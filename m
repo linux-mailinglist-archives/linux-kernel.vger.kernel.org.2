@@ -2,78 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1494637EBB0
+	by mail.lfdr.de (Postfix) with ESMTP id 5EE6737EBB1
 	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:21:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381846AbhELTf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:35:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44562 "EHLO mx2.suse.de"
+        id S1381862AbhELTf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:35:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46646 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237832AbhELR4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 13:56:36 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 87A0AB20B;
-        Wed, 12 May 2021 17:55:26 +0000 (UTC)
-Subject: Re: [PATCH v1 8/8] block: add add_disk() failure injection support
-To:     Luis Chamberlain <mcgrof@kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Akinobu Mita <akinobu.mita@gmail.com>
-Cc:     axboe@kernel.dk, bvanassche@acm.org, ming.lei@redhat.com,
-        hch@infradead.org, jack@suse.cz, osandov@fb.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210512064629.13899-1-mcgrof@kernel.org>
- <20210512064629.13899-9-mcgrof@kernel.org>
- <e938c21f-3872-232c-4956-dfa53aec579b@suse.de>
- <20210512165639.GB4332@42.do-not-panic.com>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <989175a7-5533-02ef-c096-b24b2769c9cf@suse.de>
-Date:   Wed, 12 May 2021 19:55:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S243991AbhELR5x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 13:57:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CC226101A;
+        Wed, 12 May 2021 17:56:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620842203;
+        bh=uPk0tjKHI/wUcLVdmGHeXXyKlhgkkSi7MDoFAUTa6Oc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FDm4sadzByuZig7gHU3hlHkcwVKy+igRBpOZaEb3HkHqysfLWf21vFMXnki9E5+sb
+         T6NfPBn7SIHe6/8HaShYDZIHuKbI4mrQfnA2HJ5x3FzAaVKPKeuAaarWY4It+3xxuc
+         +amRBuKPR2yhEaiLkC0VsFfCq5bdlkkRk5Y5naSw=
+Date:   Wed, 12 May 2021 19:56:41 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhuacai@kernel.org>
+Subject: Re: [PATCH 5.12 000/677] 5.12.4-rc1 review
+Message-ID: <YJwW2bNXGZw5kmpo@kroah.com>
+References: <20210512144837.204217980@linuxfoundation.org>
+ <CA+G9fYufHvM+C=39gtk5CF-r4sYYpRkQFGsmKrkdQcXj_XKFag@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210512165639.GB4332@42.do-not-panic.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYufHvM+C=39gtk5CF-r4sYYpRkQFGsmKrkdQcXj_XKFag@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/12/21 6:56 PM, Luis Chamberlain wrote:
-> On Wed, May 12, 2021 at 05:22:48PM +0200, Hannes Reinecke wrote:
-[ .. ]
->> So I'd rather delegate the topic of error injection to a more general
->> discussion (LSF springs to mind ...), and then agree on a framework which is
->> suitable for every function.
+On Wed, May 12, 2021 at 10:53:04PM +0530, Naresh Kamboju wrote:
+> On Wed, 12 May 2021 at 21:27, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 5.12.4 release.
+> > There are 677 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Fri, 14 May 2021 14:47:09 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.4-rc1.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
 > 
-> Or we just get cranking and produce proof of concepts to compare and
-> contrast later. At least I hope this patch and the respective blktests
-> patches suffice to help demo what we need to test.
 > 
-Yeah; I know; 'tis a hard topic.
-(Will we have another ALPSS this year? Would be ideal to discuss things 
-there. Christoph?)
+> MIPS Clang build regression detected.
+> MIPS gcc-10,9 and 8 build PASS.
+> 
+> > Maciej W. Rozycki <macro@orcam.me.uk>
+> >     MIPS: Reinstate platform `__div64_32' handler
+> 
+> mips clang build breaks on stable rc 5.4 .. 5.12 due to below warnings / errors
+>  - mips (defconfig) with clang-12
+>  - mips (tinyconfig) with clang-12
+>  - mips (allnoconfig) with clang-12
+> 
+> make --silent --keep-going --jobs=8
+> O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=mips
+> CROSS_COMPILE=mips-linux-gnu- 'HOSTCC=sccache clang' 'CC=sccache
+> clang'
+> kernel/time/hrtimer.c:318:2: error: couldn't allocate output register
+> for constraint 'x'
+>         do_div(tmp, (u32) div);
+>         ^
+> include/asm-generic/div64.h:243:11: note: expanded from macro 'do_div'
+>                 __rem = __div64_32(&(n), __base);       \
+>                         ^
+> arch/mips/include/asm/div64.h:74:11: note: expanded from macro '__div64_32'
+>                 __asm__("divu   $0, %z1, %z2"                           \
+>                         ^
+> 1 error generated.
 
-What I would love to see is to facilitate kernel live patching for 
-testing, blanking out the function body under test and just return 
-specific error codes.
-That would be _ideal_ for testing, as we don't have to modify the kernel 
-at all, we just need to compile it with the appropriate compiler options 
-for live patching.
-And then we should be able compile modules for the functions to test, 
-load the module, do the test, remove the module, and everything would be 
-back to normal again.
+Does this also show up in Linus's tree?  The same MIPS patch is there as
+well from what I can tell.
 
-I know, but one can dream ...
+thanks,
 
-But maybe I can trick you in trying it ... hmm?
-
-Cheers,
-
-Hannes
--- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+greg k-h
