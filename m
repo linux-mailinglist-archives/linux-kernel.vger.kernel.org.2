@@ -2,108 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB1A137EDBC
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E5A137EDC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:43:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1388018AbhELUlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 16:41:47 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:40402 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344894AbhELUYY (ORCPT
+        id S1388103AbhELUmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 16:42:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1387260AbhELUd3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 16:24:24 -0400
-Received: from mail-vs1-f71.google.com ([209.85.217.71])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lgvNl-0005l3-7W
-        for linux-kernel@vger.kernel.org; Wed, 12 May 2021 20:23:01 +0000
-Received: by mail-vs1-f71.google.com with SMTP id e12-20020a67d80c0000b029022a88436f30so6669863vsj.11
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 13:23:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9gJsXnEr4ZIoyQYIBIzO2lxuT2xnUGyt9hpWeVeGi8I=;
-        b=kbPDgC1gFod1Oj/iEzmeENUReNJndROp9Jmw7EEOWvdXfEvMt9dXts7q2bC2FO02i5
-         rKp6jSWPSp4pvnGVf8QKO5TRL2ml9F5rTErw5Y7Tzehh7xZK9W7pIdulqqht9QTt1Tmu
-         9B/JpG7BOV5aY6CZ5bZvKMNkO7wwkYIDRPsEEmIYO6MzfyngrVRc5QJKwCuffYShzEr5
-         PAOKyeGrvQEUsZCni0WBP9iE4dWlAy++djDqxyIDfdNXOHwhlHS8x7mwgJ4rY2ow3V5f
-         j72N9eHh8tDFR85ENTYor/CgqcL9RHo8u9fCCLhaSqP6YJGnM+KOxKR252YB+2einUEC
-         h1GQ==
-X-Gm-Message-State: AOAM533WKXvXG8vpVIHhW85Y6rSx4KYYR4EKBqo4GG+h05UF+ZRYrdC5
-        +BpSEbpbXIgkswkuR9r2N2L7ItzHKghf8AENXVGKFQXIHUqxEoZbj8/pdd2/V7rumkmHSP/4CO6
-        wilKzHO1Ukxwq8FALkukQ+d4V8VxGHe/rtDwXuvHX5A==
-X-Received: by 2002:a67:ee4e:: with SMTP id g14mr35358349vsp.37.1620850979958;
-        Wed, 12 May 2021 13:22:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzo1HcgGvTIwADZqFT4FFfzTBlNKsqR3dNu8u/ryzDxJLZoeNXUQ5nAD8NmfVFGhoZFuAnWMw==
-X-Received: by 2002:a67:ee4e:: with SMTP id g14mr35358331vsp.37.1620850979717;
-        Wed, 12 May 2021 13:22:59 -0700 (PDT)
-Received: from [192.168.1.4] ([45.237.48.3])
-        by smtp.gmail.com with ESMTPSA id y4sm122078vsq.27.2021.05.12.13.22.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 May 2021 13:22:59 -0700 (PDT)
-Subject: Re: [linux-nfc] Re: [PATCH 1/2] MAINTAINERS: nfc: add Krzysztof
- Kozlowski as maintainer
-To:     Mark Greer <mgreer@animalcreek.com>
+        Wed, 12 May 2021 16:33:29 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8359C061345;
+        Wed, 12 May 2021 13:29:32 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1620851248;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=T8VGM7T2ebwxRKCm5/uITXAy1lYGXfvGxWTRjsElJlo=;
+        b=tolPteYN+1BOe/u6A1hk+xYj0vM7JQBAx1QnrNmuv4xyd1EGQv/70l3ul3vocp9hyYA1zs
+        WklamftkByCa5+e7/tOTgSQYo6JpeMsrWboXpiNtkpsyGy1U+qR773gqBbZ5tD+JNnbCD/
+        ibtkRiKfKSFRjqDMllzvVRqE1T7UHo/u6UUZ4EFjt3qHqUr/gwrhys+UhITVVWck5eqQPd
+        h/tHkvkPcjYTnMK6105DE76hrQWSdDbjUJluIo4pMvGSD0TOAlyz629ncbP/xvvx6KF/kt
+        w7zfZVs+a+309+mkLqfY/qOFcGhY8+EGBIVMtIlpz8/pZszMU2xcTjXL0IpA4Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1620851248;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=T8VGM7T2ebwxRKCm5/uITXAy1lYGXfvGxWTRjsElJlo=;
+        b=EQTh/A7XSqo9mXKYkLMu0PQUecmLYJRHnb+Pm4yi3tEuGxUxVg7ubba0KNUejp7niMF6Ej
+        0w60bRAIGZVLDwCA==
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        linux-hyperv@vger.kernel.org
 Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nfc@lists.01.org
-References: <20210512144319.30852-1-krzysztof.kozlowski@canonical.com>
- <961dc9c5-0eb0-586c-5e70-b21ca2f8e6f3@linaro.org>
- <d498c949-3b1e-edaa-81ed-60573cfb6ee9@canonical.com>
- <20210512164952.GA222094@animalcreek.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <06892f2b-e4af-66d4-f033-aff49039d1a9@canonical.com>
-Date:   Wed, 12 May 2021 16:22:58 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Michael Kelley <mikelley@microsoft.com>,
+        Mohammed Gamal <mgamal@redhat.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] clocksource/drivers/hyper-v: Re-enable VDSO_CLOCKMODE_HVCLOCK on X86
+In-Reply-To: <20210512084630.1662011-1-vkuznets@redhat.com>
+References: <20210512084630.1662011-1-vkuznets@redhat.com>
+Date:   Wed, 12 May 2021 22:27:28 +0200
+Message-ID: <87tun766kv.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210512164952.GA222094@animalcreek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/05/2021 12:49, Mark Greer wrote:
-> On Wed, May 12, 2021 at 11:43:13AM -0400, Krzysztof Kozlowski wrote:
->> On 12/05/2021 11:11, Daniel Lezcano wrote:
->>> On 12/05/2021 16:43, Krzysztof Kozlowski wrote:
->>>> The NFC subsystem is orphaned.  I am happy to spend some cycles to
->>>> review the patches, send pull requests and in general keep the NFC
->>>> subsystem running.
->>>>
->>>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->>>>
->>>> ---
->>>>
->>>> I admit I don't have big experience in NFC part but this will be nice
->>>> opportunity to learn something new. 
->>>
->>> NFC has been lost in the limbos since a while. Good to see someone
->>> volunteering to take care of it.
->>>
->>> May I suggest to create a simple nfc reading program in the 'tools'
->>> directory (could be a training exercise ;)
->>>
->>
->> Noted, thanks. I also need to get a simple hardware dongle for this....
-> 
-> Krzysztof, the NFC portion of the kernel has a counterpart in userspace
-> called neard.  I'm supposed to be maintaining it but I have next to no
-> time to do so.  If you have spare cycles, any help would be appreciated.
-> 
-> Anyway, in neard, there are some simple test scripts (python2 - I/we need
-> to update to python3).  The current home of neard is:
-> 
-> git://git.kernel.org/pub/scm/network/nfc/neard.git
+On Wed, May 12 2021 at 10:46, Vitaly Kuznetsov wrote:
+> Mohammed reports (https://bugzilla.kernel.org/show_bug.cgi?id=213029)
+> the commit e4ab4658f1cf ("clocksource/drivers/hyper-v: Handle vDSO
+> differences inline") broke vDSO on x86. The problem appears to be that
+> VDSO_CLOCKMODE_HVCLOCK is an enum value in 'enum vdso_clock_mode' and
+> '#ifdef VDSO_CLOCKMODE_HVCLOCK' branch evaluates to false (it is not
+> a define). Replace it with CONFIG_X86 as it is the only arch which
+> has this mode currently.
+>
+> Reported-by: Mohammed Gamal <mgamal@redhat.com>
+> Fixes: e4ab4658f1cf ("clocksource/drivers/hyper-v: Handle vDSO differences inline")
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> ---
+>  drivers/clocksource/hyperv_timer.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/clocksource/hyperv_timer.c b/drivers/clocksource/hyperv_timer.c
+> index 977fd05ac35f..e17421f5e47d 100644
+> --- a/drivers/clocksource/hyperv_timer.c
+> +++ b/drivers/clocksource/hyperv_timer.c
+> @@ -419,7 +419,7 @@ static void resume_hv_clock_tsc(struct clocksource *arg)
+>  	hv_set_register(HV_REGISTER_REFERENCE_TSC, tsc_msr);
+>  }
+>  
+> -#ifdef VDSO_CLOCKMODE_HVCLOCK
+> +#ifdef CONFIG_X86
+>  static int hv_cs_enable(struct clocksource *cs)
+>  {
+>  	vclocks_set_used(VDSO_CLOCKMODE_HVCLOCK);
+> @@ -435,7 +435,7 @@ static struct clocksource hyperv_cs_tsc = {
+>  	.flags	= CLOCK_SOURCE_IS_CONTINUOUS,
+>  	.suspend= suspend_hv_clock_tsc,
+>  	.resume	= resume_hv_clock_tsc,
+> -#ifdef VDSO_CLOCKMODE_HVCLOCK
+> +#ifdef CONFIG_X86
+>  	.enable = hv_cs_enable,
+>  	.vdso_clock_mode = VDSO_CLOCKMODE_HVCLOCK,
+>  #else
 
-Thanks for sharing this. Let me take a look at it first, before
-committing to something too big.
+That's lame as it needs to be patched differently once ARM64 gains
+support. What about the below?
 
-Best regards,
-Krzysztof
+Thanks,
+
+        tglx
+---
+--- a/arch/x86/include/asm/vdso/clocksource.h
++++ b/arch/x86/include/asm/vdso/clocksource.h
+@@ -7,4 +7,6 @@
+ 	VDSO_CLOCKMODE_PVCLOCK,	\
+ 	VDSO_CLOCKMODE_HVCLOCK
+ 
++#define HAVE_VDSO_CLOCKMODE_HVCLOCK
++
+ #endif /* __ASM_VDSO_CLOCKSOURCE_H */
+--- a/drivers/clocksource/hyperv_timer.c
++++ b/drivers/clocksource/hyperv_timer.c
+@@ -419,7 +419,7 @@ static void resume_hv_clock_tsc(struct c
+ 	hv_set_register(HV_REGISTER_REFERENCE_TSC, tsc_msr);
+ }
+ 
+-#ifdef VDSO_CLOCKMODE_HVCLOCK
++#ifdef HAVE_VDSO_CLOCKMODE_HVCLOCK
+ static int hv_cs_enable(struct clocksource *cs)
+ {
+ 	vclocks_set_used(VDSO_CLOCKMODE_HVCLOCK);
+@@ -435,7 +435,7 @@ static struct clocksource hyperv_cs_tsc
+ 	.flags	= CLOCK_SOURCE_IS_CONTINUOUS,
+ 	.suspend= suspend_hv_clock_tsc,
+ 	.resume	= resume_hv_clock_tsc,
+-#ifdef VDSO_CLOCKMODE_HVCLOCK
++#ifdef HAVE_VDSO_CLOCKMODE_HVCLOCK
+ 	.enable = hv_cs_enable,
+ 	.vdso_clock_mode = VDSO_CLOCKMODE_HVCLOCK,
+ #else
