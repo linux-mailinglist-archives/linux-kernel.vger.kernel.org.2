@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3735837B92E
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 11:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CE0A37B929
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 11:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230349AbhELJa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 05:30:56 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:2458 "EHLO
+        id S230196AbhELJap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 05:30:45 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:2459 "EHLO
         szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230137AbhELJam (ORCPT
+        with ESMTP id S230109AbhELJam (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 12 May 2021 05:30:42 -0400
 Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Fg8Z22YHDzBtTP;
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Fg8Z21s0szBtSv;
         Wed, 12 May 2021 17:26:50 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
@@ -22,9 +22,9 @@ From:   Xiaofei Tan <tanxiaofei@huawei.com>
 To:     <gregkh@linuxfoundation.org>, <jirislaby@kernel.org>
 CC:     <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
         Xiaofei Tan <tanxiaofei@huawei.com>
-Subject: [PATCH 02/17] tty: tty_baudrate: Fix coding style issues of block comments
-Date:   Wed, 12 May 2021 17:26:10 +0800
-Message-ID: <1620811585-18582-3-git-send-email-tanxiaofei@huawei.com>
+Subject: [PATCH 03/17] tty: tty_buffer: Add a blank line after declarations
+Date:   Wed, 12 May 2021 17:26:11 +0800
+Message-ID: <1620811585-18582-4-git-send-email-tanxiaofei@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1620811585-18582-1-git-send-email-tanxiaofei@huawei.com>
 References: <1620811585-18582-1-git-send-email-tanxiaofei@huawei.com>
@@ -36,50 +36,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix coding style issues of block comments, reported by checkpatch.pl.
-Besides, add a period at the end of comment sentenses.
+Add a blank line after declarations, reported by checkpatch.pl.
 
 Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
 ---
- drivers/tty/tty_baudrate.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ drivers/tty/tty_buffer.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/tty/tty_baudrate.c b/drivers/tty/tty_baudrate.c
-index b3f5ba9..426b125 100644
---- a/drivers/tty/tty_baudrate.c
-+++ b/drivers/tty/tty_baudrate.c
-@@ -159,8 +159,9 @@ void tty_termios_encode_baud_rate(struct ktermios *termios,
- #endif
- #ifdef BOTHER
- 	/* If the user asked for a precise weird speed give a precise weird
--	   answer. If they asked for a Bfoo speed they may have problems
--	   digesting non-exact replies so fuzz a bit */
-+	 * answer. If they asked for a Bfoo speed they may have problems
-+	 * digesting non-exact replies so fuzz a bit.
-+	 */
- 
- 	if ((termios->c_cflag & CBAUD) == BOTHER) {
- 		oclose = 0;
-@@ -191,7 +192,8 @@ void tty_termios_encode_baud_rate(struct ktermios *termios,
- 		if (ibaud - iclose <= baud_table[i] &&
- 		    ibaud + iclose >= baud_table[i]) {
- 			/* For the case input == output don't set IBAUD bits
--			   if the user didn't do so */
-+			 * if the user didn't do so.
-+			 */
- 			if (ofound == i && !ibinput)
- 				ifound  = i;
- #ifdef IBSHIFT
-@@ -211,7 +213,8 @@ void tty_termios_encode_baud_rate(struct ktermios *termios,
- 	if (ofound == -1)
- 		termios->c_cflag |= BOTHER;
- 	/* Set exact input bits only if the input and output differ or the
--	   user already did */
-+	 * user already did.
-+	 */
- 	if (ifound == -1 && (ibaud != obaud || ibinput))
- 		termios->c_cflag |= (BOTHER << IBSHIFT);
- #else
+diff --git a/drivers/tty/tty_buffer.c b/drivers/tty/tty_buffer.c
+index 9733469..5509b5d 100644
+--- a/drivers/tty/tty_buffer.c
++++ b/drivers/tty/tty_buffer.c
+@@ -91,6 +91,7 @@ EXPORT_SYMBOL_GPL(tty_buffer_unlock_exclusive);
+ int tty_buffer_space_avail(struct tty_port *port)
+ {
+ 	int space = port->buf.mem_limit - atomic_read(&port->buf.mem_used);
++
+ 	return max(space, 0);
+ }
+ EXPORT_SYMBOL_GPL(tty_buffer_space_avail);
+@@ -312,11 +313,13 @@ int tty_insert_flip_string_fixed_flag(struct tty_port *port,
+ 		const unsigned char *chars, char flag, size_t size)
+ {
+ 	int copied = 0;
++
+ 	do {
+ 		int goal = min_t(size_t, size - copied, TTY_BUFFER_PAGE);
+ 		int flags = (flag == TTY_NORMAL) ? TTYB_NORMAL : 0;
+ 		int space = __tty_buffer_request_room(port, goal, flags);
+ 		struct tty_buffer *tb = port->buf.tail;
++
+ 		if (unlikely(space == 0))
+ 			break;
+ 		memcpy(char_buf_ptr(tb, tb->used), chars, space);
+@@ -348,10 +351,12 @@ int tty_insert_flip_string_flags(struct tty_port *port,
+ 		const unsigned char *chars, const char *flags, size_t size)
+ {
+ 	int copied = 0;
++
+ 	do {
+ 		int goal = min_t(size_t, size - copied, TTY_BUFFER_PAGE);
+ 		int space = tty_buffer_request_room(port, goal);
+ 		struct tty_buffer *tb = port->buf.tail;
++
+ 		if (unlikely(space == 0))
+ 			break;
+ 		memcpy(char_buf_ptr(tb, tb->used), chars, space);
+@@ -431,8 +436,10 @@ int tty_prepare_flip_string(struct tty_port *port, unsigned char **chars,
+ 		size_t size)
+ {
+ 	int space = __tty_buffer_request_room(port, size, TTYB_NORMAL);
++
+ 	if (likely(space)) {
+ 		struct tty_buffer *tb = port->buf.tail;
++
+ 		*chars = char_buf_ptr(tb, tb->used);
+ 		if (~tb->flags & TTYB_NORMAL)
+ 			memset(flag_buf_ptr(tb, tb->used), TTY_NORMAL, space);
 -- 
 2.8.1
 
