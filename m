@@ -2,92 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A882437B955
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 11:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E355437B958
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 11:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230210AbhELJg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 05:36:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbhELJgy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 05:36:54 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE95C061574;
-        Wed, 12 May 2021 02:35:46 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id g24so13214699pji.4;
-        Wed, 12 May 2021 02:35:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+DNGDumTIkNC+0BsMICVPR49/upzOcBt01+SOrhLdME=;
-        b=DlPfjNTz1AUpI7H0Ekkta2lKCbbanPuAqM3KDZ7wGxEJJ9nFp6idx/o9CKDzPjkI6A
-         e3pZyoeauaU9PDch8uLFQY5Mne96rsWiULfiIxehFZIcPpURL4DydX15wRTzuwjpJwdn
-         USlxq58JPKSnI7m1foZLHyh+IKimYoQttxiWK5U/MGHI/yAUtwXS4FK+rvlAqdNL7lSq
-         KSv6kIWfVb6P2MxemaV+LMpJ4fveOjrmWn/SqiA+CEox5k1xcT+jq1MuFOpjx3nmb0Hs
-         Qm0ljr+b6MA8nHZq7+YWbHsZk7QH4ha3LECgsmU1L1jcqy0oJXPEk9DaADO+yrpmTbRj
-         1Kfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+DNGDumTIkNC+0BsMICVPR49/upzOcBt01+SOrhLdME=;
-        b=hnCldp/P2ju/zONpPKCcOZ30eAkKi87HMpb3FrbLWXayQo/deXm9qgyn/6yOy5wTj9
-         /08/wMt9GB7JeNlhwJ4kN90RtGjO4ytqD7J8AqIROJxShhdVfwJO6CO7H864d2gvq+HZ
-         Pwr2tJhqCCyKRUgfSE5FNoKvfIoc4L82A7fDvlZBeZUEeCXu5HDF6CszH8khjib/3ZTQ
-         LeanogEXMUChR5ePxs2WV+7jUshnePYPvUXbfBAbPkBU2WhAVX36gSwGOVNtvbCkqYMA
-         fMDQRDB/clDJRQnvhBseFw04SDOd2pWFn8m5a+R4yZV6X7EVCLHKztKIeoyJQZcj84sR
-         DIAA==
-X-Gm-Message-State: AOAM5320qNNwgEd9v7Wvb5h8LX9TFF4VWqvvirg/G+2fGWPgpqcUqtml
-        5EVXL77l8zo6yhTSaZoOAFw=
-X-Google-Smtp-Source: ABdhPJwr3Rds4nAEyDvnvtjwkn3mI78LQe0RYr6Sd+KwArIHHCc3193bZ4zqJ41BOzUybjI9mRNuVg==
-X-Received: by 2002:a17:90a:1389:: with SMTP id i9mr36221660pja.232.1620812145711;
-        Wed, 12 May 2021 02:35:45 -0700 (PDT)
-Received: from ubt.spreadtrum.com ([117.18.48.102])
-        by smtp.gmail.com with ESMTPSA id p1sm15051048pfp.137.2021.05.12.02.35.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 02:35:45 -0700 (PDT)
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-spi@vger.kernel.org, Baolin Wang <baolin.wang7@gmail.com>,
-        linux-kernel@vger.kernel.org, Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>
-Subject: [PATCH] spi: sprd: Add missing MODULE_DEVICE_TABLE
-Date:   Wed, 12 May 2021 17:35:34 +0800
-Message-Id: <20210512093534.243040-1-zhang.lyra@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S230178AbhELJhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 05:37:46 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:37967 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230097AbhELJhm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 05:37:42 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4Fg8nF5JGxz9sfF;
+        Wed, 12 May 2021 11:36:33 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id B4dS7uK_X9-j; Wed, 12 May 2021 11:36:33 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4Fg8nF4JH0z9sf6;
+        Wed, 12 May 2021 11:36:33 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 77ECA8B7E5;
+        Wed, 12 May 2021 11:36:33 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id NJvqNYHf9qcZ; Wed, 12 May 2021 11:36:33 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id D64DE8B7DF;
+        Wed, 12 May 2021 11:36:32 +0200 (CEST)
+Subject: Re: arch/powerpc/kernel/optprobes.c:34:1: error: unused function
+ 'is_kprobe_ppc_optinsn_slot'
+To:     Nathan Chancellor <nathan@kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        linux-kernel@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>
+References: <202105120059.uTLH58Lm-lkp@intel.com>
+ <48747467-cb93-c66d-4cf9-097be0568488@csgroup.eu>
+ <208186f3-aab0-d94e-bcf4-8347983cc1a6@kernel.org>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <0885f8b8-fea5-3fb0-42d7-b73e862a8c47@csgroup.eu>
+Date:   Wed, 12 May 2021 11:36:29 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
+In-Reply-To: <208186f3-aab0-d94e-bcf4-8347983cc1a6@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunyan Zhang <chunyan.zhang@unisoc.com>
 
-MODULE_DEVICE_TABLE is used to extract the device information out of the
-driver and builds a table when being compiled. If using this macro,
-kernel can find the driver if available when the device is plugged in,
-and then loads that driver and initializes the device.
 
-Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
----
- drivers/spi/spi-sprd.c | 1 +
- 1 file changed, 1 insertion(+)
+Le 11/05/2021 à 20:46, Nathan Chancellor a écrit :
+> On 5/11/2021 9:47 AM, Christophe Leroy wrote:
+>> Hi All,
+>>
+>> Le 11/05/2021 à 18:30, kernel test robot a écrit :
+>>> Hi Christophe,
+>>>
+>>> First bad commit (maybe != root cause):
+>>>
+>>> tree: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>>> head:   1140ab592e2ebf8153d2b322604031a8868ce7a5
+>>> commit: eacf4c0202654adfa94bbb17b5c5c77c0be14af8 powerpc: Enable OPTPROBES on PPC32
 
-diff --git a/drivers/spi/spi-sprd.c b/drivers/spi/spi-sprd.c
-index b41a75749b49..28e70db9bbba 100644
---- a/drivers/spi/spi-sprd.c
-+++ b/drivers/spi/spi-sprd.c
-@@ -1068,6 +1068,7 @@ static const struct of_device_id sprd_spi_of_match[] = {
- 	{ .compatible = "sprd,sc9860-spi", },
- 	{ /* sentinel */ }
- };
-+MODULE_DEVICE_TABLE(of, sprd_spi_of_match);
- 
- static struct platform_driver sprd_spi_driver = {
- 	.driver = {
--- 
-2.25.1
+Ok, the problem appears on PPC32 with that patch, but it must have been there on PPC64 since the 
+implementation of optprobes with commit 51c9c0843993 ("powerpc/kprobes: Implement Optprobes")
 
+
+>>> date:   3 weeks ago
+>>> config: powerpc-randconfig-r033-20210511 (attached as .config)
+>>> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project 
+>>> a0fed635fe1701470062495a6ffee1c608f3f1bc)
+>>
+>> A clang issue ?
+>>
+>>
+>>> reproduce (this is a W=1 build):
+>>>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O 
+>>> ~/bin/make.cross
+>>>          chmod +x ~/bin/make.cross
+>>>          # install powerpc cross compiling tool for clang build
+>>>          # apt-get install binutils-powerpc-linux-gnu
+>>>          # 
+>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=eacf4c0202654adfa94bbb17b5c5c77c0be14af8 
+>>>
+>>>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>>>          git fetch --no-tags linus master
+>>>          git checkout eacf4c0202654adfa94bbb17b5c5c77c0be14af8
+>>>          # save the attached .config to linux build tree
+>>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=powerpc
+>>>
+>>> If you fix the issue, kindly add following tag as appropriate
+>>> Reported-by: kernel test robot <lkp@intel.com>
+>>>
+>>> All errors (new ones prefixed by >>):
+>>>
+>>>>> arch/powerpc/kernel/optprobes.c:34:1: error: unused function 'is_kprobe_ppc_optinsn_slot' 
+>>>>> [-Werror,-Wunused-function]
+>>>     DEFINE_INSN_CACHE_OPS(ppc_optinsn);
+>>>     ^
+>>>     include/linux/kprobes.h:306:20: note: expanded from macro 'DEFINE_INSN_CACHE_OPS'
+>>>     static inline bool is_kprobe_##__name##_slot(unsigned long addr)        \
+>>
+>> That's a 'static inline', shouldn't generate an 'unused function' warning.
+> This is a W=1 build, which means that "inline" does not silence unused function warnings with clang 
+> because of commit 6863f5643dd7 ("kbuild: allow Clang to find unused static inline functions for W=1 
+> build").
+
+Ok, I didn't know that.
+
+> 
+> Cheers,
+> Nathan
+> 
+>>>                        ^
+>>>     <scratch space>:16:1: note: expanded from here
+>>>     is_kprobe_ppc_optinsn_slot
+>>>     ^
+>>>     1 error generated.
+>>>
+>>>
+>>> vim +/is_kprobe_ppc_optinsn_slot +34 arch/powerpc/kernel/optprobes.c
+>>>
+>>> 51c9c084399352 Anju T 2017-02-08  20
+>>> 51c9c084399352 Anju T 2017-02-08  21  #define TMPL_CALL_HDLR_IDX    \
+>>> 51c9c084399352 Anju T 2017-02-08  22 (optprobe_template_call_handler - optprobe_template_entry)
+>>> 51c9c084399352 Anju T 2017-02-08  23  #define TMPL_EMULATE_IDX    \
+>>> 51c9c084399352 Anju T 2017-02-08  24 (optprobe_template_call_emulate - optprobe_template_entry)
+>>> 51c9c084399352 Anju T 2017-02-08  25  #define TMPL_RET_IDX        \
+>>> 51c9c084399352 Anju T 2017-02-08  26      (optprobe_template_ret - optprobe_template_entry)
+>>> 51c9c084399352 Anju T 2017-02-08  27  #define TMPL_OP_IDX        \
+>>> 51c9c084399352 Anju T 2017-02-08  28 (optprobe_template_op_address - optprobe_template_entry)
+>>> 51c9c084399352 Anju T 2017-02-08  29  #define TMPL_INSN_IDX        \
+>>> 51c9c084399352 Anju T 2017-02-08  30      (optprobe_template_insn - optprobe_template_entry)
+>>> 51c9c084399352 Anju T 2017-02-08  31  #define TMPL_END_IDX        \
+>>> 51c9c084399352 Anju T 2017-02-08  32      (optprobe_template_end - optprobe_template_entry)
+>>> 51c9c084399352 Anju T 2017-02-08  33
+>>> 51c9c084399352 Anju T 2017-02-08 @34  DEFINE_INSN_CACHE_OPS(ppc_optinsn);
+>>> 51c9c084399352 Anju T 2017-02-08  35
+>>>
+>>> :::::: The code at line 34 was first introduced by commit
+>>> :::::: 51c9c0843993528bffc920c54c2121d9e6f8b090 powerpc/kprobes: Implement Optprobes
+>>>
+>>> :::::: TO: Anju T <anju@linux.vnet.ibm.com>
+>>> :::::: CC: Michael Ellerman <mpe@ellerman.id.au>
+>>>
+>>> ---
+>>> 0-DAY CI Kernel Test Service, Intel Corporation
+>>> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>>>
+>>
