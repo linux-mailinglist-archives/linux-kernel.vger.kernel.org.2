@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08CF537C3F2
+	by mail.lfdr.de (Postfix) with ESMTP id A77ED37C3F4
 	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 17:30:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234587AbhELPZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 11:25:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41228 "EHLO mail.kernel.org"
+        id S234765AbhELPZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 11:25:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232988AbhELPL6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:11:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C50F617C9;
-        Wed, 12 May 2021 15:03:30 +0000 (UTC)
+        id S233216AbhELPMB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:12:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62F21616ED;
+        Wed, 12 May 2021 15:03:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620831811;
-        bh=70kosp97N7B5aL+vSZt3412l73+kQTlgiL5T0M9Po9U=;
+        s=korg; t=1620831815;
+        bh=Rd7/jkZaQPeU3MGkbzUL4jwXVTMMUEuAqfKekpuH5Is=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0r7p/DcwL2xcteQwNneH0NsCvcNw/anKosqNIsSuRclUGtC0cMFumz0+QSdTnUAWx
-         2+ZL0f8QCo8Z1Va8SfWQj4BwnfIpXpwhOc3sn/3CyqI/d2e85o3/TDqj+TewZEFNQ0
-         X6txMLiZ+RZ8tF/qO4qeZO60ERu08zke8o6aDfNw=
+        b=tlQcMdJvDgc3da95NsV6nMVVKHeugY+RyM19+VKefIDWUID6yrgfRtd5GjrVJi5EM
+         offvTxYQXrYRNKCRZl4VEL921wIng1i7xyei/atiDdBAhQvOuF+fkMRHmSdK9mdwHB
+         yPXxOGe+ldqpkFafXsSfdPRXAlqjtATzi8uQE98Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Annaliese McDermond <nh6z@nh6z.net>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.10 024/530] ASoC: tlv320aic32x4: Increase maximum register in regmap
-Date:   Wed, 12 May 2021 16:42:14 +0200
-Message-Id: <20210512144820.530822600@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Tobias Wolf <dev-NTEO@vplace.de>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: [PATCH 5.10 026/530] MIPS: pci-rt2880: fix slot 0 configuration
+Date:   Wed, 12 May 2021 16:42:16 +0200
+Message-Id: <20210512144820.592738091@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144819.664462530@linuxfoundation.org>
 References: <20210512144819.664462530@linuxfoundation.org>
@@ -39,40 +42,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Annaliese McDermond <nh6z@nh6z.net>
+From: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
 
-commit 29654ed8384e9dbaf4cfba689dbcb664a6ab4bb7 upstream.
+commit 8e98b697006d749d745d3b174168a877bb96c500 upstream.
 
-AIC32X4_REFPOWERUP was added as a register, but the maximum register value
-in the regmap and regmap range was not correspondingly increased.  This
-caused an error when this register was attempted to be written.
+pci_fixup_irqs() used to call pcibios_map_irq on every PCI device, which
+for RT2880 included bus 0 slot 0. After pci_fixup_irqs() got removed,
+only slots/funcs with devices attached would be called. While arguably
+the right thing, that left no chance for this driver to ever initialize
+slot 0, effectively bricking PCI and USB on RT2880 devices such as the
+Belkin F5D8235-4 v1.
 
-Fixes: ec96690de82c ("ASoC: tlv320aic32x4: Enable fast charge")
-Cc: stable@vger.kernel.org
-Signed-off-by: Annaliese McDermond <nh6z@nh6z.net>
-Link: https://lore.kernel.org/r/0101017889851cab-ce60cfdb-d88c-43d8-bbd2-7fbf34a0c912-000000@us-west-2.amazonses.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Slot 0 configuration needs to happen after PCI bus enumeration, but
+before any device at slot 0x11 (func 0 or 1) is talked to. That was
+determined empirically by testing on a Belkin F5D8235-4 v1 device. A
+minimal BAR 0 config write followed by read, then setting slot 0
+PCI_COMMAND to MASTER | IO | MEMORY is all that seems to be required for
+proper functionality.
+
+Tested by ensuring that full- and high-speed USB devices get enumerated
+on the Belkin F5D8235-4 v1 (with an out of tree DTS file from OpenWrt).
+
+Fixes: 04c81c7293df ("MIPS: PCI: Replace pci_fixup_irqs() call with host bridge IRQ mapping hooks")
+Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc: Tobias Wolf <dev-NTEO@vplace.de>
+Cc: <stable@vger.kernel.org> # v4.14+
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/soc/codecs/tlv320aic32x4.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/mips/pci/pci-rt2880.c |   37 ++++++++++++++++++++++++-------------
+ 1 file changed, 24 insertions(+), 13 deletions(-)
 
---- a/sound/soc/codecs/tlv320aic32x4.c
-+++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -577,12 +577,12 @@ static const struct regmap_range_cfg aic
- 		.window_start = 0,
- 		.window_len = 128,
- 		.range_min = 0,
--		.range_max = AIC32X4_RMICPGAVOL,
-+		.range_max = AIC32X4_REFPOWERUP,
- 	},
- };
+--- a/arch/mips/pci/pci-rt2880.c
++++ b/arch/mips/pci/pci-rt2880.c
+@@ -180,7 +180,6 @@ static inline void rt2880_pci_write_u32(
  
- const struct regmap_config aic32x4_regmap_config = {
--	.max_register = AIC32X4_RMICPGAVOL,
-+	.max_register = AIC32X4_REFPOWERUP,
- 	.ranges = aic32x4_regmap_pages,
- 	.num_ranges = ARRAY_SIZE(aic32x4_regmap_pages),
- };
+ int pcibios_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+ {
+-	u16 cmd;
+ 	int irq = -1;
+ 
+ 	if (dev->bus->number != 0)
+@@ -188,8 +187,6 @@ int pcibios_map_irq(const struct pci_dev
+ 
+ 	switch (PCI_SLOT(dev->devfn)) {
+ 	case 0x00:
+-		rt2880_pci_write_u32(PCI_BASE_ADDRESS_0, 0x08000000);
+-		(void) rt2880_pci_read_u32(PCI_BASE_ADDRESS_0);
+ 		break;
+ 	case 0x11:
+ 		irq = RT288X_CPU_IRQ_PCI;
+@@ -201,16 +198,6 @@ int pcibios_map_irq(const struct pci_dev
+ 		break;
+ 	}
+ 
+-	pci_write_config_byte((struct pci_dev *) dev,
+-		PCI_CACHE_LINE_SIZE, 0x14);
+-	pci_write_config_byte((struct pci_dev *) dev, PCI_LATENCY_TIMER, 0xFF);
+-	pci_read_config_word((struct pci_dev *) dev, PCI_COMMAND, &cmd);
+-	cmd |= PCI_COMMAND_MASTER | PCI_COMMAND_IO | PCI_COMMAND_MEMORY |
+-		PCI_COMMAND_INVALIDATE | PCI_COMMAND_FAST_BACK |
+-		PCI_COMMAND_SERR | PCI_COMMAND_WAIT | PCI_COMMAND_PARITY;
+-	pci_write_config_word((struct pci_dev *) dev, PCI_COMMAND, cmd);
+-	pci_write_config_byte((struct pci_dev *) dev, PCI_INTERRUPT_LINE,
+-			      dev->irq);
+ 	return irq;
+ }
+ 
+@@ -251,6 +238,30 @@ static int rt288x_pci_probe(struct platf
+ 
+ int pcibios_plat_dev_init(struct pci_dev *dev)
+ {
++	static bool slot0_init;
++
++	/*
++	 * Nobody seems to initialize slot 0, but this platform requires it, so
++	 * do it once when some other slot is being enabled. The PCI subsystem
++	 * should configure other slots properly, so no need to do anything
++	 * special for those.
++	 */
++	if (!slot0_init && dev->bus->number == 0) {
++		u16 cmd;
++		u32 bar0;
++
++		slot0_init = true;
++
++		pci_bus_write_config_dword(dev->bus, 0, PCI_BASE_ADDRESS_0,
++					   0x08000000);
++		pci_bus_read_config_dword(dev->bus, 0, PCI_BASE_ADDRESS_0,
++					  &bar0);
++
++		pci_bus_read_config_word(dev->bus, 0, PCI_COMMAND, &cmd);
++		cmd |= PCI_COMMAND_MASTER | PCI_COMMAND_IO | PCI_COMMAND_MEMORY;
++		pci_bus_write_config_word(dev->bus, 0, PCI_COMMAND, cmd);
++	}
++
+ 	return 0;
+ }
+ 
 
 
