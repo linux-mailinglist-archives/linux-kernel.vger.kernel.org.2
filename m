@@ -2,126 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F279B37ED9B
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F2637EDA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1387810AbhELUkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 16:40:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55030 "EHLO
+        id S1387930AbhELUlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 16:41:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1386846AbhELUWY (ORCPT
+        with ESMTP id S1386849AbhELUWY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 12 May 2021 16:22:24 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BFE1C061351
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 13:19:59 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id b3-20020a05620a0cc3b02902e9d5ca06f2so18136893qkj.19
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 13:19:59 -0700 (PDT)
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C814C061353
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 13:20:15 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id j19so18198734qtp.7
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 13:20:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc
-         :content-transfer-encoding;
-        bh=YXR7018ir3yC5tcsqwArvEvMEw9OfhcwUNlN5MdOICU=;
-        b=qOWX+kRIMBQ4mZ/HLAhtp9wtaMHP5alBj0yPlO6T3CwoNy5+yXHc5+lK3jUvjUIMh4
-         scx7qYpwH7fn/Co419Rrw+6ku5QpMn8wo3UNlyU8TEuYLawfwF18y1DiiuImUsYbxsLv
-         LPA6EbjkZjr8zxRwy4oYlC+xugm0nGJrCHl73zgZwy8DgPcoBkh7M4oINhOnNXmLUYrW
-         wZH4ZX80NB0kU/47Pq/MkaoXxSGioC5CD8RKCA+CBb71BHR8hQXMfVcj9JTEz9cL6sX7
-         RIfHXat1yI2+q4QA/ysP/u64GkwyUP8I5QE/j0PdS2w8+MmdJ1lJC2/HhIa71OzHvOVR
-         oOuw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dUIJstx/27xJVJz6QvCNOVh0gIQL6FYmLOnlZbT26JY=;
+        b=gHtfhdTydYQykUTziTudHgN3fY5eRaL0TRbmCbpE/HyutC8I7eMRHymRr0f/F94N/q
+         mDhKFMgyHunn8V1UvTp453K69fOaVBWqmCxPSLAyvQBRnujT00a2RCjMQqcord9iYI9Q
+         DgikAWPXqoLdPCm2cv9GuFTKyablXEAcS6dUKsUy8GWTFTzqtR+lFSIXcchBFuJDQTVI
+         ee8VsLYjNhW5H51afxzp73EcbEhAQcRk4mzK5s5t9C3K0XzrgmEseLbPZyS+KQLhr9bY
+         BjzOCT1RSNrq+EE6oo05Z8m91yxppvW0iTyMG477mdxXC9iH8S5l7W/m/r4E2bupSKHU
+         ER9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc
-         :content-transfer-encoding;
-        bh=YXR7018ir3yC5tcsqwArvEvMEw9OfhcwUNlN5MdOICU=;
-        b=I97teJa+tXA6ENUafTrRjGUJ5PV6XeiupDp931p/7TVFUrn2iJ3v77T7yD1zokH1Fe
-         5SEmoNQCM91OIMSbg1j2TMOgGvQ7N4zP5NyP/VY9K3NryQ5MvlLXngqa1XA0pjYYkIeg
-         beGo06AisWgy0fCe/PgIRMruUdKlh0aS/ECY/kJR7QAPXx/s+hTqdRbCD95Sq+tBE8g8
-         YFqUmA6b+q3ejsHsB01cEE5T0vQgeA7CMUIBdSfMKroBrGXC1ucD80hfg+csRFZHCcSk
-         f/SFFOMSekFNfHPNu5B86Xy1YQZ+i0DqR7EnNSB6HTdcqsvIwL9RXFAZZcvDc6oJ1kkx
-         jrRA==
-X-Gm-Message-State: AOAM532ZlM19ZpC5ytVMbg6aaKMxYdZiqGDYvNozXGC0U8FBhXo8ht5K
-        HA6zbcmHrUzG4rMfQ7vBIDHgz1HcFkxNTQ==
-X-Google-Smtp-Source: ABdhPJy9B5ZOBGDC2X2Ln5na2zOpL8YrUS7FzOGtaEKRGfgX6pCT328QYm5PbLKrd9uhkotB5yKaub1wDZxxnA==
-X-Received: from shakeelb.svl.corp.google.com ([2620:15c:2cd:202:937a:8b67:cf77:36ff])
- (user=shakeelb job=sendgmr) by 2002:a37:c0e:: with SMTP id
- 14mr2543550qkm.255.1620850798158; Wed, 12 May 2021 13:19:58 -0700 (PDT)
-Date:   Wed, 12 May 2021 13:19:46 -0700
-Message-Id: <20210512201946.2949351-1-shakeelb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
-Subject: [PATCH] cgroup: disable controllers at parse time
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, shy828301@gmail.com,
-        junichi.nomura@nec.com
-Cc:     Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dUIJstx/27xJVJz6QvCNOVh0gIQL6FYmLOnlZbT26JY=;
+        b=t/OUEkhlXdB9RBa2dLt8BT35jCXzaKHrLUygSqqCa5DdhA1GFdga/VYNYcjWR1c1uP
+         LZaChGducifSe9ULaxXDoY0/6inQt2UdRp3DqP2dvVAFdtsTZyZEEc5kaMsU5Zp1aoXf
+         UH0fQIWrZhQewQp3U49RpKHlgPFgjXw2xMAzhmfM8IXGb8Cn3RSpC8mFRYH1eD9L4T8q
+         X17qat7PFtzvJKwLXWDL/zCfrflEkfQq1BVHXCmkP9el6cTo/Ggy7NlrpvY8WFaMECw8
+         WqZZNngRssFBN9N5BFn+CbpMjzBPiyoY15IJbJHRPRdjc3Pk/6ixGqU9CuY8jXD37Myq
+         g5VQ==
+X-Gm-Message-State: AOAM533Dm7Qb1vVpSe6pyJHkMNgfWt6P+PkIyoMCoQ/FUQ9aBqV4UA4X
+        kwMQal3Yr0lxbX9Zf1tqF4CuOz6FONZof6bu3dAN0Q==
+X-Google-Smtp-Source: ABdhPJxtMXLhHYJuWiY0OsXg1Vwzw0RC9z7My1doZmIhPaMmNZmmtY48fMAiP4xOY5Y5j5Fi2FbfcrWCKiwFMmKBvys=
+X-Received: by 2002:a05:622a:114:: with SMTP id u20mr34729020qtw.317.1620850814080;
+ Wed, 12 May 2021 13:20:14 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210422120459.447350175@infradead.org> <20210422123308.980003687@infradead.org>
+ <CAEXW_YTHZF69YHD-r=ST97sagjnxEDy6492nDKaaJtkKMoQN9Q@mail.gmail.com>
+ <3dbce4ff-44ed-73ca-2ea1-97b126dd664e@oracle.com> <CAEXW_YSX79vR9hdkjKcf08uZk85xhC8nOnesf8s6Cvp2kqKoFA@mail.gmail.com>
+ <2b4ae2b4-62e5-96be-ddae-b261139842c1@oracle.com> <YJuadFpNsfHu6n0Y@hirez.programming.kicks-ass.net>
+In-Reply-To: <YJuadFpNsfHu6n0Y@hirez.programming.kicks-ass.net>
+From:   Josh Don <joshdon@google.com>
+Date:   Wed, 12 May 2021 13:20:02 -0700
+Message-ID: <CABk29NsMtsMvvVLbq7fGR0EMLZ9soFKGnE-SeectjWLym6YGcg@mail.gmail.com>
+Subject: Re: [PATCH 17/19] sched: Inherit task cookie on fork()
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Chris Hyser <chris.hyser@oracle.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Glexiner <tglx@linutronix.de>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch effectively reverts the commit a3e72739b7a7 ("cgroup: fix
-too early usage of static_branch_disable()"). The commit 6041186a3258
-("init: initialize jump labels before command line option parsing") has
-moved the jump_label_init() before parse_args() which has made the
-commit a3e72739b7a7 unnecessary. On the other hand there are
-consequences of disabling the controllers later as there are subsystems
-doing the controller checks for different decisions. One such incident
-is reported [1] regarding the memory controller and its impact on memory
-reclaim code.
+On Wed, May 12, 2021 at 2:05 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> Right, I need a Champion that actually cares about cgroups and has
+> use-cases to go argue with TJ on this. I've proposed code that I think
+> has sane semantics, but I'm not in a position to argue for it, given I
+> think a world without cgroups is a better world :-)))
 
-[1] https://lore.kernel.org/linux-mm/921e53f3-4b13-aab8-4a9e-e83ff15371e4@n=
-ec.com
+Not sure if Tejun has any thoughts on
+http://lkml.kernel.org/r/CABk29NtahuW6UERvRdK5v8My_MfPsoESDKXUjGdvaQcHOJEMvg@mail.gmail.com.
 
-Signed-off-by: Shakeel Butt <shakeelb@google.com>
-Reported-by: NOMURA JUNICHI(=E9=87=8E=E6=9D=91=E3=80=80=E6=B7=B3=E4=B8=80) =
-<junichi.nomura@nec.com>
----
- kernel/cgroup/cgroup.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+We're looking at using the prctl interface with one of our main
+internal users of core scheduling. As an example, suppose we have a
+management process that wants to make tasks A and B share a cookie:
+- Spawn a new thread m, which then does the following, and exits.
+- PR_SCHED_CORE_CREATE for just its own PID
+- PR_SCHED_CORE_SHARE_TO A
+- PR_SCHED_CORE_SHARE_TO B
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index e049edd66776..e7a9a2998245 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -5634,8 +5634,6 @@ int __init cgroup_init_early(void)
- 	return 0;
- }
-=20
--static u16 cgroup_disable_mask __initdata;
--
- /**
-  * cgroup_init - cgroup initialization
-  *
-@@ -5694,12 +5692,8 @@ int __init cgroup_init(void)
- 		 * disabled flag and cftype registration needs kmalloc,
- 		 * both of which aren't available during early_init.
- 		 */
--		if (cgroup_disable_mask & (1 << ssid)) {
--			static_branch_disable(cgroup_subsys_enabled_key[ssid]);
--			printk(KERN_INFO "Disabling %s control group subsystem\n",
--			       ss->name);
-+		if (!cgroup_ssid_enabled(ssid))
- 			continue;
--		}
-=20
- 		if (cgroup1_ssid_disabled(ssid))
- 			printk(KERN_INFO "Disabling %s control group subsystem in v1 mounts\n",
-@@ -6214,7 +6208,10 @@ static int __init cgroup_disable(char *str)
- 			if (strcmp(token, ss->name) &&
- 			    strcmp(token, ss->legacy_name))
- 				continue;
--			cgroup_disable_mask |=3D 1 << i;
-+
-+			static_branch_disable(cgroup_subsys_enabled_key[i]);
-+			pr_info("Disabling %s control group subsystem\n",
-+				ss->name);
- 		}
- 	}
- 	return 1;
---=20
-2.31.1.607.g51e8a6a459-goog
-
+That seems to work ok; I'll follow up if there are any pain points
+that aren't easily addressed with the prctl interface.
