@@ -2,68 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB84F37C032
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 354E037C0C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:53:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230446AbhELOcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 10:32:18 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:52190 "EHLO mail.skyhub.de"
+        id S231423AbhELOx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 10:53:58 -0400
+Received: from mga07.intel.com ([134.134.136.100]:11241 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230347AbhELOcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 10:32:16 -0400
-Received: from zn.tnic (p200300ec2f0bb800c6bc209d75c80142.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:b800:c6bc:209d:75c8:142])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 432F41EC046E;
-        Wed, 12 May 2021 16:31:06 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1620829866;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=sH1fnhjM7cZz9QEE54H+quyulj+UQHZBIMnPp2FOud4=;
-        b=E2oxhHIBzBfQCFRLuWw+j2m5/FrUVFuIFUmoP+gsmfRlYvNrNW/0g6C6VFAH4XNSklkrYF
-        hXqwk6zOf7GuIRaIm4QgAUpKd+FAYpKBBbKO4WnLfHt+wgtvb6CTRrHjjdR04K870kIcqB
-        UnEJB+Pxm25SuSkKGC+gLRfzqoC+hcM=
-Date:   Wed, 12 May 2021 16:31:03 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        tglx@linutronix.de, jroedel@suse.de, thomas.lendacky@amd.com,
-        pbonzini@redhat.com, mingo@redhat.com, dave.hansen@intel.com,
-        rientjes@google.com, seanjc@google.com, peterz@infradead.org,
-        hpa@zytor.com, tony.luck@intel.com
-Subject: Re: [PATCH Part1 RFC v2 02/20] x86/sev: Save the negotiated GHCB
- version
-Message-ID: <YJvmp3ELvej0ydnL@zn.tnic>
-References: <20210430121616.2295-1-brijesh.singh@amd.com>
- <20210430121616.2295-3-brijesh.singh@amd.com>
- <YJpM+VZaEr68hTwZ@zn.tnic>
- <36add6ab-0115-d290-facd-2709e3c93fb9@amd.com>
- <YJrP1vTXmtzXYapq@zn.tnic>
- <0f7abbc3-5ad4-712c-e669-d41fd83b9ed3@amd.com>
+        id S231162AbhELOxz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 10:53:55 -0400
+IronPort-SDR: BJltbjT1RMvl7Mv6aTLtmU91NkbBubwJCy+QYeRRsBInk5pyf3V/nRsqQiqgUyHOcvHC5sC7bL
+ N/CjJvNQcpRw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="263650806"
+X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
+   d="scan'208";a="263650806"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2021 07:52:46 -0700
+IronPort-SDR: cA6Zs510rHgQ6GkS8D4I8JMdHFHQypk/xImYgpETYmwZqd5kFXM15Z5wxzVPeZQ9aidlivSjlH
+ DTsE4qIgJrvA==
+X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
+   d="scan'208";a="437236918"
+Received: from cwitkows-mobl.amr.corp.intel.com (HELO [10.212.100.147]) ([10.212.100.147])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2021 07:52:44 -0700
+Subject: Re: [PATCH -next] ASoC: intel/boards: add missing MODULE_DEVICE_TABLE
+To:     Zou Wei <zou_wei@huawei.com>, cezary.rojewski@intel.com,
+        liam.r.girdwood@linux.intel.com, yang.jie@linux.intel.com,
+        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+        kuninori.morimoto.gx@renesas.com, kai.vehmanen@linux.intel.com,
+        brent.lu@intel.com, ranjani.sridharan@linux.intel.com,
+        yong.zhi@intel.com, dharageswari.r@intel.com,
+        sathyanarayana.nujella@intel.com, fred.oh@linux.intel.com,
+        tzungbi@google.com
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+References: <1620791647-16024-1-git-send-email-zou_wei@huawei.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <50fa973b-aa9f-ccb4-8020-9d38a63e2c30@linux.intel.com>
+Date:   Wed, 12 May 2021 08:41:43 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <0f7abbc3-5ad4-712c-e669-d41fd83b9ed3@amd.com>
+In-Reply-To: <1620791647-16024-1-git-send-email-zou_wei@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 09:03:41AM -0500, Brijesh Singh wrote:
-> Version 2 of the spec adds bunch of NAEs, and several of them are
-> optional except the hyervisor features NAE. IMO, a guest should bump the
-> GHCB version only after it has implemented all the required NAEs from
-> the version 2. It may help during the git bisect of the guest kernel --
-> mainly when the hypervisor supports the higher version.
 
-Aha, so AFAICT, the version bump should happen in patch 3 which adds
-that HV features NAE - not in a separate one after that. The logic
-being, with the patch which adds the functionality needed, you mark the
-guest as supporting v2.
 
--- 
-Regards/Gruss,
-    Boris.
+On 5/11/21 10:54 PM, Zou Wei wrote:
+> This patch adds missing MODULE_DEVICE_TABLE definition which generates
+> correct modalias for automatic loading of this driver when it is built
+> as an external module.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+I have a limited understanding of all this, but we already support the 
+machine drivers as modules and things work fine.
+
+I wonder if this MODULE_DEVICE_TABLE generates the alias automatically, 
+which would make the existing ones added manually at the end of the 
+files unnecessary? If that was the case, then we should remove those 
+MODULE_ALIAS as well, no?
+
+MODULE_DESCRIPTION("SOF Audio Machine driver");
+MODULE_AUTHOR("Bard Liao <bard.liao@intel.com>");
+MODULE_AUTHOR("Sathya Prakash M R <sathya.prakash.m.r@intel.com>");
+MODULE_AUTHOR("Brent Lu <brent.lu@intel.com>");
+MODULE_LICENSE("GPL v2");
+MODULE_ALIAS("platform:sof_rt5682");
+MODULE_ALIAS("platform:tgl_max98357a_rt5682");
+MODULE_ALIAS("platform:jsl_rt5682_rt1015");
+MODULE_ALIAS("platform:tgl_max98373_rt5682");
+MODULE_ALIAS("platform:jsl_rt5682_max98360a");
+MODULE_ALIAS("platform:cml_rt1015_rt5682");
+MODULE_ALIAS("platform:tgl_rt1011_rt5682");
+MODULE_ALIAS("platform:jsl_rt5682_rt1015p");
+
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+> ---
+>   sound/soc/intel/boards/sof_da7219_max98373.c | 1 +
+>   sound/soc/intel/boards/sof_rt5682.c          | 1 +
+>   2 files changed, 2 insertions(+)
+> 
+> diff --git a/sound/soc/intel/boards/sof_da7219_max98373.c b/sound/soc/intel/boards/sof_da7219_max98373.c
+> index f3cb077..8d1ad89 100644
+> --- a/sound/soc/intel/boards/sof_da7219_max98373.c
+> +++ b/sound/soc/intel/boards/sof_da7219_max98373.c
+> @@ -440,6 +440,7 @@ static const struct platform_device_id board_ids[] = {
+>   	},
+>   	{ }
+>   };
+> +MODULE_DEVICE_TABLE(platform, board_ids);
+>   
+>   static struct platform_driver audio = {
+>   	.probe = audio_probe,
+> diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+> index 58548ea..cf1d053 100644
+> --- a/sound/soc/intel/boards/sof_rt5682.c
+> +++ b/sound/soc/intel/boards/sof_rt5682.c
+> @@ -968,6 +968,7 @@ static const struct platform_device_id board_ids[] = {
+>   	},
+>   	{ }
+>   };
+> +MODULE_DEVICE_TABLE(platform, board_ids);
+>   
+>   static struct platform_driver sof_audio = {
+>   	.probe = sof_audio_probe,
+> 
