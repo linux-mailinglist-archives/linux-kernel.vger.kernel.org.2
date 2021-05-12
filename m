@@ -2,88 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5216037EDC9
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:44:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFD2737EEAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 01:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344187AbhELUwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 16:52:50 -0400
-Received: from ms.lwn.net ([45.79.88.28]:46786 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1389186AbhELUvK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 16:51:10 -0400
-Received: from localhost (unknown [IPv6:2601:281:8300:104d:444a:d152:279d:1dbb])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 5EC7137B;
-        Wed, 12 May 2021 20:49:59 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 5EC7137B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1620852599; bh=A72A0ng7ue0f4QDFOktx3v8jm1ywul+VfilJg4lRtcs=;
-        h=From:To:Cc:Subject:Date:From;
-        b=dH6uMndNMgSVZpxK1Ve1MvsAwfCoin4p0xCOaLtS7skowNxicsMF38jAsLqsbjve8
-         Gj5HzuQdpZm4LLxHjKi/koaSkgAIFWYiRO7w9rwNDBjBotyshZosXIwcNoPRo/Jyaa
-         OZMNkdsdak8GWl1sgOq9/eRiisJrEFeFGR9bSQaK4FJFWQ1KVHmxpVefh4t/tIQBgC
-         tSCeDTmhe5C77JzvcZrjQx7aonjgLZotLZRk0/vFTrAgzQXnSS8O1Lb5jHRLXkSxvu
-         Ljw5jzltOQD+rO8xHf7V/KS0kvhT18E7fiAkRwtRRvB2wGHZIeuqO3Bu2Occ6kBzmY
-         QT8vg15pQzbKg==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: [GIT PULL] Documentation fixes
-Date:   Wed, 12 May 2021 14:49:58 -0600
-Message-ID: <87mtszad8p.fsf@meer.lwn.net>
+        id S242586AbhELWEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 18:04:42 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:51830 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345496AbhELUy2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 16:54:28 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 1121A1C0B80; Wed, 12 May 2021 22:53:09 +0200 (CEST)
+Date:   Wed, 12 May 2021 22:53:08 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/530] 5.10.37-rc1 review
+Message-ID: <20210512205308.GA30312@duo.ucw.cz>
+References: <20210512144819.664462530@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="HcAYCG3uE/tztfnV"
+Content-Disposition: inline
+In-Reply-To: <20210512144819.664462530@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
 
-  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
+--HcAYCG3uE/tztfnV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-are available in the Git repository at:
+Hi!
 
-  git://git.lwn.net/linux.git tags/docs-5.13-3
+> This is the start of the stable review cycle for the 5.10.37 release.
+> There are 530 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>=20
+> Responses should be made by Fri, 14 May 2021 14:47:09 +0000.
+> Anything received after that time might be too late.
 
-for you to fetch changes up to 7240cd200541543008a7ce4fcaf2ba5a5556128f:
+While trying to review the patches... I discovered 5.10.36 is not
+tagged in origin/queue:
 
-  Remove link to nonexistent rocket driver docs (2021-05-11 11:02:39 -0600)
+commit 72bb632d15f2eabf22b085d79590125a6e2e1aa3
+Author: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Date:   Tue May 11 14:47:41 2021 +0200
 
-----------------------------------------------------------------
-A set of straightforward documentation fixes.
+    Linux 5.10.36
+   =20
+=2E..
+commit f53a3a4808625f876aebc5a0bfb354480bbf0c21 (tag: v5.10.35)
 
-----------------------------------------------------------------
-Desmond Cheong Zhi Xi (1):
-      Remove link to nonexistent rocket driver docs
+Best regards,
+								Pavel
 
-Mauro Carvalho Chehab (5):
-      docs: cdrom-standard.rst: get rid of uneeded UTF-8 chars
-      docs: ABI: remove a meaningless UTF-8 character
-      docs: ABI: remove some spurious characters
-      docs: hwmon: tmp103.rst: fix bad usage of UTF-8 chars
-      docs: networking: device_drivers: fix bad usage of UTF-8 chars
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
 
-Randy Dunlap (1):
-      Documentation: drop optional BOMs
+--HcAYCG3uE/tztfnV
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Wan Jiabing (1):
-      docs/zh_CN: Remove obsolete translation file
+-----BEGIN PGP SIGNATURE-----
 
- .../ABI/obsolete/sysfs-kernel-fadump_registered    |  2 +-
- .../ABI/obsolete/sysfs-kernel-fadump_release_mem   |  2 +-
- Documentation/ABI/testing/sysfs-module             |  4 +-
- Documentation/block/data-integrity.rst             |  2 +-
- Documentation/cdrom/cdrom-standard.rst             | 30 ++++++-------
- Documentation/driver-api/serial/index.rst          |  1 -
- Documentation/hwmon/tmp103.rst                     |  4 +-
- .../device_drivers/ethernet/intel/i40e.rst         |  4 +-
- .../device_drivers/ethernet/intel/iavf.rst         |  2 +-
- .../process/kernel-enforcement-statement.rst       |  2 +-
- Documentation/security/tpm/xen-tpmfront.rst        |  2 +-
- Documentation/timers/no_hz.rst                     |  2 +-
- Documentation/translations/zh_CN/SecurityBugs      | 50 ----------------------
- Documentation/usb/mtouchusb.rst                    |  2 +-
- Documentation/usb/usb-serial.rst                   |  2 +-
- 15 files changed, 30 insertions(+), 81 deletions(-)
- delete mode 100644 Documentation/translations/zh_CN/SecurityBugs
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYJxANAAKCRAw5/Bqldv6
+8vrYAKCxg80oK6Nqwarx3srWL5biHQKm9gCfZVs7tw29MLBUA5uFrmTUrbc9E+o=
+=29Uv
+-----END PGP SIGNATURE-----
+
+--HcAYCG3uE/tztfnV--
