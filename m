@@ -2,212 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D5D637B5C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 08:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95EEB37B5CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 08:18:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230183AbhELGQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 02:16:36 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:53424 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230109AbhELGQ2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 02:16:28 -0400
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 11 May 2021 23:15:21 -0700
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 11 May 2021 23:15:18 -0700
-X-QCInternal: smtphost
-Received: from c-skakit-linux.ap.qualcomm.com (HELO c-skakit-linux.qualcomm.com) ([10.242.51.242])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 12 May 2021 11:44:40 +0530
-Received: by c-skakit-linux.qualcomm.com (Postfix, from userid 2344709)
-        id E013F4F44; Wed, 12 May 2021 11:44:38 +0530 (IST)
-From:   satya priya <skakit@codeaurora.org>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>
-Cc:     David Collins <collinsd@codeaurora.org>, kgunda@codeaurora.org,
-        linux-input@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        Andy Yan <andy.yan@rock-chips.com>,
-        satya priya <skakit@codeaurora.org>
-Subject: [PATCH V4 5/5] dt-bindings: power: reset: qcom-pon: Convert qcom PON binding to yaml
-Date:   Wed, 12 May 2021 11:44:13 +0530
-Message-Id: <1620800053-26405-6-git-send-email-skakit@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1620800053-26405-1-git-send-email-skakit@codeaurora.org>
-References: <1620800053-26405-1-git-send-email-skakit@codeaurora.org>
+        id S230115AbhELGTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 02:19:16 -0400
+Received: from mga18.intel.com ([134.134.136.126]:41907 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229580AbhELGTP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 02:19:15 -0400
+IronPort-SDR: 8VR/McrrqP2NDzHraoFmgHVUiAkNwhspaXaPgplInRrizzdDBqR/vNqRy3aFosUYCRx1YE/vPs
+ Gq8wNTNOoayA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="187059473"
+X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
+   d="scan'208";a="187059473"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 23:17:51 -0700
+IronPort-SDR: eKCNMpeHPWLmk7vJIwjhuSmXBop7XerPWQWy872xdGO86m0g2BRrimnNjVJ8HpeYt6nQhGXy1U
+ voQZiO92UGew==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
+   d="scan'208";a="625097068"
+Received: from lkp-server01.sh.intel.com (HELO 1e931876798f) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 11 May 2021 23:17:50 -0700
+Received: from kbuild by 1e931876798f with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lgiBp-000027-F3; Wed, 12 May 2021 06:17:49 +0000
+Date:   Wed, 12 May 2021 14:16:57 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:core/urgent] BUILD SUCCESS
+ 2515dd6ce8e545b0b2eece84920048ef9ed846c4
+Message-ID: <609b72d9.ZKqSJCdOfS+r7bXa%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert qcom PON binding from .txt to .yaml format.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git core/urgent
+branch HEAD: 2515dd6ce8e545b0b2eece84920048ef9ed846c4  stack: Replace "o" output with "r" input constraint
 
-Signed-off-by: satya priya <skakit@codeaurora.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
+elapsed time: 1325m
+
+configs tested: 216
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+riscv                            allmodconfig
+riscv                            allyesconfig
+i386                             allyesconfig
+powerpc                    amigaone_defconfig
+nios2                            allyesconfig
+mips                      malta_kvm_defconfig
+arm                           u8500_defconfig
+sh                            hp6xx_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                ecovec24-romimage_defconfig
+powerpc                     pseries_defconfig
+powerpc                  storcenter_defconfig
+arm                      footbridge_defconfig
+mips                            gpr_defconfig
+sh                           se7705_defconfig
+mips                        workpad_defconfig
+arm                        shmobile_defconfig
+arm                  colibri_pxa270_defconfig
+arm                         axm55xx_defconfig
+m68k                       m5475evb_defconfig
+sparc                       sparc64_defconfig
+powerpc                   currituck_defconfig
+m68k                        mvme147_defconfig
+sh                             shx3_defconfig
+mips                        qi_lb60_defconfig
+parisc                generic-32bit_defconfig
+powerpc                     tqm8548_defconfig
+powerpc64                           defconfig
+powerpc                     ep8248e_defconfig
+mips                      bmips_stb_defconfig
+mips                         tb0226_defconfig
+powerpc                     tqm8541_defconfig
+powerpc                 mpc834x_itx_defconfig
+powerpc                     rainier_defconfig
+powerpc                      ppc64e_defconfig
+arm                         s3c2410_defconfig
+arm                           viper_defconfig
+arm                          gemini_defconfig
+arm                          pcm027_defconfig
+powerpc                     tqm8540_defconfig
+sh                              ul2_defconfig
+mips                     loongson1c_defconfig
+arm                        mvebu_v5_defconfig
+mips                          ath25_defconfig
+sh                            migor_defconfig
+mips                     decstation_defconfig
+m68k                        m5407c3_defconfig
+arm                            xcep_defconfig
+h8300                     edosk2674_defconfig
+powerpc                        fsp2_defconfig
+xtensa                           alldefconfig
+powerpc                     tqm8560_defconfig
+powerpc                     ppa8548_defconfig
+arm                        multi_v7_defconfig
+arm                       mainstone_defconfig
+mips                            ar7_defconfig
+powerpc                      bamboo_defconfig
+arm                        mvebu_v7_defconfig
+arm                        clps711x_defconfig
+powerpc                     stx_gp3_defconfig
+xtensa                  cadence_csp_defconfig
+sh                           se7721_defconfig
+sh                          polaris_defconfig
+mips                           ip27_defconfig
+sh                           se7751_defconfig
+arm                            pleb_defconfig
+sh                               alldefconfig
+arc                    vdk_hs38_smp_defconfig
+powerpc                       holly_defconfig
+sh                        apsh4ad0a_defconfig
+mips                       lemote2f_defconfig
+xtensa                generic_kc705_defconfig
+arm                             mxs_defconfig
+arm                           tegra_defconfig
+ia64                             alldefconfig
+arm                        spear3xx_defconfig
+arm                              alldefconfig
+sh                          lboxre2_defconfig
+powerpc                       maple_defconfig
+xtensa                         virt_defconfig
+arc                 nsimosci_hs_smp_defconfig
+sh                        edosk7760_defconfig
+mips                       capcella_defconfig
+nios2                         10m50_defconfig
+arm                             rpc_defconfig
+arc                           tb10x_defconfig
+mips                        nlm_xlp_defconfig
+powerpc                  mpc866_ads_defconfig
+sh                 kfr2r09-romimage_defconfig
+riscv                             allnoconfig
+s390                                defconfig
+m68k                       m5208evb_defconfig
+sh                        sh7763rdp_defconfig
+sh                             espt_defconfig
+powerpc                 mpc837x_mds_defconfig
+powerpc                    ge_imp3a_defconfig
+arc                        vdk_hs38_defconfig
+arm                         socfpga_defconfig
+m68k                          amiga_defconfig
+nios2                         3c120_defconfig
+arm                           stm32_defconfig
+sh                        dreamcast_defconfig
+sh                           se7780_defconfig
+powerpc                 xes_mpc85xx_defconfig
+mips                        jmr3927_defconfig
+arm                       imx_v4_v5_defconfig
+sh                                  defconfig
+sh                          rsk7264_defconfig
+powerpc                     pq2fads_defconfig
+arm                           sama5_defconfig
+powerpc                   lite5200b_defconfig
+s390                          debug_defconfig
+m68k                        m5307c3_defconfig
+powerpc                 linkstation_defconfig
+arm                       netwinder_defconfig
+sh                           sh2007_defconfig
+m68k                        mvme16x_defconfig
+powerpc                         wii_defconfig
+ia64                         bigsur_defconfig
+powerpc                         ps3_defconfig
+sh                          r7785rp_defconfig
+mips                        omega2p_defconfig
+arm                          imote2_defconfig
+alpha                            alldefconfig
+sh                               j2_defconfig
+powerpc                     tqm8555_defconfig
+mips                          ath79_defconfig
+powerpc                 mpc836x_rdk_defconfig
+mips                         tb0287_defconfig
+m68k                            q40_defconfig
+arm                         assabet_defconfig
+m68k                           sun3_defconfig
+arm                             pxa_defconfig
+powerpc                   bluestone_defconfig
+arm                         bcm2835_defconfig
+openrisc                    or1ksim_defconfig
+arm                         at91_dt_defconfig
+sh                            titan_defconfig
+x86_64                           alldefconfig
+powerpc                      chrp32_defconfig
+arm                      tct_hammer_defconfig
+arm                     am200epdkit_defconfig
+um                            kunit_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a003-20210511
+i386                 randconfig-a001-20210511
+i386                 randconfig-a005-20210511
+i386                 randconfig-a004-20210511
+i386                 randconfig-a002-20210511
+i386                 randconfig-a006-20210511
+x86_64               randconfig-a012-20210511
+x86_64               randconfig-a015-20210511
+x86_64               randconfig-a011-20210511
+x86_64               randconfig-a013-20210511
+x86_64               randconfig-a016-20210511
+x86_64               randconfig-a014-20210511
+i386                 randconfig-a016-20210511
+i386                 randconfig-a014-20210511
+i386                 randconfig-a011-20210511
+i386                 randconfig-a015-20210511
+i386                 randconfig-a012-20210511
+i386                 randconfig-a013-20210511
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a003-20210511
+x86_64               randconfig-a004-20210511
+x86_64               randconfig-a001-20210511
+x86_64               randconfig-a005-20210511
+x86_64               randconfig-a002-20210511
+x86_64               randconfig-a006-20210511
+
 ---
-Changes in V2:
- - As per Rob's comments, converted the main PON binding and added in V2.
-   Dropped example here to have one full example in qcom,pm8941-pwrkey.yaml
-
-Changes in V3:
- - As per Sebastian's comments, added allOf to refer reboot-mode.yaml and
-   used unevaluatedProperties = false. Added maxItems for reg.
-
-Changes in V4:
- - Added the example back. Removed it in qcom,pm8941-pwrkey.yaml
-
- .../devicetree/bindings/power/reset/qcom,pon.txt   | 49 -------------
- .../devicetree/bindings/power/reset/qcom,pon.yaml  | 80 ++++++++++++++++++++++
- 2 files changed, 80 insertions(+), 49 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/power/reset/qcom,pon.txt
- create mode 100644 Documentation/devicetree/bindings/power/reset/qcom,pon.yaml
-
-diff --git a/Documentation/devicetree/bindings/power/reset/qcom,pon.txt b/Documentation/devicetree/bindings/power/reset/qcom,pon.txt
-deleted file mode 100644
-index 0c0dc3a..0000000
---- a/Documentation/devicetree/bindings/power/reset/qcom,pon.txt
-+++ /dev/null
-@@ -1,49 +0,0 @@
--Qualcomm PON Device
--
--The Power On device for Qualcomm PM8xxx is MFD supporting pwrkey
--and resin along with the Android reboot-mode.
--
--This DT node has pwrkey and resin as sub nodes.
--
--Required Properties:
---compatible: Must be one of:
--	"qcom,pm8916-pon"
--	"qcom,pms405-pon"
--	"qcom,pm8998-pon"
--
---reg: Specifies the physical address of the pon register
--
--Optional subnode:
---pwrkey: Specifies the subnode pwrkey and should follow the
-- qcom,pm8941-pwrkey.txt description.
---resin: Specifies the subnode resin and should follow the
-- qcom,pm8xxx-pwrkey.txt description.
--
--The rest of the properties should follow the generic reboot-mode description
--found in reboot-mode.txt
--
--Example:
--
--	pon@800 {
--		compatible = "qcom,pm8916-pon";
--
--		reg = <0x800>;
--		mode-bootloader = <0x2>;
--		mode-recovery = <0x1>;
--
--		pwrkey {
--			compatible = "qcom,pm8941-pwrkey";
--			interrupts = <0x0 0x8 0 IRQ_TYPE_EDGE_BOTH>;
--			debounce = <15625>;
--			bias-pull-up;
--			linux,code = <KEY_POWER>;
--		};
--
--		resin {
--			compatible = "qcom,pm8941-resin";
--			interrupts = <0x0 0x8 1 IRQ_TYPE_EDGE_BOTH>;
--			debounce = <15625>;
--			bias-pull-up;
--			linux,code = <KEY_VOLUMEDOWN>;
--		};
--	};
-diff --git a/Documentation/devicetree/bindings/power/reset/qcom,pon.yaml b/Documentation/devicetree/bindings/power/reset/qcom,pon.yaml
-new file mode 100644
-index 0000000..353f155
---- /dev/null
-+++ b/Documentation/devicetree/bindings/power/reset/qcom,pon.yaml
-@@ -0,0 +1,80 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/power/reset/qcom,pon.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Qualcomm PON Device
-+
-+maintainers:
-+  - Vinod Koul <vkoul@kernel.org>
-+
-+description: |
-+  The Power On device for Qualcomm PM8xxx is MFD supporting pwrkey
-+  and resin along with the Android reboot-mode.
-+
-+  This DT node has pwrkey and resin as sub nodes.
-+
-+allOf:
-+  - $ref: reboot-mode.yaml#
-+
-+properties:
-+  compatible:
-+    enum:
-+      - qcom,pm8916-pon
-+      - qcom,pms405-pon
-+      - qcom,pm8998-pon
-+
-+  reg:
-+    maxItems: 1
-+
-+  pwrkey:
-+    type: object
-+    $ref: "../../input/qcom,pm8941-pwrkey.yaml#"
-+
-+  resin:
-+    type: object
-+    $ref: "../../input/qcom,pm8941-pwrkey.yaml#"
-+
-+required:
-+  - compatible
-+  - reg
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+   #include <dt-bindings/interrupt-controller/irq.h>
-+   #include <dt-bindings/input/linux-event-codes.h>
-+   #include <dt-bindings/spmi/spmi.h>
-+   spmi_bus: spmi@c440000 {
-+     reg = <0x0c440000 0x1100>;
-+     #address-cells = <2>;
-+     #size-cells = <0>;
-+     pmk8350: pmic@0 {
-+       reg = <0x0 SPMI_USID>;
-+       #address-cells = <1>;
-+       #size-cells = <0>;
-+       pmk8350_pon: pon_hlos@1300 {
-+         reg = <0x1300>;
-+         compatible = "qcom,pm8998-pon";
-+
-+         pwrkey {
-+            compatible = "qcom,pm8941-pwrkey";
-+            interrupts = < 0x0 0x8 0 IRQ_TYPE_EDGE_BOTH >;
-+            debounce = <15625>;
-+            bias-pull-up;
-+            linux,code = <KEY_POWER>;
-+         };
-+
-+         resin {
-+            compatible = "qcom,pm8941-resin";
-+            interrupts = <0x0 0x8 1 IRQ_TYPE_EDGE_BOTH>;
-+            debounce = <15625>;
-+            bias-pull-up;
-+            linux,code = <KEY_VOLUMEDOWN>;
-+         };
-+       };
-+     };
-+   };
-+...
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
