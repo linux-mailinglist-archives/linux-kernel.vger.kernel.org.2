@@ -2,69 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B688C37B357
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 03:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C87C637B35D
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 03:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbhELBPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 21:15:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59310 "EHLO mail.kernel.org"
+        id S229980AbhELBSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 21:18:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229736AbhELBPN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 21:15:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 238EC6191C;
-        Wed, 12 May 2021 01:14:05 +0000 (UTC)
+        id S229736AbhELBSs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 21:18:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E71546190A;
+        Wed, 12 May 2021 01:17:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620782046;
-        bh=vfOxNCe9BxPc36rFi4QK3dRxJEm1Vn5HiuA75DFmjZs=;
+        s=k20201202; t=1620782261;
+        bh=AktYlWaGr7394zUc1f2j8uMtJ2qB+r/wzZ9wf6oV66A=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HlEXFwpzLowyEC8dCdgHpO67JNHHumW8D4MCxSRhgSMjkEIVhToPbRoYkLENJMoX0
-         eXcYGp5ApLdmYzQzqtWykEzdRdAC1pKAyYpF0mm5P3Mpa8fec5rmFs2yque1zfDaRI
-         FBciARyv4bQxFsKhO1EzVrX/5XIWKqfrjhMCp7tsrydPQx0JtmpKpqEVX2SaGulN6V
-         T/eAzglCqkmd4BhWA5eAbfO6VAz9lUY7uxn74DNArqiyNUdp5OotlLVfpndAiX4cpu
-         Z3ysCd/jdcOkLbRfzLlC5wpH0tKET1x+pSNjKKJ1N719E+38FRlPBh12qneCcY4QC9
-         wMWO2E4NbwTBg==
-Date:   Wed, 12 May 2021 04:14:04 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Shuah Khan <shuah@kernel.org>, linux-sgx@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        reinette.chatre@intel.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] selftests/sgx: Rename 'eenter' and 'sgx_call_vdso'
-Message-ID: <YJsr3MWf55UWLCiO@kernel.org>
-References: <20210508035648.18176-1-jarkko@kernel.org>
- <4b8d9604-8d35-eefe-41cb-511b92a3f086@intel.com>
+        b=aXn3fA5z7lcFlHNq1K5/lrzPmAD4sLs35bFf0SBCjrNayldftQjrT0yMGdZ9jQq7F
+         Lr7SWwMfvPyNfrLLwbcyF/fwWuvF/EfY4rc9r6Hs68jBirIPket2YspjOpdUpOgDqI
+         pK1NsJbJWQkOvlFyi2jLNj2RM51OLpGxKCoyWluGMjbz/OVgU8bTlKF7A6rtiT4+/g
+         VX08CYFx0KjL6KXquUC60FYGdbaqhL4q0QpGSkWCKiGzDHisrPw5HDpg1Kcoo9GqIb
+         LaGghtXdwbM0jSUmwh0hsgrS3H4ojO07YsoZ3fMlbl3M8eOaw+xDoQWNOBmFIu3xXe
+         Erw86DXRC0NeQ==
+Date:   Tue, 11 May 2021 18:17:38 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
+        darrick.wong@oracle.com, dan.j.williams@intel.com,
+        willy@infradead.org, viro@zeniv.linux.org.uk, david@fromorbit.com,
+        hch@lst.de, rgoldwyn@suse.de,
+        Ritesh Harjani <riteshh@linux.ibm.com>
+Subject: Re: [PATCH v5 3/7] fsdax: Add dax_iomap_cow_copy() for dax_iomap_zero
+Message-ID: <20210512011738.GT8582@magnolia>
+References: <20210511030933.3080921-1-ruansy.fnst@fujitsu.com>
+ <20210511030933.3080921-4-ruansy.fnst@fujitsu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4b8d9604-8d35-eefe-41cb-511b92a3f086@intel.com>
+In-Reply-To: <20210511030933.3080921-4-ruansy.fnst@fujitsu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 11:49:18AM -0700, Dave Hansen wrote:
-> On 5/7/21 8:56 PM, Jarkko Sakkinen wrote:
-> > Rename symbols for better clarity:
-> > 
-> > * 'eenter' -> 'vdso_sgx_enter_enclave'
-> > * 'sgx_call_vdso' -> 'sgx_enter_enclave'
+On Tue, May 11, 2021 at 11:09:29AM +0800, Shiyang Ruan wrote:
+> Punch hole on a reflinked file needs dax_copy_edge() too.  Otherwise,
+> data in not aligned area will be not correct.  So, add the srcmap to
+> dax_iomap_zero() and replace memset() as dax_copy_edge().
 > 
-> Another sentence or two here would do wonders:
+> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
+> Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> ---
+>  fs/dax.c               | 25 +++++++++++++++----------
+>  fs/iomap/buffered-io.c |  2 +-
+>  include/linux/dax.h    |  3 ++-
+>  3 files changed, 18 insertions(+), 12 deletions(-)
 > 
-> 'eenter' might be confused for directly calling ENCLU[EENTER].  It does
-> not.  It calls into the VDSO, which actually has the EENTER instruction.
-> 
-> 'sgx_call_vdso' is *only* used for entering the enclave.  It's not some
-> generic SGX call into the VDSO.
-> 
-> Make the naming reflect that.
-> 
-> Right?
+> diff --git a/fs/dax.c b/fs/dax.c
+> index ef0e564e7904..ee9d28a79bfb 100644
+> --- a/fs/dax.c
+> +++ b/fs/dax.c
+> @@ -1186,7 +1186,8 @@ static vm_fault_t dax_pmd_load_hole(struct xa_state *xas, struct vm_fault *vmf,
+>  }
+>  #endif /* CONFIG_FS_DAX_PMD */
+>  
+> -s64 dax_iomap_zero(loff_t pos, u64 length, struct iomap *iomap)
+> +s64 dax_iomap_zero(loff_t pos, u64 length, struct iomap *iomap,
+> +		struct iomap *srcmap)
+>  {
+>  	sector_t sector = iomap_sector(iomap, pos & PAGE_MASK);
+>  	pgoff_t pgoff;
+> @@ -1208,19 +1209,23 @@ s64 dax_iomap_zero(loff_t pos, u64 length, struct iomap *iomap)
+>  
+>  	if (page_aligned)
+>  		rc = dax_zero_page_range(iomap->dax_dev, pgoff, 1);
+> -	else
+> +	else {
+>  		rc = dax_direct_access(iomap->dax_dev, pgoff, 1, &kaddr, NULL);
+> -	if (rc < 0) {
+> -		dax_read_unlock(id);
+> -		return rc;
+> -	}
+> -
+> -	if (!page_aligned) {
+> -		memset(kaddr + offset, 0, size);
+> +		if (rc < 0)
+> +			goto out;
+> +		if (iomap->addr != srcmap->addr) {
 
-Agreed.
+Why isn't this "if (srcmap->type != IOMAP_HOLE)" ?
 
-I'll spin off a yet new version of the series, taking also care
-of the log messages that the enclave loader emits (Renette's
-feedback). They should be wrapped with TH_LOG() macro I suppose.
+I suppose it has the same effect, since @iomap should never be a hole
+and we should never have a @srcmap that's the same as @iomap, but
+still, we use IOMAP_HOLE checks in most other parts of fs/iomap/.
 
-/Jarkko
+Other than that, the logic looks decent to me.
+
+--D
+
+> +			rc = dax_iomap_cow_copy(offset, size, PAGE_SIZE, srcmap,
+> +						kaddr);
+> +			if (rc < 0)
+> +				goto out;
+> +		} else
+> +			memset(kaddr + offset, 0, size);
+>  		dax_flush(iomap->dax_dev, kaddr + offset, size);
+>  	}
+> +
+> +out:
+>  	dax_read_unlock(id);
+> -	return size;
+> +	return rc < 0 ? rc : size;
+>  }
+>  
+>  static loff_t
+> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> index f2cd2034a87b..2734955ea67f 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -933,7 +933,7 @@ static loff_t iomap_zero_range_actor(struct inode *inode, loff_t pos,
+>  		s64 bytes;
+>  
+>  		if (IS_DAX(inode))
+> -			bytes = dax_iomap_zero(pos, length, iomap);
+> +			bytes = dax_iomap_zero(pos, length, iomap, srcmap);
+>  		else
+>  			bytes = iomap_zero(inode, pos, length, iomap, srcmap);
+>  		if (bytes < 0)
+> diff --git a/include/linux/dax.h b/include/linux/dax.h
+> index b52f084aa643..3275e01ed33d 100644
+> --- a/include/linux/dax.h
+> +++ b/include/linux/dax.h
+> @@ -237,7 +237,8 @@ vm_fault_t dax_finish_sync_fault(struct vm_fault *vmf,
+>  int dax_delete_mapping_entry(struct address_space *mapping, pgoff_t index);
+>  int dax_invalidate_mapping_entry_sync(struct address_space *mapping,
+>  				      pgoff_t index);
+> -s64 dax_iomap_zero(loff_t pos, u64 length, struct iomap *iomap);
+> +s64 dax_iomap_zero(loff_t pos, u64 length, struct iomap *iomap,
+> +		struct iomap *srcmap);
+>  static inline bool dax_mapping(struct address_space *mapping)
+>  {
+>  	return mapping->host && IS_DAX(mapping->host);
+> -- 
+> 2.31.1
+> 
+> 
+> 
