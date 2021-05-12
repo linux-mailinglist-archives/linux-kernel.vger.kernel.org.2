@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4982A37C72A
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 17:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B92B37C6E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 17:57:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235017AbhELP7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 11:59:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38508 "EHLO mail.kernel.org"
+        id S237642AbhELP4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 11:56:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40990 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235474AbhELP2I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:28:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F0C3B616ED;
-        Wed, 12 May 2021 15:13:07 +0000 (UTC)
+        id S235137AbhELP0z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:26:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A1F061A06;
+        Wed, 12 May 2021 15:11:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620832388;
-        bh=EFzdeRfP/X2uieP6ur3M6VsCkAY+gw7saZybeenXfGs=;
+        s=korg; t=1620832307;
+        bh=+ZSX+yPtuGULCRIss4T0JsrpfGrp9F8Pn8qWcb3paSc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RqGlqjvkSGcxi75P+ZPM5Sj9W+ZMwEi8ca5/EBvgC/z6uPPKL6Bv2odUnD+1+Au7B
-         JKUt4nn+zOA0Wp9K7Ss1+NvWmeu0j5IrL87VDISX3fACq3IfBV+YCQhENAZ3S/TbG+
-         CyBTSRj/2ez3arXXglhhsvvxp5BErgPtm+tLH6XQ=
+        b=igmP6KRiLxo1ROiKckXZysaViywbjDZfFVvdw9qTJWLSsloWIWZlaQKfmdRovJdwV
+         BqkM3JcOah35K359htNMyvbD1hBMhSnibcm7OgWeYfzgS4EOr/RXMyB1H7gfTr1b8v
+         vEyRZEcDD5ec3ZUouHOcJLF/sg8cD0cOfPEkpVIQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Corentin Labbe <clabbe.montjoie@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 225/530] ACPI: CPPC: Replace cppc_attr with kobj_attribute
-Date:   Wed, 12 May 2021 16:45:35 +0200
-Message-Id: <20210512144827.226892673@linuxfoundation.org>
+Subject: [PATCH 5.10 227/530] crypto: sun8i-ss - Fix memory leak of pad
+Date:   Wed, 12 May 2021 16:45:37 +0200
+Message-Id: <20210512144827.290049604@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144819.664462530@linuxfoundation.org>
 References: <20210512144819.664462530@linuxfoundation.org>
@@ -40,88 +41,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <nathan@kernel.org>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 2bc6262c6117dd18106d5aa50d53e945b5d99c51 ]
+[ Upstream commit 50274b01ac1689b1a3f6bc4b5b3dbf361a55dd3a ]
 
-All of the CPPC sysfs show functions are called via indirect call in
-kobj_attr_show(), where they should be of type
+It appears there are several failure return paths that don't seem
+to be free'ing pad. Fix these.
 
-ssize_t (*show)(struct kobject *kobj, struct kobj_attribute *attr, char *buf);
-
-because that is the type of the ->show() member in
-'struct kobj_attribute' but they are actually of type
-
-ssize_t (*show)(struct kobject *kobj, struct attribute *attr, char *buf);
-
-because of the ->show() member in 'struct cppc_attr', resulting in a
-Control Flow Integrity violation [1].
-
-$ cat /sys/devices/system/cpu/cpu0/acpi_cppc/highest_perf
-3400
-
-$ dmesg | grep "CFI failure"
-[  175.970559] CFI failure (target: show_highest_perf+0x0/0x8):
-
-As far as I can tell, the only difference between 'struct cppc_attr'
-and 'struct kobj_attribute' aside from the type of the attr parameter
-is the type of the count parameter in the ->store() member (ssize_t vs.
-size_t), which does not actually matter because all of these nodes are
-read-only.
-
-Eliminate 'struct cppc_attr' in favor of 'struct kobj_attribute' to fix
-the violation.
-
-[1]: https://lore.kernel.org/r/20210401233216.2540591-1-samitolvanen@google.com/
-
-Fixes: 158c998ea44b ("ACPI / CPPC: add sysfs support to compute delivered performance")
-Link: https://github.com/ClangBuiltLinux/linux/issues/1343
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Addresses-Coverity: ("Resource leak")
+Fixes: d9b45418a917 ("crypto: sun8i-ss - support hash algorithms")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Acked-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+Tested-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/cppc_acpi.c | 14 +++-----------
- 1 file changed, 3 insertions(+), 11 deletions(-)
+ drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-index 7a99b19bb893..0a2da06e9d8b 100644
---- a/drivers/acpi/cppc_acpi.c
-+++ b/drivers/acpi/cppc_acpi.c
-@@ -118,23 +118,15 @@ static DEFINE_PER_CPU(struct cpc_desc *, cpc_desc_ptr);
-  */
- #define NUM_RETRIES 500ULL
+diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c
+index 541bcd814384..756d5a783548 100644
+--- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c
++++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c
+@@ -347,8 +347,10 @@ int sun8i_ss_hash_run(struct crypto_engine *engine, void *breq)
+ 	bf = (__le32 *)pad;
  
--struct cppc_attr {
--	struct attribute attr;
--	ssize_t (*show)(struct kobject *kobj,
--			struct attribute *attr, char *buf);
--	ssize_t (*store)(struct kobject *kobj,
--			struct attribute *attr, const char *c, ssize_t count);
--};
+ 	result = kzalloc(digestsize, GFP_KERNEL | GFP_DMA);
+-	if (!result)
++	if (!result) {
++		kfree(pad);
+ 		return -ENOMEM;
++	}
+ 
+ 	for (i = 0; i < MAX_SG; i++) {
+ 		rctx->t_dst[i].addr = 0;
+@@ -434,10 +436,9 @@ int sun8i_ss_hash_run(struct crypto_engine *engine, void *breq)
+ 	dma_unmap_sg(ss->dev, areq->src, nr_sgs, DMA_TO_DEVICE);
+ 	dma_unmap_single(ss->dev, addr_res, digestsize, DMA_FROM_DEVICE);
+ 
+-	kfree(pad);
 -
- #define define_one_cppc_ro(_name)		\
--static struct cppc_attr _name =			\
-+static struct kobj_attribute _name =		\
- __ATTR(_name, 0444, show_##_name, NULL)
- 
- #define to_cpc_desc(a) container_of(a, struct cpc_desc, kobj)
- 
- #define show_cppc_data(access_fn, struct_name, member_name)		\
- 	static ssize_t show_##member_name(struct kobject *kobj,		\
--					struct attribute *attr,	char *buf) \
-+				struct kobj_attribute *attr, char *buf)	\
- 	{								\
- 		struct cpc_desc *cpc_ptr = to_cpc_desc(kobj);		\
- 		struct struct_name st_name = {0};			\
-@@ -160,7 +152,7 @@ show_cppc_data(cppc_get_perf_ctrs, cppc_perf_fb_ctrs, reference_perf);
- show_cppc_data(cppc_get_perf_ctrs, cppc_perf_fb_ctrs, wraparound_time);
- 
- static ssize_t show_feedback_ctrs(struct kobject *kobj,
--		struct attribute *attr, char *buf)
-+		struct kobj_attribute *attr, char *buf)
- {
- 	struct cpc_desc *cpc_ptr = to_cpc_desc(kobj);
- 	struct cppc_perf_fb_ctrs fb_ctrs = {0};
+ 	memcpy(areq->result, result, algt->alg.hash.halg.digestsize);
+ theend:
++	kfree(pad);
+ 	kfree(result);
+ 	crypto_finalize_hash_request(engine, breq, err);
+ 	return 0;
 -- 
 2.30.2
 
