@@ -2,73 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B63B937B6C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 09:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A88D37B6CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 09:23:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230157AbhELHVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 03:21:22 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2568 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229627AbhELHVU (ORCPT
+        id S230166AbhELHYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 03:24:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34127 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229627AbhELHYf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 03:21:20 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Fg5hj6c2tzwSJ0;
-        Wed, 12 May 2021 15:17:25 +0800 (CST)
-Received: from huawei.com (10.175.103.91) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.498.0; Wed, 12 May 2021
- 15:20:03 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     <gregkh@linuxfoundation.org>, <rafael@kernel.org>
-Subject: [PATCH -next] driver core: attribute_container: fix W=1 warnings
-Date:   Wed, 12 May 2021 15:22:33 +0800
-Message-ID: <20210512072233.3817056-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 12 May 2021 03:24:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620804207;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vg/cll4jMfmP1m7tM5YSccYAw8vElQEoOqiM7v+Lw54=;
+        b=JTq7nhOe88F/ZkpQ2iYvfnYs5akaGi82vtpHxW7jCAgWyoNhATO28TuyYhI/hc31LHSgrI
+        8TL+KQSym8C2VJj4wxtiwV/r81zaHEvEqnC/ka/YGAHgxZSu5/B+/leRuVB11GLI4H1Hb1
+        AaXcfp/VaR7y4dJ+8wIQDwLaXcXWWi8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-593-FrlSMN87OIaCe4JumnKwJw-1; Wed, 12 May 2021 03:23:23 -0400
+X-MC-Unique: FrlSMN87OIaCe4JumnKwJw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A38411854E26;
+        Wed, 12 May 2021 07:23:21 +0000 (UTC)
+Received: from T590 (ovpn-13-214.pek2.redhat.com [10.72.13.214])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1800114103;
+        Wed, 12 May 2021 07:23:14 +0000 (UTC)
+Date:   Wed, 12 May 2021 15:23:10 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Gulam Mohamed <gulam.mohamed@oracle.com>, viro@zeniv.linux.org.uk,
+        axboe@kernel.dk, linux-fsdevel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        martin.petersen@oracle.com, junxiao.bi@oracle.com
+Subject: Re: [PATCH V1 1/1] Fix race between iscsi logout and systemd-udevd
+Message-ID: <YJuCXh2ykAuDcuTb@T590>
+References: <20210511181558.380764-1-gulam.mohamed@oracle.com>
+ <YJtKT7rLi2CFqDsV@T590>
+ <20210512063505.GA18367@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210512063505.GA18367@lst.de>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following make W=1 kernel build warnings:
+On Wed, May 12, 2021 at 08:35:05AM +0200, Christoph Hellwig wrote:
+> On Wed, May 12, 2021 at 11:23:59AM +0800, Ming Lei wrote:
+> > 
+> > 1) code path BLKRRPART:
+> > 	mutex_lock(bdev->bd_mutex)
+> > 	down_read(&bdev_lookup_sem);
+> > 
+> > 2) del_gendisk():
+> > 	down_write(&bdev_lookup_sem);
+> > 	mutex_lock(&disk->part0->bd_mutex);
+> > 
+> > Given GENHD_FL_UP is only checked when opening one bdev, and
+> > fsync_bdev() and __invalidate_device() needn't to open bdev, so
+> > the following way may work for your issue:
+> 
+> If we move the clearing of GENHD_FL_UP earlier we can do away with
+> bdev_lookup_sem entirely I think.  Something like this untested patch:
+> 
+> diff --git a/block/genhd.c b/block/genhd.c
+> index a5847560719c..ef717084b343 100644
+> --- a/block/genhd.c
+> +++ b/block/genhd.c
+> @@ -29,8 +29,6 @@
+>  
+>  static struct kobject *block_depr;
+>  
+> -DECLARE_RWSEM(bdev_lookup_sem);
+> -
+>  /* for extended dynamic devt allocation, currently only one major is used */
+>  #define NR_EXT_DEVT		(1 << MINORBITS)
+>  static DEFINE_IDA(ext_devt_ida);
+> @@ -609,13 +607,8 @@ void del_gendisk(struct gendisk *disk)
+>  	blk_integrity_del(disk);
+>  	disk_del_events(disk);
+>  
+> -	/*
+> -	 * Block lookups of the disk until all bdevs are unhashed and the
+> -	 * disk is marked as dead (GENHD_FL_UP cleared).
+> -	 */
+> -	down_write(&bdev_lookup_sem);
+> -
+>  	mutex_lock(&disk->open_mutex);
+> +	disk->flags &= ~GENHD_FL_UP;
+>  	blk_drop_partitions(disk);
+>  	mutex_unlock(&disk->open_mutex);
+>  
+> @@ -627,10 +620,7 @@ void del_gendisk(struct gendisk *disk)
+>  	 * up any more even if openers still hold references to it.
+>  	 */
+>  	remove_inode_hash(disk->part0->bd_inode);
+> -
+>  	set_capacity(disk, 0);
+> -	disk->flags &= ~GENHD_FL_UP;
+> -	up_write(&bdev_lookup_sem);
+>  
+>  	if (!(disk->flags & GENHD_FL_HIDDEN)) {
+>  		sysfs_remove_link(&disk_to_dev(disk)->kobj, "bdi");
+> diff --git a/fs/block_dev.c b/fs/block_dev.c
+> index 8dd8e2fd1401..bde23940190f 100644
+> --- a/fs/block_dev.c
+> +++ b/fs/block_dev.c
+> @@ -1377,33 +1377,24 @@ struct block_device *blkdev_get_no_open(dev_t dev)
+>  	struct block_device *bdev;
+>  	struct gendisk *disk;
+>  
+> -	down_read(&bdev_lookup_sem);
+>  	bdev = bdget(dev);
+>  	if (!bdev) {
+> -		up_read(&bdev_lookup_sem);
+>  		blk_request_module(dev);
+> -		down_read(&bdev_lookup_sem);
+> -
+>  		bdev = bdget(dev);
+>  		if (!bdev)
+> -			goto unlock;
+> +			return NULL;
+>  	}
+>  
+>  	disk = bdev->bd_disk;
+>  	if (!kobject_get_unless_zero(&disk_to_dev(disk)->kobj))
+>  		goto bdput;
+> -	if ((disk->flags & (GENHD_FL_UP | GENHD_FL_HIDDEN)) != GENHD_FL_UP)
+> -		goto put_disk;
+>  	if (!try_module_get(bdev->bd_disk->fops->owner))
+>  		goto put_disk;
+> -	up_read(&bdev_lookup_sem);
+>  	return bdev;
+>  put_disk:
+>  	put_disk(disk);
+>  bdput:
+>  	bdput(bdev);
+> -unlock:
+> -	up_read(&bdev_lookup_sem);
+>  	return NULL;
+>  }
+>  
+> @@ -1462,7 +1453,10 @@ struct block_device *blkdev_get_by_dev(dev_t dev, fmode_t mode, void *holder)
+>  
+>  	disk_block_events(disk);
+>  
+> +	ret = -ENXIO;
+>  	mutex_lock(&disk->open_mutex);
+> +	if ((disk->flags & (GENHD_FL_UP | GENHD_FL_HIDDEN)) != GENHD_FL_UP)
+> +		goto abort_claiming;
+>  	if (bdev_is_partition(bdev))
+>  		ret = blkdev_get_part(bdev, mode);
+>  	else
 
-  drivers/base/attribute_container.c:304: warning: Function parameter or member 'fn' not described in 'attribute_container_device_trigger_safe'
-  drivers/base/attribute_container.c:304: warning: Function parameter or member 'undo' not described in 'attribute_container_device_trigger_safe'
-  drivers/base/attribute_container.c:357: warning: Function parameter or member 'fn' not described in 'attribute_container_device_trigger'
+This patch looks fine, and new openers can be prevented really with help
+of ->open_mutex.
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/base/attribute_container.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/base/attribute_container.c b/drivers/base/attribute_container.c
-index 9c00d203d61e..01ef796c2055 100644
---- a/drivers/base/attribute_container.c
-+++ b/drivers/base/attribute_container.c
-@@ -284,8 +284,8 @@ do_attribute_container_device_trigger_safe(struct device *dev,
-  * matching classdev or fail all of them.
-  *
-  * @dev:  The generic device to run the trigger for
-- * @fn	  the function to execute for each classdev.
-- * @undo  A function to undo the work previously done in case of error
-+ * @fn:   the function to execute for each classdev.
-+ * @undo: A function to undo the work previously done in case of error
-  *
-  * This function is a safe version of
-  * attribute_container_device_trigger. It stops on the first error and
-@@ -343,7 +343,7 @@ attribute_container_device_trigger_safe(struct device *dev,
-  * attribute_container_device_trigger - execute a trigger for each matching classdev
-  *
-  * @dev:  The generic device to run the trigger for
-- * @fn	  the function to execute for each classdev.
-+ * @fn:   the function to execute for each classdev.
-  *
-  * This function is for executing a trigger when you need to know both
-  * the container and the classdev.  If you only care about the
--- 
-2.25.1
+Thanks, 
+Ming
 
