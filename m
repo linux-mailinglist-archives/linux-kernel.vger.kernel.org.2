@@ -2,107 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB40837EB8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4737637EB8F
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381168AbhELTdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:33:35 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:24588 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348231AbhELRcY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 13:32:24 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1620840675; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=7oUoGyjrFKYwW1zHjHfoOw/G0kalViUlyRPQ/f7iQmc=;
- b=uvMJ6pNbKiy/lT+EzV5rnZia50NOjysNGTshf/eTJbLBdg5Daxc1QG+SOQx3W2sG7w23q8XY
- FBL0RPX5DC42cD5Qslno3BZBtaEYyHF8qr1+sZcRgV7MoqLI2AI6pfT0f8KEXDXo09Ib9TFY
- SjJTBRbytOZmkJeB+MCnZfOmxxc=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 609c10c0938a1a6b8f6e38cc (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 12 May 2021 17:30:40
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5DDFFC433F1; Wed, 12 May 2021 17:30:40 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0C505C433D3;
-        Wed, 12 May 2021 17:30:39 +0000 (UTC)
+        id S1381220AbhELTdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:33:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242882AbhELRfD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 13:35:03 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76EB1C06134E
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 10:31:08 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id p17so12852715plf.12
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 10:31:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jQ1izlrVGOhPAXdn9/aplXdHdgbZMkL/hHrij75+k+Q=;
+        b=a4DNmUDUNPSavKGBm5teXTf27JxGyXaVA19FtMli56IbhkY9lFuV+rJqzokIoTEuwj
+         F49XgNCm3V3M5/9KmyOKYrZZYrD8M0sxKPi5CWvV+66QLiQRD1dTK6hnpF6oOnX3KdYl
+         KuYf/BxHq4xPZ5ZcOpdXGVy7p+OIZAgc99rCcjvCYvgDQxe5GvZg2Mt/NNQY/q+08vQ0
+         Hl+rCDHoUA2rv75AAhQoZLZWwV1kC9ZJJDMDoQ/lYVk1QpsvMjeAuI4uQV90enBsC69c
+         FUK56tmkLe8UkPGpZbmL7IVKUmI0tUBnEDrhm26gFC5GF7vWR9q72Rtv/k6SpUDPgwUW
+         EuZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jQ1izlrVGOhPAXdn9/aplXdHdgbZMkL/hHrij75+k+Q=;
+        b=iNmYSKwrQLz7qSQKVyewS4z7zHaZh+GsYM4v99NhWu3onaAYbbf6sHmfncc0wgEIFT
+         H9lHrQJK3lJfsLGIzp67J5B78MUcHOZtly+yttoCnONYShXwzdIFoOHZvGa8oyoANDMd
+         h2/Tyt7ILMGUuIkcEJlEg2VQpdECGSbsXdEadabbGD6WtlWylZAvsW4q95OFjEy2fzx0
+         oIenmV5/V/G0R+lND+8mjeJKZxJL5YZSZL9H1+MRDA8CQv/9/nTY3WXhcU2B3pvCS1Ai
+         aAo/vV8nAqTWA2XTlx7s3/VybJxeR9K8P3x0NWxluGzaCdpx2QmwN8CJ5FDvPrZ9I1Rv
+         NgZg==
+X-Gm-Message-State: AOAM532pStvjosjUFCkfE0c3W+tjLgFtYkRuPNv2PZBkSrea1Jd3NYjl
+        bxbsgIY4k0jOkMraQil3QCDHpQ==
+X-Google-Smtp-Source: ABdhPJz/4rNTvkI1wMpdg6OUFlsFjzwopUXYcEfBvzxbgvGH5sNB0scPThabFLbqW1Veig+/7/0g+A==
+X-Received: by 2002:a17:90a:5207:: with SMTP id v7mr11942175pjh.87.1620840667721;
+        Wed, 12 May 2021 10:31:07 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id t15sm369192pgh.33.2021.05.12.10.31.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 10:31:07 -0700 (PDT)
+Date:   Wed, 12 May 2021 17:31:03 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     x86@kernel.org, Hyunwook Baek <baekhw@google.com>,
+        Joerg Roedel <jroedel@suse.de>, stable@vger.kernel.org,
+        hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH 2/6] x86/sev-es: Forward page-faults which happen during
+ emulation
+Message-ID: <YJwQ1xsiDtv3LkBe@google.com>
+References: <20210512075445.18935-1-joro@8bytes.org>
+ <20210512075445.18935-3-joro@8bytes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 12 May 2021 10:30:39 -0700
-From:   khsieh@codeaurora.org
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Stephen Boyd <swboyd@chromium.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, robdclark@gmail.com, sean@poorly.run,
-        abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/msm/dp: handle irq_hpd with sink_count = 0 correctly
-In-Reply-To: <YJtnPt63yK4zP3O1@vkoul-mobl.Dlink>
-References: <1620251521-29999-1-git-send-email-khsieh@codeaurora.org>
- <CAE-0n50HUo0tm22xX+j8H-u+EDH+wBrdEvM68p-X3EyR8S_u3Q@mail.gmail.com>
- <YJtnPt63yK4zP3O1@vkoul-mobl.Dlink>
-Message-ID: <868dbca9a30e0d6a6d51f5e559b12ea3@codeaurora.org>
-X-Sender: khsieh@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210512075445.18935-3-joro@8bytes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-11 22:27, Vinod Koul wrote:
-> On 10-05-21, 11:15, Stephen Boyd wrote:
->> Quoting Kuogee Hsieh (2021-05-05 14:52:01)
->> > @@ -1414,6 +1416,10 @@ void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl)
->> >         phy = dp_io->phy;
->> >
->> >         dp_catalog_ctrl_enable_irq(ctrl->catalog, false);
->> > +
->> > +       if (phy->power_count)
->> > +               phy_power_off(phy);
->> > +
->> >         phy_exit(phy);
->> >
->> >         DRM_DEBUG_DP("Host deinitialized successfully\n");
->> > @@ -1445,7 +1451,6 @@ static int dp_ctrl_reinitialize_mainlink(struct dp_ctrl_private *ctrl)
->> >
->> >         dp_catalog_ctrl_mainlink_ctrl(ctrl->catalog, false);
->> >         opts_dp->lanes = ctrl->link->link_params.num_lanes;
->> > -       phy_configure(phy, &dp_io->phy_opts);
->> >         /*
->> >          * Disable and re-enable the mainlink clock since the
->> >          * link clock might have been adjusted as part of the
->> > @@ -1456,9 +1461,13 @@ static int dp_ctrl_reinitialize_mainlink(struct dp_ctrl_private *ctrl)
->> >                 DRM_ERROR("Failed to disable clocks. ret=%d\n", ret);
->> >                 return ret;
->> >         }
->> > -       phy_power_off(phy);
->> > -       /* hw recommended delay before re-enabling clocks */
->> > -       msleep(20);
->> > +
->> > +       if (phy->power_count) {
->> 
->> I don't believe members of 'phy' are supposed to be looked at by 
->> various
->> phy consumer drivers. Vinod, is that right?
+On Wed, May 12, 2021, Joerg Roedel wrote:
+> From: Joerg Roedel <jroedel@suse.de>
 > 
-> That is correct, we should not be doing that. And IMO this code is
-> redundant, the phy core will check power_count and invoke drivers
-> .power_off accordingly, so should be removed...
+> When emulating guest instructions for MMIO or IOIO accesses the #VC
+> handler might get a page-fault and will not be able to complete. Forward
+> the page-fault in this case to the correct handler instead of killing
+> the machine.
 > 
-> Thanks
+> Fixes: 0786138c78e7 ("x86/sev-es: Add a Runtime #VC Exception Handler")
+> Cc: stable@vger.kernel.org # v5.10+
+> Signed-off-by: Joerg Roedel <jroedel@suse.de>
+> ---
+>  arch/x86/kernel/sev.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
+> index c49270c7669e..6530a844eb61 100644
+> --- a/arch/x86/kernel/sev.c
+> +++ b/arch/x86/kernel/sev.c
+> @@ -1265,6 +1265,10 @@ static __always_inline void vc_forward_exception(struct es_em_ctxt *ctxt)
+>  	case X86_TRAP_UD:
+>  		exc_invalid_op(ctxt->regs);
+>  		break;
+> +	case X86_TRAP_PF:
+> +		write_cr2(ctxt->fi.cr2);
+> +		exc_page_fault(ctxt->regs, error_code);
+> +		break;
 
-ok, v2 patch uploaded to address this issue.
+This got me looking at the flows that "inject" #PF, and I'm pretty sure there
+are bugs in __vc_decode_user_insn() + insn_get_effective_ip().
+
+Problem #1: __vc_decode_user_insn() assumes a #PF if insn_fetch_from_user_inatomic()
+fails, but the majority of failure cases in insn_get_seg_base() are #GPs, not #PF.
+
+	res = insn_fetch_from_user_inatomic(ctxt->regs, buffer);
+	if (!res) {
+		ctxt->fi.vector     = X86_TRAP_PF;
+		ctxt->fi.error_code = X86_PF_INSTR | X86_PF_USER;
+		ctxt->fi.cr2        = ctxt->regs->ip;
+		return ES_EXCEPTION;
+	}
+
+Problem #2: Using '0' as an error code means a legitimate effective IP of '0'
+will be misinterpreted as a failure.  Practically speaking, I highly doubt anyone
+will ever actually run code at address 0, but it's technically possible.  The
+most robust approach would be to pass a pointer to @ip and return an actual error
+code.  Using a non-canonical magic value might also work, but that could run afoul
+of future shenanigans like LAM.
+
+	ip = insn_get_effective_ip(regs);
+	if (!ip)
+		return 0;
