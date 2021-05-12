@@ -2,142 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A4FF37BBF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 13:38:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87AFB37BBFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 13:40:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230246AbhELLjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 07:39:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51752 "EHLO
+        id S230326AbhELLlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 07:41:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230037AbhELLjL (ORCPT
+        with ESMTP id S230300AbhELLlr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 07:39:11 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BCA8C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 04:38:02 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id v5so15582476edc.8
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 04:38:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=UpD/+YrtaMz5PR2dtvL4t8j/9dEXdGpQf09tWS3r5rw=;
-        b=udp+4TRpeviOuAnt7FrqJRRV1+zXYBvVGgv4Cz5Y9t6zBLVwFUjA59+uUeEwQsnDVl
-         45kremyM0hZhUJwpcJJndt7S+Noq8tnCrzEYIlw6h6IiqlOfuxtXfabUemdEoHfc7ZbB
-         NY8gqtrb1Ww2H3NrVEKy7yMCzFLqzZ5kHFN6JbVAVVZwFfmzC9uOLg/oEN4+cil3XjJY
-         25zZuHHEdtYO/jywa5VbIs/rqluxihlrXKZvZHU/vTttl5N3NXiLaW3AamRoqatv3TtA
-         0tdJzU5NYRSjtKOgfNOSgKToLFC4LsOj5kuJWApynOclcwkDO/usuo86Uk9pJF4oJLzw
-         T48g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UpD/+YrtaMz5PR2dtvL4t8j/9dEXdGpQf09tWS3r5rw=;
-        b=dXvzIn3BD2jr4cPy2QoBKCvM60sWCwGvhnqUNFMmT8XoNJJ8MnugQm71rKkE5cc5fI
-         fg8CPnGkTpozHX2Wbv4NRo4s+ya5Cuao1NqdpMq9O51km9YkA17CaBTn1IpdlYBwe2V3
-         S/zQQMNj//C4y2eUzcsr2/jGjDMCFbaWGA8GhzG+R+n+YPv5BOkZFEqUgwP/8KSuTCff
-         wCavDoj/wEosID+dsQnS45qpjx5POjoLrjGT8GhpUk9+1TgNGUfGwzPU+d+JfTyZDpjD
-         Mq/HCeDkZtnuWE6hRvET1nC2ZE4BAVBMzRLc/d22Z5g5K1Ohru2g2VgymsodR2vdKEOR
-         9Rjw==
-X-Gm-Message-State: AOAM530AYr1u9uZHg+8OsalfwDzmXQ4YB+IK3RL78O3VhXuEXGBeeIoE
-        PQpMTqb4Q9wdzmNYNK6g4U4WdQ==
-X-Google-Smtp-Source: ABdhPJyGFxPE/N7ZciKy727EOs4Kgvddr2+YwvncA1HKgg5RKfV3yiczKlNpu+zaRQ+rWwGx1RIcdA==
-X-Received: by 2002:a05:6402:2548:: with SMTP id l8mr43334868edb.208.1620819480745;
-        Wed, 12 May 2021 04:38:00 -0700 (PDT)
-Received: from [192.168.1.14] ([195.24.90.54])
-        by smtp.googlemail.com with ESMTPSA id w6sm11802898edc.25.2021.05.12.04.37.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 May 2021 04:38:00 -0700 (PDT)
-Subject: Re: [PATCH][next] media: venus: hfi_cmds.h: Replace one-element array
- with flexible-array member
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20210210225720.GA13710@embeddedor>
- <6081fb66-7f43-cab4-b7ff-ce4b291b8865@embeddedor.com>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <b9f4cce4-f836-96a9-2efd-cb5b9151a186@linaro.org>
-Date:   Wed, 12 May 2021 14:37:57 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 12 May 2021 07:41:47 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AC1EC061574;
+        Wed, 12 May 2021 04:40:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=hfpiF6M7gD0zv0WKuJyv2m+M6IsU8UI95/eFQuGgu0c=; b=cqybAHBnHGa7VYS1KWnAIjqRbz
+        gs9rJ56mJD0juvKQQXZWweMK7GN0n6rj0SLu1aRsjlkkkdKDwEpwfworFPum7WVo7R9QKUUqw+qxZ
+        rOEmhftRvA3iktdWOJBViKYPdR1XwZTzDeESI/QkjkXP1et0Rad9Ye5n+NwtbwySaAFORwDpV5LYA
+        FfURIykhTRfwfWtYAFrFytQfCKgpTAwyHvrDiSUcNvfMKqMI1zf7oK7syrCfdehJAqUanyhYFVRpu
+        KvvkUhLdkDJuqifNGrVI39R99ndUyoUbr5DViph62fYNPujCg93A0bRf1jTSkWHCKst/SeUH1tPLc
+        mU6gZTpw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lgnBh-008E6B-0N; Wed, 12 May 2021 11:38:09 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6905F300242;
+        Wed, 12 May 2021 13:38:00 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4A14420C6A1CF; Wed, 12 May 2021 13:38:00 +0200 (CEST)
+Date:   Wed, 12 May 2021 13:38:00 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mel Gorman <mgorman@suse.de>
+Cc:     Balbir Singh <bsingharora@gmail.com>, tglx@linutronix.de,
+        mingo@kernel.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+        pbonzini@redhat.com, maz@kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, riel@surriel.com, hannes@cmpxchg.org,
+        Paul Wise <pabs3@bonedaddy.net>
+Subject: Re: [PATCH 0/6] sched,delayacct: Some cleanups
+Message-ID: <YJu+GPHYmRf5Y/Br@hirez.programming.kicks-ass.net>
+References: <20210505105940.190490250@infradead.org>
+ <20210505222940.GA4236@balbir-desktop>
+ <YJOzUAg30LZWSHcI@hirez.programming.kicks-ass.net>
+ <20210507123810.GB4236@balbir-desktop>
+ <20210512113419.GF3672@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <6081fb66-7f43-cab4-b7ff-ce4b291b8865@embeddedor.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210512113419.GF3672@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, May 12, 2021 at 12:34:19PM +0100, Mel Gorman wrote:
+> > I don't disagree, we've had these around for a while and I know of users
+> > that use these stats to find potential starvation. I am OK with default
+> > disabled. I suspect distros will have the final say.
+> > 
+> 
+> I think default disabled should be fine. At worst when dealing with a bug
+> there would be a need to either reboot or enable at runtime with patch
+> 7 included and add that instruction to the bug report when requesting
+> iotop data. At worst, a distro could revert the patch if iotop generated
+> too many bug reports or patch iotop in the distro package.
+> 
+> Alternatively, I've added Paul Wise to the cc who is the latest
+> committer to iotop.  Maybe he knows who could add/commit a check for
+> sysctl.sched_delayacct and if it exists then check if it's 1 and display
+> an error suggesting corrective action (add delayacct to the kernel command
+> line or sysctl sched.sched_delayacct=1). iotop appears to be in maintenance
+> mode but gets occasional commits even if it has not had a new version
+> since 2013 so maybe it could get a 0.7 tag if such a check was added.
 
-On 5/11/21 6:44 PM, Gustavo A. R. Silva wrote:
-> Hi all,
-> 
-> Friendly ping:
-> 
-> We are about to be able to globally enable -Warray-bounds and, this is one of the
-> last out-of-bounds warnings in linux-next.
-> 
-> Could someone take this, please?
+In the final commit I made the knob be known as task_delayacct. I
+figured that was a slightly better name.
 
-I'll take this for 5.14.
+But yes, a check in iotop, if that really is the sole user of all this,
+would be very nice.
 
-> 
-> Thanks
-> --
-> Gustavo
-> 
-> On 2/10/21 16:57, Gustavo A. R. Silva wrote:
->> There is a regular need in the kernel to provide a way to declare having
->> a dynamically sized set of trailing elements in a structure. Kernel code
->> should always use “flexible array members”[1] for these cases. The older
->> style of one-element or zero-length arrays should no longer be used[2].
->>
->> Use flexible-array member in struct hfi_sys_set_property_pkt instead of
->> one-element array.
->>
->> Also, this helps with the ongoing efforts to enable -Warray-bounds and
->> fix the following warnings:
->>
->> drivers/media/platform/qcom/venus/hfi_cmds.c: In function ‘pkt_sys_coverage_config’:
->> drivers/media/platform/qcom/venus/hfi_cmds.c:57:11: warning: array subscript 1 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
->>    57 |  pkt->data[1] = mode;
->>       |  ~~~~~~~~~^~~
->>
->> [1] https://en.wikipedia.org/wiki/Flexible_array_member
->> [2] https://www.kernel.org/doc/html/v5.9/process/deprecated.html#zero-length-and-one-element-arrays
->>
->> Link: https://github.com/KSPP/linux/issues/79
->> Link: https://github.com/KSPP/linux/issues/109
->> Build-tested-by: kernel test robot <lkp@intel.com>
->> Link: https://lore.kernel.org/lkml/602416da.iZqae7Dbk7nyl6OY%25lkp@intel.com/
->> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->> ---
->>  drivers/media/platform/qcom/venus/hfi_cmds.h | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/media/platform/qcom/venus/hfi_cmds.h b/drivers/media/platform/qcom/venus/hfi_cmds.h
->> index 83705e237f1c..327ed90a2788 100644
->> --- a/drivers/media/platform/qcom/venus/hfi_cmds.h
->> +++ b/drivers/media/platform/qcom/venus/hfi_cmds.h
->> @@ -68,7 +68,7 @@ struct hfi_sys_release_resource_pkt {
->>  struct hfi_sys_set_property_pkt {
->>  	struct hfi_pkt_hdr hdr;
->>  	u32 num_properties;
->> -	u32 data[1];
->> +	u32 data[];
->>  };
->>  
->>  struct hfi_sys_get_property_pkt {
->>
-
--- 
-regards,
-Stan
+Thanks!
