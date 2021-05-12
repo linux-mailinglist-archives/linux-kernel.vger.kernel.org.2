@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25F6837EA80
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:01:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F7A937EA8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:03:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377025AbhELTCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:02:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36542 "EHLO mail.kernel.org"
+        id S239632AbhELTEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:04:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244078AbhELQmc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:42:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8D1961D1E;
-        Wed, 12 May 2021 16:10:11 +0000 (UTC)
+        id S244144AbhELQmi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:42:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C5FE61D1C;
+        Wed, 12 May 2021 16:11:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620835812;
-        bh=YCtJv9qST3vpj6bHQ9FWRyXru33eBfZLH4zRMIE+CnI=;
+        s=korg; t=1620835866;
+        bh=lR6VFXI+3PyUbpl7FG1A6iS2iML3XrMI1/krbe+pEAU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UZLK5I3qbZ5u5rSK6/AdiiLgndWfM50Y8HV8bGsoROiwZmeFq4ZS5MamXR+7pv8+v
-         7oysR2x5hvGJCeaaoLS7TBf2ZFEHN/1s8DHKCDjEaHoXV8QfNxycmjw4midFTs2ys3
-         WbBAwlFuKNKfV4P7XytnVnWbD6VurUcZGyHgsPro=
+        b=yTyS+eyploClkd48AEZEYeK4Z6GaJy3Qit+e9eE74HIAHexuTceNlb3Brxei2772c
+         1+xPFBpIHhDjoHAFMrUZ9VyyOsmXIOykf76OME59WYGThRLhynVU2WPrveXw1Nb0bY
+         d7AVPn59Z2dbl/fc+IYnYDz+4m5IHK4cGjEZZ8bo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 487/677] nfc: pn533: prevent potential memory corruption
-Date:   Wed, 12 May 2021 16:48:53 +0200
-Message-Id: <20210512144853.558633129@linuxfoundation.org>
+Subject: [PATCH 5.12 489/677] mips: bmips: fix syscon-reboot nodes
+Date:   Wed, 12 May 2021 16:48:55 +0200
+Message-Id: <20210512144853.628609402@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
 References: <20210512144837.204217980@linuxfoundation.org>
@@ -40,36 +42,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Álvaro Fernández Rojas <noltari@gmail.com>
 
-[ Upstream commit ca4d4c34ae9aa5c3c0da76662c5e549d2fc0cc86 ]
+[ Upstream commit cde58b861a1d365568588adda59d42351c0c4ad3 ]
 
-If the "type_a->nfcid_len" is too large then it would lead to memory
-corruption in pn533_target_found_type_a() when we do:
+Commit a23c4134955e added the clock controller nodes, incorrectly changing the
+syscon-reboot nodes addresses.
 
-	memcpy(nfc_tgt->nfcid1, tgt_type_a->nfcid_data, nfc_tgt->nfcid1_len);
-
-Fixes: c3b1e1e8a76f ("NFC: Export NFCID1 from pn533")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: a23c4134955e ("MIPS: BMIPS: add clock controller nodes")
+Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nfc/pn533/pn533.c | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/mips/boot/dts/brcm/bcm3368.dtsi  | 2 +-
+ arch/mips/boot/dts/brcm/bcm63268.dtsi | 2 +-
+ arch/mips/boot/dts/brcm/bcm6358.dtsi  | 2 +-
+ arch/mips/boot/dts/brcm/bcm6362.dtsi  | 2 +-
+ arch/mips/boot/dts/brcm/bcm6368.dtsi  | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/nfc/pn533/pn533.c b/drivers/nfc/pn533/pn533.c
-index f1469ac8ff42..3fe5b81eda2d 100644
---- a/drivers/nfc/pn533/pn533.c
-+++ b/drivers/nfc/pn533/pn533.c
-@@ -706,6 +706,9 @@ static bool pn533_target_type_a_is_valid(struct pn533_target_type_a *type_a,
- 	if (PN533_TYPE_A_SEL_CASCADE(type_a->sel_res) != 0)
- 		return false;
+diff --git a/arch/mips/boot/dts/brcm/bcm3368.dtsi b/arch/mips/boot/dts/brcm/bcm3368.dtsi
+index 69cbef472377..d4b2b430dad0 100644
+--- a/arch/mips/boot/dts/brcm/bcm3368.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm3368.dtsi
+@@ -59,7 +59,7 @@
  
-+	if (type_a->nfcid_len > NFC_NFCID1_MAXSIZE)
-+		return false;
-+
- 	return true;
- }
+ 		periph_cntl: syscon@fff8c008 {
+ 			compatible = "syscon";
+-			reg = <0xfff8c000 0x4>;
++			reg = <0xfff8c008 0x4>;
+ 			native-endian;
+ 		};
+ 
+diff --git a/arch/mips/boot/dts/brcm/bcm63268.dtsi b/arch/mips/boot/dts/brcm/bcm63268.dtsi
+index e0021ff9f144..940594436872 100644
+--- a/arch/mips/boot/dts/brcm/bcm63268.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm63268.dtsi
+@@ -59,7 +59,7 @@
+ 
+ 		periph_cntl: syscon@10000008 {
+ 			compatible = "syscon";
+-			reg = <0x10000000 0xc>;
++			reg = <0x10000008 0x4>;
+ 			native-endian;
+ 		};
+ 
+diff --git a/arch/mips/boot/dts/brcm/bcm6358.dtsi b/arch/mips/boot/dts/brcm/bcm6358.dtsi
+index 9d93e7f5e6fc..d79c88c2fc9c 100644
+--- a/arch/mips/boot/dts/brcm/bcm6358.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm6358.dtsi
+@@ -59,7 +59,7 @@
+ 
+ 		periph_cntl: syscon@fffe0008 {
+ 			compatible = "syscon";
+-			reg = <0xfffe0000 0x4>;
++			reg = <0xfffe0008 0x4>;
+ 			native-endian;
+ 		};
+ 
+diff --git a/arch/mips/boot/dts/brcm/bcm6362.dtsi b/arch/mips/boot/dts/brcm/bcm6362.dtsi
+index eb10341b75ba..8a21cb761ffd 100644
+--- a/arch/mips/boot/dts/brcm/bcm6362.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm6362.dtsi
+@@ -59,7 +59,7 @@
+ 
+ 		periph_cntl: syscon@10000008 {
+ 			compatible = "syscon";
+-			reg = <0x10000000 0xc>;
++			reg = <0x10000008 0x4>;
+ 			native-endian;
+ 		};
+ 
+diff --git a/arch/mips/boot/dts/brcm/bcm6368.dtsi b/arch/mips/boot/dts/brcm/bcm6368.dtsi
+index 52c19f40b9cc..8e87867ebc04 100644
+--- a/arch/mips/boot/dts/brcm/bcm6368.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm6368.dtsi
+@@ -59,7 +59,7 @@
+ 
+ 		periph_cntl: syscon@100000008 {
+ 			compatible = "syscon";
+-			reg = <0x10000000 0xc>;
++			reg = <0x10000008 0x4>;
+ 			native-endian;
+ 		};
  
 -- 
 2.30.2
