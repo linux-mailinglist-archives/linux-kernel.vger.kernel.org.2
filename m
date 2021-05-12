@@ -2,71 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCB2137B9D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 11:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55E0637B9D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 11:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230109AbhELJ7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 05:59:49 -0400
-Received: from uho.ysoft.cz ([81.19.3.130]:42298 "EHLO uho.ysoft.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230096AbhELJ7r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 05:59:47 -0400
-Received: from iota-build.ysoft.local (unknown [10.1.5.151])
-        by uho.ysoft.cz (Postfix) with ESMTP id 81F10A02C2;
-        Wed, 12 May 2021 11:58:38 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ysoft.com;
-        s=20160406-ysoft-com; t=1620813518;
-        bh=SXlFiufzZxGFnc3q9XNjWC73WdXnlKAFExbpvizwEUE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Wm8/1cUPgEYqUoiK9ww8Kw04S6sdU04uciNAyAr0cIbymoMVvi1Cu/w9nTned1wJg
-         uTgfAdkrFJhJr7AXt2nivoASOodTGIR2UyPoIZNu5kjO39L4+aIl/M8JOGrDocKXOi
-         T6gLSwjhGbykrBx1RZsMO+kNDEZY19NMEn8Ne9Kw=
-From:   =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>
-To:     Shawn Guo <shawnguo@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>
-Subject: [PATCH RESEND] ARM: dts: imx6dl-yapp4: Use aliases to set custom MMC device indexes
-Date:   Wed, 12 May 2021 11:58:30 +0200
-Message-Id: <1620813510-31079-1-git-send-email-michal.vokac@ysoft.com>
-X-Mailer: git-send-email 2.1.4
+        id S230228AbhELKAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 06:00:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230126AbhELKAe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 06:00:34 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2501C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 02:59:26 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id n17-20020a7bc5d10000b0290169edfadac9so2183537wmk.1
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 02:59:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Xv66uSypjir4jy5I6sEQsec6QT2ejT+lfOXgIGsNm/4=;
+        b=YOW03NWqE16Y6IBJ+DPy98eDm2LqEsTemChzKWpn1VcvfZ7pCtR9naHEhbV8HmYOAy
+         n9yNQ+4Hpal+NIgUSGWfyxKdQ44jWOOR7757EKyjjMGKWEtXMFk+W+d7NvzXyjV0Kx/B
+         Chq+U3i/U4er3iGw397pxjLksy6DG9c3j/2r9NCT1EtCQdHbjJQ8V7Lbn4t7lBli5jaY
+         hzSMIX+5+mTHFm07z48MYPnuy0+QQCHIVIve3YuezrYOMppUJqwdv85EJARs9r5LSRHh
+         IT+v9wIuToPGhRBvtJ1afYZs3lAJbF1LRWp32eMA4BgkuQOCtCs6iDy49i5EXC+jwsLS
+         HenQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Xv66uSypjir4jy5I6sEQsec6QT2ejT+lfOXgIGsNm/4=;
+        b=lOAF5ftA3PhxP9x4LFy4phUKevCIhw2JKqLP3ZgWCCgV2NpA3J7B5PHl4wdE8fS32d
+         SH7BBBrtIuov8yeBNapxnxG0E3rvF4d/k/wikv/CWAHP4cJtfuznNWLkMqWUDTJV1zVd
+         i0yB7nDcwNq/PsFBoxopHrDgDauyfCS3u1D9MDfLlgtuDFXNd0zGS7YgsbHCho3Ivd+w
+         ia8EI9njb/Qh9NkX3mYwNSq4xzmNHuWKx0YVPAGgWz9FFxSY+PHOYQzdqLU1F0s0SpOe
+         EB5tZol4nvpRu2/1UBYDrAUkw14ETUcozaZyGGVMGsGj+bVS3/mAUf0tZvHnOwknQ03F
+         /+Qg==
+X-Gm-Message-State: AOAM530Zbv99GRXSmRUDAdxHEclpRnaEiABgVk5fUExo9ULtlV/9P7Mv
+        9TywSKGy2hEMG8yxUMPuq0lzNRMU8h60Pw==
+X-Google-Smtp-Source: ABdhPJyJ6fTwNwBxiKk/rB2t7DwtSsKLCKdlawNQfqUi2UqyOq4m86muCEXW3J52lt3SwEnYuPOwxA==
+X-Received: by 2002:a05:600c:1907:: with SMTP id j7mr37178513wmq.158.1620813565641;
+        Wed, 12 May 2021 02:59:25 -0700 (PDT)
+Received: from dell ([91.110.221.215])
+        by smtp.gmail.com with ESMTPSA id v20sm26793277wmj.15.2021.05.12.02.59.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 02:59:25 -0700 (PDT)
+Date:   Wed, 12 May 2021 10:59:23 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Luca Ceresoli <luca@lucaceresoli.net>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] mfd: lp87565: fix typo in define names
+Message-ID: <20210512095923.GC805368@dell>
+References: <20210219223910.1831-1-luca@lucaceresoli.net>
+ <20210308140440.GH4931@dell>
+ <365cc875-e1de-0a81-6163-007f574779d3@lucaceresoli.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <365cc875-e1de-0a81-6163-007f574779d3@lucaceresoli.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Until commit fa2d0aa96941 ("mmc: core: Allow setting slot index via
-device tree alias") was introduced, our usdhc3 and usdhc4 devices
-were enumerated as mmc0 and mmc1. The mmc1 device is used to boot/update
-the board and its name must be fixed.
+On Wed, 12 May 2021, Luca Ceresoli wrote:
 
-With the referenced commit, aliases from imx6qdl.dtsi took effect.
-Override the aliases to get back the original device indexes.
+> Hi,
+> 
+> On 08/03/21 15:04, Lee Jones wrote:
+> > On Fri, 19 Feb 2021, Luca Ceresoli wrote:
+> > 
+> >> "GOIO" should be "GPIO" here.
+> >>
+> >> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+> >> ---
+> >>  drivers/gpio/gpio-lp87565.c |  6 +++---
+> >>  include/linux/mfd/lp87565.h | 28 ++++++++++++++--------------
+> >>  2 files changed, 17 insertions(+), 17 deletions(-)
+> > 
+> > For my own reference (apply this as-is to your sign-off block):
+> > 
+> >   Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+> 
+> Gentle ping on patches 1 and 3. Both have at least an ack and are fairly
+> trivial. Both apply cleanly on current master.
 
-Signed-off-by: Michal Vokáč <michal.vokac@ysoft.com>
----
- arch/arm/boot/dts/imx6dl-yapp4-common.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
+I'll take care of these this time, but in future, if you don't receive
+further responses for ~2 weeks, you should collect all of the Acks and
+submit a [RESEND].
 
-diff --git a/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi b/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi
-index 686dab57a1e4..ff8d335ee482 100644
---- a/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi
-+++ b/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi
-@@ -11,6 +11,8 @@
- 	aliases: aliases {
- 		ethernet1 = &eth1;
- 		ethernet2 = &eth2;
-+		mmc0 = &usdhc3;
-+		mmc1 = &usdhc4;
- 	};
- 
- 	backlight: backlight {
 -- 
-2.1.4
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
