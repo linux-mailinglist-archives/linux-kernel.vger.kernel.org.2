@@ -2,164 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9C8537D032
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:40:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89B3937CFB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347958AbhELRaS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 12 May 2021 13:30:18 -0400
-Received: from de-smtp-delivery-105.mimecast.com ([194.104.109.105]:23950 "EHLO
-        de-smtp-delivery-105.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238400AbhELQEl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:04:41 -0400
-Received: from GBR01-LO2-obe.outbound.protection.outlook.com
- (mail-lo2gbr01lp2057.outbound.protection.outlook.com [104.47.21.57]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-29-XiQMOm0QMweQiFtXCrNAKg-1; Wed, 12 May 2021 18:03:25 +0200
-X-MC-Unique: XiQMOm0QMweQiFtXCrNAKg-1
-Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:89::10)
- by CWXP265MB4075.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:132::6) with
+        id S1346771AbhELRQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 13:16:52 -0400
+Received: from mail-sn1anam02on2125.outbound.protection.outlook.com ([40.107.96.125]:48640
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238427AbhELQE6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:04:58 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bjrrMf5ooe45CESnd7a6SpyCPrzbMv3D3X9hwJ1rLNAnVVg2PNk6k0HxCCQ+dZeANppYZXUwS9zsbIZ2QkCgn0WwdOr+TzUD5o2J9dA4ideN4vV4yWAIHYkL1dUvhfnhHizB1HVd9j0C9Zs+VihGPDhwVMopPLUDEqcDuiay/09PXu0PTqPFaBXz2T/3Phbpgmdj8/dpFYHK43si9YU+9w2Ex980eSSoZZuZWLGl0mpnX719SYue2ldA+GwzvrzpSabyp0h/zMViS4B8MGkCzBeR/UUJUbTm+GhwRDfIh/fTYfQnQmdQPhjeDXl7NVbFF5/ItZyFNlr3WvaidXVzEQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=B5KLpwK3ifDBoBVo3F9zLFRQOhRwVaNZNOFbEq7ydYU=;
+ b=KIz4x8OA9UZLjhHtZeu4loW4vr8A2/rYP+ZM/kJzUMoLH0GzPxyhTMvMpuEnFrtvSy4wz2YKitQm7oom2f4GGI6Ww3mCpbMGO4CS8L+gfkdsTnLxUD4ntOmJosyVSjzUVDLFQYkMdkIgV6gPgL2vBDxwdGscLhY7gq599sRkQLMb3j7VmDHfNPTqv4uXxcjJI2EATNQ3f2a6zDI7HJmOy5z7bBpzn9Dafwcx5N1nuPwtH1+6nvp4VbqSo2wXEemW3ojpUcH+6iGRe1BaGlFTo4lGZXIoML63lU2GZ8tAziF2jGAgAMz872dY1tlZb1QZoiDH2x+FfHDYn7vA1AI0lg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=B5KLpwK3ifDBoBVo3F9zLFRQOhRwVaNZNOFbEq7ydYU=;
+ b=SpBhEe4piBlqVZrbvJjV4haeHzY2o5f1mYj5yTfkeq64Y1pM1pAQj8uKSWrvnxbUumw1y4pnv89YHJzL+8BllrCDLP5czQUVdf2FB2xUpya6HQngCFLE+hsEu+aAg4YX5ExZJf2FwYNcN5MzdO2gWDzANJ0O4qCkWc+k95X5EOs=
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com (2603:10b6:301:7c::11)
+ by MWHPR21MB0704.namprd21.prod.outlook.com (2603:10b6:300:128::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.25; Wed, 12 May
- 2021 16:03:24 +0000
-Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
- ([fe80::a91f:361d:5554:3958]) by CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
- ([fe80::a91f:361d:5554:3958%5]) with mapi id 15.20.4129.025; Wed, 12 May 2021
- 16:03:24 +0000
-From:   =?iso-8859-1?Q?Christian_L=F6hle?= <CLoehle@hyperstone.com>
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>
-CC:     "pali@kernel.org" <pali@kernel.org>,
-        "huyue2@yulong.com" <huyue2@yulong.com>,
-        "tiantao6@hisilicon.com" <tiantao6@hisilicon.com>
-Subject: [PATCH v2] mmc: enable UHS voltage switch for SDSC if supported
-Thread-Topic: [PATCH v2] mmc: enable UHS voltage switch for SDSC if supported
-Thread-Index: AQHXR0hWieWyusUSG0mi/K66XPZUDA==
-Date:   Wed, 12 May 2021 16:03:24 +0000
-Message-ID: <CWXP265MB26803AE79E0AD5ED083BF2A6C4529@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
-References: <CWXP265MB2680766F673A99D2F296B878C4469@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
-In-Reply-To: <CWXP265MB2680766F673A99D2F296B878C4469@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.7; Wed, 12 May
+ 2021 16:03:39 +0000
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::3c30:6e04:401d:c31f]) by MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::3c30:6e04:401d:c31f%4]) with mapi id 15.20.4129.023; Wed, 12 May 2021
+ 16:03:39 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     vkuznets <vkuznets@redhat.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
+CC:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Mohammed Gamal <mgamal@redhat.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] clocksource/drivers/hyper-v: Re-enable
+ VDSO_CLOCKMODE_HVCLOCK on X86
+Thread-Topic: [PATCH] clocksource/drivers/hyper-v: Re-enable
+ VDSO_CLOCKMODE_HVCLOCK on X86
+Thread-Index: AQHXRwtVNnDiDjklFkSFuIrM36V3V6rgAGXg
+Date:   Wed, 12 May 2021 16:03:39 +0000
+Message-ID: <MWHPR21MB15935352EB587E263D2C808CD7529@MWHPR21MB1593.namprd21.prod.outlook.com>
+References: <20210512084630.1662011-1-vkuznets@redhat.com>
+In-Reply-To: <20210512084630.1662011-1-vkuznets@redhat.com>
 Accept-Language: en-US
+Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-originating-ip: [185.80.168.10]
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=9fb28631-f914-4533-a943-f102c3b28a2a;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-05-12T15:55:34Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=microsoft.com;
+x-originating-ip: [24.22.167.197]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: c9263031-3140-4dc3-781b-08d9155f78cd
-x-ms-traffictypediagnostic: CWXP265MB4075:
-x-microsoft-antispam-prvs: <CWXP265MB4075461377B0B65C411D7176C4529@CWXP265MB4075.GBRP265.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:8882
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0
-x-microsoft-antispam-message-info: P0WJ5CWOz7od9yomwzhA0JQehWDTfPqAirNHvL0o+XiZUX5Yu3PcL06M10OvtZaGbQ45BiMsPXOJsRtpY4+Hxck9xAV3l/KVZnB4mQI4OMj9zr5Ilvl1TkSj1UpNfPJgMuOvJAXIzJv3IQN7ROMzeH2YL1IECXgR4joYrOE3YzTwRrmfYcnZHTEoTlLxX9hcYZQ57YYNykpe8ZrpJI/l3lDSVCa5CO9eLo9SmcaPAdJ8WJrahGYQYlf3aWupEeyIcX0Ff54UVJy0m3+a/r24fYz++0XXTMs5iFZtgB4aA7ZPjF91hTICWhAyIrb4NUXXw9UqD/TQawHFFl0Cxz16bGHDGfKLNhigLtWSbqGpeaKoe6R3vWT+VE848yWcFDgBHroAhSMenm3JNQZPVA5AuauP/q2FxS3EZQXfQpszB4TDnImuZS6xECpdhvoNCecwXmbYbdUvFHn1vsoz/4+OF0YNr5JopxElBfkWVWVNdBA4jsORoXkLZgAcCuEjLyg61COllpMhPttRmjGnp8ThnLukfIWBJcwwsXS/M+4QgAIu5hFwYOy4c1OtgLNoAOBV62VnNhk+swbvF4d1FoSxwfwCXMdyKiNhIm4jSpfnQH0=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(396003)(39830400003)(346002)(376002)(366004)(136003)(7696005)(186003)(110136005)(38100700002)(478600001)(4326008)(66446008)(64756008)(66476007)(66556008)(26005)(66946007)(52536014)(91956017)(8676002)(8936002)(5660300002)(122000001)(6506007)(71200400001)(76116006)(2906002)(86362001)(54906003)(33656002)(316002)(55016002)(9686003)(83380400001);DIR:OUT;SFP:1101
-x-ms-exchange-antispam-messagedata: =?iso-8859-1?Q?oMbiKQ2KRmRtD5+xHMhg9O+IkONhcG93pBE453z+ZanzwqH2lyKDbRjXYY?=
- =?iso-8859-1?Q?2C8v3ymeTyUpDUc1wR3UEjbkCotWUKFWRdWs22do2wb8EkfLOi8WM1OOHp?=
- =?iso-8859-1?Q?gmejWd1ralw9LvOoibZ7Dh69AtsKJwTuGaIDdacaGv8Pi5PfghpVIulnSp?=
- =?iso-8859-1?Q?EYDo9vaSNvKAmKUv5al+G/Nvpef7nY9zAKB7XnMZV6G5HvyDb9Vi18GPCn?=
- =?iso-8859-1?Q?BYjPvAJ8ufODLUzkr/6PTasBc9dzDA8QwqTIDR2/Qkpepdxvi6Afa3w0CT?=
- =?iso-8859-1?Q?EjakWsyD2giTufmtD5qABeSkzP+uVsz4W9sOqkDmL6mAYRJoanevfhSZ37?=
- =?iso-8859-1?Q?Of2pX7Xi4LVKT1WMECevUVI768mFvfTW5ptWu5KCbGJXD0ztcXgNDw3DH+?=
- =?iso-8859-1?Q?765SknnLgA10vrHfyx0JldpibAhx3jwl5TDqlBbRsEdRDX7Q/FkdUS2SUd?=
- =?iso-8859-1?Q?aoZUdVTWlUfTpCcrHKvHQ228hmF7YEqj1epZuxl5jJ6Sajun4K+IrsEkSx?=
- =?iso-8859-1?Q?5E5WByI8dgHnOxelKsnEHLjA3mPynv2n5bYpJW/MDjRtwf0adg9HV30jgZ?=
- =?iso-8859-1?Q?62MlSilp0/I2BGc3Bcy0mG+4QAUT5ymOVZlR9oaz/cxlDivvSP3jCR2/CX?=
- =?iso-8859-1?Q?u0iHja9Rnl+SRTKwIBcILqJMva4cgNTYqMyF5BDHbuwBKj8LoQieA8mHq5?=
- =?iso-8859-1?Q?tPZMhvHOG3fSKyY+no12p311iyYr3sdiuJQLHNK6Sm/gcDeSchiMBEscf7?=
- =?iso-8859-1?Q?6v2W8Wzx02UN+k4i5tAn/3H0Jj4n6wZlatgFADHbBeQNcv8bv9QvA1Os/P?=
- =?iso-8859-1?Q?dCjcsz71NMTsoASSeDyFGWo5lLlopwknNwGS2a0qb5qdz/z/yNOnYU1VnW?=
- =?iso-8859-1?Q?sqix5uJTCQOUdDl9hXk2yztKdIPaIVEvp7MKKwT2LonkEtJwUmUcJNmNEz?=
- =?iso-8859-1?Q?zCOvBb3kZYLGDjgB9GoZ3iZe+q1Mu3ApxACIIXXHB5G12C5qEfH1b1KdC5?=
- =?iso-8859-1?Q?BmutdSvT85vTcT+Bdp4HljHw4XHotEgXm61LI5AEgeqVfm3tHNgO20FAV+?=
- =?iso-8859-1?Q?fX3vCHt4WkO+88+M2BVEYl8kZDuKPH7ALBCnb9g48x1L4GX/6hiXjpJVYV?=
- =?iso-8859-1?Q?2EknAKRL4txwS28ywHRMTamY403/qQ+H+OikQC9GWKVbyYahqmFzu9vbMG?=
- =?iso-8859-1?Q?L7taZIKWbOVlb85SirNrg43OAbtCBn4ca3YoepASKvIAZTo1Ca0fPFyBDA?=
- =?iso-8859-1?Q?zHcuzUDNE6pjf82FKL6d7xOXc/omC7jmyD/uEZKl+cY7le4je3aM3lMfqc?=
- =?iso-8859-1?Q?7FmGgsBALJLMjXYtL0rJz0ojcuYhj2ypMXi5wgiU5F29aZM=3D?=
+x-ms-office365-filtering-correlation-id: b7663199-ed41-44f8-2f5b-08d9155f81f7
+x-ms-traffictypediagnostic: MWHPR21MB0704:
 x-ms-exchange-transport-forked: True
+x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
+x-microsoft-antispam-prvs: <MWHPR21MB0704DE09930058D781F29E45D7529@MWHPR21MB0704.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: tiDgnv4QKO6vr9jZ0xLQ5H16bq2/GyGERWi9+e8osKsmcoufB2kuRQ0AmjzC5Cf3qg1J+nZnzz2vnQJGA2A8YcHdk/QKt6P51PKB90PlJhvfDuJVCIqODnPqr4G3Dg01hk49Uyw1EIKqSnWa1T/oYGUnfdyat7G85XqX6XFvedawn+rvwFP25cOWYv31XzcsKNZHC+wf1W+wNZyg6HtnfiTa7KGEKG6fWkYx90pecPGxOb6Ltcf8h2ndm4CYCyAySXthE1ELrQdm9BwTBruPRCZwJ1vvdi4wVVers8Xt1bHys3jMcAu28DqyaE410fw5V7Hxi1hchJn+ECAQ7AaGt9Y3WHkdDo5yGQ5Qv6lqtLCsqkRWq4XMKVfPhGBJolxi3QPe2bdEZTHWGUeyYS0dkRQLRDQeojDDjQaMk23aCG+Erbpe2SqNxSg0dvtdGtOJl0oSz+QFXJdQsOFZGVLfOWCQ5iiRwtiSUJJp/u3HrqIzv9lT9YRcdwIlA6LIKUXupwp0c+UT7ASpFYStAehuEFb5TFabw2VTdWRhu1+n+KkDpq5mH1Wysrp/ER92REF0pkWVhUsEZYymeSYsdm/3ZreG08lUFnJwPjtgX/+6PFUmEWm0bcdDr+HxRPVO4plSXuDwIkHncNszfH1SxtHpMwbKhLHR5F4hexFY2UN4MG9CpOCX72mL0UURfAIndgNp1VZK9q0taHKr2qt51nE0Vx3vtNF+Re0Al2LzY3RmicI=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66556008)(316002)(66476007)(64756008)(8936002)(186003)(66946007)(66446008)(5660300002)(7696005)(55016002)(6506007)(52536014)(8676002)(2906002)(83380400001)(26005)(33656002)(9686003)(86362001)(4326008)(82960400001)(38100700002)(82950400001)(71200400001)(122000001)(54906003)(76116006)(10290500003)(8990500004)(478600001)(110136005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 2
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?rmzB4PmcOTuVb/gMuhgNt9DI99eA6joaVsT6UCer5h59X4TJ1oTRGxmLCvcM?=
+ =?us-ascii?Q?Tm6fy7GVVeXUjXcUYPXKd9VkeXjfRuuqq+Cf/jVKU8967zvHd9zBdLXdpNlV?=
+ =?us-ascii?Q?g9Bkxxs+t7AX9Le6r1zhqmxFLqiDD9kBGOuPsX/x3p7a250U54JIliXYAMTx?=
+ =?us-ascii?Q?pptFuyMGkzDK84+wNZgZKZUPp7j73lTmbdzQF9SLdROA099hUis0rRoaeyyx?=
+ =?us-ascii?Q?qyxeJ5qyuRxnAObni45udem5X9n1DBldSOhVAGFQ+EkrH3Jw3tFXAUYggKI9?=
+ =?us-ascii?Q?KMVI6sxn+PA++XfT0WX3lHhhCHQRvVzDm2jI9qpMDBfgQyXNaK0YWYQUCfCy?=
+ =?us-ascii?Q?7BLWGEjMUHDDSaziBnhJmVZfI2LOiPK0ilSdsJ1cFmh7/npmDEnw0uinLLow?=
+ =?us-ascii?Q?yyglhxBufhbUgLhS9KSp63Did30HInHukout5LybgkiNmC0P9k/3lUbU76o2?=
+ =?us-ascii?Q?FwENKRBSl4bIFCGYleqeyRyDT/H0M9pnMBC/nWoAjgJaMV6zljXMsIic/Lmx?=
+ =?us-ascii?Q?V1UK36pI7InXh7AvpS9MysI8QRBu6peVPQvJD8xrgHtfER6rP+5MlJpY4Ril?=
+ =?us-ascii?Q?Zia1pHmHh9VTWZXgWl6A/CUM2rSiExASH6LpcNQ9AlQ/JbYqnljKb3jWVIIA?=
+ =?us-ascii?Q?grHmkGABsnCLWQCewd+ofjJPCIwbE7qvr14+pSEmR5r2DHIHERLPESC0KSf/?=
+ =?us-ascii?Q?jphpntulgeKI2TIZBwNC5nBxsV+7lNx5qZFZFBKdP9DCO/2HfRGpRjGDT3iH?=
+ =?us-ascii?Q?XhpAiijbL00Jr6qVvozgsKiEKr8ekcKrJpos/3GwJ2uQaOGuqcRDdIEWCFoy?=
+ =?us-ascii?Q?wr0FRyg2HEwzPoHMcx1Mea6f7aXBtWLNV4N3U1/EfxLVs6aQjhRwC4JzlQZP?=
+ =?us-ascii?Q?fYjisacnlAG8HnAHSIq1IlH0lRX2Z59BXKYspZKHXgES+klUROSH5lWFXZr3?=
+ =?us-ascii?Q?Pb03+x4PIUbYUPyMhJiK8pKUGZK2EhyFpKLK3eGf?=
+x-ms-exchange-antispam-messagedata-1: RDNObe8Pb1JymyH/0UYxBpSMH6b05FBf+8bkCXED3Qy3o39UcYXqWyp3m/xahByHC7pueBth9dJUxwt2ggB2JVanqWGMbxunikmEbM3+YOkIi16cN1wgHLibfc+Du9KhMjC4P0zUxqatyMh6qAXgXlPLkGPlb8risXx+COH11IjbeCoxFien9KBe0wEru/6iSOGfXyd4lNpciHlYrqzi0Pdzch3PS3/25hq3qf2cWerv+9yUYK0QeEiNk8egj8kijzfBDYm/BLeSdLuVqvh1DsUSz3AOZjojLbsIQ+pAX1hqzh2o/OZaiZ0Jm/epxUry5K+Ogsgx3AiIFSTwg1W50gog
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-OriginatorOrg: hyperstone.com
+X-OriginatorOrg: microsoft.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: c9263031-3140-4dc3-781b-08d9155f78cd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 May 2021 16:03:24.1278
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b7663199-ed41-44f8-2f5b-08d9155f81f7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 May 2021 16:03:39.4523
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 86f203eb-e878-4188-b297-34c118c18b11
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: O2gGMULAipk1j6BKzg++NwwkFU3pq9wE40+I14btPfltHDnuh+Y8702sXDl8xLJM9r1NEeaQtU1/yCfWRd7tnw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWXP265MB4075
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: hyperstone.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+X-MS-Exchange-CrossTenant-userprincipalname: twKcWrf9zYFigh0h5AaDCqyGfP9sBV4mNLy0K8uB5vra9LPgo4wjIlB3PbgGQ/Wu500Kc4BUiRWubuIRQ5ifG61j8DgtZPjqzcuU8rInPPE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR21MB0704
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ignore the reported capacity if the card otherwise reports UHS support.
+From: Vitaly Kuznetsov <vkuznets@redhat.com> Sent: Wednesday, May 12, 2021 =
+1:47 AM
+>=20
+> Mohammed reports (https://bugzilla.kernel.org/show_bug.cgi?id=3D213029)
+> the commit e4ab4658f1cf ("clocksource/drivers/hyper-v: Handle vDSO
+> differences inline") broke vDSO on x86. The problem appears to be that
+> VDSO_CLOCKMODE_HVCLOCK is an enum value in 'enum vdso_clock_mode' and
+> '#ifdef VDSO_CLOCKMODE_HVCLOCK' branch evaluates to false (it is not
+> a define). Replace it with CONFIG_X86 as it is the only arch which
+> has this mode currently.
+>=20
+> Reported-by: Mohammed Gamal <mgamal@redhat.com>
+> Fixes: e4ab4658f1cf ("clocksource/drivers/hyper-v: Handle vDSO difference=
+s inline")
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> ---
+>  drivers/clocksource/hyperv_timer.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/clocksource/hyperv_timer.c b/drivers/clocksource/hyp=
+erv_timer.c
+> index 977fd05ac35f..e17421f5e47d 100644
+> --- a/drivers/clocksource/hyperv_timer.c
+> +++ b/drivers/clocksource/hyperv_timer.c
+> @@ -419,7 +419,7 @@ static void resume_hv_clock_tsc(struct clocksource *a=
+rg)
+>  	hv_set_register(HV_REGISTER_REFERENCE_TSC, tsc_msr);
+>  }
+>=20
+> -#ifdef VDSO_CLOCKMODE_HVCLOCK
+> +#ifdef CONFIG_X86
+>  static int hv_cs_enable(struct clocksource *cs)
+>  {
+>  	vclocks_set_used(VDSO_CLOCKMODE_HVCLOCK);
+> @@ -435,7 +435,7 @@ static struct clocksource hyperv_cs_tsc =3D {
+>  	.flags	=3D CLOCK_SOURCE_IS_CONTINUOUS,
+>  	.suspend=3D suspend_hv_clock_tsc,
+>  	.resume	=3D resume_hv_clock_tsc,
+> -#ifdef VDSO_CLOCKMODE_HVCLOCK
+> +#ifdef CONFIG_X86
+>  	.enable =3D hv_cs_enable,
+>  	.vdso_clock_mode =3D VDSO_CLOCKMODE_HVCLOCK,
+>  #else
+> --
+> 2.31.1
 
-Let SDSC cards reporting UHS support (except for the CCS) attempt the
-voltage switch.
-Up until now such cards would be initialized as UHS,
-supporting UHS features SDSC cards are otherwise barred from,
-but skip the voltage switch.
-While strictly speaking a SDSC card cannot support UHS in compliance
-with the standard, there is no good reason to throttle them that way.
-Especially for pSLCs in practice such cards benefit greatly,
-as they can be new and UHS supporting, but must not lie about their CCS.
+Well, bummer.  I thought I was being so clever.  I hate having to base the
+behavior directly on the architecture instead of the actual VDSO feature,
+but I don't see a way to detect whether VDSO_CLOCKMODE_HVCLOCK is
+defined or not.  The other alternative would be to add another #define
+such as VDSO_CLOCKMODE_HVCLOCK_PRESENT in
+arch/x86/include/asm/vdso/clocksource.h, and use it in the #ifdefs
+here.  But that's a bit messy too, and I'm not sure it's worth the
+trouble.  So,
 
-Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
----
- drivers/mmc/core/sd.c | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
 
-diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
-index 2c48d6504101..62d02f1dc924 100644
---- a/drivers/mmc/core/sd.c
-+++ b/drivers/mmc/core/sd.c
-@@ -847,11 +847,17 @@ int mmc_sd_get_cid(struct mmc_host *host, u32 ocr, u32 *cid, u32 *rocr)
- 		return err;
- 
- 	/*
--	 * In case CCS and S18A in the response is set, start Signal Voltage
-+	 * In case S18A in the response is set, start Signal Voltage
- 	 * Switch procedure. SPI mode doesn't support CMD11.
-+	 * Strictly speaking, S18A is not valid if CCS is not set (= not SDSC),
-+	 * so one would have to OCR for 0x41000000.
-+	 * We choose to ignore this as SDSC cards that report UHS voltage
-+	 * support should not be throttled artificially by the standard this
-+	 * way.
-+	 * SDSC cards that 'accidentally' reporting UHS support by setting the
-+	 * reserved bits don't seem to be an issue in practice.
- 	 */
--	if (!mmc_host_is_spi(host) && rocr &&
--	   ((*rocr & 0x41000000) == 0x41000000)) {
-+	if (!mmc_host_is_spi(host) && rocr && (*rocr & 0x01000000)) {
- 		err = mmc_set_uhs_voltage(host, pocr);
- 		if (err == -EAGAIN) {
- 			retries--;
-@@ -1109,7 +1115,14 @@ static int mmc_sd_init_card(struct mmc_host *host, u32 ocr,
- 		}
- 	}
- 
--	/* Initialization sequence for UHS-I cards */
-+	/* Initialization sequence for UHS-I cards
-+	 * Strictly speaking, S18A in the OCR is only valid if CCS is set, too.
-+	 * So SDSC cards should be excluded. We choose to deviate from the
-+	 * standard here to allow SDSC cards to utilize UHS if they report
-+	 * supporting it.
-+	 * Fortunately, SDSC cards reporting S18A and the related bus speed
-+	 * modes on accident, by setting reserved bits, don't seem to exist.
-+	 */
- 	if (rocr & SD_ROCR_S18A && mmc_host_uhs(host)) {
- 		err = mmc_sd_init_uhs_card(card);
- 		if (err)
--- 
-2.31.1
-
-Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
-Managing Directors: Dr. Jan Peter Berns.
-Commercial register of local courts: Freiburg HRB381782
-
+Mohammed -- Thanks for finding this!
