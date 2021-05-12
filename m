@@ -2,101 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D00E37EB38
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:09:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89B9237EAFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379861AbhELTUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:20:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50920 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244789AbhELQvL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:51:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 655A061D6B;
-        Wed, 12 May 2021 16:18:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620836307;
-        bh=L//eVip2ugc2dnjIBpAAQDQ5bs6VSLdTVlefG5+qRtA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PCahJ434qSX6HMll2gzCnwvtr9P7pgnLaS8yTWe/kfyDY35szSoSKBnIqQ8cTdZBP
-         cHEZnJw9W2t7VFfSsTSt2yws2nHP3ji05EbvFHGz/c/OMDrLzrH/MMaHsWaXrH23RZ
-         e675KJj4fAGjxjalactwCfv7C4MzdIeDJY90mtQ8=
-Date:   Wed, 12 May 2021 17:50:31 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Oliver Glitta <glittao@gmail.com>,
-        David Rientjes <rientjes@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 518/530] mm, slub: enable slub_debug static key when
- creating cache with explicit debug flags
-Message-ID: <YJv5R0KNH+/EsWfX@kroah.com>
-References: <20210512144819.664462530@linuxfoundation.org>
- <20210512144836.780038842@linuxfoundation.org>
- <dd590c4d-cb37-fd38-3ad7-96f677403b3c@suse.cz>
+        id S1378368AbhELTRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:17:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236030AbhELQr7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:47:59 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB3E0C08EB20;
+        Wed, 12 May 2021 09:20:50 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id d11so24219161wrw.8;
+        Wed, 12 May 2021 09:20:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=g3cwY6Hzy6EqdwJaqVSzBqAF7NmFEme2hYX8gRSTBJ8=;
+        b=gC0znr5PRqA5wRxIgIiAmKgcHzgv0b4bKRjccuLX6Iwidd0KlUZ2dVEKJTX4BS6Qtn
+         mI5KQGsRLvvomQg3r1/1EuhiaVFE3MPEuthJz3koNfy/MJItDQkBi/+PawpVMNsJwalC
+         rPEk4mSaplt1hE0GFzt4Ku+/sK1bZF4w6A5yyLuqrz73ySV3uM6cB7yojp4KImi9JDhO
+         iv6ajbxfjtSdxh87h+6h+9VE4LucPMWfTDDhDViS7Umn+ktC1mRacDEjrc+Helrg8dhj
+         V7VWK8KnfqeqXjjL9lW3JSEt7a8kPfmPsJvV6dApGLFHwmMOqqW/Wgf8UQpvBroTgKLj
+         6DFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=g3cwY6Hzy6EqdwJaqVSzBqAF7NmFEme2hYX8gRSTBJ8=;
+        b=mez7OvqSkUeoMmccXKkpYux0eUkLClyM2Ci/XvvYpG8s3MhGvxpTHoySs/qVsrgAZw
+         FHe45UNVzpISu3M2bftvfRJBuQxkGyrhr2yk9P/P4hZ6p61QwP6tUeKQvrOHszQQuCon
+         47ioomL6CbjAX3SI1rLsA6cRxS8q3uL94+JqJKzc7q/UTmaxqt/nF1DkvB0k9KJhvaWR
+         dBmIN+bu4if4cAnK9khzOXkC0t6AJgn0z75JW2ltVJogOTTUUjBREQB5qRsEEr6qjGRL
+         /Uitgnlj1DpPUexIA6MotlMJbIoZZhH88EEMcS2DK1+fyNiOme8lWQ3Zs9CfoI2BjPOc
+         A4bA==
+X-Gm-Message-State: AOAM531kYtL2dHSpm9ceI/gIhvcZZbASvMeV9L+ucEtr3mBAZTeGDH6Y
+        kQMPNxeE8L+E041UeOu6zIU/uJ6IiImAyw==
+X-Google-Smtp-Source: ABdhPJwxmmhuNFN4Qj6xtMqbuk5mOqU/iFz28N2vLzffR4UhACjE+oiPI8EWzNhx1E44PPwQUX6Z7Q==
+X-Received: by 2002:a5d:4a51:: with SMTP id v17mr42251239wrs.259.1620836449668;
+        Wed, 12 May 2021 09:20:49 -0700 (PDT)
+Received: from ziggy.stardust ([37.223.140.37])
+        by smtp.gmail.com with ESMTPSA id f7sm135279wmq.30.2021.05.12.09.20.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 May 2021 09:20:49 -0700 (PDT)
+Subject: Re: [PATCH v3 3/3] arm64: dts: mediatek: mt8167: add some DRM nodes
+To:     Fabien Parent <fparent@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc:     mkorpershoek@baylibre.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210406113631.2675029-1-fparent@baylibre.com>
+ <20210406113631.2675029-3-fparent@baylibre.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <df4c57f9-115b-c4da-e656-e4bdec62c2d7@gmail.com>
+Date:   Wed, 12 May 2021 18:20:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dd590c4d-cb37-fd38-3ad7-96f677403b3c@suse.cz>
+In-Reply-To: <20210406113631.2675029-3-fparent@baylibre.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 05:35:28PM +0200, Vlastimil Babka wrote:
-> On 5/12/21 4:50 PM, Greg Kroah-Hartman wrote:
-> > From: Vlastimil Babka <vbabka@suse.cz>
-> > 
-> > [ Upstream commit 1f0723a4c0df36cbdffc6fac82cd3c5d57e06d66 ]
-> > 
-> > Commit ca0cab65ea2b ("mm, slub: introduce static key for slub_debug()")
-> > introduced a static key to optimize the case where no debugging is
-> > enabled for any cache.  The static key is enabled when slub_debug boot
-> > parameter is passed, or CONFIG_SLUB_DEBUG_ON enabled.
-> > 
-> > However, some caches might be created with one or more debugging flags
-> > explicitly passed to kmem_cache_create(), and the commit missed this.
-> > Thus the debugging functionality would not be actually performed for
-> > these caches unless the static key gets enabled by boot param or config.
-> > 
-> > This patch fixes it by checking for debugging flags passed to
-> > kmem_cache_create() and enabling the static key accordingly.
-> > 
-> > Note such explicit debugging flags should not be used outside of
-> > debugging and testing as they will now enable the static key globally.
-> > btrfs_init_cachep() creates a cache with SLAB_RED_ZONE but that's a
-> > mistake that's being corrected [1].  rcu_torture_stats() creates a cache
-> > with SLAB_STORE_USER, but that is a testing module so it's OK and will
-> > start working as intended after this patch.
-> > 
-> > Also note that in case of backports to kernels before v5.12 that don't
-> > have 59450bbc12be ("mm, slab, slub: stop taking cpu hotplug lock"),
-> > static_branch_enable_cpuslocked() should be used.
-> > 
-> > [1] https://lore.kernel.org/linux-btrfs/20210315141824.26099-1-dsterba@suse.com/
-> > 
-> > Link: https://lkml.kernel.org/r/20210315153415.24404-1-vbabka@suse.cz
-> > Fixes: ca0cab65ea2b ("mm, slub: introduce static key for slub_debug()")
-> > Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> > Reported-by: Oliver Glitta <glittao@gmail.com>
-> > Acked-by: David Rientjes <rientjes@google.com>
-> > Cc: Christoph Lameter <cl@linux.com>
-> > Cc: Pekka Enberg <penberg@kernel.org>
-> > Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> > Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> > Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> > Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-> > Signed-off-by: Sasha Levin <sashal@kernel.org>
+Hi Fabien,
+
+As you might remember this patch didn't hit mainline in the last merge window.
+Actually there are some concerns about the driver architecture [1].
+
+Apart from that small comment below.
+
+[1]
+https://lore.kernel.org/linux-mediatek/CAK8P3a2Qg-uz0kMXFMrvRjUv3NRvZXjTwS1P5MDvFk3feYaBzg@mail.gmail.com/
+
+On 06/04/2021 13:36, Fabien Parent wrote:
+> Add all the DRM nodes required to get DSI to work on MT8167 SoC.
 > 
-> Uh, rather not release this to stable without the followup fix:
-> https://lore.kernel.org/linux-mm/20210504120019.26791-1-vbabka@suse.cz/
+> Signed-off-by: Fabien Parent <fparent@baylibre.com>
+> ---
+> Note: This series is based on https://git.kernel.org/pub/scm/linux/kernel/git/matthias.bgg/linux.git/log/?h=v5.12-next/dts64-2
+> 
+> V3:
+> 	* Removed unicode character in commit summary
+> V2:
+> 	* No changes
+> 
+>  arch/arm64/boot/dts/mediatek/mt8167.dtsi | 149 +++++++++++++++++++++++
+>  1 file changed, 149 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8167.dtsi b/arch/arm64/boot/dts/mediatek/mt8167.dtsi
+> index 9029051624a6..17942095944e 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8167.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8167.dtsi
+> @@ -16,6 +16,19 @@
+>  / {
+>  	compatible = "mediatek,mt8167";
+>  
+> +	aliases {
+> +		aal0 = &aal;
+> +		ccorr0 = &ccorr;
+> +		color0 = &color;
+> +		dither0 = &dither;
+> +		dsi0 = &dsi;
+> +		ovl0 = &ovl0;
+> +		pwm0 = &disp_pwm;
+> +		rdma0 = &rdma0;
+> +		rdma1 = &rdma1;
+> +		wdma0 = &wdma;
+> +	};
+> +
+>  	soc {
+>  		topckgen: topckgen@10000000 {
+>  			compatible = "mediatek,mt8167-topckgen", "syscon";
+> @@ -114,6 +127,13 @@ vdecsys: syscon@16000000 {
+>  			#clock-cells = <1>;
+>  		};
+>  
+> +		mutex: mutex@14015000 {
+> +			compatible = "mediatek,mt8167-disp-mutex";
+> +			reg = <0 0x14015000 0 0x1000>;
+> +			interrupts = <GIC_SPI 153 IRQ_TYPE_LEVEL_LOW>;
+> +			power-domains = <&spm MT8167_POWER_DOMAIN_MM>;
+> +		};
+> +
+>  		pio: pinctrl@1000b000 {
+>  			compatible = "mediatek,mt8167-pinctrl";
+>  			reg = <0 0x1000b000 0 0x1000>;
+> @@ -126,6 +146,135 @@ pio: pinctrl@1000b000 {
+>  			interrupts = <GIC_SPI 134 IRQ_TYPE_LEVEL_HIGH>;
+>  		};
+>  
+> +		rdma1: rdma1@1400a000 {
+> +			compatible = "mediatek,mt8167-disp-rdma",
+> +				     "mediatek,mt2701-disp-rdma";
+> +			reg = <0 0x1400a000 0 0x1000>;
+> +			interrupts = <GIC_SPI 163 IRQ_TYPE_LEVEL_LOW>;
+> +			power-domains = <&spm MT8167_POWER_DOMAIN_MM>;
+> +			clocks = <&mmsys CLK_MM_DISP_RDMA1>;
+> +			iommus = <&iommu M4U_PORT_DISP_RDMA1>;
+> +			mediatek,larb = <&larb0>;
+> +		};
+> +
+> +		disp_pwm: disp_pwm@1100f000 {
+> +			compatible = "mediatek,mt8167-disp-pwm",
+> +				     "mediatek,mt8173-disp-pwn";
 
-Is that in Linus's tree yet?  If so, what is the git id?
+Should be "mediatek,mt8173-disp-pwm" right?
+I'll un-stage this patch but keep the rest for v5.14. Please re-submit once the
+driver binding is clarified.
 
-thanks,
-
-greg k-h
+Regards,
+Matthias
