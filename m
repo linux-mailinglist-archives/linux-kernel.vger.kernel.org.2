@@ -2,75 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDE3237BB69
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 13:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B151A37BB6B
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 13:03:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230218AbhELLDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 07:03:02 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44188 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230019AbhELLC7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 07:02:59 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7B359B15B;
-        Wed, 12 May 2021 11:01:50 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id E3C4E1E0A4C; Wed, 12 May 2021 13:01:49 +0200 (CEST)
-Date:   Wed, 12 May 2021 13:01:49 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
-        kernel@pengutronix.de, Jan Kara <jack@suse.com>,
-        Richard Weinberger <richard@nod.at>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: Re: [PATCH v3 0/2] quota: Add mountpath based quota support
-Message-ID: <20210512110149.GA31495@quack2.suse.cz>
-References: <20210304123541.30749-1-s.hauer@pengutronix.de>
- <20210316112916.GA23532@quack2.suse.cz>
+        id S230154AbhELLEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 07:04:40 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:54098 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230037AbhELLEi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 07:04:38 -0400
+Received: from mail-wr1-f71.google.com ([209.85.221.71])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <dimitri.ledkov@canonical.com>)
+        id 1lgmeI-0004Ki-EG
+        for linux-kernel@vger.kernel.org; Wed, 12 May 2021 11:03:30 +0000
+Received: by mail-wr1-f71.google.com with SMTP id 4-20020adf80040000b029010cab735fdeso9971366wrk.14
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 04:03:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ksFYSUB08pq8Nu0f8+tRAEFzoQcNFQPa/IzSDmTOQ2c=;
+        b=OemHNaPzj0/lUiCJLdMBn7tgYfjBIjMG8t4eGW894uOpYE3xrgAawdZwR0ZSpUu2m9
+         oHSKAe8a6tPEGFbLvg+gha7GewYXRrmjjZD+Shh9yGHsfL8VLZllCD+PEIx+EKiPbGTR
+         l3Mz9tfZp92ei80oyg+C3q6k1qwdQsy86DgtGuQxDHCSShyGsxPrTitNNyOojfJgMIGk
+         yy8dpam8QB4oyVWS+bSmLjAXqjWFNBgChnjR4/htL6Ioc+OB0gy90zAEBTN82JZJFi3u
+         rrTnL82nCrU3Use4y9dLXhC+CyS70oM+Dx5vX/HgIRfOyk89ifofWgDiz2dpvXlPziG2
+         5wUw==
+X-Gm-Message-State: AOAM532QlfGJOvS4CfnK3J1WIoeafVNBKU8rxet1KmGAKylKmjoWWpa9
+        +M5phTRspKFcpJ24HiIhWbVBt/lQqRX2o88lb5DKFTUSffZUK98DtHp7G1GzIgQaC3kWL3+4dRX
+        15PoANS75ZAlJ0saXxLVsGYCQR4teX+fBS3ASJJAkMQ==
+X-Received: by 2002:a1c:7e93:: with SMTP id z141mr6712336wmc.59.1620817409500;
+        Wed, 12 May 2021 04:03:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwfqspLfy84tsWQocApOU+jdiYwOBR2Z17yCy+8oUs5Mi7KriX9TLIg5nPjBxIxsKbcu1gFPw==
+X-Received: by 2002:a1c:7e93:: with SMTP id z141mr6712308wmc.59.1620817409191;
+        Wed, 12 May 2021 04:03:29 -0700 (PDT)
+Received: from localhost ([2a01:4b00:85fd:d700:8f2c:460b:dbba:6128])
+        by smtp.gmail.com with ESMTPSA id j10sm30399481wrt.32.2021.05.12.04.03.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 04:03:28 -0700 (PDT)
+From:   Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Dimitri John Ledkov <dimitri.ledkov@canonical.com>,
+        keyrings@vger.kernel.org, Eric Snowberg <eric.snowberg@oracle.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        David Howells <dhowells@redhat.com>
+Subject: [PATCH] integrity: add informational messages when revoking certs
+Date:   Wed, 12 May 2021 12:03:02 +0100
+Message-Id: <20210512110302.262104-1-dimitri.ledkov@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210316112916.GA23532@quack2.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added a few more CCs.
+integrity_load_cert() prints messages of the source and cert details
+when adding certs as trusted. Mirror those messages in
+uefi_revocation_list_x509() when adding certs as revoked.
 
-On Tue 16-03-21 12:29:16, Jan Kara wrote:
-> On Thu 04-03-21 13:35:38, Sascha Hauer wrote:
-> > Current quotactl syscall uses a path to a block device to specify the
-> > filesystem to work on which makes it unsuitable for filesystems that
-> > do not have a block device. This series adds a new syscall quotactl_path()
-> > which replaces the path to the block device with a mountpath, but otherwise
-> > behaves like original quotactl.
-> > 
-> > This is done to add quota support to UBIFS. UBIFS quota support has been
-> > posted several times with different approaches to put the mountpath into
-> > the existing quotactl() syscall until it has been suggested to make it a
-> > new syscall instead, so here it is.
-> > 
-> > I'm not posting the full UBIFS quota series here as it remains unchanged
-> > and I'd like to get feedback to the new syscall first. For those interested
-> > the most recent series can be found here: https://lwn.net/Articles/810463/
-> 
-> Thanks. I've merged the two patches into my tree and will push them to
-> Linus for the next merge window.
+Sample dmesg with this change:
 
-So there are some people at LWN whining that quotactl_path() has no dirfd
-and flags arguments for specifying the target. Somewhat late in the game
-but since there's no major release with the syscall and no userspace using
-it, I think we could still change that. What do you think? What they
-suggest does make some sense. But then, rather then supporting API for
-million-and-one ways in which I may wish to lookup a fs object, won't it be
-better to just pass 'fd' in the new syscall (it may well be just O_PATH fd
-AFAICT) and be done with that?
+    integrity: Platform Keyring initialized
+    integrity: Loading X.509 certificate: UEFI:db
+    integrity: Loaded X.509 cert 'Microsoft Corporation UEFI CA 2011: 13adbf4309bd82709c8cd54f316ed522988a1bd4'
+    integrity: Revoking X.509 certificate: UEFI:MokListXRT (MOKvar table)
+    blacklist: Revoked X.509 cert 'Canonical Ltd. Secure Boot Signing: 61482aa2830d0ab2ad5af10b7250da9033ddcef0'
+    integrity: Loading X.509 certificate: UEFI:MokListRT (MOKvar table)
+    integrity: Loaded X.509 cert 'Canonical Ltd. Master Certificate Authority: ad91990bc22ab1f517048c23b6655a268e345a63'
 
-								Honza
+Signed-off-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+cc: keyrings@vger.kernel.org
+cc: Eric Snowberg <eric.snowberg@oracle.com>
+cc: Jarkko Sakkinen <jarkko@kernel.org>
+cc: David Woodhouse <dwmw2@infradead.org>
+cc: David Howells <dhowells@redhat.com>
+---
+ certs/blacklist.c                                   | 4 +++-
+ security/integrity/platform_certs/keyring_handler.c | 1 +
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/certs/blacklist.c b/certs/blacklist.c
+index c9a435b15af40..6a2afa84a5db9 100644
+--- a/certs/blacklist.c
++++ b/certs/blacklist.c
+@@ -172,7 +172,9 @@ int add_key_to_revocation_list(const char *data, size_t size)
+ 	if (IS_ERR(key)) {
+ 		pr_err("Problem with revocation key (%ld)\n", PTR_ERR(key));
+ 		return PTR_ERR(key);
+-	}
++	} else
++		pr_notice("Revoked X.509 cert '%s'\n",
++			  key_ref_to_ptr(key)->description);
+ 
+ 	return 0;
+ }
+diff --git a/security/integrity/platform_certs/keyring_handler.c b/security/integrity/platform_certs/keyring_handler.c
+index 5604bd57c9907..9f85626702b2c 100644
+--- a/security/integrity/platform_certs/keyring_handler.c
++++ b/security/integrity/platform_certs/keyring_handler.c
+@@ -61,6 +61,7 @@ static __init void uefi_blacklist_binary(const char *source,
+ static __init void uefi_revocation_list_x509(const char *source,
+ 					     const void *data, size_t len)
+ {
++	pr_info("Revoking X.509 certificate: %s\n", source);
+ 	add_key_to_revocation_list(data, len);
+ }
+ 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.27.0
+
