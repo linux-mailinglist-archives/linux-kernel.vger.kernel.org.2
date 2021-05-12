@@ -2,77 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6608737B9C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 11:56:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 754EA37B9BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 11:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230398AbhELJ54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 05:57:56 -0400
-Received: from outbound-smtp47.blacknight.com ([46.22.136.64]:36147 "EHLO
-        outbound-smtp47.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230114AbhELJ5u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 05:57:50 -0400
-Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
-        by outbound-smtp47.blacknight.com (Postfix) with ESMTPS id 4AB84FA956
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 10:56:42 +0100 (IST)
-Received: (qmail 31206 invoked from network); 12 May 2021 09:56:42 -0000
-Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.23.168])
-  by 81.17.254.9 with ESMTPA; 12 May 2021 09:56:42 -0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH 9/9] mm/page_alloc: Update PGFREE outside the zone lock in __free_pages_ok
-Date:   Wed, 12 May 2021 10:54:58 +0100
-Message-Id: <20210512095458.30632-10-mgorman@techsingularity.net>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210512095458.30632-1-mgorman@techsingularity.net>
-References: <20210512095458.30632-1-mgorman@techsingularity.net>
+        id S230097AbhELJ4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 05:56:41 -0400
+Received: from uho.ysoft.cz ([81.19.3.130]:24907 "EHLO uho.ysoft.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230329AbhELJ4j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 05:56:39 -0400
+Received: from iota-build.ysoft.local (unknown [10.1.5.151])
+        by uho.ysoft.cz (Postfix) with ESMTP id F3843A1B65;
+        Wed, 12 May 2021 11:55:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ysoft.com;
+        s=20160406-ysoft-com; t=1620813329;
+        bh=ppuEtfUiNh6dPna9esARC/I573CvEjsGGl/2B/7p0bA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=jMGnnZmNRDrqSJ2f9xNKGupyjRyNPvpNlbkDoUCudpzAW0RLKYaor5/a2bvxCuhPb
+         gI0J2o4xigK2/URYPxJkfeF6zzunb6+ue5GGpc0m5SfV6rpL042H5aC0YWdAsG37rj
+         l57vsA/OWZLSQDLK/2yybSVScppN5RJCpoiVZb/I=
+From:   =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>
+To:     Shawn Guo <shawnguo@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>
+Subject: [PATCH RESEND] ARM: dts: imx6dl-yapp4: Configure the OLED display segment offset
+Date:   Wed, 12 May 2021 11:55:14 +0200
+Message-Id: <1620813314-30803-1-git-send-email-michal.vokac@ysoft.com>
+X-Mailer: git-send-email 2.1.4
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VM events do not need explicit protection by disabling IRQs so
-update the counter with IRQs enabled in __free_pages_ok.
+The imx6dl-yapp4 platform uses a GE-LX012864FWPP3N0000 OLED display.
+The display consist of a 128x64 OLED panel and a SSD1305 controller.
 
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+The OLED panel resolution is 128x64 but the built-in controller default
+resolution is 132x64. To display properly a segment offset needs to be
+configured.
+
+Signed-off-by: Michal Vokáč <michal.vokac@ysoft.com>
 ---
- mm/page_alloc.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/imx6dl-yapp4-common.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 83268f7b3ded..ff8f706839ea 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -1589,13 +1589,14 @@ static void __free_pages_ok(struct page *page, unsigned int order,
- 	migratetype = get_pfnblock_migratetype(page, pfn);
- 
- 	spin_lock_irqsave(&zone->lock, flags);
--	__count_vm_events(PGFREE, 1 << order);
- 	if (unlikely(has_isolate_pageblock(zone) ||
- 		is_migrate_isolate(migratetype))) {
- 		migratetype = get_pfnblock_migratetype(page, pfn);
- 	}
- 	__free_one_page(page, pfn, zone, order, migratetype, fpi_flags);
- 	spin_unlock_irqrestore(&zone->lock, flags);
-+
-+	__count_vm_events(PGFREE, 1 << order);
- }
- 
- void __free_pages_core(struct page *page, unsigned int order)
+diff --git a/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi b/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi
+index 51972c85e207..111d4d331f98 100644
+--- a/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi
++++ b/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi
+@@ -373,6 +373,7 @@
+ 		solomon,height = <64>;
+ 		solomon,width = <128>;
+ 		solomon,page-offset = <0>;
++		solomon,col-offset = <4>;
+ 		solomon,prechargep2 = <15>;
+ 		reset-gpios = <&gpio_oled 1 GPIO_ACTIVE_LOW>;
+ 		vbat-supply = <&sw2_reg>;
 -- 
-2.26.2
+2.1.4
 
