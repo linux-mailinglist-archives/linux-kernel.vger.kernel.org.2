@@ -2,126 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BAE937EB42
+	by mail.lfdr.de (Postfix) with ESMTP id 5471937EB43
 	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:09:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343738AbhELTVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:21:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37132 "EHLO
+        id S1358867AbhELTWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:22:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245449AbhELQwm (ORCPT
+        with ESMTP id S245516AbhELQwv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:52:42 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCB97C0612B0;
-        Wed, 12 May 2021 09:33:50 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id e7so5740275wrc.11;
-        Wed, 12 May 2021 09:33:50 -0700 (PDT)
+        Wed, 12 May 2021 12:52:51 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58999C061263
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 09:37:14 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id i13so19056771pfu.2
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 09:37:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WKFBLhMyTkS7BKOikVrkP4FV7nAoabO4CG7z4br68DE=;
-        b=a+aNAviufzUkCgligaluZ5C/T3prJd7/DnIW10TdVFgYsepOPcPBYdS6DZa6kGcKDU
-         9opBe9mB1gus8F0tcunOE8LsKHwDO3KXAjYPY2sCNaK3/Jb+/2H2J4/HZnABK0qEX+zl
-         eIG3LLHjIJsoihkLzGwanc5eTna08dI+Ecdr67+7L5brlX6JEOHAgZ/mFTs7fLFHlGfs
-         TTAkNtO4/s5lg4t6dFeaO5/9pzKF5UhWaHQDBauQPyh5H06xAJ3yeDfd9cm2iRSWDGM4
-         8hFFzBElkkiOcPlDIac4Ma8R+sImyWV7rDdExpS3IojdoAX+dIaAkEeFMHlgPJq/fJY3
-         WRJw==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Ikw1DMHOUmP/SzfSES6R5kSb98F6N2mCjodmrWpWN6g=;
+        b=KkirfHVZjMS1zmEGPy+VBdrsNAY3rYK47T7nfXjC/YUQmC+25+MTJ2logrgzW2xmh3
+         SyuoF/bjsuo3xvgfrwUuh+X/x26hJjWPNvn2AroKt5qEAHT+6d+2ASwA0HqZYOGDZGbS
+         xF+TK4/mW6qpoIPthsAjzv7yWTzaKVjzIyKU0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WKFBLhMyTkS7BKOikVrkP4FV7nAoabO4CG7z4br68DE=;
-        b=pdQIP3WCWKJLWtTAQzIJo3cWvnn84fyOrxB9LsOlOuLDxorVnYPt3MeHkPym509aT8
-         GxJtLpt72Gt+xORctAHfSKCFKvco6M2gY4o2veqRQYrbfHWSSzoKzY23TE3R/QfHmRBZ
-         pcdrSFE3IOh9rZ/547Nga8XYJlfP8SofVT9Ggra2mfLQAGnTwGXYsWhW3JZ6b4pLmh+j
-         5miLDxdf/s9zS27Yu6upm2IhzUB4S+foq6BfrM784cyTqEAOU0rUAWbp0+wxtAhrudzh
-         CjOO67s2JMI8UxKk+DxBOfTHPrvZMkj5+g3njelwJmSbHLOXQttQDAeCMA6VhD70/OH2
-         G4vA==
-X-Gm-Message-State: AOAM533v5kj2WDXczIhnM0kzcHKh/u8ZBARLBogY9SbBMY/JXahOus+X
-        ii9VKyY5QRctw47WXW503Ew=
-X-Google-Smtp-Source: ABdhPJyokWdNDAfgloClWaWik3W3sa7b0KN2iLv2Mnjl86s3mNiHt+RjWCfKBpdWy5qTA3eOD97hmg==
-X-Received: by 2002:a05:6000:1549:: with SMTP id 9mr46381060wry.367.1620837229554;
-        Wed, 12 May 2021 09:33:49 -0700 (PDT)
-Received: from ziggy.stardust ([37.223.140.37])
-        by smtp.gmail.com with ESMTPSA id k16sm155693wmi.44.2021.05.12.09.33.48
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ikw1DMHOUmP/SzfSES6R5kSb98F6N2mCjodmrWpWN6g=;
+        b=ZkRx/1YCUom/bJtQjKZxP12M7FAI+14x/MPRYOHF+/jn7/xM7dUtwvleQbFd3QjWMS
+         yPhtok/pKwMqbtdB63OV+6I2FQgJPeeNBeo9MPGJjEqyVbsRwHREYRgacs9DupuwtWev
+         oiwjthe7chZDGe5sWF02tFsFQ92xi9WQB/jslEDWWBjmLse59X7OxjwbCE8+BhBslxCN
+         8LvHD5qQaB5RklGjswC/BxTLSxjDbXESOXd3ACVIIwFOpT5QGFmxJcZVBGPo4UeE9m1B
+         cUw3c6uZAebSXmMshk4Ljr1M9/VFAvr9jIzJqIuX/T1t8xmfgtV4emHTteAw4mGoLOJi
+         mwdw==
+X-Gm-Message-State: AOAM531Zkhm6J8DNLLBugtctLFgliNTAz/l9880h5qaQ6dVRUXoQcGlK
+        ZUfzpcKenBWM5QYB58Y6DLoiGg==
+X-Google-Smtp-Source: ABdhPJxuT0+Mg/Bi0bMwJjnB+ZHQoIjaWs7TkrW6+woTv3Rv+Ea+lhcjKrnW/Na/ptsbEe9SkHZ+GA==
+X-Received: by 2002:a62:84d2:0:b029:27c:bbd5:6c0d with SMTP id k201-20020a6284d20000b029027cbbd56c0dmr35865705pfd.32.1620837433857;
+        Wed, 12 May 2021 09:37:13 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:a89e:5bb2:e8e0:4428])
+        by smtp.gmail.com with UTF8SMTPSA id e3sm243298pjd.18.2021.05.12.09.37.12
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 May 2021 09:33:49 -0700 (PDT)
-Subject: Re: [PATCH v3 00/10] Add several jacuzzi boards
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Sean Wang <sean.wang@mediatek.com>,
-        Ben Ho <Ben.Ho@mediatek.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-References: <20210421090601.730744-1-hsinyi@chromium.org>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <b241e27c-b68a-1d2a-cbae-4f8b41cf02b1@gmail.com>
-Date:   Wed, 12 May 2021 18:33:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Wed, 12 May 2021 09:37:13 -0700 (PDT)
+Date:   Wed, 12 May 2021 09:37:10 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Alexander Dahl <ada@thorsis.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        devicetree@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-usb@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
+        linux-kernel@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Al Cooper <alcooperx@gmail.com>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Christian Lamparter <chunkeey@googlemail.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v10 0/5] USB: misc: Add onboard_usb_hub driver
+Message-ID: <YJwENo/DmcyMR8bw@google.com>
+References: <20210511225223.550762-1-mka@chromium.org>
+ <YJuBmlPSaJlyVuzW@ada-deb-carambola.ifak-system.com>
 MIME-Version: 1.0
-In-Reply-To: <20210421090601.730744-1-hsinyi@chromium.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <YJuBmlPSaJlyVuzW@ada-deb-carambola.ifak-system.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Alexander,
 
-
-On 21/04/2021 11:05, Hsin-Yi Wang wrote:
-> Add several jacuzzi follower devices: kappa, willo, burnet, kenzo, and
-> fennel.
+On Wed, May 12, 2021 at 09:19:54AM +0200, Alexander Dahl wrote:
+> Hello Matthias,
 > 
-> Change log:
-> v2 -> v3:
->  - remove unused property in i2c2 in willow and burnet.
->  - add fennel.
+> just a curious informal question, see below.
 > 
-> Hsin-Yi Wang (10):
->   dt-bindings: arm64: dts: mediatek: Add mt8183-kukui-jacuzzi-kappa
->   dt-bindings: arm64: dts: mediatek: Add mt8183-kukui-jacuzzi-willow
->   dt-bindings: arm64: dts: mediatek: Add mt8183-kukui-jacuzzi-burnet
->   dt-bindings: arm64: dts: mediatek: Add mt8183-kukui-jacuzzi-kenzo
->   dt-bindings: arm64: dts: mediatek: Add mt8183-kukui-jacuzzi-fennel
->   arm64: dts: mt8183: Add kukui-jacuzzi-kappa board
->   arm64: dts: mt8183: Add kukui-jacuzzi-willow board
->   arm64: dts: mt8183: Add kukui-jacuzzi-burnet board
->   arm64: dts: mt8183: Add kukui-jacuzzi-kenzo board
->   arm64: dts: mt8183: Add kukui-jacuzzi-fennel board
+> Am Tue, May 11, 2021 at 03:52:18PM -0700 schrieb Matthias Kaehlcke:
+> > This series adds:
+> > - the onboard_usb_hub_driver
+> > - glue in the xhci-plat driver to create the onboard_usb_hub
+> >   platform device if needed
+> > - a device tree binding for the Realtek RTS5411 USB hub controller
+> > - device tree changes that add RTS5411 entries for the QCA SC7180
+> >   based boards trogdor and lazor
+> > - a couple of stubs for platform device functions to avoid
+> >   unresolved symbols with certain kernel configs
+> > 
+> > The main issue the driver addresses is that a USB hub needs to be
+> > powered before it can be discovered. For discrete onboard hubs (an
+> > example for such a hub is the Realtek RTS5411) this is often solved
+> > by supplying the hub with an 'always-on' regulator, which is kind
+> > of a hack. Some onboard hubs may require further initialization
+> > steps, like changing the state of a GPIO or enabling a clock, which
+> > requires even more hacks. This driver creates a platform device
+> > representing the hub which performs the necessary initialization.
+> > Currently it only supports switching on a single regulator, support
+> > for multiple regulators or other actions can be added as needed.
+> > Different initialization sequences can be supported based on the
+> > compatible string.
 > 
+> This sounds like it would be useful for other hub controllers as well?
+> For example, would the Microchip USB3503 (former SMSC,
+> drivers/usb/misc/usb3503.c, [1]) fall into this category? That chip is
+> used on the "Cubietech Cubietruck Plus" for example.
 
-Whole series applied to v5.13-next/dts64
+usb3503.c provides two 'separate' USB3503 drivers (which share some
+code), a i2c client driver and a platform driver. IIUC on a system with
+an USB3503 only one of these drivers is used. Theoretically it should be
+feasible to extend the onboard_usb_hub driver to cover the functionality
+of the platform driver in usb3503.c (essentially to control GPIOs and
+clocks at initialization time and suspend/resume). Another question is
+whether that would be desirable, since the i2c and the platform driver
+share code, which then would be duplicated in the i2c and onboard_usb_hub
+driver, unless a way is found to keep sharing that code.
 
-Thanks!
+The i2c driver can't be completely replaced by the onboard_usb_hub
+driver, due to the i2c communications. It might be possible to have the
+i2c driver and the onboard_usb_hub collaborate, however I expect it
+would take a certain effort to design and implement a solid solution.
 
->  .../devicetree/bindings/arm/mediatek.yaml     | 29 +++++++++++-
->  arch/arm64/boot/dts/mediatek/Makefile         |  8 ++++
->  .../mediatek/mt8183-kukui-jacuzzi-burnet.dts  | 30 +++++++++++++
->  .../mt8183-kukui-jacuzzi-fennel-sku1.dts      | 44 +++++++++++++++++++
->  .../mt8183-kukui-jacuzzi-fennel-sku6.dts      | 32 ++++++++++++++
->  .../mediatek/mt8183-kukui-jacuzzi-fennel.dtsi | 27 ++++++++++++
->  .../mt8183-kukui-jacuzzi-fennel14.dts         | 16 +++++++
->  .../mediatek/mt8183-kukui-jacuzzi-kappa.dts   | 16 +++++++
->  .../mediatek/mt8183-kukui-jacuzzi-kenzo.dts   | 12 +++++
->  .../mt8183-kukui-jacuzzi-willow-sku0.dts      | 13 ++++++
->  .../mt8183-kukui-jacuzzi-willow-sku1.dts      | 12 +++++
->  .../mediatek/mt8183-kukui-jacuzzi-willow.dtsi | 26 +++++++++++
->  .../dts/mediatek/mt8183-kukui-jacuzzi.dtsi    |  8 ++++
->  13 files changed, 271 insertions(+), 2 deletions(-)
->  create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-burnet.dts
->  create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel-sku1.dts
->  create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel-sku6.dts
->  create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel.dtsi
->  create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-fennel14.dts
->  create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-kappa.dts
->  create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-kenzo.dts
->  create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-willow-sku0.dts
->  create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-willow-sku1.dts
->  create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-willow.dtsi
-> 
+Thanks
+
+Matthias
