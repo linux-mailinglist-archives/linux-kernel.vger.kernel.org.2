@@ -2,139 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D2AE37B637
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 08:35:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B3F537B63A
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 08:36:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230149AbhELGgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 02:36:16 -0400
-Received: from verein.lst.de ([213.95.11.211]:39900 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230114AbhELGgP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 02:36:15 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id CB5B967373; Wed, 12 May 2021 08:35:05 +0200 (CEST)
-Date:   Wed, 12 May 2021 08:35:05 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     Gulam Mohamed <gulam.mohamed@oracle.com>, viro@zeniv.linux.org.uk,
-        axboe@kernel.dk, linux-fsdevel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hch@lst.de, martin.petersen@oracle.com, junxiao.bi@oracle.com
-Subject: Re: [PATCH V1 1/1] Fix race between iscsi logout and systemd-udevd
-Message-ID: <20210512063505.GA18367@lst.de>
-References: <20210511181558.380764-1-gulam.mohamed@oracle.com> <YJtKT7rLi2CFqDsV@T590>
+        id S230126AbhELGhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 02:37:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229626AbhELGhf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 02:37:35 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A279C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 23:36:27 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id j10so6255101ejb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 23:36:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=nevGWaMjb5PeAfV1/F7svJNtl2lKO/LKnPavtCONiAI=;
+        b=HPpOr4WJvmIPXKYS68buFhoAp5Li17j7jKX7/p4MM8Jdc8zp3Afy+9QrHlxyMLkqIl
+         W0fRFCLAdUeZBL3gi7PbgBPQ2F0hcFhKcEsEbfTfQvBERFdKM/18nGInFsl/X0bSoMrR
+         nR9pIlJU1StFIq8JAetJztmRo3A6V63sHQnOOaWpliocMXgE0ELlocl9ycD4j9pn7JFr
+         3n0uEjA7UdCX+6oI3KKWzREefFEM0X5ZRtOwXAlMHKHKa1Cb2PUkuaNhhHeMUmQctqYU
+         ZdY5BRWrjlO0ZlELbBdtQu9YnCkrzUMTOZOQtTedilA/k5K62kSLy1DVIUepVg5shp51
+         ItYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=nevGWaMjb5PeAfV1/F7svJNtl2lKO/LKnPavtCONiAI=;
+        b=SHdStRwyVNiy9C6bEaGayHvrVlZm9OWHwjJKBdDunM5yH0TtAcc7RH04eiL1qUnyk7
+         eYw4o9mkpHBFtnQ8f1/OL55ZjRpCX+3vQ5Q51czpW0sPZiTuOc+imRn0r+V4JHIC6s3S
+         uRDJJqlW47lAbwcFqjL8eG0SttOMFaMcyMlrUfzwql6nC5njb5uZCunY8iVbZFF8cJ1D
+         wuViB4zV2I5FVPDD/xIEmeDFUnFQE27RXjP1gjWmP1cFyPUcMHSaSqkjQGri+udN60gc
+         f/VnDo12N8EePizq4rhwzWyX+tH1BsQvjbUpruoUxvdhfBxF/jpxGXFkyiP3ImoRNgwp
+         S6bA==
+X-Gm-Message-State: AOAM532CihGxXCdEkpSQ9HZclUwRCl5RUKwpDiOS8RYUph54CoW6uXF9
+        /JcVg/DpRnBVpbk12Qwxl/dZJnhMMVV5Pg1VZ2r3Yg==
+X-Google-Smtp-Source: ABdhPJxCxoEotHYSk6jU/Ap34pv984lwVWKfA4gMFHe/bD7fPEXF/C3Wo4s41aCcPA/bHiQZsSq+DtoYOWuPDgIL8kQ=
+X-Received: by 2002:a17:906:bc8e:: with SMTP id lv14mr35741607ejb.418.1620801386118;
+ Tue, 11 May 2021 23:36:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YJtKT7rLi2CFqDsV@T590>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+References: <162042787450.1202325.5718541949681409566.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <162042791852.1202325.8197739881935753009.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <20210510162121.000042be@Huawei.com>
+In-Reply-To: <20210510162121.000042be@Huawei.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 11 May 2021 23:36:15 -0700
+Message-ID: <CAPcyv4jyGDYbwz1h3z3N-vEVXyYOu7Cbf+hnzWDQk+dOWHgZmQ@mail.gmail.com>
+Subject: Re: [PATCH 7/8] cxl/port: Introduce cxl_port objects
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     linux-cxl@vger.kernel.org, Linux PCI <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 11:23:59AM +0800, Ming Lei wrote:
-> 
-> 1) code path BLKRRPART:
-> 	mutex_lock(bdev->bd_mutex)
-> 	down_read(&bdev_lookup_sem);
-> 
-> 2) del_gendisk():
-> 	down_write(&bdev_lookup_sem);
-> 	mutex_lock(&disk->part0->bd_mutex);
-> 
-> Given GENHD_FL_UP is only checked when opening one bdev, and
-> fsync_bdev() and __invalidate_device() needn't to open bdev, so
-> the following way may work for your issue:
+On Mon, May 10, 2021 at 8:23 AM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
+>
+> On Fri, 7 May 2021 15:51:58 -0700
+> Dan Williams <dan.j.williams@intel.com> wrote:
+>
+> > Once the cxl_root is established then other ports in the hierarchy can
+> > be attached. The cxl_port object, unlike cxl_root that is associated
+> > with host bridges, is associated with PCIe Root Ports or PCIe Switch
+> > Ports. Add cxl_port instances for all PCIe Root Ports in an ACPI0016
+> > host bridge. The cxl_port instances for PCIe Switch Ports are not
+> > included here as those are to be modeled as another service device
+> > registered on the pcie_port_bus_type.
+> >
+> > A sample sysfs topology for a single-host-bridge with
+> > single-PCIe/CXL-port follows:
+> >
+> > /sys/bus/cxl/devices/root0
+> > =E2=94=9C=E2=94=80=E2=94=80 address_space0
+> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 devtype
+> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 end
+> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 start
+> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 supports_ram
+> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 supports_type2
+> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 supports_type3
+> > =E2=94=82   =E2=94=94=E2=94=80=E2=94=80 uevent
+> > =E2=94=9C=E2=94=80=E2=94=80 address_space1
+> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 devtype
+> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 end
+> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 start
+> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 supports_pmem
+> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 supports_type2
+> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 supports_type3
+> > =E2=94=82   =E2=94=94=E2=94=80=E2=94=80 uevent
+> > =E2=94=9C=E2=94=80=E2=94=80 devtype
+> > =E2=94=9C=E2=94=80=E2=94=80 port1
+> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 devtype
+> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 host -> ../../../../LNXSYSTM:00=
+/LNXSYBUS:00/ACPI0016:00
+> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 port2
+> > =E2=94=82   =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 devtype
+> > =E2=94=82   =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 host -> ../../../..=
+/../pci0000:34/0000:34:00.0
+> > =E2=94=82   =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 subsystem -> ../../=
+../../../../bus/cxl
+> > =E2=94=82   =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 target_id
+> > =E2=94=82   =E2=94=82   =E2=94=94=E2=94=80=E2=94=80 uevent
+> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 subsystem -> ../../../../../bus=
+/cxl
+> > =E2=94=82   =E2=94=9C=E2=94=80=E2=94=80 target_id
+> > =E2=94=82   =E2=94=94=E2=94=80=E2=94=80 uevent
+> > =E2=94=9C=E2=94=80=E2=94=80 subsystem -> ../../../../bus/cxl
+> > =E2=94=9C=E2=94=80=E2=94=80 target_id
+> > =E2=94=94=E2=94=80=E2=94=80 uevent
+> >
+> > In this listing the system-wide-singleton root0 has 2 address spaces, 1
+> > PMEM and 1 RAM. Those address spaces are accessed through port1 which
+> > represents the upstream port of an ACPI0016 host-bridge. A
+> > multi-host-bridge system would have other ports as peers to port1 to
+> > additionally decode root level address spaces. Port2 in this diagram
+> > represents the single downstream port of the host-bridge. Were it to be
+> > a multi-ported-host-bridge there would be peers / siblings of port2 wit=
+h
+> > port1 as their common ancestor.
+>
+> I guess it would be a pain to emulate a system that actually had
+> multiple ports at the last level. Pity as would have made your
+> explanation here a little easier to follow.
+>
 
-If we move the clearing of GENHD_FL_UP earlier we can do away with
-bdev_lookup_sem entirely I think.  Something like this untested patch:
+A pain in QEMU, but maybe not with a mocked implementation similar to
+what gets injected for the nvdimm "nfit_test". I'll take a look.
 
-diff --git a/block/genhd.c b/block/genhd.c
-index a5847560719c..ef717084b343 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -29,8 +29,6 @@
- 
- static struct kobject *block_depr;
- 
--DECLARE_RWSEM(bdev_lookup_sem);
--
- /* for extended dynamic devt allocation, currently only one major is used */
- #define NR_EXT_DEVT		(1 << MINORBITS)
- static DEFINE_IDA(ext_devt_ida);
-@@ -609,13 +607,8 @@ void del_gendisk(struct gendisk *disk)
- 	blk_integrity_del(disk);
- 	disk_del_events(disk);
- 
--	/*
--	 * Block lookups of the disk until all bdevs are unhashed and the
--	 * disk is marked as dead (GENHD_FL_UP cleared).
--	 */
--	down_write(&bdev_lookup_sem);
--
- 	mutex_lock(&disk->open_mutex);
-+	disk->flags &= ~GENHD_FL_UP;
- 	blk_drop_partitions(disk);
- 	mutex_unlock(&disk->open_mutex);
- 
-@@ -627,10 +620,7 @@ void del_gendisk(struct gendisk *disk)
- 	 * up any more even if openers still hold references to it.
- 	 */
- 	remove_inode_hash(disk->part0->bd_inode);
--
- 	set_capacity(disk, 0);
--	disk->flags &= ~GENHD_FL_UP;
--	up_write(&bdev_lookup_sem);
- 
- 	if (!(disk->flags & GENHD_FL_HIDDEN)) {
- 		sysfs_remove_link(&disk_to_dev(disk)->kobj, "bdi");
-diff --git a/fs/block_dev.c b/fs/block_dev.c
-index 8dd8e2fd1401..bde23940190f 100644
---- a/fs/block_dev.c
-+++ b/fs/block_dev.c
-@@ -1377,33 +1377,24 @@ struct block_device *blkdev_get_no_open(dev_t dev)
- 	struct block_device *bdev;
- 	struct gendisk *disk;
- 
--	down_read(&bdev_lookup_sem);
- 	bdev = bdget(dev);
- 	if (!bdev) {
--		up_read(&bdev_lookup_sem);
- 		blk_request_module(dev);
--		down_read(&bdev_lookup_sem);
--
- 		bdev = bdget(dev);
- 		if (!bdev)
--			goto unlock;
-+			return NULL;
- 	}
- 
- 	disk = bdev->bd_disk;
- 	if (!kobject_get_unless_zero(&disk_to_dev(disk)->kobj))
- 		goto bdput;
--	if ((disk->flags & (GENHD_FL_UP | GENHD_FL_HIDDEN)) != GENHD_FL_UP)
--		goto put_disk;
- 	if (!try_module_get(bdev->bd_disk->fops->owner))
- 		goto put_disk;
--	up_read(&bdev_lookup_sem);
- 	return bdev;
- put_disk:
- 	put_disk(disk);
- bdput:
- 	bdput(bdev);
--unlock:
--	up_read(&bdev_lookup_sem);
- 	return NULL;
- }
- 
-@@ -1462,7 +1453,10 @@ struct block_device *blkdev_get_by_dev(dev_t dev, fmode_t mode, void *holder)
- 
- 	disk_block_events(disk);
- 
-+	ret = -ENXIO;
- 	mutex_lock(&disk->open_mutex);
-+	if ((disk->flags & (GENHD_FL_UP | GENHD_FL_HIDDEN)) != GENHD_FL_UP)
-+		goto abort_claiming;
- 	if (bdev_is_partition(bdev))
- 		ret = blkdev_get_part(bdev, mode);
- 	else
+> > The rationale for this port hierarchy is to be able to walk the HDM
+> > decoder register sets that each port implements. Additionally it
+> > provides a representation of host-bridge interleave which will be
+> > necessary for follow-on work that adds CXL region devices.
+> >
+> > The details in the /sys/bus/cxl hierarchy that are not suitable to be
+> > represented in the /sys/bus/pci hierarchy are:
+> > - memory address spaces that are interleaved across host bridges
+> > - common sub-device functionality represented by CXL component + device
+> >   registers (enumerated via DVSEC or platform firmware (ACPI CEDT)).
+>
+> I'm sold :)
+
+Thanks for the vote of confidence. It sounded like Bjorn was sold too
+at the end of our last thread... I'll Cc him on this patch directly in
+the resend.
+
+>
+> >
+> > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+>
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+Thanks for the review Jonathan, appreciate it.
