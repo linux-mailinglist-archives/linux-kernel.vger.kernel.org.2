@@ -2,75 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EA4737BFE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:24:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E5FC37BFE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231162AbhELOZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 10:25:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230452AbhELOY6 (ORCPT
+        id S230497AbhELOZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 10:25:00 -0400
+Received: from vmicros1.altlinux.org ([194.107.17.57]:33506 "EHLO
+        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230347AbhELOY5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 10:24:58 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 105B3C061574;
-        Wed, 12 May 2021 07:23:50 -0700 (PDT)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94.2)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1lgpm7-007zO9-7d; Wed, 12 May 2021 16:23:47 +0200
-Message-ID: <10cc8522b27a051e6a9c3e158a4c4b6414fd04a0.camel@sipsolutions.net>
-Subject: Re: [PATCH 6/9] kbuild: refactor scripts/Makefile.modinst
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Michal Marek <michal.lkml@markovi.net>
-Date:   Wed, 12 May 2021 16:23:46 +0200
-In-Reply-To: <20210331133811.3221540-6-masahiroy@kernel.org>
-References: <20210331133811.3221540-1-masahiroy@kernel.org>
-         <20210331133811.3221540-6-masahiroy@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Wed, 12 May 2021 10:24:57 -0400
+Received: from imap.altlinux.org (imap.altlinux.org [194.107.17.38])
+        by vmicros1.altlinux.org (Postfix) with ESMTP id D107B72C8B4;
+        Wed, 12 May 2021 17:23:47 +0300 (MSK)
+Received: from altlinux.org (sole.flsd.net [185.75.180.6])
+        by imap.altlinux.org (Postfix) with ESMTPSA id 03B614A46E8;
+        Wed, 12 May 2021 17:23:47 +0300 (MSK)
+Date:   Wed, 12 May 2021 17:23:46 +0300
+From:   Vitaly Chikunov <vt@altlinux.org>
+To:     Elvira Khabirova <e.khabirova@omp.ru>
+Cc:     keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, davem@davemloft.net,
+        herbert@gondor.apana.org.au, dhowells@redhat.com
+Subject: Re: [PATCH] pkcs7: support EC-RDSA/streebog in SignerInfo
+Message-ID: <20210512142346.kui3zeyheo7wlnwm@altlinux.org>
+References: <20210511174744.4f3c6c59@msk1wst204>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-malware-bazaar: not-scanned
+Content-Type: text/plain; charset=koi8-r
+Content-Disposition: inline
+In-Reply-To: <20210511174744.4f3c6c59@msk1wst204>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-So I'm not *entirely* sure if this caused it, but I noticed that doing
-
-	make -C linux M=/path/to/extmod/ modules_install
-
-stopped working.
-
-This is because here:
+On Tue, May 11, 2021 at 05:47:44PM +0300, Elvira Khabirova wrote:
+> Allow using EC-RDSA/streebog in pkcs7 certificates in a similar way
+> to how it's done in the x509 parser.
 > 
-> -extmod_prefix = $(if $(KBUILD_EXTMOD),$(KBUILD_EXTMOD)/)
-> +export extmod_prefix = $(if $(KBUILD_EXTMOD),$(KBUILD_EXTMOD)/)
+> This is needed e.g. for loading kernel modules signed with EC-RDSA.
+> 
+> Signed-off-by: Elvira Khabirova <e.khabirova@omp.ru>
 
-
-(as before, of course) another trailing / is added to the M= argument,
-and then
-
-> +modules := $(patsubst $(extmod_prefix)%, $(dst)/%, $(modules))
-
-this patsubst turns out to do nothing. So $(modules) contains the
-original paths where the modules were compiled, and consequently nothing
-happens.
-
-Specifying
-
-	make -C linux M=/path/to/extmod modules_install
-
-actually works.
-
-
-Obviously I can work around it, but it hardly seems intentional?
+Reviewed-by: Vitaly Chikunov <vt@altlinux.org>
 
 Thanks,
-johannes
 
+> ---
+>  crypto/asymmetric_keys/pkcs7_parser.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/crypto/asymmetric_keys/pkcs7_parser.c b/crypto/asymmetric_keys/pkcs7_parser.c
+> index 967329e0a07b..39c260a04167 100644
+> --- a/crypto/asymmetric_keys/pkcs7_parser.c
+> +++ b/crypto/asymmetric_keys/pkcs7_parser.c
+> @@ -248,6 +248,12 @@ int pkcs7_sig_note_digest_algo(void *context, size_t hdrlen,
+>  	case OID_sha224:
+>  		ctx->sinfo->sig->hash_algo = "sha224";
+>  		break;
+> +	case OID_gost2012Digest256:
+> +		ctx->sinfo->sig->hash_algo = "streebog256";
+> +		break;
+> +	case OID_gost2012Digest512:
+> +		ctx->sinfo->sig->hash_algo = "streebog512";
+> +		break;
+>  	default:
+>  		printk("Unsupported digest algo: %u\n", ctx->last_oid);
+>  		return -ENOPKG;
+> @@ -269,6 +275,11 @@ int pkcs7_sig_note_pkey_algo(void *context, size_t hdrlen,
+>  		ctx->sinfo->sig->pkey_algo = "rsa";
+>  		ctx->sinfo->sig->encoding = "pkcs1";
+>  		break;
+> +	case OID_gost2012PKey256:
+> +	case OID_gost2012PKey512:
+> +		ctx->sinfo->sig->pkey_algo = "ecrdsa";
+> +		ctx->sinfo->sig->encoding = "raw";
+> +		break;
+>  	default:
+>  		printk("Unsupported pkey algo: %u\n", ctx->last_oid);
+>  		return -ENOPKG;
+> -- 
+> 2.25.1
