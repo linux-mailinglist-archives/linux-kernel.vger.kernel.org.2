@@ -2,164 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE8ED37EBA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 399CD37EBA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381574AbhELTeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:34:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37374 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349713AbhELRqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 13:46:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D1F9613DF;
-        Wed, 12 May 2021 17:45:05 +0000 (UTC)
-Date:   Wed, 12 May 2021 18:45:03 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Steven Price <steven.price@arm.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-Subject: Re: [PATCH v11 2/6] arm64: kvm: Introduce MTE VM feature
-Message-ID: <20210512174502.GC12391@arm.com>
-References: <20210416154309.22129-1-steven.price@arm.com>
- <20210416154309.22129-3-steven.price@arm.com>
- <20210428170705.GB4022@arm.com>
- <c3293d47-a5f2-ea4a-6730-f5cae26d8a7e@arm.com>
- <YJGHApOCXl811VK3@arm.com>
- <329286e8-a8f3-ea1a-1802-58813255a4a5@arm.com>
- <20210507182538.GF26528@arm.com>
- <20210510183506.GA10910@arm.com>
- <c891d4eb-b388-1658-8c8a-e76477062463@arm.com>
+        id S1381644AbhELTew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:34:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350512AbhELRvG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 13:51:06 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CABAC061761
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 10:49:56 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id f1so5865858edt.4
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 10:49:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=deviqon.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6CF6JaLEsr4bT8+QMif5jPEHXEsPl26FZvVRFcuOkwc=;
+        b=uOBsu1XrTiZAwShcaOMcffKTDx/Ophnyzam9nkJ6oEg55xrsCEksPt88yeaVa3Ovqt
+         2/SRVcnxMhYkX8I+aQHAHvvVHAEERH9RqzuRChVR45Vb8nLFAY4b+mPf7n0P6R/yAhnY
+         La735GzTyGtprzS0GPLMFfXKxBsaYrUiQYIoBEOQCf8s44lJxk6UUHMuxCQr4/fwjl7n
+         84f5uecYvko4pNv+RgrtmFDbLWXd2F1AS4LzNxHRZT+wE7DwWFrDOb5ytKsewOqZmC8m
+         GFh5Ff8BKcz6x7jBJHc47fz8x21FoqGJA4SiGAe4LyjrqMZ600q6hfvYcyE+DNN7vvG2
+         WjUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6CF6JaLEsr4bT8+QMif5jPEHXEsPl26FZvVRFcuOkwc=;
+        b=KOs+H5Z4ZSqebn5o5u0b5oQyjRHTmErBkxz0NYPj926jLAmGQHoCErVXclUdsFkLtc
+         wU6xRwL0WLv99iVoQIox/yrXhOqtV7pjJAK1nhyXdxIP9y7tBujbk77jwpHrW1CQcCwU
+         Xc1dHjWGQMpVD4wGuipwoCQ0maDD0PfTPTKHxUPF3pIcUVNbFxL+yh6sNpTwdxl0t7ay
+         ypOUwQKnoTd3TyUkC42qroaOd4apeVRiVzroOstjxfF4C+Zj3/lZkqRgbje9ji4LhRTS
+         QZ3Ne8qlsjDL1/ezoThaNfU3EnqubHStbc8LLV4/2Jv9M1oDV71FSk/0r7c3D/Hkv0qk
+         UymA==
+X-Gm-Message-State: AOAM530yjQQooLcvoZ3sILx5A2NrolwZPRpRXSqFQ3zTBZf4v/Udxa/z
+        55gwpkoHmL2yQGb7hGNRe737rcbCgn5k+w==
+X-Google-Smtp-Source: ABdhPJzy+ZctiG/CuSRiDfEFPWdzDWwJlut5GCbXDpDUdtanYQzxV0aXnNO3mPgLQRGnzdTtFbtu2g==
+X-Received: by 2002:aa7:dc54:: with SMTP id g20mr45080155edu.266.1620841795330;
+        Wed, 12 May 2021 10:49:55 -0700 (PDT)
+Received: from neptune.. ([5.2.193.191])
+        by smtp.gmail.com with ESMTPSA id r16sm338058edq.87.2021.05.12.10.49.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 10:49:54 -0700 (PDT)
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     jic23@kernel.org, Jonathan.Cameron@huawei.com,
+        alexandru.tachici@analog.com, linux@deviqon.com,
+        Alexandru Ardelean <aardelean@deviqon.com>
+Subject: [PATCH v3 00/12] ad_sigma_delta: convert all drivers to device-managed
+Date:   Wed, 12 May 2021 20:49:02 +0300
+Message-Id: <20210512174914.10549-1-aardelean@deviqon.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c891d4eb-b388-1658-8c8a-e76477062463@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 04:46:48PM +0100, Steven Price wrote:
-> On 10/05/2021 19:35, Catalin Marinas wrote:
-> > On Fri, May 07, 2021 at 07:25:39PM +0100, Catalin Marinas wrote:
-> > > On Thu, May 06, 2021 at 05:15:25PM +0100, Steven Price wrote:
-> > > > On 04/05/2021 18:40, Catalin Marinas wrote:
-> > > > > On Thu, Apr 29, 2021 at 05:06:41PM +0100, Steven Price wrote:
-> > > > > > Given the changes to set_pte_at() which means that tags are restored from
-> > > > > > swap even if !PROT_MTE, the only race I can see remaining is the creation of
-> > > > > > new PROT_MTE mappings. As you mention an attempt to change mappings in the
-> > > > > > VMM memory space should involve a mmu notifier call which I think serialises
-> > > > > > this. So the remaining issue is doing this in a separate address space.
-> > > > > > 
-> > > > > > So I guess the potential problem is:
-> > > > > > 
-> > > > > >    * allocate memory MAP_SHARED but !PROT_MTE
-> > > > > >    * fork()
-> > > > > >    * VM causes a fault in parent address space
-> > > > > >    * child does a mprotect(PROT_MTE)
-> > > > > > 
-> > > > > > With the last two potentially racing. Sadly I can't see a good way of
-> > > > > > handling that.
-[...]
-> > Options:
-> > 
-> > 1. Change the mte_sync_tags() code path to set the flag after clearing
-> >     and avoid reading stale tags. We document that mprotect() on
-> >     MAP_SHARED may lead to tag loss. Maybe we can intercept this in the
-> >     arch code and return an error.
-> 
-> This is the best option I've come up with so far - but it's not a good
-> one! We can replace the set_bit() with a test_and_set_bit() to catch the
-> race after it has occurred - but I'm not sure what we can do about it
-> then (we've already wiped the data). Returning an error doesn't seem
-> particularly useful at that point, a message in dmesg is about the best
-> I can come up with.
+Well, for lack of a better title that's what this series does.
+It merges Jonathan's patches from:
+  * https://lore.kernel.org/linux-iio/20210508182319.488551-1-jic23@kernel.org/
+    Patch 3/3 was a polished a bit with my comments from that review and also
+    to use the devm_ad_sd_setup_buffer_and_trigger() function.
+  * https://lore.kernel.org/linux-iio/20210509114118.660422-1-jic23@kernel.org/
+    Added only to base the conversion to devm_
 
-What I meant about intercepting is on something like
-arch_validate_flags() to prevent VM_SHARED and VM_MTE together but only
-for mprotect(), not mmap(). However, arch_validate_flags() is currently
-called on both mmap() and mprotect() paths.
+The AD Sigma Delta family of ADC drivers share a lot of the logic in the
+ad_sigma_delta lib-driver.
 
-We can't do much in set_pte_at() to prevent the race with only a single
-bit.
+This set introduces a devm_ad_sd_setup_buffer_and_trigger() call, which
+aims to replace the 'ad_sd_{setup,cleanup}_buffer_and_trigger()' pair.
 
-> > 2. Figure out some other locking in the core code. However, if
-> >     mprotect() in one process can race with a handle_pte_fault() in
-> >     another, on the same shared mapping, it's not trivial.
-> >     filemap_map_pages() would take the page lock before calling
-> >     do_set_pte(), so mprotect() would need the same page lock.
-> 
-> I can't see how this is going to work without harming the performance of
-> non-MTE work. Ultimately we're trying to add some sort of locking for
-> two (mostly) unrelated processes doing page table operations, which will
-> hurt scalability.
+This helps with converting the AD7780, AD7791, AD7793 and AD7192
+drivers use be fully converted to device-managed functions.
 
-Another option is to have an arch callback to force re-faulting on the
-pte. That means we don't populate it back after the invalidation in the
-change_protection() path. We could do this only if the new pte is tagged
-and the page doesn't have PG_mte_tagged. The faulting path takes the
-page lock IIUC.
+Changelog v2 -> v3:
+* https://lore.kernel.org/linux-iio/20210511071831.576145-1-aardelean@deviqon.com/
+* patch 'iio: adc: ad7192: handle zero Avdd regulator value as error'
+  is now 'iio: adc: ad7192: handle zero Avdd regulator value'
+  essentially just doing a simple 'if (voltage_uv >= 0)' check now
 
-Well, at least for stage 1, I haven't thought much about stage 2.
+Changelog v1 -> v2:
+* https://lore.kernel.org/linux-iio/20210510125523.1271237-1-aardelean@deviqon.com/
+* add my S-o-b tags on all patches; with @deviqon.com email
+  - Note: I'm a little unsure about the correctness of these tags; there
+    are a few mixed-in, with Reviewed-by & Signed-off-by; I'm fine if
+    Jonathan tweaks these as needed;
+* added patch 'iio: adc: ad7192: handle zero Avdd regulator value as error'
+* all Fixes patches should be now at the beginning of the series
 
-> > 3. Use another PG_arch_3 bit as a lock to spin on in the arch code (i.e.
-> >     set it around the other PG_arch_* bit setting).
-> 
-> This is certainly tempting, although sadly the existing
-> wait_on_page_bit() is sleeping - so this would either be a literal spin,
-> or we'd need to implement a new non-sleeping wait mechanism.
+Alexandru Ardelean (8):
+  iio: adc: ad7192: handle zero Avdd regulator value
+  iio: adc: ad_sigma_delta: introduct
+    devm_ad_sd_setup_buffer_and_trigger()
+  iio: adc: ad7793: convert to device-managed functions
+  iio: adc: ad7791: convert to device-managed functions
+  iio: adc: ad7780: convert to device-managed functions
+  iio: adc: ad7192: use devm_clk_get_optional() for mclk
+  iio: adc: ad7192: convert to device-managed functions
+  iio: adc: ad_sigma_delta: remove
+    ad_sd_{setup,cleanup}_buffer_and_trigger()
 
-Yeah, it would have to be a custom spinning mechanism, something like:
+Jonathan Cameron (4):
+  iio: adc: ad7124: Fix missbalanced regulator enable / disable on
+    error.
+  iio: adc: ad7124: Fix potential overflow due to non sequential channel
+    numbers
+  iio: adc: ad7192: Avoid disabling a clock that was never enabled.
+  iio: adc: ad7124: Use devm_ managed calls for all of probe() + drop
+    remove()
 
-	/* lock the page */
-	while (test_and_set_bit(PG_arch_3, &page->flags))
-		smp_cond_load_relaxed(&page->flags, !(VAL & PG_arch_3));
-	...
-	/* unlock the page */
-	clear_bit(PG_arch_3, &page->flags);
-
-> 4. Sledgehammer locking in mte_sync_page_tags(), add a spinlock only for
-> the MTE case where we have to sync tags (see below). What the actual
-> performance impact of this is I've no idea. It could certainly be bad
-> if there are a lot of pages with MTE enabled, which sadly is exactly
-> the case if KVM is used with MTE :(
-> 
-> --->8----
-> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-> index 0d320c060ebe..389ad40256f6 100644
-> --- a/arch/arm64/kernel/mte.c
-> +++ b/arch/arm64/kernel/mte.c
-> @@ -25,23 +25,33 @@
->  u64 gcr_kernel_excl __ro_after_init;
->  static bool report_fault_once = true;
-> +static spinlock_t tag_sync_lock;
->  static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool check_swap,
->  			       bool pte_is_tagged)
->  {
->  	pte_t old_pte = READ_ONCE(*ptep);
-> +	if (!is_swap_pte(old_pte) && !pte_is_tagged)
-> +		return;
-> +
-> +	spin_lock_irqsave(&tag_sync_lock, flags);
-> +
-> +	/* Recheck with the lock held */
-> +	if (test_bit(PG_mte_tagged, &page->flags))
-> +		goto out;
-
-Can we skip the lock if the page already has the PG_mte_tagged set?
-That's assuming that we set the flag only after clearing the tags. The
-normal case where mprotect() is called on a page already mapped with
-PROT_MTE would not be affected.
+ drivers/iio/adc/ad7124.c               | 84 ++++++++++-------------
+ drivers/iio/adc/ad7192.c               | 92 +++++++++++---------------
+ drivers/iio/adc/ad7780.c               | 38 +++--------
+ drivers/iio/adc/ad7791.c               | 44 ++++--------
+ drivers/iio/adc/ad7793.c               | 53 +++++----------
+ drivers/iio/adc/ad_sigma_delta.c       | 82 ++++++++---------------
+ include/linux/iio/adc/ad_sigma_delta.h |  4 +-
+ 7 files changed, 142 insertions(+), 255 deletions(-)
 
 -- 
-Catalin
+2.31.1
+
