@@ -2,137 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE42137BF5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:06:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A75537BF37
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231607AbhELOHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 10:07:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56852 "EHLO
+        id S231349AbhELOFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 10:05:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231426AbhELOGq (ORCPT
+        with ESMTP id S231236AbhELOF1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 10:06:46 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3401C061761;
-        Wed, 12 May 2021 07:05:36 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id bo23-20020a17090b0917b029015cb1f2fd59so475199pjb.2;
-        Wed, 12 May 2021 07:05:36 -0700 (PDT)
+        Wed, 12 May 2021 10:05:27 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF3EC06174A;
+        Wed, 12 May 2021 07:04:18 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id u16so22349195oiu.7;
+        Wed, 12 May 2021 07:04:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=4LIq+bz5lnH5lUkY8iYUzXMCbY6aYzyuWY+qUtLmZAM=;
-        b=pFxCMcoM+qKX2GsF691TVaHCi+QqYuNgj23BhbqZ1TMtZvDc5ANFic7+tk0XoYlozN
-         3MjsvzPGbf/RYFWIpXwYN3aP9bm90leapxGrJWhCk7hv9pUGzvPHHx/I+e8lq1ys6KOQ
-         uUn7XV+UtF8syrAkPUNXxt8WHY4LrKgs/uKjG11AfQtkzSiq9P7f8R0yrghTGItOuncd
-         ZcukArOpmlLGG9r0TLZ4cZ7/ytpYpcm0RFWVugGLUgQj4UTozg949SqV6G5i6kC+3W6r
-         z//L/a+yDlUo4v917ykg39yRN19zS0kVMeojyKQoAD6/WTe7DivFEEJb9KKSVkQpyKpQ
-         t6jw==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Hurtn54WPjyZFZ9fAyALLC/h2FFj3dL9hsA1UGpG2Fw=;
+        b=q8C0aQ6FoOzBtpa+schonjzmaFvMIdkIm+tfPjNaCShN7tcrwm5PoZ47NDjMvnEXFO
+         TmIiU/GSjgn/6zPcBUzTZ7xN+TXt5pUlIQ50VPiIVP1ANDksHt4xHQ+iKTn33WRyirBR
+         E5b5roteECsxNNmzVSRKE29grRFcLNy+GaAVd/A7H3UG6pYXjVWDvi6thb9PqiMhVVB0
+         PLG/yjs3uVYwvvTFBWNmkxRIsbXvFqtdED3pnfcmcnXWLKzJXfcchzMaJ49lGrcVi2Zw
+         Yvq7u1es+74R8CC2yBuIDWIuBMBLesggdqbzFcCKgJSU/VoAuDjxLDbQYmPU2ze8Lck5
+         PEMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=4LIq+bz5lnH5lUkY8iYUzXMCbY6aYzyuWY+qUtLmZAM=;
-        b=BJ+TP/TuNb+L7V4cntRikBW+bdjPijZZ/NaSMlNj2A5pbjCOep+7A4g6qFJ1mqx9if
-         iKVqhqbD2tdKKwK8M2wJDxg1Co7sXekItD3B9ANB1FnE8KrQ8b/XKeP/8qcIryOzIuND
-         Bf6WYStkOFXF9san/fsEcQfQ/6zQcDgvzqiUYnvmP4PXsdNqqDnx4bIRXyInOxubD8JA
-         c5INbNmRPmKLPuvbRG/TFkcazIakWGHyZkLoVREbIv4mhdEg4wUvpGh5UOxlvzy324e2
-         MZXFqP2lzJ+IZt4S3EvYI1mJwTjHuruWX9CZdt+Y06s2ene+VRp6f77FEJuM0c8B/iS3
-         bX5w==
-X-Gm-Message-State: AOAM533+TjpxX+5AFaIHbwVPvlgddg5RxurKSC8cOqe33zJ3puDvoPeQ
-        bZhKpznOXNWSjifuBtIT28tRXIMdZOA=
-X-Google-Smtp-Source: ABdhPJzp3wwqMAqG6uIrPd1BFM8u5ILKfL43n0dtAknECBn1RWt6OnsMuinGmZYSWAm/Q/ymGKcGbw==
-X-Received: by 2002:a17:90b:46c4:: with SMTP id jx4mr40322847pjb.155.1620828336187;
-        Wed, 12 May 2021 07:05:36 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.39])
-        by smtp.gmail.com with ESMTPSA id in16sm28546pjb.14.2021.05.12.07.05.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 12 May 2021 07:05:35 -0700 (PDT)
-From:   Hongbo Li <herbert.tencent@gmail.com>
-To:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        herbert@gondor.apana.org.au, dhowells@redhat.com,
-        jarkko@kernel.org, tianjia.zhang@linux.alibaba.com,
-        herberthbli@tencent.com
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH 7/7] crypto: add eddsa test vector
-Date:   Wed, 12 May 2021 22:04:14 +0800
-Message-Id: <1620828254-25545-8-git-send-email-herbert.tencent@gmail.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1620828254-25545-1-git-send-email-herbert.tencent@gmail.com>
-References: <1620828254-25545-1-git-send-email-herbert.tencent@gmail.com>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=Hurtn54WPjyZFZ9fAyALLC/h2FFj3dL9hsA1UGpG2Fw=;
+        b=JFcAV8AUOltJGplOs9HdIevdhtQRxiCYnsan0LYL+7/GoLplHlshpNCZD3v1k56z/x
+         L8N9CWhdP/Gf8BuGRqiUKcDkdk9MKfbGXaXGyJlcdO4Ew87hFDNJ9MPsc2i789Eqs9HF
+         iSYxYcEy+mLD5Y5+Qw3h2KzCCsHxHQ1v/dYgRJ/8IfLwxnGCWdNUXsZYSZh1nvVnMw3/
+         0fjmL3QffNFYSiscj/e7iufusjPVReeEv/iZl/IdLpziGTD1aByLUVUkDDESyq3VfGo9
+         DBLdYjhjJHAoRZ5wEX7eZKZXkXLVsiOeblLVBvKh1heGpwqjumRR5FTLymDcvQrkqoSR
+         zKRw==
+X-Gm-Message-State: AOAM530jA2tO5TSH3KViadSMKDmo2FXxTgwluCbGybX3WZtol2ivAWWJ
+        hVT2Zq+ZKkji6JjGUbn8YxnrcxQo62g=
+X-Google-Smtp-Source: ABdhPJzOqdtXSr9z9flnfO/l8WrFn0WKpGRe/r5trUdSeSIZENuSbKhPPdrn+ycbOQJJKeSl4LZejg==
+X-Received: by 2002:aca:355:: with SMTP id 82mr7768087oid.155.1620828257858;
+        Wed, 12 May 2021 07:04:17 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id w10sm4453608ott.75.2021.05.12.07.04.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 07:04:16 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 12 May 2021 07:04:15 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     shruthi.sanil@intel.com
+Cc:     wim@linux-watchdog.org, linux-watchdog@vger.kernel.org,
+        linux-kernel@vger.kernel.org, andriy.shevchenko@linux.intel.com,
+        kris.pan@linux.intel.com, mgross@linux.intel.com,
+        srikanth.thokala@intel.com, lakshmi.bai.raja.subramanian@intel.com,
+        mallikarjunappa.sangannavar@intel.com
+Subject: Re: [PATCH 08/10] watchdog: keembay: MACRO for WDT enable and
+ disable values
+Message-ID: <20210512140415.GH1333995@roeck-us.net>
+References: <20210512084724.14634-1-shruthi.sanil@intel.com>
+ <20210512084724.14634-9-shruthi.sanil@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210512084724.14634-9-shruthi.sanil@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hongbo Li <herberthbli@tencent.com>
+On Wed, May 12, 2021 at 02:17:22PM +0530, shruthi.sanil@intel.com wrote:
+> From: Shruthi Sanil <shruthi.sanil@intel.com>
+> 
+> Introduced MACRO's for WDT enable and disable values for better readability
+> 
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Tested-by: Kris Pan <kris.pan@intel.com>
+> Signed-off-by: Shruthi Sanil <shruthi.sanil@intel.com>
 
-This patch adds the test vector for ed25519.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-Signed-off-by: Hongbo Li <herberthbli@tencent.com>
----
- crypto/testmgr.c |  6 ++++++
- crypto/testmgr.h | 32 ++++++++++++++++++++++++++++++++
- 2 files changed, 38 insertions(+)
-
-diff --git a/crypto/testmgr.c b/crypto/testmgr.c
-index 10c5b3b..498d186 100644
---- a/crypto/testmgr.c
-+++ b/crypto/testmgr.c
-@@ -4939,6 +4939,12 @@ static int alg_test_null(const struct alg_test_desc *desc,
- 			.akcipher = __VECS(ecrdsa_tv_template)
- 		}
- 	}, {
-+		.alg = "eddsa-25519",
-+		.test = alg_test_akcipher,
-+		.suite = {
-+			.akcipher = __VECS(eddsa_25519_tv_template)
-+		}
-+	}, {
- 		.alg = "essiv(authenc(hmac(sha256),cbc(aes)),sha256)",
- 		.test = alg_test_aead,
- 		.fips_allowed = 1,
-diff --git a/crypto/testmgr.h b/crypto/testmgr.h
-index 34e4a3d..11807a3 100644
---- a/crypto/testmgr.h
-+++ b/crypto/testmgr.h
-@@ -1145,6 +1145,38 @@ struct kpp_testvec {
- };
- 
- /*
-+ * EDDSA test vectors.
-+ * From RFC8032 section 7.1
-+ */
-+static const struct akcipher_testvec eddsa_25519_tv_template[] = {
-+	{
-+	.key =
-+	"\x3d\x40\x17\xc3\xe8\x43\x89\x5a\x92\xb7\x0a\xa7\x4d\x1b\x7e\xbc"
-+	"\x9c\x98\x2c\xcf\x2e\xc4\x96\x8c\xc0\xcd\x55\xf1\x2a\xf4\x66\x0c",
-+	.key_len = 32,
-+	/*
-+	 * RFC8032 section 5.1.7. m is SHA512(dom2(F, C) || R || A || PH(M))
-+	 * M is 0x72
-+	 */
-+	.m =
-+	"\xa2\x71\xdf\x0d\x2b\x0d\x03\xbd\x17\xb4\xed\x9a\x4b\x6a\xfd\xdf"
-+	"\x2e\x73\x28\x7f\xd6\x30\xf1\xa1\x37\xd8\x7c\xe8\x73\xa5\x91\xcc"
-+	"\x31\xb6\xdd\x85\x2a\x98\xb5\xdd\x12\x26\xfe\x99\x3d\x82\x28\x27"
-+	"\x8c\xeb\xa2\x1f\x80\xb8\xfc\x95\x98\x6a\x70\xd7\x1e\xdf\x3f\xaf",
-+	.m_size = 64,
-+	.c =
-+	"\x92\xa0\x09\xa9\xf0\xd4\xca\xb8\x72\x0e\x82\x0b\x5f\x64\x25\x40"
-+	"\xa2\xb2\x7b\x54\x16\x50\x3f\x8f\xb3\x76\x22\x23\xeb\xdb\x69\xda"
-+	"\x08\x5a\xc1\xe4\x3e\x15\x99\x6e\x45\x8f\x36\x13\xd0\xf1\x1d\x8c"
-+	"\x38\x7b\x2e\xae\xb4\x30\x2a\xee\xb0\x0d\x29\x16\x12\xbb\x0c\x00",
-+	.c_size = 64,
-+	.algo = OID_ed25519,
-+	.public_key_vec = true,
-+	.siggen_sigver_test = true,
-+	}
-+};
-+
-+/*
-  * PKCS#1 RSA test vectors. Obtained from CAVS testing.
-  */
- static const struct akcipher_testvec pkcs1pad_rsa_tv_template[] = {
--- 
-1.8.3.1
-
+> ---
+>  drivers/watchdog/keembay_wdt.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/watchdog/keembay_wdt.c b/drivers/watchdog/keembay_wdt.c
+> index 10896415f8c7..63a7c5d719a3 100644
+> --- a/drivers/watchdog/keembay_wdt.c
+> +++ b/drivers/watchdog/keembay_wdt.c
+> @@ -27,6 +27,8 @@
+>  #define WDT_TO_INT_MASK		BIT(9)
+>  #define WDT_ISR_CLEAR		0x8200ff18
+>  #define WDT_UNLOCK		0xf1d0dead
+> +#define WDT_DISABLE		0x0
+> +#define WDT_ENABLE		0x1
+>  #define WDT_LOAD_MAX		U32_MAX
+>  #define WDT_LOAD_MIN		1
+>  #define WDT_TIMEOUT		5
+> @@ -84,7 +86,7 @@ static int keembay_wdt_start(struct watchdog_device *wdog)
+>  {
+>  	struct keembay_wdt *wdt = watchdog_get_drvdata(wdog);
+>  
+> -	keembay_wdt_writel(wdt, TIM_WDOG_EN, 1);
+> +	keembay_wdt_writel(wdt, TIM_WDOG_EN, WDT_ENABLE);
+>  
+>  	return 0;
+>  }
+> @@ -93,7 +95,7 @@ static int keembay_wdt_stop(struct watchdog_device *wdog)
+>  {
+>  	struct keembay_wdt *wdt = watchdog_get_drvdata(wdog);
+>  
+> -	keembay_wdt_writel(wdt, TIM_WDOG_EN, 0);
+> +	keembay_wdt_writel(wdt, TIM_WDOG_EN, WDT_DISABLE);
+>  
+>  	return 0;
+>  }
+> -- 
+> 2.17.1
+> 
