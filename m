@@ -2,133 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 063AA37BBD5
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 13:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EDDD37BBE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 13:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230216AbhELLdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 07:33:45 -0400
-Received: from mga01.intel.com ([192.55.52.88]:47247 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230037AbhELLdo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 07:33:44 -0400
-IronPort-SDR: KKfR39WQ4b17wAnitTpLLttnAkcwWq7ba/hTv12hQj8aQPU7u4No/iUDWC1DeSv4Mqzgyt17pH
- dOQlJ1lVBieQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="220652412"
-X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
-   d="scan'208";a="220652412"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2021 04:32:11 -0700
-IronPort-SDR: GM0y7i9w2gAupgR5Q0lhYEchbcbaaim1usJ+WvbY5KptixLGwgEioF21ntWT3v7XBDMdSfnAId
- uY8AH9uHx/0A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
-   d="scan'208";a="622371382"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
-  by fmsmga006.fm.intel.com with ESMTP; 12 May 2021 04:32:08 -0700
-Cc:     baolu.lu@linux.intel.com, "Raj, Ashok" <ashok.raj@intel.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] iommu/vt-d: Support asynchronous IOMMU nested
- capabilities
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
-References: <20210512070421.3472857-1-baolu.lu@linux.intel.com>
- <MWHPR11MB18867DF70AD168ECFB3CC0648C529@MWHPR11MB1886.namprd11.prod.outlook.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <2eb677d1-14d7-c1dc-6dd4-179c11c76b10@linux.intel.com>
-Date:   Wed, 12 May 2021 19:31:22 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230336AbhELLf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 07:35:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230037AbhELLfz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 07:35:55 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFB43C061574;
+        Wed, 12 May 2021 04:34:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=sLA8x8bF7v1sDQnZimx3oxH0nvPNKA3JqIaZJ/Rl+VY=; b=BEMKies3QWEHNNHELX5UfwpO4X
+        j620BVMz4ol4HXg779xn71wRKkIv48A3TSOINy68yh5iQcKKE7pW8HxX7pS66L91L88qUcdMhdjm3
+        2hM5VajuL/M2z14QEoKezFsjS8IhO6galWkwUDhXzfSTJVNdOmjRXKV1XhkOUDGW8XugN7zK/ALqa
+        MUe5OX2FZjsVX9x4Sr+e/goHGSfHuYExhjbOTC7xKg9VJdGhSTE5NSUvE/2wrU9t6veaxLx1yYm9W
+        PswX+z6+4t5SiNs+JMrvoImp33d4OREZE+hazZcOoXFmNGLfPyCMIwGMm+LkDiUDHuTqoVo6kewHJ
+        jSNK0PdA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lgn5z-008DkT-2f; Wed, 12 May 2021 11:32:13 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 421D430019C;
+        Wed, 12 May 2021 13:32:04 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 06A092040BF80; Wed, 12 May 2021 13:32:04 +0200 (CEST)
+Date:   Wed, 12 May 2021 13:32:03 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mel Gorman <mgorman@suse.de>
+Cc:     tglx@linutronix.de, mingo@kernel.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+        bsingharora@gmail.com, pbonzini@redhat.com, maz@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        riel@surriel.com, hannes@cmpxchg.org
+Subject: Re: [PATCH 3/6] sched: Simplify sched_info_on()
+Message-ID: <YJu8s0f7Cc78GEWN@hirez.programming.kicks-ass.net>
+References: <20210505105940.190490250@infradead.org>
+ <20210505111525.121458839@infradead.org>
+ <20210512111040.GC3672@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <MWHPR11MB18867DF70AD168ECFB3CC0648C529@MWHPR11MB1886.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210512111040.GC3672@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kevin,
-
-On 5/12/21 4:30 PM, Tian, Kevin wrote:
->> From: Lu Baolu <baolu.lu@linux.intel.com>
->> Sent: Wednesday, May 12, 2021 3:04 PM
->>
->> Current VT-d implementation supports nested translation only if all
->> underlying IOMMUs support the nested capability. This is unnecessary
->> as the upper layer is allowed to create different containers and set
->> them with different type of iommu backend. The IOMMU driver needs to
->> guarantee that devices attached to a nested mode iommu_domain should
->> support nested capabilility.
+On Wed, May 12, 2021 at 12:10:40PM +0100, Mel Gorman wrote:
+> As delta is !0 iff t->sched_info.last_queued, why not this?
 > 
-> so the consistency check is now applied only to the IOMMUs that are
-> spanned by a given iommu_domain?
+> diff --git a/kernel/sched/stats.h b/kernel/sched/stats.h
+> index 33ffd41935ba..37e33c0eeb7c 100644
+> --- a/kernel/sched/stats.h
+> +++ b/kernel/sched/stats.h
+> @@ -158,15 +158,14 @@ static inline void psi_sched_switch(struct task_struct *prev,
+>   */
+>  static inline void sched_info_dequeue(struct rq *rq, struct task_struct *t)
+>  {
+> -	unsigned long long delta = 0;
+> -
+>  	if (t->sched_info.last_queued) {
+> +		unsigned long long delta;
+> +
+>  		delta = rq_clock(rq) - t->sched_info.last_queued;
+>  		t->sched_info.last_queued = 0;
+> +		t->sched_info.run_delay += delta;
+> +		rq_sched_info_dequeue(rq, delta);
+>  	}
+> -	t->sched_info.run_delay += delta;
+> -
+> -	rq_sched_info_dequeue(rq, delta);
+>  }
 
-Yes.
+Right.. clearly I missed the obvious there.. Lemme go add another patch
+on top of the lot.
 
-> 
->>
->> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
->> ---
->>   drivers/iommu/intel/iommu.c | 21 +++++++++++++++++++--
->>   1 file changed, 19 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
->> index f1742da42478..1cd4840e6f9f 100644
->> --- a/drivers/iommu/intel/iommu.c
->> +++ b/drivers/iommu/intel/iommu.c
->> @@ -4755,6 +4755,13 @@ static int prepare_domain_attach_device(struct
->> iommu_domain *domain,
->>   	if (!iommu)
->>   		return -ENODEV;
->>
->> +	if ((dmar_domain->flags & DOMAIN_FLAG_NESTING_MODE) &&
->> +	    !ecap_nest(iommu->ecap)) {
->> +		dev_err(dev, "%s: iommu not support nested translation\n",
->> +			iommu->name);
->> +		return -EINVAL;
->> +	}
->> +
->>   	/* check if this iommu agaw is sufficient for max mapped address */
->>   	addr_width = agaw_to_width(iommu->agaw);
->>   	if (addr_width > cap_mgaw(iommu->cap))
->> @@ -5451,11 +5458,21 @@ static int
->>   intel_iommu_enable_nesting(struct iommu_domain *domain)
->>   {
->>   	struct dmar_domain *dmar_domain = to_dmar_domain(domain);
->> +	struct dmar_drhd_unit *drhd;
->> +	struct intel_iommu *iommu;
->> +	bool has_nesting = false;
->>   	unsigned long flags;
->> -	int ret = -ENODEV;
->> +	int ret = -EINVAL;
->> +
->> +	for_each_active_iommu(iommu, drhd)
->> +		if (ecap_nest(iommu->ecap))
->> +			has_nesting = true;
->> +
->> +	if (!has_nesting)
->> +		return -ENODEV;
-> 
-> Isn't above still doing global consistency check?
+Something like this I suppose.
 
-The logic is if nested mode is globally unsupported, return false.
+---
+diff --git a/kernel/sched/stats.h b/kernel/sched/stats.h
+index 33ffd41935ba..111072ee9663 100644
+--- a/kernel/sched/stats.h
++++ b/kernel/sched/stats.h
+@@ -160,10 +160,11 @@ static inline void sched_info_dequeue(struct rq *rq, struct task_struct *t)
+ {
+ 	unsigned long long delta = 0;
+ 
+-	if (t->sched_info.last_queued) {
+-		delta = rq_clock(rq) - t->sched_info.last_queued;
+-		t->sched_info.last_queued = 0;
+-	}
++	if (!t->sched_info.last_queued)
++		return;
++
++	delta = rq_clock(rq) - t->sched_info.last_queued;
++	t->sched_info.last_queued = 0;
+ 	t->sched_info.run_delay += delta;
+ 
+ 	rq_sched_info_dequeue(rq, delta);
+@@ -176,12 +177,14 @@ static inline void sched_info_dequeue(struct rq *rq, struct task_struct *t)
+  */
+ static void sched_info_arrive(struct rq *rq, struct task_struct *t)
+ {
+-	unsigned long long now = rq_clock(rq), delta = 0;
++	unsigned long long now, delta = 0;
+ 
+-	if (t->sched_info.last_queued) {
+-		delta = now - t->sched_info.last_queued;
+-		t->sched_info.last_queued = 0;
+-	}
++	if (!t->sched_info.last_queued)
++		return;
++
++	now = rq_clock(rq);
++	delta = now - t->sched_info.last_queued;
++	t->sched_info.last_queued = 0;
+ 	t->sched_info.run_delay += delta;
+ 	t->sched_info.last_arrival = now;
+ 	t->sched_info.pcount++;
 
-> 
->>
->>   	spin_lock_irqsave(&device_domain_lock, flags);
->> -	if (nested_mode_support() && list_empty(&dmar_domain->devices))
->> {
->> +	if (list_empty(&dmar_domain->devices)) {
->>   		dmar_domain->flags |= DOMAIN_FLAG_NESTING_MODE;
->>   		dmar_domain->flags &= ~DOMAIN_FLAG_USE_FIRST_LEVEL;
->>   		ret = 0;
->> --
->> 2.25.1
-> 
 
-Best regards,
-baolu
