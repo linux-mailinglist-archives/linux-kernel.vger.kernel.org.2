@@ -2,126 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9101737F00D
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 01:44:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5173137F00F
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 01:44:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242332AbhELXnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 19:43:45 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:23535 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244112AbhELXcL (ORCPT
+        id S231249AbhELXoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 19:44:22 -0400
+Received: from mail-wm1-f42.google.com ([209.85.128.42]:40542 "EHLO
+        mail-wm1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233586AbhELXdk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 19:32:11 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1620862263; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=vn1GUprrTOTgFLsy5aDltqbfGp3QhAfUgbGNgrzy+6k=;
- b=JtNym1sC4Pf9snjmUHKBPCxGO6kQa9af8lseeRG2Dg4oniydmICiTvg27WdLe/tto2AyU/yn
- x7iZqBIaMbXnjhf3vT5KzrkLvosd6iOOgucLhvfv0vMFGEdhjQUEGuYIE8Z1N8lJI1D5olI2
- I5HXPh9m3Xp8l2dh/25P5wnqhto=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 609c65327bf557a012050396 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 12 May 2021 23:30:58
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 888B4C433D3; Wed, 12 May 2021 23:30:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C5925C433F1;
-        Wed, 12 May 2021 23:30:57 +0000 (UTC)
+        Wed, 12 May 2021 19:33:40 -0400
+Received: by mail-wm1-f42.google.com with SMTP id y124-20020a1c32820000b029010c93864955so508696wmy.5;
+        Wed, 12 May 2021 16:32:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1H+d0FBxQyBmCizFzbRyEoxvV7pCSwkXkm1m5umLuY4=;
+        b=N8gDeDCeXiCLYx1kdeuLqy/l7jZ4CZq4uN00fnTbQ0fmjmSByuOA2dOKwQlwyT9KeD
+         SOYvvYqNrGHHagmL1qSEo/+fRquqVfm2xJW7qSLQi2mgSKQ2MuKVCGjlUR6lbXzgO5EL
+         FIl4PCL1dw48U5pYY911drh3VclTCZ1o/5r0et+NhjoH0J5VJG2wS2dpOQe+mPVPAJgr
+         oTQmOKoBcruDgfRdEvwJ7EBagbzKRv1fCKQVrOO+/GuCS2YofdjGDJFU/U8L8jQWwvks
+         LMF8xeHqswcfRPsA9JJTwYAvQGVcscZ7xr0/0j+6TSidUplvp4c5u1Gox94uBMsEQOiq
+         fW0w==
+X-Gm-Message-State: AOAM531SNwHaN1snxTLh37NjhHqlc206h837jWJ1rco+adFyTA7cUloa
+        VS5WYr+jCDNqsWXPn3NqwYGjVcuMuiwkd6vz
+X-Google-Smtp-Source: ABdhPJyrWHK5hpJkgZiC7V6D/0QFJqr9C2oF38e/hMrtNMBBAj4fwLxfq8HoFrOyuq300gy/4GFR6g==
+X-Received: by 2002:a05:600c:293:: with SMTP id 19mr41463394wmk.144.1620862348337;
+        Wed, 12 May 2021 16:32:28 -0700 (PDT)
+Received: from rocinante.localdomain ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id e12sm1123249wrm.80.2021.05.12.16.32.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 16:32:27 -0700 (PDT)
+Date:   Thu, 13 May 2021 01:32:25 +0200
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Rajat Jain <rajatja@google.com>
+Cc:     Rajat Jain <rajatxjain@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
+        <linux-usb@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Dmitry Torokhov <dtor@google.com>
+Subject: Re: [PATCH v2 1/2] driver core: Move the "removable" attribute from
+ USB to core
+Message-ID: <20210512233225.GA137103@rocinante.localdomain>
+References: <20210424021631.1972022-1-rajatja@google.com>
+ <20210512010049.GA89346@rocinante.localdomain>
+ <CAA93t1ohAFM1U2xTvbd1J1dUCaZwh6GYNGib_AM0J7+qHwSf1A@mail.gmail.com>
+ <CACK8Z6HuKqgYQZGJZGQGr5FC96naV+1yXZuwYTy5Ydb5=k40KA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 12 May 2021 16:30:57 -0700
-From:   khsieh@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robdclark@gmail.com,
-        sean@poorly.run, vkoul@kernel.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] drm/msm/dp: handle irq_hpd with sink_count = 0
- correctly
-In-Reply-To: <CAE-0n517Xkj=-m=gYv-FkpWGP+xC=ht8pRTtr5V8CKdrNtq9gQ@mail.gmail.com>
-References: <1620840558-28684-1-git-send-email-khsieh@codeaurora.org>
- <CAE-0n517Xkj=-m=gYv-FkpWGP+xC=ht8pRTtr5V8CKdrNtq9gQ@mail.gmail.com>
-Message-ID: <f259274c5b474b51d31b05845d06c55b@codeaurora.org>
-X-Sender: khsieh@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CACK8Z6HuKqgYQZGJZGQGr5FC96naV+1yXZuwYTy5Ydb5=k40KA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-12 11:50, Stephen Boyd wrote:
-> Quoting Kuogee Hsieh (2021-05-12 10:29:18)
->> irq_hpd interrupt should be handled after dongle plugged in and
->> before dongle unplugged. Hence irq_hpd interrupt is enabled at
->> the end of the plugin handle and disabled at the beginning of
->> unplugged handle. Current irq_hpd with sink_count = 0 is wrongly
->> handled same as the dongle unplugged which tears down the mainlink
->> and disables the phy. This patch fixes this problem by only tearing
->> down the mainlink but keeping phy enabled at irq_hpd with
->> sink_count = 0 handle so that next irq_hpe with sink_count =1 can be
->> handled by setup mainlink only.
->> 
->> Changes in v2:
->> -- add ctrl->phy_Power_count
->> 
->> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
->> ---
->>  drivers/gpu/drm/msm/dp/dp_catalog.c |  5 +--
->>  drivers/gpu/drm/msm/dp/dp_ctrl.c    | 83 
->> ++++++++++++++++++++++++++++++++++---
->>  drivers/gpu/drm/msm/dp/dp_ctrl.h    |  2 +
->>  drivers/gpu/drm/msm/dp/dp_display.c | 46 +++++++++++++++-----
->>  4 files changed, 118 insertions(+), 18 deletions(-)
->> 
->> diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.c 
->> b/drivers/gpu/drm/msm/dp/dp_catalog.c
->> index b1a9b1b..f4f53f2 100644
->> --- a/drivers/gpu/drm/msm/dp/dp_catalog.c
->> +++ b/drivers/gpu/drm/msm/dp/dp_catalog.c
->> @@ -582,10 +582,9 @@ void dp_catalog_ctrl_hpd_config(struct dp_catalog 
->> *dp_catalog)
->> 
->>         u32 reftimer = dp_read_aux(catalog, REG_DP_DP_HPD_REFTIMER);
->> 
->> -       /* enable HPD interrupts */
->> +       /* enable HPD plug and unplug interrupts */
->>         dp_catalog_hpd_config_intr(dp_catalog,
->> -               DP_DP_HPD_PLUG_INT_MASK | DP_DP_IRQ_HPD_INT_MASK
->> -               | DP_DP_HPD_UNPLUG_INT_MASK | 
->> DP_DP_HPD_REPLUG_INT_MASK, true);
->> +               DP_DP_HPD_PLUG_INT_MASK | DP_DP_HPD_UNPLUG_INT_MASK, 
->> true);
->> 
->>         /* Configure REFTIMER and enable it */
->>         reftimer |= DP_DP_HPD_REFTIMER_ENABLE;
->> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c 
->> b/drivers/gpu/drm/msm/dp/dp_ctrl.c
->> index 8d59eb9..b5bed5f 100644
->> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
->> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
->> @@ -77,6 +77,8 @@ struct dp_ctrl_private {
->>         struct dp_parser *parser;
->>         struct dp_catalog *catalog;
->> 
->> +       int phy_power_count;
-> 
-> This is still redundant. Please restructure the code to call the power
-> on/off function in one place and the init/exit function in another so
-> that we don't have to reference count it.
+Hi Rajat,
 
-ok, v3 patch uploaded
+> Posted a v3 of this patch here:
+> https://lore.kernel.org/patchwork/patch/1428133/
+
+I saw!  Thank you!
+
+I also found the original conversation around the main idea that's
+driving the work done here, as per:
+
+  https://lore.kernel.org/lkml/20200601232542.GA473883@bjorn-Precision-5520/
+
+This helped to fill-in some missing pieces, so to speak, I've bad.
+
+[...]
+> > > > @@ -2504,8 +2523,16 @@ static int device_add_attrs(struct device *dev)
+> > > >                       goto err_remove_dev_online;
+> > > >       }
+> > > >
+> > > > +     if (type && type->supports_removable) {
+> > > > +             error = device_create_file(dev, &dev_attr_removable);
+> > > > +             if (error)
+> > > > +                     goto err_remove_dev_waiting_for_supplier;
+> > > > +     }
+> > > > +
+> > > >       return 0;
+> > >
+> > One of my primary considerations was also that the existing UAPI for
+> > the USB's "removable" attribute shouldn't be changed. Currently, it
+> > exists for all USB devices, so I think the current code / check is OK.
+[...]
+
+We wouldn't change addition of this attribute to the USB devices - after
+the lift to the device core it still has to work as before, as you say.
+
+Just to clarify.   What I was wondering is whether we should add this new
+sysfs object so that every device now would get this attribute going
+forward, regardless of whether it would have the "type->supports_removable"
+set.
+
+We would then have a lot of devices with this attribute set to
+"unknown", and then were the is an actual support it would then be
+either "fixed" or "removable".
+
+Having said that, Bjorn pointed out to me that this might be
+not necessarily desirable.
+
+We were also wondering if we should only set DEVICE_REMOVABLE for
+devices known to be behind an external-facing port, and let everything
+else be set to "unknown" (or whatever the default would be).
+
+Krzysztof
