@@ -2,92 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3A1C37B83A
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 10:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6A2E37B83F
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 10:44:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230328AbhELIp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 04:45:28 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:2639 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229968AbhELIp1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 04:45:27 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Fg7ZR35LGzlYJM;
-        Wed, 12 May 2021 16:42:07 +0800 (CST)
-Received: from [10.174.187.224] (10.174.187.224) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 12 May 2021 16:44:11 +0800
-Subject: Re: [RFC PATCH v4 01/13] iommu: Introduce dirty log tracking
- framework
-To:     Lu Baolu <baolu.lu@linux.intel.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "Joerg Roedel" <joro@8bytes.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Yi Sun <yi.y.sun@linux.intel.com>,
-        Tian Kevin <kevin.tian@intel.com>
-References: <20210507102211.8836-1-zhukeqian1@huawei.com>
- <20210507102211.8836-2-zhukeqian1@huawei.com>
- <efc2d868-28ba-8ed9-1d6b-610b67d671b5@linux.intel.com>
- <18ac787a-179e-71f7-728b-c43feda80a16@huawei.com>
- <55fda826-9ab6-a3a0-b17e-a4d4879f00bc@linux.intel.com>
- <a8df289a-47c2-c193-cd6f-8415f68b900f@huawei.com>
- <f47e90c6-f3c4-b28f-a810-e03afe79e62d@linux.intel.com>
- <60182a35-e151-7150-3708-4e58dd8e78da@huawei.com>
- <36cc7267-6aa3-db54-b08c-c2dfc0bbacb6@linux.intel.com>
-CC:     Alex Williamson <alex.williamson@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>,
-        <yuzenghui@huawei.com>, <lushenming@huawei.com>
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-Message-ID: <e38f1837-b814-3717-2faf-4df8349cb57c@huawei.com>
-Date:   Wed, 12 May 2021 16:44:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S230370AbhELIpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 04:45:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57530 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229968AbhELIpd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 04:45:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 00852613C9;
+        Wed, 12 May 2021 08:44:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620809065;
+        bh=wtyfChv9H4tAXRucGeEUaqkwZzsSy8E4mSqAZXz/tBw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=TgBnKgiDkB7a0KA5HG/fO+8pykepeityp9fMt8RfDQZTB0RJnZS0+e3QAjJ+T63+g
+         s170WY4+9Lp6RzAooO1vbnj1dmhE3UzlvKt8tN3+B0+VguYc5J6HUa48PnKiBIlF7Z
+         mJLnnweiP/UaqE1YGElsRU1zhxPsce/c/i+GkakvTcCMIHN78vptzxl/5D64kD514Y
+         7wd6oLntL4cpLkwcfL+AlogaxBps6nXp0hw8yrGVyum0ePAPZ8VCHpq2DGiqyACEG3
+         FxiiBCI7ybdQ+QQMoSpEKGU6AY65OmsCAvlCa1jEjA7VYNZEjSD9C4nUNZOll2vmKe
+         RhNnIcQDyPjRA==
+Date:   Wed, 12 May 2021 10:44:16 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>,
+        "Jonathan Corbet" <corbet@lwn.net>, Arnd Bergmann <arnd@arndb.de>,
+        Borislav Petkov <bp@alien8.de>,
+        David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        James Morse <james.morse@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Richter <rric@kernel.org>,
+        Thorsten Leemhuis <linux@leemhuis.info>,
+        Tony Luck <tony.luck@intel.com>, keyrings@vger.kernel.org,
+        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 06/53] docs: admin-guide: avoid using UTF-8 chars
+Message-ID: <20210512104416.265a477b@coco.lan>
+In-Reply-To: <878s4m301i.fsf@collabora.com>
+References: <cover.1620641727.git.mchehab+huawei@kernel.org>
+        <4b372b47487992fa0b4036b4bfbb6c879f497786.1620641727.git.mchehab+huawei@kernel.org>
+        <878s4m301i.fsf@collabora.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <36cc7267-6aa3-db54-b08c-c2dfc0bbacb6@linux.intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.187.224]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Mon, 10 May 2021 14:40:09 -0400
+Gabriel Krisman Bertazi <krisman@collabora.com> escreveu:
 
+> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> writes:
+>=20
+> > While UTF-8 characters can be used at the Linux documentation,
+> > the best is to use them only when ASCII doesn't offer a good replacemen=
+t.
+> > So, replace the occurences of the following UTF-8 characters:
+> >
+> > 	- U+00a0 ('=C2=A0'): NO-BREAK SPACE
+> > 	- U+2013 ('=E2=80=93'): EN DASH
+> > 	- U+2014 ('=E2=80=94'): EM DASH
+> >
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > ---
+> >  Documentation/admin-guide/index.rst           |  2 +-
+> >  Documentation/admin-guide/module-signing.rst  |  4 +-
+> >  Documentation/admin-guide/ras.rst             | 94 +++++++++----------
+> >  .../admin-guide/reporting-issues.rst          | 12 +--
+> >  4 files changed, 56 insertions(+), 56 deletions(-) =20
+>=20
+> Hi Mauro,
+>=20
+> This patch misses one occurrence of U+2014 in
+> Documentation/admin-guide/sysctl/kernel.rst:1288.
 
-On 2021/5/12 11:20, Lu Baolu wrote:
-> On 5/11/21 3:40 PM, Keqian Zhu wrote:
->>> For upper layers, before starting page tracking, they check the
->>> dirty_page_trackable attribution of the domain and start it only it's
->>> capable. Once the page tracking is switched on the vendor iommu driver
->>> (or iommu core) should block further device attach/detach operations
->>> until page tracking is stopped.
->> But when a domain becomes capable after detaching a device, the upper layer
->> still needs to query it and enable dirty log for it...
->>
->> To make things coordinated, maybe the upper layer can register a notifier,
->> when the domain's capability change, the upper layer do not need to query, instead
->> they just need to realize a callback, and do their specific policy in the callback.
->> What do you think?
->>
-> 
-> That might be an option. But why not checking domain's attribution every
-> time a new tracking period is about to start?
-Hi Baolu,
+It ended to be on a separate patch.
 
-I'll add an attribution in iommu_domain, and the vendor iommu driver will update
-the attribution when attach/detach devices.
+> There are also countless occurrences in Documentation/, outside of
+> Documentation/admin-guide.  I suppose another patch in the series, which
+> I didn't receive, will fix them?
 
-The attribute should be protected by a lock, so the upper layer shouldn't access
-the attribute directly. Then the iommu_domain_support_dirty_log() still should be
-retained. Does this design looks good to you?
+Yes. This series should fix all occurrences inside Documentation/ on
+*.rst files and on ABI, except for Documentation/translations[1].
+
+[1] Still it probably makes sense to do a subset of the changes
+from this series there, but touching non-Latin translations are riskier.
+
+> These characters will just reappear elsewhere, eventually. I'm not sure
+> what is the gain here, other than minor consistence improvements.
+
+The main point here is that a large amount of those UTF-8 characters
+appeared as result of document conversion from DocBook/LaTeX/Markdown.
+
+As the conversion ended, I don't expect the need of re-doing a series
+like that in the near future.
+
+There are even some cases where the UTF-8 were doing wrong things, like
+using an EN DASH instead of an hyphen in order to pass a command line
+parameter, and the addition of non-printable BOM characters.
+
+So, IMO, this is a necessarily cleanup after the conversion.
+
+> But we
+> should add a Warning during documentation generation (if there isn't one
+> already), to prevent them from spreading again.
+
+Not sure if it is worth... See: people can (and should) use UTF-8
+characters when needed, like for instance using Latin accented=20
+characters on names and translations, and use Greek letters when
+pertinent, like using MICRO SIGN or GREEK SMALL LETTER MU to
+represent microsseconds.
+
+On the other hand, using curly commas instead of ASCII ones and
+dashes instead of -- and --- only makes harder for people to type
+documents with normal editors without any gain, as Sphinx already
+convert those into curly commas and EN/EM DASH when it generates=20
+html/pdf docs.
+
 
 Thanks,
-Keqian
+Mauro
