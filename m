@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F46437CDFF
+	by mail.lfdr.de (Postfix) with ESMTP id B798F37CE00
 	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:16:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343940AbhELRAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 13:00:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36062 "EHLO mail.kernel.org"
+        id S1343958AbhELRAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 13:00:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237929AbhELP4y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:56:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4AE5061433;
-        Wed, 12 May 2021 15:28:53 +0000 (UTC)
+        id S237942AbhELP4z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:56:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B096C61928;
+        Wed, 12 May 2021 15:28:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620833333;
-        bh=NMclS5wjHRBtVyRdUkVEaRAvKEfqBw3aJqBzkZT6iwo=;
+        s=korg; t=1620833336;
+        bh=gwS0c3Vb7uj7NGu3ju9bETQclPXFifb69g+XAZjW9gI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=02kABhb01CEXyS+bhqTYmTSD5XOO5YEO8b2HxGJtkYVaMD2o/B8RdWhi6ulMVyNyy
-         j0eO9F9UFDmAkYKzco7CVWp4tnwIuXnopdZTM5/zM8mIgJWoXXj2G99sHtD9yW2u1T
-         NcrvUJb0xZBr87cOcfmORAlogm3dHMrIGcG4H1Vs=
+        b=OKJ7YtWeZzYEvK8H89SQ1K70XkPegnOmT7LN2rI1Wcu2mR71/7D279FOafc2axLcF
+         /jY7Vz6eKx1LbwqbtzE204LMvOeQ3iN8lbybCk8mlrki/flk4K1Im9Ali6QDuDmbEp
+         2STWy1+m3nE/C3OJs0xZiEVL6O9B5MXCit0NPw5U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
+        stable@vger.kernel.org,
+        Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>,
         Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.11 073/601] drm/amdgpu: add new MC firmware for Polaris12 32bit ASIC
-Date:   Wed, 12 May 2021 16:42:30 +0200
-Message-Id: <20210512144830.230383038@linuxfoundation.org>
+Subject: [PATCH 5.11 074/601] drm/amdgpu: Init GFX10_ADDR_CONFIG for VCN v3 in DPG mode.
+Date:   Wed, 12 May 2021 16:42:31 +0200
+Message-Id: <20210512144830.263420306@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144827.811958675@linuxfoundation.org>
 References: <20210512144827.811958675@linuxfoundation.org>
@@ -39,50 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evan Quan <evan.quan@amd.com>
+From: Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>
 
-commit c83c4e1912446db697a120eb30126cd80cbf6349 upstream.
+commit 8bf073ca9235fe38d7b74a0b4e779cfa7cc70fc9 upstream.
 
-Polaris12 32bit ASIC needs a special MC firmware.
+Otherwise tiling modes that require the values form this field
+(In particular _*_X) would be corrupted upon video decode.
 
-Signed-off-by: Evan Quan <evan.quan@amd.com>
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Copied from the VCN v2 code.
+
+Fixes: 99541f392b4d ("drm/amdgpu: add mc resume DPG mode for VCN3.0")
+Reviewed-and-Tested by: Leo Liu <leo.liu@amd.com>
+Signed-off-by: Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c |   13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
-@@ -59,6 +59,7 @@ MODULE_FIRMWARE("amdgpu/tonga_mc.bin");
- MODULE_FIRMWARE("amdgpu/polaris11_mc.bin");
- MODULE_FIRMWARE("amdgpu/polaris10_mc.bin");
- MODULE_FIRMWARE("amdgpu/polaris12_mc.bin");
-+MODULE_FIRMWARE("amdgpu/polaris12_32_mc.bin");
- MODULE_FIRMWARE("amdgpu/polaris11_k_mc.bin");
- MODULE_FIRMWARE("amdgpu/polaris10_k_mc.bin");
- MODULE_FIRMWARE("amdgpu/polaris12_k_mc.bin");
-@@ -243,10 +244,16 @@ static int gmc_v8_0_init_microcode(struc
- 			chip_name = "polaris10";
- 		break;
- 	case CHIP_POLARIS12:
--		if (ASICID_IS_P23(adev->pdev->device, adev->pdev->revision))
-+		if (ASICID_IS_P23(adev->pdev->device, adev->pdev->revision)) {
- 			chip_name = "polaris12_k";
--		else
--			chip_name = "polaris12";
-+		} else {
-+			WREG32(mmMC_SEQ_IO_DEBUG_INDEX, ixMC_IO_DEBUG_UP_159);
-+			/* Polaris12 32bit ASIC needs a special MC firmware */
-+			if (RREG32(mmMC_SEQ_IO_DEBUG_DATA) == 0x05b4dc40)
-+				chip_name = "polaris12_32";
-+			else
-+				chip_name = "polaris12";
-+		}
- 		break;
- 	case CHIP_FIJI:
- 	case CHIP_CARRIZO:
+--- a/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/vcn_v3_0.c
+@@ -584,6 +584,10 @@ static void vcn_v3_0_mc_resume_dpg_mode(
+ 	WREG32_SOC15_DPG_MODE(inst_idx, SOC15_DPG_MODE_OFFSET(
+ 			VCN, inst_idx, mmUVD_VCPU_NONCACHE_SIZE0),
+ 			AMDGPU_GPU_PAGE_ALIGN(sizeof(struct amdgpu_fw_shared)), 0, indirect);
++
++	/* VCN global tiling registers */
++	WREG32_SOC15_DPG_MODE(0, SOC15_DPG_MODE_OFFSET(
++		UVD, 0, mmUVD_GFX10_ADDR_CONFIG), adev->gfx.config.gb_addr_config, 0, indirect);
+ }
+ 
+ static void vcn_v3_0_disable_static_power_gating(struct amdgpu_device *adev, int inst)
 
 
