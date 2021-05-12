@@ -2,32 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F52B37CEC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F097937CDFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:16:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241182AbhELRGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 13:06:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37078 "EHLO mail.kernel.org"
+        id S1343839AbhELQ7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 12:59:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237744AbhELP4S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:56:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3499D61453;
-        Wed, 12 May 2021 15:28:21 +0000 (UTC)
+        id S237871AbhELP4a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:56:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6611D61C1E;
+        Wed, 12 May 2021 15:28:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620833301;
-        bh=tvYm0EGFUqeYlgwdXWIFOc77jLjBntRRaa/VugxJFn4=;
+        s=korg; t=1620833323;
+        bh=WpcLTHjKv5NQ1sL3+0oPPHvyRL2/Ps9DXZuV7pQtd/0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=etw1GVda/jxnhPcRw1lPXAZ9MCRZp5hh9MTEt91sh6AhF+Z58kpN4nOEj1alQjNR2
-         zhhvIL807rUtBztUzncFunIpJ+5Mefpaa1QvV5mBgIL0XvPMVhJHwHExQDazedAu2h
-         rAu50b+g+Xo5nvWC9KUbzsWQxR5kQL1dzRiZdbBo=
+        b=miPJf9UOsBgdSjKJ/HDCkfZMiJ1QcgAFPi/3fOsU7nNEwqr80mel7ot7aC7MgReSD
+         V2RAZing2pT3K0I/FA7d3M/PfvU2DM99LLpQ8JASsIt1i67DNsXPvWAN8x0OhqTr8E
+         5JR0rIE4ynFPmzuv9mHD7hWzu0K7xtGZiir4B+BQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wayne Lin <Wayne.Lin@amd.com>,
-        Lyude Paul <lyude@redhat.com>
-Subject: [PATCH 5.11 068/601] drm/dp_mst: Set CLEAR_PAYLOAD_ID_TABLE as broadcast
-Date:   Wed, 12 May 2021 16:42:25 +0200
-Message-Id: <20210512144830.051154699@linuxfoundation.org>
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Robert Foss <robert.foss@linaro.org>,
+        Xin Ji <xji@analogixsemi.com>, Sam Ravnborg <sam@ravnborg.org>,
+        dri-devel@lists.freedesktop.org,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: [PATCH 5.11 069/601] drm: bridge: fix ANX7625 use of mipi_dsi_() functions
+Date:   Wed, 12 May 2021 16:42:26 +0200
+Message-Id: <20210512144830.091001249@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144827.811958675@linuxfoundation.org>
 References: <20210512144827.811958675@linuxfoundation.org>
@@ -39,43 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wayne Lin <Wayne.Lin@amd.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-commit d919d3d6cdb31d0f9fe06c880f683a24f2838813 upstream.
+commit ed01fca38717169fcb61bd45ad1c3750d9c40d59 upstream.
 
-[Why & How]
-According to DP spec, CLEAR_PAYLOAD_ID_TABLE is a path broadcast request
-message and current implementation is incorrect. Fix it.
+The Analogix DRM ANX7625 bridge driver uses mips_dsi_() function
+interfaces so it should select DRM_MIPI_DSI to prevent build errors.
 
-Signed-off-by: Wayne Lin <Wayne.Lin@amd.com>
+ERROR: modpost: "mipi_dsi_attach" [drivers/gpu/drm/bridge/analogix/anx7625.ko] undefined!
+ERROR: modpost: "mipi_dsi_device_register_full" [drivers/gpu/drm/bridge/analogix/anx7625.ko] undefined!
+ERROR: modpost: "of_find_mipi_dsi_host_by_node" [drivers/gpu/drm/bridge/analogix/anx7625.ko] undefined!
+ERROR: modpost: "mipi_dsi_device_unregister" [drivers/gpu/drm/bridge/analogix/anx7625.ko] undefined!
+ERROR: modpost: "mipi_dsi_detach" [drivers/gpu/drm/bridge/analogix/anx7625.ko] undefined!
+
+Fixes: 8bdfc5dae4e3 ("drm/bridge: anx7625: Add anx7625 MIPI DSI/DPI to DP")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
+Cc: Xin Ji <xji@analogixsemi.com>
+Cc: Sam Ravnborg <sam@ravnborg.org>
+Cc: dri-devel@lists.freedesktop.org
+Cc: Andrzej Hajda <a.hajda@samsung.com>
+Cc: Neil Armstrong <narmstrong@baylibre.com>
+Cc: Robert Foss <robert.foss@linaro.org>
 Cc: stable@vger.kernel.org
-Reviewed-by: Lyude Paul <lyude@redhat.com>
-Signed-off-by: Lyude Paul <lyude@redhat.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210224101521.6713-3-Wayne.Lin@amd.com
+Signed-off-by: Robert Foss <robert.foss@linaro.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210415183619.1431-1-rdunlap@infradead.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/drm_dp_mst_topology.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/bridge/analogix/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/gpu/drm/drm_dp_mst_topology.c
-+++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-@@ -1154,6 +1154,7 @@ static void build_clear_payload_id_table
- 
- 	req.req_type = DP_CLEAR_PAYLOAD_ID_TABLE;
- 	drm_dp_encode_sideband_req(&req, msg);
-+	msg->path_msg = true;
- }
- 
- static int build_enum_path_resources(struct drm_dp_sideband_msg_tx *msg,
-@@ -2824,7 +2825,8 @@ static int set_hdr_from_dst_qlock(struct
- 
- 	req_type = txmsg->msg[0] & 0x7f;
- 	if (req_type == DP_CONNECTION_STATUS_NOTIFY ||
--		req_type == DP_RESOURCE_STATUS_NOTIFY)
-+		req_type == DP_RESOURCE_STATUS_NOTIFY ||
-+		req_type == DP_CLEAR_PAYLOAD_ID_TABLE)
- 		hdr->broadcast = 1;
- 	else
- 		hdr->broadcast = 0;
+--- a/drivers/gpu/drm/bridge/analogix/Kconfig
++++ b/drivers/gpu/drm/bridge/analogix/Kconfig
+@@ -30,6 +30,7 @@ config DRM_ANALOGIX_ANX7625
+ 	tristate "Analogix Anx7625 MIPI to DP interface support"
+ 	depends on DRM
+ 	depends on OF
++	select DRM_MIPI_DSI
+ 	help
+ 	  ANX7625 is an ultra-low power 4K mobile HD transmitter
+ 	  designed for portable devices. It converts MIPI/DPI to
 
 
