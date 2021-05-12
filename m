@@ -2,92 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9B3637B40B
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 04:02:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFA9237B40E
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 04:03:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbhELCDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 22:03:33 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:2780 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230095AbhELCDc (ORCPT
+        id S230115AbhELCET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 22:04:19 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:9842 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229973AbhELCES (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 22:03:32 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FfydK2cnszmg9n;
-        Wed, 12 May 2021 09:59:01 +0800 (CST)
-Received: from [10.174.176.232] (10.174.176.232) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 12 May 2021 10:02:16 +0800
-Subject: Re: [PATCH v3 2/5] mm/huge_memory.c: use page->deferred_list
-To:     Matthew Wilcox <willy@infradead.org>
-CC:     <akpm@linux-foundation.org>, <ziy@nvidia.com>,
-        <william.kucharski@oracle.com>, <yang.shi@linux.alibaba.com>,
-        <aneesh.kumar@linux.ibm.com>, <rcampbell@nvidia.com>,
-        <songliubraving@fb.com>, <kirill.shutemov@linux.intel.com>,
-        <riel@surriel.com>, <hannes@cmpxchg.org>, <minchan@kernel.org>,
-        <hughd@google.com>, <adobriyan@gmail.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-fsdevel@vger.kernel.org>
-References: <20210511134857.1581273-1-linmiaohe@huawei.com>
- <20210511134857.1581273-3-linmiaohe@huawei.com>
- <YJsNRtg5IcMY7V/F@casper.infradead.org>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <b2b1f4e6-bc37-160b-5931-f64730d5ef53@huawei.com>
-Date:   Wed, 12 May 2021 10:02:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 11 May 2021 22:04:18 -0400
+X-UUID: 837896f299db42c7b372cb76a202a70c-20210512
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=T8K9jXRssUMgZPyRniiOWW1kVzpxyI3Fg5ZYopeSdmA=;
+        b=jsk7+4WyMcgmczQF9yimk50VfxbZGAupjqqzr5exHQsJa7Vc15VMuYi6F95UYBW4I9f1dKcMSudMuVR0k/G2tbuae2JvoaTf8ZQDEfKyvPMmhXSPJ8++clafgSKUIhP30zo04sCcRoAiTHCncWtTsWwKPvgr6iM2PMBuVqvmrIE=;
+X-UUID: 837896f299db42c7b372cb76a202a70c-20210512
+Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1048197291; Wed, 12 May 2021 10:03:07 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
+ (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 12 May
+ 2021 10:02:59 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 12 May 2021 10:02:58 +0800
+Message-ID: <1620784978.25159.4.camel@mhfsdcap03>
+Subject: Re: [PATCH] usb: core: hub: fix race condition about TRSMRCY of
+ resume
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Alan Stern <stern@rowland.harvard.edu>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Bixuan Cui <cuibixuan@huawei.com>,
+        Eugeniu Rosca <erosca@de.adit-jv.com>,
+        "Oliver Neukum" <oneukum@suse.com>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Tianping Fang <tianping.fang@mediatek.com>,
+        Eddie Hung <eddie.hung@mediatek.com>,
+        "Ikjoon Jang" <ikjn@chromium.org>
+Date:   Wed, 12 May 2021 10:02:58 +0800
+In-Reply-To: <YJpqJr/3XEIYrtko@kroah.com>
+References: <20210511101522.34193-1-chunfeng.yun@mediatek.com>
+         <YJpqJr/3XEIYrtko@kroah.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-In-Reply-To: <YJsNRtg5IcMY7V/F@casper.infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.232]
-X-CFilter-Loop: Reflected
+X-TM-SNTS-SMTP: BB3D69465F189431B6CB5B8CFC24F1B67DD4789539F36897903386BFD931EB7C2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/5/12 7:03, Matthew Wilcox wrote:
-> On Tue, May 11, 2021 at 09:48:54PM +0800, Miaohe Lin wrote:
->> Now that we can represent the location of ->deferred_list instead of
->> ->mapping + ->index, make use of it to improve readability.
->>
->> Reviewed-by: Yang Shi <shy828301@gmail.com>
->> Reviewed-by: David Hildenbrand <david@redhat.com>
->> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->> ---
->>  mm/huge_memory.c | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
->> index 63ed6b25deaa..76ca1eb2a223 100644
->> --- a/mm/huge_memory.c
->> +++ b/mm/huge_memory.c
->> @@ -2868,7 +2868,7 @@ static unsigned long deferred_split_scan(struct shrinker *shrink,
->>  	spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
->>  	/* Take pin on all head pages to avoid freeing them under us */
->>  	list_for_each_safe(pos, next, &ds_queue->split_queue) {
->> -		page = list_entry((void *)pos, struct page, mapping);
->> +		page = list_entry((void *)pos, struct page, deferred_list);
->>  		page = compound_head(page);
-> 
-> This is an equivalent transformation, but it doesn't really go far
-> enough.  I think you want something like this:
-> 
-> 	struct page *page, *next;
-> 
-> 	list_for_each_entry_safe(page, next, &ds_queue->split_queue,
-> 							deferred_list) {
-> 		struct page *head = page - 1;
-> 		... then use head throughout ...
-> 	}
-> 
-
-Many thanks for your time and reminder. list_for_each_entry_safe is equivalent
-to list_for_each_safe + list_entry and there is many places using list_for_each_safe
-+ list_entry, so I think it's ok to keep the code as it is.
-Thanks again. :)
-
-> .
-> 
+T24gVHVlLCAyMDIxLTA1LTExIGF0IDEzOjI3ICswMjAwLCBHcmVnIEtyb2FoLUhhcnRtYW4gd3Jv
+dGU6DQo+IE9uIFR1ZSwgTWF5IDExLCAyMDIxIGF0IDA2OjE1OjIyUE0gKzA4MDAsIENodW5mZW5n
+IFl1biB3cm90ZToNCj4gPiBUaGlzIG1heSBoYXBwZW4gaWYgdGhlIHBvcnQgYmVjb21lcyByZXN1
+bWUgc3RhdHVzIGV4YWN0bHkNCj4gPiB3aGVuIHVzYl9wb3J0X3Jlc3VtZSgpIGdldHMgcG9ydCBz
+dGF0dXMsIGl0IHN0aWxsIG5lZWQgcHJvdmlkZQ0KPiA+IGEgVFJTTUNSWSB0aW1lIGJlZm9yZSBh
+Y2Nlc3MgdGhlIGRldmljZS4NCj4gPiANCj4gPiBSZXBvcnRlZC1ieTogVGlhbnBpbmcgRmFuZyA8
+dGlhbnBpbmcuZmFuZ0BtZWRpYXRlay5jb20+DQo+ID4gU2lnbmVkLW9mZi1ieTogQ2h1bmZlbmcg
+WXVuIDxjaHVuZmVuZy55dW5AbWVkaWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL3Vz
+Yi9jb3JlL2h1Yi5jIHwgNiArKystLS0NCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9u
+cygrKSwgMyBkZWxldGlvbnMoLSkNCj4gDQo+IERvZXMgdGhpcyBuZWVkIHRvIGdvIHRvIGFueSBv
+bGRlci9zdGFibGUga2VybmVscz8gIElmIHNvLCBob3cgZmFyIGJhY2s/DQoNClRoZSBmbG93IGlz
+IGNoYW5nZWQgYnkgDQoiYjAxYjAzZjNhZDgyIFVTQjogYWRkIG5ldyByb3V0aW5lIGZvciBjaGVj
+a2luZyBwb3J0LXJlc3VtZSB0eXBlIiwgYnV0DQppdCB3aWxsIGNhdXNlIGNvbmZsaWN0IHdpdGgN
+CiJhZDQ5M2U1ZTU4MDUgdXNiOiBhZGQgdXNiIHBvcnQgYXV0byBwb3dlciBvZmYgbWVjaGFuaXNt
+Ig0KIA0KPiANCj4gdGhhbmtzLA0KPiANCj4gZ3JlZyBrLWgNCg0K
 
