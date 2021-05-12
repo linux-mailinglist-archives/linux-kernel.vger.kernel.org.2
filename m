@@ -2,117 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BE9537CC33
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA0C337CD12
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:08:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233202AbhELQnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 12:43:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42370 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236952AbhELPre (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:47:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B35CB615FF;
-        Wed, 12 May 2021 15:24:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620833046;
-        bh=jjJSg1UkQ1lgP0jWjsn1+KaxdffEcxoj3ORUXacOc+M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qFV2oicgTFhsw+OD15BogcbG2+RpacUV7JYmYZhsSOrokhtXiWISAIMlpV0wxEC08
-         wJzrgqgm/kyw8TefEg/gww+jNx/MPaoqlr8JPOSYpaVLv6MAoltXLNj6w0nYbQRDvf
-         y5BJABiNAio7i4gJ4yRv87FU+pGK59exPNiQCXJRmwMU8syHmcnkGxYnh/li/OALgb
-         BhOJPBRj4LYnFebICxpSnkq6V09trHJM6deqN14LXfMGbV1rWjA7/VSutA9Nezw5lJ
-         /bN4kh6Z48raCKLSFJGA5lgkarBBZBe3ycL7bgJhgtjFRWH0IoSH8L2LDMYUnQWA/y
-         gc/ryxWSQuPng==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 5E3424034C; Wed, 12 May 2021 12:24:03 -0300 (-03)
-Date:   Wed, 12 May 2021 12:24:03 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Milian Wolff <milian.wolff@kdab.com>
-Cc:     acme@redhat.com, alexey.budankov@linux.intel.com,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        acme@kenel.org
-Subject: Re: [PATCH] perf buildid-list: Initialize zstd_data
-Message-ID: <YJvzE1fE7WRDzw57@kernel.org>
-References: <20210429185759.59870-1-milian.wolff@kdab.com>
- <3144693.egzistUG4v@milian-workstation>
+        id S1343553AbhELQxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 12:53:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233433AbhELPvJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:51:09 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F8D5C061344
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 08:26:53 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id b19-20020a05600c06d3b029014258a636e8so3255486wmn.2
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 08:26:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qo9U0GYt6DMr0n2/j17Wlk3nBr9MEvK6tP9ZxY2RR0c=;
+        b=Eby89UI0IAG4vUd4hCA4VLnkKIT10UJ9/FY4KM9dxGiMIRkb4azADDaexbelr6k5sx
+         XaoSmEef3ysKxVIHnzOPRMNZThU27cJ1GKGBtGyEnQgOi6a8607JtxknevpszcKNRFhD
+         uh2JvmBFdIhylyI33YepaRx/D71R4ORs1oIGMx5pmmB+hsVh8C7V0Oc2V5xofLGv8qjZ
+         s9GMae2bTFsdZSx/9JlBQON45QdycONzsC7ZWHtdrgSO5qVrUwNupo2xBe9D01gHvGoj
+         x/djK7Vu3wNSbhop6bSEW02MjHafRJq97BhcTFUO4I1ZRn+3moKhxnVMZFibQpkmW/zC
+         uEDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qo9U0GYt6DMr0n2/j17Wlk3nBr9MEvK6tP9ZxY2RR0c=;
+        b=nI0c2KC5+fB14fpwsTMni4Ak1kR4Y3rIZaOpQEIwU8oaPJ9iEW7gEGNGs6XvTjtQxB
+         lZdF9o0bFyW044u1sYMRUkMROGR2V86of2uT5ir+Jd/7znHQksxQcNIMwq9TgITl+ysi
+         9fu/Yyqlyj76hbsVkLTKXQSN45EOfNpe3WpvS/u57l4s4Ia1oUzRKMV3c6tkYGhU6PY8
+         hv7CRmEPF0apuYAGLU+1Ja++MZ+0u9Ua2aySXGDE+IvakMcaEHfJPHm7TZApvpjJmevZ
+         iVO6IdOZQ4JrQ5880IKdwUQf12mgD01PpE5px/jSjtuMZLlYbIPJi1bfji+tCwL70m+N
+         PF7g==
+X-Gm-Message-State: AOAM530/zH/u0BZjvyk4TjHNW795Ll9rwyf5Oax2DfanA6EUl8x0AuqB
+        ILpgn1rg32qAMbFGe80on3N0MA==
+X-Google-Smtp-Source: ABdhPJxK4OXOZyM8UmJPCc+lhHTTxoneOlyV6LIU6uC/nUXyW+Iz1VKA97tGwMOkipkrPdSRylyeZQ==
+X-Received: by 2002:a1c:e408:: with SMTP id b8mr8749252wmh.85.1620833211941;
+        Wed, 12 May 2021 08:26:51 -0700 (PDT)
+Received: from mkorpershoek-XPS-13-9370.home (lfbn-tou-1-1465-169.w90-89.abo.wanadoo.fr. [90.89.34.169])
+        by smtp.gmail.com with ESMTPSA id b7sm30931256wri.83.2021.05.12.08.26.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 08:26:51 -0700 (PDT)
+From:   Mattijs Korpershoek <mkorpershoek@baylibre.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Fabien Parent <fparent@baylibre.com>, linux-input@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Mattijs Korpershoek <mkorpershoek@baylibre.com>
+Subject: [PATCH v2 0/3] input: MT6358 PMIC button support
+Date:   Wed, 12 May 2021 17:26:45 +0200
+Message-Id: <20210512152648.39961-1-mkorpershoek@baylibre.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3144693.egzistUG4v@milian-workstation>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, May 12, 2021 at 05:14:29PM +0200, Milian Wolff escreveu:
-> On Donnerstag, 29. April 2021 20:57:59 CEST Milian Wolff wrote:
-> > Fixes segmentation fault when trying to obtain buildid list (e.g. via
-> > perf-archive) from a zstd-compressed `perf.data` file:
-> 
-> Ping, can someone please review and push this upstream? It's such a trivial 
-> fix, I would like to see it fixed upstream.
+The MediaTek MT6358 PMIC has support for two buttons: PWR and HOME.
 
-Fell thru the cracks, processing it now.
+The interrupt logic is a little different than other PMICs from the
+same family:
+for MT6323 and MT6397, we have one interrupt source per button
+* for MT6358, we have two interrupts lines per button: the press and
+* release interrupts are distinct sources.
 
-- Arnaldo
- 
-> Thanks
-> 
-> > ```
-> >     $ perf record -z ls
-> >     ...
-> >     [ perf record: Captured and wrote 0,010 MB perf.data, compressed
-> > (original 0,001 MB, ratio is 2,190) ] $ memcheck perf buildid-list
-> >     ...
-> >     ==57268== Invalid read of size 4
-> >     ==57268==    at 0x5260D88: ZSTD_decompressStream (in
-> > /usr/lib/libzstd.so.1.4.9) ==57268==    by 0x4BB51B: zstd_decompress_stream
-> > (zstd.c:100)
-> >     ==57268==    by 0x425C6C: perf_session__process_compressed_event
-> > (session.c:73) ==57268==    by 0x427450: perf_session__process_user_event
-> > (session.c:1631) ==57268==    by 0x42A609: reader__process_events
-> > (session.c:2207) ==57268==    by 0x42A609: __perf_session__process_events
-> > (session.c:2264) ==57268==    by 0x42A609: perf_session__process_events
-> > (session.c:2297) ==57268==    by 0x343A62: perf_session__list_build_ids
-> > (builtin-buildid-list.c:88) ==57268==    by 0x343A62: cmd_buildid_list
-> > (builtin-buildid-list.c:120) ==57268==    by 0x3C7732: run_builtin
-> > (perf.c:313)
-> >     ==57268==    by 0x331157: handle_internal_command (perf.c:365)
-> >     ==57268==    by 0x331157: run_argv (perf.c:409)
-> >     ==57268==    by 0x331157: main (perf.c:539)
-> >     ==57268==  Address 0x7470 is not stack'd, malloc'd or (recently) free'd
-> > ```
-> > 
-> > Signed-off-by: Milian Wolff <milian.wolff@kdab.com>
-> > ---
-> >  tools/perf/builtin-buildid-list.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/tools/perf/builtin-buildid-list.c
-> > b/tools/perf/builtin-buildid-list.c index 87f5b1a4a7fa..833405c27dae 100644
-> > --- a/tools/perf/builtin-buildid-list.c
-> > +++ b/tools/perf/builtin-buildid-list.c
-> > @@ -80,6 +80,9 @@ static int perf_session__list_build_ids(bool force, bool
-> > with_hits) if (!perf_header__has_feat(&session->header, HEADER_BUILD_ID))
-> >  		with_hits = true;
-> > 
-> > +	if (zstd_init(&(session->zstd_data), 0) < 0)
-> > +		pr_warning("Decompression initialization failed. Reported data 
-> may be
-> > incomplete.\n"); +
-> >  	/*
-> >  	 * in pipe-mode, the only way to get the buildids is to parse
-> >  	 * the record stream. Buildids are stored as RECORD_HEADER_BUILD_ID
-> 
-> 
-> -- 
-> Milian Wolff | milian.wolff@kdab.com | Senior Software Engineer
-> KDAB (Deutschland) GmbH, a KDAB Group company
-> Tel: +49-30-521325470
-> KDAB - The Qt, C++ and OpenGL Experts
+Initially, this series contained both mfd and input patches.
+To simplify maintenance and review the original series [1] has
+been split.
 
+Changes since v1 at [2]:
+- cover letter title prefixed with 'input'
 
+This series depends on [3]
+
+[1] https://lore.kernel.org/r/87tunpw339.fsf@baylibre.com
+[2] https://lore.kernel.org/r/20210506153718.256903-1-mkorpershoek@baylibre.com
+[3] https://lore.kernel.org/r/20210506094116.638527-1-mkorpershoek@baylibre.com
+
+Mattijs Korpershoek (3):
+  Input: mtk-pmic-keys - use get_irq_byname() instead of index
+  dt-bindings: input: mtk-pmic-keys: add MT6358 binding definition
+  Input: mtk-pmic-keys - add support for MT6358
+
+ .../bindings/input/mtk-pmic-keys.txt          |  5 +-
+ drivers/input/keyboard/mtk-pmic-keys.c        | 56 +++++++++++++++++--
+ 2 files changed, 56 insertions(+), 5 deletions(-)
 
 -- 
+2.27.0
 
-- Arnaldo
