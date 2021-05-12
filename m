@@ -2,108 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E800237EB86
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4869137EB87
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380954AbhELTdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:33:07 -0400
-Received: from mail-pg1-f182.google.com ([209.85.215.182]:33748 "EHLO
-        mail-pg1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346863AbhELRVu (ORCPT
+        id S1380980AbhELTdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:33:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239940AbhELRZn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 13:21:50 -0400
-Received: by mail-pg1-f182.google.com with SMTP id i5so13919160pgm.0;
-        Wed, 12 May 2021 10:20:42 -0700 (PDT)
+        Wed, 12 May 2021 13:25:43 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F415C06138C
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 10:23:17 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id di13so28009618edb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 10:23:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oyKCugOHrF3iiwRI1CT/wN4ttg5vDvJaE34/Sl3BUss=;
+        b=dZ2P6Nf8zI09crYT0Q9zg80xELxLlJV9Q8BBOVL1kOXS6EVivIw3xHH+SwEiSkF/z5
+         TyzYPCaK+P5B4DKytLs2THnS1Kxbt2rH+11yJ8fPkbXFG8uLm/2XYXD9Q6J+j8fGANxm
+         tEsjVGBa5zl5072hFmmzEVC1Wl5vHOuNtYzEIVsN9qxrXd6n2EGMcJJMu5ZewJi/RPga
+         Hj83F/mMMmfDJsa6k+5eQq1Ubqflf219wyHJqB68J+Z/RpyQKKTC1Y/4K8Gsw4U6nMdY
+         Z5bxByxLUqzOEEiypReff8QxFKUujGrhV6vPRTjCKbjTvZmaz2SXVhCvCU0lx5dfN5gJ
+         /Osg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7LGcYCNZMcfCP3NWFcJJOSDPCUnlEq03kEzY5RMmLcM=;
-        b=VTckpdLgLA5oquEjefQpHUhNroCbphuA3PLt1n06GLPgkmRJ9nueRDlj9o2nMxxigz
-         PanOzLSm+JOvYpEMDEgqnvIASdv+guZUqG7jxWhXVBLw9OlhtWU+/leNki8Gsf4cwrRw
-         MMBq/jZ2HUnrZAK/wk61eMsvC7prUntW0Az3jYKddbpfOSja8mN1SE7ZpX5y1m6WAa22
-         jeEKdRXF52b3wOeQ9fKZaVpXsLVfJk0YDDVbxqjwvHhJGFKTz6HiR5DXYhLNZVIlBRKs
-         WGSmKxmgphU/YmXS8TI+ahFla4UTvSudqU8CzpwrXhywJdy09jove0eAVUsATYSZavut
-         2+dg==
-X-Gm-Message-State: AOAM5309DMh/SPlWl3EK0l+NLc+Fj4JW5+zUcprtNGhu46KjDGIuw/cp
-        j4OlyVRbcXqNFkTvg1/GRKw=
-X-Google-Smtp-Source: ABdhPJzFXwRRMW5n7pGiz+V294eU3gB1BFVm04NenPL4KbwcBLPSsec4Ecele52LHZfmHrzXIwhV+g==
-X-Received: by 2002:a63:d70f:: with SMTP id d15mr37948115pgg.397.1620840041768;
-        Wed, 12 May 2021 10:20:41 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id j79sm333131pfd.184.2021.05.12.10.20.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 10:20:40 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id EBA8B41321; Wed, 12 May 2021 17:20:39 +0000 (UTC)
-Date:   Wed, 12 May 2021 17:20:39 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Hannes Reinecke <hare@suse.de>
-Cc:     axboe@kernel.dk, bvanassche@acm.org, ming.lei@redhat.com,
-        hch@infradead.org, jack@suse.cz, osandov@fb.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 7/8] null_blk: add error handling support for
- add_disk()
-Message-ID: <20210512172039.GQ4332@42.do-not-panic.com>
-References: <20210512064629.13899-1-mcgrof@kernel.org>
- <20210512064629.13899-8-mcgrof@kernel.org>
- <842b6a8d-8880-a0da-a38b-39378dc6ebb9@suse.de>
- <20210512164709.GA4332@42.do-not-panic.com>
- <d519b9ce-ad28-a266-786f-4128e0b91b9f@suse.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oyKCugOHrF3iiwRI1CT/wN4ttg5vDvJaE34/Sl3BUss=;
+        b=daz9kuuIA8ga0cClpJ4iim0zPVCefxEh8i+GSdLUWY8Etj81bPKEir+Xso1D+tmUan
+         THA9Bc5kYwbW/L87YI6p/Lq1P8oaBFd7FArgax3QN94494WbJJ27e1dMqs+DxyE53bJF
+         o3sdJTdgdJGtHcflRSIAtVgfi8sNxu7nbzT9v4le35iPQPP48EnXMh3/Dqz570OKr7+c
+         1FzFhFVxYQAmgveQ89hw2ZGcLh/gEm5jh4DqOg9mWEC8f/I2m9HB7oRSvsya1Q6dk5i2
+         hiA9kULp9Xjl9FOVboCsAXVcf0kaz1suGZL6VAEVrYpHDsBTzUx91/BIUnpHj34zogzG
+         qjhQ==
+X-Gm-Message-State: AOAM532DTYRvACf7f/1dSzBP2FGr9I7AJRfz2XD8fwNVe/+DtX0ASt4o
+        VWS/6i3qP3qpZ6uGmF6C/2JJlL/khO8rlnMyBflShhsiKl5oEW6v
+X-Google-Smtp-Source: ABdhPJx9dtHw4yIQzA4Rjc857bcPUhAz0JGfW+d3zkOljlTonr+OVpudbnfDWa0BXv6JHsRYANBAi/d+vE0E3pcgl7E=
+X-Received: by 2002:aa7:c6ca:: with SMTP id b10mr29676518eds.221.1620840195559;
+ Wed, 12 May 2021 10:23:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d519b9ce-ad28-a266-786f-4128e0b91b9f@suse.de>
+References: <20210512144837.204217980@linuxfoundation.org>
+In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 12 May 2021 22:53:04 +0530
+Message-ID: <CA+G9fYufHvM+C=39gtk5CF-r4sYYpRkQFGsmKrkdQcXj_XKFag@mail.gmail.com>
+Subject: Re: [PATCH 5.12 000/677] 5.12.4-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhuacai@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 07:12:03PM +0200, Hannes Reinecke wrote:
-> On 5/12/21 6:47 PM, Luis Chamberlain wrote:
-> > On Wed, May 12, 2021 at 05:16:39PM +0200, Hannes Reinecke wrote:
-> > > On 5/12/21 8:46 AM, Luis Chamberlain wrote:
-> > > > We never checked for errors on add_disk() as this function
-> > > > returned void. Now that this is fixed, use the shiny new
-> > > > error handling.
-> > > > 
-> > > > Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> > > > ---
-> > > >    drivers/block/null_blk/main.c | 9 +++++++--
-> > > >    1 file changed, 7 insertions(+), 2 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/block/null_blk/main.c b/drivers/block/null_blk/main.c
-> > > > index 5f006d9e1472..2346d1292b26 100644
-> > > > --- a/drivers/block/null_blk/main.c
-> > > > +++ b/drivers/block/null_blk/main.c
-> > > > @@ -1699,6 +1699,7 @@ static int init_driver_queues(struct nullb *nullb)
-> > > >    static int null_gendisk_register(struct nullb *nullb)
-> > > >    {
-> > > > +	int ret;
-> > > >    	sector_t size = ((sector_t)nullb->dev->size * SZ_1M) >> SECTOR_SHIFT;
-> > > >    	struct gendisk *disk;
-> > > > @@ -1719,13 +1720,17 @@ static int null_gendisk_register(struct nullb *nullb)
-> > > >    	strncpy(disk->disk_name, nullb->disk_name, DISK_NAME_LEN);
-> > > >    	if (nullb->dev->zoned) {
-> > > > -		int ret = null_register_zoned_dev(nullb);
-> > > > +		ret = null_register_zoned_dev(nullb);
-> > > >    		if (ret)
-> > > >    			return ret;
-> > > >    	}
-> > > > -	add_disk(disk);
-> > > > +	ret = add_disk(disk);
-> > > > +	if (ret) {
-> > > 
-> > > unregister_zoned_device() ?
-> > 
-> > That function does not exist, do you mean null_free_zoned_dev()? If so
-> > that is done by the caller.
-> > 
-> What I intended to say is that you are calling 'null_register_zoned_dev()'
-> at one point, but don't call a cleanup function if there is an error later
-> in the path, leaving the caller to guess whether null_register_zoned_dev()
-> has been called or not.
-> So we should call the cleanup function here, too.
+On Wed, 12 May 2021 at 21:27, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.12.4 release.
+> There are 677 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 14 May 2021 14:47:09 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.4-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-The cleanup for zone stuff is done on the caller.
 
-  Luis
+MIPS Clang build regression detected.
+MIPS gcc-10,9 and 8 build PASS.
+
+> Maciej W. Rozycki <macro@orcam.me.uk>
+>     MIPS: Reinstate platform `__div64_32' handler
+
+mips clang build breaks on stable rc 5.4 .. 5.12 due to below warnings / errors
+ - mips (defconfig) with clang-12
+ - mips (tinyconfig) with clang-12
+ - mips (allnoconfig) with clang-12
+
+make --silent --keep-going --jobs=8
+O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=mips
+CROSS_COMPILE=mips-linux-gnu- 'HOSTCC=sccache clang' 'CC=sccache
+clang'
+kernel/time/hrtimer.c:318:2: error: couldn't allocate output register
+for constraint 'x'
+        do_div(tmp, (u32) div);
+        ^
+include/asm-generic/div64.h:243:11: note: expanded from macro 'do_div'
+                __rem = __div64_32(&(n), __base);       \
+                        ^
+arch/mips/include/asm/div64.h:74:11: note: expanded from macro '__div64_32'
+                __asm__("divu   $0, %z1, %z2"                           \
+                        ^
+1 error generated.
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+steps to reproduce:
+--------------------------
+#!/bin/sh
+
+# TuxMake is a command line tool and Python library that provides
+# portable and repeatable Linux kernel builds across a variety of
+# architectures, toolchains, kernel configurations, and make targets.
+#
+# TuxMake supports the concept of runtimes.
+# See https://docs.tuxmake.org/runtimes/, for that to work it requires
+# that you install podman or docker on your system.
+#
+# To install tuxmake on your system globally:
+# sudo pip3 install -U tuxmake
+#
+# See https://docs.tuxmake.org/ for complete documentation.
+
+tuxmake --runtime podman --target-arch mips --toolchain clang-12
+--kconfig defconfig
+
+build ref:
+https://builds.tuxbuild.com/1sRW8pJDUO08LLScNJnPlFqm8lV/
+
+--
+Linaro LKFT
+https://lkft.linaro.org
