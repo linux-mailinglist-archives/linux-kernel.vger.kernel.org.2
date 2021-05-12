@@ -2,110 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17BA237B6FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 09:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CD1437B70D
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 09:46:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230118AbhELHkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 03:40:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54172 "EHLO
+        id S230211AbhELHrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 03:47:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229627AbhELHkG (ORCPT
+        with ESMTP id S230184AbhELHrR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 03:40:06 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1771C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 00:38:57 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id u21so33474138ejo.13
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 00:38:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=N9lhNSkhlyUhXIO2O+gz6kztxq/n6XYJjAIx1T19amQ=;
-        b=NCVUjbwJyi4J8KMUagQgUhYcUdm/bOEs57Z4W8zkTyVfrMs81FmSAoTxTqCedjKOse
-         cglM0y0DP2muX3kEQzaZAYs98P5m7EslPZPYgFbnnfLnpKx8AYSvEXu9yxj0U3yA1wqI
-         biPBYqP2gD6g6OhfMiwpPQWBbe69T8GawEJU++3Mpu0YlYPsVP/7tkhb88HAPlFyvwwy
-         N2QhQx1BNP/e7IGjUpT3ZGcdnq2ecU1ipnHepX1BwabKagSSYabYNq0uLJAnbOfWv4Et
-         JdwFr1G0/GH73uZQ0GosBDDO9SuJpSaCgnicVXgyrROX9DFKkrb0WMzXazK3Z8v4lNva
-         jP/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=N9lhNSkhlyUhXIO2O+gz6kztxq/n6XYJjAIx1T19amQ=;
-        b=WDASKPSqX2qVxGl3TBXr+UszrA2lwPPhJNzO7/XB3rAuXKzEkgiktCs0VRuxX1LcOw
-         XRkwdRv0MLM9lSlCvGiSxDpam9KYjE1vCo5Hh3gvOUxFK7I95JBYa5TCrEs5eaMeghH3
-         k9015Oy9z5jlmGA1hUfymFJ51+nx+rfY5HY0Hca6ZHXYxUQoJKo/z9Gd8ppFpdbTpgJd
-         eG5ru0zGXSPFzdWSYBKB9D/r7A3jDQ41oPsk+sjBBo/KsV4ekK+Ut0xO8FID909CrBIw
-         IBO/ZbcWlrg95ZS7Xt2cPjIwqmPNrdX+uNc4eM3yHZiUhX3PHrFE1qb3EgEYCSXc7CTd
-         Rdag==
-X-Gm-Message-State: AOAM531zdHomuE24rJNbhedE/VqcPZiULazjQW0hcIt1sl84QFEjEHNN
-        DCaX/4F0X5IJP7BzIHWxBI8=
-X-Google-Smtp-Source: ABdhPJwjfxUxccgq1TPii8sjiTaDSYEYfOYqvpyT74mqGOvwHpwD90ju0JkbubJNS1684x8GT9gsaw==
-X-Received: by 2002:a17:906:268c:: with SMTP id t12mr5761291ejc.441.1620805136528;
-        Wed, 12 May 2021 00:38:56 -0700 (PDT)
-Received: from linux.local (host-79-52-107-152.retail.telecomitalia.it. [79.52.107.152])
-        by smtp.gmail.com with ESMTPSA id g16sm5691854ejw.42.2021.05.12.00.38.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 00:38:55 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     outreachy-kernel@googlegroups.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev (open list:STAGING SUBSYSTEM),
-        linux-kernel@vger.kernel.org (open list)
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [Outreachy kernel] [PATCH] staging: rtl8723bs: hal: Remove set but unused variable
-Date:   Wed, 12 May 2021 09:38:52 +0200
-Message-Id: <20210512073852.14085-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Wed, 12 May 2021 03:47:17 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68189C061574;
+        Wed, 12 May 2021 00:46:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=qTeWQyqg90a0gIju1FCIhB4SaC06XxqkOWQ6xtTm4Es=; b=NlsjsMvDDgO0IMtnHraRetZsIk
+        6ryqjmPMmdqeCkRL7AJ5FHt0wrPbFlgAchZDkGSmgrVMivTdfDOYQhW1pSRx6CvNn8F53ygREJrAu
+        uwjs+ea5rLshMzfYJWcpNhTVFdQkWkFajqojNth2n9xexlBh0KFLb8AAIB/mHp0bC87m1b6NAZxLs
+        zel+3z4tBGHdYv+Dccd/5lpE18seXHJ2msM6jBB5s1Xm2Z+/wNf0K3IzMGuGPuB28Lo5ybl5llAKl
+        GuUnQYg+iWLsWUQ+HsMWRIie6NsaB7NFYUaicWNG9g5Q9kQN1fAd/8epnob9zzKP8OLuwqFBoXMZ4
+        1iOJlHoA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lgjUe-00847E-Uf; Wed, 12 May 2021 07:41:39 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A9B3E300242;
+        Wed, 12 May 2021 09:41:14 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B9CBE20237F69; Wed, 12 May 2021 09:41:14 +0200 (CEST)
+Date:   Wed, 12 May 2021 09:41:14 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Jon Kohler <jon@nutanix.com>
+Cc:     Babu Moger <babu.moger@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Uros Bizjak <ubizjak@gmail.com>,
+        Petteri Aimonen <jpa@git.mail.kapsi.fi>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Fan Yang <Fan_Yang@sjtu.edu.cn>,
+        Juergen Gross <jgross@suse.com>,
+        Benjamin Thiel <b.thiel@posteo.de>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v3] KVM: x86: use wrpkru directly in
+ kvm_load_{guest|host}_xsave_state
+Message-ID: <YJuGms6UnRVpP7U/@hirez.programming.kicks-ass.net>
+References: <20210511170508.40034-1-jon@nutanix.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210511170508.40034-1-jon@nutanix.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Removed "delta_IQK" and its occurrences in comments
-and code because the variable is set but not used.
-Issue detected by GCC.
+On Tue, May 11, 2021 at 01:05:02PM -0400, Jon Kohler wrote:
+> diff --git a/arch/x86/include/asm/fpu/internal.h b/arch/x86/include/asm/fpu/internal.h
+> index 8d33ad80704f..5bc4df3a4c27 100644
+> --- a/arch/x86/include/asm/fpu/internal.h
+> +++ b/arch/x86/include/asm/fpu/internal.h
+> @@ -583,7 +583,13 @@ static inline void switch_fpu_finish(struct fpu *new_fpu)
+>  		if (pk)
+>  			pkru_val = pk->pkru;
+>  	}
+> -	__write_pkru(pkru_val);
+> +
+> +	/*
+> +	 * WRPKRU is relatively expensive compared to RDPKRU.
+> +	 * Avoid WRPKRU when it would not change the value.
+> +	 */
+> +	if (pkru_val != rdpkru())
+> +		wrpkru(pkru_val);
 
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
- drivers/staging/rtl8723bs/hal/HalPhyRf.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/staging/rtl8723bs/hal/HalPhyRf.c b/drivers/staging/rtl8723bs/hal/HalPhyRf.c
-index b8e385fdda89..365e1195b5e5 100644
---- a/drivers/staging/rtl8723bs/hal/HalPhyRf.c
-+++ b/drivers/staging/rtl8723bs/hal/HalPhyRf.c
-@@ -76,7 +76,7 @@ void ODM_TXPowerTrackingCallback_ThermalMeter(struct adapter *Adapter)
- 	struct hal_com_data *pHalData = GET_HAL_DATA(Adapter);
- 	struct dm_odm_t *pDM_Odm = &pHalData->odmpriv;
- 
--	u8 ThermalValue = 0, delta, delta_LCK, delta_IQK, p = 0, i = 0;
-+	u8 ThermalValue = 0, delta, delta_LCK, p = 0, i = 0;
- 	u8 ThermalValue_AVG_count = 0;
- 	u32 ThermalValue_AVG = 0;
- 
-@@ -137,7 +137,7 @@ void ODM_TXPowerTrackingCallback_ThermalMeter(struct adapter *Adapter)
- 		ThermalValue = (u8)(ThermalValue_AVG / ThermalValue_AVG_count);
- 	}
- 
--	/* 4 5. Calculate delta, delta_LCK, delta_IQK. */
-+	/* 4 5. Calculate delta, delta_LCK */
- 	/* delta" here is used to determine whether thermal value changes or not. */
- 	delta =
- 		(ThermalValue > pDM_Odm->RFCalibrateInfo.ThermalValue) ?
-@@ -147,10 +147,6 @@ void ODM_TXPowerTrackingCallback_ThermalMeter(struct adapter *Adapter)
- 		(ThermalValue > pDM_Odm->RFCalibrateInfo.ThermalValue_LCK) ?
- 		(ThermalValue - pDM_Odm->RFCalibrateInfo.ThermalValue_LCK) :
- 		(pDM_Odm->RFCalibrateInfo.ThermalValue_LCK - ThermalValue);
--	delta_IQK =
--		(ThermalValue > pDM_Odm->RFCalibrateInfo.ThermalValue_IQK) ?
--		(ThermalValue - pDM_Odm->RFCalibrateInfo.ThermalValue_IQK) :
--		(pDM_Odm->RFCalibrateInfo.ThermalValue_IQK - ThermalValue);
- 
- 	/* 4 6. If necessary, do LCK. */
- 	/*  Delta temperature is equal to or larger than 20 centigrade. */
--- 
-2.31.1
-
+Just wondering; why aren't we having that in a per-cpu variable? The
+usual per-cpu MSR shadow approach avoids issuing any 'special' ops
+entirely.
