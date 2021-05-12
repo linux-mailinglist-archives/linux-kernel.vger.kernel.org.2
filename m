@@ -2,160 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FB0837B411
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 04:07:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EA0B37B415
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 04:07:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbhELCIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 22:08:37 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:2055 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbhELCIg (ORCPT
+        id S230104AbhELCIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 22:08:53 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:38183 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230017AbhELCIv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 22:08:36 -0400
-Received: from dggemx753-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Ffyk76ySKzWhq8;
-        Wed, 12 May 2021 10:03:11 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- dggemx753-chm.china.huawei.com (10.0.44.37) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 12 May 2021 10:07:26 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH v2 2/2] f2fs: atgc: export entries for better tunability via sysfs
-Date:   Wed, 12 May 2021 10:07:19 +0800
-Message-ID: <20210512020719.43685-1-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.29.2
+        Tue, 11 May 2021 22:08:51 -0400
+X-UUID: 043a8edf537c48238d73c9fe36cca988-20210512
+X-UUID: 043a8edf537c48238d73c9fe36cca988-20210512
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 997202855; Wed, 12 May 2021 10:07:40 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 12 May 2021 10:07:39 +0800
+Received: from mtkslt301.mediatek.inc (10.21.14.114) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 12 May 2021 10:07:39 +0800
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Bixuan Cui <cuibixuan@huawei.com>,
+        Eugeniu Rosca <erosca@de.adit-jv.com>,
+        Oliver Neukum <oneukum@suse.com>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Tianping Fang <tianping.fang@mediatek.com>,
+        Eddie Hung <eddie.hung@mediatek.com>,
+        Ikjoon Jang <ikjn@chromium.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        <stable@vger.kernel.org>
+Subject: [PATCH v2] usb: core: hub: fix race condition about TRSMRCY of resume
+Date:   Wed, 12 May 2021 10:07:38 +0800
+Message-ID: <20210512020738.52961-1-chunfeng.yun@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggemx753-chm.china.huawei.com (10.0.44.37)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch export below sysfs entries for better ATGC tunability.
+This may happen if the port becomes resume status exactly
+when usb_port_resume() gets port status, it still need provide
+a TRSMCRY time before access the device.
 
-/sys/fs/f2fs/<disk>/atgc_candidate_ratio
-/sys/fs/f2fs/<disk>/atgc_candidate_count
-/sys/fs/f2fs/<disk>/atgc_age_weight
-/sys/fs/f2fs/<disk>/atgc_age_threshold
-
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
+CC: <stable@vger.kernel.org>
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Reported-by: Tianping Fang <tianping.fang@mediatek.com>
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 ---
 v2:
-- limit value range of candidate_ratio and candidate_ratio in __sbi_store()
- Documentation/ABI/testing/sysfs-fs-f2fs | 28 +++++++++++++++++++++++++
- fs/f2fs/sysfs.c                         | 27 ++++++++++++++++++++++++
- 2 files changed, 55 insertions(+)
+    cc stable suggested by Alan,
+    and add acked-by Alan
+---
+ drivers/usb/core/hub.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
-index 4849b8e84e42..5088281e312e 100644
---- a/Documentation/ABI/testing/sysfs-fs-f2fs
-+++ b/Documentation/ABI/testing/sysfs-fs-f2fs
-@@ -438,3 +438,31 @@ Description:	Show the count of inode newly enabled for compression since mount.
- 		Note that when the compression is disabled for the files, this count
- 		doesn't decrease. If you write "0" here, you can initialize
- 		compr_new_inode to "0".
-+
-+What:		/sys/fs/f2fs/<disk>/atgc_candidate_ratio
-+Date:		May 2021
-+Contact:	"Chao Yu" <yuchao0@huawei.com>
-+Description:	When ATGC is on, it controls candidate ratio in order to limit total
-+		number of potential victim in all candidates, the value should be in
-+		range of [0, 100], by default it was initialized as 20(%).
-+
-+What:		/sys/fs/f2fs/<disk>/atgc_candidate_count
-+Date:		May 2021
-+Contact:	"Chao Yu" <yuchao0@huawei.com>
-+Description:	When ATGC is on, it controls candidate count in order to limit total
-+		number of potential victim in all candidates, by default it was
-+		initialized as 10 (sections).
-+
-+What:		/sys/fs/f2fs/<disk>/atgc_age_weight
-+Date:		May 2021
-+Contact:	"Chao Yu" <yuchao0@huawei.com>
-+Description:	When ATGC is on, it controls age weight to balance weight proportion
-+		in between aging and valid blocks, the value should be in range of
-+		[0, 100], by default it was initialized as 60(%).
-+
-+What:		/sys/fs/f2fs/<disk>/atgc_age_threshold
-+Date:		May 2021
-+Contact:	"Chao Yu" <yuchao0@huawei.com>
-+Description:	When ATGC is on, it controls age threshold to bypass GCing young
-+		candidates whose age is not beyond the threshold, by default it was
-+		initialized as 604800 seconds (equals to 7 days).
-diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
-index 39b522ec73e7..dc71bc968c72 100644
---- a/fs/f2fs/sysfs.c
-+++ b/fs/f2fs/sysfs.c
-@@ -37,6 +37,7 @@ enum {
- #endif
- 	RESERVED_BLOCKS,	/* struct f2fs_sb_info */
- 	CPRC_INFO,	/* struct ckpt_req_control */
-+	ATGC_INFO,	/* struct atgc_management */
- };
- 
- struct f2fs_attr {
-@@ -75,6 +76,8 @@ static unsigned char *__struct_ptr(struct f2fs_sb_info *sbi, int struct_type)
- #endif
- 	else if (struct_type == CPRC_INFO)
- 		return (unsigned char *)&sbi->cprc_info;
-+	else if (struct_type == ATGC_INFO)
-+		return (unsigned char *)&sbi->am;
- 	return NULL;
- }
- 
-@@ -495,6 +498,20 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
+diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+index b2bc4b7c4289..fc7d6cdacf16 100644
+--- a/drivers/usb/core/hub.c
++++ b/drivers/usb/core/hub.c
+@@ -3642,9 +3642,6 @@ int usb_port_resume(struct usb_device *udev, pm_message_t msg)
+ 		 * sequence.
+ 		 */
+ 		status = hub_port_status(hub, port1, &portstatus, &portchange);
+-
+-		/* TRSMRCY = 10 msec */
+-		msleep(10);
  	}
- #endif
  
-+	if (!strcmp(a->attr.name, "atgc_candidate_ratio")) {
-+		if (t > 100)
-+			return -EINVAL;
-+		sbi->am.candidate_ratio = t;
-+		return count;
-+	}
+  SuspendCleared:
+@@ -3659,6 +3656,9 @@ int usb_port_resume(struct usb_device *udev, pm_message_t msg)
+ 				usb_clear_port_feature(hub->hdev, port1,
+ 						USB_PORT_FEAT_C_SUSPEND);
+ 		}
 +
-+	if (!strcmp(a->attr.name, "atgc_age_weight")) {
-+		if (t > 100)
-+			return -EINVAL;
-+		sbi->am.age_weight = t;
-+		return count;
-+	}
-+
- 	*ui = (unsigned int)t;
++		/* TRSMRCY = 10 msec */
++		msleep(10);
+ 	}
  
- 	return count;
-@@ -710,6 +727,11 @@ F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_written_block, compr_written_block);
- F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_saved_block, compr_saved_block);
- F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_new_inode, compr_new_inode);
- #endif
-+/* For ATGC */
-+F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_candidate_ratio, candidate_ratio);
-+F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_candidate_count, max_candidate_count);
-+F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_age_weight, age_weight);
-+F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_age_threshold, age_threshold);
- 
- #define ATTR_LIST(name) (&f2fs_attr_##name.attr)
- static struct attribute *f2fs_attrs[] = {
-@@ -778,6 +800,11 @@ static struct attribute *f2fs_attrs[] = {
- 	ATTR_LIST(compr_saved_block),
- 	ATTR_LIST(compr_new_inode),
- #endif
-+	/* For ATGC */
-+	ATTR_LIST(atgc_candidate_ratio),
-+	ATTR_LIST(atgc_candidate_count),
-+	ATTR_LIST(atgc_age_weight),
-+	ATTR_LIST(atgc_age_threshold),
- 	NULL,
- };
- ATTRIBUTE_GROUPS(f2fs);
+ 	if (udev->persist_enabled)
 -- 
-2.29.2
+2.18.0
 
