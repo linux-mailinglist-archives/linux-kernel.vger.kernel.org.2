@@ -2,123 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D0D637B53C
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 07:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E03F837B53D
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 07:01:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230126AbhELFBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 01:01:32 -0400
-Received: from mga12.intel.com ([192.55.52.136]:62358 "EHLO mga12.intel.com"
+        id S229994AbhELFCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 01:02:11 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:47951 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229730AbhELFBb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 01:01:31 -0400
-IronPort-SDR: BHgET79TguYm7IfA9QmKcS/i7PmhqUJWcUoNmF4r9MsEVCfYVoDCSKlM7vPP4nm9/mCm1SBVez
- AkDgQyNE2NRg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="179211622"
-X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
-   d="scan'208";a="179211622"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 22:00:23 -0700
-IronPort-SDR: MGnaFeC8SGot2dzUNyVXV8muw+3o/BVLW+i34rxzYRdo72YFfl3s9f8Lsge7nGyoXU9t9FaO4f
- WAgRKYnFVRdw==
-X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
-   d="scan'208";a="437014682"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 22:00:18 -0700
-Subject: Re: [PATCH v6 04/16] KVM: x86/pmu: Set MSR_IA32_MISC_ENABLE_EMON bit
- when vPMU is enabled
-To:     Venkatesh Srinivas <venkateshs@chromium.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, weijiang.yang@intel.com,
-        Kan Liang <kan.liang@linux.intel.com>, ak@linux.intel.com,
-        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
-        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
-        Yao Yuan <yuan.yao@intel.com>,
-        Like Xu <like.xu@linux.intel.com>
-References: <20210511024214.280733-1-like.xu@linux.intel.com>
- <20210511024214.280733-5-like.xu@linux.intel.com>
- <CAA0tLErUFPnZ=SL82bLe8Ddf5rFu2Pdv5xE0aq4A91mzn9=ABA@mail.gmail.com>
-From:   "Xu, Like" <like.xu@intel.com>
-Message-ID: <ead61a83-1534-a8a6-13ee-646898a6d1a9@intel.com>
-Date:   Wed, 12 May 2021 13:00:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-MIME-Version: 1.0
-In-Reply-To: <CAA0tLErUFPnZ=SL82bLe8Ddf5rFu2Pdv5xE0aq4A91mzn9=ABA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        id S229580AbhELFCJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 01:02:09 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4Fg2gH0m2Rz9sdy;
+        Wed, 12 May 2021 07:00:59 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id XsPm6W350ZRE; Wed, 12 May 2021 07:00:59 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4Fg2gG6sQxz9sdw;
+        Wed, 12 May 2021 07:00:58 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 79F568B7D6;
+        Wed, 12 May 2021 07:00:58 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id xwiuG9ynOkOh; Wed, 12 May 2021 07:00:58 +0200 (CEST)
+Received: from po15610vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 015118B769;
+        Wed, 12 May 2021 07:00:57 +0200 (CEST)
+Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id AE30264164; Wed, 12 May 2021 05:00:57 +0000 (UTC)
+Message-Id: <cover.1620795204.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v2 0/5] Implement huge VMAP and VMALLOC on powerpc 8xx
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>
+Cc:     linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        sparclinux@vger.kernel.org, linux-mm@kvack.org
+Date:   Wed, 12 May 2021 05:00:57 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Venkatesh Srinivas,
+This series implements huge VMAP and VMALLOC on powerpc 8xx.
 
-On 2021/5/12 9:58, Venkatesh Srinivas wrote:
-> On 5/10/21, Like Xu <like.xu@linux.intel.com> wrote:
->> On Intel platforms, the software can use the IA32_MISC_ENABLE[7] bit to
->> detect whether the processor supports performance monitoring facility.
->>
->> It depends on the PMU is enabled for the guest, and a software write
->> operation to this available bit will be ignored.
-> Is the behavior that writes to IA32_MISC_ENABLE[7] are ignored (rather than #GP)
-> documented someplace?
+Powerpc 8xx has 4 page sizes:
+- 4k
+- 16k
+- 512k
+- 8M
 
-The bit[7] behavior of the real hardware on the native host is quite 
-suspicious.
+At the time being, vmalloc and vmap only support huge pages which are
+leaf at PMD level.
 
-To keep the semantics consistent and simple, we propose ignoring write 
-operation
-in the virtualized world, since whether or not to expose PMU is configured 
-by the
-hypervisor user space and not by the guest side.
+Here the PMD level is 4M, it doesn't correspond to any supported
+page size.
 
-I assume your "reviewed-by" also points this out. Thanks.
+For now, implement use of 16k and 512k pages which is done
+at PTE level.
 
->
-> Reviewed-by: Venkatesh Srinivas <venkateshs@chromium.org>
->
->> Cc: Yao Yuan <yuan.yao@intel.com>
->> Signed-off-by: Like Xu <like.xu@linux.intel.com>
->> ---
->>   arch/x86/kvm/vmx/pmu_intel.c | 1 +
->>   arch/x86/kvm/x86.c           | 1 +
->>   2 files changed, 2 insertions(+)
->>
->> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
->> index 9efc1a6b8693..d9dbebe03cae 100644
->> --- a/arch/x86/kvm/vmx/pmu_intel.c
->> +++ b/arch/x86/kvm/vmx/pmu_intel.c
->> @@ -488,6 +488,7 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
->>   	if (!pmu->version)
->>   		return;
->>
->> +	vcpu->arch.ia32_misc_enable_msr |= MSR_IA32_MISC_ENABLE_EMON;
->>   	perf_get_x86_pmu_capability(&x86_pmu);
->>
->>   	pmu->nr_arch_gp_counters = min_t(int, eax.split.num_counters,
->> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->> index 5bd550eaf683..abe3ea69078c 100644
->> --- a/arch/x86/kvm/x86.c
->> +++ b/arch/x86/kvm/x86.c
->> @@ -3211,6 +3211,7 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct
->> msr_data *msr_info)
->>   		}
->>   		break;
->>   	case MSR_IA32_MISC_ENABLE:
->> +		data &= ~MSR_IA32_MISC_ENABLE_EMON;
->>   		if (!kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_MISC_ENABLE_NO_MWAIT)
->> &&
->>   		    ((vcpu->arch.ia32_misc_enable_msr ^ data) &
->> MSR_IA32_MISC_ENABLE_MWAIT)) {
->>   			if (!guest_cpuid_has(vcpu, X86_FEATURE_XMM3))
->> --
->> 2.31.1
->>
->>
+Support of 8M pages will be implemented later, it requires use of
+hugepd tables.
+
+To allow this, the architecture provides two functions:
+- arch_vmap_pte_range_map_size() which tells vmap_pte_range() what
+page size to use. A stub returning PAGE_SIZE is provided when the
+architecture doesn't provide this function.
+- arch_vmap_pte_supported_shift() which tells __vmalloc_node_range()
+what page shift to use for a given area size. A stub returning
+PAGE_SHIFT is provided when the architecture doesn't provide this
+function.
+
+The main change in v2 compared to the RFC is that powerpc 8xx
+specificities are not plugged anymore directly inside vmalloc code.
+
+Christophe Leroy (5):
+  mm/hugetlb: Change parameters of arch_make_huge_pte()
+  mm/pgtable: Add stubs for {pmd/pub}_{set/clear}_huge
+  mm/vmalloc: Enable mapping of huge pages at pte level in vmap
+  mm/vmalloc: Enable mapping of huge pages at pte level in vmalloc
+  powerpc/8xx: Add support for huge pages on VMAP and VMALLOC
+
+ arch/arm64/include/asm/hugetlb.h              |  3 +-
+ arch/arm64/mm/hugetlbpage.c                   |  5 +--
+ arch/powerpc/Kconfig                          |  2 +-
+ .../include/asm/nohash/32/hugetlb-8xx.h       |  5 +--
+ arch/powerpc/include/asm/nohash/32/mmu-8xx.h  | 43 +++++++++++++++++++
+ arch/sparc/include/asm/pgtable_64.h           |  3 +-
+ arch/sparc/mm/hugetlbpage.c                   |  6 +--
+ include/linux/hugetlb.h                       |  4 +-
+ include/linux/pgtable.h                       | 26 ++++++++++-
+ include/linux/vmalloc.h                       | 15 +++++++
+ mm/hugetlb.c                                  |  6 ++-
+ mm/migrate.c                                  |  4 +-
+ mm/vmalloc.c                                  | 34 +++++++++++----
+ 13 files changed, 126 insertions(+), 30 deletions(-)
+
+-- 
+2.25.0
 
