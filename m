@@ -2,111 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D72937D078
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D0C937D07D
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:42:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348337AbhELRgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 13:36:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55490 "EHLO
+        id S1348461AbhELRhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 13:37:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239591AbhELQKM (ORCPT
+        with ESMTP id S239627AbhELQKW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:10:12 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 888AEC061264;
-        Wed, 12 May 2021 08:46:10 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 82-20020a1c01550000b0290142562ff7c9so3287389wmb.3;
-        Wed, 12 May 2021 08:46:10 -0700 (PDT)
+        Wed, 12 May 2021 12:10:22 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5ED9C061232;
+        Wed, 12 May 2021 08:49:13 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id h202so31234763ybg.11;
+        Wed, 12 May 2021 08:49:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=t/meNjZ0Nht+RonvzyRGNz+Sylq/Yz/vgFjTi37bDrE=;
-        b=p5H95YkRm4qypJ1VXfunFTs2qXkp3RFcPncyQHjSJbn/3m9QkH/OQu1lUj3zhLqIdW
-         feakVA3m4oTBW0eOYpdDK5G83qoWpWdUFpOoow6+H1zn78zwpoNKI8sIH2YxEi4ihzdo
-         F8Pj8aT+sifNO1+kh5HW9mdwQNzOloBZ3HHeX45DLJvE5WO7Z1D4oP2+y41/k2IYfKYN
-         b7MreOOv9dgsFa2sXpPVWoLLpVvn/K/RmkUM5uJZErt6IyyLhyOvycvSkyk7/LlXmoB2
-         DjfvXjwpvZh1j6yksb6cpBSSA5mCbeeIeYnmN8tqWW48Fa60sSz++wbjs8GnZswdM5dS
-         j59Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=S1LgsqPi/5J34aRfiQ4OAfRKOwxu94hxIuvDDA8q2eE=;
+        b=mW18cFKa+9JkzCXo84G2iq2LurpHEMcQ7tyBVv9Kg8ZpY2G2JxZY7V5LvPzfMm+KTr
+         x8Dbxo53Dv2S9FFAcUhtmlgim6RpOxE2Os1PCkVRli9jm5GFgo+NLhSE/9ShcfHBuS+3
+         +hngoZ1DkCy+B4vs2RcoReX3Kib5FMZt9wiqB8LZ4Sg3zkHzii5GjBHhcdRbqcMnX9Vf
+         S125+5w8dMaXNkpgiQB1bmQM68HD8wTqYKM1BF70IzQd5n//eFa/hCdqIdSSaAKDW3nv
+         if+tG3PZdUZmGMw7D66YMIlCGx3ZzQqd4QGkd/+1v/rrWCR281UaIKFfKaqbxfqmttk7
+         OMDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=t/meNjZ0Nht+RonvzyRGNz+Sylq/Yz/vgFjTi37bDrE=;
-        b=igL36UJWMIlqHcIej1u5N9f/yldqWXSwxkzgVpbRTCfmW5GP/2rICo+U35QoQUIfUP
-         UlTawayGJT5KDsdXj+xTXZcvhFBc0hdc7JyeJQjW3DVc0hfM/WS7uZc5QGv7QY2z+YLO
-         M3vXrrBEjkMZO3J/dcywOt5S/VyZPIk3pV1+ohJEISCq2LIk67JsbG/fbLxPPeU2y9uW
-         gV/Cxl3cJ6cjCLMHM86Awik2GewIjECt2Sqw+EHKfECwMEKVbjA2+gixJiKnu8Qxl7MQ
-         7gkfAeiNGLvaY6ES31SsWD2hXl9tm5U6qRsbfj+BnsHm3bVRWqbOGyeW0vy9veVGAsZF
-         JEhQ==
-X-Gm-Message-State: AOAM532jmlaCGJCjjshwVdMOPH1sBu+whdZRjwykQkyMJQB3n2zVJ0np
-        CHidJ+DMWx3cPwQ2N6r9C/Y=
-X-Google-Smtp-Source: ABdhPJwYuTCotr2sEyzdL2rZRhrQqc7oqM7Iiyowlk8hQGp59sT8OOJrmqBcqcP+2r/KwlLq3/sU4g==
-X-Received: by 2002:a05:600c:322a:: with SMTP id r42mr39484143wmp.98.1620834369271;
-        Wed, 12 May 2021 08:46:09 -0700 (PDT)
-Received: from ziggy.stardust ([37.223.140.37])
-        by smtp.gmail.com with ESMTPSA id p1sm48270wrs.50.2021.05.12.08.46.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 May 2021 08:46:08 -0700 (PDT)
-Subject: Re: [PATCH v21 3/5] i2c: mediatek: mt65xx: add optional vbus-supply
-To:     Hsin-Yi Wang <hsinyi@chromium.org>, Wolfram Sang <wsa@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     linux-i2c@vger.kernel.org, Qii Wang <qii.wang@mediatek.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Brown <broonie@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Bibby Hsieh <bibby.hsieh@mediatek.com>,
-        Arnd Bergmann <arnd@arndb.de>
-References: <20210507131406.2224177-1-hsinyi@chromium.org>
- <20210507131406.2224177-4-hsinyi@chromium.org>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <6e971f16-a325-34cd-faaa-cfd51db86c66@gmail.com>
-Date:   Wed, 12 May 2021 17:46:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=S1LgsqPi/5J34aRfiQ4OAfRKOwxu94hxIuvDDA8q2eE=;
+        b=aTFLQE1d6iU/pEu8bcqq4q2bfI0FjRhK6y3PqFQ4X6F2apJ3khPF29UsdlAok6cyEb
+         3tUYB0smBRBSI/Elz3yNiFyihtgvoHq40ABXUy7L3CRKI2CrtToa4WXGorAxqVe7/yLE
+         eI5nR7NDRwArEaD4iJNIC5e0augFa25KBkB5UDyEKRugIDyvsDcmJSbV6OgKCz5HIR2r
+         vcbm00t7lDsMksbLtWXFuZHuJ7yg8rf7k3nlPEsTHmQ+GQtqTLxxUMP6VApQo8b5gEz7
+         b7whylVxeT+mBTneKJsLf2/kUaC0L3k0Uu0/A5cnpfKipJU3LV6hTmIvd4xUU5qV2fYA
+         ja+g==
+X-Gm-Message-State: AOAM5309Can9cHcOvEzkqlP2Eo/lLiLN4PFN5tlnLb1yQZbgSh/uNiu7
+        besRYabcSXp1blJ7vZ87CVg8HBGNkhWOUwUsHGk=
+X-Google-Smtp-Source: ABdhPJwxGIrTb+lFdWzSts3+FwNXEM+hGK8Q3w1KtG+ooNHiPor89gdXv1+juyiaCdugXS0T28vRUl6K8aHiEE+lK4s=
+X-Received: by 2002:a25:abe2:: with SMTP id v89mr27927426ybi.26.1620834553261;
+ Wed, 12 May 2021 08:49:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210507131406.2224177-4-hsinyi@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210106113730.k5qveshjgcd57kgx@runtux.com> <20210106113929.fizyg6fcsmsntkiy@runtux.com>
+ <CANiq72=Cfv=Qo2fs+HDjUc8pV37mL326SDS5JpGotUfHLwK_rQ@mail.gmail.com> <CAMuHMdUW3U6DVkHp3xiHFzvRUDJ1FwTNCnBWp5LCuDGxhds9wg@mail.gmail.com>
+In-Reply-To: <CAMuHMdUW3U6DVkHp3xiHFzvRUDJ1FwTNCnBWp5LCuDGxhds9wg@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Wed, 12 May 2021 17:49:02 +0200
+Message-ID: <CANiq72mCFwYnbynQgwNGTt0mzo_rMrnQfpinz6DrPttFxUpyNQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] auxdisplay: Add I2C gpio expander example
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Ralf Schlatterbeck <rsc@runtux.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Willy Tarreau <w@1wt.eu>, Lars Poeschel <poeschel@lemonage.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, May 12, 2021 at 5:32 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Seems like so far no one has picked this up?
 
+Queuing it then.
 
-On 07/05/2021 15:14, Hsin-Yi Wang wrote:
-> Add vbus-supply which provides power to SCL/SDA. Pass this regulator
-> into core so it can be turned on/off for low power mode support.
-> 
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-
-Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
-
-> ---
->  drivers/i2c/busses/i2c-mt65xx.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
-> index 5ddfa4e56ee2..22d1d14b5de5 100644
-> --- a/drivers/i2c/busses/i2c-mt65xx.c
-> +++ b/drivers/i2c/busses/i2c-mt65xx.c
-> @@ -1220,6 +1220,13 @@ static int mtk_i2c_probe(struct platform_device *pdev)
->  	i2c->adap.quirks = i2c->dev_comp->quirks;
->  	i2c->adap.timeout = 2 * HZ;
->  	i2c->adap.retries = 1;
-> +	i2c->adap.bus_regulator = devm_regulator_get_optional(&pdev->dev, "vbus");
-> +	if (IS_ERR(i2c->adap.bus_regulator)) {
-> +		if (PTR_ERR(i2c->adap.bus_regulator) == -ENODEV)
-> +			i2c->adap.bus_regulator = NULL;
-> +		else
-> +			return PTR_ERR(i2c->adap.bus_regulator);
-> +	}
->  
->  	ret = mtk_i2c_parse_dt(pdev->dev.of_node, i2c);
->  	if (ret)
-> 
+Cheers,
+Miguel
