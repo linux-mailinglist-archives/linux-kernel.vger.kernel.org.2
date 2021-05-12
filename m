@@ -2,259 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51CA037B31B
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 02:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D60337B326
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 02:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230172AbhELAlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 20:41:24 -0400
-Received: from mga02.intel.com ([134.134.136.20]:61587 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229920AbhELAlX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 20:41:23 -0400
-IronPort-SDR: /xFcCLO4A8+SRzpDE2fSpKsddqii/yU/BNGLeZ3DKn4uhzI2d60LJCoZyDBQLSJ3raYC7VAk83
- ZIXW8vY0aLXw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="186721282"
-X-IronPort-AV: E=Sophos;i="5.82,292,1613462400"; 
-   d="scan'208";a="186721282"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 17:40:10 -0700
-IronPort-SDR: fOyv004Yriyqn3SQqnDGYP5nydIpF4lK3oEVuWMaZ9Ja5yAAw5LVkRba6Nyy/VjcMDqtP1h4sl
- 4BT+232YtbOA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,292,1613462400"; 
-   d="scan'208";a="434844713"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga008.fm.intel.com with ESMTP; 11 May 2021 17:40:09 -0700
-Received: from fmsmsx608.amr.corp.intel.com (10.18.126.88) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 11 May 2021 17:40:09 -0700
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx608.amr.corp.intel.com (10.18.126.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 11 May 2021 17:40:08 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
- via Frontend Transport; Tue, 11 May 2021 17:40:08 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.175)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2106.2; Tue, 11 May 2021 17:40:08 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h3mPSehUonwRu787wQj04sOkxDEmN9VPsQibcEw5CVJiohQv9aKxDGrTleeU3CjvyZJjTYM7DDM+cUzOQiniRIxRROF89rd3oghjsUD+6hsSl/sy5gsyAxIjebdKZGatgt4UjGWaIVjznkiTDPbunAjxsr2csw9zJJfWVQQGunyqF96s2gLUWRwnU65tX9g433ih1TCinFL2zRrO4Oj1AMBlG23hEaqJVCgb2XEU+Qrb+LbN57f10HC4QAUv3aFvsNAT4ekPnFiOk7n/iLMAIb2CvgcWRNsMagIc1zqPbfixw6wk+LI9n/e4l/mKXSHqqDKLM/iQNF3WwwngGZFICg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ol8tdKdXEMiUCLvEiPres2Ur7dwmUvIMjcVrRkVNYT4=;
- b=EPYQAe8dMYyVoAQF1DiEZII8chKqsNUJFPj3VPdcIWfAgKupLF3+CFq/n2Mp71LPtEJUnV8b2JP2f1672gcf6z0AHahEy/NxDp4ETSajBN556F1XWJrK4LKyaMIuuzdgzOluc73bPLvio8sCl02cMXJXr4+hpBrEoxntezuXGL5+awoZQBtXKbnth3gRhvW2LW1VSZeNK6EzanPopM8HO8gL6SsWgE6eWAd0OaFxTRSv2yVaHUpfyHqoottwVPB8etfCECXsHXmFoUbZs/o1Aq2aAkosCJoe8XwrJZwrN6/Hn4FCPfySRjr872kyArWeVD53QqBMJ6qeC0Y9dll1rA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ol8tdKdXEMiUCLvEiPres2Ur7dwmUvIMjcVrRkVNYT4=;
- b=LqRuuxdhkOLWFORIjABHybYg8bb1PhALB4URXIcoT+dZ3WCBosTnDc9JPkUV7BCL8NXdNfeMWcShp1Ml4hu+LyHCQtBZfnMXOFUmblzfP12BikeKOLjb2rExwdcGgYAf/VZ8pVPB+3gBVIHX1sPY3tAz8nljUrjRMtYxBXcBvzI=
-Received: from MWHPR11MB1886.namprd11.prod.outlook.com (2603:10b6:300:110::9)
- by MWHPR1101MB2271.namprd11.prod.outlook.com (2603:10b6:301:52::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25; Wed, 12 May
- 2021 00:40:04 +0000
-Received: from MWHPR11MB1886.namprd11.prod.outlook.com
- ([fe80::75b0:a8e9:60cb:7a29]) by MWHPR11MB1886.namprd11.prod.outlook.com
- ([fe80::75b0:a8e9:60cb:7a29%9]) with mapi id 15.20.4108.032; Wed, 12 May 2021
- 00:40:04 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Li Zefan <lizefan@huawei.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Jean-Philippe Brucker" <jean-philippe@linaro.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "Alex Williamson" <alex.williamson@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "Wu, Hao" <hao.wu@intel.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: RE: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and allocation
- APIs
-Thread-Topic: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Thread-Index: AQHXDZub0CDG82VGXUmLEYgvMuPs4KqKkLIAgACg94CAAC72gIAAD04AgAADogCAAErUgIAETQEAgAOaswCAB7C3gIAAhxQwgADYDACAATCSAIAAVGMAgAELsQCAACiXgIAAVBgAgAAaMwCAAAESAIAABy2AgAAgOYCAFdCAgIAAppUAgADsNgCAACqygIAHsmaAgAAzsYCAAAjdgIAAD/yAgAAcQgCAADqggIAAk6nQgABIUACAASsnkIAAYWwAgALs9qCAAdeZgIACip7wgAo7TwCAACbZAIAARiUAgAARxQCAAS/XgIAACnOAgAAiwQCAAL24AIAAVNoAgABEgACAAo33AIADeaeAgAESCjCAAKImAIAAgzaAgAAT/gCAAAjoUIAAA8iAgAAAOiA=
-Date:   Wed, 12 May 2021 00:40:04 +0000
-Message-ID: <MWHPR11MB1886C5A82E4846A86F4D31988C529@MWHPR11MB1886.namprd11.prod.outlook.com>
-References: <YJOZhPGheTSlHtQc@myrica> <20210506122730.GQ1370958@nvidia.com>
- <20210506163240.GA9058@otc-nc-03>
- <MWHPR11MB188698FBEE62AF1313E0F7AC8C569@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210510123729.GA1002214@nvidia.com>
- <MWHPR11MB1886E22D03B14EE0D5725CE08C539@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210511143840.GL1002214@nvidia.com>
- <MWHPR11MB188601321993CA43E3058C4D8C539@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210511233950.GQ1002214@nvidia.com>
- <MWHPR11MB188623FB741481D489D259798C529@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210512002515.GR1002214@nvidia.com>
-In-Reply-To: <20210512002515.GR1002214@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [192.198.147.218]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 798a93a7-4e94-4010-bd39-08d914de7c0e
-x-ms-traffictypediagnostic: MWHPR1101MB2271:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR1101MB22716FF7B1C99ABCB961B3698C529@MWHPR1101MB2271.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: UOCSvkmE/kchnlbSvQfRiDDzuTf0sUUC+5rCe33fUO+M9Tf3ClVirZcTF9k/4V2zw6csKNcsZqYy1O95i02BD/C4KgZzB7bQyMbNPFEsWAE7KAifV3fPeaWUh4AsjKR8qIK62vL0IJzAuUQbscpPsPNbBO++/2jTLCNEYP+48SYGxG50F8H7NCcH2Datc4aOJYpzhMp+74HMjgiS9RpvB/j0F0O9QGGFhaJPgJm5vqb0OgJ3UWS7jyeUDnbdMSG0qPPSM+nG8OTfD/fujn1M6d2/92ZL0v/AXEvsY2y+YkeKjgm+dG3onmw5fyJA8P0VVyVjD88nB+o0UIkI5pwDUw67IrRYAWP45+ldM6tAHsiWQPyIWWXUxPZyjq9xdN5gFiDRHov5EK4HJdT+5bkS3NFbd4U0SgUQTdWKjJm2+dRZ/xZk+r9LfsFM4DJoWC/5WWUdMXG6VT8FEIFEnB9uTrOi810thg1PssRjSmgGWHmEkGXCqWgGDK4LnyXeXxLK1kFOiDyJRBu9hX62l/8RVKz/nUaDg/qfzYwXfm+65qiA/DBnNsMa7ydvXe0PMzy4eT4p9SKwdU9mYHF4dS7bEK5TTECNFHh8jhLHdS/u7GE=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1886.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(346002)(39860400002)(396003)(376002)(7696005)(71200400001)(66946007)(76116006)(6916009)(64756008)(186003)(54906003)(7416002)(66556008)(86362001)(66446008)(66476007)(478600001)(2906002)(33656002)(8936002)(122000001)(4326008)(55016002)(8676002)(52536014)(26005)(316002)(9686003)(38100700002)(83380400001)(5660300002)(6506007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?ODSFmnfF2iis5HkZh6QarS9AAd4Yjxqcu2ZVfm36XDFCZcbWS7tu5BRIDeRg?=
- =?us-ascii?Q?KyVYCx87ifK7hGifFAc2nTfOGKSUUUChT7ijIUcnjcSH+80s/EwF3vQnBsGE?=
- =?us-ascii?Q?kOIjeqJrQ0dXRrWEfGG0jMsNVD/EJL2N7lHSuNWsst5kEnxPzDozAKRi85hP?=
- =?us-ascii?Q?6ZNog1IzTq/sEMb6QYwfeFbmb5KXVsv+9iscFC27syxvxSSElnF94cagaqwk?=
- =?us-ascii?Q?xBzdJhfx3GgPP1senALTDPIVIUr8B1hAdcJ/m6jRGaHEx1Nol6issNm3OENo?=
- =?us-ascii?Q?InzLVymCz6UfxzZO3jzKeoKJzpGm3BFEwTFCRN5kUbouyttvOlMkkvS21gl6?=
- =?us-ascii?Q?pbsIo0K/fT0AB+d+hyGA+zbLX5iU6sHL4i/DPcmk38aGtzqUQieME7Xal0CD?=
- =?us-ascii?Q?qpYtip2GPexe4Xon1yNDeZ5tCtl4h9lNs0EOXZor9vqOg3YOQ1cpxdXFsAi4?=
- =?us-ascii?Q?GBns5Wo1T9VX5jUycyubduDy38rhElE+3gnaAZrQkFv9pRidOgQ0e5hOGoRd?=
- =?us-ascii?Q?hwQcPO3+SK4TSVfUqKDW8VlXG0oQ/YUjb1htfANno1IWTYjhgWWJoz92Zl93?=
- =?us-ascii?Q?hgGkANOobKscyHq7GZBeYzoA/TAE4kMJjb8vmxvodXzYxmTkipKzWuwmX3W8?=
- =?us-ascii?Q?p5Ha8Dql6DROy9LnWi9SPsdGdLR8rra7L/zprLtbTigAXVF1fQi1RhPHvJlS?=
- =?us-ascii?Q?KLb5975HBEJ33JA1HPYtRZPP8nOcSqaKY1ewub9GxjDnkO755qIuXSCrDo+3?=
- =?us-ascii?Q?HtEHwUAee00+aZexM7/iXLiaJVfZI+5S0s0xs/vGoYvOch9PzMVihPbyFv37?=
- =?us-ascii?Q?C6WVQrpBdQ4nTd6dWMMIMNjINgaCao5Sg9H/qCUD6WUHx2ZmayvlEs1aD8wh?=
- =?us-ascii?Q?Uj9hN5bCqjL1HP9lwkVbOaFaQcSlaPq6N5P0eFzuKF9nwJIXshoGVkfk93Vf?=
- =?us-ascii?Q?8qAzo3KfkSD/umrb55C1G1HKBe+7/KE+2JvUhQH8Cs+tVp8VtDkmuLv2uNFF?=
- =?us-ascii?Q?IW9ZyorVjwvyh60fzb+mIxHGSY/5Rn+7mQDwDNs7NDogED30AycBKa1W1aPq?=
- =?us-ascii?Q?OPPwpGUC76uUQpcs0zZewyjpR1mvUh4iXyeEGE2hp5j4ptxUVLpNxITUf55u?=
- =?us-ascii?Q?YXpjTEKa1gbGLEGq58CGZstBTSvev/jsXqMwFh/2P09ZIms6J2XA8IpsUMBm?=
- =?us-ascii?Q?1HkxIG6i3M79hf3gzj3FpkEz+yfpMDItYpey+SIbALAUcbY5g5oBIuEcxTny?=
- =?us-ascii?Q?xSTvcIV0hHGlQn+au2NtbsdzWbjlU/P45dFx8LweOe+ULFz97C8Bv8FVw5Ut?=
- =?us-ascii?Q?iujLfW10faTU+3AQC6s6sxii?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S229637AbhELAqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 20:46:18 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:60470 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229934AbhELAqQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 20:46:16 -0400
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210512004507epoutp01f49c6c415dc951eaec0458d7890fec55~_KxpPaPLP1156911569epoutp01H
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 00:45:07 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210512004507epoutp01f49c6c415dc951eaec0458d7890fec55~_KxpPaPLP1156911569epoutp01H
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1620780307;
+        bh=dfggp+4g/zAr9O+AzcgFCwUClokaZu0+FQs1KqAJUDg=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=XA9RW9j343EQGsDvb6I7Pk2hS9Qmu1HOB3WvJHzaFcSlz+fsSm425BMgXqzaJQnb2
+         f9n34GdW7IjPPaCLNROsKWB7kLOclO12Ae3r61zGUds5ponfBplwUZDEg3z4K6BaDp
+         koUf7dc0ZJMeXgmVx0CUysUhca+xjYwkwDkasOWs=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
+        20210512004507epcas2p268219b25083295c943dd87ba0e8fdf02~_KxoumdM70700007000epcas2p2c;
+        Wed, 12 May 2021 00:45:07 +0000 (GMT)
+Received: from epsmges2p3.samsung.com (unknown [182.195.40.184]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4Ffx0167Gfz4x9Q2; Wed, 12 May
+        2021 00:45:05 +0000 (GMT)
+Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
+        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        30.68.09433.0152B906; Wed, 12 May 2021 09:45:04 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
+        20210512004504epcas2p3e3dc9b5dc5df6ea16fb887e0fb23718c~_Kxl9Kbhf1310913109epcas2p3Z;
+        Wed, 12 May 2021 00:45:04 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210512004504epsmtrp2c27fee30e1107570bdf11cc1e6972289~_Kxl8Bl4H0559905599epsmtrp2E;
+        Wed, 12 May 2021 00:45:04 +0000 (GMT)
+X-AuditID: b6c32a47-f61ff700000024d9-1e-609b2510bf9e
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        1C.05.08637.0152B906; Wed, 12 May 2021 09:45:04 +0900 (KST)
+Received: from KORDO035731 (unknown [12.36.185.47]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210512004504epsmtip15aec5dec4cde3de0795bff4ac6ee4d6f~_KxloXrmK0154401544epsmtip1Y;
+        Wed, 12 May 2021 00:45:04 +0000 (GMT)
+From:   "Dongseok Yi" <dseok.yi@samsung.com>
+To:     "'Willem de Bruijn'" <willemdebruijn.kernel@gmail.com>
+Cc:     "'Yunsheng Lin'" <linyunsheng@huawei.com>,
+        "'Daniel Borkmann'" <daniel@iogearbox.net>,
+        "'bpf'" <bpf@vger.kernel.org>,
+        "'Alexei Starovoitov'" <ast@kernel.org>,
+        "'Andrii Nakryiko'" <andrii@kernel.org>,
+        "'Martin KaFai Lau'" <kafai@fb.com>,
+        "'Song Liu'" <songliubraving@fb.com>,
+        "'Yonghong Song'" <yhs@fb.com>,
+        "'John Fastabend'" <john.fastabend@gmail.com>,
+        "'KP Singh'" <kpsingh@kernel.org>,
+        "'David S. Miller'" <davem@davemloft.net>,
+        "'Jakub Kicinski'" <kuba@kernel.org>,
+        "'Network Development'" <netdev@vger.kernel.org>,
+        "'linux-kernel'" <linux-kernel@vger.kernel.org>
+In-Reply-To: <CAF=yD-+ncxKY28h8ch8kcJmSXfqdnBrBELKFBPmfP7RzNsWoTg@mail.gmail.com>
+Subject: RE: [PATCH bpf] bpf: check for data_len before upgrading mss when 6
+ to 4
+Date:   Wed, 12 May 2021 09:45:03 +0900
+Message-ID: <01b701d746c8$0c15ae70$24410b50$@samsung.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB1886.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 798a93a7-4e94-4010-bd39-08d914de7c0e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 May 2021 00:40:04.5292
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: KELDRJ246CsNud8+xmFAEHCw+a8H6SFTz59t5SRIXu+cZxJgJLSyeHk29MkJT+GoH5bwf5Jzqc4UQy7BW6b9+g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1101MB2271
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQKypHYW3xad5/j2XvChPebQmKG2owG+YoocAqFpyMsBZavlXQIxNaIYAiru3ucBq8RF2QKY6vTDAm6kVlUBadK04AMaqQ3GARiLayQDE+caWwJJGwtFAeZKb9QDLW923AHUONYWAfw9g6SoAqstYA==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrKJsWRmVeSWpSXmKPExsWy7bCmma6A6uwEg43TzSy+/57NbPHl5212
+        i89HjrNZLF74jdlizvkWFoumHSuYLF58eMJo8XxfL5PFhW19rBaXd81hs2h4y2VxbIGYxc/D
+        Z5gtFv/cAFS1ZAajA7/HlpU3mTwmNr9j99g56y67R8uRt6weXTcuMXtsWtXJ5vF5k1wAe1SO
+        TUZqYkpqkUJqXnJ+SmZeuq2Sd3C8c7ypmYGhrqGlhbmSQl5ibqqtkotPgK5bZg7Q2UoKZYk5
+        pUChgMTiYiV9O5ui/NKSVIWM/OISW6XUgpScAkPDAr3ixNzi0rx0veT8XCtDAwMjU6DKhJyM
+        CdMOsRScF6z4eyuxgXE9bxcjJ4eEgInE5F1PmEFsIYEdjBLzb/l0MXIB2Z8YJf6v3sAC4Xxj
+        lNh7q48JpqNryis2iI69jBITbhRBFL1glDh0bhJYEZuAlsSbWe2sILaIgJXE/9kn2EGKmAVO
+        s0g8Wf0NrIhTIFBic98BsCJhgWCJp5OawOIsAqoSS3tBVnNy8ApYSvzbNJsJwhaUODnzCVic
+        WUBeYvvbOcwQFylI/Hy6jBVkgYjAMkaJaX+nMUIUiUjM7myDKnrAIbHoiRGE7SJxecJ1dghb
+        WOLV8S1QtpTE53d7gV7jALLrJVq7Y0BmSgj0MEpc2QexWELAWGLWs3ZGkBpmAU2J9bv0IcqV
+        JY7cgjqNT6Lj8F92iDCvREebEISpJDHxSzzEDAmJFycns0xgVJqF5K9ZSP6aheT8WQirFjCy
+        rGIUSy0ozk1PLTYqMEaO6U2M4PSs5b6DccbbD3qHGJk4GA8xSnAwK4nwzq2flSDEm5JYWZVa
+        lB9fVJqTWnyI0RQY0hOZpUST84EZIq8k3tDUyMzMwNLUwtTMyEJJnPdnal2CkEB6Yklqdmpq
+        QWoRTB8TB6dUA1N9Ln/Gh6fXjetYd/SUnNz3nUtY1u+F9hx3V0mThhOMW97f28Nq1l/5dXkp
+        J+supxfJJ5XmHpO9EaYRVTvFTsZ77Zar7N+myF5xLroYPu2J0/3VT/7Ob6m76vvGVKrMXtmj
+        N6J+SvwL39crnrcJ7I/buPBu9wL7rNu/C0X/Tt/D536I7ebvuNeLpsjZf4v0Z+r55mNfflEv
+        271tcaz23sCIa285m/YIsRtJabz22/Q+9XDKm9iC1VYfLqVbtGoaiHkdWuj88P+PFGUWzZ2p
+        11UNuKOO8ZX/6Oa/8Iypa9JuVofy2Uma3rn/Fx3tL/GImvxr8ymlCnFZo6QnDI8ULUU6OT+u
+        FhecO1Vyqkb6OyWW4oxEQy3mouJEAKIla6xYBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrCIsWRmVeSWpSXmKPExsWy7bCSnK6A6uwEgzUHuCy+/57NbPHl5212
+        i89HjrNZLF74jdlizvkWFoumHSuYLF58eMJo8XxfL5PFhW19rBaXd81hs2h4y2VxbIGYxc/D
+        Z5gtFv/cAFS1ZAajA7/HlpU3mTwmNr9j99g56y67R8uRt6weXTcuMXtsWtXJ5vF5k1wAexSX
+        TUpqTmZZapG+XQJXxoRph1gKzgtW/L2V2MC4nreLkZNDQsBEomvKK7YuRi4OIYHdjBLTT+0F
+        cjiAEhISuza7QtQIS9xvOcIKUfOMUeLj76csIAk2AS2JN7PaWUFsEQErif+zT7CDFDELXGWR
+        2PzjGzNExz4OiQsn3zCBVHEKBEps7jsA1iEMZPf/u8UIYrMIqEos7d0ANpVXwFLi36bZTBC2
+        oMTJmU/A4swC2hK9D1sZIWx5ie1v5zBDnKcg8fPpMrDzRASWMUpM+zsNqkhEYnZnG/MERuFZ
+        SGbNQjJrFpJZs5C0LGBkWcUomVpQnJueW2xYYJiXWq5XnJhbXJqXrpecn7uJERyxWpo7GLev
+        +qB3iJGJg/EQowQHs5II79z6WQlCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeS90nYwXEkhPLEnN
+        Tk0tSC2CyTJxcEo1MLWpmM/aENMXZ55f5eKU9r+wrWXjEaOaEz+8e1I3Vy+zdlws1bbkh+Pj
+        4yk51+o7fkvUMMx7uzVdQTdaVlKZJ8Xqbu3Jtl/Tzhy5pvTv5cfgC88erBe88MxiwVqmc9cS
+        v95+HF91Vqq3y2NOYcH1f3Y9Gvef7Jv4/RxjU9bDv7Lue/5aW094EWrMsTV/+nLRHTtfLgxO
+        6fr26GQX0wZphUMzzp9ZIFzyvk+lqnTj1fmFcy+WdTxnDJ4VIuv233yDn2jGu8iz+nMeTLnw
+        d2bUfJV6uf1Zli2O1Z8E5/5P+PpDQG71kc9bVoWH2oZOX/D7+M9lB84zq/LN2ud5zOfJjXZZ
+        14nmp6tf6wZX/Xy8VKdeiaU4I9FQi7moOBEAVTXzjEcDAAA=
+X-CMS-MailID: 20210512004504epcas2p3e3dc9b5dc5df6ea16fb887e0fb23718c
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210429102143epcas2p4c8747c09a9de28f003c20389c050394a
+References: <CGME20210429102143epcas2p4c8747c09a9de28f003c20389c050394a@epcas2p4.samsung.com>
+        <1619690903-1138-1-git-send-email-dseok.yi@samsung.com>
+        <8c2ea41a-3fc5-d560-16e5-bf706949d857@iogearbox.net>
+        <02bf01d74211$0ff4aed0$2fde0c70$@samsung.com>
+        <CA+FuTScC96R5o24c-sbY-CEV4EYOVFepFR85O4uGtCLwOjnzEw@mail.gmail.com>
+        <02c801d7421f$65287a90$2f796fb0$@samsung.com>
+        <CA+FuTScUJwqEpYim0hG27k39p_yEyzuW2A8RFKuBndctgKjWZw@mail.gmail.com>
+        <001801d742db$68ab8060$3a028120$@samsung.com>
+        <CAF=yD-KtJvyjHgGVwscoQpFX3e+DmQCYeO_HVGwyGAp3ote00A@mail.gmail.com>
+        <436dbc62-451b-9b29-178d-9da28f47ef24@huawei.com>
+        <CAF=yD-+d0QYj+812joeuEx1HKPzDyhMpkZP5aP=yNBzrQT5usw@mail.gmail.com>
+        <007001d7431a$96281960$c2784c20$@samsung.com>
+        <CAF=yD-L9pxAFoT+c1Xk5YS42ZaJ+YLVQVnV+fvtqn-gLxq9ENg@mail.gmail.com>
+        <00c901d74543$57fa3620$07eea260$@samsung.com>
+        <CA+FuTSepShKoXUJo7ELMMJ4La11J6CsZggJWsQ5MB2_uhAi+OQ@mail.gmail.com>
+        <CA+FuTSeyuUvKC==Mo7L+u3PS0BQyea+EdLLYjhGFrP7FQZsbEQ@mail.gmail.com>
+        <015101d74602$86442210$92cc6630$ @samsung.com> 
+        <CAF=yD-+ncxKY28h8ch8kcJmSXfqdnBrBELKFBPmfP7RzNsWoTg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Jason Gunthorpe <jgg@nvidia.com>
-> Sent: Wednesday, May 12, 2021 8:25 AM
->=20
-> On Wed, May 12, 2021 at 12:21:24AM +0000, Tian, Kevin wrote:
->=20
-> > > Basically each RID knows based on its kernel drivers if it is a local
-> > > or global RID and the ioasid knob can further fine tune this for any
-> > > other specialty cases.
+On Tue, May 11, 2021 at 01:38:41PM -0400, Willem de Bruijn wrote:
+> On Mon, May 10, 2021 at 9:11 PM Dongseok Yi <dseok.yi@samsung.com> wrote:
 > >
-> > It's fine if you insist on this way. Then we leave it to userspace to
-> > ensure same split range is used across devices when vIOMMU is
-> > concerned.
->=20
-> I'm still confused why there is a split range needed.
-
-a device could support both ENQCMD and non-ENQCMD submissions.
-
-for ENQCMD path, CPU provides a PASID translation mechanism (from
-guest PASID to host PASID)
-
-for non-ENQCMD path, guest driver directly programs untranslated=20
-guest PASID to the device MMIO register.
-
-the host kernel only setups host PASID entry which is hwid for a said
-ioasid page table.
-
-If we don't split range, we have to assume guest PASID =3D=3D host PASID
-otherwise non-ENQCMD path will fail. But expose host PASID to guest
-breaks migration.
-
-If we want to allow migration, then need support guest PASID !=3D host
-PASID and make sure both entries point to the same page table so
-ENQCMD (host PASID) and non-ENQCMD (guest PASID) can both work.
-It requires range split to avoid conflict between host/guest PASIDs
-in the same space.
-
->=20
-> > Please note such range split has to be enforced through
-> > vIOMMU which (e.g. on VT-d) includes a register to report available
-> > PASID space size (applying to all devices behind this vIOMMU) to
-> > the guest. The kernel just follows per-RID split info. If anything brok=
-en,
-> > the userspace just shoots its own foot.
->=20
-> Is it because this specific vIOMMU protocol is limiting things?
-
-When range split is enabled, we need a way to tell the guest about the
-local range size so guest PASID is allocated only within this range. Then
-we use vIOMMU to expose such information.
-
->=20
-> > > > > It does need some user visible difference because SIOV/mdev is no=
-t
-> > > > > migratable. Only the kernel can select a PASID, userspace (and he=
-nce
-> > > > > the guest) shouldn't have the option to force a specific PASID as=
- the
-> > > > > PASID space is shared across the entire RID to all VMs using the =
-mdev.
+> > On Mon, May 10, 2021 at 09:46:25AM -0400, Willem de Bruijn wrote:
+> > > On Mon, May 10, 2021 at 9:19 AM Willem de Bruijn
+> > > <willemdebruijn.kernel@gmail.com> wrote:
 > > > >
-> > > > not migratable only when you choose exposing host-allocated PASID
-> > > > into guest. However in the entire this proposal we actually virtual=
-ize
-> > > > PASIDs, letting the guest manage its own PASID space in all
-> > > > scenarios
+> > > > > > That generates TCP packets with different MSS within the same stream.
+> > > > > >
+> > > > > > My suggestion remains to just not change MSS at all. But this has to
+> > > > > > be a new flag to avoid changing established behavior.
+> > > > >
+> > > > > I don't understand why the mss size should be kept in GSO step. Will
+> > > > > there be any issue with different mss?
+> > > >
+> > > > This issue has come up before and that has been the feedback from
+> > > > TCP experts at one point.
+> > > >
+> > > > > In general, upgrading mss make sense when 6 to 4. The new flag would be
+> > > > > set by user to not change mss. What happened if user does not set the
+> > > > > flag? I still think we should fix the issue with a general approach. Or
+> > > > > can we remove the skb_increase_gso_size line?
+> > > >
+> > > > Admins that insert such BPF packets should be aware of these issues.
+> > > > And likely be using clamping. This is a known issue.
+> > > >
+> > > > We arrived that the flag approach in bpf_skb_net_shrink. Extending
+> > > > that  to bpf_skb_change_proto would be consistent.
 > > >
-> > > PASID cannot be virtualized without also using ENQCMD.
-> > >
-> > > A mdev that is using PASID without ENQCMD is non-migratable and this
-> > > needs to be make visiable in the uAPI.
+> > > As for more generic approach: does downgrading to non-TSO by clearing
+> > > gso_size work for this edge case?
 > >
-> > No. without ENQCMD the PASID must be programmed to a mdev MMIO
-> > register. This operation is mediated then mdev driver can translate the
-> > PASID from virtual to real.
->=20
-> That is probably unworkable with real devices, but if you do this you
-> need to explicitly expose the vPASID to the mdev API somehow, and still
-> the device needs to declare if it supports this, and devices that
-> don't should still work in a non-migratable mode.
->=20
+> > It can hit __skb_linearize in validate_xmit_skb and frags will be
+> > copied to a linear part. The linear part size can exceed the MTU of
+> > skb->dev unexpectedly.
+> 
+> When does skb_needs_linearize return true here (besides lack of
+> scatter-gather support, which would also preclude TSO)?
 
-It's not necessary. For real devices we use alias mapping for both guest/ho=
-st
-PASID as explained above. Then we can have the guest to always register its=
-=20
-vPASID with ioasid (just like map/unmap GPA to HVA), and then let host driv=
-ers=20
-to figure out whether that vPASID can be used as a real hwid. When it's con=
-sidered
-virtual and a real hwid is allocated by the host, the mapping is saved unde=
-r this
-ioasid to be queried by device drivers if translation is required.=20
-=20
-From this angle, the previous IOASID_SET_HWID possibly should be renamed=20
-to IOASID_SET_USER_HWID.
+As I know not every netdev support NETIF_F_SG. TSO requires SG.
 
-Thanks
-Kevin
+    /* TSO requires that SG is present as well. */
+    if ((features & NETIF_F_ALL_TSO) && !(features & NETIF_F_SG)) {
+        netdev_dbg(dev, "Dropping TSO features since no SG feature.\n");
+        features &= ~NETIF_F_ALL_TSO;
+    }
+
+> 
+> > I will make another patch with the flag approach.
+> >
+
