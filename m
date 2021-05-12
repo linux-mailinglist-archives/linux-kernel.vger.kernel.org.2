@@ -2,130 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C27137B57F
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 07:33:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B56D937B581
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 07:33:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230097AbhELFeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 01:34:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57282 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230017AbhELFem (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 01:34:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C386D613C2;
-        Wed, 12 May 2021 05:33:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620797615;
-        bh=USzfXL7rhbiNnC/UNNFOQgAUDuwKT0jR8zKV7J6vvp4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tY80cvzTIrxVZ/KlZkv4hTSQ0d6QMpNymy43XFKK4Nl4pg5jBiKiaaVe96lBT3sne
-         elPv0NK/sEy6D8KvvT99q6vd09rylQLChwFHrA2dxkbosxTt9iza8zPCXcL3RVUcpz
-         tR8QQCigsZGcNbYKbyHoeYgo0opjKqs/VqdoafsgvJbHpUP/UAg2CV4dThNi57rHlz
-         lWQwpz2czPHlvszx5g7ovXvuxtzhYuWaX2v4SjxSx0ijOrwd+Qe8pcNkbKEfiC5CAG
-         7HoXNA8R+NWu01QvHBNz2VZrcmewfLAv4NZ9AsNZ9f/uzMGEAlDGYHjQSsPW6nyDRR
-         iqp5x1wXGHYsQ==
-Date:   Wed, 12 May 2021 07:33:30 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/5] docs: hwmon: tmp103.rst: fix bad usage of UTF-8
- chars
-Message-ID: <20210512073330.2b48e81a@coco.lan>
-In-Reply-To: <a4d0e1cf-20f1-d87c-0af6-b39f45afae5f@roeck-us.net>
-References: <cover.1620744606.git.mchehab+huawei@kernel.org>
-        <73b3c7c1eef5c12ddc941624d23689313bd56529.1620744606.git.mchehab+huawei@kernel.org>
-        <a4d0e1cf-20f1-d87c-0af6-b39f45afae5f@roeck-us.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S230126AbhELFfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 01:35:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230017AbhELFe7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 01:34:59 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9235C061574;
+        Tue, 11 May 2021 22:33:51 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Fg3P91bfrz9sWY;
+        Wed, 12 May 2021 15:33:49 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1620797629;
+        bh=Jt9fjmiYDPAo79c/vHFKOcrMlmW/NShAz/ZIMt8foPU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=NqMMWU40+m5Hsi7FfbFaIFqG/zCrzuOHSTX28pMcZtDroxkHhkWA4gJvg0RAHhcvf
+         R93+kXCpVFrhpwblCaw+32UhbPSkywUjJVBmbFnqu5WfgXXAHSXhigix6Sb3fsmfRk
+         2g/tQdZ6p6k92ZJIrJ5mnAeTmNkjkzukMPu1YPj5XFZifeGAaofz4Bu755lsMq4X0Z
+         eyf/BA1sYWmAzG/B2/72ZEqR93ds9ELeqlMHjFJzyencfajNhqls5i0AQ56oQZjwUv
+         OEku68vfjsi9R5BujwwdivQatyTlszXbuQT6/5FLVCe8A2SkKOLYHNezo1/jgindaT
+         1ne+RJUsdyLCg==
+Date:   Wed, 12 May 2021 15:33:48 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the akpm-current tree
+Message-ID: <20210512153348.2ef4d1a9@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="Sig_/mNTt96jBPaR9.mJBDh24Cdd";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guenter,
+--Sig_/mNTt96jBPaR9.mJBDh24Cdd
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Em Tue, 11 May 2021 11:55:53 -0700
-Guenter Roeck <linux@roeck-us.net> escreveu:
+Hi all,
 
-> On 5/11/21 8:01 AM, Mauro Carvalho Chehab wrote:
-> > While UTF-8 characters can be used at the Linux documentation,
-> > the best is to use them only when ASCII doesn't offer a good replacemen=
-t.
-> > So, replace the occurences of the following UTF-8 characters:
-> >=20
-> > 	- U+2013 ('=E2=80=93'): EN DASH
-> >=20
-> > In this specific case, EN DASH was used instead of a minus
-> > sign. So, replace it by a single hyphen.
-> >=20
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org> =20
->=20
-> Confused. Is that supposed to replace the earlier patch (docs: hwmon:
-> avoid using UTF-8 chars) ? I thought that was more comprehensive
-> and just as valid. Anyway, should I drop that patch ?
+After merging the akpm-current tree, today's linux-next build (powerpc
+ppc64_defconfig) failed like this:
 
-If you applied already the previous patch, that's OK. Just ignore this
-one.
+In file included from arch/powerpc/include/asm/book3s/64/mmu-hash.h:20,
+                 from arch/powerpc/include/asm/book3s/64/mmu.h:31,
+                 from arch/powerpc/include/asm/mmu.h:402,
+                 from arch/powerpc/include/asm/lppaca.h:46,
+                 from arch/powerpc/include/asm/paca.h:17,
+                 from arch/powerpc/include/asm/current.h:13,
+                 from include/linux/thread_info.h:22,
+                 from include/asm-generic/preempt.h:5,
+                 from ./arch/powerpc/include/generated/asm/preempt.h:1,
+                 from include/linux/preempt.h:78,
+                 from include/linux/spinlock.h:51,
+                 from include/linux/vmalloc.h:5,
+                 from mm/ioremap.c:9:
+arch/powerpc/include/asm/book3s/64/pgtable.h:246:21: error: initializer ele=
+ment is not constant
+  246 | #define PGDIR_SHIFT (PUD_SHIFT + PUD_INDEX_SIZE)
+      |                     ^
+include/asm-generic/pgtable-nop4d.h:11:20: note: in expansion of macro 'PGD=
+IR_SHIFT'
+   11 | #define P4D_SHIFT  PGDIR_SHIFT
+      |                    ^~~~~~~~~~~
+mm/ioremap.c:19:60: note: in expansion of macro 'P4D_SHIFT'
+   19 | static unsigned int __ro_after_init iomap_max_page_shift =3D P4D_SH=
+IFT;
+      |                                                            ^~~~~~~~~
 
-It is just that, after some discussions around EM/EN DASH on
-patch 00/53[1], I opted to split the changes on three parts:
+Caused by commit
 
-	- UTF-8 fixes;
-	- non DASH UTF-8 replacements;
-	- EM/EN DASH.
+  9054fd6cce6c ("mm/ioremap: fix iomap_max_page_shift")
 
-in order to make easier for reviewers to discuss EM/EN DASH if needed.
+I have reverted that commit for today.
 
--
+--=20
+Cheers,
+Stephen Rothwell
 
-[1] You can see the full thread at:
+--Sig_/mNTt96jBPaR9.mJBDh24Cdd
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-	https://lore.kernel.org/lkml/cover.1620641727.git.mchehab+huawei@kernel.or=
-g/
+-----BEGIN PGP SIGNATURE-----
 
-    In summary, my original patchset were replacing both
-    EM/EN DASH to a single hyphen.
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCbaLwACgkQAVBC80lX
+0Gy4DAgAi0ZwrsRw+KeOZSH/GsXl1NxpF1zxSkZ6eigW5f2k56CUrk/87duehq1U
+y2XDlPukrB/HiH3TAf8cfg60kFHdXoHpAXYkvljmJcmXbV5PkBn42KBlQuFkVSXF
+fFU8jg19vBqNcO6tVUTv3mSMimwUUVJxDDS7WosONCLZug39oNCC5xXKhJ7xQWt4
+DwzawsERpHk4WLJhAsJu7G1+ffTBiouEWUgRQ0/A2fqmBvVydgQqddgep2dtDp2a
+8RvuSXMGHm9e7a8K2RzACCd1Kzm8UDmE7FhTdTmSFYQG10Hq+olWNjdP+RTXfdCl
+upCce7aJKZcQMbL2mvBHhlC1oVJ+NA==
+=ySdW
+-----END PGP SIGNATURE-----
 
-    Yet, several maintainers seem to prefer using "--" for EN DASH
-    and either "--" or "---" for EM DASH.
-
-    Neither -- nor --- would make any sense on tmp103.rst, as here it
-    means a minus sign.
-   =20
-
->=20
-> Guenter
->=20
-> > ---
-> >   Documentation/hwmon/tmp103.rst | 4 ++--
-> >   1 file changed, 2 insertions(+), 2 deletions(-)
-> >=20
-> > diff --git a/Documentation/hwmon/tmp103.rst b/Documentation/hwmon/tmp10=
-3.rst
-> > index e195a7d14309..b3ef81475cf8 100644
-> > --- a/Documentation/hwmon/tmp103.rst
-> > +++ b/Documentation/hwmon/tmp103.rst
-> > @@ -21,10 +21,10 @@ Description
-> >   The TMP103 is a digital output temperature sensor in a four-ball
-> >   wafer chip-scale package (WCSP). The TMP103 is capable of reading
-> >   temperatures to a resolution of 1=C2=B0C. The TMP103 is specified for
-> > -operation over a temperature range of =E2=80=9340=C2=B0C to +125=C2=B0=
-C.
-> > +operation over a temperature range of -40=C2=B0C to +125=C2=B0C.
-> >  =20
-> >   Resolution: 8 Bits
-> > -Accuracy: =C2=B11=C2=B0C Typ (=E2=80=9310=C2=B0C to +100=C2=B0C)
-> > +Accuracy: =C2=B11=C2=B0C Typ (-10=C2=B0C to +100=C2=B0C)
-> >  =20
-> >   The driver provides the common sysfs-interface for temperatures (see
-> >   Documentation/hwmon/sysfs-interface.rst under Temperatures).
-> >  =20
->=20
-
-
-
-Thanks,
-Mauro
+--Sig_/mNTt96jBPaR9.mJBDh24Cdd--
