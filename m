@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D7D937CE71
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:22:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A01637CE02
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245124AbhELRFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 13:05:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36062 "EHLO mail.kernel.org"
+        id S1344023AbhELRAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 13:00:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238178AbhELP53 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:57:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EEC56193A;
-        Wed, 12 May 2021 15:30:32 +0000 (UTC)
+        id S237943AbhELP4z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:56:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8464E61947;
+        Wed, 12 May 2021 15:29:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620833433;
-        bh=Lbn0cnLWpCAAcVlZ4aN63HVDM4nHBlmQK3j4bK53M+8=;
+        s=korg; t=1620833341;
+        bh=ov5v3pfwyvD/diOAexh/wTDvF+knV2lPyrBuKmd7vRM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p6m76RspyIq9AloHWFpxVblDEaUuWdmR/qM+knKnsBsm4VWTOwSJjS18GLyaSjYPX
-         krvjosybWenT4Cpt64yXAiwTzSSaGC3qX/YczYKgSMJZHYIoYEWdWo4XHIZdXQILre
-         RUraXUu9dnPwRo6GewIZxPMj4cDtylvSQ2G+NcAg=
+        b=0m80ltWrOvuQHCCQx8IMQnIIf8Tr361ldFtHvDxoBmsBPWBkZxiJEygna6JXAigAs
+         sTLanD5J73x6JiGpA8v5MiQI4FT5XFGYAeZrwfq1AP9uKIcJ+AVYk3DG5Sx9wxAo/C
+         rJf/H/DqIMXbosITyP4OlE1gjk2ZJAFnH9PdTc1Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
+        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
         Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.11 103/601] KVM: SVM: Do not allow SEV/SEV-ES initialization after vCPUs are created
-Date:   Wed, 12 May 2021 16:43:00 +0200
-Message-Id: <20210512144831.237873782@linuxfoundation.org>
+Subject: [PATCH 5.11 104/601] KVM: SVM: Inject #GP on guest MSR_TSC_AUX accesses if RDTSCP unsupported
+Date:   Wed, 12 May 2021 16:43:01 +0200
+Message-Id: <20210512144831.268914627@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144827.811958675@linuxfoundation.org>
 References: <20210512144827.811958675@linuxfoundation.org>
@@ -43,40 +42,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sean Christopherson <seanjc@google.com>
 
-commit 8727906fde6ea665b52e68ddc58833772537f40a upstream.
+commit 6f2b296aa6432d8274e258cc3220047ca04f5de0 upstream.
 
-Reject KVM_SEV_INIT and KVM_SEV_ES_INIT if they are attempted after one
-or more vCPUs have been created.  KVM assumes a VM is tagged SEV/SEV-ES
-prior to vCPU creation, e.g. init_vmcb() needs to mark the VMCB as SEV
-enabled, and svm_create_vcpu() needs to allocate the VMSA.  At best,
-creating vCPUs before SEV/SEV-ES init will lead to unexpected errors
-and/or behavior, and at worst it will crash the host, e.g.
-sev_launch_update_vmsa() will dereference a null svm->vmsa pointer.
+Inject #GP on guest accesses to MSR_TSC_AUX if RDTSCP is unsupported in
+the guest's CPUID model.
 
-Fixes: 1654efcbc431 ("KVM: SVM: Add KVM_SEV_INIT command")
-Fixes: ad73109ae7ec ("KVM: SVM: Provide support to launch and run an SEV-ES guest")
+Fixes: 46896c73c1a4 ("KVM: svm: add support for RDTSCP")
 Cc: stable@vger.kernel.org
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210331031936.2495277-4-seanjc@google.com>
+Message-Id: <20210423223404.3860547-2-seanjc@google.com>
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/svm/sev.c |    3 +++
- 1 file changed, 3 insertions(+)
+ arch/x86/kvm/svm/svm.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -181,6 +181,9 @@ static int sev_guest_init(struct kvm *kv
- 	bool es_active = argp->id == KVM_SEV_ES_INIT;
- 	int asid, ret;
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -2651,6 +2651,9 @@ static int svm_get_msr(struct kvm_vcpu *
+ 	case MSR_TSC_AUX:
+ 		if (!boot_cpu_has(X86_FEATURE_RDTSCP))
+ 			return 1;
++		if (!msr_info->host_initiated &&
++		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
++			return 1;
+ 		msr_info->data = svm->tsc_aux;
+ 		break;
+ 	/*
+@@ -2859,6 +2862,10 @@ static int svm_set_msr(struct kvm_vcpu *
+ 		if (!boot_cpu_has(X86_FEATURE_RDTSCP))
+ 			return 1;
  
-+	if (kvm->created_vcpus)
-+		return -EINVAL;
++		if (!msr->host_initiated &&
++		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
++			return 1;
 +
- 	ret = -EBUSY;
- 	if (unlikely(sev->active))
- 		return ret;
+ 		/*
+ 		 * This is rare, so we update the MSR here instead of using
+ 		 * direct_access_msrs.  Doing that would require a rdmsr in
 
 
