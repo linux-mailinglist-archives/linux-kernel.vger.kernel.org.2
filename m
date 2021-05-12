@@ -2,69 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BE0F37BA26
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 12:13:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FFE237BA27
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 12:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230285AbhELKOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 06:14:23 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:33735 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230184AbhELKOO (ORCPT
+        id S230183AbhELKOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 06:14:42 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2058 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230129AbhELKOk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 06:14:14 -0400
-Received: by mail-io1-f70.google.com with SMTP id d13-20020a6b7d4d0000b029043969826f55so7150880ioq.0
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 03:13:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=QsFoIF7+TXSZxLlCnFsTt3IaVFcGwD9RJbkW47UyGlA=;
-        b=OKoA1w5U0+GxCGYAr9oNyJJfJPnWXhwQlFS+TAxJd3xhwC+r2OCWS1DwVQvy4fwkYX
-         uTq/9pII2kBcF4gL8Wp5+EpiCWiPhd913FSziFBrHxfjKZWawTxQS7wI3Ar7deOqnAou
-         3Sx+T7F56AheItvMhgzbuSZXmw4Wz3oYwF4VyYDqNRNt+zDhyf5cFEeU7S/SFhGp0v0R
-         3qH8VFz49x3/GtLb9CtXJEHHagVvOClS3fHz1PiSjjDLKIwIVA8qqf9TYaJE0puRcfzd
-         EauZo8yvPiZtY1lhubKeV5YklLV7ht41+Hbvi9a1M9ARQUU4ls3hZubF0UkXFJRFlDZ1
-         wPxQ==
-X-Gm-Message-State: AOAM530vtdMjxM3ZlwtuN/+etSN4r5lLaSC+H1yjVcx8itt2cLQy5Xfh
-        8RM3ztq38m6dec8hMzw1U61xpkV34UZcdKpcqw+jwL/lWtIz
-X-Google-Smtp-Source: ABdhPJzK9DvyxlU39vr0TQCdZh91ks01LjLIzA5HtsRDNbuPVf/NBs2iiNdzZan43Z1RRmaTXl6CMdSWH9UF16deYyYIUANjpgrl
+        Wed, 12 May 2021 06:14:40 -0400
+Received: from dggemx753-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fg9Vz3gpGzWhZs;
+        Wed, 12 May 2021 18:09:15 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by
+ dggemx753-chm.china.huawei.com (10.0.44.37) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 12 May 2021 18:13:30 +0800
+Subject: Re: [f2fs-dev] [PATCH v2] f2fs: avoid swapon failure by giving a
+ warning first
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+CC:     kernel test robot <oliver.sang@intel.com>
+References: <20210511214337.2857522-1-jaegeuk@kernel.org>
+ <YJtS3qEDFIzqc5Ki@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <5c359041-27e8-12d2-5a85-559ab56b835e@huawei.com>
+Date:   Wed, 12 May 2021 18:13:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:144f:: with SMTP id p15mr29977292ilo.143.1620814385945;
- Wed, 12 May 2021 03:13:05 -0700 (PDT)
-Date:   Wed, 12 May 2021 03:13:05 -0700
-In-Reply-To: <000000000000a16c4f05c21ecc1c@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b8a27f05c21f4195@google.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in bcm_rx_handler
-From:   syzbot <syzbot+0f7e7e5e2f4f40fa89c0@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mkl@pengutronix.de,
-        netdev@vger.kernel.org, socketcan@hartkopp.net,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YJtS3qEDFIzqc5Ki@google.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-ClientProxiedBy: dggemx701-chm.china.huawei.com (10.1.199.48) To
+ dggemx753-chm.china.huawei.com (10.0.44.37)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+Jaegeuk,
 
-commit e057dd3fc20ffb3d7f150af46542a51b59b90127
-Author: Oliver Hartkopp <socketcan@hartkopp.net>
-Date:   Mon Sep 28 20:04:04 2020 +0000
+On 2021/5/12 12:00, Jaegeuk Kim wrote:
+> The final solution can be migrating blocks to form a section-aligned file
+> internally. Meanwhile, let's ask users to do that when preparing the swap
+> file initially like:
+> 1) create()
+> 2) ioctl(F2FS_IOC_SET_PIN_FILE)
+> 3) fallocate()
+> 
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Fixes: 36e4d95891ed ("f2fs: check if swapfile is section-alligned")
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 
-    can: add ISO 15765-2:2016 transport protocol
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16883835d00000
-start commit:   009fc857 mISDN: fix possible use-after-free in HFC_cleanup()
-git tree:       net-next
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=15883835d00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=11883835d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b072be26137971e1
-dashboard link: https://syzkaller.appspot.com/bug?extid=0f7e7e5e2f4f40fa89c0
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17c9f9b3d00000
+I've not tested yet though, any comments on below patch?
 
-Reported-by: syzbot+0f7e7e5e2f4f40fa89c0@syzkaller.appspotmail.com
-Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
+[PATCH RFC] f2fs: support migrating swapfile in aligned write mode
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Thanks,
+
+> ---
+> v2:
+>   - fix to warn out once
+>   - cover check_swap_activate_fast
+> 
+>   fs/f2fs/data.c | 29 +++++++++++++++++++++++------
+>   1 file changed, 23 insertions(+), 6 deletions(-)
+> 
+> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> index 33e56ae84e35..41e260680b27 100644
+> --- a/fs/f2fs/data.c
+> +++ b/fs/f2fs/data.c
+> @@ -3801,6 +3801,7 @@ static int f2fs_is_file_aligned(struct inode *inode)
+>   	block_t pblock;
+>   	unsigned long nr_pblocks;
+>   	unsigned int blocks_per_sec = BLKS_PER_SEC(sbi);
+> +	unsigned int not_aligned = 0;
+>   	int ret = 0;
+>   
+>   	cur_lblock = 0;
+> @@ -3833,13 +3834,20 @@ static int f2fs_is_file_aligned(struct inode *inode)
+>   
+>   		if ((pblock - main_blkaddr) & (blocks_per_sec - 1) ||
+>   			nr_pblocks & (blocks_per_sec - 1)) {
+> -			f2fs_err(sbi, "Swapfile does not align to section");
+> -			ret = -EINVAL;
+> -			goto out;
+> +			if (f2fs_is_pinned_file(inode)) {
+> +				f2fs_err(sbi, "Swapfile does not align to section");
+> +				ret = -EINVAL;
+> +				goto out;
+> +			}
+> +			not_aligned++;
+>   		}
+>   
+>   		cur_lblock += nr_pblocks;
+>   	}
+> +	if (not_aligned)
+> +		f2fs_warn(sbi, "Swapfile (%u) is not align to section: \n"
+> +			"\t1) creat(), 2) ioctl(F2FS_IOC_SET_PIN_FILE), 3) fallocate()",
+> +			not_aligned);
+>   out:
+>   	return ret;
+>   }
+> @@ -3858,6 +3866,7 @@ static int check_swap_activate_fast(struct swap_info_struct *sis,
+>   	int nr_extents = 0;
+>   	unsigned long nr_pblocks;
+>   	unsigned int blocks_per_sec = BLKS_PER_SEC(sbi);
+> +	unsigned int not_aligned = 0;
+>   	int ret = 0;
+>   
+>   	/*
+> @@ -3896,9 +3905,12 @@ static int check_swap_activate_fast(struct swap_info_struct *sis,
+>   
+>   		if ((pblock - SM_I(sbi)->main_blkaddr) & (blocks_per_sec - 1) ||
+>   				nr_pblocks & (blocks_per_sec - 1)) {
+> -			f2fs_err(sbi, "Swapfile does not align to section");
+> -			ret = -EINVAL;
+> -			goto out;
+> +			if (f2fs_is_pinned_file(inode)) {
+> +				f2fs_err(sbi, "Swapfile does not align to section");
+> +				ret = -EINVAL;
+> +				goto out;
+> +			}
+> +			not_aligned++;
+>   		}
+>   
+>   		if (cur_lblock + nr_pblocks >= sis->max)
+> @@ -3927,6 +3939,11 @@ static int check_swap_activate_fast(struct swap_info_struct *sis,
+>   	sis->max = cur_lblock;
+>   	sis->pages = cur_lblock - 1;
+>   	sis->highest_bit = cur_lblock - 1;
+> +
+> +	if (not_aligned)
+> +		f2fs_warn(sbi, "Swapfile (%u) is not align to section: \n"
+> +			"\t1) creat(), 2) ioctl(F2FS_IOC_SET_PIN_FILE), 3) fallocate()",
+> +			not_aligned);
+>   out:
+>   	return ret;
+>   }
+> 
