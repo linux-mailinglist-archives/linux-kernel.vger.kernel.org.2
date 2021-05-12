@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3864037EA7B
+	by mail.lfdr.de (Postfix) with ESMTP id C92AE37EA7D
 	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358189AbhELTCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:02:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35790 "EHLO mail.kernel.org"
+        id S1358478AbhELTCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:02:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36542 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243919AbhELQmO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S243924AbhELQmO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 12 May 2021 12:42:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F07C61998;
-        Wed, 12 May 2021 16:08:18 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 39D8861C44;
+        Wed, 12 May 2021 16:08:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620835698;
-        bh=8eLJmLZTNlA0xGW4L8I/apdPvAqzjJcA/wNW2WCKOC0=;
+        s=korg; t=1620835703;
+        bh=qo5X3bvPHRaDyQ+A7wmJAJJO2KAhPLn2mnm/HJqmc/c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g4gZSQfl8osbQFiFjpQUWlcyp51fxqQTDGYRRpEfiZYTRauzAaBPhkzJnAZ+UezB9
-         SEGOPugILy82zTs+djKiHPVAvnnS6jIHsQH3LEaZmCsV42uTk7N2O/LlxiRBcUIOko
-         I8OVlBGXk2YSku6baVrSRme4g9cfvQ1I1oMQQDNo=
+        b=ZwTXp3baxXsYv8yTm8Y3YqGV1c3zR20kbnmfvXqM5BlCk0gp8JkYT27a7hGx/3mC3
+         fGIdbTggpnoZPfueNSUJrF1WgH8NG2SkzOOHuouZnxAoEOLkiox3ORyQWHmjwG6JE2
+         sPDkO4UH1U+cngQZ+v+ot+c47jbTvR39ZNSic3WA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Colin Ian King <colin.king@canonical.com>,
+        stable@vger.kernel.org, John Garry <john.garry@huawei.com>,
+        Sergey Shtylyov <s.shtylyov@omprussia.ru>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 414/677] scsi: pm80xx: Fix potential infinite loop
-Date:   Wed, 12 May 2021 16:47:40 +0200
-Message-Id: <20210512144851.098772950@linuxfoundation.org>
+Subject: [PATCH 5.12 416/677] scsi: hisi_sas: Fix IRQ checks
+Date:   Wed, 12 May 2021 16:47:42 +0200
+Message-Id: <20210512144851.161610524@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
 References: <20210512144837.204217980@linuxfoundation.org>
@@ -42,42 +41,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
 
-[ Upstream commit 40fa7394a1ad5706e795823276f2e394cca145d0 ]
+[ Upstream commit 6c11dc060427e07ca144eacaccd696106b361b06 ]
 
-The for-loop iterates with a u8 loop counter i and compares this with the
-loop upper limit of pm8001_ha->max_q_num which is a u32 type.  There is a
-potential infinite loop if pm8001_ha->max_q_num is larger than the u8 loop
-counter. Fix this by making the loop counter the same type as
-pm8001_ha->max_q_num.
+Commit df2d8213d9e3 ("hisi_sas: use platform_get_irq()") failed to take
+into account that irq_of_parse_and_map() and platform_get_irq() have a
+different way of indicating an error: the former returns 0 and the latter
+returns a negative error code. Fix up the IRQ checks!
 
-[mkp: this is purely theoretical, max_q_num is currently limited to 64]
-
-Link: https://lore.kernel.org/r/20210407135840.494747-1-colin.king@canonical.com
-Fixes: 65df7d1986a1 ("scsi: pm80xx: Fix chip initialization failure")
-Addresses-Coverity: ("Infinite loop")
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Link: https://lore.kernel.org/r/810f26d3-908b-1d6b-dc5c-40019726baca@omprussia.ru
+Fixes: df2d8213d9e3 ("hisi_sas: use platform_get_irq()")
+Acked-by: John Garry <john.garry@huawei.com>
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/pm8001/pm8001_hwi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/hisi_sas/hisi_sas_v1_hw.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/pm8001/pm8001_hwi.c b/drivers/scsi/pm8001/pm8001_hwi.c
-index 31e5455d280c..1b1a57f46989 100644
---- a/drivers/scsi/pm8001/pm8001_hwi.c
-+++ b/drivers/scsi/pm8001/pm8001_hwi.c
-@@ -643,7 +643,7 @@ static void init_pci_device_addresses(struct pm8001_hba_info *pm8001_ha)
-  */
- static int pm8001_chip_init(struct pm8001_hba_info *pm8001_ha)
- {
--	u8 i = 0;
-+	u32 i = 0;
- 	u16 deviceid;
- 	pci_read_config_word(pm8001_ha->pdev, PCI_DEVICE_ID, &deviceid);
- 	/* 8081 controllers need BAR shift to access MPI space
+diff --git a/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c
+index 7451377c4cb6..3e359ac752fd 100644
+--- a/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c
++++ b/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c
+@@ -1646,7 +1646,7 @@ static int interrupt_init_v1_hw(struct hisi_hba *hisi_hba)
+ 		idx = i * HISI_SAS_PHY_INT_NR;
+ 		for (j = 0; j < HISI_SAS_PHY_INT_NR; j++, idx++) {
+ 			irq = platform_get_irq(pdev, idx);
+-			if (!irq) {
++			if (irq < 0) {
+ 				dev_err(dev, "irq init: fail map phy interrupt %d\n",
+ 					idx);
+ 				return -ENOENT;
+@@ -1665,7 +1665,7 @@ static int interrupt_init_v1_hw(struct hisi_hba *hisi_hba)
+ 	idx = hisi_hba->n_phy * HISI_SAS_PHY_INT_NR;
+ 	for (i = 0; i < hisi_hba->queue_count; i++, idx++) {
+ 		irq = platform_get_irq(pdev, idx);
+-		if (!irq) {
++		if (irq < 0) {
+ 			dev_err(dev, "irq init: could not map cq interrupt %d\n",
+ 				idx);
+ 			return -ENOENT;
+@@ -1683,7 +1683,7 @@ static int interrupt_init_v1_hw(struct hisi_hba *hisi_hba)
+ 	idx = (hisi_hba->n_phy * HISI_SAS_PHY_INT_NR) + hisi_hba->queue_count;
+ 	for (i = 0; i < HISI_SAS_FATAL_INT_NR; i++, idx++) {
+ 		irq = platform_get_irq(pdev, idx);
+-		if (!irq) {
++		if (irq < 0) {
+ 			dev_err(dev, "irq init: could not map fatal interrupt %d\n",
+ 				idx);
+ 			return -ENOENT;
 -- 
 2.30.2
 
