@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBDC237D19E
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 20:03:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A13A137D1A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 20:03:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241534AbhELR7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 13:59:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42866 "EHLO mail.kernel.org"
+        id S1349163AbhELR7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 13:59:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240890AbhELQZt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:25:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E012761CAF;
-        Wed, 12 May 2021 15:48:39 +0000 (UTC)
+        id S240913AbhELQZx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:25:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD94161DA2;
+        Wed, 12 May 2021 15:48:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620834520;
-        bh=5C+HoE2l5GtqQ9GnIElGTvNUCbmQS4vhj3dATuGp+Xs=;
+        s=korg; t=1620834530;
+        bh=21D9EouhYMPVN19Tfg3MwP9cAd41TDYdW1xJM1bUCLA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TooTyjasp/a6P4nfMnc1voz/MkEcsZ9ojwwxdcozgBIvi3OrLwT1WLzm6StQuGPp+
-         CSsvpvfHNm9aAFJ6HfP1eSTad/HNDiW1xyu5a8hT7vxVA0xZM0P12rQtmARxYCx3/Q
-         VC8L8L8fI+CtV8SY/rTXFpYVJcJ0Ws3fJaUhBVSs=
+        b=wuqAB18yHBnO4obiOA5+y4gJ2z6hLcPqkIuOjlVqI+ihUpsk8cjgBZp73iuBC74gb
+         dRS1JF/nrZ3KWX1O6n9InNPCQfogdrItDzsX6Pdjt5rdFvmZ01Kb3S9ZrwDvPDzciR
+         LvYPxfBEYlaJZjYHw117fyS5Sk6WdObofr/hOYdM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lorenz Bauer <lmb@cloudflare.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 577/601] selftests/bpf: Fix core_reloc test runner
-Date:   Wed, 12 May 2021 16:50:54 +0200
-Message-Id: <20210512144846.851356559@linuxfoundation.org>
+Subject: [PATCH 5.11 581/601] net: bridge: mcast: fix broken length + header check for MRDv6 Adv.
+Date:   Wed, 12 May 2021 16:50:58 +0200
+Message-Id: <20210512144846.982620557@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144827.811958675@linuxfoundation.org>
 References: <20210512144827.811958675@linuxfoundation.org>
@@ -41,92 +41,170 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrii Nakryiko <andrii@kernel.org>
+From: Linus Lüssing <linus.luessing@c0d3.blue>
 
-[ Upstream commit bede0ebf0be87e9678103486a77f39e0334c6791 ]
+[ Upstream commit 99014088156cd78867d19514a0bc771c4b86b93b ]
 
-Fix failed tests checks in core_reloc test runner, which allowed failing tests
-to pass quietly. Also add extra check to make sure that expected to fail test cases with
-invalid names are caught as test failure anyway, as this is not an expected
-failure mode. Also fix mislabeled probed vs direct bitfield test cases.
+The IPv6 Multicast Router Advertisements parsing has the following two
+issues:
 
-Fixes: 124a892d1c41 ("selftests/bpf: Test TYPE_EXISTS and TYPE_SIZE CO-RE relocations")
-Reported-by: Lorenz Bauer <lmb@cloudflare.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: Lorenz Bauer <lmb@cloudflare.com>
-Link: https://lore.kernel.org/bpf/20210426192949.416837-6-andrii@kernel.org
+For one thing, ICMPv6 MRD Advertisements are smaller than ICMPv6 MLD
+messages (ICMPv6 MRD Adv.: 8 bytes vs. ICMPv6 MLDv1/2: >= 24 bytes,
+assuming MLDv2 Reports with at least one multicast address entry).
+When ipv6_mc_check_mld_msg() tries to parse an Multicast Router
+Advertisement its MLD length check will fail - and it will wrongly
+return -EINVAL, even if we have a valid MRD Advertisement. With the
+returned -EINVAL the bridge code will assume a broken packet and will
+wrongly discard it, potentially leading to multicast packet loss towards
+multicast routers.
+
+The second issue is the MRD header parsing in
+br_ip6_multicast_mrd_rcv(): It wrongly checks for an ICMPv6 header
+immediately after the IPv6 header (IPv6 next header type). However
+according to RFC4286, section 2 all MRD messages contain a Router Alert
+option (just like MLD). So instead there is an IPv6 Hop-by-Hop option
+for the Router Alert between the IPv6 and ICMPv6 header, again leading
+to the bridge wrongly discarding Multicast Router Advertisements.
+
+To fix these two issues, introduce a new return value -ENODATA to
+ipv6_mc_check_mld() to indicate a valid ICMPv6 packet with a hop-by-hop
+option which is not an MLD but potentially an MRD packet. This also
+simplifies further parsing in the bridge code, as ipv6_mc_check_mld()
+already fully checks the ICMPv6 header and hop-by-hop option.
+
+These issues were found and fixed with the help of the mrdisc tool
+(https://github.com/troglobit/mrdisc).
+
+Fixes: 4b3087c7e37f ("bridge: Snoop Multicast Router Advertisements")
+Signed-off-by: Linus Lüssing <linus.luessing@c0d3.blue>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../selftests/bpf/prog_tests/core_reloc.c     | 20 +++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ include/net/addrconf.h    |  1 -
+ net/bridge/br_multicast.c | 33 ++++++++-------------------------
+ net/ipv6/mcast_snoop.c    | 12 +++++++-----
+ 3 files changed, 15 insertions(+), 31 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc.c b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-index cd3ba54a1f68..4b517d76257d 100644
---- a/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-+++ b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-@@ -217,7 +217,7 @@ static int duration = 0;
+diff --git a/include/net/addrconf.h b/include/net/addrconf.h
+index 18f783dcd55f..78ea3e332688 100644
+--- a/include/net/addrconf.h
++++ b/include/net/addrconf.h
+@@ -233,7 +233,6 @@ void ipv6_mc_unmap(struct inet6_dev *idev);
+ void ipv6_mc_remap(struct inet6_dev *idev);
+ void ipv6_mc_init_dev(struct inet6_dev *idev);
+ void ipv6_mc_destroy_dev(struct inet6_dev *idev);
+-int ipv6_mc_check_icmpv6(struct sk_buff *skb);
+ int ipv6_mc_check_mld(struct sk_buff *skb);
+ void addrconf_dad_failure(struct sk_buff *skb, struct inet6_ifaddr *ifp);
  
- #define BITFIELDS_CASE(name, ...) {					\
- 	BITFIELDS_CASE_COMMON("test_core_reloc_bitfields_probed.o",	\
--			      "direct:", name),				\
-+			      "probed:", name),				\
- 	.input = STRUCT_TO_CHAR_PTR(core_reloc_##name) __VA_ARGS__,	\
- 	.input_len = sizeof(struct core_reloc_##name),			\
- 	.output = STRUCT_TO_CHAR_PTR(core_reloc_bitfields_output)	\
-@@ -225,7 +225,7 @@ static int duration = 0;
- 	.output_len = sizeof(struct core_reloc_bitfields_output),	\
- }, {									\
- 	BITFIELDS_CASE_COMMON("test_core_reloc_bitfields_direct.o",	\
--			      "probed:", name),				\
-+			      "direct:", name),				\
- 	.input = STRUCT_TO_CHAR_PTR(core_reloc_##name) __VA_ARGS__,	\
- 	.input_len = sizeof(struct core_reloc_##name),			\
- 	.output = STRUCT_TO_CHAR_PTR(core_reloc_bitfields_output)	\
-@@ -545,8 +545,7 @@ static struct core_reloc_test_case test_cases[] = {
- 	ARRAYS_ERR_CASE(arrays___err_too_small),
- 	ARRAYS_ERR_CASE(arrays___err_too_shallow),
- 	ARRAYS_ERR_CASE(arrays___err_non_array),
--	ARRAYS_ERR_CASE(arrays___err_wrong_val_type1),
--	ARRAYS_ERR_CASE(arrays___err_wrong_val_type2),
-+	ARRAYS_ERR_CASE(arrays___err_wrong_val_type),
- 	ARRAYS_ERR_CASE(arrays___err_bad_zero_sz_arr),
+diff --git a/net/bridge/br_multicast.c b/net/bridge/br_multicast.c
+index 257ac4e25f6d..5f89ae3ae4d8 100644
+--- a/net/bridge/br_multicast.c
++++ b/net/bridge/br_multicast.c
+@@ -3075,25 +3075,14 @@ static int br_multicast_ipv4_rcv(struct net_bridge *br,
+ }
  
- 	/* enum/ptr/int handling scenarios */
-@@ -864,13 +863,20 @@ void test_core_reloc(void)
- 			  "prog '%s' not found\n", probe_name))
- 			goto cleanup;
+ #if IS_ENABLED(CONFIG_IPV6)
+-static int br_ip6_multicast_mrd_rcv(struct net_bridge *br,
+-				    struct net_bridge_port *port,
+-				    struct sk_buff *skb)
++static void br_ip6_multicast_mrd_rcv(struct net_bridge *br,
++				     struct net_bridge_port *port,
++				     struct sk_buff *skb)
+ {
+-	int ret;
+-
+-	if (ipv6_hdr(skb)->nexthdr != IPPROTO_ICMPV6)
+-		return -ENOMSG;
+-
+-	ret = ipv6_mc_check_icmpv6(skb);
+-	if (ret < 0)
+-		return ret;
+-
+ 	if (icmp6_hdr(skb)->icmp6_type != ICMPV6_MRDISC_ADV)
+-		return -ENOMSG;
++		return;
  
-+
-+		if (test_case->btf_src_file) {
-+			err = access(test_case->btf_src_file, R_OK);
-+			if (!ASSERT_OK(err, "btf_src_file"))
-+				goto cleanup;
-+		}
-+
- 		load_attr.obj = obj;
- 		load_attr.log_level = 0;
- 		load_attr.target_btf_path = test_case->btf_src_file;
- 		err = bpf_object__load_xattr(&load_attr);
- 		if (err) {
- 			if (!test_case->fails)
--				CHECK(false, "obj_load", "failed to load prog '%s': %d\n", probe_name, err);
-+				ASSERT_OK(err, "obj_load");
- 			goto cleanup;
- 		}
+ 	br_multicast_mark_router(br, port);
+-
+-	return 0;
+ }
  
-@@ -909,10 +915,8 @@ void test_core_reloc(void)
- 			goto cleanup;
- 		}
+ static int br_multicast_ipv6_rcv(struct net_bridge *br,
+@@ -3107,18 +3096,12 @@ static int br_multicast_ipv6_rcv(struct net_bridge *br,
  
--		if (test_case->fails) {
--			CHECK(false, "obj_load_fail", "should fail to load prog '%s'\n", probe_name);
-+		if (!ASSERT_FALSE(test_case->fails, "obj_load_should_fail"))
- 			goto cleanup;
+ 	err = ipv6_mc_check_mld(skb);
+ 
+-	if (err == -ENOMSG) {
++	if (err == -ENOMSG || err == -ENODATA) {
+ 		if (!ipv6_addr_is_ll_all_nodes(&ipv6_hdr(skb)->daddr))
+ 			BR_INPUT_SKB_CB(skb)->mrouters_only = 1;
+-
+-		if (ipv6_addr_is_all_snoopers(&ipv6_hdr(skb)->daddr)) {
+-			err = br_ip6_multicast_mrd_rcv(br, port, skb);
+-
+-			if (err < 0 && err != -ENOMSG) {
+-				br_multicast_err_count(br, port, skb->protocol);
+-				return err;
+-			}
 -		}
++		if (err == -ENODATA &&
++		    ipv6_addr_is_all_snoopers(&ipv6_hdr(skb)->daddr))
++			br_ip6_multicast_mrd_rcv(br, port, skb);
  
- 		equal = memcmp(data->out, test_case->output,
- 			       test_case->output_len) == 0;
+ 		return 0;
+ 	} else if (err < 0) {
+diff --git a/net/ipv6/mcast_snoop.c b/net/ipv6/mcast_snoop.c
+index d3d6b6a66e5f..04d5fcdfa6e0 100644
+--- a/net/ipv6/mcast_snoop.c
++++ b/net/ipv6/mcast_snoop.c
+@@ -109,7 +109,7 @@ static int ipv6_mc_check_mld_msg(struct sk_buff *skb)
+ 	struct mld_msg *mld;
+ 
+ 	if (!ipv6_mc_may_pull(skb, len))
+-		return -EINVAL;
++		return -ENODATA;
+ 
+ 	mld = (struct mld_msg *)skb_transport_header(skb);
+ 
+@@ -122,7 +122,7 @@ static int ipv6_mc_check_mld_msg(struct sk_buff *skb)
+ 	case ICMPV6_MGM_QUERY:
+ 		return ipv6_mc_check_mld_query(skb);
+ 	default:
+-		return -ENOMSG;
++		return -ENODATA;
+ 	}
+ }
+ 
+@@ -131,7 +131,7 @@ static inline __sum16 ipv6_mc_validate_checksum(struct sk_buff *skb)
+ 	return skb_checksum_validate(skb, IPPROTO_ICMPV6, ip6_compute_pseudo);
+ }
+ 
+-int ipv6_mc_check_icmpv6(struct sk_buff *skb)
++static int ipv6_mc_check_icmpv6(struct sk_buff *skb)
+ {
+ 	unsigned int len = skb_transport_offset(skb) + sizeof(struct icmp6hdr);
+ 	unsigned int transport_len = ipv6_transport_len(skb);
+@@ -150,7 +150,6 @@ int ipv6_mc_check_icmpv6(struct sk_buff *skb)
+ 
+ 	return 0;
+ }
+-EXPORT_SYMBOL(ipv6_mc_check_icmpv6);
+ 
+ /**
+  * ipv6_mc_check_mld - checks whether this is a sane MLD packet
+@@ -161,7 +160,10 @@ EXPORT_SYMBOL(ipv6_mc_check_icmpv6);
+  *
+  * -EINVAL: A broken packet was detected, i.e. it violates some internet
+  *  standard
+- * -ENOMSG: IP header validation succeeded but it is not an MLD packet.
++ * -ENOMSG: IP header validation succeeded but it is not an ICMPv6 packet
++ *  with a hop-by-hop option.
++ * -ENODATA: IP+ICMPv6 header with hop-by-hop option validation succeeded
++ *  but it is not an MLD packet.
+  * -ENOMEM: A memory allocation failure happened.
+  *
+  * Caller needs to set the skb network header and free any returned skb if it
 -- 
 2.30.2
 
