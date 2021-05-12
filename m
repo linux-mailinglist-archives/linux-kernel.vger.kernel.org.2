@@ -2,143 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31BB937EEDA
+	by mail.lfdr.de (Postfix) with ESMTP id C29D537EEDC
 	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 01:04:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443405AbhELWSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 18:18:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1390084AbhELVtY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 17:49:24 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCFF9C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 14:47:53 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id 10so19871802pfl.1
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 14:47:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=N1sUYuNRtWpe5/0gBwMIZwmUciYoDGABR1xIt9TC6eM=;
-        b=YBGOjbBK1Lv4SSzr9vR844bjr8N+oPqsqXVS9OppNQix8L7AGlck8c67Q0v7jQAPyH
-         DOR//BlEIdfW067JNJ+TpdoSm3UTAMOB8+NX4ZlPQOgUNxI73rhKhy5odLsOIYbfpmpe
-         gar7Q7vsFCcqYajv4wWlR+Mdk9RmkFd583Ty8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=N1sUYuNRtWpe5/0gBwMIZwmUciYoDGABR1xIt9TC6eM=;
-        b=Vjd+AiVaF2eaOM2aIJmoBWCF8LBGjvExpTeN3NIy3KA8ifSOWe2TZM8JcovST3koKr
-         TbFN4UQ+YzF+cyCWOICA6j9Kj/SwSK7hMADUdhF5Xs8s6xtnB+Mjb7UY1qIkH0k86Rg8
-         +fgupssNgGYcxTA7TVlO/UdQjNLd+5j5faJaef7DxFN9N+sUgY6xm3itf+ApjmhHaoBf
-         qx9Zryid250Onfqoe7WxHF+7HVxw/HrO7ZZbcM01hzhrTTbr22FYFuUQNY5zSnDl4T0/
-         vLtIN8qYN94e5FrHs9jRWo2egJHM3lAraZipYh0b9k9k8x+29rInEXouKaRvKOYHOhYx
-         sA0Q==
-X-Gm-Message-State: AOAM532jcGsJ6zec638vm2VP732rZffiInDUughD3BMkDUY3EyT/Pqa8
-        A2qO6iW5g6jcFkx6IGhjVY+JMw==
-X-Google-Smtp-Source: ABdhPJzyYEFFCFF3ZAAPgV0TudErY54r0ya7cQySaETLzoT/B5u7qP3W8ckLBKfcjrYik66Ir6w+9g==
-X-Received: by 2002:a05:6a00:14cb:b029:2be:1466:5a28 with SMTP id w11-20020a056a0014cbb02902be14665a28mr18204262pfu.55.1620856073353;
-        Wed, 12 May 2021 14:47:53 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:a89e:5bb2:e8e0:4428])
-        by smtp.gmail.com with UTF8SMTPSA id t26sm611645pfg.12.2021.05.12.14.47.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 May 2021 14:47:52 -0700 (PDT)
-Date:   Wed, 12 May 2021 14:47:50 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Felipe Balbi <balbi@kernel.org>
-Cc:     Sandeep Maheswaram <sanm@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>
-Subject: Re: [PATCH v7 2/5] usb: dwc3: core: Host wake up support from system
- suspend
-Message-ID: <YJxNBm0WiMqjJ2Cg@google.com>
-References: <1619586716-8687-1-git-send-email-sanm@codeaurora.org>
- <1619586716-8687-3-git-send-email-sanm@codeaurora.org>
- <87r1iuk9vs.fsf@kernel.org>
- <184ddea9-643f-91ea-6d1f-5bdd26373e53@codeaurora.org>
- <87h7jkhxmw.fsf@kernel.org>
+        id S1443472AbhELWSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 18:18:54 -0400
+Received: from mga06.intel.com ([134.134.136.31]:62957 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1391505AbhELVta (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 17:49:30 -0400
+IronPort-SDR: eLHo0CSDsCmIsMfXFecXSRQwUUq6SjqKS8+4wh8vlrDK2FxXN52lT5nRilVm4JZJ52akwB254p
+ owHIrfnFCMIQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="261062425"
+X-IronPort-AV: E=Sophos;i="5.82,295,1613462400"; 
+   d="scan'208";a="261062425"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2021 14:48:18 -0700
+IronPort-SDR: 4xOzcugXdt3uWlgi7ujm2HQh1QvPEsDB4ZAqIzc4jfqgd71lR4b4G47TfeWMfmQMoWm9AGknx/
+ qt/02AhAhtuQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,295,1613462400"; 
+   d="scan'208";a="610109473"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga005.jf.intel.com with ESMTP; 12 May 2021 14:48:18 -0700
+Received: from orsmsx608.amr.corp.intel.com (10.22.229.21) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 12 May 2021 14:48:18 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx608.amr.corp.intel.com (10.22.229.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
+ via Frontend Transport; Wed, 12 May 2021 14:48:18 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.174)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2106.2; Wed, 12 May 2021 14:48:18 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hqgqiH3kXKLggoow5xAAWvWwuXloM7k2N36dNkIUyjo1ma42dd5eQ0I9+i8IC7FNmHL1tEkCE16VI/APupUdAhr1LJfiqIMTe29XswFlqGt50WifQeiNkWxzO0ntzPNqh6NOo6Ws+LLv7jRFzcEUa+gAYQnluv4wP08/Qn2xNxsmXjpcRFu1Zk+oeD71ZtuTonCozCCqYmxTIzX0J61t9DHARmnbsuCEsjSLMtT5hcPo//f0E7VrzCpuJPNaoX4cZLEUUF6idPQje1+R9SflJvoDRYg2I8OlOp7kT5UPzV04+MofcG+9Ksd7IVR//snodMxMIbRNMt1eKBfFY5eCEw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1DcyUMlvj7liLPUeR+lCslylKB5cLu1RzMqMqDlTXnQ=;
+ b=IzCBO+/JAaDexs7caZtzuO5A5u23XT5R0lsudJSwefJsNC1GWncC4w6tCFmn00ZCogwAODsvLDWF7ujbqIzYvXA2OLhSU55w4FnreyxoEleoUuXj68LqGkk0eh9PJHPhrWDNB8e+PZtRrfl+wy3LSv0FQyug6MzgPFSZLqJiV9qK4Gh4J789jb/Bf/g5Oiz4V2NmRWJI+5XDdiU3fFChFpK7sCgL+e0VQYogDeW4Pvvf4U5teo9wgXipw17ManFmChS2NmzkhYjfBd//naSSbUDCNug1Cwjg8+Fu8DUsCpgfG3SHZEOQQFZ+3SoavoBZiyU75X0gIMiRA8jxJwKGww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1DcyUMlvj7liLPUeR+lCslylKB5cLu1RzMqMqDlTXnQ=;
+ b=CPcdGpSkOFpQlDshwVoPCnPCcLFrUL5+/mw0sz+LcfCJrX1LccmG0DSVaOQALW62CX2PGouvpcuPc5ibZtSQ73xWZ/oOxQkt+U+htSNLqAX9tmI5q9A/m3nxnX/0LDDVl0yKA/82Bf40Cv2hGeTROyVnV2V/gsP55WYk/9JDe14=
+Received: from CO1PR11MB5105.namprd11.prod.outlook.com (2603:10b6:303:9f::7)
+ by MWHPR11MB1693.namprd11.prod.outlook.com (2603:10b6:300:2b::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.30; Wed, 12 May
+ 2021 21:48:16 +0000
+Received: from CO1PR11MB5105.namprd11.prod.outlook.com
+ ([fe80::4db9:fe34:a884:4e43]) by CO1PR11MB5105.namprd11.prod.outlook.com
+ ([fe80::4db9:fe34:a884:4e43%7]) with mapi id 15.20.4108.031; Wed, 12 May 2021
+ 21:48:16 +0000
+From:   "Brelinski, TonyX" <tonyx.brelinski@intel.com>
+To:     Liwei Song <liwei.song@windriver.com>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
+CC:     Jakub <kuba@kernel.org>, David <davem@davemloft.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: RE: [Intel-wired-lan] [PATCH] ice: set the value of global config
+ lock timeout longer
+Thread-Topic: [Intel-wired-lan] [PATCH] ice: set the value of global config
+ lock timeout longer
+Thread-Index: AQHXNP7Terxi6PVDU0yarXCQw89LCqrghrBQ
+Date:   Wed, 12 May 2021 21:48:16 +0000
+Message-ID: <CO1PR11MB51059B08F5B1A7EA207FC3E9FA529@CO1PR11MB5105.namprd11.prod.outlook.com>
+References: <20210419093106.6487-1-liwei.song@windriver.com>
+In-Reply-To: <20210419093106.6487-1-liwei.song@windriver.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-version: 11.6.0.76
+dlp-reaction: no-action
+authentication-results: windriver.com; dkim=none (message not signed)
+ header.d=none;windriver.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [71.236.132.75]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 60d1f23c-7494-47de-ac5b-08d9158fa62d
+x-ms-traffictypediagnostic: MWHPR11MB1693:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR11MB1693DE1BF7E3149E769FB4EEFA529@MWHPR11MB1693.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3826;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: V1Z+p4ZY1S0GTikcZYwvAltWynDx1wSiw/ZFHAZQopk0FZzrVt6Wro7jQVoyZb8xW3+YkAUGjHK7sFIzv1hDjFUPKqX7nRivLr6d9iggZ2wJ5m5dmrc9z2xyJnepYL9NSI0XYfaiTeMGiVrx5fVEM0GtIXXU1ig7EkBLc7cWETSs9Od6DFWOcmJ+aiVwoGWOFl0YE16n6yOXLEsummhCQHPDr4s9i+fUZG3Df4O8dSSY0atjhEXNgL13CNZoNRbVcQGdGczcpvoPCxGFlpgiCUt0KFhVB9k0zkJ4n20smERRSAiP7y3j4IYPrrwtmIVVhpw0g8eNf9PHLBrcVkfniPAc2CPsyHeBgfsA6YGgu5oRo6EYw4n6QavalVVQGJcBDhuFIIEux8pPle1YgItGOslYTSSuoU8QaqfUW1TMKI3Tzsk2dSduMTGuku90Zh+sRO9FJR798E4M5lNuVuCVgRVuq+VII2luv4f7l336wJv17i/PeiPVIcwDkO1FhcVuYIGI94eV4qsYFUuZ+FrU6idjxYDC2bLlEl0F6uenQB6dPtUeRKWWMoK3JgR8ix2kh7D4xrj+REo0gNl42VGcsOVp0N+kBN6GBTq6BhyXuqoycddKxykJ7bYG1D+qokKfCGWLM+8bvVp4jyWslFCElu97/ziRZZm8od6J1ewu0uc=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5105.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(346002)(136003)(376002)(39860400002)(396003)(71200400001)(8676002)(33656002)(76116006)(122000001)(316002)(7696005)(186003)(66946007)(54906003)(26005)(5660300002)(110136005)(6506007)(86362001)(66446008)(66556008)(52536014)(2906002)(53546011)(64756008)(66476007)(8936002)(478600001)(55016002)(4326008)(83380400001)(38100700002)(6636002)(9686003)(148743002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?O+jGfnDVSMu+7QXhiBK+THpa4rNOylMCAk1+KaclybTFvP5OZJQgApMF8+J5?=
+ =?us-ascii?Q?2v023asoD6s0JhmbFx9KjqLH4apzrdq4Jryb0jkyvt1LGfnG8dQzHdnfgQb5?=
+ =?us-ascii?Q?ydoJcCTheWuHD3O/b//W+C29RmvrOu4JFMZMYq5c2kRkkBkmwOsIqgmjMuAm?=
+ =?us-ascii?Q?/onsUyKy5veIbZktoGor42cJtCVH5GkAJA2kTwXNrrxFWpyF8QYfYk+3lazG?=
+ =?us-ascii?Q?Oi+FlhXtDTMgU530N6LfJGaQ0V2CIF2TiQcEX+FqXffmfyzphh3KmAsIib05?=
+ =?us-ascii?Q?CZWGdlSvXcnXsczZMLBmHGVJ5vLTlRf4+Iqdvkd4zSJwiXDRtaVKJ4W+EccC?=
+ =?us-ascii?Q?4iyVoOgBgoFtzA3kdItVREFWmP65mUE67+xNLDGS2Z/jESV3pvXvbhRtoduk?=
+ =?us-ascii?Q?6v55v140Qsr4TALI8f88IhnNElU8+ZU/ebp1CF8oCNJfyNa/5gHWQpQYaz6E?=
+ =?us-ascii?Q?sFEvO1jmiyOykM0IYE/d8aKJVkESdlIbtma3igSbDz54DoakQZ6XZNfxq18a?=
+ =?us-ascii?Q?FcVEVgr7Fo6hChDAgO/mO9ZWzR7IbCUMeQFPgF02gQxIDIClFYoZCH8PTiZR?=
+ =?us-ascii?Q?3/TfbSwMcTxgXH6NCEWlOiyNdT0z9qMAIy1QMyIr80ccS1ve84MbgsctfKdp?=
+ =?us-ascii?Q?J7hxJCx4tpHqOR0hlswvVl8s43Ui/hb3UJGoQEpsVpM/V4+R07yBwu4fVUHk?=
+ =?us-ascii?Q?sjmZ1sOugIvibQAUUIpSaA/GmQ1t2NKym6pwTo8XYBqQHvYbBprOtIefPXkk?=
+ =?us-ascii?Q?O4k5kcRNSS03fBIMhLJTIkTGM3N4CaFk8sPNLmO3wJBNvMeJRaaEiY9DP90q?=
+ =?us-ascii?Q?USw07sYA4yoULwSVg9sXrQeeZlL1jRo9AE2nOKGK5ANpjDpLq567O+ZQpdkq?=
+ =?us-ascii?Q?CMlhl325IjB6saiRqf/nPSQkYPb0KBxLdG+bKz4gmL9ijq4KQQnuy8HJ78rF?=
+ =?us-ascii?Q?QhLC6ntVq8Ln1Tg8YDX0fa+RQzJpgjyUgOdDl5hIJghh1iF4UPjHTNP75BQr?=
+ =?us-ascii?Q?lGFEyC+mOMUDNKZ4+eoLbutGMvyt0xARUj/yP0PMBwx2KDAxlS+WwdJhSN1J?=
+ =?us-ascii?Q?rMh72J5O+9T/XQ9qLWUj1WIfQW5Ovtl4bubxaPB8w6Y7xkL0wB1VWjLrPw7Z?=
+ =?us-ascii?Q?+T35WNy/r1lFHBqg336hR7GOPHiBjEBGer4IT1Gz5g/qt49/mWQ0dfFoKYCf?=
+ =?us-ascii?Q?GHLafkYNkE7rb3Z++PRP8bOyt6+rxQ0sysKrsdyh6eXcb3hc5GM9zX7KzUCt?=
+ =?us-ascii?Q?IrvtXN3BdNRlPvbTc7abrjF0kxhx54yaFdxdqO+Z2loNz7pbarnPkqAkrKLk?=
+ =?us-ascii?Q?88jlSsnoSMwrhjdt/PJMbCp0?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87h7jkhxmw.fsf@kernel.org>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5105.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 60d1f23c-7494-47de-ac5b-08d9158fa62d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 May 2021 21:48:16.0809
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: YHE7X1SUzwwEBidM0GoO4OfspOBVpAhykvmqN7x6IYfMEKLAwLAW1ltFXgXAMY4JEkbL9ehYX/bNYZwOgEZG8MMrZetFTVFgtWxo0E3JHI0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1693
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 03, 2021 at 02:20:23PM +0300, Felipe Balbi wrote:
-> 
-> Hi,
-> 
-> Sandeep Maheswaram <sanm@codeaurora.org> writes:
-> >> Sandeep Maheswaram <sanm@codeaurora.org> writes:
-> >>> Avoiding phy powerdown when wakeup capable devices are connected
-> >>> by checking phy_power_off flag.
-> >>> Phy should be on to wake up the device from suspend using wakeup capable
-> >>> devices such as keyboard and mouse.
-> >>>
-> >>> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
-> >>> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
-> >>> ---
-> >>>   drivers/usb/dwc3/core.c | 7 +++++--
-> >>>   1 file changed, 5 insertions(+), 2 deletions(-)
-> >>>
-> >>> diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-> >>> index b6e53d8..bb414c3 100644
-> >>> --- a/drivers/usb/dwc3/core.c
-> >>> +++ b/drivers/usb/dwc3/core.c
-> >>> @@ -1738,7 +1738,7 @@ static int dwc3_suspend_common(struct dwc3 *dwc, pm_message_t msg)
-> >>>   		dwc3_core_exit(dwc);
-> >>>   		break;
-> >>>   	case DWC3_GCTL_PRTCAP_HOST:
-> >>> -		if (!PMSG_IS_AUTO(msg)) {
-> >>> +		if (!PMSG_IS_AUTO(msg) && dwc->phy_power_off) {
-> >> should be able to detect this generically, no? Shouldn't
-> >> device_may_wakeup() be valid here and give you the answer you want?
-> >
-> > I think  device_may_wakeup() gives whether the controller is wake up 
-> > capable or not.
-> 
-> Yes, but it's a bit more than that. Looking at devices.rst we read:
-> 
-> If :c:func:`device_may_wakeup(dev)` returns ``true``, the device should be
-> prepared for generating hardware wakeup signals to trigger a system wakeup event
-> when the system is in the sleep state.  For example, :c:func:`enable_irq_wake()`
-> might identify GPIO signals hooked up to a switch or other external hardware,
-> and :c:func:`pci_enable_wake()` does something similar for the PCI PME signal.
-> 
-> So, if there is a condition where $this device has to, somehow, deal
-> with wakeup, it should be configured accordingly. This ->phy_power_off
-> flag is telling us the same thing.
-> 
-> > But we want to keep phy powered on only when some wakeup capable devices 
-> > (eg:keyboard ,mouse ) are connected to controller.
-> 
-> Understood, it could be that we're missing some method for propagating
-> that state (i.e. keyboard with PM support) up to the parent device, but
-> that's no excuse to bypass driver boundaries. Wouldn't you agree?
+> -----Original Message-----
+> From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf Of
+> Liwei Song
+> Sent: Monday, April 19, 2021 2:31 AM
+> To: intel-wired-lan <intel-wired-lan@lists.osuosl.org>; Brandeburg, Jesse
+> <jesse.brandeburg@intel.com>; Nguyen, Anthony L
+> <anthony.l.nguyen@intel.com>
+> Cc: Jakub <kuba@kernel.org>; David <davem@davemloft.net>; linux-
+> kernel@vger.kernel.org; netdev@vger.kernel.org
+> Subject: [Intel-wired-lan] [PATCH] ice: set the value of global config lo=
+ck
+> timeout longer
+>=20
+> It may need hold Global Config Lock a longer time when download DDP
+> package file, extend the timeout value to 5000ms to ensure that download
+> can be finished before other AQ command got time to run, this will fix th=
+e
+> issue below when probe the device, 5000ms is a test value that work with
+> both Backplane and BreakoutCable NVM image:
+>=20
+> ice 0000:f4:00.0: VSI 12 failed lan queue config, error ICE_ERR_CFG ice
+> 0000:f4:00.0: Failed to delete VSI 12 in FW - error: ICE_ERR_AQ_TIMEOUT i=
+ce
+> 0000:f4:00.0: probe failed due to setup PF switch: -12
+> ice: probe of 0000:f4:00.0 failed with error -12
+>=20
+> Signed-off-by: Liwei Song <liwei.song@windriver.com>
+> ---
+>  drivers/net/ethernet/intel/ice/ice_type.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-I'm not sure if device_may_wakeup() is really the right tool for the
-job. This is the current implementation:
+Tested-by: Tony Brelinski <tonyx.brelinski@intel.com> (A Contingent Worker =
+at Intel)
 
-static inline bool device_may_wakeup(struct device *dev)
-{
-	return dev->power.can_wakeup && !!dev->power.wakeup;
-}
 
-IIUC power.can_wakeup specifies whether the device is wakeup
-capable, primarily in physical terms and indicating that the
-driver is ready to handle wakeups, and power.wakeup represents
-the policy which can be changed by userspace.
-
-Supposing the hub is generally wakeup capable that flag
-shouldn't be changed. Neither should be the policy based on
-what is connected to the bus.
