@@ -2,92 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 057AD37C44D
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 17:30:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C9FE37C502
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 17:37:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235806AbhELPaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 11:30:13 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:32853 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233767AbhELPOv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:14:51 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lgqYO-0007lr-Rg; Wed, 12 May 2021 15:13:40 +0000
-Subject: Re: splice() from /dev/zero to a pipe does not work (5.9+)
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <2add1129-d42e-176d-353d-3aca21280ead@canonical.com>
- <202105071116.638258236E@keescook>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <61a548af-840a-1418-4cb6-644db6c9ba26@canonical.com>
-Date:   Wed, 12 May 2021 16:13:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S236098AbhELPhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 11:37:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41568 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233239AbhELPME (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:12:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F18BE61628;
+        Wed, 12 May 2021 15:03:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620831813;
+        bh=s3BM/sj6oyrnLcGniBopzOVI6NUof9Zb1aULINA8GoI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Hsr6RGl0jSb5yG+CGC4qzGgh/Y6Hhb+w3CDi6SltCygsUnZxyMpY8EwISVTwaVYTu
+         THn09oZfppmgRmTLco3SpF+w7DSRgVdfjIEweClIn6dSPCnMek8R8xqcwi6vlcqAb1
+         Z3m3jpvpq2F9e/FibVNgcwIBru3K6g/9YemEWL6Q=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
+        John Crispin <john@phrozen.org>, linux-mips@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: [PATCH 5.10 025/530] MIPS: pci-mt7620: fix PLL lock check
+Date:   Wed, 12 May 2021 16:42:15 +0200
+Message-Id: <20210512144820.562269751@linuxfoundation.org>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210512144819.664462530@linuxfoundation.org>
+References: <20210512144819.664462530@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-In-Reply-To: <202105071116.638258236E@keescook>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/05/2021 19:21, Kees Cook wrote:
-> On Fri, May 07, 2021 at 07:05:51PM +0100, Colin Ian King wrote:
->> Hi,
->>
->> While doing some micro benchmarking with stress-ng I discovered that
->> since linux 5.9 the splicing from /dev/zero to a pipe now fails with
->> -EINVAL.
->>
->> I bisected this down to the following commit:
->>
->> 36e2c7421f02a22f71c9283e55fdb672a9eb58e7 is the first bad commit
->> commit 36e2c7421f02a22f71c9283e55fdb672a9eb58e7
->> Author: Christoph Hellwig <hch@lst.de>
->> Date:   Thu Sep 3 16:22:34 2020 +0200
->>
->>     fs: don't allow splice read/write without explicit ops
->>
->> I'm not sure if this has been reported before, or if it's intentional
->> behavior or not. As it stands, it's a regression in the stress-ng splice
->> test case.
-> 
-> The general loss of generic splice read/write is known. Here's some
-> early conversations I was involved in:
-> 
-> https://lore.kernel.org/lkml/20200818200725.GA1081@lst.de/
-> https://lore.kernel.org/lkml/202009181443.C2179FB@keescook/
-> https://lore.kernel.org/lkml/20201005204517.2652730-1-keescook@chromium.org/
-> 
-> And it's been getting re-implemented in individual places:
-> 
-> $ git log --oneline --no-merges --grep 36e2c742
-> 42984af09afc jffs2: Hook up splice_write callback
-> a35d8f016e0b nilfs2: make splice write available again
-> f8ad8187c3b5 fs/pipe: allow sendfile() to pipe again
-> f2d6c2708bd8 kernfs: wire up ->splice_read and ->splice_write
-> 9bb48c82aced tty: implement write_iter
-> dd78b0c483e3 tty: implement read_iter
-> 14e3e989f6a5 proc mountinfo: make splice available again
-> c1048828c3db orangefs: add splice file operations
-> 960f4f8a4e60 fs: 9p: add generic splice_write file operation
-> cf03f316ad20 fs: 9p: add generic splice_read file operations
-> 06a17bbe1d47 afs: Fix copy_file_range()
+From: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
 
-Ah..so this explains why copy_file_range() also returns -EINVAL now on
-some file systems, such a minix since that uses splicing too via
-do_splice_direct().  :-/
+commit c15b99ae2ba9ea30da3c7cd4765b8a4707e530a6 upstream.
 
-> 
-> So the question is likely, "do we want this for /dev/zero?"
-> 
+Upstream a long-standing OpenWrt patch [0] that fixes MT7620 PCIe PLL
+lock check. The existing code checks the wrong register bit: PPLL_SW_SET
+is not defined in PPLL_CFG1 and bit 31 of PPLL_CFG1 is marked as reserved
+in the MT7620 Programming Guide. The correct bit to check for PLL lock
+is PPLL_LD (bit 23).
+
+Also reword the error message for clarity.
+
+Without this change it is unlikely that this driver ever worked with
+mainline kernel.
+
+[0]: https://lists.infradead.org/pipermail/lede-commits/2017-July/004441.html
+
+Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Cc: John Crispin <john@phrozen.org>
+Cc: linux-mips@vger.kernel.org
+Cc: linux-mediatek@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ arch/mips/pci/pci-mt7620.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+--- a/arch/mips/pci/pci-mt7620.c
++++ b/arch/mips/pci/pci-mt7620.c
+@@ -30,6 +30,7 @@
+ #define RALINK_GPIOMODE			0x60
+ 
+ #define PPLL_CFG1			0x9c
++#define PPLL_LD				BIT(23)
+ 
+ #define PPLL_DRV			0xa0
+ #define PDRV_SW_SET			BIT(31)
+@@ -239,8 +240,8 @@ static int mt7620_pci_hw_init(struct pla
+ 	rt_sysc_m32(0, RALINK_PCIE0_CLK_EN, RALINK_CLKCFG1);
+ 	mdelay(100);
+ 
+-	if (!(rt_sysc_r32(PPLL_CFG1) & PDRV_SW_SET)) {
+-		dev_err(&pdev->dev, "MT7620 PPLL unlock\n");
++	if (!(rt_sysc_r32(PPLL_CFG1) & PPLL_LD)) {
++		dev_err(&pdev->dev, "pcie PLL not locked, aborting init\n");
+ 		reset_control_assert(rstpcie0);
+ 		rt_sysc_m32(RALINK_PCIE0_CLK_EN, 0, RALINK_CLKCFG1);
+ 		return -1;
+
 
