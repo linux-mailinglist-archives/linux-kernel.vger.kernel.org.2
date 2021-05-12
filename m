@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A872B37CE1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:17:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6555C37CE30
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:17:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344394AbhELRBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 13:01:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40540 "EHLO mail.kernel.org"
+        id S238653AbhELRDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 13:03:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238068AbhELP5Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:57:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B22F561C31;
-        Wed, 12 May 2021 15:29:56 +0000 (UTC)
+        id S238112AbhELP5W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:57:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25F9A61CB0;
+        Wed, 12 May 2021 15:30:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620833397;
-        bh=nqskidpnvRQM16z1CrdeVWLSJpxUl0Zfc4Ddm7oefFU=;
+        s=korg; t=1620833419;
+        bh=/k805jO32RGiOlBu8HnZojudGEJY8laJl1v8kCPUf8I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KJHW4986B/mkmvdVJ0PPNPqf6aOFnvoVJOnYQfCIBudCGswq3X8v8OZ9LdCDqRHg4
-         VbLAcGuRSwKn7LCzO3vHT1jET87FCTYHBIF17BMjvP93UV3QS6m1agyxHvZQB7Xku9
-         XNZBmT2kvRmuoV484b0U6GqVYhntuQDrjK80vznI=
+        b=R2BGWYU16tlSMz6g+aoD5+KKyWGLTQg/nFmaUeLTfHAxEaTyCabhfyUQJy27Tgsei
+         m3WSUzojwfBf7/NTS/TWYPL0XALHgUIj7wyv4U6uNOweEaLe13Gqb8DR+jeSN6M+pU
+         MIWlf1tGnLr5DWiEKX+lIYu3wx21dJfyuUadktwo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.11 106/601] KVM: nVMX: Truncate bits 63:32 of VMCS field on nested check in !64-bit
-Date:   Wed, 12 May 2021 16:43:03 +0200
-Message-Id: <20210512144831.335450048@linuxfoundation.org>
+Subject: [PATCH 5.11 107/601] KVM: nVMX: Truncate base/index GPR value on address calc in !64-bit
+Date:   Wed, 12 May 2021 16:43:04 +0200
+Message-Id: <20210512144831.365868168@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144827.811958675@linuxfoundation.org>
 References: <20210512144827.811958675@linuxfoundation.org>
@@ -41,36 +41,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sean Christopherson <seanjc@google.com>
 
-commit ee050a577523dfd5fac95e6cc182ebe0293ead59 upstream.
+commit 82277eeed65eed6c6ee5b8f97bd978763eab148f upstream.
 
-Drop bits 63:32 of the VMCS field encoding when checking for a nested
-VM-Exit on VMREAD/VMWRITE in !64-bit mode.  VMREAD and VMWRITE always
-use 32-bit operands outside of 64-bit mode.
+Drop bits 63:32 of the base and/or index GPRs when calculating the
+effective address of a VMX instruction memory operand.  Outside of 64-bit
+mode, memory encodings are strictly limited to E*X and below.
 
-The actual emulation of VMREAD/VMWRITE does the right thing, this bug is
-purely limited to incorrectly causing a nested VM-Exit if a GPR happens
-to have bits 63:32 set outside of 64-bit mode.
-
-Fixes: a7cde481b6e8 ("KVM: nVMX: Do not forward VMREAD/VMWRITE VMExits to L1 if required so by vmcs12 vmread/vmwrite bitmaps")
+Fixes: 064aea774768 ("KVM: nVMX: Decoding memory operands of VMX instructions")
 Cc: stable@vger.kernel.org
 Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210422022128.3464144-6-seanjc@google.com>
+Message-Id: <20210422022128.3464144-7-seanjc@google.com>
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/vmx/nested.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kvm/vmx/nested.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 --- a/arch/x86/kvm/vmx/nested.c
 +++ b/arch/x86/kvm/vmx/nested.c
-@@ -5750,7 +5750,7 @@ static bool nested_vmx_exit_handled_vmcs
+@@ -4639,9 +4639,9 @@ int get_vmx_mem_address(struct kvm_vcpu
+ 	else if (addr_size == 0)
+ 		off = (gva_t)sign_extend64(off, 15);
+ 	if (base_is_valid)
+-		off += kvm_register_read(vcpu, base_reg);
++		off += kvm_register_readl(vcpu, base_reg);
+ 	if (index_is_valid)
+-		off += kvm_register_read(vcpu, index_reg) << scaling;
++		off += kvm_register_readl(vcpu, index_reg) << scaling;
+ 	vmx_get_segment(vcpu, &s, seg_reg);
  
- 	/* Decode instruction info and find the field to access */
- 	vmx_instruction_info = vmcs_read32(VMX_INSTRUCTION_INFO);
--	field = kvm_register_read(vcpu, (((vmx_instruction_info) >> 28) & 0xf));
-+	field = kvm_register_readl(vcpu, (((vmx_instruction_info) >> 28) & 0xf));
- 
- 	/* Out-of-range fields always cause a VM exit from L2 to L1 */
- 	if (field >> 15)
+ 	/*
 
 
