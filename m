@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0395A37ED5B
+	by mail.lfdr.de (Postfix) with ESMTP id 4BEAF37ED5C
 	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:40:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386546AbhELUVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 16:21:20 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:53640 "EHLO
+        id S1386575AbhELUVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 16:21:23 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:53648 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238748AbhELUDH (ORCPT
+        with ESMTP id S238678AbhELUDH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 12 May 2021 16:03:07 -0400
-Date:   Wed, 12 May 2021 20:01:45 -0000
+Date:   Wed, 12 May 2021 20:01:46 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620849706;
+        s=2020; t=1620849707;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=j3GfjciUuHctw4hx+yJNNp9+xYEKLhuvs6D678TbFDQ=;
-        b=Zzh6YlGksa7d5QI43+plg+5F2RQiPmtaLRFCHFGJwYESeR/iUMHsA3xPevbBC7RtY71jvt
-        UzYHUNAoCpRpDuI7nQBcl4s2MrNn8cEtdjfeBVVCiEXPLH4P6mIqKJQDsjffvF3O2KoYaz
-        g7mwcEIOUcuuABB/ddl7Aaclo1pMlNprHFObx0jastnTOgDE4DDZF4RyLR95ro0Pq+XCBu
-        YdBWaHu7bdBIfcpQel62pAFobiAgnSAnSwi0tzO8Nja6a0wUU29huk0nozQ/p31wHDqeBp
-        9XlkHSdgksrkHAGfGXv3TJKkMui958pAr9S6scyy7aq2b999OMn27EIVxvIZOw==
+        bh=pNNWCnyZavCf3oBct79KcydlQfuXDFo9EH5ShcvhKts=;
+        b=3rFR8XODEUKo/2feK567qOIT+K/t5/A6an+RTnQIqqWwlb60qUnAhQPQUatgQNmVhYMIEe
+        yGrz3abdHYjgZMeDGtoe+SzoybXxZXaDkVV8xdsawnvmh6MIW2LA7/NGfCiIQAAgZ31Z/O
+        +3+/h0KUjGSgIHzudK9EAUSIblAgexny7HLl5BOai0/GxXqySstSZv+YUr9JhksHlBVek9
+        G1rmBkVvf7t6Ij+OLgOzdoUTChmSQeEhuRQl8VXYSUytVM0odFb8AaJN5b1on9j2V+laEI
+        wZ/CsChUtvx+/PNAK3e6fFJuedwqHph1fJLJSRWTp+i2RBP0E5Z3adjW+xLt5g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620849706;
+        s=2020e; t=1620849707;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=j3GfjciUuHctw4hx+yJNNp9+xYEKLhuvs6D678TbFDQ=;
-        b=PSY/0JFPDL6B7LDD3JlJQ9Oe3+dUagYT9p1w5H7hpiWdPJi9xjP2KazRFjvqoQmMNxhu0B
-        sLtLWF7/rP+QW6Cw==
+        bh=pNNWCnyZavCf3oBct79KcydlQfuXDFo9EH5ShcvhKts=;
+        b=r+XnRm92U/KiCAqfaQ2zvnD/fY+zSixr1ck08d9rLpCZqhUK2PZ9FIR4jiFYsrN/tqonHP
+        u9fv5HDPdmQWgXAA==
 From:   "tip-bot2 for Alexey Dobriyan" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched: Make multiple runqueue task counters 32-bit
+Subject: [tip: sched/core] sched: Make nr_iowait_cpu() return 32-bit value
 Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
         Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210422200228.1423391-4-adobriyan@gmail.com>
-References: <20210422200228.1423391-4-adobriyan@gmail.com>
+In-Reply-To: <20210422200228.1423391-3-adobriyan@gmail.com>
+References: <20210422200228.1423391-3-adobriyan@gmail.com>
 MIME-Version: 1.0
-Message-ID: <162084970568.29796.11631457054332313096.tip-bot2@tip-bot2>
+Message-ID: <162084970625.29796.535929681999700472.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -58,102 +58,82 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     e6fe3f422be128b7d65de607f6ae67bedc55f0ca
-Gitweb:        https://git.kernel.org/tip/e6fe3f422be128b7d65de607f6ae67bedc55f0ca
+Commit-ID:     8fc2858e572ce761bffcade81a42ac72005e76f9
+Gitweb:        https://git.kernel.org/tip/8fc2858e572ce761bffcade81a42ac72005e76f9
 Author:        Alexey Dobriyan <adobriyan@gmail.com>
-AuthorDate:    Thu, 22 Apr 2021 23:02:28 +03:00
+AuthorDate:    Thu, 22 Apr 2021 23:02:27 +03:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Wed, 12 May 2021 21:34:17 +02:00
+CommitterDate: Wed, 12 May 2021 21:34:16 +02:00
 
-sched: Make multiple runqueue task counters 32-bit
+sched: Make nr_iowait_cpu() return 32-bit value
 
-Make:
+Runqueue ->nr_iowait counters are 32-bit anyway.
 
-	struct dl_rq::dl_nr_migratory
-	struct dl_rq::dl_nr_running
-
-	struct rt_rq::rt_nr_boosted
-	struct rt_rq::rt_nr_migratory
-	struct rt_rq::rt_nr_total
-
-	struct rq::nr_uninterruptible
-
-32-bit.
-
-If total number of tasks can't exceed 2**32 (and less due to futex pid
-limits), then per-runqueue counters can't as well.
-
-This patchset has been sponsored by REX Prefix Eradication Society.
+Propagate 32-bitness into other code, but don't try too hard.
 
 Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20210422200228.1423391-4-adobriyan@gmail.com
+Link: https://lore.kernel.org/r/20210422200228.1423391-3-adobriyan@gmail.com
 ---
- kernel/sched/loadavg.c |  2 +-
- kernel/sched/sched.h   | 12 ++++++------
- 2 files changed, 7 insertions(+), 7 deletions(-)
+ drivers/cpuidle/governors/menu.c | 6 +++---
+ include/linux/sched/stat.h       | 2 +-
+ kernel/sched/core.c              | 2 +-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/sched/loadavg.c b/kernel/sched/loadavg.c
-index 1c79896..954b229 100644
---- a/kernel/sched/loadavg.c
-+++ b/kernel/sched/loadavg.c
-@@ -81,7 +81,7 @@ long calc_load_fold_active(struct rq *this_rq, long adjust)
- 	long nr_active, delta = 0;
+diff --git a/drivers/cpuidle/governors/menu.c b/drivers/cpuidle/governors/menu.c
+index c3aa8d6..2e56704 100644
+--- a/drivers/cpuidle/governors/menu.c
++++ b/drivers/cpuidle/governors/menu.c
+@@ -117,7 +117,7 @@ struct menu_device {
+ 	int		interval_ptr;
+ };
  
- 	nr_active = this_rq->nr_running - adjust;
--	nr_active += (long)this_rq->nr_uninterruptible;
-+	nr_active += (int)this_rq->nr_uninterruptible;
+-static inline int which_bucket(u64 duration_ns, unsigned long nr_iowaiters)
++static inline int which_bucket(u64 duration_ns, unsigned int nr_iowaiters)
+ {
+ 	int bucket = 0;
  
- 	if (nr_active != this_rq->calc_load_active) {
- 		delta = nr_active - this_rq->calc_load_active;
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 904c52b..8f0194c 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -636,8 +636,8 @@ struct rt_rq {
- 	} highest_prio;
- #endif
- #ifdef CONFIG_SMP
--	unsigned long		rt_nr_migratory;
--	unsigned long		rt_nr_total;
-+	unsigned int		rt_nr_migratory;
-+	unsigned int		rt_nr_total;
- 	int			overloaded;
- 	struct plist_head	pushable_tasks;
+@@ -150,7 +150,7 @@ static inline int which_bucket(u64 duration_ns, unsigned long nr_iowaiters)
+  * to be, the higher this multiplier, and thus the higher
+  * the barrier to go to an expensive C state.
+  */
+-static inline int performance_multiplier(unsigned long nr_iowaiters)
++static inline int performance_multiplier(unsigned int nr_iowaiters)
+ {
+ 	/* for IO wait tasks (per cpu!) we add 10x each */
+ 	return 1 + 10 * nr_iowaiters;
+@@ -270,7 +270,7 @@ static int menu_select(struct cpuidle_driver *drv, struct cpuidle_device *dev,
+ 	unsigned int predicted_us;
+ 	u64 predicted_ns;
+ 	u64 interactivity_req;
+-	unsigned long nr_iowaiters;
++	unsigned int nr_iowaiters;
+ 	ktime_t delta, delta_tick;
+ 	int i, idx;
  
-@@ -651,7 +651,7 @@ struct rt_rq {
- 	raw_spinlock_t		rt_runtime_lock;
+diff --git a/include/linux/sched/stat.h b/include/linux/sched/stat.h
+index 81d9b53..0108a38 100644
+--- a/include/linux/sched/stat.h
++++ b/include/linux/sched/stat.h
+@@ -20,7 +20,7 @@ extern int nr_processes(void);
+ extern unsigned int nr_running(void);
+ extern bool single_task_running(void);
+ extern unsigned int nr_iowait(void);
+-extern unsigned long nr_iowait_cpu(int cpu);
++extern unsigned int nr_iowait_cpu(int cpu);
  
- #ifdef CONFIG_RT_GROUP_SCHED
--	unsigned long		rt_nr_boosted;
-+	unsigned int		rt_nr_boosted;
+ static inline int sched_info_on(void)
+ {
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index fadf2bf..24fd795 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -4739,7 +4739,7 @@ unsigned long long nr_context_switches(void)
+  * it does become runnable.
+  */
  
- 	struct rq		*rq;
- 	struct task_group	*tg;
-@@ -668,7 +668,7 @@ struct dl_rq {
- 	/* runqueue is an rbtree, ordered by deadline */
- 	struct rb_root_cached	root;
- 
--	unsigned long		dl_nr_running;
-+	unsigned int		dl_nr_running;
- 
- #ifdef CONFIG_SMP
- 	/*
-@@ -682,7 +682,7 @@ struct dl_rq {
- 		u64		next;
- 	} earliest_dl;
- 
--	unsigned long		dl_nr_migratory;
-+	unsigned int		dl_nr_migratory;
- 	int			overloaded;
- 
- 	/*
-@@ -960,7 +960,7 @@ struct rq {
- 	 * one CPU and if it got migrated afterwards it may decrease
- 	 * it on another CPU. Always updated under the runqueue lock:
- 	 */
--	unsigned long		nr_uninterruptible;
-+	unsigned int		nr_uninterruptible;
- 
- 	struct task_struct __rcu	*curr;
- 	struct task_struct	*idle;
+-unsigned long nr_iowait_cpu(int cpu)
++unsigned int nr_iowait_cpu(int cpu)
+ {
+ 	return atomic_read(&cpu_rq(cpu)->nr_iowait);
+ }
