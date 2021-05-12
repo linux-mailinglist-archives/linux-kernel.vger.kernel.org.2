@@ -2,57 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 016B037B330
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 02:49:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 588CC37B335
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 02:50:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbhELAuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 20:50:03 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:36272 "EHLO vps0.lunn.ch"
+        id S229980AbhELAvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 20:51:05 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:36284 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229637AbhELAuC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 20:50:02 -0400
+        id S229637AbhELAvE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 20:51:04 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=cYa39Ppa/s8/J47IUv/CCPv0pyDLZZpBQwjmpffJtd4=; b=gN+xRV/Gzbrg3ydw/AW6zMA3SC
-        fr1aEtjvwZHuhL/lr6YGfJXe/J+CopkU3Sqs+cFq4XPUx63hSjU8iLHL0m8Rhj4UF1XBDXf2lYaR2
-        napwxHV+7E89wzY5cglyMUMIStI9tqe28fYZwBXxBnOTtE3e0k/BZSHH/Gv9nqLGgFR4=;
+        bh=i/3C/hjIk05NQu3nwTqgwisfFRauNxcxQu+WgCsQ07o=; b=DGsEr+0BLaRv/HdzIHnN92DgSb
+        ZwBmqZTiLlpxs61qm8gOfD6xtaCWQVTWSB5d4qIvxOLEF4t561GR2Xp0eIibIOCyZeeLLT5Lc4V1y
+        z3epsTbxTgU/Y7+c2aZwW8L4kib3IMiUtB7KeBQ2pwGtM8E7fEeQUzrUjcr4EpQjpGMU=;
 Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
         (envelope-from <andrew@lunn.ch>)
-        id 1lgd3O-003qHX-Un; Wed, 12 May 2021 02:48:46 +0200
-Date:   Wed, 12 May 2021 02:48:46 +0200
+        id 1lgd4T-003qIi-39; Wed, 12 May 2021 02:49:53 +0200
+Date:   Wed, 12 May 2021 02:49:53 +0200
 From:   Andrew Lunn <andrew@lunn.ch>
-To:     Peter Geis <pgwipeout@gmail.com>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH v2] net: phy: add driver for Motorcomm yt8511 phy
-Message-ID: <YJsl7rLVI6ShqZvI@lunn.ch>
-References: <20210511225913.2951922-1-pgwipeout@gmail.com>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 mvebu + mvebu/dt64 1/6] firmware: turris-mox-rwtm: fix
+ reply status decoding function
+Message-ID: <YJsmMfVWY49pwmzB@lunn.ch>
+References: <20210308153703.23097-1-kabel@kernel.org>
+ <20210506090802.14268-1-pali@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210511225913.2951922-1-pgwipeout@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210506090802.14268-1-pali@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 06:59:13PM -0400, Peter Geis wrote:
-> Add a driver for the Motorcomm yt8511 phy that will be used in the
-> production Pine64 rk3566-quartz64 development board.
-> It supports gigabit transfer speeds, rgmii, and 125mhz clk output.
+On Thu, May 06, 2021 at 11:07:57AM +0200, Pali Rohár wrote:
+> From: Marek Behún <kabel@kernel.org>
+> 
+> The status decoding function mox_get_status() currently contains an
+> incorrect check: if the error status is not MBOX_STS_SUCCESS, it always
+> returns -EIO, so the comparison to MBOX_STS_FAIL is never executed and
+> we don't get the actual error code sent by the firmware.
+> 
+> Fix this.
+> 
+> Signed-off-by: Marek Behún <kabel@kernel.org>
+> Fixes: 389711b37493 ("firmware: Add Turris Mox rWTM firmware driver")
 
-Hi Peter
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-Please can you add minimal RGMII delay support. Trying to add it later
-generally end up in backwards compatibility problems.
-
-Do you know which one of the four RGMII modes your setup needs? Is the
-PHY adding the Rx and Tx delays? So "rgmii-id"?
-
-       Andrew
+    Andrew
