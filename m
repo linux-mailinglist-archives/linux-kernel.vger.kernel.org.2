@@ -2,135 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B453C37ED86
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:41:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5640937ED94
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:42:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384333AbhELUiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 16:38:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34406 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1383472AbhELUPy (ORCPT
+        id S1387733AbhELUjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 16:39:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1386794AbhELUWM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 16:15:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620850485;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3wuTWQtuAdZWIF9OysD2QPM7zsLn8CRp+0adiSduMjY=;
-        b=SZ0kSaJcuz8dG0U0sHqMcSyhpgb4voCez+FrEIFPblu6kMaw2H5vGFBSRQBgLlrXMNSsQf
-        PzaMle1/mSdu8B3oP6IaHt+6EJIUE25dQeX+5ExOIlvtPuu0+Pvyu2zpVyHQUfbM3fna8F
-        wk9yTC7IhfQNT+K+FomsGKiCVWx+2A4=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-372-4h4DCB0tOoizu1V88jgoMg-1; Wed, 12 May 2021 16:14:43 -0400
-X-MC-Unique: 4h4DCB0tOoizu1V88jgoMg-1
-Received: by mail-qv1-f69.google.com with SMTP id b24-20020a0cb3d80000b02901e78b82d74aso9763735qvf.20
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 13:14:43 -0700 (PDT)
+        Wed, 12 May 2021 16:22:12 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2476EC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 13:14:59 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id v12so24848144wrq.6
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 13:14:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Ess5L+xOXRmxYaXPi1OkUKTPgDo0tGEKtcX8Gli1a7M=;
+        b=bMD1xxDCoYykjIBBe999brSCSiuN3hK3+40TGP10CnhnqZUH4avumUHhe0jPHhpYsK
+         nzJWpPjs5Yc+lHVUKa1cV3kJHdHdK+3d+b9lFiQOzT3gdp/2GIdZQfCUj7F5gBx4h+Eb
+         50NembGNIrUec+KQYTUi8CLaSiLmMpj1HHj2tHk6Bxu1LHrCj8Usgr6b23cvEP4jkgAH
+         j31VSyiAChSkhpNxliI9cALLQgU0wc2cBLkSuIe+B8XkhjX5TMVcrTDlzIzQyPd/5pdM
+         bTlrFFbdbaHev1D9WC8y8XSoUfJWjWjj4yUnkx1hEfieCDzHPfyunCQOJvBlt4ORGbVN
+         fQGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3wuTWQtuAdZWIF9OysD2QPM7zsLn8CRp+0adiSduMjY=;
-        b=VBndn8d2H3NCRNHahfwYbXWXcODlA/xij73Kv6lbwGJpKnlxQJ7d+RSrRPZ4ze1hIC
-         xHn/GNEW9RWOUd9qO+dQspgnyydW8jM92TMv9WcN2HS9LE8yyaI1QWGs698vfuMGQyIg
-         ZiQMTeCtenO9EC8Upuuz/lcjODYGWR8wsnvJkQDYvHxnbCOUqK2lPLOkDhYtNciVFW/C
-         I+uhtXdkTrLfY68yoLobuHNq6CVm5XVeW3uBKhX5hlRFH8+sNowFKobUIUg/ZBQqS2PC
-         +HKWEqZNkpjtfRxKLw0qUV+Pkxb/sUWFSHSjk0m+TMR4tSF0HhtPdN3IInwS1Br2AIRK
-         1LJw==
-X-Gm-Message-State: AOAM530qlQFCTqC0/EXHwjWNQGf0Y1VgOBcewhhQtc5N9jSR2KOEDght
-        GRKvMViMIe/fx8yENN/QjAK6lHPTmHvZdZ3GZ3lzQZUgzFZ0k/j2KGY+au8ePUld8aFXMDJOiDo
-        xTI4CifgjnmFPf+T1YGajLcJ/
-X-Received: by 2002:ac8:754a:: with SMTP id b10mr35375896qtr.83.1620850483239;
-        Wed, 12 May 2021 13:14:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyFVH3v9wK01tFnKp9M4XThk+XsejO1huyQYVMBeEOp+qXQ8jQRLoYuAI5nciOv1HySxPSwOA==
-X-Received: by 2002:ac8:754a:: with SMTP id b10mr35375872qtr.83.1620850482957;
-        Wed, 12 May 2021 13:14:42 -0700 (PDT)
-Received: from t490s (bras-base-toroon474qw-grc-72-184-145-4-219.dsl.bell.ca. [184.145.4.219])
-        by smtp.gmail.com with ESMTPSA id h10sm884015qka.26.2021.05.12.13.14.41
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Ess5L+xOXRmxYaXPi1OkUKTPgDo0tGEKtcX8Gli1a7M=;
+        b=ESpBsJ5+dlfhynmEtbe9QvMsnug1oJZA/v5+8py37T5QzXuUl0zGaZ1aPGnXU4Wzg1
+         hre+gK0LJqe0QE5tGhhO6NfWERlZ00SNizEXvUCg3LNVC3TpeXW4/FTjbyubqql6DcRs
+         NMMPjuP/jK07E1rAECh1jFAYwllIFLsrUkHmLIrVJlYkHWG9O3q45Pmcj9Z2sdBwNM3j
+         DvbuMyO8K/Kwxv0oPn3sZyKpIAtF5jBLgenZOHLEJAhMJSFbHmFMVUk154XcLK/57S59
+         RwHeeIqesl07Qt7oyd6CD9/0sNB0pFeSi1zVu4LvgooD13yKJKbgtwoaqEbx1lfGiY78
+         6DuQ==
+X-Gm-Message-State: AOAM533t/JYYRkOq/5wlJq1YpSJdaIeHdcq4rNyZ3Vl2Xg9DUZmtfBMc
+        rpJzXXjeFnwZNQByu3eeOwI=
+X-Google-Smtp-Source: ABdhPJybbYUER9CG6kcFQ36dzqEBntNnGBm+HBlS1sPcUtT0FUIPh559g+wBe0RJQP55zzq6iErIHQ==
+X-Received: by 2002:adf:e611:: with SMTP id p17mr48475507wrm.161.1620850497911;
+        Wed, 12 May 2021 13:14:57 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id z18sm678676wrh.16.2021.05.12.13.14.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 13:14:42 -0700 (PDT)
-Date:   Wed, 12 May 2021 16:14:40 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Axel Rasmussen <axelrasmussen@google.com>
-Subject: Re: [PATCH] mm, hugetlb: fix resv_huge_pages underflow on UFFDIO_COPY
-Message-ID: <YJw3MH2kTftwvlGa@t490s>
-References: <e134d74d-c218-a01d-a315-82b909c84051@oracle.com>
- <20210512065813.89270-1-almasrymina@google.com>
- <CAJHvVch0ZMapPVEc0Ge5V4KDgNDNhECbqwDi0y9XxsxFXQZ-gg@mail.gmail.com>
- <c455d241-11f6-95a6-eb29-0ddd94eedbd7@oracle.com>
- <CAHS8izM8G948ziJToaNKgqaMQ9_CB+anksGQQHSbTY1a+yGSjg@mail.gmail.com>
+        Wed, 12 May 2021 13:14:56 -0700 (PDT)
+Date:   Wed, 12 May 2021 22:14:54 +0200
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: gemini: sl3516: Mainlining of NS 2502
+Message-ID: <YJw3PrZqz2q5OYbI@Red>
+References: <YGtZeofmBv7hXK+a@Red>
+ <CACRpkdZ_barDrLvD2UBKo+GA-F+g72uMQx8CfRK2YLRodpeyUA@mail.gmail.com>
+ <YGxOf8pKN8Ip/kCl@Red>
+ <CACRpkdYRUXJY_tXamS0vc+RNPDxR2oxdRLbBUk0fmQLp+eYAOA@mail.gmail.com>
+ <YJLxTgVflotKs5Oe@Red>
+ <CACRpkdaGAiK57LE8vkEBjCGwb+HRWBzWS_C86xdNa8N51G+1PA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAHS8izM8G948ziJToaNKgqaMQ9_CB+anksGQQHSbTY1a+yGSjg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACRpkdaGAiK57LE8vkEBjCGwb+HRWBzWS_C86xdNa8N51G+1PA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mina,
-
-On Wed, May 12, 2021 at 12:42:32PM -0700, Mina Almasry wrote:
-> > >> @@ -4868,30 +4869,39 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
-> > >>                             struct page **pagep)
-> > >>  {
-> > >>         bool is_continue = (mode == MCOPY_ATOMIC_CONTINUE);
-> > >> -       struct address_space *mapping;
-> > >> -       pgoff_t idx;
-> > >> +       struct hstate *h = hstate_vma(dst_vma);
-> > >> +       struct address_space *mapping = dst_vma->vm_file->f_mapping;
-> > >> +       pgoff_t idx = vma_hugecache_offset(h, dst_vma, dst_addr);
-> > >>         unsigned long size;
-> > >>         int vm_shared = dst_vma->vm_flags & VM_SHARED;
-> > >> -       struct hstate *h = hstate_vma(dst_vma);
-> > >>         pte_t _dst_pte;
-> > >>         spinlock_t *ptl;
-> > >> -       int ret;
-> > >> +       int ret = -ENOMEM;
-> > >>         struct page *page;
-> > >>         int writable;
-> > >>
-> > >> -       mapping = dst_vma->vm_file->f_mapping;
-> > >> -       idx = vma_hugecache_offset(h, dst_vma, dst_addr);
-> > >> +       /* Out parameter. */
-> > >> +       WARN_ON(*pagep);
-> > >
-> > > I don't think this warning works, because we do set *pagep, in the
-> > > copy_huge_page_from_user failure case. In that case, the following
-> > > happens:
-> > >
-> > > 1. We set *pagep, and return immediately.
-> > > 2. Our caller notices this particular error, drops mmap_lock, and then
-> > > calls us again with *pagep set.
-> > >
-> > > In this path, we're supposed to just re-use this existing *pagep
-> > > instead of allocating a second new page.
-> > >
-> > > I think this also means we need to keep the "else" case where *pagep
-> > > is set below.
-> > >
-> >
-> > +1 to Peter's comment.
-> >
+Le Thu, May 06, 2021 at 01:56:28AM +0200, Linus Walleij a écrit :
+> Hi Corentin,
 > 
-> Gah, sorry about that. I'll fix in v2.
+> I will check the patches you posted too, sorry for being a bit busy
+> with some merge window and stuff.
+> 
+> On Wed, May 5, 2021 at 9:26 PM Corentin Labbe <clabbe.montjoie@gmail.com> wrote:
+> 
+> > It seems that USB is still a bit buggy, device are detected only if plugged before boot.
+> 
+> Yeah :/ I don't know that driver very well, only that others use it too
+> so there might be some people who can help. I haven't mainlined
+> that patch because there is something that seems wrong about it
+> but I'm not a USB guy.
+> 
+> > I hit a problem on the NS2502, sata drives does not work well:
+> (...)
+> > It seems a problem soon after driver probe (qc timeout and HPA error).
+> > Any idea ?
+> >
+> > The SATA works well on my other board (SSI1328)
+> > having one or two disk does not change the behavour.
+> 
+> Could be the SATA muxing, this thing in your device tree:
+> 
+> sata: sata@46000000 {
+>     cortina,gemini-ata-muxmode = <0>;
+>     cortina,gemini-enable-sata-bridge;
+>     status = "okay";
+> };
+> 
+> cortina,gemini-ata-muxmode should be 3 for two harddisks
+> I think.
+> 
 
-I have a question regarding v1: how do you guarantee huge_add_to_page_cache()
-won't fail again even if checked before page alloc?  Say, what if the page
-cache got inserted after hugetlbfs_pagecache_present() (which is newly added in
-your v1) but before huge_add_to_page_cache()?
+I used 0, and only the second slot was working.
+Using 3 fixed both slots.
 
-I also have a feeling that we've been trying to work around something else, but
-I can't tell yet as I'll probably need to read a bit more/better on how hugetlb
-does the accounting and also on reservations.
-
-Thanks,
-
--- 
-Peter Xu
-
+Thanks
