@@ -2,67 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF50237C03A
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:33:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A9A337C045
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:35:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230483AbhELOfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 10:35:01 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34394 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230370AbhELOfA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 10:35:00 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0D24EADD7;
-        Wed, 12 May 2021 14:33:51 +0000 (UTC)
-To:     Andrew Morton <akpm@linux-foundation.org>, glittao@gmail.com
-Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, "Paul E . McKenney" <paulmck@kernel.org>
-References: <20210414163434.4376-1-glittao@gmail.com>
- <20210509214603.d2a5faaa3fe0d71c3517cb36@linux-foundation.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH] mm/slub: use stackdepot to save stack trace in objects
-Message-ID: <f9dd0692-e490-56ce-3cd8-b99aea559e79@suse.cz>
-Date:   Wed, 12 May 2021 16:33:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S231139AbhELOhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 10:37:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230247AbhELOg7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 10:36:59 -0400
+Received: from plekste.mt.lv (bute.mt.lv [IPv6:2a02:610:7501:2000::195])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A545C061574;
+        Wed, 12 May 2021 07:35:51 -0700 (PDT)
+Received: from localhost ([127.0.0.1] helo=bute.mt.lv)
+        by plekste.mt.lv with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <gatis@mikrotik.com>)
+        id 1lgpxO-0006fy-AC; Wed, 12 May 2021 17:35:26 +0300
 MIME-Version: 1.0
-In-Reply-To: <20210509214603.d2a5faaa3fe0d71c3517cb36@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Date:   Wed, 12 May 2021 17:35:26 +0300
+From:   Gatis Peisenieks <gatis@mikrotik.com>
+To:     Chris Snook <chris.snook@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        jesse.brandeburg@intel.com, dchickles@marvell.com,
+        tully@mikrotik.com, Eric Dumazet <eric.dumazet@gmail.com>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next 2/4] atl1c: improve performance by avoiding
+ unnecessary pcie writes on xmit
+In-Reply-To: <CAMXMK6tkPYLLQzq65uFVd-aCWaVHSne16MBEo7o6fGDTDA0rpw@mail.gmail.com>
+References: <20210511190518.8901-1-gatis@mikrotik.com>
+ <20210511190518.8901-3-gatis@mikrotik.com>
+ <CAMXMK6tkPYLLQzq65uFVd-aCWaVHSne16MBEo7o6fGDTDA0rpw@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <c7ae91ea1d8aec340202c67cd4c85d30@mikrotik.com>
+X-Sender: gatis@mikrotik.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/10/21 6:46 AM, Andrew Morton wrote:
-> On Wed, 14 Apr 2021 18:34:34 +0200 glittao@gmail.com wrote:
+
+
+On 2021-05-12 05:39, Chris Snook wrote:
+> Increases in latency tend to hurt more on single-queue devices. Has
+> this been tested on the original gigabit atl1c?
+
+Thank you Chris, for checking this out!
+
+I did test the atl1c driver with and without this change on actual
+AR8151 hardware.
+
+My test system was Intel(R) Core(TM) i7-4790K + RB44Ge.
+That is a 4 port 1G AR8151 based card.
+
+I measured latency with external traffic generator with test system
+doing L2 forwarding. Receiving traffic on one atl1c interface and
+transmitting over another atl1c interface. I had default 1000 packet
+pfifo queue configured on the atl1c interfaces.
+
+Max 64 byte packet L2 forward pps rate improved 860K -> 1070K.
+
+Any latency difference at 800Kpps was lost in the noise - with the
+particular traffic generator system (a linux based RouterOS 
+traffic-gen).
+I measured average 285us for a 30 second run in both cases. Note that
+this includes any traffic generator "internal" latency.
+
+Note that I had to tweak atl1c tx interrupt moderation to get these
+numbers. With default tx_imt = 1000 no matter what I get only 500
+tx interrupts/sec. Since the tx clean is fast and do not get polled
+repeatedly and ring size is 1024 I am limited to ~500Kpps.
+tx_imt = 500 dobubles that, I used tx_imt = 200 for this test.
+
+As a side note that still relates to latency discussion on AR8151
+hardware what I did find out however is that rx interrupt moderation
+timer value has a big effect on latency. Changing rx_imt
+from 200 to 10 resulted in considerable improvement from 285us to 41us
+average latency as measured by traffic generator. I do not have
+enough knowledge of the quirks of all the hardware supported by
+the driver to confidently put this in a patch though.
+
+Mikrotik 10/25G NIC has its own interrupt moderation mechanism,
+so this is not relevant to that if anyone is interested.
+
+
 > 
->> Many stack traces are similar so there are many similar arrays.
->> Stackdepot saves each unique stack only once.
->> 
->> Replace field addrs in struct track with depot_stack_handle_t handle.
->> Use stackdepot to save stack trace.
->> 
->> The benefits are smaller memory overhead and possibility to aggregate
->> per-cache statistics in the future using the stackdepot handle
->> instead of matching stacks manually.
+> - Chris
 > 
-> Which tree was this prepared against?  5.12's kmem_obj_info() is
-> significantly different from the version you were working on.
-
-It was based on -next at the time of submission, which contained patch in Paul's
-tree that expands kmem_obj_info to print also free call stack [1] so that also
-needs to be switched to stackdepot to work.
-
-> Please take a look, redo, retest and resend?  Thanks.
-
-I expected [1] to be in 5.13-rc1, but as Paul explained to me, it's queued for
-5.14. So if we (Oliver) rebase on current -next, can you queue it in the section
-of mmotm series that goes after -next?
-
-Vlastimil
-
-[1]
-https://lore.kernel.org/linux-arm-kernel/1615891032-29160-2-git-send-email-maninder1.s@samsung.com/
+> On Tue, May 11, 2021 at 12:05 PM Gatis Peisenieks <gatis@mikrotik.com> 
+> wrote:
+>> 
+>> The kernel has xmit_more facility that hints the networking driver 
+>> xmit
+>> path about whether more packets are coming soon. This information can 
+>> be
+>> used to avoid unnecessary expensive PCIe transaction per tx packet at 
+>> a
+>> slight increase in latency.
+>> 
+>> Max TX pps on Mikrotik 10/25G NIC in a Threadripper 3960X system
+>> improved from 1150Kpps to 1700Kpps.
+>> 
