@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EF8937D58A
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 23:53:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B43937D586
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 23:53:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358804AbhELSuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 14:50:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36542 "EHLO mail.kernel.org"
+        id S1355243AbhELStE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 14:49:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243753AbhELQmB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:42:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C9DC6195A;
-        Wed, 12 May 2021 16:06:21 +0000 (UTC)
+        id S243759AbhELQmC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:42:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C7C5761948;
+        Wed, 12 May 2021 16:06:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620835582;
-        bh=jJBfcZSMxzOu0I1FuITNhDs/2GeZ66Y0fPfWyvKslnA=;
+        s=korg; t=1620835607;
+        bh=WRvG1EINOCKrSzXJphB66WYHEk3Gyc+nby5WPI1Ew0k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V8wcJS9b37JzbDpjStmFPswWA9fx9/1CuuSGCMWXIxiPo0hNQx875AvNH2bplPSCE
-         YGcom5m/dqZZhCXmnTawaVkIcjhk+Sa2FfyysBvZgINyR190x4fxA7wyEUVzOQmVQ3
-         JO73l0NiplXrvdEKWsf0ew4df0hb8I4Fd2j5KmR0=
+        b=i/aFd7On3FNZjjDirTD6LAh0xgdhUTCWmMPngSMfJR7sfvEycg38XMeQQOfMx/MpM
+         3b+nf84lem1LYZHI8V95qYO0oU/pHBaF2JrlzM9RNtNYqJLgySAsE4Oeqm2TiD6Fn2
+         8arKyMAbQZRCtLhnXqRmiCh8Ta6T2nE+XOX0w+ss=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 375/677] drm/omap: dsi: Add missing IRQF_ONESHOT
-Date:   Wed, 12 May 2021 16:47:01 +0200
-Message-Id: <20210512144849.791650274@linuxfoundation.org>
+        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 377/677] pata_arasan_cf: fix IRQ check
+Date:   Wed, 12 May 2021 16:47:03 +0200
+Message-Id: <20210512144849.859550905@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
 References: <20210512144837.204217980@linuxfoundation.org>
@@ -42,39 +40,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Li <yang.lee@linux.alibaba.com>
+From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
 
-[ Upstream commit 0cafc8d88e6df446751669ec15adc9b807af4501 ]
+[ Upstream commit c7e8f404d56b99c80990b19a402c3f640d74be05 ]
 
-fixed the following coccicheck:
-./drivers/gpu/drm/omapdrm/dss/dsi.c:4329:7-27: ERROR: Threaded IRQ with
-no primary handler requested without IRQF_ONESHOT
+The driver's probe() method is written as if platform_get_irq() returns 0
+on error, while actually it returns a negative error code (with all the
+other values considered valid IRQs). Rewrite the driver's IRQ checking code
+to pass the positive IRQ #s to ata_host_activate(), propagate upstream
+-EPROBE_DEFER, and set up the driver to polling mode on (negative) errors
+and IRQ0 (libata treats IRQ #0 as a polling mode anyway)...
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Fixes: 4c1b935fea54 ("drm/omap: dsi: move TE GPIO handling into core")
-Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/1616492093-68237-1-git-send-email-yang.lee@linux.alibaba.com
+Fixes: a480167b23ef ("pata_arasan_cf: Adding support for arasan compact flash host controller")
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/omapdrm/dss/dsi.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/ata/pata_arasan_cf.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/omapdrm/dss/dsi.c b/drivers/gpu/drm/omapdrm/dss/dsi.c
-index b31d750c425a..5f1722b040f4 100644
---- a/drivers/gpu/drm/omapdrm/dss/dsi.c
-+++ b/drivers/gpu/drm/omapdrm/dss/dsi.c
-@@ -4327,7 +4327,8 @@ static int omap_dsi_register_te_irq(struct dsi_data *dsi,
- 	irq_set_status_flags(te_irq, IRQ_NOAUTOEN);
+diff --git a/drivers/ata/pata_arasan_cf.c b/drivers/ata/pata_arasan_cf.c
+index e9cf31f38450..63f39440a9b4 100644
+--- a/drivers/ata/pata_arasan_cf.c
++++ b/drivers/ata/pata_arasan_cf.c
+@@ -818,12 +818,19 @@ static int arasan_cf_probe(struct platform_device *pdev)
+ 	else
+ 		quirk = CF_BROKEN_UDMA; /* as it is on spear1340 */
  
- 	err = request_threaded_irq(te_irq, NULL, omap_dsi_te_irq_handler,
--				   IRQF_TRIGGER_RISING, "TE", dsi);
-+				   IRQF_TRIGGER_RISING | IRQF_ONESHOT,
-+				   "TE", dsi);
- 	if (err) {
- 		dev_err(dsi->dev, "request irq failed with %d\n", err);
- 		gpiod_put(dsi->te_gpio);
+-	/* if irq is 0, support only PIO */
+-	acdev->irq = platform_get_irq(pdev, 0);
+-	if (acdev->irq)
++	/*
++	 * If there's an error getting IRQ (or we do get IRQ0),
++	 * support only PIO
++	 */
++	ret = platform_get_irq(pdev, 0);
++	if (ret > 0) {
++		acdev->irq = ret;
+ 		irq_handler = arasan_cf_interrupt;
+-	else
++	} else	if (ret == -EPROBE_DEFER) {
++		return ret;
++	} else	{
+ 		quirk |= CF_BROKEN_MWDMA | CF_BROKEN_UDMA;
++	}
+ 
+ 	acdev->pbase = res->start;
+ 	acdev->vbase = devm_ioremap(&pdev->dev, res->start,
 -- 
 2.30.2
 
