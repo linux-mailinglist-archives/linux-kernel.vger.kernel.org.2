@@ -2,151 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 819E237ECDC
+	by mail.lfdr.de (Postfix) with ESMTP id EEB7B37ECDD
 	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384666AbhELUCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 16:02:06 -0400
-Received: from mga12.intel.com ([192.55.52.136]:41676 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343682AbhELSf2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 14:35:28 -0400
-IronPort-SDR: trpsocEuMcjP3Kkrv5DM8m9vkGI7gy19XWgPEFQv5xbbC6M8op3T39gviWnoed3MBG7TK0UqQe
- Oxqh81yUw8BQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="179372618"
-X-IronPort-AV: E=Sophos;i="5.82,295,1613462400"; 
-   d="scan'208";a="179372618"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2021 11:33:23 -0700
-IronPort-SDR: lAROKlT1CyajAg6vKFcMX4eJjvsT/BLqRLmwevKOczuyyYzoeVh98jEI7OZgr5h68Cw/D1f/Ze
- 5YpK9Nd3gkmg==
-X-IronPort-AV: E=Sophos;i="5.82,295,1613462400"; 
-   d="scan'208";a="622791145"
-Received: from purnend1-mobl1.amr.corp.intel.com (HELO [10.209.123.133]) ([10.209.123.133])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2021 11:33:22 -0700
-Subject: Re: [PATCH v3] KVM: x86: use wrpkru directly in
- kvm_load_{guest|host}_xsave_state
-To:     Peter Zijlstra <peterz@infradead.org>, Jon Kohler <jon@nutanix.com>
-Cc:     Babu Moger <babu.moger@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Uros Bizjak <ubizjak@gmail.com>,
-        Petteri Aimonen <jpa@git.mail.kapsi.fi>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Fan Yang <Fan_Yang@sjtu.edu.cn>,
-        Juergen Gross <jgross@suse.com>,
-        Benjamin Thiel <b.thiel@posteo.de>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-References: <20210511170508.40034-1-jon@nutanix.com>
- <YJuGms6UnRVpP7U/@hirez.programming.kicks-ass.net>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <25d39a79-d8d8-9798-a930-ccdace304bac@intel.com>
-Date:   Wed, 12 May 2021 11:33:21 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1384689AbhELUCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 16:02:11 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:53288 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354186AbhELSfs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 14:35:48 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1620844479;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KdNcJ8cEaSMgpbsP8tBqYM0z6corc8i7Q+IqLVoaSeI=;
+        b=3x+cKd8kaBdN5LgKQSfI6isMBwiqQpyrzQri1RDEePZqtFMQda1NU3AzNJ5QQHoV0c4FQ8
+        /jw6Vrjp4LDjimTKLPcjzjH1XRq9qqmaEiE1dbge+Qe0x3DRV/HSGE8R++Bk+zWTGskdEF
+        hxmHa9XeUAahJFqheh1+1S0A/D1RGuPA3V3c+35FpjLi/EfLHWNVNcTJCNl4zFti7EkLZ/
+        D1QT6NZMy3K3cr/wb0fw6K5dSPHTi2b+wm3sjUYPxAmWTH/U/1thh/tr5MDZl272BryNjv
+        FSdpgfpBSvohUxvJafYVSXmx0OpHG3Xyj/6eV+yq6456C6w6aclMVHtTROl7fA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1620844479;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KdNcJ8cEaSMgpbsP8tBqYM0z6corc8i7Q+IqLVoaSeI=;
+        b=q1pkZx2cjT1GVCWu62URddV0ZE8eU1Js6/RuUC9ttaZ8Jpm1689ri3E0prukrnU5xUoDZI
+        WOxqEgX1qNXkxTAA==
+To:     "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC v2 PATCH 7/7] x86/entry: use int for syscall number; handle all invalid syscall nrs
+In-Reply-To: <60495dd3-ea68-4db3-47ad-b7b45796bf76@zytor.com>
+References: <871racf928.ffs@nanos.tec.linutronix.de> <60495dd3-ea68-4db3-47ad-b7b45796bf76@zytor.com>
+Date:   Wed, 12 May 2021 20:34:39 +0200
+Message-ID: <87o8dfer7k.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <YJuGms6UnRVpP7U/@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/12/21 12:41 AM, Peter Zijlstra wrote:
-> On Tue, May 11, 2021 at 01:05:02PM -0400, Jon Kohler wrote:
->> diff --git a/arch/x86/include/asm/fpu/internal.h b/arch/x86/include/asm/fpu/internal.h
->> index 8d33ad80704f..5bc4df3a4c27 100644
->> --- a/arch/x86/include/asm/fpu/internal.h
->> +++ b/arch/x86/include/asm/fpu/internal.h
->> @@ -583,7 +583,13 @@ static inline void switch_fpu_finish(struct fpu *new_fpu)
->>  		if (pk)
->>  			pkru_val = pk->pkru;
->>  	}
->> -	__write_pkru(pkru_val);
->> +
->> +	/*
->> +	 * WRPKRU is relatively expensive compared to RDPKRU.
->> +	 * Avoid WRPKRU when it would not change the value.
->> +	 */
->> +	if (pkru_val != rdpkru())
->> +		wrpkru(pkru_val);
-> Just wondering; why aren't we having that in a per-cpu variable? The
-> usual per-cpu MSR shadow approach avoids issuing any 'special' ops
-> entirely.
+On Wed, May 12 2021 at 11:21, H. Peter Anvin wrote:
+> On 5/12/21 5:09 AM, Thomas Gleixner wrote:
+>> 
+>>> index 1d9db15fdc69..85f04ea0e368 100644
+>>> --- a/arch/x86/entry/entry_64.S
+>>> +++ b/arch/x86/entry/entry_64.S
+>>> @@ -108,7 +108,7 @@ SYM_INNER_LABEL(entry_SYSCALL_64_after_hwframe, SYM_L_GLOBAL)
+>>>   
+>>>   	/* IRQs are off. */
+>>>   	movq	%rsp, %rdi
+>>> -	movq	%rax, %rsi
+>>> +	movslq	%eax, %rsi
+>> 
+>> This is wrong.
+>> 
+>>    syscall(long number,...);
+>> 
+>> So the above turns syscall(UINT_MAX + N, ...) into syscall(N, ...).
+>> 
+>
+> That is intentional, as (again) system calls are int.
 
-It could be a per-cpu variable.  When I wrote this originally I figured
-that a rdpkru would be cheaper than a load from memory (even per-cpu
-memory).
+They are 'int' kernel internally, but _NOT_ at the user space visible
+side. Again: man syscall
 
-But, now that I think about it, assuming that 'prku_val' is in %rdi, doing:
+    syscall(long number,...);
 
-	cmp	%gs:0x1234, %rdi
+So that results in a user ABI change.
 
-might end up being cheaper than clobbering a *pair* of GPRs with rdpkru:
+> As stated in my reply to Ingo, I'll clean the various descriptions and
+> try to capture the discussion better.
 
-	xor    %ecx,%ecx
-	rdpkru
-	cmp	%rax, %rdi
+If we agree to go there then this wants to be a seperate commit which
+does nothing else than changing this behaviour.
 
-I'm too lazy to go figure out what would be faster in practice, though.
- Does anyone care?
+Thanks,
+
+        tglx
