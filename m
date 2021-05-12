@@ -2,91 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A34F37ED52
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B789437ED53
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:40:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386274AbhELUUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 16:20:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46046 "EHLO mail.kernel.org"
+        id S1386303AbhELUUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 16:20:39 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54670 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1382919AbhELTsp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 15:48:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 30A84613EB;
-        Wed, 12 May 2021 19:47:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620848854;
-        bh=PJ3ESWcwcY+cOUBfUMzEZA7WXUM3t+690sUs4xNmQ1o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Vqp+X6/R66gWgNkKRIpjNdjvJlhKCX2XmADLPwMj/MynViRqsijk2h5bBswVj4HkY
-         DFPkMElC1Lx1MiV7nE40MB4gezu2FY4I9okjMA+O41QafjnYBvesu47gCHyDD1DxSf
-         zL9eyhWiKn6dkFzud6tdmxguLLfPozyRPlKFTTOR4ihpoiTxY5iSXQn77zlnU1Iq+p
-         z9pIMmDoK2uRp0yhSIpPwu/VaO9nQ3RUewOGXdr4Y4JXjmvURSoE5QtWKA3qN84qtj
-         wk2aY115si1I3DJHsn2TUkukSASzeVvD96uhUyCGiBJrj6nP/gjMzb9bkAfYHQtQ5R
-         rAD3kAg5Qnohg==
-Date:   Wed, 12 May 2021 12:47:31 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     <davem@davemloft.net>, <olteanv@gmail.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <andriin@fb.com>, <edumazet@google.com>,
-        <weiwan@google.com>, <cong.wang@bytedance.com>,
-        <ap420073@gmail.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
-        <mkl@pengutronix.de>, <linux-can@vger.kernel.org>,
-        <jhs@mojatatu.com>, <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
-        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
-        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
-        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
-        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
-        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
-        <alobakin@pm.me>
-Subject: Re: [Linuxarm] Re: [PATCH net v6 3/3] net: sched: fix tx action
- reschedule issue with stopped queue
-Message-ID: <20210512124731.2993dac7@kicinski-fedora-PC1C0HJN>
-In-Reply-To: <62054a31-4708-1696-60d5-b33e4993cddc@huawei.com>
-References: <1620610956-56306-1-git-send-email-linyunsheng@huawei.com>
-        <1620610956-56306-4-git-send-email-linyunsheng@huawei.com>
-        <20210510212232.3386c5b4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <c676404c-f210-b0cb-ced3-5449676055a8@huawei.com>
-        <8db8e594-9606-2c93-7274-1c180afaadb2@huawei.com>
-        <20210511163049.37d2cba0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <62054a31-4708-1696-60d5-b33e4993cddc@huawei.com>
+        id S1383634AbhELTxS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 15:53:18 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 178B9AC6A;
+        Wed, 12 May 2021 19:52:07 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id D4311DA7B0; Wed, 12 May 2021 21:49:35 +0200 (CEST)
+Date:   Wed, 12 May 2021 21:49:35 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Nick Terrell <terrelln@fb.com>
+Cc:     Nick Terrell <nickrterrell@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        "squashfs-devel@lists.sourceforge.net" 
+        <squashfs-devel@lists.sourceforge.net>,
+        "linux-f2fs-devel@lists.sourceforge.net" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>, Chris Mason <clm@fb.com>,
+        Petr Malat <oss@malat.biz>, Johannes Weiner <jweiner@fb.com>,
+        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        David Sterba <dsterba@suse.cz>,
+        Oleksandr Natalenko <oleksandr@natalenko.name>,
+        Felix Handte <felixh@fb.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        torvalds@linux-foundation.org
+Subject: Re: [GIT PULL][PATCH v11 0/4] Update to zstd-1.4.10
+Message-ID: <20210512194935.GY7604@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Nick Terrell <terrelln@fb.com>,
+        Nick Terrell <nickrterrell@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        "squashfs-devel@lists.sourceforge.net" <squashfs-devel@lists.sourceforge.net>,
+        "linux-f2fs-devel@lists.sourceforge.net" <linux-f2fs-devel@lists.sourceforge.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>, Chris Mason <clm@fb.com>,
+        Petr Malat <oss@malat.biz>, Johannes Weiner <jweiner@fb.com>,
+        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Oleksandr Natalenko <oleksandr@natalenko.name>,
+        Felix Handte <felixh@fb.com>, Eric Biggers <ebiggers@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>, torvalds@linux-foundation.org
+References: <20210430013157.747152-1-nickrterrell@gmail.com>
+ <B093B859-53CC-4818-8CC3-A317F4872AD6@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <B093B859-53CC-4818-8CC3-A317F4872AD6@fb.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 12 May 2021 11:34:55 +0800 Yunsheng Lin wrote:
-> > This is indeed the idiomatic way of dealing with Tx queue stopping race,
-> > but it's a bit of code to sprinkle around. My vote would be option 1.  
+On Tue, May 11, 2021 at 08:53:41PM +0000, Nick Terrell wrote:
+> Pinging this series. Is there anything I should do to help get this
+> merged?
 > 
-> I had done some performance testing to see which is better, tested using
-> pktgen and dummy netdev with pfifo_fast qdisc attached:
+> The use of zstd in the kernel is continuously increasing over time,
+> both in terms of number of use cases, and number of users that
+> actually enable zstd compression in production. E.g. Fedora is
+> making btrfs with zstd compression enabled the default.
 > 
-> unit: Mpps
-> 
-> threads    V6         V6 + option 1     V6 + option 3
->   1       2.60          2.54               2.60
->   2       3.86          3.84               3.84
->   4       5.56          5.50               5.51
->   8       2.79          2.77               2.77
->   16      2.23          2.24               2.22
-> 
-> So it seems the netif_xmit_frozen_or_stopped checking overhead for non-stopped queue
-> is noticable for 1 pktgen thread.
-> 
-> And the performance increase for V6 + option 1 with 16 pktgen threads is because of
-> "clear_bit(__QDISC_STATE_MISSED, &qdisc->state)" at the end of qdisc_run_end(), which
-> may avoid the another round of dequeuing in the pfifo_fast_dequeue(). And adding the
-> "clear_bit(__QDISC_STATE_MISSED, &qdisc->state)"  for V6 + option 3, the data for
-> 16 pktgen thread also go up to 2.24Mpps.
-> 
-> 
-> So it seems V6 + option 3 with "clear_bit(__QDISC_STATE_MISSED, &qdisc->state)" at
-> the end of qdisc_run_end() is better?
+> I would love to see the zstd code updated to the latest upstream
+> and be kept up to date. The latest upstream brings bug fixes, and
+> significant performance improvements. Additionally, the latest
+> upstream code is continuously fuzzed.
 
-Alright, sounds good.
+The btrfs community and I in particular have interest to get zstd
+updated but also there's the patch 3 that goes against what kernel
+requires regarding patch size and logical split of changes.
+
+That the update is so large shouldn't have happened, it covers 3 years
+of development, the syncs should have happened more often, but here we
+are.
+
+Other points that have been raised in the past:
+
+* new wrappers - there are new wrappers changing users of the API, the
+  new names are more conforming, eg ZSTD_decompressDCtx -> zstd_decompress_dctx,
+  sounds like an improvement to me
+
+* high stack usage - mentioned in patch 3, slight increase but bounded
+  and upstream now monitors that so it does not increase
+
+Other points that are worth mentioning:
+
+* bisectability - the version switch happens in one patch, so the
+  effects before/after the patch are only runtime as there's no change
+  in format etc, so ok
+
+* will be maintained - no such huge update should happen again
+
+So I suggest to merge in current form. I'm not sure what was the
+original plan if it was supposed to go via Herbert's crypto tree, but
+that was before Nick added himself as maintainer.
+
+I think that Nick can send the pull request to Linus, perhaps with acks
+to all changes that are in the non-zstd code (patch 1).
+
+Cover letter v11: https://lore.kernel.org/linux-btrfs/20210430013157.747152-1-nickrterrell@gmail.com/
