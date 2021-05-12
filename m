@@ -2,83 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D472C37B747
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 09:58:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1271537B748
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 09:58:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230228AbhELH71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 03:59:27 -0400
-Received: from conuserg-07.nifty.com ([210.131.2.74]:42592 "EHLO
-        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230176AbhELH7Z (ORCPT
+        id S230210AbhELH7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 03:59:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230018AbhELH7n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 03:59:25 -0400
-Received: from grover.RMN.KIBA.LAB.jp (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-07.nifty.com with ESMTP id 14C7vbPw028192;
-        Wed, 12 May 2021 16:57:44 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 14C7vbPw028192
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1620806264;
-        bh=bChIpXSfR+kCBzLwyD4niwOhoAcgIJg4n39mkjxXwJw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SX+SA69zityA1bM1vTUJR/0j8WkzUNNRg3kwf/+jGkC/L5sbJ4U/5+mIny0Oj87/s
-         c1qZSVHJXkRTyvlpgqUQ1vn9gER2nWtIIOKfVxshWAhS3yE/UxuiGX9dnzKNVLIm81
-         dXxFn1FcNsuP4dW8QefujxB5m3Q6XBRmT49+2+d9dOnzaI9rMCAAUv2vgIvYo8hxjY
-         g1fqmSZPiQIiSCCGindN9ZbTnDxya/LKR4VnrDjY/xzktUPSVRwNMssFXA3wneWzaj
-         2nr+UXFag5cRSsSglZjbAtaetN1iQghajDNdzESrgVwCSHvV6uAw3g08F2epLJrez8
-         38FR2E1b1NxqQ==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Rich Felker <dalias@libc.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        linux-kernel@vger.kernel.org, linux-sh@vger.kernel.org
-Subject: [PATCH 5/5] sh: move core-y in arch/sh/Makefile to arch/sh/Kbuild
-Date:   Wed, 12 May 2021 16:57:29 +0900
-Message-Id: <20210512075729.60291-5-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210512075729.60291-1-masahiroy@kernel.org>
-References: <20210512075729.60291-1-masahiroy@kernel.org>
+        Wed, 12 May 2021 03:59:43 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B5C1C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 00:58:35 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id b15so5931564plh.10
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 00:58:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ingics-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=j+C0nUFVgs9ztPs7RXQOMTgel0gmWhONAZSzmf96Fjo=;
+        b=QZNsg+X+bp5LJd+j53kxqT5tMo/9kPJmEqiRLJECfZxft16/ACFIQ4Z0tdcUtY4atX
+         9gQAmNXswArZd/kSESFHQFgjiiCrPg/d7a6MmiPtPQY2Z00LUYaCzcU9toCBZDqSUoaV
+         8Jd/Cb6BVSpsuybgqCVI2HSlkr4MGQ+Fhx4O7JlA9UZ56dcUsd1KeYauiLpCdzuNLWmA
+         yCenKDGW4MHqb0fkm1dRy1GCCledLGHeDHlGjI8hXa8VSKGufYL5bC9SVBovJC1cKsrn
+         Ky7ve+VTKdFVKnJMJfqC4pZkvJmgjrA358gKqNnELCWx9oV9tD9WYrwmR8WJYY4a+tJx
+         0kbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=j+C0nUFVgs9ztPs7RXQOMTgel0gmWhONAZSzmf96Fjo=;
+        b=OWx1R3cpBVlBcUttF8PC+dB4/pjd3BQUDeb5YJuZ8xw9keb0pcV5sf/B7t1ufEp93Q
+         BfS02j2lW2s9nvJBomQtvSI+kFTqypC+PDlPgcgrV0RUDMO2Xz6yhiRVVd+fs9DQ24AZ
+         nOOBpJ7LXjUvmCte8I2+zONUHSuR9Tw9Gmsww/abL33knef7XBIHhbPuHDcISeNaANgo
+         xHfYKxaPRRDjUWuJE4pyP6ouL5OOrfncYL60/XiL4wlUwnlFOiqhr8UjynOdLllYIIrC
+         b9jO8nB9oQwpuUakinR2bl2Sa7g/RahXomSasPlGlx++XlJ71rEZFaaosYUXBei0Q/y1
+         ydBQ==
+X-Gm-Message-State: AOAM531t2T6TFRYToE2a4dJ6JkOBW94bEmoCqbuLrj0/g9xTPUH6lHZH
+        MKUONqUbPT/sd6QR19JStjRS8Q==
+X-Google-Smtp-Source: ABdhPJzWLTXBhI7/HmyT3Sa3GQxFblVMuCRO4ZQds+qhV1gqjFKll2kaBNqunFs2mtOOgXkS1NY67A==
+X-Received: by 2002:a17:902:b104:b029:ee:beb3:ef0a with SMTP id q4-20020a170902b104b02900eebeb3ef0amr34004970plr.80.1620806314457;
+        Wed, 12 May 2021 00:58:34 -0700 (PDT)
+Received: from localhost.localdomain (122-117-179-2.HINET-IP.hinet.net. [122.117.179.2])
+        by smtp.gmail.com with ESMTPSA id y17sm6650626pfr.119.2021.05.12.00.58.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 00:58:33 -0700 (PDT)
+From:   Axel Lin <axel.lin@ingics.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Pi-Hsun Shih <pihsun@chromium.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH] regulator: cros-ec: Fix error code in dev_err message
+Date:   Wed, 12 May 2021 15:58:24 +0800
+Message-Id: <20210512075824.620580-1-axel.lin@ingics.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use obj-y to clean up Makefile.
+Show proper error code instead of 0.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
 ---
+ drivers/regulator/cros-ec-regulator.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
- arch/sh/Kbuild   | 3 +++
- arch/sh/Makefile | 5 -----
- 2 files changed, 3 insertions(+), 5 deletions(-)
-
-diff --git a/arch/sh/Kbuild b/arch/sh/Kbuild
-index a4e40e534e6a..48c2a091a072 100644
---- a/arch/sh/Kbuild
-+++ b/arch/sh/Kbuild
-@@ -1 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0-only
-+obj-y				+= kernel/ mm/ boards/
-+obj-$(CONFIG_SH_FPU_EMU)	+= math-emu/
-+obj-$(CONFIG_USE_BUILTIN_DTB)	+= boot/dts/
-diff --git a/arch/sh/Makefile b/arch/sh/Makefile
-index 44bcb80e791a..88ddb6f1c75b 100644
---- a/arch/sh/Makefile
-+++ b/arch/sh/Makefile
-@@ -116,11 +116,6 @@ export ld-bfd
+diff --git a/drivers/regulator/cros-ec-regulator.c b/drivers/regulator/cros-ec-regulator.c
+index eb3fc1db4edc..c4754f3cf233 100644
+--- a/drivers/regulator/cros-ec-regulator.c
++++ b/drivers/regulator/cros-ec-regulator.c
+@@ -225,8 +225,9 @@ static int cros_ec_regulator_probe(struct platform_device *pdev)
  
- head-y	:= arch/sh/kernel/head_32.o
+ 	drvdata->dev = devm_regulator_register(dev, &drvdata->desc, &cfg);
+ 	if (IS_ERR(drvdata->dev)) {
++		ret = PTR_ERR(drvdata->dev);
+ 		dev_err(&pdev->dev, "Failed to register regulator: %d\n", ret);
+-		return PTR_ERR(drvdata->dev);
++		return ret;
+ 	}
  
--core-y				+= arch/sh/kernel/ arch/sh/mm/ arch/sh/boards/
--core-$(CONFIG_SH_FPU_EMU)	+= arch/sh/math-emu/
--
--core-$(CONFIG_USE_BUILTIN_DTB)	+= arch/sh/boot/dts/
--
- # Mach groups
- machdir-$(CONFIG_SOLUTION_ENGINE)		+= mach-se
- machdir-$(CONFIG_SH_HP6XX)			+= mach-hp6xx
+ 	platform_set_drvdata(pdev, drvdata);
 -- 
-2.27.0
+2.25.1
 
