@@ -2,291 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5248A37B4B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 05:52:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33D3937B4BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 05:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230118AbhELDxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 23:53:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39470 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229994AbhELDxE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 23:53:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E791A6147F;
-        Wed, 12 May 2021 03:51:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620791516;
-        bh=cwVrM7qlJkBZsTH1xOHNyPlMSl4sP4XfTnRoFL4+L4k=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=HLjIad3wZzFa1G/AigAyUdlsKsqgkVRvjz9wxv8ootWUoT16UGRfZ84KQPElGg5PO
-         22QXE1lf7YyQem2rDWpwXq1yVKhZcuJGFJyHlk6PxIkvt9dRbAAsxiNzoD4cDKkNCh
-         STo6exmhG57OeXNkkRKOkAAdInn4zRoQ0iCc4Ss5IVT8hY9Zj+dAEerHqXVbzcGVyJ
-         FDQtKrm+MVVDlNYhVrUM/pRjP10hUudhppWnMprulyIiy6X51csQzx4zRjdDFB0/L/
-         K7qYodQh8ymR2qWqfcixMu6ng4P9YOHu5tfvIbEP1vND4k3VZkQyq51MQbs98Z8D3m
-         C9pAOYeaSrq+w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B21DE5C0134; Tue, 11 May 2021 20:51:56 -0700 (PDT)
-Date:   Tue, 11 May 2021 20:51:56 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        john.stultz@linaro.org, sboyd@kernel.org, corbet@lwn.net,
-        Mark.Rutland@arm.com, maz@kernel.org, kernel-team@fb.com,
-        neeraju@codeaurora.org, ak@linux.intel.com,
-        zhengjun.xing@intel.com,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Subject: Re: [PATCH v14 clocksource 4/6] clocksource: Reduce clocksource-skew
- threshold for TSC
-Message-ID: <20210512035156.GT975577@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210511233403.GA2896757@paulmck-ThinkPad-P17-Gen-1>
- <20210511233455.2897068-4-paulmck@kernel.org>
- <20210512021849.GB78351@shbuild999.sh.intel.com>
+        id S230139AbhELDx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 23:53:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229994AbhELDxz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 23:53:55 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 807EDC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 20:52:47 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id 69so7232191plc.5
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 20:52:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=kLri06/PsvUYTrFMMBEaqXVTzgJ4ixwFqo6hvHf1gdo=;
+        b=zQYt8vmLxc4EUHyZ8moH+yj8OYC+z2rQ4gn0BRyl6DT/viyW0wO94EtxSIxCstUGRc
+         0uW4PCPhfph4XjbqqSqoAVDf8Vcjh2R1TGQ1Guh/lXj8DxhEurVCghHhyGiJVvNaVcWs
+         UFsaP+uLAm49vA76ZS9lqysDL6SHsTcjsLFC47ovXi+UER3hhmA77L+1gZ1HdZLtlu1i
+         hqz0oKuTt4QkLCzM+DgYuBRPXi7/0BxxZ0gxvTLenMgR+YObBYayeR9nLA1S5pd2dhgy
+         bCUVBpxGiOV1dCfn3RBRsvT1N5LC4GLSuW+WL/tYcyGcQpwTMHklY9N8HlYbxG0zZJn/
+         m9NA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=kLri06/PsvUYTrFMMBEaqXVTzgJ4ixwFqo6hvHf1gdo=;
+        b=fPv7zyHogcgM8xs564D+ffuiYIH7bUgsFCrxpr2MpQU/9qThrbNF1NvGIX6/FDKAN9
+         tVWyR1nGvCh1/vqm7tpO5U5naXA++1XC4NV7D21s/xqv/UccWTjYRlYKyzs4zlOp1U6f
+         JvxBglLlcw4+D0SN4no2Zqb7cB92Wx+1ZKYZcAvlKrznOhoY9sXhlRA6/8TzZlfEt2gl
+         njZoH4W5K8gNfAu79y7XV24etM5UOQqDYAxiH7z1fukhpIqf6jJxoM8ncAeH/WCQaBPb
+         8nzDvlmn+dT7LLqiSp1RdOk1TkhR3doI/k8j4WkEIfexsbk0G/dyRr+MqPUcm1WjvLNZ
+         uNbw==
+X-Gm-Message-State: AOAM530ZTVZM8A+BBaYS/RbwwpAAfZwjnVZ5XyOZ210lR3YRWkKhiY3x
+        8pFJC3Pd8aSREBfzLbFUIHU3Zw==
+X-Google-Smtp-Source: ABdhPJy4L0Jl9SVrbA3JDGJ4wx7AHQyih5iN9xmtcgDnhJEIwn147LaXX8q4AYVUzwhJgfoHUu+NyQ==
+X-Received: by 2002:a17:902:e00e:b029:ef:5f1c:18a8 with SMTP id o14-20020a170902e00eb02900ef5f1c18a8mr6440716plo.38.1620791567073;
+        Tue, 11 May 2021 20:52:47 -0700 (PDT)
+Received: from localhost (110-175-254-242.static.tpgi.com.au. [110.175.254.242])
+        by smtp.gmail.com with UTF8SMTPSA id d8sm13938636pfl.156.2021.05.11.20.52.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 May 2021 20:52:46 -0700 (PDT)
+Message-ID: <1024e788-f5f0-9990-a049-94133d3a0921@ozlabs.ru>
+Date:   Wed, 12 May 2021 13:52:10 +1000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210512021849.GB78351@shbuild999.sh.intel.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:88.0) Gecko/20100101
+ Thunderbird/88.0
+Subject: Re: [PATCH kernel v2] powerpc/makefile: Do not redefine $(CPP) for
+ preprocessor
+Content-Language: en-US
+To:     Nathan Chancellor <nathan@kernel.org>,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210511044812.267965-1-aik@ozlabs.ru>
+ <3579aa0d-0470-9a6b-e35b-48f997a5b48b@kernel.org>
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+In-Reply-To: <3579aa0d-0470-9a6b-e35b-48f997a5b48b@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 10:18:49AM +0800, Feng Tang wrote:
-> Hi Paul,
+
+
+On 5/12/21 05:18, Nathan Chancellor wrote:
+> On 5/10/2021 9:48 PM, Alexey Kardashevskiy wrote:
+>> The $(CPP) (do only preprocessing) macro is already defined in Makefile.
+>> However POWERPC redefines it and adds $(KBUILD_CFLAGS) which results
+>> in flags duplication. Which is not a big deal by itself except for
+>> the flags which depend on other flags and the compiler checks them
+>> as it parses the command line.
+>>
+>> Specifically, scripts/Makefile.build:304 generates ksyms for .S files.
+>> If clang+llvm+sanitizer are enabled, this results in
+>>
+>> -emit-llvm-bc -fno-lto -flto -fvisibility=hidden \
+>>   -fsanitize=cfi-mfcall -fno-lto  ...
+>>
+>> in the clang command line and triggers error:
+>>
+>> clang-13: error: invalid argument '-fsanitize=cfi-mfcall' only allowed 
+>> with '-flto'
+>>
+>> This removes unnecessary CPP redefinition. Which works fine as in most
+>> place KBUILD_CFLAGS is passed to $CPP except
+>> arch/powerpc/kernel/vdso64/vdso(32|64).lds (and probably some others,
+>> not yet detected). To fix vdso, we do:
+>> 1. explicitly add -m(big|little)-endian to $CPP
+>> 2. (for clang) add $CLANG_FLAGS to $KBUILD_CPPFLAGS as otherwise clang
+>> silently ignores -m(big|little)-endian if the building platform does not
+>> support big endian (such as x86) so --prefix= is required.
+>>
+>> While at this, remove some duplication from CPPFLAGS_vdso(32|64)
+>> as cmd_cpp_lds_S has them anyway. It still puzzles me why we need -C
+>> (preserve comments in the preprocessor output) flag here.
+>>
+>> Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+>> ---
+>> Changes:
+>> v2:
+>> * fix KBUILD_CPPFLAGS
+>> * add CLANG_FLAGS to CPPFLAGS
+>> ---
+>>   Makefile                            | 1 +
+>>   arch/powerpc/Makefile               | 3 ++-
+>>   arch/powerpc/kernel/vdso32/Makefile | 2 +-
+>>   arch/powerpc/kernel/vdso64/Makefile | 2 +-
+>>   4 files changed, 5 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/Makefile b/Makefile
+>> index 72af8e423f11..13acd2183d55 100644
+>> --- a/Makefile
+>> +++ b/Makefile
+>> @@ -591,6 +591,7 @@ CLANG_FLAGS    += 
+>> --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
+>>   endif
+>>   CLANG_FLAGS    += -Werror=unknown-warning-option
+>>   KBUILD_CFLAGS    += $(CLANG_FLAGS)
+>> +KBUILD_CPPFLAGS    += $(CLANG_FLAGS)
 > 
-> On Tue, May 11, 2021 at 04:34:53PM -0700, Paul E. McKenney wrote:
-> > Currently, WATCHDOG_THRESHOLD is set to detect a 62.5-millisecond skew in
-> > a 500-millisecond WATCHDOG_INTERVAL.  This requires that clocks be skewed
-> > by more than 12.5% in order to be marked unstable.  Except that a clock
-> > that is skewed by that much is probably destroying unsuspecting software
-> > right and left.  And given that there are now checks for false-positive
-> > skews due to delays between reading the two clocks, it should be possible
-> > to greatly decrease WATCHDOG_THRESHOLD, at least for fine-grained clocks
-> > such as TSC.
-> > 
-> > Therefore, add a new uncertainty_margin field to the clocksource
-> > structure that contains the maximum uncertainty in nanoseconds for
-> > the corresponding clock.  This field may be initialized manually,
-> > as it is for clocksource_tsc_early and clocksource_jiffies, which
-> > is copied to refined_jiffies.  If the field is not initialized
-> > manually, it will be computed at clock-registry time as the period
-> > of the clock in question based on the scale and freq parameters to
-> > __clocksource_update_freq_scale() function.  If either of those two
-> > parameters are zero, the tens-of-milliseconds WATCHDOG_THRESHOLD is
-> > used as a cowardly alternative to dividing by zero.  No matter how the
-> > uncertainty_margin field is calculated, it is bounded below by twice
-> > WATCHDOG_MAX_SKEW, that is, by 100 microseconds.
-> > 
-> > Note that manually initialized uncertainty_margin fields are not adjusted,
-> > but there is a WARN_ON_ONCE() that triggers if any such field is less than
-> > twice WATCHDOG_MAX_SKEW.  This WARN_ON_ONCE() is intended to discourage
-> > production use of the one-nanosecond uncertainty_margin values that are
-> > used to test the clock-skew code itself.
-> > 
-> > The actual clock-skew check uses the sum of the uncertainty_margin fields
-> > of the two clocksource structures being compared.  Integer overflow is
-> > avoided because the largest computed value of the uncertainty_margin
-> > fields is one billion (10^9), and double that value fits into an
-> > unsigned int.  However, if someone manually specifies (say) UINT_MAX,
-> > they will get what they deserve.
-> > 
-> > Note that the refined_jiffies uncertainty_margin field is initialized to
-> > TICK_NSEC, which means that skew checks involving this clocksource will
-> > be sufficently forgiving.  In a similar vein, the clocksource_tsc_early
-> > uncertainty_margin field is initialized to 32*NSEC_PER_MSEC, which
-> > replicates the current behavior and allows custom setting if needed
-> > in order to address the rare skews detected for this clocksource in
-> > current mainline.
-> > 
-> > Link: https://lore.kernel.org/lkml/202104291438.PuHsxRkl-lkp@intel.com/
-> > Link: https://lore.kernel.org/lkml/20210429140440.GT975577@paulmck-ThinkPad-P17-Gen-1
-> > Link: https://lore.kernel.org/lkml/20210425224540.GA1312438@paulmck-ThinkPad-P17-Gen-1/
-> > Link: https://lore.kernel.org/lkml/20210420064934.GE31773@xsang-OptiPlex-9020/
-> > Link: https://lore.kernel.org/lkml/20210106004013.GA11179@paulmck-ThinkPad-P72/
-> > Link: https://lore.kernel.org/lkml/20210414043435.GA2812539@paulmck-ThinkPad-P17-Gen-1/
-> > Link: https://lore.kernel.org/lkml/20210419045155.GA596058@paulmck-ThinkPad-P17-Gen-1/
-> > Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: John Stultz <john.stultz@linaro.org>
-> > Cc: Stephen Boyd <sboyd@kernel.org>
-> > Cc: Jonathan Corbet <corbet@lwn.net>
-> > Cc: Mark Rutland <Mark.Rutland@arm.com>
-> > Cc: Marc Zyngier <maz@kernel.org>
-> > Cc: Andi Kleen <ak@linux.intel.com>
-> > Cc: Xing Zhengjun <zhengjun.xing@linux.intel.com>
-> > Cc: Feng Tang <feng.tang@intel.com>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > ---
-> >  arch/x86/kernel/tsc.c       |  1 +
-> >  include/linux/clocksource.h |  3 +++
-> >  kernel/time/clocksource.c   | 48 +++++++++++++++++++++++++++++--------
-> >  kernel/time/jiffies.c       | 15 ++++++------
-> >  4 files changed, 50 insertions(+), 17 deletions(-)
-> > 
-> > diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
-> > index 6eb1b097e97e..2e076a459a0c 100644
-> > --- a/arch/x86/kernel/tsc.c
-> > +++ b/arch/x86/kernel/tsc.c
-> > @@ -1128,6 +1128,7 @@ static int tsc_cs_enable(struct clocksource *cs)
-> >  static struct clocksource clocksource_tsc_early = {
-> >  	.name			= "tsc-early",
-> >  	.rating			= 299,
-> > +	.uncertainty_margin	= 32 * NSEC_PER_MSEC,
-> >  	.read			= read_tsc,
-> >  	.mask			= CLOCKSOURCE_MASK(64),
-> >  	.flags			= CLOCK_SOURCE_IS_CONTINUOUS |
-> > diff --git a/include/linux/clocksource.h b/include/linux/clocksource.h
-> > index 7f83d51c0fd7..895203727cb5 100644
-> > --- a/include/linux/clocksource.h
-> > +++ b/include/linux/clocksource.h
-> > @@ -43,6 +43,8 @@ struct module;
-> >   * @shift:		Cycle to nanosecond divisor (power of two)
-> >   * @max_idle_ns:	Maximum idle time permitted by the clocksource (nsecs)
-> >   * @maxadj:		Maximum adjustment value to mult (~11%)
-> > + * @uncertainty_margin:	Maximum uncertainty in nanoseconds per half second.
-> > + *			Zero says to use default WATCHDOG_THRESHOLD.
-> >   * @archdata:		Optional arch-specific data
-> >   * @max_cycles:		Maximum safe cycle value which won't overflow on
-> >   *			multiplication
-> > @@ -98,6 +100,7 @@ struct clocksource {
-> >  	u32			shift;
-> >  	u64			max_idle_ns;
-> >  	u32			maxadj;
-> > +	u32			uncertainty_margin;
-> >  #ifdef CONFIG_ARCH_CLOCKSOURCE_DATA
-> >  	struct arch_clocksource_data archdata;
-> >  #endif
-> > diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-> > index 66243da2dadb..9ebf9931f3d6 100644
-> > --- a/kernel/time/clocksource.c
-> > +++ b/kernel/time/clocksource.c
-> > @@ -95,6 +95,20 @@ static char override_name[CS_NAME_LEN];
-> >  static int finished_booting;
-> >  static u64 suspend_start;
-> >  
-> > +/*
-> > + * Threshold: 0.0312s, when doubled: 0.0625s.
-> > + * Also a default for cs->uncertainty_margin when registering clocks.
-> > + */
-> > +#define WATCHDOG_THRESHOLD (NSEC_PER_SEC >> 5)
-> > +
-> > +/*
-> > + * Maximum permissible delay between two readouts of the watchdog
-> > + * clocksource surrounding a read of the clocksource being validated.
-> > + * This delay could be due to SMIs, NMIs, or to VCPU preemptions.  Used as
-> > + * a lower bound for cs->uncertainty_margin values when registering clocks.
-> > + */
-> > +#define WATCHDOG_MAX_SKEW (50 * NSEC_PER_USEC)
-> > +
-> >  #ifdef CONFIG_CLOCKSOURCE_WATCHDOG
-> >  static void clocksource_watchdog_work(struct work_struct *work);
-> >  static void clocksource_select(void);
-> > @@ -121,17 +135,9 @@ static int clocksource_watchdog_kthread(void *data);
-> >  static void __clocksource_change_rating(struct clocksource *cs, int rating);
-> >  
-> >  /*
-> > - * Interval: 0.5sec Threshold: 0.0625s
-> > + * Interval: 0.5sec.
-> >   */
-> >  #define WATCHDOG_INTERVAL (HZ >> 1)
-> > -#define WATCHDOG_THRESHOLD (NSEC_PER_SEC >> 4)
-> > -
-> > -/*
-> > - * Maximum permissible delay between two readouts of the watchdog
-> > - * clocksource surrounding a read of the clocksource being validated.
-> > - * This delay could be due to SMIs, NMIs, or to VCPU preemptions.
-> > - */
-> > -#define WATCHDOG_MAX_SKEW (100 * NSEC_PER_USEC)
-> >  
-> >  static void clocksource_watchdog_work(struct work_struct *work)
-> >  {
-> > @@ -347,6 +353,7 @@ static void clocksource_watchdog(struct timer_list *unused)
-> >  	int next_cpu, reset_pending;
-> >  	int64_t wd_nsec, cs_nsec;
-> >  	struct clocksource *cs;
-> > +	u32 md;
-> >  
-> >  	spin_lock(&watchdog_lock);
-> >  	if (!watchdog_running)
-> > @@ -393,7 +400,8 @@ static void clocksource_watchdog(struct timer_list *unused)
-> >  			continue;
-> >  
-> >  		/* Check the deviation from the watchdog clocksource. */
-> > -		if (abs(cs_nsec - wd_nsec) > WATCHDOG_THRESHOLD) {
-> > +		md = cs->uncertainty_margin + watchdog->uncertainty_margin;
-> > +		if (abs(cs_nsec - wd_nsec) > md) {
-> >  			pr_warn("timekeeping watchdog on CPU%d: Marking clocksource '%s' as unstable because the skew is too large:\n",
-> >  				smp_processor_id(), cs->name);
-> >  			pr_warn("                      '%s' wd_now: %llx wd_last: %llx mask: %llx\n",
-> > @@ -1046,6 +1054,26 @@ void __clocksource_update_freq_scale(struct clocksource *cs, u32 scale, u32 freq
-> >  		clocks_calc_mult_shift(&cs->mult, &cs->shift, freq,
-> >  				       NSEC_PER_SEC / scale, sec * scale);
-> >  	}
-> > +
-> > +	/*
-> > +	 * If the uncertainty margin is not specified, calculate it.
-> > +	 * If both scale and freq are non-zero, calculate the clock
-> > +	 * period, but bound below at 2*WATCHDOG_MAX_SKEW.  However,
-> > +	 * if either of scale or freq is zero, be very conservative and
-> > +	 * take the tens-of-milliseconds WATCHDOG_THRESHOLD value for the
-> > +	 * uncertainty margin.  Allow stupidly small uncertainty margins
-> > +	 * to be specified by the caller for testing purposes, but warn
-> > +	 * to discourage production use of this capability.
-> > +	 */
-> > +	if (scale && freq && !cs->uncertainty_margin) {
-> > +		cs->uncertainty_margin = NSEC_PER_SEC / (scale * freq);
-> > +		if (cs->uncertainty_margin < 2 * WATCHDOG_MAX_SKEW)
-> > +			cs->uncertainty_margin = 2 * WATCHDOG_MAX_SKEW;
-> > +	} else if (!cs->uncertainty_margin) {
-> > +		cs->uncertainty_margin = WATCHDOG_THRESHOLD;
-> > +	}
-> > +	WARN_ON_ONCE(cs->uncertainty_margin < 2 * WATCHDOG_MAX_SKEW);
-> > +
-> >  	/*
-> >  	 * Ensure clocksources that have large 'mult' values don't overflow
-> >  	 * when adjusted.
-> > diff --git a/kernel/time/jiffies.c b/kernel/time/jiffies.c
-> > index a492e4da69ba..b3f608c2b936 100644
-> > --- a/kernel/time/jiffies.c
-> > +++ b/kernel/time/jiffies.c
-> > @@ -49,13 +49,14 @@ static u64 jiffies_read(struct clocksource *cs)
-> >   * for "tick-less" systems.
-> >   */
-> >  static struct clocksource clocksource_jiffies = {
-> > -	.name		= "jiffies",
-> > -	.rating		= 1, /* lowest valid rating*/
-> > -	.read		= jiffies_read,
-> > -	.mask		= CLOCKSOURCE_MASK(32),
-> > -	.mult		= TICK_NSEC << JIFFIES_SHIFT, /* details above */
-> > -	.shift		= JIFFIES_SHIFT,
-> > -	.max_cycles	= 10,
-> > +	.name			= "jiffies",
-> > +	.rating			= 1, /* lowest valid rating*/
-> > +	.uncertainty_margin	= TICK_NSEC,
+> This is going to cause flag duplication, which would be nice to avoid. I 
+> do not know if we can get away with just adding $(CLANG_FLAGS) to 
+> KBUILD_CPPFLAGS instead of KBUILD_CFLAGS though. It seems like this 
+> assignment might be better in arch/powerpc/Makefile with the 
+> KBUILD_CPPFLAGS additions there.
+
+
+It is a fair point about the duplication (which is woooow, I often see 
+-mbig-endian 3 - three - times) and I think I only need --prefix= there 
+but this is still exactly the place to do such thing as it potentially 
+affects all archs supporting both endianness (not many though, yeah). 
+Thanks,
+
+
+
+
 > 
-> 'jiffies' is known to be very bad as a watchdog ("worse bandaid" in
-> Thomas' words :)), and TICK_NSEC just turns to 1ms for HZ=1000 case. 
-> Maybe we should give it a bigger margin, like the 32ms margin for 
-> 'tsc-early'?
+> Cheers,
+> Nathan
 > 
-> Other than this, it looks good to me, thanks!
+>>   KBUILD_AFLAGS    += $(CLANG_FLAGS)
+>>   export CLANG_FLAGS
+>>   endif
+>> diff --git a/arch/powerpc/Makefile b/arch/powerpc/Makefile
+>> index 3212d076ac6a..306bfd2797ad 100644
+>> --- a/arch/powerpc/Makefile
+>> +++ b/arch/powerpc/Makefile
+>> @@ -76,6 +76,7 @@ endif
+>>   ifdef CONFIG_CPU_LITTLE_ENDIAN
+>>   KBUILD_CFLAGS    += -mlittle-endian
+>> +KBUILD_CPPFLAGS    += -mlittle-endian
+>>   KBUILD_LDFLAGS    += -EL
+>>   LDEMULATION    := lppc
+>>   GNUTARGET    := powerpcle
+>> @@ -83,6 +84,7 @@ MULTIPLEWORD    := -mno-multiple
+>>   KBUILD_CFLAGS_MODULE += $(call cc-option,-mno-save-toc-indirect)
+>>   else
+>>   KBUILD_CFLAGS += $(call cc-option,-mbig-endian)
+>> +KBUILD_CPPFLAGS += $(call cc-option,-mbig-endian)
+>>   KBUILD_LDFLAGS    += -EB
+>>   LDEMULATION    := ppc
+>>   GNUTARGET    := powerpc
+>> @@ -208,7 +210,6 @@ KBUILD_CPPFLAGS    += -I $(srctree)/arch/$(ARCH) 
+>> $(asinstr)
+>>   KBUILD_AFLAGS    += $(AFLAGS-y)
+>>   KBUILD_CFLAGS    += $(call cc-option,-msoft-float)
+>>   KBUILD_CFLAGS    += -pipe $(CFLAGS-y)
+>> -CPP        = $(CC) -E $(KBUILD_CFLAGS)
+>>   CHECKFLAGS    += -m$(BITS) -D__powerpc__ -D__powerpc$(BITS)__
+>>   ifdef CONFIG_CPU_BIG_ENDIAN
+>> diff --git a/arch/powerpc/kernel/vdso32/Makefile 
+>> b/arch/powerpc/kernel/vdso32/Makefile
+>> index 7d9a6fee0e3d..ea001c6df1fa 100644
+>> --- a/arch/powerpc/kernel/vdso32/Makefile
+>> +++ b/arch/powerpc/kernel/vdso32/Makefile
+>> @@ -44,7 +44,7 @@ asflags-y := -D__VDSO32__ -s
+>>   obj-y += vdso32_wrapper.o
+>>   targets += vdso32.lds
+>> -CPPFLAGS_vdso32.lds += -P -C -Upowerpc
+>> +CPPFLAGS_vdso32.lds += -C
+>>   # link rule for the .so file, .lds has to be first
+>>   $(obj)/vdso32.so.dbg: $(src)/vdso32.lds $(obj-vdso32) 
+>> $(obj)/vgettimeofday.o FORCE
+>> diff --git a/arch/powerpc/kernel/vdso64/Makefile 
+>> b/arch/powerpc/kernel/vdso64/Makefile
+>> index 2813e3f98db6..07eadba48c7a 100644
+>> --- a/arch/powerpc/kernel/vdso64/Makefile
+>> +++ b/arch/powerpc/kernel/vdso64/Makefile
+>> @@ -30,7 +30,7 @@ ccflags-y := -shared -fno-common -fno-builtin 
+>> -nostdlib \
+>>   asflags-y := -D__VDSO64__ -s
+>>   targets += vdso64.lds
+>> -CPPFLAGS_vdso64.lds += -P -C -U$(ARCH)
+>> +CPPFLAGS_vdso64.lds += -C
+>>   # link rule for the .so file, .lds has to be first
+>>   $(obj)/vdso64.so.dbg: $(src)/vdso64.lds $(obj-vdso64) 
+>> $(obj)/vgettimeofday.o FORCE
+>>
+> 
 
-As in the fixup diff below?
-
-Would you be willing to provide an ack or tested-by for the rest
-of the series?  (I have your ack on 1/6.)
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
-diff --git a/kernel/time/jiffies.c b/kernel/time/jiffies.c
-index b3f608c2b936..01935aafdb46 100644
---- a/kernel/time/jiffies.c
-+++ b/kernel/time/jiffies.c
-@@ -51,7 +51,7 @@ static u64 jiffies_read(struct clocksource *cs)
- static struct clocksource clocksource_jiffies = {
- 	.name			= "jiffies",
- 	.rating			= 1, /* lowest valid rating*/
--	.uncertainty_margin	= TICK_NSEC,
-+	.uncertainty_margin	= 32 * NSEC_PER_MSEC,
- 	.read			= jiffies_read,
- 	.mask			= CLOCKSOURCE_MASK(32),
- 	.mult			= TICK_NSEC << JIFFIES_SHIFT, /* details above */
+-- 
+Alexey
