@@ -2,107 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4299E37ECE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:36:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E966C37ED1E
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:38:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353347AbhELUCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 16:02:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58990 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1358824AbhELSue (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 14:50:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 88CC1610F8;
-        Wed, 12 May 2021 18:49:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620845364;
-        bh=pUzFV6x8DwAbivkRdrmFuXxPE7dSIvSWJjXeCNQ3QYo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kjQ/7kTctcB1QPMBrfhezJNM42V4SBwt1XwPkweunsoixc6jV5vIeDSbDfmBmj0wB
-         jsGT5utAJgsJrywNycmJyhlUTEE3g2LN44u7ELfHxE+511sjML+8qX5uU+B6vXVEDN
-         r+f3us6yMaOWR5+CZIykdZJeeKOV8rQc+fi2O9G8=
-Date:   Wed, 12 May 2021 20:49:22 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Oliver Glitta <glittao@gmail.com>,
-        David Rientjes <rientjes@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 518/530] mm, slub: enable slub_debug static key when
- creating cache with explicit debug flags
-Message-ID: <YJwjMglS4/wZ/ieH@kroah.com>
-References: <20210512144819.664462530@linuxfoundation.org>
- <20210512144836.780038842@linuxfoundation.org>
- <dd590c4d-cb37-fd38-3ad7-96f677403b3c@suse.cz>
- <YJv5R0KNH+/EsWfX@kroah.com>
- <003ce4ee-304c-68cb-6871-cf01495438b6@suse.cz>
+        id S1344510AbhELUM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 16:12:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1359630AbhELSxm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 14:53:42 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7F6FC0613ED;
+        Wed, 12 May 2021 11:50:09 -0700 (PDT)
+Date:   Wed, 12 May 2021 18:50:07 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1620845408;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yrZEYGg22iU4PvAHomrgotrJaJDq0HrQ0SHNi3BqUn0=;
+        b=Tu581bm1Fo8avpJPMxJbPRTTcVzH1NMobr8kIYXalzkQhAthLmrS8rLT0uH77RQd6asdk2
+        c5BfN7ZW/UtNquq9aeYHPwU9vwCJYRxSxRsREDHRB2UPSIygBxprPBDTCeSxPC8VaF/ln2
+        jt0BXz6FGE2HnbUw9Ot+9Hjw9G+hyblcC727grkJAUf8JJxyZGHJLus3prKOTi1VCRwn5P
+        aJzv4RagqmNUybgrJ4G56LUNz2vFaBYHE5RZ1aOBka0MPQ4X4t8zPkSEbj3HJi2g8UX/gA
+        drqsS+VsCTlkJgGfLWKXhsSMwW9Z61qaM3JpdBS99hX7XCksvhHKD519T0gPAg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1620845408;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yrZEYGg22iU4PvAHomrgotrJaJDq0HrQ0SHNi3BqUn0=;
+        b=J/gpcuHXS32tjbFO00E3Aija/ztTOAFv5cfRqc4SsZLxl+8b2rzpXCfVl1DGzoWQzF9hn3
+        tRDfHnQptrZ7I1Bw==
+From:   tip-bot2 for =?utf-8?q?Andr=C3=A9?= Almeida 
+        <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/core] selftests: futex: Expand timeout test
+Cc:     andrealmeid@collabora.com, Ingo Molnar <mingo@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210427135328.11013-3-andrealmeid@collabora.com>
+References: <20210427135328.11013-3-andrealmeid@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <003ce4ee-304c-68cb-6871-cf01495438b6@suse.cz>
+Message-ID: <162084540749.29796.13674112601731526898.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 07:25:24PM +0200, Vlastimil Babka wrote:
-> On 5/12/21 5:50 PM, Greg Kroah-Hartman wrote:
-> > On Wed, May 12, 2021 at 05:35:28PM +0200, Vlastimil Babka wrote:
-> >> On 5/12/21 4:50 PM, Greg Kroah-Hartman wrote:
-> >> > From: Vlastimil Babka <vbabka@suse.cz>
-> >> > 
-> >> > [ Upstream commit 1f0723a4c0df36cbdffc6fac82cd3c5d57e06d66 ]
-> >> > 
-> >> > Commit ca0cab65ea2b ("mm, slub: introduce static key for slub_debug()")
-> >> > introduced a static key to optimize the case where no debugging is
-> >> > enabled for any cache.  The static key is enabled when slub_debug boot
-> >> > parameter is passed, or CONFIG_SLUB_DEBUG_ON enabled.
-> >> > 
-> >> > However, some caches might be created with one or more debugging flags
-> >> > explicitly passed to kmem_cache_create(), and the commit missed this.
-> >> > Thus the debugging functionality would not be actually performed for
-> >> > these caches unless the static key gets enabled by boot param or config.
-> >> > 
-> >> > This patch fixes it by checking for debugging flags passed to
-> >> > kmem_cache_create() and enabling the static key accordingly.
-> >> > 
-> >> > Note such explicit debugging flags should not be used outside of
-> >> > debugging and testing as they will now enable the static key globally.
-> >> > btrfs_init_cachep() creates a cache with SLAB_RED_ZONE but that's a
-> >> > mistake that's being corrected [1].  rcu_torture_stats() creates a cache
-> >> > with SLAB_STORE_USER, but that is a testing module so it's OK and will
-> >> > start working as intended after this patch.
-> >> > 
-> >> > Also note that in case of backports to kernels before v5.12 that don't
-> >> > have 59450bbc12be ("mm, slab, slub: stop taking cpu hotplug lock"),
-> >> > static_branch_enable_cpuslocked() should be used.
-> >> > 
-> >> > [1] https://lore.kernel.org/linux-btrfs/20210315141824.26099-1-dsterba@suse.com/
-> >> > 
-> >> > Link: https://lkml.kernel.org/r/20210315153415.24404-1-vbabka@suse.cz
-> >> > Fixes: ca0cab65ea2b ("mm, slub: introduce static key for slub_debug()")
-> >> > Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> >> > Reported-by: Oliver Glitta <glittao@gmail.com>
-> >> > Acked-by: David Rientjes <rientjes@google.com>
-> >> > Cc: Christoph Lameter <cl@linux.com>
-> >> > Cc: Pekka Enberg <penberg@kernel.org>
-> >> > Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> >> > Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> >> > Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> >> > Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-> >> > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> >> 
-> >> Uh, rather not release this to stable without the followup fix:
-> >> https://lore.kernel.org/linux-mm/20210504120019.26791-1-vbabka@suse.cz/
-> > 
-> > Is that in Linus's tree yet?  If so, what is the git id?
-> 
-> No, it's in mmotm, so no git id yet, but should make it to Linus during 5.13 rc's.
+The following commit has been merged into the locking/core branch of tip:
 
-Ok, thanks, now dropped from all 3 queues.
+Commit-ID:     f4addd54b1617067f735ad194a3580a2db7b8bf5
+Gitweb:        https://git.kernel.org/tip/f4addd54b1617067f735ad194a3580a2db7=
+b8bf5
+Author:        Andr=C3=A9 Almeida <andrealmeid@collabora.com>
+AuthorDate:    Tue, 27 Apr 2021 10:53:28 -03:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Wed, 12 May 2021 20:44:59 +02:00
 
-greg k-h
+selftests: futex: Expand timeout test
+
+Improve futex timeout testing by checking all the operations that
+supports timeout and their available modes.
+
+Signed-off-by: Andr=C3=A9 Almeida <andrealmeid@collabora.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20210427135328.11013-3-andrealmeid@collabora.=
+com
+---
+ tools/testing/selftests/futex/functional/futex_wait_timeout.c | 126 ++++++-
+ 1 file changed, 110 insertions(+), 16 deletions(-)
+
+diff --git a/tools/testing/selftests/futex/functional/futex_wait_timeout.c b/=
+tools/testing/selftests/futex/functional/futex_wait_timeout.c
+index ee55e6d..1f8f6da 100644
+--- a/tools/testing/selftests/futex/functional/futex_wait_timeout.c
++++ b/tools/testing/selftests/futex/functional/futex_wait_timeout.c
+@@ -11,21 +11,18 @@
+  *
+  * HISTORY
+  *      2009-Nov-6: Initial version by Darren Hart <dvhart@linux.intel.com>
++ *      2021-Apr-26: More test cases by Andr=C3=A9 Almeida <andrealmeid@coll=
+abora.com>
+  *
+  ***************************************************************************=
+**/
+=20
+-#include <errno.h>
+-#include <getopt.h>
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>
+-#include <time.h>
++#include <pthread.h>
+ #include "futextest.h"
+ #include "logging.h"
+=20
+ #define TEST_NAME "futex-wait-timeout"
+=20
+ static long timeout_ns =3D 100000;	/* 100us default timeout */
++static futex_t futex_pi;
+=20
+ void usage(char *prog)
+ {
+@@ -37,11 +34,67 @@ void usage(char *prog)
+ 	       VQUIET, VCRITICAL, VINFO);
+ }
+=20
++/*
++ * Get a PI lock and hold it forever, so the main thread lock_pi will block
++ * and we can test the timeout
++ */
++void *get_pi_lock(void *arg)
++{
++	int ret;
++	volatile futex_t lock =3D 0;
++
++	ret =3D futex_lock_pi(&futex_pi, NULL, 0, 0);
++	if (ret !=3D 0)
++		error("futex_lock_pi failed\n", ret);
++
++	/* Blocks forever */
++	ret =3D futex_wait(&lock, 0, NULL, 0);
++	error("futex_wait failed\n", ret);
++
++	return NULL;
++}
++
++/*
++ * Check if the function returned the expected error
++ */
++static void test_timeout(int res, int *ret, char *test_name, int err)
++{
++	if (!res || errno !=3D err) {
++		ksft_test_result_fail("%s returned %d\n", test_name,
++				      res < 0 ? errno : res);
++		*ret =3D RET_FAIL;
++	} else {
++		ksft_test_result_pass("%s succeeds\n", test_name);
++	}
++}
++
++/*
++ * Calculate absolute timeout and correct overflow
++ */
++static int futex_get_abs_timeout(clockid_t clockid, struct timespec *to,
++				 long timeout_ns)
++{
++	if (clock_gettime(clockid, to)) {
++		error("clock_gettime failed\n", errno);
++		return errno;
++	}
++
++	to->tv_nsec +=3D timeout_ns;
++
++	if (to->tv_nsec >=3D 1000000000) {
++		to->tv_sec++;
++		to->tv_nsec -=3D 1000000000;
++	}
++
++	return 0;
++}
++
+ int main(int argc, char *argv[])
+ {
+ 	futex_t f1 =3D FUTEX_INITIALIZER;
+-	struct timespec to;
+ 	int res, ret =3D RET_PASS;
++	struct timespec to;
++	pthread_t thread;
+ 	int c;
+=20
+ 	while ((c =3D getopt(argc, argv, "cht:v:")) !=3D -1) {
+@@ -65,22 +118,63 @@ int main(int argc, char *argv[])
+ 	}
+=20
+ 	ksft_print_header();
+-	ksft_set_plan(1);
++	ksft_set_plan(7);
+ 	ksft_print_msg("%s: Block on a futex and wait for timeout\n",
+ 	       basename(argv[0]));
+ 	ksft_print_msg("\tArguments: timeout=3D%ldns\n", timeout_ns);
+=20
+-	/* initialize timeout */
++	pthread_create(&thread, NULL, get_pi_lock, NULL);
++
++	/* initialize relative timeout */
+ 	to.tv_sec =3D 0;
+ 	to.tv_nsec =3D timeout_ns;
+=20
+-	info("Calling futex_wait on f1: %u @ %p\n", f1, &f1);
+-	res =3D futex_wait(&f1, f1, &to, FUTEX_PRIVATE_FLAG);
+-	if (!res || errno !=3D ETIMEDOUT) {
+-		fail("futex_wait returned %d\n", ret < 0 ? errno : ret);
+-		ret =3D RET_FAIL;
+-	}
++	res =3D futex_wait(&f1, f1, &to, 0);
++	test_timeout(res, &ret, "futex_wait relative", ETIMEDOUT);
++
++	/* FUTEX_WAIT_BITSET with CLOCK_REALTIME */
++	if (futex_get_abs_timeout(CLOCK_REALTIME, &to, timeout_ns))
++		return RET_FAIL;
++	res =3D futex_wait_bitset(&f1, f1, &to, 1, FUTEX_CLOCK_REALTIME);
++	test_timeout(res, &ret, "futex_wait_bitset realtime", ETIMEDOUT);
++
++	/* FUTEX_WAIT_BITSET with CLOCK_MONOTONIC */
++	if (futex_get_abs_timeout(CLOCK_MONOTONIC, &to, timeout_ns))
++		return RET_FAIL;
++	res =3D futex_wait_bitset(&f1, f1, &to, 1, 0);
++	test_timeout(res, &ret, "futex_wait_bitset monotonic", ETIMEDOUT);
++
++	/* FUTEX_WAIT_REQUEUE_PI with CLOCK_REALTIME */
++	if (futex_get_abs_timeout(CLOCK_REALTIME, &to, timeout_ns))
++		return RET_FAIL;
++	res =3D futex_wait_requeue_pi(&f1, f1, &futex_pi, &to, FUTEX_CLOCK_REALTIME=
+);
++	test_timeout(res, &ret, "futex_wait_requeue_pi realtime", ETIMEDOUT);
++
++	/* FUTEX_WAIT_REQUEUE_PI with CLOCK_MONOTONIC */
++	if (futex_get_abs_timeout(CLOCK_MONOTONIC, &to, timeout_ns))
++		return RET_FAIL;
++	res =3D futex_wait_requeue_pi(&f1, f1, &futex_pi, &to, 0);
++	test_timeout(res, &ret, "futex_wait_requeue_pi monotonic", ETIMEDOUT);
++
++	/*
++	 * FUTEX_LOCK_PI with CLOCK_REALTIME
++	 * Due to historical reasons, FUTEX_LOCK_PI supports only realtime
++	 * clock, but requires the caller to not set CLOCK_REALTIME flag.
++	 *
++	 * If you call FUTEX_LOCK_PI with a monotonic clock, it'll be
++	 * interpreted as a realtime clock, and (unless you mess your machine's
++	 * time or your time machine) the monotonic clock value is always
++	 * smaller than realtime and the syscall will timeout immediately.
++	 */
++	if (futex_get_abs_timeout(CLOCK_REALTIME, &to, timeout_ns))
++		return RET_FAIL;
++	res =3D futex_lock_pi(&futex_pi, &to, 0, 0);
++	test_timeout(res, &ret, "futex_lock_pi realtime", ETIMEDOUT);
++
++	/* Test operations that don't support FUTEX_CLOCK_REALTIME */
++	res =3D futex_lock_pi(&futex_pi, NULL, 0, FUTEX_CLOCK_REALTIME);
++	test_timeout(res, &ret, "futex_lock_pi invalid timeout flag", ENOSYS);
+=20
+-	print_result(TEST_NAME, ret);
++	ksft_print_cnts();
+ 	return ret;
+ }
