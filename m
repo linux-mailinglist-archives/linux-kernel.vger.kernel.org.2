@@ -2,97 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52FCC37BF72
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D46337BF7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231273AbhELOMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 10:12:21 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:44588 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230362AbhELOMR (ORCPT
+        id S230401AbhELOOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 10:14:05 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3067 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230196AbhELOOC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 10:12:17 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14CE4a1q146034;
-        Wed, 12 May 2021 10:11:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=d0UUIad/gZlY4qKQ9o8OrUCGPp92lSUIJYiNaYE2ss4=;
- b=MmDCJwvrvOY79IivoYIqTyUDAySf7TuUv6mwjWfa6nnB00TrBgXf29qzs7Nx9jMX8c3F
- l2820M4puZ1JG6aDkVFXd2EhRy6ZxIbGsV9KMxY9ZarFC3iWIMEIOmbvFk+Q2OYFSvJ1
- Kwd3V2UXC3d3sdIF4PQ9UDesBi8JUggbFDp0vheP2wR4sLkjnow0CYOwgiz3P9RtUryu
- ZPj/YLGdYIiokogWusgbdxDkia4LNp8uSP/iUcFLk2kMR2Vt0NZ0oF5SxCA4tZKAlK30
- Sp37CJZcRnzDYr1d+KMTlKiOl6U4uuhdc8kV+jsak58E1rvnOwMSXFOB2nOx8Z5Wjml/ mg== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38gehtc8nd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 12 May 2021 10:11:06 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14CDq2RH032506;
-        Wed, 12 May 2021 14:11:04 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 38dj98a87g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 12 May 2021 14:11:04 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14CEAZV729426088
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 12 May 2021 14:10:35 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6F4A511C054;
-        Wed, 12 May 2021 14:11:02 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3825611C050;
-        Wed, 12 May 2021 14:11:02 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 12 May 2021 14:11:02 +0000 (GMT)
-From:   Julian Wiedmann <jwi@linux.ibm.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Julian Wiedmann <jwi@linux.ibm.com>
-Subject: [PATCH] driver core: replace open-coded device_lock_assert()
-Date:   Wed, 12 May 2021 16:10:54 +0200
-Message-Id: <20210512141054.2180373-1-jwi@linux.ibm.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 12 May 2021 10:14:02 -0400
+Received: from fraeml735-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FgGkT5k4Cz6wj4N;
+        Wed, 12 May 2021 22:04:33 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml735-chm.china.huawei.com (10.206.15.216) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 12 May 2021 16:12:46 +0200
+Received: from [10.47.85.216] (10.47.85.216) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 12 May
+ 2021 15:12:45 +0100
+Subject: Re: [PATCH v2] blk-mq: Use request queue-wide tags for tagset-wide
+ sbitmap
+To:     Ming Lei <ming.lei@redhat.com>
+CC:     "axboe@kernel.dk" <axboe@kernel.dk>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "kashyap.desai@broadcom.com" <kashyap.desai@broadcom.com>,
+        "chenxiang (M)" <chenxiang66@hisilicon.com>,
+        "yama@redhat.com" <yama@redhat.com>,
+        "dgilbert@interlog.com" <dgilbert@interlog.com>
+References: <1620749743-36000-1-git-send-email-john.garry@huawei.com>
+ <YJs2KWMCn2kpyryT@T590>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <06b5ab3f-467a-44eb-c997-5a85508dbcda@huawei.com>
+Date:   Wed, 12 May 2021 15:12:01 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: gq5kCRb1hfewYtpVS9xpZ7q34TKRCQ-e
-X-Proofpoint-GUID: gq5kCRb1hfewYtpVS9xpZ7q34TKRCQ-e
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-12_06:2021-05-12,2021-05-12 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
- lowpriorityscore=0 malwarescore=0 suspectscore=0 phishscore=0 adultscore=0
- priorityscore=1501 mlxscore=0 impostorscore=0 mlxlogscore=929
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105120094
+In-Reply-To: <YJs2KWMCn2kpyryT@T590>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.85.216]
+X-ClientProxiedBy: lhreml740-chm.china.huawei.com (10.201.108.190) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using the right wrapper makes it easier to associate this assert
-statement with the device_[un]lock() helpers.
 
-Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
----
- drivers/base/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>>   
+>> +static int blk_mq_init_sched_shared_sbitmap(struct request_queue *queue)
+>> +{
+>> +	struct blk_mq_tag_set *set = queue->tag_set;
+>> +	int ret;
+>> +
+>> +	/*
+>> +	 * Set initial depth at max so that we don't need to reallocate for
+>> +	 * updating nr_requests.
+>> +	 */
+>> +	ret = blk_mq_init_bitmaps(&queue->sched_bitmap_tags,
+>> +				  &queue->sched_breserved_tags,
+>> +				  set, MAX_SCHED_RQ, set->reserved_tags);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	sbitmap_queue_resize(&queue->sched_bitmap_tags,
+>> +			     queue->nr_requests - set->reserved_tags);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static void blk_mq_exit_sched_shared_sbitmap(struct request_queue *queue)
+>> +{
+>> +	sbitmap_queue_free(&queue->sched_bitmap_tags);
+>> +	sbitmap_queue_free(&queue->sched_breserved_tags);
+>> +}
+>> +
+>>   int blk_mq_init_sched(struct request_queue *q, struct elevator_type *e)
+>>   {
+>>   	struct blk_mq_hw_ctx *hctx;
+>> @@ -578,12 +598,25 @@ int blk_mq_init_sched(struct request_queue *q, struct elevator_type *e)
+>>   	queue_for_each_hw_ctx(q, hctx, i) {
+>>   		ret = blk_mq_sched_alloc_tags(q, hctx, i);
+>>   		if (ret)
+>> -			goto err;
+>> +			goto err_free_tags;
+>> +	}
+>> +
+>> +	if (blk_mq_is_sbitmap_shared(q->tag_set->flags)) {
+>> +		ret = blk_mq_init_sched_shared_sbitmap(q);
+>> +		if (ret)
+>> +			goto err_free_tags;
+>> +
+>> +		queue_for_each_hw_ctx(q, hctx, i) {
+>> +			hctx->sched_tags->bitmap_tags =
+>> +						&q->sched_bitmap_tags;
+>> +			hctx->sched_tags->breserved_tags =
+>> +						&q->sched_breserved_tags;
+>> +		}
+> The above assignment can be folded into blk_mq_init_sched_shared_sbitmap().
+> 
 
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index 4a8bf8cda52b..bfa3536d48df 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -3437,7 +3437,7 @@ bool kill_device(struct device *dev)
- 	 * to run while we are tearing out the bus/class/sysfs from
- 	 * underneath the device.
- 	 */
--	lockdep_assert_held(&dev->mutex);
-+	device_lock_assert(dev);
- 
- 	if (dev->p->dead)
- 		return false;
--- 
-2.25.1
+ok
+
+>>   	}
+>>   
+>>   	ret = e->ops.init_sched(q, e);
+>>   	if (ret)
+>> -		goto err;
+>> +		goto err_free_sbitmap;
+>>   
+>>   	blk_mq_debugfs_register_sched(q);
+>>   
+>> @@ -603,7 +636,10 @@ int blk_mq_init_sched(struct request_queue *q, struct elevator_type *e)
+>>   
+>>   	return 0;
+>>   
+>> -err:
+>> +err_free_sbitmap:
+>> +	if (blk_mq_is_sbitmap_shared(q->tag_set->flags))
+>> +		blk_mq_exit_sched_shared_sbitmap(q);
+>> +err_free_tags:
+>>   	blk_mq_sched_free_requests(q);
+>>   	blk_mq_sched_tags_teardown(q);
+>>   	q->elevator = NULL;
+>> @@ -641,5 +677,7 @@ void blk_mq_exit_sched(struct request_queue *q, struct elevator_queue *e)
+>>   	if (e->type->ops.exit_sched)
+>>   		e->type->ops.exit_sched(e);
+>>   	blk_mq_sched_tags_teardown(q);
+>> +	if (blk_mq_is_sbitmap_shared(q->tag_set->flags))
+>> +		blk_mq_exit_sched_shared_sbitmap(q);
+> The above two lines can be moved to blk_mq_sched_tags_teardown().
+
+blk_mq_sched_tags_teardown() is also used in blk_mq_init_sched() to undo 
+the blk_mq_sched_alloc_tags() calls; however, in that same function we 
+call blk_mq_sched_alloc_tags() and blk_mq_init_sched_shared_sbitmap() 
+separately, so can't combine into a single teardown function.
+
+> 
+>>   	q->elevator = NULL;
+>>   }
+>> diff --git a/block/blk-mq-sched.h b/block/blk-mq-sched.h
+>> index 5b18ab915c65..aff037cfd8e7 100644
+>> --- a/block/blk-mq-sched.h
+>> +++ b/block/blk-mq-sched.h
+>> @@ -5,6 +5,8 @@
+>>   #include "blk-mq.h"
+>>   #include "blk-mq-tag.h"
+>>   
+>> +#define MAX_SCHED_RQ (16 * BLKDEV_MAX_RQ)
+>> +
+>>   void blk_mq_sched_assign_ioc(struct request *rq);
+>>   
+>>   bool blk_mq_sched_try_merge(struct request_queue *q, struct bio *bio,
+>> diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+>> index 2a37731e8244..e3ab8631be22 100644
+>> --- a/block/blk-mq-tag.c
+>> +++ b/block/blk-mq-tag.c
+>> @@ -13,6 +13,7 @@
+>>   #include <linux/delay.h>
+>>   #include "blk.h"
+>>   #include "blk-mq.h"
+>> +#include "blk-mq-sched.h"
+>>   #include "blk-mq-tag.h"
+>>   
+>>   /*
+>> @@ -466,19 +467,39 @@ static int blk_mq_init_bitmap_tags(struct blk_mq_tags *tags,
+>>   	return -ENOMEM;
+>>   }
+>>   
+>> -int blk_mq_init_shared_sbitmap(struct blk_mq_tag_set *set, unsigned int flags)
+>> +int blk_mq_init_bitmaps(struct sbitmap_queue *bitmap_tags,
+>> +			struct sbitmap_queue *breserved_tags,
+>> +			struct blk_mq_tag_set *set,
+> The 'set' parameter can be killed, meantime pass 'node' & 'alloc_policy',
+> just like blk_mq_init_bitmap_tags()'s type, then blk_mq_init_bitmaps()
+> can be re-used by blk_mq_init_bitmap_tags() for avoiding to duplicate
+> bitmap allocation code.
+
+I was thinking that we could consolidate here, so let me check this.
+
+> 
+>> +			unsigned int queue_depth, unsigned int reserved)
+>>   {
+>> -	unsigned int depth = set->queue_depth - set->reserved_tags;
+>> +	unsigned int depth = queue_depth - reserved;
+>>   	int alloc_policy = BLK_MQ_FLAG_TO_ALLOC_POLICY(set->flags);
+>>   	bool round_robin = alloc_policy == BLK_TAG_ALLOC_RR;
+>> -	int i, node = set->numa_node;
+>>   
+>> -	if (bt_alloc(&set->__bitmap_tags, depth, round_robin, node))
+>> +	if (bt_alloc(bitmap_tags, depth, round_robin, set->numa_node))
+>>   		return -ENOMEM;
+>> -	if (bt_alloc(&set->__breserved_tags, set->reserved_tags,
+>> -		     round_robin, node))
+>> +	if (bt_alloc(breserved_tags, set->reserved_tags,
+> s/set->reserved_tags/reserved/
+
+ok
+
+Thanks!
 
