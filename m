@@ -2,115 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20CD237B619
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 08:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3695537B5CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 08:17:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230126AbhELGax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 02:30:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229626AbhELGav (ORCPT
+        id S230096AbhELGSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 02:18:07 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:2451 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229580AbhELGSD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 02:30:51 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31E71C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 23:29:44 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id m12so33315248eja.2
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 23:29:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FVKY/8OJFn/AVdYg/I2U6wFa/UltzqiJOYIbxas+wEU=;
-        b=yYdoQ0XOKaW4HcjPMnq93wc7+gItMahnbROPanX3KqYLjQuDGmimm7lbH816+fbqhn
-         kci5LkuqFtzFZI4hjsKtNQe73fB74qX8p43uQ5/mhHSj1HbkfzNbYcsdDXEWii6tJX3g
-         jiMOqiQeX/XT7ldlFlcutczVHa/kStKJhOdk0RFSBvQeQyne0fkF/DPWR3N+mCF4felH
-         pll/YYLAz87XWt/AE7w8oMIb6FC7rpeJDlTQtJ/qVfHkN5fHWdJuWYfP1GF5jTfL/OFl
-         KTecmwaX5KB7rbu5U0i+nOEZeMBJ1F4gfTgcR9fvKLaDmhYrLK8b+0U3AerOFqEpBaur
-         N16A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FVKY/8OJFn/AVdYg/I2U6wFa/UltzqiJOYIbxas+wEU=;
-        b=qhscMp0ohCqZylYwqK7DNahl4YAgLE89aYtNOUv98lZSXswmoVoGaxc9WarS8YeVBO
-         PINbQ3B36XSxNTRUClYvZXqTUFlMgeGAPJC1AhfVn4uQn7YyLFpoKuxatxRKBMw+zYgF
-         hSFRxa0qbaIH2izU+SGQITmrGI2jUM/xjFRKpHjG9DhSPnq0lqa4FmDCBuwVgX8Wmud6
-         0us6ZOyrcVxSQFrOQEljKchtlCMsiWwbRqNlm8c2N+UDffym86j8MYghsksrP62oJ+5l
-         o/A44rDnRPNTQd+U+nomQlFSihT1FkG0SBWbd8UCkFNhpY2zL2dS0/++WxaLsVKEnTM1
-         23NA==
-X-Gm-Message-State: AOAM531tPJom2G0MDM53FGa+zdyWrszMs43hE7MAdTTDkkj0+TZgo+O+
-        CxCrQrxFspRdl0YYtRYZ/hVgo18wmGJxDx5VV5Mqag==
-X-Google-Smtp-Source: ABdhPJzYbY/R0qqrV0pXjUABpIJ7ACdERRMeCz+5DyaWf4VP+kWWFYuoNa0frLSCJSlRglFL14LyI/CnlB0EiIs4wI4=
-X-Received: by 2002:a17:906:bc8e:: with SMTP id lv14mr35714177ejb.418.1620800982974;
- Tue, 11 May 2021 23:29:42 -0700 (PDT)
+        Wed, 12 May 2021 02:18:03 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Fg4Hn3NVKzCr03;
+        Wed, 12 May 2021 14:14:13 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 12 May 2021 14:16:44 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <support.opensource@diasemi.com>, <lee.jones@linaro.org>,
+        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] mfd: da9052/stmpe: Add and modify MODULE_DEVICE_TABLE
+Date:   Wed, 12 May 2021 14:33:46 +0800
+Message-ID: <1620801226-18474-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-References: <162042787450.1202325.5718541949681409566.stgit@dwillia2-desk3.amr.corp.intel.com>
- <162042790793.1202325.13507889482183963289.stgit@dwillia2-desk3.amr.corp.intel.com>
- <20210510155615.000001fc@Huawei.com>
-In-Reply-To: <20210510155615.000001fc@Huawei.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 11 May 2021 23:29:32 -0700
-Message-ID: <CAPcyv4hhYJsTaRbCXKQaHWw8KwfOFxa-pG4x2r8HCYqVTshZCA@mail.gmail.com>
-Subject: Re: [PATCH 5/8] cxl/acpi: Introduce ACPI0017 driver and cxl_root
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     linux-cxl@vger.kernel.org, Linux PCI <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 7:58 AM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
->
-> On Fri, 7 May 2021 15:51:47 -0700
-> Dan Williams <dan.j.williams@intel.com> wrote:
->
-> > While CXL builds upon the PCI software model for dynamic enumeration and
-> > control, a static platform component is required to bootstrap the CXL
-> > memory layout. In addition to identifying the host bridges ACPI is
-> > responsible for enumerating the CXL memory space that can be addressed
-> > by decoders. This is similar to the requirement for ACPI to publish
-> > resources reported by _CRS for PCI host bridges.
-> >
-> > Introduce the cxl_root object as an abstract "port" into the CXL.mem
-> > address space described by HDM decoders identified by the ACPI
-> > CEDT.CHBS.
-> >
-> > For now just establish the initial boilerplate and sysfs attributes, to
-> > be followed by enumeration of the ports within the host bridge.
-> >
-> > Note the allocation of CXL core device objects is split into separate
-> > alloc and add steps in order to separate the alloc error path (kfree())
-> > from the device add error path (put_device()).
-> >
-> > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
->
-> Hi Dan
->
-> Just one bit in here that confused me (assuming I'm reading the code correctly).
-> You have is_visible for the dev_attr_supports_pmem etc to only show them if
-> the particular space supports that memory type. That's fine. You also have
-> the actual sysfs function checking the same flag to decide to return "1" or "0"
-> which would also be fine, but in combination it's rather odd as the sysfs
-> read function can never return "0" (sysfs attribute isn't visible in that
-> condition). Probably deserves at least a comment.
+This patch adds/modifies MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
-Ok.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ drivers/mfd/da9052-i2c.c | 1 +
+ drivers/mfd/stmpe-i2c.c  | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-That was deliberate since it's trivial to code and allows the
-visibility policy to change without needing to go audit the attributes
-that assumed invisibility. However, yes, it deserves a comment to save
-brain cycles with that "hmm, that's odd" in the future.
+diff --git a/drivers/mfd/da9052-i2c.c b/drivers/mfd/da9052-i2c.c
+index 47556d2d..8ebfc7b 100644
+--- a/drivers/mfd/da9052-i2c.c
++++ b/drivers/mfd/da9052-i2c.c
+@@ -113,6 +113,7 @@ static const struct i2c_device_id da9052_i2c_id[] = {
+ 	{"da9053-bc", DA9053_BC},
+ 	{}
+ };
++MODULE_DEVICE_TABLE(i2c, da9052_i2c_id);
+ 
+ #ifdef CONFIG_OF
+ static const struct of_device_id dialog_dt_ids[] = {
+diff --git a/drivers/mfd/stmpe-i2c.c b/drivers/mfd/stmpe-i2c.c
+index 61aa020..cd2f452 100644
+--- a/drivers/mfd/stmpe-i2c.c
++++ b/drivers/mfd/stmpe-i2c.c
+@@ -109,7 +109,7 @@ static const struct i2c_device_id stmpe_i2c_id[] = {
+ 	{ "stmpe2403", STMPE2403 },
+ 	{ }
+ };
+-MODULE_DEVICE_TABLE(i2c, stmpe_id);
++MODULE_DEVICE_TABLE(i2c, stmpe_i2c_id);
+ 
+ static struct i2c_driver stmpe_i2c_driver = {
+ 	.driver = {
+-- 
+2.6.2
 
-> This also needs some documentation for the new sysfs ABI
-> (Documentation/ABI/...) but that can be in a separate patch.
-
-True.
-
->
-> Otherwise looks good to me.
-
-Thanks.
