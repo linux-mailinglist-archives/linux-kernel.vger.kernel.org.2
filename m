@@ -2,150 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 168DD37BACF
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 12:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 039B637BB03
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 12:43:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230326AbhELKi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 06:38:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24628 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230247AbhELKi2 (ORCPT
+        id S230182AbhELKoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 06:44:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230096AbhELKoK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 06:38:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620815840;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xOVMN72sKeKCS1PFdOW/P2Twf1MTO/8asgvKsZIuneY=;
-        b=E7l5wvVmOxqwZjWYbT+mWR+jt/wJk+K7NOOcPNnbVchj2POsYxD96p1JaJllzDAipUYVlI
-        tA36E1c5/UsWbPXfSPBdhWXOT8aeJPNuviG9uiEStzIYGWKhnL/1xI+f3ZI/Av4EIktNP9
-        p05J+RcfNSMCE4tSor9bmkt9cp2MDBU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-19-ZqO7vMrOMTa0rqxr37eUaQ-1; Wed, 12 May 2021 06:37:16 -0400
-X-MC-Unique: ZqO7vMrOMTa0rqxr37eUaQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 53C62802938;
-        Wed, 12 May 2021 10:37:15 +0000 (UTC)
-Received: from pick.home.annexia.org (ovpn-114-114.ams2.redhat.com [10.36.114.114])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 261117770F;
-        Wed, 12 May 2021 10:37:13 +0000 (UTC)
-From:   "Richard W.M. Jones" <rjones@redhat.com>
-To:     miklos@szeredi.hu
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        eblake@redhat.com, libguestfs@redhat.com
-Subject: [PATCH v2] fuse: Allow fallocate(FALLOC_FL_ZERO_RANGE)
-Date:   Wed, 12 May 2021 11:37:04 +0100
-Message-Id: <20210512103704.3505086-2-rjones@redhat.com>
-In-Reply-To: <20210512103704.3505086-1-rjones@redhat.com>
-References: <20210512103704.3505086-1-rjones@redhat.com>
+        Wed, 12 May 2021 06:44:10 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 015F3C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 03:43:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=f9p34mnXe4t5mNvfpROYXG2aTzJ6mgUxTWOmTJUAMYY=; b=eiYeqMjz8mZe0BeBTs7cArM4Jp
+        V4+TuJU0LbHqyl/NILzq4KSVNOEow8n/sQEGPHrpBTXIj3lKOKVXHs3q5dycBwmgtFCrct7JI+lyS
+        YONVSum7V533EwWLKyJttqR8BDtgTS+LaBmjNooEvXa25EnlVYww2c7qO+epPHNMqabuDNQw57Hc8
+        4kPtNgVyLUMKuV2pIXDzX3n/0ikGGnePaX7CkLpUr4cjHqlOp59kCaY0akmT+MQEpXXeiqI3od0NM
+        4spsMAHAlCSYTUtgXPsmFDHWkZ+xYE9+VMw2zpeJsFYUILV0PJ+EZ1EAh+KMljc4NgwI2dvDLWAPQ
+        XqeyuNjg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lgmJU-008BsZ-A2; Wed, 12 May 2021 10:42:07 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D9C5830019C;
+        Wed, 12 May 2021 12:41:58 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A34572040BF80; Wed, 12 May 2021 12:41:58 +0200 (CEST)
+Date:   Wed, 12 May 2021 12:41:58 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     x86@kernel.org, jpoimboe@redhat.com, jbaron@akamai.com,
+        rostedt@goodmis.org, ardb@kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/13] objtool: Rewrite hashtable sizing
+Message-ID: <YJuw9lmr0kGX3vlY@hirez.programming.kicks-ass.net>
+References: <20210506193352.719596001@infradead.org>
+ <20210506194157.452881700@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210506194157.452881700@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-libnbd's nbdfuse utility would like to translate fallocate zero
-requests into NBD_CMD_WRITE_ZEROES.  Currently the fuse module filters
-these out, returning -EOPNOTSUPP.  This commit treats these almost the
-same way as FALLOC_FL_PUNCH_HOLE except not calling
-truncate_pagecache_range.
+On Thu, May 06, 2021 at 09:33:53PM +0200, Peter Zijlstra wrote:
+> @@ -343,6 +360,10 @@ static int read_symbols(struct elf *elf)
+>  
+>  	symbols_nr = symtab->sh.sh_size / symtab->sh.sh_entsize;
+>  
+> +	if (!elf_alloc_hash(symbol, symbols_nr) ||
+> +	    !elf_alloc_hash(symbol_name, symbols_nr))
+> +		return -1;
+> +
+>  	for (i = 0; i < symbols_nr; i++) {
+>  		sym = malloc(sizeof(*sym));
+>  		if (!sym) {
 
-A way to test this is with the following script:
+Ingo ran into the empty file without .symtab case with as-2.36.1, which
+then means we don't even allocate the symbol hashes which then explodes
+later.
 
---------------------
-  #!/bin/bash
-  # Requires fuse >= 3, nbdkit >= 1.8, and latest nbdfuse from
-  # https://gitlab.com/nbdkit/libnbd/-/tree/master/fuse
-  set -e
-  set -x
+The below seems to fix things.
 
-  export output=$PWD/output
-  rm -f test.img $output
-
-  # Create an nbdkit instance that prints the NBD requests seen.
-  nbdkit sh - <<'EOF'
-  case "$1" in
-    get_size) echo 1M ;;
-    can_write|can_trim|can_zero|can_fast_zero) ;;
-    pread) echo "$@" >>$output; dd if=/dev/zero count=$3 iflag=count_bytes ;;
-    pwrite) echo "$@" >>$output; cat >/dev/null ;;
-    trim|zero) echo "$@" >>$output ;;
-    *) exit 2 ;;
-  esac
-  EOF
-
-  # Fuse-mount NBD instance as a file.
-  touch test.img
-  nbdfuse test.img nbd://localhost & sleep 2
-  ls -lh test.img
-
-  # Run a read, write, trim and zero request.
-  dd if=test.img of=/dev/null bs=512 skip=1024 count=1
-  dd if=/dev/zero of=test.img bs=512 skip=2048 count=1
-  fallocate -p -l 512 -o 4096 test.img
-  fallocate -z -l 512 -o 8192 test.img
-
-  # Print the output from the NBD server.
-  cat $output
-
-  # Clean up.
-  fusermount3 -u test.img
-  killall nbdkit
-  rm test.img $output
-  --------------------
-
-which will print:
-
-  pread  4096 524288    # number depends on readahead
-  pwrite  512 0
-  trim  512 4096
-  zero  512 8192 may_trim
-
-The last line indicates that the FALLOC_FL_ZERO_RANGE request was
-successfully passed through by the kernel module to nbdfuse,
-translated to NBD_CMD_WRITE_ZEROES and sent through to the server.
-
-Signed-off-by: Richard W.M. Jones <rjones@redhat.com>
 ---
- fs/fuse/file.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/fs/fuse/file.c b/fs/fuse/file.c
-index 09ef2a4d25ed..22e8e88c78d4 100644
---- a/fs/fuse/file.c
-+++ b/fs/fuse/file.c
-@@ -2907,11 +2907,13 @@ static long fuse_file_fallocate(struct file *file, int mode, loff_t offset,
- 	};
- 	int err;
- 	bool lock_inode = !(mode & FALLOC_FL_KEEP_SIZE) ||
--			   (mode & FALLOC_FL_PUNCH_HOLE);
-+			   (mode & FALLOC_FL_PUNCH_HOLE) ||
-+			   (mode & FALLOC_FL_ZERO_RANGE);
+diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
+index 6942357cd4a2..60bef847ee85 100644
+--- a/tools/objtool/elf.c
++++ b/tools/objtool/elf.c
+@@ -340,25 +340,19 @@ static int read_symbols(struct elf *elf)
+ {
+ 	struct section *symtab, *symtab_shndx, *sec;
+ 	struct symbol *sym, *pfunc;
+-	int symbols_nr, i;
++	int i, symbols_nr = 0;
+ 	char *coldstr;
+ 	Elf_Data *shndx_data = NULL;
+ 	Elf32_Word shndx;
  
- 	bool block_faults = FUSE_IS_DAX(inode) && lock_inode;
+ 	symtab = find_section_by_name(elf, ".symtab");
+-	if (!symtab) {
+-		/*
+-		 * A missing symbol table is actually possible if it's an empty
+-		 * .o file.  This can happen for thunk_64.o.
+-		 */
+-		return 0;
+-	}
+-
+-	symtab_shndx = find_section_by_name(elf, ".symtab_shndx");
+-	if (symtab_shndx)
+-		shndx_data = symtab_shndx->data;
++	if (symtab) {
++		symtab_shndx = find_section_by_name(elf, ".symtab_shndx");
++		if (symtab_shndx)
++			shndx_data = symtab_shndx->data;
  
--	if (mode & ~(FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE))
-+	if (mode & ~(FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE |
-+		     FALLOC_FL_ZERO_RANGE))
- 		return -EOPNOTSUPP;
+-	symbols_nr = symtab->sh.sh_size / symtab->sh.sh_entsize;
++		symbols_nr = symtab->sh.sh_size / symtab->sh.sh_entsize;
++	}
  
- 	if (fm->fc->no_fallocate)
-@@ -2926,7 +2928,8 @@ static long fuse_file_fallocate(struct file *file, int mode, loff_t offset,
- 				goto out;
- 		}
- 
--		if (mode & FALLOC_FL_PUNCH_HOLE) {
-+		if ((mode & FALLOC_FL_PUNCH_HOLE) ||
-+		    (mode & FALLOC_FL_ZERO_RANGE)) {
- 			loff_t endbyte = offset + length - 1;
- 
- 			err = fuse_writeback_range(inode, offset, endbyte);
--- 
-2.31.1
-
+ 	if (!elf_alloc_hash(symbol, symbols_nr) ||
+ 	    !elf_alloc_hash(symbol_name, symbols_nr))
