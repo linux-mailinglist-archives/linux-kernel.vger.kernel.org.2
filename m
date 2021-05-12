@@ -2,118 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CF2737ECD8
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:36:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B82337ECD1
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:36:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384587AbhELUBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 16:01:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355736AbhELS3J (ORCPT
+        id S1353345AbhELUA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 16:00:58 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:53194 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1355079AbhELS1N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 14:29:09 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED460C061345;
-        Wed, 12 May 2021 11:23:20 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id s6so28157681edu.10;
-        Wed, 12 May 2021 11:23:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fKX6JLMddsj2QIsWTB0q5RqXGPJy18yr11an7r8jFDE=;
-        b=fNb8XvX2bdQFsgq//ZiupRvbehV4om2g6KZLv6vMDSvjZwo/79qo4Y7Tct3aEXyxHk
-         SrR4Az+b37RCWN8rSvATI7PEPli2xayIrFM+9lyUwA+NrIcWK/STxRBGca7rB4v5mqbz
-         vXmHrTkhYQsEs/7L72O6NVnc5fwVjbUi4s5za/WYWzOLWh7aWNJNj+Mq1rRvmLdkLYPf
-         NPB2L33UJ2hzXdXwTvommus05b0Fp+dUujhIosfNR7eG8Z0JVk5b065xXn5l52X6ARFT
-         J1348kpRggmlsytyojlPnoF6DPDY+nNR4NbsQzDXiCgxL9lSqiipbRXE9AD0Gm407m/k
-         nAWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=fKX6JLMddsj2QIsWTB0q5RqXGPJy18yr11an7r8jFDE=;
-        b=I5bx5fQfetT/PgcHaZ2KvvfIAF/8O1k1/TjthRDJ9p9loBEpbMvgeapLHaOm63ZiIl
-         k4CoV1AveWMOKmZYuIGST5O1JOMGt31WSy3/QxmvwOkDJ+AGDFFMU5Im5Badb1NcQJiM
-         IHLNOQf0SgVvKqVWPGzKQCrZwtjG9/B6myNBPebJtsuMknGe9pikaH/KYv2u4+29ACeO
-         HlO3m75aGUqYgojlukMWW8aWsEj+0t8Mv3CQYtRd2LzPI2iPVN0qnQ8h7+z/G5ZAacvh
-         6LXRuBzKwrZz25qihPUyTI4CRckYRwOChfqG52Zpwb/POlG4ohQz9Y/tHX5gPMdj/nQr
-         fWow==
-X-Gm-Message-State: AOAM532Q3W/SlpKg2rCLBBsMFNvx1shP5Jmm4OuPC1bdPSd4C0nmYSH5
-        5I2USTb8VlNBeGG621agOGs=
-X-Google-Smtp-Source: ABdhPJz+RMbEAG1HZqNZ29tkXkC2IHm6vt/BlwhGOKWig1DTOhsBrEmUVCdU3FZ77VigkqQOyfukcw==
-X-Received: by 2002:a05:6402:12c6:: with SMTP id k6mr44791644edx.372.1620843799542;
-        Wed, 12 May 2021 11:23:19 -0700 (PDT)
-Received: from gmail.com (0526E777.dsl.pool.telekom.hu. [5.38.231.119])
-        by smtp.gmail.com with ESMTPSA id e4sm296654ejh.98.2021.05.12.11.23.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 11:23:19 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Wed, 12 May 2021 20:23:17 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH tip/core/rcu 10/10] rcu: Fix various typos in comments
-Message-ID: <YJwdFeb825Nzhpo2@gmail.com>
-References: <20210511230244.GA2894061@paulmck-ThinkPad-P17-Gen-1>
- <20210511230336.2894314-10-paulmck@kernel.org>
+        Wed, 12 May 2021 14:27:13 -0400
+Date:   Wed, 12 May 2021 18:26:01 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1620843962;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=gMKXE1uKagYjAdNzad/SCNIV/mJntvL5NyqzVKofiW0=;
+        b=xnzU0aJRWO9C8+i8GJXgfTGBNZVlxYK7sjh9TgNnGgC6HVb5OaYcr6ZWcWXfjAis0gS0nY
+        pXuCeG1ZI6UtTMcQqDbxZ1DNHzF11vGhhg8xwNs/ZngAjPuVMNjqbc6s7srYmJpLyWDArE
+        x3QTVCd0yaaJgYBX4y2NBFhHUZxUv/OxCdJtZ6838LhCP1br3B4gRZmI3ZkjxHM+ilYlx+
+        vuy0SzxeuIrT2R7WBMM2DJaSZhqHcQqMWui5/NZvek7gcflHOnv//Xl23CJqVqNkhGeeRC
+        8wzeScmitU7pN8UXpEiJyZLviPgY262CBn2WXcbepsQvmrSHmgFU5vbJdOpabw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1620843962;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=gMKXE1uKagYjAdNzad/SCNIV/mJntvL5NyqzVKofiW0=;
+        b=KVcdKH5lRKnapONy0TJQIWAGPP0VRkxp3zO/HIydBK09MxoZrjMn7aETRykawGf6Q5iHKf
+        PbBuWVbWlRQAhtCw==
+From:   "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/core] locking: Fix comment typos
+Cc:     Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210511230336.2894314-10-paulmck@kernel.org>
+Message-ID: <162084396182.29796.4910292329768296928.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the locking/core branch of tip:
 
-* Paul E. McKenney <paulmck@kernel.org> wrote:
+Commit-ID:     93d0955e6cf562d02aae37f5f8d98d9d9d16e0d4
+Gitweb:        https://git.kernel.org/tip/93d0955e6cf562d02aae37f5f8d98d9d9d16e0d4
+Author:        Ingo Molnar <mingo@kernel.org>
+AuthorDate:    Wed, 12 May 2021 20:04:28 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Wed, 12 May 2021 20:11:17 +02:00
 
-> From: Ingo Molnar <mingo@kernel.org>
-> 
-> Fix ~12 single-word typos in RCU code comments.
-> 
-> [ paulmck: Apply feedback from Randy Dunlap. ]
-> Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Ingo Molnar <mingo@kernel.org>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> ---
->  kernel/rcu/srcutree.c                                     | 4 ++--
->  kernel/rcu/sync.c                                         | 4 ++--
->  kernel/rcu/tasks.h                                        | 8 ++++----
->  kernel/rcu/tree.c                                         | 4 ++--
->  kernel/rcu/tree.h                                         | 2 +-
->  kernel/rcu/tree_plugin.h                                  | 2 +-
->  .../selftests/rcutorture/formal/srcu-cbmc/src/locks.h     | 2 +-
->  7 files changed, 13 insertions(+), 13 deletions(-)
+locking: Fix comment typos
 
-There's one more I missed.
-
-Thanks,
-
-	Ingo
+A few snuck through.
 
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
 ---
- kernel/rcu/tree.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/lockdep_types.h |  2 +-
+ kernel/futex.c                | 12 ++++++------
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 60ad78560be3..a7dd763a70c3 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3848,7 +3848,7 @@ EXPORT_SYMBOL_GPL(start_poll_synchronize_rcu);
+diff --git a/include/linux/lockdep_types.h b/include/linux/lockdep_types.h
+index 2ec9ff5..3e726ac 100644
+--- a/include/linux/lockdep_types.h
++++ b/include/linux/lockdep_types.h
+@@ -52,7 +52,7 @@ enum lockdep_lock_type {
+  * NR_LOCKDEP_CACHING_CLASSES ... Number of classes
+  * cached in the instance of lockdep_map
   *
-  * If a full RCU grace period has elapsed since the earlier call from
-  * which oldstate was obtained, return @true, otherwise return @false.
-- * If @false is returned, it is the caller's responsibilty to invoke this
-+ * If @false is returned, it is the caller's responsibility to invoke this
-  * function later on until it does return @true.  Alternatively, the caller
-  * can explicitly wait for a grace period, for example, by passing @oldstate
-  * to cond_synchronize_rcu() or by directly invoking synchronize_rcu().
-
+- * Currently main class (subclass == 0) and signle depth subclass
++ * Currently main class (subclass == 0) and single depth subclass
+  * are cached in lockdep_map. This optimization is mainly targeting
+  * on rq->lock. double_rq_lock() acquires this highly competitive with
+  * single depth.
+diff --git a/kernel/futex.c b/kernel/futex.c
+index 4938a00..2f386f0 100644
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -1874,7 +1874,7 @@ futex_proxy_trylock_atomic(u32 __user *pifutex, struct futex_hash_bucket *hb1,
+ 	 * If the caller intends to requeue more than 1 waiter to pifutex,
+ 	 * force futex_lock_pi_atomic() to set the FUTEX_WAITERS bit now,
+ 	 * as we have means to handle the possible fault.  If not, don't set
+-	 * the bit unecessarily as it will force the subsequent unlock to enter
++	 * the bit unnecessarily as it will force the subsequent unlock to enter
+ 	 * the kernel.
+ 	 */
+ 	top_waiter = futex_top_waiter(hb1, key1);
+@@ -2103,7 +2103,7 @@ retry_private:
+ 			continue;
+ 
+ 		/*
+-		 * FUTEX_WAIT_REQEUE_PI and FUTEX_CMP_REQUEUE_PI should always
++		 * FUTEX_WAIT_REQUEUE_PI and FUTEX_CMP_REQUEUE_PI should always
+ 		 * be paired with each other and no other futex ops.
+ 		 *
+ 		 * We should never be requeueing a futex_q with a pi_state,
+@@ -2318,7 +2318,7 @@ retry:
+ }
+ 
+ /*
+- * PI futexes can not be requeued and must remove themself from the
++ * PI futexes can not be requeued and must remove themselves from the
+  * hash bucket. The hash bucket lock (i.e. lock_ptr) is held.
+  */
+ static void unqueue_me_pi(struct futex_q *q)
+@@ -2903,7 +2903,7 @@ no_block:
+ 	 */
+ 	res = fixup_owner(uaddr, &q, !ret);
+ 	/*
+-	 * If fixup_owner() returned an error, proprogate that.  If it acquired
++	 * If fixup_owner() returned an error, propagate that.  If it acquired
+ 	 * the lock, clear our -ETIMEDOUT or -EINTR.
+ 	 */
+ 	if (res)
+@@ -3280,7 +3280,7 @@ static int futex_wait_requeue_pi(u32 __user *uaddr, unsigned int flags,
+ 		 */
+ 		res = fixup_owner(uaddr2, &q, !ret);
+ 		/*
+-		 * If fixup_owner() returned an error, proprogate that.  If it
++		 * If fixup_owner() returned an error, propagate that.  If it
+ 		 * acquired the lock, clear -ETIMEDOUT or -EINTR.
+ 		 */
+ 		if (res)
+@@ -3678,7 +3678,7 @@ void futex_exec_release(struct task_struct *tsk)
+ {
+ 	/*
+ 	 * The state handling is done for consistency, but in the case of
+-	 * exec() there is no way to prevent futher damage as the PID stays
++	 * exec() there is no way to prevent further damage as the PID stays
+ 	 * the same. But for the unlikely and arguably buggy case that a
+ 	 * futex is held on exec(), this provides at least as much state
+ 	 * consistency protection which is possible.
