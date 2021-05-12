@@ -2,63 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8612D37EECF
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 01:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A70E137EED3
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 01:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443140AbhELWQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 18:16:30 -0400
-Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:39477 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1392187AbhELVgv (ORCPT
+        id S1443221AbhELWRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 18:17:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1387867AbhELVtN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 17:36:51 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d61 with ME
-        id 3xbe2500821Fzsu03xbe13; Wed, 12 May 2021 23:35:41 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Wed, 12 May 2021 23:35:41 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        davem@davemloft.net, kuba@kernel.org, david.daney@cavium.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] net: mdio: Fix a double free issue in the .remove function
-Date:   Wed, 12 May 2021 23:35:38 +0200
-Message-Id: <f8ad939e6d5df4cb0273ea71a418a3ca1835338d.1620855222.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Wed, 12 May 2021 17:49:13 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33DE1C061246;
+        Wed, 12 May 2021 14:43:28 -0700 (PDT)
+Date:   Wed, 12 May 2021 23:43:24 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1620855806;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HSbdv1GDdPztZw5zTb9KslOGTnh1tRDArL4XhKvz/ec=;
+        b=PtKwVVKfzJNbyEOwpyCTxHTECuCU4MVf8kxZQYDpX592nPOY9pV/ABQi6nwSn2y9M4dyDd
+        HOTjVjWjjr5SbCP6udeCfm/y45nmeoDKiSbD/fMFh9JQJjH8JXI4agH8pK2vkhVEmLoa1Y
+        KXmI1AwmCcPk0wgfm0iEnXRCkeSzciQYmEd4jdhzSHoELRAbUwMVPq83dbruzvYhwCHbg6
+        o+cKcLdccweyn2gh5VIoKxz5xlRa5zhg71we4ssfFWMdv1Ed4ROwWSPuHQYwrqIvHRS3zC
+        VhtqH2QtlcFATgZAIXzuslczgnHYWj2CrueR9JHdz2GlNY+XcjRKj5+ii/3j+g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1620855806;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HSbdv1GDdPztZw5zTb9KslOGTnh1tRDArL4XhKvz/ec=;
+        b=A4Gb/KNED+5M7zpJuUewsiFOs0wkU5hVfNlRS0Ocv7tLHf1xjZZkpwQviqVyQWpRQ8isNM
+        hPIGcW+d+o1cetAQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     netdev@vger.kernel.org
+Cc:     Juri Lelli <juri.lelli@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>, sassmann@redhat.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH net-next] net: Treat __napi_schedule_irqoff() as
+ __napi_schedule() on PREEMPT_RT
+Message-ID: <20210512214324.hiaiw3e2tzmsygcz@linutronix.de>
+References: <YJofplWBz8dT7xiw@localhost.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YJofplWBz8dT7xiw@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'bus->mii_bus' have been allocated with 'devm_mdiobus_alloc_size()' in the
-probe function. So it must not be freed explicitly or there will be a
-double free.
+__napi_schedule_irqoff() is an optimized version of __napi_schedule()
+which can be used where it is known that interrupts are disabled,
+e.g. in interrupt-handlers, spin_lock_irq() sections or hrtimer
+callbacks.
 
-Remove the incorrect 'mdiobus_free' in the remove function.
+On PREEMPT_RT enabled kernels this assumptions is not true. Force-
+threaded interrupt handlers and spinlocks are not disabling interrupts
+and the NAPI hrtimer callback is forced into softirq context which runs
+with interrupts enabled as well.
 
-Fixes: 379d7ac7ca31 ("phy: mdio-thunder: Add driver for Cavium Thunder SoC MDIO buses.")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Chasing all usage sites of __napi_schedule_irqoff() is a whack-a-mole
+game so make __napi_schedule_irqoff() invoke __napi_schedule() for
+PREEMPT_RT kernels.
+
+The callers of ____napi_schedule() in the networking core have been
+audited and are correct on PREEMPT_RT kernels as well.
+
+Reported-by: Juri Lelli <juri.lelli@redhat.com>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- drivers/net/mdio/mdio-thunder.c | 1 -
- 1 file changed, 1 deletion(-)
+Alternatively __napi_schedule_irqoff() could be #ifdef'ed out on RT and
+an inline provided which invokes __napi_schedule().
 
-diff --git a/drivers/net/mdio/mdio-thunder.c b/drivers/net/mdio/mdio-thunder.c
-index cb1761693b69..822d2cdd2f35 100644
---- a/drivers/net/mdio/mdio-thunder.c
-+++ b/drivers/net/mdio/mdio-thunder.c
-@@ -126,7 +126,6 @@ static void thunder_mdiobus_pci_remove(struct pci_dev *pdev)
- 			continue;
+This was not chosen as it creates #ifdeffery all over the place and with
+the proposed solution the code reflects the documentation consistently
+and in one obvious place.
+
+ net/core/dev.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 222b1d322c969..febb23708184e 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -6501,11 +6501,18 @@ EXPORT_SYMBOL(napi_schedule_prep);
+  * __napi_schedule_irqoff - schedule for receive
+  * @n: entry to schedule
+  *
+- * Variant of __napi_schedule() assuming hard irqs are masked
++ * Variant of __napi_schedule() assuming hard irqs are masked.
++ *
++ * On PREEMPT_RT enabled kernels this maps to __napi_schedule()
++ * because the interrupt disabled assumption might not be true
++ * due to force-threaded interrupts and spinlock substitution.
+  */
+ void __napi_schedule_irqoff(struct napi_struct *n)
+ {
+-	____napi_schedule(this_cpu_ptr(&softnet_data), n);
++	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
++		____napi_schedule(this_cpu_ptr(&softnet_data), n);
++	else
++		__napi_schedule(n);
+ }
+ EXPORT_SYMBOL(__napi_schedule_irqoff);
  
- 		mdiobus_unregister(bus->mii_bus);
--		mdiobus_free(bus->mii_bus);
- 		oct_mdio_writeq(0, bus->register_base + SMI_EN);
- 	}
- 	pci_release_regions(pdev);
 -- 
-2.30.2
+2.31.1
 
