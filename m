@@ -2,172 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4212A37ED23
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:38:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A603F37ED31
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352912AbhELUNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 16:13:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36874 "EHLO
+        id S241486AbhELUNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 16:13:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352810AbhELTAz (ORCPT
+        with ESMTP id S1377319AbhELTDe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 15:00:55 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0815C06138C
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 11:56:58 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id 69-20020a9d0a4b0000b02902ed42f141e1so11301515otg.2
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 11:56:58 -0700 (PDT)
+        Wed, 12 May 2021 15:03:34 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F527C061246
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 11:57:57 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id t4-20020a05683014c4b02902ed26dd7a60so11350767otq.7
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 11:57:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=daynix-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mpQjVx+/QfqR0pn4o8Ju928QdaYbFB0kBBz4UV+mn+0=;
-        b=SO9+8FKxgXRbGu3ebKZVHcMv2fHMN11i9e2GIHiUUEWuipjAgmqzD0xjct7DE0mWko
-         UiElZx9az7Cf9zBMIYrjXkI26jKpsqe+muetUiU9TT4ubLiJ7Ux2XKpdTlN+v8M/IGMj
-         REQo3H1HQaxfYmHZYriH/Csa5rloabyfBbvMXQlorWjEd6fuCPMq0MtzBgM9VaHjYCk4
-         eRy0HntmJkNnOaq9EhaNJc8QIDYR8GfumoBQ46ASk7vsI4lOqiiA2jVmcl7oMyj0iDGh
-         VR8VGIQmPldE6YuSyLDLIzOQKUmrW7Aa3YwKXsZQvH5cvoW2pQRnVFGl+Q/dpOQ+xXk1
-         UKqQ==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=PehLa9MGShjuTsXrSuonmCUzxBSw0r+oW/besiLAOSg=;
+        b=e7QWriUulUNRPB0jJnAJKw/zMmZn8kRRBSywopzp5wcDxq2VWWf3bpHvugikCOY9W7
+         a0kHkr5Jzk42OGM3+lOAtcuS0p0ieGRuKMhb2vlc8V0O/xW/q5D3pDzlFkt0uzQFmD9p
+         nSwAKymo6YI0llaqDyFJQY9dDhKN070USLUjM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mpQjVx+/QfqR0pn4o8Ju928QdaYbFB0kBBz4UV+mn+0=;
-        b=B9dBziips82TPj/qJjyysAokhDW36QgqGR8QiXWJ4ZGGSmxo8qMcmLDX4DMvnRjUAf
-         u6JOix0i2KiDEphNjrC4NlJvc/SBZzEvWRaqm7j4R6G9cKAp7w76MdN1v1bB7TQ14zqD
-         tLPzX5BM4Muxl4HtbZzML3PKr9XXkA91tb3gjdHqxcpPTw+Y3U7a/ux020ftK3DmKYXy
-         QfA7VJ6M9zH2IoW5BWLQA8B4jt1gKtwkaZf/GTwxmLM6Pe83WzbcW2kmLiia4HmT4Zcf
-         wtaJ9fyv8ENI/fHO3cFcq/mYlMNtwLxlBD755BJKQ5QI+wiQKoW4E2xYKFt5Vxhpb9Fk
-         e0rA==
-X-Gm-Message-State: AOAM532PXo6rOmsaAZeND0J7J/HCqpPHbA029lMpL/ZIq6R7xLczpKmT
-        wxCcqh9cxAxzdHn1LFqs8HQ51lgZRUtcwy7zUtv6eA==
-X-Google-Smtp-Source: ABdhPJwoj7rGQhAWz07iMzr5AvnqbEBRfn+tnercciMQG8rZChJyhzYEf595qy8/+DcEpmjtdLdZvMOxhvdTwTmumG4=
-X-Received: by 2002:a9d:8ce:: with SMTP id 72mr33114920otf.220.1620845817949;
- Wed, 12 May 2021 11:56:57 -0700 (PDT)
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=PehLa9MGShjuTsXrSuonmCUzxBSw0r+oW/besiLAOSg=;
+        b=feslukjmxzg59xgbyViyVsTi3Fvrsbu6ZUgVXe0lICGj95qtB3wY9YapZ1z9lkhkyB
+         EGywt91flizl4U2aLIczYA/PGdtiU8j+E+PXv6iCPD9TvNgOHfhbfqLzDotc06FK7LFu
+         zc0psoSOSDiXd7uS9URhvHsZHPD6wXRGh8bNYvbCY0xsX/E9Ew6yfVETcCXHzYhvih1f
+         v6LVOz36Tua5qPxIMdhXvZ48uP7n7mwbGGSy7AO0bGnTh9/jTSTNlUGrKi8n/0WJIST7
+         z+dJ8jz7p7js88xuqxzYKEOg0y6ZlDVs2P2DWQxglPjrtOW9PmvIUDg9rMtavIwZiaoE
+         V4bA==
+X-Gm-Message-State: AOAM533QhGD+kq6Opdl/4kxyhR+30gedtenuvykQc1gXSFs2GlXh3JIt
+        QAWLHaDVn9VX+pnd7zE0mSbHdxRXtE6AFEIGfGBP8g==
+X-Google-Smtp-Source: ABdhPJzBOj/82oAh5sBucFDlICY1aaY8WRL1s5yQq3y7rEs/5jiHV7d0KyTPx5JmEzraeDWWvfK+qDFF5VxaUmj9mUE=
+X-Received: by 2002:a9d:1ea9:: with SMTP id n38mr32942611otn.233.1620845876668;
+ Wed, 12 May 2021 11:57:56 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 12 May 2021 11:57:56 -0700
 MIME-Version: 1.0
-References: <20210511044253.469034-1-yuri.benditovich@daynix.com>
- <20210511044253.469034-3-yuri.benditovich@daynix.com> <CA+FuTSdfA6sT68AJNpa=VPBdwRFHvEY+=C-B_mS=y=WMpTyc=Q@mail.gmail.com>
- <CAOEp5OcV-YmPFoewuCHg=ADFQ4BmVL5ioMgh3qVjUGk9mauejg@mail.gmail.com> <CA+FuTSes20+KKhnNFHyOa_E0dp-RgUNFRj-YLHvjpqqL75zDXQ@mail.gmail.com>
-In-Reply-To: <CA+FuTSes20+KKhnNFHyOa_E0dp-RgUNFRj-YLHvjpqqL75zDXQ@mail.gmail.com>
-From:   Yuri Benditovich <yuri.benditovich@daynix.com>
-Date:   Wed, 12 May 2021 21:56:46 +0300
-Message-ID: <CAOEp5OcYL8E__wpHgbFkkJJ98FG_zjhKMBLnCJym8CjkHby3eA@mail.gmail.com>
-Subject: Re: [PATCH 2/4] virtio-net: add support of UDP segmentation (USO) on
- the host
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        Yan Vugenfirer <yan@daynix.com>
+In-Reply-To: <20210512082220.7137-1-rojay@codeaurora.org>
+References: <20210512082220.7137-1-rojay@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Wed, 12 May 2021 11:57:56 -0700
+Message-ID: <CAE-0n52D-K1T0QgxA-S7BXxE3Qk807F9edNyR+2RL4YxRyigMg@mail.gmail.com>
+Subject: Re: [PATCH V10] i2c: i2c-qcom-geni: Add shutdown callback for i2c
+To:     Roja Rani Yarubandi <rojay@codeaurora.org>, wsa@kernel.org
+Cc:     dianders@chromium.org, saiprakash.ranjan@codeaurora.org,
+        gregkh@linuxfoundation.org, mka@chromium.org,
+        skananth@codeaurora.org, msavaliy@qti.qualcomm.com,
+        skakit@codeaurora.org, rnayak@codeaurora.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sumit.semwal@linaro.org, linux-media@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 5:33 PM Willem de Bruijn
-<willemdebruijn.kernel@gmail.com> wrote:
+Quoting Roja Rani Yarubandi (2021-05-12 01:22:20)
+> If the hardware is still accessing memory after SMMU translation
+> is disabled (as part of smmu shutdown callback), then the
+> IOVAs (I/O virtual address) which it was using will go on the bus
+> as the physical addresses which will result in unknown crashes
+> like NoC/interconnect errors.
 >
-> On Wed, May 12, 2021 at 2:10 AM Yuri Benditovich
-> <yuri.benditovich@daynix.com> wrote:
-> >
-> > On Tue, May 11, 2021 at 8:48 PM Willem de Bruijn
-> > <willemdebruijn.kernel@gmail.com> wrote:
-> > >
-> > > On Tue, May 11, 2021 at 12:43 AM Yuri Benditovich
-> > > <yuri.benditovich@daynix.com> wrote:
-> > > >
-> > > > Large UDP packet provided by the guest with GSO type set to
-> > > > VIRTIO_NET_HDR_GSO_UDP_L4 will be divided to several UDP
-> > > > packets according to the gso_size field.
-> > > >
-> > > > Signed-off-by: Yuri Benditovich <yuri.benditovich@daynix.com>
-> > > > ---
-> > > >  include/linux/virtio_net.h | 5 +++++
-> > > >  1 file changed, 5 insertions(+)
-> > > >
-> > > > diff --git a/include/linux/virtio_net.h b/include/linux/virtio_net.h
-> > > > index b465f8f3e554..4ecf9a1ca912 100644
-> > > > --- a/include/linux/virtio_net.h
-> > > > +++ b/include/linux/virtio_net.h
-> > > > @@ -51,6 +51,11 @@ static inline int virtio_net_hdr_to_skb(struct sk_buff *skb,
-> > > >                         ip_proto = IPPROTO_UDP;
-> > > >                         thlen = sizeof(struct udphdr);
-> > > >                         break;
-> > > > +               case VIRTIO_NET_HDR_GSO_UDP_L4:
-> > > > +                       gso_type = SKB_GSO_UDP_L4;
-> > > > +                       ip_proto = IPPROTO_UDP;
-> > > > +                       thlen = sizeof(struct udphdr);
-> > > > +                       break;
-> > >
-> > > If adding a new VIRTIO_NET_HDR type I suggest adding separate IPv4 and
-> > > IPv6 variants, analogous to VIRTIO_NET_HDR_GSO_TCPV[46]. To avoid
-> > > having to infer protocol again, as for UDP fragmentation offload (the
-> > > retry case below this code).
-> >
-> > Thank you for denoting this important point of distinguishing between v4 and v6.
-> > Let's try to take a deeper look to see what is the correct thing to do
-> > and please correct me if I'm wrong:
-> > 1. For USO we do not need to guess the protocol as it is used with
-> > VIRTIO_NET_HDR_F_NEEDS_CSUM (unlike UFO)
+> So, implement shutdown callback for i2c driver to suspend the bus
+> during system "reboot" or "shutdown".
 >
-> Enforcing that is a good start. We should also enforce that
-> skb->protocol is initialized to one of htons(ETH_P_IP) or
-> htons(ETH_P_IPV6), so that it does not have to be inferred by parsing.
+> Fixes: 37692de5d523 ("i2c: i2c-qcom-geni: Add bus driver for the Qualcomm GENI I2C controller")
+> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
+> ---
+> Changes in V2:
+>  - As per Stephen's comments added seperate function for stop transfer,
+>    fixed minor nitpicks.
+>  - As per Stephen's comments, changed commit text.
+>
+> Changes in V3:
+>  - As per Stephen's comments, squashed patch 1 into patch 2, added Fixes tag.
+>  - As per Akash's comments, included FIFO case in stop_xfer, fixed minor nitpicks.
+>
+> Changes in V4:
+>  - As per Stephen's comments cleaned up geni_i2c_stop_xfer function,
+>    added dma_buf in geni_i2c_dev struct to call i2c_put_dma_safe_msg_buf()
+>    from other functions, removed "iova" check in geni_se_rx_dma_unprep()
+>    and geni_se_tx_dma_unprep() functions.
+>  - Added two helper functions geni_i2c_rx_one_msg_done() and
+>    geni_i2c_tx_one_msg_done() to unwrap the things after rx/tx FIFO/DMA
+>    transfers, so that the same can be used in geni_i2c_stop_xfer() function
+>    during shutdown callback. Updated commit text accordingly.
+>  - Checking whether it is tx/rx transfer using I2C_M_RD which is valid for both
+>    FIFO and DMA cases, so dropped DMA_RX_ACTIVE and DMA_TX_ACTIVE bit checking
+>
+> Changes in V5:
+>  - As per Stephen's comments, added spin_lock_irqsave & spin_unlock_irqsave in
+>    geni_i2c_stop_xfer() function.
+>
+> Changes in V6:
+>  - As per Stephen's comments, taken care of unsafe lock order in
+>    geni_i2c_stop_xfer().
+>  - Moved spin_lock/unlock to geni_i2c_rx_msg_cleanup() and
+>    geni_i2c_tx_msg_cleanup() functions.
+>
+> Changes in V7:
+>  - No changes
+>
+> Changes in V8:
+>  - As per Wolfram Sang comment, removed goto and modified geni_i2c_stop_xfer()
+>    accordingly.
+>
+> Changes in V9:
+>  - Fixed possbile race by protecting gi2c->cur and calling geni_i2c_abort_xfer()
+>    with adding another parameter to differentiate from which sequence is the
+>    geni_i2c_abort_xfer() called and handle the spin_lock/spin_unlock accordingly
+>    inside geni_i2c_abort_xfer(). For this added two macros ABORT_XFER and
+>    STOP_AND_ABORT_XFER.
+>  - Added a bool variable "stop_xfer" in geni_i2c_dev struct, used to put stop
+>    to upcoming geni_i2c_rx_one_msg() and geni_i2c_tx_one_msg() calls once we
+>    recieve the shutdown call.
+>  - Added gi2c->cur == NULL check in geni_i2c_irq() to not to process the irq
+>    even if any transfer is queued and shutdown to HW received.
+>
+> Changes in V10:
+>  - As per Stephen's comments, removed ongoing transfers flush and only
+>    suspending i2c bus in shutdown callback.
+>  - Also removed all other changes which have been made for ongoing transfers
+>    flush, handling race issues etc., during shutdown callback.
+>  - Updated commit text accordingly.
+>
+>  drivers/i2c/busses/i2c-qcom-geni.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+> diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
+> index 214b4c913a13..277ab7e7dd51 100644
+> --- a/drivers/i2c/busses/i2c-qcom-geni.c
+> +++ b/drivers/i2c/busses/i2c-qcom-geni.c
+> @@ -650,6 +650,14 @@ static int geni_i2c_remove(struct platform_device *pdev)
+>         return 0;
+>  }
+>
+> +static void geni_i2c_shutdown(struct platform_device *pdev)
+> +{
+> +       struct geni_i2c_dev *gi2c = platform_get_drvdata(pdev);
+> +
+> +       if (!pm_runtime_status_suspended(gi2c->se.dev))
+> +               pm_runtime_set_suspended(gi2c->se.dev);
 
-As this feature is new and is not used in any public release of any
-misbehaving driver, probably it is enough to state in the spec that
-VIRTIO_NET_HDR_F_NEEDS_CSUM is required for USO packets.
-The spec states that the USO feature requires checksumming feature.
+What was wrong with my suggested approach of telling i2c core that the
+bus is suspended? This looks to do a bunch of work right before we're
+shutting down, when it would be simpler to just mark the bus as
+suspended and have it block future transactions and spit out a warning.
 
->
-> These requirements were not enforced for previous values, and cannot
-> be introduced afterwards, which has led to have to add that extra code
-> to handle these obscure edge cases.
->
-> I agree that with well behaved configurations, the need for separate
-> _V4 and _V6 variants is not needed.
->
-> > and the USO packets
-> > transmitted by the guest are under the same clause as both
-> > VIRTIO_NET_HDR_GSO_TCP, i.e. under if (hdr->flags &
-> > VIRTIO_NET_HDR_F_NEEDS_CSUM) {
-> > 2. If we even define VIRTIO_NET_HDR_GSO_UDPv4_L4 and
-> > VIRTIO_NET_HDR_GSO_UDPv6_L4 - both will be translated to
-> > SKB_GSO_UDP_L4, so this information is immediately lost (the code will
-> > look like:
-> > case VIRTIO_NET_HDR_GSO_UDP4_L4: case VIRTIO_NET_HDR_GSO_UDP6_L4
-> >     gso_type = SKB_GSO_UDP;
-> >
-> > 3. When we will define the respective guest features (like
-> > VIRTIO_NET_F_HOST_USO4 VIRTIO_NET_F_HOST_USO6) we will need to
-This is my typo: VIRTIO_NET_F_GUEST_USO4...
-> > recreate the virtio_net header from the skb when both v4 and v6 have
-> > the same SKB_GSO_UDP_L4, (see virtio_net_hdr_from_skb) and I'm not
-> > sure whether somebody needs the exact v4 or v6 information on guest RX
-> > path.
->
-> FWIW, it is good to keep in mind that virtio_net_hdr is also used
-> outside virtio, in both ingress and egress paths.
+I do see that we should be marking it suspended/resumed during runtime
+suspend/resume. I'm also confused if during system wide suspend/resume
+we actually do anything in this driver. Is runtime suspend called for
+system wide suspend?
 
-Can you please elaborate in which scenarios we do not have any virtio
-device in path but need virtio_net_hdr?
+----8<----
+diff --git a/drivers/i2c/busses/i2c-qcom-geni.c
+b/drivers/i2c/busses/i2c-qcom-geni.c
+index 214b4c913a13..ca12d348336b 100644
+--- a/drivers/i2c/busses/i2c-qcom-geni.c
++++ b/drivers/i2c/busses/i2c-qcom-geni.c
+@@ -656,6 +656,7 @@ static int __maybe_unused
+geni_i2c_runtime_suspend(struct device *dev)
+ 	struct geni_i2c_dev *gi2c = dev_get_drvdata(dev);
 
->
-> > 4. What is completely correct is that when we will start working with
-> > the guest RX path we will need to define something like NETIF_F_USO4
-> > and NETIF_F_USO6 and configure them according to exact guest offload
-> > capabilities.
-> > Do you agree?
->
-> I don't immediately see the need for advertising this device feature
-> on a per-protocol basis. Can you elaborate?
+ 	disable_irq(gi2c->irq);
++	i2c_mark_adapter_suspended(&gi2c->adap);
+ 	ret = geni_se_resources_off(&gi2c->se);
+ 	if (ret) {
+ 		enable_irq(gi2c->irq);
+@@ -682,6 +683,7 @@ static int __maybe_unused
+geni_i2c_runtime_resume(struct device *dev)
+ 		return ret;
 
-Separate offload setting (controlled by the guest) for v4 and v6 in
-guest RX path is mandatory, at least Windows always requires this for
-any offload.
-In this case it seems easy to have also virtio-net device features to
-be indicated separately (the TAP/TUN should report its capabilities).
+ 	enable_irq(gi2c->irq);
++	i2c_mark_adapter_resumed(&gi2c->adap);
+ 	gi2c->suspended = 0;
+ 	return 0;
+ }
