@@ -2,172 +2,368 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9357437B752
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 09:59:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9C8F37B762
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 10:04:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbhELIAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 04:00:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54330 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230019AbhELIAw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 04:00:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 01D5F613C9
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 07:59:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620806385;
-        bh=/jbrQezTL8G/ui6Q5vjZ+00LR2hUCslIdKJk+xNCZgY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dqUIkOHH4A0b11/IJHaaCwCI3sbOltoRHV8RLoBhbUg9wrc3JeVK66bUge4gOmfTd
-         VI27E3h4zuKvm1vDW0+zxiofKuQ5ewAAf7whkg5H0wHe/Rr13KUwFx49LunR1lpJWH
-         iatdg7FSlp5qY1qV+R9Vfn0MyaSWy4MM0N8zLi5FuezPQ7Ji/m2F8aQaQWpzuFGTxb
-         BcPUKT2uSJ79VOF0N/OUYEHCrFcO3bcmUlSnDIBL4fj8feXm7pmQLlU04VX3TaSatn
-         vBLdvuXGKRD6MC93+ifGXhhJqUOwpgbvDAht5+lfPUDjGxGLeCh7HnIwzHJt9zn5Js
-         kuGyGnp6XjrdA==
-Received: by mail-oi1-f180.google.com with SMTP id x15so7750395oic.13
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 00:59:44 -0700 (PDT)
-X-Gm-Message-State: AOAM533L+oI2J1rBbBT3SjNACt69p1E9Z3w69uboXZt+oFrdnRwWWMfi
-        bEQxCDtnEhvCoUcAg1bjw1aWt783BFWjBS2lm5Y=
-X-Google-Smtp-Source: ABdhPJwiXQK1n/wBurFk/qMzA9zSmBQYyMp/smLZRpZ5mb6HG5OLIvzlMqKlDQM6+S8vLVEBuAav/8FG2yoiJ7+A87A=
-X-Received: by 2002:aca:4056:: with SMTP id n83mr6713227oia.47.1620806384150;
- Wed, 12 May 2021 00:59:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210511100550.28178-1-rppt@kernel.org> <CAMj1kXFHLkmgZKEb8BtgGt6GQ93Qd+yv6NtiCvtgX0ex9wSeyw@mail.gmail.com>
- <YJuE5O8nWNc1TGZ6@linux.ibm.com>
-In-Reply-To: <YJuE5O8nWNc1TGZ6@linux.ibm.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 12 May 2021 09:59:33 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXE3G5v=1HFvGoW9weArBLpR_rDyAj0TZxTsZfdrNfgpyw@mail.gmail.com>
-Message-ID: <CAMj1kXE3G5v=1HFvGoW9weArBLpR_rDyAj0TZxTsZfdrNfgpyw@mail.gmail.com>
-Subject: Re: [PATCH v4 0/4] arm64: drop pfn_valid_within() and simplify pfn_valid()
-To:     Mike Rapoport <rppt@linux.ibm.com>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
+        id S230183AbhELIFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 04:05:43 -0400
+Received: from conuserg-07.nifty.com ([210.131.2.74]:53036 "EHLO
+        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229968AbhELIFh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 04:05:37 -0400
+X-Greylist: delayed 345 seconds by postgrey-1.27 at vger.kernel.org; Wed, 12 May 2021 04:05:34 EDT
+Received: from grover.RMN.KIBA.LAB.jp (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-07.nifty.com with ESMTP id 14C7vbPs028192;
+        Wed, 12 May 2021 16:57:38 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 14C7vbPs028192
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1620806261;
+        bh=wIUNhcOB6btFOL0gSpr92RlYruAqiaKJ+SP4MHn4OAA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=MEPfaL+dgaQHelu1aORa4dkshKUoXyML9ToegfF2X/+DDlDkT2NTxvVtRobsDkp3y
+         w6q0OMUPClkMLevvjlJySVaAGk9chQn5JmHYb+Sby+ocz18EmUyh5EfwgbghPbCUMs
+         BfqHu2GczlJunlpKBWtiGYnb5THa+fwMAHT17a+4GK1J+KWFOc18MvDzUYfMdu9apT
+         X6Smfz3LDGjObml+5VUPVmYQNjXkkTpqKOuY3LDfkxKy7PEEqqJdMx9ujR6UWsgJpM
+         n0Q+gHtNpnXSYPWFtp4AhWmiwdi6gcYpdR3mkS/pbX/h/3dXftILrjdVKvAqW4utJB
+         bGXpxDJOBDv8Q==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Brian Cain <bcain@codeaurora.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
+        Chris Zankel <chris@zankel.net>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Greentime Hu <green.hu@gmail.com>, Guo Ren <guoren@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Helge Deller <deller@gmx.de>, Ingo Molnar <mingo@redhat.com>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Jeff Dike <jdike@addtoit.com>, Jonas Bonn <jonas@southpole.se>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Matt Turner <mattst88@gmail.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Michal Simek <monstr@monstr.eu>,
+        Nick Hu <nickhu@andestech.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rich Felker <dalias@libc.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Richard Weinberger <richard@nod.at>,
+        Russell King <linux@armlinux.org.uk>,
+        Stafford Horne <shorne@gmail.com>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
         Will Deacon <will@kernel.org>,
-        kvmarm <kvmarm@lists.cs.columbia.edu>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        linuxppc-dev@lists.ozlabs.org, openrisc@lists.librecores.org,
+        sparclinux@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp,
+        x86@kernel.org
+Subject: [PATCH 1/5] kbuild: require all architectures to have arch/$(SRCARCH)/Kbuild
+Date:   Wed, 12 May 2021 16:57:25 +0900
+Message-Id: <20210512075729.60291-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 12 May 2021 at 09:34, Mike Rapoport <rppt@linux.ibm.com> wrote:
->
-> On Wed, May 12, 2021 at 09:00:02AM +0200, Ard Biesheuvel wrote:
-> > On Tue, 11 May 2021 at 12:05, Mike Rapoport <rppt@kernel.org> wrote:
-> > >
-> > > From: Mike Rapoport <rppt@linux.ibm.com>
-> > >
-> > > Hi,
-> > >
-> > > These patches aim to remove CONFIG_HOLES_IN_ZONE and essentially hardwire
-> > > pfn_valid_within() to 1.
-> > >
-> > > The idea is to mark NOMAP pages as reserved in the memory map and restore
-> > > the intended semantics of pfn_valid() to designate availability of struct
-> > > page for a pfn.
-> > >
-> > > With this the core mm will be able to cope with the fact that it cannot use
-> > > NOMAP pages and the holes created by NOMAP ranges within MAX_ORDER blocks
-> > > will be treated correctly even without the need for pfn_valid_within.
-> > >
-> > > The patches are boot tested on qemu-system-aarch64.
-> > >
-> >
-> > Did you use EFI boot when testing this? The memory map is much more
-> > fragmented in that case, so this would be a good data point.
->
-> Right, something like this:
->
+arch/$(SRCARCH)/Kbuild is useful for Makefile cleanups because you can
+use the obj-y syntax.
 
-Yes, although it is not always that bad.
+Add an empty file if it is missing in arch/$(SRCARCH)/.
 
-> [    0.000000] Early memory node ranges
-> [    0.000000]   node   0: [mem 0x0000000040000000-0x00000000ffffbfff]
-> [    0.000000]   node   0: [mem 0x00000000ffffc000-0x00000000ffffffff]
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-This is allocated below 4 GB by the firmware, for reasons that are
-only valid on x86 (where some of the early boot chain is IA32 only)
+ Makefile               | 2 +-
+ arch/alpha/Kbuild      | 1 +
+ arch/arc/Makefile      | 3 ---
+ arch/arm/Makefile      | 1 -
+ arch/arm64/Makefile    | 1 -
+ arch/csky/Kbuild       | 1 +
+ arch/h8300/Kbuild      | 1 +
+ arch/hexagon/Kbuild    | 1 +
+ arch/ia64/Kbuild       | 1 +
+ arch/microblaze/Kbuild | 1 +
+ arch/mips/Makefile     | 3 ---
+ arch/nds32/Kbuild      | 1 +
+ arch/nios2/Kbuild      | 1 +
+ arch/openrisc/Makefile | 1 -
+ arch/parisc/Kbuild     | 1 +
+ arch/powerpc/Makefile  | 3 ---
+ arch/riscv/Makefile    | 1 -
+ arch/s390/Makefile     | 3 ---
+ arch/sh/Kbuild         | 1 +
+ arch/sparc/Makefile    | 3 ---
+ arch/um/Kbuild         | 1 +
+ arch/x86/Makefile      | 3 ---
+ arch/xtensa/Kbuild     | 1 +
+ 23 files changed, 13 insertions(+), 23 deletions(-)
+ create mode 100644 arch/alpha/Kbuild
+ create mode 100644 arch/csky/Kbuild
+ create mode 100644 arch/h8300/Kbuild
+ create mode 100644 arch/hexagon/Kbuild
+ create mode 100644 arch/ia64/Kbuild
+ create mode 100644 arch/microblaze/Kbuild
+ create mode 100644 arch/nds32/Kbuild
+ create mode 100644 arch/nios2/Kbuild
+ create mode 100644 arch/parisc/Kbuild
+ create mode 100644 arch/sh/Kbuild
+ create mode 100644 arch/um/Kbuild
+ create mode 100644 arch/xtensa/Kbuild
 
-> [    0.000000]   node   0: [mem 0x0000000100000000-0x00000004386fffff]
-> [    0.000000]   node   0: [mem 0x0000000438700000-0x000000043899ffff]
-> [    0.000000]   node   0: [mem 0x00000004389a0000-0x00000004389bffff]
-> [    0.000000]   node   0: [mem 0x00000004389c0000-0x0000000438b5ffff]
-> [    0.000000]   node   0: [mem 0x0000000438b60000-0x000000043be3ffff]
-> [    0.000000]   node   0: [mem 0x000000043be40000-0x000000043becffff]
-> [    0.000000]   node   0: [mem 0x000000043bed0000-0x000000043bedffff]
-> [    0.000000]   node   0: [mem 0x000000043bee0000-0x000000043bffffff]
-> [    0.000000]   node   0: [mem 0x000000043c000000-0x000000043fffffff]
->
-> This is a pity really, because I don't see a fundamental reason for those
-> tiny holes all over the place.
->
+diff --git a/Makefile b/Makefile
+index 15b6476d0f89..7df040b1b023 100644
+--- a/Makefile
++++ b/Makefile
+@@ -658,7 +658,7 @@ endif
+ 
+ ifeq ($(KBUILD_EXTMOD),)
+ # Objects we will link into vmlinux / subdirs we need to visit
+-core-y		:= init/ usr/
++core-y		:= init/ usr/ arch/$(SRCARCH)/
+ drivers-y	:= drivers/ sound/
+ drivers-$(CONFIG_SAMPLES) += samples/
+ drivers-$(CONFIG_NET) += net/
+diff --git a/arch/alpha/Kbuild b/arch/alpha/Kbuild
+new file mode 100644
+index 000000000000..a4e40e534e6a
+--- /dev/null
++++ b/arch/alpha/Kbuild
+@@ -0,0 +1 @@
++# SPDX-License-Identifier: GPL-2.0-only
+diff --git a/arch/arc/Makefile b/arch/arc/Makefile
+index 4392c9c189c4..3e6d4b84797f 100644
+--- a/arch/arc/Makefile
++++ b/arch/arc/Makefile
+@@ -85,9 +85,6 @@ KBUILD_LDFLAGS	+= $(ldflags-y)
+ 
+ head-y		:= arch/arc/kernel/head.o
+ 
+-# See arch/arc/Kbuild for content of core part of the kernel
+-core-y		+= arch/arc/
+-
+ # w/o this dtb won't embed into kernel binary
+ core-y		+= arch/arc/boot/dts/
+ 
+diff --git a/arch/arm/Makefile b/arch/arm/Makefile
+index 415c3514573a..173da685a52e 100644
+--- a/arch/arm/Makefile
++++ b/arch/arm/Makefile
+@@ -252,7 +252,6 @@ endif
+ 
+ export	TEXT_OFFSET GZFLAGS MMUEXT
+ 
+-core-y				+= arch/arm/
+ # If we have a machine-specific directory, then include it in the build.
+ core-y				+= $(machdirs) $(platdirs)
+ 
+diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
+index 7ef44478560d..b73c151f3a53 100644
+--- a/arch/arm64/Makefile
++++ b/arch/arm64/Makefile
+@@ -149,7 +149,6 @@ KBUILD_CFLAGS += -DKASAN_SHADOW_SCALE_SHIFT=$(KASAN_SHADOW_SCALE_SHIFT)
+ KBUILD_CPPFLAGS += -DKASAN_SHADOW_SCALE_SHIFT=$(KASAN_SHADOW_SCALE_SHIFT)
+ KBUILD_AFLAGS += -DKASAN_SHADOW_SCALE_SHIFT=$(KASAN_SHADOW_SCALE_SHIFT)
+ 
+-core-y		+= arch/arm64/
+ libs-y		:= arch/arm64/lib/ $(libs-y)
+ libs-$(CONFIG_EFI_STUB) += $(objtree)/drivers/firmware/efi/libstub/lib.a
+ 
+diff --git a/arch/csky/Kbuild b/arch/csky/Kbuild
+new file mode 100644
+index 000000000000..a4e40e534e6a
+--- /dev/null
++++ b/arch/csky/Kbuild
+@@ -0,0 +1 @@
++# SPDX-License-Identifier: GPL-2.0-only
+diff --git a/arch/h8300/Kbuild b/arch/h8300/Kbuild
+new file mode 100644
+index 000000000000..a4e40e534e6a
+--- /dev/null
++++ b/arch/h8300/Kbuild
+@@ -0,0 +1 @@
++# SPDX-License-Identifier: GPL-2.0-only
+diff --git a/arch/hexagon/Kbuild b/arch/hexagon/Kbuild
+new file mode 100644
+index 000000000000..a4e40e534e6a
+--- /dev/null
++++ b/arch/hexagon/Kbuild
+@@ -0,0 +1 @@
++# SPDX-License-Identifier: GPL-2.0-only
+diff --git a/arch/ia64/Kbuild b/arch/ia64/Kbuild
+new file mode 100644
+index 000000000000..a4e40e534e6a
+--- /dev/null
++++ b/arch/ia64/Kbuild
+@@ -0,0 +1 @@
++# SPDX-License-Identifier: GPL-2.0-only
+diff --git a/arch/microblaze/Kbuild b/arch/microblaze/Kbuild
+new file mode 100644
+index 000000000000..a4e40e534e6a
+--- /dev/null
++++ b/arch/microblaze/Kbuild
+@@ -0,0 +1 @@
++# SPDX-License-Identifier: GPL-2.0-only
+diff --git a/arch/mips/Makefile b/arch/mips/Makefile
+index 258234c35a09..4e942b7ef022 100644
+--- a/arch/mips/Makefile
++++ b/arch/mips/Makefile
+@@ -332,9 +332,6 @@ head-y := arch/mips/kernel/head.o
+ libs-y			+= arch/mips/lib/
+ libs-$(CONFIG_MIPS_FP_SUPPORT) += arch/mips/math-emu/
+ 
+-# See arch/mips/Kbuild for content of core part of the kernel
+-core-y += arch/mips/
+-
+ drivers-y			+= arch/mips/crypto/
+ 
+ # suspend and hibernation support
+diff --git a/arch/nds32/Kbuild b/arch/nds32/Kbuild
+new file mode 100644
+index 000000000000..a4e40e534e6a
+--- /dev/null
++++ b/arch/nds32/Kbuild
+@@ -0,0 +1 @@
++# SPDX-License-Identifier: GPL-2.0-only
+diff --git a/arch/nios2/Kbuild b/arch/nios2/Kbuild
+new file mode 100644
+index 000000000000..a4e40e534e6a
+--- /dev/null
++++ b/arch/nios2/Kbuild
+@@ -0,0 +1 @@
++# SPDX-License-Identifier: GPL-2.0-only
+diff --git a/arch/openrisc/Makefile b/arch/openrisc/Makefile
+index 410e7abfac69..c52de526e518 100644
+--- a/arch/openrisc/Makefile
++++ b/arch/openrisc/Makefile
+@@ -42,7 +42,6 @@ endif
+ 
+ head-y 		:= arch/openrisc/kernel/head.o
+ 
+-core-y		+= arch/openrisc/
+ libs-y		+= $(LIBGCC)
+ 
+ PHONY += vmlinux.bin
+diff --git a/arch/parisc/Kbuild b/arch/parisc/Kbuild
+new file mode 100644
+index 000000000000..a4e40e534e6a
+--- /dev/null
++++ b/arch/parisc/Kbuild
+@@ -0,0 +1 @@
++# SPDX-License-Identifier: GPL-2.0-only
+diff --git a/arch/powerpc/Makefile b/arch/powerpc/Makefile
+index 3212d076ac6a..af669aa75b73 100644
+--- a/arch/powerpc/Makefile
++++ b/arch/powerpc/Makefile
+@@ -267,9 +267,6 @@ head-$(CONFIG_PPC_FPU)		+= arch/powerpc/kernel/fpu.o
+ head-$(CONFIG_ALTIVEC)		+= arch/powerpc/kernel/vector.o
+ head-$(CONFIG_PPC_OF_BOOT_TRAMPOLINE)  += arch/powerpc/kernel/prom_init.o
+ 
+-# See arch/powerpc/Kbuild for content of core part of the kernel
+-core-y += arch/powerpc/
+-
+ # Default to zImage, override when needed
+ all: zImage
+ 
+diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+index 3eb9590a0775..c5f359540862 100644
+--- a/arch/riscv/Makefile
++++ b/arch/riscv/Makefile
+@@ -90,7 +90,6 @@ endif
+ 
+ head-y := arch/riscv/kernel/head.o
+ 
+-core-y += arch/riscv/
+ core-$(CONFIG_RISCV_ERRATA_ALTERNATIVE) += arch/riscv/errata/
+ 
+ libs-y += arch/riscv/lib/
+diff --git a/arch/s390/Makefile b/arch/s390/Makefile
+index e443ed9947bd..37b61645694c 100644
+--- a/arch/s390/Makefile
++++ b/arch/s390/Makefile
+@@ -128,9 +128,6 @@ OBJCOPYFLAGS	:= -O binary
+ 
+ head-y		:= arch/s390/kernel/head64.o
+ 
+-# See arch/s390/Kbuild for content of core part of the kernel
+-core-y		+= arch/s390/
+-
+ libs-y		+= arch/s390/lib/
+ drivers-y	+= drivers/s390/
+ 
+diff --git a/arch/sh/Kbuild b/arch/sh/Kbuild
+new file mode 100644
+index 000000000000..a4e40e534e6a
+--- /dev/null
++++ b/arch/sh/Kbuild
+@@ -0,0 +1 @@
++# SPDX-License-Identifier: GPL-2.0-only
+diff --git a/arch/sparc/Makefile b/arch/sparc/Makefile
+index bee99e65fe23..4e65245bc755 100644
+--- a/arch/sparc/Makefile
++++ b/arch/sparc/Makefile
+@@ -58,9 +58,6 @@ endif
+ 
+ head-y                 := arch/sparc/kernel/head_$(BITS).o
+ 
+-# See arch/sparc/Kbuild for the core part of the kernel
+-core-y                 += arch/sparc/
+-
+ libs-y                 += arch/sparc/prom/
+ libs-y                 += arch/sparc/lib/
+ 
+diff --git a/arch/um/Kbuild b/arch/um/Kbuild
+new file mode 100644
+index 000000000000..a4e40e534e6a
+--- /dev/null
++++ b/arch/um/Kbuild
+@@ -0,0 +1 @@
++# SPDX-License-Identifier: GPL-2.0-only
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index c77c5d8a7b3e..4307bf48ec53 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -239,9 +239,6 @@ head-y += arch/x86/kernel/platform-quirks.o
+ 
+ libs-y  += arch/x86/lib/
+ 
+-# See arch/x86/Kbuild for content of core part of the kernel
+-core-y += arch/x86/
+-
+ # drivers-y are linked after core-y
+ drivers-$(CONFIG_MATH_EMULATION) += arch/x86/math-emu/
+ drivers-$(CONFIG_PCI)            += arch/x86/pci/
+diff --git a/arch/xtensa/Kbuild b/arch/xtensa/Kbuild
+new file mode 100644
+index 000000000000..a4e40e534e6a
+--- /dev/null
++++ b/arch/xtensa/Kbuild
+@@ -0,0 +1 @@
++# SPDX-License-Identifier: GPL-2.0-only
+-- 
+2.27.0
 
-There is a config option in the firmware build that allows these
-regions to be preallocated using larger windows, which greatly reduces
-the fragmentation.
-> I know that EFI/ACPI mandates "IO style" memory access for those regions,
-> but I fail to get why...
->
-
-Not sure what you mean by 'IO style memory access'.
-
-
-
-> > > I beleive it would be best to route these via mmotm tree.
-> > >
-> > > v4:
-> > > * rebase on v5.13-rc1
-> > >
-> > > v3: Link: https://lore.kernel.org/lkml/20210422061902.21614-1-rppt@kernel.org
-> > > * Fix minor issues found by Anshuman
-> > > * Freshen up the declaration of pfn_valid() to make it consistent with
-> > >   pfn_is_map_memory()
-> > > * Add more Acked-by and Reviewed-by tags, thanks Anshuman and David
-> > >
-> > > v2: Link: https://lore.kernel.org/lkml/20210421065108.1987-1-rppt@kernel.org
-> > > * Add check for PFN overflow in pfn_is_map_memory()
-> > > * Add Acked-by and Reviewed-by tags, thanks David.
-> > >
-> > > v1: Link: https://lore.kernel.org/lkml/20210420090925.7457-1-rppt@kernel.org
-> > > * Add comment about the semantics of pfn_valid() as Anshuman suggested
-> > > * Extend comments about MEMBLOCK_NOMAP, per Anshuman
-> > > * Use pfn_is_map_memory() name for the exported wrapper for
-> > >   memblock_is_map_memory(). It is still local to arch/arm64 in the end
-> > >   because of header dependency issues.
-> > >
-> > > rfc: Link: https://lore.kernel.org/lkml/20210407172607.8812-1-rppt@kernel.org
-> > >
-> > > Mike Rapoport (4):
-> > >   include/linux/mmzone.h: add documentation for pfn_valid()
-> > >   memblock: update initialization of reserved pages
-> > >   arm64: decouple check whether pfn is in linear map from pfn_valid()
-> > >   arm64: drop pfn_valid_within() and simplify pfn_valid()
-> > >
-> > >  arch/arm64/Kconfig              |  3 ---
-> > >  arch/arm64/include/asm/memory.h |  2 +-
-> > >  arch/arm64/include/asm/page.h   |  3 ++-
-> > >  arch/arm64/kvm/mmu.c            |  2 +-
-> > >  arch/arm64/mm/init.c            | 14 +++++++++++++-
-> > >  arch/arm64/mm/ioremap.c         |  4 ++--
-> > >  arch/arm64/mm/mmu.c             |  2 +-
-> > >  include/linux/memblock.h        |  4 +++-
-> > >  include/linux/mmzone.h          | 11 +++++++++++
-> > >  mm/memblock.c                   | 28 ++++++++++++++++++++++++++--
-> > >  10 files changed, 60 insertions(+), 13 deletions(-)
-> > >
-> > >
-> > > base-commit: 6efb943b8616ec53a5e444193dccf1af9ad627b5
-> > > --
-> > > 2.28.0
-> > >
->
-> --
-> Sincerely yours,
-> Mike.
