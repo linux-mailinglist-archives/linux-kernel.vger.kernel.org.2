@@ -2,76 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DC2F37B89D
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 10:52:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3566137B892
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 10:51:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230473AbhELIxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 04:53:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42508 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230295AbhELIxE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 04:53:04 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ABDCC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 01:51:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/MqLJ4rj5L9md7sMeoP8AyNO73HQlye6pz1itww7fL0=; b=VH7QEH+8UXpc3iQM9a9fSnn8j9
-        ydrqlOcHTf/nuBBN6RYNYWugp5wJry3Pq3ucdVgzZHOXD5owD43L8bVJkWC/n8dZPrD7OPlT41by0
-        qOtDPCblF2WKGl8eruNFA3LckTJmeynOg7tPf9jtkMRbeDWZ0ycfH0wyQJpK/wrFLA5y9TV/mP5xF
-        DHv200DgV9vIiybbWAI6SNzleG0yHr2ZJOZjro0EGefQT7A37crZm1UI40x1fdVnm+Y3C/WmhMRel
-        Q/Hf325Ekd4sVcQcM5USRQmiKZA1Y1vNzgHVYf2UonpMatEb8D7v20dR1r3nhjcUQA3z1lNISxtLF
-        +QcoHrYQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lgkZ6-0086jG-0Y; Wed, 12 May 2021 08:50:32 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 76E3C3001E1;
-        Wed, 12 May 2021 10:49:59 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5D35B29CB9DBF; Wed, 12 May 2021 10:49:59 +0200 (CEST)
-Date:   Wed, 12 May 2021 10:49:59 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@suse.de>
-Subject: Re: [patch 1/2 v2] x86/cpu: Init AP exception handling from
- cpu_init_secondary()
-Message-ID: <YJuWt16izc2toXIM@hirez.programming.kicks-ass.net>
-References: <20210507110210.147106915@linutronix.de>
- <20210507114000.429303187@linutronix.de>
- <ccbd2f11-bb74-19bd-cf5c-d524625f9a0d@linux.alibaba.com>
- <87wns8ko48.ffs@nanos.tec.linutronix.de>
- <87k0o6gtvu.ffs@nanos.tec.linutronix.de>
+        id S230418AbhELIvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 04:51:53 -0400
+Received: from 8bytes.org ([81.169.241.247]:38848 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230137AbhELIvv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 04:51:51 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id D8842F3; Wed, 12 May 2021 10:50:42 +0200 (CEST)
+Date:   Wed, 12 May 2021 10:50:41 +0200
+From:   'Joerg Roedel' <joro@8bytes.org>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     David Laight <David.Laight@aculab.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        Hyunwook Baek <baekhw@google.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>
+Subject: Re: [PATCH 3/6] x86/sev-es: Use __put_user()/__get_user
+Message-ID: <YJuW4TtRJKZ+OIhj@8bytes.org>
+References: <20210512075445.18935-1-joro@8bytes.org>
+ <20210512075445.18935-4-joro@8bytes.org>
+ <0496626f018d4d27a8034a4822170222@AcuMS.aculab.com>
+ <fcb2c501-70ca-1a54-4a75-8ab05c21ee30@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87k0o6gtvu.ffs@nanos.tec.linutronix.de>
+In-Reply-To: <fcb2c501-70ca-1a54-4a75-8ab05c21ee30@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 11:29:25PM +0200, Thomas Gleixner wrote:
-> +#ifdef CONFIG_SMP
-> +void cpu_init_secondary(void)
-> +{
-	/*
-	 * Relies on the BP having set-up the IDT tables, which
-	 * are loaded on this CPU in the below
-	 * cpu_init_exception_handling().
-	 */
-> +	cpu_init_exception_handling();
-> +	cpu_init();
-> +}
-> +#endif
+On Wed, May 12, 2021 at 10:16:12AM +0200, Juergen Gross wrote:
+> You want something like xen_safe_[read|write]_ulong().
 
-Or something along those lines? It took me a little to figure out why
-start_secondary() didn't have idt_setup_traps(), hopefully something
-like this will avoid a little future confusion.
+From a first glance I can't see it, what is the difference between the
+xen_safe_*_ulong() functions and __get_user()/__put_user()? The only
+difference I can see is that __get/__put_user() support different access
+sizes, but neither of those disables page-faults by itself, for example.
+
+Couldn't these xen-specific functions not also be replaces by
+__get_user()/__put_user()?
+
+Regards,
+
+	Joerg
+
