@@ -2,87 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 528E837D0AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:42:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBC337D08E
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:42:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348788AbhELRiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 13:38:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56656 "EHLO
+        id S1348860AbhELRjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 13:39:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236572AbhELQMJ (ORCPT
+        with ESMTP id S236585AbhELQMX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:12:09 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1FC8C0610E7
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 08:50:35 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id q6so12278505qvb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 08:50:35 -0700 (PDT)
+        Wed, 12 May 2021 12:12:23 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66A6DC034610
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 08:51:15 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id m124so18451684pgm.13
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 08:51:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=lUNZPIvUpUF22GN5HWhSK1rgVPittay1FdfmyU3qBis=;
-        b=eNHinH3Lowl5TPC4qzBSoPxoX/gKqjEPywzf7TT5e+BrQATO37VG3Y0VkR8+l6xCIx
-         z7b9RVrTWPtyjqGdGlzIqGZhQCtj5s5mbfmFfg2B1aQJRU0YGWpsglyGrBCkdp1HAsmg
-         Vw8u/JZMDNenOo0Y1QlWc+iHA3Ekihxi0JYZowvMgscNMV8UzWhyFcaCPi4gH6m4IDQ1
-         NRpe2ULsORnUome5DaDnwiSiDbGnKkwKbEeHN0cOLDe69d4x2ITvJmL8RHilEyN1PTto
-         nAs/I1FE3BUsXuTWphyVnOKc+YO4jv1Bw0veBcHO3aOEa6j03FmeBtPe2Rd8ePrTN3Ys
-         01OA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Ml4FlirfAM0Le7fdpn8CEXufxztA/hSk61DRpU9Z7dU=;
+        b=h9gcbIMmQlnhLY9eH9K/D52LdTHz0QSead5AUJGn8prv4jJW8YLJk0yzikEktL2678
+         cV+V/+Ne2I1obYyvZzwTBXSQrcrPhHBTzjOzCOnWm1nTV0yHdXfUfg/Xt4y9n+0cOvAV
+         cpVCAo1lyNLRqj/yuyta82edBvWKROo4XQHKwzyhy8FtyZ/7eBJb+ccoZSKzX8NgN5r7
+         FPgqGqqeJVU2s8xiqo/l5GMi8xDMOoHVbkOgKGkl4xwEetf1UfYX9gCs73d250Fi7IKI
+         iZzuO+0I34INxObQA5bVLhxYs+1k69fdvDMa9yVl6EUU19jtwrqXy7zJkKNdKJQ+H1T/
+         1KVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=lUNZPIvUpUF22GN5HWhSK1rgVPittay1FdfmyU3qBis=;
-        b=DGBOwGQeQmJ/AO1QIHv8deHqnld3Le3iJQUqQi69umlosy+MiXbnnFrlzQyfJJmO/j
-         fLQzaMeEPHAlkHn6rB5AlN85JHK0E5BIkGYcJCLyO2u0ujSwh8pVDLbvrjXlRHa/6llW
-         BwaC0+tBom9ucw+9k8VOysrsYmL0DuN8PhDGViogjFW0RkRtE/4tTeuaQ3W8DfMk6Gq2
-         pL96zTJS3+TQqcly+rV8KMfBCbYQkLp0VzTXhsSwjh3c7eBebjgn4ChoDrKpKJi9Is8A
-         T1CDm/CZY6QJS13KjvWepki2yjTtbdDD5rqAJpKnaMgIHqhBMbm+FiE0+ODKGnyr71E9
-         KqFw==
-X-Gm-Message-State: AOAM530CnvQltnqfJqd7ucY8TkvXysgJpozjyWjQzjh0NKskP0UoA6FU
-        96pKxQVHwHPMqxpj1p5RxS7Yha4CbFnDNXbU+uuDpQ==
-X-Google-Smtp-Source: ABdhPJz6I3XQOp+zixZ7kGGsPE2zOHfne5RsDQ+wRfzC9asD+rAhS7zspcx9Gw5yOVuvTqVd8JrQY59x/0A4Nigu9LA=
-X-Received: by 2002:a0c:e3d4:: with SMTP id e20mr36129254qvl.10.1620834631926;
- Wed, 12 May 2021 08:50:31 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ml4FlirfAM0Le7fdpn8CEXufxztA/hSk61DRpU9Z7dU=;
+        b=IL4/fTGYVgxVavF6hsf2c/d9Soyo3z6LmrGAfvufn7K78296oT0ZXZBUBoqOLlHrQ1
+         icPgAtLIhSZNhFIpdw/FIQ64f/Cw5+eK7DsCv3Qygosby1h1Op6DTtS54WXle3nOLrwj
+         5IPiYyw9iDNS4n6m7m/LN8bKP31hwLRldtRrJd3wQmmgerqRw1PDJ4xQ7/rpCm8i+ezI
+         GyVMEQImfLnvha+g+bALOV0wHEnbZfQcPXEADb+OngHCO1gvNL1qJ1EJEPWd+f9RC38R
+         dLm6avvd6d0XTzPZ4Iy24BNpAbV/fJoLY4t1KwMWi7x3DnyBSkPR+TuxSsvwWI9oOFir
+         U1/A==
+X-Gm-Message-State: AOAM530ntoZODyox1jJ3H7nvT0bXZK6eAYA7ixYR2o6LPguNUmXzr2s2
+        nefy1dryktp+9V/IGSJyOrU/WA==
+X-Google-Smtp-Source: ABdhPJzj1YpYhdkaQh59hJxLv43j3+jK88a9dOARyY72/6HKjVRUp+Bs9CNBqVhu9XIAAXmAy07jGw==
+X-Received: by 2002:a65:550e:: with SMTP id f14mr8841530pgr.160.1620834674732;
+        Wed, 12 May 2021 08:51:14 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id h24sm218439pfn.180.2021.05.12.08.51.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 08:51:14 -0700 (PDT)
+Date:   Wed, 12 May 2021 15:51:10 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Ashish Kalra <Ashish.Kalra@amd.com>, pbonzini@redhat.com,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        joro@8bytes.org, thomas.lendacky@amd.com, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        srutherford@google.com, venu.busireddy@oracle.com,
+        brijesh.singh@amd.com
+Subject: Re: [PATCH v2 2/4] mm: x86: Invoke hypercall when page encryption
+ status is changed
+Message-ID: <YJv5bjd0xThIahaa@google.com>
+References: <cover.1619193043.git.ashish.kalra@amd.com>
+ <ff68a73e0cdaf89e56add5c8b6e110df881fede1.1619193043.git.ashish.kalra@amd.com>
+ <YJvU+RAvetAPT2XY@zn.tnic>
 MIME-Version: 1.0
-References: <20210322003915.3199775-1-mw@semihalf.com> <YFiKHu3hlAk+joOn@lunn.ch>
-In-Reply-To: <YFiKHu3hlAk+joOn@lunn.ch>
-From:   Marcin Wojtas <mw@semihalf.com>
-Date:   Wed, 12 May 2021 17:50:19 +0200
-Message-ID: <CAPv3WKdf5aX2W77N_-FBM5hugYW-ME1DvkjNuCUrcU8FG2XENg@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: ensure backward compatibility of the AP807 Xenon
-To:     =?UTF-8?Q?Gr=C3=A9gory_Clement?= <gregory.clement@bootlin.com>
-Cc:     linux-arm-kernel@lists.infradead.org, Andrew Lunn <andrew@lunn.ch>,
-        devicetree@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJvU+RAvetAPT2XY@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gregory,
+On Wed, May 12, 2021, Borislav Petkov wrote:
+> On Fri, Apr 23, 2021 at 03:58:43PM +0000, Ashish Kalra wrote:
+> > +static inline void notify_page_enc_status_changed(unsigned long pfn,
+> > +						  int npages, bool enc)
+> > +{
+> > +	PVOP_VCALL3(mmu.notify_page_enc_status_changed, pfn, npages, enc);
+> > +}
+> 
+> Now the question is whether something like that is needed for TDX, and,
+> if so, could it be shared by both.
 
-pon., 22 mar 2021 o 13:14 Andrew Lunn <andrew@lunn.ch> napisa=C5=82(a):
->
-> On Mon, Mar 22, 2021 at 01:39:15AM +0100, Marcin Wojtas wrote:
-> > A recent switch to a dedicated AP807 compatible string for the Xenon
-> > SD/MMC controller result in the driver not being probed when
-> > using updated device tree with the older kernel revisions.
-> > It may also be problematic for other OSs/firmware that use
-> > Linux device tree sources as a reference. Resolve the problem
-> > with backward compatibility by restoring a previous compatible
-> > string as secondary one.
-> >
-> > Signed-off-by: Marcin Wojtas <mw@semihalf.com>
->
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
->
+Yes, TDX needs this same hook, but "can't" reuse the hypercall verbatime.  Ditto
+for SEV-SNP.  I wanted to squish everything into a single common hypercall, but
+that didn't pan out.
 
-Do you have any feedback about this patch? I just noticed it's not
-merged in v5.13-rc1, it would be great to have it in the next release
-though.
+The problem is that both TDX and SNP define their own versions of this so that
+any guest kernel that complies with the TDX|SNP specification will run cleanly
+on a hypervisor that also complies with the spec.  This KVM-specific hook doesn't
+meet those requires because non-Linux guest support will be sketchy at best, and
+non-KVM hypervisor support will be non-existent.
 
-Best regards,
-Marcin
+The best we can do, short of refusing to support TDX or SNP, is to make this
+KVM-specific hypercall compatible with TDX and SNP so that the bulk of the
+control logic is identical.  The mechanics of actually invoking the hypercall
+will differ, but if done right, everything else should be reusable without
+modification.
+
+I had an in-depth analysis of this, but it was all off-list.  Pasted below. 
+
+  TDX uses GPRs to communicate with the host, so it can tunnel "legacy" hypercalls
+  from time zero.  SNP could technically do the same (with a revised GHCB spec),
+  but it'd be butt ugly.  And of course trying to go that route for either TDX or
+  SNP would run into the problem of having to coordinate the ABI for the "legacy"
+  hypercall across all guests and hosts.  So yeah, trying to remove any of the
+  three (KVM vs. SNP vs. TDX) interfaces is sadly just wishful thinking.
+
+  That being said, I do think we can reuse the KVM specific hypercall for TDX and
+  SNP.  Both will still need a {TDX,SNP}-specific GCH{I,B} protocol so that cross-
+  vendor compatibility is guaranteed, but that shouldn't preclude a guest that is
+  KVM enlightened from switching to the KVM specific hypercall once it can do so.
+  More thoughts later on.
+
+  > I guess a common structure could be used along the lines of what is in the
+  > GHCB spec today, but that seems like overkill for SEV/SEV-ES, which will
+  > only ever really do a single page range at a time (through
+  > set_memory_encrypted() and set_memory_decrypted()). The reason for the
+  > expanded form for SEV-SNP is that the OS can (proactively) adjust multiple
+  > page ranges in advance. Will TDX need to do something similar?
+
+  Yes, TDX needs the exact same thing.  All three (SEV, SNP, and TDX) have more or
+  less the exact same hook in the guest (Linux, obviously) kernel.
+
+  > If so, the only real common piece in KVM is a function to track what pages
+  > are shared vs private, which would only require a simple interface.
+
+  It's not just KVM, it's also the relevant code in the guest kernel(s) and other
+  hypervisors.  And the MMU side of KVM will likely be able to share code, e.g. to
+  act on the page size hint.
+
+  > So for SEV/SEV-ES, a simpler hypercall interface to specify a single page
+  > range is really all that is needed, but it must be common across
+  > hypervisors. I think that was one Sean's points originally, we don't want
+  > one hypercall for KVM, one for Hyper-V, one for VMware, one for Xen, etc.
+
+  For the KVM defined interface (required for SEV/SEV-ES), I think it makes sense
+  to make it a superset of the SNP and TDX protocols so that it _can_ be used in
+  lieu of the SNP/TDX specific protocol.  I don't know for sure whether or not
+  that will actually yield better code and/or performance, but it costs us almost
+  nothing and at least gives us the option of further optimizing the Linux+KVM
+  combination.
+
+  It probably shouldn't be a strict superset, as in practice I don't think SNP
+  approach of having individual entries when batching multiple pages will yield
+  the best performance.  E.g. the vast majority (maybe all?) of conversions for a
+  Linux guest will be physically contiguous and will have the same preferred page
+  size, at which point there will be less overhead if the guest specifies a
+  massive range as opposed to having to santize and fill a large buffer.
+
+  TL;DR: I think the KVM hypercall should be something like this, so that it can
+  be used for SNP and TDX, and possibly for other purposes, e.g. for paravirt
+  performance enhancements or something.
+
+    8. KVM_HC_MAP_GPA_RANGE
+    -----------------------
+    :Architecture: x86
+    :Status: active
+    :Purpose: Request KVM to map a GPA range with the specified attributes.
+
+    a0: the guest physical address of the start page
+    a1: the number of (4kb) pages (must be contiguous in GPA space)
+    a2: attributes
+
+  where 'attributes' could be something like:
+
+    bits  3:0 - preferred page size encoding 0 = 4kb, 1 = 2mb, 2 = 1gb, etc...
+    bit     4 - plaintext = 0, encrypted = 1
+    bits 63:5 - reserved (must be zero)
+
