@@ -2,123 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 291CD37B33E
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 03:00:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DB0537B341
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 03:04:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229980AbhELBCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 21:02:02 -0400
-Received: from mail-ej1-f47.google.com ([209.85.218.47]:38410 "EHLO
-        mail-ej1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbhELBCB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 21:02:01 -0400
-Received: by mail-ej1-f47.google.com with SMTP id b25so32416749eju.5;
-        Tue, 11 May 2021 18:00:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=w5T9ZppkqLGlw3eNUaMbpVD5FujhFVJDEVceVQJsQxo=;
-        b=PghfrQL2RSuE6A4U5f/W4k/JlnG+1WedYj1I9fOrEtgvWz7ondhm1NlIq6UjD4eNbb
-         zERtaIROr9WiJ84esGCxXXX+rgnUomEp5TkPimaeNXX1hMArKlCcZIJytXcro9sd9DTY
-         cRsz6UySs3pzcKY6ikxoMwoKmV5v44NO7qb8wBzbzV0PvZ/0ZgwQr5Cv0FME9w0v0+Lj
-         n9+VF1TysyHPxcRLZB7crrW4csILbUxk/vPU/cIJR+CE+92xuFMCGTao7nt4IZhYxxzg
-         rqMo+coegGtL9dMTYIOx0Hx4m7P78lFzB68hAlvyl2tS8sKL85J9uACXRDcIcrS6zw+J
-         KDjA==
-X-Gm-Message-State: AOAM531iC86yoXue02/pFczawXTW991gWwRkyb4+vmbkyi0IO+CEqxE/
-        uxC+LYstV0aOIkWx2h/ulU4=
-X-Google-Smtp-Source: ABdhPJzdayMEz2R8eKVIC+R0Mz0wUdi04OZcpUFEPErnRFhfCLxIg6YElc3jCwfMQKuH79ADXhuVCw==
-X-Received: by 2002:a17:906:22c6:: with SMTP id q6mr34522665eja.275.1620781252296;
-        Tue, 11 May 2021 18:00:52 -0700 (PDT)
-Received: from rocinante.localdomain ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id u13sm15872171edq.55.2021.05.11.18.00.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 18:00:51 -0700 (PDT)
-Date:   Wed, 12 May 2021 03:00:49 +0200
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Rajat Jain <rajatja@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-usb@vger.kernel.org, helgaas@kernel.org,
-        rajatxjain@gmail.com, jsbarnes@google.com, dtor@google.com
-Subject: Re: [PATCH v2 1/2] driver core: Move the "removable" attribute from
- USB to core
-Message-ID: <20210512010049.GA89346@rocinante.localdomain>
-References: <20210424021631.1972022-1-rajatja@google.com>
+        id S229996AbhELBFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 21:05:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54496 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229637AbhELBFj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 21:05:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 92DFF6188B;
+        Wed, 12 May 2021 01:04:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620781471;
+        bh=4ukDiIKKgh1y+mRhe74OIC0185vE18PdqlfDiEBdDE4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HksElAHPqQqPB2hMXEL/asB8GFQXO3cFgF3KADg+VblDPr/PBw4dPekdB21RFxoSJ
+         5Awaw1RlZivkW7DrIaEee7Ctm/wxfD/BTyXlqhTLHsF6mSqovXt/1rZiv/s9Vq62w3
+         3Efp0CgDDF5waFLOzD8jmBLv46/LliifFIMNAspqqG5791JL8rsBnFOkUg8efhqMxD
+         pkxMmHCzryjgNtteu5hzHqyqzm1ACsfYCcMcwQ1fqIHGyWcNqL+R5z4nKs9grDuPoL
+         CZ5m0uxIYixuIs41CZ0xcuJBTkXamHs/pU58ime2FvfEtX89szvZdLuu9FTwcx5E8R
+         DAQVLPTmCDdfw==
+Date:   Tue, 11 May 2021 18:04:28 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
+        darrick.wong@oracle.com, dan.j.williams@intel.com,
+        willy@infradead.org, viro@zeniv.linux.org.uk, david@fromorbit.com,
+        hch@lst.de, rgoldwyn@suse.de
+Subject: Re: [PATCH v5 7/7] fs/xfs: Add dax dedupe support
+Message-ID: <20210512010428.GQ8582@magnolia>
+References: <20210511030933.3080921-1-ruansy.fnst@fujitsu.com>
+ <20210511030933.3080921-8-ruansy.fnst@fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210424021631.1972022-1-rajatja@google.com>
+In-Reply-To: <20210511030933.3080921-8-ruansy.fnst@fujitsu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rajat,
-
-I have few questions below, but to add in advance, I might be confusing
-the role that "type->supports_removable" and "dev->removable" plays
-here, and if so then I apologise.
-
-[...]
-> @@ -2504,8 +2523,16 @@ static int device_add_attrs(struct device *dev)
->  			goto err_remove_dev_online;
->  	}
+On Tue, May 11, 2021 at 11:09:33AM +0800, Shiyang Ruan wrote:
+> Introduce xfs_mmaplock_two_inodes_and_break_dax_layout() for dax files
+> who are going to be deduped.  After that, call compare range function
+> only when files are both DAX or not.
+> 
+> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
+> ---
+>  fs/xfs/xfs_file.c    |  2 +-
+>  fs/xfs/xfs_inode.c   | 66 +++++++++++++++++++++++++++++++++++++++++++-
+>  fs/xfs/xfs_inode.h   |  1 +
+>  fs/xfs/xfs_reflink.c |  4 +--
+>  4 files changed, 69 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
+> index 38d8eca05aee..bd5002d38df4 100644
+> --- a/fs/xfs/xfs_file.c
+> +++ b/fs/xfs/xfs_file.c
+> @@ -823,7 +823,7 @@ xfs_wait_dax_page(
+>  	xfs_ilock(ip, XFS_MMAPLOCK_EXCL);
+>  }
 >  
-> +	if (type && type->supports_removable) {
-> +		error = device_create_file(dev, &dev_attr_removable);
-> +		if (error)
-> +			goto err_remove_dev_waiting_for_supplier;
+> -static int
+> +int
+>  xfs_break_dax_layouts(
+>  	struct inode		*inode,
+>  	bool			*retry)
+> diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
+> index 0369eb22c1bb..0774b6e2b940 100644
+> --- a/fs/xfs/xfs_inode.c
+> +++ b/fs/xfs/xfs_inode.c
+> @@ -3711,6 +3711,64 @@ xfs_iolock_two_inodes_and_break_layout(
+>  	return 0;
+>  }
+>  
+> +static int
+> +xfs_mmaplock_two_inodes_and_break_dax_layout(
+> +	struct inode		*src,
+> +	struct inode		*dest)
+
+MMAPLOCK is an xfs_inode lock, so please pass those in here.
+
+> +{
+> +	int			error, attempts = 0;
+> +	bool			retry;
+> +	struct xfs_inode	*ip0, *ip1;
+> +	struct page		*page;
+> +	struct xfs_log_item	*lp;
+> +
+> +	if (src > dest)
+> +		swap(src, dest);
+
+The MMAPLOCK (and ILOCK) locking order is increasing inode number, not
+the address of the incore object.  This is different (and not consistent
+with) i_rwsem/XFS_IOLOCK, but those are the rules.
+
+> +	ip0 = XFS_I(src);
+> +	ip1 = XFS_I(dest);
+> +
+> +again:
+> +	retry = false;
+> +	/* Lock the first inode */
+> +	xfs_ilock(ip0, XFS_MMAPLOCK_EXCL);
+> +	error = xfs_break_dax_layouts(src, &retry);
+> +	if (error || retry) {
+> +		xfs_iunlock(ip0, XFS_MMAPLOCK_EXCL);
+> +		goto again;
 > +	}
 > +
->  	return 0;
+> +	if (src == dest)
+> +		return 0;
+> +
+> +	/* Nested lock the second inode */
+> +	lp = &ip0->i_itemp->ili_item;
+> +	if (lp && test_bit(XFS_LI_IN_AIL, &lp->li_flags)) {
+> +		if (!xfs_ilock_nowait(ip1,
+> +		    xfs_lock_inumorder(XFS_MMAPLOCK_EXCL, 1))) {
+> +			xfs_iunlock(ip0, XFS_MMAPLOCK_EXCL);
+> +			if ((++attempts % 5) == 0)
+> +				delay(1); /* Don't just spin the CPU */
+> +			goto again;
+> +		}
+> +	} else
+> +		xfs_ilock(ip1, xfs_lock_inumorder(XFS_MMAPLOCK_EXCL, 1));
+> +	/*
+> +	 * We cannot use xfs_break_dax_layouts() directly here because it may
+> +	 * need to unlock & lock the XFS_MMAPLOCK_EXCL which is not suitable
+> +	 * for this nested lock case.
+> +	 */
+> +	page = dax_layout_busy_page(dest->i_mapping);
+> +	if (page) {
+> +		if (page_ref_count(page) != 1) {
 
-Would a check for "dev->removable == DEVICE_REMOVABLE" here be more
-appropriate?
+This could be flattened to:
 
-Unless you wanted to add sysfs objects when the device hints that it has
-a notion of being removable even though it might be set to "unknown" or
-"fixed" (if that state is at all possible then), and in which case using
-the dev_is_removable() helper would also not be an option since it does
-a more complex check internally.
+	if (page && page_ref_count(page) != 1) {
+		...
+	}
 
-Technically, you could always add this sysfs object (similarly to what
-USB core did) as it would then show the correct state depending on
-"dev->removable".
+--D
 
-Also, I suppose, it's not possible for a device to have
-"supports_removable" set to true, but "removable" would be different
-than "DEVICE_REMOVABLE", correct?
-
-[...]
-> +enum device_removable {
-> +	DEVICE_REMOVABLE_UNKNOWN = 0,
-> +	DEVICE_REMOVABLE,
-> +	DEVICE_FIXED,
-> +};
-
-I know this was moved from the USB core, but I personally find it
-a little bit awkward to read, would something like that be acceptable?
-
-enum device_removable {
-	DEVICE_STATE_UNKNOWN = 0,
-	DEVICE_STATE_REMOVABLE,
-	DEVICE_STATE_FIXED,
-};
-
-The addition of state to the name follows the removable_show() function
-where the local variable is called "state", and I think it makes sense
-to call this as such.  What do you think?
-
-> +static inline bool dev_is_removable(struct device *dev)
-> +{
-> +	return dev && dev->type && dev->type->supports_removable
-> +	    && dev->removable == DEVICE_REMOVABLE;
+> +			xfs_iunlock(ip1, XFS_MMAPLOCK_EXCL);
+> +			xfs_iunlock(ip0, XFS_MMAPLOCK_EXCL);
+> +			goto again;
+> +		}
+> +	}
+> +
+> +	return 0;
 > +}
-
-Similarly to my question about - would a simple check to see if
-"dev->removable" is set to "DEVICE_REMOVABLE" here be enough?
-
-Krzysztof
+> +
+>  /*
+>   * Lock two inodes so that userspace cannot initiate I/O via file syscalls or
+>   * mmap activity.
+> @@ -3721,10 +3779,16 @@ xfs_ilock2_io_mmap(
+>  	struct xfs_inode	*ip2)
+>  {
+>  	int			ret;
+> +	struct inode		*ino1 = VFS_I(ip1);
+> +	struct inode		*ino2 = VFS_I(ip2);
+>  
+> -	ret = xfs_iolock_two_inodes_and_break_layout(VFS_I(ip1), VFS_I(ip2));
+> +	ret = xfs_iolock_two_inodes_and_break_layout(ino1, ino2);
+>  	if (ret)
+>  		return ret;
+> +
+> +	if (IS_DAX(ino1) && IS_DAX(ino2))
+> +		return xfs_mmaplock_two_inodes_and_break_dax_layout(ino1, ino2);
+> +
+>  	if (ip1 == ip2)
+>  		xfs_ilock(ip1, XFS_MMAPLOCK_EXCL);
+>  	else
+> diff --git a/fs/xfs/xfs_inode.h b/fs/xfs/xfs_inode.h
+> index ca826cfba91c..2d0b344fb100 100644
+> --- a/fs/xfs/xfs_inode.h
+> +++ b/fs/xfs/xfs_inode.h
+> @@ -457,6 +457,7 @@ enum xfs_prealloc_flags {
+>  
+>  int	xfs_update_prealloc_flags(struct xfs_inode *ip,
+>  				  enum xfs_prealloc_flags flags);
+> +int	xfs_break_dax_layouts(struct inode *inode, bool *retry);
+>  int	xfs_break_layouts(struct inode *inode, uint *iolock,
+>  		enum layout_break_reason reason);
+>  
+> diff --git a/fs/xfs/xfs_reflink.c b/fs/xfs/xfs_reflink.c
+> index 9a780948dbd0..ff308304c5cd 100644
+> --- a/fs/xfs/xfs_reflink.c
+> +++ b/fs/xfs/xfs_reflink.c
+> @@ -1324,8 +1324,8 @@ xfs_reflink_remap_prep(
+>  	if (XFS_IS_REALTIME_INODE(src) || XFS_IS_REALTIME_INODE(dest))
+>  		goto out_unlock;
+>  
+> -	/* Don't share DAX file data for now. */
+> -	if (IS_DAX(inode_in) || IS_DAX(inode_out))
+> +	/* Don't share DAX file data with non-DAX file. */
+> +	if (IS_DAX(inode_in) != IS_DAX(inode_out))
+>  		goto out_unlock;
+>  
+>  	if (!IS_DAX(inode_in))
+> -- 
+> 2.31.1
+> 
+> 
+> 
