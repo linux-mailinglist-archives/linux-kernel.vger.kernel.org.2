@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFEDF37D17B
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:57:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3184237D16C
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241314AbhELR5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 13:57:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42392 "EHLO mail.kernel.org"
+        id S242356AbhELRz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 13:55:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40576 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240834AbhELQZo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:25:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 451AF61CA9;
-        Wed, 12 May 2021 15:48:30 +0000 (UTC)
+        id S238442AbhELQYq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:24:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE21B613D6;
+        Wed, 12 May 2021 15:48:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620834510;
-        bh=JiSwBk7n+z9UDxHWijuW9vbtAqoFPPUFO5JE7rJFJas=;
+        s=korg; t=1620834486;
+        bh=2J2tAljGL2+9zc0rl1Dv+X0Z9uN04ywIMMzBgFEg4c0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ep3fk3k0iZN4bM/bpd1bwFfUZgfS2DZ+X5Scnijm4HuTXzOkL3FCXQSWfFn6jDr0Q
-         mUbqTtPrwFxotzmDvdBoRE4UugM5WZGYno3uX7jd5wxQMpxHVOmySLKPUHTZIBpOYq
-         7f/iQha8u74oPQyTTaTDc/ZaPGvMJ+4Og27lxEDw=
+        b=0886nqzNofLVfOTSJZl1jtm8Llwqt4OzjI1ZlFnD2wfJ9ZrCAoQmbgwGzTFtOVb7J
+         GsL0D1iVxZjT6B7H3kKD9CFeSBFyLH+sdFCvc/qQ/Pr0S2uy/EBOzYVFPLzxK4jFVt
+         JoM+0OGc3TcgAfwJmND0uPkHRCrWZfxfScexcW6Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 556/601] ath10k: Fix ath10k_wmi_tlv_op_pull_peer_stats_info() unlock without lock
-Date:   Wed, 12 May 2021 16:50:33 +0200
-Message-Id: <20210512144846.165198540@linuxfoundation.org>
+Subject: [PATCH 5.11 564/601] ARM: dts: uniphier: Change phy-mode to RGMII-ID to enable delay pins for RTL8211E
+Date:   Wed, 12 May 2021 16:50:41 +0200
+Message-Id: <20210512144846.419823165@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144827.811958675@linuxfoundation.org>
 References: <20210512144827.811958675@linuxfoundation.org>
@@ -41,40 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shuah Khan <skhan@linuxfoundation.org>
+From: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
 
-[ Upstream commit eaaf52e4b866f265eb791897d622961293fd48c1 ]
+[ Upstream commit 9ba585cc5b56ea14a453ba6be9bdb984ed33471a ]
 
-ath10k_wmi_tlv_op_pull_peer_stats_info() could try to unlock RCU lock
-winthout locking it first when peer reason doesn't match the valid
-cases for this function.
+UniPhier PXs2 boards have RTL8211E ethernet phy, and the phy have the RX/TX
+delays of RGMII interface using pull-ups on the RXDLY and TXDLY pins.
 
-Add a default case to return without unlocking.
+After the commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx
+delay config"), the delays are working correctly, however, "rgmii" means
+no delay and the phy doesn't work. So need to set the phy-mode to
+"rgmii-id" to show that RX/TX delays are enabled.
 
-Fixes: 09078368d516 ("ath10k: hold RCU lock when calling ieee80211_find_sta_by_ifaddr()")
-Reported-by: Pavel Machek <pavel@ucw.cz>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210406230228.31301-1-skhan@linuxfoundation.org
+Fixes: e3cc931921d2 ("ARM: dts: uniphier: add AVE ethernet node")
+Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/arm/boot/dts/uniphier-pxs2.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index e7072fc4f487..4f2fbc610d79 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -592,6 +592,9 @@ static void ath10k_wmi_event_tdls_peer(struct ath10k *ar, struct sk_buff *skb)
- 					GFP_ATOMIC
- 					);
- 		break;
-+	default:
-+		kfree(tb);
-+		return;
- 	}
+diff --git a/arch/arm/boot/dts/uniphier-pxs2.dtsi b/arch/arm/boot/dts/uniphier-pxs2.dtsi
+index b0b15c97306b..e81e5937a60a 100644
+--- a/arch/arm/boot/dts/uniphier-pxs2.dtsi
++++ b/arch/arm/boot/dts/uniphier-pxs2.dtsi
+@@ -583,7 +583,7 @@
+ 			clocks = <&sys_clk 6>;
+ 			reset-names = "ether";
+ 			resets = <&sys_rst 6>;
+-			phy-mode = "rgmii";
++			phy-mode = "rgmii-id";
+ 			local-mac-address = [00 00 00 00 00 00];
+ 			socionext,syscon-phy-mode = <&soc_glue 0>;
  
- exit:
 -- 
 2.30.2
 
