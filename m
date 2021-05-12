@@ -2,258 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5626237B7D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 10:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F04637B7DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 10:26:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbhELI0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 04:26:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36300 "EHLO
+        id S230160AbhELI1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 04:27:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230109AbhELI0K (ORCPT
+        with ESMTP id S229968AbhELI12 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 04:26:10 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BFDDC061574;
-        Wed, 12 May 2021 01:25:02 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id A88C11F42650
-Received: by earth.universe (Postfix, from userid 1000)
-        id 711603C0C95; Wed, 12 May 2021 10:24:58 +0200 (CEST)
-Date:   Wed, 12 May 2021 10:24:58 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     satya priya <skakit@codeaurora.org>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Collins <collinsd@codeaurora.org>, kgunda@codeaurora.org,
-        linux-input@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        Andy Yan <andy.yan@rock-chips.com>
-Subject: Re: [PATCH V4 5/5] dt-bindings: power: reset: qcom-pon: Convert qcom
- PON binding to yaml
-Message-ID: <20210512082458.o37su5rcpfc3sp23@earth.universe>
-References: <1620800053-26405-1-git-send-email-skakit@codeaurora.org>
- <1620800053-26405-6-git-send-email-skakit@codeaurora.org>
+        Wed, 12 May 2021 04:27:28 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4368C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 01:26:19 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id n2so33717934ejy.7
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 01:26:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NMAtkouy/UQHrdTj1Ln2w4uJpCPejRtEz1B0Xgr6qJ4=;
+        b=lRem6m6mNyxYTmNSN+B48ut74tpPFWUlTDXZTXWdJ9g3LQi+GIr5g4aWK7sTeMZ0B6
+         qzSHX8pN65PW3YUd7nBFaE5C8g6EtZqzt9nkX9kdWqYH85pmYZJWp2ZOgvEoiwt8Arwf
+         4DP0UflQdUg/EAOuQE1MReNMGFO16sFB/qhhEEcQdzLxY4940qlAkDHif7hWZ7C/6uJ+
+         8yp+6bcsMnYjm6U1czKukgMBkanwPhKTyb41rB3HSMw4C9xd+LBXV2HY5+KZXE+7/FAe
+         1NHcOmZ2Q6KIYUW6uWrTiGSfLe6rkAsR77SF/xNb//xHT9MmGTBZnRS+MKnMVV8q/TjQ
+         l4PQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NMAtkouy/UQHrdTj1Ln2w4uJpCPejRtEz1B0Xgr6qJ4=;
+        b=Yos461uZ8tOSoeMf9DhCPB9J7vuf2N+YFgBpzqg7gHL+4maIID43H9PW7xf/3A6U2c
+         QkkKAuBaSICwnYT8H8Wcsp4aKBOI2Kd7lsQLIMvV6d4aG9yni1NcUWOYalWF9bJjGz0t
+         kqArUQHoj2Kbv9YM07dDZz0upzzZ80/loo6Eo/97x/GHB/8EXfcEPdUU/kmWU0GeWUo2
+         3Vre3CAldqqNXAEK5mnyJwiDZFnGC/Gi/AeBuoC6dmSXwWR4gPIHuUM76hlfPO+stVso
+         Tgb/xZ9V8RHbBQ97D/w7H9dg5hkgOyUlpBbjBLdV2v9rWuyBLL42lW/TueJD/UcTwIOO
+         WpqQ==
+X-Gm-Message-State: AOAM531duxrAtHBaQqzRvP4ea/rNj+y5bfe9wE6GiYM64MYDB53IX8xS
+        lWrk+3trLhG4bAv1wS0DCgA=
+X-Google-Smtp-Source: ABdhPJy6+KsjMc7QIOlXs0YiNhWM+EIHgLXW4KiuDaN2yf7P7VhKgbzOSian+YJ1xJofsG+kn5ot9Q==
+X-Received: by 2002:a17:906:3b13:: with SMTP id g19mr36287442ejf.238.1620807978124;
+        Wed, 12 May 2021 01:26:18 -0700 (PDT)
+Received: from linux.local (host-79-52-107-152.retail.telecomitalia.it. [79.52.107.152])
+        by smtp.gmail.com with ESMTPSA id s17sm3355797ejz.78.2021.05.12.01.26.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 01:26:17 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev (open list:STAGING SUBSYSTEM),
+        linux-kernel@vger.kernel.org (open list)
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH] staging: rtl8723bs: hal: Remove two set but unused variables
+Date:   Wed, 12 May 2021 10:26:14 +0200
+Message-Id: <20210512082614.30890-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="qfwnk4lxta2snkiz"
-Content-Disposition: inline
-In-Reply-To: <1620800053-26405-6-git-send-email-skakit@codeaurora.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Removed two set but unused variables. Issue detected by GCC.
 
---qfwnk4lxta2snkiz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+---
+ drivers/staging/rtl8723bs/hal/HalPhyRf_8723B.c | 14 +-------------
+ 1 file changed, 1 insertion(+), 13 deletions(-)
 
-Hi,
+diff --git a/drivers/staging/rtl8723bs/hal/HalPhyRf_8723B.c b/drivers/staging/rtl8723bs/hal/HalPhyRf_8723B.c
+index c42fd36c88ef..3b8be8137683 100644
+--- a/drivers/staging/rtl8723bs/hal/HalPhyRf_8723B.c
++++ b/drivers/staging/rtl8723bs/hal/HalPhyRf_8723B.c
+@@ -1629,7 +1629,7 @@ void PHY_IQCalibrate_8723B(
+ 	s32 result[4][8];	/* last is final result */
+ 	u8 i, final_candidate;
+ 	bool bPathAOK, bPathBOK;
+-	s32 RegE94, RegE9C, RegEA4, RegEAC, RegEB4, RegEBC, RegEC4, RegECC, RegTmp = 0;
++	s32 RegE94, RegE9C, RegEA4, RegEB4, RegEBC, RegEC4, RegTmp = 0;
+ 	bool is12simular, is13simular, is23simular;
+ 	bool bSingleTone = false, bCarrierSuppression = false;
+ 	u32 IQK_BB_REG_92C[IQK_BB_REG_NUM] = {
+@@ -1646,7 +1646,6 @@ void PHY_IQCalibrate_8723B(
+ /* 	u32 		Path_SEL_BB = 0; */
+ 	u32 		GNT_BT_default;
+ 	u32 		StartTime;
+-	s32			ProgressingTime;
+ 
+ 	if (!ODM_CheckPowerStatus(padapter))
+ 		return;
+@@ -1777,22 +1776,18 @@ void PHY_IQCalibrate_8723B(
+ 		RegE94 = result[i][0];
+ 		RegE9C = result[i][1];
+ 		RegEA4 = result[i][2];
+-		RegEAC = result[i][3];
+ 		RegEB4 = result[i][4];
+ 		RegEBC = result[i][5];
+ 		RegEC4 = result[i][6];
+-		RegECC = result[i][7];
+ 	}
+ 
+ 	if (final_candidate != 0xff) {
+ 		pDM_Odm->RFCalibrateInfo.RegE94 = RegE94 = result[final_candidate][0];
+ 		pDM_Odm->RFCalibrateInfo.RegE9C = RegE9C = result[final_candidate][1];
+ 		RegEA4 = result[final_candidate][2];
+-		RegEAC = result[final_candidate][3];
+ 		pDM_Odm->RFCalibrateInfo.RegEB4 = RegEB4 = result[final_candidate][4];
+ 		pDM_Odm->RFCalibrateInfo.RegEBC = RegEBC = result[final_candidate][5];
+ 		RegEC4 = result[final_candidate][6];
+-		RegECC = result[final_candidate][7];
+ 		bPathAOK = bPathBOK = true;
+ 	} else {
+ 		pDM_Odm->RFCalibrateInfo.RegE94 = pDM_Odm->RFCalibrateInfo.RegEB4 = 0x100;	/* X default value */
+@@ -1844,10 +1839,6 @@ void PHY_IQCalibrate_8723B(
+ 	}
+ 
+ 	pDM_Odm->RFCalibrateInfo.bIQKInProgress = false;
+-
+-	ProgressingTime = jiffies_to_msecs(jiffies - StartTime);
+-
+-
+ }
+ 
+ 
+@@ -1856,7 +1847,6 @@ void PHY_LCCalibrate_8723B(struct dm_odm_t *pDM_Odm)
+ 	bool		bSingleTone = false, bCarrierSuppression = false;
+ 	u32 		timeout = 2000, timecount = 0;
+ 	u32 		StartTime;
+-	s32			ProgressingTime;
+ 
+ #if DISABLE_BB_RF
+ 	return;
+@@ -1882,6 +1872,4 @@ void PHY_LCCalibrate_8723B(struct dm_odm_t *pDM_Odm)
+ 
+ 
+ 	pDM_Odm->RFCalibrateInfo.bLCKInProgress = false;
+-
+-	ProgressingTime = jiffies_to_msecs(jiffies - StartTime);
+ }
+-- 
+2.31.1
 
-On Wed, May 12, 2021 at 11:44:13AM +0530, satya priya wrote:
-> Convert qcom PON binding from .txt to .yaml format.
->=20
-> Signed-off-by: satya priya <skakit@codeaurora.org>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> ---
-
-Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-
--- Sebastian
-
-> Changes in V2:
->  - As per Rob's comments, converted the main PON binding and added in V2.
->    Dropped example here to have one full example in qcom,pm8941-pwrkey.ya=
-ml
->=20
-> Changes in V3:
->  - As per Sebastian's comments, added allOf to refer reboot-mode.yaml and
->    used unevaluatedProperties =3D false. Added maxItems for reg.
->=20
-> Changes in V4:
->  - Added the example back. Removed it in qcom,pm8941-pwrkey.yaml
->=20
->  .../devicetree/bindings/power/reset/qcom,pon.txt   | 49 -------------
->  .../devicetree/bindings/power/reset/qcom,pon.yaml  | 80 ++++++++++++++++=
-++++++
->  2 files changed, 80 insertions(+), 49 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/power/reset/qcom,po=
-n.txt
->  create mode 100644 Documentation/devicetree/bindings/power/reset/qcom,po=
-n.yaml
->=20
-> diff --git a/Documentation/devicetree/bindings/power/reset/qcom,pon.txt b=
-/Documentation/devicetree/bindings/power/reset/qcom,pon.txt
-> deleted file mode 100644
-> index 0c0dc3a..0000000
-> --- a/Documentation/devicetree/bindings/power/reset/qcom,pon.txt
-> +++ /dev/null
-> @@ -1,49 +0,0 @@
-> -Qualcomm PON Device
-> -
-> -The Power On device for Qualcomm PM8xxx is MFD supporting pwrkey
-> -and resin along with the Android reboot-mode.
-> -
-> -This DT node has pwrkey and resin as sub nodes.
-> -
-> -Required Properties:
-> --compatible: Must be one of:
-> -	"qcom,pm8916-pon"
-> -	"qcom,pms405-pon"
-> -	"qcom,pm8998-pon"
-> -
-> --reg: Specifies the physical address of the pon register
-> -
-> -Optional subnode:
-> --pwrkey: Specifies the subnode pwrkey and should follow the
-> - qcom,pm8941-pwrkey.txt description.
-> --resin: Specifies the subnode resin and should follow the
-> - qcom,pm8xxx-pwrkey.txt description.
-> -
-> -The rest of the properties should follow the generic reboot-mode descrip=
-tion
-> -found in reboot-mode.txt
-> -
-> -Example:
-> -
-> -	pon@800 {
-> -		compatible =3D "qcom,pm8916-pon";
-> -
-> -		reg =3D <0x800>;
-> -		mode-bootloader =3D <0x2>;
-> -		mode-recovery =3D <0x1>;
-> -
-> -		pwrkey {
-> -			compatible =3D "qcom,pm8941-pwrkey";
-> -			interrupts =3D <0x0 0x8 0 IRQ_TYPE_EDGE_BOTH>;
-> -			debounce =3D <15625>;
-> -			bias-pull-up;
-> -			linux,code =3D <KEY_POWER>;
-> -		};
-> -
-> -		resin {
-> -			compatible =3D "qcom,pm8941-resin";
-> -			interrupts =3D <0x0 0x8 1 IRQ_TYPE_EDGE_BOTH>;
-> -			debounce =3D <15625>;
-> -			bias-pull-up;
-> -			linux,code =3D <KEY_VOLUMEDOWN>;
-> -		};
-> -	};
-> diff --git a/Documentation/devicetree/bindings/power/reset/qcom,pon.yaml =
-b/Documentation/devicetree/bindings/power/reset/qcom,pon.yaml
-> new file mode 100644
-> index 0000000..353f155
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/power/reset/qcom,pon.yaml
-> @@ -0,0 +1,80 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/power/reset/qcom,pon.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm PON Device
-> +
-> +maintainers:
-> +  - Vinod Koul <vkoul@kernel.org>
-> +
-> +description: |
-> +  The Power On device for Qualcomm PM8xxx is MFD supporting pwrkey
-> +  and resin along with the Android reboot-mode.
-> +
-> +  This DT node has pwrkey and resin as sub nodes.
-> +
-> +allOf:
-> +  - $ref: reboot-mode.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - qcom,pm8916-pon
-> +      - qcom,pms405-pon
-> +      - qcom,pm8998-pon
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  pwrkey:
-> +    type: object
-> +    $ref: "../../input/qcom,pm8941-pwrkey.yaml#"
-> +
-> +  resin:
-> +    type: object
-> +    $ref: "../../input/qcom,pm8941-pwrkey.yaml#"
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +   #include <dt-bindings/interrupt-controller/irq.h>
-> +   #include <dt-bindings/input/linux-event-codes.h>
-> +   #include <dt-bindings/spmi/spmi.h>
-> +   spmi_bus: spmi@c440000 {
-> +     reg =3D <0x0c440000 0x1100>;
-> +     #address-cells =3D <2>;
-> +     #size-cells =3D <0>;
-> +     pmk8350: pmic@0 {
-> +       reg =3D <0x0 SPMI_USID>;
-> +       #address-cells =3D <1>;
-> +       #size-cells =3D <0>;
-> +       pmk8350_pon: pon_hlos@1300 {
-> +         reg =3D <0x1300>;
-> +         compatible =3D "qcom,pm8998-pon";
-> +
-> +         pwrkey {
-> +            compatible =3D "qcom,pm8941-pwrkey";
-> +            interrupts =3D < 0x0 0x8 0 IRQ_TYPE_EDGE_BOTH >;
-> +            debounce =3D <15625>;
-> +            bias-pull-up;
-> +            linux,code =3D <KEY_POWER>;
-> +         };
-> +
-> +         resin {
-> +            compatible =3D "qcom,pm8941-resin";
-> +            interrupts =3D <0x0 0x8 1 IRQ_TYPE_EDGE_BOTH>;
-> +            debounce =3D <15625>;
-> +            bias-pull-up;
-> +            linux,code =3D <KEY_VOLUMEDOWN>;
-> +         };
-> +       };
-> +     };
-> +   };
-> +...
-> --=20
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member=
-=20
-> of Code Aurora Forum, hosted by The Linux Foundation
->=20
-
---qfwnk4lxta2snkiz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmCbkNIACgkQ2O7X88g7
-+poMCRAAibu5F3FbmYapA73Qr0G3L1N0Aq6s48p+pkZMUKoUCNdT3Zs++0o1tPUq
-7Pyn3Wpt/Fd8/wNt+T8CFE7T2dZOpQGf6DspjXbKLvqEWZ6+K23S82/A2v4Jy8D9
-HovDfz657lG+j/zroqm1sHdLJhN22vqZsw/xw1fe/7qey9tyWiclZj/nC0fS7aZS
-JZMG9DzxNkgObExZMfOaeZ0Hf+00SiHkcKYEVAZU0lH7Tqo4E4S0p59vFET2Q7nD
-fD2rpqDEEvJVSVjRcr+BWUGONq8XZF6K5qyfkueRhX3IzPFOOxrShgCfgvQrhCpu
-2E+QNWMsnRdgI85AkhNYUi6qWZL8CmDi2jn2WEKlL7nBPwZa7gD8Rx5s/M/v4E5g
-EyYXbmAt54/b55+3Kn2Rk7ZEG1uU/VOe0ELcH+0H1wT2zTVDyyiWaHqQwAndVS2E
-CiSLRcJMl8OeGan1iCOl2Xq8pbxWKkuw6A+zJA1TEraQqYJE6rhespzASgwH3xFZ
-Qdyo9C6NVqxRC8sya0gnYCDR9B7p7Le1OKrOnmciOTe2+8HAyQt7dEBxmEm8fNMZ
-eqNjo5jSpkeBJBKdXqF+ri5kBAgWoFChh7w8ae0TgHKxWckWdPGoeal1tBvkNSJQ
-RjtnIPhojWie5FutYmKq7BbDP24idzNYEjIWHDMD1rPcMEUmCEw=
-=Cb4p
------END PGP SIGNATURE-----
-
---qfwnk4lxta2snkiz--
