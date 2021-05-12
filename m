@@ -2,103 +2,339 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A67E837EB89
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1DE37EB8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381031AbhELTdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:33:14 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46500 "EHLO mx2.suse.de"
+        id S1381086AbhELTdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:33:22 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:24588 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347725AbhELR30 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 13:29:26 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 55EE6AFC2;
-        Wed, 12 May 2021 17:28:17 +0000 (UTC)
-Subject: Re: [PATCH v1 7/8] null_blk: add error handling support for
- add_disk()
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     axboe@kernel.dk, bvanassche@acm.org, ming.lei@redhat.com,
-        hch@infradead.org, jack@suse.cz, osandov@fb.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210512064629.13899-1-mcgrof@kernel.org>
- <20210512064629.13899-8-mcgrof@kernel.org>
- <842b6a8d-8880-a0da-a38b-39378dc6ebb9@suse.de>
- <20210512164709.GA4332@42.do-not-panic.com>
- <d519b9ce-ad28-a266-786f-4128e0b91b9f@suse.de>
- <20210512172039.GQ4332@42.do-not-panic.com>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <096c9d6f-b765-ab70-098e-ab64d8b411df@suse.de>
-Date:   Wed, 12 May 2021 19:28:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
-MIME-Version: 1.0
-In-Reply-To: <20210512172039.GQ4332@42.do-not-panic.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S239160AbhELRav (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 13:30:51 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620840575; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=UflwmnQChaQlCsa3Tb1vT/Wzj+LkoGJrbouQ38Qv1pw=; b=ZpzHbuknHLjEKlpEMO4aryRvHaeQRWpWGlwix1I6565mXs8Ka8EthB2Kb8bz0rV5Z7T7pBdy
+ IcUM4XOB11mMiO99cB/2FXbCzzTmzs5FeofM5bogNG11Fb6L7OP5ciWMJj2lWyddrl5uA8+W
+ mjsGSp487T32fr+RXTz0TJzdBkA=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 609c107ce0211609c43b067d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 12 May 2021 17:29:32
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 99C29C4323A; Wed, 12 May 2021 17:29:32 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8A9BEC43460;
+        Wed, 12 May 2021 17:29:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8A9BEC43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
+From:   Kuogee Hsieh <khsieh@codeaurora.org>
+To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
+        vkoul@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org
+Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        khsieh@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] drm/msm/dp: handle irq_hpd with sink_count = 0 correctly
+Date:   Wed, 12 May 2021 10:29:18 -0700
+Message-Id: <1620840558-28684-1-git-send-email-khsieh@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/12/21 7:20 PM, Luis Chamberlain wrote:
-> On Wed, May 12, 2021 at 07:12:03PM +0200, Hannes Reinecke wrote:
->> On 5/12/21 6:47 PM, Luis Chamberlain wrote:
->>> On Wed, May 12, 2021 at 05:16:39PM +0200, Hannes Reinecke wrote:
->>>> On 5/12/21 8:46 AM, Luis Chamberlain wrote:
->>>>> We never checked for errors on add_disk() as this function
->>>>> returned void. Now that this is fixed, use the shiny new
->>>>> error handling.
->>>>>
->>>>> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
->>>>> ---
->>>>>     drivers/block/null_blk/main.c | 9 +++++++--
->>>>>     1 file changed, 7 insertions(+), 2 deletions(-)
->>>>>
->>>>> diff --git a/drivers/block/null_blk/main.c b/drivers/block/null_blk/main.c
->>>>> index 5f006d9e1472..2346d1292b26 100644
->>>>> --- a/drivers/block/null_blk/main.c
->>>>> +++ b/drivers/block/null_blk/main.c
->>>>> @@ -1699,6 +1699,7 @@ static int init_driver_queues(struct nullb *nullb)
->>>>>     static int null_gendisk_register(struct nullb *nullb)
->>>>>     {
->>>>> +	int ret;
->>>>>     	sector_t size = ((sector_t)nullb->dev->size * SZ_1M) >> SECTOR_SHIFT;
->>>>>     	struct gendisk *disk;
->>>>> @@ -1719,13 +1720,17 @@ static int null_gendisk_register(struct nullb *nullb)
->>>>>     	strncpy(disk->disk_name, nullb->disk_name, DISK_NAME_LEN);
->>>>>     	if (nullb->dev->zoned) {
->>>>> -		int ret = null_register_zoned_dev(nullb);
->>>>> +		ret = null_register_zoned_dev(nullb);
->>>>>     		if (ret)
->>>>>     			return ret;
->>>>>     	}
->>>>> -	add_disk(disk);
->>>>> +	ret = add_disk(disk);
->>>>> +	if (ret) {
->>>>
->>>> unregister_zoned_device() ?
->>>
->>> That function does not exist, do you mean null_free_zoned_dev()? If so
->>> that is done by the caller.
->>>
->> What I intended to say is that you are calling 'null_register_zoned_dev()'
->> at one point, but don't call a cleanup function if there is an error later
->> in the path, leaving the caller to guess whether null_register_zoned_dev()
->> has been called or not.
->> So we should call the cleanup function here, too.
-> 
-> The cleanup for zone stuff is done on the caller.
-> 
-My point being: how does he know?
-The zone stuff might or might not be initialized.
-Why not do the cleanup action in the error path of this function?
+irq_hpd interrupt should be handled after dongle plugged in and
+before dongle unplugged. Hence irq_hpd interrupt is enabled at
+the end of the plugin handle and disabled at the beginning of
+unplugged handle. Current irq_hpd with sink_count = 0 is wrongly
+handled same as the dongle unplugged which tears down the mainlink
+and disables the phy. This patch fixes this problem by only tearing
+down the mainlink but keeping phy enabled at irq_hpd with
+sink_count = 0 handle so that next irq_hpe with sink_count =1 can be
+handled by setup mainlink only.
 
-Cheers,
+Changes in v2:
+-- add ctrl->phy_Power_count
 
-Hannes
+Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+---
+ drivers/gpu/drm/msm/dp/dp_catalog.c |  5 +--
+ drivers/gpu/drm/msm/dp/dp_ctrl.c    | 83 ++++++++++++++++++++++++++++++++++---
+ drivers/gpu/drm/msm/dp/dp_ctrl.h    |  2 +
+ drivers/gpu/drm/msm/dp/dp_display.c | 46 +++++++++++++++-----
+ 4 files changed, 118 insertions(+), 18 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.c b/drivers/gpu/drm/msm/dp/dp_catalog.c
+index b1a9b1b..f4f53f2 100644
+--- a/drivers/gpu/drm/msm/dp/dp_catalog.c
++++ b/drivers/gpu/drm/msm/dp/dp_catalog.c
+@@ -582,10 +582,9 @@ void dp_catalog_ctrl_hpd_config(struct dp_catalog *dp_catalog)
+ 
+ 	u32 reftimer = dp_read_aux(catalog, REG_DP_DP_HPD_REFTIMER);
+ 
+-	/* enable HPD interrupts */
++	/* enable HPD plug and unplug interrupts */
+ 	dp_catalog_hpd_config_intr(dp_catalog,
+-		DP_DP_HPD_PLUG_INT_MASK | DP_DP_IRQ_HPD_INT_MASK
+-		| DP_DP_HPD_UNPLUG_INT_MASK | DP_DP_HPD_REPLUG_INT_MASK, true);
++		DP_DP_HPD_PLUG_INT_MASK | DP_DP_HPD_UNPLUG_INT_MASK, true);
+ 
+ 	/* Configure REFTIMER and enable it */
+ 	reftimer |= DP_DP_HPD_REFTIMER_ENABLE;
+diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+index 8d59eb9..b5bed5f 100644
+--- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
++++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+@@ -77,6 +77,8 @@ struct dp_ctrl_private {
+ 	struct dp_parser *parser;
+ 	struct dp_catalog *catalog;
+ 
++	int phy_power_count;
++
+ 	struct opp_table *opp_table;
+ 
+ 	struct completion idle_comp;
+@@ -1334,8 +1336,11 @@ static int dp_ctrl_enable_mainlink_clocks(struct dp_ctrl_private *ctrl)
+ 	dp_ctrl_set_clock_rate(ctrl, DP_CTRL_PM, "ctrl_link",
+ 					ctrl->link->link_params.rate * 1000);
+ 
+-	phy_configure(phy, &dp_io->phy_opts);
+-	phy_power_on(phy);
++	if (!ctrl->phy_power_count) {
++		phy_configure(phy, &dp_io->phy_opts);
++		phy_power_on(phy);
++		ctrl->phy_power_count++;
++	}
+ 
+ 	ret = dp_power_clk_enable(ctrl->power, DP_CTRL_PM, true);
+ 	if (ret)
+@@ -1414,6 +1419,12 @@ void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl)
+ 	phy = dp_io->phy;
+ 
+ 	dp_catalog_ctrl_enable_irq(ctrl->catalog, false);
++
++	if (ctrl->phy_power_count) {
++		phy_power_off(phy);
++		ctrl->phy_power_count--;
++	}
++
+ 	phy_exit(phy);
+ 
+ 	DRM_DEBUG_DP("Host deinitialized successfully\n");
+@@ -1456,7 +1467,12 @@ static int dp_ctrl_reinitialize_mainlink(struct dp_ctrl_private *ctrl)
+ 		DRM_ERROR("Failed to disable clocks. ret=%d\n", ret);
+ 		return ret;
+ 	}
+-	phy_power_off(phy);
++
++	if (ctrl->phy_power_count) {
++		phy_power_off(phy);
++		ctrl->phy_power_count--;
++	}
++
+ 	/* hw recommended delay before re-enabling clocks */
+ 	msleep(20);
+ 
+@@ -1487,7 +1503,11 @@ static int dp_ctrl_deinitialize_mainlink(struct dp_ctrl_private *ctrl)
+ 		DRM_ERROR("Failed to disable link clocks. ret=%d\n", ret);
+ 	}
+ 
+-	phy_power_off(phy);
++	if (ctrl->phy_power_count) {
++		phy_power_off(phy);
++		ctrl->phy_power_count--;
++	}
++
+ 	phy_exit(phy);
+ 
+ 	return 0;
+@@ -1811,6 +1831,55 @@ int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl)
+ 	return ret;
+ }
+ 
++int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl)
++{
++	struct dp_ctrl_private *ctrl;
++	int ret = 0;
++
++	if (!dp_ctrl)
++		return -EINVAL;
++
++	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
++
++	dp_catalog_ctrl_mainlink_ctrl(ctrl->catalog, false);
++
++	ret = dp_power_clk_enable(ctrl->power, DP_STREAM_PM, false);
++	if (ret)
++		DRM_ERROR("Failed to disable pixel clocks. ret=%d\n", ret);
++
++	ret = dp_power_clk_enable(ctrl->power, DP_CTRL_PM, false);
++	if (ret)
++		DRM_ERROR("Failed to disable link clocks. ret=%d\n", ret);
++
++	DRM_DEBUG_DP("DP off link/stream done\n");
++	return ret;
++}
++
++void dp_ctrl_off_phy(struct dp_ctrl *dp_ctrl)
++{
++	struct dp_ctrl_private *ctrl;
++	struct dp_io *dp_io;
++	struct phy *phy;
++
++	if (!dp_ctrl)
++		return;
++
++	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
++	dp_io = &ctrl->parser->io;
++	phy = dp_io->phy;
++
++	dp_catalog_ctrl_reset(ctrl->catalog);
++
++	if (ctrl->phy_power_count) {
++		phy_power_off(phy);
++		ctrl->phy_power_count--;
++	}
++
++	phy_exit(phy);
++
++	DRM_DEBUG_DP("DP off phy done\n");
++}
++
+ int dp_ctrl_off(struct dp_ctrl *dp_ctrl)
+ {
+ 	struct dp_ctrl_private *ctrl;
+@@ -1838,7 +1907,11 @@ int dp_ctrl_off(struct dp_ctrl *dp_ctrl)
+ 		DRM_ERROR("Failed to disable link clocks. ret=%d\n", ret);
+ 	}
+ 
+-	phy_power_off(phy);
++	if (ctrl->phy_power_count) {
++		phy_power_off(phy);
++		ctrl->phy_power_count--;
++	}
++
+ 	phy_exit(phy);
+ 
+ 	DRM_DEBUG_DP("DP off done\n");
+diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.h b/drivers/gpu/drm/msm/dp/dp_ctrl.h
+index a836bd3..25e4f75 100644
+--- a/drivers/gpu/drm/msm/dp/dp_ctrl.h
++++ b/drivers/gpu/drm/msm/dp/dp_ctrl.h
+@@ -23,6 +23,8 @@ int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip, bool reset);
+ void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl);
+ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl);
+ int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl);
++int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl);
++void dp_ctrl_off_phy(struct dp_ctrl *dp_ctrl);
+ int dp_ctrl_off(struct dp_ctrl *dp_ctrl);
+ void dp_ctrl_push_idle(struct dp_ctrl *dp_ctrl);
+ void dp_ctrl_isr(struct dp_ctrl *dp_ctrl);
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+index 0ba71c7..c2b2050 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.c
++++ b/drivers/gpu/drm/msm/dp/dp_display.c
+@@ -570,6 +570,10 @@ static int dp_hpd_plug_handle(struct dp_display_private *dp, u32 data)
+ 		dp_add_event(dp, EV_CONNECT_PENDING_TIMEOUT, 0, tout);
+ 	}
+ 
++	/* enable HDP irq_hpd/replug interrupt */
++	dp_catalog_hpd_config_intr(dp->catalog,
++		DP_DP_IRQ_HPD_INT_MASK | DP_DP_HPD_REPLUG_INT_MASK, true);
++
+ 	mutex_unlock(&dp->event_mutex);
+ 
+ 	/* uevent will complete connection part */
+@@ -619,7 +623,26 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
+ 	mutex_lock(&dp->event_mutex);
+ 
+ 	state = dp->hpd_state;
+-	if (state == ST_DISCONNECT_PENDING || state == ST_DISCONNECTED) {
++
++	/* disable irq_hpd/replug interrupts */
++	dp_catalog_hpd_config_intr(dp->catalog,
++		DP_DP_IRQ_HPD_INT_MASK | DP_DP_HPD_REPLUG_INT_MASK, false);
++
++	/* unplugged, no more irq_hpd handle */
++	dp_del_event(dp, EV_IRQ_HPD_INT);
++
++	if (state == ST_DISCONNECTED) {
++		/* triggered by irq_hdp with sink_count = 0 */
++		if (dp->link->sink_count == 0) {
++			dp_ctrl_off_phy(dp->ctrl);
++			hpd->hpd_high = 0;
++			dp->core_initialized = false;
++		}
++		mutex_unlock(&dp->event_mutex);
++		return 0;
++	}
++
++	if (state == ST_DISCONNECT_PENDING) {
+ 		mutex_unlock(&dp->event_mutex);
+ 		return 0;
+ 	}
+@@ -633,9 +656,8 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
+ 
+ 	dp->hpd_state = ST_DISCONNECT_PENDING;
+ 
+-	/* disable HPD plug interrupt until disconnect is done */
+-	dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_PLUG_INT_MASK
+-				| DP_DP_IRQ_HPD_INT_MASK, false);
++	/* disable HPD plug interrupts */
++	dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_PLUG_INT_MASK, false);
+ 
+ 	hpd->hpd_high = 0;
+ 
+@@ -652,8 +674,8 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
+ 	reinit_completion(&dp->audio_comp);
+ 	dp_display_handle_plugged_change(g_dp_display, false);
+ 
+-	dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_PLUG_INT_MASK |
+-					DP_DP_IRQ_HPD_INT_MASK, true);
++	/* enable HDP plug interrupt to prepare for next plugin */
++	dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_PLUG_INT_MASK, true);
+ 
+ 	/* uevent will complete disconnection part */
+ 	mutex_unlock(&dp->event_mutex);
+@@ -684,7 +706,7 @@ static int dp_irq_hpd_handle(struct dp_display_private *dp, u32 data)
+ 
+ 	/* irq_hpd can happen at either connected or disconnected state */
+ 	state =  dp->hpd_state;
+-	if (state == ST_DISPLAY_OFF) {
++	if (state == ST_DISPLAY_OFF || state == ST_SUSPENDED) {
+ 		mutex_unlock(&dp->event_mutex);
+ 		return 0;
+ 	}
+@@ -903,9 +925,13 @@ static int dp_display_disable(struct dp_display_private *dp, u32 data)
+ 
+ 	dp_display->audio_enabled = false;
+ 
+-	dp_ctrl_off(dp->ctrl);
+-
+-	dp->core_initialized = false;
++	/* triggered by irq_hpd with sink_count = 0 */
++	if (dp->link->sink_count == 0) {
++		dp_ctrl_off_link_stream(dp->ctrl);
++	} else {
++		dp_ctrl_off(dp->ctrl);
++		dp->core_initialized = false;
++	}
+ 
+ 	dp_display->power_on = false;
+ 
 -- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
