@@ -2,42 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3C6737EB78
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2976837EB7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380545AbhELTb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:31:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46942 "EHLO mail.kernel.org"
+        id S1380596AbhELTcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:32:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47142 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241558AbhELRIj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 13:08:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D7F86134F;
-        Wed, 12 May 2021 17:05:49 +0000 (UTC)
+        id S239597AbhELRIn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 13:08:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 43602613BE;
+        Wed, 12 May 2021 17:05:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620839150;
-        bh=McpoRHLvMNh7o2t4R0tgVJ81OfdHjOJvOW40DSLsONA=;
+        s=k20201202; t=1620839152;
+        bh=37b6sYm47fj9tJA5pTEY7KlL0GHnz0MhaTe/CechS7Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l7xcXoM8zOMHdtaZmk5zK+SKwdtBjgQ0F6jnyeEf6kePqhGPY1iPVwo4oz6VDm70w
-         Hg5y0IpuzkqyakYgb1VAyZxGUF+txoilBGAWQvPokMl+e3ntgbot/FBFbQyW3t+Bmo
-         a5Y0WIph0a+V25+nHhnTdbH6u0SFvBsUsFI5pUZjuH+uKQgg0WxodP0XISJqyfSAmz
-         DzCj+ARha8iOsJXBjqjlJayBMDSgsnUwSXePS2btIR7ku5bJuBvi1694rsy7UY7JZb
-         +/hb3GAM+xkaa19uz/ZnH4cu7b4ZWEGQfkxxuYbV4jqrZuZ5OYNCF04AXT4oU7edHF
-         UEgtBfMPhXpRw==
+        b=XcSm6+p3hy+PvvTg8/wLohTQBoLS8yJlYN2iqkYRmpImlZ3XtsOcp53Fji26Y2ADc
+         NeTkQwIrSzD7TGVcWTASkL3BrSZ0qscMK3ddoS3V38aaGoVfmOPVIhhFjtjBPC6mRz
+         R56qyynzQmbMlLhwGpHL1TO8JAZMOvGqQ+8xJ2X2KPvfCN+j6ntN3e/C/1KvXJqA2y
+         u0+AeBDZM7xPdN3eZV61vkwLnt3SWeqAExhc9+j4MLTURbSIcokksQG5ZOAPPd1++c
+         I/v6HfSdBLofCKWfQg5U2cejU7c5FovHIPw74c9Z8RA5z6s64reHKzTTNgN4LqI2Iq
+         QIpBw30ZAQDJQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     James Schulman <james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Vitaly Rodionov <vitalyr@opensource.cirrus.com>,
-        Jaroslav Kysela <perex@perex.cz>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
 Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        patches@opensource.cirrus.com, alsa-devel@alsa-project.org
-Subject: Re: [PATCH] ASoC: cs42l42: make HSBIAS_SENSE_EN optional
-Date:   Wed, 12 May 2021 18:04:45 +0100
-Message-Id: <162083892845.44734.6387839662389398582.b4-ty@kernel.org>
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        clang-built-linux@googlegroups.com,
+        kernel test robot <lkp@intel.com>,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH] Revert "ASoC: q6dsp: q6afe: remove unneeded dead-store initialization"
+Date:   Wed, 12 May 2021 18:04:46 +0100
+Message-Id: <162083892845.44734.12776647391535930277.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210511145220.125760-1-vitalyr@opensource.cirrus.com>
-References: <20210511145220.125760-1-vitalyr@opensource.cirrus.com>
+In-Reply-To: <20210511190306.2418917-1-nathan@kernel.org>
+References: <20210511190306.2418917-1-nathan@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -45,13 +47,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 May 2021 15:52:20 +0100, Vitaly Rodionov wrote:
-> HSBIAS_SENSE_EN configures HSBIAS output current sense through
-> the external 2.21-k resistor. HSBIAS_SENSE is hardware feature to reduce
-> the potential pop noise during the headset plug out slowly. But on some
-> platforms ESD voltage will affect it causing test to fail, especially
-> with CTIA headset type. For different hardware setups, a designer might
-> want to tweak default behavior.
+On Tue, 11 May 2021 12:03:06 -0700, Nathan Chancellor wrote:
+> This reverts commit 5f1b95d08de712327e452d082a50fded435ec884.
+> 
+> The warnings that commit 5f1b95d08de7 ("ASoC: q6dsp: q6afe: remove
+> unneeded dead-store initialization") was trying to fix were already
+> fixed in commit 12900bacb4f3 ("ASoC: qcom: q6afe: remove useless
+> assignments"). With both commits in the tree, port_id is uninitialized,
+> as pointed out by clang:
+> 
+> [...]
 
 Applied to
 
@@ -59,8 +64,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: cs42l42: make HSBIAS_SENSE_EN optional
-      commit: c9f2e3c3ddab87d93cde99f6da10dd00c1d1edb9
+[1/1] Revert "ASoC: q6dsp: q6afe: remove unneeded dead-store initialization"
+      commit: 9b7493468fa7eeef2e86b8c646c0535c00eed3e2
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
