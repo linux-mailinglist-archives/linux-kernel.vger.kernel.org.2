@@ -2,140 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89DCF37EB6E
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB41137EB6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380309AbhELTa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:30:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344925AbhELRDF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 13:03:05 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 230CFC06137B
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 09:59:21 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id 33so296005pgo.5
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 09:59:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1IimKhEf1GjkO4us3Bblmu7m4xRs4WJcM8SG6dGEVnU=;
-        b=QJK2Pqnu2zSa2SC/LK0xVCwuyR3e+Lnssnov9f6PPsJdkEGhUDsGq0I83Okd+Hbrpp
-         t52/ABLV5uiJ+D98Uuhdg44+tZLhaANO6QeXMUrZ20yQHNFs/TuE5iJr44lyzku+nNZE
-         nrWuBmfRrT5i3cUYx9nRuDEnl4YZllznre45Hn5hZbS7QRlLJl9/hinS7DdrNp4jvDrA
-         OXUAwojw5yraob2G7RuoAa441yd1Lq1RgC/FO9ElpE7UtkVoDPRV0pxPYs6bAS2T0iXK
-         uhCrzjuUKUsDswDDqAT9kiQZf4GlwX6lqsOJVMxFV0ynV0UErH+bcsudfXfHAQWZra0D
-         BKhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1IimKhEf1GjkO4us3Bblmu7m4xRs4WJcM8SG6dGEVnU=;
-        b=gXGAgyPHy+OFofie9FvfU0nrnI1rZbTbQaRF3ZT5UFDV5IPMGyiaNXH1Qb3aj9cnL6
-         +BhTt1ENFdELPF9Fo+Q+40eiMcvKE8JmIQF6jU8oI5odixRLny3Vdv0vT+shlv2hooEq
-         /UzDyujuFtXHf+VbosC4zo85KtI+Mxc+IAe1tVhqhohTxQGExPzWNCQ00eFEamhQNotS
-         crvb0uSpIzlTWZAymNF1F5mUs4sI4Bq9KRO71idyKzN41JAwiKUdAQQcgO4VAt3JKjzg
-         IT1/fuOMfIOsOsB6+MNe6ABaHZuCdGizqU2IeNtanubFBMQZ9t31eXmiNbdw5tKjyd+N
-         lrHA==
-X-Gm-Message-State: AOAM530jxkZSaUf0NwykzlLFZWWWPG0XbXJIlWSs30YiVxSclJgw0WtT
-        e8UX4uq9vVYfQjhIvT2rXcXDqZdKvdgIOw==
-X-Google-Smtp-Source: ABdhPJxUFI/X3MMDN3e7n8EhHUWxHfQiq/e8rBV1jxYrxKhOcDEXFOAbfwaXYNN/IR3OJx1ogBehAQ==
-X-Received: by 2002:a05:6a00:1409:b029:27f:fb6a:24b5 with SMTP id l9-20020a056a001409b029027ffb6a24b5mr36305473pfu.18.1620838760501;
-        Wed, 12 May 2021 09:59:20 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id c16sm315246pgl.79.2021.05.12.09.59.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 09:59:19 -0700 (PDT)
-Date:   Wed, 12 May 2021 16:59:15 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Wanpeng Li <kernellwp@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [PATCH 2/3] KVM: X86: Bail out of direct yield in case of
- undercomitted scenarios
-Message-ID: <YJwJYxM3BBuQEXw8@google.com>
-References: <1620466310-8428-1-git-send-email-wanpengli@tencent.com>
- <1620466310-8428-2-git-send-email-wanpengli@tencent.com>
- <YJr6v+hfMJxI2iAn@google.com>
- <CANRm+Czbc9AX3=Qj7dDCENyWj27drWniimZLnyKd9=--Ag8F+g@mail.gmail.com>
+        id S1380254AbhELTat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:30:49 -0400
+Received: from foss.arm.com ([217.140.110.172]:44850 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344065AbhELRAo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 13:00:44 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5845D31B;
+        Wed, 12 May 2021 09:59:36 -0700 (PDT)
+Received: from [192.168.0.110] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4C46D3F719;
+        Wed, 12 May 2021 09:59:34 -0700 (PDT)
+Subject: Re: [PATCH 5.4 000/244] 5.4.119-rc1 review
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        kvmarm@lists.cs.columbia.edu
+References: <20210512144743.039977287@linuxfoundation.org>
+ <CA+G9fYs1AH8ZNWMJ=H4TY5C6bqp--=SZfW9P=WbB85qSBDkuXw@mail.gmail.com>
+From:   Alexandru Elisei <alexandru.elisei@arm.com>
+Message-ID: <b7df0d7f-e582-6a0d-2385-b9fce50f9106@arm.com>
+Date:   Wed, 12 May 2021 18:00:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANRm+Czbc9AX3=Qj7dDCENyWj27drWniimZLnyKd9=--Ag8F+g@mail.gmail.com>
+In-Reply-To: <CA+G9fYs1AH8ZNWMJ=H4TY5C6bqp--=SZfW9P=WbB85qSBDkuXw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021, Wanpeng Li wrote:
-> On Wed, 12 May 2021 at 05:44, Sean Christopherson <seanjc@google.com> wrote:
-> >
-> > On Sat, May 08, 2021, Wanpeng Li wrote:
-> > > From: Wanpeng Li <wanpengli@tencent.com>
-> > >
-> > > In case of undercomitted scenarios, vCPU can get scheduling easily,
-> > > kvm_vcpu_yield_to adds extra overhead, we can observe a lot of race
-> > > between vcpu->ready is true and yield fails due to p->state is
-> > > TASK_RUNNING. Let's bail out is such scenarios by checking the length
-> > > of current cpu runqueue.
-> > >
-> > > Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-> > > ---
-> > >  arch/x86/kvm/x86.c | 3 +++
-> > >  1 file changed, 3 insertions(+)
-> > >
-> > > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > > index 5bd550e..c0244a6 100644
-> > > --- a/arch/x86/kvm/x86.c
-> > > +++ b/arch/x86/kvm/x86.c
-> > > @@ -8358,6 +8358,9 @@ static void kvm_sched_yield(struct kvm_vcpu *vcpu, unsigned long dest_id)
-> > >       struct kvm_vcpu *target = NULL;
-> > >       struct kvm_apic_map *map;
-> > >
-> > > +     if (single_task_running())
-> > > +             goto no_yield;
-> > > +
-> >
-> > Hmm, could we push the result of kvm_sched_yield() down into the guest?
-> > Currently the guest bails after the first attempt, which is perfect for this
-> > scenario, but it seems like it would make sense to keep trying to yield if there
-> > are multiple preempted vCPUs and
-> 
-> It can have a race in case of sustain yield if there are multiple
-> preempted vCPUs , the vCPU which you intend to yield may have already
-> completed to handle IPI and be preempted now when the yielded sender
-> is scheduled again and checks the next preempted candidate.
+Hi Naresh,
 
-Ah, right, don't want to penalize the happy case.
+Thank you for the report!
 
-> > Unrelated to this patch, but it's the first time I've really looked at the guest
-> > side of directed yield...
-> >
-> > Wouldn't it also make sense for the guest side to hook .send_call_func_single_ipi?
-> 
-> reschedule ipi is called by .smp_send_reschedule hook, there are a lot
-> of researches intend to accelerate idle vCPU reactivation, my original
-> attemption is to boost synchronization primitive, I believe we need a
-> lot of benchmarkings to consider inter-VM fairness and performance
-> benefit for  hooks .send_call_func_single_ipi and
-> .smp_send_reschedule.
+On 5/12/21 5:47 PM, Naresh Kamboju wrote:
+> On Wed, 12 May 2021 at 20:22, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+>> This is the start of the stable review cycle for the 5.4.119 release.
+>> There are 244 patches in this series, all will be posted as a response
+>> to this one.  If anyone has any issues with these being applied, please
+>> let me know.
+>>
+>> Responses should be made by Fri, 14 May 2021 14:47:09 +0000.
+>> Anything received after that time might be too late.
+>>
+>> The whole patch series can be found in one patch at:
+>>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.119-rc1.gz
+>> or in the git tree and branch at:
+>>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+>> and the diffstat can be found below.
+>>
+>> thanks,
+>>
+>> greg k-h
+> Build regression detected.
+>
+>> Alexandru Elisei <alexandru.elisei@arm.com>
+>>     KVM: arm64: Initialize VCPU mdcr_el2 before loading it
+> stable rc 5.4 arm axm55xx_defconfig builds failed due to these
+> warnings / errors.
+>   - arm (axm55xx_defconfig) with gcc-8,9 and 10 failed
+>
+> arch/arm/kvm/../../../virt/kvm/arm/arm.c: In function 'kvm_vcpu_first_run_init':
+> arch/arm/kvm/../../../virt/kvm/arm/arm.c:582:2: error: implicit
+> declaration of function 'kvm_arm_vcpu_init_debug'; did you mean
+> 'kvm_arm_init_debug'? [-Werror=implicit-function-declaration]
+>   kvm_arm_vcpu_init_debug(vcpu);
+>   ^~~~~~~~~~~~~~~~~~~~~~~
+>   kvm_arm_init_debug
+> cc1: some warnings being treated as errors
 
-I was thinking of the 2 vCPU case.  If the VM has 2 vCPUs, then this
+This is my fault, in Linux v5.4 KVM for arm is still around, and there's no
+prototype for the function when compiling for arm. I suspect that's also the case
+for v4.19.
 
-	/*
-	 * Choose the most efficient way to send an IPI. Note that the
-	 * number of CPUs might be zero due to concurrent changes to the
-	 * provided mask.
-	 */
-	if (nr_cpus == 1)
-		send_call_function_single_ipi(last_cpu);
-	else if (likely(nr_cpus > 1))
-		arch_send_call_function_ipi_mask(cfd->cpumask_ipi);
+I made this change to get it to build:
 
-means .send_call_func_single_ipi() will always be used to send an IPI to the
-other vCPU, and thus 2 vCPU VMs will never utilize PV yield.
+$ git diff
+diff --git a/arch/arm/include/asm/kvm_host.h b/arch/arm/include/asm/kvm_host.h
+index dd03d5e01a94..32564b017ba0 100644
+--- a/arch/arm/include/asm/kvm_host.h
++++ b/arch/arm/include/asm/kvm_host.h
+@@ -335,6 +335,7 @@ static inline void kvm_arch_sched_in(struct kvm_vcpu *vcpu,
+int cpu) {}
+ static inline void kvm_arch_vcpu_block_finish(struct kvm_vcpu *vcpu) {}
+ 
+ static inline void kvm_arm_init_debug(void) {}
++static inline void kvm_arm_vcpu_init_debug(struct kvm_vcpu *vcpu) {}
+ static inline void kvm_arm_setup_debug(struct kvm_vcpu *vcpu) {}
+ static inline void kvm_arm_clear_debug(struct kvm_vcpu *vcpu) {}
+ static inline void kvm_arm_reset_debug_ptr(struct kvm_vcpu *vcpu) {}
+
+which matches the stub for kvm_arm_init_debug(). I can spin a patch out of it and
+send it for 5.4 and 4.19. Marc, what do you think?
+
+Thanks,
+
+Alex
+
+>
+>
+> steps to reproduce:
+> --------------------
+> #!/bin/sh
+>
+> # TuxMake is a command line tool and Python library that provides
+> # portable and repeatable Linux kernel builds across a variety of
+> # architectures, toolchains, kernel configurations, and make targets.
+> #
+> # TuxMake supports the concept of runtimes.
+> # See https://docs.tuxmake.org/runtimes/, for that to work it requires
+> # that you install podman or docker on your system.
+> #
+> # To install tuxmake on your system globally:
+> # sudo pip3 install -U tuxmake
+> #
+> # See https://docs.tuxmake.org/ for complete documentation.
+>
+>
+> tuxmake --runtime podman --target-arch arm --toolchain gcc-8 --kconfig
+> axm55xx_defconfig
+>
+> ref:
+> https://builds.tuxbuild.com/1sRT0HOyHnZ8N5ktJmaEcMIQZL0/
+>
+>
+> --
+> Linaro LKFT
+> https://lkft.linaro.org
