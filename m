@@ -2,256 +2,458 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7BD937B37C
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 03:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AED8E37B37F
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 03:31:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230009AbhELBbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 21:31:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42408 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229736AbhELBbR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 21:31:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 97A8C61927;
-        Wed, 12 May 2021 01:30:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620783009;
-        bh=Vg/kR1hjFwUfoVRRdbozqj39FwPrLpjJeupkthrO8dg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lX+jqid+kjhN2QdPnhITLk0QCYptvNdWPIUcxl6ZvEm/1sSuT86Io+0dBEHLXet39
-         oFlbVHlB80OIgUgofgyOWFXLj9jnSHusLOxK5U39lXpMCIdDoFxnOl7Gw1SJNPIJyc
-         AkTBlE3RwfhuniiBbnbRxmG6F6n1OegYg0Uc4cf3NmxcK5vhnRMvUlHdV+V2DiTc7U
-         D2HK/zpriKrBtRbDJ5ljVUeRqxxRD9ewEmZ5T2GUZXyLl3pe9eVPbyYOFL2BM1rTpS
-         j2uVKgfLi6JfwIhFaRHeqNUbenCnp1qG5CrhP38UqBvn5geNiHykbJmGcfXyBqUErl
-         /c6LzaD3ifpBQ==
-Date:   Tue, 11 May 2021 18:30:06 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
-        darrick.wong@oracle.com, dan.j.williams@intel.com,
-        willy@infradead.org, viro@zeniv.linux.org.uk, david@fromorbit.com,
-        hch@lst.de, rgoldwyn@suse.de
-Subject: Re: [PATCH v5 6/7] fs/xfs: Handle CoW for fsdax write() path
-Message-ID: <20210512013006.GV8582@magnolia>
-References: <20210511030933.3080921-1-ruansy.fnst@fujitsu.com>
- <20210511030933.3080921-7-ruansy.fnst@fujitsu.com>
+        id S230018AbhELBcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 21:32:08 -0400
+Received: from mail-ej1-f50.google.com ([209.85.218.50]:40911 "EHLO
+        mail-ej1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229736AbhELBcG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 21:32:06 -0400
+Received: by mail-ej1-f50.google.com with SMTP id n2so32537742ejy.7;
+        Tue, 11 May 2021 18:30:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8vN57tc+R9hCBTn9Gn7iqqxIUedyS/lu3ldsWeszRTk=;
+        b=jo+5AaauKV8XwgBZEc++siXOuVZ+36ArcLYUdWpXPKeQw5/OuTkJQAqtD3wOt/tdAR
+         VuS57UMunDx5Y0Zkqe6vBqNgB+sHFp/UF8Z5IpOHEi5OxT90aHW5cyU9aq+cSb1c8GGq
+         rlVPTewCu0P1fuBCYjy/BeRXbuOb9Hcd/IeVE0WEtC7/FFBehbN309TJfOr6ze8U2n5v
+         cO/m+R9brzRmt6Y/N8G3bUQxKo0B4NwibhMaLNmm8eWUpGFxN6D0Dx4hKsSXhzOe+/WH
+         JgIk22XYXwEi965KOiGl6wPMO4yDDkmMQ2Ua7vJ/5cZflqiFTaOhNDdE+XQ2g6i6ZYoK
+         W2Gw==
+X-Gm-Message-State: AOAM531Dglqcedszgy998qf6/RRRJ54X1vh48WHrpiX56KVy+Nf7f/eX
+        Ig0C8saqUMsBxjT9Zl4MjZ4=
+X-Google-Smtp-Source: ABdhPJynP0+45XLQLKgIsayB/9bUdi9a50i/8RizbVOnKU+z7SAOu3OJvNOvh6znf181H1sJZKy0AA==
+X-Received: by 2002:a17:906:7302:: with SMTP id di2mr16064552ejc.409.1620783058107;
+        Tue, 11 May 2021 18:30:58 -0700 (PDT)
+Received: from localhost ([2a02:8308:387:c900:a7b5:b859:9449:c07b])
+        by smtp.gmail.com with ESMTPSA id w2sm14460577edl.53.2021.05.11.18.30.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 May 2021 18:30:57 -0700 (PDT)
+From:   =?UTF-8?q?V=C3=A1clav=20Kubern=C3=A1t?= <kubernat@cesnet.cz>
+To:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?V=C3=A1clav=20Kubern=C3=A1t?= <kubernat@cesnet.cz>
+Subject: [PATCH v5 1/5] hwmon: (max31790) Rework to use regmap
+Date:   Wed, 12 May 2021 03:30:47 +0200
+Message-Id: <20210512013052.903297-1-kubernat@cesnet.cz>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210511030933.3080921-7-ruansy.fnst@fujitsu.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 11:09:32AM +0800, Shiyang Ruan wrote:
-> In fsdax mode, WRITE and ZERO on a shared extent need CoW performed. After
-> CoW, new allocated extents needs to be remapped to the file.  So, add an
-> iomap_end for dax write ops to do the remapping work.
-> 
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-> ---
->  fs/xfs/xfs_bmap_util.c |  3 +--
->  fs/xfs/xfs_file.c      |  9 +++----
->  fs/xfs/xfs_iomap.c     | 61 +++++++++++++++++++++++++++++++++++++++++-
->  fs/xfs/xfs_iomap.h     |  4 +++
->  fs/xfs/xfs_iops.c      |  7 +++--
->  fs/xfs/xfs_reflink.c   |  3 +--
->  6 files changed, 72 insertions(+), 15 deletions(-)
-> 
-> diff --git a/fs/xfs/xfs_bmap_util.c b/fs/xfs/xfs_bmap_util.c
-> index a5e9d7d34023..2a36dc93ff27 100644
-> --- a/fs/xfs/xfs_bmap_util.c
-> +++ b/fs/xfs/xfs_bmap_util.c
-> @@ -965,8 +965,7 @@ xfs_free_file_space(
->  		return 0;
->  	if (offset + len > XFS_ISIZE(ip))
->  		len = XFS_ISIZE(ip) - offset;
-> -	error = iomap_zero_range(VFS_I(ip), offset, len, NULL,
-> -			&xfs_buffered_write_iomap_ops);
-> +	error = xfs_iomap_zero_range(ip, offset, len, NULL);
->  	if (error)
->  		return error;
->  
-> diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-> index 396ef36dcd0a..38d8eca05aee 100644
-> --- a/fs/xfs/xfs_file.c
-> +++ b/fs/xfs/xfs_file.c
-> @@ -684,11 +684,8 @@ xfs_file_dax_write(
->  	pos = iocb->ki_pos;
->  
->  	trace_xfs_file_dax_write(iocb, from);
-> -	ret = dax_iomap_rw(iocb, from, &xfs_direct_write_iomap_ops);
-> -	if (ret > 0 && iocb->ki_pos > i_size_read(inode)) {
-> -		i_size_write(inode, iocb->ki_pos);
-> -		error = xfs_setfilesize(ip, pos, ret);
-> -	}
-> +	ret = dax_iomap_rw(iocb, from, &xfs_dax_write_iomap_ops);
-> +
->  out:
->  	if (iolock)
->  		xfs_iunlock(ip, iolock);
-> @@ -1309,7 +1306,7 @@ __xfs_filemap_fault(
->  
->  		ret = dax_iomap_fault(vmf, pe_size, &pfn, NULL,
->  				(write_fault && !vmf->cow_page) ?
-> -				 &xfs_direct_write_iomap_ops :
-> +				 &xfs_dax_write_iomap_ops :
->  				 &xfs_read_iomap_ops);
->  		if (ret & VM_FAULT_NEEDDSYNC)
->  			ret = dax_finish_sync_fault(vmf, pe_size, pfn);
-> diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
-> index d154f42e2dc6..8b593a51480d 100644
-> --- a/fs/xfs/xfs_iomap.c
-> +++ b/fs/xfs/xfs_iomap.c
-> @@ -761,7 +761,8 @@ xfs_direct_write_iomap_begin(
->  
->  		/* may drop and re-acquire the ilock */
->  		error = xfs_reflink_allocate_cow(ip, &imap, &cmap, &shared,
-> -				&lockmode, flags & IOMAP_DIRECT);
-> +				&lockmode,
-> +				(flags & IOMAP_DIRECT) || IS_DAX(inode));
->  		if (error)
->  			goto out_unlock;
->  		if (shared)
-> @@ -854,6 +855,41 @@ const struct iomap_ops xfs_direct_write_iomap_ops = {
->  	.iomap_begin		= xfs_direct_write_iomap_begin,
->  };
->  
-> +static int
-> +xfs_dax_write_iomap_end(
-> +	struct inode		*inode,
-> +	loff_t			pos,
-> +	loff_t			length,
-> +	ssize_t			written,
-> +	unsigned int		flags,
-> +	struct iomap		*iomap)
-> +{
-> +	int			error = 0;
-> +	struct xfs_inode	*ip = XFS_I(inode);
-> +	bool			cow = xfs_is_cow_inode(ip);
-> +
-> +	if (!written)
-> +		return 0;
-> +
-> +	if (pos + written > i_size_read(inode) && !(flags & IOMAP_FAULT)) {
-> +		i_size_write(inode, pos + written);
-> +		error = xfs_setfilesize(ip, pos, written);
-> +		if (error && cow) {
-> +			xfs_reflink_cancel_cow_range(ip, pos, written, true);
-> +			return error;
-> +		}
-> +	}
-> +	if (cow)
-> +		error = xfs_reflink_end_cow(ip, pos, written);
-> +
-> +	return error;
-> +}
-> +
-> +const struct iomap_ops xfs_dax_write_iomap_ops = {
-> +	.iomap_begin		= xfs_direct_write_iomap_begin,
-> +	.iomap_end		= xfs_dax_write_iomap_end,
-> +};
-> +
->  static int
->  xfs_buffered_write_iomap_begin(
->  	struct inode		*inode,
-> @@ -1311,3 +1347,26 @@ xfs_xattr_iomap_begin(
->  const struct iomap_ops xfs_xattr_iomap_ops = {
->  	.iomap_begin		= xfs_xattr_iomap_begin,
->  };
-> +
-> +int
-> +xfs_iomap_zero_range(
-> +	struct xfs_inode	*ip,
-> +	loff_t			offset,
-> +	loff_t			len,
-> +	bool			*did_zero)
-> +{
-> +	return iomap_zero_range(VFS_I(ip), offset, len, did_zero,
-> +			IS_DAX(VFS_I(ip)) ? &xfs_dax_write_iomap_ops
-> +					  : &xfs_buffered_write_iomap_ops);
-> +}
-> +
-> +int
-> +xfs_iomap_truncate_page(
-> +	struct xfs_inode	*ip,
-> +	loff_t			pos,
-> +	bool			*did_zero)
-> +{
-> +	return iomap_truncate_page(VFS_I(ip), pos, did_zero,
-> +			IS_DAX(VFS_I(ip)) ? &xfs_dax_write_iomap_ops
-> +					  : &xfs_buffered_write_iomap_ops);
-> +}
+Converting the driver to use regmap makes it more generic. It also makes
+it a lot easier to debug through debugfs.
 
-I wonder, can these become static inline helpers in xfs_iomap.h?
-It would be kinda nice not to add another stack frame just to virtualize
-the iomap ops.
+Signed-off-by: Václav Kubernát <kubernat@cesnet.cz>
+---
+ drivers/hwmon/Kconfig    |   1 +
+ drivers/hwmon/max31790.c | 254 ++++++++++++++++++++-------------------
+ 2 files changed, 133 insertions(+), 122 deletions(-)
 
---D
+diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+index 54f04e61fb83..c2ec57672c4e 100644
+--- a/drivers/hwmon/Kconfig
++++ b/drivers/hwmon/Kconfig
+@@ -1092,6 +1092,7 @@ config SENSORS_MAX6697
+ config SENSORS_MAX31790
+ 	tristate "Maxim MAX31790 sensor chip"
+ 	depends on I2C
++	select REGMAP_I2C
+ 	help
+ 	  If you say yes here you get support for 6-Channel PWM-Output
+ 	  Fan RPM Controller.
+diff --git a/drivers/hwmon/max31790.c b/drivers/hwmon/max31790.c
+index 2c6b333a28e9..e3765ce4444a 100644
+--- a/drivers/hwmon/max31790.c
++++ b/drivers/hwmon/max31790.c
+@@ -12,6 +12,7 @@
+ #include <linux/init.h>
+ #include <linux/jiffies.h>
+ #include <linux/module.h>
++#include <linux/regmap.h>
+ #include <linux/slab.h>
+ 
+ /* MAX31790 registers */
+@@ -46,92 +47,53 @@
+ 
+ #define NR_CHANNEL			6
+ 
++#define MAX31790_REG_USER_BYTE_67	0x67
++
++#define BULK_TO_U16(msb, lsb)		(((msb) << 8) + (lsb))
++#define U16_MSB(num)			(((num) & 0xFF00) >> 8)
++#define U16_LSB(num)			((num) & 0x00FF)
++
++static const struct regmap_range max31790_ro_range = {
++	.range_min = MAX31790_REG_TACH_COUNT(0),
++	.range_max = MAX31790_REG_PWMOUT(0) - 1,
++};
++
++static const struct regmap_access_table max31790_wr_table = {
++	.no_ranges = &max31790_ro_range,
++	.n_no_ranges = 1,
++};
++
++static const struct regmap_range max31790_volatile_ranges[] = {
++	regmap_reg_range(MAX31790_REG_TACH_COUNT(0), MAX31790_REG_TACH_COUNT(12)),
++	regmap_reg_range(MAX31790_REG_FAN_FAULT_STATUS2, MAX31790_REG_FAN_FAULT_STATUS1),
++};
++
++static const struct regmap_access_table max31790_volatile_table = {
++	.no_ranges = max31790_volatile_ranges,
++	.n_no_ranges = 2,
++	.n_yes_ranges = 0
++};
++
++static const struct regmap_config max31790_regmap_config = {
++	.reg_bits = 8,
++	.val_bits = 8,
++	.reg_stride = 1,
++	.max_register = MAX31790_REG_USER_BYTE_67,
++	.wr_table = &max31790_wr_table,
++	.volatile_table = &max31790_volatile_table
++};
++
+ /*
+  * Client data (each client gets its own)
+  */
+ struct max31790_data {
+-	struct i2c_client *client;
++	struct regmap *regmap;
++
+ 	struct mutex update_lock;
+-	bool valid; /* zero until following fields are valid */
+-	unsigned long last_updated; /* in jiffies */
+-
+-	/* register values */
+ 	u8 fan_config[NR_CHANNEL];
+ 	u8 fan_dynamics[NR_CHANNEL];
+-	u16 fault_status;
+-	u16 tach[NR_CHANNEL * 2];
+-	u16 pwm[NR_CHANNEL];
+-	u16 target_count[NR_CHANNEL];
+ };
+ 
+-static struct max31790_data *max31790_update_device(struct device *dev)
+-{
+-	struct max31790_data *data = dev_get_drvdata(dev);
+-	struct i2c_client *client = data->client;
+-	struct max31790_data *ret = data;
+-	int i;
+-	int rv;
+-
+-	mutex_lock(&data->update_lock);
+-
+-	if (time_after(jiffies, data->last_updated + HZ) || !data->valid) {
+-		rv = i2c_smbus_read_byte_data(client,
+-				MAX31790_REG_FAN_FAULT_STATUS1);
+-		if (rv < 0)
+-			goto abort;
+-		data->fault_status = rv & 0x3F;
+-
+-		rv = i2c_smbus_read_byte_data(client,
+-				MAX31790_REG_FAN_FAULT_STATUS2);
+-		if (rv < 0)
+-			goto abort;
+-		data->fault_status |= (rv & 0x3F) << 6;
+-
+-		for (i = 0; i < NR_CHANNEL; i++) {
+-			rv = i2c_smbus_read_word_swapped(client,
+-					MAX31790_REG_TACH_COUNT(i));
+-			if (rv < 0)
+-				goto abort;
+-			data->tach[i] = rv;
+-
+-			if (data->fan_config[i]
+-			    & MAX31790_FAN_CFG_TACH_INPUT) {
+-				rv = i2c_smbus_read_word_swapped(client,
+-					MAX31790_REG_TACH_COUNT(NR_CHANNEL
+-								+ i));
+-				if (rv < 0)
+-					goto abort;
+-				data->tach[NR_CHANNEL + i] = rv;
+-			} else {
+-				rv = i2c_smbus_read_word_swapped(client,
+-						MAX31790_REG_PWMOUT(i));
+-				if (rv < 0)
+-					goto abort;
+-				data->pwm[i] = rv;
+-
+-				rv = i2c_smbus_read_word_swapped(client,
+-						MAX31790_REG_TARGET_COUNT(i));
+-				if (rv < 0)
+-					goto abort;
+-				data->target_count[i] = rv;
+-			}
+-		}
+-
+-		data->last_updated = jiffies;
+-		data->valid = true;
+-	}
+-	goto done;
+-
+-abort:
+-	data->valid = false;
+-	ret = ERR_PTR(rv);
+-
+-done:
+-	mutex_unlock(&data->update_lock);
+-
+-	return ret;
+-}
+-
+ static const u8 tach_period[8] = { 1, 2, 4, 8, 16, 32, 32, 32 };
+ 
+ static u8 get_tach_period(u8 fan_dynamics)
+@@ -159,28 +121,75 @@ static u8 bits_for_tach_period(int rpm)
+ 	return bits;
+ }
+ 
++static int read_reg_byte(struct regmap *regmap, u8 reg)
++{
++	int rv;
++	int val;
++
++	rv = regmap_read(regmap, reg, &val);
++	if (rv < 0)
++		return rv;
++
++	return val;
++}
++
++static int read_reg_word(struct regmap *regmap, u8 reg)
++{
++	int rv;
++	u8 val_bulk[2];
++
++	rv = regmap_bulk_read(regmap, reg, val_bulk, 2);
++	if (rv < 0)
++		return rv;
++
++	return BULK_TO_U16(val_bulk[0], val_bulk[1]);
++}
++
++static int write_reg_word(struct regmap *regmap, u8 reg, u16 val)
++{
++	u8 bulk_val[2];
++
++	bulk_val[0] = U16_MSB(val);
++	bulk_val[1] = U16_LSB(val);
++
++	return regmap_bulk_write(regmap, reg, bulk_val, 2);
++}
++
+ static int max31790_read_fan(struct device *dev, u32 attr, int channel,
+ 			     long *val)
+ {
+-	struct max31790_data *data = max31790_update_device(dev);
+-	int sr, rpm;
+-
+-	if (IS_ERR(data))
+-		return PTR_ERR(data);
++	struct max31790_data *data = dev_get_drvdata(dev);
++	struct regmap *regmap = data->regmap;
++	int tach, fault;
+ 
+ 	switch (attr) {
+ 	case hwmon_fan_input:
+-		sr = get_tach_period(data->fan_dynamics[channel]);
+-		rpm = RPM_FROM_REG(data->tach[channel], sr);
+-		*val = rpm;
++		tach = read_reg_word(regmap, MAX31790_REG_TACH_COUNT(channel));
++		if (tach < 0)
++			return tach;
++
++		*val = RPM_FROM_REG(tach, get_tach_period(data->fan_dynamics[channel]));
+ 		return 0;
+ 	case hwmon_fan_target:
+-		sr = get_tach_period(data->fan_dynamics[channel]);
+-		rpm = RPM_FROM_REG(data->target_count[channel], sr);
+-		*val = rpm;
++		tach = read_reg_word(regmap, MAX31790_REG_TARGET_COUNT(channel));
++		if (tach < 0)
++			return tach;
++
++		*val = RPM_FROM_REG(tach, get_tach_period(data->fan_dynamics[channel]));
+ 		return 0;
+ 	case hwmon_fan_fault:
+-		*val = !!(data->fault_status & (1 << channel));
++		if (channel > 6)
++			fault = read_reg_byte(regmap, MAX31790_REG_FAN_FAULT_STATUS2);
++		else
++			fault = read_reg_byte(regmap, MAX31790_REG_FAN_FAULT_STATUS1);
++
++		if (fault < 0)
++			return fault;
++
++		if (channel > 6)
++			*val = !!(fault & (1 << (channel - 6)));
++		else
++			*val = !!(fault & (1 << channel));
+ 		return 0;
+ 	default:
+ 		return -EOPNOTSUPP;
+@@ -191,7 +200,7 @@ static int max31790_write_fan(struct device *dev, u32 attr, int channel,
+ 			      long val)
+ {
+ 	struct max31790_data *data = dev_get_drvdata(dev);
+-	struct i2c_client *client = data->client;
++	struct regmap *regmap = data->regmap;
+ 	int target_count;
+ 	int err = 0;
+ 	u8 bits;
+@@ -207,9 +216,10 @@ static int max31790_write_fan(struct device *dev, u32 attr, int channel,
+ 			((data->fan_dynamics[channel] &
+ 			  ~MAX31790_FAN_DYN_SR_MASK) |
+ 			 (bits << MAX31790_FAN_DYN_SR_SHIFT));
+-		err = i2c_smbus_write_byte_data(client,
+-					MAX31790_REG_FAN_DYNAMICS(channel),
+-					data->fan_dynamics[channel]);
++
++		err = regmap_write(regmap,
++				   MAX31790_REG_FAN_DYNAMICS(channel),
++				   data->fan_dynamics[channel]);
+ 		if (err < 0)
+ 			break;
+ 
+@@ -217,11 +227,11 @@ static int max31790_write_fan(struct device *dev, u32 attr, int channel,
+ 		target_count = RPM_TO_REG(val, sr);
+ 		target_count = clamp_val(target_count, 0x1, 0x7FF);
+ 
+-		data->target_count[channel] = target_count << 5;
++		target_count = target_count << 5;
+ 
+-		err = i2c_smbus_write_word_swapped(client,
+-					MAX31790_REG_TARGET_COUNT(channel),
+-					data->target_count[channel]);
++		err = write_reg_word(regmap,
++				     MAX31790_REG_TARGET_COUNT(channel),
++				     target_count);
+ 		break;
+ 	default:
+ 		err = -EOPNOTSUPP;
+@@ -258,22 +268,22 @@ static umode_t max31790_fan_is_visible(const void *_data, u32 attr, int channel)
+ static int max31790_read_pwm(struct device *dev, u32 attr, int channel,
+ 			     long *val)
+ {
+-	struct max31790_data *data = max31790_update_device(dev);
+-	u8 fan_config;
+-
+-	if (IS_ERR(data))
+-		return PTR_ERR(data);
+-
+-	fan_config = data->fan_config[channel];
++	struct max31790_data *data = dev_get_drvdata(dev);
++	struct regmap *regmap = data->regmap;
++	int read;
+ 
+ 	switch (attr) {
+ 	case hwmon_pwm_input:
+-		*val = data->pwm[channel] >> 8;
++		read = read_reg_word(regmap, MAX31790_REG_PWMOUT(channel));
++		if (read < 0)
++			return read;
++
++		*val = read >> 8;
+ 		return 0;
+ 	case hwmon_pwm_enable:
+-		if (fan_config & MAX31790_FAN_CFG_RPM_MODE)
++		if (data->fan_config[channel] & MAX31790_FAN_CFG_RPM_MODE)
+ 			*val = 2;
+-		else if (fan_config & MAX31790_FAN_CFG_TACH_INPUT_EN)
++		else if (data->fan_config[channel] & MAX31790_FAN_CFG_TACH_INPUT_EN)
+ 			*val = 1;
+ 		else
+ 			*val = 0;
+@@ -287,7 +297,7 @@ static int max31790_write_pwm(struct device *dev, u32 attr, int channel,
+ 			      long val)
+ {
+ 	struct max31790_data *data = dev_get_drvdata(dev);
+-	struct i2c_client *client = data->client;
++	struct regmap *regmap = data->regmap;
+ 	u8 fan_config;
+ 	int err = 0;
+ 
+@@ -299,10 +309,7 @@ static int max31790_write_pwm(struct device *dev, u32 attr, int channel,
+ 			err = -EINVAL;
+ 			break;
+ 		}
+-		data->pwm[channel] = val << 8;
+-		err = i2c_smbus_write_word_swapped(client,
+-						   MAX31790_REG_PWMOUT(channel),
+-						   data->pwm[channel]);
++		err = write_reg_word(regmap, MAX31790_REG_PWMOUT(channel), val << 8);
+ 		break;
+ 	case hwmon_pwm_enable:
+ 		fan_config = data->fan_config[channel];
+@@ -321,9 +328,9 @@ static int max31790_write_pwm(struct device *dev, u32 attr, int channel,
+ 			break;
+ 		}
+ 		data->fan_config[channel] = fan_config;
+-		err = i2c_smbus_write_byte_data(client,
+-					MAX31790_REG_FAN_CONFIG(channel),
+-					fan_config);
++		err = regmap_write(regmap,
++				   MAX31790_REG_FAN_CONFIG(channel),
++				   fan_config);
+ 		break;
+ 	default:
+ 		err = -EOPNOTSUPP;
+@@ -426,20 +433,18 @@ static const struct hwmon_chip_info max31790_chip_info = {
+ 	.info = max31790_info,
+ };
+ 
+-static int max31790_init_client(struct i2c_client *client,
++static int max31790_init_client(struct regmap *regmap,
+ 				struct max31790_data *data)
+ {
+ 	int i, rv;
+ 
+ 	for (i = 0; i < NR_CHANNEL; i++) {
+-		rv = i2c_smbus_read_byte_data(client,
+-				MAX31790_REG_FAN_CONFIG(i));
++		rv = read_reg_byte(regmap, MAX31790_REG_FAN_CONFIG(i % NR_CHANNEL));
+ 		if (rv < 0)
+ 			return rv;
+ 		data->fan_config[i] = rv;
+ 
+-		rv = i2c_smbus_read_byte_data(client,
+-				MAX31790_REG_FAN_DYNAMICS(i));
++		rv = read_reg_byte(regmap, MAX31790_REG_FAN_DYNAMICS(i));
+ 		if (rv < 0)
+ 			return rv;
+ 		data->fan_dynamics[i] = rv;
+@@ -464,13 +469,18 @@ static int max31790_probe(struct i2c_client *client)
+ 	if (!data)
+ 		return -ENOMEM;
+ 
+-	data->client = client;
+ 	mutex_init(&data->update_lock);
+ 
++	data->regmap = devm_regmap_init_i2c(client, &max31790_regmap_config);
++	if (IS_ERR(data->regmap)) {
++		dev_err(dev, "failed to allocate register map\n");
++		return PTR_ERR(data->regmap);
++	}
++
+ 	/*
+ 	 * Initialize the max31790 chip
+ 	 */
+-	err = max31790_init_client(client, data);
++	err = max31790_init_client(data->regmap, data);
+ 	if (err)
+ 		return err;
+ 
+-- 
+2.31.1
 
-> diff --git a/fs/xfs/xfs_iomap.h b/fs/xfs/xfs_iomap.h
-> index 7d3703556d0e..e4e515cd63b5 100644
-> --- a/fs/xfs/xfs_iomap.h
-> +++ b/fs/xfs/xfs_iomap.h
-> @@ -14,6 +14,9 @@ struct xfs_bmbt_irec;
->  int xfs_iomap_write_direct(struct xfs_inode *ip, xfs_fileoff_t offset_fsb,
->  		xfs_fileoff_t count_fsb, struct xfs_bmbt_irec *imap);
->  int xfs_iomap_write_unwritten(struct xfs_inode *, xfs_off_t, xfs_off_t, bool);
-> +int xfs_iomap_zero_range(struct xfs_inode *ip, loff_t offset, loff_t len,
-> +		bool *did_zero);
-> +int xfs_iomap_truncate_page(struct xfs_inode *ip, loff_t pos, bool *did_zero);
->  xfs_fileoff_t xfs_iomap_eof_align_last_fsb(struct xfs_inode *ip,
->  		xfs_fileoff_t end_fsb);
->  
-> @@ -42,6 +45,7 @@ xfs_aligned_fsb_count(
->  
->  extern const struct iomap_ops xfs_buffered_write_iomap_ops;
->  extern const struct iomap_ops xfs_direct_write_iomap_ops;
-> +extern const struct iomap_ops xfs_dax_write_iomap_ops;
->  extern const struct iomap_ops xfs_read_iomap_ops;
->  extern const struct iomap_ops xfs_seek_iomap_ops;
->  extern const struct iomap_ops xfs_xattr_iomap_ops;
-> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-> index dfe24b7f26e5..6d936c3e1a6e 100644
-> --- a/fs/xfs/xfs_iops.c
-> +++ b/fs/xfs/xfs_iops.c
-> @@ -911,8 +911,8 @@ xfs_setattr_size(
->  	 */
->  	if (newsize > oldsize) {
->  		trace_xfs_zero_eof(ip, oldsize, newsize - oldsize);
-> -		error = iomap_zero_range(inode, oldsize, newsize - oldsize,
-> -				&did_zeroing, &xfs_buffered_write_iomap_ops);
-> +		error = xfs_iomap_zero_range(ip, oldsize, newsize - oldsize,
-> +				&did_zeroing);
->  	} else {
->  		/*
->  		 * iomap won't detect a dirty page over an unwritten block (or a
-> @@ -924,8 +924,7 @@ xfs_setattr_size(
->  						     newsize);
->  		if (error)
->  			return error;
-> -		error = iomap_truncate_page(inode, newsize, &did_zeroing,
-> -				&xfs_buffered_write_iomap_ops);
-> +		error = xfs_iomap_truncate_page(ip, newsize, &did_zeroing);
->  	}
->  
->  	if (error)
-> diff --git a/fs/xfs/xfs_reflink.c b/fs/xfs/xfs_reflink.c
-> index d25434f93235..9a780948dbd0 100644
-> --- a/fs/xfs/xfs_reflink.c
-> +++ b/fs/xfs/xfs_reflink.c
-> @@ -1266,8 +1266,7 @@ xfs_reflink_zero_posteof(
->  		return 0;
->  
->  	trace_xfs_zero_eof(ip, isize, pos - isize);
-> -	return iomap_zero_range(VFS_I(ip), isize, pos - isize, NULL,
-> -			&xfs_buffered_write_iomap_ops);
-> +	return xfs_iomap_zero_range(ip, isize, pos - isize, NULL);
->  }
->  
->  /*
-> -- 
-> 2.31.1
-> 
-> 
-> 
