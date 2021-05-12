@@ -2,88 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D356537B2D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 01:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 562DD37B2E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 02:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbhEKX7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 19:59:42 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:50435 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229637AbhEKX7l (ORCPT
+        id S230109AbhELADV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 20:03:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229920AbhELADU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 19:59:41 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 21CC45C0150;
-        Tue, 11 May 2021 19:58:34 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 11 May 2021 19:58:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=benboeckel.net;
-         h=date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=F405VTvvDsLYnK6i0Qg9HJcn6wq
-        Vw6Lc1ypuVa795h4=; b=d0mjyYNmUtfM63vRox75IS7DSosOcuQ8PmFHqVoOx6e
-        2HYM2UltloGTeodM11l2042yiRXp5Qw7lTEWzJIexX8RsqvlF/Gyv2/jpPfq6Duo
-        dOYFybU7CkYRte1gBWKn0EYcYELAYgISKxsZD/XARLGsDwXyuZmEWvxnVIcTmHVw
-        CLs8zbjUl0SC508mKnPENnWBEXclvg/77DAtp7w447n+uPfkl1mEJs6lQp+Ryw6A
-        Ge9q7NLgCWjIpm6ljbfLHBLuDmB8Flxp+SDstaLlgjFUeqxC2GMojk9VqJfIZzqi
-        Gq4QbzhUMNZsS5LELWckvBwYAAXLTh0Etn47RkW/b/A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=F405VT
-        vvDsLYnK6i0Qg9HJcn6wqVw6Lc1ypuVa795h4=; b=Y/ON5KOjz7C/clVFtc7JfR
-        uwRgZvKJ5iOAfP7dsQQIA6my/yzmJHAH5CncMDrxDEoVkf2XDS+mey9FT2a4/A55
-        /pBrynjp9hw4KJpZ0TtRjnyrRohd5Z+HCkgoB71chS+U1Wd/gwCqhH8koLss8fpm
-        pwTgB/lPoqxZqOVGYgVuZXhVYNNAvm5Ic/92rvl8fm3pBpo09lDQCtwSJuBFUXHb
-        DYp76Jzqz8nIM5OpgRqkTPFzLgtEnctoIUSGcUnQLNYt1IC09JHDUyW+77IEh2Y0
-        13zMDMqCAimftbr8I3vExtAoiXo3n92NHSPLLcw1I85NuvM5uUf0oLdJqZkMzg8A
-        ==
-X-ME-Sender: <xms:KRqbYGEqWd28FAatUEyD2c8w0srsPvySHT46odRIUxqLK1hy81RxbQ>
-    <xme:KRqbYHVNbNLWegh-0usJqHTdxBTFibJ62WUAqQFyT368Orbyuj_78smqYmMRrg3f3
-    oqXekm7vHwv6EU4GU0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdehuddgvdejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjfgesthdtrodttderjeenucfhrhhomhepuegvnhcu
-    uehovggtkhgvlhcuoehmvgessggvnhgsohgvtghkvghlrdhnvghtqeenucggtffrrghtth
-    gvrhhnpedtveetgfehfeekvddthffgkeelheduudeffefggedvjedvkeekueetgffhudfh
-    jeenucfkphepvdegrdduieelrddvtddrvdehheenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehmvgessggvnhgsohgvtghkvghlrdhnvght
-X-ME-Proxy: <xmx:KRqbYAJx8LpXVPTBahbQB-np72Eca0UHTnynH-DjbgS2CFck7u_Qnw>
-    <xmx:KRqbYAFWo8wUQ0aUhIx0D3JmGN5eQFCXJSyerNDZ3gtrscD8tiFXew>
-    <xmx:KRqbYMVIAESeoqHH_GXVE9bUgzlYeXiocve1edk6TamrE_8pQGsfyQ>
-    <xmx:KhqbYGe38-L3BMU3a5sNE3jpnNypSNX2sbB8603XbL6eklx7I5XLkA>
-Received: from localhost (unknown [24.169.20.255])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Tue, 11 May 2021 19:58:33 -0400 (EDT)
-Date:   Tue, 11 May 2021 19:58:32 -0400
-From:   Ben Boeckel <me@benboeckel.net>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     keyrings@vger.kernel.org, Ben Boeckel <mathstuf@gmail.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH v2 1/1] trusted-keys: match tpm_get_ops on all return
- paths
-Message-ID: <YJsaKJvgExLmjhoH@erythro.dev.benboeckel.internal>
-References: <20210429192156.770145-1-list.lkml.keyrings@me.benboeckel.net>
- <20210429192156.770145-2-list.lkml.keyrings@me.benboeckel.net>
- <YJmf4Q0l+MTFEaEo@erythro.dev.benboeckel.internal>
- <YJsXN47MTF/TpsKX@kernel.org>
+        Tue, 11 May 2021 20:03:20 -0400
+Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95E85C061574;
+        Tue, 11 May 2021 17:02:13 -0700 (PDT)
+Received: by mail-oo1-xc2c.google.com with SMTP id h9-20020a4a94090000b02901f9d4f64172so4583571ooi.5;
+        Tue, 11 May 2021 17:02:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KNr65iV0ydSb6KWIC4+XbRnV1TP02oNLnyMxFYz+vSk=;
+        b=Fb0H96Vss8faMT+Q3ACe1H6L9YzhreOK5Zbk+iJolwhxJkIgtcloStW/jfq0Z2KzMm
+         ElLLhfBrlBWPyBzLEKuWFbDRvMfpbeqqm9yyqp848mRq/983cwS0q2nOM7fku7dafN83
+         pzvPbxB1zjCsC4MyzO4a8dwcxtaPOvgUhPJNJsXCf2o7WN47Ve0zpS8yFFJIf5zLdAd4
+         fvDpeROP0sf0t3x9GlwT+5eQ9RUAIeAdg34Q/Dsw52xClJ54QVSgrrnFG1MZITlRhZ5j
+         OgEkTAp8bdYqNJZWR45PcLXcxw7T/NJAjvjHF3u+F+/f8qJNHlRReeKbclvXTMerAxjX
+         SV5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KNr65iV0ydSb6KWIC4+XbRnV1TP02oNLnyMxFYz+vSk=;
+        b=DjgjYWaIBeuiTTJgB8fLUG3IEjdQqzf7jKmyABs/wKVDX8fBETAlb+DTo30RkV/pW6
+         7Nnd1jOtgqP2ocz7zMzU0yN+kblU/dMqWynMuteudakKVkt6ha05yTcLkzL44uoBYhJn
+         RG1HwSTA5Iu6RCF0hqGei+tR6dRIDJ59hv4Ix5yfNk/t+KmZYo/8rxlHoiTK99l3kpSE
+         jO4GW08IN2MZbCBfziQxAShsMDBR4nhwt1TGcyloEs/QohGl7B9lB0D1ngTb/6b6JaI9
+         pRsn4pJ/nq1bN20oLKECq1bt6ZF46aoRylB/2OsE0wBgfQ7tAvfAq1EkTGMKPPVNAbOB
+         gMbg==
+X-Gm-Message-State: AOAM531FYWrM+uIPZkytbo/B4T9UxObyfTi317P6YwcxInuGxLdSQQ4A
+        FozJ0B3LG3njlTHIgZOaUx4/IiK+Xddx5XXhRER0d6qomX8=
+X-Google-Smtp-Source: ABdhPJzjN2WktcSN6/IyxNyB3/zoq61qk4K0zYIEQL8Y7IEzhRbREvcSwCCWhS03WvYQ7HMAQZtNmkvsMdwAZx39giQ=
+X-Received: by 2002:a4a:8706:: with SMTP id z6mr7736545ooh.41.1620777732651;
+ Tue, 11 May 2021 17:02:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YJsXN47MTF/TpsKX@kernel.org>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+References: <1620466310-8428-1-git-send-email-wanpengli@tencent.com>
+In-Reply-To: <1620466310-8428-1-git-send-email-wanpengli@tencent.com>
+From:   Wanpeng Li <kernellwp@gmail.com>
+Date:   Wed, 12 May 2021 08:02:02 +0800
+Message-ID: <CANRm+Cwq9F+yBTy8By0VgX3aA1NeVn0COAoRnYLr0jXe6QMOWA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] KVM: PPC: Book3S HV: exit halt polling on
+ need_resched() as well
+To:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Ben Segall <bsegall@google.com>,
+        Venkatesh Srinivas <venkateshs@chromium.org>,
+        David Matlack <dmatlack@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 02:45:59 +0300, Jarkko Sakkinen wrote:
-> I applied it, probably will do additional PR for v5.13 in order to fix
-> some urgent tpm_tis issues, so I'll include this to the same pull
-> request. Thanks for fixing this!
+Cc more guys,
+On Sat, 8 May 2021 at 17:32, Wanpeng Li <kernellwp@gmail.com> wrote:
+>
+> From: Wanpeng Li <wanpengli@tencent.com>
+>
+> Inspired by commit 262de4102c7bb8 (kvm: exit halt polling on need_resched()
+> as well), due to PPC implements an arch specific halt polling logic, we should
+> add the need_resched() checking there as well.
+>
 
-Thanks for the update :) .
+Update the patch description:
 
---Ben
+Inspired by commit 262de4102c7bb8 (kvm: exit halt polling on need_resched()
+as well), CFS_BANDWIDTH throttling will use resched_task() when there is just
+one task to get the task to block. It was likely allowing VMs to overrun their
+quota when halt polling. Due to PPC implements an arch specific halt polling
+logic, we should add the need_resched() checking there as well.
+
+> Cc: Paul Mackerras <paulus@ozlabs.org>
+> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+> ---
+>  arch/powerpc/kvm/book3s_hv.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
+> index 28a80d2..6199397 100644
+> --- a/arch/powerpc/kvm/book3s_hv.c
+> +++ b/arch/powerpc/kvm/book3s_hv.c
+> @@ -3936,7 +3936,8 @@ static void kvmppc_vcore_blocked(struct kvmppc_vcore *vc)
+>                                 break;
+>                         }
+>                         cur = ktime_get();
+> -               } while (single_task_running() && ktime_before(cur, stop));
+> +               } while (single_task_running() && !need_resched() &&
+> +                        ktime_before(cur, stop));
+>
+>                 spin_lock(&vc->lock);
+>                 vc->vcore_state = VCORE_INACTIVE;
+> --
+> 2.7.4
+>
