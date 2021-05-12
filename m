@@ -2,185 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FCE737BD50
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:52:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F030337BCD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:50:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233435AbhELMxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 08:53:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52780 "EHLO mail.kernel.org"
+        id S230373AbhELMvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 08:51:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50464 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231389AbhELMwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 08:52:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CEA661434;
-        Wed, 12 May 2021 12:51:42 +0000 (UTC)
+        id S230037AbhELMve (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 08:51:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 89EFE613CA;
+        Wed, 12 May 2021 12:50:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620823902;
-        bh=qN4Xto9q7BDAdXgMgIL7kT5vL081HfY6IT10ClR3inc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DGeLH8hN5cv5F/plR/w5nPL2vN/UHSeumvMtO8JYvmtrXodeHPvgDClbohFVfZ5yz
-         oCmRFs6m0i4oq5UPCiCL0Nn3pW9eOvhj/2Ekf+yj04zljGP0uQSTkiKAJm70UtGCAZ
-         +K+Pslo5TUV4ItKS3qkMMgS8byCGC8WR6a1nvezjJxMbXJVbwz/FmFLhYxPLFoUWyT
-         lcMEH/sxAZMsJ9seaR8a6SEncDgW+NHTPAi9v5tjSdZ/PffxRp4LjC40dc7GoiGFfd
-         F3IQZGf8nnBpkw8kNQSz0YvKy2peSt8EvSGQa/4BxAIJmhiYgkOK9EeiYFZhWXg1U2
-         /kM3pnblXT2iA==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1lgoKy-0018hp-N4; Wed, 12 May 2021 14:51:40 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: [PATCH v2 16/40] docs: userspace-api: media: dvb: Use ASCII subset instead of UTF-8 alternate symbols
-Date:   Wed, 12 May 2021 14:50:20 +0200
-Message-Id: <ce5783afc7452bfe1eb8d812c18f498cf78d34b1.1620823573.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <cover.1620823573.git.mchehab+huawei@kernel.org>
-References: <cover.1620823573.git.mchehab+huawei@kernel.org>
+        s=k20201202; t=1620823826;
+        bh=uGZN093G8UznNDfSiUvQMW1X6K1u4U9norEFO5yfBeU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qY3xt5DM9nNrf/qzNYHSoEht97NuI/NL/B7mp1RgXdwLN323h6lINp63PXOM1ESqF
+         3MI7HBDlJ3q/OMgjDp2fOWSX4gkDShnedRWL1fkC7VSmfXfD3QYpGpiPuzYYB8Yl5P
+         qybPIx2OIxF7CpqutOGTqnMk2zYiP+mEeeEC7jno7Sdk6TBuzjh5vPf+JKK/ud3niX
+         B7+MXNsbwvtxLyqiuE1i2qTpxHdzFrgfMAoD/PtEdB3PKj0RFsx7UVfQ1cwOY6pXid
+         Zxh2AC9uLPqYA3lJbB2DmYO9n3O/DbU8KypLraFHaoNsfe6O2Da47pmtXOD2z2ZDEA
+         1GvKgH2V0PL3Q==
+Date:   Wed, 12 May 2021 15:50:21 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>
+Cc:     "Dalessandro, Dennis" <dennis.dalessandro@cornelisnetworks.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH rdma-next] RDMA/rdmavt: Decouple QP and SGE lists
+ allocations
+Message-ID: <YJvPDbV0VpFShidZ@unreal>
+References: <c34a864803f9bbd33d3f856a6ba2dd595ab708a7.1620729033.git.leonro@nvidia.com>
+ <f72bb31b-ea93-f3c9-607f-a696eac27344@cornelisnetworks.com>
+ <YJp589JwbqGvljew@unreal>
+ <BYAPR01MB3816C9521A96A8BA773CF613F2529@BYAPR01MB3816.prod.exchangelabs.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BYAPR01MB3816C9521A96A8BA773CF613F2529@BYAPR01MB3816.prod.exchangelabs.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The conversion tools used during DocBook/LaTeX/Markdown->ReST conversion
-and some automatic rules which exists on certain text editors like
-LibreOffice turned ASCII characters into some UTF-8 alternatives that
-are better displayed on html and PDF.
+On Wed, May 12, 2021 at 12:25:15PM +0000, Marciniszyn, Mike wrote:
+> > > Thanks Leon, we'll get this put through our testing.
+> > 
+> > Thanks a lot.
+> > 
+> > >
+> 
+> The patch as is passed all our functional testing.
 
-While it is OK to use UTF-8 characters in Linux, it is better to
-use the ASCII subset instead of using an UTF-8 equivalent character
-as it makes life easier for tools like grep, and are easier to edit
-with the some commonly used text/source code editors.
+Thanks Mike,
 
-Also, Sphinx already do such conversion automatically outside literal blocks:
-   https://docutils.sourceforge.io/docs/user/smartquotes.html
+Can I ask you to perform a performance comparison between this patch and
+the following?
 
-So, replace the occurences of the following UTF-8 characters:
+diff --git a/drivers/infiniband/sw/rdmavt/qp.c b/drivers/infiniband/sw/rdmavt/qp.c
+index 4522071fc220..d0e0f7cbe17a 100644
+--- a/drivers/infiniband/sw/rdmavt/qp.c
++++ b/drivers/infiniband/sw/rdmavt/qp.c
+@@ -1134,7 +1134,7 @@ struct ib_qp *rvt_create_qp(struct ib_pd *ibpd,
+                } else if (init_attr->cap.max_recv_sge > 1)
+                        sg_list_sz = sizeof(*qp->r_sg_list) *
+                                (init_attr->cap.max_recv_sge - 1);
+-               qp = kzalloc(sizeof(*qp), GFP_KERNEL);
++               qp = kzalloc_node(sizeof(*qp), GFP_KERNEL, rdi->dparms.node);
+                if (!qp)
+                        goto bail_swq;
+                qp->r_sg_list =
 
-	- U+00a0 (' '): NO-BREAK SPACE
-	- U+2019 ('’'): RIGHT SINGLE QUOTATION MARK
-	- U+201c ('“'): LEFT DOUBLE QUOTATION MARK
-	- U+201d ('”'): RIGHT DOUBLE QUOTATION MARK
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- .../userspace-api/media/dvb/audio-set-bypass-mode.rst       | 2 +-
- Documentation/userspace-api/media/dvb/audio.rst             | 2 +-
- Documentation/userspace-api/media/dvb/dmx-fopen.rst         | 2 +-
- Documentation/userspace-api/media/dvb/dmx-fread.rst         | 2 +-
- Documentation/userspace-api/media/dvb/dmx-set-filter.rst    | 2 +-
- Documentation/userspace-api/media/dvb/intro.rst             | 6 +++---
- Documentation/userspace-api/media/dvb/video.rst             | 2 +-
- 7 files changed, 9 insertions(+), 9 deletions(-)
+Thanks
 
-diff --git a/Documentation/userspace-api/media/dvb/audio-set-bypass-mode.rst b/Documentation/userspace-api/media/dvb/audio-set-bypass-mode.rst
-index ecac02f1b2fc..80d551a2053a 100644
---- a/Documentation/userspace-api/media/dvb/audio-set-bypass-mode.rst
-+++ b/Documentation/userspace-api/media/dvb/audio-set-bypass-mode.rst
-@@ -50,7 +50,7 @@ Description
- 
- This ioctl call asks the Audio Device to bypass the Audio decoder and
- forward the stream without decoding. This mode shall be used if streams
--that can’t be handled by the Digital TV system shall be decoded. Dolby
-+that can't be handled by the Digital TV system shall be decoded. Dolby
- DigitalTM streams are automatically forwarded by the Digital TV subsystem if
- the hardware can handle it.
- 
-diff --git a/Documentation/userspace-api/media/dvb/audio.rst b/Documentation/userspace-api/media/dvb/audio.rst
-index eaae5675a47d..aa753336b31f 100644
---- a/Documentation/userspace-api/media/dvb/audio.rst
-+++ b/Documentation/userspace-api/media/dvb/audio.rst
-@@ -11,7 +11,7 @@ TV hardware. It can be accessed through ``/dev/dvb/adapter?/audio?``. Data
- types and ioctl definitions can be accessed by including
- ``linux/dvb/audio.h`` in your application.
- 
--Please note that some Digital TV cards don’t have their own MPEG decoder, which
-+Please note that some Digital TV cards don't have their own MPEG decoder, which
- results in the omission of the audio and video device.
- 
- These ioctls were also used by V4L2 to control MPEG decoders implemented
-diff --git a/Documentation/userspace-api/media/dvb/dmx-fopen.rst b/Documentation/userspace-api/media/dvb/dmx-fopen.rst
-index 8f0a2b831d4a..50b36eb4371e 100644
---- a/Documentation/userspace-api/media/dvb/dmx-fopen.rst
-+++ b/Documentation/userspace-api/media/dvb/dmx-fopen.rst
-@@ -82,7 +82,7 @@ appropriately.
-     :widths: 1 16
- 
-     -  -  ``EMFILE``
--       -  “Too many open files”, i.e. no more filters available.
-+       -  "Too many open files", i.e. no more filters available.
- 
- The generic error codes are described at the
- :ref:`Generic Error Codes <gen-errors>` chapter.
-diff --git a/Documentation/userspace-api/media/dvb/dmx-fread.rst b/Documentation/userspace-api/media/dvb/dmx-fread.rst
-index 78e9daef595a..88c4cddf7c30 100644
---- a/Documentation/userspace-api/media/dvb/dmx-fread.rst
-+++ b/Documentation/userspace-api/media/dvb/dmx-fread.rst
-@@ -34,7 +34,7 @@ Description
- 
- This system call returns filtered data, which might be section or Packetized
- Elementary Stream (PES) data. The filtered data is transferred from
--the driver’s internal circular buffer to ``buf``. The maximum amount of data
-+the driver's internal circular buffer to ``buf``. The maximum amount of data
- to be transferred is implied by count.
- 
- .. note::
-diff --git a/Documentation/userspace-api/media/dvb/dmx-set-filter.rst b/Documentation/userspace-api/media/dvb/dmx-set-filter.rst
-index f43455b7adae..1b8c8071b14f 100644
---- a/Documentation/userspace-api/media/dvb/dmx-set-filter.rst
-+++ b/Documentation/userspace-api/media/dvb/dmx-set-filter.rst
-@@ -37,7 +37,7 @@ parameters provided. A timeout may be defined stating number of seconds
- to wait for a section to be loaded. A value of 0 means that no timeout
- should be applied. Finally there is a flag field where it is possible to
- state whether a section should be CRC-checked, whether the filter should
--be a ”one-shot” filter, i.e. if the filtering operation should be
-+be a "one-shot" filter, i.e. if the filtering operation should be
- stopped after the first section is received, and whether the filtering
- operation should be started immediately (without waiting for a
- :ref:`DMX_START` ioctl call). If a filter was previously set-up, this
-diff --git a/Documentation/userspace-api/media/dvb/intro.rst b/Documentation/userspace-api/media/dvb/intro.rst
-index a935f3914e56..6784ae79657c 100644
---- a/Documentation/userspace-api/media/dvb/intro.rst
-+++ b/Documentation/userspace-api/media/dvb/intro.rst
-@@ -107,7 +107,7 @@ Audio and video decoder
-       a Systems on a Chip (SoC) integrated circuit.
- 
-       It may also not be needed for certain usages (e.g. for data-only
--      uses like “internet over satellite”).
-+      uses like "internet over satellite").
- 
- :ref:`stb_components` shows a crude schematic of the control and data
- flow between those components.
-@@ -148,9 +148,9 @@ individual devices are called:
- 
- -  ``/dev/dvb/adapterN/caM``,
- 
--where ``N`` enumerates the Digital TV cards in a system starting from 0, and
-+where ``N`` enumerates the Digital TV cards in a system starting from 0, and
- ``M`` enumerates the devices of each type within each adapter, starting
--from 0, too. We will omit the “``/dev/dvb/adapterN/``\ ” in the further
-+from 0, too. We will omit the "``/dev/dvb/adapterN/``\ " in the further
- discussion of these devices.
- 
- More details about the data structures and function calls of all the
-diff --git a/Documentation/userspace-api/media/dvb/video.rst b/Documentation/userspace-api/media/dvb/video.rst
-index 38a8d39a1d25..808705b769a1 100644
---- a/Documentation/userspace-api/media/dvb/video.rst
-+++ b/Documentation/userspace-api/media/dvb/video.rst
-@@ -16,7 +16,7 @@ stream, not its presentation on the TV or computer screen. On PCs this
- is typically handled by an associated video4linux device, e.g.
- **/dev/video**, which allows scaling and defining output windows.
- 
--Some Digital TV cards don’t have their own MPEG decoder, which results in the
-+Some Digital TV cards don't have their own MPEG decoder, which results in the
- omission of the audio and video device as well as the video4linux
- device.
- 
--- 
-2.30.2
-
+> 
+> Mike
