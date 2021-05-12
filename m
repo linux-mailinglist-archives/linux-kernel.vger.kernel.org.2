@@ -2,78 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56D8837ECD2
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:36:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C73AA37ECD0
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:36:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380350AbhELUBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 16:01:07 -0400
-Received: from gate.crashing.org ([63.228.1.57]:41948 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355206AbhELS1n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 14:27:43 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 14CIL4bD009429;
-        Wed, 12 May 2021 13:21:04 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 14CIL4PD009428;
-        Wed, 12 May 2021 13:21:04 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Wed, 12 May 2021 13:21:03 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] powerpc: Force inlining of csum_add()
-Message-ID: <20210512182103.GX10366@gate.crashing.org>
-References: <f7f4d4e364de6e473da874468b903da6e5d97adc.1620713272.git.christophe.leroy@csgroup.eu> <20210511105154.GJ10366@gate.crashing.org> <e996ef13-c25c-5e9c-edd2-444eded88802@csgroup.eu> <20210512143105.GW10366@gate.crashing.org> <2623fe98-7a73-f7a2-bcba-2d668d00ffd0@csgroup.eu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2623fe98-7a73-f7a2-bcba-2d668d00ffd0@csgroup.eu>
-User-Agent: Mutt/1.4.2.3i
+        id S1344952AbhELUAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 16:00:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245131AbhELSYW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 14:24:22 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7F38C061763
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 11:21:31 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id h4so35138217lfv.0
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 11:21:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Dg0aT9CGnTa3wuH7NsxQOFQv42isTf38NzWAad/uPQE=;
+        b=ctV+PfMrQmaJ6slkQjOSQ6FIInzYoAdDelIR0/I7GSCPQ4WH2Q8dxhHwgJMrmZbwGL
+         kh6tCAmEynkqhBqS2Zq535RALK3OuF+bx9QSLY5qSu3hgltGeBxYdo2kf08oONihR7MR
+         hR6/ZCVFamIbKX3nUP3xLRMq0Ew0MuQNkLrDr5/H2rsOtDKcCuBLixVoYhpoXQZTsEl3
+         SGcq8ehsB83FCjS3drP5fg7FkAKKbXe2nsbpRhVUKeyiBErpIdAdlPPoIQ/dWMzCnecd
+         xHEgkbJmZjX1Y32vvilyiCyPYdhgJ1mBKRj9+8kHUGCzaO3SprhU7wjBjmCZ9hgSUpSy
+         okag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Dg0aT9CGnTa3wuH7NsxQOFQv42isTf38NzWAad/uPQE=;
+        b=QMMi7PxR3gxrytNhWnmU/WB6QRUhca5Yxq7y3fvm5rgitrD3entjK45grp3HSL0zUD
+         djnUgi+BS3tlUC157dXYqYE/DEmI+67kj26Ur4XyU/hAtf1LVTs801eOVrQcSozxD//v
+         ndeH7rZiQuBKgT1f/yASChWbVfpkVnma6RYFcLIvKCNYtc7CenwIODU8eXYinV1Tv9/D
+         KyjEK7hM9pLsA48nNoWf0G2kcbIUVJ74YJMfxsgE8+svt1yKQ4vqLAgpzcnsfDXqxDHJ
+         ueGjOv/L3qmKjoVzXzUMbCE5x5BI1TeEkIPhEgl3vYHBxAsA7zMN9oh191aikN4SPc6e
+         su7Q==
+X-Gm-Message-State: AOAM532sFNmEv3De8v41/Yqy384nwNvwJ9hgYm/F3t7jqhP3YIT1143q
+        tSCDdZxckskrhTaBkdlU4qV3O6DFOqsfnFG1LEKHUQ==
+X-Google-Smtp-Source: ABdhPJyMQQ57JywNBx+Etccl693u861JrcS1dP7sUHeNMxrNogeWNU6kbdnM9bk0QULlC4xClEAX/ReXS4wVQSi6JgM=
+X-Received: by 2002:ac2:428e:: with SMTP id m14mr25450552lfh.478.1620843689766;
+ Wed, 12 May 2021 11:21:29 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210414021201.2462114-1-lzye@google.com> <CAFFuddLDgidkqDsihCU0VpXC_qEXVww67DmoFOvRdgrrPgOj_A@mail.gmail.com>
+In-Reply-To: <CAFFuddLDgidkqDsihCU0VpXC_qEXVww67DmoFOvRdgrrPgOj_A@mail.gmail.com>
+From:   Chris Ye <lzye@google.com>
+Date:   Wed, 12 May 2021 11:21:18 -0700
+Message-ID: <CAFFuddK_u2XxjbXnvhaRP1PakMCPDD5tV2T6ihXcAzzC72fu9g@mail.gmail.com>
+Subject: Re: [PATCH] [v5] Input: Add "Select" button to Microsoft Xbox One controller.
+To:     =?UTF-8?Q?=C5=81ukasz_Patron?= <priv.luk@gmail.com>,
+        Benjamin Valentin <benpicco@googlemail.com>,
+        Chris Ye <lzye@google.com>, Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Olivier_Cr=C3=AAte?= <olivier.crete@ocrete.ca>,
+        Sanjay Govind <sanjay.govind9@gmail.com>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        Bastien Nocera <hadess@hadess.net>
+Cc:     linux-input <linux-input@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>, trivial@kernel.org,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 04:43:33PM +0200, Christophe Leroy wrote:
-> Le 12/05/2021 à 16:31, Segher Boessenkool a écrit :
-> >On Wed, May 12, 2021 at 02:56:56PM +0200, Christophe Leroy wrote:
-> >>Le 11/05/2021 à 12:51, Segher Boessenkool a écrit :
-> >>>Something seems to have decided this asm is more expensive than it is.
-> >>>That isn't always avoidable -- the compiler cannot look inside asms --
-> >>>but it seems it could be improved here.
-> >>>
-> >>>Do you have (or can make) a self-contained testcase?
-> >>
-> >>I have not tried, and I fear it might be difficult, because on a kernel
-> >>build with dozens of calls to csum_add(), only ip6_tunnel.o exhibits such
-> >>an issue.
-> >
-> >Yeah.  Sometimes you can force some of the decisions, but that usually
-> >requires knowing too many GCC internals :-/
-> >
-> >>>>And there is even one completely unused instance of csum_add().
-> >>>
-> >>>That is strange, that should never happen.
-> >>
-> >>It seems that several .o include unused versions of csum_add. After the
-> >>final link, one remains (in addition to the used one) in vmlinux.
-> >
-> >But it is a static function, so it should not end up in any object file
-> >where it isn't used.
-> 
-> Well .... did I dream ?
-> 
-> Now I only find one extra .o with unused csum_add() : That's 
-> net/ipv6/exthdrs.o
-> It matches the one found in vmlinux.
-> 
-> Are you interested in -fdump-tree-einline-all for that one as well ?
+Hi Benjamin,
+     It seems I don't have any further comments on patch v5, do you
+think we can land the patch in the next kernel release? Please advise
+if there are any further comments.
+Thank you!
 
-Sure.  Hopefully it will show more :-)
+Regards,
+Chris
 
-
-Segher
+On Wed, May 5, 2021 at 9:57 AM Chris Ye <lzye@google.com> wrote:
+>
+> Hi Bastien,
+>       Can you please take a look at the patch v5, which has restored
+> the same tab formatting?
+> Thanks! Regards,
+> Chris
+>
+> On Tue, Apr 13, 2021 at 7:12 PM Chris Ye <lzye@google.com> wrote:
+> >
+> > Add "Select" button input capability and input event mapping for
+> > Microsoft Xbox One controller. From product site this is also referred as
+> > "Share" button.
+> > Fixed Microsoft Xbox One controller select button not working under USB
+> > connection.
+> >
+> > Signed-off-by: Chris Ye <lzye@google.com>
+> > ---
+> >  drivers/input/joystick/xpad.c | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> >
+> > diff --git a/drivers/input/joystick/xpad.c b/drivers/input/joystick/xpad.c
+> > index 9f0d07dcbf06..cfbf1747b205 100644
+> > --- a/drivers/input/joystick/xpad.c
+> > +++ b/drivers/input/joystick/xpad.c
+> > @@ -79,6 +79,7 @@
+> >  #define MAP_DPAD_TO_BUTTONS            (1 << 0)
+> >  #define MAP_TRIGGERS_TO_BUTTONS                (1 << 1)
+> >  #define MAP_STICKS_TO_NULL             (1 << 2)
+> > +#define MAP_SELECT_BUTTON              (1 << 3)
+> >  #define DANCEPAD_MAP_CONFIG    (MAP_DPAD_TO_BUTTONS |                  \
+> >                                 MAP_TRIGGERS_TO_BUTTONS | MAP_STICKS_TO_NULL)
+> >
+> > @@ -130,6 +131,7 @@ static const struct xpad_device {
+> >         { 0x045e, 0x02e3, "Microsoft X-Box One Elite pad", 0, XTYPE_XBOXONE },
+> >         { 0x045e, 0x02ea, "Microsoft X-Box One S pad", 0, XTYPE_XBOXONE },
+> >         { 0x045e, 0x0719, "Xbox 360 Wireless Receiver", MAP_DPAD_TO_BUTTONS, XTYPE_XBOX360W },
+> > +       { 0x045e, 0x0b12, "Microsoft Xbox One X pad", MAP_SELECT_BUTTON, XTYPE_XBOXONE },
+> >         { 0x046d, 0xc21d, "Logitech Gamepad F310", 0, XTYPE_XBOX360 },
+> >         { 0x046d, 0xc21e, "Logitech Gamepad F510", 0, XTYPE_XBOX360 },
+> >         { 0x046d, 0xc21f, "Logitech Gamepad F710", 0, XTYPE_XBOX360 },
+> > @@ -862,6 +864,8 @@ static void xpadone_process_packet(struct usb_xpad *xpad, u16 cmd, unsigned char
+> >         /* menu/view buttons */
+> >         input_report_key(dev, BTN_START,  data[4] & 0x04);
+> >         input_report_key(dev, BTN_SELECT, data[4] & 0x08);
+> > +       if (xpad->mapping & MAP_SELECT_BUTTON)
+> > +               input_report_key(dev, KEY_RECORD, data[22] & 0x01);
+> >
+> >         /* buttons A,B,X,Y */
+> >         input_report_key(dev, BTN_A,    data[4] & 0x10);
+> > @@ -1672,6 +1676,8 @@ static int xpad_init_input(struct usb_xpad *xpad)
+> >             xpad->xtype == XTYPE_XBOXONE) {
+> >                 for (i = 0; xpad360_btn[i] >= 0; i++)
+> >                         input_set_capability(input_dev, EV_KEY, xpad360_btn[i]);
+> > +               if (xpad->mapping & MAP_SELECT_BUTTON)
+> > +                       input_set_capability(input_dev, EV_KEY, KEY_RECORD);
+> >         } else {
+> >                 for (i = 0; xpad_btn[i] >= 0; i++)
+> >                         input_set_capability(input_dev, EV_KEY, xpad_btn[i]);
+> > --
+> > 2.31.1.295.g9ea45b61b8-goog
+> >
