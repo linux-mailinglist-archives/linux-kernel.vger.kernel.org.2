@@ -2,176 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C29D537EEDC
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 01:04:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C007737EEDF
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 01:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443472AbhELWSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 18:18:54 -0400
-Received: from mga06.intel.com ([134.134.136.31]:62957 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1391505AbhELVta (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 17:49:30 -0400
-IronPort-SDR: eLHo0CSDsCmIsMfXFecXSRQwUUq6SjqKS8+4wh8vlrDK2FxXN52lT5nRilVm4JZJ52akwB254p
- owHIrfnFCMIQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="261062425"
-X-IronPort-AV: E=Sophos;i="5.82,295,1613462400"; 
-   d="scan'208";a="261062425"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2021 14:48:18 -0700
-IronPort-SDR: 4xOzcugXdt3uWlgi7ujm2HQh1QvPEsDB4ZAqIzc4jfqgd71lR4b4G47TfeWMfmQMoWm9AGknx/
- qt/02AhAhtuQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,295,1613462400"; 
-   d="scan'208";a="610109473"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orsmga005.jf.intel.com with ESMTP; 12 May 2021 14:48:18 -0700
-Received: from orsmsx608.amr.corp.intel.com (10.22.229.21) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 12 May 2021 14:48:18 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx608.amr.corp.intel.com (10.22.229.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
- via Frontend Transport; Wed, 12 May 2021 14:48:18 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.174)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2106.2; Wed, 12 May 2021 14:48:18 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hqgqiH3kXKLggoow5xAAWvWwuXloM7k2N36dNkIUyjo1ma42dd5eQ0I9+i8IC7FNmHL1tEkCE16VI/APupUdAhr1LJfiqIMTe29XswFlqGt50WifQeiNkWxzO0ntzPNqh6NOo6Ws+LLv7jRFzcEUa+gAYQnluv4wP08/Qn2xNxsmXjpcRFu1Zk+oeD71ZtuTonCozCCqYmxTIzX0J61t9DHARmnbsuCEsjSLMtT5hcPo//f0E7VrzCpuJPNaoX4cZLEUUF6idPQje1+R9SflJvoDRYg2I8OlOp7kT5UPzV04+MofcG+9Ksd7IVR//snodMxMIbRNMt1eKBfFY5eCEw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1DcyUMlvj7liLPUeR+lCslylKB5cLu1RzMqMqDlTXnQ=;
- b=IzCBO+/JAaDexs7caZtzuO5A5u23XT5R0lsudJSwefJsNC1GWncC4w6tCFmn00ZCogwAODsvLDWF7ujbqIzYvXA2OLhSU55w4FnreyxoEleoUuXj68LqGkk0eh9PJHPhrWDNB8e+PZtRrfl+wy3LSv0FQyug6MzgPFSZLqJiV9qK4Gh4J789jb/Bf/g5Oiz4V2NmRWJI+5XDdiU3fFChFpK7sCgL+e0VQYogDeW4Pvvf4U5teo9wgXipw17ManFmChS2NmzkhYjfBd//naSSbUDCNug1Cwjg8+Fu8DUsCpgfG3SHZEOQQFZ+3SoavoBZiyU75X0gIMiRA8jxJwKGww==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1DcyUMlvj7liLPUeR+lCslylKB5cLu1RzMqMqDlTXnQ=;
- b=CPcdGpSkOFpQlDshwVoPCnPCcLFrUL5+/mw0sz+LcfCJrX1LccmG0DSVaOQALW62CX2PGouvpcuPc5ibZtSQ73xWZ/oOxQkt+U+htSNLqAX9tmI5q9A/m3nxnX/0LDDVl0yKA/82Bf40Cv2hGeTROyVnV2V/gsP55WYk/9JDe14=
-Received: from CO1PR11MB5105.namprd11.prod.outlook.com (2603:10b6:303:9f::7)
- by MWHPR11MB1693.namprd11.prod.outlook.com (2603:10b6:300:2b::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.30; Wed, 12 May
- 2021 21:48:16 +0000
-Received: from CO1PR11MB5105.namprd11.prod.outlook.com
- ([fe80::4db9:fe34:a884:4e43]) by CO1PR11MB5105.namprd11.prod.outlook.com
- ([fe80::4db9:fe34:a884:4e43%7]) with mapi id 15.20.4108.031; Wed, 12 May 2021
- 21:48:16 +0000
-From:   "Brelinski, TonyX" <tonyx.brelinski@intel.com>
-To:     Liwei Song <liwei.song@windriver.com>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
-CC:     Jakub <kuba@kernel.org>, David <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: RE: [Intel-wired-lan] [PATCH] ice: set the value of global config
- lock timeout longer
-Thread-Topic: [Intel-wired-lan] [PATCH] ice: set the value of global config
- lock timeout longer
-Thread-Index: AQHXNP7Terxi6PVDU0yarXCQw89LCqrghrBQ
-Date:   Wed, 12 May 2021 21:48:16 +0000
-Message-ID: <CO1PR11MB51059B08F5B1A7EA207FC3E9FA529@CO1PR11MB5105.namprd11.prod.outlook.com>
-References: <20210419093106.6487-1-liwei.song@windriver.com>
-In-Reply-To: <20210419093106.6487-1-liwei.song@windriver.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.6.0.76
-dlp-reaction: no-action
-authentication-results: windriver.com; dkim=none (message not signed)
- header.d=none;windriver.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [71.236.132.75]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 60d1f23c-7494-47de-ac5b-08d9158fa62d
-x-ms-traffictypediagnostic: MWHPR11MB1693:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR11MB1693DE1BF7E3149E769FB4EEFA529@MWHPR11MB1693.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3826;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: V1Z+p4ZY1S0GTikcZYwvAltWynDx1wSiw/ZFHAZQopk0FZzrVt6Wro7jQVoyZb8xW3+YkAUGjHK7sFIzv1hDjFUPKqX7nRivLr6d9iggZ2wJ5m5dmrc9z2xyJnepYL9NSI0XYfaiTeMGiVrx5fVEM0GtIXXU1ig7EkBLc7cWETSs9Od6DFWOcmJ+aiVwoGWOFl0YE16n6yOXLEsummhCQHPDr4s9i+fUZG3Df4O8dSSY0atjhEXNgL13CNZoNRbVcQGdGczcpvoPCxGFlpgiCUt0KFhVB9k0zkJ4n20smERRSAiP7y3j4IYPrrwtmIVVhpw0g8eNf9PHLBrcVkfniPAc2CPsyHeBgfsA6YGgu5oRo6EYw4n6QavalVVQGJcBDhuFIIEux8pPle1YgItGOslYTSSuoU8QaqfUW1TMKI3Tzsk2dSduMTGuku90Zh+sRO9FJR798E4M5lNuVuCVgRVuq+VII2luv4f7l336wJv17i/PeiPVIcwDkO1FhcVuYIGI94eV4qsYFUuZ+FrU6idjxYDC2bLlEl0F6uenQB6dPtUeRKWWMoK3JgR8ix2kh7D4xrj+REo0gNl42VGcsOVp0N+kBN6GBTq6BhyXuqoycddKxykJ7bYG1D+qokKfCGWLM+8bvVp4jyWslFCElu97/ziRZZm8od6J1ewu0uc=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5105.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(346002)(136003)(376002)(39860400002)(396003)(71200400001)(8676002)(33656002)(76116006)(122000001)(316002)(7696005)(186003)(66946007)(54906003)(26005)(5660300002)(110136005)(6506007)(86362001)(66446008)(66556008)(52536014)(2906002)(53546011)(64756008)(66476007)(8936002)(478600001)(55016002)(4326008)(83380400001)(38100700002)(6636002)(9686003)(148743002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?O+jGfnDVSMu+7QXhiBK+THpa4rNOylMCAk1+KaclybTFvP5OZJQgApMF8+J5?=
- =?us-ascii?Q?2v023asoD6s0JhmbFx9KjqLH4apzrdq4Jryb0jkyvt1LGfnG8dQzHdnfgQb5?=
- =?us-ascii?Q?ydoJcCTheWuHD3O/b//W+C29RmvrOu4JFMZMYq5c2kRkkBkmwOsIqgmjMuAm?=
- =?us-ascii?Q?/onsUyKy5veIbZktoGor42cJtCVH5GkAJA2kTwXNrrxFWpyF8QYfYk+3lazG?=
- =?us-ascii?Q?Oi+FlhXtDTMgU530N6LfJGaQ0V2CIF2TiQcEX+FqXffmfyzphh3KmAsIib05?=
- =?us-ascii?Q?CZWGdlSvXcnXsczZMLBmHGVJ5vLTlRf4+Iqdvkd4zSJwiXDRtaVKJ4W+EccC?=
- =?us-ascii?Q?4iyVoOgBgoFtzA3kdItVREFWmP65mUE67+xNLDGS2Z/jESV3pvXvbhRtoduk?=
- =?us-ascii?Q?6v55v140Qsr4TALI8f88IhnNElU8+ZU/ebp1CF8oCNJfyNa/5gHWQpQYaz6E?=
- =?us-ascii?Q?sFEvO1jmiyOykM0IYE/d8aKJVkESdlIbtma3igSbDz54DoakQZ6XZNfxq18a?=
- =?us-ascii?Q?FcVEVgr7Fo6hChDAgO/mO9ZWzR7IbCUMeQFPgF02gQxIDIClFYoZCH8PTiZR?=
- =?us-ascii?Q?3/TfbSwMcTxgXH6NCEWlOiyNdT0z9qMAIy1QMyIr80ccS1ve84MbgsctfKdp?=
- =?us-ascii?Q?J7hxJCx4tpHqOR0hlswvVl8s43Ui/hb3UJGoQEpsVpM/V4+R07yBwu4fVUHk?=
- =?us-ascii?Q?sjmZ1sOugIvibQAUUIpSaA/GmQ1t2NKym6pwTo8XYBqQHvYbBprOtIefPXkk?=
- =?us-ascii?Q?O4k5kcRNSS03fBIMhLJTIkTGM3N4CaFk8sPNLmO3wJBNvMeJRaaEiY9DP90q?=
- =?us-ascii?Q?USw07sYA4yoULwSVg9sXrQeeZlL1jRo9AE2nOKGK5ANpjDpLq567O+ZQpdkq?=
- =?us-ascii?Q?CMlhl325IjB6saiRqf/nPSQkYPb0KBxLdG+bKz4gmL9ijq4KQQnuy8HJ78rF?=
- =?us-ascii?Q?QhLC6ntVq8Ln1Tg8YDX0fa+RQzJpgjyUgOdDl5hIJghh1iF4UPjHTNP75BQr?=
- =?us-ascii?Q?lGFEyC+mOMUDNKZ4+eoLbutGMvyt0xARUj/yP0PMBwx2KDAxlS+WwdJhSN1J?=
- =?us-ascii?Q?rMh72J5O+9T/XQ9qLWUj1WIfQW5Ovtl4bubxaPB8w6Y7xkL0wB1VWjLrPw7Z?=
- =?us-ascii?Q?+T35WNy/r1lFHBqg336hR7GOPHiBjEBGer4IT1Gz5g/qt49/mWQ0dfFoKYCf?=
- =?us-ascii?Q?GHLafkYNkE7rb3Z++PRP8bOyt6+rxQ0sysKrsdyh6eXcb3hc5GM9zX7KzUCt?=
- =?us-ascii?Q?IrvtXN3BdNRlPvbTc7abrjF0kxhx54yaFdxdqO+Z2loNz7pbarnPkqAkrKLk?=
- =?us-ascii?Q?88jlSsnoSMwrhjdt/PJMbCp0?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1443539AbhELWUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 18:20:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348055AbhELVz1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 17:55:27 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6D94C06138B
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 14:53:05 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id x188so19739803pfd.7
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 14:53:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=31Caylk6NgplyOdEHmBs90YF+DyIdObUGOQdNgbTVPU=;
+        b=khNY1wUPCnx6s/b1o0E8dyvbVcj5ruewQNunqDgsQAd+jlQeIkT4piAjt5QNFwxvnp
+         BbIhTImXu1OkMhFGW++qgklR8ei2F4E5faPIekzMSxQx8mU+/ky0EJAuOG1V3NuA06u8
+         uuAcR5NbTxEzyOzGjgxj8jexzp0Ov6f8HrZwhdVnfu7jFF0TyjF1djzyut3U41mCC1Ny
+         U/ZWYaI2SI/FnalW+MWF1sfWNH1IoJadHWQVWnbkPyDJvQM/UDFxUq74yCoceZKH+zH/
+         UkomqvAv+2DvOmYSRnD+qysQI1/7KDT+ekUbgYgzyiDmBqUwc9YpbfCkv1wDufeIG19E
+         07xA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=31Caylk6NgplyOdEHmBs90YF+DyIdObUGOQdNgbTVPU=;
+        b=NcvTJDlPa6rwby7H3Oke0mdOSx8aRp5KmVluqk9GN77X9fPGF2tE+jtmvV6NV/Qlib
+         k9Ph5NGbeFN2gxq3up4WpQnmvny5o9tjMuXyKtLgHY1qV2/8oC3LzIp1wK1yml635z9q
+         jBL4GH6ygIwVKQUCrbMchq/GMJBP2ZiVfvEgFSUDfJXBnEvRI8C1ihQFTsIHPxy3zxVE
+         iOF9SHH+n2mN1JeaRWLq5HmMjPePve0mVfZ+ACaaKiDydfOAkROwUyzIibo43qXOsnOF
+         NITWVovs9td0pqTZrOMSlXG0m+8Nae8b/ZtKOdXo6C2j1kBbKhSxX9KvF64ntpO2ieCA
+         oJbA==
+X-Gm-Message-State: AOAM531qlPfduYJfCw56OozRqHJn9NbiERkfpi3xEWN+/Nl2VdsbV8fk
+        ce+377oo68lrQGgGrIvnLjxiS6rhGQCfitkCUgsPNg==
+X-Google-Smtp-Source: ABdhPJyYMdgdxgQl4RO7FDyTSI8sljhmYktWge1iSEPO0dv6Q3L3L3hfZpTE078xVY4h180yyGL6FjvVnrXGrRocj4o=
+X-Received: by 2002:a17:90b:2393:: with SMTP id mr19mr728085pjb.24.1620856385292;
+ Wed, 12 May 2021 14:53:05 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5105.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 60d1f23c-7494-47de-ac5b-08d9158fa62d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 May 2021 21:48:16.0809
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: YHE7X1SUzwwEBidM0GoO4OfspOBVpAhykvmqN7x6IYfMEKLAwLAW1ltFXgXAMY4JEkbL9ehYX/bNYZwOgEZG8MMrZetFTVFgtWxo0E3JHI0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1693
-X-OriginatorOrg: intel.com
+References: <e134d74d-c218-a01d-a315-82b909c84051@oracle.com>
+ <20210512065813.89270-1-almasrymina@google.com> <CAJHvVch0ZMapPVEc0Ge5V4KDgNDNhECbqwDi0y9XxsxFXQZ-gg@mail.gmail.com>
+ <c455d241-11f6-95a6-eb29-0ddd94eedbd7@oracle.com> <CAHS8izM8G948ziJToaNKgqaMQ9_CB+anksGQQHSbTY1a+yGSjg@mail.gmail.com>
+ <YJw3MH2kTftwvlGa@t490s> <6a4678a2-c6d1-cf27-cd69-1b49349a3271@oracle.com>
+In-Reply-To: <6a4678a2-c6d1-cf27-cd69-1b49349a3271@oracle.com>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Wed, 12 May 2021 14:52:54 -0700
+Message-ID: <CAHS8izO_YAsYxxrCpSMNe2V5cV-zfsW=Xu4-suEHVPetkGSuBA@mail.gmail.com>
+Subject: Re: [PATCH] mm, hugetlb: fix resv_huge_pages underflow on UFFDIO_COPY
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Peter Xu <peterx@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Axel Rasmussen <axelrasmussen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf Of
-> Liwei Song
-> Sent: Monday, April 19, 2021 2:31 AM
-> To: intel-wired-lan <intel-wired-lan@lists.osuosl.org>; Brandeburg, Jesse
-> <jesse.brandeburg@intel.com>; Nguyen, Anthony L
-> <anthony.l.nguyen@intel.com>
-> Cc: Jakub <kuba@kernel.org>; David <davem@davemloft.net>; linux-
-> kernel@vger.kernel.org; netdev@vger.kernel.org
-> Subject: [Intel-wired-lan] [PATCH] ice: set the value of global config lo=
-ck
-> timeout longer
->=20
-> It may need hold Global Config Lock a longer time when download DDP
-> package file, extend the timeout value to 5000ms to ensure that download
-> can be finished before other AQ command got time to run, this will fix th=
-e
-> issue below when probe the device, 5000ms is a test value that work with
-> both Backplane and BreakoutCable NVM image:
->=20
-> ice 0000:f4:00.0: VSI 12 failed lan queue config, error ICE_ERR_CFG ice
-> 0000:f4:00.0: Failed to delete VSI 12 in FW - error: ICE_ERR_AQ_TIMEOUT i=
-ce
-> 0000:f4:00.0: probe failed due to setup PF switch: -12
-> ice: probe of 0000:f4:00.0 failed with error -12
->=20
-> Signed-off-by: Liwei Song <liwei.song@windriver.com>
-> ---
->  drivers/net/ethernet/intel/ice/ice_type.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On Wed, May 12, 2021 at 2:31 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+>
+> On 5/12/21 1:14 PM, Peter Xu wrote:
+> > On Wed, May 12, 2021 at 12:42:32PM -0700, Mina Almasry wrote:
+> >>>>> @@ -4868,30 +4869,39 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
+> >>>>> +       WARN_ON(*pagep);
+> >>>>
+> >>>> I don't think this warning works, because we do set *pagep, in the
+> >>>> copy_huge_page_from_user failure case. In that case, the following
+> >>>> happens:
+> >>>>
+> >>>> 1. We set *pagep, and return immediately.
+> >>>> 2. Our caller notices this particular error, drops mmap_lock, and then
+> >>>> calls us again with *pagep set.
+> >>>>
+> >>>> In this path, we're supposed to just re-use this existing *pagep
+> >>>> instead of allocating a second new page.
+> >>>>
+> >>>> I think this also means we need to keep the "else" case where *pagep
+> >>>> is set below.
+> >>>>
+> >>>
+> >>> +1 to Peter's comment.
+> >>>
+>
+> Apologies to Axel (and Peter) as that comment was from Axel.
+>
+> >>
+> >> Gah, sorry about that. I'll fix in v2.
+> >
+> > I have a question regarding v1: how do you guarantee huge_add_to_page_cache()
+> > won't fail again even if checked before page alloc?  Say, what if the page
+> > cache got inserted after hugetlbfs_pagecache_present() (which is newly added in
+> > your v1) but before huge_add_to_page_cache()?
+>
+> In the caller (__mcopy_atomic_hugetlb) we obtain the hugetlb fault mutex
+> before calling this routine.  This should prevent changes to the cache
+> while in the routine.
+>
+> However, things get complicated in the case where copy_huge_page_from_user
+> fails.  In this case, we will return to the caller which will drop mmap_lock
+> and the hugetlb fault mutex before doing the copy.  After dropping the
+> mutex, someone could populate the cache.  This would result in the same
+> situation where two reserves are 'temporarily' consumed for the same
+> mapping offset.  By the time we get to the second call to
+> hugetlb_mcopy_atomic_pte where the previously allocated page is passed
+> in, it is too late.
+>
 
-Tested-by: Tony Brelinski <tonyx.brelinski@intel.com> (A Contingent Worker =
-at Intel)
+Thanks. I tried locally to allocate a page, then add it into the
+cache, *then* copy its contents (dropping that lock if that fails).
+That also has the test passing, but I'm not sure if I'm causing a fire
+somewhere else by having a page in the cache that has uninitialized
+contents. The only other code that checks the cache seems to be the
+hugetlb_fault/hugetlb_cow code. I'm reading that code to try to
+understand if I'm breaking that code doing this.
 
-
+> --
+> Mike Kravetz
