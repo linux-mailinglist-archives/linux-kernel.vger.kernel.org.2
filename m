@@ -2,125 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2713837EC89
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:28:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7436B37EC70
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:28:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384515AbhELT6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:58:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59586 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353338AbhELSLT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 14:11:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D88AB61941;
-        Wed, 12 May 2021 18:05:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620842761;
-        bh=HoXhbdPkempNh0y+GrVdzvcto/dJ8wWErjeD512HHMg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W8sfnekLAfAGHRJHnnN42oEJJrzh26d8PJ3FejT4iw/BUcwJgqNF0DgyBTPVI0n8U
-         jWttDU2J/pl3BYi8Bwi7MmVEobDT5qUNYDoj+s10l3rh/3II3ztZ9VpMHNJ1tAPtuh
-         QFa80REhwsFqlQ2HcPPSYADx7vUEVjhJCKubsNOaF3h8FOeid9i5mZijqorHgCOFSS
-         jOCRYUxsUfMyf9dQoJzLsKvxV9ULElT1Ps4dElFZzEglUauAO1OMJAzdrBQH0KX79w
-         4wEO6LRHpr9pshFPZ79qUiVKkNUhqlBgHTSf9BIcZECiQyqtxYHZs7h5xzXOX9hExU
-         HawkU+GjNp//g==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zqiang <qiang.zhang@windriver.com>,
-        Andrew Halaney <ahalaney@redhat.com>,
-        Alexander Potapenko <glider@google.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Vijayanand Jitta <vjitta@codeaurora.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Yogesh Lal <ylal@codeaurora.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.9 7/7] lib: stackdepot: turn depot_lock spinlock to raw_spinlock
-Date:   Wed, 12 May 2021 14:05:44 -0400
-Message-Id: <20210512180545.665946-7-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210512180545.665946-1-sashal@kernel.org>
-References: <20210512180545.665946-1-sashal@kernel.org>
+        id S1384047AbhELT4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:56:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241933AbhELSJL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 14:09:11 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8356C061344
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 11:08:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=MD8daV3kN0gejfU6VKniWGHf2kzOV3GCoEimBhHQ6Mg=; b=iOakIakZMZlv1e6OfHVF2n0Exc
+        OswJSthdiCnu89HO1NE1WSXsfp4Smz85+HRrHHlJp8417rEFWPNkQ2bvjaaINzUhMoWYSzRrbd2DX
+        1vHhkryhyJ+hym9JLmuiVY0Ya41zpA+CI4obpo3U4QQeC9X/vIVp+DL4dJMbXM64Qp8l0IUolAyZ/
+        mkrhNBgRAd1uw55FckefaxqMK6kUceV7mKxV+Q/8YySMZQoZCvt4vCYD0ZM7x4Vdukw/r5vEHSpGj
+        cNh2Pl38O/teIz2tfePrbGZNglzJ9O4Y9KoyPDo2RQ18sdz06j6NOrBE15lkMhaWTPzj2g9oDnTQe
+        +N5tms0g==;
+Received: from [2601:1c0:6280:3f0::7376]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lgtH4-00Agkt-Ej; Wed, 12 May 2021 18:07:58 +0000
+Subject: Re: [PATCH 02/15] misc: nnpi: Initialize NNP-I framework and PCIe
+ modules
+To:     Guy Zadicario <guy.zadicario@intel.com>,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
+Cc:     olof@lixom.net, alexander.shishkin@linux.intel.com,
+        andriy.shevchenko@intel.com, yochai.shefi-simchon@intel.com
+References: <20210512071046.34941-1-guy.zadicario@intel.com>
+ <20210512071046.34941-3-guy.zadicario@intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <fec29580-b5b3-3e62-05b2-0227de43971d@infradead.org>
+Date:   Wed, 12 May 2021 11:07:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210512071046.34941-3-guy.zadicario@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zqiang <qiang.zhang@windriver.com>
+On 5/12/21 12:10 AM, Guy Zadicario wrote:
+> diff --git a/drivers/misc/intel-nnpi/Kconfig b/drivers/misc/intel-nnpi/Kconfig
+> new file mode 100644
+> index 0000000..ccd39df
+> --- /dev/null
+> +++ b/drivers/misc/intel-nnpi/Kconfig
+> @@ -0,0 +1,18 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +
+> +#
+> +# Copyright (C) 2019-2021 Intel Corporation
+> +#
+> +#
+> +
+> +config INTEL_NNPI
+> +	tristate "Intel(R) PCIe NNP-I (AI accelerator for inference) device driver"
+> +	depends on PCI
+> +	select DMA_SHARED_BUFFER
+> +	help
+> +	  Device driver for Intel NNP-I PCIe accelerator card for AI inference.
+> +
+> +	  If unsure, say N.
+> +
+> +	  To compile this driver as a module, choose M here. Two modules will
+> +          get generated intel_nnpi and intel_nnpi_pcie.
 
-[ Upstream commit 78564b9434878d686c5f88c4488b20cccbcc42bc ]
+For the last help text line, use a tab + 2 spaces for indentation.
+Also 2 more changes:  s/get generated/be generated:/
 
-In RT system, the spin_lock will be replaced by sleepable rt_mutex lock,
-in __call_rcu(), disable interrupts before calling
-kasan_record_aux_stack(), will trigger this calltrace:
 
-  BUG: sleeping function called from invalid context at kernel/locking/rtmutex.c:951
-  in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 19, name: pgdatinit0
-  Call Trace:
-    ___might_sleep.cold+0x1b2/0x1f1
-    rt_spin_lock+0x3b/0xb0
-    stack_depot_save+0x1b9/0x440
-    kasan_save_stack+0x32/0x40
-    kasan_record_aux_stack+0xa5/0xb0
-    __call_rcu+0x117/0x880
-    __exit_signal+0xafb/0x1180
-    release_task+0x1d6/0x480
-    exit_notify+0x303/0x750
-    do_exit+0x678/0xcf0
-    kthread+0x364/0x4f0
-    ret_from_fork+0x22/0x30
-
-Replace spinlock with raw_spinlock.
-
-Link: https://lkml.kernel.org/r/20210329084009.27013-1-qiang.zhang@windriver.com
-Signed-off-by: Zqiang <qiang.zhang@windriver.com>
-Reported-by: Andrew Halaney <ahalaney@redhat.com>
-Cc: Alexander Potapenko <glider@google.com>
-Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
-Cc: Vijayanand Jitta <vjitta@codeaurora.org>
-Cc: Vinayak Menon <vinmenon@codeaurora.org>
-Cc: Yogesh Lal <ylal@codeaurora.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- lib/stackdepot.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/lib/stackdepot.c b/lib/stackdepot.c
-index 759ff419fe61..c519aa07d2e9 100644
---- a/lib/stackdepot.c
-+++ b/lib/stackdepot.c
-@@ -78,7 +78,7 @@ static void *stack_slabs[STACK_ALLOC_MAX_SLABS];
- static int depot_index;
- static int next_slab_inited;
- static size_t depot_offset;
--static DEFINE_SPINLOCK(depot_lock);
-+static DEFINE_RAW_SPINLOCK(depot_lock);
- 
- static bool init_stack_slab(void **prealloc)
- {
-@@ -253,7 +253,7 @@ depot_stack_handle_t depot_save_stack(struct stack_trace *trace,
- 			prealloc = page_address(page);
- 	}
- 
--	spin_lock_irqsave(&depot_lock, flags);
-+	raw_spin_lock_irqsave(&depot_lock, flags);
- 
- 	found = find_stack(*bucket, trace->entries, trace->nr_entries, hash);
- 	if (!found) {
-@@ -277,7 +277,7 @@ depot_stack_handle_t depot_save_stack(struct stack_trace *trace,
- 		WARN_ON(!init_stack_slab(&prealloc));
- 	}
- 
--	spin_unlock_irqrestore(&depot_lock, flags);
-+	raw_spin_unlock_irqrestore(&depot_lock, flags);
- exit:
- 	if (prealloc) {
- 		/* Nobody used this memory, ok to free it. */
+thanks.
 -- 
-2.30.2
+~Randy
 
