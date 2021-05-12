@@ -2,104 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 305B137C507
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 17:37:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFCFF37C557
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 17:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236224AbhELPhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 11:37:21 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:56103 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234367AbhELPQh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:16:37 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id C82C15C0045;
-        Wed, 12 May 2021 11:15:28 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Wed, 12 May 2021 11:15:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=animalcreek.com;
-         h=date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=YVb0jvkmEwmzubD+WY/O9I3Lwz6
-        UzT1MBUzmycrS1X0=; b=FRwdWdbb2twJseeJq+qSCcc9GlztShbYmnKJowgxGtv
-        g87O2DVPWEdlo/jHV8csHR5+9oubXJU1MebXg8atcX0CFPZlz3mgikgYwAu9NIms
-        oo7qmgFvOwdG5c16y3fDRWeeKeDLfG6CNLpTKpFjVq4dYgFfHnMa2QmEt8btOl6g
-        DAak3dslDOyx80sdNBXA9Ko2hFB5G4Ph9NF8XYmm/FyR/gFgX9VntwnEyQiBCBvM
-        99lHx764+V6VUdmKu/t4OIBm5EdRSONwsV4lMHlCE3GEuIxq/QLfI8g36WKgftUj
-        FpJTu4GoqmXA93T0vyJ4HBy3uMqGfTHerEjWRoXpZ4w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=YVb0jv
-        kmEwmzubD+WY/O9I3Lwz6UzT1MBUzmycrS1X0=; b=TfDUy/HEdekEgEmn35QrP8
-        vSnTZaG28Y4JvYwBtOJ8uMsAElOje+D+01CdrSr76wgRwdNstcQc+J+OdqS4GMQ1
-        w0cbo11GXX0sK01YlsNHMTmE9j5u43EyIr3oyJxI2hTErfxlnOcFStambU5fIp6D
-        Y8OE0397JIVRsaqEAZ8laIOP7LYXM5+ly06gIAmVk7TksuBy7qG0VsX0qwMXhzXe
-        MTKu4rXwtVkCsw4gbJqcRjGehhJbFPuH/n8emDBEMh+6L1VECAnvN85OqppcLNFJ
-        +7FaxocXUxgMxnqgxoKrWopPLf4jGeVJxwY8Nn3d89eLzjhznme8XAVBA+2VCdgA
-        ==
-X-ME-Sender: <xms:D_GbYFXtFz5jfR4g2rSdljD13nzJTZY_cDI8jmSyLWbojffzAZsD5Q>
-    <xme:D_GbYFmHvLdZ6LG12Op-mhmQaRtq3Y4KLPoSIwS1xq8G-zM6jbgYoPVX42KZYtv_S
-    _kPzABYDgSnJ9ooYg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdehvddgkeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjohesthdtredttddtvdenucfhrhhomhepofgrrhhk
-    ucfirhgvvghruceomhhgrhgvvghrsegrnhhimhgrlhgtrhgvvghkrdgtohhmqeenucggtf
-    frrghtthgvrhhnpeeiuefguddtfeeitddvffetudefvdejhefgveevfedugfejffegieet
-    teejudffhfenucfkphepjedtrddujedvrdefvddrvddukeenucevlhhushhtvghrufhiii
-    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmghhrvggvrhesrghnihhmrghltghr
-    vggvkhdrtghomh
-X-ME-Proxy: <xmx:D_GbYBbvS4iKQXktS56xejXww8t2ygqwhbedyVtLgjq1yS-ZOhKH6g>
-    <xmx:D_GbYIX8TQJLeM3LWuJNevHbYQuCf9t53oxJ67r4MKXfTxPmM5KlAg>
-    <xmx:D_GbYPnG82hS7ZuqIpb2cgxqirOG5EN6aFqs_q7r0uEwZKLPqkNbcQ>
-    <xmx:EPGbYNjD6mI5FLixTC5Y_PrGqVtSM_acIbUBM9usyOyUYD7U78BRGg>
-Received: from blue.animalcreek.com (ip70-172-32-218.ph.ph.cox.net [70.172.32.218])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Wed, 12 May 2021 11:15:27 -0400 (EDT)
-Received: by blue.animalcreek.com (Postfix, from userid 1000)
-        id 9741D136008B; Wed, 12 May 2021 08:15:26 -0700 (MST)
-Date:   Wed, 12 May 2021 08:15:26 -0700
-From:   Mark Greer <mgreer@animalcreek.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nfc@lists.01.org
-Subject: Re: [linux-nfc] [PATCH 2/2] MAINTAINERS: nfc: include linux-nfc
- mailing list
-Message-ID: <20210512151526.GC215713@animalcreek.com>
-References: <20210512144319.30852-1-krzysztof.kozlowski@canonical.com>
- <20210512144319.30852-2-krzysztof.kozlowski@canonical.com>
+        id S234369AbhELPjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 11:39:35 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51870 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231533AbhELPRB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:17:01 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CA3FDAF80;
+        Wed, 12 May 2021 15:15:52 +0000 (UTC)
+Subject: Re: [PATCH v1 6/8] loop: add error handling support for add_disk()
+To:     Luis Chamberlain <mcgrof@kernel.org>, axboe@kernel.dk
+Cc:     bvanassche@acm.org, ming.lei@redhat.com, hch@infradead.org,
+        jack@suse.cz, osandov@fb.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210512064629.13899-1-mcgrof@kernel.org>
+ <20210512064629.13899-7-mcgrof@kernel.org>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <65f45d01-2f22-e7b9-1eb9-9055a7b483cd@suse.de>
+Date:   Wed, 12 May 2021 17:15:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210512144319.30852-2-krzysztof.kozlowski@canonical.com>
-Organization: Animal Creek Technologies, Inc.
+In-Reply-To: <20210512064629.13899-7-mcgrof@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 10:43:19AM -0400, Krzysztof Kozlowski wrote:
-> Keep all NFC related patches in existing linux-nfc@lists.01.org mailing
-> list.
+On 5/12/21 8:46 AM, Luis Chamberlain wrote:
+> We never checked for errors on add_disk() as this function
+> returned void. Now that this is fixed, use the shiny new
+> error handling.
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 > ---
->  MAINTAINERS | 1 +
->  1 file changed, 1 insertion(+)
+>   drivers/block/loop.c | 7 ++++++-
+>   1 file changed, 6 insertions(+), 1 deletion(-)
 > 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index adc6cbe29f78..83f18e674880 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -12900,6 +12900,7 @@ F:	net/ipv4/nexthop.c
->  
->  NFC SUBSYSTEM
->  M:	Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> +L:	linux-nfc@lists.01.org (moderated for non-subscribers)
->  L:	netdev@vger.kernel.org
->  S:	Maintained
->  F:	Documentation/devicetree/bindings/net/nfc/
+> diff --git a/drivers/block/loop.c b/drivers/block/loop.c
+> index d58d68f3c7cd..a22d8c985bf3 100644
+> --- a/drivers/block/loop.c
+> +++ b/drivers/block/loop.c
+> @@ -2170,10 +2170,15 @@ static int loop_add(struct loop_device **l, int i)
+>   	disk->private_data	= lo;
+>   	disk->queue		= lo->lo_queue;
+>   	sprintf(disk->disk_name, "loop%d", i);
+> -	add_disk(disk);
+> +	err = add_disk(disk);
+> +	if (err)
+> +		goto out_put_disk;
+> +
+>   	*l = lo;
+>   	return lo->lo_number;
+>   
+> +out_put_disk:
+> +	put_disk(lo->lo_disk);
+>   out_free_queue:
+>   	blk_cleanup_queue(lo->lo_queue);
+>   out_cleanup_tags:
+> 
+Reviewed-by: Hannes Reinecke <hare@suse.de>
 
-FWIW,
+Cheers,
 
-Acked-by: Mark Greer <mgreer@animalcreek.com>
+Hannes
+-- 
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
