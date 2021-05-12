@@ -2,111 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B852037ED69
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:40:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B05A037ECDF
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:36:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386912AbhELUWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 16:22:41 -0400
-Received: from mail-oi1-f176.google.com ([209.85.167.176]:37786 "EHLO
-        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1385232AbhELUHi (ORCPT
+        id S1384758AbhELUCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 16:02:19 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:36960 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1356720AbhELSg4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 16:07:38 -0400
-Received: by mail-oi1-f176.google.com with SMTP id k25so23419961oic.4;
-        Wed, 12 May 2021 13:06:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=ZT4JNzSVA4XzKpARhAEfHQrvscUrf/xbLw82kFR8CgM=;
-        b=gUYvJSMePg6fhzUY7HrLQWKBXq5ZoZjxqu1wYUjOb894V34suYFMTfeniJfdwigZpC
-         tdqyOpCXdPKF3FrJNFlAEXLNYcSOMcROPV2IbPM5BXg/mcVqKwQMWg1Dj60gG7x/4B9+
-         FBuvIwXxdOiR5F2Pta7iGt0S8xhBL8DqdvwVo4fob/G2cogTylB0qjTS2M2NZXxHxHDK
-         nbsPaKpFq0xixVz1JIDUv45MxX8eQekzr++8zWiyN93zFfySgYkK6/1aUteavS2sd8Bl
-         vtUmeT+P472696GFJq5m5Xqtnl2mMXw5MRObuXFt6IHB3JJvLbmrPCym2G8l9RAJK/+C
-         86zA==
-X-Gm-Message-State: AOAM532YmmW0S3QK66werJdHwr5RkAZ96zCou8DbnjLsXXisNNpwhiyX
-        F6TMH2AwdLxrTdTuldTrIw==
-X-Google-Smtp-Source: ABdhPJyx3BiGpIeRJ3UIVk48+wQi6XdGs6DMxX1QJJ+UbedL6x3vdBzMYF8skTJgNZgJb8r3EWzcbQ==
-X-Received: by 2002:aca:1a05:: with SMTP id a5mr182147oia.26.1620849989353;
-        Wed, 12 May 2021 13:06:29 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id h184sm191133oia.1.2021.05.12.13.06.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 13:06:28 -0700 (PDT)
-Received: (nullmailer pid 204078 invoked by uid 1000);
-        Wed, 12 May 2021 18:35:16 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Sean Anderson <sean.anderson@seco.com>
-Cc:     michal.simek@xilinx.com, linux-pwm@vger.kernel.org,
-        Alvaro Gamez <alvaro.gamez@hazent.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-In-Reply-To: <20210511191239.774570-1-sean.anderson@seco.com>
-References: <20210511191239.774570-1-sean.anderson@seco.com>
-Subject: Re: [PATCH v3 1/2] dt-bindings: pwm: Add Xilinx AXI Timer
-Date:   Wed, 12 May 2021 13:35:16 -0500
-Message-Id: <1620844516.484369.204077.nullmailer@robh.at.kernel.org>
+        Wed, 12 May 2021 14:36:56 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14CIYWnH125672;
+        Wed, 12 May 2021 14:35:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=qiIPM4jFYVlQa2wBPzrk+yQsKPL4bBQC7RNPW3MJnVg=;
+ b=Ccn2Q+R+Eo5Hiuilhdbg1De7n0YWCZfEJUOhfXXjKUBmMR4u950309IU6B3b0iS5uLlO
+ kS7cIhB9Fa42PdnYR0kpsWenMCVtDhXzXOWgR2Rcl2KcjGTiAsfJaNKdwGWx99u8WdIm
+ 6uuJgffhgJN3bbhgvOvZ4qexfDFcATKkIAg1ORsd55z49E1GRrfvC3ronkJz7+/0IW+O
+ gNEhskMA1hUF17zYNpbgpuWOujptFLwk5/1II9cAHQd80LW8IruJtjz+Li/CoEdlkW4S
+ BmoFBacCFoFnndLLXHVyKnrK+BPbmwr+u/Ajv/vi7PB490R8M57OBUI3DIMWsU9udOst iA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38gkcn1scb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 12 May 2021 14:35:45 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14CIYXfr125804;
+        Wed, 12 May 2021 14:35:44 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38gkcn1sbr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 12 May 2021 14:35:44 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14CIT6GN027359;
+        Wed, 12 May 2021 18:35:42 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04fra.de.ibm.com with ESMTP id 38ef37h33p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 12 May 2021 18:35:42 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14CIZdOi2753178
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 12 May 2021 18:35:39 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 64C37A4040;
+        Wed, 12 May 2021 18:35:39 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 89752A4051;
+        Wed, 12 May 2021 18:35:38 +0000 (GMT)
+Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.63.111])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Wed, 12 May 2021 18:35:38 +0000 (GMT)
+Date:   Wed, 12 May 2021 20:35:36 +0200
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        stable@vger.kernel.org, Tony Krowiak <akrowiak@stny.rr.com>
+Subject: Re: [PATCH v2] s390/vfio-ap: fix memory leak in mdev remove
+ callback
+Message-ID: <20210512203536.4209c29c.pasic@linux.ibm.com>
+In-Reply-To: <20210510214837.359717-1-akrowiak@linux.ibm.com>
+References: <20210510214837.359717-1-akrowiak@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: aoiz9GkGwDh40YfM0LFgbl2fYmQg0rU4
+X-Proofpoint-ORIG-GUID: 4B3MDJ4aV-8tuyS6Gt7ZsQGH332RzLe_
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-12_09:2021-05-12,2021-05-12 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxscore=0
+ malwarescore=0 impostorscore=0 priorityscore=1501 adultscore=0
+ phishscore=0 bulkscore=0 mlxlogscore=999 spamscore=0 lowpriorityscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105120120
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 May 2021 15:12:37 -0400, Sean Anderson wrote:
-> This adds a binding for the Xilinx LogiCORE IP AXI Timer. This device is
-> a "soft" block, so it has many parameters which would not be
-> configurable in most hardware. This binding is usually automatically
-> generated by Xilinx's tools, so the names and values of some properties
-> must be kept as they are. Replacement properties have been provided for
-> new device trees.
+On Mon, 10 May 2021 17:48:37 -0400
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+
+> The mdev remove callback for the vfio_ap device driver bails out with
+> -EBUSY if the mdev is in use by a KVM guest. The intended purpose was
+> to prevent the mdev from being removed while in use; however, returning a
+> non-zero rc does not prevent removal. This could result in a memory leak
+> of the resources allocated when the mdev was created. In addition, the
+> KVM guest will still have access to the AP devices assigned to the mdev
+> even though the mdev no longer exists.
 > 
-> Because we need to init timer devices so early in boot, the easiest way
-> to configure things is to use a device tree property. For the moment
-> this is 'xlnx,pwm', but this could be extended/renamed/etc. in the
-> future if these is a need for a generic property.
+> To prevent this scenario, cleanup will be done - including unplugging the
+> AP adapters, domains and control domains - regardless of whether the mdev
+> is in use by a KVM guest or not.
 > 
-> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
+> Fixes: 258287c994de ("s390: vfio-ap: implement mediated device open callback")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Tony Krowiak <akrowiak@stny.rr.com>
 > ---
-> How should the clocking situation be documented? For the moment I have
-> just left clock as optional, but should clock-frequency be documented?
+>  drivers/s390/crypto/vfio_ap_ops.c | 13 ++-----------
+>  1 file changed, 2 insertions(+), 11 deletions(-)
 > 
-> Changes in v3:
-> - Mark all boolean-as-int properties as deprecated
-> - Add xlnx,pwm and xlnx,gen?-active-low properties.
-> - Make newer replacement properties mutually-exclusive with what they
->   replace
-> - Add an example with non-deprecated properties only.
+> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
+> index b2c7e10dfdcd..f90c9103dac2 100644
+> --- a/drivers/s390/crypto/vfio_ap_ops.c
+> +++ b/drivers/s390/crypto/vfio_ap_ops.c
+> @@ -26,6 +26,7 @@
 > 
-> Changes in v2:
-> - Use 32-bit addresses for example binding
+>  static int vfio_ap_mdev_reset_queues(struct mdev_device *mdev);
+>  static struct vfio_ap_queue *vfio_ap_find_queue(int apqn);
+> +static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev);
 > 
->  .../bindings/pwm/xlnx,axi-timer.yaml          | 142 ++++++++++++++++++
->  1 file changed, 142 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pwm/xlnx,axi-timer.yaml
+>  static int match_apqn(struct device *dev, const void *data)
+>  {
+> @@ -366,17 +367,7 @@ static int vfio_ap_mdev_remove(struct mdev_device *mdev)
+>  	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
 > 
+>  	mutex_lock(&matrix_dev->lock);
+> -
+> -	/*
+> -	 * If the KVM pointer is in flux or the guest is running, disallow
+> -	 * un-assignment of control domain.
+> -	 */
+> -	if (matrix_mdev->kvm_busy || matrix_mdev->kvm) {
+> -		mutex_unlock(&matrix_dev->lock);
+> -		return -EBUSY;
+> -	}
+> -
+> -	vfio_ap_mdev_reset_queues(mdev);
+> +	vfio_ap_mdev_unset_kvm(matrix_mdev);
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+>  	list_del(&matrix_mdev->node);
+>  	kfree(matrix_mdev);
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/pwm/xlnx,axi-timer.yaml:16:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+Are we at risk of handle_pqap() in arch/s390/kvm/priv.c using an
+already freed pqap_hook (which is a member of the matrix_mdev pointee
+that is freed just above my comment).
 
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/pwm/xlnx,axi-timer.example.dts:49.37-57.11: ERROR (duplicate_label): /example-1/timer@800e0000: Duplicate label 'axi_timer_0' on /example-1/timer@800e0000 and /example-0/timer@800e0000
-ERROR: Input tree has errors, aborting (use -f to force output)
-make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/pwm/xlnx,axi-timer.example.dt.yaml] Error 2
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1416: dt_binding_check] Error 2
+I'm aware of the fact that vfio_ap_mdev_unset_kvm() does a
+matrix_mdev->kvm->arch.crypto.pqap_hook = NULL but that is
+AFRICT not done under any lock relevant for handle_pqap(). I guess
+the idea is, I guess, the check cited below 
 
-See https://patchwork.ozlabs.org/patch/1477288
+static int handle_pqap(struct kvm_vcpu *vcpu)
+[..]
+        /*                                                                      
+         * Verify that the hook callback is registered, lock the owner          
+         * and call the hook.                                                   
+         */                                                                     
+        if (vcpu->kvm->arch.crypto.pqap_hook) {                                 
+                if (!try_module_get(vcpu->kvm->arch.crypto.pqap_hook->owner))   
+                        return -EOPNOTSUPP;                                     
+                ret = vcpu->kvm->arch.crypto.pqap_hook->hook(vcpu);             
+                module_put(vcpu->kvm->arch.crypto.pqap_hook->owner);            
+                if (!ret && vcpu->run->s.regs.gprs[1] & 0x00ff0000)             
+                        kvm_s390_set_psw_cc(vcpu, 3);                           
+                return ret;                                                     
+        }
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+is going to catch it, but I'm not sure it is guaranteed to catch it.
+Opinions?
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+Regards,
+Halil
 
-pip3 install dtschema --upgrade
 
-Please check and re-submit.
+>  	mdev_set_drvdata(mdev, NULL);
 
