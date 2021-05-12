@@ -2,82 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA5237B63D
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 08:39:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94C0737B63C
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 08:38:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230198AbhELGkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 02:40:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229626AbhELGkR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 02:40:17 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0726C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 23:39:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=qT8iDHBtgV77fF8gHSSRJsweWuoLwMxssud1SQ+sMFw=; b=ekg1E450CgRxJwrigDD4HIGXvy
-        qTLJcWMI7uNPCzwaWsYYZF/KX0n2Euqn1nzZ8/r3VogDq44psgbEO5tjSxh25+ixKgYQqfeO1nHb8
-        hNsnEjGZyXAWFndfUAd/TDMgtXwovpIXfh1ahU9khrB8jQ/bQlEXYRkiQNMXWk41ULbwH1hjsBQUV
-        X4a9KsTuYG/ix1dW2e7d+x9efrRhnwZd1yyzfTRSyXa+3BfvYk3DBa0FDiS849nDIE/JEdiCD0ctD
-        3Eg1wbBhKB1LxgX3bphe3vXT+rykAg0mfG5Qc5xG5C6lHZkAuoYgqn5sVobKMp2bSZ1Oi8K0fDshc
-        0WfcCPuQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lgiV2-0081QQ-2F; Wed, 12 May 2021 06:37:54 +0000
-Date:   Wed, 12 May 2021 07:37:40 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Yi Liu <yi.l.liu@intel.com>, Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>, wangzhou1@hisilicon.com,
-        zhangfei.gao@linaro.org, vkoul@kernel.org,
-        David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH v4 1/2] iommu/sva: Tighten SVA bind API with explicit
- flags
-Message-ID: <YJt3tGlzFK3b4E82@infradead.org>
-References: <1620653108-44901-1-git-send-email-jacob.jun.pan@linux.intel.com>
- <1620653108-44901-2-git-send-email-jacob.jun.pan@linux.intel.com>
- <20210510233749.GG1002214@nvidia.com>
- <20210510203145.086835cc@jacob-builder>
- <20210511114848.GK1002214@nvidia.com>
- <20210511091452.721e9a03@jacob-builder>
- <20210511163521.GN1002214@nvidia.com>
- <20210511110550.477a434f@jacob-builder>
- <20210511194726.GP1002214@nvidia.com>
+        id S229776AbhELGkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 02:40:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58974 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230166AbhELGkE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 02:40:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 98B36613B4;
+        Wed, 12 May 2021 06:38:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620801536;
+        bh=wO4wTgcE9JVwrgnGpZ2YVNejuDl1TlTD4a69qDkK3gw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WOMgr9h1+J5O6M8CyeukTkigICYxsTaI8NdlDAxkY3mSRgsUgAFCCGrijLpXfnXAR
+         D4X7IU41EGuR9JhU+7xNcYTTy1siOL/CTYoOK4WPNEGW8dLvUF7GJnCjVdFgVDcwDI
+         YlEl26i1uVLHRYmg5KMYVOqxxGtqGwdThbw30T7c=
+Date:   Wed, 12 May 2021 08:38:54 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.11 000/342] 5.11.20-rc1 review
+Message-ID: <YJt3/o7aGFyq3fIQ@kroah.com>
+References: <20210510102010.096403571@linuxfoundation.org>
+ <396382a7-9a50-7ea1-53a9-8898bf640c46@linuxfoundation.org>
+ <YJqIOajso0EyqgjO@kroah.com>
+ <3244bd40-3afa-8386-3378-220ff2e2527d@linuxfoundation.org>
+ <YJq0yCirpEV+bgC/@kroah.com>
+ <01f12fb8-b4e0-189d-61fe-ace8c4c65b10@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210511194726.GP1002214@nvidia.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <01f12fb8-b4e0-189d-61fe-ace8c4c65b10@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 04:47:26PM -0300, Jason Gunthorpe wrote:
-> > Let me try to break down your concerns:
-> > 1. portability - driver uses DMA APIs can function w/ and w/o IOMMU. is
-> > that your concern? But PASID is intrinsically tied with IOMMU and if
-> > the drivers are using a generic sva-lib API, why they are not portable?
-> > SVA by its definition is to avoid map/unmap every time.
+On Tue, May 11, 2021 at 01:49:20PM -0600, Shuah Khan wrote:
+> On 5/11/21 10:46 AM, Greg Kroah-Hartman wrote:
+> > On Tue, May 11, 2021 at 10:16:00AM -0600, Shuah Khan wrote:
+> > > On 5/11/21 7:35 AM, Greg Kroah-Hartman wrote:
+> > > > On Mon, May 10, 2021 at 04:48:01PM -0600, Shuah Khan wrote:
+> > > > > On 5/10/21 4:16 AM, Greg Kroah-Hartman wrote:
+> > > > > > This is the start of the stable review cycle for the 5.11.20 release.
+> > > > > > There are 342 patches in this series, all will be posted as a response
+> > > > > > to this one.  If anyone has any issues with these being applied, please
+> > > > > > let me know.
+> > > > > > 
+> > > > > > Responses should be made by Wed, 12 May 2021 10:19:23 +0000.
+> > > > > > Anything received after that time might be too late.
+> > > > > > 
+> > > > > > The whole patch series can be found in one patch at:
+> > > > > > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.11.20-rc1.gz
+> > > > > > or in the git tree and branch at:
+> > > > > > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.11.y
+> > > > > > and the diffstat can be found below.
+> > > > > > 
+> > > > > > thanks,
+> > > > > > 
+> > > > > > greg k-h
+> > > > > > 
+> > > > > 
+> > > > > Compiled and doesn't boot. Dies in kmem_cache_alloc_node() called
+> > > > > from alloc_skb_with_frags()
+> > > > > 
+> > > > > I will start bisect.
+> > > > > 
+> > > > > Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+> > > > 
+> > > > It might be due to 79fcd446e7e1 ("drm/amdgpu: Fix memory leak") which I
+> > > > have reverted from 5.12 and 5.11 queues now and pushed out a -rc2.  If
+> > > > you could test those to verify this or not, that would be great.
+> > > > 
+> > > 
+> > > I am seeing other display issues as well. This might be it.
+> > > 
+> > > I couldn't find rc2. Checking out
+> > > git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+> > > linux-5.11.y
+> > 
+> > Ah, sorry, pushed the -rc2 patch out now, but the -rc git tree has it as
+> > well.
+> > 
 > 
-> Kernel explicitly does not support this programming model. All DMA is
-> explicit and the DMA API hides platform details like IOMMU and CPU
-> cache coherences. Just because x86 doesn't care about this doesn't
-> make any of it optional.
+> 5.11.20-rc2 compiled and booted on my test system with 79fcd446e7e1
+> reverted. No dmesg regressions.
+> 
+> Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-Exactly.
+Wonderful, thanks for testing and verifying this.
 
-> If you want to do SVA PASID then it also must come with DMA APIs to
-> manage the CPU cache coherence that are all NOP's on x86.
-
-Yes.  And we have plenty of precende where an IOMMU is in "bypass" mode
-to allow access to all memory and then uses the simple dma-direct case.
+greg k-h
