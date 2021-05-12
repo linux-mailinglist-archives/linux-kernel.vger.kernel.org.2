@@ -2,87 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8973037EA59
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC8FD37D491
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 23:43:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244018AbhELS5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 14:57:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37576 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244281AbhELQmv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:42:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 70F4661D3D;
-        Wed, 12 May 2021 16:12:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620835933;
-        bh=FPCu4wS85Mh0AFZqXVdiT5Jacnrk35+PiSkNOqhXPho=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qdM5K5BLk8RfyzwVAu+fOqKPe+iv5utHInEEjtILw34Fd1BqgJVm+LVXqWD6gWpHe
-         6yD3fNQGeHisFQK4gRC3gpLA28pGVnUHXCQG+Tsy/pa0aVYk3kBK094xfZtGfcZdgx
-         Ga+PF2TRMB/YU3+qpbm46PE69y7AcNWMw8kET2l4=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Soul Huang <Soul.Huang@mediatek.com>,
-        YN Chen <YN.Chen@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 543/677] mt76: mt7921: fix the dwell time control
-Date:   Wed, 12 May 2021 16:49:49 +0200
-Message-Id: <20210512144855.403912209@linuxfoundation.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
-References: <20210512144837.204217980@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1351747AbhELSZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 14:25:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242083AbhELQbw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:31:52 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D314C0612A4
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 09:07:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=p0l50jpw4w004bI64W6HxRwIjlLQGJ9WgZdJZn71930=; b=rCUy/l+msTWFLMdEd0Z1Ypaet
+        AZoqkL+HE+FNyMj3b1gxx2hPFF9wUEqqAsYmAhB6G8s8v9RFbK39kJ3p0RNZgN0VDczgT0NxmmDBv
+        r/HFK/QCqHLTUlJIxQ4xgEIlhd5L7IG/lEJYmMTulWs8woSLpvJ5mNEDaLtrupNzsiGYppMYAITQ8
+        +fZ+i2nhAsJULtmlVRTsuyamfLNo4HN8lfjztpW3sym77NpLmnwjtyVxu8GrOnkKZsFlKnETxjUff
+        HOh0DZqt7rP+4emCv50BzW3GVi3jLgwnLwm5v98YHAWHtLuPamDioIEXWUUTVa/8x4Ll34OwhfJuv
+        6Z3DIxhBw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43892)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lgrNr-0004Y7-WA; Wed, 12 May 2021 17:06:52 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lgrNr-00028n-N6; Wed, 12 May 2021 17:06:51 +0100
+Date:   Wed, 12 May 2021 17:06:51 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Jessica Yu <jeyu@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] module: check for exit sections in layout_sections()
+ instead of module_init_section()
+Message-ID: <20210512160651.GP1336@shell.armlinux.org.uk>
+References: <20210512144653.3726-1-jeyu@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210512144653.3726-1-jeyu@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Wang <sean.wang@mediatek.com>
+Hi,
 
-[ Upstream commit 9db419f0cb39a63fb2f645a846cae17b81cd5c96 ]
+On Wed, May 12, 2021 at 04:46:53PM +0200, Jessica Yu wrote:
+> diff --git a/kernel/module.c b/kernel/module.c
+> index 173a09175511..a5c9842371b1 100644
+> --- a/kernel/module.c
+> +++ b/kernel/module.c
+> @@ -2430,6 +2430,9 @@ static void layout_sections(struct module *mod, struct load_info *info)
+>  			if ((s->sh_flags & masks[m][0]) != masks[m][0]
+>  			    || (s->sh_flags & masks[m][1])
+>  			    || s->sh_entsize != ~0UL
+> +#ifndef CONFIG_MODULE_UNLOAD
+> +			    || module_exit_section(sname)
+> +#endif
+>  			    || module_init_section(sname))
 
-dwell time for the scan is not configurable according to the current
-firmware submitted into linux-firmware.git, so leave the dwell time 0 to
-indicate the dwell time always determined by the firmware.
+How about a helper to make this a bit easier in both these places to
+make the code more undertsandable? I think the great value comes from
+the resulting change in the second hunk.
 
-Fixes: 399090ef9605 ("mt76: mt76_connac: move hw_scan and sched_scan routine in mt76_connac_mcu module")
-Suggested-by: Soul Huang <Soul.Huang@mediatek.com>
-Co-developed-by: YN Chen <YN.Chen@mediatek.com>
-Signed-off-by: YN Chen <YN.Chen@mediatek.com>
-Signed-off-by: Sean Wang <sean.wang@mediatek.com>
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+static bool module_evictable_section(const char *sname)
+{
+#ifndef CONFIG_MODULE_UNLOAD
+	if (module_exit_section(sname))
+		return true;
+#endif
+	return module_init_section(sname);
+}
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c b/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c
-index 8e9e42b77692..76a61e8b7fb9 100644
---- a/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c
-@@ -1309,7 +1309,7 @@ int mt76_connac_mcu_hw_scan(struct mt76_phy *phy, struct ieee80211_vif *vif,
- {
- 	struct mt76_vif *mvif = (struct mt76_vif *)vif->drv_priv;
- 	struct cfg80211_scan_request *sreq = &scan_req->req;
--	int n_ssids = 0, err, i, duration = MT76_CONNAC_SCAN_CHANNEL_TIME;
-+	int n_ssids = 0, err, i, duration;
- 	int ext_channels_num = max_t(int, sreq->n_channels - 32, 0);
- 	struct ieee80211_channel **scan_list = sreq->channels;
- 	struct mt76_dev *mdev = phy->dev;
-@@ -1346,6 +1346,7 @@ int mt76_connac_mcu_hw_scan(struct mt76_phy *phy, struct ieee80211_vif *vif,
- 	req->ssid_type_ext = n_ssids ? BIT(0) : 0;
- 	req->ssids_num = n_ssids;
- 
-+	duration = is_mt7921(phy->dev) ? 0 : MT76_CONNAC_SCAN_CHANNEL_TIME;
- 	/* increase channel time for passive scan */
- 	if (!sreq->n_ssids)
- 		duration *= 2;
+and then just use that above?
+
+>  				continue;
+>  			s->sh_entsize = get_offset(mod, &mod->core_layout.size, s, i);
+> @@ -2463,7 +2466,11 @@ static void layout_sections(struct module *mod, struct load_info *info)
+>  			if ((s->sh_flags & masks[m][0]) != masks[m][0]
+>  			    || (s->sh_flags & masks[m][1])
+>  			    || s->sh_entsize != ~0UL
+> +#ifndef CONFIG_MODULE_UNLOAD
+> +			    || (!module_init_section(sname) && !module_exit_section(sname)))
+> +#else
+>  			    || !module_init_section(sname))
+> +#endif
+
+I find this a tad confusing, and this is the reason for my suggestion
+above. With that, this becomes:
+
+			    || !module_evictable_section(sname))
+
+which can be clearly seen is the opposite condition from the above
+without doing mental logic gymnastics.
+
+Thanks.
+
 -- 
-2.30.2
-
-
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
