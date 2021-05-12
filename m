@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A6C337D559
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 23:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBDC037D55E
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 23:52:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358303AbhELSnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 14:43:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35814 "EHLO mail.kernel.org"
+        id S1358384AbhELSoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 14:44:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243576AbhELQle (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:41:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 137A061166;
-        Wed, 12 May 2021 16:05:09 +0000 (UTC)
+        id S243588AbhELQlg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:41:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 58DEA61CE6;
+        Wed, 12 May 2021 16:05:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620835510;
-        bh=jHIb7LeLnE2hgOS8iOKFwyqP9aUTIdVSm1wwR+1+nh0=;
+        s=korg; t=1620835515;
+        bh=Uxz7oMteSxfFHU48bBX/AmUX+Xv2sHNP8sQl4iLm4c0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FMTmAuQvNc8kW2jPlL+jV4mjVTqdSn0y1KGMTLS59DeY13PsI+L0tVR1eV24N5DXt
-         NMjhI6/SdNfaB24ILwvHPmuo2ELC4ThF2YgOI8OMDskUb81encwgbJ2CJrlKp59C9Z
-         KhiRexDWHX3OBQjkWNDvuPUaUrF6kq0qdxDrKUuo=
+        b=J3utnVfNFWUlOwMWotJvkuG7BUD4N5rxFU+8i1cAl7G8xzaqgsJMGqQLZdkL+bPIJ
+         9Mup6VLRqBGW7AL74Qw42n24XVm9G+SlyAfsYSyKzltsjRidSmocv2pUP9K6ifYaYx
+         XL42WVtVaAFadNvmmdtmDuukpuQwsihv83Jj6NUc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Quanyang Wang <quanyang.wang@windriver.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 338/677] spi: tools: make a symbolic link to the header file spi.h
-Date:   Wed, 12 May 2021 16:46:24 +0200
-Message-Id: <20210512144848.507335554@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Patrick Venture <venture@google.com>,
+        Arnd Bergmann <arnd@arndb.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 340/677] soc: aspeed: fix a ternary sign expansion bug
+Date:   Wed, 12 May 2021 16:46:26 +0200
+Message-Id: <20210512144848.580662928@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
 References: <20210512144837.204217980@linuxfoundation.org>
@@ -41,48 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quanyang Wang <quanyang.wang@windriver.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit bc2e9578baed90f36abe6bb922b9598a327b0555 ]
+[ Upstream commit 5ffa828534036348fa90fb3079ccc0972d202c4a ]
 
-The header file spi.h in include/uapi/linux/spi is needed for spidev.h,
-so we also need make a symbolic link to it to eliminate the error message
-as below:
+The intent here was to return negative error codes but it actually
+returns positive values.  The problem is that type promotion with
+ternary operations is quite complicated.
 
-In file included from spidev_test.c:24:
-include/linux/spi/spidev.h:28:10: fatal error: linux/spi/spi.h: No such file or directory
-   28 | #include <linux/spi/spi.h>
-      |          ^~~~~~~~~~~~~~~~~
-compilation terminated.
+"ret" is an int.  "copied" is a u32.  And the snoop_file_read() function
+returns long.  What happens is that "ret" is cast to u32 and becomes
+positive then it's cast to long and it's still positive.
 
-Fixes: f7005142dace ("spi: uapi: unify SPI modes into a single spi.h")
-Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
-Link: https://lore.kernel.org/r/20210422102604.3034217-1-quanyang.wang@windriver.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fix this by removing the ternary so that "ret" is type promoted directly
+to long.
+
+Fixes: 3772e5da4454 ("drivers/misc: Aspeed LPC snoop output using misc chardev")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Joel Stanley <joel@jms.id.au>
+Reviewed-by: Patrick Venture <venture@google.com>
+Link: https://lore.kernel.org/r/YIE90PSXsMTa2Y8n@mwanda
+Link: https://lore.kernel.org/r/20210423000919.1249474-1-joel@jms.id.au'
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/spi/Makefile | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/soc/aspeed/aspeed-lpc-snoop.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/tools/spi/Makefile b/tools/spi/Makefile
-index ada881afb489..0aa6dbd31fb8 100644
---- a/tools/spi/Makefile
-+++ b/tools/spi/Makefile
-@@ -25,11 +25,12 @@ include $(srctree)/tools/build/Makefile.include
- #
- # We need the following to be outside of kernel tree
- #
--$(OUTPUT)include/linux/spi/spidev.h: ../../include/uapi/linux/spi/spidev.h
-+$(OUTPUT)include/linux/spi: ../../include/uapi/linux/spi
- 	mkdir -p $(OUTPUT)include/linux/spi 2>&1 || true
- 	ln -sf $(CURDIR)/../../include/uapi/linux/spi/spidev.h $@
-+	ln -sf $(CURDIR)/../../include/uapi/linux/spi/spi.h $@
+diff --git a/drivers/soc/aspeed/aspeed-lpc-snoop.c b/drivers/soc/aspeed/aspeed-lpc-snoop.c
+index 20acac6342ef..5828f94b8a7d 100644
+--- a/drivers/soc/aspeed/aspeed-lpc-snoop.c
++++ b/drivers/soc/aspeed/aspeed-lpc-snoop.c
+@@ -95,8 +95,10 @@ static ssize_t snoop_file_read(struct file *file, char __user *buffer,
+ 			return -EINTR;
+ 	}
+ 	ret = kfifo_to_user(&chan->fifo, buffer, count, &copied);
++	if (ret)
++		return ret;
  
--prepare: $(OUTPUT)include/linux/spi/spidev.h
-+prepare: $(OUTPUT)include/linux/spi
+-	return ret ? ret : copied;
++	return copied;
+ }
  
- #
- # spidev_test
+ static __poll_t snoop_file_poll(struct file *file,
 -- 
 2.30.2
 
