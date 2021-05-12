@@ -2,126 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4161E37EB6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7496537EB70
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380291AbhELTaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:30:55 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:56203 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1344846AbhELRCq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 13:02:46 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 3ABC35C009D;
-        Wed, 12 May 2021 13:01:38 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Wed, 12 May 2021 13:01:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=animalcreek.com;
-         h=date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=ehLJt91Cv1IJwJ6IYAYh3aRLUhG
-        2EWZLs3iv2swzrNI=; b=KKfGp9ZnxPCUof9nSRlhWO43OD/zAXMJzBREOk1G+XW
-        r0ZmzlRsZc5IS+kH7lzjrRBANuag/bVz3cqUZuIkEi5ldtlNcnzR5piMZBO1PbSN
-        tysY1y68zSPXr6fOYGzssLFT4T6nJgGGWlkcl0Y7nhy0w1kJiutNdPHjC80Lgy5c
-        EtMWGbrjKkW1ZiTFGcWUp5CfR7qvrTfk0WLzyRGg7VCaiQcHDmI6ZIKUv7bfbCYN
-        ZxPeaXrRFyDxNQSf85RvkMAg0JSbOJr+NmTV93ROdVoCZLMJlxA/+FFGCkmfJaaP
-        ShHZEo7k52AGBtzRLYqP+1dNM5teMt/FzI1dHUyUk9A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=ehLJt9
-        1Cv1IJwJ6IYAYh3aRLUhG2EWZLs3iv2swzrNI=; b=N39Tksa1cGZiVqbx8y/Zss
-        fEXlnUuLSWOkDWab6PaGj2doagfDjnMSk7ViroyfGN6tq1zMAqQzAUmDzNsF0tX8
-        TvuE8+x9CeInDqVXIGw6q2gsYr70g+BuSP6QWphXQm0P7brfPB4sJSgek/IO+w8B
-        Ds3gHLhKOt7C5Omd5TD6neREnAvJvWA+TjdRo9P02phpg+icSGbgJhg2TvaVxVVL
-        21iEYNVfIor4JR8pxpRqlw+314ZesR2DXrhR3N/zPtNNcAsaYB1QYzUpHGmvaWh0
-        to9wFV7HcZ8/m+UR+o3AwgrGRub8UIgR49vgYhExcyg3tHHCp3UVCIJ4kdFfbUCQ
-        ==
-X-ME-Sender: <xms:8AmcYHrd_tDp0je2TBQSKifWTfgENxKOJkLix_uDFzAPSTUBJfcMiw>
-    <xme:8AmcYBoF7jc6U_sPlaakHBfujyOa_aZ2M-EaDkl9nin-r8_VsF3STxBHl8MK06O7L
-    JAkzGm1ymfCoeRf_g>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdehvddguddtgecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujghosehttdertddttddvnecuhfhrohhmpeforghr
-    khcuifhrvggvrhcuoehmghhrvggvrhesrghnihhmrghltghrvggvkhdrtghomheqnecugg
-    ftrfgrthhtvghrnhepkedvieegledtvdeuveejueetteevtdetueekgedvkedtgeeftdel
-    leekkeduteefnecuffhomhgrihhnpedtuddrohhrghdpqhhtrdhiohdpkhgvrhhnvghlrd
-    horhhgnecukfhppeejtddrudejvddrfedvrddvudeknecuvehluhhsthgvrhfuihiivgep
-    tdenucfrrghrrghmpehmrghilhhfrhhomhepmhhgrhgvvghrsegrnhhimhgrlhgtrhgvvg
-    hkrdgtohhm
-X-ME-Proxy: <xmx:8QmcYEPgReCzZXmWP0Tfwqn78XZtoyaoOTnEn-Hc1HcDZt2aSfGCyw>
-    <xmx:8QmcYK4a5GFu3Jrxzn-ZLeu8nbigWmcEHtjoYKwpo2NTh6nCfK5orA>
-    <xmx:8QmcYG50w1YHNG7caBPLfcVHDhY9hSCLxoG55PAclK8XBt7zrivexg>
-    <xmx:8gmcYDuVJtVFFGGAM28KephTStB0LDfjx64dJQdC4cnhMXZwWte18A>
-Received: from blue.animalcreek.com (ip70-172-32-218.ph.ph.cox.net [70.172.32.218])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Wed, 12 May 2021 13:01:36 -0400 (EDT)
-Received: by blue.animalcreek.com (Postfix, from userid 1000)
-        id 87ACB136008B; Wed, 12 May 2021 10:01:35 -0700 (MST)
-Date:   Wed, 12 May 2021 10:01:35 -0700
-From:   Mark Greer <mgreer@animalcreek.com>
-To:     Frieder Schrempf <frieder.schrempf@kontron.de>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nfc@lists.01.org,
-        Alex Blasche <alexander.blasche@qt.io>,
-        Mark Greer <mgreer@animalcreek.com>
-Subject: Re: [linux-nfc] [PATCH 1/2] MAINTAINERS: nfc: add Krzysztof
- Kozlowski as maintainer
-Message-ID: <20210512170135.GB222094@animalcreek.com>
-References: <20210512144319.30852-1-krzysztof.kozlowski@canonical.com>
- <14e78a9a-ed1a-9d7d-b854-db6d811f4622@kontron.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <14e78a9a-ed1a-9d7d-b854-db6d811f4622@kontron.de>
-Organization: Animal Creek Technologies, Inc.
+        id S1380359AbhELTbN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 12 May 2021 15:31:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40044 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238559AbhELRDv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 13:03:51 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9ADED61221;
+        Wed, 12 May 2021 17:02:40 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1lgsFq-000zDP-J1; Wed, 12 May 2021 18:02:38 +0100
+Date:   Wed, 12 May 2021 18:02:37 +0100
+Message-ID: <87h7j7opg2.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Alexandru Elisei <alexandru.elisei@arm.com>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        kvmarm@lists.cs.columbia.edu
+Subject: Re: [PATCH 5.4 000/244] 5.4.119-rc1 review
+In-Reply-To: <b7df0d7f-e582-6a0d-2385-b9fce50f9106@arm.com>
+References: <20210512144743.039977287@linuxfoundation.org>
+        <CA+G9fYs1AH8ZNWMJ=H4TY5C6bqp--=SZfW9P=WbB85qSBDkuXw@mail.gmail.com>
+        <b7df0d7f-e582-6a0d-2385-b9fce50f9106@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: alexandru.elisei@arm.com, naresh.kamboju@linaro.org, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, shuah@kernel.org, f.fainelli@gmail.com, patches@kernelci.org, lkft-triage@lists.linaro.org, jonathanh@nvidia.com, stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org, torvalds@linux-foundation.org, linux@roeck-us.net, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 05:32:35PM +0200, Frieder Schrempf wrote:
-> On 12.05.21 16:43, Krzysztof Kozlowski wrote:
-> > The NFC subsystem is orphaned.  I am happy to spend some cycles to
-> > review the patches, send pull requests and in general keep the NFC
-> > subsystem running.
+On Wed, 12 May 2021 18:00:16 +0100,
+Alexandru Elisei <alexandru.elisei@arm.com> wrote:
 > 
-> That's great, thanks!
+> Hi Naresh,
 > 
-> Maybe you also want to have a look at the userspace side and talk to Mark Greer (on cc). He recently said, that he is supposed to be taking over maintenance for the neard daemon (see this thread: [1]) which currently looks like it's close to being dead (no release for several years, etc.).
+> Thank you for the report!
 > 
-> I don't know much about the NFC stack and if/how people use it, but without reliable and maintained userspace tooling, the whole thing seems of little use in the long run. Qt has already dropped their neard support for Qt 6 [2], which basically means the mainline NFC stack won't be supported anymore in one of the most common application frameworks for IoT/embedded.
+> On 5/12/21 5:47 PM, Naresh Kamboju wrote:
+> > On Wed, 12 May 2021 at 20:22, Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> >> This is the start of the stable review cycle for the 5.4.119 release.
+> >> There are 244 patches in this series, all will be posted as a response
+> >> to this one.  If anyone has any issues with these being applied, please
+> >> let me know.
+> >>
+> >> Responses should be made by Fri, 14 May 2021 14:47:09 +0000.
+> >> Anything received after that time might be too late.
+> >>
+> >> The whole patch series can be found in one patch at:
+> >>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.119-rc1.gz
+> >> or in the git tree and branch at:
+> >>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> >> and the diffstat can be found below.
+> >>
+> >> thanks,
+> >>
+> >> greg k-h
+> > Build regression detected.
+> >
+> >> Alexandru Elisei <alexandru.elisei@arm.com>
+> >>     KVM: arm64: Initialize VCPU mdcr_el2 before loading it
+> > stable rc 5.4 arm axm55xx_defconfig builds failed due to these
+> > warnings / errors.
+> >   - arm (axm55xx_defconfig) with gcc-8,9 and 10 failed
+> >
+> > arch/arm/kvm/../../../virt/kvm/arm/arm.c: In function 'kvm_vcpu_first_run_init':
+> > arch/arm/kvm/../../../virt/kvm/arm/arm.c:582:2: error: implicit
+> > declaration of function 'kvm_arm_vcpu_init_debug'; did you mean
+> > 'kvm_arm_init_debug'? [-Werror=implicit-function-declaration]
+> >   kvm_arm_vcpu_init_debug(vcpu);
+> >   ^~~~~~~~~~~~~~~~~~~~~~~
+> >   kvm_arm_init_debug
+> > cc1: some warnings being treated as errors
 > 
-> [1] https://lists.01.org/hyperkitty/list/linux-nfc@lists.01.org/thread/OHD5IQHYPFUPUFYWDMNSVCBNO24M45VK/
-> [2] https://bugreports.qt.io/browse/QTBUG-81824
+> This is my fault, in Linux v5.4 KVM for arm is still around, and
+> there's no prototype for the function when compiling for arm. I
+> suspect that's also the case for v4.19.
+> 
+> I made this change to get it to build:
+> 
+> $ git diff
+> diff --git a/arch/arm/include/asm/kvm_host.h b/arch/arm/include/asm/kvm_host.h
+> index dd03d5e01a94..32564b017ba0 100644
+> --- a/arch/arm/include/asm/kvm_host.h
+> +++ b/arch/arm/include/asm/kvm_host.h
+> @@ -335,6 +335,7 @@ static inline void kvm_arch_sched_in(struct kvm_vcpu *vcpu,
+> int cpu) {}
+>  static inline void kvm_arch_vcpu_block_finish(struct kvm_vcpu *vcpu) {}
+>  
+>  static inline void kvm_arm_init_debug(void) {}
+> +static inline void kvm_arm_vcpu_init_debug(struct kvm_vcpu *vcpu) {}
+>  static inline void kvm_arm_setup_debug(struct kvm_vcpu *vcpu) {}
+>  static inline void kvm_arm_clear_debug(struct kvm_vcpu *vcpu) {}
+>  static inline void kvm_arm_reset_debug_ptr(struct kvm_vcpu *vcpu) {}
+> 
+> which matches the stub for kvm_arm_init_debug(). I can spin a patch
+> out of it and send it for 5.4 and 4.19. Marc, what do you think?
 
-Re: QT - I've already talked to Alex Blasche from QT (CC'd).  With some
-work we can get Linux NFC/neard back into their good graces.  I/we need
-to find time to put in the work, though.
-
-An example of the issues they have seen is:
-
-	https://bugreports.qt.io/browse/QTBUG-43802
-
-Another issue I have--and I suspect you, Krzysztof, have as well--is
-lack of hardware.  If anyone reading this wants to volunteer to be a
-tester, please speak up.
-
-To help get everyone on the same page, this is a response I made to
-Krzysztof in another email:
-
-    "Krzysztof, the NFC portion of the kernel has a counterpart in userspace
-     called neard.  I'm supposed to be maintaining it but I have next to no
-     time to do so.  If you have spare cycles, any help would be appreciated.
-
-     Anyway, in neard, there are some simple test scripts (python2 - I/we need
-     to update to python3).  The current home of neard is:
-
-     git://git.kernel.org/pub/scm/network/nfc/neard.git"
+Ideally, we'd drop the patch in its current form from 5.4 and 4.19,
+and send an updated patch with this hunk to fix the 32bit build.
 
 Thanks,
 
-Mark
---
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
