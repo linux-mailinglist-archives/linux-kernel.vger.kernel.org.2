@@ -2,63 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2614737B616
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 08:29:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8074F37B62B
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 08:31:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230011AbhELGaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 02:30:10 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:2635 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230018AbhELGaJ (ORCPT
+        id S230347AbhELGcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 02:32:01 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:3724 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230172AbhELGbc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 02:30:09 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Fg4ZK292gzlclf;
-        Wed, 12 May 2021 14:26:49 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 12 May 2021 14:28:53 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <a.hajda@samsung.com>, <narmstrong@baylibre.com>,
-        <robert.foss@linaro.org>, <Laurent.pinchart@ideasonboard.com>,
-        <jonas@kwiboo.se>, <jernej.skrabec@siol.net>, <airlied@linux.ie>,
-        <daniel@ffwll.ch>
-CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] drm/bridge: lt9611: Add missing MODULE_DEVICE_TABLE
-Date:   Wed, 12 May 2021 14:45:55 +0800
-Message-ID: <1620801955-19188-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        Wed, 12 May 2021 02:31:32 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fg4ZS4KvqzmgKw;
+        Wed, 12 May 2021 14:26:56 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 12 May 2021 14:30:10 +0800
+From:   Hui Tang <tanghui20@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
+        <wangzhou1@hisilicon.com>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 5/8] crypto: hisilicon/hpre - delete rudundant initialization
+Date:   Wed, 12 May 2021 14:27:08 +0800
+Message-ID: <1620800831-53346-6-git-send-email-tanghui20@huawei.com>
+X-Mailer: git-send-email 2.8.1
+In-Reply-To: <1620800831-53346-1-git-send-email-tanghui20@huawei.com>
+References: <1620800831-53346-1-git-send-email-tanghui20@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
+X-Originating-IP: [10.67.165.24]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds missing MODULE_DEVICE_TABLE definition which generates
-correct modalias for automatic loading of this driver when it is built
-as an external module.
+Delete rudundant variable initialization.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Signed-off-by: Hui Tang <tanghui20@huawei.com>
 ---
- drivers/gpu/drm/bridge/lontium-lt9611.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/crypto/hisilicon/hpre/hpre_crypto.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/lontium-lt9611.c b/drivers/gpu/drm/bridge/lontium-lt9611.c
-index e8eb8de..29b1ce2 100644
---- a/drivers/gpu/drm/bridge/lontium-lt9611.c
-+++ b/drivers/gpu/drm/bridge/lontium-lt9611.c
-@@ -1215,6 +1215,7 @@ static struct i2c_device_id lt9611_id[] = {
- 	{ "lontium,lt9611", 0 },
- 	{}
- };
-+MODULE_DEVICE_TABLE(i2c, lt9611_id);
+diff --git a/drivers/crypto/hisilicon/hpre/hpre_crypto.c b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
+index b9197e9..3a3af82 100644
+--- a/drivers/crypto/hisilicon/hpre/hpre_crypto.c
++++ b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
+@@ -1480,7 +1480,7 @@ static int hpre_ecdh_dst_data_init(struct hpre_asym_request *hpre_req,
+ 	struct hpre_sqe *msg = &hpre_req->req;
+ 	struct hpre_ctx *ctx = hpre_req->ctx;
+ 	struct device *dev = ctx->dev;
+-	dma_addr_t dma = 0;
++	dma_addr_t dma;
  
- static const struct of_device_id lt9611_match_table[] = {
- 	{ .compatible = "lontium,lt9611" },
+ 	if (unlikely(!data || !sg_is_last(data) || len != ctx->key_sz << 1)) {
+ 		dev_err(dev, "data or data length is illegal!\n");
+@@ -1807,7 +1807,7 @@ static int hpre_curve25519_dst_init(struct hpre_asym_request *hpre_req,
+ 	struct hpre_sqe *msg = &hpre_req->req;
+ 	struct hpre_ctx *ctx = hpre_req->ctx;
+ 	struct device *dev = ctx->dev;
+-	dma_addr_t dma = 0;
++	dma_addr_t dma;
+ 
+ 	if (!data || !sg_is_last(data) || len != ctx->key_sz) {
+ 		dev_err(dev, "data or data length is illegal!\n");
 -- 
-2.6.2
+2.8.1
 
