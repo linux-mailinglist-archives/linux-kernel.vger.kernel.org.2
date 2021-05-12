@@ -2,110 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9301537B469
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 05:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B98137B46B
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 05:16:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230095AbhELDRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 23:17:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbhELDRC (ORCPT
+        id S230096AbhELDRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 23:17:54 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:51860 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229848AbhELDRx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 23:17:02 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A2DCC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 20:15:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=b3q1cOi5vzb/fYvgXV1ILp6S0UFGe9AtTSyL/tGSRuc=; b=v7uCNGf4pSOH3gT0X6IjJcmOHy
-        JI9VLLn7NG+T1g8+fnu/w62HMsQbejNHTFcV3+ygfzu/NIIUBqe6ZjZTumpwYMqUv3Zd3eyHxz1vF
-        3oe+WHrz8qHgArXsllzikF9Gjg1WPqob0mFeHjDAg1/M6LpV/5RfuVLYhcDvBYAhRb2C82QP+zart
-        52ppKfh4FYvku2hRRvDc0HGfffDtqOO5Etg28OxY6naqBhTZ+pstUX4HYY58nfsM5Mykb9tIIKZpm
-        mO+sJqw9s9OuT1rpXJCxAk/m1Q42eqP99HTHNV7vZGlQofAIjIE1wsAsdligDMqc2/WFXyOOhnZTl
-        io6C0rRw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lgfLB-007taj-9F; Wed, 12 May 2021 03:15:28 +0000
-Date:   Wed, 12 May 2021 04:15:17 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Tue, 11 May 2021 23:17:53 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=xhao@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UYbG6OP_1620789403;
+Received: from B-X3VXMD6M-2058.local(mailfrom:xhao@linux.alibaba.com fp:SMTPD_---0UYbG6OP_1620789403)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 12 May 2021 11:16:44 +0800
+From:   Xin Hao <xhao@linux.alibaba.com>
+Reply-To: xhao@linux.alibaba.com
+Subject: Re: [PATCH v2 1/1] spi: Assume GPIO CS active high in ACPI case
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] mm/debug: Check page poisoned firstly in dump_page()
-Message-ID: <YJtIRR2NfpRtYQrG@casper.infradead.org>
-References: <20210512031057.13580-1-wangkefeng.wang@huawei.com>
- <20210512031057.13580-3-wangkefeng.wang@huawei.com>
+Cc:     Liguang Zhang <zhangliguang@linux.alibaba.com>,
+        Jay Fang <f.fangjian@huawei.com>,
+        Sven Van Asbroeck <thesven73@gmail.com>
+References: <20210511140912.30757-1-andriy.shevchenko@linux.intel.com>
+Message-ID: <b1f1539d-2e7c-a56b-9a04-2a85637f0a01@linux.alibaba.com>
+Date:   Wed, 12 May 2021 11:16:43 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210512031057.13580-3-wangkefeng.wang@huawei.com>
+In-Reply-To: <20210511140912.30757-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 11:10:57AM +0800, Kefeng Wang wrote:
-> If page is poisoned, it will crash when we call some page related
-> functions, so must check whether the page is poisoned or not firstly.
 
-https://lore.kernel.org/linux-mm/20210430145549.2662354-4-willy@infradead.org/
-
-> Fixes: 6197ab984b41 ("mm: improve dump_page() for compound pages")
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+在 2021/5/11 下午10:09, Andy Shevchenko 写道:
+> Currently GPIO CS handling, when descriptors are in use, doesn't
+> take into consideration that in ACPI case the default polarity
+> is Active High and can't be altered. Instead we have to use the
+> per-chip definition provided by SPISerialBus() resource.
+>
+> Fixes: 766c6b63aa04 ("spi: fix client driver breakages when using GPIO descriptors")
+> Cc: Liguang Zhang <zhangliguang@linux.alibaba.com>
+> Cc: Jay Fang <f.fangjian@huawei.com>
+> Cc: Sven Van Asbroeck <thesven73@gmail.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Tested-by: Xin Hao <xhao@linux.alibaba.com>
 > ---
->  mm/debug.c | 15 +++++++++------
->  1 file changed, 9 insertions(+), 6 deletions(-)
-> 
-> diff --git a/mm/debug.c b/mm/debug.c
-> index 84cdcd0f7bd3..cf84cd9df527 100644
-> --- a/mm/debug.c
-> +++ b/mm/debug.c
-> @@ -44,20 +44,19 @@ const struct trace_print_flags vmaflag_names[] = {
->  
->  static void __dump_page(struct page *page, const char *reason)
->  {
-> -	struct page *head = compound_head(page);
-> +	struct page *head = NULL;
->  	struct address_space *mapping;
-> -	bool page_poisoned = PagePoisoned(page);
-> -	bool compound = PageCompound(page);
-> +	bool compound;
->  	/*
->  	 * Accessing the pageblock without the zone lock. It could change to
->  	 * "isolate" again in the meantime, but since we are just dumping the
->  	 * state for debugging, it should be fine to accept a bit of
->  	 * inaccuracy here due to racing.
->  	 */
-> -	bool page_cma = is_migrate_cma_page(page);
-> +	bool page_cma;
->  	int mapcount;
->  	char *type = "";
-> -
-> +	bool page_poisoned = PagePoisoned(page);
->  	/*
->  	 * If struct page is poisoned don't access Page*() functions as that
->  	 * leads to recursive loop. Page*() check for poisoned pages, and calls
-> @@ -68,6 +67,10 @@ static void __dump_page(struct page *page, const char *reason)
->  		goto hex_only;
->  	}
->  
-> +	head = compound_head(page);
-> +	page_poisoned = PagePoisoned(page);
-> +	page_cma = is_migrate_cma_page(page);
-> +
->  	if (page < head || (page >= head + MAX_ORDER_NR_PAGES)) {
->  		/*
->  		 * Corrupt page, so we cannot call page_mapping. Instead, do a
-> @@ -178,7 +181,7 @@ static void __dump_page(struct page *page, const char *reason)
->  	print_hex_dump(KERN_WARNING, "raw: ", DUMP_PREFIX_NONE, 32,
->  			sizeof(unsigned long), page,
->  			sizeof(struct page), false);
-> -	if (head != page)
-> +	if (head && head != page)
->  		print_hex_dump(KERN_WARNING, "head: ", DUMP_PREFIX_NONE, 32,
->  			sizeof(unsigned long), head,
->  			sizeof(struct page), false);
-> -- 
-> 2.26.2
-> 
-> 
+> v2: refactor to avoid ternary (Mark, Sven), dropped comment changes (Mark)
+>   drivers/spi/spi.c | 22 ++++++++++++++++++----
+>   1 file changed, 18 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+> index cd40421b8f55..36ee33514b40 100644
+> --- a/drivers/spi/spi.c
+> +++ b/drivers/spi/spi.c
+> @@ -820,15 +820,29 @@ static void spi_set_cs(struct spi_device *spi, bool enable, bool force)
+>   
+>   	if (spi->cs_gpiod || gpio_is_valid(spi->cs_gpio)) {
+>   		if (!(spi->mode & SPI_NO_CS)) {
+> -			if (spi->cs_gpiod)
+> -				/* polarity handled by gpiolib */
+> -				gpiod_set_value_cansleep(spi->cs_gpiod, activate);
+> -			else
+> +			if (spi->cs_gpiod) {
+> +				/*
+> +				 * Historically ACPI has no means of the GPIO polarity and
+> +				 * thus the SPISerialBus() resource defines it on the per-chip
+> +				 * basis. In order to avoid a chain of negations, the GPIO
+> +				 * polarity is considered being Active High. Even for the cases
+> +				 * when _DSD() is involved (in the updated versions of ACPI)
+> +				 * the GPIO CS polarity must be defined Active High to avoid
+> +				 * ambiguity. That's why we use enable, that takes SPI_CS_HIGH
+> +				 * into account.
+> +				 */
+> +				if (has_acpi_companion(&spi->dev))
+> +					gpiod_set_value_cansleep(spi->cs_gpiod, !enable);
+
+it worked and code changed minimally,  before ACPI & OF keeps no same 
+rules,  this patch is ok!
+
+> +				else
+> +					/* Polarity handled by GPIO library */
+> +					gpiod_set_value_cansleep(spi->cs_gpiod, activate);
+> +			} else {
+>   				/*
+>   				 * invert the enable line, as active low is
+>   				 * default for SPI.
+>   				 */
+>   				gpio_set_value_cansleep(spi->cs_gpio, !enable);
+> +			}
+>   		}
+>   		/* Some SPI masters need both GPIO CS & slave_select */
+>   		if ((spi->controller->flags & SPI_MASTER_GPIO_SS) &&
+
+-- 
+Best Regards!
+Xin Hao
+
