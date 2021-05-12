@@ -2,83 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A58F237B4B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 05:51:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5248A37B4B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 05:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230097AbhELDwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 23:52:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229994AbhELDwu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 23:52:50 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06EEEC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 20:51:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=aTvKpxfUjpa51UfREN7+HPOb94z389kuVFnSFnj9YgU=; b=tWukLvpVP3mWDqMnudvsVMOPTc
-        CmanCzPaqq7vaM/1/jq6bWGBSxQ3KbDbSrx7HXFJbsmPDtkYy4Otxvki0LA5rW70CbgL2eZOF7QvP
-        9B7yVLaQD0Hjxcrq7IujWR/L1KaTqkAXO6A4mqboJgFywAHTN0/T0UsT26KwQwny3Ls3Q28LnABN0
-        B8BV0mR9rlxHn61P/4eRUggbQ3nQsnWrLywPbuJMq0PKzhrw3nVzQJlTVxJ6t9vNlpVcIDQLtjauW
-        6rkqQgGSKWKfH4CGfwBd2PqMSMmKJErqrtglN00r3qEjnwg4Mjl5Xp9NUTYSt3H2fxePeFZjFa00p
-        s7nH+zzQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lgftX-007ukN-UV; Wed, 12 May 2021 03:50:54 +0000
-Date:   Wed, 12 May 2021 04:50:47 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: arm32: panic in move_freepages (Was [PATCH v2 0/4] arm64: drop
- pfn_valid_within() and simplify pfn_valid())
-Message-ID: <YJtQl3wLUo4msF+Y@casper.infradead.org>
-References: <20210421065108.1987-1-rppt@kernel.org>
- <9aa68d26-d736-3b75-4828-f148964eb7f0@huawei.com>
- <YIEl8aKr8Ly0Zd3O@kernel.org>
- <33fa74c2-f32d-f224-eb30-acdb717179ff@huawei.com>
- <2a1592ad-bc9d-4664-fd19-f7448a37edc0@huawei.com>
- <YIUYG8N9T3/C/tSG@kernel.org>
- <52f7d03b-7219-46bc-c62d-b976bc31ebd5@huawei.com>
+        id S230118AbhELDxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 23:53:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39470 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229994AbhELDxE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 23:53:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E791A6147F;
+        Wed, 12 May 2021 03:51:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620791516;
+        bh=cwVrM7qlJkBZsTH1xOHNyPlMSl4sP4XfTnRoFL4+L4k=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=HLjIad3wZzFa1G/AigAyUdlsKsqgkVRvjz9wxv8ootWUoT16UGRfZ84KQPElGg5PO
+         22QXE1lf7YyQem2rDWpwXq1yVKhZcuJGFJyHlk6PxIkvt9dRbAAsxiNzoD4cDKkNCh
+         STo6exmhG57OeXNkkRKOkAAdInn4zRoQ0iCc4Ss5IVT8hY9Zj+dAEerHqXVbzcGVyJ
+         FDQtKrm+MVVDlNYhVrUM/pRjP10hUudhppWnMprulyIiy6X51csQzx4zRjdDFB0/L/
+         K7qYodQh8ymR2qWqfcixMu6ng4P9YOHu5tfvIbEP1vND4k3VZkQyq51MQbs98Z8D3m
+         C9pAOYeaSrq+w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id B21DE5C0134; Tue, 11 May 2021 20:51:56 -0700 (PDT)
+Date:   Tue, 11 May 2021 20:51:56 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        john.stultz@linaro.org, sboyd@kernel.org, corbet@lwn.net,
+        Mark.Rutland@arm.com, maz@kernel.org, kernel-team@fb.com,
+        neeraju@codeaurora.org, ak@linux.intel.com,
+        zhengjun.xing@intel.com,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Subject: Re: [PATCH v14 clocksource 4/6] clocksource: Reduce clocksource-skew
+ threshold for TSC
+Message-ID: <20210512035156.GT975577@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210511233403.GA2896757@paulmck-ThinkPad-P17-Gen-1>
+ <20210511233455.2897068-4-paulmck@kernel.org>
+ <20210512021849.GB78351@shbuild999.sh.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <52f7d03b-7219-46bc-c62d-b976bc31ebd5@huawei.com>
+In-Reply-To: <20210512021849.GB78351@shbuild999.sh.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 25, 2021 at 03:51:56PM +0800, Kefeng Wang wrote:
-> we see the PC is at PageLRU, same reason like arm64 panic log,
+On Wed, May 12, 2021 at 10:18:49AM +0800, Feng Tang wrote:
+> Hi Paul,
 > 
-> "PageBuddy in move_freepages returns false Then we call PageLRU, the macro
-> calls PF_HEAD which is compound_page() compound_page reads
-> page->compound_head, it is 0xffffffffffffffff, so it resturns
-> 0xfffffffffffffffe - and accessing this address causes crash"
+> On Tue, May 11, 2021 at 04:34:53PM -0700, Paul E. McKenney wrote:
+> > Currently, WATCHDOG_THRESHOLD is set to detect a 62.5-millisecond skew in
+> > a 500-millisecond WATCHDOG_INTERVAL.  This requires that clocks be skewed
+> > by more than 12.5% in order to be marked unstable.  Except that a clock
+> > that is skewed by that much is probably destroying unsuspecting software
+> > right and left.  And given that there are now checks for false-positive
+> > skews due to delays between reading the two clocks, it should be possible
+> > to greatly decrease WATCHDOG_THRESHOLD, at least for fine-grained clocks
+> > such as TSC.
+> > 
+> > Therefore, add a new uncertainty_margin field to the clocksource
+> > structure that contains the maximum uncertainty in nanoseconds for
+> > the corresponding clock.  This field may be initialized manually,
+> > as it is for clocksource_tsc_early and clocksource_jiffies, which
+> > is copied to refined_jiffies.  If the field is not initialized
+> > manually, it will be computed at clock-registry time as the period
+> > of the clock in question based on the scale and freq parameters to
+> > __clocksource_update_freq_scale() function.  If either of those two
+> > parameters are zero, the tens-of-milliseconds WATCHDOG_THRESHOLD is
+> > used as a cowardly alternative to dividing by zero.  No matter how the
+> > uncertainty_margin field is calculated, it is bounded below by twice
+> > WATCHDOG_MAX_SKEW, that is, by 100 microseconds.
+> > 
+> > Note that manually initialized uncertainty_margin fields are not adjusted,
+> > but there is a WARN_ON_ONCE() that triggers if any such field is less than
+> > twice WATCHDOG_MAX_SKEW.  This WARN_ON_ONCE() is intended to discourage
+> > production use of the one-nanosecond uncertainty_margin values that are
+> > used to test the clock-skew code itself.
+> > 
+> > The actual clock-skew check uses the sum of the uncertainty_margin fields
+> > of the two clocksource structures being compared.  Integer overflow is
+> > avoided because the largest computed value of the uncertainty_margin
+> > fields is one billion (10^9), and double that value fits into an
+> > unsigned int.  However, if someone manually specifies (say) UINT_MAX,
+> > they will get what they deserve.
+> > 
+> > Note that the refined_jiffies uncertainty_margin field is initialized to
+> > TICK_NSEC, which means that skew checks involving this clocksource will
+> > be sufficently forgiving.  In a similar vein, the clocksource_tsc_early
+> > uncertainty_margin field is initialized to 32*NSEC_PER_MSEC, which
+> > replicates the current behavior and allows custom setting if needed
+> > in order to address the rare skews detected for this clocksource in
+> > current mainline.
+> > 
+> > Link: https://lore.kernel.org/lkml/202104291438.PuHsxRkl-lkp@intel.com/
+> > Link: https://lore.kernel.org/lkml/20210429140440.GT975577@paulmck-ThinkPad-P17-Gen-1
+> > Link: https://lore.kernel.org/lkml/20210425224540.GA1312438@paulmck-ThinkPad-P17-Gen-1/
+> > Link: https://lore.kernel.org/lkml/20210420064934.GE31773@xsang-OptiPlex-9020/
+> > Link: https://lore.kernel.org/lkml/20210106004013.GA11179@paulmck-ThinkPad-P72/
+> > Link: https://lore.kernel.org/lkml/20210414043435.GA2812539@paulmck-ThinkPad-P17-Gen-1/
+> > Link: https://lore.kernel.org/lkml/20210419045155.GA596058@paulmck-ThinkPad-P17-Gen-1/
+> > Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: John Stultz <john.stultz@linaro.org>
+> > Cc: Stephen Boyd <sboyd@kernel.org>
+> > Cc: Jonathan Corbet <corbet@lwn.net>
+> > Cc: Mark Rutland <Mark.Rutland@arm.com>
+> > Cc: Marc Zyngier <maz@kernel.org>
+> > Cc: Andi Kleen <ak@linux.intel.com>
+> > Cc: Xing Zhengjun <zhengjun.xing@linux.intel.com>
+> > Cc: Feng Tang <feng.tang@intel.com>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > ---
+> >  arch/x86/kernel/tsc.c       |  1 +
+> >  include/linux/clocksource.h |  3 +++
+> >  kernel/time/clocksource.c   | 48 +++++++++++++++++++++++++++++--------
+> >  kernel/time/jiffies.c       | 15 ++++++------
+> >  4 files changed, 50 insertions(+), 17 deletions(-)
+> > 
+> > diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+> > index 6eb1b097e97e..2e076a459a0c 100644
+> > --- a/arch/x86/kernel/tsc.c
+> > +++ b/arch/x86/kernel/tsc.c
+> > @@ -1128,6 +1128,7 @@ static int tsc_cs_enable(struct clocksource *cs)
+> >  static struct clocksource clocksource_tsc_early = {
+> >  	.name			= "tsc-early",
+> >  	.rating			= 299,
+> > +	.uncertainty_margin	= 32 * NSEC_PER_MSEC,
+> >  	.read			= read_tsc,
+> >  	.mask			= CLOCKSOURCE_MASK(64),
+> >  	.flags			= CLOCK_SOURCE_IS_CONTINUOUS |
+> > diff --git a/include/linux/clocksource.h b/include/linux/clocksource.h
+> > index 7f83d51c0fd7..895203727cb5 100644
+> > --- a/include/linux/clocksource.h
+> > +++ b/include/linux/clocksource.h
+> > @@ -43,6 +43,8 @@ struct module;
+> >   * @shift:		Cycle to nanosecond divisor (power of two)
+> >   * @max_idle_ns:	Maximum idle time permitted by the clocksource (nsecs)
+> >   * @maxadj:		Maximum adjustment value to mult (~11%)
+> > + * @uncertainty_margin:	Maximum uncertainty in nanoseconds per half second.
+> > + *			Zero says to use default WATCHDOG_THRESHOLD.
+> >   * @archdata:		Optional arch-specific data
+> >   * @max_cycles:		Maximum safe cycle value which won't overflow on
+> >   *			multiplication
+> > @@ -98,6 +100,7 @@ struct clocksource {
+> >  	u32			shift;
+> >  	u64			max_idle_ns;
+> >  	u32			maxadj;
+> > +	u32			uncertainty_margin;
+> >  #ifdef CONFIG_ARCH_CLOCKSOURCE_DATA
+> >  	struct arch_clocksource_data archdata;
+> >  #endif
+> > diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+> > index 66243da2dadb..9ebf9931f3d6 100644
+> > --- a/kernel/time/clocksource.c
+> > +++ b/kernel/time/clocksource.c
+> > @@ -95,6 +95,20 @@ static char override_name[CS_NAME_LEN];
+> >  static int finished_booting;
+> >  static u64 suspend_start;
+> >  
+> > +/*
+> > + * Threshold: 0.0312s, when doubled: 0.0625s.
+> > + * Also a default for cs->uncertainty_margin when registering clocks.
+> > + */
+> > +#define WATCHDOG_THRESHOLD (NSEC_PER_SEC >> 5)
+> > +
+> > +/*
+> > + * Maximum permissible delay between two readouts of the watchdog
+> > + * clocksource surrounding a read of the clocksource being validated.
+> > + * This delay could be due to SMIs, NMIs, or to VCPU preemptions.  Used as
+> > + * a lower bound for cs->uncertainty_margin values when registering clocks.
+> > + */
+> > +#define WATCHDOG_MAX_SKEW (50 * NSEC_PER_USEC)
+> > +
+> >  #ifdef CONFIG_CLOCKSOURCE_WATCHDOG
+> >  static void clocksource_watchdog_work(struct work_struct *work);
+> >  static void clocksource_select(void);
+> > @@ -121,17 +135,9 @@ static int clocksource_watchdog_kthread(void *data);
+> >  static void __clocksource_change_rating(struct clocksource *cs, int rating);
+> >  
+> >  /*
+> > - * Interval: 0.5sec Threshold: 0.0625s
+> > + * Interval: 0.5sec.
+> >   */
+> >  #define WATCHDOG_INTERVAL (HZ >> 1)
+> > -#define WATCHDOG_THRESHOLD (NSEC_PER_SEC >> 4)
+> > -
+> > -/*
+> > - * Maximum permissible delay between two readouts of the watchdog
+> > - * clocksource surrounding a read of the clocksource being validated.
+> > - * This delay could be due to SMIs, NMIs, or to VCPU preemptions.
+> > - */
+> > -#define WATCHDOG_MAX_SKEW (100 * NSEC_PER_USEC)
+> >  
+> >  static void clocksource_watchdog_work(struct work_struct *work)
+> >  {
+> > @@ -347,6 +353,7 @@ static void clocksource_watchdog(struct timer_list *unused)
+> >  	int next_cpu, reset_pending;
+> >  	int64_t wd_nsec, cs_nsec;
+> >  	struct clocksource *cs;
+> > +	u32 md;
+> >  
+> >  	spin_lock(&watchdog_lock);
+> >  	if (!watchdog_running)
+> > @@ -393,7 +400,8 @@ static void clocksource_watchdog(struct timer_list *unused)
+> >  			continue;
+> >  
+> >  		/* Check the deviation from the watchdog clocksource. */
+> > -		if (abs(cs_nsec - wd_nsec) > WATCHDOG_THRESHOLD) {
+> > +		md = cs->uncertainty_margin + watchdog->uncertainty_margin;
+> > +		if (abs(cs_nsec - wd_nsec) > md) {
+> >  			pr_warn("timekeeping watchdog on CPU%d: Marking clocksource '%s' as unstable because the skew is too large:\n",
+> >  				smp_processor_id(), cs->name);
+> >  			pr_warn("                      '%s' wd_now: %llx wd_last: %llx mask: %llx\n",
+> > @@ -1046,6 +1054,26 @@ void __clocksource_update_freq_scale(struct clocksource *cs, u32 scale, u32 freq
+> >  		clocks_calc_mult_shift(&cs->mult, &cs->shift, freq,
+> >  				       NSEC_PER_SEC / scale, sec * scale);
+> >  	}
+> > +
+> > +	/*
+> > +	 * If the uncertainty margin is not specified, calculate it.
+> > +	 * If both scale and freq are non-zero, calculate the clock
+> > +	 * period, but bound below at 2*WATCHDOG_MAX_SKEW.  However,
+> > +	 * if either of scale or freq is zero, be very conservative and
+> > +	 * take the tens-of-milliseconds WATCHDOG_THRESHOLD value for the
+> > +	 * uncertainty margin.  Allow stupidly small uncertainty margins
+> > +	 * to be specified by the caller for testing purposes, but warn
+> > +	 * to discourage production use of this capability.
+> > +	 */
+> > +	if (scale && freq && !cs->uncertainty_margin) {
+> > +		cs->uncertainty_margin = NSEC_PER_SEC / (scale * freq);
+> > +		if (cs->uncertainty_margin < 2 * WATCHDOG_MAX_SKEW)
+> > +			cs->uncertainty_margin = 2 * WATCHDOG_MAX_SKEW;
+> > +	} else if (!cs->uncertainty_margin) {
+> > +		cs->uncertainty_margin = WATCHDOG_THRESHOLD;
+> > +	}
+> > +	WARN_ON_ONCE(cs->uncertainty_margin < 2 * WATCHDOG_MAX_SKEW);
+> > +
+> >  	/*
+> >  	 * Ensure clocksources that have large 'mult' values don't overflow
+> >  	 * when adjusted.
+> > diff --git a/kernel/time/jiffies.c b/kernel/time/jiffies.c
+> > index a492e4da69ba..b3f608c2b936 100644
+> > --- a/kernel/time/jiffies.c
+> > +++ b/kernel/time/jiffies.c
+> > @@ -49,13 +49,14 @@ static u64 jiffies_read(struct clocksource *cs)
+> >   * for "tick-less" systems.
+> >   */
+> >  static struct clocksource clocksource_jiffies = {
+> > -	.name		= "jiffies",
+> > -	.rating		= 1, /* lowest valid rating*/
+> > -	.read		= jiffies_read,
+> > -	.mask		= CLOCKSOURCE_MASK(32),
+> > -	.mult		= TICK_NSEC << JIFFIES_SHIFT, /* details above */
+> > -	.shift		= JIFFIES_SHIFT,
+> > -	.max_cycles	= 10,
+> > +	.name			= "jiffies",
+> > +	.rating			= 1, /* lowest valid rating*/
+> > +	.uncertainty_margin	= TICK_NSEC,
+> 
+> 'jiffies' is known to be very bad as a watchdog ("worse bandaid" in
+> Thomas' words :)), and TICK_NSEC just turns to 1ms for HZ=1000 case. 
+> Maybe we should give it a bigger margin, like the 32ms margin for 
+> 'tsc-early'?
+> 
+> Other than this, it looks good to me, thanks!
 
-Oh.  I posted patches to fix this back in 2018.
+As in the fixup diff below?
 
-https://lore.kernel.org/linux-mm/20180414043145.3953-6-willy@infradead.org/
+Would you be willing to provide an ack or tested-by for the rest
+of the series?  (I have your ack on 1/6.)
 
-and 2019.
+						Thanx, Paul
 
-https://lore.kernel.org/linux-mm/20190501202433.GC28500@bombadil.infradead.org/
+------------------------------------------------------------------------
 
-and 2020.
-
-https://lore.kernel.org/linux-mm/20200408150148.25290-6-willy@infradead.org/
-
-Looks like it's about that time of year for me to try to fix this again.
-
+diff --git a/kernel/time/jiffies.c b/kernel/time/jiffies.c
+index b3f608c2b936..01935aafdb46 100644
+--- a/kernel/time/jiffies.c
++++ b/kernel/time/jiffies.c
+@@ -51,7 +51,7 @@ static u64 jiffies_read(struct clocksource *cs)
+ static struct clocksource clocksource_jiffies = {
+ 	.name			= "jiffies",
+ 	.rating			= 1, /* lowest valid rating*/
+-	.uncertainty_margin	= TICK_NSEC,
++	.uncertainty_margin	= 32 * NSEC_PER_MSEC,
+ 	.read			= jiffies_read,
+ 	.mask			= CLOCKSOURCE_MASK(32),
+ 	.mult			= TICK_NSEC << JIFFIES_SHIFT, /* details above */
