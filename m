@@ -2,45 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A930E37BD5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:54:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B5637BD5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:54:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233568AbhELMzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 08:55:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52632 "EHLO mail.kernel.org"
+        id S233557AbhELMzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 08:55:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52626 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231230AbhELMxA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231513AbhELMxA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 12 May 2021 08:53:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1144561439;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 167AA61469;
         Wed, 12 May 2021 12:51:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620823903;
-        bh=WJnZZbvp/3S4+mp/P3c374P9sXWpRT/tkUrjwqlxuBE=;
+        bh=5grcpmVWK6qFXGk84Uc7pxJTRe6T83rcuW2ekjlJZ/Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hpmPUvze122Z88MbxyJ83KfRXPlS2//fnIasq9quewJJDo/CrzSl4AS78cU/EnY6Q
-         7Zu3BewUGA5I8YJeVnP1kc1yq1neWzk3aigdwcY8TojJt/zmg0jmaz3GEBZPe9rhh4
-         dWjjJqbfsYmFOQDY4EhuJRv60WP2o+wxGMI5t10Zo7fZ1RUV5qIemUuWOCb7Tw+siZ
-         jABs8/7Wow/b+7XoBX81eTatEJxanmlokwbYLZvUO0IQ5SMKJAOI+SIjWxj7GPgJaq
-         9spMdsMvSJ0msgdG2kBmOu0hrps8lZt5WxithYsEUDMoTDsVsvkFUovZfO01q0KA/m
-         3/sfVaScsThuQ==
+        b=RRD8okc4zu3jTa2huY7IN/0Gw30InHdOBTA0JnnqfjFsd4u7dXS9jKeCZrWQ2mR5v
+         5PALdyrT1cPyl30hJZnNlQZyAPwAdtBAIl+yC6v/68ZoAYqlk/k0NZEm3K3442BE2c
+         SbwV+c3mqX75Fzz3ih4TdGdNNy/27VcNcuygC4soJdNlYW7lbsBtx8i4oV56HjP9sV
+         v0ZxMpIvlShBRO8Bx95DEh5UfNSm57BKg9WewQQo/HoXkbKr35YRl/F3Z1qK0o09K2
+         P6RJJTRf/toWaUmoMU9Yaw1cVO/7QjqVFk8z+Nmb+/iY7QveKavqMmc3DmQ0TzNYQU
+         6fKXyJMouHEJQ==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1lgoKz-0018iU-6a; Wed, 12 May 2021 14:51:41 +0200
+        id 1lgoKz-0018iY-82; Wed, 12 May 2021 14:51:41 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH v2 26/40] docs: networking: device_drivers: Use ASCII subset instead of UTF-8 alternate symbols
-Date:   Wed, 12 May 2021 14:50:30 +0200
-Message-Id: <aa49206f65b7302f6d579d3be726242dedebdb79.1620823573.git.mchehab+huawei@kernel.org>
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Jonathan Corbet" <corbet@lwn.net>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+        x86@kernel.org
+Subject: [PATCH v2 27/40] docs: x86: Use ASCII subset instead of UTF-8 alternate symbols
+Date:   Wed, 12 May 2021 14:50:31 +0200
+Message-Id: <7af1f56ef0237c6adeea85e4d4155b872db21b34.1620823573.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1620823573.git.mchehab+huawei@kernel.org>
 References: <cover.1620823573.git.mchehab+huawei@kernel.org>
@@ -67,97 +68,50 @@ Also, Sphinx already do such conversion automatically outside literal blocks:
 
 So, replace the occurences of the following UTF-8 characters:
 
-	- U+00a0 (' '): NO-BREAK SPACE
-	- U+2018 ('‘'): LEFT SINGLE QUOTATION MARK
-	- U+2019 ('’'): RIGHT SINGLE QUOTATION MARK
+	- U+201c ('“'): LEFT DOUBLE QUOTATION MARK
+	- U+201d ('”'): RIGHT DOUBLE QUOTATION MARK
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- .../device_drivers/ethernet/intel/i40e.rst           |  8 ++++----
- .../device_drivers/ethernet/intel/iavf.rst           |  4 ++--
- .../device_drivers/ethernet/netronome/nfp.rst        | 12 ++++++------
- 3 files changed, 12 insertions(+), 12 deletions(-)
+ Documentation/x86/resctrl.rst | 2 +-
+ Documentation/x86/sgx.rst     | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/networking/device_drivers/ethernet/intel/i40e.rst b/Documentation/networking/device_drivers/ethernet/intel/i40e.rst
-index 2d3f6bd969a2..d0e9b783a224 100644
---- a/Documentation/networking/device_drivers/ethernet/intel/i40e.rst
-+++ b/Documentation/networking/device_drivers/ethernet/intel/i40e.rst
-@@ -466,7 +466,7 @@ network. PTP support varies among Intel devices that support this driver. Use
- "ethtool -T <netdev name>" to get a definitive list of PTP capabilities
- supported by the device.
+diff --git a/Documentation/x86/resctrl.rst b/Documentation/x86/resctrl.rst
+index 71a531061e4e..511cd5b76ed1 100644
+--- a/Documentation/x86/resctrl.rst
++++ b/Documentation/x86/resctrl.rst
+@@ -519,7 +519,7 @@ Cache pseudo-locking increases the probability that data will remain
+ in the cache via carefully configuring the CAT feature and controlling
+ application behavior. There is no guarantee that data is placed in
+ cache. Instructions like INVD, WBINVD, CLFLUSH, etc. can still evict
+-“locked” data from cache. Power management C-states may shrink or
++"locked" data from cache. Power management C-states may shrink or
+ power off cache. Deeper C-states will automatically be restricted on
+ pseudo-locked region creation.
  
--IEEE 802.1ad (QinQ) Support
-+IEEE 802.1ad (QinQ) Support
- ---------------------------
- The IEEE 802.1ad standard, informally known as QinQ, allows for multiple VLAN
- IDs within a single Ethernet frame. VLAN IDs are sometimes referred to as
-@@ -523,8 +523,8 @@ of a port's bandwidth (should it be available). The sum of all the values for
- Maximum Bandwidth is not restricted, because no more than 100% of a port's
- bandwidth can ever be used.
+diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
+index dd0ac96ff9ef..7ccf63d0d083 100644
+--- a/Documentation/x86/sgx.rst
++++ b/Documentation/x86/sgx.rst
+@@ -88,7 +88,7 @@ Enclave build functions
+ -----------------------
  
--NOTE: X710/XXV710 devices fail to enable Max VFs (64) when Multiple Functions
--per Port (MFP) and SR-IOV are enabled. An error from i40e is logged that says
-+NOTE: X710/XXV710 devices fail to enable Max VFs (64) when Multiple Functions
-+per Port (MFP) and SR-IOV are enabled. An error from i40e is logged that says
- "add vsi failed for VF N, aq_err 16". To workaround the issue, enable less than
- 64 virtual functions (VFs).
+ In addition to the traditional compiler and linker build process, SGX has a
+-separate enclave “build” process.  Enclaves must be built before they can be
++separate enclave "build" process.  Enclaves must be built before they can be
+ executed (entered). The first step in building an enclave is opening the
+ **/dev/sgx_enclave** device.  Since enclave memory is protected from direct
+ access, special privileged instructions are Then used to copy data into enclave
+@@ -147,7 +147,7 @@ Page reclaimer
  
-@@ -680,7 +680,7 @@ queues: for each tc, <num queues>@<offset> (e.g. queues 16@0 16@16 assigns
- 16 queues to tc0 at offset 0 and 16 queues to tc1 at offset 16. Max total
- number of queues for all tcs is 64 or number of cores, whichever is lower.)
+ Similar to the core kswapd, ksgxd, is responsible for managing the
+ overcommitment of enclave memory.  If the system runs out of enclave memory,
+-*ksgxwapd* “swaps” enclave memory to normal memory.
++*ksgxwapd* "swaps" enclave memory to normal memory.
  
--hw 1 mode channel: ‘channel’ with ‘hw’ set to 1 is a new new hardware
-+hw 1 mode channel: 'channel' with 'hw' set to 1 is a new new hardware
- offload mode in mqprio that makes full use of the mqprio options, the
- TCs, the queue configurations, and the QoS parameters.
- 
-diff --git a/Documentation/networking/device_drivers/ethernet/intel/iavf.rst b/Documentation/networking/device_drivers/ethernet/intel/iavf.rst
-index 25330b7b5168..b70eea67c3d9 100644
---- a/Documentation/networking/device_drivers/ethernet/intel/iavf.rst
-+++ b/Documentation/networking/device_drivers/ethernet/intel/iavf.rst
-@@ -113,7 +113,7 @@ which the AVF is associated. The following are base mode features:
- - AVF device ID
- - HW mailbox is used for VF to PF communications (including on Windows)
- 
--IEEE 802.1ad (QinQ) Support
-+IEEE 802.1ad (QinQ) Support
- ---------------------------
- The IEEE 802.1ad standard, informally known as QinQ, allows for multiple VLAN
- IDs within a single Ethernet frame. VLAN IDs are sometimes referred to as
-@@ -171,7 +171,7 @@ queues: for each tc, <num queues>@<offset> (e.g. queues 16@0 16@16 assigns
- 16 queues to tc0 at offset 0 and 16 queues to tc1 at offset 16. Max total
- number of queues for all tcs is 64 or number of cores, whichever is lower.)
- 
--hw 1 mode channel: ‘channel’ with ‘hw’ set to 1 is a new new hardware
-+hw 1 mode channel: 'channel' with 'hw' set to 1 is a new new hardware
- offload mode in mqprio that makes full use of the mqprio options, the
- TCs, the queue configurations, and the QoS parameters.
- 
-diff --git a/Documentation/networking/device_drivers/ethernet/netronome/nfp.rst b/Documentation/networking/device_drivers/ethernet/netronome/nfp.rst
-index ada611fb427c..949c036e8667 100644
---- a/Documentation/networking/device_drivers/ethernet/netronome/nfp.rst
-+++ b/Documentation/networking/device_drivers/ethernet/netronome/nfp.rst
-@@ -62,14 +62,14 @@ actual firmware files in application-named subdirectories in
-     $ tree /lib/firmware/netronome/
-     /lib/firmware/netronome/
-     ├── bpf
--    │   ├── nic_AMDA0081-0001_1x40.nffw
--    │   └── nic_AMDA0081-0001_4x10.nffw
-+    │   ├── nic_AMDA0081-0001_1x40.nffw
-+    │   └── nic_AMDA0081-0001_4x10.nffw
-     ├── flower
--    │   ├── nic_AMDA0081-0001_1x40.nffw
--    │   └── nic_AMDA0081-0001_4x10.nffw
-+    │   ├── nic_AMDA0081-0001_1x40.nffw
-+    │   └── nic_AMDA0081-0001_4x10.nffw
-     ├── nic
--    │   ├── nic_AMDA0081-0001_1x40.nffw
--    │   └── nic_AMDA0081-0001_4x10.nffw
-+    │   ├── nic_AMDA0081-0001_1x40.nffw
-+    │   └── nic_AMDA0081-0001_4x10.nffw
-     ├── nic_AMDA0081-0001_1x40.nffw -> bpf/nic_AMDA0081-0001_1x40.nffw
-     └── nic_AMDA0081-0001_4x10.nffw -> bpf/nic_AMDA0081-0001_4x10.nffw
- 
+ Launch Control
+ ==============
 -- 
 2.30.2
 
