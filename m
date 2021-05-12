@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B2B37C3F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 17:30:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7A2A37C40A
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 17:30:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234785AbhELPZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 11:25:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47290 "EHLO mail.kernel.org"
+        id S235341AbhELP1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 11:27:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50276 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233243AbhELPME (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:12:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8B1561925;
-        Wed, 12 May 2021 15:03:42 +0000 (UTC)
+        id S231920AbhELPNt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:13:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EC9861928;
+        Wed, 12 May 2021 15:04:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620831823;
-        bh=kluB8RU/e70WoIuBC0DmhMIFSSJuZ8GREZZBiaI4IrA=;
+        s=korg; t=1620831845;
+        bh=0UxNvVA0ZyxaLYXVLgm8MVeYcvrnSD8DVBRXNu47WLs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VqkZiplyfn+Cc8a6KG9/aWFHxk/bOlPDVC4+Mc3Rs1/jwxl1wO+XbFc78sEWOJpx6
-         x4Us8/FCgIOYQ6rWItO0Ajwcm+SuISp2dBAKaIIOpzTtMgJzJdyBNC+USwWmyRvz5J
-         w/L+1R6TzU2DzdiJk7mZKa8tV0m94/Je4X3LqRqI=
+        b=kzjnmJ/+jzOIF5pwsl6tHtd65rNM7f0Z4L2NYC9fHFLYW05PCAQLLqSPJXPX4pMlD
+         LGJI6xo4S7il4V2HQh5bfYmxrvEpyPpJy/qH1WXNlI9944lNC+8LJ5DF7LmkTZIR8W
+         Oo4X1060Us34UU/cwSfzuqgprLqddm3vWgZMqd08=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.10 029/530] KVM: x86: Defer the MMU unload to the normal path on an global INVPCID
-Date:   Wed, 12 May 2021 16:42:19 +0200
-Message-Id: <20210512144820.688292054@linuxfoundation.org>
+        stable@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>
+Subject: [PATCH 5.10 031/530] PCI: keystone: Let AM65 use the pci_ops defined in pcie-designware-host.c
+Date:   Wed, 12 May 2021 16:42:21 +0200
+Message-Id: <20210512144820.753336749@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144819.664462530@linuxfoundation.org>
 References: <20210512144819.664462530@linuxfoundation.org>
@@ -39,38 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Kishon Vijay Abraham I <kishon@ti.com>
 
-commit f66c53b3b94f658590e1012bf6d922f8b7e01bda upstream.
+commit 3d0b2a3a87ce5ae85de46c4241afd52ab8b566fe upstream.
 
-Defer unloading the MMU after a INVPCID until the instruction emulation
-has completed, i.e. until after RIP has been updated.
+Both TI's AM65x (K3) and TI's K2 PCIe driver are implemented in
+pci-keystone. However Only K2 PCIe driver should use it's own pci_ops
+for configuration space accesses. But commit 10a797c6e54a
+("PCI: dwc: keystone: Use pci_ops for config space accessors") used
+custom pci_ops for both AM65x and K2. This breaks configuration space
+access for AM65x platform. Fix it here.
 
-On VMX, this is a benign bug as VMX doesn't touch the MMU when skipping
-an emulated instruction.  However, on SVM, if nrip is disabled, the
-emulator is used to skip an instruction, which would lead to fireworks
-if the emulator were invoked without a valid MMU.
-
-Fixes: eb4b248e152d ("kvm: vmx: Support INVPCID in shadow paging mode")
-Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210305011101.3597423-15-seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Link: https://lore.kernel.org/r/20210317131518.11040-1-kishon@ti.com
+Fixes: 10a797c6e54a ("PCI: dwc: keystone: Use pci_ops for config space accessors")
+Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
+Cc: <stable@vger.kernel.org> # v5.10
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/x86.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pci/controller/dwc/pci-keystone.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -11290,7 +11290,7 @@ int kvm_handle_invpcid(struct kvm_vcpu *
+--- a/drivers/pci/controller/dwc/pci-keystone.c
++++ b/drivers/pci/controller/dwc/pci-keystone.c
+@@ -811,7 +811,8 @@ static int __init ks_pcie_host_init(stru
+ 	int ret;
  
- 		fallthrough;
- 	case INVPCID_TYPE_ALL_INCL_GLOBAL:
--		kvm_mmu_unload(vcpu);
-+		kvm_make_request(KVM_REQ_MMU_RELOAD, vcpu);
- 		return kvm_skip_emulated_instruction(vcpu);
+ 	pp->bridge->ops = &ks_pcie_ops;
+-	pp->bridge->child_ops = &ks_child_pcie_ops;
++	if (!ks_pcie->is_am6)
++		pp->bridge->child_ops = &ks_child_pcie_ops;
  
- 	default:
+ 	ret = ks_pcie_config_legacy_irq(ks_pcie);
+ 	if (ret)
 
 
