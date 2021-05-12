@@ -2,30 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF16537B448
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 04:48:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 313C337B44D
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 04:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229932AbhELCtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 22:49:32 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:2634 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230115AbhELCta (ORCPT
+        id S230019AbhELCwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 22:52:22 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:2563 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229848AbhELCwV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 22:49:30 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Ffzgj09vnzldMC;
-        Wed, 12 May 2021 10:46:09 +0800 (CST)
+        Tue, 11 May 2021 22:52:21 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FfzkR6181zwScW;
+        Wed, 12 May 2021 10:48:31 +0800 (CST)
 Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 12 May 2021 10:48:13 +0800
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 12 May 2021 10:51:05 +0800
 From:   Zou Wei <zou_wei@huawei.com>
-To:     <pizza@shaftnet.org>, <kvalo@codeaurora.org>,
-        <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH net-next] cw1200: add missing MODULE_DEVICE_TABLE
-Date:   Wed, 12 May 2021 11:05:14 +0800
-Message-ID: <1620788714-14300-1-git-send-email-zou_wei@huawei.com>
+To:     <krzysztof.kozlowski@canonical.com>
+CC:     <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] memory: da8xx-ddrctl: add missing MODULE_DEVICE_TABLE
+Date:   Wed, 12 May 2021 11:08:07 +0800
+Message-ID: <1620788887-14812-1-git-send-email-zou_wei@huawei.com>
 X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -42,21 +40,21 @@ as an external module.
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Zou Wei <zou_wei@huawei.com>
 ---
- drivers/net/wireless/st/cw1200/cw1200_sdio.c | 1 +
+ drivers/memory/da8xx-ddrctl.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/st/cw1200/cw1200_sdio.c b/drivers/net/wireless/st/cw1200/cw1200_sdio.c
-index b65ec14..4c30b57 100644
---- a/drivers/net/wireless/st/cw1200/cw1200_sdio.c
-+++ b/drivers/net/wireless/st/cw1200/cw1200_sdio.c
-@@ -53,6 +53,7 @@ static const struct sdio_device_id cw1200_sdio_ids[] = {
- 	{ SDIO_DEVICE(SDIO_VENDOR_ID_STE, SDIO_DEVICE_ID_STE_CW1200) },
- 	{ /* end: all zeroes */			},
+diff --git a/drivers/memory/da8xx-ddrctl.c b/drivers/memory/da8xx-ddrctl.c
+index 872addd..7a51932 100644
+--- a/drivers/memory/da8xx-ddrctl.c
++++ b/drivers/memory/da8xx-ddrctl.c
+@@ -153,6 +153,7 @@ static const struct of_device_id da8xx_ddrctl_of_match[] = {
+ 	{ .compatible = "ti,da850-ddr-controller", },
+ 	{ },
  };
-+MODULE_DEVICE_TABLE(sdio, cw1200_sdio_ids);
++MODULE_DEVICE_TABLE(of, da8xx_ddrctl_of_match);
  
- /* hwbus_ops implemetation */
- 
+ static struct platform_driver da8xx_ddrctl_driver = {
+ 	.probe = da8xx_ddrctl_probe,
 -- 
 2.6.2
 
