@@ -2,126 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66AC337BC66
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:23:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 644C837BC6C
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231732AbhELMYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 08:24:20 -0400
-Received: from mail-bn8nam08on2100.outbound.protection.outlook.com ([40.107.100.100]:1507
-        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231730AbhELMYT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 08:24:19 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hQ/AkX/XTxrvp9gxlg6O5Dq5R0174mfNbnT4YujKdNdAP4CW1tocEhrFYFjc7bNP4cx0o3TPVqjitk/VLCh1j4LbX2wH2Ddo8V+HYhnY2fooy5DA8O8VEYAi0WK/uWJeaLwUlNNsEO/Lzzoh24GRPbEziuhN1qXwSJ3pp6htA/jGJDrJ0hNirZuzl36h9Pa34M9dYIy1rRSj44mD8bI7J89GjC43QUuOfPQlYV/5okBS8ZYc8m+ANY7dCSgJJrycgsmG/ib2/UaD7yhCJiFPEMi95FgBJT0ScSfqaYKYjmP6WI8q0xAPn6/dA2qgSSgauluWOZOk5lN8CIGb5sHriQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k7ipd2pwu4YKebdTap/w37mJVdhkJFfamIbRKTA4Epc=;
- b=Nsjj6uouugatgudv3s3GMZz47i87K+BEk9J7ShMci9O7el6mMcTj4m4cTcXMSTgiNsCLcfUp9S5owSanIxDqYwQwz0fDmot/WlqWM+dGVaqSLlUqGQkR09lTB3UXAAwTeBjpDqVf28L1mqNYgznSFMlUgsGeqo/6Hv5LdZN435HwblFbFHpuBsYuyVtCLPkT+N0Ynvz/cJGOAxLUzulGynIgk81n52dlDu5ATcMBYPPOznDQocWuUdFF61Xo72O8NVEIxjZuB9bA9uBEB8Q3jTroQPovsb3YdigaUy8gZ3HeqbHz6ozZquXa9bTUIFPPWBOuLl6T4yvyZQwU3LrQ1g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
- header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k7ipd2pwu4YKebdTap/w37mJVdhkJFfamIbRKTA4Epc=;
- b=URQaLbBqkBf7chQ9mpj5i+r8R5t8KC1d5765E18KLwRGw5Z8xzRHGj3EX+ACAas0ceuVT9i3nkFaqGJQeueO8jyXY8RJ2CMmP8rtusxgAx8ITbuhn2ROjvvoZw7BKRNlxP2vMkrNcuRUcWxLAFbXYN3WiipZUrsiSmj5YZH3+ocDRImNEc10qmetWRf/Sq8lV28djM2WLwosuVHZhgeaLrZhKKp4ya8lkr67CQPIGBQeJn0pXGTI/nhjRghfAvtnfpkt/GycR8ZHeJwyQt9jlQiwWQU8duzVJXtvy6/ikUCplElS3lOhe2qImiTQh39PXx5yM8D1AzZhGlvxQwx2dA==
-Received: from BYAPR01MB3816.prod.exchangelabs.com (2603:10b6:a02:88::20) by
- BYAPR01MB4072.prod.exchangelabs.com (2603:10b6:a03:5a::28) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4129.25; Wed, 12 May 2021 12:23:06 +0000
-Received: from BYAPR01MB3816.prod.exchangelabs.com
- ([fe80::d145:208f:691f:1ba4]) by BYAPR01MB3816.prod.exchangelabs.com
- ([fe80::d145:208f:691f:1ba4%6]) with mapi id 15.20.4108.031; Wed, 12 May 2021
- 12:23:06 +0000
-From:   "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>
-To:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        "Dalessandro, Dennis" <dennis.dalessandro@cornelisnetworks.com>
-CC:     Leon Romanovsky <leonro@nvidia.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: RE: [PATCH rdma-next] RDMA/rdmavt: Decouple QP and SGE lists
- allocations
-Thread-Topic: [PATCH rdma-next] RDMA/rdmavt: Decouple QP and SGE lists
- allocations
-Thread-Index: AQHXRlGKOHE6QFLZoEWMq90D8Um/darfxaGg
-Date:   Wed, 12 May 2021 12:23:06 +0000
-Message-ID: <BYAPR01MB38165194C3FE39850D61C6C6F2529@BYAPR01MB3816.prod.exchangelabs.com>
-References: <c34a864803f9bbd33d3f856a6ba2dd595ab708a7.1620729033.git.leonro@nvidia.com>
-In-Reply-To: <c34a864803f9bbd33d3f856a6ba2dd595ab708a7.1620729033.git.leonro@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none
- header.from=cornelisnetworks.com;
-x-originating-ip: [70.15.25.19]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d192de3c-f95d-4635-92e5-08d91540b281
-x-ms-traffictypediagnostic: BYAPR01MB4072:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR01MB4072E4784E33D09EB3A7DE2CF2529@BYAPR01MB4072.prod.exchangelabs.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5797;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: B/hMF32WPNit3fohxts5q8hoeAvIjQ8JMv8xiZDThrLvtzRSqGdBBRXz35Cl+WV5OZ2SFqigUglnc2p1dw1W4uOcpF3IFPOW9OewQ0Fy4AkKhmhm5GKvYA9An1BsepGsnKbI7kZ9IVL6I2tK9zczCgVjf822zwgIEFFLpWtRuv1Xcp96ANMFZVc2KF4uUV5BBuikbGAS5tJR9nnWUEMkzk/AD8uzZ9V8yYVwxwyI8hnpcGRwiMTwZqgQQy3Z+rEUnx8IVS3DqfGom4uPsMIMs6WxqqR8e6F1d/dqr0si5G6d28FfoLsIDbmtwH77Ceii2Jq+ed5NZUwWWwsO4FmVx2jgkQmaOoEs5fpLO4toXyqHmvyp8J1rWRdhyGJcoA8x/IrtiqadKjzcJJ9j+9gYrgBgHWtsCkvC0Sg1xYUBiAM6esigggQ5uYrMWWo7Z0Qvu4Kh0DRdxYSFedvEXXlMCwVXP0UJdLrIIQUAluaOh+bE1xKA0FDsTuqYF1c4AG/RFEQEh1jQarFLBLUOIc3GddEtfEQWeXQ0Es9YI9EUtlUGiBEsT0czBXf5dcNEOXJyxRrpfNTKYSDubBazuSgpEUOZOGiYmeHtL7ko74B87Rw=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR01MB3816.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(136003)(396003)(39830400003)(346002)(4744005)(5660300002)(86362001)(8936002)(316002)(110136005)(52536014)(55016002)(9686003)(186003)(478600001)(66556008)(7696005)(83380400001)(38100700002)(66476007)(26005)(122000001)(33656002)(8676002)(66446008)(71200400001)(6636002)(64756008)(76116006)(2906002)(6506007)(4326008)(66946007)(54906003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?Ef7voK4iyX42v88V+fIV8xm+GHY1OqXev9HuYAkeMGLl2gG02SfDvN3DT8yd?=
- =?us-ascii?Q?lZid6FdfU+gfbZCR/Ai4b5qreZ7b4QJbIkLHPJRDa7BO5HC3TfHnMdwiHSL0?=
- =?us-ascii?Q?DTr9Tsgti+FGKQnYFVqUR5k2GXyLMx4y7hbSUf+qlqCsxyj8Ftlz6DsLhVP5?=
- =?us-ascii?Q?gvnCUpnvxblCgYqREbbFGYEsPLVQPmMcipkCkhZ5C8T5BhVYtcljnBxLRmFS?=
- =?us-ascii?Q?I9TGGPaKx7OCX5DFtJkSvuq6qHn88M7ru5vxlrk89VNdomYdgQ7cA9uy8/0o?=
- =?us-ascii?Q?0PxW2gWVEJQOR965bE9QVlBuzNeAQhxUsrNg1sg9EsABHk76u4z4CPNyinzJ?=
- =?us-ascii?Q?25tAXFr0/76bfbgYzrMGQpar5CVha+YCIg3Xdl6LbwqODsZ6Ivl9jbWOtbF8?=
- =?us-ascii?Q?fDrzdMHR7Z1ZYsp9GNba5hEq8QFBUC7eplv/mTAqhfplFwnGXuoThdgg1/Aq?=
- =?us-ascii?Q?3rKV1ZmRsH/GahlLExF0VBhNdrYV/ammSltrR1TDduihGbP0bt9TuXQhrxtz?=
- =?us-ascii?Q?XCeFZwH4d4oZ523uzyDcrBHjQzga/muKtksNZF/G8HYHCzTgMokOTlOBXfXx?=
- =?us-ascii?Q?6WY3A1vD3LPlmVV7eb6UqJW4+CTawT9FTKMnM1RvezMAf9A49yNEH7e9C67z?=
- =?us-ascii?Q?pWm3fT+qOuPjQXQzP/jCuifa/fiSNmmuwp2d1dlzhR7dPb4KLuJbldTycL4d?=
- =?us-ascii?Q?aWTn4JtD04sm011hi01tRUPXgMbmrZEuBFg01VttLUwAj+qZO/o/mTA7SFV0?=
- =?us-ascii?Q?6nmwUEj+b49y5fh7pOLcUTnwF2Q6nInVz5jFqzpbbzekoJ2K50kNvZxGGHq8?=
- =?us-ascii?Q?WXfjKnWWPXADCVznZnJAN5etncvzhQxhpwJ1yCrPI6oW0N9Fi80hm3w1n+Ja?=
- =?us-ascii?Q?iEKNxK5kL+HEo4ixZjvKkDBugJaOOSe1pYthj2xfXtoaNK+Njrwo3TNPGeZG?=
- =?us-ascii?Q?d7WmXCDUmQMgID4nPTXoQH9ZDcrn8/oThuzF+NN2QZxt5Ey32j6y3EFrSOmk?=
- =?us-ascii?Q?VRteL7KSKYeJJF3MY2WIIkEajEiZF5v/0jwCbpA769q2MJyqB8H8wGI383oB?=
- =?us-ascii?Q?BvZP+UKo+K9hD466kYnoVg3G7WHx8CxPEsTdlEsD4Qjs1bENPhglowSuu7dy?=
- =?us-ascii?Q?X093pZlqGRK9oyV2A18ySmq1Imx6771eeVTq4aV7j7bnADhIyk5MEEhko8/d?=
- =?us-ascii?Q?Gpy1YyB0dy+heffNwdn4msOBtBS6iZaoWTkxCi4dpqayrCa/FrjhdbtdOEGU?=
- =?us-ascii?Q?pVYMQkm8sFXFWHN8PCfQI4OqB5u59i2ZbvltGTCn20ZLJsiaJ0OwHJU9VBbu?=
- =?us-ascii?Q?l0A=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR01MB3816.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d192de3c-f95d-4635-92e5-08d91540b281
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 May 2021 12:23:06.3903
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: hDOMa+oYVVsjUH8QnInqkfXGKrK6giJucsNmj/tHIyK3Y7DHFnG9Q/rrQmC8WDgQzV0c8hvyL1+vs2k/C3vkaFPRRyKaBMPXTRVw55h4YMPrwB0L7W0xA+HyFHXjtXZE
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR01MB4072
+        id S231502AbhELMZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 08:25:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231728AbhELMZD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 08:25:03 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 374EEC061574;
+        Wed, 12 May 2021 05:23:55 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id j10so7639150ejb.3;
+        Wed, 12 May 2021 05:23:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=5kmeS+nP3CmJVZdwXbNkWQh2vxe2fkR1l6Dh3bLEmEY=;
+        b=FZVLUW/3zsBvC4EOC6o1FXqQYISK/B9fzR1kaPEZah0OJXzpYeCefe4Wb10MDWc07W
+         HW6675sciZd2zrssX0+dj8nhG7IKvWbCqIXBL7clAxfqEWI/dQi3jBsWbmS6d+6Dg/mv
+         o9xETW0IOyALa3aALt1lm/k5zZE0yC2t1rO7fzC9cH1ryT8CD0m02IPs4LdmF8rsMzYD
+         L/gOia/JLjjYnAWCqgwUPJoZkTk9DdjvaenhVlK+27KgahmDwzzJI9IoYH0+YGK/v1d9
+         yibNHP2B8hTTffdvxQYkfhuWLbAOEdirrzvj5UJnYPods4ZAbAaUnYOpuYHFzfqQZutn
+         XLyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=5kmeS+nP3CmJVZdwXbNkWQh2vxe2fkR1l6Dh3bLEmEY=;
+        b=kN7PDBWaK8AFRWIa3mUiXvh87/IMfbiUHRK282oI7VcpdeOAZK7arGwxUUUvi/RjOG
+         gJqiwmz68hflF0XARNRMISf5RjHdoYj770HdbdQAXRSJ3r8bLrfsdZHCMFQWm0qoYx5P
+         CeKQcv6t3W9aSQvwuP0xxlFUIKqtGRTZ8WEhYKNwKzmJCE1Iza9NoaulT5J1jWFSG+v4
+         L6feyMIZ3vLo/4rmhESQCsTWhTrQVHjyU5dER5aoOflOE/rup2ZyFhDZFMOZdkrCcDvg
+         FbnrlkVSVWdnqQ6anLp+7lK4xwh1nUEnPKsfw7FKpwfXDP1ELD1IwQRJbkWLZglbR/1b
+         9uKg==
+X-Gm-Message-State: AOAM532/i8jRuUQQGpH1jPh1UUJn/hAuZQfuX2g49geJLX5QA3DvQfOc
+        znL14v+NzCSU+s9BdXwOkdA05VU6YSY=
+X-Google-Smtp-Source: ABdhPJyL/A02iHlXMGs1GvLo/Vpabb4JGISfTlYROGOastlv45I5mrXPrIN6cyfn2/RUWSji16c75A==
+X-Received: by 2002:a17:906:22cf:: with SMTP id q15mr38101309eja.474.1620822234011;
+        Wed, 12 May 2021 05:23:54 -0700 (PDT)
+Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id g17sm21459665edv.47.2021.05.12.05.23.52
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 12 May 2021 05:23:53 -0700 (PDT)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, linus.walleij@linaro.org, kishon@ti.com,
+        vkoul@kernel.org, jay.xu@rock-chips.com, shawn.lin@rock-chips.com,
+        david.wu@rock-chips.com, zhangqing@rock-chips.com,
+        huangtao@rock-chips.com, cl@rock-chips.com,
+        linux-phy@lists.infradead.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/4] convert grf.txt to YAML
+Date:   Wed, 12 May 2021 14:23:42 +0200
+Message-Id: <20210512122346.9463-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -	struct rvt_sge r_sg_list[] /* verified SGEs */
-> +	struct rvt_sge *r_sg_list /* verified SGEs */
->  		____cacheline_aligned_in_smp;
->  };
->=20
+Changed V5:
+  changed compatibles for rk3066/rk3188
+  add rockchip-usb-phy.yaml
+  move and restyle grf nodes rk3066/rk3188
+  remove applied patches
 
-Since since has been made an independent allocation, r_sg_list becomes a re=
-ad-mostly pointer and should be moved up in rvt_qp to other 64 bit fields a=
-round timeout_jiffies.
+Changed V4:
+  revert separate schemas for each 'if' subset
+  add additionalProperties
+  move properties to top level
 
-The cacheline can then be dropped for this field.
+Changed V3:
+  remove select
+  change unevaluatedProperties
+  add separate schemas for each 'if' subset
 
-Mike
+Changed V2:
+  add rockchip,rk3328-grf-gpio.yaml
+  rename grf-gpio nodename
+
+Johan Jonker (4):
+  dt-bindings: phy: convert rockchip-usb-phy.txt to YAML
+  dt-bindings: soc: rockchip: convert grf.txt to YAML
+  ARM: dts: rockchip: move and restyle grf nodes rk3066/rk3188
+  arm64: dts: rename grf-gpio nodename in rk3328.dtsi
+
+ .../devicetree/bindings/phy/rockchip-usb-phy.txt   |  52 -----
+ .../devicetree/bindings/phy/rockchip-usb-phy.yaml  |  86 +++++++
+ .../devicetree/bindings/soc/rockchip/grf.txt       |  61 -----
+ .../devicetree/bindings/soc/rockchip/grf.yaml      | 260 +++++++++++++++++++++
+ arch/arm/boot/dts/rk3066a.dtsi                     |  53 +++--
+ arch/arm/boot/dts/rk3188.dtsi                      |  53 +++--
+ arch/arm/boot/dts/rk3xxx.dtsi                      |   2 +-
+ arch/arm64/boot/dts/rockchip/rk3328.dtsi           |   2 +-
+ 8 files changed, 406 insertions(+), 163 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/phy/rockchip-usb-phy.txt
+ create mode 100644 Documentation/devicetree/bindings/phy/rockchip-usb-phy.yaml
+ delete mode 100644 Documentation/devicetree/bindings/soc/rockchip/grf.txt
+ create mode 100644 Documentation/devicetree/bindings/soc/rockchip/grf.yaml
+
+-- 
+2.11.0
+
