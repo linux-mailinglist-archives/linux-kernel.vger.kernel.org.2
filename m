@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F097937CDFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:16:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E171F37CDFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343839AbhELQ7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 12:59:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38790 "EHLO mail.kernel.org"
+        id S1343882AbhELRAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 13:00:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237871AbhELP4a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:56:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6611D61C1E;
-        Wed, 12 May 2021 15:28:43 +0000 (UTC)
+        id S237889AbhELP4s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:56:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C613861461;
+        Wed, 12 May 2021 15:28:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620833323;
-        bh=WpcLTHjKv5NQ1sL3+0oPPHvyRL2/Ps9DXZuV7pQtd/0=;
+        s=korg; t=1620833326;
+        bh=LQXZaWxdFrbx4iUlhxsh9hQfXSBcjHWTSy6hmOmnKfs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=miPJf9UOsBgdSjKJ/HDCkfZMiJ1QcgAFPi/3fOsU7nNEwqr80mel7ot7aC7MgReSD
-         V2RAZing2pT3K0I/FA7d3M/PfvU2DM99LLpQ8JASsIt1i67DNsXPvWAN8x0OhqTr8E
-         5JR0rIE4ynFPmzuv9mHD7hWzu0K7xtGZiir4B+BQ=
+        b=akLgOfEW8wW5n09bINQtu7zcl0TL+etDklRhfpi7j2sraRA5cdhPs/jM14JZ7Fpl/
+         YyS7+MrdBP84wQPS380W5OLweIjqt9hyirMcavVqOdenJbDxEYqB0uo/fgj09i8GNE
+         rgE4y8ifsVC2OVEy2rpXROtsAWElyEFXnHOm4d2Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Robert Foss <robert.foss@linaro.org>,
-        Xin Ji <xji@analogixsemi.com>, Sam Ravnborg <sam@ravnborg.org>,
-        dri-devel@lists.freedesktop.org,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>
-Subject: [PATCH 5.11 069/601] drm: bridge: fix ANX7625 use of mipi_dsi_() functions
-Date:   Wed, 12 May 2021 16:42:26 +0200
-Message-Id: <20210512144830.091001249@linuxfoundation.org>
+        stable@vger.kernel.org, Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: [PATCH 5.11 070/601] drm: bridge/panel: Cleanup connector on bridge detach
+Date:   Wed, 12 May 2021 16:42:27 +0200
+Message-Id: <20210512144830.122578348@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144827.811958675@linuxfoundation.org>
 References: <20210512144827.811958675@linuxfoundation.org>
@@ -44,46 +44,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Paul Cercueil <paul@crapouillou.net>
 
-commit ed01fca38717169fcb61bd45ad1c3750d9c40d59 upstream.
+commit 4d906839d321c2efbf3fed4bc31ffd9ff55b75c0 upstream.
 
-The Analogix DRM ANX7625 bridge driver uses mips_dsi_() function
-interfaces so it should select DRM_MIPI_DSI to prevent build errors.
+If we don't call drm_connector_cleanup() manually in
+panel_bridge_detach(), the connector will be cleaned up with the other
+DRM objects in the call to drm_mode_config_cleanup(). However, since our
+drm_connector is devm-allocated, by the time drm_mode_config_cleanup()
+will be called, our connector will be long gone. Therefore, the
+connector must be cleaned up when the bridge is detached to avoid
+use-after-free conditions.
 
-ERROR: modpost: "mipi_dsi_attach" [drivers/gpu/drm/bridge/analogix/anx7625.ko] undefined!
-ERROR: modpost: "mipi_dsi_device_register_full" [drivers/gpu/drm/bridge/analogix/anx7625.ko] undefined!
-ERROR: modpost: "of_find_mipi_dsi_host_by_node" [drivers/gpu/drm/bridge/analogix/anx7625.ko] undefined!
-ERROR: modpost: "mipi_dsi_device_unregister" [drivers/gpu/drm/bridge/analogix/anx7625.ko] undefined!
-ERROR: modpost: "mipi_dsi_detach" [drivers/gpu/drm/bridge/analogix/anx7625.ko] undefined!
+v2: Cleanup connector only if it was created
 
-Fixes: 8bdfc5dae4e3 ("drm/bridge: anx7625: Add anx7625 MIPI DSI/DPI to DP")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
-Cc: Xin Ji <xji@analogixsemi.com>
-Cc: Sam Ravnborg <sam@ravnborg.org>
-Cc: dri-devel@lists.freedesktop.org
+v3: Add FIXME
+
+v4: (Use connector->dev) directly in if() block
+
+Fixes: 13dfc0540a57 ("drm/bridge: Refactor out the panel wrapper from the lvds-encoder bridge.")
+Cc: <stable@vger.kernel.org> # 4.12+
 Cc: Andrzej Hajda <a.hajda@samsung.com>
 Cc: Neil Armstrong <narmstrong@baylibre.com>
-Cc: Robert Foss <robert.foss@linaro.org>
-Cc: stable@vger.kernel.org
-Signed-off-by: Robert Foss <robert.foss@linaro.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210415183619.1431-1-rdunlap@infradead.org
+Cc: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+Cc: Jonas Karlman <jonas@kwiboo.se>
+Cc: Jernej Skrabec <jernej.skrabec@siol.net>
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210327115742.18986-2-paul@crapouillou.net
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/bridge/analogix/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/bridge/panel.c |   12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
---- a/drivers/gpu/drm/bridge/analogix/Kconfig
-+++ b/drivers/gpu/drm/bridge/analogix/Kconfig
-@@ -30,6 +30,7 @@ config DRM_ANALOGIX_ANX7625
- 	tristate "Analogix Anx7625 MIPI to DP interface support"
- 	depends on DRM
- 	depends on OF
-+	select DRM_MIPI_DSI
- 	help
- 	  ANX7625 is an ultra-low power 4K mobile HD transmitter
- 	  designed for portable devices. It converts MIPI/DPI to
+--- a/drivers/gpu/drm/bridge/panel.c
++++ b/drivers/gpu/drm/bridge/panel.c
+@@ -87,6 +87,18 @@ static int panel_bridge_attach(struct dr
+ 
+ static void panel_bridge_detach(struct drm_bridge *bridge)
+ {
++	struct panel_bridge *panel_bridge = drm_bridge_to_panel_bridge(bridge);
++	struct drm_connector *connector = &panel_bridge->connector;
++
++	/*
++	 * Cleanup the connector if we know it was initialized.
++	 *
++	 * FIXME: This wouldn't be needed if the panel_bridge structure was
++	 * allocated with drmm_kzalloc(). This might be tricky since the
++	 * drm_device pointer can only be retrieved when the bridge is attached.
++	 */
++	if (connector->dev)
++		drm_connector_cleanup(connector);
+ }
+ 
+ static void panel_bridge_pre_enable(struct drm_bridge *bridge)
 
 
