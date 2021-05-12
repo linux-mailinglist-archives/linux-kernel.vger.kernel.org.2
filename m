@@ -2,192 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15FCE37C06B
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C79837C06D
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:40:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231245AbhELOkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 10:40:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230247AbhELOku (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 10:40:50 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 952BBC06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 07:39:40 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id s8so23889517wrw.10
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 07:39:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Rfei5MEg9bMEdOxZz3i9gp/4Xf63nRd6sW81/rNWaPA=;
-        b=zkeeqiVHma3XJR/YrkY21U3s61+aPn20UKjLvK2B6kIuhVHYPMLf+YCIAZYOV2cOwA
-         GCgI9Iac036xWy7Ttp1TDN5cXN2sFNjE1DBNA6/3sokb7tEXhvTjVxhfdpOH1/PUHIvs
-         iJqiIzJ7sTSwwNgkCAwMRI+pHWYdLA1e53lomjMrZPFdBg0ENDrUoo0IxnlaUWGALyeJ
-         gDCUwT0IoJ6hnLYeIs3/GdcDVteMS9mmUc0AuillQR8knPOjzmpuZiZ/kldaw1b4hjb5
-         hZoHP0FJK5G4bZ8L8afAbmJ9y6WG5t5gxL1ak3NvCE5Ts3cPtUzH+nlUKLGJ5SfS+6yZ
-         3lrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Rfei5MEg9bMEdOxZz3i9gp/4Xf63nRd6sW81/rNWaPA=;
-        b=scSPEAFnz60E6ZSUg0W45JTBu16EfcM0ZUD8CKRIMRPPjH7W2C2btJOfjRn27iInbt
-         F8aU2MoG3EyhGQ+JR/tNY/3glpbm75w8ce5WXZiqTGP7SBcWgpk+bKlFDPEzZ90GX6re
-         Uf7xTkUnyyiOFafhx9LpYQvQ4NSap9JN42Y8k3lQK4/C8hR5ZRi/YLDpYmSiJ/QvMI1T
-         vh91oBi/4O5A4F+9UdjcbDJXVvTpHblTsAY831X1sVQon8HarHoQNGtdv7ophEgh96UA
-         cKlILubObfemLA7Wkr+OU1xUijfanV9z80IxM3A1/D1gFZK8kfsNUx3h3J4m0IZu88jK
-         rE7Q==
-X-Gm-Message-State: AOAM530mONKXcYGSJLwjznWuGU2NyDgBIy+1emWyQr5qxUDRuoHVVet+
-        XJ7O87vXNVln7cP0/ovD0Puyhg==
-X-Google-Smtp-Source: ABdhPJyVfNFYYeNQ4AG+yp0IlLCFS0VkZrtKFW3E+38v4QOFOQ28Vij61Om2GuDVOc7ydR2EYbR9cA==
-X-Received: by 2002:adf:d1c6:: with SMTP id b6mr42542657wrd.110.1620830379358;
-        Wed, 12 May 2021 07:39:39 -0700 (PDT)
-Received: from apalos.home ([94.69.77.156])
-        by smtp.gmail.com with ESMTPSA id v17sm29739475wrd.89.2021.05.12.07.39.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 07:39:38 -0700 (PDT)
-Date:   Wed, 12 May 2021 17:39:33 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        netdev <netdev@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        id S231274AbhELOlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 10:41:09 -0400
+Received: from foss.arm.com ([217.140.110.172]:40616 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231268AbhELOlH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 10:41:07 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 700561FB;
+        Wed, 12 May 2021 07:39:59 -0700 (PDT)
+Received: from [10.57.81.122] (unknown [10.57.81.122])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 584EF3F718;
+        Wed, 12 May 2021 07:39:57 -0700 (PDT)
+Subject: Re: [PATCH v1 2/3] perf arm-spe: Correct sample flags for dummy event
+To:     Leo Yan <leo.yan@linaro.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        John Garry <john.garry@huawei.com>,
         Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Matthew Wilcox <willy@infradead.org>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-Subject: Re: [PATCH net-next v4 2/4] page_pool: Allow drivers to hint on SKB
- recycling
-Message-ID: <YJvopUsZHcGb7q24@apalos.home>
-References: <20210511133118.15012-1-mcroce@linux.microsoft.com>
- <20210511133118.15012-3-mcroce@linux.microsoft.com>
- <fa93976a-3460-0f7f-7af4-e78bfe55900a@gmail.com>
- <YJuk3o6CezbVrT+P@apalos.home>
- <CANn89iLkq0zcbVeRRPGfeb5ZRcnz+e7dR1BCj-RGehNYE1Hzkw@mail.gmail.com>
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Al Grant <Al.Grant@arm.com>
+References: <20210429150100.282180-1-leo.yan@linaro.org>
+ <20210429150100.282180-3-leo.yan@linaro.org>
+From:   James Clark <james.clark@arm.com>
+Message-ID: <f4e483ae-acbb-7afa-c215-cb4244c2e820@arm.com>
+Date:   Wed, 12 May 2021 17:39:56 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANn89iLkq0zcbVeRRPGfeb5ZRcnz+e7dR1BCj-RGehNYE1Hzkw@mail.gmail.com>
+In-Reply-To: <20210429150100.282180-3-leo.yan@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
 
-[...]
-> > > > +   if (skb->pp_recycle && page_pool_return_skb_page(head))
-> > >
-> > > This probably should be attempted only in the (skb->head_frag) case ?
-> >
-> > I think the extra check makes sense.
+
+On 29/04/2021 18:00, Leo Yan wrote:
+> The dummy event is mainly used for mmap, the TIME sample is only needed
+> for per-cpu case so that the perf tool can rely on the correct timing
+> for parsing symbols.  And the CPU sample is useless for mmap.
 > 
-> What do you mean here ?
+> This patch enables TIME sample for per-cpu mmap and doesn't enable CPU
+> sample.  For later extension (e.g. support multiple AUX events), it sets
+> the dummy event when the condition "opts->full_auxtrace" is true.
 > 
-
-I thought you wanted an extra check in the if statement above.  So move the
-block under the existing if. Something like
-
-	if (skb->head_frag) {
-		#ifdef (CONFIG_PAGE_POOL)
-			if (skb->pp_recycle && page_pool_return_skb_page(head))
-			return;
-		#endif
-        skb_free_frag(head);
-	} else {
-	.....
-
-> >
-> > >
-> > > Also this patch misses pskb_expand_head()
-> >
-> > I am not sure I am following. Misses what? pskb_expand_head() will either
-> > call skb_release_data() or skb_free_head(), which would either recycle or
-> > unmap the buffer for us (depending on the page refcnt)
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> ---
+>  tools/perf/arch/arm64/util/arm-spe.c | 30 ++++++++++++++++------------
+>  1 file changed, 17 insertions(+), 13 deletions(-)
 > 
->  pskb_expand_head() allocates a new skb->head, from slab.
+> diff --git a/tools/perf/arch/arm64/util/arm-spe.c b/tools/perf/arch/arm64/util/arm-spe.c
+> index 902e73a64184..f6eec0900604 100644
+> --- a/tools/perf/arch/arm64/util/arm-spe.c
+> +++ b/tools/perf/arch/arm64/util/arm-spe.c
+> @@ -70,7 +70,6 @@ static int arm_spe_recording_options(struct auxtrace_record *itr,
+>  	struct evsel *evsel, *arm_spe_evsel = NULL;
+>  	struct perf_cpu_map *cpus = evlist->core.cpus;
+>  	bool privileged = perf_event_paranoid_check(-1);
+> -	struct evsel *tracking_evsel;
+>  	int err;
+>  
+>  	sper->evlist = evlist;
+> @@ -126,18 +125,23 @@ static int arm_spe_recording_options(struct auxtrace_record *itr,
+>  		evsel__set_sample_bit(arm_spe_evsel, CPU);
+>  
+>  	/* Add dummy event to keep tracking */
+> -	err = parse_events(evlist, "dummy:u", NULL);
+> -	if (err)
+> -		return err;
+> -
+> -	tracking_evsel = evlist__last(evlist);
+> -	evlist__set_tracking_event(evlist, tracking_evsel);
+> -
+> -	tracking_evsel->core.attr.freq = 0;
+> -	tracking_evsel->core.attr.sample_period = 1;
+> -	evsel__set_sample_bit(tracking_evsel, TIME);
+> -	evsel__set_sample_bit(tracking_evsel, CPU);
+> -	evsel__reset_sample_bit(tracking_evsel, BRANCH_STACK);
+> +	if (opts->full_auxtrace) {
+> +		struct evsel *tracking_evsel;
+
+Hi Leo,
+
+I know the "if (opts->full_auxtrace)" pattern is copied from other auxtrace
+files, but I don't think it does anything because there is this at the top
+of the function:
+
+   	if (!opts->full_auxtrace)
+		return 0;
+
+The same applies for other usages of "full_auxtrace" in the same function.
+They are all always true. I'm also not sure if it's ever defined what
+full_auxtrace means.
+
+James
+
+> +
+> +		err = parse_events(evlist, "dummy:u", NULL);
+> +		if (err)
+> +			return err;
+> +
+> +		tracking_evsel = evlist__last(evlist);
+> +		evlist__set_tracking_event(evlist, tracking_evsel);
+> +
+> +		tracking_evsel->core.attr.freq = 0;
+> +		tracking_evsel->core.attr.sample_period = 1;
+> +
+> +		/* In per-cpu case, always need the time of mmap events etc */
+> +		if (!perf_cpu_map__empty(cpus))
+> +			evsel__set_sample_bit(tracking_evsel, TIME);
+> +	}
+>  
+>  	return 0;
+>  }
 > 
-> We should clear skb->pp_recycle for consistency of the skb->head_frag
-> clearing we perform there.
-
-Ah right, good catch. I was mostly worried we are not freeing/unmapping
-buffers and I completely missed that.  I think nothing bad will happen even
-if we don't, since the signature will eventually protect us, but it's
-definitely the right thing to do.
-
-> 
-> But then, I now realize you use skb->pp_recycle bit for both skb->head
-> and fragments,
-> and rely on this PP_SIGNATURE thing (I note that patch 1 changelog
-> does not describe why a random page will _not_ have this signature by
-> bad luck)
-
-Correct.  I've tried to explain in the previous posting as well, but that's
-the big difference compared to the initial RFC we sent a few years ago (the
-ability to recycle frags as well).
-
-> 
-> Please document/describe which struct page fields are aliased with
-> page->signature ?
-> 
-
-Sure, any preference on this? Right above page_pool_return_skb_page() ?
-
-Keep in mind the current [1/4] patch is wrong, since it will overlap
-pp_signature with mapping.  So we'll have interesting results if a page
-gets mapped to userspace :).
-What Matthew proposed makes sense, we can add something along the lines of: 
-
-+ unsigned long pp_magic;
-+ struct page_pool *pp;
-+ unsigned long _pp_mapping_pad;
-+ unsigned long dma_addr[2];
-
-in struct page. In this case page->mapping aliases to pa->_pp_mapping_pad
-
-The first word (that we'll now be using) is used for a pointer or a
-compound_head.  So as long as pp_magic doesn't resemble a pointer and has 
-bits 0/1 set to 0 we should be safe.
-
-Thanks!
-/Ilias
