@@ -2,114 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C62237ED1D
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:38:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F44C37ED1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344419AbhELUML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 16:12:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359638AbhELSxn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 14:53:43 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33154C06138A
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 11:50:42 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id u19-20020a0568302493b02902d61b0d29adso20693622ots.10
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 11:50:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=L7DlZ5NyTwLk7rVfxKjK+qgzyH7WbDEj7IFbwXV5/ko=;
-        b=W5ENh4vHkaVFcb5NO44g5Hjz7X+WFAaPID+EfPoYkTag44QDfGmgs5sj6vKBYWQte6
-         z7q8dQceV/9w0LOqAbkxm5FOwSOuXkZsgRNRl+CU7nya3U6oEjbixXUn69Kb2DrzZ3vp
-         H29bJR8RUzo0tnd6lsUnojame717iZdO3/NFk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=L7DlZ5NyTwLk7rVfxKjK+qgzyH7WbDEj7IFbwXV5/ko=;
-        b=d9IUcdDnvYQXPxP7m5qOM+BJ6acEDTQAd/65lLHYqqA9wd9ZzzapQE7uzD9lV/iG+N
-         HaQPjfUGyR0FWlVQWNg8ODfAqWxty8NhM4esIrylSMVS6heqP71F6zFLfxqix3GSelr9
-         esm7oB1aoyDuPM8UV6KvPZjwhrUkUWyIX3Idu0K42mzS8DGOLFDj8MsL+tKFXm3M09eV
-         qCw0F0YJC5a3zeUYz5lFOzfJPKRFzCrA0shF2k6Sfd+sIPANIOXSix2D12an8jnfIY4s
-         NazHsbc9B07Pl05QbJMiJ6rZdKfaRsJEhRZCpXk/hFd3vKlkXPN0VYfPjl0RrY3iWWtL
-         ytcg==
-X-Gm-Message-State: AOAM5319lrUFgYu+/e5puHsyBf8OZyDGIx5xEwX8IcsdcOMsPLOk7rtb
-        j3pXzABWIqKtw4wgbZKvoMDqy1cazhBnO+fBPcS1ZA==
-X-Google-Smtp-Source: ABdhPJzIipDkUQDMHFojJ3nyYAssT6+br/EGKtgrhlZUKlZMGCZyBx8bfbd3zJEFcJcLl9lzwKJvetiEr+/fDpmYsEo=
-X-Received: by 2002:a9d:425:: with SMTP id 34mr32079004otc.25.1620845441618;
- Wed, 12 May 2021 11:50:41 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 12 May 2021 11:50:41 -0700
+        id S241628AbhELUL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 16:11:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60238 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1359257AbhELSws (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 14:52:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B6FC61352;
+        Wed, 12 May 2021 18:51:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620845499;
+        bh=esyNIqLM2hxd3zsko2LcEGzWyYBhGjlifPE6DrQzHug=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DBvc3Jdm4WyzVMxhwu+0okQPF8brTGe1zcyV8E2uLxJZyaOUTAq70YJwjRXJWAz0T
+         nEdwGpiL4LP30Sni+n9Qb0AOwTSk+e6EYR2NLMDzZuz3NRl5hj8RCiMFnDSWSiaKQE
+         SgDI1pwZuRgIbLkpFr4ooag1nWsNHQM+DZ94ATQQ=
+Date:   Wed, 12 May 2021 20:51:36 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhuacai@kernel.org>
+Subject: Re: [PATCH 5.12 000/677] 5.12.4-rc1 review
+Message-ID: <YJwjuJrYiyS/eeR8@kroah.com>
+References: <20210512144837.204217980@linuxfoundation.org>
+ <CA+G9fYufHvM+C=39gtk5CF-r4sYYpRkQFGsmKrkdQcXj_XKFag@mail.gmail.com>
+ <YJwW2bNXGZw5kmpo@kroah.com>
+ <CA+G9fYvbe9L=3uJk2+5fR_e2-fnw=UXSDRnHh+u3nMFeOjOwjg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1620840558-28684-1-git-send-email-khsieh@codeaurora.org>
-References: <1620840558-28684-1-git-send-email-khsieh@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Wed, 12 May 2021 11:50:41 -0700
-Message-ID: <CAE-0n517Xkj=-m=gYv-FkpWGP+xC=ht8pRTtr5V8CKdrNtq9gQ@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/msm/dp: handle irq_hpd with sink_count = 0 correctly
-To:     Kuogee Hsieh <khsieh@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, robdclark@gmail.com, sean@poorly.run,
-        vkoul@kernel.org
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYvbe9L=3uJk2+5fR_e2-fnw=UXSDRnHh+u3nMFeOjOwjg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Kuogee Hsieh (2021-05-12 10:29:18)
-> irq_hpd interrupt should be handled after dongle plugged in and
-> before dongle unplugged. Hence irq_hpd interrupt is enabled at
-> the end of the plugin handle and disabled at the beginning of
-> unplugged handle. Current irq_hpd with sink_count = 0 is wrongly
-> handled same as the dongle unplugged which tears down the mainlink
-> and disables the phy. This patch fixes this problem by only tearing
-> down the mainlink but keeping phy enabled at irq_hpd with
-> sink_count = 0 handle so that next irq_hpe with sink_count =1 can be
-> handled by setup mainlink only.
->
-> Changes in v2:
-> -- add ctrl->phy_Power_count
->
-> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-> ---
->  drivers/gpu/drm/msm/dp/dp_catalog.c |  5 +--
->  drivers/gpu/drm/msm/dp/dp_ctrl.c    | 83 ++++++++++++++++++++++++++++++++++---
->  drivers/gpu/drm/msm/dp/dp_ctrl.h    |  2 +
->  drivers/gpu/drm/msm/dp/dp_display.c | 46 +++++++++++++++-----
->  4 files changed, 118 insertions(+), 18 deletions(-)
->
-> diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.c b/drivers/gpu/drm/msm/dp/dp_catalog.c
-> index b1a9b1b..f4f53f2 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_catalog.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_catalog.c
-> @@ -582,10 +582,9 @@ void dp_catalog_ctrl_hpd_config(struct dp_catalog *dp_catalog)
->
->         u32 reftimer = dp_read_aux(catalog, REG_DP_DP_HPD_REFTIMER);
->
-> -       /* enable HPD interrupts */
-> +       /* enable HPD plug and unplug interrupts */
->         dp_catalog_hpd_config_intr(dp_catalog,
-> -               DP_DP_HPD_PLUG_INT_MASK | DP_DP_IRQ_HPD_INT_MASK
-> -               | DP_DP_HPD_UNPLUG_INT_MASK | DP_DP_HPD_REPLUG_INT_MASK, true);
-> +               DP_DP_HPD_PLUG_INT_MASK | DP_DP_HPD_UNPLUG_INT_MASK, true);
->
->         /* Configure REFTIMER and enable it */
->         reftimer |= DP_DP_HPD_REFTIMER_ENABLE;
-> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-> index 8d59eb9..b5bed5f 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-> @@ -77,6 +77,8 @@ struct dp_ctrl_private {
->         struct dp_parser *parser;
->         struct dp_catalog *catalog;
->
-> +       int phy_power_count;
+On Thu, May 13, 2021 at 12:18:32AM +0530, Naresh Kamboju wrote:
+> On Wed, 12 May 2021 at 23:26, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Wed, May 12, 2021 at 10:53:04PM +0530, Naresh Kamboju wrote:
+> > > On Wed, 12 May 2021 at 21:27, Greg Kroah-Hartman
+> > > <gregkh@linuxfoundation.org> wrote:
+> > > >
+> > > > This is the start of the stable review cycle for the 5.12.4 release.
+> > > > There are 677 patches in this series, all will be posted as a response
+> > > > to this one.  If anyone has any issues with these being applied, please
+> > > > let me know.
+> > > >
+> > > > Responses should be made by Fri, 14 May 2021 14:47:09 +0000.
+> > > > Anything received after that time might be too late.
+> > > >
+> > > > The whole patch series can be found in one patch at:
+> > > >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.4-rc1.gz
+> > > > or in the git tree and branch at:
+> > > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
+> > > > and the diffstat can be found below.
+> > > >
+> > > > thanks,
+> > > >
+> > > > greg k-h
+> > >
+> > >
+> > > MIPS Clang build regression detected.
+> > > MIPS gcc-10,9 and 8 build PASS.
+> > >
+> > > > Maciej W. Rozycki <macro@orcam.me.uk>
+> > > >     MIPS: Reinstate platform `__div64_32' handler
+> > >
+> > > mips clang build breaks on stable rc 5.4 .. 5.12 due to below warnings / errors
+> > >  - mips (defconfig) with clang-12
+> > >  - mips (tinyconfig) with clang-12
+> > >  - mips (allnoconfig) with clang-12
+> > >
+> > > make --silent --keep-going --jobs=8
+> > > O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=mips
+> > > CROSS_COMPILE=mips-linux-gnu- 'HOSTCC=sccache clang' 'CC=sccache
+> > > clang'
+> > > kernel/time/hrtimer.c:318:2: error: couldn't allocate output register
+> > > for constraint 'x'
+> > >         do_div(tmp, (u32) div);
+> > >         ^
+> > > include/asm-generic/div64.h:243:11: note: expanded from macro 'do_div'
+> > >                 __rem = __div64_32(&(n), __base);       \
+> > >                         ^
+> > > arch/mips/include/asm/div64.h:74:11: note: expanded from macro '__div64_32'
+> > >                 __asm__("divu   $0, %z1, %z2"                           \
+> > >                         ^
+> > > 1 error generated.
+> >
+> > Does this also show up in Linus's tree?  The same MIPS patch is there as
+> > well from what I can tell.
+> 
+> No.
+> Linus's tree builds MIPS clang successfully.
 
-This is still redundant. Please restructure the code to call the power
-on/off function in one place and the init/exit function in another so
-that we don't have to reference count it.
+Ick, ok, I'll go drop this and let a MIPS developer send us the correct
+thing.
+
+thanks!
+
+greg k-h
