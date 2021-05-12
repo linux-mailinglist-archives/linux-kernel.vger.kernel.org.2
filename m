@@ -2,72 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6DF837B94F
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 11:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A882437B955
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 11:35:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhELJea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 05:34:30 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:52810 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230097AbhELJe3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 05:34:29 -0400
-Received: from zn.tnic (p200300ec2f0bb800ec6923be2c5225a4.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:b800:ec69:23be:2c52:25a4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 81FF41EC02E6;
-        Wed, 12 May 2021 11:33:20 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1620812000;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:
-         content-transfer-encoding:content-transfer-encoding:in-reply-to:
-         references; bh=ZLhbZuuCMLlj0Z4qrwrYvpSTEI0aCJ4rAXqOt/GpHdw=;
-        b=dWOjGstHDHRftU5HAjUI1r4Ub7YJMlUtnLhXgLpcC3kAqIoucXus+ckNGm26JJ9DjrM/W0
-        byfIUsPXFsvui/s5rfNTBGiqHBas3Ull5WIReAILEYoZIyx6KpyPt7PFS5CWezNkoMrkg/
-        ONGlDjzhmdUQ2FiH5ZE4Z4+HEioYGkY=
-From:   Borislav Petkov <bp@alien8.de>
-To:     X86 ML <x86@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH] x86/asm: Simplify __smp_mb() definition
-Date:   Wed, 12 May 2021 11:33:10 +0200
-Message-Id: <20210512093310.5635-1-bp@alien8.de>
-X-Mailer: git-send-email 2.29.2
+        id S230210AbhELJg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 05:36:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230104AbhELJgy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 05:36:54 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE95C061574;
+        Wed, 12 May 2021 02:35:46 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id g24so13214699pji.4;
+        Wed, 12 May 2021 02:35:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+DNGDumTIkNC+0BsMICVPR49/upzOcBt01+SOrhLdME=;
+        b=DlPfjNTz1AUpI7H0Ekkta2lKCbbanPuAqM3KDZ7wGxEJJ9nFp6idx/o9CKDzPjkI6A
+         e3pZyoeauaU9PDch8uLFQY5Mne96rsWiULfiIxehFZIcPpURL4DydX15wRTzuwjpJwdn
+         USlxq58JPKSnI7m1foZLHyh+IKimYoQttxiWK5U/MGHI/yAUtwXS4FK+rvlAqdNL7lSq
+         KSv6kIWfVb6P2MxemaV+LMpJ4fveOjrmWn/SqiA+CEox5k1xcT+jq1MuFOpjx3nmb0Hs
+         Qm0ljr+b6MA8nHZq7+YWbHsZk7QH4ha3LECgsmU1L1jcqy0oJXPEk9DaADO+yrpmTbRj
+         1Kfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+DNGDumTIkNC+0BsMICVPR49/upzOcBt01+SOrhLdME=;
+        b=hnCldp/P2ju/zONpPKCcOZ30eAkKi87HMpb3FrbLWXayQo/deXm9qgyn/6yOy5wTj9
+         /08/wMt9GB7JeNlhwJ4kN90RtGjO4ytqD7J8AqIROJxShhdVfwJO6CO7H864d2gvq+HZ
+         Pwr2tJhqCCyKRUgfSE5FNoKvfIoc4L82A7fDvlZBeZUEeCXu5HDF6CszH8khjib/3ZTQ
+         LeanogEXMUChR5ePxs2WV+7jUshnePYPvUXbfBAbPkBU2WhAVX36gSwGOVNtvbCkqYMA
+         fMDQRDB/clDJRQnvhBseFw04SDOd2pWFn8m5a+R4yZV6X7EVCLHKztKIeoyJQZcj84sR
+         DIAA==
+X-Gm-Message-State: AOAM5320qNNwgEd9v7Wvb5h8LX9TFF4VWqvvirg/G+2fGWPgpqcUqtml
+        5EVXL77l8zo6yhTSaZoOAFw=
+X-Google-Smtp-Source: ABdhPJwr3Rds4nAEyDvnvtjwkn3mI78LQe0RYr6Sd+KwArIHHCc3193bZ4zqJ41BOzUybjI9mRNuVg==
+X-Received: by 2002:a17:90a:1389:: with SMTP id i9mr36221660pja.232.1620812145711;
+        Wed, 12 May 2021 02:35:45 -0700 (PDT)
+Received: from ubt.spreadtrum.com ([117.18.48.102])
+        by smtp.gmail.com with ESMTPSA id p1sm15051048pfp.137.2021.05.12.02.35.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 02:35:45 -0700 (PDT)
+From:   Chunyan Zhang <zhang.lyra@gmail.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-spi@vger.kernel.org, Baolin Wang <baolin.wang7@gmail.com>,
+        linux-kernel@vger.kernel.org, Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>
+Subject: [PATCH] spi: sprd: Add missing MODULE_DEVICE_TABLE
+Date:   Wed, 12 May 2021 17:35:34 +0800
+Message-Id: <20210512093534.243040-1-zhang.lyra@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Borislav Petkov <bp@suse.de>
+From: Chunyan Zhang <chunyan.zhang@unisoc.com>
 
-Drop the bitness ifdeffery in favor of using the rSP register
-specification for 32 and 64 bit depending on the build.
+MODULE_DEVICE_TABLE is used to extract the device information out of the
+driver and builds a table when being compiled. If using this macro,
+kernel can find the driver if available when the device is plugged in,
+and then loads that driver and initializes the device.
 
-No functional changes.
-
-Signed-off-by: Borislav Petkov <bp@suse.de>
+Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
 ---
- arch/x86/include/asm/barrier.h | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ drivers/spi/spi-sprd.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/include/asm/barrier.h b/arch/x86/include/asm/barrier.h
-index 4819d5e5a335..3ba772a69cc8 100644
---- a/arch/x86/include/asm/barrier.h
-+++ b/arch/x86/include/asm/barrier.h
-@@ -54,11 +54,8 @@ static inline unsigned long array_index_mask_nospec(unsigned long index,
- #define dma_rmb()	barrier()
- #define dma_wmb()	barrier()
+diff --git a/drivers/spi/spi-sprd.c b/drivers/spi/spi-sprd.c
+index b41a75749b49..28e70db9bbba 100644
+--- a/drivers/spi/spi-sprd.c
++++ b/drivers/spi/spi-sprd.c
+@@ -1068,6 +1068,7 @@ static const struct of_device_id sprd_spi_of_match[] = {
+ 	{ .compatible = "sprd,sc9860-spi", },
+ 	{ /* sentinel */ }
+ };
++MODULE_DEVICE_TABLE(of, sprd_spi_of_match);
  
--#ifdef CONFIG_X86_32
--#define __smp_mb()	asm volatile("lock; addl $0,-4(%%esp)" ::: "memory", "cc")
--#else
--#define __smp_mb()	asm volatile("lock; addl $0,-4(%%rsp)" ::: "memory", "cc")
--#endif
-+#define __smp_mb()	asm volatile("lock; addl $0,-4(%%" _ASM_SP ")" ::: "memory", "cc")
-+
- #define __smp_rmb()	dma_rmb()
- #define __smp_wmb()	barrier()
- #define __smp_store_mb(var, value) do { (void)xchg(&var, value); } while (0)
+ static struct platform_driver sprd_spi_driver = {
+ 	.driver = {
 -- 
-2.29.2
+2.25.1
 
