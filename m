@@ -2,124 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFD9737B7A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 10:14:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E701737B7A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 10:14:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230355AbhELIOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 04:14:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60922 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230026AbhELIOL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 04:14:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CCE3D610CA;
-        Wed, 12 May 2021 08:12:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620807183;
-        bh=1l2aL6MQW5LUJydNXgkrG+07wfw0dHz3q3rtI8bM68c=;
-        h=From:To:Cc:Subject:Date:From;
-        b=XNSq1m9aPv2daYt3A1iSM4aUB1FpHHDzyOUiidhwjsxiFNYE9m6WCxlTKRW4KcVKS
-         uaCrA5MDqjzpsL7q96yYuZq96NJlV/AZ7s2/pto438EtJgkIUkE4E/vr6w//EXFBxQ
-         1GT+iukc6JX38Na3RqDmYce8ih7C30DYG8ewf5wvtMDOCW8BsF1xQL9CTrRYs8WghA
-         hv2LNGOkAOh8o7Mhol3gYEsU2pTo0riLzQTfHc+RguNtkCGfZZT3hYdv2t6ZhfvaAV
-         hOrymnNI+a6Qa4fv0s4WU+bZ/BkBoC/ph3dZ94EjbjSXEPYx64j6y1s/WOYlz8GjLV
-         eGkhjWPadlTRg==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Russell King <linux@armlinux.org.uk>
-Cc:     Arnd Bergmann <arnd@arndb.de>, stable@vger.kernel.org,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Marek Vasut <marek.vasut@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Mike Rapoport <rppt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH] ARM: fix gcc-10 thumb2-kernel regression
-Date:   Wed, 12 May 2021 10:12:01 +0200
-Message-Id: <20210512081211.200025-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S230343AbhELINp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 04:13:45 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:37469 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230328AbhELINm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 04:13:42 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-24-Mu4ZH7yROfqaElxRZepFWA-1; Wed, 12 May 2021 09:12:32 +0100
+X-MC-Unique: Mu4ZH7yROfqaElxRZepFWA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Wed, 12 May 2021 09:12:30 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Wed, 12 May 2021 09:12:30 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Borislav Petkov' <bp@alien8.de>,
+        "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+CC:     "x86@kernel.org" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Eugene Syromiatnikov" <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        "Weijiang Yang" <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        "Haitao Huang" <haitao.huang@intel.com>
+Subject: RE: [PATCH v26 23/30] x86/cet/shstk: Handle thread shadow stack
+Thread-Topic: [PATCH v26 23/30] x86/cet/shstk: Handle thread shadow stack
+Thread-Index: AQHXRoh6HV4c4+Eb3km5gqBECdAPb6rff7ZQ
+Date:   Wed, 12 May 2021 08:12:29 +0000
+Message-ID: <e22d3116efef4e25a45fc6b58d5622ef@AcuMS.aculab.com>
+References: <20210427204315.24153-1-yu-cheng.yu@intel.com>
+ <20210427204315.24153-24-yu-cheng.yu@intel.com> <YJlADyc/9pn8Sjkn@zn.tnic>
+ <89598d32-4bf8-b989-ee77-5b4b55a138a9@intel.com> <YJq6VZ/XMAtfkrMc@zn.tnic>
+In-Reply-To: <YJq6VZ/XMAtfkrMc@zn.tnic>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
-
-When building the kernel wtih gcc-10 or higher using the
-CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE=y flag, the compiler picks a slightly
-different set of registers for the inline assembly in cpu_init() that
-subsequently results in a corrupt kernel stack as well as remaining in
-FIQ mode. If a banked register is used for the last argument, the wrong
-version of that register gets loaded into CPSR_c.  When building in Arm
-mode, the arguments are passed as immediate values and the bug cannot
-happen.
-
-This got introduced when Daniel reworked the FIQ handling and was
-technically always broken, but happened to work with both clang and gcc
-before gcc-10 as long as they picked one of the lower registers.
-This is probably an indication that still very few people build the
-kernel in Thumb2 mode.
-
-Marek pointed out the problem on IRC, Arnd narrowed it down to this
-inline assembly and Russell pinpointed the exact bug.
-
-Change the constraints to force the final mode switch to use a non-banked
-register for the argument to ensure that the correct constant gets loaded.
-Another alternative would be to always use registers for the constant
-arguments to avoid the #ifdef that has now become more complex.
-
-Cc: <stable@vger.kernel.org> # v3.18+
-Cc: Daniel Thompson <daniel.thompson@linaro.org>
-Reported-by: Marek Vasut <marek.vasut@gmail.com>
-Fixes: c0e7f7ee717e ("ARM: 8150/3: fiq: Replace default FIQ handler")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/arm/kernel/setup.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
-
-diff --git a/arch/arm/kernel/setup.c b/arch/arm/kernel/setup.c
-index 1a5edf562e85..73ca7797b92f 100644
---- a/arch/arm/kernel/setup.c
-+++ b/arch/arm/kernel/setup.c
-@@ -545,9 +545,11 @@ void notrace cpu_init(void)
- 	 * In Thumb-2, msr with an immediate value is not allowed.
- 	 */
- #ifdef CONFIG_THUMB2_KERNEL
--#define PLC	"r"
-+#define PLC_l	"l"
-+#define PLC_r	"r"
- #else
--#define PLC	"I"
-+#define PLC_l	"I"
-+#define PLC_r	"I"
- #endif
- 
- 	/*
-@@ -569,15 +571,15 @@ void notrace cpu_init(void)
- 	"msr	cpsr_c, %9"
- 	    :
- 	    : "r" (stk),
--	      PLC (PSR_F_BIT | PSR_I_BIT | IRQ_MODE),
-+	      PLC_r (PSR_F_BIT | PSR_I_BIT | IRQ_MODE),
- 	      "I" (offsetof(struct stack, irq[0])),
--	      PLC (PSR_F_BIT | PSR_I_BIT | ABT_MODE),
-+	      PLC_r (PSR_F_BIT | PSR_I_BIT | ABT_MODE),
- 	      "I" (offsetof(struct stack, abt[0])),
--	      PLC (PSR_F_BIT | PSR_I_BIT | UND_MODE),
-+	      PLC_r (PSR_F_BIT | PSR_I_BIT | UND_MODE),
- 	      "I" (offsetof(struct stack, und[0])),
--	      PLC (PSR_F_BIT | PSR_I_BIT | FIQ_MODE),
-+	      PLC_r (PSR_F_BIT | PSR_I_BIT | FIQ_MODE),
- 	      "I" (offsetof(struct stack, fiq[0])),
--	      PLC (PSR_F_BIT | PSR_I_BIT | SVC_MODE)
-+	      PLC_l (PSR_F_BIT | PSR_I_BIT | SVC_MODE)
- 	    : "r14");
- #endif
- }
--- 
-2.29.2
+RnJvbTogQm9yaXNsYXYgUGV0a292DQo+IFNlbnQ6IDExIE1heSAyMDIxIDE4OjEwDQo+IA0KPiBP
+biBNb24sIE1heSAxMCwgMjAyMSBhdCAwMzo1Nzo1NlBNIC0wNzAwLCBZdSwgWXUtY2hlbmcgd3Jv
+dGU6DQo+ID4gU28gdGhpcyBzdHJ1Y3Qgd2lsbCBiZToNCj4gPg0KPiA+IHN0cnVjdCB0aHJlYWRf
+c2hzdGsgew0KPiA+IAl1NjQgc2hzdGtfYmFzZTsNCj4gPiAJdTY0IHNoc3RrX3NpemU7DQo+ID4g
+CXU2NCBsb2NrZWQ6MTsNCj4gPiAJdTY0IGlidDoxOw0KDQpObyBwb2ludCBpbiBiaXQgZmllbGRz
+Pw0KDQo+ID4gfTsNCj4gPg0KPiA+IE9rPw0KPiANCj4gUHJldHR5IG11Y2guDQo+IA0KPiBZb3Ug
+Y2FuIGV2ZW4gcmVtb3ZlIHRoZSAic2hzdGtfIiBmcm9tIHRoZSBtZW1iZXJzIGFuZCB3aGVuIHlv
+dSBjYWxsIHRoZQ0KPiBwb2ludGVyICJzaHN0ayIsIGFjY2Vzc2luZyB0aGUgbWVtYmVycyB3aWxs
+IHJlYWQNCj4gDQo+IAlzaHN0ay0+YmFzZQ0KPiAJc2hzdGstPnNpemUNCj4gCS4uLg0KPiANCj4g
+YW5kIGFsbCBpcyBvcmdhbmljIGFuZCByZWFkYWJsZSA6KQ0KDQpBbmQgZW50aXJlbHkgbm90IGdy
+ZXBwYWJsZS4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJh
+bWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0
+cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
