@@ -2,82 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46FD237BEC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 15:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8411437BEC9
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 15:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231497AbhELNsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 09:48:20 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42792 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231428AbhELNrz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 09:47:55 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 00F8AB1F3;
-        Wed, 12 May 2021 13:46:46 +0000 (UTC)
-Date:   Wed, 12 May 2021 15:46:39 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Wan Jiabing <wanjiabing@vivo.com>
-Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-kernel@vger.kernel.org, kael_w@yeah.net
-Subject: Re: [PATCH] tools/x86: update include of alternative
-Message-ID: <YJvcPz1IjGpbZ7BX@zn.tnic>
-References: <20210506094335.18281-1-wanjiabing@vivo.com>
+        id S231709AbhELNso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 09:48:44 -0400
+Received: from mail-oi1-f170.google.com ([209.85.167.170]:46998 "EHLO
+        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231430AbhELNsT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 09:48:19 -0400
+Received: by mail-oi1-f170.google.com with SMTP id x15so8532215oic.13;
+        Wed, 12 May 2021 06:47:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EVt1p5SHmhDVWSXHXwKOAt0atSnLGbn9g6enDYXV3RM=;
+        b=HhccjEdipZgGlZgJsMtvOAmSWYFwPJ8xgPZvVXgPFHvnsX08e/axLCEKdwXkZFE7/X
+         d1HXtd9X2lly0ETYu8jYgO4UZWFSZLoF6UkJDKV6Ifym+TAjv556sY3PU6vY5XrZlzZS
+         wmiXDb2of79dSwlxs5H2FT9pWrE7EcNntgW0SnRpZ0eXYyAmzPih+ldw8uDzhlKnZ7a4
+         lHi5fsBFKiJ1hfyUVyvtQcwdpN9dZJsy5/xuyG/HaIPj03rQ/V0JuHbyHSS6LmkmQzYi
+         vxGwONtau/iAWsp6xWDkP2qosqX7z0bOXYJveapRDKHIlZ8SALTAwUXg46fbSgrMzSXW
+         SVcw==
+X-Gm-Message-State: AOAM531FyiuFbM81BW5OFhVkxQwLe3Cv8Rxg3hkLWkX9SUk74IGATohd
+        wefw17Hm1eh5EYWAeydTCTxXlV6F2MDvsB2IPtM6wD/nFZI=
+X-Google-Smtp-Source: ABdhPJwqfslqDE3FClpdtRaWzdU38oTBpsUvH6tw7DtCzDvwDnJu3EGwdfaTMbXBZ/KdyDH9UzlvpxAFoKX4cLUVzII=
+X-Received: by 2002:a05:6808:90d:: with SMTP id w13mr11574688oih.71.1620827230530;
+ Wed, 12 May 2021 06:47:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210506094335.18281-1-wanjiabing@vivo.com>
+References: <cover.1620823573.git.mchehab+huawei@kernel.org> <afeeee8d52dac14c8e86e326b8fcee300dcb0d59.1620823573.git.mchehab+huawei@kernel.org>
+In-Reply-To: <afeeee8d52dac14c8e86e326b8fcee300dcb0d59.1620823573.git.mchehab+huawei@kernel.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 12 May 2021 15:46:59 +0200
+Message-ID: <CAJZ5v0iGGdyNwq4GgZ8+b6-GJGA2nALWZL5QXm=bA4c5wFHNTw@mail.gmail.com>
+Subject: Re: [PATCH v2 38/40] docs: firmware-guide: acpi: dsd: graph.rst: Use
+ ASCII subset instead of UTF-8 alternate symbols
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 05:43:28PM +0800, Wan Jiabing wrote:
-> In commit 5e21a3ecad15 ("x86/alternative: Merge include files"),
-> arch/x86/include/asm/alternative-asm.h was replaced by
-> arch/x86/include/asm/alternative.h. Fix them in tools directory.
-> 
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+On Wed, May 12, 2021 at 2:52 PM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
+>
+> The conversion tools used during DocBook/LaTeX/Markdown->ReST conversion
+> and some automatic rules which exists on certain text editors like
+> LibreOffice turned ASCII characters into some UTF-8 alternatives that
+> are better displayed on html and PDF.
+>
+> While it is OK to use UTF-8 characters in Linux, it is better to
+> use the ASCII subset instead of using an UTF-8 equivalent character
+> as it makes life easier for tools like grep, and are easier to edit
+> with the some commonly used text/source code editors.
+>
+> Also, Sphinx already do such conversion automatically outside literal blocks:
+>    https://docutils.sourceforge.io/docs/user/smartquotes.html
+>
+> So, replace the occurences of the following UTF-8 characters:
+>
+>         - U+00a0 (' '): NO-BREAK SPACE
+>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+
 > ---
->  tools/arch/x86/lib/memcpy_64.S | 2 +-
->  tools/arch/x86/lib/memset_64.S | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/arch/x86/lib/memcpy_64.S b/tools/arch/x86/lib/memcpy_64.S
-> index 1e299ac73c86..1cc9da6e29c7 100644
-> --- a/tools/arch/x86/lib/memcpy_64.S
-> +++ b/tools/arch/x86/lib/memcpy_64.S
-> @@ -4,7 +4,7 @@
->  #include <linux/linkage.h>
->  #include <asm/errno.h>
->  #include <asm/cpufeatures.h>
-> -#include <asm/alternative-asm.h>
-> +#include <asm/alternative.h>
->  #include <asm/export.h>
->  
->  .pushsection .noinstr.text, "ax"
-> diff --git a/tools/arch/x86/lib/memset_64.S b/tools/arch/x86/lib/memset_64.S
-> index 0bfd26e4ca9e..9827ae267f96 100644
-> --- a/tools/arch/x86/lib/memset_64.S
-> +++ b/tools/arch/x86/lib/memset_64.S
-> @@ -3,7 +3,7 @@
->  
->  #include <linux/linkage.h>
->  #include <asm/cpufeatures.h>
-> -#include <asm/alternative-asm.h>
-> +#include <asm/alternative.h>
->  #include <asm/export.h>
->  
->  /*
-> -- 
-
-fb24e308b631 ("tools arch: Update arch/x86/lib/mem{cpy,set}_64.S copies used in 'perf bench mem memcpy'")
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+>  Documentation/firmware-guide/acpi/dsd/graph.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/Documentation/firmware-guide/acpi/dsd/graph.rst b/Documentation/firmware-guide/acpi/dsd/graph.rst
+> index 7072db801aeb..954b99ec6b77 100644
+> --- a/Documentation/firmware-guide/acpi/dsd/graph.rst
+> +++ b/Documentation/firmware-guide/acpi/dsd/graph.rst
+> @@ -159,7 +159,7 @@ References
+>
+>  [2] Devicetree. https://www.devicetree.org, referenced 2016-10-03.
+>
+> -[3] Documentation/devicetree/bindings/graph.txt
+> +[3] Documentation/devicetree/bindings/graph.txt
+>
+>  [4] Device Properties UUID For _DSD.
+>      https://www.uefi.org/sites/default/files/resources/_DSD-device-properties-UUID.pdf,
+> --
+> 2.30.2
+>
