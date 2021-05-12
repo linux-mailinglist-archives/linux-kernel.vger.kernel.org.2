@@ -2,80 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B73D37B94D
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 11:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6DF837B94F
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 11:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230224AbhELJds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 05:33:48 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55614 "EHLO mx2.suse.de"
+        id S230213AbhELJea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 05:34:30 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:52810 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230019AbhELJdr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 05:33:47 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 35D6CAF75;
-        Wed, 12 May 2021 09:32:38 +0000 (UTC)
-Date:   Wed, 12 May 2021 11:32:35 +0200
-From:   Joerg Roedel <jroedel@suse.de>
-To:     Juergen Gross <jgross@suse.com>
-Cc:     'Joerg Roedel' <joro@8bytes.org>,
-        David Laight <David.Laight@aculab.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        Hyunwook Baek <baekhw@google.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>
-Subject: Re: [PATCH 3/6] x86/sev-es: Use __put_user()/__get_user
-Message-ID: <YJugs0CdiNo0/Gbd@suse.de>
-References: <20210512075445.18935-1-joro@8bytes.org>
- <20210512075445.18935-4-joro@8bytes.org>
- <0496626f018d4d27a8034a4822170222@AcuMS.aculab.com>
- <fcb2c501-70ca-1a54-4a75-8ab05c21ee30@suse.com>
- <YJuW4TtRJKZ+OIhj@8bytes.org>
- <92244e37-4443-98bd-24aa-bf59548aab47@suse.com>
+        id S230097AbhELJe3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 05:34:29 -0400
+Received: from zn.tnic (p200300ec2f0bb800ec6923be2c5225a4.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:b800:ec69:23be:2c52:25a4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 81FF41EC02E6;
+        Wed, 12 May 2021 11:33:20 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1620812000;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:
+         content-transfer-encoding:content-transfer-encoding:in-reply-to:
+         references; bh=ZLhbZuuCMLlj0Z4qrwrYvpSTEI0aCJ4rAXqOt/GpHdw=;
+        b=dWOjGstHDHRftU5HAjUI1r4Ub7YJMlUtnLhXgLpcC3kAqIoucXus+ckNGm26JJ9DjrM/W0
+        byfIUsPXFsvui/s5rfNTBGiqHBas3Ull5WIReAILEYoZIyx6KpyPt7PFS5CWezNkoMrkg/
+        ONGlDjzhmdUQ2FiH5ZE4Z4+HEioYGkY=
+From:   Borislav Petkov <bp@alien8.de>
+To:     X86 ML <x86@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] x86/asm: Simplify __smp_mb() definition
+Date:   Wed, 12 May 2021 11:33:10 +0200
+Message-Id: <20210512093310.5635-1-bp@alien8.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <92244e37-4443-98bd-24aa-bf59548aab47@suse.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 10:58:20AM +0200, Juergen Gross wrote:
-> No, those were used before, but commit 9da3f2b7405440 broke Xen's use
-> case. That is why I did commit 1457d8cf7664f.
+From: Borislav Petkov <bp@suse.de>
 
-I see, thanks for the heads-up. So here this is not a big issue, because
-when an access to kernel space faults under SEV-ES, its a kernel bug
-anyway. The issue is that it is not reported correctly.
+Drop the bitness ifdeffery in favor of using the rSP register
+specification for 32 and 64 bit depending on the build.
 
-I think I need to re-work the helper and use probe_kernel_read/write()
-when the address is in kernel space. This distinction is already made
-when fetching instruction bytes in the #VC handler, but I thought I
-could get around it for data accesses.
+No functional changes.
 
-Having the distinction between user and kernel memory accesses
-explicitly in the code seems to be the most robust solution.
+Signed-off-by: Borislav Petkov <bp@suse.de>
+---
+ arch/x86/include/asm/barrier.h | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-Regards,
-
-	Joerg
+diff --git a/arch/x86/include/asm/barrier.h b/arch/x86/include/asm/barrier.h
+index 4819d5e5a335..3ba772a69cc8 100644
+--- a/arch/x86/include/asm/barrier.h
++++ b/arch/x86/include/asm/barrier.h
+@@ -54,11 +54,8 @@ static inline unsigned long array_index_mask_nospec(unsigned long index,
+ #define dma_rmb()	barrier()
+ #define dma_wmb()	barrier()
+ 
+-#ifdef CONFIG_X86_32
+-#define __smp_mb()	asm volatile("lock; addl $0,-4(%%esp)" ::: "memory", "cc")
+-#else
+-#define __smp_mb()	asm volatile("lock; addl $0,-4(%%rsp)" ::: "memory", "cc")
+-#endif
++#define __smp_mb()	asm volatile("lock; addl $0,-4(%%" _ASM_SP ")" ::: "memory", "cc")
++
+ #define __smp_rmb()	dma_rmb()
+ #define __smp_wmb()	barrier()
+ #define __smp_store_mb(var, value) do { (void)xchg(&var, value); } while (0)
+-- 
+2.29.2
 
