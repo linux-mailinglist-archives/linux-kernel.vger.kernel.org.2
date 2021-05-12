@@ -2,97 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE46C37B62C
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 08:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85C8937B633
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 08:35:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230414AbhELGcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 02:32:02 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:3725 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230178AbhELGbc (ORCPT
+        id S230104AbhELGgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 02:36:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229580AbhELGgD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 02:31:32 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fg4ZS4XLczmgKx;
-        Wed, 12 May 2021 14:26:56 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 12 May 2021 14:30:10 +0800
-From:   Hui Tang <tanghui20@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
-        <wangzhou1@hisilicon.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 6/8] crypto: hisilicon/hpre - use 'GENMASK' to generate mask value
-Date:   Wed, 12 May 2021 14:27:09 +0800
-Message-ID: <1620800831-53346-7-git-send-email-tanghui20@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1620800831-53346-1-git-send-email-tanghui20@huawei.com>
-References: <1620800831-53346-1-git-send-email-tanghui20@huawei.com>
+        Wed, 12 May 2021 02:36:03 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 364D8C061574;
+        Tue, 11 May 2021 23:34:56 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id z1so11534024qvo.4;
+        Tue, 11 May 2021 23:34:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=m0gzjTtB8QgGDKc9baNE5fji+M4gSffyk6B9ol6NXGU=;
+        b=jUEVqe1XDHL7tDNQhartGrq92p9/k6UW9fKPRdne7IH/OuCd9L1yYO1wgxpGOTxPSs
+         ntkaU7BUzBfp9MXqwm+WL60+vf31gZXNM2dSs0AucAx6Sb7gdO2Clv4dXXCVgawulN0C
+         vdmVIaxUSRl/TRx0eodWZZE+6+9psduUNrRLU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=m0gzjTtB8QgGDKc9baNE5fji+M4gSffyk6B9ol6NXGU=;
+        b=k8vuClm2ez1akbVRX3qeiNVo2i27Wkfcz6o5CnCTvM/kifyopOpueXr2sMzWCrTO4E
+         2GsQnoqj+JhOHGeiLsGs8Cw40LmKXE6uewqMNQmoUq8csZWg94baB0uwssp/YXouTCfX
+         Y4PKL/Jka08s1clyRVGjqfVu8IInRd9cUsd6PeAnkCVNfWn56TXvJ2+Svt4wOJsgRxsA
+         AQXoWxsLSsV2ReeDE5Dk6Ep23tBIEl0eny0NxYnguKbaLRPxI41LOiQ9uYD2pkWIYSF1
+         otVDjVORCfVVd0+zDPWGaGCeYOWeOwtO39XZ0qdiVngu7NIfmfc++5uF09VFTaBecWK+
+         tyog==
+X-Gm-Message-State: AOAM532FP0VETxNDgO7I3Ua1lejb2q0ii3/Cm3IyFxCTioi2E6TE9CJ5
+        Yzc/agtVXwW3hUVOjHuXyK+4gKOMDkWEUka62kWdUAMgpjk=
+X-Google-Smtp-Source: ABdhPJzCEIxh2H2pOIMO0oGM6WytczIHKo2s4ibtRpIOtbi/FfQbPNDCxuathbrJE3659y5tRD8UwjdUuWE/VcOYors=
+X-Received: by 2002:a0c:d786:: with SMTP id z6mr33336335qvi.18.1620801295398;
+ Tue, 11 May 2021 23:34:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+References: <1620790204-15658-1-git-send-email-zou_wei@huawei.com>
+In-Reply-To: <1620790204-15658-1-git-send-email-zou_wei@huawei.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Wed, 12 May 2021 06:34:43 +0000
+Message-ID: <CACPK8XeEHCPXt_xq4YFy5ZAdAuBgoAE0SfcyRX1P39T7Dz6d4g@mail.gmail.com>
+Subject: Re: [PATCH net-next] net: mdio: Add missing MODULE_DEVICE_TABLE
+To:     Zou Wei <zou_wei@huawei.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>, hkallweit1@gmail.com,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Networking <netdev@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use 'GENMASK' to generate mask value, just make the code clearer.
+On Wed, 12 May 2021 at 03:13, Zou Wei <zou_wei@huawei.com> wrote:
+>
+> This patch adds missing MODULE_DEVICE_TABLE definition which generates
+> correct modalias for automatic loading of this driver when it is built
+> as an external module.
+>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zou Wei <zou_wei@huawei.com>
 
-Signed-off-by: Hui Tang <tanghui20@huawei.com>
----
- drivers/crypto/hisilicon/hpre/hpre_crypto.c |  6 +++---
- drivers/crypto/hisilicon/hpre/hpre_main.c   | 14 +++++++-------
- 2 files changed, 10 insertions(+), 10 deletions(-)
+Fixes: f160e99462c6 ("net: phy: Add mdio-aspeed")
+Acked-by: Joel Stanley <joel@jms.id.au>
 
-diff --git a/drivers/crypto/hisilicon/hpre/hpre_crypto.c b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-index 3a3af82..fb8e9c0 100644
---- a/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-+++ b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-@@ -326,9 +326,9 @@ static int hpre_alg_res_post_hf(struct hpre_ctx *ctx, struct hpre_sqe *sqe,
-
- #define HPRE_NO_HW_ERR		0
- #define HPRE_HW_TASK_DONE	3
--#define HREE_HW_ERR_MASK	0x7ff
--#define HREE_SQE_DONE_MASK	0x3
--#define HREE_ALG_TYPE_MASK	0x1f
-+#define HREE_HW_ERR_MASK	GENMASK(10, 0)
-+#define HREE_SQE_DONE_MASK	GENMASK(1, 0)
-+#define HREE_ALG_TYPE_MASK	GENMASK(4, 0)
- 	id = (int)le16_to_cpu(sqe->tag);
- 	req = ctx->req_list[id];
- 	hpre_rm_req_from_ctx(req);
-diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
-index 1e7d1fb..46c24f9 100644
---- a/drivers/crypto/hisilicon/hpre/hpre_main.c
-+++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
-@@ -36,7 +36,7 @@
- #define HPRE_INT_MASK			0x301400
- #define HPRE_INT_STATUS			0x301800
- #define HPRE_CORE_INT_ENABLE		0
--#define HPRE_CORE_INT_DISABLE		0x003fffff
-+#define HPRE_CORE_INT_DISABLE		GENMASK(21, 0)
- #define HPRE_RDCHN_INI_ST		0x301a00
- #define HPRE_CLSTR_BASE			0x302000
- #define HPRE_CORE_EN_OFFSET		0x04
-@@ -69,12 +69,12 @@
- #define HPRE_DBGFS_VAL_MAX_LEN		20
- #define HPRE_PCI_DEVICE_ID		0xa258
- #define HPRE_PCI_VF_DEVICE_ID		0xa259
--#define HPRE_QM_USR_CFG_MASK		0xfffffffe
--#define HPRE_QM_AXI_CFG_MASK		0xffff
--#define HPRE_QM_VFG_AX_MASK		0xff
--#define HPRE_BD_USR_MASK		0x3
--#define HPRE_CLUSTER_CORE_MASK_V2	0xf
--#define HPRE_CLUSTER_CORE_MASK_V3	0xff
-+#define HPRE_QM_USR_CFG_MASK		GENMASK(31, 1)
-+#define HPRE_QM_AXI_CFG_MASK		GENMASK(15, 0)
-+#define HPRE_QM_VFG_AX_MASK		GENMASK(7, 0)
-+#define HPRE_BD_USR_MASK		GENMASK(1, 0)
-+#define HPRE_CLUSTER_CORE_MASK_V2	GENMASK(3, 0)
-+#define HPRE_CLUSTER_CORE_MASK_V3	GENMASK(7, 0)
-
- #define HPRE_AM_OOO_SHUTDOWN_ENB	0x301044
- #define HPRE_AM_OOO_SHUTDOWN_ENABLE	BIT(0)
---
-2.8.1
-
+Thanks for the patch.
