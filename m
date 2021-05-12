@@ -2,169 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A88D37B6CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 09:23:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 118D637B6C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 09:22:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230166AbhELHYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 03:24:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34127 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229627AbhELHYf (ORCPT
+        id S230070AbhELHX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 03:23:57 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:2364 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229627AbhELHX4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 03:24:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620804207;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vg/cll4jMfmP1m7tM5YSccYAw8vElQEoOqiM7v+Lw54=;
-        b=JTq7nhOe88F/ZkpQ2iYvfnYs5akaGi82vtpHxW7jCAgWyoNhATO28TuyYhI/hc31LHSgrI
-        8TL+KQSym8C2VJj4wxtiwV/r81zaHEvEqnC/ka/YGAHgxZSu5/B+/leRuVB11GLI4H1Hb1
-        AaXcfp/VaR7y4dJ+8wIQDwLaXcXWWi8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-593-FrlSMN87OIaCe4JumnKwJw-1; Wed, 12 May 2021 03:23:23 -0400
-X-MC-Unique: FrlSMN87OIaCe4JumnKwJw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A38411854E26;
-        Wed, 12 May 2021 07:23:21 +0000 (UTC)
-Received: from T590 (ovpn-13-214.pek2.redhat.com [10.72.13.214])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1800114103;
-        Wed, 12 May 2021 07:23:14 +0000 (UTC)
-Date:   Wed, 12 May 2021 15:23:10 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Gulam Mohamed <gulam.mohamed@oracle.com>, viro@zeniv.linux.org.uk,
-        axboe@kernel.dk, linux-fsdevel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        martin.petersen@oracle.com, junxiao.bi@oracle.com
-Subject: Re: [PATCH V1 1/1] Fix race between iscsi logout and systemd-udevd
-Message-ID: <YJuCXh2ykAuDcuTb@T590>
-References: <20210511181558.380764-1-gulam.mohamed@oracle.com>
- <YJtKT7rLi2CFqDsV@T590>
- <20210512063505.GA18367@lst.de>
+        Wed, 12 May 2021 03:23:56 -0400
+Received: from dggeml704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Fg5l02R2Bz60Wb;
+        Wed, 12 May 2021 15:19:24 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggeml704-chm.china.huawei.com (10.3.17.142) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 12 May 2021 15:22:46 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 12 May
+ 2021 15:22:46 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>
+CC:     <gregkh@linuxfoundation.org>, <rjw@rjwysocki.net>
+Subject: [PATCH -next] PM: domains: fix some kernel-doc issues
+Date:   Wed, 12 May 2021 15:25:15 +0800
+Message-ID: <20210512072515.3820032-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210512063505.GA18367@lst.de>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 08:35:05AM +0200, Christoph Hellwig wrote:
-> On Wed, May 12, 2021 at 11:23:59AM +0800, Ming Lei wrote:
-> > 
-> > 1) code path BLKRRPART:
-> > 	mutex_lock(bdev->bd_mutex)
-> > 	down_read(&bdev_lookup_sem);
-> > 
-> > 2) del_gendisk():
-> > 	down_write(&bdev_lookup_sem);
-> > 	mutex_lock(&disk->part0->bd_mutex);
-> > 
-> > Given GENHD_FL_UP is only checked when opening one bdev, and
-> > fsync_bdev() and __invalidate_device() needn't to open bdev, so
-> > the following way may work for your issue:
-> 
-> If we move the clearing of GENHD_FL_UP earlier we can do away with
-> bdev_lookup_sem entirely I think.  Something like this untested patch:
-> 
-> diff --git a/block/genhd.c b/block/genhd.c
-> index a5847560719c..ef717084b343 100644
-> --- a/block/genhd.c
-> +++ b/block/genhd.c
-> @@ -29,8 +29,6 @@
->  
->  static struct kobject *block_depr;
->  
-> -DECLARE_RWSEM(bdev_lookup_sem);
-> -
->  /* for extended dynamic devt allocation, currently only one major is used */
->  #define NR_EXT_DEVT		(1 << MINORBITS)
->  static DEFINE_IDA(ext_devt_ida);
-> @@ -609,13 +607,8 @@ void del_gendisk(struct gendisk *disk)
->  	blk_integrity_del(disk);
->  	disk_del_events(disk);
->  
-> -	/*
-> -	 * Block lookups of the disk until all bdevs are unhashed and the
-> -	 * disk is marked as dead (GENHD_FL_UP cleared).
-> -	 */
-> -	down_write(&bdev_lookup_sem);
-> -
->  	mutex_lock(&disk->open_mutex);
-> +	disk->flags &= ~GENHD_FL_UP;
->  	blk_drop_partitions(disk);
->  	mutex_unlock(&disk->open_mutex);
->  
-> @@ -627,10 +620,7 @@ void del_gendisk(struct gendisk *disk)
->  	 * up any more even if openers still hold references to it.
->  	 */
->  	remove_inode_hash(disk->part0->bd_inode);
-> -
->  	set_capacity(disk, 0);
-> -	disk->flags &= ~GENHD_FL_UP;
-> -	up_write(&bdev_lookup_sem);
->  
->  	if (!(disk->flags & GENHD_FL_HIDDEN)) {
->  		sysfs_remove_link(&disk_to_dev(disk)->kobj, "bdi");
-> diff --git a/fs/block_dev.c b/fs/block_dev.c
-> index 8dd8e2fd1401..bde23940190f 100644
-> --- a/fs/block_dev.c
-> +++ b/fs/block_dev.c
-> @@ -1377,33 +1377,24 @@ struct block_device *blkdev_get_no_open(dev_t dev)
->  	struct block_device *bdev;
->  	struct gendisk *disk;
->  
-> -	down_read(&bdev_lookup_sem);
->  	bdev = bdget(dev);
->  	if (!bdev) {
-> -		up_read(&bdev_lookup_sem);
->  		blk_request_module(dev);
-> -		down_read(&bdev_lookup_sem);
-> -
->  		bdev = bdget(dev);
->  		if (!bdev)
-> -			goto unlock;
-> +			return NULL;
->  	}
->  
->  	disk = bdev->bd_disk;
->  	if (!kobject_get_unless_zero(&disk_to_dev(disk)->kobj))
->  		goto bdput;
-> -	if ((disk->flags & (GENHD_FL_UP | GENHD_FL_HIDDEN)) != GENHD_FL_UP)
-> -		goto put_disk;
->  	if (!try_module_get(bdev->bd_disk->fops->owner))
->  		goto put_disk;
-> -	up_read(&bdev_lookup_sem);
->  	return bdev;
->  put_disk:
->  	put_disk(disk);
->  bdput:
->  	bdput(bdev);
-> -unlock:
-> -	up_read(&bdev_lookup_sem);
->  	return NULL;
->  }
->  
-> @@ -1462,7 +1453,10 @@ struct block_device *blkdev_get_by_dev(dev_t dev, fmode_t mode, void *holder)
->  
->  	disk_block_events(disk);
->  
-> +	ret = -ENXIO;
->  	mutex_lock(&disk->open_mutex);
-> +	if ((disk->flags & (GENHD_FL_UP | GENHD_FL_HIDDEN)) != GENHD_FL_UP)
-> +		goto abort_claiming;
->  	if (bdev_is_partition(bdev))
->  		ret = blkdev_get_part(bdev, mode);
->  	else
+Fix the following make W=1 kernel build warnings:
 
-This patch looks fine, and new openers can be prevented really with help
-of ->open_mutex.
+  drivers/base/power/domain_governor.c:259: warning: Function parameter or member 'now' not described in '_default_power_down_ok'
+  drivers/base/power/domain.c:581: warning: Function parameter or member 'depth' not described in 'genpd_power_off'
+  drivers/base/power/domain.c:2520: warning: Function parameter or member 'np' not described in 'of_genpd_remove_last'
+  drivers/base/power/domain.c:2520: warning: Excess function parameter 'provider' description in 'of_genpd_remove_last'
 
-Thanks, 
-Ming
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ drivers/base/power/domain.c          | 3 ++-
+ drivers/base/power/domain_governor.c | 1 +
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+index b6a782c31613..5695a641efd3 100644
+--- a/drivers/base/power/domain.c
++++ b/drivers/base/power/domain.c
+@@ -572,6 +572,7 @@ static void genpd_queue_power_off_work(struct generic_pm_domain *genpd)
+  * RPM status of the releated device is in an intermediate state, not yet turned
+  * into RPM_SUSPENDED. This means genpd_power_off() must allow one device to not
+  * be RPM_SUSPENDED, while it tries to power off the PM domain.
++ * @depth: nesting count for lockdep.
+  *
+  * If all of the @genpd's devices have been suspended and all of its subdomains
+  * have been powered down, remove power from @genpd.
+@@ -2505,7 +2506,7 @@ EXPORT_SYMBOL_GPL(of_genpd_remove_subdomain);
+ 
+ /**
+  * of_genpd_remove_last - Remove the last PM domain registered for a provider
+- * @provider: Pointer to device structure associated with provider
++ * @np: Pointer to device node associated with provider
+  *
+  * Find the last PM domain that was added by a particular provider and
+  * remove this PM domain from the list of PM domains. The provider is
+diff --git a/drivers/base/power/domain_governor.c b/drivers/base/power/domain_governor.c
+index c6c218758f0b..cd08c5885190 100644
+--- a/drivers/base/power/domain_governor.c
++++ b/drivers/base/power/domain_governor.c
+@@ -252,6 +252,7 @@ static bool __default_power_down_ok(struct dev_pm_domain *pd,
+ /**
+  * _default_power_down_ok - Default generic PM domain power off governor routine.
+  * @pd: PM domain to check.
++ * @now: current ktime.
+  *
+  * This routine must be executed under the PM domain's lock.
+  */
+-- 
+2.25.1
 
