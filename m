@@ -2,127 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F26837D139
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:54:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F18A837D16B
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349545AbhELRuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 13:50:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33619 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238567AbhELQUM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:20:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620836343;
+        id S241086AbhELRzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 13:55:40 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:43374 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238323AbhELQYp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:24:45 -0400
+Received: from zn.tnic (p200300ec2f0bb80077d55d62652951c8.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:b800:77d5:5d62:6529:51c8])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7E2BA1EC0473;
+        Wed, 12 May 2021 18:23:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1620836614;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=QJ4upse7khFQlrmEcgIqmwBiGfPoV54IRNxitLsmg/M=;
-        b=dDjF17pLtA0ILJLvr059qb11k6X3Xlxb2KMfKM/oD9KZ+Hw4yeLWdQCIVYqJEBjGzECrkv
-        S2JI4NLcoozpzKuSIvD4hYp0uJykRFRgq4nvwZYwXV3cj1htOuwGZp+IrqAECKEznJ6llN
-        ucwTqAtSoYuzWkC12ZyqPnlwIrR038U=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-292-XwRP9WpjNACYd1NfZ9kMkA-1; Wed, 12 May 2021 12:18:57 -0400
-X-MC-Unique: XwRP9WpjNACYd1NfZ9kMkA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E5D35107ACE8;
-        Wed, 12 May 2021 16:18:56 +0000 (UTC)
-Received: from pick.home.annexia.org (ovpn-114-114.ams2.redhat.com [10.36.114.114])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A9A1D6D8C0;
-        Wed, 12 May 2021 16:18:55 +0000 (UTC)
-From:   "Richard W.M. Jones" <rjones@redhat.com>
-To:     miklos@szeredi.hu
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        eblake@redhat.com, libguestfs@redhat.com, synarete@gmail.com
-Subject: [PATCH v4] fuse: Allow fallocate(FALLOC_FL_ZERO_RANGE)
-Date:   Wed, 12 May 2021 17:18:48 +0100
-Message-Id: <20210512161848.3513818-2-rjones@redhat.com>
-In-Reply-To: <20210512161848.3513818-1-rjones@redhat.com>
-References: <20210512161848.3513818-1-rjones@redhat.com>
+        bh=/0X58j7/TAcR/6ydoMQr78dKigX0U3Iwk3UeXo3z7hE=;
+        b=m3FkKJtCFmkZ0gJVjd9JdKC3IotegfXp85I2WiSv2lbm3mvKMFuExkVUUTDXwQC5Gn31Gp
+        8ogIClxXx7noylqZmMsBEO6JGz9wGoYegx1hNCSAcYrGI/H44XdpuvQfWZkkMHGDENIx+f
+        sJKF3O2PjMFOzMfJhr6Xi2c2iH0jTIg=
+Date:   Wed, 12 May 2021 18:23:27 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Ashish Kalra <Ashish.Kalra@amd.com>, pbonzini@redhat.com,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        joro@8bytes.org, thomas.lendacky@amd.com, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        srutherford@google.com, venu.busireddy@oracle.com,
+        brijesh.singh@amd.com
+Subject: Re: [PATCH v2 2/4] mm: x86: Invoke hypercall when page encryption
+ status is changed
+Message-ID: <YJwA/+0+LYtRzahr@zn.tnic>
+References: <cover.1619193043.git.ashish.kalra@amd.com>
+ <ff68a73e0cdaf89e56add5c8b6e110df881fede1.1619193043.git.ashish.kalra@amd.com>
+ <YJvU+RAvetAPT2XY@zn.tnic>
+ <YJv5bjd0xThIahaa@google.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <YJv5bjd0xThIahaa@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current fuse module filters out fallocate(FALLOC_FL_ZERO_RANGE)
-returning -EOPNOTSUPP.  libnbd's nbdfuse would like to translate
-FALLOC_FL_ZERO_RANGE requests into the NBD command
-NBD_CMD_WRITE_ZEROES which allows NBD servers that support it to do
-zeroing efficiently.
+On Wed, May 12, 2021 at 03:51:10PM +0000, Sean Christopherson wrote:
+>   TL;DR: I think the KVM hypercall should be something like this, so that it can
+>   be used for SNP and TDX, and possibly for other purposes, e.g. for paravirt
+>   performance enhancements or something.
 
-This commit treats this flag exactly like FALLOC_FL_PUNCH_HOLE.
+Ok, good, I was only making sure this is on people's radar but it
+actually is more than that. I'll let Tom and Jörg comment on the meat
+of the thing - as always, thanks for the detailed explanation.
 
-A way to test this, requiring fuse >= 3, nbdkit >= 1.8 and the latest
-nbdfuse from https://gitlab.com/nbdkit/libnbd/-/tree/master/fuse is to
-create a file containing some data and "mirror" it to a fuse file:
+From my !virt guy POV, I like the aspect of sharing stuff as much as
+possible and it all makes sense to me but what the hell do I know...
 
-  $ dd if=/dev/urandom of=disk.img bs=1M count=1
-  $ nbdkit file disk.img
-  $ touch mirror.img
-  $ nbdfuse mirror.img nbd://localhost &
+>     8. KVM_HC_MAP_GPA_RANGE
+>     -----------------------
+>     :Architecture: x86
+>     :Status: active
+>     :Purpose: Request KVM to map a GPA range with the specified attributes.
+> 
+>     a0: the guest physical address of the start page
+>     a1: the number of (4kb) pages (must be contiguous in GPA space)
+>     a2: attributes
+> 
+>   where 'attributes' could be something like:
+> 
+>     bits  3:0 - preferred page size encoding 0 = 4kb, 1 = 2mb, 2 = 1gb, etc...
+>     bit     4 - plaintext = 0, encrypted = 1
+>     bits 63:5 - reserved (must be zero)
 
-(mirror.img -> nbdfuse -> NBD over loopback -> nbdkit -> disk.img)
+Yah, nice and simple. I like.
 
-You can then run commands such as:
+Thx.
 
-  $ fallocate -z -o 1024 -l 1024 mirror.img
-
-and check that the content of the original file ("disk.img") stays
-synchronized.  To show NBD commands, export LIBNBD_DEBUG=1 before
-running nbdfuse.  To clean up:
-
-  $ fusermount3 -u mirror.img
-  $ killall nbdkit
-
-Signed-off-by: Richard W.M. Jones <rjones@redhat.com>
----
- fs/fuse/file.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/fs/fuse/file.c b/fs/fuse/file.c
-index 09ef2a4d25ed..ec20a1801c1b 100644
---- a/fs/fuse/file.c
-+++ b/fs/fuse/file.c
-@@ -2907,11 +2907,13 @@ static long fuse_file_fallocate(struct file *file, int mode, loff_t offset,
- 	};
- 	int err;
- 	bool lock_inode = !(mode & FALLOC_FL_KEEP_SIZE) ||
--			   (mode & FALLOC_FL_PUNCH_HOLE);
-+			   (mode & (FALLOC_FL_PUNCH_HOLE |
-+				    FALLOC_FL_ZERO_RANGE));
- 
- 	bool block_faults = FUSE_IS_DAX(inode) && lock_inode;
- 
--	if (mode & ~(FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE))
-+	if (mode & ~(FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE |
-+		     FALLOC_FL_ZERO_RANGE))
- 		return -EOPNOTSUPP;
- 
- 	if (fm->fc->no_fallocate)
-@@ -2926,7 +2928,7 @@ static long fuse_file_fallocate(struct file *file, int mode, loff_t offset,
- 				goto out;
- 		}
- 
--		if (mode & FALLOC_FL_PUNCH_HOLE) {
-+		if (mode & (FALLOC_FL_PUNCH_HOLE | FALLOC_FL_ZERO_RANGE)) {
- 			loff_t endbyte = offset + length - 1;
- 
- 			err = fuse_writeback_range(inode, offset, endbyte);
-@@ -2966,7 +2968,7 @@ static long fuse_file_fallocate(struct file *file, int mode, loff_t offset,
- 			file_update_time(file);
- 	}
- 
--	if (mode & FALLOC_FL_PUNCH_HOLE)
-+	if (mode & (FALLOC_FL_PUNCH_HOLE | FALLOC_FL_ZERO_RANGE))
- 		truncate_pagecache_range(inode, offset, offset + length - 1);
- 
- 	fuse_invalidate_attr(inode);
 -- 
-2.31.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
