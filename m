@@ -2,93 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E50AB37B538
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 07:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D0D637B53C
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 07:00:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230096AbhELFBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 01:01:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229627AbhELFBW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 01:01:22 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0EC5C061574;
-        Tue, 11 May 2021 22:00:14 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Fg2fL143zz9sWX;
-        Wed, 12 May 2021 15:00:09 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1620795611;
-        bh=QUroELMBcg2yl0c8Ocr3GIPaSGOYYWLIChZdl8QSxTc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=b14pM2A1SRpKW0kl9mTkAQZd6+AnoKrF0R9QjS2bsiDAhKgiDi7YPorLWiwLWjB6E
-         LoIpgAkWjdSi6EacTMXczcAoEztkxFPAZAYMzmwm+mLnvXxtqj13a3ff9uXPz90G1m
-         cqlP3ClFyzARQOsPH5U8I3gvQSS95Ev3PN5dPD5/QCtFqQuZtwcALY/fmGdc6KMN/M
-         2COUpgzI0bd9GZxZu4brbjkrssTk4KqFVeSjbRipVAZ3oFq8w5KZnej6883sniTnrH
-         m2710bNFD3eL18wQjgIKKWv2nCwK8YouLTwLHdptOOSNxvleEg9MUryWRyrcpa5wTk
-         +E6pY+JiGNeSQ==
-Date:   Wed, 12 May 2021 15:00:08 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the drm-misc tree
-Message-ID: <20210512150008.52f92c26@canb.auug.org.au>
+        id S230126AbhELFBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 01:01:32 -0400
+Received: from mga12.intel.com ([192.55.52.136]:62358 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229730AbhELFBb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 01:01:31 -0400
+IronPort-SDR: BHgET79TguYm7IfA9QmKcS/i7PmhqUJWcUoNmF4r9MsEVCfYVoDCSKlM7vPP4nm9/mCm1SBVez
+ AkDgQyNE2NRg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="179211622"
+X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
+   d="scan'208";a="179211622"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 22:00:23 -0700
+IronPort-SDR: MGnaFeC8SGot2dzUNyVXV8muw+3o/BVLW+i34rxzYRdo72YFfl3s9f8Lsge7nGyoXU9t9FaO4f
+ WAgRKYnFVRdw==
+X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
+   d="scan'208";a="437014682"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 22:00:18 -0700
+Subject: Re: [PATCH v6 04/16] KVM: x86/pmu: Set MSR_IA32_MISC_ENABLE_EMON bit
+ when vPMU is enabled
+To:     Venkatesh Srinivas <venkateshs@chromium.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, weijiang.yang@intel.com,
+        Kan Liang <kan.liang@linux.intel.com>, ak@linux.intel.com,
+        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        Yao Yuan <yuan.yao@intel.com>,
+        Like Xu <like.xu@linux.intel.com>
+References: <20210511024214.280733-1-like.xu@linux.intel.com>
+ <20210511024214.280733-5-like.xu@linux.intel.com>
+ <CAA0tLErUFPnZ=SL82bLe8Ddf5rFu2Pdv5xE0aq4A91mzn9=ABA@mail.gmail.com>
+From:   "Xu, Like" <like.xu@intel.com>
+Message-ID: <ead61a83-1534-a8a6-13ee-646898a6d1a9@intel.com>
+Date:   Wed, 12 May 2021 13:00:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/6Z92Gv.P.iwuhI+YMz0./pR";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <CAA0tLErUFPnZ=SL82bLe8Ddf5rFu2Pdv5xE0aq4A91mzn9=ABA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/6Z92Gv.P.iwuhI+YMz0./pR
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Venkatesh Srinivas,
 
-Hi all,
+On 2021/5/12 9:58, Venkatesh Srinivas wrote:
+> On 5/10/21, Like Xu <like.xu@linux.intel.com> wrote:
+>> On Intel platforms, the software can use the IA32_MISC_ENABLE[7] bit to
+>> detect whether the processor supports performance monitoring facility.
+>>
+>> It depends on the PMU is enabled for the guest, and a software write
+>> operation to this available bit will be ignored.
+> Is the behavior that writes to IA32_MISC_ENABLE[7] are ignored (rather than #GP)
+> documented someplace?
 
-After merging the drm-misc tree, today's linux-next build (powerpc
-allyesconfig) failed like this:
+The bit[7] behavior of the real hardware on the native host is quite 
+suspicious.
 
-drivers/gpu/drm/nouveau/nouveau_connector.c: In function 'nouveau_connector=
-_of_detect':
-drivers/gpu/drm/nouveau/nouveau_connector.c:463:59: error: 'struct drm_devi=
-ce' has no member named 'pdev'; did you mean 'dev'?
-  463 |  struct device_node *cn, *dn =3D pci_device_to_OF_node(dev->pdev);
-      |                                                           ^~~~
-      |                                                           dev
+To keep the semantics consistent and simple, we propose ignoring write 
+operation
+in the virtualized world, since whether or not to expose PMU is configured 
+by the
+hypervisor user space and not by the guest side.
 
-Caused by commit
+I assume your "reviewed-by" also points this out. Thanks.
 
-  b347e04452ff ("drm: Remove pdev field from struct drm_device")
+>
+> Reviewed-by: Venkatesh Srinivas <venkateshs@chromium.org>
+>
+>> Cc: Yao Yuan <yuan.yao@intel.com>
+>> Signed-off-by: Like Xu <like.xu@linux.intel.com>
+>> ---
+>>   arch/x86/kvm/vmx/pmu_intel.c | 1 +
+>>   arch/x86/kvm/x86.c           | 1 +
+>>   2 files changed, 2 insertions(+)
+>>
+>> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+>> index 9efc1a6b8693..d9dbebe03cae 100644
+>> --- a/arch/x86/kvm/vmx/pmu_intel.c
+>> +++ b/arch/x86/kvm/vmx/pmu_intel.c
+>> @@ -488,6 +488,7 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
+>>   	if (!pmu->version)
+>>   		return;
+>>
+>> +	vcpu->arch.ia32_misc_enable_msr |= MSR_IA32_MISC_ENABLE_EMON;
+>>   	perf_get_x86_pmu_capability(&x86_pmu);
+>>
+>>   	pmu->nr_arch_gp_counters = min_t(int, eax.split.num_counters,
+>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>> index 5bd550eaf683..abe3ea69078c 100644
+>> --- a/arch/x86/kvm/x86.c
+>> +++ b/arch/x86/kvm/x86.c
+>> @@ -3211,6 +3211,7 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct
+>> msr_data *msr_info)
+>>   		}
+>>   		break;
+>>   	case MSR_IA32_MISC_ENABLE:
+>> +		data &= ~MSR_IA32_MISC_ENABLE_EMON;
+>>   		if (!kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_MISC_ENABLE_NO_MWAIT)
+>> &&
+>>   		    ((vcpu->arch.ia32_misc_enable_msr ^ data) &
+>> MSR_IA32_MISC_ENABLE_MWAIT)) {
+>>   			if (!guest_cpuid_has(vcpu, X86_FEATURE_XMM3))
+>> --
+>> 2.31.1
+>>
+>>
 
-I have reverted that commit for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/6Z92Gv.P.iwuhI+YMz0./pR
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCbYNgACgkQAVBC80lX
-0GyESgf/T07rjtpKJQjtzWk/qYdBRCC+Q8ax5RfJORk8UpqNlJqy9ZGe1FPXkn1D
-wJdnx9eI8J19CgueHZWJP57lp754E0NCC9Y7rG1nfqzY5JJIKRnw8kL7oJRGItQ/
-hbddLG4ddkG5bo73Z0xxDOFy8yINUsQmt0uy/tuK28fqOqVjaFU1WyBbrb5Gb3qG
-26nM90fBzqbnsO8Tz5Z8xA/DBSTJGM6ame7m1qvQ2w0/U9QhkWSEjhE50/niZWtC
-nJqdajEDtDCCKzn/9W2uV//+q9+pxYykTHBuBmbn9u06SdxmgsV24398P9Ni6tdl
-jZ+NeX33AlOhXTSdre1aAATiOjuljg==
-=uEFp
------END PGP SIGNATURE-----
-
---Sig_/6Z92Gv.P.iwuhI+YMz0./pR--
