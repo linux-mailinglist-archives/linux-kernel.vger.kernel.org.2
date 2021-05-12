@@ -2,63 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8BD837BA23
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 12:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BE0F37BA26
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 12:13:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230347AbhELKNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 06:13:33 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:40287 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230355AbhELKN0 (ORCPT
+        id S230285AbhELKOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 06:14:23 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:33735 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230184AbhELKOO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 06:13:26 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UYdo9OT_1620814328;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UYdo9OT_1620814328)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 12 May 2021 18:12:16 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     sathya.prakash@broadcom.com
-Cc:     sreekanth.reddy@broadcom.com,
-        suganath-prabu.subramani@broadcom.com,
-        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] scsi: message: fusion: Remove redundant assignment to rc
-Date:   Wed, 12 May 2021 18:12:07 +0800
-Message-Id: <1620814327-25427-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Wed, 12 May 2021 06:14:14 -0400
+Received: by mail-io1-f70.google.com with SMTP id d13-20020a6b7d4d0000b029043969826f55so7150880ioq.0
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 03:13:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=QsFoIF7+TXSZxLlCnFsTt3IaVFcGwD9RJbkW47UyGlA=;
+        b=OKoA1w5U0+GxCGYAr9oNyJJfJPnWXhwQlFS+TAxJd3xhwC+r2OCWS1DwVQvy4fwkYX
+         uTq/9pII2kBcF4gL8Wp5+EpiCWiPhd913FSziFBrHxfjKZWawTxQS7wI3Ar7deOqnAou
+         3Sx+T7F56AheItvMhgzbuSZXmw4Wz3oYwF4VyYDqNRNt+zDhyf5cFEeU7S/SFhGp0v0R
+         3qH8VFz49x3/GtLb9CtXJEHHagVvOClS3fHz1PiSjjDLKIwIVA8qqf9TYaJE0puRcfzd
+         EauZo8yvPiZtY1lhubKeV5YklLV7ht41+Hbvi9a1M9ARQUU4ls3hZubF0UkXFJRFlDZ1
+         wPxQ==
+X-Gm-Message-State: AOAM530vtdMjxM3ZlwtuN/+etSN4r5lLaSC+H1yjVcx8itt2cLQy5Xfh
+        8RM3ztq38m6dec8hMzw1U61xpkV34UZcdKpcqw+jwL/lWtIz
+X-Google-Smtp-Source: ABdhPJzK9DvyxlU39vr0TQCdZh91ks01LjLIzA5HtsRDNbuPVf/NBs2iiNdzZan43Z1RRmaTXl6CMdSWH9UF16deYyYIUANjpgrl
+MIME-Version: 1.0
+X-Received: by 2002:a05:6e02:144f:: with SMTP id p15mr29977292ilo.143.1620814385945;
+ Wed, 12 May 2021 03:13:05 -0700 (PDT)
+Date:   Wed, 12 May 2021 03:13:05 -0700
+In-Reply-To: <000000000000a16c4f05c21ecc1c@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b8a27f05c21f4195@google.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in bcm_rx_handler
+From:   syzbot <syzbot+0f7e7e5e2f4f40fa89c0@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mkl@pengutronix.de,
+        netdev@vger.kernel.org, socketcan@hartkopp.net,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Variable rc is set to '-1', but this value is never read as it is
-overwritten or not used later on, hence it is a redundant assignment
-and can be removed.
+syzbot has bisected this issue to:
 
-Clean up the following clang-analyzer warning:
+commit e057dd3fc20ffb3d7f150af46542a51b59b90127
+Author: Oliver Hartkopp <socketcan@hartkopp.net>
+Date:   Mon Sep 28 20:04:04 2020 +0000
 
-drivers/message/fusion/mptbase.c:6996:2: warning: Value stored to 'rc'
-is never read [clang-analyzer-deadcode.DeadStores].
+    can: add ISO 15765-2:2016 transport protocol
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/message/fusion/mptbase.c | 2 --
- 1 file changed, 2 deletions(-)
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16883835d00000
+start commit:   009fc857 mISDN: fix possible use-after-free in HFC_cleanup()
+git tree:       net-next
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=15883835d00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=11883835d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b072be26137971e1
+dashboard link: https://syzkaller.appspot.com/bug?extid=0f7e7e5e2f4f40fa89c0
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17c9f9b3d00000
 
-diff --git a/drivers/message/fusion/mptbase.c b/drivers/message/fusion/mptbase.c
-index f4f89cf..7f7abc9 100644
---- a/drivers/message/fusion/mptbase.c
-+++ b/drivers/message/fusion/mptbase.c
-@@ -6993,8 +6993,6 @@ static void seq_mpt_print_ioc_summary(MPT_ADAPTER *ioc, struct seq_file *m, int
- 	ioc->ioc_reset_in_progress = 1;
- 	spin_unlock_irqrestore(&ioc->taskmgmt_lock, flags);
- 
--	rc = -1;
--
- 	for (cb_idx = MPT_MAX_PROTOCOL_DRIVERS-1; cb_idx; cb_idx--) {
- 		if (MptResetHandlers[cb_idx])
- 			mpt_signal_reset(cb_idx, ioc, MPT_IOC_SETUP_RESET);
--- 
-1.8.3.1
+Reported-by: syzbot+0f7e7e5e2f4f40fa89c0@syzkaller.appspotmail.com
+Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
 
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
