@@ -2,285 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46BBF37B780
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 10:07:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B2237B784
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 10:08:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbhELII1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 04:08:27 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:51404 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230149AbhELIIW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 04:08:22 -0400
-Received: by linux.microsoft.com (Postfix, from userid 1004)
-        id C18F020B7178; Wed, 12 May 2021 01:07:14 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C18F020B7178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
-        s=default; t=1620806834;
-        bh=ONMUm9lGQb0L+PrjIyabqO4fxeAhk5qGinvEBfGFW50=;
-        h=From:To:Cc:Subject:Date:From;
-        b=V8O3IdMmNHNOqBI7ZYNB9Gp6GBaxst/A9k6HOUoYKz0QZOkrdJ3CjglMrYocF8LGr
-         3b0qKQrCEsX+Akyjd7idsv+oJF2w8n0RMRP0VvE60Br6JpdHR+9/mzDAxjAImjdudf
-         AkMYKifl3pDBTAOaXrP8TXOiChUP6g8nflX060gE=
-From:   longli@linuxonhyperv.com
-To:     "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Long Li <longli@microsoft.com>
-Subject: [PATCH] PCI: hv: Move completion variable from stack to heap in hv_compose_msi_msg()
-Date:   Wed, 12 May 2021 01:07:04 -0700
-Message-Id: <1620806824-31151-1-git-send-email-longli@linuxonhyperv.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S230285AbhELIJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 04:09:39 -0400
+Received: from mga07.intel.com ([134.134.136.100]:45922 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230018AbhELIJi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 04:09:38 -0400
+IronPort-SDR: BGufosqlpCyYGyeiYbd4E4P05KRI9PEgyaGBFU49MuZXf7aVYalCW17aO8t3x7xnk7nwsOFGnb
+ FwHQcn6iY5Rg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="263574324"
+X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
+   d="scan'208";a="263574324"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2021 01:08:25 -0700
+IronPort-SDR: PCDFUll6IBBso3MPC9/0iQr9dpJJ9SWelorUZvb8tp5qi/ajZiSgNPfa3G5N6ecvMYGjdfQKvd
+ vbEOd1/u9J/A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
+   d="scan'208";a="455479215"
+Received: from aubrey-app.sh.intel.com (HELO [10.239.53.25]) ([10.239.53.25])
+  by fmsmga004.fm.intel.com with ESMTP; 12 May 2021 01:08:21 -0700
+Subject: Re: [PATCH v2 6/8] sched/idle: Move busy_cpu accounting to idle
+ callback
+To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Rik van Riel <riel@surriel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Parth Shah <parth@linux.ibm.com>
+References: <20210506164543.90688-1-srikar@linux.vnet.ibm.com>
+ <20210506164543.90688-7-srikar@linux.vnet.ibm.com>
+From:   Aubrey Li <aubrey.li@linux.intel.com>
+Message-ID: <47d29f1d-cea6-492a-5125-85db6bce0fa7@linux.intel.com>
+Date:   Wed, 12 May 2021 16:08:24 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210506164543.90688-7-srikar@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Long Li <longli@microsoft.com>
+On 5/7/21 12:45 AM, Srikar Dronamraju wrote:
+> Currently we account nr_busy_cpus in no_hz idle functions.
+> There is no reason why nr_busy_cpus should updated be in NO_HZ_COMMON
+> configs only. Also scheduler can mark a CPU as non-busy as soon as an
+> idle class task starts to run. Scheduler can then mark a CPU as busy
+> as soon as its woken up from idle or a new task is placed on it's
+> runqueue.
 
-hv_compose_msi_msg() may be called with interrupt disabled. It calls
-wait_for_completion() in a loop and may exit the loop earlier if the device is
-being ejected or it's hitting other errors. However the VSP may send
-completion packet after the loop exit and the completion variable is no
-longer valid on the stack. This results in a kernel oops.
+IIRC, we discussed this before, if a SCHED_IDLE task is placed on the
+CPU's runqueue, this CPU should be still taken as a wakeup target.
 
-Fix this by relocating completion variable from stack to heap, and use hbus
-to maintain a list of leftover completions for future cleanup if necessary.
+Also, for those frequent context-switching tasks with very short idle,
+it's expensive for scheduler to mark idle/busy every time, that's why
+my patch only marks idle every time and marks busy ratelimited in
+scheduler tick.
 
-Signed-off-by: Long Li <longli@microsoft.com>
----
- drivers/pci/controller/pci-hyperv.c | 97 +++++++++++++++++++----------
- 1 file changed, 65 insertions(+), 32 deletions(-)
+Thanks,
+-Aubrey
 
-diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
-index 9499ae3275fe..29fe26e2193c 100644
---- a/drivers/pci/controller/pci-hyperv.c
-+++ b/drivers/pci/controller/pci-hyperv.c
-@@ -473,6 +473,9 @@ struct hv_pcibus_device {
- 	struct msi_controller msi_chip;
- 	struct irq_domain *irq_domain;
- 
-+	struct list_head compose_msi_msg_ctxt_list;
-+	spinlock_t compose_msi_msg_ctxt_list_lock;
-+
- 	spinlock_t retarget_msi_interrupt_lock;
- 
- 	struct workqueue_struct *wq;
-@@ -552,6 +555,17 @@ struct hv_pci_compl {
- 	s32 completion_status;
- };
- 
-+struct compose_comp_ctxt {
-+	struct hv_pci_compl comp_pkt;
-+	struct tran_int_desc int_desc;
-+};
-+
-+struct compose_msi_msg_ctxt {
-+	struct list_head list;
-+	struct pci_packet pci_pkt;
-+	struct compose_comp_ctxt comp;
-+};
-+
- static void hv_pci_onchannelcallback(void *context);
- 
- /**
-@@ -1293,11 +1307,6 @@ static void hv_irq_unmask(struct irq_data *data)
- 	pci_msi_unmask_irq(data);
- }
- 
--struct compose_comp_ctxt {
--	struct hv_pci_compl comp_pkt;
--	struct tran_int_desc int_desc;
--};
--
- static void hv_pci_compose_compl(void *context, struct pci_response *resp,
- 				 int resp_packet_size)
- {
-@@ -1373,16 +1382,12 @@ static void hv_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
- 	struct pci_bus *pbus;
- 	struct pci_dev *pdev;
- 	struct cpumask *dest;
--	struct compose_comp_ctxt comp;
- 	struct tran_int_desc *int_desc;
--	struct {
--		struct pci_packet pci_pkt;
--		union {
--			struct pci_create_interrupt v1;
--			struct pci_create_interrupt2 v2;
--		} int_pkts;
--	} __packed ctxt;
--
-+	struct compose_msi_msg_ctxt *ctxt;
-+	union {
-+		struct pci_create_interrupt v1;
-+		struct pci_create_interrupt2 v2;
-+	} int_pkts;
- 	u32 size;
- 	int ret;
- 
-@@ -1402,18 +1407,24 @@ static void hv_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
- 		hv_int_desc_free(hpdev, int_desc);
- 	}
- 
-+	ctxt = kzalloc(sizeof(*ctxt), GFP_ATOMIC);
-+	if (!ctxt)
-+		goto drop_reference;
-+
- 	int_desc = kzalloc(sizeof(*int_desc), GFP_ATOMIC);
--	if (!int_desc)
-+	if (!int_desc) {
-+		kfree(ctxt);
- 		goto drop_reference;
-+	}
- 
--	memset(&ctxt, 0, sizeof(ctxt));
--	init_completion(&comp.comp_pkt.host_event);
--	ctxt.pci_pkt.completion_func = hv_pci_compose_compl;
--	ctxt.pci_pkt.compl_ctxt = &comp;
-+	memset(ctxt, 0, sizeof(*ctxt));
-+	init_completion(&ctxt->comp.comp_pkt.host_event);
-+	ctxt->pci_pkt.completion_func = hv_pci_compose_compl;
-+	ctxt->pci_pkt.compl_ctxt = &ctxt->comp;
- 
- 	switch (hbus->protocol_version) {
- 	case PCI_PROTOCOL_VERSION_1_1:
--		size = hv_compose_msi_req_v1(&ctxt.int_pkts.v1,
-+		size = hv_compose_msi_req_v1(&int_pkts.v1,
- 					dest,
- 					hpdev->desc.win_slot.slot,
- 					cfg->vector);
-@@ -1421,7 +1432,7 @@ static void hv_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
- 
- 	case PCI_PROTOCOL_VERSION_1_2:
- 	case PCI_PROTOCOL_VERSION_1_3:
--		size = hv_compose_msi_req_v2(&ctxt.int_pkts.v2,
-+		size = hv_compose_msi_req_v2(&int_pkts.v2,
- 					dest,
- 					hpdev->desc.win_slot.slot,
- 					cfg->vector);
-@@ -1434,17 +1445,18 @@ static void hv_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
- 		 */
- 		dev_err(&hbus->hdev->device,
- 			"Unexpected vPCI protocol, update driver.");
-+		kfree(ctxt);
- 		goto free_int_desc;
- 	}
- 
--	ret = vmbus_sendpacket(hpdev->hbus->hdev->channel, &ctxt.int_pkts,
--			       size, (unsigned long)&ctxt.pci_pkt,
-+	ret = vmbus_sendpacket(hpdev->hbus->hdev->channel, &int_pkts,
-+			       size, (unsigned long)&ctxt->pci_pkt,
- 			       VM_PKT_DATA_INBAND,
- 			       VMBUS_DATA_PACKET_FLAG_COMPLETION_REQUESTED);
- 	if (ret) {
- 		dev_err(&hbus->hdev->device,
--			"Sending request for interrupt failed: 0x%x",
--			comp.comp_pkt.completion_status);
-+			"Sending request for interrupt failed: 0x%x", ret);
-+		kfree(ctxt);
- 		goto free_int_desc;
- 	}
- 
-@@ -1458,7 +1470,7 @@ static void hv_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
- 	 * Since this function is called with IRQ locks held, can't
- 	 * do normal wait for completion; instead poll.
- 	 */
--	while (!try_wait_for_completion(&comp.comp_pkt.host_event)) {
-+	while (!try_wait_for_completion(&ctxt->comp.comp_pkt.host_event)) {
- 		unsigned long flags;
- 
- 		/* 0xFFFF means an invalid PCI VENDOR ID. */
-@@ -1494,10 +1506,11 @@ static void hv_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
- 
- 	tasklet_enable(&channel->callback_event);
- 
--	if (comp.comp_pkt.completion_status < 0) {
-+	if (ctxt->comp.comp_pkt.completion_status < 0) {
- 		dev_err(&hbus->hdev->device,
- 			"Request for interrupt failed: 0x%x",
--			comp.comp_pkt.completion_status);
-+			ctxt->comp.comp_pkt.completion_status);
-+		kfree(ctxt);
- 		goto free_int_desc;
- 	}
- 
-@@ -1506,23 +1519,36 @@ static void hv_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
- 	 * irq_set_chip_data() here would be appropriate, but the lock it takes
- 	 * is already held.
- 	 */
--	*int_desc = comp.int_desc;
-+	*int_desc = ctxt->comp.int_desc;
- 	data->chip_data = int_desc;
- 
- 	/* Pass up the result. */
--	msg->address_hi = comp.int_desc.address >> 32;
--	msg->address_lo = comp.int_desc.address & 0xffffffff;
--	msg->data = comp.int_desc.data;
-+	msg->address_hi = ctxt->comp.int_desc.address >> 32;
-+	msg->address_lo = ctxt->comp.int_desc.address & 0xffffffff;
-+	msg->data = ctxt->comp.int_desc.data;
- 
- 	put_pcichild(hpdev);
-+	kfree(ctxt);
- 	return;
- 
- enable_tasklet:
- 	tasklet_enable(&channel->callback_event);
-+
-+	/*
-+	 * Move uncompleted context to the leftover list.
-+	 * The host may send completion at a later time, and we ignore this
-+	 * completion but keep the memory reference valid.
-+	 */
-+	spin_lock(&hbus->compose_msi_msg_ctxt_list_lock);
-+	list_add_tail(&ctxt->list, &hbus->compose_msi_msg_ctxt_list);
-+	spin_unlock(&hbus->compose_msi_msg_ctxt_list_lock);
-+
- free_int_desc:
- 	kfree(int_desc);
-+
- drop_reference:
- 	put_pcichild(hpdev);
-+
- return_null_message:
- 	msg->address_hi = 0;
- 	msg->address_lo = 0;
-@@ -3076,9 +3102,11 @@ static int hv_pci_probe(struct hv_device *hdev,
- 	INIT_LIST_HEAD(&hbus->children);
- 	INIT_LIST_HEAD(&hbus->dr_list);
- 	INIT_LIST_HEAD(&hbus->resources_for_children);
-+	INIT_LIST_HEAD(&hbus->compose_msi_msg_ctxt_list);
- 	spin_lock_init(&hbus->config_lock);
- 	spin_lock_init(&hbus->device_list_lock);
- 	spin_lock_init(&hbus->retarget_msi_interrupt_lock);
-+	spin_lock_init(&hbus->compose_msi_msg_ctxt_list_lock);
- 	hbus->wq = alloc_ordered_workqueue("hv_pci_%x", 0,
- 					   hbus->sysdata.domain);
- 	if (!hbus->wq) {
-@@ -3282,6 +3310,7 @@ static int hv_pci_bus_exit(struct hv_device *hdev, bool keep_devs)
- static int hv_pci_remove(struct hv_device *hdev)
- {
- 	struct hv_pcibus_device *hbus;
-+	struct compose_msi_msg_ctxt *ctxt, *tmp;
- 	int ret;
- 
- 	hbus = hv_get_drvdata(hdev);
-@@ -3318,6 +3347,10 @@ static int hv_pci_remove(struct hv_device *hdev)
- 
- 	hv_put_dom_num(hbus->sysdata.domain);
- 
-+	list_for_each_entry_safe(ctxt, tmp, &hbus->compose_msi_msg_ctxt_list, list) {
-+		list_del(&ctxt->list);
-+		kfree(ctxt);
-+	}
- 	kfree(hbus);
- 	return ret;
- }
--- 
-2.27.0
+> 
+> Cc: LKML <linux-kernel@vger.kernel.org>
+> Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
+> Cc: Parth Shah <parth@linux.ibm.com>
+> Cc: Ingo Molnar <mingo@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Valentin Schneider <valentin.schneider@arm.com>
+> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> Cc: Mel Gorman <mgorman@techsingularity.net>
+> Cc: Vincent Guittot <vincent.guittot@linaro.org>
+> Cc: Rik van Riel <riel@surriel.com>
+> Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+> ---
+>  kernel/sched/fair.c     |  6 ++++--
+>  kernel/sched/idle.c     | 29 +++++++++++++++++++++++++++--
+>  kernel/sched/sched.h    |  1 +
+>  kernel/sched/topology.c |  2 ++
+>  4 files changed, 34 insertions(+), 4 deletions(-)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index c30587631a24..4d3b0928fe98 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -10394,7 +10394,10 @@ static void set_cpu_sd_state_busy(int cpu)
+>  		goto unlock;
+>  	sd->nohz_idle = 0;
+>  
+> -	atomic_inc(&sd->shared->nr_busy_cpus);
+> +	if (sd && per_cpu(is_idle, cpu)) {
+> +		atomic_add_unless(&sd->shared->nr_busy_cpus, 1, per_cpu(sd_llc_size, cpu));
+> +		per_cpu(is_idle, cpu) = 0;
+> +	}
+>  unlock:
+>  	rcu_read_unlock();
+>  }
+> @@ -10424,7 +10427,6 @@ static void set_cpu_sd_state_idle(int cpu)
+>  		goto unlock;
+>  	sd->nohz_idle = 1;
+>  
+> -	atomic_dec(&sd->shared->nr_busy_cpus);
+>  unlock:
+>  	rcu_read_unlock();
+>  }
+> diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
+> index cc828f3efe71..e624a05e48bd 100644
+> --- a/kernel/sched/idle.c
+> +++ b/kernel/sched/idle.c
+> @@ -425,12 +425,25 @@ static void check_preempt_curr_idle(struct rq *rq, struct task_struct *p, int fl
+>  
+>  static void put_prev_task_idle(struct rq *rq, struct task_struct *prev)
+>  {
+> -#ifdef CONFIG_SCHED_SMT
+> +#ifdef CONFIG_SMP
+> +	struct sched_domain_shared *sds;
+>  	int cpu = rq->cpu;
+>  
+> +#ifdef CONFIG_SCHED_SMT
+>  	if (static_branch_likely(&sched_smt_present))
+>  		set_core_busy(cpu);
+>  #endif
+> +
+> +	rcu_read_lock();
+> +	sds = rcu_dereference(per_cpu(sd_llc_shared, cpu));
+> +	if (sds) {
+> +		if (per_cpu(is_idle, cpu)) {
+> +			atomic_inc(&sds->nr_busy_cpus);
+> +			per_cpu(is_idle, cpu) = 0;
+> +		}
+> +	}
+> +	rcu_read_unlock();
+> +#endif
+>  }
+>  
+>  static void set_next_task_idle(struct rq *rq, struct task_struct *next, bool first)
+> @@ -442,9 +455,21 @@ static void set_next_task_idle(struct rq *rq, struct task_struct *next, bool fir
+>  struct task_struct *pick_next_task_idle(struct rq *rq)
+>  {
+>  	struct task_struct *next = rq->idle;
+> +#ifdef CONFIG_SMP
+> +	struct sched_domain_shared *sds;
+> +	int cpu = rq->cpu;
+>  
+> -	set_next_task_idle(rq, next, true);
+> +	rcu_read_lock();
+> +	sds = rcu_dereference(per_cpu(sd_llc_shared, cpu));
+> +	if (sds) {
+> +		atomic_add_unless(&sds->nr_busy_cpus, -1, 0);
+> +		per_cpu(is_idle, cpu) = 1;
+> +	}
+>  
+> +	rcu_read_unlock();
+> +#endif
+> +
+> +	set_next_task_idle(rq, next, true);
+>  	return next;
+>  }
+>  
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index 5c0bd4b0e73a..baf8d9a4cb26 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -1483,6 +1483,7 @@ DECLARE_PER_CPU(int, sd_llc_id);
+>  #ifdef CONFIG_SCHED_SMT
+>  DECLARE_PER_CPU(int, smt_id);
+>  #endif
+> +DECLARE_PER_CPU(int, is_idle);
+>  DECLARE_PER_CPU(struct sched_domain_shared __rcu *, sd_llc_shared);
+>  DECLARE_PER_CPU(struct sched_domain __rcu *, sd_numa);
+>  DECLARE_PER_CPU(struct sched_domain __rcu *, sd_asym_packing);
+> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> index 8db40c8a6ad0..00e4669bb241 100644
+> --- a/kernel/sched/topology.c
+> +++ b/kernel/sched/topology.c
+> @@ -647,6 +647,7 @@ DEFINE_PER_CPU(int, sd_llc_id);
+>  #ifdef CONFIG_SCHED_SMT
+>  DEFINE_PER_CPU(int, smt_id);
+>  #endif
+> +DEFINE_PER_CPU(int, is_idle);
+>  DEFINE_PER_CPU(struct sched_domain_shared __rcu *, sd_llc_shared);
+>  DEFINE_PER_CPU(struct sched_domain __rcu *, sd_numa);
+>  DEFINE_PER_CPU(struct sched_domain __rcu *, sd_asym_packing);
+> @@ -673,6 +674,7 @@ static void update_top_cache_domain(int cpu)
+>  #ifdef CONFIG_SCHED_SMT
+>  	per_cpu(smt_id, cpu) = cpumask_first(cpu_smt_mask(cpu));
+>  #endif
+> +	per_cpu(is_idle, cpu) = 1;
+>  	rcu_assign_pointer(per_cpu(sd_llc_shared, cpu), sds);
+>  
+>  	sd = lowest_flag_domain(cpu, SD_NUMA);
+> 
 
