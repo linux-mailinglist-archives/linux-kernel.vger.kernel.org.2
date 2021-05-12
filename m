@@ -2,106 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E03F837B53D
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 07:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5FAD37B570
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 07:24:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbhELFCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 01:02:11 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:47951 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229580AbhELFCJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 01:02:09 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4Fg2gH0m2Rz9sdy;
-        Wed, 12 May 2021 07:00:59 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id XsPm6W350ZRE; Wed, 12 May 2021 07:00:59 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4Fg2gG6sQxz9sdw;
-        Wed, 12 May 2021 07:00:58 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 79F568B7D6;
-        Wed, 12 May 2021 07:00:58 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id xwiuG9ynOkOh; Wed, 12 May 2021 07:00:58 +0200 (CEST)
-Received: from po15610vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 015118B769;
-        Wed, 12 May 2021 07:00:57 +0200 (CEST)
-Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id AE30264164; Wed, 12 May 2021 05:00:57 +0000 (UTC)
-Message-Id: <cover.1620795204.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2 0/5] Implement huge VMAP and VMALLOC on powerpc 8xx
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>
-Cc:     linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        sparclinux@vger.kernel.org, linux-mm@kvack.org
-Date:   Wed, 12 May 2021 05:00:57 +0000 (UTC)
+        id S229994AbhELFZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 01:25:30 -0400
+Received: from cloud48395.mywhc.ca ([173.209.37.211]:53856 "EHLO
+        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229627AbhELFZ3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 01:25:29 -0400
+X-Greylist: delayed 3587 seconds by postgrey-1.27 at vger.kernel.org; Wed, 12 May 2021 01:25:29 EDT
+Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:53822 helo=[192.168.1.177])
+        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <olivier@trillion01.com>)
+        id 1lggQD-00008a-LO; Wed, 12 May 2021 00:24:33 -0400
+Message-ID: <17471c9fec18765449ef3a5a4cddc23561b97f52.camel@trillion01.com>
+Subject: Re: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es'
+ registers for io_threads
+From:   Olivier Langlois <olivier@trillion01.com>
+To:     Jens Axboe <axboe@kernel.dk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Stefan Metzmacher <metze@samba.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>
+Date:   Wed, 12 May 2021 00:24:32 -0400
+In-Reply-To: <59ea3b5a-d7b3-b62e-cc83-1f32a83c4ac2@kernel.dk>
+References: <8735v3ex3h.ffs@nanos.tec.linutronix.de>
+         <3C41339D-29A2-4AB1-958F-19DB0A92D8D7@amacapital.net>
+         <CAHk-=wh0KoEZXPYMGkfkeVEerSCEF1AiCZSvz9TRrx=Kj74D+Q@mail.gmail.com>
+         <CALCETrV9bCenqzzaW6Ra18tCvNP-my09decTjmLDVZZAQxR6VA@mail.gmail.com>
+         <CAHk-=wgo6XEz3VQ9ntqzWLR3-hm1YXrXUz4_heDs4wcLe9NYvA@mail.gmail.com>
+         <d26e3a82-8a2c-7354-d36b-cac945c208c7@kernel.dk>
+         <CALCETrWmhquicE2C=G2Hmwfj4VNypXVxY-K3CWOkyMe9Edv88A@mail.gmail.com>
+         <CAHk-=wgqK0qUskrzeWXmChErEm32UiOaUmynWdyrjAwNzkDKaw@mail.gmail.com>
+         <8735v3jujv.ffs@nanos.tec.linutronix.de>
+         <CAHk-=wi4Dyg_Z70J_hJbtFLPQDG+Zx3dP2jB5QrOdZC6W6j4Gw@mail.gmail.com>
+         <12710fda-1732-ee55-9ac1-0df9882aa71b@samba.org>
+         <CAHk-=wiR7c-UHh_3Rj-EU8=AbURKchnMFJWW7=5EH=qEUDT8wg@mail.gmail.com>
+         <59ea3b5a-d7b3-b62e-cc83-1f32a83c4ac2@kernel.dk>
+Organization: Trillion01 Inc
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - trillion01.com
+X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
+X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series implements huge VMAP and VMALLOC on powerpc 8xx.
+On Mon, 2021-05-03 at 20:50 -0600, Jens Axboe wrote:
+> 
+> I tested the below, which is the two combined, with a case that
+> deliberately has two types of io threads - one for SQPOLL submission,
+> and one that was created due to async work being needed. gdb attaches
+> just fine to the creator, with a slight complaint:
+> 
+> Attaching to process 370
+> [New LWP 371]
+> [New LWP 372]
+> Error while reading shared library symbols for
+> /usr/lib/libpthread.so.0:
+> Cannot find user-level thread for LWP 372: generic error
+> 0x00007f1a74675125 in clock_nanosleep@GLIBC_2.2.5 () from
+> /usr/lib/libc.so.6
+> (gdb) info threads
+>   Id   Target Id             Frame 
+> * 1    LWP 370 "io_uring"    0x00007f1a74675125 in
+> clock_nanosleep@GLIBC_2.2.5 ()
+>    from /usr/lib/libc.so.6
+>   2    LWP 371 "iou-sqp-370" 0x00007f1a746a7a9d in syscall () from
+> /usr/lib/libc.so.6
+>   3    LWP 372 "io_uring"    0x00007f1a74675125 in
+> clock_nanosleep@GLIBC_2.2.5 ()
+>    from /usr/lib/libc.so.6
+> 
+> (gdb) thread 2
+> [Switching to thread 2 (LWP 371)]
+> #0  0x00007f1a746a7a9d in syscall () from /usr/lib/libc.so.6
+> (gdb) bt
+> #0  0x00007f1a746a7a9d in syscall () from /usr/lib/libc.so.6
+> Backtrace stopped: Cannot access memory at address 0x0
+> 
+> (gdb) thread 1
+> [Switching to thread 1 (LWP 370)]
+> #0  0x00007f1a74675125 in clock_nanosleep@GLIBC_2.2.5 () from
+> /usr/lib/libc.so.6
+> (gdb) bt
+> #0  0x00007f1a74675125 in clock_nanosleep@GLIBC_2.2.5 () from
+> /usr/lib/libc.so.6
+> #1  0x00007f1a7467a357 in nanosleep () from /usr/lib/libc.so.6
+> #2  0x00007f1a7467a28e in sleep () from /usr/lib/libc.so.6
+> #3  0x000055bd41e929ba in main (argc=<optimized out>, argv=<optimized
+> out>)
+>     at t/io_uring.c:658
+> 
+> which looks very reasonable to me - no backtraces for the io threads,
+> and
+> no arch complaints.
+> 
+I have reported an issue that I have with a user process using io_uring
+where when it core dumps, the dump fails to be generated.
+https://github.com/axboe/liburing/issues/346
 
-Powerpc 8xx has 4 page sizes:
-- 4k
-- 16k
-- 512k
-- 8M
+Pavel did comment to my report and he did point out this thread as
+possibly a related issue.
 
-At the time being, vmalloc and vmap only support huge pages which are
-leaf at PMD level.
+I'm far from being 100% convinced that Stefan patch can help but I am
+going to give it a try and report back here if it does help.
 
-Here the PMD level is 4M, it doesn't correspond to any supported
-page size.
-
-For now, implement use of 16k and 512k pages which is done
-at PTE level.
-
-Support of 8M pages will be implemented later, it requires use of
-hugepd tables.
-
-To allow this, the architecture provides two functions:
-- arch_vmap_pte_range_map_size() which tells vmap_pte_range() what
-page size to use. A stub returning PAGE_SIZE is provided when the
-architecture doesn't provide this function.
-- arch_vmap_pte_supported_shift() which tells __vmalloc_node_range()
-what page shift to use for a given area size. A stub returning
-PAGE_SHIFT is provided when the architecture doesn't provide this
-function.
-
-The main change in v2 compared to the RFC is that powerpc 8xx
-specificities are not plugged anymore directly inside vmalloc code.
-
-Christophe Leroy (5):
-  mm/hugetlb: Change parameters of arch_make_huge_pte()
-  mm/pgtable: Add stubs for {pmd/pub}_{set/clear}_huge
-  mm/vmalloc: Enable mapping of huge pages at pte level in vmap
-  mm/vmalloc: Enable mapping of huge pages at pte level in vmalloc
-  powerpc/8xx: Add support for huge pages on VMAP and VMALLOC
-
- arch/arm64/include/asm/hugetlb.h              |  3 +-
- arch/arm64/mm/hugetlbpage.c                   |  5 +--
- arch/powerpc/Kconfig                          |  2 +-
- .../include/asm/nohash/32/hugetlb-8xx.h       |  5 +--
- arch/powerpc/include/asm/nohash/32/mmu-8xx.h  | 43 +++++++++++++++++++
- arch/sparc/include/asm/pgtable_64.h           |  3 +-
- arch/sparc/mm/hugetlbpage.c                   |  6 +--
- include/linux/hugetlb.h                       |  4 +-
- include/linux/pgtable.h                       | 26 ++++++++++-
- include/linux/vmalloc.h                       | 15 +++++++
- mm/hugetlb.c                                  |  6 ++-
- mm/migrate.c                                  |  4 +-
- mm/vmalloc.c                                  | 34 +++++++++++----
- 13 files changed, 126 insertions(+), 30 deletions(-)
-
--- 
-2.25.0
+Greetings,
+Olivier
 
