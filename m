@@ -2,90 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C75237B352
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 03:10:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 428EC37B355
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 03:12:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229984AbhELBLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 21:11:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57464 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229637AbhELBLr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 21:11:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 75B746191C;
-        Wed, 12 May 2021 01:10:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620781840;
-        bh=MiFiwv59iLa8fHDH6J32sia/o6DCitrl053+nXGCPxk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kwf0rn3YKIpklZd2FA0ZRWPYz788mBaRt2ZaPgwhmECO9TQh2Mqh3FVvSsRqlOzs7
-         ldB/OQul7lHfVUd8H2jSpDsk0KN84rwKmG5p0aqzKP6fidOHtZE+LzjHxHzcnoe8Zj
-         CdIg388pOjD7BDmACvvptzoVmNkZd9ZWFzU89amioAxZiD45SwQ7DUaoRMhtfZ58vV
-         Kxs+nzU3v8YQ7/lj+kvZRbdloBLoeOzXDY/kh45XHCmOV65JqJh8kJfkd4Y55e5s3M
-         MLlvrZ1RJ647PY+8x8MSGuguitVJ5mkBS9/aHYzDzIXmISm96xKfAX4d5nzkY3BZmY
-         Mue7hIciTpONA==
-Date:   Wed, 12 May 2021 04:10:37 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-Cc:     Shuah Khan <shuah@kernel.org>, linux-sgx@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] selftests/sgx: Migrate to kselftest harness
-Message-ID: <YJsrDc34d2vbc+At@kernel.org>
-References: <20210508035648.18176-1-jarkko@kernel.org>
- <20210508035648.18176-2-jarkko@kernel.org>
- <960f1cd8-d805-8ed8-6af0-eed1f49e3c65@intel.com>
+        id S229952AbhELBNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 21:13:39 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2706 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229637AbhELBNi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 21:13:38 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FfxXY178Bz1BLX0;
+        Wed, 12 May 2021 09:09:49 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.72) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Wed, 12 May 2021
+ 09:12:27 +0800
+Subject: Re: [PATCH 1/1] tpm: fix error return code in tpm2_get_cc_attrs_tbl()
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+CC:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+        "James Bottomley" <James.Bottomley@hansenpartnership.com>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210508025444.1977-1-thunder.leizhen@huawei.com>
+ <YJhI+lIt4devpAoS@kernel.org>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <b79b306a-71da-f655-3e68-11f1c9df4115@huawei.com>
+Date:   Wed, 12 May 2021 09:12:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <960f1cd8-d805-8ed8-6af0-eed1f49e3c65@intel.com>
+In-Reply-To: <YJhI+lIt4devpAoS@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.72]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 11:42:49AM -0700, Reinette Chatre wrote:
-> Hi Jarkko,
-> 
-> On 5/7/2021 8:56 PM, Jarkko Sakkinen wrote:
-> > Migrate to kselftest harness. Use a fixture test with enclave initialized
-> > and de-initialized for each of the existing three tests, in other words:
-> > 
-> > 1. One FIXTURE() for managing the enclave life-cycle.
-> > 2. Three TEST_F()'s, one for each test case.
-> 
-> These changes make it easier to add tests and I think it is a valuable
-> addition.
-> 
-> > 
-> > This gives a leaps better reporting than before. Here's an example
-> > transcript:
-> > 
-> > TAP version 13
-> > 1..3
-> > 0x0000000000000000 0x0000000000002000 0x03
-> > 0x0000000000002000 0x0000000000001000 0x05
-> > 0x0000000000003000 0x0000000000003000 0x03
-> > ok 1 enclave.unclobbered_vdso
-> > 0x0000000000000000 0x0000000000002000 0x03
-> > 0x0000000000002000 0x0000000000001000 0x05
-> > 0x0000000000003000 0x0000000000003000 0x03
-> > ok 2 enclave.clobbered_vdso
-> > 0x0000000000000000 0x0000000000002000 0x03
-> > 0x0000000000002000 0x0000000000001000 0x05
-> > 0x0000000000003000 0x0000000000003000 0x03
-> > ok 3 enclave.clobbered_vdso_and_user_function
-> > 
-> 
-> The output claims to conform to TAP13 but it does not seem as though all of
-> the output conforms to TAP13. I assume such output would confuse automated
-> systems.
 
-You mean
 
-0x0000000000000000 0x0000000000002000 0x03
-0x0000000000002000 0x0000000000001000 0x05
-0x0000000000003000 0x0000000000003000 0x03
+On 2021/5/10 4:41, Jarkko Sakkinen wrote:
+> On Sat, May 08, 2021 at 10:54:44AM +0800, Zhen Lei wrote:
+>> Fix to return a negative error code from the error handling
+>> case instead of 0, as done elsewhere in this function.
+>>
+>> Fixes: 58472f5cd4f6("tpm: validate TPM 2.0 commands")
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> 
+> In the commit message:
+> 
+> 1. Instead of writing "a negative error code", write -EFAULT.
+OK, I will change it.
 
-?
+> 2. Some explanation of the choice.
+Do you mean why I choice error code -EFAULT? There's a similar one above this branch.
 
-/Jarkko
->
+        if (nr_commands > 0xFFFFF) {
+                rc = -EFAULT;
+                goto out;
+        }
+
+
+> 
+>> ---
+>>  drivers/char/tpm/tpm2-cmd.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/char/tpm/tpm2-cmd.c b/drivers/char/tpm/tpm2-cmd.c
+>> index eff1f12d981a..c84d23951219 100644
+>> --- a/drivers/char/tpm/tpm2-cmd.c
+>> +++ b/drivers/char/tpm/tpm2-cmd.c
+>> @@ -656,6 +656,7 @@ int tpm2_get_cc_attrs_tbl(struct tpm_chip *chip)
+>>  
+>>  	if (nr_commands !=
+>>  	    be32_to_cpup((__be32 *)&buf.data[TPM_HEADER_SIZE + 5])) {
+>> +		rc = -EFAULT;
+>>  		tpm_buf_destroy(&buf);
+>>  		goto out;
+>>  	}
+>> -- 
+>> 2.25.1
+>>
+>>
+>>
+> 
+> Other than that looks good.
+> 
+> /Jarkko
+> 
+> .
+> 
+
