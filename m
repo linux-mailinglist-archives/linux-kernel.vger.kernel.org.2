@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73A3037D59D
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 23:54:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E34EF37D599
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 23:53:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359191AbhELSwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 14:52:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35912 "EHLO mail.kernel.org"
+        id S1359114AbhELSv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 14:51:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243879AbhELQmL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S243881AbhELQmL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 12 May 2021 12:42:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DAE06199C;
-        Wed, 12 May 2021 16:07:41 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C4D9D61C3B;
+        Wed, 12 May 2021 16:07:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620835662;
-        bh=tqHUNvc8a8XupP10MTLcTLfCepQE+wTuWBqFI5Vme6o=;
+        s=korg; t=1620835669;
+        bh=mA9WkzbfdPXuWHWAix469IF1+31mfDhXVxZl2nwyaGI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bvKmQ5I765RC+EImeDNkGaXV5NE6xW5fZriw7iVsKMBiDLIODs98SWvgtUax/wosn
-         jLRDLeq6/bcZsVVv7gLn1uI9v71Cqq2Nfpc+kIPxVX4ZeO2EJyUzl8/Na1IQHpVD0V
-         qTviW2Nlv3cJ1IwPieW0n7JTZOGn+0QcVuNmgYpU=
+        b=z/EYP0EM6zZ/45bN6EeDzif/OwSmyZDq67yE2SEvrnAOBMCgn2MzzMdR2Htxchq4k
+         1evUiSa6ImtDmrCeya/jch3fHzkAUD+7xMs2kg8pJcNPrdvWUdo+rmeegNWAwqdsFI
+         QekmoNG53SitPyKknJFUWBlplSO70OX6WkaMRX+g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        stable@vger.kernel.org, Alexander Lobakin <alobakin@pm.me>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 434/677] ataflop: potential out of bounds in do_format()
-Date:   Wed, 12 May 2021 16:48:00 +0200
-Message-Id: <20210512144851.757505713@linuxfoundation.org>
+Subject: [PATCH 5.12 437/677] xsk: Respect devices headroom and tailroom on generic xmit path
+Date:   Wed, 12 May 2021 16:48:03 +0200
+Message-Id: <20210512144851.860267896@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
 References: <20210512144837.204217980@linuxfoundation.org>
@@ -41,57 +42,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Alexander Lobakin <alobakin@pm.me>
 
-[ Upstream commit 1ffec389a6431782a8a28805830b6fae9bf00af1 ]
+[ Upstream commit 3914d88f7608e6c2e80e344474fa289370c32451 ]
 
-The function uses "type" as an array index:
+xsk_generic_xmit() allocates a new skb and then queues it for
+xmitting. The size of new skb's headroom is desc->len, so it comes
+to the driver/device with no reserved headroom and/or tailroom.
+Lots of drivers need some headroom (and sometimes tailroom) to
+prepend (and/or append) some headers or data, e.g. CPU tags,
+device-specific headers/descriptors (LSO, TLS etc.), and if case
+of no available space skb_cow_head() will reallocate the skb.
+Reallocations are unwanted on fast-path, especially when it comes
+to XDP, so generic XSK xmit should reserve the spaces declared in
+dev->needed_headroom and dev->needed tailroom to avoid them.
 
-	q = unit[drive].disk[type]->queue;
+Note on max(NET_SKB_PAD, L1_CACHE_ALIGN(dev->needed_headroom)):
 
-Unfortunately the bounds check on "type" isn't done until later in the
-function.  Fix this by moving the bounds check to the start.
+Usually, output functions reserve LL_RESERVED_SPACE(dev), which
+consists of dev->hard_header_len + dev->needed_headroom, aligned
+by 16.
 
-Fixes: bf9c0538e485 ("ataflop: use a separate gendisk for each media format")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+However, on XSK xmit hard header is already here in the chunk, so
+hard_header_len is not needed. But it'd still be better to align
+data up to cacheline, while reserving no less than driver requests
+for headroom. NET_SKB_PAD here is to double-insure there will be
+no reallocations even when the driver advertises no needed_headroom,
+but in fact need it (not so rare case).
+
+Fixes: 35fcde7f8deb ("xsk: support for Tx")
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+Link: https://lore.kernel.org/bpf/20210218204908.5455-5-alobakin@pm.me
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/ataflop.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ net/xdp/xsk.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
-index 104b713f4055..aed2c2a4f4ea 100644
---- a/drivers/block/ataflop.c
-+++ b/drivers/block/ataflop.c
-@@ -729,8 +729,12 @@ static int do_format(int drive, int type, struct atari_format_descr *desc)
- 	unsigned long	flags;
- 	int ret;
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 4faabd1ecfd1..143979ea4165 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -454,12 +454,16 @@ static int xsk_generic_xmit(struct sock *sk)
+ 	struct sk_buff *skb;
+ 	unsigned long flags;
+ 	int err = 0;
++	u32 hr, tr;
  
--	if (type)
-+	if (type) {
- 		type--;
-+		if (type >= NUM_DISK_MINORS ||
-+		    minor2disktype[type].drive_types > DriveType)
-+			return -EINVAL;
-+	}
+ 	mutex_lock(&xs->mutex);
  
- 	q = unit[drive].disk[type]->queue;
- 	blk_mq_freeze_queue(q);
-@@ -742,11 +746,6 @@ static int do_format(int drive, int type, struct atari_format_descr *desc)
- 	local_irq_restore(flags);
+ 	if (xs->queue_id >= xs->dev->real_num_tx_queues)
+ 		goto out;
  
- 	if (type) {
--		if (type >= NUM_DISK_MINORS ||
--		    minor2disktype[type].drive_types > DriveType) {
--			ret = -EINVAL;
--			goto out;
--		}
- 		type = minor2disktype[type].index;
- 		UDT = &atari_disk_type[type];
- 	}
++	hr = max(NET_SKB_PAD, L1_CACHE_ALIGN(xs->dev->needed_headroom));
++	tr = xs->dev->needed_tailroom;
++
+ 	while (xskq_cons_peek_desc(xs->tx, &desc, xs->pool)) {
+ 		char *buffer;
+ 		u64 addr;
+@@ -471,11 +475,13 @@ static int xsk_generic_xmit(struct sock *sk)
+ 		}
+ 
+ 		len = desc.len;
+-		skb = sock_alloc_send_skb(sk, len, 1, &err);
++		skb = sock_alloc_send_skb(sk, hr + len + tr, 1, &err);
+ 		if (unlikely(!skb))
+ 			goto out;
+ 
++		skb_reserve(skb, hr);
+ 		skb_put(skb, len);
++
+ 		addr = desc.addr;
+ 		buffer = xsk_buff_raw_get_data(xs->pool, addr);
+ 		err = skb_store_bits(skb, 0, buffer, len);
 -- 
 2.30.2
 
