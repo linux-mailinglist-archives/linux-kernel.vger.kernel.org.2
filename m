@@ -2,138 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ACBD37B57C
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 07:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C27137B57F
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 07:33:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbhELFeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 01:34:37 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:34651 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229580AbhELFef (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 01:34:35 -0400
-X-UUID: 5797150b343e496b963cce3ee13a5135-20210512
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=1Hig6ufK3upmffi3QW656W1WbomkrJd5dyZdBbMqwVw=;
-        b=BSE5Y2r0ghMJwbL/rAcEdfCIBDqrcRnixuB/KATPf742dyLtWetXWUe7goYoRsfz2/LecHpSYryN80CrTPsAhsrN6ORbV4cy4dVdvUNBOvGM+B02Q6aj1wNKIUYXQetgxYkRLqUkIzPp8dBWGuaSI6NhZw4mqNJp1MX1BGZS5Z0=;
-X-UUID: 5797150b343e496b963cce3ee13a5135-20210512
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <miles.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 499874169; Wed, 12 May 2021 13:33:22 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 12 May 2021 13:33:20 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 12 May 2021 13:33:20 +0800
-Message-ID: <1620797600.14730.7.camel@mtkswgap22>
-Subject: Re: [PATCH] mm/sparse: fix check_usemap_section_nr warnings
-From:   Miles Chen <miles.chen@mediatek.com>
-To:     Mike Rapoport <rppt@kernel.org>
-CC:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>
-Date:   Wed, 12 May 2021 13:33:20 +0800
-In-Reply-To: <YJpbWVrgJFLRpzl3@kernel.org>
-References: <20210511093114.15123-1-miles.chen@mediatek.com>
-         <YJpbWVrgJFLRpzl3@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        id S230097AbhELFeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 01:34:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57282 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230017AbhELFem (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 01:34:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C386D613C2;
+        Wed, 12 May 2021 05:33:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620797615;
+        bh=USzfXL7rhbiNnC/UNNFOQgAUDuwKT0jR8zKV7J6vvp4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=tY80cvzTIrxVZ/KlZkv4hTSQ0d6QMpNymy43XFKK4Nl4pg5jBiKiaaVe96lBT3sne
+         elPv0NK/sEy6D8KvvT99q6vd09rylQLChwFHrA2dxkbosxTt9iza8zPCXcL3RVUcpz
+         tR8QQCigsZGcNbYKbyHoeYgo0opjKqs/VqdoafsgvJbHpUP/UAg2CV4dThNi57rHlz
+         lWQwpz2czPHlvszx5g7ovXvuxtzhYuWaX2v4SjxSx0ijOrwd+Qe8pcNkbKEfiC5CAG
+         7HoXNA8R+NWu01QvHBNz2VZrcmewfLAv4NZ9AsNZ9f/uzMGEAlDGYHjQSsPW6nyDRR
+         iqp5x1wXGHYsQ==
+Date:   Wed, 12 May 2021 07:33:30 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/5] docs: hwmon: tmp103.rst: fix bad usage of UTF-8
+ chars
+Message-ID: <20210512073330.2b48e81a@coco.lan>
+In-Reply-To: <a4d0e1cf-20f1-d87c-0af6-b39f45afae5f@roeck-us.net>
+References: <cover.1620744606.git.mchehab+huawei@kernel.org>
+        <73b3c7c1eef5c12ddc941624d23689313bd56529.1620744606.git.mchehab+huawei@kernel.org>
+        <a4d0e1cf-20f1-d87c-0af6-b39f45afae5f@roeck-us.net>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 0075D64FEC39526C3973E4FE3D00DD596B03BFF770B42BCC6A67117FD9B851EC2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIxLTA1LTExIGF0IDEzOjI0ICswMzAwLCBNaWtlIFJhcG9wb3J0IHdyb3RlOg0K
-PiBPbiBUdWUsIE1heSAxMSwgMjAyMSBhdCAwNTozMToxNFBNICswODAwLCBNaWxlcyBDaGVuIHdy
-b3RlOg0KPiA+IEluIGN1cnJlbnQgaW1wbGVtZW50YXRpb24gb2Ygbm9kZV9kYXRhLCBpZiBDT05G
-SUdfTkVFRF9NVUxUSVBMRV9OT0RFUz15LA0KPiA+IG5vZGVfZGF0YSBpcyBhbGxvY2F0ZWQgYnkg
-a3ptYWxsb2MuIElmIENPTkZJR19ORUVEX01VTFRJUExFX05PREVTPW4sDQo+ID4gd2UgdXNlIGEg
-Z2xvYmFsIHZhcmlhYmxlIG5hbWVkICJjb250aWdfcGFnZV9kYXRhIi4NCj4gPiANCj4gPiBJZiBD
-T05GSUdfREVCVUdfVklSVFVBTCBpcyBub3QgZW5hYmxlZC4gX19wYSgpIGNhbiBoYW5kbGUgYm90
-aCBremFsbG9jIGFuZA0KPiA+IHN5bWJvbCBjYXNlcy4gQnV0IGlmIENPTkZJR19ERUJVR19WSVJU
-VUFMIGlzIHNldCwgd2Ugd2lsbCBoYXZlIHRoZQ0KPiA+ICJ2aXJ0X3RvX3BoeXMgdXNlZCBmb3Ig
-bm9uLWxpbmVhciBhZGRyZXNzIiB3YXJuaW5nIHdoZW4gYm9vdGluZy4NCj4gDQo+IE1heWJlIHdl
-J2xsIGp1c3QgYWxsb2NhdGUgcGdkYXQgZm9yIENPTkZJR19ORUVEX01VTFRJUExFX05PREVTPW4g
-KHdoaWNoIGlzDQo+IGVzc2VudGlhbGx5ICFOVU1BKSBjYXNlIGluLCBzYXksIGZyZWVfYXJlYV9p
-bml0KCk/DQoNCg0KdGhhbmtzIGZvciB5b3VyIGNvbW1lbnQuDQoNCkkgY2hlY2sgdGhlIHNvdXJj
-ZSB0cmVlIGFuZCBmb3VuZCB0aGF0IGNvbnRpZ19wYWdlX2RhdGEgaXMgdXNlZCBieQ0KY3Jhc2hf
-Y29yZS5jIGFzIGEgc3ltYm9sLiBJIGFtIG5vdCBmYW1pbGlhciB3aXRoIGNyYXNoX2NvcmUgYnV0
-IEkgZ3Vlc3MNCmFsbG9jYXRlIHBnZGF0IG1heSBicmVhayB0aGlzIGNyYXNoX2NvcmUgdXNlcnMu
-DQoNCkZvciBleGFtcGxlOiBzb21lIHVzZXJzcGFjZSBzY3JpcHRzIHdhbnQgdG8gcmVhZCB0aGUg
-YWRkcmVzcyBvZg0KY29udGlnX3BhZ2VfZGF0YSBzeW1ib2wgZnJvbSBhIGNvcmVmaWxlLg0KDQpr
-ZXJuZWwvY3Jhc2hfY29yZS5jOjQ2MDogICAgICAgIFZNQ09SRUlORk9fU1lNQk9MKGNvbnRpZ19w
-YWdlX2RhdGEpOw0KDQojaWZuZGVmIENPTkZJR19ORUVEX01VTFRJUExFX05PREVTDQogICAgICAg
-IFZNQ09SRUlORk9fU1lNQk9MKG1lbV9tYXApOw0KICAgICAgICBWTUNPUkVJTkZPX1NZTUJPTChj
-b250aWdfcGFnZV9kYXRhKTsNCiNlbmRpZg0KDQoNClBlcmhhcHMgd2Ugc2hvdWxkIHVzZSBjdXJy
-ZW50IHNpbXBsZSBhcHByb2FjaD8NCg0KDQo+ICANCj4gPiBUbyBmaXggaXQsIGNyZWF0ZSBhIHNt
-YWxsIGZ1bmN0aW9uIHRvIGhhbmRsZSBib3RoIHRyYW5zbGF0aW9uLg0KPiA+IA0KPiA+IFdhcm5p
-bmcgbWVzc2FnZToNCj4gPiBbICAgIDAuMDAwMDAwXSAtLS0tLS0tLS0tLS1bIGN1dCBoZXJlIF0t
-LS0tLS0tLS0tLS0NCj4gPiBbICAgIDAuMDAwMDAwXSB2aXJ0X3RvX3BoeXMgdXNlZCBmb3Igbm9u
-LWxpbmVhciBhZGRyZXNzOiAoX19fX3B0cnZhbF9fX18pIChjb250aWdfcGFnZV9kYXRhKzB4MC8w
-eDFjMDApDQo+ID4gWyAgICAwLjAwMDAwMF0gV0FSTklORzogQ1BVOiAwIFBJRDogMCBhdCBhcmNo
-L2FybTY0L21tL3BoeXNhZGRyLmM6MTUgX192aXJ0X3RvX3BoeXMrMHg1OC8weDY4DQo+ID4gWyAg
-ICAwLjAwMDAwMF0gTW9kdWxlcyBsaW5rZWQgaW46DQo+ID4gWyAgICAwLjAwMDAwMF0gQ1BVOiAw
-IFBJRDogMCBDb21tOiBzd2FwcGVyIFRhaW50ZWQ6IEcgICAgICAgIFcgICAgICAgICA1LjEzLjAt
-cmMxLTAwMDc0LWcxMTQwYWI1OTJlMmUgIzMNCj4gPiBbICAgIDAuMDAwMDAwXSBIYXJkd2FyZSBu
-YW1lOiBsaW51eCxkdW1teS12aXJ0IChEVCkNCj4gPiBbICAgIDAuMDAwMDAwXSBwc3RhdGU6IDYw
-MDAwMGM1IChuWkN2IGRhSUYgLVBBTiAtVUFPIC1UQ08gQlRZUEU9LS0pDQo+ID4gWyAgICAwLjAw
-MDAwMF0gcGMgOiBfX3ZpcnRfdG9fcGh5cysweDU4LzB4NjgNCj4gPiBbICAgIDAuMDAwMDAwXSBs
-ciA6IF9fdmlydF90b19waHlzKzB4NTQvMHg2OA0KPiA+IFsgICAgMC4wMDAwMDBdIHNwIDogZmZm
-ZjgwMDAxMTgzM2U3MA0KPiA+IFsgICAgMC4wMDAwMDBdIHgyOTogZmZmZjgwMDAxMTgzM2U3MCB4
-Mjg6IDAwMDAwMDAwNDE4YTAwMTggeDI3OiAwMDAwMDAwMDAwMDAwMDAwDQo+ID4gWyAgICAwLjAw
-MDAwMF0geDI2OiAwMDAwMDAwMDAwMDAwMDBhIHgyNTogZmZmZjgwMDAxMWI3MDAwMCB4MjQ6IGZm
-ZmY4MDAwMTFiNzAwMDANCj4gPiBbICAgIDAuMDAwMDAwXSB4MjM6IGZmZmZmYzAwMDFjMDAwMDAg
-eDIyOiBmZmZmODAwMDExYjcwMDAwIHgyMTogMDAwMDAwMDA0N2ZmZmZiMA0KPiA+IFsgICAgMC4w
-MDAwMDBdIHgyMDogMDAwMDAwMDAwMDAwMDAwOCB4MTk6IGZmZmY4MDAwMTFiMDgyYzAgeDE4OiBm
-ZmZmZmZmZmZmZmZmZmZmDQo+ID4gWyAgICAwLjAwMDAwMF0geDE3OiAwMDAwMDAwMDAwMDAwMDAw
-IHgxNjogZmZmZjgwMDAxMTgzM2JmOSB4MTU6IDAwMDAwMDAwMDAwMDAwMDQNCj4gPiBbICAgIDAu
-MDAwMDAwXSB4MTQ6IDAwMDAwMDAwMDAwMDBmZmYgeDEzOiBmZmZmODAwMDExODZhNTQ4IHgxMjog
-MDAwMDAwMDAwMDAwMDAwMA0KPiA+IFsgICAgMC4wMDAwMDBdIHgxMTogMDAwMDAwMDAwMDAwMDAw
-MCB4MTA6IDAwMDAwMDAwZmZmZmZmZmYgeDkgOiAwMDAwMDAwMDAwMDAwMDAwDQo+ID4gWyAgICAw
-LjAwMDAwMF0geDggOiBmZmZmODAwMDExNWM5MDAwIHg3IDogNzM3NTIwNzM3OTY4NzA1ZiB4NiA6
-IGZmZmY4MDAwMTFiNjJlZjgNCj4gPiBbICAgIDAuMDAwMDAwXSB4NSA6IDAwMDAwMDAwMDAwMDAw
-MDAgeDQgOiAwMDAwMDAwMDAwMDAwMDAxIHgzIDogMDAwMDAwMDAwMDAwMDAwMA0KPiA+IFsgICAg
-MC4wMDAwMDBdIHgyIDogMDAwMDAwMDAwMDAwMDAwMCB4MSA6IGZmZmY4MDAwMTE1OTU4NWUgeDAg
-OiAwMDAwMDAwMDAwMDAwMDU4DQo+ID4gWyAgICAwLjAwMDAwMF0gQ2FsbCB0cmFjZToNCj4gPiBb
-ICAgIDAuMDAwMDAwXSAgX192aXJ0X3RvX3BoeXMrMHg1OC8weDY4DQo+ID4gWyAgICAwLjAwMDAw
-MF0gIGNoZWNrX3VzZW1hcF9zZWN0aW9uX25yKzB4NTAvMHhmYw0KPiA+IFsgICAgMC4wMDAwMDBd
-ICBzcGFyc2VfaW5pdF9uaWQrMHgxYWMvMHgyOGMNCj4gPiBbICAgIDAuMDAwMDAwXSAgc3BhcnNl
-X2luaXQrMHgxYzQvMHgxZTANCj4gPiBbICAgIDAuMDAwMDAwXSAgYm9vdG1lbV9pbml0KzB4NjAv
-MHg5MA0KPiA+IFsgICAgMC4wMDAwMDBdICBzZXR1cF9hcmNoKzB4MTg0LzB4MWYwDQo+ID4gWyAg
-ICAwLjAwMDAwMF0gIHN0YXJ0X2tlcm5lbCsweDc4LzB4NDg4DQo+ID4gWyAgICAwLjAwMDAwMF0g
-LS0tWyBlbmQgdHJhY2UgZjY4NzI4YTBkMzA1M2I2MCBdLS0tDQo+ID4gDQo+ID4gU2lnbmVkLW9m
-Zi1ieTogTWlsZXMgQ2hlbiA8bWlsZXMuY2hlbkBtZWRpYXRlay5jb20+DQo+ID4gLS0tDQo+ID4g
-IG1tL3NwYXJzZS5jIHwgMTMgKysrKysrKysrKystLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgMTEg
-aW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvbW0v
-c3BhcnNlLmMgYi9tbS9zcGFyc2UuYw0KPiA+IGluZGV4IGIyYWRhOWRjMDBjYi4uNTVjMThhZmYz
-ZTQyIDEwMDY0NA0KPiA+IC0tLSBhL21tL3NwYXJzZS5jDQo+ID4gKysrIGIvbW0vc3BhcnNlLmMN
-Cj4gPiBAQCAtMzQ0LDYgKzM0NCwxNSBAQCBzaXplX3QgbWVtX3NlY3Rpb25fdXNhZ2Vfc2l6ZSh2
-b2lkKQ0KPiA+ICAJcmV0dXJuIHNpemVvZihzdHJ1Y3QgbWVtX3NlY3Rpb25fdXNhZ2UpICsgdXNl
-bWFwX3NpemUoKTsNCj4gPiAgfQ0KPiA+ICANCj4gPiArc3RhdGljIGlubGluZSBwaHlzX2FkZHJf
-dCBwZ2RhdF90b19waHlzKHN0cnVjdCBwZ2xpc3RfZGF0YSAqcGdkYXQpDQo+ID4gK3sNCj4gPiAr
-I2lmbmRlZiBDT05GSUdfTkVFRF9NVUxUSVBMRV9OT0RFUw0KPiA+ICsJcmV0dXJuIF9fcGFfc3lt
-Ym9sKHBnZGF0KTsNCj4gPiArI2Vsc2UNCj4gPiArCXJldHVybiBfX3BhKHBnZGF0KTsNCj4gPiAr
-I2VuZGlmDQo+ID4gK30NCj4gPiArDQo+ID4gICNpZmRlZiBDT05GSUdfTUVNT1JZX0hPVFJFTU9W
-RQ0KPiA+ICBzdGF0aWMgc3RydWN0IG1lbV9zZWN0aW9uX3VzYWdlICogX19pbml0DQo+ID4gIHNw
-YXJzZV9lYXJseV91c2VtYXBzX2FsbG9jX3BnZGF0X3NlY3Rpb24oc3RydWN0IHBnbGlzdF9kYXRh
-ICpwZ2RhdCwNCj4gPiBAQCAtMzYyLDcgKzM3MSw3IEBAIHNwYXJzZV9lYXJseV91c2VtYXBzX2Fs
-bG9jX3BnZGF0X3NlY3Rpb24oc3RydWN0IHBnbGlzdF9kYXRhICpwZ2RhdCwNCj4gPiAgCSAqIGZy
-b20gdGhlIHNhbWUgc2VjdGlvbiBhcyB0aGUgcGdkYXQgd2hlcmUgcG9zc2libGUgdG8gYXZvaWQN
-Cj4gPiAgCSAqIHRoaXMgcHJvYmxlbS4NCj4gPiAgCSAqLw0KPiA+IC0JZ29hbCA9IF9fcGEocGdk
-YXQpICYgKFBBR0VfU0VDVElPTl9NQVNLIDw8IFBBR0VfU0hJRlQpOw0KPiA+ICsJZ29hbCA9IHBn
-ZGF0X3RvX3BoeXMocGdkYXQpICYgKFBBR0VfU0VDVElPTl9NQVNLIDw8IFBBR0VfU0hJRlQpOw0K
-PiA+ICAJbGltaXQgPSBnb2FsICsgKDFVTCA8PCBQQV9TRUNUSU9OX1NISUZUKTsNCj4gPiAgCW5p
-ZCA9IGVhcmx5X3Bmbl90b19uaWQoZ29hbCA+PiBQQUdFX1NISUZUKTsNCj4gPiAgYWdhaW46DQo+
-ID4gQEAgLTM5MCw3ICszOTksNyBAQCBzdGF0aWMgdm9pZCBfX2luaXQgY2hlY2tfdXNlbWFwX3Nl
-Y3Rpb25fbnIoaW50IG5pZCwNCj4gPiAgCX0NCj4gPiAgDQo+ID4gIAl1c2VtYXBfc25yID0gcGZu
-X3RvX3NlY3Rpb25fbnIoX19wYSh1c2FnZSkgPj4gUEFHRV9TSElGVCk7DQo+ID4gLQlwZ2RhdF9z
-bnIgPSBwZm5fdG9fc2VjdGlvbl9ucihfX3BhKHBnZGF0KSA+PiBQQUdFX1NISUZUKTsNCj4gPiAr
-CXBnZGF0X3NuciA9IHBmbl90b19zZWN0aW9uX25yKHBnZGF0X3RvX3BoeXMocGdkYXQpID4+IFBB
-R0VfU0hJRlQpOw0KPiA+ICAJaWYgKHVzZW1hcF9zbnIgPT0gcGdkYXRfc25yKQ0KPiA+ICAJCXJl
-dHVybjsNCj4gPiAgDQo+ID4gLS0gDQo+ID4gMi4xOC4wDQo+IA0KDQo=
+Hi Guenter,
 
+Em Tue, 11 May 2021 11:55:53 -0700
+Guenter Roeck <linux@roeck-us.net> escreveu:
+
+> On 5/11/21 8:01 AM, Mauro Carvalho Chehab wrote:
+> > While UTF-8 characters can be used at the Linux documentation,
+> > the best is to use them only when ASCII doesn't offer a good replacemen=
+t.
+> > So, replace the occurences of the following UTF-8 characters:
+> >=20
+> > 	- U+2013 ('=E2=80=93'): EN DASH
+> >=20
+> > In this specific case, EN DASH was used instead of a minus
+> > sign. So, replace it by a single hyphen.
+> >=20
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org> =20
+>=20
+> Confused. Is that supposed to replace the earlier patch (docs: hwmon:
+> avoid using UTF-8 chars) ? I thought that was more comprehensive
+> and just as valid. Anyway, should I drop that patch ?
+
+If you applied already the previous patch, that's OK. Just ignore this
+one.
+
+It is just that, after some discussions around EM/EN DASH on
+patch 00/53[1], I opted to split the changes on three parts:
+
+	- UTF-8 fixes;
+	- non DASH UTF-8 replacements;
+	- EM/EN DASH.
+
+in order to make easier for reviewers to discuss EM/EN DASH if needed.
+
+-
+
+[1] You can see the full thread at:
+
+	https://lore.kernel.org/lkml/cover.1620641727.git.mchehab+huawei@kernel.or=
+g/
+
+    In summary, my original patchset were replacing both
+    EM/EN DASH to a single hyphen.
+
+    Yet, several maintainers seem to prefer using "--" for EN DASH
+    and either "--" or "---" for EM DASH.
+
+    Neither -- nor --- would make any sense on tmp103.rst, as here it
+    means a minus sign.
+   =20
+
+>=20
+> Guenter
+>=20
+> > ---
+> >   Documentation/hwmon/tmp103.rst | 4 ++--
+> >   1 file changed, 2 insertions(+), 2 deletions(-)
+> >=20
+> > diff --git a/Documentation/hwmon/tmp103.rst b/Documentation/hwmon/tmp10=
+3.rst
+> > index e195a7d14309..b3ef81475cf8 100644
+> > --- a/Documentation/hwmon/tmp103.rst
+> > +++ b/Documentation/hwmon/tmp103.rst
+> > @@ -21,10 +21,10 @@ Description
+> >   The TMP103 is a digital output temperature sensor in a four-ball
+> >   wafer chip-scale package (WCSP). The TMP103 is capable of reading
+> >   temperatures to a resolution of 1=C2=B0C. The TMP103 is specified for
+> > -operation over a temperature range of =E2=80=9340=C2=B0C to +125=C2=B0=
+C.
+> > +operation over a temperature range of -40=C2=B0C to +125=C2=B0C.
+> >  =20
+> >   Resolution: 8 Bits
+> > -Accuracy: =C2=B11=C2=B0C Typ (=E2=80=9310=C2=B0C to +100=C2=B0C)
+> > +Accuracy: =C2=B11=C2=B0C Typ (-10=C2=B0C to +100=C2=B0C)
+> >  =20
+> >   The driver provides the common sysfs-interface for temperatures (see
+> >   Documentation/hwmon/sysfs-interface.rst under Temperatures).
+> >  =20
+>=20
+
+
+
+Thanks,
+Mauro
