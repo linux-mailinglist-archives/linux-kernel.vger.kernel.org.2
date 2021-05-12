@@ -2,80 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDD6437F055
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 02:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B44337F054
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 02:22:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235656AbhEMAYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 20:24:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53496 "EHLO
+        id S233827AbhEMAXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 20:23:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346258AbhEMAWW (ORCPT
+        with ESMTP id S231645AbhEMAXD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 20:22:22 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1018EC061359
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 16:58:18 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620863896;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=CX9+MuuWEQWnFC1f0v4umjM+QedIzoRjhbbbY3SBY/Y=;
-        b=ZNDkANDGwRROjrzWGWRElNOkfA4C5+41NwZ2A9s0gdQwx+QiRLzwLdaNUx8Wf3ThiIpe+b
-        n+1R3bNi0O0QftDuxj2Fw6T1I0LntXzBhPb667WmYCLm+Lpodyx1cHkc1pQvoZbmzLHrbm
-        ecG+QYYA/4kdnMHBa8BSYfi/2oAu7plqeh81l1/JlUehY5fUVrT4o4AAVHWQDXet5Imc74
-        kcDJKfxytEAI4yeEjnK2pA4n64S8S//KKe8G5BfgMcvoF6ufO9FTzqHUm71eHR+HCxNW8a
-        cH1FG/qpR3x4qv77ndbn/EUlLb0BWUWW2g0T3EoTBggEaqOt50j7EbheX3KCWw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620863896;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=CX9+MuuWEQWnFC1f0v4umjM+QedIzoRjhbbbY3SBY/Y=;
-        b=o7kCPiWS7RzQ4S/OEGRUHYOByNw8Pm0MPlWue0VP2qZAaMZENXhqfU2lI/HUAOhahAEaS/
-        oe6Jw92bhcThLABQ==
-To:     Alexey Dobriyan <adobriyan@gmail.com>, mingo@redhat.com,
-        peterz@infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        Alexey Dobriyan <adobriyan@gmail.com>, x86@kernel.org
-Subject: Re: [PATCH 1/4] sched: make nr_running() return 32-bit
-In-Reply-To: <20210422200228.1423391-1-adobriyan@gmail.com>
-Date:   Thu, 13 May 2021 01:58:16 +0200
-Message-ID: <87fsyr5wtj.ffs@nanos.tec.linutronix.de>
+        Wed, 12 May 2021 20:23:03 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6A0BC035433
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 16:58:45 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id a5so12967967pfa.11
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 16:58:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fBeZiHSroHCA0AHxTWkdEHWAZk+ZdrTZZucuCIgP8Bs=;
+        b=SVYkyc1aY1BgfeSpf/utpVtPeuSNxwrEKKDYOcKZ49rgapj6USnKktoOsSHRJkAJWY
+         NSwU1NsU2OmQdbw8gd728mnYLlV63nzzcx2/f9Giby3jQHDT5oQfK3idKwSxy6psVcio
+         CqILIxNCQ11YkRbFSXEyxnEEbFhf0ElRx41EEmJxN2Jfrxk8pc3+f15KvmV77dJUnztT
+         RSd0A8U8E/+mNT8W3Sqio+DMlt/XhVwyPduWhZ/F783pmnmtqNSRhzk+Ou2UmrO0XfRl
+         6N7OAgwIhkRmNAIcaWrTAlkc2cfSEsR6E1/OpW/U22DvP38NECZq5x/FOD6k8eLmXOio
+         x+DA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fBeZiHSroHCA0AHxTWkdEHWAZk+ZdrTZZucuCIgP8Bs=;
+        b=I4mXzMpcHYytJFhKe2Q4DoRkweR5eWQbL7sNqkB7AyAcbnulZcQZVH6FwJCwQCe1Ub
+         VDzepKiikQUcW1fScLhRbOqbPrarOSUSREbPGs/1PkLx0QVr38GVJA9tGQ6tlvanYcPr
+         md03/fXQIkEhguMNrMwRAkqk/yvbl+myUzHChp63CS94HRLGJwykddzfMnVV+EMktE1j
+         J17IT3nVa3IQHPrx3Iq84Ne1VprM1n5DuGGKAmER5EjHyVqg/4LGfsy/jofMAK8lZ/BX
+         kNIRflI9eRlRxIpHAb3mFNz0w9g0rkAl61s+vYg0YmCqp1mssqEIfIZXXj7jluMSJ9jR
+         8WNA==
+X-Gm-Message-State: AOAM531TQJ0t3HO+7IebGvlF39qbPB8n+04L7UjG4RLz0i2RULpu9ChZ
+        LE00TIev6c3alfDSb1KmHADzEA==
+X-Google-Smtp-Source: ABdhPJweDUbIQTmPn54zQGHe4eVzEbNXUwp/h7jdBJ6xevizYah+dXtVnzInxtGweFqnzxFTY49RxQ==
+X-Received: by 2002:a17:90b:4d08:: with SMTP id mw8mr1270613pjb.202.1620863924660;
+        Wed, 12 May 2021 16:58:44 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id b2sm5273827pji.28.2021.05.12.16.58.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 16:58:43 -0700 (PDT)
+Date:   Wed, 12 May 2021 23:58:40 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Igor Mammedov <imammedo@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/8] KVM: Scalable memslots implementation
+Message-ID: <YJxrsI89kdiM5Dk2@google.com>
+References: <cover.1618322001.git.maciej.szmigiero@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1618322001.git.maciej.szmigiero@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alexey,
+On Tue, Apr 13, 2021, Maciej S. Szmigiero wrote:
+> From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
 
-On Thu, Apr 22 2021 at 23:02, Alexey Dobriyan wrote:
-> Creating 2**32 tasks is impossible due to futex pid limits and wasteful
-> anyway. Nobody has done it.
->
+Grr, this entire series got autobinned into my spam folder, which I obviously
+don't check very often.  I won't be able to take a look until next week at the
+earliest, any chance you'd want to rebase to the latest kvm/queue and spin v3?
+The rebase will probably be a bit painful, but on the plus side the majority of
+the arch specific changes will disappear now that walking the memslots for the
+MMU notifiers is done in common code.
 
-this whole pile lacks useful numbers. What's the actual benefit of that
-churn?
-
-Just with the default config for one of my reference machines:
-
-   text		data	bss	dec	 hex	 filename
-16679864	6627950	1671296	24979110 17d26a6 ../build/vmlinux-before
-16679894	6627950	1671296	24979140 17d26c4 ../build/vmlinux-after
-------------------------------------------------------------------------
-     +30
-
-I'm truly impressed by the massive savings of this change and I'm even
-more impressed by the justification:
-
-> Bring nr_running() into 32-bit world to save on REX prefixes.
-
-Aside of the obvious useless churn, REX prefixes are universaly true for
-all architectures, right? There is a world outside x86 ...
-
-Thanks,
-
-        tglx
-
-
-
+>  arch/arm64/kvm/Kconfig              |   1 +
+>  arch/arm64/kvm/mmu.c                |  20 +-
+>  arch/mips/kvm/Kconfig               |   1 +
+>  arch/mips/kvm/mmu.c                 |  12 +-
+>  arch/powerpc/kvm/Kconfig            |   1 +
+>  arch/powerpc/kvm/book3s_64_mmu_hv.c |  16 +-
+>  arch/powerpc/kvm/book3s_64_vio.c    |   2 +-
+>  arch/powerpc/kvm/book3s_64_vio_hv.c |   2 +-
+>  arch/powerpc/kvm/book3s_hv.c        |   3 +-
+>  arch/powerpc/kvm/book3s_hv_nested.c |   4 +-
+>  arch/powerpc/kvm/book3s_hv_uvmem.c  |  14 +-
+>  arch/powerpc/kvm/book3s_pr.c        |  12 +-
+>  arch/s390/kvm/Kconfig               |   1 +
+>  arch/s390/kvm/kvm-s390.c            |  66 +---
+>  arch/s390/kvm/kvm-s390.h            |  15 +
+>  arch/s390/kvm/pv.c                  |   4 +-
+>  arch/x86/include/asm/kvm_host.h     |   2 +-
+>  arch/x86/kvm/Kconfig                |   1 +
+>  arch/x86/kvm/mmu/mmu.c              |  78 ++--
+>  arch/x86/kvm/mmu/tdp_mmu.c          |  15 +-
+>  arch/x86/kvm/x86.c                  |  18 +-
+>  include/linux/kvm_host.h            | 139 ++++---
+>  virt/kvm/kvm_main.c                 | 592 ++++++++++++++++------------
+>  23 files changed, 603 insertions(+), 416 deletions(-)
+> 
