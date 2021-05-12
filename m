@@ -2,112 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B2B237BF00
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 15:56:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE2837BF04
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 15:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230472AbhELN6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 09:58:01 -0400
-Received: from mail.efficios.com ([167.114.26.124]:49570 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230196AbhELN6A (ORCPT
+        id S230370AbhELN7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 09:59:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230037AbhELN7R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 09:58:00 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 2E406331BF6;
-        Wed, 12 May 2021 09:56:52 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id Q5YjFhWnJ2Qt; Wed, 12 May 2021 09:56:50 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 240E833211B;
-        Wed, 12 May 2021 09:56:50 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 240E833211B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1620827810;
-        bh=TiLCLn2QTd4JQkZHarkDu8my0WUJj5FPPxSTRQX7FwI=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=D4Nulqcb5ZQ9AxnTisIBO5qldY7Fs/CFc7iEDMVvaiNryqluY1QTFg8z43ALhqY3t
-         x2x8vI45FtBF0WRuTxIkifFxV5aWqEkULNC83K4TVytpFGKcWXRIv3Kmwbu9K5QOSb
-         yN3kBZisGD/UAsUFzMUnoThQM1juWcTqHPEuhj1vE63pHFxzwldKHGI+hAFgQj6nzF
-         YOMq7+GFO5ir9VaWEpSZRFHfXVTqUkq8PR/O1YUOB8IhLP+FzMkYHBLQPSMxQ04vyR
-         IeAij3PvzU5tYl1ixXk2JxDbhZ8hZvGnCXGFAtxYPwAsXjV+NNxTsB4qfJnzdycv6A
-         xl0kkQX1/WS8w==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id qDwG2C_odGRc; Wed, 12 May 2021 09:56:50 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 0B6B5332111;
-        Wed, 12 May 2021 09:56:50 -0400 (EDT)
-Date:   Wed, 12 May 2021 09:56:49 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Jan Kratochvil <jan.kratochvil@redhat.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Pedro Alves <palves@redhat.com>,
-        Simon Marchi <simon.marchi@efficios.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <1879292286.40455.1620827809948.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20210512133615.GA19594@redhat.com>
-References: <20210511165626.GA13720@redhat.com> <CAHk-=whLqbTNc1T+rHCm-kxbVAuhK3hjo5fOgDVf5-z--x1mvQ@mail.gmail.com> <20210511175341.GA14488@redhat.com> <20210511180627.GB14488@redhat.com> <20210512133615.GA19594@redhat.com>
-Subject: Re: [PATCH RESEND2] ptrace: make ptrace() fail if the tracee
- changed its pid unexpectedly
+        Wed, 12 May 2021 09:59:17 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E0C2C061574;
+        Wed, 12 May 2021 06:58:09 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id d3-20020a9d29030000b029027e8019067fso20566540otb.13;
+        Wed, 12 May 2021 06:58:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WGXaBS28zz51CK0WFE0Kv69wdQDd8SbaKjqA6EoSxJI=;
+        b=BpGBM/mGowxVCrCqMocUHv5X7QPLZl4OC4fOOmk1jSHxzgESJVNBjZHCFlpyk36DqV
+         1O/yMZIey1I3whwVqT1lX4DmmwMPo2rIJ1cZE+YtINpJV2GRxSKIVLVIqs1nYl/vUrGy
+         uE7255NMWA/PdaugAmjwV8fcFPQ88pS/TcRKrw8Mur2QuxOU8gQGPMuJFAExQ19CrkT7
+         UI+EyHTBa2M/MntzcDDWEvipyHKfr8HUIRsXNzZStq82Pitu+3Zqyi5P0j8Fa4+3OwZb
+         vqYv6IDYCoCxQ8b5Dq+tRcIpIWFxyHNeqBC2iYuFNJS6QGcK3rwrPsyTOsP7hthPzReQ
+         hIxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=WGXaBS28zz51CK0WFE0Kv69wdQDd8SbaKjqA6EoSxJI=;
+        b=sKEZtOJiUwmuE/a+eiqXmgH+fJzIhQw0WK3V4ZHZKIEoMHdzph3w2CoOdhtZZEgh/M
+         m2zz9IQjZ1TTlW68FVr7WIR4gU+93iGiDw2RJc3UBt5V8cXfyb7cUaojrfo51/FKFpIV
+         68Xf6JFjzMVF8j0dZFOxNhhIOlK7jFRdzkumeTz7letI0CbnbbI1QGk5JklymQcTH/YV
+         26Mb/F8zkHBGzp2YPZb914f03/H9wi/SnLTCtwWNorag65BNLOFmiF1o9OpTpH/9Rb3r
+         c6iMkRiYIqntVyVMK8SpjiL1y9ZH/llNfvvhDcT082jzz5hFoV9tSwEts2uswekEWuV/
+         p+2A==
+X-Gm-Message-State: AOAM531TrPtls6dHaCC1XnYMIoTy/IVZQdOB2U2wu32e0f9X+x8tSLpz
+        XkIBnFsLe3aAVtW8dpv93nE=
+X-Google-Smtp-Source: ABdhPJwTsVwr4E7FCdeSrzIC/1Dirq5RBQHWYxwaAztDWOxeaKsDlM5LxphiCfuvyctmpCsCc4W8tQ==
+X-Received: by 2002:a05:6830:4030:: with SMTP id i16mr7194414ots.294.1620827888519;
+        Wed, 12 May 2021 06:58:08 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id e20sm17225oot.11.2021.05.12.06.58.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 06:58:07 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 12 May 2021 06:58:06 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     shruthi.sanil@intel.com
+Cc:     wim@linux-watchdog.org, linux-watchdog@vger.kernel.org,
+        linux-kernel@vger.kernel.org, andriy.shevchenko@linux.intel.com,
+        kris.pan@linux.intel.com, mgross@linux.intel.com,
+        srikanth.thokala@intel.com, lakshmi.bai.raja.subramanian@intel.com,
+        mallikarjunappa.sangannavar@intel.com
+Subject: Re: [PATCH 01/10] watchdog: keembay: Update WDT pre-timeout during
+ the initialization
+Message-ID: <20210512135806.GA1333995@roeck-us.net>
+References: <20210512084724.14634-1-shruthi.sanil@intel.com>
+ <20210512084724.14634-2-shruthi.sanil@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4018 (ZimbraWebClient - FF88 (Linux)/8.8.15_GA_4007)
-Thread-Topic: ptrace: make ptrace() fail if the tracee changed its pid unexpectedly
-Thread-Index: SQXpGls19Im4Qivw+1Gpa/jcGJBPGg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210512084724.14634-2-shruthi.sanil@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On May 12, 2021, at 9:36 AM, Oleg Nesterov oleg@redhat.com wrote:
-
-> On 05/11, Oleg Nesterov wrote:
->>
->> On 05/11, Oleg Nesterov wrote:
->> >
->> > On 05/11, Linus Torvalds wrote:
->> >
->> > > That said, why this:
->> > >
->> > > > +       rcu_read_lock();
->> > > > +       pid = task_pid_nr_ns(task, task_active_pid_ns(task->parent));
->> > > > +       rcu_read_unlock();
->> > >
->> > > I don't see why the RCU read lock would be needed? task_pid_nr_ns()
->> > > does any required locking itself, afaik.
->> > >
->> > > And even if it wasn't, this all happens with siglock held, can
->> > > anything actually change.
->> >
->> > ... and with tasklist_lock held.
->> >
->> > Hmm. Linus, I am shy to admit I can't answer immediately, I'll recheck
->> > tomorrow after sleep. But it seems you are right.
->>
->> most probably to protect task->parent, not sure, this was 6 month ago...
->> but in this case we can use "current". I'll recheck.
+On Wed, May 12, 2021 at 02:17:15PM +0530, shruthi.sanil@intel.com wrote:
+> From: Shruthi Sanil <shruthi.sanil@intel.com>
 > 
-> Of course you are right, rcu_read_lock() is not needed. Plus we can use
-> task_pid_vnr() rather than task_pid_nr_ns(). I've sent v2.
+> The pretimeout register has a default reset value. Hence
+> when a smaller WDT timeout is set which would be lesser than the
+> default pretimeout, the system behaves abnormally, starts
+> triggering the pretimeout interrupt even when the WDT is
+> not enabled, most of the times leading to system crash.
+> Hence an update in the pre-timeout is also required for the
+> default timeout that is being configured.
+> 
+> Fixes: fa0f8d51e90d ("watchdog: Add watchdog driver for Intel Keembay Soc")
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Tested-by: Kris Pan <kris.pan@intel.com>
+> Signed-off-by: Shruthi Sanil <shruthi.sanil@intel.com>
 
-Out of curiosity: what makes it OK to use either the current task or its
-parent's pid namespace in this specific case ? What happens if they are
-in different pid namespaces ?
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-Thanks,
-
-Mathieu
-
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+> ---
+>  drivers/watchdog/keembay_wdt.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/watchdog/keembay_wdt.c b/drivers/watchdog/keembay_wdt.c
+> index 547d3fea33ff..f2f5c9fae29c 100644
+> --- a/drivers/watchdog/keembay_wdt.c
+> +++ b/drivers/watchdog/keembay_wdt.c
+> @@ -29,6 +29,7 @@
+>  #define WDT_LOAD_MAX		U32_MAX
+>  #define WDT_LOAD_MIN		1
+>  #define WDT_TIMEOUT		5
+> +#define WDT_PRETIMEOUT		4
+>  
+>  static unsigned int timeout = WDT_TIMEOUT;
+>  module_param(timeout, int, 0);
+> @@ -224,11 +225,13 @@ static int keembay_wdt_probe(struct platform_device *pdev)
+>  	wdt->wdd.min_timeout	= WDT_LOAD_MIN;
+>  	wdt->wdd.max_timeout	= WDT_LOAD_MAX / wdt->rate;
+>  	wdt->wdd.timeout	= WDT_TIMEOUT;
+> +	wdt->wdd.pretimeout	= WDT_PRETIMEOUT;
+>  
+>  	watchdog_set_drvdata(&wdt->wdd, wdt);
+>  	watchdog_set_nowayout(&wdt->wdd, nowayout);
+>  	watchdog_init_timeout(&wdt->wdd, timeout, dev);
+>  	keembay_wdt_set_timeout(&wdt->wdd, wdt->wdd.timeout);
+> +	keembay_wdt_set_pretimeout(&wdt->wdd, wdt->wdd.pretimeout);
+>  
+>  	ret = devm_watchdog_register_device(dev, &wdt->wdd);
+>  	if (ret)
+> -- 
+> 2.17.1
+> 
