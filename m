@@ -2,76 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82AA037BCA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:37:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EA0F37BCAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232817AbhELMiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 08:38:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232808AbhELMiu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 08:38:50 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D017C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 05:37:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=EHo8Um/Yao4wgjlCL2kpN65vP23zytGFwA2JQrNZcRw=; b=mnHo6V0UlJh79ufuLEj3A/j2Fc
-        ngaNrBAcwrSIJ1C+H1IqzDVVPTwopLMYtufPumnnf3kREjR5KwLUF1YWE8XZSk6tPsueLfxDdxqCL
-        5ZZCnJIKLtzGYmqTn2MwwULWzikQlejNdf9YxBr+ikouYyeJFqAsiGlMupDq8s9+GZoSC/3mWxTfa
-        H7r25X92pRL50BraZGBnq0sa/C3qIt6sI9mvApBKLHVuK56geSqqf9KEXO1uXBlwRqZuLJOvkQUo0
-        oL4Yk1lp3cvM9IK7GAcuNtxpQcF2ZZsovgT3+c6111w1ABzoobpNIyniEQK6rpH/jLs8xfywQfJAJ
-        vnzr9qrw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lgo74-002l9n-5V; Wed, 12 May 2021 12:37:18 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3C94230026A;
-        Wed, 12 May 2021 14:37:12 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1DEEF2040BF87; Wed, 12 May 2021 14:37:12 +0200 (CEST)
-Date:   Wed, 12 May 2021 14:37:12 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] locking/lockdep: Correct calling tracepoints
-Message-ID: <YJvL+IvlTtoNv2c7@hirez.programming.kicks-ass.net>
-References: <20210512120937.90211-1-leo.yan@linaro.org>
+        id S232861AbhELMjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 08:39:45 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:36870 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232856AbhELMjm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 08:39:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=OJJr8CZTbZhq52U3R30ulRa0ODzw83ZeiqAf+DqB3O0=; b=pacQotNKRZo+ykt5hJEFh1OaoN
+        GBg7Cp2d0smTSvP5G8drNk4rVT5ZLyKMmExcrltDv/1Zr3Clt/HPshs4fG6paFM1OdlWG/d4bEMiE
+        4cTXPN0A1vgNikU5CbHSmFwFsgFMKCLFh2iowTpzEsvJJ2ocGsCNY9xIFu88OxqlG094=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lgo89-003uFc-Dt; Wed, 12 May 2021 14:38:25 +0200
+Date:   Wed, 12 May 2021 14:38:25 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Peter Geis <pgwipeout@gmail.com>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>
+Subject: Re: [PATCH v2] net: phy: add driver for Motorcomm yt8511 phy
+Message-ID: <YJvMQWPW1eT5Wo/4@lunn.ch>
+References: <20210511225913.2951922-1-pgwipeout@gmail.com>
+ <YJsl7rLVI6ShqZvI@lunn.ch>
+ <CAMdYzYrbzk60=XvU4dEeb9QriKDXD1bDEbL86nD+yZjbik-E3g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210512120937.90211-1-leo.yan@linaro.org>
+In-Reply-To: <CAMdYzYrbzk60=XvU4dEeb9QriKDXD1bDEbL86nD+yZjbik-E3g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 08:09:37PM +0800, Leo Yan wrote:
-> The commit eb1f00237aca ("lockdep,trace: Expose tracepoints") reverses
-> tracepoints for lock_contended() and lock_acquired(), thus the ftrace
-> log shows the wrong locking sequence that "acquired" event is prior to
-> "contended" event:
-> 
->   <idle>-0       [001] d.s3 20803.501685: lock_acquire: 0000000008b91ab4 &sg_policy->update_lock
->   <idle>-0       [001] d.s3 20803.501686: lock_acquired: 0000000008b91ab4 &sg_policy->update_lock
->   <idle>-0       [001] d.s3 20803.501689: lock_contended: 0000000008b91ab4 &sg_policy->update_lock
->   <idle>-0       [001] d.s3 20803.501690: lock_release: 0000000008b91ab4 &sg_policy->update_lock
-> 
-> This patch fixes calling tracepoints for lock_contended() and
-> lock_acquired().
-> 
-> Fixes: eb1f00237aca ("lockdep,trace: Expose tracepoints")
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+Hi Peter
 
-No idea how that happened, curious. Thanks for fixing though!
+> A lot of items should be set up via the device tree, though it seems
+> this is a relatively unused concept in the net phy subsystem.
+
+Very little should be set up via device tree, since it does not
+describe the hardware. The interface mode does describe the hardware,
+so that is expected to be in DT, but not too much else.
+
+> > Do you know which one of the four RGMII modes your setup needs? Is the
+> > PHY adding the Rx and Tx delays? So "rgmii-id"?
+> 
+> By default it implements a 500ps delay internally on the txd clock and
+> a 1.2 ns delay on the rx clock.
+> The controller is the snps,dwmac-4.20a, and it implements a default
+> delay as well.
+
+O.K, that is confusing. We generally recommend that the MAC does not
+add delays, the PHY does it. So maybe you can implement "rgmii-id" in
+the PHY, and return -EOPNOTSUP for the other three RGMII modes, as a
+minimum. However dwmac is one of the oddball drivers which does
+sometime add the delays, and always sets the PHY to "rgmii" so it does
+not add delays. Either way, is O.K, but please avoid having some of
+the delay on one side, and the rest on the other.
+
+	Andrew
