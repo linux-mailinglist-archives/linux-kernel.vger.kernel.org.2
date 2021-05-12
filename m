@@ -2,110 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5AC137EB81
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 700E237EB7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380776AbhELTcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:32:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346489AbhELRNg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 13:13:36 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1EFBC0612F1
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 10:10:46 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id d11-20020a0cdb0b0000b02901c0da4391d5so19536008qvk.12
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 10:10:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=PXODettiudEJAl3QLXIii2j1h/vSRPebc7EbOxNgBmo=;
-        b=f98rcg/95teB9HFcgpwBS7gGtFdesugKlc5az7RUWdj441yY/U8zMdfxVK8Zkpo7rd
-         Oxn6Sntph6Hmg1Cpn2M5Y5UAjvi6ieUKIkZPJx2cCbZAq4pPyUBhbHY79YZH3TMtpSnA
-         GU5H2LNalltyeVYhNgn4sRgmtu5RLyA3dXhtX8NmJDQW0RYjrwNPSZJW9nl6ecU6ZabY
-         pQ6UdtyVzvnAqklH0DiCHOwtx69aNkTR9CldOgjvv5vJcbDtqK7hwnbWSUjQcYIc/veY
-         oEz15GJN7DVPXzI1ajyCrYnFcGHObtuc58dn0q7hz4tb34Y42Czd5K/XNvWShCf1gv3u
-         WPqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=PXODettiudEJAl3QLXIii2j1h/vSRPebc7EbOxNgBmo=;
-        b=EvS5wojBh4H+8myJsLxvbwOz0aHw9PbC8phhIXaafT2/l3U45CN40PDW4TePyBq0h6
-         hyFwaKucGIW1yE0m5hbylWHTNuKv8v84e45tIxZHNlf11rQRS0o1pL/Ip0RZjPDn7sVM
-         Aio9uMnCrYHxJfVKhVvU9w8k4N5RQO5U/pWmYZapl5L6LUbs7XVZatNoxogYTSMqau+D
-         13VNDG581N3PyRcWXNdHvcKZB/rQ/6XAZmyRwexY4F+hwLfe+6upGMbWuR07sJ4rYT5W
-         wCx3YHgCjqiqSyxv9CEZaqcfm6hKfPYSJQsCXtEfNVb+sZN4JGXqlep63BHMX1atKinx
-         0Jjg==
-X-Gm-Message-State: AOAM532yNYUlPLh6NqKK1cFAzD0R8Su9sTV0GEQQG4Gr/H8eBAC8bDJh
-        GVAWK4FH6nsO7be0ES53ufQihEeeBXbXupnm
-X-Google-Smtp-Source: ABdhPJzomWSMXPl3e1djwKEST9tCuVHZ8Yg+H7hpq6SMi1Z1tZy8PzyAYUndQbpCcuEuhm3wdxQGHNVN7MYj72pF
-X-Received: from chu-dev-docker.c.googlers.com ([fda3:e722:ac3:10:7f:e700:c0a8:80f])
- (user=linchuyuan job=sendgmr) by 2002:a05:6214:30a:: with SMTP id
- i10mr9734120qvu.42.1620839446135; Wed, 12 May 2021 10:10:46 -0700 (PDT)
-Date:   Wed, 12 May 2021 17:10:43 +0000
-Message-Id: <20210512171043.2433694-1-linchuyuan@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
-Subject: [PATCH] hwmon: adm1272: enable adm1272 temperature reporting
-From:   Chu Lin <linchuyuan@google.com>
-To:     linchuyuan@gmail.com, jasonling@google.com, zhongqil@google.com,
-        linux@roeck-us.net, jdelvare@suse.com, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Chu Lin <linchuyuan@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1380658AbhELTcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:32:16 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38016 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1346307AbhELRNN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 13:13:13 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9EDD9B1BF;
+        Wed, 12 May 2021 17:12:04 +0000 (UTC)
+Subject: Re: [PATCH v1 7/8] null_blk: add error handling support for
+ add_disk()
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     axboe@kernel.dk, bvanassche@acm.org, ming.lei@redhat.com,
+        hch@infradead.org, jack@suse.cz, osandov@fb.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210512064629.13899-1-mcgrof@kernel.org>
+ <20210512064629.13899-8-mcgrof@kernel.org>
+ <842b6a8d-8880-a0da-a38b-39378dc6ebb9@suse.de>
+ <20210512164709.GA4332@42.do-not-panic.com>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <d519b9ce-ad28-a266-786f-4128e0b91b9f@suse.de>
+Date:   Wed, 12 May 2021 19:12:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
+MIME-Version: 1.0
+In-Reply-To: <20210512164709.GA4332@42.do-not-panic.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-adm1272 supports temperature reporting but it is disabled by default.
+On 5/12/21 6:47 PM, Luis Chamberlain wrote:
+> On Wed, May 12, 2021 at 05:16:39PM +0200, Hannes Reinecke wrote:
+>> On 5/12/21 8:46 AM, Luis Chamberlain wrote:
+>>> We never checked for errors on add_disk() as this function
+>>> returned void. Now that this is fixed, use the shiny new
+>>> error handling.
+>>>
+>>> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+>>> ---
+>>>    drivers/block/null_blk/main.c | 9 +++++++--
+>>>    1 file changed, 7 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/block/null_blk/main.c b/drivers/block/null_blk/main.c
+>>> index 5f006d9e1472..2346d1292b26 100644
+>>> --- a/drivers/block/null_blk/main.c
+>>> +++ b/drivers/block/null_blk/main.c
+>>> @@ -1699,6 +1699,7 @@ static int init_driver_queues(struct nullb *nullb)
+>>>    static int null_gendisk_register(struct nullb *nullb)
+>>>    {
+>>> +	int ret;
+>>>    	sector_t size = ((sector_t)nullb->dev->size * SZ_1M) >> SECTOR_SHIFT;
+>>>    	struct gendisk *disk;
+>>> @@ -1719,13 +1720,17 @@ static int null_gendisk_register(struct nullb *nullb)
+>>>    	strncpy(disk->disk_name, nullb->disk_name, DISK_NAME_LEN);
+>>>    	if (nullb->dev->zoned) {
+>>> -		int ret = null_register_zoned_dev(nullb);
+>>> +		ret = null_register_zoned_dev(nullb);
+>>>    		if (ret)
+>>>    			return ret;
+>>>    	}
+>>> -	add_disk(disk);
+>>> +	ret = add_disk(disk);
+>>> +	if (ret) {
+>>
+>> unregister_zoned_device() ?
+> 
+> That function does not exist, do you mean null_free_zoned_dev()? If so
+> that is done by the caller.
+> 
+What I intended to say is that you are calling 
+'null_register_zoned_dev()' at one point, but don't call a cleanup 
+function if there is an error later in the path, leaving the caller to 
+guess whether null_register_zoned_dev() has been called or not.
+So we should call the cleanup function here, too.
 
-Tested:
-ls temp1_*
-temp1_crit           temp1_highest        temp1_max
-temp1_crit_alarm     temp1_input          temp1_max_alarm
+Cheers,
 
-cat temp1_input
-26642
-
-Signed-off-by: Chu Lin <linchuyuan@google.com>
----
- drivers/hwmon/pmbus/adm1275.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/hwmon/pmbus/adm1275.c b/drivers/hwmon/pmbus/adm1275.c
-index e7997f37b266..0be1b5777d2f 100644
---- a/drivers/hwmon/pmbus/adm1275.c
-+++ b/drivers/hwmon/pmbus/adm1275.c
-@@ -611,11 +611,13 @@ static int adm1275_probe(struct i2c_client *client)
- 		tindex = 8;
- 
- 		info->func[0] |= PMBUS_HAVE_PIN | PMBUS_HAVE_STATUS_INPUT |
--			PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT;
-+			PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT |
-+			PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP;
- 
--		/* Enable VOUT if not enabled (it is disabled by default) */
--		if (!(config & ADM1278_VOUT_EN)) {
--			config |= ADM1278_VOUT_EN;
-+		/* Enable VOUT & TEMP1 if not enabled (disabled by default) */
-+		if ((config & (ADM1278_VOUT_EN | ADM1278_TEMP1_EN)) !=
-+		    (ADM1278_VOUT_EN | ADM1278_TEMP1_EN)) {
-+			config |= ADM1278_VOUT_EN | ADM1278_TEMP1_EN;
- 			ret = i2c_smbus_write_byte_data(client,
- 							ADM1275_PMON_CONFIG,
- 							config);
-@@ -625,10 +627,6 @@ static int adm1275_probe(struct i2c_client *client)
- 				return -ENODEV;
- 			}
- 		}
--
--		if (config & ADM1278_TEMP1_EN)
--			info->func[0] |=
--				PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP;
- 		if (config & ADM1278_VIN_EN)
- 			info->func[0] |= PMBUS_HAVE_VIN;
- 		break;
+Hannes
 -- 
-2.31.1.607.g51e8a6a459-goog
-
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
