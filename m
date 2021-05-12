@@ -2,308 +2,472 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D63A37BA50
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 12:26:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D40437BA63
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 12:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230305AbhELK1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 06:27:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35636 "EHLO
+        id S230405AbhELK3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 06:29:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230109AbhELK1U (ORCPT
+        with ESMTP id S230115AbhELK3b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 06:27:20 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B14EFC061574;
-        Wed, 12 May 2021 03:26:12 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id n3so139191plf.7;
-        Wed, 12 May 2021 03:26:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YI/Fq5khq9VFEJZ0kliGhwv5FAKXrppTUpUM593GEkw=;
-        b=gkUntUdhXJiIrdNbczgvL0YOOzlLGHgsvwxdaCQ7nNZLbHUNbAzEFw5VotGYdUYW0a
-         5twq85ow9uwlQUNzrTh//d7nuiFGGMlCeqwI8/OfWGmFX7SSWiBUoBfu9fIyTR4mhybM
-         NAbVM7m9D03s7H8bQHhy8SbPvqmeWb9+6jgvRxBcq8ixXOHnv76Ros3bKBHgOMWzED7t
-         VradjtRnpG9w8IBGeL3BGQNsHGipQDnD/AWaf7MXoMSALhEhwT0C6H7ZU1/8VwOsXX2g
-         glK9i55hkj+SpR9QnzndZlm7ccThdjboWSnw7VhS40NL+Cm2A9wVEw5E3C15cPVhONRX
-         wYlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YI/Fq5khq9VFEJZ0kliGhwv5FAKXrppTUpUM593GEkw=;
-        b=KD8+KvnwUa/YEL5kKtuX8V07bTNaShBm+OSPXUr8v95dvF6FOTvROXVwjXcgqEaDFg
-         gb7GIdXtAgQVP0oiTBwnvd7gD+BRoez1wT2QXwfkppZ4A5cHPP3cJJlJUY5yAJeT/ndL
-         tCwzxKQ7Ort/W59fA+pPCVE8g4CFG35unydMLFqGnYDCqLBO8CagTOYFmEh2rr0j1gBs
-         Wb6PWT6I9uRC+XlLGeVIs68mhE8QKSQQw027aXD1t2zLsorKuhY9I0u3UYkfRucNd5ir
-         HAIIwuZ4bfD2bnZZx/WgPwVJOlUdYmibkr2CMMUEA9sgwrusf26MBt/NcAtddUkcuj4r
-         ZSMA==
-X-Gm-Message-State: AOAM531IuzF49orW1ww0VG4h8oKfIF1jFgV2GTad88NQuKqV6Bc3NSqv
-        N52+JI9XAM9bJ1E8fuWVNGE=
-X-Google-Smtp-Source: ABdhPJycTDWS0oytllDhMXgqUbpbqjONbgEFQpIYqhkBMn7T9dAA/fp5e/GEc5Da8CU+3YI8KROuCw==
-X-Received: by 2002:a17:902:e986:b029:ee:d430:6bf9 with SMTP id f6-20020a170902e986b02900eed4306bf9mr35016403plb.0.1620815172204;
-        Wed, 12 May 2021 03:26:12 -0700 (PDT)
-Received: from localhost.localdomain ([49.207.224.217])
-        by smtp.gmail.com with ESMTPSA id j26sm15621715pfn.47.2021.05.12.03.26.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 03:26:11 -0700 (PDT)
-From:   Prasanth KSR <kosigiprasanth@gmail.com>
-X-Google-Original-From: Prasanth KSR <prasanth.ksr@dell.com>
-To:     Hans de Goede <hdegoede@redhat.com>, dvhart@infradead.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org,
-        Prasanth KSR <prasanth.ksr@dell.com>,
-        Divya Bharathi <divya.bharathi@dell.com>
-Subject: [PATCH v2] platform/x86: dell-wmi-sysman: Make populate_foo_data functions more robust
-Date:   Wed, 12 May 2021 15:55:30 +0530
-Message-Id: <20210512102530.9704-1-prasanth.ksr@dell.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 12 May 2021 06:29:31 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38DC5C061574;
+        Wed, 12 May 2021 03:28:22 -0700 (PDT)
+Date:   Wed, 12 May 2021 10:28:20 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1620815301;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rQYh2niRCNEgdSv5uQFvvdRgkeUGImI1b3ptliuA/Mw=;
+        b=VOTU0+tvQjZUQutM54leCf21KZaqUs1NrDInytJveAXLzP6qHTDfUCkYMAMICyD2DkWBNC
+        HedE5Jr8fkWiw4yL8W2ocaMXYMC/1hTJDdM46sS4bwRv9FnLZ/PAO0F5XnbVc/RndUUrox
+        set4cFcB/JmxX3ePBQsKlADm0yDvUaj0o/eRnSaRaX/cvgs21rCLaFkbbli7cSb+Ibzgbu
+        bnWFEcjkI/KIo1YCOU6eK3B5pBtv9tv1bhXB9tVJA8vMr3EHZiUqoRiJq7NqhAU7xRPRWj
+        sXkmz8LRmjVGE6UNH9z/jbJbLShylfBWF0YuboI4/DggfWKBmf5bfToSprMWQA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1620815301;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rQYh2niRCNEgdSv5uQFvvdRgkeUGImI1b3ptliuA/Mw=;
+        b=ZS1GKlA0yRq/wEoy2dC2DiLfQ6hV9uWKC39bQM6Z3yiagkIaqwn06Ry2oz791hFruKh07P
+        jk8OtBsXZgnPqwBg==
+From:   "tip-bot2 for Chris Hyser" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] kselftest: Add test for core sched prctl interface
+Cc:     Chris Hyser <chris.hyser@oracle.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Don Hiatt <dhiatt@digitalocean.com>,
+        Hongyu Ning <hongyu.ning@linux.intel.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210422123309.100860030@infradead.org>
+References: <20210422123309.100860030@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <162081530038.29796.8660324173928745497.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1. Check acpi type before assignment of each property value
+The following commit has been merged into the sched/core branch of tip:
 
-2. Add boundary check for properties count
+Commit-ID:     9f26990074931bbf797373e53104216059b300b1
+Gitweb:        https://git.kernel.org/tip/9f26990074931bbf797373e53104216059b300b1
+Author:        Chris Hyser <chris.hyser@oracle.com>
+AuthorDate:    Wed, 24 Mar 2021 17:40:16 -04:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Wed, 12 May 2021 11:43:32 +02:00
 
-Co-developed-by: Divya Bharathi <divya.bharathi@dell.com>
-Signed-off-by: Divya Bharathi <divya.bharathi@dell.com>
-Signed-off-by: Prasanth KSR <prasanth.ksr@dell.com>
+kselftest: Add test for core sched prctl interface
 
-Changes from v1 to v2:
- - added a missed boundary check for enum next object
- - removed the fix for errors reported by checkpatch as it is unrelated to this patch
+Provides a selftest and examples of using the interface.
+
+[peterz: updated to not use sched_debug]
+Signed-off-by: Chris Hyser <chris.hyser@oracle.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Tested-by: Don Hiatt <dhiatt@digitalocean.com>
+Tested-by: Hongyu Ning <hongyu.ning@linux.intel.com>
+Tested-by: Vincent Guittot <vincent.guittot@linaro.org>
+Link: https://lkml.kernel.org/r/20210422123309.100860030@infradead.org
 ---
- .../dell/dell-wmi-sysman/dell-wmi-sysman.h    |  5 ++-
- .../dell/dell-wmi-sysman/enum-attributes.c    | 39 ++++++++++++++++---
- .../x86/dell/dell-wmi-sysman/int-attributes.c | 16 ++++++++
- .../dell/dell-wmi-sysman/passobj-attributes.c |  6 +++
- .../dell/dell-wmi-sysman/string-attributes.c  | 16 +++++++-
- .../x86/dell/dell-wmi-sysman/sysman.c         |  3 +-
- 6 files changed, 77 insertions(+), 8 deletions(-)
+ tools/testing/selftests/sched/.gitignore      |   1 +-
+ tools/testing/selftests/sched/Makefile        |  14 +-
+ tools/testing/selftests/sched/config          |   1 +-
+ tools/testing/selftests/sched/cs_prctl_test.c | 338 +++++++++++++++++-
+ 4 files changed, 354 insertions(+)
+ create mode 100644 tools/testing/selftests/sched/.gitignore
+ create mode 100644 tools/testing/selftests/sched/Makefile
+ create mode 100644 tools/testing/selftests/sched/config
+ create mode 100644 tools/testing/selftests/sched/cs_prctl_test.c
 
-diff --git a/drivers/platform/x86/dell/dell-wmi-sysman/dell-wmi-sysman.h b/drivers/platform/x86/dell/dell-wmi-sysman/dell-wmi-sysman.h
-index b80f2a62ea3f..3ad33a094588 100644
---- a/drivers/platform/x86/dell/dell-wmi-sysman/dell-wmi-sysman.h
-+++ b/drivers/platform/x86/dell/dell-wmi-sysman/dell-wmi-sysman.h
-@@ -152,12 +152,15 @@ static ssize_t curr_val##_store(struct kobject *kobj,				\
- 	return ret ? ret : count;						\
- }
- 
-+#define check_property_type(attr, prop, valuetype)				\
-+	(attr##_obj[prop].type != valuetype)
+diff --git a/tools/testing/selftests/sched/.gitignore b/tools/testing/selftests/sched/.gitignore
+new file mode 100644
+index 0000000..6996d46
+--- /dev/null
++++ b/tools/testing/selftests/sched/.gitignore
+@@ -0,0 +1 @@
++cs_prctl_test
+diff --git a/tools/testing/selftests/sched/Makefile b/tools/testing/selftests/sched/Makefile
+new file mode 100644
+index 0000000..10c72f1
+--- /dev/null
++++ b/tools/testing/selftests/sched/Makefile
+@@ -0,0 +1,14 @@
++# SPDX-License-Identifier: GPL-2.0+
 +
- union acpi_object *get_wmiobj_pointer(int instance_id, const char *guid_string);
- int get_instance_count(const char *guid_string);
- void strlcpy_attr(char *dest, char *src);
- 
- int populate_enum_data(union acpi_object *enumeration_obj, int instance_id,
--			struct kobject *attr_name_kobj);
-+			struct kobject *attr_name_kobj, u32 enum_property_count);
- int alloc_enum_data(void);
- void exit_enum_attributes(void);
- 
-diff --git a/drivers/platform/x86/dell/dell-wmi-sysman/enum-attributes.c b/drivers/platform/x86/dell/dell-wmi-sysman/enum-attributes.c
-index 091e48c217ed..8cc212c85266 100644
---- a/drivers/platform/x86/dell/dell-wmi-sysman/enum-attributes.c
-+++ b/drivers/platform/x86/dell/dell-wmi-sysman/enum-attributes.c
-@@ -132,39 +132,68 @@ int alloc_enum_data(void)
-  * @enumeration_obj: ACPI object with enumeration data
-  * @instance_id: The instance to enumerate
-  * @attr_name_kobj: The parent kernel object
-+ * @enum_property_count: Total properties count under enumeration type
-  */
- int populate_enum_data(union acpi_object *enumeration_obj, int instance_id,
--			struct kobject *attr_name_kobj)
-+			struct kobject *attr_name_kobj, u32 enum_property_count)
- {
- 	int i, next_obj, value_modifier_count, possible_values_count;
- 
- 	wmi_priv.enumeration_data[instance_id].attr_name_kobj = attr_name_kobj;
-+	if (check_property_type(enumeration, ATTR_NAME, ACPI_TYPE_STRING))
-+		return -EINVAL;
- 	strlcpy_attr(wmi_priv.enumeration_data[instance_id].attribute_name,
- 		enumeration_obj[ATTR_NAME].string.pointer);
-+	if (check_property_type(enumeration, DISPL_NAME_LANG_CODE, ACPI_TYPE_STRING))
-+		return -EINVAL;
- 	strlcpy_attr(wmi_priv.enumeration_data[instance_id].display_name_language_code,
- 		enumeration_obj[DISPL_NAME_LANG_CODE].string.pointer);
-+	if (check_property_type(enumeration, DISPLAY_NAME, ACPI_TYPE_STRING))
-+		return -EINVAL;
- 	strlcpy_attr(wmi_priv.enumeration_data[instance_id].display_name,
- 		enumeration_obj[DISPLAY_NAME].string.pointer);
-+	if (check_property_type(enumeration, DEFAULT_VAL, ACPI_TYPE_STRING))
-+		return -EINVAL;
- 	strlcpy_attr(wmi_priv.enumeration_data[instance_id].default_value,
- 		enumeration_obj[DEFAULT_VAL].string.pointer);
-+	if (check_property_type(enumeration, MODIFIER, ACPI_TYPE_STRING))
-+		return -EINVAL;
- 	strlcpy_attr(wmi_priv.enumeration_data[instance_id].dell_modifier,
- 		enumeration_obj[MODIFIER].string.pointer);
- 
- 	next_obj = MODIFIER + 1;
- 
--	value_modifier_count = (uintptr_t)enumeration_obj[next_obj].string.pointer;
-+	if (next_obj >= enum_property_count)
-+		return -EINVAL;
++ifneq ($(shell $(CC) --version 2>&1 | head -n 1 | grep clang),)
++CLANG_FLAGS += -no-integrated-as
++endif
 +
-+	if (check_property_type(enumeration, next_obj, ACPI_TYPE_INTEGER))
-+		return -EINVAL;
-+	value_modifier_count = (uintptr_t)enumeration_obj[next_obj++].string.pointer;
- 
- 	for (i = 0; i < value_modifier_count; i++) {
-+		if (next_obj >= enum_property_count)
-+			return -EINVAL;
-+		if (check_property_type(enumeration, next_obj, ACPI_TYPE_STRING))
-+			return -EINVAL;
- 		strcat(wmi_priv.enumeration_data[instance_id].dell_value_modifier,
--			enumeration_obj[++next_obj].string.pointer);
-+			enumeration_obj[next_obj++].string.pointer);
- 		strcat(wmi_priv.enumeration_data[instance_id].dell_value_modifier, ";");
- 	}
- 
--	possible_values_count = (uintptr_t) enumeration_obj[++next_obj].string.pointer;
-+	if (next_obj >= enum_property_count)
-+		return -EINVAL;
++CFLAGS += -O2 -Wall -g -I./ -I../../../../usr/include/  -Wl,-rpath=./ \
++	  $(CLANG_FLAGS)
++LDLIBS += -lpthread
 +
-+	if (check_property_type(enumeration, next_obj, ACPI_TYPE_INTEGER))
-+		return -EINVAL;
-+	possible_values_count = (uintptr_t) enumeration_obj[next_obj++].string.pointer;
- 
- 	for (i = 0; i < possible_values_count; i++) {
-+		if (next_obj >= enum_property_count)
-+			return -EINVAL;
-+		if (check_property_type(enumeration, next_obj, ACPI_TYPE_STRING))
-+			return -EINVAL;
- 		strcat(wmi_priv.enumeration_data[instance_id].possible_values,
--			enumeration_obj[++next_obj].string.pointer);
-+			enumeration_obj[next_obj++].string.pointer);
- 		strcat(wmi_priv.enumeration_data[instance_id].possible_values, ";");
- 	}
- 
-diff --git a/drivers/platform/x86/dell/dell-wmi-sysman/int-attributes.c b/drivers/platform/x86/dell/dell-wmi-sysman/int-attributes.c
-index 8a49ba6e44f9..951e75b538fa 100644
---- a/drivers/platform/x86/dell/dell-wmi-sysman/int-attributes.c
-+++ b/drivers/platform/x86/dell/dell-wmi-sysman/int-attributes.c
-@@ -141,20 +141,36 @@ int populate_int_data(union acpi_object *integer_obj, int instance_id,
- 			struct kobject *attr_name_kobj)
- {
- 	wmi_priv.integer_data[instance_id].attr_name_kobj = attr_name_kobj;
-+	if (check_property_type(integer, ATTR_NAME, ACPI_TYPE_STRING))
-+		return -EINVAL;
- 	strlcpy_attr(wmi_priv.integer_data[instance_id].attribute_name,
- 		integer_obj[ATTR_NAME].string.pointer);
-+	if (check_property_type(integer, DISPL_NAME_LANG_CODE, ACPI_TYPE_STRING))
-+		return -EINVAL;
- 	strlcpy_attr(wmi_priv.integer_data[instance_id].display_name_language_code,
- 		integer_obj[DISPL_NAME_LANG_CODE].string.pointer);
-+	if (check_property_type(integer, DISPLAY_NAME, ACPI_TYPE_STRING))
-+		return -EINVAL;
- 	strlcpy_attr(wmi_priv.integer_data[instance_id].display_name,
- 		integer_obj[DISPLAY_NAME].string.pointer);
-+	if (check_property_type(integer, DEFAULT_VAL, ACPI_TYPE_INTEGER))
-+		return -EINVAL;
- 	wmi_priv.integer_data[instance_id].default_value =
- 		(uintptr_t)integer_obj[DEFAULT_VAL].string.pointer;
-+	if (check_property_type(integer, MODIFIER, ACPI_TYPE_STRING))
-+		return -EINVAL;
- 	strlcpy_attr(wmi_priv.integer_data[instance_id].dell_modifier,
- 		integer_obj[MODIFIER].string.pointer);
-+	if (check_property_type(integer, MIN_VALUE, ACPI_TYPE_INTEGER))
-+		return -EINVAL;
- 	wmi_priv.integer_data[instance_id].min_value =
- 		(uintptr_t)integer_obj[MIN_VALUE].string.pointer;
-+	if (check_property_type(integer, MAX_VALUE, ACPI_TYPE_INTEGER))
-+		return -EINVAL;
- 	wmi_priv.integer_data[instance_id].max_value =
- 		(uintptr_t)integer_obj[MAX_VALUE].string.pointer;
-+	if (check_property_type(integer, SCALAR_INCR, ACPI_TYPE_INTEGER))
-+		return -EINVAL;
- 	wmi_priv.integer_data[instance_id].scalar_increment =
- 		(uintptr_t)integer_obj[SCALAR_INCR].string.pointer;
- 
-diff --git a/drivers/platform/x86/dell/dell-wmi-sysman/passobj-attributes.c b/drivers/platform/x86/dell/dell-wmi-sysman/passobj-attributes.c
-index 834b3e82ad9f..230e6ee96636 100644
---- a/drivers/platform/x86/dell/dell-wmi-sysman/passobj-attributes.c
-+++ b/drivers/platform/x86/dell/dell-wmi-sysman/passobj-attributes.c
-@@ -159,10 +159,16 @@ int alloc_po_data(void)
- int populate_po_data(union acpi_object *po_obj, int instance_id, struct kobject *attr_name_kobj)
- {
- 	wmi_priv.po_data[instance_id].attr_name_kobj = attr_name_kobj;
-+	if (check_property_type(po, ATTR_NAME, ACPI_TYPE_STRING))
-+		return -EINVAL;
- 	strlcpy_attr(wmi_priv.po_data[instance_id].attribute_name,
- 		     po_obj[ATTR_NAME].string.pointer);
-+	if (check_property_type(po, MIN_PASS_LEN, ACPI_TYPE_INTEGER))
-+		return -EINVAL;
- 	wmi_priv.po_data[instance_id].min_password_length =
- 		(uintptr_t)po_obj[MIN_PASS_LEN].string.pointer;
-+	if (check_property_type(po, MAX_PASS_LEN, ACPI_TYPE_INTEGER))
-+		return -EINVAL;
- 	wmi_priv.po_data[instance_id].max_password_length =
- 		(uintptr_t) po_obj[MAX_PASS_LEN].string.pointer;
- 
-diff --git a/drivers/platform/x86/dell/dell-wmi-sysman/string-attributes.c b/drivers/platform/x86/dell/dell-wmi-sysman/string-attributes.c
-index 552537852459..c392f0ecf8b5 100644
---- a/drivers/platform/x86/dell/dell-wmi-sysman/string-attributes.c
-+++ b/drivers/platform/x86/dell/dell-wmi-sysman/string-attributes.c
-@@ -118,24 +118,38 @@ int alloc_str_data(void)
- 
- /**
-  * populate_str_data() - Populate all properties of an instance under string attribute
-- * @str_obj: ACPI object with integer data
-+ * @str_obj: ACPI object with string data
-  * @instance_id: The instance to enumerate
-  * @attr_name_kobj: The parent kernel object
-  */
- int populate_str_data(union acpi_object *str_obj, int instance_id, struct kobject *attr_name_kobj)
- {
- 	wmi_priv.str_data[instance_id].attr_name_kobj = attr_name_kobj;
-+	if (check_property_type(str, ATTR_NAME, ACPI_TYPE_STRING))
-+		return -EINVAL;
- 	strlcpy_attr(wmi_priv.str_data[instance_id].attribute_name,
- 		     str_obj[ATTR_NAME].string.pointer);
-+	if (check_property_type(str, DISPL_NAME_LANG_CODE, ACPI_TYPE_STRING))
-+		return -EINVAL;
- 	strlcpy_attr(wmi_priv.str_data[instance_id].display_name_language_code,
- 		     str_obj[DISPL_NAME_LANG_CODE].string.pointer);
-+	if (check_property_type(str, DISPLAY_NAME, ACPI_TYPE_STRING))
-+		return -EINVAL;
- 	strlcpy_attr(wmi_priv.str_data[instance_id].display_name,
- 		     str_obj[DISPLAY_NAME].string.pointer);
-+	if (check_property_type(str, DEFAULT_VAL, ACPI_TYPE_STRING))
-+		return -EINVAL;
- 	strlcpy_attr(wmi_priv.str_data[instance_id].default_value,
- 		     str_obj[DEFAULT_VAL].string.pointer);
-+	if (check_property_type(str, MODIFIER, ACPI_TYPE_STRING))
-+		return -EINVAL;
- 	strlcpy_attr(wmi_priv.str_data[instance_id].dell_modifier,
- 		     str_obj[MODIFIER].string.pointer);
-+	if (check_property_type(str, MIN_LEN, ACPI_TYPE_INTEGER))
-+		return -EINVAL;
- 	wmi_priv.str_data[instance_id].min_length = (uintptr_t)str_obj[MIN_LEN].string.pointer;
-+	if (check_property_type(str, MAX_LEN, ACPI_TYPE_INTEGER))
-+		return -EINVAL;
- 	wmi_priv.str_data[instance_id].max_length = (uintptr_t) str_obj[MAX_LEN].string.pointer;
- 
- 	return sysfs_create_group(attr_name_kobj, &str_attr_group);
-diff --git a/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c b/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c
-index c8d276d78e92..d21e84c7a694 100644
---- a/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c
-+++ b/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c
-@@ -481,7 +481,8 @@ static int init_bios_attributes(int attr_type, const char *guid)
- 		/* enumerate all of this attribute */
- 		switch (attr_type) {
- 		case ENUM:
--			retval = populate_enum_data(elements, instance_id, attr_name_kobj);
-+			retval = populate_enum_data(elements, instance_id, attr_name_kobj,
-+					obj->package.count);
- 			break;
- 		case INT:
- 			retval = populate_int_data(elements, instance_id, attr_name_kobj);
--- 
-2.25.1
-
++TEST_GEN_FILES := cs_prctl_test
++TEST_PROGS := cs_prctl_test
++
++include ../lib.mk
+diff --git a/tools/testing/selftests/sched/config b/tools/testing/selftests/sched/config
+new file mode 100644
+index 0000000..e8b09aa
+--- /dev/null
++++ b/tools/testing/selftests/sched/config
+@@ -0,0 +1 @@
++CONFIG_SCHED_DEBUG=y
+diff --git a/tools/testing/selftests/sched/cs_prctl_test.c b/tools/testing/selftests/sched/cs_prctl_test.c
+new file mode 100644
+index 0000000..63fe652
+--- /dev/null
++++ b/tools/testing/selftests/sched/cs_prctl_test.c
+@@ -0,0 +1,338 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Use the core scheduling prctl() to test core scheduling cookies control.
++ *
++ * Copyright (c) 2021 Oracle and/or its affiliates.
++ * Author: Chris Hyser <chris.hyser@oracle.com>
++ *
++ *
++ * This library is free software; you can redistribute it and/or modify it
++ * under the terms of version 2.1 of the GNU Lesser General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This library is distributed in the hope that it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License
++ * for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public License
++ * along with this library; if not, see <http://www.gnu.org/licenses>.
++ */
++
++#define _GNU_SOURCE
++#include <sys/eventfd.h>
++#include <sys/wait.h>
++#include <sys/types.h>
++#include <sched.h>
++#include <sys/prctl.h>
++#include <sys/types.h>
++#include <sys/wait.h>
++#include <unistd.h>
++#include <time.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++
++#if __GLIBC_PREREQ(2, 30) == 0
++#include <sys/syscall.h>
++static pid_t gettid(void)
++{
++	return syscall(SYS_gettid);
++}
++#endif
++
++#ifndef PR_SCHED_CORE
++#define PR_SCHED_CORE			62
++# define PR_SCHED_CORE_GET		0
++# define PR_SCHED_CORE_CREATE		1 /* create unique core_sched cookie */
++# define PR_SCHED_CORE_SHARE_TO		2 /* push core_sched cookie to pid */
++# define PR_SCHED_CORE_SHARE_FROM	3 /* pull core_sched cookie to pid */
++# define PR_SCHED_CORE_MAX		4
++#endif
++
++#define MAX_PROCESSES 128
++#define MAX_THREADS   128
++
++static const char USAGE[] = "cs_prctl_test [options]\n"
++"    options:\n"
++"	-P  : number of processes to create.\n"
++"	-T  : number of threads per process to create.\n"
++"	-d  : delay time to keep tasks alive.\n"
++"	-k  : keep tasks alive until keypress.\n";
++
++enum pid_type {PIDTYPE_PID = 0, PIDTYPE_TGID, PIDTYPE_PGID};
++
++const int THREAD_CLONE_FLAGS = CLONE_THREAD | CLONE_SIGHAND | CLONE_FS | CLONE_VM | CLONE_FILES;
++
++static int _prctl(int option, unsigned long arg2, unsigned long arg3, unsigned long arg4,
++		  unsigned long arg5)
++{
++	int res;
++
++	res = prctl(option, arg2, arg3, arg4, arg5);
++	printf("%d = prctl(%d, %ld, %ld, %ld, %lx)\n", res, option, (long)arg2, (long)arg3,
++	       (long)arg4, arg5);
++	return res;
++}
++
++#define STACK_SIZE (1024 * 1024)
++
++#define handle_error(msg) __handle_error(__FILE__, __LINE__, msg)
++static void __handle_error(char *fn, int ln, char *msg)
++{
++	printf("(%s:%d) - ", fn, ln);
++	perror(msg);
++	exit(EXIT_FAILURE);
++}
++
++static void handle_usage(int rc, char *msg)
++{
++	puts(USAGE);
++	puts(msg);
++	putchar('\n');
++	exit(rc);
++}
++
++static unsigned long get_cs_cookie(int pid)
++{
++	unsigned long long cookie;
++	int ret;
++
++	ret = prctl(PR_SCHED_CORE, PR_SCHED_CORE_GET, pid, PIDTYPE_PID,
++		    (unsigned long)&cookie);
++	if (ret) {
++		printf("Not a core sched system\n");
++		return -1UL;
++	}
++
++	return cookie;
++}
++
++struct child_args {
++	int num_threads;
++	int pfd[2];
++	int cpid;
++	int thr_tids[MAX_THREADS];
++};
++
++static int child_func_thread(void __attribute__((unused))*arg)
++{
++	while (1)
++		usleep(20000);
++	return 0;
++}
++
++static void create_threads(int num_threads, int thr_tids[])
++{
++	void *child_stack;
++	pid_t tid;
++	int i;
++
++	for (i = 0; i < num_threads; ++i) {
++		child_stack = malloc(STACK_SIZE);
++		if (!child_stack)
++			handle_error("child stack allocate");
++
++		tid = clone(child_func_thread, child_stack + STACK_SIZE, THREAD_CLONE_FLAGS, NULL);
++		if (tid == -1)
++			handle_error("clone thread");
++		thr_tids[i] = tid;
++	}
++}
++
++static int child_func_process(void *arg)
++{
++	struct child_args *ca = (struct child_args *)arg;
++
++	close(ca->pfd[0]);
++
++	create_threads(ca->num_threads, ca->thr_tids);
++
++	write(ca->pfd[1], &ca->thr_tids, sizeof(int) * ca->num_threads);
++	close(ca->pfd[1]);
++
++	while (1)
++		usleep(20000);
++	return 0;
++}
++
++static unsigned char child_func_process_stack[STACK_SIZE];
++
++void create_processes(int num_processes, int num_threads, struct child_args proc[])
++{
++	pid_t cpid;
++	int i;
++
++	for (i = 0; i < num_processes; ++i) {
++		proc[i].num_threads = num_threads;
++
++		if (pipe(proc[i].pfd) == -1)
++			handle_error("pipe() failed");
++
++		cpid = clone(child_func_process, child_func_process_stack + STACK_SIZE,
++			     SIGCHLD, &proc[i]);
++		proc[i].cpid = cpid;
++		close(proc[i].pfd[1]);
++	}
++
++	for (i = 0; i < num_processes; ++i) {
++		read(proc[i].pfd[0], &proc[i].thr_tids, sizeof(int) * proc[i].num_threads);
++		close(proc[i].pfd[0]);
++	}
++}
++
++void disp_processes(int num_processes, struct child_args proc[])
++{
++	int i, j;
++
++	printf("tid=%d, / tgid=%d / pgid=%d: %lx\n", gettid(), getpid(), getpgid(0),
++	       get_cs_cookie(getpid()));
++
++	for (i = 0; i < num_processes; ++i) {
++		printf("    tid=%d, / tgid=%d / pgid=%d: %lx\n", proc[i].cpid, proc[i].cpid,
++		       getpgid(proc[i].cpid), get_cs_cookie(proc[i].cpid));
++		for (j = 0; j < proc[i].num_threads; ++j) {
++			printf("        tid=%d, / tgid=%d / pgid=%d: %lx\n", proc[i].thr_tids[j],
++			       proc[i].cpid, getpgid(0), get_cs_cookie(proc[i].thr_tids[j]));
++		}
++	}
++	puts("\n");
++}
++
++static int errors;
++
++#define validate(v) _validate(__LINE__, v, #v)
++void _validate(int line, int val, char *msg)
++{
++	if (!val) {
++		++errors;
++		printf("(%d) FAILED: %s\n", line, msg);
++	} else {
++		printf("(%d) PASSED: %s\n", line, msg);
++	}
++}
++
++int main(int argc, char *argv[])
++{
++	struct child_args procs[MAX_PROCESSES];
++
++	int keypress = 0;
++	int num_processes = 2;
++	int num_threads = 3;
++	int delay = 0;
++	int res = 0;
++	int pidx;
++	int pid;
++	int opt;
++
++	while ((opt = getopt(argc, argv, ":hkT:P:d:")) != -1) {
++		switch (opt) {
++		case 'P':
++			num_processes = (int)strtol(optarg, NULL, 10);
++			break;
++		case 'T':
++			num_threads = (int)strtoul(optarg, NULL, 10);
++			break;
++		case 'd':
++			delay = (int)strtol(optarg, NULL, 10);
++			break;
++		case 'k':
++			keypress = 1;
++			break;
++		case 'h':
++			printf(USAGE);
++			exit(EXIT_SUCCESS);
++		default:
++			handle_usage(20, "unknown option");
++		}
++	}
++
++	if (num_processes < 1 || num_processes > MAX_PROCESSES)
++		handle_usage(1, "Bad processes value");
++
++	if (num_threads < 1 || num_threads > MAX_THREADS)
++		handle_usage(2, "Bad thread value");
++
++	if (keypress)
++		delay = -1;
++
++	srand(time(NULL));
++
++	/* put into separate process group */
++	if (setpgid(0, 0) != 0)
++		handle_error("process group");
++
++	printf("\n## Create a thread/process/process group hiearchy\n");
++	create_processes(num_processes, num_threads, procs);
++	disp_processes(num_processes, procs);
++	validate(get_cs_cookie(0) == 0);
++
++	printf("\n## Set a cookie on entire process group\n");
++	if (_prctl(PR_SCHED_CORE, PR_SCHED_CORE_CREATE, 0, PIDTYPE_PGID, 0) < 0)
++		handle_error("core_sched create failed -- PGID");
++	disp_processes(num_processes, procs);
++
++	validate(get_cs_cookie(0) != 0);
++
++	/* get a random process pid */
++	pidx = rand() % num_processes;
++	pid = procs[pidx].cpid;
++
++	validate(get_cs_cookie(0) == get_cs_cookie(pid));
++	validate(get_cs_cookie(0) == get_cs_cookie(procs[pidx].thr_tids[0]));
++
++	printf("\n## Set a new cookie on entire process/TGID [%d]\n", pid);
++	if (_prctl(PR_SCHED_CORE, PR_SCHED_CORE_CREATE, pid, PIDTYPE_TGID, 0) < 0)
++		handle_error("core_sched create failed -- TGID");
++	disp_processes(num_processes, procs);
++
++	validate(get_cs_cookie(0) != get_cs_cookie(pid));
++	validate(get_cs_cookie(pid) != 0);
++	validate(get_cs_cookie(pid) == get_cs_cookie(procs[pidx].thr_tids[0]));
++
++	printf("\n## Copy the cookie of current/PGID[%d], to pid [%d] as PIDTYPE_PID\n",
++	       getpid(), pid);
++	if (_prctl(PR_SCHED_CORE, PR_SCHED_CORE_SHARE_TO, pid, PIDTYPE_PID, 0) < 0)
++		handle_error("core_sched share to itself failed -- PID");
++	disp_processes(num_processes, procs);
++
++	validate(get_cs_cookie(0) == get_cs_cookie(pid));
++	validate(get_cs_cookie(pid) != 0);
++	validate(get_cs_cookie(pid) != get_cs_cookie(procs[pidx].thr_tids[0]));
++
++	printf("\n## Copy cookie from a thread [%d] to current/PGID [%d] as PIDTYPE_PID\n",
++	       procs[pidx].thr_tids[0], getpid());
++	if (_prctl(PR_SCHED_CORE, PR_SCHED_CORE_SHARE_FROM, procs[pidx].thr_tids[0],
++		   PIDTYPE_PID, 0) < 0)
++		handle_error("core_sched share from thread failed -- PID");
++	disp_processes(num_processes, procs);
++
++	validate(get_cs_cookie(0) == get_cs_cookie(procs[pidx].thr_tids[0]));
++	validate(get_cs_cookie(pid) != get_cs_cookie(procs[pidx].thr_tids[0]));
++
++	printf("\n## Copy cookie from current [%d] to current as pidtype PGID\n", getpid());
++	if (_prctl(PR_SCHED_CORE, PR_SCHED_CORE_SHARE_TO, 0, PIDTYPE_PGID, 0) < 0)
++		handle_error("core_sched share to self failed -- PGID");
++	disp_processes(num_processes, procs);
++
++	validate(get_cs_cookie(0) == get_cs_cookie(pid));
++	validate(get_cs_cookie(pid) != 0);
++	validate(get_cs_cookie(pid) == get_cs_cookie(procs[pidx].thr_tids[0]));
++
++	if (errors) {
++		printf("TESTS FAILED. errors: %d\n", errors);
++		res = 10;
++	} else {
++		printf("SUCCESS !!!\n");
++	}
++
++	if (keypress)
++		getchar();
++	else
++		sleep(delay);
++
++	for (pidx = 0; pidx < num_processes; ++pidx)
++		kill(procs[pidx].cpid, 15);
++
++	return res;
++}
