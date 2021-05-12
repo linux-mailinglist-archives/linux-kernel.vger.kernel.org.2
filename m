@@ -2,95 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B3E337BA95
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 12:31:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9D6A37BAA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 12:33:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbhELKcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 06:32:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50264 "EHLO mx2.suse.de"
+        id S230160AbhELKeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 06:34:13 -0400
+Received: from gate.crashing.org ([63.228.1.57]:39489 "EHLO gate.crashing.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230149AbhELKbN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 06:31:13 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5181CB0BD;
-        Wed, 12 May 2021 10:30:04 +0000 (UTC)
-Subject: Re: [PATCH v5 2/3] mm/slub, kunit: add a KUnit test for SLUB
- debugging functionality
-To:     Marco Elver <elver@google.com>, Oliver Glitta <glittao@gmail.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Daniel Latypov <dlatypov@google.com>
-References: <20210511150734.3492-1-glittao@gmail.com>
- <20210511150734.3492-2-glittao@gmail.com>
- <CANpmjNNnS5FgPnNkGWG2ae_ybsr=Wa_bzNba7RruOM+1kgOzfw@mail.gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <99d79722-ea94-7775-8ac2-5957b42060b2@suse.cz>
-Date:   Wed, 12 May 2021 12:30:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
-MIME-Version: 1.0
-In-Reply-To: <CANpmjNNnS5FgPnNkGWG2ae_ybsr=Wa_bzNba7RruOM+1kgOzfw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S230019AbhELKeL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 06:34:11 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 14CAQgOQ001475;
+        Wed, 12 May 2021 05:26:42 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 14CAQe4i001474;
+        Wed, 12 May 2021 05:26:40 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Wed, 12 May 2021 05:26:40 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Alexey Kardashevskiy <aik@ozlabs.ru>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        clang-built-linux@googlegroups.com, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH kernel v2] powerpc/makefile: Do not redefine $(CPP) for preprocessor
+Message-ID: <20210512102640.GT10366@gate.crashing.org>
+References: <20210511044812.267965-1-aik@ozlabs.ru> <20210511112019.GK10366@gate.crashing.org> <1795b9efa40.27bb.1ca38dd7e845b990cd13d431eb58563d@ozlabs.ru> <20210511231635.GR10366@gate.crashing.org> <80ae1561-ed8d-cf3a-f3bb-d89cd07bfc24@ozlabs.ru>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <80ae1561-ed8d-cf3a-f3bb-d89cd07bfc24@ozlabs.ru>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/11/21 5:16 PM, Marco Elver wrote:
-> On Tue, 11 May 2021 at 17:07, <glittao@gmail.com> wrote:
->> From: Oliver Glitta <glittao@gmail.com>
->>
->> SLUB has resiliency_test() function which is hidden behind #ifdef
->> SLUB_RESILIENCY_TEST that is not part of Kconfig, so nobody
->> runs it. KUnit should be a proper replacement for it.
->>
->> Try changing byte in redzone after allocation and changing
->> pointer to next free node, first byte, 50th byte and redzone
->> byte. Check if validation finds errors.
->>
->> There are several differences from the original resiliency test:
->> Tests create own caches with known state instead of corrupting
->> shared kmalloc caches.
->>
->> The corruption of freepointer uses correct offset, the original
->> resiliency test got broken with freepointer changes.
->>
->> Scratch changing random byte test, because it does not have
->> meaning in this form where we need deterministic results.
->>
->> Add new option CONFIG_SLUB_KUNIT_TEST in Kconfig.
->> Tests next_pointer, first_word and clobber_50th_byte do not run
->> with KASAN option on. Because the test deliberately modifies non-allocated
->> objects.
->>
->> Use kunit_resource to count errors in cache and silence bug reports.
->> Count error whenever slab_bug() or slab_fix() is called or when
->> the count of pages is wrong.
->>
->> Signed-off-by: Oliver Glitta <glittao@gmail.com>
-
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-
-> I think I had already reviewed v4, and the changes here are fine:
+On Wed, May 12, 2021 at 01:48:53PM +1000, Alexey Kardashevskiy wrote:
+> >Oh!  I completely missed those few lines.  Sorry for that :-(
 > 
-> Reviewed-by: Marco Elver <elver@google.com>
+> Well, I probably should have made it a separate patch anyway, I'll 
+> repost separately.
+
+Thanks.
+
+> >To compensate a bit:
+> >
+> >>It still puzzles me why we need -C
+> >>(preserve comments in the preprocessor output) flag here.
+> >
+> >It is so that a human can look at the output and read it.  Comments are
+> >very significant to human readers :-)
 > 
-> Others who had reviewed/acked v4, probably need to re-ack/review.
-> Note, I think if you addressed the comments and didn't change much
-> else, you can typically carry the acks/reviews, unless the other
-> person changed their mind explicitly.
+> I seriously doubt anyone ever read those :)
 
-FTR, besides me and Marco, v4 had also:
+I am pretty sure whoever wrote it did!
 
-Acked-by: Daniel Latypov <dlatypov@google.com>
+> I suspect this is to pull 
+> all the licenses in one place and do some checking but I did not dig deep.
+
+I don't see the point in that, but :-)
+
+
+Segher
