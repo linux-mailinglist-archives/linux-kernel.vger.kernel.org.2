@@ -2,112 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 930E537C9D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 18:48:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FD0137C955
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 18:46:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234747AbhELQW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 12:22:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236101AbhELPhC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:37:02 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C363C03546C
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 08:16:32 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id z130so1020461wmg.2
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 08:16:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=63QQCc6cTan1btl2te+SCsjBWU0FH3iC+vQeIXSq1iY=;
-        b=V9R2XWR/saz6XB8NRctn/cGN1pRjTqiEDub+PuWKysZpA8EcL4PA+58xSrmgeB0du5
-         Bv41I/jd6D/4Tif0aS/r1KPKknFBgvQ0DOqezpAF7EHP+xLskYV9C6YxDMmIwPnt78Gu
-         UjvQ2c6VGMv0oIwds2bqw31zezgXow/oq+REYMVZyGoQ5fjX64W2axB6QRE3elQt3Yrb
-         BYaCJWef7OxPOs+WqHrzq2b4DEvybfNEIV3UcgcQfs2SoI9M8ryJD8mztruRKRx9nwy9
-         Zcqr2jR4+eVBb0ikee0QNVVFIT4OQItpdd1eFKYHCz/Tuk4GVZ7xwHCztgO9nOscQeN5
-         9UGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=63QQCc6cTan1btl2te+SCsjBWU0FH3iC+vQeIXSq1iY=;
-        b=l8O3M3GjVroFH5c9/RnnkWV25RKBIlFBeSJlinb4B71AVeEc3hampIYp5LI9vcYYyT
-         YkeGVaQaUaeQnOWuO0GekIon5xsWdaJkatCpwbfZJggUN3KWk5fLZlJpb34kR+3hSyGn
-         1H3Pjtuqr3kMs6b8DsSdNe+qxunlWBKYLhFpWKg9C6Epcns7Q9tjA7jeZMyBkVQwtTUh
-         3jzxVYoM78sG8KO+t/QTsIvgpViIPUdZz3PUZbBlqZBrwKyDYyuH1Z0zX4schBbKTQMr
-         9t3+17R8luLhlXOjV0hGSFWkYEy68T8A2KgkSuaNeJdeDaVblvIXzRkA5DTDKZyQ6fYv
-         u2xQ==
-X-Gm-Message-State: AOAM5334Y0zRz7X2o/YywrBWOz6USq7ck8sg9eaWtmQU6s3+UqDb7xV7
-        n5zBZbWMXeFsX9CxL5Tdfrqfiw==
-X-Google-Smtp-Source: ABdhPJy33NvSem24eI2h1X+78s6h8Fyljd3qZ3KpToCeaJt1bQMLx99FHMfDjjXFE0vPCV8Wp+5oKA==
-X-Received: by 2002:a05:600c:3592:: with SMTP id p18mr20474678wmq.44.1620832589473;
-        Wed, 12 May 2021 08:16:29 -0700 (PDT)
-Received: from mkorpershoek-XPS-13-9370.home (lfbn-tou-1-1465-169.w90-89.abo.wanadoo.fr. [90.89.34.169])
-        by smtp.gmail.com with ESMTPSA id c15sm30095011wrr.3.2021.05.12.08.16.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 08:16:29 -0700 (PDT)
-From:   Mattijs Korpershoek <mkorpershoek@baylibre.com>
-To:     Lee Jones <lee.jones@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Fabien Parent <fparent@baylibre.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Mattijs Korpershoek <mkorpershoek@baylibre.com>
-Subject: [PATCH v2 3/3] mfd: mt6397: add PMIC keys for MT6358
-Date:   Wed, 12 May 2021 17:16:14 +0200
-Message-Id: <20210512151614.36996-4-mkorpershoek@baylibre.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210512151614.36996-1-mkorpershoek@baylibre.com>
-References: <20210512151614.36996-1-mkorpershoek@baylibre.com>
+        id S240313AbhELQRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 12:17:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51290 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234879AbhELPeu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:34:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E86561971;
+        Wed, 12 May 2021 15:17:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620832649;
+        bh=udW/PLZ5iZPSNRhPqLGSKInIoq9dtLr6gVmuhkHoe3k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Uw346nuZgdXAjMrtIW7Wl1wjoU/XEuK3mQaevlbO7TxfuHuON94vksTuQ6X2qc0p8
+         NTXevC0ntw3PztvtTBceiK3fJcsYNfPixJLctn1nIY69kb2bP/Km8unlNGpPwhhoTF
+         bAt2eXWwnZ3SO4PHibR+soP14e0UTAMrhZehMK8mhXgGJ+PGbDrOGmqxnUL6nlCC8x
+         osG7SL+Ph2Rpa5dRHSTwDfOLbsW1gFlQ4RFYWeHprAnP+sV+m77qSk6CxDcUzcW9cL
+         lMZE+/p9gvmn+QsXu+ESR8SVVuH/lVVDzaMx/E2VudSrZqxhgTexr4YvmT+mN6HIj/
+         tlo9UYdVcKagA==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1lgqc8-0005RE-54; Wed, 12 May 2021 17:17:32 +0200
+Date:   Wed, 12 May 2021 17:17:32 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.10 245/530] tty: actually undefine superseded ASYNC
+ flags
+Message-ID: <YJvxjC5qyyRmLSyB@hovoldconsulting.com>
+References: <20210512144819.664462530@linuxfoundation.org>
+ <20210512144827.885941093@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210512144827.885941093@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add compatible strings and interrupts for pmic keys
-which serves as child device of MFD.
+On Wed, May 12, 2021 at 04:45:55PM +0200, Greg Kroah-Hartman wrote:
+> From: Johan Hovold <johan@kernel.org>
+> 
+> [ Upstream commit d09845e98a05850a8094ea8fd6dd09a8e6824fff ]
+> 
+> Some kernel-internal ASYNC flags have been superseded by tty-port flags
+> and should no longer be used by kernel drivers.
+> 
+> Fix the misspelled "__KERNEL__" compile guards which failed their sole
+> purpose to break out-of-tree drivers that have not yet been updated.
+> 
+> Fixes: 5c0517fefc92 ("tty: core: Undefine ASYNC_* flags superceded by TTY_PORT* flags")
+> Signed-off-by: Johan Hovold <johan@kernel.org>
+> Link: https://lore.kernel.org/r/20210407095208.31838-2-johan@kernel.org
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
-MT6358 has two interrupts per key: one for press, another one for
-release (_R)
+I don't think this should be backported to any stable tree and the
+stable tag was left out on purpose.
 
-Signed-off-by: Mattijs Korpershoek <mkorpershoek@baylibre.com>
----
- drivers/mfd/mt6397-core.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+> ---
+>  include/uapi/linux/tty_flags.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/uapi/linux/tty_flags.h b/include/uapi/linux/tty_flags.h
+> index 900a32e63424..6a3ac496a56c 100644
+> --- a/include/uapi/linux/tty_flags.h
+> +++ b/include/uapi/linux/tty_flags.h
+> @@ -39,7 +39,7 @@
+>   * WARNING: These flags are no longer used and have been superceded by the
+>   *	    TTY_PORT_ flags in the iflags field (and not userspace-visible)
+>   */
+> -#ifndef _KERNEL_
+> +#ifndef __KERNEL__
+>  #define ASYNCB_INITIALIZED	31 /* Serial port was initialized */
+>  #define ASYNCB_SUSPENDED	30 /* Serial port is suspended */
+>  #define ASYNCB_NORMAL_ACTIVE	29 /* Normal device is active */
+> @@ -81,7 +81,7 @@
+>  #define ASYNC_SPD_WARP		(ASYNC_SPD_HI|ASYNC_SPD_SHI)
+>  #define ASYNC_SPD_MASK		(ASYNC_SPD_HI|ASYNC_SPD_VHI|ASYNC_SPD_SHI)
+>  
+> -#ifndef _KERNEL_
+> +#ifndef __KERNEL__
+>  /* These flags are no longer used (and were always masked from userspace) */
+>  #define ASYNC_INITIALIZED	(1U << ASYNCB_INITIALIZED)
+>  #define ASYNC_NORMAL_ACTIVE	(1U << ASYNCB_NORMAL_ACTIVE)
 
-diff --git a/drivers/mfd/mt6397-core.c b/drivers/mfd/mt6397-core.c
-index 8738b5524783..5b79975dc13c 100644
---- a/drivers/mfd/mt6397-core.c
-+++ b/drivers/mfd/mt6397-core.c
-@@ -45,6 +45,13 @@ static const struct resource mt6397_rtc_resources[] = {
- 	DEFINE_RES_IRQ(MT6397_IRQ_RTC),
- };
- 
-+static const struct resource mt6358_keys_resources[] = {
-+	DEFINE_RES_IRQ_NAMED(MT6358_IRQ_PWRKEY, "powerkey"),
-+	DEFINE_RES_IRQ_NAMED(MT6358_IRQ_HOMEKEY, "homekey"),
-+	DEFINE_RES_IRQ_NAMED(MT6358_IRQ_PWRKEY_R, "powerkey_r"),
-+	DEFINE_RES_IRQ_NAMED(MT6358_IRQ_HOMEKEY_R, "homekey_r"),
-+};
-+
- static const struct resource mt6323_keys_resources[] = {
- 	DEFINE_RES_IRQ_NAMED(MT6323_IRQ_STATUS_PWRKEY, "powerkey"),
- 	DEFINE_RES_IRQ_NAMED(MT6323_IRQ_STATUS_FCHRKEY, "homekey"),
-@@ -96,6 +103,11 @@ static const struct mfd_cell mt6358_devs[] = {
- 	}, {
- 		.name = "mt6358-sound",
- 		.of_compatible = "mediatek,mt6358-sound"
-+	}, {
-+		.name = "mt6358-keys",
-+		.num_resources = ARRAY_SIZE(mt6358_keys_resources),
-+		.resources = mt6358_keys_resources,
-+		.of_compatible = "mediatek,mt6358-keys"
- 	},
- };
- 
--- 
-2.27.0
-
+Johan
