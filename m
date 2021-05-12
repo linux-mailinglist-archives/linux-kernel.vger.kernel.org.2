@@ -2,181 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C1637B709
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 09:45:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B163537B70B
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 09:45:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230139AbhELHqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 03:46:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55532 "EHLO
+        id S230186AbhELHqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 03:46:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbhELHqQ (ORCPT
+        with ESMTP id S229850AbhELHqV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 03:46:16 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29882C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 00:45:09 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id b13-20020a17090a8c8db029015cd97baea9so1059246pjo.0
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 00:45:09 -0700 (PDT)
+        Wed, 12 May 2021 03:46:21 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90693C061574;
+        Wed, 12 May 2021 00:45:13 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id g14so25926284edy.6;
+        Wed, 12 May 2021 00:45:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MtvdMrkUbTnK66R9+ui61gQOXaiSAm2MDifZQfuXMEA=;
-        b=Ghui20jCJRybOfpM0mXz6U9UgcW2lkC5vDJKETWh2HZuuJ7qnjwtoV9TV73YbkBzHf
-         lL0KQIkqYfgwdNF+XfP6DHeXf7C9NjzUcLPOAV0sIwnBBLUHLZ+WoKyqzCmcX77l/N7i
-         XFRp6KDhcBmEMSdx8EWwYs9GV3ppz7b+JGC5kVKIzpr9vXEc2RaJB4Vo2qNktxMlb8Q6
-         FWWCdNWFjO3WCqjqRWYokNE1WfgtomeeBDbvR2BCHmTHQKlZB68tW+FSO/q02A+IWREu
-         DgoauqqLm1LM3sEsMpDIaOCP51HlInYgLy8tVZscOvSBZ3uMbj9hwG41HC8Bqn+ONkJD
-         uErQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=WqKbFi1zcT06ocFbBAnAZcAvyy09Fxb57wc82froFIk=;
+        b=t6VE6y+eXUA0deIf7OOmOlR9KMXybIqSnMCv9l6s/HwvHP1i6v5lRKB9NW8QZZFPPY
+         zPYAIAGOaEoQIwRPlB861nJ8EmP+Vqyn55U49PPVYDSzDfoFW5bNibMSQ0UTo8eyVlbz
+         GGchffGgDQKXQr7tOma+86+kMFiRVIG7HNc5DBD5woNdZ71DR7eHPyh4JaqT7wVlTzZq
+         7apDiU8VgC3OxX3Lqwv30GcpqAtnNGXHbGzdiOO0Nu/TTEpbgfWl67gHVpWTu1sr2/YR
+         F6RvSynr3ce6pN40lgdN3oKse0Dw0+V0h+gcBAmm/sObkJZdaUEn1k2q4hYPC+ut9uLb
+         FV9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MtvdMrkUbTnK66R9+ui61gQOXaiSAm2MDifZQfuXMEA=;
-        b=P6ZtvNnFd7sl9jMIL9e41tEL4r4TTcEmvZmWvsk6DMNJuiGPNaAhUDQfYIfgdEsCEn
-         epSxyIPytxKNd1mifzsV7fBJJW7IW9w1v3KAf4peJQAxiLREcTql6bo1fYYwN5u5sc48
-         qw4l1H+6Y7K6tPSdufabill3hPKxJ7K17klsNlDTcWcfR7H4lQ503gpTBSrwzx3Y05F3
-         y6pOdMV7fJtlpJ7XQBXqdlWfARCvSOFgLKom2HpaLj0/D1ReJKegUqnig/n5ZmF5qSlX
-         wjr4BQE6Fj2vQb9BokjxVHVhzUTlimztBgWn6+N4eEtfpN4YS7LFnc/9PqUwhKwvpC4+
-         R0cg==
-X-Gm-Message-State: AOAM530GG0ET79b/4NFmeyFDDFiHVz9HFlkMyl4rAj4YKJzoLtkJLxDL
-        ROO/EZttGuFZUBQS5HMGb3WxWk5Tt0IaY0LFeWNEUAa6Cjs=
-X-Google-Smtp-Source: ABdhPJzIRuma7toXotpPxHLNyDtJU0KEDLYsuq3GkR3RGgIYm+jdCZky96AE9F2jO3wRD2MHIEYkGmHQjYf7ydtxoag=
-X-Received: by 2002:a17:902:7c85:b029:ed:893d:ec7c with SMTP id
- y5-20020a1709027c85b02900ed893dec7cmr33237150pll.82.1620805508451; Wed, 12
- May 2021 00:45:08 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=WqKbFi1zcT06ocFbBAnAZcAvyy09Fxb57wc82froFIk=;
+        b=EDKjfdFiKDm5OCVudEaJrTa+6o+tjm+8NRpyCKKBKjkRyMs5hkeJ25Wj4iq6cvKs9y
+         zRN27kTA1BeZnFek18Y84yvg6YdZdTAMjpD3JFTaqqsSGs7UmeKBywqGR9vJnc8LAkqg
+         T+Ud1CAXz9M6N7NYStchvGQp5EK+QF7PGMbqVdXDP0jJAdtCJ06SfXuR+E+kvgFsyycH
+         zUbGlBz8skURWW2Qdf65qKzI96dBKeGzEeKBcIDJVpN0wL2FwK3qCow4nkNpZ6/oKJlo
+         KEeOGinbJMW6a91mOb8kAyKne1nvJMdjS52J0nRiVgWhjTpO8lW5Vmo1b9q+XFgQdEhZ
+         8QPw==
+X-Gm-Message-State: AOAM531wo7vkHn3yv3nklXCDialo46kYfyyDUN0SmwuDok6dY7yVla8c
+        U2zdUtSG/lMYT7SCpRwyqoc=
+X-Google-Smtp-Source: ABdhPJxR8SXu0XSUhDZsOCyAn0XAtiue+uZX2UQBu9BohSYTysGTeFAPxIsKoOX3+a4KV5/je/odEg==
+X-Received: by 2002:aa7:d3c2:: with SMTP id o2mr41640429edr.111.1620805512335;
+        Wed, 12 May 2021 00:45:12 -0700 (PDT)
+Received: from agape.jhs ([5.171.80.141])
+        by smtp.gmail.com with ESMTPSA id y8sm4729219edo.90.2021.05.12.00.45.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 00:45:12 -0700 (PDT)
+Date:   Wed, 12 May 2021 09:45:09 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Lucas Stankus <lucas.p.stankus@gmail.com>
+Cc:     lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org,
+        gregkh@linuxfoundation.org, linux-iio@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] staging: iio: cdc: ad7746: clean up driver comments
+ and probe return
+Message-ID: <20210512074508.GB1413@agape.jhs>
+References: <cover.1620766020.git.lucas.p.stankus@gmail.com>
+ <687a1923add71303da13e3a838e97a6ffc7dcda7.1620766020.git.lucas.p.stankus@gmail.com>
 MIME-Version: 1.0
-References: <e134d74d-c218-a01d-a315-82b909c84051@oracle.com> <20210512065813.89270-1-almasrymina@google.com>
-In-Reply-To: <20210512065813.89270-1-almasrymina@google.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Wed, 12 May 2021 00:44:57 -0700
-Message-ID: <CAHS8izODzgEOCrorUmNjQZzOgAM3Kbv=DPbVpoDyrk0iKtRYMQ@mail.gmail.com>
-Subject: Re: [PATCH] mm, hugetlb: fix resv_huge_pages underflow on UFFDIO_COPY
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Peter Xu <peterx@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <687a1923add71303da13e3a838e97a6ffc7dcda7.1620766020.git.lucas.p.stankus@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 11:58 PM Mina Almasry <almasrymina@google.com> wrote:
->
-> When hugetlb_mcopy_atomic_pte() is called with:
-> - mode==MCOPY_ATOMIC_NORMAL and,
-> - we already have a page in the page cache corresponding to the
-> associated address,
->
-> We will allocate a huge page from the reserves, and then fail to insert it
-> into the cache and return -EEXIST.
->
-> In this case, we need to return -EEXIST without allocating a new page as
-> the page already exists in the cache. Allocating the extra page causes
-> the resv_huge_pages to underflow temporarily until the extra page is
-> freed.
->
-> Also, add the warning so that future similar instances of resv_huge_pages
-> underflowing will be caught.
->
-> Also, minor drive-by cleanups to this code path:
-> - pagep is an out param never set by calling code, so delete code
-> assuming there could be a valid page in there.
-> - use hugetlbfs_pagecache_page() instead of repeating its
-> implementation.
->
-> Tested using:
-> ./tools/testing/selftests/vm/userfaultfd hugetlb_shared 1024 200 \
-> /mnt/huge
->
-> Test passes, and dmesg shows no underflow warnings.
->
-> Signed-off-by: Mina Almasry <almasrymina@google.com>
-> Cc: Mike Kravetz <mike.kravetz@oracle.com>
-> Cc: Axel Rasmussen <axelrasmussen@google.com>
-> Cc: Peter Xu <peterx@redhat.com>
->
-> ---
->  mm/hugetlb.c | 33 ++++++++++++++++++++-------------
->  1 file changed, 20 insertions(+), 13 deletions(-)
->
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 629aa4c2259c..40f4ad1bca29 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -1165,6 +1165,7 @@ static struct page *dequeue_huge_page_vma(struct hstate *h,
->         page = dequeue_huge_page_nodemask(h, gfp_mask, nid, nodemask);
->         if (page && !avoid_reserve && vma_has_reserves(vma, chg)) {
->                 SetHPageRestoreReserve(page);
-> +               WARN_ON_ONCE(!h->resv_huge_pages);
->                 h->resv_huge_pages--;
->         }
->
-> @@ -4868,30 +4869,39 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
->                             struct page **pagep)
->  {
->         bool is_continue = (mode == MCOPY_ATOMIC_CONTINUE);
-> -       struct address_space *mapping;
-> -       pgoff_t idx;
-> +       struct hstate *h = hstate_vma(dst_vma);
-> +       struct address_space *mapping = dst_vma->vm_file->f_mapping;
-> +       pgoff_t idx = vma_hugecache_offset(h, dst_vma, dst_addr);
->         unsigned long size;
->         int vm_shared = dst_vma->vm_flags & VM_SHARED;
-> -       struct hstate *h = hstate_vma(dst_vma);
->         pte_t _dst_pte;
->         spinlock_t *ptl;
-> -       int ret;
-> +       int ret = -ENOMEM;
->         struct page *page;
->         int writable;
->
-> -       mapping = dst_vma->vm_file->f_mapping;
-> -       idx = vma_hugecache_offset(h, dst_vma, dst_addr);
-> +       /* Out parameter. */
-> +       WARN_ON(*pagep);
->
->         if (is_continue) {
->                 ret = -EFAULT;
-> -               page = find_lock_page(mapping, idx);
-> +               page = hugetlbfs_pagecache_page(h, dst_vma, dst_addr);
->                 if (!page)
->                         goto out;
-> -       } else if (!*pagep) {
-> -               ret = -ENOMEM;
-> +       } else {
-> +               /* If a page already exists, then it's UFFDIO_COPY for
-> +                * a non-missing case. Return -EEXIST.
-> +                */
-> +               if (hugetlbfs_pagecache_present(h, dst_vma, dst_addr)) {
-> +                       ret = -EEXIST;
-> +                       goto out;
-> +               }
-> +
->                 page = alloc_huge_page(dst_vma, dst_addr, 0);
-> -               if (IS_ERR(page))
-> +               if (IS_ERR(page)) {
-> +                       ret = -ENOMEM;
->                         goto out;
-> +               }
->
->                 ret = copy_huge_page_from_user(page,
->                                                 (const void __user *) src_addr,
-> @@ -4904,9 +4914,6 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
->                         /* don't free the page */
->                         goto out;
->                 }
-> -       } else {
-> -               page = *pagep;
-> -               *pagep = NULL;
->         }
->
->         /*
-> --
-> 2.31.1.607.g51e8a6a459-goog
+Hi Lucas,
 
-I just realized I missed CCing Andrew and the mailing lists to this
-patch's review. I'll collect review comments from folks and send a v2
-to the correct folks and mailing lists.
+On Tue, May 11, 2021 at 05:54:01PM -0300, Lucas Stankus wrote:
+> Remove vague comments, align temperature comment with indent block and
+> simplify probe return on device register.
+> 
+> Also fix the following checkpatch warning:
+> CHECK: Alignment should match open parenthesis
+> 
+> Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
+> ---
+>  drivers/staging/iio/cdc/ad7746.c | 31 ++++++++++---------------------
+>  1 file changed, 10 insertions(+), 21 deletions(-)
+> 
+> diff --git a/drivers/staging/iio/cdc/ad7746.c b/drivers/staging/iio/cdc/ad7746.c
+> index dfd71e99e872..e03d010b2f4c 100644
+> --- a/drivers/staging/iio/cdc/ad7746.c
+> +++ b/drivers/staging/iio/cdc/ad7746.c
+> @@ -84,10 +84,6 @@
+>  #define AD7746_CAPDAC_DACEN		BIT(7)
+>  #define AD7746_CAPDAC_DACP(x)		((x) & 0x7F)
+>  
+> -/*
+> - * struct ad7746_chip_info - chip specific information
+> - */
+> -
+
+Comment deletions should go in a separate patch
+
+
+>  struct ad7746_chip_info {
+>  	struct i2c_client *client;
+>  	struct mutex lock; /* protect sensor state */
+> @@ -232,13 +228,14 @@ static int ad7746_select_channel(struct iio_dev *indio_dev,
+>  
+>  		if (chip->capdac_set != chan->channel) {
+>  			ret = i2c_smbus_write_byte_data(chip->client,
+> -				AD7746_REG_CAPDACA,
+> -				chip->capdac[chan->channel][0]);
+> +							AD7746_REG_CAPDACA,
+> +							chip->capdac[chan->channel][0]);
+>  			if (ret < 0)
+>  				return ret;
+> +
+>  			ret = i2c_smbus_write_byte_data(chip->client,
+> -				AD7746_REG_CAPDACB,
+> -				chip->capdac[chan->channel][1]);
+> +							AD7746_REG_CAPDACB,
+> +							chip->capdac[chan->channel][1]);
+>  			if (ret < 0)
+>  				return ret;
+
+Alignments of function argument form a different logical change
+and should go on a separate patch...
+ 
+>  
+> @@ -564,10 +561,10 @@ static int ad7746_read_raw(struct iio_dev *indio_dev,
+>  
+>  		switch (chan->type) {
+>  		case IIO_TEMP:
+> -		/*
+> -		 * temperature in milli degrees Celsius
+> -		 * T = ((*val / 2048) - 4096) * 1000
+> -		 */
+> +			/*
+> +			 * temperature in milli degrees Celsius
+> +			 * T = ((*val / 2048) - 4096) * 1000
+> +			 */
+>  			*val = (*val * 125) / 256;
+>  			break;
+>  		case IIO_VOLTAGE:
+> @@ -669,10 +666,6 @@ static const struct iio_info ad7746_info = {
+>  	.write_raw = ad7746_write_raw,
+>  };
+>  
+> -/*
+> - * device probe and remove
+> - */
+> -
+>  static int ad7746_probe(struct i2c_client *client,
+>  			const struct i2c_device_id *id)
+>  {
+> @@ -730,11 +723,7 @@ static int ad7746_probe(struct i2c_client *client,
+>  	if (ret < 0)
+>  		return ret;
+>  
+> -	ret = devm_iio_device_register(indio_dev->dev.parent, indio_dev);
+> -	if (ret)
+> -		return ret;
+> -
+> -	return 0;
+> +	return devm_iio_device_register(indio_dev->dev.parent, indio_dev);
+>  }
+
+this return value fix should go in a separate patch
+
+>  
+>  static const struct i2c_device_id ad7746_id[] = {
+> -- 
+> 2.31.1
+> 
+> 
+
+so, in my opinion, this patch could be split
+in three different patches.
+
+Thank you,
+
+fabio
