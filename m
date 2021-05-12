@@ -2,112 +2,648 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5640937ED94
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67C9137ED8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:42:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1387733AbhELUjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 16:39:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1386794AbhELUWM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 16:22:12 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2476EC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 13:14:59 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id v12so24848144wrq.6
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 13:14:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Ess5L+xOXRmxYaXPi1OkUKTPgDo0tGEKtcX8Gli1a7M=;
-        b=bMD1xxDCoYykjIBBe999brSCSiuN3hK3+40TGP10CnhnqZUH4avumUHhe0jPHhpYsK
-         nzJWpPjs5Yc+lHVUKa1cV3kJHdHdK+3d+b9lFiQOzT3gdp/2GIdZQfCUj7F5gBx4h+Eb
-         50NembGNIrUec+KQYTUi8CLaSiLmMpj1HHj2tHk6Bxu1LHrCj8Usgr6b23cvEP4jkgAH
-         j31VSyiAChSkhpNxliI9cALLQgU0wc2cBLkSuIe+B8XkhjX5TMVcrTDlzIzQyPd/5pdM
-         bTlrFFbdbaHev1D9WC8y8XSoUfJWjWjj4yUnkx1hEfieCDzHPfyunCQOJvBlt4ORGbVN
-         fQGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Ess5L+xOXRmxYaXPi1OkUKTPgDo0tGEKtcX8Gli1a7M=;
-        b=ESpBsJ5+dlfhynmEtbe9QvMsnug1oJZA/v5+8py37T5QzXuUl0zGaZ1aPGnXU4Wzg1
-         hre+gK0LJqe0QE5tGhhO6NfWERlZ00SNizEXvUCg3LNVC3TpeXW4/FTjbyubqql6DcRs
-         NMMPjuP/jK07E1rAECh1jFAYwllIFLsrUkHmLIrVJlYkHWG9O3q45Pmcj9Z2sdBwNM3j
-         DvbuMyO8K/Kwxv0oPn3sZyKpIAtF5jBLgenZOHLEJAhMJSFbHmFMVUk154XcLK/57S59
-         RwHeeIqesl07Qt7oyd6CD9/0sNB0pFeSi1zVu4LvgooD13yKJKbgtwoaqEbx1lfGiY78
-         6DuQ==
-X-Gm-Message-State: AOAM533t/JYYRkOq/5wlJq1YpSJdaIeHdcq4rNyZ3Vl2Xg9DUZmtfBMc
-        rpJzXXjeFnwZNQByu3eeOwI=
-X-Google-Smtp-Source: ABdhPJybbYUER9CG6kcFQ36dzqEBntNnGBm+HBlS1sPcUtT0FUIPh559g+wBe0RJQP55zzq6iErIHQ==
-X-Received: by 2002:adf:e611:: with SMTP id p17mr48475507wrm.161.1620850497911;
-        Wed, 12 May 2021 13:14:57 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id z18sm678676wrh.16.2021.05.12.13.14.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 13:14:56 -0700 (PDT)
-Date:   Wed, 12 May 2021 22:14:54 +0200
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: gemini: sl3516: Mainlining of NS 2502
-Message-ID: <YJw3PrZqz2q5OYbI@Red>
-References: <YGtZeofmBv7hXK+a@Red>
- <CACRpkdZ_barDrLvD2UBKo+GA-F+g72uMQx8CfRK2YLRodpeyUA@mail.gmail.com>
- <YGxOf8pKN8Ip/kCl@Red>
- <CACRpkdYRUXJY_tXamS0vc+RNPDxR2oxdRLbBUk0fmQLp+eYAOA@mail.gmail.com>
- <YJLxTgVflotKs5Oe@Red>
- <CACRpkdaGAiK57LE8vkEBjCGwb+HRWBzWS_C86xdNa8N51G+1PA@mail.gmail.com>
+        id S1387621AbhELUiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 16:38:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33320 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1386046AbhELUSy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 16:18:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 65D9F60E09;
+        Wed, 12 May 2021 20:17:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620850664;
+        bh=wdILHCP6dNnk3muwmBMWKYZ+siU/Vf+xoO3elurzkaU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=KRbWatYwaMQU1Zh5mVS29mE31B7Lc3BmSuUo5KCwPTy60v3peG7YHDNGcABHH8Bf8
+         YJIEQv4BXaui1aHtgYSUao6sX48pvpuDy5auiJgL1T84xaW25WNmOIrJNhiZCnNkbJ
+         qhoD5gTR5u2L7/P5jxThuAc2VMiZK+U8pxn9mNW188hNWes+hWw36/uiKeyCITM07x
+         sNtUew/Yt87WQYJ3gd51Yx4lnx16T/Vw0IZ2Hfth+t30c8aRJQOSl1cTffwTTPzsZl
+         aABDk2ytzZydVhNXy5roIFJPxXle+CDuCW1G/lp6kAXcfG7QxbfJeCF2V0+NKMDG4I
+         iJ7ygr76h6vmA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id E6E7D5C0379; Wed, 12 May 2021 13:17:43 -0700 (PDT)
+Date:   Wed, 12 May 2021 13:17:43 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Manfred Spraul <manfred@colorfullife.com>
+Cc:     kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Davidlohr Bueso <dbueso@suse.de>, 1vier1@web.de
+Subject: Re: ipc/sem, ipc/msg, ipc/mqueue.c kcsan questions
+Message-ID: <20210512201743.GW975577@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <a9b36c77-dc42-4ab2-9740-f27b191dd403@colorfullife.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACRpkdaGAiK57LE8vkEBjCGwb+HRWBzWS_C86xdNa8N51G+1PA@mail.gmail.com>
+In-Reply-To: <a9b36c77-dc42-4ab2-9740-f27b191dd403@colorfullife.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le Thu, May 06, 2021 at 01:56:28AM +0200, Linus Walleij a écrit :
-> Hi Corentin,
+On Wed, May 12, 2021 at 09:58:18PM +0200, Manfred Spraul wrote:
+> Hi,
 > 
-> I will check the patches you posted too, sorry for being a bit busy
-> with some merge window and stuff.
+> I got a report from kcsan for sem_lock()/sem_unlock(), but I'm fairly
+> certain that this is a false positive:
 > 
-> On Wed, May 5, 2021 at 9:26 PM Corentin Labbe <clabbe.montjoie@gmail.com> wrote:
+> > [  184.344960] BUG: KCSAN: data-race in sem_lock / sem_unlock.part.0
+> > [  184.360437]
+> > [  184.375443] write to 0xffff8881022fd6c0 of 4 bytes by task 1128 on
+> > cpu 0:
+> > [  184.391192]  sem_unlock.part.0+0xfa/0x118
+> 0000000000001371 <sem_unlock.part.0>:
+> static inline void sem_unlock(struct sem_array *sma, int locknum)
+>     1464:       eb 0f                   jmp    1475
+> <sem_unlock.part.0+0x104>
+>                 sma->use_global_lock--;
+>     1466:       e8 00 00 00 00          callq  146b <sem_unlock.part.0+0xfa>
+>                         1467: R_X86_64_PLT32    __tsan_write4-0x4
+>     146b:       41 ff cc                dec    %r12d
 > 
-> > It seems that USB is still a bit buggy, device are detected only if plugged before boot.
+> > [  184.406693]  do_semtimedop+0x690/0xab3
+> > [  184.422032]  __x64_sys_semop+0x3e/0x43
+> > [  184.437180]  do_syscall_64+0x9e/0xb5
+> > [  184.452125]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > [  184.467269]
+> > [  184.482215] read to 0xffff8881022fd6c0 of 4 bytes by task 1129 on cpu
+> > 2:
+> > [  184.497750]  sem_lock+0x59/0xe0
+> 0000000000001bbc <sem_lock>:
+>         if (!sma->use_global_lock) {
+>     1c0a:       4c 89 ef                mov    %r13,%rdi
+>         idx = array_index_nospec(sops->sem_num, sma->sem_nsems);
+>     1c0d:       0f b7 db                movzwl %bx,%ebx
+>         if (!sma->use_global_lock) {
+>     1c10:       e8 00 00 00 00          callq  1c15 <sem_lock+0x59>
+>                         1c11: R_X86_64_PLT32    __tsan_read4-0x4
 > 
-> Yeah :/ I don't know that driver very well, only that others use it too
-> so there might be some people who can help. I haven't mainlined
-> that patch because there is something that seems wrong about it
-> but I'm not a USB guy.
+> > [  184.513121]  do_semtimedop+0x4f6/0xab3
+> > [  184.528427]  __x64_sys_semop+0x3e/0x43
+> > [  184.543540]  do_syscall_64+0x9e/0xb5
+> > [  184.558473]  entry_SYSCALL_64_after_hwframe+0x44/0xae
 > 
-> > I hit a problem on the NS2502, sata drives does not work well:
-> (...)
-> > It seems a problem soon after driver probe (qc timeout and HPA error).
-> > Any idea ?
-> >
-> > The SATA works well on my other board (SSI1328)
-> > having one or two disk does not change the behavour.
 > 
-> Could be the SATA muxing, this thing in your device tree:
+> sma->use_global_lock is evaluated in sem_lock() twice:
 > 
-> sata: sata@46000000 {
->     cortina,gemini-ata-muxmode = <0>;
->     cortina,gemini-enable-sata-bridge;
->     status = "okay";
-> };
+> >        /*
+> >          * Initial check for use_global_lock. Just an optimization,
+> >          * no locking, no memory barrier.
+> >          */
+> >         if (!sma->use_global_lock) {
+> Both sides of the if-clause handle possible data races.
 > 
-> cortina,gemini-ata-muxmode should be 3 for two harddisks
-> I think.
+> Is
 > 
+>     if (!data_race(sma->use_global_lock)) {
+> 
+> the correct thing to suppress the warning?
 
-I used 0, and only the second slot was working.
-Using 3 fixed both slots.
+Most likely READ_ONCE() rather than data_race(), but please see
+the end of this message.
 
-Thanks
+> >                 /*
+> >                  * It appears that no complex operation is around.
+> >                  * Acquire the per-semaphore lock.
+> >                  */
+> >                 spin_lock(&sem->lock);
+> > 
+> >                 /* see SEM_BARRIER_1 for purpose/pairing */
+> >                 if (!smp_load_acquire(&sma->use_global_lock)) {
+> Here I would need advise: The code only checks for zero / non-zero.
+
+The smp_load_acquire() is just fine.
+
+> This pairs with complexmode_tryleave():
+> 
+> >         if (sma->use_global_lock == 1) {
+> > 
+> >                 /* See SEM_BARRIER_1 for purpose/pairing */
+> >                 smp_store_release(&sma->use_global_lock, 0);
+> >         } else {
+> >                 sma->use_global_lock--;
+> >         }
+> 
+> If use_global_lock is reduced from e.g. 6 to 5, it is undefined if a
+> concurrent reader sees 6 or 5. But it doesn't matter, as both values are
+> non-zero.
+> 
+> The change to 0 is protected.
+
+Again, most likely a READ_ONCE() for sma->use_global_lock, but again
+please see the end of this message.
+
+The key point is that adding (or avoiding) markings is not a mechanical
+process.
+
+> What is the right way to prevent false positives from kcsan?
+> 
+> As 2nd question:
+> 
+> net/netfilter/nf_conntrack_core.c, nf_conntrack_all_lock():
+> 
+> Is a data_race() needed around "nf_conntrack_locks_all = true;"?
+
+Interesting code.  The nf_conntrack_all_lock() function acquires
+nf_conntrack_locks_all_lock, except that the smp_load_acquire() of
+nf_conntrack_locks_all in nf_conntrack_lock() might be protected by any
+of a number of locks.
+
+In contrast, it appears that the smp_store_release()
+in nf_conntrack_all_unlock() is always protected by
+nf_conntrack_locks_all_lock.
+
+Is the fact that nf_conntrack_all_lock()'s store can run concurrently
+with nf_conntrack_lock() smp_load_acquire() intentional?  If not, then
+KCSAN is letting you know of a bug.  Otherwise, WRITE_ONCE() might
+be helpful, but I don't know this code, so that is just a guess.
+
+Does tools/memory-model/Documentation/access-marking.txt, shown below,
+help?
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+MARKING SHARED-MEMORY ACCESSES
+==============================
+
+This document provides guidelines for marking intentionally concurrent
+normal accesses to shared memory, that is "normal" as in accesses that do
+not use read-modify-write atomic operations.  It also describes how to
+document these accesses, both with comments and with special assertions
+processed by the Kernel Concurrency Sanitizer (KCSAN).  This discussion
+builds on an earlier LWN article [1].
+
+
+ACCESS-MARKING OPTIONS
+======================
+
+The Linux kernel provides the following access-marking options:
+
+1.	Plain C-language accesses (unmarked), for example, "a = b;"
+
+2.	Data-race marking, for example, "data_race(a = b);"
+
+3.	READ_ONCE(), for example, "a = READ_ONCE(b);"
+	The various forms of atomic_read() also fit in here.
+
+4.	WRITE_ONCE(), for example, "WRITE_ONCE(a, b);"
+	The various forms of atomic_set() also fit in here.
+
+
+These may be used in combination, as shown in this admittedly improbable
+example:
+
+	WRITE_ONCE(a, b + data_race(c + d) + READ_ONCE(e));
+
+Neither plain C-language accesses nor data_race() (#1 and #2 above) place
+any sort of constraint on the compiler's choice of optimizations [2].
+In contrast, READ_ONCE() and WRITE_ONCE() (#3 and #4 above) restrict the
+compiler's use of code-motion and common-subexpression optimizations.
+Therefore, if a given access is involved in an intentional data race,
+using READ_ONCE() for loads and WRITE_ONCE() for stores is usually
+preferable to data_race(), which in turn is usually preferable to plain
+C-language accesses.
+
+KCSAN will complain about many types of data races involving plain
+C-language accesses, but marking all accesses involved in a given data
+race with one of data_race(), READ_ONCE(), or WRITE_ONCE(), will prevent
+KCSAN from complaining.  Of course, lack of KCSAN complaints does not
+imply correct code.  Therefore, please take a thoughtful approach
+when responding to KCSAN complaints.  Churning the code base with
+ill-considered additions of data_race(), READ_ONCE(), and WRITE_ONCE()
+is unhelpful.
+
+In fact, the following sections describe situations where use of
+data_race() and even plain C-language accesses is preferable to
+READ_ONCE() and WRITE_ONCE().
+
+
+Use of the data_race() Macro
+----------------------------
+
+Here are some situations where data_race() should be used instead of
+READ_ONCE() and WRITE_ONCE():
+
+1.	Data-racy loads from shared variables whose values are used only
+	for diagnostic purposes.
+
+2.	Data-racy reads whose values are checked against marked reload.
+
+3.	Reads whose values feed into error-tolerant heuristics.
+
+4.	Writes setting values that feed into error-tolerant heuristics.
+
+
+Data-Racy Reads for Approximate Diagnostics
+
+Approximate diagnostics include lockdep reports, monitoring/statistics
+(including /proc and /sys output), WARN*()/BUG*() checks whose return
+values are ignored, and other situations where reads from shared variables
+are not an integral part of the core concurrency design.
+
+In fact, use of data_race() instead READ_ONCE() for these diagnostic
+reads can enable better checking of the remaining accesses implementing
+the core concurrency design.  For example, suppose that the core design
+prevents any non-diagnostic reads from shared variable x from running
+concurrently with updates to x.  Then using plain C-language writes
+to x allows KCSAN to detect reads from x from within regions of code
+that fail to exclude the updates.  In this case, it is important to use
+data_race() for the diagnostic reads because otherwise KCSAN would give
+false-positive warnings about these diagnostic reads.
+
+In theory, plain C-language loads can also be used for this use case.
+However, in practice this will have the disadvantage of causing KCSAN
+to generate false positives because KCSAN will have no way of knowing
+that the resulting data race was intentional.
+
+
+Data-Racy Reads That Are Checked Against Marked Reload
+
+The values from some reads are not implicitly trusted.  They are instead
+fed into some operation that checks the full value against a later marked
+load from memory, which means that the occasional arbitrarily bogus value
+is not a problem.  For example, if a bogus value is fed into cmpxchg(),
+all that happens is that this cmpxchg() fails, which normally results
+in a retry.  Unless the race condition that resulted in the bogus value
+recurs, this retry will with high probability succeed, so no harm done.
+
+However, please keep in mind that a data_race() load feeding into
+a cmpxchg_relaxed() might still be subject to load fusing on some
+architectures.  Therefore, it is best to capture the return value from
+the failing cmpxchg() for the next iteration of the loop, an approach
+that provides the compiler much less scope for mischievous optimizations.
+Capturing the return value from cmpxchg() also saves a memory reference
+in many cases.
+
+In theory, plain C-language loads can also be used for this use case.
+However, in practice this will have the disadvantage of causing KCSAN
+to generate false positives because KCSAN will have no way of knowing
+that the resulting data race was intentional.
+
+
+Reads Feeding Into Error-Tolerant Heuristics
+
+Values from some reads feed into heuristics that can tolerate occasional
+errors.  Such reads can use data_race(), thus allowing KCSAN to focus on
+the other accesses to the relevant shared variables.  But please note
+that data_race() loads are subject to load fusing, which can result in
+consistent errors, which in turn are quite capable of breaking heuristics.
+Therefore use of data_race() should be limited to cases where some other
+code (such as a barrier() call) will force the occasional reload.
+
+In theory, plain C-language loads can also be used for this use case.
+However, in practice this will have the disadvantage of causing KCSAN
+to generate false positives because KCSAN will have no way of knowing
+that the resulting data race was intentional.
+
+
+Writes Setting Values Feeding Into Error-Tolerant Heuristics
+
+The values read into error-tolerant heuristics come from somewhere,
+for example, from sysfs.  This means that some code in sysfs writes
+to this same variable, and these writes can also use data_race().
+After all, if the heuristic can tolerate the occasional bogus value
+due to compiler-mangled reads, it can also tolerate the occasional
+compiler-mangled write, at least assuming that the proper value is in
+place once the write completes.
+
+Plain C-language stores can also be used for this use case.  However,
+in kernels built with CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC=n, this
+will have the disadvantage of causing KCSAN to generate false positives
+because KCSAN will have no way of knowing that the resulting data race
+was intentional.
+
+
+Use of Plain C-Language Accesses
+--------------------------------
+
+Here are some example situations where plain C-language accesses should
+used instead of READ_ONCE(), WRITE_ONCE(), and data_race():
+
+1.	Accesses protected by mutual exclusion, including strict locking
+	and sequence locking.
+
+2.	Initialization-time and cleanup-time accesses.	This covers a
+	wide variety of situations, including the uniprocessor phase of
+	system boot, variables to be used by not-yet-spawned kthreads,
+	structures not yet published to reference-counted or RCU-protected
+	data structures, and the cleanup side of any of these situations.
+
+3.	Per-CPU variables that are not accessed from other CPUs.
+
+4.	Private per-task variables, including on-stack variables, some
+	fields in the task_struct structure, and task-private heap data.
+
+5.	Any other loads for which there is not supposed to be a concurrent
+	store to that same variable.
+
+6.	Any other stores for which there should be neither concurrent
+	loads nor concurrent stores to that same variable.
+
+	But note that KCSAN makes two explicit exceptions to this rule
+	by default, refraining from flagging plain C-language stores:
+
+	a.	No matter what.  You can override this default by building
+		with CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC=n.
+
+	b.	When the store writes the value already contained in
+		that variable.	You can override this default by building
+		with CONFIG_KCSAN_REPORT_VALUE_CHANGE_ONLY=n.
+
+	c.	When one of the stores is in an interrupt handler and
+		the other in the interrupted code.  You can override this
+		default by building with CONFIG_KCSAN_INTERRUPT_WATCHER=y.
+
+Note that it is important to use plain C-language accesses in these cases,
+because doing otherwise prevents KCSAN from detecting violations of your
+code's synchronization rules.
+
+
+ACCESS-DOCUMENTATION OPTIONS
+============================
+
+It is important to comment marked accesses so that people reading your
+code, yourself included, are reminded of the synchronization design.
+However, it is even more important to comment plain C-language accesses
+that are intentionally involved in data races.  Such comments are
+needed to remind people reading your code, again, yourself included,
+of how the compiler has been prevented from optimizing those accesses
+into concurrency bugs.
+
+It is also possible to tell KCSAN about your synchronization design.
+For example, ASSERT_EXCLUSIVE_ACCESS(foo) tells KCSAN that any
+concurrent access to variable foo by any other CPU is an error, even
+if that concurrent access is marked with READ_ONCE().  In addition,
+ASSERT_EXCLUSIVE_WRITER(foo) tells KCSAN that although it is OK for there
+to be concurrent reads from foo from other CPUs, it is an error for some
+other CPU to be concurrently writing to foo, even if that concurrent
+write is marked with data_race() or WRITE_ONCE().
+
+Note that although KCSAN will call out data races involving either
+ASSERT_EXCLUSIVE_ACCESS() or ASSERT_EXCLUSIVE_WRITER() on the one hand
+and data_race() writes on the other, KCSAN will not report the location
+of these data_race() writes.
+
+
+EXAMPLES
+========
+
+As noted earlier, the goal is to prevent the compiler from destroying
+your concurrent algorithm, to help the human reader, and to inform
+KCSAN of aspects of your concurrency design.  This section looks at a
+few examples showing how this can be done.
+
+
+Lock Protection With Lockless Diagnostic Access
+-----------------------------------------------
+
+For example, suppose a shared variable "foo" is read only while a
+reader-writer spinlock is read-held, written only while that same
+spinlock is write-held, except that it is also read locklessly for
+diagnostic purposes.  The code might look as follows:
+
+	int foo;
+	DEFINE_RWLOCK(foo_rwlock);
+
+	void update_foo(int newval)
+	{
+		write_lock(&foo_rwlock);
+		foo = newval;
+		do_something(newval);
+		write_unlock(&foo_rwlock);
+	}
+
+	int read_foo(void)
+	{
+		int ret;
+
+		read_lock(&foo_rwlock);
+		do_something_else();
+		ret = foo;
+		read_unlock(&foo_rwlock);
+		return ret;
+	}
+
+	int read_foo_diagnostic(void)
+	{
+		return data_race(foo);
+	}
+
+The reader-writer lock prevents the compiler from introducing concurrency
+bugs into any part of the main algorithm using foo, which means that
+the accesses to foo within both update_foo() and read_foo() can (and
+should) be plain C-language accesses.  One benefit of making them be
+plain C-language accesses is that KCSAN can detect any erroneous lockless
+reads from or updates to foo.  The data_race() in read_foo_diagnostic()
+tells KCSAN that data races are expected, and should be silently
+ignored.  This data_race() also tells the human reading the code that
+read_foo_diagnostic() might sometimes return a bogus value.
+
+However, please note that your kernel must be built with
+CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC=n in order for KCSAN to
+detect a buggy lockless write.  If you need KCSAN to detect such a
+write even if that write did not change the value of foo, you also
+need CONFIG_KCSAN_REPORT_VALUE_CHANGE_ONLY=n.  If you need KCSAN to
+detect such a write happening in an interrupt handler running on the
+same CPU doing the legitimate lock-protected write, you also need
+CONFIG_KCSAN_INTERRUPT_WATCHER=y.  With some or all of these Kconfig
+options set properly, KCSAN can be quite helpful, although it is not
+necessarily a full replacement for hardware watchpoints.  On the other
+hand, neither are hardware watchpoints a full replacement for KCSAN
+because it is not always easy to tell hardware watchpoint to conditionally
+trap on accesses.
+
+
+Lock-Protected Writes With Lockless Reads
+-----------------------------------------
+
+For another example, suppose a shared variable "foo" is updated only
+while holding a spinlock, but is read locklessly.  The code might look
+as follows:
+
+	int foo;
+	DEFINE_SPINLOCK(foo_lock);
+
+	void update_foo(int newval)
+	{
+		spin_lock(&foo_lock);
+		WRITE_ONCE(foo, newval);
+		ASSERT_EXCLUSIVE_WRITER(foo);
+		do_something(newval);
+		spin_unlock(&foo_wlock);
+	}
+
+	int read_foo(void)
+	{
+		do_something_else();
+		return READ_ONCE(foo);
+	}
+
+Because foo is read locklessly, all accesses are marked.  The purpose
+of the ASSERT_EXCLUSIVE_WRITER() is to allow KCSAN to check for a buggy
+concurrent lockless write.
+
+
+Lockless Reads and Writes
+-------------------------
+
+For another example, suppose a shared variable "foo" is both read and
+updated locklessly.  The code might look as follows:
+
+	int foo;
+
+	int update_foo(int newval)
+	{
+		int ret;
+
+		ret = xchg(&foo, newval);
+		do_something(newval);
+		return ret;
+	}
+
+	int read_foo(void)
+	{
+		do_something_else();
+		return READ_ONCE(foo);
+	}
+
+Because foo is accessed locklessly, all accesses are marked.  It does
+not make sense to use ASSERT_EXCLUSIVE_WRITER() in this case because
+there really can be concurrent lockless writers.  KCSAN would
+flag any concurrent plain C-language reads from foo, and given
+CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC=n, also any concurrent plain
+C-language writes to foo.
+
+
+Lockless Reads and Writes, But With Single-Threaded Initialization
+------------------------------------------------------------------
+
+For yet another example, suppose that foo is initialized in a
+single-threaded manner, but that a number of kthreads are then created
+that locklessly and concurrently access foo.  Some snippets of this code
+might look as follows:
+
+	int foo;
+
+	void initialize_foo(int initval, int nkthreads)
+	{
+		int i;
+
+		foo = initval;
+		ASSERT_EXCLUSIVE_ACCESS(foo);
+		for (i = 0; i < nkthreads; i++)
+			kthread_run(access_foo_concurrently, ...);
+	}
+
+	/* Called from access_foo_concurrently(). */
+	int update_foo(int newval)
+	{
+		int ret;
+
+		ret = xchg(&foo, newval);
+		do_something(newval);
+		return ret;
+	}
+
+	/* Also called from access_foo_concurrently(). */
+	int read_foo(void)
+	{
+		do_something_else();
+		return READ_ONCE(foo);
+	}
+
+The initialize_foo() uses a plain C-language write to foo because there
+are not supposed to be concurrent accesses during initialization.  The
+ASSERT_EXCLUSIVE_ACCESS() allows KCSAN to flag buggy concurrent unmarked
+reads, and the ASSERT_EXCLUSIVE_ACCESS() call further allows KCSAN to
+flag buggy concurrent writes, even if:  (1) Those writes are marked or
+(2) The kernel was built with CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC=y.
+
+
+Checking Stress-Test Race Coverage
+----------------------------------
+
+When designing stress tests it is important to ensure that race conditions
+of interest really do occur.  For example, consider the following code
+fragment:
+
+	int foo;
+
+	int update_foo(int newval)
+	{
+		return xchg(&foo, newval);
+	}
+
+	int xor_shift_foo(int shift, int mask)
+	{
+		int old, new, newold;
+
+		newold = data_race(foo); /* Checked by cmpxchg(). */
+		do {
+			old = newold;
+			new = (old << shift) ^ mask;
+			newold = cmpxchg(&foo, old, new);
+		} while (newold != old);
+		return old;
+	}
+
+	int read_foo(void)
+	{
+		return READ_ONCE(foo);
+	}
+
+If it is possible for update_foo(), xor_shift_foo(), and read_foo() to be
+invoked concurrently, the stress test should force this concurrency to
+actually happen.  KCSAN can evaluate the stress test when the above code
+is modified to read as follows:
+
+	int foo;
+
+	int update_foo(int newval)
+	{
+		ASSERT_EXCLUSIVE_ACCESS(foo);
+		return xchg(&foo, newval);
+	}
+
+	int xor_shift_foo(int shift, int mask)
+	{
+		int old, new, newold;
+
+		newold = data_race(foo); /* Checked by cmpxchg(). */
+		do {
+			old = newold;
+			new = (old << shift) ^ mask;
+			ASSERT_EXCLUSIVE_ACCESS(foo);
+			newold = cmpxchg(&foo, old, new);
+		} while (newold != old);
+		return old;
+	}
+
+
+	int read_foo(void)
+	{
+		ASSERT_EXCLUSIVE_ACCESS(foo);
+		return READ_ONCE(foo);
+	}
+
+If a given stress-test run does not result in KCSAN complaints from
+each possible pair of ASSERT_EXCLUSIVE_ACCESS() invocations, the
+stress test needs improvement.  If the stress test was to be evaluated
+on a regular basis, it would be wise to place the above instances of
+ASSERT_EXCLUSIVE_ACCESS() under #ifdef so that they did not result in
+false positives when not evaluating the stress test.
+
+
+REFERENCES
+==========
+
+[1] "Concurrency bugs should fear the big bad data-race detector (part 2)"
+    https://lwn.net/Articles/816854/
+
+[2] "Who's afraid of a big bad optimizing compiler?"
+    https://lwn.net/Articles/793253/
