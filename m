@@ -2,20 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B1DC37BE02
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 15:19:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E8F537BDFC
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 15:19:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231341AbhELNVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 09:21:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230037AbhELNU6 (ORCPT
+        id S231235AbhELNU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 09:20:59 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:51694 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231166AbhELNU5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 09:20:58 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C823C061574;
-        Wed, 12 May 2021 06:19:50 -0700 (PDT)
-Date:   Wed, 12 May 2021 13:19:47 -0000
+        Wed, 12 May 2021 09:20:57 -0400
+Date:   Wed, 12 May 2021 13:19:48 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1620825588;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -23,12 +20,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9gU+RP/lnQppvNCgK8p0xEMHn8SaE0tuCjrsNkvAogg=;
-        b=zm3J0jxe9dkr5Ac2SjCbDZTjsE29akU+IxZuisU/4WBX1ugqoAg80bdZdWiC8mAglywYZ0
-        qrlPi48eLHGdGjPkAW3Eq5pUYWf1vHiHbzgGf9+NXseax1JjWlr8XmAdFWUhzqpCoFEG94
-        aOxmK5euQV1UhgJdxqIoB9iMZAoNvESrmFQ29lAfOrrdowWTPFbtqcSsOxciw7kx63lNhZ
-        sY+YSeACz+rhrilFelx/wVrD57hobYBZML1C2bc/HnTLFnlln8AJzT1qgj7mwqUAnYWQ6t
-        Dj8bqDmywEucM/b5NXYqV4zHyti+9KozQpKtOiWcz7vP8Qzg7L3ueT0WvcpUAw==
+        bh=r9agY4BSWr+/5Lkd3pVf9WcTIaJywNy5cQ8OBpZPUww=;
+        b=bwh5PRRXmqzr8G9yjANMVGcNTIvQUoTf+J4Ds8Ne2zMtCpXpCBUM0qIBcW2BMMnzATul0J
+        QI3s3qTkpw/1SVpDV9Vm+R2XW4/GTvI9mjP9ImKl9wQM9OK9okBdhxwPaWP2NClnPkprwf
+        +7zlcV7GuAOGw+EXxIYSTHebrgv7VA4GC14RXtkN4PwbYnsVtuODIotsUJK/dOkIWIjyF6
+        IBLETI63CUYsu9Ejp4XDMc2TYLI5CjL/YCcWmcwXKdmwPfoCYApfjXiUMPZ5DchGakqo/W
+        zY1ifpo1El2fMtjWHIqLsk4hxvGwmIflbeX8/UWw98Og6Zc/1k5/7CnmpQbn3w==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1620825588;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,21 +33,21 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9gU+RP/lnQppvNCgK8p0xEMHn8SaE0tuCjrsNkvAogg=;
-        b=IZ1ou4xj/6FFLvyxEjV8di/djwtIOHKeq/yAfF9PC6EhdP+DFvHicPh8Y8D4ymxzSH3rDM
-        gfZiWn6IvumCNTCQ==
+        bh=r9agY4BSWr+/5Lkd3pVf9WcTIaJywNy5cQ8OBpZPUww=;
+        b=uQFyCA6BwX6bEDOQ+qdnEbokyAUIxFYCNf+1kjQldlj+z/DRyixU0GaeB4cZxvQ/VzaGCd
+        WWug0BSaN9mCkUCQ==
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: objtool/core] objtool: Provide stats for jump_labels
+Subject: [tip: objtool/core] objtool: Rewrite jump_label instructions
 Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210506194158.153101906@infradead.org>
-References: <20210506194158.153101906@infradead.org>
+In-Reply-To: <20210506194158.091028792@infradead.org>
+References: <20210506194158.091028792@infradead.org>
 MIME-Version: 1.0
-Message-ID: <162082558766.29796.6186809502677667620.tip-bot2@tip-bot2>
+Message-ID: <162082558817.29796.3667347480291581926.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,86 +58,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the objtool/core branch of tip:
 
-Commit-ID:     e2d9494beff21a26438eb611c260b8a6c2dc4dbf
-Gitweb:        https://git.kernel.org/tip/e2d9494beff21a26438eb611c260b8a6c2dc4dbf
+Commit-ID:     6d37b83c5d79ef5996cc49c3e3ac3d8ecd8c7050
+Gitweb:        https://git.kernel.org/tip/6d37b83c5d79ef5996cc49c3e3ac3d8ecd8c7050
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Thu, 06 May 2021 21:34:04 +02:00
+AuthorDate:    Thu, 06 May 2021 21:34:03 +02:00
 Committer:     Ingo Molnar <mingo@kernel.org>
 CommitterDate: Wed, 12 May 2021 14:54:56 +02:00
 
-objtool: Provide stats for jump_labels
+objtool: Rewrite jump_label instructions
 
-Add objtool --stats to count the jump_label sites it encounters.
+When a jump_entry::key has bit1 set, rewrite the instruction to be a
+NOP. This allows the compiler/assembler to emit JMP (and thus decide
+on which encoding to use).
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20210506194158.153101906@infradead.org
+Link: https://lore.kernel.org/r/20210506194158.091028792@infradead.org
 ---
- tools/objtool/check.c                   | 22 ++++++++++++++++++++--
- tools/objtool/include/objtool/objtool.h |  3 +++
- 2 files changed, 23 insertions(+), 2 deletions(-)
+ tools/objtool/check.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
 diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 98cf87f..2c6a93e 100644
+index 9ed1a4c..98cf87f 100644
 --- a/tools/objtool/check.c
 +++ b/tools/objtool/check.c
-@@ -1225,8 +1225,15 @@ static int handle_jump_alt(struct objtool_file *file,
- 			   struct instruction *orig_insn,
- 			   struct instruction **new_insn)
- {
--	if (orig_insn->type == INSN_NOP)
-+	if (orig_insn->type == INSN_NOP) {
-+do_nop:
-+		if (orig_insn->len == 2)
-+			file->jl_nop_short++;
-+		else
-+			file->jl_nop_long++;
-+
- 		return 0;
-+	}
- 
- 	if (orig_insn->type != INSN_JUMP_UNCONDITIONAL) {
- 		WARN_FUNC("unsupported instruction at jump label",
-@@ -1245,9 +1252,14 @@ static int handle_jump_alt(struct objtool_file *file,
- 			       orig_insn->offset, orig_insn->len,
- 			       arch_nop_insn(orig_insn->len));
- 		orig_insn->type = INSN_NOP;
--		return 0;
-+		goto do_nop;
+@@ -1234,6 +1234,20 @@ static int handle_jump_alt(struct objtool_file *file,
+ 		return -1;
  	}
  
-+	if (orig_insn->len == 2)
-+		file->jl_short++;
-+	else
-+		file->jl_long++;
++	if (special_alt->key_addend & 2) {
++		struct reloc *reloc = insn_reloc(file, orig_insn);
++
++		if (reloc) {
++			reloc->type = R_NONE;
++			elf_write_reloc(file->elf, reloc);
++		}
++		elf_write_insn(file->elf, orig_insn->sec,
++			       orig_insn->offset, orig_insn->len,
++			       arch_nop_insn(orig_insn->len));
++		orig_insn->type = INSN_NOP;
++		return 0;
++	}
 +
  	*new_insn = list_next_entry(orig_insn, list);
  	return 0;
  }
-@@ -1328,6 +1340,12 @@ static int add_special_section_alts(struct objtool_file *file)
- 		free(special_alt);
- 	}
- 
-+	if (stats) {
-+		printf("jl\\\tNOP\tJMP\n");
-+		printf("short:\t%ld\t%ld\n", file->jl_nop_short, file->jl_short);
-+		printf("long:\t%ld\t%ld\n", file->jl_nop_long, file->jl_long);
-+	}
-+
- out:
- 	return ret;
- }
-diff --git a/tools/objtool/include/objtool/objtool.h b/tools/objtool/include/objtool/objtool.h
-index e4084af..24fa836 100644
---- a/tools/objtool/include/objtool/objtool.h
-+++ b/tools/objtool/include/objtool/objtool.h
-@@ -22,6 +22,9 @@ struct objtool_file {
- 	struct list_head static_call_list;
- 	struct list_head mcount_loc_list;
- 	bool ignore_unreachables, c_file, hints, rodata;
-+
-+	unsigned long jl_short, jl_long;
-+	unsigned long jl_nop_short, jl_nop_long;
- };
- 
- struct objtool_file *objtool_open_read(const char *_objname);
