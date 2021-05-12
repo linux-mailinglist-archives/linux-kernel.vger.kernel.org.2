@@ -2,101 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A4E537ED47
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C897F37ED48
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386056AbhELUTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 16:19:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56708 "EHLO mail.kernel.org"
+        id S1386075AbhELUTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 16:19:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58130 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344556AbhELT1k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 15:27:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5662B61182;
-        Wed, 12 May 2021 19:26:26 +0000 (UTC)
+        id S1378528AbhELT30 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 15:29:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F240261289;
+        Wed, 12 May 2021 19:28:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620847586;
-        bh=eSoV/aEdtGCTeb6pk9JF8nSRnnQKGfJnLa3hlfVjizI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=X3V5fF5vJksEMhr77Xb85Auo544MmaQBjg8SUN7lpgMyXOTuHEc1rxQBDDBLMNBPF
-         5Zz8kirXFIw/H4g+ITOXROVgwkeZxpxSWhsJ8JVJ7kOQCLOvz86LBHW6bvdbzp5keE
-         ugzWNgslBfw9jDdbqUULpVFmX+5iNBvRZQRGBvi+8Jj7Ka9Qh72YQiRXuu4fwxD8qZ
-         KqXcaAgRTEJ/E1R94jip92fD4OVOGh32a7HJ57+arn+ThbwMC5zyOyqtjWdKrN7kMC
-         gMN4UyMnKdgavVqSSmEcSkqgh83qYp1AjeFJ1rudTqkywEkYTV9ZZWzk5bOrAod9X0
-         u4GvfvuURq/Ng==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id F14D45C0379; Wed, 12 May 2021 12:26:25 -0700 (PDT)
-Date:   Wed, 12 May 2021 12:26:25 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH tip/core/rcu 10/10] rcu: Fix various typos in comments
-Message-ID: <20210512192625.GV975577@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210511230244.GA2894061@paulmck-ThinkPad-P17-Gen-1>
- <20210511230336.2894314-10-paulmck@kernel.org>
- <YJwdFeb825Nzhpo2@gmail.com>
+        s=k20201202; t=1620847698;
+        bh=6iFH/7DBOnYgqfe5St6V+48YFQ+dajzUksv+xrkUsXM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NABkE1qMrTm5hp+DTiRo3TkpP2G4mkyJttSzMR8Y22LiC01HWyuV05dDqK/ewus3n
+         dd6VOaD5aNtSQURQ8kRp9uz1m5Cc/Ra0UbiJmiXhAcIXiJ7GVgtEZPm16Um0joOpTL
+         XPrEGyluk73evRvFoArqhcPZDsYKj2ZA4OdhpuiZPFcjb9hdIXb9mDV0NcuBnx/97O
+         dsNeaIj671PKGTfr1d8+6iq5tuVmZHMwBwWzUAZm0+C5ukgFKFQWZdaNDqaxdbkude
+         tCrKDhCaSCkjw3MNqG4XbQV7l9mdkWigOI8vBURPgKLVn88AJbe8nb9decD16ghGaH
+         UBn/jWgWOOJqg==
+Date:   Wed, 12 May 2021 15:28:16 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Oliver Glitta <glittao@gmail.com>,
+        David Rientjes <rientjes@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH 5.10 518/530] mm, slub: enable slub_debug static key when
+ creating cache with explicit debug flags
+Message-ID: <YJwsUBfAmRlpFP+j@sashalap>
+References: <20210512144819.664462530@linuxfoundation.org>
+ <20210512144836.780038842@linuxfoundation.org>
+ <dd590c4d-cb37-fd38-3ad7-96f677403b3c@suse.cz>
+ <YJv5R0KNH+/EsWfX@kroah.com>
+ <003ce4ee-304c-68cb-6871-cf01495438b6@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <YJwdFeb825Nzhpo2@gmail.com>
+In-Reply-To: <003ce4ee-304c-68cb-6871-cf01495438b6@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 08:23:17PM +0200, Ingo Molnar wrote:
-> 
-> * Paul E. McKenney <paulmck@kernel.org> wrote:
-> 
-> > From: Ingo Molnar <mingo@kernel.org>
-> > 
-> > Fix ~12 single-word typos in RCU code comments.
-> > 
-> > [ paulmck: Apply feedback from Randy Dunlap. ]
-> > Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-> > Signed-off-by: Ingo Molnar <mingo@kernel.org>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > ---
-> >  kernel/rcu/srcutree.c                                     | 4 ++--
-> >  kernel/rcu/sync.c                                         | 4 ++--
-> >  kernel/rcu/tasks.h                                        | 8 ++++----
-> >  kernel/rcu/tree.c                                         | 4 ++--
-> >  kernel/rcu/tree.h                                         | 2 +-
-> >  kernel/rcu/tree_plugin.h                                  | 2 +-
-> >  .../selftests/rcutorture/formal/srcu-cbmc/src/locks.h     | 2 +-
-> >  7 files changed, 13 insertions(+), 13 deletions(-)
-> 
-> There's one more I missed.
+On Wed, May 12, 2021 at 07:25:24PM +0200, Vlastimil Babka wrote:
+>On 5/12/21 5:50 PM, Greg Kroah-Hartman wrote:
+>> On Wed, May 12, 2021 at 05:35:28PM +0200, Vlastimil Babka wrote:
+>>> On 5/12/21 4:50 PM, Greg Kroah-Hartman wrote:
+>>> > From: Vlastimil Babka <vbabka@suse.cz>
+>>> >
+>>> > [ Upstream commit 1f0723a4c0df36cbdffc6fac82cd3c5d57e06d66 ]
+>>> >
+>>> > Commit ca0cab65ea2b ("mm, slub: introduce static key for slub_debug()")
+>>> > introduced a static key to optimize the case where no debugging is
+>>> > enabled for any cache.  The static key is enabled when slub_debug boot
+>>> > parameter is passed, or CONFIG_SLUB_DEBUG_ON enabled.
+>>> >
+>>> > However, some caches might be created with one or more debugging flags
+>>> > explicitly passed to kmem_cache_create(), and the commit missed this.
+>>> > Thus the debugging functionality would not be actually performed for
+>>> > these caches unless the static key gets enabled by boot param or config.
+>>> >
+>>> > This patch fixes it by checking for debugging flags passed to
+>>> > kmem_cache_create() and enabling the static key accordingly.
+>>> >
+>>> > Note such explicit debugging flags should not be used outside of
+>>> > debugging and testing as they will now enable the static key globally.
+>>> > btrfs_init_cachep() creates a cache with SLAB_RED_ZONE but that's a
+>>> > mistake that's being corrected [1].  rcu_torture_stats() creates a cache
+>>> > with SLAB_STORE_USER, but that is a testing module so it's OK and will
+>>> > start working as intended after this patch.
+>>> >
+>>> > Also note that in case of backports to kernels before v5.12 that don't
+>>> > have 59450bbc12be ("mm, slab, slub: stop taking cpu hotplug lock"),
+>>> > static_branch_enable_cpuslocked() should be used.
+>>> >
+>>> > [1] https://lore.kernel.org/linux-btrfs/20210315141824.26099-1-dsterba@suse.com/
+>>> >
+>>> > Link: https://lkml.kernel.org/r/20210315153415.24404-1-vbabka@suse.cz
+>>> > Fixes: ca0cab65ea2b ("mm, slub: introduce static key for slub_debug()")
+>>> > Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+>>> > Reported-by: Oliver Glitta <glittao@gmail.com>
+>>> > Acked-by: David Rientjes <rientjes@google.com>
+>>> > Cc: Christoph Lameter <cl@linux.com>
+>>> > Cc: Pekka Enberg <penberg@kernel.org>
+>>> > Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+>>> > Cc: "Paul E. McKenney" <paulmck@kernel.org>
+>>> > Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+>>> > Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+>>> > Signed-off-by: Sasha Levin <sashal@kernel.org>
+>>>
+>>> Uh, rather not release this to stable without the followup fix:
+>>> https://lore.kernel.org/linux-mm/20210504120019.26791-1-vbabka@suse.cz/
+>>
+>> Is that in Linus's tree yet?  If so, what is the git id?
+>
+>No, it's in mmotm, so no git id yet, but should make it to Linus during 5.13 rc's.
 
-Good eyes, and I have folded this in, thank you!
+I'll drop it for now, thanks!
 
-							Thanx, Paul
-
-> Thanks,
-> 
-> 	Ingo
-> 
-> Signed-off-by: Ingo Molnar <mingo@kernel.org>
-> ---
->  kernel/rcu/tree.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 60ad78560be3..a7dd763a70c3 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -3848,7 +3848,7 @@ EXPORT_SYMBOL_GPL(start_poll_synchronize_rcu);
->   *
->   * If a full RCU grace period has elapsed since the earlier call from
->   * which oldstate was obtained, return @true, otherwise return @false.
-> - * If @false is returned, it is the caller's responsibilty to invoke this
-> + * If @false is returned, it is the caller's responsibility to invoke this
->   * function later on until it does return @true.  Alternatively, the caller
->   * can explicitly wait for a grace period, for example, by passing @oldstate
->   * to cond_synchronize_rcu() or by directly invoking synchronize_rcu().
-> 
+-- 
+Thanks,
+Sasha
