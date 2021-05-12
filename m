@@ -2,147 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C6C937B975
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 11:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4EE637B97F
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 11:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230326AbhELJnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 05:43:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53898 "EHLO
+        id S230129AbhELJrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 05:47:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230176AbhELJnM (ORCPT
+        with ESMTP id S230019AbhELJrc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 05:43:12 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84503C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 02:42:03 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id s20so28511638ejr.9
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 02:42:03 -0700 (PDT)
+        Wed, 12 May 2021 05:47:32 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2DDBC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 02:46:24 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id h4so32887593lfv.0
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 02:46:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=J5ilOFgohDPowmInai3EYFncza98UL+il5HL3oO9vVE=;
-        b=P1O9HrOSfZr0fdZnh9cx07Q3tIkAsfdOggSGcISUJ47Em9U+qMku0KDscLgHJswPb/
-         VToYR/Yi42SMNo3Lk8RrUJNeEeNct4jSIQRXdbui0zTvO+dd5A9tJXZQnkjqSDinKHRt
-         FZi7FTiEhYU5nCNmXQgyrusQQdlxTl07Iku0oUSEiCSBtT9CTngKsOfP2dlsKGnuQfXl
-         BOxmebktZozSxzyE5IxfLd+Cw2xHZl/xbi07EdN4hzlRv+fdOTxa8gU50MwukvrZZCUf
-         1VykBN9ABHxUhync1Vcp6iQdGv9p1qHJBnFrkyBBeTIXmMEB+mswsL1HbMDpFhC84aU1
-         CgGQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version;
+        bh=UTRP9W3DEBcVT+DNyrLGorO1aWE0wr79U4YNb/sEr88=;
+        b=Tobg/HwCejdmVJtT9riwTrELsR+KxRPiAyTzL5Hei34O/TmMDIneiXJSwKQAVabbjI
+         hhoDpf26PlqSSgFKjVnsuDdKHzavjgRqoT4NE9XAlyEJBjm4frVGBeOumk5zXd/7SrVX
+         0F/YSZ1jHiwqFFY9VC+pxI3yE3/md8bRSc0d7zplqWwu5YFOPi+uXLjKR0FQ0qXL3ZVT
+         zGcx1eORkiBi68Sf/gyy7HrdYut3BfrVpmVv24ji0prPEpnkrJaSOaSf+yeBOyiQzQFH
+         rmhaq4GVfVauCP+UmCz2aD+UuA0DPehY8fuxZ92xSRy9HOFKCAXUhsHoQLB+9HvBRxGp
+         r5Aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=J5ilOFgohDPowmInai3EYFncza98UL+il5HL3oO9vVE=;
-        b=InkLTlXqb6PIwCWhGRCG7gsqsG6+i6di3nqgYgPWPdX6ikyIwEI6zGzpyO/yMsgtS9
-         lfGeh/RaHOvc76FVUEYtxEwdiZxeiRNyzyb6XiZ5bW6R0vk+obJhn61GHqaw44wiqR8d
-         RMuHcOifguE9qi25oy93WUTAttcDSLJyvf/HY4UFuqXNUfYZUFAZAJGVkSNsj5ahrxkx
-         t30+YlxA8i+buJbbu0+QIqD2e++mWyxmj9OvylF0YtFNciy+id68TfhRXwmpQ5dFP5Vj
-         LHYsXn3oYTYYx6AW823sKxenWbuh4FT1qRbvvcM8J8FaEmQsuZDxXDIjH5WlRf1GseVO
-         OdSA==
-X-Gm-Message-State: AOAM530/ljG3FqimcCJbnSNG5HOZypGeUD4turSQQ52CZvtHU6QEkr6g
-        ynSXyp90t/xX5zRUlpuENsjKzOmMNalC3UkZ
-X-Google-Smtp-Source: ABdhPJzRu72gJjn0WIjo+2j/Y6e4RQU7/05oZiXpUIngV0qidNDYedy94Ac5BQGj8E054nxxwzLMBA==
-X-Received: by 2002:a17:907:3da4:: with SMTP id he36mr35931348ejc.308.1620812522246;
-        Wed, 12 May 2021 02:42:02 -0700 (PDT)
-Received: from localhost.localdomain ([83.216.184.132])
-        by smtp.gmail.com with ESMTPSA id p22sm17068261edr.4.2021.05.12.02.42.01
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 12 May 2021 02:42:01 -0700 (PDT)
-From:   Paolo Valente <paolo.valente@linaro.org>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@redhat.com, Paolo Valente <paolo.valente@linaro.org>,
-        Pietro Pedroni <pedroni.pietro.96@gmail.com>
-Subject: [PATCH BUGFIX 1/1] block, bfq: avoid circular stable merges
-Date:   Wed, 12 May 2021 11:43:52 +0200
-Message-Id: <20210512094352.85545-2-paolo.valente@linaro.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210512094352.85545-1-paolo.valente@linaro.org>
-References: <20210512094352.85545-1-paolo.valente@linaro.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version;
+        bh=UTRP9W3DEBcVT+DNyrLGorO1aWE0wr79U4YNb/sEr88=;
+        b=aYiKzJhXZfz5oo7UuHw7tWzr9fZyD9ZhoPZ+MWk83uvRFCiFAw/QjFdUs0I/HS2q74
+         JxmEWfBon7liyhXjiSVItMgQv9GKhFE1HedwTqs00QgMZugZNLcXQki5smAeEpaFlGip
+         X5YQdb9PMXlrl06rlAAROQVWkHjwyXbl5lGwtyPMLH93eROoTwLr+QckZSfYPK6bCZFj
+         3goEvTHczRfvWzT+hf6Qk0NhnNQOfuwFLVlEpY0dfabGjDq5hsUJx9e4mRXXaUUmnqHT
+         m1AedHHHFMeuN40PqIE56UMYwTAsJ4QTG+0JYoajAQ9m2IGrr5yOSf/rZX9IPlEaHPSt
+         FX4g==
+X-Gm-Message-State: AOAM531MRE2Ts4aFCHtQS/JYV7uieObHVLSgj8JnuItzGaZLiJ5yQZ7K
+        zwZ7qXDy0fG1bpu+L2+y58A=
+X-Google-Smtp-Source: ABdhPJy5+cU1uYWURgeU0XWz89XSUMz+AgVTEVmslstJsUSkDYUfwB4bEB1kRwOwnrZylA75c+gVGQ==
+X-Received: by 2002:a19:c512:: with SMTP id w18mr24201034lfe.428.1620812783233;
+        Wed, 12 May 2021 02:46:23 -0700 (PDT)
+Received: from eldfell ([194.136.85.206])
+        by smtp.gmail.com with ESMTPSA id h19sm2930207lfc.56.2021.05.12.02.46.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 02:46:22 -0700 (PDT)
+Date:   Wed, 12 May 2021 12:46:19 +0300
+From:   Pekka Paalanen <ppaalanen@gmail.com>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Rob Clark <robdclark@chromium.org>,
+        David Airlie <airlied@linux.ie>,
+        open list <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [PATCH 1/2] drm: Fix dirtyfb stalls
+Message-ID: <20210512124619.3fba5b9b@eldfell>
+In-Reply-To: <YJuVbRNGSCkYYD7U@phenom.ffwll.local>
+References: <20210508195641.397198-1-robdclark@gmail.com>
+        <20210508195641.397198-2-robdclark@gmail.com>
+        <YJlb3GO41hiu4pWw@phenom.ffwll.local>
+        <CAF6AEGsGb1jZgRRUqDvf+j+E6pNEtSck=r3xh4VL7FmZMPszBQ@mail.gmail.com>
+        <CAKMK7uGPGbOPRtJaiG5oNCDhYQ27+V3bO5Wcgv7C9fqdyp8LeA@mail.gmail.com>
+        <CAF6AEGto1PQcEbYeWfXqMatK0z3dW-mpLNVh=VJb=9gwrPfCWg@mail.gmail.com>
+        <YJq0YVi4O4zGkb3j@phenom.ffwll.local>
+        <20210512112330.0130a62a@eldfell>
+        <YJuVbRNGSCkYYD7U@phenom.ffwll.local>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ boundary="Sig_/+osi.ekD5RBkw66jYfIoG/Y"; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BFQ may merge a new bfq_queue, stably, with the last bfq_queue
-created. In particular, BFQ first waits a little bit for some I/O to
-flow inside the new queue, say Q2, if this is needed to understand
-whether it is better or worse to merge Q2 with the last queue created,
-say Q1. This delayed stable merge is performed by assigning
-bic->stable_merge_bfqq = Q1, for the bic associated with Q1.
+--Sig_/+osi.ekD5RBkw66jYfIoG/Y
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Yet, while waiting for some I/O to flow in Q2, a non-stable queue
-merge of Q2 with Q1 may happen, causing the bic previously associated
-with Q2 to be associated with exactly Q1 (bic->bfqq = Q1). After that,
-Q2 and Q1 may happen to be split, and, in the split, Q1 may happen to
-be recycled as a non-shared bfq_queue. In that case, Q1 may then
-happen to undergo a stable merge with the bfq_queue pointed by
-bic->stable_merge_bfqq. Yet bic->stable_merge_bfqq still points to
-Q1. So Q1 would be merged with itself.
+On Wed, 12 May 2021 10:44:29 +0200
+Daniel Vetter <daniel@ffwll.ch> wrote:
 
-This commit fixes this error by intercepting this situation, and
-canceling the schedule of the stable merge.
+> On Wed, May 12, 2021 at 11:23:30AM +0300, Pekka Paalanen wrote:
+> > On Tue, 11 May 2021 18:44:17 +0200
+> > Daniel Vetter <daniel@ffwll.ch> wrote:
+> >  =20
+> > > On Mon, May 10, 2021 at 12:06:05PM -0700, Rob Clark wrote: =20
+> > > > On Mon, May 10, 2021 at 10:44 AM Daniel Vetter <daniel@ffwll.ch> wr=
+ote:   =20
+> > > > >
+> > > > > On Mon, May 10, 2021 at 6:51 PM Rob Clark <robdclark@gmail.com> w=
+rote:   =20
+> > > > > >
+> > > > > > On Mon, May 10, 2021 at 9:14 AM Daniel Vetter <daniel@ffwll.ch>=
+ wrote:   =20
+> > > > > > >
+> > > > > > > On Sat, May 08, 2021 at 12:56:38PM -0700, Rob Clark wrote:   =
+=20
+> > > > > > > > From: Rob Clark <robdclark@chromium.org>
+> > > > > > > >
+> > > > > > > > drm_atomic_helper_dirtyfb() will end up stalling for vblank=
+ on "video
+> > > > > > > > mode" type displays, which is pointless and unnecessary.  A=
+dd an
+> > > > > > > > optional helper vfunc to determine if a plane is attached t=
+o a CRTC
+> > > > > > > > that actually needs dirtyfb, and skip over them.
+> > > > > > > >
+> > > > > > > > Signed-off-by: Rob Clark <robdclark@chromium.org>   =20
+> > > > > > >
+> > > > > > > So this is a bit annoying because the idea of all these "rema=
+p legacy uapi
+> > > > > > > to atomic constructs" helpers is that they shouldn't need/use=
+ anything
+> > > > > > > beyond what userspace also has available. So adding hacks for=
+ them feels
+> > > > > > > really bad.   =20
+> > > > > >
+> > > > > > I suppose the root problem is that userspace doesn't know if di=
+rtyfb
+> > > > > > (or similar) is actually required or is a no-op.
+> > > > > >
+> > > > > > But it is perhaps less of a problem because this essentially bo=
+ils
+> > > > > > down to "x11 vs wayland", and it seems like wayland compositors=
+ for
+> > > > > > non-vsync'd rendering just pageflips and throws away extra fram=
+es from
+> > > > > > the app?   =20
+> > > > >
+> > > > > Yeah it's about not adequately batching up rendering and syncing =
+with
+> > > > > hw. bare metal x11 is just especially stupid about it :-)
+> > > > >   =20
+> > > > > > > Also I feel like it's not entirely the right thing to do here=
+ either.
+> > > > > > > We've had this problem already on the fbcon emulation side (w=
+hich also
+> > > > > > > shouldn't be able to peek behind the atomic kms uapi curtain)=
+, and the fix
+> > > > > > > there was to have a worker which batches up all the updates a=
+nd avoids any
+> > > > > > > stalls in bad places.   =20
+> > > > > >
+> > > > > > I'm not too worried about fbcon not being able to render faster=
+ than
+> > > > > > vblank.  OTOH it is a pretty big problem for x11   =20
+> > > > >
+> > > > > That's why we'd let the worker get ahead at most one dirtyfb. We =
+do
+> > > > > the same with fbcon, which trivially can get ahead of vblank othe=
+rwise
+> > > > > (if sometimes flushes each character, so you have to pile them up=
+ into
+> > > > > a single update if that's still pending).
+> > > > >   =20
+> > > > > > > Since this is for frontbuffer rendering userspace only we can=
+ probably get
+> > > > > > > away with assuming there's only a single fb, so the implement=
+ation becomes
+> > > > > > > pretty simple:
+> > > > > > >
+> > > > > > > - 1 worker, and we keep track of a single pending fb
+> > > > > > > - if there's already a dirty fb pending on a different fb, we=
+ stall for
+> > > > > > >   the worker to start processing that one already (i.e. the f=
+b we track is
+> > > > > > >   reset to NULL)
+> > > > > > > - if it's pending on the same fb we just toss away all the up=
+dates and go
+> > > > > > >   with a full update, since merging the clip rects is too muc=
+h work :-) I
+> > > > > > >   think there's helpers so you could be slightly more clever =
+and just have
+> > > > > > >   an overall bounding box   =20
+> > > > > >
+> > > > > > This doesn't really fix the problem, you still end up delaying =
+sending
+> > > > > > the next back-buffer to mesa   =20
+> > > > >
+> > > > > With this the dirtyfb would never block. Also glorious frontbuffer
+> > > > > tracking corruption is possible, but that's not the kernel's prob=
+lem.
+> > > > > So how would anything get held up in userspace.   =20
+> > > >=20
+> > > > the part about stalling if a dirtyfb is pending was what I was worr=
+ied
+> > > > about.. but I suppose you meant the worker stalling, rather than
+> > > > userspace stalling (where I had interpreted it the other way around=
+).
+> > > > As soon as userspace needs to stall, you're losing again.   =20
+> > >=20
+> > > Nah, I did mean userspace stalling, so we can't pile up unlimited amo=
+unts
+> > > of dirtyfb request in the kernel.
+> > >=20
+> > > But also I never expect userspace that uses dirtyfb to actually hit t=
+his
+> > > stall point (otherwise we'd need to look at this again). It would rea=
+lly
+> > > be only there as defense against abuse.
+> > >  =20
+> > > > > > But we could re-work drm_framebuffer_funcs::dirty to operate on=
+ a
+> > > > > > per-crtc basis and hoist the loop and check if dirtyfb is neede=
+d out
+> > > > > > of drm_atomic_helper_dirtyfb()   =20
+> > > > >
+> > > > > That's still using information that userspace doesn't have, which=
+ is a
+> > > > > bit irky. We might as well go with your thing here then.   =20
+> > > >=20
+> > > > arguably, this is something we should expose to userspace.. for DSI
+> > > > command-mode panels, you probably want to make a different decision
+> > > > with regard to how many buffers in your flip-chain..
+> > > >=20
+> > > > Possibly we should add/remove the fb_damage_clips property depending
+> > > > on the display type (ie. video/pull vs cmd/push mode)?   =20
+> > >=20
+> > > I'm not sure whether atomic actually needs this exposed:
+> > > - clients will do full flips for every frame anyway, I've not heard of
+> > >   anyone seriously doing frontbuffer rendering. =20
+> >=20
+> > That may or may not be changing, depending on whether the DRM drivers
+> > will actually support tearing flips. There has been a huge amount of
+> > debate for needing tearing for Wayland [1], and while I haven't really
+> > joined that discussion, using front-buffer rendering (blits) to work
+> > around the driver inability to flip-tear might be something some people
+> > will want. =20
+>=20
+> Uh pls dont, dirtyfb does a full atomic commit on atomic drivers
+> underneath it.
 
-Fixes: 430a67f9d616 ("block, bfq: merge bursts of newly-created queues")
-Signed-off-by: Pietro Pedroni <pedroni.pietro.96@gmail.com>
-Signed-off-by: Paolo Valente <paolo.valente@linaro.org>
----
- block/bfq-iosched.c | 31 +++++++++++++++++++++++++++++--
- 1 file changed, 29 insertions(+), 2 deletions(-)
+You keep saying dirtyfb, but I still didn't understand if you mean
+literally *only* the legacy DirtyFB ioctl, or does it include
+FB_DAMAGE_CLIPS in atomic too?
 
-diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index 0270cd7ca165..4c3dcf43b0e2 100644
---- a/block/bfq-iosched.c
-+++ b/block/bfq-iosched.c
-@@ -372,9 +372,38 @@ struct bfq_queue *bic_to_bfqq(struct bfq_io_cq *bic, bool is_sync)
- 	return bic->bfqq[is_sync];
- }
- 
-+static void bfq_put_stable_ref(struct bfq_queue *bfqq);
-+
- void bic_set_bfqq(struct bfq_io_cq *bic, struct bfq_queue *bfqq, bool is_sync)
- {
-+	/*
-+	 * If bfqq != NULL, then a non-stable queue merge between
-+	 * bic->bfqq and bfqq is happening here. This causes troubles
-+	 * in the following case: bic->bfqq has also been scheduled
-+	 * for a possible stable merge with bic->stable_merge_bfqq,
-+	 * and bic->stable_merge_bfqq == bfqq happens to
-+	 * hold. Troubles occur because bfqq may then undergo a split,
-+	 * thereby becoming eligible for a stable merge. Yet, if
-+	 * bic->stable_merge_bfqq points exactly to bfqq, then bfqq
-+	 * would be stably merged with itself. To avoid this anomaly,
-+	 * we cancel the stable merge if
-+	 * bic->stable_merge_bfqq == bfqq.
-+	 */
- 	bic->bfqq[is_sync] = bfqq;
-+
-+	if (bfqq && bic->stable_merge_bfqq == bfqq) {
-+		/*
-+		 * Actually, these same instructions are executed also
-+		 * in bfq_setup_cooperator, in case of abort or actual
-+		 * execution of a stable merge. We could avoid
-+		 * repeating these instructions there too, but if we
-+		 * did so, we would nest even more complexity in this
-+		 * function.
-+		 */
-+		bfq_put_stable_ref(bic->stable_merge_bfqq);
-+
-+		bic->stable_merge_bfqq = NULL;
-+	}
- }
- 
- struct bfq_data *bic_to_bfqd(struct bfq_io_cq *bic)
-@@ -2631,8 +2660,6 @@ static bool bfq_may_be_close_cooperator(struct bfq_queue *bfqq,
- static bool idling_boosts_thr_without_issues(struct bfq_data *bfqd,
- 					     struct bfq_queue *bfqq);
- 
--static void bfq_put_stable_ref(struct bfq_queue *bfqq);
--
- /*
-  * Attempt to schedule a merge of bfqq with the currently in-service
-  * queue or with a close queue among the scheduled queues.  Return
--- 
-2.20.1
+I suppose you mean only the legacy ioctl.
 
+> > Personally, what I do agree with is that "tear if late from intended
+> > vblank" is a feature that will be needed when VRR cannot be used.
+> > However, I would also argue that multiple tearing updates per refresh
+> > cycle is not a good idea, and I know people disagree with this because
+> > practically all relevant games are using a naive main loop that makes
+> > multi-tearing necessary for good input response.
+> >=20
+> > I'm not quite sure where this leaves the KMS UAPI usage patterns. Maybe
+> > this matters, maybe not?
+> >=20
+> > Does it make a difference between using legacy DirtyFB vs. atomic
+> > FB_DAMAGE_CLIPS property?
+> >=20
+> > Also mind that Wayland compositors would be dynamically switching
+> > between "normal flips" and "tearing updates" depending on the
+> > scenegraph. This switch should not be considered a "mode set".
+> >=20
+> > [1] https://gitlab.freedesktop.org/wayland/wayland-protocols/-/merge_re=
+quests/65 =20
+>=20
+> I think what you want is two things:
+> - some indication that frontbuffer rendering "works", for some value of
+>   that (which should probably be "doesn't require dirtyfb")
+>=20
+> - tearing flips support. This needs driver support
+
+A "tear if late" functionality in the kernel would be really nice too,
+but can probably be worked around with high resolution timers in
+userspace and just-in-time atomic tearing flips. Although those flips
+would need to be tearing always, because timers that close to vblank are
+going to race with vblank.
+
+> If you don't have either, pls don't try to emulate something using
+> frontbuffer rendering and dirtyfb, because that will make it really,
+> really awkward for the kernel to know what exactly userspace wants to do.
+> Overloading existing interfaces with new meaning just we can really=20
+> and it happens to work on the one platform we tested is really not a good
+> idea.
+
+Alright, I'll spread the word if I catch people trying that.
+
+I didn't even understand that using DirtyFB at all would put "new
+meaning" to it. I mean, if you do front-buffer rendering, you must use
+DirtyFB or FB_DAMAGE_CLIPS on atomic to make sure it actually goes
+anywhere, right?
+
+
+Thanks,
+pq
+
+--Sig_/+osi.ekD5RBkw66jYfIoG/Y
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmCbo+sACgkQI1/ltBGq
+qqccsA/9EikRFWnviIH8pRt8K+WdgN2z8rZMbR3OJf/v6ChNpUrCHjBCJJ9MULrc
+WbyVpvb+dyv2fUi2Yc4r4gLMWa95xQkZ/MhIvjWv9tKnlkUbogkyBhi0PxuctmUL
+4uAxw+rQ8+46ICDKZ+q4TF1ZKocAhlQAmF25MDZVaTgWTIcXbSOLZZ+okT0coi3b
+UTKSQIZ/VyH7fz91Jknsds8imGcpmvmJr57HHv/EW8QTqU3hdJbcIly1oYKvT7Dt
+8oBSj5rcvy79bFStiWKcd1M/cUhM01esoKU2UzLZAhzH657oQmo3ECMXzHtcC0do
+LuRR/xxvLvcKJILtP4w6sDdryDbdCIWOj8CARfOmEDZnPleBDGN2dQ1mbI2bCWoh
+udWHlywYV/hcJbLBA1ySu/51YCqzHBQnkvjQDEDYSfhhg5mBz0+YDYD3kRCd+tZH
+tixFk77yEzb2NQnVHlj7drJj+FCzhF6PU0HcOIq26JzGGculTqigkz4WFrBjBC60
++rnB5uZpMDtAU/v9RGzvUBdTuHiBxyJJSTxQMcLkEDgrtq8le7IIPW9io8Thx+K7
+CV8+x2vYOVQCTNmJT+6gFDaBb9caZJ7fupzdNwRFozEHJxTYWsm3Kwh5Bid3PDpr
+g8h8kebrdjKYNQ8XxRTr+FUfdpWD40Mg9PO6kfWVIfmYUdqUecw=
+=Bjrg
+-----END PGP SIGNATURE-----
+
+--Sig_/+osi.ekD5RBkw66jYfIoG/Y--
