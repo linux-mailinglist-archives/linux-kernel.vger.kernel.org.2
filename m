@@ -2,76 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF59F37ED66
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:40:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B852037ED69
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386839AbhELUWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 16:22:23 -0400
-Received: from mail-ot1-f48.google.com ([209.85.210.48]:37654 "EHLO
-        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1385226AbhELUHc (ORCPT
+        id S1386912AbhELUWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 16:22:41 -0400
+Received: from mail-oi1-f176.google.com ([209.85.167.176]:37786 "EHLO
+        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1385232AbhELUHi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 16:07:32 -0400
-Received: by mail-ot1-f48.google.com with SMTP id v19-20020a0568301413b0290304f00e3d88so520060otp.4;
-        Wed, 12 May 2021 13:06:24 -0700 (PDT)
+        Wed, 12 May 2021 16:07:38 -0400
+Received: by mail-oi1-f176.google.com with SMTP id k25so23419961oic.4;
+        Wed, 12 May 2021 13:06:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=hhnaSOD9rZUaH7zbR+h3t72aZb7UhhEovYqBhpogtio=;
-        b=Ssd0khHDrdt2dhdZ3Urq0aXdE8OfnJaohg+0BuqDWAPAngJbovL99aRdp/jXvcjdWx
-         CTgh3KaEtNe2jwhC5LBQfkPDHIgUlK34/J+0+3laeo5uS48GU8Mfs7pf4RbWvlBpvFD2
-         9mDpGKWJgfSQMaTfkk85p8PxWewwyleFUahNBa3dpIiM5Y9LV8mx9YlzGnDzmHpPvu7f
-         U4jBFJ5g7jyq52pA5hkHeKxjtAAp9LWCSpKFDT4qcF0h+6wNsZCznTNDSGiP7umoUpCH
-         tFXXSHdSUXDgMyYgJ44e9iRyb4rujXYUcG5MRRdlx9PtcF5XKIs0ycG6ii2/TRAaH3Ls
-         rVMw==
-X-Gm-Message-State: AOAM5337DdkSkmA8RGkwOEHXXEQe9qwrcz+DU7MCx+qfxehtB7qKcb+k
-        KCX8rIOnfZdr7HtXwY0l80hPod7FRA==
-X-Google-Smtp-Source: ABdhPJzyWvUr3Ry/8XTYUAydrxrHT/tsdf/bcwoWjSHkvNEpPyamIYQZ0sf4FRVUdyw+345Ug+z0Aw==
-X-Received: by 2002:a05:6830:208c:: with SMTP id y12mr30405131otq.129.1620849983154;
-        Wed, 12 May 2021 13:06:23 -0700 (PDT)
+        bh=ZT4JNzSVA4XzKpARhAEfHQrvscUrf/xbLw82kFR8CgM=;
+        b=gUYvJSMePg6fhzUY7HrLQWKBXq5ZoZjxqu1wYUjOb894V34suYFMTfeniJfdwigZpC
+         tdqyOpCXdPKF3FrJNFlAEXLNYcSOMcROPV2IbPM5BXg/mcVqKwQMWg1Dj60gG7x/4B9+
+         FBuvIwXxdOiR5F2Pta7iGt0S8xhBL8DqdvwVo4fob/G2cogTylB0qjTS2M2NZXxHxHDK
+         nbsPaKpFq0xixVz1JIDUv45MxX8eQekzr++8zWiyN93zFfySgYkK6/1aUteavS2sd8Bl
+         vtUmeT+P472696GFJq5m5Xqtnl2mMXw5MRObuXFt6IHB3JJvLbmrPCym2G8l9RAJK/+C
+         86zA==
+X-Gm-Message-State: AOAM532YmmW0S3QK66werJdHwr5RkAZ96zCou8DbnjLsXXisNNpwhiyX
+        F6TMH2AwdLxrTdTuldTrIw==
+X-Google-Smtp-Source: ABdhPJyx3BiGpIeRJ3UIVk48+wQi6XdGs6DMxX1QJJ+UbedL6x3vdBzMYF8skTJgNZgJb8r3EWzcbQ==
+X-Received: by 2002:aca:1a05:: with SMTP id a5mr182147oia.26.1620849989353;
+        Wed, 12 May 2021 13:06:29 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id h6sm223813oom.21.2021.05.12.13.06.21
+        by smtp.gmail.com with ESMTPSA id h184sm191133oia.1.2021.05.12.13.06.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 13:06:22 -0700 (PDT)
-Received: (nullmailer pid 204080 invoked by uid 1000);
+        Wed, 12 May 2021 13:06:28 -0700 (PDT)
+Received: (nullmailer pid 204078 invoked by uid 1000);
         Wed, 12 May 2021 18:35:16 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Doug Zobel <dougdev334@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
-        Pavel Machek <pavel@ucw.cz>
-In-Reply-To: <20210511204834.2675271-3-dougdev334@gmail.com>
-References: <20210511204834.2675271-1-dougdev334@gmail.com> <20210511204834.2675271-3-dougdev334@gmail.com>
-Subject: Re: [PATCH 2/2] dt: bindings: lp55xx: Add predefined LED pattern
+To:     Sean Anderson <sean.anderson@seco.com>
+Cc:     michal.simek@xilinx.com, linux-pwm@vger.kernel.org,
+        Alvaro Gamez <alvaro.gamez@hazent.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20210511191239.774570-1-sean.anderson@seco.com>
+References: <20210511191239.774570-1-sean.anderson@seco.com>
+Subject: Re: [PATCH v3 1/2] dt-bindings: pwm: Add Xilinx AXI Timer
 Date:   Wed, 12 May 2021 13:35:16 -0500
-Message-Id: <1620844516.492214.204079.nullmailer@robh.at.kernel.org>
+Message-Id: <1620844516.484369.204077.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 May 2021 15:48:34 -0500, Doug Zobel wrote:
-> Add a new device tree object for LP5562 predfined led patterns.
+On Tue, 11 May 2021 15:12:37 -0400, Sean Anderson wrote:
+> This adds a binding for the Xilinx LogiCORE IP AXI Timer. This device is
+> a "soft" block, so it has many parameters which would not be
+> configurable in most hardware. This binding is usually automatically
+> generated by Xilinx's tools, so the names and values of some properties
+> must be kept as they are. Replacement properties have been provided for
+> new device trees.
 > 
-> Signed-off-by: Doug Zobel <dougdev334@gmail.com>
+> Because we need to init timer devices so early in boot, the easiest way
+> to configure things is to use a device tree property. For the moment
+> this is 'xlnx,pwm', but this could be extended/renamed/etc. in the
+> future if these is a need for a generic property.
+> 
+> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
 > ---
->  .../devicetree/bindings/leds/leds-lp55xx.yaml | 103 +++++++++++++++++-
->  1 file changed, 102 insertions(+), 1 deletion(-)
+> How should the clocking situation be documented? For the moment I have
+> just left clock as optional, but should clock-frequency be documented?
+> 
+> Changes in v3:
+> - Mark all boolean-as-int properties as deprecated
+> - Add xlnx,pwm and xlnx,gen?-active-low properties.
+> - Make newer replacement properties mutually-exclusive with what they
+>   replace
+> - Add an example with non-deprecated properties only.
+> 
+> Changes in v2:
+> - Use 32-bit addresses for example binding
+> 
+>  .../bindings/pwm/xlnx,axi-timer.yaml          | 142 ++++++++++++++++++
+>  1 file changed, 142 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pwm/xlnx,axi-timer.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
 on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
 yamllint warnings/errors:
+./Documentation/devicetree/bindings/pwm/xlnx,axi-timer.yaml:16:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
 
 dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/leds/leds-lp55xx.example.dts:159.28-172.20: Warning (unit_address_vs_reg): /example-0/i2c/led-controller@30/pattern@1: node has a unit name, but no reg or ranges property
-Documentation/devicetree/bindings/leds/leds-lp55xx.example.dts:174.28-209.20: Warning (unit_address_vs_reg): /example-0/i2c/led-controller@30/pattern@2: node has a unit name, but no reg or ranges property
-Documentation/devicetree/bindings/leds/leds-lp55xx.example.dts:147.24-151.20: Warning (unique_unit_address): /example-0/i2c/led-controller@30/led@1: duplicate unit-address (also used in node /example-0/i2c/led-controller@30/pattern@1)
-Documentation/devicetree/bindings/leds/leds-lp55xx.example.dts:153.24-157.20: Warning (unique_unit_address): /example-0/i2c/led-controller@30/led@2: duplicate unit-address (also used in node /example-0/i2c/led-controller@30/pattern@2)
+Documentation/devicetree/bindings/pwm/xlnx,axi-timer.example.dts:49.37-57.11: ERROR (duplicate_label): /example-1/timer@800e0000: Duplicate label 'axi_timer_0' on /example-1/timer@800e0000 and /example-0/timer@800e0000
+ERROR: Input tree has errors, aborting (use -f to force output)
+make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/pwm/xlnx,axi-timer.example.dt.yaml] Error 2
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1416: dt_binding_check] Error 2
 
-See https://patchwork.ozlabs.org/patch/1477300
+See https://patchwork.ozlabs.org/patch/1477288
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
