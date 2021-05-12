@@ -2,36 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C515037EA4D
+	by mail.lfdr.de (Postfix) with ESMTP id 73EDB37EA4C
 	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376935AbhELS4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 14:56:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35700 "EHLO mail.kernel.org"
+        id S1376917AbhELS4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 14:56:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244201AbhELQmm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S244205AbhELQmm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 12 May 2021 12:42:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 737E561040;
-        Wed, 12 May 2021 16:11:37 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59AA361D25;
+        Wed, 12 May 2021 16:11:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620835898;
-        bh=/mfnOEZScKr430mTfPPVF8A9WpZ30nigDey2yN4XNWA=;
+        s=korg; t=1620835902;
+        bh=YudxFErCNGEG/IMcM55fzLDfeqLIl64lIT/PgvE9NZE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xrn046kXqSQ5fGeW+HJk9ipx7X2RITSadj7ypZPmx9QlMTs49XOMAbh3TlBTmKMLn
-         zGW2wZDTjjiSZO9XyAXwjy2fMeBQ2fsAj2Wjz+UnNit6cW/QK1l/IvHcv4vsJmaq+F
-         5IOBgONBDNIA5IWP3yQ8pJ4q1XK9QRTf1rvXExqk=
+        b=bbdLmH1HFD/y8qolWmEvgJsHPz/WbQClEEshJ2zG3xlB1ZfJzyd4HVlZGnx70BCVt
+         3UEarOs0qAznAv2nKWEe0pRl6778XabqaOzAH5S882UpxOoUv44CNCeaO5zcs38d97
+         BfCxlqQYbD2dOIzliVygPQWGrmGYrmLHFXYUzgjw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Rajesh Sankaran <rajesh.sankaran@intel.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
+        stable@vger.kernel.org, Ashok Raj <ashok.raj@intel.com>,
         Lu Baolu <baolu.lu@linux.intel.com>,
         Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 493/677] iommu/vt-d: Report right snoop capability when using FL for IOVA
-Date:   Wed, 12 May 2021 16:48:59 +0200
-Message-Id: <20210512144853.764437351@linuxfoundation.org>
+Subject: [PATCH 5.12 495/677] iommu/vt-d: Remove WO permissions on second-level paging entries
+Date:   Wed, 12 May 2021 16:49:01 +0200
+Message-Id: <20210512144853.828509274@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
 References: <20210512144837.204217980@linuxfoundation.org>
@@ -45,113 +42,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lu Baolu <baolu.lu@linux.intel.com>
 
-[ Upstream commit 6c00612d0cba10f7d0917cf1f73c945003ed4cd7 ]
+[ Upstream commit eea53c5816889ee8b64544fa2e9311a81184ff9c ]
 
-The Intel VT-d driver checks wrong register to report snoop capablility
-when using first level page table for GPA to HPA translation. This might
-lead the IOMMU driver to say that it supports snooping control, but in
-reality, it does not. Fix this by always setting PASID-table-entry.PGSNP
-whenever a pasid entry is setting up for GPA to HPA translation so that
-the IOMMU driver could report snoop capability as long as it runs in the
-scalable mode.
+When the first level page table is used for IOVA translation, it only
+supports Read-Only and Read-Write permissions. The Write-Only permission
+is not supported as the PRESENT bit (implying Read permission) should
+always set. When using second level, we still give separate permissions
+that allows WriteOnly which seems inconsistent and awkward. We want to
+have consistent behavior. After moving to 1st level, we don't want things
+to work sometimes, and break if we use 2nd level for the same mappings.
+Hence remove this configuration.
 
-Fixes: b802d070a52a1 ("iommu/vt-d: Use iova over first level")
-Suggested-by: Rajesh Sankaran <rajesh.sankaran@intel.com>
-Suggested-by: Kevin Tian <kevin.tian@intel.com>
 Suggested-by: Ashok Raj <ashok.raj@intel.com>
+Fixes: b802d070a52a1 ("iommu/vt-d: Use iova over first level")
 Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-Link: https://lore.kernel.org/r/20210330021145.13824-1-baolu.lu@linux.intel.com
+Link: https://lore.kernel.org/r/20210320025415.641201-3-baolu.lu@linux.intel.com
 Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/intel/iommu.c | 12 +++++++++++-
- drivers/iommu/intel/pasid.c | 16 ++++++++++++++++
- drivers/iommu/intel/pasid.h |  1 +
- 3 files changed, 28 insertions(+), 1 deletion(-)
+ drivers/iommu/intel/iommu.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index 66fab7944b39..b5d3301b2700 100644
+index b5d3301b2700..36d60536ae8d 100644
 --- a/drivers/iommu/intel/iommu.c
 +++ b/drivers/iommu/intel/iommu.c
-@@ -657,7 +657,14 @@ static int domain_update_iommu_snooping(struct intel_iommu *skip)
- 	rcu_read_lock();
- 	for_each_active_iommu(iommu, drhd) {
- 		if (iommu != skip) {
--			if (!ecap_sc_support(iommu->ecap)) {
-+			/*
-+			 * If the hardware is operating in the scalable mode,
-+			 * the snooping control is always supported since we
-+			 * always set PASID-table-entry.PGSNP bit if the domain
-+			 * is managed outside (UNMANAGED).
-+			 */
-+			if (!sm_supported(iommu) &&
-+			    !ecap_sc_support(iommu->ecap)) {
- 				ret = 0;
- 				break;
- 			}
-@@ -2528,6 +2535,9 @@ static int domain_setup_first_level(struct intel_iommu *iommu,
+@@ -2346,8 +2346,9 @@ __domain_mapping(struct dmar_domain *domain, unsigned long iov_pfn,
+ 		return -EINVAL;
  
- 	flags |= (level == 5) ? PASID_FLAG_FL5LP : 0;
+ 	attr = prot & (DMA_PTE_READ | DMA_PTE_WRITE | DMA_PTE_SNP);
++	attr |= DMA_FL_PTE_PRESENT;
+ 	if (domain_use_first_level(domain)) {
+-		attr |= DMA_FL_PTE_PRESENT | DMA_FL_PTE_XD | DMA_FL_PTE_US;
++		attr |= DMA_FL_PTE_XD | DMA_FL_PTE_US;
  
-+	if (domain->domain.type == IOMMU_DOMAIN_UNMANAGED)
-+		flags |= PASID_FLAG_PAGE_SNOOP;
-+
- 	return intel_pasid_setup_first_level(iommu, dev, (pgd_t *)pgd, pasid,
- 					     domain->iommu_did[iommu->seq_id],
- 					     flags);
-diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
-index f26cb6195b2c..5093d317ff1a 100644
---- a/drivers/iommu/intel/pasid.c
-+++ b/drivers/iommu/intel/pasid.c
-@@ -411,6 +411,16 @@ static inline void pasid_set_page_snoop(struct pasid_entry *pe, bool value)
- 	pasid_set_bits(&pe->val[1], 1 << 23, value << 23);
- }
- 
-+/*
-+ * Setup the Page Snoop (PGSNP) field (Bit 88) of a scalable mode
-+ * PASID entry.
-+ */
-+static inline void
-+pasid_set_pgsnp(struct pasid_entry *pe)
-+{
-+	pasid_set_bits(&pe->val[1], 1ULL << 24, 1ULL << 24);
-+}
-+
- /*
-  * Setup the First Level Page table Pointer field (Bit 140~191)
-  * of a scalable mode PASID entry.
-@@ -565,6 +575,9 @@ int intel_pasid_setup_first_level(struct intel_iommu *iommu,
- 		}
- 	}
- 
-+	if (flags & PASID_FLAG_PAGE_SNOOP)
-+		pasid_set_pgsnp(pte);
-+
- 	pasid_set_domain_id(pte, did);
- 	pasid_set_address_width(pte, iommu->agaw);
- 	pasid_set_page_snoop(pte, !!ecap_smpwc(iommu->ecap));
-@@ -643,6 +656,9 @@ int intel_pasid_setup_second_level(struct intel_iommu *iommu,
- 	pasid_set_fault_enable(pte);
- 	pasid_set_page_snoop(pte, !!ecap_smpwc(iommu->ecap));
- 
-+	if (domain->domain.type == IOMMU_DOMAIN_UNMANAGED)
-+		pasid_set_pgsnp(pte);
-+
- 	/*
- 	 * Since it is a second level only translation setup, we should
- 	 * set SRE bit as well (addresses are expected to be GPAs).
-diff --git a/drivers/iommu/intel/pasid.h b/drivers/iommu/intel/pasid.h
-index 444c0bec221a..086ebd697319 100644
---- a/drivers/iommu/intel/pasid.h
-+++ b/drivers/iommu/intel/pasid.h
-@@ -48,6 +48,7 @@
-  */
- #define PASID_FLAG_SUPERVISOR_MODE	BIT(0)
- #define PASID_FLAG_NESTED		BIT(1)
-+#define PASID_FLAG_PAGE_SNOOP		BIT(2)
- 
- /*
-  * The PASID_FLAG_FL5LP flag Indicates using 5-level paging for first-
+ 		if (domain->domain.type == IOMMU_DOMAIN_DMA) {
+ 			attr |= DMA_FL_PTE_ACCESS;
 -- 
 2.30.2
 
