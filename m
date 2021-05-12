@@ -2,120 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3BB237EB9E
+	by mail.lfdr.de (Postfix) with ESMTP id EC71137EB9F
 	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381535AbhELTef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:34:35 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:50896 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237536AbhELRnk (ORCPT
+        id S1381555AbhELTeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:34:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349894AbhELRqx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 13:43:40 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14CHXxNa060840;
-        Wed, 12 May 2021 13:42:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=L1Ft5Omd2CLiJM0wtk4u1tDePf7r2ihE+7ASLO5TB1A=;
- b=H586JPlpOdpA2btQamx98b/VqbOldPLyIxZrXUPsRzqNhvLoME/3H/Wbmc3AwzrwmVdI
- iu8b8z4+WqixIxg9PQF9K5rrmedrGTqw4ObghgEip6ErMhJovj91mc0Ed6/W7Px2fdDq
- 7mlkDmGqLXH7BkfdpcKs03tCdhOV3wISRh/yukMr6aN1T6rcase+MfCWF57nsPRCAUvK
- +xkKJDew3N/SurCZai2y9WYGPwAwKKnhUSHcLd8mm37ylqCUoFbjtYOBHPH86z92uAPO
- sD3BYdvlqxMlncoXFxwooEIXya1r7H7Az1Rlv8SULUtj5Bn6SudmBwQ9YWMHi7h9BU/l 4g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38gkcn0f2r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 12 May 2021 13:42:19 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14CHZp3X069060;
-        Wed, 12 May 2021 13:42:19 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38gkcn0f1y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 12 May 2021 13:42:19 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14CHg35p026653;
-        Wed, 12 May 2021 17:42:17 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04ams.nl.ibm.com with ESMTP id 38dj98aba6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 12 May 2021 17:42:17 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14CHgFB345154782
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 12 May 2021 17:42:15 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5174AAE053;
-        Wed, 12 May 2021 17:42:15 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id ECA17AE045;
-        Wed, 12 May 2021 17:42:14 +0000 (GMT)
-Received: from localhost (unknown [9.171.5.155])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed, 12 May 2021 17:42:14 +0000 (GMT)
-Date:   Wed, 12 May 2021 19:42:13 +0200
-From:   Vasily Gorbik <gor@linux.ibm.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
-        Miroslav Benes <mbenes@suse.cz>, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] objtool/x86: Fix elf_add_alternative() endianness
-Message-ID: <patch-2.thread-6c9df9.git-6c9df9a8098d.your-ad-here.call-01620841104-ext-2554@work.hours>
-References: <cover.thread-6c9df9.your-ad-here.call-01620841104-ext-2554@work.hours>
+        Wed, 12 May 2021 13:46:53 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D066EC061761
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 10:45:00 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id i9so28369229lfe.13
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 10:45:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EnLmte8GJt9Bb4Yd8FS7Fvu9RWF8YS8wdhW8/1E4zQQ=;
+        b=FdGhpYQR9EJbOPTteKhrCj0ZG6s92OcG2YCJlMUtFF5hCaG7UqrDHELczhFojbbgqn
+         eAVv4deyYW5mjRHjJLMGvedL/b+KVwQ9YyO9MQiIvn/VBLfyDaQh4frsubScc4vnJSPr
+         M5j7oAfrCStdWjsg9Zhj6FJ0qVw/yVCYo6lqo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EnLmte8GJt9Bb4Yd8FS7Fvu9RWF8YS8wdhW8/1E4zQQ=;
+        b=TWqxw7GF+rzFMkJ0saA8XSxdtlkAvGlASciQyVa2XEK86BSHERNHN8guiMrkV4kUCR
+         KS2B/zFxvll1LYcnsqMhm77XnMZll0J4kgnab0y1VeDcaGHZaaJQ+vGBnMWRBjnrsP0q
+         PDwB0kROgYFg2Cb5XuDY5IzsHVx/wQGMnp96aIVY41icoYxUY8JqqiTttkf0CpFocDy/
+         eWS34n4u/GDfOr6ySBQxbJfVrK+aZIyWeqNRjyfqG824Z82ezBPJ7CdrZ5CpS4ae5OlU
+         l+bXy4SEL3OdovA+s24/O5jYEEt87VcmXtW5VFwYDJHk/D78Q3pznR7e9G68Y+9nUoiB
+         YmDw==
+X-Gm-Message-State: AOAM5319LU23hNffFeYzaV7z6aNesT7zklu4wLcrE5vQe8LPHiVAMlx+
+        z1GU3ZE04p/M+J++Qz/6b5Y9rhJDNW3eWQPg
+X-Google-Smtp-Source: ABdhPJz+Dqd7UilXhcs/qWlnkAlYyigHiorOuXkFa1UIz9e08pgLuYebZGdnxrkjy5BE9rQZf7pGog==
+X-Received: by 2002:ac2:4ed9:: with SMTP id p25mr24955187lfr.576.1620841498735;
+        Wed, 12 May 2021 10:44:58 -0700 (PDT)
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
+        by smtp.gmail.com with ESMTPSA id z18sm34090lft.57.2021.05.12.10.44.57
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 May 2021 10:44:57 -0700 (PDT)
+Received: by mail-lf1-f45.google.com with SMTP id z9so34909698lfu.8
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 10:44:57 -0700 (PDT)
+X-Received: by 2002:a19:4cd7:: with SMTP id z206mr11366696lfa.487.1620841496852;
+ Wed, 12 May 2021 10:44:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <cover.thread-6c9df9.your-ad-here.call-01620841104-ext-2554@work.hours>
-X-Patchwork-Bot: notify
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: m2RwJhQst7Cxy-qgG43Q7bLJ6w2IIVfQ
-X-Proofpoint-ORIG-GUID: Xz_Q5ndX-iojBRNETZ1HMEZlszifw1MW
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-12_09:2021-05-12,2021-05-12 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
- malwarescore=0 impostorscore=0 priorityscore=1501 adultscore=0
- phishscore=0 bulkscore=0 mlxlogscore=999 spamscore=0 lowpriorityscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105120114
+References: <8735v3ex3h.ffs@nanos.tec.linutronix.de> <3C41339D-29A2-4AB1-958F-19DB0A92D8D7@amacapital.net>
+ <CAHk-=wh0KoEZXPYMGkfkeVEerSCEF1AiCZSvz9TRrx=Kj74D+Q@mail.gmail.com>
+ <CALCETrV9bCenqzzaW6Ra18tCvNP-my09decTjmLDVZZAQxR6VA@mail.gmail.com>
+ <CAHk-=wgo6XEz3VQ9ntqzWLR3-hm1YXrXUz4_heDs4wcLe9NYvA@mail.gmail.com>
+ <d26e3a82-8a2c-7354-d36b-cac945c208c7@kernel.dk> <CALCETrWmhquicE2C=G2Hmwfj4VNypXVxY-K3CWOkyMe9Edv88A@mail.gmail.com>
+ <CAHk-=wgqK0qUskrzeWXmChErEm32UiOaUmynWdyrjAwNzkDKaw@mail.gmail.com>
+ <8735v3jujv.ffs@nanos.tec.linutronix.de> <CAHk-=wi4Dyg_Z70J_hJbtFLPQDG+Zx3dP2jB5QrOdZC6W6j4Gw@mail.gmail.com>
+ <12710fda-1732-ee55-9ac1-0df9882aa71b@samba.org> <CAHk-=wiR7c-UHh_3Rj-EU8=AbURKchnMFJWW7=5EH=qEUDT8wg@mail.gmail.com>
+ <59ea3b5a-d7b3-b62e-cc83-1f32a83c4ac2@kernel.dk> <17471c9fec18765449ef3a5a4cddc23561b97f52.camel@trillion01.com>
+In-Reply-To: <17471c9fec18765449ef3a5a4cddc23561b97f52.camel@trillion01.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 12 May 2021 10:44:40 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whoJCocFsQ7+Sqq=dkuzHE+RXxvRdd4ZvyYqnsKBqsKAA@mail.gmail.com>
+Message-ID: <CAHk-=whoJCocFsQ7+Sqq=dkuzHE+RXxvRdd4ZvyYqnsKBqsKAA@mail.gmail.com>
+Subject: Re: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es'
+ registers for io_threads
+To:     Olivier Langlois <olivier@trillion01.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Stefan Metzmacher <metze@samba.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently x86 kernel cross-compiled on big endian system fails at boot with:
-kernel BUG at arch/x86/kernel/alternative.c:258!
+On Tue, May 11, 2021 at 9:24 PM Olivier Langlois <olivier@trillion01.com> wrote:
+>
+> I have reported an issue that I have with a user process using io_uring
+> where when it core dumps, the dump fails to be generated.
+> https://github.com/axboe/liburing/issues/346
 
-Corresponding bug condition look like the following:
-BUG_ON(feature >= (NCAPINTS + NBUGINTS) * 32);
+I suspect most kernel developers don't have github notifications
+enabled. I know I have them disabled because it would be *way* too
+noisy not to.
 
-Fix that by converting alternative feature/cpuid to target endianness.
+But maybe Jens does for that libiouring part.
 
-Fixes: 9bc0bb50727c ("objtool/x86: Rewrite retpoline thunk calls")
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
----
- tools/objtool/arch/x86/decode.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+> Pavel did comment to my report and he did point out this thread as
+> possibly a related issue.
 
-diff --git a/tools/objtool/arch/x86/decode.c b/tools/objtool/arch/x86/decode.c
-index cedf3ede7545..24295d39713b 100644
---- a/tools/objtool/arch/x86/decode.c
-+++ b/tools/objtool/arch/x86/decode.c
-@@ -19,6 +19,7 @@
- #include <objtool/elf.h>
- #include <objtool/arch.h>
- #include <objtool/warn.h>
-+#include <objtool/endianness.h>
- #include <arch/elf.h>
- 
- static int is_x86_64(const struct elf *elf)
-@@ -725,7 +726,7 @@ static int elf_add_alternative(struct elf *elf,
- 		return -1;
- 	}
- 
--	alt->cpuid = cpuid;
-+	alt->cpuid = bswap_if_needed(cpuid);
- 	alt->instrlen = orig_len;
- 	alt->replacementlen = repl_len;
- 
--- 
-2.25.4
+I don't think this is related. The gdb confusion wouldn't affect core
+dump generation.
+
+I don't see why a core-dump shouldn't work from an IO thread these
+days - the signal struct and synchronization should all be the same as
+for a regular user thread.
+
+That said, I do wonder if we should avoid generating core dumps from
+the IO worker thread itself. The IO thread itself should never get a
+SIGSEGV/SIGBUS anyway, it should have been turned into -EFAULT.
+
+So maybe the
+
+                if (current->flags & PF_IO_WORKER)
+                        goto out;
+
+in kernel/signal.c should be moved up above the do_coredump() logic regardless.
+
+Jens, have you played with core-dumping when there are active io_uring
+threads? There's a test-program in that github issue report..
+
+              Linus
