@@ -2,139 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EBE837EFEB
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 01:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CA1937EFF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 01:43:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233628AbhELXhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 19:37:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39248 "EHLO
+        id S234196AbhELXhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 19:37:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358857AbhELXUG (ORCPT
+        with ESMTP id S233920AbhELXU6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 19:20:06 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ADF6C061351
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 16:14:39 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id j19so18535141qtp.7
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 16:14:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ljcjrxsK/XtCU4dS+x6LI3mL4RYEV9Ptry5OPwJVY2E=;
-        b=s8CweXbfhLkcMdcT4cy/GbSPDQnSsyfTfzDI1GTMbJ6TPSLqE4/nAW9bxFjPHzHL72
-         571VcDZa6pKEhVPYi/CZ3RCUfI3x3KgqxhuxF5Nh/dvMXLeJM0XXdQViqi4lWm12vL5z
-         50OrxtyTTYBRQchcB34p4bL2zp5LYS8lPQO8pOT4Y5l+gU40GNf1S1Fr3XL2iabIawfr
-         Cema/AjTx7HVf+t5IiGbx8WqhJJWgRvWyhTilW1ps56sxrNs0XiFMPj1jkP+j+w/4F4R
-         h+NHoxrRiQx/KJ3nld/gTRvxRV5grXrVIHqQsLrkGJFtOzF11mvcrqY16EAhTsvW8usg
-         qgcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ljcjrxsK/XtCU4dS+x6LI3mL4RYEV9Ptry5OPwJVY2E=;
-        b=d/5F40NR4xc3lvMroMa/NzUgdgJ3LF6sKQ5M7httdKIBqA4yXaLBoLwoI0IDv1hY+7
-         0Pd0Qxx/bEJHQa4vj8Ot1xz/xfDGdWp0zG097GxHr4Cgdh7iD0UVMoY36GnIUW8eIkdb
-         JrSF1mKXKGYN3hRn7Df3+uWIYmU8gk9KbWDSWkoCjt+fusrRR23KE6NhOrKwT7LFCw+b
-         UdQuJ1hUtuz50vzd69AAyxTQZRlsXndWM7ovzw657gBwdyu3xZZCtpg2gCEQi4LNC7bc
-         bgKC/a5qKsRcYKFlcKbfswU1cOwim73rCfIWL6iFZdt2c4PsdDrwrb+j054kd2qGirmJ
-         BQ0Q==
-X-Gm-Message-State: AOAM5308lDUsYVKv5clSS2h9Te/NUumFJSh6ekqo2PZKLGji9V7NdRkh
-        22KroPDhgojDh6JYX4R3ozYyScgTiviCKvhMQUyi3A==
-X-Google-Smtp-Source: ABdhPJxLxj3TDBvcyByWDdaRA++dYA1K6hxNUZNV7DdQ5UKrMBDGQmHs5sMqcUIm9FkRI26YZKPprPB9q2vLgL3UH3w=
-X-Received: by 2002:aed:314c:: with SMTP id 70mr34994410qtg.364.1620861278353;
- Wed, 12 May 2021 16:14:38 -0700 (PDT)
+        Wed, 12 May 2021 19:20:58 -0400
+Received: from mail.aperture-lab.de (mail.aperture-lab.de [IPv6:2a01:4f8:c2c:665b::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7B82C06175F;
+        Wed, 12 May 2021 16:19:48 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 760503E942;
+        Thu, 13 May 2021 01:19:45 +0200 (CEST)
+From:   =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>
+To:     netdev@vger.kernel.org
+Cc:     Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        bridge@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v3 00/11] net: bridge: split IPv4/v6 mc router state and export for batman-adv
+Date:   Thu, 13 May 2021 01:19:30 +0200
+Message-Id: <20210512231941.19211-1-linus.luessing@c0d3.blue>
 MIME-Version: 1.0
-References: <20210511041852.592295-1-bjorn.andersson@linaro.org> <20210511041852.592295-2-bjorn.andersson@linaro.org>
-In-Reply-To: <20210511041852.592295-2-bjorn.andersson@linaro.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Thu, 13 May 2021 02:14:27 +0300
-Message-ID: <CAA8EJpo-GNsVSXG_6PfnPTLHp-hMT7GBKLEmDz4S25R4gGmOrw@mail.gmail.com>
-Subject: Re: [PATCH 1/4] drm/msm/dpu: Introduce knowledge of widebus feature
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Last-TLS-Session-Version: TLSv1.2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 May 2021 at 07:18, Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> Some hardware supports clocking 2 pixels per pixel clock pulse, known as
-> "widebus". The configuration needs to match between the DPU and the
-> interface controller, and the timing parameters must be adjusted.
->
-> As a first step towards supporting this, start by adding a INTF mask
-> flag to signal the timing configuration code that the INTF_CONFIG2
-> register should be written - which will clear the bit, in the case that
-> the bootloader left it set.
->
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Hi,
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+The following patches are splitting the so far combined multicast router
+state in the Linux bridge into two ones, one for IPv4 and one for IPv6,
+for a more fine-grained detection of multicast routers. This avoids
+sending IPv4 multicast packets to an IPv6-only multicast router and 
+avoids sending IPv6 multicast packets to an IPv4-only multicast router.
+This also allows batman-adv to make use of the now split information in
+the final patch.
 
-> ---
->  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h | 2 ++
->  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c    | 3 ++-
->  2 files changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
-> index 4dfd8a20ad5c..c2f34a4f82d9 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
-> @@ -196,12 +196,14 @@ enum {
->   * @DPU_INTF_TE                 INTF block has TE configuration support
->   * @DPU_DATA_HCTL_EN            Allows data to be transferred at different rate
->                                  than video timing
-> + * @DPU_INTF_WIDEBUS            INTF block supports driving 2 pixels per clock
->   * @DPU_INTF_MAX
->   */
->  enum {
->         DPU_INTF_INPUT_CTRL = 0x1,
->         DPU_INTF_TE,
->         DPU_DATA_HCTL_EN,
-> +       DPU_INTF_WIDEBUS,
->         DPU_INTF_MAX
->  };
->
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
-> index 1599e3f49a4f..933485d8c03c 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
-> @@ -183,7 +183,6 @@ static void dpu_hw_intf_setup_timing_engine(struct dpu_hw_intf *ctx,
->         if (ctx->cap->features & BIT(DPU_DATA_HCTL_EN)) {
->                 intf_cfg2 |= BIT(4);
->                 display_data_hctl = display_hctl;
-> -               DPU_REG_WRITE(c, INTF_CONFIG2, intf_cfg2);
->                 DPU_REG_WRITE(c, INTF_DISPLAY_DATA_HCTL, display_data_hctl);
->         }
->
-> @@ -204,6 +203,8 @@ static void dpu_hw_intf_setup_timing_engine(struct dpu_hw_intf *ctx,
->         DPU_REG_WRITE(c, INTF_FRAME_LINE_COUNT_EN, 0x3);
->         DPU_REG_WRITE(c, INTF_CONFIG, intf_cfg);
->         DPU_REG_WRITE(c, INTF_PANEL_FORMAT, panel_format);
-> +       if (ctx->cap->features & (BIT(DPU_DATA_HCTL_EN) | BIT(DPU_INTF_WIDEBUS)))
-> +               DPU_REG_WRITE(c, INTF_CONFIG2, intf_cfg2);
->  }
->
->  static void dpu_hw_intf_enable_timing_engine(
-> --
-> 2.29.2
->
+The first eight patches prepare the bridge code to avoid duplicate
+code or IPv6-#ifdef clutter for the multicast router state split. And 
+contain no functional changes yet.
+
+The ninth patch then implements the IPv4+IPv6 multicast router state
+split.
+
+Patch number ten adds IPv4+IPv6 specific timers to the mdb netlink
+router port dump, so that the timers validity can be checked individually
+from userspace.
+
+The final, eleventh patch exports this now per protocol family multicast
+router state so that batman-adv can then later make full use of the 
+Multicast Router Discovery (MRD) support in the Linux bridge. The 
+batman-adv protocol format currently expects separate multicast router
+states for IPv4 and IPv6, therefore it depends on the first patch.
+batman-adv will then make use of this newly exported functions like
+this[0].
+
+Regards, Linus
+
+[0]: https://git.open-mesh.org/batman-adv.git/shortlog/refs/heads/linus/multicast-routeable-mrd
+     -> https://git.open-mesh.org/batman-adv.git/commit/d4bed3a92427445708baeb1f2d1841c5fb816fd4
+
+Changelog v3:
+
+* Patch 01/11:
+  * fixed/added missing rename of br->router_list to
+    br->ip4_mc_router_list in br_multicast_flood()
+* Patch 02/11:
+  * moved inline functions from br_forward.c to br_private.h
+* Patch 03/11:
+  * removed inline attribute from functions added to br_mdb.c
+* Patch 04/11:
+  * unchanged
+* Patch 05/11:
+  * converted if()'s into switch-case in br_multicast_is_router()
+* Patch 06/11:
+  * removed inline attribute from function added to br_multicast.c
+* Patch 07/11:
+  * added missing static attribute to function
+    br_ip4_multicast_get_rport_slot() added to br_multicast.c
+* Patch 08/11:
+  * removed inline attribute from function added to br_multicast.c
+* Patch 09/11:
+  * added missing static attribute to function
+    br_ip6_multicast_get_rport_slot() added to br_multicast.c
+  * removed inline attribute from function added to br_multicast.c
+* Patch 10/11:
+  * unchanged
+* Patch 11/11:
+  * simplified bridge check in br_multicast_has_router_adjacent()
+    by using br_port_get_check_rcu()
+  * added missing declaration for br_multicast_has_router_adjacent()
+    in include/linux/if_bridge.h
+
+Changelog v2:
+
+* split into multiple patches as suggested by Nikolay
+* added helper functions to br_multicast_flood(), avoiding
+  IPv6 #ifdef clutter
+* fixed reverse xmas tree ordering in br_rports_fill_info() and
+  added helper functions to avoid IPv6 #ifdef clutter
+* Added a common br_multicast_add_router() and a helper function
+  to retrieve the correct slot to avoid duplicate code for an
+  ip4 and ip6 variant
+* replaced the "1" and "2" constants in br_multicast_is_router()
+  with the appropriate enums
+* added br_{ip4,ip6}_multicast_rport_del() wrappers to reduce
+  IPv6 #ifdef clutter
+* added return values to br_*multicast_rport_del() to only notify
+  if the port was actually removed and did not race with a readdition
+  somewhere else
+* added empty, void br_ip6_multicast_mark_router() if compiled
+  without IPv6, to reduce IPv6 #ifdef clutter
 
 
--- 
-With best wishes
-Dmitry
