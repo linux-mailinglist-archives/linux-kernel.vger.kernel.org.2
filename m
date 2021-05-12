@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33C8637BD2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:52:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3592537BD3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232793AbhELMxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 08:53:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52514 "EHLO mail.kernel.org"
+        id S233348AbhELMxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 08:53:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52580 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231302AbhELMwv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231308AbhELMwv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 12 May 2021 08:52:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 358C1613EE;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CA0C613FE;
         Wed, 12 May 2021 12:51:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620823902;
-        bh=rGHnZz0sSHB5d7aG1LRrcHqBY8ZGCas2wbdtc/wHeoE=;
+        bh=gBojUuAxkEIMMYcr4yqiMf2CAE+iYREtTJ0SySLQafU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VxhU+vEzUdpzfB0/Gxa/QVlH0MlsDQDVw0HBZGvdYEjSX8PSosKE5ViYj3++hNQfP
-         UhDB06S4PbYz5LngiXFO3NZnuEAuEQCzc65lHh6EU6hQAMx6EK5N5J34bZoA7P+PAp
-         M+agXs6/f/4xK+aaJxaha1Djnq28h/Zy/KubrzLmVqqp4NVP+yOQSfwtX21KfcMMMZ
-         Xc9ut4MytSk4BsjBZ3qMgeUnkU4RNmoJPBlStTCyfnJkrzn7l0K0yNQ7WMejQkIQFa
-         CVDdGz2EL4R6MlRZLllKmlnwwzmxxy+OchQ1kV3FabuBHu+k1Qlvm2rgoDl9Hzcvli
-         gOpmjJxov8/uA==
+        b=RS2dnaaG4Peowz7mEncXM71htgkxYx4eu7bN4QiWUF1PpM0CqPkD8YUD02Bjz/M+l
+         c1vyG3OBlLEBjlsHdhplqDN4koCozEOswNOS1PNzOKLzjtqrfeEOig+tXQ1AIq1u7j
+         P64PUf5HTtBZbf+QMBNcsjakFcxLZTbwhw18S+3c9xMIsXNi02HnLHA1fsHdf6/2Py
+         6TNuRp/89vvS4U8+arJgh7/vtKoj0Hy9Bid+rRBCQHxLhcFz5iZld7iLI9617g5lMr
+         uNNs1Elhvu3yQvcpQU5s1cdmUKnyjaY/m0YuWTXuGWYMqrtKwqR+ASkdtRq1PgQPg8
+         iFkLRxeJIlBSQ==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1lgoKy-0018hJ-BG; Wed, 12 May 2021 14:51:40 +0200
+        id 1lgoKy-0018hN-CM; Wed, 12 May 2021 14:51:40 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>,
-        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: [PATCH v2 08/40] docs: driver-api: thermal: Use ASCII subset instead of UTF-8 alternate symbols
-Date:   Wed, 12 May 2021 14:50:12 +0200
-Message-Id: <6866f10fbfbe599448fafa0ca35f1b5b262ce60f.1620823573.git.mchehab+huawei@kernel.org>
+        Corentin Labbe <clabbe@baylibre.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        mjpeg-users@lists.sourceforge.net
+Subject: [PATCH v2 09/40] docs: driver-api: media: drivers: Use ASCII subset instead of UTF-8 alternate symbols
+Date:   Wed, 12 May 2021 14:50:13 +0200
+Message-Id: <99228c03965f3347cd910e20f7c914e14c7243b7.1620823573.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1620823573.git.mchehab+huawei@kernel.org>
 References: <cover.1620823573.git.mchehab+huawei@kernel.org>
@@ -64,99 +63,47 @@ Also, Sphinx already do such conversion automatically outside literal blocks:
 
 So, replace the occurences of the following UTF-8 characters:
 
-	- U+2018 ('‘'): LEFT SINGLE QUOTATION MARK
-	- U+2019 ('’'): RIGHT SINGLE QUOTATION MARK
+	- U+00ad ('­'): SOFT HYPHEN
+	- U+00b4 ('´'): ACUTE ACCENT
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- .../driver-api/thermal/cpu-idle-cooling.rst        | 14 +++++++-------
- .../driver-api/thermal/intel_powerclamp.rst        |  6 +++---
- .../thermal/x86_pkg_temperature_thermal.rst        |  2 +-
- 3 files changed, 11 insertions(+), 11 deletions(-)
+ .../driver-api/media/drivers/sh_mobile_ceu_camera.rst     | 8 ++++----
+ Documentation/driver-api/media/drivers/zoran.rst          | 2 +-
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/driver-api/thermal/cpu-idle-cooling.rst b/Documentation/driver-api/thermal/cpu-idle-cooling.rst
-index c2a7ca676853..60934a518560 100644
---- a/Documentation/driver-api/thermal/cpu-idle-cooling.rst
-+++ b/Documentation/driver-api/thermal/cpu-idle-cooling.rst
-@@ -49,7 +49,7 @@ belong to the same cluster, with a duration greater than the cluster
- idle state target residency, we lead to dropping the static and the
- dynamic leakage for this period (modulo the energy needed to enter
- this state). So the sustainable power with idle cycles has a linear
--relation with the OPP’s sustainable power and can be computed with a
-+relation with the OPP's sustainable power and can be computed with a
- coefficient similar to::
+diff --git a/Documentation/driver-api/media/drivers/sh_mobile_ceu_camera.rst b/Documentation/driver-api/media/drivers/sh_mobile_ceu_camera.rst
+index 822fcb8368ae..280a322c34c6 100644
+--- a/Documentation/driver-api/media/drivers/sh_mobile_ceu_camera.rst
++++ b/Documentation/driver-api/media/drivers/sh_mobile_ceu_camera.rst
+@@ -30,10 +30,10 @@ Generic scaling / cropping scheme
+ 	|                       `. .6--
+ 	|
+ 	|                        . .6'-
+-	|                      .´
+-	|           ... -4'- .´
+-	|       ...´             - -7'.
+-	+-5'- .´               -/
++	|                      .'
++	|           ... -4'- .'
++	|       ...'             - -7'.
++	+-5'- .'               -/
+ 	|            -- -3'- -/
+ 	|         --/
+ 	|      --/
+diff --git a/Documentation/driver-api/media/drivers/zoran.rst b/Documentation/driver-api/media/drivers/zoran.rst
+index 83cbae9cedef..b205e10c3154 100644
+--- a/Documentation/driver-api/media/drivers/zoran.rst
++++ b/Documentation/driver-api/media/drivers/zoran.rst
+@@ -319,7 +319,7 @@ Conexant bt866 TV encoder
+ ~~~~~~~~~~~~~~~~~~~~~~~~~
  
- 	    Power(IdleCycle) = Coef x Power(OPP)
-@@ -134,7 +134,7 @@ The idle injection duration value must comply with the constraints:
-   user experience, reactivity vs performance trade off we want. This
-   value should be specified.
+ - is used in AVS6EYES, and
+-- can generate: NTSC/PAL, PAL­M, PAL­N
++- can generate: NTSC/PAL, PAL-M, PAL-N
  
--- It is greater than the idle state’s target residency we want to go
-+- It is greater than the idle state's target residency we want to go
-   for thermal mitigation, otherwise we end up consuming more energy.
- 
- Power considerations
-@@ -146,11 +146,11 @@ power for a specific temperature but at this time we consume::
-  Power = Capacitance x Voltage^2 x Frequency x Utilisation
- 
- ... which is more than the sustainable power (or there is something
--wrong in the system setup). The ‘Capacitance’ and ‘Utilisation’ are a
--fixed value, ‘Voltage’ and the ‘Frequency’ are fixed artificially
--because we don’t want to change the OPP. We can group the
--‘Capacitance’ and the ‘Utilisation’ into a single term which is the
--‘Dynamic Power Coefficient (Cdyn)’ Simplifying the above, we have::
-+wrong in the system setup). The 'Capacitance' and 'Utilisation' are a
-+fixed value, 'Voltage' and the 'Frequency' are fixed artificially
-+because we don't want to change the OPP. We can group the
-+'Capacitance' and the 'Utilisation' into a single term which is the
-+'Dynamic Power Coefficient (Cdyn)' Simplifying the above, we have::
- 
-  Pdyn = Cdyn x Voltage^2 x Frequency
- 
-diff --git a/Documentation/driver-api/thermal/intel_powerclamp.rst b/Documentation/driver-api/thermal/intel_powerclamp.rst
-index 3f6dfb0b3ea6..d349c1b64281 100644
---- a/Documentation/driver-api/thermal/intel_powerclamp.rst
-+++ b/Documentation/driver-api/thermal/intel_powerclamp.rst
-@@ -29,7 +29,7 @@ By:
- INTRODUCTION
- ============
- 
--Consider the situation where a system’s power consumption must be
-+Consider the situation where a system's power consumption must be
- reduced at runtime, due to power budget, thermal constraint, or noise
- level, and where active cooling is not preferred. Software managed
- passive power reduction must be performed to prevent the hardware
-@@ -39,7 +39,7 @@ Currently, P-states, T-states (clock modulation), and CPU offlining
- are used for CPU throttling.
- 
- On Intel CPUs, C-states provide effective power reduction, but so far
--they’re only used opportunistically, based on workload. With the
-+they're only used opportunistically, based on workload. With the
- development of intel_powerclamp driver, the method of synchronizing
- idle injection across all online CPU threads was introduced. The goal
- is to achieve forced and controllable C-state residency.
-@@ -264,7 +264,7 @@ CPUs).
- Usage and Interfaces
- ====================
- The powerclamp driver is registered to the generic thermal layer as a
--cooling device. Currently, it’s not bound to any thermal zones::
-+cooling device. Currently, it's not bound to any thermal zones::
- 
-   jacob@chromoly:/sys/class/thermal/cooling_device14$ grep . *
-   cur_state:0
-diff --git a/Documentation/driver-api/thermal/x86_pkg_temperature_thermal.rst b/Documentation/driver-api/thermal/x86_pkg_temperature_thermal.rst
-index 2ac42ccd236f..5b95af96e40f 100644
---- a/Documentation/driver-api/thermal/x86_pkg_temperature_thermal.rst
-+++ b/Documentation/driver-api/thermal/x86_pkg_temperature_thermal.rst
-@@ -13,7 +13,7 @@ Authors: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
- Reference
- ---------
- 
--Intel® 64 and IA-32 Architectures Software Developer’s Manual (Jan, 2013):
-+Intel® 64 and IA-32 Architectures Software Developer's Manual (Jan, 2013):
- Chapter 14.6: PACKAGE LEVEL THERMAL MANAGEMENT
- 
- Description
+ The adv717x, should be able to produce PAL N. But you find nothing PAL N
+ specific in the registers. Seem that you have to reuse a other standard
 -- 
 2.30.2
 
