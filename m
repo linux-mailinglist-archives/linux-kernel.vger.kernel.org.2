@@ -2,109 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FB8037ED42
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:39:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4225D37ED41
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1385920AbhELURD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 16:17:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379137AbhELTSu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 15:18:50 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC0D1C061358;
-        Wed, 12 May 2021 12:15:35 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id g14so28401271edy.6;
-        Wed, 12 May 2021 12:15:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Abiitb1gjpYOc5fE4sslTKMLhdObSvKxFOMEoYm7P2c=;
-        b=PyAtDsTpzjMsXiCdFuCTC/A7LfgEe9WVPpqJX4dNc7lhvYPg+rC00sMvh/N0ljYh4a
-         JcC6Un/z7NXqG9zcPb6k2pd98lliHuetm1c7sDUUHS/bylBKU3rSpNje6Wjs4vum9zcr
-         TKRTYZBqeS48l/f08po56XXlfSVfe3s3bI07eEYY39DnNmmP22znmZCA8SvDSP8285Ub
-         oBwjdH79+86MaRdfkIEoKd/wd2HpI6jA3PdjFi2cCwlWTVpcRFQkpKf2Cl+wt3H0enZl
-         +TUvXYtBqBqwRb9djoDeNC9vr618oyrT+Z/QE3PxQJqtZbTjTsTe8JOVIOF1a8NzEYAe
-         185Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=Abiitb1gjpYOc5fE4sslTKMLhdObSvKxFOMEoYm7P2c=;
-        b=PWQfWEeH+j5EuLjQZMow1Y1ggiCpWv1eLkIyvOAHzEj3bLpx+Kt8/24vTcy+iuOFwm
-         Jsno6xkOA7DweXpTR8/tXSg0FwfHi9oOGZQzr2DPF5P+EOrzR9nG84UTu4Vgx3uFZWmO
-         VqbAyUZQ7qyP/BxGh9hINbE4bIf4kruZ6yl+VgbDM2r1/BAcOixeRjx92LUUMwrdwggN
-         7kOT+tUklEVrnggEooVno3ETKTALpHWLtEqSw2Pgq0NzXxAyx+FMG5kNgEXUn4wn+uca
-         tqfcWhAkAAa0Omf7nhRyIXM6bA7SEmLhtmJphDqjfVt9Q4khtyoiB3dCxdFUw2tcKqRu
-         Nxtw==
-X-Gm-Message-State: AOAM530+exT1kIagtLtQQOje1ICQxwHZsbh734kZH1ILOFTpM942+Xc8
-        noQTIGiW2/7Hvxd3b/u0BR0=
-X-Google-Smtp-Source: ABdhPJxKHE4B77rInpeA6gyqxxAPLgDGnTCIGF4ic7+B3W5zPICiW0m/2J7aoEGN0xTx7fP1eNq89g==
-X-Received: by 2002:a05:6402:2550:: with SMTP id l16mr45471115edb.249.1620846934772;
-        Wed, 12 May 2021 12:15:34 -0700 (PDT)
-Received: from gmail.com (0526E777.dsl.pool.telekom.hu. [5.38.231.119])
-        by smtp.gmail.com with ESMTPSA id q16sm558524edv.61.2021.05.12.12.15.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 12:15:34 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Wed, 12 May 2021 21:15:32 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Huang Rui <ray.huang@amd.com>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Jason Bagavatsingham <jason.bagavatsingham@gmail.com>,
-        "Pierre-Loup A . Griffais" <pgriffais@valvesoftware.com>,
-        Nathan Fontenot <nathan.fontenot@amd.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Borislav Petkov <bp@suse.de>, x86@kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v4] x86, sched: Fix the AMD CPPC maximum perf on some
- specific generations
-Message-ID: <YJwpVA2UHGBuag0w@gmail.com>
-References: <20210425073451.2557394-1-ray.huang@amd.com>
+        id S1385901AbhELUQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 16:16:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50420 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1378924AbhELTSQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 15:18:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE320613EE;
+        Wed, 12 May 2021 19:17:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620847027;
+        bh=vTMq9ZCTPIJ2uJNu6RKADW8q+ip6eYhDylHbUOhPidI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=K6cT6CSJOQNJOETbfQE6pjZBxVxmXOXSfuDkf+uIg0ynziDtiz5AR/Bi+dWbvdgKM
+         TlLTBDOlGsLhuEXrjMI5OGAiBGLA+03EUBgW6OWt8u5WvhD8b+Q561uD1tHe08gGNg
+         17lO0zpEbF8uJatw+Po4g1kk5dZ/XnGbgix3cGE/4yt8f1/YxDyJf/5fRAGP+rpU0I
+         oWIbteN8CDdzpgBpmFB5g6CvHcwEZotsOXsIFD8bgZr+R4TXybQjnLKQZZoPgRzsFn
+         tGhrD67DHuY+zs7pou38CP8VP5K2cq+NVIBDo3QX/dLaYByi9IwcFyfJcIn+x823Bi
+         3wJvsw7MdIbYA==
+Date:   Wed, 12 May 2021 22:17:04 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+Cc:     Shuah Khan <shuah@kernel.org>, linux-sgx@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/2] selftests/sgx: Migrate to kselftest harness
+Message-ID: <YJwpsEJVQ1joWgX3@kernel.org>
+References: <20210508035648.18176-1-jarkko@kernel.org>
+ <20210508035648.18176-2-jarkko@kernel.org>
+ <960f1cd8-d805-8ed8-6af0-eed1f49e3c65@intel.com>
+ <YJsrDc34d2vbc+At@kernel.org>
+ <0b68cf8e-994d-3c85-cb93-5701722d9336@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210425073451.2557394-1-ray.huang@amd.com>
+In-Reply-To: <0b68cf8e-994d-3c85-cb93-5701722d9336@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-* Huang Rui <ray.huang@amd.com> wrote:
-
-> Some AMD Ryzen generations has different calculation method on maximum
-> perf. 255 is not for all asics, some specific generations should use 166
-> as the maximum perf. Otherwise, it will report incorrect frequency value
-> like below:
+On Wed, May 12, 2021 at 08:56:03AM -0700, Reinette Chatre wrote:
+> Hi Jarkko,
 > 
-> ~ → lscpu | grep MHz
-> CPU MHz:                         3400.000
-> CPU max MHz:                     7228.3198
-> CPU min MHz:                     2200.0000
+> On 5/11/2021 6:10 PM, Jarkko Sakkinen wrote:
+> > On Tue, May 11, 2021 at 11:42:49AM -0700, Reinette Chatre wrote:
+> > > Hi Jarkko,
+> > > 
+> > > On 5/7/2021 8:56 PM, Jarkko Sakkinen wrote:
+> > > > Migrate to kselftest harness. Use a fixture test with enclave initialized
+> > > > and de-initialized for each of the existing three tests, in other words:
+> > > > 
+> > > > 1. One FIXTURE() for managing the enclave life-cycle.
+> > > > 2. Three TEST_F()'s, one for each test case.
+> > > 
+> > > These changes make it easier to add tests and I think it is a valuable
+> > > addition.
+> > > 
+> > > > 
+> > > > This gives a leaps better reporting than before. Here's an example
+> > > > transcript:
+> > > > 
+> > > > TAP version 13
+> > > > 1..3
+> > > > 0x0000000000000000 0x0000000000002000 0x03
+> > > > 0x0000000000002000 0x0000000000001000 0x05
+> > > > 0x0000000000003000 0x0000000000003000 0x03
+> > > > ok 1 enclave.unclobbered_vdso
+> > > > 0x0000000000000000 0x0000000000002000 0x03
+> > > > 0x0000000000002000 0x0000000000001000 0x05
+> > > > 0x0000000000003000 0x0000000000003000 0x03
+> > > > ok 2 enclave.clobbered_vdso
+> > > > 0x0000000000000000 0x0000000000002000 0x03
+> > > > 0x0000000000002000 0x0000000000001000 0x05
+> > > > 0x0000000000003000 0x0000000000003000 0x03
+> > > > ok 3 enclave.clobbered_vdso_and_user_function
+> > > > 
+> > > 
+> > > The output claims to conform to TAP13 but it does not seem as though all of
+> > > the output conforms to TAP13. I assume such output would confuse automated
+> > > systems.
+> > 
+> > You mean
+> > 
+> > 0x0000000000000000 0x0000000000002000 0x03
+> > 0x0000000000002000 0x0000000000001000 0x05
+> > 0x0000000000003000 0x0000000000003000 0x03
+> > 
+> > ?
+> 
+> Yes
 
-It would have been useful to also quote the 'after' part.
+Thanks, just sanity checking :-)
 
-> +u32 amd_get_highest_perf(void)
-> +{
-> +	struct cpuinfo_x86 *c = &boot_cpu_data;
-> +
-> +	if (c->x86 == 0x17 && ((c->x86_model >= 0x30 && c->x86_model < 0x40) ||
-> +			       (c->x86_model >= 0x70 && c->x86_model < 0x80)))
-> +	    return 166;
-> +
-> +	if (c->x86 == 0x19 && ((c->x86_model >= 0x20 && c->x86_model < 0x30) ||
-> +			       (c->x86_model >= 0x40 && c->x86_model < 0x70)))
-> +	    return 166;
-
-I fixed these stray 4-space tabs.
-
-Looks good otherwise - queued up in tip:sched/urgent.
-
-Thanks,
-
-	Ingo
+/Jarkko
