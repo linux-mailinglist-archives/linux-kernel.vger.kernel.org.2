@@ -2,174 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19B2537B41A
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 04:13:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ECE037B41F
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 04:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230118AbhELCO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 22:14:57 -0400
-Received: from mga05.intel.com ([192.55.52.43]:15071 "EHLO mga05.intel.com"
+        id S229973AbhELCUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 22:20:06 -0400
+Received: from mga17.intel.com ([192.55.52.151]:33311 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229945AbhELCO4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 22:14:56 -0400
-IronPort-SDR: qiNsI/iw1vcDlxWsftb3xg6XdxYsTVjRx7qeTrLiqZ6ZG24iCy93Lrbv8EgxhKshWEQ/qlN0If
- gesVef54yhLQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="285097285"
+        id S229920AbhELCUF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 22:20:05 -0400
+IronPort-SDR: B8tDx0hP2bMaBs4/t2mn+S/+bwyUV+eLE6FyREPeiirUKyi4yt4bmO9cWKAzdgVWUb5ZDGjZYj
+ QTpWNrhtlyQQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="179865446"
 X-IronPort-AV: E=Sophos;i="5.82,292,1613462400"; 
-   d="scan'208";a="285097285"
+   d="scan'208";a="179865446"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 19:13:48 -0700
-IronPort-SDR: M2CHU/kJz1e+rcDGJQedHdv4eIhBcBowaTsp5Z/u8pQQOtGBk7SVC9zJWWgtKbjv1t3A2/z9vV
- gT73SB0iD52A==
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 19:18:54 -0700
+IronPort-SDR: 2zehLsh0vYyxbqZ/8nNcheKTlwm3WkyWlDAx5ObTnl4WiBmij2K4EQ5VGlwwl/L0LVKBjDFxuy
+ Z42UbyZ/W4Ow==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,292,1613462400"; 
-   d="scan'208";a="434876136"
-Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
-  by fmsmga008.fm.intel.com with ESMTP; 11 May 2021 19:13:47 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 11 May 2021 19:13:46 -0700
-Received: from fmsmsx605.amr.corp.intel.com (10.18.126.85) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 11 May 2021 19:13:46 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
- via Frontend Transport; Tue, 11 May 2021 19:13:46 -0700
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.46) by
- edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2106.2; Tue, 11 May 2021 19:13:40 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Zs6tRLIp4hoLwUeFWebGKCf9v/5H1MQU5mb1Rp4wHkRGKoec5BN5Jcl2Gis6ojjhWTNDGVlGGE0Olj5WPOnIB2ojPcXMrUoj3AfDfI8ajjBWgli1w9iZIQ0IBe6Sl6f/FJOcBAebWc/9sL5yRJ2TrByPavyzPcPphvZeXKHp+vvukEkS3+ovv4CzUhaplJ0FvzJr56hbQmWQKnlviEU4Tkdq7dypQCCrrF0lcRQPJMK8w2Dv2d/EvSlzOeIgHlOW/tvtFWcpSUVujB6aykpA8rjgNKe1UGn03wwjImJjKYtQogB1V7yKYJp00OxL3kQJAm/bpAR22D7oGz9PEjq6Sw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mJoNNbxEjWU9XIceoXWykmwxTgiPJX1fxJbZfftUTWg=;
- b=V573i7k6vHKUzwFJZB73FIgekWqI0O8QHMCjD0b1L/5aj5oyxYgTOtBwzsTfiottoO6fMgEhf7xKyrs610Yg8wO/qVxSUwZbumkfo2CtcQlzApMZQXbUKbgem7YGpavbLVGbRHDY2bzMXQL21KO2IoEejpZx/Uu1YOrrw5rHIxHoEW8Wy3hgJmckVzqN/guRa0rKuqeGNhwV28ZCrQkh+fcWD6kSfSRh6rS81wQhTS5hNIsxgMB2aCbLsvzRHTmYnbHqtwZ5oj9DM48IyBRoILbzVg9XNM+1xdvs3lWf3lKxVXS7fI/nMxoQtlI6WeaH5xOabPnWOzbDGlXuDHdLnw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mJoNNbxEjWU9XIceoXWykmwxTgiPJX1fxJbZfftUTWg=;
- b=mDg3ZEvjy+KQN2H0cVPyxgjvxdwqT4z/7LqWMDYEU72YExgAFigqjChoC0OibdBmoYs7ScvydXIXGaBtL5E2g4FnnWUcAbXg2C8d2RlepeCpSmGeGoKe2d1tOvcpjJqzC8k9SulzA1GBAibE29OBFhU4bdvliBCy/EfsReR8Ti0=
-Received: from BY5PR11MB3893.namprd11.prod.outlook.com (2603:10b6:a03:183::26)
- by SJ0PR11MB4830.namprd11.prod.outlook.com (2603:10b6:a03:2d7::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25; Wed, 12 May
- 2021 02:13:39 +0000
-Received: from BY5PR11MB3893.namprd11.prod.outlook.com
- ([fe80::e878:3625:5685:c19d]) by BY5PR11MB3893.namprd11.prod.outlook.com
- ([fe80::e878:3625:5685:c19d%7]) with mapi id 15.20.4108.031; Wed, 12 May 2021
- 02:13:39 +0000
-From:   "Tan, Ley Foon" <ley.foon.tan@intel.com>
-To:     Dinh Nguyen <dinguyen@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] MAINTAINERS: remove Ley Foon for NIOS2
-Thread-Topic: [PATCH] MAINTAINERS: remove Ley Foon for NIOS2
-Thread-Index: AQHXRtQa/w/iimglH0KaOS0TZjGL6arfGwvw
-Date:   Wed, 12 May 2021 02:13:38 +0000
-Message-ID: <BY5PR11MB3893D130095C99659852E8CBCC529@BY5PR11MB3893.namprd11.prod.outlook.com>
-References: <20210512021055.2195467-1-dinguyen@kernel.org>
-In-Reply-To: <20210512021055.2195467-1-dinguyen@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [42.189.132.158]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: c84128a2-00cf-4665-8bb6-08d914eb8e7d
-x-ms-traffictypediagnostic: SJ0PR11MB4830:
-x-microsoft-antispam-prvs: <SJ0PR11MB48303469F509B3A425E880EFCC529@SJ0PR11MB4830.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:529;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: wk6TdZcuRJQK/KwRpAn0O8qrcEweZJMcJz8t4AaOfeYXxMPtnUJTLZWUFEG9HSohFdMcnRHgmFESwbM1gbSBKWlS3vyyD5q9DuHmqIPsFtWFlxcMTNXUqbc9Y2WPqjCSc2dciCxaNqaYuTap58pRjtJmtYpsNjS+Pm6rDNc8YOYwDhcqFJBfkT7U4U3LjTBaiGyfFr9R5aqwJmINCfmARGOX9JDN+wXwSXI9UnHViT/uEtXGr3tzPf/6yWVmQ/YXabiWPw5PJ341G4d/BV7jXOvamq6mid/fDMiEhdwn0mDIrONGNrGfg9erFscApOPlzvxWhE7n2hFrciDkt8QeWLRXGdDWTczblfFe7aAP92FlZGq4oqvK7FI9vBcOFWqQwfynjiEnWY8+1nqPOo8KURTSEZUMMuuIKM0S4hiNK4tAc7A4C76+B2b04n3g/aghACIROOBC2zbgFifNnf0SNUG9ARxY3RZg0LaOXG/q4+AprZ9NVxP+vuu2RjfBayeSeNQGkzEqdLJLwqiK1lf2fc65Xr6Z5X5It68JrdGx3fIcfQwpVKPnEL+E1BgjS9t0mM89NBG0zK0/sRl90DBQlBnqshIo1hLiwh4bwjlaS0U=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB3893.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(376002)(366004)(396003)(346002)(5660300002)(478600001)(8676002)(83380400001)(122000001)(66446008)(38100700002)(66556008)(64756008)(186003)(66946007)(4744005)(86362001)(53546011)(76116006)(66476007)(8936002)(7696005)(26005)(6506007)(71200400001)(33656002)(55016002)(52536014)(2906002)(110136005)(9686003)(316002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?LiMH/VluQRlOD054oSB/L8LUO1D1xhwNNXXDprMPYrq72/0MaRxbHSjmoUPs?=
- =?us-ascii?Q?aB9wAIe8EQ29/N58Gcb1/fPjKAehweUTBY87vJav2+yddkfB+xjTwKz6K9Qd?=
- =?us-ascii?Q?ON9Yt/P+iFaLqGTEA9CpXOA+yl543M8ANAldYzQ6ySL2gz1w4BZANGs/ZMyx?=
- =?us-ascii?Q?r8Yqtq98mibwF/LtUy9/97WvAGCpXzMCeLj96mdV0CCIcloopfaBOxLFzHcB?=
- =?us-ascii?Q?JOVL2uZeChFQ9F4NB4DbKMLh9GR7m4a50EptQqAKFtuDQalY0v0l/HrExQKL?=
- =?us-ascii?Q?P91ypfvvJqgvvtHpMt8KsTR9C2hoOpvI94L8CzUQng7F/kdkgkbAvI5lmxmn?=
- =?us-ascii?Q?/poYDVT3SUyxxP/k3RGQQTTUJ4Jx/RYk4B6svxGLof6bL8XWdJOS6HUprE3R?=
- =?us-ascii?Q?qTM6zpVjoVqcUBTAYrCG7Mu29Zbu3b0nGOp3tmZHYsth2ZNndGGd4OUwNTWP?=
- =?us-ascii?Q?0AJsBskMG9cv1u1VJRGj7R8uzdkqKrp/+mhw9Po3gyFbC4YqR44luZho5Eoa?=
- =?us-ascii?Q?3uKFcTuyAI6LHho8dzqNgJp5+H56sM03Jo/wa5kXEqugiCR0kmfVaaI0pGsi?=
- =?us-ascii?Q?PImd8hEP4yYbLgCZZeOolPpbLk4EjElg8DmZGHPSrORx/Lb6sN2bVsw9jr7E?=
- =?us-ascii?Q?rBltb0W73I2agJGD3c0pbaepzoBVsfcgOWr18uSS8IrVlhPG6N0QH6zaO/4t?=
- =?us-ascii?Q?cppC+wR8a4PWnrMVp7cYNAtUzv8c9YpO6eDRnrQGAz3Wcjlcfb5vhItVsUMj?=
- =?us-ascii?Q?S0qwIZkbG8OlA6d6DxyGKLmZUxGeuVLXu2u90cIjavbuKZqUgP595FHuDHK3?=
- =?us-ascii?Q?tTpo84k016jWgvwjf/CWmxnoDyBJqd7tpV5p1ll4mcnpJXlA5mr3NYh85Cb8?=
- =?us-ascii?Q?3m47HTlQPfC1KFLVFAVOY3EteXvrqxJKYavL6cm/vTWdHfNNpkIwUQK29bmS?=
- =?us-ascii?Q?Nuwzco/ZIaLiJ80g8Tk86snYzfpOze/tyn8wCT27/lp67IYArZhUfFq0Fd5z?=
- =?us-ascii?Q?5/v7WNZmd3/1v0FO2C3f+uzlAJLz9L2X5x76MoJp9VO+rA5IwPKuTErknBCv?=
- =?us-ascii?Q?UAKw9C2qX/WjLfYb2DgmSWxDrIdv8rgnygL5azOb3FH9TWy2yJFy3j+AtX9Y?=
- =?us-ascii?Q?CkD6twtyd/AkEhM/Pm9Vn8StylklOI+C9wvqlPmirt7itKHRSTyDr+dwOxf+?=
- =?us-ascii?Q?8PYh2vKq/sfPUEE/OguNBTKqpc1ZuB+OC/xAVLTMpeALnPELUSZr83d5WvYz?=
- =?us-ascii?Q?Y8eIYXwpRYgQtf07HpjGbaKOd0iJP0UW/7jMNYswWMNSM3xIIzpVeS/SRK6p?=
- =?us-ascii?Q?JmAQW1Bgd/7Os9Kmp/JipX1M?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+   d="scan'208";a="434879147"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
+  by fmsmga008.fm.intel.com with ESMTP; 11 May 2021 19:18:50 -0700
+Date:   Wed, 12 May 2021 10:18:49 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        john.stultz@linaro.org, sboyd@kernel.org, corbet@lwn.net,
+        Mark.Rutland@arm.com, maz@kernel.org, kernel-team@fb.com,
+        neeraju@codeaurora.org, ak@linux.intel.com,
+        zhengjun.xing@intel.com,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Subject: Re: [PATCH v14 clocksource 4/6] clocksource: Reduce clocksource-skew
+ threshold for TSC
+Message-ID: <20210512021849.GB78351@shbuild999.sh.intel.com>
+References: <20210511233403.GA2896757@paulmck-ThinkPad-P17-Gen-1>
+ <20210511233455.2897068-4-paulmck@kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB3893.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c84128a2-00cf-4665-8bb6-08d914eb8e7d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 May 2021 02:13:38.8899
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: CNe1LA6nn/uxpGJX6eSqCsh0n1R4Nn17InA5WM+wTiKydD7zS8BVTEvptvJMHbFCPCE9XXKnloZ2J6pIExp7Qg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4830
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210511233455.2897068-4-paulmck@kernel.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Paul,
 
-
-> -----Original Message-----
-> From: Dinh Nguyen <dinguyen@kernel.org>
-> Sent: Wednesday, May 12, 2021 10:11 AM
-> To: linux-kernel@vger.kernel.org
-> Cc: dinguyen@kernel.org; Tan, Ley Foon <ley.foon.tan@intel.com>
-> Subject: [PATCH] MAINTAINERS: remove Ley Foon for NIOS2
->=20
-> Ley Foon is transferring her NIOS2 maintainership to me because she is
-> moving on to do different work.
->=20
-> Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
+On Tue, May 11, 2021 at 04:34:53PM -0700, Paul E. McKenney wrote:
+> Currently, WATCHDOG_THRESHOLD is set to detect a 62.5-millisecond skew in
+> a 500-millisecond WATCHDOG_INTERVAL.  This requires that clocks be skewed
+> by more than 12.5% in order to be marked unstable.  Except that a clock
+> that is skewed by that much is probably destroying unsuspecting software
+> right and left.  And given that there are now checks for false-positive
+> skews due to delays between reading the two clocks, it should be possible
+> to greatly decrease WATCHDOG_THRESHOLD, at least for fine-grained clocks
+> such as TSC.
+> 
+> Therefore, add a new uncertainty_margin field to the clocksource
+> structure that contains the maximum uncertainty in nanoseconds for
+> the corresponding clock.  This field may be initialized manually,
+> as it is for clocksource_tsc_early and clocksource_jiffies, which
+> is copied to refined_jiffies.  If the field is not initialized
+> manually, it will be computed at clock-registry time as the period
+> of the clock in question based on the scale and freq parameters to
+> __clocksource_update_freq_scale() function.  If either of those two
+> parameters are zero, the tens-of-milliseconds WATCHDOG_THRESHOLD is
+> used as a cowardly alternative to dividing by zero.  No matter how the
+> uncertainty_margin field is calculated, it is bounded below by twice
+> WATCHDOG_MAX_SKEW, that is, by 100 microseconds.
+> 
+> Note that manually initialized uncertainty_margin fields are not adjusted,
+> but there is a WARN_ON_ONCE() that triggers if any such field is less than
+> twice WATCHDOG_MAX_SKEW.  This WARN_ON_ONCE() is intended to discourage
+> production use of the one-nanosecond uncertainty_margin values that are
+> used to test the clock-skew code itself.
+> 
+> The actual clock-skew check uses the sum of the uncertainty_margin fields
+> of the two clocksource structures being compared.  Integer overflow is
+> avoided because the largest computed value of the uncertainty_margin
+> fields is one billion (10^9), and double that value fits into an
+> unsigned int.  However, if someone manually specifies (say) UINT_MAX,
+> they will get what they deserve.
+> 
+> Note that the refined_jiffies uncertainty_margin field is initialized to
+> TICK_NSEC, which means that skew checks involving this clocksource will
+> be sufficently forgiving.  In a similar vein, the clocksource_tsc_early
+> uncertainty_margin field is initialized to 32*NSEC_PER_MSEC, which
+> replicates the current behavior and allows custom setting if needed
+> in order to address the rare skews detected for this clocksource in
+> current mainline.
+> 
+> Link: https://lore.kernel.org/lkml/202104291438.PuHsxRkl-lkp@intel.com/
+> Link: https://lore.kernel.org/lkml/20210429140440.GT975577@paulmck-ThinkPad-P17-Gen-1
+> Link: https://lore.kernel.org/lkml/20210425224540.GA1312438@paulmck-ThinkPad-P17-Gen-1/
+> Link: https://lore.kernel.org/lkml/20210420064934.GE31773@xsang-OptiPlex-9020/
+> Link: https://lore.kernel.org/lkml/20210106004013.GA11179@paulmck-ThinkPad-P72/
+> Link: https://lore.kernel.org/lkml/20210414043435.GA2812539@paulmck-ThinkPad-P17-Gen-1/
+> Link: https://lore.kernel.org/lkml/20210419045155.GA596058@paulmck-ThinkPad-P17-Gen-1/
+> Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: John Stultz <john.stultz@linaro.org>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: Mark Rutland <Mark.Rutland@arm.com>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Andi Kleen <ak@linux.intel.com>
+> Cc: Xing Zhengjun <zhengjun.xing@linux.intel.com>
+> Cc: Feng Tang <feng.tang@intel.com>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 > ---
->  MAINTAINERS | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index bd7aff0c120f..83aef3e767c8 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -12960,9 +12960,9 @@ F:	Documentation/scsi/NinjaSCSI.rst
->  F:	drivers/scsi/nsp32*
->=20
->  NIOS2 ARCHITECTURE
-> -M:	Ley Foon Tan <ley.foon.tan@intel.com>
-> +M:	Dinh Nguyen <dinguyen@kernel.org>
->  S:	Maintained
-> -T:	git git://git.kernel.org/pub/scm/linux/kernel/git/lftan/nios2.git
-> +T:	git git://git.kernel.org/pub/scm/linux/kernel/git/dinguyen/linux.git
->  F:	arch/nios2/
->=20
->  NITRO ENCLAVES (NE)
-> --
-> 2.25.1
+>  arch/x86/kernel/tsc.c       |  1 +
+>  include/linux/clocksource.h |  3 +++
+>  kernel/time/clocksource.c   | 48 +++++++++++++++++++++++++++++--------
+>  kernel/time/jiffies.c       | 15 ++++++------
+>  4 files changed, 50 insertions(+), 17 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+> index 6eb1b097e97e..2e076a459a0c 100644
+> --- a/arch/x86/kernel/tsc.c
+> +++ b/arch/x86/kernel/tsc.c
+> @@ -1128,6 +1128,7 @@ static int tsc_cs_enable(struct clocksource *cs)
+>  static struct clocksource clocksource_tsc_early = {
+>  	.name			= "tsc-early",
+>  	.rating			= 299,
+> +	.uncertainty_margin	= 32 * NSEC_PER_MSEC,
+>  	.read			= read_tsc,
+>  	.mask			= CLOCKSOURCE_MASK(64),
+>  	.flags			= CLOCK_SOURCE_IS_CONTINUOUS |
+> diff --git a/include/linux/clocksource.h b/include/linux/clocksource.h
+> index 7f83d51c0fd7..895203727cb5 100644
+> --- a/include/linux/clocksource.h
+> +++ b/include/linux/clocksource.h
+> @@ -43,6 +43,8 @@ struct module;
+>   * @shift:		Cycle to nanosecond divisor (power of two)
+>   * @max_idle_ns:	Maximum idle time permitted by the clocksource (nsecs)
+>   * @maxadj:		Maximum adjustment value to mult (~11%)
+> + * @uncertainty_margin:	Maximum uncertainty in nanoseconds per half second.
+> + *			Zero says to use default WATCHDOG_THRESHOLD.
+>   * @archdata:		Optional arch-specific data
+>   * @max_cycles:		Maximum safe cycle value which won't overflow on
+>   *			multiplication
+> @@ -98,6 +100,7 @@ struct clocksource {
+>  	u32			shift;
+>  	u64			max_idle_ns;
+>  	u32			maxadj;
+> +	u32			uncertainty_margin;
+>  #ifdef CONFIG_ARCH_CLOCKSOURCE_DATA
+>  	struct arch_clocksource_data archdata;
+>  #endif
+> diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+> index 66243da2dadb..9ebf9931f3d6 100644
+> --- a/kernel/time/clocksource.c
+> +++ b/kernel/time/clocksource.c
+> @@ -95,6 +95,20 @@ static char override_name[CS_NAME_LEN];
+>  static int finished_booting;
+>  static u64 suspend_start;
+>  
+> +/*
+> + * Threshold: 0.0312s, when doubled: 0.0625s.
+> + * Also a default for cs->uncertainty_margin when registering clocks.
+> + */
+> +#define WATCHDOG_THRESHOLD (NSEC_PER_SEC >> 5)
+> +
+> +/*
+> + * Maximum permissible delay between two readouts of the watchdog
+> + * clocksource surrounding a read of the clocksource being validated.
+> + * This delay could be due to SMIs, NMIs, or to VCPU preemptions.  Used as
+> + * a lower bound for cs->uncertainty_margin values when registering clocks.
+> + */
+> +#define WATCHDOG_MAX_SKEW (50 * NSEC_PER_USEC)
+> +
+>  #ifdef CONFIG_CLOCKSOURCE_WATCHDOG
+>  static void clocksource_watchdog_work(struct work_struct *work);
+>  static void clocksource_select(void);
+> @@ -121,17 +135,9 @@ static int clocksource_watchdog_kthread(void *data);
+>  static void __clocksource_change_rating(struct clocksource *cs, int rating);
+>  
+>  /*
+> - * Interval: 0.5sec Threshold: 0.0625s
+> + * Interval: 0.5sec.
+>   */
+>  #define WATCHDOG_INTERVAL (HZ >> 1)
+> -#define WATCHDOG_THRESHOLD (NSEC_PER_SEC >> 4)
+> -
+> -/*
+> - * Maximum permissible delay between two readouts of the watchdog
+> - * clocksource surrounding a read of the clocksource being validated.
+> - * This delay could be due to SMIs, NMIs, or to VCPU preemptions.
+> - */
+> -#define WATCHDOG_MAX_SKEW (100 * NSEC_PER_USEC)
+>  
+>  static void clocksource_watchdog_work(struct work_struct *work)
+>  {
+> @@ -347,6 +353,7 @@ static void clocksource_watchdog(struct timer_list *unused)
+>  	int next_cpu, reset_pending;
+>  	int64_t wd_nsec, cs_nsec;
+>  	struct clocksource *cs;
+> +	u32 md;
+>  
+>  	spin_lock(&watchdog_lock);
+>  	if (!watchdog_running)
+> @@ -393,7 +400,8 @@ static void clocksource_watchdog(struct timer_list *unused)
+>  			continue;
+>  
+>  		/* Check the deviation from the watchdog clocksource. */
+> -		if (abs(cs_nsec - wd_nsec) > WATCHDOG_THRESHOLD) {
+> +		md = cs->uncertainty_margin + watchdog->uncertainty_margin;
+> +		if (abs(cs_nsec - wd_nsec) > md) {
+>  			pr_warn("timekeeping watchdog on CPU%d: Marking clocksource '%s' as unstable because the skew is too large:\n",
+>  				smp_processor_id(), cs->name);
+>  			pr_warn("                      '%s' wd_now: %llx wd_last: %llx mask: %llx\n",
+> @@ -1046,6 +1054,26 @@ void __clocksource_update_freq_scale(struct clocksource *cs, u32 scale, u32 freq
+>  		clocks_calc_mult_shift(&cs->mult, &cs->shift, freq,
+>  				       NSEC_PER_SEC / scale, sec * scale);
+>  	}
+> +
+> +	/*
+> +	 * If the uncertainty margin is not specified, calculate it.
+> +	 * If both scale and freq are non-zero, calculate the clock
+> +	 * period, but bound below at 2*WATCHDOG_MAX_SKEW.  However,
+> +	 * if either of scale or freq is zero, be very conservative and
+> +	 * take the tens-of-milliseconds WATCHDOG_THRESHOLD value for the
+> +	 * uncertainty margin.  Allow stupidly small uncertainty margins
+> +	 * to be specified by the caller for testing purposes, but warn
+> +	 * to discourage production use of this capability.
+> +	 */
+> +	if (scale && freq && !cs->uncertainty_margin) {
+> +		cs->uncertainty_margin = NSEC_PER_SEC / (scale * freq);
+> +		if (cs->uncertainty_margin < 2 * WATCHDOG_MAX_SKEW)
+> +			cs->uncertainty_margin = 2 * WATCHDOG_MAX_SKEW;
+> +	} else if (!cs->uncertainty_margin) {
+> +		cs->uncertainty_margin = WATCHDOG_THRESHOLD;
+> +	}
+> +	WARN_ON_ONCE(cs->uncertainty_margin < 2 * WATCHDOG_MAX_SKEW);
+> +
+>  	/*
+>  	 * Ensure clocksources that have large 'mult' values don't overflow
+>  	 * when adjusted.
+> diff --git a/kernel/time/jiffies.c b/kernel/time/jiffies.c
+> index a492e4da69ba..b3f608c2b936 100644
+> --- a/kernel/time/jiffies.c
+> +++ b/kernel/time/jiffies.c
+> @@ -49,13 +49,14 @@ static u64 jiffies_read(struct clocksource *cs)
+>   * for "tick-less" systems.
+>   */
+>  static struct clocksource clocksource_jiffies = {
+> -	.name		= "jiffies",
+> -	.rating		= 1, /* lowest valid rating*/
+> -	.read		= jiffies_read,
+> -	.mask		= CLOCKSOURCE_MASK(32),
+> -	.mult		= TICK_NSEC << JIFFIES_SHIFT, /* details above */
+> -	.shift		= JIFFIES_SHIFT,
+> -	.max_cycles	= 10,
+> +	.name			= "jiffies",
+> +	.rating			= 1, /* lowest valid rating*/
+> +	.uncertainty_margin	= TICK_NSEC,
 
-ACKed-by: Ley Foon Tan <ley.foon.tan@intel.com>
+'jiffies' is known to be very bad as a watchdog ("worse bandaid" in
+Thomas' words :)), and TICK_NSEC just turns to 1ms for HZ=1000 case. 
+Maybe we should give it a bigger margin, like the 32ms margin for 
+'tsc-early'?
+
+Other than this, it looks good to me, thanks!
+
+- Feng
+
+> +	.read			= jiffies_read,
+> +	.mask			= CLOCKSOURCE_MASK(32),
+> +	.mult			= TICK_NSEC << JIFFIES_SHIFT, /* details above */
+> +	.shift			= JIFFIES_SHIFT,
+> +	.max_cycles		= 10,
+>  };
+>  
+>  __cacheline_aligned_in_smp DEFINE_RAW_SPINLOCK(jiffies_lock);
+> -- 
+> 2.31.1.189.g2e36527f23
