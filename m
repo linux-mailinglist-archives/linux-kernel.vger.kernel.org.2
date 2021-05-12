@@ -2,158 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18CC237BD7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3578A37BD81
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233417AbhELM5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 08:57:21 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:2365 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233638AbhELMz6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 08:55:58 -0400
-Received: from dggeml711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FgF621Fldz5vvL;
-        Wed, 12 May 2021 20:51:22 +0800 (CST)
-Received: from dggpemm500023.china.huawei.com (7.185.36.83) by
- dggeml711-chm.china.huawei.com (10.3.17.122) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 12 May 2021 20:54:44 +0800
-Received: from [10.174.187.128] (10.174.187.128) by
- dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Wed, 12 May 2021 20:54:43 +0800
-Subject: Re: [PATCH v5 0/6] KVM: arm64: Improve efficiency of stage2 page
- table
-To:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        "Quentin Perret" <qperret@google.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        <kvmarm@lists.cs.columbia.edu>,
-        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        "Suzuki K Poulose" <suzuki.poulose@arm.com>,
-        Gavin Shan <gshan@redhat.com>, <wanghaibin.wang@huawei.com>,
-        <zhukeqian1@huawei.com>, <yuzenghui@huawei.com>
-References: <20210415115032.35760-1-wangyanan55@huawei.com>
-From:   "wangyanan (Y)" <wangyanan55@huawei.com>
-Message-ID: <e0a51638-e337-edb9-3b50-4d7c02ba0426@huawei.com>
-Date:   Wed, 12 May 2021 20:54:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S231533AbhELM62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 08:58:28 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:58869 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230334AbhELM6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 08:58:20 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4FgFDj4JDkz9sf2;
+        Wed, 12 May 2021 14:57:09 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id CKX-q6AHXoOp; Wed, 12 May 2021 14:57:09 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4FgFDj3J5cz9sf1;
+        Wed, 12 May 2021 14:57:09 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4DE178B7F2;
+        Wed, 12 May 2021 14:57:09 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id r9l0ajoEPVOw; Wed, 12 May 2021 14:57:09 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id CFDFF8B7EF;
+        Wed, 12 May 2021 14:57:08 +0200 (CEST)
+Subject: Re: [PATCH] powerpc: Force inlining of csum_add()
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <f7f4d4e364de6e473da874468b903da6e5d97adc.1620713272.git.christophe.leroy@csgroup.eu>
+ <20210511105154.GJ10366@gate.crashing.org>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <e996ef13-c25c-5e9c-edd2-444eded88802@csgroup.eu>
+Date:   Wed, 12 May 2021 14:56:56 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <20210415115032.35760-1-wangyanan55@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.187.128]
-X-ClientProxiedBy: dggeme705-chm.china.huawei.com (10.1.199.101) To
- dggpemm500023.china.huawei.com (7.185.36.83)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210511105154.GJ10366@gate.crashing.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A really gentle ping ...
+Hi,
 
-Sincerely,
-Yanan
+Le 11/05/2021 à 12:51, Segher Boessenkool a écrit :
+> Hi!
+> 
+> On Tue, May 11, 2021 at 06:08:06AM +0000, Christophe Leroy wrote:
+>> Commit 328e7e487a46 ("powerpc: force inlining of csum_partial() to
+>> avoid multiple csum_partial() with GCC10") inlined csum_partial().
+>>
+>> Now that csum_partial() is inlined, GCC outlines csum_add() when
+>> called by csum_partial().
+> 
+>> c064fb28 <csum_add>:
+>> c064fb28:	7c 63 20 14 	addc    r3,r3,r4
+>> c064fb2c:	7c 63 01 94 	addze   r3,r3
+>> c064fb30:	4e 80 00 20 	blr
+> 
+> Could you build this with -fdump-tree-einline-all and send me the
+> results?  Or open a GCC PR yourself :-)
 
+Ok, I'll forward it to you in a minute.
 
-On 2021/4/15 19:50, Yanan Wang wrote:
-> Hi,
->
-> This series makes some efficiency improvement of guest stage-2 page
-> table code, and there are some test results to quantify the benefit.
-> The code has been re-arranged based on the latest kvmarm/next tree.
->
-> Descriptions:
-> We currently uniformly permorm CMOs of D-cache and I-cache in function
-> user_mem_abort before calling the fault handlers. If we get concurrent
-> guest faults(e.g. translation faults, permission faults) or some really
-> unnecessary guest faults caused by BBM, CMOs for the first vcpu are
-> necessary while the others later are not.
->
-> By moving CMOs to the fault handlers, we can easily identify conditions
-> where they are really needed and avoid the unnecessary ones. As it's a
-> time consuming process to perform CMOs especially when flushing a block
-> range, so this solution reduces much load of kvm and improve efficiency
-> of the stage-2 page table code.
->
-> In this series, patch #1, #3, #4 make preparation for place movement
-> of CMOs (adapt to the latest stage-2 page table framework). And patch
-> #2, #5 move CMOs of D-cache and I-cache to the fault handlers. Patch
-> #6 introduces a new way to distinguish cases of memcache allocations.
->
-> The following are results in v3 to represent the benefit introduced
-> by movement of CMOs, and they were tested by [1] (kvm/selftest) that
-> I have posted recently.
-> [1] https://lore.kernel.org/lkml/20210302125751.19080-1-wangyanan55@huawei.com/
->
-> When there are muitiple vcpus concurrently accessing the same memory
-> region, we can test the execution time of KVM creating new mappings,
-> updating the permissions of old mappings from RO to RW, and the time
-> of re-creating the blocks after they have been split.
->
-> hardware platform: HiSilicon Kunpeng920 Server
-> host kernel: Linux mainline v5.12-rc2
->
-> cmdline: ./kvm_page_table_test -m 4 -s anonymous -b 1G -v 80
->             (80 vcpus, 1G memory, page mappings(normal 4K))
-> KVM_CREATE_MAPPINGS: before 104.35s -> after  90.42s  +13.35%
-> KVM_UPDATE_MAPPINGS: before  78.64s -> after  75.45s  + 4.06%
->
-> cmdline: ./kvm_page_table_test -m 4 -s anonymous_thp -b 20G -v 40
->             (40 vcpus, 20G memory, block mappings(THP 2M))
-> KVM_CREATE_MAPPINGS: before  15.66s -> after   6.92s  +55.80%
-> KVM_UPDATE_MAPPINGS: before 178.80s -> after 123.35s  +31.00%
-> KVM_REBUILD_BLOCKS:  before 187.34s -> after 131.76s  +30.65%
->
-> cmdline: ./kvm_page_table_test -m 4 -s anonymous_hugetlb_1gb -b 20G -v 40
->             (40 vcpus, 20G memory, block mappings(HUGETLB 1G))
-> KVM_CREATE_MAPPINGS: before 104.54s -> after   3.70s  +96.46%
-> KVM_UPDATE_MAPPINGS: before 174.20s -> after 115.94s  +33.44%
-> KVM_REBUILD_BLOCKS:  before 103.95s -> after   2.96s  +97.15%
->
-> ---
->
-> Changelogs:
-> v4->v5:
-> - rebased on the latest kvmarm/tree to adapt to the new stage-2 page-table code
-> - v4: https://lore.kernel.org/lkml/20210409033652.28316-1-wangyanan55@huawei.com/
->
-> v3->v4:
-> - perform D-cache flush if we are not mapping device memory
-> - rebased on top of mainline v5.12-rc6
-> - v3: https://lore.kernel.org/lkml/20210326031654.3716-1-wangyanan55@huawei.com/
->
-> v2->v3:
-> - drop patch #3 in v2
-> - retest v3 based on v5.12-rc2
-> - v2: https://lore.kernel.org/lkml/20210310094319.18760-1-wangyanan55@huawei.com/
->
-> v1->v2:
-> - rebased on top of mainline v5.12-rc2
-> - also move CMOs of I-cache to the fault handlers
-> - retest v2 based on v5.12-rc2
-> - v1: https://lore.kernel.org/lkml/20210208112250.163568-1-wangyanan55@huawei.com/
->
-> ---
->
-> Yanan Wang (6):
->    KVM: arm64: Introduce KVM_PGTABLE_S2_GUEST stage-2 flag
->    KVM: arm64: Move D-cache flush to the fault handlers
->    KVM: arm64: Add mm_ops member for structure stage2_attr_data
->    KVM: arm64: Provide invalidate_icache_range at non-VHE EL2
->    KVM: arm64: Move I-cache flush to the fault handlers
->    KVM: arm64: Distinguish cases of memcache allocations completely
->
->   arch/arm64/include/asm/kvm_mmu.h     | 31 -------------
->   arch/arm64/include/asm/kvm_pgtable.h | 38 ++++++++++------
->   arch/arm64/kvm/hyp/nvhe/cache.S      | 11 +++++
->   arch/arm64/kvm/hyp/pgtable.c         | 65 +++++++++++++++++++++++-----
->   arch/arm64/kvm/mmu.c                 | 51 ++++++++--------------
->   5 files changed, 107 insertions(+), 89 deletions(-)
->
+> 
+> Something seems to have decided this asm is more expensive than it is.
+> That isn't always avoidable -- the compiler cannot look inside asms --
+> but it seems it could be improved here.
+> 
+> Do you have (or can make) a self-contained testcase?
+
+I have not tried, and I fear it might be difficult, because on a kernel build with dozens of calls 
+to csum_add(), only ip6_tunnel.o exhibits such an issue.
+
+> 
+>> The sum with 0 is useless, should have been skipped.
+> 
+> That isn't something the compiler can do anything about (not sure if you
+> were suggesting that); it has to be done in the user code (and it tries
+> to already, see below).
+
+I was not suggesting that, only that when properly inlined the sum with 0 is skipped (because we put 
+the necessary stuff in csum_add() of course).
+
+> 
+>> And there is even one completely unused instance of csum_add().
+> 
+> That is strange, that should never happen.
+
+It seems that several .o include unused versions of csum_add. After the final link, one remains (in 
+addition to the used one) in vmlinux.
+
+> 
+>> ./arch/powerpc/include/asm/checksum.h: In function '__ip6_tnl_rcv':
+>> ./arch/powerpc/include/asm/checksum.h:94:22: warning: inlining failed in call to 'csum_add': call is unlikely and code size would grow [-Winline]
+>>     94 | static inline __wsum csum_add(__wsum csum, __wsum addend)
+>>        |                      ^~~~~~~~
+>> ./arch/powerpc/include/asm/checksum.h:172:31: note: called from here
+>>    172 |                         sum = csum_add(sum, (__force __wsum)*(const u32 *)buff);
+>>        |                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> At least we say what happened.  Progress!  :-)
+
+Lol. I've seen this warning for long, that's not something new I guess.
+
+> 
+>> In the non-inlined version, the first sum with 0 was performed.
+>> Here it is skipped.
+> 
+> That is because of how __builtin_constant_p works, most likely.  As we
+> discussed elsewhere it is evaluated before all forms of loop unrolling.
+
+But we are not talking about loop unrolling here, are we ?
+
+It seems that the reason here is that __builtin_constant_p() is evaluated long after GCC decided to 
+not inline that call to csum_add().
+
+Christophe
