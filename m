@@ -2,203 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 119D737ECCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56D8837ECD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:36:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344014AbhELUAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 16:00:00 -0400
-Received: from mga12.intel.com ([192.55.52.136]:39791 "EHLO mga12.intel.com"
+        id S1380350AbhELUBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 16:01:07 -0400
+Received: from gate.crashing.org ([63.228.1.57]:41948 "EHLO gate.crashing.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353798AbhELSMq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 14:12:46 -0400
-IronPort-SDR: H0malZIzDX5+FdQ+i+zPMqYXiGSUcC4Cj0zDvZnGDi80nto/HcpKEnu+8LGbofuiLHA8U/LdS/
- OcRU7D4VWq3w==
-X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="179368067"
-X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
-   d="scan'208";a="179368067"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2021 11:11:36 -0700
-IronPort-SDR: cBYKzJw1qCwlG20Y/VdCFTcIS9oozhCEOIajXljuTpIpTsJqrVo3rG/oUJVa9+y1OvESq8FZ2Y
- /NvlUqvG3tXg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
-   d="scan'208";a="625524898"
-Received: from lkp-server01.sh.intel.com (HELO 1e931876798f) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 12 May 2021 11:11:35 -0700
-Received: from kbuild by 1e931876798f with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lgtKY-0000Qd-Oz; Wed, 12 May 2021 18:11:34 +0000
-Date:   Thu, 13 May 2021 02:11:29 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:timers/urgent] BUILD SUCCESS
- e09784a8a751e539dffc94d43bc917b0ac1e934a
-Message-ID: <609c1a51.KFZMcvP3Fs1Iq3KM%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+        id S1355206AbhELS1n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 14:27:43 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 14CIL4bD009429;
+        Wed, 12 May 2021 13:21:04 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 14CIL4PD009428;
+        Wed, 12 May 2021 13:21:04 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Wed, 12 May 2021 13:21:03 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] powerpc: Force inlining of csum_add()
+Message-ID: <20210512182103.GX10366@gate.crashing.org>
+References: <f7f4d4e364de6e473da874468b903da6e5d97adc.1620713272.git.christophe.leroy@csgroup.eu> <20210511105154.GJ10366@gate.crashing.org> <e996ef13-c25c-5e9c-edd2-444eded88802@csgroup.eu> <20210512143105.GW10366@gate.crashing.org> <2623fe98-7a73-f7a2-bcba-2d668d00ffd0@csgroup.eu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2623fe98-7a73-f7a2-bcba-2d668d00ffd0@csgroup.eu>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers/urgent
-branch HEAD: e09784a8a751e539dffc94d43bc917b0ac1e934a  alarmtimer: Check RTC features instead of ops
+On Wed, May 12, 2021 at 04:43:33PM +0200, Christophe Leroy wrote:
+> Le 12/05/2021 à 16:31, Segher Boessenkool a écrit :
+> >On Wed, May 12, 2021 at 02:56:56PM +0200, Christophe Leroy wrote:
+> >>Le 11/05/2021 à 12:51, Segher Boessenkool a écrit :
+> >>>Something seems to have decided this asm is more expensive than it is.
+> >>>That isn't always avoidable -- the compiler cannot look inside asms --
+> >>>but it seems it could be improved here.
+> >>>
+> >>>Do you have (or can make) a self-contained testcase?
+> >>
+> >>I have not tried, and I fear it might be difficult, because on a kernel
+> >>build with dozens of calls to csum_add(), only ip6_tunnel.o exhibits such
+> >>an issue.
+> >
+> >Yeah.  Sometimes you can force some of the decisions, but that usually
+> >requires knowing too many GCC internals :-/
+> >
+> >>>>And there is even one completely unused instance of csum_add().
+> >>>
+> >>>That is strange, that should never happen.
+> >>
+> >>It seems that several .o include unused versions of csum_add. After the
+> >>final link, one remains (in addition to the used one) in vmlinux.
+> >
+> >But it is a static function, so it should not end up in any object file
+> >where it isn't used.
+> 
+> Well .... did I dream ?
+> 
+> Now I only find one extra .o with unused csum_add() : That's 
+> net/ipv6/exthdrs.o
+> It matches the one found in vmlinux.
+> 
+> Are you interested in -fdump-tree-einline-all for that one as well ?
 
-elapsed time: 735m
+Sure.  Hopefully it will show more :-)
 
-configs tested: 141
-configs skipped: 2
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                         tb0287_defconfig
-m68k                          sun3x_defconfig
-mips                          rb532_defconfig
-arm                      jornada720_defconfig
-arm                          imote2_defconfig
-um                               allmodconfig
-sh                          landisk_defconfig
-arm                         at91_dt_defconfig
-powerpc                     tqm8555_defconfig
-powerpc                 mpc836x_mds_defconfig
-openrisc                  or1klitex_defconfig
-m68k                          amiga_defconfig
-mips                           xway_defconfig
-sh                           se7712_defconfig
-arm                          collie_defconfig
-powerpc                     ppa8548_defconfig
-powerpc                      obs600_defconfig
-mips                     decstation_defconfig
-arm                           sunxi_defconfig
-powerpc                    sam440ep_defconfig
-mips                           jazz_defconfig
-powerpc                        warp_defconfig
-s390                       zfcpdump_defconfig
-xtensa                         virt_defconfig
-sh                        sh7763rdp_defconfig
-csky                                defconfig
-arm                        mini2440_defconfig
-powerpc                 mpc834x_itx_defconfig
-powerpc                    socrates_defconfig
-arm                         s5pv210_defconfig
-arm                        magician_defconfig
-arm                         mv78xx0_defconfig
-arm                       aspeed_g4_defconfig
-mips                      malta_kvm_defconfig
-parisc                generic-32bit_defconfig
-powerpc                     sequoia_defconfig
-sh                           se7619_defconfig
-riscv                    nommu_k210_defconfig
-powerpc                     powernv_defconfig
-arc                            hsdk_defconfig
-arm                          iop32x_defconfig
-mips                        workpad_defconfig
-arm                         bcm2835_defconfig
-arm                        spear6xx_defconfig
-sh                          rsk7264_defconfig
-powerpc                       holly_defconfig
-mips                         mpc30x_defconfig
-mips                  decstation_64_defconfig
-mips                           ip27_defconfig
-ia64                                defconfig
-arc                 nsimosci_hs_smp_defconfig
-arm                        keystone_defconfig
-parisc                           alldefconfig
-powerpc                        fsp2_defconfig
-m68k                       m5275evb_defconfig
-xtensa                          iss_defconfig
-powerpc                 mpc834x_mds_defconfig
-h8300                     edosk2674_defconfig
-arm                         lpc18xx_defconfig
-arm                       mainstone_defconfig
-sparc64                             defconfig
-sh                            hp6xx_defconfig
-arm                         shannon_defconfig
-powerpc                    ge_imp3a_defconfig
-sh                            titan_defconfig
-sh                   sh7770_generic_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a003-20210512
-x86_64               randconfig-a004-20210512
-x86_64               randconfig-a001-20210512
-x86_64               randconfig-a005-20210512
-x86_64               randconfig-a002-20210512
-x86_64               randconfig-a006-20210512
-i386                 randconfig-a003-20210512
-i386                 randconfig-a001-20210512
-i386                 randconfig-a005-20210512
-i386                 randconfig-a004-20210512
-i386                 randconfig-a002-20210512
-i386                 randconfig-a006-20210512
-i386                 randconfig-a016-20210512
-i386                 randconfig-a014-20210512
-i386                 randconfig-a011-20210512
-i386                 randconfig-a015-20210512
-i386                 randconfig-a012-20210512
-i386                 randconfig-a013-20210512
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a015-20210512
-x86_64               randconfig-a012-20210512
-x86_64               randconfig-a011-20210512
-x86_64               randconfig-a013-20210512
-x86_64               randconfig-a016-20210512
-x86_64               randconfig-a014-20210512
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Segher
