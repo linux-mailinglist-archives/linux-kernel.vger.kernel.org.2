@@ -2,95 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B99C137BF91
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:14:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 972E637BF9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:15:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230477AbhELOPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 10:15:41 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:37491 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231429AbhELOOS (ORCPT
+        id S231624AbhELOQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 10:16:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231559AbhELOPZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 10:14:18 -0400
-Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id D5EC32225B;
-        Wed, 12 May 2021 16:13:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1620828789;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cPGkhq/BSP3LqTLYGR9T4LGJDXj4OLPuBBkkFMuOrqY=;
-        b=ZkdYqzQbY8Nb7BNiheV3T0G+5i3ReRFHj5pE77IPIK9nBw+eTPZy/hiO0GAmGSCvF2qP2+
-        p0VsUFPEcYz8ZjdVxVCods3UxNIshP65+jiJzk7y17Z8E6lLXTzeiGqy9rGGYNglN9rrU+
-        RrRzjk6Myh/v+Dx1b4+e6Z+LUilTTYs=
-From:   Michael Walle <michael@walle.cc>
-To:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Angelo Dureghello <angelo.dureghello@timesys.com>,
-        Johan Hovold <johan@kernel.org>,
-        Philippe Schenker <philippe.schenker@toradex.com>,
-        Michael Walle <michael@walle.cc>
-Subject: [PATCH v2 9/9] serial: fsl_lpuart: disable DMA for console and fix sysrq
-Date:   Wed, 12 May 2021 16:12:55 +0200
-Message-Id: <20210512141255.18277-10-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210512141255.18277-1-michael@walle.cc>
-References: <20210512141255.18277-1-michael@walle.cc>
+        Wed, 12 May 2021 10:15:25 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FA27C06138E
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 07:14:14 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id t4so35290545ejo.0
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 07:14:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=B8+dsnVGPf7hsY+HQXduPDAnUEDSpNmU6uRk4M3oaqs=;
+        b=c917zy549w9VdfbQA59q0ZGjmJzDalQGHwIAgrrORe6nhbyLpIm0hOhpfbR2lf56Do
+         H4sq4JTjpYYzjFFtG0b3QjgOoRtfJPFdkjU9BzxOynd4sqh1WtoW8wGUXVi+Q6m6w22i
+         kFeD/tXYufp88NZZwKtwHsIma/lW4Qxa4v5H11u4IUqDvj7C/BJPM/XGh4ma0/LydrAn
+         utQySur7OvheW+UY9CJyqdC8EuH9SEGAQfSNUx682LoK/ZuEvSs5agLzdXj+D8v3A7OW
+         mjja+ixSxQt/u0Qwy5OKTNtrwqxTXmk9tq3TKUOb1PkTmGMm2EiTX2wT/ZqpiDoRlZNg
+         hYAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B8+dsnVGPf7hsY+HQXduPDAnUEDSpNmU6uRk4M3oaqs=;
+        b=Kq7cLn7zcO4sxHV95THZhK7JkNAvrFb5lDGKPuOFXktuFo3U94vodr3RPp/VpRi+M8
+         qJDiNKD7Gly8B/gBia7iEcCiIH9B+sbZyUeWPcGdVW2Zx+n9JwqwUZ5nomhkmM7KWISG
+         kz9bImA5YJGyGZO1GPSlTQgXZynETXUjqkPor10Mfr4wsqvGIHrlOU4MWLwbQ+SHAGs/
+         8+shScMEpKYpVhZkn28LkDNW+Mflx4XKWYQZF3LVEoltxh9bamDxIm/XBOjSxDxBs3Vi
+         P0mfE/N9SHHV7v43AoK/MHbjd6H+UoJZrmrSzX/ReGO6ctnfa81Kj7Kx5dODjqlHNYci
+         Eb9A==
+X-Gm-Message-State: AOAM53129MQnLHSkHaKKz4fc4k0kPB+9hlTDCIg5EitksbiDdRYkLtMt
+        /kMbQOWifCr+Z+niV5S/RVqR9Mhu+yBkFg==
+X-Google-Smtp-Source: ABdhPJw8SlktX8dsixbWlXO7Non9hffmxokViC/0m0wWbQfshEDSr0xDEK+UxgmssiFbswmzvjm82Q==
+X-Received: by 2002:a17:906:68c:: with SMTP id u12mr774733ejb.470.1620828852912;
+        Wed, 12 May 2021 07:14:12 -0700 (PDT)
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com. [209.85.128.50])
+        by smtp.gmail.com with ESMTPSA id h11sm17812370eds.15.2021.05.12.07.14.11
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 May 2021 07:14:11 -0700 (PDT)
+Received: by mail-wm1-f50.google.com with SMTP id 4-20020a05600c26c4b0290146e1feccd8so3129543wmv.1
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 07:14:11 -0700 (PDT)
+X-Received: by 2002:a1c:ba05:: with SMTP id k5mr7661497wmf.169.1620828850704;
+ Wed, 12 May 2021 07:14:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CGME20210512074058epcas2p35536c27bdfafaa6431e164c142007f96@epcas2p3.samsung.com>
+ <1620714998-120657-1-git-send-email-dseok.yi@samsung.com> <1620804453-57566-1-git-send-email-dseok.yi@samsung.com>
+In-Reply-To: <1620804453-57566-1-git-send-email-dseok.yi@samsung.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Wed, 12 May 2021 10:13:32 -0400
+X-Gmail-Original-Message-ID: <CA+FuTSdOvfdeEPffem6ZDyMzu7yqWxBZrVi2S2wgwjBwqpqquA@mail.gmail.com>
+Message-ID: <CA+FuTSdOvfdeEPffem6ZDyMzu7yqWxBZrVi2S2wgwjBwqpqquA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3] bpf: check for BPF_F_ADJ_ROOM_FIXED_GSO when bpf_skb_change_proto
+To:     Dongseok Yi <dseok.yi@samsung.com>
+Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SYSRQ doesn't work with DMA. This is because there is no error
-indication whether a symbol had a framing error or not. Actually,
-this is not completely correct, there is a bit in the data register
-which is set in this case, but we'd have to read change the DMA access
-to 16 bit and we'd need to post process the data, thus make the DMA
-pointless in the first place.
+On Wed, May 12, 2021 at 3:41 AM Dongseok Yi <dseok.yi@samsung.com> wrote:
+>
+> In the forwarding path GRO -> BPF 6 to 4 -> GSO for TCP traffic, the
+> coalesced packet payload can be > MSS, but < MSS + 20.
+> bpf_skb_proto_6_to_4 will upgrade the MSS and it can be > the payload
+> length. After then tcp_gso_segment checks for the payload length if it
+> is <= MSS. The condition is causing the packet to be dropped.
+>
+> tcp_gso_segment():
+>         [...]
+>         mss = skb_shinfo(skb)->gso_size;
+>         if (unlikely(skb->len <= mss))
+>                 goto out;
+>         [...]
+>
+> Allow to upgrade/downgrade MSS only when BPF_F_ADJ_ROOM_FIXED_GSO is
+> not set.
+>
+> Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
 
-Signed-off-by: Michael Walle <michael@walle.cc>
----
-Please note, that there is already sysrq/break support in the 8 bit
-version. But I think there is a race between the hardware DMA controller
-and the ISR in this driver. I'm not sure though and can't test it.
-
-Angelo, maybe you could test it, I'd presume with this patch you don't need
-the special handling in the ISR anymore.
-
- drivers/tty/serial/fsl_lpuart.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/drivers/tty/serial/fsl_lpuart.c b/drivers/tty/serial/fsl_lpuart.c
-index 1ed019d91177..0185bb8b6000 100644
---- a/drivers/tty/serial/fsl_lpuart.c
-+++ b/drivers/tty/serial/fsl_lpuart.c
-@@ -1587,6 +1587,9 @@ static void lpuart_tx_dma_startup(struct lpuart_port *sport)
- 	u32 uartbaud;
- 	int ret;
- 
-+	if (uart_console(&sport->port))
-+		goto err;
-+
- 	if (!sport->dma_tx_chan)
- 		goto err;
- 
-@@ -1616,6 +1619,9 @@ static void lpuart_rx_dma_startup(struct lpuart_port *sport)
- 	int ret;
- 	unsigned char cr3;
- 
-+	if (uart_console(&sport->port))
-+		goto err;
-+
- 	if (!sport->dma_rx_chan)
- 		goto err;
- 
--- 
-2.20.1
-
+Acked-by: Willem de Bruijn <willemb@google.com>
