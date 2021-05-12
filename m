@@ -2,135 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99D2C37BE10
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 15:20:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B93E37BE0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 15:20:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231510AbhELNV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 09:21:28 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:51732 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231297AbhELNVA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 09:21:00 -0400
-Date:   Wed, 12 May 2021 13:19:51 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620825591;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vT6fAHEXU9MTVtnC/lsWmh5tFdzKinjeCcQPLCu/Ecg=;
-        b=lvFaqpX407BieTEmew4hlCtgYwhXI9kHsL2xAY1VFvLivDqv3aKfw2T37Bx0b0rQq45ae0
-        ZOjghVSwyWvvWaLy8yR9I3JDrI35o2T0HKpTi5JEfrBy0o/mDnEY3nxwULgrWlRV74V4W5
-        f8PCogH+h5lA1rUUCC+tikY0VQTDR2tbFF1ndcGep/2nH4mEIDhaInvgx8fr2FEgGinzeI
-        Q163J20EdEJZU+UirON7N35g1KVk+kgoBEi+CugrVbTO8tlwmwZgYVNaQ37A+e66qiWWzH
-        3/ZRfuae1Wk4rQTc/SiRtB7jfpvX1Zoe/IP13PNEpXoXLeu26KpiDoZrHaTX5g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620825591;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vT6fAHEXU9MTVtnC/lsWmh5tFdzKinjeCcQPLCu/Ecg=;
-        b=RLPSrRV4te631NYoCjie/3Q9p2mnmna0qn7/pmPr7Cdo50VqTZskOkhQCZ+198EPLZBwbH
-        yEzN3d2kN5n+kNAg==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: objtool/core] jump_label, x86: Improve error when we fail expected text
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210506194157.726939027@infradead.org>
-References: <20210506194157.726939027@infradead.org>
+        id S231349AbhELNVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 09:21:14 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:38248 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231233AbhELNU7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 09:20:59 -0400
+Received: from zn.tnic (p200300ec2f0bb8006edd94bc9370939d.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:b800:6edd:94bc:9370:939d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4C6A11EC0390;
+        Wed, 12 May 2021 15:19:50 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1620825590;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=oNPg3vxOc+Ox+fohCHc47ZdZvfnk6G6W8tH14loE6Sk=;
+        b=EXX3oJI2tQjSdwnPllc9um9bPhyDf7PQfncbtmfHKP6Hrxdm55NHa0eq4ZTpq0cCGdkXP6
+        c8mOCsVIbwB/YbmD9raGg/HlLIsfs6Wi1w8WtpfFG2+oQFpVT+E+eU+6lco8IOP94Dy/Ho
+        uCHzu9WmRWphRwHgamwuBfED5dzVMgg=
+Date:   Wed, 12 May 2021 15:19:51 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Ashish Kalra <Ashish.Kalra@amd.com>
+Cc:     pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        hpa@zytor.com, joro@8bytes.org, thomas.lendacky@amd.com,
+        x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        srutherford@google.com, seanjc@google.com,
+        venu.busireddy@oracle.com, brijesh.singh@amd.com,
+        linux-efi@vger.kernel.org
+Subject: Re: [PATCH v2 3/4] EFI: Introduce the new AMD Memory Encryption GUID.
+Message-ID: <YJvV9yKclJWLppWU@zn.tnic>
+References: <cover.1619193043.git.ashish.kalra@amd.com>
+ <f9d22080293f24bd92684915fcee71a4974593a3.1619193043.git.ashish.kalra@amd.com>
 MIME-Version: 1.0
-Message-ID: <162082559123.29796.6175093223438979415.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <f9d22080293f24bd92684915fcee71a4974593a3.1619193043.git.ashish.kalra@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the objtool/core branch of tip:
+On Fri, Apr 23, 2021 at 03:59:01PM +0000, Ashish Kalra wrote:
+> From: Ashish Kalra <ashish.kalra@amd.com>
+> 
+> Introduce a new AMD Memory Encryption GUID which is currently
+> used for defining a new UEFI environment variable which indicates
+> UEFI/OVMF support for the SEV live migration feature. This variable
+> is setup when UEFI/OVMF detects host/hypervisor support for SEV
+> live migration and later this variable is read by the kernel using
+> EFI runtime services to verify if OVMF supports the live migration
+> feature.
+> 
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> ---
+>  include/linux/efi.h | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/include/linux/efi.h b/include/linux/efi.h
+> index 8710f5710c1d..e95c144d1d02 100644
+> --- a/include/linux/efi.h
+> +++ b/include/linux/efi.h
+> @@ -360,6 +360,7 @@ void efi_native_runtime_setup(void);
+>  
+>  /* OEM GUIDs */
+>  #define DELLEMC_EFI_RCI2_TABLE_GUID		EFI_GUID(0x2d9f28a2, 0xa886, 0x456a,  0x97, 0xa8, 0xf1, 0x1e, 0xf2, 0x4f, 0xf4, 0x55)
+> +#define MEM_ENCRYPT_GUID			EFI_GUID(0x0cf29b71, 0x9e51, 0x433a,  0xa3, 0xb7, 0x81, 0xf3, 0xab, 0x16, 0xb8, 0x75)
+>  
+>  typedef struct {
+>  	efi_guid_t guid;
+> -- 
 
-Commit-ID:     f9510fa9caaf8229381d5f86ba0774bf1a6ca39b
-Gitweb:        https://git.kernel.org/tip/f9510fa9caaf8229381d5f86ba0774bf1a6ca39b
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Thu, 06 May 2021 21:33:57 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Wed, 12 May 2021 14:54:55 +02:00
+When you apply this patch locally, you do:
 
-jump_label, x86: Improve error when we fail expected text
+$ git log -p -1 | ./scripts/get_maintainer.pl
+Ard Biesheuvel <ardb@kernel.org> (maintainer:EXTENSIBLE FIRMWARE INTERFACE (EFI))
+linux-efi@vger.kernel.org (open list:EXTENSIBLE FIRMWARE INTERFACE (EFI))
+linux-kernel@vger.kernel.org (open list)
 
-There is only a single usage site left, remove the function and extend
-the print to include more information, like the expected text and the
-patch type.
+and this tells you that you need to CC EFI folks too.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20210506194157.726939027@infradead.org
----
- arch/x86/kernel/jump_label.c | 33 ++++++++++++++-------------------
- 1 file changed, 14 insertions(+), 19 deletions(-)
+I've CCed linux-efi now - please make sure you use that script to CC the
+relevant parties on patches, in the future.
 
-diff --git a/arch/x86/kernel/jump_label.c b/arch/x86/kernel/jump_label.c
-index 6a2eb62..638d3b9 100644
---- a/arch/x86/kernel/jump_label.c
-+++ b/arch/x86/kernel/jump_label.c
-@@ -16,37 +16,32 @@
- #include <asm/alternative.h>
- #include <asm/text-patching.h>
- 
--static void bug_at(const void *ip, int line)
--{
--	/*
--	 * The location is not an op that we were expecting.
--	 * Something went wrong. Crash the box, as something could be
--	 * corrupting the kernel.
--	 */
--	pr_crit("jump_label: Fatal kernel bug, unexpected op at %pS [%p] (%5ph) %d\n", ip, ip, ip, line);
--	BUG();
--}
--
- static const void *
- __jump_label_set_jump_code(struct jump_entry *entry, enum jump_label_type type)
- {
- 	const void *expect, *code;
- 	const void *addr, *dest;
--	int line;
- 
- 	addr = (void *)jump_entry_code(entry);
- 	dest = (void *)jump_entry_target(entry);
- 
- 	code = text_gen_insn(JMP32_INSN_OPCODE, addr, dest);
- 
--	if (type == JUMP_LABEL_JMP) {
--		expect = x86_nops[5]; line = __LINE__;
--	} else {
--		expect = code; line = __LINE__;
--	}
-+	if (type == JUMP_LABEL_JMP)
-+		expect = x86_nops[5];
-+	else
-+		expect = code;
- 
--	if (memcmp(addr, expect, JUMP_LABEL_NOP_SIZE))
--		bug_at(addr, line);
-+	if (memcmp(addr, expect, JUMP_LABEL_NOP_SIZE)) {
-+		/*
-+		 * The location is not an op that we were expecting.
-+		 * Something went wrong. Crash the box, as something could be
-+		 * corrupting the kernel.
-+		 */
-+		pr_crit("jump_label: Fatal kernel bug, unexpected op at %pS [%p] (%5ph != %5ph)) type:%d\n",
-+				addr, addr, addr, expect, type);
-+		BUG();
-+	}
- 
- 	if (type == JUMP_LABEL_NOP)
- 		code = x86_nops[5];
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
