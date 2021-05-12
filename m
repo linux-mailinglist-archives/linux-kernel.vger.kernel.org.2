@@ -2,114 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2C7737CD38
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:13:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC26237CD3D
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:13:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245642AbhELQxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 12:53:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51372 "EHLO
+        id S1343639AbhELQxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 12:53:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234814AbhELPwj (ORCPT
+        with ESMTP id S231667AbhELPxF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:52:39 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82DD3C06137A;
+        Wed, 12 May 2021 11:53:05 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AA5EC06137B
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 08:27:34 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id na14-20020a17090b4c0eb029015cbbd5f028so406910pjb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 08:27:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1p7s7yHbJjgTEPNp24tZw18ktReYfalK9gHrNJbuQyA=;
+        b=rWvZTyo+BT81E3IA1vzV56GxMSZ2zHK+3Y12M1DD9IHnTVBZT9O8jIBaufryo6ikGW
+         j2goUsop2XE0C3JHUgurfOfKmpybGuWDV3hgkvI/gkI39nRLQ5EvFQCEfa2Wl4Bz5fHM
+         pXGwQ76fFj90ApTpL3jTMKb+e/9DAiG4kwmYHEnDwrwzZvPDGWGGP2DmTygjLUPN2aoe
+         jjrqT3iStlGMp2kYu3oFkgR0gxq7r0tijsBsr9W6AirlbqBCNYYlP3cl8CGulW3CoQZH
+         eVDdvL6lMXSk8jHKzmP89OxprXv1pZtd+GQNehgrUuLYAEzVtZLGHBMtBI1c+MYrbboe
+         VASw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1p7s7yHbJjgTEPNp24tZw18ktReYfalK9gHrNJbuQyA=;
+        b=XNFgy5qLIWTVrtjaLGvcAwxO84bl7FCV1oXWQUFBjJU6zYIU6sOyAIEF0bWXl3UBBc
+         4PfhcHIHwIPmhqiPZBoZJtGYWXJQsEMe4L8yp9mYh5sbGg6S9W2l+vsE2CGo1yIyxqer
+         aYhPjpaRgxOR2s2fDn/JCwyflc4zVRJS3GW1ZrRlgl+O6p881iH+qNw1VZ+Qi/UV+paG
+         8GYEDCbLxOR0xDcMedS7zAPNEMA19IRW3vpZF+emfqmJSBP9kyQVPtNTEwRtnzIVDXKa
+         Un5dm4wjN2UEHwdL78AGmVr46aMH74M4s9WYVSC2ZIZxSB4/rz8/1TfjPqIpZhiqBhJo
+         54rw==
+X-Gm-Message-State: AOAM533kCwG5WPuvHVq0rG+miv4sxVV4X0kzCMi9tfEWOEMGS8AvmZUi
+        S7r4tHmwx6CNUjd71p8xyfKTLA==
+X-Google-Smtp-Source: ABdhPJzpzn0JDIkhvQrJ7XJ2OE5lv5VRxXO91bDuAsfDQQFSS7dg+I2D2r/31mHpYTiOeb8deoAWZg==
+X-Received: by 2002:a17:90a:f3d3:: with SMTP id ha19mr39726268pjb.166.1620833254037;
+        Wed, 12 May 2021 08:27:34 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id v18sm189525pff.90.2021.05.12.08.27.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 12 May 2021 08:27:33 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id C49182225B;
-        Wed, 12 May 2021 17:27:28 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1620833251;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/lNbUY/raG/xRWA6P8fTkTsqWviUwUsi8XU1DoxL1/M=;
-        b=Jj+17XP/xwM+dPAw2Pj80gHf1z5xq1Yr961HLmLV9nokufv2KA2Xpd6SMhT9omtPic4mQA
-        Jl92FskDHiRqjhCkfmeaWkIu16InuTrErlTLck1Dty+8beZqahjpF4Md/9oCN2jMIJToce
-        0vNrKOzBTgEOA/uSWAaC4s5LofDXAvk=
+Date:   Wed, 12 May 2021 15:27:29 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Uros Bizjak <ubizjak@gmail.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: SVM/VMX: Use %rax instead of %__ASM_AX within
+ CONFIG_X86_64
+Message-ID: <YJvz4crhU7Gbn0p0@google.com>
+References: <20210512112115.70048-1-ubizjak@gmail.com>
+ <074223fd-6f82-9ed6-8664-f324f5027da5@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 12 May 2021 17:27:28 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Ansuel Smith <ansuelsmth@gmail.com>
-Subject: Re: [PATCH net-next 1/3] dt-bindings: net: add
- nvmem-mac-address-offset property
-In-Reply-To: <fefde522146d18aa7f8fbb8fa698cb58@walle.cc>
-References: <20210414152657.12097-1-michael@walle.cc>
- <20210414152657.12097-2-michael@walle.cc> <YHcNtdq+oIYcB08+@lunn.ch>
- <20210415215955.GA1937954@robh.at.kernel.org>
- <fefde522146d18aa7f8fbb8fa698cb58@walle.cc>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <362f1c6a8b0ec191b285ac6a604500da@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <074223fd-6f82-9ed6-8664-f324f5027da5@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[adding Srinivas Kandagatla and Ansuel Smith]
-
-Am 2021-04-16 00:27, schrieb Michael Walle:
-> Am 2021-04-15 23:59, schrieb Rob Herring:
->> On Wed, Apr 14, 2021 at 05:43:49PM +0200, Andrew Lunn wrote:
->>> On Wed, Apr 14, 2021 at 05:26:55PM +0200, Michael Walle wrote:
->>> > It is already possible to read the MAC address via a NVMEM provider. But
->>> > there are boards, esp. with many ports, which only have a base MAC
->>> > address stored. Thus we need to have a way to provide an offset per
->>> > network device.
->>> 
->>> We need to see what Rob thinks of this. There was recently a patchset
->>> to support swapping the byte order of the MAC address in a NVMEM. Rob
->>> said the NVMEM provider should have the property, not the MAC driver.
->>> This does seems more ethernet specific, so maybe it should be an
->>> Ethernet property?
->> 
->> There was also this one[1]. I'm not totally opposed, but don't want to
->> see a never ending addition of properties to try to describe any
->> possible transformation.
+On Wed, May 12, 2021, Paolo Bonzini wrote:
+> On 12/05/21 13:21, Uros Bizjak wrote:
+> > There is no need to use %__ASM_AX within CONFIG_X86_64. The macro
+> > will always expand to %rax.
+> > diff --git a/arch/x86/kvm/vmx/vmenter.S b/arch/x86/kvm/vmx/vmenter.S
+> > index 3a6461694fc2..9273709e4800 100644
+> > --- a/arch/x86/kvm/vmx/vmenter.S
+> > +++ b/arch/x86/kvm/vmx/vmenter.S
+> > @@ -142,14 +142,14 @@ SYM_FUNC_START(__vmx_vcpu_run)
+> >   	mov VCPU_RSI(%_ASM_AX), %_ASM_SI
+> >   	mov VCPU_RDI(%_ASM_AX), %_ASM_DI
+> >   #ifdef CONFIG_X86_64
+> > -	mov VCPU_R8 (%_ASM_AX),  %r8
+> > -	mov VCPU_R9 (%_ASM_AX),  %r9
+> > -	mov VCPU_R10(%_ASM_AX), %r10
+> > -	mov VCPU_R11(%_ASM_AX), %r11
+> > -	mov VCPU_R12(%_ASM_AX), %r12
+> > -	mov VCPU_R13(%_ASM_AX), %r13
+> > -	mov VCPU_R14(%_ASM_AX), %r14
+> > -	mov VCPU_R15(%_ASM_AX), %r15
+> > +	mov VCPU_R8 (%rax),  %r8
+> > +	mov VCPU_R9 (%rax),  %r9
+> > +	mov VCPU_R10(%rax), %r10
+> > +	mov VCPU_R11(%rax), %r11
+> > +	mov VCPU_R12(%rax), %r12
+> > +	mov VCPU_R13(%rax), %r13
+> > +	mov VCPU_R14(%rax), %r14
+> > +	mov VCPU_R15(%rax), %r15
+> >   #endif
+> >   	/* Load guest RAX.  This kills the @regs pointer! */
+> >   	mov VCPU_RAX(%_ASM_AX), %_ASM_AX
+> > @@ -175,14 +175,14 @@ SYM_FUNC_START(__vmx_vcpu_run)
+> >   	mov %_ASM_SI, VCPU_RSI(%_ASM_AX)
+> >   	mov %_ASM_DI, VCPU_RDI(%_ASM_AX)
+> >   #ifdef CONFIG_X86_64
+> > -	mov %r8,  VCPU_R8 (%_ASM_AX)
+> > -	mov %r9,  VCPU_R9 (%_ASM_AX)
+> > -	mov %r10, VCPU_R10(%_ASM_AX)
+> > -	mov %r11, VCPU_R11(%_ASM_AX)
+> > -	mov %r12, VCPU_R12(%_ASM_AX)
+> > -	mov %r13, VCPU_R13(%_ASM_AX)
+> > -	mov %r14, VCPU_R14(%_ASM_AX)
+> > -	mov %r15, VCPU_R15(%_ASM_AX)
+> > +	mov %r8,  VCPU_R8 (%rax)
+> > +	mov %r9,  VCPU_R9 (%rax)
+> > +	mov %r10, VCPU_R10(%rax)
+> > +	mov %r11, VCPU_R11(%rax)
+> > +	mov %r12, VCPU_R12(%rax)
+> > +	mov %r13, VCPU_R13(%rax)
+> > +	mov %r14, VCPU_R14(%rax)
+> > +	mov %r15, VCPU_R15(%rax)
+> >   #endif
+> >   	/* Clear RAX to indicate VM-Exit (as opposed to VM-Fail). */
+> > 
 > 
-> Agreed, that stuff like ASCII MAC address parsing should be done
-> elsewhere. But IMHO adding an offset is a pretty common one (as also
-> pointed out in [1]). And it also need to be a per ethernet device
-> property.
+> It looks a bit weird either way (either the address is different within the
+> #ifdef, or the address is different from the destinatino), so I lean more
+> towards avoiding churn.
 
-I'm a bit up in the air on this, as I don't know how to proceed here.
-
-To cite Rob from IRC:
-   Not really up to me. All the people that care need to come up with
-   something flexible enough for common/simple cases and that's not
-   going to get extended with every new variation. What I don't want is
-   a one-off that's then extended with another one-off.
-
-I already pointed out that this property is per consumer as opposed
-to something like endianess swap or parsing a given format. The latter
-operates on the nvmem cell.
-
-One random idea is to have a nvmem-cells-transformation (in the lack of
-a better name) property for consumers, where you can have some kind of
-simple operations like add:
-   nvmem-cells-transformation = <NVMEM_ADD 1>
-But is that something we really want to have? I'm not sure.
-
-btw. given that there might be other means where a base mac address can
-come from in the future, it might make sense to drop the "nvmem-"
-prefix and just use "mac-address-offset" (or 
-"base-mac-address-offset"?).
-
-> [1] 
-> https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20200920095724.8251-4-ansuelsmth@gmail.com/
-
--michael
+Even though it's unnecessary, I prefer %_ASM_AX since it provides a consistent
+flow across the 64-bit-only boundary.
