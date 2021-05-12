@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED6F637EAB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:05:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65BC237EAB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:05:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378098AbhELTKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:10:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37572 "EHLO mail.kernel.org"
+        id S1378116AbhELTKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:10:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244295AbhELQmw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S244292AbhELQmw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 12 May 2021 12:42:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C15161D34;
-        Wed, 12 May 2021 16:11:59 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EF5461D37;
+        Wed, 12 May 2021 16:12:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620835920;
-        bh=puRKLj/Es+vBRGUJWVG62c51zUbliuaQk3+L9/9WopU=;
+        s=korg; t=1620835924;
+        bh=3t3zC9WRI3kaAdmf0rP5FLO3jWmu5QW2X3t2gVj2qhY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xUdQAv3YRZgi84g+ZXJCtEFApzq1thbIpk5+oSfOrxY6tFV3xqLJiVFhfSRFENdjY
-         jYuZHmjhCcKs7mhWIrAzj8sOfdmoJn1IY5tRoxv/W05AHWM067tzXnz66VcldD54iR
-         D9a6XZs5J9xDsdeebp4tbLW2ZxRwF0IFCnJUd/Xs=
+        b=LpLXLbxWAgC4oHkgm+EL4WwRFsX/0ugZS+w7vtjrnw7MiYO+bGLjJELstGXGPsK4R
+         d+bG7aIMrqiRurQNgB+tTU4+CxDQi0rRfd1ORM0MNPy65wCar17odkreOjRa38bhfl
+         xqJ4cXniyYXBrhwxYplUe1p86lVLm2BP0AKPZirc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Wang <sean.wang@mediatek.com>,
+        stable@vger.kernel.org, Ryder Lee <ryder.lee@mediatek.com>,
         Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 538/677] mt76: mt7663s: fix the possible device hang in high traffic
-Date:   Wed, 12 May 2021 16:49:44 +0200
-Message-Id: <20210512144855.244879288@linuxfoundation.org>
+Subject: [PATCH 5.12 540/677] mt76: mt7915: cleanup mcu tx queue in mt7915_dma_reset()
+Date:   Wed, 12 May 2021 16:49:46 +0200
+Message-Id: <20210512144855.307943288@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
 References: <20210512144837.204217980@linuxfoundation.org>
@@ -39,51 +39,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Wang <sean.wang@mediatek.com>
+From: Ryder Lee <ryder.lee@mediatek.com>
 
-[ Upstream commit 45247a85614b49b07b9dc59a4e6783b17e766ff2 ]
+[ Upstream commit 1ebea45ef027ee31cd50ed92903071391e792edb ]
 
-Use the additional memory barrier to ensure the skb list up-to-date
-between the skb producer and consumer to avoid the invalid skb content
-written into sdio controller and then cause device hang due to mcu assert
-caught by WR_TIMEOUT_INT.
+Cleanup mcu queues in mt7915_mac_reset_work().
 
-Fixes: 1522ff731f84 ("mt76: mt7663s: introduce sdio tx aggregation")
-Signed-off-by: Sean Wang <sean.wang@mediatek.com>
+Fixes: e637763b606b ("mt76: move mcu queues to mt76_dev q_mcu array")
+Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
 Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt76/mt7615/sdio_txrx.c | 2 ++
- drivers/net/wireless/mediatek/mt76/sdio.c             | 3 +++
- 2 files changed, 5 insertions(+)
+ drivers/net/wireless/mediatek/mt76/mt7915/mac.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7615/sdio_txrx.c b/drivers/net/wireless/mediatek/mt76/mt7615/sdio_txrx.c
-index 37fe65ced4fd..4393dd21ebbb 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7615/sdio_txrx.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7615/sdio_txrx.c
-@@ -225,6 +225,8 @@ static int mt7663s_tx_run_queue(struct mt76_dev *dev, struct mt76_queue *q)
- 		struct mt76_queue_entry *e = &q->entry[q->first];
- 		struct sk_buff *iter;
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/mac.c b/drivers/net/wireless/mediatek/mt76/mt7915/mac.c
+index 555274a2f436..819670767521 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7915/mac.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7915/mac.c
+@@ -1470,9 +1470,8 @@ mt7915_update_beacons(struct mt7915_dev *dev)
+ }
  
-+		smp_rmb();
+ static void
+-mt7915_dma_reset(struct mt7915_phy *phy)
++mt7915_dma_reset(struct mt7915_dev *dev)
+ {
+-	struct mt7915_dev *dev = phy->dev;
+ 	struct mt76_phy *mphy_ext = dev->mt76.phy2;
+ 	u32 hif1_ofs = MT_WFDMA1_PCIE1_BASE - MT_WFDMA1_BASE;
+ 	int i;
+@@ -1489,18 +1488,20 @@ mt7915_dma_reset(struct mt7915_phy *phy)
+ 			   (MT_WFDMA1_GLO_CFG_TX_DMA_EN |
+ 			    MT_WFDMA1_GLO_CFG_RX_DMA_EN));
+ 	}
 +
- 		if (!test_bit(MT76_STATE_MCU_RUNNING, &dev->phy.state)) {
- 			__skb_put_zero(e->skb, 4);
- 			err = __mt7663s_xmit_queue(dev, e->skb->data,
-diff --git a/drivers/net/wireless/mediatek/mt76/sdio.c b/drivers/net/wireless/mediatek/mt76/sdio.c
-index 0b6facb17ff7..a18d2896ee1f 100644
---- a/drivers/net/wireless/mediatek/mt76/sdio.c
-+++ b/drivers/net/wireless/mediatek/mt76/sdio.c
-@@ -256,6 +256,9 @@ mt76s_tx_queue_skb(struct mt76_dev *dev, struct mt76_queue *q,
+ 	usleep_range(1000, 2000);
  
- 	q->entry[q->head].skb = tx_info.skb;
- 	q->entry[q->head].buf_sz = len;
-+
-+	smp_wmb();
-+
- 	q->head = (q->head + 1) % q->ndesc;
- 	q->queued++;
+-	mt76_queue_tx_cleanup(dev, dev->mt76.q_mcu[MT_MCUQ_WA], true);
+ 	for (i = 0; i < __MT_TXQ_MAX; i++) {
+-		mt76_queue_tx_cleanup(dev, phy->mt76->q_tx[i], true);
++		mt76_queue_tx_cleanup(dev, dev->mphy.q_tx[i], true);
+ 		if (mphy_ext)
+ 			mt76_queue_tx_cleanup(dev, mphy_ext->q_tx[i], true);
+ 	}
  
+-	mt76_for_each_q_rx(&dev->mt76, i) {
++	for (i = 0; i < __MT_MCUQ_MAX; i++)
++		mt76_queue_tx_cleanup(dev, dev->mt76.q_mcu[i], true);
++
++	mt76_for_each_q_rx(&dev->mt76, i)
+ 		mt76_queue_rx_reset(dev, i);
+-	}
+ 
+ 	/* re-init prefetch settings after reset */
+ 	mt7915_dma_prefetch(dev);
+@@ -1584,7 +1585,7 @@ void mt7915_mac_reset_work(struct work_struct *work)
+ 	idr_init(&dev->token);
+ 
+ 	if (mt7915_wait_reset_state(dev, MT_MCU_CMD_RESET_DONE)) {
+-		mt7915_dma_reset(&dev->phy);
++		mt7915_dma_reset(dev);
+ 
+ 		mt76_wr(dev, MT_MCU_INT_EVENT, MT_MCU_INT_EVENT_DMA_INIT);
+ 		mt7915_wait_reset_state(dev, MT_MCU_CMD_RECOVERY_DONE);
 -- 
 2.30.2
 
