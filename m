@@ -2,148 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B56237EB92
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A94B37EB9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381294AbhELTdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:33:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47872 "EHLO
+        id S1381481AbhELTe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:34:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348913AbhELRjm (ORCPT
+        with ESMTP id S240557AbhELRlZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 13:39:42 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58D78C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 10:38:34 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id q15so14459536pgg.12
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 10:38:34 -0700 (PDT)
+        Wed, 12 May 2021 13:41:25 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDCCDC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 10:40:14 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id v5so16982747edc.8
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 10:40:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ygukMSZ6mguXZGZCEiXIOEJ1Ou3kN4uMuhJTb1ptDIQ=;
-        b=aXvwhA4SMeZkjzvQvbiETGvNAb2DW9SKROVUAae6HB3DVvXq17O96jqoZbLxV9WKy4
-         6pxWvKKC9OC18rcxw5IF8aal6YBlmThgbKX5w18PudVXAWgCcMhfEn5QQgzdeqe2JNVO
-         lDDbYBrELxRRY+pM82COQUTEbS52U4d2TK/IIWHJP3+Q+EcRTBiF5L7TGFcRapr4PunV
-         cw91rrN/yQBF9KZmHUWj7OeWzVio3XpBzFn6gR4JIWEWZYDFaVUzCJDUXqX5R5TKlQPR
-         b+bCPrxxd1/ixHoqp72R2BOqR54trN2dX3sUaMjyNtbpMiNWGODg24Cy8qXWN3hmWaT1
-         JcnA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Xs+y9eBZ2/f87DSJ1iquJSlmC9eevjB35zefQmd1hRk=;
+        b=Utcd2QRxbe79ZIchmVbulc3/bTSxKeki/63PzjOiEhb0lapJGAHR21Z3v+SDY8quYi
+         tadQEDFWSlzIBbeu/+TOp3dAVYKTxoxrfTO9DLaL0WNvd7QlHy0LEzQ0CDN4nlMQ2538
+         /asIwx2rZYDtz8J2Rfvm4VSZ9CO8DlZqiWZcqrgTfuTVjzyY/PYFoQNCX2v79FnKfL72
+         rq6zGJYqI6IF2oAiJ0wrKXpZvDs1sbBnsr7Uk0LR+n71i9yZYJCNl2ffI+nfKguZ0kjv
+         J7qHIdx23RohV1r5ZizJHX5VSp2+rAT071LqZGcvwrYb1xmI9NcJid+j/d6JTaFni4i2
+         3ktw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ygukMSZ6mguXZGZCEiXIOEJ1Ou3kN4uMuhJTb1ptDIQ=;
-        b=sJZEpNYk+ZGr/nLTAfSEKxZGWj8KrHIaO4O0Nky3Aw6OyfVYJk6EC0l2VHp9X9zYQT
-         jjOUQ2KjIGzq/Mksb6tnuGc3JBDEzGkTFqE08XqGx0L1oFYQ6gPy7TaQyi7epXmH29cj
-         7RcZRbVDNtedKGGFO9rFzo8q8s7iwpclGnYEK8BBRdboQsf2paW67zso1pbzs/imVuw8
-         oNVe7/vPRoRP0FcE5p5Ak+f1su0qg8zu80w/qwZPulLKxBWYs4xCCC5S2CQiAfG7e2za
-         YVN4uhBsaLwL2YEyHHjSPYg1/hTxTs6eKURmU1xwIH71JnH09u0qBQhyA55o/EjcNzfs
-         qPWA==
-X-Gm-Message-State: AOAM533xrJhB1u5ZtJPaCsr2zM3/DXMzHm0qZR/xBogtONGXqR32M8Qb
-        AycDgDcRFy6HcURPJkFz0JgEcA==
-X-Google-Smtp-Source: ABdhPJz7ZGBw/PUTscy3NA7kLlxFOShh6OFXdGf+R8J7hxnn+s1GWr4QOvbmGe5JQFSmOdIskkO9FQ==
-X-Received: by 2002:aa7:85d0:0:b029:28e:80ff:cbf4 with SMTP id z16-20020aa785d00000b029028e80ffcbf4mr36669418pfn.59.1620841113580;
-        Wed, 12 May 2021 10:38:33 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id b6sm318783pjk.13.2021.05.12.10.38.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 10:38:32 -0700 (PDT)
-Date:   Wed, 12 May 2021 17:38:29 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     x86@kernel.org, Hyunwook Baek <baekhw@google.com>,
-        Joerg Roedel <jroedel@suse.de>, stable@vger.kernel.org,
-        hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH 4/6] Revert "x86/sev-es: Handle string port IO to kernel
- memory properly"
-Message-ID: <YJwSlVnHb0SZTSrG@google.com>
-References: <20210512075445.18935-1-joro@8bytes.org>
- <20210512075445.18935-5-joro@8bytes.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Xs+y9eBZ2/f87DSJ1iquJSlmC9eevjB35zefQmd1hRk=;
+        b=hVqY+APUmUCy/NKo95HBBPsdIybYWjLFKat76Exd8gocPgtiQ3QEl3rNO/Dyb5gWNG
+         bgNxEcdt66dP2NlSt8haiUAZeURT6H6qoSNsTJ1Q1pRaQRO1FegnTzDT9JGJHhdQKvp1
+         7qHWI3VbHI9ulatAqGLdA9ERxbmHA+jsAHl7zBjVGxr2DRaEmYagoAl1/iJPRPyy35xV
+         QgZBq57iyVR2Gm1Mt1KRLWoXuP/ga4J7BFARnuD2mE4I5Tl45WL40n4E9EiFsKfyBKWn
+         ficNsGrYliWEdBdID2W3XD6xvEG0UJk4LcHwTgfe16tdq64i/nilzvQX1+Q0X3DXIhOh
+         jDug==
+X-Gm-Message-State: AOAM530jqgs7JN7JDq/zEJ3vCX6rNR3cqN+g9U1mAOj/9sGjY8Q3cvyF
+        wGKcGRxbybpV8swhz7gDeB7Px/OxmNJMM5AO5ESJAO9FOxGsDA==
+X-Google-Smtp-Source: ABdhPJx8E6FGhvyS3xK9AMswqEfR5SPNSY/P+1j9adWZ8+asLCk+dYS/zvLK3tH4enTE2yk3Spv92W+RpAElXBqaQBg=
+X-Received: by 2002:a05:6402:17d8:: with SMTP id s24mr44491555edy.155.1620841213370;
+ Wed, 12 May 2021 10:40:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210512075445.18935-5-joro@8bytes.org>
+References: <CAOVCmzGX54u4VLUSLt_yEM4E8MQNLwW4VTkNVurPXbCuQX6d_g@mail.gmail.com>
+ <CAHbLzko8rHfE-3k=e+fdW2+S1Cc0his8-=Ch08HuMMmf=RJsDg@mail.gmail.com>
+ <CAOVCmzFiqASFCyoNrxksGzFtqJfR5FA06O-qFD-Jkv0tvsAMog@mail.gmail.com> <CAHbLzko9eh=5qD02jtYq4u4Awqrzc2F=jNWxRw4m0UdCMjjWnA@mail.gmail.com>
+In-Reply-To: <CAHbLzko9eh=5qD02jtYq4u4Awqrzc2F=jNWxRw4m0UdCMjjWnA@mail.gmail.com>
+From:   Shivank Garg <shivankgarg98@gmail.com>
+Date:   Wed, 12 May 2021 23:09:57 +0530
+Message-ID: <CAOVCmzH2+iHDeyzzSvLcAKXfzcWG5fqTvAPkhqJvdKUU-gY3=A@mail.gmail.com>
+Subject: Re: Profiling execution time for __alloc_pages_nodemask
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        gregkh@linuxfoundation.org, sergey.senozhatsky@gmail.com,
+        pmladek@suse.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021, Joerg Roedel wrote:
-> From: Joerg Roedel <jroedel@suse.de>
-> 
-> This reverts commit 7024f60d655272bd2ca1d3a4c9e0a63319b1eea1.
-> 
-> The commit reverted here introduces a short-cut into the #VC handlers
-> memory access code which only works reliably in task context. But the
-> kernels #VC handler can be invoked from any context, making the
-> access_ok() call trigger a warning with CONFIG_DEBUG_ATOMIC_SLEEP
-> enabled.
-> 
-> Also the memcpy() used in the reverted patch is wrong, as it has no
-> page-fault handling. Access to kernel memory can also fault due to
-> kernel bugs, and those should not be reported as faults from the #VC
-> handler but as bugs of their real call-site, which is correctly later
-> done from vc_forward_exception().
+>> Actually, I want to record the arguments for the memory allocator and
+>> filter out the calls I don't need (which are creating noise).
+>> For instance, I'm only interested in particular order and flags.
 
-The changelog should call out that a previous patch fixed the original bug by
-switching to unchecked versions of get/put.  Without that, this reads like we're
-reverting to even worse behavior.
+>BPF can do so too. You can either attach to kprobe or tracepoint, then
+>filter out the calls by the function's parameters or tracepoint's
+>fields.
 
-Alternatively, and probably even better, fold this revert into the switch to
-the unchecked version (sounds like those will use kernel-specific flavors?).
+Thanks Yang for the suggestion, I'll try the BPF. Anyway my problem
+was solved by the filter in custom tracepoints (for instance,
+tracing/events/kmem/filter).
 
-> Fixes: 7024f60d6552 ("x86/sev-es: Handle string port IO to kernel memory properly")
-> Cc: stable@vger.kernel.org # v5.11
-> Signed-off-by: Joerg Roedel <jroedel@suse.de>
-> ---
->  arch/x86/kernel/sev.c | 12 ------------
->  1 file changed, 12 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-> index 110b39345b40..f4f319004713 100644
-> --- a/arch/x86/kernel/sev.c
-> +++ b/arch/x86/kernel/sev.c
-> @@ -333,12 +333,6 @@ static enum es_result vc_write_mem(struct es_em_ctxt *ctxt,
->  	u16 d2;
->  	u8  d1;
->  
-> -	/* If instruction ran in kernel mode and the I/O buffer is in kernel space */
-> -	if (!user_mode(ctxt->regs) && !access_ok(target, size)) {
-> -		memcpy(dst, buf, size);
-> -		return ES_OK;
-> -	}
-> -
->  	switch (size) {
->  	case 1:
->  		memcpy(&d1, buf, 1);
-> @@ -388,12 +382,6 @@ static enum es_result vc_read_mem(struct es_em_ctxt *ctxt,
->  	u16 d2;
->  	u8  d1;
->  
-> -	/* If instruction ran in kernel mode and the I/O buffer is in kernel space */
-> -	if (!user_mode(ctxt->regs) && !access_ok(s, size)) {
-> -		memcpy(buf, src, size);
-> -		return ES_OK;
-> -	}
-> -
->  	switch (size) {
->  	case 1:
->  		if (__get_user(d1, s))
-> -- 
-> 2.31.1
-> 
+Also, I used trace_*_enabled() to first check if tracepoint is enabled
+and take ktime_get() only after that. This solved my initial issue.
+
+Thanks David, Yang and the Linux community for helping me identify my
+issue and solve it.
+
+Best Regards,
+Shivank
