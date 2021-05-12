@@ -2,68 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6667A37B582
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 07:34:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FD1537B586
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 07:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbhELFfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 01:35:09 -0400
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:52969 "EHLO 1wt.eu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230017AbhELFfI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 01:35:08 -0400
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 14C5Xual020758;
-        Wed, 12 May 2021 07:33:56 +0200
-Date:   Wed, 12 May 2021 07:33:56 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tools/nolibc: Implement msleep()
-Message-ID: <20210512053356.GA20749@1wt.eu>
-References: <20210511110159.57286-1-broonie@kernel.org>
+        id S229952AbhELFhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 01:37:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229580AbhELFhx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 01:37:53 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B10AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 22:36:46 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id q2so17662729pfh.13
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 22:36:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Ifo9croMydmJDq8tVTBmjMUam90Lc+s7rOdOzubXklE=;
+        b=agHLsJAoym4mAxL5ZbgKFvYlFEOR4OOQAOYhJ5XL6zGFdXJTNW4ILyNtIcpp9yBgWu
+         WGiFqBgjT8jdwWMZEEBeaCuxu3R9F6JWpU5mTBExX2j8kfB6AE+viouqAsO+RaLKOja2
+         aWMHOrhc3nlqUO/fB8z+BAMqBkXNeQ8TMjUP1rPfYwO3iJxQcwGHpuSEjRoVkWbL0hZ5
+         ED7JTdff4rrrkT4GaOq/oAtxwhrZnduoyKXKextYZlUE3OfryuNdWAEqB77tz6ppExO9
+         z0X9ADhSj6j1JxyAJBcryBF1+7fbqoS/I3hgAi1UyrDTQGtLFGPeSJFFEDd+d4qN4C5O
+         veVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Ifo9croMydmJDq8tVTBmjMUam90Lc+s7rOdOzubXklE=;
+        b=iC531mSKF6vPDUtobCS1RY7mO4pcK3p4Dl8sQncuuxQjlaONpdzSG5uo2USRFCg6T3
+         r4kamL4cRvAzL//3DNYQUU/Dwm5LQ5hT55N6DxTf2SzHu4QKFNlWaIzZ+oEz2moKddck
+         XWBn/G+UWWYiH7wVG8uYECONZP4qAcYWPv1Zt2QXDxdNHspUuNlcqKymyc255CKxtFuj
+         1zb/yyVt/F2XGZ3iiLps2j20pYKRksnbiRYA8kUu13A9nirmwZ6J4mloyrgguHf+Vk4o
+         yJTlLiYtGf1Ovd/o/flglHR29RSCoWo3z0cM7eXNbB2sAs2d3xEGiHIAovr3XEdx3i/s
+         dpJg==
+X-Gm-Message-State: AOAM5323qvE5La+LtyI7CVrOiTceX+7Z520JuagaHsfvCa1HbatEkZWg
+        8utRpXSmKVEHQz5u7ztvQzkoWA==
+X-Google-Smtp-Source: ABdhPJxG5HFk1BVt87iNZIgnUiokph6k9IgeqiusOSQfY+cfYd6jn7ckZgLDJf5/yFz2AyFt27T+0w==
+X-Received: by 2002:a63:eb47:: with SMTP id b7mr7593796pgk.227.1620797805698;
+        Tue, 11 May 2021 22:36:45 -0700 (PDT)
+Received: from localhost ([136.185.154.93])
+        by smtp.gmail.com with ESMTPSA id m2sm14853917pgv.87.2021.05.11.22.36.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 May 2021 22:36:44 -0700 (PDT)
+Date:   Wed, 12 May 2021 11:06:42 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        rjw@rjwysocki.net
+Subject: Re: [PATCH -next] cpufreq: cppc: Remove unnecessary INIT_LIST_HEAD()
+Message-ID: <20210512053642.74so7tkzsjbthybf@vireshk-i7>
+References: <20210511114703.3790524-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210511110159.57286-1-broonie@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210511114703.3790524-1-yangyingliang@huawei.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+On 11-05-21, 19:47, Yang Yingliang wrote:
+> The list_head cpu_data_list is initialized statically.
+> It is unnecessary to initialize by INIT_LIST_HEAD().
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> ---
+>  drivers/cpufreq/cppc_cpufreq.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
+> index 3848b4c222e1..b312fa210a39 100644
+> --- a/drivers/cpufreq/cppc_cpufreq.c
+> +++ b/drivers/cpufreq/cppc_cpufreq.c
+> @@ -723,8 +723,6 @@ static int __init cppc_cpufreq_init(void)
+>  	if ((acpi_disabled) || !acpi_cpc_valid())
+>  		return -ENODEV;
+>  
+> -	INIT_LIST_HEAD(&cpu_data_list);
+> -
+>  	cppc_check_hisi_workaround();
+>  
+>  	ret = cpufreq_register_driver(&cppc_cpufreq_driver);
 
-On Tue, May 11, 2021 at 12:01:59PM +0100, Mark Brown wrote:
-> +static __attribute__((unused))
-> +void msleep(unsigned int msecs)
-> +{
-> +	struct timeval my_timeval = { 0, msecs * 1000 };
-> +
-> +	sys_select(0, 0, 0, 0, &my_timeval);
-> +}
-> +
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-Just a quick question, is there any reason for not keeping most of the
-precision like this and allow applications to use it beyond 4294 seconds
-like this ?
-
-	struct timeval my_timeval = { msecs / 1000, (msecs % 1000) * 1000 };
-
-Another thing that comes to my mind is that sleep() returns the remaining
-number of seconds if the syscall was interrupted, and I think it could be
-very useful in small tests programs to do the same at the subsecond level
-in simple scheduling loops for example. Copying what we're doing in sleep()
-we could have this:
-
-        if (sys_select(0, 0, 0, 0, &my_timeval) < 0)
-                return my_timeval.tv_sec * 1000 + (my_timeval.tv_usec + 999) / 1000;
-        else
-                return 0;
-
-And since that's an inline function it will be optimized away if the result
-is not used anyway, resulting in the same code as the void version in this
-case.
-
-What do you think ?
-
-Thanks!
-Willy
+-- 
+viresh
