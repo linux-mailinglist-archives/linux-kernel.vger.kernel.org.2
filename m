@@ -2,57 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3B8537EED0
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 01:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6782837EED5
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 01:04:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443167AbhELWQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 18:16:43 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:37818 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347157AbhELVpj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 17:45:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=G4FRzr8UOcQ0mGjU/d41grqZ4PRaNx1y9G+DGXzduP4=; b=w8mAlBwZh0NWwURiIt4ishGdXU
-        O7l+wjTe0bacbb6zrO+Rmiv65PeFtAy55PfF4Dy/EJWGXvTZvjtIycewJujAM8gFuo1Q+cmPT69qe
-        j/GThzI3gKXbsgY4tdN4Y3IoN3mM5aBNRIN15JjSZGgPvIbaE8ZyQxj11W8kikUGOzSg=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lgweN-003yj3-3e; Wed, 12 May 2021 23:44:15 +0200
-Date:   Wed, 12 May 2021 23:44:15 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
-        kuba@kernel.org, david.daney@cavium.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] net: mdio: Fix a double free issue in the .remove
- function
-Message-ID: <YJxML4HvQd+WiDK6@lunn.ch>
-References: <f8ad939e6d5df4cb0273ea71a418a3ca1835338d.1620855222.git.christophe.jaillet@wanadoo.fr>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f8ad939e6d5df4cb0273ea71a418a3ca1835338d.1620855222.git.christophe.jaillet@wanadoo.fr>
+        id S1443263AbhELWRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 18:17:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1388276AbhELVtQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 17:49:16 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4838AC061249
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 14:45:06 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id q9-20020a170902e309b02900ed842dacffso10096444plc.7
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 14:45:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=5jUpkIWfMaq5Jmoaunq8eRpC3Xi5xzv1ZG/MFZDMBzk=;
+        b=WGvG1+DLOaYsWwslzcFaBddiYRxp0XLqVYB2uArPgDzBleiI+uU3cDpZD1xK69YsJ1
+         VY7xsOG//Dm7VOkj9PySP6eJvXdk66vQgdIaBXmFdzqhqDRnRDJ4ZteE1Q5Jkioj0Eyy
+         Z4+DzQ36g5xqcpcc6bJb4Dwzj6ERvA9KCFrl6ETG1oxasRhdbscS7A3TMKEjJQxObA7L
+         k0esfRk4vbESKv1UUlqYB8b4fRIuJFTme0t/PZ27GsZJZU4umFYYr53CGFaI9ZhkaS07
+         CwZpz4xwZD3+xTAgBF7COPrLiUOF/gBc2jcwD3zczjVHVubH6LLTCDntZF3i6NRIe95G
+         zGug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=5jUpkIWfMaq5Jmoaunq8eRpC3Xi5xzv1ZG/MFZDMBzk=;
+        b=hFNSeFBv0jyua+bGMzij7U4B/C1fATYvvACqs2u5lZQ44rh91NOIH4xXq7WRS0Ir4h
+         ro6exZ1aekWgnrUnloLw0de/7RHadXTf+0+STeRPQ0wkb2kQHD1P6fUoqQo+LQMwDOi1
+         iZbKO346vTZL/4Yuht+JxdAvLmy9rZ9YrkiTNAD55X3Hzwhub4Xewdh6SuR840Xi0/fK
+         eO9wqwX1S/RVu9/+qm4PeI6iRNA8bdqqirh1Txav0oVLfR8pXdNARfNCvsjKHyl82nLL
+         q8XaQy9GLePmk6rscVKUqY1VsUa1PYTrPdf3gFf6SQ+p1HDP4FnALoZrZtMeiXihD2tr
+         1qbQ==
+X-Gm-Message-State: AOAM530vhIQtGWJFglnJJsDPhD6F90qiWxjsVtzIke5hHbt1UvYtxBSP
+        jILb2egEqJyqzYdfFHojumMOz/jkpHz5wSqefBzN
+X-Google-Smtp-Source: ABdhPJznlwzFf+8b63G8BSVyi6fcbSnTpML8PUgB8sdorKJKvZseAtm8CUY4Wm7UAnSfjya00Qx++cbvuCwwU2jBGzQo
+X-Received: from ajr0.svl.corp.google.com ([2620:15c:2cd:203:29e5:10fc:1128:b0c0])
+ (user=axelrasmussen job=sendgmr) by 2002:a17:902:7488:b029:ef:838a:3071 with
+ SMTP id h8-20020a1709027488b02900ef838a3071mr4687161pll.61.1620855905759;
+ Wed, 12 May 2021 14:45:05 -0700 (PDT)
+Date:   Wed, 12 May 2021 14:44:57 -0700
+Message-Id: <20210512214502.2047008-1-axelrasmussen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
+Subject: [PATCH 0/5] KVM: selftests: exercise userfaultfd minor faults
+From:   Axel Rasmussen <axelrasmussen@google.com>
+To:     Aaron Lewis <aaronlewis@google.com>,
+        Alexander Graf <graf@amazon.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ben Gardon <bgardon@google.com>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jacob Xu <jacobhxu@google.com>,
+        Makarand Sonare <makarandsonare@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Yanan Wang <wangyanan55@huawei.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Axel Rasmussen <axelrasmussen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 11:35:38PM +0200, Christophe JAILLET wrote:
-> 'bus->mii_bus' have been allocated with 'devm_mdiobus_alloc_size()' in the
-> probe function. So it must not be freed explicitly or there will be a
-> double free.
+Base
+====
 
-Hi Christophe
+These patches are based upon Andrew Morton's v5.13-rc1-mmots-2021-05-10-22-15
+tag. This is because this series depends on:
 
-[PATCH] net: mdio: Fix a double free issue in the .remove function
+- UFFD minor fault support for hugetlbfs (in v5.13-rc1) [1]
+- UFFD minor fault support for shmem (in Andrew's tree) [2]
 
-Please indicate in the subject which mdio bus driver has a double
-free.
+[1] https://lore.kernel.org/linux-fsdevel/20210301222728.176417-1-axelrasmussen@google.com/
+[2] https://lore.kernel.org/patchwork/cover/1420967/
 
-Also, octeon_mdiobus_remove() appears to have the same problem.
+Overview
+========
 
-      Andrew
+Minor fault handling is a new userfaultfd feature whose goal is generally to
+improve performance. In particular, it is intended for use with demand paging.
+There are more details in the cover letters for this new feature (linked above),
+but at a high level the idea is that we think of these three phases of live
+migration of a VM:
+
+1. Precopy, where we copy "some" pages from the source to the target, while the
+   VM is still running on the source machine.
+2. Blackout, where execution stops on the source, and begins on the target.
+3. Postcopy, where the VM is running on the target, some pages are already up
+   to date, and others are not (because they weren't copied, or were modified
+   after being copied).
+
+During postcopy, the first time the guest touches memory, we intercept a minor
+fault. Userspace checks whether or not the page is already up to date. If
+needed, we copy the final version of the page from the soure machine. This
+could be done with RDMA for example, to do it truly in place / with no copying.
+At this point, all that's left is to setup PTEs for the guest: so we issue
+UFFDIO_CONTINUE. No copying or page allocation needed.
+
+Because of this use case, it's useful to exercise this as part of the demand
+paging test. It lets us ensure the use case works correctly end-to-end, and also
+gives us an in-tree way to profile the end-to-end flow for future performance
+improvements.
+
+Axel Rasmussen (5):
+  KVM: selftests: allow different backing memory types for demand paging
+  KVM: selftests: add shmem backing source type
+  KVM: selftests: create alias mappings when using shared memory
+  KVM: selftests: allow using UFFD minor faults for demand paging
+  KVM: selftests: add shared hugetlbfs backing source type
+
+ .../selftests/kvm/demand_paging_test.c        | 146 +++++++++++++-----
+ .../testing/selftests/kvm/include/kvm_util.h  |   1 +
+ .../testing/selftests/kvm/include/test_util.h |  11 ++
+ tools/testing/selftests/kvm/lib/kvm_util.c    |  79 +++++++++-
+ .../selftests/kvm/lib/kvm_util_internal.h     |   2 +
+ tools/testing/selftests/kvm/lib/test_util.c   |  46 ++++--
+ 6 files changed, 222 insertions(+), 63 deletions(-)
+
+--
+2.31.1.607.g51e8a6a459-goog
+
