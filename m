@@ -2,48 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CFFE37BB92
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 13:14:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DEB137BB9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 13:16:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230246AbhELLPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 07:15:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55592 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230329AbhELLPG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 07:15:06 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 27639B02A;
-        Wed, 12 May 2021 11:13:57 +0000 (UTC)
-Date:   Wed, 12 May 2021 12:13:54 +0100
-From:   Mel Gorman <mgorman@suse.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     tglx@linutronix.de, mingo@kernel.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
-        bsingharora@gmail.com, pbonzini@redhat.com, maz@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        riel@surriel.com, hannes@cmpxchg.org
-Subject: Re: [PATCH 5/6] delayacct: Add static_branch in scheduler hooks
-Message-ID: <20210512111354.GE3672@suse.de>
-References: <20210505105940.190490250@infradead.org>
- <20210505111525.248028369@infradead.org>
+        id S230224AbhELLRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 07:17:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230182AbhELLRQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 07:17:16 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1380FC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 04:16:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/YzIPVf0TSTnsIiEebVAwyDbe66VAQBxqqFJbqGyDhM=; b=t6WgltO/8euk95nxU3pgCRIET1
+        TBjLWJTUgj0j+tgtmL5Ksuz3zF7W99rqn/72myM45MaxGNie0oYHW+BcjkYHxdhuUia2clhFIJnHv
+        PLAJ9lfxm5XVdyCWu2p70zI0Il2KJBqp62saEs0WfG0qnd4vt5toydMYMtmqajCgtpk5z3jMCAKpj
+        yA9TDDDVs2q37/AKF9WtEiLeb0jRwzHIxSpJRzCqTkNrqEOn1A4i6RRJ5KjXVlFJoX+tCaI7aYjjq
+        pnf9ydfiQDIIGFKCVzGBEalJYEKiBIe7v5bKRUYhbKUsdbYtHPgZx6mTVQqb5XU+5Gqs0BJC3mtg+
+        bALQOHdQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lgmpU-008D7l-Vl; Wed, 12 May 2021 11:15:11 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 06921300242;
+        Wed, 12 May 2021 13:15:04 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E5F5C20B5CA97; Wed, 12 May 2021 13:15:03 +0200 (CEST)
+Date:   Wed, 12 May 2021 13:15:03 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     intel-gfx@lists.freedesktop.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        x86@kernel.org, hch@lst.de
+Subject: Re: 5.13 i915/PAT regression on Brasswell, adding nopat to the
+ kernel commandline worksaround this
+Message-ID: <YJu4tzXmCJbKp7Fm@hirez.programming.kicks-ass.net>
+References: <b6b61cf0-5874-f4c0-1fcc-4b3848451c31@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210505111525.248028369@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <b6b61cf0-5874-f4c0-1fcc-4b3848451c31@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 12:59:45PM +0200, Peter Zijlstra wrote:
-> Cheaper when delayacct is disabled.
+On Wed, May 12, 2021 at 11:57:02AM +0200, Hans de Goede wrote:
+> Hi All,
 > 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> I'm not sure if this is a i915 bug, or caused by changes elsewhere in the kernel,
+> so I thought it would be best to just send out an email and then see from there.
+> 
+> With 5.13-rc1 gdm fails to show and dmesg contains:
+> 
+> [   38.504613] x86/PAT: Xwayland:683 map pfn RAM range req write-combining for [mem 0x23883000-0x23883fff], got write-back
+> <repeated lots of times for different ranges>
+> [   39.484766] x86/PAT: gnome-shell:632 map pfn RAM range req write-combining for [mem 0x1c6a3000-0x1c6a3fff], got write-back
+> <repeated lots of times for different ranges>
+> [   54.314858] Asynchronous wait on fence 0000:00:02.0:gnome-shell[632]:a timed out (hint:intel_cursor_plane_create [i915])
+> [   58.339769] i915 0000:00:02.0: [drm] GPU HANG: ecode 8:1:86dfdffb, in gnome-shell [632]
+> [   58.341161] i915 0000:00:02.0: [drm] Resetting rcs0 for stopped heartbeat on rcs0
+> [   58.341267] i915 0000:00:02.0: [drm] gnome-shell[632] context reset due to GPU hang
+> 
+> Because of the PAT errors I tried adding "nopat" to the kernel commandline
+> and I'm happy to report that that works around this.
+> 
+> Any hints on how to debug this further (without doing a full git bisect) would be
+> appreciated.
 
-Acked-by: Mel Gorman <mgorman@suse.de>
+IIRC it's because of 74ffa5a3e685 ("mm: add remap_pfn_range_notrack"),
+which added a sanity check to make sure expectations were met. It turns
+out they were not.
 
--- 
-Mel Gorman
-SUSE Labs
+The bug is not new, the warning is. AFAIK the i915 team is aware, but
+other than that I've not followed.
