@@ -2,102 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F36B937BF61
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:07:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E072037BF6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230501AbhELOIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 10:08:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57216 "EHLO
+        id S231261AbhELOLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 10:11:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230292AbhELOIO (ORCPT
+        with ESMTP id S230018AbhELOLJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 10:08:14 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 540F9C061574;
-        Wed, 12 May 2021 07:07:05 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id gx5so35140381ejb.11;
-        Wed, 12 May 2021 07:07:05 -0700 (PDT)
+        Wed, 12 May 2021 10:11:09 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF9DC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 07:10:00 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id g38so30877564ybi.12
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 07:10:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=N5LF26CKutDtZq53l+W30hpY63jIDvW7jhu+eoEl2ew=;
-        b=ZnhUVQ9JVwJAKPCJ5gOrkoLqfQ5MdoigO+F6uo0DG1I9ymh1HS+pCVo1dSSSGX8JWB
-         HLl0O2B7u3WlbEaa6gzPEwsdFCXnxkzmmk3lQWz2zwOpoLtZAUmYTxlikPejW9WF/3T1
-         sv1JWJQrEq7y2g/DgStmhN0YE4IIlIOS7Q9jD+3H8l42GXiwqRKi+hh/6iQ4SG+3RUDX
-         unHt0FwgOo+gw9KducW7162dUZjoMWrxdJbxQSv7OAA9c6iAVNVoBUtbLPEwBsajfdFM
-         tt4Nt2OdewldT99E9o3c6neqIYwfRzmlU9T3Pu8FdrWsMTpnIo0csYxwJ/JIF2lee1WX
-         elrA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZMqb9pDlPkxQxt7DO3JSQX2FDPEZa9Tg1uyg9iwkb3w=;
+        b=OV7yj3NQQdF7FlfLdQEdonq710miiphHYoEQVNeNZ/aiBaF4QduqoFFT+PXWILPjkX
+         3lLKurAgxyUo4GVwvrLvBheX30QVU+hvIwSwo0XJOk9i6RCZk2lFYq4cfVn8gyMZcCpj
+         0FRw/iy/24u2PDncsePYn6l0Rj8jfq5YN5I2LIey4wp0seVSlh2HD5eVdLyVPNxYGaz9
+         i4ClNAwgNx1rLyC2Au/6hAjL1MYoriYfm4dd70BhFeDJnXG2VxqDvFekWkaKcfju6DmF
+         TOUNPilaGx7Sod94c+dOHZgvHtrzjtHLOlD6Rx6V+8gI/3vJGfZI4gD2mjvfjOheQiCC
+         qqcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=N5LF26CKutDtZq53l+W30hpY63jIDvW7jhu+eoEl2ew=;
-        b=S28Ocsxw3cG6936eimng867f1aSULyBcbzWkyvgS9VIsKm7ASkKsGAuA+lBJCCqNi+
-         +96y3AIs7wYacdv5/F77Q20zJy4ve2zKb3mIab1pcmF7EWUQoIoK6Rzk6svRXjHFGD2O
-         H+15bsS77VyUGWnfCPrl3Y5ZOp67KCd/RVusVpBVZ2Ngo1nfWYjoRg5s0frfM2hDVQ8L
-         rXbtT3Hm5soHqBz9rKiJpaIk8Lo5wP+/sxWKWWlgYyJmQURN/IkK7HyliiLclXW3P/JT
-         iLlRawQOTecp8SoNX3psxfPx7kG/jo6TNKrZBm78sNkok+BoIN5SSuyLhKdHWqWMHU0U
-         ohXQ==
-X-Gm-Message-State: AOAM532+TNOP4ty4u0WtzWJeLIsxNY2muo8sdBXAgjL3WKpl1tu5S4pE
-        tK+ZThHuezbysEhCQ+mG4Cg=
-X-Google-Smtp-Source: ABdhPJwH/iByVw+CnvRUG344WyGXRKSmDNAzfjpygkxFPPv9BlK0j9qfLnEWcMifHUCH8SNO/5GqbQ==
-X-Received: by 2002:a17:907:990f:: with SMTP id ka15mr30608107ejc.132.1620828420320;
-        Wed, 12 May 2021 07:07:00 -0700 (PDT)
-Received: from localhost.localdomain (ispc-static-34.84-47-111.telekom.sk. [84.47.111.34])
-        by smtp.gmail.com with ESMTPSA id k5sm20022874edk.46.2021.05.12.07.06.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 07:06:58 -0700 (PDT)
-From:   glittao@gmail.com
-To:     brendanhiggins@google.com, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, vbabka@suse.cz
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-mm@kvack.org, elver@google.com,
-        dlatypov@google.com, Oliver Glitta <glittao@gmail.com>
-Subject: [PATCH] mm/slub, kunit: add a KUnit test for SLUB debugging functionality-fix
-Date:   Wed, 12 May 2021 16:06:56 +0200
-Message-Id: <20210512140656.12083-1-glittao@gmail.com>
-X-Mailer: git-send-email 2.31.1.272.g89b43f80a5
-In-Reply-To: <20210511150734.3492-2-glittao@gmail.com>
-References: <20210511150734.3492-2-glittao@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZMqb9pDlPkxQxt7DO3JSQX2FDPEZa9Tg1uyg9iwkb3w=;
+        b=OMGDYtCFR6pg6W7RHdepk9AXAIm1yp4QKcPS8VK0SmLoTYIlETezTeygj8wA64oTBr
+         YFhFEpNkLrJrqDbYzSBdMbzOI/VU3athfezizmxwrOM/RZf5JM1/XPNFtUCA8MiAB6sn
+         VPdgkdsZihkuXggUq4VckpCqACGbZmrPgPuWMntHi8/UGAhi28xLagVOhrxI+Ry8JIS6
+         ds95Q9cLd/Mg8a8TY/7pQWkA/YUlQOtf0qIoaL0lMgYMh7yIUxOWyebxsB/jHwRe19Bw
+         Uuu/GKYA0KrriUZju32vaWM3Z6kwDxzOvXW8tpC+FCzdV+96RKxupmHtSr9GM3LZcwcm
+         +OSQ==
+X-Gm-Message-State: AOAM5308kb0NLPsazHbj7+2wukO7p5vDrT2YQR4ygMN0w3In5sxFRY5Q
+        mBjySTVmZyqTIkNMOzkmu5lD0mOonAcCUXnUmsYlRQ==
+X-Google-Smtp-Source: ABdhPJxHpb6RWithEu2vmhMDoaI9be2NUJek9rc1e/+bPZxqSoTLthtREkjsSfQchD2N3oC1udEzZ0LIqBewSkPZWUI=
+X-Received: by 2002:a25:7ac5:: with SMTP id v188mr27529673ybc.132.1620828599169;
+ Wed, 12 May 2021 07:09:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210511133118.15012-1-mcroce@linux.microsoft.com>
+ <20210511133118.15012-3-mcroce@linux.microsoft.com> <fa93976a-3460-0f7f-7af4-e78bfe55900a@gmail.com>
+ <YJuk3o6CezbVrT+P@apalos.home>
+In-Reply-To: <YJuk3o6CezbVrT+P@apalos.home>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 12 May 2021 16:09:47 +0200
+Message-ID: <CANn89iLkq0zcbVeRRPGfeb5ZRcnz+e7dR1BCj-RGehNYE1Hzkw@mail.gmail.com>
+Subject: Re: [PATCH net-next v4 2/4] page_pool: Allow drivers to hint on SKB recycling
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        netdev <netdev@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Matthew Wilcox <willy@infradead.org>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver Glitta <glittao@gmail.com>
+On Wed, May 12, 2021 at 11:50 AM Ilias Apalodimas
+<ilias.apalodimas@linaro.org> wrote:
+>
+> [...]
+> > > Since we added an extra argument on __skb_frag_unref() to handle
+> > > recycling, update the current users of the function with that.
+> >
+> > This part could be done with a preliminary patch, only adding this
+> > extra boolean, this would keep the 'complex' patch smaller.
+>
+> Sure
+>
+> [...]
+> > >  #include <linux/uaccess.h>
+> > >  #include <trace/events/skb.h>
+> > > @@ -645,6 +648,11 @@ static void skb_free_head(struct sk_buff *skb)
+> > >  {
+> > >     unsigned char *head = skb->head;
+> > >
+> > > +#if IS_BUILTIN(CONFIG_PAGE_POOL)
+> >
+> > Why IS_BUILTIN() ?
+>
+> No reason, we'll replace it with an ifdef
+>
+> >
+> > PAGE_POOL is either y or n
+> >
+> > IS_ENABLED() would look better, since we use IS_BUILTIN() for the cases where a module might be used.
+> >
+> > Or simply #ifdef CONFIG_PAGE_POOL
+> >
+> > > +   if (skb->pp_recycle && page_pool_return_skb_page(head))
+> >
+> > This probably should be attempted only in the (skb->head_frag) case ?
+>
+> I think the extra check makes sense.
 
-Remove unused function test_exit(), from SLUB KUnit test.
+What do you mean here ?
 
-Reported-by: Marco Elver <elver@google.com>
-Signed-off-by: Oliver Glitta <glittao@gmail.com>
----
- lib/slub_kunit.c | 3 ---
- 1 file changed, 3 deletions(-)
+>
+> >
+> > Also this patch misses pskb_expand_head()
+>
+> I am not sure I am following. Misses what? pskb_expand_head() will either
+> call skb_release_data() or skb_free_head(), which would either recycle or
+> unmap the buffer for us (depending on the page refcnt)
 
-diff --git a/lib/slub_kunit.c b/lib/slub_kunit.c
-index f28965f64ef6..8662dc6cb509 100644
---- a/lib/slub_kunit.c
-+++ b/lib/slub_kunit.c
-@@ -129,8 +129,6 @@ static int test_init(struct kunit *test)
- 	return 0;
- }
- 
--static void test_exit(struct kunit *test) {}
--
- static struct kunit_case test_cases[] = {
- 	KUNIT_CASE(test_clobber_zone),
- 
-@@ -147,7 +145,6 @@ static struct kunit_case test_cases[] = {
- static struct kunit_suite test_suite = {
- 	.name = "slub_test",
- 	.init = test_init,
--	.exit = test_exit,
- 	.test_cases = test_cases,
- };
- kunit_test_suite(test_suite);
--- 
-2.31.1.272.g89b43f80a5
+ pskb_expand_head() allocates a new skb->head, from slab.
 
+We should clear skb->pp_recycle for consistency of the skb->head_frag
+clearing we perform there.
+
+But then, I now realize you use skb->pp_recycle bit for both skb->head
+and fragments,
+and rely on this PP_SIGNATURE thing (I note that patch 1 changelog
+does not describe why a random page will _not_ have this signature by
+bad luck)
+
+Please document/describe which struct page fields are aliased with
+page->signature ?
+
+Thanks !
