@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC04937C39C
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 17:20:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 130A237C3CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 17:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233899AbhELPVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 11:21:09 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:53725 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S233624AbhELPJ4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:09:56 -0400
-Received: (qmail 935639 invoked by uid 1000); 12 May 2021 11:08:47 -0400
-Date:   Wed, 12 May 2021 11:08:47 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Zou Wei <zou_wei@huawei.com>
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        id S232444AbhELPWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 11:22:09 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37062 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232509AbhELPKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:10:13 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id AF563B172;
+        Wed, 12 May 2021 15:09:03 +0000 (UTC)
+Subject: Re: [PATCH v1 3/8] block: move disk invalidation from del_gendisk()
+ into a helper
+To:     Luis Chamberlain <mcgrof@kernel.org>, axboe@kernel.dk
+Cc:     bvanassche@acm.org, ming.lei@redhat.com, hch@infradead.org,
+        jack@suse.cz, osandov@fb.com, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] USB: EHCI: ehci-mv: add missing MODULE_DEVICE_TABLE
-Message-ID: <20210512150847.GB934575@rowland.harvard.edu>
-References: <1620801369-18642-1-git-send-email-zou_wei@huawei.com>
+References: <20210512064629.13899-1-mcgrof@kernel.org>
+ <20210512064629.13899-4-mcgrof@kernel.org>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <fdc93947-a1e1-c0ba-f9b4-1bcf9145f08c@suse.de>
+Date:   Wed, 12 May 2021 17:09:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1620801369-18642-1-git-send-email-zou_wei@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210512064629.13899-4-mcgrof@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 02:36:09PM +0800, Zou Wei wrote:
-> This patch adds missing MODULE_DEVICE_TABLE definition which generates
-> correct modalias for automatic loading of this driver when it is built
-> as an external module.
+On 5/12/21 8:46 AM, Luis Chamberlain wrote:
+> Move the disk / partition invalidation into a helper. This will make
+> reading del_gendisk easier to read, in preparation for adding support
+> to add error handling later on register_disk() and to later share more
+> code with del_gendisk.
 > 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+> This change has no functional changes.
+> 
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 > ---
->  drivers/usb/host/ehci-mv.c | 1 +
->  1 file changed, 1 insertion(+)
+>   block/genhd.c | 48 ++++++++++++++++++++++++++----------------------
+>   1 file changed, 26 insertions(+), 22 deletions(-)
 > 
-> diff --git a/drivers/usb/host/ehci-mv.c b/drivers/usb/host/ehci-mv.c
-> index cffdc8d..beb478c 100644
-> --- a/drivers/usb/host/ehci-mv.c
-> +++ b/drivers/usb/host/ehci-mv.c
-> @@ -266,6 +266,7 @@ static const struct platform_device_id ehci_id_table[] = {
->  	{"pxa-sph", 0},
->  	{},
->  };
-> +MODULE_DEVICE_TABLE(platform, ehci_id_table);
->  
->  static void mv_ehci_shutdown(struct platform_device *pdev)
->  {
+Reviewed-by: Hannes Reinecke <hare@suse.de>
 
-This is a bit odd.  Nothing wrong with it, of course, but it leads one 
-to wonder how the driver ever worked.  Maybe the platforms that can use 
-it never build the driver as a loadable module.
+Cheers,
 
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-
-Alan Stern
+Hannes
+-- 
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
