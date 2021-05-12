@@ -2,46 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8B5637BD5E
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:54:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB9DD37BD62
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:54:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233557AbhELMzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 08:55:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52626 "EHLO mail.kernel.org"
+        id S233595AbhELMzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 08:55:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53114 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231513AbhELMxA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231512AbhELMxA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 12 May 2021 08:53:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 167AA61469;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BAB161584;
         Wed, 12 May 2021 12:51:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620823903;
-        bh=5grcpmVWK6qFXGk84Uc7pxJTRe6T83rcuW2ekjlJZ/Q=;
+        bh=ejiB+UWymQa1W+uDq7gSHwijTlvt5QhzfdCJAzX0GHI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RRD8okc4zu3jTa2huY7IN/0Gw30InHdOBTA0JnnqfjFsd4u7dXS9jKeCZrWQ2mR5v
-         5PALdyrT1cPyl30hJZnNlQZyAPwAdtBAIl+yC6v/68ZoAYqlk/k0NZEm3K3442BE2c
-         SbwV+c3mqX75Fzz3ih4TdGdNNy/27VcNcuygC4soJdNlYW7lbsBtx8i4oV56HjP9sV
-         v0ZxMpIvlShBRO8Bx95DEh5UfNSm57BKg9WewQQo/HoXkbKr35YRl/F3Z1qK0o09K2
-         P6RJJTRf/toWaUmoMU9Yaw1cVO/7QjqVFk8z+Nmb+/iY7QveKavqMmc3DmQ0TzNYQU
-         6fKXyJMouHEJQ==
+        b=WIYp5ItZkYS8mzagQTW5qnRSBYZO/qEime7xrxULzwqMS/zslIaqWSGlCh9SOrsl4
+         WppN1kZYVKca5kYnBBvR6aoCDXqcK191E5NEpDvAYg5O00d74oi4pXOjwzYEgmc7W4
+         i20Lr2WICaStaPwE6A7mYI46SMUAbvF1Y0l1zNZCLqF7rQIQA5JR/EMENWoWlLa+BF
+         K+leeBs5hKT4+WGkj/pEf8/65t5Xfeh8mStpOz4YE84X2XgV+gKTqiMhYqv46XnviJ
+         5EO/n8aeZO7f1H+PiAd0v05GKk14m3FOydA/+yc2Y/1nFUNK09BhG/G+dCR0BwGzBq
+         ICuT8HU0H7jGA==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1lgoKz-0018iY-82; Wed, 12 May 2021 14:51:41 +0200
+        id 1lgoKz-0018ic-95; Wed, 12 May 2021 14:51:41 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Jonathan Corbet" <corbet@lwn.net>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        x86@kernel.org
-Subject: [PATCH v2 27/40] docs: x86: Use ASCII subset instead of UTF-8 alternate symbols
-Date:   Wed, 12 May 2021 14:50:31 +0200
-Message-Id: <7af1f56ef0237c6adeea85e4d4155b872db21b34.1620823573.git.mchehab+huawei@kernel.org>
+        "Jonathan Corbet" <corbet@lwn.net>, Joe Perches <joe@perches.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 28/40] docs: scheduler: sched-deadline.rst: Use ASCII subset instead of UTF-8 alternate symbols
+Date:   Wed, 12 May 2021 14:50:32 +0200
+Message-Id: <730dba19074ce5bc761232a3421b8b933252b262.1620823573.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1620823573.git.mchehab+huawei@kernel.org>
 References: <cover.1620823573.git.mchehab+huawei@kernel.org>
@@ -68,50 +60,26 @@ Also, Sphinx already do such conversion automatically outside literal blocks:
 
 So, replace the occurences of the following UTF-8 characters:
 
-	- U+201c ('“'): LEFT DOUBLE QUOTATION MARK
-	- U+201d ('”'): RIGHT DOUBLE QUOTATION MARK
+	- U+2212 ('−'): MINUS SIGN
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/x86/resctrl.rst | 2 +-
- Documentation/x86/sgx.rst     | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ Documentation/scheduler/sched-deadline.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/x86/resctrl.rst b/Documentation/x86/resctrl.rst
-index 71a531061e4e..511cd5b76ed1 100644
---- a/Documentation/x86/resctrl.rst
-+++ b/Documentation/x86/resctrl.rst
-@@ -519,7 +519,7 @@ Cache pseudo-locking increases the probability that data will remain
- in the cache via carefully configuring the CAT feature and controlling
- application behavior. There is no guarantee that data is placed in
- cache. Instructions like INVD, WBINVD, CLFLUSH, etc. can still evict
--“locked” data from cache. Power management C-states may shrink or
-+"locked" data from cache. Power management C-states may shrink or
- power off cache. Deeper C-states will automatically be restricted on
- pseudo-locked region creation.
+diff --git a/Documentation/scheduler/sched-deadline.rst b/Documentation/scheduler/sched-deadline.rst
+index 9d9be52f221a..657ffb04b4d6 100644
+--- a/Documentation/scheduler/sched-deadline.rst
++++ b/Documentation/scheduler/sched-deadline.rst
+@@ -359,7 +359,7 @@ Deadline Task Scheduling
+  More precisely, it can be proven that using a global EDF scheduler the
+  maximum tardiness of each task is smaller or equal than
  
-diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
-index dd0ac96ff9ef..7ccf63d0d083 100644
---- a/Documentation/x86/sgx.rst
-+++ b/Documentation/x86/sgx.rst
-@@ -88,7 +88,7 @@ Enclave build functions
- -----------------------
+-	((M − 1) · WCET_max − WCET_min)/(M − (M − 2) · U_max) + WCET_max
++	((M - 1) · WCET_max - WCET_min)/(M - (M - 2) · U_max) + WCET_max
  
- In addition to the traditional compiler and linker build process, SGX has a
--separate enclave “build” process.  Enclaves must be built before they can be
-+separate enclave "build" process.  Enclaves must be built before they can be
- executed (entered). The first step in building an enclave is opening the
- **/dev/sgx_enclave** device.  Since enclave memory is protected from direct
- access, special privileged instructions are Then used to copy data into enclave
-@@ -147,7 +147,7 @@ Page reclaimer
- 
- Similar to the core kswapd, ksgxd, is responsible for managing the
- overcommitment of enclave memory.  If the system runs out of enclave memory,
--*ksgxwapd* “swaps” enclave memory to normal memory.
-+*ksgxwapd* "swaps" enclave memory to normal memory.
- 
- Launch Control
- ==============
+  where WCET_max = max{WCET_i} is the maximum WCET, WCET_min=min{WCET_i}
+  is the minimum WCET, and U_max = max{WCET_i/P_i} is the maximum
 -- 
 2.30.2
 
