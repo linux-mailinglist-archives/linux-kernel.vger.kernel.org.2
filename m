@@ -2,91 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9322037BBFA
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 13:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A43137BBFE
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 13:40:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230218AbhELLln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 07:41:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230137AbhELLlm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 07:41:42 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92750C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 04:40:33 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id m9so30355651ybm.3
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 04:40:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5KVdPIyF8+aJEsW6KKNMoePQjVtsaF/CvO6Qobl4y+E=;
-        b=A2vWHwAQ/w0XgStFHKpHkeIh+zRFNm1JVkYV6g/EvYEZD/2flG+HA/4vcOQpU8+cOl
-         608GzqNvzSL6ZNv/bpc4nyQKZxWGDic3bcPMMxNE1wR4y045I8/TGeSYnLNNt37gY0Nk
-         CtjdWcKMxk3KndLtVuYtsWp6AFI53QoWBq6nW+1oSdn1iqtae8HjYOAzMs3DTyR1v3d4
-         WW6Z14Zlyx0w9V9YpSu1QLQLlj/V4ytsdHhVgjreq6uXcuKJRS3TjUa566EVILhGCHKf
-         Lqemnj4Y4mexeQD3IXulQNuFNmpaUJIMGMeWXBwz/dxndZ6jbuhhoy2kzGRFYl1/w5hL
-         rY9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5KVdPIyF8+aJEsW6KKNMoePQjVtsaF/CvO6Qobl4y+E=;
-        b=AurmJvdxLelT+SYTGy6k6surwu36em56Vqtw21/rvvh6O5hIWEJS5OBRHSOub+fu1I
-         cC4V/8/KiD45ybLeBFBHjBFLuLWeah+8phNZeFDAwo09E8CTJnOFoIKsFBng2zvYZtT3
-         Yej8w03XrJbmc6sPzLpiTt2mM2bhNDRIqn7w+JETvuxSM8zPRZyLz3GBz3PMyMlvbOvT
-         27r5S+veNDDWQp+HEVrYXRdzd72Zfqy6Rzqu6lU2li6PJMKnuTQZeZshTmcCWDEZOWT/
-         ANi4ppONxW+0FCy88wnC19BfkP55fMpNj3tR/YWhqnBvNlLfP5HiGNsElJ+0KtamYIvH
-         gK1A==
-X-Gm-Message-State: AOAM531RMPvIfny3XyPJA9XvKl9rM7G3JRZNgFQduzLXiMikrEVbfp5Q
-        rjyeidhFjdBNRc/4FTcwfuT0dUOZ6xAkfLr3ccCPQA==
-X-Google-Smtp-Source: ABdhPJwtP+FdVycLsvBLB5AaaOOm6vDT6c8XN/0Ty20OF0E3IJWb3DLHRK4xNz4h2Qhf0yPNAgmvj2KJ3lO2OC2RtNA=
-X-Received: by 2002:a25:9d86:: with SMTP id v6mr45835119ybp.366.1620819632511;
- Wed, 12 May 2021 04:40:32 -0700 (PDT)
+        id S230347AbhELLlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 07:41:50 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48012 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230293AbhELLlr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 07:41:47 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E8690B048;
+        Wed, 12 May 2021 11:40:38 +0000 (UTC)
+Date:   Wed, 12 May 2021 12:40:35 +0100
+From:   Mel Gorman <mgorman@suse.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     tglx@linutronix.de, mingo@kernel.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+        bsingharora@gmail.com, pbonzini@redhat.com, maz@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        riel@surriel.com, hannes@cmpxchg.org,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH 7/6] delayacct: Add sysctl to enable at runtime
+Message-ID: <20210512114035.GH3672@suse.de>
+References: <20210505105940.190490250@infradead.org>
+ <YJkhebGJAywaZowX@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <1620714150-106682-1-git-send-email-zou_wei@huawei.com>
-In-Reply-To: <1620714150-106682-1-git-send-email-zou_wei@huawei.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Wed, 12 May 2021 13:40:21 +0200
-Message-ID: <CAMpxmJWukRCivVE6pVhQm=ob98gDt1dn2hB_7GrisrSQ0Kc+8Q@mail.gmail.com>
-Subject: Re: [PATCH -next] bus: da8xx-mstpri: add missing MODULE_DEVICE_TABLE
-To:     Zou Wei <zou_wei@huawei.com>
-Cc:     Sekhar Nori <nsekhar@ti.com>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <YJkhebGJAywaZowX@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 8:06 AM Zou Wei <zou_wei@huawei.com> wrote:
->
-> This patch adds missing MODULE_DEVICE_TABLE definition which generates
-> correct modalias for automatic loading of this driver when it is built
-> as an external module.
->
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+On Mon, May 10, 2021 at 02:05:13PM +0200, Peter Zijlstra wrote:
+> 
+> Just like sched_schedstats, allow runtime enabling (and disabling) of
+> delayacct. This is useful if one forgot to add the delayacct boot time
+> option.
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 > ---
->  drivers/bus/da8xx-mstpri.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/bus/da8xx-mstpri.c b/drivers/bus/da8xx-mstpri.c
-> index ee4c023..ff158a1 100644
-> --- a/drivers/bus/da8xx-mstpri.c
-> +++ b/drivers/bus/da8xx-mstpri.c
-> @@ -249,6 +249,7 @@ static const struct of_device_id da8xx_mstpri_of_match[] = {
->         { .compatible = "ti,da850-mstpri", },
->         { },
->  };
-> +MODULE_DEVICE_TABLE(of, da8xx_mstpri_of_match);
->
->  static struct platform_driver da8xx_mstpri_driver = {
->         .probe = da8xx_mstpri_probe,
-> --
-> 2.6.2
->
+>  Documentation/accounting/delay-accounting.rst |    6 ++--
+>  kernel/delayacct.c                            |   36 ++++++++++++++++++++++++--
+>  kernel/sysctl.c                               |   12 ++++++++
+>  3 files changed, 50 insertions(+), 4 deletions(-)
+> 
 
-This module is always built-in. I don't think we require the module
-device table for non-dynamic modules.
+Update sysctl/kernel.rst?
 
-Bartosz
+diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
+index 1d56a6b73a4e..5d9193bd8d27 100644
+--- a/Documentation/admin-guide/sysctl/kernel.rst
++++ b/Documentation/admin-guide/sysctl/kernel.rst
+@@ -1087,6 +1087,13 @@ Model available). If your platform happens to meet the
+ requirements for EAS but you do not want to use it, change
+ this value to 0.
+ 
++sched_delayacct
++===============
++
++Enables/disables task delay accounting (see
++:doc:`accounting/delay-accounting.rst`). Enabling this feature incurs
++a small amount of overhead in the scheduler but is useful for debugging
++and performance tuning. It is required by some tools such as iotop.
+ 
+ sched_schedstats
+ ================
+
+-- 
+Mel Gorman
+SUSE Labs
