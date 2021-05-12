@@ -2,104 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B98137B46B
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 05:16:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F374237B46E
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 05:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230096AbhELDRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 23:17:54 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:51860 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229848AbhELDRx (ORCPT
+        id S230118AbhELDVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 23:21:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230126AbhELDVV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 23:17:53 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=xhao@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UYbG6OP_1620789403;
-Received: from B-X3VXMD6M-2058.local(mailfrom:xhao@linux.alibaba.com fp:SMTPD_---0UYbG6OP_1620789403)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 12 May 2021 11:16:44 +0800
-From:   Xin Hao <xhao@linux.alibaba.com>
-Reply-To: xhao@linux.alibaba.com
-Subject: Re: [PATCH v2 1/1] spi: Assume GPIO CS active high in ACPI case
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Liguang Zhang <zhangliguang@linux.alibaba.com>,
-        Jay Fang <f.fangjian@huawei.com>,
-        Sven Van Asbroeck <thesven73@gmail.com>
-References: <20210511140912.30757-1-andriy.shevchenko@linux.intel.com>
-Message-ID: <b1f1539d-2e7c-a56b-9a04-2a85637f0a01@linux.alibaba.com>
-Date:   Wed, 12 May 2021 11:16:43 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.9.0
+        Tue, 11 May 2021 23:21:21 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4399C061574;
+        Tue, 11 May 2021 20:19:25 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Fg0Q24gKbz9sSs;
+        Wed, 12 May 2021 13:19:22 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1620789562;
+        bh=f/tE1O7TnGwKtzXIWKZ9E9+OSqVX+6t2Zlft+8e4zu4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Y0PeF2eL4ZhBcho8ZSPSW80+0Fl4+9Sdm3ZhVIo0SUupySAj1Jx/6SZozCGUhpniv
+         BrW5KU2GJZpsQ9ldNTJd/FQ3QtBXULJRQCKUjI4jmIyIlquRlwSTokwoNoAaRmJf66
+         Iz2f+PP1boghUx0mhYquXDgI4Rf2KyTfY91ddebf3BsC9zRH6Hde1fNMO9rg8ns1gS
+         VHl0p4f6qIfclvPVKKzSbecnQz98tRdzwZNSv+GQoZjwXZOAYZtEYOzAv2uCfA+xU2
+         1e/jJkcY1kaJwBQpm1PdwWUMOPbYavZMpcFcv+dCDi1MmWgjLZrdP7GNeJrITR+0Fr
+         t+TzhNpSbQ//w==
+Date:   Wed, 12 May 2021 13:19:22 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the hyperv tree with Linus' tree
+Message-ID: <20210512131922.716824fa@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210511140912.30757-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/k2q9RJCw=ag.ovMZwDStgWC";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/k2q9RJCw=ag.ovMZwDStgWC
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-在 2021/5/11 下午10:09, Andy Shevchenko 写道:
-> Currently GPIO CS handling, when descriptors are in use, doesn't
-> take into consideration that in ACPI case the default polarity
-> is Active High and can't be altered. Instead we have to use the
-> per-chip definition provided by SPISerialBus() resource.
->
-> Fixes: 766c6b63aa04 ("spi: fix client driver breakages when using GPIO descriptors")
-> Cc: Liguang Zhang <zhangliguang@linux.alibaba.com>
-> Cc: Jay Fang <f.fangjian@huawei.com>
-> Cc: Sven Van Asbroeck <thesven73@gmail.com>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Tested-by: Xin Hao <xhao@linux.alibaba.com>
-> ---
-> v2: refactor to avoid ternary (Mark, Sven), dropped comment changes (Mark)
->   drivers/spi/spi.c | 22 ++++++++++++++++++----
->   1 file changed, 18 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-> index cd40421b8f55..36ee33514b40 100644
-> --- a/drivers/spi/spi.c
-> +++ b/drivers/spi/spi.c
-> @@ -820,15 +820,29 @@ static void spi_set_cs(struct spi_device *spi, bool enable, bool force)
->   
->   	if (spi->cs_gpiod || gpio_is_valid(spi->cs_gpio)) {
->   		if (!(spi->mode & SPI_NO_CS)) {
-> -			if (spi->cs_gpiod)
-> -				/* polarity handled by gpiolib */
-> -				gpiod_set_value_cansleep(spi->cs_gpiod, activate);
-> -			else
-> +			if (spi->cs_gpiod) {
-> +				/*
-> +				 * Historically ACPI has no means of the GPIO polarity and
-> +				 * thus the SPISerialBus() resource defines it on the per-chip
-> +				 * basis. In order to avoid a chain of negations, the GPIO
-> +				 * polarity is considered being Active High. Even for the cases
-> +				 * when _DSD() is involved (in the updated versions of ACPI)
-> +				 * the GPIO CS polarity must be defined Active High to avoid
-> +				 * ambiguity. That's why we use enable, that takes SPI_CS_HIGH
-> +				 * into account.
-> +				 */
-> +				if (has_acpi_companion(&spi->dev))
-> +					gpiod_set_value_cansleep(spi->cs_gpiod, !enable);
+Hi all,
 
-it worked and code changed minimally,  before ACPI & OF keeps no same 
-rules,  this patch is ok!
+Today's linux-next merge of the hyperv tree got a conflict in:
 
-> +				else
-> +					/* Polarity handled by GPIO library */
-> +					gpiod_set_value_cansleep(spi->cs_gpiod, activate);
-> +			} else {
->   				/*
->   				 * invert the enable line, as active low is
->   				 * default for SPI.
->   				 */
->   				gpio_set_value_cansleep(spi->cs_gpio, !enable);
-> +			}
->   		}
->   		/* Some SPI masters need both GPIO CS & slave_select */
->   		if ((spi->controller->flags & SPI_MASTER_GPIO_SS) &&
+  drivers/hv/ring_buffer.c
 
--- 
-Best Regards!
-Xin Hao
+between commit:
 
+  0c85c54bf7fa ("Drivers: hv: vmbus: Drop error message when 'No request id=
+ available'")
+
+from Linus' tree and commit:
+
+  8e74d1f319bf ("scsi: storvsc: Use blk_mq_unique_tag() to generate request=
+IDs")
+
+from the hyperv tree.
+
+I fixed it up (I just used the latter as it included the former) and
+can carry the fix as necessary. This is now fixed as far as linux-next
+is concerned, but any non trivial conflicts should be mentioned to your
+upstream maintainer when your tree is submitted for merging.  You may
+also want to consider cooperating with the maintainer of the conflicting
+tree to minimise any particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/k2q9RJCw=ag.ovMZwDStgWC
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCbSToACgkQAVBC80lX
+0GxOdggAi4Eh4OkQbQvHLilXjkcgWpjZFEq822lLfbf/BeOeWNXq5Bh0N3VFFoWb
+as9EZHF9s0AliQ70kS+g3+85bGZjnJU5O35UDo7DwPJSFLifPn/K6fgBVsB/IlzG
+fqbAXABcU1NGLbEWx4bKB/j64r7Umu/ATApwv7+uCOVmXjO9LRHETFI1MC9fV5TW
+jddiTiNOA4XHtpB5VypsWH3ds9hfn2wagO/zBH9msTzttDyWyMjf1ptNHZEQGPfu
+A70ATP8kJpUsqwHCeQr3lXOuFYFWTnbXPyiM378uZKQnEWvh+WCDF5MPFZpSVY17
+5FmwfHbC9tTIVb6/XnR46xY3aD/4vA==
+=T3zQ
+-----END PGP SIGNATURE-----
+
+--Sig_/k2q9RJCw=ag.ovMZwDStgWC--
