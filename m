@@ -2,99 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6FE537C2ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 17:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A2AA37C383
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 17:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234404AbhELPQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 11:16:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38862 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233001AbhELPHD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:07:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 272C261447;
-        Wed, 12 May 2021 15:01:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620831684;
-        bh=eVJIJPQRut7K9Tu8mkfXxVF3G+ycqC5k1sE42YbMqek=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=c/0LG8JRxfEogycKZwPikQR2FSRaY8mYTVNlj0kpvzGT4vBoJazp+qHlrCrKRiYyS
-         szXytK/8Kd2+8YxKYesZ2j+TTsP1xWg+l7Ljb+6oUhgWb59z4iOmC7yIR1MmgNA2BG
-         WiDhShGGqolDFtrTLlToBMa9r8Bp1h5JDg+ZI3B7CfZlj8Q15rKIHL4WRoEk8d8YZs
-         lND2A3hZlX0yZgZGuAY06l5+/BYeaaclG55FuVDCoYB//vIYbfcDNfUD2N7Mv+PPwm
-         ebd115sfs2YX9WF5Sw8Lf+XpOFHPx4jJPV+18kiJ2yDnoNiOhPRfd3Bll6z9GfsFuz
-         CcG+OwV8n7Z9g==
-Date:   Wed, 12 May 2021 17:01:18 +0200
-From:   "wsa@kernel.org" <wsa@kernel.org>
-To:     Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-Cc:     "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "Chris.Packham@alliedtelesis.co.nz" 
-        <Chris.Packham@alliedtelesis.co.nz>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 0/4] P2040/P2041 i2c recovery erratum
-Message-ID: <20210512150118.GA1004@ninjato>
-References: <20210511212052.27242-1-chris.packham@alliedtelesis.co.nz>
- <b90f48cfdc31af08190e7a8eaa71b7bd488fcbaa.camel@infinera.com>
- <ec3cdcc8-5869-9e7d-30c0-59ff4ec67a58@alliedtelesis.co.nz>
- <4e96247275d559bab133d6c318276fa6be4d7be0.camel@infinera.com>
+        id S234617AbhELPUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 11:20:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233472AbhELPJe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:09:34 -0400
+Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64A34C06123B
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 08:01:52 -0700 (PDT)
+Received: by mail-oo1-xc34.google.com with SMTP id o202-20020a4a2cd30000b02901fcaada0306so5006420ooo.7
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 08:01:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UDD7PJOLLYReV+ki1w4vWVhaqVdnK70fMH/aRuBsi+U=;
+        b=j3EdvE/qBJ2JgHC4pSAw8ptUM/hHYSlfqrJ2bFDGn2AgF1DuvwJnsQErvNFeapmoOd
+         WjwGhq3dj825FTLXsKh1Y9BvNJuxB88Y9b89ERwOhntkFG2VFxwix0XuqvpuMkAUFqt4
+         ZeskQ1YsAtuToGOXwdrcTTAJe1mpr9sVsXp+emzb8tXoNI2EDxzP9yTiqce+6RneGFO0
+         VNRovDzDjhR4MOq45H8TRVrwsITF4/08VWL3lnmNzeXHLCoB6GGezkgw52AAnEi7iMYU
+         OVhqRAqlOA2T2q78oVkxMizPE6DhFLwRDwU8C3pgADouxAKG/fP07vGY3pmNGJBNJEM+
+         cDPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UDD7PJOLLYReV+ki1w4vWVhaqVdnK70fMH/aRuBsi+U=;
+        b=RwJ2HEomA95c4PLsxSSMhf5a5GKOnZbdO/b7xaGNS/vvJjfZ/cKa48Em9tXkRIyM9h
+         ojx0DdsBHvnEIh6296Vkib37FKV4jkj3OWV+NAt/cIe/yyR4qf1ZO3QnPkvitphvHWQA
+         kgdsqyweTFyYfjOpuvaSpRSvcMjUBtDUCqUlyvXmt8s5dlTVOvw4JfX3ws/mSIodJxhy
+         dtZeb7MK8Zs3vLY7aWtAosFoYA/s6XpnMY0w7GB2bEL2B/6x+RZg6ThnHeWNRsd91ygd
+         1VF9+wysim09ITVWCEPAfon25xo0RRmy6mEl+BVY9oAUBiL4t7NEACr5PfpBIVXHiv7G
+         2cwg==
+X-Gm-Message-State: AOAM531PUEoL0lXNT09TUN3MMdzz9LkMQtX3DrWW4ku5Ynnpk2MzHNLo
+        +lk0dkm4tOXKDAW3HpTYGIY=
+X-Google-Smtp-Source: ABdhPJwIUfudclyVSUS4OIM+Wq5qc8wnqq6eG4UzeB9J9g6dbK3zWJSX32nnnjigVzYpJ7b4h3l69A==
+X-Received: by 2002:a4a:98a4:: with SMTP id a33mr28096899ooj.21.1620831711875;
+        Wed, 12 May 2021 08:01:51 -0700 (PDT)
+Received: from ceres ([2603:300b:7b5:c800:1cf6:4c9f:4e7:d116])
+        by smtp.gmail.com with ESMTPSA id h184sm34435oia.1.2021.05.12.08.01.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 08:01:51 -0700 (PDT)
+Date:   Wed, 12 May 2021 09:01:49 -0600
+From:   Connor Davis <connojdavis@gmail.com>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] xen: Export dbgp functions when CONFIG_XEN_DOM0 is
+ enabled
+Message-ID: <20210512150149.nfzsgh3hnx7o7caf@ceres>
+References: <cover.1620776161.git.connojdavis@gmail.com>
+ <291659390aff63df7c071367ad4932bf41e11aef.1620776161.git.connojdavis@gmail.com>
+ <0ef85b32-4069-4e94-0a2f-2325cd21510f@suse.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="pWyiEgJYm5f9v55/"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4e96247275d559bab133d6c318276fa6be4d7be0.camel@infinera.com>
+In-Reply-To: <0ef85b32-4069-4e94-0a2f-2325cd21510f@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On May 12, 21, Juergen Gross wrote:
+> On 12.05.21 02:18, Connor Davis wrote:
+> > Export xen_dbgp_reset_prep and xen_dbgp_external_startup
+> > when CONFIG_XEN_DOM0 is defined. This allows use of these symbols
+> > even if CONFIG_EARLY_PRINK_DBGP is defined.
+> >
+> > Signed-off-by: Connor Davis <connojdavis@gmail.com>
+>
+> Acked-by: Juergen Gross <jgross@suse.com>
 
---pWyiEgJYm5f9v55/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thank you.
 
+- Connor
 
-> > I've been doing my recent work with a P2040 and prior to that I did tes=
-t=20
-> > out the recovery on a T2081 (which isn't documented to have this=20
-> > erratum) when I was re-working the driver. The "new" recovery actually=
-=20
-> > seems better but I don't have a reliably faulty i2c device so that's=20
-> > only based on me writing some code to manually trigger the recovery=20
-> > (using the snippet below) and observing it with an oscilloscope.
->=20
-> You don't need a faulty device, just an aborted I2C read/write op.
-
-If you can wire GPIOs to the bus, you can use the I2C fault injector:
-
-	Documentation/i2c/gpio-fault-injection.rst
-
-There are already two "incomplete transfer" injectors.
-
-
---pWyiEgJYm5f9v55/
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmCb7boACgkQFA3kzBSg
-KbZ2cA/6ArsdZ8oeQnb4ZdE6P2n/iEJan1gFTBse4voG84wLXndcRs9ylZRRy6gU
-kn+ZRsP8i3eRyJrYHd4a5s9IAfxYlOplIm6VvNLQRe7sMsjNkIxYdCQPwqUA02wy
-1jrYOPhAFBnggzP6k5eTtvnf2k9yuma2hJtvu3tzaBs8x0eSx/LEu+K74mPFTkys
-nmRI2IbgXxkhLw9eVP652bqPkX/kkT2oiABwMw9m9m2qv4Ce/VflEYPq/Ie+9gIt
-ktbAg/E9UlGMQMzhPZQ0trOdstvXU3U7gD9RoCSnJiUjJaDM2iBtWfM07V86Pptf
-VOKjbWR2POER3llDyDxdkNVW1bUFh38zprWRkDfQd9pD+F63pTrcwo+iKwST0Lc0
-BLGWw1OElr3IaXHSI/bCMtgpUQxplq5unc/+bXydd/DvIw1X0/f0dJMihjbHDYy1
-fXa1Ac7plZGHxEdrt4wRLimgjoA/A0eOC1Ixkoc7pKylUjAdOlA7mC7O5tcJ2fg9
-p0CuWascBRY/F+UEAtI10Fc9E5q/uLrmmWUPtIvivm+wQx8frIeZS002yeArsvvR
-+J4NQRv9VPbg+sgDxtX2AHJZnGsKJ22+htHkHE4RfkiNUYEzjNgYwAjd+Fu/cMOw
-0tj3LuG1uhYsmHwVwdLC2/MwNh3qVGL1/rbp5aFICBDcF6EZ5D0=
-=ar4h
------END PGP SIGNATURE-----
-
---pWyiEgJYm5f9v55/--
