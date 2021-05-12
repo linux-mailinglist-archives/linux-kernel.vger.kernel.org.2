@@ -2,229 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C40FD37B2FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 02:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F29FC37B300
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 02:25:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230114AbhELAYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 20:24:49 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:50184 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229964AbhELAYs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 20:24:48 -0400
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id F3AAA20B7178;
-        Tue, 11 May 2021 17:23:40 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com F3AAA20B7178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1620779021;
-        bh=PCcqHKfcC40XETopB6mFbp3LGmM21EL73MZsy4vVBJ0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QgJ6uyMu3jjpjMs7Ydf+9sedTXy1H9EXs/aAtC0eNIxuA5OwAcWVr7EQPrsG0JzOe
-         WPILUmjlHq17uzKwrHVkLZXKJG3/dI9wUr/RWQGQlAEwEViwaxLs0Au2j2NDDBkKJK
-         4n0wvdCqG18QjTMZu46cGFqcFixh+h9irJ6Yx0pY=
-Date:   Tue, 11 May 2021 19:23:38 -0500
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     Allen Pais <apais@linux.microsoft.com>, zajec5@gmail.com,
-        Allen Pais <allen.lkml@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>
-Subject: Re: [PATCH] optee: Disable shm cache when booting the crash kernel
-Message-ID: <20210512002338.GJ4967@sequoia>
-References: <20210225090610.242623-1-allen.lkml@gmail.com>
- <20210507035816.426585-1-tyhicks@linux.microsoft.com>
- <720CDF03-42F9-43C3-B3B3-999E4A5E2864@linux.microsoft.com>
- <CAHUa44FHo2_EUzFzHnakkm3o7H-Nn+k4hgqT2WNFezZO6D8mxA@mail.gmail.com>
- <20210507131722.GI4967@sequoia>
- <CAHUa44F7AzRQ0ZUBtJV2Y39tk1mPGAbetn7i8-DVAsSFLbFgEg@mail.gmail.com>
-MIME-Version: 1.0
+        id S229980AbhELA02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 20:26:28 -0400
+Received: from mail-dm6nam11on2077.outbound.protection.outlook.com ([40.107.223.77]:14784
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229637AbhELA00 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 20:26:26 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=d1Fifjn28CdVRDKRT236KYsvztqqRHmcIPL1QsoLEXVuY9Z40h+6XISC23x4cF0GhlA1WR79ZRHSnWbXJbzZO3wpxwSlSmRHTyckKtxpCvL7H1Tbflt3ILAJp06klaWlXR/6PegAcCIlcfFN9W55bEVkWAL4p9MIS8Y7LSRhg1I2QopVJ1TFl7RrbMptXPVjefQ+bHtAYzowygQ2in9tx1B/d9R+pO5WS3frZS2m6F/Z9w/bLH+v4/t5f3HgzFfBVncYimEvOD/789lrSFB9NQVsgW5g81xa+ch1DhY5tQwKusdlcM00EOEcxlLjXPd3keKVyps81klM72a4q3etiA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xMSZFvU8qZDP0H5FQuurn4Yqnfl6o3plyNnSza9qP28=;
+ b=ZTnpegHNwFvONhhFHtF700teFQbntmyljmBeJmnLlunvz5+0shfkrsD7+SksXO+pYsqknQvPnC2mrMgNll6NC+pciEhQfC35EcEBfV7EQ+2k6AQmkLkxwZOIMjzlctGOXl0+LZJotVzSeHesISl238qM5f30CL3Z1L4YSS6dMpDiUvDcY0i8oeQyJykWRsnsMUqdzgcCYdwvXT3OjeMOx5DuQe1hTxBzpwGiB59o2fGTrjHjxNb7t8OByUrwLdV1VUV/VfwkOsrgk0yE8vKt7KcRKb3XOMlph+xHej8Jhoqp9aDmOOsHfd2FxWdKSXo6kXF4kvbGo5yMu2C6sxvOBQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xMSZFvU8qZDP0H5FQuurn4Yqnfl6o3plyNnSza9qP28=;
+ b=QYUQJVDQjOgzjQE97iWTIyLjP9gV7DrO3PzXBe6erXgf70P12NN+bgwkMqSOnBQx15je1R9fkBxqqk1YfC6Dv2lP3rrbvNQCGKlJfd+H/AYcGerv30ne3IQFQPnZyjQ87clQNKfV/IfLdItbpamhPJ9vaNcPfUTKV1jH+mUgzN6ferboYDepH0u+7fXs1StemW7jJMP10j175EGFIBL93/GesZNSQbK+ioMYgUsodx4Jdc89LU2O/MHN9raS7Rb5g1fbPUdHGdI/vbY4jO20afxJdafbDnzR/RbmtlC+Vnle+BGc9NT5k6TlZ7YYr1dPr6mUouqXFLZfaNp68pK8+Q==
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3307.namprd12.prod.outlook.com (2603:10b6:5:15d::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.31; Wed, 12 May
+ 2021 00:25:17 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4108.031; Wed, 12 May 2021
+ 00:25:17 +0000
+Date:   Tue, 11 May 2021 21:25:15 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Li Zefan <lizefan@huawei.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Tejun Heo <tj@kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "Wu, Hao" <hao.wu@intel.com>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210512002515.GR1002214@nvidia.com>
+References: <YJOZhPGheTSlHtQc@myrica>
+ <20210506122730.GQ1370958@nvidia.com>
+ <20210506163240.GA9058@otc-nc-03>
+ <MWHPR11MB188698FBEE62AF1313E0F7AC8C569@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210510123729.GA1002214@nvidia.com>
+ <MWHPR11MB1886E22D03B14EE0D5725CE08C539@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210511143840.GL1002214@nvidia.com>
+ <MWHPR11MB188601321993CA43E3058C4D8C539@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210511233950.GQ1002214@nvidia.com>
+ <MWHPR11MB188623FB741481D489D259798C529@MWHPR11MB1886.namprd11.prod.outlook.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHUa44F7AzRQ0ZUBtJV2Y39tk1mPGAbetn7i8-DVAsSFLbFgEg@mail.gmail.com>
+In-Reply-To: <MWHPR11MB188623FB741481D489D259798C529@MWHPR11MB1886.namprd11.prod.outlook.com>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: MN2PR15CA0021.namprd15.prod.outlook.com
+ (2603:10b6:208:1b4::34) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR15CA0021.namprd15.prod.outlook.com (2603:10b6:208:1b4::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Wed, 12 May 2021 00:25:16 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lgcgd-005cwb-OM; Tue, 11 May 2021 21:25:15 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 81036c3f-82d9-4821-d364-08d914dc6aec
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3307:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB33075F54516E4563B1C8CEC6C2529@DM6PR12MB3307.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PXB7JPxwz1xDzP56vHC3udzuylXpwlntCAr9Z1XzKjBEhnSb6Vm6DJEZngfBJ7gLih9FdiRZkpiyMQ6aQWY45fvM26tT57j/PS0g4yHsQdMqyGeRhQzdDhj9KoXIDQyI3hK3connLRMWbCnDnmim5xuPqc/VPpsi7h509AL0WAKfvlSVa+TKz+SdXEHs0ggDEu7t6p0Xgn4AZ41ks1KfI3LWxVRtSNLD39zH8Uvtc9MmcyOev4MOKhsdXUObwQKFKQgn2GRQcptpqZhjYOsLUXWqWngiokqH77+YeRw5R6WLcaPTuFEB7n3QJ+L7isYj6IiCUMoEh0HRmiSQT1OCKY1T5vmVngSYtF9kF2TTgSEsbyVSaOMNs9Lts6pmlVn/cXTC1x9N58ZMWOBdO8GwEmjUg7MLI5y0FhthqAGNn+XHn9hSTjFHVvpu4KCkvEF/VC5FjTDcjmeXme+dhz1zC8bzI7/Wvz1+Fyh+Y0/sNagvKNVxH31dMdsxZU1apuJIXjwA+4JWBc7ViuTDfZSi4rjOyMlD/sXXlQg8tvt4zcMNd661SFJNxmftcuumEdxcoHT4YuoPSeaAdvJhR0B+itmVoVAXVN7JVyHdYq4Keko=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(396003)(136003)(366004)(39860400002)(83380400001)(66946007)(8936002)(26005)(2906002)(36756003)(9746002)(9786002)(6916009)(86362001)(66476007)(54906003)(66556008)(7416002)(186003)(4326008)(478600001)(316002)(33656002)(426003)(8676002)(2616005)(1076003)(5660300002)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?6u1kxPWlnU/mPUOe2hqbHTxByWYod4lmrqYKVd5t21Mk8O/Tja48bjJe/Wvw?=
+ =?us-ascii?Q?C00MCKBjIra96Hsm9fQdSPh7qTcPLtYhvsFmmpNfSsnmvGUCrTTWkmBqt0ZC?=
+ =?us-ascii?Q?HjNocVbhKU2emSCXONX8QlNqSPh13iNhEzLXKwoakRdDdhQtOL0/tPYWE3Lh?=
+ =?us-ascii?Q?qRbd5LC+6mURsUwKQpzffgRvjXvx9rv0dycQJcMzXQ9emS+R/DCSzHc2+E5t?=
+ =?us-ascii?Q?luwNBACfJ6Vzuirhoi8zZCw8ItjB9KG9xS3tYswd6J8+BOfQ8jSUHd3ABkV9?=
+ =?us-ascii?Q?vq5VM8nP1jEwWplrQkuXzFphWnIegQdf68J/LmT7vILle+NLxVxVm8ssQRsJ?=
+ =?us-ascii?Q?zVs0R6XyAojXTmW5IKr30zVLdEjpz5n6LYkSPlk9ZUyVNcPNALw9Elnr5EYj?=
+ =?us-ascii?Q?Uk3YDOvPN+NcOMCWKKmq4vMAr3Jy+Y1tCX0z+ujtTZTfk/qkaskE8jm0W37q?=
+ =?us-ascii?Q?QHJ4yuNjbaxTYMN0vYS8JeiBrDwqwZdVBSYlwUWNtfExbgY6h69yhAb6u/eT?=
+ =?us-ascii?Q?LDV0ukbBXGv3/iubdYjdvF+/ykeC8aUz+Dj3ub2VDaIf2fiShRHnpfBUKThI?=
+ =?us-ascii?Q?E33yQQoDwjx25YCbYuWCL72o9ho60wsnJc1XiZ2tHWCYK/6m60dNSFjHkjMt?=
+ =?us-ascii?Q?8T5MyaPPIG8onPu6J7GlHlk7zwVx/x6UJjKV5eL4CP5Vs7kRklqMFNmz0Yob?=
+ =?us-ascii?Q?RN5I/ew3swzo5Wo9omhBC4JJTg1qc2GhqrVIAjg5bnBuhRnWjYuaDWvDWEov?=
+ =?us-ascii?Q?OJ2gUNd1k+jG5mp7N4fkWXseP5QGGcLDOB7E6hn8zUR0s4pe/VORvn4+Og68?=
+ =?us-ascii?Q?TXpS5L967ssa0litQi7IeTkLQI4bmTDL0j5BHzYpvEovTdQ4Y/7xWCWRqSRn?=
+ =?us-ascii?Q?HtxeefSgf8980woqofsPlcI5G7SXokwLPSosQn5EDY8t5wdl/bzCZq1rl+C1?=
+ =?us-ascii?Q?9pE832oMm6rULLDyYC76bDTZPjYoEEtPHo09fJf4nWWEr1pE18muW+ARt68v?=
+ =?us-ascii?Q?0bHvAo8ULspNM20AFiYysPcK+irSiTKnFJU7Nez+z+PTLeoLuDOwzKS0ubCG?=
+ =?us-ascii?Q?YXHGGsDZKFNF5IbUN9IG7PYulgIvUgcrE2eqQlnwIKo2qwP9v4q98FQwu9Gp?=
+ =?us-ascii?Q?LK3GecH0NvyiGkexoGFnm+2IFGV0e/kjrOfSWXuZwlNe/GdBCSHC0K9tHcLY?=
+ =?us-ascii?Q?qRwOtXKUDJc+jJUHUe/PvTUbXp3/RZ6Zi0FxWlb3GlN5J0PTRjyRe+qHsgSa?=
+ =?us-ascii?Q?QDF9gMHv2KKNBO8noEq+ig0vxSNw3b5VfMLE7NnKrugEJyPnPQ6NYmZbFvBq?=
+ =?us-ascii?Q?/cEEEooQqLgcL1eNQasUH9ik?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 81036c3f-82d9-4821-d364-08d914dc6aec
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 May 2021 00:25:17.3709
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: D5O30OufMEBnUg3pNiMm3Rs4XxlGa2+3+jGOh4QLIW9zCcPK+M0lhNUlsK7U1Tsl
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3307
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-10 09:31:51, Jens Wiklander wrote:
-> On Fri, May 7, 2021 at 3:17 PM Tyler Hicks <tyhicks@linux.microsoft.com> wrote:
-> >
-> > On 2021-05-07 11:23:17, Jens Wiklander wrote:
-> > > On Fri, May 7, 2021 at 9:00 AM Allen Pais <apais@linux.microsoft.com> wrote:
-> > > >
-> > > >
-> > > >
-> > > > > On 07-May-2021, at 9:28 AM, Tyler Hicks <tyhicks@linux.microsoft.com> wrote:
-> > > > >
-> > > > > The .shutdown hook is not called after a kernel crash when a kdump
-> > > > > kernel is pre-loaded. A kexec into the kdump kernel takes place as
-> > > > > quickly as possible without allowing drivers to clean up.
-> > > > >
-> > > > > That means that the OP-TEE shared memory cache, which was initialized by
-> > > > > the kernel that crashed, is still in place when the kdump kernel is
-> > > > > booted. As the kdump kernel is shutdown, the .shutdown hook is called,
-> > > > > which calls optee_disable_shm_cache(), and OP-TEE's
-> > > > > OPTEE_SMC_DISABLE_SHM_CACHE API returns virtual addresses that are not
-> > > > > mapped for the kdump kernel since the cache was set up by the previous
-> > > > > kernel. Trying to dereference the tee_shm pointer or otherwise translate
-> > > > > the address results in a fault that cannot be handled:
-> > > > >
-> > > > > Unable to handle kernel paging request at virtual address ffff4317b9c09744
-> > > > > Mem abort info:
-> > > > >   ESR = 0x96000004
-> > > > >   EC = 0x25: DABT (current EL), IL = 32 bits
-> > > > >   SET = 0, FnV = 0
-> > > > >   EA = 0, S1PTW = 0
-> > > > > Data abort info:
-> > > > >   ISV = 0, ISS = 0x00000004
-> > > > >   CM = 0, WnR = 0
-> > > > > swapper pgtable: 4k pages, 48-bit VAs, pgdp=0000000970b1e000
-> > > > > [ffff4317b9c09744] pgd=0000000000000000, p4d=0000000000000000
-> > > > > Internal error: Oops: 96000004 [#1] SMP
-> > > > > Modules linked in: bnxt_en pcie_iproc_platform pcie_iproc diagbe(O)
-> > > > > CPU: 4 PID: 1 Comm: systemd-shutdow Tainted: G           O      5.10.19.8 #1
-> > > > > Hardware name: Redacted (DT)
-> > > > > pstate: 60400005 (nZCv daif +PAN -UAO -TCO BTYPE=--)
-> > > > > pc : tee_shm_free (/usr/src/kernel/drivers/tee/tee_shm.c:363)
-> > > > > lr : optee_disable_shm_cache (/usr/src/kernel/drivers/tee/optee/call.c:441)
-> > > > > sp : ffff80001005bb70
-> > > > > x29: ffff80001005bb70 x28: ffff608e74648e00
-> > > > > x27: ffff80001005bb98 x26: dead000000000100
-> > > > > x25: ffff80001005bbb8 x24: aaaaaaaaaaaaaaaa
-> > > > > x23: ffff608e74cf8818 x22: ffff608e738be600
-> > > > > x21: ffff80001005bbc8 x20: ffff608e738be638
-> > > > > x19: ffff4317b9c09700 x18: ffffffffffffffff
-> > > > > x17: 0000000000000041 x16: ffffba61b5171764
-> > > > > x15: 0000000000000004 x14: 0000000000000fff
-> > > > > x13: ffffba61b5c9dfc8 x12: 0000000000000003
-> > > > > x11: 0000000000000000 x10: 0000000000000000
-> > > > > x9 : ffffba61b5413824 x8 : 00000000ffff4317
-> > > > > x7 : 0000000000000000 x6 : 0000000000000000
-> > > > > x5 : 0000000000000000 x4 : 0000000000000000
-> > > > > x3 : 0000000000000000 x2 : ffff4317b9c09700
-> > > > > x1 : 00000000ffff4317 x0 : ffff4317b9c09700
-> > > > > Call trace:
-> > > > > tee_shm_free (/usr/src/kernel/drivers/tee/tee_shm.c:363)
-> > > > > optee_disable_shm_cache (/usr/src/kernel/drivers/tee/optee/call.c:441)
-> > > > > optee_shutdown (/usr/src/kernel/drivers/tee/optee/core.c:636)
-> > > > > platform_drv_shutdown (/usr/src/kernel/drivers/base/platform.c:800)
-> > > > > device_shutdown (/usr/src/kernel/include/linux/device.h:758 /usr/src/kernel/drivers/base/core.c:4078)
-> > > > > kernel_restart (/usr/src/kernel/kernel/reboot.c:221 /usr/src/kernel/kernel/reboot.c:248)
-> > > > > __arm64_sys_reboot (/usr/src/kernel/kernel/reboot.c:349 /usr/src/kernel/kernel/reboot.c:312 /usr/src/kernel/kernel/reboot.c:312)
-> > > > > do_el0_svc (/usr/src/kernel/arch/arm64/kernel/syscall.c:56 /usr/src/kernel/arch/arm64/kernel/syscall.c:158 /usr/src/kernel/arch/arm64/kernel/syscall.c:197)
-> > > > > el0_svc (/usr/src/kernel/arch/arm64/kernel/entry-common.c:368)
-> > > > > el0_sync_handler (/usr/src/kernel/arch/arm64/kernel/entry-common.c:428)
-> > > > > el0_sync (/usr/src/kernel/arch/arm64/kernel/entry.S:671)
-> > > > > Code: aa0003f3 b5000060 12800003 14000002 (b9404663)
-> > > > >
-> > > > > When booting the kdump kernel, drain the shared memory cache while being
-> > > > > careful to not translate the addresses returned from
-> > > > > OPTEE_SMC_DISABLE_SHM_CACHE. Once the invalid cache objects are drained
-> > > > > and the cache is disabled, proceed with re-enabling the cache so that we
-> > > > > aren't dealing with invalid addresses while shutting down the kdump
-> > > > > kernel.
-> > > > >
-> > > > > Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-> > > > > ---
-> > > > >
-> > > > > This patch fixes a crash introduced by "optee: fix tee out of memory
-> > > > > failure seen during kexec reboot"[1]. However, I don't think that the
-> > > > > original two patch series[2] plus this patch is the full solution to
-> > > > > properly handling OP-TEE shared memory across kexec.
-> > > > >
-> > > > > While testing this fix, I did about 10 kexec reboots and then triggered
-> > > > > a kernel crash by writing 'c' to /proc/sysrq-trigger. The kdump kernel
-> > > > > became unresponsive during boot while steadily streaming the following
-> > > > > errors to the serial console:
-> > > > >
-> > > > > arm-smmu 64000000.mmu: Blocked unknown Stream ID 0x2000; boot with "arm-smmu.disable_bypass=0" to allow, but this may have security implications
-> > > > > arm-smmu 64000000.mmu:     GFSR 0x00000002, GFSYNR0 0x00000002, GFSYNR1 0x00002000, GFSYNR2 0x00000000
-> > > > >
-> > > > > I suspect that this is related to the problems of OP-TEE shared memory
-> > > > > handling across kexec. My current hunch is that while we've disabled the
-> > > > > shared memory cache with this patch, we haven't unregistered all of the
-> > > > > addresses that the previous kernel (which crashed) had registered with
-> > > > > OP-TEE and that perhaps OP-TEE OS is still trying to make use those
-> > > > > addresses?
-> >
-> > @Jens did you have any thoughts on what could be happening here with the
-> > arm-smmu errors? Do I need to try to unregister the cached shared memory
-> > addresses when booting the kdump kernel, rather than just disabling the
-> > caches?
+On Wed, May 12, 2021 at 12:21:24AM +0000, Tian, Kevin wrote:
+
+> > Basically each RID knows based on its kernel drivers if it is a local
+> > or global RID and the ioasid knob can further fine tune this for any
+> > other specialty cases.
 > 
-> No idea. There's no support for SMMU in upstream OP-TEE. Just
-> disabling the caches should be good enough. You could try to never
-> enable the cache so see if it makes any difference.
+> It's fine if you insist on this way. Then we leave it to userspace to
+> ensure same split range is used across devices when vIOMMU is
+> concerned. 
 
-I think this is unrelated to OP-TEE and more to do with ongoing DMA
-activity when the kernel has crashed and we've done an emergency kexec
-into the kdump kernel which didn't shutdown the SMMU. The SoC I'm using
-has a v2 SMMU and I think something similar to commit 3f54c447df34
-("iommu/arm-smmu-v3: Don't disable SMMU in kdump kernel") is needed for
-the v1/v2 SMMU driver. I've prototyped a patch that disables the SMMU
-interrupts (GFIE and GCFGFIE) in the kdump kernel and testing has looked
-good so far. I'll send that out as a separate patch after a little more
-testing.
+I'm still confused why there is a split range needed.
 
-However, with that change and my earlier change to disable the shm cache
-during boot, I'm periodically seeing a different issue while the kdump
-kernel is coming up. I'm pretty certain it was already there before but
-I wasn't seeing it as often since the SMMU warnings were so "loud".
+> Please note such range split has to be enforced through
+> vIOMMU which (e.g. on VT-d) includes a register to report available
+> PASID space size (applying to all devices behind this vIOMMU) to 
+> the guest. The kernel just follows per-RID split info. If anything broken,
+> the userspace just shoots its own foot.
 
-The kernel waits indefinitely for a secure world thread and boot hangs
-completely:
+Is it because this specific vIOMMU protocol is limiting things?
 
-[  243.359489] INFO: task swapper/0:1 blocked for more than 120 seconds.
-[  243.366141]       Not tainted 5.4.83-microsoft-standard #1
-[  243.371802] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[  243.379882] swapper/0       D    0     1      0 0x00000028
-[  243.385543] Call trace:
-[  243.388080]  __switch_to+0xc8/0x118
-[  243.391683]  __schedule+0x2e0/0x700
-[  243.395280]  schedule+0x38/0xb8
-[  243.398522]  schedule_timeout+0x258/0x388
-[  243.402659]  wait_for_completion+0x16c/0x4b8
-[  243.407067]  optee_cq_wait_for_completion+0x28/0xa8
-[  243.412100]  optee_disable_shm_cache+0xb8/0xf8
-[  243.416685]  optee_probe+0x560/0x61c
-[  243.420375]  platform_drv_probe+0x58/0xa8
-[  243.424512]  really_probe+0xe0/0x338
-[  243.428202]  driver_probe_device+0x5c/0xf0
-[  243.432427]  device_driver_attach+0x74/0x80
-[  243.436744]  __driver_attach+0x64/0xe0
-[  243.440611]  bus_for_each_dev+0x84/0xd8
-[  243.444570]  driver_attach+0x30/0x40
-[  243.448258]  bus_add_driver+0x188/0x1e8
-[  243.452215]  driver_register+0x64/0x110
-[  243.456172]  __platform_driver_register+0x54/0x60
-[  243.461027]  optee_driver_init+0x20/0x28
-[  243.465075]  do_one_initcall+0x54/0x24c
-[  243.469034]  kernel_init_freeable+0x1e8/0x2c0
-[  243.473529]  kernel_init+0x18/0x118
-[  243.477128]  ret_from_fork+0x10/0x18
-
-I'm unable to trigger a sysrq over the serial console of this remote
-machine so I don't yet know what the other threads on the system are
-doing during this time. I'll hack something together tomorrow to get a
-better idea.
-
-The blocked task warning reminded me of when you said this earlier:
-
-> Bear in mind that there are other times where we can't recover from a
-> kernel crash. For instance if a thread is executing in OP-TEE in
-> secure world. 
-
-I suspect that it is related to what I'm seeing with this blocked task. Can you
-expand on why we can't recover from a kernel crash if a thread is
-executing in the secure world?
-
-I appreciate your help!
-
-Tyler
-
+> > > > It does need some user visible difference because SIOV/mdev is not
+> > > > migratable. Only the kernel can select a PASID, userspace (and hence
+> > > > the guest) shouldn't have the option to force a specific PASID as the
+> > > > PASID space is shared across the entire RID to all VMs using the mdev.
+> > >
+> > > not migratable only when you choose exposing host-allocated PASID
+> > > into guest. However in the entire this proposal we actually virtualize
+> > > PASIDs, letting the guest manage its own PASID space in all
+> > > scenarios
+> > 
+> > PASID cannot be virtualized without also using ENQCMD.
+> > 
+> > A mdev that is using PASID without ENQCMD is non-migratable and this
+> > needs to be make visiable in the uAPI.
 > 
-> Cheers,
-> Jens
-> 
+> No. without ENQCMD the PASID must be programmed to a mdev MMIO
+> register. This operation is mediated then mdev driver can translate the
+> PASID from virtual to real.
+
+That is probably unworkable with real devices, but if you do this you
+need to explicitly expose the vPASID to the mdev API somehow, and still
+the device needs to declare if it supports this, and devices that
+don't should still work in a non-migratable mode.
+
+Jason
