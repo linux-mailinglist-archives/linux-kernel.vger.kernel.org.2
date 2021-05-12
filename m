@@ -2,34 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69CD237D55A
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 23:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B33C037D561
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 23:52:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358319AbhELSnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 14:43:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35798 "EHLO mail.kernel.org"
+        id S1358434AbhELSoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 14:44:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243573AbhELQle (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:41:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A134E61984;
-        Wed, 12 May 2021 16:05:07 +0000 (UTC)
+        id S243632AbhELQlt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:41:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FF5161E50;
+        Wed, 12 May 2021 16:05:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620835508;
-        bh=+DjlCxK49GG544gUXooFh6iAaJ7Zqe2xhI9369vmbjE=;
+        s=korg; t=1620835528;
+        bh=MQADYLZj+YBnT+1AdNqgk9CDQ1A79OUfTtfPthMRutM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EBuakcmM1eZLJX12LuUE5km4r+RRotpLoVLJvW94JCyU27juxOVI1jYUDCFwEM08Y
-         HUOp4YlM2MBR52/WncWtrfQQkMUk8tJGf7mrr5eItbNfs2iSDdxEOnsoYDT2yZjdVm
-         qG7Xsfz4VUnv9nw6c4pakpdptpuok/yDU5a57AXE=
+        b=FGRcoIbY3lV1DbhLGG+kOt0xbhkc2WWVL3rwXdpat/pEH4Z4LvvAFK0AkJCn6RITq
+         YGk8Wfe7X0HXMMMKaiCxeKvBw1Hgk+W27k0VXbVokaPhjGiWiasMWmKClx+zYFuu5N
+         Ol4Wg8rWwMNs1KFrG2uHnllg597+IcYyHjfxjq64=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Victor Lu <victorchengchi.lu@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Saurav Kashyap <skashyap@marvell.com>,
+        Nilesh Javali <njavali@marvell.com>,
+        Quinn Tran <qutran@marvell.com>,
+        Mike Christie <michael.christie@oracle.com>,
+        Daniel Wagner <dwagner@suse.de>, Lee Duncan <lduncan@suse.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 371/677] drm/amd/display: Free local data after use
-Date:   Wed, 12 May 2021 16:46:57 +0200
-Message-Id: <20210512144849.646718793@linuxfoundation.org>
+Subject: [PATCH 5.12 373/677] scsi: qla2xxx: Check kzalloc() return value
+Date:   Wed, 12 May 2021 16:46:59 +0200
+Message-Id: <20210512144849.719291602@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
 References: <20210512144837.204217980@linuxfoundation.org>
@@ -41,56 +47,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Victor Lu <victorchengchi.lu@amd.com>
+From: Bart Van Assche <bvanassche@acm.org>
 
-[ Upstream commit 616cf23b6cf40ad6f03ffbddfa1b6c4eb68d8ae1 ]
+[ Upstream commit e5406d8ad4a1659f4d4d1b39fe203855c4eaef2d ]
 
-Fixes the following memory leak in dc_link_construct():
+Instead of crashing if kzalloc() fails, make qla2x00_get_host_stats()
+return -ENOMEM.
 
-unreferenced object 0xffffa03e81471400 (size 1024):
-comm "amd_module_load", pid 2486, jiffies 4294946026 (age 10.544s)
-hex dump (first 32 bytes):
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
-backtrace:
-[<000000000bdf5c4a>] kmem_cache_alloc_trace+0x30a/0x4a0
-[<00000000e7c59f0e>] link_create+0xce/0xac0 [amdgpu]
-[<000000002fb6c072>] dc_create+0x370/0x720 [amdgpu]
-[<000000000094d1f3>] amdgpu_dm_init+0x18e/0x17a0 [amdgpu]
-[<00000000bec048fd>] dm_hw_init+0x12/0x20 [amdgpu]
-[<00000000a2bb7cf6>] amdgpu_device_init+0x1463/0x1e60 [amdgpu]
-[<0000000032d3bb13>] amdgpu_driver_load_kms+0x5b/0x330 [amdgpu]
-[<00000000a27834f9>] amdgpu_pci_probe+0x192/0x280 [amdgpu]
-[<00000000fec7d291>] local_pci_probe+0x47/0xa0
-[<0000000055dbbfa7>] pci_device_probe+0xe3/0x180
-[<00000000815da970>] really_probe+0x1c4/0x4e0
-[<00000000b4b6974b>] driver_probe_device+0x62/0x150
-[<000000000f9ecc61>] device_driver_attach+0x58/0x60
-[<000000000f65c843>] __driver_attach+0xd6/0x150
-[<000000002f5e3683>] bus_for_each_dev+0x6a/0xc0
-[<00000000a1cfc897>] driver_attach+0x1e/0x20
-
-Fixes: 3a00c04212d1cf ("drm/amd/display/dc/core/dc_link: Move some local data from the stack to the heap")
-Signed-off-by: Victor Lu <victorchengchi.lu@amd.com>
-Reviewed-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Link: https://lore.kernel.org/r/20210320232359.941-8-bvanassche@acm.org
+Fixes: dbf1f53cfd23 ("scsi: qla2xxx: Implementation to get and manage host, target stats and initiator port")
+Cc: Himanshu Madhani <himanshu.madhani@oracle.com>
+Cc: Saurav Kashyap <skashyap@marvell.com>
+Cc: Nilesh Javali <njavali@marvell.com>
+Cc: Quinn Tran <qutran@marvell.com>
+Cc: Mike Christie <michael.christie@oracle.com>
+Cc: Daniel Wagner <dwagner@suse.de>
+Cc: Lee Duncan <lduncan@suse.com>
+Reviewed-by: Daniel Wagner <dwagner@suse.de>
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Acked-by: Saurav Kashyap <skashyap@marvell.com>
+Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/core/dc_link.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/scsi/qla2xxx/qla_bsg.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link.c b/drivers/gpu/drm/amd/display/dc/core/dc_link.c
-index bd0101013ec8..440bf0a0e12a 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc_link.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc_link.c
-@@ -1603,6 +1603,7 @@ static bool dc_link_construct(struct dc_link *link,
- 	link->psr_settings.psr_version = DC_PSR_VERSION_UNSUPPORTED;
+diff --git a/drivers/scsi/qla2xxx/qla_bsg.c b/drivers/scsi/qla2xxx/qla_bsg.c
+index d021e51344f5..aef2f7cc89d3 100644
+--- a/drivers/scsi/qla2xxx/qla_bsg.c
++++ b/drivers/scsi/qla2xxx/qla_bsg.c
+@@ -2584,6 +2584,10 @@ qla2x00_get_host_stats(struct bsg_job *bsg_job)
+ 	}
  
- 	DC_LOG_DC("BIOS object table - %s finished successfully.\n", __func__);
-+	kfree(info);
- 	return true;
- device_tag_fail:
- 	link->link_enc->funcs->destroy(&link->link_enc);
+ 	data = kzalloc(response_len, GFP_KERNEL);
++	if (!data) {
++		kfree(req_data);
++		return -ENOMEM;
++	}
+ 
+ 	ret = qla2xxx_get_ini_stats(fc_bsg_to_shost(bsg_job), req_data->stat_type,
+ 				    data, response_len);
 -- 
 2.30.2
 
