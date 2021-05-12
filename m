@@ -2,78 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F160F37BC0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 13:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E16037BC0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 13:48:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbhELLw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 07:52:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50138 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230037AbhELLwZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 07:52:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 45D1B61353;
-        Wed, 12 May 2021 11:51:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620820277;
-        bh=NmRdc9G7JJFHGfkGyc+LaMf36FTOlxulYuSeArk85go=;
-        h=From:To:Cc:Subject:Date:From;
-        b=JYIBsc2N2gJ1wUihhjHXfwwG8zZHwoI9PXbiNLIu75YrNBP9bNmT4SpwMSXsgBVo8
-         cFmYKz0cXt26BGxcR0PDjK0vRU8Tdgpu5ms+qM2Ogj+i2LJnn+DVmlwUkGSc2zFc0L
-         Q4itev67yHXmhYz96ObZrbmzh4Eyk90c4oUccruWT19cazA00ElmOIEnLV0lAEArU3
-         p0rZHayfCbWOWfRR8rCkTvmfVzk11SgQ2dPvh76WttUf8gu1Fo4EEKhThfkmonRaJ6
-         Mw9ust8x4Q70aGu73UtIWzCLyyldxrTVaqgNdJ24uM3R/OZRTq1u90LBUfdqEYcPyQ
-         66LP3DMfeNYFg==
-From:   Mark Brown <broonie@kernel.org>
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
-Subject: [PATCH v2] tools/nolibc: Implement msleep()
-Date:   Wed, 12 May 2021 12:47:28 +0100
-Message-Id: <20210512114728.19015-1-broonie@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S230247AbhELLtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 07:49:09 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:55341 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230145AbhELLtH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 07:49:07 -0400
+Received: from mail-vs1-f72.google.com ([209.85.217.72])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lgnLL-0007XC-37
+        for linux-kernel@vger.kernel.org; Wed, 12 May 2021 11:47:59 +0000
+Received: by mail-vs1-f72.google.com with SMTP id f5-20020a67e0850000b0290226ef8b7beaso11025898vsl.17
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 04:47:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sN7PtoHpAWooHK+Hak2qRw9IZrK7ofjQa8fGIcLObj0=;
+        b=tw40slnYYwROM/NLgV6AVMskcQSRsefW8N6f+++NMFQRGNIWHQxvAw3ThMGP4RNtLs
+         lpg01mZeC/EZsIZTD2/q6aUCpCTlzxA6bwMWdN+kVjeJktwRla45O6rESBLd5y4+pzil
+         uaQzwNf91KyIGTTjAOAZBUBtOkZS30+6ES5/0Xw6m13Y3i+BGrNl7fLoRb1OlYnp7NlD
+         vBp893JAT8tFcnMKjJmO7Pfi9qN1suepkSOASVN2ECe0lyVo9L4c4zDHy8+9cA7KwN0+
+         +LlpVSzQxEhneAZwUjkN5BZxpyfXIgeZPwqt5bl3RGf9I1UIaJXNQ2wVRc2+YOnAfHcu
+         DP5w==
+X-Gm-Message-State: AOAM533GhsMdtPsm6hQ6vHeOPRzjzDXy5cD+R3wRVnl+/UUTfCd+MTpX
+        J5vFcoutMBYXUxvBPeo4YUO0jS9QOG4nmYDZ2T5qUH8abW9CcJMFLUUJvat18v6REnTnD3bhpjJ
+        f+0GtGW/gs6JZjwvzpCI05ybVvrdO+g85MZFyVbIsTw==
+X-Received: by 2002:a67:f711:: with SMTP id m17mr30783347vso.48.1620820077541;
+        Wed, 12 May 2021 04:47:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwksI2M5eF6imGkWUMuv300ZLIoqSlW1tFTiuy4A0nPCinGiT3xU2/fyB/FUwODB95ZTVpBBw==
+X-Received: by 2002:a67:f711:: with SMTP id m17mr30783336vso.48.1620820077401;
+        Wed, 12 May 2021 04:47:57 -0700 (PDT)
+Received: from [192.168.1.4] ([45.237.48.6])
+        by smtp.gmail.com with ESMTPSA id h129sm2811832vkb.36.2021.05.12.04.47.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 May 2021 04:47:56 -0700 (PDT)
+Subject: Re: [PATCH -next] memory: da8xx-ddrctl: add missing
+ MODULE_DEVICE_TABLE
+To:     Zou Wei <zou_wei@huawei.com>
+Cc:     linux-kernel@vger.kernel.org
+References: <1620788887-14812-1-git-send-email-zou_wei@huawei.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <ddb6a020-1a76-c91c-23d3-754641cb3af0@canonical.com>
+Date:   Wed, 12 May 2021 07:47:56 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; i=WROh5SBSWd//p/Sxtx1sSZhXRJr/pNHGmfIOZDLA1ME=; m=DsG0GUH5Pq7W2vv4GT6Z0e1qoDZBWwgUNihInvr8Y2M=; p=goBe/H9D7gHdYDF1GUG3qnE1yXlI/9UHpsYgIuToVI8=; g=e63813b3d0cd70e8afa36d09389e65a5b1a1a1ec
-X-Patch-Sig: m=pgp; i=broonie@kernel.org; s=0xC3F436CA30F5D8EB; b=iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCbv/UACgkQJNaLcl1Uh9Dqowf9E16 qjowmtU0rxTE+BOWEJw8Z8f7PM+10vRWw2SjtvvGdKZ065pLYlqLNuvqBjPlIZyUxCk6E0nROrTEE hCX64nrkOCTzxZvz7faioL8p4VQeKMcgJh9kwO4xSUQzRECEw4FHGyv5f4/rWq50mT9tpP9ZaPR7q ed9CkcXUpaGT1wpLTqYwzNIWRLRJWYIZF6QrZRTBtDW7fwG2oCGBWG7KZbMDmQsKGKw3fxPZ0H1Vd K+naIj84fdFH6OVPOClIxOwrKq9Wob1MHh5wfQ8LbQGoDHnJX+9OD3ke7f9b5o/XqQeD6IERPrL2p cKxgBkcnbiBTJHvuTLgaT2Bvl+OfKsw==
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1620788887-14812-1-git-send-email-zou_wei@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow users to implement shorter delays than a full second by implementing
-msleep().
+On 11/05/2021 23:08, Zou Wei wrote:
+> This patch adds missing MODULE_DEVICE_TABLE definition which generates
+> correct modalias for automatic loading of this driver when it is built
+> as an external module.
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
+Thanks for the patch. Can you confirm that driver can be built as module?
 
-v2:
- - Support delays of more than a second.
- - Return the number of seconds remaining if the delay does not
-   complete.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
 
- tools/include/nolibc/nolibc.h | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+Please make the reports public. This is open source work and public
+collaboration.
 
-diff --git a/tools/include/nolibc/nolibc.h b/tools/include/nolibc/nolibc.h
-index 8b7a9830dd22..01400d36ce99 100644
---- a/tools/include/nolibc/nolibc.h
-+++ b/tools/include/nolibc/nolibc.h
-@@ -2243,6 +2243,17 @@ unsigned int sleep(unsigned int seconds)
- 		return 0;
- }
- 
-+static __attribute__((unused))
-+int msleep(unsigned int msecs)
-+{
-+	struct timeval my_timeval = { msecs / 1000, (msecs % 1000) * 1000 };
-+
-+	if (sys_select(0, 0, 0, 0, &my_timeval) < 0)
-+		return my_timeval.tv_sec + !!my_timeval.tv_usec;
-+	else
-+		return 0;
-+}
-+
- static __attribute__((unused))
- int stat(const char *path, struct stat *buf)
- {
--- 
-2.20.1
 
+Best regards,
+Krzysztof
