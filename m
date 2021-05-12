@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E0A237EA82
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2008037EA8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:03:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377057AbhELTC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:02:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35726 "EHLO mail.kernel.org"
+        id S1377108AbhELTCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:02:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244097AbhELQme (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:42:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 88C3261D33;
-        Wed, 12 May 2021 16:10:34 +0000 (UTC)
+        id S244104AbhELQmf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:42:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B0D561D31;
+        Wed, 12 May 2021 16:10:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620835835;
-        bh=uidAe+Es+/+PmreWX+fJb2EbtdDpLV3OhFvWEUt83cY=;
+        s=korg; t=1620835844;
+        bh=l53qjLtTzEQnkdS0F5TN+5MEX+fHKQbbD5Dpr9JVCBk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LLlYPKayfzKvoz0BCuuTdAHR9UHKluOh4QHXjbzIrFnMKrZkxr4ELuYbV/1SriD8J
-         vMyopL6rSGEL28QYPuMINJB0OiN/c4E0UUN1jd7oWlEYNWqWjrENxLlMo6wi53x6XY
-         uvlhj6VAnJnZHVaUru9/Y96Iz9p68Rln5OBO3S6Y=
+        b=FsSo/cr5/4ZWrADmoYTou27P1qdhvdZzTUuFmtWuYb3+GHncxxsAM8Ep704Bm7jhh
+         f+L0raYLkDVWds51IeBsLJGDBQBTj2HFKyE6ASsCqXIkFHFsRs1uylr2AXKMLTZc2D
+         UzDN+DjS7V34XYbsDVZeb5CQnC3eMsdDdkK4RGAY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 504/677] liquidio: Fix unintented sign extension of a left shift of a u16
-Date:   Wed, 12 May 2021 16:49:10 +0200
-Message-Id: <20210512144854.128584261@linuxfoundation.org>
+Subject: [PATCH 5.12 507/677] powerpc/pseries: Add key to flags in pSeries_lpar_hpte_updateboltedpp()
+Date:   Wed, 12 May 2021 16:49:13 +0200
+Message-Id: <20210512144854.227562877@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
 References: <20210512144837.204217980@linuxfoundation.org>
@@ -40,46 +39,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Michael Ellerman <mpe@ellerman.id.au>
 
-[ Upstream commit 298b58f00c0f86868ea717426beb5c1198772f81 ]
+[ Upstream commit b56d55a5aa4aa9fc166595a7feb57f153ef7b555 ]
 
-The macro CN23XX_PEM_BAR1_INDEX_REG is being used to shift oct->pcie_port
-(a u16) left 24 places. There are two subtle issues here, first the
-shift gets promoted to an signed int and then sign extended to a u64.
-If oct->pcie_port is 0x80 or more then the upper bits get sign extended
-to 1. Secondly shfiting a u16 24 bits will lead to an overflow so it
-needs to be cast to a u64 for all the bits to not overflow.
+The flags argument to plpar_pte_protect() (aka. H_PROTECT), includes
+the key in bits 9-13, but currently we always set those bits to zero.
 
-It is entirely possible that the u16 port value is never large enough
-for this to fail, but it is useful to fix unintended overflows such
-as this.
+In the past that hasn't been a problem because we always used key 0
+for the kernel, and updateboltedpp() is only used for kernel mappings.
 
-Fix this by casting the port parameter to the macro to a u64 before
-the shift.
+However since commit d94b827e89dc ("powerpc/book3s64/kuap: Use Key 3
+for kernel mapping with hash translation") we are now inadvertently
+changing the key (to zero) when we call plpar_pte_protect().
 
-Addresses-Coverity: ("Unintended sign extension")
-Fixes: 5bc67f587ba7 ("liquidio: CN23XX register definitions")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+That hasn't broken anything because updateboltedpp() is only used for
+STRICT_KERNEL_RWX, which is currently disabled on 64s due to other
+bugs.
+
+But we want to fix that, so first we need to pass the key correctly to
+plpar_pte_protect(). We can't pass our newpp value directly in, we
+have to convert it into the form expected by the hcall.
+
+The hcall we're using here is H_PROTECT, which is specified in section
+14.5.4.1.6 of LoPAPR v1.1.
+
+It takes a `flags` parameter, and the description for flags says:
+
+ * flags: AVPN, pp0, pp1, pp2, key0-key4, n, and for the CMO
+   option: CMO Option flags as defined in Table 189‚
+
+If you then go to the start of the parent section, 14.5.4.1, on page
+405, it says:
+
+Register Linkage (For hcall() tokens 0x04 - 0x18)
+ * On Call
+   * R3 function call token
+   * R4 flags (see Table 178‚ “Page Frame Table Access flags field
+     definition‚” on page 401)
+
+Then you have to go to section 14.5.3, and on page 394 there is a list
+of hcalls and their tokens (table 176), and there you can see that
+H_PROTECT == 0x18.
+
+Finally you can look at table 178, on page 401, where it specifies the
+layout of the bits for the key:
+
+ Bit     Function
+ -----------------
+ 50-54 | key0-key4
+
+Those are big-endian bit numbers, converting to normal bit numbers you
+get bits 9-13, or 0x3e00.
+
+In the kernel we have:
+
+  #define HPTE_R_KEY_HI		ASM_CONST(0x3000000000000000)
+  #define HPTE_R_KEY_LO		ASM_CONST(0x0000000000000e00)
+
+So the LO bits of newpp are already in the right place, and the HI
+bits need to be shifted down by 48.
+
+Fixes: d94b827e89dc ("powerpc/book3s64/kuap: Use Key 3 for kernel mapping with hash translation")
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210331003845.216246-2-mpe@ellerman.id.au
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/cavium/liquidio/cn23xx_pf_regs.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/platforms/pseries/lpar.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_regs.h b/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_regs.h
-index e6d4ad99cc38..3f1c189646f4 100644
---- a/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_regs.h
-+++ b/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_regs.h
-@@ -521,7 +521,7 @@
- #define    CN23XX_BAR1_INDEX_OFFSET                3
+diff --git a/arch/powerpc/platforms/pseries/lpar.c b/arch/powerpc/platforms/pseries/lpar.c
+index 3805519a6469..cd38bd421f38 100644
+--- a/arch/powerpc/platforms/pseries/lpar.c
++++ b/arch/powerpc/platforms/pseries/lpar.c
+@@ -977,11 +977,13 @@ static void pSeries_lpar_hpte_updateboltedpp(unsigned long newpp,
+ 	slot = pSeries_lpar_hpte_find(vpn, psize, ssize);
+ 	BUG_ON(slot == -1);
  
- #define    CN23XX_PEM_BAR1_INDEX_REG(port, idx)		\
--		(CN23XX_PEM_BAR1_INDEX_START + ((port) << CN23XX_PEM_OFFSET) + \
-+		(CN23XX_PEM_BAR1_INDEX_START + (((u64)port) << CN23XX_PEM_OFFSET) + \
- 		 ((idx) << CN23XX_BAR1_INDEX_OFFSET))
+-	flags = newpp & 7;
++	flags = newpp & (HPTE_R_PP | HPTE_R_N);
+ 	if (mmu_has_feature(MMU_FTR_KERNEL_RO))
+ 		/* Move pp0 into bit 8 (IBM 55) */
+ 		flags |= (newpp & HPTE_R_PP0) >> 55;
  
- /*############################ DPI #########################*/
++	flags |= ((newpp & HPTE_R_KEY_HI) >> 48) | (newpp & HPTE_R_KEY_LO);
++
+ 	lpar_rc = plpar_pte_protect(flags, slot, 0);
+ 
+ 	BUG_ON(lpar_rc != H_SUCCESS);
 -- 
 2.30.2
 
