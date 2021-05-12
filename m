@@ -2,96 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B93E37BE0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 15:20:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2488237BE14
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 15:20:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231349AbhELNVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 09:21:14 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:38248 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231233AbhELNU7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 09:20:59 -0400
-Received: from zn.tnic (p200300ec2f0bb8006edd94bc9370939d.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:b800:6edd:94bc:9370:939d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4C6A11EC0390;
-        Wed, 12 May 2021 15:19:50 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1620825590;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=oNPg3vxOc+Ox+fohCHc47ZdZvfnk6G6W8tH14loE6Sk=;
-        b=EXX3oJI2tQjSdwnPllc9um9bPhyDf7PQfncbtmfHKP6Hrxdm55NHa0eq4ZTpq0cCGdkXP6
-        c8mOCsVIbwB/YbmD9raGg/HlLIsfs6Wi1w8WtpfFG2+oQFpVT+E+eU+6lco8IOP94Dy/Ho
-        uCHzu9WmRWphRwHgamwuBfED5dzVMgg=
-Date:   Wed, 12 May 2021 15:19:51 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Ashish Kalra <Ashish.Kalra@amd.com>
-Cc:     pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        hpa@zytor.com, joro@8bytes.org, thomas.lendacky@amd.com,
-        x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        srutherford@google.com, seanjc@google.com,
-        venu.busireddy@oracle.com, brijesh.singh@amd.com,
-        linux-efi@vger.kernel.org
-Subject: Re: [PATCH v2 3/4] EFI: Introduce the new AMD Memory Encryption GUID.
-Message-ID: <YJvV9yKclJWLppWU@zn.tnic>
-References: <cover.1619193043.git.ashish.kalra@amd.com>
- <f9d22080293f24bd92684915fcee71a4974593a3.1619193043.git.ashish.kalra@amd.com>
+        id S232344AbhELNVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 09:21:46 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:51732 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231377AbhELNVC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 09:21:02 -0400
+Date:   Wed, 12 May 2021 13:19:52 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1620825593;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WPtHy0O3DJH8u9h9Da4vVCx09lKAVfFg5K1Wp/+urZ8=;
+        b=VR+zwBs4aMw0c0ubGtOTvqNnEiwV6rrz3qxLe5Fa0/bJgqqOBehkmVWijDh533GkYHeKxx
+        vyj63gRs4tAeeRCLqhL7mf0+xe5x9Amafxz3BFwHyDQvsbqsv77lCz4dxcojBRv7I2XoA1
+        05eIoiYg8OM7EIg7zec76QmC2Nabb7oGLoOd3Vc43LR7N5tFjLqDPM1tQQTy3Pl2ZAoU8z
+        xhUqnBa8e3MEXzX4XJh2cf5jNM6rNYhtMLRSd8ocFrO951dYd8lTl3ctoEZsO49D4xD7ei
+        MkqYCv4mm/3F+oZRFAj1EarPnIkpvUorHMZa8bO5zmZjpyjTm8A9aDfI4InBjg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1620825593;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WPtHy0O3DJH8u9h9Da4vVCx09lKAVfFg5K1Wp/+urZ8=;
+        b=wLn4BAFhaVD8BW4i6Z/O9neOSuCub61iAVAZBq/bQqLx9Te8iVJp3ImKRnPXI/pjvGISSl
+        O0PEGtsHhqmcaQDQ==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: objtool/core] x86, objtool: Dont exclude arch/x86/realmode/
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210506194157.516200011@infradead.org>
+References: <20210506194157.516200011@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <f9d22080293f24bd92684915fcee71a4974593a3.1619193043.git.ashish.kalra@amd.com>
+Message-ID: <162082559265.29796.3486154504952053256.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 03:59:01PM +0000, Ashish Kalra wrote:
-> From: Ashish Kalra <ashish.kalra@amd.com>
-> 
-> Introduce a new AMD Memory Encryption GUID which is currently
-> used for defining a new UEFI environment variable which indicates
-> UEFI/OVMF support for the SEV live migration feature. This variable
-> is setup when UEFI/OVMF detects host/hypervisor support for SEV
-> live migration and later this variable is read by the kernel using
-> EFI runtime services to verify if OVMF supports the live migration
-> feature.
-> 
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-> ---
->  include/linux/efi.h | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/include/linux/efi.h b/include/linux/efi.h
-> index 8710f5710c1d..e95c144d1d02 100644
-> --- a/include/linux/efi.h
-> +++ b/include/linux/efi.h
-> @@ -360,6 +360,7 @@ void efi_native_runtime_setup(void);
->  
->  /* OEM GUIDs */
->  #define DELLEMC_EFI_RCI2_TABLE_GUID		EFI_GUID(0x2d9f28a2, 0xa886, 0x456a,  0x97, 0xa8, 0xf1, 0x1e, 0xf2, 0x4f, 0xf4, 0x55)
-> +#define MEM_ENCRYPT_GUID			EFI_GUID(0x0cf29b71, 0x9e51, 0x433a,  0xa3, 0xb7, 0x81, 0xf3, 0xab, 0x16, 0xb8, 0x75)
->  
->  typedef struct {
->  	efi_guid_t guid;
-> -- 
+The following commit has been merged into the objtool/core branch of tip:
 
-When you apply this patch locally, you do:
+Commit-ID:     80870e6ece78ce67b91398db88fb6b92a178f574
+Gitweb:        https://git.kernel.org/tip/80870e6ece78ce67b91398db88fb6b92a178f574
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Thu, 06 May 2021 21:33:54 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Wed, 12 May 2021 14:54:54 +02:00
 
-$ git log -p -1 | ./scripts/get_maintainer.pl
-Ard Biesheuvel <ardb@kernel.org> (maintainer:EXTENSIBLE FIRMWARE INTERFACE (EFI))
-linux-efi@vger.kernel.org (open list:EXTENSIBLE FIRMWARE INTERFACE (EFI))
-linux-kernel@vger.kernel.org (open list)
+x86, objtool: Dont exclude arch/x86/realmode/
 
-and this tells you that you need to CC EFI folks too.
+Specifically, init.c uses jump_labels.
 
-I've CCed linux-efi now - please make sure you use that script to CC the
-relevant parties on patches, in the future.
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20210506194157.516200011@infradead.org
+---
+ arch/x86/realmode/Makefile | 1 -
+ 1 file changed, 1 deletion(-)
 
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+diff --git a/arch/x86/realmode/Makefile b/arch/x86/realmode/Makefile
+index 6b1f3a4..a0b491a 100644
+--- a/arch/x86/realmode/Makefile
++++ b/arch/x86/realmode/Makefile
+@@ -10,7 +10,6 @@
+ # Sanitizer runtimes are unavailable and cannot be linked here.
+ KASAN_SANITIZE			:= n
+ KCSAN_SANITIZE			:= n
+-OBJECT_FILES_NON_STANDARD	:= y
+ 
+ subdir- := rm
+ 
