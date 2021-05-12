@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C9FE37C502
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 17:37:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFB2D37C4EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 17:36:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236098AbhELPhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 11:37:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41568 "EHLO mail.kernel.org"
+        id S235138AbhELPf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 11:35:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233239AbhELPME (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:12:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F18BE61628;
-        Wed, 12 May 2021 15:03:32 +0000 (UTC)
+        id S234169AbhELPQL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:16:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A3A7D6194D;
+        Wed, 12 May 2021 15:05:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620831813;
-        bh=s3BM/sj6oyrnLcGniBopzOVI6NUof9Zb1aULINA8GoI=;
+        s=korg; t=1620831935;
+        bh=RECN36ShKBagzxEbRoQl0Lum/THzHpmshgFw7da/V3E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Hsr6RGl0jSb5yG+CGC4qzGgh/Y6Hhb+w3CDi6SltCygsUnZxyMpY8EwISVTwaVYTu
-         THn09oZfppmgRmTLco3SpF+w7DSRgVdfjIEweClIn6dSPCnMek8R8xqcwi6vlcqAb1
-         Z3m3jpvpq2F9e/FibVNgcwIBru3K6g/9YemEWL6Q=
+        b=nXI0SoNuSqDXE5XBaiLSrTW6+v5yuvU98e+3s5qI/1Gn6EoqewQkgtrYAoltiIcP1
+         lB8/u9n+wmbDlE4uA+Qlwtdh6Ocm0WNN69IkbaSNGmzcrYd6qoHkMA7uH6tcFnLyPP
+         aepR1liQedCThteNI10aZrUbK35ZJ3/q5CBOk3pY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
-        John Crispin <john@phrozen.org>, linux-mips@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: [PATCH 5.10 025/530] MIPS: pci-mt7620: fix PLL lock check
-Date:   Wed, 12 May 2021 16:42:15 +0200
-Message-Id: <20210512144820.562269751@linuxfoundation.org>
+        stable@vger.kernel.org, dann.frazier@canonical.com,
+        Dejin Zheng <zhengdejin5@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Subject: [PATCH 5.10 030/530] PCI: xgene: Fix cfg resource mapping
+Date:   Wed, 12 May 2021 16:42:20 +0200
+Message-Id: <20210512144820.718490956@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144819.664462530@linuxfoundation.org>
 References: <20210512144819.664462530@linuxfoundation.org>
@@ -42,55 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+From: Dejin Zheng <zhengdejin5@gmail.com>
 
-commit c15b99ae2ba9ea30da3c7cd4765b8a4707e530a6 upstream.
+commit d4707d79fae08c8996a1ba45965a491045a22dda upstream.
 
-Upstream a long-standing OpenWrt patch [0] that fixes MT7620 PCIe PLL
-lock check. The existing code checks the wrong register bit: PPLL_SW_SET
-is not defined in PPLL_CFG1 and bit 31 of PPLL_CFG1 is marked as reserved
-in the MT7620 Programming Guide. The correct bit to check for PLL lock
-is PPLL_LD (bit 23).
+In commit e2dcd20b1645 a change was made to use
+devm_platform_ioremap_resource_byname() to simplify code and remove
+the res variable; this was wrong since the res variable is still needed
+and as an outcome the port->cfg_addr gets an erroneous address.
 
-Also reword the error message for clarity.
+Revert the change going back to original behaviour.
 
-Without this change it is unlikely that this driver ever worked with
-mainline kernel.
-
-[0]: https://lists.infradead.org/pipermail/lede-commits/2017-July/004441.html
-
-Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Cc: John Crispin <john@phrozen.org>
-Cc: linux-mips@vger.kernel.org
-Cc: linux-mediatek@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Link: https://lore.kernel.org/r/20210328144118.305074-1-zhengdejin5@gmail.com
+Fixes: e2dcd20b1645a ("PCI: controller: Convert to devm_platform_ioremap_resource_byname()")
+Reported-by: dann.frazier@canonical.com
+Tested-by: dann frazier <dann.frazier@canonical.com>
+Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc: stable@vger.kernel.org    # v5.9+
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/mips/pci/pci-mt7620.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/pci/controller/pci-xgene.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/arch/mips/pci/pci-mt7620.c
-+++ b/arch/mips/pci/pci-mt7620.c
-@@ -30,6 +30,7 @@
- #define RALINK_GPIOMODE			0x60
+--- a/drivers/pci/controller/pci-xgene.c
++++ b/drivers/pci/controller/pci-xgene.c
+@@ -355,7 +355,8 @@ static int xgene_pcie_map_reg(struct xge
+ 	if (IS_ERR(port->csr_base))
+ 		return PTR_ERR(port->csr_base);
  
- #define PPLL_CFG1			0x9c
-+#define PPLL_LD				BIT(23)
- 
- #define PPLL_DRV			0xa0
- #define PDRV_SW_SET			BIT(31)
-@@ -239,8 +240,8 @@ static int mt7620_pci_hw_init(struct pla
- 	rt_sysc_m32(0, RALINK_PCIE0_CLK_EN, RALINK_CLKCFG1);
- 	mdelay(100);
- 
--	if (!(rt_sysc_r32(PPLL_CFG1) & PDRV_SW_SET)) {
--		dev_err(&pdev->dev, "MT7620 PPLL unlock\n");
-+	if (!(rt_sysc_r32(PPLL_CFG1) & PPLL_LD)) {
-+		dev_err(&pdev->dev, "pcie PLL not locked, aborting init\n");
- 		reset_control_assert(rstpcie0);
- 		rt_sysc_m32(RALINK_PCIE0_CLK_EN, 0, RALINK_CLKCFG1);
- 		return -1;
+-	port->cfg_base = devm_platform_ioremap_resource_byname(pdev, "cfg");
++	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "cfg");
++	port->cfg_base = devm_ioremap_resource(dev, res);
+ 	if (IS_ERR(port->cfg_base))
+ 		return PTR_ERR(port->cfg_base);
+ 	port->cfg_addr = res->start;
 
 
