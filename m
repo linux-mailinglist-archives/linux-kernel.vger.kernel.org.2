@@ -2,106 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B74E537EDB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:43:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDEC837EDB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1387965AbhELUlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 16:41:20 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:40346 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1386908AbhELUWi (ORCPT
+        id S1387995AbhELUlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 16:41:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1386928AbhELUWw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 16:22:38 -0400
-Received: from mail-ua1-f70.google.com ([209.85.222.70])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lgvMH-0005cH-BC
-        for linux-kernel@vger.kernel.org; Wed, 12 May 2021 20:21:29 +0000
-Received: by mail-ua1-f70.google.com with SMTP id o4-20020ab02a040000b02901f6d77e1faaso3443739uar.11
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 13:21:29 -0700 (PDT)
+        Wed, 12 May 2021 16:22:52 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24B7BC06175F;
+        Wed, 12 May 2021 13:21:42 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id r11so4532479edt.13;
+        Wed, 12 May 2021 13:21:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=N4ZAlOgDW9ujpwjPHQr8aGCrSs+JV5Nyhyk5LQI3HKI=;
+        b=ru+/i/5bgX9E14YIfBAn6to/vAz91/xUZWO0XKEFx/X+sBzOOoeqikp5lakJoAKrPv
+         nDl6zja3All4C2a1JP400GptP9ZmpUqL7LrFqoHV//LUWWpyU6IAuLDpfFEFz9VWjUl1
+         MxUyjalMppKimCcBOzUkGlorMXqV4XouSk3jr/7+VzFjrS/pYDDvQr//VS94WUCDCn+O
+         tanYrliRgd9U0N8wB9uKX9wwE9EHh8UxzFbWI13OzalrWQTMSW2iSLAjSpA2GhBUs4Kp
+         0EzQ+sGomgtyaxA1e4QLc2sY1pXAemkkKSygNRsWk4YY8/r+05oeQb+M5HJDoWlaCsHk
+         aOwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GPSchaWIh9W0a/KWJptAdzH4Ia11x5AtL0JuQZVu/NU=;
-        b=PeSW/UVqkTt8Wfa1HyzQvgqc4kRFtitwgOSleM5x828MQAOs+gNVW3WSp4XzcQQBjj
-         RV1yCUUnqV69RJCdOpiz2q4L4i1Bu7ONScCFgtOV/MLB1mqHYK7eD/sVAflqvQI3Xphy
-         fM/qmBikMhwe3S4imQ5S6/8A2GKh04Z6uaAY3e6mMDzUhoAGLv3ViHBAO7ikchckTm0+
-         IMr2GI9AheNUgPNH7/YJjCH+Ddh/JDN/TQzBZJpMYFIdZoXF9kHUEW8oNo3flp+3Eulr
-         dnMhQ2CAT2Er39fqtR3Gnk9y32d+XjTfHLbIGiNLQ9SV0c2SYyroKRzQlpPEr9pcxuR1
-         UmCQ==
-X-Gm-Message-State: AOAM532vPzkPrz6mXyOGcsFaR1Nq1sHK5pESNSGHkzV/SMdG5Hq3F4RJ
-        frr//ToIRyD3j8Uf6K88VQ/IApa2I4xjIoRD4bBGrMk0wuSBL2E66EY/EVgOtHREHgQgBDVpYZD
-        54W00DFTuSITNX6+K/e781YjqffE5D16wmxD8UsFoIQ==
-X-Received: by 2002:a1f:784c:: with SMTP id t73mr30125692vkc.14.1620850888139;
-        Wed, 12 May 2021 13:21:28 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzrJdbPgvpiXdpX3wOjnLuu0MgeYwXqYZEYdNJ2scWsTdKyud/94qx2Zr8Ha9rIIBePrSKTbw==
-X-Received: by 2002:a1f:784c:: with SMTP id t73mr30125683vkc.14.1620850887959;
-        Wed, 12 May 2021 13:21:27 -0700 (PDT)
-Received: from [192.168.1.4] ([45.237.48.3])
-        by smtp.gmail.com with ESMTPSA id b197sm120811vke.24.2021.05.12.13.21.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 May 2021 13:21:27 -0700 (PDT)
-Subject: Re: [linux-nfc] [PATCH 1/2] MAINTAINERS: nfc: add Krzysztof Kozlowski
- as maintainer
-To:     Mark Greer <mgreer@animalcreek.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nfc@lists.01.org,
-        Alex Blasche <alexander.blasche@qt.io>
-References: <20210512144319.30852-1-krzysztof.kozlowski@canonical.com>
- <14e78a9a-ed1a-9d7d-b854-db6d811f4622@kontron.de>
- <20210512170135.GB222094@animalcreek.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <cd7a0110-702a-6e14-527e-fb4b53705870@canonical.com>
-Date:   Wed, 12 May 2021 16:21:25 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=N4ZAlOgDW9ujpwjPHQr8aGCrSs+JV5Nyhyk5LQI3HKI=;
+        b=C5P2CW8GHaVlAGcdiVPlXZl5dELN8yjY7H5XuQGHXA9QsiWGgUgC/MIgBnh3VVyqMa
+         /gPRQtyMdrjlN5oVhI3CVhQbNxFRJqgc4nSBExwTKat/98fyvUFswAI7Bg3Qv7NGS5hb
+         yn9OlYu3XleghCtippKzXTHmHBvnXj+6O2ZvYGTODry/n1G/szwF+GVIk5baw2+o6js7
+         ct4tMxDgTF4o7pbZpy7V6pPFiu+k8PirZ6uB/9NlM2wrRURKehPf4lH4sHyr77WwmcUl
+         kLlEe05y8SG88NP7DlteAJG+shwE8DFKyfcPLhd8/gNB04h7jcTvqvbDycju4v2L1rs8
+         nc9w==
+X-Gm-Message-State: AOAM531TywbA8NM2uT4RWv49sYLCTIR8avtwzJ1I9UP7NhBPnnQ4B5UP
+        y0inGaeqLn1hpF6T/3yd4osi/5zHcPM=
+X-Google-Smtp-Source: ABdhPJy2MoFIbMXHK5sH71DILt+6PkNvgj1tDU2/ZAEvcuIFM+3oPHITB8QNN7PbBDDu475yC4iVEw==
+X-Received: by 2002:aa7:cb10:: with SMTP id s16mr45722585edt.313.1620850900900;
+        Wed, 12 May 2021 13:21:40 -0700 (PDT)
+Received: from ubuntu-laptop (ip5f5bec5d.dynamic.kabel-deutschland.de. [95.91.236.93])
+        by smtp.googlemail.com with ESMTPSA id z9sm659159edb.51.2021.05.12.13.21.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 13:21:40 -0700 (PDT)
+Message-ID: <cb32c4e786ac73681b80b8af556543f08f076687.camel@gmail.com>
+Subject: Re: [PATCH v5 1/2] scsi: ufs: Introduce hba performance monitor
+ sysfs nodes
+From:   Bean Huo <huobean@gmail.com>
+To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Wed, 12 May 2021 22:21:38 +0200
+In-Reply-To: <1619058521-35307-2-git-send-email-cang@codeaurora.org>
+References: <1619058521-35307-1-git-send-email-cang@codeaurora.org>
+         <1619058521-35307-2-git-send-email-cang@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-In-Reply-To: <20210512170135.GB222094@animalcreek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/05/2021 13:01, Mark Greer wrote:
-> On Wed, May 12, 2021 at 05:32:35PM +0200, Frieder Schrempf wrote:
->> On 12.05.21 16:43, Krzysztof Kozlowski wrote:
->>> The NFC subsystem is orphaned.  I am happy to spend some cycles to
->>> review the patches, send pull requests and in general keep the NFC
->>> subsystem running.
->>
->> That's great, thanks!
->>
->> Maybe you also want to have a look at the userspace side and talk to Mark Greer (on cc). He recently said, that he is supposed to be taking over maintenance for the neard daemon (see this thread: [1]) which currently looks like it's close to being dead (no release for several years, etc.).
->>
->> I don't know much about the NFC stack and if/how people use it, but without reliable and maintained userspace tooling, the whole thing seems of little use in the long run. Qt has already dropped their neard support for Qt 6 [2], which basically means the mainline NFC stack won't be supported anymore in one of the most common application frameworks for IoT/embedded.
->>
->> [1] https://lists.01.org/hyperkitty/list/linux-nfc@lists.01.org/thread/OHD5IQHYPFUPUFYWDMNSVCBNO24M45VK/
->> [2] https://bugreports.qt.io/browse/QTBUG-81824
+On Wed, 2021-04-21 at 19:28 -0700, Can Guo wrote:
+> +
 > 
-> Re: QT - I've already talked to Alex Blasche from QT (CC'd).  With some
-> work we can get Linux NFC/neard back into their good graces.  I/we need
-> to find time to put in the work, though.
+> +static DEVICE_ATTR_RW(monitor_enable);
 > 
-> An example of the issues they have seen is:
+> +static DEVICE_ATTR_RW(monitor_chunk_size);
 > 
-> 	https://bugreports.qt.io/browse/QTBUG-43802
+> +static DEVICE_ATTR_RO(read_total_sectors);
 > 
-> Another issue I have--and I suspect you, Krzysztof, have as well--is
-> lack of hardware.  If anyone reading this wants to volunteer to be a
-> tester, please speak up.
+> +static DEVICE_ATTR_RO(read_total_busy);
+> 
+> +static DEVICE_ATTR_RO(read_nr_requests);
+> 
+> +static DEVICE_ATTR_RO(read_req_latency_avg);
+> 
+> +static DEVICE_ATTR_RO(read_req_latency_max);
+> 
+> +static DEVICE_ATTR_RO(read_req_latency_min);
+> 
+> +static DEVICE_ATTR_RO(read_req_latency_sum);
+> 
+> +static DEVICE_ATTR_RO(write_total_sectors);
+> 
+> +static DEVICE_ATTR_RO(write_total_busy);
+> 
+> +static DEVICE_ATTR_RO(write_nr_requests);
+> 
+> +static DEVICE_ATTR_RO(write_req_latency_avg);
+> 
+> +static DEVICE_ATTR_RO(write_req_latency_max);
+> 
+> +static DEVICE_ATTR_RO(write_req_latency_min);
+> 
+> +static DEVICE_ATTR_RO(write_req_latency_sum);
 
-Yes, testing would be very appreciated. I don't know how many unit tests
-neard has, but maybe some mockups with unit testing would solve some of
-problems?
+Can,
 
+I like this series of patches, which can help me monitor UFS
+performance online. I have a suggestion,  how do you think that we add
+this to ufs-debugfs. Then we don't need to poll each parameter one by
+one, just one interface.
 
+Bean
 
-Best regards,
-Krzysztof
