@@ -2,58 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5276C37EB83
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C0D337EB72
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380855AbhELTcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:32:50 -0400
-Received: from mleia.com ([178.79.152.223]:32924 "EHLO mail.mleia.com"
+        id S1380400AbhELTbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:31:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346519AbhELRNt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 13:13:49 -0400
-X-Greylist: delayed 488 seconds by postgrey-1.27 at vger.kernel.org; Wed, 12 May 2021 13:13:48 EDT
-Received: from mail.mleia.com (localhost [127.0.0.1])
-        by mail.mleia.com (Postfix) with ESMTP id 1E5D31264;
-        Wed, 12 May 2021 17:04:28 +0000 (UTC)
-Subject: Re: [PATCH -next] watchdog: Fix possible use-after-free by calling
- del_timer_sync()
-To:     Zou Wei <zou_wei@huawei.com>, wim@linux-watchdog.org,
-        linux@roeck-us.net
-Cc:     linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <1620802676-19701-1-git-send-email-zou_wei@huawei.com>
-From:   Vladimir Zapolskiy <vz@mleia.com>
-Message-ID: <f5b8a4e5-069b-290d-b0d6-2ef89f7a0d4a@mleia.com>
-Date:   Wed, 12 May 2021 20:04:27 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S245247AbhELRGh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 13:06:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 74FAC61221;
+        Wed, 12 May 2021 17:05:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620839127;
+        bh=pl6QFYggyKEgGFGWijuQGA710WYGSQjCjRLG1PY4TRM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=NElbabHXinPOID74WkxsGWND1UrbiJqkIDn4aWAfT1auriZPVGNcLxD6QMivw0Wa1
+         v60O8d8cr6V7TXFHJAJwuRrGLrDlKoLxMV6v1OtJfLY66pNAnRfbVRveahtakz1hgx
+         9sWU1zIl5a8jt+E91oXn0oWS3i/8JpVr6SKBofH1o6pXzisaaEMxmPuAoYWISRW3RC
+         2hCOUcZ+AJxyAnrN3n0vZcnJ8nC1CRYVcez784SPCk7CKb5hu5PV5ADvEeL2qxNRd6
+         Co2L6QquJB16IsZL+WLsD+2Ia2nvR/L2E8wFxLXNlZU/97c14x/eJ0d1tUL/TEjV8X
+         zqmhIC71vsWxA==
+From:   Mark Brown <broonie@kernel.org>
+To:     Chunyan Zhang <zhang.lyra@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        linux-spi@vger.kernel.org, Orson Zhai <orsonzhai@gmail.com>
+Subject: Re: [PATCH] spi: sprd: Add missing MODULE_DEVICE_TABLE
+Date:   Wed, 12 May 2021 18:04:37 +0100
+Message-Id: <162083907219.45027.14385100050123362588.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210512093534.243040-1-zhang.lyra@gmail.com>
+References: <20210512093534.243040-1-zhang.lyra@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1620802676-19701-1-git-send-email-zou_wei@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-49551924 
-X-CRM114-CacheID: sfid-20210512_170428_148887_70604D62 
-X-CRM114-Status: UNSURE (   7.50  )
-X-CRM114-Notice: Please train this message. 
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/12/21 9:57 AM, Zou Wei wrote:
-> This driver's remove path calls del_timer(). However, that function
-> does not wait until the timer handler finishes. This means that the
-> timer handler may still be running after the driver's remove function
-> has finished, which would result in a use-after-free.
-> 
-> Fix by calling del_timer_sync(), which makes sure the timer handler
-> has finished, and unable to re-schedule itself.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+On Wed, 12 May 2021 17:35:34 +0800, Chunyan Zhang wrote:
+> MODULE_DEVICE_TABLE is used to extract the device information out of the
+> driver and builds a table when being compiled. If using this macro,
+> kernel can find the driver if available when the device is plugged in,
+> and then loads that driver and initializes the device.
 
-Acked-by: Vladimir Zapolskiy <vz@mleia.com>
+Applied to
 
---
-Best wishes,
-Vladimir
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+
+Thanks!
+
+[1/1] spi: sprd: Add missing MODULE_DEVICE_TABLE
+      commit: 7907cad7d07e0055789ec0c534452f19dfe1fc80
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
