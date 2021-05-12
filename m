@@ -2,164 +2,334 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB3F37B912
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 11:24:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 072DC37B914
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 11:24:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230181AbhELJZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 05:25:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230213AbhELJYn (ORCPT
+        id S230178AbhELJZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 05:25:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21423 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230037AbhELJZr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 05:24:43 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12126C06175F;
-        Wed, 12 May 2021 02:23:36 -0700 (PDT)
-Date:   Wed, 12 May 2021 09:23:33 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620811414;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        Wed, 12 May 2021 05:25:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620811479;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ekT+n5CCG0M45QzWTBOOK9qeE/la1TPEy7Kpp5ge2+o=;
-        b=DDnmgzbB4cVS1zkvRVfyt6FP2mnshxUaI3uOkZgj5wv7gU2G2dOmiebrCe5FT4QB0wCN1y
-        VACs9DjanTCfA/2WdBu5Ha317Z3QyuOG89V0lbIsJVet2H8BHhsrlb/Sn8xuPNhtjexd90
-        0r4MsKOyboN/63r5ZhlPtFlN4ilMkaWRhnHSutnn8B/c/nRujT2FKY8mrm1BeX6DJ0/hzO
-        wuaWubYCU4eIcnDLi8P/Py5La9cxrwVO30DZJRixrCM2gOFfXibUL6wJKJ+hdNeaIKX0Gc
-        vtG+sj8tva9nmnacZemPjHvhy9ER1+J8lD8640fDBlqTz26yngpftUKzz4+sPQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620811414;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ekT+n5CCG0M45QzWTBOOK9qeE/la1TPEy7Kpp5ge2+o=;
-        b=3icQg6Bu/rCtck33oK+4f4poBGUvSyG78LH5S0YeHqqscBS/xWyozlEjfxdsfEJ7V5MUzA
-        mq1HpStyREHXeGCQ==
-From:   "tip-bot2 for H. Peter Anvin (Intel)" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/asm] x86/entry: Unify definitions from <asm/calling.h> and
- <asm/ptrace-abi.h>
-Cc:     "H. Peter Anvin (Intel)" <hpa@zytor.com>,
-        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210510185316.3307264-2-hpa@zytor.com>
-References: <20210510185316.3307264-2-hpa@zytor.com>
+        bh=Je1KS7YOVHavoIfQ7KtY7zo/B1WdAVPfu1SGQbtiGY8=;
+        b=QsiXQtT1tqwI6YxWC/hz7FfwPGv/IMF/8GO5ftIkPxi2+vbmyZJ14+4EEqU8fGYPLZu3BE
+        IGp9VS1cJlijL/DZZDAHVQ8L/naO4CkWfMigOgOG7wrfLLSCeO7x4/zAv4Qe6ALFkTGlgV
+        Qa8xXGjw7X1hA+ssL5TnWW+szNqnCaE=
+Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
+ [209.85.210.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-368-P9AaH0hjPYCm3aAgi9OueQ-1; Wed, 12 May 2021 05:24:37 -0400
+X-MC-Unique: P9AaH0hjPYCm3aAgi9OueQ-1
+Received: by mail-pf1-f200.google.com with SMTP id a8-20020a62d4080000b029028db7db58adso14543626pfh.22
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 02:24:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Je1KS7YOVHavoIfQ7KtY7zo/B1WdAVPfu1SGQbtiGY8=;
+        b=gCEbX+6mRpdu3838Akp4qcmJosa8vdvdgMesUXsd9q6bjEf3le9gPKP/hRp+lqI3OS
+         u1cx5gt2CeJNcXupWOeLumien9CAAs/TblowwiWgL41Myc+MPLFDNM0Pq65h1FBkowhv
+         K9GgbSe+i6k7vJJb3gI3tGf0n0MzhQL+uCP6g4bEHFHxL3ZtoGsaa+rUWzJxsWd82Ck0
+         zeSe+CAEns/NK+UelpBDURBJuZBEw/D3gIV33qUuSjQm7VMwR91Y/bY0TseaqYZHb2Rn
+         ZqBYk0sQD8JPyQY4EiIh05CG2xrnjltM3gtxxqr2yQQZFJ3yIPEIKnLpJL6BdB8uCB8A
+         /7aA==
+X-Gm-Message-State: AOAM5317LczGlo5I4k+4H7WuTDBtI1/pBTEn/+s+9I0u0K4nBF6NWR3d
+        RIKHRGvtnOLQ2wwiEJLI87BqGmX4FyK4AuWtqGWUsZhaGIrYJYHFxR0aGmZ4b8hf4h2ZhGwYRZK
+        TrgTAddugKPVjUgVhetlEx1H5P0OaHWa+vGWcSrlS
+X-Received: by 2002:a17:902:c211:b029:ed:7a6b:d4bf with SMTP id 17-20020a170902c211b02900ed7a6bd4bfmr34388968pll.63.1620811476413;
+        Wed, 12 May 2021 02:24:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwp7t4oeA7z4E29TZxB0ETdgquSHL87LpVC0igXsRjg2A9wiZeFn/i7AV+3FbTEtsIJ/UcsQpCgZn71OZpTMTs=
+X-Received: by 2002:a17:902:c211:b029:ed:7a6b:d4bf with SMTP id
+ 17-20020a170902c211b02900ed7a6bd4bfmr34388944pll.63.1620811476008; Wed, 12
+ May 2021 02:24:36 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <162081141389.29796.14002445951520228539.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20210408082648.20145-1-jasowang@redhat.com> <20210409115343-mutt-send-email-mst@kernel.org>
+ <42891807-cb24-5352-f8cb-798e9d1a1854@redhat.com> <20210412050730-mutt-send-email-mst@kernel.org>
+ <01918e14-7f7a-abf2-5864-292a32f0233c@redhat.com> <d5632a4d-4d0b-b08d-06f9-c56f16734607@redhat.com>
+ <20210421035331-mutt-send-email-mst@kernel.org> <3d5754f3-c012-67ad-5f01-fc16ec53df4e@redhat.com>
+ <529543956.24692551.1620722593826.JavaMail.zimbra@redhat.com> <20210511061740-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20210511061740-mutt-send-email-mst@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Wed, 12 May 2021 17:24:21 +0800
+Message-ID: <CACGkMEuvqUL04_wHqSKPUufu5O6ydhytHAx0NryLODNHkEO+Fw@mail.gmail.com>
+Subject: Re: [RFC PATCH] vdpa: mandate 1.0 device
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     virtualization <virtualization@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, parav@nvidia.com,
+        Eli Cohen <elic@nvidia.com>,
+        Lingshan Zhu <lingshan.zhu@intel.com>, mapfelba@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/asm branch of tip:
+On Wed, May 12, 2021 at 3:54 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> On Tue, May 11, 2021 at 04:43:13AM -0400, Jason Wang wrote:
+> >
+> >
+> > ----- =E5=8E=9F=E5=A7=8B=E9=82=AE=E4=BB=B6 -----
+> > >
+> > > =E5=9C=A8 2021/4/21 =E4=B8=8B=E5=8D=884:03, Michael S. Tsirkin =E5=86=
+=99=E9=81=93:
+> > > > On Wed, Apr 21, 2021 at 03:41:36PM +0800, Jason Wang wrote:
+> > > >> =E5=9C=A8 2021/4/12 =E4=B8=8B=E5=8D=885:23, Jason Wang =E5=86=99=
+=E9=81=93:
+> > > >>> =E5=9C=A8 2021/4/12 =E4=B8=8B=E5=8D=885:09, Michael S. Tsirkin =
+=E5=86=99=E9=81=93:
+> > > >>>> On Mon, Apr 12, 2021 at 02:35:07PM +0800, Jason Wang wrote:
+> > > >>>>> =E5=9C=A8 2021/4/10 =E4=B8=8A=E5=8D=8812:04, Michael S. Tsirkin=
+ =E5=86=99=E9=81=93:
+> > > >>>>>> On Fri, Apr 09, 2021 at 12:47:55PM +0800, Jason Wang wrote:
+> > > >>>>>>> =E5=9C=A8 2021/4/8 =E4=B8=8B=E5=8D=8811:59, Michael S. Tsirki=
+n =E5=86=99=E9=81=93:
+> > > >>>>>>>> On Thu, Apr 08, 2021 at 04:26:48PM +0800, Jason Wang wrote:
+> > > >>>>>>>>> This patch mandates 1.0 for vDPA devices. The goal is to ha=
+ve the
+> > > >>>>>>>>> semantic of normative statement in the virtio
+> > > >>>>>>>>> spec and eliminate the
+> > > >>>>>>>>> burden of transitional device for both vDPA bus and vDPA pa=
+rent.
+> > > >>>>>>>>>
+> > > >>>>>>>>> uAPI seems fine since all the vDPA parent mandates
+> > > >>>>>>>>> VIRTIO_F_ACCESS_PLATFORM which implies 1.0 devices.
+> > > >>>>>>>>>
+> > > >>>>>>>>> For legacy guests, it can still work since Qemu will mediat=
+e when
+> > > >>>>>>>>> necessary (e.g doing the endian conversion).
+> > > >>>>>>>>>
+> > > >>>>>>>>> Signed-off-by: Jason Wang <jasowang@redhat.com>
+> > > >>>>>>>> Hmm. If we do this, don't we still have a problem with
+> > > >>>>>>>> legacy drivers which don't ack 1.0?
+> > > >>>>>>> Yes, but it's not something that is introduced in this
+> > > >>>>>>> commit. The legacy
+> > > >>>>>>> driver never work ...
+> > > >>>>>> My point is this neither fixes or prevents this.
+> > > >>>>>>
+> > > >>>>>> So my suggestion is to finally add ioctls along the lines
+> > > >>>>>> of PROTOCOL_FEATURES of vhost-user.
+> > > >>>>>>
+> > > >>>>>> Then that one can have bits for legacy le, legacy be and moder=
+n.
+> > > >>>>>>
+> > > >>>>>> BTW I looked at vhost-user and it does not look like that
+> > > >>>>>> has a solution for this problem either, right?
+> > > >>>>> Right.
+> > > >>>>>
+> > > >>>>>
+> > > >>>>>>>> Note 1.0 affects ring endianness which is not mediated in QE=
+MU
+> > > >>>>>>>> so QEMU can't pretend to device guest is 1.0.
+> > > >>>>>>> Right, I plan to send patches to do mediation in the
+> > > >>>>>>> Qemu to unbreak legacy
+> > > >>>>>>> drivers.
+> > > >>>>>>>
+> > > >>>>>>> Thanks
+> > > >>>>>> I frankly think we'll need PROTOCOL_FEATURES anyway, it's
+> > > >>>>>> too useful ...
+> > > >>>>>> so why not teach drivers about it and be done with it? You
+> > > >>>>>> can't emulate
+> > > >>>>>> legacy on modern in a cross endian situation because of vring
+> > > >>>>>> endian-ness ...
+> > > >>>>> So the problem still. This can only work when the hardware can =
+support
+> > > >>>>> legacy vring endian-ness.
+> > > >>>>>
+> > > >>>>> Consider:
+> > > >>>>>
+> > > >>>>> 1) the leagcy driver support is non-normative in the spec
+> > > >>>>> 2) support a transitional device in the kenrel may requires the
+> > > >>>>> hardware
+> > > >>>>> support and a burden of kernel codes
+> > > >>>>>
+> > > >>>>> I'd rather simply drop the legacy driver support
+> > > >>>> My point is this patch does not drop legacy support. It merely m=
+andates
+> > > >>>> modern support.
+> > > >>>
+> > > >>> I am not sure I get here. This patch fails the set_feature if VER=
+SION_1
+> > > >>> is not negotiated. This means:
+> > > >>>
+> > > >>> 1) vDPA presents a modern device instead of transitonal device
+> > > >>> 2) legacy driver can't be probed
+> > > >>>
+> > > >>> What I'm missing?
+> > > >>
+> > > >> Hi Michael:
+> > > >>
+> > > >> Do you agree to find the way to present modern device? We need a
+> > > >> conclusion
+> > > >> to make the netlink API work to move forward.
+> > > >>
+> > > >> Thanks
+> > > > I think we need a way to support legacy with no data path overhead.=
+ qemu
+> > > > setting VERSION_1 for a legacy guest affects the ring format so it =
+does
+> > > > not really work. This seems to rule out emulating config space enti=
+rely
+> > > > in userspace.
+> > >
+> > >
+> > > So I'd rather drop the legacy support in this case. It never work for
+> > > vDPA in the past and virtio-vDPA doesn't even need that. Note that
+> > > ACCESS_PLATFORM is mandated for all the vDPA parents right now which
+> > > implies modern device and LE. I wonder what's the value for supportin=
+g
+> > > legacy in this case or do we really encourage vendors to ship card wi=
+th
+> > > legacy support (e.g endian support in the hardware)?
+> >
+> > Hi Michael:
+> >
+> > Any thoughts on this approach?
+> >
+> > My understanding is that dropping legacy support will simplify a lot of=
+ stuffs.
+> >
+> > Thanks
+>
+> So basically the main condition is that strong memory barriers aren't
+> needed for virtio, smp barriers are enough.
+> Are there architectures besides x86 (where it's kind of true - as long as
+> one does not use non-temporals) where that is true?
+> If all these architectures are LE then we don't need to worry
+> about endian support in the hardware.
 
-Commit-ID:     6627eb25e40cc8d135d3f8d5391851d18ac497d7
-Gitweb:        https://git.kernel.org/tip/6627eb25e40cc8d135d3f8d5391851d18ac497d7
-Author:        H. Peter Anvin (Intel) <hpa@zytor.com>
-AuthorDate:    Mon, 10 May 2021 11:53:10 -07:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Wed, 12 May 2021 10:49:13 +02:00
+So I agree it's better not to add those stuffs in either qemu or
+kernel. See below.
 
-x86/entry: Unify definitions from <asm/calling.h> and <asm/ptrace-abi.h>
+>
+> In other words I guess yes we could have qemu limit things to x86 and
+> then just pretend to the card that it's virtio 1.
+> So endian-ness we can address.
+>
+> Problem is virtio 1 has effects beyond this. things like header size
+> with mergeable buffers off for virtio net.
+>
+> So I am inclined to say let us not do the "pretend it's virtio 1" game
+> in qemu.
 
-The register offsets in <asm/ptrace-abi.h> are duplicated in
-entry/calling.h, but are formatted differently and therefore not
-compatible. Use the version from <asm/ptrace-abi.h> consistently.
+I fully agree.
 
-Signed-off-by: H. Peter Anvin (Intel) <hpa@zytor.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20210510185316.3307264-2-hpa@zytor.com
----
- arch/x86/entry/calling.h  | 36 +-----------------------------------
- arch/x86/kernel/head_64.S |  6 +++---
- 2 files changed, 4 insertions(+), 38 deletions(-)
+  Let us be honest to the card about what happens.
+> But if you want to limit things to x86 either in kernel or in qemu,
+> that's ok by me.
 
-diff --git a/arch/x86/entry/calling.h b/arch/x86/entry/calling.h
-index 07a9331..7436d4a 100644
---- a/arch/x86/entry/calling.h
-+++ b/arch/x86/entry/calling.h
-@@ -6,6 +6,7 @@
- #include <asm/percpu.h>
- #include <asm/asm-offsets.h>
- #include <asm/processor-flags.h>
-+#include <asm/ptrace-abi.h>
- 
- /*
- 
-@@ -62,41 +63,6 @@ For 32-bit we have the following conventions - kernel is built with
-  * for assembly code:
-  */
- 
--/* The layout forms the "struct pt_regs" on the stack: */
--/*
-- * C ABI says these regs are callee-preserved. They aren't saved on kernel entry
-- * unless syscall needs a complete, fully filled "struct pt_regs".
-- */
--#define R15		0*8
--#define R14		1*8
--#define R13		2*8
--#define R12		3*8
--#define RBP		4*8
--#define RBX		5*8
--/* These regs are callee-clobbered. Always saved on kernel entry. */
--#define R11		6*8
--#define R10		7*8
--#define R9		8*8
--#define R8		9*8
--#define RAX		10*8
--#define RCX		11*8
--#define RDX		12*8
--#define RSI		13*8
--#define RDI		14*8
--/*
-- * On syscall entry, this is syscall#. On CPU exception, this is error code.
-- * On hw interrupt, it's IRQ number:
-- */
--#define ORIG_RAX	15*8
--/* Return frame for iretq */
--#define RIP		16*8
--#define CS		17*8
--#define EFLAGS		18*8
--#define RSP		19*8
--#define SS		20*8
--
--#define SIZEOF_PTREGS	21*8
--
- .macro PUSH_AND_CLEAR_REGS rdx=%rdx rax=%rax save_ret=0
- 	.if \save_ret
- 	pushq	%rsi		/* pt_regs->si */
-diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-index 04bddaa..d8b3ebd 100644
---- a/arch/x86/kernel/head_64.S
-+++ b/arch/x86/kernel/head_64.S
-@@ -62,7 +62,7 @@ SYM_CODE_START_NOALIGN(startup_64)
- 	 */
- 
- 	/* Set up the stack for verify_cpu(), similar to initial_stack below */
--	leaq	(__end_init_task - SIZEOF_PTREGS)(%rip), %rsp
-+	leaq	(__end_init_task - FRAME_SIZE)(%rip), %rsp
- 
- 	leaq	_text(%rip), %rdi
- 	pushq	%rsi
-@@ -343,10 +343,10 @@ SYM_DATA(initial_vc_handler,	.quad handle_vc_boot_ghcb)
- #endif
- 
- /*
-- * The SIZEOF_PTREGS gap is a convention which helps the in-kernel unwinder
-+ * The FRAME_SIZE gap is a convention which helps the in-kernel unwinder
-  * reliably detect the end of the stack.
-  */
--SYM_DATA(initial_stack, .quad init_thread_union + THREAD_SIZE - SIZEOF_PTREGS)
-+SYM_DATA(initial_stack, .quad init_thread_union + THREAD_SIZE - FRAME_SIZE)
- 	__FINITDATA
- 
- 	__INIT
+So what I want to do is:
+
+1) mandate 1.0 device on the kernel
+2) don't try to pretend transitional or legacy device on top of modern
+device in Qemu, so qemu will fail to start if vhost-vDPA is started
+with a legacy or transitional device
+
+And this simply the management API which can assume LE for
+pre-configuration via config space.
+
+So if I'm not misunderstanding, we can merge this patch and I can do
+the Qemu work on top?
+
+Thanks
+
+>
+> >
+> > >
+> > >
+> > > >
+> > > > So I think we should add an ioctl along the lines of
+> > > > protocol features. Then I think we can reserve feature bits
+> > > > for config space format: legacy LE, legacy BE, modern.
+> > >
+> > >
+> > > We had VHOST_SET_VRING_ENDIAN but this will complicates both the vDPA
+> > > parent and management. What's more important, legacy behaviour is not
+> > > restrictied by the spec.
+> > >
+> > >
+> > > >
+> > > > Querying the feature bits will provide us with info about
+> > > > what does the device support. Acking them will tell device
+> > > > what does guest need.
+> > >
+> > >
+> > > I think this can work, but I wonder how much we can gain from such
+> > > complexitiy.
+> > >
+> > > Thanks
+> > >
+> > >
+> > > >
+> > > >
+> > > >
+> > > >
+> > > >
+> > > >>>
+> > > >>>>> to have a simple and easy
+> > > >>>>> abstarction in the kenrel. For legacy driver in the guest,
+> > > >>>>> hypervisor is in
+> > > >>>>> charge of the mediation:
+> > > >>>>>
+> > > >>>>> 1) config space access endian conversion
+> > > >>>>> 2) using shadow virtqueue to change the endian in the vring
+> > > >>>>>
+> > > >>>>> Thanks
+> > > >>>> I'd like to avoid shadow virtqueue hacks if at all possible.
+> > > >>>> Last I checked performance wasn't much better than just emulatin=
+g
+> > > >>>> virtio in software.
+> > > >>>
+> > > >>> I think the legacy driver support is just a nice to have. Or do y=
+ou see
+> > > >>> any value to that? I guess for mellanox and intel, only modern de=
+vice is
+> > > >>> supported in the hardware.
+> > > >>>
+> > > >>> Thanks
+> > > >>>
+> > > >>>
+> > > >>>>>>>>
+> > > >>>>>>>>
+> > > >>>>>>>>> ---
+> > > >>>>>>>>>      include/linux/vdpa.h | 6 ++++++
+> > > >>>>>>>>>      1 file changed, 6 insertions(+)
+> > > >>>>>>>>>
+> > > >>>>>>>>> diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
+> > > >>>>>>>>> index 0fefeb976877..cfde4ec999b4 100644
+> > > >>>>>>>>> --- a/include/linux/vdpa.h
+> > > >>>>>>>>> +++ b/include/linux/vdpa.h
+> > > >>>>>>>>> @@ -6,6 +6,7 @@
+> > > >>>>>>>>>      #include <linux/device.h>
+> > > >>>>>>>>>      #include <linux/interrupt.h>
+> > > >>>>>>>>>      #include <linux/vhost_iotlb.h>
+> > > >>>>>>>>> +#include <uapi/linux/virtio_config.h>
+> > > >>>>>>>>>      /**
+> > > >>>>>>>>>       * vDPA callback definition.
+> > > >>>>>>>>> @@ -317,6 +318,11 @@ static inline int
+> > > >>>>>>>>> vdpa_set_features(struct vdpa_device *vdev, u64
+> > > >>>>>>>>> features)
+> > > >>>>>>>>>      {
+> > > >>>>>>>>>              const struct vdpa_config_ops *ops =3D vdev->co=
+nfig;
+> > > >>>>>>>>> +        /* Mandating 1.0 to have semantics of
+> > > >>>>>>>>> normative statements in
+> > > >>>>>>>>> +         * the spec. */
+> > > >>>>>>>>> +        if (!(features & BIT_ULL(VIRTIO_F_VERSION_1)))
+> > > >>>>>>>>> +        return -EINVAL;
+> > > >>>>>>>>> +
+> > > >>>>>>>>>          vdev->features_valid =3D true;
+> > > >>>>>>>>>              return ops->set_features(vdev, features);
+> > > >>>>>>>>>      }
+> > > >>>>>>>>> --
+> > > >>>>>>>>> 2.25.1
+> > >
+> > >
+>
+
