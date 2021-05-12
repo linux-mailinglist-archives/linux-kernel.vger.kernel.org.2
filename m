@@ -2,88 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C39E37BD78
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EDAC37BD79
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:55:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232426AbhELM41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 08:56:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55166 "EHLO mail.kernel.org"
+        id S233534AbhELM4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 08:56:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55656 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233514AbhELMyZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 08:54:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD1AC61177;
-        Wed, 12 May 2021 12:53:13 +0000 (UTC)
-Date:   Wed, 12 May 2021 14:53:10 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
-        kernel@pengutronix.de, Jan Kara <jack@suse.com>,
-        Richard Weinberger <richard@nod.at>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH v3 0/2] quota: Add mountpath based quota support
-Message-ID: <20210512125310.m3b4ralhwsdocpyb@wittgenstein>
-References: <20210304123541.30749-1-s.hauer@pengutronix.de>
- <20210316112916.GA23532@quack2.suse.cz>
- <20210512110149.GA31495@quack2.suse.cz>
+        id S232920AbhELMys (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 08:54:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D06F613FB
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 12:53:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620824019;
+        bh=XbmRrReojneENbPSOsU6jBGRBw9yRA5UpTwIcpDkSpc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=mBs5vpI7hBKzuA1pOJxQSwbXVzF+V9ogB1ilzujPFM0oCf9q7/JCDjWMRVFNZJyl8
+         r06bViLCittI0TwmSi8TpCkueNZJ5cM7eu4PKjsw8vupJT3Cq05ei/aFDXeEvsHvms
+         WrIAIRi0ZqdTNjCUHztmgTezzmHcQ5bbEIOe3gAGNqYn/aQuaBq2Erw1/qXfdJ0Hvd
+         kfEBKC9pF3YnUc+wG1YE3ilgWv1nwyLHtoSDGccGKR2r3DBrI7rLlAHzb//SyrPbEt
+         YcsqNsWw6ZlkmKmPobQpgFGPeQKf4HJ1MomKgMWg6wfiOuXLAXvYYHvUtTezrMUrwC
+         spqYkPMAWV4KA==
+Received: by mail-ot1-f49.google.com with SMTP id r26-20020a056830121ab02902a5ff1c9b81so20435136otp.11
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 05:53:39 -0700 (PDT)
+X-Gm-Message-State: AOAM530N44hWeGVKAS0a4sCOMoECv6tGuiokypEI+v9J0c9Dhl3qmLGL
+        EbHYHAVu7TzT4alqRyyO2iFP+AzBzRMljd9pH0o=
+X-Google-Smtp-Source: ABdhPJyzv9iOlLaq/QuwKouiiizHJWE6YBEN3U+psdBds/7z9QuhH2qyv3UMJdgN5tLID6ZlAJ8yjGsT5jZINq+zfLw=
+X-Received: by 2002:a05:6830:4da:: with SMTP id s26mr30389717otd.77.1620824018741;
+ Wed, 12 May 2021 05:53:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210512110149.GA31495@quack2.suse.cz>
+References: <20210511203716.117010-1-rikard.falkeborn@gmail.com>
+In-Reply-To: <20210511203716.117010-1-rikard.falkeborn@gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 12 May 2021 14:53:27 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXF0rMwjgm27=i3XkrXJ=21C_x4he5Ls+7FSKUhsva970Q@mail.gmail.com>
+Message-ID: <CAMj1kXF0rMwjgm27=i3XkrXJ=21C_x4he5Ls+7FSKUhsva970Q@mail.gmail.com>
+Subject: Re: [PATCH] linux/bits.h: Fix compilation error with GENMASK
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Yury Norov <yury.norov@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 01:01:49PM +0200, Jan Kara wrote:
-> Added a few more CCs.
-> 
-> On Tue 16-03-21 12:29:16, Jan Kara wrote:
-> > On Thu 04-03-21 13:35:38, Sascha Hauer wrote:
-> > > Current quotactl syscall uses a path to a block device to specify the
-> > > filesystem to work on which makes it unsuitable for filesystems that
-> > > do not have a block device. This series adds a new syscall quotactl_path()
-> > > which replaces the path to the block device with a mountpath, but otherwise
-> > > behaves like original quotactl.
-> > > 
-> > > This is done to add quota support to UBIFS. UBIFS quota support has been
-> > > posted several times with different approaches to put the mountpath into
-> > > the existing quotactl() syscall until it has been suggested to make it a
-> > > new syscall instead, so here it is.
-> > > 
-> > > I'm not posting the full UBIFS quota series here as it remains unchanged
-> > > and I'd like to get feedback to the new syscall first. For those interested
-> > > the most recent series can be found here: https://lwn.net/Articles/810463/
-> > 
-> > Thanks. I've merged the two patches into my tree and will push them to
-> > Linus for the next merge window.
-> 
-> So there are some people at LWN whining that quotactl_path() has no dirfd
-> and flags arguments for specifying the target. Somewhat late in the game
-> but since there's no major release with the syscall and no userspace using
-> it, I think we could still change that. What do you think? What they
-> suggest does make some sense. But then, rather then supporting API for
-> million-and-one ways in which I may wish to lookup a fs object, won't it be
-> better to just pass 'fd' in the new syscall (it may well be just O_PATH fd
-> AFAICT) and be done with that?
+(+ Arnd)
 
-I think adding a dirfd argument makes a lot of sense (Unless there are
-some restrictions around quotas I'm misunderstanding.).
-
-If I may: in general, I think we should aim to not add additional system
-calls that operate on paths only. Purely path-based apis tend to be the
-source of security issues especially when scoped lookups are really
-important which given the ubiquity of sandboxing solutions nowadays is
-quite often actually.
-For example, when openat2() landed it gave such a boost in lookup
-capabilities that I switched some libraries over to only ever do scoped
-lookups, i.e. I decide on a starting point that gets opened path-based
-and then explicitly express how I want that lookup to proceed ultimately
-opening the final path component on which I want to perform operations.
-Combined with the mount API almost everything can be done purely fd
-based.
-
-In addition to that dirfd-scopable system calls allow for a much nicer
-api experience when programming in userspace.
-
-Christian
+On Tue, 11 May 2021 at 22:37, Rikard Falkeborn
+<rikard.falkeborn@gmail.com> wrote:
+>
+> GENMASK() has an input check which uses __builtin_choose_expr() to enable
+> a compile time sanity check of its inputs if they are known at compile
+> time. However, it turns out that __builtin_constant_p() does not always
+> return a compile time constant [0]. It was thought this problem was fixed
+> with gcc 4.9 [1], but apparently this is not the case [2].
+>
+> Switch to use __is_constexpr() instead which always returns a compile
+> time constant, regardless of its inputs.
+>
+> [0]: https://lore.kernel.org/lkml/42b4342b-aefc-a16a-0d43-9f9c0d63ba7a@rasmusvillemoes.dk
+> [1]: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=19449
+> [2]: https://lore.kernel.org/lkml/1ac7bbc2-45d9-26ed-0b33-bf382b8d858b@I-love.SAKURA.ne.jp
+>
+> Reported-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+> ---
+> Feedback on placing __is_constexpr() in const.h is welcome, at least the
+> name is appropriate...
+>
+>  include/linux/bits.h        |  2 +-
+>  include/linux/const.h       |  8 ++++++++
+>  include/linux/minmax.h      | 10 ++--------
+>  tools/include/linux/bits.h  |  2 +-
+>  tools/include/linux/const.h |  8 ++++++++
+>  5 files changed, 20 insertions(+), 10 deletions(-)
+>
+> diff --git a/include/linux/bits.h b/include/linux/bits.h
+> index 7f475d59a097..87d112650dfb 100644
+> --- a/include/linux/bits.h
+> +++ b/include/linux/bits.h
+> @@ -22,7 +22,7 @@
+>  #include <linux/build_bug.h>
+>  #define GENMASK_INPUT_CHECK(h, l) \
+>         (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
+> -               __builtin_constant_p((l) > (h)), (l) > (h), 0)))
+> +               __is_constexpr((l) > (h)), (l) > (h), 0)))
+>  #else
+>  /*
+>   * BUILD_BUG_ON_ZERO is not available in h files included from asm files,
+> diff --git a/include/linux/const.h b/include/linux/const.h
+> index 81b8aae5a855..435ddd72d2c4 100644
+> --- a/include/linux/const.h
+> +++ b/include/linux/const.h
+> @@ -3,4 +3,12 @@
+>
+>  #include <vdso/const.h>
+>
+> +/*
+> + * This returns a constant expression while determining if an argument is
+> + * a constant expression, most importantly without evaluating the argument.
+> + * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
+> + */
+> +#define __is_constexpr(x) \
+> +       (sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
+> +
+>  #endif /* _LINUX_CONST_H */
+> diff --git a/include/linux/minmax.h b/include/linux/minmax.h
+> index c0f57b0c64d9..5433c08fcc68 100644
+> --- a/include/linux/minmax.h
+> +++ b/include/linux/minmax.h
+> @@ -2,6 +2,8 @@
+>  #ifndef _LINUX_MINMAX_H
+>  #define _LINUX_MINMAX_H
+>
+> +#include <linux/const.h>
+> +
+>  /*
+>   * min()/max()/clamp() macros must accomplish three things:
+>   *
+> @@ -17,14 +19,6 @@
+>  #define __typecheck(x, y) \
+>         (!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
+>
+> -/*
+> - * This returns a constant expression while determining if an argument is
+> - * a constant expression, most importantly without evaluating the argument.
+> - * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
+> - */
+> -#define __is_constexpr(x) \
+> -       (sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
+> -
+>  #define __no_side_effects(x, y) \
+>                 (__is_constexpr(x) && __is_constexpr(y))
+>
+> diff --git a/tools/include/linux/bits.h b/tools/include/linux/bits.h
+> index 7f475d59a097..87d112650dfb 100644
+> --- a/tools/include/linux/bits.h
+> +++ b/tools/include/linux/bits.h
+> @@ -22,7 +22,7 @@
+>  #include <linux/build_bug.h>
+>  #define GENMASK_INPUT_CHECK(h, l) \
+>         (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
+> -               __builtin_constant_p((l) > (h)), (l) > (h), 0)))
+> +               __is_constexpr((l) > (h)), (l) > (h), 0)))
+>  #else
+>  /*
+>   * BUILD_BUG_ON_ZERO is not available in h files included from asm files,
+> diff --git a/tools/include/linux/const.h b/tools/include/linux/const.h
+> index 81b8aae5a855..435ddd72d2c4 100644
+> --- a/tools/include/linux/const.h
+> +++ b/tools/include/linux/const.h
+> @@ -3,4 +3,12 @@
+>
+>  #include <vdso/const.h>
+>
+> +/*
+> + * This returns a constant expression while determining if an argument is
+> + * a constant expression, most importantly without evaluating the argument.
+> + * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
+> + */
+> +#define __is_constexpr(x) \
+> +       (sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
+> +
+>  #endif /* _LINUX_CONST_H */
+> --
+> 2.31.1
+>
