@@ -2,105 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F51A37EB85
+	by mail.lfdr.de (Postfix) with ESMTP id E800237EB86
 	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380930AbhELTdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:33:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346783AbhELRVk (ORCPT
+        id S1380954AbhELTdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:33:07 -0400
+Received: from mail-pg1-f182.google.com ([209.85.215.182]:33748 "EHLO
+        mail-pg1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346863AbhELRVu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 13:21:40 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A482C061347;
-        Wed, 12 May 2021 10:20:14 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id v191so18995763pfc.8;
-        Wed, 12 May 2021 10:20:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/mRM7q1w9KEfWo7XLMCrlXg4WbYJ598DsMPCReIKFcI=;
-        b=NNxJOC23SFvUX3yQW92nyLFzLFHNPZr8wDnfRRzMSlqB2XWlW6gkv9Pgwv1joc/odL
-         kZUSxA62ue/klNVU1liSmFbMBwJyzDwt86W1jUoMTLxjwfQxWO8hCSlzWrYERHAfmD0S
-         HgUnaOJWhGXY+4JXADcXpKI9iJCWYvKgwLcFQsBjh8yIKYDK2scSHFKXs2xGOvsCzcQd
-         uiOGUIgi+lyiMA8uK7nuZXyxhRDdUOBTBQEBCTfnAEz7pAlfr7ANsPBg43I4VCHqGh6Z
-         bbulzkuoffV1gybJb8q00vrxEt7M46JwL5cD9pxAWd6bAtom880pBUVmOcX28MNfRe2A
-         MfMQ==
+        Wed, 12 May 2021 13:21:50 -0400
+Received: by mail-pg1-f182.google.com with SMTP id i5so13919160pgm.0;
+        Wed, 12 May 2021 10:20:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/mRM7q1w9KEfWo7XLMCrlXg4WbYJ598DsMPCReIKFcI=;
-        b=mFATqLwBsL7RH7yhhIVJT30DMNtNARQzmibIcx6iluCGVxgnMJSxHrO98Pm2ethLKr
-         y2K5sVVvtjm1tfiim3T6rhMVx8cAa1oPgASLsuPAAa756Yprv2KZ3xXhO7H4/OGs1m8X
-         ENw3Sbo2Jp68WlOiCgZbzCxfXuDI1YfDusImSxzkllb1HJ1TwyW1sruYdJc/XCtHULM8
-         sASupd3dfrAxhmLXkBPbBxJIp0nz2qmm6i0rJAvcMg/7DMzJViZdqSvAQBBHBHjudoWB
-         bmugCZvOotIAXQRp1t0lG+e0UqHOQRVRSsWpyT/V5m++6r3WmKHWsoDOYUvgKb7xXnqa
-         BSWw==
-X-Gm-Message-State: AOAM533EnNJQE//Hr9IrjYvDrUQXxz1FKJ/HMlSIZl0ttmJiwbEVAwzy
-        pygjUiC+MevIiQLU3VJjWCArQM4MsDnpWjQcq2o=
-X-Google-Smtp-Source: ABdhPJxDVWM6VC96SX/FrY4PNncdkd0pABiXC4DaOTQwHYXX7VS6NITQsa75eGgDVq4vOcFjWpkRADT1tlGm2bYJnSI=
-X-Received: by 2002:a05:6a00:8c4:b029:2b4:8334:ed4d with SMTP id
- s4-20020a056a0008c4b02902b48334ed4dmr22170660pfu.36.1620840013879; Wed, 12
- May 2021 10:20:13 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7LGcYCNZMcfCP3NWFcJJOSDPCUnlEq03kEzY5RMmLcM=;
+        b=VTckpdLgLA5oquEjefQpHUhNroCbphuA3PLt1n06GLPgkmRJ9nueRDlj9o2nMxxigz
+         PanOzLSm+JOvYpEMDEgqnvIASdv+guZUqG7jxWhXVBLw9OlhtWU+/leNki8Gsf4cwrRw
+         MMBq/jZ2HUnrZAK/wk61eMsvC7prUntW0Az3jYKddbpfOSja8mN1SE7ZpX5y1m6WAa22
+         jeEKdRXF52b3wOeQ9fKZaVpXsLVfJk0YDDVbxqjwvHhJGFKTz6HiR5DXYhLNZVIlBRKs
+         WGSmKxmgphU/YmXS8TI+ahFla4UTvSudqU8CzpwrXhywJdy09jove0eAVUsATYSZavut
+         2+dg==
+X-Gm-Message-State: AOAM5309DMh/SPlWl3EK0l+NLc+Fj4JW5+zUcprtNGhu46KjDGIuw/cp
+        j4OlyVRbcXqNFkTvg1/GRKw=
+X-Google-Smtp-Source: ABdhPJzFXwRRMW5n7pGiz+V294eU3gB1BFVm04NenPL4KbwcBLPSsec4Ecele52LHZfmHrzXIwhV+g==
+X-Received: by 2002:a63:d70f:: with SMTP id d15mr37948115pgg.397.1620840041768;
+        Wed, 12 May 2021 10:20:41 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id j79sm333131pfd.184.2021.05.12.10.20.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 10:20:40 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id EBA8B41321; Wed, 12 May 2021 17:20:39 +0000 (UTC)
+Date:   Wed, 12 May 2021 17:20:39 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Hannes Reinecke <hare@suse.de>
+Cc:     axboe@kernel.dk, bvanassche@acm.org, ming.lei@redhat.com,
+        hch@infradead.org, jack@suse.cz, osandov@fb.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 7/8] null_blk: add error handling support for
+ add_disk()
+Message-ID: <20210512172039.GQ4332@42.do-not-panic.com>
+References: <20210512064629.13899-1-mcgrof@kernel.org>
+ <20210512064629.13899-8-mcgrof@kernel.org>
+ <842b6a8d-8880-a0da-a38b-39378dc6ebb9@suse.de>
+ <20210512164709.GA4332@42.do-not-panic.com>
+ <d519b9ce-ad28-a266-786f-4128e0b91b9f@suse.de>
 MIME-Version: 1.0
-References: <cover.1620766020.git.lucas.p.stankus@gmail.com> <09e65d3a235febfc4c3ee172b573ba8c9cde94b8.1620766020.git.lucas.p.stankus@gmail.com>
-In-Reply-To: <09e65d3a235febfc4c3ee172b573ba8c9cde94b8.1620766020.git.lucas.p.stankus@gmail.com>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Wed, 12 May 2021 20:20:02 +0300
-Message-ID: <CA+U=DsptfNDut3984MJkKckgWBhNd_0p17RfpidEXwYhMRfxtg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] staging: iio: cdc: ad7746: avoid overwrite of num_channels
-To:     Lucas Stankus <lucas.p.stankus@gmail.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        linux-staging@lists.linux.dev, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d519b9ce-ad28-a266-786f-4128e0b91b9f@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 11:55 PM Lucas Stankus
-<lucas.p.stankus@gmail.com> wrote:
->
-> AD7745 devices don't have the CIN2 pins and therefore can't handle related
-> channels. Forcing the number of AD7746 channels may lead to enabling more
-> channels than what the hardware actually supports.
-> Avoid num_channels being overwritten after first assignment.
->
-> Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
-> ---
->  drivers/staging/iio/cdc/ad7746.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/drivers/staging/iio/cdc/ad7746.c b/drivers/staging/iio/cdc/ad7746.c
-> index e03d010b2f4c..9e0da43b2871 100644
-> --- a/drivers/staging/iio/cdc/ad7746.c
-> +++ b/drivers/staging/iio/cdc/ad7746.c
-> @@ -693,7 +693,6 @@ static int ad7746_probe(struct i2c_client *client,
->                 indio_dev->num_channels = ARRAY_SIZE(ad7746_channels);
->         else
->                 indio_dev->num_channels =  ARRAY_SIZE(ad7746_channels) - 2;
-> -       indio_dev->num_channels = ARRAY_SIZE(ad7746_channels);
+On Wed, May 12, 2021 at 07:12:03PM +0200, Hannes Reinecke wrote:
+> On 5/12/21 6:47 PM, Luis Chamberlain wrote:
+> > On Wed, May 12, 2021 at 05:16:39PM +0200, Hannes Reinecke wrote:
+> > > On 5/12/21 8:46 AM, Luis Chamberlain wrote:
+> > > > We never checked for errors on add_disk() as this function
+> > > > returned void. Now that this is fixed, use the shiny new
+> > > > error handling.
+> > > > 
+> > > > Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> > > > ---
+> > > >    drivers/block/null_blk/main.c | 9 +++++++--
+> > > >    1 file changed, 7 insertions(+), 2 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/block/null_blk/main.c b/drivers/block/null_blk/main.c
+> > > > index 5f006d9e1472..2346d1292b26 100644
+> > > > --- a/drivers/block/null_blk/main.c
+> > > > +++ b/drivers/block/null_blk/main.c
+> > > > @@ -1699,6 +1699,7 @@ static int init_driver_queues(struct nullb *nullb)
+> > > >    static int null_gendisk_register(struct nullb *nullb)
+> > > >    {
+> > > > +	int ret;
+> > > >    	sector_t size = ((sector_t)nullb->dev->size * SZ_1M) >> SECTOR_SHIFT;
+> > > >    	struct gendisk *disk;
+> > > > @@ -1719,13 +1720,17 @@ static int null_gendisk_register(struct nullb *nullb)
+> > > >    	strncpy(disk->disk_name, nullb->disk_name, DISK_NAME_LEN);
+> > > >    	if (nullb->dev->zoned) {
+> > > > -		int ret = null_register_zoned_dev(nullb);
+> > > > +		ret = null_register_zoned_dev(nullb);
+> > > >    		if (ret)
+> > > >    			return ret;
+> > > >    	}
+> > > > -	add_disk(disk);
+> > > > +	ret = add_disk(disk);
+> > > > +	if (ret) {
+> > > 
+> > > unregister_zoned_device() ?
+> > 
+> > That function does not exist, do you mean null_free_zoned_dev()? If so
+> > that is done by the caller.
+> > 
+> What I intended to say is that you are calling 'null_register_zoned_dev()'
+> at one point, but don't call a cleanup function if there is an error later
+> in the path, leaving the caller to guess whether null_register_zoned_dev()
+> has been called or not.
+> So we should call the cleanup function here, too.
 
-ohh; good catch
+The cleanup for zone stuff is done on the caller.
 
-this falls into the category of a fix, so a Fixes tag is required;
-this looks so old, that i did not bother tracking it before
-83e416f458d53  [which is 2011]
-
-so, maybe something like:
-
-Fixes: 83e416f458d53 ("staging: iio: adc: Replace, rewrite ad7745 from
-scratch.")
-
->         indio_dev->modes = INDIO_DIRECT_MODE;
->
->         if (pdata) {
-> --
-> 2.31.1
->
+  Luis
