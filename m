@@ -2,122 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF30137BDF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 15:18:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E755D37BDF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 15:19:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230375AbhELNT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 09:19:29 -0400
-Received: from mga04.intel.com ([192.55.52.120]:58117 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230037AbhELNT2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 09:19:28 -0400
-IronPort-SDR: KvVGnP12J4OkXHhBg2IWYbzXoWNAYuRBEkYhItsbsw4aijIE9yoIQyyTnI1AHj4Byl+0ixdzqg
- 0KnOR+OCo+ew==
-X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="197725896"
-X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
-   d="scan'208";a="197725896"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2021 06:18:19 -0700
-IronPort-SDR: hDC1EPD4jIQJWFtmEFffflQBmH7KzkRZofmxG7tE5yyfCgysRZhaJseDxvUP+mDpcXp5ISPLf7
- B6cT/U896XrA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
-   d="scan'208";a="622414803"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
-  by fmsmga006.fm.intel.com with ESMTP; 12 May 2021 06:18:15 -0700
-Date:   Wed, 12 May 2021 21:18:15 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        john.stultz@linaro.org, sboyd@kernel.org, corbet@lwn.net,
-        Mark.Rutland@arm.com, maz@kernel.org, kernel-team@fb.com,
-        neeraju@codeaurora.org, ak@linux.intel.com,
-        zhengjun.xing@intel.com,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Subject: Re: [PATCH v14 clocksource 4/6] clocksource: Reduce clocksource-skew
- threshold for TSC
-Message-ID: <20210512131815.GA37641@shbuild999.sh.intel.com>
-References: <20210511233403.GA2896757@paulmck-ThinkPad-P17-Gen-1>
- <20210511233455.2897068-4-paulmck@kernel.org>
- <20210512021849.GB78351@shbuild999.sh.intel.com>
- <20210512035156.GT975577@paulmck-ThinkPad-P17-Gen-1>
+        id S230326AbhELNUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 09:20:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230037AbhELNUW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 09:20:22 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05B9AC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 06:19:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=kM8Gv4a7if6FOAGYpIP4H4G5ELTL9yP0j2wunmulU+g=; b=IxkLR8bNVFnsDosV3gjfPgggNa
+        1zh6QH/LgbpHoi480Ij82xCBQAnWc5KtCeK4JpZ26xHB15CP1luAkUovYhCcfCDc4LxpINJ2rWVUJ
+        Karqtz3BHWU6pBpxdyrBM9PJCJb3LUV4qLTYT7ozpXTk8bW8mcp1VtRf45dq4kcdcKhvInMDbfFf9
+        Gi6FdogMnOjwiHnQKKbWnc6FqTXjfcGcMArKgcHvfYvUQljm3UPNBhV9MmCsbnyJ7PCjbXRhm4uDG
+        2JxaO8B0lU0OuHL5BL45JLE65lbvnzR4pyP6i5tBEXvFeLN2TVDWFQWWUx003LIimpxYW3bJbFfsG
+        8Qsw3dew==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lgolT-002sBN-Hy; Wed, 12 May 2021 13:19:04 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 22EED300242;
+        Wed, 12 May 2021 15:18:58 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 088162870D488; Wed, 12 May 2021 15:18:58 +0200 (CEST)
+Date:   Wed, 12 May 2021 15:18:57 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     Andi Kleen <ak@linux.intel.com>, Borislav Petkov <bp@alien8.de>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC v2 01/32] x86/paravirt: Introduce CONFIG_PARAVIRT_XL
+Message-ID: <YJvVwXqGZWrXWPvP@hirez.programming.kicks-ass.net>
+References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <4f8c9559dd04d8e8485c419c5ebc9471613f7928.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YIhKXcNuinL0ar0O@zn.tnic>
+ <f62354fe-e202-ad38-5466-03e79954f757@suse.com>
+ <a24884ac-452e-751f-fb3e-82b3a9978ed1@linux.intel.com>
+ <41463493-48bb-0e69-dcb2-3072e2ddf208@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210512035156.GT975577@paulmck-ThinkPad-P17-Gen-1>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <41463493-48bb-0e69-dcb2-3072e2ddf208@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+On Mon, May 10, 2021 at 05:56:05PM +0200, Juergen Gross wrote:
 
-On Tue, May 11, 2021 at 08:51:56PM -0700, Paul E. McKenney wrote:
-> On Wed, May 12, 2021 at 10:18:49AM +0800, Feng Tang wrote:
-> > Hi Paul,
-> > 
-> > On Tue, May 11, 2021 at 04:34:53PM -0700, Paul E. McKenney wrote:
+> No. We have PARAVIRT_XXL for Xen PV guests, and we have PARAVIRT for
+> other hypervisor's guests, supporting basically the TLB flush operations
+> and time related operations only. Adding the halt related operations to
+> PARAVIRT wouldn't break anything.
 
-[SNIP]
-> > >  	 * Ensure clocksources that have large 'mult' values don't overflow
-> > >  	 * when adjusted.
-> > > diff --git a/kernel/time/jiffies.c b/kernel/time/jiffies.c
-> > > index a492e4da69ba..b3f608c2b936 100644
-> > > --- a/kernel/time/jiffies.c
-> > > +++ b/kernel/time/jiffies.c
-> > > @@ -49,13 +49,14 @@ static u64 jiffies_read(struct clocksource *cs)
-> > >   * for "tick-less" systems.
-> > >   */
-> > >  static struct clocksource clocksource_jiffies = {
-> > > -	.name		= "jiffies",
-> > > -	.rating		= 1, /* lowest valid rating*/
-> > > -	.read		= jiffies_read,
-> > > -	.mask		= CLOCKSOURCE_MASK(32),
-> > > -	.mult		= TICK_NSEC << JIFFIES_SHIFT, /* details above */
-> > > -	.shift		= JIFFIES_SHIFT,
-> > > -	.max_cycles	= 10,
-> > > +	.name			= "jiffies",
-> > > +	.rating			= 1, /* lowest valid rating*/
-> > > +	.uncertainty_margin	= TICK_NSEC,
-> > 
-> > 'jiffies' is known to be very bad as a watchdog ("worse bandaid" in
-> > Thomas' words :)), and TICK_NSEC just turns to 1ms for HZ=1000 case. 
-> > Maybe we should give it a bigger margin, like the 32ms margin for 
-> > 'tsc-early'?
-> > 
-> > Other than this, it looks good to me, thanks!
-> 
-> As in the fixup diff below?
+Also, I don't think anything modern should actually ever hit any of the
+HLT instructions, most everything should end up at an MWAIT.
 
-Yep, thanks,
-
-> 
-> Would you be willing to provide an ack or tested-by for the rest
-> of the series?  (I have your ack on 1/6.)
-
-I haven't figured out a way to check 5/6 patch yet, but feel free
-to add my ack for the first 4 patches (1/6 ~ 4/6) 
-
-	Acked-by: Feng Tang <feng.tang@intel.com>
-
-Thanks,
-Feng
-
-> 
-> 						Thanx, Paul
-> 
-> ------------------------------------------------------------------------
-> 
-> diff --git a/kernel/time/jiffies.c b/kernel/time/jiffies.c
-> index b3f608c2b936..01935aafdb46 100644
-> --- a/kernel/time/jiffies.c
-> +++ b/kernel/time/jiffies.c
-> @@ -51,7 +51,7 @@ static u64 jiffies_read(struct clocksource *cs)
->  static struct clocksource clocksource_jiffies = {
->  	.name			= "jiffies",
->  	.rating			= 1, /* lowest valid rating*/
-> -	.uncertainty_margin	= TICK_NSEC,
-> +	.uncertainty_margin	= 32 * NSEC_PER_MSEC,
->  	.read			= jiffies_read,
->  	.mask			= CLOCKSOURCE_MASK(32),
->  	.mult			= TICK_NSEC << JIFFIES_SHIFT, /* details above */
+Still, do we wants to give arch_safe_halt() and halt() the
+PVOP_ALT_VCALL0() treatment?
