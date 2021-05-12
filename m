@@ -2,85 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A46937B51B
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 06:47:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F239837B534
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 06:59:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230011AbhELEsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 00:48:52 -0400
-Received: from mga12.intel.com ([192.55.52.136]:61438 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229495AbhELEsu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 00:48:50 -0400
-IronPort-SDR: lm5mruyCjAlZqTVgzWpdSsTzOyC6YCzGB8DaNBHbu+lOyy9ggQAzCOZH4Wv1ZvOlOUFbzbFcMH
- iIjOqbtQ8OlA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="179210148"
-X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
-   d="scan'208";a="179210148"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2021 21:47:41 -0700
-IronPort-SDR: 53J1wazrS1QReixwdHkkxnR6h55hKjKPB+/AHJbpqmNp4e/76VbGCJhC1SNjmVaypT58hu5x5h
- SX50P3VhkV8A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,292,1613462400"; 
-   d="scan'208";a="622109218"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
-  by fmsmga006.fm.intel.com with ESMTP; 11 May 2021 20:21:05 -0700
-Cc:     baolu.lu@linux.intel.com,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        wanghaibin.wang@huawei.com, jiangkunkun@huawei.com,
-        yuzenghui@huawei.com, lushenming@huawei.com
-Subject: Re: [RFC PATCH v4 01/13] iommu: Introduce dirty log tracking
- framework
-To:     Keqian Zhu <zhukeqian1@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Yi Sun <yi.y.sun@linux.intel.com>,
-        Tian Kevin <kevin.tian@intel.com>
-References: <20210507102211.8836-1-zhukeqian1@huawei.com>
- <20210507102211.8836-2-zhukeqian1@huawei.com>
- <efc2d868-28ba-8ed9-1d6b-610b67d671b5@linux.intel.com>
- <18ac787a-179e-71f7-728b-c43feda80a16@huawei.com>
- <55fda826-9ab6-a3a0-b17e-a4d4879f00bc@linux.intel.com>
- <a8df289a-47c2-c193-cd6f-8415f68b900f@huawei.com>
- <f47e90c6-f3c4-b28f-a810-e03afe79e62d@linux.intel.com>
- <60182a35-e151-7150-3708-4e58dd8e78da@huawei.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <36cc7267-6aa3-db54-b08c-c2dfc0bbacb6@linux.intel.com>
-Date:   Wed, 12 May 2021 11:20:18 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230026AbhELFAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 01:00:15 -0400
+Received: from m1357.mail.163.com ([220.181.13.57]:62612 "EHLO
+        m1357.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229627AbhELFAO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 01:00:14 -0400
+X-Greylist: delayed 931 seconds by postgrey-1.27 at vger.kernel.org; Wed, 12 May 2021 01:00:13 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=cosug
+        5t8HU39//BFltOJj7rRKLz2TifgDlwd/EQhrQ8=; b=LLIp/6ex0sBGnIpb5Jl9C
+        VC9dmRlclgH4sQTKWf0a7bi7MvY3cSOVTWdPqOUZptQruGcQulfq9tR8hgBXnf7o
+        5iPe3JFnSaNJ5ZNYlXbNiCxnXuMz4b1AoePiRo13egRzTmyetZg4vvp/2E3ear3j
+        7Ko+8pp9ESZz610OcnspDY=
+Received: from meijusan$163.com ( [117.131.86.42] ) by ajax-webmail-wmsvr57
+ (Coremail) ; Wed, 12 May 2021 12:43:18 +0800 (CST)
+X-Originating-IP: [117.131.86.42]
+Date:   Wed, 12 May 2021 12:43:18 +0800 (CST)
+From:   meijusan <meijusan@163.com>
+To:     "David Ahern" <dsahern@gmail.com>
+Cc:     "Jakub Kicinski" <kuba@kernel.org>, davem@davemloft.net,
+        yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re:Re: [PATCH] net/ipv4/ip_fragment:fix missing Flags reserved bit
+ set in iphdr
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210104(ab8c30b6)
+ Copyright (c) 2002-2021 www.mailtech.cn 163com
+In-Reply-To: <28dfa69f-2844-29c4-5405-421520711196@gmail.com>
+References: <20210506145905.3884-1-meijusan@163.com>
+ <20210507155900.43cd8200@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <1368d6c3.bd1.1795900a467.Coremail.meijusan@163.com>
+ <28dfa69f-2844-29c4-5405-421520711196@gmail.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=GBK
 MIME-Version: 1.0
-In-Reply-To: <60182a35-e151-7150-3708-4e58dd8e78da@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Message-ID: <568ddced.29a0.1795ee2e53b.Coremail.meijusan@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: OcGowACn+dDmXJtgDMngAA--.61454W
+X-CM-SenderInfo: xphly3xvdqqiywtou0bp/1tbiFgyPHl44P95hDgADsg
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/11/21 3:40 PM, Keqian Zhu wrote:
->> For upper layers, before starting page tracking, they check the
->> dirty_page_trackable attribution of the domain and start it only it's
->> capable. Once the page tracking is switched on the vendor iommu driver
->> (or iommu core) should block further device attach/detach operations
->> until page tracking is stopped.
-> But when a domain becomes capable after detaching a device, the upper layer
-> still needs to query it and enable dirty log for it...
-> 
-> To make things coordinated, maybe the upper layer can register a notifier,
-> when the domain's capability change, the upper layer do not need to query, instead
-> they just need to realize a callback, and do their specific policy in the callback.
-> What do you think?
-> 
-
-That might be an option. But why not checking domain's attribution every
-time a new tracking period is about to start?
-
-Best regards,
-baolu
+CkF0IDIwMjEtMDUtMTEgMTE6MDU6NTQsICJEYXZpZCBBaGVybiIgPGRzYWhlcm5AZ21haWwuY29t
+PiB3cm90ZToKPk9uIDUvMTAvMjEgNzoxOCBQTSwgbWVpanVzYW4gd3JvdGU6Cj4+IAo+PiBBdCAy
+MDIxLTA1LTA4IDA2OjU5OjAwLCAiSmFrdWIgS2ljaW5za2kiIDxrdWJhQGtlcm5lbC5vcmc+IHdy
+b3RlOgo+Pj4gT24gVGh1LCAgNiBNYXkgMjAyMSAyMjo1OTowNSArMDgwMCBtZWlqdXNhbiB3cm90
+ZToKPj4+PiBpcCBmcmFnIHdpdGggdGhlIGlwaGRyIGZsYWdzIHJlc2VydmVkIGJpdCBzZXQsdmlh
+IHJvdXRlcixpcCBmcmFnIHJlYXNtIG9yCj4+Pj4gZnJhZ21lbnQsY2F1c2luZyB0aGUgcmVzZXJ2
+ZWQgYml0IGlzIHJlc2V0IHRvIHplcm8uCj4+Pj4KPj4+PiBLZWVwIHJlc2VydmVkIGJpdCBzZXQg
+aXMgbm90IG1vZGlmaWVkIGluIGlwIGZyYWcgIGRlZnJhZyBvciBmcmFnbWVudC4KPj4+Pgo+Pj4+
+IFNpZ25lZC1vZmYtYnk6IG1laWp1c2FuIDxtZWlqdXNhbkAxNjMuY29tPgo+Pj4KPj4+IENvdWxk
+IHlvdSBwbGVhc2UgcHJvdmlkZSBtb3JlIGJhY2tncm91bmQgb24gd2h5IHdlJ2Qgd2FudCB0byBk
+byB0aGlzPwo+PiAKPj4+IFByZWZlcmFibHkgd2l0aCByZWZlcmVuY2VzIHRvIHJlbGV2YW50IChu
+b24tQXByaWwgRm9vbHMnIERheSkgUkZDcy4KPj4gCj4+IFtiYWNrZ3JvdW5kXQo+PiB0aGUgU2lt
+cGxlIG5ldHdvcmsgdXNhZ2Ugc2NlbmFyaW9zOiB0aGUgb25lIFBDIHNvZnR3YXJlPC0tLT5saW51
+eCByb3V0ZXIoTDMpL2xpbnV4IGJyaWRlZ2UoTDIsYnJpZGdlLW5mLWNhbGwtaXB0YWJsZXMpPC0t
+LT50aGUgb3RoZXIgUEMgc29mdHdhcmUKPj4gMSl0aGUgUEMgc29mdHdhcmUgc2VuZCB0aGUgaXAg
+cGFja2V0IHdpdGggdGhlIGlwaGRyIGZsYWdzIHJlc2VydmVkIGJpdCBpcyBzZXQsIHdoZW4gaXAg
+cGFja2V0KG5vdCBmcmFnbWVudHMgKSB2aWEgdGhlIG9uZSBsaW51eCByb3V0ZXIvbGludXggYnJp
+ZGdlLGFuZCB0aGUgaXBoZHIgZmxhZ3MgcmVzZXJ2ZWQgYml0IGlzIG5vdCBtb2RpZmllZDsKPj4g
+MilidXQgdGhlIGlwIGZyYWdtZW50cyB2aWEgcm91dGVyLHRoZSBsaW51eCBJUCByZWFzc2VtYmx5
+IG9yIGZyYWdtZW50YXRpb24gLGNhdXNpbmcgdGhlIHJlc2VydmVkIGJpdCBpcyByZXNldCB0byB6
+ZXJvLFdoaWNoIGxlYWRzIHRvIFRoZSBvdGhlciBQQyBzb2Z0d2FyZSBkZXBlbmRpbmcgb24gdGhl
+IHJlc2VydmVkIGJpdCBzZXQgIHByb2Nlc3MgdGhlIFBhY2tldCBmYWlsZWQuCj4+IFtyZmNdCj4+
+IFJGQzc5MQo+PiBCaXQgMDogcmVzZXJ2ZWQsIG11c3QgYmUgemVybwo+PiBSRkMzNTE0Cj4+IElu
+dHJvZHVjdGlvbiBUaGlzIGJpdCAsIGJ1dCBUaGUgc2NlbmUgc2VlbXMgZGlmZmVyZW50IGZyb20g
+dXOjrHdlIGV4cGVjdCBLZWVwIHJlc2VydmVkIGJpdCBzZXQgaXMgbm90IG1vZGlmaWVkIHdoZW4g
+Zm9yd2FyZCB0aGUgbGludXggcm91dGVyCj4+IAo+PiAKPj4gCj4+IAo+PiAKPgo+V2h5IHByb2Nl
+c3MgdGhlIHBhY2tldCBhdCBhbGw/IElmIGEgcmVzZXJ2ZWQgYml0IG11c3QgYmUgMCBhbmQgaXQg
+aXMKCj5ub3QsIGRyb3AgdGhlIHBhY2tldC4KClNvcnJ5LCBteSBiYWNrZ3JvdW5kIGRlc2NyaXB0
+aW9uIGlzIG5vdCBjbGVhcmx5IGRlc2NyaWJlZAoKIHRoZSBTaW1wbGUgbmV0d29yayB1c2FnZSBz
+Y2VuYXJpb3M6IG9uZSBQQyBzb2Z0d2FyZTwtLS0+bGludXggcm91dGVyKEwzKS9saW51eCBicmlk
+ZWdlKEwyLGJyaWRnZS1uZi1jYWxsLWlwdGFibGVzKTwtLS0+dGhlIG90aGVyIFBDIHNvZnR3YXJl
+CiAxKXRoZSBQQyBzb2Z0d2FyZSBzZW5kIHRoZSBpcCBwYWNrZXQgd2l0aCB0aGUgaXBoZHIgZmxh
+Z3MgcmVzZXJ2ZWQgYml0IGlzIHNldCAxLFRoZSBwYWNrZXQgY2FuIHBhc3MgdGhyb3VnaCB0aGUg
+cm91dGVyIG5vcm1hbGx5LCBhbmQgdGhlIHJlc2VydmVkIGZsYWdzIGJpdCBoYXZlIG5vdCBiZWVu
+IG1vZGlmaWVkOwogMilXaGVuIHRoZSBpcCBmcmFnbWVudCBwYWNrZXQgcGFzc2VzIHRocm91Z2gg
+dGhlIGxpbnV4IHJvdXRlciwgdGhlIGxpbnV4IG5ldHdvcmsgcHJvdG9jb2wgc3RhY2sncyByZS1m
+cmFnbWVudGF0aW9uIGZ1bmN0aW9uIG9mIHRoZSBJUCBmcmFnbWVudCBjYXVzZXMgdGhlIGZpcnN0
+IGJpdCBvZiB0aGUgcmVzZXJ2ZWQgZmllbGQgb2YgdGhlIGlwIGhlYWRlciB0byBiZSBjbGVhcmVk
+IHRvIDAuIFdoZW4gdGhlIHBhY2tldCByZWFjaGVzIHRoZSBzb2Z0d2FyZSBvZiBhbm90aGVyIHBj
+LCB0aGUgUEMgc29mdHdhcmUgY2hlY2tzIHRoZSByZXNlcnZlZCBiaXQgYW5kIGZpbmRzIHRoYXQg
+dGhlIHJlc2VydmVkIGJpdCBpcyBub3QgMCwgIGRpc2NhcmQgdGhlIHBhY2tldC4KCiBJZiBhY2Nv
+cmRpbmcgdG8gcmZjNzkxLCB0aGUgcmVzZXJ2ZWQgYml0IG11c3QgYmUgMCwgaG93IGRvZXMgdGhl
+IGtlcm5lbCBwcm90b2NvbCBzdGFjayBkZWFsIHdpdGggZnJhZ21lbnRlZCBwYWNrZXRzIG9yIG5v
+bi1mcmFnbWVudGVkIHBhY2tldHMgdGhhdCBjYXJyeSB0aGUgcmVzZXJ2ZWQgZmllbGQgYml0IGFz
+IDE/IEkgcGVyc29uYWxseSB0aGluayB0aGF0IGVpdGhlciBhbGwgb2YgdGhlbSBhcmUgdHJhbnNt
+aXR0ZWQgdHJhbnNwYXJlbnRseSBvciBhbGwgb2YgdGhlbSBhcmUgZGlzY2FyZGVkLiBUaGlzIG5l
+ZWRzIHRvIGJlIGRpc2N1c3NlZC4KCg==
