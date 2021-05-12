@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B5EB37ED5A
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:40:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 945C537ED5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:40:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386521AbhELUVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 16:21:18 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:53654 "EHLO
+        id S1386601AbhELUVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 16:21:30 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:53660 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238779AbhELUDH (ORCPT
+        with ESMTP id S238723AbhELUDH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 12 May 2021 16:03:07 -0400
-Date:   Wed, 12 May 2021 20:01:46 -0000
+Date:   Wed, 12 May 2021 20:01:47 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620849707;
+        s=2020; t=1620849708;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=he7PoGyTMVd8d2vIjb3JCZ4egZAR870X/zRlUhrbRmY=;
-        b=EapU9zuFdfc2a0nycyUyTK5KgK9bWRA/IuQIzq3wZUeFTQWY4BTaXGrEbz2CDMk+lTgyfO
-        O80Chkjo3pFL3UV/XniU7MYXVxuQEUmv2Fahw5KqcF2hFP8sb92qm3wbot/fvs3beXBYwc
-        sd6GlhIZW4fQmcAiLmStBR3xKTeldlimyhJ7J9vCNZAqjnjTBPM4jQF8upkafZaQ4FQy+R
-        mZYRjPbm0rKFovpMtpkWnICEeDvKcv9Yfpgp3bJ0ivnzkzQHlfSjt/c/reAfcYzkOg9CXW
-        Zx1lpdS+EdDeVihHwNIg29T8r29lYEZcG1pCHGRd6W2k3yU5MDI06xy7feDM4A==
+        bh=U16Wen9fRtuglAqaBDoY+AdOgmO4JbDun0z7yyR1kjU=;
+        b=uT38VRBeUCwGi/QWtuGZJLFf47ShY38MrfcQtWZDJLEqckG/QvbcIgJ6aBy5Q6s49AeZG9
+        im6XimfO0dz+VXd/+AIC9PGZRgH0IRdlH+rgq4iD/AVSLp+nrzKn4jJQeK4+gJvWBVDgNj
+        t19d3/l8lpkKROGIGIa7EN0SbeBXhehDpWWBV/v85/Ey6q1Cp7HyYNmllDT25VP1iE/9KN
+        dwZ+ahLyL4JxRH2hHNhbr1Mb6M7ROYr21r4+8P5KVKleOhe/Hqpp+4QyahyoshYnLHfMnm
+        O3/W0Ti4URVeqZofJqjrHJh1GZExRnqxtUBGfYuYW9gCR4yu43o3KNbbOD4WmA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620849707;
+        s=2020e; t=1620849708;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=he7PoGyTMVd8d2vIjb3JCZ4egZAR870X/zRlUhrbRmY=;
-        b=wZ648Dgs1vbqeXsDFwkNtVFG3mjTYLOQS+J/R8EsIRiK9av+7ANCPGKsuj4SiO5LQjK9ou
-        HdFK9LfrQcf0i6Cg==
+        bh=U16Wen9fRtuglAqaBDoY+AdOgmO4JbDun0z7yyR1kjU=;
+        b=t1wkgdi0d1hGYi6jaD8JKcCXOecrk4ZR6oC57QhFleam+ZG7rsnIsk7MNFnXsJWe4w443N
+        t2ixvH5V5L/NL9Aw==
 From:   "tip-bot2 for Alexey Dobriyan" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched: Make nr_iowait() return 32-bit value
+Subject: [tip: sched/core] sched: Make nr_running() return 32-bit value
 Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
         Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210422200228.1423391-2-adobriyan@gmail.com>
-References: <20210422200228.1423391-2-adobriyan@gmail.com>
+In-Reply-To: <20210422200228.1423391-1-adobriyan@gmail.com>
+References: <20210422200228.1423391-1-adobriyan@gmail.com>
 MIME-Version: 1.0
-Message-ID: <162084970686.29796.5102772648534849157.tip-bot2@tip-bot2>
+Message-ID: <162084970734.29796.6875060189702159404.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -58,67 +58,82 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     9745516841a55c77163a5d549bce1374d776df54
-Gitweb:        https://git.kernel.org/tip/9745516841a55c77163a5d549bce1374d776df54
+Commit-ID:     01aee8fd7fb23049e2b52abadbe1f7b5e94a52d2
+Gitweb:        https://git.kernel.org/tip/01aee8fd7fb23049e2b52abadbe1f7b5e94a52d2
 Author:        Alexey Dobriyan <adobriyan@gmail.com>
-AuthorDate:    Thu, 22 Apr 2021 23:02:26 +03:00
+AuthorDate:    Thu, 22 Apr 2021 23:02:25 +03:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Wed, 12 May 2021 21:34:15 +02:00
+CommitterDate: Wed, 12 May 2021 21:34:14 +02:00
 
-sched: Make nr_iowait() return 32-bit value
+sched: Make nr_running() return 32-bit value
 
-Creating 2**32 tasks to wait in D-state is impossible and wasteful.
+Creating 2**32 tasks is impossible due to futex pid limits and wasteful
+anyway. Nobody has done it.
 
-Return "unsigned int" and save on REX prefixes.
+Bring nr_running() into 32-bit world to save on REX prefixes.
 
 Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20210422200228.1423391-2-adobriyan@gmail.com
+Link: https://lore.kernel.org/r/20210422200228.1423391-1-adobriyan@gmail.com
 ---
+ fs/proc/loadavg.c          | 2 +-
  fs/proc/stat.c             | 2 +-
  include/linux/sched/stat.h | 2 +-
  kernel/sched/core.c        | 4 ++--
- 3 files changed, 4 insertions(+), 4 deletions(-)
+ 4 files changed, 5 insertions(+), 5 deletions(-)
 
+diff --git a/fs/proc/loadavg.c b/fs/proc/loadavg.c
+index 8468bae..f32878d 100644
+--- a/fs/proc/loadavg.c
++++ b/fs/proc/loadavg.c
+@@ -16,7 +16,7 @@ static int loadavg_proc_show(struct seq_file *m, void *v)
+ 
+ 	get_avenrun(avnrun, FIXED_1/200, 0);
+ 
+-	seq_printf(m, "%lu.%02lu %lu.%02lu %lu.%02lu %ld/%d %d\n",
++	seq_printf(m, "%lu.%02lu %lu.%02lu %lu.%02lu %u/%d %d\n",
+ 		LOAD_INT(avnrun[0]), LOAD_FRAC(avnrun[0]),
+ 		LOAD_INT(avnrun[1]), LOAD_FRAC(avnrun[1]),
+ 		LOAD_INT(avnrun[2]), LOAD_FRAC(avnrun[2]),
 diff --git a/fs/proc/stat.c b/fs/proc/stat.c
-index 941605d..6561a06 100644
+index f25e853..941605d 100644
 --- a/fs/proc/stat.c
 +++ b/fs/proc/stat.c
-@@ -201,7 +201,7 @@ static int show_stat(struct seq_file *p, void *v)
+@@ -200,7 +200,7 @@ static int show_stat(struct seq_file *p, void *v)
+ 		"\nctxt %llu\n"
  		"btime %llu\n"
  		"processes %lu\n"
- 		"procs_running %u\n"
--		"procs_blocked %lu\n",
-+		"procs_blocked %u\n",
+-		"procs_running %lu\n"
++		"procs_running %u\n"
+ 		"procs_blocked %lu\n",
  		nr_context_switches(),
  		(unsigned long long)boottime.tv_sec,
- 		total_forks,
 diff --git a/include/linux/sched/stat.h b/include/linux/sched/stat.h
-index 73606b3..81d9b53 100644
+index 939c3ec..73606b3 100644
 --- a/include/linux/sched/stat.h
 +++ b/include/linux/sched/stat.h
-@@ -19,7 +19,7 @@ DECLARE_PER_CPU(unsigned long, process_counts);
+@@ -17,7 +17,7 @@ extern unsigned long total_forks;
+ extern int nr_threads;
+ DECLARE_PER_CPU(unsigned long, process_counts);
  extern int nr_processes(void);
- extern unsigned int nr_running(void);
+-extern unsigned long nr_running(void);
++extern unsigned int nr_running(void);
  extern bool single_task_running(void);
--extern unsigned long nr_iowait(void);
-+extern unsigned int nr_iowait(void);
+ extern unsigned long nr_iowait(void);
  extern unsigned long nr_iowait_cpu(int cpu);
- 
- static inline int sched_info_on(void)
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 2c6cdb0..fadf2bf 100644
+index ac8882d..2c6cdb0 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -4774,9 +4774,9 @@ unsigned long nr_iowait_cpu(int cpu)
-  * Task CPU affinities can make all that even more 'interesting'.
+@@ -4692,9 +4692,9 @@ context_switch(struct rq *rq, struct task_struct *prev,
+  * externally visible scheduler statistics: current number of runnable
+  * threads, total number of context switches performed since bootup.
   */
- 
--unsigned long nr_iowait(void)
-+unsigned int nr_iowait(void)
+-unsigned long nr_running(void)
++unsigned int nr_running(void)
  {
 -	unsigned long i, sum = 0;
 +	unsigned int i, sum = 0;
  
- 	for_each_possible_cpu(i)
- 		sum += nr_iowait_cpu(i);
+ 	for_each_online_cpu(i)
+ 		sum += cpu_rq(i)->nr_running;
