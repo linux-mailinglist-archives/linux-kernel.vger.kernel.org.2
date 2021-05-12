@@ -2,303 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90F2A37B4A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 05:37:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC2CD37B491
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 05:35:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230236AbhELDix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 23:38:53 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2428 "EHLO
+        id S230114AbhELDgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 23:36:10 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2489 "EHLO
         szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbhELDir (ORCPT
+        with ESMTP id S229848AbhELDgH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 23:38:47 -0400
-Received: from dggeml751-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fg0m24vk8z61Qm;
-        Wed, 12 May 2021 11:34:58 +0800 (CST)
-Received: from dggemi760-chm.china.huawei.com (10.1.198.146) by
- dggeml751-chm.china.huawei.com (10.1.199.150) with Microsoft SMTP Server
+        Tue, 11 May 2021 23:36:07 -0400
+Received: from dggeml752-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fg0j857VLzYjL9;
+        Wed, 12 May 2021 11:32:28 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggeml752-chm.china.huawei.com (10.1.199.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 12 May 2021 11:37:38 +0800
-Received: from localhost.localdomain (10.67.165.24) by
- dggemi760-chm.china.huawei.com (10.1.198.146) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 12 May 2021 11:37:38 +0800
-From:   Hui Tang <tanghui20@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
-        <wangzhou1@hisilicon.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 4/8] crypto: hisilicon/hpre - remove the macro of 'HPRE_DEV'
-Date:   Wed, 12 May 2021 11:34:27 +0800
-Message-ID: <1620790471-16621-5-git-send-email-tanghui20@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1620790471-16621-1-git-send-email-tanghui20@huawei.com>
-References: <1620790471-16621-1-git-send-email-tanghui20@huawei.com>
+ 15.1.2176.2; Wed, 12 May 2021 11:34:56 +0800
+Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Wed, 12 May
+ 2021 11:34:56 +0800
+Subject: Re: [Linuxarm] Re: [PATCH net v6 3/3] net: sched: fix tx action
+ reschedule issue with stopped queue
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     <davem@davemloft.net>, <olteanv@gmail.com>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <andriin@fb.com>, <edumazet@google.com>,
+        <weiwan@google.com>, <cong.wang@bytedance.com>,
+        <ap420073@gmail.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        <mkl@pengutronix.de>, <linux-can@vger.kernel.org>,
+        <jhs@mojatatu.com>, <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
+        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
+        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
+        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
+        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
+        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
+        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
+        <alobakin@pm.me>
+References: <1620610956-56306-1-git-send-email-linyunsheng@huawei.com>
+ <1620610956-56306-4-git-send-email-linyunsheng@huawei.com>
+ <20210510212232.3386c5b4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <c676404c-f210-b0cb-ced3-5449676055a8@huawei.com>
+ <8db8e594-9606-2c93-7274-1c180afaadb2@huawei.com>
+ <20210511163049.37d2cba0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <62054a31-4708-1696-60d5-b33e4993cddc@huawei.com>
+Date:   Wed, 12 May 2021 11:34:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggemi760-chm.china.huawei.com (10.1.198.146)
+In-Reply-To: <20210511163049.37d2cba0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme701-chm.china.huawei.com (10.1.199.97) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove complex macro of 'HPRE_DEV' and replace with the initialized
-device pointer.
+On 2021/5/12 7:30, Jakub Kicinski wrote:
+> On Tue, 11 May 2021 20:13:56 +0800 Yunsheng Lin wrote:
+>> On 2021/5/11 17:04, Yunsheng Lin wrote:
+>>> On 2021/5/11 12:22, Jakub Kicinski wrote:  
+>>>> The queues are woken asynchronously without holding any locks via
+>>>> netif_tx_wake_queue(). Theoretically we can have a situation where:
+>>>>
+>>>> CPU 0                            CPU 1   
+>>>>   .                                .
+>>>> dequeue_skb()                      .
+>>>>   netif_xmit_frozen..() # true     .
+>>>>   .                              [IRQ]
+>>>>   .                              netif_tx_wake_queue()
+>>>>   .                              <end of IRQ>
+>>>>   .                              netif_tx_action()
+>>>>   .                              set MISSED
+>>>>   clear MISSED
+>>>>   return NULL
+>>>> ret from qdisc_restart()
+>>>> ret from __qdisc_run()
+>>>> qdisc_run_end()  
+>>  [...]  
+>>>
+>>> Yes, the above does seems to have the above data race.
+>>>
+>>> As my understanding, there is two ways to fix the above data race:
+>>> 1. do not clear the STATE_MISSED for netif_xmit_frozen_or_stopped()
+>>>    case, just check the netif_xmit_frozen_or_stopped() before
+>>>    calling __netif_schedule() at the end of qdisc_run_end(). This seems
+>>>    to only work with qdisc with TCQ_F_ONETXQUEUE flag because it seems
+>>>    we can only check the netif_xmit_frozen_or_stopped() with q->dev_queue,
+>>>    I am not sure q->dev_queue is pointint to which netdev queue when qdisc
+>>>    is not set with TCQ_F_ONETXQUEUE flag.
+> 
+> Isn't the case where we have a NOLOCK qdisc without TCQ_F_ONETXQUEUE
+> rather unexpected? It'd have to be a single pfifo on multi-queue
+> netdev, right? Sounds not worth optimizing for. How about:
+> 
+>  static inline void qdisc_run_end(struct Qdisc *qdisc)
+>  {
+>  	write_seqcount_end(&qdisc->running);
+> 	if (qdisc->flags & TCQ_F_NOLOCK) {
+>  		spin_unlock(&qdisc->seqlock);
+> 
+> 		if (unlikely(test_bit(__QDISC_STATE_MISSED,
+> 				      &qdisc->state))) {
+> 			clear_bit(__QDISC_STATE_MISSED, &qdisc->state);
+> 			if (!(q->flags & TCQ_F_ONETXQUEUE) ||
+> 			    !netif_xmit_frozen_or_stopped(q->dev_queue))
+> 				__netif_schedule(qdisc);
+> 		}
+> 	}
+>  }
+> 
+> For the strange non-ONETXQUEUE case we'd have an occasional unnecessary
+> net_tx_action, but no infinite loop possible.
+> 
+>>> 2. clearing the STATE_MISSED for netif_xmit_frozen_or_stopped() case
+>>>    as this patch does, and protect the __netif_schedule() with q->seqlock
+>>>    for netif_tx_wake_queue(), which might bring unnecessary overhead for
+>>>    non-stopped queue case
+>>>
+>>> Any better idea?  
+>>
+>> 3. Or check the netif_xmit_frozen_or_stopped() again after clearing
+>>    STATE_MISSED, like below:
+>>
+>>    if (netif_xmit_frozen_or_stopped(txq)) {
+>> 	  clear_bit(__QDISC_STATE_MISSED, &q->state);
+>>
+>> 	  /* Make sure the below netif_xmit_frozen_or_stopped()
+>> 	   * checking happens after clearing STATE_MISSED.
+>> 	   */
+>> 	  smp_mb__after_atomic();
+>>
+>> 	  /* Checking netif_xmit_frozen_or_stopped() again to
+>> 	   * make sure __QDISC_STATE_MISSED is set if the
+>> 	   * __QDISC_STATE_MISSED set by netif_tx_wake_queue()'s
+>> 	   * rescheduling of net_tx_action() is cleared by the
+>> 	   * above clear_bit().
+>> 	   */
+>> 	  if (!netif_xmit_frozen_or_stopped(txq))
+>> 	  	set_bit(__QDISC_STATE_MISSED, &q->state);
+>>   }
+>>
+>>   It is kind of ugly, but it does seem to fix the above data race too.
+>>   And it seems like a common pattern to deal with the concurrency between
+>>   xmit and NAPI polling, as below:
+>>
+>> https://elixir.bootlin.com/linux/v5.12-rc2/source/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c#L1409
+> 
+> This is indeed the idiomatic way of dealing with Tx queue stopping race,
+> but it's a bit of code to sprinkle around. My vote would be option 1.
 
-Signed-off-by: Hui Tang <tanghui20@huawei.com>
----
- drivers/crypto/hisilicon/hpre/hpre_crypto.c | 53 ++++++++++++++---------------
- 1 file changed, 26 insertions(+), 27 deletions(-)
+I had done some performance testing to see which is better, tested using
+pktgen and dummy netdev with pfifo_fast qdisc attached:
 
-diff --git a/drivers/crypto/hisilicon/hpre/hpre_crypto.c b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-index c07a7f5..b9197e9 100644
---- a/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-+++ b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-@@ -30,7 +30,6 @@ struct hpre_ctx;
- #define HPRE_DH_G_FLAG		0x02
- #define HPRE_TRY_SEND_TIMES	100
- #define HPRE_INVLD_REQ_ID		(-1)
--#define HPRE_DEV(ctx)		(&((ctx)->qp->qm->pdev->dev))
- 
- #define HPRE_SQE_ALG_BITS	5
- #define HPRE_SQE_DONE_SHIFT	30
-@@ -102,6 +101,7 @@ struct hpre_curve25519_ctx {
- 
- struct hpre_ctx {
- 	struct hisi_qp *qp;
-+	struct device *dev;
- 	struct hpre_asym_request **req_list;
- 	struct hpre *hpre;
- 	spinlock_t req_lock;
-@@ -214,8 +214,7 @@ static int hpre_get_data_dma_addr(struct hpre_asym_request *hpre_req,
- 				  struct scatterlist *data, unsigned int len,
- 				  int is_src, dma_addr_t *tmp)
- {
--	struct hpre_ctx *ctx = hpre_req->ctx;
--	struct device *dev = HPRE_DEV(ctx);
-+	struct device *dev = hpre_req->ctx->dev;
- 	enum dma_data_direction dma_dir;
- 
- 	if (is_src) {
-@@ -239,7 +238,7 @@ static int hpre_prepare_dma_buf(struct hpre_asym_request *hpre_req,
- 				int is_src, dma_addr_t *tmp)
- {
- 	struct hpre_ctx *ctx = hpre_req->ctx;
--	struct device *dev = HPRE_DEV(ctx);
-+	struct device *dev = ctx->dev;
- 	void *ptr;
- 	int shift;
- 
-@@ -293,7 +292,7 @@ static void hpre_hw_data_clr_all(struct hpre_ctx *ctx,
- 				 struct scatterlist *dst,
- 				 struct scatterlist *src)
- {
--	struct device *dev = HPRE_DEV(ctx);
-+	struct device *dev = ctx->dev;
- 	struct hpre_sqe *sqe = &req->req;
- 	dma_addr_t tmp;
- 
-@@ -321,7 +320,6 @@ static void hpre_hw_data_clr_all(struct hpre_ctx *ctx,
- static int hpre_alg_res_post_hf(struct hpre_ctx *ctx, struct hpre_sqe *sqe,
- 				void **kreq)
- {
--	struct device *dev = HPRE_DEV(ctx);
- 	struct hpre_asym_request *req;
- 	unsigned int err, done, alg;
- 	int id;
-@@ -346,7 +344,7 @@ static int hpre_alg_res_post_hf(struct hpre_ctx *ctx, struct hpre_sqe *sqe,
- 		return 0;
- 
- 	alg = le32_to_cpu(sqe->dw0) & HREE_ALG_TYPE_MASK;
--	dev_err_ratelimited(dev, "alg[0x%x] error: done[0x%x], etype[0x%x]\n",
-+	dev_err_ratelimited(ctx->dev, "alg[0x%x] error: done[0x%x], etype[0x%x]\n",
- 		alg, done, err);
- 
- 	return -EINVAL;
-@@ -361,6 +359,7 @@ static int hpre_ctx_set(struct hpre_ctx *ctx, struct hisi_qp *qp, int qlen)
- 
- 	spin_lock_init(&ctx->req_lock);
- 	ctx->qp = qp;
-+	ctx->dev = &qp->qm->pdev->dev;
- 
- 	hpre = container_of(ctx->qp->qm, struct hpre, qm);
- 	ctx->hpre = hpre;
-@@ -625,7 +624,7 @@ static int hpre_is_dh_params_length_valid(unsigned int key_sz)
- 
- static int hpre_dh_set_params(struct hpre_ctx *ctx, struct dh *params)
- {
--	struct device *dev = HPRE_DEV(ctx);
-+	struct device *dev = ctx->dev;
- 	unsigned int sz;
- 
- 	if (params->p_size > HPRE_DH_MAX_P_SZ)
-@@ -664,7 +663,7 @@ static int hpre_dh_set_params(struct hpre_ctx *ctx, struct dh *params)
- 
- static void hpre_dh_clear_ctx(struct hpre_ctx *ctx, bool is_clear_all)
- {
--	struct device *dev = HPRE_DEV(ctx);
-+	struct device *dev = ctx->dev;
- 	unsigned int sz = ctx->key_sz;
- 
- 	if (is_clear_all)
-@@ -877,18 +876,18 @@ static int hpre_rsa_set_n(struct hpre_ctx *ctx, const char *value,
- 	if (!hpre_rsa_key_size_is_support(ctx->key_sz))
- 		return 0;
- 
--	ctx->rsa.pubkey = dma_alloc_coherent(HPRE_DEV(ctx), vlen << 1,
-+	ctx->rsa.pubkey = dma_alloc_coherent(ctx->dev, vlen << 1,
- 					     &ctx->rsa.dma_pubkey,
- 					     GFP_KERNEL);
- 	if (!ctx->rsa.pubkey)
- 		return -ENOMEM;
- 
- 	if (private) {
--		ctx->rsa.prikey = dma_alloc_coherent(HPRE_DEV(ctx), vlen << 1,
-+		ctx->rsa.prikey = dma_alloc_coherent(ctx->dev, vlen << 1,
- 						     &ctx->rsa.dma_prikey,
- 						     GFP_KERNEL);
- 		if (!ctx->rsa.prikey) {
--			dma_free_coherent(HPRE_DEV(ctx), vlen << 1,
-+			dma_free_coherent(ctx->dev, vlen << 1,
- 					  ctx->rsa.pubkey,
- 					  ctx->rsa.dma_pubkey);
- 			ctx->rsa.pubkey = NULL;
-@@ -950,7 +949,7 @@ static int hpre_crt_para_get(char *para, size_t para_sz,
- static int hpre_rsa_setkey_crt(struct hpre_ctx *ctx, struct rsa_key *rsa_key)
- {
- 	unsigned int hlf_ksz = ctx->key_sz >> 1;
--	struct device *dev = HPRE_DEV(ctx);
-+	struct device *dev = ctx->dev;
- 	u64 offset;
- 	int ret;
- 
-@@ -1008,7 +1007,7 @@ static int hpre_rsa_setkey_crt(struct hpre_ctx *ctx, struct rsa_key *rsa_key)
- static void hpre_rsa_clear_ctx(struct hpre_ctx *ctx, bool is_clear_all)
- {
- 	unsigned int half_key_sz = ctx->key_sz >> 1;
--	struct device *dev = HPRE_DEV(ctx);
-+	struct device *dev = ctx->dev;
- 
- 	if (is_clear_all)
- 		hisi_qm_stop_qp(ctx->qp);
-@@ -1179,7 +1178,7 @@ static void hpre_key_to_big_end(u8 *data, int len)
- static void hpre_ecc_clear_ctx(struct hpre_ctx *ctx, bool is_clear_all,
- 			       bool is_ecdh)
- {
--	struct device *dev = HPRE_DEV(ctx);
-+	struct device *dev = ctx->dev;
- 	unsigned int sz = ctx->key_sz;
- 	unsigned int shift = sz << 1;
- 
-@@ -1281,7 +1280,7 @@ static unsigned int hpre_ecdh_get_curvesz(unsigned short id)
- 
- static int hpre_ecdh_set_param(struct hpre_ctx *ctx, struct ecdh *params)
- {
--	struct device *dev = HPRE_DEV(ctx);
-+	struct device *dev = ctx->dev;
- 	unsigned int sz, shift, curve_sz;
- 	int ret;
- 
-@@ -1332,7 +1331,7 @@ static int hpre_ecdh_set_secret(struct crypto_kpp *tfm, const void *buf,
- 				unsigned int len)
- {
- 	struct hpre_ctx *ctx = kpp_tfm_ctx(tfm);
--	struct device *dev = HPRE_DEV(ctx);
-+	struct device *dev = ctx->dev;
- 	unsigned int sz, sz_shift;
- 	struct ecdh params;
- 	int ret;
-@@ -1367,7 +1366,7 @@ static void hpre_ecdh_hw_data_clr_all(struct hpre_ctx *ctx,
- 				      struct scatterlist *dst,
- 				      struct scatterlist *src)
- {
--	struct device *dev = HPRE_DEV(ctx);
-+	struct device *dev = ctx->dev;
- 	struct hpre_sqe *sqe = &req->req;
- 	dma_addr_t dma;
- 
-@@ -1450,7 +1449,7 @@ static int hpre_ecdh_src_data_init(struct hpre_asym_request *hpre_req,
- {
- 	struct hpre_sqe *msg = &hpre_req->req;
- 	struct hpre_ctx *ctx = hpre_req->ctx;
--	struct device *dev = HPRE_DEV(ctx);
-+	struct device *dev = ctx->dev;
- 	unsigned int tmpshift;
- 	dma_addr_t dma = 0;
- 	void *ptr;
-@@ -1480,7 +1479,7 @@ static int hpre_ecdh_dst_data_init(struct hpre_asym_request *hpre_req,
- {
- 	struct hpre_sqe *msg = &hpre_req->req;
- 	struct hpre_ctx *ctx = hpre_req->ctx;
--	struct device *dev = HPRE_DEV(ctx);
-+	struct device *dev = ctx->dev;
- 	dma_addr_t dma = 0;
- 
- 	if (unlikely(!data || !sg_is_last(data) || len != ctx->key_sz << 1)) {
-@@ -1503,7 +1502,7 @@ static int hpre_ecdh_compute_value(struct kpp_request *req)
- {
- 	struct crypto_kpp *tfm = crypto_kpp_reqtfm(req);
- 	struct hpre_ctx *ctx = kpp_tfm_ctx(tfm);
--	struct device *dev = HPRE_DEV(ctx);
-+	struct device *dev = ctx->dev;
- 	void *tmp = kpp_request_ctx(req);
- 	struct hpre_asym_request *hpre_req = PTR_ALIGN(tmp, HPRE_ALIGN_SZ);
- 	struct hpre_sqe *msg = &hpre_req->req;
-@@ -1609,7 +1608,7 @@ static void hpre_curve25519_fill_curve(struct hpre_ctx *ctx, const void *buf,
- static int hpre_curve25519_set_param(struct hpre_ctx *ctx, const void *buf,
- 				     unsigned int len)
- {
--	struct device *dev = HPRE_DEV(ctx);
-+	struct device *dev = ctx->dev;
- 	unsigned int sz = ctx->key_sz;
- 	unsigned int shift = sz << 1;
- 
-@@ -1634,7 +1633,7 @@ static int hpre_curve25519_set_secret(struct crypto_kpp *tfm, const void *buf,
- 				      unsigned int len)
- {
- 	struct hpre_ctx *ctx = kpp_tfm_ctx(tfm);
--	struct device *dev = HPRE_DEV(ctx);
-+	struct device *dev = ctx->dev;
- 	int ret = -EINVAL;
- 
- 	if (len != CURVE25519_KEY_SIZE ||
-@@ -1662,7 +1661,7 @@ static void hpre_curve25519_hw_data_clr_all(struct hpre_ctx *ctx,
- 					    struct scatterlist *dst,
- 					    struct scatterlist *src)
- {
--	struct device *dev = HPRE_DEV(ctx);
-+	struct device *dev = ctx->dev;
- 	struct hpre_sqe *sqe = &req->req;
- 	dma_addr_t dma;
- 
-@@ -1752,7 +1751,7 @@ static int hpre_curve25519_src_init(struct hpre_asym_request *hpre_req,
- {
- 	struct hpre_sqe *msg = &hpre_req->req;
- 	struct hpre_ctx *ctx = hpre_req->ctx;
--	struct device *dev = HPRE_DEV(ctx);
-+	struct device *dev = ctx->dev;
- 	u8 p[CURVE25519_KEY_SIZE] = { 0 };
- 	const struct ecc_curve *curve;
- 	dma_addr_t dma = 0;
-@@ -1807,7 +1806,7 @@ static int hpre_curve25519_dst_init(struct hpre_asym_request *hpre_req,
- {
- 	struct hpre_sqe *msg = &hpre_req->req;
- 	struct hpre_ctx *ctx = hpre_req->ctx;
--	struct device *dev = HPRE_DEV(ctx);
-+	struct device *dev = ctx->dev;
- 	dma_addr_t dma = 0;
- 
- 	if (!data || !sg_is_last(data) || len != ctx->key_sz) {
-@@ -1830,7 +1829,7 @@ static int hpre_curve25519_compute_value(struct kpp_request *req)
- {
- 	struct crypto_kpp *tfm = crypto_kpp_reqtfm(req);
- 	struct hpre_ctx *ctx = kpp_tfm_ctx(tfm);
--	struct device *dev = HPRE_DEV(ctx);
-+	struct device *dev = ctx->dev;
- 	void *tmp = kpp_request_ctx(req);
- 	struct hpre_asym_request *hpre_req = PTR_ALIGN(tmp, HPRE_ALIGN_SZ);
- 	struct hpre_sqe *msg = &hpre_req->req;
--- 
-2.8.1
+unit: Mpps
+
+threads    V6         V6 + option 1     V6 + option 3
+  1       2.60          2.54               2.60
+  2       3.86          3.84               3.84
+  4       5.56          5.50               5.51
+  8       2.79          2.77               2.77
+  16      2.23          2.24               2.22
+
+So it seems the netif_xmit_frozen_or_stopped checking overhead for non-stopped queue
+is noticable for 1 pktgen thread.
+
+And the performance increase for V6 + option 1 with 16 pktgen threads is because of
+"clear_bit(__QDISC_STATE_MISSED, &qdisc->state)" at the end of qdisc_run_end(), which
+may avoid the another round of dequeuing in the pfifo_fast_dequeue(). And adding the
+"clear_bit(__QDISC_STATE_MISSED, &qdisc->state)"  for V6 + option 3, the data for
+16 pktgen thread also go up to 2.24Mpps.
+
+
+So it seems V6 + option 3 with "clear_bit(__QDISC_STATE_MISSED, &qdisc->state)" at
+the end of qdisc_run_end() is better?
+
+
+> _______________________________________________
+> Linuxarm mailing list -- linuxarm@openeuler.org
+> To unsubscribe send an email to linuxarm-leave@openeuler.org
+> 
 
