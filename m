@@ -2,41 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A123B37BCFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B4B37BD13
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:52:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231223AbhELMw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 08:52:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52122 "EHLO mail.kernel.org"
+        id S230474AbhELMxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 08:53:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231166AbhELMwu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231293AbhELMwu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 12 May 2021 08:52:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2412461104;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 306C1613CF;
         Wed, 12 May 2021 12:51:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620823902;
-        bh=jmDA7OBIG40e3rzXAsGJ5fdtuKiC6QO6Mo48AVXXMFM=;
+        bh=Tbm1lU5lr00378ByC1nMvAs2HAItbU4kcrpdqRshg3w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pL4SydUtBWPym3d0Xl+3VdgdUWCpgr6afKhS9Uqc+AS4VcDS82cLP2ihz6GbIeqLw
-         FCefDFmi/6n7F1tEU2K/51sL8IGLso+cBQBa0Mk2uS7y/eQWNM8+jl8Ot3DcKsJ2H9
-         EGCzKw6UFrWSmYs9LG+N/T5ULbWdV7SONKwr+GMBJ+Q2LRYs9+c+CqTLborlcXU4RU
-         mLvJPtag5QX/wNVrn5Tk7KU1QvUDbwLf8tjkoycXMiy2hpe3dvq0hSEE7QwZ6ha7K7
-         vn7hK5Mzm+3ljP3HXxEHk6UADrzEs83V/vEj5lmYmx42o9eUrF3CLMFE+cx9eCXVLI
-         KzJ1SyYJSZteg==
+        b=WWcChBZ5QwAuyJyX/8U3XsMMjLRnJYA79eUSinMRZflN+8V/2sCH+vBle37aIDXbm
+         yS/DMVV6WVUSRZD/C/AsYrd2BPGTF08QgXZMymi2fy2kKgZeAPI1qQf46+Tn4WI/KJ
+         2hkGH8wdJxOcvXQ8Mm376bB9Fs3sKP7EkiCAuf/6D8MQzELQWBLo3SQJYrwYLurJ50
+         b5X1rbpfHPcwJoXF+Q/dwV0KxTSU4/52HXl+0osoO1ZLvZkkfKsHQZGvo+EKjuXMFA
+         AdimOyisxtcYO5T7qbW+5beinFl0mxHEau8P0hk66bZShg6hND6AuREwykMW+a9nUJ
+         rcB5kzPLtdUXA==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1lgoKy-0018gr-3F; Wed, 12 May 2021 14:51:40 +0200
+        id 1lgoKy-0018gu-4M; Wed, 12 May 2021 14:51:40 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Charles Hsu <hsu.yungteng@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        "Jonathan Corbet" <corbet@lwn.net>, Borislav Petkov <bp@alien8.de>,
+        James Morse <james.morse@arm.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Richter <rric@kernel.org>,
+        Thorsten Leemhuis <linux@leemhuis.info>,
+        Tony Luck <tony.luck@intel.com>, linux-edac@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 01/40] docs: hwmon: Use ASCII subset instead of UTF-8 alternate symbols
-Date:   Wed, 12 May 2021 14:50:05 +0200
-Message-Id: <8a84b20ef52e012850a88be99c4a5450abfeda13.1620823573.git.mchehab+huawei@kernel.org>
+Subject: [PATCH v2 02/40] docs: admin-guide: Use ASCII subset instead of UTF-8 alternate symbols
+Date:   Wed, 12 May 2021 14:50:06 +0200
+Message-Id: <a0e9db59df5dafa9fbd5f2f3a9d39a9fa2864726.1620823573.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1620823573.git.mchehab+huawei@kernel.org>
 References: <cover.1620823573.git.mchehab+huawei@kernel.org>
@@ -63,55 +65,124 @@ Also, Sphinx already do such conversion automatically outside literal blocks:
 
 So, replace the occurences of the following UTF-8 characters:
 
-	- U+2010 ('‐'): HYPHEN
-	- U+2019 ('’'): RIGHT SINGLE QUOTATION MARK
+	- U+00a0 (' '): NO-BREAK SPACE
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/hwmon/ir36021.rst  | 2 +-
- Documentation/hwmon/ltc2992.rst  | 2 +-
- Documentation/hwmon/pm6764tr.rst | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ Documentation/admin-guide/ras.rst             | 86 +++++++++----------
+ .../admin-guide/reporting-issues.rst          |  2 +-
+ 2 files changed, 44 insertions(+), 44 deletions(-)
 
-diff --git a/Documentation/hwmon/ir36021.rst b/Documentation/hwmon/ir36021.rst
-index ca3436b04e20..1faa85c39f1b 100644
---- a/Documentation/hwmon/ir36021.rst
-+++ b/Documentation/hwmon/ir36021.rst
-@@ -19,7 +19,7 @@ Authors:
- Description
- -----------
+diff --git a/Documentation/admin-guide/ras.rst b/Documentation/admin-guide/ras.rst
+index 7b481b2a368e..e1adbd27d1d8 100644
+--- a/Documentation/admin-guide/ras.rst
++++ b/Documentation/admin-guide/ras.rst
+@@ -443,49 +443,49 @@ A typical EDAC system has the following structure under
  
--The IR36021 is a dual‐loop digital multi‐phase buck controller designed for
-+The IR36021 is a dual-loop digital multi-phase buck controller designed for
- point of load applications.
+ 	/sys/devices/system/edac/
+ 	├── mc
+-	│   ├── mc0
+-	│   │   ├── ce_count
+-	│   │   ├── ce_noinfo_count
+-	│   │   ├── dimm0
+-	│   │   │   ├── dimm_ce_count
+-	│   │   │   ├── dimm_dev_type
+-	│   │   │   ├── dimm_edac_mode
+-	│   │   │   ├── dimm_label
+-	│   │   │   ├── dimm_location
+-	│   │   │   ├── dimm_mem_type
+-	│   │   │   ├── dimm_ue_count
+-	│   │   │   ├── size
+-	│   │   │   └── uevent
+-	│   │   ├── max_location
+-	│   │   ├── mc_name
+-	│   │   ├── reset_counters
+-	│   │   ├── seconds_since_reset
+-	│   │   ├── size_mb
+-	│   │   ├── ue_count
+-	│   │   ├── ue_noinfo_count
+-	│   │   └── uevent
+-	│   ├── mc1
+-	│   │   ├── ce_count
+-	│   │   ├── ce_noinfo_count
+-	│   │   ├── dimm0
+-	│   │   │   ├── dimm_ce_count
+-	│   │   │   ├── dimm_dev_type
+-	│   │   │   ├── dimm_edac_mode
+-	│   │   │   ├── dimm_label
+-	│   │   │   ├── dimm_location
+-	│   │   │   ├── dimm_mem_type
+-	│   │   │   ├── dimm_ue_count
+-	│   │   │   ├── size
+-	│   │   │   └── uevent
+-	│   │   ├── max_location
+-	│   │   ├── mc_name
+-	│   │   ├── reset_counters
+-	│   │   ├── seconds_since_reset
+-	│   │   ├── size_mb
+-	│   │   ├── ue_count
+-	│   │   ├── ue_noinfo_count
+-	│   │   └── uevent
+-	│   └── uevent
++	│   ├── mc0
++	│   │   ├── ce_count
++	│   │   ├── ce_noinfo_count
++	│   │   ├── dimm0
++	│   │   │   ├── dimm_ce_count
++	│   │   │   ├── dimm_dev_type
++	│   │   │   ├── dimm_edac_mode
++	│   │   │   ├── dimm_label
++	│   │   │   ├── dimm_location
++	│   │   │   ├── dimm_mem_type
++	│   │   │   ├── dimm_ue_count
++	│   │   │   ├── size
++	│   │   │   └── uevent
++	│   │   ├── max_location
++	│   │   ├── mc_name
++	│   │   ├── reset_counters
++	│   │   ├── seconds_since_reset
++	│   │   ├── size_mb
++	│   │   ├── ue_count
++	│   │   ├── ue_noinfo_count
++	│   │   └── uevent
++	│   ├── mc1
++	│   │   ├── ce_count
++	│   │   ├── ce_noinfo_count
++	│   │   ├── dimm0
++	│   │   │   ├── dimm_ce_count
++	│   │   │   ├── dimm_dev_type
++	│   │   │   ├── dimm_edac_mode
++	│   │   │   ├── dimm_label
++	│   │   │   ├── dimm_location
++	│   │   │   ├── dimm_mem_type
++	│   │   │   ├── dimm_ue_count
++	│   │   │   ├── size
++	│   │   │   └── uevent
++	│   │   ├── max_location
++	│   │   ├── mc_name
++	│   │   ├── reset_counters
++	│   │   ├── seconds_since_reset
++	│   │   ├── size_mb
++	│   │   ├── ue_count
++	│   │   ├── ue_noinfo_count
++	│   │   └── uevent
++	│   └── uevent
+ 	└── uevent
  
- Usage Notes
-diff --git a/Documentation/hwmon/ltc2992.rst b/Documentation/hwmon/ltc2992.rst
-index 46aa1aa84a1a..a0bcd867a0f5 100644
---- a/Documentation/hwmon/ltc2992.rst
-+++ b/Documentation/hwmon/ltc2992.rst
-@@ -19,7 +19,7 @@ This driver supports hardware monitoring for Linear Technology LTC2992 power mon
- LTC2992 is a rail-to-rail system monitor that measures current,
- voltage, and power of two supplies.
+ In the ``dimmX`` directories are EDAC control and attribute files for
+diff --git a/Documentation/admin-guide/reporting-issues.rst b/Documentation/admin-guide/reporting-issues.rst
+index 18d8e25ba9df..d7ac13f789cc 100644
+--- a/Documentation/admin-guide/reporting-issues.rst
++++ b/Documentation/admin-guide/reporting-issues.rst
+@@ -1248,7 +1248,7 @@ paragraph makes the severeness obvious.
  
--Two ADCs simultaneously measure each supply’s current. A third ADC monitors
-+Two ADCs simultaneously measure each supply's current. A third ADC monitors
- the input voltages and four auxiliary external voltages.
+ In case you performed a successful bisection, use the title of the change that
+ introduced the regression as the second part of your subject. Make the report
+-also mention the commit id of the culprit. In case of an unsuccessful bisection,
++also mention the commit id of the culprit. In case of an unsuccessful bisection,
+ make your report mention the latest tested version that's working fine (say 5.7)
+ and the oldest where the issue occurs (say 5.8-rc1).
  
- 
-diff --git a/Documentation/hwmon/pm6764tr.rst b/Documentation/hwmon/pm6764tr.rst
-index a1fb8fea2326..294a8ffc8bd8 100644
---- a/Documentation/hwmon/pm6764tr.rst
-+++ b/Documentation/hwmon/pm6764tr.rst
-@@ -20,7 +20,7 @@ Description:
- ------------
- 
- This driver supports the STMicroelectronics PM6764TR chip. The PM6764TR is a high
--performance digital controller designed to power Intel’s VR12.5 processors and memories.
-+performance digital controller designed to power Intel's VR12.5 processors and memories.
- 
- The device utilizes digital technology to implement all control and power management
- functions to provide maximum flexibility and performance. The NVM is embedded to store
 -- 
 2.30.2
 
