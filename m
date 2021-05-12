@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1317F37D15F
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:55:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A897437D16A
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351170AbhELRxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 13:53:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42392 "EHLO mail.kernel.org"
+        id S240737AbhELRzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 13:55:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237053AbhELQYL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:24:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D9C461C9F;
-        Wed, 12 May 2021 15:47:43 +0000 (UTC)
+        id S237988AbhELQYi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:24:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C47561DB7;
+        Wed, 12 May 2021 15:48:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620834463;
-        bh=JzetIQQuZ5cB7MJY+zjMK3lz4KswqMMKVJmxRfMZMZY=;
+        s=korg; t=1620834483;
+        bh=PNu7+jadj9x9BmJTVziJwL/PZSEIZ6YdtI/TsPT2bJQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oGXS50PrS74Yj38F4oEotVLl12n42Ay7+L+MV+XSsj9Cx5lWgfBcX6poMGWj6qL3X
-         hUPBOuCiGuDQTUB1TKrvB74cNAUrzesbSpuzKG6XlHaAqYcCJfYhXYxQJNVBRdQlIx
-         bV6H/gPuM2Tb0kjx+RaxHFWDXZRQSgqPjwU97aqI=
+        b=l1qNhwffOrsChqlw9sC7ZlqQLNa2xUGQmcTTMnOEgxqmg6z2r/8EHp0p4GcDH9ZD8
+         27F6vchxAxJWSqDo7LvsmZa7jkeH5eDpCDaR0xEtuiiQrHG6Zsbpf/Nzbog2ENQClg
+         ruNzlDLY6VpUDWtLsuRiI8AHGh9W50J7XfLa9PAc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 553/601] powerpc/64: Fix the definition of the fixmap area
-Date:   Wed, 12 May 2021 16:50:30 +0200
-Message-Id: <20210512144846.068646624@linuxfoundation.org>
+Subject: [PATCH 5.11 555/601] ath10k: Fix a use after free in ath10k_htc_send_bundle
+Date:   Wed, 12 May 2021 16:50:32 +0200
+Message-Id: <20210512144846.133817548@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144827.811958675@linuxfoundation.org>
 References: <20210512144827.811958675@linuxfoundation.org>
@@ -41,125 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
 
-[ Upstream commit 9ccba66d4d2aff9a3909aa77d57ea8b7cc166f3c ]
+[ Upstream commit 8392df5d7e0b6a7d21440da1fc259f9938f4dec3 ]
 
-At the time being, the fixmap area is defined at the top of
-the address space or just below KASAN.
+In ath10k_htc_send_bundle, the bundle_skb could be freed by
+dev_kfree_skb_any(bundle_skb). But the bundle_skb is used later
+by bundle_skb->len.
 
-This definition is not valid for PPC64.
+As skb_len = bundle_skb->len, my patch replaces bundle_skb->len to
+skb_len after the bundle_skb was freed.
 
-For PPC64, use the top of the I/O space.
-
-Because of circular dependencies, it is not possible to include
-asm/fixmap.h in asm/book3s/64/pgtable.h , so define a fixed size
-AREA at the top of the I/O space for fixmap and ensure during
-build that the size is big enough.
-
-Fixes: 265c3491c4bc ("powerpc: Add support for GENERIC_EARLY_IOREMAP")
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/0d51620eacf036d683d1a3c41328f69adb601dc0.1618925560.git.christophe.leroy@csgroup.eu
+Fixes: c8334512f3dd1 ("ath10k: add htt TX bundle for sdio")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210329120154.8963-1-lyl2019@mail.ustc.edu.cn
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/include/asm/book3s/64/pgtable.h | 4 +++-
- arch/powerpc/include/asm/fixmap.h            | 9 +++++++++
- arch/powerpc/include/asm/nohash/64/pgtable.h | 5 ++++-
- 3 files changed, 16 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/htc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/include/asm/book3s/64/pgtable.h b/arch/powerpc/include/asm/book3s/64/pgtable.h
-index a39886681629..3d6cfa3b0f40 100644
---- a/arch/powerpc/include/asm/book3s/64/pgtable.h
-+++ b/arch/powerpc/include/asm/book3s/64/pgtable.h
-@@ -7,6 +7,7 @@
- #ifndef __ASSEMBLY__
- #include <linux/mmdebug.h>
- #include <linux/bug.h>
-+#include <linux/sizes.h>
- #endif
+diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
+index 31df6dd04bf6..540dd59112a5 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.c
++++ b/drivers/net/wireless/ath/ath10k/htc.c
+@@ -665,7 +665,7 @@ static int ath10k_htc_send_bundle(struct ath10k_htc_ep *ep,
  
- /*
-@@ -323,7 +324,8 @@ extern unsigned long pci_io_base;
- #define  PHB_IO_END	(KERN_IO_START + FULL_IO_SIZE)
- #define IOREMAP_BASE	(PHB_IO_END)
- #define IOREMAP_START	(ioremap_bot)
--#define IOREMAP_END	(KERN_IO_END)
-+#define IOREMAP_END	(KERN_IO_END - FIXADDR_SIZE)
-+#define FIXADDR_SIZE	SZ_32M
+ 	ath10k_dbg(ar, ATH10K_DBG_HTC,
+ 		   "bundle tx status %d eid %d req count %d count %d len %d\n",
+-		   ret, ep->eid, skb_queue_len(&ep->tx_req_head), cn, bundle_skb->len);
++		   ret, ep->eid, skb_queue_len(&ep->tx_req_head), cn, skb_len);
+ 	return ret;
+ }
  
- /* Advertise special mapping type for AGP */
- #define HAVE_PAGE_AGP
-diff --git a/arch/powerpc/include/asm/fixmap.h b/arch/powerpc/include/asm/fixmap.h
-index 8d03c16a3663..947b5b9c4424 100644
---- a/arch/powerpc/include/asm/fixmap.h
-+++ b/arch/powerpc/include/asm/fixmap.h
-@@ -23,12 +23,17 @@
- #include <asm/kmap_size.h>
- #endif
- 
-+#ifdef CONFIG_PPC64
-+#define FIXADDR_TOP	(IOREMAP_END + FIXADDR_SIZE)
-+#else
-+#define FIXADDR_SIZE	0
- #ifdef CONFIG_KASAN
- #include <asm/kasan.h>
- #define FIXADDR_TOP	(KASAN_SHADOW_START - PAGE_SIZE)
- #else
- #define FIXADDR_TOP	((unsigned long)(-PAGE_SIZE))
- #endif
-+#endif
- 
- /*
-  * Here we define all the compile-time 'special' virtual
-@@ -50,6 +55,7 @@
-  */
- enum fixed_addresses {
- 	FIX_HOLE,
-+#ifdef CONFIG_PPC32
- 	/* reserve the top 128K for early debugging purposes */
- 	FIX_EARLY_DEBUG_TOP = FIX_HOLE,
- 	FIX_EARLY_DEBUG_BASE = FIX_EARLY_DEBUG_TOP+(ALIGN(SZ_128K, PAGE_SIZE)/PAGE_SIZE)-1,
-@@ -72,6 +78,7 @@ enum fixed_addresses {
- 		       FIX_IMMR_SIZE,
- #endif
- 	/* FIX_PCIE_MCFG, */
-+#endif /* CONFIG_PPC32 */
- 	__end_of_permanent_fixed_addresses,
- 
- #define NR_FIX_BTMAPS		(SZ_256K / PAGE_SIZE)
-@@ -98,6 +105,8 @@ enum fixed_addresses {
- static inline void __set_fixmap(enum fixed_addresses idx,
- 				phys_addr_t phys, pgprot_t flags)
- {
-+	BUILD_BUG_ON(IS_ENABLED(CONFIG_PPC64) && __FIXADDR_SIZE > FIXADDR_SIZE);
-+
- 	if (__builtin_constant_p(idx))
- 		BUILD_BUG_ON(idx >= __end_of_fixed_addresses);
- 	else if (WARN_ON(idx >= __end_of_fixed_addresses))
-diff --git a/arch/powerpc/include/asm/nohash/64/pgtable.h b/arch/powerpc/include/asm/nohash/64/pgtable.h
-index 6cb8aa357191..57cd3892bfe0 100644
---- a/arch/powerpc/include/asm/nohash/64/pgtable.h
-+++ b/arch/powerpc/include/asm/nohash/64/pgtable.h
-@@ -6,6 +6,8 @@
-  * the ppc64 non-hashed page table.
-  */
- 
-+#include <linux/sizes.h>
-+
- #include <asm/nohash/64/pgtable-4k.h>
- #include <asm/barrier.h>
- #include <asm/asm-const.h>
-@@ -54,7 +56,8 @@
- #define  PHB_IO_END	(KERN_IO_START + FULL_IO_SIZE)
- #define IOREMAP_BASE	(PHB_IO_END)
- #define IOREMAP_START	(ioremap_bot)
--#define IOREMAP_END	(KERN_VIRT_START + KERN_VIRT_SIZE)
-+#define IOREMAP_END	(KERN_VIRT_START + KERN_VIRT_SIZE - FIXADDR_SIZE)
-+#define FIXADDR_SIZE	SZ_32M
- 
- 
- /*
 -- 
 2.30.2
 
