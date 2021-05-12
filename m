@@ -2,339 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A1DE37EB8B
+	by mail.lfdr.de (Postfix) with ESMTP id A27A237EB8C
 	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381086AbhELTdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:33:22 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:24588 "EHLO m43-7.mailgun.net"
+        id S1381122AbhELTd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:33:28 -0400
+Received: from foss.arm.com ([217.140.110.172]:45770 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239160AbhELRav (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 13:30:51 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1620840575; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=UflwmnQChaQlCsa3Tb1vT/Wzj+LkoGJrbouQ38Qv1pw=; b=ZpzHbuknHLjEKlpEMO4aryRvHaeQRWpWGlwix1I6565mXs8Ka8EthB2Kb8bz0rV5Z7T7pBdy
- IcUM4XOB11mMiO99cB/2FXbCzzTmzs5FeofM5bogNG11Fb6L7OP5ciWMJj2lWyddrl5uA8+W
- mjsGSp487T32fr+RXTz0TJzdBkA=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 609c107ce0211609c43b067d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 12 May 2021 17:29:32
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 99C29C4323A; Wed, 12 May 2021 17:29:32 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8A9BEC43460;
-        Wed, 12 May 2021 17:29:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8A9BEC43460
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
-From:   Kuogee Hsieh <khsieh@codeaurora.org>
-To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
-        vkoul@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        khsieh@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] drm/msm/dp: handle irq_hpd with sink_count = 0 correctly
-Date:   Wed, 12 May 2021 10:29:18 -0700
-Message-Id: <1620840558-28684-1-git-send-email-khsieh@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S239282AbhELRaw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 13:30:52 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3F2BB31B;
+        Wed, 12 May 2021 10:29:40 -0700 (PDT)
+Received: from [192.168.1.123] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 37C463F719;
+        Wed, 12 May 2021 10:29:35 -0700 (PDT)
+Subject: Re: [Resend RFC PATCH V2 10/12] HV/IOMMU: Add Hyper-V dma ops support
+To:     Tianyu Lan <ltykernel@gmail.com>, Christoph Hellwig <hch@lst.de>,
+        konrad.wilk@oracle.com
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com, arnd@arndb.de,
+        akpm@linux-foundation.org, gregkh@linuxfoundation.org,
+        m.szyprowski@samsung.com, joro@8bytes.org, will@kernel.org,
+        davem@davemloft.net, kuba@kernel.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-scsi@vger.kernel.org,
+        netdev@vger.kernel.org, vkuznets@redhat.com,
+        thomas.lendacky@amd.com, brijesh.singh@amd.com,
+        sunilmut@microsoft.com
+References: <20210414144945.3460554-1-ltykernel@gmail.com>
+ <20210414144945.3460554-11-ltykernel@gmail.com>
+ <20210414154729.GD32045@lst.de>
+ <a316af73-2c96-f307-6285-593597e05123@gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <4793ae97-5e29-4a45-d2b6-61c151322065@arm.com>
+Date:   Wed, 12 May 2021 18:29:29 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
+MIME-Version: 1.0
+In-Reply-To: <a316af73-2c96-f307-6285-593597e05123@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-irq_hpd interrupt should be handled after dongle plugged in and
-before dongle unplugged. Hence irq_hpd interrupt is enabled at
-the end of the plugin handle and disabled at the beginning of
-unplugged handle. Current irq_hpd with sink_count = 0 is wrongly
-handled same as the dongle unplugged which tears down the mainlink
-and disables the phy. This patch fixes this problem by only tearing
-down the mainlink but keeping phy enabled at irq_hpd with
-sink_count = 0 handle so that next irq_hpe with sink_count =1 can be
-handled by setup mainlink only.
+On 2021-05-12 17:01, Tianyu Lan wrote:
+> Hi Christoph and Konrad:
+>       Current Swiotlb bounce buffer uses a pool for all devices. There
+> is a high overhead to get or free bounce buffer during performance test.
+> Swiotlb code now use a global spin lock to protect bounce buffer data.
+> Several device queues try to acquire the spin lock and this introduce
+> additional overhead.
+> 
+> For performance and security perspective, each devices should have a
+> separate swiotlb bounce buffer pool and so this part needs to rework.
+> I want to check this is right way to resolve performance issues with 
+> swiotlb bounce buffer. If you have some other suggestions,welcome.
 
-Changes in v2:
--- add ctrl->phy_Power_count
+We're already well on the way to factoring out SWIOTLB to allow for just 
+this sort of more flexible usage like per-device bounce pools - see here:
 
-Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
----
- drivers/gpu/drm/msm/dp/dp_catalog.c |  5 +--
- drivers/gpu/drm/msm/dp/dp_ctrl.c    | 83 ++++++++++++++++++++++++++++++++++---
- drivers/gpu/drm/msm/dp/dp_ctrl.h    |  2 +
- drivers/gpu/drm/msm/dp/dp_display.c | 46 +++++++++++++++-----
- 4 files changed, 118 insertions(+), 18 deletions(-)
+https://lore.kernel.org/linux-iommu/20210510095026.3477496-1-tientzu@chromium.org/T/#t
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.c b/drivers/gpu/drm/msm/dp/dp_catalog.c
-index b1a9b1b..f4f53f2 100644
---- a/drivers/gpu/drm/msm/dp/dp_catalog.c
-+++ b/drivers/gpu/drm/msm/dp/dp_catalog.c
-@@ -582,10 +582,9 @@ void dp_catalog_ctrl_hpd_config(struct dp_catalog *dp_catalog)
- 
- 	u32 reftimer = dp_read_aux(catalog, REG_DP_DP_HPD_REFTIMER);
- 
--	/* enable HPD interrupts */
-+	/* enable HPD plug and unplug interrupts */
- 	dp_catalog_hpd_config_intr(dp_catalog,
--		DP_DP_HPD_PLUG_INT_MASK | DP_DP_IRQ_HPD_INT_MASK
--		| DP_DP_HPD_UNPLUG_INT_MASK | DP_DP_HPD_REPLUG_INT_MASK, true);
-+		DP_DP_HPD_PLUG_INT_MASK | DP_DP_HPD_UNPLUG_INT_MASK, true);
- 
- 	/* Configure REFTIMER and enable it */
- 	reftimer |= DP_DP_HPD_REFTIMER_ENABLE;
-diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-index 8d59eb9..b5bed5f 100644
---- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
-+++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-@@ -77,6 +77,8 @@ struct dp_ctrl_private {
- 	struct dp_parser *parser;
- 	struct dp_catalog *catalog;
- 
-+	int phy_power_count;
-+
- 	struct opp_table *opp_table;
- 
- 	struct completion idle_comp;
-@@ -1334,8 +1336,11 @@ static int dp_ctrl_enable_mainlink_clocks(struct dp_ctrl_private *ctrl)
- 	dp_ctrl_set_clock_rate(ctrl, DP_CTRL_PM, "ctrl_link",
- 					ctrl->link->link_params.rate * 1000);
- 
--	phy_configure(phy, &dp_io->phy_opts);
--	phy_power_on(phy);
-+	if (!ctrl->phy_power_count) {
-+		phy_configure(phy, &dp_io->phy_opts);
-+		phy_power_on(phy);
-+		ctrl->phy_power_count++;
-+	}
- 
- 	ret = dp_power_clk_enable(ctrl->power, DP_CTRL_PM, true);
- 	if (ret)
-@@ -1414,6 +1419,12 @@ void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl)
- 	phy = dp_io->phy;
- 
- 	dp_catalog_ctrl_enable_irq(ctrl->catalog, false);
-+
-+	if (ctrl->phy_power_count) {
-+		phy_power_off(phy);
-+		ctrl->phy_power_count--;
-+	}
-+
- 	phy_exit(phy);
- 
- 	DRM_DEBUG_DP("Host deinitialized successfully\n");
-@@ -1456,7 +1467,12 @@ static int dp_ctrl_reinitialize_mainlink(struct dp_ctrl_private *ctrl)
- 		DRM_ERROR("Failed to disable clocks. ret=%d\n", ret);
- 		return ret;
- 	}
--	phy_power_off(phy);
-+
-+	if (ctrl->phy_power_count) {
-+		phy_power_off(phy);
-+		ctrl->phy_power_count--;
-+	}
-+
- 	/* hw recommended delay before re-enabling clocks */
- 	msleep(20);
- 
-@@ -1487,7 +1503,11 @@ static int dp_ctrl_deinitialize_mainlink(struct dp_ctrl_private *ctrl)
- 		DRM_ERROR("Failed to disable link clocks. ret=%d\n", ret);
- 	}
- 
--	phy_power_off(phy);
-+	if (ctrl->phy_power_count) {
-+		phy_power_off(phy);
-+		ctrl->phy_power_count--;
-+	}
-+
- 	phy_exit(phy);
- 
- 	return 0;
-@@ -1811,6 +1831,55 @@ int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl)
- 	return ret;
- }
- 
-+int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl)
-+{
-+	struct dp_ctrl_private *ctrl;
-+	int ret = 0;
-+
-+	if (!dp_ctrl)
-+		return -EINVAL;
-+
-+	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
-+
-+	dp_catalog_ctrl_mainlink_ctrl(ctrl->catalog, false);
-+
-+	ret = dp_power_clk_enable(ctrl->power, DP_STREAM_PM, false);
-+	if (ret)
-+		DRM_ERROR("Failed to disable pixel clocks. ret=%d\n", ret);
-+
-+	ret = dp_power_clk_enable(ctrl->power, DP_CTRL_PM, false);
-+	if (ret)
-+		DRM_ERROR("Failed to disable link clocks. ret=%d\n", ret);
-+
-+	DRM_DEBUG_DP("DP off link/stream done\n");
-+	return ret;
-+}
-+
-+void dp_ctrl_off_phy(struct dp_ctrl *dp_ctrl)
-+{
-+	struct dp_ctrl_private *ctrl;
-+	struct dp_io *dp_io;
-+	struct phy *phy;
-+
-+	if (!dp_ctrl)
-+		return;
-+
-+	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
-+	dp_io = &ctrl->parser->io;
-+	phy = dp_io->phy;
-+
-+	dp_catalog_ctrl_reset(ctrl->catalog);
-+
-+	if (ctrl->phy_power_count) {
-+		phy_power_off(phy);
-+		ctrl->phy_power_count--;
-+	}
-+
-+	phy_exit(phy);
-+
-+	DRM_DEBUG_DP("DP off phy done\n");
-+}
-+
- int dp_ctrl_off(struct dp_ctrl *dp_ctrl)
- {
- 	struct dp_ctrl_private *ctrl;
-@@ -1838,7 +1907,11 @@ int dp_ctrl_off(struct dp_ctrl *dp_ctrl)
- 		DRM_ERROR("Failed to disable link clocks. ret=%d\n", ret);
- 	}
- 
--	phy_power_off(phy);
-+	if (ctrl->phy_power_count) {
-+		phy_power_off(phy);
-+		ctrl->phy_power_count--;
-+	}
-+
- 	phy_exit(phy);
- 
- 	DRM_DEBUG_DP("DP off done\n");
-diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.h b/drivers/gpu/drm/msm/dp/dp_ctrl.h
-index a836bd3..25e4f75 100644
---- a/drivers/gpu/drm/msm/dp/dp_ctrl.h
-+++ b/drivers/gpu/drm/msm/dp/dp_ctrl.h
-@@ -23,6 +23,8 @@ int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip, bool reset);
- void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl);
- int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl);
- int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl);
-+int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl);
-+void dp_ctrl_off_phy(struct dp_ctrl *dp_ctrl);
- int dp_ctrl_off(struct dp_ctrl *dp_ctrl);
- void dp_ctrl_push_idle(struct dp_ctrl *dp_ctrl);
- void dp_ctrl_isr(struct dp_ctrl *dp_ctrl);
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index 0ba71c7..c2b2050 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -570,6 +570,10 @@ static int dp_hpd_plug_handle(struct dp_display_private *dp, u32 data)
- 		dp_add_event(dp, EV_CONNECT_PENDING_TIMEOUT, 0, tout);
- 	}
- 
-+	/* enable HDP irq_hpd/replug interrupt */
-+	dp_catalog_hpd_config_intr(dp->catalog,
-+		DP_DP_IRQ_HPD_INT_MASK | DP_DP_HPD_REPLUG_INT_MASK, true);
-+
- 	mutex_unlock(&dp->event_mutex);
- 
- 	/* uevent will complete connection part */
-@@ -619,7 +623,26 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
- 	mutex_lock(&dp->event_mutex);
- 
- 	state = dp->hpd_state;
--	if (state == ST_DISCONNECT_PENDING || state == ST_DISCONNECTED) {
-+
-+	/* disable irq_hpd/replug interrupts */
-+	dp_catalog_hpd_config_intr(dp->catalog,
-+		DP_DP_IRQ_HPD_INT_MASK | DP_DP_HPD_REPLUG_INT_MASK, false);
-+
-+	/* unplugged, no more irq_hpd handle */
-+	dp_del_event(dp, EV_IRQ_HPD_INT);
-+
-+	if (state == ST_DISCONNECTED) {
-+		/* triggered by irq_hdp with sink_count = 0 */
-+		if (dp->link->sink_count == 0) {
-+			dp_ctrl_off_phy(dp->ctrl);
-+			hpd->hpd_high = 0;
-+			dp->core_initialized = false;
-+		}
-+		mutex_unlock(&dp->event_mutex);
-+		return 0;
-+	}
-+
-+	if (state == ST_DISCONNECT_PENDING) {
- 		mutex_unlock(&dp->event_mutex);
- 		return 0;
- 	}
-@@ -633,9 +656,8 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
- 
- 	dp->hpd_state = ST_DISCONNECT_PENDING;
- 
--	/* disable HPD plug interrupt until disconnect is done */
--	dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_PLUG_INT_MASK
--				| DP_DP_IRQ_HPD_INT_MASK, false);
-+	/* disable HPD plug interrupts */
-+	dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_PLUG_INT_MASK, false);
- 
- 	hpd->hpd_high = 0;
- 
-@@ -652,8 +674,8 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
- 	reinit_completion(&dp->audio_comp);
- 	dp_display_handle_plugged_change(g_dp_display, false);
- 
--	dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_PLUG_INT_MASK |
--					DP_DP_IRQ_HPD_INT_MASK, true);
-+	/* enable HDP plug interrupt to prepare for next plugin */
-+	dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_PLUG_INT_MASK, true);
- 
- 	/* uevent will complete disconnection part */
- 	mutex_unlock(&dp->event_mutex);
-@@ -684,7 +706,7 @@ static int dp_irq_hpd_handle(struct dp_display_private *dp, u32 data)
- 
- 	/* irq_hpd can happen at either connected or disconnected state */
- 	state =  dp->hpd_state;
--	if (state == ST_DISPLAY_OFF) {
-+	if (state == ST_DISPLAY_OFF || state == ST_SUSPENDED) {
- 		mutex_unlock(&dp->event_mutex);
- 		return 0;
- 	}
-@@ -903,9 +925,13 @@ static int dp_display_disable(struct dp_display_private *dp, u32 data)
- 
- 	dp_display->audio_enabled = false;
- 
--	dp_ctrl_off(dp->ctrl);
--
--	dp->core_initialized = false;
-+	/* triggered by irq_hpd with sink_count = 0 */
-+	if (dp->link->sink_count == 0) {
-+		dp_ctrl_off_link_stream(dp->ctrl);
-+	} else {
-+		dp_ctrl_off(dp->ctrl);
-+		dp->core_initialized = false;
-+	}
- 
- 	dp_display->power_on = false;
- 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+FWIW this looks to have an awful lot in common with what's going to be 
+needed for Android's protected KVM and Arm's Confidential Compute 
+Architecture, so we'll all be better off by doing it right. I'm getting 
+the feeling that set_memory_decrypted() wants to grow into a more 
+general abstraction that can return an alias at a different GPA if 
+necessary.
 
+Robin.
+
+> 
+> Thanks.
+> 
+> On 4/14/2021 11:47 PM, Christoph Hellwig wrote:
+>>> +static dma_addr_t hyperv_map_page(struct device *dev, struct page 
+>>> *page,
+>>> +                  unsigned long offset, size_t size,
+>>> +                  enum dma_data_direction dir,
+>>> +                  unsigned long attrs)
+>>> +{
+>>> +    phys_addr_t map, phys = (page_to_pfn(page) << PAGE_SHIFT) + offset;
+>>> +
+>>> +    if (!hv_is_isolation_supported())
+>>> +        return phys;
+>>> +
+>>> +    map = swiotlb_tbl_map_single(dev, phys, size, HV_HYP_PAGE_SIZE, 
+>>> dir,
+>>> +                     attrs);
+>>> +    if (map == (phys_addr_t)DMA_MAPPING_ERROR)
+>>> +        return DMA_MAPPING_ERROR;
+>>> +
+>>> +    return map;
+>>> +}
+>>
+>> This largerly duplicates what dma-direct + swiotlb does.  Please use
+>> force_dma_unencrypted to force bounce buffering and just use the generic
+>> code.
+>>
+>>> +    if (hv_isolation_type_snp()) {
+>>> +        ret = hv_set_mem_host_visibility(
+>>> +                phys_to_virt(hyperv_io_tlb_start),
+>>> +                hyperv_io_tlb_size,
+>>> +                VMBUS_PAGE_VISIBLE_READ_WRITE);
+>>> +        if (ret)
+>>> +            panic("%s: Fail to mark Hyper-v swiotlb buffer visible 
+>>> to host. err=%d\n",
+>>> +                  __func__, ret);
+>>> +
+>>> +        hyperv_io_tlb_remap = ioremap_cache(hyperv_io_tlb_start
+>>> +                        + ms_hyperv.shared_gpa_boundary,
+>>> +                            hyperv_io_tlb_size);
+>>> +        if (!hyperv_io_tlb_remap)
+>>> +            panic("%s: Fail to remap io tlb.\n", __func__);
+>>> +
+>>> +        memset(hyperv_io_tlb_remap, 0x00, hyperv_io_tlb_size);
+>>> +        swiotlb_set_bounce_remap(hyperv_io_tlb_remap);
+>>
+>> And this really needs to go into a common hook where we currently just
+>> call set_memory_decrypted so that all the different schemes for these
+>> trusted VMs (we have about half a dozen now) can share code rather than
+>> reinventing it.
+>>
