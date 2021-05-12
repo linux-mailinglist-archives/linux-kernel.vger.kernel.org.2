@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1089337BD21
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:52:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F9237BD33
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:52:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232222AbhELMxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 08:53:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52504 "EHLO mail.kernel.org"
+        id S233270AbhELMxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 08:53:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52584 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231301AbhELMwv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231310AbhELMwv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 12 May 2021 08:52:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3844D613FC;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F8C961417;
         Wed, 12 May 2021 12:51:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620823902;
-        bh=tiztELb5VMV5JjRFGKumELNKo9NifoAHMsnm7x1qrik=;
+        bh=NJ4jcd2S0MqqF1GQjKPHZyD2C+Se0R8Fi4ONAk1Od5M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AtCTqWdHLRSvLn8qTI99Wk/oQLGQGPRapk0tVtcq7P0KQ4PvV6t4AxaVh+UHkOzER
-         Eo+kXQn9Ph4fRlVSpdrmma2P6yrols4kffj6hDAGBtT+I9hc5zypcQiewLr3vzYWQH
-         qZXlNQkbPJ6cANDOjdBrd7v1CJwRlPeQfERr0H3EMfztz/v1zHPouvJC1JxMNgwUkO
-         l4ZO5hhrzRHaGw6T6b0K7NLqGQGhJZBLJHdFJs3msO1Sxb19QqYAtGycxlavhRfwBA
-         +ZtFd/ejXA26g8eRpPb64fLctWzvlYvT6X2l3LijI4ongqd96hLiMVFRos/MvFYEqw
-         iu3XUZmXDl0jA==
+        b=UkIGVodtiNfZaIiqZpBbckPirT9lNAlpAdDow9Ib8GOoKK3n58dvKMwKxAaCrcAvu
+         PDRYCxVJnHpD642pDLxMi6RVXhcfrPsYw7V2HdLaWaVtlDae8bVb3ENLSYCPGiVETP
+         ehxJJ2ZJoFVUxQYZ2O9gTLJ46kCmKjEtCyQZ2htzN8rdvVQMfaBBcpillTfO+JjjBD
+         4gigNapxnbh4QNePQASImJQlJ1TCjUggTLhGe4xax0QFOE3RqETFUUOIEuXMK/xYdg
+         KoGYAANN9rlqT8/9jIfQDp4IXgKhtMn+r+YsdGudWEvsHOn1JFscu5eGr9JIfzbd5j
+         J/3SDO6JPfAOw==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1lgoKy-0018hR-DM; Wed, 12 May 2021 14:51:40 +0200
+        id 1lgoKy-0018hV-EM; Wed, 12 May 2021 14:51:40 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 10/40] docs: driver-api: firmware: other_interfaces.rst: Use ASCII subset instead of UTF-8 alternate symbols
-Date:   Wed, 12 May 2021 14:50:14 +0200
-Message-Id: <f0862a53e1f54aa3a18902e69316c98168d86bf8.1620823573.git.mchehab+huawei@kernel.org>
+        "Jonathan Corbet" <corbet@lwn.net>,
+        Akinobu Mita <akinobu.mita@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 11/40] docs: fault-injection: nvme-fault-injection.rst: Use ASCII subset instead of UTF-8 alternate symbols
+Date:   Wed, 12 May 2021 14:50:15 +0200
+Message-Id: <1c7520a02119fc356fa71732b9162f5892016f5d.1620823573.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1620823573.git.mchehab+huawei@kernel.org>
 References: <cover.1620823573.git.mchehab+huawei@kernel.org>
@@ -59,26 +61,27 @@ Also, Sphinx already do such conversion automatically outside literal blocks:
 
 So, replace the occurences of the following UTF-8 characters:
 
+	- U+2018 ('‘'): LEFT SINGLE QUOTATION MARK
 	- U+2019 ('’'): RIGHT SINGLE QUOTATION MARK
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/driver-api/firmware/other_interfaces.rst | 2 +-
+ Documentation/fault-injection/nvme-fault-injection.rst | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/driver-api/firmware/other_interfaces.rst b/Documentation/driver-api/firmware/other_interfaces.rst
-index b81794e0cfbb..6711b3572408 100644
---- a/Documentation/driver-api/firmware/other_interfaces.rst
-+++ b/Documentation/driver-api/firmware/other_interfaces.rst
-@@ -23,7 +23,7 @@ Exception Level 3 (EL3).
+diff --git a/Documentation/fault-injection/nvme-fault-injection.rst b/Documentation/fault-injection/nvme-fault-injection.rst
+index 1d4427890d75..d372ce66a244 100644
+--- a/Documentation/fault-injection/nvme-fault-injection.rst
++++ b/Documentation/fault-injection/nvme-fault-injection.rst
+@@ -25,7 +25,7 @@ Example 1: Inject default status code with no retry
  
- The Intel Stratix10 SoC service layer provides an in kernel API for
- drivers to request access to the secure features. The requests are queued
--and processed one by one. ARM’s SMCCC is used to pass the execution
-+and processed one by one. ARM's SMCCC is used to pass the execution
- of the requests on to a secure monitor (EL3).
+ Expected Result::
  
- .. kernel-doc:: include/linux/firmware/intel/stratix10-svc-client.h
+-  cp: cannot stat ‘/mnt/a.file’: Input/output error
++  cp: cannot stat '/mnt/a.file': Input/output error
+ 
+ Message from dmesg::
+ 
 -- 
 2.30.2
 
