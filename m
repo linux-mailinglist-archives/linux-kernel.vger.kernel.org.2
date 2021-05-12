@@ -2,87 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 155E437B410
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 04:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FB0837B411
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 04:07:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230109AbhELCE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 22:04:56 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:59727 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229934AbhELCEz (ORCPT
+        id S229996AbhELCIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 22:08:37 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2055 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229848AbhELCIg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 22:04:55 -0400
-X-UUID: 7dd48654e91b4cf49193b651f8a1d0ee-20210512
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=PwJHRqwBEarNjfAVmhlQxjauvjjxcaY8dzl8Reekzso=;
-        b=mcz9/hgW/2l4XxvUCm5Q9oLOFBv60sRwPbTkKWNBTZ8u33jGbZI/5jV1pQKHZV2Ytp1302oVhmjczEKUtEQvNqerxNEMkZVTF/Stz1P7XvXwCxk7ju8/DBaHGu1rttrchgnL/bNBj8CtaNwbj4VQNXuAD/sFgKQoVfog8XhYZIY=;
-X-UUID: 7dd48654e91b4cf49193b651f8a1d0ee-20210512
-Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1628613659; Wed, 12 May 2021 10:03:40 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
- (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 12 May
- 2021 10:03:38 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 12 May 2021 10:03:37 +0800
-Message-ID: <1620785017.25159.5.camel@mhfsdcap03>
-Subject: Re: [PATCH] usb: core: hub: fix race condition about TRSMRCY of
- resume
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Alan Stern <stern@rowland.harvard.edu>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Bixuan Cui <cuibixuan@huawei.com>,
-        Eugeniu Rosca <erosca@de.adit-jv.com>,
-        "Oliver Neukum" <oneukum@suse.com>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Tianping Fang <tianping.fang@mediatek.com>,
-        Eddie Hung <eddie.hung@mediatek.com>,
-        "Ikjoon Jang" <ikjn@chromium.org>
-Date:   Wed, 12 May 2021 10:03:37 +0800
-In-Reply-To: <20210511163907.GB901897@rowland.harvard.edu>
-References: <20210511101522.34193-1-chunfeng.yun@mediatek.com>
-         <20210511163907.GB901897@rowland.harvard.edu>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Tue, 11 May 2021 22:08:36 -0400
+Received: from dggemx753-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Ffyk76ySKzWhq8;
+        Wed, 12 May 2021 10:03:11 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ dggemx753-chm.china.huawei.com (10.0.44.37) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 12 May 2021 10:07:26 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH v2 2/2] f2fs: atgc: export entries for better tunability via sysfs
+Date:   Wed, 12 May 2021 10:07:19 +0800
+Message-ID: <20210512020719.43685-1-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: E3079C5BB8EAEF3DC9471B8695BAD55DD3FA211E210FA2A8C5F3E4DBC356237E2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.120.216.130]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggemx753-chm.china.huawei.com (10.0.44.37)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIxLTA1LTExIGF0IDEyOjM5IC0wNDAwLCBBbGFuIFN0ZXJuIHdyb3RlOg0KPiBP
-biBUdWUsIE1heSAxMSwgMjAyMSBhdCAwNjoxNToyMlBNICswODAwLCBDaHVuZmVuZyBZdW4gd3Jv
-dGU6DQo+ID4gVGhpcyBtYXkgaGFwcGVuIGlmIHRoZSBwb3J0IGJlY29tZXMgcmVzdW1lIHN0YXR1
-cyBleGFjdGx5DQo+ID4gd2hlbiB1c2JfcG9ydF9yZXN1bWUoKSBnZXRzIHBvcnQgc3RhdHVzLCBp
-dCBzdGlsbCBuZWVkIHByb3ZpZGUNCj4gPiBhIFRSU01DUlkgdGltZSBiZWZvcmUgYWNjZXNzIHRo
-ZSBkZXZpY2UuDQo+ID4gDQo+ID4gUmVwb3J0ZWQtYnk6IFRpYW5waW5nIEZhbmcgPHRpYW5waW5n
-LmZhbmdAbWVkaWF0ZWsuY29tPg0KPiA+IFNpZ25lZC1vZmYtYnk6IENodW5mZW5nIFl1biA8Y2h1
-bmZlbmcueXVuQG1lZGlhdGVrLmNvbT4NCj4gDQo+IFRoaXMgc2hvdWxkIGFsc28gc2F5Og0KPiAN
-Cj4gQ0M6IDxzdGFibGVAdmdlci5rZXJuZWwub3JnPg0KDQpPSywgdGhhbmtzDQoNCj4gDQo+ID4g
-LS0tDQo+ID4gIGRyaXZlcnMvdXNiL2NvcmUvaHViLmMgfCA2ICsrKy0tLQ0KPiA+ICAxIGZpbGUg
-Y2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQ0KPiA+IA0KPiA+IGRpZmYg
-LS1naXQgYS9kcml2ZXJzL3VzYi9jb3JlL2h1Yi5jIGIvZHJpdmVycy91c2IvY29yZS9odWIuYw0K
-PiA+IGluZGV4IGIyYmM0YjdjNDI4OS4uZmM3ZDZjZGFjZjE2IDEwMDY0NA0KPiA+IC0tLSBhL2Ry
-aXZlcnMvdXNiL2NvcmUvaHViLmMNCj4gPiArKysgYi9kcml2ZXJzL3VzYi9jb3JlL2h1Yi5jDQo+
-ID4gQEAgLTM2NDIsOSArMzY0Miw2IEBAIGludCB1c2JfcG9ydF9yZXN1bWUoc3RydWN0IHVzYl9k
-ZXZpY2UgKnVkZXYsIHBtX21lc3NhZ2VfdCBtc2cpDQo+ID4gIAkJICogc2VxdWVuY2UuDQo+ID4g
-IAkJICovDQo+ID4gIAkJc3RhdHVzID0gaHViX3BvcnRfc3RhdHVzKGh1YiwgcG9ydDEsICZwb3J0
-c3RhdHVzLCAmcG9ydGNoYW5nZSk7DQo+ID4gLQ0KPiA+IC0JCS8qIFRSU01SQ1kgPSAxMCBtc2Vj
-ICovDQo+ID4gLQkJbXNsZWVwKDEwKTsNCj4gPiAgCX0NCj4gPiAgDQo+ID4gICBTdXNwZW5kQ2xl
-YXJlZDoNCj4gPiBAQCAtMzY1OSw2ICszNjU2LDkgQEAgaW50IHVzYl9wb3J0X3Jlc3VtZShzdHJ1
-Y3QgdXNiX2RldmljZSAqdWRldiwgcG1fbWVzc2FnZV90IG1zZykNCj4gPiAgCQkJCXVzYl9jbGVh
-cl9wb3J0X2ZlYXR1cmUoaHViLT5oZGV2LCBwb3J0MSwNCj4gPiAgCQkJCQkJVVNCX1BPUlRfRkVB
-VF9DX1NVU1BFTkQpOw0KPiA+ICAJCX0NCj4gPiArDQo+ID4gKwkJLyogVFJTTVJDWSA9IDEwIG1z
-ZWMgKi8NCj4gPiArCQltc2xlZXAoMTApOw0KPiA+ICAJfQ0KPiA+ICANCj4gPiAgCWlmICh1ZGV2
-LT5wZXJzaXN0X2VuYWJsZWQpDQo+IA0KPiBBY2tlZC1ieTogQWxhbiBTdGVybiA8c3Rlcm5Acm93
-bGFuZC5oYXJ2YXJkLmVkdT4NCg0K
+This patch export below sysfs entries for better ATGC tunability.
+
+/sys/fs/f2fs/<disk>/atgc_candidate_ratio
+/sys/fs/f2fs/<disk>/atgc_candidate_count
+/sys/fs/f2fs/<disk>/atgc_age_weight
+/sys/fs/f2fs/<disk>/atgc_age_threshold
+
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+---
+v2:
+- limit value range of candidate_ratio and candidate_ratio in __sbi_store()
+ Documentation/ABI/testing/sysfs-fs-f2fs | 28 +++++++++++++++++++++++++
+ fs/f2fs/sysfs.c                         | 27 ++++++++++++++++++++++++
+ 2 files changed, 55 insertions(+)
+
+diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
+index 4849b8e84e42..5088281e312e 100644
+--- a/Documentation/ABI/testing/sysfs-fs-f2fs
++++ b/Documentation/ABI/testing/sysfs-fs-f2fs
+@@ -438,3 +438,31 @@ Description:	Show the count of inode newly enabled for compression since mount.
+ 		Note that when the compression is disabled for the files, this count
+ 		doesn't decrease. If you write "0" here, you can initialize
+ 		compr_new_inode to "0".
++
++What:		/sys/fs/f2fs/<disk>/atgc_candidate_ratio
++Date:		May 2021
++Contact:	"Chao Yu" <yuchao0@huawei.com>
++Description:	When ATGC is on, it controls candidate ratio in order to limit total
++		number of potential victim in all candidates, the value should be in
++		range of [0, 100], by default it was initialized as 20(%).
++
++What:		/sys/fs/f2fs/<disk>/atgc_candidate_count
++Date:		May 2021
++Contact:	"Chao Yu" <yuchao0@huawei.com>
++Description:	When ATGC is on, it controls candidate count in order to limit total
++		number of potential victim in all candidates, by default it was
++		initialized as 10 (sections).
++
++What:		/sys/fs/f2fs/<disk>/atgc_age_weight
++Date:		May 2021
++Contact:	"Chao Yu" <yuchao0@huawei.com>
++Description:	When ATGC is on, it controls age weight to balance weight proportion
++		in between aging and valid blocks, the value should be in range of
++		[0, 100], by default it was initialized as 60(%).
++
++What:		/sys/fs/f2fs/<disk>/atgc_age_threshold
++Date:		May 2021
++Contact:	"Chao Yu" <yuchao0@huawei.com>
++Description:	When ATGC is on, it controls age threshold to bypass GCing young
++		candidates whose age is not beyond the threshold, by default it was
++		initialized as 604800 seconds (equals to 7 days).
+diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+index 39b522ec73e7..dc71bc968c72 100644
+--- a/fs/f2fs/sysfs.c
++++ b/fs/f2fs/sysfs.c
+@@ -37,6 +37,7 @@ enum {
+ #endif
+ 	RESERVED_BLOCKS,	/* struct f2fs_sb_info */
+ 	CPRC_INFO,	/* struct ckpt_req_control */
++	ATGC_INFO,	/* struct atgc_management */
+ };
+ 
+ struct f2fs_attr {
+@@ -75,6 +76,8 @@ static unsigned char *__struct_ptr(struct f2fs_sb_info *sbi, int struct_type)
+ #endif
+ 	else if (struct_type == CPRC_INFO)
+ 		return (unsigned char *)&sbi->cprc_info;
++	else if (struct_type == ATGC_INFO)
++		return (unsigned char *)&sbi->am;
+ 	return NULL;
+ }
+ 
+@@ -495,6 +498,20 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
+ 	}
+ #endif
+ 
++	if (!strcmp(a->attr.name, "atgc_candidate_ratio")) {
++		if (t > 100)
++			return -EINVAL;
++		sbi->am.candidate_ratio = t;
++		return count;
++	}
++
++	if (!strcmp(a->attr.name, "atgc_age_weight")) {
++		if (t > 100)
++			return -EINVAL;
++		sbi->am.age_weight = t;
++		return count;
++	}
++
+ 	*ui = (unsigned int)t;
+ 
+ 	return count;
+@@ -710,6 +727,11 @@ F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_written_block, compr_written_block);
+ F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_saved_block, compr_saved_block);
+ F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_new_inode, compr_new_inode);
+ #endif
++/* For ATGC */
++F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_candidate_ratio, candidate_ratio);
++F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_candidate_count, max_candidate_count);
++F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_age_weight, age_weight);
++F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_age_threshold, age_threshold);
+ 
+ #define ATTR_LIST(name) (&f2fs_attr_##name.attr)
+ static struct attribute *f2fs_attrs[] = {
+@@ -778,6 +800,11 @@ static struct attribute *f2fs_attrs[] = {
+ 	ATTR_LIST(compr_saved_block),
+ 	ATTR_LIST(compr_new_inode),
+ #endif
++	/* For ATGC */
++	ATTR_LIST(atgc_candidate_ratio),
++	ATTR_LIST(atgc_candidate_count),
++	ATTR_LIST(atgc_age_weight),
++	ATTR_LIST(atgc_age_threshold),
+ 	NULL,
+ };
+ ATTRIBUTE_GROUPS(f2fs);
+-- 
+2.29.2
 
