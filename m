@@ -2,159 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CF0137B999
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 11:49:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4516437B989
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 11:47:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbhELJu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 05:50:27 -0400
-Received: from mail-ua1-f48.google.com ([209.85.222.48]:39548 "EHLO
-        mail-ua1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbhELJuY (ORCPT
+        id S230217AbhELJsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 05:48:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230196AbhELJs3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 05:50:24 -0400
-Received: by mail-ua1-f48.google.com with SMTP id a12so7278878uak.6
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 02:49:17 -0700 (PDT)
+        Wed, 12 May 2021 05:48:29 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 371E7C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 02:47:21 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id t4so34118975ejo.0
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 02:47:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=sv961MJyocNObPGcZa967XLagc7KlobuPCBUYNDEQvo=;
+        b=xIOvEfAOy7t8SB+dFMOMRDVmUL/m6ixXM4m6TxkP4uzUmVfp2IIPBPyTl8YrmElxbX
+         QAFyAea8LnhvGo0kdytldq5/dC1fCII0ocXGObB6fXysMIcHLueqcBmWNw9o1aMvMm/S
+         E68bLKHOUj0Geap5G3MlovyTuTCUGcMUs0q8CuxBXH500GD5DPAe8LZguZqhe0ML96CP
+         iiqV3ZrRkA4pAOj/baoMr3DEfD5ZXtSOAtb3loRmRxXDQOPnIrKXXeMUVUBvnXKyRZnX
+         Oc06UhFG1b2CAX9zVCbLC691Iv8Po9CTcrWW+n+lM0f1bqM9/P3HkaTYGRjQEehDPbgj
+         eYKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HwuV0oIEoZ+EQ5+Mm5jlhwshZkWr3IhzEV/rE9T6cEw=;
-        b=oWdptxaRLrgXNXV+xxVi7fmHQOUYZve/WEnh8xDzvSzYFzC2WNOG+sfkq5qKDBOmA/
-         jqA2vmGXcrnEriP9LMo15oAlIDN+cZuYZyPLC5S08/Ww+h74nJJ59ngx4hVkKBHnqYpC
-         p4vxtgxYtJ2v7cCJt7d9d1p8In9ICjpcAc7sJTutEB9ugttIHTgqnOwJ1iysR/xCcXRv
-         5q2oj4IsoGoP2Ffp0dRU16yQZRTmGn/FJPg2JUppsigNS+qBC+kH4TYugLqhNu3vI5Zz
-         PTSTNH2S8CZ/HRQ8CEFWEUksi6U4t9JLi3Pgh4qc9wL7TKWsg/3k5SH89EDb/dJSGrwf
-         1lfw==
-X-Gm-Message-State: AOAM533KmRUTV+5kM3PAtecKw14tdDPLCKeToNv9Qzc4D5QpYaA9x6Gx
-        AsdIG+7ld0aRq5ig+Z39iMqtjFzQkMUqPGZGQXQ=
-X-Google-Smtp-Source: ABdhPJzQGXZD6dgZ85APfNUlHHznrQzLksJl7I1MmQfQ/FfX780s5vYhVBREXXLKbtUN48frqg1GMbdzUXcfPyHZELY=
-X-Received: by 2002:a9f:3852:: with SMTP id q18mr30989572uad.58.1620812956684;
- Wed, 12 May 2021 02:49:16 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210507150553.208763-1-peterx@redhat.com> <20210507150553.208763-4-peterx@redhat.com>
-In-Reply-To: <20210507150553.208763-4-peterx@redhat.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 12 May 2021 11:49:05 +0200
-Message-ID: <CAMuHMdUe-P=8qoUBnNa4gx2Dg4YvcfLqnBJvRqp9FNLw55fsPQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] mm: gup: pack has_pinned in MMF_HAS_PINNED
-To:     Peter Xu <peterx@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>, John Hubbard <jhubbard@nvidia.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jann Horn <jannh@google.com>, Jason Gunthorpe <jgg@nvidia.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=sv961MJyocNObPGcZa967XLagc7KlobuPCBUYNDEQvo=;
+        b=ho2u+vxoqrpQfp3dOmzHRkrl2bMhS3o92YJbSLOr6A4nyD8G1KVk6wKI/m2haUpRsz
+         1/YBcVmgumQyjIp3Xr+//t94inPprGg0vNsWVpMklG6Q0zfPZ+2D0EI8JjP6xIk+yVWc
+         JqQj4ukWyy8bgjlVsT0JVlm5+LWoTH3b+QmkWRU1ojbyIlRqEVEUX18FBP4Qd19td95R
+         GhJEtXkgR0fDrTUZxeyoKLFDNGyFjY+ycLxRTH8XEY4bsUjIjFVygb4emxkRnvjZLwUP
+         sgf1bKvE1tlzrh8Tat2Mz0VMyP3orAin5kK35jEU+ZWKzpxAfDQNCQIifO1wCrcR1CHU
+         Hjsg==
+X-Gm-Message-State: AOAM5335hIKZGJoK4Z20d8/8k5/x/R/iKZAwdqXwkCIyfmxZHQ7TnpmG
+        CftayIgkVC0iAXoqzEpWBHb99Q==
+X-Google-Smtp-Source: ABdhPJyuzUgQJa4i7aUIDYkPuuUXGAkzqLoSi3I21f/iXc8hYGFWTCS2oi1FMNXFSiS1nJC6MOo3+g==
+X-Received: by 2002:a17:906:d145:: with SMTP id br5mr35836821ejb.452.1620812839886;
+        Wed, 12 May 2021 02:47:19 -0700 (PDT)
+Received: from [192.168.0.13] ([83.216.184.132])
+        by smtp.gmail.com with ESMTPSA id d25sm13572340ejd.59.2021.05.12.02.47.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 12 May 2021 02:47:19 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: block, bfq: NULL pointer dereference in bfq_rq_pos_tree_lookup()
+From:   Paolo Valente <paolo.valente@linaro.org>
+In-Reply-To: <abe6426476d4e87bd3977079380bc7c3f508328d.camel@gmx.de>
+Date:   Wed, 12 May 2021 11:49:34 +0200
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <DB1E4403-5102-4D01-A8F6-2F12191F7761@linaro.org>
+References: <8c38408d27f1032f2a664838e523376c5da09a80.camel@gmx.de>
+ <9732EA9F-E15B-48E1-9B92-2D74F75C6331@linaro.org>
+ <e0ece2e6349e92adc3da6d8c2ae6ff8a4172e4ad.camel@gmx.de>
+ <abe6426476d4e87bd3977079380bc7c3f508328d.camel@gmx.de>
+To:     Mike Galbraith <efault@gmx.de>
+X-Mailer: Apple Mail (2.3445.104.11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter, Andrea,
 
-On Fri, May 7, 2021 at 7:26 PM Peter Xu <peterx@redhat.com> wrote:
-> From: Andrea Arcangeli <aarcange@redhat.com>
->
-> has_pinned 32bit can be packed in the MMF_HAS_PINNED bit as a noop
-> cleanup.
->
-> Any atomic_inc/dec to the mm cacheline shared by all threads in
-> pin-fast would reintroduce a loss of SMP scalability to pin-fast, so
-> there's no future potential usefulness to keep an atomic in the mm for
-> this.
->
-> set_bit(MMF_HAS_PINNED) will be theoretically a bit slower than
-> WRITE_ONCE (atomic_set is equivalent to WRITE_ONCE), but the set_bit
-> (just like atomic_set after this commit) has to be still issued only
-> once per "mm", so the difference between the two will be lost in the
-> noise.
->
-> will-it-scale "mmap2" shows no change in performance with enterprise
-> config as expected.
->
-> will-it-scale "pin_fast" retains the > 4000% SMP scalability
-> performance improvement against upstream as expected.
->
-> This is a noop as far as overall performance and SMP scalability are
-> concerned.
->
-> Signed-off-by: Andrea Arcangeli <aarcange@redhat.com>
-> [peterx: Fix build for task_mmu.c, introduce mm_set_has_pinned_flag, fix
->  comment here and there]
-> Signed-off-by: Peter Xu <peterx@redhat.com>
 
-Thanks for your patch, which is now in linux-next.
+> Il giorno 8 mag 2021, alle ore 06:49, Mike Galbraith <efault@gmx.de> =
+ha scritto:
+>=20
+> On Mon, 2021-05-03 at 14:41 +0200, Mike Galbraith wrote:
+>> On Mon, 2021-05-03 at 11:52 +0200, Paolo Valente wrote:
+>>> Hi Mike,
+>>> I've waited a little bit before replying, because I've worked on a =
+dev
+>>> patch series, for debugging another crash. I'd like to use
+>>> this series for your failure too, as the OOPS you report
+>>> unfortunately does not ring any bell :(
+>>>=20
+>>> So, could you please try to apply this patch series?  If it doesn't
+>>> apply, I'll rebase it.
+>>=20
+>> This bug isn't deterministic, but I can wedge your set into my devel
+>> trees, and see if anything falls out.
+>=20
+> What fell out was not the least bit useful.  After days of box working
+> just fine despite bug being given ample enticement, it didn't take the
+> bait.  I then build master sans patch set, which exploded on its very
+> first distro build, after which bug (snickered mightily and) went back
+> to into hiding.
+>=20
 
-> diff --git a/mm/gup.c b/mm/gup.c
-> index 9933bc5c2eff2..bb130723a6717 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -1270,6 +1270,17 @@ int fixup_user_fault(struct mm_struct *mm,
->  }
->  EXPORT_SYMBOL_GPL(fixup_user_fault);
->
-> +/*
-> + * Set the MMF_HAS_PINNED if not set yet; after set it'll be there for the mm's
-> + * lifecycle.  Avoid setting the bit unless necessary, or it might cause write
-> + * cache bouncing on large SMP machines for concurrent pinned gups.
-> + */
-> +static inline void mm_set_has_pinned_flag(unsigned long *mm_flags)
-> +{
-> +       if (!test_bit(MMF_HAS_PINNED, mm_flags))
-> +               set_bit(MMF_HAS_PINNED, mm_flags);
-> +}
-> +
->  /*
->   * Please note that this function, unlike __get_user_pages will not
->   * return 0 for nr_pages > 0 without FOLL_NOWAIT
-> @@ -1292,8 +1303,8 @@ static __always_inline long __get_user_pages_locked(struct mm_struct *mm,
->                 BUG_ON(*locked != 1);
->         }
->
-> -       if ((flags & FOLL_PIN) && !atomic_read(&mm->has_pinned))
-> -               atomic_set(&mm->has_pinned, 1);
-> +       if (flags & FOLL_PIN)
-> +               mm_set_has_pinned_flag(&mm->flags);
->
->         /*
->          * FOLL_PIN and FOLL_GET are mutually exclusive. Traditional behavior
-> @@ -2617,8 +2628,8 @@ static int internal_get_user_pages_fast(unsigned long start,
->                                        FOLL_FAST_ONLY)))
->                 return -EINVAL;
->
-> -       if ((gup_flags & FOLL_PIN) && !atomic_read(&current->mm->has_pinned))
-> -               atomic_set(&current->mm->has_pinned, 1);
-> +       if (gup_flags & FOLL_PIN)
-> +               mm_set_has_pinned_flag(&current->mm->flags);
+Not easy to debug this way :)
 
-noreply@ellerman.id.au reports:
+At any rate, I've just posted the fix contained in my debug patch =
+series.
 
-    FAILED linux-next/m5272c3_defconfig/m68k-gcc8 Wed May 12, 19:30
-    http://kisskb.ellerman.id.au/kisskb/buildresult/14543658/
-    Commit:   Add linux-next specific files for 20210512
-          ec85c95b0c90a17413901b018e8ade7b9eae7cad
-    Compiler: m68k-linux-gcc (GCC) 8.1.0 / GNU ld (GNU Binutils) 2.30
+Thanks,
+Paolo
 
-    mm/gup.c:2698:3: error: implicit declaration of function
-'mm_set_has_pinned_flag'; did you mean 'set_tsk_thread_flag'?
-[-Werror=implicit-function-declaration]
+> 	-Mike
+>=20
 
-It's definition is inside the #ifdef CONFIG_MMU section, but the last
-user isn't.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
