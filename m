@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC2B37CB0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 18:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C2C137CB32
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 18:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241244AbhELQeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 12:34:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56710 "EHLO mail.kernel.org"
+        id S242465AbhELQev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 12:34:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231899AbhELPla (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:41:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C61C61419;
-        Wed, 12 May 2021 15:21:42 +0000 (UTC)
+        id S235042AbhELPmV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:42:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 11C8A61C76;
+        Wed, 12 May 2021 15:21:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620832902;
-        bh=IxcVmoEDSOcLe6wKdiFuAwZ2BzGHj9LWnYjuVFfoxSQ=;
+        s=korg; t=1620832910;
+        bh=K9YfiBT3PGPhLAmA0zT6LshT9kX7FXrYZhF5Bfk5ViM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mL7zbhWoz5c3T/tPLcEd55qi70fvNeAzwC5a2Vgtr8Pr6zu2og0rSSvPnWbkwypKo
-         Q46oKl38lJplveHAeP6gMgTMgzmTLFqqh0MLm0WBWD87d2kasyWa0b/1/34TSUI1vV
-         P03VW/IoUI8OLpBg9aIBFnB39tw26P4BWEUDzDiE=
+        b=CIjwGrZCh5YN55yXY4oRHpAOAhmkf1y16lOZL11cWz1oRRTxPJUffi97USCL4EIAv
+         Pf5cgHVEECIRxkDkqhcSORJ0G9U6LUsLCEiEFTx7m+Ys0Ro3YDcKX7pvO8crfXvCFY
+         nNHN1MLGd4jv9kuHiQqWxD0vz6pgWsBAF71FDM2Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Sindhu Devale <sindhu.devale@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 469/530] gro: fix napi_gro_frags() Fast GRO breakage due to IP alignment check
-Date:   Wed, 12 May 2021 16:49:39 +0200
-Message-Id: <20210512144835.177370972@linuxfoundation.org>
+Subject: [PATCH 5.10 471/530] RDMA/i40iw: Fix error unwinding when i40iw_hmc_sd_one fails
+Date:   Wed, 12 May 2021 16:49:41 +0200
+Message-Id: <20210512144835.241281086@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144819.664462530@linuxfoundation.org>
 References: <20210512144819.664462530@linuxfoundation.org>
@@ -41,80 +42,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Lobakin <alobakin@pm.me>
+From: Sindhu Devale <sindhu.devale@intel.com>
 
-[ Upstream commit 7ad18ff6449cbd6beb26b53128ddf56d2685aa93 ]
+[ Upstream commit 783a11bf2400e5d5c42a943c3083dc0330751842 ]
 
-Commit 38ec4944b593 ("gro: ensure frag0 meets IP header alignment")
-did the right thing, but missed the fact that napi_gro_frags() logics
-calls for skb_gro_reset_offset() *before* pulling Ethernet header
-to the skb linear space.
-That said, the introduced check for frag0 address being aligned to 4
-always fails for it as Ethernet header is obviously 14 bytes long,
-and in case with NET_IP_ALIGN its start is not aligned to 4.
+When i40iw_hmc_sd_one fails, chunk is freed without the deletion of chunk
+entry in the PBLE info list.
 
-Fix this by adding @nhoff argument to skb_gro_reset_offset() which
-tells if an IP header is placed right at the start of frag0 or not.
-This restores Fast GRO for napi_gro_frags() that became very slow
-after the mentioned commit, and preserves the introduced check to
-avoid silent unaligned accesses.
+Fix it by adding the chunk entry to the PBLE info list only after
+successful addition of SD in i40iw_hmc_sd_one.
 
->From v1 [0]:
- - inline tiny skb_gro_reset_offset() to let the code be optimized
-   more efficively (esp. for the !NET_IP_ALIGN case) (Eric);
- - pull in Reviewed-by from Eric.
+This fixes a static checker warning reported here:
+  https://lore.kernel.org/linux-rdma/YHV4CFXzqTm23AOZ@mwanda/
 
-[0] https://lore.kernel.org/netdev/20210418114200.5839-1-alobakin@pm.me
-
-Fixes: 38ec4944b593 ("gro: ensure frag0 meets IP header alignment")
-Reviewed-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 9715830157be ("i40iw: add pble resource files")
+Link: https://lore.kernel.org/r/20210416002104.323-1-shiraz.saleem@intel.com
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Sindhu Devale <sindhu.devale@intel.com>
+Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/dev.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/infiniband/hw/i40iw/i40iw_pble.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 64f4c7ec729d..2f17a4ac82f0 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -5857,7 +5857,7 @@ static struct list_head *gro_list_prepare(struct napi_struct *napi,
- 	return head;
- }
+diff --git a/drivers/infiniband/hw/i40iw/i40iw_pble.c b/drivers/infiniband/hw/i40iw/i40iw_pble.c
+index 5f97643e22e5..ae7d227edad2 100644
+--- a/drivers/infiniband/hw/i40iw/i40iw_pble.c
++++ b/drivers/infiniband/hw/i40iw/i40iw_pble.c
+@@ -392,12 +392,9 @@ static enum i40iw_status_code add_pble_pool(struct i40iw_sc_dev *dev,
+ 	i40iw_debug(dev, I40IW_DEBUG_PBLE, "next_fpm_addr = %llx chunk_size[%u] = 0x%x\n",
+ 		    pble_rsrc->next_fpm_addr, chunk->size, chunk->size);
+ 	pble_rsrc->unallocated_pble -= (chunk->size >> 3);
+-	list_add(&chunk->list, &pble_rsrc->pinfo.clist);
+ 	sd_reg_val = (sd_entry_type == I40IW_SD_TYPE_PAGED) ?
+ 			sd_entry->u.pd_table.pd_page_addr.pa : sd_entry->u.bp.addr.pa;
+-	if (sd_entry->valid)
+-		return 0;
+-	if (dev->is_pf) {
++	if (dev->is_pf && !sd_entry->valid) {
+ 		ret_code = i40iw_hmc_sd_one(dev, hmc_info->hmc_fn_id,
+ 					    sd_reg_val, idx->sd_idx,
+ 					    sd_entry->entry_type, true);
+@@ -408,6 +405,7 @@ static enum i40iw_status_code add_pble_pool(struct i40iw_sc_dev *dev,
+ 	}
  
--static void skb_gro_reset_offset(struct sk_buff *skb)
-+static inline void skb_gro_reset_offset(struct sk_buff *skb, u32 nhoff)
- {
- 	const struct skb_shared_info *pinfo = skb_shinfo(skb);
- 	const skb_frag_t *frag0 = &pinfo->frags[0];
-@@ -5868,7 +5868,7 @@ static void skb_gro_reset_offset(struct sk_buff *skb)
- 
- 	if (!skb_headlen(skb) && pinfo->nr_frags &&
- 	    !PageHighMem(skb_frag_page(frag0)) &&
--	    (!NET_IP_ALIGN || !(skb_frag_off(frag0) & 3))) {
-+	    (!NET_IP_ALIGN || !((skb_frag_off(frag0) + nhoff) & 3))) {
- 		NAPI_GRO_CB(skb)->frag0 = skb_frag_address(frag0);
- 		NAPI_GRO_CB(skb)->frag0_len = min_t(unsigned int,
- 						    skb_frag_size(frag0),
-@@ -6101,7 +6101,7 @@ gro_result_t napi_gro_receive(struct napi_struct *napi, struct sk_buff *skb)
- 	skb_mark_napi_id(skb, napi);
- 	trace_napi_gro_receive_entry(skb);
- 
--	skb_gro_reset_offset(skb);
-+	skb_gro_reset_offset(skb, 0);
- 
- 	ret = napi_skb_finish(napi, skb, dev_gro_receive(napi, skb));
- 	trace_napi_gro_receive_exit(ret);
-@@ -6194,7 +6194,7 @@ static struct sk_buff *napi_frags_skb(struct napi_struct *napi)
- 	napi->skb = NULL;
- 
- 	skb_reset_mac_header(skb);
--	skb_gro_reset_offset(skb);
-+	skb_gro_reset_offset(skb, hlen);
- 
- 	if (unlikely(skb_gro_header_hard(skb, hlen))) {
- 		eth = skb_gro_header_slow(skb, hlen, 0);
+ 	sd_entry->valid = true;
++	list_add(&chunk->list, &pble_rsrc->pinfo.clist);
+ 	return 0;
+  error:
+ 	kfree(chunk);
 -- 
 2.30.2
 
