@@ -2,75 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39DDD37C10E
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:55:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FECF37C09C
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232313AbhELO4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 10:56:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45520 "EHLO mail.kernel.org"
+        id S230202AbhELOt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 10:49:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231996AbhELOzO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 10:55:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ADE3D613AF;
-        Wed, 12 May 2021 14:54:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620831246;
-        bh=SFe4uRmtVkrqxJZehugrkHwY3YxnnFtWZhVWl5HPHM4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kL8uex9I7kItYGEvWsjmug4DxgeqJAgxk7oyPb+SJrpp5PmX8RkXKtPHNBmgFyBqW
-         J6ybgg8K+UFLSe0ezt5uHaAmW0BvV8jUtQGMWt7Q+N1tswD1jAvPbBVvzsWj1ndAEm
-         BSlKELJagIbmiuVKmLorvKEr0MSA24Kw1U0geNYQ=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+        id S230474AbhELOty (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 10:49:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A638160D07;
+        Wed, 12 May 2021 14:48:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620830926;
+        bh=jnhc6L5aE/L2E2M7Tw9BvkqscRZ44fnqwr1IsxfoBXM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ozriwa6JPyCqWIimKbWAnzcrQu/4yT647E3O8yudRHnH6rJDH9P5K26Yf0l++/bbF
+         PMgXlCILmRxE5Jsi7wlTpPXZeloT+ISMm8P+KOonVKRmmf7au+vcL0kBBvYpiAEIGR
+         IH+8YXfhVuTi5gCVNbc+UaS2rQTZJFIc8PEQLUQekA5Rcu3wCNcTSDd8N1oHy/vpwa
+         Znh/06XuWMACFCt2jM0TMEc2wFAHGutaZTl3rHYErRl+pY40Avre69RMlEAMLtVeZR
+         DgPKIvLCvEi1TEuCzqRBgSH1SnQVXl5dYNH/6iqjz9zoOWcWWW/TzowQXxKAcAZO3a
+         SJNgoWq/Zuqvg==
+From:   Jessica Yu <jeyu@kernel.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.4 041/244] drm/radeon: fix copy of uninitialized variable back to userspace
-Date:   Wed, 12 May 2021 16:46:52 +0200
-Message-Id: <20210512144744.364208425@linuxfoundation.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Jessica Yu <jeyu@kernel.org>
+Subject: [PATCH] module: check for exit sections in layout_sections() instead of module_init_section()
+Date:   Wed, 12 May 2021 16:46:53 +0200
+Message-Id: <20210512144653.3726-1-jeyu@kernel.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210512144743.039977287@linuxfoundation.org>
-References: <20210512144743.039977287@linuxfoundation.org>
-User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Previously, when CONFIG_MODULE_UNLOAD=n, the module loader just does not
+attempt to load exit sections since it never expects that any code in those
+sections will ever execute. However, dynamic code patching (alternatives,
+jump_label and static_call) can have sites in __exit code, even if __exit is
+never executed. Therefore __exit must be present at runtime, at least for as
+long as __init code is.
 
-commit 8dbc2ccac5a65c5b57e3070e36a3dc97c7970d96 upstream.
+Commit 33121347fb1c ("module: treat exit sections the same as init
+sections when !CONFIG_MODULE_UNLOAD") solves the requirements of
+jump_labels and static_calls by putting the exit sections in the init
+region of the module so that they are at least present at init, and
+discarded afterwards. It does this by including a check for exit
+sections in module_init_section(), so that it also returns true for exit
+sections, and the module loader will automatically sort them in the init
+region of the module.
 
-Currently the ioctl command RADEON_INFO_SI_BACKEND_ENABLED_MASK can
-copy back uninitialised data in value_tmp that pointer *value points
-to. This can occur when rdev->family is less than CHIP_BONAIRE and
-less than CHIP_TAHITI.  Fix this by adding in a missing -EINVAL
-so that no invalid value is copied back to userspace.
+However, the solution there was not completely arch-independent. ARM is
+a special case where it supplies its own module_{init, exit}_section()
+functions. Instead of pushing the exit section checks into
+module_init_section(), just implement the exit section check in
+layout_sections(), so that we don't have to touch arch-dependent code.
 
-Addresses-Coverity: ("Uninitialized scalar variable)
-Cc: stable@vger.kernel.org # 3.13+
-Fixes: 439a1cfffe2c ("drm/radeon: expose render backend mask to the userspace")
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 33121347fb1c ("module: treat exit sections the same as init sections when !CONFIG_MODULE_UNLOAD")
+Signed-off-by: Jessica Yu <jeyu@kernel.org>
 ---
- drivers/gpu/drm/radeon/radeon_kms.c |    1 +
- 1 file changed, 1 insertion(+)
+ kernel/module.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
---- a/drivers/gpu/drm/radeon/radeon_kms.c
-+++ b/drivers/gpu/drm/radeon/radeon_kms.c
-@@ -512,6 +512,7 @@ static int radeon_info_ioctl(struct drm_
- 			*value = rdev->config.si.backend_enable_mask;
- 		} else {
- 			DRM_DEBUG_KMS("BACKEND_ENABLED_MASK is si+ only!\n");
-+			return -EINVAL;
- 		}
- 		break;
- 	case RADEON_INFO_MAX_SCLK:
-
+diff --git a/kernel/module.c b/kernel/module.c
+index 173a09175511..a5c9842371b1 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -2430,6 +2430,9 @@ static void layout_sections(struct module *mod, struct load_info *info)
+ 			if ((s->sh_flags & masks[m][0]) != masks[m][0]
+ 			    || (s->sh_flags & masks[m][1])
+ 			    || s->sh_entsize != ~0UL
++#ifndef CONFIG_MODULE_UNLOAD
++			    || module_exit_section(sname)
++#endif
+ 			    || module_init_section(sname))
+ 				continue;
+ 			s->sh_entsize = get_offset(mod, &mod->core_layout.size, s, i);
+@@ -2463,7 +2466,11 @@ static void layout_sections(struct module *mod, struct load_info *info)
+ 			if ((s->sh_flags & masks[m][0]) != masks[m][0]
+ 			    || (s->sh_flags & masks[m][1])
+ 			    || s->sh_entsize != ~0UL
++#ifndef CONFIG_MODULE_UNLOAD
++			    || (!module_init_section(sname) && !module_exit_section(sname)))
++#else
+ 			    || !module_init_section(sname))
++#endif
+ 				continue;
+ 			s->sh_entsize = (get_offset(mod, &mod->init_layout.size, s, i)
+ 					 | INIT_OFFSET_MASK);
+@@ -2802,11 +2809,7 @@ void * __weak module_alloc(unsigned long size)
+ 
+ bool __weak module_init_section(const char *name)
+ {
+-#ifndef CONFIG_MODULE_UNLOAD
+-	return strstarts(name, ".init") || module_exit_section(name);
+-#else
+ 	return strstarts(name, ".init");
+-#endif
+ }
+ 
+ bool __weak module_exit_section(const char *name)
+-- 
+2.31.1
 
