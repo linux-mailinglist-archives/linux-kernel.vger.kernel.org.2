@@ -2,97 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6360537BD8E
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 15:00:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D16D37BD97
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 15:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231263AbhELNBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 09:01:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230293AbhELNBO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 09:01:14 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD418C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 06:00:05 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id r5so16390302lfr.5
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 06:00:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xap++t9BoJl2IuYSh+EBBBTbjARnF0khTcoJ209GXBc=;
-        b=XEQ3MPkzgiu+ROcRgQU2v+djK2hR7zxon3gknqwdo1p/YftJClB6BLbmeIwd1XCdgf
-         x78iUeS1hM9rRoRbV/4q2JX04bjfc8jpAqYRONcvRhUD/RlgEnnri69MabJ3igJKaTuv
-         cuFUkm1Q1gSPVmezasmYuyRe52XPLzBuOJ3GRKDxxS5amkfKi40+fbQFLqT1tcy32nIP
-         GWVEEdw2bbfRccKJGCjNVZZq2eJSub7N0ShYZyRose7gdR3jq8q70riUuNHh/SmxOzeP
-         zvrtB0S2vAsNR3Mp7VjQFY+f1/GLfzXaKLeKwtfzeiN8AqZYK9LykMLL3nF5A3CV+dXF
-         eeGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xap++t9BoJl2IuYSh+EBBBTbjARnF0khTcoJ209GXBc=;
-        b=nECuIqxJiSPKp3i16PA6oDHmBCjUpeSGd6hLe7qDQNqpcS5QZ+BsQPt99fioVDEros
-         bZv1pTKBZs/P55y96SiRzLfRdzrgnTW1fDaRzB5Lu+MuzVkCazo6wouFxrPlCl5trSeQ
-         Lm24uKDLRcaSGcI+/5jEZCBfOhmocaYXk1Kglon3+Cx4Lg4LgsmOtDRP+3lIAA3c6MtC
-         Uo7cCIGy1N5Qbuo+01jeRzk51bATX0riIHlZu9xpbO5m1D+z7Na91i623rD4Mm0+ldHh
-         W2HaERLrcOUCUSRXGzLvnlXB/SquRSSuyA/Rldi54D24jr8RFccm9VtnH7L4r6e77MTC
-         +Mew==
-X-Gm-Message-State: AOAM530LizYjGetn7hoctldtnCWCKMh84EQMKQxaEtCbm6ItoJIRXbT5
-        lijMYT81yrVebcqibfuvUlctHA==
-X-Google-Smtp-Source: ABdhPJzUGgPVfvYx5b+WByPlhMttdcGQHZK1x/SEymuRXmKkAwJIsX2gxpYd5ntEQWlHgWx0o2Ia2g==
-X-Received: by 2002:a19:4cd7:: with SMTP id z206mr10482663lfa.487.1620824404282;
-        Wed, 12 May 2021 06:00:04 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id f29sm4091830ljo.69.2021.05.12.06.00.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 06:00:03 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 9DB1410265F; Wed, 12 May 2021 16:00:04 +0300 (+03)
-Date:   Wed, 12 May 2021 16:00:04 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org,
-        Isaku Yamahata <isaku.yamahata@intel.com>
-Subject: Re: [RFC v2 10/32] x86/tdx: Wire up KVM hypercalls
-Message-ID: <20210512130004.gxiaxj6wlzcjcem5@box.shutemov.name>
-References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <04de6cd6549eee0b77fe3b0937c4b4b7f0e3ff2e.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <bc2e6da5-f35d-6574-52d0-82d996e56920@intel.com>
- <b836a6a2-3bbe-d568-50f0-0b6b8dbe3133@linux.intel.com>
+        id S231904AbhELNCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 09:02:14 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59184 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230293AbhELNCK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 09:02:10 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7ADA4AE27;
+        Wed, 12 May 2021 13:01:01 +0000 (UTC)
+Date:   Wed, 12 May 2021 14:00:58 +0100
+From:   Mel Gorman <mgorman@suse.de>
+To:     Paul Wise <pabs3@bonedaddy.net>
+Cc:     Balbir Singh <bsingharora@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
+        mingo@kernel.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+        pbonzini@redhat.com, maz@kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, riel@surriel.com, hannes@cmpxchg.org
+Subject: Re: [PATCH 0/6] sched,delayacct: Some cleanups
+Message-ID: <20210512130058.GJ3672@suse.de>
+References: <20210505105940.190490250@infradead.org>
+ <20210505222940.GA4236@balbir-desktop>
+ <YJOzUAg30LZWSHcI@hirez.programming.kicks-ass.net>
+ <20210507123810.GB4236@balbir-desktop>
+ <20210512113419.GF3672@suse.de>
+ <9524e77d054f380e4711eaf68344ebba2d1271be.camel@bonedaddy.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="9amGYk9869ThD9tj"
 Content-Disposition: inline
-In-Reply-To: <b836a6a2-3bbe-d568-50f0-0b6b8dbe3133@linux.intel.com>
+In-Reply-To: <9524e77d054f380e4711eaf68344ebba2d1271be.camel@bonedaddy.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 07, 2021 at 05:59:34PM -0700, Kuppuswamy, Sathyanarayanan wrote:
-> 
-> 
-> On 5/7/21 2:46 PM, Dave Hansen wrote:
-> > I know KVM does weird stuff.  But, this is*really*  weird.  Why are we
-> > #including a .c file into another .c file?
-> 
-> I think Kirill implemented it this way to skip Makefile changes for it. I don't
-> see any other KVM direct dependencies in tdx.c.
-> 
-> I will fix it in next version.
 
-This has to be compiled only for TDX+KVM.
+--9amGYk9869ThD9tj
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
- Kirill A. Shutemov
+On Wed, May 12, 2021 at 08:23:51PM +0800, Paul Wise wrote:
+> On Wed, 2021-05-12 at 12:34 +0100, Mel Gorman wrote:
+>=20
+> > Alternatively, I've added Paul Wise to the cc who is the latest
+> > committer to iotop.=A0 Maybe he knows who could add/commit a check for
+> > sysctl.sched_delayacct and if it exists then check if it's 1 and display
+> > an error suggesting corrective action (add delayacct to the kernel comm=
+and
+> > line or sysctl sched.sched_delayacct=3D1). iotop appears to be in maint=
+enance
+> > mode but gets occasional commits even if it has not had a new version
+> > since 2013 so maybe it could get a 0.7 tag if such a check was added.
+>=20
+> I am able to commit to the iotop repository but I don't have permission
+> from the author to make releases nor do I have access to the website.
+>=20
+> I am happy to apply any patches anyone has for iotop and upload the
+> result to Debian, or I'll be willing to write patches to cope with
+> changes in Linux behaviour, if given a succinct explanation of what
+> changes are needed in iotop, once the Linux changes are fully merged.
+>=20
+
+If you send me the same patch, I can do submit a request to the devel
+package for openSUSE. I don't have commit access but I would be surprised
+if the package maintainer didn't accept the request. Obviously, I'll
+build+boot a kernel that includes the final version of this series in
+case of any naming changes or other oddities.
+
+> As well as the Python iotop implementation, there is one written in C=20
+> with more features, so please also file an issue or pull request there.
+> Please note that I don't have commit access to that repository though.
+>=20
+
+Good thinking. I'll open a bug on github when I've tested your iotop
+patch so that the bug report is more coherent.
+
+Thanks for the quick response.
+
+--=20
+Mel Gorman
+SUSE Labs
+
+--9amGYk9869ThD9tj
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEElcbIJ2qkxLDKryriKjSY26pIcMkFAmCb0YoACgkQKjSY26pI
+cMlCHQf9GT0P/UankEgBtZounGI78uf3N202drVjCELtqnzKvYq7G98vv0De+IFb
+TbVMRqUZegJXJk0I4bGqtPUO3Nt5CxqrgSBVI9D3kLAGgzLZ8dQCLQqbszffJr6s
+5Kap0bdCp94nLDrtknOFCM4ne7UYA0xF4q9E6v8n2mVfvrpIClX5AAnoijRobyeH
+bICRMNLEficuhj+y7Gtkhm2oKQJAKW8mTLywUi/30KF8C7hVobgxSjnVCNil4Eqb
+sMtyqDA1IfqhTsnnyQMUk6j7hQuqJOUf6zI1uv4lW2FDl165q3ozoKVjQ90Ac3LT
+WUumVin9QgdId2Mxej74YYzn7MF7UA==
+=nPPi
+-----END PGP SIGNATURE-----
+
+--9amGYk9869ThD9tj--
