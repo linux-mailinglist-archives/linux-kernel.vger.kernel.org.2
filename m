@@ -2,350 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ECBF37B96D
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 11:40:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AAD937B96B
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 11:40:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbhELJlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 05:41:55 -0400
-Received: from mga06.intel.com ([134.134.136.31]:53223 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230096AbhELJlx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 05:41:53 -0400
-IronPort-SDR: 8vknRNb/M1gtrJDKq7CQm/nNxwQPLg4XPEaMn4A/6G0nF/pO+J8l7F1RJyE2UREvGFoa+yXwQi
- RJ1Kwt1P2Ouw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9981"; a="260915338"
-X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
-   d="gz'50?scan'50,208,50";a="260915338"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2021 02:40:41 -0700
-IronPort-SDR: Joe4gNAPk6Utzo0Rxrs2ReqZqHkXG/7F4mcylfGn96t6fwHfmA3FHPdpgAhSYxblv79Oo2kego
- EZer10ygjVwQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,293,1613462400"; 
-   d="gz'50?scan'50,208,50";a="471401222"
-Received: from lkp-server01.sh.intel.com (HELO 1e931876798f) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 12 May 2021 02:40:38 -0700
-Received: from kbuild by 1e931876798f with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lglM4-0000ED-2M; Wed, 12 May 2021 09:40:36 +0000
-Date:   Wed, 12 May 2021 17:39:31 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     =?iso-8859-1?Q?Jos=E9_Exp=F3sito?= <jose.exposito89@gmail.com>,
-        jikos@kernel.org
-Cc:     kbuild-all@lists.01.org, benjamin.tissoires@redhat.com,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?iso-8859-1?Q?Jos=E9_Exp=F3sito?= <jose.exposito89@gmail.com>
-Subject: Re: [PATCH 3/5] HID: magicmouse: Magic Trackpad 2 USB battery
- capacity
-Message-ID: <202105121712.MGWeLu1Q-lkp@intel.com>
-References: <20210511182023.730524-3-jose.exposito89@gmail.com>
+        id S230360AbhELJlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 05:41:40 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:56032 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230114AbhELJl3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 05:41:29 -0400
+Received: by mail-il1-f200.google.com with SMTP id a15-20020a927f0f0000b02901ac2bdd733dso19142822ild.22
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 02:40:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=/1q+jr3iwbZQMoQfu/rwxrLc0Iqm+hrDD6OBwHxiMgQ=;
+        b=jWS/zHIP10fqY3LlPgiXRGHAozqrq6qcbibq+dN9wdBzVLuQuNyO/CIUpje+qZahQh
+         vsCaWsSZEXY2w6xo8imbI/o2JRR6SlaWgf2yoFVTy7rN0twHfZB3h+Bsq5kh1fUCAwMz
+         WjfS2e0Z+PQHi2rNlITrAZP7phd7+H1wJw2vty1OD03M9i/FPvIIx6Y3cFZQURidrb17
+         oVZyJ89FSJDZOejaR8GlxC8Ud5CCBQRyGHfe6hO/vXCrwDHVHi581BsuZaTWf4tUqswU
+         /54YcTn1slN19V2qnD+axOC2jEhen0aSnwXH/4fdsoF5kPsqvB4BxL44eBAI9S2FVZSl
+         UCRA==
+X-Gm-Message-State: AOAM533E2t1GizhYzBomushhRXfEEuIPq9nOMlmdtqhqB9N7mR6eLXOC
+        X9/wYqKFXQQT8aqXu1N/g6NebDAxNJhhPKCBEyPYVjoROxrK
+X-Google-Smtp-Source: ABdhPJxKwFXjjfgpIkLY6FmsUEdNZXXdfvK2/SA6v+/gWGXTM5LbUu6QjbGZ6sTxtimImZqm/1wx/fmCxDM8ZC+XWLBGqdDCAob9
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="ZGiS0Q5IWpPtfppv"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210511182023.730524-3-jose.exposito89@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Received: by 2002:a05:6e02:20c5:: with SMTP id 5mr30445805ilq.14.1620812421489;
+ Wed, 12 May 2021 02:40:21 -0700 (PDT)
+Date:   Wed, 12 May 2021 02:40:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a16c4f05c21ecc1c@google.com>
+Subject: [syzbot] KASAN: use-after-free Read in bcm_rx_handler
+From:   syzbot <syzbot+0f7e7e5e2f4f40fa89c0@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mkl@pengutronix.de,
+        netdev@vger.kernel.org, socketcan@hartkopp.net,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
---ZGiS0Q5IWpPtfppv
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+syzbot found the following issue on:
 
-Hi "José,
+HEAD commit:    009fc857 mISDN: fix possible use-after-free in HFC_cleanup()
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=11ce90add00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b072be26137971e1
+dashboard link: https://syzkaller.appspot.com/bug?extid=0f7e7e5e2f4f40fa89c0
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17c9f9b3d00000
 
-Thank you for the patch! Yet something to improve:
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+0f7e7e5e2f4f40fa89c0@syzkaller.appspotmail.com
 
-[auto build test ERROR on hid/for-next]
-[also build test ERROR on v5.13-rc1 next-20210511]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+==================================================================
+BUG: KASAN: use-after-free in bcm_rx_starttimer net/can/bcm.c:543 [inline]
+BUG: KASAN: use-after-free in bcm_rx_handler+0x5ff/0x6d0 net/can/bcm.c:694
+Read of size 4 at addr ffff88802af28418 by task syz-executor.1/10095
 
-url:    https://github.com/0day-ci/linux/commits/Jos-Exp-sito/HID-magicmouse-register-power-supply/20210512-022327
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git for-next
-config: s390-randconfig-r002-20210512 (attached as .config)
-compiler: s390-linux-gcc (GCC) 9.3.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/0day-ci/linux/commit/701f395a5566b6d2fd3a78389983237668902998
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Jos-Exp-sito/HID-magicmouse-register-power-supply/20210512-022327
-        git checkout 701f395a5566b6d2fd3a78389983237668902998
-        # save the attached .config to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross W=1 ARCH=s390 
+CPU: 1 PID: 10095 Comm: syz-executor.1 Not tainted 5.12.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:233
+ __kasan_report mm/kasan/report.c:419 [inline]
+ kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:436
+ bcm_rx_starttimer net/can/bcm.c:543 [inline]
+ bcm_rx_handler+0x5ff/0x6d0 net/can/bcm.c:694
+ deliver net/can/af_can.c:574 [inline]
+ can_rcv_filter+0x445/0x8d0 net/can/af_can.c:635
+ can_receive+0x290/0x580 net/can/af_can.c:661
+ can_rcv+0x120/0x1c0 net/can/af_can.c:696
+ __netif_receive_skb_one_core+0x114/0x180 net/core/dev.c:5440
+ __netif_receive_skb+0x27/0x1c0 net/core/dev.c:5554
+ process_backlog+0x232/0x6c0 net/core/dev.c:6418
+ __napi_poll+0xaf/0x440 net/core/dev.c:6966
+ napi_poll net/core/dev.c:7033 [inline]
+ net_rx_action+0x801/0xb40 net/core/dev.c:7120
+ __do_softirq+0x29b/0x9f6 kernel/softirq.c:559
+ do_softirq.part.0+0xd9/0x130 kernel/softirq.c:460
+ </IRQ>
+ netif_rx_ni+0x33d/0x590 net/core/dev.c:4966
+ can_send+0x4ec/0x9a0 net/can/af_can.c:287
+ isotp_sendmsg+0x8c2/0x13d0 net/can/isotp.c:946
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:674
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665f9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ff4a7a7d188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 00000000004665f9
+RDX: 0000000000000004 RSI: 00000000200003c0 RDI: 0000000000000004
+RBP: 00000000004bfce1 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
+R13: 00007ffe23e0924f R14: 00007ff4a7a7d300 R15: 0000000000022000
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Allocated by task 10111:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:428 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:507 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:466 [inline]
+ __kasan_kmalloc+0x9b/0xd0 mm/kasan/common.c:516
+ kmalloc include/linux/slab.h:556 [inline]
+ kzalloc include/linux/slab.h:686 [inline]
+ bcm_rx_setup net/can/bcm.c:1070 [inline]
+ bcm_sendmsg+0x2a81/0x4420 net/can/bcm.c:1331
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:674
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-All errors (new ones prefixed by >>):
+Freed by task 10093:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+ kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
+ ____kasan_slab_free mm/kasan/common.c:360 [inline]
+ ____kasan_slab_free mm/kasan/common.c:325 [inline]
+ __kasan_slab_free+0xfb/0x130 mm/kasan/common.c:368
+ kasan_slab_free include/linux/kasan.h:212 [inline]
+ slab_free_hook mm/slub.c:1581 [inline]
+ slab_free_freelist_hook+0xdf/0x240 mm/slub.c:1606
+ slab_free mm/slub.c:3166 [inline]
+ kfree+0xe5/0x7f0 mm/slub.c:4225
+ bcm_release+0x34a/0x780 net/can/bcm.c:1506
+ __sock_release+0xcd/0x280 net/socket.c:599
+ sock_close+0x18/0x20 net/socket.c:1258
+ __fput+0x288/0x920 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:174 [inline]
+ exit_to_user_mode_prepare+0x272/0x280 kernel/entry/common.c:208
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:301
+ do_syscall_64+0x47/0xb0 arch/x86/entry/common.c:57
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-   s390-linux-ld: drivers/pcmcia/cistpl.o: in function `set_cis_map':
-   cistpl.c:(.text+0x3a2): undefined reference to `ioremap'
-   s390-linux-ld: cistpl.c:(.text+0x3dc): undefined reference to `iounmap'
-   s390-linux-ld: cistpl.c:(.text+0x404): undefined reference to `iounmap'
-   s390-linux-ld: cistpl.c:(.text+0x416): undefined reference to `ioremap'
-   s390-linux-ld: drivers/pcmcia/cistpl.o: in function `release_cis_mem':
-   cistpl.c:(.text+0xe16): undefined reference to `iounmap'
-   s390-linux-ld: drivers/hid/hid-magicmouse.o: in function `magicmouse_remove':
-   hid-magicmouse.c:(.text+0xd2c): undefined reference to `usb_kill_urb'
->> s390-linux-ld: hid-magicmouse.c:(.text+0xd48): undefined reference to `usb_free_coherent'
->> s390-linux-ld: hid-magicmouse.c:(.text+0xd54): undefined reference to `usb_free_urb'
-   s390-linux-ld: drivers/hid/hid-magicmouse.o: in function `magicmouse_battery_usb_urb_complete':
-   hid-magicmouse.c:(.text+0xe12): undefined reference to `usb_submit_urb'
-   s390-linux-ld: drivers/hid/hid-magicmouse.o: in function `magicmouse_probe':
-   hid-magicmouse.c:(.text+0x1194): undefined reference to `usb_alloc_urb'
->> s390-linux-ld: hid-magicmouse.c:(.text+0x121a): undefined reference to `usb_alloc_coherent'
-   s390-linux-ld: hid-magicmouse.c:(.text+0x1422): undefined reference to `usb_free_coherent'
-   s390-linux-ld: hid-magicmouse.c:(.text+0x142e): undefined reference to `usb_free_urb'
->> s390-linux-ld: hid-magicmouse.c:(.text+0x1462): undefined reference to `usb_submit_urb'
+The buggy address belongs to the object at ffff88802af28400
+ which belongs to the cache kmalloc-512 of size 512
+The buggy address is located 24 bytes inside of
+ 512-byte region [ffff88802af28400, ffff88802af28600)
+The buggy address belongs to the page:
+page:ffffea0000abca00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x2af28
+head:ffffea0000abca00 order:2 compound_mapcount:0 compound_pincount:0
+flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+raw: 00fff00000010200 dead000000000100 dead000000000122 ffff888011041c80
+raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 2, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 8455, ts 309324953429, free_ts 309319650475
+ prep_new_page mm/page_alloc.c:2358 [inline]
+ get_page_from_freelist+0x1033/0x2b60 mm/page_alloc.c:3994
+ __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5200
+ alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
+ alloc_slab_page mm/slub.c:1644 [inline]
+ allocate_slab+0x2c5/0x4c0 mm/slub.c:1784
+ new_slab mm/slub.c:1847 [inline]
+ new_slab_objects mm/slub.c:2593 [inline]
+ ___slab_alloc+0x44c/0x7a0 mm/slub.c:2756
+ __slab_alloc.constprop.0+0xa7/0xf0 mm/slub.c:2796
+ slab_alloc_node mm/slub.c:2878 [inline]
+ __kmalloc_node_track_caller+0x2e6/0x350 mm/slub.c:4604
+ kmalloc_reserve net/core/skbuff.c:354 [inline]
+ __alloc_skb+0xde/0x340 net/core/skbuff.c:425
+ alloc_skb include/linux/skbuff.h:1107 [inline]
+ nlmsg_new include/net/netlink.h:953 [inline]
+ netlink_ack+0x1ed/0xaa0 net/netlink/af_netlink.c:2437
+ netlink_rcv_skb+0x33d/0x420 net/netlink/af_netlink.c:2508
+ netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:674
+ __sys_sendto+0x21c/0x320 net/socket.c:1977
+ __do_sys_sendto net/socket.c:1989 [inline]
+ __se_sys_sendto net/socket.c:1985 [inline]
+ __x64_sys_sendto+0xdd/0x1b0 net/socket.c:1985
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1298 [inline]
+ __free_pages_ok+0x476/0xce0 mm/page_alloc.c:1572
+ stack_depot_save+0x162/0x4e0 lib/stackdepot.c:336
+ kasan_save_stack+0x32/0x40 mm/kasan/common.c:40
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:428 [inline]
+ __kasan_slab_alloc+0x84/0xa0 mm/kasan/common.c:461
+ kasan_slab_alloc include/linux/kasan.h:236 [inline]
+ slab_post_alloc_hook mm/slab.h:524 [inline]
+ slab_alloc_node mm/slub.c:2912 [inline]
+ slab_alloc mm/slub.c:2920 [inline]
+ kmem_cache_alloc+0x152/0x3a0 mm/slub.c:2925
+ alloc_inode+0x161/0x230 fs/inode.c:235
+ new_inode_pseudo fs/inode.c:934 [inline]
+ new_inode+0x27/0x2f0 fs/inode.c:963
+ debugfs_get_inode+0x1a/0x130 fs/debugfs/inode.c:69
+ __debugfs_create_file+0x11a/0x4e0 fs/debugfs/inode.c:404
+ debugfs_create_mode_unsafe fs/debugfs/file.c:407 [inline]
+ debugfs_create_bool+0x6c/0xa0 fs/debugfs/file.c:862
+ nsim_dev_debugfs_init drivers/net/netdevsim/dev.c:231 [inline]
+ nsim_dev_probe+0xa9d/0x1080 drivers/net/netdevsim/dev.c:1109
+ really_probe+0x291/0xf60 drivers/base/dd.c:576
+ driver_probe_device+0x298/0x410 drivers/base/dd.c:763
+ __device_attach_driver+0x203/0x2c0 drivers/base/dd.c:870
+ bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
+ __device_attach+0x228/0x4b0 drivers/base/dd.c:938
+
+Memory state around the buggy address:
+ ffff88802af28300: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff88802af28380: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff88802af28400: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                            ^
+ ffff88802af28480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88802af28500: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
 
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
---ZGiS0Q5IWpPtfppv
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
-
-H4sICASam2AAAy5jb25maWcAnDzZctu6ku/nK1g5VVP3PiTR4rWm/ACBoISYWwhQi19YOraS
-uK5juyT5zMl8/XQDXAAQlFPzktjdja3R6J3+848/A/J2fPm5PT7eb5+efgXfd8+7/fa4ewi+
-PT7t/jsIsyDNZMBCLj8Bcfz4/PbP58P0ehScfxpPPo2C293+efcU0Jfnb4/f32Do48vzH3/+
-QbM04vOK0mrJCsGztJJsLW8+4NCPTzjLx+/398G/5pT+O7j+NP00+mCM4aICxM2vBjTv5rm5
-Hk1Ho5Y2Jum8RbVgItQUadlNAaCGbDI962aIQySdRWFHCiA/qYEYGbtdwNxEJNU8k1k3i4Hg
-acxTZqCyVMiipDIrRAflxddqlRW3HWRW8jiUPGGVJLOYVSIrZIeVi4IR2H0aZfAPkAgcCrz/
-M5irW3wKDrvj22t3GzzlsmLpsiIFnIYnXN5MJ+3pMkri5ngfPvjAFSnNE6rtVYLE0qBfkCWr
-blmRsria3/G8IzcxM8BM/Kj4LiF+zPpuaEQ2hDjzI8qUZkleMCEY3vufQU1j7Dt4PATPL0dk
-4R82ttm7Owo3bo5y8eu7U1g4xGn02Sm0eSDPzkMWkTKWSgCMu2rAi0zIlCTs5sO/nl+ed//+
-0M0vNmLJc+pde0UkXVRfS1YyL54WmRBVwpKs2FRESkIXXrpSsJjPPNtWV0YKWISUoIBgLyCL
-cSPk8F6Cw9tfh1+H4+5nJ+RzlrKCU/WcePqFUYkCbb2yMEsIN2AiJ4VgiDJUjjFNyGblPBLq
-znfPD8HLN2dxd5B6s8tuvw6awqO6ZUuWStEcRj7+3O0PvvNITm+rLGVikRmPP82qxR0okiRR
-h2t5CcAc1shCTj0M1aN4GDNzjIL62M/niwpkSh2nsI7f2243G0ghS3IJs6bMM2mDXmZxmUpS
-bMyd1EhzmOIOzcvPcnv4T3CEdYMt7OFw3B4Pwfb+/uXt+fj4/L3j15IXsoIBFaE0gyV4Ou/Y
-5kFWKZF8aTFkJkLYSkbhOSGh9B1DcGvjgrevKeQCtXVoy3rNuN84SWslYJtcZDGpBVhxoqBl
-IDxCAoyrAGfuCX6t2Bqkwbd/oYnN4Q4IzIlQc9RS60H1QGXIfHBZEOogcGIh4XV0MmxgUsbA
-sLA5ncVcSFPw7PN3h+W3+gfPUfntAuykFmDFQ3H/Y/fw9rTbB9922+PbfndQ4HoFD7b1IVAV
-iTLPwQ6LKi0TUs0IeCDUkrHa8PNUjidXxot1ybv3Z2FaOWJpT4yaFeZFVuaG65CTOauUQLOi
-g4LmpXPn1+oW/jP2qmaqBF0wwwGKCC8qL4ZG4CuRNFzxUC4sYZPmAL850AQ5D8XgmaoiVNbf
-HRSBgN6x4tS8i3LOZDzzk+RgY6Q4NTxkS04H7JimgElcZdA7GyuiU/iEC78pbTcBhsZLgOYZ
-zBSoJP/4BaO3eQYyhwob/Eqf6lVXo3w4tZrJZjBVcLMhAwVMifQKXcFisjGcv/gWeaZcisKQ
-EPU7SWA2kZUFZYa7UYSNR9iJTajdKd96oeMKAkB5gObgIa9Joc78s94Jaex3lmWy0j9bTzjL
-werxO1ZFWaHuNSsSeKCWnXDJBPww5MaUPBxfGC4H+AYyBv1MWS5VeIQ6ssNrxd397gxPQEFw
-kOnCukR4AAko3Kp2PLyc0TftoWje/gKed2zsJM8EX5suQGurQdpuvWsMCfGMgJcVlQM7i0oI
-ET07YnmmnKjuCHyekjjyCanaphnLKS/LBIiFVoDtbIT7RYhnVQlH9J+EhEsOZ6nZ6NNnsMqM
-FAU3FfIt0m4S0YdUlp/YQhXD8OH1PJQ8OnGHyk6tCCiDxpYg/RduyhPIjkKZvLmliRGvgUts
-+MNKNTWwdh9wSBaGXn2hpB4fTtV6uo3kIBA2UC0T2H9meBY5HY/OGjNdZxby3f7by/7n9vl+
-F7C/d8/gLBGw1BTdJfBBOx/Iu5betmfF1t7/5jKtB5noNRpza6yFIRgBXpshvIjJzJLduPSb
-KBFnQwgyA2kqwMLXt+lT7UiERhL9paqAJ5wl9rImfkGKEJw6362JRRlFMdMeheIVAWtiv/ss
-4rHzMFo/EpSYMkNWtGCnI9oXkhj+4B1EC1Voqnt0f2coYmnIieEfYuwEhqrxwwxWQ4B5q13N
-Hq6JvBYrBkGNB6GEu35olTqBdbUq/lTvygrBeIbLVAkxno3tJJbArhkzZhLT65HxmzLJWQKT
-R2A126WNJzHXuZ8YpC4WN+fW84phtzlG4c2byfcv97vD4WUfHH+96vjC8HHNoYna5931aFRF
-jMiyMDfZIc2bb6DXI6+gNuhqPLo+RTA+OXx8fXEKzeh4cnL49CTWn0RpsOc+Pd6tW8kytbQw
-/u57lDYBsvEUdoCdNXaQmxo/wMwaafPSwuGBemcZYl+N9HOvRvqYd3E2M42OVpCG9JvmJi2U
-m35zcdbKaSbzuFSawA6jzDcYMvBmFjySN2P7UYlEuu8soS4EvL9bFxYWZGW+QA2V8NTjbG6l
-KxZ3cDv+CwDU5HwQNbVHWdMZ2mFxd4MAeyOLAjNChtFma0Yd9dMagJZGZQnTbGYwHFzMrM5L
-d/a8hlVZ5A9kWgIMI3zOWoNHN89y1pmyJajLvImRU5pLqbZk9/Nl/8tNaWttq/J34HHVMbOr
-jFt0/VYdvB7UJCprqXuPpoCflu5KNZXIY1DoeRJWuURzZSrWdZUvNgI3A09D3JxdGJYV7Je2
-YsMxXh9fY1ekSKtwA3EiWDNFZFpgi3k6e/o582Ubv4bcrGEsBEWxs1wJClsvhfcS7UnVOuHb
-z1eAvb6+7I86l1dPXRCxqMIyyb0zWcO6sGzVGLrl4/74tn16/F+n4ATmVjIKEaxK9ZUk5ncq
-f1bNS1ZnkhrKYbVNk8TnGoHlrhabHMKnyLCVuq6wNF6bvbJVKVgOTtztr+aAc0Kdudo9fTvu
-DkfDmKvBZbriKWbM4kg603RDrMrQdn//4/G4u8cH9vFh9wrU4PMGL6+4mDG9viaaFczROA6s
-8aPAMy6MLMEXuN8KfE9mRDcgnKDBYJaNMHdsspNFEaccvewSIj0I9zBvQTEf6zw49OmxDCV5
-Ws3EivTKTa77paEFk36EhlYgL5ETkCt8VKaqnFCxooB431NeUGRpwh2I2qyacWFZHIUEtxcz
-EJLPy6wUfZ6CmVQ5+7ri57AAc40R+Jo82jQplz6BYLLWXQ4So0TR6g2psgeqNOnQTSegroDd
-cHdVBGE2Gl73jCKpkiysa4Uuaws2hygXhRR1U32bFcldTtlRZxdE4ngfHAPZek5UJj6++4TQ
-hzUj7S5GqeZELmAN7YZjDOVFY9r6HRIIGPRPvQvSMlMJEjFQPvmaLubOVmuoLscO4MKs7Bs/
-lQbgOa10jasp8HqI6vD1t2izODTofWwVjCLBCVQFYaR0Mlga49GRscxURcmZ72SxZ4iiKYD1
-HgmwFhQNEGMa6TfmgQc68M5T9DlQf2FWGmNpLx+yCKtFhdw4WHhFjefCKI/M2gugyhg0FCo+
-0J1KZJ3RWLFka3itoKfw58YZMGlwacQBSbZKXZKWI2oF5UvyO/cIsDLX3k4bdxuOQ4zx/AwQ
-4JeEwij1o+QIPhclnC0Npz0EcRRqLWUutrPVGq/1E96br7YA1waPr7MqUc+AqyMvIZA3fKfG
-nLfQoVSbEh4Jqlo2nnaxWpsGbxDlDtfXa9OgB2nmnFwbiMO170uLTe4qbsQuQ5FVITjfQ1mK
-OksGctqkx7SzQLPlx7+2h91D8B+dJXvdv3x7fLLqrUhUn82ztMLqlBGrk5wtY12c1xE8tQfr
-BrFHCB13bpoeG2is3IAruqFKhmJ8MhvPDRu0YB3wFtDHyfKNbxX1WlwD6kX3agpOruwdB62Z
-G7NPmDc3XRmVNRaY6YSYuEtyaM3hS3HUOkVVgWPwT+za0AwF0Cf6Ih07N64bnUBtYT9SsbFj
-nyGKarY4QfTOHL83gd3aMUgiSC+iM8nK9J3NaILT26lpTm+oI6qreX5a1f91ks+K4jfQg3vu
-KAZ3bJEMs1CRnWKhQXB6O++x0CE6ycJVwSU7zUNN8jv4wW0bJIO7tmmG+ajpTjHSpHhnS++x
-0qXq8bJM330hrZUhMsMgo0hWhj+DyksP1r6I6R0XKwF2bQCptjSA68yqrpHBOUieKwpl2Ng/
-u/u34/avp51qcw1U5ed4MPMTM55GiUQPaMjqdxQqpDWYUmMELbhpj2swNgHYHkzBBvMgQzs1
-U2LJ9nn7fffTG7+3ua9uG6q5RhWQwejpDKrhq3SptDXmuJgPtYR/0Clys209CtevZYkyJioF
-VvXxERGymtvWx87K+bInOtmmEm06g9wmkOuxM3RqbK+xBmnvUfmUPrexRXb7VHWxgqFAW7FG
-wucFcUjxkCQMIXRsE+FdJkj4MkFNuVZxNwHRxuE3Z6NrI0voiy58m48ZuBaELuyOBbtFtYbe
-5VlmeWZ3s9JXHLybRuCHW4RCF1S9aTQ4DSsKTMXXHg/yDvtD/PX2sCk7YixxO1R5h1eM7jy+
-OH8rDMhPhSmlU856LpmOrUh808+Set6T0YjD+u2J4e7vx/tdEO4f/7Yq0jpLQe1OQcp97YSU
-ErOLJqcJbM79HXQeWDbK2062nH683+4fgr/2jw/fVYmvS/I93tcbCrJWKXQttzqeWLA4H+iq
-CtlSJnnk5zFwPw1JPNjhqSaPOGh6kFPdJ95sOXrc//yf7X4XPL1sH3b7jlnRSh3PVOMtSMlF
-CBNFHRL1E2kXMdqMulEqN6TP6JvUQIPqieOZFQR3dE1rtSkq7jGaUXXXxbLV6ubd41NZWViv
-DsBYLCz40tx1DWVLXac1rgnhKO/1kEoXJnz3klRfM1HdlvgVgJ10rYfmzIsFI4p5b1YsuciM
-PbXtzJgVKWWmkqd+9LKM4Rcy46CruWlvCja37ID+veIT2oeZTgrmTMWCFFoqIjuNhMgIwmGt
-Svz1poE3omR09nYIHtSbth5NsuCDlQ9zSMuA1MxXJ7J9A/l2f3zE9YLX7f6gVUa3isTkzyXm
-4AY0HFLQJFRuV4/KoAHmqO42RWNtpEWFvGD4GcpGR3k3H8f2MtYUKhmvqngDHZ79EeiKZ2m8
-8fKszwbFhxJ+DJIX7MHVPThyv30+PKkySBBvf1kqFpfMstw5Hi7O0RqjpwNORef5FST5XGTJ
-5+hpe/gRQIj9Gjy0atvmcORT1Ij5wkJGHWFHOAh81YDdqbBjTDULZunQdaGMz0h6W6nm2mps
-T+5gJyexZzYW1+djD2zigaWSxfiplu8MSSjk8NUjCVgGn4fRoEvJY0cSSeIAMgdAZgLMial8
-T1yiusUUrJMtIghpKla2uJKVQvZsOqMUlvv++LwzqpfujIxSd8IGXokV2P8k8TdKuZSzusba
-eP2exRucOpzaYpyDdxj8l/5/As5AEvzUHsyD64ngeorMZu1X9fFYJ7P1Eu9PbJ+5nHGvUGRR
-j60pRAaBMMrBzalMuA5uHg/3Pi1MwvPJ+boK88zn4oFRTTa1qehcSyqupxNxNhr7expSGmei
-BE9FoI2j3iQZyUNxfTWakNj8ZE/Ek+vRaGotpmATX4MHyDEYUFFJIDk/t3qrGtRsMb689PeN
-NCRqJ9cjX6vsIqEX03PjVYdifHFl/E4ndV+clnEGV5/05VvDIV6fGIqkBsZsTqjVBVMjErK+
-uLo893NYk1xP6drXkVSjQXVVV9eLnIm1Z37GxqPRmdeQOOfQH1Tt/tkeAv58OO7ffqp2zsMP
-8NcegiNaE6QLnvB9PYCYPb7ij6Y4/j9G9y8q5mKKnoy/gxhrXwT1Ze5vh2Z04WuwwW8QLC2W
-L3OScupljPWGdAcBFbyG9O8dkZgNNnWBb4BuIHl+fTsOTsXTvDRcSPUryE4oXFgUYZgeW6V9
-jdHZhFvLPdSYhMiCr2tM6zM8Yc/QI3brftvem/2O9aAM/H1woHuT1fAqF6RcD2IFLRjY9/XN
-eDQ5O02zubm8uLJJvmQbz9JsqYGd7qjBTgO9we9eqOmMvWWbWQahpO87qG6zltFCABze9w2G
-xoFW5GbRWUPphuTEBbKYpLXz7izQYAYfhEMmEsfVtsiWYr1eE9JfZp4PtPPXR9mkBJwwKga3
-0d6XwDa7EySq2O8zQTU6K7F7CgWiY5IBRKuLn3hY0ZCJJ+Hl1eW1ecI+1j2Fj1AmLK4S26Gz
-CErwAPiacn8ewCSdlZPxyG4RHaKaDO6cbq6oTMj4zGch+4Tz8XjkZxDdSClypw/JQ+CIY5/i
-TM3x7umxSQYu7Z1dg8+XiwUf2hNjkg9g5iQm695js0jWdGo1iJrIqPzCpSj9yHmWhXw9xIYF
-D8GEvnMwCN3hXtf++cWF2FxejIcWmJfp3fsMZrcymownl+8TgpL4DaL3rmpFKPgVq6vRaOw/
-lSawchEmGjye8fhqaHBCxfnIbqC30IkYDzVUm2QsjrC+z3Pf12wWpfrFvxeesrXZ12mNu710
-OsFNJcXSBHsO3uc2+G6RPF+PvB3nBqH6ubA/wujhV3xIaSpFNXBboby6XK9PvXf1M5eTd3WY
-xL5X/I5+YJOCTkaj9QndoynOBjei0Jfv7KJIKjlgHQSPrVZAGydOMUHI8WTq/4jCJkuigQSU
-Rba+ujh/TzZlLi7OR5cDyuOOyYvJZDqAjDKrpdHiT7ZIanMzHTot/yrO175YyVoEqxK2fqy9
-JeeD3RpZJPzMuXwFcriuYODIeJmokNHIJ4kKNQnrQKI3YzQeDw2KxhNnS9F01J9g6v00VqOI
-O8H5eeNlL7b7B5X0xj5v9PfNQqP9WtSv+G8dbxrBESJiPnM8ToegIKsTWBibDHwIp/DoBSJR
-t5+y2V9XJyKJKuN5AyffSdsmd1/goz1xiBG39xCAGHmLRtrMJr+l9U0M3HHMdFlP/60HK8G/
-lA2JL95fNUhzcgOMNefQ+XMDZcrX11dVLjf+160j/B6+wYbwJFS6H6sj3bJpGcf1Ka3LIrEq
-ePTy5h1fTn1JjF2XcJUeDnQPNU9m9df7KnlZRE7Kv+NV/7vIFlivdGpc8+leXXnDglxw77nx
-7viblMY8va3owEf7BP/aQVqdjbyfA3XoM+uLwWJytjYj9MGtdLWjpfPNM0Dw70D4TkvSuf7Q
-RH1K3RxXfMY/+eUu4Uudy3Q6GUhgIcr7mZigcd6THYSdundFsJSTyQiH+pNhVVgse5Nmke9v
-DanvKCTJmX3k4/Z1F/xotEE/Y9KMqqZna8t+GJjzgS/8lgn1Od1Jlqq2G/MTNJxsmZSFee99
-bWOoeS2xsiiF6lr2WyCTCIs2ut7ZzzxAkNlP8JheMQbsKu2A+WQb7H7zp2DqA2Q78wHgpPTZ
-acTURVr7z4+pLEFs9Um1oDpp6MNgbROLnO7qupLqRoI9AhLPM/MWTOa01FPzQ8M8sRoAFsKf
-LM9z0eN8LvPg/unl/j8G/3Xm9lm1BOWLDf7lLEx8pUziH4/DrhP1dIWEQBSLD8cXmG8XHH/s
-gu3Dg6q3bZ/0rIdPZs6zv1hzBJiHysIISgGQmLkyJICfOkBT++0h6k7jdsLu+BoEYVM+mYrR
-la+AXZOI9fhcBaK6ord73h22h+D18fn+uH+ydFJTLxogaXcL7gLw0dj+/1H2JM1t40rf369Q
-5TRTlZlPu+VDDiAJSYy5mYsl+cJyZI2tim25JPlN8u8/NACSWBpK3iWOupvY0Wg0ehEAbpDE
-Vu9SBsubDIYmRZjfshtFpjNX6KJTEcVlEx6FAzM2BqSvqQpbUH03MKDsAno16kYCliKvdvfj
-nS0J7QGI05Mgm0xmM00KUuDQGVebRFV961MOH67dPc18cj0Z/YrgCjsAJXo+m6g3Bw4ts9Af
-zgZ9cyca3RcPSfPAHpZORW5jVQdDgUPOOTFwi0XOpKUyxXVnYoRS/6bCjfvQOpQtka64PUeB
-qhkFFowrIz2GmgK/EFCIm4xwWkz0YAx6AQyXLYz+VFl2HinZwbSp/dWwP5jY8KAYXqnvTQ28
-8NQ4GbJ0DdhQerdDdonXjlID5VB6NlSglbkSIpNVgsRhqu6mUYxkdt0f2a2NstnV8MqGw+Qh
-1OVoOtH0YR3GHw+mQyxuS0PCOjoeTNbY1xzlkCdUmuEEUy6oFFejid1shpiImhHE7LrvaNLk
-eoZKsArFdI32h92OR2Osqc2ULUi1oDBow+vxwG5XXl6PJ1hHguvr64nyfAl+d7GmWBUA4Y4K
-yv7CxlEedyWB2xDslHQ+ZzsqImwhFV/6yl6S5CC2cZeoMg8zjL03hI2d5yK9Y/XTrF6F+qMM
-RsijsnGbJ3xDI58I58gMvxA1H+hl24NgNhJBexCFF/7B0V0zsD5SdpUnDhNcHmI0SJVyG4ih
-fmnBSboim7TSxLsWKWJbiZhf7vB6LXmage6KCVNQXh8pzzrG+Qmxejhvnx8PT73suIMwj4eP
-c29xYMz97aCfIW05WU5lNTBe7gJdhqbck9Aeq/swzEHktTExPPwMB6AzVWSzkCyGTAxQyLu7
-Al3ALKXYaZGbzuAMIN5mO51CmKN6NJCq/TSgehzkOqEtQoPn/sQBn6Lwr3d4OUWabBREdw9g
-KJJs0gaHKxzETsl+RRT7tL7xAoysI1rHGdrCkN0CHS3M/Ti+WDcfVcuOpXsJpWyia58NsfTM
-sNbb4vjw/rzfnsxbh394Ox1euNXD+8tDYw1k3w2FEY5vaqY0MPsbVXFSfJn1cXyeroovw4ly
-3/1F7a1lp9l6obsMA7uhDNg1j/3o5JUyp8miXGrYnCiOK5X1bRcnVegP3nfbPRPuoGJEfoQv
-yLikekxkFennlXZktsB6jvmkcDQT+qj1TZVTgtuY8C7T6CbEeC8gfcaj1ZgBAhayXyYwrRYk
-12ExAd8bk5AvPwO2aeyrFSAb7kWa5MbB2EFrR4Qa+JbGhXuQaMT2TmyOEr2/oagWic9s7IW5
-Od3z3CpkEaV5mDpUnUBwF96RKMAVAIBnbeDvEo6G3Gys2V2RqEyzCxXSFeN2IcZ9eYs3ptsK
-QEOfaOEdAFRaVX8lXo5HPAdsuQqTJXEtrBuaFCHbYUb0aoaJfOtWouPxaIMck6R3qVVeuggv
-bLOYLELfMooRmKjMUalEYDfziBQ6hwDrZ75AjY0QQih0dkYb4BTU1XRjVQy+WZeWQaLaEACA
-MXF6o4MykoCAxRak5rCjgN07JKMliTbJ2iiRbfvID8zWSjA37nJOWkNkWJmoFBEBt+pEyOH6
-x0zi5lJ6ir/6c5o8ZDc3R9kFCcX4aJ8UJC4qh5cRx9MYPnPjM0rBCB/zjeb4khKLQzAgjeBd
-xHE4c5oqyaILTCSP3QxkAe+ZpAjd+7KISV5+TTdmFerWDe9Sfe4Ziykotea+XLI9jD4jMGQF
-B2adFSO9qFXIZJvS4C7rMImNKu/ZfQvaqNbZwNxL934TsDPS5iokynDHDeyYbrVputCgaZo0
-VPtsqABbQaHw6nTph0wGLksm17TxLBWBLLaMzSQqoSvDahJ+QdqTQhuYDlpzruR42GuJOIth
-W9KhuOKUHrfSSCBMDzwowssQte3kgR1b5ub8+ygeTUZ9o+UcOLSB07EJFIrDodVLCbcUrCqN
-rpMRdWSj6/EYAU6s1mST/nqNtWbigGL1AWo6WtvNX8UXhjwYzvqYdopjS5+AFYVVZBn5k+sB
-auTQjvnkRyOXdhMGzsS9by/7t+9/DP7ssXXayxdeT56vH6ALxXZH749u5/+pSrSiB8AQL/Qw
-jtbsKunGg6rA2X+2h+KqSxgg/Am5Dwi8gJSH4/bZWI9tj8vj/unJXqMlW+ML7fapgts3UGO8
-JVYm5XB3piGMS0xk0UiWlHFlj6ovZRoefBMjaTWFV2K88mEk4Mx8F6qWCBoaWcUNqlEqdeO+
-f+de6afeWYxst2aS3fmf/Qu8S255UqjeHzAB54fj0+5sL5h2qMH+AYLz/KoTPmFzQpzDkNnG
-8DgZXPRweUIfsypw85m28XxM28XmwZ7CtwZaoQiGFnLvyA1KEcQEudIL5+OYeNVc8fzX7A8g
-yBam/KvEZ9rVikNq8B6tkxTiySHfSSL+rqDc7AW0ieZXWBi2vLMCqYzDQY1W0hg9no3eNcWS
-ah2ERaZlJADVrymfBuPxFaqaZoRDLYEGhGYSZxw7j4tCC9klsFxr2OA+KTmSZMVsgs2wqQiB
-HryqQ7iP7Qpdf3fzEOJPQ3i5cpNRRTUOGP0Xm05OqVbN4TFbVE67G+kVjAmJwlimq6R1rIf4
-IBDISsbfhCpk+icjemOLVXO0SSASr0FiuFEe3mDIYcWLszZIvN8eD6fDP+fe8uf77vjXXe/p
-Y3c6Y4Ldr0ibhjIpe+OpoRrZmUSD0PxtbpMWKoPyw5aB3BE33pdhfzy7QMbuNipl3yAFM8Vm
-uqzqvDQJLGBpREOV4Izktk2cThIW5MLKaMoR8QpcTfK9OiDFYFrrl72m46Toz5xGU4ImAbLb
-+qrfNwhRMsbCh2O8MkYRES/zf11fDO/wF+q6rQjoGaDCrPbtTs+G6ntUB5ygQHY9teA34q9m
-qtC1L08rPSaJMtV2azi0pmsSZ6qOVsPKQvWIA+wmvsCdWkUwykhRRLAfYLjQxhQzCOHdI9Pe
-nIRsZxTSwmAbXI9nExRXhJOR9kKoo4zHWA05xsxhFRI/8OlVf+oowC+GfViGmC2XQsYEf2UE
-VhC5SAZLEmc2t7wpDh9Hw66u0X5j+Ka4mISRl6rOa/xgENFVu7cDDnQp/fPd6+G8ez8etvZ9
-DmJKlGBRpZs3t1Bun4Ke30iporb319MTUlEWF8oK5j9rNaCfgLTnT1ePVp5QwKd+74+Ch6Lu
-pW89/3n//mfvBBeaf9q4D+0dgby+HJ4YuDj42OhjaBEq4nh4eNweXl0fonjhCb3O/m9+3O1O
-24eXXe/2cAxvXYX8ilQI5H/Ha1cBFk41Iov2553Aeh/7F5Dg20FCivr9j/hXtx8PL6z7zvFB
-8c1ksxmsuaqTf7GGoI8/XAVh2FbH81srQVGSwvva3TynmDkUXZd+dw2iP87sluN8mBXE9bwg
-jG8puhAJ129cEsiY3GikngoSnpXJZDCxC8nL2fWVarYv4UU8mfSHFhj0UWi9DMGGm/07Gupp
-P7gEh79yoqKpxunYD/FMrmmhV7FtmqTguPJk1vodgF0aj/KA6eJMnMqfIOw1+1HmaRQhhq3Z
-cqMlU+wMtxrzxaUjcon2odIveLnwSWbXpGQXej287c+HI9aZS2RKv4h9CyRvj8fD/rFbeSQJ
-8lR9opQA7hHArqwibHN3BdWwqG2iUYC8j3759G0P1/7Pz//K//z37VH875O7ajRUfdOH9u5I
-lBMtudOD2MFPe2FJcAbBtAMSW8O0XIEH/3b/9oTYcpd6yqQy5tkE4D5SoO9nHQVESNIyEcXi
-MdssT8Rnv+DQoRAhGiEF24an73TPdtea7+bZQlOYyNgDGUyFy+IZvgEVcKBehDkwpwvtwbAI
-VckDfoG3h8FjiiiMPV2Zz5012P8TimZY7dJZ6l/kVcY2dYLfUeK0wB16DAYtQ5Gxg0zsYU1v
-ckeiMGCyPGPbIhI6ppEEHM+MR/xIZaUgW+lrsoGJEEt1ilqG8RjIgNejCkKYNR6eycC3hbNi
-Zdxn3IBqztOeazq/FtReT9XSJKpJqsBz7fHsUGjhQk+kKXacqqNQYGqZtrApg9hlNLAmS0BG
-c3bDLRyxk26rVI1szb2JBJAnRTEGTCBch4/AlloE/1sI2qnaXguAcrLyr/xSs2cHX4V5Ma5x
-VsqRWhqROYQn0BeOz0BO5Yv2ccpmDcwScRi8SvM4XxDuS60AIyHRimwgowTEqkNqV74Bbr5G
-K0xgWa5N1z+FYM0Wg5VCCCOMKRvZNNtYnNx/2D6rDnYJhS1mJX6bF00MTB2grP3mgiUKFMf1
-affxeOARVxH+wG886LyKu9AyjIJcDfsA0dHVqWmOLfmTx1lUB4oDOvaCm3tymjUpS0fcBo7n
-eTqm2PVWpsvVAuELUK3nK2AH6jyo/ZxqIW67AO/hgiSQz0X/Svxp1ngn4NgDqzBv0GIBoxP6
-YGyAEzX6EvvRZnT6tD8dZrPJ9V+DTyoajOR4TNHx6Er/sMVcuTFXE022UHEzR3Ivgwh7yzNI
-Jo7aZ5Mrd+3T36l9irkJGyRDV+3TkRMzdmIujNcUCwxgkFw7Cr4eTV0Y9T5kfOPq2vX42t3M
-K2yvAElYpLC+6pnz24GR8M1BMzALIIUfYqEG1VoHel8a8NAsq0FgXuUqfoyXN8HBU1c1mOG+
-ir/GyxuMHHBHswbWurpJw1mNM74WjT2HAjImPgQZVHOKNmCfglkEBmeSZ5WnZjM4Lk9JGaKG
-bi3JJg+jCCt4QaiAW8WCIQ9qESLx7O4VkSTAPg2TKsQkaq3zIdZ/JujdhKpNGyCqcq6ksa+S
-0NdyP0lAnUAyizbdGna/0+RtoaLbbT+O+/NPO245ZAdTD9ANiCi3kCOtNg70DLIUFTwxByOD
-jM2qV5FVlJSWaWBXUQdLMPnPbSf8gvqVkJhjWizaVy7sAicplcNeQuZ4idJv80JR8FatmhmC
-8rzJ4MuFaZCPtFy9LaVBdAGlBkDunk8tKmBiReaIvqNnIUNJZO43KC9mi+ZC/Om29xuCxixv
-8ZA0q6ClqupocTxXMCQ4ior4F+iaXbd1Rzp+W+NombmHRyLhWaiwB2WcGq6sC7kgflUyx7IB
-Z9zEaQjQlodjISoy9I7yVGtpLpy7RaJTNFymfGPsFjhRuBSM2icIqwdvD5/hn8fDv2+ffz68
-PnyGuNfv+7fPp4d/dqzA/eNnCL33BLv587f3fz5pObzBgX73BqoJa6MryXFEmPiIkvZRRAZk
-37/tz3s12aMyHGEps7855gUtv7mDdgo/lMrb5BQ3Mr9Ab2cyuvgNu+p4KXrP431jrJTvbN0C
-x6CAjHM6gRnS3hxBI/k5Mj9d/kiDRbcSPrDRtJkp//jz/XzobQ/HXe9w7D3vXt7V4O6CmAn3
-aqRmCSTRQksDqIGHNlyLe6QAbdLixg8zLd+egbA/WWom3QrQJs21t9YWhrTYWRtxNfAmy2xq
-BrRLgPgKNik74BmntsuVcE1u1FF1EBbChxGegDG9nE4uwvCbb8yCZjEfDGdxFVmIRCQHtoFY
-wzL+F3+cFxT8D2Zi1wxSVS7ZuY+UbSaKELf/j28v++1f33c/e1u+rJ/Ao+intZpz7YlewAJ7
-9RhBoltogJv7dPgCO/dadB4g1RexvRYYZ7+jw8lkcN1sVvJxft69nffbh/PusUffeC8huvq/
-+/Nzj5xOh+2eo4KH84PVbd+Pkf4sfNzqs/loyaQ2MuxnabQZjPp4mOB2My/Cgq2cSzQFvQ1x
-06V2gJaE8UfbmdLjD+mvh0dVe9S00vPt4Zt7Nqy0t5aPbADq299G+cqCpbwOe+F72LODxK6R
-+pgQC5mOkLIIGJ2XFWar37S1KMK7L22kr9NzO0bWXLKrgrucZUyw9b6+2Jk78ZEwaNw/7U5n
-rN7cH6Gu/yreGpP1GuXpXkRu6NCeHgG3h5YVXg76QTjH1v7SsN0z5lGueZsbB2OMEQcXd0cc
-spUNIV3RN6mGNcXBYNq32cOSDDDgcDLFwJMBcqYuyQhhOwgMtOheap+Rq0yUK2Z4//6svZi3
-PAARFCBHoS0oeFG6mofoFAtEZzFuTCmJKbuW21zUhzxUzo+K0p5JgNpDGCCdmBtJOg3+aA8j
-zTOR/sAc8rEFYzdJdCAk3LCc9w+v78fd6aTlT29bPo+I7vHXsK977MlfImdj7ACP7lH7qha5
-xPjFvZFpQlgNsbvI4bWXfLx+2x1lqswz1n6wJa/9DBPRgtxbGHanKkayLwwj2IjZUI7zSzSM
-SkdhFfk1BAP0LpWoKkW/7L8dH5jUfjx8nPdvyDkFkYewHQJwycAUd2QnDYoTK/Hi54IER7XC
-hlKCtSA0wgtrI/TQPQTwhqkyKQxyEw8ukVzqi5M5dx3tpBaUqOWfZjeX2PsZKTZxTEF9xFVO
-YLutfqqgs8qLJFVReUBoP4LtjmewYWLC2ol785z2T28PkDK2t33ebb9riXrFq0qrEZDKMkUt
-YuELJauWxApx34fA5fPQ156EXBTcxtlIYldQ9p+A5BuzObguSJTMVi04wRQlTty84/3GmHTq
-wQTawJ+M580mjJy7DzIukRzi5i3UVZkR49neC0vIgZar4VIak6J5mASQtQxC7oWGCXYeoGc6
-+LZSdj2KPc2WWugpiZl1mcfm77LF3+R0ri5bn8nvjPVooMFUp2gFHQUWllWtfzUyeD0DtGpf
-hwDDSdiipt7GJd0rJPipwQlIvrKOJ0B4qOKb4abaaenrv3SXutCzBU21Giw0nSlkitCKyoB0
-KHZGqhnlFCjE9DDh9zzIXNKcxioUOaMFfB6VPraO+FGL1M3geN3sCEYR63sAqxULSL2eTdFR
-k2huHpfhAytJQoK+Vkss0UMudNByWTnCLEsaSCaCjYlEe/5Xs3tmirx2HOrFfZihiOg+Jihi
-fY+CYYBtDoFo8j01sDspitQP2ebnaetzoqn1C/Cs6gA81yukw5M57K0nfMAZOUpVNBQolNNA
-WCXt64nC9ldhWkbKRYoXmVnOLxq4LjSjnKaFHiufCWD4c8giqpvs9M2IRamn/0L2mx/dQ64O
-tbowv4VzHwvBFme6e0XKgzos2KGjhUHhCeflfN0FRWrP4oKWPKTTPFAnSP2Ge5dqxu0iXTJo
-s1dE9YDgoIBmaWnAuExas3OD5l+G/Q4FhyP6BGedbbqWvpEYOPT9uH87f+eutY+vuxOiu/dl
-qJ4oXUTsvGtjj325clLcViEt1Qy93J3OLqGlYPKQl4IcRPM8IbFm8uhsYXu/2b/s/oIQXOLo
-P3HSrYAfMZdJsTghii1m7paz+rlNmeauBcOdsV0J5qixltqSBFyTSgo9DASFKLtgm8PmEF2E
-cotQnnsYzGJiiMilzL2B4W2qIc+iymagDLF351UiPiBRuEjq0VDbDXcxk2uqNWxAZ1tEOSt4
-sMiEr7E6D7890v9Rs9PKVRfsvn08PcHbg5JuS50THqEFZEA0OqlsH5IUdV7IhKuXBpkRgcKb
-0/FMFxfKcbwwtYyy8gqSQACxsARfPRJpBoEci0qsvzUgerPFu6E52zKzuPp01hbW7VpuiMKk
-dIjAoyo4ZGhehm3YrDEQLUrGzms2KyayQh1GUnYOy9IQwhGp0nJXeC1kVaPaPA1ISX6Z01kQ
-r9Z2ASssMkJr4l+aWXoFRHzryH8syk29r2wjYm8kcgNHxDPODDl7POMZubGb2mAu1CoYf1UY
-ab+7y5K/5Cm3gYomPIQXGlrEGLi7uM4WpZ7PvcHYEK6wNZOLt8gcC7CuVMPkVtVIA2mAUaZ0
-InbmDpdLSHAmYGRoZBvCBSbW6xtSqNYvBgL6pssZvs8HSmBtZYLAghUHHLtJ2nEAJlgZeaOt
-bWlN79KIwix04kDfSw/vp8+96LD9/vEuOOzy4e1Jt02F8AfwJpziduYaHizdK/qlryORgJcB
-LcE2eFmx/pWkwJbT6laPG9na3V9quDACYicGJPs9asyqe4BG0OagQZNvKM0MnYC4zsNzT8dT
-/zi979948PPPvdeP8+7Hjv1nd97+/ffffyo3fW6hAWUvuCjVmhWrRsB3rUW+yx4EJG5znedl
-HVclXVNrByguofrqb8lNxrYSOMZp0hVYCV3YHPmqwE1qBZo311j23DyGZhYAbtnFl8HEBPMX
-t0JipyZWcCTutiJJri+RcMlW0I2tisLcryKSM2mSVk1pQ7PHkvrCmLBLVgyiRYRnP+uKgTUA
-dxckwAUfOHZZAx8Jy6u+myBEL9Ly67n5fcNYikAUvyJhaRus/y8LW+8S4zAGC+Yj37kUNc0H
-sZItCnbxg+hfNJB6DedY3YgjsZFBxOb/LsSax4fzQw/kmS3o4pRbhBzmsLC2SiaBJovE9ptA
-cb+RUFOT8ZM6qbkM4afcfSjUbWQuNlMv38+pNNAqmk6ypYhJWa4lwcjZlBNpYIF0BAjw9QAY
-MDDqPtdxcPbxK0XLwocDrVRzfgFIbwssSnzjVq11zuI/t/JikLvCD0GTlmkJZk9C/dC4Yyoq
-ijQTLcuNE7m9tVzGLnKSLXEayNgIG7x1lnMj61VYLuGmX5j1CHTM3dEYgZ9qgUCBhF1NfD7q
-QMkE3KS0CoF3HlN/AB0XxXaI/y/sSJIahmFvghNXE9ppICSQhQ4nhkOHB5T/D9ocWZZcTp3G
-m2zL2izJPA0MAf6qYGYwOssfSM9/3I7HcuqgRwOkWL/KBjECJVrRXoMqY71grn4WkBsVg1Ab
-h1/odEhGDmkT6dRuk9WdNNrh6OQ3dvn/Dd5HAGaOcSflizvKiqr8y+8LpoFvQsPit294Og9p
-DZrpdBlMQaYwezwjxzKCfHua7IOutmgXhZdzqNQLFwZqDpjAk6/C5ExZ0+k1F6cRCG8iP1Nq
-Z4WVvRackVzeAIrwWbuwwPhF3ejpesb4MEDx5uG1pXRvYrTe5XMElPGd657iXVROIRdHYdEI
-fCL78TmOdFW6oQZQQ6b1lMcWUjdcGsic2sj9JfPm5cCfbbaWgEYFvsi7u38IyE/UW+H5On3s
-WMCd3zwCawL299ZkkMWoZdWQLGowLxGip8MA+ovZZEqAEwZpqoJMUeW92IGM8ZviAIIX1vrJ
-ljm15Iqvi0VyAy1BltA8lSU3dXkyr5aXKi7TUcYsEch2ll4NXBqA18v1F0VJVNA6fLDg++dS
-hGTIq1nl32wlqT/b/eBvkmsoLCP2KYK1xrOIMIem32mWqbSSALPzc1in3s8XQEenvoPSjljK
-y29zI2D9cMwZ6AaxN4AcUa5OP6YmzMOrvxW1Ltjx2js/bbbQ/wHCcjvuuLsAAA==
-
---ZGiS0Q5IWpPtfppv--
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
