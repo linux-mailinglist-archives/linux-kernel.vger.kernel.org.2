@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85F0937EB73
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DD1C37EB74
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380443AbhELTbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:31:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43484 "EHLO mail.kernel.org"
+        id S1380467AbhELTbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:31:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232303AbhELRGj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 13:06:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EFE361376;
-        Wed, 12 May 2021 17:05:29 +0000 (UTC)
+        id S245740AbhELRGm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 13:06:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B17F61352;
+        Wed, 12 May 2021 17:05:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620839130;
-        bh=mKbciF1oaTiE7EO3ynmwEg+52gdbwWhxk/wAmHieKJA=;
+        s=k20201202; t=1620839132;
+        bh=Bh2V0sgmyQknZxL4AvMKILIQ6tKp7KM9OxB7PWJ++Mk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=shgyKFUeEKlCckdhQFe4VyMRXLV0GIkwhb0YYlYlwP4JgrKH/3rpL8YkAuRwiwyKJ
-         aIkOuSa66g491QtKiSNmGHTXFufzu4lQqZS93ykWC15loN8wjrO1IN5P5ODE62gYoW
-         KIA3q5vwdRFegYGXwBPsR4vtl25xb5khUalnGMUWjmM7z1jQHRO2TOgJN52OEEl1kK
-         H2DsMH27HH6mn4L9YBIvYL++9g+YB2219wSDZXvE4qBwnsUwi6NyBSnwQnTdhu1k3B
-         Fm86le+eRaCaNbpU0FtHt9FqBy2ifrKS+rMrfQcwlga1DiWL0PVG31rtU2d1JWIPtT
-         vGVKglHcvGxIQ==
+        b=tCaq2+X3x8gq6wps7DA7W3LzdRJM4e6PvhVfD78dKnxbP0q0TPSV/dzqKkJoVHyGs
+         Vaf7cJUPYqOh6P1+BaytbY3E/uW5cowSyHE/BsS8USAK9S6JB04YcuZ/FPe+rSU+yF
+         0jXTr36KojbOaYiDLxAGXFDIN3EfAHzIJd8IygeBKlp2KKBibk0thKBpRefVctD4Pd
+         nP7nDQeRV9yQ8FqszLOcT2jET+LT0AvxONXa02lyHvI/ByzAtv8I+5j2qUYQC7zJDi
+         3wcqhUEWMu7+7l0KmRwXojaYQ6WBURlRdlfRqaEVOXU5YdpIz/t2gs0YzDKOSvdoZv
+         ULRjRg9+AUI+A==
 From:   Mark Brown <broonie@kernel.org>
-To:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Axel Lin <axel.lin@ingics.com>
 Cc:     Mark Brown <broonie@kernel.org>,
-        Liguang Zhang <zhangliguang@linux.alibaba.com>,
-        Jay Fang <f.fangjian@huawei.com>,
-        Xin Hao <xhao@linux.alibaba.com>,
-        Sven Van Asbroeck <thesven73@gmail.com>
-Subject: Re: [PATCH v2 1/1] spi: Assume GPIO CS active high in ACPI case
-Date:   Wed, 12 May 2021 18:04:38 +0100
-Message-Id: <162083907220.45027.2264909866666593515.b4-ty@kernel.org>
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, Pi-Hsun Shih <pihsun@chromium.org>
+Subject: Re: [PATCH] regulator: cros-ec: Fix error code in dev_err message
+Date:   Wed, 12 May 2021 18:04:39 +0100
+Message-Id: <162083902381.44966.11137962760646106401.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210511140912.30757-1-andriy.shevchenko@linux.intel.com>
-References: <20210511140912.30757-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210512075824.620580-1-axel.lin@ingics.com>
+References: <20210512075824.620580-1-axel.lin@ingics.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -44,20 +41,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 May 2021 17:09:12 +0300, Andy Shevchenko wrote:
-> Currently GPIO CS handling, when descriptors are in use, doesn't
-> take into consideration that in ACPI case the default polarity
-> is Active High and can't be altered. Instead we have to use the
-> per-chip definition provided by SPISerialBus() resource.
+On Wed, 12 May 2021 15:58:24 +0800, Axel Lin wrote:
+> Show proper error code instead of 0.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
 Thanks!
 
-[1/1] spi: Assume GPIO CS active high in ACPI case
-      commit: 6b69546912a57ff8c31061f98e56383cc0beffd3
+[1/1] regulator: cros-ec: Fix error code in dev_err message
+      commit: 3d681804efcb6e5d8089a433402e19179347d7ae
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
