@@ -2,73 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6A8E37D065
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:41:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90D1137D079
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:42:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241385AbhELReR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 13:34:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34634 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234285AbhELQIU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:08:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BDC2261447;
-        Wed, 12 May 2021 15:39:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620833956;
-        bh=3OKE5hvIdwuXgAtAcX9qP9UHIBPfVufpxaoy+qmN7ik=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ax9+eTqIZr/T8ny36CIMXGA9hNYiTeTt9XbyhxfEPDGXfPAWU5nG5S/zjLcbQdn2T
-         qPOwqL20LTk856KlTtKDU367ck3i3dA3AxM4oeR6uX48dP/RFymAX834uZPxeBcu8w
-         eUcelaBUPJW2GP0qFvlCmVOjyJtRYoBeyK/GD7wHbr1RbbuwdOc6IS4l25COBK2Ja7
-         iu+uG26ufHxyBoZgBdISpfOm8q7sTncmgVeSdropTh79gPy81Kfu0hcfLyGW9KcCnc
-         r5pDV9LfJZzg1KLwXF88yxTD8qEgSGadtSIACQ4/iSl9w0RmSOm7AVqyHtG8gaKCby
-         4IP1ixvg62zpg==
-Date:   Wed, 12 May 2021 08:39:13 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Rocco yue <rocco.yue@mediatek.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>
-Subject: Re: [PATCH][v3] rtnetlink: add rtnl_lock debug log
-Message-ID: <20210512083913.733f9803@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210511113257.2094-1-rocco.yue@mediatek.com>
-References: <20210511113257.2094-1-rocco.yue@mediatek.com>
+        id S1348361AbhELRgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 13:36:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239550AbhELQJ7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:09:59 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5177AC061377;
+        Wed, 12 May 2021 08:45:29 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 82-20020a1c01550000b0290142562ff7c9so3286247wmb.3;
+        Wed, 12 May 2021 08:45:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2mpyyEC7XJrsgi3YMcgqzQye6WX/xUo0syDXtLLqF04=;
+        b=WFdXTTeGbyXygnc4svp/5Z6Yk40JUjx0BGhGZTTdIpzcdVLERcPZdfDiQraL3WyFSz
+         WVcHOixfJNFZrHnz2ATXiy6RSFHvmnAG1znR2IcVgWn6UhSc0ohGvdE0LGlp5TK5ZykB
+         p6sHfLifLnmwXqZWKOJNYT+dlxdURVlGN9XpdjTTsSZRfcE2e2thjcKuGJLrUZCPAFa3
+         TpZIFmUY5z6YpSkwRXETaVrPln0GY9MiLJB6uM+MHmWJ67u/gBpGuiSp2lMvXKWfRBNi
+         vyFt2wZAvZtqWSnP7q5qwje5gnKdD5PLNveQoqL92ci2uqPwnX7UJ69ik2I4iG+yP5lW
+         xQmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2mpyyEC7XJrsgi3YMcgqzQye6WX/xUo0syDXtLLqF04=;
+        b=HDOVKgL9gpEtcQOK56aJCl65+8vfFmKdgnF3sZuf5ySYuhUiX0HZys0niJ+PTvw17g
+         XNZ5SUegLROd7z6A3PVz5Dmrb1B5nEwolnxKOo4oyvxC3BvGBZ8gpilVslTdFTlICoXl
+         2/sCq6bPW7+Zer2knE8S8qjsxCUAQE5TZtDzsPAKATbd1cPvX7qmh7uqrJiLWE8uFAJx
+         SfxS8OG5FsGbnlQ0ev464brFXF33lIoipOVraAsc4baf9rZKpx0ybCNtxMBCppeL2nst
+         w4HLOQ/KdzWCTIwLZVcl+wJ+lce2gDl/qqNw0jxe0ZKxiguv/6wf8L2U2aW6IhmNsZeL
+         upWQ==
+X-Gm-Message-State: AOAM531u4cpVbFncAV1tiDWcTa5ah7hYgD6zA+TBWecTn3y6Rq5R6igp
+        dCcj67lYy41Ndm0kX3D+gus=
+X-Google-Smtp-Source: ABdhPJyoX0JIfO4FFBxxeezwHm+TZ3T0E/Xd6lO8PKbV1N17Ydciv5FK3V4Aa254aJ28KFfR+uSWkQ==
+X-Received: by 2002:a7b:c252:: with SMTP id b18mr39969380wmj.32.1620834328018;
+        Wed, 12 May 2021 08:45:28 -0700 (PDT)
+Received: from ziggy.stardust ([37.223.140.37])
+        by smtp.gmail.com with ESMTPSA id l18sm19802wrx.96.2021.05.12.08.45.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 May 2021 08:45:27 -0700 (PDT)
+Subject: Re: [PATCH v21 1/5] i2c: core: support bus regulator controlling in
+ adapter
+To:     Hsin-Yi Wang <hsinyi@chromium.org>, Wolfram Sang <wsa@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     linux-i2c@vger.kernel.org, Qii Wang <qii.wang@mediatek.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Bibby Hsieh <bibby.hsieh@mediatek.com>,
+        Arnd Bergmann <arnd@arndb.de>
+References: <20210507131406.2224177-1-hsinyi@chromium.org>
+ <20210507131406.2224177-2-hsinyi@chromium.org>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <2df39bc6-3ab1-69f2-4ac3-952277f53fe5@gmail.com>
+Date:   Wed, 12 May 2021 17:45:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210507131406.2224177-2-hsinyi@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 May 2021 19:32:57 +0800 Rocco yue wrote:
-> We often encounter system hangs caused by certain process
-> holding rtnl_lock for a long time. Even if there is a lock
-> detection mechanism in Linux, it is a bit troublesome and
-> affects the system performance. We hope to add a lightweight
-> debugging mechanism for detecting rtnl_lock.
-> 
-> Up to now, we have discovered and solved some potential bugs
-> through this lightweight rtnl_lock debugging mechanism, which
-> is helpful for us.
-> 
-> When you say Y for RTNL_LOCK_DEBUG, then the kernel will
-> detect if any function hold rtnl_lock too long and some key
-> information will be printed out to help locate the problem.
-> 
-> i.e: from the following logs, we can clearly know that the
-> pid=2206 RfxSender_4 process holds rtnl_lock for a long time,
-> causing the system to hang. And we can also speculate that the
-> delay operation may be performed in devinet_ioctl(), resulting
-> in rtnl_lock was not released in time.
 
-You can achieve that with a pair of fexit/fentry hooks or kprobes,
-and maybe a bit of BPF. No need for config options, and hardcoded
-parameters..
+
+On 07/05/2021 15:14, Hsin-Yi Wang wrote:
+> From: Bibby Hsieh <bibby.hsieh@mediatek.com>
+> 
+> Although in the most platforms, the bus power of i2c
+> are alway on, some platforms disable the i2c bus power
+> in order to meet low power request.
+> 
+> We can control bulk regulator if it is provided in i2c
+> adapter device.
+> 
+> Signed-off-by: Bibby Hsieh <bibby.hsieh@mediatek.com>
+> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+
+Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+
+> ---
+>  drivers/i2c/i2c-core-base.c | 95 +++++++++++++++++++++++++++++++++++++
+>  include/linux/i2c.h         |  2 +
+>  2 files changed, 97 insertions(+)
+> 
+> diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
+> index 5a97e4a02fa2..23bc7c269184 100644
+> --- a/drivers/i2c/i2c-core-base.c
+> +++ b/drivers/i2c/i2c-core-base.c
+> @@ -461,12 +461,14 @@ static int i2c_smbus_host_notify_to_irq(const struct i2c_client *client)
+>  static int i2c_device_probe(struct device *dev)
+>  {
+>  	struct i2c_client	*client = i2c_verify_client(dev);
+> +	struct i2c_adapter	*adap;
+>  	struct i2c_driver	*driver;
+>  	int status;
+>  
+>  	if (!client)
+>  		return 0;
+>  
+> +	adap = client->adapter;
+>  	client->irq = client->init_irq;
+>  
+>  	if (!client->irq) {
+> @@ -532,6 +534,14 @@ static int i2c_device_probe(struct device *dev)
+>  
+>  	dev_dbg(dev, "probe\n");
+>  
+> +	if (adap->bus_regulator) {
+> +		status = regulator_enable(adap->bus_regulator);
+> +		if (status < 0) {
+> +			dev_err(&adap->dev, "Failed to enable bus regulator\n");
+> +			goto err_clear_wakeup_irq;
+> +		}
+> +	}
+> +
+>  	status = of_clk_set_defaults(dev->of_node, false);
+>  	if (status < 0)
+>  		goto err_clear_wakeup_irq;
+> @@ -589,8 +599,10 @@ static int i2c_device_probe(struct device *dev)
+>  static int i2c_device_remove(struct device *dev)
+>  {
+>  	struct i2c_client	*client = to_i2c_client(dev);
+> +	struct i2c_adapter      *adap;
+>  	struct i2c_driver	*driver;
+>  
+> +	adap = client->adapter;
+>  	driver = to_i2c_driver(dev->driver);
+>  	if (driver->remove) {
+>  		int status;
+> @@ -605,6 +617,8 @@ static int i2c_device_remove(struct device *dev)
+>  	devres_release_group(&client->dev, client->devres_group_id);
+>  
+>  	dev_pm_domain_detach(&client->dev, true);
+> +	if (!pm_runtime_status_suspended(&client->dev) && adap->bus_regulator)
+> +		regulator_disable(adap->bus_regulator);
+>  
+>  	dev_pm_clear_wake_irq(&client->dev);
+>  	device_init_wakeup(&client->dev, false);
+> @@ -617,6 +631,86 @@ static int i2c_device_remove(struct device *dev)
+>  	return 0;
+>  }
+>  
+> +#ifdef CONFIG_PM_SLEEP
+> +static int i2c_resume_early(struct device *dev)
+> +{
+> +	struct i2c_client *client = i2c_verify_client(dev);
+> +	int err;
+> +
+> +	if (!client)
+> +		return 0;
+> +
+> +	if (pm_runtime_status_suspended(&client->dev) &&
+> +		client->adapter->bus_regulator) {
+> +		err = regulator_enable(client->adapter->bus_regulator);
+> +		if (err)
+> +			return err;
+> +	}
+> +
+> +	return pm_generic_resume_early(&client->dev);
+> +}
+> +
+> +static int i2c_suspend_late(struct device *dev)
+> +{
+> +	struct i2c_client *client = i2c_verify_client(dev);
+> +	int err;
+> +
+> +	if (!client)
+> +		return 0;
+> +
+> +	err = pm_generic_suspend_late(&client->dev);
+> +	if (err)
+> +		return err;
+> +
+> +	if (!pm_runtime_status_suspended(&client->dev) &&
+> +		client->adapter->bus_regulator)
+> +		return regulator_disable(client->adapter->bus_regulator);
+> +
+> +	return 0;
+> +}
+> +#endif
+> +
+> +#ifdef CONFIG_PM
+> +static int i2c_runtime_resume(struct device *dev)
+> +{
+> +	struct i2c_client *client = i2c_verify_client(dev);
+> +	int err;
+> +
+> +	if (!client)
+> +		return 0;
+> +
+> +	if (client->adapter->bus_regulator) {
+> +		err = regulator_enable(client->adapter->bus_regulator);
+> +		if (err)
+> +			return err;
+> +	}
+> +
+> +	return pm_generic_runtime_resume(&client->dev);
+> +}
+> +
+> +static int i2c_runtime_suspend(struct device *dev)
+> +{
+> +	struct i2c_client *client = i2c_verify_client(dev);
+> +	int err;
+> +
+> +	if (!client)
+> +		return 0;
+> +
+> +	err = pm_generic_runtime_suspend(&client->dev);
+> +	if (err)
+> +		return err;
+> +
+> +	if (client->adapter->bus_regulator)
+> +		return regulator_disable(client->adapter->bus_regulator);
+> +	return 0;
+> +}
+> +#endif
+> +
+> +static const struct dev_pm_ops i2c_device_pm = {
+> +	SET_LATE_SYSTEM_SLEEP_PM_OPS(i2c_suspend_late, i2c_resume_early)
+> +	SET_RUNTIME_PM_OPS(i2c_runtime_suspend, i2c_runtime_resume, NULL)
+> +};
+> +
+>  static void i2c_device_shutdown(struct device *dev)
+>  {
+>  	struct i2c_client *client = i2c_verify_client(dev);
+> @@ -674,6 +768,7 @@ struct bus_type i2c_bus_type = {
+>  	.probe		= i2c_device_probe,
+>  	.remove		= i2c_device_remove,
+>  	.shutdown	= i2c_device_shutdown,
+> +	.pm		= &i2c_device_pm,
+>  };
+>  EXPORT_SYMBOL_GPL(i2c_bus_type);
+>  
+> diff --git a/include/linux/i2c.h b/include/linux/i2c.h
+> index e8f2ac8c9c3d..953a4eecb88f 100644
+> --- a/include/linux/i2c.h
+> +++ b/include/linux/i2c.h
+> @@ -15,6 +15,7 @@
+>  #include <linux/device.h>	/* for struct device */
+>  #include <linux/sched.h>	/* for completion */
+>  #include <linux/mutex.h>
+> +#include <linux/regulator/consumer.h>
+>  #include <linux/rtmutex.h>
+>  #include <linux/irqdomain.h>		/* for Host Notify IRQ */
+>  #include <linux/of.h>		/* for struct device_node */
+> @@ -729,6 +730,7 @@ struct i2c_adapter {
+>  	const struct i2c_adapter_quirks *quirks;
+>  
+>  	struct irq_domain *host_notify_domain;
+> +	struct regulator *bus_regulator;
+>  };
+>  #define to_i2c_adapter(d) container_of(d, struct i2c_adapter, dev)
+>  
+> 
