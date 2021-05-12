@@ -2,130 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C79837C06D
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9949037C075
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:42:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231274AbhELOlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 10:41:09 -0400
-Received: from foss.arm.com ([217.140.110.172]:40616 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231268AbhELOlH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 10:41:07 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 700561FB;
-        Wed, 12 May 2021 07:39:59 -0700 (PDT)
-Received: from [10.57.81.122] (unknown [10.57.81.122])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 584EF3F718;
-        Wed, 12 May 2021 07:39:57 -0700 (PDT)
-Subject: Re: [PATCH v1 2/3] perf arm-spe: Correct sample flags for dummy event
-To:     Leo Yan <leo.yan@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Al Grant <Al.Grant@arm.com>
-References: <20210429150100.282180-1-leo.yan@linaro.org>
- <20210429150100.282180-3-leo.yan@linaro.org>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <f4e483ae-acbb-7afa-c215-cb4244c2e820@arm.com>
-Date:   Wed, 12 May 2021 17:39:56 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231278AbhELOnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 10:43:32 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:52232 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230445AbhELOnb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 10:43:31 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1620830541;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=X/FBaaUrcpeBw1z8WTREnKbTYrdVj+tsIwJFqKWNnfI=;
+        b=BOadud88kio+9lWZ6KKx0f6S/pO2QfnwHxw/kD3Y7yFMGlHoRd1qlpAbFfQq+Gq/xyMnUm
+        DHpVr1E+OEixWy7K8vN4doQ3vlD98ovOSriltoeSiMGZx67T5U1XhUZysXzpzZq53u2w9N
+        W6HXs1pBU+eStAJk0vvnyItqx57kfzl2jSe2kFGkRiSqQGDdqqZzqPyL8j5X3K9gHCO9B/
+        zxhuJZCB7hJjdY0K6+ObO0AY48a/+1N70Dc69XraDZ2w8fpYLcgNS7uDkRkRX6XpDKar6k
+        VoK0MYR1mvmLxO53JHe4t7vA5I8YAi4cGEgY44/rlR6J96VD4i6w1TAhutfkLw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1620830541;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=X/FBaaUrcpeBw1z8WTREnKbTYrdVj+tsIwJFqKWNnfI=;
+        b=IXI8ND1yak9Vi3x3K0TZuKIaE94HFH4LjhauBQa/17UtMIhQr9zZwJiUUz4d5uthwfQdfa
+        HCj2pkKQjhEhS6AA==
+To:     Xiongfeng Wang <wangxiongfeng2@huawei.com>, john.stultz@linaro.org,
+        sboyd@kernel.org
+Cc:     linux-kernel@vger.kernel.org, wangxiongfeng2@huawei.com
+Subject: Re: [RFC PATCH] timer: Fix bucket_expiry calculation
+In-Reply-To: <1620821729-40694-1-git-send-email-wangxiongfeng2@huawei.com>
+References: <1620821729-40694-1-git-send-email-wangxiongfeng2@huawei.com>
+Date:   Wed, 12 May 2021 16:42:21 +0200
+Message-ID: <87y2ckdnea.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210429150100.282180-3-leo.yan@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Xiongfeng,
 
+On Wed, May 12 2021 at 20:15, Xiongfeng Wang wrote:
+> When I use schedule_timeout(5) to put a process into sleep on my machine
+> with HZ = 100. It always sleep about 60ms. I enable the timer trace and
+> find out, when the timer_list expires, 'now' is always equal to
+> 'expires + 1'. I print 'base->next_expiry' in '__run_timers' and find out
+> 'next_expiry' is always equal to 'expires + 1';
+>
+> It is because we use the following equation to calculate bucket_expiry.
+>
+>   bucket_expiry = ((expires + LVL_GRAN(lvl)) >> LVL_SHIFT(lvl)) << LVL_SHIFT(lvl)
+>
+> 'bucket_expiry' is equal to 'expires + 1' when lvl = 0. So modify the
+> equation as follows to fix the issue.
+>
+>   bucket_expiry = ((expires + LVL_GRAN(lvl) - 1) >> LVL_SHIFT(lvl)) << LVL_SHIFT(lvl)
 
-On 29/04/2021 18:00, Leo Yan wrote:
-> The dummy event is mainly used for mmap, the TIME sample is only needed
-> for per-cpu case so that the perf tool can rely on the correct timing
-> for parsing symbols.  And the CPU sample is useless for mmap.
-> 
-> This patch enables TIME sample for per-cpu mmap and doesn't enable CPU
-> sample.  For later extension (e.g. support multiple AUX events), it sets
-> the dummy event when the condition "opts->full_auxtrace" is true.
-> 
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> ---
->  tools/perf/arch/arm64/util/arm-spe.c | 30 ++++++++++++++++------------
->  1 file changed, 17 insertions(+), 13 deletions(-)
-> 
-> diff --git a/tools/perf/arch/arm64/util/arm-spe.c b/tools/perf/arch/arm64/util/arm-spe.c
-> index 902e73a64184..f6eec0900604 100644
-> --- a/tools/perf/arch/arm64/util/arm-spe.c
-> +++ b/tools/perf/arch/arm64/util/arm-spe.c
-> @@ -70,7 +70,6 @@ static int arm_spe_recording_options(struct auxtrace_record *itr,
->  	struct evsel *evsel, *arm_spe_evsel = NULL;
->  	struct perf_cpu_map *cpus = evlist->core.cpus;
->  	bool privileged = perf_event_paranoid_check(-1);
-> -	struct evsel *tracking_evsel;
->  	int err;
->  
->  	sper->evlist = evlist;
-> @@ -126,18 +125,23 @@ static int arm_spe_recording_options(struct auxtrace_record *itr,
->  		evsel__set_sample_bit(arm_spe_evsel, CPU);
->  
->  	/* Add dummy event to keep tracking */
-> -	err = parse_events(evlist, "dummy:u", NULL);
-> -	if (err)
-> -		return err;
-> -
-> -	tracking_evsel = evlist__last(evlist);
-> -	evlist__set_tracking_event(evlist, tracking_evsel);
-> -
-> -	tracking_evsel->core.attr.freq = 0;
-> -	tracking_evsel->core.attr.sample_period = 1;
-> -	evsel__set_sample_bit(tracking_evsel, TIME);
-> -	evsel__set_sample_bit(tracking_evsel, CPU);
-> -	evsel__reset_sample_bit(tracking_evsel, BRANCH_STACK);
-> +	if (opts->full_auxtrace) {
-> +		struct evsel *tracking_evsel;
+That's wrong because you move the expiry of each timer one jiffie ahead,
+which violates the guarantee that a timer sleeps at least for one jiffie
+for real and not measured in jiffies.
 
-Hi Leo,
+  jiffies = 0
+  schedule_timeout(1)
 
-I know the "if (opts->full_auxtrace)" pattern is copied from other auxtrace
-files, but I don't think it does anything because there is this at the top
-of the function:
+   local_irq_disable()
+			  -> timer interrupt is raised in HW
+   timer->expires = jiffies + 1 <- 1
+   add_timer(timer)
+   local_irq_enable()
+   timer interrupt
+      jiffies++;
+      softirq()
+	  expire(timer); -> timer is expired immediately       
 
-   	if (!opts->full_auxtrace)
-		return 0;
+So the off by one has a reason and is required to prevent too short
+timeouts. There is nothing you can do about that because that's a
+property of low granularity tick based timer wheels.
 
-The same applies for other usages of "full_auxtrace" in the same function.
-They are all always true. I'm also not sure if it's ever defined what
-full_auxtrace means.
+That's even documented in the comment above the code you modified:
 
-James
+	/*
+	 * The timer wheel has to guarantee that a timer does not fire
+	 * early. Early expiry can happen due to:
+	 * - Timer is armed at the edge of a tick
+	 * - Truncation of the expiry time in the outer wheel levels
+	 *
+	 * Round up with level granularity to prevent this.
+	 */
 
-> +
-> +		err = parse_events(evlist, "dummy:u", NULL);
-> +		if (err)
-> +			return err;
-> +
-> +		tracking_evsel = evlist__last(evlist);
-> +		evlist__set_tracking_event(evlist, tracking_evsel);
-> +
-> +		tracking_evsel->core.attr.freq = 0;
-> +		tracking_evsel->core.attr.sample_period = 1;
-> +
-> +		/* In per-cpu case, always need the time of mmap events etc */
-> +		if (!perf_cpu_map__empty(cpus))
-> +			evsel__set_sample_bit(tracking_evsel, TIME);
-> +	}
->  
->  	return 0;
->  }
-> 
+Thanks,
+
+	  tglx
