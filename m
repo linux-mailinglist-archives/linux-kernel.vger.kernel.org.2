@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7CEE37D37F
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 20:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F99E37D380
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 20:22:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244586AbhELSXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 14:23:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48666 "EHLO mail.kernel.org"
+        id S244760AbhELSXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 14:23:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241839AbhELQa4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:30:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BC0A61C27;
-        Wed, 12 May 2021 15:57:40 +0000 (UTC)
+        id S241891AbhELQbD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:31:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EC3B61C51;
+        Wed, 12 May 2021 15:57:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620835060;
-        bh=YBgL38BbDoQ3OoqPikTjVjilfPDlvVgFSeTcvn87+fA=;
+        s=korg; t=1620835063;
+        bh=rKL868noUL5uE6Dk7EGh5h8is5SjrEFWLvkhtXN6vmk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Doq+Ku799nAOTzG7Voa5xh3qXL1k7Rl04tW2w0qhkvEUnSyKcEPRU93LIDj8URIwR
-         MpgMdnejmxdLG1BZFpl4dQ8RAh+zgXu/FLvpzsKO2LF+BxA7h5e+oPIGgtC+DFhyly
-         89ZYME8KPV/G2NL5OSKpiUJUV6sFMYI67L+I7JuE=
+        b=ZMyHTmt5oPen+WOc7JTJQaTRUXpTmWbLKEORYRORscvLT1txHtZs4hYmoO2AfxNmy
+         /zadG1YQGXfC75Rz8PCBbGUy/1JHcK1a7JCtQE8On7Krt7QZHhMms2BTEhklUWLyih
+         V+6HJSQuuhd75bYCEqrKOzdS7JeAgXmCKQNLp4C8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
+        stable@vger.kernel.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 185/677] mtd: parsers: qcom: Fix error condition
-Date:   Wed, 12 May 2021 16:43:51 +0200
-Message-Id: <20210512144843.392484632@linuxfoundation.org>
+Subject: [PATCH 5.12 194/677] arm64: dts: qcom: sm8250: Fix timer interrupt to specify EL2 physical timer
+Date:   Wed, 12 May 2021 16:44:00 +0200
+Message-Id: <20210512144843.695310436@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
 References: <20210512144837.204217980@linuxfoundation.org>
@@ -41,42 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+From: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
 
-[ Upstream commit c95310e1b33eae9767af9698aa976d5301f37203 ]
+[ Upstream commit 29a3349543e4ce3fe4e2a761403cc629e3534c67 ]
 
-qcom_smem_get() does not return NULL, and even if it did, the NULL
-condition is usually not an error but a success condition and should
-not trigger an error trace.
+ARM architected timer interrupts DT property specifies EL2/HYP
+physical interrupt and not EL2/HYP virtual interrupt for the 4th
+interrupt property. As per interrupt documentation for SM8250 SoC,
+the EL2/HYP physical timer interrupt is 10 and EL2/HYP virtual timer
+interrupt is 12, so fix the 4th timer interrupt to be EL2 physical
+timer interrupt (10 in this case).
 
-Let's replace IS_ERR_OR_NULL() by IS_ERR().
-
-This fixes the following smatch warning:
-drivers/mtd/parsers/qcomsmempart.c:109 parse_qcomsmem_part() warn: passing zero to 'PTR_ERR'
-
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Fixes: 803eb124e1a6 ("mtd: parsers: Add Qcom SMEM parser")
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20210303084634.12796-1-miquel.raynal@bootlin.com
+Fixes: 60378f1a171e ("arm64: dts: qcom: sm8250: Add sm8250 dts file")
+Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Link: https://lore.kernel.org/r/744e58f725d279eb2b049a7da42b0f09189f4054.1613468366.git.saiprakash.ranjan@codeaurora.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/parsers/qcomsmempart.c | 2 +-
+ arch/arm64/boot/dts/qcom/sm8250.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/parsers/qcomsmempart.c b/drivers/mtd/parsers/qcomsmempart.c
-index 808cb33d71f8..1c8a44d0d6e4 100644
---- a/drivers/mtd/parsers/qcomsmempart.c
-+++ b/drivers/mtd/parsers/qcomsmempart.c
-@@ -104,7 +104,7 @@ static int parse_qcomsmem_part(struct mtd_info *mtd,
- 	 * complete partition table
- 	 */
- 	ptable = qcom_smem_get(SMEM_APPS, SMEM_AARM_PARTITION_TABLE, &len);
--	if (IS_ERR_OR_NULL(ptable)) {
-+	if (IS_ERR(ptable)) {
- 		pr_err("Error reading partition table\n");
- 		return PTR_ERR(ptable);
- 	}
+diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+index 1864c459a563..3232ac6253bb 100644
+--- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+@@ -3754,7 +3754,7 @@
+ 				(GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>,
+ 			     <GIC_PPI 11
+ 				(GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>,
+-			     <GIC_PPI 12
++			     <GIC_PPI 10
+ 				(GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>;
+ 	};
+ 
 -- 
 2.30.2
 
