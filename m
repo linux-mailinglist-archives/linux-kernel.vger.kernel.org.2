@@ -2,28 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48B2837B608
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 08:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2614737B616
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 08:29:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230115AbhELG0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 02:26:06 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:2713 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230070AbhELG0F (ORCPT
+        id S230011AbhELGaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 02:30:10 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:2635 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230018AbhELGaJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 02:26:05 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fg4T4665Cz16Q2c;
-        Wed, 12 May 2021 14:22:16 +0800 (CST)
+        Wed, 12 May 2021 02:30:09 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Fg4ZK292gzlclf;
+        Wed, 12 May 2021 14:26:49 +0800 (CST)
 Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 12 May 2021 14:24:46 +0800
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 12 May 2021 14:28:53 +0800
 From:   Zou Wei <zou_wei@huawei.com>
-To:     <jdelvare@suse.com>, <arnd@arndb.de>, <gregkh@linuxfoundation.org>
-CC:     <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] misc: eeprom: Add missing MODULE_DEVICE_TABLE
-Date:   Wed, 12 May 2021 14:41:48 +0800
-Message-ID: <1620801708-18965-1-git-send-email-zou_wei@huawei.com>
+To:     <a.hajda@samsung.com>, <narmstrong@baylibre.com>,
+        <robert.foss@linaro.org>, <Laurent.pinchart@ideasonboard.com>,
+        <jonas@kwiboo.se>, <jernej.skrabec@siol.net>, <airlied@linux.ie>,
+        <daniel@ffwll.ch>
+CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] drm/bridge: lt9611: Add missing MODULE_DEVICE_TABLE
+Date:   Wed, 12 May 2021 14:45:55 +0800
+Message-ID: <1620801955-19188-1-git-send-email-zou_wei@huawei.com>
 X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -40,21 +44,21 @@ as an external module.
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Zou Wei <zou_wei@huawei.com>
 ---
- drivers/misc/eeprom/eeprom.c | 1 +
+ drivers/gpu/drm/bridge/lontium-lt9611.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/misc/eeprom/eeprom.c b/drivers/misc/eeprom/eeprom.c
-index 34fa385..3fefb70 100644
---- a/drivers/misc/eeprom/eeprom.c
-+++ b/drivers/misc/eeprom/eeprom.c
-@@ -194,6 +194,7 @@ static const struct i2c_device_id eeprom_id[] = {
- 	{ "eeprom", 0 },
- 	{ }
+diff --git a/drivers/gpu/drm/bridge/lontium-lt9611.c b/drivers/gpu/drm/bridge/lontium-lt9611.c
+index e8eb8de..29b1ce2 100644
+--- a/drivers/gpu/drm/bridge/lontium-lt9611.c
++++ b/drivers/gpu/drm/bridge/lontium-lt9611.c
+@@ -1215,6 +1215,7 @@ static struct i2c_device_id lt9611_id[] = {
+ 	{ "lontium,lt9611", 0 },
+ 	{}
  };
-+MODULE_DEVICE_TABLE(i2c, eeprom_id);
++MODULE_DEVICE_TABLE(i2c, lt9611_id);
  
- static struct i2c_driver eeprom_driver = {
- 	.driver = {
+ static const struct of_device_id lt9611_match_table[] = {
+ 	{ .compatible = "lontium,lt9611" },
 -- 
 2.6.2
 
