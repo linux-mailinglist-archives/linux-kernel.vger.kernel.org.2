@@ -2,174 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EDAC37BD79
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CE1637BD7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:55:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233534AbhELM4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 08:56:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55656 "EHLO mail.kernel.org"
+        id S233341AbhELM4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 08:56:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56340 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232920AbhELMys (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 08:54:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D06F613FB
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 12:53:39 +0000 (UTC)
+        id S233560AbhELMzQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 08:55:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE660613F8;
+        Wed, 12 May 2021 12:54:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620824019;
-        bh=XbmRrReojneENbPSOsU6jBGRBw9yRA5UpTwIcpDkSpc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=mBs5vpI7hBKzuA1pOJxQSwbXVzF+V9ogB1ilzujPFM0oCf9q7/JCDjWMRVFNZJyl8
-         r06bViLCittI0TwmSi8TpCkueNZJ5cM7eu4PKjsw8vupJT3Cq05ei/aFDXeEvsHvms
-         WrIAIRi0ZqdTNjCUHztmgTezzmHcQ5bbEIOe3gAGNqYn/aQuaBq2Erw1/qXfdJ0Hvd
-         kfEBKC9pF3YnUc+wG1YE3ilgWv1nwyLHtoSDGccGKR2r3DBrI7rLlAHzb//SyrPbEt
-         YcsqNsWw6ZlkmKmPobQpgFGPeQKf4HJ1MomKgMWg6wfiOuXLAXvYYHvUtTezrMUrwC
-         spqYkPMAWV4KA==
-Received: by mail-ot1-f49.google.com with SMTP id r26-20020a056830121ab02902a5ff1c9b81so20435136otp.11
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 05:53:39 -0700 (PDT)
-X-Gm-Message-State: AOAM530N44hWeGVKAS0a4sCOMoECv6tGuiokypEI+v9J0c9Dhl3qmLGL
-        EbHYHAVu7TzT4alqRyyO2iFP+AzBzRMljd9pH0o=
-X-Google-Smtp-Source: ABdhPJyzv9iOlLaq/QuwKouiiizHJWE6YBEN3U+psdBds/7z9QuhH2qyv3UMJdgN5tLID6ZlAJ8yjGsT5jZINq+zfLw=
-X-Received: by 2002:a05:6830:4da:: with SMTP id s26mr30389717otd.77.1620824018741;
- Wed, 12 May 2021 05:53:38 -0700 (PDT)
+        s=k20201202; t=1620824048;
+        bh=s63/YJ4rfJgTZzM8uR7M0raGMpzNRGRCgreL8WEBXdY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iSWdCs42qLZHX2ToG41t7al8jA2FDsE9y5DGWzMyqPTV7ldBCszU/dCVM5pmB23ln
+         Nxeqm5eS8LBZzGvfHr5P4oBu80yPT0cI1rXim5a+J2MokjMFjdjbdWYRDvcetofq39
+         AdRj332k+PLgLfIjDjh84V+hVAaQU6oTFJjoQSsY7nAZFzMq5RpTPaaRWnTQeFq1Bh
+         yu3ooTHmAUWnmclclXHqV7qFBTR25Q5pE1bO9im87xM0lGqjCKrKmXWyflv8t3xU/S
+         kc6hk/oHF6j/cX4ifwcYDeo4SwqbNp6UNpEDxfEzkkmT0IyA/WMy2Eyyw9bZemiurq
+         6gno/8flQsjtA==
+Date:   Wed, 12 May 2021 14:54:04 +0200
+From:   Jessica Yu <jeyu@kernel.org>
+To:     zhouchuangao <zhouchuangao@vivo.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kernel/module: Use BUG_ON instead of if condition
+ followed by BUG
+Message-ID: <YJvP7JLKwJbcEYIg@p200300cbcf361a0029e37a38368d6727.dip0.t-ipconnect.de>
+References: <1620610682-25567-1-git-send-email-zhouchuangao@vivo.com>
 MIME-Version: 1.0
-References: <20210511203716.117010-1-rikard.falkeborn@gmail.com>
-In-Reply-To: <20210511203716.117010-1-rikard.falkeborn@gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 12 May 2021 14:53:27 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXF0rMwjgm27=i3XkrXJ=21C_x4he5Ls+7FSKUhsva970Q@mail.gmail.com>
-Message-ID: <CAMj1kXF0rMwjgm27=i3XkrXJ=21C_x4he5Ls+7FSKUhsva970Q@mail.gmail.com>
-Subject: Re: [PATCH] linux/bits.h: Fix compilation error with GENMASK
-To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Yury Norov <yury.norov@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <1620610682-25567-1-git-send-email-zhouchuangao@vivo.com>
+X-OS:   Linux p200300cbcf361a0029e37a38368d6727.dip0.t-ipconnect.de
+ 5.12.0-2-default x86_64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(+ Arnd)
++++ zhouchuangao [09/05/21 18:38 -0700]:
+>This patch comes from cocinelle warning.
 
-On Tue, 11 May 2021 at 22:37, Rikard Falkeborn
-<rikard.falkeborn@gmail.com> wrote:
+Please include the output of the cocinelle warning here as well.
+
+See commit 56149c8cd820 ("media: pci: saa7164-core.c: replace if
+(cond) BUG() with BUG_ON()") for an example. Thanks.
+
+>BUG_ON uses unlikely in if(). Through disassembly, we can see that
+>brk #0x800 is compiled to the end of the function.
+>As you can see below:
+>    ......
+>    ffffff8008660bec:   d65f03c0    ret
+>    ffffff8008660bf0:   d4210000    brk #0x800
 >
-> GENMASK() has an input check which uses __builtin_choose_expr() to enable
-> a compile time sanity check of its inputs if they are known at compile
-> time. However, it turns out that __builtin_constant_p() does not always
-> return a compile time constant [0]. It was thought this problem was fixed
-> with gcc 4.9 [1], but apparently this is not the case [2].
+>Usually, the condition in if () is not satisfied. For the
+>multi-stage pipeline, we do not need to perform fetch decode
+>and excute operation on brk instruction.
 >
-> Switch to use __is_constexpr() instead which always returns a compile
-> time constant, regardless of its inputs.
+>In my opinion, this can improve the efficiency of the
+>multi-stage pipeline.
 >
-> [0]: https://lore.kernel.org/lkml/42b4342b-aefc-a16a-0d43-9f9c0d63ba7a@rasmusvillemoes.dk
-> [1]: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=19449
-> [2]: https://lore.kernel.org/lkml/1ac7bbc2-45d9-26ed-0b33-bf382b8d858b@I-love.SAKURA.ne.jp
+>Signed-off-by: zhouchuangao <zhouchuangao@vivo.com>
+>---
+> kernel/module.c | 3 +--
+> 1 file changed, 1 insertion(+), 2 deletions(-)
 >
-> Reported-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
-> ---
-> Feedback on placing __is_constexpr() in const.h is welcome, at least the
-> name is appropriate...
+>diff --git a/kernel/module.c b/kernel/module.c
+>index b5dd92e..faf9114 100644
+>--- a/kernel/module.c
+>+++ b/kernel/module.c
+>@@ -1014,8 +1014,7 @@ void __symbol_put(const char *symbol)
+> 	};
 >
->  include/linux/bits.h        |  2 +-
->  include/linux/const.h       |  8 ++++++++
->  include/linux/minmax.h      | 10 ++--------
->  tools/include/linux/bits.h  |  2 +-
->  tools/include/linux/const.h |  8 ++++++++
->  5 files changed, 20 insertions(+), 10 deletions(-)
->
-> diff --git a/include/linux/bits.h b/include/linux/bits.h
-> index 7f475d59a097..87d112650dfb 100644
-> --- a/include/linux/bits.h
-> +++ b/include/linux/bits.h
-> @@ -22,7 +22,7 @@
->  #include <linux/build_bug.h>
->  #define GENMASK_INPUT_CHECK(h, l) \
->         (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
-> -               __builtin_constant_p((l) > (h)), (l) > (h), 0)))
-> +               __is_constexpr((l) > (h)), (l) > (h), 0)))
->  #else
->  /*
->   * BUILD_BUG_ON_ZERO is not available in h files included from asm files,
-> diff --git a/include/linux/const.h b/include/linux/const.h
-> index 81b8aae5a855..435ddd72d2c4 100644
-> --- a/include/linux/const.h
-> +++ b/include/linux/const.h
-> @@ -3,4 +3,12 @@
->
->  #include <vdso/const.h>
->
-> +/*
-> + * This returns a constant expression while determining if an argument is
-> + * a constant expression, most importantly without evaluating the argument.
-> + * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
-> + */
-> +#define __is_constexpr(x) \
-> +       (sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
-> +
->  #endif /* _LINUX_CONST_H */
-> diff --git a/include/linux/minmax.h b/include/linux/minmax.h
-> index c0f57b0c64d9..5433c08fcc68 100644
-> --- a/include/linux/minmax.h
-> +++ b/include/linux/minmax.h
-> @@ -2,6 +2,8 @@
->  #ifndef _LINUX_MINMAX_H
->  #define _LINUX_MINMAX_H
->
-> +#include <linux/const.h>
-> +
->  /*
->   * min()/max()/clamp() macros must accomplish three things:
->   *
-> @@ -17,14 +19,6 @@
->  #define __typecheck(x, y) \
->         (!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
->
-> -/*
-> - * This returns a constant expression while determining if an argument is
-> - * a constant expression, most importantly without evaluating the argument.
-> - * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
-> - */
-> -#define __is_constexpr(x) \
-> -       (sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
-> -
->  #define __no_side_effects(x, y) \
->                 (__is_constexpr(x) && __is_constexpr(y))
->
-> diff --git a/tools/include/linux/bits.h b/tools/include/linux/bits.h
-> index 7f475d59a097..87d112650dfb 100644
-> --- a/tools/include/linux/bits.h
-> +++ b/tools/include/linux/bits.h
-> @@ -22,7 +22,7 @@
->  #include <linux/build_bug.h>
->  #define GENMASK_INPUT_CHECK(h, l) \
->         (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
-> -               __builtin_constant_p((l) > (h)), (l) > (h), 0)))
-> +               __is_constexpr((l) > (h)), (l) > (h), 0)))
->  #else
->  /*
->   * BUILD_BUG_ON_ZERO is not available in h files included from asm files,
-> diff --git a/tools/include/linux/const.h b/tools/include/linux/const.h
-> index 81b8aae5a855..435ddd72d2c4 100644
-> --- a/tools/include/linux/const.h
-> +++ b/tools/include/linux/const.h
-> @@ -3,4 +3,12 @@
->
->  #include <vdso/const.h>
->
-> +/*
-> + * This returns a constant expression while determining if an argument is
-> + * a constant expression, most importantly without evaluating the argument.
-> + * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
-> + */
-> +#define __is_constexpr(x) \
-> +       (sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
-> +
->  #endif /* _LINUX_CONST_H */
-> --
-> 2.31.1
+> 	preempt_disable();
+>-	if (!find_symbol(&fsa))
+>-		BUG();
+>+	BUG_ON(!find_symbol(&fsa));
+> 	module_put(fsa.owner);
+> 	preempt_enable();
+> }
+>-- 
+>2.7.4
 >
