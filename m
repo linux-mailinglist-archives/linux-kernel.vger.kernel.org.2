@@ -2,99 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 068F937B4A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 05:38:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AE5437B4B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 05:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230289AbhELDjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 23:39:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57740 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230035AbhELDjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 23:39:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B69661432;
-        Wed, 12 May 2021 03:38:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620790687;
-        bh=oT0X2JNCx1DviEyHFEyiFx4MvQ/+8rEsXU09/zK0VR0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=EEzDzWRp7tu0larBn9hLExOedDdhvg7q2aDpnMvTgmq0MGBpi1YXLpRrXKVAroOZn
-         tp9ehTbLN65H7HI1JiOb3nYjBHhLP0lAU2IJELbAOM9ESXZyDG7CRUDDpfzcxE+laE
-         YuzPoWc/UJ5SHo9ScFImrJJKjFVSvRTO2t5P/1QKZnnyyrJKlQuDx1BfB/ROb1Ko+E
-         weU7IlBs4LqCgLi1rESM3RgtMEkj7YatIRiiarwQJh90DbljJMnQprr7CjboNBAwGi
-         CbMCwqKASoqS91j/3PNr/u0dtR2H4urqnDRwxIiF6MitpE5MnSxSXbte+MCunGI/cl
-         1D2b5Qm6jKIZg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 1B2E85C0134; Tue, 11 May 2021 20:38:07 -0700 (PDT)
-Date:   Tue, 11 May 2021 20:38:07 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        john.stultz@linaro.org, sboyd@kernel.org, corbet@lwn.net,
-        Mark.Rutland@arm.com, maz@kernel.org, kernel-team@fb.com,
-        neeraju@codeaurora.org, ak@linux.intel.com, zhengjun.xing@intel.com
-Subject: Re: [PATCH v14 clocksource 6/6] clocksource: Print deviation in
- nanoseconds for unstable case
-Message-ID: <20210512033807.GS975577@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210511233403.GA2896757@paulmck-ThinkPad-P17-Gen-1>
- <20210511233455.2897068-6-paulmck@kernel.org>
- <20210512022136.GC78351@shbuild999.sh.intel.com>
+        id S229964AbhELDui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 23:50:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229951AbhELDuh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 23:50:37 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12576C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 20:49:30 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id m190so17281062pga.2
+        for <linux-kernel@vger.kernel.org>; Tue, 11 May 2021 20:49:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=IzgGu9R0ARwDBsD+F2+JiW3x3zuHRQ4yrRZwYSnXu+o=;
+        b=gBKUHOq8bXXc4gcmvChqsaFwzXmCzVaMbuxGaRF2zoU+2K9H8RWm99PIaivtkqwvbN
+         9VWicYA33/yyz1ikMIL5uUDsNKBqrVc5xKHfNf/LCAKV2zULY5hdHnvpV0tJh7M8z9z/
+         EpVCUCDWBdySe55vmMY/ducax5q8LvjK9PGwT0zfFFW7IRsuMV4hpZh8SVdothpAQcNk
+         Iclsx/8GGQO9tqUqb7Z2b9OUCU5VcwhP6wac/gASXrinZZ0U/fkQpz/hconVGRTuhywk
+         gAEJpKrDpnGq04SrJ1eJ84sBdqLVjTBegeTqAU/xW4dI7NfHVkUYsRmeQY7FSbbPTnfB
+         6iwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=IzgGu9R0ARwDBsD+F2+JiW3x3zuHRQ4yrRZwYSnXu+o=;
+        b=f1YoeQaBf3lRh+x5DdW78oMAiWD++1AZM8YoEITLVGD4/TmCiXkyvXegEZXbv3gZtx
+         qSN5VXIAoXFb+MjqyLdSETuGRRbpdHH4uBse8zY7KUqQEagAyQOCxQhfkgqTQ+n2ygza
+         a6As/fNMMLISYuZbzQ85rqpcfzku5eMPefyTBzKrIbSo5AA1xXhrGh2zbD5IKmZyjgyQ
+         B3OYTzpDcDyMP1YOHQnrdV1Mjvk8c072d/b7Y/om+d6BIiSSLppdD2W/fdNKrwlLYJP5
+         aIiy/9CamKFR3vnrwbZx+cyGizsmixamFfhOfD9/Q06PBLliXG99bFojIs1glfX+SbEl
+         gKog==
+X-Gm-Message-State: AOAM5327e4U20GwqbkNGLVHX94t2kiC8dTHEuM/WK8foiOI+1hBeG6if
+        Pne/x/dH7B56bZIIR+C7R3dUmw==
+X-Google-Smtp-Source: ABdhPJxECYSxNbvtoCjLInxxaXIyELrqBbGqdhrt2f9UsjwHdNJpJRoX9OeikLS7FyqRho+D5sZ8NA==
+X-Received: by 2002:aa7:864c:0:b029:2cd:558:dbb8 with SMTP id a12-20020aa7864c0000b02902cd0558dbb8mr2932500pfo.78.1620791369439;
+        Tue, 11 May 2021 20:49:29 -0700 (PDT)
+Received: from localhost (110-175-254-242.static.tpgi.com.au. [110.175.254.242])
+        by smtp.gmail.com with UTF8SMTPSA id c6sm3225014pjs.11.2021.05.11.20.49.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 May 2021 20:49:28 -0700 (PDT)
+Message-ID: <80ae1561-ed8d-cf3a-f3bb-d89cd07bfc24@ozlabs.ru>
+Date:   Wed, 12 May 2021 13:48:53 +1000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210512022136.GC78351@shbuild999.sh.intel.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:88.0) Gecko/20100101
+ Thunderbird/88.0
+Subject: Re: [PATCH kernel v2] powerpc/makefile: Do not redefine $(CPP) for
+ preprocessor
+Content-Language: en-US
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        clang-built-linux@googlegroups.com, linuxppc-dev@lists.ozlabs.org
+References: <20210511044812.267965-1-aik@ozlabs.ru>
+ <20210511112019.GK10366@gate.crashing.org>
+ <1795b9efa40.27bb.1ca38dd7e845b990cd13d431eb58563d@ozlabs.ru>
+ <20210511231635.GR10366@gate.crashing.org>
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+In-Reply-To: <20210511231635.GR10366@gate.crashing.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 10:21:36AM +0800, Feng Tang wrote:
-> On Tue, May 11, 2021 at 04:34:55PM -0700, Paul E. McKenney wrote:
-> > From: Feng Tang <feng.tang@intel.com>
-> > 
-> > Currently when an unstable clocksource is detected, the raw counters
-> > of that clocksource and watchdog will be printed, which can only be
-> > understood after some math calculation.  So print the existing delta in
-> > nanoseconds to make it easier for humans to check the results.
-> > 
-> > Signed-off-by: Feng Tang <feng.tang@intel.com>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > ---
-> >  kernel/time/clocksource.c | 8 ++++----
-> >  1 file changed, 4 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-> > index bbe1bcf44ffa..9c45b98e60e2 100644
-> > --- a/kernel/time/clocksource.c
-> > +++ b/kernel/time/clocksource.c
-> > @@ -406,10 +406,10 @@ static void clocksource_watchdog(struct timer_list *unused)
-> >  		if (abs(cs_nsec - wd_nsec) > md) {
-> >  			pr_warn("timekeeping watchdog on CPU%d: Marking clocksource '%s' as unstable because the skew is too large:\n",
-> >  				smp_processor_id(), cs->name);
-> > -			pr_warn("                      '%s' wd_now: %llx wd_last: %llx mask: %llx\n",
-> > -				watchdog->name, wdnow, wdlast, watchdog->mask);
-> > -			pr_warn("                      '%s' cs_now: %llx cs_last: %llx mask: %llx\n",
-> > -				cs->name, csnow, cslast, cs->mask);
-> > +			pr_warn("                      '%s' wd_nesc: %lld wd_now: %llx wd_last: %llx mask: %llx\n",
+
+
+On 5/12/21 09:16, Segher Boessenkool wrote:
+> On Tue, May 11, 2021 at 11:30:17PM +1000, Alexey Kardashevskiy wrote:
+>>> In any case, please mention the reasoning (and the fact that you are
+>>> removing these flags!) in the commit message.  Thanks!
+>>
+>> but i did mention this, the last paragraph... they are duplicated.
 > 
-> There is a typo in the message, 'wd_nesc' should be 'wd_nsec' , 
-> sorry for that.
+> Oh!  I completely missed those few lines.  Sorry for that :-(
 
-No problem!  I already have you covered with bfa55d346b23 ("squash!
-clocksource: Print deviation in nanoseconds for unstable case").
+Well, I probably should have made it a separate patch anyway, I'll 
+repost separately.
 
-I will merge it on the next rebase.
 
-							Thanx, Paul
-
-> Thanks,
-> Feng
+> To compensate a bit:
 > 
+>> It still puzzles me why we need -C
+>> (preserve comments in the preprocessor output) flag here.
 > 
-> > +				watchdog->name, wd_nsec, wdnow, wdlast, watchdog->mask);
-> > +			pr_warn("                      '%s' cs_nsec: %lld cs_now: %llx cs_last: %llx mask: %llx\n",
-> > +				cs->name, cs_nsec, csnow, cslast, cs->mask);
-> >  			if (curr_clocksource == cs)
-> >  				pr_warn("                      '%s' is current clocksource.\n", cs->name);
-> >  			else if (curr_clocksource)
-> > -- 
-> > 2.31.1.189.g2e36527f23
+> It is so that a human can look at the output and read it.  Comments are
+> very significant to human readers :-)
+
+I seriously doubt anyone ever read those :) I suspect this is to pull 
+all the licenses in one place and do some checking but I did not dig deep.
+
+
+-- 
+Alexey
