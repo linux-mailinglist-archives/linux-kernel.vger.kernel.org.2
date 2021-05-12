@@ -2,86 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDBB837ED3D
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:39:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8130B37ED3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:39:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383652AbhELUP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 16:15:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40098 "EHLO
+        id S1385825AbhELUQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 16:16:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378203AbhELTKu (ORCPT
+        with ESMTP id S1378627AbhELTR2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 15:10:50 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49ED6C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 12:09:40 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id j26so24691811edf.9
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 12:09:40 -0700 (PDT)
+        Wed, 12 May 2021 15:17:28 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF8C0C06129E
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 12:11:27 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id di13so28372906edb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 12:11:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=apG1X3HrVuRv/i/BvJgwnrGIjCE1leMjMNDGvCM9iD4=;
-        b=dE9R4i57fBYrZfLm4Sv2D2SQVZG+iZswX1Qm5jh63U13htwYgUMeUfxoQIYe3iT/78
-         m6f4JE24TdhLocRKmin11kv1wENOLqSHHoFhi3ey9Q86MCS8tc6J1ZOmRSgT8UzwfO4z
-         H8Stbv5gjKPbAmxjNIVpohDuEhLqkoXEZUCTmuUQL4pdZKlBHYl72dozG3A5xqBJEN70
-         mmLaQ9gvF2B1nlpEmwlrbGz/OaOJw2SxaLRCsGcZdU16LX9x2vHGUs4usCFVqaurvGJZ
-         h9u2VtLNdytoCgz0BTB712h/QWZi91UJF1cU7F9AUXp4oMTRtjY86B7PYbtxdcRy1Inh
-         Z/cg==
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MP25mFNYjdZfEJ+K2afJBNsaU0wrWzUC+MJo8UFw/5Q=;
+        b=ApaXlJJOrWAXC+lybZWDPHlyWBmTCYMUKgAVwD/5GGx44YUdkuGHZ2qKn+pAzij60S
+         F6w5dsMzxmvDRTL4Mna0QFE/GsRsgxB5N3Un2MFYeI++ewdn+jD3NHFhJD2gnHxm7mML
+         1Cf4x0JmAJNGLn+c1bzcMnIaEj7kX+n7Ps56m3rEyx0Dzkc/a7jvld2OARw/U78P5P8g
+         tHGVHxjXUyq0GmJROsGaR1rh3AlIWeZSScmGAPwmtiiqmUG/FTF7vub0KFSLTjLcbNm3
+         3zyMYWiIl1LJfrrx6q+QHNr32GEUhHfOJg0jXDL8nLafEi6DKzyjNg9x5KrzjhYcpVrb
+         jWJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=apG1X3HrVuRv/i/BvJgwnrGIjCE1leMjMNDGvCM9iD4=;
-        b=jzyJTQ66fVUaNMqYn+g+GIUeNXB22T138UtqxGKB+Gi7+EvnWdGz4+cyTowZjsqtGd
-         kDF6wfX1aZT2OKQ8+NTdrO8W5FkdI6Zwca56SS1HGjbMaSyeI3mdwGIpTObRLfceqn4P
-         P6D1bWKZHWpE3ru8wU2F3k496n9KbKSLo0ChxgsxrRnnewF+GNEvx+mjj7I3hGpR+0to
-         ys2u7j3Sdz+Fs6fG1xmaEdkV5z5bVrJoo0J2gaNhE+y/Qc0d9VnFebyX9UcsO6vGqE0b
-         09f7gGvZyGjwiXUFqDJPFcmks4hEhG+fxPCgDBJVnIg/Z0YoNxV7uw2baqQrC18f/Qdx
-         TmnQ==
-X-Gm-Message-State: AOAM531cUy+0HY0U6kD6BlTGraQADuMG0tE3pvj90Br8z8bkwp2S0LPn
-        zVgKejUfXkfBxkVaeSqtF0lPzwF6H7c=
-X-Google-Smtp-Source: ABdhPJzDZ4zaWHx45p5OLVBZ82uHiyv5hDMxzXu2INe1CKI54xuHCFG4uY1ZIdgdJsBuNq+/XAKd1w==
-X-Received: by 2002:a05:6402:35c4:: with SMTP id z4mr44519810edc.362.1620846578993;
-        Wed, 12 May 2021 12:09:38 -0700 (PDT)
-Received: from gmail.com (0526E777.dsl.pool.telekom.hu. [5.38.231.119])
-        by smtp.gmail.com with ESMTPSA id z11sm376077ejc.122.2021.05.12.12.09.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 12:09:36 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Wed, 12 May 2021 21:09:34 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH] kernel/locking: make __down_common use flags previously
- saved
-Message-ID: <YJwn7qb3/ekFBWDF@gmail.com>
-References: <20210424142823.3896-1-42.hyeyoo@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MP25mFNYjdZfEJ+K2afJBNsaU0wrWzUC+MJo8UFw/5Q=;
+        b=tzd4tIC9fkjk42r5uxy9w4SxoT5mf4wUWYzfNH9Y2kNUaDs6baROqgl3wFZm+oEiUY
+         NQ0roLwTDGlBJCqxBmjjMIPOmCbN1WvbKxWWufboWfllgBBZOzkRMtGFbjFappQfsPKy
+         eUBThGuafn3uxDvXO20CKzk7fsWQ5m2g5E0n869sOtBcugoq4bnbeELxA8RwD6SlCFK+
+         XiBk3Sy8FYzBsLviJ6R5uqObBzdgPShHs0rmfj0e5M2MkZkUXroujvOP7yCmq5qZJSkx
+         8W+CxFspKFFnT+7pI5l2CJtR6NMCQcm6KLKdjcufjUi+AZCr533YOEw4Oct9XTDoKgb2
+         Vacg==
+X-Gm-Message-State: AOAM530z9kWu4Bfv6kZ/ffNBro9dZn4i/XRzB9q6kCkP+WwWysIw8V7u
+        HENx6yR/h9RQbBBawXzEVrA1PpvlXIecuLyBa/RvIg==
+X-Google-Smtp-Source: ABdhPJzhhn72YZLsSlT3n6CJInAuFpexzIYfmN5GIL9N0oXGrfcJ3RgKSHTfyZIy4PoIxUh+DEPzadPoxoL83/C7m+E=
+X-Received: by 2002:aa7:dc0b:: with SMTP id b11mr46060566edu.124.1620846686535;
+ Wed, 12 May 2021 12:11:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210424142823.3896-1-42.hyeyoo@gmail.com>
+References: <20210502193216.24872-1-brgl@bgdev.pl> <CAHk-=whSWp3exv8tZ2th5im_P7HF=c6iuOOVb9iSrNrd6405WA@mail.gmail.com>
+ <YJBA1iYK7npit9vn@zeniv-ca.linux.org.uk> <YJCpnvKUNx+Tc+vg@zeniv-ca.linux.org.uk>
+ <CAMRc=Mdh9LvUQCxcyt7ZBjitDB2noVnOptft_VORDhffxJaeCA@mail.gmail.com> <YJGFsrPBoQsKj+JZ@zeniv-ca.linux.org.uk>
+In-Reply-To: <YJGFsrPBoQsKj+JZ@zeniv-ca.linux.org.uk>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Wed, 12 May 2021 21:11:15 +0200
+Message-ID: <CAMRc=Mfk0cosLZbdTbg3XGHfSAtUkKpZ+zZpfSrN0Hntz3WtnQ@mail.gmail.com>
+Subject: configfs: commitable items (was Re: [GIT PULL] gpio: updates for v5.13)
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kent Gibson <warthog618@gmail.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Joel Becker <jlbec@evilplan.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Al!
 
-* Hyeonggon Yoo <42.hyeyoo@gmail.com> wrote:
+This is a follow-up to your review of the configfs rename operation
+for committable items. I'd like to start with a disclaimer: I have a
+very limited knowledge of the linux VFS and am more of a driver &
+platform guy. That means I may be asking silly questions so please be
+patient with me.
 
-> down, down_interruptible, down_killable, and down_timeout
-> call raw_spin_lock_irqsave that saves current status to flags.
-> 
-> but in __down_common, that is called by functions above, calls
-> raw_spin_lock_irq and raw_spin_unlock_irq regardless of flags previously saved.
+You've mentioned two sets of problems: one with my rename
+implementation and one with the general architecture of configfs.
+While I can try to take on the latter as a side-project, I'll
+definitely need guidance in the form of your old notes you mentioned.
+For the former: I'd like to ask for advice on how to approach it. My
+goal is to get an acceptable implementation of committable items in
+for v5.14 and then potentially try to improve the overall configfs
+design later.
 
-Yes, this is intentional, because if we get into __down_common() we have to 
-schedule, so we have to enable interrupts.
+> FWIW, I'm not happy about the userland API of that thing (what is supposed
+> to happen if you create, move to live, then create another with the same
+> name and try to move it to live or original back from live?), but
+> Documentation/filesystems/configfs.rst is too sparse on such details.
+> So I would like to see the specifics on that as well.  _Before_ signing
+> up on anything, including "we can fix it up after merge".
 
-> this mismatch can potentially cause problem.
+Do you not like just the details like this (i.e. fixing this use-case
+and documenting the behavior would be fine) or do you have an entirely
+different idea for committable items? I'm open for other designs as
+admittedly the hard-coded "live" and "pending" directories aren't very
+elegant.
 
-What problems?
+Regarding the repeating names: are there any helpers I could use for
+finding the sibling (live for pending and vice versa) and then
+inspecting its children for a repeating name? Any caveats to watch out
+for?
 
-Thanks,
+> Rename implementation is simply bogus.  You are, for some reason, attaching
+> stuff to *destination*, which won't be seen by anyone not currently using
+> it.  It's the old_dentry that will be seen from that point on - you are
+> moving it to new location by that d_move().  So I rather wonder how much
+> had that thing been tested.  And I'm pretty much certain that you are
+> mishandling the refcounts on configfs-internal objects, with everything
+> that entails in terms of UAF and leaks.
 
-	Ingo
+I admit I don't really understand the meaning of "won't be seen by
+anyone not currently using it". Should this cause some visible
+problems in user-space or is it just related to VFS' accounting? Could
+you point me to any existing example of the rename() callback that
+would be useful in my case? The documentation does not really explain
+the goal of rename wrt both the vfs and underlying fs' structures.
+
+I assume d_move() should not be here at all (no other rename()
+callback seems to call it) but does moving of the configfs sub-tree to
+the live/pending sibling make sense?
+
+Is the fact that configfs has its own tree with children and siblings
+in parallel to the VFS a problem? To my inexperienced eye this looks
+redundant if the VFS already keeps track of this. Is this one of the
+things that should be reworked?
+
+Best regards,
+Bartosz Golaszewski
