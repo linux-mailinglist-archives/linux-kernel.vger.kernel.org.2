@@ -2,117 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FDD037CFB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8883037D003
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232659AbhELRQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 13:16:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238564AbhELQF3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:05:29 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18133C0612A9
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 08:32:14 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id v5so16505429edc.8
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 08:32:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=q9xyIoE6CrjZqQcs86QMTM/B4ykQ6IuUZXiQ0CWZo0U=;
-        b=pQlMk9VnhDTBGRLs8hPH0QQpSihJHLzY2vQCZyNMjS5cpYFqwn1j+EnmAjBAcF59i5
-         FGyMzxEou7ykJLKPytdLn1UiRt3CFxQa3yVd9h468K5RJVcnUHDnwMHDYuyuaNzQGQgW
-         RkDgp0K9iG5ty9tPbEuolzRPvZOOQ9sDZeguUFKDndQF75kmb5m6iiknGdWpN4HUR4P5
-         tlxcu8FxavibfMAhQkTuL9vplOZsC24UYSY1PFx48HZr8xJ8ogTrPj+V1mr8G4yTd2Gm
-         EDDxjAIl3PilQlVp0Z2yotpR1xq0VyWdbswTEHOKDTqygB5VFDQw2Do0tJua0rD1hLd3
-         Gphw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=q9xyIoE6CrjZqQcs86QMTM/B4ykQ6IuUZXiQ0CWZo0U=;
-        b=k6Yq0layAFjXt1sxKVxIKt+Ru2yZJYCQHrO7NhdnwmHhTY8MDN8N7woGoXecJeTogb
-         G/qJUC3qDV4AvsSkhkRhM5pGe7bf2qUjT/u6/eaaCqce85tGKpv4AMmBw8pz0WzKe68a
-         0wz8SQHvavPuR0n76dDw2jRHRv/U7a0V23XvyRANk/FHTfuqrbe5/ys5/rB+QKdgnCZr
-         +3edEH7bj8ll5BNlyeQP2VE1TCnJibpIMPlFO2BExj6aRbzEHqRCtCG3owVQzLYZEqhq
-         bG+zdKIRfNBhUXWvtMaB0DdLNqr37cGlfQb18Y6vlyBKNEI97lnGkA4KFzXnBNkRagrO
-         4jbg==
-X-Gm-Message-State: AOAM531Xec6P35GGpRKEU3OVtv3yMcyZIpV0fE410folUGYOo6VOpoC3
-        XbqPqxlb5KSo1xvIgQCFWnQ=
-X-Google-Smtp-Source: ABdhPJyTOS3XGFR8y61FuIO8viOKx45YtC+kDNjtdX3dmmSVuFgqv9yPETZmKdBZ0PgAWb7XbQrfrA==
-X-Received: by 2002:a05:6402:1807:: with SMTP id g7mr43524931edy.335.1620833532671;
-        Wed, 12 May 2021 08:32:12 -0700 (PDT)
-Received: from linux.local (host-79-52-107-152.retail.telecomitalia.it. [79.52.107.152])
-        by smtp.gmail.com with ESMTPSA id q25sm28866ejd.9.2021.05.12.08.32.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 08:32:12 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev (open list:STAGING SUBSYSTEM),
-        linux-kernel@vger.kernel.org (open list)
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH] staging: rtl8723bs: core: Remove unnecessary lines of code
-Date:   Wed, 12 May 2021 17:32:08 +0200
-Message-Id: <20210512153208.9584-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        id S240110AbhELR0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 13:26:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36288 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239159AbhELQHa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:07:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F002661C49;
+        Wed, 12 May 2021 15:36:26 +0000 (UTC)
+Date:   Wed, 12 May 2021 17:36:21 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
+        kernel@pengutronix.de, Jan Kara <jack@suse.com>,
+        Richard Weinberger <richard@nod.at>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH v3 0/2] quota: Add mountpath based quota support
+Message-ID: <20210512153621.n5u43jsytbik4yze@wittgenstein>
+References: <20210304123541.30749-1-s.hauer@pengutronix.de>
+ <20210316112916.GA23532@quack2.suse.cz>
+ <20210512110149.GA31495@quack2.suse.cz>
+ <20210512125310.m3b4ralhwsdocpyb@wittgenstein>
+ <20210512131429.GA2734@quack2.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210512131429.GA2734@quack2.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Removed unnecessary lines of code inside an "else if" block.
-That code acquires a spinlock and iterates over each item in
-a linked list for no purpose.
+On Wed, May 12, 2021 at 03:14:29PM +0200, Jan Kara wrote:
+> On Wed 12-05-21 14:53:10, Christian Brauner wrote:
+> > On Wed, May 12, 2021 at 01:01:49PM +0200, Jan Kara wrote:
+> > > Added a few more CCs.
+> > > 
+> > > On Tue 16-03-21 12:29:16, Jan Kara wrote:
+> > > > On Thu 04-03-21 13:35:38, Sascha Hauer wrote:
+> > > > > Current quotactl syscall uses a path to a block device to specify the
+> > > > > filesystem to work on which makes it unsuitable for filesystems that
+> > > > > do not have a block device. This series adds a new syscall quotactl_path()
+> > > > > which replaces the path to the block device with a mountpath, but otherwise
+> > > > > behaves like original quotactl.
+> > > > > 
+> > > > > This is done to add quota support to UBIFS. UBIFS quota support has been
+> > > > > posted several times with different approaches to put the mountpath into
+> > > > > the existing quotactl() syscall until it has been suggested to make it a
+> > > > > new syscall instead, so here it is.
+> > > > > 
+> > > > > I'm not posting the full UBIFS quota series here as it remains unchanged
+> > > > > and I'd like to get feedback to the new syscall first. For those interested
+> > > > > the most recent series can be found here: https://lwn.net/Articles/810463/
+> > > > 
+> > > > Thanks. I've merged the two patches into my tree and will push them to
+> > > > Linus for the next merge window.
+> > > 
+> > > So there are some people at LWN whining that quotactl_path() has no dirfd
+> > > and flags arguments for specifying the target. Somewhat late in the game
+> > > but since there's no major release with the syscall and no userspace using
+> > > it, I think we could still change that. What do you think? What they
+> > > suggest does make some sense. But then, rather then supporting API for
+> > > million-and-one ways in which I may wish to lookup a fs object, won't it be
+> > > better to just pass 'fd' in the new syscall (it may well be just O_PATH fd
+> > > AFAICT) and be done with that?
+> > 
+> > I think adding a dirfd argument makes a lot of sense (Unless there are
+> > some restrictions around quotas I'm misunderstanding.).
+> > 
+> > If I may: in general, I think we should aim to not add additional system
+> > calls that operate on paths only. Purely path-based apis tend to be the
+> > source of security issues especially when scoped lookups are really
+> > important which given the ubiquity of sandboxing solutions nowadays is
+> > quite often actually.
+> > For example, when openat2() landed it gave such a boost in lookup
+> > capabilities that I switched some libraries over to only ever do scoped
+> > lookups, i.e. I decide on a starting point that gets opened path-based
+> > and then explicitly express how I want that lookup to proceed ultimately
+> > opening the final path component on which I want to perform operations.
+> > Combined with the mount API almost everything can be done purely fd
+> > based.
+> > 
+> > In addition to that dirfd-scopable system calls allow for a much nicer
+> > api experience when programming in userspace.
+> 
+> OK, thanks for your insights. But when we add 'dirfd' I wonder whether we
+> still need the 'path' component then. I mean you can always do fd =
+> openat2(), quotactl_fd(fd, ...). After all ioctl() works exactly that way
+> since the beginning. The only advantage of quotactl_xxx() taking path would
+> be saving the open(2) call. That is somewhat convenient for simple cases
+> (but also error prone in complex setups as you point out) and can be also
+> sligthly faster (but quotactl is hardly a performance sensitive thing)...
 
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
- drivers/staging/rtl8723bs/core/rtw_mlme_ext.c | 20 +------------------
- 1 file changed, 1 insertion(+), 19 deletions(-)
-
-diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-index c5430e737bb1..74cfc7b0a5a2 100644
---- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-@@ -5125,23 +5125,9 @@ void _linked_info_dump(struct adapter *padapter)
- 
- 	if (padapter->bLinkInfoDump) {
- 
--		if ((pmlmeinfo->state&0x03) == WIFI_FW_STATION_STATE) {
-+		if ((pmlmeinfo->state&0x03) == WIFI_FW_STATION_STATE)
- 			rtw_hal_get_def_var(padapter, HAL_DEF_UNDERCORATEDSMOOTHEDPWDB, &UndecoratedSmoothedPWDB);
--		} else if ((pmlmeinfo->state&0x03) == _HW_STATE_AP_) {
--			struct list_head	*phead, *plist;
- 
--			struct sta_info *psta = NULL;
--			struct sta_priv *pstapriv = &padapter->stapriv;
--
--			spin_lock_bh(&pstapriv->asoc_list_lock);
--			phead = &pstapriv->asoc_list;
--			list_for_each(plist, phead) {
--				psta = list_entry(plist, struct sta_info,
--						  asoc_list);
--			}
--			spin_unlock_bh(&pstapriv->asoc_list_lock);
--
--		}
- 		for (i = 0; i < NUM_STA; i++) {
- 			if (pdvobj->macid[i]) {
- 				if (i != 1) /* skip bc/mc sta */
-@@ -5150,11 +5136,7 @@ void _linked_info_dump(struct adapter *padapter)
- 			}
- 		}
- 		rtw_hal_set_def_var(padapter, HAL_DEF_DBG_RX_INFO_DUMP, NULL);
--
--
- 	}
--
--
- }
- 
- static u8 chk_ap_is_alive(struct adapter *padapter, struct sta_info *psta)
--- 
-2.31.1
-
+That's a bit tricky indeed. It would feel consistent to add a path
+argument as most of our fs apis seems to work that way even stuff like
+fanotify_mark() but indeed a fd-only based api would be fine too. I
+would try to follow recent additions/prior art here, I think.
