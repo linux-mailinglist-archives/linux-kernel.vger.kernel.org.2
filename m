@@ -2,173 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9085E37B766
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 10:04:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A7C737B777
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 10:06:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230160AbhELIFt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 12 May 2021 04:05:49 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:44201 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230135AbhELIFq (ORCPT
+        id S230291AbhELIHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 04:07:53 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:51292 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230247AbhELIHv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 04:05:46 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-226-GJ3a8MFKOOuK1O-e4s34MQ-1; Wed, 12 May 2021 09:04:35 +0100
-X-MC-Unique: GJ3a8MFKOOuK1O-e4s34MQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Wed, 12 May 2021 09:04:33 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Wed, 12 May 2021 09:04:33 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Joerg Roedel' <joro@8bytes.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        Hyunwook Baek <baekhw@google.com>
-CC:     Joerg Roedel <jroedel@suse.de>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "Juergen Gross" <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>
-Subject: RE: [PATCH 3/6] x86/sev-es: Use __put_user()/__get_user
-Thread-Topic: [PATCH 3/6] x86/sev-es: Use __put_user()/__get_user
-Thread-Index: AQHXRwQswpicLJM6a0eoGXhfP+3kQqrfe29g
-Date:   Wed, 12 May 2021 08:04:33 +0000
-Message-ID: <0496626f018d4d27a8034a4822170222@AcuMS.aculab.com>
-References: <20210512075445.18935-1-joro@8bytes.org>
- <20210512075445.18935-4-joro@8bytes.org>
-In-Reply-To: <20210512075445.18935-4-joro@8bytes.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
-MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+        Wed, 12 May 2021 04:07:51 -0400
+Received: by linux.microsoft.com (Postfix, from userid 1004)
+        id CB0FA20B7178; Wed, 12 May 2021 01:06:43 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com CB0FA20B7178
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
+        s=default; t=1620806803;
+        bh=DrcN8Mc9KoSHKP7jY6XiaePM+j+mzg7Iow8prdIghf0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=cpXXmKQzKjD8LAfx72n+KOFE+yatDg57u5PXrl4fc6zOflX6Xvn5eOHlpDRC8qXu3
+         Px7AmTsB1dssov92YBP7y3GR9szkwWmoMGsraSXZW3V1EZanyDSP+1010G1S0/EMjf
+         T7K08eSVyVtJdg567pPM3XkkoyoM1apRlw6z/meY=
+From:   longli@linuxonhyperv.com
+To:     "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Long Li <longli@microsoft.com>
+Subject: [Patch v3 1/2] PCI: hv: Fix a race condition when removing the device
+Date:   Wed, 12 May 2021 01:06:40 -0700
+Message-Id: <1620806800-30983-1-git-send-email-longli@linuxonhyperv.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg
-> Sent: 12 May 2021 08:55
-> 
-> From: Joerg Roedel <jroedel@suse.de>
-> 
-> The put_user() and get_user() functions do checks on the address which is
-> passed to them. They check whether the address is actually a user-space
-> address and whether its fine to access it. They also call might_fault()
-> to indicate that they could fault and possibly sleep.
-> 
-> All of these checks are neither wanted nor required in the #VC exception
-> handler, which can be invoked from almost any context and also for MMIO
-> instructions from kernel space on kernel memory. All the #VC handler
-> wants to know is whether a fault happened when the access was tried.
-> 
-> This is provided by __put_user()/__get_user(), which just do the access
-> no matter what.
+From: Long Li <longli@microsoft.com>
 
-That can't be right at all.
-__put/get_user() are only valid on user addresses and will try to
-fault in a missing page - so can sleep.
+On removing the device, any work item (hv_pci_devices_present() or
+hv_pci_eject_device()) scheduled on workqueue hbus->wq may still be running
+and race with hv_pci_remove().
 
-At best this is abused the calls.
+This can happen because the host may send PCI_EJECT or PCI_BUS_RELATIONS(2)
+and decide to rescind the channel immediately after that.
 
-	David
+Fix this by flushing/destroying the workqueue of hbus before doing hbus remove.
 
-> Fixes: f980f9c31a92 ("x86/sev-es: Compile early handler code into kernel image")
-> Cc: stable@vger.kernel.org # v5.10+
-> Signed-off-by: Joerg Roedel <jroedel@suse.de>
-> ---
->  arch/x86/kernel/sev.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-> index 6530a844eb61..110b39345b40 100644
-> --- a/arch/x86/kernel/sev.c
-> +++ b/arch/x86/kernel/sev.c
-> @@ -342,22 +342,22 @@ static enum es_result vc_write_mem(struct es_em_ctxt *ctxt,
->  	switch (size) {
->  	case 1:
->  		memcpy(&d1, buf, 1);
-> -		if (put_user(d1, target))
-> +		if (__put_user(d1, target))
->  			goto fault;
->  		break;
->  	case 2:
->  		memcpy(&d2, buf, 2);
-> -		if (put_user(d2, target))
-> +		if (__put_user(d2, target))
->  			goto fault;
->  		break;
->  	case 4:
->  		memcpy(&d4, buf, 4);
-> -		if (put_user(d4, target))
-> +		if (__put_user(d4, target))
->  			goto fault;
->  		break;
->  	case 8:
->  		memcpy(&d8, buf, 8);
-> -		if (put_user(d8, target))
-> +		if (__put_user(d8, target))
->  			goto fault;
->  		break;
->  	default:
-> @@ -396,22 +396,22 @@ static enum es_result vc_read_mem(struct es_em_ctxt *ctxt,
-> 
->  	switch (size) {
->  	case 1:
-> -		if (get_user(d1, s))
-> +		if (__get_user(d1, s))
->  			goto fault;
->  		memcpy(buf, &d1, 1);
->  		break;
->  	case 2:
-> -		if (get_user(d2, s))
-> +		if (__get_user(d2, s))
->  			goto fault;
->  		memcpy(buf, &d2, 2);
->  		break;
->  	case 4:
-> -		if (get_user(d4, s))
-> +		if (__get_user(d4, s))
->  			goto fault;
->  		memcpy(buf, &d4, 4);
->  		break;
->  	case 8:
-> -		if (get_user(d8, s))
-> +		if (__get_user(d8, s))
->  			goto fault;
->  		memcpy(buf, &d8, 8);
->  		break;
-> --
-> 2.31.1
+Signed-off-by: Long Li <longli@microsoft.com>
+---
+Change in v2: Remove unused bus state hv_pcibus_removed
+Change in v3: Change hv_pci_bus_exit() to not use workqueue to remove PCI devices
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+ drivers/pci/controller/pci-hyperv.c | 30 ++++++++++++++++++++++-------
+ 1 file changed, 23 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
+index 27a17a1e4a7c..c6122a1b0c46 100644
+--- a/drivers/pci/controller/pci-hyperv.c
++++ b/drivers/pci/controller/pci-hyperv.c
+@@ -444,7 +444,6 @@ enum hv_pcibus_state {
+ 	hv_pcibus_probed,
+ 	hv_pcibus_installed,
+ 	hv_pcibus_removing,
+-	hv_pcibus_removed,
+ 	hv_pcibus_maximum
+ };
+ 
+@@ -3247,8 +3246,9 @@ static int hv_pci_bus_exit(struct hv_device *hdev, bool keep_devs)
+ 		struct pci_packet teardown_packet;
+ 		u8 buffer[sizeof(struct pci_message)];
+ 	} pkt;
+-	struct hv_dr_state *dr;
+ 	struct hv_pci_compl comp_pkt;
++	struct hv_pci_dev *hpdev, *tmp;
++	unsigned long flags;
+ 	int ret;
+ 
+ 	/*
+@@ -3260,9 +3260,16 @@ static int hv_pci_bus_exit(struct hv_device *hdev, bool keep_devs)
+ 
+ 	if (!keep_devs) {
+ 		/* Delete any children which might still exist. */
+-		dr = kzalloc(sizeof(*dr), GFP_KERNEL);
+-		if (dr && hv_pci_start_relations_work(hbus, dr))
+-			kfree(dr);
++		spin_lock_irqsave(&hbus->device_list_lock, flags);
++		list_for_each_entry_safe(hpdev, tmp, &hbus->children, list_entry) {
++			list_del(&hpdev->list_entry);
++			if (hpdev->pci_slot)
++				pci_destroy_slot(hpdev->pci_slot);
++			/* For the two refs got in new_pcichild_device() */
++			put_pcichild(hpdev);
++			put_pcichild(hpdev);
++		}
++		spin_unlock_irqrestore(&hbus->device_list_lock, flags);
+ 	}
+ 
+ 	ret = hv_send_resources_released(hdev);
+@@ -3305,13 +3312,23 @@ static int hv_pci_remove(struct hv_device *hdev)
+ 
+ 	hbus = hv_get_drvdata(hdev);
+ 	if (hbus->state == hv_pcibus_installed) {
++		tasklet_disable(&hdev->channel->callback_event);
++		hbus->state = hv_pcibus_removing;
++		tasklet_enable(&hdev->channel->callback_event);
++		destroy_workqueue(hbus->wq);
++		hbus->wq = NULL;
++		/*
++		 * At this point, no work is running or can be scheduled
++		 * on hbus-wq. We can't race with hv_pci_devices_present()
++		 * or hv_pci_eject_device(), it's safe to proceed.
++		 */
++
+ 		/* Remove the bus from PCI's point of view. */
+ 		pci_lock_rescan_remove();
+ 		pci_stop_root_bus(hbus->pci_bus);
+ 		hv_pci_remove_slots(hbus);
+ 		pci_remove_root_bus(hbus->pci_bus);
+ 		pci_unlock_rescan_remove();
+-		hbus->state = hv_pcibus_removed;
+ 	}
+ 
+ 	ret = hv_pci_bus_exit(hdev, false);
+@@ -3326,7 +3343,6 @@ static int hv_pci_remove(struct hv_device *hdev)
+ 	irq_domain_free_fwnode(hbus->sysdata.fwnode);
+ 	put_hvpcibus(hbus);
+ 	wait_for_completion(&hbus->remove_event);
+-	destroy_workqueue(hbus->wq);
+ 
+ 	hv_put_dom_num(hbus->sysdata.domain);
+ 
+-- 
+2.27.0
 
