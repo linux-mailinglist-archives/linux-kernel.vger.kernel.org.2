@@ -2,49 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6DAC37BB7D
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 13:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7EFA37BB8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 13:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbhELLM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 07:12:56 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52518 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230168AbhELLMz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 07:12:55 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E61AFAFAA;
-        Wed, 12 May 2021 11:11:45 +0000 (UTC)
-Date:   Wed, 12 May 2021 12:11:43 +0100
-From:   Mel Gorman <mgorman@suse.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     tglx@linutronix.de, mingo@kernel.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
-        bsingharora@gmail.com, pbonzini@redhat.com, maz@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        riel@surriel.com, hannes@cmpxchg.org
-Subject: Re: [PATCH 4/6] kvm: Select SCHED_INFO instead of TASK_DELAY_ACCT
-Message-ID: <20210512111143.GD3672@suse.de>
-References: <20210505105940.190490250@infradead.org>
- <20210505111525.187225172@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20210505111525.187225172@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S230291AbhELLO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 07:14:58 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:6815 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230236AbhELLOw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 07:14:52 -0400
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 12 May 2021 04:13:45 -0700
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 12 May 2021 04:13:43 -0700
+X-QCInternal: smtphost
+Received: from c-skakit-linux.ap.qualcomm.com (HELO c-skakit-linux.qualcomm.com) ([10.242.51.242])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 12 May 2021 16:43:14 +0530
+Received: by c-skakit-linux.qualcomm.com (Postfix, from userid 2344709)
+        id 6430F4F2D; Wed, 12 May 2021 16:43:13 +0530 (IST)
+From:   satya priya <skakit@codeaurora.org>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     kgunda@codeaurora.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, satya priya <skakit@codeaurora.org>
+Subject: [PATCH V3 0/3] Add GPIO support for PM7325 
+Date:   Wed, 12 May 2021 16:43:05 +0530
+Message-Id: <1620817988-18809-1-git-send-email-skakit@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 12:59:44PM +0200, Peter Zijlstra wrote:
-> AFAICT KVM only relies on SCHED_INFO. Nothing uses the p->delays data
-> that belongs to TASK_DELAY_ACCT.
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+satya priya (3):
+  pinctrl: qcom: spmi-gpio: Add support for pm7325
+  dt-bindings: pinctrl: qcom-pmic-gpio: Add pm7325 support
+  dt-bindings: pinctrl: qcom-pmic-gpio: Convert qcom pmic gpio bindings
+    to YAML
 
-Acked-by: Mel Gorman <mgorman@suse.de>
+ .../devicetree/bindings/pinctrl/qcom,pmic-gpio.txt | 286 ---------------------
+ .../bindings/pinctrl/qcom,pmic-gpio.yaml           | 245 ++++++++++++++++++
+ drivers/pinctrl/qcom/pinctrl-spmi-gpio.c           |   1 +
+ 3 files changed, 246 insertions(+), 286 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
 
 -- 
-Mel Gorman
-SUSE Labs
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
+
