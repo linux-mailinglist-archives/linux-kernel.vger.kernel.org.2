@@ -2,86 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F2D37C954
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 18:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A179837C978
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 18:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240288AbhELQRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 12:17:51 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:40072 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234840AbhELPed (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:34:33 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14CFXHN4017873;
-        Wed, 12 May 2021 10:33:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1620833597;
-        bh=M4L0ShxGeQXtxLHTUqB17KpjcOtc7d6VVBZpkVEJMZA=;
-        h=From:To:CC:Subject:Date;
-        b=ZFvoWB84Jbn2uJEeIx/3bUfG4r+jghmmZ8Aux+k+NZx1Tytl4XNSZ4+mxwcbg5tk+
-         2JQLqfTw8wdcNvQ3nJ/OuWQGqzDe9PGu5+73qNs7jW0Vf8oh88o64UlGFrGLpXLY3c
-         j3YruvidxlXTYq1rEtxQYdtJRXdSl7TRuU1cznQo=
-Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14CFXHaP071950
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 12 May 2021 10:33:17 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 12
- May 2021 10:33:16 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 12 May 2021 10:33:16 -0500
-Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14CFX9v0045910;
-        Wed, 12 May 2021 10:33:10 -0500
-From:   Aswath Govindraju <a-govindraju@ti.com>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Tero Kristo <kristo@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Aswath Govindraju <a-govindraju@ti.com>
-Subject: [PATCH] arm64: dts: ti: j7200-main: Enable USB2 PHY RX sensitivity workaround
-Date:   Wed, 12 May 2021 21:03:08 +0530
-Message-ID: <20210512153308.5840-1-a-govindraju@ti.com>
-X-Mailer: git-send-email 2.17.1
+        id S235235AbhELQTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 12:19:31 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51850 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236026AbhELPgl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:36:41 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 19A58B1B8;
+        Wed, 12 May 2021 15:35:30 +0000 (UTC)
+Subject: Re: [PATCH 5.10 518/530] mm, slub: enable slub_debug static key when
+ creating cache with explicit debug flags
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org, Oliver Glitta <glittao@gmail.com>,
+        David Rientjes <rientjes@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+References: <20210512144819.664462530@linuxfoundation.org>
+ <20210512144836.780038842@linuxfoundation.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <dd590c4d-cb37-fd38-3ad7-96f677403b3c@suse.cz>
+Date:   Wed, 12 May 2021 17:35:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <20210512144836.780038842@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roger Quadros <rogerq@ti.com>
+On 5/12/21 4:50 PM, Greg Kroah-Hartman wrote:
+> From: Vlastimil Babka <vbabka@suse.cz>
+> 
+> [ Upstream commit 1f0723a4c0df36cbdffc6fac82cd3c5d57e06d66 ]
+> 
+> Commit ca0cab65ea2b ("mm, slub: introduce static key for slub_debug()")
+> introduced a static key to optimize the case where no debugging is
+> enabled for any cache.  The static key is enabled when slub_debug boot
+> parameter is passed, or CONFIG_SLUB_DEBUG_ON enabled.
+> 
+> However, some caches might be created with one or more debugging flags
+> explicitly passed to kmem_cache_create(), and the commit missed this.
+> Thus the debugging functionality would not be actually performed for
+> these caches unless the static key gets enabled by boot param or config.
+> 
+> This patch fixes it by checking for debugging flags passed to
+> kmem_cache_create() and enabling the static key accordingly.
+> 
+> Note such explicit debugging flags should not be used outside of
+> debugging and testing as they will now enable the static key globally.
+> btrfs_init_cachep() creates a cache with SLAB_RED_ZONE but that's a
+> mistake that's being corrected [1].  rcu_torture_stats() creates a cache
+> with SLAB_STORE_USER, but that is a testing module so it's OK and will
+> start working as intended after this patch.
+> 
+> Also note that in case of backports to kernels before v5.12 that don't
+> have 59450bbc12be ("mm, slab, slub: stop taking cpu hotplug lock"),
+> static_branch_enable_cpuslocked() should be used.
+> 
+> [1] https://lore.kernel.org/linux-btrfs/20210315141824.26099-1-dsterba@suse.com/
+> 
+> Link: https://lkml.kernel.org/r/20210315153415.24404-1-vbabka@suse.cz
+> Fixes: ca0cab65ea2b ("mm, slub: introduce static key for slub_debug()")
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> Reported-by: Oliver Glitta <glittao@gmail.com>
+> Acked-by: David Rientjes <rientjes@google.com>
+> Cc: Christoph Lameter <cl@linux.com>
+> Cc: Pekka Enberg <penberg@kernel.org>
+> Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
-Enable work around feature built into the controller to address issue with
-RX Sensitivity for USB2 PHY.
+Uh, rather not release this to stable without the followup fix:
+https://lore.kernel.org/linux-mm/20210504120019.26791-1-vbabka@suse.cz/
 
-Fixes: 6197d7139d12 ("arm64: dts: ti: k3-j7200-main: Add USB controller")
-Signed-off-by: Roger Quadros <rogerq@ti.com>
-Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
----
- arch/arm64/boot/dts/ti/k3-j7200-main.dtsi | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-index f86c493a44f1..07c0ce484cae 100644
---- a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-@@ -679,6 +679,7 @@
- 					  "otg";
- 			maximum-speed = "super-speed";
- 			dr_mode = "otg";
-+			cdns,phyrst-a-enable;
- 		};
- 	};
- 
--- 
-2.17.1
+> ---
+>  mm/slub.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 05a501b67cd5..e4f7978d43c2 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -3779,6 +3779,15 @@ static int calculate_sizes(struct kmem_cache *s, int forced_order)
+>  
+>  static int kmem_cache_open(struct kmem_cache *s, slab_flags_t flags)
+>  {
+> +#ifdef CONFIG_SLUB_DEBUG
+> +	/*
+> +	 * If no slub_debug was enabled globally, the static key is not yet
+> +	 * enabled by setup_slub_debug(). Enable it if the cache is being
+> +	 * created with any of the debugging flags passed explicitly.
+> +	 */
+> +	if (flags & SLAB_DEBUG_FLAGS)
+> +		static_branch_enable(&slub_debug_enabled);
+> +#endif
+>  	s->flags = kmem_cache_flags(s->size, flags, s->name);
+>  #ifdef CONFIG_SLAB_FREELIST_HARDENED
+>  	s->random = get_random_long();
+> 
 
