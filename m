@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C82E937CF35
+	by mail.lfdr.de (Postfix) with ESMTP id 7F89937CF34
 	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 19:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345395AbhELRKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 13:10:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34658 "EHLO mail.kernel.org"
+        id S1345358AbhELRJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 13:09:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238237AbhELP5e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238235AbhELP5e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 12 May 2021 11:57:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D11061C25;
-        Wed, 12 May 2021 15:31:10 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 277E061CB3;
+        Wed, 12 May 2021 15:31:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620833470;
-        bh=SLWMs1rpk2WPhOcuh68j6BUTGqVBRlq2b1IEtVLBjDM=;
+        s=korg; t=1620833475;
+        bh=dJnl1HIIHYQeuYrh4heyzbBZxjcFq2NDzIonBGPXj6k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tlOoc/K2Gt2M6+JzW09Ho0w8nmQCNeEih9irBS1yChEo1hpzCu5A0kYIL25CAo5YR
-         WuV47vwf+uh3Z6OMYZSsnzflNrKOkHWXODCKVFxrvRlszWD+PKLnMw/1+zKuuPwRlU
-         yxyYo0jtcLMV3EzS7uo6QO9e2mfjJAfhlKI7e77w=
+        b=LVgqZSKNi8GvfwpMhPaLtEaXkGetIydRIgKULzYYwIUccj0xL5lFOj82uSK+m2SeX
+         bS9QQqWlsvskPAXFllsSPMjY8DqFntwKjKYq+W7Nwpp/CT9ZUr5n3baSEXr88mBYuT
+         HjuREIOACODF2USPwCJTylMt9HGUz9GzjWvs6GR0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Amelie Delaunay <amelie.delaunay@foss.st.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
+        stable@vger.kernel.org, Meng Li <Meng.Li@windriver.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 162/601] usb: typec: stusb160x: fix return value check in stusb160x_probe()
-Date:   Wed, 12 May 2021 16:43:59 +0200
-Message-Id: <20210512144833.173859885@linuxfoundation.org>
+Subject: [PATCH 5.11 164/601] regmap: set debugfs_name to NULL after it is freed
+Date:   Wed, 12 May 2021 16:44:01 +0200
+Message-Id: <20210512144833.234167280@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144827.811958675@linuxfoundation.org>
 References: <20210512144827.811958675@linuxfoundation.org>
@@ -42,41 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Yongjun <weiyongjun1@huawei.com>
+From: Meng Li <Meng.Li@windriver.com>
 
-[ Upstream commit f2d90e07b5df2c7745ae66d2d48cc350d3f1c7d2 ]
+[ Upstream commit e41a962f82e7afb5b1ee644f48ad0b3aee656268 ]
 
-In case of error, the function device_get_named_child_node() returns
-NULL pointer not ERR_PTR(). The IS_ERR() test in the return value check
-should be replaced with NULL test.
+There is a upstream commit cffa4b2122f5("regmap:debugfs:
+Fix a memory leak when calling regmap_attach_dev") that
+adds a if condition when create name for debugfs_name.
+With below function invoking logical, debugfs_name is
+freed in regmap_debugfs_exit(), but it is not created again
+because of the if condition introduced by above commit.
+regmap_reinit_cache()
+	regmap_debugfs_exit()
+	...
+	regmap_debugfs_init()
+So, set debugfs_name to NULL after it is freed.
 
-Fixes: da0cb6310094 ("usb: typec: add support for STUSB160x Type-C controller family")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Reviewed-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Link: https://lore.kernel.org/r/20210308094839.3586773-1-weiyongjun1@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: cffa4b2122f5 ("regmap: debugfs: Fix a memory leak when calling regmap_attach_dev")
+Signed-off-by: Meng Li <Meng.Li@windriver.com>
+Link: https://lore.kernel.org/r/20210226021737.7690-1-Meng.Li@windriver.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/typec/stusb160x.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/base/regmap/regmap-debugfs.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/usb/typec/stusb160x.c b/drivers/usb/typec/stusb160x.c
-index d21750bbbb44..6eaeba9b096e 100644
---- a/drivers/usb/typec/stusb160x.c
-+++ b/drivers/usb/typec/stusb160x.c
-@@ -682,8 +682,8 @@ static int stusb160x_probe(struct i2c_client *client)
- 	}
+diff --git a/drivers/base/regmap/regmap-debugfs.c b/drivers/base/regmap/regmap-debugfs.c
+index ff2ee87987c7..211a335a608d 100644
+--- a/drivers/base/regmap/regmap-debugfs.c
++++ b/drivers/base/regmap/regmap-debugfs.c
+@@ -660,6 +660,7 @@ void regmap_debugfs_exit(struct regmap *map)
+ 		regmap_debugfs_free_dump_cache(map);
+ 		mutex_unlock(&map->cache_lock);
+ 		kfree(map->debugfs_name);
++		map->debugfs_name = NULL;
+ 	} else {
+ 		struct regmap_debugfs_node *node, *tmp;
  
- 	fwnode = device_get_named_child_node(chip->dev, "connector");
--	if (IS_ERR(fwnode))
--		return PTR_ERR(fwnode);
-+	if (!fwnode)
-+		return -ENODEV;
- 
- 	/*
- 	 * When both VDD and VSYS power supplies are present, the low power
 -- 
 2.30.2
 
