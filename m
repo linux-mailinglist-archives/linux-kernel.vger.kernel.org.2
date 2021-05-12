@@ -2,84 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DEB137BB9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 13:16:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C636337BB98
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 13:15:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230224AbhELLRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 07:17:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230182AbhELLRQ (ORCPT
+        id S230211AbhELLQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 07:16:44 -0400
+Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:40137 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230139AbhELLQl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 07:17:16 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1380FC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 04:16:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/YzIPVf0TSTnsIiEebVAwyDbe66VAQBxqqFJbqGyDhM=; b=t6WgltO/8euk95nxU3pgCRIET1
-        TBjLWJTUgj0j+tgtmL5Ksuz3zF7W99rqn/72myM45MaxGNie0oYHW+BcjkYHxdhuUia2clhFIJnHv
-        PLAJ9lfxm5XVdyCWu2p70zI0Il2KJBqp62saEs0WfG0qnd4vt5toydMYMtmqajCgtpk5z3jMCAKpj
-        yA9TDDDVs2q37/AKF9WtEiLeb0jRwzHIxSpJRzCqTkNrqEOn1A4i6RRJ5KjXVlFJoX+tCaI7aYjjq
-        pnf9ydfiQDIIGFKCVzGBEalJYEKiBIe7v5bKRUYhbKUsdbYtHPgZx6mTVQqb5XU+5Gqs0BJC3mtg+
-        bALQOHdQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lgmpU-008D7l-Vl; Wed, 12 May 2021 11:15:11 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 06921300242;
-        Wed, 12 May 2021 13:15:04 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E5F5C20B5CA97; Wed, 12 May 2021 13:15:03 +0200 (CEST)
-Date:   Wed, 12 May 2021 13:15:03 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     intel-gfx@lists.freedesktop.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        x86@kernel.org, hch@lst.de
-Subject: Re: 5.13 i915/PAT regression on Brasswell, adding nopat to the
- kernel commandline worksaround this
-Message-ID: <YJu4tzXmCJbKp7Fm@hirez.programming.kicks-ass.net>
-References: <b6b61cf0-5874-f4c0-1fcc-4b3848451c31@redhat.com>
+        Wed, 12 May 2021 07:16:41 -0400
+Received: from localhost.localdomain ([86.243.172.93])
+        by mwinf5d58 with ME
+        id 3nFX2500W21Fzsu03nFX49; Wed, 12 May 2021 13:15:32 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 12 May 2021 13:15:32 +0200
+X-ME-IP: 86.243.172.93
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     richardcochran@gmail.com, kuba@kernel.org, jonathan.lemon@gmail.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] ptp: ocp: Fix a resource leak in an error handling path
+Date:   Wed, 12 May 2021 13:15:29 +0200
+Message-Id: <141cd7dc7b44385ead176b1d0eb139573b47f110.1620818043.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b6b61cf0-5874-f4c0-1fcc-4b3848451c31@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 11:57:02AM +0200, Hans de Goede wrote:
-> Hi All,
-> 
-> I'm not sure if this is a i915 bug, or caused by changes elsewhere in the kernel,
-> so I thought it would be best to just send out an email and then see from there.
-> 
-> With 5.13-rc1 gdm fails to show and dmesg contains:
-> 
-> [   38.504613] x86/PAT: Xwayland:683 map pfn RAM range req write-combining for [mem 0x23883000-0x23883fff], got write-back
-> <repeated lots of times for different ranges>
-> [   39.484766] x86/PAT: gnome-shell:632 map pfn RAM range req write-combining for [mem 0x1c6a3000-0x1c6a3fff], got write-back
-> <repeated lots of times for different ranges>
-> [   54.314858] Asynchronous wait on fence 0000:00:02.0:gnome-shell[632]:a timed out (hint:intel_cursor_plane_create [i915])
-> [   58.339769] i915 0000:00:02.0: [drm] GPU HANG: ecode 8:1:86dfdffb, in gnome-shell [632]
-> [   58.341161] i915 0000:00:02.0: [drm] Resetting rcs0 for stopped heartbeat on rcs0
-> [   58.341267] i915 0000:00:02.0: [drm] gnome-shell[632] context reset due to GPU hang
-> 
-> Because of the PAT errors I tried adding "nopat" to the kernel commandline
-> and I'm happy to report that that works around this.
-> 
-> Any hints on how to debug this further (without doing a full git bisect) would be
-> appreciated.
+If an error occurs after a successful 'pci_ioremap_bar()' call, it must be
+undone by a corresponding 'pci_iounmap()' call, as already done in the
+remove function.
 
-IIRC it's because of 74ffa5a3e685 ("mm: add remap_pfn_range_notrack"),
-which added a sanity check to make sure expectations were met. It turns
-out they were not.
+Fixes: a7e1abad13f3 ("ptp: Add clock driver for the OpenCompute TimeCard.")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/ptp/ptp_ocp.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-The bug is not new, the warning is. AFAIK the i915 team is aware, but
-other than that I've not followed.
+diff --git a/drivers/ptp/ptp_ocp.c b/drivers/ptp/ptp_ocp.c
+index 530e5f90095e..0d1034e3ed0f 100644
+--- a/drivers/ptp/ptp_ocp.c
++++ b/drivers/ptp/ptp_ocp.c
+@@ -324,7 +324,7 @@ ptp_ocp_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	if (!bp->base) {
+ 		dev_err(&pdev->dev, "io_remap bar0\n");
+ 		err = -ENOMEM;
+-		goto out;
++		goto out_release_regions;
+ 	}
+ 	bp->reg = bp->base + OCP_REGISTER_OFFSET;
+ 	bp->tod = bp->base + TOD_REGISTER_OFFSET;
+@@ -347,6 +347,8 @@ ptp_ocp_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	return 0;
+ 
+ out:
++	pci_iounmap(pdev, bp->base);
++out_release_regions:
+ 	pci_release_regions(pdev);
+ out_disable:
+ 	pci_disable_device(pdev);
+-- 
+2.30.2
+
