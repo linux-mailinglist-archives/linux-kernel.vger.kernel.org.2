@@ -2,82 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 569B637B8C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 11:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A03437B8C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 11:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230413AbhELJCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 05:02:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48534 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230176AbhELJCl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 05:02:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FEDF61403;
-        Wed, 12 May 2021 09:01:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620810093;
-        bh=zG9OP4EUNrKHbg0lDClVXB7imXazcWV3M6RxRM30/B0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Td7SRIdSsGHyhuayIkYNwak11j2m/4FOJ85kSV/oyueaB18U9WQrRhAEEGxV9gBO7
-         qze70HHr0sSi0HjBceE4O0YHfI2bJz0pGlrObkk0eQujgBMmAcunIl7f6Lis0o0lMN
-         FZ2zQXOUpWFUQCjng+DssUZAqLrfmEwPS8tdO3ThV1UM5xj3D/Nrjd6IuWHpySMc83
-         eWYybrFXaModi8Uy6esqUk5mGujB26AZBvRaz1Ia8h6XQkQKyTHntJwgw4LKbpyfeJ
-         +FaEjmR14mfJPPkMMd1WUFuMhMyg1L2uhH9tlGJxbIa0nMLodTZhUdpLm57lisqlle
-         Ea+Dt6uVv9qVQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Russell King <linux@armlinux.org.uk>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Mike Rapoport <rppt@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Changbin Du <changbin.du@intel.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] [v2] ARM: mark prepare_page_table as __init
-Date:   Wed, 12 May 2021 11:00:42 +0200
-Message-Id: <20210512090047.2069033-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S230295AbhELJEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 05:04:01 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:56644 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230114AbhELJEA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 05:04:00 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R591e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UYdpVrJ_1620810169;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UYdpVrJ_1620810169)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 12 May 2021 17:02:50 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     bernie@plugable.com
+Cc:     nathan@kernel.org, ndesaulniers@google.com,
+        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] video: fbdev: udlfb: Remove redundant initialization of 
+Date:   Wed, 12 May 2021 17:02:47 +0800
+Message-Id: <1620810167-89132-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Integer variable 'identical' is being initialized however
+this value is never read as 'identical' is assigned the result
+of 'start + (width - end)'. Remove the redundant assignment.
+At the same time, adjust the declarations order of variables
+to keep the "upside-down x-mas tree" look of them.
 
-In some configurations when building with gcc-11, prepare_page_table
-does not get inline, which causes a build time warning for a section
-mismatch:
+Clean up clang warning:
 
-WARNING: modpost: vmlinux.o(.text.unlikely+0xce8): Section mismatch in reference from the function prepare_page_table() to the (unknown reference) .init.data:(unknown)
-The function prepare_page_table() references
-the (unknown reference) __initdata (unknown).
-This is often because prepare_page_table lacks a __initdata
-annotation or the annotation of (unknown) is wrong.
+drivers/video/fbdev/udlfb.c:370:6: warning: Value stored to 'identical'
+during its initialization is never read
+[clang-analyzer-deadcode.DeadStores]
 
-Mark the function as __init to avoid the warning regardless of the
-inlining, and remove the 'inline' keyword. The compiler is
-free to ignore the 'inline' here and it doesn't result in better
-object code or more readable source.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 ---
-v2: remove 'inline', as suggested by Russell and Ard
----
- arch/arm/mm/mmu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/video/fbdev/udlfb.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/mm/mmu.c b/arch/arm/mm/mmu.c
-index 051f4f82414b..40a1fa5ec93b 100644
---- a/arch/arm/mm/mmu.c
-+++ b/arch/arm/mm/mmu.c
-@@ -1246,7 +1246,7 @@ void __init adjust_lowmem_bounds(void)
- 	memblock_set_current_limit(memblock_limit);
- }
- 
--static inline void prepare_page_table(void)
-+static __init void prepare_page_table(void)
+diff --git a/drivers/video/fbdev/udlfb.c b/drivers/video/fbdev/udlfb.c
+index b9cdd02..f40dd6d8 100644
+--- a/drivers/video/fbdev/udlfb.c
++++ b/drivers/video/fbdev/udlfb.c
+@@ -363,13 +363,13 @@ static int dlfb_ops_mmap(struct fb_info *info, struct vm_area_struct *vma)
+  */
+ static int dlfb_trim_hline(const u8 *bback, const u8 **bfront, int *width_bytes)
  {
- 	unsigned long addr;
- 	phys_addr_t end;
+-	int j, k;
+-	const unsigned long *back = (const unsigned long *) bback;
+ 	const unsigned long *front = (const unsigned long *) *bfront;
++	const unsigned long *back = (const unsigned long *) bback;
+ 	const int width = *width_bytes / sizeof(unsigned long);
+-	int identical = width;
+ 	int start = width;
+ 	int end = width;
++	int identical;
++	int j, k;
+ 
+ 	for (j = 0; j < width; j++) {
+ 		if (back[j] != front[j]) {
 -- 
-2.29.2
+1.8.3.1
 
