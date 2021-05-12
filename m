@@ -2,181 +2,436 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1D6037B983
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 11:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6270D37B993
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 11:48:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230157AbhELJrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 05:47:43 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:37537 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbhELJri (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 05:47:38 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id DB76A22256;
-        Wed, 12 May 2021 11:46:28 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1620812788;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UPiA4uNIpFpQdD08qj9dWESieTJar/iY+6FBgxQ3wjk=;
-        b=EXy4zz/xsosBJZhZ/mwyYtS7zSQl6Ft5qFIUQng4g7J+u1eRB6SE9y5LLpEcrrBHcMUve4
-        Zi3dyf764Jw4S/I5vgfpqFFAhHM78RGikKnMm63ouAT+emKxzq+AUofMvYaYXAkGCm4e5W
-        B6e2dDxsz0qnRYdPO8ilyyPV5JpJLRo=
+        id S230284AbhELJs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 05:48:56 -0400
+Received: from foss.arm.com ([217.140.110.172]:35612 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230184AbhELJsz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 05:48:55 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A3064D6E;
+        Wed, 12 May 2021 02:47:46 -0700 (PDT)
+Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 742143F719;
+        Wed, 12 May 2021 02:47:43 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
+        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        linux-arch@vger.kernel.org
+Cc:     mingo@kernel.org, peterz@infradead.org, tglx@linutronix.de,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>, bristot@redhat.com,
+        yejune.deng@gmail.com
+Subject: [PATCH] sched: Initialize the idle task with preemption disabled
+Date:   Wed, 12 May 2021 10:46:36 +0100
+Message-Id: <20210512094636.2958515-1-valentin.schneider@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 12 May 2021 11:46:28 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Angelo Dureghello <angelo.dureghello@timesys.com>,
-        Fugang Duan <fugang.duan@nxp.com>,
-        Philippe Schenker <philippe.schenker@toradex.com>
-Subject: Re: [PATCH 4/8] serial: fsl_lpuart: handle break and make sysrq work
-In-Reply-To: <YJugS4fiUBgPvIS6@hovoldconsulting.com>
-References: <20210511200148.11934-1-michael@walle.cc>
- <20210511200148.11934-5-michael@walle.cc>
- <YJugS4fiUBgPvIS6@hovoldconsulting.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <e3e5ad179483508d02305f26fd20800a@walle.cc>
-X-Sender: michael@walle.cc
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-05-12 11:30, schrieb Johan Hovold:
-> On Tue, May 11, 2021 at 10:01:44PM +0200, Michael Walle wrote:
->> Although there is already (broken) sysrq characters handling, a break
->> condition was never detected. There is also a possible deadlock 
->> because
->> we might call handle_sysrq() while still holding the port lock.
-> 
-> Where's the possible deadlock?
+As pointed out by commit
 
-[   17.866874] ======================================================
-[   17.866876] WARNING: possible circular locking dependency detected
-[   17.866878] 5.13.0-rc1-next-20210511+ #555 Not tainted
-[   17.866880] ------------------------------------------------------
-[   17.866882] sl28-variant.sh/1934 is trying to acquire lock:
-[   17.866884] ffff800011d16a00 (console_owner){-.-.}-{0:0}, at: 
-console_unlock+0x1c0/0x660
-[   17.866892]
-[   17.866893] but task is already holding lock:
-[   17.866895] ffff0020026ea098 (&port_lock_key){-.-.}-{2:2}, at: 
-lpuart32_int+0x1b0/0x7c8
-[   17.866902]
-[   17.866904] which lock already depends on the new lock.
-[   17.866906]
-[   17.866907]
-[   17.866909] the existing dependency chain (in reverse order) is:
-[   17.866910]
-[   17.866912] -> #1 (&port_lock_key){-.-.}-{2:2}:
-[   17.866918]        _raw_spin_lock_irqsave+0x80/0xd0
-[   17.866920]        lpuart32_console_write+0x214/0x2b8
-[   17.866922]        console_unlock+0x404/0x660
-[   17.866924]        register_console+0x170/0x2a8
-[   17.866925]        uart_add_one_port+0x464/0x478
-[   17.866927]        lpuart_probe+0x218/0x3a8
-[   17.866928]        platform_probe+0x70/0xe0
-[   17.866930]        really_probe+0xec/0x3c0
-[   17.866931]        driver_probe_device+0x6c/0xd0
-[   17.866933]        device_driver_attach+0x7c/0x88
-[   17.866935]        __driver_attach+0x6c/0xf8
-[   17.866936]        bus_for_each_dev+0x7c/0xd0
-[   17.866938]        driver_attach+0x2c/0x38
-[   17.866939]        bus_add_driver+0x194/0x1f8
-[   17.866941]        driver_register+0x6c/0x128
-[   17.866943]        __platform_driver_register+0x30/0x40
-[   17.866944]        lpuart_serial_init+0x44/0x6c
-[   17.866946]        do_one_initcall+0x90/0x470
-[   17.866948]        kernel_init_freeable+0x2d4/0x344
-[   17.866949]        kernel_init+0x1c/0x120
-[   17.866951]        ret_from_fork+0x10/0x30
-[   17.866952]
-[   17.866953] -> #0 (console_owner){-.-.}-{0:0}:
-[   17.866959]        __lock_acquire+0xf60/0x17e8
-[   17.866961]        lock_acquire+0x138/0x4c0
-[   17.866963]        console_unlock+0x224/0x660
-[   17.866964]        vprintk_emit+0x11c/0x338
-[   17.866966]        vprintk_default+0x40/0x50
-[   17.866967]        vprintk+0xfc/0x320
-[   17.866969]        printk+0x6c/0x90
-[   17.866970]        __handle_sysrq+0x16c/0x1d8
-[   17.866972]        handle_sysrq+0x2c/0x48
-[   17.866973]        lpuart32_int+0x70c/0x7c8
-[   17.866975]        __handle_irq_event_percpu+0xcc/0x430
-[   17.866977]        handle_irq_event_percpu+0x40/0x98
-[   17.866978]        handle_irq_event+0x50/0x100
-[   17.866980]        handle_fasteoi_irq+0xc0/0x178
-[   17.866981]        generic_handle_irq+0x38/0x50
-[   17.866983]        __handle_domain_irq+0x6c/0xc8
-[   17.866985]        gic_handle_irq+0xdc/0x340
-[   17.866986]        el1_irq+0xb8/0x150
-[   17.866988]        arch_local_irq_restore+0x8/0x20
-[   17.866989]        page_add_file_rmap+0x24/0x1f8
-[   17.866991]        do_set_pte+0xd4/0x1a0
-[   17.866992]        filemap_map_pages+0x358/0x590
-[   17.866994]        __handle_mm_fault+0xbc0/0xdd0
-[   17.866995]        handle_mm_fault+0x170/0x3e0
-[   17.866997]        do_page_fault+0x1e8/0x448
-[   17.866998]        do_translation_fault+0x60/0x70
-[   17.867000]        do_mem_abort+0x48/0xb8
-[   17.867001]        el0_da+0x44/0x80
-[   17.867002]        el0_sync_handler+0x68/0xb8
-[   17.867004]        el0_sync+0x178/0x180
-[   17.867005]
-[   17.867007] other info that might help us debug this:
-[   17.867008]
-[   17.867009]  Possible unsafe locking scenario:
-[   17.867011]
-[   17.867012]        CPU0                    CPU1
-[   17.867013]        ----                    ----
-[   17.867015]   lock(&port_lock_key);
-[   17.867019]                                lock(console_owner);
-[   17.867023]                                lock(&port_lock_key);
-[   17.867027]   lock(console_owner);
-[   17.867030]
-[   17.867031]  *** DEADLOCK ***
-[   17.867033]
-[   17.867034] 7 locks held by sl28-variant.sh/1934:
-[   17.867035]  #0: ffff002003a37b08 (&mm->mmap_lock){++++}-{3:3}, at: 
-do_page_fault+0x180/0x448
-[   17.867043]  #1: ffff800011d87660 (rcu_read_lock){....}-{1:2}, at: 
-filemap_map_pages+0x8/0x590
-[   17.867051]  #2: ffff0020048d8318 (ptlock_ptr(page)){+.+.}-{2:2}, at: 
-filemap_map_pages+0x27c/0x590
-[   17.867059]  #3: ffff800011d87660 (rcu_read_lock){....}-{1:2}, at: 
-lock_page_memcg+0x8/0x1d8
-[   17.867067]  #4: ffff0020026ea098 (&port_lock_key){-.-.}-{2:2}, at: 
-lpuart32_int+0x1b0/0x7c8
-[   17.867074]  #5: ffff800011d87660 (rcu_read_lock){....}-{1:2}, at: 
-__handle_sysrq+0x8/0x1d8
-[   17.867082]  #6: ffff800011d168a0 (console_lock){+.+.}-{0:0}, at: 
-vprintk_emit+0x114/0x338
+  de9b8f5dcbd9 ("sched: Fix crash trying to dequeue/enqueue the idle thread")
 
+init_idle() can and will be invoked more than once on the same idle
+task. At boot time, it is invoked for the boot CPU thread by
+sched_init(). Then smp_init() creates the threads for all the secondary
+CPUs and invokes init_idle() on them.
 
-> First, as you point out above the driver currently doesn't detect 
-> breaks
-> so the sysrq handler is never called and there's no risk for deadlocks
-> in the console code.
+As the hotplug machinery brings the secondaries to life, it will issue
+calls to idle_thread_get(), which itself invokes init_idle() yet again.
+In this case it's invoked twice more per secondary: at _cpu_up(), and at
+bringup_cpu().
 
-But this commit introduces it? Therefore, I don't get your point.
+Given smp_init() already initializes the idle tasks for all *possible*
+CPUs, no further initialization should be required. Now, removing
+init_idle() from idle_thread_get() exposes some interesting expectations
+with regards to the idle task's preempt_count: the secondary startup always
+issues a preempt_disable(), requiring some reset of the preempt count to 0
+between hot-unplug and hotplug, which is currently served by
+idle_thread_get() -> idle_init().
 
-> Second, the driver's console implementation explicitly handles being
-> called recursively so would not deadlock after you start detecting
-> breaks either.
+Given the idle task is supposed to have preemption disabled once and never
+see it re-enabled, it seems that what we actually want is to initialize its
+preempt_count to PREEMPT_DISABLED and leave it there. Do that, and remove
+init_idle() from idle_thread_get().
 
-See above. Or there is something wrong with the lock debugging.
+Secondary startups were patched via coccinelle:
 
->> Add support for break detection and use the proper
->> uart_unlock_and_check_sysrq() to defer calling handle_sysrq().
+  @begone@
+  @@
 
--michael
+  -preempt_disable();
+  ...
+  cpu_startup_entry(CPUHP_AP_ONLINE_IDLE);
+
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+---
+ arch/alpha/kernel/smp.c          | 1 -
+ arch/arc/kernel/smp.c            | 1 -
+ arch/arm/kernel/smp.c            | 1 -
+ arch/arm64/include/asm/preempt.h | 2 +-
+ arch/arm64/kernel/smp.c          | 1 -
+ arch/csky/kernel/smp.c           | 1 -
+ arch/ia64/kernel/smpboot.c       | 1 -
+ arch/mips/kernel/smp.c           | 1 -
+ arch/openrisc/kernel/smp.c       | 2 --
+ arch/parisc/kernel/smp.c         | 1 -
+ arch/powerpc/kernel/smp.c        | 1 -
+ arch/riscv/kernel/smpboot.c      | 1 -
+ arch/s390/include/asm/preempt.h  | 4 ++--
+ arch/s390/kernel/smp.c           | 1 -
+ arch/sh/kernel/smp.c             | 2 --
+ arch/sparc/kernel/smp_32.c       | 1 -
+ arch/sparc/kernel/smp_64.c       | 3 ---
+ arch/x86/include/asm/preempt.h   | 2 +-
+ arch/x86/kernel/smpboot.c        | 1 -
+ arch/xtensa/kernel/smp.c         | 1 -
+ include/asm-generic/preempt.h    | 2 +-
+ init/main.c                      | 6 +-----
+ kernel/fork.c                    | 2 +-
+ kernel/sched/core.c              | 2 +-
+ kernel/smpboot.c                 | 1 -
+ 25 files changed, 8 insertions(+), 34 deletions(-)
+
+diff --git a/arch/alpha/kernel/smp.c b/arch/alpha/kernel/smp.c
+index f4dd9f3f3001..4b2575f936d4 100644
+--- a/arch/alpha/kernel/smp.c
++++ b/arch/alpha/kernel/smp.c
+@@ -166,7 +166,6 @@ smp_callin(void)
+ 	DBGS(("smp_callin: commencing CPU %d current %p active_mm %p\n",
+ 	      cpuid, current, current->active_mm));
+ 
+-	preempt_disable();
+ 	cpu_startup_entry(CPUHP_AP_ONLINE_IDLE);
+ }
+ 
+diff --git a/arch/arc/kernel/smp.c b/arch/arc/kernel/smp.c
+index 52906d314537..db0e104d6835 100644
+--- a/arch/arc/kernel/smp.c
++++ b/arch/arc/kernel/smp.c
+@@ -189,7 +189,6 @@ void start_kernel_secondary(void)
+ 	pr_info("## CPU%u LIVE ##: Executing Code...\n", cpu);
+ 
+ 	local_irq_enable();
+-	preempt_disable();
+ 	cpu_startup_entry(CPUHP_AP_ONLINE_IDLE);
+ }
+ 
+diff --git a/arch/arm/kernel/smp.c b/arch/arm/kernel/smp.c
+index 74679240a9d8..c7bb168b0d97 100644
+--- a/arch/arm/kernel/smp.c
++++ b/arch/arm/kernel/smp.c
+@@ -432,7 +432,6 @@ asmlinkage void secondary_start_kernel(void)
+ #endif
+ 	pr_debug("CPU%u: Booted secondary processor\n", cpu);
+ 
+-	preempt_disable();
+ 	trace_hardirqs_off();
+ 
+ 	/*
+diff --git a/arch/arm64/include/asm/preempt.h b/arch/arm64/include/asm/preempt.h
+index 80e946b2abee..e83f0982b99c 100644
+--- a/arch/arm64/include/asm/preempt.h
++++ b/arch/arm64/include/asm/preempt.h
+@@ -23,7 +23,7 @@ static inline void preempt_count_set(u64 pc)
+ } while (0)
+ 
+ #define init_idle_preempt_count(p, cpu) do { \
+-	task_thread_info(p)->preempt_count = PREEMPT_ENABLED; \
++	task_thread_info(p)->preempt_count = PREEMPT_DISABLED; \
+ } while (0)
+ 
+ static inline void set_preempt_need_resched(void)
+diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+index 357590beaabb..48fd89256739 100644
+--- a/arch/arm64/kernel/smp.c
++++ b/arch/arm64/kernel/smp.c
+@@ -223,7 +223,6 @@ asmlinkage notrace void secondary_start_kernel(void)
+ 		init_gic_priority_masking();
+ 
+ 	rcu_cpu_starting(cpu);
+-	preempt_disable();
+ 	trace_hardirqs_off();
+ 
+ 	/*
+diff --git a/arch/csky/kernel/smp.c b/arch/csky/kernel/smp.c
+index 0f9f5eef9338..e2993539af8e 100644
+--- a/arch/csky/kernel/smp.c
++++ b/arch/csky/kernel/smp.c
+@@ -281,7 +281,6 @@ void csky_start_secondary(void)
+ 	pr_info("CPU%u Online: %s...\n", cpu, __func__);
+ 
+ 	local_irq_enable();
+-	preempt_disable();
+ 	cpu_startup_entry(CPUHP_AP_ONLINE_IDLE);
+ }
+ 
+diff --git a/arch/ia64/kernel/smpboot.c b/arch/ia64/kernel/smpboot.c
+index 49b488580939..d10f780c13b9 100644
+--- a/arch/ia64/kernel/smpboot.c
++++ b/arch/ia64/kernel/smpboot.c
+@@ -441,7 +441,6 @@ start_secondary (void *unused)
+ #endif
+ 	efi_map_pal_code();
+ 	cpu_init();
+-	preempt_disable();
+ 	smp_callin();
+ 
+ 	cpu_startup_entry(CPUHP_AP_ONLINE_IDLE);
+diff --git a/arch/mips/kernel/smp.c b/arch/mips/kernel/smp.c
+index ef86fbad8546..d542fb7af3ba 100644
+--- a/arch/mips/kernel/smp.c
++++ b/arch/mips/kernel/smp.c
+@@ -348,7 +348,6 @@ asmlinkage void start_secondary(void)
+ 	 */
+ 
+ 	calibrate_delay();
+-	preempt_disable();
+ 	cpu = smp_processor_id();
+ 	cpu_data[cpu].udelay_val = loops_per_jiffy;
+ 
+diff --git a/arch/openrisc/kernel/smp.c b/arch/openrisc/kernel/smp.c
+index 48e1092a64de..415e209732a3 100644
+--- a/arch/openrisc/kernel/smp.c
++++ b/arch/openrisc/kernel/smp.c
+@@ -145,8 +145,6 @@ asmlinkage __init void secondary_start_kernel(void)
+ 	set_cpu_online(cpu, true);
+ 
+ 	local_irq_enable();
+-
+-	preempt_disable();
+ 	/*
+ 	 * OK, it's off to the idle thread for us
+ 	 */
+diff --git a/arch/parisc/kernel/smp.c b/arch/parisc/kernel/smp.c
+index 10227f667c8a..1405b603b91b 100644
+--- a/arch/parisc/kernel/smp.c
++++ b/arch/parisc/kernel/smp.c
+@@ -302,7 +302,6 @@ void __init smp_callin(unsigned long pdce_proc)
+ #endif
+ 
+ 	smp_cpu_init(slave_id);
+-	preempt_disable();
+ 
+ 	flush_cache_all_local(); /* start with known state */
+ 	flush_tlb_all_local(NULL);
+diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
+index 5a4d59a1070d..055ca3816eb7 100644
+--- a/arch/powerpc/kernel/smp.c
++++ b/arch/powerpc/kernel/smp.c
+@@ -1505,7 +1505,6 @@ void start_secondary(void *unused)
+ 	smp_store_cpu_info(cpu);
+ 	set_dec(tb_ticks_per_jiffy);
+ 	rcu_cpu_starting(cpu);
+-	preempt_disable();
+ 	cpu_callin_map[cpu] = 1;
+ 
+ 	if (smp_ops->setup_cpu)
+diff --git a/arch/riscv/kernel/smpboot.c b/arch/riscv/kernel/smpboot.c
+index 5e276c25646f..1941a6ce86a1 100644
+--- a/arch/riscv/kernel/smpboot.c
++++ b/arch/riscv/kernel/smpboot.c
+@@ -176,7 +176,6 @@ asmlinkage __visible void smp_callin(void)
+ 	 * Disable preemption before enabling interrupts, so we don't try to
+ 	 * schedule a CPU that hasn't actually started yet.
+ 	 */
+-	preempt_disable();
+ 	local_irq_enable();
+ 	cpu_startup_entry(CPUHP_AP_ONLINE_IDLE);
+ }
+diff --git a/arch/s390/include/asm/preempt.h b/arch/s390/include/asm/preempt.h
+index b49e0492842c..23ff51be7e29 100644
+--- a/arch/s390/include/asm/preempt.h
++++ b/arch/s390/include/asm/preempt.h
+@@ -32,7 +32,7 @@ static inline void preempt_count_set(int pc)
+ #define init_task_preempt_count(p)	do { } while (0)
+ 
+ #define init_idle_preempt_count(p, cpu)	do { \
+-	S390_lowcore.preempt_count = PREEMPT_ENABLED; \
++	S390_lowcore.preempt_count = PREEMPT_DISABLED; \
+ } while (0)
+ 
+ static inline void set_preempt_need_resched(void)
+@@ -91,7 +91,7 @@ static inline void preempt_count_set(int pc)
+ #define init_task_preempt_count(p)	do { } while (0)
+ 
+ #define init_idle_preempt_count(p, cpu)	do { \
+-	S390_lowcore.preempt_count = PREEMPT_ENABLED; \
++	S390_lowcore.preempt_count = PREEMPT_DISABLED; \
+ } while (0)
+ 
+ static inline void set_preempt_need_resched(void)
+diff --git a/arch/s390/kernel/smp.c b/arch/s390/kernel/smp.c
+index 58c8afa3da65..d60c7374d807 100644
+--- a/arch/s390/kernel/smp.c
++++ b/arch/s390/kernel/smp.c
+@@ -877,7 +877,6 @@ static void smp_init_secondary(void)
+ 	restore_access_regs(S390_lowcore.access_regs_save_area);
+ 	cpu_init();
+ 	rcu_cpu_starting(cpu);
+-	preempt_disable();
+ 	init_cpu_timer();
+ 	vtime_init();
+ 	vdso_getcpu_init();
+diff --git a/arch/sh/kernel/smp.c b/arch/sh/kernel/smp.c
+index 372acdc9033e..65924d9ec245 100644
+--- a/arch/sh/kernel/smp.c
++++ b/arch/sh/kernel/smp.c
+@@ -186,8 +186,6 @@ asmlinkage void start_secondary(void)
+ 
+ 	per_cpu_trap_init();
+ 
+-	preempt_disable();
+-
+ 	notify_cpu_starting(cpu);
+ 
+ 	local_irq_enable();
+diff --git a/arch/sparc/kernel/smp_32.c b/arch/sparc/kernel/smp_32.c
+index 50c127ab46d5..22b148e5a5f8 100644
+--- a/arch/sparc/kernel/smp_32.c
++++ b/arch/sparc/kernel/smp_32.c
+@@ -348,7 +348,6 @@ static void sparc_start_secondary(void *arg)
+ 	 */
+ 	arch_cpu_pre_starting(arg);
+ 
+-	preempt_disable();
+ 	cpu = smp_processor_id();
+ 
+ 	notify_cpu_starting(cpu);
+diff --git a/arch/sparc/kernel/smp_64.c b/arch/sparc/kernel/smp_64.c
+index e38d8bf454e8..ae5faa1d989d 100644
+--- a/arch/sparc/kernel/smp_64.c
++++ b/arch/sparc/kernel/smp_64.c
+@@ -138,9 +138,6 @@ void smp_callin(void)
+ 
+ 	set_cpu_online(cpuid, true);
+ 
+-	/* idle thread is expected to have preempt disabled */
+-	preempt_disable();
+-
+ 	local_irq_enable();
+ 
+ 	cpu_startup_entry(CPUHP_AP_ONLINE_IDLE);
+diff --git a/arch/x86/include/asm/preempt.h b/arch/x86/include/asm/preempt.h
+index f8cb8af4de5c..fe5efbcba824 100644
+--- a/arch/x86/include/asm/preempt.h
++++ b/arch/x86/include/asm/preempt.h
+@@ -44,7 +44,7 @@ static __always_inline void preempt_count_set(int pc)
+ #define init_task_preempt_count(p) do { } while (0)
+ 
+ #define init_idle_preempt_count(p, cpu) do { \
+-	per_cpu(__preempt_count, (cpu)) = PREEMPT_ENABLED; \
++	per_cpu(__preempt_count, (cpu)) = PREEMPT_DISABLED; \
+ } while (0)
+ 
+ /*
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index 16703c35a944..29713d0cf155 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -236,7 +236,6 @@ static void notrace start_secondary(void *unused)
+ 	cpu_init();
+ 	rcu_cpu_starting(raw_smp_processor_id());
+ 	x86_cpuinit.early_percpu_clock_init();
+-	preempt_disable();
+ 	smp_callin();
+ 
+ 	enable_start_cpu0 = 0;
+diff --git a/arch/xtensa/kernel/smp.c b/arch/xtensa/kernel/smp.c
+index cd85a7a2722b..1254da07ead1 100644
+--- a/arch/xtensa/kernel/smp.c
++++ b/arch/xtensa/kernel/smp.c
+@@ -145,7 +145,6 @@ void secondary_start_kernel(void)
+ 	cpumask_set_cpu(cpu, mm_cpumask(mm));
+ 	enter_lazy_tlb(mm, current);
+ 
+-	preempt_disable();
+ 	trace_hardirqs_off();
+ 
+ 	calibrate_delay();
+diff --git a/include/asm-generic/preempt.h b/include/asm-generic/preempt.h
+index d683f5e6d791..b4d43a4af5f7 100644
+--- a/include/asm-generic/preempt.h
++++ b/include/asm-generic/preempt.h
+@@ -29,7 +29,7 @@ static __always_inline void preempt_count_set(int pc)
+ } while (0)
+ 
+ #define init_idle_preempt_count(p, cpu) do { \
+-	task_thread_info(p)->preempt_count = PREEMPT_ENABLED; \
++	task_thread_info(p)->preempt_count = PREEMPT_DISABLED; \
+ } while (0)
+ 
+ static __always_inline void set_preempt_need_resched(void)
+diff --git a/init/main.c b/init/main.c
+index 53b278845b88..d8580323110e 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -918,11 +918,7 @@ asmlinkage __visible void __init __no_sanitize_address start_kernel(void)
+ 	 * time - but meanwhile we still have a functioning scheduler.
+ 	 */
+ 	sched_init();
+-	/*
+-	 * Disable preemption - early bootup scheduling is extremely
+-	 * fragile until we cpu_idle() for the first time.
+-	 */
+-	preempt_disable();
++
+ 	if (WARN(!irqs_disabled(),
+ 		 "Interrupts were enabled *very* early, fixing it\n"))
+ 		local_irq_disable();
+diff --git a/kernel/fork.c b/kernel/fork.c
+index a1a763019bfb..9de7bc40be1d 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -2406,7 +2406,7 @@ static inline void init_idle_pids(struct task_struct *idle)
+ 	}
+ }
+ 
+-struct task_struct *fork_idle(int cpu)
++struct task_struct * __init fork_idle(int cpu)
+ {
+ 	struct task_struct *task;
+ 	struct kernel_clone_args args = {
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 4a0668acd876..43b903ae823b 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -7433,7 +7433,7 @@ void show_state_filter(unsigned long state_filter)
+  * NOTE: this function does not set the idle thread's NEED_RESCHED
+  * flag, to make booting more robust.
+  */
+-void init_idle(struct task_struct *idle, int cpu)
++void __init init_idle(struct task_struct *idle, int cpu)
+ {
+ 	struct rq *rq = cpu_rq(cpu);
+ 	unsigned long flags;
+diff --git a/kernel/smpboot.c b/kernel/smpboot.c
+index f25208e8df83..e4163042c4d6 100644
+--- a/kernel/smpboot.c
++++ b/kernel/smpboot.c
+@@ -33,7 +33,6 @@ struct task_struct *idle_thread_get(unsigned int cpu)
+ 
+ 	if (!tsk)
+ 		return ERR_PTR(-ENOMEM);
+-	init_idle(tsk, cpu);
+ 	return tsk;
+ }
+ 
+-- 
+2.25.1
+
