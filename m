@@ -2,45 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 190FF37BD73
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:55:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84D8737BD5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233664AbhELM4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 08:56:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53202 "EHLO mail.kernel.org"
+        id S233351AbhELMzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 08:55:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231660AbhELMxD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231656AbhELMxD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 12 May 2021 08:53:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C63E6188B;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 341C7616E9;
         Wed, 12 May 2021 12:51:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620823903;
-        bh=j6DIEEgrDdmsa6vlovG+W3lTJsaTQQADW76v2QtOJRI=;
+        bh=mv6LmDTZqB4qEwkep20CW6JiwxGthmk9rWUgZqXguUg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nuHrE/8cnNkSvEikAD0T12AKzFrpPbkQ8uXSWeouu06bs2YJaZAuc9tQ/3SuwXDAP
-         OlqDV393Tk/OF5FhZm5j+pvdx5N07ZOnlUbquT7bgWSRCj94YP30y/LIy/uCRzIuZz
-         KoYDa+J/EvC1DYW/bx4TVBM9X5VZvmEgVPuJV0L0DjrnM6a8SMN+lx1QTPIYGo+YiR
-         GayR1XixWqskRTbYLn+ExStvioXxzeoAekh5q+6XJQNi7EDP7ddvTJTVbI6WX7mjot
-         9m1Lm4EQT4/xcN5BebFHVjKZ4UGPCmr2uVYN9FWVbG4R2aiyLle2Zmzqi73lGZkLiR
-         r5WMPY7VvUp5A==
+        b=Opzo/UinbtsUDqpCoqHHa/hUCkxHRYzGhLgk5+vbTCrlxx5DhB3lzwTkOCVO4KE0a
+         RXJrtIXVRHvGOhRgPqUpH0vSpAm2NfJ7wnmH+FDSayB6Woa7459CZNOJS2P8r4574Y
+         YIaoXMgFw6J5GdBqzh4wETPmsFq8yWll/uYXkiDkykXCjsNp3kjHj0HCaQglU8S82e
+         P7TPBXi6Y3aTGFvAP3CvzJXEE7pCWNgBZhv1rnm2r5pO9Qgt0+cE5Ft4dIBgK1gydR
+         ZPqxa29MonxKpPXf2bMq5yUTkzY35+gLUrkOovy10J4swuw8m4S5ROIMYm0rNeshgH
+         iUx6YiQwRb4Pw==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1lgoKz-0018ik-BR; Wed, 12 May 2021 14:51:41 +0200
+        id 1lgoKz-0018io-CU; Wed, 12 May 2021 14:51:41 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Oded Gabbay <oded.gabbay@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 30/40] docs: ABI: Use ASCII subset instead of UTF-8 alternate symbols
-Date:   Wed, 12 May 2021 14:50:34 +0200
-Message-Id: <5109b6739272e1faa637ba2acb33b3129131d4aa.1620823573.git.mchehab+huawei@kernel.org>
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>
+Subject: [PATCH v2 31/40] docs: PCI: acpi-info.rst: Use ASCII subset instead of UTF-8 alternate symbols
+Date:   Wed, 12 May 2021 14:50:35 +0200
+Message-Id: <7fd9d4360a3d0f761b169b95d9997f4f5d06319c.1620823573.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1620823573.git.mchehab+huawei@kernel.org>
 References: <cover.1620823573.git.mchehab+huawei@kernel.org>
@@ -67,74 +62,90 @@ Also, Sphinx already do such conversion automatically outside literal blocks:
 
 So, replace the occurences of the following UTF-8 characters:
 
-	- U+2018 ('‘'): LEFT SINGLE QUOTATION MARK
+	- U+00a0 (' '): NO-BREAK SPACE
 	- U+2019 ('’'): RIGHT SINGLE QUOTATION MARK
 
+Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- .../ABI/testing/sysfs-class-chromeos-driver-cros-ec-lightbar  | 2 +-
- Documentation/ABI/testing/sysfs-devices-platform-ipmi         | 2 +-
- Documentation/ABI/testing/sysfs-devices-platform-trackpoint   | 2 +-
- Documentation/ABI/testing/sysfs-devices-soc                   | 4 ++--
- 4 files changed, 5 insertions(+), 5 deletions(-)
+ Documentation/PCI/acpi-info.rst | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-class-chromeos-driver-cros-ec-lightbar b/Documentation/ABI/testing/sysfs-class-chromeos-driver-cros-ec-lightbar
-index 57a037791403..a7fb8f1169f2 100644
---- a/Documentation/ABI/testing/sysfs-class-chromeos-driver-cros-ec-lightbar
-+++ b/Documentation/ABI/testing/sysfs-class-chromeos-driver-cros-ec-lightbar
-@@ -29,7 +29,7 @@ KernelVersion:	4.2
- Description:
- 		This allows you to control each LED segment. If the
- 		lightbar is already running one of the automatic
--		sequences, you probably won’t see anything change because
-+		sequences, you probably won't see anything change because
- 		your color setting will be almost immediately replaced.
- 		To get useful results, you should stop the lightbar
- 		sequence first.
-diff --git a/Documentation/ABI/testing/sysfs-devices-platform-ipmi b/Documentation/ABI/testing/sysfs-devices-platform-ipmi
-index 07df0ddc0b69..3935cdedea0e 100644
---- a/Documentation/ABI/testing/sysfs-devices-platform-ipmi
-+++ b/Documentation/ABI/testing/sysfs-devices-platform-ipmi
-@@ -52,7 +52,7 @@ Date:		Mar, 2006
- KernelVersion:	v2.6.17
- Contact:	openipmi-developer@lists.sourceforge.net
- Description:
--		(RO) Lists the IPMI ‘logical device’ commands and functions
-+		(RO) Lists the IPMI 'logical device' commands and functions
- 		that the controller supports that are in addition to the
- 		mandatory IPM and Application commands.
+diff --git a/Documentation/PCI/acpi-info.rst b/Documentation/PCI/acpi-info.rst
+index 060217081c79..30d0fc85dd8e 100644
+--- a/Documentation/PCI/acpi-info.rst
++++ b/Documentation/PCI/acpi-info.rst
+@@ -22,9 +22,9 @@ or if the device has INTx interrupts connected by platform interrupt
+ controllers and a _PRT is needed to describe those connections.
  
-diff --git a/Documentation/ABI/testing/sysfs-devices-platform-trackpoint b/Documentation/ABI/testing/sysfs-devices-platform-trackpoint
-index df11901a6b3d..82a38ac0435c 100644
---- a/Documentation/ABI/testing/sysfs-devices-platform-trackpoint
-+++ b/Documentation/ABI/testing/sysfs-devices-platform-trackpoint
-@@ -105,7 +105,7 @@ KernelVersion:	3.19
- Contact:	linux-input@vger.kernel.org
- Description:
- 		(RW) This parameter controls the period of time to test for a
--		‘hands off’ condition (i.e. when no force is applied) before a
-+		'hands off' condition (i.e. when no force is applied) before a
- 		drift (noise) calibration occurs.
+ ACPI resource description is done via _CRS objects of devices in the ACPI
+-namespace [2].   The _CRS is like a generalized PCI BAR: the OS can read
++namespace [2].   The _CRS is like a generalized PCI BAR: the OS can read
+ _CRS and figure out what resource is being consumed even if it doesn't have
+-a driver for the device [3].  That's important because it means an old OS
++a driver for the device [3].  That's important because it means an old OS
+ can work correctly even on a system with new devices unknown to the OS.
+ The new devices might not do anything, but the OS can at least make sure no
+ resources conflict with them.
+@@ -41,15 +41,15 @@ ACPI, that device will have a specific _HID/_CID that tells the OS what
+ driver to bind to it, and the _CRS tells the OS and the driver where the
+ device's registers are.
  
- 		IBM Trackpoints have a feature to compensate for drift by
-diff --git a/Documentation/ABI/testing/sysfs-devices-soc b/Documentation/ABI/testing/sysfs-devices-soc
-index ea999e292f11..7f90c6a44610 100644
---- a/Documentation/ABI/testing/sysfs-devices-soc
-+++ b/Documentation/ABI/testing/sysfs-devices-soc
-@@ -27,11 +27,11 @@ Description:
- 		(e.g. DB8500).
+-PCI host bridges are PNP0A03 or PNP0A08 devices.  Their _CRS should
+-describe all the address space they consume.  This includes all the windows
++PCI host bridges are PNP0A03 or PNP0A08 devices.  Their _CRS should
++describe all the address space they consume.  This includes all the windows
+ they forward down to the PCI bus, as well as registers of the host bridge
+-itself that are not forwarded to PCI.  The host bridge registers include
++itself that are not forwarded to PCI.  The host bridge registers include
+ things like secondary/subordinate bus registers that determine the bus
+ range below the bridge, window registers that describe the apertures, etc.
+ These are all device-specific, non-architected things, so the only way a
+ PNP0A03/PNP0A08 driver can manage them is via _PRS/_CRS/_SRS, which contain
+-the device-specific details.  The host bridge registers also include ECAM
++the device-specific details.  The host bridge registers also include ECAM
+ space, since it is consumed by the host bridge.
  
- 		On many of ARM based silicon with SMCCC v1.2+ compliant firmware
--		this will contain the JEDEC JEP106 manufacturer’s identification
-+		this will contain the JEDEC JEP106 manufacturer's identification
- 		code. The format is "jep106:XXYY" where XX is identity code and
- 		YY is continuation code.
+ ACPI defines a Consumer/Producer bit to distinguish the bridge registers
+@@ -66,7 +66,7 @@ the PNP0A03/PNP0A08 device itself.  The workaround was to describe the
+ bridge registers (including ECAM space) in PNP0C02 catch-all devices [6].
+ With the exception of ECAM, the bridge register space is device-specific
+ anyway, so the generic PNP0A03/PNP0A08 driver (pci_root.c) has no need to
+-know about it.  
++know about it.  
  
--		This manufacturer’s identification code is defined by one
-+		This manufacturer's identification code is defined by one
- 		or more eight (8) bit fields, each consisting of seven (7)
- 		data bits plus one (1) odd parity bit. It is a single field,
- 		limiting the possible number of vendors to 126. To expand
+ New architectures should be able to use "Consumer" Extended Address Space
+ descriptors in the PNP0A03 device for bridge registers, including ECAM,
+@@ -75,9 +75,9 @@ ia64 kernels assume all address space descriptors, including "Consumer"
+ Extended Address Space ones, are windows, so it would not be safe to
+ describe bridge registers this way on those architectures.
+ 
+-PNP0C02 "motherboard" devices are basically a catch-all.  There's no
++PNP0C02 "motherboard" devices are basically a catch-all.  There's no
+ programming model for them other than "don't use these resources for
+-anything else."  So a PNP0C02 _CRS should claim any address space that is
++anything else."  So a PNP0C02 _CRS should claim any address space that is
+ (1) not claimed by _CRS under any other device object in the ACPI namespace
+ and (2) should not be assigned by the OS to something else.
+ 
+@@ -125,7 +125,7 @@ address always corresponds to bus 0, even if the bus range below the bridge
+     requirements of the device.  It may also call _CRS to find the current
+     resource settings for the device.  Using this information, the Plug and
+     Play system determines what resources the device should consume and
+-    sets those resources by calling the device’s _SRS control method.
++    sets those resources by calling the device's _SRS control method.
+ 
+     In ACPI, devices can consume resources (for example, legacy keyboards),
+     provide resources (for example, a proprietary PCI bridge), or do both.
+@@ -156,7 +156,7 @@ address always corresponds to bus 0, even if the bus range below the bridge
+     4.1.3) must be reserved by declaring a motherboard resource.  For most
+     systems, the motherboard resource would appear at the root of the ACPI
+     namespace (under \_SB) in a node with a _HID of EISAID (PNP0C02), and
+-    the resources in this case should not be claimed in the root PCI bus’s
++    the resources in this case should not be claimed in the root PCI bus's
+     _CRS.  The resources can optionally be returned in Int15 E820 or
+     EFIGetMemoryMap as reserved memory but must always be reported through
+     ACPI as a motherboard resource.
 -- 
 2.30.2
 
