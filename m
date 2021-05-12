@@ -2,148 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1154037EFFF
+	by mail.lfdr.de (Postfix) with ESMTP id C550637F001
 	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 01:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239001AbhELXls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 19:41:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234300AbhELXVL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 19:21:11 -0400
-Received: from mail.aperture-lab.de (mail.aperture-lab.de [IPv6:2a01:4f8:c2c:665b::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C64AFC06174A;
-        Wed, 12 May 2021 16:19:59 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id DC7C03E942;
-        Thu, 13 May 2021 01:19:57 +0200 (CEST)
-From:   =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>
-To:     netdev@vger.kernel.org
-Cc:     Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        bridge@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>
-Subject: [net-next v3 11/11] net: bridge: mcast: export multicast router presence adjacent to a port
-Date:   Thu, 13 May 2021 01:19:41 +0200
-Message-Id: <20210512231941.19211-12-linus.luessing@c0d3.blue>
-In-Reply-To: <20210512231941.19211-1-linus.luessing@c0d3.blue>
-References: <20210512231941.19211-1-linus.luessing@c0d3.blue>
+        id S239446AbhELXmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 19:42:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51684 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243600AbhELXar (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 19:30:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC7BE613F6;
+        Wed, 12 May 2021 23:29:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620862178;
+        bh=BvLgFFP2FaOwOn41naJu3wceL9pcWdau3pAGZc8yBA0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=CB+XVxyKRy7YNFjUS47rhUVinyCWl7MqPgyJlPacni3Kt2yOeZDqejBU2GiH5R2MU
+         Y3Q2+GP0wp/Dq2mtjHMSHNBnIv3m1jF2q5iRS9QWb7qc+Gti00BVfQ0qfai/1mrVGD
+         AVd7RRgsueU7rgY6Ggx/2tH8zE4aRW9c2dALtAqpwB3sKH9PpW4AnL8Ff0wlFBcTOZ
+         jzpOvXDkRbkfHPEGmY1goNFkMXhgX3Crpv9QFtvcJQS3ZUWCYidq1DCrCMXZMl+PwB
+         dmNjxxjDlEIzwhq1+fjMtvkV5u0zUjQ0L7wNl6ZSef7+Sr54IK3XT44WEN5dinX2Z2
+         Yma6BYopivVpw==
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Yunfeng Ye <yeyunfeng@huawei.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+Subject: [GIT PULL] tick/nohz updates v3
+Date:   Thu, 13 May 2021 01:29:14 +0200
+Message-Id: <20210512232924.150322-1-frederic@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Last-TLS-Session-Version: TLSv1.2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To properly support routable multicast addresses in batman-adv in a
-group-aware way, a batman-adv node needs to know if it serves multicast
-routers.
+Ingo, Thomas,
 
-This adds a function to the bridge to export this so that batman-adv
-can then make full use of the Multicast Router Discovery capability of
-the bridge.
+Please pull the timers/nohz-v3 branch that can be found at:
 
-Signed-off-by: Linus Lüssing <linus.luessing@c0d3.blue>
+git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+	timers/nohz-v3
+
+Changes since v2:
+
+* Add Acks from Peter Zijlstra
+
+* Only bother to fetch task's CPU if the task is queued in
+	"tick/nohz: Kick only _queued_ task whose tick dependency is updated"
+  (reported by Peter Zijlstra)
+
+* Correctly indent comment in
+  "tick/nohz: Kick only _queued_ task whose tick dependency is updated"
+  (reported by Peter Zijlstra)
+
+* Add Peter's SoB in "tick/nohz: Evaluate the CPU expression after the static key"
+
+* Add "tick/nohz: Call tick_nohz_task_switch() with interrupts disabled"
+  (from Peter Zijlstra)
+
+* Add "MAINTAINERS: Add myself as context tracking maintainer"
+
 ---
- include/linux/if_bridge.h |  8 ++++++
- net/bridge/br_multicast.c | 55 +++++++++++++++++++++++++++++++++++++++
- 2 files changed, 63 insertions(+)
+Summary:
 
-diff --git a/include/linux/if_bridge.h b/include/linux/if_bridge.h
-index 2cc3503..12e9a32 100644
---- a/include/linux/if_bridge.h
-+++ b/include/linux/if_bridge.h
-@@ -67,6 +67,7 @@ int br_multicast_list_adjacent(struct net_device *dev,
- 			       struct list_head *br_ip_list);
- bool br_multicast_has_querier_anywhere(struct net_device *dev, int proto);
- bool br_multicast_has_querier_adjacent(struct net_device *dev, int proto);
-+bool br_multicast_has_router_adjacent(struct net_device *dev, int proto);
- bool br_multicast_enabled(const struct net_device *dev);
- bool br_multicast_router(const struct net_device *dev);
- int br_mdb_replay(struct net_device *br_dev, struct net_device *dev,
-@@ -87,6 +88,13 @@ static inline bool br_multicast_has_querier_adjacent(struct net_device *dev,
- {
- 	return false;
- }
-+
-+static inline bool br_multicast_has_router_adjacent(struct net_device *dev,
-+						    int proto)
-+{
-+	return true;
-+}
-+
- static inline bool br_multicast_enabled(const struct net_device *dev)
- {
- 	return false;
-diff --git a/net/bridge/br_multicast.c b/net/bridge/br_multicast.c
-index 4448490..fe21f52 100644
---- a/net/bridge/br_multicast.c
-+++ b/net/bridge/br_multicast.c
-@@ -4061,6 +4061,61 @@ unlock:
- }
- EXPORT_SYMBOL_GPL(br_multicast_has_querier_adjacent);
- 
-+/**
-+ * br_multicast_has_router_adjacent - Checks for a router behind a bridge port
-+ * @dev: The bridge port adjacent to which to check for a multicast router
-+ * @proto: The protocol family to check for: IGMP -> ETH_P_IP, MLD -> ETH_P_IPV6
-+ *
-+ * Checks whether the given interface has a bridge on top and if so returns
-+ * true if a multicast router is behind one of the other ports of this
-+ * bridge. Otherwise returns false.
-+ */
-+bool br_multicast_has_router_adjacent(struct net_device *dev, int proto)
-+{
-+	struct net_bridge_port *port, *p;
-+	bool ret = false;
-+
-+	rcu_read_lock();
-+	port = br_port_get_check_rcu(dev);
-+	if (!port)
-+		goto unlock;
-+
-+	switch (proto) {
-+	case ETH_P_IP:
-+		hlist_for_each_entry_rcu(p, &port->br->ip4_mc_router_list,
-+					 ip4_rlist) {
-+			if (p == port)
-+				continue;
-+
-+			ret = true;
-+			goto unlock;
-+		}
-+		break;
-+#if IS_ENABLED(CONFIG_IPV6)
-+	case ETH_P_IPV6:
-+		hlist_for_each_entry_rcu(p, &port->br->ip6_mc_router_list,
-+					 ip6_rlist) {
-+			if (p == port)
-+				continue;
-+
-+			ret = true;
-+			goto unlock;
-+		}
-+		break;
-+#endif
-+	default:
-+		/* when compiled without IPv6 support, be conservative and
-+		 * always assume presence of an IPv6 multicast router
-+		 */
-+		ret = true;
-+	}
-+
-+unlock:
-+	rcu_read_unlock();
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(br_multicast_has_router_adjacent);
-+
- static void br_mcast_stats_add(struct bridge_mcast_stats __percpu *stats,
- 			       const struct sk_buff *skb, u8 type, u8 dir)
- {
--- 
-2.31.0
+* Further reduce ticks and IPIs in full dynticks mode.
 
+* Optimize static key based test for a CPU's nohz_full mode
+  and also tick nohz probe on context switch.
+
+* A few cleanups, Kconfig documentation and maintainership clarification.
+
+HEAD: 380b68819eed62264ad8e54467481ca7003248c3
+
+Thanks,
+	Frederic
+---
+
+Frederic Weisbecker (4):
+      tick/nohz: Remove superflous check for CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
+      tick/nohz: Update nohz_full Kconfig help
+      tick/nohz: Only wakeup a single target cpu when kicking a task
+      MAINTAINERS: Add myself as context tracking maintainer
+
+Marcelo Tosatti (2):
+      tick/nohz: Change signal tick dependency to wakeup CPUs of member tasks
+      tick/nohz: Kick only _queued_ task whose tick dependency is updated
+
+Peter Zijlstra (2):
+      tick/nohz: Evaluate the CPU expression after the static key
+      tick/nohz: Call tick_nohz_task_switch() with interrupts disabled
+
+Yunfeng Ye (2):
+      tick/nohz: Conditionally restart tick on idle exit
+      tick/nohz: Update idle_exittime on actual idle exit
+
+
+ MAINTAINERS                    |   6 ++
+ include/linux/sched.h          |   2 +
+ include/linux/tick.h           |  26 +++++----
+ kernel/sched/core.c            |   7 ++-
+ kernel/time/Kconfig            |  11 ++--
+ kernel/time/posix-cpu-timers.c |   4 +-
+ kernel/time/tick-sched.c       | 129 ++++++++++++++++++++++++++++-------------
+ 7 files changed, 125 insertions(+), 60 deletions(-)
