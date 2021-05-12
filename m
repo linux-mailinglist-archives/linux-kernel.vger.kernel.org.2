@@ -2,71 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3566137B892
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 10:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D43BF37B8A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 10:52:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230418AbhELIvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 04:51:53 -0400
-Received: from 8bytes.org ([81.169.241.247]:38848 "EHLO theia.8bytes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230137AbhELIvv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 04:51:51 -0400
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id D8842F3; Wed, 12 May 2021 10:50:42 +0200 (CEST)
-Date:   Wed, 12 May 2021 10:50:41 +0200
-From:   'Joerg Roedel' <joro@8bytes.org>
-To:     Juergen Gross <jgross@suse.com>
-Cc:     David Laight <David.Laight@aculab.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        Hyunwook Baek <baekhw@google.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>
-Subject: Re: [PATCH 3/6] x86/sev-es: Use __put_user()/__get_user
-Message-ID: <YJuW4TtRJKZ+OIhj@8bytes.org>
-References: <20210512075445.18935-1-joro@8bytes.org>
- <20210512075445.18935-4-joro@8bytes.org>
- <0496626f018d4d27a8034a4822170222@AcuMS.aculab.com>
- <fcb2c501-70ca-1a54-4a75-8ab05c21ee30@suse.com>
+        id S231127AbhELIxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 04:53:51 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3064 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230145AbhELIxu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 04:53:50 -0400
+Received: from fraeml734-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Fg7YY61mnz6tmwH;
+        Wed, 12 May 2021 16:41:21 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml734-chm.china.huawei.com (10.206.15.215) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 12 May 2021 10:52:40 +0200
+Received: from localhost (10.52.125.138) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 12 May
+ 2021 09:52:39 +0100
+Date:   Wed, 12 May 2021 09:50:57 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+CC:     Greg KH <greg@kroah.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Tomasz Duszynski <tomasz.duszynski@octakon.com>
+Subject: Re: linux-next: manual merge of the iio tree with the
+ staging.current tree
+Message-ID: <20210512095057.00000715@Huawei.com>
+In-Reply-To: <20210512114805.5bcef396@canb.auug.org.au>
+References: <20210512114342.286dd7d6@canb.auug.org.au>
+        <20210512114805.5bcef396@canb.auug.org.au>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fcb2c501-70ca-1a54-4a75-8ab05c21ee30@suse.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.125.138]
+X-ClientProxiedBy: lhreml725-chm.china.huawei.com (10.201.108.76) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 10:16:12AM +0200, Juergen Gross wrote:
-> You want something like xen_safe_[read|write]_ulong().
+On Wed, 12 May 2021 11:48:05 +1000
+Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 
-From a first glance I can't see it, what is the difference between the
-xen_safe_*_ulong() functions and __get_user()/__put_user()? The only
-difference I can see is that __get/__put_user() support different access
-sizes, but neither of those disables page-faults by itself, for example.
+> Hi all,
+> 
+> On Wed, 12 May 2021 11:43:42 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > 
+> > Today's linux-next merge of the iio tree got a conflict in:
+> > 
+> >   drivers/iio/industrialio-core.c
+> > 
+> > between commit:
+> > 
+> >   901f84de0e16 ("iio: core: fix ioctl handlers removal")
+> > 
+> > from the staging.current tree and commit:
+> > 
+> >   919a6adf8107 ("iio: core: move @chrdev from struct iio_dev to struct iio_dev_opaque")
+> > 
+> > from the iio tree.
+> > 
+> > I fixed it up (see below) and can carry the fix as necessary. This
+> > is now fixed as far as linux-next is concerned, but any non trivial
+> > conflicts should be mentioned to your upstream maintainer when your tree
+> > is submitted for merging.  You may also want to consider cooperating
+> > with the maintainer of the conflicting tree to minimise any particularly
+> > complex conflicts.
+> > 
+> > diff --cc drivers/iio/industrialio-core.c
+> > index 59efb36db2c7,efb4cf91c9e4..000000000000
+> > --- a/drivers/iio/industrialio-core.c
+> > +++ b/drivers/iio/industrialio-core.c
+> > @@@ -1785,10 -1811,10 +1810,10 @@@ static long iio_ioctl(struct file *filp
+> >   	}
+> >   
+> >   	if (ret == IIO_IOCTL_UNHANDLED)
+> >  -		ret = -EINVAL;
+> >  +		ret = -ENODEV;
+> >   
+> >   out_unlock:
+> > - 	mutex_unlock(&indio_dev->info_exist_lock);
+> > + 	mutex_unlock(&iio_dev_opaque->info_exist_lock);
+> >   
+> >   	return ret;
+> >   }
+> > @@@ -1925,9 -1951,12 +1950,9 @@@ EXPORT_SYMBOL(__iio_device_register)
+> >    **/
+> >   void iio_device_unregister(struct iio_dev *indio_dev)
+> >   {
+> > - 	cdev_device_del(&indio_dev->chrdev, &indio_dev->dev);
+> >  -	struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
+> >  -	struct iio_ioctl_handler *h, *t;
+> >  -
+> > + 	cdev_device_del(&iio_dev_opaque->chrdev, &indio_dev->dev);
+> >   
+> > - 	mutex_lock(&indio_dev->info_exist_lock);
+> > + 	mutex_lock(&iio_dev_opaque->info_exist_lock);
+> >   
+> >   	iio_device_unregister_debugfs(indio_dev);
+> >     
+> 
+> Actually, I had to add back the iio_dev_opaque declaration line.
+> 
 
-Couldn't these xen-specific functions not also be replaces by
-__get_user()/__put_user()?
+Makes sense.  I'll deal with this in the IIO tree after rc2.
 
-Regards,
+thanks,
 
-	Joerg
-
+Jonathan
