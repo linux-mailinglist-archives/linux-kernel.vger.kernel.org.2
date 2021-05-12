@@ -2,227 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5EAE37BCB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:41:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6610437BCB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233024AbhELMmZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 12 May 2021 08:42:25 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:38891 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232965AbhELMlo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 08:41:44 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R671e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=changhuaixin@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0UYewVyO_1620823231;
-Received: from 30.240.101.97(mailfrom:changhuaixin@linux.alibaba.com fp:SMTPD_---0UYewVyO_1620823231)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 12 May 2021 20:40:32 +0800
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH v4 1/4] sched/fair: Introduce primitives for CFS bandwidth
- burst
-From:   changhuaixin <changhuaixin@linux.alibaba.com>
-In-Reply-To: <YFNsKGKRL3SaJNZk@hirez.programming.kicks-ass.net>
-Date:   Wed, 12 May 2021 20:41:20 +0800
-Cc:     changhuaixin <changhuaixin@linux.alibaba.com>,
-        Benjamin Segall <bsegall@google.com>, dietmar.eggemann@arm.com,
-        juri.lelli@redhat.com, khlebnikov@yandex-team.ru,
-        open list <linux-kernel@vger.kernel.org>, mgorman@suse.de,
-        mingo@redhat.com, Odin Ugedal <odin@uged.al>,
-        Odin Ugedal <odin@ugedal.com>, pauld@redhead.com,
-        Paul Turner <pjt@google.com>, rostedt@goodmis.org,
-        Shanpei Chen <shanpeic@linux.alibaba.com>,
-        Tejun Heo <tj@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        xiyou.wangcong@gmail.com, dtcccc@linux.alibaba.com
-Content-Transfer-Encoding: 8BIT
-Message-Id: <5371BD36-55AE-4F71-B9D7-B86DC32E3D2B@linux.alibaba.com>
-References: <20210316044931.39733-1-changhuaixin@linux.alibaba.com>
- <20210316044931.39733-2-changhuaixin@linux.alibaba.com>
- <YFCAXeZj6sXBI5Ls@hirez.programming.kicks-ass.net>
- <B75EDF95-96B3-44E4-8169-3C1FCBC30A7B@linux.alibaba.com>
- <YFG4hEOe65cbCo26@hirez.programming.kicks-ass.net>
- <EA9BCA7F-8B57-4A87-A32E-DBBF8E7BAD8F@linux.alibaba.com>
- <YFNsKGKRL3SaJNZk@hirez.programming.kicks-ass.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-X-Mailer: Apple Mail (2.3445.104.11)
+        id S233055AbhELMmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 08:42:54 -0400
+Received: from mail-dm6nam11on2060.outbound.protection.outlook.com ([40.107.223.60]:51040
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232854AbhELMmc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 08:42:32 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bImzQQWJKg8fuSkam3uwIrirHc+q3qAnzWUrKUH/e2gdDGYabCbJambRnTcftElpEmzYgMVh2Rlks7Ec7pZKYS2fjGKd+uAC76n8hqh5SYIabvRE7R2uF/+rBx9VCdhVkZnidCPzo/tGwrYyQlY7+iy8WzgDhpBbJaEBp/fnepsBB4c2WxjefO1PBwSAelXQOFRWMhNOnaoY04gHhrFnvI8S58HA2tUENswqoWcIQ4Xf4Q1wlPLn5nC5fALcsRLkQNzUJmyGcHIjuvwMnCtGweBQsWHrWY/Aw+CbkacEgXae4EAQpx17TY1YHVAjWfndynOs8j6ZlZqNI/lX52bdHg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4Us1s3Snv0o5Y5bXHJDkGXcrCTOdKWws6PSmPL0Lirc=;
+ b=HCp3ZPTqNshWp0jLrfCdaBPbY/ClRj7eK/ed9JU+6GXVe8VmyKlKe1ibMMBU8XlhngxYpiToDI5cxiD6n6m3d23ac7OQcYXHnwE5rwdvcuON0eTa11dtdDINK/ZeLsRLgiGKq7XFj2V9r4CmDwEksvq+0TkjWaxtgyuH9T6U+2i5lVW1Gh/H7qsGwoHcrVgjKTq4XSWKqO2hhwpmUmPk6tTX45QzeKYDSz+/yLva2a2sq6SEDilouM46elpG4pwK/MY7BHD8K2O/6FB7UanrzfSLv2XL0JqvB1JjbD1HKhXpZnpbzhCxpG30Czv9FxSfFn02baaIHQOwdrwx/JsDDA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4Us1s3Snv0o5Y5bXHJDkGXcrCTOdKWws6PSmPL0Lirc=;
+ b=XX1+IJIMXGiSeOsckgKCqLjRsu0dOdwNiTccPxKburh2cQE6vdm2K5QVlZKK0cRAMzHQ2dEEQkp5QPoOC8zdZF+Im06Buj6Y+6ZBKxlSKK/ugrqVIh4oOQrB4li0v8bQMe7pBGAi0l4f+p5K3JL7klOU1Ti1xTSD64oXFmxH83YiPhrdiO8wSWjRp0X49JtMg0CzU9kq0x9j0RQuaENsFf9MROcbETyv4EtCEcMB47a+Dn1S/tC3dY2erKx7LwkwzH9mZ2Ne0p//TDCHoS6YFFhkNcK9tRl5o8h/tOQDHSlV3PPEywzyh/jmjtJMTUAy9lQ6Xki9R1l55DkRSM5B+g==
+Authentication-Results: linux.ibm.com; dkim=none (message not signed)
+ header.d=none;linux.ibm.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB1337.namprd12.prod.outlook.com (2603:10b6:3:6e::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.30; Wed, 12 May
+ 2021 12:41:22 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4129.026; Wed, 12 May 2021
+ 12:41:22 +0000
+Date:   Wed, 12 May 2021 09:41:20 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        stable@vger.kernel.org, Tony Krowiak <akrowiak@stny.rr.com>
+Subject: Re: [PATCH v2] s390/vfio-ap: fix memory leak in mdev remove callback
+Message-ID: <20210512124120.GV1002214@nvidia.com>
+References: <20210510214837.359717-1-akrowiak@linux.ibm.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210510214837.359717-1-akrowiak@linux.ibm.com>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: BLAPR03CA0134.namprd03.prod.outlook.com
+ (2603:10b6:208:32e::19) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by BLAPR03CA0134.namprd03.prod.outlook.com (2603:10b6:208:32e::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Wed, 12 May 2021 12:41:21 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lgoAy-005pQA-F0; Wed, 12 May 2021 09:41:20 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d61d14e1-70e2-4569-7049-08d915433f46
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1337:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM5PR12MB13377548AF929AC9E62819DAC2529@DM5PR12MB1337.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hUbTCtYt/4qrIXzseIsecSk/mf15Xxu+BbFf1fUXJVmghpNwl9Pg9KqJpP4Rz3JWE//iUPnPlqr5/7Ab/PnE0tiQ9IcsD1FseWgCHIcNZbzlqaXPH5fy5wcoXZ0geu/vGs5AB0MOmQMWqSD69/ek2FTpaL2cmJjn6CGm8BmUJ3d6K2mUm/ZIYdQwOwhAdiVDbcnLySoFFptAaTmbybZaHvgYx0a2EuXHVIrK49KPdBFksSaonlQienmQ6pOyq4cpNouJlofYJyy+a93/+dUtynGHntSkuWQ8poR69lVQ4zErFUEV97Nk9GWjaKSTgPLNtIqpbTb2dK/AEuSJ9cbkI0Sc5dQecZg5yG1sDRs92STETXj8d+fkZR4Y4HcNFMk0hUfDLU6KKk7mrO27CjTtSyChwupn8Vp+hRb4Hjvrz18xyo+kkeIvMeRgCAzauX3ugr1EjeHssbPUhr/ottFaVkSngBjEKKSuRdZcLfgEMvHF21kMeNG/M5sSwvKl0DaloiLoFmh7BMTQSQM4ed/6Vp7S1QSCXtVEMsF1pZOKuvPHUfVGQz1WqIcxa435MFuuX9nTFEs+vlimQ5h8fR1S4c/3CULOuEYAhCrJLcThpQo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(366004)(346002)(136003)(39860400002)(426003)(7416002)(9746002)(66476007)(66556008)(83380400001)(2616005)(26005)(66946007)(5660300002)(4326008)(478600001)(36756003)(6916009)(186003)(38100700002)(9786002)(33656002)(86362001)(2906002)(8936002)(8676002)(1076003)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?kwhU6m07z88eFJptwyKY7jZaIctk9Gg1tLSwqCNa087tx4r6iW9gJhHkALCb?=
+ =?us-ascii?Q?Md28b7lrMyAspk3XdHt6qIIqwyZgygrfgXQfy3N27o+N935OZSwC9NSXgfZX?=
+ =?us-ascii?Q?CajOUCGZAHKFGlZ65xHei3IeGBFE+VGF5OudaKDZhXHQqsD4kQL/7dV+8bhb?=
+ =?us-ascii?Q?bF9U3EGadohELpSZh25MvDPSpIGhWF9+1cidbTSd2jjEWuz7T+smwip+1ztx?=
+ =?us-ascii?Q?h3O7vu2GOhUENQEjV9T44jnaXRQ5IljNPY8HGDmVewxsLDWkC/XcfJtWq9T3?=
+ =?us-ascii?Q?92uglzTCUL5gRQGce4b2qLhx6gpEvSoAdURdls76XfOLfUS4+4h7PgANyhiZ?=
+ =?us-ascii?Q?cJ7R+KlLYrLKwb1eDDKQQ+KPXGtRX5EZeVsJH7ULL0gRXYPQM3mR1mc8/c7R?=
+ =?us-ascii?Q?IdH4G13eDLChQHWJ8YTr2SYfyWK5lpr47O/rwCIvp5DH5qt07PYQ3zJySl5x?=
+ =?us-ascii?Q?Ick+vQoIRfZyhroZbZBElEq6xGpLEHIl/rtQFXA9FYrq/y09l8IDNElGD1xl?=
+ =?us-ascii?Q?XWwzqIrxOfWfsWtuUlkv73D398xLTgHc/2AdXRLV0c6PJLYN6+sPh7IPssDD?=
+ =?us-ascii?Q?a08k/CK7oFy4pc19cDqyk7K2LLn+9r5QbJBINwKqAcw3f8+8LlnZN28LdvWF?=
+ =?us-ascii?Q?GFuj8/GMepYobR7TKXbVOVLcC9ggP/q5E5sd6zjlVWdko1z2JYF329Cc3iyJ?=
+ =?us-ascii?Q?epXzpQl6Oi2j4gSh0VY5t2ftn22FhCvPonimr/7SgHBie6um/6jdylhz/zvU?=
+ =?us-ascii?Q?7kUoYl7xkUuc6nEWIKxxWgMnoJXYESEh+TrWWZ7PWidfg3a6cScYBsos57FI?=
+ =?us-ascii?Q?Qw+DInY9RbC7GOBBj7BSXVNi5armUtv48VK111QaoWQc4ipoW59iz/lkMa7d?=
+ =?us-ascii?Q?kb5FqHVWzD6fLd3DTlppCG62YAb++oYzrZ3DHJTNgFwTPuA5ZHldnGzCmq5t?=
+ =?us-ascii?Q?2Nt1UXBe5QTEBcpN8BuMde+X2vRxJvNagTnFz12a6L8T8Gg1izOLr7YbaUZZ?=
+ =?us-ascii?Q?FiU9jUWndYTu9KH0SMl/gI8cL/AQOwJ/xyoCARc81Ns8LHyP3LiyaBsPxAOg?=
+ =?us-ascii?Q?HlK7+kykkA6Ekc4GLSz+tKpFf4/Fpdbr78vkdsyB0JtnD58AVOgLTnngZoxJ?=
+ =?us-ascii?Q?xysI177+cbt97b2e5YQXujLT1MpBGWGSsdOvpJUawSxjtFlOTHZFbK8MNJl0?=
+ =?us-ascii?Q?lFETB+paXc1BXu0g4g37UQn+iYKUEC9ftD0Us/qkqlcNNtZbAvDi0WYaQTbu?=
+ =?us-ascii?Q?QSnne8a+ihQmUX9clfDs4K6Z0DgkWQCOimeqym4n0GSP6VJF4eiNMUOkLWVp?=
+ =?us-ascii?Q?yR9LvSIGCfnOD78hrmskzo/G?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d61d14e1-70e2-4569-7049-08d915433f46
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 May 2021 12:41:21.9608
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PAg8QDvzjMvSLm94ydqH+LTJt1CIpMwZ6iRegsT88GGLmD+WXmKmWt9rBHE/bBIx
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1337
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> On Mar 18, 2021, at 11:05 PM, Peter Zijlstra <peterz@infradead.org> wrote:
+On Mon, May 10, 2021 at 05:48:37PM -0400, Tony Krowiak wrote:
+> The mdev remove callback for the vfio_ap device driver bails out with
+> -EBUSY if the mdev is in use by a KVM guest. The intended purpose was
+> to prevent the mdev from being removed while in use; however, returning a
+> non-zero rc does not prevent removal. This could result in a memory leak
+> of the resources allocated when the mdev was created. In addition, the
+> KVM guest will still have access to the AP devices assigned to the mdev
+> even though the mdev no longer exists.
 > 
-> On Thu, Mar 18, 2021 at 09:26:58AM +0800, changhuaixin wrote:
->>> On Mar 17, 2021, at 4:06 PM, Peter Zijlstra <peterz@infradead.org> wrote:
+> To prevent this scenario, cleanup will be done - including unplugging the
+> AP adapters, domains and control domains - regardless of whether the mdev
+> is in use by a KVM guest or not.
 > 
->>> So what is the typical avg,stdev,max and mode for the workloads where you find
->>> you need this?
->>> 
->>> I would really like to put a limit on the burst. IMO a workload that has
->>> a burst many times longer than the quota is plain broken.
->> 
->> I see. Then the problem comes down to how large the limit on burst shall be.
->> 
->> I have sampled the CPU usage of a bursty container in 100ms periods. The statistics are:
-> 
-> So CPU usage isn't exactly what is required, job execution time is what
-> you're after. Assuming there is a relation...
-> 
->> average	: 42.2%
->> stddev	: 81.5%
->> max		: 844.5%
->> P95		: 183.3%
->> P99		: 437.0%
-> 
-> Then your WCET is 844% of 100ms ? , which is .84s.
-> 
-> But you forgot your mode; what is the most common duration, given P95 is
-> so high, I doubt that avg is representative of the most common duration.
-> 
->> If quota is 100000ms, burst buffer needs to be 8 times more in order
->> for this workload not to be throttled.
-> 
-> Where does that 100s come from? And an 800s burst is bizarre.
-> 
-> Did you typo [us] as [ms] ?
-> 
->> I can't say this is typical, but these workloads exist. On a machine
->> running Kubernetes containers, where there is often room for such
->> burst and the interference is hard to notice, users would prefer
->> allowing such burst to being throttled occasionally.
-> 
-> Users also want ponies. I've no idea what kubernetes actually is or what
-> it has to do with containers. That's all just word salad.
-> 
->> In this sense, I suggest limit burst buffer to 16 times of quota or
->> around. That should be enough for users to improve tail latency caused
->> by throttling. And users might choose a smaller one or even none, if
->> the interference is unacceptable. What do you think?
-> 
-> Well, normal RT theory would suggest you pick your runtime around 200%
-> to get that P95 and then allow a full period burst to get your P99, but
-> that same RT theory would also have you calculate the resulting
-> interference and see if that works with the rest of the system...
-> 
-> 16 times is horrific.
-> 
-> 
+> Fixes: 258287c994de ("s390: vfio-ap: implement mediated device open callback")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Tony Krowiak <akrowiak@stny.rr.com>
+> ---
+>  drivers/s390/crypto/vfio_ap_ops.c | 13 ++-----------
+>  1 file changed, 2 insertions(+), 11 deletions(-)
 
-Hi,
+Can you please ensure this goes to a -rc branch or through Alex's
+tree?
 
-We have discussed much about the benefit of using the burst feature previously in the
-thread[1]. This mail shows the interference on the rest of the system when burst buffer is used,
-when runtime is under exponential[2], poisson[3] or pareto[4] distribution. Test results showed that,
-interference is more sensitive to the average utilization and the number of cgroups, than to burst buffer
-size. If there are many cgroups and CPU is under utilized, a large burst buffer is acceptable. If there are
-a small number of cgroups or CPU utilization is high, burst buffer should not be used.
-
-The calculation is done by simulating[5] the CPU utilization and CPU Bandwidth distribution,
-and deciding whether deadline is broken in each period. Simulation is done for over 1M
-periods to get stable results.We also tried queueing theory, such as Markov chains,
-to do the simplest WCET calculation, and failed when the calculation gets more complicated.
-Nor did we find any paper on this. 
-
-The inputs for our simulation program are: distribution, u_avg, m, and b. We let m cgroups
-configured eqaul quota (1/m of the total) and buffer (b * quota). The CPU utilization for each period
-is under certain distribution and averaged at u_avg of quota. Utilization of m cgroups is independent
-identically distributed.
-
-The WCET is counted as the number of periods till making the deadline. If a period ends with
-more CPU needs that 100% after using burst, deadline is broken for this period. Without burst
-feature, deadline can be guaranteed in each period.
-
-We've conducted our experiments with variable inputs. The result is shown with the format of
-E(WCET)/P(WCET>1), meaning the expectation of WCET and the probability when WCET>1.
-The rows and cols(i.e. buffer=0) with all 1.0000/0% are omitted.
-
-For exponential distribution[2], we set λ=u_avg/m for each cgroup.
-
-m=5:
-u_avg/buffer            100%              200%                    ∞
-30%               1.0001/0.01%     1.0002/0.02%   1.0002/0.02%
-50%               1.0176/1.66%     1.0301/2.76%    1.0352/3.15%
-70%               1.1503/11.52%    1.2691/17.51%   1.4057/21.86%
-90%               1.3042/21.17%    1.6701/34.19%  3.7937/60.02%
-
-m=20:
-u_avg/buffer            100%              200%                    ∞
-50%               1.0000/0%        1.0001/0.01%    1.0002/0.02%
-70%               1.0060/0.59%    1.0217/2.05%    1.0476/4.18%
-90%               1.1989/14.07%    1.4467/24.46%  2.8603/46.26%
-
-Since poisson distribution[3] is discrete, we convert u_avg to integer by multiplying 10 and normalize
-the result, where X = n means utilization is at n * 10% of quota. We choose this way instead of others like
-X = n requires n% or n/10% of quota because it generates more bursts, and thus more interference.
-
-m=5:
-u_avg/buffer            100%              200%                    ∞
-70%               1.0071/0.69%      1.0071/0.69%   1.0071/0.70%
-90%               1.4313/25.22%    1.5124/27.29%  1.5237/27.52%
-
-m=20:
-u_avg/buffer            100%              200%                    ∞
-90%               1.0708/6.06%     1.0879/7.20%   1.0903/7.35%
-
-It can be concluded that, compared to exponential distribution, tasks whose utilization is under
-poisson distribution generate less interference after using burst. To generate more bursty workload, we also tested
-the pareto distribution[4]. We set α=4 and adjust x_min accordingly so that the max demand is at about 500%
-when u_avg is at 30% during 1M periods.
-
-m=5:
-u_avg/buffer            100%              200%                    ∞
-30%               1.0000/0%        1.0000/0%        1.0001/0.01%
-50%               1.0001/0.01%     1.0008/0.08%    1.0019/0.16%
-70%               1.0117/1.11%       1.0234/2.11%     1.0308/2.38%
-90%               1.3994/21.97      1.6059/26.49%  1.8296/28.78%
-
-m=20:
-u_avg/buffer            100%              200%                    ∞
-70%               1.0000/0%         1.0001/0.01%      1.0013/0.12%
-90%               1.0447/3.96%    1.0941/7.49%       1.1622/10.59%
-
-References
-[1]. https://lore.kernel.org/lkml/YFNtesvbxUY4XTYR@hirez.programming.kicks-ass.net/
-[2]. https://en.wikipedia.org/wiki/Exponential_distribution
-[3]. https://en.wikipedia.org/wiki/Poisson_distribution
-[4]. https://en.wikipedia.org/wiki/Pareto_distribution
-[5]. The pseudo code for our simulation program is as follows:
-
-input: u_avg, m, b, distribution
-output: wcet_list
-
-for  (i = 0; i < nr_periods; i++) {
-   free_cpu = 0;
-   for (j = 0; j < m; j++) {
-       needs[j] += new_needs(u_avg, m);
-       if (needs[j] <= quota[j]) {
-           free_cpu += quota[j] - needs[j];
-           gather_token();
-           needs[j] = 0;
-       } else /* needs > quota */
-           needs[j] -= quota[j];
-   }
-
-   /*
-    * Additional free cpu is distrubted fairly among cgroups 
-    * with more needs and burst buffer to meet needs.
-    */
-   distribute_free_cpu();
-
-   for (j = 0; j < m; j++) {
-       needs[j] -= free_cpu_use[j];
-       use_token();
-   }
-
-   /* 
-    * If deadline is met for this period.
-    */
-   if (free_cpu > 0 || !distribute_done) {
-       /*
-	 * Count periods when deadline is broken.
-        */ 
-       count_wcet_periods();
-   }
-}
+Thanks,
+Jason
