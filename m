@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79DA637EA56
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16FAC37EA58
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:00:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243553AbhELS4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 14:56:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34162 "EHLO mail.kernel.org"
+        id S243916AbhELS5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 14:57:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244275AbhELQmv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S244278AbhELQmv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 12 May 2021 12:42:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E485061D40;
-        Wed, 12 May 2021 16:12:14 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DF1861D29;
+        Wed, 12 May 2021 16:11:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620835935;
-        bh=MpxhMahEBC0yECHXFSyoHxnv6tvQx/d3vzPZM1xILo0=;
+        s=korg; t=1620835912;
+        bh=n/drkzbpv5kORQkzPHiYtzf9uV2emDfLYV/qkXe8C5c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Nbi44OfWvX0mXSpp+zcvQvbA/OkJhvyaxZJKvqyjlZyONtX7th1pEL/LfqktMfxmn
-         rJSKs9LVoM/IlTH/7sznB8ZHvvyXChfgYmL4pbEzU1MTgenBG0h3kGFZEyb/uytAbX
-         1NVNbW8ZpVsIifDoeSZec7T4VleWD9l80LxbQF1o=
+        b=2XX1ABUG9WTcH92C7sSqm2+79r7KdgAtrAxYKmgmo0W9IXVq6NC6XG+DmzynoT646
+         MlorELQd52pWJ7BsGMGyP5sLZH3Tgwk2gbwtguk/qmYBMTq2l8zVUBhoRXDwfQY+Q8
+         LHgtdICvpwn6Dwh2b7/x1IOdmXHMY7fRhtKDT/OA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
+        stable@vger.kernel.org, Evelyn Tsai <evelyn.tsai@mediatek.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
         Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 526/677] mt76: mt7921: fix stats register definitions
-Date:   Wed, 12 May 2021 16:49:32 +0200
-Message-Id: <20210512144854.862501953@linuxfoundation.org>
+Subject: [PATCH 5.12 535/677] mt76: mt7915: fix txrate reporting
+Date:   Wed, 12 May 2021 16:49:41 +0200
+Message-Id: <20210512144855.147581548@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
 References: <20210512144837.204217980@linuxfoundation.org>
@@ -39,146 +40,140 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lorenzo Bianconi <lorenzo@kernel.org>
+From: Ryder Lee <ryder.lee@mediatek.com>
 
-[ Upstream commit f76e9019913bffee0e49b096068e6f6b12f9b0e0 ]
+[ Upstream commit f43b941fd61003659a3f0e039595e5e525917aa8 ]
 
-Fix register definitions for mac80211 stats reporting.
-Move mib counter reset to mt7921_get_stats routine.
+Properly check rate_info to fix unexpected reporting.
 
-Fixes: 163f4d22c118d ("mt76: mt7921: add MAC support")
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+[ 1215.161863] Call trace:
+[ 1215.164307]  cfg80211_calculate_bitrate+0x124/0x200 [cfg80211]
+[ 1215.170139]  ieee80211s_update_metric+0x80/0xc0 [mac80211]
+[ 1215.175624]  ieee80211_tx_status_ext+0x508/0x838 [mac80211]
+[ 1215.181190]  mt7915_mcu_get_rx_rate+0x28c/0x8d0 [mt7915e]
+[ 1215.186580]  mt7915_mac_tx_free+0x324/0x7c0 [mt7915e]
+[ 1215.191623]  mt7915_queue_rx_skb+0xa8/0xd0 [mt7915e]
+[ 1215.196582]  mt76_dma_cleanup+0x7b0/0x11d0 [mt76]
+[ 1215.201276]  __napi_poll+0x38/0xf8
+[ 1215.204668]  napi_workfn+0x40/0x80
+[ 1215.208062]  process_one_work+0x1fc/0x390
+[ 1215.212062]  worker_thread+0x48/0x4d0
+[ 1215.215715]  kthread+0x120/0x128
+[ 1215.218935]  ret_from_fork+0x10/0x1c
+
+Fixes: e57b7901469f ("mt76: add mac80211 driver for MT7915 PCIe-based chipsets")
+Fixes: e4c5ead632ff ("mt76: mt7915: rename mt7915_mcu_get_rate_info to mt7915_mcu_get_tx_rate")
+Reported-by: Evelyn Tsai <evelyn.tsai@mediatek.com>
+Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
 Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/wireless/mediatek/mt76/mt7921/mac.c   | 31 ++++++-------------
- .../net/wireless/mediatek/mt76/mt7921/main.c  |  6 ++++
- .../wireless/mediatek/mt76/mt7921/mt7921.h    | 10 +++---
- .../net/wireless/mediatek/mt76/mt7921/regs.h  | 15 ++++++---
- 4 files changed, 31 insertions(+), 31 deletions(-)
+ .../net/wireless/mediatek/mt76/mt7915/mcu.c   | 38 ++++++++++++-------
+ 1 file changed, 24 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/mac.c b/drivers/net/wireless/mediatek/mt76/mt7921/mac.c
-index b4388a290753..a6d2a25b3495 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7921/mac.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7921/mac.c
-@@ -1318,31 +1318,20 @@ mt7921_mac_update_mib_stats(struct mt7921_phy *phy)
- 	struct mib_stats *mib = &phy->mib;
- 	int i, aggr0 = 0, aggr1;
- 
--	memset(mib, 0, sizeof(*mib));
--
--	mib->fcs_err_cnt = mt76_get_field(dev, MT_MIB_SDR3(0),
--					  MT_MIB_SDR3_FCS_ERR_MASK);
-+	mib->fcs_err_cnt += mt76_get_field(dev, MT_MIB_SDR3(0),
-+					   MT_MIB_SDR3_FCS_ERR_MASK);
-+	mib->ack_fail_cnt += mt76_get_field(dev, MT_MIB_MB_BSDR3(0),
-+					    MT_MIB_ACK_FAIL_COUNT_MASK);
-+	mib->ba_miss_cnt += mt76_get_field(dev, MT_MIB_MB_BSDR2(0),
-+					   MT_MIB_BA_FAIL_COUNT_MASK);
-+	mib->rts_cnt += mt76_get_field(dev, MT_MIB_MB_BSDR0(0),
-+				       MT_MIB_RTS_COUNT_MASK);
-+	mib->rts_retries_cnt += mt76_get_field(dev, MT_MIB_MB_BSDR1(0),
-+					       MT_MIB_RTS_FAIL_COUNT_MASK);
- 
- 	for (i = 0, aggr1 = aggr0 + 4; i < 4; i++) {
- 		u32 val, val2;
- 
--		val = mt76_rr(dev, MT_MIB_MB_SDR1(0, i));
--
--		val2 = FIELD_GET(MT_MIB_ACK_FAIL_COUNT_MASK, val);
--		if (val2 > mib->ack_fail_cnt)
--			mib->ack_fail_cnt = val2;
--
--		val2 = FIELD_GET(MT_MIB_BA_MISS_COUNT_MASK, val);
--		if (val2 > mib->ba_miss_cnt)
--			mib->ba_miss_cnt = val2;
--
--		val = mt76_rr(dev, MT_MIB_MB_SDR0(0, i));
--		val2 = FIELD_GET(MT_MIB_RTS_RETRIES_COUNT_MASK, val);
--		if (val2 > mib->rts_retries_cnt) {
--			mib->rts_cnt = FIELD_GET(MT_MIB_RTS_COUNT_MASK, val);
--			mib->rts_retries_cnt = val2;
--		}
--
- 		val = mt76_rr(dev, MT_TX_AGG_CNT(0, i));
- 		val2 = mt76_rr(dev, MT_TX_AGG_CNT2(0, i));
- 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/main.c b/drivers/net/wireless/mediatek/mt76/mt7921/main.c
-index 729f6c42cdde..3566059e5704 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7921/main.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7921/main.c
-@@ -814,11 +814,17 @@ mt7921_get_stats(struct ieee80211_hw *hw,
- 	struct mt7921_phy *phy = mt7921_hw_phy(hw);
- 	struct mib_stats *mib = &phy->mib;
- 
-+	mt7921_mutex_acquire(phy->dev);
-+
- 	stats->dot11RTSSuccessCount = mib->rts_cnt;
- 	stats->dot11RTSFailureCount = mib->rts_retries_cnt;
- 	stats->dot11FCSErrorCount = mib->fcs_err_cnt;
- 	stats->dot11ACKFailureCount = mib->ack_fail_cnt;
- 
-+	memset(mib, 0, sizeof(*mib));
-+
-+	mt7921_mutex_release(phy->dev);
-+
- 	return 0;
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
+index ca3e7a9bbcb6..443cb09ae7cb 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
+@@ -351,54 +351,62 @@ mt7915_mcu_rx_radar_detected(struct mt7915_dev *dev, struct sk_buff *skb)
+ 	dev->hw_pattern++;
  }
  
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/mt7921.h b/drivers/net/wireless/mediatek/mt76/mt7921/mt7921.h
-index 46e6aeec35ae..2979d06ee0ad 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7921/mt7921.h
-+++ b/drivers/net/wireless/mediatek/mt76/mt7921/mt7921.h
-@@ -102,11 +102,11 @@ struct mt7921_vif {
- };
+-static void
++static int
+ mt7915_mcu_tx_rate_parse(struct mt76_phy *mphy, struct mt7915_mcu_ra_info *ra,
+ 			 struct rate_info *rate, u16 r)
+ {
+ 	struct ieee80211_supported_band *sband;
+ 	u16 ru_idx = le16_to_cpu(ra->ru_idx);
+-	u16 flags = 0;
++	bool cck = false;
  
- struct mib_stats {
--	u16 ack_fail_cnt;
--	u16 fcs_err_cnt;
--	u16 rts_cnt;
--	u16 rts_retries_cnt;
--	u16 ba_miss_cnt;
-+	u32 ack_fail_cnt;
-+	u32 fcs_err_cnt;
-+	u32 rts_cnt;
-+	u32 rts_retries_cnt;
-+	u32 ba_miss_cnt;
- };
+ 	rate->mcs = FIELD_GET(MT_RA_RATE_MCS, r);
+ 	rate->nss = FIELD_GET(MT_RA_RATE_NSS, r) + 1;
  
- struct mt7921_phy {
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/regs.h b/drivers/net/wireless/mediatek/mt76/mt7921/regs.h
-index 11d5aa44ae7b..2dd2e628b776 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7921/regs.h
-+++ b/drivers/net/wireless/mediatek/mt76/mt7921/regs.h
-@@ -96,8 +96,8 @@
- #define MT_WF_MIB_BASE(_band)		((_band) ? 0xa4800 : 0x24800)
- #define MT_WF_MIB(_band, ofs)		(MT_WF_MIB_BASE(_band) + (ofs))
+ 	switch (FIELD_GET(MT_RA_RATE_TX_MODE, r)) {
+ 	case MT_PHY_TYPE_CCK:
++		cck = true;
++		fallthrough;
+ 	case MT_PHY_TYPE_OFDM:
+ 		if (mphy->chandef.chan->band == NL80211_BAND_5GHZ)
+ 			sband = &mphy->sband_5g.sband;
+ 		else
+ 			sband = &mphy->sband_2g.sband;
  
--#define MT_MIB_SDR3(_band)		MT_WF_MIB(_band, 0x014)
--#define MT_MIB_SDR3_FCS_ERR_MASK	GENMASK(15, 0)
-+#define MT_MIB_SDR3(_band)		MT_WF_MIB(_band, 0x698)
-+#define MT_MIB_SDR3_FCS_ERR_MASK	GENMASK(31, 16)
++		rate->mcs = mt76_get_rate(mphy->dev, sband, rate->mcs, cck);
+ 		rate->legacy = sband->bitrates[rate->mcs].bitrate;
+ 		break;
+ 	case MT_PHY_TYPE_HT:
+ 	case MT_PHY_TYPE_HT_GF:
+ 		rate->mcs += (rate->nss - 1) * 8;
+-		flags |= RATE_INFO_FLAGS_MCS;
++		if (rate->mcs > 31)
++			return -EINVAL;
  
- #define MT_MIB_SDR9(_band)		MT_WF_MIB(_band, 0x02c)
- #define MT_MIB_SDR9_BUSY_MASK		GENMASK(23, 0)
-@@ -121,9 +121,14 @@
- #define MT_MIB_RTS_RETRIES_COUNT_MASK	GENMASK(31, 16)
- #define MT_MIB_RTS_COUNT_MASK		GENMASK(15, 0)
++		rate->flags = RATE_INFO_FLAGS_MCS;
+ 		if (ra->gi)
+-			flags |= RATE_INFO_FLAGS_SHORT_GI;
++			rate->flags |= RATE_INFO_FLAGS_SHORT_GI;
+ 		break;
+ 	case MT_PHY_TYPE_VHT:
+-		flags |= RATE_INFO_FLAGS_VHT_MCS;
++		if (rate->mcs > 9)
++			return -EINVAL;
  
--#define MT_MIB_MB_SDR1(_band, n)	MT_WF_MIB(_band, 0x104 + ((n) << 4))
--#define MT_MIB_BA_MISS_COUNT_MASK	GENMASK(15, 0)
--#define MT_MIB_ACK_FAIL_COUNT_MASK	GENMASK(31, 16)
-+#define MT_MIB_MB_BSDR0(_band)		MT_WF_MIB(_band, 0x688)
-+#define MT_MIB_RTS_COUNT_MASK		GENMASK(15, 0)
-+#define MT_MIB_MB_BSDR1(_band)		MT_WF_MIB(_band, 0x690)
-+#define MT_MIB_RTS_FAIL_COUNT_MASK	GENMASK(15, 0)
-+#define MT_MIB_MB_BSDR2(_band)		MT_WF_MIB(_band, 0x518)
-+#define MT_MIB_BA_FAIL_COUNT_MASK	GENMASK(15, 0)
-+#define MT_MIB_MB_BSDR3(_band)		MT_WF_MIB(_band, 0x520)
-+#define MT_MIB_ACK_FAIL_COUNT_MASK	GENMASK(15, 0)
++		rate->flags = RATE_INFO_FLAGS_VHT_MCS;
+ 		if (ra->gi)
+-			flags |= RATE_INFO_FLAGS_SHORT_GI;
++			rate->flags |= RATE_INFO_FLAGS_SHORT_GI;
+ 		break;
+ 	case MT_PHY_TYPE_HE_SU:
+ 	case MT_PHY_TYPE_HE_EXT_SU:
+ 	case MT_PHY_TYPE_HE_TB:
+ 	case MT_PHY_TYPE_HE_MU:
++		if (ra->gi > NL80211_RATE_INFO_HE_GI_3_2 || rate->mcs > 11)
++			return -EINVAL;
++
+ 		rate->he_gi = ra->gi;
+ 		rate->he_dcm = FIELD_GET(MT_RA_RATE_DCM_EN, r);
+-
+-		flags |= RATE_INFO_FLAGS_HE_MCS;
++		rate->flags = RATE_INFO_FLAGS_HE_MCS;
+ 		break;
+ 	default:
+-		break;
++		return -EINVAL;
+ 	}
+-	rate->flags = flags;
  
- #define MT_MIB_MB_SDR2(_band, n)	MT_WF_MIB(_band, 0x108 + ((n) << 4))
- #define MT_MIB_FRAME_RETRIES_COUNT_MASK	GENMASK(15, 0)
+ 	if (ru_idx) {
+ 		switch (ru_idx) {
+@@ -435,6 +443,8 @@ mt7915_mcu_tx_rate_parse(struct mt76_phy *mphy, struct mt7915_mcu_ra_info *ra,
+ 			break;
+ 		}
+ 	}
++
++	return 0;
+ }
+ 
+ static void
+@@ -465,12 +475,12 @@ mt7915_mcu_tx_rate_report(struct mt7915_dev *dev, struct sk_buff *skb)
+ 		mphy = dev->mt76.phy2;
+ 
+ 	/* current rate */
+-	mt7915_mcu_tx_rate_parse(mphy, ra, &rate, curr);
+-	stats->tx_rate = rate;
++	if (!mt7915_mcu_tx_rate_parse(mphy, ra, &rate, curr))
++		stats->tx_rate = rate;
+ 
+ 	/* probing rate */
+-	mt7915_mcu_tx_rate_parse(mphy, ra, &prob_rate, probe);
+-	stats->prob_rate = prob_rate;
++	if (!mt7915_mcu_tx_rate_parse(mphy, ra, &prob_rate, probe))
++		stats->prob_rate = prob_rate;
+ 
+ 	if (attempts) {
+ 		u16 success = le16_to_cpu(ra->success);
 -- 
 2.30.2
 
