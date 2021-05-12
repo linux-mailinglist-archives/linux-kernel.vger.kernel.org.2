@@ -2,126 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B938637B6B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 09:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D70CE37B6B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 09:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbhELHRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 03:17:04 -0400
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:54627 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229996AbhELHRC (ORCPT
+        id S230075AbhELHQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 03:16:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38009 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229996AbhELHQJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 03:17:02 -0400
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 14C7FPOg028464;
-        Wed, 12 May 2021 16:15:25 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 14C7FPOg028464
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1620803725;
-        bh=8pvjgXWjwNn85x800/kxtZEedGc84LtOQn0TCaf3B2Y=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=NZBYZwsxzTPhmdURAAXV13QJGj0NOTeGTb7KOGgNCyPpOQxvbEEeG5zrQthTJKYb0
-         wjiLK3ir0+lsiutC72un0M2N2v+/45mvI6zwNUeCIeqaPQ10QK+H4A7K8X0P7x0guM
-         AYNOxIHM7F8heyKUAhg0e+tF4gmRsq3LxAxUJRlscCL15eppFmUylAprzhvd++MFS7
-         Z5kDG89NZhtviMBPKuK3WlVl3AGAG/xuwBxWWvmXu99RHhQ2G0cl/9tFUOaRDJMBmc
-         AA5vyuuJN/ZHfGv67nauIuGj7bb+TNqAbcDlNGThHXa38gix4JKElu2KQ3DCAlDkfz
-         iMFhagjGxjf6Q==
-X-Nifty-SrcIP: [209.85.210.176]
-Received: by mail-pf1-f176.google.com with SMTP id i13so17993977pfu.2;
-        Wed, 12 May 2021 00:15:25 -0700 (PDT)
-X-Gm-Message-State: AOAM531D3iewXDt00XfA0Zixm5d2zVA//+ych2d06DmkBCeDqzLRXS/y
-        HNRDnOm4SnfNTMuD1tH64+kj8WV4UewXPIw1+no=
-X-Google-Smtp-Source: ABdhPJwR9OZjGZZlsHyh2GHgKZ/BI5OyOVpAnz19sI6mG+L/SQD+qKQAAe099nMEM5v2u3M94P3mvkthQqyltgSwxrk=
-X-Received: by 2002:a63:a547:: with SMTP id r7mr34599360pgu.7.1620803724655;
- Wed, 12 May 2021 00:15:24 -0700 (PDT)
+        Wed, 12 May 2021 03:16:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620803701;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AXFTE7PJi+lvpeYy5c9eIvb8OVfNqNtGNLIpDwSvSsI=;
+        b=C+M32w6C/sZGuOZlYxaAIvXAVoEOZMDPQQpMk+EOt8SJeQLXubfwQWsgnZ1FQBj6oNl8r0
+        v224HGkj9cIuyKoI+q3xMSmYR/WtuTJreHyfCtYlB77ma+MBxv1BRqodCU5k5t5sL4Vqny
+        xe1Cy2TY5cYYIg14fPqlRhdbfU7/lRM=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-294-tQmnMLlGPhmNTlxuOR0FIA-1; Wed, 12 May 2021 03:14:59 -0400
+X-MC-Unique: tQmnMLlGPhmNTlxuOR0FIA-1
+Received: by mail-wm1-f71.google.com with SMTP id o18-20020a1ca5120000b02901333a56d46eso286586wme.8
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 00:14:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=AXFTE7PJi+lvpeYy5c9eIvb8OVfNqNtGNLIpDwSvSsI=;
+        b=LeaviZYUdbS4byMzv7ax/6uS9Zjxb33t3K7rBURG47IPoHWWeOrPCu2PSVHz0w+cTO
+         e3JQLgurXm+rgX2mPngQx4B4Zjglkm30x2L1btaQiGPjNratGvcc17PDnDVQZhoSQ/7D
+         cu748MjHQJrHEhyoBUNU9PW8j89tN7M0lh48miivjpDteUCL2OM1Kx5nbO/+o6YxLgVj
+         Iy5nGTvOlDjVW242c+c/AqIokiLCtW7jeJ7zhT6gmmEDma6FhBnx1vpEZ9I48MFU8dNi
+         IdlUxfWQ/xh9cE0nPhOTm5v2DzLUuPbbBIgvt/ECl/OwQliLxY/AVfzANiuKtGrUEdGs
+         bL+g==
+X-Gm-Message-State: AOAM531GEt4cxvVJw/eqnfSGe3xf1ByzjKXN8xVzHaLWQi5KKexcF0oS
+        m5tHl6cJnYoYStCyON5RLuDXSYDXu13RbXOlyWkecrBIT08Z5otqu8TczOdUaM7UBP+iKDLYSf5
+        xtGTkNBewJIHIfBsQ/O/bevem
+X-Received: by 2002:adf:e8c4:: with SMTP id k4mr43671525wrn.262.1620803698463;
+        Wed, 12 May 2021 00:14:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw8+TpIL+jbLqGy87WoayUMJGUDPjdx9/HH0UWUN15jKA6+I25Ud6sP1w0JPnCCEngQeZpc9A==
+X-Received: by 2002:adf:e8c4:: with SMTP id k4mr43671513wrn.262.1620803698277;
+        Wed, 12 May 2021 00:14:58 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id r7sm23718330wmq.18.2021.05.12.00.14.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 00:14:57 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Subject: Re: [PATCH 3/7] KVM: nVMX: Ignore 'hv_clean_fields' data when eVMCS
+ data is copied in vmx_get_nested_state()
+In-Reply-To: <YJqytyu7+Q7+bqeG@google.com>
+References: <20210511111956.1555830-1-vkuznets@redhat.com>
+ <20210511111956.1555830-4-vkuznets@redhat.com>
+ <YJqytyu7+Q7+bqeG@google.com>
+Date:   Wed, 12 May 2021 09:14:56 +0200
+Message-ID: <87eeecwhhr.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-References: <1620286499-40999-1-git-send-email-feng.tang@intel.com>
-In-Reply-To: <1620286499-40999-1-git-send-email-feng.tang@intel.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 12 May 2021 16:14:47 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQoDES7yFmjHzBTMBgJ+Mg_B9t3U3QR2zC0Xs+cn6mEFw@mail.gmail.com>
-Message-ID: <CAK7LNAQoDES7yFmjHzBTMBgJ+Mg_B9t3U3QR2zC0Xs+cn6mEFw@mail.gmail.com>
-Subject: Re: [PATCH] Makefile: extend 32B aligned debug option to 64B aligned
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andi Kleen <ak@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 6, 2021 at 4:35 PM Feng Tang <feng.tang@intel.com> wrote:
->
-> commit 09c60546f04f ("./Makefile: add debug option to enable
-> function aligned on 32 bytes") was introduced to help debugging
-> strange kernel performance changes caused by code alignment
-> change.
->
-> Recently we found 2 similar cases [1][2] caused by code-alignment
-> changes, which can only be identified by forcing 64 bytes aligned
-> for all functions.
->
-> Originally, 32 bytes was used mainly for not wasting too much
-> text space, but this option is only for debug anyway where text
-> space is not a big concern. So extend the alignment to 64 bytes
-> to cover more similar cases.
->
-> [1].https://lore.kernel.org/lkml/20210427090013.GG32408@xsang-OptiPlex-9020/
-> [2].https://lore.kernel.org/lkml/20210420030837.GB31773@xsang-OptiPlex-9020/
-> Signed-off-by: Feng Tang <feng.tang@intel.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Andi Kleen <ak@linux.intel.com>
+Sean Christopherson <seanjc@google.com> writes:
 
-
-Applied to linux-kbuild.
-Thanks.
-
-
-
-> ---
->  Makefile          | 4 ++--
->  lib/Kconfig.debug | 4 ++--
->  2 files changed, 4 insertions(+), 4 deletions(-)
+> On Tue, May 11, 2021, Vitaly Kuznetsov wrote:
+>> 'Clean fields' data from enlightened VMCS is only valid upon vmentry: L1
+>> hypervisor is not obliged to keep it up-to-date while it is mangling L2's
+>> state, KVM_GET_NESTED_STATE request may come at a wrong moment when actual
+>> eVMCS changes are unsynchronized with 'hv_clean_fields'. As upon migration
+>> VMCS12 is used as a source of ultimate truce, we must make sure we pick all
+>> the changes to eVMCS and thus 'clean fields' data must be ignored.
+>> 
+>> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+>> ---
+>>  arch/x86/kvm/vmx/nested.c | 43 +++++++++++++++++++++++----------------
+>>  1 file changed, 25 insertions(+), 18 deletions(-)
+>> 
+>> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+>> index ea2869d8b823..7970a16ee6b1 100644
+>> --- a/arch/x86/kvm/vmx/nested.c
+>> +++ b/arch/x86/kvm/vmx/nested.c
+>> @@ -1607,16 +1607,23 @@ static void copy_vmcs12_to_shadow(struct vcpu_vmx *vmx)
+>>  	vmcs_load(vmx->loaded_vmcs->vmcs);
+>>  }
+>>  
+>> -static int copy_enlightened_to_vmcs12(struct vcpu_vmx *vmx)
+>> +static int copy_enlightened_to_vmcs12(struct vcpu_vmx *vmx, bool from_vmentry)
+>>  {
+>>  	struct vmcs12 *vmcs12 = vmx->nested.cached_vmcs12;
+>>  	struct hv_enlightened_vmcs *evmcs = vmx->nested.hv_evmcs;
+>> +	u32 hv_clean_fields;
+>>  
+>>  	/* HV_VMX_ENLIGHTENED_CLEAN_FIELD_NONE */
+>>  	vmcs12->tpr_threshold = evmcs->tpr_threshold;
+>>  	vmcs12->guest_rip = evmcs->guest_rip;
+>>  
+>> -	if (unlikely(!(evmcs->hv_clean_fields &
+>> +	/* Clean fields data can only be trusted upon vmentry */
+>> +	if (likely(from_vmentry))
+>> +		hv_clean_fields = evmcs->hv_clean_fields;
+>> +	else
+>> +		hv_clean_fields = 0;
 >
-> diff --git a/Makefile b/Makefile
-> index 72af8e4..a9f6715 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -958,8 +958,8 @@ KBUILD_CFLAGS       += $(CC_FLAGS_CFI)
->  export CC_FLAGS_CFI
->  endif
+> ...
 >
-> -ifdef CONFIG_DEBUG_FORCE_FUNCTION_ALIGN_32B
-> -KBUILD_CFLAGS += -falign-functions=32
-> +ifdef CONFIG_DEBUG_FORCE_FUNCTION_ALIGN_64B
-> +KBUILD_CFLAGS += -falign-functions=64
->  endif
+>> @@ -3503,7 +3510,7 @@ static int nested_vmx_run(struct kvm_vcpu *vcpu, bool launch)
+>>  		return nested_vmx_failInvalid(vcpu);
+>>  
+>>  	if (vmx->nested.hv_evmcs) {
+>> -		copy_enlightened_to_vmcs12(vmx);
+>> +		copy_enlightened_to_vmcs12(vmx, true);
 >
->  # arch Makefile may override CC so keep this after arch Makefile is included
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 678c1396..6ce26b8 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -400,8 +400,8 @@ config SECTION_MISMATCH_WARN_ONLY
+> Rather than pass a bool, what about having the caller explicitly specify the
+> clean fields?  Then the migration path can have a comment about needing to
+> assume all fields are dirty, and the normal path would be self-documenting.
+> E.g. with evmcs captured in a local var:
 >
->           If unsure, say Y.
->
-> -config DEBUG_FORCE_FUNCTION_ALIGN_32B
-> -       bool "Force all function address 32B aligned" if EXPERT
-> +config DEBUG_FORCE_FUNCTION_ALIGN_64B
-> +       bool "Force all function address 64B aligned" if EXPERT
->         help
->           There are cases that a commit from one domain changes the function
->           address alignment of other domains, and cause magic performance
-> --
-> 2.7.4
+> 	if (evmcs) {
+> 		copy_enlightened_to_vmcs12(vmx, evmcs->hv_clean_fields);
+> 	} else if (...) {
+> 	}
 >
 
+I like the idea, thanks! Will incorporate into v2.
+
+>>  		/* Enlightened VMCS doesn't have launch state */
+>>  		vmcs12->launch_state = !launch;
+>>  	} else if (enable_shadow_vmcs) {
+>> @@ -6136,7 +6143,7 @@ static int vmx_get_nested_state(struct kvm_vcpu *vcpu,
+>>  		copy_vmcs02_to_vmcs12_rare(vcpu, get_vmcs12(vcpu));
+>>  		if (!vmx->nested.need_vmcs12_to_shadow_sync) {
+>>  			if (vmx->nested.hv_evmcs)
+>> -				copy_enlightened_to_vmcs12(vmx);
+>> +				copy_enlightened_to_vmcs12(vmx, false);
+>>  			else if (enable_shadow_vmcs)
+>>  				copy_shadow_to_vmcs12(vmx);
+>>  		}
+>> -- 
+>> 2.30.2
+>> 
+>
 
 -- 
-Best Regards
-Masahiro Yamada
+Vitaly
+
