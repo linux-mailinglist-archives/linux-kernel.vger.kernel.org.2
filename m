@@ -2,36 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADD9537D305
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 20:18:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7166237D307
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 20:18:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352319AbhELSP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 14:15:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43732 "EHLO mail.kernel.org"
+        id S1352742AbhELSPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 14:15:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240750AbhELQZQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:25:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB46F619B4;
-        Wed, 12 May 2021 15:48:22 +0000 (UTC)
+        id S240818AbhELQZn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:25:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AAA0E61CAB;
+        Wed, 12 May 2021 15:48:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620834503;
-        bh=f4FpQnCVgyUwamhGnxb5joz99sn7Vicj5MGxRKKfhDM=;
+        s=korg; t=1620834513;
+        bh=n+AlIZTnt6xoCymPDcnfpVGdh1ubkYkDSmHe4NPqy7U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dbHCFWNyVuaQTEfbHef94QCj4vuOOzOYdRY5+BQSTeK2hXcKUL8ea9R99hTx1WgMU
-         oMOF5JV3mXMafTndTDSQqwECDxb5nw7IRUT/pELGLecxycTiLS+h1ySQoU2i1Pg1+p
-         Ujza9s2hd9xAI6BPllII6XfR8TBKoh528tZ1Vo2g=
+        b=OJVUktWZkPZq20hNJfhPlUiMpKIEktVQrqh96nUsJCUF4pycwm0W7op9B6tVZ9b/U
+         nCc+ulNpks46YUpkpTWXnbuGgJKpXlyrXdUooTbgdF0AX5VnVmKBNfjCT6TcNS8PuF
+         yvMuxwGq0COydagILRqDgr1tK4iTPtiBCzVCettY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Borislav Petkov <bp@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
+        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 571/601] KVM: SVM: Zero out the VMCB array used to track SEV ASID association
-Date:   Wed, 12 May 2021 16:50:48 +0200
-Message-Id: <20210512144846.654984006@linuxfoundation.org>
+Subject: [PATCH 5.11 574/601] net:emac/emac-mac: Fix a use after free in emac_mac_tx_buf_send
+Date:   Wed, 12 May 2021 16:50:51 +0200
+Message-Id: <20210512144846.748983322@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144827.811958675@linuxfoundation.org>
 References: <20210512144827.811958675@linuxfoundation.org>
@@ -43,48 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
 
-[ Upstream commit 3b1902b87bf11f1c6a84368470dc13da6f3da3bd ]
+[ Upstream commit 6d72e7c767acbbdd44ebc7d89c6690b405b32b57 ]
 
-Zero out the array of VMCB pointers so that pre_sev_run() won't see
-garbage when querying the array to detect when an SEV ASID is being
-associated with a new VMCB.  In practice, reading random values is all
-but guaranteed to be benign as a false negative (which is extremely
-unlikely on its own) can only happen on CPU0 on the first VMRUN and would
-only cause KVM to skip the ASID flush.  For anything bad to happen, a
-previous instance of KVM would have to exit without flushing the ASID,
-_and_ KVM would have to not flush the ASID at any time while building the
-new SEV guest.
+In emac_mac_tx_buf_send, it calls emac_tx_fill_tpd(..,skb,..).
+If some error happens in emac_tx_fill_tpd(), the skb will be freed via
+dev_kfree_skb(skb) in error branch of emac_tx_fill_tpd().
+But the freed skb is still used via skb->len by netdev_sent_queue(,skb->len).
 
-Cc: Borislav Petkov <bp@suse.de>
-Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
-Reviewed-by: Brijesh Singh <brijesh.singh@amd.com>
-Fixes: 70cd94e60c73 ("KVM: SVM: VMRUN should use associated ASID when SEV is enabled")
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210422021125.3417167-2-seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+As i observed that emac_tx_fill_tpd() haven't modified the value of skb->len,
+thus my patch assigns skb->len to 'len' before the possible free and
+use 'len' instead of skb->len later.
+
+Fixes: b9b17debc69d2 ("net: emac: emac gigabit ethernet controller driver")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/svm/svm.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/qualcomm/emac/emac-mac.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index c8033f2586f1..99592e03658b 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -576,9 +576,8 @@ static int svm_cpu_init(int cpu)
- 	clear_page(page_address(sd->save_area));
+diff --git a/drivers/net/ethernet/qualcomm/emac/emac-mac.c b/drivers/net/ethernet/qualcomm/emac/emac-mac.c
+index 117188e3c7de..87b8c032195d 100644
+--- a/drivers/net/ethernet/qualcomm/emac/emac-mac.c
++++ b/drivers/net/ethernet/qualcomm/emac/emac-mac.c
+@@ -1437,6 +1437,7 @@ netdev_tx_t emac_mac_tx_buf_send(struct emac_adapter *adpt,
+ {
+ 	struct emac_tpd tpd;
+ 	u32 prod_idx;
++	int len;
  
- 	if (svm_sev_enabled()) {
--		sd->sev_vmcbs = kmalloc_array(max_sev_asid + 1,
--					      sizeof(void *),
--					      GFP_KERNEL);
-+		sd->sev_vmcbs = kcalloc(max_sev_asid + 1, sizeof(void *),
-+					GFP_KERNEL);
- 		if (!sd->sev_vmcbs)
- 			goto free_save_area;
- 	}
+ 	memset(&tpd, 0, sizeof(tpd));
+ 
+@@ -1456,9 +1457,10 @@ netdev_tx_t emac_mac_tx_buf_send(struct emac_adapter *adpt,
+ 	if (skb_network_offset(skb) != ETH_HLEN)
+ 		TPD_TYP_SET(&tpd, 1);
+ 
++	len = skb->len;
+ 	emac_tx_fill_tpd(adpt, tx_q, skb, &tpd);
+ 
+-	netdev_sent_queue(adpt->netdev, skb->len);
++	netdev_sent_queue(adpt->netdev, len);
+ 
+ 	/* Make sure the are enough free descriptors to hold one
+ 	 * maximum-sized SKB.  We need one desc for each fragment,
 -- 
 2.30.2
 
