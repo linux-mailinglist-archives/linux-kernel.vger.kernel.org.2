@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49C2837D4A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 23:44:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5063937D4B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 23:44:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355199AbhELS1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 14:27:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48578 "EHLO mail.kernel.org"
+        id S1355373AbhELS2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 14:28:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242296AbhELQeJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:34:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 50C2461CB9;
-        Wed, 12 May 2021 15:59:14 +0000 (UTC)
+        id S242480AbhELQey (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:34:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D51E361CC2;
+        Wed, 12 May 2021 15:59:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620835154;
-        bh=UzEpmqrKLhRDY5yqTYrJzl2TtaBXi6EbG6hW1Jrm+fA=;
+        s=korg; t=1620835183;
+        bh=DF8prHhm7BdjJr3JuvxXGbq5KxsOC0UJ246nObn0pFQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F4kU0VYC1qmn/uZZTg4XQmfHkAQDCDehNE39Ip5xz6ataLYurRF2m2+BvGgYevSrm
-         +kR4EtF5z2z3V15NPiM2qgJz/TB1lQlL1DUHxXC6HH28r5K+wS9fngK7Xx/uUe/AoB
-         u2nwmTpXAPLLI1oEfFb+YsrbL2a5ae1T/baKd7Z4=
+        b=OobCb1xaJ8JHkBf4wFiynUenkqpv54V9oVVEZETWwybrj2jcCJxt0tG7Rfe7418+7
+         naCw1nUaGS1M4cPFkVdM8fZ8v316KokDdvqxUvlzKGLtEQ8ap2uf9C3Ai5a1TNy+rm
+         H55vGHaMtrOB8zEZSIk2h3vSXi00TYj6XQiOap/8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Fabian Vogt <fabian@ritter-vogt.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 223/677] fotg210-udc: Fix EP0 IN requests bigger than two packets
-Date:   Wed, 12 May 2021 16:44:29 +0200
-Message-Id: <20210512144844.647220275@linuxfoundation.org>
+Subject: [PATCH 5.12 224/677] fotg210-udc: Remove a dubious condition leading to fotg210_done
+Date:   Wed, 12 May 2021 16:44:30 +0200
+Message-Id: <20210512144844.678322700@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
 References: <20210512144837.204217980@linuxfoundation.org>
@@ -41,34 +41,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Fabian Vogt <fabian@ritter-vogt.de>
 
-[ Upstream commit 078ba935651e149c92c41161e0322e3372cc2705 ]
+[ Upstream commit c7f755b243494d6043aadcd9a2989cb157958b95 ]
 
-For a 134 Byte packet, it sends the first two 64 Byte packets just fine,
-but then notice that less than a packet is remaining and call fotg210_done
-without actually sending the rest.
+When the EP0 IN request was not completed but less than a packet sent,
+it would complete the request successfully. That doesn't make sense
+and can't really happen as fotg210_start_dma always sends
+min(length, maxpkt) bytes.
 
 Fixes: b84a8dee23fd ("usb: gadget: add Faraday fotg210_udc driver")
 Signed-off-by: Fabian Vogt <fabian@ritter-vogt.de>
-Link: https://lore.kernel.org/r/20210324141115.9384-3-fabian@ritter-vogt.de
+Link: https://lore.kernel.org/r/20210324141115.9384-4-fabian@ritter-vogt.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/udc/fotg210-udc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/gadget/udc/fotg210-udc.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/drivers/usb/gadget/udc/fotg210-udc.c b/drivers/usb/gadget/udc/fotg210-udc.c
-index 39260007ebf8..345827cf1b64 100644
+index 345827cf1b64..a3ad93bfd256 100644
 --- a/drivers/usb/gadget/udc/fotg210-udc.c
 +++ b/drivers/usb/gadget/udc/fotg210-udc.c
-@@ -820,7 +820,7 @@ static void fotg210_ep0in(struct fotg210_udc *fotg210)
- 		if (req->req.length)
- 			fotg210_start_dma(ep, req);
- 
--		if ((req->req.length - req->req.actual) < ep->ep.maxpacket)
-+		if (req->req.actual == req->req.length)
+@@ -379,8 +379,7 @@ static void fotg210_ep0_queue(struct fotg210_ep *ep,
+ 	}
+ 	if (ep->dir_in) { /* if IN */
+ 		fotg210_start_dma(ep, req);
+-		if ((req->req.length == req->req.actual) ||
+-		    (req->req.actual < ep->ep.maxpacket))
++		if (req->req.length == req->req.actual)
  			fotg210_done(ep, req, 0);
- 	} else {
- 		fotg210_set_cxdone(fotg210);
+ 	} else { /* OUT */
+ 		u32 value = ioread32(ep->fotg210->reg + FOTG210_DMISGR0);
 -- 
 2.30.2
 
