@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2F0E37EA73
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3864037EA7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356657AbhELTA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:00:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35714 "EHLO mail.kernel.org"
+        id S1358189AbhELTCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:02:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243763AbhELQmC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:42:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B2BB6192B;
-        Wed, 12 May 2021 16:06:44 +0000 (UTC)
+        id S243919AbhELQmO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:42:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F07C61998;
+        Wed, 12 May 2021 16:08:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620835604;
-        bh=2zWcmAgQ9bjXTUIYZLN/Gfg/0sz4RI2iBgchK/DDHbU=;
+        s=korg; t=1620835698;
+        bh=8eLJmLZTNlA0xGW4L8I/apdPvAqzjJcA/wNW2WCKOC0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FIb/sC18oNyPSUWOcPMrENcW3qTCp3775dkiBgCSNDXviB3r82m41qUyE24UWI4ni
-         /B2kDoTB8KV9TEDRntbpYDPrxT+92piTMWRPWBVMLmCsSYD9wkAvh2vuLnWI2ti5qL
-         tsCVa2KJZ3wBS/zQqKWPTcseerYs/uC+j/KTnNiE=
+        b=g4gZSQfl8osbQFiFjpQUWlcyp51fxqQTDGYRRpEfiZYTRauzAaBPhkzJnAZ+UezB9
+         SEGOPugILy82zTs+djKiHPVAvnnS6jIHsQH3LEaZmCsV42uTk7N2O/LlxiRBcUIOko
+         I8OVlBGXk2YSku6baVrSRme4g9cfvQ1I1oMQQDNo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ilya Leoshkevich <iii@linux.ibm.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 376/677] selftests: fix prepending $(OUTPUT) to $(TEST_PROGS)
-Date:   Wed, 12 May 2021 16:47:02 +0200
-Message-Id: <20210512144849.824914080@linuxfoundation.org>
+Subject: [PATCH 5.12 414/677] scsi: pm80xx: Fix potential infinite loop
+Date:   Wed, 12 May 2021 16:47:40 +0200
+Message-Id: <20210512144851.098772950@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
 References: <20210512144837.204217980@linuxfoundation.org>
@@ -40,64 +42,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ilya Leoshkevich <iii@linux.ibm.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit cb4969e6f9f5ee12521aec764fa3d4bbd91bc797 ]
+[ Upstream commit 40fa7394a1ad5706e795823276f2e394cca145d0 ]
 
-Currently the following command produces an error message:
+The for-loop iterates with a u8 loop counter i and compares this with the
+loop upper limit of pm8001_ha->max_q_num which is a u32 type.  There is a
+potential infinite loop if pm8001_ha->max_q_num is larger than the u8 loop
+counter. Fix this by making the loop counter the same type as
+pm8001_ha->max_q_num.
 
-    linux# make kselftest TARGETS=bpf O=/mnt/linux-build
-    # selftests: bpf: test_libbpf.sh
-    # ./test_libbpf.sh: line 23: ./test_libbpf_open: No such file or directory
-    # test_libbpf: failed at file test_l4lb.o
-    # selftests: test_libbpf [FAILED]
+[mkp: this is purely theoretical, max_q_num is currently limited to 64]
 
-The error message might not affect the return code of make, therefore
-one needs to grep make output in order to detect it.
-
-This is not the only instance of the same underlying problem; any test
-with more than one element in $(TEST_PROGS) fails the same way. Another
-example:
-
-    linux# make O=/mnt/linux-build TARGETS=splice kselftest
-    [...]
-    # ./short_splice_read.sh: 15: ./splice_read: not found
-    # FAIL: /sys/module/test_module/sections/.init.text 2
-    not ok 2 selftests: splice: short_splice_read.sh # exit=1
-
-The current logic prepends $(OUTPUT) only to the first member of
-$(TEST_PROGS). After that, run_one() does
-
-   cd `dirname $TEST`
-
-For all tests except the first one, `dirname $TEST` is ., which means
-they cannot access the files generated in $(OUTPUT).
-
-Fix by using $(addprefix) to prepend $(OUTPUT)/ to each member of
-$(TEST_PROGS).
-
-Fixes: 1a940687e424 ("selftests: lib.mk: copy test scripts and test files for make O=dir run")
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20210407135840.494747-1-colin.king@canonical.com
+Fixes: 65df7d1986a1 ("scsi: pm80xx: Fix chip initialization failure")
+Addresses-Coverity: ("Infinite loop")
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/lib.mk | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/scsi/pm8001/pm8001_hwi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
-index a5ce26d548e4..be17462fe146 100644
---- a/tools/testing/selftests/lib.mk
-+++ b/tools/testing/selftests/lib.mk
-@@ -74,7 +74,8 @@ ifdef building_out_of_srctree
- 		rsync -aq $(TEST_PROGS) $(TEST_PROGS_EXTENDED) $(TEST_FILES) $(OUTPUT); \
- 	fi
- 	@if [ "X$(TEST_PROGS)" != "X" ]; then \
--		$(call RUN_TESTS, $(TEST_GEN_PROGS) $(TEST_CUSTOM_PROGS) $(OUTPUT)/$(TEST_PROGS)) ; \
-+		$(call RUN_TESTS, $(TEST_GEN_PROGS) $(TEST_CUSTOM_PROGS) \
-+				  $(addprefix $(OUTPUT)/,$(TEST_PROGS))) ; \
- 	else \
- 		$(call RUN_TESTS, $(TEST_GEN_PROGS) $(TEST_CUSTOM_PROGS)); \
- 	fi
+diff --git a/drivers/scsi/pm8001/pm8001_hwi.c b/drivers/scsi/pm8001/pm8001_hwi.c
+index 31e5455d280c..1b1a57f46989 100644
+--- a/drivers/scsi/pm8001/pm8001_hwi.c
++++ b/drivers/scsi/pm8001/pm8001_hwi.c
+@@ -643,7 +643,7 @@ static void init_pci_device_addresses(struct pm8001_hba_info *pm8001_ha)
+  */
+ static int pm8001_chip_init(struct pm8001_hba_info *pm8001_ha)
+ {
+-	u8 i = 0;
++	u32 i = 0;
+ 	u16 deviceid;
+ 	pci_read_config_word(pm8001_ha->pdev, PCI_DEVICE_ID, &deviceid);
+ 	/* 8081 controllers need BAR shift to access MPI space
 -- 
 2.30.2
 
