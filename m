@@ -2,91 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06EAC37C574
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 17:40:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 203BF37C577
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 17:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236485AbhELPkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 11:40:42 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52552 "EHLO mx2.suse.de"
+        id S236547AbhELPkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 11:40:51 -0400
+Received: from foss.arm.com ([217.140.110.172]:41812 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233254AbhELPRu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:17:50 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3242DB0B3;
-        Wed, 12 May 2021 15:16:40 +0000 (UTC)
-Subject: Re: [PATCH v1 7/8] null_blk: add error handling support for
- add_disk()
-To:     Luis Chamberlain <mcgrof@kernel.org>, axboe@kernel.dk
-Cc:     bvanassche@acm.org, ming.lei@redhat.com, hch@infradead.org,
-        jack@suse.cz, osandov@fb.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210512064629.13899-1-mcgrof@kernel.org>
- <20210512064629.13899-8-mcgrof@kernel.org>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <842b6a8d-8880-a0da-a38b-39378dc6ebb9@suse.de>
-Date:   Wed, 12 May 2021 17:16:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S233409AbhELPSQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:18:16 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9CE2D31B;
+        Wed, 12 May 2021 08:17:06 -0700 (PDT)
+Received: from [10.57.81.122] (unknown [10.57.81.122])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4E2DA3F718;
+        Wed, 12 May 2021 08:17:04 -0700 (PDT)
+Subject: Re: [PATCH v1 2/3] perf arm-spe: Correct sample flags for dummy event
+From:   James Clark <james.clark@arm.com>
+To:     Leo Yan <leo.yan@linaro.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Al Grant <Al.Grant@arm.com>
+References: <20210429150100.282180-1-leo.yan@linaro.org>
+ <20210429150100.282180-3-leo.yan@linaro.org>
+ <f4e483ae-acbb-7afa-c215-cb4244c2e820@arm.com>
+Message-ID: <95d93dcb-e930-a1c7-08e1-be8885d19f64@arm.com>
+Date:   Wed, 12 May 2021 18:17:03 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210512064629.13899-8-mcgrof@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <f4e483ae-acbb-7afa-c215-cb4244c2e820@arm.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/12/21 8:46 AM, Luis Chamberlain wrote:
-> We never checked for errors on add_disk() as this function
-> returned void. Now that this is fixed, use the shiny new
-> error handling.
+
+
+On 12/05/2021 17:39, James Clark wrote:
 > 
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> ---
->   drivers/block/null_blk/main.c | 9 +++++++--
->   1 file changed, 7 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/block/null_blk/main.c b/drivers/block/null_blk/main.c
-> index 5f006d9e1472..2346d1292b26 100644
-> --- a/drivers/block/null_blk/main.c
-> +++ b/drivers/block/null_blk/main.c
-> @@ -1699,6 +1699,7 @@ static int init_driver_queues(struct nullb *nullb)
->   
->   static int null_gendisk_register(struct nullb *nullb)
->   {
-> +	int ret;
->   	sector_t size = ((sector_t)nullb->dev->size * SZ_1M) >> SECTOR_SHIFT;
->   	struct gendisk *disk;
->   
-> @@ -1719,13 +1720,17 @@ static int null_gendisk_register(struct nullb *nullb)
->   	strncpy(disk->disk_name, nullb->disk_name, DISK_NAME_LEN);
->   
->   	if (nullb->dev->zoned) {
-> -		int ret = null_register_zoned_dev(nullb);
-> +		ret = null_register_zoned_dev(nullb);
->   
->   		if (ret)
->   			return ret;
->   	}
->   
-> -	add_disk(disk);
-> +	ret = add_disk(disk);
-> +	if (ret) {
+> On 29/04/2021 18:00, Leo Yan wrote:
+>> The dummy event is mainly used for mmap, the TIME sample is only needed
+[...]
+>> -	tracking_evsel->core.attr.freq = 0;
+>> -	tracking_evsel->core.attr.sample_period = 1;
+>> -	evsel__set_sample_bit(tracking_evsel, TIME);
+>> -	evsel__set_sample_bit(tracking_evsel, CPU);
+>> -	evsel__reset_sample_bit(tracking_evsel, BRANCH_STACK);
+>> +	if (opts->full_auxtrace) {
+>> +		struct evsel *tracking_evsel;
+> 
+> Hi Leo,
+> 
+> I know the "if (opts->full_auxtrace)" pattern is copied from other auxtrace
+> files, but I don't think it does anything because there is this at the top
+> of the function:
+> 
+>    	if (!opts->full_auxtrace)
+> 		return 0;
+> 
+> The same applies for other usages of "full_auxtrace" in the same function.
+> They are all always true. I'm also not sure if it's ever defined what
+> full_auxtrace means.
+> 
+> James
 
-unregister_zoned_device() ?
+Apart from this issue above, I've tested the full patchset with various combinations
+of --per-thread, -a and --timestamp and don't see any issues like missing command names
+or decode issues. (Apart from -a where Command is reported as '-1', but this issue is
+present before and after this patchset so is unrelated.)
 
-> +		put_disk(disk);
-> +		return ret;
-> +	}
->   	return 0;
->   }
->   
-> Cheers,
+I think it makes sense to unify the behaviour to make it more like Coresight and others
+so this is a good change.
 
-Hannes
--- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+Reviewed-by: James Clark <james.clark@arm.com>
+Tested-by: James Clark <james.clark@arm.com>
+
+> 
+>> +
+>> +		err = parse_events(evlist, "dummy:u", NULL);
+>> +		if (err)
+>> +			return err;
+>> +
+>> +		tracking_evsel = evlist__last(evlist);
+>> +		evlist__set_tracking_event(evlist, tracking_evsel);
+>> +
+>> +		tracking_evsel->core.attr.freq = 0;
+>> +		tracking_evsel->core.attr.sample_period = 1;
+>> +
+>> +		/* In per-cpu case, always need the time of mmap events etc */
+>> +		if (!perf_cpu_map__empty(cpus))
+>> +			evsel__set_sample_bit(tracking_evsel, TIME);
+>> +	}
+>>  
+>>  	return 0;
+>>  }
+>>
