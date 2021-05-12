@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AAD637D22E
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 20:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D26A37D230
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 20:07:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353028AbhELSGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 14:06:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44832 "EHLO mail.kernel.org"
+        id S1353062AbhELSGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 14:06:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41044 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241543AbhELQ1c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:27:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D855161A24;
-        Wed, 12 May 2021 15:53:58 +0000 (UTC)
+        id S241547AbhELQ1e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:27:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5313D61DEC;
+        Wed, 12 May 2021 15:54:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620834839;
-        bh=Y7qFrPwaTehrK6r+27CjiQ6TfRytRSMftu+HhrOVxUc=;
+        s=korg; t=1620834841;
+        bh=w0ODjGif2rcoZGNVI2RJdhui/zw658jsUrjRas3821E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uRYtrQhqGjtSusG967iWe7Oc+kwnYHHZLtdUyc7j0Latk8Pd1rTPCbrTGAvzz8OLv
-         ettXyHZN4L38u/b5I3jveoWUFyT1jG8g64nNsS/gQTYJUMSYECrVrsI/duHLX0OLHK
-         nHLtswDCPIPAYabWkhJRWIhU4V85UQBcWDs6aqs0=
+        b=VTeAyNi/rgpo4jCuBfN0kQcNzxeBfM3H9dUaFwZqpIfU21vNtmu2svoTU7lO2vOch
+         xgwJsOPS6UDlltDZOtKImHu5Oe5VhKI42uMNj5O7gNrFlqcnGFDGt85F3ssuN49AXX
+         MOPNHQrJ0Pgx0IrfJUwH0L5mbgyuElDpHAC9f05o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        stable@vger.kernel.org, Claudio Imbrenda <imbrenda@linux.ibm.com>,
         David Hildenbrand <david@redhat.com>,
+        Thomas Huth <thuth@redhat.com>,
         Christian Borntraeger <borntraeger@de.ibm.com>
-Subject: [PATCH 5.12 103/677] KVM: s390: VSIE: fix MVPG handling for prefixing and MSO
-Date:   Wed, 12 May 2021 16:42:29 +0200
-Message-Id: <20210512144840.644784211@linuxfoundation.org>
+Subject: [PATCH 5.12 104/677] KVM: s390: split kvm_s390_real_to_abs
+Date:   Wed, 12 May 2021 16:42:30 +0200
+Message-Id: <20210512144840.680550936@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
 References: <20210512144837.204217980@linuxfoundation.org>
@@ -43,50 +43,69 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Claudio Imbrenda <imbrenda@linux.ibm.com>
 
-commit c3171e94cc1cdcc3229565244112e869f052b8d9 upstream.
+commit c5d1f6b531e68888cbe6718b3f77a60115d58b9c upstream.
 
-Prefixing needs to be applied to the guest real address to translate it
-into a guest absolute address.
+A new function _kvm_s390_real_to_abs will apply prefixing to a real address
+with a given prefix value.
 
-The value of MSO needs to be added to a guest-absolute address in order to
-obtain the host-virtual.
+The old kvm_s390_real_to_abs becomes now a wrapper around the new function.
 
-Fixes: bdf7509bbefa ("s390/kvm: VSIE: correctly handle MVPG when in VSIE")
-Reported-by: Janosch Frank <frankja@linux.ibm.com>
+This is needed to avoid code duplication in vSIE.
+
 Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
 Reviewed-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: Thomas Huth <thuth@redhat.com>
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210322140559.500716-3-imbrenda@linux.ibm.com
-[borntraeger@de.ibm.com simplify mso]
+Link: https://lore.kernel.org/r/20210322140559.500716-2-imbrenda@linux.ibm.com
 Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/s390/kvm/vsie.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/s390/kvm/gaccess.h |   23 +++++++++++++++++------
+ 1 file changed, 17 insertions(+), 6 deletions(-)
 
---- a/arch/s390/kvm/vsie.c
-+++ b/arch/s390/kvm/vsie.c
-@@ -1002,7 +1002,7 @@ static u64 vsie_get_register(struct kvm_
- static int vsie_handle_mvpg(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
+--- a/arch/s390/kvm/gaccess.h
++++ b/arch/s390/kvm/gaccess.h
+@@ -18,17 +18,14 @@
+ 
+ /**
+  * kvm_s390_real_to_abs - convert guest real address to guest absolute address
+- * @vcpu - guest virtual cpu
++ * @prefix - guest prefix
+  * @gra - guest real address
+  *
+  * Returns the guest absolute address that corresponds to the passed guest real
+- * address @gra of a virtual guest cpu by applying its prefix.
++ * address @gra of by applying the given prefix.
+  */
+-static inline unsigned long kvm_s390_real_to_abs(struct kvm_vcpu *vcpu,
+-						 unsigned long gra)
++static inline unsigned long _kvm_s390_real_to_abs(u32 prefix, unsigned long gra)
  {
- 	struct kvm_s390_sie_block *scb_s = &vsie_page->scb_s;
--	unsigned long pei_dest, pei_src, src, dest, mask;
-+	unsigned long pei_dest, pei_src, src, dest, mask, prefix;
- 	u64 *pei_block = &vsie_page->scb_o->mcic;
- 	int edat, rc_dest, rc_src;
- 	union ctlreg0 cr0;
-@@ -1010,9 +1010,12 @@ static int vsie_handle_mvpg(struct kvm_v
- 	cr0.val = vcpu->arch.sie_block->gcr[0];
- 	edat = cr0.edat && test_kvm_facility(vcpu->kvm, 8);
- 	mask = _kvm_s390_logical_to_effective(&scb_s->gpsw, PAGE_MASK);
-+	prefix = scb_s->prefix << GUEST_PREFIX_SHIFT;
+-	unsigned long prefix  = kvm_s390_get_prefix(vcpu);
+-
+ 	if (gra < 2 * PAGE_SIZE)
+ 		gra += prefix;
+ 	else if (gra >= prefix && gra < prefix + 2 * PAGE_SIZE)
+@@ -37,6 +34,20 @@ static inline unsigned long kvm_s390_rea
+ }
  
- 	dest = vsie_get_register(vcpu, vsie_page, scb_s->ipb >> 20) & mask;
-+	dest = _kvm_s390_real_to_abs(prefix, dest) + scb_s->mso;
- 	src = vsie_get_register(vcpu, vsie_page, scb_s->ipb >> 16) & mask;
-+	src = _kvm_s390_real_to_abs(prefix, src) + scb_s->mso;
- 
- 	rc_dest = kvm_s390_shadow_fault(vcpu, vsie_page->gmap, dest, &pei_dest);
- 	rc_src = kvm_s390_shadow_fault(vcpu, vsie_page->gmap, src, &pei_src);
+ /**
++ * kvm_s390_real_to_abs - convert guest real address to guest absolute address
++ * @vcpu - guest virtual cpu
++ * @gra - guest real address
++ *
++ * Returns the guest absolute address that corresponds to the passed guest real
++ * address @gra of a virtual guest cpu by applying its prefix.
++ */
++static inline unsigned long kvm_s390_real_to_abs(struct kvm_vcpu *vcpu,
++						 unsigned long gra)
++{
++	return _kvm_s390_real_to_abs(kvm_s390_get_prefix(vcpu), gra);
++}
++
++/**
+  * _kvm_s390_logical_to_effective - convert guest logical to effective address
+  * @psw: psw of the guest
+  * @ga: guest logical address
 
 
