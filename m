@@ -2,50 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DF2037C09A
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:48:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E61F737C08F
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231289AbhELOt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 10:49:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38348 "EHLO
+        id S231182AbhELOq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 10:46:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230202AbhELOt0 (ORCPT
+        with ESMTP id S230396AbhELOq6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 10:49:26 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58642C061574;
-        Wed, 12 May 2021 07:48:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=6qER5CBKsbNlRlz0pP9tX3PI2r+bhUbYf6ZB05djsns=; b=oEFbiCrod3cplqF2BzOY/m7iRM
-        P37ADaOWG7bepT9Zh44ELoa+7uDnbRZjp1kzxR4XsxkkHsOPTP/jx2NNJ1JWgD2QNwPOMXJ7SObmN
-        QRIVRRna5wfJjVRAAk7+izH/d3yWXCdrxK5bMmkeejP8s4JUwM3sRqZs+6qBxv0QckDrNuQm79jW/
-        A7zDGeYlUZ8WoEWfhVy80TWqfNSaV2atpoYlOdO4tcLVycuISeLttsFrNsnG873e4a+zsDqmtE6kO
-        3u8V9yHVJdrzqNzlCpkvVLKfQtKYSfC95MbR12p8uA7/ja68WjMXRkOfp+jKehaF0SAWso6RdZi1f
-        m37LmMWw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lgq6Z-008Ncg-SM; Wed, 12 May 2021 14:45:09 +0000
-Date:   Wed, 12 May 2021 15:44:55 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     axboe@kernel.dk, bvanassche@acm.org, ming.lei@redhat.com,
-        hch@infradead.org, jack@suse.cz, osandov@fb.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 0/8] block: add error handling for *add_disk*()
-Message-ID: <YJvp5x8ZaeFnvvlK@infradead.org>
-References: <20210512064629.13899-1-mcgrof@kernel.org>
+        Wed, 12 May 2021 10:46:58 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC8C6C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 07:45:50 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id p15so20385794iln.3
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 07:45:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=BK2qpALR1fioksJYR4iyV0Xbl3Hw607tt9qwlb5LLEE=;
+        b=LbSvU/mLRgwwFZ8vODjogufJ3cXBQEYTIDnEM1nNx6UaL3hP03m7qzkNttkrRK9NRV
+         CDOxtnoyrIFNCXUzVksvEHWFQiHTKfq3Gb6GZlX47TkgLwPAFs5F1hccxk+FpZPMRnOO
+         BzG6oj9hjYx6kjkG/x1uYbYV4w903ix1MVqc4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BK2qpALR1fioksJYR4iyV0Xbl3Hw607tt9qwlb5LLEE=;
+        b=O7MNpCrThUQFWR23LJX+fdU3Z433uUf3Fy9/dlzrmHmwhoi4D0N6CEgELJ0EE0PB8D
+         QLg2Oh7mwl4+fcR+wE6SMO+fQOpcBqnLOuZkLjQ+yfgHkdSOBh8LEmE0gPMM5HL/6muS
+         RG5BnMVGL7qSjuPBFLenaTDJCiPZt06+A/bIUN97wLCPZgLMSlvMqZsyG+VEQq7t1Hyg
+         ojlXNwPabLHhgMpThWOtxwjb2GhgKBUjk+JTtKUu9Owx6g4AXHACBt6nonX48UEglgx5
+         WXG05NsTgSsPDbnFxcKrdB3fmSeDqDWKxFK1s/5QnuJzRWPy6j8vheTxT3acxU3jJs5l
+         u1Jw==
+X-Gm-Message-State: AOAM5316b6KalpiocgRQnHaZd4uVWc7cICSrV68DJ6nHALkBl1k82G98
+        neokgH70dJlJg+GXFrSeZQB2uA==
+X-Google-Smtp-Source: ABdhPJyEsoGBh/1CwWJ///88HZIkkV1QwAZK9hxhH5rxGow7K/NOTE5O3GykDe6YI0U4s0FZl//wPQ==
+X-Received: by 2002:a92:dc0c:: with SMTP id t12mr17590218iln.290.1620830750194;
+        Wed, 12 May 2021 07:45:50 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id p10sm17043ios.2.2021.05.12.07.45.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 May 2021 07:45:49 -0700 (PDT)
+Subject: Re: [PATCH 2/2] cpupower: removed a completed task from the list
+To:     Hamza Mahfooz <someguy@effective-light.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Thomas Renninger <trenn@suse.com>, Shuah Khan <shuah@kernel.org>,
+        linux-pm@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
+References: <20210512112658.89965-1-someguy@effective-light.com>
+ <20210512112658.89965-2-someguy@effective-light.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <c92f8273-9a93-1441-2866-89e94e2aef5d@linuxfoundation.org>
+Date:   Wed, 12 May 2021 08:45:49 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210512064629.13899-1-mcgrof@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20210512112658.89965-2-someguy@effective-light.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just FYI, I have a large series to clean up a lot of the
-disk/request_queue allocation and cleanup.  Which should help
-with actually adding add_disk error handling to drivers, and has
-some as far as I can tell minor context conflicts with your work.
+On 5/12/21 5:26 AM, Hamza Mahfooz wrote:
+> Since this task has been completed, cpupower/ToDo should be updated so
+> that others know not to attempt this task as well.
+> 
+> Signed-off-by: Hamza Mahfooz <someguy@effective-light.com>
+
+
+You have to use real name/address in you signed-off-by. Is this how
+you sign your legal documents?
+
+Please refer to:
+https://www.kernel.org/doc/html/latest/process/submitting-patches.html
+
+thanks,
+-- Shuah
