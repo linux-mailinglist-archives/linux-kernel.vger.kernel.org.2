@@ -2,91 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1846E37B836
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 10:40:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA70737B82D
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 10:38:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbhELImA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 04:42:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39854 "EHLO
+        id S230211AbhELIkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 04:40:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229968AbhELIl7 (ORCPT
+        with ESMTP id S229968AbhELIkD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 04:41:59 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA44C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 01:40:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=aCbHCS/vOTKYin2zVWEkVMKtygd54jsqUMQnCeOW+uc=; b=mODRj1LgtJLzzvrYKwVvo6YQmv
-        H1xn8XO1ggz/R6cI7fhVQ0b8uRtAE7Stn1jf8kKKoXCaIGUJnNbrL9egNfRgRr3UP2yoL+iECBrxA
-        KQTCWrhyCTHXEV7l0AUCOz6jiXZhdr6VB96cgpTEM2D45cyuB5CygI0O5lfbQ7vNwuyWHFzo4j4aQ
-        dBgAw392tEl7Gw5WtrCjRZwHQUWoS02KFnojLtAksh8CwgVKKTXQpa/N86pijUquhumtTM2kgN4rE
-        95eJeaQHwuEDt7fNjNCKti2NnYLQTYkMe+kDLQGADqOXrtkSYm/bGVaWShxHbKM9+Uvhzx+9RJazC
-        el2itSWg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lgkN9-0086NA-34; Wed, 12 May 2021 08:38:03 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8ED2E300242;
-        Wed, 12 May 2021 10:37:37 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 761162BA8A549; Wed, 12 May 2021 10:37:37 +0200 (CEST)
-Date:   Wed, 12 May 2021 10:37:37 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Lai Jiangshan <laijs@linux.alibaba.com>
+        Wed, 12 May 2021 04:40:03 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BB5AC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 01:38:55 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id w3so33792800ejc.4
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 01:38:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Xpv7E7m0/0rGiji1ncsswDm/EzxICdxuwDJh772j9n0=;
+        b=gV5nshzUNBLeAszIp22vouVL7PMVADVEqeNUnusNOkANOf7Tg/Lt/JG9kU7hgV8T09
+         S+es/Rd8xcOIh0ZNj9eUNP2RNF+2RFd3fjfxz9f8465QJaMjVgkkrFBD2J5MZ6/vX0i/
+         M7s4K9Bssn/KwTh5vRKMVXnxw/DNcfK7KOjz1t4i0Klofwh6BZDfzIW7OywPk1cN/yBe
+         3SZ5IZaX3u4UIbQ5azUHLgg4hk5wPbVq4z2YNBXzDFR3I30AjfG5HSBUnHp58QpF/lfz
+         5iOqGED+S4auMOrDx+F77imX6fATgMrkypZs6o6kVYvqW2uU9exYEUNjEYgkfyKTMwZL
+         rp3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=Xpv7E7m0/0rGiji1ncsswDm/EzxICdxuwDJh772j9n0=;
+        b=cI2B9WywAviFmgHe+mR0x5F6a0GlD4/t3VubmFk34kZ/5jADRXKR0xMZy/aTwXshWa
+         59X3LKSj6vKmnV/OPKa7E8Qbc79R7oq7jT9uSObfhn9gor9aHlmeyAUZrHg8mKePHOMY
+         0QFehugxjftVQ1alRg5qe8r5AcnX2SY6cWeyFNk0030J/oCwlHsVZRqXDu7oblanU4jG
+         t53KsOUTmdMNZmzMIxg1YZMW3vnCsSjM3jCr7GykBAiszp9prN5zamY3Fzj0fvGQIHJf
+         vcmuyA8NB9/fRUKcromsvUvP4HTIKyGW07hlfhHzFMHlpdAoN48wKukSVl3blajUgwwe
+         2NWA==
+X-Gm-Message-State: AOAM532kywgbuUJTbf3dwJ+lWqPk7cMB2hy3Aysa/5klTm9S0znyKRfz
+        reriXldNZpTkJGjHbaRSuW7zxklT31g=
+X-Google-Smtp-Source: ABdhPJw8Ci94AXfF/DkYp976yQHl8GYsu0fdSeRBRp/txoOC/ky+B11y1uN6l1/iAGVLBO3JjlhoFg==
+X-Received: by 2002:a17:906:c448:: with SMTP id ck8mr5534671ejb.497.1620808733842;
+        Wed, 12 May 2021 01:38:53 -0700 (PDT)
+Received: from gmail.com (0526E777.dsl.pool.telekom.hu. [5.38.231.119])
+        by smtp.gmail.com with ESMTPSA id l2sm13354681ejs.125.2021.05.12.01.38.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 01:38:53 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Wed, 12 May 2021 10:38:51 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     "H. Peter Anvin" <hpa@zytor.com>
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@suse.de>
-Subject: Re: [patch 1/2 v2] x86/cpu: Init AP exception handling from
- cpu_init_secondary()
-Message-ID: <YJuT0XfLAlkM6BZM@hirez.programming.kicks-ass.net>
-References: <20210507110210.147106915@linutronix.de>
- <20210507114000.429303187@linutronix.de>
- <ccbd2f11-bb74-19bd-cf5c-d524625f9a0d@linux.alibaba.com>
- <87wns8ko48.ffs@nanos.tec.linutronix.de>
- <87k0o6gtvu.ffs@nanos.tec.linutronix.de>
- <d5a7434c-9205-b6c6-c7ad-423e7050bc62@linux.alibaba.com>
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Mike Travis <mike.travis@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/6] x86/irq: merge common code in
+ DEFINE_IDTENTRY_SYSVEC[_SIMPLE]
+Message-ID: <YJuUG5qhGW3A1fUD@gmail.com>
+References: <20210511005531.1065536-1-hpa@zytor.com>
+ <20210511005531.1065536-5-hpa@zytor.com>
+ <87lf8lfizj.ffs@nanos.tec.linutronix.de>
+ <d6789f7c-9c44-cb57-2a52-03ac9474d2e2@zytor.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d5a7434c-9205-b6c6-c7ad-423e7050bc62@linux.alibaba.com>
+In-Reply-To: <d6789f7c-9c44-cb57-2a52-03ac9474d2e2@zytor.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 05:25:35PM +0800, Lai Jiangshan wrote:
-> 
-> 
-> On 2021/5/11 05:29, Thomas Gleixner wrote:
-> > From: Borislav Petkov <bp@suse.de>
-> > 
-> > SEV-ES guests require properly setup task register with which the TSS
-> > descriptor in the GDT can be located so that the IST-type #VC exception
-> > handler which they need to function properly, can be executed.
-> > 
-> > This setup needs to happen before attempting to load microcode in
-> > ucode_cpu_init() on secondary CPUs which can cause such #VC exceptions.
-> > 
-> > Simplify the machinery by running that exception setup from a new function
-> > cpu_init_secondary() and explicitly call cpu_init_exception_handling() for
-> > the boot CPU before cpu_init(). The latter prepares for fixing and
-> > simplifying the exception/IST setup on the boot CPU.
-> > 
-> > There should be no functional changes resulting from this patch.
-> > 
-> > [ tglx: Reworked it so cpu_init_exception_handling() stays seperate ]
-> > 
-> > Signed-off-by: Borislav Petkov <bp@suse.de>
-> > Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> 
-> 
-> For both patches:
-> 
-> Reviewed-by: Lai Jiangshan <laijs@linux.alibaba.com>
 
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+* H. Peter Anvin <hpa@zytor.com> wrote:
+
+> On 5/11/21 7:22 AM, Thomas Gleixner wrote:
+> > 
+> > That's not really making the code more readable. Something like the
+> > below perhaps?
+> > 
+> > #define IDTENTRY_INVOKE_SYSVEC(func, regs, raw)				\
+> > do {									\
+> > 	irqentry_state_t state = irqentry_enter(regs);			\
+> > 									\
+> > 	instrumentation_begin();					\
+> > 	kvm_set_cpu_l1tf_flush_l1d();					\
+> >          if (raw) {							\
+> > 		__irq_enter_raw();					\
+> > 		func(regs);						\
+> > 		__irq_exit_raw();			                \
+> > 	} else {	                                                \
+> > 		run_sysvec_on_irqstack_cond(func, regs);	        \
+> >          }                                                               \
+> > 	instrumentation_end();						\
+> >          irqentry_exit(regs, state);					\
+> > } while (0)								\
+> > 
+> 
+> Digging more into it, it looks like a *lot* of the macros in
+> <asm/irq_stack.h> and <asm/idtentry.h> can be replaced with inlines without
+> any change in functionality or generated code.
+
+That would be a much preferred outcome ...
+
+Thanks,
+
+	Ingo
