@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEDED37D325
+	by mail.lfdr.de (Postfix) with ESMTP id 6223D37D324
 	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 20:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354559AbhELSSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 14:18:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43414 "EHLO mail.kernel.org"
+        id S1354519AbhELSSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 14:18:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241727AbhELQ14 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:27:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5958C61420;
-        Wed, 12 May 2021 15:55:38 +0000 (UTC)
+        id S241732AbhELQ15 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:27:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD06F61DFF;
+        Wed, 12 May 2021 15:55:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620834938;
-        bh=kqBPCLw3fTjQTbbrkRgQ1iSU7cna6dND4Gyu3RXdw9w=;
+        s=korg; t=1620834941;
+        bh=OutA4LIeEjcDid8OGBeOVhqgU0w91cHH6NxHdsKbaME=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y8eBzeA7N1AzfQF9/LNyYjqeoXeBssWKjmdicMsSo37n7YC9u+w8PGunXTRSB8YXz
-         NSg3ev8RmL8+WdVFdAwlCbPCGeIy9m7Dl7KKeNidALke5rzMg0wQdthhIHcn03Ffur
-         qA2jffb0qP1/fYIPteTe12o3UwFiEIN6z9ljxADI=
+        b=eoYtIT4erhr24PETEtgU80rcFSlojmxnpdqD+wcFxZA9672zmMgJevyDUHqS9cjpJ
+         VCdBGcProU1tlYGJw1taeTdHzcU1HJz01+ZhDt7MnKh2GbaQtQpYNtlooX6/IMVLZy
+         6D8IZlrRqWvMdyb11CgjOb9dG96IXcgEVp3iJSk0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Corentin Labbe <clabbe.montjoie@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 143/677] crypto: sun8i-ss - fix result memory leak on error path
-Date:   Wed, 12 May 2021 16:43:09 +0200
-Message-Id: <20210512144841.998613218@linuxfoundation.org>
+Subject: [PATCH 5.12 144/677] memory: gpmc: fix out of bounds read and dereference on gpmc_cs[]
+Date:   Wed, 12 May 2021 16:43:10 +0200
+Message-Id: <20210512144842.032725877@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
 References: <20210512144837.204217980@linuxfoundation.org>
@@ -42,36 +41,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Corentin Labbe <clabbe.montjoie@gmail.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 1dbc6a1e25be8575d6c4114d1d2b841a796507f7 ]
+[ Upstream commit e004c3e67b6459c99285b18366a71af467d869f5 ]
 
-This patch fixes a memory leak on an error path.
+Currently the array gpmc_cs is indexed by cs before it cs is range checked
+and the pointer read from this out-of-index read is dereferenced. Fix this
+by performing the range check on cs before the read and the following
+pointer dereference.
 
-Fixes: d9b45418a917 ("crypto: sun8i-ss - support hash algorithms")
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Addresses-Coverity: ("Negative array index read")
+Fixes: 9ed7a776eb50 ("ARM: OMAP2+: Fix support for multiple devices on a GPMC chip select")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Reviewed-by: Tony Lindgren <tony@atomide.com>
+Link: https://lore.kernel.org/r/20210223193821.17232-1-colin.king@canonical.com
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/memory/omap-gpmc.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c
-index 11cbcbc83a7b..0b9aa24a5edd 100644
---- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c
-+++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c
-@@ -438,8 +438,8 @@ int sun8i_ss_hash_run(struct crypto_engine *engine, void *breq)
- 	kfree(pad);
+diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
+index cfa730cfd145..f80c2ea39ca4 100644
+--- a/drivers/memory/omap-gpmc.c
++++ b/drivers/memory/omap-gpmc.c
+@@ -1009,8 +1009,8 @@ EXPORT_SYMBOL(gpmc_cs_request);
  
- 	memcpy(areq->result, result, algt->alg.hash.halg.digestsize);
--	kfree(result);
- theend:
-+	kfree(result);
- 	crypto_finalize_hash_request(engine, breq, err);
- 	return 0;
- }
+ void gpmc_cs_free(int cs)
+ {
+-	struct gpmc_cs_data *gpmc = &gpmc_cs[cs];
+-	struct resource *res = &gpmc->mem;
++	struct gpmc_cs_data *gpmc;
++	struct resource *res;
+ 
+ 	spin_lock(&gpmc_mem_lock);
+ 	if (cs >= gpmc_cs_num || cs < 0 || !gpmc_cs_reserved(cs)) {
+@@ -1018,6 +1018,9 @@ void gpmc_cs_free(int cs)
+ 		spin_unlock(&gpmc_mem_lock);
+ 		return;
+ 	}
++	gpmc = &gpmc_cs[cs];
++	res = &gpmc->mem;
++
+ 	gpmc_cs_disable_mem(cs);
+ 	if (res->flags)
+ 		release_resource(res);
 -- 
 2.30.2
 
