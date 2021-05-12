@@ -2,118 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AA6D37B713
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 09:47:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 613B137B717
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 09:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230225AbhELHs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 03:48:27 -0400
-Received: from ivanoab7.miniserver.com ([37.128.132.42]:33284 "EHLO
-        www.kot-begemot.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230168AbhELHsY (ORCPT
+        id S230178AbhELHvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 03:51:07 -0400
+Received: from mout.kundenserver.de ([212.227.126.135]:50065 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229994AbhELHvF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 03:48:24 -0400
-Received: from tun252.jain.kot-begemot.co.uk ([192.168.18.6] helo=jain.kot-begemot.co.uk)
-        by www.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <anton.ivanov@cambridgegreys.com>)
-        id 1lgjZw-0007XN-Id; Wed, 12 May 2021 07:46:48 +0000
-Received: from jain.kot-begemot.co.uk ([192.168.3.3])
-        by jain.kot-begemot.co.uk with esmtp (Exim 4.92)
-        (envelope-from <anton.ivanov@cambridgegreys.com>)
-        id 1lgjZu-0001kn-0v; Wed, 12 May 2021 08:46:48 +0100
-Subject: Re: [PATCH] um: add 2 missing libs to fix various build errors
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     kernel test robot <lkp@intel.com>,
-        Brendan Jackman <jackmanb@google.com>,
-        Alexei Starovoitov <ast@kernel.org>, kbuild-all@lists.01.org,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        linux-um@lists.infradead.org,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Johannes Berg <johannes.berg@intel.com>
-References: <20210404182044.9918-1-rdunlap@infradead.org>
- <9f7eeb70-8ddc-fb04-a378-5f1e80d485e6@infradead.org>
- <74a0ba94-9a22-b7a4-3c1b-596ddbaa856e@cambridgegreys.com>
- <2a2ddf5b-3d08-1a13-94c8-ae2ca0e6444b@infradead.org>
-From:   Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Message-ID: <2f1283d0-64bc-a225-cff3-71893fdf3330@cambridgegreys.com>
-Date:   Wed, 12 May 2021 08:46:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Wed, 12 May 2021 03:51:05 -0400
+Received: from mail-oi1-f178.google.com ([209.85.167.178]) by
+ mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MFKX3-1lihhK34Pp-00Fnda; Wed, 12 May 2021 09:49:55 +0200
+Received: by mail-oi1-f178.google.com with SMTP id x15so7731063oic.13;
+        Wed, 12 May 2021 00:49:55 -0700 (PDT)
+X-Gm-Message-State: AOAM5332yO5fBiTf58nzSnzrGM13tnnVMVvXp+6Vm9GXPnge8Fqoosq0
+        bwic36wCqdqkwYZXa/BM5jt9yIG2rb9ootp5+kU=
+X-Google-Smtp-Source: ABdhPJxd0lpfpoLIqJOw+6SPCO8QED3/X3t9JAR8I4sQlku1WpueQz6KE4WIiLlRxouPNnwly1mFxvEEQ4Zrg7KWp+o=
+X-Received: by 2002:aca:f587:: with SMTP id t129mr25234423oih.84.1620805794260;
+ Wed, 12 May 2021 00:49:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <2a2ddf5b-3d08-1a13-94c8-ae2ca0e6444b@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -1.0
-X-Spam-Score: -1.0
-X-Clacks-Overhead: GNU Terry Pratchett
+References: <20210401003153.97325-1-yury.norov@gmail.com> <20210401003153.97325-12-yury.norov@gmail.com>
+ <1ac7bbc2-45d9-26ed-0b33-bf382b8d858b@I-love.SAKURA.ne.jp>
+ <CAHp75Vea0Y_LfWC7LNDoDZqO4t+SVHV5HZMzErfyMPoBAjjk1g@mail.gmail.com>
+ <YJm5Dpo+RspbAtye@rikard> <YJoyMrqRtB3GSAny@smile.fi.intel.com>
+ <YJpePAHS3EDw6PK1@rikard> <151de51e-9302-1f59-407a-e0d68bbaf11c@i-love.sakura.ne.jp>
+ <YJrrJhvwq7RUvDXD@rikard>
+In-Reply-To: <YJrrJhvwq7RUvDXD@rikard>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 12 May 2021 09:48:57 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a02qNHcksJ8DahHgLtbM9ZOydGjE3__3GoxgJFiWrAT0w@mail.gmail.com>
+Message-ID: <CAK8P3a02qNHcksJ8DahHgLtbM9ZOydGjE3__3GoxgJFiWrAT0w@mail.gmail.com>
+Subject: Re: [PATCH 11/12] tools: sync lib/find_bit implementation
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux-SH <linux-sh@vger.kernel.org>,
+        Alexey Klimov <aklimov@redhat.com>,
+        David Sterba <dsterba@suse.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jianpeng Ma <jianpeng.ma@intel.com>,
+        Joe Perches <joe@perches.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Rich Felker <dalias@libc.org>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:fhzWoOc1Vad7Gk0f0i3YZQTK7+oA8uzLV3sSW2zE6I47Ody7IvG
+ S0rZhdcOmArhLGlKkN1ijeiTQrZ8WMMZFefLsOAMnFJrJeQPFlDraXdgRyMU3S/pxOXZe0g
+ BsfNnWJgJOSMWKh2ZovFD7lypwLsYydBp2uw2L+vSc66ZfZckw/BZ8xsWEtKjxfaPba8u3J
+ l08CRvBFmJL2LQvms5Cwg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:KK/dcYhHyco=:CAyYNaS8gDrjoZWnGW4SWq
+ E8AaGhybFNBdvJxiR+GRumjv3VKz0jhJNfW4HndiWyssPH49ibo1CZcxYtq/anY0PEZeaO/Jp
+ g9My9IpOds7tbz9kPb47eWFiXdgLHh89RUzMUECtIZXLiGNnsa52/LlKDnt3sOcjq9prq6KUL
+ Iw2khn48hpKRmKf54LMEUa3+AQDBiF8L+nWjneAH3TM2CBFnQaJSDLIzmgYAHhanqpSdFXoa7
+ IqhLX1qpkIScny65UVA05L3HmHmY3t3bxoFFCJWYCX4gOU+10pGWjU0wj5EkSLqd3oi3cpJPw
+ JkR6bF2FPHWBMkjgU55RExNZHI8RvwW/1hjOMOtYUFjKqz5LkjxdCEnQZxXftg0aUUGdKascV
+ sj/twLz9OZtizPljvAz0YiP6DqWDlqZWQGLC51/kFpE7dSYbyEpNXpVUt9jncgxvWURNFFYf9
+ 6ES0kgyxQtuon2CtZQKkA9demAPU7ac1cuCt51tw5JQEEvARHI8/k5F0UP3jcsqsH2HPJmYvk
+ ke5jjaQ5xzWPNZqleeBgGM=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, May 11, 2021 at 10:39 PM Rikard Falkeborn
+<rikard.falkeborn@gmail.com> wrote:
+> On Tue, May 11, 2021 at 08:53:53PM +0900, Tetsuo Handa wrote:
 
+> > #define GENMASK_INPUT_CHECK(h, l) \
+> >      (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
+> >           __builtin_constant_p((l) > (h)), (l) > (h), 0)))
+> >
+> > __GENMASK() does not need "h" and "l" being a constant.
+> >
+> > Yes, small_const_nbits(size) in find_next_bit() can guarantee that "size" is a
+> > constant and hence "h" argument in GENMASK_INPUT_CHECK() call is also a constant.
+> > But nothing can guarantee that "offset" is a constant, and hence nothing can
+> > guarantee that "l" argument in GENMASK_INPUT_CHECK() call is also a constant.
+> >
+> > Then, how can (l) > (h) in __builtin_constant_p((l) > (h)) be evaluated at build time
+> > if either l or h (i.e. "offset" and "size - 1" in find_next_bit()) lacks a guarantee of
+> > being a constant?
+> >
+>
+> So the idea is that if (l > h) is constant, __builtin_constant_p should
+> evaluate that, and if it is not it should use zero instead as input to
+> __builtin_chose_expr(). This works with non-const inputs in many other
+> places in the kernel, but apparently in this case with a certain
+> compiler, it doesn't so I guess we need to work around it.
 
-On 12/05/2021 02:56, Randy Dunlap wrote:
-> On 4/9/21 10:28 PM, Anton Ivanov wrote:
->> On 10/04/2021 05:13, Randy Dunlap wrote:
->>> On 4/4/21 11:20 AM, Randy Dunlap wrote:
-> 
-> 
-> [snip]
-> 
->>>
->>> There are still some build errors in 2 object files:
->>>
->>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x8): undefined reference to `X86_FEATURE_XMM2'
->>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x15): undefined reference to `X86_FEATURE_XMM2'
->>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x22): undefined reference to `X86_FEATURE_XMM'
->>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x2f): undefined reference to `X86_FEATURE_XMM'
->>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x3c): undefined reference to `X86_FEATURE_XMM'
->>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x49): undefined reference to `X86_FEATURE_XMM'
->>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x56): undefined reference to `X86_FEATURE_XMM'
->>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x63): more undefined references to `X86_FEATURE_XMM' follow
->>>
->>> and
->>>
->>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x8): undefined reference to `X86_FEATURE_XMM2'
->>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x15): undefined reference to `X86_FEATURE_XMM2'
->>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x22): undefined reference to `X86_FEATURE_XMM'
->>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x2f): undefined reference to `X86_FEATURE_XMM'
->>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x3c): undefined reference to `X86_FEATURE_XMM'
->>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x49): undefined reference to `X86_FEATURE_XMM'
->>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x56): undefined reference to `X86_FEATURE_XMM'
->>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x63): undefined reference to `X86_FEATURE_XMM2'
->>> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x70): undefined reference to `X86_FEATURE_XMM2'
->>>
->>> I don't know what to do about these or what is causing them (other than
->>> "alternatives").
->>
->> I have a patch in the queue which should fix these - it "steals" the bug/feature definitions from the x86 tree.
->>
->> A
-> 
-> Hi Anton,
-> 
-> Can you post (repost) the patch for these or point me to it
-> on a mailing list, please?
-> 
-> 
-> thanks.
+I have a vague memory that __builtin_constant_p() inside of
+__builtin_choose_expr()
+always evaluates to false because of the order in which the compiler processes
+those: If constant-folding only happens after __builtin_choose_expr(), then
+__builtin_constant_p() has to be false.
 
-They are in patchwork:
-
-It is the first patch in these series:
-
-https://patchwork.ozlabs.org/project/linux-um/patch/20210312151609.24745-2-anton.ivanov@cambridgegreys.com/
-https://patchwork.ozlabs.org/project/linux-um/patch/20210312151609.24745-3-anton.ivanov@cambridgegreys.com/
-https://patchwork.ozlabs.org/project/linux-um/patch/20210312151609.24745-4-anton.ivanov@cambridgegreys.com/
-
-Best Regards,
-
-> 
-
--- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
-https://www.cambridgegreys.com/
+        Arnd
