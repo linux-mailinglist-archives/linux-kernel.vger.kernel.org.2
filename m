@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C3DF37D32A
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 20:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61CFB37D236
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 20:07:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354651AbhELSSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 14:18:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42822 "EHLO mail.kernel.org"
+        id S1353164AbhELSHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 14:07:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237880AbhELQ2B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:28:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 33D7C61461;
-        Wed, 12 May 2021 15:56:01 +0000 (UTC)
+        id S241626AbhELQ1j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:27:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD27F61DF7;
+        Wed, 12 May 2021 15:54:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620834961;
-        bh=feGBGZ6G839HD36t7DZkDVprzfXHcdWXVlp4ZpSeKbo=;
+        s=korg; t=1620834870;
+        bh=xAU5NaZrKs84wEQ0MftKqBtsgv0dD5UnYI5EjBqH2Z8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZKqoLKPHW+4PZyLBQZsHUzHWn1JFmiD1P+Gmmtic2eohgzKoABEU2ezh4+6ySob2Q
-         eXUrs+l7T+bFbQfg0yFcpWEQ3JG9+I2pqzMjhweCimpDKEwpWp51WBav4uE7hpNCa8
-         mTUVNGDFBNKK7tmkwJBKc5nHw08sQC2THVLreRsw=
+        b=08ZAhJMWvSau5pCTvyGsnGwcGXWCDJ1X5H0OA+NUiZAuI6HH+BiiARYYKVn1GAwRY
+         Wni2H03xqp9jL2vSwugM3dcgRqE/0OdvhrTQtWNtt0klHDnzPVp5A9VKo/DwQXVBgD
+         A5vGlvCrpnE6rCFNEIGjfbOJcx5fanqG2OjISAHY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>,
+        stable@vger.kernel.org,
+        Sebastien Boeuf <sebastien.boeuf@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
         Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.12 108/677] KVM: X86: Fix failure to boost kernel lock holder candidate in SEV-ES guests
-Date:   Wed, 12 May 2021 16:42:34 +0200
-Message-Id: <20210512144840.811548808@linuxfoundation.org>
+Subject: [PATCH 5.12 109/677] KVM: x86: Properly handle APF vs disabled LAPIC situation
+Date:   Wed, 12 May 2021 16:42:35 +0200
+Message-Id: <20210512144840.841629030@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
 References: <20210512144837.204217980@linuxfoundation.org>
@@ -39,39 +41,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wanpeng Li <wanpengli@tencent.com>
+From: Vitaly Kuznetsov <vkuznets@redhat.com>
 
-commit b86bb11e3a79ac0db9a6786b1fe80f74321cb076 upstream.
+commit 2f15d027c05fac406decdb5eceb9ec0902b68f53 upstream.
 
-Commit f1c6366e3043 ("KVM: SVM: Add required changes to support intercepts under
-SEV-ES") prevents hypervisor accesses guest register state when the guest is
-running under SEV-ES. The initial value of vcpu->arch.guest_state_protected
-is false, it will not be updated in preemption notifiers after this commit which
-means that the kernel spinlock lock holder will always be skipped to boost. Let's
-fix it by always treating preempted is in the guest kernel mode, false positive
-is better than skip completely.
+Async PF 'page ready' event may happen when LAPIC is (temporary) disabled.
+In particular, Sebastien reports that when Linux kernel is directly booted
+by Cloud Hypervisor, LAPIC is 'software disabled' when APF mechanism is
+initialized. On initialization KVM tries to inject 'wakeup all' event and
+puts the corresponding token to the slot. It is, however, failing to inject
+an interrupt (kvm_apic_set_irq() -> __apic_accept_irq() -> !apic_enabled())
+so the guest never gets notified and the whole APF mechanism gets stuck.
+The same issue is likely to happen if the guest temporary disables LAPIC
+and a previously unavailable page becomes available.
 
-Fixes: f1c6366e3043 (KVM: SVM: Add required changes to support intercepts under SEV-ES)
-Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-Message-Id: <1619080459-30032-1-git-send-email-wanpengli@tencent.com>
+Do two things to resolve the issue:
+- Avoid dequeuing 'page ready' events from APF queue when LAPIC is
+  disabled.
+- Trigger an attempt to deliver pending 'page ready' events when LAPIC
+  becomes enabled (SPIV or MSR_IA32_APICBASE).
+
+Reported-by: Sebastien Boeuf <sebastien.boeuf@intel.com>
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Message-Id: <20210422092948.568327-1-vkuznets@redhat.com>
 Cc: stable@vger.kernel.org
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/x86.c |    3 +++
- 1 file changed, 3 insertions(+)
+ arch/x86/kvm/lapic.c |    6 ++++++
+ arch/x86/kvm/x86.c   |    2 +-
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -11020,6 +11020,9 @@ bool kvm_arch_dy_runnable(struct kvm_vcp
+--- a/arch/x86/kvm/lapic.c
++++ b/arch/x86/kvm/lapic.c
+@@ -296,6 +296,10 @@ static inline void apic_set_spiv(struct
  
- bool kvm_arch_vcpu_in_kernel(struct kvm_vcpu *vcpu)
- {
-+	if (vcpu->arch.guest_state_protected)
-+		return true;
+ 		atomic_set_release(&apic->vcpu->kvm->arch.apic_map_dirty, DIRTY);
+ 	}
 +
- 	return vcpu->arch.preempted_in_kernel;
++	/* Check if there are APF page ready requests pending */
++	if (enabled)
++		kvm_make_request(KVM_REQ_APF_READY, apic->vcpu);
  }
  
+ static inline void kvm_apic_set_xapic_id(struct kvm_lapic *apic, u8 id)
+@@ -2261,6 +2265,8 @@ void kvm_lapic_set_base(struct kvm_vcpu
+ 		if (value & MSR_IA32_APICBASE_ENABLE) {
+ 			kvm_apic_set_xapic_id(apic, vcpu->vcpu_id);
+ 			static_branch_slow_dec_deferred(&apic_hw_disabled);
++			/* Check if there are APF page ready requests pending */
++			kvm_make_request(KVM_REQ_APF_READY, vcpu);
+ 		} else {
+ 			static_branch_inc(&apic_hw_disabled.key);
+ 			atomic_set_release(&apic->vcpu->kvm->arch.apic_map_dirty, DIRTY);
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -11293,7 +11293,7 @@ bool kvm_arch_can_dequeue_async_page_pre
+ 	if (!kvm_pv_async_pf_enabled(vcpu))
+ 		return true;
+ 	else
+-		return apf_pageready_slot_free(vcpu);
++		return kvm_lapic_enabled(vcpu) && apf_pageready_slot_free(vcpu);
+ }
+ 
+ void kvm_arch_start_assignment(struct kvm *kvm)
 
 
