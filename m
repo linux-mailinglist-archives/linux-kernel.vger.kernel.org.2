@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2415F37CBA3
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 18:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B391037CB8C
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 18:57:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243273AbhELQhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 12:37:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42328 "EHLO mail.kernel.org"
+        id S242817AbhELQfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 12:35:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42208 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236404AbhELPpc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:45:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D6A3161960;
-        Wed, 12 May 2021 15:23:18 +0000 (UTC)
+        id S234846AbhELPn0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:43:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA79D61C8C;
+        Wed, 12 May 2021 15:22:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620832999;
-        bh=qjCLGl56/4hCZXnw235vd6NXQCHpnEWMJvpg5P2bAPI=;
+        s=korg; t=1620832947;
+        bh=JiSwBk7n+z9UDxHWijuW9vbtAqoFPPUFO5JE7rJFJas=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VI0SMRSfR1VD9nCd5jx10srDkqD+CAVf8VJsWpgI3KY/6HIX7qL8fGDkZiTM68rno
-         ftYy3YtFsZmi+DNJN1wJU4ABjuByHE6Bydr9ttb2TpU8bbaewLw4Pkngkf6/e0Dcp/
-         /UfzwmG5TfyrcvgcqmY6p/gOY5SfXWrmJeTiM4E8=
+        b=Cl8JxvdfPOuvw5NgmQXz1yCfhneq0OQloktIrdeQykdhWmjFup5Sk0014CSqo8EEx
+         l4/z4rT0BsRkY31J0wivupO3vacQ+q0LSHHZRNAG+F7oBS+PUQZbB4hgIVb4USJcj6
+         jdHdFGp8Ah2YYnduLCrRpQex2jC/1+Pl7O95pbJI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 481/530] net: renesas: ravb: Fix a stuck issue when a lot of frames are received
-Date:   Wed, 12 May 2021 16:49:51 +0200
-Message-Id: <20210512144835.568587130@linuxfoundation.org>
+Subject: [PATCH 5.10 488/530] ath10k: Fix ath10k_wmi_tlv_op_pull_peer_stats_info() unlock without lock
+Date:   Wed, 12 May 2021 16:49:58 +0200
+Message-Id: <20210512144835.794461810@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144819.664462530@linuxfoundation.org>
 References: <20210512144819.664462530@linuxfoundation.org>
@@ -41,78 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+From: Shuah Khan <skhan@linuxfoundation.org>
 
-[ Upstream commit 5718458b092bf6bf4482c5df32affba3c3259517 ]
+[ Upstream commit eaaf52e4b866f265eb791897d622961293fd48c1 ]
 
-When a lot of frames were received in the short term, the driver
-caused a stuck of receiving until a new frame was received. For example,
-the following command from other device could cause this issue.
+ath10k_wmi_tlv_op_pull_peer_stats_info() could try to unlock RCU lock
+winthout locking it first when peer reason doesn't match the valid
+cases for this function.
 
-    $ sudo ping -f -l 1000 -c 1000 <this driver's ipaddress>
+Add a default case to return without unlocking.
 
-The previous code always cleared the interrupt flag of RX but checks
-the interrupt flags in ravb_poll(). So, ravb_poll() could not call
-ravb_rx() in the next time until a new RX frame was received if
-ravb_rx() returned true. To fix the issue, always calls ravb_rx()
-regardless the interrupt flags condition.
-
-Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
-Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 09078368d516 ("ath10k: hold RCU lock when calling ieee80211_find_sta_by_ifaddr()")
+Reported-by: Pavel Machek <pavel@ucw.cz>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210406230228.31301-1-skhan@linuxfoundation.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/renesas/ravb_main.c | 35 ++++++++----------------
- 1 file changed, 12 insertions(+), 23 deletions(-)
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-index bd30505fbc57..f96eed67e1a2 100644
---- a/drivers/net/ethernet/renesas/ravb_main.c
-+++ b/drivers/net/ethernet/renesas/ravb_main.c
-@@ -911,31 +911,20 @@ static int ravb_poll(struct napi_struct *napi, int budget)
- 	int q = napi - priv->napi;
- 	int mask = BIT(q);
- 	int quota = budget;
--	u32 ris0, tis;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index e7072fc4f487..4f2fbc610d79 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -592,6 +592,9 @@ static void ath10k_wmi_event_tdls_peer(struct ath10k *ar, struct sk_buff *skb)
+ 					GFP_ATOMIC
+ 					);
+ 		break;
++	default:
++		kfree(tb);
++		return;
+ 	}
  
--	for (;;) {
--		tis = ravb_read(ndev, TIS);
--		ris0 = ravb_read(ndev, RIS0);
--		if (!((ris0 & mask) || (tis & mask)))
--			break;
-+	/* Processing RX Descriptor Ring */
-+	/* Clear RX interrupt */
-+	ravb_write(ndev, ~(mask | RIS0_RESERVED), RIS0);
-+	if (ravb_rx(ndev, &quota, q))
-+		goto out;
- 
--		/* Processing RX Descriptor Ring */
--		if (ris0 & mask) {
--			/* Clear RX interrupt */
--			ravb_write(ndev, ~(mask | RIS0_RESERVED), RIS0);
--			if (ravb_rx(ndev, &quota, q))
--				goto out;
--		}
--		/* Processing TX Descriptor Ring */
--		if (tis & mask) {
--			spin_lock_irqsave(&priv->lock, flags);
--			/* Clear TX interrupt */
--			ravb_write(ndev, ~(mask | TIS_RESERVED), TIS);
--			ravb_tx_free(ndev, q, true);
--			netif_wake_subqueue(ndev, q);
--			spin_unlock_irqrestore(&priv->lock, flags);
--		}
--	}
-+	/* Processing RX Descriptor Ring */
-+	spin_lock_irqsave(&priv->lock, flags);
-+	/* Clear TX interrupt */
-+	ravb_write(ndev, ~(mask | TIS_RESERVED), TIS);
-+	ravb_tx_free(ndev, q, true);
-+	netif_wake_subqueue(ndev, q);
-+	spin_unlock_irqrestore(&priv->lock, flags);
- 
- 	napi_complete(napi);
- 
+ exit:
 -- 
 2.30.2
 
