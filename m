@@ -2,141 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0D2937D1CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 20:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CED737D22B
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 20:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351777AbhELSBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 14:01:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41044 "EHLO mail.kernel.org"
+        id S1352954AbhELSGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 14:06:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241134AbhELQ0b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:26:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F305661DB4;
-        Wed, 12 May 2021 15:49:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620834595;
-        bh=N9vLcYC82o7Orr1L431UBD443bgdWcbPBkCcJ5/0KjE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V5f5z3cRdqUio22AMMlTGQTCQxGBpSvfpuuTECqQrQvsVtiaWgT5rTEl3oeBk0+yM
-         TuWjPDe4p1Ib8gA1RL9xpkOXY1ibZP9D+HX1B7yK5CYqtw0JwW/JZ+QXRWHDFYgGhp
-         ZeP+RXC1PWyQdfuvQszBEHitie4DjIFflVIN+7c0=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Or Cohen <orcohen@paloaltonetworks.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.11 601/601] sctp: delay auto_asconf init until binding the first addr
-Date:   Wed, 12 May 2021 16:51:18 +0200
-Message-Id: <20210512144847.649025326@linuxfoundation.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210512144827.811958675@linuxfoundation.org>
-References: <20210512144827.811958675@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S241544AbhELQ1c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:27:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BF0E61A14;
+        Wed, 12 May 2021 15:53:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620834838;
+        bh=N016NWgkukjszQxuR/Ofv+KdWercgaEVuGtmzHviWyo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=X5Cdg4r8O9CTyFW0SZFaL9lRd52w/VAOm0W3w/7gomx1x4zSjmFLNuzS0E38Jlu3J
+         WlfuucToIrQZqnZjO0y19g+ZpkE7oUZd4xpaE1d2RtY/oIzqZ56PFaLhCPPabKlXr/
+         JldbdFvCB2K22Ts1uWzkH0uhmY5x9M2nmQQJk46JPa/XHd/nNoyifhVUp/csJEfLo4
+         Vo0Xzjyb0CjdiWc9TjxZ8gB0KZXorXV5278qf7x0QnTc15exOoEjFKd61jVLNyx49M
+         vKzG0dtFp491CtiKZMq8it5xQaw+9YRc5OQsTB6zmZsFFMEkpQ5q70rdJXkhxbHHC0
+         MJJ673GPmnxhg==
+Date:   Wed, 12 May 2021 16:53:18 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Zou Wei <zou_wei@huawei.com>, cezary.rojewski@intel.com,
+        liam.r.girdwood@linux.intel.com, yang.jie@linux.intel.com,
+        perex@perex.cz, tiwai@suse.com, kuninori.morimoto.gx@renesas.com,
+        kai.vehmanen@linux.intel.com, brent.lu@intel.com,
+        ranjani.sridharan@linux.intel.com, yong.zhi@intel.com,
+        dharageswari.r@intel.com, sathyanarayana.nujella@intel.com,
+        fred.oh@linux.intel.com, tzungbi@google.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] ASoC: intel/boards: add missing MODULE_DEVICE_TABLE
+Message-ID: <20210512155318.GA54562@sirena.org.uk>
+References: <1620791647-16024-1-git-send-email-zou_wei@huawei.com>
+ <50fa973b-aa9f-ccb4-8020-9d38a63e2c30@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="/04w6evG8XlLl3ft"
+Content-Disposition: inline
+In-Reply-To: <50fa973b-aa9f-ccb4-8020-9d38a63e2c30@linux.intel.com>
+X-Cookie: They just buzzed and buzzed...buzzed.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
 
-commit 34e5b01186858b36c4d7c87e1a025071e8e2401f upstream.
+--/04w6evG8XlLl3ft
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-As Or Cohen described:
+On Wed, May 12, 2021 at 08:41:43AM -0500, Pierre-Louis Bossart wrote:
 
-  If sctp_destroy_sock is called without sock_net(sk)->sctp.addr_wq_lock
-  held and sp->do_auto_asconf is true, then an element is removed
-  from the auto_asconf_splist without any proper locking.
+> I wonder if this MODULE_DEVICE_TABLE generates the alias automatically,
+> which would make the existing ones added manually at the end of the files
+> unnecessary? If that was the case, then we should remove those MODULE_ALIAS
+> as well, no?
 
-  This can happen in the following functions:
-  1. In sctp_accept, if sctp_sock_migrate fails.
-  2. In inet_create or inet6_create, if there is a bpf program
-     attached to BPF_CGROUP_INET_SOCK_CREATE which denies
-     creation of the sctp socket.
+Yes, you shouldn't need the MODULE_ALIAS stuff there.
 
-This patch is to fix it by moving the auto_asconf init out of
-sctp_init_sock(), by which inet_create()/inet6_create() won't
-need to operate it in sctp_destroy_sock() when calling
-sk_common_release().
+--/04w6evG8XlLl3ft
+Content-Type: application/pgp-signature; name="signature.asc"
 
-It also makes more sense to do auto_asconf init while binding the
-first addr, as auto_asconf actually requires an ANY addr bind,
-see it in sctp_addr_wq_timeout_handler().
+-----BEGIN PGP SIGNATURE-----
 
-This addresses CVE-2021-23133.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCb+e0ACgkQJNaLcl1U
+h9C94Qf/R8x4USWufxkjE/vfZi6GbULEc2gbk+fdtzu/4PUfiZ/ZLBWQalz/259s
+VFG4tL+IaGU0dgVPODTSMazVCHHXdd3hxXGK5JYtzRv1NGPfi7IHLZmKkzw9yQv+
+bAELKl0QB7JXnYXWp8xeKQPZXoUBng5TNESh4qL/vBbEzHNgEA9mvmYP/Uh1cXFc
+oosiFoCLmhxxHGFhQwE5mDapqqF4RhRzDaq6paFvGzuGYIrhd6I4YHccJ1cOaRhP
+QbikYG9KjKDZUqz8iPfTvVKV+uRuhvXaEfwLPkXPrLs1oQ8syyn/eEAgTw8/kzNL
+Izn00HcKd3k0Pdq19CJGrDDzdhIJjg==
+=WJu8
+-----END PGP SIGNATURE-----
 
-Fixes: 610236587600 ("bpf: Add new cgroup attach type to enable sock modifications")
-Reported-by: Or Cohen <orcohen@paloaltonetworks.com>
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/sctp/socket.c |   31 +++++++++++++++++--------------
- 1 file changed, 17 insertions(+), 14 deletions(-)
-
---- a/net/sctp/socket.c
-+++ b/net/sctp/socket.c
-@@ -357,6 +357,18 @@ static struct sctp_af *sctp_sockaddr_af(
- 	return af;
- }
- 
-+static void sctp_auto_asconf_init(struct sctp_sock *sp)
-+{
-+	struct net *net = sock_net(&sp->inet.sk);
-+
-+	if (net->sctp.default_auto_asconf) {
-+		spin_lock(&net->sctp.addr_wq_lock);
-+		list_add_tail(&sp->auto_asconf_list, &net->sctp.auto_asconf_splist);
-+		spin_unlock(&net->sctp.addr_wq_lock);
-+		sp->do_auto_asconf = 1;
-+	}
-+}
-+
- /* Bind a local address either to an endpoint or to an association.  */
- static int sctp_do_bind(struct sock *sk, union sctp_addr *addr, int len)
- {
-@@ -418,8 +430,10 @@ static int sctp_do_bind(struct sock *sk,
- 		return -EADDRINUSE;
- 
- 	/* Refresh ephemeral port.  */
--	if (!bp->port)
-+	if (!bp->port) {
- 		bp->port = inet_sk(sk)->inet_num;
-+		sctp_auto_asconf_init(sp);
-+	}
- 
- 	/* Add the address to the bind address list.
- 	 * Use GFP_ATOMIC since BHs will be disabled.
-@@ -4993,19 +5007,6 @@ static int sctp_init_sock(struct sock *s
- 	sk_sockets_allocated_inc(sk);
- 	sock_prot_inuse_add(net, sk->sk_prot, 1);
- 
--	/* Nothing can fail after this block, otherwise
--	 * sctp_destroy_sock() will be called without addr_wq_lock held
--	 */
--	if (net->sctp.default_auto_asconf) {
--		spin_lock(&sock_net(sk)->sctp.addr_wq_lock);
--		list_add_tail(&sp->auto_asconf_list,
--		    &net->sctp.auto_asconf_splist);
--		sp->do_auto_asconf = 1;
--		spin_unlock(&sock_net(sk)->sctp.addr_wq_lock);
--	} else {
--		sp->do_auto_asconf = 0;
--	}
--
- 	local_bh_enable();
- 
- 	return 0;
-@@ -9401,6 +9402,8 @@ static int sctp_sock_migrate(struct sock
- 			return err;
- 	}
- 
-+	sctp_auto_asconf_init(newsp);
-+
- 	/* Move any messages in the old socket's receive queue that are for the
- 	 * peeled off association to the new socket's receive queue.
- 	 */
-
-
+--/04w6evG8XlLl3ft--
