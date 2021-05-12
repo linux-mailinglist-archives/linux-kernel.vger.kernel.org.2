@@ -2,115 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A70E137EED3
+	by mail.lfdr.de (Postfix) with ESMTP id EFB9037EED4
 	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 01:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443221AbhELWRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 18:17:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46918 "EHLO
+        id S1443242AbhELWRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 18:17:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1387867AbhELVtN (ORCPT
+        with ESMTP id S1388045AbhELVtO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 17:49:13 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33DE1C061246;
-        Wed, 12 May 2021 14:43:28 -0700 (PDT)
-Date:   Wed, 12 May 2021 23:43:24 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620855806;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HSbdv1GDdPztZw5zTb9KslOGTnh1tRDArL4XhKvz/ec=;
-        b=PtKwVVKfzJNbyEOwpyCTxHTECuCU4MVf8kxZQYDpX592nPOY9pV/ABQi6nwSn2y9M4dyDd
-        HOTjVjWjjr5SbCP6udeCfm/y45nmeoDKiSbD/fMFh9JQJjH8JXI4agH8pK2vkhVEmLoa1Y
-        KXmI1AwmCcPk0wgfm0iEnXRCkeSzciQYmEd4jdhzSHoELRAbUwMVPq83dbruzvYhwCHbg6
-        o+cKcLdccweyn2gh5VIoKxz5xlRa5zhg71we4ssfFWMdv1Ed4ROwWSPuHQYwrqIvHRS3zC
-        VhtqH2QtlcFATgZAIXzuslczgnHYWj2CrueR9JHdz2GlNY+XcjRKj5+ii/3j+g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620855806;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HSbdv1GDdPztZw5zTb9KslOGTnh1tRDArL4XhKvz/ec=;
-        b=A4Gb/KNED+5M7zpJuUewsiFOs0wkU5hVfNlRS0Ocv7tLHf1xjZZkpwQviqVyQWpRQ8isNM
-        hPIGcW+d+o1cetAQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     netdev@vger.kernel.org
-Cc:     Juri Lelli <juri.lelli@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>, sassmann@redhat.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH net-next] net: Treat __napi_schedule_irqoff() as
- __napi_schedule() on PREEMPT_RT
-Message-ID: <20210512214324.hiaiw3e2tzmsygcz@linutronix.de>
-References: <YJofplWBz8dT7xiw@localhost.localdomain>
+        Wed, 12 May 2021 17:49:14 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DEC9C06138D;
+        Wed, 12 May 2021 14:44:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=y/fK96kafVWJUqOAzIofEe1Sj54Q2fAf5XvOg0ehO8Y=; b=1xqf+KJauQDYC+YkSlJFrN3aU
+        +duX9QVTX92GZYhiCtbThLDRSUB6+0TK+MuOKEEU7qvGYXUmxUn2lccwktaLjL0uWAa3pYSW90txs
+        p5fZPv0V4dWNt065MBRzviRyIfPESg3Wjq9l4K+/1XZ6lCVdOqC1LxsJ16BgkfDTZdQi/T+Hjg3PM
+        /dGwOGgWcGZZKhq9K9maC9fu5qG/uVNwv1+Zk1bN2LNxChDv7p7GNjFMRjnr0HR04fSIGva8JZZlW
+        IEbS/OUuB3tvPeJAJGRJi6ugzLVwFhpHyLUTNAIF/VPpTk6eUuC9fzuzdXmzW3fTaUd0bWWZL20HL
+        r84m/dxZA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43900)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lgweD-00058K-IP; Wed, 12 May 2021 22:44:05 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lgweB-0002MJ-Js; Wed, 12 May 2021 22:44:03 +0100
+Date:   Wed, 12 May 2021 22:44:03 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, david.daney@cavium.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] net: mdio: Fix a double free issue in the .remove
+ function
+Message-ID: <20210512214403.GQ1336@shell.armlinux.org.uk>
+References: <f8ad939e6d5df4cb0273ea71a418a3ca1835338d.1620855222.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YJofplWBz8dT7xiw@localhost.localdomain>
+In-Reply-To: <f8ad939e6d5df4cb0273ea71a418a3ca1835338d.1620855222.git.christophe.jaillet@wanadoo.fr>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__napi_schedule_irqoff() is an optimized version of __napi_schedule()
-which can be used where it is known that interrupts are disabled,
-e.g. in interrupt-handlers, spin_lock_irq() sections or hrtimer
-callbacks.
+On Wed, May 12, 2021 at 11:35:38PM +0200, Christophe JAILLET wrote:
+> 'bus->mii_bus' have been allocated with 'devm_mdiobus_alloc_size()' in the
+> probe function. So it must not be freed explicitly or there will be a
+> double free.
+> 
+> Remove the incorrect 'mdiobus_free' in the remove function.
 
-On PREEMPT_RT enabled kernels this assumptions is not true. Force-
-threaded interrupt handlers and spinlocks are not disabling interrupts
-and the NAPI hrtimer callback is forced into softirq context which runs
-with interrupts enabled as well.
+Yes, this looks correct, thanks.
 
-Chasing all usage sites of __napi_schedule_irqoff() is a whack-a-mole
-game so make __napi_schedule_irqoff() invoke __napi_schedule() for
-PREEMPT_RT kernels.
+Reviewed-by: Russell King <rmk+kernel@armlinux.org.uk>
 
-The callers of ____napi_schedule() in the networking core have been
-audited and are correct on PREEMPT_RT kernels as well.
+However, there's another issue in this driver that ought to be fixed.
 
-Reported-by: Juri Lelli <juri.lelli@redhat.com>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
-Alternatively __napi_schedule_irqoff() could be #ifdef'ed out on RT and
-an inline provided which invokes __napi_schedule().
+If devm_mdiobus_alloc_size() succeeds, but of_mdiobus_register() fails,
+we continue on to the next bus (which I think is reasonable.) We don't
+free the bus.
 
-This was not chosen as it creates #ifdeffery all over the place and with
-the proposed solution the code reflects the documentation consistently
-and in one obvious place.
+When we come to the remove method however, we will call
+mdiobus_unregister() on this existent but not-registered bus. Surely we
+don't want to do that?
 
- net/core/dev.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 222b1d322c969..febb23708184e 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -6501,11 +6501,18 @@ EXPORT_SYMBOL(napi_schedule_prep);
-  * __napi_schedule_irqoff - schedule for receive
-  * @n: entry to schedule
-  *
-- * Variant of __napi_schedule() assuming hard irqs are masked
-+ * Variant of __napi_schedule() assuming hard irqs are masked.
-+ *
-+ * On PREEMPT_RT enabled kernels this maps to __napi_schedule()
-+ * because the interrupt disabled assumption might not be true
-+ * due to force-threaded interrupts and spinlock substitution.
-  */
- void __napi_schedule_irqoff(struct napi_struct *n)
- {
--	____napi_schedule(this_cpu_ptr(&softnet_data), n);
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
-+		____napi_schedule(this_cpu_ptr(&softnet_data), n);
-+	else
-+		__napi_schedule(n);
- }
- EXPORT_SYMBOL(__napi_schedule_irqoff);
- 
 -- 
-2.31.1
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
