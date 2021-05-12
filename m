@@ -2,32 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2008037EA8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D01937EA8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377108AbhELTCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:02:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35834 "EHLO mail.kernel.org"
+        id S1377130AbhELTCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:02:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244104AbhELQmf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 12:42:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B0D561D31;
-        Wed, 12 May 2021 16:10:44 +0000 (UTC)
+        id S244122AbhELQmg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 12:42:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F7BD61D18;
+        Wed, 12 May 2021 16:10:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620835844;
-        bh=l53qjLtTzEQnkdS0F5TN+5MEX+fHKQbbD5Dpr9JVCBk=;
+        s=korg; t=1620835856;
+        bh=hm7zlPd3i6DhNWvRiqLjzlRdTb94Y6hFcTU5uPnT8Ww=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FsSo/cr5/4ZWrADmoYTou27P1qdhvdZzTUuFmtWuYb3+GHncxxsAM8Ep704Bm7jhh
-         f+L0raYLkDVWds51IeBsLJGDBQBTj2HFKyE6ASsCqXIkFHFsRs1uylr2AXKMLTZc2D
-         UzDN+DjS7V34XYbsDVZeb5CQnC3eMsdDdkK4RGAY=
+        b=WbrSnsOdwck/ONlKe8Lg7V7QsEL0PfFpN4OJb1pSkIyWp44kokB524algYbSNIwcY
+         r3Sb07vQCeY33qt3ZH4BVckLBSUW68fcMN8/xqN/j7z17G7fFgje141BqZwIrDbbSk
+         uy4Oauk6Jwe1T3ZmsFv6ZoWXDkz80Zh9dVAJKJyw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 507/677] powerpc/pseries: Add key to flags in pSeries_lpar_hpte_updateboltedpp()
-Date:   Wed, 12 May 2021 16:49:13 +0200
-Message-Id: <20210512144854.227562877@linuxfoundation.org>
+        stable@vger.kernel.org, Robert Richter <rrichter@amd.com>,
+        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        =?UTF-8?q?Martin=20Li=C5=A1ka?= <mliska@suse.cz>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vijay Thakkar <vijaythakkar@me.com>,
+        linux-perf-users@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: [PATCH 5.12 512/677] perf vendor events amd: Fix broken L2 Cache Hits from L2 HWPF metric
+Date:   Wed, 12 May 2021 16:49:18 +0200
+Message-Id: <20210512144854.398935382@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
 References: <20210512144837.204217980@linuxfoundation.org>
@@ -39,94 +53,161 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Ellerman <mpe@ellerman.id.au>
+From: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
 
-[ Upstream commit b56d55a5aa4aa9fc166595a7feb57f153ef7b555 ]
+[ Upstream commit 86c2bc3da769124e3e856b6e9457be3667c30919 ]
 
-The flags argument to plpar_pte_protect() (aka. H_PROTECT), includes
-the key in bits 9-13, but currently we always set those bits to zero.
+Commit 08ed77e414ab2342 ("perf vendor events amd: Add recommended events")
+added the hits event "L2 Cache Hits from L2 HWPF" with the same metric
+expression as the accesses event "L2 Cache Accesses from L2 HWPF":
 
-In the past that hasn't been a problem because we always used key 0
-for the kernel, and updateboltedpp() is only used for kernel mappings.
+$ perf list --details
+...
+  l2_cache_accesses_from_l2_hwpf
+     [L2 Cache Accesses from L2 HWPF]
+     [l2_pf_hit_l2 + l2_pf_miss_l2_hit_l3 + l2_pf_miss_l2_l3]
+  l2_cache_hits_from_l2_hwpf
+     [L2 Cache Hits from L2 HWPF]
+     [l2_pf_hit_l2 + l2_pf_miss_l2_hit_l3 + l2_pf_miss_l2_l3]
+...
 
-However since commit d94b827e89dc ("powerpc/book3s64/kuap: Use Key 3
-for kernel mapping with hash translation") we are now inadvertently
-changing the key (to zero) when we call plpar_pte_protect().
+This was wrong and led to counting hits the same as accesses. Section
+2.1.15.2 "Performance Measurement" of "PPR for AMD Family 17h Model 31h
+B0 - 55803 Rev 0.54 - Sep 12, 2019", documents the hits event with
+EventCode 0x70 which is the same as l2_pf_hit_l2.
 
-That hasn't broken anything because updateboltedpp() is only used for
-STRICT_KERNEL_RWX, which is currently disabled on 64s due to other
-bugs.
+Fix this, and massage the description for l2_pf_hit_l2 as the hits event
+is now the duplicate of l2_pf_hit_l2. AMD recommends using the recommended
+event over other events if the duplicate exists and maintain both for
+consistency. Hence, l2_cache_hits_from_l2_hwpf should override
+l2_pf_hit_l2.
 
-But we want to fix that, so first we need to pass the key correctly to
-plpar_pte_protect(). We can't pass our newpp value directly in, we
-have to convert it into the form expected by the hcall.
+Before:
 
-The hcall we're using here is H_PROTECT, which is specified in section
-14.5.4.1.6 of LoPAPR v1.1.
+ # perf stat -M l2_cache_accesses_from_l2_hwpf,l2_cache_hits_from_l2_hwpf sleep 1
 
-It takes a `flags` parameter, and the description for flags says:
+ Performance counter stats for 'sleep 1':
 
- * flags: AVPN, pp0, pp1, pp2, key0-key4, n, and for the CMO
-   option: CMO Option flags as defined in Table 189‚
+             1,436      l2_pf_miss_l2_l3          # 11114.00 l2_cache_accesses_from_l2_hwpf
+                                                  # 11114.00 l2_cache_hits_from_l2_hwpf
+             4,482      l2_pf_hit_l2
+             5,196      l2_pf_miss_l2_hit_l3
 
-If you then go to the start of the parent section, 14.5.4.1, on page
-405, it says:
+       1.001765339 seconds time elapsed
 
-Register Linkage (For hcall() tokens 0x04 - 0x18)
- * On Call
-   * R3 function call token
-   * R4 flags (see Table 178‚ “Page Frame Table Access flags field
-     definition‚” on page 401)
+After:
 
-Then you have to go to section 14.5.3, and on page 394 there is a list
-of hcalls and their tokens (table 176), and there you can see that
-H_PROTECT == 0x18.
+ # perf stat -M l2_cache_accesses_from_l2_hwpf sleep 1
 
-Finally you can look at table 178, on page 401, where it specifies the
-layout of the bits for the key:
+ Performance counter stats for 'sleep 1':
 
- Bit     Function
- -----------------
- 50-54 | key0-key4
+             1,477      l2_pf_miss_l2_l3          # 10442.00 l2_cache_accesses_from_l2_hwpf
+             3,978      l2_pf_hit_l2
+             4,987      l2_pf_miss_l2_hit_l3
 
-Those are big-endian bit numbers, converting to normal bit numbers you
-get bits 9-13, or 0x3e00.
+       1.001491186 seconds time elapsed
 
-In the kernel we have:
+ # perf stat -e l2_cache_hits_from_l2_hwpf sleep 1
 
-  #define HPTE_R_KEY_HI		ASM_CONST(0x3000000000000000)
-  #define HPTE_R_KEY_LO		ASM_CONST(0x0000000000000e00)
+ Performance counter stats for 'sleep 1':
 
-So the LO bits of newpp are already in the right place, and the HI
-bits need to be shifted down by 48.
+             3,983      l2_cache_hits_from_l2_hwpf
 
-Fixes: d94b827e89dc ("powerpc/book3s64/kuap: Use Key 3 for kernel mapping with hash translation")
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210331003845.216246-2-mpe@ellerman.id.au
+       1.001329970 seconds time elapsed
+
+Note the difference in performance counter values for the accesses
+versus the hits after the fix, and the hits event now counting the same
+as l2_pf_hit_l2.
+
+Fixes: 08ed77e414ab ("perf vendor events amd: Add recommended events")
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=206537
+Reviewed-by: Robert Richter <rrichter@amd.com>
+Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+Tested-by: Arnaldo Carvalho de Melo <acme@kernel.org> # On a 3900X
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Kim Phillips <kim.phillips@amd.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Martin Liška <mliska@suse.cz>
+Cc: Michael Petlan <mpetlan@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Vijay Thakkar <vijaythakkar@me.com>
+Cc: linux-perf-users@vger.kernel.org
+Link: https://lore.kernel.org/r/20210406215944.113332-2-Smita.KoralahalliChannabasappa@amd.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/platforms/pseries/lpar.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ tools/perf/pmu-events/arch/x86/amdzen1/cache.json       | 2 +-
+ tools/perf/pmu-events/arch/x86/amdzen1/recommended.json | 6 +++---
+ tools/perf/pmu-events/arch/x86/amdzen2/cache.json       | 2 +-
+ tools/perf/pmu-events/arch/x86/amdzen2/recommended.json | 6 +++---
+ 4 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/arch/powerpc/platforms/pseries/lpar.c b/arch/powerpc/platforms/pseries/lpar.c
-index 3805519a6469..cd38bd421f38 100644
---- a/arch/powerpc/platforms/pseries/lpar.c
-+++ b/arch/powerpc/platforms/pseries/lpar.c
-@@ -977,11 +977,13 @@ static void pSeries_lpar_hpte_updateboltedpp(unsigned long newpp,
- 	slot = pSeries_lpar_hpte_find(vpn, psize, ssize);
- 	BUG_ON(slot == -1);
- 
--	flags = newpp & 7;
-+	flags = newpp & (HPTE_R_PP | HPTE_R_N);
- 	if (mmu_has_feature(MMU_FTR_KERNEL_RO))
- 		/* Move pp0 into bit 8 (IBM 55) */
- 		flags |= (newpp & HPTE_R_PP0) >> 55;
- 
-+	flags |= ((newpp & HPTE_R_KEY_HI) >> 48) | (newpp & HPTE_R_KEY_LO);
-+
- 	lpar_rc = plpar_pte_protect(flags, slot, 0);
- 
- 	BUG_ON(lpar_rc != H_SUCCESS);
+diff --git a/tools/perf/pmu-events/arch/x86/amdzen1/cache.json b/tools/perf/pmu-events/arch/x86/amdzen1/cache.json
+index 4ea7ec4f496e..008f1683e540 100644
+--- a/tools/perf/pmu-events/arch/x86/amdzen1/cache.json
++++ b/tools/perf/pmu-events/arch/x86/amdzen1/cache.json
+@@ -275,7 +275,7 @@
+   {
+     "EventName": "l2_pf_hit_l2",
+     "EventCode": "0x70",
+-    "BriefDescription": "L2 prefetch hit in L2.",
++    "BriefDescription": "L2 prefetch hit in L2. Use l2_cache_hits_from_l2_hwpf instead.",
+     "UMask": "0xff"
+   },
+   {
+diff --git a/tools/perf/pmu-events/arch/x86/amdzen1/recommended.json b/tools/perf/pmu-events/arch/x86/amdzen1/recommended.json
+index 2cfe2d2f3bfd..3c954543d1ae 100644
+--- a/tools/perf/pmu-events/arch/x86/amdzen1/recommended.json
++++ b/tools/perf/pmu-events/arch/x86/amdzen1/recommended.json
+@@ -79,10 +79,10 @@
+     "UMask": "0x70"
+   },
+   {
+-    "MetricName": "l2_cache_hits_from_l2_hwpf",
++    "EventName": "l2_cache_hits_from_l2_hwpf",
++    "EventCode": "0x70",
+     "BriefDescription": "L2 Cache Hits from L2 HWPF",
+-    "MetricExpr": "l2_pf_hit_l2 + l2_pf_miss_l2_hit_l3 + l2_pf_miss_l2_l3",
+-    "MetricGroup": "l2_cache"
++    "UMask": "0xff"
+   },
+   {
+     "EventName": "l3_accesses",
+diff --git a/tools/perf/pmu-events/arch/x86/amdzen2/cache.json b/tools/perf/pmu-events/arch/x86/amdzen2/cache.json
+index f61b982f83ca..8ba84a48188d 100644
+--- a/tools/perf/pmu-events/arch/x86/amdzen2/cache.json
++++ b/tools/perf/pmu-events/arch/x86/amdzen2/cache.json
+@@ -205,7 +205,7 @@
+   {
+     "EventName": "l2_pf_hit_l2",
+     "EventCode": "0x70",
+-    "BriefDescription": "L2 prefetch hit in L2.",
++    "BriefDescription": "L2 prefetch hit in L2. Use l2_cache_hits_from_l2_hwpf instead.",
+     "UMask": "0xff"
+   },
+   {
+diff --git a/tools/perf/pmu-events/arch/x86/amdzen2/recommended.json b/tools/perf/pmu-events/arch/x86/amdzen2/recommended.json
+index 2ef91e25e661..1c624cee9ef4 100644
+--- a/tools/perf/pmu-events/arch/x86/amdzen2/recommended.json
++++ b/tools/perf/pmu-events/arch/x86/amdzen2/recommended.json
+@@ -79,10 +79,10 @@
+     "UMask": "0x70"
+   },
+   {
+-    "MetricName": "l2_cache_hits_from_l2_hwpf",
++    "EventName": "l2_cache_hits_from_l2_hwpf",
++    "EventCode": "0x70",
+     "BriefDescription": "L2 Cache Hits from L2 HWPF",
+-    "MetricExpr": "l2_pf_hit_l2 + l2_pf_miss_l2_hit_l3 + l2_pf_miss_l2_l3",
+-    "MetricGroup": "l2_cache"
++    "UMask": "0xff"
+   },
+   {
+     "EventName": "l3_accesses",
 -- 
 2.30.2
 
