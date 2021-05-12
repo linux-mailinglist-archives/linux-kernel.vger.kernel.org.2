@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D431637CB65
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 18:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07C9437CB8D
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 18:57:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242665AbhELQfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 12:35:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41108 "EHLO mail.kernel.org"
+        id S242835AbhELQf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 12:35:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233477AbhELPmy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 11:42:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D5ADA619A1;
-        Wed, 12 May 2021 15:22:04 +0000 (UTC)
+        id S235262AbhELPn2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 11:43:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 525FD61C89;
+        Wed, 12 May 2021 15:22:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620832925;
-        bh=LkWGr2rRHvEgmvScWiGg+bJIodcaQoaK49yILxuNnuM=;
+        s=korg; t=1620832944;
+        bh=nYdm/1Foq3zpi5pSmv6cBeYEM0UPepIDimfFb/6Wdd8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GcGjpTqEuhwH5obC0Zcn/bhhnVD4lEPARGqmQ+rG9UE51wRjFBgdWRUVuPlEHW0jV
-         rcnUIpighoE9aJOJVY/teuIDy7M3S9unGU4CV4rChrRkiYz2EZlvQBKUzJXj2wK8Mj
-         p1ChKnDwW0dKV7yZ043mW8z+RTbdoP8+xqHcruSE=
+        b=Ie1J/802xWGo0eY7Bq30SIJSYaYoy+PgZzaaM1IBO7TDk+MehD4vSv+vXxE2S8eba
+         JYA5qalUOOo1fIlJ4aXklATTcWgOdS71IBnA914oS299CnHhI/6zFLa+FoDDi2F5hk
+         o3BvHk73LQuhdW/WdVr2PGsrOckrbRD5G71XPGn4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ryder Lee <ryder.lee@mediatek.com>,
-        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 477/530] mt76: mt7615: fix memleak when mt7615_unregister_device()
-Date:   Wed, 12 May 2021 16:49:47 +0200
-Message-Id: <20210512144835.435825744@linuxfoundation.org>
+        stable@vger.kernel.org, Yinjun Zhang <yinjun.zhang@corigine.com>,
+        Louis Peens <louis.peens@corigine.com>,
+        Simon Horman <simon.horman@netronome.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 479/530] nfp: devlink: initialize the devlink port attribute "lanes"
+Date:   Wed, 12 May 2021 16:49:49 +0200
+Message-Id: <20210512144835.499815048@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210512144819.664462530@linuxfoundation.org>
 References: <20210512144819.664462530@linuxfoundation.org>
@@ -39,36 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ryder Lee <ryder.lee@mediatek.com>
+From: Yinjun Zhang <yinjun.zhang@corigine.com>
 
-[ Upstream commit 8ab31da7b89f71c4c2defcca989fab7b42f87d71 ]
+[ Upstream commit 90b669d65d99a3ee6965275269967cdee4da106e ]
 
-mt7615_tx_token_put() should get call before mt76_free_pending_txwi().
+The number of lanes of devlink port should be correctly initialized
+when registering the port, so that the input check when running
+"devlink port split <port> count <N>" can pass.
 
-Fixes: a6275e934605 ("mt76: mt7615: reset token when mac_reset happens")
-Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Fixes: a21cf0a8330b ("devlink: Add a new devlink port lanes attribute and pass to netlink")
+Signed-off-by: Yinjun Zhang <yinjun.zhang@corigine.com>
+Signed-off-by: Louis Peens <louis.peens@corigine.com>
+Signed-off-by: Simon Horman <simon.horman@netronome.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt76/mt7615/pci_init.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/ethernet/netronome/nfp/nfp_devlink.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7615/pci_init.c b/drivers/net/wireless/mediatek/mt76/mt7615/pci_init.c
-index 7b81aef3684e..726e4781d9d9 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7615/pci_init.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7615/pci_init.c
-@@ -161,10 +161,9 @@ void mt7615_unregister_device(struct mt7615_dev *dev)
- 	mt76_unregister_device(&dev->mt76);
- 	if (mcu_running)
- 		mt7615_mcu_exit(dev);
--	mt7615_dma_cleanup(dev);
+diff --git a/drivers/net/ethernet/netronome/nfp/nfp_devlink.c b/drivers/net/ethernet/netronome/nfp/nfp_devlink.c
+index 97d2b03208de..7a8187458724 100644
+--- a/drivers/net/ethernet/netronome/nfp/nfp_devlink.c
++++ b/drivers/net/ethernet/netronome/nfp/nfp_devlink.c
+@@ -364,6 +364,7 @@ int nfp_devlink_port_register(struct nfp_app *app, struct nfp_port *port)
  
- 	mt7615_tx_token_put(dev);
--
-+	mt7615_dma_cleanup(dev);
- 	tasklet_disable(&dev->irq_tasklet);
- 
- 	mt76_free_device(&dev->mt76);
+ 	attrs.split = eth_port.is_split;
+ 	attrs.splittable = !attrs.split;
++	attrs.lanes = eth_port.port_lanes;
+ 	attrs.flavour = DEVLINK_PORT_FLAVOUR_PHYSICAL;
+ 	attrs.phys.port_number = eth_port.label_port;
+ 	attrs.phys.split_subport_number = eth_port.label_subport;
 -- 
 2.30.2
 
