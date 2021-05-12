@@ -2,134 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACA4C37B443
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 04:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 663C537B436
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 04:43:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230109AbhELCs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 22:48:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46646 "EHLO
+        id S230023AbhELCoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 22:44:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229934AbhELCs4 (ORCPT
+        with ESMTP id S229952AbhELCoh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 22:48:56 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01A11C061761;
-        Tue, 11 May 2021 19:39:51 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id e11so14165068ljn.13;
-        Tue, 11 May 2021 19:39:50 -0700 (PDT)
+        Tue, 11 May 2021 22:44:37 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E31CC061763;
+        Tue, 11 May 2021 19:43:30 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id w22so7099858oiw.9;
+        Tue, 11 May 2021 19:43:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=BZrN9CKOIbxr+u9v7iLlbrVLgfzLx8ReH7EGaaO9x1I=;
-        b=lbLifQDNCpqVolfi042QXh5WuwbLtkYvVO4+OKYLT1ZYeN0GZPdt6v0ZC01Ycp/AbC
-         yJCUY6OLXls/8Uo/drc0huwWw41jxoKhZdjhuuZWpNteeOaTFUIVMHloI2IED1SmrhdV
-         y7jdjA8mhzAA0tplfiMoCbYSeGmGJ0Ys28mA/qD0nWsVX8fTVdVWbfQKwfmRdrlINyvp
-         xJl5DhqcNUqolDr56E6xNuBMzjpqsmpIpAZbKbVqCsM5SqJQ9Yiq/C5HPbEWpxn+4Fjl
-         X3cDGlA0f9Sj+HiLpKZf9pnh5XDHEEx48gDlUj7bwlbmzWRqChr++rsGHefWQ/Rmnkzj
-         iKEg==
+        bh=jiFXw0djjJoh6U5BPJwzizmPY29AVsMjgO4iqC1nUPc=;
+        b=SVp23lzqVA+XUl5i76vOZyM8rl+ajveVK61N2LBOTHRk75uvk9Wt8kB/2nir0m2NCq
+         aPXmE1/DxBoxgnVAAuYnyNMcN3ZtU1M9g4a6f6h9XURr80cXTv4FdpCsPv/upH5t9+vp
+         qPjbyhkfwBHxxU0RkOH6wB8LimzXwnAPUXQnFEMC3ee/2vCsypSrgUzl0qD+7OG9FjXe
+         wwdTEXQ6pnOqzqa3/XAINjHY3n7eLj93DRuXu88ofc8qnS23xOVlLVFjHlGZM4SvdFVO
+         YFx/CJS2COabTMY/LSavmoV0LjaQVFaXuhXLmqaKM+AwvTBDkDOCZCNgHGZ8sKq2LZmx
+         dgVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=BZrN9CKOIbxr+u9v7iLlbrVLgfzLx8ReH7EGaaO9x1I=;
-        b=kpRqdX8tDZCzUxcaL/ZWuaagOnE4yhAkOzj9DoCmcht0xOGQpBWJ3OU+25UGvfodex
-         IFlAvi/7Z74C1g8DOqzPy3UvTnudlxKKSFa8uy1+csgyohJfMSTc1EOP/U913V/SSe2T
-         zlr2ziIEqYzfe7h9C5492oz502kjcWdBblVnBKNUHCUDO5tKkvJxvGu9xQQQQ/b8Ocj6
-         QSsuGAaePjvFbMTMy1aXpoCjT2Z4b/Eiz8UnLxYiEy6e/wworuAPto8j+kPtjJ5JGNCm
-         WyXRFgjbsl9K2jPSIjESLtZ3xpyEraCHiYWOx2d9joWOIsEs0vo0wvw6BRFzp1pHa+49
-         YAGg==
-X-Gm-Message-State: AOAM531z3vnP5a5AUnQt3bT/lNY5369A/3WBk1Vxv04UgDGzmjwLskXX
-        jUXscNn3fYFEcRzcAZxPjJLAD3u7U7bmK4jxdI4=
-X-Google-Smtp-Source: ABdhPJwUNWoD0sHexnPdDFMVCMFGnuaVCaQuZqImmT6XeZa5ItR8WaL/uitw2bleALjA3lJb1ACEe7B+DMbmJxgwQNg=
-X-Received: by 2002:a2e:a606:: with SMTP id v6mr27851429ljp.289.1620787189542;
- Tue, 11 May 2021 19:39:49 -0700 (PDT)
+        bh=jiFXw0djjJoh6U5BPJwzizmPY29AVsMjgO4iqC1nUPc=;
+        b=fzVvKLho3AkV9dHQJKSRr1jo2Jm7cnTlZfiqPl+N8ni+aFml4Op/B9t4tsGTGRkIp6
+         Ld2yVpABORVwao6ZCHdzpA8KRYXNAFW3Cdkpwj6c/eXbidNoh06hSsHCF5VRDkxBIdIj
+         RRs0v+9M5gfbhwYhvTkKBRXEtmfWe0yZmpeXJ13b/IOcnG1oWKxEHUFxhiiCsyyg0Oms
+         KD0/2WZwbZO95KiDm4q0qRxICFbr0tnP2xzhlePfbXjr4zODe7Ua1+Q2EUEvaDnyhwR8
+         Egf3q2q0Wnfyxm8v9jQXZRZ1R99psbhgILvZQUhK73HwjypKqcTAL937faRvnLzP/ZDM
+         iYNw==
+X-Gm-Message-State: AOAM532m6lG8re37UVqYFS1d0wwkOpbdXlU4ReEOYIqsNVHsd6L896KO
+        a0/Hhaf+QtwqAmtDmdF6GKSOgRS5tD3BTJgjkfk=
+X-Google-Smtp-Source: ABdhPJzvibUVZXLXUlvNTMe/9ojiBltyI639HptwJYY0KtqjTv9dj8CnsFVyD5qD95iVH9unX6iGskwDi7QtCz/dC8k=
+X-Received: by 2002:aca:aa12:: with SMTP id t18mr1920871oie.141.1620787409603;
+ Tue, 11 May 2021 19:43:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210511190518.8901-1-gatis@mikrotik.com> <20210511190518.8901-3-gatis@mikrotik.com>
-In-Reply-To: <20210511190518.8901-3-gatis@mikrotik.com>
-From:   Chris Snook <chris.snook@gmail.com>
-Date:   Tue, 11 May 2021 19:39:38 -0700
-Message-ID: <CAMXMK6tkPYLLQzq65uFVd-aCWaVHSne16MBEo7o6fGDTDA0rpw@mail.gmail.com>
-Subject: Re: [PATCH net-next 2/4] atl1c: improve performance by avoiding
- unnecessary pcie writes on xmit
-To:     Gatis Peisenieks <gatis@mikrotik.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        jesse.brandeburg@intel.com, dchickles@marvell.com,
-        tully@mikrotik.com, Eric Dumazet <eric.dumazet@gmail.com>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <1620466310-8428-1-git-send-email-wanpengli@tencent.com>
+ <1620466310-8428-2-git-send-email-wanpengli@tencent.com> <YJr6v+hfMJxI2iAn@google.com>
+In-Reply-To: <YJr6v+hfMJxI2iAn@google.com>
+From:   Wanpeng Li <kernellwp@gmail.com>
+Date:   Wed, 12 May 2021 10:43:18 +0800
+Message-ID: <CANRm+Czbc9AX3=Qj7dDCENyWj27drWniimZLnyKd9=--Ag8F+g@mail.gmail.com>
+Subject: Re: [PATCH 2/3] KVM: X86: Bail out of direct yield in case of
+ undercomitted scenarios
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Increases in latency tend to hurt more on single-queue devices. Has
-this been tested on the original gigabit atl1c?
+On Wed, 12 May 2021 at 05:44, Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Sat, May 08, 2021, Wanpeng Li wrote:
+> > From: Wanpeng Li <wanpengli@tencent.com>
+> >
+> > In case of undercomitted scenarios, vCPU can get scheduling easily,
+> > kvm_vcpu_yield_to adds extra overhead, we can observe a lot of race
+> > between vcpu->ready is true and yield fails due to p->state is
+> > TASK_RUNNING. Let's bail out is such scenarios by checking the length
+> > of current cpu runqueue.
+> >
+> > Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+> > ---
+> >  arch/x86/kvm/x86.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >
+> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > index 5bd550e..c0244a6 100644
+> > --- a/arch/x86/kvm/x86.c
+> > +++ b/arch/x86/kvm/x86.c
+> > @@ -8358,6 +8358,9 @@ static void kvm_sched_yield(struct kvm_vcpu *vcpu, unsigned long dest_id)
+> >       struct kvm_vcpu *target = NULL;
+> >       struct kvm_apic_map *map;
+> >
+> > +     if (single_task_running())
+> > +             goto no_yield;
+> > +
+>
+> Hmm, could we push the result of kvm_sched_yield() down into the guest?
+> Currently the guest bails after the first attempt, which is perfect for this
+> scenario, but it seems like it would make sense to keep trying to yield if there
+> are multiple preempted vCPUs and
 
-- Chris
+It can have a race in case of sustain yield if there are multiple
+preempted vCPUs , the vCPU which you intend to yield may have already
+completed to handle IPI and be preempted now when the yielded sender
+is scheduled again and checks the next preempted candidate.
 
-On Tue, May 11, 2021 at 12:05 PM Gatis Peisenieks <gatis@mikrotik.com> wrote:
+> the "problem" was with the target.  E.g.
+
+At the beginning of kvm_sched_yield() we can just get the run queue
+length of the source, it can be treated as a hint of under-committed
+instead of guarantee of accuracy.
+
 >
-> The kernel has xmit_more facility that hints the networking driver xmit
-> path about whether more packets are coming soon. This information can be
-> used to avoid unnecessary expensive PCIe transaction per tx packet at a
-> slight increase in latency.
->
-> Max TX pps on Mikrotik 10/25G NIC in a Threadripper 3960X system
-> improved from 1150Kpps to 1700Kpps.
->
-> Signed-off-by: Gatis Peisenieks <gatis@mikrotik.com>
-> ---
->  drivers/net/ethernet/atheros/atl1c/atl1c_main.c | 13 +++++++++----
->  1 file changed, 9 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/net/ethernet/atheros/atl1c/atl1c_main.c b/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
-> index 28c30d5288e4..2a8ab51b0ed9 100644
-> --- a/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
-> +++ b/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
-> @@ -2211,8 +2211,8 @@ static int atl1c_tx_map(struct atl1c_adapter *adapter,
->         return -1;
->  }
->
-> -static void atl1c_tx_queue(struct atl1c_adapter *adapter, struct sk_buff *skb,
-> -                          struct atl1c_tpd_desc *tpd, enum atl1c_trans_queue type)
-> +static void atl1c_tx_queue(struct atl1c_adapter *adapter,
-> +                          enum atl1c_trans_queue type)
->  {
->         struct atl1c_tpd_ring *tpd_ring = &adapter->tpd_ring[type];
->         u16 reg;
-> @@ -2238,6 +2238,7 @@ static netdev_tx_t atl1c_xmit_frame(struct sk_buff *skb,
->
->         if (atl1c_tpd_avail(adapter, type) < tpd_req) {
->                 /* no enough descriptor, just stop queue */
-> +               atl1c_tx_queue(adapter, type);
->                 netif_stop_queue(netdev);
->                 return NETDEV_TX_BUSY;
->         }
-> @@ -2246,6 +2247,7 @@ static netdev_tx_t atl1c_xmit_frame(struct sk_buff *skb,
->
->         /* do TSO and check sum */
->         if (atl1c_tso_csum(adapter, skb, &tpd, type) != 0) {
-> +               atl1c_tx_queue(adapter, type);
->                 dev_kfree_skb_any(skb);
->                 return NETDEV_TX_OK;
->         }
-> @@ -2270,8 +2272,11 @@ static netdev_tx_t atl1c_xmit_frame(struct sk_buff *skb,
->                 atl1c_tx_rollback(adapter, tpd, type);
->                 dev_kfree_skb_any(skb);
->         } else {
-> -               netdev_sent_queue(adapter->netdev, skb->len);
-> -               atl1c_tx_queue(adapter, skb, tpd, type);
-> +               bool more = netdev_xmit_more();
-> +
-> +               __netdev_sent_queue(adapter->netdev, skb->len, more);
-> +               if (!more)
-> +                       atl1c_tx_queue(adapter, type);
+>         /*
+>          * Make sure other vCPUs get a chance to run if they need to.  Yield at
+>          * most once, and stop trying to yield if the VMM says yielding isn't
+>          * going to happen.
+>          */
+>         for_each_cpu(cpu, mask) {
+>                 if (vcpu_is_preempted(cpu)) {
+>                         r = kvm_hypercall1(KVM_HC_SCHED_YIELD,
+>                                            per_cpu(x86_cpu_to_apicid, cpu));
+>                         if (r != -EBUSY)
+>                                 break;
+>                 }
 >         }
 >
->         return NETDEV_TX_OK;
-> --
-> 2.31.1
 >
+> Unrelated to this patch, but it's the first time I've really looked at the guest
+> side of directed yield...
+>
+> Wouldn't it also make sense for the guest side to hook .send_call_func_single_ipi?
+
+reschedule ipi is called by .smp_send_reschedule hook, there are a lot
+of researches intend to accelerate idle vCPU reactivation, my original
+attemption is to boost synchronization primitive, I believe we need a
+lot of benchmarkings to consider inter-VM fairness and performance
+benefit for  hooks .send_call_func_single_ipi and
+.smp_send_reschedule.
+
+>
+> >       vcpu->stat.directed_yield_attempted++;
+>
+> Shouldn't directed_yield_attempted be incremented in this case?  It doesn't seem
+> fundamentally different than the case where the target was scheduled in between
+> the guest's check and the host's processing of the yield request.  In both
+> instances, the guest did indeed attempt to yield.
+
+Yes, it should be treated as attempted, I move it above the counting
+because this patch helps improve successful ratio in under-committed
+scenarios and easily shows me how much failure ratio leaves over. I
+can move it after the counting in the next version.
+
+    Wanpeng
