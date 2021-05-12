@@ -2,214 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 062E537B42B
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 04:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34E3937B434
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 04:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbhELC2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 11 May 2021 22:28:33 -0400
-Received: from mail-eopbgr10049.outbound.protection.outlook.com ([40.107.1.49]:55462
-        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229934AbhELC2b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 11 May 2021 22:28:31 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=haUsEzEKpt5mLpqh+D8xkiNMm1LYOL1BVRdM7YOqQv3KrTjn0DOQwsp+c9slJ7VG3kkC25RaHF+wn7xfRDDXQrsL6pI3IQxhCme2jKvHSUA/Bk0EEVGxQejg4QHo20PxCC1wP2t9mXa68JHArVPUGgRalrb3173pGWCLVeBF9+TPprRvJ71O9upaaO8IXRkKw1HvEpJmNLN8wjdDrDhNsVkTjfykCehNC79YMHY70Zso/3I/NikdnyZi0FZUMTprQfs4zHGg6JkxMOAXMjn+/2SCT71GWQyRIqgD9Q1T8/0L6UoLGlRoafbN/ov7ty64tBDaeLYqmvcDv0AHKFGG4g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6OzmI8MxDjk/bAHTUFLeoyiJ3yTBuTlJmmUjVNz2PMI=;
- b=AnwIOygJYs/dLwMwso7gDkJEknadzy5jeCcf7Y/wa6doBEZoTkb0zIFCVCMvZSL29V8BMRoRRw0w2lljiH8rjM3Y9Nul6CQA2eKhgnXZF2faOPWS5B/0wR6QdU1uprb7QhWBOXgv53k7YJ/6fhhYh3ZQwrRKBAVHJVKlObl/bm9SIi9TGh0+m82Se/zQaPCukG9f2PdjWvKXXsHdcptTX8S7NijDSV4kQ5BVu7W9p6kzOU5eFm8t2IAUV+V1VnFkWTH/LZc2LfSvcd+S1rxvkpYeFnDKhppDBy3QdM8QXH0pMzStnUwZQPufnOCXjubpm1KEwYEYR7iDfTjNEHxlpQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nextfour.com; dmarc=pass action=none header.from=nextfour.com;
- dkim=pass header.d=nextfour.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=NextfourGroupOy.onmicrosoft.com;
- s=selector2-NextfourGroupOy-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6OzmI8MxDjk/bAHTUFLeoyiJ3yTBuTlJmmUjVNz2PMI=;
- b=Q1mBDcqDy6JZbDJT9IK0JG1+CQ4eyFM/zEqILyUzPy0YGYPogVOGZaWENG+cbGOn/NFGpxoRYDc0BH6PhMVNqbusrz6tY8pzRYyb0aeRjQg7oXrzUBfxFJfgkb9phzei9h6/qAY6PMpUHSZ68cU5fB0mP9jToEz34+MeV3DyudM=
-Authentication-Results: linux.ibm.com; dkim=none (message not signed)
- header.d=none;linux.ibm.com; dmarc=none action=none header.from=nextfour.com;
-Received: from DBAPR03MB6630.eurprd03.prod.outlook.com (2603:10a6:10:194::6)
- by DB8PR03MB5932.eurprd03.prod.outlook.com (2603:10a6:10:ea::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.24; Wed, 12 May
- 2021 02:27:20 +0000
-Received: from DBAPR03MB6630.eurprd03.prod.outlook.com
- ([fe80::593:3329:e104:239]) by DBAPR03MB6630.eurprd03.prod.outlook.com
- ([fe80::593:3329:e104:239%5]) with mapi id 15.20.4108.031; Wed, 12 May 2021
- 02:27:20 +0000
-Subject: Re: [PATCH v5 3/7] fsdax: Add dax_iomap_cow_copy() for dax_iomap_zero
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>,
-        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org
-Cc:     darrick.wong@oracle.com, dan.j.williams@intel.com,
-        willy@infradead.org, viro@zeniv.linux.org.uk, david@fromorbit.com,
-        hch@lst.de, rgoldwyn@suse.de,
-        Ritesh Harjani <riteshh@linux.ibm.com>
-References: <20210511030933.3080921-1-ruansy.fnst@fujitsu.com>
- <20210511030933.3080921-4-ruansy.fnst@fujitsu.com>
-From:   =?UTF-8?Q?Mika_Penttil=c3=a4?= <mika.penttila@nextfour.com>
-Message-ID: <4c944ccc-7708-5dbd-18c3-9ecb5c3a539f@nextfour.com>
-Date:   Wed, 12 May 2021 05:27:16 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20210511030933.3080921-4-ruansy.fnst@fujitsu.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [91.145.109.188]
-X-ClientProxiedBy: HE1PR0102CA0049.eurprd01.prod.exchangelabs.com
- (2603:10a6:7:7d::26) To DBAPR03MB6630.eurprd03.prod.outlook.com
- (2603:10a6:10:194::6)
+        id S230075AbhELCmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 11 May 2021 22:42:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57886 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229951AbhELCe6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 11 May 2021 22:34:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC2DB616ED;
+        Wed, 12 May 2021 02:33:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620786822;
+        bh=xqZbwCyE8nxSLmtMoLnpjhoPdg0FHuoWAMNJYrN/75E=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=F5h7bSy6043IfwzAJSDQVXQe7fzkrg5baNzjW2LRMTdWivNfxcL5Tt1iXAqZH/b5R
+         zuFaFnWpzaawJr2VwreVIS0DEcsmcKQL5WkuxdV0+BcLRFhqP+NfRwn4czlj9UZ6of
+         EYT2qZ3hBpC8MuuriJyKvz+k0dKZqab4iekLUVely4DHucdZoSiCFMM7S1GQ8bojHQ
+         ae6EOgTRhtODZ0KEEZ8CaX2uCstKggN0l1jZueB6zPwx2j20vRrSMDues8Wm9YKBwl
+         WC99NV4+WyYhsywL3Yo7/6F6UxWNyKcl2UnY74prx3eGknwtA1j/OC2uWdTFe+5TX2
+         j5D7psdE6fDqg==
+Received: by mail-lj1-f180.google.com with SMTP id v5so27666688ljg.12;
+        Tue, 11 May 2021 19:33:42 -0700 (PDT)
+X-Gm-Message-State: AOAM531fG/eOnEXTkU9Eagj4mGrgPeiAiru7Zpa75P0XdpZo/R1Ft1qh
+        pRk8ZnA/4Vl2qdkEeU/e7n0Jqj7n1wW4f4caHe0=
+X-Google-Smtp-Source: ABdhPJzFWd6QZalPnljkVBWzSRmWMEc6JwLshWOm2oZC+5mG3gQUUhWoaqrkSWMLSb457PwohEGWMm8Sbkma3Xx/z1M=
+X-Received: by 2002:a05:651c:1307:: with SMTP id u7mr26598055lja.498.1620786821112;
+ Tue, 11 May 2021 19:33:41 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.121] (91.145.109.188) by HE1PR0102CA0049.eurprd01.prod.exchangelabs.com (2603:10a6:7:7d::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.24 via Frontend Transport; Wed, 12 May 2021 02:27:18 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 804c182b-944d-4028-bbf2-08d914ed77a6
-X-MS-TrafficTypeDiagnostic: DB8PR03MB5932:
-X-Microsoft-Antispam-PRVS: <DB8PR03MB59329E13B8FB4EC438CEA46D83529@DB8PR03MB5932.eurprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: h+iHHkv4srWSfzOvETdgtPC/UrhAIZtWQ09vj50OBTOEXfZp7ZTzeJ7vZ5sFFL/brD8rkNr0G7Bi3+jV/9L2mjoItc1nY5Sno5whnp5heLB3g7kEuABSyEUPP06NRi2jkfJ+YvRmHTS/NmLplDw7JraK3sbkSc81e7Z/wjkSb8wZ7kVL9/OsMccRha2R21yxlKHH+IJul3DZiBxR9mPNZueOxfXlXdOID1GrHlyb7ssnXFrztRl55BslsqgCb8HYWMSv9SExbZEivGWA9y3KhsOjM0LDaAqmOhaiOJemQUgHE2buOllJhDQ8uefBthqmZn06zyn9f+y64ZF/R7Ei2zB5J+oa1faT2sTZox0kB9Mds+ggJ+jj/0Vg3u63bSqtEEvhVjULamWZCdyH9aj9Q1vh0QOnhabSB1KWcgKnMKt3xus4xeqI6H3ErjK9nHJaLkvS8jtDBHK2Q6BODfOoaQisVrH1J02/j9s+FRBfIinGJY1+FZbL2DY89dEhcqvngZfJtZBpQSiNPO0uAWdfia7JTrXiaUbwcXBHf2A+Pkp/B2VOzKw6kNqHJO3DXAwyyOWqAmbQZsfl/vA9EaGBRk3BdD9orutLDdqwsRPOfskGMZFmZC9eLTyHHp00Crh3Kevw2w3oaQItscSWvyaJvZygt3NlOg7kL+nQQ+MHy7tcXGsWx5l5L14U9W+U8X8x
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBAPR03MB6630.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(39830400003)(376002)(366004)(346002)(136003)(396003)(16576012)(316002)(16526019)(186003)(26005)(66946007)(31686004)(2906002)(956004)(66476007)(6486002)(2616005)(31696002)(8936002)(66556008)(86362001)(38350700002)(38100700002)(7416002)(52116002)(83380400001)(5660300002)(8676002)(478600001)(4326008)(36756003)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?dlVzY05oOTQ1eWp1OWtSZkpyNXRGV2xQY1plWkNxN1l3SVJTU1pnUUxHTlpW?=
- =?utf-8?B?UXljK3F1WEZQZFdHNFBYSUdSTzVpRmo0Q0ZLUDdzOGMvZFVnR1J6dTNRaHFN?=
- =?utf-8?B?TThvcHphUEZIUmh1Qm9pcFBqTE4wT1hud21qY3V4R0hXRDhocUJiVlB0R1Aw?=
- =?utf-8?B?WkR6UXBGSndOZGVMWXVpaUlRZUFBNWlmb3UyUjc4Z05nVUYwaHR4NElGYWtm?=
- =?utf-8?B?L0d0dDY1R3pvRHNRTjZiYVp4Y3k5UDRPQTJpMi8yTkpSVVRzYTNQRWtyY2xQ?=
- =?utf-8?B?YXFSby9NNHZ4aWdCSjlURXM4MGdqVFRtajFEUGt0MHpjUE1DbzJOczM3cm1I?=
- =?utf-8?B?b2RjTmh4WC9rTEpJSzhQb0NEVmxEenl2a2NTa3BnRE14eUJnZjRjRzNOeUdH?=
- =?utf-8?B?dlBMMDBNbmJvclQ5WkRHU2RBV0crTnJPeDZVTE15eWdPMXVHSWxncXhpcnhK?=
- =?utf-8?B?MnNHZlNIbUVaRUozMkJiWEhISkJXNWZBUVlpODJzMS9DUXBRZ29KTml2K2hK?=
- =?utf-8?B?b00vd0JWK29KNGhmT3pIZnlsM3BpU2hHQzVJdFFMNk9CMkR1NkVlN0t2L0dW?=
- =?utf-8?B?RGtOY3pibk1pd0pwNStjOXk4NHhpUmtnN003dncxL3QxLy9TQ3JLU291Z3kz?=
- =?utf-8?B?dlVReTE2SlNkSFdQajRXcTFhQzgveWNGN254TG9TaVQ0aWtLT2IwTWw4amxt?=
- =?utf-8?B?bFl3QU9Wd3B3c29GNU1vVW5UcU5oQkZYL3M3UXdxMGE2YmJoMzEyUHV1TW0y?=
- =?utf-8?B?eTRZS0VHaDk0V0dVWmpNTm1RR2NRcWFGcnkvWk50bXo3V21GMklkNGNDUzFN?=
- =?utf-8?B?N3ZMSXhZUkJLMUh1eHlWKzZBM0pjNndPZTIwbUk0cnFpMndRQkdpUHV0bGRM?=
- =?utf-8?B?V2c4NUI5OGJSeDFKL2Z5cVlCVzBKMTZkUjM4ckFKUWxsWTE5dFY5Y0FIZzRH?=
- =?utf-8?B?d3Z6dlNQL1lkd2h0clI2K21SdjcvMUNCR0Q5T2RxMU9jUThuTVJ0NWVBYlE1?=
- =?utf-8?B?UWNVdm5aK3FPc21EWmFQUUptOW5UdkQrMCtYSVU4bzY0NGdEeUZNUW8ybUgz?=
- =?utf-8?B?ZkdEcXNDaUVtU0lzVlNJQ2YxK3VrdVdGc2xpR0U2ZG5pOVdjS0VNRXFiMVhW?=
- =?utf-8?B?b01CRUVGTCt3S3EzaTVib2dVNEd0SzFWZGhIUWE2WXY0MXUxSFNEZXZSRExM?=
- =?utf-8?B?OFM1cFU0SlBzbDR5eWJiQjR3NEJ3VHExbnNFaFZWdFdtcmlib1R1STFNWko3?=
- =?utf-8?B?bzB1NXM3N2VWK2VpWUNyejFKSHgxTWJnWHFJTjMxUWNlM0pJYVByTWRmL216?=
- =?utf-8?B?N3laVTY0TFFOMndzUVc0TzBMb1pySVVrTjlEQkR0ZHhnVWh3MVhUNkJMMnBT?=
- =?utf-8?B?MkFoT3l6Y21MS1Rma0pOZjBWVzh0UGJoZlArRXBRbnpseHhkUW92cTRSc0tP?=
- =?utf-8?B?andMYWlldExpaWphRVQyN0Q2RjEybTF2T1R5Mm1lNnZuNGtjUFNEUGtJWUVI?=
- =?utf-8?B?MXRFb2xXSWxBZEpMOVdQVExxcHcwNFA3YVNQN1FYNlA1WHZOcUtuTElpNlNJ?=
- =?utf-8?B?amdNalhGRkw4d0pTYlpvczhpczV5c1RMcThudi9URU9sYVpkTXJBZFVuVVEx?=
- =?utf-8?B?VnZEbVhwVktmcHhlbGtmZmlWZTVLajc1Y2VGU2NqME44cEdwdXlvb3l0cmt5?=
- =?utf-8?B?YmRURFdSNFFOeVFVTzQrTmFNb1lqSWNaK0Ntc242OTVNYmpwWmVVdFRKbUR4?=
- =?utf-8?Q?zYGkjOAZlLwjBcl9F2g0AKlDi3QAjKoGxtYA87F?=
-X-OriginatorOrg: nextfour.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 804c182b-944d-4028-bbf2-08d914ed77a6
-X-MS-Exchange-CrossTenant-AuthSource: DBAPR03MB6630.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 May 2021 02:27:19.9146
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 972e95c2-9290-4a02-8705-4014700ea294
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Z4QZRqRQ19cqMw2ODSVFn/UVILfmte1mwmxDgSHyWnczjH3NjlBiMDRjeCx9nxkdJX6akVAAmkVtg0Rxvpnmw4V9XeGylyyxHky4+eSP8Vs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR03MB5932
+References: <20210511132257.1272-1-wangjunqiang@iscas.ac.cn> <202105120013.CKxQukHu-lkp@intel.com>
+In-Reply-To: <202105120013.CKxQukHu-lkp@intel.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Wed, 12 May 2021 10:33:29 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTSeG5AeytW5cyjsp+tVkK9RvRkz43HWbxWC-u2gg7PQCg@mail.gmail.com>
+Message-ID: <CAJF2gTSeG5AeytW5cyjsp+tVkK9RvRkz43HWbxWC-u2gg7PQCg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] csky: add CSKY 810/860 FPU instruction simulation
+To:     kernel test robot <lkp@intel.com>
+Cc:     Wang Junqiang <wangjunqiang@iscas.ac.cn>, kbuild-all@lists.01.org,
+        Guo Ren <guoren@linux.alibaba.com>, linux-csky@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Li Weiwei <liweiwei@iscas.ac.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+gcc 860 is on the way:
+https://gcc.gnu.org/pipermail/gcc-patches/2021-April/569272.html
 
-On 11.5.2021 6.09, Shiyang Ruan wrote:
-> Punch hole on a reflinked file needs dax_copy_edge() too.  Otherwise,
-> data in not aligned area will be not correct.  So, add the srcmap to
-> dax_iomap_zero() and replace memset() as dax_copy_edge().
+On Wed, May 12, 2021 at 1:15 AM kernel test robot <lkp@intel.com> wrote:
 >
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-> Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> Hi Wang,
+>
+> Thank you for the patch! Yet something to improve:
+>
+> [auto build test ERROR on linus/master]
+> [also build test ERROR on v5.13-rc1 next-20210511]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+>
+> url:    https://github.com/0day-ci/linux/commits/Wang-Junqiang/csky-add-C=
+SKY-810-860-FPU-instruction-simulation/20210511-212648
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
+t 1140ab592e2ebf8153d2b322604031a8868ce7a5
+> config: csky-randconfig-r005-20210511 (attached as .config)
+> compiler: csky-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=3D1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbi=
+n/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://github.com/0day-ci/linux/commit/ba3d3b92b548373cb84c691=
+5a02dda46ef1c5d38
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Wang-Junqiang/csky-add-CSKY-810-=
+860-FPU-instruction-simulation/20210511-212648
+>         git checkout ba3d3b92b548373cb84c6915a02dda46ef1c5d38
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dgcc-9.3.0 make.cros=
+s W=3D1 ARCH=3Dcsky
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+> >> error: arch/csky/include/uapi/asm/siginfo.h: missing "WITH Linux-sysca=
+ll-note" for SPDX-License-Identifier
+>    make[2]: *** [scripts/Makefile.headersinst:63: usr/include/asm/siginfo=
+.h] Error 1
+>    make[2]: Target '__headers' not remade because of errors.
+>    make[1]: *** [Makefile:1334: headers] Error 2
+>    make[1]: Target 'headers_install' not remade because of errors.
+>    make: *** [Makefile:215: __sub-make] Error 2
+>    make: Target 'headers_install' not remade because of errors.
+> --
+>    csky-linux-gcc: error: unrecognized argument in option '-mcpu=3Dck860'
+>    csky-linux-gcc: note: valid arguments to '-mcpu=3D' are: ck801 ck801t =
+ck802 ck802j ck802t ck803 ck803e ck803ef ck803efh ck803efhr1 ck803efht ck80=
+3efhtr1 ck803efr1 ck803eft ck803eftr1 ck803eh ck803ehr1 ck803eht ck803ehtr1=
+ ck803er1 ck803et ck803etr1 ck803f ck803fh ck803fhr1 ck803fr1 ck803ft ck803=
+ftr1 ck803h ck803hr1 ck803ht ck803htr1 ck803r1 ck803s ck803se ck803sef ck80=
+3seft ck803sf ck803st ck803t ck803tr1 ck807 ck807e ck807ef ck807f ck810 ck8=
+10e ck810ef ck810eft ck810et ck810f ck810ft ck810ftv ck810fv ck810t ck810tv=
+ ck810v; did you mean 'ck810'?
+> >> error: arch/csky/include/uapi/asm/siginfo.h: missing "WITH Linux-sysca=
+ll-note" for SPDX-License-Identifier
+>    make[2]: *** [scripts/Makefile.headersinst:63: usr/include/asm/siginfo=
+.h] Error 1
+>    make[2]: Target '__headers' not remade because of errors.
+>    make[1]: *** [Makefile:1334: headers] Error 2
+>    csky-linux-gcc: error: unrecognized argument in option '-mcpu=3Dck860'
+>    csky-linux-gcc: note: valid arguments to '-mcpu=3D' are: ck801 ck801t =
+ck802 ck802j ck802t ck803 ck803e ck803ef ck803efh ck803efhr1 ck803efht ck80=
+3efhtr1 ck803efr1 ck803eft ck803eftr1 ck803eh ck803ehr1 ck803eht ck803ehtr1=
+ ck803er1 ck803et ck803etr1 ck803f ck803fh ck803fhr1 ck803fr1 ck803ft ck803=
+ftr1 ck803h ck803hr1 ck803ht ck803htr1 ck803r1 ck803s ck803se ck803sef ck80=
+3seft ck803sf ck803st ck803t ck803tr1 ck807 ck807e ck807ef ck807f ck810 ck8=
+10e ck810ef ck810eft ck810et ck810f ck810ft ck810ftv ck810fv ck810t ck810tv=
+ ck810v; did you mean 'ck810'?
+>    make[2]: *** [scripts/Makefile.build:272: scripts/mod/empty.o] Error 1
+>    csky-linux-gcc: error: unrecognized argument in option '-mcpu=3Dck860'
+>    csky-linux-gcc: note: valid arguments to '-mcpu=3D' are: ck801 ck801t =
+ck802 ck802j ck802t ck803 ck803e ck803ef ck803efh ck803efhr1 ck803efht ck80=
+3efhtr1 ck803efr1 ck803eft ck803eftr1 ck803eh ck803ehr1 ck803eht ck803ehtr1=
+ ck803er1 ck803et ck803etr1 ck803f ck803fh ck803fhr1 ck803fr1 ck803ft ck803=
+ftr1 ck803h ck803hr1 ck803ht ck803htr1 ck803r1 ck803s ck803se ck803sef ck80=
+3seft ck803sf ck803st ck803t ck803tr1 ck807 ck807e ck807ef ck807f ck810 ck8=
+10e ck810ef ck810eft ck810et ck810f ck810ft ck810ftv ck810fv ck810t ck810tv=
+ ck810v; did you mean 'ck810'?
+>    make[2]: *** [scripts/Makefile.build:117: scripts/mod/devicetable-offs=
+ets.s] Error 1
+>    make[2]: Target '__build' not remade because of errors.
+>    make[1]: *** [Makefile:1226: prepare0] Error 2
+>    make[1]: Target 'modules_prepare' not remade because of errors.
+>    make: *** [Makefile:215: __sub-make] Error 2
+>    make: Target 'modules_prepare' not remade because of errors.
+> --
+>    csky-linux-gcc: error: unrecognized argument in option '-mcpu=3Dck860'
+>    csky-linux-gcc: note: valid arguments to '-mcpu=3D' are: ck801 ck801t =
+ck802 ck802j ck802t ck803 ck803e ck803ef ck803efh ck803efhr1 ck803efht ck80=
+3efhtr1 ck803efr1 ck803eft ck803eftr1 ck803eh ck803ehr1 ck803eht ck803ehtr1=
+ ck803er1 ck803et ck803etr1 ck803f ck803fh ck803fhr1 ck803fr1 ck803ft ck803=
+ftr1 ck803h ck803hr1 ck803ht ck803htr1 ck803r1 ck803s ck803se ck803sef ck80=
+3seft ck803sf ck803st ck803t ck803tr1 ck807 ck807e ck807ef ck807f ck810 ck8=
+10e ck810ef ck810eft ck810et ck810f ck810ft ck810ftv ck810fv ck810t ck810tv=
+ ck810v; did you mean 'ck810'?
+>    scripts/genksyms/parse.y: warning: 9 shift/reduce conflicts [-Wconflic=
+ts-sr]
+>    scripts/genksyms/parse.y: warning: 5 reduce/reduce conflicts [-Wconfli=
+cts-rr]
+> >> error: arch/csky/include/uapi/asm/siginfo.h: missing "WITH Linux-sysca=
+ll-note" for SPDX-License-Identifier
+>    make[2]: *** [scripts/Makefile.headersinst:63: usr/include/asm/siginfo=
+.h] Error 1
+>    make[2]: Target '__headers' not remade because of errors.
+>    make[1]: *** [Makefile:1334: headers] Error 2
+>    csky-linux-gcc: error: unrecognized argument in option '-mcpu=3Dck860'
+>    csky-linux-gcc: note: valid arguments to '-mcpu=3D' are: ck801 ck801t =
+ck802 ck802j ck802t ck803 ck803e ck803ef ck803efh ck803efhr1 ck803efht ck80=
+3efhtr1 ck803efr1 ck803eft ck803eftr1 ck803eh ck803ehr1 ck803eht ck803ehtr1=
+ ck803er1 ck803et ck803etr1 ck803f ck803fh ck803fhr1 ck803fr1 ck803ft ck803=
+ftr1 ck803h ck803hr1 ck803ht ck803htr1 ck803r1 ck803s ck803se ck803sef ck80=
+3seft ck803sf ck803st ck803t ck803tr1 ck807 ck807e ck807ef ck807f ck810 ck8=
+10e ck810ef ck810eft ck810et ck810f ck810ft ck810ftv ck810fv ck810t ck810tv=
+ ck810v; did you mean 'ck810'?
+>    make[2]: *** [scripts/Makefile.build:272: scripts/mod/empty.o] Error 1
+>    csky-linux-gcc: error: unrecognized argument in option '-mcpu=3Dck860'
+>    csky-linux-gcc: note: valid arguments to '-mcpu=3D' are: ck801 ck801t =
+ck802 ck802j ck802t ck803 ck803e ck803ef ck803efh ck803efhr1 ck803efht ck80=
+3efhtr1 ck803efr1 ck803eft ck803eftr1 ck803eh ck803ehr1 ck803eht ck803ehtr1=
+ ck803er1 ck803et ck803etr1 ck803f ck803fh ck803fhr1 ck803fr1 ck803ft ck803=
+ftr1 ck803h ck803hr1 ck803ht ck803htr1 ck803r1 ck803s ck803se ck803sef ck80=
+3seft ck803sf ck803st ck803t ck803tr1 ck807 ck807e ck807ef ck807f ck810 ck8=
+10e ck810ef ck810eft ck810et ck810f ck810ft ck810ftv ck810fv ck810t ck810tv=
+ ck810v; did you mean 'ck810'?
+>    make[2]: *** [scripts/Makefile.build:117: scripts/mod/devicetable-offs=
+ets.s] Error 1
+>    make[2]: Target '__build' not remade because of errors.
+>    make[1]: *** [Makefile:1226: prepare0] Error 2
+>    make[1]: Target 'prepare' not remade because of errors.
+>    make: *** [Makefile:215: __sub-make] Error 2
+>    make: Target 'prepare' not remade because of errors.
+>
+> Kconfig warnings: (for reference only)
+>    WARNING: unmet direct dependencies detected for LOCKDEP
+>    Depends on DEBUG_KERNEL && LOCK_DEBUGGING_SUPPORT && (FRAME_POINTER ||=
+ MIPS || PPC || S390 || MICROBLAZE || ARM || ARC || X86)
+>    Selected by
+>    - LOCK_STAT && DEBUG_KERNEL && LOCK_DEBUGGING_SUPPORT
+>    - DEBUG_LOCK_ALLOC && DEBUG_KERNEL && LOCK_DEBUGGING_SUPPORT
+>
 > ---
->   fs/dax.c               | 25 +++++++++++++++----------
->   fs/iomap/buffered-io.c |  2 +-
->   include/linux/dax.h    |  3 ++-
->   3 files changed, 18 insertions(+), 12 deletions(-)
->
-> diff --git a/fs/dax.c b/fs/dax.c
-> index ef0e564e7904..ee9d28a79bfb 100644
-> --- a/fs/dax.c
-> +++ b/fs/dax.c
-> @@ -1186,7 +1186,8 @@ static vm_fault_t dax_pmd_load_hole(struct xa_state *xas, struct vm_fault *vmf,
->   }
->   #endif /* CONFIG_FS_DAX_PMD */
->   
-> -s64 dax_iomap_zero(loff_t pos, u64 length, struct iomap *iomap)
-> +s64 dax_iomap_zero(loff_t pos, u64 length, struct iomap *iomap,
-> +		struct iomap *srcmap)
->   {
->   	sector_t sector = iomap_sector(iomap, pos & PAGE_MASK);
->   	pgoff_t pgoff;
-> @@ -1208,19 +1209,23 @@ s64 dax_iomap_zero(loff_t pos, u64 length, struct iomap *iomap)
->   
->   	if (page_aligned)
->   		rc = dax_zero_page_range(iomap->dax_dev, pgoff, 1);
-> -	else
-> +	else {
->   		rc = dax_direct_access(iomap->dax_dev, pgoff, 1, &kaddr, NULL);
-> -	if (rc < 0) {
-> -		dax_read_unlock(id);
-> -		return rc;
-> -	}
-> -
-> -	if (!page_aligned) {
-> -		memset(kaddr + offset, 0, size);
-> +		if (rc < 0)
-> +			goto out;
-> +		if (iomap->addr != srcmap->addr) {
-> +			rc = dax_iomap_cow_copy(offset, size, PAGE_SIZE, srcmap,
-> +						kaddr);
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-offset above is offset in page, think dax_iomap_cow_copy() expects 
-absolute pos
 
-> +			if (rc < 0)
-> +				goto out;
-> +		} else
-> +			memset(kaddr + offset, 0, size);
->   		dax_flush(iomap->dax_dev, kaddr + offset, size);
->   	}
-> +
-> +out:
->   	dax_read_unlock(id);
-> -	return size;
-> +	return rc < 0 ? rc : size;
->   }
->   
->   static loff_t
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index f2cd2034a87b..2734955ea67f 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -933,7 +933,7 @@ static loff_t iomap_zero_range_actor(struct inode *inode, loff_t pos,
->   		s64 bytes;
->   
->   		if (IS_DAX(inode))
-> -			bytes = dax_iomap_zero(pos, length, iomap);
-> +			bytes = dax_iomap_zero(pos, length, iomap, srcmap);
->   		else
->   			bytes = iomap_zero(inode, pos, length, iomap, srcmap);
->   		if (bytes < 0)
-> diff --git a/include/linux/dax.h b/include/linux/dax.h
-> index b52f084aa643..3275e01ed33d 100644
-> --- a/include/linux/dax.h
-> +++ b/include/linux/dax.h
-> @@ -237,7 +237,8 @@ vm_fault_t dax_finish_sync_fault(struct vm_fault *vmf,
->   int dax_delete_mapping_entry(struct address_space *mapping, pgoff_t index);
->   int dax_invalidate_mapping_entry_sync(struct address_space *mapping,
->   				      pgoff_t index);
-> -s64 dax_iomap_zero(loff_t pos, u64 length, struct iomap *iomap);
-> +s64 dax_iomap_zero(loff_t pos, u64 length, struct iomap *iomap,
-> +		struct iomap *srcmap);
->   static inline bool dax_mapping(struct address_space *mapping)
->   {
->   	return mapping->host && IS_DAX(mapping->host);
 
+--=20
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
