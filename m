@@ -2,37 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32D3237BD0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:52:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33C8637BD2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 14:52:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231783AbhELMxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 08:53:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52138 "EHLO mail.kernel.org"
+        id S232793AbhELMxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 08:53:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52514 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231289AbhELMwu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 08:52:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D2AB61177;
+        id S231302AbhELMwv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 08:52:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 358C1613EE;
         Wed, 12 May 2021 12:51:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620823902;
-        bh=9ZrdEXP9uF/1gywNsqqqNVwR7m3JOM+kWEVqticTO7o=;
+        bh=rGHnZz0sSHB5d7aG1LRrcHqBY8ZGCas2wbdtc/wHeoE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a8R6KfiuBdkQUoal0yj23vXyClXR3ungJ8ExFyoxj9nWavV4zFy9WoEJ850DV7/UM
-         j6XWVapuxbuqoeKQb3FQsbdxndsLJrGr0gxvdSg2+m6764hmfhdEZmG1T5CO7GpDY/
-         CP3pyQPXBLYY2w+tLFJ3CcZvq3vPlna3eNrZcUwrwOXniO6cTZXoMCwGetzvauhOJu
-         a+l0np8gLr9oVAXowGJkN/951Xhv8DulMigdYNQh++VorgPtTDDzbXRD/SrxYhx2IN
-         DwDJPhsLR7/MdRBU7X1OU1Lmg2BQcmF3EwUj4jVgDx5pCvqvWg3ma5NDE7q6TMAnNf
-         e8niC4hc1yA/w==
+        b=VxhU+vEzUdpzfB0/Gxa/QVlH0MlsDQDVw0HBZGvdYEjSX8PSosKE5ViYj3++hNQfP
+         UhDB06S4PbYz5LngiXFO3NZnuEAuEQCzc65lHh6EU6hQAMx6EK5N5J34bZoA7P+PAp
+         M+agXs6/f/4xK+aaJxaha1Djnq28h/Zy/KubrzLmVqqp4NVP+yOQSfwtX21KfcMMMZ
+         Xc9ut4MytSk4BsjBZ3qMgeUnkU4RNmoJPBlStTCyfnJkrzn7l0K0yNQ7WMejQkIQFa
+         CVDdGz2EL4R6MlRZLllKmlnwwzmxxy+OchQ1kV3FabuBHu+k1Qlvm2rgoDl9Hzcvli
+         gOpmjJxov8/uA==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1lgoKy-0018hF-AH; Wed, 12 May 2021 14:51:40 +0200
+        id 1lgoKy-0018hJ-BG; Wed, 12 May 2021 14:51:40 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 07/40] docs: driver-api: ioctl.rst: Use ASCII subset instead of UTF-8 alternate symbols
-Date:   Wed, 12 May 2021 14:50:11 +0200
-Message-Id: <5cf0219649d914d5657adcc7fcda64e59f1aec12.1620823573.git.mchehab+huawei@kernel.org>
+        "Jonathan Corbet" <corbet@lwn.net>,
+        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: [PATCH v2 08/40] docs: driver-api: thermal: Use ASCII subset instead of UTF-8 alternate symbols
+Date:   Wed, 12 May 2021 14:50:12 +0200
+Message-Id: <6866f10fbfbe599448fafa0ca35f1b5b262ce60f.1620823573.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1620823573.git.mchehab+huawei@kernel.org>
 References: <cover.1620823573.git.mchehab+huawei@kernel.org>
@@ -59,42 +64,99 @@ Also, Sphinx already do such conversion automatically outside literal blocks:
 
 So, replace the occurences of the following UTF-8 characters:
 
-	- U+00a0 (' '): NO-BREAK SPACE
+	- U+2018 ('‘'): LEFT SINGLE QUOTATION MARK
+	- U+2019 ('’'): RIGHT SINGLE QUOTATION MARK
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/driver-api/ioctl.rst | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ .../driver-api/thermal/cpu-idle-cooling.rst        | 14 +++++++-------
+ .../driver-api/thermal/intel_powerclamp.rst        |  6 +++---
+ .../thermal/x86_pkg_temperature_thermal.rst        |  2 +-
+ 3 files changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/Documentation/driver-api/ioctl.rst b/Documentation/driver-api/ioctl.rst
-index c455db0e1627..5b76e765827d 100644
---- a/Documentation/driver-api/ioctl.rst
-+++ b/Documentation/driver-api/ioctl.rst
-@@ -25,9 +25,9 @@ ioctl commands that follow modern conventions: ``_IO``, ``_IOR``,
- with the correct parameters:
+diff --git a/Documentation/driver-api/thermal/cpu-idle-cooling.rst b/Documentation/driver-api/thermal/cpu-idle-cooling.rst
+index c2a7ca676853..60934a518560 100644
+--- a/Documentation/driver-api/thermal/cpu-idle-cooling.rst
++++ b/Documentation/driver-api/thermal/cpu-idle-cooling.rst
+@@ -49,7 +49,7 @@ belong to the same cluster, with a duration greater than the cluster
+ idle state target residency, we lead to dropping the static and the
+ dynamic leakage for this period (modulo the energy needed to enter
+ this state). So the sustainable power with idle cycles has a linear
+-relation with the OPP’s sustainable power and can be computed with a
++relation with the OPP's sustainable power and can be computed with a
+ coefficient similar to::
  
- _IO/_IOR/_IOW/_IOWR
--   The macro name specifies how the argument will be used.  It may be a
-+   The macro name specifies how the argument will be used.  It may be a
-    pointer to data to be passed into the kernel (_IOW), out of the kernel
--   (_IOR), or both (_IOWR).  _IO can indicate either commands with no
-+   (_IOR), or both (_IOWR).  _IO can indicate either commands with no
-    argument or those passing an integer value instead of a pointer.
-    It is recommended to only use _IO for commands without arguments,
-    and use pointers for passing data.
-@@ -200,10 +200,10 @@ cause an information leak, which can be used to defeat kernel address
- space layout randomization (KASLR), helping in an attack.
+ 	    Power(IdleCycle) = Coef x Power(OPP)
+@@ -134,7 +134,7 @@ The idle injection duration value must comply with the constraints:
+   user experience, reactivity vs performance trade off we want. This
+   value should be specified.
  
- For this reason (and for compat support) it is best to avoid any
--implicit padding in data structures.  Where there is implicit padding
-+implicit padding in data structures.  Where there is implicit padding
- in an existing structure, kernel drivers must be careful to fully
- initialize an instance of the structure before copying it to user
--space.  This is usually done by calling memset() before assigning to
-+space.  This is usually done by calling memset() before assigning to
- individual members.
+-- It is greater than the idle state’s target residency we want to go
++- It is greater than the idle state's target residency we want to go
+   for thermal mitigation, otherwise we end up consuming more energy.
  
- Subsystem abstractions
+ Power considerations
+@@ -146,11 +146,11 @@ power for a specific temperature but at this time we consume::
+  Power = Capacitance x Voltage^2 x Frequency x Utilisation
+ 
+ ... which is more than the sustainable power (or there is something
+-wrong in the system setup). The ‘Capacitance’ and ‘Utilisation’ are a
+-fixed value, ‘Voltage’ and the ‘Frequency’ are fixed artificially
+-because we don’t want to change the OPP. We can group the
+-‘Capacitance’ and the ‘Utilisation’ into a single term which is the
+-‘Dynamic Power Coefficient (Cdyn)’ Simplifying the above, we have::
++wrong in the system setup). The 'Capacitance' and 'Utilisation' are a
++fixed value, 'Voltage' and the 'Frequency' are fixed artificially
++because we don't want to change the OPP. We can group the
++'Capacitance' and the 'Utilisation' into a single term which is the
++'Dynamic Power Coefficient (Cdyn)' Simplifying the above, we have::
+ 
+  Pdyn = Cdyn x Voltage^2 x Frequency
+ 
+diff --git a/Documentation/driver-api/thermal/intel_powerclamp.rst b/Documentation/driver-api/thermal/intel_powerclamp.rst
+index 3f6dfb0b3ea6..d349c1b64281 100644
+--- a/Documentation/driver-api/thermal/intel_powerclamp.rst
++++ b/Documentation/driver-api/thermal/intel_powerclamp.rst
+@@ -29,7 +29,7 @@ By:
+ INTRODUCTION
+ ============
+ 
+-Consider the situation where a system’s power consumption must be
++Consider the situation where a system's power consumption must be
+ reduced at runtime, due to power budget, thermal constraint, or noise
+ level, and where active cooling is not preferred. Software managed
+ passive power reduction must be performed to prevent the hardware
+@@ -39,7 +39,7 @@ Currently, P-states, T-states (clock modulation), and CPU offlining
+ are used for CPU throttling.
+ 
+ On Intel CPUs, C-states provide effective power reduction, but so far
+-they’re only used opportunistically, based on workload. With the
++they're only used opportunistically, based on workload. With the
+ development of intel_powerclamp driver, the method of synchronizing
+ idle injection across all online CPU threads was introduced. The goal
+ is to achieve forced and controllable C-state residency.
+@@ -264,7 +264,7 @@ CPUs).
+ Usage and Interfaces
+ ====================
+ The powerclamp driver is registered to the generic thermal layer as a
+-cooling device. Currently, it’s not bound to any thermal zones::
++cooling device. Currently, it's not bound to any thermal zones::
+ 
+   jacob@chromoly:/sys/class/thermal/cooling_device14$ grep . *
+   cur_state:0
+diff --git a/Documentation/driver-api/thermal/x86_pkg_temperature_thermal.rst b/Documentation/driver-api/thermal/x86_pkg_temperature_thermal.rst
+index 2ac42ccd236f..5b95af96e40f 100644
+--- a/Documentation/driver-api/thermal/x86_pkg_temperature_thermal.rst
++++ b/Documentation/driver-api/thermal/x86_pkg_temperature_thermal.rst
+@@ -13,7 +13,7 @@ Authors: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+ Reference
+ ---------
+ 
+-Intel® 64 and IA-32 Architectures Software Developer’s Manual (Jan, 2013):
++Intel® 64 and IA-32 Architectures Software Developer's Manual (Jan, 2013):
+ Chapter 14.6: PACKAGE LEVEL THERMAL MANAGEMENT
+ 
+ Description
 -- 
 2.30.2
 
