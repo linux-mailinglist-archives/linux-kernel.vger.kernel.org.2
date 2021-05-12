@@ -2,132 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 009A637EB9A
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B56237EB92
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:20:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381463AbhELTe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 15:34:26 -0400
-Received: from mail-dm6nam12on2138.outbound.protection.outlook.com ([40.107.243.138]:63361
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1348935AbhELRjq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 13:39:46 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Xihgg/Pp6FyQarAzURkku8x66cdUvJpeScNSDzd3mUI29HTIpMd1NdLDhngYGOLA3tBFZmVRonhyC4uksyIrGcj0sZpTef7O11Ulg2d7O1N7EneKx3DEUHNLs0Vza+YNiEidNxg82uLIyt+RIbgyKGqTDQKhSp10uMwIf0/XZRpNIW1qIAy0eOVbVjGtBw2v5yN9U5+bxRzmZZJwWCjwtz5SCmxZYlx5hGgSBuzxGghkQWsuHYPGv2d0e9+QcLgvsf6dJjV7qTTc6t/3KyNIx0RgusPL1nHZ2OKgwH08ZpooIyp+UqP1o331NtS8aKL++VndkxuIDX9eH9vOGaRmxg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sT2Ypqct7f4vBCa8b8tJLDx27rUACwUFEiRcKXQ95Sg=;
- b=D8betxYkfPvnCaivBjDnWZlRqV5YkMuv7zL8ovNekbTrh0t8KX1Hy77o/8EysEaGp6WNZFyRQcD/3QvJIHGTsCvXURMUe1NUHzGkuRo+hmQdcUowR9Wz9XVGpoCIotffe3SrgDcoh04vxztpsU3JN6LtHUlHgpXgqpFPSK9RN4M3QMcyyEefFo65Uxiydmy9ICZvzh/VhnzfCBFidiwEMwucnQwbQfRyt5bkXjV1Z32S2bHyOYG68B8KbYHzpsPLl/LD2KVqcJz65HD0tzw3PZQJGsg21d4LEkF9CUFPeE7LqW5BepPtGknblNvC6Wsm7Y825ta0u64q3PZG8gbPOw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sT2Ypqct7f4vBCa8b8tJLDx27rUACwUFEiRcKXQ95Sg=;
- b=EEhGfUa5mlVtGp48cdM5OYf4DE5GBRitbYNesxtgaZ9aEhdgQb5BkcibOInnX3Pht1ExzJbX8xtnfc+MMVW/o2kED6jvvykXe5YqBWDEpNo70ZREmYbyHPjYpT3xUOW7ijB0lEmnHLoFmrXrzREdENQEGXWbfKFRT2ScoPVsUco=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=microsoft.com;
-Received: from DM6PR21MB1514.namprd21.prod.outlook.com (2603:10b6:5:22d::11)
- by DM6PR21MB1483.namprd21.prod.outlook.com (2603:10b6:5:25c::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.5; Wed, 12 May
- 2021 17:38:34 +0000
-Received: from DM6PR21MB1514.namprd21.prod.outlook.com
- ([fe80::fdb1:c8ac:5a1f:8588]) by DM6PR21MB1514.namprd21.prod.outlook.com
- ([fe80::fdb1:c8ac:5a1f:8588%5]) with mapi id 15.20.4150.011; Wed, 12 May 2021
- 17:38:34 +0000
-From:   Michael Kelley <mikelley@microsoft.com>
-To:     will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
-        lorenzo.pieralisi@arm.com, sudeep.holla@arm.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-efi@vger.kernel.org,
-        arnd@arndb.de, wei.liu@kernel.org, ardb@kernel.org,
-        daniel.lezcano@linaro.org, kys@microsoft.com
-Cc:     mikelley@microsoft.com
-Subject: [PATCH v10 7/7] Drivers: hv: Enable Hyper-V code to be built on ARM64
-Date:   Wed, 12 May 2021 10:37:47 -0700
-Message-Id: <1620841067-46606-8-git-send-email-mikelley@microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1620841067-46606-1-git-send-email-mikelley@microsoft.com>
-References: <1620841067-46606-1-git-send-email-mikelley@microsoft.com>
-Content-Type: text/plain
-X-Originating-IP: [131.107.1.144]
-X-ClientProxiedBy: CO2PR04CA0102.namprd04.prod.outlook.com
- (2603:10b6:104:6::28) To DM6PR21MB1514.namprd21.prod.outlook.com
- (2603:10b6:5:22d::11)
+        id S1381294AbhELTdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 15:33:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348913AbhELRjm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 13:39:42 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58D78C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 10:38:34 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id q15so14459536pgg.12
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 10:38:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ygukMSZ6mguXZGZCEiXIOEJ1Ou3kN4uMuhJTb1ptDIQ=;
+        b=aXvwhA4SMeZkjzvQvbiETGvNAb2DW9SKROVUAae6HB3DVvXq17O96jqoZbLxV9WKy4
+         6pxWvKKC9OC18rcxw5IF8aal6YBlmThgbKX5w18PudVXAWgCcMhfEn5QQgzdeqe2JNVO
+         lDDbYBrELxRRY+pM82COQUTEbS52U4d2TK/IIWHJP3+Q+EcRTBiF5L7TGFcRapr4PunV
+         cw91rrN/yQBF9KZmHUWj7OeWzVio3XpBzFn6gR4JIWEWZYDFaVUzCJDUXqX5R5TKlQPR
+         b+bCPrxxd1/ixHoqp72R2BOqR54trN2dX3sUaMjyNtbpMiNWGODg24Cy8qXWN3hmWaT1
+         JcnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ygukMSZ6mguXZGZCEiXIOEJ1Ou3kN4uMuhJTb1ptDIQ=;
+        b=sJZEpNYk+ZGr/nLTAfSEKxZGWj8KrHIaO4O0Nky3Aw6OyfVYJk6EC0l2VHp9X9zYQT
+         jjOUQ2KjIGzq/Mksb6tnuGc3JBDEzGkTFqE08XqGx0L1oFYQ6gPy7TaQyi7epXmH29cj
+         7RcZRbVDNtedKGGFO9rFzo8q8s7iwpclGnYEK8BBRdboQsf2paW67zso1pbzs/imVuw8
+         oNVe7/vPRoRP0FcE5p5Ak+f1su0qg8zu80w/qwZPulLKxBWYs4xCCC5S2CQiAfG7e2za
+         YVN4uhBsaLwL2YEyHHjSPYg1/hTxTs6eKURmU1xwIH71JnH09u0qBQhyA55o/EjcNzfs
+         qPWA==
+X-Gm-Message-State: AOAM533xrJhB1u5ZtJPaCsr2zM3/DXMzHm0qZR/xBogtONGXqR32M8Qb
+        AycDgDcRFy6HcURPJkFz0JgEcA==
+X-Google-Smtp-Source: ABdhPJz7ZGBw/PUTscy3NA7kLlxFOShh6OFXdGf+R8J7hxnn+s1GWr4QOvbmGe5JQFSmOdIskkO9FQ==
+X-Received: by 2002:aa7:85d0:0:b029:28e:80ff:cbf4 with SMTP id z16-20020aa785d00000b029028e80ffcbf4mr36669418pfn.59.1620841113580;
+        Wed, 12 May 2021 10:38:33 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id b6sm318783pjk.13.2021.05.12.10.38.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 10:38:32 -0700 (PDT)
+Date:   Wed, 12 May 2021 17:38:29 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     x86@kernel.org, Hyunwook Baek <baekhw@google.com>,
+        Joerg Roedel <jroedel@suse.de>, stable@vger.kernel.org,
+        hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH 4/6] Revert "x86/sev-es: Handle string port IO to kernel
+ memory properly"
+Message-ID: <YJwSlVnHb0SZTSrG@google.com>
+References: <20210512075445.18935-1-joro@8bytes.org>
+ <20210512075445.18935-5-joro@8bytes.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mhkdev.corp.microsoft.com (131.107.1.144) by CO2PR04CA0102.namprd04.prod.outlook.com (2603:10b6:104:6::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Wed, 12 May 2021 17:38:33 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 23cb3666-cc4b-4657-8290-08d9156cc44d
-X-MS-TrafficTypeDiagnostic: DM6PR21MB1483:
-X-MS-Exchange-Transport-Forked: True
-X-LD-Processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-X-Microsoft-Antispam-PRVS: <DM6PR21MB148360014184D8D326340D06D7529@DM6PR21MB1483.namprd21.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:466;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nWBiJmvlLnQ9UJ4cOr9cmUErlbmicZq4SEmnvmAxbsrREWhz2ew45zwZdDYyZUMCP0Y7+4DN48YOT5FO5jp5wfCRzQZneljpKNOOhkgBDDSCEt+GUvE8lE20XKVhLM9NpF/rt6U1UOlhL3lkSVX+o4oAHyxAq7ZJT/RT7ks7I9BYB3Ri6+snGPzd9aXIZoBMPeHKXi1nWYGhjGQDKgIoF1RVAP3ChB3GYPkxYtgUD2F7YolWuIVGqae9LEGMIbL2vHFRGtdHhFLmnIJc3CCy3na3sPXCo31CiFGAqeXpDaiZz0D79jTSYmNtdeNoP3nzHXFPI8/JNe8xkjGhyWJabDihabRIuAjfMJp+n+78t1ei5Fcco9UzW74MTMmxDPU9jsMMVvPmVtQBVZjZezTdyMHYa4cj9ZghGxMXe+ltTeBZ2B+k42YDrJQd4rsJfwZqkxSg9KtiuQrzyHaTv1ZiwH+0gkEjDX/DRe0mM0e84AMxIa9C72UwkYyL1D8mgYiwk7rlXH8uYPvnTTk5i9YBxI6gj7LsI125BVphp45OoY4CZWyLInMAUIzzdO9vAJMnWDu8fWsyxCU1HHXbF0iRHn+5GBsOjuWt1PTJb/bBm2hrxVc0ZDf7t0kzfJ8rhyB3BpPtyAInEpHlCXLwgtAqKQfOw2kmVimXcJO8E1TosRg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR21MB1514.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8936002)(6636002)(316002)(478600001)(8676002)(86362001)(66556008)(921005)(16526019)(10290500003)(7696005)(52116002)(7416002)(2906002)(186003)(4744005)(66476007)(4326008)(82960400001)(2616005)(82950400001)(956004)(66946007)(6486002)(6666004)(38100700002)(38350700002)(5660300002)(107886003)(36756003)(26005)(83380400001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 2
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?t4ZwbJ2bGzR/lJ1lXszfSQOFHcAFR9QIQo7wUzCVvUgUu+KIrnk4MCKRGdT2?=
- =?us-ascii?Q?2Kq1y07GJId8BOlMlwOmz69fqJP/GBqE06yxi1BkpjMZId+S3//gqFh/gfaH?=
- =?us-ascii?Q?qgwdKH0cpWywWcU4Tb+er5/vnUBJHCW5pPviZPX48BwJCC+zhWt8pavv/jXy?=
- =?us-ascii?Q?2b6Xb4Z46fbc0VLDdz4LD3p8woI1b601RXXAt5xBpnnJIrIg+0k6bwIGhFMp?=
- =?us-ascii?Q?OuuEiciggocCj8vf6sIR57Jlq+fDXQovs+7S8gSnkAmtyHyc0bhI3YriJA6P?=
- =?us-ascii?Q?1xY5P//BBEOrHJqe3Pw172Ts37yp6IctISJevJomNriWyYuH6DHPd7nk+n5n?=
- =?us-ascii?Q?dJ8CwpXnDk6GiBR7B7jCMFO5+aU+UW3wi0PEaw4gsUhFlETiZknZ3iX65a7k?=
- =?us-ascii?Q?8TA15+pyVDQiEwF8a0Vw4SvWkO62oQLdz2uyteh72V9stjDWbkPoURih5pW0?=
- =?us-ascii?Q?enOzCQozpAWObT9I5SkUYrsJwVTGjsoQvKR8Uf84N3UWN55AFG9h6RPjQGBS?=
- =?us-ascii?Q?2tZAiewnxvZxf7wvihTmuK7l0c0ffY4/JJ6Vnc2rYP+TlhxSpoLyNua/LJ86?=
- =?us-ascii?Q?aC83a8stP3Zb7uDMS/KI3MrT4MRQoXG6zb86o+gQGbbJa+vbh7P0Tpo1eWjg?=
- =?us-ascii?Q?21FiTALjoFPH8KjE9LCoWPXlYnuAJyIGOqKqOGDgq/owfHzhw8MuQwYNHV3J?=
- =?us-ascii?Q?JtCA0MHnRG0cApg5ddDRpr1Pswnnj4GlHm2/wkN6D4tATOTE1TVUas2VSwg4?=
- =?us-ascii?Q?L140JusLvbR28KCuLC+qyVcct+DZeqj4blAHPD/AJU/yWJmsP7bRJqSXahm6?=
- =?us-ascii?Q?8tCXHlR5Wy/xLCNfupqMG7fHA/FAnWHprojmRHpsnUsNnCLRrViJwccEJA8F?=
- =?us-ascii?Q?spGljIQQmkbR5DLQ1L1A0W2H0EKsbR/SnvWeVCNcEyUHMuoI9IftTQx0dnCr?=
- =?us-ascii?Q?PHHl3OQ+ileBTfDwtjz5qc2jxXk+2EmeZNnOcKzc?=
-X-MS-Exchange-AntiSpam-MessageData-1: 5c7qf4XUrlA5F6yEIChdoD9shYKIU35QAhvjQ4ofHdlgCTa17EBOyl1xgb68vJ6XWvW5cRz/OMeWFbunKqQC7w8sZkjBoE23f3WqgBuavVQHIShp6Pt0Ibnm5XyECmtXGEMj96NvKesr2k95lARcHV0ktua/XG+vHdkFhFCTX9aO/Lj0EHiRo9bmlTog10YRZhyR+zQ1jKZfWbXk6ifBHIUSSw1qHo2pIWYGXGvQXbm+oldJQ0dzqMFzP81n2UHpdoINVQeQ5TxfFJj7SCEOOFVkkPODrdVHoW+PlSjJ1GT1ziE45u60DyLLL4ORosYvttLtx2mCniSbWAfNSHSDtFHi
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 23cb3666-cc4b-4657-8290-08d9156cc44d
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR21MB1514.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 May 2021 17:38:34.4925
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WVype/z9wW7HClirB3YOJLOf7RzDCalfohQDuk8NWOgi0PRO8AgMUCfcziN+4rF/Rgr8ygCcKPGKV3mywIdf0g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR21MB1483
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210512075445.18935-5-joro@8bytes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update drivers/hv/Kconfig so CONFIG_HYPERV can be selected on
-ARM64, causing the Hyper-V specific code to be built.
+On Wed, May 12, 2021, Joerg Roedel wrote:
+> From: Joerg Roedel <jroedel@suse.de>
+> 
+> This reverts commit 7024f60d655272bd2ca1d3a4c9e0a63319b1eea1.
+> 
+> The commit reverted here introduces a short-cut into the #VC handlers
+> memory access code which only works reliably in task context. But the
+> kernels #VC handler can be invoked from any context, making the
+> access_ok() call trigger a warning with CONFIG_DEBUG_ATOMIC_SLEEP
+> enabled.
+> 
+> Also the memcpy() used in the reverted patch is wrong, as it has no
+> page-fault handling. Access to kernel memory can also fault due to
+> kernel bugs, and those should not be reported as faults from the #VC
+> handler but as bugs of their real call-site, which is correctly later
+> done from vc_forward_exception().
 
-Signed-off-by: Michael Kelley <mikelley@microsoft.com>
-Reviewed-by: Sunil Muthuswamy <sunilmut@microsoft.com>
----
- drivers/hv/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+The changelog should call out that a previous patch fixed the original bug by
+switching to unchecked versions of get/put.  Without that, this reads like we're
+reverting to even worse behavior.
 
-diff --git a/drivers/hv/Kconfig b/drivers/hv/Kconfig
-index 66c794d..efb7585 100644
---- a/drivers/hv/Kconfig
-+++ b/drivers/hv/Kconfig
-@@ -4,7 +4,8 @@ menu "Microsoft Hyper-V guest support"
- 
- config HYPERV
- 	tristate "Microsoft Hyper-V client drivers"
--	depends on X86 && ACPI && X86_LOCAL_APIC && HYPERVISOR_GUEST
-+	depends on ACPI && ((X86 && X86_LOCAL_APIC && HYPERVISOR_GUEST) \
-+		|| (ARM64 && !CPU_BIG_ENDIAN))
- 	select PARAVIRT
- 	select X86_HV_CALLBACK_VECTOR
- 	help
--- 
-1.8.3.1
+Alternatively, and probably even better, fold this revert into the switch to
+the unchecked version (sounds like those will use kernel-specific flavors?).
 
+> Fixes: 7024f60d6552 ("x86/sev-es: Handle string port IO to kernel memory properly")
+> Cc: stable@vger.kernel.org # v5.11
+> Signed-off-by: Joerg Roedel <jroedel@suse.de>
+> ---
+>  arch/x86/kernel/sev.c | 12 ------------
+>  1 file changed, 12 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
+> index 110b39345b40..f4f319004713 100644
+> --- a/arch/x86/kernel/sev.c
+> +++ b/arch/x86/kernel/sev.c
+> @@ -333,12 +333,6 @@ static enum es_result vc_write_mem(struct es_em_ctxt *ctxt,
+>  	u16 d2;
+>  	u8  d1;
+>  
+> -	/* If instruction ran in kernel mode and the I/O buffer is in kernel space */
+> -	if (!user_mode(ctxt->regs) && !access_ok(target, size)) {
+> -		memcpy(dst, buf, size);
+> -		return ES_OK;
+> -	}
+> -
+>  	switch (size) {
+>  	case 1:
+>  		memcpy(&d1, buf, 1);
+> @@ -388,12 +382,6 @@ static enum es_result vc_read_mem(struct es_em_ctxt *ctxt,
+>  	u16 d2;
+>  	u8  d1;
+>  
+> -	/* If instruction ran in kernel mode and the I/O buffer is in kernel space */
+> -	if (!user_mode(ctxt->regs) && !access_ok(s, size)) {
+> -		memcpy(buf, src, size);
+> -		return ES_OK;
+> -	}
+> -
+>  	switch (size) {
+>  	case 1:
+>  		if (__get_user(d1, s))
+> -- 
+> 2.31.1
+> 
