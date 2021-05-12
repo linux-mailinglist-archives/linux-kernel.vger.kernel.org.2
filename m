@@ -2,96 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1296537ECDB
+	by mail.lfdr.de (Postfix) with ESMTP id 819E237ECDC
 	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 00:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384640AbhELUB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 16:01:57 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:53268 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243380AbhELSdp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 14:33:45 -0400
-Date:   Wed, 12 May 2021 18:32:31 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620844352;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GL+KN12V2WLlmTN5qmieIkFJpA5O3CkALUJ4v9GhZ0M=;
-        b=BcpmxlJrVK9DhuCoFKi8BSGzLPrNDpthK4DPOuFYWMZCg59ooPUn9ERFXe1yz/8z4u0Olj
-        mxm+OFffaZn0AHXH1nJcrMaENqLSJ7DfvpjbP2g8lSj5z4XG7sKpO36nUC8sosoqhbZPYF
-        mOVAlMsESlIyo4xrScspQFhs6r513yn7XLZaRLM/AxbjdUIZqLCA+l1Wh2Uj9MKINTLKyG
-        cxIIEr7qmgVr4zJyVOPTmMCKiMxfXlcNsuEkUjqnlaTPnaACcxVwawpgpSosMfWzMu6zx/
-        8QzCkxPDeC208YzJ85iPa6YmHGsf6+5tFhaXD/t8CmYi0M79sgKaFllJsZZF5Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620844352;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GL+KN12V2WLlmTN5qmieIkFJpA5O3CkALUJ4v9GhZ0M=;
-        b=qh0dnRcxq+qQtW22145R4o6XVeafFN3xx2UFxNWaJg/0D5EmMckYEpzRJZXtwcVhNPuvTK
-        GBwnzdRcR+NZvRAw==
-From:   "tip-bot2 for Vasily Gorbik" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: objtool/urgent] objtool: Fix elf_create_undef_symbol() endianness
-Cc:     Vasily Gorbik <gor@linux.ibm.com>, Ingo Molnar <mingo@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: =?utf-8?q?=3Cpatch-1=2Ethread-6c9df9=2Egit-d39264656387=2Eyou?=
- =?utf-8?q?r-ad-here=2Ecall-01620841104-ext-2554=40work=2Ehours=3E?=
-References: =?utf-8?q?=3Cpatch-1=2Ethread-6c9df9=2Egit-d39264656387=2Eyour?=
- =?utf-8?q?-ad-here=2Ecall-01620841104-ext-2554=40work=2Ehours=3E?=
+        id S1384666AbhELUCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 16:02:06 -0400
+Received: from mga12.intel.com ([192.55.52.136]:41676 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1343682AbhELSf2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 14:35:28 -0400
+IronPort-SDR: trpsocEuMcjP3Kkrv5DM8m9vkGI7gy19XWgPEFQv5xbbC6M8op3T39gviWnoed3MBG7TK0UqQe
+ Oxqh81yUw8BQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="179372618"
+X-IronPort-AV: E=Sophos;i="5.82,295,1613462400"; 
+   d="scan'208";a="179372618"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2021 11:33:23 -0700
+IronPort-SDR: lAROKlT1CyajAg6vKFcMX4eJjvsT/BLqRLmwevKOczuyyYzoeVh98jEI7OZgr5h68Cw/D1f/Ze
+ 5YpK9Nd3gkmg==
+X-IronPort-AV: E=Sophos;i="5.82,295,1613462400"; 
+   d="scan'208";a="622791145"
+Received: from purnend1-mobl1.amr.corp.intel.com (HELO [10.209.123.133]) ([10.209.123.133])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2021 11:33:22 -0700
+Subject: Re: [PATCH v3] KVM: x86: use wrpkru directly in
+ kvm_load_{guest|host}_xsave_state
+To:     Peter Zijlstra <peterz@infradead.org>, Jon Kohler <jon@nutanix.com>
+Cc:     Babu Moger <babu.moger@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Uros Bizjak <ubizjak@gmail.com>,
+        Petteri Aimonen <jpa@git.mail.kapsi.fi>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Fan Yang <Fan_Yang@sjtu.edu.cn>,
+        Juergen Gross <jgross@suse.com>,
+        Benjamin Thiel <b.thiel@posteo.de>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+References: <20210511170508.40034-1-jon@nutanix.com>
+ <YJuGms6UnRVpP7U/@hirez.programming.kicks-ass.net>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <25d39a79-d8d8-9798-a930-ccdace304bac@intel.com>
+Date:   Wed, 12 May 2021 11:33:21 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Message-ID: <162084435147.29796.6211951426659224988.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <YJuGms6UnRVpP7U/@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the objtool/urgent branch of tip:
+On 5/12/21 12:41 AM, Peter Zijlstra wrote:
+> On Tue, May 11, 2021 at 01:05:02PM -0400, Jon Kohler wrote:
+>> diff --git a/arch/x86/include/asm/fpu/internal.h b/arch/x86/include/asm/fpu/internal.h
+>> index 8d33ad80704f..5bc4df3a4c27 100644
+>> --- a/arch/x86/include/asm/fpu/internal.h
+>> +++ b/arch/x86/include/asm/fpu/internal.h
+>> @@ -583,7 +583,13 @@ static inline void switch_fpu_finish(struct fpu *new_fpu)
+>>  		if (pk)
+>>  			pkru_val = pk->pkru;
+>>  	}
+>> -	__write_pkru(pkru_val);
+>> +
+>> +	/*
+>> +	 * WRPKRU is relatively expensive compared to RDPKRU.
+>> +	 * Avoid WRPKRU when it would not change the value.
+>> +	 */
+>> +	if (pkru_val != rdpkru())
+>> +		wrpkru(pkru_val);
+> Just wondering; why aren't we having that in a per-cpu variable? The
+> usual per-cpu MSR shadow approach avoids issuing any 'special' ops
+> entirely.
 
-Commit-ID:     7176af27a8bf4ab5b5c7a1850459b194a21cf876
-Gitweb:        https://git.kernel.org/tip/7176af27a8bf4ab5b5c7a1850459b194a21cf876
-Author:        Vasily Gorbik <gor@linux.ibm.com>
-AuthorDate:    Wed, 12 May 2021 19:42:10 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Wed, 12 May 2021 20:25:48 +02:00
+It could be a per-cpu variable.  When I wrote this originally I figured
+that a rdpkru would be cheaper than a load from memory (even per-cpu
+memory).
 
-objtool: Fix elf_create_undef_symbol() endianness
+But, now that I think about it, assuming that 'prku_val' is in %rdi, doing:
 
-Currently x86 cross-compilation fails on big endian system with:
+	cmp	%gs:0x1234, %rdi
 
-  x86_64-cross-ld: init/main.o: invalid string offset 488112128 >= 6229 for section `.strtab'
+might end up being cheaper than clobbering a *pair* of GPRs with rdpkru:
 
-Mark new ELF data in elf_create_undef_symbol() as symbol, so that libelf
-does endianness handling correctly.
+	xor    %ecx,%ecx
+	rdpkru
+	cmp	%rax, %rdi
 
-Fixes: 2f2f7e47f052 ("objtool: Add elf_create_undef_symbol()")
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/patch-1.thread-6c9df9.git-d39264656387.your-ad-here.call-01620841104-ext-2554@work.hours
----
- tools/objtool/elf.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
-index d08f5f3..743c2e9 100644
---- a/tools/objtool/elf.c
-+++ b/tools/objtool/elf.c
-@@ -762,6 +762,7 @@ struct symbol *elf_create_undef_symbol(struct elf *elf, const char *name)
- 	data->d_buf = &sym->sym;
- 	data->d_size = sizeof(sym->sym);
- 	data->d_align = 1;
-+	data->d_type = ELF_T_SYM;
- 
- 	sym->idx = symtab->len / sizeof(sym->sym);
- 
+I'm too lazy to go figure out what would be faster in practice, though.
+ Does anyone care?
