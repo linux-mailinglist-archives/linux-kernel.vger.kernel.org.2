@@ -2,180 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C982837C15C
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:58:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6282437C104
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 May 2021 16:55:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232596AbhELO7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 10:59:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46930 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232400AbhELO46 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 10:56:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB0B461462;
-        Wed, 12 May 2021 14:55:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620831330;
-        bh=DvKCo+D/uNmFT6p2+ZAdmHSuFl+XPHUCcdtAgp8SinQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=s5UJXp5A1ehWLquNUtUygQzPoAeGL5vtitKRKqK7MMfGQM/4qJn2NWXsr8zyxrZ/f
-         HVOO6bUKiOk+O0GZJb/rcyUJjbSOy1I8xiww4X3IxU1yGTogCaAilw0MakKjs1PRcH
-         frdF8sGqgOtHULizm4fHwXMlYKr5RomnwES0YNA163ZT3kWYtzIK0Pch44oBAiyN4W
-         SAf4wOMGM42IYPgwOPYpC3CH+FQehusJtnW72j8gB6j7jjFTgkK74L6VQdmFjbTaj0
-         CBwWNOzBK1NzWOzItpfXq91+yiTuujcXFW4lojWbqTqx3KlX2F4pKS5OPUzK6XPSif
-         Yzjrm2O71TopA==
-Received: by mail-ot1-f52.google.com with SMTP id u19-20020a0568302493b02902d61b0d29adso20019145ots.10;
-        Wed, 12 May 2021 07:55:30 -0700 (PDT)
-X-Gm-Message-State: AOAM532/qr4HFQUQb4Fzkox8mMJ0HYtGWjH9aDehaCVmkMzjg9zydB+1
-        WMGsoyACcQn+DU/Y7jDM7AD9nUOuu7xiGt2wxZw=
-X-Google-Smtp-Source: ABdhPJzYb9Oaloykf1CG+pTRbJVzjiXnCPWHMEzD/y4/q2A9ig0gIcqKYlTWZovopNvMJ5IO7bPdtjymQwkgeuAUOVI=
-X-Received: by 2002:a05:6830:4da:: with SMTP id s26mr30866699otd.77.1620831329825;
- Wed, 12 May 2021 07:55:29 -0700 (PDT)
+        id S231419AbhELOzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 10:55:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231830AbhELOyz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 10:54:55 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70F5DC061346
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 07:53:46 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id j3-20020a05600c4843b02901484662c4ebso3184491wmo.0
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 07:53:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fd/lp47bMDksEuCZvWNiiTTpOFVNkBriPN79wBwwZlk=;
+        b=WPEFTeGb0JMfmKzK5eEiCGQAdd42KCSJ//onCHJLhX6KStKsTis44g4I5QVg+IUwiC
+         qzKt2QoVeXoYJWPE17RbfYyCLzwETRPr48WToGxv+OfazCAdoC+94RpiecZcfe6DsK9h
+         aH10s+MWdH0NGRo2sTQ8VS8zntmZxASFJgfdtV2wRa/sZ3zIX6zYLdumlgE6auCYqVdW
+         cfagrj/KXPYQqUaDNqpIjhK7TnsmZsoA+eS1cb7/6cIHYpL/hOc8zirqgH87btnxOBvG
+         QXUiaNjQ96w3OWHSJOkyEECxY/t0Q6fRItzfRhdU9mMe/nVS4ad/4tZmjjMX7fqKhy3H
+         3Gpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fd/lp47bMDksEuCZvWNiiTTpOFVNkBriPN79wBwwZlk=;
+        b=OQlg4VUOjsg/mAUEubwo/g3PFF8s/JQ6mgl3fEVov6aT1EL1cf/JcQ4a5LnZOIB316
+         Y52oewnuZEJH5wsNRYGgK2KWGkccI1qyVMRrSpB8SS76mvQTpC2dVnxGw9tknfQWhnPu
+         pGtDFCLsPbRLvsiDyYKG/zC+sZ1gRM7ir5j1WIynWwVByLvpdKN4S5EX+WgwlH49OIQB
+         g56mytjx2vldmzYLd97C5XiCN42xVYLv3hM6hwJ1uZAPCPSqnaL5pdlY8tPrL3fNbj/Q
+         m//IK6CnzIoW+v5BccuP87SKqL0f5FkWbboDzfi7oUv3AxOZck2aZzeC+cDkWlX6gdde
+         fJvQ==
+X-Gm-Message-State: AOAM533KbBPDqgRpgWa/J8hUxFk4flkorgqwvSBWZ7P9/J483oWF9pHy
+        qR/PVP6pFhntAwMj9FMuA+ipO1X87kFnHLky3Zs=
+X-Google-Smtp-Source: ABdhPJz2FBpCZCQePjbngIM4j/DQbkpJd3753XlajVSNgQ6bONe6Pn557OEJfoZFG5F2vWkSc/Bg2AlfH1Yd1Q8OZnE=
+X-Received: by 2002:a1c:4954:: with SMTP id w81mr12296554wma.49.1620831225047;
+ Wed, 12 May 2021 07:53:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210511185057.3815777-1-jim.cromie@gmail.com> <20210511185057.3815777-18-jim.cromie@gmail.com>
-In-Reply-To: <20210511185057.3815777-18-jim.cromie@gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 12 May 2021 16:55:18 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGLKJ19oThbXPhboHzCHfX_oZscxRHn6M7s4jt9Gk8SEA@mail.gmail.com>
-Message-ID: <CAMj1kXGLKJ19oThbXPhboHzCHfX_oZscxRHn6M7s4jt9Gk8SEA@mail.gmail.com>
-Subject: Re: [RFC PATCH v5 17/28] dyndbg: prevent build bugs via -DNO_DYNAMIC_DEBUG_TABLE
-To:     Jim Cromie <jim.cromie@gmail.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Bill Wendling <morbo@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Joerg Roedel <jroedel@suse.de>, Nick Terrell <terrelln@fb.com>,
-        Dave Young <dyoung@redhat.com>,
-        Pingfan Liu <kernelfans@gmail.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:SPARC + UltraSPARC (sparc/sparc64)" 
-        <sparclinux@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        kbuild test robot <lkp@intel.com>
+References: <20210508195641.397198-1-robdclark@gmail.com> <20210508195641.397198-2-robdclark@gmail.com>
+ <YJlb3GO41hiu4pWw@phenom.ffwll.local> <CAF6AEGsGb1jZgRRUqDvf+j+E6pNEtSck=r3xh4VL7FmZMPszBQ@mail.gmail.com>
+ <CAKMK7uGPGbOPRtJaiG5oNCDhYQ27+V3bO5Wcgv7C9fqdyp8LeA@mail.gmail.com>
+ <CAF6AEGto1PQcEbYeWfXqMatK0z3dW-mpLNVh=VJb=9gwrPfCWg@mail.gmail.com>
+ <YJq0YVi4O4zGkb3j@phenom.ffwll.local> <20210512112330.0130a62a@eldfell>
+In-Reply-To: <20210512112330.0130a62a@eldfell>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Wed, 12 May 2021 07:57:26 -0700
+Message-ID: <CAF6AEGu4B2wXhbjUxT36tKUhz7R_Mg=TzD7yOA-90L7VBCHpMQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] drm: Fix dirtyfb stalls
+To:     Pekka Paalanen <ppaalanen@gmail.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        Rob Clark <robdclark@chromium.org>,
+        David Airlie <airlied@linux.ie>,
+        open list <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 May 2021 at 20:51, Jim Cromie <jim.cromie@gmail.com> wrote:
+On Wed, May 12, 2021 at 1:23 AM Pekka Paalanen <ppaalanen@gmail.com> wrote:
 >
-> The next patch adds DEFINE_DYNAMIC_DEBUG_TABLE(), which broke several
-> subtrees, including efi, vdso, and some of arch/*/boot/compressed,
-> with various relocation errors, iirc.
+> On Tue, 11 May 2021 18:44:17 +0200
+> Daniel Vetter <daniel@ffwll.ch> wrote:
 >
-> Avoid those problems by adding a define to suppress the "transparent"
-> DEFINE_DYNAMIC_DEBUG_TABLE() invocation.  I found the x86 problems
-> myself, lkp@intel.com found arm & sparc problems, and may yet find
-> others.
+> > On Mon, May 10, 2021 at 12:06:05PM -0700, Rob Clark wrote:
+> > > On Mon, May 10, 2021 at 10:44 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > > >
+> > > > On Mon, May 10, 2021 at 6:51 PM Rob Clark <robdclark@gmail.com> wrote:
+> > > > >
+> > > > > On Mon, May 10, 2021 at 9:14 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > > > > >
+> > > > > > On Sat, May 08, 2021 at 12:56:38PM -0700, Rob Clark wrote:
+> > > > > > > From: Rob Clark <robdclark@chromium.org>
+> > > > > > >
+> > > > > > > drm_atomic_helper_dirtyfb() will end up stalling for vblank on "video
+> > > > > > > mode" type displays, which is pointless and unnecessary.  Add an
+> > > > > > > optional helper vfunc to determine if a plane is attached to a CRTC
+> > > > > > > that actually needs dirtyfb, and skip over them.
+> > > > > > >
+> > > > > > > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > > > > >
+> > > > > > So this is a bit annoying because the idea of all these "remap legacy uapi
+> > > > > > to atomic constructs" helpers is that they shouldn't need/use anything
+> > > > > > beyond what userspace also has available. So adding hacks for them feels
+> > > > > > really bad.
+> > > > >
+> > > > > I suppose the root problem is that userspace doesn't know if dirtyfb
+> > > > > (or similar) is actually required or is a no-op.
+> > > > >
+> > > > > But it is perhaps less of a problem because this essentially boils
+> > > > > down to "x11 vs wayland", and it seems like wayland compositors for
+> > > > > non-vsync'd rendering just pageflips and throws away extra frames from
+> > > > > the app?
+> > > >
+> > > > Yeah it's about not adequately batching up rendering and syncing with
+> > > > hw. bare metal x11 is just especially stupid about it :-)
+> > > >
+> > > > > > Also I feel like it's not entirely the right thing to do here either.
+> > > > > > We've had this problem already on the fbcon emulation side (which also
+> > > > > > shouldn't be able to peek behind the atomic kms uapi curtain), and the fix
+> > > > > > there was to have a worker which batches up all the updates and avoids any
+> > > > > > stalls in bad places.
+> > > > >
+> > > > > I'm not too worried about fbcon not being able to render faster than
+> > > > > vblank.  OTOH it is a pretty big problem for x11
+> > > >
+> > > > That's why we'd let the worker get ahead at most one dirtyfb. We do
+> > > > the same with fbcon, which trivially can get ahead of vblank otherwise
+> > > > (if sometimes flushes each character, so you have to pile them up into
+> > > > a single update if that's still pending).
+> > > >
+> > > > > > Since this is for frontbuffer rendering userspace only we can probably get
+> > > > > > away with assuming there's only a single fb, so the implementation becomes
+> > > > > > pretty simple:
+> > > > > >
+> > > > > > - 1 worker, and we keep track of a single pending fb
+> > > > > > - if there's already a dirty fb pending on a different fb, we stall for
+> > > > > >   the worker to start processing that one already (i.e. the fb we track is
+> > > > > >   reset to NULL)
+> > > > > > - if it's pending on the same fb we just toss away all the updates and go
+> > > > > >   with a full update, since merging the clip rects is too much work :-) I
+> > > > > >   think there's helpers so you could be slightly more clever and just have
+> > > > > >   an overall bounding box
+> > > > >
+> > > > > This doesn't really fix the problem, you still end up delaying sending
+> > > > > the next back-buffer to mesa
+> > > >
+> > > > With this the dirtyfb would never block. Also glorious frontbuffer
+> > > > tracking corruption is possible, but that's not the kernel's problem.
+> > > > So how would anything get held up in userspace.
+> > >
+> > > the part about stalling if a dirtyfb is pending was what I was worried
+> > > about.. but I suppose you meant the worker stalling, rather than
+> > > userspace stalling (where I had interpreted it the other way around).
+> > > As soon as userspace needs to stall, you're losing again.
+> >
+> > Nah, I did mean userspace stalling, so we can't pile up unlimited amounts
+> > of dirtyfb request in the kernel.
+> >
+> > But also I never expect userspace that uses dirtyfb to actually hit this
+> > stall point (otherwise we'd need to look at this again). It would really
+> > be only there as defense against abuse.
+> >
+> > > > > But we could re-work drm_framebuffer_funcs::dirty to operate on a
+> > > > > per-crtc basis and hoist the loop and check if dirtyfb is needed out
+> > > > > of drm_atomic_helper_dirtyfb()
+> > > >
+> > > > That's still using information that userspace doesn't have, which is a
+> > > > bit irky. We might as well go with your thing here then.
+> > >
+> > > arguably, this is something we should expose to userspace.. for DSI
+> > > command-mode panels, you probably want to make a different decision
+> > > with regard to how many buffers in your flip-chain..
+> > >
+> > > Possibly we should add/remove the fb_damage_clips property depending
+> > > on the display type (ie. video/pull vs cmd/push mode)?
+> >
+> > I'm not sure whether atomic actually needs this exposed:
+> > - clients will do full flips for every frame anyway, I've not heard of
+> >   anyone seriously doing frontbuffer rendering.
 >
+> That may or may not be changing, depending on whether the DRM drivers
+> will actually support tearing flips. There has been a huge amount of
+> debate for needing tearing for Wayland [1], and while I haven't really
+> joined that discussion, using front-buffer rendering (blits) to work
+> around the driver inability to flip-tear might be something some people
+> will want.
 
-Given that I was only cc'ed on this patch in isolation, would you mind
-adding more clarification here? What is DEFINE_DYNAMIC_DEBUG_TABLE()
-supposed to do, and why is it breaking standalone binaries?
+jfwiw, there is a lot of hw that just can't do tearing pageflips.. I
+think this probably includes most arm hw.  What is done instead is to
+skip the pageflip and render directly to the front-buffer.
 
+EGL_KHR_mutable_render_buffer is a thing you might be interested in..
+it is wired up for android on i965 and there is a WIP MR[1] for
+mesa/st (gallium):
 
-> Reported-by: <lkp@intel.com> # on [jimc:lkp-test/dyndbg-diet] recently
-> Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
-> ---
->  arch/arm/boot/compressed/Makefile     | 2 ++
->  arch/sparc/vdso/Makefile              | 2 ++
->  arch/x86/boot/compressed/Makefile     | 1 +
->  arch/x86/entry/vdso/Makefile          | 3 +++
->  arch/x86/purgatory/Makefile           | 1 +
->  drivers/firmware/efi/libstub/Makefile | 3 ++-
->  6 files changed, 11 insertions(+), 1 deletion(-)
+Possibly it could be useful to add support for platform_wayland?
+
+[1] https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/10685
+
+BR,
+-R
+
+> Personally, what I do agree with is that "tear if late from intended
+> vblank" is a feature that will be needed when VRR cannot be used.
+> However, I would also argue that multiple tearing updates per refresh
+> cycle is not a good idea, and I know people disagree with this because
+> practically all relevant games are using a naive main loop that makes
+> multi-tearing necessary for good input response.
 >
-> diff --git a/arch/arm/boot/compressed/Makefile b/arch/arm/boot/compressed/Makefile
-> index fd94e27ba4fa..72f056a00ad4 100644
-> --- a/arch/arm/boot/compressed/Makefile
-> +++ b/arch/arm/boot/compressed/Makefile
-> @@ -82,6 +82,8 @@ compress-$(CONFIG_KERNEL_LZMA) = lzma
->  compress-$(CONFIG_KERNEL_XZ)   = xzkern
->  compress-$(CONFIG_KERNEL_LZ4)  = lz4
+> I'm not quite sure where this leaves the KMS UAPI usage patterns. Maybe
+> this matters, maybe not?
 >
-> +KBUILD_CFLAGS += -DNO_DYNAMIC_DEBUG_TABLE
-> +
->  libfdt_objs := fdt_rw.o fdt_ro.o fdt_wip.o fdt.o
+> Does it make a difference between using legacy DirtyFB vs. atomic
+> FB_DAMAGE_CLIPS property?
 >
->  ifeq ($(CONFIG_ARM_ATAG_DTB_COMPAT),y)
-> diff --git a/arch/sparc/vdso/Makefile b/arch/sparc/vdso/Makefile
-> index c5e1545bc5cf..960ed0fb6804 100644
-> --- a/arch/sparc/vdso/Makefile
-> +++ b/arch/sparc/vdso/Makefile
-> @@ -30,6 +30,8 @@ obj-y += $(vdso_img_objs)
->  targets += $(vdso_img_cfiles)
->  targets += $(vdso_img_sodbg) $(vdso_img-y:%=vdso%.so)
+> Also mind that Wayland compositors would be dynamically switching
+> between "normal flips" and "tearing updates" depending on the
+> scenegraph. This switch should not be considered a "mode set".
 >
-> +KBUILD_CFLAGS += -DNO_DYNAMIC_DEBUG_TABLE
-> +
->  CPPFLAGS_vdso.lds += -P -C
+> [1] https://gitlab.freedesktop.org/wayland/wayland-protocols/-/merge_requests/65
 >
->  VDSO_LDFLAGS_vdso.lds = -m elf64_sparc -soname linux-vdso.so.1 --no-undefined \
-> diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
-> index e0bc3988c3fa..ada4eb960d95 100644
-> --- a/arch/x86/boot/compressed/Makefile
-> +++ b/arch/x86/boot/compressed/Makefile
-> @@ -31,6 +31,7 @@ targets := vmlinux vmlinux.bin vmlinux.bin.gz vmlinux.bin.bz2 vmlinux.bin.lzma \
->  KBUILD_CFLAGS := -m$(BITS) -O2
->  KBUILD_CFLAGS += -fno-strict-aliasing -fPIE
->  KBUILD_CFLAGS += -DDISABLE_BRANCH_PROFILING
-> +KBUILD_CFLAGS += -DNO_DYNAMIC_DEBUG_TABLE
->  cflags-$(CONFIG_X86_32) := -march=i386
->  cflags-$(CONFIG_X86_64) := -mcmodel=small -mno-red-zone
->  KBUILD_CFLAGS += $(cflags-y)
-> diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
-> index 05c4abc2fdfd..619878f2c427 100644
-> --- a/arch/x86/entry/vdso/Makefile
-> +++ b/arch/x86/entry/vdso/Makefile
-> @@ -29,6 +29,9 @@ vobjs32-y := vdso32/note.o vdso32/system_call.o vdso32/sigreturn.o
->  vobjs32-y += vdso32/vclock_gettime.o
->  vobjs-$(CONFIG_X86_SGX)        += vsgx.o
 >
-> +# avoid a x86_64_RELATIVE error
-> +KBUILD_CFLAGS += -DNO_DYNAMIC_DEBUG_TABLE
-> +
->  # files to link into kernel
->  obj-y                          += vma.o extable.o
->  KASAN_SANITIZE_vma.o           := y
-> diff --git a/arch/x86/purgatory/Makefile b/arch/x86/purgatory/Makefile
-> index 95ea17a9d20c..95ba7b18410f 100644
-> --- a/arch/x86/purgatory/Makefile
-> +++ b/arch/x86/purgatory/Makefile
-> @@ -35,6 +35,7 @@ PURGATORY_CFLAGS_REMOVE := -mcmodel=kernel
->  PURGATORY_CFLAGS := -mcmodel=large -ffreestanding -fno-zero-initialized-in-bss -g0
->  PURGATORY_CFLAGS += $(DISABLE_STACKLEAK_PLUGIN) -DDISABLE_BRANCH_PROFILING
->  PURGATORY_CFLAGS += -fno-stack-protector
-> +PURGATORY_CFLAGS += -DNO_DYNAMIC_DEBUG_TABLE
->
->  # Default KBUILD_CFLAGS can have -pg option set when FTRACE is enabled. That
->  # in turn leaves some undefined symbols like __fentry__ in purgatory and not
-> diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/efi/libstub/Makefile
-> index c23466e05e60..def8febefbd3 100644
-> --- a/drivers/firmware/efi/libstub/Makefile
-> +++ b/drivers/firmware/efi/libstub/Makefile
-> @@ -13,7 +13,8 @@ cflags-$(CONFIG_X86)          += -m$(BITS) -D__KERNEL__ \
->                                    -Wno-pointer-sign \
->                                    $(call cc-disable-warning, address-of-packed-member) \
->                                    $(call cc-disable-warning, gnu) \
-> -                                  -fno-asynchronous-unwind-tables
-> +                                  -fno-asynchronous-unwind-tables \
-> +                                  -DNO_DYNAMIC_DEBUG_TABLE
->
->  # arm64 uses the full KBUILD_CFLAGS so it's necessary to explicitly
->  # disable the stackleak plugin
-> --
-> 2.31.1
->
+> Thanks,
+> pq
