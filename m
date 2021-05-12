@@ -2,116 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5173137F00F
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 01:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68AFC37F026
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 01:57:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231249AbhELXoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 19:44:22 -0400
-Received: from mail-wm1-f42.google.com ([209.85.128.42]:40542 "EHLO
-        mail-wm1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233586AbhELXdk (ORCPT
+        id S243993AbhELX51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 19:57:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234091AbhELXof (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 19:33:40 -0400
-Received: by mail-wm1-f42.google.com with SMTP id y124-20020a1c32820000b029010c93864955so508696wmy.5;
-        Wed, 12 May 2021 16:32:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1H+d0FBxQyBmCizFzbRyEoxvV7pCSwkXkm1m5umLuY4=;
-        b=N8gDeDCeXiCLYx1kdeuLqy/l7jZ4CZq4uN00fnTbQ0fmjmSByuOA2dOKwQlwyT9KeD
-         SOYvvYqNrGHHagmL1qSEo/+fRquqVfm2xJW7qSLQi2mgSKQ2MuKVCGjlUR6lbXzgO5EL
-         FIl4PCL1dw48U5pYY911drh3VclTCZ1o/5r0et+NhjoH0J5VJG2wS2dpOQe+mPVPAJgr
-         oTQmOKoBcruDgfRdEvwJ7EBagbzKRv1fCKQVrOO+/GuCS2YofdjGDJFU/U8L8jQWwvks
-         LMF8xeHqswcfRPsA9JJTwYAvQGVcscZ7xr0/0j+6TSidUplvp4c5u1Gox94uBMsEQOiq
-         fW0w==
-X-Gm-Message-State: AOAM531SNwHaN1snxTLh37NjhHqlc206h837jWJ1rco+adFyTA7cUloa
-        VS5WYr+jCDNqsWXPn3NqwYGjVcuMuiwkd6vz
-X-Google-Smtp-Source: ABdhPJyrWHK5hpJkgZiC7V6D/0QFJqr9C2oF38e/hMrtNMBBAj4fwLxfq8HoFrOyuq300gy/4GFR6g==
-X-Received: by 2002:a05:600c:293:: with SMTP id 19mr41463394wmk.144.1620862348337;
-        Wed, 12 May 2021 16:32:28 -0700 (PDT)
-Received: from rocinante.localdomain ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id e12sm1123249wrm.80.2021.05.12.16.32.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 16:32:27 -0700 (PDT)
-Date:   Thu, 13 May 2021 01:32:25 +0200
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Rajat Jain <rajatja@google.com>
-Cc:     Rajat Jain <rajatxjain@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
-        <linux-usb@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Dmitry Torokhov <dtor@google.com>
-Subject: Re: [PATCH v2 1/2] driver core: Move the "removable" attribute from
- USB to core
-Message-ID: <20210512233225.GA137103@rocinante.localdomain>
-References: <20210424021631.1972022-1-rajatja@google.com>
- <20210512010049.GA89346@rocinante.localdomain>
- <CAA93t1ohAFM1U2xTvbd1J1dUCaZwh6GYNGib_AM0J7+qHwSf1A@mail.gmail.com>
- <CACK8Z6HuKqgYQZGJZGQGr5FC96naV+1yXZuwYTy5Ydb5=k40KA@mail.gmail.com>
+        Wed, 12 May 2021 19:44:35 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8BC9C06138E
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 16:35:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=Xi6rUATIsl0qQ+HXmFtFtw/1f9MPy0zZoPPcyd3kqEU=; b=rxYYs25uYWJ/6fnZRiGTi2RJPZ
+        g6tj/f/htNS77W39ILeHPPiSDCZigWVhEJHMLd/LETIdTfax1Yj1iqDfKoshttbJEGBagzWAXpQzS
+        ArNqcMiWvNRxhB3tPntrwoL+BphTyp+EmJhDb0lrWLQqFZkuokLrr/4jrxB3tzKpTmFYoaGdsTGlm
+        JItaEF1noZtR1Q8hazbfRfFNi0HrCvupxTvEMkWbK5xvRw7sCllBRaJDkvMwKVG0RtIrHMtSQcQjG
+        l9p4eYKRoHEhi9VaULcvVo+r8cK3UT843nCGjm9n+SDxvCwJbmIMm28Iqn6KXE6PuntOuoXebCK3T
+        nF9DRglQ==;
+Received: from [2601:1c0:6280:3f0::7376] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lgyNY-00AuaN-Fr; Wed, 12 May 2021 23:35:00 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH -next] drm: simpledrm: print resource info using '%pr'
+Date:   Wed, 12 May 2021 16:34:59 -0700
+Message-Id: <20210512233459.19534-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CACK8Z6HuKqgYQZGJZGQGr5FC96naV+1yXZuwYTy5Ydb5=k40KA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rajat,
+struct resource start and end fields are not always long long,
+so using %llx to print them can cause build warnings (below).
+Fix these by using the special "%pr" for printing struct resource info.
 
-> Posted a v3 of this patch here:
-> https://lore.kernel.org/patchwork/patch/1428133/
+../drivers/gpu/drm/tiny/simpledrm.c: In function ‘simpledrm_device_init_mm’:
+../include/drm/drm_print.h:412:32: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 3 has type ‘resource_size_t {aka unsigned int}’ [-Wformat=]
+../drivers/gpu/drm/tiny/simpledrm.c:533:54: note: format string is defined here
+   drm_err(dev, "could not acquire memory range [0x%llx:0x%llx]: error %d\n",
+                                                   ~~~^
+                                                   %x
+../include/drm/drm_print.h:412:32: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 4 has type ‘resource_size_t {aka unsigned int}’ [-Wformat=]
+../drivers/gpu/drm/tiny/simpledrm.c:533:61: note: format string is defined here
+   drm_err(dev, "could not acquire memory range [0x%llx:0x%llx]: error %d\n",
+                                                          ~~~^
+                                                          %x
 
-I saw!  Thank you!
+Fixes: 4aae79f77e3a ("drm/simpledrm: Acquire memory aperture for framebuffer")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Thomas Zimmermann <tzimmermann@suse.de>
+Cc: dri-devel@lists.freedesktop.org
+---
+ drivers/gpu/drm/tiny/simpledrm.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I also found the original conversation around the main idea that's
-driving the work done here, as per:
-
-  https://lore.kernel.org/lkml/20200601232542.GA473883@bjorn-Precision-5520/
-
-This helped to fill-in some missing pieces, so to speak, I've bad.
-
-[...]
-> > > > @@ -2504,8 +2523,16 @@ static int device_add_attrs(struct device *dev)
-> > > >                       goto err_remove_dev_online;
-> > > >       }
-> > > >
-> > > > +     if (type && type->supports_removable) {
-> > > > +             error = device_create_file(dev, &dev_attr_removable);
-> > > > +             if (error)
-> > > > +                     goto err_remove_dev_waiting_for_supplier;
-> > > > +     }
-> > > > +
-> > > >       return 0;
-> > >
-> > One of my primary considerations was also that the existing UAPI for
-> > the USB's "removable" attribute shouldn't be changed. Currently, it
-> > exists for all USB devices, so I think the current code / check is OK.
-[...]
-
-We wouldn't change addition of this attribute to the USB devices - after
-the lift to the device core it still has to work as before, as you say.
-
-Just to clarify.   What I was wondering is whether we should add this new
-sysfs object so that every device now would get this attribute going
-forward, regardless of whether it would have the "type->supports_removable"
-set.
-
-We would then have a lot of devices with this attribute set to
-"unknown", and then were the is an actual support it would then be
-either "fixed" or "removable".
-
-Having said that, Bjorn pointed out to me that this might be
-not necessarily desirable.
-
-We were also wondering if we should only set DEVICE_REMOVABLE for
-devices known to be behind an external-facing port, and let everything
-else be set to "unknown" (or whatever the default would be).
-
-Krzysztof
+--- linux-next-20210512.orig/drivers/gpu/drm/tiny/simpledrm.c
++++ linux-next-20210512/drivers/gpu/drm/tiny/simpledrm.c
+@@ -530,8 +530,8 @@ static int simpledrm_device_init_mm(stru
+ 
+ 	ret = devm_aperture_acquire_from_firmware(dev, mem->start, resource_size(mem));
+ 	if (ret) {
+-		drm_err(dev, "could not acquire memory range [0x%llx:0x%llx]: error %d\n",
+-			mem->start, mem->end, ret);
++		drm_err(dev, "could not acquire memory range %pr: error %d\n",
++			mem, ret);
+ 		return ret;
+ 	}
+ 
