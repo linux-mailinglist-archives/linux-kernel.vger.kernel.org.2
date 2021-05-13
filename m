@@ -2,144 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC61E37FE8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 22:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EADB37FE8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 22:07:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232412AbhEMUHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 16:07:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39456 "EHLO mail.kernel.org"
+        id S232419AbhEMUIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 16:08:52 -0400
+Received: from mga12.intel.com ([192.55.52.136]:46772 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232389AbhEMUHC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 16:07:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B307161421;
-        Thu, 13 May 2021 20:05:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620936352;
-        bh=8T+J3wCXI/e4i0Nq0qkxzfPcgMyR9DsieXzCu8AyHN4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=S8aZH569dpHyPV1WO9KYLvi5aeA4T/Bi2TDTlr76AqbK7Lss5y8R7nzoaJvXSoh8v
-         AlAi/al1uKP6LoN6pTwS+Dbd6rny3YwO5cDVtK1DC74Fqv/ejJqOwgF/af3d4oE08o
-         QT5DjPJ4GXOAagBrMiKykL58ii3A2EuFPFGuP2FPjdcq83lgS/0Km5N2cUzZDp8x4B
-         Wj/GXNjZ41PLmuXelRojpihdaXt+o7+yWC2ioTg6vHAOdFxv15DcQ8SCFDXt4veoBE
-         1EbsXRaHuYonUI6rnefgLjRpu8TUsLMKo32FB/NTxKi1JdqUbijoRwEHgkljkpOZw5
-         5M9uuGP7jhqrg==
-Date:   Thu, 13 May 2021 15:05:50 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Rajat Jain <rajatja@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
-        <linux-usb@vger.kernel.org>, Oliver Neukum <oneukum@suse.com>,
-        David Laight <David.Laight@aculab.com>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rajat Jain <rajatxjain@gmail.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Dmitry Torokhov <dtor@google.com>
-Subject: Re: [PATCH v3 2/2] PCI: Add sysfs "removable" attribute
-Message-ID: <20210513200550.GA2604592@bjorn-Precision-5520>
+        id S232387AbhEMUIt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 16:08:49 -0400
+IronPort-SDR: Se1ATL+zaBT2JdNP5vLqqb8xaE06bFrjv/SJiyifn0hfNgIagz0mGN8QQBVGLfePc4gpuHHRP8
+ rb15l9kyIR4g==
+X-IronPort-AV: E=McAfee;i="6200,9189,9983"; a="179636810"
+X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
+   d="scan'208";a="179636810"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 13:07:39 -0700
+IronPort-SDR: Sqg+C3NSDelLsy/5XX5jk6hIWJtHxCX2cnF3mTdiLsiG+UO7Dq4o1n25Gy4t2mCifosGvuahCq
+ qJagnWfYNYLA==
+X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
+   d="scan'208";a="456784066"
+Received: from rgandiko-mobl.amr.corp.intel.com (HELO [10.212.226.208]) ([10.212.226.208])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 13:07:38 -0700
+Subject: Re: [RFC v2 08/32] x86/traps: Add #VE support for TDX guest
+To:     Andi Kleen <ak@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tony Luck <tony.luck@intel.com>
+Cc:     Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <8a1d6930f784cb57c957cf20cea870947db91e05.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <afd85e8f-ab26-aa3b-e4e9-a0b3bfd472c8@intel.com>
+ <73752227-6eaf-2de6-3ac6-5ee280980c18@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <5b6b1937-d38f-a337-0520-7ce5d3083065@intel.com>
+Date:   Thu, 13 May 2021 13:07:35 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACK8Z6EPjcRwDB=r6RnsJRjHN4oJXTD0_8zbtUCA+awofY7=5Q@mail.gmail.com>
+In-Reply-To: <73752227-6eaf-2de6-3ac6-5ee280980c18@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 11:02:10AM -0700, Rajat Jain wrote:
-> On Wed, May 12, 2021 at 2:35 PM Rajat Jain <rajatja@google.com> wrote:
-> >
-> > A PCI device is "external_facing" if it's a Root Port with the ACPI
-> > "ExternalFacingPort" property or if it has the DT "external-facing"
-> > property.  We consider everything downstream from such a device to
-> > be removable by user.
-> >
-> > We're mainly concerned with consumer platforms with user accessible
-> > thunderbolt ports that are vulnerable to DMA attacks, and we expect those
-> > ports to be identified as "ExternalFacingPort". Devices in traditional
-> > hotplug slots can technically be removed, but the expectation is that
-> > unless the port is marked with "ExternalFacingPort", such devices are less
-> > accessible to user / may not be removed by end user, and thus not exposed
-> > as "removable" to userspace.
+On 5/13/21 12:47 PM, Andi Kleen wrote:
+> "if there is any reason for it to nest the TD would shut down."
 
-s/thunderbolt/Thunderbolt/ since I think it's a trademark
-s/identified as/identified by firmware as/
+The TDX EAS says:
 
-> > Set pci_dev_type.supports_removable so the device core exposes the
-> > "removable" file in sysfs, and tell the device core about removable
-> > devices.
-> >
-> > This can be used by userspace to implment any policies it wants to,
-> > tailored specifically for user removable devices. Eg usage:
-> > https://chromium-review.googlesource.com/c/chromiumos/platform2/+/2591812
-> > https://chromium-review.googlesource.com/c/chromiumos/platform2/+/2795038
-> > (code uses such an attribute to remove external PCI devicces or disable
-> > features on them as needed by the policy desired)
+> If, when attempting to inject a #VE, the Intel TDX module discovers
+> that the guest TD has not yet retrieved the information for a
+> previous #VE (i.e., VE_INFO.VALID is not 0), the TDX module injects a
+> #DF into the guest TD to indicate a #VE overrun.
 
-s/implment/implement/
-s/devicces/devices/
-
-Or maybe something like:
-
-  This can be used to implement userspace policies tailored for
-  user-removable devices.
-
-Not sure exactly what "remove external PCI devices" means.  You're
-talking about the *code* doing something, so I don't think it means
-physically unplugging the device from the system.  Maybe preventing a
-driver from binding to it or something similar?
-
-I hesitate slightly to rely on URLs like googlesource.com in commit
-logs because we don't know how long they will remain valid.  But I
-guess there's no real alternative here, since this code probably
-hasn't been posted to any public mailing lists like the ones archived
-at https://lore.kernel.org/lists.html, right?
-
-> > Signed-off-by: Rajat Jain <rajatja@google.com>
-
-> > +static void pci_set_removable(struct pci_dev *dev)
-> > +{
-> > +       struct pci_dev *parent = pci_upstream_bridge(dev);
-> > +       if (parent &&
-> > +           (parent->external_facing || dev_is_removable(&parent->dev)))
-> > +               dev_set_removable(&dev->dev, DEVICE_REMOVABLE);
-> > +       else
-> > +               dev_set_removable(&dev->dev, DEVICE_FIXED);
-> > +}
-> 
-> Copying comments from Krzysztof from another thread:
-> 
-> [Krzysztof] We were also wondering if we should only set DEVICE_REMOVABLE for
-> devices known to be behind an external-facing port, and let everything
-> else be set to "unknown" (or whatever the default would be).
-> 
-> [Rajat]: I think I'm fine with this proposal if Bjorn & PCI community
-> also sees this as a better idea. Essentially the question here is,
-> would it be better for the non-removable PCI devices to be shown as
-> "fixed" or "unknown"?
-
-I think I would rather see this as:
-
-  struct pci_dev *parent = pci_upstream_bridge(dev);
-
-  if (parent &&
-      (parent->external_facing || dev_is_removable(&parent->dev)))
-          dev_set_removable(&dev->dev, DEVICE_REMOVABLE);
-
-In other words, assume only that everything below an "external-facing"
-device is removable.
-
-In the absence of an "external-facing" property, we don't know
-anything about the connection, and I'd rather use the default
-(probably "unknown") instead of assuming "fixed."
-
-I don't think we have anything that depends on "fixed," so I don't
-think there's value in setting it.
-
-(Note the blank line between local variables and the "if"; maybe
-that's what Greg hinted at?)
-
-Bjorn
+How does that result in a shut down?
