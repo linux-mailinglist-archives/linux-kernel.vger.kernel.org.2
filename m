@@ -2,153 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34BC037F8FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 15:44:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05B4F37F90C
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 15:47:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234145AbhEMNp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 09:45:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57147 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234134AbhEMNpy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 09:45:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620913484;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oWoRXdPQG5Lp8dZ+UX0wcCkUvkRtLC4RqeaSswn2gS0=;
-        b=Os+RY71I+P1UIGJXkM8Gw6rcPsLEieUu3FsKZMV2eEcC2z3bBVsp7w5HGRHapNwmT9owhW
-        oIx6nlO5P7Ubw8HTnJLNEGnKyJP2WiV7IJmIm0XY5PRB3kkHXZ4QNN6ezskg0nXd6GEiAv
-        9vwB7WBt+1f/B6c51ouLz20Fri3n4rc=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-6-QLCgEnVxPx2QOJCyE5FySw-1; Thu, 13 May 2021 09:44:41 -0400
-X-MC-Unique: QLCgEnVxPx2QOJCyE5FySw-1
-Received: by mail-ed1-f70.google.com with SMTP id r19-20020a05640251d3b02903888eb31cafso14667138edd.13
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 06:44:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oWoRXdPQG5Lp8dZ+UX0wcCkUvkRtLC4RqeaSswn2gS0=;
-        b=R3SdfuaQUCtpEs/sEtYgZYN2Z3iVwO6cj1Xc5+DXc1jMs8botz3C+LAhDYXv2uQlBQ
-         nNqGODnMbzwapoMdcD3x6JUcnBkwmpuege7jzrEdhLbDTJNkCKys1JSJtvVbSn7AZD2t
-         mke5rq4qM0xrNpFT5fikVfuS54dphlIhsWz+Sbw35VNOe7ZId0oqW+PjpY7f8LtnWV1L
-         iQGWnhI0h7d+DE+9c9qTqGN6RevZjx1NJcG+WjycQlMKdrmsoUpvpj29NzGiYB8gTdJF
-         BpXtQxDOwz42lCW2ma0Aj+t0BOP1fG4bfkjVodk8ibOwlAsc5MOjNaBG8MIS84oTguNy
-         Y4zQ==
-X-Gm-Message-State: AOAM530MqO3Y4seZK3lmNP48AmZPr3wn/KEKli2Bf2BbP3UMZynSAlvx
-        x4tMq6DyIXzLoXOBGWXQrIYjX/PktOFlYLgmpMkcuGlxkXglL+GRTmUbyvdPavJUbnI4rTPmiMQ
-        n2O5/oLhJ11CJp8wAzhS7muLt
-X-Received: by 2002:a17:906:f28a:: with SMTP id gu10mr9366299ejb.135.1620913480729;
-        Thu, 13 May 2021 06:44:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyRgeZlJQmydhRmOxSudfdDEFokEqUOqWxM5HwrKX/tQlm/Hr03jIduTjjqf7mT/0OjHrCwUQ==
-X-Received: by 2002:a17:906:f28a:: with SMTP id gu10mr9366276ejb.135.1620913480499;
-        Thu, 13 May 2021 06:44:40 -0700 (PDT)
-Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
-        by smtp.gmail.com with ESMTPSA id q25sm1863114ejd.9.2021.05.13.06.44.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 06:44:40 -0700 (PDT)
-Date:   Thu, 13 May 2021 15:44:37 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Andra Paraschiv <andraprs@amazon.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v9 15/19] vhost/vsock: enable SEQPACKET for transport
-Message-ID: <20210513134437.xwz5gaulse4jqcmm@steredhat>
-References: <20210508163027.3430238-1-arseny.krasnov@kaspersky.com>
- <20210508163634.3432505-1-arseny.krasnov@kaspersky.com>
+        id S234170AbhEMNsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 09:48:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54636 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234123AbhEMNsA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 09:48:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B8DD4613BF;
+        Thu, 13 May 2021 13:46:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620913611;
+        bh=Hl9Tp2US/fiQulPkeoFf/XOunQPxECU8X4jZScPaoCQ=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=XkFpLapmamzs7aWn1Dd03XtYGRLQZb65b13mb5hPFMoEmp77YMQvTaOkbbtG/CVPv
+         ikigHr5oou8tgfo77nYtVXP2OpVEDu6cb8ifsLsDUzQTrztGfghcX5qZ3KrKCohuQh
+         k6kRLlF1l/NHImdpNW5NS1aZHNBLJQmnUl6aL8IeMvQejor2nntsHW7H3pYD8f6BM9
+         2QUJFgfYPPR+uitpKft9MGTuT8+IqjRx1iqgT12wMoDGFfZDj3uM9+3KETe5bRtLXP
+         QTtShd6NN1yW62iNkzR5rIjHoXQsO64tUxvRILMNVwrprtqpQFv5E0BbVQ/ALNpjJ+
+         WxqVLQmEpXl3A==
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Sandeep Maheswaram <sanm@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>
+Subject: Re: [PATCH v7 1/5] usb: dwc3: host: Set PHY mode during suspend
+In-Reply-To: <YJwommGqKVeMdXth@google.com>
+References: <1619586716-8687-1-git-send-email-sanm@codeaurora.org>
+ <1619586716-8687-2-git-send-email-sanm@codeaurora.org>
+ <87tunqka2e.fsf@kernel.org> <YJwommGqKVeMdXth@google.com>
+Date:   Thu, 13 May 2021 16:46:41 +0300
+Message-ID: <87wns27nlq.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210508163634.3432505-1-arseny.krasnov@kaspersky.com>
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 08, 2021 at 07:36:31PM +0300, Arseny Krasnov wrote:
->This removes:
->1) Ignore of non-stream type of packets.
->This adds:
->1) Handling of SEQPACKET bit: if guest sets features with this bit cleared,
->   then SOCK_SEQPACKET support will be disabled.
->2) 'seqpacket_allow()' callback.
->3) Handling of SEQ_EOR bit: when vhost places data in buffers of guest's
->   rx queue, keep this bit set only when last piece of data is copied.
->
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->---
-> v8 -> v9:
-> 1) Move 'seqpacket_allow' to 'struct vhost_vsock'.
-> 2) Use cpu_to_le32()/le32_to_cpu() to work with 'flags' of packet.
->
-> drivers/vhost/vsock.c | 42 +++++++++++++++++++++++++++++++++++++++---
-> 1 file changed, 39 insertions(+), 3 deletions(-)
->
->diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
->index 5e78fb719602..3395b25d4a35 100644
->--- a/drivers/vhost/vsock.c
->+++ b/drivers/vhost/vsock.c
->@@ -31,7 +31,8 @@
->
-> enum {
-> 	VHOST_VSOCK_FEATURES = VHOST_FEATURES |
->-			       (1ULL << VIRTIO_F_ACCESS_PLATFORM)
->+			       (1ULL << VIRTIO_F_ACCESS_PLATFORM) |
->+			       (1ULL << VIRTIO_VSOCK_F_SEQPACKET)
-> };
->
-> enum {
->@@ -56,6 +57,7 @@ struct vhost_vsock {
-> 	atomic_t queued_replies;
->
-> 	u32 guest_cid;
->+	bool seqpacket_allow;
-> };
->
-> static u32 vhost_transport_get_local_cid(void)
->@@ -112,6 +114,7 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
-> 		size_t nbytes;
-> 		size_t iov_len, payload_len;
-> 		int head;
->+		bool restore_flag = false;
->
-> 		spin_lock_bh(&vsock->send_pkt_list_lock);
-> 		if (list_empty(&vsock->send_pkt_list)) {
->@@ -174,6 +177,12 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
-> 		/* Set the correct length in the header */
-> 		pkt->hdr.len = cpu_to_le32(payload_len);
->
->+		if (pkt->off + payload_len < pkt->len &&
->+		    le32_to_cpu(pkt->hdr.flags) & VIRTIO_VSOCK_SEQ_EOR) {
->+			pkt->hdr.flags &= ~cpu_to_le32(VIRTIO_VSOCK_SEQ_EOR);
->+			restore_flag = true;
->+		}
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-I think is better to move this code in the same block when we limit
-payload_len, something like this (not tested):
 
-		/* If the packet is greater than the space available in the
-		 * buffer, we split it using multiple buffers.
-		 */
-		if (payload_len > iov_len - sizeof(pkt->hdr)) {
-			payload_len = iov_len - sizeof(pkt->hdr);
+Hi,
 
-			if (le32_to_cpu(pkt->hdr.flags) & VIRTIO_VSOCK_SEQ_EOR) {
-				pkt->hdr.flags &= ~cpu_to_le32(VIRTIO_VSOCK_SEQ_EOR);
-				restore_flag = true;
-			}
-		}
+Matthias Kaehlcke <mka@chromium.org> writes:
+>> > @@ -127,6 +142,50 @@ int dwc3_host_init(struct dwc3 *dwc)
+>> >  	return ret;
+>> >  }
+>> >=20=20
+>> > +static void dwc3_set_phy_mode(struct usb_hcd *hcd)
+>> > +{
+>> > +
+>> > +	int i, num_ports;
+>> > +	u32 reg;
+>> > +	unsigned int ss_phy_mode =3D 0;
+>> > +	struct dwc3 *dwc =3D dev_get_drvdata(hcd->self.controller->parent);
+>> > +	struct xhci_hcd	*xhci_hcd =3D hcd_to_xhci(hcd);
+>> > +
+>> > +	dwc->hs_phy_mode =3D 0;
+>> > +
+>> > +	reg =3D readl(&xhci_hcd->cap_regs->hcs_params1);
+>> > +	num_ports =3D HCS_MAX_PORTS(reg);
+>>=20
+>> there's a big assumption here that xhci is still alive. Why isn't this
+>> quirk implemented in xhci-plat itself?
+>
+> That should work for determining which types of devices are connected to
+> the PHYs, however IIUC the xhci-plat doesn't know about the PHY topology.
+> Are you suggesting to move that info into the xhci-plat driver so that it
+> can set the corresponding PHY modes?
 
-The rest LGTM.
+Yes, if xHCI needs to know about PHYs in order to properly configure the
+PHYs, so be it :-)
 
+=2D-=20
+balbi
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQFFBAEBCAAvFiEE9DumQ60WEZ09LIErzlfNM9wDzUgFAmCdLcERHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzlfNM9wDzUiIlQgAmyUNbusUCCFnOyF9fdp17YNP2neOLsBY
+B0OSC3VQcYJxUXIZNvUmk+FoKtvF06w4xCnU15iKod+WRUe53zmSIDmfQBtApqEi
+nz8OvtF4huzSGg6IgPY40lXR96cLuOOfOsXCOzYzwsWMo04Sd5hUXvaazZYWUyeC
+z5ZuRBD9KVGvULor2NRrDHO9laaTo4maccDkorTmywwczaNcxvT4lO7/qiRwTeSf
+RahkCbPJ3xE7mcpfoe2goaytfAOfeAruMsc4K4JJKtZ0600pwLnaIwXnE71r6d6u
+yI4DVSlTc2nbYKJ7iEpbkoYTF65tQ3hJqMy2kDy9yXeglq7tsePYvw==
+=B6ua
+-----END PGP SIGNATURE-----
+--=-=-=--
