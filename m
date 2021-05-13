@@ -2,63 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D844337F3CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 09:59:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2114F37F3CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 10:00:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231710AbhEMIAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 04:00:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45006 "EHLO mail.kernel.org"
+        id S231854AbhEMIBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 04:01:12 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49394 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230210AbhEMIAb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 04:00:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2160261439;
-        Thu, 13 May 2021 07:59:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620892762;
-        bh=iUrtpqFnXdmWdBcpzXp0Ri1xgecNKmB4qbJd7wPBrss=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PZAFz5rA4Fgu/+xKLoQ9cK5gmvGLaj+7VPIKvDgCzPaTPu0EQEUFLQn7VQYtn3NPw
-         Tb6QNmaDZ1rTbKNzCAyXjAa2IZxsmloOCKJz11ifsxYmfnLpA7QygLBkYIGE4PpjeG
-         5KkRNkPitFKNhOlQekQHiniqnZyS/r3yJkClZ1Sfr3QyWaiVzeni5ybfphdGoVwJlW
-         pNCb1xvkqtUA8hjIEWeV6Un9mxaRcwKzcm3prz9GnP2znWJDNWXuiyqDqBoxNFjVqA
-         fOzV6p/lIUjp8gzn+tqQRfWOFBqb/mv6HHyB0cNSEsjTNP+McmsuNyf8gC6c6Ql+hK
-         PXewaizjDjFvQ==
-Date:   Thu, 13 May 2021 15:59:17 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Mian Yousaf Kaukab <ykaukab@suse.de>
-Cc:     leoyang.li@nxp.com, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: ls208xa: remove bus-num from dspi node
-Message-ID: <20210513075917.GX3425@dragon>
-References: <20210428125807.29553-1-ykaukab@suse.de>
+        id S231719AbhEMIBD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 04:01:03 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 80502ACB1;
+        Thu, 13 May 2021 07:59:53 +0000 (UTC)
+From:   Giovanni Gherdovich <ggherdovich@suse.cz>
+To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Len Brown <lenb@kernel.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Giovanni Gherdovich <ggherdovich@suse.cz>
+Subject: [PATCH] cpufreq: intel_pstate: Force intel_pstate to load when HWP disabled in firmware
+Date:   Thu, 13 May 2021 09:59:30 +0200
+Message-Id: <20210513075930.22657-1-ggherdovich@suse.cz>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210428125807.29553-1-ykaukab@suse.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 02:58:07PM +0200, Mian Yousaf Kaukab wrote:
-> On LS2088A-RDB board, if the spi-fsl-dspi driver is built as module
-> then its probe fails with the following warning:
-> 
-> [   10.471363] couldn't get idr
-> [   10.471381] WARNING: CPU: 4 PID: 488 at drivers/spi/spi.c:2689 spi_register_controller+0x73c/0x8d0
-> ...
-> [   10.471651] fsl-dspi 2100000.spi: Problem registering DSPI ctlr
-> [   10.471708] fsl-dspi: probe of 2100000.spi failed with error -16
-> 
-> Reason for the failure is that bus-num property is set for dspi node.
-> However, bus-num property is not set for the qspi node. If probe for
-> spi-fsl-qspi happens first then id 0 is dynamically allocated to it.
-> Call to spi_register_controller() from spi-fsl-dspi driver then fails.
-> Since commit 29d2daf2c33c ("spi: spi-fsl-dspi: Make bus-num property
-> optional") bus-num property is optional. Remove bus-num property from
-> dspi node to fix the issue.
-> 
-> Signed-off-by: Mian Yousaf Kaukab <ykaukab@suse.de>
+On CPUs succeeding SKX, eg. ICELAKE_X, intel_pstate doesn't load unless
+CPUID advertises support for the HWP feature. Some OEMs, however, may offer
+users the possibility to disable HWP from the BIOS config utility by
+altering the output of CPUID.
 
-Applied, thanks.
+Add the command line option "intel_pstate=hwp_broken_firmware" so that
+intel_pstate still loads in that case, providing OS-driven frequency
+scaling.
+
+Signed-off-by: Giovanni Gherdovich <ggherdovich@suse.cz>
+---
+ Documentation/admin-guide/kernel-parameters.txt | 7 +++++++
+ Documentation/admin-guide/pm/intel_pstate.rst   | 7 +++++++
+ drivers/cpufreq/intel_pstate.c                  | 7 ++++++-
+ 3 files changed, 20 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index cb89dbdedc46..278ec0718dc9 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -1951,6 +1951,13 @@
+ 			per_cpu_perf_limits
+ 			  Allow per-logical-CPU P-State performance control limits using
+ 			  cpufreq sysfs interface
++			hwp_broken_firmware
++			  Register intel_pstate as the scaling driver despite the
++			  hardware-managed P-states (HWP) feature being disabled in
++			  firmware. On CPU models succeeding SKX, intel_pstate expects
++			  HWP to be supported. Some OEMs may use firmware that hides the
++			  feature from the OS. With this option intel_pstate will
++			  load regardless.
+ 
+ 	intremap=	[X86-64, Intel-IOMMU]
+ 			on	enable Interrupt Remapping (default)
+diff --git a/Documentation/admin-guide/pm/intel_pstate.rst b/Documentation/admin-guide/pm/intel_pstate.rst
+index df29b4f1f219..1e6f139d5b05 100644
+--- a/Documentation/admin-guide/pm/intel_pstate.rst
++++ b/Documentation/admin-guide/pm/intel_pstate.rst
+@@ -689,6 +689,13 @@ of them have to be prepended with the ``intel_pstate=`` prefix.
+ 	Use per-logical-CPU P-State limits (see `Coordination of P-state
+ 	Limits`_ for details).
+ 
++``hwp_broken_firmware``
++	Register ``intel_pstate`` as the scaling driver despite the
++	hardware-managed P-states (HWP) feature being disabled in firmware.
++
++	On CPU models succeeding SKX, ``intel_pstate`` expects HWP to be
++	supported. Some OEMs may use firmware that hides the feature from the
++	OS. With this option ``intel_pstate`` will load regardless.
+ 
+ Diagnostics and Tuning
+ ======================
+diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+index f0401064d7aa..8635251f86f2 100644
+--- a/drivers/cpufreq/intel_pstate.c
++++ b/drivers/cpufreq/intel_pstate.c
+@@ -2856,6 +2856,7 @@ static int intel_pstate_update_status(const char *buf, size_t size)
+ static int no_load __initdata;
+ static int no_hwp __initdata;
+ static int hwp_only __initdata;
++static int hwp_broken_firmware __initdata;
+ static unsigned int force_load __initdata;
+ 
+ static int __init intel_pstate_msrs_not_valid(void)
+@@ -3066,7 +3067,7 @@ static int __init intel_pstate_init(void)
+ 		}
+ 	} else {
+ 		id = x86_match_cpu(intel_pstate_cpu_ids);
+-		if (!id) {
++		if (!id && !hwp_broken_firmware) {
+ 			pr_info("CPU model not supported\n");
+ 			return -ENODEV;
+ 		}
+@@ -3149,6 +3150,10 @@ static int __init intel_pstate_setup(char *str)
+ 		force_load = 1;
+ 	if (!strcmp(str, "hwp_only"))
+ 		hwp_only = 1;
++	if (!strcmp(str, "hwp_broken_firmware")) {
++		pr_info("HWP disabled by firmware\n");
++		hwp_broken_firmware = 1;
++	}
+ 	if (!strcmp(str, "per_cpu_perf_limits"))
+ 		per_cpu_limits = true;
+ 
+-- 
+2.26.2
+
