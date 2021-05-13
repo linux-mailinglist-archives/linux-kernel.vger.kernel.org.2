@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF9DB37F4A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 11:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85DDE37F4A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 11:02:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232525AbhEMJDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 05:03:46 -0400
-Received: from mga02.intel.com ([134.134.136.20]:47046 "EHLO mga02.intel.com"
+        id S232541AbhEMJD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 05:03:56 -0400
+Received: from mga02.intel.com ([134.134.136.20]:47049 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232490AbhEMJB0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 05:01:26 -0400
-IronPort-SDR: P/mmqrJ9eb0o4cyuMoWyDP9mCJHkp32kehZ9V40+qiUR3EmOvuwwb6pKA37FmqHL0mpL5YSOqo
- nhyMxaL5Gybg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="187032319"
+        id S231375AbhEMJCK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 05:02:10 -0400
+IronPort-SDR: 5tEQdt3N47bMFa039CRX4fMgG30pB1Bdnt8Itpr7nS38+DuLZC82bJ5PEesKOI/JOLnc9PWKIC
+ VAu38puPeKEA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="187032325"
 X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
-   d="scan'208";a="187032319"
+   d="scan'208";a="187032325"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 01:58:28 -0700
-IronPort-SDR: ml5V0Tbv54cX8g5UXcY/IDkmMBTK0BHML2WQybiKMhJbZ9jAdGEPy9k9r37wowbIhoHeXbSlg/
- 66EfKt6fGi9w==
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 01:58:31 -0700
+IronPort-SDR: zCwc8laL79cSOAdbvo2SLVQ+e2gdmehUpmjttUdvePx3PEu6MKU5qDOaLbOrTlcYrZPy3KQaEn
+ nRNPZbM4SCeA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
-   d="scan'208";a="625928465"
+   d="scan'208";a="625928513"
 Received: from aipg-stp-03.iil.intel.com ([143.185.92.28])
-  by fmsmga005.fm.intel.com with ESMTP; 13 May 2021 01:58:26 -0700
+  by fmsmga005.fm.intel.com with ESMTP; 13 May 2021 01:58:29 -0700
 From:   Guy Zadicario <guy.zadicario@intel.com>
 To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
 Cc:     olof@lixom.net, alexander.shishkin@linux.intel.com,
         andriy.shevchenko@intel.com, yochai.shefi-simchon@intel.com,
         guy.zadicario@intel.com
-Subject: [PATCH v2 12/15] misc: nnpi: Route device response messages
-Date:   Thu, 13 May 2021 11:57:22 +0300
-Message-Id: <20210513085725.45528-13-guy.zadicario@intel.com>
+Subject: [PATCH v2 13/15] misc: nnpi: Expose command channel file interface
+Date:   Thu, 13 May 2021 11:57:23 +0300
+Message-Id: <20210513085725.45528-14-guy.zadicario@intel.com>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <20210513085725.45528-1-guy.zadicario@intel.com>
 References: <20210513085725.45528-1-guy.zadicario@intel.com>
@@ -43,439 +43,603 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Route both types of messages coming from the NNP-I card - event
-report messages, which are handled by the driver, and command-response
-messages, which should be routed to a specific command channel object
-("channel").
+Expose an anon file descriptor interface to a command channel object
+which allows user-space to send commands to the device by writing to
+that file as well as consume device response messages by reading the
+file.
 
-Event report messages are device-level messages which are not
-associated with a specific channel. They are typically initiated by the
-NNP-I card, to indicate an error, status change, or any event which
-is not a response to a message sent from a spcific channel. These event
-report messages are handled by the driver.
-
-In contrast, command-response messages are associated with a specific
-channel, and are typically sent from the NNP-I card in response to a
-message sent from a channel to the card. These command-response
-messages are added to the intended channel ring-buffer for consumption
-by this channel.
-
-The list of messages, of both types, coming from the card, is defined
-in ipc_include/ipc_c2h_events.h included in this patch.
+When the file is released (closed), a channel shut-down sequence
+starts. First, a message is sent to the device notifying it that the
+channel is closing. Once the response to this message is received from
+the device, the command channel object is destroyed.
 
 Signed-off-by: Guy Zadicario <guy.zadicario@intel.com>
 Reviewed-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
 ---
- drivers/misc/intel-nnpi/cmd_chan.h                 |   6 +
- drivers/misc/intel-nnpi/device.c                   | 104 +++++++++++
- drivers/misc/intel-nnpi/device.h                   |   2 +
- .../misc/intel-nnpi/ipc_include/ipc_c2h_events.h   | 198 +++++++++++++++++++++
- 4 files changed, 310 insertions(+)
- create mode 100644 drivers/misc/intel-nnpi/ipc_include/ipc_c2h_events.h
+ drivers/misc/intel-nnpi/cmd_chan.c | 362 +++++++++++++++++++++++++++++++++++++
+ drivers/misc/intel-nnpi/cmd_chan.h |  22 ++-
+ drivers/misc/intel-nnpi/device.c   |  71 ++++++++
+ 3 files changed, 454 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/misc/intel-nnpi/cmd_chan.c b/drivers/misc/intel-nnpi/cmd_chan.c
+index b5518e0..89ae604 100644
+--- a/drivers/misc/intel-nnpi/cmd_chan.c
++++ b/drivers/misc/intel-nnpi/cmd_chan.c
+@@ -4,13 +4,16 @@
+ #define pr_fmt(fmt)   KBUILD_MODNAME ": " fmt
+ 
+ #include <linux/anon_inodes.h>
++#include <linux/bitfield.h>
+ #include <linux/dev_printk.h>
+ #include <linux/file.h>
+ #include <linux/minmax.h>
++#include <linux/poll.h>
+ #include <linux/slab.h>
+ 
+ #include "cmd_chan.h"
+ #include "host_chardev.h"
++#include "ipc_c2h_events.h"
+ #include "ipc_protocol.h"
+ #include "nnp_user.h"
+ 
+@@ -52,6 +55,258 @@ static inline void respq_pop(struct nnp_chan *chan, void *buf, int count)
+ 	chan->respq.tail = (chan->respq.tail + count) & (chan->respq_size - 1);
+ }
+ 
++static inline void respq_unpop(struct nnp_chan *chan, int count)
++{
++	chan->respq.tail = (chan->respq.tail - count) & (chan->respq_size - 1);
++}
++
++enum respq_state {
++	RESPQ_EMPTY = 0,
++	RESPQ_MSG_AVAIL,
++	RESPQ_DISCONNECTED
++};
++
++/**
++ * respq_state() - check if a response message is available to be popped
++ * @chan: the cmd_chan object
++ *
++ * Checks if new response message is available or channel has been destroyed.
++ *
++ * Return:
++ *  * RESPQ_EMPTY        - response queue is empty
++ *  * RESPQ_MSG_AVAIL    - a response message is available in the queue
++ *  * RESPQ_DISCONNECTED - the channel in a destroyed state
++ */
++static enum respq_state respq_state(struct nnp_chan *chan)
++{
++	bool ret;
++
++	mutex_lock(&chan->dev_mutex);
++	if (chan->state == NNP_CHAN_DESTROYED) {
++		mutex_unlock(&chan->dev_mutex);
++		return RESPQ_DISCONNECTED;
++	}
++
++	spin_lock(&chan->respq_lock);
++	/*
++	 * response messages are pushed into the respq ring-buffer by pushing
++	 * the size of the message (as u32) followed by message content.
++	 * So an entire message is available only if more than sizeof(u32)
++	 * bytes are available (there is no message with zero size).
++	 */
++	if (CIRC_CNT(chan->respq.head, chan->respq.tail, chan->respq_size) >
++	    sizeof(u32))
++		ret = RESPQ_MSG_AVAIL;
++	else
++		ret = RESPQ_EMPTY;
++	spin_unlock(&chan->respq_lock);
++
++	mutex_unlock(&chan->dev_mutex);
++
++	return ret;
++}
++
++static inline int is_cmd_chan_file(struct file *f);
++
++static int cmd_chan_file_release(struct inode *inode, struct file *f)
++{
++	struct nnp_chan *chan = f->private_data;
++	struct file *host_file;
++
++	if (!is_cmd_chan_file(f))
++		return -EINVAL;
++
++	nnp_chan_send_destroy(chan);
++
++	host_file = chan->host_file;
++	nnp_chan_put(chan);
++	fput(host_file);
++
++	return 0;
++}
++
++/**
++ * cmd_chan_file_read() - reads a single response message arrived from device
++ * @f: cmd_chan file descriptor
++ * @buf: buffer to receive the message
++ * @size: size of buf, must be at least 16 qwords (16 * sizeof(u64))
++ * @off: ignored.
++ *
++ * This function will block and wait until interrupted or a response
++ * message from device is available.
++ * When message(s) are available, it reads a single message, copy it to
++ * @buf and returns the message size.
++ * The given @buf and @size must be large enough to receive the largest
++ * possible response which is 16 qwords, otherwise -EINVAL is returned.
++ * The function returns the size of the received message, a return value
++ * of zero means that corrupted message has been detected and no more reads
++ * can be made from this channel.
++ *
++ * Return: if positive, the size in bytes of the read message.
++ *         zero, if a corrupted message has been detected.
++ *         error code otherwise
++ */
++static ssize_t cmd_chan_file_read(struct file *f, char __user *buf, size_t size,
++				  loff_t *off)
++{
++	struct nnp_chan *chan = f->private_data;
++	u64 msg[NNP_DEVICE_RESPONSE_FIFO_LEN];
++	enum respq_state state;
++	u32 msg_size;
++	int ret;
++
++	if (!is_cmd_chan_file(f))
++		return -EINVAL;
++
++	if (size < sizeof(msg))
++		return -EINVAL;
++
++	/*
++	 * wait for response message to be available, interrupted or channel
++	 * has been destroyed on us.
++	 */
++	ret = wait_event_interruptible(chan->resp_waitq,
++				       (state = respq_state(chan)) != RESPQ_EMPTY);
++	if (ret < 0)
++		return ret;
++
++	if (state == RESPQ_DISCONNECTED)
++		return -EPIPE;
++
++	spin_lock(&chan->respq_lock);
++	respq_pop(chan, &msg_size, sizeof(msg_size));
++	/*
++	 * Check msg_size does not overrun msg size.
++	 * This will never happen unless the response ring buffer got
++	 * corrupted in some way.
++	 * We detect it here for safety and return zero
++	 */
++	if (msg_size > sizeof(msg)) {
++		/*
++		 * unpop the bad size to let subsequent read attempts
++		 * to fail as well.
++		 */
++		respq_unpop(chan, sizeof(msg_size));
++		spin_unlock(&chan->respq_lock);
++		return 0;
++	}
++	respq_pop(chan, msg, msg_size);
++	spin_unlock(&chan->respq_lock);
++
++	if (copy_to_user(buf, msg, msg_size))
++		return -EFAULT;
++
++	return (ssize_t)msg_size;
++}
++
++/**
++ * cmd_chan_file_write() - schedule a command message to be sent to the device.
++ * @f: a cmd_chan file descriptor
++ * @buf: the command message content
++ * @size: size in bytes of the message, must be multiple of 8 and not larger
++ *        than 3 qwords.
++ * @off: ignored
++ *
++ * This function reads a command message from buffer and puts it in the
++ * channel's message queue to schedule it to be delivered to the device.
++ * The function returns when the message is copied to the message scheduler
++ * queue without waiting for it to be sent out.
++ * A valid command message size must be qword aligned and not larger than
++ * the maximum size the message scheduler support, which is 3 qwords.
++ *
++ * The function also validate the command content and fail if the chan_id
++ * field of the command header does not belong to the same channel of this
++ * file descriptor, or the command opcode is out of range, or the command
++ * size does not fit the size of this opcode.
++ *
++ * Return: the size of the message written or error code.
++ */
++static ssize_t cmd_chan_file_write(struct file *f, const char __user *buf,
++				   size_t size, loff_t *off)
++{
++	struct nnp_chan *chan = f->private_data;
++	u64 msg[MSG_SCHED_MAX_MSG_SIZE];
++	unsigned int chan_id, opcode;
++	unsigned int op;
++	int rc = 0;
++
++	if (!is_cmd_chan_file(f))
++		return -EINVAL;
++
++	/*
++	 * size must be positive, multiple of 8 bytes and
++	 * cannot exceed maximum message size
++	 */
++	if (!size || size > sizeof(msg) || (size &  0x7) != 0)
++		return -EINVAL;
++
++	if (copy_from_user(msg, buf, size))
++		return -EFAULT;
++
++	/*
++	 * Check chan_id, opcode and message size are valid
++	 */
++	opcode = FIELD_GET(NNP_H2C_CHAN_MSG_OP_MASK, msg[0]);
++	chan_id = FIELD_GET(NNP_H2C_CHAN_MSG_CHAN_ID_MASK, msg[0]);
++	if (chan_id != chan->chan_id)
++		return -EINVAL;
++	if (opcode < NNP_IPC_MIN_USER_OP)
++		return -EINVAL;
++	op = opcode - NNP_IPC_MIN_USER_OP;
++
++	mutex_lock(&chan->dev_mutex);
++	if (!chan->nnpdev) {
++		/* The device was removed */
++		mutex_unlock(&chan->dev_mutex);
++		return -EPIPE;
++	}
++	if (size != chan->nnpdev->ipc_chan_cmd_op_size[op] * 8) {
++		mutex_unlock(&chan->dev_mutex);
++		return -EINVAL;
++	}
++
++	if (!is_card_fatal_drv_event(chan_broken(chan)))
++		rc  = nnp_msched_queue_add_msg(chan->cmdq, msg, size / 8);
++	mutex_unlock(&chan->dev_mutex);
++
++	if (rc < 0)
++		return rc;
++
++	return size;
++}
++
++static unsigned int cmd_chan_file_poll(struct file *f, struct poll_table_struct *pt)
++{
++	struct nnp_chan *chan = f->private_data;
++	unsigned int mask = POLLOUT | POLLWRNORM;
++	enum respq_state state;
++
++	if (!is_cmd_chan_file(f))
++		return 0;
++
++	poll_wait(f, &chan->resp_waitq, pt);
++	state = respq_state(chan);
++	if (state != RESPQ_EMPTY)
++		mask |= POLLIN | POLLRDNORM;
++	if (state == RESPQ_DISCONNECTED)
++		mask |= POLLHUP;
++
++	return mask;
++}
++
++static const struct file_operations nnp_chan_fops = {
++	.owner = THIS_MODULE,
++	.release = cmd_chan_file_release,
++	.read = cmd_chan_file_read,
++	.write = cmd_chan_file_write,
++	.poll = cmd_chan_file_poll,
++};
++
++static inline int is_cmd_chan_file(struct file *f)
++{
++	return f->f_op == &nnp_chan_fops;
++}
++
+ /**
+  * nnpdev_chan_create() - creates a command channel object
+  * @nnpdev: the device
+@@ -119,6 +374,7 @@ struct nnp_chan *nnpdev_chan_create(struct nnp_device *nnpdev, int host_fd,
+ 	kref_init(&cmd_chan->ref);
+ 	cmd_chan->chan_id = chan_id;
+ 	cmd_chan->nnpdev = nnpdev;
++	cmd_chan->fd = -1;
+ 	cmd_chan->get_device_events = get_device_events;
+ 
+ 	cmd_chan->nnp_user = cmd_chan->host_file->private_data;
+@@ -154,6 +410,17 @@ static void nnp_chan_release(struct kref *kref)
+ 
+ 	nnp_chan_disconnect(cmd_chan);
+ 
++	/*
++	 * If a chan file was created (through nnp_chan_create_file),
++	 * the host_file was already put when the file has released, otherwise
++	 * we put it here.
++	 * This is because we want to release host_file once the channel file
++	 * has been closed even though the channel object may continue to exist
++	 * until the card will send a respond that it was destroyed.
++	 */
++	if (cmd_chan->fd < 0)
++		fput(cmd_chan->host_file);
++
+ 	nnp_user_put(cmd_chan->nnp_user);
+ 
+ 	kfree(cmd_chan->respq_buf);
+@@ -170,6 +437,99 @@ void nnp_chan_put(struct nnp_chan *cmd_chan)
+ 	kref_put(&cmd_chan->ref, nnp_chan_release);
+ }
+ 
++int nnp_chan_create_file(struct nnp_chan *cmd_chan)
++{
++	/*
++	 * get refcount to the channel that will drop when
++	 * the file is released.
++	 */
++	nnp_chan_get(cmd_chan);
++
++	cmd_chan->fd = anon_inode_getfd("nnpi_chan", &nnp_chan_fops, cmd_chan,
++					O_RDWR | O_CLOEXEC);
++	if (cmd_chan->fd < 0)
++		nnp_chan_put(cmd_chan);
++
++	return cmd_chan->fd;
++}
++
++/**
++ * nnp_chan_set_destroyed() - atomically mark the channel "destroyed"
++ * @chan: the cmd_chan
++ *
++ * This function sets the command channel state to "destroyed" and returns
++ * the previous destroyed state.
++ * This function should be called once the channel has been destructed on the
++ * device and a "channel destroyed" response message arrived.
++ *
++ * Return: true if the channel was already marked destroyed.
++ */
++bool nnp_chan_set_destroyed(struct nnp_chan *chan)
++{
++	bool ret;
++
++	mutex_lock(&chan->dev_mutex);
++	ret = (chan->state == NNP_CHAN_DESTROYED);
++	chan->state = NNP_CHAN_DESTROYED;
++	mutex_unlock(&chan->dev_mutex);
++
++	wake_up_all(&chan->resp_waitq);
++
++	return ret;
++}
++
++/**
++ * nnp_chan_send_destroy() - sends a "destroy channel" command to device
++ * @chan: the cmd_chan to destroy.
++ *
++ * This function sends a command to the device to destroy a command channel,
++ * The channel object remains to exist, it will be dropped only when the device
++ * send back a "channel destroyed" response message.
++ * In case the device is in critical error state, we treat it as not
++ * functional, and the function will immediately drop the channel object without
++ * sending any command and will return with success.
++ *
++ * Return: 0 on success, error value otherwise.
++ */
++int nnp_chan_send_destroy(struct nnp_chan *chan)
++{
++	u64 cmd;
++	int ret = 0;
++	bool do_put = false;
++
++	mutex_lock(&chan->dev_mutex);
++	if (chan->state == NNP_CHAN_DESTROYED || !chan->nnpdev)
++		goto done;
++
++	cmd = FIELD_PREP(NNP_H2C_OP_MASK, NNP_IPC_H2C_OP_CHANNEL_OP);
++	cmd |= FIELD_PREP(NNP_H2C_CHANNEL_OP_CHAN_ID_MASK, chan->chan_id);
++	cmd |= FIELD_PREP(NNP_H2C_CHANNEL_OP_DESTROY_MASK, 1);
++
++	chan->event_msg = 0;
++
++	/*
++	 * If card is in critical state (or was during the channel lifetime)
++	 * we destroy the channel.
++	 * otherwise, we send a destroy command to card and will destroy when
++	 * the destroy reply arrives.
++	 */
++	if (is_card_fatal_drv_event(chan_broken(chan))) {
++		chan->state = NNP_CHAN_DESTROYED;
++		do_put = true;
++		goto done;
++	}
++
++	ret = nnp_msched_queue_msg(chan->cmdq, cmd);
++
++done:
++	mutex_unlock(&chan->dev_mutex);
++	if (do_put) {
++		wake_up_all(&chan->resp_waitq);
++		nnp_chan_put(chan);
++	}
++	return ret;
++}
++
+ /**
+  * nnp_chan_disconnect() - disconnect the channel from the NNP-I device object
+  * @cmd_chan: the command channel object
+@@ -194,8 +554,10 @@ void nnp_chan_disconnect(struct nnp_chan *cmd_chan)
+ 	spin_lock(&nnpdev->lock);
+ 	hash_del(&cmd_chan->hash_node);
+ 	spin_unlock(&nnpdev->lock);
++	cmd_chan->state = NNP_CHAN_DESTROYED;
+ 	mutex_unlock(&cmd_chan->dev_mutex);
+ 
++	wake_up_all(&cmd_chan->resp_waitq);
+ 	nnp_msched_queue_sync(cmd_chan->cmdq);
+ 	nnp_msched_queue_destroy(cmd_chan->cmdq);
+ 
 diff --git a/drivers/misc/intel-nnpi/cmd_chan.h b/drivers/misc/intel-nnpi/cmd_chan.h
-index 8cb1a5e..2be88c6 100644
+index 2be88c6..d60abf4 100644
 --- a/drivers/misc/intel-nnpi/cmd_chan.h
 +++ b/drivers/misc/intel-nnpi/cmd_chan.h
-@@ -4,6 +4,7 @@
- #ifndef NNPDRV_CMD_CHAN_H
- #define NNPDRV_CMD_CHAN_H
- 
-+#include <linux/bitfield.h>
- #include <linux/circ_buf.h>
- #include <linux/hashtable.h>
- #include <linux/kref.h>
-@@ -12,6 +13,7 @@
- #include <linux/spinlock.h>
- 
- #include "device.h"
-+#include "ipc_c2h_events.h"
+@@ -16,6 +16,16 @@
+ #include "ipc_c2h_events.h"
  
  /**
++ * enum nnp_chan_state - indicate special state of a command channel
++ * @NNP_CHAN_NORMAL: channel is in normal state.
++ * @NNP_CHAN_DESTROYED: channel should be treated as no-longer-exist on card.
++ */
++enum nnp_chan_state {
++	NNP_CHAN_NORMAL = 0,
++	NNP_CHAN_DESTROYED,
++};
++
++/**
   * struct nnp_chan - structure object for user<->device communication
-@@ -21,6 +23,7 @@
+  * @ref: refcount for this object
+  * @nnpdev: the device this channel is connected to. May be NULL after device
+@@ -23,9 +33,11 @@
   * @chan_id: the ipc channel id for this channel
   * @hash_node: node to include this object in list of channels
   *             hash is in (cmd_chan_hash in nnp_device).
-+ * @card_critical_error_msg: last critical event report received from device
++ * @event_msg: ipc event response received from device during create channel
+  * @card_critical_error_msg: last critical event report received from device
   * @get_device_events: true if device-level events received from card should
   *                     be sent over this channel to user.
++ * @fd: file descriptor created for the channel (implements read/write)
   * @cmdq: message queue added to msg_scheduler, for user commands to be sent
-@@ -43,6 +46,7 @@ struct nnp_chan {
+  *        to the device.
+  * @host_file: reference to opened "/dev/nnpi_host" object which defines the
+@@ -33,7 +45,8 @@
+  * @nnp_user: the nnp_user this channel belongs to.
+  *             the channel can reference host resources created by this
+  *             nnp_user object.
+- * @dev_mutex: protects @nnpdev
++ * @dev_mutex: protects @nnpdev and @state
++ * @state: the current state of this channel.
+  * @resp_waitq: waitqueue used for waiting for response messages be available.
+  * @respq: circular buffer object that receive response messages from device.
+  * @respq_lock: protects @respq
+@@ -46,15 +59,18 @@ struct nnp_chan {
  	struct nnp_device      *nnpdev;
  	u16                    chan_id;
  	struct hlist_node      hash_node;
-+	u64                    card_critical_error_msg;
++	u64                    event_msg;
+ 	u64                    card_critical_error_msg;
  	bool                   get_device_events;
  
++	int fd;
  	struct nnp_msched_queue    *cmdq;
-@@ -59,6 +63,8 @@ struct nnp_chan {
- 	unsigned int      resp_lost;
- };
+ 	struct file                *host_file;
+ 	struct nnp_user_info       *nnp_user;
  
-+#define chan_broken(chan) FIELD_GET(NNP_C2H_EVENT_REPORT_CODE_MASK, (chan)->card_critical_error_msg)
+ 	struct mutex      dev_mutex;
+ 	wait_queue_head_t resp_waitq;
++	enum nnp_chan_state state;
+ 
+ 	struct circ_buf   respq;
+ 	spinlock_t        respq_lock;
+@@ -73,6 +89,10 @@ struct nnp_chan *nnpdev_chan_create(struct nnp_device *nnpdev, int host_fd,
+ void nnp_chan_put(struct nnp_chan *cmd_chan);
+ void nnp_chan_disconnect(struct nnp_chan *cmd_chan);
+ 
++int nnp_chan_create_file(struct nnp_chan *cmd_chan);
++int nnp_chan_send_destroy(struct nnp_chan *chan);
++bool nnp_chan_set_destroyed(struct nnp_chan *chan);
 +
- struct nnp_chan *nnpdev_chan_create(struct nnp_device *nnpdev, int host_fd,
- 				    unsigned int min_id, unsigned int max_id,
- 				    bool get_device_events);
+ int nnp_chan_add_response(struct nnp_chan *cmd_chan, u64 *hw_msg, u32 size);
+ 
+ #endif
 diff --git a/drivers/misc/intel-nnpi/device.c b/drivers/misc/intel-nnpi/device.c
-index 3902876..1064edc 100644
+index 1064edc..ece19c0 100644
 --- a/drivers/misc/intel-nnpi/device.c
 +++ b/drivers/misc/intel-nnpi/device.c
-@@ -14,6 +14,7 @@
- #include "cmd_chan.h"
- #include "device.h"
- #include "host_chardev.h"
-+#include "ipc_c2h_events.h"
- #include "msg_scheduler.h"
- #include "nnp_boot_defs.h"
+@@ -246,6 +246,47 @@ static void nnpdev_submit_device_event_to_channels(struct nnp_device *nnpdev,
  
-@@ -212,11 +213,113 @@ static void disconnect_all_channels(struct nnp_device *nnpdev)
- 	spin_unlock(&nnpdev->lock);
- }
- 
-+static void nnpdev_submit_device_event_to_channels(struct nnp_device *nnpdev,
-+						   u64 event_msg)
+ 	if (should_wake)
+ 		wake_up_all(&nnpdev->waitq);
++
++	/*
++	 * On card fatal event, we consider the device dead and there is
++	 * no point communicating with it. The user will destroy the channel
++	 * and initiate a device reset to fix this.
++	 * We disconnect all channels and set each as "destroyed" since the
++	 * NNP_IPC_CHANNEL_DESTROYED response, which normally do that, will
++	 * never arrive.
++	 */
++	if (is_card_fatal_drv_event(event_code))
++		disconnect_all_channels(nnpdev);
++}
++
++static void handle_channel_destroy(struct nnp_device *nnpdev, u64 event_msg)
 +{
 +	struct nnp_chan *cmd_chan;
-+	int i;
-+	unsigned int event_code;
-+	bool should_wake = false;
-+	bool is_card_fatal;
++	unsigned int chan_id;
 +
-+	event_code = FIELD_GET(NNP_C2H_EVENT_REPORT_CODE_MASK, event_msg);
-+	is_card_fatal = is_card_fatal_event(event_code);
-+
-+	spin_lock(&nnpdev->lock);
-+	hash_for_each(nnpdev->cmd_chan_hash, i, cmd_chan, hash_node) {
-+		/*
-+		 * Update channel's card critical error,
-+		 * but do not override it if a more sever "fatal_drv" error
-+		 * event is already set.
-+		 */
-+		if (is_card_fatal &&
-+		    !is_card_fatal_drv_event(chan_broken(cmd_chan))) {
-+			cmd_chan->card_critical_error_msg = event_msg;
-+			should_wake = true;
-+		}
-+
-+		/* Send the event message to the channel (if needed) */
-+		if (is_card_fatal || cmd_chan->get_device_events)
-+			nnp_chan_add_response(cmd_chan, &event_msg, sizeof(event_msg));
-+	}
-+	spin_unlock(&nnpdev->lock);
-+
-+	if (should_wake)
-+		wake_up_all(&nnpdev->waitq);
-+}
-+
-+/*
-+ * this function handle device-level event report message.
-+ * which is usually affect the entire device and not a single channel
-+ */
-+static void process_device_event(struct nnp_device *nnpdev, u64 event_msg)
-+{
-+	/* submit the event to all channels requested to get device events */
-+	nnpdev_submit_device_event_to_channels(nnpdev, event_msg);
-+}
-+
-+struct event_report_work {
-+	struct work_struct work;
-+	struct nnp_device  *nnpdev;
-+	u64                event_msg;
-+};
-+
-+static void device_event_report_handler(struct work_struct *work)
-+{
-+	struct event_report_work *req =
-+		container_of(work, struct event_report_work, work);
-+
-+	process_device_event(req->nnpdev, req->event_msg);
-+
-+	kfree(req);
-+}
-+
-+static int handle_event_report(struct nnp_device *nnpdev, const u64 *msgbuf,
-+			       int avail_qwords)
-+{
-+	int msg_qwords = 1; /* EVENT_REPORT response len is 1 qword */
-+	struct event_report_work *req;
-+	u64 event_msg;
-+
-+	if (avail_qwords < msg_qwords)
-+		return 0;
-+
-+	event_msg = msgbuf[0];
-+	if (FIELD_GET(NNP_C2H_EVENT_REPORT_CHAN_VALID_MASK, event_msg)) {
-+		struct nnp_chan *cmd_chan;
-+		unsigned int chan_id;
-+
-+		chan_id = FIELD_GET(NNP_C2H_EVENT_REPORT_CHAN_ID_MASK, event_msg);
-+		cmd_chan = nnpdev_find_channel(nnpdev, chan_id);
-+		if (cmd_chan) {
-+			nnp_chan_add_response(cmd_chan, &event_msg, sizeof(event_msg));
-+			nnp_chan_put(cmd_chan);
-+		} else {
-+			dev_dbg(nnpdev->dev,
-+				"Got Event Report for non existing channel id %d\n",
-+				chan_id);
-+		}
-+		return msg_qwords;
++	chan_id = FIELD_GET(NNP_C2H_EVENT_REPORT_OBJ_ID_MASK, event_msg);
++	cmd_chan = nnpdev_find_channel(nnpdev, chan_id);
++	if (!cmd_chan) {
++		dev_err(nnpdev->dev,
++			"Got channel destroyed reply for not existing channel %d\n",
++			chan_id);
++		return;
 +	}
 +
-+	req = kzalloc(sizeof(*req), GFP_NOWAIT);
-+	if (!req)
-+		return msg_qwords;
++	/*
++	 * Channel is destroyed on device. Put the main ref of cmd_chan if it
++	 * did not already done.
++	 * There is one possible case that the channel will be already marked
++	 * as destroyed when we get here. This is when we got some card fatal
++	 * event, which caused us to flag the channel as destroyed, but later
++	 * the "destroy channel" response has arrived from the device
++	 * (unexpected).
++	 */
++	if (!nnp_chan_set_destroyed(cmd_chan))
++		nnp_chan_put(cmd_chan);
 +
-+	req->event_msg = event_msg;
-+	req->nnpdev = nnpdev;
-+	INIT_WORK(&req->work, device_event_report_handler);
-+	queue_work(nnpdev->wq, &req->work);
-+
-+	return msg_qwords;
-+}
-+
- typedef int (*response_handler)(struct nnp_device *nnpdev, const u64 *msgbuf,
- 				int avail_qwords);
++	/* put against the get from find_channel */
++	nnp_chan_put(cmd_chan);
+ }
  
- static response_handler resp_handlers[NNP_IPC_C2H_OPCODE_LAST + 1] = {
- 	[NNP_IPC_C2H_OP_QUERY_VERSION_REPLY3] = handle_query_version_reply3,
-+	[NNP_IPC_C2H_OP_EVENT_REPORT] = handle_event_report,
- 	[NNP_IPC_C2H_OP_BIOS_PROTOCOL] = handle_bios_protocol
- };
- 
-@@ -593,6 +696,7 @@ int nnpdev_init(struct nnp_device *nnpdev, struct device *dev,
- 
- 	ida_init(&nnpdev->cmd_chan_ida);
- 	hash_init(nnpdev->cmd_chan_hash);
-+	init_waitqueue_head(&nnpdev->waitq);
- 
- 	nnpdev->cmdq_sched = nnp_msched_create(nnpdev);
- 	if (!nnpdev->cmdq_sched) {
-diff --git a/drivers/misc/intel-nnpi/device.h b/drivers/misc/intel-nnpi/device.h
-index 9b6383e..c37f1da 100644
---- a/drivers/misc/intel-nnpi/device.h
-+++ b/drivers/misc/intel-nnpi/device.h
-@@ -79,6 +79,7 @@ struct query_version_work {
-  * @response_num_msgs: number of qwords available in @response_buf
-  * @cmd_chan_ida: allocate channel ids to be used in ipc protocol.
-  * @cmd_chan_hash: maps command channel id to its struct pointer.
-+ * @waitq: used to wait for device response messages
-  * @bios_system_info_dma_addr: dma page allocated for bios system info.
-  * @bios_system_info: virtual pointer to bios system info page
-  * @bios_version_str: the device's started bios version string
-@@ -113,6 +114,7 @@ struct nnp_device {
- 
- 	struct ida cmd_chan_ida;
- 	DECLARE_HASHTABLE(cmd_chan_hash, 6);
-+	wait_queue_head_t waitq;
- 
- 	dma_addr_t                  bios_system_info_dma_addr;
- 	struct nnp_c2h_system_info  *bios_system_info;
-diff --git a/drivers/misc/intel-nnpi/ipc_include/ipc_c2h_events.h b/drivers/misc/intel-nnpi/ipc_include/ipc_c2h_events.h
-new file mode 100644
-index 0000000..5ca1b8e
---- /dev/null
-+++ b/drivers/misc/intel-nnpi/ipc_include/ipc_c2h_events.h
-@@ -0,0 +1,198 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/* Copyright (C) 2019-2021 Intel Corporation */
+ /*
+@@ -254,6 +295,36 @@ static void nnpdev_submit_device_event_to_channels(struct nnp_device *nnpdev,
+  */
+ static void process_device_event(struct nnp_device *nnpdev, u64 event_msg)
+ {
++	unsigned int event_code = FIELD_GET(NNP_C2H_EVENT_REPORT_CODE_MASK, event_msg);
++	unsigned int obj_id, event_val;
 +
-+#ifndef _NNP_IPC_C2H_EVENTS_H
-+#define _NNP_IPC_C2H_EVENTS_H
++	if (!is_card_fatal_event(event_code)) {
++		switch (event_code) {
++		case NNP_IPC_DESTROY_CHANNEL_FAILED:
++			obj_id = FIELD_GET(NNP_C2H_EVENT_REPORT_OBJ_ID_MASK, event_msg);
++			event_val = FIELD_GET(NNP_C2H_EVENT_REPORT_VAL_MASK, event_msg);
++			dev_err(nnpdev->dev,
++				"Channel destroyed failed channel %d val %d\n",
++				obj_id, event_val);
++			/*
++			 * We should not enter this case never as the card will
++			 * send this response only when the driver requested to
++			 * destroy a not-exist channel, which means a driver
++			 * bug.
++			 * To handle the case we continue and destroy the channel
++			 * on the host side.
++			 */
++			fallthrough;
++		case NNP_IPC_CHANNEL_DESTROYED:
++			handle_channel_destroy(nnpdev, event_msg);
++			break;
++		default:
++			dev_err(nnpdev->dev,
++				"Unknown event received - %u\n", event_code);
++			return;
++		}
++	}
 +
-+/**
-+ * The following describes the possible values for a c2h_event_report message
-+ * sent from card to host to report on some error or other events.
-+ *
-+ * The c2h_event_report message has the following fields available to describe
-+ * the event:
-+ *    event_code  - 7 bits value describing the type of event
-+ *    event_val   - 8 bits value - interpretation depends on event_code
-+ *    chan_id     - the protocol id of the channel in which the event was
-+ *                 occurred.
-+ *    obj_id      - 16 bits, interpretation depends on event_code, usually used
-+ *                 to hold an inference object protocol ID.
-+ *    obj_id_2    - 16 bits, in case obj_id is not enough to describe the object
-+ * In this file we define the possible values for the above fields and document
-+ * each field meaning for each possible event_code.
-+ */
-+
-+/**
-+ * Event codes ranges
-+ *
-+ * error codes are grouped into the following ranges:
-+ *     0 -   3   ==> non error events generated by daemon/runtime
-+ *     4 -  47   ==> non error events generated by card kernel driver
-+ *    48 -  51   ==> non-critical error events generated by daemon/runtime
-+ *    52 -  95   ==> non-critical error events generatd by kernel driver
-+ *    96 - 103   ==> context-critical error events generated by daemon/runtime
-+ *   104 - 111   ==> context-critical error events generated by kernel driver
-+ *   112 - 119   ==> card-critical error events generated by daemon/runtime
-+ *   120 - 127   ==> card-critical error events generated by kernel driver
-+ *
-+ * context-critical error event is one that puts the infer context in an
-+ * un-recoverable error state.
-+ * card-critical error event is one that make the card not useful for inference
-+ * request until it is reset.
-+ */
-+#define EVENT_NON_ERR_START             0
-+#define EVENT_NON_ERR_DRV_START         4
-+#define EVENT_ERR_START                48
-+#define EVENT_ERR_DRV_START            52
-+#define EVENT_CONTEXT_FATAL_START      96
-+#define EVENT_CONTEXT_FATAL_DRV_START 104
-+#define EVENT_CARD_FATAL_START        112
-+#define EVENT_CARD_FATAL_DRV_START    120
-+
-+#define is_context_fatal_event(e)  ({ \
-+	int e_ = (e); \
-+	(e_ >= EVENT_CONTEXT_FATAL_START && e_ < EVENT_CARD_FATAL_START); \
-+})
-+
-+#define is_card_fatal_event(e)     ((e) >= EVENT_CARD_FATAL_START)
-+#define is_card_fatal_drv_event(e)     ((e) >= EVENT_CARD_FATAL_DRV_START)
-+
-+#define NNP_IPC_RUNTIME_DONE   (EVENT_NON_ERR_START + 1)
-+/*            MAX offset for EVENT_NON_ERR_START is 3 */
-+
-+/* non-error event codes */
-+#define NNP_IPC_CREATE_CONTEXT_SUCCESS   (EVENT_NON_ERR_DRV_START + 0)
-+#define NNP_IPC_CREATE_DEVRES_SUCCESS    (EVENT_NON_ERR_DRV_START + 1)
-+#define NNP_IPC_CREATE_COPY_SUCCESS      (EVENT_NON_ERR_DRV_START + 2)
-+#define NNP_IPC_EXECUTE_COPY_SUCCESS     (EVENT_NON_ERR_DRV_START + 3)
-+#define NNP_IPC_DEVRES_DESTROYED         (EVENT_NON_ERR_DRV_START + 4)
-+#define NNP_IPC_COPY_DESTROYED           (EVENT_NON_ERR_DRV_START + 5)
-+#define NNP_IPC_CONTEXT_DESTROYED        (EVENT_NON_ERR_DRV_START + 6)
-+#define NNP_IPC_CREATE_DEVNET_SUCCESS    (EVENT_NON_ERR_DRV_START + 7)
-+#define NNP_IPC_DEVNET_DESTROYED         (EVENT_NON_ERR_DRV_START + 8)
-+#define NNP_IPC_CREATE_INFREQ_SUCCESS    (EVENT_NON_ERR_DRV_START + 9)
-+#define NNP_IPC_INFREQ_DESTROYED         (EVENT_NON_ERR_DRV_START + 10)
-+#define NNP_IPC_RECOVER_CONTEXT_SUCCESS  (EVENT_NON_ERR_DRV_START + 11)
-+#define NNP_IPC_THERMAL_TRIP_EVENT       (EVENT_NON_ERR_DRV_START + 12)
-+#define NNP_IPC_DEVNET_ADD_RES_SUCCESS   (EVENT_NON_ERR_DRV_START + 13)
-+#define NNP_IPC_DEVICE_STATE_CHANGED     (EVENT_NON_ERR_DRV_START + 14)
-+#define NNP_IPC_DEVNET_RESOURCES_RESERVATION_SUCCESS \
-+	(EVENT_NON_ERR_DRV_START + 15)
-+#define NNP_IPC_DEVNET_RESOURCES_RELEASE_SUCCESS  (EVENT_NON_ERR_DRV_START + 16)
-+#define NNP_IPC_CREATE_CHANNEL_SUCCESS   (EVENT_NON_ERR_DRV_START + 17)
-+#define NNP_IPC_CHANNEL_DESTROYED        (EVENT_NON_ERR_DRV_START + 18)
-+#define NNP_IPC_CHANNEL_SET_RB_SUCCESS   (EVENT_NON_ERR_DRV_START + 19)
-+#define NNP_IPC_CHANNEL_MAP_HOSTRES_SUCCESS   (EVENT_NON_ERR_DRV_START + 20)
-+#define NNP_IPC_CHANNEL_UNMAP_HOSTRES_SUCCESS (EVENT_NON_ERR_DRV_START + 21)
-+#define NNP_IPC_ABORT_REQUEST            (EVENT_NON_ERR_DRV_START + 22)
-+#define NNP_IPC_GET_FIFO                 (EVENT_NON_ERR_DRV_START + 23)
-+#define NNP_IPC_CREATE_CMD_SUCCESS       (EVENT_NON_ERR_DRV_START + 24)
-+#define NNP_IPC_CMD_DESTROYED            (EVENT_NON_ERR_DRV_START + 25)
-+#define NNP_IPC_EXECUTE_CMD_COMPLETE     (EVENT_NON_ERR_DRV_START + 26)
-+#define NNP_IPC_DEVNET_SET_PROPERTY_SUCCESS  (EVENT_NON_ERR_DRV_START + 27)
-+#define NNP_IPC_EXECUTE_CPYLST_SUCCESS   (EVENT_NON_ERR_DRV_START + 28)
-+#define NNP_IPC_GET_CR_FIFO_REPLY        (EVENT_NON_ERR_DRV_START + 29)
-+#define NNP_IPC_P2P_PEERS_CONNECTED      (EVENT_NON_ERR_DRV_START + 30)
-+#define NNP_IPC_P2P_PEER_DEV_UPDATED     (EVENT_NON_ERR_DRV_START + 31)
-+#define NNP_IPC_EXECUTE_COPY_SUBRES_SUCCESS  (EVENT_NON_ERR_DRV_START + 32)
-+/*                   MAX offset for EVENT_NON_ERR_DRV_START is 43 */
-+
-+/* non-critical error event codes */
-+#define NNP_IPC_CREATE_CONTEXT_FAILED    (EVENT_ERR_DRV_START + 0)
-+#define NNP_IPC_CREATE_DEVRES_FAILED     (EVENT_ERR_DRV_START + 1)
-+#define NNP_IPC_CREATE_COPY_FAILED       (EVENT_ERR_DRV_START + 2)
-+#define NNP_IPC_DESTROY_CONTEXT_FAILED   (EVENT_ERR_DRV_START + 3)
-+#define NNP_IPC_DESTROY_DEVRES_FAILED    (EVENT_ERR_DRV_START + 4)
-+#define NNP_IPC_DESTROY_COPY_FAILED      (EVENT_ERR_DRV_START + 5)
-+#define NNP_IPC_CREATE_SYNC_FAILED       (EVENT_ERR_DRV_START + 6)
-+#define NNP_IPC_ERROR_SUB_RESOURCE_LOAD_FAILED      (EVENT_ERR_DRV_START + 7)
-+#define NNP_IPC_CREATE_DEVNET_FAILED     (EVENT_ERR_DRV_START + 8)
-+#define NNP_IPC_DESTROY_DEVNET_FAILED    (EVENT_ERR_DRV_START + 9)
-+#define NNP_IPC_CREATE_INFREQ_FAILED     (EVENT_ERR_DRV_START + 10)
-+#define NNP_IPC_DESTROY_INFREQ_FAILED    (EVENT_ERR_DRV_START + 11)
-+#define NNP_IPC_RECOVER_CONTEXT_FAILED   (EVENT_ERR_DRV_START + 12)
-+#define NNP_IPC_ERROR_MCE_CORRECTABLE    (EVENT_ERR_DRV_START + 13)
-+#define NNP_IPC_ERROR_MCE_UNCORRECTABLE  (EVENT_ERR_DRV_START + 14)
-+#define NNP_IPC_DEVNET_ADD_RES_FAILED    (EVENT_ERR_DRV_START + 15)
-+#define NNP_IPC_DEVNET_RESOURCES_RESERVATION_FAILED (EVENT_ERR_DRV_START + 16)
-+#define NNP_IPC_DEVNET_RESOURCES_RELEASE_FAILED     (EVENT_ERR_DRV_START + 17)
-+#define NNP_IPC_CREATE_CHANNEL_FAILED    (EVENT_ERR_DRV_START + 18)
-+#define NNP_IPC_DESTROY_CHANNEL_FAILED   (EVENT_ERR_DRV_START + 19)
-+#define NNP_IPC_CHANNEL_SET_RB_FAILED    (EVENT_ERR_DRV_START + 20)
-+#define NNP_IPC_CREATE_CMD_FAILED        (EVENT_ERR_DRV_START + 21)
-+#define NNP_IPC_DESTROY_CMD_FAILED       (EVENT_ERR_DRV_START + 22)
-+#define NNP_IPC_CHANNEL_MAP_HOSTRES_FAILED   (EVENT_ERR_DRV_START + 23)
-+#define NNP_IPC_CHANNEL_UNMAP_HOSTRES_FAILED (EVENT_ERR_DRV_START + 24)
-+#define NNP_IPC_DEVNET_SET_PROPERTY_FAILED  (EVENT_ERR_DRV_START + 25)
-+#define NNP_IPC_ERROR_DRAM_ECC_CORRECTABLE (EVENT_ERR_DRV_START + 26)
-+#define NNP_IPC_EXECUTE_COPY_FAILED        (EVENT_ERR_DRV_START + 27)
-+#define NNP_IPC_SCHEDULE_INFREQ_FAILED     (EVENT_ERR_DRV_START + 28)
-+#define NNP_IPC_EXECUTE_CPYLST_FAILED      (EVENT_ERR_DRV_START + 29)
-+#define NNP_IPC_EXECUTE_COPY_SUBRES_FAILED  (EVENT_ERR_DRV_START + 30)
-+#define NNP_IPC_EC_FAILED_TO_RELEASE_CREDIT  (EVENT_ERR_DRV_START + 31)
-+#define NNP_IPC_DMA_HANG_DETECTED            (EVENT_ERR_DRV_START + 32)
-+/*                   MAX offset for EVENT_ERR_DRV_START is 43 */
-+
-+/* context critical error event codes */
-+#define NNP_IPC_ERROR_RUNTIME_LAUNCH     (EVENT_CONTEXT_FATAL_START + 0)
-+#define NNP_IPC_ERROR_RUNTIME_DIED       (EVENT_CONTEXT_FATAL_START + 1)
-+/*                   MAX offset for EVENT_CONTEXT_FATAL_START is 7 */
-+
-+#define NNP_IPC_CONTEXT_EXEC_ERROR          (EVENT_CONTEXT_FATAL_DRV_START + 0)
-+#define NNP_IPC_CTX_DRAM_ECC_UNCORRECTABLE  (EVENT_CONTEXT_FATAL_DRV_START + 1)
-+/*                   MAX offset for EVENT_CONTEXT_FATAL_DRV_START is 7 */
-+
-+/* card critical error event codes */
-+#define NNP_IPC_ERROR_OS_CRASHED          (EVENT_CARD_FATAL_START + 0)
-+#define NNP_IPC_ERROR_DRAM_ECC_UNCORRECTABLE_FATAL  (EVENT_CARD_FATAL_START + 1)
-+#define NNP_IPC_ERROR_FATAL_ICE_ERROR     (EVENT_CARD_FATAL_START + 2)
-+/*                   MAX offset for EVENT_CARD_FATAL_START is 7 */
-+
-+/* card critical and driver fatal*/
-+#define NNP_IPC_ERROR_PCI_ERROR           (EVENT_CARD_FATAL_DRV_START + 0)
-+#define NNP_IPC_ERROR_MCE_UNCORRECTABLE_FATAL  (EVENT_CARD_FATAL_DRV_START + 1)
-+#define NNP_IPC_ERROR_CARD_RESET          (EVENT_CARD_FATAL_DRV_START + 2)
-+#define NNP_IPC_ERROR_CHANNEL_KILLED      (EVENT_CARD_FATAL_DRV_START + 3)
-+#define NNP_IPC_ERROR_PROTOCOL_ERROR      (EVENT_CARD_FATAL_DRV_START + 4)
-+#define NNP_IPC_FATAL_DMA_HANG_DETECTED   (EVENT_CARD_FATAL_DRV_START + 5)
-+/*                   MAX offset for EVENT_CARD_FATAL_DRV_START is 7 */
-+
-+enum event_val {
-+	NNP_IPC_NO_ERROR		= 0,
-+	NNP_IPC_NO_SUCH_CONTEXT		= 1,
-+	NNP_IPC_NO_SUCH_DEVRES		= 2,
-+	NNP_IPC_NO_SUCH_COPY		= 3,
-+	NNP_IPC_NO_SUCH_NET		= 4,
-+	NNP_IPC_NO_SUCH_INFREQ		= 5,
-+	NNP_IPC_ALREADY_EXIST		= 6,
-+	NNP_IPC_NO_DAEMON		= 7,
-+	NNP_IPC_NO_MEMORY		= 8,
-+	NNP_IPC_RUNTIME_FAILED		= 9,
-+	NNP_IPC_RUNTIME_LAUNCH_FAILED	= 10,
-+	NNP_IPC_DMA_ERROR		= 11,
-+	NNP_IPC_RUNTIME_NOT_SUPPORTED	= 12,
-+	NNP_IPC_RUNTIME_INVALID_EXECUTABLE_NETWORK_BINARY = 13,
-+	NNP_IPC_RUNTIME_INFER_MISSING_RESOURCE        = 14,
-+	NNP_IPC_RUNTIME_INFER_EXEC_ERROR              = 15,
-+	NNP_IPC_RUNTIME_INFER_SCHEDULE_ERROR          = 16,
-+	NNP_IPC_CONTEXT_BROKEN                        = 17,
-+	NNP_IPC_DEVNET_RESERVE_INSUFFICIENT_RESOURCES = 18,
-+	NNP_IPC_TIMEOUT_EXCEEDED        = 19,
-+	NNP_IPC_ECC_ALLOC_FAILED        = 20,
-+	NNP_IPC_NO_SUCH_CHANNEL         = 21,
-+	NNP_IPC_NO_SUCH_CMD             = 22,
-+	NNP_IPC_NO_SUCH_HOSTRES         = 23,
-+	NNP_IPC_DEVNET_EDIT_BUSY        = 24,
-+	NNP_IPC_DEVNET_EDIT_ERROR       = 25,
-+	NNP_IPC_NOT_SUPPORTED           = 26,
-+	NNP_IPC_ICEDRV_INFER_EXEC_ERROR = 27,
-+	NNP_IPC_ICEDRV_INFER_EXEC_ERROR_NEED_RESET = 28,
-+	NNP_IPC_ICEDRV_INFER_EXEC_ERROR_NEED_CARD_RESET = 29,
-+	NNP_IPC_NO_EXEC_ERRORS          = 30,
-+	NNP_IPC_IO_ERROR                = 31,
-+	NNP_IPC_INPUT_IS_DIRTY          = 32,
-+
-+	/* Non failure events */
-+	NNP_IPC_CMDLIST_FINISHED       = 128,
-+};
-+
-+#endif
+ 	/* submit the event to all channels requested to get device events */
+ 	nnpdev_submit_device_event_to_channels(nnpdev, event_msg);
+ }
 -- 
 1.8.3.1
 
