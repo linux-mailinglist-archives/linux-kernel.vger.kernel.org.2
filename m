@@ -2,72 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57E0E37F508
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 11:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8A1C37F50C
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 11:51:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232525AbhEMJtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 05:49:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50286 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230338AbhEMJth (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 05:49:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A9FC1613D6;
-        Thu, 13 May 2021 09:48:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620899308;
-        bh=ZdufSwHQhI6UqGmsnop72bTBK3b9KB9yklyAwI+MobQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PtIs6Vd3YiZ3ikcQVWaY1c/EN4Qm+dANzcM79dwtMTdnKz8S5EdPEs2kwRaTWXKue
-         82umZ2oCxobcgz6danlIVuX5RXrIbuQ8cwny0XGsst99B1iAYK60YcbKvDv3uIbI1f
-         zFy1dNqLKjLBYb5eeajJwphaeEvpiWspzitc6EWY=
-Date:   Thu, 13 May 2021 11:48:25 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 050/530] md: md_open returns -EBUSY when entering
- racing area
-Message-ID: <YJz16WxZH3sVMatV@kroah.com>
-References: <20210512144819.664462530@linuxfoundation.org>
- <20210512144821.386618889@linuxfoundation.org>
- <20210513075940.GA22156@amd>
- <YJz1o17zGaqfCH0X@kroah.com>
+        id S232505AbhEMJws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 05:52:48 -0400
+Received: from angie.orcam.me.uk ([78.133.224.34]:33164 "EHLO
+        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230338AbhEMJwq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 05:52:46 -0400
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 87E3392009C; Thu, 13 May 2021 11:51:35 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 792E892009B;
+        Thu, 13 May 2021 11:51:35 +0200 (CEST)
+Date:   Thu, 13 May 2021 11:51:35 +0200 (CEST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Martin Hostettler <textshell@uchuujin.de>,
+        Peilin Ye <yepeilin.cs@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/3] VT_RESIZEX fixes
+Message-ID: <alpine.DEB.2.21.2105131132100.3032@angie.orcam.me.uk>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YJz1o17zGaqfCH0X@kroah.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 11:47:15AM +0200, Greg Kroah-Hartman wrote:
-> On Thu, May 13, 2021 at 09:59:41AM +0200, Pavel Machek wrote:
-> > Hi!
-> > 
-> > > commit 6a4db2a60306eb65bfb14ccc9fde035b74a4b4e7 upstream.
-> > > 
-> > > commit d3374825ce57 ("md: make devices disappear when they are no longer
-> > > needed.") introduced protection between mddev creating & removing. The
-> > > md_open shouldn't create mddev when all_mddevs list doesn't contain
-> > > mddev. With currently code logic, there will be very easy to trigger
-> > > soft lockup in non-preempt env.
-> > > 
-> > > This patch changes md_open returning from -ERESTARTSYS to -EBUSY, which
-> > > will break the infinitely retry when md_open enter racing area.
-> > > 
-> > > This patch is partly fix soft lockup issue, full fix needs mddev_find
-> > > is split into two functions: mddev_find & mddev_find_or_alloc. And
-> > > md_open should call new mddev_find (it only does searching job).
-> > > 
-> > > For more detail, please refer with Christoph's "split mddev_find" patch
-> > > in later commits.
-> > 
-> > Something went wrong here; changelog is truncated, in particular it
-> > does not contain required sign-offs.
-> 
-> That's really odd, let me figure out what went wrong there, might be a
-> quilt thing...
+Hi,
 
-Yup, it's a bug in quilt, the header is just dropped for some reason.
-Will dig further, thanks for pointing this out.
+ This is a minor update to the previous version of the series, adding a 
+clarification to 3/3 as to the problem the original fix to which caused 
+the functional regression the removal of extra VT_RESIZEX parameter 
+handling caused.  No change to actual code.
 
-greg k-h
+ See individual change descriptions for details.
+
+ Please apply.
+
+  Maciej
