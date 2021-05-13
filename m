@@ -2,72 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0EB37F676
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 13:09:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4C0337F678
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 13:09:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233209AbhEMLKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 07:10:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59774 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232957AbhEMLKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 07:10:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D47CA61422;
-        Thu, 13 May 2021 11:09:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620904148;
-        bh=uoluFBaduD5lLVV4XzN00NtHyh9peG4uBDHAHqnWv8o=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=M1wGDTMKy1JRRL4gmij6N2CDAmH/WNMowt8QqCeFvj1GA88YVvXSxqRhM4cCEnrdq
-         8aC4N3MvF7e6MZd2xAJkSqPp2tI2PDgwUMW81v9Xxgi2SoTi58cJLuOnslYZXqIu3q
-         9im0/s4exVXCQciNOfNZmjRe/1/njdMeP73nmHvTV61QdeZO4R55p38NfMmr0H4iKl
-         98xBUKRNjWQKPS3/nhysSswwwD0L7H1xXeBNIq8PX1hD/Y/BwjwTTCWvvxTOhXkR9R
-         jdeKLVWaRD5Bup9p+FkCqjbfSyRcc2ax8fsq6xUjfoIW92h9OlI4sflBSDjxYeEKfR
-         IWzHRz9iqP/KQ==
-Date:   Thu, 13 May 2021 13:09:04 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Michael Zaidman <michael.zaidman@gmail.com>
-cc:     trix@redhat.com, benjamin.tissoires@redhat.com,
-        linux-i2c@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] HID: ft260: improve error handling of
- ft260_hid_feature_report_get()
-In-Reply-To: <20210511101208.16401-1-michael.zaidman@gmail.com>
-Message-ID: <nycvar.YFH.7.76.2105131308260.28378@cbobk.fhfr.pm>
-References: <20210511101208.16401-1-michael.zaidman@gmail.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S233205AbhEMLLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 07:11:04 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:53810 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231690AbhEMLK7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 07:10:59 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UYkkqt._1620904183;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UYkkqt._1620904183)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 13 May 2021 19:09:49 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     wim@linux-watchdog.org
+Cc:     linux@roeck-us.net, p.zabel@pengutronix.de,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH v2] watchdog: dw_wdt: Fix duplicate included linux/kernel.h
+Date:   Thu, 13 May 2021 19:09:42 +0800
+Message-Id: <1620904182-74107-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 May 2021, Michael Zaidman wrote:
+Clean up the following includecheck warning:
 
-> Fixes: 6a82582d9fa4 ("HID: ft260: add usb hid to i2c host bridge driver")
-> 
-> The ft260_hid_feature_report_get() checks if the return size matches
-> the requested size. But the function can also fail with at least -ENOMEM.
-> Add the < 0 checks.
-> 
-> In ft260_hid_feature_report_get(), do not do the memcpy to the caller's
-> buffer if there is an error.
-> 
-> ---
-> v4   Fixed commit message
-> ---
-> v3   Simplify and optimize the changes
-> ---
-> v2:  add unlikely()'s for error conditions
-> ---
-> 
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> Signed-off-by: Michael Zaidman <michael.zaidman@gmail.com>
+./drivers/watchdog/dw_wdt.c: linux/kernel.h is included more than once.
 
-Who should be the author of the git commit?
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+Changes in v2:
+  -Adjust header file order, for the follow advice:
+   https://lore.kernel.org/patchwork/patch/1428192/
 
-Thanks,
+ drivers/watchdog/dw_wdt.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
+diff --git a/drivers/watchdog/dw_wdt.c b/drivers/watchdog/dw_wdt.c
+index 32d0e17..cd57884 100644
+--- a/drivers/watchdog/dw_wdt.c
++++ b/drivers/watchdog/dw_wdt.c
+@@ -13,22 +13,21 @@
+  */
+ 
+ #include <linux/bitops.h>
+-#include <linux/limits.h>
+-#include <linux/kernel.h>
+ #include <linux/clk.h>
++#include <linux/debugfs.h>
+ #include <linux/delay.h>
+ #include <linux/err.h>
++#include <linux/interrupt.h>
+ #include <linux/io.h>
+ #include <linux/kernel.h>
++#include <linux/limits.h>
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+-#include <linux/interrupt.h>
+ #include <linux/of.h>
+-#include <linux/pm.h>
+ #include <linux/platform_device.h>
++#include <linux/pm.h>
+ #include <linux/reset.h>
+ #include <linux/watchdog.h>
+-#include <linux/debugfs.h>
+ 
+ #define WDOG_CONTROL_REG_OFFSET		    0x00
+ #define WDOG_CONTROL_REG_WDT_EN_MASK	    0x01
 -- 
-Jiri Kosina
-SUSE Labs
+1.8.3.1
 
