@@ -2,141 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CF8937FB64
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 18:21:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F7B037FB67
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 18:22:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235100AbhEMQXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 12:23:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232251AbhEMQW4 (ORCPT
+        id S235112AbhEMQXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 12:23:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52087 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235104AbhEMQXj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 12:22:56 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04744C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 09:21:47 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id i23-20020a9d68d70000b02902dc19ed4c15so20063561oto.0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 09:21:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:reply-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dgHsi4uL/mIogUUPS9S351fL40I/K3+T9vuN9hTTz7w=;
-        b=iCVdZl0Yn608I/Ise9u2VIbuQosG+fyguuaj2b/r9pzeoPbxOttg4bEjdOO1lKLC5f
-         rLc8KnRcMt5qSnxEemOIyz0H5szo7z1ww+3ovDtnVUnQHzytFEldNouMimQj7H8eVGz3
-         /G4d02VBfKYrWVjoWNN3KLMC1kBNk2UrcDGcxQVIT1KrCrnFMj6wqoTHE7Skqm4f5zps
-         SJUIxHdm3UgIdEpxbPRhzVGbXaKHsXZsH3IDlZJa+hfTVu453XxPq6PPBDxT3P6gaeNq
-         06ttTJshZB7N2dotA45ABZXy+hI7aaEuMvJe5eQHVkpP4+VfFBE+9BLxywanlfkRluRp
-         ZGHA==
+        Thu, 13 May 2021 12:23:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620922948;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EIx7hWghyOcKHsxnhk7V96UW46vI1Sqd/jZUYBrxrFs=;
+        b=hKlULPkoulYlZIy5SXjnctz4Sn/fCBGk+wDptP8HVw3G1CLr4vTlrSoWCNbO+MokCiYnfW
+        t6b/MX4M2yrnH99zV3UbhNu6svZPrZfrPh+V25oApTFyYDTDYVp3rQ8uj2+5y7lZdXv/vU
+        qQIOphsNd2h7DrjYR7QvJ/aiwHcR0Rk=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-94-4_FY14s6PHSyM52XJW3YDw-1; Thu, 13 May 2021 12:22:24 -0400
+X-MC-Unique: 4_FY14s6PHSyM52XJW3YDw-1
+Received: by mail-qv1-f72.google.com with SMTP id a6-20020a0ce3460000b02901c4f39aa36aso21663955qvm.21
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 09:22:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :reply-to:references:mime-version:content-disposition:in-reply-to;
-        bh=dgHsi4uL/mIogUUPS9S351fL40I/K3+T9vuN9hTTz7w=;
-        b=HBYddxrAVjHTUV2LRfPYMuqvZbxJ4w31ajmGuxQwgJZJT+LxkpU2wMjoA/f4NhdqM+
-         6aWYU8CvGVdoSQg8OUi4nPKASEAwGTyvAp8ZIyoDVXRmq/EFkzC1gcpkePB2RTWPmYXs
-         yZN1JH4XfWRggjVa+TVKoqGgvTxd9nAiN+uaV0RMPAJx9r1wQCBnl6XtRzAm2JXLqtey
-         PikIVJbFmYebiOOFYGDerm/NhfBYH65GPlkN8ulC3FuidWwyN3EJv3V6+SgC8cxkJu+A
-         O/NyRyYlcoLMA0sNBDg3XvFLKuyJ2bBnzd8DCIspPBxeEDO1U5kc3umpUsW4OSJ6sRs1
-         tQhg==
-X-Gm-Message-State: AOAM533Q9xXINyTPows8OxDowjifNCRsXoQB9uhdq4UuJuo1oFKNYZBj
-        c4DY85Hspil6b3P2ZXUc+9hd3PbuBQ==
-X-Google-Smtp-Source: ABdhPJyYLp5S/qQBA1OuEVBcW0m4KEGrpE/QwsI8w/jV7EwdlSAbGoLiUdk0ZupldjNaSG1FddaCMQ==
-X-Received: by 2002:a9d:7a88:: with SMTP id l8mr28062977otn.185.1620922906348;
-        Thu, 13 May 2021 09:21:46 -0700 (PDT)
-Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
-        by smtp.gmail.com with ESMTPSA id r189sm683530oif.8.2021.05.13.09.21.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 09:21:45 -0700 (PDT)
-Sender: Corey Minyard <tcminyard@gmail.com>
-Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:412b:6b1b:237c:6ae7])
-        by serve.minyard.net (Postfix) with ESMTPSA id DCEC5180052;
-        Thu, 13 May 2021 16:21:43 +0000 (UTC)
-Date:   Thu, 13 May 2021 11:21:42 -0500
-From:   Corey Minyard <minyard@acm.org>
-To:     Petr Pavlu <petr.pavlu@suse.com>
-Cc:     openipmi-developer@lists.sourceforge.net,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ipmi/watchdog: Stop watchdog timer when the current
- action is 'none'
-Message-ID: <20210513162142.GA2921206@minyard.net>
-Reply-To: minyard@acm.org
-References: <10a41bdc-9c99-089c-8d89-fa98ce5ea080@suse.com>
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=EIx7hWghyOcKHsxnhk7V96UW46vI1Sqd/jZUYBrxrFs=;
+        b=JTLT4oNlf3ay8l3cQwfORHuNmvZ08ht5fy1VxiFVFm9rSzujN1M1LowruDDzPrpyJl
+         YQ0rslKUMnCeDmSWOCMEAoh/4hmWIG9A4no2EnQjt5hF2/zv2I35hW4Hr2bb6s1Ex0/4
+         qoe7zTR0CvhaTzatf6KjOTrC5GyW9NCf3DrQqv/qrmjeaw0i3vL6jN1i6zJpE88lffyL
+         aPuC7mvr20Tzt+zTDr7jaHm/nXlr/b4FBJrw9AiRswC2NGdi2/DKaWLkNTJVZkOuAIwl
+         KfNDTyRH8iRv9gfY5xqluel3rCGVpL1Uii5jcXjrKx0F1EQvDXiGUIvpx+z25y0TFmbX
+         hoxQ==
+X-Gm-Message-State: AOAM533gg9ma7LrnrzwAbLTFnIPTIGQsOGzy79A+jVXZdJzBWkggMWix
+        +0RNXd1Waz1rRJ8yv9yhoD8CosNHCpPPRqJvZHoXSfjyOJW/wXaVatW745hpohGvtfIXrkMEp6A
+        BJcNmeK8woOM+GNGQZQzvxmSx
+X-Received: by 2002:ae9:c010:: with SMTP id u16mr36002735qkk.133.1620922944362;
+        Thu, 13 May 2021 09:22:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJypW52z4koXjDm+vseDa/OGAuJKFw35V6mcwKGIJDY6x7ocwRRUfji64raykrWzMhJogEoz0Q==
+X-Received: by 2002:ae9:c010:: with SMTP id u16mr36002717qkk.133.1620922944166;
+        Thu, 13 May 2021 09:22:24 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id c20sm2816714qtm.52.2021.05.13.09.22.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 May 2021 09:22:23 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v5 2/3] mm: memcg/slab: Create a new set of kmalloc-cg-<n>
+ caches
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Waiman Long <llong@redhat.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20210505200610.13943-1-longman@redhat.com>
+ <20210512145107.6208-1-longman@redhat.com>
+ <0919aaab-cc08-f86d-1f9a-8ddfeed7bb31@redhat.com>
+ <20210512173212.738f592c36bf0e4c205f628e@linux-foundation.org>
+Message-ID: <5b853795-6583-8527-93d2-68ff0b9b5457@redhat.com>
+Date:   Thu, 13 May 2021 12:22:21 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <10a41bdc-9c99-089c-8d89-fa98ce5ea080@suse.com>
+In-Reply-To: <20210512173212.738f592c36bf0e4c205f628e@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 02:26:36PM +0200, Petr Pavlu wrote:
-> When an IPMI watchdog timer is being stopped in ipmi_close() or
-> ipmi_ioctl(WDIOS_DISABLECARD), the current watchdog action is updated to
-> WDOG_TIMEOUT_NONE and _ipmi_set_timeout(IPMI_SET_TIMEOUT_NO_HB) is called
-> to install this action. The latter function ends up invoking
-> __ipmi_set_timeout() which makes the actual 'Set Watchdog Timer' IPMI
-> request.
-> 
-> For IPMI 1.0, this operation results in fully stopping the watchdog timer.
-> For IPMI >= 1.5, function __ipmi_set_timeout() always specifies the "don't
-> stop" flag in the prepared 'Set Watchdog Timer' IPMI request. This causes
-> that the watchdog timer has its action correctly updated to 'none' but the
-> timer continues to run. A problem is that IPMI firmware can then still log
-> an expiration event when the configured timeout is reached, which is
-> unexpected because the watchdog timer was requested to be stopped.
-> 
-> The patch fixes this problem by not setting the "don't stop" flag in
-> __ipmi_set_timeout() when the current action is WDOG_TIMEOUT_NONE which
-> results in stopping the watchdog timer. This makes the behaviour for
-> IPMI >= 1.5 consistent with IPMI 1.0. It also matches the logic in
-> __ipmi_heartbeat() which does not allow to reset the watchdog if the
-> current action is WDOG_TIMEOUT_NONE as that would start the timer.
+On 5/12/21 8:32 PM, Andrew Morton wrote:
+> On Wed, 12 May 2021 10:54:19 -0400 Waiman Long <llong@redhat.com> wrote:
+>
+>>>    include/linux/slab.h | 42 +++++++++++++++++++++++++++++++++---------
+>>>    mm/slab_common.c     | 25 +++++++++++++++++--------
+>>>    2 files changed, 50 insertions(+), 17 deletions(-)
+>> The following are the diff's from previous version. It turns out that
+>> the previous patch doesn't work if CONFIG_ZONE_DMA isn't defined.
+>>
+>> diff --git a/include/linux/slab.h b/include/linux/slab.h
+>> index a51cad5f561c..aa7f6c222a60 100644
+>> --- a/include/linux/slab.h
+>> +++ b/include/linux/slab.h
+>> @@ -312,16 +312,17 @@ static inline void __check_heap_object(const void
+>> *ptr, un
+>> signed long n,
+>>     */
+>>    enum kmalloc_cache_type {
+>>        KMALLOC_NORMAL = 0,
+>> -#ifdef CONFIG_MEMCG_KMEM
+>> -    KMALLOC_CGROUP,
+>> -#else
+>> +#ifndef CONFIG_ZONE_DMA
+>> +    KMALLOC_DMA = KMALLOC_NORMAL,
+>> +#endif
+>> +#ifndef CONFIG_MEMCG_KMEM
+>>        KMALLOC_CGROUP = KMALLOC_NORMAL,
+>> +#else
+>> +    KMALLOC_CGROUP,
+>>    #endif
+>>        KMALLOC_RECLAIM,
+>>    #ifdef CONFIG_ZONE_DMA
+>>        KMALLOC_DMA,
+>> -#else
+>> -    KMALLOC_DMA = KMALLOC_NORMAL,
+>>    #endif
+>>        NR_KMALLOC_TYPES
+>>    };
+> I assume this fixes
+> https://lkml.kernel.org/r/20210512152806.2492ca42@canb.auug.org.au?
+>
+Yes.
 
-Yes, I believe this is correct, though it took a bit to be sure :).
-Applied for linux-next.  I'm also requesting backport to stable kernels.
+Cheers,
+Longman
 
--corey
-
-> 
-> Signed-off-by: Petr Pavlu <petr.pavlu@suse.com>
-> ---
->  drivers/char/ipmi/ipmi_watchdog.c | 22 ++++++++++++----------
->  1 file changed, 12 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/char/ipmi/ipmi_watchdog.c b/drivers/char/ipmi/ipmi_watchdog.c
-> index 32c334e34d55..e4ff3b50de7f 100644
-> --- a/drivers/char/ipmi/ipmi_watchdog.c
-> +++ b/drivers/char/ipmi/ipmi_watchdog.c
-> @@ -371,16 +371,18 @@ static int __ipmi_set_timeout(struct ipmi_smi_msg  *smi_msg,
->  	data[0] = 0;
->  	WDOG_SET_TIMER_USE(data[0], WDOG_TIMER_USE_SMS_OS);
->  
-> -	if ((ipmi_version_major > 1)
-> -	    || ((ipmi_version_major == 1) && (ipmi_version_minor >= 5))) {
-> -		/* This is an IPMI 1.5-only feature. */
-> -		data[0] |= WDOG_DONT_STOP_ON_SET;
-> -	} else if (ipmi_watchdog_state != WDOG_TIMEOUT_NONE) {
-> -		/*
-> -		 * In ipmi 1.0, setting the timer stops the watchdog, we
-> -		 * need to start it back up again.
-> -		 */
-> -		hbnow = 1;
-> +	if (ipmi_watchdog_state != WDOG_TIMEOUT_NONE) {
-> +		if ((ipmi_version_major > 1) ||
-> +		    ((ipmi_version_major == 1) && (ipmi_version_minor >= 5))) {
-> +			/* This is an IPMI 1.5-only feature. */
-> +			data[0] |= WDOG_DONT_STOP_ON_SET;
-> +		} else {
-> +			/*
-> +			 * In ipmi 1.0, setting the timer stops the watchdog, we
-> +			 * need to start it back up again.
-> +			 */
-> +			hbnow = 1;
-> +		}
->  	}
->  
->  	data[1] = 0;
-> -- 
-> 2.26.2
-> 
