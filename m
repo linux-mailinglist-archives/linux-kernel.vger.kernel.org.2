@@ -2,121 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9FE37F93A
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 15:58:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7359A37F93D
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 15:58:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234313AbhEMN7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 09:59:05 -0400
-Received: from foss.arm.com ([217.140.110.172]:36104 "EHLO foss.arm.com"
+        id S234292AbhEMN75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 09:59:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34518 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234292AbhEMN6d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 09:58:33 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 79EB61713;
-        Thu, 13 May 2021 06:57:23 -0700 (PDT)
-Received: from [10.57.81.122] (unknown [10.57.81.122])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0D0533F73B;
-        Thu, 13 May 2021 06:57:20 -0700 (PDT)
-Subject: Re: [RFC PATCH] perf cs-etm: Handle valid-but-zero timestamps
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     coresight@lists.linaro.org, mathieu.poirier@linaro.org,
-        al.grant@arm.com, branislav.rankov@arm.com, denik@chromium.org,
-        suzuki.poulose@arm.com, anshuman.khandual@arm.com,
-        Mike Leach <mike.leach@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210507095814.17933-1-james.clark@arm.com>
- <3926c523-3fdb-66de-8b9c-b68290a5053e@arm.com>
- <20210510053904.GB4835@leoy-ThinkPad-X240s>
- <da07f930-ccd7-2b46-7b0f-0e9da3bf9482@arm.com>
- <20210512012002.GB249068@leoy-ThinkPad-X240s>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <b0279722-2746-bf58-0e84-224db0d85222@arm.com>
-Date:   Thu, 13 May 2021 16:57:19 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S234125AbhEMN7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 09:59:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 93D1761406;
+        Thu, 13 May 2021 13:58:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620914308;
+        bh=+2C2vXezVVrNO7tc1g+YZPiKBmWLmnx6KmsQzw5Px+k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IUJb0L7v3yUFEWPdVr0mFTCbxGRfUhwh/r9i4RiTXaR7HcQ9X14j4F9WMjy7P5pjc
+         QR+UDnXQCO2DYo4yqXjSrF6Ryyf/zOg+9VGtwG+w6OuJPIITdpAMc0qP5Byb/2ArUK
+         ZFqPa7bzU0JxHGAi6XmFQrya87qk/AwPytLCZyT4=
+Date:   Thu, 13 May 2021 15:58:25 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Rajat Jain <rajatja@google.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-usb@vger.kernel.org, helgaas@kernel.org,
+        Oliver Neukum <oneukum@suse.com>,
+        David Laight <David.Laight@aculab.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        rajatxjain@gmail.com, jsbarnes@google.com, dtor@google.com
+Subject: Re: [PATCH v3 2/2] PCI: Add sysfs "removable" attribute
+Message-ID: <YJ0wgdUaOyaJpaXi@kroah.com>
+References: <20210512213457.1310774-1-rajatja@google.com>
+ <20210512213457.1310774-2-rajatja@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210512012002.GB249068@leoy-ThinkPad-X240s>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210512213457.1310774-2-rajatja@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, May 12, 2021 at 02:34:57PM -0700, Rajat Jain wrote:
+> A PCI device is "external_facing" if it's a Root Port with the ACPI
+> "ExternalFacingPort" property or if it has the DT "external-facing"
+> property.  We consider everything downstream from such a device to
+> be removable by user.
+> 
+> We're mainly concerned with consumer platforms with user accessible
+> thunderbolt ports that are vulnerable to DMA attacks, and we expect those
+> ports to be identified as "ExternalFacingPort". Devices in traditional
+> hotplug slots can technically be removed, but the expectation is that
+> unless the port is marked with "ExternalFacingPort", such devices are less
+> accessible to user / may not be removed by end user, and thus not exposed
+> as "removable" to userspace.
+> 
+> Set pci_dev_type.supports_removable so the device core exposes the
+> "removable" file in sysfs, and tell the device core about removable
+> devices.
+> 
+> This can be used by userspace to implment any policies it wants to,
+> tailored specifically for user removable devices. Eg usage:
+> https://chromium-review.googlesource.com/c/chromiumos/platform2/+/2591812
+> https://chromium-review.googlesource.com/c/chromiumos/platform2/+/2795038
+> (code uses such an attribute to remove external PCI devicces or disable
+> features on them as needed by the policy desired)
+> 
+> Signed-off-by: Rajat Jain <rajatja@google.com>
+> ---
+> v3: - commit log updated
+>     - Rename set_pci_dev_removable() -> pci_set_removable()
+>     - Call it after applying early PCI quirks.
+> v2: Add documentation
+> 
+>  Documentation/ABI/testing/sysfs-devices-removable |  3 ++-
+>  drivers/pci/pci-sysfs.c                           |  1 +
+>  drivers/pci/probe.c                               | 12 ++++++++++++
+>  3 files changed, 15 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-devices-removable b/Documentation/ABI/testing/sysfs-devices-removable
+> index 9dabcad7cdcd..ec0b243f5db4 100644
+> --- a/Documentation/ABI/testing/sysfs-devices-removable
+> +++ b/Documentation/ABI/testing/sysfs-devices-removable
+> @@ -14,4 +14,5 @@ Description:
+>  
+>  		Currently this is only supported by USB (which infers the
+>  		information from a combination of hub descriptor bits and
+> -		platform-specific data such as ACPI).
+> +		platform-specific data such as ACPI) and PCI (which gets this
+> +		from ACPI / device tree).
+> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> index beb8d1f4fafe..38b3259ba333 100644
+> --- a/drivers/pci/pci-sysfs.c
+> +++ b/drivers/pci/pci-sysfs.c
+> @@ -1541,4 +1541,5 @@ static const struct attribute_group *pci_dev_attr_groups[] = {
+>  
+>  const struct device_type pci_dev_type = {
+>  	.groups = pci_dev_attr_groups,
+> +	.supports_removable = true,
+>  };
+> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+> index 3a62d09b8869..3515afeeaba8 100644
+> --- a/drivers/pci/probe.c
+> +++ b/drivers/pci/probe.c
+> @@ -1575,6 +1575,16 @@ static void set_pcie_untrusted(struct pci_dev *dev)
+>  		dev->untrusted = true;
+>  }
+>  
+> +static void pci_set_removable(struct pci_dev *dev)
+> +{
+> +	struct pci_dev *parent = pci_upstream_bridge(dev);
+> +	if (parent &&
+> +	    (parent->external_facing || dev_is_removable(&parent->dev)))
+> +		dev_set_removable(&dev->dev, DEVICE_REMOVABLE);
+> +	else
+> +		dev_set_removable(&dev->dev, DEVICE_FIXED);
+> +}
+
+Always run checkpatch.pl so you don't get grumpy maintainers telling you
+to run checkpatch.pl :(
+
+And why does external_facing come into play here?  I know you say it
+above, but you should also put it here into the code for when we need to
+look at it in a few months and wonder what in the world this is doing.
+
+Also, are you SURE this is correct and will handle the hotpluggable PCI
+devices in things like drawers and the like?
+
+What is the goal here in exposing this information to userspace, who is
+going to use it and what is it going to be used for?
 
 
-On 12/05/2021 04:20, Leo Yan wrote:
-> On Tue, May 11, 2021 at 04:53:35PM +0300, James Clark wrote:
+> +
+>  /**
+>   * pci_ext_cfg_is_aliased - Is ext config space just an alias of std config?
+>   * @dev: PCI device
+> @@ -1822,6 +1832,8 @@ int pci_setup_device(struct pci_dev *dev)
+>  	/* Early fixups, before probing the BARs */
+>  	pci_fixup_device(pci_fixup_early, dev);
+>  
+> +	pci_set_removable(dev);
+> +
+>  	pci_info(dev, "[%04x:%04x] type %02x class %#08x\n",
+>  		 dev->vendor, dev->device, dev->hdr_type, dev->class);
+>  
+> -- 
+> 2.31.1.607.g51e8a6a459-goog
 > 
-> [...]
-> 
->> Do you have any idea about what to do in the overflow case?
-> 
-> A quick thinking is to connect the kernel timestamp and correlate the
-> overflow case for CoreSight's timestamp, but this approach will cause
-> complexity.  And considering if the overflow occurs for not only once
-> before the new kernel timestamp is updated, it's hard to handle for
-> this case.  So seems to me, printing warning is a better choice.
-> 
->> I think I will submit a
->> new patchset that makes the new 'Z' timeless --itrace option work, because that also
->> fixes this issue, without having to do the original workaround change in this RFC.
-> 
-> Good finding for these options for zero timestamps!
-> 
->> But I'd also like to fix this overflow because it masks the issue by making non-zero
->> timestamps appear even though they aren't valid ones.
->>
->> I was thinking that printing a warning in the overflow case would work, but then I would
->> also print a warning for the zero timestamps, and that would make just a single case,
->> rather than two. Unless we just have slightly different warning text?
-> 
-> Printing two different warnings is okay for me, which is more clear
-> for users.
-> 
->> Something like this? Without the zero timestamp issue, the underflow issue probably wouldn't
->> be encountered. But at least there would be some visibility if it did:
->>
->> diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
->> index 059bcec3f651..5d8abccd34ab 100644
->> --- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
->> +++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
->> @@ -17,6 +17,7 @@
->>  
->>  #include "cs-etm.h"
->>  #include "cs-etm-decoder.h"
->> +#include "debug.h"
->>  #include "intlist.h"
->>  
->>  /* use raw logging */
->> @@ -294,9 +295,11 @@ cs_etm_decoder__do_soft_timestamp(struct cs_etm_queue *etmq,
->>  static ocsd_datapath_resp_t
->>  cs_etm_decoder__do_hard_timestamp(struct cs_etm_queue *etmq,
->>                                   const ocsd_generic_trace_elem *elem,
->> -                                 const uint8_t trace_chan_id)
->> +                                 const uint8_t trace_chan_id,
->> +                                 const ocsd_trc_index_t indx)
-> 
-> Do we really need the new argument "indx"?  If print "trace_chan_id",
-> can it give the info that the timestamp is attached to which tracer?
-
-I thought that just the channel ID wouldn't be very useful for locating where the
-issue is when doing --dump-raw-trace.
-
-By printing "Idx:..." it can be pasted straight into the search in perf and you'll
-jump straight to the part where the error happened. If you only have the channel
-ID then you'd still need to get a debugger out and find out the index if you want
-to look into the problem.
-
-I will include the index in the new patch I will submit now, but I don't insist on
-keeping it so let me know what you think.
-
-James
-
