@@ -2,105 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6812337F88D
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 15:19:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E483037F892
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 15:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233963AbhEMNUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 09:20:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233927AbhEMNSr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 09:18:47 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A80BEC061763;
-        Thu, 13 May 2021 06:17:35 -0700 (PDT)
-Date:   Thu, 13 May 2021 13:17:29 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620911849;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EoZGNtpT7J9Ukr34M6cTRSHUYsCi8hXA8RtxyEBUWik=;
-        b=YrVlZ5Nvp3uW01CKTL6AjrGVvR59M7m12BNSJXkdC+BmW3qc6IQzGrhGx+rCvjDKSXOHk3
-        8thZKQZHmhKW3AQ8WFjNw2m81odzxqB5SqIE/dlvCLFktDORjBMSILn4LECGDWYOXnwER/
-        OBZXcJbID6Qn4qhCM4o5al0Twel0xuARy7DoLahIA8IjqULXoQuQuVnSSv7ATvq+dg3DXl
-        +ciCnE2lGxBvE0fIlG9WAAWTEitcG8GeD24nidOHlp4SFs757lnfGQ7Jn2ApaQk6IlbR2v
-        KviBSgUUV4lGmmKWrUN6+EYVtPpLuPol5+i1XcmjJh7xeJQO1aof0l7FwT5p5w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620911849;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EoZGNtpT7J9Ukr34M6cTRSHUYsCi8hXA8RtxyEBUWik=;
-        b=BNeHwPJ+qBpc3L3kulal/KUVMRQsRwTvSj+rnER7te6qVwK88roTSeQNq2vhnL68xZ3QsF
-        sndRDa3zK4hKnDDA==
-From:   "tip-bot2 for Frederic Weisbecker" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/nohz] tick/nohz: Remove superflous check for
- CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210512232924.150322-4-frederic@kernel.org>
-References: <20210512232924.150322-4-frederic@kernel.org>
+        id S234021AbhEMNVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 09:21:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35656 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233961AbhEMNUs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 09:20:48 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A083C61433;
+        Thu, 13 May 2021 13:19:36 +0000 (UTC)
+Date:   Thu, 13 May 2021 09:19:35 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     kgdb-bugreport@lists.sourceforge.net, daniel.thompson@linaro.org,
+        jason.wessel@windriver.com, dianders@chromium.org,
+        mingo@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] kdb: Get rid of redundant kdb_register_flags()
+Message-ID: <20210513091935.5747c12e@gandalf.local.home>
+In-Reply-To: <20210513112842.707103-2-sumit.garg@linaro.org>
+References: <20210513112842.707103-1-sumit.garg@linaro.org>
+        <20210513112842.707103-2-sumit.garg@linaro.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Message-ID: <162091184904.29796.4999933388579094630.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/nohz branch of tip:
+On Thu, 13 May 2021 16:58:41 +0530
+Sumit Garg <sumit.garg@linaro.org> wrote:
 
-Commit-ID:     3f624314b3f7c580aa5844a8930befd71e2a287c
-Gitweb:        https://git.kernel.org/tip/3f624314b3f7c580aa5844a8930befd71e2a287c
-Author:        Frederic Weisbecker <frederic@kernel.org>
-AuthorDate:    Thu, 13 May 2021 01:29:17 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 13 May 2021 14:21:21 +02:00
+> Commit e4f291b3f7bb ("kdb: Simplify kdb commands registration")
+> allowed registration of pre-allocated kdb commands with pointer to
+> struct kdbtab_t. Lets switch other users as well to register pre-
+> allocated kdb commands via:
+> - Changing prototype for kdb_register() to pass a pointer to struct
+>   kdbtab_t instead.
+> - Embed kdbtab_t structure in defcmd_set rather than individual params.
+>   So while at it rename struct defcmd_set to struct kdb_macro_t as that
+>   sounds more appropriate given its purpose.
+> 
+> With these changes kdb_register_flags() becomes redundant and hence
+> removed. Also, since we have switched all users to register
+> pre-allocated commands, "is_dynamic" flag in struct kdbtab_t becomes
+> redundant and hence removed as well.
+> 
+> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> ---
+>  include/linux/kdb.h            |  27 +++--
+>  kernel/debug/kdb/kdb_main.c    | 206 +++++++++++----------------------
+>  kernel/debug/kdb/kdb_private.h |  13 ---
+>  kernel/trace/trace_kdb.c       |  12 +-
 
-tick/nohz: Remove superflous check for CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
+For the tracing directory.
 
-The vtime_accounting_enabled_this_cpu() early check already makes what
-follows as dead code in the case of CONFIG_VIRT_CPU_ACCOUNTING_NATIVE.
-No need to keep the ifdeferry around.
+Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Peter Zijlstra <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20210512232924.150322-4-frederic@kernel.org
----
- kernel/time/tick-sched.c | 2 --
- 1 file changed, 2 deletions(-)
+-- Steve
 
-diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index 05c1ce1..1afa759 100644
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -1196,7 +1196,6 @@ unsigned long tick_nohz_get_idle_calls(void)
- 
- static void tick_nohz_account_idle_ticks(struct tick_sched *ts)
- {
--#ifndef CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
- 	unsigned long ticks;
- 
- 	if (vtime_accounting_enabled_this_cpu())
-@@ -1212,7 +1211,6 @@ static void tick_nohz_account_idle_ticks(struct tick_sched *ts)
- 	 */
- 	if (ticks && ticks < LONG_MAX)
- 		account_idle_ticks(ticks);
--#endif
- }
- 
- void tick_nohz_idle_restart_tick(void)
+>  samples/kdb/kdb_hello.c        |  20 ++--
+>  5 files changed, 104 insertions(+), 174 deletions(-)
+
