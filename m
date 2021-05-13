@@ -2,621 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7229C37F324
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 08:38:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FC4837F325
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 08:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231387AbhEMGjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 02:39:53 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:57452 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231380AbhEMGjM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 02:39:12 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14D6bs6J091511;
-        Thu, 13 May 2021 01:37:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1620887874;
-        bh=mffXkUFwoAbjKjsb0vLd1lzYCI2TVNQ9N8Snpv0SbM4=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=JvyZ+SELKD6SMHsMqQ6G84U1uCn7fDXfI4TrKNKXlbTtjJEi8KrOamwywe25x9CEL
-         4Cu/fn/uM/YFWcJ1qTJLgVFMHZWP+GZdTkFzbP4OSbl96eKLxdvw7d/qrwataZ3Ikn
-         RB3K7f4C+++SzzNg3iIZ/NRP21mQXDpio0Kamo3I=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14D6bsJS101026
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 13 May 2021 01:37:54 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 13
- May 2021 01:37:53 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 13 May 2021 01:37:53 -0500
-Received: from [10.250.232.157] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14D6bnKc071392;
-        Thu, 13 May 2021 01:37:50 -0500
-Subject: Re: [PATCH 02/14] phy: cadence-torrent: Reorder few functions to
- remove function declarations
-To:     Swapnil Jakhade <sjakhade@cadence.com>, <vkoul@kernel.org>,
-        <p.zabel@pengutronix.de>, <linux-phy@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <mparab@cadence.com>, <lokeshvutla@ti.com>
-References: <1617946456-27773-1-git-send-email-sjakhade@cadence.com>
- <1617946456-27773-3-git-send-email-sjakhade@cadence.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <509084ce-1425-4dab-ac0d-9e57e8786eb0@ti.com>
-Date:   Thu, 13 May 2021 12:07:49 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <1617946456-27773-3-git-send-email-sjakhade@cadence.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+        id S231383AbhEMGlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 02:41:18 -0400
+Received: from mail-co1nam11on2042.outbound.protection.outlook.com ([40.107.220.42]:46497
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230063AbhEMGlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 02:41:15 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=I7ITl16xTsB8n79N9ObK8nwXpPs0Zxnnlruwew/1ES/N0h0Sh+IODNGV43E7CDWyokTN6mDprx7s4L+YVY4MS4Zt35/MUNPEmN9SVkD8yGrmknmSYfLgxDQfVdSz/MJjy84udVNnH/T1mmApsCGo7aYl77mHgURDrfJ3Qx+huJgIsNivqdRi7WMoKfZBSelvW0mUPJTWSE+2wjTLTp4TkYucUk1hTpGkhq9bs06L6+LiyiOuxgZzZMuie0AbggBaFT8oW3qMffx9Dx6/QgeNA2ErZQetSarB4Lojys2+6t4kGN3tYRqbFpQECHriwJwOjonNQ8w+50YNViTmQPrqEA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pXfJlPn00Ee4R1bjyWY+94pyHb6aKlnAHCG4D9Y7WRw=;
+ b=T8vjkkSlVAnkhdznw9O31wjW0xMmN8L5Byt334pon6HSh10/uW3m4IBAZKpb4jvm2hv7ywDXhXEcw/GHAA/JlrrFbZS7aun1XVkndvrtrN/gXXeX3dbFgbsm+WEakoAbq3Fyon04Fn4vUiltAo80pbasqMqVoBvYSe3DKGNKgk4EVuVKI8AC5KOlT4q/tb6hdJAyjE8GCc3nOeKqmeQARU0fjg0f0gXzmlw1xqvyvlY62wLBM/ZveG6MN6uPGGMxV9VFTCheDyLsbSZwUPQA2+Kb+fQblmZFzIcY+cMWMqyL3+s1z2SdpCUTVGhZf8gyMWEJoKzY7RUYrT2qiWFW5A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pXfJlPn00Ee4R1bjyWY+94pyHb6aKlnAHCG4D9Y7WRw=;
+ b=LpU9AYbfQ7P44GcTFpdf3Scy/khrokfVOynpyBteBGNhsqCcBELJp9LegTJWBMfgT0HBt3M6qePsrlSzO1NaVqYKPsvHB0DbVGCIgJD6ip/tfUfj4I5GlgqUhL18t+cWomUUD60kuP8X8/hd0TZyqoAJm8bx/aHCccrgRuW4UUQ=
+Authentication-Results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none
+ header.from=synaptics.com;
+Received: from BN9PR03MB6058.namprd03.prod.outlook.com (2603:10b6:408:137::15)
+ by BN8PR03MB5041.namprd03.prod.outlook.com (2603:10b6:408:d5::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Thu, 13 May
+ 2021 06:40:03 +0000
+Received: from BN9PR03MB6058.namprd03.prod.outlook.com
+ ([fe80::308b:9168:78:9791]) by BN9PR03MB6058.namprd03.prod.outlook.com
+ ([fe80::308b:9168:78:9791%4]) with mapi id 15.20.4129.026; Thu, 13 May 2021
+ 06:40:02 +0000
+Date:   Thu, 13 May 2021 14:39:53 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Jon Bloomfield <jon.bloomfield@intel.com>
+Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Ville =?UTF-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+Subject: [PATCH V3 RESEND] drm/i915: Fix "mitigations" parsing if i915 is
+ builtin
+Message-ID: <20210513143953.1f8a82e7@xhacker.debian>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Originating-IP: [192.147.44.204]
+X-ClientProxiedBy: BYAPR02CA0056.namprd02.prod.outlook.com
+ (2603:10b6:a03:54::33) To BN9PR03MB6058.namprd03.prod.outlook.com
+ (2603:10b6:408:137::15)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xhacker.debian (192.147.44.204) by BYAPR02CA0056.namprd02.prod.outlook.com (2603:10b6:a03:54::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Thu, 13 May 2021 06:39:59 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 35301b51-949f-465a-f0b8-08d915d9eff6
+X-MS-TrafficTypeDiagnostic: BN8PR03MB5041:
+X-Microsoft-Antispam-PRVS: <BN8PR03MB50411CC299AD088EFFAE0D59ED519@BN8PR03MB5041.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OehM+pyZrDIb3o69uOfbZIfBMXtmD5rvrsrCdIeA9VZvtwpiKGhO3p81nYP3X2DKZ+voTUzl3h6Da5CTQX70fsINLjNDliuf45SuxPm0v0YQoIUmqpLaQ9nGfOqZ3wJ6kKYfRdHxWkYwwS4Ppc7UN+oMB2IAzSD3ITDHmi3Ao1J7lZgiSJspwYCWobQ0HOBc6rXdJlE+tKdtEZAjcofjspPtyiSqWajTtS+P5+qEyqbb5KUCBu1HAIAxgCSPQMkHJt9gHdn1DbYPptKbuJCFjDOxWy71KGRmFlxGmUFDLJASGNOvy8ZF6NEETPFmkM92WMpAo+gI+Lc5BEoYlnAhnSv7r/3d/yHnjezX+0aEg3gQ/hjogHYjpmCM/zNLpKkWmUtpwn4wWq/UhelbQtdTNphqBFgfEZKK0qQJIetnesfHz6houVRMYWV3+GGrIY9DKBo0EaCSfFY+kNmoHzXkDohGx8TVAiHxjM+V6oPXmaaN+QKMmQpxcYKaxr2pd8vluVnLjnR+aYcXdtTsl8WL5nFiWHRIvy9vtHjWxb3GnIyKtW+tzu7wwtXeQdU97G94aVjay0jjLn5ndlLgP7J57o7qU678wDfBuAKuNmVJc18fX7x9sExJuCxBaLU2FBeGD/QG00sgo4zvAI5rBXnjhenUOj2RxztL/QmtwBXl5Lo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR03MB6058.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(366004)(376002)(396003)(39830400003)(8676002)(86362001)(9686003)(66556008)(7416002)(52116002)(16526019)(66476007)(7696005)(478600001)(8936002)(55016002)(38100700002)(316002)(38350700002)(956004)(2906002)(110136005)(83380400001)(6666004)(26005)(1076003)(66946007)(6506007)(4326008)(5660300002)(186003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?ouWjBckXTmvZAPe8F+0YSf1IWG6QofDIcyST66l08KrFDRiGn8S/ZhB11p7q?=
+ =?us-ascii?Q?2pPGbCjc4S+YKqYLFsZSKI11Xpwc1SAl00wfnTZFs90beDvNLFjXXJ6E8tlJ?=
+ =?us-ascii?Q?yjrxabutLeEJvWRDOuNnfG/cJNsqKsWwgG/kJVm/iivi9F7GpBQ2Bxwd0I2A?=
+ =?us-ascii?Q?BRK0NbfllB8b6VZ4x9ZHQgvzRZhnOpkhmJvJHcHOMUxfYCyQhQtqIYfU/ita?=
+ =?us-ascii?Q?NFF6/vaPIpXnSfpygsujZdfo/q7OP0Bu/ccGm8CIN8WNmeqeInZP/KTjDig2?=
+ =?us-ascii?Q?aMCO9ELLTLg0dx3ENCAs8Qiby+yU6XggYTLP7M3VRX1LQ4OPvydIdFIznQKx?=
+ =?us-ascii?Q?Gxjd5m/F9tPny1km1iSjkQxGNp4ux4dunB/StDXDPQGQBQf5rGzHVfoISNjO?=
+ =?us-ascii?Q?eOYQUTCNxInHi8Hh2CkCBSNGiza0vz6OIwcXIzDjRqSiMVrNQ4PFiqmjgESC?=
+ =?us-ascii?Q?lN6Keb5jMLM2lJ5SdpDkR/h0NleyzZdwbB2hxlq71+Nnu+CRYsJWI3AUWSDX?=
+ =?us-ascii?Q?nAAz5dmSnyFQD+uNnC7FEng2dmHhKgVltidBKWuF4jsfKXSMw9hTxcy8xJQu?=
+ =?us-ascii?Q?Rl4st3LtfkkOMk6bwt3x1mKyY1ju9IBiZ6zSlGTUVTW+hV3A6NFXjNR/lcUM?=
+ =?us-ascii?Q?HRHLhp128JE7ai4Wbt23r5yx5jWI8CZ7158lk9zdLlSwkwzpE572xNQo7LwV?=
+ =?us-ascii?Q?1+7Bsvm5oFTQ1v8J3DiOOo5xS42dBR43It74BJXzYUdPW4LdLsT3q45uPyyF?=
+ =?us-ascii?Q?R1OjxT1ot4MdXH6MMbfYjTyYd9X6b5fF1Tw4HUYbe5KMms+MqkflcYNWT32o?=
+ =?us-ascii?Q?WK1Wo2sjndgh4AHIC8kDO3yCjIoHBv/10THi5tSZzPLK5WiywM7xx7gaDm1r?=
+ =?us-ascii?Q?0Ni1+ujLl6vgpcKEtc9uVy8YtxpeKcWbZo/S8gRtyHgB6i55ektW1qblddfh?=
+ =?us-ascii?Q?4diAQSWuB/3yOBN6KG85ksbcBy1olZi+vxYFOl5z88Qu5uz+ArdIx0/YC5Zj?=
+ =?us-ascii?Q?qOpLM2l+r0uSGdnQMD4QbW62wExiwIRByP0aspc8HOxSLYqaNNz4OgnlqhXJ?=
+ =?us-ascii?Q?6KF7pVVj58zSjys9ESgDf2p9ku894jbylt9yWjMs6tUsDAOngo5CuRyihM7X?=
+ =?us-ascii?Q?4p9zSXvO8T+NO1kJco/8vZiXRGTKm1Oe1NO7MDEd/h3yHJjvy6Is5eMfhpsE?=
+ =?us-ascii?Q?yWaL3OkbaqtSpCzhFzoucb4PTIgFL9VS65QZJHc9Lz6XTI0eVqTZ/HFp/110?=
+ =?us-ascii?Q?c9LVEap8BBwpLXrOr774ivBq6rtr8XiUZufeAZU+4R+of9NlLiRO7tf+DilA?=
+ =?us-ascii?Q?I1esXXuzEiyDx6A2jGcXXkZt?=
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 35301b51-949f-465a-f0b8-08d915d9eff6
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR03MB6058.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2021 06:40:02.8168
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tLiWzjiqSp/cL4Yh89nHUrUNuB8cLG//DIbPxaX2PlsrHRtzRp1XXbfkTYoi0mRNjn3UDwdylMN45hQ77Mp+eg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR03MB5041
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Swapnil,
+I met below error during boot with i915 builtin if pass
+"i915.mitigations=off":
+[    0.015589] Booting kernel: `off' invalid for parameter `i915.mitigations'
 
-On 09/04/21 11:04 am, Swapnil Jakhade wrote:
-> Reorder some functions to avoid function declarations.
-> No functional change.
-> 
-> Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
+The reason is slab subsystem isn't ready at that time, so kstrdup()
+returns NULL. Fix this issue by using stack var instead of kstrdup().
 
-Please squash patches 2, 6 and 7 together unless you have a specific
-reason to keep them separate.
+Fixes: 984cadea032b ("drm/i915: Allow the sysadmin to override security mitigations")
+Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+---
+Since v2:
+ - Use strscpy() per Ville's suggestion
 
-Thanks
-Kishon
+Since v1:
+ - Ensure "str" is properly terminated. Thanks Ville for pointing this out
 
-> ---
->  drivers/phy/cadence/phy-cadence-torrent.c | 474 +++++++++++-----------
->  1 file changed, 229 insertions(+), 245 deletions(-)
-> 
-> diff --git a/drivers/phy/cadence/phy-cadence-torrent.c b/drivers/phy/cadence/phy-cadence-torrent.c
-> index ff647669f1a3..6eeb753fbb78 100644
-> --- a/drivers/phy/cadence/phy-cadence-torrent.c
-> +++ b/drivers/phy/cadence/phy-cadence-torrent.c
-> @@ -333,12 +333,6 @@ struct cdns_torrent_derived_refclk {
->  #define to_cdns_torrent_derived_refclk(_hw)	\
->  			container_of(_hw, struct cdns_torrent_derived_refclk, hw)
->  
-> -static int cdns_torrent_phy_init(struct phy *phy);
-> -static int cdns_torrent_dp_init(struct phy *phy);
-> -static int cdns_torrent_dp_run(struct cdns_torrent_phy *cdns_phy,
-> -			       u32 num_lanes);
-> -static
-> -int cdns_torrent_dp_wait_pma_cmn_ready(struct cdns_torrent_phy *cdns_phy);
->  static void cdns_torrent_dp_pma_cfg(struct cdns_torrent_phy *cdns_phy,
->  				    struct cdns_torrent_inst *inst);
->  static
-> @@ -353,36 +347,6 @@ void cdns_torrent_dp_pma_cmn_vco_cfg_25mhz(struct cdns_torrent_phy *cdns_phy,
->  					   u32 rate, bool ssc);
->  static void cdns_torrent_dp_pma_lane_cfg(struct cdns_torrent_phy *cdns_phy,
->  					 unsigned int lane);
-> -static void cdns_torrent_dp_pma_cmn_rate(struct cdns_torrent_phy *cdns_phy,
-> -					 u32 rate, u32 num_lanes);
-> -static int cdns_torrent_dp_configure(struct phy *phy,
-> -				     union phy_configure_opts *opts);
-> -static int cdns_torrent_dp_set_power_state(struct cdns_torrent_phy *cdns_phy,
-> -					   u32 num_lanes,
-> -					   enum phy_powerstate powerstate);
-> -static int cdns_torrent_phy_on(struct phy *phy);
-> -static int cdns_torrent_phy_off(struct phy *phy);
-> -
-> -static const struct phy_ops cdns_torrent_phy_ops = {
-> -	.init		= cdns_torrent_phy_init,
-> -	.configure	= cdns_torrent_dp_configure,
-> -	.power_on	= cdns_torrent_phy_on,
-> -	.power_off	= cdns_torrent_phy_off,
-> -	.owner		= THIS_MODULE,
-> -};
-> -
-> -static int cdns_torrent_noop_phy_on(struct phy *phy)
-> -{
-> -	/* Give 5ms to 10ms delay for the PIPE clock to be stable */
-> -	usleep_range(5000, 10000);
-> -
-> -	return 0;
-> -}
-> -
-> -static const struct phy_ops noop_ops = {
-> -	.power_on	= cdns_torrent_noop_phy_on,
-> -	.owner		= THIS_MODULE,
-> -};
->  
->  struct cdns_reg_pairs {
->  	u32 val;
-> @@ -669,6 +633,164 @@ static int cdns_torrent_dp_set_pll_en(struct cdns_torrent_phy *cdns_phy,
->  	return ret;
->  }
->  
-> +static int cdns_torrent_dp_set_power_state(struct cdns_torrent_phy *cdns_phy,
-> +					   u32 num_lanes,
-> +					   enum phy_powerstate powerstate)
-> +{
-> +	/* Register value for power state for a single byte. */
-> +	u32 value_part;
-> +	u32 value;
-> +	u32 mask;
-> +	u32 read_val;
-> +	u32 ret;
-> +	struct regmap *regmap = cdns_phy->regmap_dptx_phy_reg;
-> +
-> +	switch (powerstate) {
-> +	case (POWERSTATE_A0):
-> +		value_part = 0x01U;
-> +		break;
-> +	case (POWERSTATE_A2):
-> +		value_part = 0x04U;
-> +		break;
-> +	default:
-> +		/* Powerstate A3 */
-> +		value_part = 0x08U;
-> +		break;
-> +	}
-> +
-> +	/* Select values of registers and mask, depending on enabled
-> +	 * lane count.
-> +	 */
-> +	switch (num_lanes) {
-> +	/* lane 0 */
-> +	case (1):
-> +		value = value_part;
-> +		mask = 0x0000003FU;
-> +		break;
-> +	/* lanes 0-1 */
-> +	case (2):
-> +		value = (value_part
-> +			 | (value_part << 8));
-> +		mask = 0x00003F3FU;
-> +		break;
-> +	/* lanes 0-3, all */
-> +	default:
-> +		value = (value_part
-> +			 | (value_part << 8)
-> +			 | (value_part << 16)
-> +			 | (value_part << 24));
-> +		mask = 0x3F3F3F3FU;
-> +		break;
-> +	}
-> +
-> +	/* Set power state A<n>. */
-> +	cdns_torrent_dp_write(regmap, PHY_PMA_XCVR_POWER_STATE_REQ, value);
-> +	/* Wait, until PHY acknowledges power state completion. */
-> +	ret = regmap_read_poll_timeout(regmap, PHY_PMA_XCVR_POWER_STATE_ACK,
-> +				       read_val, (read_val & mask) == value, 0,
-> +				       POLL_TIMEOUT_US);
-> +	cdns_torrent_dp_write(regmap, PHY_PMA_XCVR_POWER_STATE_REQ, 0x00000000);
-> +	ndelay(100);
-> +
-> +	return ret;
-> +}
-> +
-> +static int cdns_torrent_dp_run(struct cdns_torrent_phy *cdns_phy, u32 num_lanes)
-> +{
-> +	unsigned int read_val;
-> +	int ret;
-> +	struct regmap *regmap = cdns_phy->regmap_dptx_phy_reg;
-> +
-> +	/*
-> +	 * waiting for ACK of pma_xcvr_pllclk_en_ln_*, only for the
-> +	 * master lane
-> +	 */
-> +	ret = regmap_read_poll_timeout(regmap, PHY_PMA_XCVR_PLLCLK_EN_ACK,
-> +				       read_val, read_val & 1,
-> +				       0, POLL_TIMEOUT_US);
-> +	if (ret == -ETIMEDOUT) {
-> +		dev_err(cdns_phy->dev,
-> +			"timeout waiting for link PLL clock enable ack\n");
-> +		return ret;
-> +	}
-> +
-> +	ndelay(100);
-> +
-> +	ret = cdns_torrent_dp_set_power_state(cdns_phy, num_lanes,
-> +					      POWERSTATE_A2);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = cdns_torrent_dp_set_power_state(cdns_phy, num_lanes,
-> +					      POWERSTATE_A0);
-> +
-> +	return ret;
-> +}
-> +
-> +static int cdns_torrent_dp_wait_pma_cmn_ready(struct cdns_torrent_phy *cdns_phy)
-> +{
-> +	unsigned int reg;
-> +	int ret;
-> +	struct regmap *regmap = cdns_phy->regmap_dptx_phy_reg;
-> +
-> +	ret = regmap_read_poll_timeout(regmap, PHY_PMA_CMN_READY, reg,
-> +				       reg & 1, 0, POLL_TIMEOUT_US);
-> +	if (ret == -ETIMEDOUT) {
-> +		dev_err(cdns_phy->dev,
-> +			"timeout waiting for PMA common ready\n");
-> +		return -ETIMEDOUT;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static void cdns_torrent_dp_pma_cmn_rate(struct cdns_torrent_phy *cdns_phy,
-> +					 u32 rate, u32 num_lanes)
-> +{
-> +	unsigned int clk_sel_val = 0;
-> +	unsigned int hsclk_div_val = 0;
-> +	unsigned int i;
-> +
-> +	/* 16'h0000 for single DP link configuration */
-> +	regmap_field_write(cdns_phy->phy_pll_cfg, 0x0);
-> +
-> +	switch (rate) {
-> +	case 1620:
-> +		clk_sel_val = 0x0f01;
-> +		hsclk_div_val = 2;
-> +		break;
-> +	case 2160:
-> +	case 2430:
-> +	case 2700:
-> +		clk_sel_val = 0x0701;
-> +		hsclk_div_val = 1;
-> +		break;
-> +	case 3240:
-> +		clk_sel_val = 0x0b00;
-> +		hsclk_div_val = 2;
-> +		break;
-> +	case 4320:
-> +	case 5400:
-> +		clk_sel_val = 0x0301;
-> +		hsclk_div_val = 0;
-> +		break;
-> +	case 8100:
-> +		clk_sel_val = 0x0200;
-> +		hsclk_div_val = 0;
-> +		break;
-> +	}
-> +
-> +	cdns_torrent_phy_write(cdns_phy->regmap_common_cdb,
-> +			       CMN_PDIAG_PLL0_CLK_SEL_M0, clk_sel_val);
-> +	cdns_torrent_phy_write(cdns_phy->regmap_common_cdb,
-> +			       CMN_PDIAG_PLL1_CLK_SEL_M0, clk_sel_val);
-> +
-> +	/* PMA lane configuration to deal with multi-link operation */
-> +	for (i = 0; i < num_lanes; i++)
-> +		cdns_torrent_phy_write(cdns_phy->regmap_tx_lane_cdb[i],
-> +				       XCVR_DIAG_HSCLK_DIV, hsclk_div_val);
-> +}
-> +
->  /*
->   * Perform register operations related to setting link rate, once powerstate is
->   * set and PLL disable request was processed.
-> @@ -984,6 +1106,56 @@ static int cdns_torrent_dp_configure(struct phy *phy,
->  	return ret;
->  }
->  
-> +static int cdns_torrent_phy_on(struct phy *phy)
-> +{
-> +	struct cdns_torrent_inst *inst = phy_get_drvdata(phy);
-> +	struct cdns_torrent_phy *cdns_phy = dev_get_drvdata(phy->dev.parent);
-> +	u32 read_val;
-> +	int ret;
-> +
-> +	if (cdns_phy->nsubnodes == 1) {
-> +		/* Take the PHY lane group out of reset */
-> +		reset_control_deassert(inst->lnk_rst);
-> +
-> +		/* Take the PHY out of reset */
-> +		ret = reset_control_deassert(cdns_phy->phy_rst);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	/*
-> +	 * Wait for cmn_ready assertion
-> +	 * PHY_PMA_CMN_CTRL1[0] == 1
-> +	 */
-> +	ret = regmap_field_read_poll_timeout(cdns_phy->phy_pma_cmn_ctrl_1,
-> +					     read_val, read_val, 1000,
-> +					     PLL_LOCK_TIMEOUT);
-> +	if (ret) {
-> +		dev_err(cdns_phy->dev, "Timeout waiting for CMN ready\n");
-> +		return ret;
-> +	}
-> +
-> +	mdelay(10);
-> +
-> +	return 0;
-> +}
-> +
-> +static int cdns_torrent_phy_off(struct phy *phy)
-> +{
-> +	struct cdns_torrent_inst *inst = phy_get_drvdata(phy);
-> +	struct cdns_torrent_phy *cdns_phy = dev_get_drvdata(phy->dev.parent);
-> +	int ret;
-> +
-> +	if (cdns_phy->nsubnodes != 1)
-> +		return 0;
-> +
-> +	ret = reset_control_assert(cdns_phy->phy_rst);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return reset_control_assert(inst->lnk_rst);
-> +}
-> +
->  static int cdns_torrent_dp_init(struct phy *phy)
->  {
->  	unsigned char lane_bits;
-> @@ -1051,24 +1223,6 @@ static int cdns_torrent_dp_init(struct phy *phy)
->  	return ret;
->  }
->  
-> -static
-> -int cdns_torrent_dp_wait_pma_cmn_ready(struct cdns_torrent_phy *cdns_phy)
-> -{
-> -	unsigned int reg;
-> -	int ret;
-> -	struct regmap *regmap = cdns_phy->regmap_dptx_phy_reg;
-> -
-> -	ret = regmap_read_poll_timeout(regmap, PHY_PMA_CMN_READY, reg,
-> -				       reg & 1, 0, POLL_TIMEOUT_US);
-> -	if (ret == -ETIMEDOUT) {
-> -		dev_err(cdns_phy->dev,
-> -			"timeout waiting for PMA common ready\n");
-> -		return -ETIMEDOUT;
-> -	}
-> -
-> -	return 0;
-> -}
-> -
->  static void cdns_torrent_dp_pma_cfg(struct cdns_torrent_phy *cdns_phy,
->  				    struct cdns_torrent_inst *inst)
->  {
-> @@ -1478,53 +1632,6 @@ void cdns_torrent_dp_pma_cmn_vco_cfg_25mhz(struct cdns_torrent_phy *cdns_phy,
->  	cdns_torrent_phy_write(regmap, CMN_PLL1_LOCK_PLLCNT_START, 0x00C7);
->  }
->  
-> -static void cdns_torrent_dp_pma_cmn_rate(struct cdns_torrent_phy *cdns_phy,
-> -					 u32 rate, u32 num_lanes)
-> -{
-> -	unsigned int clk_sel_val = 0;
-> -	unsigned int hsclk_div_val = 0;
-> -	unsigned int i;
-> -
-> -	/* 16'h0000 for single DP link configuration */
-> -	regmap_field_write(cdns_phy->phy_pll_cfg, 0x0);
-> -
-> -	switch (rate) {
-> -	case 1620:
-> -		clk_sel_val = 0x0f01;
-> -		hsclk_div_val = 2;
-> -		break;
-> -	case 2160:
-> -	case 2430:
-> -	case 2700:
-> -		clk_sel_val = 0x0701;
-> -		hsclk_div_val = 1;
-> -		break;
-> -	case 3240:
-> -		clk_sel_val = 0x0b00;
-> -		hsclk_div_val = 2;
-> -		break;
-> -	case 4320:
-> -	case 5400:
-> -		clk_sel_val = 0x0301;
-> -		hsclk_div_val = 0;
-> -		break;
-> -	case 8100:
-> -		clk_sel_val = 0x0200;
-> -		hsclk_div_val = 0;
-> -		break;
-> -	}
-> -
-> -	cdns_torrent_phy_write(cdns_phy->regmap_common_cdb,
-> -			       CMN_PDIAG_PLL0_CLK_SEL_M0, clk_sel_val);
-> -	cdns_torrent_phy_write(cdns_phy->regmap_common_cdb,
-> -			       CMN_PDIAG_PLL1_CLK_SEL_M0, clk_sel_val);
-> -
-> -	/* PMA lane configuration to deal with multi-link operation */
-> -	for (i = 0; i < num_lanes; i++)
-> -		cdns_torrent_phy_write(cdns_phy->regmap_tx_lane_cdb[i],
-> -				       XCVR_DIAG_HSCLK_DIV, hsclk_div_val);
-> -}
-> -
->  static void cdns_torrent_dp_pma_lane_cfg(struct cdns_torrent_phy *cdns_phy,
->  					 unsigned int lane)
->  {
-> @@ -1568,100 +1675,6 @@ static void cdns_torrent_dp_pma_lane_cfg(struct cdns_torrent_phy *cdns_phy,
->  			       XCVR_DIAG_HSCLK_SEL, 0x0000);
->  }
->  
-> -static int cdns_torrent_dp_set_power_state(struct cdns_torrent_phy *cdns_phy,
-> -					   u32 num_lanes,
-> -					   enum phy_powerstate powerstate)
-> -{
-> -	/* Register value for power state for a single byte. */
-> -	u32 value_part;
-> -	u32 value;
-> -	u32 mask;
-> -	u32 read_val;
-> -	u32 ret;
-> -	struct regmap *regmap = cdns_phy->regmap_dptx_phy_reg;
-> -
-> -	switch (powerstate) {
-> -	case (POWERSTATE_A0):
-> -		value_part = 0x01U;
-> -		break;
-> -	case (POWERSTATE_A2):
-> -		value_part = 0x04U;
-> -		break;
-> -	default:
-> -		/* Powerstate A3 */
-> -		value_part = 0x08U;
-> -		break;
-> -	}
-> -
-> -	/* Select values of registers and mask, depending on enabled
-> -	 * lane count.
-> -	 */
-> -	switch (num_lanes) {
-> -	/* lane 0 */
-> -	case (1):
-> -		value = value_part;
-> -		mask = 0x0000003FU;
-> -		break;
-> -	/* lanes 0-1 */
-> -	case (2):
-> -		value = (value_part
-> -			 | (value_part << 8));
-> -		mask = 0x00003F3FU;
-> -		break;
-> -	/* lanes 0-3, all */
-> -	default:
-> -		value = (value_part
-> -			 | (value_part << 8)
-> -			 | (value_part << 16)
-> -			 | (value_part << 24));
-> -		mask = 0x3F3F3F3FU;
-> -		break;
-> -	}
-> -
-> -	/* Set power state A<n>. */
-> -	cdns_torrent_dp_write(regmap, PHY_PMA_XCVR_POWER_STATE_REQ, value);
-> -	/* Wait, until PHY acknowledges power state completion. */
-> -	ret = regmap_read_poll_timeout(regmap, PHY_PMA_XCVR_POWER_STATE_ACK,
-> -				       read_val, (read_val & mask) == value, 0,
-> -				       POLL_TIMEOUT_US);
-> -	cdns_torrent_dp_write(regmap, PHY_PMA_XCVR_POWER_STATE_REQ, 0x00000000);
-> -	ndelay(100);
-> -
-> -	return ret;
-> -}
-> -
-> -static int cdns_torrent_dp_run(struct cdns_torrent_phy *cdns_phy, u32 num_lanes)
-> -{
-> -	unsigned int read_val;
-> -	int ret;
-> -	struct regmap *regmap = cdns_phy->regmap_dptx_phy_reg;
-> -
-> -	/*
-> -	 * waiting for ACK of pma_xcvr_pllclk_en_ln_*, only for the
-> -	 * master lane
-> -	 */
-> -	ret = regmap_read_poll_timeout(regmap, PHY_PMA_XCVR_PLLCLK_EN_ACK,
-> -				       read_val, read_val & 1,
-> -				       0, POLL_TIMEOUT_US);
-> -	if (ret == -ETIMEDOUT) {
-> -		dev_err(cdns_phy->dev,
-> -			"timeout waiting for link PLL clock enable ack\n");
-> -		return ret;
-> -	}
-> -
-> -	ndelay(100);
-> -
-> -	ret = cdns_torrent_dp_set_power_state(cdns_phy, num_lanes,
-> -					      POWERSTATE_A2);
-> -	if (ret)
-> -		return ret;
-> -
-> -	ret = cdns_torrent_dp_set_power_state(cdns_phy, num_lanes,
-> -					      POWERSTATE_A0);
-> -
-> -	return ret;
-> -}
-> -
->  static int cdns_torrent_derived_refclk_enable(struct clk_hw *hw)
->  {
->  	struct cdns_torrent_derived_refclk *derived_refclk = to_cdns_torrent_derived_refclk(hw);
-> @@ -1764,56 +1777,6 @@ static int cdns_torrent_derived_refclk_register(struct cdns_torrent_phy *cdns_ph
->  	return 0;
->  }
->  
-> -static int cdns_torrent_phy_on(struct phy *phy)
-> -{
-> -	struct cdns_torrent_inst *inst = phy_get_drvdata(phy);
-> -	struct cdns_torrent_phy *cdns_phy = dev_get_drvdata(phy->dev.parent);
-> -	u32 read_val;
-> -	int ret;
-> -
-> -	if (cdns_phy->nsubnodes == 1) {
-> -		/* Take the PHY lane group out of reset */
-> -		reset_control_deassert(inst->lnk_rst);
-> -
-> -		/* Take the PHY out of reset */
-> -		ret = reset_control_deassert(cdns_phy->phy_rst);
-> -		if (ret)
-> -			return ret;
-> -	}
-> -
-> -	/*
-> -	 * Wait for cmn_ready assertion
-> -	 * PHY_PMA_CMN_CTRL1[0] == 1
-> -	 */
-> -	ret = regmap_field_read_poll_timeout(cdns_phy->phy_pma_cmn_ctrl_1,
-> -					     read_val, read_val, 1000,
-> -					     PLL_LOCK_TIMEOUT);
-> -	if (ret) {
-> -		dev_err(cdns_phy->dev, "Timeout waiting for CMN ready\n");
-> -		return ret;
-> -	}
-> -
-> -	mdelay(10);
-> -
-> -	return 0;
-> -}
-> -
-> -static int cdns_torrent_phy_off(struct phy *phy)
-> -{
-> -	struct cdns_torrent_inst *inst = phy_get_drvdata(phy);
-> -	struct cdns_torrent_phy *cdns_phy = dev_get_drvdata(phy->dev.parent);
-> -	int ret;
-> -
-> -	if (cdns_phy->nsubnodes != 1)
-> -		return 0;
-> -
-> -	ret = reset_control_assert(cdns_phy->phy_rst);
-> -	if (ret)
-> -		return ret;
-> -
-> -	return reset_control_assert(inst->lnk_rst);
-> -}
-> -
->  static struct regmap *cdns_regmap_init(struct device *dev, void __iomem *base,
->  				       u32 block_offset,
->  				       u8 reg_offset_shift,
-> @@ -2091,6 +2054,27 @@ static int cdns_torrent_phy_init(struct phy *phy)
->  	return 0;
->  }
->  
-> +static const struct phy_ops cdns_torrent_phy_ops = {
-> +	.init		= cdns_torrent_phy_init,
-> +	.configure	= cdns_torrent_dp_configure,
-> +	.power_on	= cdns_torrent_phy_on,
-> +	.power_off	= cdns_torrent_phy_off,
-> +	.owner		= THIS_MODULE,
-> +};
-> +
-> +static int cdns_torrent_noop_phy_on(struct phy *phy)
-> +{
-> +	/* Give 5ms to 10ms delay for the PIPE clock to be stable */
-> +	usleep_range(5000, 10000);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct phy_ops noop_ops = {
-> +	.power_on	= cdns_torrent_noop_phy_on,
-> +	.owner		= THIS_MODULE,
-> +};
-> +
->  static
->  int cdns_torrent_phy_configure_multilink(struct cdns_torrent_phy *cdns_phy)
->  {
-> 
+ drivers/gpu/drm/i915/i915_mitigations.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/gpu/drm/i915/i915_mitigations.c b/drivers/gpu/drm/i915/i915_mitigations.c
+index 84f12598d145..70944764a77e 100644
+--- a/drivers/gpu/drm/i915/i915_mitigations.c
++++ b/drivers/gpu/drm/i915/i915_mitigations.c
+@@ -29,15 +29,13 @@ bool i915_mitigate_clear_residuals(void)
+ static int mitigations_set(const char *val, const struct kernel_param *kp)
+ {
+ 	unsigned long new = ~0UL;
+-	char *str, *sep, *tok;
++	char str[64], *sep, *tok;
+ 	bool first = true;
+ 	int err = 0;
+ 
+ 	BUILD_BUG_ON(ARRAY_SIZE(names) >= BITS_PER_TYPE(mitigations));
+ 
+-	str = kstrdup(val, GFP_KERNEL);
+-	if (!str)
+-		return -ENOMEM;
++	strscpy(str, val, sizeof(str));
+ 
+ 	for (sep = str; (tok = strsep(&sep, ","));) {
+ 		bool enable = true;
+@@ -86,7 +84,6 @@ static int mitigations_set(const char *val, const struct kernel_param *kp)
+ 			break;
+ 		}
+ 	}
+-	kfree(str);
+ 	if (err)
+ 		return err;
+ 
+-- 
+2.31.0
+
