@@ -2,58 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8DA537F1BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 05:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AF4837F1BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 05:47:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230432AbhEMDpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 23:45:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50184 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230109AbhEMDp2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 23:45:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D3D56613FC;
-        Thu, 13 May 2021 03:44:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620877459;
-        bh=ZTKvkWEQTOlTTMRT6PkyxlnT2PHJ9UiQuuk+33hcGqg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iH4laW1Q9IA/6svGaDX9CdR3tPfMDTibVXEGCKB2cIl5ZkS0AjBsoglS8vsieUOGg
-         EK1Aa11wAf6knbwtv6kOuRVRpISdWMi5mjm+pvp5vK9Rh+yA4Xv0l0Idz02u4i2B0C
-         ORkHxKA5mmuH+97C8SHIraoegLXCsSZOrC1poWqVqLXRlIW8Jv8rDlr8gPFGrXzHVZ
-         qTsylXtKer3MZIs/bOvTYwvbrnzzo9gzegRwhW4xtLuJc18SMe4ZWLugAs5A21NHHO
-         szpcMwe5X3km14z2x6JZRBENCwdonNjUBv4ijsKpfSGnWI8Qe5ErgLOLrD4HkirbcU
-         qxTvgsdsxzv/A==
-Date:   Thu, 13 May 2021 11:44:14 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Primoz Fiser <primoz.fiser@norik.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        id S230489AbhEMDsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 23:48:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230109AbhEMDsO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 23:48:14 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66804C061574;
+        Wed, 12 May 2021 20:47:05 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id 10so20604905pfl.1;
+        Wed, 12 May 2021 20:47:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uCFKPzrYeuwaqZekX+y/t+Ka+1uMgBTfhabTovYmswE=;
+        b=S1VPcIohjHX5sP19NIEdpm56pe9PXvkGl7DaTv6G2T0uAyfAvcQT5SAa9lnNA978jO
+         ZTt1yWfo6m3kOYvXP69MZcGR4kAaKxbtzpsWs2ds2wua4NBX2zBrxJEXmhjtDh8A9cpm
+         wFalWIggNCl1SonztJEPMp+AXsWI8KEsEUcj+iKPeKVNJ/pd6gxkm9WIyJBCPSuvOKQ7
+         dLs8Fxf6vhrqz0pvgjvkMUA1qG89j8YCWtQR0C7Di8b3ZgPztHfxKpTX8Adem0bsK9cq
+         u2E9YhfAEIXrSUp4KUI4/XIAcKJLm2mpMq2YXfRu4TfhYtNrUqmKjWi3TMHdVWyb5xhr
+         M0Og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uCFKPzrYeuwaqZekX+y/t+Ka+1uMgBTfhabTovYmswE=;
+        b=E9AJjxzxkLcL3bmVwI2SVaf+Mxklip5PTbhK1iev5b++y7aLjgYs7e7lBOTaLsA9DU
+         1OKL8AfAphx+RnVowUkt8mNXw6seJeG2pJPRAZjVKXprpK44JCDts8yO41Wc7KH101ot
+         2z67LNcBaQOxvc7JMTqQF/x+mHizGT4nMI1TyRBBesXNAb7xlxj5Bi8lZciN4ZhuNdCE
+         Xue0EwCWLNy0hSBJE/eN8XazqSS9pOpZb67MBLLi6ylNuOA8lLbzLs8ft60m1uD+WlBl
+         S6v6DkUOtItV48SHh1AfrDups1P3A8wBkUSNGGmKMSOmvbSZsefUaclMqrMAGqvey84r
+         nWmQ==
+X-Gm-Message-State: AOAM531QuWNrG2WQYWGd4eMxREEd7jFShK9QYvl49f1QN4WuJKUxnTPN
+        mvtrRV3ZwJ2pHH4daP0YlwI=
+X-Google-Smtp-Source: ABdhPJy+EbKIa+BZvLYWEb/qxTIUGLYURVDv4BQlMdlRdnjgQvyyOG8THHzFekc06oruonzKBg/68A==
+X-Received: by 2002:a17:90a:a60d:: with SMTP id c13mr2242335pjq.172.1620877624487;
+        Wed, 12 May 2021 20:47:04 -0700 (PDT)
+Received: from localhost.localdomain ([118.200.63.8])
+        by smtp.gmail.com with ESMTPSA id t19sm988295pfg.70.2021.05.12.20.47.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 20:47:04 -0700 (PDT)
+From:   Nguyen Dinh Phi <phind.uet@gmail.com>
+To:     mchehab@kernel.org, sakari.ailus@linux.intel.com,
+        gregkh@linuxfoundation.org, andriy.shevchenko@linux.intel.com
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: imx6: phyFLEX: Fix UART hardware flow control
-Message-ID: <20210513034413.GM3425@dragon>
-References: <20210412062450.1430199-1-primoz.fiser@norik.com>
- <20210412062450.1430199-2-primoz.fiser@norik.com>
+Subject: [PATCH] Staging: atomisp: Use sysfs_emit() instead of sprintf() where appropriate
+Date:   Thu, 13 May 2021 11:46:50 +0800
+Message-Id: <20210513034650.252993-1-phind.uet@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210412062450.1430199-2-primoz.fiser@norik.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 08:24:50AM +0200, Primoz Fiser wrote:
-> Serial interface uart3 on phyFLEX board is capable of 5-wire connection
-> including signals RTS and CTS for hardware flow control.
-> 
-> Fix signals UART3_CTS_B and UART3_RTS_B padmux assignments and add
-> missing property "uart-has-rtscts" to allow serial interface to be
-> configured and used with the hardware flow control.
-> 
-> Signed-off-by: Primoz Fiser <primoz.fiser@norik.com>
+sysfs_emit() is preferred over raw sprintf() for sysfs attributes since it
+knows about the sysfs buffer specifics and has some built-in sanity checks.
 
-Applied, thanks.
+Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
+---
+ drivers/staging/media/atomisp/pci/atomisp_drvfs.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/staging/media/atomisp/pci/atomisp_drvfs.c b/drivers/staging/media/atomisp/pci/atomisp_drvfs.c
+index f670faf978e6..dcb571f515a7 100644
+--- a/drivers/staging/media/atomisp/pci/atomisp_drvfs.c
++++ b/drivers/staging/media/atomisp/pci/atomisp_drvfs.c
+@@ -96,7 +96,7 @@ static inline int iunit_dump_dbgopt(struct atomisp_device *isp,
+ static ssize_t iunit_dbglvl_show(struct device_driver *drv, char *buf)
+ {
+ 	iunit_debug.dbglvl = dbg_level;
+-	return sprintf(buf, "dtrace level:%u\n", iunit_debug.dbglvl);
++	return sysfs_emit(buf, "dtrace level:%u\n", iunit_debug.dbglvl);
+ }
+ 
+ static ssize_t iunit_dbglvl_store(struct device_driver *drv, const char *buf,
+@@ -115,7 +115,7 @@ static ssize_t iunit_dbglvl_store(struct device_driver *drv, const char *buf,
+ static ssize_t iunit_dbgfun_show(struct device_driver *drv, char *buf)
+ {
+ 	iunit_debug.dbgfun = atomisp_get_css_dbgfunc();
+-	return sprintf(buf, "dbgfun opt:%u\n", iunit_debug.dbgfun);
++	return sysfs_emit(buf, "dbgfun opt:%u\n", iunit_debug.dbgfun);
+ }
+ 
+ static ssize_t iunit_dbgfun_store(struct device_driver *drv, const char *buf,
+@@ -139,7 +139,7 @@ static ssize_t iunit_dbgfun_store(struct device_driver *drv, const char *buf,
+ 
+ static ssize_t iunit_dbgopt_show(struct device_driver *drv, char *buf)
+ {
+-	return sprintf(buf, "option:0x%x\n", iunit_debug.dbgopt);
++	return sysfs_emit(buf, "option:0x%x\n", iunit_debug.dbgopt);
+ }
+ 
+ static ssize_t iunit_dbgopt_store(struct device_driver *drv, const char *buf,
+-- 
+2.25.1
+
