@@ -2,148 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6F6F37F69C
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 13:19:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B33F637F69E
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 13:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231269AbhEMLUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 07:20:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36936 "EHLO mail.kernel.org"
+        id S231742AbhEMLVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 07:21:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231533AbhEMLU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 07:20:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C8D67613CA;
-        Thu, 13 May 2021 11:19:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620904758;
-        bh=1DY1eVWYP757z7axkngnQdbTOZst1Izo014oZvuSrP8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SSrpOmBhn99/rBSDiyUjMMGpnlA393P7pqKhCUmbwmBoHVYAyxmG0PxuFe6bac8zU
-         ejPrmRwjy7kZwEtbOtadutYmnJgs3O4ebtZEcpTl9P/QPz0kxwZv5G7qAQWhknqLhS
-         701yS8QR8qVySAgpBREaVxwbrF/d9c/P89QK/xIU=
-Date:   Thu, 13 May 2021 13:19:16 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Jonathan Corbet <corbet@lwn.net>,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Tomasz Jankowski <tomasz1.jankowski@intel.com>,
-        Savo Novakovic <savox.novakovic@intel.com>,
-        Jianxun Zhang <jianxun.zhang@linux.intel.com>
-Subject: Re: [PATCH v3 13/14] intel_gna: add file operations to a 'misc'
- device
-Message-ID: <YJ0LNB0V113ky0FB@kroah.com>
-References: <20210513110040.2268-1-maciej.kwapulinski@linux.intel.com>
- <20210513110040.2268-14-maciej.kwapulinski@linux.intel.com>
+        id S231265AbhEMLVU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 07:21:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D41C1613CA;
+        Thu, 13 May 2021 11:20:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620904811;
+        bh=cwqEWwV9yRq3gYtZuQO7urPFM2+sG+9/kIHoib4Cu/w=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=qIczjlnZnAw2l/yN3RCkzMVDo9Z1Q4dsVj9B91ow7NV6xfEjDobUjgdiQmolJP7AR
+         tJnPZo/IxhsfDrLffcF77VPdDAyUSh0OPBwoizAip+7opXPi/2abUhWI2xz09I1ZQF
+         0yCH8PpkM+vh0c+cte8znLvmcybfAdw06E1iSTgy7nPjS3QHuFmyFlHeRbmBVcFefn
+         YsCVRl9QTuBMxxE6z8X+uSRkNKkLyCm8vY0HBXovXdEmun5iQAJr8AL5hSRGICTzbB
+         /RuGIph93uxUixTfitGf+oUqtu8NXAnYwUiJZPtmD43B+CaQELR1hNwW6hUk5z74dk
+         qv1kdivndJmew==
+Date:   Thu, 13 May 2021 13:20:07 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     =?ISO-8859-15?Q?Uwe_Kleine-K=F6nig?= <uwe@kleine-koenig.org>
+cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/3] HID: intel-ish-hid: Drop if block with an always
+ false condition
+In-Reply-To: <e200b949-b909-d5da-8c81-06a57fc50b98@kleine-koenig.org>
+Message-ID: <nycvar.YFH.7.76.2105131318120.28378@cbobk.fhfr.pm>
+References: <20210206151348.14530-1-uwe@kleine-koenig.org> <nycvar.YFH.7.76.2103081107250.12405@cbobk.fhfr.pm> <31028f589e27e246bb3b4b693caeb0b8eae3a285.camel@linux.intel.com> <nycvar.YFH.7.76.2103081716200.12405@cbobk.fhfr.pm>
+ <e200b949-b909-d5da-8c81-06a57fc50b98@kleine-koenig.org>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210513110040.2268-14-maciej.kwapulinski@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 01:00:39PM +0200, Maciej Kwapulinski wrote:
-> From: Tomasz Jankowski <tomasz1.jankowski@intel.com>
+On Mon, 10 May 2021, Uwe Kleine-König wrote:
+
+> I expected these patches to go in during the 5.13 merge window, but they
+> didn't. I found your pull request for 5.13
+> (https://lore.kernel.org/lkml/nycvar.YFH.7.76.2104292151220.18270@cbobk.fhfr.pm/)
+> and they were not included there even though the patches were in next since at
+> least next-20210310. Looking at
 > 
-> Signed-off-by: Tomasz Jankowski <tomasz1.jankowski@intel.com>
-> Tested-by: Savo Novakovic <savox.novakovic@intel.com>
-> Co-developed-by: Jianxun Zhang <jianxun.zhang@linux.intel.com>
-> Signed-off-by: Jianxun Zhang <jianxun.zhang@linux.intel.com>
-> Co-developed-by: Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>
-> Signed-off-by: Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>
-> ---
->  drivers/misc/intel/gna/device.c | 60 +++++++++++++++++++++++++++++++--
->  1 file changed, 57 insertions(+), 3 deletions(-)
+> 	git log --oneline --cherry
+> v5.13-rc1...dce6a0d56a7719efcad438f5c46a9d192fd36a89
 > 
-> diff --git a/drivers/misc/intel/gna/device.c b/drivers/misc/intel/gna/device.c
-> index 1e6345a8325b..c882055de8cf 100644
-> --- a/drivers/misc/intel/gna/device.c
-> +++ b/drivers/misc/intel/gna/device.c
-> @@ -4,7 +4,9 @@
->  #include <linux/device.h>
->  #include <linux/dma-mapping.h>
->  #include <linux/interrupt.h>
-> +#include <linux/fs.h>
->  #include <linux/module.h>
-> +#include <linux/slab.h>
->  
->  #include <uapi/misc/intel/gna.h>
->  
-> @@ -20,16 +22,68 @@ module_param(recovery_timeout, int, 0644);
->  MODULE_PARM_DESC(recovery_timeout, "Recovery timeout in seconds");
->  #endif
->  
-> -struct file;
-> -
->  static int gna_open(struct inode *inode, struct file *f)
->  {
-> -	return -EPERM;
-> +	struct gna_file_private *file_priv;
-> +	struct gna_private *gna_priv;
-> +
-> +	gna_priv = container_of(f->private_data, struct gna_private, misc);
-> +
-> +	file_priv = kzalloc(sizeof(*file_priv), GFP_KERNEL);
-> +	if (!file_priv)
-> +		return -ENOMEM;
-> +
-> +	file_priv->fd = f;
-> +	file_priv->gna_priv = gna_priv;
-> +
-> +	mutex_init(&file_priv->memlist_lock);
-> +	INIT_LIST_HEAD(&file_priv->memory_list);
-> +
-> +	INIT_LIST_HEAD(&file_priv->flist);
-> +
-> +	mutex_lock(&gna_priv->flist_lock);
-> +	list_add_tail(&file_priv->flist, &gna_priv->file_list);
-> +	mutex_unlock(&gna_priv->flist_lock);
-> +
-> +	f->private_data = file_priv;
-> +
-> +	return 0;
-> +}
-> +
-> +static int gna_release(struct inode *inode, struct file *f)
-> +{
-> +	struct gna_memory_object *iter_mo, *temp_mo;
-> +	struct gna_file_private *file_priv;
-> +	struct gna_private *gna_priv;
-> +
-> +	/* free all memory objects created by that file */
-> +	file_priv = (struct gna_file_private *)f->private_data;
-> +	gna_priv = file_priv->gna_priv;
-> +
-> +	mutex_lock(&file_priv->memlist_lock);
-> +	list_for_each_entry_safe(iter_mo, temp_mo, &file_priv->memory_list, file_mem_list) {
-> +		queue_work(gna_priv->request_wq, &iter_mo->work);
-> +		wait_event(iter_mo->waitq, true);
-> +		gna_memory_free(gna_priv, iter_mo);
-> +	}
-> +	mutex_unlock(&file_priv->memlist_lock);
-> +
-> +	gna_delete_file_requests(f, gna_priv);
-> +
-> +	mutex_lock(&gna_priv->flist_lock);
-> +	list_del_init(&file_priv->flist);
-> +	mutex_unlock(&gna_priv->flist_lock);
-> +	kfree(file_priv);
-> +	f->private_data = NULL;
-> +
-> +	return 0;
->  }
->  
->  static const struct file_operations gna_file_ops = {
->  	.owner		=	THIS_MODULE,
->  	.open		=	gna_open,
-> +	.release	=	gna_release,
-> +	.unlocked_ioctl =	gna_ioctl,
+> (where dce.. was the tip of your for-next for next-20210506 (i.e. before
+> 5.13-rc1 was cut)) and it seems there are quite a few more commits that didn't
+> make it into your pull request.
+> 
+> What am I missing?
 
-Wait, where's the ioctl?  You added it earlier in the series?
+You are missing the fact that I am a halfwit and I screwed up the merge :) 
 
-gotta go dig now...
+for-5.13/intel-ish branch by mistake didn't make it into final for-linus 
+unfortunately, due to my mistake.
 
+Thanks a lot for pointing it out, I will fix that up.
 
-greg k-h
+-- 
+Jiri Kosina
+SUSE Labs
+
