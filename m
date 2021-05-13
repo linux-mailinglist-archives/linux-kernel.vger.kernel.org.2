@@ -2,216 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 838F137FA48
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 17:08:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 809F737FA46
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 17:08:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233774AbhEMPKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 11:10:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36732 "EHLO mail.kernel.org"
+        id S233598AbhEMPJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 11:09:39 -0400
+Received: from mga18.intel.com ([134.134.136.126]:64242 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232156AbhEMPJx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 11:09:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BC94E613BF;
-        Thu, 13 May 2021 15:08:39 +0000 (UTC)
-Date:   Thu, 13 May 2021 16:08:37 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Steven Price <steven.price@arm.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-Subject: Re: [PATCH v11 2/6] arm64: kvm: Introduce MTE VM feature
-Message-ID: <20210513150835.GA6801@arm.com>
-References: <20210416154309.22129-3-steven.price@arm.com>
- <20210428170705.GB4022@arm.com>
- <c3293d47-a5f2-ea4a-6730-f5cae26d8a7e@arm.com>
- <YJGHApOCXl811VK3@arm.com>
- <329286e8-a8f3-ea1a-1802-58813255a4a5@arm.com>
- <20210507182538.GF26528@arm.com>
- <20210510183506.GA10910@arm.com>
- <c891d4eb-b388-1658-8c8a-e76477062463@arm.com>
- <20210512174502.GC12391@arm.com>
- <7c1cb7c8-6ab4-62bd-fa17-2fb7be6d7f09@arm.com>
+        id S232156AbhEMPJf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 11:09:35 -0400
+IronPort-SDR: 2MkuJgSUn0Vaf3qug1rS09q0Ou+mVTTeMCEK8tRbAV/TRx08MYDHnLF5uyDSFhKlOVgwwVRSbV
+ 7RWWhbLNBhpA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="187382670"
+X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
+   d="scan'208";a="187382670"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 08:08:24 -0700
+IronPort-SDR: h8cnr1lRgYszrkpIKJZgTT5deHWSNW4DKLnW4hv/nIRhPifQYiZdb19NeQKFI2GUvfxErDsCe7
+ cGsYelF/g5Lg==
+X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
+   d="scan'208";a="409665304"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 08:08:24 -0700
+Date:   Thu, 13 May 2021 08:10:50 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Yi Liu <yi.l.liu@intel.com>, Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>, wangzhou1@hisilicon.com,
+        zhangfei.gao@linaro.org, vkoul@kernel.org,
+        David Woodhouse <dwmw2@infradead.org>,
+        "Luck, Tony" <tony.luck@intel.com>, jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH v4 1/2] iommu/sva: Tighten SVA bind API with explicit
+ flags
+Message-ID: <20210513081050.5cf6a6ed@jacob-builder>
+In-Reply-To: <20210513133834.GC1002214@nvidia.com>
+References: <1620653108-44901-2-git-send-email-jacob.jun.pan@linux.intel.com>
+        <20210510233749.GG1002214@nvidia.com>
+        <20210510203145.086835cc@jacob-builder>
+        <20210511114848.GK1002214@nvidia.com>
+        <20210511091452.721e9a03@jacob-builder>
+        <20210511163521.GN1002214@nvidia.com>
+        <20210511110550.477a434f@jacob-builder>
+        <20210511194726.GP1002214@nvidia.com>
+        <YJt3tGlzFK3b4E82@infradead.org>
+        <20210513060012.0fcc7653@jacob-builder>
+        <20210513133834.GC1002214@nvidia.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7c1cb7c8-6ab4-62bd-fa17-2fb7be6d7f09@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 11:57:39AM +0100, Steven Price wrote:
-> On 12/05/2021 18:45, Catalin Marinas wrote:
-> > On Wed, May 12, 2021 at 04:46:48PM +0100, Steven Price wrote:
-> >>>>>> On Thu, Apr 29, 2021 at 05:06:41PM +0100, Steven Price wrote:
-> >>>>>>> Given the changes to set_pte_at() which means that tags are restored from
-> >>>>>>> swap even if !PROT_MTE, the only race I can see remaining is the creation of
-> >>>>>>> new PROT_MTE mappings. As you mention an attempt to change mappings in the
-> >>>>>>> VMM memory space should involve a mmu notifier call which I think serialises
-> >>>>>>> this. So the remaining issue is doing this in a separate address space.
-> >>>>>>>
-> >>>>>>> So I guess the potential problem is:
-> >>>>>>>
-> >>>>>>>    * allocate memory MAP_SHARED but !PROT_MTE
-> >>>>>>>    * fork()
-> >>>>>>>    * VM causes a fault in parent address space
-> >>>>>>>    * child does a mprotect(PROT_MTE)
-> >>>>>>>
-> >>>>>>> With the last two potentially racing. Sadly I can't see a good way of
-> >>>>>>> handling that.
-[...]
-> >> 4. Sledgehammer locking in mte_sync_page_tags(), add a spinlock only for
-> >> the MTE case where we have to sync tags (see below). What the actual
-> >> performance impact of this is I've no idea. It could certainly be bad
-> >> if there are a lot of pages with MTE enabled, which sadly is exactly
-> >> the case if KVM is used with MTE :(
-> >>
-> >> --->8----
-> >> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-> >> index 0d320c060ebe..389ad40256f6 100644
-> >> --- a/arch/arm64/kernel/mte.c
-> >> +++ b/arch/arm64/kernel/mte.c
-> >> @@ -25,23 +25,33 @@
-> >>  u64 gcr_kernel_excl __ro_after_init;
-> >>  static bool report_fault_once = true;
-> >> +static spinlock_t tag_sync_lock;
-> >>  static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool check_swap,
-> >>  			       bool pte_is_tagged)
-> >>  {
-> >>  	pte_t old_pte = READ_ONCE(*ptep);
-> >> +	if (!is_swap_pte(old_pte) && !pte_is_tagged)
-> >> +		return;
-> >> +
-> >> +	spin_lock_irqsave(&tag_sync_lock, flags);
-> >> +
-> >> +	/* Recheck with the lock held */
-> >> +	if (test_bit(PG_mte_tagged, &page->flags))
-> >> +		goto out;
-> > 
-> > Can we skip the lock if the page already has the PG_mte_tagged set?
-> > That's assuming that we set the flag only after clearing the tags. The
-> > normal case where mprotect() is called on a page already mapped with
-> > PROT_MTE would not be affected.
+Hi Jason,
+
+On Thu, 13 May 2021 10:38:34 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
+
+> On Thu, May 13, 2021 at 06:00:12AM -0700, Jacob Pan wrote:
+> > > > If you want to do SVA PASID then it also must come with DMA APIs to
+> > > > manage the CPU cache coherence that are all NOP's on x86.    
+> > > 
+> > > Yes.  And we have plenty of precende where an IOMMU is in "bypass"
+> > > mode to allow access to all memory and then uses the simple
+> > > dma-direct case.  
+> > I agree it is better not to expose the entire direct map. But the
+> > missing piece of using DMA APIs is the PASID. The caller needs the
+> > PASID value to do work submission once buffer is mapped.  
 > 
-> It was missing from the diff context (sorry, should have double checked
-> that), but I was keeping the check in mte_sync_tags():
+> You still haven't explained why the kernel driver should have a PASID at
+> all.
 > 
->   void mte_sync_tags(pte_t *ptep, pte_t pte)
->   {
-> 	struct page *page = pte_page(pte);
-> 	long i, nr_pages = compound_nr(page);
-> 	bool check_swap = nr_pages == 1;
-> 	bool pte_is_tagged = pte_tagged(pte);
-> 	unsigned long flags;
-> 
-> 	/* Early out if there's nothing to do */
-> 	if (!check_swap && !pte_is_tagged)
-> 		return;
-> 
-> 	/* if PG_mte_tagged is set, tags have already been initialised */
-> 	for (i = 0; i < nr_pages; i++, page++) {
-> 		if (!test_bit(PG_mte_tagged, &page->flags))
-> 			mte_sync_page_tags(page, ptep, check_swap,
-> 					   pte_is_tagged);
-> 	}
->   }
-> 
-> So the hit is only taken if !PG_mte_tagged - hence the "recheck" comment
-> in mte_sync_page_tags() once the lock is held. I guess if I'm going this
-> route it would make sense to refactor this to be a bit clearer.
+For shared workqueue, it can only generate DMA request with PASID. The
+submission is done by ENQCMDS (S for supervisor) instruction.
 
-I think we can go with this for now but we should still raise it with
-the mm folk, maybe they have a better idea on how to avoid the race in
-the core code. There are other architectures affected, those that use
-PG_arch_1.
+If we were not to share page tables with init_mm, we need a system PASID
+that doing the same direct mapping in IOMMU page tables.
 
-As the kernel stands currently, we'd take the lock on any set_pte_at()
-for a tagged page when first mapped. With Peter's patches to use DC
-GZVA, the tag zeroing is done on allocation. Until those are merged, we
-could do something similar in the arch code but without the DC GZVA
-optimisation (useful if we need to cc this fix to stable):
+> Jason
 
-----------8<--------------------------
-From 9f445f794454cf139c0953391e6c30fa3f075dc1 Mon Sep 17 00:00:00 2001
-From: Catalin Marinas <catalin.marinas@arm.com>
-Date: Thu, 13 May 2021 14:15:37 +0100
-Subject: [PATCH] arm64: Handle MTE tags zeroing in
- __alloc_zeroed_user_highpage()
 
-Currently, on an anonymous page fault, the kernel allocates a zeroed
-page and maps it in user space. If the mapping is tagged (PROT_MTE),
-set_pte_at() additionally clears the tags under a spinlock to avoid a
-race on the page->flags. In order to optimise the lock, clear the page
-tags on allocation in __alloc_zeroed_user_highpage() if the vma flags
-have VM_MTE set.
+Thanks,
 
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
----
- arch/arm64/include/asm/page.h |  6 ++++--
- arch/arm64/mm/fault.c         | 21 +++++++++++++++++++++
- 2 files changed, 25 insertions(+), 2 deletions(-)
-
-diff --git a/arch/arm64/include/asm/page.h b/arch/arm64/include/asm/page.h
-index 012cffc574e8..97853570d0f1 100644
---- a/arch/arm64/include/asm/page.h
-+++ b/arch/arm64/include/asm/page.h
-@@ -13,6 +13,7 @@
- #ifndef __ASSEMBLY__
- 
- #include <linux/personality.h> /* for READ_IMPLIES_EXEC */
-+#include <linux/types.h>
- #include <asm/pgtable-types.h>
- 
- struct page;
-@@ -28,8 +29,9 @@ void copy_user_highpage(struct page *to, struct page *from,
- void copy_highpage(struct page *to, struct page *from);
- #define __HAVE_ARCH_COPY_HIGHPAGE
- 
--#define __alloc_zeroed_user_highpage(movableflags, vma, vaddr) \
--	alloc_page_vma(GFP_HIGHUSER | __GFP_ZERO | movableflags, vma, vaddr)
-+struct page *__alloc_zeroed_user_highpage(gfp_t movableflags,
-+					  struct vm_area_struct *vma,
-+					  unsigned long vaddr);
- #define __HAVE_ARCH_ALLOC_ZEROED_USER_HIGHPAGE
- 
- #define clear_user_page(page, vaddr, pg)	clear_page(page)
-diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
-index 871c82ab0a30..5a03428e97f3 100644
---- a/arch/arm64/mm/fault.c
-+++ b/arch/arm64/mm/fault.c
-@@ -921,3 +921,24 @@ void do_debug_exception(unsigned long addr_if_watchpoint, unsigned int esr,
- 	debug_exception_exit(regs);
- }
- NOKPROBE_SYMBOL(do_debug_exception);
-+
-+/*
-+ * Used during anonymous page fault handling.
-+ */
-+struct page *__alloc_zeroed_user_highpage(gfp_t movableflags,
-+					  struct vm_area_struct *vma,
-+					  unsigned long vaddr)
-+{
-+	struct page *page;
-+	bool tagged = system_supports_mte() && (vma->vm_flags & VM_MTE);
-+
-+	page = alloc_page_vma(GFP_HIGHUSER | __GFP_ZERO | movableflags, vma,
-+			      vaddr);
-+	if (tagged && page) {
-+		mte_clear_page_tags(page_address(page));
-+		page_kasan_tag_reset(page);
-+		set_bit(PG_mte_tagged, &page->flags);
-+	}
-+
-+	return page;
-+}
-
+Jacob
