@@ -2,90 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19D9637FFAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 23:11:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95CFF37FFAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 23:13:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233349AbhEMVMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 17:12:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233322AbhEMVMt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 17:12:49 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6ACAC061574;
-        Thu, 13 May 2021 14:11:38 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id l7so32537387edb.1;
-        Thu, 13 May 2021 14:11:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=ccm1ANNkF7ktIVVOd0ImVs+nS3U0CVzOXbPzh4549ds=;
-        b=I1AshWsAmLAtAcvAiACAp9TQ0bnZ3IRkhL9mos8789Phnh9Ex59TyY5L3sqzCELI3B
-         t1aiqiLQPKe/38XtaIqVwfEV84iLEeAC9oe/WOpcaRey2u7Ct+ATZaEtIhLyMzjdGTQO
-         GX2MGr4vjI7YKgZliAlml5UF2UeBs/ZkMe/oQsPMK4nZ7/P6DAw7TWOr6IAtsPJNLMrj
-         8WSfDp9pvPcI0TW0b3fTFKWqI3+UjqzqRbh6tWW4tS435cwl3tWh6lS1atAN99NEb6kQ
-         JwwXdvT6pFyJeKMw3nJHshVeQ/CnG6K/9ahxsE+wO6jsJSpQPdfcEKdtFmPs8HC8re5y
-         exwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=ccm1ANNkF7ktIVVOd0ImVs+nS3U0CVzOXbPzh4549ds=;
-        b=LD/pa7Nz/pNISDBo3qj34K7FFBWymsrkH7VFm9vafs8pavo1VlMoTo/p67trqmAGIT
-         uyGahEOXNWmklPApaDxXQsq9BwztWusn+WF42StnzRFWKRfdejW+uCI2y/hAmT9JHz2Y
-         ea6Wm6OOhAh4GwL4a9ef2OoqXzsiTUx7/tNvq0ith6CEICSaaZnnr/mN/GwBmpUZ5c4f
-         uxVJBuRaV4i/0ua5QKRaEvdIG0Rfh0XKn2xDV5MpGzI/P7asrrucH1Ha/Cjus0CVUjtG
-         1OCm48ZITgStGwvyDYRvJj+rKfcrTRfxrnTDkKdjMcVNUHyMcfvMFNuxrD/7Xbj/qQZO
-         hjFw==
-X-Gm-Message-State: AOAM533Fk2QjD63T9upW/E6TsnphYcSybhHgfN7VIGq0dLCJq0eDqJso
-        +Q+qEtMD/kDnE/wdD45Mu7I=
-X-Google-Smtp-Source: ABdhPJwt3zT6Dt0F6U4vkL0yttxVF/tDWP9klBZpNkBDvTEMIKIi071CXA3LWXzgZtvPfDIRNabzCA==
-X-Received: by 2002:a50:bec7:: with SMTP id e7mr53657355edk.295.1620940297708;
-        Thu, 13 May 2021 14:11:37 -0700 (PDT)
-Received: from ubuntu-laptop (ip5f5bec5d.dynamic.kabel-deutschland.de. [95.91.236.93])
-        by smtp.googlemail.com with ESMTPSA id v18sm2177431ejg.63.2021.05.13.14.11.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 14:11:37 -0700 (PDT)
-Message-ID: <51ddc84208e6f9b59c6c1b02b4b49872b999f556.camel@gmail.com>
-Subject: Re: [PATCH v5 2/2] scsi: ufs: Add support for hba performance
- monitor
-From:   Bean Huo <huobean@gmail.com>
-To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com
-Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Bean Huo <beanhuo@micron.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Thu, 13 May 2021 23:11:36 +0200
-In-Reply-To: <1619058521-35307-3-git-send-email-cang@codeaurora.org>
-References: <1619058521-35307-1-git-send-email-cang@codeaurora.org>
-         <1619058521-35307-3-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        id S233365AbhEMVPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 17:15:02 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:39290 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233276AbhEMVPB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 17:15:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=mGpK26Mb+uqhFf1LLz52H7ke22MaI/Hpa228UC+2GwM=; b=x1TTkXeXeBcyX6BmDqj3k4ExtK
+        /CKVun7INmxbNFmAeQMgEIeQDQ7/HteZ55RHItx/GtLFktd2FyJyzZVtSrzASayuvLXPk7+bzRZj6
+        f7jgE61U/+fS90NvtzBtgx3+SBQHy0NpgbOu799qMXDa6FlR02n32hsL/sW+uJwHJPy0=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lhIeB-0046qA-4e; Thu, 13 May 2021 23:13:31 +0200
+Date:   Thu, 13 May 2021 23:13:31 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Dario Binacchi <dariobin@libero.it>
+Cc:     linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Tong Zhang <ztong0001@gmail.com>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] can: c_can: add ethtool support
+Message-ID: <YJ2We1T+34oj8Mm1@lunn.ch>
+References: <20210513193638.11201-2-dariobin@libero.it>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210513193638.11201-2-dariobin@libero.it>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-04-21 at 19:28 -0700, Can Guo wrote:
-> Add a new sysfs group which has nodes to monitor data/request
-> transfer
-> 
-> performance. This sysfs group has nodes showing total
-> sectors/requests
-> 
-> transferred, total busy time spent and max/min/avg/sum latencies.
-> 
-> 
-> 
-> Signed-off-by: Can Guo <cang@codeaurora.org>
-Reviewed-by: Bean Huo <beanhuo@micron.com>
+On Thu, May 13, 2021 at 09:36:37PM +0200, Dario Binacchi wrote:
+> With commit 132f2d45fb23 ("can: c_can: add support to 64 message objects")
+> the number of message objects used for reception / transmission depends
+> on FIFO size.
+> The ethtools API support allows you to retrieve this info. Driver info
+> has been added too.
 
+Hi Dario
+
+Nice to see the API being re-used for something other than Ethernet.
+
+> +static void c_can_get_drvinfo(struct net_device *netdev,
+> +			      struct ethtool_drvinfo *info)
+> +{
+> +	struct c_can_priv *priv = netdev_priv(netdev);
+> +	struct platform_device	*pdev = to_platform_device(priv->device);
+> +
+> +	strscpy(info->driver, "c_can", sizeof(info->driver));
+> +	strscpy(info->version, "1.0", sizeof(info->version));
+
+version is pretty meaningless. This driver could be backported into
+some enterprise kernel with a huge number of patches. Or more likely,
+some in car infotainment kernel with a lot of vendor patches. Lots of
+things around the driver change, but it still tells you version
+1.0. So we don't recommend filling this in. The ethtool core will then
+fill the version what kernel the driver is actually being used in:
+
+https://elixir.bootlin.com/linux/latest/source/net/ethtool/ioctl.c#L706
+
+	Andrew
