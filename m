@@ -2,132 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EDA237F709
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 13:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73A9837F714
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 13:46:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232056AbhEMLrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 07:47:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50076 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231602AbhEMLrA (ORCPT
+        id S233554AbhEMLsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 07:48:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231738AbhEMLrs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 07:47:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620906350;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MT3wo5NP4c6jdkY4rdnz2C8pxWgXXp6JkWRd1hEobAU=;
-        b=g9lNaNobZgESD/ykD08L/iU8xz2b8kqaQaBv2qfrx+D2bpMbtHiVGX0jYC9VhdlfJyoeVT
-        BujTGwMo5vym45isGIlVtbE4rdDDK6737gYuuXaRtYhDpzuYIxl5qbz7BiXkqeWl9ZToHT
-        q1qGN1mNCfJjXuA9CEptGksD0nUXpr4=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-100-ixXQS4BRP2yLlwcZdHAaoA-1; Thu, 13 May 2021 07:45:48 -0400
-X-MC-Unique: ixXQS4BRP2yLlwcZdHAaoA-1
-Received: by mail-ed1-f72.google.com with SMTP id c21-20020a0564021015b029038c3f08ce5aso9030628edu.18
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 04:45:48 -0700 (PDT)
+        Thu, 13 May 2021 07:47:48 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4123C061574;
+        Thu, 13 May 2021 04:46:37 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id p8so24559838iol.11;
+        Thu, 13 May 2021 04:46:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=BK4qT11Jcy2nrTMBkQncpXyFc35XEEjYCK/MCqvtRuY=;
+        b=jIjh5Hn+VtVG5LtWuuAqzs91VERchHii1B5R9VriyZB0old767hT16jywsD9Ix0mzr
+         lj5jC/x5KdNdK/ZBZffjolitnRPVrWxZd1rKJVYumb+NCSV/r9V/Bi4qycFxrsjueoEF
+         YQrIe6qKGMbN5t6nRG2c6WwbOyszZJH4EBZD7VMTQ9puazrf/o9Vh8z4EXsd7nJ/Obyo
+         Y/EK1ADBXLnYbwKq16j5LQTovFJAVz0Bv7wD/hqvkpCqdfBkMi3STayOO4Kco+11VNZA
+         RbsoYQd+eE3xkRFMSYx0bQCBonAq88b/kScAysihJJFkfclV9mQmLcuRVEUi9OvwXvsU
+         Sk6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MT3wo5NP4c6jdkY4rdnz2C8pxWgXXp6JkWRd1hEobAU=;
-        b=ZHy8bCc6j/WQvx9BnUmcyWpsWnqcPUY2yn8KCYkQ34mOEmMvjeESVbCJbPaoLs35c3
-         j9U1UzMS/HHifaaohXBvR4ZCy/NbTqcCJzjkn9wZNn6PMLzNU5vx6a0bAA1ewoOcKNDO
-         0rWPak8bycRXuNPFqR+Y2C9Iq55b4J0wfjWbn2rl3jRbzN+EmhZMq6szSdG/KJAzx7EJ
-         RhEfdI/Dw0rmzqH9zFTVbdoLEfDcdEWk/r1DG4pAVQZ+6PaOLXJl3NZnlckqyUABJb9S
-         2ZUKl60rFBN75epBqKFOYVP9oe5X3vLWoITgU654/4IpkjpgoRO85eHXO2+O0bKtf9B1
-         Hgow==
-X-Gm-Message-State: AOAM532CdDhLnVkUTjVJqGtRd9po/ORUud8uoKTM2JTPy5CX/2WbdDPN
-        saznb9TlMXgTvYnUcHuLVlt3nfiRBW9mUnnKNwNo2ccGuJH7ZlxKEUhgZ2EiWVE44NwtBMFq0km
-        1ioiZyHsQqwfnHmHC8vnSSY1d
-X-Received: by 2002:aa7:db90:: with SMTP id u16mr49671407edt.106.1620906347032;
-        Thu, 13 May 2021 04:45:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzK9y97PFsnFtKG2m387tQ7wMAVv4mrXxkCxS1dn+cI2Zu3pe2nfVjZZrdViT0h2czbettl2g==
-X-Received: by 2002:aa7:db90:: with SMTP id u16mr49671388edt.106.1620906346853;
-        Thu, 13 May 2021 04:45:46 -0700 (PDT)
-Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
-        by smtp.gmail.com with ESMTPSA id f7sm1685809ejz.95.2021.05.13.04.45.45
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=BK4qT11Jcy2nrTMBkQncpXyFc35XEEjYCK/MCqvtRuY=;
+        b=Se8TJoAOk7A7HW0+79YXEPXmkpbE1RudGm4O7FSjHaXkXSMgA0050KsKufvqZhyD1h
+         ic7CPspctmjl9LnOq9/qaHIKfrpUlWke4rgbjuV+pGExkXysYwsxsj3RSvd6DkeLTVM1
+         8jEHQfPDNAscM4mWIYPS5Ca0XuF4FgLPwKObRKJE7nct1QMlPFzudbftj1RGehZgKFuu
+         C6eta6z41aOic1mSBUONogKfZIl5UX62jZrNNCEoYKt3Wi0PQnr1u6ekIBmPxURGogC5
+         8wLCnA1b0K7zsFkIb/AQmDCwDBbEj3MLg8yr4DMuWbNoYZdE76awO50NQ75mh5v6gJez
+         onAA==
+X-Gm-Message-State: AOAM532bqwqjR4F/JbB7WBWcgnqWMqSmrZv9PqFoUOrsXoE6D4kaP7GQ
+        Q3N6N0BJg5Uo2LkW8kSQfEQ=
+X-Google-Smtp-Source: ABdhPJwMns8v9R5jX+V3mJ70Y1UWJL5D0BVlKjaR4sY4/Mc9zGc0VuwxuWjBBPAyjUblBtXOCsGl1g==
+X-Received: by 2002:a05:6602:70d:: with SMTP id f13mr31647503iox.16.1620906396431;
+        Thu, 13 May 2021 04:46:36 -0700 (PDT)
+Received: from aford-OptiPlex-7050.logicpd.com ([174.46.170.158])
+        by smtp.gmail.com with ESMTPSA id x13sm1298192ilv.88.2021.05.13.04.46.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 04:45:46 -0700 (PDT)
-Date:   Thu, 13 May 2021 13:45:43 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Norbert Slusarek <nslusarek@gmx.net>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v9 10/19] virtio/vsock: defines and constants for
- SEQPACKET
-Message-ID: <20210513114543.hucvkhky3tlmvabl@steredhat>
-References: <20210508163027.3430238-1-arseny.krasnov@kaspersky.com>
- <20210508163508.3431890-1-arseny.krasnov@kaspersky.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210508163508.3431890-1-arseny.krasnov@kaspersky.com>
+        Thu, 13 May 2021 04:46:35 -0700 (PDT)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] arm64: dts: renesas: beacon: Fix USB extal reference
+Date:   Thu, 13 May 2021 06:46:15 -0500
+Message-Id: <20210513114617.30191-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 08, 2021 at 07:35:05PM +0300, Arseny Krasnov wrote:
->This adds set of defines and constants for SOCK_SEQPACKET
->support in vsock. Here is link to spec patch, which uses it:
->
->https://lists.oasis-open.org/archives/virtio-comment/202103/msg00069.html
+The USB extal clock reference isn't associated to a crystal, it's
+assoicated to a programmable clock, so remove the extal reference,
+add the usb2_clksel.  Since usb_extal is referenced by the versaclock,
+reference it here so the usb2_clksel can get the proper clock speed
+of 50MHz.
 
-Will you be submitting a new version?
+Signed-off-by: Adam Ford <aford173@gmail.com>
 
->
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->---
-> include/uapi/linux/virtio_vsock.h | 9 +++++++++
-> 1 file changed, 9 insertions(+)
->
->diff --git a/include/uapi/linux/virtio_vsock.h b/include/uapi/linux/virtio_vsock.h
->index 1d57ed3d84d2..3dd3555b2740 100644
->--- a/include/uapi/linux/virtio_vsock.h
->+++ b/include/uapi/linux/virtio_vsock.h
->@@ -38,6 +38,9 @@
-> #include <linux/virtio_ids.h>
-> #include <linux/virtio_config.h>
->
->+/* The feature bitmap for virtio vsock */
->+#define VIRTIO_VSOCK_F_SEQPACKET	1	/* SOCK_SEQPACKET supported */
->+
-> struct virtio_vsock_config {
-> 	__le64 guest_cid;
-> } __attribute__((packed));
->@@ -65,6 +68,7 @@ struct virtio_vsock_hdr {
->
-> enum virtio_vsock_type {
-> 	VIRTIO_VSOCK_TYPE_STREAM = 1,
->+	VIRTIO_VSOCK_TYPE_SEQPACKET = 2,
-> };
->
-> enum virtio_vsock_op {
->@@ -91,4 +95,9 @@ enum virtio_vsock_shutdown {
-> 	VIRTIO_VSOCK_SHUTDOWN_SEND = 2,
-> };
->
->+/* VIRTIO_VSOCK_OP_RW flags values */
->+enum virtio_vsock_rw {
->+	VIRTIO_VSOCK_SEQ_EOR = 1,
->+};
->+
-> #endif /* _UAPI_LINUX_VIRTIO_VSOCK_H */
->-- 
->2.25.1
->
-
-Looks good:
-
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+diff --git a/arch/arm64/boot/dts/renesas/beacon-renesom-som.dtsi b/arch/arm64/boot/dts/renesas/beacon-renesom-som.dtsi
+index 8d3a4d6ee885..bd3d26b2a2bb 100644
+--- a/arch/arm64/boot/dts/renesas/beacon-renesom-som.dtsi
++++ b/arch/arm64/boot/dts/renesas/beacon-renesom-som.dtsi
+@@ -319,8 +319,10 @@
+ 	status = "okay";
+ };
+ 
+-&usb_extal_clk {
+-	clock-frequency = <50000000>;
++&usb2_clksel {
++	clocks = <&cpg CPG_MOD 703>, <&cpg CPG_MOD 704>,
++		  <&versaclock5 3>, <&usb3s0_clk>;
++	status = "okay";
+ };
+ 
+ &usb3s0_clk {
+-- 
+2.17.1
 
