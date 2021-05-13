@@ -2,141 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E941E37F7E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 14:27:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0D3F37F7EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 14:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233692AbhEMM2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 08:28:04 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:36610 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231209AbhEMM15 (ORCPT
+        id S229466AbhEMM2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 08:28:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32213 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233786AbhEMM2Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 08:27:57 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14DCNBxV119669;
-        Thu, 13 May 2021 08:26:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=U/4Dpg6rGeqjovo2MNoB7wa0IvLzTG7wFV72MKbtHnY=;
- b=PerPeYqc/oSWFWodyRXsCBsU22HDaaCjzzEgxW+LuVbfxsL9bOIzFQ4vHbJCKU4Iuxd9
- z4XLk1I3YO9h2EOExeRkNRCP+CIXX7Ml18nfH0N8KfSxnUGgOun6kpDvIONSbpvEF7Ih
- KiDRQCI5s7+G4roNhFAGnYfEMunpoZFs9PIMGIzEGeqLLjrxYX6dAhd8dnKHN90gYeBH
- dNC1kupnEUPd5YKCNQEiZIFQWC9DNrjpaWG4EPl5A9XTI/Z3SLHvoQzvw+GKXtvVWdYx
- oRTjOS5GRfgusS1tiJQtLczYOhYZWYYXyxgomTmLcTwl3vazMwj6GkMEO6BI5DltkyA5 Aw== 
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38h2m5ah2e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 13 May 2021 08:26:29 -0400
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14DCCppv026233;
-        Thu, 13 May 2021 12:26:28 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma01dal.us.ibm.com with ESMTP id 38dj9a5xav-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 13 May 2021 12:26:28 +0000
-Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14DCQQum16777672
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 13 May 2021 12:26:26 GMT
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8CFC7BE04F;
-        Thu, 13 May 2021 12:26:26 +0000 (GMT)
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0515EBE05A;
-        Thu, 13 May 2021 12:26:16 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.199.44.200])
-        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 13 May 2021 12:26:16 +0000 (GMT)
-Subject: Re: [RFC 1/4] drivers/nvdimm: Add perf interface to expose nvdimm
- performance stats
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
-        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org,
-        maddy@linux.vnet.ibm.com, santosh@fossix.org,
-        aneesh.kumar@linux.ibm.com, vaibhav@linux.ibm.com,
-        dan.j.williams@intel.com, ira.weiny@intel.com,
-        atrajeev@linux.vnet.ibm.com, tglx@linutronix.de
-References: <20210512163824.255370-1-kjain@linux.ibm.com>
- <20210512163824.255370-2-kjain@linux.ibm.com>
- <YJwP9ByvAcDPixVN@hirez.programming.kicks-ass.net>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <37015d53-050a-acef-2958-b1ff5d02800b@linux.ibm.com>
-Date:   Thu, 13 May 2021 17:56:14 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Thu, 13 May 2021 08:28:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620908835;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bun77zqk7VkzrXJl00b3NEyJ8M8mJCA5zh/pMnmjFG0=;
+        b=MdENMMTXPf4uPiI0M3w9EsxlEPm+4moVWAy3O6j31rBhd0TummwMEq6QtZv7ONnybvNNaF
+        z5ryHynqCmA4Y4V86WcljLNNR+zG7rFaD3RE4cSMfOl9BeGB6HPV/7Hsp58qZqAGDQJFoi
+        UAachT7df9wXYklfONnBc2AC1BwoFOs=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-505-VG0VuzwhP2C7htp-e0ISdA-1; Thu, 13 May 2021 08:27:13 -0400
+X-MC-Unique: VG0VuzwhP2C7htp-e0ISdA-1
+Received: by mail-ej1-f71.google.com with SMTP id z6-20020a17090665c6b02903700252d1ccso8263866ejn.10
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 05:27:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bun77zqk7VkzrXJl00b3NEyJ8M8mJCA5zh/pMnmjFG0=;
+        b=TMf136JPnFBXQbn8d9LnRz0jsBybYObAuDLkaB7TC4ebRsIWCyRlC9GniNzhTG37Ax
+         rzzoG+RbNfNIfpY05hsBvWlX4SKHeK/M9O9ZtH+7lQt4c1Tmzlknq5YiM0etJYhMoHDO
+         S4S87V1QY59tfEgljBezPbSUtZgP2rms13D8R53peCv7w/Y9xH37oNqXDtNup6lsKF1V
+         pc2Toyf02vNV7y2URJHOE0WC3T5BCSbvOjplRhluXt/+Jg+uQ9Tbg/B4ESEXXqYxEPLT
+         0gM5Aw5Juxu37Bc5DceOWpm5C7zGM806ya+gl+vFHPPM8/vsmI9QJpjJMEhKTUUNkEi+
+         f+AQ==
+X-Gm-Message-State: AOAM533J2pe8jMiPmCeqvDRChDU/A2i1i+5w/pZjkLEinvgWgsW7FKIF
+        raHQZFUh6FliOLEjdrDeBFuAJ9V0oCCE81Y9rBao/EWDuXh34il2mpLgox5fv66356bqotY9Nd/
+        zmQWgG5DHn9lCtkSZU79bVtfA
+X-Received: by 2002:a17:907:dab:: with SMTP id go43mr887179ejc.164.1620908832789;
+        Thu, 13 May 2021 05:27:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwue4TmFqWLEu2VxiQaCD7KEItg8q3jSRdx8XvzysQOkYR1mJoopNDC9/BUXvDd7qRZ6CJ1Qw==
+X-Received: by 2002:a17:907:dab:: with SMTP id go43mr887165ejc.164.1620908832621;
+        Thu, 13 May 2021 05:27:12 -0700 (PDT)
+Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
+        by smtp.gmail.com with ESMTPSA id g17sm2863576edv.47.2021.05.13.05.27.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 May 2021 05:27:12 -0700 (PDT)
+Date:   Thu, 13 May 2021 14:27:08 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Norbert Slusarek <nslusarek@gmx.net>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
+Subject: Re: [RFC PATCH v9 13/19] virtio/vsock: rest of SOCK_SEQPACKET support
+Message-ID: <20210513122708.mwooglzkhv7du7jo@steredhat>
+References: <20210508163027.3430238-1-arseny.krasnov@kaspersky.com>
+ <20210508163558.3432246-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-In-Reply-To: <YJwP9ByvAcDPixVN@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: EvtomYgSIUC0jAMqMvwF4gaUntt7Qasr
-X-Proofpoint-GUID: EvtomYgSIUC0jAMqMvwF4gaUntt7Qasr
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-13_06:2021-05-12,2021-05-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
- impostorscore=0 phishscore=0 priorityscore=1501 clxscore=1011
- suspectscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105130093
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210508163558.3432246-1-arseny.krasnov@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, May 08, 2021 at 07:35:54PM +0300, Arseny Krasnov wrote:
+>This adds rest of logic for SEQPACKET:
+>1) Send SHUTDOWN on socket close for SEQPACKET type.
+>2) Set SEQPACKET packet type during send.
+>3) 'seqpacket_allow' flag to virtio transport.
 
+Please update this commit message, point 3 is not included anymore in 
+this patch, right?
 
-On 5/12/21 10:57 PM, Peter Zijlstra wrote:
-> On Wed, May 12, 2021 at 10:08:21PM +0530, Kajol Jain wrote:
->> +static void nvdimm_pmu_read(struct perf_event *event)
->> +{
->> +	struct nvdimm_pmu *nd_pmu = to_nvdimm_pmu(event->pmu);
->> +
->> +	/* jump to arch/platform specific callbacks if any */
->> +	if (nd_pmu && nd_pmu->read)
->> +		nd_pmu->read(event, nd_pmu->dev);
->> +}
->> +
->> +static void nvdimm_pmu_del(struct perf_event *event, int flags)
->> +{
->> +	struct nvdimm_pmu *nd_pmu = to_nvdimm_pmu(event->pmu);
->> +
->> +	/* jump to arch/platform specific callbacks if any */
->> +	if (nd_pmu && nd_pmu->del)
->> +		nd_pmu->del(event, flags, nd_pmu->dev);
->> +}
->> +
->> +static int nvdimm_pmu_add(struct perf_event *event, int flags)
->> +{
->> +	struct nvdimm_pmu *nd_pmu = to_nvdimm_pmu(event->pmu);
->> +
->> +	if (flags & PERF_EF_START)
->> +		/* jump to arch/platform specific callbacks if any */
->> +		if (nd_pmu && nd_pmu->add)
->> +			return nd_pmu->add(event, flags, nd_pmu->dev);
->> +	return 0;
->> +}
-> 
-> What's the value add here? Why can't you directly set driver pointers? I
-> also don't really believe ->{add,del,read} can be optional and still
-> have a sane driver.
-> 
+>4) Set 'VIRTIO_VSOCK_SEQ_EOR' bit in flags for last
+>   packet of message.
+>
+>Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>---
+> v8 -> v9:
+> 1) Use cpu_to_le32() to set VIRTIO_VSOCK_SEQ_EOR.
+>
+> include/linux/virtio_vsock.h            |  4 ++++
+> net/vmw_vsock/virtio_transport_common.c | 17 +++++++++++++++--
+> 2 files changed, 19 insertions(+), 2 deletions(-)
+>
+>diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
+>index 02acf6e9ae04..7360ab7ea0af 100644
+>--- a/include/linux/virtio_vsock.h
+>+++ b/include/linux/virtio_vsock.h
+>@@ -80,6 +80,10 @@ virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
+> 			       struct msghdr *msg,
+> 			       size_t len, int flags);
+>
+>+int
+>+virtio_transport_seqpacket_enqueue(struct vsock_sock *vsk,
+>+				   struct msghdr *msg,
+>+				   size_t len);
+> ssize_t
+> virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
+> 				   struct msghdr *msg,
+>diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+>index 7fea0a2192f7..b6608b4ac7c2 100644
+>--- a/net/vmw_vsock/virtio_transport_common.c
+>+++ b/net/vmw_vsock/virtio_transport_common.c
+>@@ -74,6 +74,10 @@ virtio_transport_alloc_pkt(struct virtio_vsock_pkt_info *info,
+> 		err = memcpy_from_msg(pkt->buf, info->msg, len);
+> 		if (err)
+> 			goto out;
+>+
+>+		if (info->msg->msg_iter.count == 0)
 
-Hi Peter,
+Also here is better `msg_data_left(info->msg)`
 
-  The intend for adding these callbacks  is to give flexibility to the
-arch/platform specific driver code to use its own routine for getting 
-counter data or specific checks/operations. Arch/platform driver code
-would have different method to get the counter data like IBM pseries
-nmem* device which uses a hypervisor call(hcall).
+>+			pkt->hdr.flags = cpu_to_le32(info->flags |
+>+						VIRTIO_VSOCK_SEQ_EOR);
 
-But yes the current read/add/del functions are not adding value. We
-could  add an arch/platform specific function which could handle the
-capturing of the counter data and do the rest of the operation here,
-is this approach better?
+Re-thinking an alternative could be to set EOR here...
 
-Thanks,
-Kajol Jain
+			info->flags |= VIRTIO_VSOCK_SEQ_EOR;
 
+> 	}
 
+... and move pkt->hdr.flags assignment after this block:
+
+	pkt->hdr.flags = cpu_to_le32(info->flags);
+
+But I don't have a strong opinion on that.
+
+>
+> 	trace_virtio_transport_alloc_pkt(src_cid, src_port,
 
