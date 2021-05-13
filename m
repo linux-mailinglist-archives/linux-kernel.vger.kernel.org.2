@@ -2,120 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A84BF37F4E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 11:38:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90B2437F4E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 11:38:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232697AbhEMJjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 05:39:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34542 "EHLO
+        id S232750AbhEMJjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 05:39:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232709AbhEMJjF (ORCPT
+        with ESMTP id S231253AbhEMJjJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 05:39:05 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF989C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 02:37:55 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id v191so21167994pfc.8
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 02:37:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=UK11emBimp2j7VDS60FsY4XS6s+jsxh4WvF3e9ihaL0=;
-        b=bTRL8PCmF1zR+sOAQgqj+65KCF99UaaO10WnRQXi2xNSucbyVk/3mRz9uG+L2YRtVv
-         LHuyA7VFIQliVXsbwO8bOL/7fGYT3CLiaJm3UdVP1HvocOzEvOq0zxj8kHcl7ja9F7JO
-         VX2EUG4hJvxb+FmB7C4uE6+yMhksBTi8vffUlN671xOj32qP8QfeqbSJU03p8X/xha3t
-         qv0b2k3WGLlonfaXW+Vn0b0R3K/cvjWYp42KUOUGr3+tq3tOqGaDo8BIS+39l4CASwI8
-         35dcPI4y1oyV5X9k5fx8dTmFJia9+vzRMoCB8AiaxiGcrblmxge4Dxktm/KhihUJFyIR
-         /nDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=UK11emBimp2j7VDS60FsY4XS6s+jsxh4WvF3e9ihaL0=;
-        b=P08D0njXGh59c0OV6x71mobljZLCH/y+4YUw3o1/gmWFt+zzXP80n1ReG0+20DZ5eE
-         gDO+XGUbI2LFYZkEW8MX0f1ERhb18eFugvvHCG1hIRy+bIboZ67wllO+WYBUJqGEV0Ex
-         LJGHnyXN99UF7mrpW/rUtACwmAW0HE1NtnaaOu/0HOAhWKcdLC2ib8vDjcSDtFvDvkRt
-         oF3JnCLxWVrUqf0w7wba/VRqXn4G9WOjxIHX+lvpWXdK70c2tX7V+Z1DRvkcBjvUByyf
-         CfbHgCV6cqBJROuwFqL5G4KMy4z/xJVc0vWwuywhaJl9ozJJrQV86qjuMrok/c30bqMo
-         fs1A==
-X-Gm-Message-State: AOAM532Bh1hZ+a47GU80W/hGgHD8a/1p5Z8HIwZNe6oWduqPQmdJB4ls
-        IkNOSmQnPSKRY4SJ9Uz/Ab/VKNsU2pvtleoBDsVy67Z5khKaYA==
-X-Google-Smtp-Source: ABdhPJz6233+qvlYevbBcOMreUeHzbiOcEVuTVvkHGYYiFVy60jPOfm7ZdHmJZFKMTy6MQsiTJK3LNJ0qGw62R6i75o=
-X-Received: by 2002:a62:8389:0:b029:27d:28f4:d583 with SMTP id
- h131-20020a6283890000b029027d28f4d583mr40172120pfe.33.1620898675232; Thu, 13
- May 2021 02:37:55 -0700 (PDT)
+        Thu, 13 May 2021 05:39:09 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC63AC061574;
+        Thu, 13 May 2021 02:37:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=KrP6SOX0x86614uuETg88bVN1b1PzU7zY1Br0j675x8=; b=gTwifMER8vPwjYLdlxTA/a53n
+        sSOCrP2RU7dVECBvzYNhbxkfzmANsJ0sT/CxThy/wAEeDErWCDf1X8PPActc7U7svENFTDJT8cutu
+        u7q0eEZar+qI5H3LSNho/KL9eInQ7VqnVZS5myngOU7Ay0OX2+1rFBtsk9JM3Wu0HRSf8sZ8kk/9Q
+        yCLaNHjkMWVLdL8Hw5/3h70AEKgzg7Wjeplq1aTAtvlWTSiHj+gChHxkx/zLLHKi3MKCm9hb8SWiy
+        ShPVGoMQSVH8gIetv4JQASI/99LBzsPg6pF6vkQoefzVj2iV3JtVyzyykVXYxCxdqse+uKItu0yGa
+        ah6bpU8oA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43920)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lh7mz-0005tm-Jo; Thu, 13 May 2021 10:37:53 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lh7mx-0002t7-Ne; Thu, 13 May 2021 10:37:51 +0100
+Date:   Thu, 13 May 2021 10:37:51 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, david.daney@cavium.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH V2] net: mdio: thunder: Fix a double free issue in the
+ .remove function
+Message-ID: <20210513093751.GU1336@shell.armlinux.org.uk>
+References: <f8ad9a9e6d7df4cb02731a71a418acca18353380.1620890611.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-References: <20210513051920.29320-1-rdunlap@infradead.org>
-In-Reply-To: <20210513051920.29320-1-rdunlap@infradead.org>
-From:   Oliver Glitta <glittao@gmail.com>
-Date:   Thu, 13 May 2021 11:37:44 +0200
-Message-ID: <CAD=R=qomoJW5jLNPWieKSCU1W=hM2dp2p1TJ-6a_DJhYmNaWQA@mail.gmail.com>
-Subject: Re: [PATCH -mm] slub: STACKDEPOT: rename save_stack_trace()
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f8ad9a9e6d7df4cb02731a71a418acca18353380.1620890611.git.christophe.jaillet@wanadoo.fr>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=C5=A1t 13. 5. 2021 o 7:19 Randy Dunlap <rdunlap@infradead.org> nap=C3=ADsa=
-l(a):
->
-> save_stack_trace() already exists, so change the one in
-> CONFIG_STACKDEPOT to be save_stack_depot_trace().
->
-> Fixes this build error:
->
-> ../mm/slub.c:607:29: error: conflicting types for =E2=80=98save_stack_tra=
-ce=E2=80=99
->  static depot_stack_handle_t save_stack_trace(gfp_t flags)
->                              ^~~~~~~~~~~~~~~~
-> In file included from ../include/linux/page_ext.h:6:0,
->                  from ../include/linux/mm.h:25,
->                  from ../mm/slub.c:13:
-> ../include/linux/stacktrace.h:86:13: note: previous declaration of =E2=80=
-=98save_stack_trace=E2=80=99 was here
->  extern void save_stack_trace(struct stack_trace *trace);
->              ^~~~~~~~~~~~~~~~
->
-> from this patch in mmotm:
->   Subject: mm/slub: use stackdepot to save stack trace in objects
->
->
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Acked-by: Oliver Glitta <glittao@gmail.com>
+On Thu, May 13, 2021 at 09:44:49AM +0200, Christophe JAILLET wrote:
+> 'bus->mii_bus' have been allocated with 'devm_mdiobus_alloc_size()' in the
+> probe function. So it must not be freed explicitly or there will be a
+> double free.
+> 
+> Remove the incorrect 'mdiobus_free' in the remove function.
+> 
+> Fixes: 379d7ac7ca31 ("phy: mdio-thunder: Add driver for Cavium Thunder SoC MDIO buses.")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-I run it with CONFIG_ARCH_STACKWALK set on, so it didn't show this error.
-Thank you for your fix.
+Also note that I did review your patch, and give you a reviewed-by for
+it, which I think should have been carried over to v2 since Andrew's
+comment was only concerning the formatting of the subject line. The
+patch content is entirely fine. So, I'll give it again, so patchwork
+gets the right information:
 
-> Cc: Oliver Glitta <glittao@gmail.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: linux-mm@kvack.org
-> ---
->  mm/slub.c |    4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> --- mmotm-2021-0512-2146.orig/mm/slub.c
-> +++ mmotm-2021-0512-2146/mm/slub.c
-> @@ -604,7 +604,7 @@ static struct track *get_track(struct km
->  }
->
->  #ifdef CONFIG_STACKDEPOT
-> -static depot_stack_handle_t save_stack_trace(gfp_t flags)
-> +static depot_stack_handle_t save_stack_depot_trace(gfp_t flags)
->  {
->         unsigned long entries[TRACK_ADDRS_COUNT];
->         depot_stack_handle_t handle;
-> @@ -623,7 +623,7 @@ static void set_track(struct kmem_cache
->
->         if (addr) {
->  #ifdef CONFIG_STACKDEPOT
-> -               p->handle =3D save_stack_trace(GFP_KERNEL);
-> +               p->handle =3D save_stack_depot_trace(GFP_KERNEL);
->  #endif
->                 p->addr =3D addr;
->                 p->cpu =3D smp_processor_id();
+Reviewed-by: Russell King <rmk+kernel@armlinux.org.uk>
+
+My comments about the unregistration are a separate bug that should be
+addressed in a separate follow-on patch. Thanks.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
