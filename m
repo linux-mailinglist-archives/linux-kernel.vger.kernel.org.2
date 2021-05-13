@@ -2,112 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB8D837FA50
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 17:11:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4374D37FA56
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 17:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234198AbhEMPM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 11:12:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230401AbhEMPMR (ORCPT
+        id S234485AbhEMPOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 11:14:04 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:39880 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230401AbhEMPOD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 11:12:17 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB8B6C061574;
-        Thu, 13 May 2021 08:11:07 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id C43321F42C58
-Received: by earth.universe (Postfix, from userid 1000)
-        id 20E0D3C0C95; Thu, 13 May 2021 17:11:03 +0200 (CEST)
-Date:   Thu, 13 May 2021 17:11:03 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Antoni Aloy Torrens <aaloytorrens@gmail.com>,
-        Nikola =?utf-8?Q?Milosavljevi=C4=87?= <mnidza@outlook.com>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] power: supply: sbs-battery: Silence warning about
- unknown chemistry
-Message-ID: <20210513151103.hihvxg7kvych4nwr@earth.universe>
-References: <20210510220827.11595-1-digetx@gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="lyzvqae6qiq3zjju"
-Content-Disposition: inline
-In-Reply-To: <20210510220827.11595-1-digetx@gmail.com>
+        Thu, 13 May 2021 11:14:03 -0400
+Received: from smtpclient.apple (p4fefc9d6.dip0.t-ipconnect.de [79.239.201.214])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 4883BCED28;
+        Thu, 13 May 2021 17:20:44 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.80.0.2.43\))
+Subject: Re: [PATCH] Bluetooth: btusb: Add support USB ALT 3 for WBS
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210513101806.5666-1-hildawu@realtek.com>
+Date:   Thu, 13 May 2021 17:12:51 +0200
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Bluetooth Kernel Mailing List 
+        <linux-bluetooth@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>, max.chou@realtek.com,
+        alex_lu@realsil.com.cn, kidman@realtek.com
+Content-Transfer-Encoding: 7bit
+Message-Id: <846A7897-6645-4FA0-8B3A-C0AB01965365@holtmann.org>
+References: <20210513101806.5666-1-hildawu@realtek.com>
+To:     Hilda Wu <hildawu@realtek.com>
+X-Mailer: Apple Mail (2.3654.80.0.2.43)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Hilda,
 
---lyzvqae6qiq3zjju
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Because mSBC frames do not need to be aligned to the SCO packet
+> boundary. Using USB ALT 3 let HCI payload >= 60 bytes, let mSBC
+> data satisfy 60 Bytes avoid payload unaligned situation and fixed
+> some headset no voise issue.
+> 
+> USB Alt 3 supported also need HFP support transparent MTU in 72 Bytes.
+> 
+> Signed-off-by: hildawu <hildawu@realtek.com>
 
-Hi,
+please use real name here.
 
-On Tue, May 11, 2021 at 01:08:26AM +0300, Dmitry Osipenko wrote:
-> Older variants of controller don't support reporting type of the battery.
-> Make warning message about unknown chemistry to be printed only once in
-> order to stop flooding kernel log with the message on each request of the
-> property. This patch fixes the noisy messages on Asus Transformer TF101.
->=20
-> Tested-by: Antoni Aloy Torrens <aaloytorrens@gmail.com> # TF101
-> Tested-by: Nikola Milosavljevi=C4=87 <mnidza@outlook.com> # TF101
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 > ---
+> drivers/bluetooth/btusb.c | 7 +++++++
+> 1 file changed, 7 insertions(+)
+> 
+> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+> index 6f253378e893..872034e7a232 100644
+> --- a/drivers/bluetooth/btusb.c
+> +++ b/drivers/bluetooth/btusb.c
+> @@ -1752,6 +1752,13 @@ static void btusb_work(struct work_struct *work)
+> 			 * which work with WBS at all.
+> 			 */
+> 			new_alts = btusb_find_altsetting(data, 6) ? 6 : 1;
+> +			/* Because mSBC frames do not need to be aligned to the
+> +			 * SCO packet boundary. If support the Alt 3, use the
+> +			 * Alt 3 for HCI payload >= 60 Bytes let air packet
+> +			 * data satisfy 60 bytes.
+> +			 */
+> +			if ((new_alts == 1) && (btusb_find_altsetting(data, 3)))
+> +				new_alts = 3;
 
-I believe the problem should be fixed as side-effect of the
-following patch:
+	if (new_alts == 1 && btusb_find_altsetting(..))
+		..
 
-https://lore.kernel.org/linux-pm/20210513020308.4011440-1-ikjn@chromium.org/
+Regards
 
-With my suggested change the message is printed once for each
-battery plug, so probably only once per boot for most users.
+Marcel
 
--- Sebastian
-
->  drivers/power/supply/sbs-battery.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/power/supply/sbs-battery.c b/drivers/power/supply/sb=
-s-battery.c
-> index 8d7a10730e43..b71fbf543428 100644
-> --- a/drivers/power/supply/sbs-battery.c
-> +++ b/drivers/power/supply/sbs-battery.c
-> @@ -814,7 +814,7 @@ static int sbs_get_chemistry(struct i2c_client *clien=
-t,
->  		val->intval =3D POWER_SUPPLY_TECHNOLOGY_UNKNOWN;
-> =20
->  	if (val->intval =3D=3D POWER_SUPPLY_TECHNOLOGY_UNKNOWN)
-> -		dev_warn(&client->dev, "Unknown chemistry: %s\n", chemistry);
-> +		dev_warn_once(&client->dev, "Unknown chemistry: %s\n", chemistry);
-> =20
->  	return 0;
->  }
-> --=20
-> 2.30.2
->=20
-
---lyzvqae6qiq3zjju
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmCdQYEACgkQ2O7X88g7
-+pqVwg//cYFlMccwaqLE2aR3E40lWPQM14FlZYq8FCJLeuCYXnE6NRcZDMZkH1A8
-DcskPOxpNUNPvhKjCZMMzYCZU4vPv8ZqdUTrsxC6H0B4xAa3zgMWVvgdrDWtu5+1
-wBZ9rHeIs7ko/vTcn3TNbj9EaRuuFYvUbjVzVHp7N2S7NFNOtSHu4r/FSksuCWEN
-qcd2YtvkZECN6i7FESQ1PxDN8gR2VzDSDF0fkEBzLkkVXcZ90se74Kq8wfmc4uMC
-XMM/9MDhJpZxaXfHE/xMhhF1SntAfGJ5pjpPhhRxbNh71K80OxMcGM2V3rhrrt5a
-4kostmwHoEoVb1d/fQ/nxTSusUO9ujhE2Qrda2qfTIzp7wahMrPQTdp70tzf/rEI
-Udr85I7c5dC3OTZkGossB/e1Za6XdllWu7KpoQkiLsPL444EaMKuMaCveC617X0a
-5rPQxIKmc3QKxvC2TKsr9mbd0akZ5xhDVnE/+JJ4EoEwd2rpaa9Mbu5MSdO18B1W
-RchfbmRFsaXtSvBzGRZCWMLdNOJSJnm+5n7aGc6nKsyRRHs6z/uzHDn8WHXrVt6v
-bOOxmjb/1WQlhybnA0UC6pkzJNMsPOlZtwpTG4C9Tlh3rbaJ9yKMFnbkO313RyRa
-UI3UM+L5ruL4FiplM0K6nW9gK+lSc69NUQmcTsxhumkg3yqcYg4=
-=hYys
------END PGP SIGNATURE-----
-
---lyzvqae6qiq3zjju--
