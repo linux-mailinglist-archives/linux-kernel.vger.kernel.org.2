@@ -2,74 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43FC337F10B
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 03:57:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F0FE37F10D
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 03:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229745AbhEMB6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 21:58:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50560 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229515AbhEMB63 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 21:58:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 244B3613C9;
-        Thu, 13 May 2021 01:57:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620871037;
-        bh=EiZdiBHL8EZ+BD3Z4LiEsJR03MfWMzEqO5FrU4oFnjc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mQEyES+iN2Mv3RFq7e1jB9zF+cXTRXQRaLlsd81Ac9v5Jk7JtlPn903nMy2lDKlBN
-         2BQdyFux3SMhd5I95fUfa292mqLiR6C28TtmfgECVoPWCpkFD+oH4nMaHblRDOfh0+
-         OI8lOMKTOid/hf/sfUBzp9UfqJWoZlVlGgcSPzQUvYs6x+4Y9sjLzD7nEvm19cLkM+
-         GWFE+LJ9OkxHBsVCEHtaxRYtwTqjCzUHX+VB6rFfgDiJATC8oKgULzVaj3RDcEprxh
-         SbVzcjUoXWWwt0yYWPibJyhRZXAw68PLggy2TtZg8bq56vNwfLR4rL3iEprfI80CQ0
-         XuW7IWvKhaWag==
-Date:   Thu, 13 May 2021 09:57:11 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Adrien Grassein <adrien.grassein@gmail.com>
-Cc:     robh+dt@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, catalin.marinas@arm.com,
-        will@kernel.org, bjorn.andersson@linaro.org, krzk@kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/4] Add peripheral support to imx8mq-nitrogen board
-Message-ID: <20210513015710.GH3425@dragon>
-References: <20210511193601.2584324-1-adrien.grassein@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210511193601.2584324-1-adrien.grassein@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S229935AbhEMB7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 21:59:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229801AbhEMB71 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 21:59:27 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86107C061574;
+        Wed, 12 May 2021 18:58:17 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id c13so6829360pfv.4;
+        Wed, 12 May 2021 18:58:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=s6yds0eAnM4G0Wdu571RvhPi3TKjI+npGap0XFILkfE=;
+        b=klaPh4iM4ryJKcK4ak5Gfiffhss4QGvganMQRvxA3qZPdfc3DZscvNZalHS2iYY7l7
+         eh7k3GoMAAuKHe4bKB7A2eIgoI5YkAhZbeevFgMnQzAniRwfzgmKbrXup6XMFcuJXzuH
+         OTlFUIcDR5se3vDF+RbYMJYyBuY5lpPA70fczLto5JJvhn+VQnWUDFXrYzSWT9dJ2oC+
+         bYVn24RIOEWg2b48Qn3ScdJAyLMfMnOOUtnHVJqAmMP/lqcWIHUXK1eQJNwma3vxR9FZ
+         cSwcvzxAwEXITjApPsOQginDTlbi1fzYtvh0sB9yAoez58SOwXoF5cuRkZ6ZGJQIblYE
+         Qxbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=s6yds0eAnM4G0Wdu571RvhPi3TKjI+npGap0XFILkfE=;
+        b=dpfba45GmFGAh0uE1qSEakZRVq9vIFCvbZz3v4rq8I/ZyRQ/xRblrR5pdf6hHgwdh3
+         5blhSSVvu1drDNzHFIpPl4XvUzA7uctGho9Ow6Mxzwr/cgZhnF/y/ffqqWGpCszga/XN
+         /wHU5x2LuuDVyeiD4AdL12xfIDoXKYlFZtmmwz4bpvWYVZnW/+Rxe/F/Q4grxOwfDOUf
+         80CAJHgBWrYP10Q8uy9JE9GqwA6kcAUKe8VS+u2OEM/TzoJOX0yxBvYnrF6rQ/jYYnld
+         /1iWyop8ffVGau9hQIOBPk84fHEZgQ6aZd+Q5sfuT3x6M7c3GElQKRS6f3bvSAwePVT4
+         5m1A==
+X-Gm-Message-State: AOAM533Brl+1339A0uPd18e5vaL0d4PJGtRUCwxjA61qyDSuvK+zHWIr
+        bvwhQh9/FAj6clDw5ohADCpvWNfiJoo=
+X-Google-Smtp-Source: ABdhPJwlNz0fWh1ClQWl8HOGpto3Gg0232jmHcD6gUChaiSQ/a7krLx/KvJDva1shE16JBeioyGFvQ==
+X-Received: by 2002:a17:90a:fd95:: with SMTP id cx21mr1777447pjb.137.1620871096858;
+        Wed, 12 May 2021 18:58:16 -0700 (PDT)
+Received: from localhost.localdomain ([103.7.29.6])
+        by smtp.googlemail.com with ESMTPSA id b7sm799560pjq.36.2021.05.12.18.58.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 12 May 2021 18:58:15 -0700 (PDT)
+From:   Wanpeng Li <kernellwp@gmail.com>
+X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Ben Segall <bsegall@google.com>,
+        Venkatesh Srinivas <venkateshs@chromium.org>,
+        David Matlack <dmatlack@google.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Suraj Jitindar Singh <sjitindarsingh@gmail.com>
+Subject: [PATCH v2 1/4] KVM: PPC: Book3S HV: exit halt polling on need_resched() as well
+Date:   Thu, 13 May 2021 09:58:04 +0800
+Message-Id: <1620871084-4639-1-git-send-email-wanpengli@tencent.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 09:35:57PM +0200, Adrien Grassein wrote:
-> Hi,
-> 
-> this patch set aims is to add support of multiple peripheral of the
-> Boundary8M board:
->   - USB Host;
->   - USB device;
->   - DB_DSIHD sub board for MIPI-DSI to HDMI output (via lt8912b chip).
-> 
-> 
-> Updates in v2:
->   - Use a GPIO hog to handle the USB HOST reset line;
->   - Remove useless GPIO hog for lt8912b.
-> 
-> Update in v3:
->   - Fix bad squash in git commits.
-> 
-> Updtaes in v4:
->   - Fix issues found during review (bad DTS style);
->   - Fix comment for the USB HOST.
-> 
-> Thanks,
-> 
-> Adrien Grassein (4):
->   arm64: dts: imx8mq-nitrogen: add USB OTG support
->   arm64: dts: imx8mq-nitrogen: add USB HOST support
->   arm64: dts: imx8mq-nitrogen: add lt8912 MIPI-DSI to HDMI
->   arm64: defconfig: Enable LT8912B DRM bridge driver
+From: Wanpeng Li <wanpengli@tencent.com>
 
-Applied all, thanks.
+Inspired by commit 262de4102c7bb8 (kvm: exit halt polling on need_resched()
+as well), CFS_BANDWIDTH throttling will use resched_task() when there is just
+one task to get the task to block. It was likely allowing VMs to overrun their
+quota when halt polling. Due to PPC implements an arch specific halt polling
+logic, we should add the need_resched() checking there as well.
+
+Cc: Ben Segall <bsegall@google.com>
+Cc: Venkatesh Srinivas <venkateshs@chromium.org>
+Cc: Jim Mattson <jmattson@google.com> 
+Cc: David Matlack <dmatlack@google.com>
+Cc: Paul Mackerras <paulus@ozlabs.org>
+Cc: Suraj Jitindar Singh <sjitindarsingh@gmail.com>
+Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+---
+v1 -> v2:
+ * update patch description
+
+ arch/powerpc/kvm/book3s_hv.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
+index 28a80d2..6199397 100644
+--- a/arch/powerpc/kvm/book3s_hv.c
++++ b/arch/powerpc/kvm/book3s_hv.c
+@@ -3936,7 +3936,8 @@ static void kvmppc_vcore_blocked(struct kvmppc_vcore *vc)
+ 				break;
+ 			}
+ 			cur = ktime_get();
+-		} while (single_task_running() && ktime_before(cur, stop));
++		} while (single_task_running() && !need_resched() &&
++			 ktime_before(cur, stop));
+ 
+ 		spin_lock(&vc->lock);
+ 		vc->vcore_state = VCORE_INACTIVE;
+-- 
+2.7.4
+
