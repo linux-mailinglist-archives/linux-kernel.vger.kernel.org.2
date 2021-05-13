@@ -2,164 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8863437F956
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 16:02:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E635937F952
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 16:02:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234330AbhEMODi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 10:03:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40166 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234308AbhEMODH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 10:03:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620914516;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dzzbRMtR/ux/HKuN2b3P0GhQTxIlq9su8CHUI1jg3KU=;
-        b=SiQOYK/MO0LdSgxD7UJuu8x2ECv0tT5oWCkX+0PVldL3e8qzVmUMnLoKTE33t7t2xzzhmj
-        LEqGqkp23MGDcelovfZrMV//aYb6vUGvjbRung5hktboDzesJeKMDsWhYONwNouBVLy4yL
-        AAK4i8lPncT0UWEMVYgKkCFE+QX1cBQ=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-324-xrRhmDXoP5CmEkpeRiq53Q-1; Thu, 13 May 2021 10:01:54 -0400
-X-MC-Unique: xrRhmDXoP5CmEkpeRiq53Q-1
-Received: by mail-ed1-f70.google.com with SMTP id h16-20020a0564020950b029038cbdae8cbaso3213805edz.6
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 07:01:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dzzbRMtR/ux/HKuN2b3P0GhQTxIlq9su8CHUI1jg3KU=;
-        b=JS4ICKaKQy2p9V6DP4rf/AnyDtjOwABwymZJeGcrwcVjzQ6jyncxOM1XQtzLBWj4Rr
-         Ufi5+TIW4p0mUCihk2uuwtnvsFZ8u2lXNwx5E5RtJKh8+J/NLS2pvHpZpVfhXRRdTzey
-         Q7eTtBxfWozXdvBOatvDQQkLRgVUHmmhXXVR9egzhd8SjwRNLNyKdpamyz8VBzcVFE0f
-         l2Ui8bJiqgQZyszXm5iiVxMLUa4B1nYqC+WPUppLQp3NnRaPzF9nchGlHdbMjkJb+df5
-         /4fxTPhXOjaf3euSm2XaePKp6CzwHmEWjvV1xx7Cq9KEcyM2RxcPiKYVeKX8Vg7uGPch
-         jQ5Q==
-X-Gm-Message-State: AOAM5337DfEnrR9D7Of+WmjAHyFDPOKYXhrI3nla2ZNeA65IL6XDsiWV
-        9ih6naEh88U2W6AC684pg2Zpnxe9Nrc25xXhEAe8FlSq+64/DTZbE94UVdJKYxYi8qwBcHDcM7k
-        sRPU8m2Q8mke8sT7IUQgPo80D
-X-Received: by 2002:a17:906:dc8:: with SMTP id p8mr43396597eji.75.1620914513353;
-        Thu, 13 May 2021 07:01:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw39IWhXvW7OgV46gQBGVCcCQQk3NNZ/aEpvFouiESvkXXJwhBo18CCtS6V20sKwwrVlEsIFQ==
-X-Received: by 2002:a17:906:dc8:: with SMTP id p8mr43396565eji.75.1620914513141;
-        Thu, 13 May 2021 07:01:53 -0700 (PDT)
-Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
-        by smtp.gmail.com with ESMTPSA id x7sm1820591ejc.116.2021.05.13.07.01.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 07:01:52 -0700 (PDT)
-Date:   Thu, 13 May 2021 16:01:50 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v9 19/19] af_vsock: serialize writes to shared socket
-Message-ID: <20210513140150.ugw6foy742fxan4w@steredhat>
-References: <20210508163027.3430238-1-arseny.krasnov@kaspersky.com>
- <20210508163738.3432975-1-arseny.krasnov@kaspersky.com>
+        id S234364AbhEMODZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 10:03:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44752 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234317AbhEMODE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 10:03:04 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B8CB7B1C3;
+        Thu, 13 May 2021 14:01:52 +0000 (UTC)
+Subject: Re: [PATCH][next] drm: simpledrm: Fix use after free issues
+To:     Colin King <colin.king@canonical.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maxime Ripard <maxime@cerno.tech>,
+        dri-devel@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210512203051.299026-1-colin.king@canonical.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <2b709552-cd8c-0885-c99c-7cb9e2af905b@suse.de>
+Date:   Thu, 13 May 2021 16:01:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210508163738.3432975-1-arseny.krasnov@kaspersky.com>
+In-Reply-To: <20210512203051.299026-1-colin.king@canonical.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="XaWzkNuflmcnRw9sH5tvQKoTUukS4gsCn"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 08, 2021 at 07:37:35PM +0300, Arseny Krasnov wrote:
->This add logic, that serializes write access to single socket
->by multiple threads. It is implemented be adding field with TID
->of current writer. When writer tries to send something, it checks
->that field is -1(free), else it sleep in the same way as waiting
->for free space at peers' side.
->
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->---
-> include/net/af_vsock.h   |  1 +
-> net/vmw_vsock/af_vsock.c | 10 +++++++++-
-> 2 files changed, 10 insertions(+), 1 deletion(-)
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--XaWzkNuflmcnRw9sH5tvQKoTUukS4gsCn
+Content-Type: multipart/mixed; boundary="la8J2z3cSCMFxMNgESLXqTvLIpk2BDxpm";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Colin King <colin.king@canonical.com>, David Airlie <airlied@linux.ie>,
+ Daniel Vetter <daniel@ffwll.ch>, Maxime Ripard <maxime@cerno.tech>,
+ dri-devel@lists.freedesktop.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <2b709552-cd8c-0885-c99c-7cb9e2af905b@suse.de>
+Subject: Re: [PATCH][next] drm: simpledrm: Fix use after free issues
+References: <20210512203051.299026-1-colin.king@canonical.com>
+In-Reply-To: <20210512203051.299026-1-colin.king@canonical.com>
 
-I think you forgot to move this patch at the beginning of the series.
-It's important because in this way we can backport to stable branches 
-easily.
+--la8J2z3cSCMFxMNgESLXqTvLIpk2BDxpm
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-About the implementation, can't we just add a mutex that we hold until 
-we have sent all the payload?
+Hi
 
-I need to check other implementations like TCP.
+Am 12.05.21 um 22:30 schrieb Colin King:
+> From: Colin Ian King <colin.king@canonical.com>
+>=20
+> There are two occurrances where objects are being free'd via
+> a put call and yet they are being referenced after this. Fix these
+> by adding in the missing continue statement so that the put on the
+> end of the loop is skipped over.
+>=20
+> Addresses-Coverity: ("Use after free")
+> Fixes: 11e8f5fd223b ("drm: Add simpledrm driver")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
->
->diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
->index 1747c0b564ef..413343f18e99 100644
->--- a/include/net/af_vsock.h
->+++ b/include/net/af_vsock.h
->@@ -69,6 +69,7 @@ struct vsock_sock {
-> 	u64 buffer_size;
-> 	u64 buffer_min_size;
-> 	u64 buffer_max_size;
->+	pid_t tid_owner;
->
-> 	/* Private to transport. */
-> 	void *trans;
->diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
->index 7790728465f4..1fb4a1860f6d 100644
->--- a/net/vmw_vsock/af_vsock.c
->+++ b/net/vmw_vsock/af_vsock.c
->@@ -757,6 +757,7 @@ static struct sock *__vsock_create(struct net *net,
-> 	vsk->peer_shutdown = 0;
-> 	INIT_DELAYED_WORK(&vsk->connect_work, vsock_connect_timeout);
-> 	INIT_DELAYED_WORK(&vsk->pending_work, vsock_pending_work);
->+	vsk->tid_owner = -1;
->
-> 	psk = parent ? vsock_sk(parent) : NULL;
-> 	if (parent) {
->@@ -1765,7 +1766,9 @@ static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
-> 		ssize_t written;
->
-> 		add_wait_queue(sk_sleep(sk), &wait);
->-		while (vsock_stream_has_space(vsk) == 0 &&
->+		while ((vsock_stream_has_space(vsk) == 0 ||
->+			(vsk->tid_owner != current->pid &&
->+			 vsk->tid_owner != -1)) &&
-> 		       sk->sk_err == 0 &&
-> 		       !(sk->sk_shutdown & SEND_SHUTDOWN) &&
-> 		       !(vsk->peer_shutdown & RCV_SHUTDOWN)) {
->@@ -1796,6 +1799,8 @@ static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
-> 				goto out_err;
-> 			}
-> 		}
->+
->+		vsk->tid_owner = current->pid;
-> 		remove_wait_queue(sk_sleep(sk), &wait);
->
-> 		/* These checks occur both as part of and after the loop
->@@ -1852,7 +1857,10 @@ static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
-> 			err = total_written;
-> 	}
-> out:
->+	vsk->tid_owner = -1;
-> 	release_sock(sk);
->+	sk->sk_write_space(sk);
->+
+Queued up for drm-misc-next. Thanks!
 
-Is this change related? Can you explain in the commit message why it is 
-needed?
+Best regards
+Thomas
 
-> 	return err;
-> }
->
->-- 
->2.25.1
->
+> ---
+>   drivers/gpu/drm/tiny/simpledrm.c | 2 ++
+>   1 file changed, 2 insertions(+)
+>=20
+> diff --git a/drivers/gpu/drm/tiny/simpledrm.c b/drivers/gpu/drm/tiny/si=
+mpledrm.c
+> index 2bdb477d9326..eae748394b00 100644
+> --- a/drivers/gpu/drm/tiny/simpledrm.c
+> +++ b/drivers/gpu/drm/tiny/simpledrm.c
+> @@ -298,6 +298,7 @@ static int simpledrm_device_init_clocks(struct simp=
+ledrm_device *sdev)
+>   			drm_err(dev, "failed to enable clock %u: %d\n",
+>   				i, ret);
+>   			clk_put(clock);
+> +			continue;
+>   		}
+>   		sdev->clks[i] =3D clock;
+>   	}
+> @@ -415,6 +416,7 @@ static int simpledrm_device_init_regulators(struct =
+simpledrm_device *sdev)
+>   			drm_err(dev, "failed to enable regulator %u: %d\n",
+>   				i, ret);
+>   			regulator_put(regulator);
+> +			continue;
+>   		}
+>  =20
+>   		sdev->regulators[i++] =3D regulator;
+>=20
 
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--la8J2z3cSCMFxMNgESLXqTvLIpk2BDxpm--
+
+--XaWzkNuflmcnRw9sH5tvQKoTUukS4gsCn
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmCdMU8FAwAAAAAACgkQlh/E3EQov+Aw
+bw/+P/W5921z5b3YngrfUBXAGxwGZ0ElScedm7rPMu4X7lxySR9LAtZtZj/a+Jy6opYN7PF2QOMu
+8lTHe4RRlRlYllWG1agX8pSAiH577d1EURj4XDmFGN8oNJKrpRaBTdV1qJstc3det3qyioHdG401
+Ms6cSsZ5pj2TmhOn6LSAGhr1SGKjvNDORGY0bO787YrJTt6gP66uBKv1S6lUH+uLIvptnnzpIzhr
+/FCSm57ouQJQdHAo7EtxjCZ8tYXZzyM/xbWtBbsURLc9nBg5cproYS5SlBMYPvOf24pa7gD6CRRa
+UpcWfZ3HmEhoE0zrkM0Fo+8fvSNT/d8fyq+9yIRlVn8tACq+yQZqk93nFqzFWEdjl6Q+yue2uo2R
+xdfrdr0ZX8z4ycClKaJWyeBN3Pqq96i1vprGuIhUAgBUR0OB+6N195Nr2bPO3HpMm/yKPon3U9IL
+FP8XORzMnrxln3pBpHCoxs26WOCt/1pw1i684Im/gkqP+NQ3J3H3x+OTau5NW9FZWXiQu4ogFN/5
+5q9/ITkDvbSHcqi5Qb/aDRoiylpzUfIfCHE1kMB1Flt2NH0+69z+K2Ml7cEXQTPmCM5/NDpCY6mV
+ntjKyAUu9rFG/EFIR3TX7PhnaKOQWxA0IY6cjc7SMDzD93eS//BZHm5UD1Q+ncP6EBPp6jy3KRM5
+f3w=
+=/ZoR
+-----END PGP SIGNATURE-----
+
+--XaWzkNuflmcnRw9sH5tvQKoTUukS4gsCn--
