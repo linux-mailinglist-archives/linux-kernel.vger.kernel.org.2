@@ -2,128 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67ED737F75B
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 14:03:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5434537F75D
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 14:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233305AbhEMMEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 08:04:54 -0400
-Received: from mga12.intel.com ([192.55.52.136]:4723 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232375AbhEMMEw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 08:04:52 -0400
-IronPort-SDR: bH396fdq8Dn5R63Qu5F5fAY0leNQUR4pxUQho0+9G5IbTpI4te89bfpzoefE1EsNW5gVa7bGkM
- lr0qGSo0EiSg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="179523248"
-X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
-   d="scan'208";a="179523248"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 05:03:42 -0700
-IronPort-SDR: kfUiTvJZ1XRAiMzDD85xQ4AZvc2CoPqWLiApWLsfmMyUNBoR8072rQ7CR5yJeVvPvATmhq6UKP
- U7hk43vai35A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
-   d="scan'208";a="623600415"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
-  by fmsmga006.fm.intel.com with ESMTP; 13 May 2021 05:03:35 -0700
-Cc:     baolu.lu@linux.intel.com,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        wanghaibin.wang@huawei.com, jiangkunkun@huawei.com,
-        yuzenghui@huawei.com, lushenming@huawei.com
-Subject: Re: [RFC PATCH v4 01/13] iommu: Introduce dirty log tracking
- framework
-To:     Keqian Zhu <zhukeqian1@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Yi Sun <yi.y.sun@linux.intel.com>,
-        Tian Kevin <kevin.tian@intel.com>
-References: <20210507102211.8836-1-zhukeqian1@huawei.com>
- <20210507102211.8836-2-zhukeqian1@huawei.com>
- <efc2d868-28ba-8ed9-1d6b-610b67d671b5@linux.intel.com>
- <18ac787a-179e-71f7-728b-c43feda80a16@huawei.com>
- <55fda826-9ab6-a3a0-b17e-a4d4879f00bc@linux.intel.com>
- <a8df289a-47c2-c193-cd6f-8415f68b900f@huawei.com>
- <f47e90c6-f3c4-b28f-a810-e03afe79e62d@linux.intel.com>
- <60182a35-e151-7150-3708-4e58dd8e78da@huawei.com>
- <36cc7267-6aa3-db54-b08c-c2dfc0bbacb6@linux.intel.com>
- <e38f1837-b814-3717-2faf-4df8349cb57c@huawei.com>
- <7fb678c7-509b-dbb5-d533-32c5ce2a0476@linux.intel.com>
- <bbc1960c-24f3-680a-b6ff-c81f70fa9c04@huawei.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <ce19e7a0-e7b7-aa09-b074-ad555d42bab2@linux.intel.com>
-Date:   Thu, 13 May 2021 20:02:47 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S233607AbhEMMFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 08:05:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233392AbhEMMEz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 08:04:55 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30A79C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 05:03:46 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id b21so14427526pft.10
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 05:03:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MSS7S19GIheJCojXinCjc0bxlDfjXvzH1jhMmBksG28=;
+        b=dL0GTbObknuHhTyeEqSbGxG0erlud97IeNV5uSvHpDV6kX/0juDFihkz+0wdo3BYkH
+         m2p0rCJAQRB/WLcIL/LMH6r1aJqgmWIT7NZFCoisXZvgSLv59nHBpgs8THzykOywhEVE
+         B421KTmNWQXKh6MR4WF3SWMfb4vJz0dPGgW0+rvC3trTKP748d2bSsVXhUV5L5QyTKx+
+         yCM0ASdmaHDzh6TjVtK4tJGO8wocizdFT5cV9W+Wpd5cYDSs+CEHi2HjQKLTPc3MYhRM
+         Kf0UAfW88A6StvSOIWm+i+U407oX74UVZ24hx144XwoYnTmHBcsGuRtEq8ktH6pWOz/S
+         MtuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MSS7S19GIheJCojXinCjc0bxlDfjXvzH1jhMmBksG28=;
+        b=Hlg8P3JIDHaNa+Slt3wSjWQwUW4VJLlOgY3JIYvgHSYvpb7Wt9jIBpLEIgKMemo4IX
+         0DmS/oYHRBrvKdFMobjfOq8UWRSTxYOHf8yD3bu+yIHvGd8uqFl6N+TtdqKKOlNIyH+M
+         fsmKsEPUSdMoaZKCTTFunbpq9jzDKLk9R0RMTTDfyImGs8piaSk2DszNetPyl9QNmDKx
+         8ea71hFRTX5M94GMEMcEEufl0ZahY4spn/FwuRVXV3/T85COTSkgVjsPJMKJt0ygQCMF
+         k5PPYOvwZw42eN4rhCJFhd0wt+2ktVHeJevWh/kX5V7PkOot6JvnpmzIX7uQexB8nJ+P
+         fsYQ==
+X-Gm-Message-State: AOAM533TtOXs3kU8AEP870DXq2PdR+8+kmKd4c+9y2jHSC5aDem3Y02Z
+        JnTLjdWyQMfmmskcy80AJMmnTR5QXmU=
+X-Google-Smtp-Source: ABdhPJxS/zijkmIAsXioCRDBn2qPsq6noLJWy31LwPUaUjYmgW5Omw8uDdFRlcGP6Vp5net4btNK/g==
+X-Received: by 2002:a05:6a00:ccd:b029:28e:d682:cc66 with SMTP id b13-20020a056a000ccdb029028ed682cc66mr40129149pfv.53.1620907425661;
+        Thu, 13 May 2021 05:03:45 -0700 (PDT)
+Received: from hyeyoo ([121.135.181.35])
+        by smtp.gmail.com with ESMTPSA id j7sm1889872pfc.164.2021.05.13.05.03.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 May 2021 05:03:45 -0700 (PDT)
+Date:   Thu, 13 May 2021 21:03:39 +0900
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Marco Elver <elver@google.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        iamjoonsoo.kim@lge.com, rientjes@google.com, penberg@kernel.org,
+        cl@linux.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        42.hyeyoo@gmail.com
+Subject: Re: [PATCH v3] mm, slub: change run-time assertion in
+ kmalloc_index() to compile-time
+Message-ID: <20210513120339.GA772931@hyeyoo>
+References: <20210511173448.GA54466@hyeyoo>
+ <20210512195227.245000695c9014242e9a00e5@linux-foundation.org>
+ <20210513031220.GA133011@hyeyoo>
+ <20210512204024.401ff3de38649d7d0f5a45e8@linux-foundation.org>
+ <20210513062809.GA319973@hyeyoo>
+ <a36ab9a1-f07a-42ca-bb11-5bd0c70660bb@suse.cz>
+ <YJ0ACtMpasnoZdUp@elver.google.com>
 MIME-Version: 1.0
-In-Reply-To: <bbc1960c-24f3-680a-b6ff-c81f70fa9c04@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJ0ACtMpasnoZdUp@elver.google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/13/21 6:58 PM, Keqian Zhu wrote:
+On Thu, May 13, 2021 at 12:31:38PM +0200, Marco Elver wrote:
+
+> ------ >8 ------
 > 
+> From: Marco Elver <elver@google.com>
+> Subject: [PATCH] kfence: test: fix for "mm, slub: change run-time assertion in
+>  kmalloc_index() to compile-time"
 > 
-> On 2021/5/12 19:36, Lu Baolu wrote:
->> Hi keqian,
->>
->> On 5/12/21 4:44 PM, Keqian Zhu wrote:
->>>
->>>
->>> On 2021/5/12 11:20, Lu Baolu wrote:
->>>> On 5/11/21 3:40 PM, Keqian Zhu wrote:
->>>>>> For upper layers, before starting page tracking, they check the
->>>>>> dirty_page_trackable attribution of the domain and start it only it's
->>>>>> capable. Once the page tracking is switched on the vendor iommu driver
->>>>>> (or iommu core) should block further device attach/detach operations
->>>>>> until page tracking is stopped.
->>>>> But when a domain becomes capable after detaching a device, the upper layer
->>>>> still needs to query it and enable dirty log for it...
->>>>>
->>>>> To make things coordinated, maybe the upper layer can register a notifier,
->>>>> when the domain's capability change, the upper layer do not need to query, instead
->>>>> they just need to realize a callback, and do their specific policy in the callback.
->>>>> What do you think?
->>>>>
->>>>
->>>> That might be an option. But why not checking domain's attribution every
->>>> time a new tracking period is about to start?
->>> Hi Baolu,
->>>
->>> I'll add an attribution in iommu_domain, and the vendor iommu driver will update
->>> the attribution when attach/detach devices.
->>>
->>> The attribute should be protected by a lock, so the upper layer shouldn't access
->>> the attribute directly. Then the iommu_domain_support_dirty_log() still should be
->>> retained. Does this design looks good to you?
->>
->> Yes, that's what I was thinking of. But I am not sure whether it worth
->> of a lock here. It seems not to be a valid behavior for upper layer to
->> attach or detach any device while doing the dirty page tracking.
-> Hi Baolu,
+> Signed-off-by: Marco Elver <elver@google.com>
+> ---
+>  include/linux/slab.h    | 9 +++++++--
+>  mm/kfence/kfence_test.c | 5 +++--
+>  2 files changed, 10 insertions(+), 4 deletions(-)
 > 
-> Right, if the "detach|attach" interfaces and "dirty tracking" interfaces can be called concurrently,
-> a lock in iommu_domain_support_dirty_log() is still not enough. I will add another note for the dirty
-> tracking interfaces.
-> 
-> Do you have other suggestions? I will accelerate the progress, so I plan to send out v5 next week.
+> diff --git a/include/linux/slab.h b/include/linux/slab.h
+> index 27d142564557..7a10bdc4b7a9 100644
+> --- a/include/linux/slab.h
+> +++ b/include/linux/slab.h
+> @@ -350,7 +350,8 @@ static __always_inline enum kmalloc_cache_type kmalloc_type(gfp_t flags)
+>   * Note: there's no need to optimize kmalloc_index because it's evaluated
+>   * in compile-time.
+>   */
+> -static __always_inline unsigned int kmalloc_index(size_t size)
+> +static __always_inline unsigned int __kmalloc_index(size_t size,
+> +						    bool size_is_constant)
+>  {
+>  	if (!size)
+>  		return 0;
+> @@ -386,11 +387,15 @@ static __always_inline unsigned int kmalloc_index(size_t size)
+>  	if (size <=  16 * 1024 * 1024) return 24;
+>  	if (size <=  32 * 1024 * 1024) return 25;
+>  
+> -	BUILD_BUG_ON_MSG(1, "unexpected size in kmalloc_index()");
+> +	if (size_is_constant)
+> +		BUILD_BUG_ON_MSG(1, "unexpected size in kmalloc_index()");
+> +	else
+> +		BUG();
 
-No further comments expect below nit:
+what about checking size it on top of kmalloc_index? because by definition of 
+KMALLOC_SHIFT_HIGH, it's not always 25. it can be less than 25. for some
+situations.
 
-"iommu_switch_dirty_log: Perform actions to start|stop dirty log tracking"
+below is what I suggested beofre. for just reference:
 
-How about splitting it into
-  - iommu_start_dirty_log()
-  - iommu_stop_dirty_log()
+--- include/linux/slab.h.orig   2021-05-12 17:56:54.504738768 +0900
++++ include/linux/slab.h        2021-05-13 15:06:25.724565850 +0900
+@@ -346,9 +346,18 @@ static __always_inline enum kmalloc_cach
+  * 1 =  65 .. 96 bytes
+  * 2 = 129 .. 192 bytes
+  * n = 2^(n-1)+1 .. 2^n
++ *
++ * Note: there's no need to optimize kmalloc_index because it's evaluated
++ * in compile-time.
+  */
+ static __always_inline unsigned int kmalloc_index(size_t size)
+ {
++       if (__builtin_constant_p(size)) {
++               BUILD_BUG_ON_MSG(size > KMALLOC_MAX_CACHE_SIZE , "unexpected size in kmalloc_index()");
++       } else if (size > KMALLOC_MAX_CACHE_SIZE) {
++               BUG();
++       }
++
+        if (!size)
+                return 0;
 
-Not a strong opinion anyway.
+@@ -382,8 +391,6 @@ static __always_inline unsigned int kmal
+        if (size <=  8 * 1024 * 1024) return 23;
+        if (size <=  16 * 1024 * 1024) return 24;
+        if (size <=  32 * 1024 * 1024) return 25;
+-       if (size <=  64 * 1024 * 1024) return 26;
+-       BUG();
 
-Best regards,
-baolu
+        /* Will never be reached. Needed because the compiler may complain */
+        return -1;
