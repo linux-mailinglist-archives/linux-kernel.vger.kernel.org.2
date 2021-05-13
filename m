@@ -2,61 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2108137F6A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 13:26:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1590237F6A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 13:23:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233070AbhEML1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 07:27:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232340AbhEML1S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 07:27:18 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAA59C06174A;
-        Thu, 13 May 2021 04:26:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=r9oN4rAfYVkltFP1nqUdIrhELASwJQF3sOXiPvRVsQo=; b=hDwMX6WOwOcFiVtmwICnmhPT+f
-        IgyOnHKvIq+Pt8H/edI/WB7n/lztayeU4Mzk9luE9yim4lGtdFWhPd4MY07tBJg2MZvZR2ckXCof4
-        zWZBjhX8kPT9Jk9x0alASXqpFgR4/srMCq88LEesSW6tVk1snu/PfnKfZkdRwFXESkppIx8+QjkX2
-        p/ob8iqQzdp5+tu3DFh+banaV3Mg1DYLsm3R5Albl0A2gMnDdfIGauty8LkIhxoQ/ofiSqlLxH/z5
-        4r+mo1P0pAsA+PNQ+U6Fi12UdEpMraXjpKw61260jrfn3HYoF8wqWmfnmm2nU5cjYKyFYwP483hTT
-        M1fnf/IA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lh9Qz-009NfE-A0; Thu, 13 May 2021 11:23:23 +0000
-Date:   Thu, 13 May 2021 12:23:17 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Changheun Lee <nanich.lee@samsung.com>
-Cc:     alex_y_xu@yahoo.ca, yi.zhang@redhat.com, jaegeuk@kernel.org,
-        bgoncalv@redhat.com, Johannes.Thumshirn@wdc.com,
-        asml.silence@gmail.com, axboe@kernel.dk, bvanassche@acm.org,
-        damien.lemoal@wdc.com, gregkh@linuxfoundation.org,
-        hch@infradead.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ming.lei@redhat.com, osandov@fb.com,
-        patchwork-bot@kernel.org, tj@kernel.org, tom.leiming@gmail.com,
-        jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
-        mj0123.lee@samsung.com, seunghwan.hyun@samsung.com,
-        sookwan7.kim@samsung.com, woosung2.lee@samsung.com,
-        yt0928.kim@samsung.com
-Subject: Re: [PATCH v10 0/1] bio: limit bio max size
-Message-ID: <YJ0MJe1Gc5XMV1gB@infradead.org>
-References: <CGME20210513102018epcas1p2a69f8e50cdf8380e433aea1a9303d04c@epcas1p2.samsung.com>
- <20210513100205.17965-1-nanich.lee@samsung.com>
+        id S232700AbhEMLYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 07:24:51 -0400
+Received: from smtp-35-i2.italiaonline.it ([213.209.12.35]:59971 "EHLO
+        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231269AbhEMLYn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 07:24:43 -0400
+Received: from oxapps-15-086.iol.local ([10.101.8.96])
+        by smtp-35.iol.local with ESMTPA
+        id h9RDla74apK9wh9RDl9TCH; Thu, 13 May 2021 13:23:31 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1620905011; bh=WOgoY8/LAB0nyFGWSAnRMCy3MHmckZrV+4bY4yJvUBE=;
+        h=From;
+        b=Qzf5TJkL6A5Ccnzeyd0qpITWG9zuwKddm4Wkjbs2EEpckaQ2KY0tM8Ma4XViIq5Yd
+         O6Ah7aUA14kqpjM1jUPvpVkVZSAiy9T+Xarvs2Mp5bzDiXKaRcIcAf1ZcOwMEYZ7mg
+         S0690CmXN+T59H2SzqzDIjyBz4oVaPqPNYZB9Tl5mWDGNbBN19J1rbRDKLaQNbP1I+
+         c60ZBPt/coKuwukMcZnKyJXaOQGlKJTPZDtAwHwuZgoahvsAeIyWFFND3Ik4NOrQhr
+         3aBe/M1uJMIGUWbl4MSHYJ9Y8KnuGLLNyP4maayzmxTdALgll8YiAfRarDoOZNw90l
+         Ur18YMR8im1TQ==
+X-CNFS-Analysis: v=2.4 cv=A9ipg4aG c=1 sm=1 tr=0 ts=609d0c33 cx=a_exe
+ a=v+7NFWUWLAxl90LcUtT8lA==:117 a=C-c6dMTymFoA:10 a=IkcTkHD0fZMA:10
+ a=vesc6bHxzc4A:10 a=bGNZPXyTAAAA:8 a=wn1pJw0M0rjdo80TUYYA:9
+ a=qVAXYMN7La3Y-hfU:21 a=DukbQzopxqIU8XLG:21 a=QEXdDO2ut3YA:10
+ a=yL4RfsBhuEsimFDS2qtJ:22
+Date:   Thu, 13 May 2021 13:23:31 +0200 (CEST)
+From:   Dario Binacchi <dariobin@libero.it>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Gianluca Falavigna <gianluca.falavigna@inwind.it>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org
+Message-ID: <434926916.298425.1620905011355@mail1.libero.it>
+In-Reply-To: <20210510123608.wywx3bb3vrgkzq2o@pengutronix.de>
+References: <20210509124309.30024-1-dariobin@libero.it>
+ <20210509124309.30024-4-dariobin@libero.it>
+ <20210510122512.5lcvvvwzk6ujamzb@pengutronix.de>
+ <20210510123608.wywx3bb3vrgkzq2o@pengutronix.de>
+Subject: Re: [PATCH 3/3] can: c_can: cache frames to operate as a true FIFO
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210513100205.17965-1-nanich.lee@samsung.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v7.10.3-Rev34
+X-Originating-IP: 185.33.57.41
+X-Originating-Client: open-xchange-appsuite
+x-libjamsun: XzH5u9jq99NX4od7nxgeKsNPlzXQ8dBq
+x-libjamv: mhMvMv7o5XE=
+X-CMAE-Envelope: MS4xfGQ5Om7oJwdC3MVFnBmyX6LdXNhOleC6Qc/QB9BTz7Sn6uu2mOPvhGn+2atHH1UKPFo8TtR3ffZW7ErWPktjRAkDyxf/hSD6n/+GQRsmSVdf+Pb0McgU
+ doGxJCOF5nTizrPbff1StvkFTTP1SRLV38m+JR0Z4b9C5V6Dy0Qfb0nR/kSNwMLHyFq4x7twb6vt8JtzoM6jPgzdME3vl1iIzsa6hbg16G7M2gB1nDdIoVLG
+ Qee4uenIquALwWcIBSj3n5br4FYEHkHR0ugHf+gJ122qmF9Zx7DsYzWjPS0dA3yRlw9pzTGOzLyr3OWGh9l9De1XNRy4pik8GetHmqX+ubyXV4M42Jma2ZX1
+ FRyBXaTP3rVIxVJjUUVHpZsjzHza5DrL+iB+cwGYuwG87jj3kXlcbJ21QPDnkOnpd62kme+WWR0l+z2mFLIQtdz0AL5bKskbUljDGXzHyK5kn18wIxFcBp1V
+ bH/4+/a9Uv4GThFIIB6hMkYKsVr1Zb3ZZrGh+w==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-FYI, I still think this whole limit is a bad idea, and instead we
-need to fix the algorithms to not waste time iterating over the bios
-again and again in non-optimal ways.  I still haven't seen an answer
-if your original latency problems are reproducable with the iomap
-direct I/O implementation, and we've also not even started the work on
-making some of the common iterators less stupid.
+Hi Marc,
+
+> Il 10/05/2021 14:36 Marc Kleine-Budde <mkl@pengutronix.de> ha scritto:
+> 
+>  
+> On 10.05.2021 14:25:15, Marc Kleine-Budde wrote:
+> > On 09.05.2021 14:43:09, Dario Binacchi wrote:
+> > > As reported by a comment in the c_can_start_xmit() this was not a FIFO.
+> > > C/D_CAN controller sends out the buffers prioritized so that the lowest
+> > > buffer number wins.
+> > > 
+> > > What did c_can_start_xmit() do if it found tx_active = 0x80000000 ? It
+> > > waited until the only frame of the FIFO was actually transmitted by the
+> > > controller. Only one message in the FIFO but we had to wait for it to
+> > > empty completely to ensure that the messages were transmitted in the
+> > > order in which they were loaded.
+> > > 
+> > > By storing the frames in the FIFO without requiring its transmission, we
+> > > will be able to use the full size of the FIFO even in cases such as the
+> > > one described above. The transmission interrupt will trigger their
+> > > transmission only when all the messages previously loaded but stored in
+> > > less priority positions of the buffers have been transmitted.
+> > 
+> > The algorithm you implemented looks a bit too complicated to me. Let me
+> > sketch the algorithm that's implemented by several other drivers.
+> > 
+> > - have a power of two number of TX objects
+> > - add a number of objects to struct priv (tx_num)
+> >   (or make it a define, if the number of tx objects is compile time fixed)
+> > - add two "unsigned int" variables to your struct priv,
+> >   one "tx_head", one "tx_tail"
+> > - the hard_start_xmit() writes to priv->tx_head & (priv->tx_num - 1)
+> > - increment tx_head
+> > - stop the tx_queue if there is no space or if the object with the
+> >   lowest prio has been written
+> > - in TX complete IRQ, handle priv->tx_tail object
+> > - increment tx_tail
+> > - wake queue if there is space but don't wake if we wait for the lowest
+> >   prio object to be TX completed.
+> > 
+> > Special care needs to be taken to implement that lock-less and race
+> > free. I suggest to look the the mcp251xfd driver.
+> 
+> After converting the driver to the above outlined implementation it
+> should be more straight forward to add the caching you implemented.  
+> 
+
+I took some time to think about your suggestions.
+The submitted patch was developed trying to improve the
+CAN transmission using the current driver design for minimize
+the creation of bugs.
+If I'm not missing something you suggest me to change the
+driver design as a pre-condition to apply an updated version
+of my patch. IMHO this would increase the possibility of generating
+bugs, even for parts of the code that are considered stable.
+If the algorithm I have implemented is a bit too complicated,
+let's try to simplify it starting from the submitted patch.
+
+Waiting for your reply, thanks and regards
+Dario
+
+> regards,
+> Marc
+> 
+> -- 
+> Pengutronix e.K.                 | Marc Kleine-Budde           |
+> Embedded Linux                   | https://www.pengutronix.de  |
+> Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+> Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
