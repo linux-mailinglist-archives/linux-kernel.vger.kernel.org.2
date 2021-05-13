@@ -2,148 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6C9937F9B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 16:35:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 735C137F9BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 16:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234510AbhEMOgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 10:36:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234498AbhEMOfw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 10:35:52 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1608DC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 07:34:36 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id k19so21956699pfu.5
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 07:34:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=C9qcsyL6yalplt7TEViKsaafpdRV3NQo90FG/ZmLHHw=;
-        b=a81n26wG1rUABw5Cr3vqYpat2S0pL6HfO1dqhiePTuRUl++kq6mRf6Dq/fFWY+ALqM
-         WreVF9AA1Joxy/wvlwiETwQKsDdL1UKEC8knVt+dR4kLKRv9Yn+d6OQtg4tFBFxObZR1
-         eeRCTvF42iKnxw4xZtUjhpDej+TqBElbmgnCo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=C9qcsyL6yalplt7TEViKsaafpdRV3NQo90FG/ZmLHHw=;
-        b=MdA+MExKJ9D4JJOXk4njMy0X7DhuJmjkv1NkzB/Vdj5ZGYYXns5E/Qu6JqyIswHO+0
-         SiruyinJ+2TG/+4istiFsYFHiu9p9aQU6yxaY5VsHtODFkJKcDjotHl8wdmchkBi/FpJ
-         vzI8DbXMCaYxcr9PComzOzkuf1bOD/jCTyD6d7tnog3YZhEoJ2qnotofh7xp0rP58t24
-         ojaWTPuibO+TS8tWqpPlLDADuBL+pYf8marjDL50FAn/vVHvD8Cl+4ba5IzB3pZ6Se5y
-         oQ2nYfnAOmyGmdzSxhIyWPrq12ChlwSkhyTzv4qplPwoLCu9vMJQLMCjLSD90mS9MiDb
-         o0Kw==
-X-Gm-Message-State: AOAM533B3+AzRvHcKp9jFqQg6i3opRAer38gPfx/nI6PCfpH2/NZ+TRk
-        RkWTREB9CU9V9HvJG+j71h5T4g==
-X-Google-Smtp-Source: ABdhPJwXk/+OzcFksJCqCvgdzV26fUsWpYljSIhXwI1wcSy28N2Yb2BBVPQ1rAmqQCnjoluRZs4GTA==
-X-Received: by 2002:a62:1b97:0:b029:24e:44e9:a8c1 with SMTP id b145-20020a621b970000b029024e44e9a8c1mr41913118pfb.19.1620916475530;
-        Thu, 13 May 2021 07:34:35 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:4c2:8d34:961f:de80])
-        by smtp.gmail.com with UTF8SMTPSA id d23sm2277201pfo.80.2021.05.13.07.34.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 May 2021 07:34:35 -0700 (PDT)
-Date:   Thu, 13 May 2021 07:34:33 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Felipe Balbi <balbi@kernel.org>
-Cc:     Sandeep Maheswaram <sanm@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>
-Subject: Re: [PATCH v7 5/5] usb: dwc3: qcom: Keep power domain on to support
- wakeup
-Message-ID: <YJ04+aQijdSxJjm3@google.com>
-References: <1619586716-8687-1-git-send-email-sanm@codeaurora.org>
- <1619586716-8687-6-git-send-email-sanm@codeaurora.org>
- <87lf92k9ms.fsf@kernel.org>
- <YJxxbe9L3+VBEqno@google.com>
- <87tun67nhc.fsf@kernel.org>
+        id S234515AbhEMOg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 10:36:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56170 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234494AbhEMOgH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 10:36:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A894761439;
+        Thu, 13 May 2021 14:34:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620916497;
+        bh=xxfQlMD0wezKXwFYz7D8jYYCXmAAXgZnJxiZiy+zERw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=h9wyMZvJCnfOcphUqpJuu+DGLjnYKSne2kKoyNvvrQCh5yv9WAiU+VhRuXZMyRYlA
+         ZZdofZvciEmZE6ny7W2LbRmDjsXyMboATkOt+TlpKxuE3imtxfa0KTMNXV3My7aoc2
+         bb1XkXIhUE9z5vw7QrOd6NN8s9ir+/DkCoWn1yZJAt/p1sTIpgBBTcK6aq7G3UyT7W
+         /JfCpNRrmioEpTw0sw5i0aCP1at7gFzqTrBLdw6l7OEfpFke4l53G3e+dB2Pxd+AGG
+         SrKYnhoYYAbF1uQP+GOEBJ2WbphdD8h4nFv4xIH8Pwlofcc9dKcIfG2zwBDWCa4SS5
+         E/wpodRAxHxTw==
+Received: by mail-ed1-f50.google.com with SMTP id c22so31210098edn.7;
+        Thu, 13 May 2021 07:34:57 -0700 (PDT)
+X-Gm-Message-State: AOAM5310bsc2BIdpsdaXF5mNOa31Re80jsIaCR3jqxZtphQFUJZT+wNJ
+        Q04Xr1ptb0HYSiD/IXpF3ehycHcwvC1WRjqRSg==
+X-Google-Smtp-Source: ABdhPJwEpp9Y9Fpl5bmyoUu5TLouC2jnXOjbcycNr9lgu5xw7SEYdFpsCB7SACyUOYBlugxVcIxqW33hPAfKM5Cv6Ls=
+X-Received: by 2002:a50:c446:: with SMTP id w6mr47224146edf.62.1620916496110;
+ Thu, 13 May 2021 07:34:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <87tun67nhc.fsf@kernel.org>
+References: <20210504102227.15475-1-nava.manne@xilinx.com> <20210504102227.15475-3-nava.manne@xilinx.com>
+ <20210513023104.GA909876@robh.at.kernel.org> <MWHPR02MB262309A8DC5BD857CBB01446C2519@MWHPR02MB2623.namprd02.prod.outlook.com>
+In-Reply-To: <MWHPR02MB262309A8DC5BD857CBB01446C2519@MWHPR02MB2623.namprd02.prod.outlook.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 13 May 2021 09:34:43 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+mHsrgQOrT48gaoqBOUuMf5mxeVauM74RDxELiA8fXKg@mail.gmail.com>
+Message-ID: <CAL_Jsq+mHsrgQOrT48gaoqBOUuMf5mxeVauM74RDxELiA8fXKg@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/4] fpga: Add new properties to support user-key
+ encrypted bitstream loading
+To:     Nava kishore Manne <navam@xilinx.com>
+Cc:     "mdf@kernel.org" <mdf@kernel.org>,
+        "trix@redhat.com" <trix@redhat.com>,
+        Michal Simek <michals@xilinx.com>,
+        "arnd@arndb.de" <arnd@arndb.de>, Rajan Vaja <RAJANV@xilinx.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        Amit Sunil Dhamne <amitsuni@xlnx.xilinx.com>,
+        Tejas Patel <tejasp@xlnx.xilinx.com>,
+        "zou_wei@huawei.com" <zou_wei@huawei.com>,
+        Manish Narani <MNARANI@xilinx.com>,
+        Sai Krishna Potthuri <lakshmis@xilinx.com>,
+        Jiaying Liang <jliang@xilinx.com>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>, git <git@xilinx.com>,
+        "chinnikishore369@gmail.com" <chinnikishore369@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 04:49:19PM +0300, Felipe Balbi wrote:
-> 
-> Hi,
-> 
-> Matthias Kaehlcke <mka@chromium.org> writes:
-> >> Sandeep Maheswaram <sanm@codeaurora.org> writes:
-> >> > If wakeup capable devices are connected to the controller (directly
-> >> > or through hubs) at suspend time keep the power domain on in order
-> >> > to support wakeup from these devices.
-> >> >
-> >> > Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
-> >> > ---
-> >> >  drivers/usb/dwc3/dwc3-qcom.c | 17 +++++++++++++++++
-> >> >  1 file changed, 17 insertions(+)
-> >> >
-> >> > diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
-> >> > index 82125bc..1e220af 100644
-> >> > --- a/drivers/usb/dwc3/dwc3-qcom.c
-> >> > +++ b/drivers/usb/dwc3/dwc3-qcom.c
-> >> > @@ -17,9 +17,11 @@
-> >> >  #include <linux/of_platform.h>
-> >> >  #include <linux/platform_device.h>
-> >> >  #include <linux/phy/phy.h>
-> >> > +#include <linux/pm_domain.h>
-> >> >  #include <linux/usb/of.h>
-> >> >  #include <linux/reset.h>
-> >> >  #include <linux/iopoll.h>
-> >> > +#include <linux/usb/hcd.h>
-> >> >  
-> >> >  #include "core.h"
-> >> >  
-> >> > @@ -354,10 +356,19 @@ static int dwc3_qcom_suspend(struct dwc3_qcom *qcom)
-> >> >  {
-> >> >  	u32 val;
-> >> >  	int i, ret;
-> >> > +	struct dwc3 *dwc = platform_get_drvdata(qcom->dwc3);
-> >> > +	struct usb_hcd  *hcd;
-> >> > +	struct generic_pm_domain *genpd = pd_to_genpd(qcom->dev->pm_domain);
-> >> >  
-> >> >  	if (qcom->is_suspended)
-> >> >  		return 0;
-> >> >  
-> >> > +	if (dwc->xhci) {
-> >> > +		hcd = platform_get_drvdata(dwc->xhci);
-> >> > +		if (usb_wakeup_enabled_descendants(hcd->self.root_hub))
-> >> > +			genpd->flags |= GENPD_FLAG_ACTIVE_WAKEUP;
-> >> > +	}
-> >> 
-> >> wow, you really need to find a way to do these things generically
-> >> instead of bypassing a bunch of layers and access stuff $this doesn't
-> >> directly own.
-> >>
-> >> I'm gonna say 'no' to this, sorry. It looks like xhci should, directly,
-> >> learn about much of this instead of hiding it 3-layers deep into the
-> >> dwc3 glue layer for your specific SoC.
+On Thu, May 13, 2021 at 5:55 AM Nava kishore Manne <navam@xilinx.com> wrote=
+:
+>
+> Hi Rob,
+>
+>         Please find my response inline.
+>
+> > -----Original Message-----
+> > From: Rob Herring <robh@kernel.org>
+> > Sent: Thursday, May 13, 2021 8:01 AM
+> > To: Nava kishore Manne <navam@xilinx.com>
+> > Cc: mdf@kernel.org; trix@redhat.com; Michal Simek <michals@xilinx.com>;
+> > arnd@arndb.de; Rajan Vaja <RAJANV@xilinx.com>;
+> > gregkh@linuxfoundation.org; linus.walleij@linaro.org; Amit Sunil Dhamne
+> > <amitsuni@xlnx.xilinx.com>; Tejas Patel <tejasp@xlnx.xilinx.com>;
+> > zou_wei@huawei.com; Manish Narani <MNARANI@xilinx.com>; Sai Krishna
+> > Potthuri <lakshmis@xilinx.com>; Jiaying Liang <jliang@xilinx.com>; linu=
+x-
+> > fpga@vger.kernel.org; devicetree@vger.kernel.org; linux-
+> > kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org; git
+> > <git@xilinx.com>; chinnikishore369@gmail.com
+> > Subject: Re: [RFC PATCH 2/4] fpga: Add new properties to support user-k=
+ey
+> > encrypted bitstream loading
 > >
-> > Maybe this could be addressed with a pair of wakeup quirks, one for suspend,
-> > another for resume. An optional genpd field could be added to struct
-> > xhci_plat_priv. The wakeup quirks would set/clear GENPD_FLAG_ACTIVE_WAKEUP
-> > of the genpd.
+> > On Tue, May 04, 2021 at 03:52:25PM +0530, Nava kishore Manne wrote:
+> > > This patch Adds =E2=80=98encrypted-key-name=E2=80=99 and
+> > > =E2=80=98encrypted-user-key-fpga-config=E2=80=99 properties to suppor=
+t user-key
+> > > encrypted bitstream loading use case.
+> > >
+> > > Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
+> > > ---
+> > >  Documentation/devicetree/bindings/fpga/fpga-region.txt | 5 +++++
+> > >  1 file changed, 5 insertions(+)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/fpga/fpga-region.txt
+> > > b/Documentation/devicetree/bindings/fpga/fpga-region.txt
+> > > index d787d57491a1..957dc6cbcd9e 100644
+> > > --- a/Documentation/devicetree/bindings/fpga/fpga-region.txt
+> > > +++ b/Documentation/devicetree/bindings/fpga/fpga-region.txt
+> > > @@ -177,6 +177,9 @@ Optional properties:
+> > >     it indicates that the FPGA has already been programmed with this
+> > image.
+> > >     If this property is in an overlay targeting a FPGA region, it is =
+a
+> > >     request to program the FPGA with that image.
+> > > +- encrypted-key-name : should contain the name of an encrypted key f=
+ile
+> > located
+> > > +   on the firmware search path. It will be used to decrypt the FPGA
+> > image
+> > > +   file.
+> > >  - fpga-bridges : should contain a list of phandles to FPGA Bridges t=
+hat must
+> > be
+> > >     controlled during FPGA programming along with the parent FPGA
+> > bridge.
+> > >     This property is optional if the FPGA Manager handles the bridges=
+.
+> > > @@ -187,6 +190,8 @@ Optional properties:
+> > >  - external-fpga-config : boolean, set if the FPGA has already been
+> > configured
+> > >     prior to OS boot up.
+> > >  - encrypted-fpga-config : boolean, set if the bitstream is encrypted
+> > > +- encrypted-user-key-fpga-config : boolean, set if the bitstream is
+> > encrypted
+> > > +   with user key.
 > >
-> > Does the above sound more palatable?
-> 
-> I don't get why you need quirk flags. All you're doing here is:
-> 
-> 	if (usb_wakeup_enabled_descendants(hcd->self.root_hub))
->         	genpd->flags |= GENPD_FLAG_ACTIVE_WAKEUP;
-> 
-> If you move this test to xhci_suspend(), you shouldn't need all the
-> magic, right?
+> > What's the relationship with encrypted-fpga-config? Both present or
+> > mutually exclusive? Couldn't this be implied by encrypted-key-name bein=
+g
+> > present?
+> >
+>
+> In Encryption we have two kinds of use case one is Encrypted Bitstream lo=
+ading with Device-key and
+> Other one is Encrypted Bitstream loading with User-key. encrypted-fpga-co=
+nfig and encrypted-user-key-fpga-config
+> are mutually exclusive. To differentiate both the use cases I have added =
+this new flag and Aes Key file(encrypted-key-name)
+> is needed only for encrypted-user-key-fpga-config use cases.
 
-Right, the quirks shouldn't be necessary if setting/clearing the genpd
-flag is the right thing to do for any controller that sets the genpd
-field in _priv, which probably is the case.
+If encrypted-key-name is required for a user key, then why do you need
+encrypted-user-key-fpga-config also?
 
+IOW, why have 3 properties (that's 9 possible combinations) for 2 modes?
+
+Rob
