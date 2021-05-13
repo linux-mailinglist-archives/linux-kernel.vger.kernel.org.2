@@ -2,136 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D3A837F115
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 04:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18B2037F117
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 04:01:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230230AbhEMCBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 22:01:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230048AbhEMCBM (ORCPT
+        id S230164AbhEMCCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 22:02:51 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2718 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229819AbhEMCCs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 22:01:12 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3FD7C061574;
-        Wed, 12 May 2021 19:00:02 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id l70so5146412pga.1;
-        Wed, 12 May 2021 19:00:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=v/Eg2aLgMEl3C9DBh5TiPixhOAqZrBo8ju/YFJi/mRs=;
-        b=H0Vf/PzvX1Az7P3qelVGuIU3tInxn8PVF40BcYsq29zt+CjKyrEcg8OJGUm7V7Vw6z
-         8xLwCXBwBcfozuhpSdADU4XabIQxvQ0WL5ULDTgQrtmv24EfQk8CIFRyMQ8XFrec++ng
-         NU1EefB1Vg3LaDJ6AMhhqaYSWYB+ujA+1KiDdFgZWvD9FQirxc5J3cScWqA9eJDr6cfY
-         tKPuxK0fgiQzze8lQRkj01lDBuv1Fd/lmfJiLwLTX3CHqphuhql0kR4mB/wH4CJJ8dDG
-         bnuUjk40oFgvnzqtUYlTwdvEnks0ZWKMn2knaehUGKeXzeJ1pJBzkmxy8ol8js6uRwW2
-         v3Hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=v/Eg2aLgMEl3C9DBh5TiPixhOAqZrBo8ju/YFJi/mRs=;
-        b=AeC3/M+HSJda7iksqqEOyndFTTlxNmGF3vv3fjy+AFyoCcMXTbOpV5lju3Eb/0HcI6
-         Bk1yinnss1AzA0Z7d6bIb3zOX5yuv1pAGCkiP7kupp/KyZ7b9qDbPqdt58CmN97JMyUI
-         hycKyFfc+8pOFkt1a+uaLpUQm8ItHQqIbSTLDWEeaaT/r+aecsNOzFLS8PDxcl3q2SLP
-         IHFbUgxG/FtqiQ28P8BIStRWUuJ+F19FfI6heFpdd/zbh9WzvSNMLFjRYIPELbXfPSzS
-         UFdrqYrTtjWdc5oSdy8aoHPQSiHR0zWrlYMdu1gEAhb6W3vApt+Ge/Ic7oP19Ql6o0Jb
-         7Q4w==
-X-Gm-Message-State: AOAM530m1W8HfTMmPqrEJPCLRfpzp1plagUwOkYa54ZnKx2hn1IPIWsW
-        EtPQNm5rgdd4QSBwQXuMYSdn/jdsULA=
-X-Google-Smtp-Source: ABdhPJzibtVAUmXcXbhH3CJXurXNW/vy8qrWyWeimKensF9A9n0fD8mjbfb7Kpy+62MsfQ4hHemqVg==
-X-Received: by 2002:a17:90a:510d:: with SMTP id t13mr1782767pjh.1.1620871202379;
-        Wed, 12 May 2021 19:00:02 -0700 (PDT)
-Received: from localhost.localdomain ([103.7.29.6])
-        by smtp.googlemail.com with ESMTPSA id w123sm812742pfw.151.2021.05.12.19.00.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 12 May 2021 19:00:02 -0700 (PDT)
-From:   Wanpeng Li <kernellwp@gmail.com>
-X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: [PATCH v2 4/4] KVM: x86: hyper-v: Task srcu lock when accessing kvm_memslots()
-Date:   Thu, 13 May 2021 09:59:49 +0800
-Message-Id: <1620871189-4763-3-git-send-email-wanpengli@tencent.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1620871189-4763-1-git-send-email-wanpengli@tencent.com>
-References: <1620871189-4763-1-git-send-email-wanpengli@tencent.com>
+        Wed, 12 May 2021 22:02:48 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FgZZn1jbDz1BHsb;
+        Thu, 13 May 2021 09:58:57 +0800 (CST)
+Received: from [10.174.178.208] (10.174.178.208) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 13 May 2021 10:01:36 +0800
+Subject: Re: [PATCH -next] watchdog: Fix possible use-after-free by calling
+ del_timer_sync()
+To:     Guenter Roeck <linux@roeck-us.net>
+CC:     <wim@linux-watchdog.org>, <vz@mleia.com>,
+        <linux-watchdog@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1620802676-19701-1-git-send-email-zou_wei@huawei.com>
+ <20210512140636.GK1333995@roeck-us.net>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <a7e5baa5-519f-cc55-42aa-affa6c72c530@huawei.com>
+Date:   Thu, 13 May 2021 10:01:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20210512140636.GK1333995@roeck-us.net>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.208]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wanpeng Li <wanpengli@tencent.com>
+Hi Guenter,
 
-   WARNING: suspicious RCU usage
-   5.13.0-rc1 #4 Not tainted
-   -----------------------------
-   ./include/linux/kvm_host.h:710 suspicious rcu_dereference_check() usage!
-  
-  other info that might help us debug this:
-  
-  rcu_scheduler_active = 2, debug_locks = 1
-   1 lock held by hyperv_clock/8318:
-    #0: ffffb6b8cb05a7d8 (&hv->hv_lock){+.+.}-{3:3}, at: kvm_hv_invalidate_tsc_page+0x3e/0xa0 [kvm]
-  
-  stack backtrace:
-  CPU: 3 PID: 8318 Comm: hyperv_clock Not tainted 5.13.0-rc1 #4
-  Call Trace:
-   dump_stack+0x87/0xb7
-   lockdep_rcu_suspicious+0xce/0xf0
-   kvm_write_guest_page+0x1c1/0x1d0 [kvm]
-   kvm_write_guest+0x50/0x90 [kvm]
-   kvm_hv_invalidate_tsc_page+0x79/0xa0 [kvm]
-   kvm_gen_update_masterclock+0x1d/0x110 [kvm]
-   kvm_arch_vm_ioctl+0x2a7/0xc50 [kvm]
-   kvm_vm_ioctl+0x123/0x11d0 [kvm]
-   __x64_sys_ioctl+0x3ed/0x9d0
-   do_syscall_64+0x3d/0x80
-   entry_SYSCALL_64_after_hwframe+0x44/0xae
+Thanks for your review. If there are similar issues in the future, I 
+will collect them together and submit as one patch.
 
-kvm_memslots() will be called by kvm_write_guest(), so we should take the srcu lock.
-
-Fixes: e880c6ea5 (KVM: x86: hyper-v: Prevent using not-yet-updated TSC page by secondary CPUs)
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
----
- arch/x86/kvm/hyperv.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-index f98370a3..f00830e 100644
---- a/arch/x86/kvm/hyperv.c
-+++ b/arch/x86/kvm/hyperv.c
-@@ -1172,6 +1172,7 @@ void kvm_hv_invalidate_tsc_page(struct kvm *kvm)
- {
- 	struct kvm_hv *hv = to_kvm_hv(kvm);
- 	u64 gfn;
-+	int idx;
- 
- 	if (hv->hv_tsc_page_status == HV_TSC_PAGE_BROKEN ||
- 	    hv->hv_tsc_page_status == HV_TSC_PAGE_UNSET ||
-@@ -1190,9 +1191,16 @@ void kvm_hv_invalidate_tsc_page(struct kvm *kvm)
- 	gfn = hv->hv_tsc_page >> HV_X64_MSR_TSC_REFERENCE_ADDRESS_SHIFT;
- 
- 	hv->tsc_ref.tsc_sequence = 0;
-+
-+	/*
-+	 * Take the srcu lock as memslots will be accessed to check the gfn
-+	 * cache generation against the memslots generation.
-+	 */
-+	idx = srcu_read_lock(&kvm->srcu);
- 	if (kvm_write_guest(kvm, gfn_to_gpa(gfn),
- 			    &hv->tsc_ref, sizeof(hv->tsc_ref.tsc_sequence)))
- 		hv->hv_tsc_page_status = HV_TSC_PAGE_BROKEN;
-+	srcu_read_unlock(&kvm->srcu, idx);
- 
- out_unlock:
- 	mutex_unlock(&hv->hv_lock);
--- 
-2.7.4
-
+On 2021/5/12 22:06, Guenter Roeck wrote:
+> On Wed, May 12, 2021 at 02:57:56PM +0800, Zou Wei wrote:
+>> This driver's remove path calls del_timer(). However, that function
+>> does not wait until the timer handler finishes. This means that the
+>> timer handler may still be running after the driver's remove function
+>> has finished, which would result in a use-after-free.
+>>
+>> Fix by calling del_timer_sync(), which makes sure the timer handler
+>> has finished, and unable to re-schedule itself.
+>>
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+> 
+> If you have more of those, _please_ submit them together to save review time.
+> 
+> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> 
+> Guenter
+> >> ---
+>>   drivers/watchdog/lpc18xx_wdt.c | 2 +-
+>>   drivers/watchdog/w83877f_wdt.c | 2 +-
+>>   2 files changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/watchdog/lpc18xx_wdt.c b/drivers/watchdog/lpc18xx_wdt.c
+>> index 78cf11c..60b6d74 100644
+>> --- a/drivers/watchdog/lpc18xx_wdt.c
+>> +++ b/drivers/watchdog/lpc18xx_wdt.c
+>> @@ -292,7 +292,7 @@ static int lpc18xx_wdt_remove(struct platform_device *pdev)
+>>   	struct lpc18xx_wdt_dev *lpc18xx_wdt = platform_get_drvdata(pdev);
+>>   
+>>   	dev_warn(&pdev->dev, "I quit now, hardware will probably reboot!\n");
+>> -	del_timer(&lpc18xx_wdt->timer);
+>> +	del_timer_sync(&lpc18xx_wdt->timer);
+>>   
+>>   	return 0;
+>>   }
+>> diff --git a/drivers/watchdog/w83877f_wdt.c b/drivers/watchdog/w83877f_wdt.c
+>> index 5772cc5..f265086 100644
+>> --- a/drivers/watchdog/w83877f_wdt.c
+>> +++ b/drivers/watchdog/w83877f_wdt.c
+>> @@ -166,7 +166,7 @@ static void wdt_startup(void)
+>>   static void wdt_turnoff(void)
+>>   {
+>>   	/* Stop the timer */
+>> -	del_timer(&timer);
+>> +	del_timer_sync(&timer);
+>>   
+>>   	wdt_change(WDT_DISABLE);
+>>   
+>> -- 
+>> 2.6.2
+>>
+> .
+> 
