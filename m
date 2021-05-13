@@ -2,88 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F60F37F5F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 12:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 444F637F5FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 12:53:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232645AbhEMKx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 06:53:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51072 "EHLO
+        id S232660AbhEMKyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 06:54:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232196AbhEMKxv (ORCPT
+        with ESMTP id S232600AbhEMKyD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 06:53:51 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0784C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 03:52:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=/r7vsNkaaaLlEs2V4TIC3qkCSYecc0pj6ZL4FrnVKYU=; b=LPWt3jqo24QEG/KRjmzrkD/Tt
-        ROLKh8lYDpweTeDIzcOQCqksjx3F7KAVfu8k5qJ3SRc9JxFWF5edVNwYMSyw7tNT5N81X6rpajSIK
-        oFpGN8O5j9e+16kzxTjP6joY9m3nVOMaR/Hfnn6lx/RxpEAlobl8QvnRNz+d4BOvy0e9+tfSoCkGx
-        sWuC+6dvbK/vqVTaldYRn2N5RkA7mV10/EG1I18WqZKm9TeYQkh+CT1VaqRfvWW2rr85CbnnBMFWF
-        ow733p0Pv77Foi340p6xU3wnhcuYz41wq26bIuJ3qitKDiR6a7ssftZWwkgIDK4UtmrzgeyQzGggQ
-        3ZtVRhwYQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43924)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lh8xI-0005zJ-0Z; Thu, 13 May 2021 11:52:36 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lh8xG-0002wb-QB; Thu, 13 May 2021 11:52:34 +0100
-Date:   Thu, 13 May 2021 11:52:34 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Allison Randal <allison@lohutok.net>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm/mm: Drop [PTE|PMD]_TYPE_FAULT
-Message-ID: <20210513105234.GW1336@shell.armlinux.org.uk>
-References: <1620885113-5938-1-git-send-email-anshuman.khandual@arm.com>
- <20210513080353.GR1336@shell.armlinux.org.uk>
+        Thu, 13 May 2021 06:54:03 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51123C061574;
+        Thu, 13 May 2021 03:52:53 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id x8so4190082wrq.9;
+        Thu, 13 May 2021 03:52:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wurg8+6Jn58vcJ4YzvhBvWEPt984bnrYtM62cgWtQ54=;
+        b=Liyso4Ddk1TCHKkBPfvE+Tjl+dMTtgM83Hv6ihumX1VaDDJHGkiVxtjQXxkaK+FApp
+         xnlzeiPdeI6EWBh3ae6KOO3fx9c1wehK6srYGZw1aoBA6XK8ZPU0qKNcn+m/Aur3ExyX
+         h39r8mNQYD3PXTuBektT9Bh1T4WfzNZr5gol2VqG+Zmu1+U7xRDmcpGy1OxIyqWoZohu
+         Ql7KY9/M7iJGuQU2Z31or64X/6EqDF346wrJyB42+vezeh0bun4hLaimxc0UvuzQZRn/
+         RXdA2H/5kpyPh2byOjtSctsoeme96ihZkLVPuGdodO3gk7x7Xfobbe9ls9Dk7fzJXKeF
+         qVHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wurg8+6Jn58vcJ4YzvhBvWEPt984bnrYtM62cgWtQ54=;
+        b=odX4ukgUAqH/8VD4fx1yqnhdg2ZHUS2ODzbHgsu9caP1dkQnokfxLRLvo46MDw0NEw
+         yeunOMVQUkQx1lyeIUt2zW12hAR2jpdMbomniqMnx6OzlpFrVIhmrCQTVN3NrmZG3NCC
+         6lxuCODC1Fz/QvAz64szpCf82htSRqP7ziAQ3k0n2/Q2FnVNTG3aTg5wQ295eBgStMqs
+         MIsGjeLOCXxtr5HOh9N2Ze5Si7oLRjPxxvTjkRF8FD52Mi7cFrJuQyh9gI+aUlwlwTDK
+         hpQCSCyc7EORZM6zvFWQQZ0fY/VLglfYz4uZPTxNOWB3uaZ3uwxS/oOamq1RYt0Sgcwa
+         5s+g==
+X-Gm-Message-State: AOAM533UvCH4b4O/gkYvNRdLYyPNiUZsm8co/iJcePfBH2+8jvBbShqI
+        zkQnAKCuYpVDXnb2bAeJTHo=
+X-Google-Smtp-Source: ABdhPJyZE+Mpuh2iBNJGqNUuuRioUx8qSD/muiIeVgDnr1tO4S4DlQy9IjOridIGsJ6QjzD1+bydAQ==
+X-Received: by 2002:adf:d084:: with SMTP id y4mr51791133wrh.0.1620903172064;
+        Thu, 13 May 2021 03:52:52 -0700 (PDT)
+Received: from debian (host-2-98-62-17.as13285.net. [2.98.62.17])
+        by smtp.gmail.com with ESMTPSA id i14sm8237544wmb.33.2021.05.13.03.52.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 May 2021 03:52:51 -0700 (PDT)
+Date:   Thu, 13 May 2021 11:52:49 +0100
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.4 000/244] 5.4.119-rc1 review
+Message-ID: <YJ0FASxs09/BxwV7@debian>
+References: <20210512144743.039977287@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210513080353.GR1336@shell.armlinux.org.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <20210512144743.039977287@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 09:03:53AM +0100, Russell King - ARM Linux admin wrote:
-> On Thu, May 13, 2021 at 11:21:53AM +0530, Anshuman Khandual wrote:
-> > Drop these unused symbols i.e PTE_TYPE_FAULT and PMD_TYPE_FAULT.
+Hi Greg,
+
+On Wed, May 12, 2021 at 04:46:11PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.119 release.
+> There are 244 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> They're documentation, although PTE_TYPE_FAULT ought to be used by
-> __swp_entry() to show that better.
+> Responses should be made by Fri, 14 May 2021 14:47:09 +0000.
+> Anything received after that time might be too late.
 
-So really, we should be doing something like this:
+Build test:
+mips (gcc version 11.1.1 20210430): 65 configs -> 1 new failure
 
-diff --git a/arch/arm/include/asm/pgtable.h b/arch/arm/include/asm/pgtable.h
-index c02f24400369..c43e07d6046d 100644
---- a/arch/arm/include/asm/pgtable.h
-+++ b/arch/arm/include/asm/pgtable.h
-@@ -303,7 +303,7 @@ static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
- #define __swp_entry(type,offset) ((swp_entry_t) { ((type) << __SWP_TYPE_SHIFT) | ((offset) << __SWP_OFFSET_SHIFT) })
- 
- #define __pte_to_swp_entry(pte)	((swp_entry_t) { pte_val(pte) })
--#define __swp_entry_to_pte(swp)	((pte_t) { (swp).val })
-+#define __swp_entry_to_pte(swp)	__pte((swp).val | PTE_TYPE_FAULT)
- 
- /*
-  * It is an error for the kernel to have more swap files than we can
+malta_qemu_32r6_defconfig fails due to:
+[PATCH 5.4 035/244] MIPS: Reinstate platform `__div64_32 handler
 
-Since that is really what is going on here. It is by design that the
-swp_entry_t is layed out to be correct, and of course because
-PTE_TYPE_FAULT has the value of zero, the above merely adds to the
-"documentation" rather than having any functional effect.
+arm (gcc version 11.1.1 20210430): 107 configs -> no new failure
+x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression.
+
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+
+--
+Regards
+Sudip
