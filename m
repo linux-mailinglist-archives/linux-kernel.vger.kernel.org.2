@@ -2,121 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3569337F770
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 14:06:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19DB137F77C
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 14:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233621AbhEMMH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 08:07:56 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58136 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233100AbhEMMHg (ORCPT
+        id S233297AbhEMMJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 08:09:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233226AbhEMMJJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 08:07:36 -0400
-Date:   Thu, 13 May 2021 12:06:23 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620907584;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=OfSgEs6K2vIwfb48s+CnOVp73nWZdkBQo4IhPqMOmNI=;
-        b=RXVxAw9VTpxWmsNMFX408LEkYOr2N+Yir7yyhq6NQX4bY6YRU9BfsJXEh4+PdREEoH/pRd
-        SIMNXJLQRD1MGmt+ZCfiaafQz4OCrwlCFuAEBQNdQ6BuJEd6kTx1Fsk1D2JK1S4UwKNhxw
-        4/3M321SROxlvIwPRXOiVL3XlzcMD7hxEK+vfHHodwvgOHFUjzgZiL0Ag209nWDfd25BRK
-        G87cYvp0ffGhAieNDdJjKOi6Vyj5Jl4QUfOoXDNyrYYIwGNaaZOcqWLiaxW3ygFhRMFh41
-        uCxzT47/hQVdNYeThtSHaWXCIlAA0FnrIDmrbFrs1j+7w5wcvdxjGSBrwVA30g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620907584;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=OfSgEs6K2vIwfb48s+CnOVp73nWZdkBQo4IhPqMOmNI=;
-        b=O0h21mANTfXP35Zg+tKUXjK2mHR10AsZp2P3RTJrvtA2MfIj//RgIDq47kqsyKNsRj8URS
-        I5AMdaVrAZ5JVqBQ==
-From:   "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/asm] x86/asm: Make <asm/asm.h> valid on cross-builds as well
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        Thu, 13 May 2021 08:09:09 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D822FC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 05:07:59 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id t4so39598423ejo.0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 05:07:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=deviqon.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AN97NCj3eyvmEj45BFIuT9uvO8IkUB2UbSSyCQn8Ghs=;
+        b=tEx6qYEor3OyFWaQgEUDBFivqR6GNXeHbrQwOymPBF1ZsUBVw7XmlkwLTLEa/Jr6SG
+         6xXLeHtfZXMEh31mWXIiUBBYc82I7eDlPWrG0s1tqWNhdTttNk7A4JFvncP+nn9P1ifh
+         JDYdhtCBdZfrrCQ+wNDo2BOWMycTA8diYsNzHx75pgzxj2017Nwp/6U4gt5z1bGADy0q
+         qAylCQbSF8guSIgoYc8xIB8m6iPHAehp1uWQbBjTHp03/vQ3pPhD2Ho1TOwIMiF3n8tO
+         jDuWAhrPtaQdY4tEcCA0tDsRlPwZq/miX11alcAwAQqBM1x0bKMdbXGQZET9U13Elgnj
+         cwIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AN97NCj3eyvmEj45BFIuT9uvO8IkUB2UbSSyCQn8Ghs=;
+        b=jyxn9NWupiFTTgOPIJc569viar9IryA+vN5uAvZHjJAgMIXbWNJdKZDBk9lVJtyQ46
+         7SIAxU9lpZ6hl354pjzZx+XMLy1vDsL+q+Zu7CE36yzb1V9lFC6M523n1P1tmDO/tGeh
+         aarmORjVrmNYR0mIw0n7dpSS0lfynh//xpbEFFTbsllpu5JhoA2xVD3lDssI/pihq5fY
+         +cfKpTZToTlYb2P9lNRYjRFwZB5Soquy5QIwHuRykWpOkItulVnGaSPsmgQ4jX37fKfH
+         oTC1Dx2YjvOQ3X+M+guUBx5k/egN1fPwXcPljlWp6lYajQxi0TbpzAjbeDkfcJ5sbved
+         7hBg==
+X-Gm-Message-State: AOAM531BQtShgBClIPpuo9Qp6fNH8jNc+g/IHm0hcjezn65WgIiXWeSv
+        ttD/FjHGRB8SsE53T6atcdNlXg==
+X-Google-Smtp-Source: ABdhPJwXrvl6/wqfYK1LxNxWtGb9h1LLHpAch6sGCil60LnfuskQucPhvPqFdFXolG4BP/lMFERejQ==
+X-Received: by 2002:a17:906:1399:: with SMTP id f25mr5940122ejc.29.1620907678519;
+        Thu, 13 May 2021 05:07:58 -0700 (PDT)
+Received: from neptune.. ([5.2.193.191])
+        by smtp.gmail.com with ESMTPSA id ga28sm1717809ejc.20.2021.05.13.05.07.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 May 2021 05:07:57 -0700 (PDT)
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     jic23@kernel.org, Jonathan.Cameron@huawei.com,
+        alexandru.tachici@analog.com, linux@deviqon.com,
+        Alexandru Ardelean <aardelean@deviqon.com>
+Subject: [PATCH v4 00/12] ad_sigma_delta: convert all drivers to device-managed
+Date:   Thu, 13 May 2021 15:07:40 +0300
+Message-Id: <20210513120752.90074-1-aardelean@deviqon.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Message-ID: <162090758316.29796.6557455559313150627.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/asm branch of tip:
+Well, for lack of a better title that's what this series does.
+It merges Jonathan's patches from:
+  * https://lore.kernel.org/linux-iio/20210508182319.488551-1-jic23@kernel.org/
+    Patch 3/3 was a polished a bit with my comments from that review and also
+    to use the devm_ad_sd_setup_buffer_and_trigger() function.
+  * https://lore.kernel.org/linux-iio/20210509114118.660422-1-jic23@kernel.org/
+    Added only to base the conversion to devm_
 
-Commit-ID:     4173d63a75ce47de95ce5406d8adab9005826def
-Gitweb:        https://git.kernel.org/tip/4173d63a75ce47de95ce5406d8adab9005826def
-Author:        Ingo Molnar <mingo@kernel.org>
-AuthorDate:    Thu, 13 May 2021 13:41:41 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 13 May 2021 13:45:04 +02:00
+The AD Sigma Delta family of ADC drivers share a lot of the logic in the
+ad_sigma_delta lib-driver.
 
-x86/asm: Make <asm/asm.h> valid on cross-builds as well
+This set introduces a devm_ad_sd_setup_buffer_and_trigger() call, which
+aims to replace the 'ad_sd_{setup,cleanup}_buffer_and_trigger()' pair.
 
-Stephen Rothwell reported that the objtool cross-build breaks on
-non-x86 hosts:
+This helps with converting the AD7780, AD7791, AD7793 and AD7192
+drivers use be fully converted to device-managed functions.
 
-  > tools/arch/x86/include/asm/asm.h:185:24: error: invalid register name for 'current_stack_pointer'
-  >   185 | register unsigned long current_stack_pointer asm(_ASM_SP);
-  >       |                        ^~~~~~~~~~~~~~~~~~~~~
+Changelog v3 -> v4:
+* https://lore.kernel.org/linux-iio/20210512174914.10549-1-aardelean@deviqon.com/
+* patch 'iio: adc: ad7192: handle zero Avdd regulator value'
+  is now 'iio: adc: ad7192: handle regulator voltage error first'
+  - now checking the regulator_voltage() return first for an error
 
-The PowerPC host obviously doesn't know much about x86 register names.
+Changelog v2 -> v3:
+* https://lore.kernel.org/linux-iio/20210511071831.576145-1-aardelean@deviqon.com/
+* patch 'iio: adc: ad7192: handle zero Avdd regulator value as error'
+  is now 'iio: adc: ad7192: handle zero Avdd regulator value'
+  essentially just doing a simple 'if (voltage_uv >= 0)' check now
 
-Protect the kernel-specific bits of <asm/asm.h>, so that it can be
-included by tooling and cross-built.
+Changelog v1 -> v2:
+* https://lore.kernel.org/linux-iio/20210510125523.1271237-1-aardelean@deviqon.com/
+* add my S-o-b tags on all patches; with @deviqon.com email
+  - Note: I'm a little unsure about the correctness of these tags; there
+    are a few mixed-in, with Reviewed-by & Signed-off-by; I'm fine if
+    Jonathan tweaks these as needed;
+* added patch 'iio: adc: ad7192: handle zero Avdd regulator value as error'
+* all Fixes patches should be now at the beginning of the series
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
----
- arch/x86/include/asm/asm.h       | 4 ++++
- tools/arch/x86/include/asm/asm.h | 4 ++++
- 2 files changed, 8 insertions(+)
+Alexandru Ardelean (8):
+  iio: adc: ad7192: handle regulator voltage error first
+  iio: adc: ad_sigma_delta: introduct
+    devm_ad_sd_setup_buffer_and_trigger()
+  iio: adc: ad7793: convert to device-managed functions
+  iio: adc: ad7791: convert to device-managed functions
+  iio: adc: ad7780: convert to device-managed functions
+  iio: adc: ad7192: use devm_clk_get_optional() for mclk
+  iio: adc: ad7192: convert to device-managed functions
+  iio: adc: ad_sigma_delta: remove
+    ad_sd_{setup,cleanup}_buffer_and_trigger()
 
-diff --git a/arch/x86/include/asm/asm.h b/arch/x86/include/asm/asm.h
-index 507a37a..3ad3da9 100644
---- a/arch/x86/include/asm/asm.h
-+++ b/arch/x86/include/asm/asm.h
-@@ -120,6 +120,8 @@
- # define CC_OUT(c) [_cc_ ## c] "=qm"
- #endif
- 
-+#ifdef __KERNEL__
-+
- /* Exception table entry */
- #ifdef __ASSEMBLY__
- # define _ASM_EXTABLE_HANDLE(from, to, handler)			\
-@@ -186,4 +188,6 @@ register unsigned long current_stack_pointer asm(_ASM_SP);
- #define ASM_CALL_CONSTRAINT "+r" (current_stack_pointer)
- #endif /* __ASSEMBLY__ */
- 
-+#endif /* __KERNEL__ */
-+
- #endif /* _ASM_X86_ASM_H */
-diff --git a/tools/arch/x86/include/asm/asm.h b/tools/arch/x86/include/asm/asm.h
-index 507a37a..3ad3da9 100644
---- a/tools/arch/x86/include/asm/asm.h
-+++ b/tools/arch/x86/include/asm/asm.h
-@@ -120,6 +120,8 @@
- # define CC_OUT(c) [_cc_ ## c] "=qm"
- #endif
- 
-+#ifdef __KERNEL__
-+
- /* Exception table entry */
- #ifdef __ASSEMBLY__
- # define _ASM_EXTABLE_HANDLE(from, to, handler)			\
-@@ -186,4 +188,6 @@ register unsigned long current_stack_pointer asm(_ASM_SP);
- #define ASM_CALL_CONSTRAINT "+r" (current_stack_pointer)
- #endif /* __ASSEMBLY__ */
- 
-+#endif /* __KERNEL__ */
-+
- #endif /* _ASM_X86_ASM_H */
+Jonathan Cameron (4):
+  iio: adc: ad7124: Fix missbalanced regulator enable / disable on
+    error.
+  iio: adc: ad7124: Fix potential overflow due to non sequential channel
+    numbers
+  iio: adc: ad7192: Avoid disabling a clock that was never enabled.
+  iio: adc: ad7124: Use devm_ managed calls for all of probe() + drop
+    remove()
+
+ drivers/iio/adc/ad7124.c               | 84 +++++++++-------------
+ drivers/iio/adc/ad7192.c               | 98 +++++++++++---------------
+ drivers/iio/adc/ad7780.c               | 38 +++-------
+ drivers/iio/adc/ad7791.c               | 44 ++++--------
+ drivers/iio/adc/ad7793.c               | 53 ++++----------
+ drivers/iio/adc/ad_sigma_delta.c       | 82 ++++++++-------------
+ include/linux/iio/adc/ad_sigma_delta.h |  4 +-
+ 7 files changed, 144 insertions(+), 259 deletions(-)
+
+-- 
+2.31.1
+
