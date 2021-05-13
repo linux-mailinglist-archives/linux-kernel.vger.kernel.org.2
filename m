@@ -2,226 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ED9737F587
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 12:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8AE937F58A
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 12:22:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232822AbhEMKWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 06:22:13 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50114 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232643AbhEMKVq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 06:21:46 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1620901236; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Gv3oECQ46RpkqjsSmVdu+DBDmUv5de8Z0G7uM0jmSok=;
-        b=jUliB6QB+yR8m7zRmYNUYKDKJ3/1vxpyky3PJGw3F93zhwBoHSkhylkgwQb1Vaq7l1dlm1
-        2KogYYZd78ZTwfzoJSBPcNNs5osgvCANhvLt7vleAdSAVPhIeb3n8SETjdMtUSokPWGDd5
-        Ownp3SVZ9wWKrhXoIPaI4X6u/QbH9/0=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 47268B15E;
-        Thu, 13 May 2021 10:20:36 +0000 (UTC)
-Subject: Re: [PATCH 8/8] xen/hvc: replace BUG_ON() with negative return value
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        xen-devel@lists.xenproject.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-References: <20210513100302.22027-1-jgross@suse.com>
- <20210513100302.22027-9-jgross@suse.com>
- <6da4cc91-ccde-fce8-707c-e7544783c2fa@csgroup.eu>
-From:   Juergen Gross <jgross@suse.com>
-Message-ID: <e62b12e7-6dbe-3d26-2196-9cbc2c0d4160@suse.com>
-Date:   Thu, 13 May 2021 12:20:35 +0200
+        id S232810AbhEMKXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 06:23:30 -0400
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:59711 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232615AbhEMKWs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 06:22:48 -0400
+X-Originating-IP: 78.45.89.65
+Received: from [192.168.1.23] (ip-78-45-89-65.net.upcbroadband.cz [78.45.89.65])
+        (Authenticated sender: i.maximets@ovn.org)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 66E12E0002;
+        Thu, 13 May 2021 10:21:32 +0000 (UTC)
+Subject: Re: [ovs-dev] [PATCH net] openvswitch: meter: fix race when getting
+ now_ms.
+To:     Tao Liu <thomas.liu@ucloud.cn>, pshelar@ovn.org
+Cc:     dev@openvswitch.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, i.maximets@ovn.org,
+        jean.tourrilhes@hpe.com, kuba@kernel.org, davem@davemloft.net,
+        Eelco Chaudron <echaudro@redhat.com>
+References: <20210513100300.22735-1-thomas.liu@ucloud.cn>
+From:   Ilya Maximets <i.maximets@ovn.org>
+Message-ID: <801322d2-5b39-2497-bf0a-1ec08122a5c7@ovn.org>
+Date:   Thu, 13 May 2021 12:21:31 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <6da4cc91-ccde-fce8-707c-e7544783c2fa@csgroup.eu>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="PNhWaVfjD0otdP9RzGGQdOMphOo0bj07j"
+In-Reply-To: <20210513100300.22735-1-thomas.liu@ucloud.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---PNhWaVfjD0otdP9RzGGQdOMphOo0bj07j
-Content-Type: multipart/mixed; boundary="yyRuUPzqcs5EAOdYBXLJTxPGRA5Ebq4bt";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>,
- xen-devel@lists.xenproject.org, linuxppc-dev@lists.ozlabs.org,
- linux-kernel@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <e62b12e7-6dbe-3d26-2196-9cbc2c0d4160@suse.com>
-Subject: Re: [PATCH 8/8] xen/hvc: replace BUG_ON() with negative return value
-References: <20210513100302.22027-1-jgross@suse.com>
- <20210513100302.22027-9-jgross@suse.com>
- <6da4cc91-ccde-fce8-707c-e7544783c2fa@csgroup.eu>
-In-Reply-To: <6da4cc91-ccde-fce8-707c-e7544783c2fa@csgroup.eu>
+On 5/13/21 12:03 PM, Tao Liu wrote:
+> We have observed meters working unexpected if traffic is 3+Gbit/s
+> with multiple connections.
+> 
+> now_ms is not pretected by meter->lock, we may get a negative
+> long_delta_ms when another cpu updated meter->used, then:
+>     delta_ms = (u32)long_delta_ms;
+> which will be a large value.
+> 
+>     band->bucket += delta_ms * band->rate;
+> then we get a wrong band->bucket.
+> 
+> Fixes: 96fbc13d7e77 ("openvswitch: Add meter infrastructure")
+> Signed-off-by: Tao Liu <thomas.liu@ucloud.cn>
+> ---
 
---yyRuUPzqcs5EAOdYBXLJTxPGRA5Ebq4bt
-Content-Type: multipart/mixed;
- boundary="------------8C09C99EF5386C5A52D248BD"
-Content-Language: en-US
+Hi.  Thanks for the patch!
+We fixed the same issue in userspace datapath some time ago and
+we did that a bit differently by just setting negative long_delta_ms
+to zero in assumption that all threads received their packets at
+the same millisecond (which is most likely true if we have this
+kind of race).  This should be also cheaper from form the performance
+point of view to not have an extra call and a division under the
+spinlock.   What do you think?
 
-This is a multi-part message in MIME format.
---------------8C09C99EF5386C5A52D248BD
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+It's also a good thing to have more or less similar implementation
+for all datapaths.
 
-On 13.05.21 12:16, Christophe Leroy wrote:
->=20
->=20
-> Le 13/05/2021 =C3=A0 12:03, Juergen Gross a =C3=A9crit=C2=A0:
->> Xen frontends shouldn't BUG() in case of illegal data received from
->> their backends. So replace the BUG_ON()s when reading illegal data fro=
-m
->> the ring page with negative return values.
->>
->> Signed-off-by: Juergen Gross <jgross@suse.com>
->> ---
->> =C2=A0 drivers/tty/hvc/hvc_xen.c | 15 +++++++++++++--
->> =C2=A0 1 file changed, 13 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/tty/hvc/hvc_xen.c b/drivers/tty/hvc/hvc_xen.c
->> index 92c9a476defc..30d7ffb1e04c 100644
->> --- a/drivers/tty/hvc/hvc_xen.c
->> +++ b/drivers/tty/hvc/hvc_xen.c
->> @@ -86,6 +86,11 @@ static int __write_console(struct xencons_info=20
->> *xencons,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cons =3D intf->out_cons;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 prod =3D intf->out_prod;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mb();=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* update queue values before going on */
->> +
->> +=C2=A0=C2=A0=C2=A0 if (WARN_ONCE((prod - cons) > sizeof(intf->out),
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 "Illegal ring page indices"))
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -EINVAL;
->> +
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BUG_ON((prod - cons) > sizeof(intf->out=
-));
->=20
-> Why keep the BUG_ON() ?
+Here is a userspace patch:
 
-Oh, failed to delete it. Thanks for noticing.
+commit acc5df0e3cb036524d49891fdb9ba89b609dd26a
+Author: Ilya Maximets <i.maximets@ovn.org>
+Date:   Thu Oct 24 15:15:07 2019 +0200
 
+    dpif-netdev: Fix time delta overflow in case of race for meter lock.
+    
+    There is a race window between getting the time and getting the meter
+    lock.  This could lead to situation where the thread with larger
+    current time (this thread called time_{um}sec() later than others)
+    will acquire meter lock first and update meter->used to the large
+    value.  Next threads will try to calculate time delta by subtracting
+    the large meter->used from their lower time getting the negative value
+    which will be converted to a big unsigned delta.
+    
+    Fix that by assuming that all these threads received packets in the
+    same time in this case, i.e. dropping negative delta to 0.
+    
+    CC: Jarno Rajahalme <jarno@ovn.org>
+    Fixes: 4b27db644a8c ("dpif-netdev: Simple DROP meter implementation.")
+    Reported-at: https://mail.openvswitch.org/pipermail/ovs-dev/2019-September/363126.html
+    Signed-off-by: Ilya Maximets <i.maximets@ovn.org>
+    Acked-by: William Tu <u9012063@gmail.com>
 
-Juergen
-
---------------8C09C99EF5386C5A52D248BD
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------8C09C99EF5386C5A52D248BD--
-
---yyRuUPzqcs5EAOdYBXLJTxPGRA5Ebq4bt--
-
---PNhWaVfjD0otdP9RzGGQdOMphOo0bj07j
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmCc/XMFAwAAAAAACgkQsN6d1ii/Ey/C
-FQf+OD+N3eBcm476rbHE/SMrRCrdPemYIIfTIa5eniRP163hc8D1XpMWlkcy5Im93pdCIpKY0tTp
-2W2b04SywD+i6CehGWJ+nKEvRh1wNiJdGF+EWyf5QQGdmixgOhHzWEcOdn+uI770XafZTPT2w3x2
-Ki7nKgGa7Gjr6xCJhexpnMYtQe4uo1SXTRT9j+W10jA6ppaG8zB4pE8ONyHG2c+CN7Ue354XBM4X
-QVNLngs5PFy8LbNyhfU1IU1kG/0rrFmwsd2+CRRx0iCgtlcxaVwkPsIEF0e17l2rXGj0+aniQXW8
-NcRQ00qw+18DPctnaLB1OU2GUgEJnuLWGzEuR6NdDg==
-=tAfr
------END PGP SIGNATURE-----
-
---PNhWaVfjD0otdP9RzGGQdOMphOo0bj07j--
+diff --git a/lib/dpif-netdev.c b/lib/dpif-netdev.c
+index c09b8fd95..4720ba1ab 100644
+--- a/lib/dpif-netdev.c
++++ b/lib/dpif-netdev.c
+@@ -5646,6 +5646,14 @@ dp_netdev_run_meter(struct dp_netdev *dp, struct dp_packet_batch *packets_,
+     /* All packets will hit the meter at the same time. */
+     long_delta_t = now / 1000 - meter->used / 1000; /* msec */
+ 
++    if (long_delta_t < 0) {
++        /* This condition means that we have several threads fighting for a
++           meter lock, and the one who received the packets a bit later wins.
++           Assuming that all racing threads received packets at the same time
++           to avoid overflow. */
++        long_delta_t = 0;
++    }
++
+     /* Make sure delta_t will not be too large, so that bucket will not
+      * wrap around below. */
+     delta_t = (long_delta_t > (long long int)meter->max_delta_t)
+---
