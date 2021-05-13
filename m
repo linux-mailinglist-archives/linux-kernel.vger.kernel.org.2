@@ -2,691 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C31837F340
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 08:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13FC337F33E
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 08:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231451AbhEMGyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 02:54:11 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:46854 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230063AbhEMGyG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 02:54:06 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14D6qlkI104855;
-        Thu, 13 May 2021 01:52:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1620888767;
-        bh=8zZM8kb7SdFruz8ojsVszZwRBe4/Txo2RSmaLM/9/Gs=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=YbR5eDwQBi1TPnwQXntfgB+J9Nx8Tx+t3s0WSSWRmCSyhUf/ReMUHAUBbcS40EbVE
-         uW9TxvJQCN9kjLRph36JhPxNuUenzwLTjANr+KwQqdKPfBieUZI9S8aPcnx3c/Gi0s
-         f7y1vVneA5+2NY1haVKhWkMOkLpLn64hmM2OlK2Q=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14D6qkGq116851
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 13 May 2021 01:52:47 -0500
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 13
- May 2021 01:52:46 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 13 May 2021 01:52:46 -0500
-Received: from [10.250.232.157] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14D6qf87079306;
-        Thu, 13 May 2021 01:52:42 -0500
-Subject: Re: [PATCH 05/14] phy: cadence-torrent: Add PHY registers for DP in
- array format
-To:     Swapnil Jakhade <sjakhade@cadence.com>, <vkoul@kernel.org>,
-        <p.zabel@pengutronix.de>, <linux-phy@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <mparab@cadence.com>, <lokeshvutla@ti.com>
-References: <1617946456-27773-1-git-send-email-sjakhade@cadence.com>
- <1617946456-27773-6-git-send-email-sjakhade@cadence.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <1d32c3a1-7fde-d8f8-4a95-659b23f64b73@ti.com>
-Date:   Thu, 13 May 2021 12:22:40 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <1617946456-27773-6-git-send-email-sjakhade@cadence.com>
-Content-Type: text/plain; charset="utf-8"
+        id S231437AbhEMGx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 02:53:59 -0400
+Received: from mga14.intel.com ([192.55.52.115]:28990 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230063AbhEMGx4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 02:53:56 -0400
+IronPort-SDR: OcHoUxV0Wd6H7zflArNhZbn91eM5PrPYhohCsJz3O4ai6P5gpLSwfTYsxCShGN/Gjv7C+SB0+u
+ QSJK4hzS/Kww==
+X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="199565804"
+X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
+   d="scan'208";a="199565804"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2021 23:52:47 -0700
+IronPort-SDR: FQg7HvmIHCOV+RTTwmMMgI1HrjgCBQ/CZJWikYaJacWOnc/DBYyT5ol1pF5KmxTyWNhUQYQAhJ
+ 4fJWhqxrROOA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
+   d="scan'208";a="610269489"
+Received: from orsmsx605.amr.corp.intel.com ([10.22.229.18])
+  by orsmga005.jf.intel.com with ESMTP; 12 May 2021 23:52:46 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 12 May 2021 23:52:46 -0700
+Received: from orsmsx605.amr.corp.intel.com (10.22.229.18) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 12 May 2021 23:52:45 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
+ via Frontend Transport; Wed, 12 May 2021 23:52:45 -0700
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.49) by
+ edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2106.2; Wed, 12 May 2021 23:52:45 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RlmpPomPLIqLuV/osuTvFRzD9RNArQYW50d6SsWZIfRUBgd61zQwfC7wZDypkcBP6M1Mlcog7vdriPbbX0BrTC4AuMFjKoX9nugR6EZSIRArHNu/NBTZQtUe7XzTq0eBZR/XFD36/G2+6wb7fkVyh5hy7Nj/FoMyYo6hlbE79Gk2KTzNQQ/jNF1/Oi5gbXvf3BXEsFveVlJEbAUUAbyGcOLKjT9G+1LjKv+0PQvdIwRijqB4VyHmktvJR5dKq+sYit5HLZXz4AwtRFpzYzxxmNOuol1Ji/HE74UYfuLtjfPU1q5bkQgg5PSHeqeZioGhUz4R6KOCCAVea69cVsoG2A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dOxG10YlcjhdLDqR+LeNIuApwba0FwwP6LcqPjTuLGk=;
+ b=jGk83dYr7+as2wM0SAyELjHimA6XxkXTioWHLuViEUfVyYKj7HUnex5yBYi2i0BzGVdEleerPWrklCXLR5hd3YZocooh5RoGKGKQrvbhIjj1dfSYZkdQ2i3BWTHSNdwbqmOc5/dk2rlz6OXmDJpIdhyoP7VS3aHUG9NzKDIUoylTAA4sjYhwItLurqhBg3kwPNFS1v2gp0pQyZyW3XBaBHRxV67+4uEKOnzzLwaLhVxS+BJjdgy22NN0vqNqLMf/6+uacewyVqGveP3WnRthi3ca7FP3Rpt9L/RB62d6LzawKLQpeSDHkGP6VZELbund/xQ2Q9ZIRusQT/wqB6TgcA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dOxG10YlcjhdLDqR+LeNIuApwba0FwwP6LcqPjTuLGk=;
+ b=MVgQ2DzC1AOPcKQ5zPaFn7LetXGCcpepufHDO0+utMNN0i9biBIb1a12iN5P8HXCCzdW7BMIY61cX641dQSsTInDRLLiiGFgk5fvdEUJo73HphYq65nRkylkSNYly6/MOQKE8ODmrCBU4qb7uIpnuP6rlEMOaYrlPthUBrpoPKs=
+Received: from MWHPR11MB1886.namprd11.prod.outlook.com (10.175.54.9) by
+ CO1PR11MB5153.namprd11.prod.outlook.com (20.182.137.77) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4129.25; Thu, 13 May 2021 06:52:43 +0000
+Received: from MWHPR11MB1886.namprd11.prod.outlook.com
+ ([fe80::6597:eb05:c507:c6c1]) by MWHPR11MB1886.namprd11.prod.outlook.com
+ ([fe80::6597:eb05:c507:c6c1%12]) with mapi id 15.20.4129.026; Thu, 13 May
+ 2021 06:52:43 +0000
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     David Gibson <david@gibson.dropbear.id.au>,
+        Jason Gunthorpe <jgg@nvidia.com>
+CC:     Alex Williamson <alex.williamson@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Alexey Kardashevskiy" <aik@ozlabs.ru>
+Subject: RE: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and allocation
+ APIs
+Thread-Topic: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Thread-Index: AQHXDZub0CDG82VGXUmLEYgvMuPs4KqKkLIAgACg94CAAC72gIAAD04AgAADogCAAErUgIAETQEAgAOaswCAB7C3gIAAhxQwgADYDACAATCSAIAAVGMAgAELsQCAACiXgIAAVBgAgAAaMwCAAAESAIAABy2AgAAgOYCAFdCAgIAAppUAgADsNgCAACqygIAHsmaAgAAzsYCAAAjdgIAAD/yAgAAcQgCAADqggIABMLWAgAcMG4CAANKaAIAAhd2AgAGBD4CAADHjAIAHHxkAgADGNoCAAPB6gIANV9MAgAAMdIA=
+Date:   Thu, 13 May 2021 06:52:43 +0000
+Message-ID: <MWHPR11MB18866CDB2F82A2E9285994998C519@MWHPR11MB1886.namprd11.prod.outlook.com>
+References: <20210421230301.GP1370958@nvidia.com>
+ <20210422111337.6ac3624d@redhat.com> <YIeYJZOdgMN/orl0@yekko.fritz.box>
+ <20210427172432.GE1370958@nvidia.com> <YIi5G4Wg/hpFqNdX@yekko.fritz.box>
+ <20210429002149.GZ1370958@nvidia.com> <YIol9p3z8BTWFRh8@yekko>
+ <20210503160530.GL1370958@nvidia.com> <YJDFj+sAv41JRIo4@yekko>
+ <20210504181537.GC1370958@nvidia.com> <YJzAsBNF1irJxRGg@yekko>
+In-Reply-To: <YJzAsBNF1irJxRGg@yekko>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: gibson.dropbear.id.au; dkim=none (message not signed)
+ header.d=none;gibson.dropbear.id.au; dmarc=none action=none
+ header.from=intel.com;
+x-originating-ip: [101.80.65.46]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: acc38c54-8998-45ae-0da1-08d915dbb573
+x-ms-traffictypediagnostic: CO1PR11MB5153:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <CO1PR11MB51530E32DAC737C733807B7D8C519@CO1PR11MB5153.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: wi7waP/PKC7Im2zH8qVoqDQ9E99q91/0Rv5VisE1XQtyLNKJxie0ZCqpmqpw+oGfrLGKAwo6CklQmP9kc388uP4hBMuWA4hGLTRm4Bkm9QtIfxmyfwD9vP9SDrrjQ0dGRd61Xt3M4kfQNobu1ZCyjfohgUMxCHUD9gdpD7LOQt1fRg/N749pRfx+JIJpTPO6TrjxnKrDunSuNpCsr0cfki9fSQM86ZC3mquoUZL4fBlwXixIoF9leBV9C51C8PvSV0hn+n/m9Bz3CQ554qq4r5r1QZ4Ty0Pe4td1a+oniKEoVF7S7bFeyhAuzi3tQjUS28uuJBBBglByQk/Ssn+r9qvL41z5qnb1IJNR7GnN1E11iIDSNzECZhSE01JRmlpheq8hPBp7OgnAdpPQ5bQNuxhdcTiQGhQLEcQn7fX8mkaszpYdc5NX7qBuPoRFY1iKNq5AVUttq8TCYAL+QQubgVVLnIYz84R8sLqVB9I17emCyU+O6NQSprb8l5mgA9UK2FephEvRT0kHsohrE0G3ZOlCxI3k8XzaR0hgzTYAfJ+x1rz2FRK81qH8yZFMZeYP8j03Cvu8Og9GTSymk1P01JICgfEAYBL+KhudxmSXj8A=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1886.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(346002)(39860400002)(376002)(366004)(7696005)(4744005)(66446008)(64756008)(76116006)(4326008)(122000001)(478600001)(52536014)(71200400001)(2906002)(7416002)(38100700002)(66476007)(26005)(66946007)(66556008)(6506007)(186003)(9686003)(55016002)(5660300002)(316002)(54906003)(110136005)(33656002)(8676002)(86362001)(8936002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?VhO4/1dscOl9cdswVYrzwmkJ/srAZNTy6UWWoqC7vfPLczpOAlF8maT6mTaN?=
+ =?us-ascii?Q?5i243gwtPsAt37DswRByoLcOU1CGBjeGGYKX8wsEsDGwzVH2yrVWHfEzIAyk?=
+ =?us-ascii?Q?qDPXDsSrUWt2KIox17L1xLz5RDMbsjBWOrs1e0QgeugktzJNCrYiW5xmMhYM?=
+ =?us-ascii?Q?le6wTIUBMqrVg7HwMUiR+vmQ3/pQLcdn8jxnnzZiofIMILKpm61wWKOywIQX?=
+ =?us-ascii?Q?RIZbFOrX+KL6DJlpC9FXoHeko4ZEcIbHeiFMlRjdJwCeqBrh1aJY8XT+K83o?=
+ =?us-ascii?Q?H1djmIvkyKrDfsj/+DpfkG3xeNWjkvw+8jyXcppuBmcS0QjeargjtBFdwhB5?=
+ =?us-ascii?Q?HyRAay/1xv7uviQjSEoY50dF24q/p6D0CKdCeF3kJBhWZNHWUQhxNq5ZC2ji?=
+ =?us-ascii?Q?JDGIcpPV9/957u/kAlZ0FbrA3D22AdW4MVSFfGz4oL3sBQDcCN0XvJCplrn1?=
+ =?us-ascii?Q?WbvPCphqmk8h0Ths1EIJahXVoohvxdnNz8qQEn8wmTc5xv+YV/qx3S8u0yEd?=
+ =?us-ascii?Q?4UpSLu4/f5BNrUP5VIds2GvftK93YQ5UVLfj8ZWRnKh9CYdRxDH2o4/IiNnC?=
+ =?us-ascii?Q?BUFwTq7woMoOLUJ0gHJgH86o307yBX2ZSXhyqS30HnSkKp++EAB+EH6NgfnP?=
+ =?us-ascii?Q?NO2twihwbWEZPHfVD1oDB2zLD4sSP5PeiWJ/7yeV53Yd+EuqcIWqM1paUhEO?=
+ =?us-ascii?Q?IefOhs3aTwdkrXA8Tv01EoNrck6GYiEshPlONt7wNzEbkrTjUgi0rzJaa4dA?=
+ =?us-ascii?Q?bNZRRWtftc12nAMGImOCggUgerbUEhkwwyMd6VNlvesPD6VPYdjYMc713fAL?=
+ =?us-ascii?Q?W6FJuiQCf6ODIL/8zaU5xtgAuIEXlzL0SQTCgcKSJglJhiv1JPShoRVwjYtd?=
+ =?us-ascii?Q?HPRU8jDjvTq3+UHvKht1y+J+EjX3woHsZmmdbhlGhCMG5+iTHjMbb9FWYqDc?=
+ =?us-ascii?Q?MqVEWgS5m4wFBK92ohRwbawdn0ZuEqXegDbYBzzewxcEIWKI4yI4VBhcQplp?=
+ =?us-ascii?Q?k4uZ82SmQqg5cR/NydmNbbHfRgovCPrKPdY+zq75NjJi3aqyBfTza8vNyHPn?=
+ =?us-ascii?Q?jvRGXA5PYo32VY4TwsVjYcg8xP1YaowOJwDS3CY1mgaXDJDFJeET4pnpANnZ?=
+ =?us-ascii?Q?NdrXRqLGQAOnpB52twvrGD086+sNQuXx55WpPjetdPhy7PvgoCX/lZoU2CMd?=
+ =?us-ascii?Q?V1siWPkVbC0vrEV67aS2ohkFaU345BGC8BOofDjWQwh4RDdfdCAx0LrhJ/lc?=
+ =?us-ascii?Q?EJJrRLhrEpBsdPWRgjsMjBocKwKlZkBuurvPrz99pp6XOJMXBRmiDaS0C3df?=
+ =?us-ascii?Q?SJYl4SEQuyXJsRCydsWiHdJj?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB1886.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: acc38c54-8998-45ae-0da1-08d915dbb573
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 May 2021 06:52:43.5423
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 022A+rbHP6Hy9GIbG2V/wAHEZFYtRK5DQ5v1Xyxj83ekYoG9vMtZBrV5CrRnFvm8oMrzDNRcjRwOClC/ATPRkw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB5153
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Swapnil,
+> From: David Gibson <david@gibson.dropbear.id.au>
+> Sent: Thursday, May 13, 2021 2:01 PM
+> >
+> > But this definitely all becomes HW specific.
+> >
+> > For instance I want to have an ARM vIOMMU driver it needs to do some
+> >
+> >  ret =3D ioctl(ioasid_fd, CREATE_NESTED_IOASID, [page table format is
+> ARMvXXX])
+> >  if (ret =3D=3D -EOPNOTSUPP)
+> >      ret =3D ioctl(ioasid_fd, CREATE_NORMAL_IOASID, ..)
+> >      // and do completely different and more expensive emulation
+> >
+> > I can get a little bit of generality, but at the end of the day the
+> > IOMMU must create a specific HW layout of the nested page table, if it
+> > can't, it can't.
+>=20
+> Erm.. I don't really know how your IOASID interface works here.  I'm
+> thinking about the VFIO interface where maps and unmaps are via
+> explicit ioctl()s, which provides an obvious point to do translation
+> between page table formats.
+>=20
 
-On 09/04/21 11:04 am, Swapnil Jakhade wrote:
-> Add PHY registers for single link DP in array format to simplify
-> code and to improve readability.
-
-Please mention this supports already supported frequencies of 19.2MHz
-and 25MHz.
-
-Was this tested both with 19.2MHz and 25MHz?
+We are working on a draft uAPI proposal based on the discussions in this
+thread. expect to send it out next week.=20
 
 Thanks
-Kishon
-
-> 
-> Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
-> ---
->  drivers/phy/cadence/phy-cadence-torrent.c | 450 +++++++++++++---------
->  1 file changed, 274 insertions(+), 176 deletions(-)
-> 
-> diff --git a/drivers/phy/cadence/phy-cadence-torrent.c b/drivers/phy/cadence/phy-cadence-torrent.c
-> index 39a26a1a4c51..4ec5909f192c 100644
-> --- a/drivers/phy/cadence/phy-cadence-torrent.c
-> +++ b/drivers/phy/cadence/phy-cadence-torrent.c
-> @@ -341,20 +341,12 @@ struct cdns_torrent_derived_refclk {
->  #define to_cdns_torrent_derived_refclk(_hw)	\
->  			container_of(_hw, struct cdns_torrent_derived_refclk, hw)
->  
-> -static void cdns_torrent_dp_pma_cfg(struct cdns_torrent_phy *cdns_phy,
-> -				    struct cdns_torrent_inst *inst);
-> -static
-> -void cdns_torrent_dp_pma_cmn_cfg_19_2mhz(struct cdns_torrent_phy *cdns_phy);
->  static
->  void cdns_torrent_dp_pma_cmn_vco_cfg_19_2mhz(struct cdns_torrent_phy *cdns_phy,
->  					     u32 rate, bool ssc);
->  static
-> -void cdns_torrent_dp_pma_cmn_cfg_25mhz(struct cdns_torrent_phy *cdns_phy);
-> -static
->  void cdns_torrent_dp_pma_cmn_vco_cfg_25mhz(struct cdns_torrent_phy *cdns_phy,
->  					   u32 rate, bool ssc);
-> -static void cdns_torrent_dp_pma_lane_cfg(struct cdns_torrent_phy *cdns_phy,
-> -					 unsigned int lane);
->  
->  struct cdns_reg_pairs {
->  	u32 val;
-> @@ -759,9 +751,6 @@ static void cdns_torrent_dp_pma_cmn_rate(struct cdns_torrent_phy *cdns_phy,
->  	unsigned int hsclk_div_val = 0;
->  	unsigned int i;
->  
-> -	/* 16'h0000 for single DP link configuration */
-> -	regmap_field_write(cdns_phy->phy_pll_cfg, 0x0);
-> -
->  	switch (rate) {
->  	case 1620:
->  		clk_sel_val = 0x0f01;
-> @@ -806,8 +795,7 @@ static void cdns_torrent_dp_pma_cmn_rate(struct cdns_torrent_phy *cdns_phy,
->  static int cdns_torrent_dp_configure_rate(struct cdns_torrent_phy *cdns_phy,
->  					  struct phy_configure_opts_dp *dp)
->  {
-> -	u32 ret;
-> -	u32 read_val;
-> +	u32 read_val, ret;
->  
->  	/* Disable the cmn_pll0_en before re-programming the new data rate. */
->  	regmap_field_write(cdns_phy->phy_pma_pll_raw_ctrl, 0x0);
-> @@ -825,17 +813,12 @@ static int cdns_torrent_dp_configure_rate(struct cdns_torrent_phy *cdns_phy,
->  	ndelay(200);
->  
->  	/* DP Rate Change - VCO Output settings. */
-> -	if (cdns_phy->ref_clk_rate == CLK_19_2_MHZ) {
-> +	if (cdns_phy->ref_clk_rate == CLK_19_2_MHZ)
->  		/* PMA common configuration 19.2MHz */
-> -		cdns_torrent_dp_pma_cmn_vco_cfg_19_2mhz(cdns_phy, dp->link_rate,
-> -							dp->ssc);
-> -		cdns_torrent_dp_pma_cmn_cfg_19_2mhz(cdns_phy);
-> -	} else if (cdns_phy->ref_clk_rate == CLK_25_MHZ) {
-> +		cdns_torrent_dp_pma_cmn_vco_cfg_19_2mhz(cdns_phy, dp->link_rate, dp->ssc);
-> +	else if (cdns_phy->ref_clk_rate == CLK_25_MHZ)
->  		/* PMA common configuration 25MHz */
-> -		cdns_torrent_dp_pma_cmn_vco_cfg_25mhz(cdns_phy, dp->link_rate,
-> -						      dp->ssc);
-> -		cdns_torrent_dp_pma_cmn_cfg_25mhz(cdns_phy);
-> -	}
-> +		cdns_torrent_dp_pma_cmn_vco_cfg_25mhz(cdns_phy, dp->link_rate, dp->ssc);
->  	cdns_torrent_dp_pma_cmn_rate(cdns_phy, dp->link_rate, dp->lanes);
->  
->  	/* Enable the cmn_pll0_en. */
-> @@ -1184,9 +1167,6 @@ static int cdns_torrent_dp_init(struct phy *phy)
->  
->  	cdns_torrent_dp_write(regmap, PHY_AUX_CTRL, 0x0003); /* enable AUX */
->  
-> -	/* PHY PMA registers configuration function */
-> -	cdns_torrent_dp_pma_cfg(cdns_phy, inst);
-> -
->  	/*
->  	 * Set lines power state to A0
->  	 * Set lines pll clk enable to 0
-> @@ -1231,67 +1211,6 @@ static int cdns_torrent_dp_init(struct phy *phy)
->  	return ret;
->  }
->  
-> -static void cdns_torrent_dp_pma_cfg(struct cdns_torrent_phy *cdns_phy,
-> -				    struct cdns_torrent_inst *inst)
-> -{
-> -	unsigned int i;
-> -
-> -	if (cdns_phy->ref_clk_rate == CLK_19_2_MHZ)
-> -		/* PMA common configuration 19.2MHz */
-> -		cdns_torrent_dp_pma_cmn_cfg_19_2mhz(cdns_phy);
-> -	else if (cdns_phy->ref_clk_rate == CLK_25_MHZ)
-> -		/* PMA common configuration 25MHz */
-> -		cdns_torrent_dp_pma_cmn_cfg_25mhz(cdns_phy);
-> -
-> -	/* PMA lane configuration to deal with multi-link operation */
-> -	for (i = 0; i < inst->num_lanes; i++)
-> -		cdns_torrent_dp_pma_lane_cfg(cdns_phy, i);
-> -}
-> -
-> -static
-> -void cdns_torrent_dp_pma_cmn_cfg_19_2mhz(struct cdns_torrent_phy *cdns_phy)
-> -{
-> -	struct regmap *regmap = cdns_phy->regmap_common_cdb;
-> -
-> -	/* refclock registers - assumes 19.2 MHz refclock */
-> -	cdns_torrent_phy_write(regmap, CMN_SSM_BIAS_TMR, 0x0014);
-> -	cdns_torrent_phy_write(regmap, CMN_PLLSM0_PLLPRE_TMR, 0x0027);
-> -	cdns_torrent_phy_write(regmap, CMN_PLLSM0_PLLLOCK_TMR, 0x00A1);
-> -	cdns_torrent_phy_write(regmap, CMN_PLLSM1_PLLPRE_TMR, 0x0027);
-> -	cdns_torrent_phy_write(regmap, CMN_PLLSM1_PLLLOCK_TMR, 0x00A1);
-> -	cdns_torrent_phy_write(regmap, CMN_BGCAL_INIT_TMR, 0x0060);
-> -	cdns_torrent_phy_write(regmap, CMN_BGCAL_ITER_TMR, 0x0060);
-> -	cdns_torrent_phy_write(regmap, CMN_IBCAL_INIT_TMR, 0x0014);
-> -	cdns_torrent_phy_write(regmap, CMN_TXPUCAL_INIT_TMR, 0x0018);
-> -	cdns_torrent_phy_write(regmap, CMN_TXPUCAL_ITER_TMR, 0x0005);
-> -	cdns_torrent_phy_write(regmap, CMN_TXPDCAL_INIT_TMR, 0x0018);
-> -	cdns_torrent_phy_write(regmap, CMN_TXPDCAL_ITER_TMR, 0x0005);
-> -	cdns_torrent_phy_write(regmap, CMN_RXCAL_INIT_TMR, 0x0240);
-> -	cdns_torrent_phy_write(regmap, CMN_RXCAL_ITER_TMR, 0x0005);
-> -	cdns_torrent_phy_write(regmap, CMN_SD_CAL_INIT_TMR, 0x0002);
-> -	cdns_torrent_phy_write(regmap, CMN_SD_CAL_ITER_TMR, 0x0002);
-> -	cdns_torrent_phy_write(regmap, CMN_SD_CAL_REFTIM_START, 0x000B);
-> -	cdns_torrent_phy_write(regmap, CMN_SD_CAL_PLLCNT_START, 0x0137);
-> -
-> -	/* PLL registers */
-> -	cdns_torrent_phy_write(regmap, CMN_PDIAG_PLL0_CP_PADJ_M0, 0x0509);
-> -	cdns_torrent_phy_write(regmap, CMN_PDIAG_PLL0_CP_IADJ_M0, 0x0F00);
-> -	cdns_torrent_phy_write(regmap, CMN_PDIAG_PLL0_FILT_PADJ_M0, 0x0F08);
-> -	cdns_torrent_phy_write(regmap, CMN_PLL0_DSM_DIAG_M0, 0x0004);
-> -	cdns_torrent_phy_write(regmap, CMN_PDIAG_PLL1_CP_PADJ_M0, 0x0509);
-> -	cdns_torrent_phy_write(regmap, CMN_PDIAG_PLL1_CP_IADJ_M0, 0x0F00);
-> -	cdns_torrent_phy_write(regmap, CMN_PDIAG_PLL1_FILT_PADJ_M0, 0x0F08);
-> -	cdns_torrent_phy_write(regmap, CMN_PLL1_DSM_DIAG_M0, 0x0004);
-> -	cdns_torrent_phy_write(regmap, CMN_PLL0_VCOCAL_INIT_TMR, 0x00C0);
-> -	cdns_torrent_phy_write(regmap, CMN_PLL0_VCOCAL_ITER_TMR, 0x0004);
-> -	cdns_torrent_phy_write(regmap, CMN_PLL1_VCOCAL_INIT_TMR, 0x00C0);
-> -	cdns_torrent_phy_write(regmap, CMN_PLL1_VCOCAL_ITER_TMR, 0x0004);
-> -	cdns_torrent_phy_write(regmap, CMN_PLL0_VCOCAL_REFTIM_START, 0x0260);
-> -	cdns_torrent_phy_write(regmap, CMN_PLL0_VCOCAL_TCTRL, 0x0003);
-> -	cdns_torrent_phy_write(regmap, CMN_PLL1_VCOCAL_REFTIM_START, 0x0260);
-> -	cdns_torrent_phy_write(regmap, CMN_PLL1_VCOCAL_TCTRL, 0x0003);
-> -}
-> -
->  /*
->   * Set registers responsible for enabling and configuring SSC, with second and
->   * third register values provided by parameters.
-> @@ -1473,50 +1392,6 @@ void cdns_torrent_dp_pma_cmn_vco_cfg_19_2mhz(struct cdns_torrent_phy *cdns_phy,
->  	cdns_torrent_phy_write(regmap, CMN_PLL1_LOCK_PLLCNT_START, 0x0099);
->  }
->  
-> -static
-> -void cdns_torrent_dp_pma_cmn_cfg_25mhz(struct cdns_torrent_phy *cdns_phy)
-> -{
-> -	struct regmap *regmap = cdns_phy->regmap_common_cdb;
-> -
-> -	/* refclock registers - assumes 25 MHz refclock */
-> -	cdns_torrent_phy_write(regmap, CMN_SSM_BIAS_TMR, 0x0019);
-> -	cdns_torrent_phy_write(regmap, CMN_PLLSM0_PLLPRE_TMR, 0x0032);
-> -	cdns_torrent_phy_write(regmap, CMN_PLLSM0_PLLLOCK_TMR, 0x00D1);
-> -	cdns_torrent_phy_write(regmap, CMN_PLLSM1_PLLPRE_TMR, 0x0032);
-> -	cdns_torrent_phy_write(regmap, CMN_PLLSM1_PLLLOCK_TMR, 0x00D1);
-> -	cdns_torrent_phy_write(regmap, CMN_BGCAL_INIT_TMR, 0x007D);
-> -	cdns_torrent_phy_write(regmap, CMN_BGCAL_ITER_TMR, 0x007D);
-> -	cdns_torrent_phy_write(regmap, CMN_IBCAL_INIT_TMR, 0x0019);
-> -	cdns_torrent_phy_write(regmap, CMN_TXPUCAL_INIT_TMR, 0x001E);
-> -	cdns_torrent_phy_write(regmap, CMN_TXPUCAL_ITER_TMR, 0x0006);
-> -	cdns_torrent_phy_write(regmap, CMN_TXPDCAL_INIT_TMR, 0x001E);
-> -	cdns_torrent_phy_write(regmap, CMN_TXPDCAL_ITER_TMR, 0x0006);
-> -	cdns_torrent_phy_write(regmap, CMN_RXCAL_INIT_TMR, 0x02EE);
-> -	cdns_torrent_phy_write(regmap, CMN_RXCAL_ITER_TMR, 0x0006);
-> -	cdns_torrent_phy_write(regmap, CMN_SD_CAL_INIT_TMR, 0x0002);
-> -	cdns_torrent_phy_write(regmap, CMN_SD_CAL_ITER_TMR, 0x0002);
-> -	cdns_torrent_phy_write(regmap, CMN_SD_CAL_REFTIM_START, 0x000E);
-> -	cdns_torrent_phy_write(regmap, CMN_SD_CAL_PLLCNT_START, 0x012B);
-> -
-> -	/* PLL registers */
-> -	cdns_torrent_phy_write(regmap, CMN_PDIAG_PLL0_CP_PADJ_M0, 0x0509);
-> -	cdns_torrent_phy_write(regmap, CMN_PDIAG_PLL0_CP_IADJ_M0, 0x0F00);
-> -	cdns_torrent_phy_write(regmap, CMN_PDIAG_PLL0_FILT_PADJ_M0, 0x0F08);
-> -	cdns_torrent_phy_write(regmap, CMN_PLL0_DSM_DIAG_M0, 0x0004);
-> -	cdns_torrent_phy_write(regmap, CMN_PDIAG_PLL1_CP_PADJ_M0, 0x0509);
-> -	cdns_torrent_phy_write(regmap, CMN_PDIAG_PLL1_CP_IADJ_M0, 0x0F00);
-> -	cdns_torrent_phy_write(regmap, CMN_PDIAG_PLL1_FILT_PADJ_M0, 0x0F08);
-> -	cdns_torrent_phy_write(regmap, CMN_PLL1_DSM_DIAG_M0, 0x0004);
-> -	cdns_torrent_phy_write(regmap, CMN_PLL0_VCOCAL_INIT_TMR, 0x00FA);
-> -	cdns_torrent_phy_write(regmap, CMN_PLL0_VCOCAL_ITER_TMR, 0x0004);
-> -	cdns_torrent_phy_write(regmap, CMN_PLL1_VCOCAL_INIT_TMR, 0x00FA);
-> -	cdns_torrent_phy_write(regmap, CMN_PLL1_VCOCAL_ITER_TMR, 0x0004);
-> -	cdns_torrent_phy_write(regmap, CMN_PLL0_VCOCAL_REFTIM_START, 0x0317);
-> -	cdns_torrent_phy_write(regmap, CMN_PLL0_VCOCAL_TCTRL, 0x0003);
-> -	cdns_torrent_phy_write(regmap, CMN_PLL1_VCOCAL_REFTIM_START, 0x0317);
-> -	cdns_torrent_phy_write(regmap, CMN_PLL1_VCOCAL_TCTRL, 0x0003);
-> -}
-> -
->  /*
->   * Set registers responsible for enabling and configuring SSC, with second
->   * register value provided by a parameter.
-> @@ -1640,49 +1515,6 @@ void cdns_torrent_dp_pma_cmn_vco_cfg_25mhz(struct cdns_torrent_phy *cdns_phy,
->  	cdns_torrent_phy_write(regmap, CMN_PLL1_LOCK_PLLCNT_START, 0x00C7);
->  }
->  
-> -static void cdns_torrent_dp_pma_lane_cfg(struct cdns_torrent_phy *cdns_phy,
-> -					 unsigned int lane)
-> -{
-> -	/* Per lane, refclock-dependent receiver detection setting */
-> -	if (cdns_phy->ref_clk_rate == CLK_19_2_MHZ)
-> -		cdns_torrent_phy_write(cdns_phy->regmap_tx_lane_cdb[lane],
-> -				       TX_RCVDET_ST_TMR, 0x0780);
-> -	else if (cdns_phy->ref_clk_rate == CLK_25_MHZ)
-> -		cdns_torrent_phy_write(cdns_phy->regmap_tx_lane_cdb[lane],
-> -				       TX_RCVDET_ST_TMR, 0x09C4);
-> -
-> -	/* Writing Tx/Rx Power State Controllers registers */
-> -	cdns_torrent_phy_write(cdns_phy->regmap_tx_lane_cdb[lane],
-> -			       TX_PSC_A0, 0x00FB);
-> -	cdns_torrent_phy_write(cdns_phy->regmap_tx_lane_cdb[lane],
-> -			       TX_PSC_A2, 0x04AA);
-> -	cdns_torrent_phy_write(cdns_phy->regmap_tx_lane_cdb[lane],
-> -			       TX_PSC_A3, 0x04AA);
-> -	cdns_torrent_phy_write(cdns_phy->regmap_rx_lane_cdb[lane],
-> -			       RX_PSC_A0, 0x0000);
-> -	cdns_torrent_phy_write(cdns_phy->regmap_rx_lane_cdb[lane],
-> -			       RX_PSC_A2, 0x0000);
-> -	cdns_torrent_phy_write(cdns_phy->regmap_rx_lane_cdb[lane],
-> -			       RX_PSC_A3, 0x0000);
-> -
-> -	cdns_torrent_phy_write(cdns_phy->regmap_rx_lane_cdb[lane],
-> -			       RX_PSC_CAL, 0x0000);
-> -
-> -	cdns_torrent_phy_write(cdns_phy->regmap_rx_lane_cdb[lane],
-> -			       RX_REE_GCSM1_CTRL, 0x0000);
-> -	cdns_torrent_phy_write(cdns_phy->regmap_rx_lane_cdb[lane],
-> -			       RX_REE_GCSM2_CTRL, 0x0000);
-> -	cdns_torrent_phy_write(cdns_phy->regmap_rx_lane_cdb[lane],
-> -			       RX_REE_PERGCSM_CTRL, 0x0000);
-> -
-> -	cdns_torrent_phy_write(cdns_phy->regmap_tx_lane_cdb[lane],
-> -			       XCVR_DIAG_BIDI_CTRL, 0x000F);
-> -	cdns_torrent_phy_write(cdns_phy->regmap_tx_lane_cdb[lane],
-> -			       XCVR_DIAG_PLLDRC_CTRL, 0x0001);
-> -	cdns_torrent_phy_write(cdns_phy->regmap_tx_lane_cdb[lane],
-> -			       XCVR_DIAG_HSCLK_SEL, 0x0000);
-> -}
-> -
->  static int cdns_torrent_derived_refclk_enable(struct clk_hw *hw)
->  {
->  	struct cdns_torrent_derived_refclk *derived_refclk = to_cdns_torrent_derived_refclk(hw);
-> @@ -1972,9 +1804,6 @@ static int cdns_torrent_phy_init(struct phy *phy)
->  	if (cdns_phy->nsubnodes > 1)
->  		return 0;
->  
-> -	if (phy_type == TYPE_DP)
-> -		return cdns_torrent_dp_init(phy);
-> -
->  	/**
->  	 * Spread spectrum generation is not required or supported
->  	 * for SGMII/QSGMII
-> @@ -2060,6 +1889,9 @@ static int cdns_torrent_phy_init(struct phy *phy)
->  		}
->  	}
->  
-> +	if (phy_type == TYPE_DP)
-> +		return cdns_torrent_dp_init(phy);
-> +
->  	return 0;
->  }
->  
-> @@ -2584,6 +2416,168 @@ static int cdns_torrent_phy_remove(struct platform_device *pdev)
->  	return 0;
->  }
->  
-> +/* Single DisplayPort(DP) link configuration */
-> +static struct cdns_reg_pairs sl_dp_link_cmn_regs[] = {
-> +	{0x0000, PHY_PLL_CFG},
-> +};
-> +
-> +static struct cdns_reg_pairs sl_dp_xcvr_diag_ln_regs[] = {
-> +	{0x0000, XCVR_DIAG_HSCLK_SEL},
-> +	{0x0001, XCVR_DIAG_PLLDRC_CTRL}
-> +};
-> +
-> +static struct cdns_torrent_vals sl_dp_link_cmn_vals = {
-> +	.reg_pairs = sl_dp_link_cmn_regs,
-> +	.num_regs = ARRAY_SIZE(sl_dp_link_cmn_regs),
-> +};
-> +
-> +static struct cdns_torrent_vals sl_dp_xcvr_diag_ln_vals = {
-> +	.reg_pairs = sl_dp_xcvr_diag_ln_regs,
-> +	.num_regs = ARRAY_SIZE(sl_dp_xcvr_diag_ln_regs),
-> +};
-> +
-> +/* Single DP, 19.2 MHz Ref clk, no SSC */
-> +static struct cdns_reg_pairs sl_dp_19_2_no_ssc_cmn_regs[] = {
-> +	{0x0014, CMN_SSM_BIAS_TMR},
-> +	{0x0027, CMN_PLLSM0_PLLPRE_TMR},
-> +	{0x00A1, CMN_PLLSM0_PLLLOCK_TMR},
-> +	{0x0027, CMN_PLLSM1_PLLPRE_TMR},
-> +	{0x00A1, CMN_PLLSM1_PLLLOCK_TMR},
-> +	{0x0060, CMN_BGCAL_INIT_TMR},
-> +	{0x0060, CMN_BGCAL_ITER_TMR},
-> +	{0x0014, CMN_IBCAL_INIT_TMR},
-> +	{0x0018, CMN_TXPUCAL_INIT_TMR},
-> +	{0x0005, CMN_TXPUCAL_ITER_TMR},
-> +	{0x0018, CMN_TXPDCAL_INIT_TMR},
-> +	{0x0005, CMN_TXPDCAL_ITER_TMR},
-> +	{0x0240, CMN_RXCAL_INIT_TMR},
-> +	{0x0005, CMN_RXCAL_ITER_TMR},
-> +	{0x0002, CMN_SD_CAL_INIT_TMR},
-> +	{0x0002, CMN_SD_CAL_ITER_TMR},
-> +	{0x000B, CMN_SD_CAL_REFTIM_START},
-> +	{0x0137, CMN_SD_CAL_PLLCNT_START},
-> +	{0x0509, CMN_PDIAG_PLL0_CP_PADJ_M0},
-> +	{0x0F00, CMN_PDIAG_PLL0_CP_IADJ_M0},
-> +	{0x0F08, CMN_PDIAG_PLL0_FILT_PADJ_M0},
-> +	{0x0004, CMN_PLL0_DSM_DIAG_M0},
-> +	{0x0509, CMN_PDIAG_PLL1_CP_PADJ_M0},
-> +	{0x0F00, CMN_PDIAG_PLL1_CP_IADJ_M0},
-> +	{0x0F08, CMN_PDIAG_PLL1_FILT_PADJ_M0},
-> +	{0x0004, CMN_PLL1_DSM_DIAG_M0},
-> +	{0x00C0, CMN_PLL0_VCOCAL_INIT_TMR},
-> +	{0x0004, CMN_PLL0_VCOCAL_ITER_TMR},
-> +	{0x00C0, CMN_PLL1_VCOCAL_INIT_TMR},
-> +	{0x0004, CMN_PLL1_VCOCAL_ITER_TMR},
-> +	{0x0260, CMN_PLL0_VCOCAL_REFTIM_START},
-> +	{0x0003, CMN_PLL0_VCOCAL_TCTRL},
-> +	{0x0260, CMN_PLL1_VCOCAL_REFTIM_START},
-> +	{0x0003, CMN_PLL1_VCOCAL_TCTRL}
-> +};
-> +
-> +static struct cdns_reg_pairs sl_dp_19_2_no_ssc_tx_ln_regs[] = {
-> +	{0x0780, TX_RCVDET_ST_TMR},
-> +	{0x00FB, TX_PSC_A0},
-> +	{0x04AA, TX_PSC_A2},
-> +	{0x04AA, TX_PSC_A3},
-> +	{0x000F, XCVR_DIAG_BIDI_CTRL}
-> +};
-> +
-> +static struct cdns_reg_pairs sl_dp_19_2_no_ssc_rx_ln_regs[] = {
-> +	{0x0000, RX_PSC_A0},
-> +	{0x0000, RX_PSC_A2},
-> +	{0x0000, RX_PSC_A3},
-> +	{0x0000, RX_PSC_CAL},
-> +	{0x0000, RX_REE_GCSM1_CTRL},
-> +	{0x0000, RX_REE_GCSM2_CTRL},
-> +	{0x0000, RX_REE_PERGCSM_CTRL}
-> +};
-> +
-> +static struct cdns_torrent_vals sl_dp_19_2_no_ssc_cmn_vals = {
-> +	.reg_pairs = sl_dp_19_2_no_ssc_cmn_regs,
-> +	.num_regs = ARRAY_SIZE(sl_dp_19_2_no_ssc_cmn_regs),
-> +};
-> +
-> +static struct cdns_torrent_vals sl_dp_19_2_no_ssc_tx_ln_vals = {
-> +	.reg_pairs = sl_dp_19_2_no_ssc_tx_ln_regs,
-> +	.num_regs = ARRAY_SIZE(sl_dp_19_2_no_ssc_tx_ln_regs),
-> +};
-> +
-> +static struct cdns_torrent_vals sl_dp_19_2_no_ssc_rx_ln_vals = {
-> +	.reg_pairs = sl_dp_19_2_no_ssc_rx_ln_regs,
-> +	.num_regs = ARRAY_SIZE(sl_dp_19_2_no_ssc_rx_ln_regs),
-> +};
-> +
-> +/* Single DP, 25 MHz Ref clk, no SSC */
-> +static struct cdns_reg_pairs sl_dp_25_no_ssc_cmn_regs[] = {
-> +	{0x0019, CMN_SSM_BIAS_TMR},
-> +	{0x0032, CMN_PLLSM0_PLLPRE_TMR},
-> +	{0x00D1, CMN_PLLSM0_PLLLOCK_TMR},
-> +	{0x0032, CMN_PLLSM1_PLLPRE_TMR},
-> +	{0x00D1, CMN_PLLSM1_PLLLOCK_TMR},
-> +	{0x007D, CMN_BGCAL_INIT_TMR},
-> +	{0x007D, CMN_BGCAL_ITER_TMR},
-> +	{0x0019, CMN_IBCAL_INIT_TMR},
-> +	{0x001E, CMN_TXPUCAL_INIT_TMR},
-> +	{0x0006, CMN_TXPUCAL_ITER_TMR},
-> +	{0x001E, CMN_TXPDCAL_INIT_TMR},
-> +	{0x0006, CMN_TXPDCAL_ITER_TMR},
-> +	{0x02EE, CMN_RXCAL_INIT_TMR},
-> +	{0x0006, CMN_RXCAL_ITER_TMR},
-> +	{0x0002, CMN_SD_CAL_INIT_TMR},
-> +	{0x0002, CMN_SD_CAL_ITER_TMR},
-> +	{0x000E, CMN_SD_CAL_REFTIM_START},
-> +	{0x012B, CMN_SD_CAL_PLLCNT_START},
-> +	{0x0509, CMN_PDIAG_PLL0_CP_PADJ_M0},
-> +	{0x0F00, CMN_PDIAG_PLL0_CP_IADJ_M0},
-> +	{0x0F08, CMN_PDIAG_PLL0_FILT_PADJ_M0},
-> +	{0x0004, CMN_PLL0_DSM_DIAG_M0},
-> +	{0x0509, CMN_PDIAG_PLL1_CP_PADJ_M0},
-> +	{0x0F00, CMN_PDIAG_PLL1_CP_IADJ_M0},
-> +	{0x0F08, CMN_PDIAG_PLL1_FILT_PADJ_M0},
-> +	{0x0004, CMN_PLL1_DSM_DIAG_M0},
-> +	{0x00FA, CMN_PLL0_VCOCAL_INIT_TMR},
-> +	{0x0004, CMN_PLL0_VCOCAL_ITER_TMR},
-> +	{0x00FA, CMN_PLL1_VCOCAL_INIT_TMR},
-> +	{0x0004, CMN_PLL1_VCOCAL_ITER_TMR},
-> +	{0x0317, CMN_PLL0_VCOCAL_REFTIM_START},
-> +	{0x0003, CMN_PLL0_VCOCAL_TCTRL},
-> +	{0x0317, CMN_PLL1_VCOCAL_REFTIM_START},
-> +	{0x0003, CMN_PLL1_VCOCAL_TCTRL}
-> +};
-> +
-> +static struct cdns_reg_pairs sl_dp_25_no_ssc_tx_ln_regs[] = {
-> +	{0x09C4, TX_RCVDET_ST_TMR},
-> +	{0x00FB, TX_PSC_A0},
-> +	{0x04AA, TX_PSC_A2},
-> +	{0x04AA, TX_PSC_A3},
-> +	{0x000F, XCVR_DIAG_BIDI_CTRL}
-> +};
-> +
-> +static struct cdns_reg_pairs sl_dp_25_no_ssc_rx_ln_regs[] = {
-> +	{0x0000, RX_PSC_A0},
-> +	{0x0000, RX_PSC_A2},
-> +	{0x0000, RX_PSC_A3},
-> +	{0x0000, RX_PSC_CAL},
-> +	{0x0000, RX_REE_GCSM1_CTRL},
-> +	{0x0000, RX_REE_GCSM2_CTRL},
-> +	{0x0000, RX_REE_PERGCSM_CTRL}
-> +};
-> +
-> +static struct cdns_torrent_vals sl_dp_25_no_ssc_cmn_vals = {
-> +	.reg_pairs = sl_dp_25_no_ssc_cmn_regs,
-> +	.num_regs = ARRAY_SIZE(sl_dp_25_no_ssc_cmn_regs),
-> +};
-> +
-> +static struct cdns_torrent_vals sl_dp_25_no_ssc_tx_ln_vals = {
-> +	.reg_pairs = sl_dp_25_no_ssc_tx_ln_regs,
-> +	.num_regs = ARRAY_SIZE(sl_dp_25_no_ssc_tx_ln_regs),
-> +};
-> +
-> +static struct cdns_torrent_vals sl_dp_25_no_ssc_rx_ln_vals = {
-> +	.reg_pairs = sl_dp_25_no_ssc_rx_ln_regs,
-> +	.num_regs = ARRAY_SIZE(sl_dp_25_no_ssc_rx_ln_regs),
-> +};
-> +
->  /* USB and SGMII/QSGMII link configuration */
->  static struct cdns_reg_pairs usb_sgmii_link_cmn_regs[] = {
->  	{0x0002, PHY_PLL_CFG},
-> @@ -3322,6 +3316,11 @@ static const struct cdns_torrent_data cdns_map_torrent = {
->  	.block_offset_shift = 0x2,
->  	.reg_offset_shift = 0x2,
->  	.link_cmn_vals = {
-> +		[TYPE_DP] = {
-> +			[TYPE_NONE] = {
-> +				[NO_SSC] = &sl_dp_link_cmn_vals,
-> +			},
-> +		},
->  		[TYPE_PCIE] = {
->  			[TYPE_NONE] = {
->  				[NO_SSC] = NULL,
-> @@ -3398,6 +3397,11 @@ static const struct cdns_torrent_data cdns_map_torrent = {
->  		},
->  	},
->  	.xcvr_diag_vals = {
-> +		[TYPE_DP] = {
-> +			[TYPE_NONE] = {
-> +				[NO_SSC] = &sl_dp_xcvr_diag_ln_vals,
-> +			},
-> +		},
->  		[TYPE_PCIE] = {
->  			[TYPE_NONE] = {
->  				[NO_SSC] = NULL,
-> @@ -3498,6 +3502,20 @@ static const struct cdns_torrent_data cdns_map_torrent = {
->  		},
->  	},
->  	.cmn_vals = {
-> +		[CLK_19_2_MHZ] = {
-> +			[TYPE_DP] = {
-> +				[TYPE_NONE] = {
-> +					[NO_SSC] = &sl_dp_19_2_no_ssc_cmn_vals,
-> +				},
-> +			},
-> +		},
-> +		[CLK_25_MHZ] = {
-> +			[TYPE_DP] = {
-> +				[TYPE_NONE] = {
-> +					[NO_SSC] = &sl_dp_25_no_ssc_cmn_vals,
-> +				},
-> +			},
-> +		},
->  		[CLK_100_MHZ] = {
->  			[TYPE_PCIE] = {
->  				[TYPE_NONE] = {
-> @@ -3576,6 +3594,20 @@ static const struct cdns_torrent_data cdns_map_torrent = {
->  		},
->  	},
->  	.tx_ln_vals = {
-> +		[CLK_19_2_MHZ] = {
-> +			[TYPE_DP] = {
-> +				[TYPE_NONE] = {
-> +					[NO_SSC] = &sl_dp_19_2_no_ssc_tx_ln_vals,
-> +				},
-> +			},
-> +		},
-> +		[CLK_25_MHZ] = {
-> +			[TYPE_DP] = {
-> +				[TYPE_NONE] = {
-> +					[NO_SSC] = &sl_dp_25_no_ssc_tx_ln_vals,
-> +				},
-> +			},
-> +		},
->  		[CLK_100_MHZ] = {
->  			[TYPE_PCIE] = {
->  				[TYPE_NONE] = {
-> @@ -3654,6 +3686,20 @@ static const struct cdns_torrent_data cdns_map_torrent = {
->  		},
->  	},
->  	.rx_ln_vals = {
-> +		[CLK_19_2_MHZ] = {
-> +			[TYPE_DP] = {
-> +				[TYPE_NONE] = {
-> +					[NO_SSC] = &sl_dp_19_2_no_ssc_rx_ln_vals,
-> +				},
-> +			},
-> +		},
-> +		[CLK_25_MHZ] = {
-> +			[TYPE_DP] = {
-> +				[TYPE_NONE] = {
-> +					[NO_SSC] = &sl_dp_25_no_ssc_rx_ln_vals,
-> +				},
-> +			},
-> +		},
->  		[CLK_100_MHZ] = {
->  			[TYPE_PCIE] = {
->  				[TYPE_NONE] = {
-> @@ -3737,6 +3783,11 @@ static const struct cdns_torrent_data ti_j721e_map_torrent = {
->  	.block_offset_shift = 0x0,
->  	.reg_offset_shift = 0x1,
->  	.link_cmn_vals = {
-> +		[TYPE_DP] = {
-> +			[TYPE_NONE] = {
-> +				[NO_SSC] = &sl_dp_link_cmn_vals,
-> +			},
-> +		},
->  		[TYPE_PCIE] = {
->  			[TYPE_NONE] = {
->  				[NO_SSC] = NULL,
-> @@ -3813,6 +3864,11 @@ static const struct cdns_torrent_data ti_j721e_map_torrent = {
->  		},
->  	},
->  	.xcvr_diag_vals = {
-> +		[TYPE_DP] = {
-> +			[TYPE_NONE] = {
-> +				[NO_SSC] = &sl_dp_xcvr_diag_ln_vals,
-> +			},
-> +		},
->  		[TYPE_PCIE] = {
->  			[TYPE_NONE] = {
->  				[NO_SSC] = NULL,
-> @@ -3913,6 +3969,20 @@ static const struct cdns_torrent_data ti_j721e_map_torrent = {
->  		},
->  	},
->  	.cmn_vals = {
-> +		[CLK_19_2_MHZ] = {
-> +			[TYPE_DP] = {
-> +				[TYPE_NONE] = {
-> +					[NO_SSC] = &sl_dp_19_2_no_ssc_cmn_vals,
-> +				},
-> +			},
-> +		},
-> +		[CLK_25_MHZ] = {
-> +			[TYPE_DP] = {
-> +				[TYPE_NONE] = {
-> +					[NO_SSC] = &sl_dp_25_no_ssc_cmn_vals,
-> +				},
-> +			},
-> +		},
->  		[CLK_100_MHZ] = {
->  			[TYPE_PCIE] = {
->  				[TYPE_NONE] = {
-> @@ -3991,6 +4061,20 @@ static const struct cdns_torrent_data ti_j721e_map_torrent = {
->  		},
->  	},
->  	.tx_ln_vals = {
-> +		[CLK_19_2_MHZ] = {
-> +			[TYPE_DP] = {
-> +				[TYPE_NONE] = {
-> +					[NO_SSC] = &sl_dp_19_2_no_ssc_tx_ln_vals,
-> +				},
-> +			},
-> +		},
-> +		[CLK_25_MHZ] = {
-> +			[TYPE_DP] = {
-> +				[TYPE_NONE] = {
-> +					[NO_SSC] = &sl_dp_25_no_ssc_tx_ln_vals,
-> +				},
-> +			},
-> +		},
->  		[CLK_100_MHZ] = {
->  			[TYPE_PCIE] = {
->  				[TYPE_NONE] = {
-> @@ -4069,6 +4153,20 @@ static const struct cdns_torrent_data ti_j721e_map_torrent = {
->  		},
->  	},
->  	.rx_ln_vals = {
-> +		[CLK_19_2_MHZ] = {
-> +			[TYPE_DP] = {
-> +				[TYPE_NONE] = {
-> +					[NO_SSC] = &sl_dp_19_2_no_ssc_rx_ln_vals,
-> +				},
-> +			},
-> +		},
-> +		[CLK_25_MHZ] = {
-> +			[TYPE_DP] = {
-> +				[TYPE_NONE] = {
-> +					[NO_SSC] = &sl_dp_25_no_ssc_rx_ln_vals,
-> +				},
-> +			},
-> +		},
->  		[CLK_100_MHZ] = {
->  			[TYPE_PCIE] = {
->  				[TYPE_NONE] = {
-> 
+Kevin
