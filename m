@@ -2,99 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE0E037FB0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 17:51:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34D6437FB11
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 17:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234922AbhEMPwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 11:52:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234933AbhEMPwV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 11:52:21 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79156C061760;
-        Thu, 13 May 2021 08:51:11 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 4730D1F40EFD
-Received: by earth.universe (Postfix, from userid 1000)
-        id 8881C3C0C95; Thu, 13 May 2021 17:51:07 +0200 (CEST)
-Date:   Thu, 13 May 2021 17:51:07 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org, kernel@collabora.com,
-        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH 4/6] dt-bindings: power: supply: charger-manager: Convert
- to DT schema format
-Message-ID: <20210513155107.qyur6dsrwpkrxpjk@earth.universe>
-References: <20210412230320.382885-1-sebastian.reichel@collabora.com>
- <20210412230320.382885-5-sebastian.reichel@collabora.com>
- <20210413152641.GA1707619@robh.at.kernel.org>
+        id S233300AbhEMPww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 11:52:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45496 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232251AbhEMPwk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 11:52:40 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B569961408;
+        Thu, 13 May 2021 15:51:28 +0000 (UTC)
+Date:   Thu, 13 May 2021 16:52:36 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandru Ardelean <ardeleanalex@gmail.com>
+Cc:     Lucas Stankus <lucas.p.stankus@gmail.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        linux-staging@lists.linux.dev, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] staging: iio: cdc: ad7746: avoid overwrite of
+ num_channels
+Message-ID: <20210513165236.586b8beb@jic23-huawei>
+In-Reply-To: <CA+U=DsptfNDut3984MJkKckgWBhNd_0p17RfpidEXwYhMRfxtg@mail.gmail.com>
+References: <cover.1620766020.git.lucas.p.stankus@gmail.com>
+        <09e65d3a235febfc4c3ee172b573ba8c9cde94b8.1620766020.git.lucas.p.stankus@gmail.com>
+        <CA+U=DsptfNDut3984MJkKckgWBhNd_0p17RfpidEXwYhMRfxtg@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="f3dxslgfbnr5shxd"
-Content-Disposition: inline
-In-Reply-To: <20210413152641.GA1707619@robh.at.kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 12 May 2021 20:20:02 +0300
+Alexandru Ardelean <ardeleanalex@gmail.com> wrote:
 
---f3dxslgfbnr5shxd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Tue, Apr 13, 2021 at 10:26:41AM -0500, Rob Herring wrote:
-> On Tue, 13 Apr 2021 01:03:18 +0200, Sebastian Reichel wrote:
-> > Convert the binding to DT schema format.
-> >=20
-> > I slightly modified the binding by allowing regulator-[0-9] and cable-[=
-0-9]
-> > instead of regulator@[0-9] and cable@[0-9], so that DT compiler does not
-> > complain about missing 'reg' property. The driver actually ignores the
-> > nodename and can handle both styles.
-> >=20
-> > Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> On Tue, May 11, 2021 at 11:55 PM Lucas Stankus
+> <lucas.p.stankus@gmail.com> wrote:
+> >
+> > AD7745 devices don't have the CIN2 pins and therefore can't handle related
+> > channels. Forcing the number of AD7746 channels may lead to enabling more
+> > channels than what the hardware actually supports.
+> > Avoid num_channels being overwritten after first assignment.
+> >
+> > Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
 > > ---
-> >  .../bindings/power/supply/charger-manager.txt |  91 --------
-> >  .../power/supply/charger-manager.yaml         | 215 ++++++++++++++++++
-> >  2 files changed, 215 insertions(+), 91 deletions(-)
-> >  delete mode 100644 Documentation/devicetree/bindings/power/supply/char=
-ger-manager.txt
-> >  create mode 100644 Documentation/devicetree/bindings/power/supply/char=
-ger-manager.yaml
->=20
-> Reviewed-by: Rob Herring <robh@kernel.org>
+> >  drivers/staging/iio/cdc/ad7746.c | 1 -
+> >  1 file changed, 1 deletion(-)
+> >
+> > diff --git a/drivers/staging/iio/cdc/ad7746.c b/drivers/staging/iio/cdc/ad7746.c
+> > index e03d010b2f4c..9e0da43b2871 100644
+> > --- a/drivers/staging/iio/cdc/ad7746.c
+> > +++ b/drivers/staging/iio/cdc/ad7746.c
+> > @@ -693,7 +693,6 @@ static int ad7746_probe(struct i2c_client *client,
+> >                 indio_dev->num_channels = ARRAY_SIZE(ad7746_channels);
+> >         else
+> >                 indio_dev->num_channels =  ARRAY_SIZE(ad7746_channels) - 2;
+> > -       indio_dev->num_channels = ARRAY_SIZE(ad7746_channels);  
+> 
+> ohh; good catch
+> 
+> this falls into the category of a fix, so a Fixes tag is required;
+> this looks so old, that i did not bother tracking it before
+> 83e416f458d53  [which is 2011]
+> 
+> so, maybe something like:
+> 
+> Fixes: 83e416f458d53 ("staging: iio: adc: Replace, rewrite ad7745 from
+> scratch.")
 
-Thanks, queued.
+ouch.  Given I was queuing up some fixes I've added this one to the fixes-togreg
+branch of iio.git and marked it for stable.
 
--- Sebastian
+So drop this one from your v2 series with the changes requested in patch 1.
 
---f3dxslgfbnr5shxd
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
 
------BEGIN PGP SIGNATURE-----
+Jonathan
 
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmCdSuYACgkQ2O7X88g7
-+pqAqA/8D3sftstSxvWSAwrnIc71f6dMiQc8fkBjKfdHwxKa2wuGK/ujBrtn5u6p
-y6cQ8uLLGJL0qUlZstQ85VdsJBsEYla3yc6HoIsRFLF3xn4oBPMD6hSQmp/x03E7
-ay1fVAQo+9R9uV/OzBKQDJ0LxPw07LpE6KE5vAyz8E+N8E1XH3latq0cih8xVbK3
-j+8NZZoCA/puOhMLt0fN5LXYEwP9rzG4aqWYd+MOJZOmMExnbSAQHvR9m0t6QlL/
-zA3klBxOp2Vn3p9wflnXR5zbBbA3zNroYSsOsOWrw39vGNTsgzukeHyunMKkyTZb
-ow7L+zlDDU4nggqDMzu/6sU1D6lMeWRpqJZn1DdM7akkptONML3Dnk4cFs/OzVLq
-e1cic3QovO9/uWU7l/9f5nNhuBUzxe+JBWbHZ4UNb0Ve3pxP5u1VdQbJgXoGlu6y
-esLOyOl9zllYupLsFjP5qFCIbYnHvuQ7UjPBrlDMKQhbOSJy/Oysa0ghkzViHhec
-HQXLTQOQBlEHzc6iHrw31CF5BWku2MoWZd9eo5d4TOerCHrNMi6lCjeoDeUeZQIv
-vtmCdrR0Ncf1p5cqLGzXXdvIdxoYfTSJW3LvekOosfRuAg0b17EYdjnNyN3ykM1s
-yZN9UaYqyspSIbJX3kkwZSqvEAFA4SvwGmQBfX/+Ck+afOcm2E8=
-=diRH
------END PGP SIGNATURE-----
+> 
+> >         indio_dev->modes = INDIO_DIRECT_MODE;
+> >
+> >         if (pdata) {
+> > --
+> > 2.31.1
+> >  
 
---f3dxslgfbnr5shxd--
