@@ -2,86 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2459D37F0E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 03:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D1437F0ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 03:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230233AbhEMBWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 21:22:54 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:42721 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230096AbhEMBWw (ORCPT
+        id S230322AbhEMBbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 21:31:50 -0400
+Received: from smtp.bonedaddy.net ([45.33.94.42]:33298 "EHLO
+        smtp.bonedaddy.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229630AbhEMBbs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 21:22:52 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 09D7D33E;
-        Wed, 12 May 2021 21:21:42 -0400 (EDT)
-Received: from imap2 ([10.202.2.52])
-  by compute3.internal (MEProxy); Wed, 12 May 2021 21:21:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm2; bh=LJMBBhe/zWnSoQmdd8FrIcwa5mli+J+
-        /2kpGJdDlKyM=; b=YlpKlfQ8Z7b/EAlOKqNPnRyUpYDOaRjvdNu6e/Z1SO1+DE7
-        kv2Zsj7Lk+XK6Bn9zaUto3AxXx17FUmv19YxYeNgGuuysQUwFgZpHD1n+te1K8kD
-        KBIw1yMVpBtneVwmK7bVb3q3NRi+QPg+Uo7BswTZzVL2neg6JiQOfl1hf/ChJFGX
-        DRy8GENqT98fLaeKtbiX4ASQGmx1ggaYcAuf+S8UfVz6LwQTUqRvQi9SV3cq5w5s
-        WHTSGwTleikD+l4j6YBXbpRkXuFcz8e//0T7fV1SZ+HdE+VoL8x6vX9KKhJ0MT1f
-        xm4+r//F7sPZcSyO7dasGT22GRkDIFYuEn2wyNg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=LJMBBh
-        e/zWnSoQmdd8FrIcwa5mli+J+/2kpGJdDlKyM=; b=X4TahsqJdPc1vgMqeEavXh
-        Kr4ZwWNGnb80ReXiGlX5HuVvKu0XXB65abj9azzpHWxPlVbpM+alyOpzYYc/x/V8
-        TQTrMNRIS37U2XD8jiHuJZS/hdu+cS1hRSZCi6PwvszmxHeWD/LJ20gfVbQjFztG
-        Dzob5ZEXOjtkhHZQJ9ICS5hDfZ9ur4+EB3VOit1ILLkQECVLIoHR7D4ObP0u8GZJ
-        dixM3gJSCKfom3gxI9IkY/l4eBowSkKT660COyI/rgWWsrBGMLifPSEsjRvUTLnb
-        4jU+bTJtFuCsApofhELlVrm5Fpm3OTOt0R8osffmBoTLron5MG26o5c1PNYCxETA
-        ==
-X-ME-Sender: <xms:JX-cYPa92C0dVyIBnN9b7Immm2wwzXMFL9CE24byqOFjeOaP-uuY4Q>
-    <xme:JX-cYOYBsvoGXFC4X-9oNg3y6MLZEcK3-wvWglJ7C83b9m99sIgQ65vIKiXzr1y4Q
-    8vCIp_3W3eqBZuWTA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdehfedggeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
-    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
-    grthhtvghrnhepuddttdekueeggedvtddtueekiedutdfguedutdefieeuteefieelteet
-    vddthfeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eprghnughrvgifsegrjhdrihgurdgruh
-X-ME-Proxy: <xmx:JX-cYB_L59YOZXJZsC5ffHczu50thD6OTOSOZWZ2k2JGArbcSf4qjQ>
-    <xmx:JX-cYFrCpigqJKtUj2ygAT-lzoXp0xQZrx1VzOA2hFQwwGxBOASUmA>
-    <xmx:JX-cYKpg2ZRp0BkbmcQwAInKpmyALkIGMN5B1TAalvOIlqFMV-759Q>
-    <xmx:Jn-cYKLR1xkgOdcZjHJ4Uvm_abGQ5kcATKVbw-a_RD6ko5kzEYYDhw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 5D47EA00079; Wed, 12 May 2021 21:21:41 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-448-gae190416c7-fm-20210505.004-gae190416
-Mime-Version: 1.0
-Message-Id: <a8ebfb09-e2d8-4c23-b479-860a116cdb49@www.fastmail.com>
-In-Reply-To: <20210510014231.647-2-zev@bewilderbeest.net>
-References: <20210510014231.647-1-zev@bewilderbeest.net>
- <20210510014231.647-2-zev@bewilderbeest.net>
-Date:   Thu, 13 May 2021 10:51:20 +0930
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Zev Weiss" <zev@bewilderbeest.net>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
-Cc:     openbmc@lists.ozlabs.org, "Jiri Slaby" <jirislaby@kernel.org>,
-        "Joel Stanley" <joel@jms.id.au>, "Johan Hovold" <johan@kernel.org>,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: =?UTF-8?Q?Re:_[PATCH_1/3]_serial:_8250=5Faspeed=5Fvuart:_factor_out_aspe?=
- =?UTF-8?Q?ed=5Fvuart=5F{read,_write}b()_helper_functions?=
-Content-Type: text/plain
+        Wed, 12 May 2021 21:31:48 -0400
+Received: from [192.168.1.209] (n49-190-168-235.per1.wa.optusnet.com.au [49.190.168.235])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pabs3@bonedaddy.net)
+        by smtp.bonedaddy.net (Postfix) with ESMTPSA id 75DC5180043;
+        Wed, 12 May 2021 21:31:12 -0400 (EDT)
+Authentication-Results: smtp.bonedaddy.net; dmarc=fail (p=none dis=none) header.from=bonedaddy.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bonedaddy.net;
+        s=mail; t=1620869477;
+        bh=jo6L1Lp7McpbL1Z7cGpI5dwqXVJEwyplDJ1NRFFYviA=;
+        h=Subject:From:To:Cc:In-Reply-To:References:Date;
+        b=LsxNjlV/IZszm2EOz/GRJeP3ns1jeQTNoK7R7ldZYkPbaCcdEo2Nu7e5020j5wg7X
+         p5RIQ9ADSISR+e7omHY35IiO9+kHvax3WU017wr9B+NqFrm4EIH6A0iwboZ61jjcLg
+         qtEXHowM7FuhoBhkFPfhDmdgcLjWguG6fIQM7ibnY9t0QU5bdZs8HSxrQUw0cxLm2B
+         NW80sl+JDrlVGW4PeqGbRHYKQekA6PrRZWmZD1whM2WiTpYRuiae84hyjaRJudrdB1
+         JRDeWuu2q/ekbOLQAJ+cEepU+ry0X54vONw60GPCi4BaSON2lZC7tGjtEyCSWTWVWC
+         Qgx8wBTWGFa3A==
+Message-ID: <ffbfcb73bfb7abb44cbe01db892bb492d80900c1.camel@bonedaddy.net>
+Subject: Re: [PATCH 0/6] sched,delayacct: Some cleanups
+From:   Paul Wise <pabs3@bonedaddy.net>
+To:     Mel Gorman <mgorman@suse.de>
+Cc:     Balbir Singh <bsingharora@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
+        mingo@kernel.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+        pbonzini@redhat.com, maz@kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, riel@surriel.com, hannes@cmpxchg.org
+In-Reply-To: <20210512130058.GJ3672@suse.de>
+References: <20210505105940.190490250@infradead.org>
+         <20210505222940.GA4236@balbir-desktop>
+         <YJOzUAg30LZWSHcI@hirez.programming.kicks-ass.net>
+         <20210507123810.GB4236@balbir-desktop> <20210512113419.GF3672@suse.de>
+         <9524e77d054f380e4711eaf68344ebba2d1271be.camel@bonedaddy.net>
+         <20210512130058.GJ3672@suse.de>
+Content-Type: multipart/signed; micalg="pgp-sha512";
+        protocol="application/pgp-signature"; boundary="=-oxFvlExZTgu9NltSQ5vc"
+Date:   Thu, 13 May 2021 09:29:38 +0800
+MIME-Version: 1.0
+User-Agent: Evolution 3.40.1-1 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--=-oxFvlExZTgu9NltSQ5vc
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 10 May 2021, at 11:12, Zev Weiss wrote:
-> This is a small prepatory step for changing the way this driver does
-> its I/O accesses.
-> 
-> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+On Wed, 2021-05-12 at 14:00 +0100, Mel Gorman wrote:
 
-Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
+> If you send me the same patch, I can do submit a request to the devel
+> package for openSUSE. I don't have commit access but I would be surprised
+> if the package maintainer didn't accept the request. Obviously, I'll
+> build+boot a kernel that includes the final version of this series in
+> case of any naming changes or other oddities.
+
+At this point I'm not clear exactly what needs to be done and whether
+or not the details have been nailed down enough that it is time to
+commit the change to the iotop-py and iotop-c git repositories.
+
+I recommend upgrading the openSUSE iotop package to the latest git
+commit rather than just applying the latest patch on top.
+
+Alternatively, once the patch is applied I can probably overstep my
+permissions and add a tag to the iotop-py git repository, in case folks
+are happy to pull from the git repository instead of the website.
+
+> Good thinking. I'll open a bug on github when I've tested your iotop
+> patch so that the bug report is more coherent.
+
+OK, sounds good.
+
+PS: does Linux have a facility for userspace processes to convert
+syscall names to numbers for the currently running Linux kernel? I
+noticed that iotop-py just hard-codes the syscall numbers for
+ioprio_set and ioprio_get on common arches, missing newer arches.
+
+--=20
+bye,
+pabs
+
+https://bonedaddy.net/pabs3/
+
+--=-oxFvlExZTgu9NltSQ5vc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEYQsotVz8/kXqG1Y7MRa6Xp/6aaMFAmCcgP4ACgkQMRa6Xp/6
+aaPPXxAAkN9epwOw3XK0bdtOoltH0wOnGHPnNcyh8LeRjNyaNcIuz/m+g2s9M3dH
+s5SXKsNNJPj/UKQd+IA7zDE32qOwq+Vn2IspWjhJ7pLrcXIu8MNAcWoHyrJ3/Duo
+025aTp+XoNqEL0PUJ+plsnC+3sTYFBiMxobkXgOUiJD6qxTypTEAxFyw4byUhsZl
+2y4VPKFSWQy+oZwpWvmHiZ6W8h71iZzGrBDrhBpWEqvkx1Xeu4z317xZHYqAWSvR
+CGUVMGC5uYcZqnUFl0PNJ94fnKVcu1JL06gdPBsTLUfeK+n0aVVB+8ZUSrli5Wc1
+tcCGPG8XOdOFmDiPZX5xy1F7tdJl1uBTDYzB4r3+LcYJphrmOy13XTUmcgAtrqJk
+HF7FJLalkmJ4VHO6wWZtCzQVYTz36vXCZEtJJLd/3blScwP61kWyaNKc5jhvAN7J
+Cj2xAPg1kkD1SAR2QoCW2kQK8h9luA/oeYycRcm2Lk08R9krXVtwX5tzgQYwjn57
+QFiZJoicyFvEAEh/lZWdc+2HEXuYAfYp0BFqhxEn/PTImlEbm7jV7DzUAAR+5fRm
+eKm380DSQ1ZORqWwb92olgIiKfobLubUX/5b5iczSAu4ENgaHXjQ1Lrgp5WFR9nY
+h4VBFZiVXrjWOOlFJ0s7M1fhEKKYI41sc6e196mv38TG9NrZbwA=
+=t0Gt
+-----END PGP SIGNATURE-----
+
+--=-oxFvlExZTgu9NltSQ5vc--
+
