@@ -2,147 +2,468 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AADC837F5D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 12:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68EB037F5DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 12:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232024AbhEMKty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 06:49:54 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:59807 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231956AbhEMKtw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 06:49:52 -0400
-Received: from mail-wm1-f72.google.com ([209.85.128.72])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <dimitri.ledkov@canonical.com>)
-        id 1lh8tV-0002Lz-PL
-        for linux-kernel@vger.kernel.org; Thu, 13 May 2021 10:48:41 +0000
-Received: by mail-wm1-f72.google.com with SMTP id r10-20020a05600c2c4ab029014b601975e1so603576wmg.0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 03:48:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kuZkXiug9hdhkwtw393tPFCcAjWKu2EOVq4JY2WC3ag=;
-        b=DJRCFgQ9zxZ4bKN20cG9dnZfkcOgve8bSGQcufFtf85s0RmA1e0nU7LDBg2MS1SXUd
-         F7rhfmr0/fXU4tarnilyn50fwNGqYZHThw3T0vj0xkwbXv6YB2fqagd1J5bZHsoZgRNr
-         wqge1fzx18W53fS3hHHovFLlzvwEVd2/Mo7mAz07ZAIierqocUN1g5XeVDiHvMFqwOpG
-         4h1+NQoqLAjRqEBvIhHRQx8WLWem9API4+zTz4I7TyKUoZzRyhvqx2c5Sk64gThD4+YZ
-         KMh3qPTUkAfC/QgHG5KFYMkytGPA+a1ShJIklBukU4AmXfNhrHB9JBTOAfFRibRRVgPf
-         4nHw==
-X-Gm-Message-State: AOAM532rXkwF4vv1Iz91VsXWMZ+TmiE15r8oWnaNuGGIyOY4kQO4FOFS
-        3VqKnDj/iVj4v5cYfp9kjEP1N6kyMa5HL2eWI0avQvJ0VKD3cMBo9pezCsIPhQfMgG6Yae0Kbcy
-        iRkJ28APNYiBr08q9yh+lSeRQREb78gTZT7DjF46mvQ==
-X-Received: by 2002:a1c:238d:: with SMTP id j135mr3205622wmj.170.1620902921222;
-        Thu, 13 May 2021 03:48:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxiZg1PttR88N5AhNZ3Q7s9Cf+giyBB7Z6cn60s55E/x5qXakwQmFLxiAbOo25RtsizWbLRfA==
-X-Received: by 2002:a1c:238d:: with SMTP id j135mr3205589wmj.170.1620902920975;
-        Thu, 13 May 2021 03:48:40 -0700 (PDT)
-Received: from localhost ([2a01:4b00:85fd:d700:8449:869d:10a:b1b9])
-        by smtp.gmail.com with ESMTPSA id k7sm2522973wro.8.2021.05.13.03.48.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 03:48:40 -0700 (PDT)
-From:   Dimitri John Ledkov <dimitri.ledkov@canonical.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Dimitri John Ledkov <dimitri.ledkov@canonical.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kyungsik Lee <kyungsik.lee@lge.com>,
-        Yinghai Lu <yinghai@kernel.org>,
-        Bongkyu Kim <bongkyu.kim@lge.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sven Schmidt <4sschmid@informatik.uni-hamburg.de>
-Subject: [RESEND PATCH v1] lib/decompress_unlz4.c: correctly handle zero-padding around initrds.
-Date:   Thu, 13 May 2021 11:48:31 +0100
-Message-Id: <20210513104831.432975-1-dimitri.ledkov@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        id S232255AbhEMKu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 06:50:56 -0400
+Received: from foss.arm.com ([217.140.110.172]:32910 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232079AbhEMKuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 06:50:40 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C696FD6E;
+        Thu, 13 May 2021 03:49:29 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.5.198])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DF0743F73B;
+        Thu, 13 May 2021 03:49:22 -0700 (PDT)
+Date:   Thu, 13 May 2021 11:49:20 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     linux-kernel@vger.kernel.org, will@kernel.org,
+        boqun.feng@gmail.com, peterz@infradead.org
+Cc:     aou@eecs.berkeley.edu, arnd@arndb.de, bcain@codeaurora.org,
+        benh@kernel.crashing.org, chris@zankel.net, dalias@libc.org,
+        davem@davemloft.net, deanbo422@gmail.com, deller@gmx.de,
+        geert@linux-m68k.org, green.hu@gmail.com, guoren@kernel.org,
+        ink@jurassic.park.msu.ru, James.Bottomley@HansenPartnership.com,
+        jcmvbkbc@gmail.com, jonas@southpole.se, ley.foon.tan@intel.com,
+        linux@armlinux.org.uk, mattst88@gmail.com, monstr@monstr.eu,
+        mpe@ellerman.id.au, nickhu@andestech.com, palmer@dabbelt.com,
+        paulus@samba.org, paul.walmsley@sifive.com, rth@twiddle.net,
+        shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
+        tsbogend@alpha.franken.de, vgupta@synopsys.com,
+        ysato@users.sourceforge.jp
+Subject: Re: [PATCH 15/33] locking/atomic: arm: move to ARCH_ATOMIC
+Message-ID: <20210513104920.GB10886@C02TD0UTHF1T.local>
+References: <20210510093753.40683-1-mark.rutland@arm.com>
+ <20210510093753.40683-16-mark.rutland@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210510093753.40683-16-mark.rutland@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-lz4 compatible decompressor is simple. The format is underspecified and
-relies on EOF notification to determine when to stop. Initramfs buffer
-format[1] explicitly states that it can have arbitrary number of zero
-padding. Thus when operating without a fill function, be extra careful to
-ensure that sizes less than 4, or apperantly empty chunksizes are treated
-as EOF.
+On Mon, May 10, 2021 at 10:37:35AM +0100, Mark Rutland wrote:
+> We'd like all architectures to convert to ARCH_ATOMIC, as once all
+> architectures are converted it will be possible to make significant
+> cleanups to the atomics headers, and this will make it much easier to
+> generically enable atomic functionality (e.g. debug logic in the
+> instrumented wrappers).
+> 
+> As a step towards that, this patch migrates arm to ARCH_ATOMIC. The arch
+> code provides arch_{atomic,atomic64,xchg,cmpxchg}*(), and common code
+> wraps these with optional instrumentation to provide the regular
+> functions.
+> 
+> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> Cc: Boqun Feng <boqun.feng@gmail.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Russell King <linux@armlinux.org.uk>
+> Cc: Will Deacon <will@kernel.org>
+> ---
+>  arch/arm/Kconfig               |  1 +
+>  arch/arm/include/asm/atomic.h  | 96 +++++++++++++++++++++---------------------
+>  arch/arm/include/asm/cmpxchg.h | 16 +++----
+>  3 files changed, 57 insertions(+), 56 deletions(-)
 
-To test this I have created two cpio initrds, first a normal one,
-main.cpio. And second one with just a single /test-file with content
-"second" second.cpio. Then i compressed both of them with gzip, and with
-lz4 -l. Then I created a padding of 4 bytes (dd if=/dev/zero of=pad4 bs=1
-count=4). To create four testcase initrds:
+The Kbuild test robot pointed out I'd forgotten to update sync_cmpxchg()
+in <asm/sync_bitops.h>, so I've fixed that up in my kernel.org branch
+for now.
 
- 1) main.cpio.gzip + extra.cpio.gzip = pad0.gzip
- 2) main.cpio.lz4  + extra.cpio.lz4 = pad0.lz4
- 3) main.cpio.gzip + pad4 + extra.cpio.gzip = pad4.gzip
- 4) main.cpio.lz4  + pad4 + extra.cpio.lz4 = pad4.lz4
+Mark.
 
-The pad4 test-cases replicate the initrd load by grub, as it pads and
-aligns every initrd it loads.
-
-All of the above boot, however /test-file was not accessible in the initrd
-for the testcase #4, as decoding in lz4 decompressor failed. Also an error
-message printed which usually is harmless.
-
-Whith a patched kernel, all of the above testcases now pass, and /test-file
-is accessible.
-
-This fixes lz4 initrd decompress warning on every boot with grub. And
-more importantly this fixes inability to load multiple lz4 compressed
-initrds with grub. This patch has been shipping in Ubuntu kernels
-since January 2021.
-
-[1] ./Documentation/driver-api/early-userspace/buffer-format.rst
-
-BugLink: https://bugs.launchpad.net/bugs/1835660
-Link: https://lore.kernel.org/lkml/20210114200256.196589-1-xnox@ubuntu.com/ # v0
-Signed-off-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Kyungsik Lee <kyungsik.lee@lge.com>
-Cc: Yinghai Lu <yinghai@kernel.org>
-Cc: Bongkyu Kim <bongkyu.kim@lge.com>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Sven Schmidt <4sschmid@informatik.uni-hamburg.de>
----
- lib/decompress_unlz4.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/lib/decompress_unlz4.c b/lib/decompress_unlz4.c
-index c0cfcfd486be..e6327391b6b6 100644
---- a/lib/decompress_unlz4.c
-+++ b/lib/decompress_unlz4.c
-@@ -112,6 +112,9 @@ STATIC inline int INIT unlz4(u8 *input, long in_len,
- 				error("data corrupted");
- 				goto exit_2;
- 			}
-+		} else if (size < 4) {
-+			/* empty or end-of-file */
-+			goto exit_3;
- 		}
- 
- 		chunksize = get_unaligned_le32(inp);
-@@ -125,6 +128,10 @@ STATIC inline int INIT unlz4(u8 *input, long in_len,
- 			continue;
- 		}
- 
-+		if (!fill && chunksize == 0) {
-+			/* empty or end-of-file */
-+			goto exit_3;
-+		}
- 
- 		if (posp)
- 			*posp += 4;
-@@ -184,6 +191,7 @@ STATIC inline int INIT unlz4(u8 *input, long in_len,
- 		}
- 	}
- 
-+exit_3:
- 	ret = 0;
- exit_2:
- 	if (!input)
--- 
-2.27.0
-
+> 
+> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+> index 24804f11302d..b7334a6643b9 100644
+> --- a/arch/arm/Kconfig
+> +++ b/arch/arm/Kconfig
+> @@ -3,6 +3,7 @@ config ARM
+>  	bool
+>  	default y
+>  	select ARCH_32BIT_OFF_T
+> +	select ARCH_ATOMIC
+>  	select ARCH_HAS_BINFMT_FLAT
+>  	select ARCH_HAS_DEBUG_VIRTUAL if MMU
+>  	select ARCH_HAS_DMA_WRITE_COMBINE if !ARM_DMA_MEM_BUFFERABLE
+> diff --git a/arch/arm/include/asm/atomic.h b/arch/arm/include/asm/atomic.h
+> index 455eb19a5ac1..db8512d9a918 100644
+> --- a/arch/arm/include/asm/atomic.h
+> +++ b/arch/arm/include/asm/atomic.h
+> @@ -22,8 +22,8 @@
+>   * strex/ldrex monitor on some implementations. The reason we can use it for
+>   * atomic_set() is the clrex or dummy strex done on every exception return.
+>   */
+> -#define atomic_read(v)	READ_ONCE((v)->counter)
+> -#define atomic_set(v,i)	WRITE_ONCE(((v)->counter), (i))
+> +#define arch_atomic_read(v)	READ_ONCE((v)->counter)
+> +#define arch_atomic_set(v,i)	WRITE_ONCE(((v)->counter), (i))
+>  
+>  #if __LINUX_ARM_ARCH__ >= 6
+>  
+> @@ -34,7 +34,7 @@
+>   */
+>  
+>  #define ATOMIC_OP(op, c_op, asm_op)					\
+> -static inline void atomic_##op(int i, atomic_t *v)			\
+> +static inline void arch_atomic_##op(int i, atomic_t *v)			\
+>  {									\
+>  	unsigned long tmp;						\
+>  	int result;							\
+> @@ -52,7 +52,7 @@ static inline void atomic_##op(int i, atomic_t *v)			\
+>  }									\
+>  
+>  #define ATOMIC_OP_RETURN(op, c_op, asm_op)				\
+> -static inline int atomic_##op##_return_relaxed(int i, atomic_t *v)	\
+> +static inline int arch_atomic_##op##_return_relaxed(int i, atomic_t *v)	\
+>  {									\
+>  	unsigned long tmp;						\
+>  	int result;							\
+> @@ -73,7 +73,7 @@ static inline int atomic_##op##_return_relaxed(int i, atomic_t *v)	\
+>  }
+>  
+>  #define ATOMIC_FETCH_OP(op, c_op, asm_op)				\
+> -static inline int atomic_fetch_##op##_relaxed(int i, atomic_t *v)	\
+> +static inline int arch_atomic_fetch_##op##_relaxed(int i, atomic_t *v)	\
+>  {									\
+>  	unsigned long tmp;						\
+>  	int result, val;						\
+> @@ -93,17 +93,17 @@ static inline int atomic_fetch_##op##_relaxed(int i, atomic_t *v)	\
+>  	return result;							\
+>  }
+>  
+> -#define atomic_add_return_relaxed	atomic_add_return_relaxed
+> -#define atomic_sub_return_relaxed	atomic_sub_return_relaxed
+> -#define atomic_fetch_add_relaxed	atomic_fetch_add_relaxed
+> -#define atomic_fetch_sub_relaxed	atomic_fetch_sub_relaxed
+> +#define arch_atomic_add_return_relaxed		arch_atomic_add_return_relaxed
+> +#define arch_atomic_sub_return_relaxed		arch_atomic_sub_return_relaxed
+> +#define arch_atomic_fetch_add_relaxed		arch_atomic_fetch_add_relaxed
+> +#define arch_atomic_fetch_sub_relaxed		arch_atomic_fetch_sub_relaxed
+>  
+> -#define atomic_fetch_and_relaxed	atomic_fetch_and_relaxed
+> -#define atomic_fetch_andnot_relaxed	atomic_fetch_andnot_relaxed
+> -#define atomic_fetch_or_relaxed		atomic_fetch_or_relaxed
+> -#define atomic_fetch_xor_relaxed	atomic_fetch_xor_relaxed
+> +#define arch_atomic_fetch_and_relaxed		arch_atomic_fetch_and_relaxed
+> +#define arch_atomic_fetch_andnot_relaxed	arch_atomic_fetch_andnot_relaxed
+> +#define arch_atomic_fetch_or_relaxed		arch_atomic_fetch_or_relaxed
+> +#define arch_atomic_fetch_xor_relaxed		arch_atomic_fetch_xor_relaxed
+>  
+> -static inline int atomic_cmpxchg_relaxed(atomic_t *ptr, int old, int new)
+> +static inline int arch_atomic_cmpxchg_relaxed(atomic_t *ptr, int old, int new)
+>  {
+>  	int oldval;
+>  	unsigned long res;
+> @@ -123,9 +123,9 @@ static inline int atomic_cmpxchg_relaxed(atomic_t *ptr, int old, int new)
+>  
+>  	return oldval;
+>  }
+> -#define atomic_cmpxchg_relaxed		atomic_cmpxchg_relaxed
+> +#define arch_atomic_cmpxchg_relaxed		arch_atomic_cmpxchg_relaxed
+>  
+> -static inline int atomic_fetch_add_unless(atomic_t *v, int a, int u)
+> +static inline int arch_atomic_fetch_add_unless(atomic_t *v, int a, int u)
+>  {
+>  	int oldval, newval;
+>  	unsigned long tmp;
+> @@ -151,7 +151,7 @@ static inline int atomic_fetch_add_unless(atomic_t *v, int a, int u)
+>  
+>  	return oldval;
+>  }
+> -#define atomic_fetch_add_unless		atomic_fetch_add_unless
+> +#define arch_atomic_fetch_add_unless		arch_atomic_fetch_add_unless
+>  
+>  #else /* ARM_ARCH_6 */
+>  
+> @@ -160,7 +160,7 @@ static inline int atomic_fetch_add_unless(atomic_t *v, int a, int u)
+>  #endif
+>  
+>  #define ATOMIC_OP(op, c_op, asm_op)					\
+> -static inline void atomic_##op(int i, atomic_t *v)			\
+> +static inline void arch_atomic_##op(int i, atomic_t *v)			\
+>  {									\
+>  	unsigned long flags;						\
+>  									\
+> @@ -170,7 +170,7 @@ static inline void atomic_##op(int i, atomic_t *v)			\
+>  }									\
+>  
+>  #define ATOMIC_OP_RETURN(op, c_op, asm_op)				\
+> -static inline int atomic_##op##_return(int i, atomic_t *v)		\
+> +static inline int arch_atomic_##op##_return(int i, atomic_t *v)		\
+>  {									\
+>  	unsigned long flags;						\
+>  	int val;							\
+> @@ -184,7 +184,7 @@ static inline int atomic_##op##_return(int i, atomic_t *v)		\
+>  }
+>  
+>  #define ATOMIC_FETCH_OP(op, c_op, asm_op)				\
+> -static inline int atomic_fetch_##op(int i, atomic_t *v)			\
+> +static inline int arch_atomic_fetch_##op(int i, atomic_t *v)		\
+>  {									\
+>  	unsigned long flags;						\
+>  	int val;							\
+> @@ -197,7 +197,7 @@ static inline int atomic_fetch_##op(int i, atomic_t *v)			\
+>  	return val;							\
+>  }
+>  
+> -static inline int atomic_cmpxchg(atomic_t *v, int old, int new)
+> +static inline int arch_atomic_cmpxchg(atomic_t *v, int old, int new)
+>  {
+>  	int ret;
+>  	unsigned long flags;
+> @@ -211,7 +211,7 @@ static inline int atomic_cmpxchg(atomic_t *v, int old, int new)
+>  	return ret;
+>  }
+>  
+> -#define atomic_fetch_andnot		atomic_fetch_andnot
+> +#define arch_atomic_fetch_andnot		arch_atomic_fetch_andnot
+>  
+>  #endif /* __LINUX_ARM_ARCH__ */
+>  
+> @@ -223,7 +223,7 @@ static inline int atomic_cmpxchg(atomic_t *v, int old, int new)
+>  ATOMIC_OPS(add, +=, add)
+>  ATOMIC_OPS(sub, -=, sub)
+>  
+> -#define atomic_andnot atomic_andnot
+> +#define arch_atomic_andnot arch_atomic_andnot
+>  
+>  #undef ATOMIC_OPS
+>  #define ATOMIC_OPS(op, c_op, asm_op)					\
+> @@ -240,7 +240,7 @@ ATOMIC_OPS(xor, ^=, eor)
+>  #undef ATOMIC_OP_RETURN
+>  #undef ATOMIC_OP
+>  
+> -#define atomic_xchg(v, new) (xchg(&((v)->counter), new))
+> +#define arch_atomic_xchg(v, new) (arch_xchg(&((v)->counter), new))
+>  
+>  #ifndef CONFIG_GENERIC_ATOMIC64
+>  typedef struct {
+> @@ -250,7 +250,7 @@ typedef struct {
+>  #define ATOMIC64_INIT(i) { (i) }
+>  
+>  #ifdef CONFIG_ARM_LPAE
+> -static inline s64 atomic64_read(const atomic64_t *v)
+> +static inline s64 arch_atomic64_read(const atomic64_t *v)
+>  {
+>  	s64 result;
+>  
+> @@ -263,7 +263,7 @@ static inline s64 atomic64_read(const atomic64_t *v)
+>  	return result;
+>  }
+>  
+> -static inline void atomic64_set(atomic64_t *v, s64 i)
+> +static inline void arch_atomic64_set(atomic64_t *v, s64 i)
+>  {
+>  	__asm__ __volatile__("@ atomic64_set\n"
+>  "	strd	%2, %H2, [%1]"
+> @@ -272,7 +272,7 @@ static inline void atomic64_set(atomic64_t *v, s64 i)
+>  	);
+>  }
+>  #else
+> -static inline s64 atomic64_read(const atomic64_t *v)
+> +static inline s64 arch_atomic64_read(const atomic64_t *v)
+>  {
+>  	s64 result;
+>  
+> @@ -285,7 +285,7 @@ static inline s64 atomic64_read(const atomic64_t *v)
+>  	return result;
+>  }
+>  
+> -static inline void atomic64_set(atomic64_t *v, s64 i)
+> +static inline void arch_atomic64_set(atomic64_t *v, s64 i)
+>  {
+>  	s64 tmp;
+>  
+> @@ -302,7 +302,7 @@ static inline void atomic64_set(atomic64_t *v, s64 i)
+>  #endif
+>  
+>  #define ATOMIC64_OP(op, op1, op2)					\
+> -static inline void atomic64_##op(s64 i, atomic64_t *v)			\
+> +static inline void arch_atomic64_##op(s64 i, atomic64_t *v)		\
+>  {									\
+>  	s64 result;							\
+>  	unsigned long tmp;						\
+> @@ -322,7 +322,7 @@ static inline void atomic64_##op(s64 i, atomic64_t *v)			\
+>  
+>  #define ATOMIC64_OP_RETURN(op, op1, op2)				\
+>  static inline s64							\
+> -atomic64_##op##_return_relaxed(s64 i, atomic64_t *v)			\
+> +arch_atomic64_##op##_return_relaxed(s64 i, atomic64_t *v)		\
+>  {									\
+>  	s64 result;							\
+>  	unsigned long tmp;						\
+> @@ -345,7 +345,7 @@ atomic64_##op##_return_relaxed(s64 i, atomic64_t *v)			\
+>  
+>  #define ATOMIC64_FETCH_OP(op, op1, op2)					\
+>  static inline s64							\
+> -atomic64_fetch_##op##_relaxed(s64 i, atomic64_t *v)			\
+> +arch_atomic64_fetch_##op##_relaxed(s64 i, atomic64_t *v)		\
+>  {									\
+>  	s64 result, val;						\
+>  	unsigned long tmp;						\
+> @@ -374,34 +374,34 @@ atomic64_fetch_##op##_relaxed(s64 i, atomic64_t *v)			\
+>  ATOMIC64_OPS(add, adds, adc)
+>  ATOMIC64_OPS(sub, subs, sbc)
+>  
+> -#define atomic64_add_return_relaxed	atomic64_add_return_relaxed
+> -#define atomic64_sub_return_relaxed	atomic64_sub_return_relaxed
+> -#define atomic64_fetch_add_relaxed	atomic64_fetch_add_relaxed
+> -#define atomic64_fetch_sub_relaxed	atomic64_fetch_sub_relaxed
+> +#define arch_atomic64_add_return_relaxed	arch_atomic64_add_return_relaxed
+> +#define arch_atomic64_sub_return_relaxed	arch_atomic64_sub_return_relaxed
+> +#define arch_atomic64_fetch_add_relaxed		arch_atomic64_fetch_add_relaxed
+> +#define arch_atomic64_fetch_sub_relaxed		arch_atomic64_fetch_sub_relaxed
+>  
+>  #undef ATOMIC64_OPS
+>  #define ATOMIC64_OPS(op, op1, op2)					\
+>  	ATOMIC64_OP(op, op1, op2)					\
+>  	ATOMIC64_FETCH_OP(op, op1, op2)
+>  
+> -#define atomic64_andnot atomic64_andnot
+> +#define arch_atomic64_andnot arch_atomic64_andnot
+>  
+>  ATOMIC64_OPS(and, and, and)
+>  ATOMIC64_OPS(andnot, bic, bic)
+>  ATOMIC64_OPS(or,  orr, orr)
+>  ATOMIC64_OPS(xor, eor, eor)
+>  
+> -#define atomic64_fetch_and_relaxed	atomic64_fetch_and_relaxed
+> -#define atomic64_fetch_andnot_relaxed	atomic64_fetch_andnot_relaxed
+> -#define atomic64_fetch_or_relaxed	atomic64_fetch_or_relaxed
+> -#define atomic64_fetch_xor_relaxed	atomic64_fetch_xor_relaxed
+> +#define arch_atomic64_fetch_and_relaxed		arch_atomic64_fetch_and_relaxed
+> +#define arch_atomic64_fetch_andnot_relaxed	arch_atomic64_fetch_andnot_relaxed
+> +#define arch_atomic64_fetch_or_relaxed		arch_atomic64_fetch_or_relaxed
+> +#define arch_atomic64_fetch_xor_relaxed		arch_atomic64_fetch_xor_relaxed
+>  
+>  #undef ATOMIC64_OPS
+>  #undef ATOMIC64_FETCH_OP
+>  #undef ATOMIC64_OP_RETURN
+>  #undef ATOMIC64_OP
+>  
+> -static inline s64 atomic64_cmpxchg_relaxed(atomic64_t *ptr, s64 old, s64 new)
+> +static inline s64 arch_atomic64_cmpxchg_relaxed(atomic64_t *ptr, s64 old, s64 new)
+>  {
+>  	s64 oldval;
+>  	unsigned long res;
+> @@ -422,9 +422,9 @@ static inline s64 atomic64_cmpxchg_relaxed(atomic64_t *ptr, s64 old, s64 new)
+>  
+>  	return oldval;
+>  }
+> -#define atomic64_cmpxchg_relaxed	atomic64_cmpxchg_relaxed
+> +#define arch_atomic64_cmpxchg_relaxed	arch_atomic64_cmpxchg_relaxed
+>  
+> -static inline s64 atomic64_xchg_relaxed(atomic64_t *ptr, s64 new)
+> +static inline s64 arch_atomic64_xchg_relaxed(atomic64_t *ptr, s64 new)
+>  {
+>  	s64 result;
+>  	unsigned long tmp;
+> @@ -442,9 +442,9 @@ static inline s64 atomic64_xchg_relaxed(atomic64_t *ptr, s64 new)
+>  
+>  	return result;
+>  }
+> -#define atomic64_xchg_relaxed		atomic64_xchg_relaxed
+> +#define arch_atomic64_xchg_relaxed		arch_atomic64_xchg_relaxed
+>  
+> -static inline s64 atomic64_dec_if_positive(atomic64_t *v)
+> +static inline s64 arch_atomic64_dec_if_positive(atomic64_t *v)
+>  {
+>  	s64 result;
+>  	unsigned long tmp;
+> @@ -470,9 +470,9 @@ static inline s64 atomic64_dec_if_positive(atomic64_t *v)
+>  
+>  	return result;
+>  }
+> -#define atomic64_dec_if_positive atomic64_dec_if_positive
+> +#define arch_atomic64_dec_if_positive arch_atomic64_dec_if_positive
+>  
+> -static inline s64 atomic64_fetch_add_unless(atomic64_t *v, s64 a, s64 u)
+> +static inline s64 arch_atomic64_fetch_add_unless(atomic64_t *v, s64 a, s64 u)
+>  {
+>  	s64 oldval, newval;
+>  	unsigned long tmp;
+> @@ -500,7 +500,7 @@ static inline s64 atomic64_fetch_add_unless(atomic64_t *v, s64 a, s64 u)
+>  
+>  	return oldval;
+>  }
+> -#define atomic64_fetch_add_unless atomic64_fetch_add_unless
+> +#define arch_atomic64_fetch_add_unless arch_atomic64_fetch_add_unless
+>  
+>  #endif /* !CONFIG_GENERIC_ATOMIC64 */
+>  #endif
+> diff --git a/arch/arm/include/asm/cmpxchg.h b/arch/arm/include/asm/cmpxchg.h
+> index 06bd8cea861a..4dfe538dfc68 100644
+> --- a/arch/arm/include/asm/cmpxchg.h
+> +++ b/arch/arm/include/asm/cmpxchg.h
+> @@ -114,7 +114,7 @@ static inline unsigned long __xchg(unsigned long x, volatile void *ptr, int size
+>  	return ret;
+>  }
+>  
+> -#define xchg_relaxed(ptr, x) ({						\
+> +#define arch_xchg_relaxed(ptr, x) ({					\
+>  	(__typeof__(*(ptr)))__xchg((unsigned long)(x), (ptr),		\
+>  				   sizeof(*(ptr)));			\
+>  })
+> @@ -128,20 +128,20 @@ static inline unsigned long __xchg(unsigned long x, volatile void *ptr, int size
+>  #error "SMP is not supported on this platform"
+>  #endif
+>  
+> -#define xchg xchg_relaxed
+> +#define arch_xchg arch_xchg_relaxed
+>  
+>  /*
+>   * cmpxchg_local and cmpxchg64_local are atomic wrt current CPU. Always make
+>   * them available.
+>   */
+> -#define cmpxchg_local(ptr, o, n) ({					\
+> +#define arch_cmpxchg_local(ptr, o, n) ({				\
+>  	(__typeof(*ptr))__generic_cmpxchg_local((ptr),			\
+>  					        (unsigned long)(o),	\
+>  					        (unsigned long)(n),	\
+>  					        sizeof(*(ptr)));	\
+>  })
+>  
+> -#define cmpxchg64_local(ptr, o, n) __generic_cmpxchg64_local((ptr), (o), (n))
+> +#define arch_cmpxchg64_local(ptr, o, n) __generic_cmpxchg64_local((ptr), (o), (n))
+>  
+>  #include <asm-generic/cmpxchg.h>
+>  
+> @@ -207,7 +207,7 @@ static inline unsigned long __cmpxchg(volatile void *ptr, unsigned long old,
+>  	return oldval;
+>  }
+>  
+> -#define cmpxchg_relaxed(ptr,o,n) ({					\
+> +#define arch_cmpxchg_relaxed(ptr,o,n) ({				\
+>  	(__typeof__(*(ptr)))__cmpxchg((ptr),				\
+>  				      (unsigned long)(o),		\
+>  				      (unsigned long)(n),		\
+> @@ -234,7 +234,7 @@ static inline unsigned long __cmpxchg_local(volatile void *ptr,
+>  	return ret;
+>  }
+>  
+> -#define cmpxchg_local(ptr, o, n) ({					\
+> +#define arch_cmpxchg_local(ptr, o, n) ({				\
+>  	(__typeof(*ptr))__cmpxchg_local((ptr),				\
+>  				        (unsigned long)(o),		\
+>  				        (unsigned long)(n),		\
+> @@ -266,13 +266,13 @@ static inline unsigned long long __cmpxchg64(unsigned long long *ptr,
+>  	return oldval;
+>  }
+>  
+> -#define cmpxchg64_relaxed(ptr, o, n) ({					\
+> +#define arch_cmpxchg64_relaxed(ptr, o, n) ({				\
+>  	(__typeof__(*(ptr)))__cmpxchg64((ptr),				\
+>  					(unsigned long long)(o),	\
+>  					(unsigned long long)(n));	\
+>  })
+>  
+> -#define cmpxchg64_local(ptr, o, n) cmpxchg64_relaxed((ptr), (o), (n))
+> +#define arch_cmpxchg64_local(ptr, o, n) arch_cmpxchg64_relaxed((ptr), (o), (n))
+>  
+>  #endif	/* __LINUX_ARM_ARCH__ >= 6 */
+>  
+> -- 
+> 2.11.0
+> 
