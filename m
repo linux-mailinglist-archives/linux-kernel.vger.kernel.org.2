@@ -2,200 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B85337F792
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 14:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED3A837F793
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 14:12:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233751AbhEMMMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 08:12:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40056 "EHLO
+        id S233764AbhEMMNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 08:13:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233718AbhEMMJX (ORCPT
+        with ESMTP id S233765AbhEMMJq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 08:09:23 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B191DC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 05:08:12 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id w3so39545775ejc.4
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 05:08:12 -0700 (PDT)
+        Thu, 13 May 2021 08:09:46 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30063C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 05:08:35 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id l19so328191plk.11
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 05:08:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=deviqon.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jHJAupFk4VVa7z8ctgtedCHBJAEpOSwdi50lGjIjnM8=;
-        b=rcr7BmNEIQVjj3pUZDq/B1tMKnn3iGdsbZuSj/giIshvWf/4JCiRGvshOVZogyJdRY
-         ZiuAPEFaf0hJD3k/2c0Q37P8T3rfQ2SI9TW9LJLQHz6XcukWbuNFzLJUjS2hXlF+Ae6R
-         G79+T/o+ZpuQWwXMzBsefokXpgdbg6YD8j3olInSGF05zvRCJR4wRPfmeFtyF+yzFiDC
-         ObuMCG85XK0BBa9/4EOCKsD9Np4GBOchz54N2LjWPW3maAJYLsn7Z+LkDBwuXZ+t65tr
-         GIRdwfXtDZNeZ9uDIbq1qwz6hYRtjcaPIh49i6SkN/z4IoLcErY3NV5Va88rMudfh5AN
-         DIDw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=sVnivwLRcHTqSxs/WG/AhUa/B+NdTuMddEhJxIh+SwA=;
+        b=UwxoaNjRk5TrUDc8tcbVayy4CxfDV6w7YQHC+zsc4FgjWtPKcEOaOs2skd6mmkD+bO
+         DMGSpRoMwGSxUEemHLJ53X2ShnF9je/6t+pVEJsUMkutb37ZO1FnHTEOmlLRbC+NQE0X
+         6M2nhZ4raBFmOE8TTQ7+rjP7aKazw7Aigen60qNfcnLJaw8FJE8wccW++Gy4HAPyV56c
+         er4UJ9bV23boDQSlNnn1iZM1ncy46cqR/+YqYuPC/gC9wnU9iOtZfDOj5mR64JprS0ys
+         aVNeo/tyUmqc24QqjGRVChXTmYZDc+jmqjFyONjkGxjl0uIMmCw/EUZYLk+jgBMn7h0K
+         RdjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jHJAupFk4VVa7z8ctgtedCHBJAEpOSwdi50lGjIjnM8=;
-        b=ldUO0JBLrIxKo5OvNO24t4WxJGwPO/ZqXRyguhxC2HlQmTErDhcPkycV2LoRYebdZ1
-         pyGmaXusdqk82PmPFyxW3SMSHk5C5HDfVCMHAyAiec1bGhKEWB4leA4FjISNPYd1h9h6
-         aZhAVzQkWIfT3jiEa5OCoiCTYUbOETbZ/t9QoRDNoxZ6BkCxDjikbmRNxVfeF4Y6KQcf
-         EmKjfaE8hxTIu6KZIJZjKBcuihDsoK2PnyJg89bLfiTTJLVIv6rVuCpb0pukQCvaKig9
-         2/X1oYtxk+2Swmnol+nNgixFm3REzMs8HBF/Mo+XEA+Vbsy+UUGweMfoPE8xoJOJqAPX
-         zAnQ==
-X-Gm-Message-State: AOAM531dzKtH4BvwgvMaUtm4fVB1vmJufIPYNqtm2nhWfHceOFpy7yLk
-        vsMIEgxqa08quMqQ+367oraOkDyvvWhuKw==
-X-Google-Smtp-Source: ABdhPJyRZRmOkMHCYv12/pyUMesmQ4h4aqn5mfmbQZlU+FCDZUxW2HuNgdCuwrihezuF85CFoVbLCQ==
-X-Received: by 2002:a17:906:81c4:: with SMTP id e4mr4926695ejx.27.1620907691447;
-        Thu, 13 May 2021 05:08:11 -0700 (PDT)
-Received: from neptune.. ([5.2.193.191])
-        by smtp.gmail.com with ESMTPSA id ga28sm1717809ejc.20.2021.05.13.05.08.10
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sVnivwLRcHTqSxs/WG/AhUa/B+NdTuMddEhJxIh+SwA=;
+        b=cVqttV1DWzEySle6HroI/WEEASU+2VWhZ6QQ//BO6mp99r+D5jVpumirLuKD29aWqW
+         bT93ClamL2KptatxawPSagghvNdI1SEGH54KEWM3wSWVfasWJ3F48u9HXSAFyjjgu2KQ
+         SfN3JKwFQ52J9zHqJiTJSO9wMX57jPR0xL214Fk3Koh+rpwtZgvkS6JM24BFIerPhMyH
+         O+erUGUevjri3CLGm0uIQZNE5MNy90YIQ230MmJREegkKITEgvSxnbsWjbsAMxXE9U0s
+         Nu+uEC7e8ckv8y1bXcQmTvccPtpRQRVx5pbcZyRacqrCyGoYO4n42lCt5B8DTyQsKoSF
+         S1Lg==
+X-Gm-Message-State: AOAM530X6bZ+6p6y7jaHFx8BR3ZXN72KHznJNrmc+7A4HU15cXHfcFGD
+        4g4yPWWZUWa6Tbo0C9XL98g=
+X-Google-Smtp-Source: ABdhPJx0neFySWzDApzUx7fLwhrl3Dr0Twva/8qryeM25HooUFoLAxklS8gvGahug+hAkYx86JBx7g==
+X-Received: by 2002:a17:903:208a:b029:ef:9465:ad10 with SMTP id d10-20020a170903208ab02900ef9465ad10mr4558335plc.53.1620907714670;
+        Thu, 13 May 2021 05:08:34 -0700 (PDT)
+Received: from hyeyoo ([121.135.181.35])
+        by smtp.gmail.com with ESMTPSA id c201sm1991044pfc.38.2021.05.13.05.08.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 05:08:11 -0700 (PDT)
-From:   Alexandru Ardelean <aardelean@deviqon.com>
-To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     jic23@kernel.org, Jonathan.Cameron@huawei.com,
-        alexandru.tachici@analog.com, linux@deviqon.com,
-        Alexandru Ardelean <aardelean@deviqon.com>
-Subject: [PATCH v4 12/12] iio: adc: ad_sigma_delta: remove ad_sd_{setup,cleanup}_buffer_and_trigger()
-Date:   Thu, 13 May 2021 15:07:52 +0300
-Message-Id: <20210513120752.90074-13-aardelean@deviqon.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210513120752.90074-1-aardelean@deviqon.com>
-References: <20210513120752.90074-1-aardelean@deviqon.com>
+        Thu, 13 May 2021 05:08:34 -0700 (PDT)
+Date:   Thu, 13 May 2021 21:08:29 +0900
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Marco Elver <elver@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        iamjoonsoo.kim@lge.com, rientjes@google.com, penberg@kernel.org,
+        cl@linux.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        42.hyeyoo@gmail.com
+Subject: Re: [PATCH v3] mm, slub: change run-time assertion in
+ kmalloc_index() to compile-time
+Message-ID: <20210513120829.GB772931@hyeyoo>
+References: <20210511173448.GA54466@hyeyoo>
+ <20210512195227.245000695c9014242e9a00e5@linux-foundation.org>
+ <20210513031220.GA133011@hyeyoo>
+ <20210512204024.401ff3de38649d7d0f5a45e8@linux-foundation.org>
+ <20210513062809.GA319973@hyeyoo>
+ <a36ab9a1-f07a-42ca-bb11-5bd0c70660bb@suse.cz>
+ <YJ0ACtMpasnoZdUp@elver.google.com>
+ <90c1b2ae-a5c1-07d1-b056-5b3699b6cc77@suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <90c1b2ae-a5c1-07d1-b056-5b3699b6cc77@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since all AD Sigma-Delta drivers now use the
-devm_ad_sd_setup_buffer_and_trigger() function, we can remove the old
-ad_sd_{setup,cleanup}_buffer_and_trigger() functions.
+On Thu, May 13, 2021 at 01:37:38PM +0200, Vlastimil Babka wrote:
+> > See my suggestion below that builds on Andrew's size_is_constant but
+> > would retain the old interface and support testing.
+> 
+> I can accept that, but please also modify/expand the newly added comment. Now
+> it's *normally* evaluated in compile-time. And there should be warning that
+> anyone calling it with size_is_constant == false should do that only in context
+> where performance (and code bloat, most likely too) doesn't matter, such as unit
+> test.
+> 
+> Thanks, Vlastimil
+> 
+> > Thanks,
 
-This way we can discourage new drivers that use the ad_sigma_delta
-lib-driver to use these (older functions).
+I completely agree on what Vlastimil said. there should be comment
+saying that generally you should not use kmalloc_index with
+size_is_const == true.
 
-Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
----
- drivers/iio/adc/ad_sigma_delta.c       | 86 --------------------------
- include/linux/iio/adc/ad_sigma_delta.h |  3 -
- 2 files changed, 89 deletions(-)
-
-diff --git a/drivers/iio/adc/ad_sigma_delta.c b/drivers/iio/adc/ad_sigma_delta.c
-index d5801a47be07..1d652d9b2f5c 100644
---- a/drivers/iio/adc/ad_sigma_delta.c
-+++ b/drivers/iio/adc/ad_sigma_delta.c
-@@ -470,49 +470,6 @@ EXPORT_SYMBOL_GPL(ad_sd_validate_trigger);
- static const struct iio_trigger_ops ad_sd_trigger_ops = {
- };
- 
--static int ad_sd_probe_trigger(struct iio_dev *indio_dev)
--{
--	struct ad_sigma_delta *sigma_delta = iio_device_get_drvdata(indio_dev);
--	int ret;
--
--	sigma_delta->trig = iio_trigger_alloc(&sigma_delta->spi->dev,
--					      "%s-dev%d", indio_dev->name,
--					      iio_device_id(indio_dev));
--	if (sigma_delta->trig == NULL) {
--		ret = -ENOMEM;
--		goto error_ret;
--	}
--	sigma_delta->trig->ops = &ad_sd_trigger_ops;
--	init_completion(&sigma_delta->completion);
--
--	sigma_delta->irq_dis = true;
--	ret = request_irq(sigma_delta->spi->irq,
--			  ad_sd_data_rdy_trig_poll,
--			  sigma_delta->info->irq_flags | IRQF_NO_AUTOEN,
--			  indio_dev->name,
--			  sigma_delta);
--	if (ret)
--		goto error_free_trig;
--
--	iio_trigger_set_drvdata(sigma_delta->trig, sigma_delta);
--
--	ret = iio_trigger_register(sigma_delta->trig);
--	if (ret)
--		goto error_free_irq;
--
--	/* select default trigger */
--	indio_dev->trig = iio_trigger_get(sigma_delta->trig);
--
--	return 0;
--
--error_free_irq:
--	free_irq(sigma_delta->spi->irq, sigma_delta);
--error_free_trig:
--	iio_trigger_free(sigma_delta->trig);
--error_ret:
--	return ret;
--}
--
- static int devm_ad_sd_probe_trigger(struct device *dev, struct iio_dev *indio_dev)
- {
- 	struct ad_sigma_delta *sigma_delta = iio_device_get_drvdata(indio_dev);
-@@ -553,49 +510,6 @@ static int devm_ad_sd_probe_trigger(struct device *dev, struct iio_dev *indio_de
- 	return 0;
- }
- 
--static void ad_sd_remove_trigger(struct iio_dev *indio_dev)
--{
--	struct ad_sigma_delta *sigma_delta = iio_device_get_drvdata(indio_dev);
--
--	iio_trigger_unregister(sigma_delta->trig);
--	free_irq(sigma_delta->spi->irq, sigma_delta);
--	iio_trigger_free(sigma_delta->trig);
--}
--
--/**
-- * ad_sd_setup_buffer_and_trigger() -
-- * @indio_dev: The IIO device
-- */
--int ad_sd_setup_buffer_and_trigger(struct iio_dev *indio_dev)
--{
--	int ret;
--
--	ret = iio_triggered_buffer_setup(indio_dev, &iio_pollfunc_store_time,
--			&ad_sd_trigger_handler, &ad_sd_buffer_setup_ops);
--	if (ret)
--		return ret;
--
--	ret = ad_sd_probe_trigger(indio_dev);
--	if (ret) {
--		iio_triggered_buffer_cleanup(indio_dev);
--		return ret;
--	}
--
--	return 0;
--}
--EXPORT_SYMBOL_GPL(ad_sd_setup_buffer_and_trigger);
--
--/**
-- * ad_sd_cleanup_buffer_and_trigger() -
-- * @indio_dev: The IIO device
-- */
--void ad_sd_cleanup_buffer_and_trigger(struct iio_dev *indio_dev)
--{
--	ad_sd_remove_trigger(indio_dev);
--	iio_triggered_buffer_cleanup(indio_dev);
--}
--EXPORT_SYMBOL_GPL(ad_sd_cleanup_buffer_and_trigger);
--
- /**
-  * devm_ad_sd_setup_buffer_and_trigger() - Device-managed buffer & trigger setup
-  * @dev: Device object to which to bind the life-time of the resources attached
-diff --git a/include/linux/iio/adc/ad_sigma_delta.h b/include/linux/iio/adc/ad_sigma_delta.h
-index be81ad39fb7a..c525fd51652f 100644
---- a/include/linux/iio/adc/ad_sigma_delta.h
-+++ b/include/linux/iio/adc/ad_sigma_delta.h
-@@ -133,9 +133,6 @@ int ad_sd_calibrate_all(struct ad_sigma_delta *sigma_delta,
- int ad_sd_init(struct ad_sigma_delta *sigma_delta, struct iio_dev *indio_dev,
- 	struct spi_device *spi, const struct ad_sigma_delta_info *info);
- 
--int ad_sd_setup_buffer_and_trigger(struct iio_dev *indio_dev);
--void ad_sd_cleanup_buffer_and_trigger(struct iio_dev *indio_dev);
--
- int devm_ad_sd_setup_buffer_and_trigger(struct device *dev, struct iio_dev *indio_dev);
- 
- int ad_sd_validate_trigger(struct iio_dev *indio_dev, struct iio_trigger *trig);
--- 
-2.31.1
-
+and the caller MUST guarantee that size_is_const is correct.
+if not, it would be so confusing.
