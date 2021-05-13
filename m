@@ -2,105 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A70EB37F268
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 06:48:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17BDD37F26A
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 06:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230489AbhEMEtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 00:49:25 -0400
-Received: from mail-io1-f41.google.com ([209.85.166.41]:35407 "EHLO
-        mail-io1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbhEMEtS (ORCPT
+        id S231190AbhEMEuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 00:50:08 -0400
+Received: from smtprelay0198.hostedemail.com ([216.40.44.198]:33110 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230362AbhEMEtv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 00:49:18 -0400
-Received: by mail-io1-f41.google.com with SMTP id d24so13968958ios.2
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 21:48:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yoz12x1QRqBVwNhioqF/aqV5rL835RXzGI5rD5tQwJc=;
-        b=oUCgGxvDzNVi3l1QoXKffle5ztnDK+M10j6qhhjdGLoODPD/HplJc5sZqMQhKsodKi
-         etxNrLpw+w5M2Fm0VfDzaCKxJ449gp5s8jrWiiCy0yBTskiPWS4SLgXjUZ2LNfPYTJf4
-         BXB/4bV43TXiGkczAg36mgKbuMI4H02Rzbdv4Y+BKixaFnCQHke4s0QX1BnaYFBzALzt
-         dVIafzmcq6rpKBsLmuPO6uwIjltH4K6P1R1fdz00mBFW45VSl0D8m9quTH4BCeei/ZIM
-         okVOAEIbWA5T4DJW9ogfaoo6XXZubo1Rn5f6BaGyKytiNj1wUDNQm0GycMM9pEFl6KSQ
-         z8vA==
-X-Gm-Message-State: AOAM5331whKggCprBgOVyIeHSwQwE/8M5VkTg8mvUZ6kXyaZr8zhTy+F
-        08S71vekQ5LzeGx7GE9Mwjhp7P5MYuc=
-X-Google-Smtp-Source: ABdhPJxKnWiAuybrPJsK5nxuIQJHp5GxIOPs/1VTigNybi2ANrOcrlZSKLSHKYdzJaj1BurWC9ZcRQ==
-X-Received: by 2002:a5d:9b03:: with SMTP id y3mr8720284ion.191.1620881289051;
-        Wed, 12 May 2021 21:48:09 -0700 (PDT)
-Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
-        by smtp.gmail.com with ESMTPSA id i131sm779451iof.15.2021.05.12.21.48.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 21:48:08 -0700 (PDT)
-Date:   Thu, 13 May 2021 04:48:07 +0000
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     tj@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] percpu_ref: Don't opencode percpu_ref_is_dying
-Message-ID: <YJyvh4iE6sVEEaHD@google.com>
-References: <20210511131633.185463-1-nborisov@suse.com>
- <YJqLY1FsMSf1fDq3@google.com>
+        Thu, 13 May 2021 00:49:51 -0400
+Received: from omf07.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 9CEC4BA02;
+        Thu, 13 May 2021 04:48:40 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf07.hostedemail.com (Postfix) with ESMTPA id 1CAF7315D73;
+        Thu, 13 May 2021 04:48:39 +0000 (UTC)
+Message-ID: <f2e616645f311ccaf6e0acb996f8c4360a0480ec.camel@perches.com>
+Subject: Re: [PATCH] watchdog: Use sysfs_emit() and sysfs_emit_at() in
+ "show" functions
+From:   Joe Perches <joe@perches.com>
+To:     Juerg Haefliger <juerg.haefliger@canonical.com>,
+        wim@linux-watchdog.org, linux@roeck-us.net, joel@jms.id.au,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org
+Cc:     andrew@aj.id.au, linux-kernel@vger.kernel.org,
+        Juerg Haefliger <juergh@canonical.com>
+Date:   Wed, 12 May 2021 21:48:37 -0700
+In-Reply-To: <20210511061812.480172-1-juergh@canonical.com>
+References: <20210511061812.480172-1-juergh@canonical.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YJqLY1FsMSf1fDq3@google.com>
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.04
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: 1CAF7315D73
+X-Stat-Signature: 6kzj9cfeptqsg315pdhjnu5ex5kpbywt
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/YmSWARqT1SSQJOYqo5pk6qOvYyh48NP4=
+X-HE-Tag: 1620881318-714369
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 01:49:23PM +0000, Dennis Zhou wrote:
-> Hello,
+On Tue, 2021-05-11 at 08:18 +0200, Juerg Haefliger wrote:
+> Convert sprintf() in sysfs "show" functions to sysfs_emit() and
+> sysfs_emit_at() in order to check for buffer overruns in sysfs outputs.
+[]
+> diff --git a/drivers/watchdog/ziirave_wdt.c b/drivers/watchdog/ziirave_wdt.c
+[]
+> @@ -445,8 +445,9 @@ static ssize_t ziirave_wdt_sysfs_show_firm(struct device *dev,
+>  	if (ret)
+>  		return ret;
+>  
 > 
-> On Tue, May 11, 2021 at 04:16:33PM +0300, Nikolay Borisov wrote:
-> > Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-> > ---
-> >  lib/percpu-refcount.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/lib/percpu-refcount.c b/lib/percpu-refcount.c
-> > index a1071cdefb5a..af9302141bcf 100644
-> > --- a/lib/percpu-refcount.c
-> > +++ b/lib/percpu-refcount.c
-> > @@ -275,7 +275,7 @@ static void __percpu_ref_switch_mode(struct percpu_ref *ref,
-> >  	wait_event_lock_irq(percpu_ref_switch_waitq, !data->confirm_switch,
-> >  			    percpu_ref_switch_lock);
-> >  
-> > -	if (data->force_atomic || (ref->percpu_count_ptr & __PERCPU_REF_DEAD))
-> > +	if (data->force_atomic || percpu_ref_is_dying(ref))
-> >  		__percpu_ref_switch_to_atomic(ref, confirm_switch);
-> >  	else
-> >  		__percpu_ref_switch_to_percpu(ref);
-> > @@ -385,7 +385,7 @@ void percpu_ref_kill_and_confirm(struct percpu_ref *ref,
-> >  
-> >  	spin_lock_irqsave(&percpu_ref_switch_lock, flags);
-> >  
-> > -	WARN_ONCE(ref->percpu_count_ptr & __PERCPU_REF_DEAD,
-> > +	WARN_ONCE(percpu_ref_is_dying(ref),
-> >  		  "%s called more than once on %ps!", __func__,
-> >  		  ref->data->release);
-> >  
-> > @@ -465,7 +465,7 @@ void percpu_ref_resurrect(struct percpu_ref *ref)
-> >  
-> >  	spin_lock_irqsave(&percpu_ref_switch_lock, flags);
-> >  
-> > -	WARN_ON_ONCE(!(ref->percpu_count_ptr & __PERCPU_REF_DEAD));
-> > +	WARN_ON_ONCE(!percpu_ref_is_dying(ref));
-> >  	WARN_ON_ONCE(__ref_is_percpu(ref, &percpu_count));
-> >  
-> >  	ref->percpu_count_ptr &= ~__PERCPU_REF_DEAD;
-> > -- 
-> > 2.25.1
-> > 
+> -	ret = sprintf(buf, ZIIRAVE_FW_VERSION_FMT, w_priv->firmware_rev.major,
+> -		      w_priv->firmware_rev.minor);
+> +	ret = sysfs_emit(buf, ZIIRAVE_FW_VERSION_FMT,
+> +			 w_priv->firmware_rev.major,
+> +			 w_priv->firmware_rev.minor);
+>  
 > 
-> If no one has any objections to me officially taking percpu_ref, I'll
-> pick this up.
+>  	mutex_unlock(&w_priv->sysfs_mutex);
+>  
 > 
-> Thanks,
-> Dennis
+> @@ -468,8 +469,9 @@ static ssize_t ziirave_wdt_sysfs_show_boot(struct device *dev,
+>  	if (ret)
+>  		return ret;
+>  
+> 
+> -	ret = sprintf(buf, ZIIRAVE_BL_VERSION_FMT, w_priv->bootloader_rev.major,
+> -		      w_priv->bootloader_rev.minor);
+> +	ret = sysfs_emit(buf, ZIIRAVE_BL_VERSION_FMT,
+> +			 w_priv->bootloader_rev.major,
+> +			 w_priv->bootloader_rev.minor);
+>  
+> 
+>  	mutex_unlock(&w_priv->sysfs_mutex);
+>  
+> 
+> @@ -491,7 +493,7 @@ static ssize_t ziirave_wdt_sysfs_show_reason(struct device *dev,
+>  	if (ret)
+>  		return ret;
+>  
+> 
+> -	ret = sprintf(buf, "%s", ziirave_reasons[w_priv->reset_reason]);
+> +	ret = sysfs_emit(buf, "%s", ziirave_reasons[w_priv->reset_reason]);
 
-I've applied this to for-5.13-fixes.
+All of these formats should probably end with a newline
+and the ZIIRAVE_<FOO>_VERSION_FMT defines are to me unnecessary.
 
-Thanks,
-Dennis
