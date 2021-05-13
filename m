@@ -2,85 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B6737FE0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 21:27:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC7A37FE0C
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 21:27:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232312AbhEMT2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 15:28:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53270 "EHLO
+        id S232305AbhEMT2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 15:28:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232303AbhEMT2O (ORCPT
+        with ESMTP id S232072AbhEMT2J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 15:28:14 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26BBEC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 12:27:04 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id p14-20020a05600c358eb029015c01f207d7so366378wmq.5
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 12:27:04 -0700 (PDT)
+        Thu, 13 May 2021 15:28:09 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55BDFC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 12:26:59 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id g4so10588865lfv.6
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 12:26:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PqbwR4L945w2uSfsL/kb8dhVuFB8CH0RH4aZW5kJJIk=;
-        b=qheDlMFs9657HZlMSTPtCq60kx8JJ9r33kg5wCbbtaI+SqpJ6ABKQZPil5sA7vFvi1
-         uKNhcbNdm/w5QlXLie5rnaol59/E5eehkpLGde/QLp+Ap8osnZ57CYSQSl8WY1/AohTz
-         q11NE/A9P7jYwrSfaspW8G2np4r1bOcq1wVoUzdi/f8V3MQUCsc1dZd5ZkGcwII4auvD
-         zaOSKwokGQwTC4MmweTKn8vzWxbRS8xk1HGOG3NYR3id4/qDwvv4ouuR9v0NIKkkRVj6
-         DjuzfXhlFNU48YeC3dUAbOaxAt+I+iUh/CAhEc2s7cPqTf34k2vyuyRou9sgqy7t0oWg
-         QOVA==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TcTyI8CdqDYS+DLvWcEReUWNJFD/4vgGxlJYUQdhn98=;
+        b=bVD78BCgzVDTYgRpvMwtI20LjNpcjZE4ug8fPOgkwqZd8jPUisd3g4ekz2la/BIgHF
+         Czg4XeaVQmqDGXkKSjeQpbpG9NqHyTVkGlTnstlgeaSofhF4+VrLOdKZbBJv/BeqO9zC
+         gfVjgew5vXKeNkTAz5Fed195VIoW0t04HzU/c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PqbwR4L945w2uSfsL/kb8dhVuFB8CH0RH4aZW5kJJIk=;
-        b=FUdCLAIh3QebGE1ctJLW0liZtDaaxKC5Af4wpe6EstPafVmDHwspwt2OObM8aTbGPt
-         JOQ01ZB1/iZ+bJJ6shq5h2XOBf1z4gCD22q6VeVC902Zkl2BtR2Sl2Nx/btNyatYoEQa
-         JV6pXArFumeKLJS2PxAvuq6Ja2alZBOVclxRbuS9aW/6R5wpMiyqXwyiVk3EJnHKolmh
-         HfYn3H1FIIqn4cQ1fwIkaKZ0bvtfo5ulp475W30lPpbjpvnEMFpXlbkxeNzoOlJph6z7
-         Xwpx/cXVmRgftTz9ijtFvdtp1bq7hluCKuXzb+7g9DFd81nonkGk/yp637QALqukmSJ6
-         e7CQ==
-X-Gm-Message-State: AOAM532CfT9Aef6jZer1Kuo5K9ZU4/uBXXd2ajO1zUDdTOL/sExTiUxm
-        APyPvEI9eBTpje38LsChNKznUw==
-X-Google-Smtp-Source: ABdhPJzCQlePs8w6v253FGGV68DYI4RKl5BD7B4i7n53vRV8poZuELeUjHXg5qpISOprpoYFeSUkSg==
-X-Received: by 2002:a1c:1d55:: with SMTP id d82mr5162172wmd.12.1620934022866;
-        Thu, 13 May 2021 12:27:02 -0700 (PDT)
-Received: from localhost.localdomain (2a02-8440-6341-d842-3074-96af-9642-0002.rev.sfr.net. [2a02:8440:6341:d842:3074:96af:9642:2])
-        by smtp.gmail.com with ESMTPSA id h9sm3053621wmb.35.2021.05.13.12.27.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 12:27:02 -0700 (PDT)
-From:   Guillaume Ranquet <granquet@baylibre.com>
-Cc:     Sean Wang <sean.wang@mediatek.com>, Vinod Koul <vkoul@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 0/3] fix mediatek UART APDMA desc logic
-Date:   Thu, 13 May 2021 21:26:39 +0200
-Message-Id: <20210513192642.29446-1-granquet@baylibre.com>
-X-Mailer: git-send-email 2.26.3
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TcTyI8CdqDYS+DLvWcEReUWNJFD/4vgGxlJYUQdhn98=;
+        b=RrQ1DhkdTSLNe/6qW4EvLJOE2NfFSVdyGisTHWodFiL8gdPq9HEg7I4O1gVR1YNX7S
+         gca1p8h5LK+yUzFd+AQWZlZOzdab5yk+wHYGRJU+xZFvD0imXhugyje4PZxICvVHjYkZ
+         jAEr4KSrt6iFwZYgkB0I+c1KS0KF7+iZ6zNlHdVLl6R4EhMozrI/eqQm140krE43GroG
+         fg3Z5HYGiChgyQbYka+dHNNJaip0X7Aj5Byax3TNRcroyTgYJz6BeaaknUPe7kRTGKDq
+         2CNktXstOKw24Mx01NEoCcMbVaJlBcoumwbgA/F6t/a1YI6AeEL06R1+DwrC4DJJtqXH
+         AM7g==
+X-Gm-Message-State: AOAM530ReGxgXZMfCk7ZDBvO09ED977JkCzqPA4IrO7hSR+yZnOCblMt
+        bT2bG59qKq8PY0h8MFG3fJEIKWXelD6b7Xai
+X-Google-Smtp-Source: ABdhPJzuJzO+qkAdGYv68vvbqAchNEW1Gv6DK0+a4gvDQd3C6AEGCfw6FISnQy2MYsmDBMGaTNRhwQ==
+X-Received: by 2002:a19:f017:: with SMTP id p23mr29991945lfc.283.1620934017557;
+        Thu, 13 May 2021 12:26:57 -0700 (PDT)
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
+        by smtp.gmail.com with ESMTPSA id y22sm375502lfl.36.2021.05.13.12.26.56
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 May 2021 12:26:57 -0700 (PDT)
+Received: by mail-lj1-f182.google.com with SMTP id v6so35071194ljj.5
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 12:26:56 -0700 (PDT)
+X-Received: by 2002:a2e:c52:: with SMTP id o18mr3512611ljd.411.1620934016634;
+ Thu, 13 May 2021 12:26:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+References: <CAJZ5v0in2AeuGt-YRjKE5r4AKhu1kTf=zRfFWfb+cPFZL-NESA@mail.gmail.com>
+In-Reply-To: <CAJZ5v0in2AeuGt-YRjKE5r4AKhu1kTf=zRfFWfb+cPFZL-NESA@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 13 May 2021 12:26:40 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjSF1Vozzmst-H_xgy20XZx0t55uBwn8B6Rqjhe0JfOwA@mail.gmail.com>
+Message-ID: <CAHk-=wjSF1Vozzmst-H_xgy20XZx0t55uBwn8B6Rqjhe0JfOwA@mail.gmail.com>
+Subject: Re: [GIT PULL] ACPI fixes for v5.13-rc2
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The logic used in the apdma driver to handle the virt_dma_desc caused
-panics and various memory corruption.
-This is an attempt at sanitizing the logic a bit.
+On Thu, May 13, 2021 at 12:06 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+>
+> These revert an unnecessary revert of an ACPI power management
+> commit
 
-Sending a v2 as the previous mails were ill formatted and not threaded
-properly.
-I'm also removing the last patch from the series as the fix is
-alread on mainline.
+I think it would be kind of nice to see more of an explanation than
+"was not necessary".
 
-Guillaume Ranquet (3):
-  dmaengine: mediatek: free the proper desc in desc_free handler
-  dmaengine: mediatek: do not issue a new desc if one is still current
-  dmaengine: mediatek: use GFP_NOWAIT instead of GFP_ATOMIC in prep_dma
+The original report of problems was apparently wrong - but it would
+maybe have been good to just mention how that all went down..
 
- drivers/dma/mediatek/mtk-uart-apdma.c | 27 ++++++++++++++-------------
- 1 file changed, 14 insertions(+), 13 deletions(-)
-
--- 
-2.26.3
-
+                Linus
