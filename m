@@ -2,68 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EB6F37F66B
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 13:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B0EB37F676
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 13:09:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233210AbhEMLJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 07:09:07 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:47800 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232434AbhEMLIm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 07:08:42 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R711e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UYkXXXR_1620904044;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UYkXXXR_1620904044)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 13 May 2021 19:07:30 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     chris@zankel.net
-Cc:     jcmvbkbc@gmail.com, linux-xtensa@linux-xtensa.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] xtensa: Fix duplicate included linux/unaligned/generic.h
-Date:   Thu, 13 May 2021 19:07:23 +0800
-Message-Id: <1620904043-71858-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S233209AbhEMLKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 07:10:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59774 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232957AbhEMLKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 07:10:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D47CA61422;
+        Thu, 13 May 2021 11:09:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620904148;
+        bh=uoluFBaduD5lLVV4XzN00NtHyh9peG4uBDHAHqnWv8o=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=M1wGDTMKy1JRRL4gmij6N2CDAmH/WNMowt8QqCeFvj1GA88YVvXSxqRhM4cCEnrdq
+         8aC4N3MvF7e6MZd2xAJkSqPp2tI2PDgwUMW81v9Xxgi2SoTi58cJLuOnslYZXqIu3q
+         9im0/s4exVXCQciNOfNZmjRe/1/njdMeP73nmHvTV61QdeZO4R55p38NfMmr0H4iKl
+         98xBUKRNjWQKPS3/nhysSswwwD0L7H1xXeBNIq8PX1hD/Y/BwjwTTCWvvxTOhXkR9R
+         jdeKLVWaRD5Bup9p+FkCqjbfSyRcc2ax8fsq6xUjfoIW92h9OlI4sflBSDjxYeEKfR
+         IWzHRz9iqP/KQ==
+Date:   Thu, 13 May 2021 13:09:04 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Michael Zaidman <michael.zaidman@gmail.com>
+cc:     trix@redhat.com, benjamin.tissoires@redhat.com,
+        linux-i2c@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] HID: ft260: improve error handling of
+ ft260_hid_feature_report_get()
+In-Reply-To: <20210511101208.16401-1-michael.zaidman@gmail.com>
+Message-ID: <nycvar.YFH.7.76.2105131308260.28378@cbobk.fhfr.pm>
+References: <20210511101208.16401-1-michael.zaidman@gmail.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clean up the following includecheck warning:
+On Tue, 11 May 2021, Michael Zaidman wrote:
 
-./arch/xtensa/include/asm/unaligned.h: linux/unaligned/generic.h is
-included more than once.
+> Fixes: 6a82582d9fa4 ("HID: ft260: add usb hid to i2c host bridge driver")
+> 
+> The ft260_hid_feature_report_get() checks if the return size matches
+> the requested size. But the function can also fail with at least -ENOMEM.
+> Add the < 0 checks.
+> 
+> In ft260_hid_feature_report_get(), do not do the memcpy to the caller's
+> buffer if there is an error.
+> 
+> ---
+> v4   Fixed commit message
+> ---
+> v3   Simplify and optimize the changes
+> ---
+> v2:  add unlikely()'s for error conditions
+> ---
+> 
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> Signed-off-by: Michael Zaidman <michael.zaidman@gmail.com>
 
-No functional change.
+Who should be the author of the git commit?
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- arch/xtensa/include/asm/unaligned.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Thanks,
 
-diff --git a/arch/xtensa/include/asm/unaligned.h b/arch/xtensa/include/asm/unaligned.h
-index 8e7ed04..c8838d9 100644
---- a/arch/xtensa/include/asm/unaligned.h
-+++ b/arch/xtensa/include/asm/unaligned.h
-@@ -15,15 +15,15 @@
- #ifdef __LITTLE_ENDIAN
- # include <linux/unaligned/le_struct.h>
- # include <linux/unaligned/be_byteshift.h>
--# include <linux/unaligned/generic.h>
- # define get_unaligned	__get_unaligned_le
- # define put_unaligned	__put_unaligned_le
- #else
- # include <linux/unaligned/be_struct.h>
- # include <linux/unaligned/le_byteshift.h>
--# include <linux/unaligned/generic.h>
- # define get_unaligned	__get_unaligned_be
- # define put_unaligned	__put_unaligned_be
- #endif
- 
-+# include <linux/unaligned/generic.h>
-+
- #endif	/* _ASM_XTENSA_UNALIGNED_H */
 -- 
-1.8.3.1
+Jiri Kosina
+SUSE Labs
 
