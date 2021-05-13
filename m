@@ -2,362 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 691EE37F3B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 09:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15D6937F3BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 09:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231641AbhEMHsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 03:48:35 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:60740 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231389AbhEMHs2 (ORCPT
+        id S231754AbhEMHvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 03:51:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230090AbhEMHvZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 03:48:28 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14D7lCV7129730;
-        Thu, 13 May 2021 02:47:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1620892032;
-        bh=QDWqwx1gf8f3V7AtFn1vm/kiWoZ6TPo3awiUQv8OkPs=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=AiHgsg5HbzLRgunBQZn9eMhR5VtCDYzCFA5gh9dhszQoXsg6bJOTyHPQUa4aUinCn
-         BErDZq5oirl520JBLI4CN8ieYXrqsq6g98N3CRFZUwhBtSNwq3ropWDmEWp+rk3Tan
-         KA4zN1CvBqeeqjiwD8U1oI7T5wFREqv9Q+OGJnE0=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14D7lBHs061314
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 13 May 2021 02:47:11 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 13
- May 2021 02:47:11 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 13 May 2021 02:47:11 -0500
-Received: from [10.250.232.157] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14D7l8WY056199;
-        Thu, 13 May 2021 02:47:09 -0500
-Subject: Re: [PATCH 12/14] phy: cadence-torrent: Add PCIe + DP multilink
- configuration
-To:     Swapnil Jakhade <sjakhade@cadence.com>, <vkoul@kernel.org>,
-        <p.zabel@pengutronix.de>, <linux-phy@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <mparab@cadence.com>, <lokeshvutla@ti.com>
-References: <1617946456-27773-1-git-send-email-sjakhade@cadence.com>
- <1617946456-27773-13-git-send-email-sjakhade@cadence.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <58a18b90-9062-a44c-f712-977025142de5@ti.com>
-Date:   Thu, 13 May 2021 13:17:07 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 13 May 2021 03:51:25 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED991C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 00:50:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=laso0NJGsAhov91wC9gA5ni0VjCkObp7QNRNmEa9AYA=; b=u9tp+TFbBpeQwFNkq1r8749PsI
+        9az8yTQY3jxlQWJ2m20Yc1KP/+l7JLeMNem1SVPsRMWix9/DSGzx3Kpqu7n3jHpMecAWgOPGxlED9
+        FSpiCmlKu8Ib1U6xa7p4ycI+ivZ1PChH1LBd5rBy97XOYVEW09NvJkvdoMHNvTumVnvl2dNK1a37h
+        +YcbJIC4g39NUHnVs/Gw5/CtOhO26IqKtVUb8RT87HvMYAZIPGN79kR3eIDtk8QkHqPl3soLpUFfe
+        Y51iFiS0WD0wnN3h4Lgq/Nm2frOT22kMK+oeO3EsU4vod0iRTSGcSjZgU2UjRjsK6QWRTd4xvn7HU
+        TtROvOLw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lh64b-009FPW-5e; Thu, 13 May 2021 07:48:17 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EB27930022A;
+        Thu, 13 May 2021 09:47:55 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D324B2BC7450F; Thu, 13 May 2021 09:47:55 +0200 (CEST)
+Date:   Thu, 13 May 2021 09:47:55 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Marcelo Tosatti <mtosatti@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Alex Belits <abelits@marvell.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        John Stultz <john.stultz@linaro.org>
+Subject: Re: [patch V2 8/8] hrtimer: Avoid more SMP function calls in
+ clock_was_set()
+Message-ID: <YJzZqyaEWstfWtYW@hirez.programming.kicks-ass.net>
+References: <20210427082537.611978720@linutronix.de>
+ <20210427083724.840364566@linutronix.de>
+ <20210427151125.GA171315@fuller.cnet>
+ <877dkno5w0.ffs@nanos.tec.linutronix.de>
+ <87a6pgfdps.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <1617946456-27773-13-git-send-email-sjakhade@cadence.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87a6pgfdps.ffs@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Swapnil,
+On Fri, Apr 30, 2021 at 09:12:15AM +0200, Thomas Gleixner wrote:
+> +static bool update_needs_ipi(struct hrtimer_cpu_base *cpu_base,
+> +			     unsigned int active)
+> +{
+> +	struct hrtimer_clock_base *base;
+> +	unsigned int seq;
+> +	ktime_t expires;
+> +
+> +	/*
+> +	 * Update the base offsets unconditionally so the following
+> +	 * checks whether the SMP function call is required works.
+> +	 *
+> +	 * The update is safe even when the remote CPU is in the hrtimer
+> +	 * interrupt or the hrtimer soft interrupt and expiring affected
+> +	 * bases. Either it will see the update before handling a base or
+> +	 * it will see it when it finishes the processing and reevaluates
+> +	 * the next expiring timer.
+> +	 */
+> +	seq = cpu_base->clock_was_set_seq;
+> +	hrtimer_update_base(cpu_base);
+> +
+> +	/*
+> +	 * If the sequence did not change over the update then the
+> +	 * remote CPU already handled it.
+> +	 */
+> +	if (seq == cpu_base->clock_was_set_seq)
+> +		return false;
+> +
 
-On 09/04/21 11:04 am, Swapnil Jakhade wrote:
-> Add PCIe + DP no SSC multilink configuration sequences.
+So far so simple, if there's nothing to update, we done.
 
-Looks neat! Exactly how it was all intended to look like. Thanks!
+> +	/*
+> +	 * If the remote CPU is currently handling an hrtimer interrupt, it
+> +	 * will reevaluate the first expiring timer of all clock bases
+> +	 * before reprogramming. Nothing to do here.
+> +	 */
+> +	if (cpu_base->in_hrtirq)
+> +		return false;
 
-I would defer merging this till it gets tested in a platform though.
+This one gives me a head-ache though; if we get here, that means
+hrtimer_interrupt()'s hrtimer_update_base() happened before the change.
+It also means that CPU is in __run_hrtimer() running a fn(), since we
+own cpu_base->lock.
 
-Thanks
-Kishon
+That in turn means it is in __hrtimer_run_queues(), possible on the last
+base.
 
-> 
-> Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
-> ---
->  drivers/phy/cadence/phy-cadence-torrent.c | 131 ++++++++++++++++++++++
->  1 file changed, 131 insertions(+)
-> 
-> diff --git a/drivers/phy/cadence/phy-cadence-torrent.c b/drivers/phy/cadence/phy-cadence-torrent.c
-> index becbf8456b2d..bf37569c6c51 100644
-> --- a/drivers/phy/cadence/phy-cadence-torrent.c
-> +++ b/drivers/phy/cadence/phy-cadence-torrent.c
-> @@ -2572,6 +2572,77 @@ static int cdns_torrent_phy_remove(struct platform_device *pdev)
->  	return 0;
->  }
->  
-> +/* PCIe and DP link configuration */
-> +static struct cdns_reg_pairs pcie_dp_link_cmn_regs[] = {
-> +	{0x0003, PHY_PLL_CFG},
-> +	{0x0601, CMN_PDIAG_PLL0_CLK_SEL_M0},
-> +	{0x0400, CMN_PDIAG_PLL0_CLK_SEL_M1}
-> +};
+Now, if I understand it right, the thing that saves us, is that
+hrtimer_update_next_event() -- right after returning from
+__hrtimer_run_queues() -- will re-evaluate all bases (with the
+hrtimer_update_base() we just did visible to it) and we'll eventually
+goto retry if time moved such that we now have timers that should've ran
+but were missed due to this concurrent shift in time.
+
+However, since that retries thing is limited to 3; could we not trigger
+that by generating a stream of these updates, causing the timer to keep
+having to be reset? I suppose updating time is a root only thing, and
+root can shoot its own foot off any time it damn well likes, so who
+cares.
+
+> +	/*
+> +	 * Walk the affected clock bases and check whether the first expiring
+> +	 * timer in a clock base is moving ahead of the first expiring timer of
+> +	 * @cpu_base. If so, the IPI must be invoked because per CPU clock
+> +	 * event devices cannot be remotely reprogrammed.
+> +	 */
+> +	active &= cpu_base->active_bases;
 > +
-> +static struct cdns_reg_pairs pcie_dp_xcvr_diag_ln_regs[] = {
-> +	{0x0000, XCVR_DIAG_HSCLK_SEL},
-> +	{0x0001, XCVR_DIAG_HSCLK_DIV},
-> +	{0x0012, XCVR_DIAG_PLLDRC_CTRL}
-> +};
+> +	for_each_active_base(base, cpu_base, active) {
+> +		struct timerqueue_node *next;
 > +
-> +static struct cdns_reg_pairs dp_pcie_xcvr_diag_ln_regs[] = {
-> +	{0x0001, XCVR_DIAG_HSCLK_SEL},
-> +	{0x0009, XCVR_DIAG_PLLDRC_CTRL}
-> +};
+> +		next = timerqueue_getnext(&base->active);
+> +		expires = ktime_sub(next->expires, base->offset);
+> +		if (expires < cpu_base->expires_next)
+> +			return true;
 > +
-> +static struct cdns_torrent_vals pcie_dp_link_cmn_vals = {
-> +	.reg_pairs = pcie_dp_link_cmn_regs,
-> +	.num_regs = ARRAY_SIZE(pcie_dp_link_cmn_regs),
-> +};
+> +		/* Extra check for softirq clock bases */
+> +		if (base->clockid < HRTIMER_BASE_MONOTONIC_SOFT)
+> +			continue;
+> +		if (cpu_base->softirq_activated)
+> +			continue;
+> +		if (expires < cpu_base->softirq_expires_next)
+> +			return true;
+> +	}
+
+Fair enough..
+
+> +	return false;
+> +}
 > +
-> +static struct cdns_torrent_vals pcie_dp_xcvr_diag_ln_vals = {
-> +	.reg_pairs = pcie_dp_xcvr_diag_ln_regs,
-> +	.num_regs = ARRAY_SIZE(pcie_dp_xcvr_diag_ln_regs),
-> +};
-> +
-> +static struct cdns_torrent_vals dp_pcie_xcvr_diag_ln_vals = {
-> +	.reg_pairs = dp_pcie_xcvr_diag_ln_regs,
-> +	.num_regs = ARRAY_SIZE(dp_pcie_xcvr_diag_ln_regs),
-> +};
-> +
-> +/* DP Multilink, 100 MHz Ref clk, no SSC */
-> +static struct cdns_reg_pairs dp_100_no_ssc_cmn_regs[] = {
-> +	{0x007F, CMN_TXPUCAL_TUNE},
-> +	{0x007F, CMN_TXPDCAL_TUNE}
-> +};
-> +
-> +static struct cdns_reg_pairs dp_100_no_ssc_tx_ln_regs[] = {
-> +	{0x00FB, TX_PSC_A0},
-> +	{0x04AA, TX_PSC_A2},
-> +	{0x04AA, TX_PSC_A3},
-> +	{0x000F, XCVR_DIAG_BIDI_CTRL}
-> +};
-> +
-> +static struct cdns_reg_pairs dp_100_no_ssc_rx_ln_regs[] = {
-> +	{0x0000, RX_PSC_A0},
-> +	{0x0000, RX_PSC_A2},
-> +	{0x0000, RX_PSC_A3},
-> +	{0x0000, RX_PSC_CAL},
-> +	{0x0000, RX_REE_GCSM1_CTRL},
-> +	{0x0000, RX_REE_GCSM2_CTRL},
-> +	{0x0000, RX_REE_PERGCSM_CTRL}
-> +};
-> +
-> +static struct cdns_torrent_vals dp_100_no_ssc_cmn_vals = {
-> +	.reg_pairs = dp_100_no_ssc_cmn_regs,
-> +	.num_regs = ARRAY_SIZE(dp_100_no_ssc_cmn_regs),
-> +};
-> +
-> +static struct cdns_torrent_vals dp_100_no_ssc_tx_ln_vals = {
-> +	.reg_pairs = dp_100_no_ssc_tx_ln_regs,
-> +	.num_regs = ARRAY_SIZE(dp_100_no_ssc_tx_ln_regs),
-> +};
-> +
-> +static struct cdns_torrent_vals dp_100_no_ssc_rx_ln_vals = {
-> +	.reg_pairs = dp_100_no_ssc_rx_ln_regs,
-> +	.num_regs = ARRAY_SIZE(dp_100_no_ssc_rx_ln_regs),
-> +};
-> +
->  /* Single DisplayPort(DP) link configuration */
->  static struct cdns_reg_pairs sl_dp_link_cmn_regs[] = {
->  	{0x0000, PHY_PLL_CFG},
-> @@ -3514,6 +3585,9 @@ static const struct cdns_torrent_data cdns_map_torrent = {
->  			[TYPE_NONE] = {
->  				[NO_SSC] = &sl_dp_link_cmn_vals,
->  			},
-> +			[TYPE_PCIE] = {
-> +				[NO_SSC] = &pcie_dp_link_cmn_vals,
-> +			},
->  		},
->  		[TYPE_PCIE] = {
->  			[TYPE_NONE] = {
-> @@ -3536,6 +3610,9 @@ static const struct cdns_torrent_data cdns_map_torrent = {
->  				[EXTERNAL_SSC] = &pcie_usb_link_cmn_vals,
->  				[INTERNAL_SSC] = &pcie_usb_link_cmn_vals,
->  			},
-> +			[TYPE_DP] = {
-> +				[NO_SSC] = &pcie_dp_link_cmn_vals,
-> +			},
->  		},
->  		[TYPE_SGMII] = {
->  			[TYPE_NONE] = {
-> @@ -3595,6 +3672,9 @@ static const struct cdns_torrent_data cdns_map_torrent = {
->  			[TYPE_NONE] = {
->  				[NO_SSC] = &sl_dp_xcvr_diag_ln_vals,
->  			},
-> +			[TYPE_PCIE] = {
-> +				[NO_SSC] = &dp_pcie_xcvr_diag_ln_vals,
-> +			},
->  		},
->  		[TYPE_PCIE] = {
->  			[TYPE_NONE] = {
-> @@ -3617,6 +3697,9 @@ static const struct cdns_torrent_data cdns_map_torrent = {
->  				[EXTERNAL_SSC] = &pcie_usb_xcvr_diag_ln_vals,
->  				[INTERNAL_SSC] = &pcie_usb_xcvr_diag_ln_vals,
->  			},
-> +			[TYPE_DP] = {
-> +				[NO_SSC] = &pcie_dp_xcvr_diag_ln_vals,
-> +			},
->  		},
->  		[TYPE_SGMII] = {
->  			[TYPE_NONE] = {
-> @@ -3715,6 +3798,9 @@ static const struct cdns_torrent_data cdns_map_torrent = {
->  				[TYPE_NONE] = {
->  					[NO_SSC] = &sl_dp_100_no_ssc_cmn_vals,
->  				},
-> +				[TYPE_PCIE] = {
-> +					[NO_SSC] = &dp_100_no_ssc_cmn_vals,
-> +				},
->  			},
->  			[TYPE_PCIE] = {
->  				[TYPE_NONE] = {
-> @@ -3737,6 +3823,9 @@ static const struct cdns_torrent_data cdns_map_torrent = {
->  					[EXTERNAL_SSC] = &pcie_100_no_ssc_cmn_vals,
->  					[INTERNAL_SSC] = &pcie_100_int_ssc_cmn_vals,
->  				},
-> +				[TYPE_DP] = {
-> +					[NO_SSC] = NULL,
-> +				},
->  			},
->  			[TYPE_SGMII] = {
->  				[TYPE_NONE] = {
-> @@ -3812,6 +3901,9 @@ static const struct cdns_torrent_data cdns_map_torrent = {
->  				[TYPE_NONE] = {
->  					[NO_SSC] = &sl_dp_100_no_ssc_tx_ln_vals,
->  				},
-> +				[TYPE_PCIE] = {
-> +					[NO_SSC] = &dp_100_no_ssc_tx_ln_vals,
-> +				},
->  			},
->  			[TYPE_PCIE] = {
->  				[TYPE_NONE] = {
-> @@ -3834,6 +3926,9 @@ static const struct cdns_torrent_data cdns_map_torrent = {
->  					[EXTERNAL_SSC] = NULL,
->  					[INTERNAL_SSC] = NULL,
->  				},
-> +				[TYPE_DP] = {
-> +					[NO_SSC] = NULL,
-> +				},
->  			},
->  			[TYPE_SGMII] = {
->  				[TYPE_NONE] = {
-> @@ -3909,6 +4004,9 @@ static const struct cdns_torrent_data cdns_map_torrent = {
->  				[TYPE_NONE] = {
->  					[NO_SSC] = &sl_dp_100_no_ssc_rx_ln_vals,
->  				},
-> +				[TYPE_PCIE] = {
-> +					[NO_SSC] = &dp_100_no_ssc_rx_ln_vals,
-> +				},
->  			},
->  			[TYPE_PCIE] = {
->  				[TYPE_NONE] = {
-> @@ -3931,6 +4029,9 @@ static const struct cdns_torrent_data cdns_map_torrent = {
->  					[EXTERNAL_SSC] = &pcie_100_no_ssc_rx_ln_vals,
->  					[INTERNAL_SSC] = &pcie_100_no_ssc_rx_ln_vals,
->  				},
-> +				[TYPE_DP] = {
-> +					[NO_SSC] = &pcie_100_no_ssc_rx_ln_vals,
-> +				},
->  			},
->  			[TYPE_SGMII] = {
->  				[TYPE_NONE] = {
-> @@ -3996,6 +4097,9 @@ static const struct cdns_torrent_data ti_j721e_map_torrent = {
->  			[TYPE_NONE] = {
->  				[NO_SSC] = &sl_dp_link_cmn_vals,
->  			},
-> +			[TYPE_PCIE] = {
-> +				[NO_SSC] = &pcie_dp_link_cmn_vals,
-> +			},
->  		},
->  		[TYPE_PCIE] = {
->  			[TYPE_NONE] = {
-> @@ -4018,6 +4122,9 @@ static const struct cdns_torrent_data ti_j721e_map_torrent = {
->  				[EXTERNAL_SSC] = &pcie_usb_link_cmn_vals,
->  				[INTERNAL_SSC] = &pcie_usb_link_cmn_vals,
->  			},
-> +			[TYPE_DP] = {
-> +				[NO_SSC] = &pcie_dp_link_cmn_vals,
-> +			},
->  		},
->  		[TYPE_SGMII] = {
->  			[TYPE_NONE] = {
-> @@ -4077,6 +4184,9 @@ static const struct cdns_torrent_data ti_j721e_map_torrent = {
->  			[TYPE_NONE] = {
->  				[NO_SSC] = &sl_dp_xcvr_diag_ln_vals,
->  			},
-> +			[TYPE_PCIE] = {
-> +				[NO_SSC] = &dp_pcie_xcvr_diag_ln_vals,
-> +			},
->  		},
->  		[TYPE_PCIE] = {
->  			[TYPE_NONE] = {
-> @@ -4099,6 +4209,9 @@ static const struct cdns_torrent_data ti_j721e_map_torrent = {
->  				[EXTERNAL_SSC] = &pcie_usb_xcvr_diag_ln_vals,
->  				[INTERNAL_SSC] = &pcie_usb_xcvr_diag_ln_vals,
->  			},
-> +			[TYPE_DP] = {
-> +				[NO_SSC] = &pcie_dp_xcvr_diag_ln_vals,
-> +			},
->  		},
->  		[TYPE_SGMII] = {
->  			[TYPE_NONE] = {
-> @@ -4197,6 +4310,9 @@ static const struct cdns_torrent_data ti_j721e_map_torrent = {
->  				[TYPE_NONE] = {
->  					[NO_SSC] = &sl_dp_100_no_ssc_cmn_vals,
->  				},
-> +				[TYPE_PCIE] = {
-> +					[NO_SSC] = &dp_100_no_ssc_cmn_vals,
-> +				},
->  			},
->  			[TYPE_PCIE] = {
->  				[TYPE_NONE] = {
-> @@ -4219,6 +4335,9 @@ static const struct cdns_torrent_data ti_j721e_map_torrent = {
->  					[EXTERNAL_SSC] = &pcie_100_no_ssc_cmn_vals,
->  					[INTERNAL_SSC] = &pcie_100_int_ssc_cmn_vals,
->  				},
-> +				[TYPE_DP] = {
-> +					[NO_SSC] = NULL,
-> +				},
->  			},
->  			[TYPE_SGMII] = {
->  				[TYPE_NONE] = {
-> @@ -4294,6 +4413,9 @@ static const struct cdns_torrent_data ti_j721e_map_torrent = {
->  				[TYPE_NONE] = {
->  					[NO_SSC] = &sl_dp_100_no_ssc_tx_ln_vals,
->  				},
-> +				[TYPE_PCIE] = {
-> +					[NO_SSC] = &dp_100_no_ssc_tx_ln_vals,
-> +				},
->  			},
->  			[TYPE_PCIE] = {
->  				[TYPE_NONE] = {
-> @@ -4316,6 +4438,9 @@ static const struct cdns_torrent_data ti_j721e_map_torrent = {
->  					[EXTERNAL_SSC] = NULL,
->  					[INTERNAL_SSC] = NULL,
->  				},
-> +				[TYPE_DP] = {
-> +					[NO_SSC] = NULL,
-> +				},
->  			},
->  			[TYPE_SGMII] = {
->  				[TYPE_NONE] = {
-> @@ -4391,6 +4516,9 @@ static const struct cdns_torrent_data ti_j721e_map_torrent = {
->  				[TYPE_NONE] = {
->  					[NO_SSC] = &sl_dp_100_no_ssc_rx_ln_vals,
->  				},
-> +				[TYPE_PCIE] = {
-> +					[NO_SSC] = &dp_100_no_ssc_rx_ln_vals,
-> +				},
->  			},
->  			[TYPE_PCIE] = {
->  				[TYPE_NONE] = {
-> @@ -4413,6 +4541,9 @@ static const struct cdns_torrent_data ti_j721e_map_torrent = {
->  					[EXTERNAL_SSC] = &pcie_100_no_ssc_rx_ln_vals,
->  					[INTERNAL_SSC] = &pcie_100_no_ssc_rx_ln_vals,
->  				},
-> +				[TYPE_DP] = {
-> +					[NO_SSC] = &pcie_100_no_ssc_rx_ln_vals,
-> +				},
->  			},
->  			[TYPE_SGMII] = {
->  				[TYPE_NONE] = {
-> 
+>  /*
+>   * Clock was set. This might affect CLOCK_REALTIME, CLOCK_TAI and
+>   * CLOCK_BOOTTIME (for late sleep time injection).
+
