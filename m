@@ -2,139 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D4F237F86B
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 15:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFE2737F86D
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 15:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233842AbhEMNKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 09:10:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230498AbhEMNKE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 09:10:04 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60D88C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 06:08:54 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id v191so21663989pfc.8
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 06:08:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gXNGtSr5Jfwp0sWTm9YEqRolUceYdaH5fX4XDPsA5Wo=;
-        b=IEah8HvzvcEfL+hYEKAPPzkpt1lA/Enb+VxQKD8zSURITes1ef/i/y8nUuSsZ+q/yO
-         M4L2uj2v3/0H9O7xwyk8SE6DJ9Q+Qi2hKTB35/m+ctU8KGPKUOupZKcivs1MwV8LA498
-         iokoEyVwXMoeT5Wj6r1akF8KQ6Vq19jqw7X7fWfzmE6ZLUXExk4rZx50apD5CKNxk1AC
-         ZxQisNERvhjLrItOeOeXqtp4bY36SgZcSiR7GPVbL7pef3dtGukxCDRkXqfGknQUeGyI
-         +tdV5iY0yPEfjvWOeJ7agFBQ8N1yP0IWRTVdeShE7ePZ60JYMXfR1Q9gGmD5DWrvMy6a
-         IYcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gXNGtSr5Jfwp0sWTm9YEqRolUceYdaH5fX4XDPsA5Wo=;
-        b=iiIj6aK5uQgZDa0R6AeqTFQn+TjFjWew146bbIPDRp65pYjtGNgZwMaywbuNyYCh4N
-         VVsV8E1+m/l9hqJ3WpCT1ZUp4naPhN9QeKiMYC71sJS8C3AdnFmTVd7klKngZwFTPP/j
-         OiKZfqweOxUrTlTCKZxdB5gRsSIKZ5mn0QsF/fF8hriR9FmrLbH7jgN6LyrO+tRfW0YC
-         MBwJUzukieequ0E4COnE0CJoekVpIJoGH7jXAm4HL0W8rld+A6l8Zy173JbauDpiBnkB
-         oXRUSLDh5GzOpFLPy68ywBBa40yl+APNlq8aRgjxFx32gAoqHczKyuQNIYyvM7+wT657
-         yazg==
-X-Gm-Message-State: AOAM533+WpbZnOgAlyR/ij6koo7HkfbfgFfYNBotvJvBPb4wVyNSn2JH
-        NzU2MnMmNNHOnbRk8UBcGsI=
-X-Google-Smtp-Source: ABdhPJyGxU2t9N4d1gexGsfQJoEiMS20c+Z6tN85lIBMVtzxpNBn92piE0I/17OqF1NO1aWquPU5Dg==
-X-Received: by 2002:a05:6a00:b46:b029:2d3:3504:88d9 with SMTP id p6-20020a056a000b46b02902d3350488d9mr839174pfo.39.1620911333958;
-        Thu, 13 May 2021 06:08:53 -0700 (PDT)
-Received: from hyeyoo ([121.135.181.35])
-        by smtp.gmail.com with ESMTPSA id w14sm2164690pff.94.2021.05.13.06.08.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 06:08:53 -0700 (PDT)
-Date:   Thu, 13 May 2021 22:08:48 +0900
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     Marco Elver <elver@google.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        David Rientjes <rientjes@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] mm, slub: change run-time assertion in
- kmalloc_index() to compile-time
-Message-ID: <20210513130848.GA778609@hyeyoo>
-References: <20210511173448.GA54466@hyeyoo>
- <20210512195227.245000695c9014242e9a00e5@linux-foundation.org>
- <20210513031220.GA133011@hyeyoo>
- <20210512204024.401ff3de38649d7d0f5a45e8@linux-foundation.org>
- <20210513062809.GA319973@hyeyoo>
- <a36ab9a1-f07a-42ca-bb11-5bd0c70660bb@suse.cz>
- <YJ0ACtMpasnoZdUp@elver.google.com>
- <20210513120339.GA772931@hyeyoo>
- <CANpmjNP9AQ2PH9wtZbZ3bT=0YAqnaPpxAN0LgrjBO_PhzG5tjQ@mail.gmail.com>
+        id S233740AbhEMNME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 09:12:04 -0400
+Received: from foss.arm.com ([217.140.110.172]:35242 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230498AbhEMNMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 09:12:00 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ED629ED1;
+        Thu, 13 May 2021 06:10:50 -0700 (PDT)
+Received: from [10.57.81.122] (unknown [10.57.81.122])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 665753F73B;
+        Thu, 13 May 2021 06:10:48 -0700 (PDT)
+Subject: Re: [RFC PATCH] perf cs-etm: Handle valid-but-zero timestamps
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     coresight@lists.linaro.org, mathieu.poirier@linaro.org,
+        al.grant@arm.com, branislav.rankov@arm.com, denik@chromium.org,
+        suzuki.poulose@arm.com, anshuman.khandual@arm.com,
+        Mike Leach <mike.leach@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210507095814.17933-1-james.clark@arm.com>
+ <3926c523-3fdb-66de-8b9c-b68290a5053e@arm.com>
+ <20210510053904.GB4835@leoy-ThinkPad-X240s>
+ <da07f930-ccd7-2b46-7b0f-0e9da3bf9482@arm.com>
+ <20210512020826.GC249068@leoy-ThinkPad-X240s>
+From:   James Clark <james.clark@arm.com>
+Message-ID: <347cb510-0057-4687-5b29-22568d228b7a@arm.com>
+Date:   Thu, 13 May 2021 16:10:47 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANpmjNP9AQ2PH9wtZbZ3bT=0YAqnaPpxAN0LgrjBO_PhzG5tjQ@mail.gmail.com>
+In-Reply-To: <20210512020826.GC249068@leoy-ThinkPad-X240s>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 02:29:13PM +0200, Marco Elver wrote:
-> This doesn't solve the problem. We want the compiler to complain
-> whenever kmalloc_index() is used with non-constant in normal code. But
-> it should be possible to use it in allocator tests regardless of size.
-> Either that or export kmalloc_slab(), but I think that's worse. I'll
-> send my patch with an updated comment.
 
 
-to explain in more detail,
+On 12/05/2021 05:08, Leo Yan wrote:
+> On Tue, May 11, 2021 at 04:53:35PM +0300, James Clark wrote:
+> 
+> [...]
+> 
+>>         /* First get the packet queue for this traceID */
+>>         packet_queue = cs_etm__etmq_get_packet_queue(etmq, trace_chan_id);
+>> @@ -320,7 +323,20 @@ cs_etm_decoder__do_hard_timestamp(struct cs_etm_queue *etmq,
+>>          * which instructions started by subtracting the number of instructions
+>>          * executed to the timestamp.
+>>          */
+>> -       packet_queue->timestamp = elem->timestamp - packet_queue->instr_count;
+>> +       if (!elem->timestamp) {
+>> +               packet_queue->timestamp = 0;
+>> +               if (!warned_timestamp_zero) {
+>> +                       pr_err("Zero Coresight timestamp found at Idx:%" OCSD_TRC_IDX_STR
+>> +                               ". Decoding may be improved with --itrace=Z...\n", indx);
+>> +                       warned_timestamp_zero = true;
+>> +               }
+>> +       }
+>> +       else if (packet_queue->instr_count >= elem->timestamp) {
+> 
+> Nitpick: I personally think should use the condition ">" rather than ">=".
 
-in include/linux/slab.h:
+Yes, good catch. I actually changed this because I realised that
+if they are equal it shouldn't print an error.
 
-  static __always_inline void *kmalloc(size_t size, gfp_t flags)                                                                                                                                           
-  {                                                                               
-        if (__builtin_constant_p(size)) {                                         
-  #ifndef CONFIG_SLOB                                                             
-              unsigned int index;                                                 
-  #endif                                                                          
-              if (size > KMALLOC_MAX_CACHE_SIZE)                                  
-                    return kmalloc_large(size, flags);                            
-  #ifndef CONFIG_SLOB                                                             
-              index = kmalloc_index(size);  
+> 
+>> +               packet_queue->timestamp = 0;
+>> +               pr_err("Timestamp calculation underflow at Idx:%" OCSD_TRC_IDX_STR "\n", indx);
+>> +       }
+>> +       else
+>> +               packet_queue->timestamp = elem->timestamp - packet_queue->instr_count;
+> 
+> Nitpick for coding style, as described in
+> Documentation/process/coding-style.rst, section "3) Placing Braces and
+> Spaces", so here should use braces with the format:
 
+Ok I will update and run it through checkpatch.pl before posting.
 
-it checks if size is bigger than KMALLOC_MAX_CACHE_SIZE.
-so kmalloc_index works safely because the size was already checked.
-
-and definition of KMALLOC_MAX_CACHE_SIZE is
-
-in include/linux/slab.h:
-  #ifdef CONFIG_SLAB                                                              
-  #define KMALLOC_SHIFT_HIGH    ((MAX_ORDER + PAGE_SHIFT - 1) <= 25 ? \           
-                          (MAX_ORDER + PAGE_SHIFT - 1) : 25)                      
-  #define KMALLOC_SHIFT_MAX     KMALLOC_SHIFT_HIGH                                
-  #ifndef KMALLOC_SHIFT_LOW                                                       
-  #define KMALLOC_SHIFT_LOW     5                                                 
-  #endif                                                                          
-  #endif                                                                          
-                                                                                  
-  #ifdef CONFIG_SLUB                                                              
-  #define KMALLOC_SHIFT_HIGH    (PAGE_SHIFT + 1)                                  
-  #define KMALLOC_SHIFT_MAX     (MAX_ORDER + PAGE_SHIFT - 1)                      
-  #ifndef KMALLOC_SHIFT_LOW                                                       
-  #define KMALLOC_SHIFT_LOW     3                                                 
-  #endif                                                                          
-  #endif                                                                          
-                                                                                  
-  #ifdef CONFIG_SLOB                                                              
-  #define KMALLOC_SHIFT_HIGH    PAGE_SHIFT                                        
-  #define KMALLOC_SHIFT_MAX     (MAX_ORDER + PAGE_SHIFT - 1)                      
-  #ifndef KMALLOC_SHIFT_LOW                                                       
-  #define KMALLOC_SHIFT_LOW     3                                                 
-  #endif                                                                          
-  #endif
-
-so if kmalloc_index is called from another place other than kmalloc,
-it's not safe to assume that the supported size is 32MB.
-
-Thanks, Hyeonggon
+[...]
