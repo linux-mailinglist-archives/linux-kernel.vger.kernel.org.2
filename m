@@ -2,120 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 575A737F808
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 14:35:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AD7137F812
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 14:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233882AbhEMMg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 08:36:28 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:58130 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233357AbhEMMgY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 08:36:24 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14DCZCeD112244;
-        Thu, 13 May 2021 07:35:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1620909312;
-        bh=6hkZN1ufAaRZSekrRI6opIq0EU23mi/iUO/k+A69uZo=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=eQlrpVtLmJqw9nG7x3gpEoL6lXwkCHKDxWG7CLAHSGyChYOAL7lalG4o5mO8shlkB
-         rjjfzJcau9eSco+o9ZuWC3E+QvAnjQMeQLIL4SJmTBxusY3VjEBTJxk0fWrjmU+ATy
-         MVOFxkGjre/Oaqt9FQ/G5RlDhlyGmcpPia3Oncuo=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14DCZCIx080340
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 13 May 2021 07:35:12 -0500
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 13
- May 2021 07:35:11 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 13 May 2021 07:35:11 -0500
-Received: from [10.250.232.183] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14DCZ7gP130234;
-        Thu, 13 May 2021 07:35:09 -0500
-Subject: Re: [PATCH 4/5] arm64: dts: ti: k3-am642-sk: Enable USB Super-Speed
- HOST port
-To:     Nishanth Menon <nm@ti.com>
-CC:     Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>, <a-govindraju@ti.com>
-References: <20210512150107.26793-1-kishon@ti.com>
- <20210512150107.26793-5-kishon@ti.com>
- <20210512194022.27h53llpxmvg3eoe@splurge>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <595af264-a962-cf3f-81ae-6398bc1e5d20@ti.com>
-Date:   Thu, 13 May 2021 18:05:06 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233908AbhEMMix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 08:38:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57130 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232660AbhEMMir (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 08:38:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 87A24613DA
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 12:37:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620909457;
+        bh=qeKUmOFQwUuzccQ7OPyu+xzYII9VVza4a7QOpxn6M64=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cmFTFjJ+7y/+1jcDyFTdQpHLWvR/xS6UhokysM12iTSV5KzZz9/TI4/vxRbJYgri3
+         BWhgqdzrZAK9tnPjgZrmbjw/6XCXyk0rRS4c4tClbcDcXNs9w1aXixVnEXie43MxCj
+         WzcyESId5GvCn2U9vHba7a25wUWzPLIsWOxhbbQFDdZ0rmFl9HSCye+tt469GJT21V
+         fhrQ210q1+vyqHFdZO3i+42CiWiRQGH5/0sOUshxpCEXl160XX2ERvzQ5nt3rOdB5A
+         KKgE641cvjtXr4ijN+d07AIum4mnAEfrxbp+t4VaMoDOdWjg/qoEpU2AMAk89/GjSo
+         ZEdS7uoz5eEuA==
+Received: by mail-ed1-f49.google.com with SMTP id r11so6753154edt.13
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 05:37:37 -0700 (PDT)
+X-Gm-Message-State: AOAM532z1ZwTPtCWT7jA/RMemQhaQbjmZlUcVWS6V0ZfT7CpFIBEXI4n
+        k2Hw8oH7OQMUaW1LKYxJhyGU1q1lc7QbhGqFBQ==
+X-Google-Smtp-Source: ABdhPJziudrJ40RQ4MMCAOpgwbf56oardORl1c2Ld7FXnTjUwjnLiVgB51drEJ586sz3Hl42A7RumoGGhpAFRn0yAQw=
+X-Received: by 2002:a05:6402:234b:: with SMTP id r11mr49991488eda.137.1620909456065;
+ Thu, 13 May 2021 05:37:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210512194022.27h53llpxmvg3eoe@splurge>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20210420031511.2348977-1-robh@kernel.org> <20210420031511.2348977-8-robh@kernel.org>
+ <OSBPR01MB4600B56CA4CE59935DDCC8B7F7519@OSBPR01MB4600.jpnprd01.prod.outlook.com>
+In-Reply-To: <OSBPR01MB4600B56CA4CE59935DDCC8B7F7519@OSBPR01MB4600.jpnprd01.prod.outlook.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 13 May 2021 07:37:24 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKazmW6_2dQBz49zPkMDYreDBnCvKbHSqm5MucefmGZ5Q@mail.gmail.com>
+Message-ID: <CAL_JsqKazmW6_2dQBz49zPkMDYreDBnCvKbHSqm5MucefmGZ5Q@mail.gmail.com>
+Subject: Re: [PATCH v7 7/9] perf: arm64: Add test for userspace counter access
+ on heterogeneous systems
+To:     "nakamura.shun@fujitsu.com" <nakamura.shun@fujitsu.com>
+Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        "honnappa.nagarahalli@arm.com" <honnappa.nagarahalli@arm.com>,
+        "Zachary.Leaf@arm.com" <Zachary.Leaf@arm.com>,
+        Raphael Gault <raphael.gault@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nishanth,
+On Thu, May 13, 2021 at 4:06 AM nakamura.shun@fujitsu.com
+<nakamura.shun@fujitsu.com> wrote:
+>
+> Hi Rob
+>
+> > Userspace counter access only works on heterogeneous systems with some
+> > restrictions. The userspace process must be pinned to a homogeneous
+> > subset of CPUs and must open the corresponding PMU for those CPUs. This
+> > commit adds a test implementing these requirements.
+>
+> Are you planning to change x86 tests (tools/perf/arch/x86/tests/rdpmc.c)
+> to use libperf as well?
 
-On 13/05/21 1:10 am, Nishanth Menon wrote:
-> On 20:31-20210512, Kishon Vijay Abraham I wrote:
->> Enable USB Super-Speed HOST port.
->>
->> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
->> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
->> ---
->>  arch/arm64/boot/dts/ti/k3-am642-sk.dts | 39 ++++++++++++++++++++++++++
->>  1 file changed, 39 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/ti/k3-am642-sk.dts b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
->> index 8424cd071955..056c1b2df559 100644
->> --- a/arch/arm64/boot/dts/ti/k3-am642-sk.dts
->> +++ b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
->> @@ -5,6 +5,8 @@
->>  
->>  /dts-v1/;
->>  
->> +#include <dt-bindings/mux/ti-serdes.h>
->> +#include <dt-bindings/phy/phy.h>
->>  #include <dt-bindings/gpio/gpio.h>
->>  #include <dt-bindings/net/ti-dp83867.h>
->>  #include "k3-am642.dtsi"
->> @@ -85,6 +87,12 @@
->>  		>;
->>  	};
->>  
->> +	main_usb0_pins_default: main-usb0-pins-default {
->> +		pinctrl-single,pins = <
->> +			AM64X_IOPAD(0x02a8, PIN_OUTPUT, 0) /* (E19) USB0_DRVVBUS */
->> +		>;
->> +	};
->> +
->>  	main_i2c1_pins_default: main-i2c1-pins-default {
->>  		pinctrl-single,pins = <
->>  			AM64X_IOPAD(0x0268, PIN_INPUT_PULLUP, 0) /* (C18) I2C1_SCL */
->> @@ -235,6 +243,37 @@
->>  	disable-wp;
->>  };
->>  
->> +&serdes_ln_ctrl {
->> +	idle-states = <AM64_SERDES0_LANE0_USB>;
->> +};
->> +
->> +&serdes_wiz0 {
->> +	status = "okay";
-> 
-> 
-> not sure I understand why default of okay needs to be explicitly stated
-> as okay in board dts.
+The test can be removed as the libperf unit tests have an equivalent
+test. I had a patch doing this, but there were objections removing it
+until 'perf test' can run the libperf tests.
 
-hmm, not required. Will remove it.
-
-Thanks
-Kishon
+Rob
