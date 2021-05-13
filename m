@@ -2,148 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDA1037F988
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 16:18:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CBA737F991
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 16:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234390AbhEMOTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 10:19:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234303AbhEMOTI (ORCPT
+        id S234422AbhEMOUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 10:20:12 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:62354 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234416AbhEMOT7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 10:19:08 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA0BC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 07:17:58 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id v19-20020a0568301413b0290304f00e3d88so2555991otp.4
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 07:17:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dfnosBslQXQ6G/XHnjEn8kNJdLQMZYIRcVlnHPvH2C8=;
-        b=mq4tFwhiYBB2EaSet++vzh5Sr0pU/IBg1ujAlt3d1n8aY0afTSIoGsqVLWsqJAEkyj
-         EE2OqfqAJkDAG+W9DlxKQqM559NMkfDH7Lv0PRszYSA7bHr5mDt56BmrlF1fvJNazVZ7
-         Ojie/HAjVIAsyV6ibcX25qDqVN6FOCG82G+cyUbg6ZafyoCUontwMeZpXn5+NE2z3QGq
-         j25EmTnu7lqWQPmcsxGDGFZL56mhOy/fW736B2xxNVga1uQvZf74YK1jziIQyq9Elxjb
-         M6fH10MTu38vp3Pbrk+h9Z6evwEA2vmUyw9fi3p9JA7WgNQb7jipIdrjz/PozkHLD8EU
-         pQMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dfnosBslQXQ6G/XHnjEn8kNJdLQMZYIRcVlnHPvH2C8=;
-        b=q52SB/tZYpFX4sJKGXh4GhPpoOWpGi24MDkWiYH5Aa+8ikAs+jzfRAzwJqGSpRFhx4
-         eHIM5mIHbhmTjlujkPNShfX/LKTXs93g4bXSRMvdWxncAb6WeLfWtlGpaWgLyAvYXJIz
-         GhNXDT/Zn4hsNRtxa9q+HJrq0vkhhzWvCOUzNw53aHqLi/vV8TjK24lN+HzATPwq+l0A
-         JvLpkJlS05Pg9M+uxG6SlUfwqtUKq6KRCYTgxtu3cMIVaa4nOpQYMwTsi7sEgITIlm8k
-         bBU897LM+AJiwqPRPIh1WW9gyOGjU7lVJJPshRim7Z3uyBSY4dqdBEuOkcdwE8QtM04Z
-         xnWg==
-X-Gm-Message-State: AOAM5302TS2a2nGlO1/7yJJZkrT9qr973evXAhCwrGgmIu4HI4ijk5Qs
-        /IuPgt+WFCjGo4R+xbL4MF5YOV8LqXpjOM8Hlyg=
-X-Google-Smtp-Source: ABdhPJxTuKONdTHhjCot+kHIbRUAsCd1jXu+Acx3Qqmz3ej6XXD1jWsLndeTtun90RmyYhqJQhoePg3XzWEPbbCSZPo=
-X-Received: by 2002:a9d:57cd:: with SMTP id q13mr33353968oti.23.1620915478199;
- Thu, 13 May 2021 07:17:58 -0700 (PDT)
+        Thu, 13 May 2021 10:19:59 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14DE8IpG085410;
+        Thu, 13 May 2021 10:18:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=D8GubXgvk3a14jGGH9ZcrPGCEvPl+rpj3xHeKnJoe40=;
+ b=pvUXLAgvibUu99FhfGNttVA7b1lvaOX+UIWgy8seeMZ4RRkdqyPl746sX9mXrb1Ow12G
+ 9vcxyR9UBvadHFQosJQNuTASu1wnqW0JXY3Jt/1I6sHSGFaFScoLralWnLlNDFVfdd1/
+ F1y3RnU76L8uU4WhtCwJNk6FBESes7AuY675UpW0whUEd3s3B58HXQWiNFDxrjb6Dr4x
+ OurTXlDntEqPaNkw7FPh+KAdghRGHbcICZrobry3Z0C8Ju+QAzT/kFd6R6zWVdayTh40
+ 9px3kGZN6myDee71ZohohjX3QGeKMyifKzQh2wQjgEgaeykGA8uYMFdC0f3BdWZeke6d 0g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38gv83xmds-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 May 2021 10:18:47 -0400
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14DE9wBt087999;
+        Thu, 13 May 2021 10:18:46 -0400
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38gv83xmd3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 May 2021 10:18:46 -0400
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14DEIPmP007221;
+        Thu, 13 May 2021 14:18:46 GMT
+Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
+        by ppma05wdc.us.ibm.com with ESMTP id 38fu1y7a1e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 May 2021 14:18:46 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14DEIjis39387560
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 13 May 2021 14:18:45 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6DAD4AC05B;
+        Thu, 13 May 2021 14:18:45 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0DAEBAC062;
+        Thu, 13 May 2021 14:18:45 +0000 (GMT)
+Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.177.219])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu, 13 May 2021 14:18:44 +0000 (GMT)
+Subject: Re: [PATCH v2] s390/vfio-ap: fix memory leak in mdev remove callback
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        stable@vger.kernel.org, Tony Krowiak <akrowiak@stny.rr.com>
+References: <20210510214837.359717-1-akrowiak@linux.ibm.com>
+ <20210512124120.GV1002214@nvidia.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <759f8840-671a-446c-875b-798dceb10d0f@linux.ibm.com>
+Date:   Thu, 13 May 2021 10:18:44 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210512013058.6827-1-mukul.joshi@amd.com> <YJuhs1WsqtJ7ta1L@zn.tnic>
- <DM4PR12MB5263797EB7B2D37C21427A88EE529@DM4PR12MB5263.namprd12.prod.outlook.com>
- <YJxDIhGnZ5XdukiS@zn.tnic> <DM4PR12MB52631035F875B77974FA8D21EE519@DM4PR12MB5263.namprd12.prod.outlook.com>
- <YJz3CMBFFIDBzVwX@zn.tnic>
-In-Reply-To: <YJz3CMBFFIDBzVwX@zn.tnic>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 13 May 2021 10:17:47 -0400
-Message-ID: <CADnq5_Or5maEWTZFzS6iksyoFC=q9=y=-YmPTdPuWRKFhdw0yg@mail.gmail.com>
-Subject: Re: [PATCH] drm/amdgpu: Register bad page handler for Aldebaran
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     "Joshi, Mukul" <Mukul.Joshi@amd.com>, x86-ml <x86@kernel.org>,
-        "Kasiviswanathan, Harish" <Harish.Kasiviswanathan@amd.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210512124120.GV1002214@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 3yiF0KWnIyI0fAnZuL05koT2Otxrbpng
+X-Proofpoint-ORIG-GUID: sraGRDogNU8hh1HU-EFJbx-KLQxDWAbd
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-13_08:2021-05-12,2021-05-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
+ priorityscore=1501 impostorscore=0 suspectscore=0 bulkscore=0
+ lowpriorityscore=0 phishscore=0 mlxlogscore=999 spamscore=0 malwarescore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105130105
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 9:26 AM Borislav Petkov <bp@alien8.de> wrote:
->
-> On Thu, May 13, 2021 at 03:20:36AM +0000, Joshi, Mukul wrote:
-> > Exporting smca_get_bank_type() works fine when CONFIG_X86_MCE_AMD is defined.
-> > I would need to put #ifdef CONFIG_X86_MCE_AMD in my code to compile the amdgpu
-> > driver when CONFIG_X86_MCE_AMD is not defined.
-> > I can avoid all that by using is_smca_umc_v2().
-> > I think it would be cleaner with using is_smca_umc_v2().
->
-> See how smca_get_long_name() is exported and export that function the
-> same way.
->
-> To save you some energy: is_smca_umc_v2() is not going to happen.
->
-> > You can think of GPU device as a EDAC device here. It is mainly
-> > interested in handling uncorrectable errors.
->
-> An EDAC "device", as you call it, is not interested in handling UEs. If
-> anything, it counts them.
->
-> > It is a deferred interrupt that generates an MCE.
->
-> Is that the same deferred interrupt which calls amd_deferred_error_interrupt() ?
->
-> > When an uncorrectable error is detected on the GPU UMC, all we are
-> > doing is determining the physical address where the error occurred and
-> > then "retiring" the page that address belongs to.
->
-> What page is that? Normal DRAM page or a page in some special GPU memory?
->
-
-GPU memory.
-
-> > By retiring, we mean we reserve the page so that it is not available
-> > for allocations to any applications.
->
-> We do that for normal DRAM memory pages by poisoning them. I hope you
-> don't mean that.
->
-> Looking at
->
-> amdgpu_ras_add_bad_pages
-> |-> amdgpu_vram_mgr_reserve_range
->
-> that's some VRAM thing so I'm guessing special memory on the GPU.
->
-
-Yes.
-
-> If so, what happens with all those "retired" pages when you reboot?
-> They're getting used again and potentially trigger the same UEs and the
-> same retiring happens?
-
-The bad pages are stored in an EEPROM on the board and the next time
-the driver loads it reads the EEPROM so that it can reserve the bad
-pages at init time so they don't get used again.
-
-Alex
 
 
+On 5/12/21 8:41 AM, Jason Gunthorpe wrote:
+> On Mon, May 10, 2021 at 05:48:37PM -0400, Tony Krowiak wrote:
+>> The mdev remove callback for the vfio_ap device driver bails out with
+>> -EBUSY if the mdev is in use by a KVM guest. The intended purpose was
+>> to prevent the mdev from being removed while in use; however, returning a
+>> non-zero rc does not prevent removal. This could result in a memory leak
+>> of the resources allocated when the mdev was created. In addition, the
+>> KVM guest will still have access to the AP devices assigned to the mdev
+>> even though the mdev no longer exists.
+>>
+>> To prevent this scenario, cleanup will be done - including unplugging the
+>> AP adapters, domains and control domains - regardless of whether the mdev
+>> is in use by a KVM guest or not.
+>>
+>> Fixes: 258287c994de ("s390: vfio-ap: implement mediated device open callback")
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Tony Krowiak <akrowiak@stny.rr.com>
+>> ---
+>>   drivers/s390/crypto/vfio_ap_ops.c | 13 ++-----------
+>>   1 file changed, 2 insertions(+), 11 deletions(-)
+> Can you please ensure this goes to a -rc branch or through Alex's
+> tree?
+
+I'm sorry, I don't know what a -rc branch is nor how to push this
+to Alex's tree, but I'd be happy to do so if you tell me now:)
+
 >
-> > We are providing information to the user by storing all the
-> > information about the retired pages in EEPROM. This can be accessed
-> > through sysfs.
->
-> Ok, I'm a user and I can access that information through sysfs. What can
-> I do with it?
->
-> > Hope it clears what "bad page retirement" is achieving.
->
-> It is getting there.
->
-> Thx.
->
-> --
-> Regards/Gruss,
->     Boris.
->
-> https://people.kernel.org/tglx/notes-about-netiquette
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+> Thanks,
+> Jason
+
