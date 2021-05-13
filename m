@@ -2,111 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B100337FA44
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 17:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 838F137FA48
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 17:08:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233218AbhEMPI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 11:08:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232156AbhEMPIx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 11:08:53 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 726BAC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 08:07:43 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id j19so19942838qtp.7
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 08:07:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=TLkSbdc1fw8jgiPXkD5Ij+EaQClDSHw8ek8z1tmir8s=;
-        b=xLFFqHGJUuKACF0i4U8uJPm4Twx4FLRwFZ3bHS1rcLvjc7XLRx0eiQCtipmD/9Aj17
-         qp+yYqr0XN5FRLxDmsV5BWl9A0aVboKsjGCtUP7RloVY9soeG0cvxBMt5bGg8YB87XCV
-         FQUVBvw3ujSSW5spSdxqiFA4Q+e0OVlHan1ttnh5RYd968dQG5+5Lwo0Dr5PS6Ko38Mj
-         LIcJ2jpay7bZ9RsUhr1z1bxmuazuKOpn//ABPNBQMBpAg7YglmRbAjj7svL0pORUVg2o
-         7yuqP9/C/itpIXv1p5o34uXj01lDTBuiYfnZQeBeVWd6bYfyRb34Vr4AwjbM9+zl3lA0
-         gEaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=TLkSbdc1fw8jgiPXkD5Ij+EaQClDSHw8ek8z1tmir8s=;
-        b=UpgAp8EzPHcRi6VCwyA1HhgrK7NVE55HSx8E+ps9PjzmY7EOPSh5vAW7Ndn5qV0MyG
-         6NcZje+NccUPN39pAxZZsNBuYZqUsafQLZD0epusM62axyTQ04IxWgSC63Vv73ia45wW
-         sBoTWYvsQzxYy5DU2U5sqpU/W8+5Pbv6ZkZHB2C6rA/0RbrmAs/1tmxgObM8FwRLECgI
-         DF6qfh+96gRLVcycr6C8yf/1o1hN+Y1zSKkcz88NwcXGVw6Iidexre2Aeuv3gkS62Zum
-         /glEmItLDCWer6mFlfpdIFaq8S9cMbPkD4jfglqB/xiX8K2S1m62mi5PxoHhxTSpRxSx
-         ztYQ==
-X-Gm-Message-State: AOAM532ZKxfCrOtiP9+xfIbrdFxVdaof99bPMJAa/d+SNAkxLOYJI7sd
-        /ki4RDlfwdqliWb6um5UxDmJTg==
-X-Google-Smtp-Source: ABdhPJzQjQznftnSoUznPn4Riax7X6sR3Jx0KiEsVldOVfBawDd633rhVFzGDWtrbUuPSud3+4cEsg==
-X-Received: by 2002:ac8:5dcc:: with SMTP id e12mr27252202qtx.70.1620918462544;
-        Thu, 13 May 2021 08:07:42 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain (mtl.collabora.ca. [66.171.169.34])
-        by smtp.gmail.com with ESMTPSA id h65sm2413773qkc.128.2021.05.13.08.07.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 08:07:42 -0700 (PDT)
-Message-ID: <83a807111f17c9e2db4e9f12a7ec1437c11d0f55.camel@ndufresne.ca>
-Subject: Re: [PATCH v4 07/15] media: mtk-vcodec: vdec: add media device if
- using stateless api
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Date:   Thu, 13 May 2021 11:07:40 -0400
-In-Reply-To: <CAPBb6MUKtxCS=JbtBmvwwEovrN8NCtLmMGcTkozo_gnDMRsqHw@mail.gmail.com>
-References: <20210427111526.1772293-1-acourbot@chromium.org>
-         <20210427111526.1772293-8-acourbot@chromium.org>
-         <faa5553f-2ea5-27a5-7f85-e1418d2c7df1@xs4all.nl>
-         <CAPBb6MUKtxCS=JbtBmvwwEovrN8NCtLmMGcTkozo_gnDMRsqHw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.1 (3.40.1-1.fc34) 
+        id S233774AbhEMPKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 11:10:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36732 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232156AbhEMPJx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 11:09:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BC94E613BF;
+        Thu, 13 May 2021 15:08:39 +0000 (UTC)
+Date:   Thu, 13 May 2021 16:08:37 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: Re: [PATCH v11 2/6] arm64: kvm: Introduce MTE VM feature
+Message-ID: <20210513150835.GA6801@arm.com>
+References: <20210416154309.22129-3-steven.price@arm.com>
+ <20210428170705.GB4022@arm.com>
+ <c3293d47-a5f2-ea4a-6730-f5cae26d8a7e@arm.com>
+ <YJGHApOCXl811VK3@arm.com>
+ <329286e8-a8f3-ea1a-1802-58813255a4a5@arm.com>
+ <20210507182538.GF26528@arm.com>
+ <20210510183506.GA10910@arm.com>
+ <c891d4eb-b388-1658-8c8a-e76477062463@arm.com>
+ <20210512174502.GC12391@arm.com>
+ <7c1cb7c8-6ab4-62bd-fa17-2fb7be6d7f09@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7c1cb7c8-6ab4-62bd-fa17-2fb7be6d7f09@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le jeudi 13 mai 2021 à 17:05 +0900, Alexandre Courbot a écrit :
-> Hi Hans, thanks for the review!
-> 
-> On Thu, Apr 29, 2021 at 4:28 PM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
+On Thu, May 13, 2021 at 11:57:39AM +0100, Steven Price wrote:
+> On 12/05/2021 18:45, Catalin Marinas wrote:
+> > On Wed, May 12, 2021 at 04:46:48PM +0100, Steven Price wrote:
+> >>>>>> On Thu, Apr 29, 2021 at 05:06:41PM +0100, Steven Price wrote:
+> >>>>>>> Given the changes to set_pte_at() which means that tags are restored from
+> >>>>>>> swap even if !PROT_MTE, the only race I can see remaining is the creation of
+> >>>>>>> new PROT_MTE mappings. As you mention an attempt to change mappings in the
+> >>>>>>> VMM memory space should involve a mmu notifier call which I think serialises
+> >>>>>>> this. So the remaining issue is doing this in a separate address space.
+> >>>>>>>
+> >>>>>>> So I guess the potential problem is:
+> >>>>>>>
+> >>>>>>>    * allocate memory MAP_SHARED but !PROT_MTE
+> >>>>>>>    * fork()
+> >>>>>>>    * VM causes a fault in parent address space
+> >>>>>>>    * child does a mprotect(PROT_MTE)
+> >>>>>>>
+> >>>>>>> With the last two potentially racing. Sadly I can't see a good way of
+> >>>>>>> handling that.
+[...]
+> >> 4. Sledgehammer locking in mte_sync_page_tags(), add a spinlock only for
+> >> the MTE case where we have to sync tags (see below). What the actual
+> >> performance impact of this is I've no idea. It could certainly be bad
+> >> if there are a lot of pages with MTE enabled, which sadly is exactly
+> >> the case if KVM is used with MTE :(
+> >>
+> >> --->8----
+> >> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+> >> index 0d320c060ebe..389ad40256f6 100644
+> >> --- a/arch/arm64/kernel/mte.c
+> >> +++ b/arch/arm64/kernel/mte.c
+> >> @@ -25,23 +25,33 @@
+> >>  u64 gcr_kernel_excl __ro_after_init;
+> >>  static bool report_fault_once = true;
+> >> +static spinlock_t tag_sync_lock;
+> >>  static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool check_swap,
+> >>  			       bool pte_is_tagged)
+> >>  {
+> >>  	pte_t old_pte = READ_ONCE(*ptep);
+> >> +	if (!is_swap_pte(old_pte) && !pte_is_tagged)
+> >> +		return;
+> >> +
+> >> +	spin_lock_irqsave(&tag_sync_lock, flags);
+> >> +
+> >> +	/* Recheck with the lock held */
+> >> +	if (test_bit(PG_mte_tagged, &page->flags))
+> >> +		goto out;
 > > 
-> > On 27/04/2021 13:15, Alexandre Courbot wrote:
-> > > From: Yunfei Dong <yunfei.dong@mediatek.com>
-> > > 
-> > > The stateless API requires a media device for issuing requests. Add one
-> > > if we are being instantiated as a stateless decoder.
-> > 
-> > Why for the stateless decoder only? Why not create one for all?
-> > 
-> > It's not a blocker, but I would recommend looking at this.
+> > Can we skip the lock if the page already has the PG_mte_tagged set?
+> > That's assuming that we set the flag only after clearing the tags. The
+> > normal case where mprotect() is called on a page already mapped with
+> > PROT_MTE would not be affected.
 > 
-> Would there be any use in creating a media device for a stateful
-> decoder that does not need to use requests?
-
-The only thing I can think of is classification. In GStreamer support for
-stateless decoders, I use the topology to classify what is a decoder by walking
-the toplogy and making sure it's what I expect, and that there is no other
-branches or functions that I may not support. This makes it more strict, so less
-likely to confuse driver function.
-
-Note that v4l2-compliance just use the same old heuristic we have used for
-stateful, which is to check that one side have only RAW format, and the other
-side have only encoded formats. It works too, it's just less strict.
-
+> It was missing from the diff context (sorry, should have double checked
+> that), but I was keeping the check in mte_sync_tags():
 > 
-> Cheers,
-> Alex.
+>   void mte_sync_tags(pte_t *ptep, pte_t pte)
+>   {
+> 	struct page *page = pte_page(pte);
+> 	long i, nr_pages = compound_nr(page);
+> 	bool check_swap = nr_pages == 1;
+> 	bool pte_is_tagged = pte_tagged(pte);
+> 	unsigned long flags;
+> 
+> 	/* Early out if there's nothing to do */
+> 	if (!check_swap && !pte_is_tagged)
+> 		return;
+> 
+> 	/* if PG_mte_tagged is set, tags have already been initialised */
+> 	for (i = 0; i < nr_pages; i++, page++) {
+> 		if (!test_bit(PG_mte_tagged, &page->flags))
+> 			mte_sync_page_tags(page, ptep, check_swap,
+> 					   pte_is_tagged);
+> 	}
+>   }
+> 
+> So the hit is only taken if !PG_mte_tagged - hence the "recheck" comment
+> in mte_sync_page_tags() once the lock is held. I guess if I'm going this
+> route it would make sense to refactor this to be a bit clearer.
 
+I think we can go with this for now but we should still raise it with
+the mm folk, maybe they have a better idea on how to avoid the race in
+the core code. There are other architectures affected, those that use
+PG_arch_1.
+
+As the kernel stands currently, we'd take the lock on any set_pte_at()
+for a tagged page when first mapped. With Peter's patches to use DC
+GZVA, the tag zeroing is done on allocation. Until those are merged, we
+could do something similar in the arch code but without the DC GZVA
+optimisation (useful if we need to cc this fix to stable):
+
+----------8<--------------------------
+From 9f445f794454cf139c0953391e6c30fa3f075dc1 Mon Sep 17 00:00:00 2001
+From: Catalin Marinas <catalin.marinas@arm.com>
+Date: Thu, 13 May 2021 14:15:37 +0100
+Subject: [PATCH] arm64: Handle MTE tags zeroing in
+ __alloc_zeroed_user_highpage()
+
+Currently, on an anonymous page fault, the kernel allocates a zeroed
+page and maps it in user space. If the mapping is tagged (PROT_MTE),
+set_pte_at() additionally clears the tags under a spinlock to avoid a
+race on the page->flags. In order to optimise the lock, clear the page
+tags on allocation in __alloc_zeroed_user_highpage() if the vma flags
+have VM_MTE set.
+
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+---
+ arch/arm64/include/asm/page.h |  6 ++++--
+ arch/arm64/mm/fault.c         | 21 +++++++++++++++++++++
+ 2 files changed, 25 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/include/asm/page.h b/arch/arm64/include/asm/page.h
+index 012cffc574e8..97853570d0f1 100644
+--- a/arch/arm64/include/asm/page.h
++++ b/arch/arm64/include/asm/page.h
+@@ -13,6 +13,7 @@
+ #ifndef __ASSEMBLY__
+ 
+ #include <linux/personality.h> /* for READ_IMPLIES_EXEC */
++#include <linux/types.h>
+ #include <asm/pgtable-types.h>
+ 
+ struct page;
+@@ -28,8 +29,9 @@ void copy_user_highpage(struct page *to, struct page *from,
+ void copy_highpage(struct page *to, struct page *from);
+ #define __HAVE_ARCH_COPY_HIGHPAGE
+ 
+-#define __alloc_zeroed_user_highpage(movableflags, vma, vaddr) \
+-	alloc_page_vma(GFP_HIGHUSER | __GFP_ZERO | movableflags, vma, vaddr)
++struct page *__alloc_zeroed_user_highpage(gfp_t movableflags,
++					  struct vm_area_struct *vma,
++					  unsigned long vaddr);
+ #define __HAVE_ARCH_ALLOC_ZEROED_USER_HIGHPAGE
+ 
+ #define clear_user_page(page, vaddr, pg)	clear_page(page)
+diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
+index 871c82ab0a30..5a03428e97f3 100644
+--- a/arch/arm64/mm/fault.c
++++ b/arch/arm64/mm/fault.c
+@@ -921,3 +921,24 @@ void do_debug_exception(unsigned long addr_if_watchpoint, unsigned int esr,
+ 	debug_exception_exit(regs);
+ }
+ NOKPROBE_SYMBOL(do_debug_exception);
++
++/*
++ * Used during anonymous page fault handling.
++ */
++struct page *__alloc_zeroed_user_highpage(gfp_t movableflags,
++					  struct vm_area_struct *vma,
++					  unsigned long vaddr)
++{
++	struct page *page;
++	bool tagged = system_supports_mte() && (vma->vm_flags & VM_MTE);
++
++	page = alloc_page_vma(GFP_HIGHUSER | __GFP_ZERO | movableflags, vma,
++			      vaddr);
++	if (tagged && page) {
++		mte_clear_page_tags(page_address(page));
++		page_kasan_tag_reset(page);
++		set_bit(PG_mte_tagged, &page->flags);
++	}
++
++	return page;
++}
 
