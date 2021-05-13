@@ -2,115 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4227037FA7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 17:18:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE44937FA7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 17:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234830AbhEMPTx convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 May 2021 11:19:53 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:58022 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234810AbhEMPTu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 11:19:50 -0400
-Received: from smtpclient.apple (p4fefc9d6.dip0.t-ipconnect.de [79.239.201.214])
-        by mail.holtmann.org (Postfix) with ESMTPSA id A688CCED28;
-        Thu, 13 May 2021 17:26:25 +0200 (CEST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.80.0.2.43\))
-Subject: Re: [PATCH] Bluetooth: Shutdown controller after workqueues are
- flushed or cancelled
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210511043029.43682-1-kai.heng.feng@canonical.com>
-Date:   Thu, 13 May 2021 17:18:33 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "open list:BLUETOOTH SUBSYSTEM" <linux-bluetooth@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <F4ED8B6E-354E-4E88-8E48-4CF4169505CE@holtmann.org>
-References: <20210511043029.43682-1-kai.heng.feng@canonical.com>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-X-Mailer: Apple Mail (2.3654.80.0.2.43)
+        id S234835AbhEMPU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 11:20:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38970 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234810AbhEMPUd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 11:20:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 87C9C61106;
+        Thu, 13 May 2021 15:19:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620919163;
+        bh=BUZ30lLjjIMg6FA/ECXLblTKPPXuRiAZOzq081unShI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ASsYgx5ZYR7/vyvthS/NOsgw7IMrO74Fcvarf1E7UjuqcI5K9Y/bLi+BUrMB/qKIq
+         DIl5C6e/odjdokZuG844AjXkiBuV9CM0HC26BuQZ1AQiDtHDGwcHt+cFV2FPQcMgBL
+         K4cSyAjAXFnICQoxh2GFklzTmtxprua84sdLH0L8=
+Date:   Thu, 13 May 2021 17:19:21 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Ian Kent <raven@themaw.net>
+Cc:     Tejun Heo <tj@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
+        Eric Sandeen <sandeen@sandeen.net>,
+        Fox Chen <foxhlchen@gmail.com>,
+        Brice Goglin <brice.goglin@gmail.com>,
+        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 0/5] kernfs: proposed locking and concurrency
+ improvement
+Message-ID: <YJ1DeXnKTxuy6uc9@kroah.com>
+References: <162077975380.14498.11347675368470436331.stgit@web.messagingengine.com>
+ <YJtz6mmgPIwEQNgD@kroah.com>
+ <152abd1fea6ae3887febdb16263ebecfcf0d4341.camel@themaw.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <152abd1fea6ae3887febdb16263ebecfcf0d4341.camel@themaw.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kai-Heng,
-
-> Rfkill block and unblock Intel USB Bluetooth [8087:0026] may make it
-> stops working:
-> [  509.691509] Bluetooth: hci0: HCI reset during shutdown failed
-> [  514.897584] Bluetooth: hci0: MSFT filter_enable is already on
-> [  530.044751] usb 3-10: reset full-speed USB device number 5 using xhci_hcd
-> [  545.660350] usb 3-10: device descriptor read/64, error -110
-> [  561.283530] usb 3-10: device descriptor read/64, error -110
-> [  561.519682] usb 3-10: reset full-speed USB device number 5 using xhci_hcd
-> [  566.686650] Bluetooth: hci0: unexpected event for opcode 0x0500
-> [  568.752452] Bluetooth: hci0: urb 0000000096cd309b failed to resubmit (113)
-> [  578.797955] Bluetooth: hci0: Failed to read MSFT supported features (-110)
-> [  586.286565] Bluetooth: hci0: urb 00000000c522f633 failed to resubmit (113)
-> [  596.215302] Bluetooth: hci0: Failed to read MSFT supported features (-110)
+On Thu, May 13, 2021 at 09:50:19PM +0800, Ian Kent wrote:
+> On Wed, 2021-05-12 at 08:21 +0200, Greg Kroah-Hartman wrote:
+> > On Wed, May 12, 2021 at 08:38:35AM +0800, Ian Kent wrote:
+> > > There have been a few instances of contention on the kernfs_mutex
+> > > during
+> > > path walks, a case on very large IBM systems seen by myself, a
+> > > report by
+> > > Brice Goglin and followed up by Fox Chen, and I've since seen a
+> > > couple
+> > > of other reports by CoreOS users.
+> > > 
+> > > The common thread is a large number of kernfs path walks leading to
+> > > slowness of path walks due to kernfs_mutex contention.
+> > > 
+> > > The problem being that changes to the VFS over some time have
+> > > increased
+> > > it's concurrency capabilities to an extent that kernfs's use of a
+> > > mutex
+> > > is no longer appropriate. There's also an issue of walks for non-
+> > > existent
+> > > paths causing contention if there are quite a few of them which is
+> > > a less
+> > > common problem.
+> > > 
+> > > This patch series is relatively straight forward.
+> > > 
+> > > All it does is add the ability to take advantage of VFS negative
+> > > dentry
+> > > caching to avoid needless dentry alloc/free cycles for lookups of
+> > > paths
+> > > that don't exit and change the kernfs_mutex to a read/write
+> > > semaphore.
+> > > 
+> > > The patch that tried to stay in VFS rcu-walk mode during path walks
+> > > has
+> > > been dropped for two reasons. First, it doesn't actually give very
+> > > much
+> > > improvement and, second, if there's a place where mistakes could go
+> > > unnoticed it would be in that path. This makes the patch series
+> > > simpler
+> > > to review and reduces the likelihood of problems going unnoticed
+> > > and
+> > > popping up later.
+> > > 
+> > > The patch to use a revision to identify if a directory has changed
+> > > has
+> > > also been dropped. If the directory has changed the dentry revision
+> > > needs to be updated to avoid subsequent rb tree searches and after
+> > > changing to use a read/write semaphore the update also requires a
+> > > lock.
+> > > But the d_lock is the only lock available at this point which might
+> > > itself be contended.
+> > > 
+> > > Changes since v3:
+> > > - remove unneeded indirection when referencing the super block.
+> > > - check if inode attribute update is actually needed.
+> > > 
+> > > Changes since v2:
+> > > - actually fix the inode attribute update locking.
+> > > - drop the patch that tried to stay in rcu-walk mode.
+> > > - drop the use a revision to identify if a directory has changed
+> > > patch.
+> > > 
+> > > Changes since v1:
+> > > - fix locking in .permission() and .getattr() by re-factoring the
+> > > attribute
+> > >   handling code.
+> > > ---
+> > > 
+> > > Ian Kent (5):
+> > >       kernfs: move revalidate to be near lookup
+> > >       kernfs: use VFS negative dentry caching
+> > >       kernfs: switch kernfs to use an rwsem
+> > >       kernfs: use i_lock to protect concurrent inode updates
+> > >       kernfs: add kernfs_need_inode_refresh()
+> > > 
+> > > 
+> > >  fs/kernfs/dir.c             | 170 ++++++++++++++++++++------------
+> > > ----
+> > >  fs/kernfs/file.c            |   4 +-
+> > >  fs/kernfs/inode.c           |  45 ++++++++--
+> > >  fs/kernfs/kernfs-internal.h |   5 +-
+> > >  fs/kernfs/mount.c           |  12 +--
+> > >  fs/kernfs/symlink.c         |   4 +-
+> > >  include/linux/kernfs.h      |   2 +-
+> > >  7 files changed, 147 insertions(+), 95 deletions(-)
+> > > 
+> > > --
+> > > Ian
+> > > 
+> > 
+> > Any benchmark numbers that you ran that are better/worse with this
+> > patch
+> > series?  That woul dbe good to know, otherwise you aren't changing
+> > functionality here, so why would we take these changes?  :)
 > 
-> Or kernel panics because other workqueues already freed skb:
-> [ 2048.663763] BUG: kernel NULL pointer dereference, address: 0000000000000000
-> [ 2048.663775] #PF: supervisor read access in kernel mode
-> [ 2048.663779] #PF: error_code(0x0000) - not-present page
-> [ 2048.663782] PGD 0 P4D 0
-> [ 2048.663787] Oops: 0000 [#1] SMP NOPTI
-> [ 2048.663793] CPU: 3 PID: 4491 Comm: rfkill Tainted: G        W         5.13.0-rc1-next-20210510+ #20
-> [ 2048.663799] Hardware name: HP HP EliteBook 850 G8 Notebook PC/8846, BIOS T76 Ver. 01.01.04 12/02/2020
-> [ 2048.663801] RIP: 0010:__skb_ext_put+0x6/0x50
-> [ 2048.663814] Code: 8b 1b 48 85 db 75 db 5b 41 5c 5d c3 be 01 00 00 00 e8 de 13 c0 ff eb e7 be 02 00 00 00 e8 d2 13 c0 ff eb db 0f 1f 44 00 00 55 <8b> 07 48 89 e5 83 f8 01 74 14 b8 ff ff ff ff f0 0f c1
-> 07 83 f8 01
-> [ 2048.663819] RSP: 0018:ffffc1d105b6fd80 EFLAGS: 00010286
-> [ 2048.663824] RAX: 0000000000000000 RBX: ffff9d9ac5649000 RCX: 0000000000000000
-> [ 2048.663827] RDX: ffffffffc0d1daf6 RSI: 0000000000000206 RDI: 0000000000000000
-> [ 2048.663830] RBP: ffffc1d105b6fd98 R08: 0000000000000001 R09: ffff9d9ace8ceac0
-> [ 2048.663834] R10: ffff9d9ace8ceac0 R11: 0000000000000001 R12: ffff9d9ac5649000
-> [ 2048.663838] R13: 0000000000000000 R14: 00007ffe0354d650 R15: 0000000000000000
-> [ 2048.663843] FS:  00007fe02ab19740(0000) GS:ffff9d9e5f8c0000(0000) knlGS:0000000000000000
-> [ 2048.663849] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 2048.663853] CR2: 0000000000000000 CR3: 0000000111a52004 CR4: 0000000000770ee0
-> [ 2048.663856] PKRU: 55555554
-> [ 2048.663859] Call Trace:
-> [ 2048.663865]  ? skb_release_head_state+0x5e/0x80
-> [ 2048.663873]  kfree_skb+0x2f/0xb0
-> [ 2048.663881]  btusb_shutdown_intel_new+0x36/0x60 [btusb]
-> [ 2048.663905]  hci_dev_do_close+0x48c/0x5e0 [bluetooth]
-> [ 2048.663954]  ? __cond_resched+0x1a/0x50
-> [ 2048.663962]  hci_rfkill_set_block+0x56/0xa0 [bluetooth]
-> [ 2048.664007]  rfkill_set_block+0x98/0x170
-> [ 2048.664016]  rfkill_fop_write+0x136/0x1e0
-> [ 2048.664022]  vfs_write+0xc7/0x260
-> [ 2048.664030]  ksys_write+0xb1/0xe0
-> [ 2048.664035]  ? exit_to_user_mode_prepare+0x37/0x1c0
-> [ 2048.664042]  __x64_sys_write+0x1a/0x20
-> [ 2048.664048]  do_syscall_64+0x40/0xb0
-> [ 2048.664055]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [ 2048.664060] RIP: 0033:0x7fe02ac23c27
-> [ 2048.664066] Code: 0d 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
-> [ 2048.664070] RSP: 002b:00007ffe0354d638 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-> [ 2048.664075] RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007fe02ac23c27
-> [ 2048.664078] RDX: 0000000000000008 RSI: 00007ffe0354d650 RDI: 0000000000000003
-> [ 2048.664081] RBP: 0000000000000000 R08: 0000559b05998440 R09: 0000559b05998440
-> [ 2048.664084] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
-> [ 2048.664086] R13: 0000000000000000 R14: ffffffff00000000 R15: 00000000ffffffff
+> Hi Greg,
 > 
-> So move the shutdown callback to a place where workqueues are either
-> flushed or cancelled to resolve the issue.
+> I'm sorry, I don't have a benchmark.
 > 
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> ---
-> net/bluetooth/hci_core.c | 16 ++++++++--------
-> 1 file changed, 8 insertions(+), 8 deletions(-)
+> My continued work on this has been driven by the report from
+> Brice Goglin and Fox Chen, and also because I've seen a couple
+> of other reports of kernfs_mutex contention that is resolved
+> by the series.
+> 
+> Unfortunately the two reports I've seen fairly recently are on
+> kernels that are about as far away from the upstream kernel
+> as you can get so probably aren't useful in making my case.
+> 
+> The report I've worked on most recently is on CoreOS/Kunbernetes
+> (based on RHEL-8.3) where the machine load goes to around 870
+> after loading what they call an OpenShift performance profile.
+> 
+> I looked at some sysreq dumps and they have a seemingly endless
+> number of processes waiting on the kernfs_mutex.
+> 
+> I tried to look at the Kubernetes source but it's written in
+> go so there would need to be a lot of time spent to work out
+> what's going on, I'm trying to find someone to help with that.
+> 
+> All I can say from looking at the Kubernetes source is it has
+> quite a few sysfs paths in it so I assume it uses sysfs fairly
+> heavily.
+> 
+> The other problem I saw was also on CoreOS/Kunernetes.
+> A vmcore analysis showed kernfs_mutex contention but with a
+> different set of processes and not as significant as the former
+> problem.
+> 
+> So, even though this isn't against the current upstream, there
+> isn't much difference in the kernfs/sysfs source between those
+> two kernels and given the results of Brice and Fox I fear I'll
+> be seeing more of this as time goes by.
+> 
+> I'm fairly confident that the user space applications aren't
+> optimal (although you may have stronger words for it than that)
+> I was hoping you would agree that it's sensible for the kernel
+> to protect itself to the extent that it can provided the change
+> is straight forward enough.
+> 
+> I have tried to make the patches as simple as possible without
+> loosing much of the improvement to minimize any potential ongoing
+> maintenance burden.
+> 
+> So, I'm sorry I can't offer you more incentive to consider the
+> series, but I remain hopeful you will.
 
-seems this one doesnâ€™t apply cleanly to bluetooth-next, please rebase and re-send.
+At the very least, if you could test the series on those "older" systems
+and say "booting went from X seconds to Y seconds!".
 
-Regards
+Otherwise, while changes are nice, without a real-world test that this
+actually made any difference at all, why would we take these changes?
 
-Marcel
+thanks,
 
+greg k-h
