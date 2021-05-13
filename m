@@ -2,201 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DE8E37F2CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 08:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0707637F2C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 08:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231256AbhEMGIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 02:08:32 -0400
-Received: from ozlabs.org ([203.11.71.1]:36557 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229504AbhEMGIX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 02:08:23 -0400
-Received: by ozlabs.org (Postfix, from userid 1007)
-        id 4Fgh5D6CF8z9sWP; Thu, 13 May 2021 16:07:12 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=gibson.dropbear.id.au; s=201602; t=1620886032;
-        bh=/axulpG0xr9w+zByZ9r8VsYsgvrRJR6F1vnx+4ZliIY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VCSg73m0p+0am+zuLt6xE9E+0pTgC38t8MJxZYRLSYnb7CqfnMt5j/KRUc9ZMvP5H
-         bKjdMIoW+za0YAW8dTA//AV2s5AG1e/VN56fKRbS2bl/8cwIRcOXTFBgMpqrCfC2LH
-         7d1OO640z6ZxZOvRZaPFfTIKjvSWBys3UPD/42y4=
-Date:   Thu, 13 May 2021 16:01:20 +1000
-From:   David Gibson <david@gibson.dropbear.id.au>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <YJzAsBNF1irJxRGg@yekko>
-References: <20210421230301.GP1370958@nvidia.com>
- <20210422111337.6ac3624d@redhat.com>
- <YIeYJZOdgMN/orl0@yekko.fritz.box>
- <20210427172432.GE1370958@nvidia.com>
- <YIi5G4Wg/hpFqNdX@yekko.fritz.box>
- <20210429002149.GZ1370958@nvidia.com>
- <YIol9p3z8BTWFRh8@yekko>
- <20210503160530.GL1370958@nvidia.com>
- <YJDFj+sAv41JRIo4@yekko>
- <20210504181537.GC1370958@nvidia.com>
+        id S231266AbhEMGDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 02:03:20 -0400
+Received: from mail-mw2nam10on2115.outbound.protection.outlook.com ([40.107.94.115]:31073
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229748AbhEMGDR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 02:03:17 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AMHRsKgg+STYjEy+IAoY82czpm6MRKl1yzPvOlmWLrpv2szaUXRENiB4fVhMhQM8I3XegKCV60uE/LGUWDMVaaTRPjlfKNBdM3dT8RoZBYrgiJtrVKqgii/b2mGfxYKIa6Q28mfhpY3PHRPJg7sWpDU5OdA18wAgzPTvXol78VM3LHRJu5J+xDBtPumF+feA3jFpKWJNPiDVDpgemn+EDwTP3ouN5uWYDZpEYfIFTjH7Yd83EztPN6N5bgb0WCgCiRnzdlQFRcMXcaL4K8CSe7eGSfVQ+j53XOAhIPFH4o6ThBmMtlYkQ2Nm8ClEBbKozRpN2PmqS66NADNyG0b+7g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9408YTzEEtLE4VrhzpN2/a5tyuy+2yuUedmaEuwqz9U=;
+ b=Y+3qIYR6BpoOiLyi0XmA5K9T5pYwOcyNr+GhoIrPUmsNI5DwsRYtgyhk/4MupC7XySbvwpkOyEllU3W2oCuV0Q60Ns2J7FGjv2plwk8FMfu1t89WKI001/dT3zS0yZFOPRaV6aP0QyRWFyOYE+DuAEAWtkjL0mcVSKo8hb/siHZ7skq1X+QMNrzDVMcBInWf+9KmEem1gF3xH/dp5rTlURktrr6Mdi0XM5g1sv620R9vo9BQtve7XO48brUdNVt8g+VYap5VxbSDeuDbD8F6dR+F+RKd/nJSVuZ/ufaMMcj/X5gUhvusOde5aSDTeh0ZGRQel1Fp9M72jjbmZ16ulQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9408YTzEEtLE4VrhzpN2/a5tyuy+2yuUedmaEuwqz9U=;
+ b=ZOUsKTSnPddqafx9Gk3rmJxqmffKb8E9svBgOIqtpdH2zU5aPdySmQtqcxJBWtGzGF5Ggzp7DW+zrKZDAURIScC3SVGuz76VgVjtDiSWwEE1UAvjYK8VtknRCd82WC2P9HCxi+m8w1zJc3Eh3FJ8aA6ZUAaBD52+Kxau37kD3NY=
+Received: from MW2PR2101MB0892.namprd21.prod.outlook.com
+ (2603:10b6:302:10::24) by MW4PR21MB1939.namprd21.prod.outlook.com
+ (2603:10b6:303:76::8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.5; Thu, 13 May
+ 2021 06:02:07 +0000
+Received: from MW2PR2101MB0892.namprd21.prod.outlook.com
+ ([fe80::5548:cbd8:43cd:aa3d]) by MW2PR2101MB0892.namprd21.prod.outlook.com
+ ([fe80::5548:cbd8:43cd:aa3d%5]) with mapi id 15.20.4150.012; Thu, 13 May 2021
+ 06:02:07 +0000
+From:   Dexuan Cui <decui@microsoft.com>
+To:     "'netfilter-devel@vger.kernel.org'" <netfilter-devel@vger.kernel.org>,
+        "'netdev@vger.kernel.org'" <netdev@vger.kernel.org>
+CC:     Stephen Hemminger <sthemmin@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>
+Subject: RE: netfilter: iptables-restore: setsockopt(3, SOL_IP,
+ IPT_SO_SET_REPLACE, "security...", ...) return -EAGAIN 
+Thread-Topic: netfilter: iptables-restore: setsockopt(3, SOL_IP,
+ IPT_SO_SET_REPLACE, "security...", ...) return -EAGAIN 
+Thread-Index: AddHdN+snMbFwQLHQSmZ6J2vO7HZjQAM7kqQAAUT/wA=
+Date:   Thu, 13 May 2021 06:02:07 +0000
+Message-ID: <MW2PR2101MB08925E481FFFF8AB7A3ACDAFBF519@MW2PR2101MB0892.namprd21.prod.outlook.com>
+References: <MW2PR2101MB0892FC0F67BD25661CDCE149BF529@MW2PR2101MB0892.namprd21.prod.outlook.com>
+ <MW2PR2101MB0892864684CFDB096E0DBF02BF519@MW2PR2101MB0892.namprd21.prod.outlook.com>
+In-Reply-To: <MW2PR2101MB0892864684CFDB096E0DBF02BF519@MW2PR2101MB0892.namprd21.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=356357d2-2a65-4b3e-86cf-03509df80d8d;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-05-12T21:20:54Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=microsoft.com;
+x-originating-ip: [2601:600:8b00:6b90:9d16:8ec9:e190:4c0c]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: efe575fa-4412-4a1d-de32-08d915d4a3cf
+x-ms-traffictypediagnostic: MW4PR21MB1939:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MW4PR21MB193924F34F18A92E50615B21BF519@MW4PR21MB1939.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:989;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: m3ewiVkPZVv54rpxWS8CvM+KyZd6KCPx1vMoPg6CO61nFnpg/CRIp64odDVEIcYozILtbQNOzA4RZ0vfA9XkHZFP8qN+rWbLgD7F4Lv/8QZBxB77Y1rJ5A8XPAJzekic/DliMv5sst/aWTtcwjC7yZ+tImky1S9DCb3Z17R6EdKzSLJ9ER+qmsjVXwYdgwkr6gwAE+a3MkjvGcIXQJhyqbjYfE79InsRsezo3q/QxazHZ7sayobrctErV4+GqHfKHdkdEhTV8ekKJFQlH82KtGZhvY3Xm0yMkAFfOcLX+EXelwzi9ihpsjlIbnJ93K8AEolhGpsY4cdo7stajDczBvVrIPu0FeQpghRnd6HtpX8BUkyqhY7R6+4w9qZiR4LEMrlNMFDIHNPH8g4D6fTUFR/mEpXcoRec9mENmfgvQGVDU9KrzFl4vF3bMh2zTpHS3iPN639Kp72A2NCi1VRvECzZUsUk5LeIjUPmzwshy5xXpOUSCFIjdlI9pd8qINlMH4PQldAwYWKzrOp2m+VAACx+VL6P5zS9oiu+rMElPKnjSEcJuxdpBogUG+D9NHFfO2Q4d49RAVx4p6yKsstNSFA6hnhdcnBnws4s32KIs/h6Al5Xle1BzJhRirC7KIVjNmwbdA+Sq8VR8FiIMVjr6chzVSxMRW9vcX7MrFItmAQq5ONtIEIfQpLJXVCX9f1Ufg8HACpq3AaObd92WTUtRu8SjWjLM2fAZ1MB6CXu9R+ynEM0Dp3n3R3cSBpifXBH2ecJ1PR8Jag9mWz6i9BmCg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR2101MB0892.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(82950400001)(82960400001)(86362001)(5660300002)(8936002)(52536014)(66476007)(4743002)(478600001)(33656002)(110136005)(54906003)(8676002)(10290500003)(186003)(55016002)(4744005)(9686003)(8990500004)(2940100002)(71200400001)(7696005)(38100700002)(122000001)(450100002)(4326008)(76116006)(316002)(6506007)(2906002)(66556008)(64756008)(66446008)(66946007)(491001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 2
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?dZFJEIL6AAmlX4yzZHTXDw7CGmwN8TrxJ9bmtp+espqQnvtPkuXx564R7Mdj?=
+ =?us-ascii?Q?JoXuYwKvpejzB1VGNJDIemHnHD4zDkAppfZfTbWL9XydKDkgrn0UyQdrPAms?=
+ =?us-ascii?Q?a9/XcDTm9nC0lAwj3kRN7XxH4RsQzlTByzVMzlkQQMUl1fxnbSXHl8j2L559?=
+ =?us-ascii?Q?t/783T3C5kNRlTA5pXPvudrFY88YpztFAWo55jECFL1VksFju6TktbdAYfxV?=
+ =?us-ascii?Q?5E48QAPI+UgrQYnfFgdxnALneADjmckM5fBW2TndLwbgxG+LvVuyef7sK3tQ?=
+ =?us-ascii?Q?kokRtmeqWI0vnzdh5QJoR3lzyU/NiUyqO2Sh3W4OyZ6K2PZJrMSxr6dJHqYC?=
+ =?us-ascii?Q?3fiRh5pEPJ3RnmTLDyFQLXX1EpJDa2Bm8HuhIFgUaH+P4BWrqbYzjs239yHc?=
+ =?us-ascii?Q?o6nh1KRLBTK5nN/e8Twr/0MWZMoZDmdXTH9LQBw/XebVztz4Y2pzhU+nNqIp?=
+ =?us-ascii?Q?pWRsx2EV6EvCP1J62D29feEKE0WNz5htbcrKA5TWvbfFDInz2Eq1mpv4lxGz?=
+ =?us-ascii?Q?4xr/noIksWyDU4vP23rNwHROm5BX97CWLnQIwgtB7m1GQHaIebhXfCsEIXme?=
+ =?us-ascii?Q?cojtHp7t949PtJncLTGSAArqxiD6DcUseBetzFOKo2/0+FsWbfUT9vYxKHdk?=
+ =?us-ascii?Q?VIIgORpBltAS++R6BxCihC/LgNKjHgci4ZsiX1NJya1bYUabadpMv8M8Ywm6?=
+ =?us-ascii?Q?dkZgwZrtuJDWl6oePnSTVQ30pn2DBW0T5x/erGWzeRjOP124f2LghCBCMDlw?=
+ =?us-ascii?Q?k1KNXw6fhW6KRPwPzYkr0luh9i0F3XhTYOqSNtI4evJYRDdjWEXK5YimOfhw?=
+ =?us-ascii?Q?tvAOCSqNaxiJDtoDaQ56gW+Jw03qpS0wmPxEmi4S0aFHRDE0WsDdF17M3VUZ?=
+ =?us-ascii?Q?wlqaIyiqlpA2cjdzivzMLo8dmreDCDas5nZEFFYZsqUnGvU9SHOsjzf9gwyQ?=
+ =?us-ascii?Q?wv+aBz04z2pGDh2bLl8CfeulJH4d0F/jP/cXWHlA?=
+x-ms-exchange-antispam-messagedata-1: aWKuH5LMf20VMINsuVGNfvCQoJ9NjWKu0SaYoxX64kokkXHwW8pElxM+d1rUPQoQX1LM8qAU7rADUrrSNnFhL4iyHDvYaxoG5MrbaD9UGU6HkVh/8PNyln5uLkCRpweW+dkC99HjNKCht/WCraEWma3JOlZLWEKPhMhe4uLjq/cOIsDZRWMBIFPXVDX8e8JpIw6Z2Q7l98uEa/cIUuBFD3qGI336ftzLN130ZNoJTZJ+yODNOZjB7YivOI4C+RC0QSSZnCMXoxO7DZ8LnF6qclPnUrFZeSe1qoNo5g1Ilk6yXdgwprpv1p9XGv+GzYNYvoIDQ0uUYZ21hD4acu5tLbbXpKmYWXtCWakhumQLRa9Mz2xpCNx2kRNGhgfhE0aBksFSfkM6fSH0hJOjrYsYG/g+
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="C5zTqZzJn85FYpd8"
-Content-Disposition: inline
-In-Reply-To: <20210504181537.GC1370958@nvidia.com>
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR2101MB0892.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: efe575fa-4412-4a1d-de32-08d915d4a3cf
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 May 2021 06:02:07.3755
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: xyyoVi/8cvv7taYHWK8I/358Pis0AdlqK6JrUy4DE1aUJb0YtfDpvOFa/w50Gl1zT7JzSDTYI+d3duz+2rNKeQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR21MB1939
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> From: Dexuan Cui
+> Sent: Wednesday, May 12, 2021 9:19 PM
+> ...
+> I think the latest mainline kernel should also have the same race.
+> It looks like this by-design race exists since day one?
 
---C5zTqZzJn85FYpd8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I indeed reproduced the issue with the latest stable tree (v5.12.3) as well=
+.
 
-On Tue, May 04, 2021 at 03:15:37PM -0300, Jason Gunthorpe wrote:
-> On Tue, May 04, 2021 at 01:54:55PM +1000, David Gibson wrote:
-> > On Mon, May 03, 2021 at 01:05:30PM -0300, Jason Gunthorpe wrote:
-> > > On Thu, Apr 29, 2021 at 01:20:22PM +1000, David Gibson wrote:
-> > > > > There is a certain appeal to having some
-> > > > > 'PPC_TCE_CREATE_SPECIAL_IOASID' entry point that has a wack of ex=
-tra
-> > > > > information like windows that can be optionally called by the vio=
-mmu
-> > > > > driver and it remains well defined and described.
-> > > >=20
-> > > > Windows really aren't ppc specific.  They're absolutely there on x86
-> > > > and everything else as well - it's just that people are used to hav=
-ing
-> > > > a window at 0..<something largish> that you can often get away with
-> > > > treating it sloppily.
-> > >=20
-> > > My point is this detailed control seems to go on to more than just
-> > > windows. As you say the vIOMMU is emulating specific HW that needs to
-> > > have kernel interfaces to match it exactly.
-> >=20
-> > It's really not that bad.  The case of emulating the PAPR vIOMMU on
-> > something else is relatively easy, because all updates to the IO page
-> > tables go through hypercalls.  So, as long as the backend IOMMU can
-> > map all the IOVAs that the guest IOMMU can, then qemu's implementation
-> > of those hypercalls just needs to put an equivalent mapping in the
-> > backend, which it can do with a generic VFIO_DMA_MAP.
->=20
-> So you also want the PAPR vIOMMU driver to run on, say, an ARM IOMMU?
+> > BTW, iptables does have a retry mechanism for getsockopt():
+> > 2f93205b375e ("Retry ruleset dump when kernel returns EAGAIN.")
+> >
+> (https://git.netfilter.org/iptables/commit/libiptc?id=3D2f93205b375e&cont=
+ext=3D10
+> > &ignorews=3D0&dt=3D0)
+> >
+> > But it looks like this is enough?=20
+I missed a "not". IMO 2f93205b375e is not enough.
 
-Well, I don't want to preclude it in the API.  I'm not sure about that
-specific example, but in most cases it should be possible to run the
-PAPR vIOMMU on an x86 IOMMU backend.  Obviously only something you'd
-want to do for testing and experimentation, but it could be quite
-useful for that.
-
-> > vIOMMUs with page tables in guest memory are harder, but only really
-> > in the usual ways that a vIOMMU of that type is harder (needs cache
-> > mode or whatever).  At whatever point you need to shadow from the
-> > guest IO page tables to the host backend, you can again do that with
-> > generic maps, as long as the backend supports the necessary IOVAs, and
-> > has an IO page size that's equal to or a submultiple of the vIOMMU
-> > page size.
->=20
-> But this definitely all becomes HW specific.
->=20
-> For instance I want to have an ARM vIOMMU driver it needs to do some
->=20
->  ret =3D ioctl(ioasid_fd, CREATE_NESTED_IOASID, [page table format is ARM=
-vXXX])
->  if (ret =3D=3D -EOPNOTSUPP)
->      ret =3D ioctl(ioasid_fd, CREATE_NORMAL_IOASID, ..)
->      // and do completely different and more expensive emulation
->=20
-> I can get a little bit of generality, but at the end of the day the
-> IOMMU must create a specific HW layout of the nested page table, if it
-> can't, it can't.
-
-Erm.. I don't really know how your IOASID interface works here.  I'm
-thinking about the VFIO interface where maps and unmaps are via
-explicit ioctl()s, which provides an obvious point to do translation
-between page table formats.
-
-But.. even if you're exposing page tables to userspace.. with hardware
-that has explicit support for nesting you can probably expose the hw
-tables directly which is great for the cases that works for.  But
-surely for older IOMMUs which don't do nesting you must have some way
-of shadowing guest IO page tables to host IO page tables to translate
-GPA to HPA at least?  If you're doing that, I don't see that
-converting page table format is really any harder
-
-> > > I'm remarking that trying to unify every HW IOMMU implementation that
-> > > ever has/will exist into a generic API complete enough to allow the
-> > > vIOMMU to be created is likely to result in an API too complicated to
-> > > understand..
-> >=20
-> > Maybe not every one, but I think we can get a pretty wide range with a
-> > reasonable interface. =20
->=20
-> It sounds like a reasonable guideline is if the feature is actually
-> general to all IOMMUs and can be used by qemu as part of a vIOMMU
-> emulation when compatible vIOMMU HW is not available.
->=20
-> Having 'requested window' support that isn't actually implemented in
-> every IOMMU is going to mean the PAPR vIOMMU emulation won't work,
-> defeating the whole point of making things general?
-
-The trick is that you don't necessarily need dynamic window support in
-the backend to emulate it in the vIOMMU.  If your backend has fixed
-windows, then you emulate request window as:
-	if (requested window is within backend windows)
-		no-op;
-	else
-		return ERROR;
-
-It might not be a theoretically complete emulation of the vIOMMU, but
-it can support in-practice usage.  In particular it works pretty well
-if your backend has a nice big IOVA range (like x86 IOMMUS) but your
-guest platform typically uses relatively small IOVA windows.  PAPR on
-x86 is exactly that... well.. possibly not the 64-bit window, but
-because of old PAPR platforms that didn't support that, we can choose
-not to advertise that and guests will cope.
-
---=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
-
---C5zTqZzJn85FYpd8
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmCcwK4ACgkQbDjKyiDZ
-s5JsAA/+Ksb/SZNvr50y/TBaIPbfqcmhfoheOmJcHkEPdFWbaRuS82h6gBlIFdFQ
-kV6VtLhX/ndrjto/oKqm7HWkSMx8gBQMoKwJCIbvQ1qesonLVpDqC03ZPK0X63Ew
-43TjSo/De1e5pql3UnEbxiVbBduKVGy1S8JbYMbsnodh2SHgO5IKx8WwEXkoqGc8
-SDUkOw6L/bdX0hrKDsrzNaZUZUgBOLKxFaInwyVI5z8LrY86mQaeyIxWDwtZ8IBK
-YC0DcfoGSZpmI7cueapG3Y5nlleUg4HgqG3Ku5Ax/Q8TM/1PQq1HtNdc0FxEqlaE
-cqezKQobuSPUXWk5Vc56IT9l+m6hhCGGpCWVKouS61BQU7tGLdulYYLGm1UWYZIW
-cdk/npdqROu3MQllMCR+T7m6kQhsKn6bLTdPjx4WxMcfYigfPKB3KvUnGejucmOz
-BRvcxIfMY9GQj7IKQtARFLRfxT6owerpQE0gaz6XXbR53yTIF2uaNcO3jIl6nyna
-jK7ZG5GqifCs9E/qLmrvPkRC5fodM5MSyDPlInet4XL7lVDyz5di/S34s3IZ7rdM
-rzjMtb4BqktP1x4YStXMdxh4eaHDb16BId+WSngPrMp3CKYDqaHtClXRb4ZCoiSP
-oK82KitpY+PC/SjpJByud+WdpfSnLJnGIP811H3Ct405EYcKw0Q=
-=EaCb
------END PGP SIGNATURE-----
-
---C5zTqZzJn85FYpd8--
+Thanks,
+-- Dexuan
