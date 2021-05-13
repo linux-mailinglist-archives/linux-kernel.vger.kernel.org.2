@@ -2,361 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4723637F524
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 11:58:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF63537F583
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 12:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232386AbhEMJ7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 05:59:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231261AbhEMJ7x (ORCPT
+        id S232719AbhEMKVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 06:21:52 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:43897 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231167AbhEMKVe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 05:59:53 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A72DCC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 02:58:42 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id m12so39125840eja.2
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 02:58:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hDj2rPJCI1Pj5glb8VlBF8OccSL7OQayA8NEYYZPhqg=;
-        b=s3FOeUTZ7ZXrnbxaNSMHtyt8Uy4kcW5mCzhcAjnuBnfXn3T9Jq1AeMrjrftJt7kcFY
-         UqxlSg+X+jvyE4sBpo+TkjB72G9dmhJ70RWO4EUQy3gYkdA6TgnpMHtSAq3TMIdimwCF
-         peWr50G+V3q0hKrOK9iXkBF32gy+4UrmSiF4RJMPuUca5y91Y2/xVNP2ymUvjmXB7/yQ
-         xwK5XezGTuEitKRfjZ3Hm0q2G3LfEmg+Cp94YtH0iVqc5b3UT+iSk9d6wGGcQwAk5APE
-         h/TlkA/8TFXzGlCY37WVc/jLI+mlfEH+6/qiwkrAY/mY7VhQBnDIOmCzGYvWTVnQcsWj
-         KZZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=hDj2rPJCI1Pj5glb8VlBF8OccSL7OQayA8NEYYZPhqg=;
-        b=eqs1EVMZCqS+06rOQkuVh4B7PTDqG1V1YCRFZ+cWJ6OBnv0u9vSQuksP3maVrjBSTk
-         6irlAEpdlh7+oGR4sD6Ou4+62M18gVXpSDfn9L9j38KbEoO+Mp8F9ISqx9pIMxcG0vnO
-         9bLkBZVShLpRRKh/UzvztjsJhjIyQv/HTrmOEW35DOIUjkzr6YSdA1izPiIjHoE6Ckfw
-         YSxKNMiN+b9zuuamGZNJAApKrGhxG0k4VGGx+yu9KTaOfjKtN7hic+GGjAHnQ5trDhOM
-         sJwvL8Y3WXu+SDrmKJg71FUJwEqY3Ei3vKFSL1J2+MB8asN6YSxThb+FZE8fkFYsh6po
-         aQcw==
-X-Gm-Message-State: AOAM533v6leciqtnrHSCLedj7jkym2r5Ewk/hb+wAYwYVX7MJ9paBWZW
-        ed2opRmAUN93m9RNH9hg7hk=
-X-Google-Smtp-Source: ABdhPJx/+hQdQXcZgrK+1z4xNjfMxyLGRXJHyprxxossL8q3fIE7j9g5/fMAEXcBlIj5zr9qbNDxEw==
-X-Received: by 2002:a17:906:1617:: with SMTP id m23mr44391824ejd.352.1620899920636;
-        Thu, 13 May 2021 02:58:40 -0700 (PDT)
-Received: from gmail.com (0526E777.dsl.pool.telekom.hu. [5.38.231.119])
-        by smtp.gmail.com with ESMTPSA id gn31sm1492339ejc.124.2021.05.13.02.58.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 02:58:39 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Thu, 13 May 2021 11:58:38 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>, mingo@redhat.com,
-        Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org,
-        x86@kernel.org, Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH 1/4] sched: make nr_running() return 32-bit
-Message-ID: <YJz4TmZ7fmKFchRe@gmail.com>
-References: <20210422200228.1423391-1-adobriyan@gmail.com>
- <87fsyr5wtj.ffs@nanos.tec.linutronix.de>
+        Thu, 13 May 2021 06:21:34 -0400
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210513102022epoutp02de8e733b0e6f01c70ff32a6a828faa51~_mRLUFYC61681116811epoutp02M
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 10:20:22 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210513102022epoutp02de8e733b0e6f01c70ff32a6a828faa51~_mRLUFYC61681116811epoutp02M
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1620901222;
+        bh=dBhV4HMCwrJY+wzRN3TXZNcHKDa/PokNUw/sRTs01Qg=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=Fk20JzaSq/BazUGsgR7x7cJtP5mnZ/Dj+45P9GQdriG+7K6ALe1+7LN492VZs8hy8
+         oepIwJfen3XDk5CUG9gAuV1MZj/XPtf+jXhXqqYxadMGH6naWlLiIwczS+cpXAdl1r
+         8CzZMZt1scFkyw3tbxMTuN+Xl8vC0S4L6Qr/H1HI=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210513102020epcas1p148bd2649b9b22cbfd0a3e5ffb4177154~_mRKKJARC2839628396epcas1p1E;
+        Thu, 13 May 2021 10:20:20 +0000 (GMT)
+Received: from epsmges1p2.samsung.com (unknown [182.195.40.160]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4FgnjH3Rscz4x9Pw; Thu, 13 May
+        2021 10:20:19 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        C4.58.09701.36DFC906; Thu, 13 May 2021 19:20:19 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210513102018epcas1p2a69f8e50cdf8380e433aea1a9303d04c~_mRIRfz952795127951epcas1p2E;
+        Thu, 13 May 2021 10:20:18 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210513102018epsmtrp175f54beaca115ca661520b6123d21eb0~_mRIQK_pl0664606646epsmtrp1c;
+        Thu, 13 May 2021 10:20:18 +0000 (GMT)
+X-AuditID: b6c32a36-647ff700000025e5-c4-609cfd6313e1
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        87.B4.08163.26DFC906; Thu, 13 May 2021 19:20:18 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.99.105]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210513102018epsmtip2ef3dab1e338e022c50c948ba45c20c0a~_mRH8atTL3252832528epsmtip29;
+        Thu, 13 May 2021 10:20:18 +0000 (GMT)
+From:   Changheun Lee <nanich.lee@samsung.com>
+To:     alex_y_xu@yahoo.ca, yi.zhang@redhat.com, jaegeuk@kernel.org,
+        bgoncalv@redhat.com, Johannes.Thumshirn@wdc.com,
+        asml.silence@gmail.com, axboe@kernel.dk, bvanassche@acm.org,
+        damien.lemoal@wdc.com, gregkh@linuxfoundation.org,
+        hch@infradead.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ming.lei@redhat.com, osandov@fb.com,
+        patchwork-bot@kernel.org, tj@kernel.org, tom.leiming@gmail.com
+Cc:     jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
+        mj0123.lee@samsung.com, seunghwan.hyun@samsung.com,
+        sookwan7.kim@samsung.com, woosung2.lee@samsung.com,
+        yt0928.kim@samsung.com, Changheun Lee <nanich.lee@samsung.com>
+Subject: [PATCH v10 0/1] bio: limit bio max size
+Date:   Thu, 13 May 2021 19:02:04 +0900
+Message-Id: <20210513100205.17965-1-nanich.lee@samsung.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87fsyr5wtj.ffs@nanos.tec.linutronix.de>
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Te0xTVxze6S23LRnkWp2csES6RuJkA1qgcJwwyUC9CyQjMXOLy4QCVyCW
+        9tLbqlPZwA4olPAQBspLmM4hgl0QkHarc2VCqqxh4TUZggywuoG8dBtsZCu9uPHf7/vyfb/H
+        d3L4mPAf3JufptRQaqVcIcbduR1dOwP9k1ZrEiTL97zQtdFmHqpp6gDo6v1iHJl/vABQxfwy
+        hnLyfucg3UUjju6WfM5BU8YqDBVOnXFDqwVjHPRsgkGWkddQv7kGR9YyHQdVXq/B0NB4Lw91
+        jQ1y0cSlUgzZbYtuqG4yEq18eRuguT+HeehOZxmGhu0VODJalvFIb7J/IIYs1T3hkaaq+zzy
+        eqMf2f+DlmxtysfJb2ubeeTczUGcLGprAuRS6zYy75aBQ1qtl7G4Fw8pwlMpeTKlFlHKJFVy
+        mjIlQhxzID4qXhYqkfpLd6EwsUgpT6cixNGxcf770hTOCMSiY3KF1knFyRlGHPhmuFql1VCi
+        VBWjiRBTdLKClkroAEaezmiVKQFJqvQ3pBJJkMypTFCkWnvKAf0ddqK+zy8LDHIKgIAPiRDY
+        dz7frQC484VEJ4BPSxwcFiwCOHN2CWfBEoCVLcOgAPBdFntdBsubAey23Ob9J6rOzsPW+uLE
+        67BodsTl3kLUYrCh+SFYAxgxCeCALRdfU20mJNA+NwvWai7hC/OHR1y8B7Ebmru/4LIb+sC/
+        xwsxlt8EbeenXDzm5HXt1dhaU0joBHCofMyNNUTDxz/fWa83w1972nhs7Q0fF+fyWIMBQF3u
+        BcCCEgAvOS6vBxIMF5eWXJdixE5oNAey9CvQ9FctYCd7wifPCt3YMDygPlfISrbD3k/Hseez
+        HC2m9Y4kLDrT49pHSHwI62ZKsBLgU7XhnqoN91T9P7geYE1gK0Uz6SkUI6WDNr5rK3D9BL/Q
+        TnB2dj7ACjh8YAWQj4m3eGxNrE4QeiTLPzpJqVXxaq2CYqxA5ky4FPN+KUnl/EpKTbxUFhQc
+        HIxCQsNCZcFiL4+UqFMJQiJFrqGOUhRNqZ/7OHyBdxYHWG5m7DnQN9RYf244Vhlu0vStNiwY
+        fB9VRL6wo9J02vTNEfyn4yvH+eUtsXZ3PYwZ0sdN14m2vSrzyUn0+WTXwvLbooWI2eK3nv5i
+        v7jyYOiqlu8ukFXr99+4NpCtubc9yKIcyDQHhBYfbtbXd9WFZe7xM8C7xsDdghumGbqn9+T3
+        tvbswJC88c4P9rZu2vHHZ6Oq5miH7dB8hxfh+95Rfs5oj8Gi9rTNBL1jce8uasvAyqJkvxke
+        XvEM5xpvfTwxDR7Rh0/Q+pfff3AQnquWag42nJp2HEOT5Yoj++I1ZOIVgWZvVmxDRLvefnp/
+        UWNCXF+m6eu5bvpd2VfTIY6pXDGXSZVL/TA1I/8XS9tgjJIEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Ra0hTYRiA+853dna2mh2nuS+lpGFC06zE4DOl9E+cLlBREQTlVp6W5C7t
+        pJb5Y7TStsyU7mtd0C7jZBma5lZabZSZNRRvJTMVzT9lWpplZeSSoH/f+zzPy/fjpaFcIMPp
+        DP0BzqTXZCopKVnjVUYu3jXpUC/NfxuN7/rLxdgh1AB8u/sUhd0tVwE+NzIB8bGCcQJbyioo
+        3FRcSuCBCjvEhQNHRHjS9o7AX/t4XNcVg1vdDgp7TlsIfL7KAXFHzysx9r5rJ3Hf9RKIfY1f
+        RPhKfwr+cesZwMPfO8X4Ze1piDt95yhcUTdBpYSzrW3r2BLLJzHrsneL2Sqnim19ncVWClaK
+        fXy5XMwO17dTbNF9AbCjlfPZgicnCNbjuQk3ztouTU7nMjOyOdOSlWrpXk/DGWB8Cg9ea1aZ
+        QTthAzSNmATku7LfBqS0nKkFqLilZYpLpng4angxJJpuQpDXy083nwGa9FWLAg3FxKKioS4q
+        IEKZaojGSs+AwACZDwDZ+kvJQBXCLEW+4SEQeJPMQmTtDGxIaBmThNzPb5DTv0WiXz2FcJoH
+        o8aLA385nOKW6kuwGATZ/1P2/9Q1QAhgLmfkdVodv8wYr+dy4niNjs/Sa+N2G3SV4O85Vapa
+        8EgYifMAggYegGioDJWF7bqklsvSNYdyOZMhzZSVyfEeEEGTSoWs2daYJme0mgPcPo4zcqZ/
+        lqAl4WbCkHzybfTy42Bwtbl81cu11kTJnF5d0/tUcStk54wO0moC5a0SDNb3PGGsahpLC553
+        fc33HaPyca13s/NYdo/wyztRFPltX+HnmmqLCIwlDeoPJ8X/9KsvfKqPmnTvuSPTBseud2ww
+        B7PbfEHpsYtKcs8eyoquVegiFKkrzOP3XP5UYevBKH2O+qEpm5+dsPz8prHOj4r+th1lGa6q
+        J5o8Y+LCPWbnPGvum25Y4P4qqDoqEwv6nbLesK0rXOnO50FHM247XBI7GZnUm6j1l0fHjPwO
+        nUk8KFM2zyreyW7xt42GjQfl9eXnyWKkhrYBh4bpkC3IvDkDKaIeUUqS36tZpoImXvMHVjan
+        ij0DAAA=
+X-CMS-MailID: 20210513102018epcas1p2a69f8e50cdf8380e433aea1a9303d04c
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210513102018epcas1p2a69f8e50cdf8380e433aea1a9303d04c
+References: <CGME20210513102018epcas1p2a69f8e50cdf8380e433aea1a9303d04c@epcas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+ v10 modifications
+ 1. bio_max_bytes is set to "BIO_MAX_VECS * PAGE_SIZE" as minimum.
+ 2. fix maxsize when iov_iter_get_pages() is call in
+    __bio_iov_append_get_pages()
 
-* Thomas Gleixner <tglx@linutronix.de> wrote:
+Changheun Lee (1):
+  bio: limit bio max size
 
-> Alexey,
-> 
-> On Thu, Apr 22 2021 at 23:02, Alexey Dobriyan wrote:
-> > Creating 2**32 tasks is impossible due to futex pid limits and wasteful
-> > anyway. Nobody has done it.
-> >
-> 
-> this whole pile lacks useful numbers. What's the actual benefit of that
-> churn?
+ block/bio.c            | 17 ++++++++++++++---
+ block/blk-settings.c   |  7 +++++++
+ include/linux/bio.h    |  4 +++-
+ include/linux/blkdev.h |  2 ++
+ 4 files changed, 26 insertions(+), 4 deletions(-)
 
-I applied the 4 patch series from Alexey Dobriyan because they offer four 
-distinct technical advantages to the scheduler code:
+-- 
+2.29.0
 
- - Shorter instructions generated in nr_running(), nr_iowait(), 
-   nr_iowait_cpu() due to losing the REX prefix.
-
- - Shorter instructions generated by users of these 3 functions as well.
-
- - Tighter data packing and structure size reduction in 'struct rt_rq', 
-   'struct dl_rq' and 'struct rq', due to 8-byte 'long' fields shrinking to 
-   4-byte 'int' based fields.
-
- - Together these 4 patches clean up all derivative uses of the 
-   rq::nr_running base type, which is already 'unsigned int' and that's 
-   pretty fundamental given our PID ABI limits. Having type mismatch where 
-   we use 64-bit data types for certain APIs while 32-bit data types for 
-   others is inconsistent crap I wouldn't accept if it was submitted as new 
-   code.
-
-As to the numbers:
-
-The data structure size improvements are IMO obvious, and they are also 
-measurable, here's the before/after Pahole comparison of 'struct rt_rq':
-
---- pahole.struct.rt_rq.before	2021-05-13 11:40:53.207077908 +0200
-+++ pahole.struct.rt_rq.after	2021-05-13 11:41:42.257385897 +0200
-@@ -7,22 +7,22 @@ struct rt_rq {
- 		int                curr;                 /*  1624     4 */
- 		int                next;                 /*  1628     4 */
- 	} highest_prio;                                  /*  1624     8 */
--	long unsigned int          rt_nr_migratory;      /*  1632     8 */
--	long unsigned int          rt_nr_total;          /*  1640     8 */
--	int                        overloaded;           /*  1648     4 */
-+	unsigned int               rt_nr_migratory;      /*  1632     4 */
-+	unsigned int               rt_nr_total;          /*  1636     4 */
-+	int                        overloaded;           /*  1640     4 */
- 
- 	/* XXX 4 bytes hole, try to pack */
- 
--	struct plist_head          pushable_tasks;       /*  1656    16 */
--	/* --- cacheline 26 boundary (1664 bytes) was 8 bytes ago --- */
--	int                        rt_queued;            /*  1672     4 */
--	int                        rt_throttled;         /*  1676     4 */
--	u64                        rt_time;              /*  1680     8 */
--	u64                        rt_runtime;           /*  1688     8 */
--	raw_spinlock_t             rt_runtime_lock;      /*  1696     4 */
-+	struct plist_head          pushable_tasks;       /*  1648    16 */
-+	/* --- cacheline 26 boundary (1664 bytes) --- */
-+	int                        rt_queued;            /*  1664     4 */
-+	int                        rt_throttled;         /*  1668     4 */
-+	u64                        rt_time;              /*  1672     8 */
-+	u64                        rt_runtime;           /*  1680     8 */
-+	raw_spinlock_t             rt_runtime_lock;      /*  1688     4 */
- 
--	/* size: 1704, cachelines: 27, members: 13 */
--	/* sum members: 1696, holes: 1, sum holes: 4 */
-+	/* size: 1696, cachelines: 27, members: 13 */
-+	/* sum members: 1688, holes: 1, sum holes: 4 */
- 	/* padding: 4 */
--	/* last cacheline: 40 bytes */
-+	/* last cacheline: 32 bytes */
-
-'struct rt_rq' got shrunk from 1704 bytes to 1696 bytes, an 8 byte 
-reduction.
-
-'struct dl_rq' shrunk by 8 bytes:
-
--	/* size: 104, cachelines: 2, members: 10 */
--	/* sum members: 100, holes: 1, sum holes: 4 */
--	/* last cacheline: 40 bytes */
-+	/* size: 96, cachelines: 2, members: 10 */
-+	/* sum members: 92, holes: 1, sum holes: 4 */
-+	/* last cacheline: 32 bytes */
-
-'struct rq', which embedds both rt_rq and dl_rq, got 20 bytes smaller:
-
--	/* sum members: 2967, holes: 10, sum holes: 137 */
-+	/* sum members: 2947, holes: 11, sum holes: 157 */
-
-Side note: there's now 20 bytes more new padding holes which could possibly 
-be coalesced a bit more by reordering members sensibly - resulting in even 
-more data footprint savings. (But those should be separate changes and only 
-for fields we truly care about from a performance POV.)
-
-As to code generation improvements:
-
-> Just with the default config for one of my reference machines:
-> 
->    text		data	bss	dec	 hex	 filename
-> 16679864	6627950	1671296	24979110 17d26a6 ../build/vmlinux-before
-> 16679894	6627950	1671296	24979140 17d26c4 ../build/vmlinux-after
-> ------------------------------------------------------------------------
->      +30
-
-Using '/usr/bin/size' to compare before/after generated code is the wrong 
-way to measure code generation improvements for smaller changes due to 
-default alignment creating a reserve of 'padding' bytes at the end of most 
-functions. You have to look at the low level generated assembly directly.
-
-For example, the nr_iowait_cpu() commit, with before/after generated code 
-of the callers of the function:
-
-  9745516841a5: ("sched: Make nr_iowait() return 32-bit value")
-
-  ffffffffxxxxxxxx:      e8 49 8e fb ff          call   ffffffffxxxxxxxx <nr_iowait_cpu>
-- ffffffffxxxxxxxx:      48 85 c0                test   %rax,%rax
-
-  ffffffffxxxxxxxx:      e8 64 8e fb ff          call   ffffffffxxxxxxxx <nr_iowait_cpu>
-+ ffffffffxxxxxxxx:      85 c0                   test   %eax,%eax
-
-Note how the 'test %rax,%rax' lost the 0x48 64-bit REX prefix and the 
-generated code got one byte shorter from "48 85 c0" to "85 c0".
-
-( Note, my asm generation scripts filter out some of the noise to make it 
-  easier to diff generated asm, hence the ffffffffxxxxxxxx placeholder. )
-
-The nr_iowait() function itself got shorter by two bytes as well, due to:
-
-Before:
-
-ffffffffxxxxxxxx <nr_iowait>:
-ffffffffxxxxxxxx:       41 54                   push   %r12
-ffffffffxxxxxxxx:       48 c7 c7 ff ff ff ff    mov    $0xffffffffxxxxxxxx,%rdi
-ffffffffxxxxxxxx:       45 31 e4                xor    %r12d,%r12d
-ffffffffxxxxxxxx:       55                      push   %rbp
-ffffffffxxxxxxxx:       8b 2d 01 ea 5d 01       mov    0x15dea01(%rip),%ebp        # ffffffffxxxxxxxx <nr_cpu_ids>
-ffffffffxxxxxxxx:       53                      push   %rbx
-ffffffffxxxxxxxx:       48 c7 c3 c0 95 02 00    mov    $0x295c0,%rbx
-ffffffffxxxxxxxx:       eb 17                   jmp    ffffffffxxxxxxxx <nr_iowait+0x34>
-ffffffffxxxxxxxx:       48 98                   cltq   
-ffffffffxxxxxxxx:       48 8b 14 c5 a0 c6 2e    mov    -0x7dd13960(,%rax,8),%rdx
-ffffffffxxxxxxxx:       82 
-ffffffffxxxxxxxx:       48 01 da                add    %rbx,%rdx
-ffffffffxxxxxxxx:       48 63 82 98 09 00 00    movslq 0x998(%rdx),%rax
-ffffffffxxxxxxxx:       49 01 c4                add    %rax,%r12
-ffffffffxxxxxxxx:       48 c7 c6 18 72 67 82    mov    $0xffffffffxxxxxxxx,%rsi
-ffffffffxxxxxxxx:       e8 80 46 39 00          call   ffffffffxxxxxxxx <cpumask_next>
-ffffffffxxxxxxxx:       89 c7                   mov    %eax,%edi
-ffffffffxxxxxxxx:       39 e8                   cmp    %ebp,%eax
-ffffffffxxxxxxxx:       72 d7                   jb     ffffffffxxxxxxxx <nr_iowait+0x1d>
-ffffffffxxxxxxxx:       4c 89 e0                mov    %r12,%rax
-ffffffffxxxxxxxx:       5b                      pop    %rbx
-ffffffffxxxxxxxx:       5d                      pop    %rbp
-ffffffffxxxxxxxx:       41 5c                   pop    %r12
-ffffffffxxxxxxxx:       c3                      ret    
-
-After:
-
-ffffffffxxxxxxxx <nr_iowait>:
-ffffffffxxxxxxxx:       41 54                   push   %r12
-ffffffffxxxxxxxx:       bf ff ff ff ff          mov    $0xffffffff,%edi
-ffffffffxxxxxxxx:       45 31 e4                xor    %r12d,%r12d
-ffffffffxxxxxxxx:       55                      push   %rbp
-ffffffffxxxxxxxx:       8b 2d 03 ea 5d 01       mov    0x15dea03(%rip),%ebp        # ffffffffxxxxxxxx <nr_cpu_ids>
-ffffffffxxxxxxxx:       53                      push   %rbx
-ffffffffxxxxxxxx:       48 c7 c3 c0 95 02 00    mov    $0x295c0,%rbx
-ffffffffxxxxxxxx:       eb 17                   jmp    ffffffffxxxxxxxx <nr_iowait+0x32>
-ffffffffxxxxxxxx:       48 63 c7                movslq %edi,%rax
-ffffffffxxxxxxxx:       48 8b 14 c5 a0 c6 2e    mov    -0x7dd13960(,%rax,8),%rdx
-ffffffffxxxxxxxx:       82 
-ffffffffxxxxxxxx:       48 01 da                add    %rbx,%rdx
-ffffffffxxxxxxxx:       8b 82 98 09 00 00       mov    0x998(%rdx),%eax
-ffffffffxxxxxxxx:       41 01 c4                add    %eax,%r12d
-ffffffffxxxxxxxx:       48 c7 c6 18 72 67 82    mov    $0xffffffffxxxxxxxx,%rsi
-ffffffffxxxxxxxx:       e8 a2 46 39 00          call   ffffffffxxxxxxxx <cpumask_next>
-ffffffffxxxxxxxx:       89 c7                   mov    %eax,%edi
-ffffffffxxxxxxxx:       39 c5                   cmp    %eax,%ebp
-ffffffffxxxxxxxx:       77 d7                   ja     ffffffffxxxxxxxx <nr_iowait+0x1b>
-ffffffffxxxxxxxx:       44 89 e0                mov    %r12d,%eax
-ffffffffxxxxxxxx:       5b                      pop    %rbx
-ffffffffxxxxxxxx:       5d                      pop    %rbp
-ffffffffxxxxxxxx:       41 5c                   pop    %r12
-ffffffffxxxxxxxx:       c3                      ret    
-
-The size of nr_iowait() shrunk from 78 bytes to 76 bytes.
-
-Or the other commit:
-
-  01aee8fd7fb2: ("sched: Make nr_running() return 32-bit value")
-
-  ffffffffxxxxxxxx:       e8 d9 24 e8 ff          call   ffffffffxxxxxxxx <nr_running>
-  ffffffffxxxxxxxx:       4c 8b 05 cc 92 70 01    mov    0x17092cc(%rip),%r8        # ffffffffxxxxxxxx <total_forks>
-  ffffffffxxxxxxxx:       4c 8b 64 24 50          mov    0x50(%rsp),%r12
-- ffffffffxxxxxxxx:       48 89 44 24 08          mov    %rax,0x8(%rsp)
-  ffffffffxxxxxxxx:       4c 89 04 24             mov    %r8,(%rsp)
-
-  ffffffffxxxxxxxx:       e8 f9 24 e8 ff          call   ffffffffxxxxxxxx <nr_running>
-  ffffffffxxxxxxxx:       4c 8b 05 ed 92 70 01    mov    0x17092ed(%rip),%r8        # ffffffffxxxxxxxx <total_forks>
-  ffffffffxxxxxxxx:       4c 8b 64 24 50          mov    0x50(%rsp),%r12
-+ ffffffffxxxxxxxx:       89 44 24 08             mov    %eax,0x8(%rsp)
-  ffffffffxxxxxxxx:       4c 89 04 24             mov    %r8,(%rsp)
-
-Note how "mov %rax,0x8(%rsp)" got shortened by one byte to "mov %eax,0x8(%rsp)":
-
-- ffffffffxxxxxxxx:       48 89 44 24 08          mov    %rax,0x8(%rsp)
-+ ffffffffxxxxxxxx:       89 44 24 08             mov    %eax,0x8(%rsp)
-
-The nr_running() function itself got shorter by 2 bytes, due to shorter 
-instruction sequences.
-
-The third commit improved code generation too:
-
-  8fc2858e572c: ("sched: Make nr_iowait_cpu() return 32-bit value")
-
-  ffffffffxxxxxxxx <nr_iowait_cpu>:
-  ffffffffxxxxxxxx:       48 63 ff                movslq %edi,%rdi
-  ffffffffxxxxxxxx:       48 c7 c0 c0 95 02 00    mov    $0x295c0,%rax
-  ffffffffxxxxxxxx:       48 03 04 fd a0 46 0f    add    -0x7df0b960(,%rdi,8),%rax
-  ffffffffxxxxxxxx:       82 
-- ffffffffxxxxxxxx:       48 63 80 98 09 00 00    movslq 0x998(%rax),%rax
-  ffffffffxxxxxxxx:       c3                      ret    
-
-  ffffffffxxxxxxxx <nr_iowait_cpu>:
-  ffffffffxxxxxxxx:       48 63 ff                movslq %edi,%rdi
-  ffffffffxxxxxxxx:       48 c7 c0 c0 95 02 00    mov    $0x295c0,%rax
-  ffffffffxxxxxxxx:       48 03 04 fd a0 46 0f    add    -0x7df0b960(,%rdi,8),%rax
-  ffffffffxxxxxxxx:       82 
-- ffffffffxxxxxxxx:       8b 80 98 09 00 00       mov    0x998(%rax),%eax
-  ffffffffxxxxxxxx:       c3                      ret    
-
-Note how the 'movslq 0x998(%rax),%rax' lost the REX prefix and got one byte 
-shorter. Call sites got shorter too:
-
-  ffffffffxxxxxxxx:       e8 e8 73 fa ff          call   ffffffffxxxxxxxx <nr_iowait_cpu>
-- ffffffffxxxxxxxx:       48 85 c0                test   %rax,%rax
-
-  ffffffffxxxxxxxx:       e8 c8 73 fa ff          call   ffffffffxxxxxxxx <nr_iowait_cpu>
-- ffffffffxxxxxxxx:       85 c0                   test   %eax,%eax
-
-You often won't see these effects in the 'size vmlinux' output, because 
-function alignment padding reserves usually hide 1-2 byte size improvements 
-in generated code.
-
-> I'm truly impressed by the massive savings of this change and I'm even 
-> more impressed by the justification:
-> 
-> > Bring nr_running() into 32-bit world to save on REX prefixes.
-> 
-> Aside of the obvious useless churn, REX prefixes are universaly true for 
-> all architectures, right? There is a world outside x86 ...
-
-Even architectures that have the same instruction length for 32-bit and 
-64-bit data types benefit:
-
- - smaller data structures benefit all 64-bit architectures
-
- - the cleaner, more coherent nr_running type definitions are now more 
-   consistently 'int' based, not the previous nonsensical 'int/long' mix 
-   that also made the generated code larger on x86.
-
-More importantly, the maintenance benchmark in these cases is not whether a 
-change actively helps every architecture we care about - but whether the 
-change is a *disadvantage* for them - and it isn't here.
-
-Changes that primarily benefit one common architecture, while not others, 
-are still eligible for upstream merging if they otherwise meet the quality 
-threshold and don't hurt the other architectures.
-
-TL;DR:
-
-This benefits from this series are small, but are far from 'useless churn', 
-unless we want to arbitrarily cut off technically valid contributions that 
-improve generated code, data structure size and code readability, submitted 
-by a long-time contributor who has contributed over 1,300 patches to the 
-kernel already, just because we don't think these add up a significant 
-enough benefit?
-
-No doubt the quality barrier must be and is higher for smaller changes - 
-but this series IMO passed that barrier.
-
-Anyway, I've Cc:-ed Linus and Greg, if you are advocating for some sort of 
-cut-off threshold for small but measurable improvements from long-time 
-contributors, it should probably be clearly specified & documented in 
-Documentation/SubmittingPatches ...
-
-Thanks,
-
-	Ingo
