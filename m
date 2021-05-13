@@ -2,158 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1C1237F706
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 13:45:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A80D837F71F
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 13:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233529AbhEMLqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 07:46:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233464AbhEMLqG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 07:46:06 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75EC5C061574;
-        Thu, 13 May 2021 04:44:54 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id a25so6497271edr.12;
-        Thu, 13 May 2021 04:44:54 -0700 (PDT)
+        id S233602AbhEMLsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 07:48:33 -0400
+Received: from mail-mw2nam10on2077.outbound.protection.outlook.com ([40.107.94.77]:8288
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233541AbhEMLsY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 07:48:24 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hmtNCfcG7JcYffjUWFbovWLr11y/6kJX3W07Yu5iwT1bM+hCLS+IHrABNEcDh7rliaOb8C80OzzNc8LxCYVXMMJobfLWZi+buIhVS3XN+pNPnex99ryWadkFu3OO87ZmfbpPu7507+fpCp3h25r9ouOI4LwoxPr7GkbwF89A0+3mQn1bELVaWsWBJofycsuOYS0kiL7wRFr/YWXA2Fi4r/CAmeV5rlRTfSvlMwkUE/aNaQWhWarBQUpyoK1fgp5giif/1lj8fkfTvy6iRc6Zm7KTn+0qZNvSqhndiOzv3B/Mz5YIAFY16AkHMTe+vmnIZMLDbqP21mCfBzgHjFC/NQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pyUhD+O496w+NzKlSXdXCrbR5UdX56y+UhYPQyKUgsk=;
+ b=KpySK7DE5NngDqLKKde6349IVnBIPiUG2YexHiyiGN0o5o92R6gSaCfKAbnPVDby2dU6PKUu0QZLV5UFksvxFnmX3Kyo03+EcUehsWoO2vQtlv5oxtZBzst5GBX4YZaF5uOZMiJ6l5lXKtp2Q6PMR/sXr7KchNCWz5j7V55VuSXOe96tRNSYmJ12wx8QwEgUW1958YVSXelYlDT78IABQmo/c2Am9wBaw9qokGJUn6e1K4dAmxe7xph4+8/Y5qmwcuCOOAiGiU7uybFLySB6Y9D12Ut48tdu/MdUTsWTxk45up50bfoK8l/AqZGYt9g7rFAvp7NM9GvrpC0xh7tBDA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fwzbWl952fr1P0i3advgiqJAkCDz6mXDvjh1DVmI6Og=;
-        b=hpFaMfGXlNFpwUyf3GqvGgp/CVBDnzn5C/Acnmbqx5YDZ56B0diF/EPDk8I5OjzkCt
-         xiqGQqYocsG8LYxn0SG8GDXvL2Jjytw8VEzS5xUz49cuUOcvFwlqoTK0hW6E0L47OKwz
-         GbEnOkz/c8mpAXwiifYgktaX8cR3xjIUWrlfgELULem0TrqYdf0T63kucbwYzuHKqRpH
-         V1IqqL8Qxhc/Y6yA8K47KM/NGzrYO2m8lvomKC31jWN8LN2L0BwbOJDMo04Vy+vMNUqg
-         a6BpQ4lAtf8hNSVfrevXxA5QtAb+Y8yhlRKqf7U2Jdtb0XjAPO1arkG17YbyE2sgpdkg
-         BQiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=fwzbWl952fr1P0i3advgiqJAkCDz6mXDvjh1DVmI6Og=;
-        b=DeeXIx/PjrS6WVxS3PMxAufxRMdu1MVyJrdwEvvFInmsTVQsJwsVRrX7D6Gw580FRR
-         Ffz3rAsDlxWf1ANlYKpaJuPfccM8UpUJbfDB2TLEEsfg+THH4JAr2aFysAa+T2z8VrfP
-         reM8OLRiiDd7j95vk1KQmAHvQ4dv947EbeglwIOWUQguErUF7FaZmt+dTUde8NBozeHU
-         /EHzmccQWocDK5vz5JABOeLl4Y2BEuI8bcMASdb+mocVBqstGl59N/tuz8e6rQli2Nw4
-         Pl3vos5u/Q4aD2T8xhLq525BlZwbXdob8dtPMXvXepE6hL65MHiL0SNxutjROzY4zmWa
-         iDIQ==
-X-Gm-Message-State: AOAM53362KnYYhKyymAOIIzAI/qVECL/LlsQ26plCXhViO94+DQHVyCI
-        o3qbaS7tnGMmIgWXM7tMkRA=
-X-Google-Smtp-Source: ABdhPJz49bKr2qwULSaCzQhwDbmJIg7e1vfwWmaFbXe1JyB7Tvy61vu10yE5W7cN7cO+asnqdqxiWQ==
-X-Received: by 2002:aa7:cd46:: with SMTP id v6mr48523581edw.16.1620906293180;
-        Thu, 13 May 2021 04:44:53 -0700 (PDT)
-Received: from gmail.com (0526E777.dsl.pool.telekom.hu. [5.38.231.119])
-        by smtp.gmail.com with ESMTPSA id k9sm1792772eje.102.2021.05.13.04.44.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 04:44:52 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Thu, 13 May 2021 13:44:51 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     "H. Peter Anvin" <hpa@zytor.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@elte.hu>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: [PATCH] x86/asm: Make <asm/asm.h> valid on cross-builds as well
-Message-ID: <YJ0RM2JIfFL8a0X2@gmail.com>
-References: <20210513120515.7060879c@canb.auug.org.au>
- <YJ0Ew9gjprpCByxF@gmail.com>
- <4A5E6F25-37B6-4114-AB3C-476F6F551DBD@zytor.com>
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pyUhD+O496w+NzKlSXdXCrbR5UdX56y+UhYPQyKUgsk=;
+ b=kVAF3905EdH4L8jmX9kFFtLvmw8bPClAjrkQVUvVBxTcpgxm8UFjkbqRNnP3SLKb5M1mQlOS03TYlTNl3+GZFMDVJzoaMrNAZaoV3iXImfRtHNcvUXBpDtZaUs3SUAJuEZw/qwIlrSdEn1TRmEF56sXQITP/r5AaRINu9WW68n4=
+Authentication-Results: xilinx.com; dkim=none (message not signed)
+ header.d=none;xilinx.com; dmarc=none action=none header.from=windriver.com;
+Received: from CY4PR11MB0071.namprd11.prod.outlook.com (2603:10b6:910:7a::30)
+ by CY4PR1101MB2344.namprd11.prod.outlook.com (2603:10b6:903:b4::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.25; Thu, 13 May
+ 2021 11:47:12 +0000
+Received: from CY4PR11MB0071.namprd11.prod.outlook.com
+ ([fe80::f45f:e820:49f5:3725]) by CY4PR11MB0071.namprd11.prod.outlook.com
+ ([fe80::f45f:e820:49f5:3725%6]) with mapi id 15.20.4108.031; Thu, 13 May 2021
+ 11:47:12 +0000
+From:   quanyang.wang@windriver.com
+To:     Hyun Kwon <hyun.kwon@xilinx.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Michal Simek <michal.simek@xilinx.com>
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Quanyang Wang <quanyang.wang@windriver.com>
+Subject: [PATCH 0/2] drm: xlnx: add some functions
+Date:   Thu, 13 May 2021 19:45:38 +0800
+Message-Id: <20210513114540.1241122-1-quanyang.wang@windriver.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: HK2P15301CA0015.APCP153.PROD.OUTLOOK.COM
+ (2603:1096:202:1::25) To CY4PR11MB0071.namprd11.prod.outlook.com
+ (2603:10b6:910:7a::30)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4A5E6F25-37B6-4114-AB3C-476F6F551DBD@zytor.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pek-qwang2-d1.wrs.com (60.247.85.82) by HK2P15301CA0015.APCP153.PROD.OUTLOOK.COM (2603:1096:202:1::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.8 via Frontend Transport; Thu, 13 May 2021 11:47:09 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: fc9e31b8-e236-42c6-a3dc-08d91604d8d7
+X-MS-TrafficTypeDiagnostic: CY4PR1101MB2344:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CY4PR1101MB23443710FE611EEDF91A54F4F0519@CY4PR1101MB2344.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gYSsh0Irde3sUDLvB2C6sDk9ozJ/+toQfr9aQ7ITQIeCvhnB7bPLsRziueSCVU+rcS/tIoHHEwydiVG2iQAmay3IxodCVBjlRQu3GtACnGrquZGBj3seFobBmvfw8QQDUb5UAm5yV/rRgtS70k8IvMXLXHPj1WEYnqmdv1EG8GG9f+V6XvNiOpg/wR74M3oHyMxMwLiFBLqFHgGrXrWfW1wNYE5Me893CMAACV90EtMdx4l4GJwTVIMFEj0u1QBkA9mwbZNrVlNV6qKuHUmPTvKKrshSWZXRV0xPVq/u35HfoZPjleXQWs4TUGHq6x/2OWwbB2zBWHxPof8QeNwv3045j1kHm+0mLHFAU07MPPcZcZubuiX+luO3rrvCWrE8YYz30oXrpY8M4E1EvStfSqHKFjzwvFw7gfYmAk7VbQrVaD0jlci0IekiNMNnq1RzC4jSJHIsWEj+L4dGOLRMur/BF+djGzfo5JzGWSp+fI3feYHAwuNV4t1QaT/KryWGlv0OZAIWmegi5r/5EhZHJJPFO1rEuS0XSYYK/rcIQ2ATLZr3x7ZFzLm06gM75p7UeelMCXndQ+zYnjox2Dg/XnwRSldZut2EFVFTrfTCjmX+gihLbQ2gPQzwv8LQG+QF4lfU3uyGGJZu2bJkcyqIEw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR11MB0071.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(366004)(39830400003)(136003)(346002)(36756003)(86362001)(52116002)(38350700002)(38100700002)(83380400001)(2616005)(6666004)(66476007)(66556008)(66946007)(2906002)(4326008)(107886003)(6636002)(6512007)(110136005)(316002)(8676002)(186003)(6486002)(1076003)(956004)(9686003)(16526019)(478600001)(26005)(4744005)(5660300002)(8936002)(6506007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?xOdwRwqtvzjdEtMmXJGVB9c5eFVjFATHW5joZVmfogbfSY0K1iVdClMEen+N?=
+ =?us-ascii?Q?wh87dHdFFaZoJcz+zdukY4/97BItA9gdl2wmmAWFEL+8sTw/g9m8G1KXONB8?=
+ =?us-ascii?Q?b3FJdNOCFelt6BKkmn3VjbGdno0qI39A+LKBqatH8YLFOZBQSdctMCKwcs3N?=
+ =?us-ascii?Q?yVJ0JKwZ3loN5pMMRVUUBDNJvGAa3q/Zb66XNJPmdW4ZcNqQGnJ0LMx8SpU0?=
+ =?us-ascii?Q?JPLCaJ3+yz6vonDvIADIIC8mPVJbixtGbdgPcbVmWpf/tXNVkzPoC9LMcb1W?=
+ =?us-ascii?Q?sIQHOAKgHvH/72DF18jQPzjEMVwp3noZlFtcZi4Gxe2Giq2jt5hUsEfm2a9F?=
+ =?us-ascii?Q?VDqmjmNAPCE4R+EcLgljmocChNDevrc8FkRXFGRluxgyoPDEUizV1i/G0bvd?=
+ =?us-ascii?Q?QrYMKPgg4IsBbOH9Ya5xHCVQ5OMiaQULtw6k6OcZnSMp9n2H+axNiZaeCJUE?=
+ =?us-ascii?Q?CsIA/QcseJoFzrbjFSgetqLmopSGkUOBea9k9ieOKN88HHAROqrya0bpI8oR?=
+ =?us-ascii?Q?zElgIv35mRzf6G+/ujptRauuzBvM7Y0hJxdMepnoDMKZcY6VMEaPpkDWKTpP?=
+ =?us-ascii?Q?7cZZ6W77jVvZX+cDlWUl3NVuuN8y/OKKFnC3eHkLS+IbxsXT1OC5N/XZ7oim?=
+ =?us-ascii?Q?IqqusxC+OKYH7GiBZLv4iy1hzDjkMoKwwoMabtp5P9lt/jgCQKm4FOrEreVW?=
+ =?us-ascii?Q?gto5ViBQUTbMZr8h3VNpWCoC3XZdopbWsKuL5Skt9hkpT/v2hEtSgZ5K2mvn?=
+ =?us-ascii?Q?6Jmt4USao1N3CI+UUDjUu6dP6eiPBwp2EAhUvn99K1Q2TNK6x0cnuhn7Y/4j?=
+ =?us-ascii?Q?O519ks+sApnCGtv2g/V8l2D49D6eD4ubakCFH9q/CGK1nVAqDM73iYc7IyKA?=
+ =?us-ascii?Q?tFaKIRvTNTjtw1QReYxfaFOClnsc+dozlnk4f4V2f2n1XbMlHWJjXuk7Pclr?=
+ =?us-ascii?Q?rQlcO9n/Lwux3ib68wi0MtNaKc6VY6yu/bg0XQiJ8pM0JKPLdjfasbsjLKYp?=
+ =?us-ascii?Q?+QNf74h9DF017wwdla5lFosRG6x5QPEvkusq9dJpql6BNA2v42Bmwqc1tkmo?=
+ =?us-ascii?Q?OpNo+HfDVu+VukqEo907Uv3zlsAaxwIpxGEY2BMZvKMu7irZBCXQ1JPLbpIk?=
+ =?us-ascii?Q?ysrDLA1AGSm8OFnpTs7GCwxh2Q5wFL33ONjqeQWwIskVbogyd1YBS+TcDnkP?=
+ =?us-ascii?Q?KXTaS2l/87dm08/2kN4JKBbVJ9V7q7pA0pZ0cUyycLbH5ojLcPXthpuh0NMN?=
+ =?us-ascii?Q?lTpLM2KeimspkJpZQXcAK0QQQwPyi4fedtv27S1Jrtc+v3NRaVEjK6o886qm?=
+ =?us-ascii?Q?AZnwkfrYHR1+heIMdgsN/fwd?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fc9e31b8-e236-42c6-a3dc-08d91604d8d7
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR11MB0071.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2021 11:47:12.6794
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9HcnuzBfk3MeOgQCkcB6yfGtdTK0xMMWfJOU2wqXfpoQampAty369kDu48jtTleSnCGCxIrPIFMthxGYyDgnnmkqGqitx6IS2pUVWB0+Ia0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1101MB2344
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Quanyang Wang <quanyang.wang@windriver.com>
 
-* H. Peter Anvin <hpa@zytor.com> wrote:
+The patch "drm: xlnx: add is_layer_vid() to simplify the code" is to
+simplify the code which judge the layer type.
 
-> Needed some head scratching, but then...
-> 
-> It makes sense for the cross-build: it's building for the host, and a 
-> non-x86 machine isn't doing to have a register named "%rsp".
-
-Oh, indeed, sfr is building on powerpc64 I think?
-
-> So this needs to be protected from non-kernel use either via __KERNEL__ 
-> or by factoring the basic macros out into a separate file.
-
-So something like the below?
-
-The exception table stuff is definitely kernel-only. The others could, in 
-principle, be used by tooling as well.
+The patch "drm: xlnx: consolidate the functions which programming AUDIO_VIDEO_SELECT register"
+is to consolidate the code that can configure vid/gfx/audio to output
+different mode (live/mem/disable/tpg) in one function "zynqmp_disp_avbuf_output_select".
 
 Thanks,
+Quanyang
 
-	Ingo
+Quanyang Wang (2):
+  drm: xlnx: add is_layer_vid() to simplify the code
+  drm: xlnx: consolidate the functions which programming
+    AUDIO_VIDEO_SELECT register
 
-=======================>
-From: Ingo Molnar <mingo@kernel.org>
-Date: Thu, 13 May 2021 13:41:41 +0200
-Subject: [PATCH] x86/asm: Make <asm/asm.h> valid on cross-builds as well
+ drivers/gpu/drm/xlnx/zynqmp_disp.c      | 191 ++++++++++++++----------
+ drivers/gpu/drm/xlnx/zynqmp_disp_regs.h |  15 +-
+ 2 files changed, 116 insertions(+), 90 deletions(-)
 
-Stephen Rothwell reported that the objtool cross-build breaks on
-non-x86 hosts:
+-- 
+2.25.1
 
-  > tools/arch/x86/include/asm/asm.h:185:24: error: invalid register name for 'current_stack_pointer'
-  >   185 | register unsigned long current_stack_pointer asm(_ASM_SP);
-  >       |                        ^~~~~~~~~~~~~~~~~~~~~
-
-The PowerPC host obviously doesn't know much about x86 register names.
-
-Protect the kernel-specific bits of <asm/asm.h>, so that it can be
-included by tooling and cross-built.
-
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
----
- arch/x86/include/asm/asm.h       | 4 ++++
- tools/arch/x86/include/asm/asm.h | 4 ++++
- 2 files changed, 8 insertions(+)
-
-diff --git a/arch/x86/include/asm/asm.h b/arch/x86/include/asm/asm.h
-index 507a37a46027..3ad3da9a7d97 100644
---- a/arch/x86/include/asm/asm.h
-+++ b/arch/x86/include/asm/asm.h
-@@ -120,6 +120,8 @@
- # define CC_OUT(c) [_cc_ ## c] "=qm"
- #endif
- 
-+#ifdef __KERNEL__
-+
- /* Exception table entry */
- #ifdef __ASSEMBLY__
- # define _ASM_EXTABLE_HANDLE(from, to, handler)			\
-@@ -186,4 +188,6 @@ register unsigned long current_stack_pointer asm(_ASM_SP);
- #define ASM_CALL_CONSTRAINT "+r" (current_stack_pointer)
- #endif /* __ASSEMBLY__ */
- 
-+#endif /* __KERNEL__ */
-+
- #endif /* _ASM_X86_ASM_H */
-diff --git a/tools/arch/x86/include/asm/asm.h b/tools/arch/x86/include/asm/asm.h
-index 507a37a46027..3ad3da9a7d97 100644
---- a/tools/arch/x86/include/asm/asm.h
-+++ b/tools/arch/x86/include/asm/asm.h
-@@ -120,6 +120,8 @@
- # define CC_OUT(c) [_cc_ ## c] "=qm"
- #endif
- 
-+#ifdef __KERNEL__
-+
- /* Exception table entry */
- #ifdef __ASSEMBLY__
- # define _ASM_EXTABLE_HANDLE(from, to, handler)			\
-@@ -186,4 +188,6 @@ register unsigned long current_stack_pointer asm(_ASM_SP);
- #define ASM_CALL_CONSTRAINT "+r" (current_stack_pointer)
- #endif /* __ASSEMBLY__ */
- 
-+#endif /* __KERNEL__ */
-+
- #endif /* _ASM_X86_ASM_H */
