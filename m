@@ -2,138 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E635937F952
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 16:02:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC7E037F95A
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 16:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234364AbhEMODZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 10:03:25 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44752 "EHLO mx2.suse.de"
+        id S234301AbhEMOIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 10:08:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40712 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234317AbhEMODE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 10:03:04 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B8CB7B1C3;
-        Thu, 13 May 2021 14:01:52 +0000 (UTC)
-Subject: Re: [PATCH][next] drm: simpledrm: Fix use after free issues
-To:     Colin King <colin.king@canonical.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maxime Ripard <maxime@cerno.tech>,
-        dri-devel@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210512203051.299026-1-colin.king@canonical.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <2b709552-cd8c-0885-c99c-7cb9e2af905b@suse.de>
-Date:   Thu, 13 May 2021 16:01:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S230355AbhEMOHr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 10:07:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A496F60FE3;
+        Thu, 13 May 2021 14:06:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620914798;
+        bh=4rN+VVlc8ibw3oXGCckMjpVShm3yI4NuuKf5/cjLR7U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=peVuKaSPy1xii6lSFRq++WcAMLUe07WXffeuebnVowAyjX4FQyHPg00L7khinSz+j
+         kTINuPDLIAqe3fFT6vVYpP/OoNXWP72iooecMWNyhYXY5AJ8NtywC4OLQhFaMhTqWf
+         NgQyjT9YTYcN9ukf9+uIUGV5ZXb5k2BVMLdpm6vxIOFJEN5GBSfjJYNvGD7S0Y7RG3
+         gRPCItwiNNLIa5kaBjfTjTYc+T6u6d4oCbp+bTQW3chVQ5RSPcjzUSsErN9Qr7v2n8
+         cL7T/vcX1lBMvohiNwQ+TN1BHn/OqReTs4/9IhXcUHvZMCFq1AZS41MHnovtg+GqQA
+         r1pakCjLk70lg==
+Date:   Thu, 13 May 2021 15:05:56 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
+Cc:     =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@gmail.com>,
+        alsa-devel@alsa-project.org, amistry@google.com,
+        nartemiev@google.com, Alexander.Deucher@amd.com,
+        Basavaraj.Hiregoudar@amd.com, Sunil-kumar.Dommati@amd.com,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] ASoC: dwc: add a quirk DW_I2S_QUIRK_STOP_ON_SHUTDOWN
+ to dwc driver
+Message-ID: <20210513140556.GD5813@sirena.org.uk>
+References: <1619195089-29710-1-git-send-email-Vijendar.Mukunda@amd.com>
+ <20210423164617.GG5507@sirena.org.uk>
+ <e1268120-7a91-da49-0bb6-89d5cb4e2cce@gmail.com>
+ <b32fcc42-d67e-bfbd-ed83-7f7274fb2f79@amd.com>
+ <ac5244d1-643d-6577-80cd-bf6867e75ca2@gmail.com>
+ <b86ad586-9513-8fa9-54e3-a0b4a3a7fd92@amd.com>
+ <070b4e5b-b7bd-b8a6-beea-593a94ec3078@gmail.com>
+ <26c79eec-5e74-38bc-465b-0ca2b2d9a6f5@amd.com>
+ <9b689495-e956-6242-0784-af3ccf7c3238@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <20210512203051.299026-1-colin.king@canonical.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="XaWzkNuflmcnRw9sH5tvQKoTUukS4gsCn"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="XvKFcGCOAo53UbWW"
+Content-Disposition: inline
+In-Reply-To: <9b689495-e956-6242-0784-af3ccf7c3238@amd.com>
+X-Cookie: snafu = Situation Normal All F%$*ed up
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---XaWzkNuflmcnRw9sH5tvQKoTUukS4gsCn
-Content-Type: multipart/mixed; boundary="la8J2z3cSCMFxMNgESLXqTvLIpk2BDxpm";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Colin King <colin.king@canonical.com>, David Airlie <airlied@linux.ie>,
- Daniel Vetter <daniel@ffwll.ch>, Maxime Ripard <maxime@cerno.tech>,
- dri-devel@lists.freedesktop.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <2b709552-cd8c-0885-c99c-7cb9e2af905b@suse.de>
-Subject: Re: [PATCH][next] drm: simpledrm: Fix use after free issues
-References: <20210512203051.299026-1-colin.king@canonical.com>
-In-Reply-To: <20210512203051.299026-1-colin.king@canonical.com>
 
---la8J2z3cSCMFxMNgESLXqTvLIpk2BDxpm
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+--XvKFcGCOAo53UbWW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hi
+On Mon, May 10, 2021 at 10:57:25PM +0530, Mukunda,Vijendar wrote:
 
-Am 12.05.21 um 22:30 schrieb Colin King:
-> From: Colin Ian King <colin.king@canonical.com>
->=20
-> There are two occurrances where objects are being free'd via
-> a put call and yet they are being referenced after this. Fix these
-> by adding in the missing continue statement so that the put on the
-> end of the loop is skipped over.
->=20
-> Addresses-Coverity: ("Use after free")
-> Fixes: 11e8f5fd223b ("drm: Add simpledrm driver")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> How about declaring a flag in sound card structure and this flag will be set
+> in stoneyridge machine driver.
 
-Queued up for drm-misc-next. Thanks!
+> Based on flag check trigger stop sequence will be re-ordered.
 
-Best regards
-Thomas
+A couple of people suggested that already, making sure the core knows
+what's going on is probably the best way forwards here.
 
-> ---
->   drivers/gpu/drm/tiny/simpledrm.c | 2 ++
->   1 file changed, 2 insertions(+)
->=20
-> diff --git a/drivers/gpu/drm/tiny/simpledrm.c b/drivers/gpu/drm/tiny/si=
-mpledrm.c
-> index 2bdb477d9326..eae748394b00 100644
-> --- a/drivers/gpu/drm/tiny/simpledrm.c
-> +++ b/drivers/gpu/drm/tiny/simpledrm.c
-> @@ -298,6 +298,7 @@ static int simpledrm_device_init_clocks(struct simp=
-ledrm_device *sdev)
->   			drm_err(dev, "failed to enable clock %u: %d\n",
->   				i, ret);
->   			clk_put(clock);
-> +			continue;
->   		}
->   		sdev->clks[i] =3D clock;
->   	}
-> @@ -415,6 +416,7 @@ static int simpledrm_device_init_regulators(struct =
-simpledrm_device *sdev)
->   			drm_err(dev, "failed to enable regulator %u: %d\n",
->   				i, ret);
->   			regulator_put(regulator);
-> +			continue;
->   		}
->  =20
->   		sdev->regulators[i++] =3D regulator;
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---la8J2z3cSCMFxMNgESLXqTvLIpk2BDxpm--
-
---XaWzkNuflmcnRw9sH5tvQKoTUukS4gsCn
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+--XvKFcGCOAo53UbWW
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmCdMU8FAwAAAAAACgkQlh/E3EQov+Aw
-bw/+P/W5921z5b3YngrfUBXAGxwGZ0ElScedm7rPMu4X7lxySR9LAtZtZj/a+Jy6opYN7PF2QOMu
-8lTHe4RRlRlYllWG1agX8pSAiH577d1EURj4XDmFGN8oNJKrpRaBTdV1qJstc3det3qyioHdG401
-Ms6cSsZ5pj2TmhOn6LSAGhr1SGKjvNDORGY0bO787YrJTt6gP66uBKv1S6lUH+uLIvptnnzpIzhr
-/FCSm57ouQJQdHAo7EtxjCZ8tYXZzyM/xbWtBbsURLc9nBg5cproYS5SlBMYPvOf24pa7gD6CRRa
-UpcWfZ3HmEhoE0zrkM0Fo+8fvSNT/d8fyq+9yIRlVn8tACq+yQZqk93nFqzFWEdjl6Q+yue2uo2R
-xdfrdr0ZX8z4ycClKaJWyeBN3Pqq96i1vprGuIhUAgBUR0OB+6N195Nr2bPO3HpMm/yKPon3U9IL
-FP8XORzMnrxln3pBpHCoxs26WOCt/1pw1i684Im/gkqP+NQ3J3H3x+OTau5NW9FZWXiQu4ogFN/5
-5q9/ITkDvbSHcqi5Qb/aDRoiylpzUfIfCHE1kMB1Flt2NH0+69z+K2Ml7cEXQTPmCM5/NDpCY6mV
-ntjKyAUu9rFG/EFIR3TX7PhnaKOQWxA0IY6cjc7SMDzD93eS//BZHm5UD1Q+ncP6EBPp6jy3KRM5
-f3w=
-=/ZoR
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCdMkMACgkQJNaLcl1U
+h9CnIQf8CZTlwmEvhbx0XYcSv9tj7ITIo7+jFMz6cTd6x5LQfqk08xg0xOrij+im
+FW5gReU/GxTEgE7K483MSbITxxRjPgLqURXSBrmub5Dp+2vCvNiXu3bX4X4vF4MG
+pt9LnM0wibEgBg431MlbaPLiL9SbOCCzQJ2o0zn8kJQ3gK7ttgtDarXjjAXvJkaZ
+Tcnfx9yY+zFrmfoC1wjphihSG2Gr+6y/2h+TYl1FWyw2lzJjsZh7U4w8vzE94+N3
+FJz5Rm9c7Y/mMCumRHlJPED1ZIeWo+vchwf2dz7nOgtcId5yBkeSGvZewauMnSOB
+onDJfyVf7Kc/qA4NYupS1QeJ8Dzwkw==
+=lt08
 -----END PGP SIGNATURE-----
 
---XaWzkNuflmcnRw9sH5tvQKoTUukS4gsCn--
+--XvKFcGCOAo53UbWW--
