@@ -2,175 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6D9837F16D
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 04:47:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F4A937F170
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 04:50:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230335AbhEMCtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 22:49:03 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:50050 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229813AbhEMCtC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 22:49:02 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14D2ljqr012163;
-        Wed, 12 May 2021 21:47:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1620874065;
-        bh=CVL24IXjC7hS/rORC2nMLVaPFRAth7V3AD9AbT6OxgY=;
-        h=Subject:From:To:CC:References:Date:In-Reply-To;
-        b=ohtqtg3h70b1QcdUPjyCMG0N9JyIV82M+uk+TEsSdLZDUq8Uhq8G61Gj9M7mD2aWO
-         h7EnD5cTwYy8nLP1fSpTWp4+Z+QG60mmeiMwOH5BKYJzYcIFtNP2jEYEUBvWuLaBW5
-         0jJZGF7JYZrHPLS3r2U3D37oH/50BjDGilvaKYU8=
-Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14D2lid3070216
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 12 May 2021 21:47:44 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 12
- May 2021 21:47:44 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 12 May 2021 21:47:44 -0500
-Received: from [10.250.33.185] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14D2li1V024269;
-        Wed, 12 May 2021 21:47:44 -0500
-Subject: Re: [PATCH v2 1/2] dt-bindings: remoteproc: k3-r5f: Update bindings
- for AM64x SoCs
-From:   Suman Anna <s-anna@ti.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Lokesh Vutla <lokeshvutla@ti.com>,
-        <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210327143117.1840-1-s-anna@ti.com>
- <20210327143117.1840-2-s-anna@ti.com>
- <8948a30c-1a2f-1fb0-05bb-37be9c02c5d5@ti.com>
-Message-ID: <ff8edffb-d926-9641-740b-2c292139aa07@ti.com>
-Date:   Wed, 12 May 2021 21:47:44 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230382AbhEMCwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 22:52:05 -0400
+Received: from mga11.intel.com ([192.55.52.93]:15460 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229745AbhEMCwC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 22:52:02 -0400
+IronPort-SDR: 6uSWLJ+A8r+KgKYftq3Ju/PH8PmJv7vBUYl8ODO/lBpUbdOtIOHAuoHLdZ1Dp6dILxDym4uuSD
+ 86RPaStwx0Zw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="196761692"
+X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
+   d="scan'208";a="196761692"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2021 19:50:50 -0700
+IronPort-SDR: 6rmxe/j+8FY1jJu5OoDnevBHx6jzZIeJxnDX74H92iE5f9tYHRRrAmOnvBnI4HGk3IYilCgBEo
+ R0Sdxsp62FqQ==
+X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
+   d="scan'208";a="623066848"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2021 19:50:44 -0700
+Subject: Re: [PATCH v6 04/16] KVM: x86/pmu: Set MSR_IA32_MISC_ENABLE_EMON bit
+ when vPMU is enabled
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Venkatesh Srinivas <venkateshs@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, weijiang.yang@intel.com,
+        Kan Liang <kan.liang@linux.intel.com>, ak@linux.intel.com,
+        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        Yao Yuan <yuan.yao@intel.com>,
+        Like Xu <like.xu@linux.intel.com>
+References: <20210511024214.280733-1-like.xu@linux.intel.com>
+ <20210511024214.280733-5-like.xu@linux.intel.com>
+ <CAA0tLErUFPnZ=SL82bLe8Ddf5rFu2Pdv5xE0aq4A91mzn9=ABA@mail.gmail.com>
+ <ead61a83-1534-a8a6-13ee-646898a6d1a9@intel.com>
+ <YJvx4tr2iXo4bQ/d@google.com>
+From:   "Xu, Like" <like.xu@intel.com>
+Message-ID: <5ef2215b-1c43-fc8a-42ef-46c22e093f40@intel.com>
+Date:   Thu, 13 May 2021 10:50:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <8948a30c-1a2f-1fb0-05bb-37be9c02c5d5@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+In-Reply-To: <YJvx4tr2iXo4bQ/d@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On 2021/5/12 23:18, Sean Christopherson wrote:
+> On Wed, May 12, 2021, Xu, Like wrote:
+>> Hi Venkatesh Srinivas,
+>>
+>> On 2021/5/12 9:58, Venkatesh Srinivas wrote:
+>>> On 5/10/21, Like Xu <like.xu@linux.intel.com> wrote:
+>>>> On Intel platforms, the software can use the IA32_MISC_ENABLE[7] bit to
+>>>> detect whether the processor supports performance monitoring facility.
+>>>>
+>>>> It depends on the PMU is enabled for the guest, and a software write
+>>>> operation to this available bit will be ignored.
+>>> Is the behavior that writes to IA32_MISC_ENABLE[7] are ignored (rather than #GP)
+>>> documented someplace?
+>> The bit[7] behavior of the real hardware on the native host is quite
+>> suspicious.
+> Ugh.  Can you file an SDM bug to get the wording and accessibility updated?  The
+> current phrasing is a mess:
+>
+>    Performance Monitoring Available (R)
+>    1 = Performance monitoring enabled.
+>    0 = Performance monitoring disabled.
+>
+> The (R) is ambiguous because most other entries that are read-only use (RO), and
+> the "enabled vs. disabled" implies the bit is writable and really does control
+> the PMU.  But on my Haswell system, it's read-only.
 
-On 4/19/21 8:55 AM, Suman Anna wrote:
-> Hi Rob,
-> 
-> On 3/27/21 9:31 AM, Suman Anna wrote:
->> The K3 AM64x SoCs have two dual-core Arm R5F clusters/subsystems, with
->> 2 R5F cores each, both in the MAIN voltage domain.
->>
->> These clusters are a revised IP version compared to those present on
->> J721E and J7200 SoCs, and supports a new "Single-CPU" mode instead of
->> LockStep mode. Update the K3 R5F remoteproc bindings with the compatible
->> info relevant to these R5F clusters/subsystems on K3 AM64x SoCs.
->>
->> Signed-off-by: Suman Anna <s-anna@ti.com>
->> ---
->> v2: No changes
->>
->>  .../bindings/remoteproc/ti,k3-r5f-rproc.yaml  | 31 ++++++++++++++++---
-> 
-> Looks like this patch has fallen through the cracks, can you please review and
-> give your ack for this patch so that Bjorn can pick up the series for 5.13?
+On your Haswell system, does it cause #GP or just silent if you change this 
+bit ?
 
-Gentle reminder, do you have any comments on this patch. Appreciate your ack so
-that we can get this in for 5.14?
+> Assuming the bit is supposed
+> to be a read-only "PMU supported bit", the SDM should be:
+>
+>    Performance Monitoring Available (RO)
+>    1 = Performance monitoring supported.
+>    0 = Performance monitoring not supported.
+>
+> And please update the changelog to explain the "why" of whatever the behavior
+> ends up being.  The "what" is obvious from the code.
 
-regards
-Suman
+Thanks for your "why" comment.
 
-> 
-> regards
-> Suman
-> 
->>  1 file changed, 26 insertions(+), 5 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/remoteproc/ti,k3-r5f-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/ti,k3-r5f-rproc.yaml
->> index d905d614502b..130fbaacc4b1 100644
->> --- a/Documentation/devicetree/bindings/remoteproc/ti,k3-r5f-rproc.yaml
->> +++ b/Documentation/devicetree/bindings/remoteproc/ti,k3-r5f-rproc.yaml
->> @@ -14,8 +14,12 @@ description: |
->>    processor subsystems/clusters (R5FSS). The dual core cluster can be used
->>    either in a LockStep mode providing safety/fault tolerance features or in a
->>    Split mode providing two individual compute cores for doubling the compute
->> -  capacity. These are used together with other processors present on the SoC
->> -  to achieve various system level goals.
->> +  capacity on most SoCs. These are used together with other processors present
->> +  on the SoC to achieve various system level goals.
->> +
->> +  AM64x SoCs do not support LockStep mode, but rather a new non-safety mode
->> +  called "Single-CPU" mode, where only Core0 is used, but with ability to use
->> +  Core1's TCMs as well.
->>  
->>    Each Dual-Core R5F sub-system is represented as a single DTS node
->>    representing the cluster, with a pair of child DT nodes representing
->> @@ -33,6 +37,7 @@ properties:
->>        - ti,am654-r5fss
->>        - ti,j721e-r5fss
->>        - ti,j7200-r5fss
->> +      - ti,am64-r5fss
->>  
->>    power-domains:
->>      description: |
->> @@ -56,11 +61,12 @@ properties:
->>  
->>    ti,cluster-mode:
->>      $ref: /schemas/types.yaml#/definitions/uint32
->> -    enum: [0, 1]
->>      description: |
->>        Configuration Mode for the Dual R5F cores within the R5F cluster.
->> -      Should be either a value of 1 (LockStep mode) or 0 (Split mode),
->> -      default is LockStep mode if omitted.
->> +      Should be either a value of 1 (LockStep mode) or 0 (Split mode) on
->> +      most SoCs (AM65x, J721E, J7200), default is LockStep mode if omitted;
->> +      and should be either a value of 0 (Split mode) or 2 (Single-CPU mode)
->> +      on AM64x SoCs, default is Split mode if omitted.
->>  
->>  # R5F Processor Child Nodes:
->>  # ==========================
->> @@ -97,6 +103,7 @@ patternProperties:
->>            - ti,am654-r5f
->>            - ti,j721e-r5f
->>            - ti,j7200-r5f
->> +          - ti,am64-r5f
->>  
->>        reg:
->>          items:
->> @@ -198,6 +205,20 @@ patternProperties:
->>  
->>      unevaluatedProperties: false
->>  
->> +if:
->> +  properties:
->> +    compatible:
->> +      enum:
->> +        - ti,am64-r5fss
->> +then:
->> +  properties:
->> +    ti,cluster-mode:
->> +      enum: [0, 2]
->> +else:
->> +  properties:
->> +    ti,cluster-mode:
->> +      enum: [0, 1]
->> +
->>  required:
->>    - compatible
->>    - power-domains
->>
-> 
+>
+>> To keep the semantics consistent and simple, we propose ignoring write
+>> operation in the virtualized world, since whether or not to expose PMU is
+>> configured by the hypervisor user space and not by the guest side.
+> Making up our own architectural behavior because it's convient is not a good
+> idea.
+
+Sometime we do change it.
+
+For example, the scope of some msrs may be "core level share"
+but we likely keep it as a "thread level" variable in the KVM out of 
+convenience.
+
+>
+>>>> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+>>>> index 9efc1a6b8693..d9dbebe03cae 100644
+>>>> --- a/arch/x86/kvm/vmx/pmu_intel.c
+>>>> +++ b/arch/x86/kvm/vmx/pmu_intel.c
+>>>> @@ -488,6 +488,7 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
+>>>>    	if (!pmu->version)
+>>>>    		return;
+>>>>
+>>>> +	vcpu->arch.ia32_misc_enable_msr |= MSR_IA32_MISC_ENABLE_EMON;
+> Hmm, normally I would say overwriting the guest's value is a bad idea, but if
+> the bit really is a read-only "PMU supported" bit, then this is the correct
+> behavior, albeit weird if userspace does a late CPUID update (though that's
+> weird no matter what).
+>
+>>>>    	perf_get_x86_pmu_capability(&x86_pmu);
+>>>>
+>>>>    	pmu->nr_arch_gp_counters = min_t(int, eax.split.num_counters,
+>>>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>>>> index 5bd550eaf683..abe3ea69078c 100644
+>>>> --- a/arch/x86/kvm/x86.c
+>>>> +++ b/arch/x86/kvm/x86.c
+>>>> @@ -3211,6 +3211,7 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct
+>>>> msr_data *msr_info)
+>>>>    		}
+>>>>    		break;
+>>>>    	case MSR_IA32_MISC_ENABLE:
+>>>> +		data &= ~MSR_IA32_MISC_ENABLE_EMON;
+> However, this is not.  If it's a read-only bit, then toggling the bit should
+> cause a #GP.
+
+The proposal here is trying to make it as an
+unchangeable bit and don't make it #GP if guest changes it.
+
+It may different from the host behavior but
+it doesn't cause potential issue if some guest code
+changes it during the use of performance monitoring.
+
+Does this make sense to you or do you want to
+keep it strictly the same as the host side?
+
+>
+>>>>    		if (!kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_MISC_ENABLE_NO_MWAIT)
+>>>> &&
+>>>>    		    ((vcpu->arch.ia32_misc_enable_msr ^ data) &
+>>>> MSR_IA32_MISC_ENABLE_MWAIT)) {
+>>>>    			if (!guest_cpuid_has(vcpu, X86_FEATURE_XMM3))
+>>>> --
 
