@@ -2,79 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5458337F408
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 10:29:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C869A37F446
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 10:40:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231876AbhEMIaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 04:30:17 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:2060 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231305AbhEMIaP (ORCPT
+        id S231803AbhEMIlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 04:41:08 -0400
+Received: from bgl-iport-4.cisco.com ([72.163.197.28]:40264 "EHLO
+        bgl-iport-4.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231981AbhEMIlA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 04:30:15 -0400
-Received: from dggeml710-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fgl7z5w4nzWhCS;
-        Thu, 13 May 2021 16:24:47 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggeml710-chm.china.huawei.com (10.3.17.140) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Thu, 13 May 2021 16:29:04 +0800
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Thu, 13 May 2021 16:29:03 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
-        <tzimmermann@suse.de>, <airlied@linux.ie>, <daniel@ffwll.ch>
-CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] drm/aperture: Fix missing unlock on error in devm_aperture_acquire()
-Date:   Thu, 13 May 2021 16:46:04 +0800
-Message-ID: <1620895564-52367-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        Thu, 13 May 2021 04:41:00 -0400
+X-Greylist: delayed 443 seconds by postgrey-1.27 at vger.kernel.org; Thu, 13 May 2021 04:40:59 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=1328; q=dns/txt; s=iport;
+  t=1620895191; x=1622104791;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=GILvIbVCmcaVxwex9QMjQ6XJulnDFvDcHk5uBggKEUY=;
+  b=jQGs2IFbSWs07l42/G9Cy0qV7Kp5q8OV2bYcTJLYiyr9PUgQSt+L9U3m
+   zu7W8/gxn+d/y/ZZ13QTY7f4LiXKGMuMoBklSoAeKgSce44pHfWDzXmcc
+   Up0QKEs/MI+FUwXrhQDC63OQNXY9BBKUPT4I5E0o1M5OXNVNsAvWv9xdJ
+   w=;
+X-IronPort-AV: E=Sophos;i="5.82,296,1613433600"; 
+   d="scan'208";a="184709319"
+Received: from vla196-nat.cisco.com (HELO bgl-core-4.cisco.com) ([72.163.197.24])
+  by bgl-iport-4.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 13 May 2021 08:32:26 +0000
+Received: from bgl-ads-2459.cisco.com (bgl-ads-2459.cisco.com [173.39.54.102])
+        by bgl-core-4.cisco.com (8.15.2/8.15.2) with ESMTP id 14D8WPKr022518;
+        Thu, 13 May 2021 08:32:25 GMT
+From:   Gopalakrishnan Santhanam <gsanthan@cisco.com>
+To:     stern@rowland.harvard.edu
+Cc:     danielwa@cisco.com, hramdasi@cisco.com, gsanthan@cisco.com,
+        christian.engelmayer@frequentis.com, xe-linux-external@cisco.com,
+        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] fsl-usb: add need_oc_pp_cycle flag for 85xx also
+Date:   Thu, 13 May 2021 14:02:25 +0530
+Message-Id: <20210513083225.68912-1-gsanthan@cisco.com>
+X-Mailer: git-send-email 2.26.2.Cisco
+In-Reply-To: <20210507172300.3075939-1-danielwa@cisco.com>
+References: <20210507172300.3075939-1-danielwa@cisco.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-Auto-Response-Suppress: DR, OOF, AutoReply
+X-Outbound-SMTP-Client: 173.39.54.102, bgl-ads-2459.cisco.com
+X-Outbound-Node: bgl-core-4.cisco.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the missing unlock before return from function devm_aperture_acquire()
-in the error handling case.
+Commit e6604a7fd71f9 ("EHCI: Quirk flag for port power handling
+on overcurrent.") activated the quirks handling (flag need_oc_pp_cycle)
+for Freescale 83xx based boards.
+Activate same for 85xx based boards as well.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Cc: xe-linux-external@cisco.com
+Signed-off-by: Gopalakrishnan Santhanam <gsanthan@cisco.com>
+Signed-off-by: Daniel Walker <danielwa@cisco.com>
 ---
- drivers/gpu/drm/drm_aperture.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/usb/host/ehci-fsl.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/drm_aperture.c b/drivers/gpu/drm/drm_aperture.c
-index 33bf018..9335d9d 100644
---- a/drivers/gpu/drm/drm_aperture.c
-+++ b/drivers/gpu/drm/drm_aperture.c
-@@ -164,13 +164,17 @@ static int devm_aperture_acquire(struct drm_device *dev,
+diff --git a/drivers/usb/host/ehci-fsl.c b/drivers/usb/host/ehci-fsl.c
+index 6f7bd6641694..385be30baad3 100644
+--- a/drivers/usb/host/ehci-fsl.c
++++ b/drivers/usb/host/ehci-fsl.c
+@@ -387,11 +387,11 @@ static int ehci_fsl_setup(struct usb_hcd *hcd)
+ 	/* EHCI registers start at offset 0x100 */
+ 	ehci->caps = hcd->regs + 0x100;
  
- 	list_for_each(pos, &drm_apertures) {
- 		ap = container_of(pos, struct drm_aperture, lh);
--		if (overlap(base, end, ap->base, ap->base + ap->size))
-+		if (overlap(base, end, ap->base, ap->base + ap->size)) {
-+			mutex_unlock(&drm_apertures_lock);
- 			return -EBUSY;
-+		}
- 	}
- 
- 	ap = devm_kzalloc(dev->dev, sizeof(*ap), GFP_KERNEL);
--	if (!ap)
-+	if (!ap) {
-+		mutex_unlock(&drm_apertures_lock);
- 		return -ENOMEM;
-+	}
- 
- 	ap->dev = dev;
- 	ap->base = base;
+-#ifdef CONFIG_PPC_83xx
++#if defined(CONFIG_PPC_83xx) || defined(CONFIG_PPC_85xx)
+ 	/*
+-	 * Deal with MPC834X that need port power to be cycled after the power
+-	 * fault condition is removed. Otherwise the state machine does not
+-	 * reflect PORTSC[CSC] correctly.
++	 * Deal with MPC834X/85XX that need port power to be cycled
++	 * after the power fault condition is removed. Otherwise the
++	 * state machine does not reflect PORTSC[CSC] correctly.
+ 	 */
+ 	ehci->need_oc_pp_cycle = 1;
+ #endif
 -- 
-2.6.2
+2.26.2.Cisco
 
