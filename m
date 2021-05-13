@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0675837F4B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 11:08:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A18D37F4B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 11:08:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232442AbhEMJJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 05:09:08 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:44027 "EHLO pegase2.c-s.fr"
+        id S232493AbhEMJJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 05:09:21 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:37351 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231453AbhEMJJE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 05:09:04 -0400
+        id S232418AbhEMJJI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 05:09:08 -0400
 Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4Fgm5h6qWPz9sbR;
-        Thu, 13 May 2021 11:07:52 +0200 (CEST)
+        by localhost (Postfix) with ESMTP id 4Fgm5k1wbJz9sbZ;
+        Thu, 13 May 2021 11:07:54 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from pegase2.c-s.fr ([172.26.127.65])
         by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id IKc8HArddjH8; Thu, 13 May 2021 11:07:52 +0200 (CEST)
+        with ESMTP id 6s838qCcO9bm; Thu, 13 May 2021 11:07:54 +0200 (CEST)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4Fgm5h5tl6z9sbQ;
-        Thu, 13 May 2021 11:07:52 +0200 (CEST)
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4Fgm5j5bH0z9sbQ;
+        Thu, 13 May 2021 11:07:53 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A59CF8B7F3;
-        Thu, 13 May 2021 11:07:52 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7F7958B7F3;
+        Thu, 13 May 2021 11:07:53 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id NDVGIVfb4mfx; Thu, 13 May 2021 11:07:52 +0200 (CEST)
+        with ESMTP id 7BOwx6cbSXtS; Thu, 13 May 2021 11:07:53 +0200 (CEST)
 Received: from po15610vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 561978B76C;
-        Thu, 13 May 2021 11:07:52 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4925A8B76C;
+        Thu, 13 May 2021 11:07:53 +0200 (CEST)
 Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 1C7BB64185; Thu, 13 May 2021 09:07:51 +0000 (UTC)
-Message-Id: <40a43d6df1fdf41ade36e9a46e60a4df774ca9f6.1620896780.git.christophe.leroy@csgroup.eu>
+        id 261DC64185; Thu, 13 May 2021 09:07:53 +0000 (UTC)
+Message-Id: <ec5e85f9f9abcfecc959a03495f4a7858eb4d203.1620896780.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <40a43d6df1fdf41ade36e9a46e60a4df774ca9f6.1620896780.git.christophe.leroy@csgroup.eu>
+References: <40a43d6df1fdf41ade36e9a46e60a4df774ca9f6.1620896780.git.christophe.leroy@csgroup.eu>
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2 1/2] kprobes: Allow architectures to override optinsn page
- allocation
+Subject: [PATCH v2 2/2] powerpc/kprobes: Replace ppc_optinsn by common optinsn
 To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
         Michael Ellerman <mpe@ellerman.id.au>,
@@ -44,71 +45,105 @@ To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         davem@davemloft.net, mhiramat@kernel.org
 Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         clang-built-linux@googlegroups.com
-Date:   Thu, 13 May 2021 09:07:51 +0000 (UTC)
+Date:   Thu, 13 May 2021 09:07:53 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some architectures like powerpc require a non standard
-allocation of optinsn page, because module pages are
-too far from the kernel for direct branches.
+Commit 51c9c0843993 ("powerpc/kprobes: Implement Optprobes")
+implemented a powerpc specific version of optinsn in order
+to workaround the 32Mb limitation for direct branches.
 
-Define weak alloc_optinsn_page() and free_optinsn_page(), that
-fall back on alloc_insn_page() and free_insn_page() when not
-overriden by the architecture.
+Instead of implementing a dedicated powerpc version, use the
+common optinsn and override the allocation and freeing functions.
+
+This also indirectly remove the CLANG warning about
+is_kprobe_ppc_optinsn_slot() not being use, and the powerpc will
+now benefit from commit 5b485629ba0d ("kprobes, extable: Identify
+kprobes trampolines as kernel text area")
 
 Suggested-by: Masami Hiramatsu <mhiramat@kernel.org>
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
-v2: Added missing prototypes in linux/kprobes.h
+v2: no change
 ---
- include/linux/kprobes.h |  3 +++
- kernel/kprobes.c        | 14 ++++++++++++--
- 2 files changed, 15 insertions(+), 2 deletions(-)
+ arch/powerpc/kernel/optprobes.c | 23 +++++------------------
+ 1 file changed, 5 insertions(+), 18 deletions(-)
 
-diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
-index 1883a4a9f16a..02d4020615a7 100644
---- a/include/linux/kprobes.h
-+++ b/include/linux/kprobes.h
-@@ -409,6 +409,9 @@ void dump_kprobe(struct kprobe *kp);
- void *alloc_insn_page(void);
- void free_insn_page(void *page);
+diff --git a/arch/powerpc/kernel/optprobes.c b/arch/powerpc/kernel/optprobes.c
+index cdf87086fa33..a370190cd02a 100644
+--- a/arch/powerpc/kernel/optprobes.c
++++ b/arch/powerpc/kernel/optprobes.c
+@@ -31,11 +31,9 @@
+ #define TMPL_END_IDX		\
+ 	(optprobe_template_end - optprobe_template_entry)
  
-+void *alloc_optinsn_page(void);
-+void free_optinsn_page(void *page);
-+
- int kprobe_get_kallsym(unsigned int symnum, unsigned long *value, char *type,
- 		       char *sym);
+-DEFINE_INSN_CACHE_OPS(ppc_optinsn);
+-
+ static bool insn_page_in_use;
  
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 745f08fdd7a6..8c0a6fdef771 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -321,11 +321,21 @@ int kprobe_cache_get_kallsym(struct kprobe_insn_cache *c, unsigned int *symnum,
+-static void *__ppc_alloc_insn_page(void)
++void *alloc_optinsn_page(void)
+ {
+ 	if (insn_page_in_use)
+ 		return NULL;
+@@ -43,20 +41,11 @@ static void *__ppc_alloc_insn_page(void)
+ 	return &optinsn_slot;
  }
  
- #ifdef CONFIG_OPTPROBES
-+void __weak *alloc_optinsn_page(void)
-+{
-+	return alloc_insn_page();
-+}
-+
-+void __weak free_optinsn_page(void *page)
-+{
-+	free_insn_page(page);
-+}
-+
- /* For optimized_kprobe buffer */
- struct kprobe_insn_cache kprobe_optinsn_slots = {
- 	.mutex = __MUTEX_INITIALIZER(kprobe_optinsn_slots.mutex),
--	.alloc = alloc_insn_page,
--	.free = free_insn_page,
-+	.alloc = alloc_optinsn_page,
-+	.free = free_optinsn_page,
- 	.sym = KPROBE_OPTINSN_PAGE_SYM,
- 	.pages = LIST_HEAD_INIT(kprobe_optinsn_slots.pages),
- 	/* .insn_size is initialized later */
+-static void __ppc_free_insn_page(void *page __maybe_unused)
++void free_optinsn_page(void *page)
+ {
+ 	insn_page_in_use = false;
+ }
+ 
+-struct kprobe_insn_cache kprobe_ppc_optinsn_slots = {
+-	.mutex = __MUTEX_INITIALIZER(kprobe_ppc_optinsn_slots.mutex),
+-	.pages = LIST_HEAD_INIT(kprobe_ppc_optinsn_slots.pages),
+-	/* insn_size initialized later */
+-	.alloc = __ppc_alloc_insn_page,
+-	.free = __ppc_free_insn_page,
+-	.nr_garbage = 0,
+-};
+-
+ /*
+  * Check if we can optimize this probe. Returns NIP post-emulation if this can
+  * be optimized and 0 otherwise.
+@@ -136,7 +125,7 @@ NOKPROBE_SYMBOL(optimized_callback);
+ void arch_remove_optimized_kprobe(struct optimized_kprobe *op)
+ {
+ 	if (op->optinsn.insn) {
+-		free_ppc_optinsn_slot(op->optinsn.insn, 1);
++		free_optinsn_slot(op->optinsn.insn, 1);
+ 		op->optinsn.insn = NULL;
+ 	}
+ }
+@@ -203,14 +192,12 @@ int arch_prepare_optimized_kprobe(struct optimized_kprobe *op, struct kprobe *p)
+ 	unsigned long nip, size;
+ 	int rc, i;
+ 
+-	kprobe_ppc_optinsn_slots.insn_size = MAX_OPTINSN_SIZE;
+-
+ 	nip = can_optimize(p);
+ 	if (!nip)
+ 		return -EILSEQ;
+ 
+ 	/* Allocate instruction slot for detour buffer */
+-	buff = get_ppc_optinsn_slot();
++	buff = get_optinsn_slot();
+ 	if (!buff)
+ 		return -ENOMEM;
+ 
+@@ -297,7 +284,7 @@ int arch_prepare_optimized_kprobe(struct optimized_kprobe *op, struct kprobe *p)
+ 	return 0;
+ 
+ error:
+-	free_ppc_optinsn_slot(buff, 0);
++	free_optinsn_slot(buff, 0);
+ 	return -ERANGE;
+ 
+ }
 -- 
 2.25.0
 
