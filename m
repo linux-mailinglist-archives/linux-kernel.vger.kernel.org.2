@@ -2,73 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6027D37FB28
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 18:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C82E37FB2E
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 18:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234997AbhEMQCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 12:02:54 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:60314 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232391AbhEMQCu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 12:02:50 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 262901C0B87; Thu, 13 May 2021 18:01:38 +0200 (CEST)
-Date:   Thu, 13 May 2021 18:01:37 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/acpi: Switch to pr_xxx log functions
-Message-ID: <20210513160137.GB19588@duo.ucw.cz>
-References: <8436da08-4812-d383-8f2a-1c07181ebfb8@gmail.com>
+        id S235014AbhEMQEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 12:04:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49762 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234922AbhEMQDi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 12:03:38 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ED232613BC;
+        Thu, 13 May 2021 16:02:25 +0000 (UTC)
+Date:   Thu, 13 May 2021 17:03:34 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Tang Bin <tangbin@cmss.chinamobile.com>
+Cc:     lars@metafoo.de, Michael.Hennerich@analog.com, knaack.h@gmx.de,
+        pmeerw@pmeerw.net, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Subject: Re: [PATCH] iio:adc:ad7766: Fix unnecessary check in ad7766_probe()
+Message-ID: <20210513170334.479953d3@jic23-huawei>
+In-Reply-To: <20210511134739.948-1-tangbin@cmss.chinamobile.com>
+References: <20210511134739.948-1-tangbin@cmss.chinamobile.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="H+4ONPRPur6+Ovig"
-Content-Disposition: inline
-In-Reply-To: <8436da08-4812-d383-8f2a-1c07181ebfb8@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 11 May 2021 21:47:39 +0800
+Tang Bin <tangbin@cmss.chinamobile.com> wrote:
 
---H+4ONPRPur6+Ovig
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> In the function ad7766_probe(), the return value of
+> devm_iio_device_register() can be zero or ret, Thus it
+> is unnecessary to repeated check here.
+> 
+> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
 
-Hi!
+Hi Tang Bin,
 
-> Switching to pr_debug et al has two benefits:
-> - We don't have to add PREFIX to each log statement
-> - Debug output is suppressed except DEBUG is defined or dynamic
->   debugging is enabled for the respective code piece.
->=20
-> In addition ensure that longer messages aren't split to multiple lines
-> in source code, checkpatch complains otherwise.
->=20
-> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+A quick query on this sign off sequence as I'd like to check what the
+intended meaning is.
 
-Acked-by: Pavel Machek <pavel@ucw.cz>
+If you both developed this patch, please use the Co-developed-by: tag
+to indicate that.   If Zhang Shengju wrote the patch then you sent it
+upstream, please fix the 'from' field on the email to reflect that.
 
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
+Patch itself is good.
 
---H+4ONPRPur6+Ovig
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
 
------BEGIN PGP SIGNATURE-----
+Jonathan
 
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYJ1NYQAKCRAw5/Bqldv6
-8jjoAKDCAf0bfCosCwpNYAfYM7ExTZ8KbwCfbqGkEyPdJ/bmJka4HFw+tSoVM44=
-=lc0P
------END PGP SIGNATURE-----
+> ---
+>  drivers/iio/adc/ad7766.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/ad7766.c b/drivers/iio/adc/ad7766.c
+> index b6b6765be..acf56e987 100644
+> --- a/drivers/iio/adc/ad7766.c
+> +++ b/drivers/iio/adc/ad7766.c
+> @@ -291,10 +291,7 @@ static int ad7766_probe(struct spi_device *spi)
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = devm_iio_device_register(&spi->dev, indio_dev);
+> -	if (ret)
+> -		return ret;
+> -	return 0;
+> +	return devm_iio_device_register(&spi->dev, indio_dev);
+>  }
+>  
+>  static const struct spi_device_id ad7766_id[] = {
 
---H+4ONPRPur6+Ovig--
