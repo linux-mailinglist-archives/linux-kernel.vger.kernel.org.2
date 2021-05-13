@@ -2,98 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D71037F689
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 13:14:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C013337F68C
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 13:15:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233264AbhEMLP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 07:15:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231255AbhEMLP0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 07:15:26 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B76D5C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 04:14:15 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id b19-20020a05600c06d3b029014258a636e8so4473752wmn.2
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 04:14:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=NBLLcVkKvatdlWCYFH9IPhSGBPBGIYLDNeKjc9M11Dw=;
-        b=IzfJv2l5KSW2kT/7M1SVhhitWUv19aB/0rsbcHRcOtYv045XH7vQrvCBilaONXXxrU
-         pbUOEyLQ6E+y5lysTgx1zZfe+loy+NYZ026OxZ72mlLX8423z3EfeMCTDqdWCP1S64dF
-         qk2QCBzN7sRPmSO0hU9tnoTj8Et6ywtQNQlkx4EdlyAfGEQLgCZzaq0CsvNwebSdwJgK
-         XBYIn/fAthqUTCcSyTiWV598DuJdtue/tT37J5E9/RI+FwkMao0dQyIV/rSnG1hDAUm3
-         6q7vEuGjoBdhS4qoTd2GDyesJPwnhrlI8UNEMYqs/uJCIvXrg9GY05SnWsK6FONNjkMg
-         bbKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=NBLLcVkKvatdlWCYFH9IPhSGBPBGIYLDNeKjc9M11Dw=;
-        b=It+X0r6Ud/jLf4mAIli69lLC2bDQQ1Lh3rn0gmVtW/km+4mo4sZJ7eYmabkLd5ksNf
-         Qn7OouVLKKI3r4vXd6/5VvH047nYCb27Wf+1bl7CYRRw+GJyQ8dxlVGyYqyZI8926XYx
-         QHzGIdiX1TjEB4Xni8dK+Ih0S9ZHEkhTc4XbmMoLtRUu3Sr85tQax7UxLhWdBiT/+8gQ
-         vwDbxO9E/7mEEdYD3nr3uEZQ/gM0VVZ4nUpGlUJrAS0+qf46UzUmjvO2O1DVDjsiJa/+
-         jQ2z7U8wPJVL1ycOypaMOgwPs0YYx9lI+GFHkO6iI/cVWxi7Dal3OKyJjUgB0BAFDS8F
-         WPZQ==
-X-Gm-Message-State: AOAM533z2ZeS+6/LKXzYkDLnRnAx2SjLLIY5u0wCjyprh3SwBmxcwb7v
-        /kaF5GfAky+s5Ox9zUg10A9JnQ==
-X-Google-Smtp-Source: ABdhPJw+Wz0JWK6yi++BengdQDNdNEhAsvsUbkVxhFFp7HhmOqJjaLj/+pSX8rvXsgGbnpg9j6cwlw==
-X-Received: by 2002:a7b:c849:: with SMTP id c9mr3306217wml.84.1620904454328;
-        Thu, 13 May 2021 04:14:14 -0700 (PDT)
-Received: from elver.google.com ([2a00:79e0:15:13:c5e0:2ff3:baa4:b294])
-        by smtp.gmail.com with ESMTPSA id p10sm2207060wmq.14.2021.05.13.04.14.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 04:14:13 -0700 (PDT)
-Date:   Thu, 13 May 2021 13:14:08 +0200
-From:   Marco Elver <elver@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Potapenko <glider@google.com>, kbuild-all@lists.01.org,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        kernel test robot <lkp@intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] fix for "printk: introduce dump_stack_lvl()"
-Message-ID: <YJ0KAM0hQev1AmWe@elver.google.com>
-References: <202105131720.yP4kfiAi-lkp@intel.com>
+        id S233300AbhEMLQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 07:16:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34370 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233273AbhEMLPd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 07:15:33 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 448E7613CB;
+        Thu, 13 May 2021 11:14:24 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1lh9IM-001C2V-Cr; Thu, 13 May 2021 12:14:22 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202105131720.yP4kfiAi-lkp@intel.com>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 13 May 2021 12:14:22 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Gavin Shan <gshan@redhat.com>
+Cc:     kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, drjones@redhat.com,
+        pbonzini@redhat.com
+Subject: Re: [PATCH] KVM: arm64: selftests: Request PMU feature in
+ get-reg-list
+In-Reply-To: <20210513130655.73154-1-gshan@redhat.com>
+References: <20210513130655.73154-1-gshan@redhat.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <d717b9272cce16c62a4e3e671bb1f068@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: gshan@redhat.com, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, drjones@redhat.com, pbonzini@redhat.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing dump_stack_lvl() stub if CONFIG_PRINTK=n.
+On 2021-05-13 14:06, Gavin Shan wrote:
+> Since the following commit, PMU registers are hidden from user until
+> it's explicitly requested by feeding feature (KVM_ARM_VCPU_PMU_V3).
+> Otherwise, 74 missing PMU registers are missing as the following
+> log indicates.
+> 
+>    11663111cd49 ("KVM: arm64: Hide PMU registers from userspace when
+> not available")
+> 
+>    # ./get-reg-list
+>    Number blessed registers:   308
+>    Number registers:           238
+> 
+>    There are 74 missing registers.
+>    The following lines are missing registers:
+> 
+>       	ARM64_SYS_REG(3, 0, 9, 14, 1),
+> 	ARM64_SYS_REG(3, 0, 9, 14, 2),
+>              :
+> 	ARM64_SYS_REG(3, 3, 14, 15, 7),
+> 
+> This fixes the issue of wrongly reported missing PMU registers by
+> requesting it explicitly.
+> 
+> Signed-off-by: Gavin Shan <gshan@redhat.com>
+> ---
+>  tools/testing/selftests/kvm/aarch64/get-reg-list.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/kvm/aarch64/get-reg-list.c
+> b/tools/testing/selftests/kvm/aarch64/get-reg-list.c
+> index 486932164cf2..6c6bdc6f5dc3 100644
+> --- a/tools/testing/selftests/kvm/aarch64/get-reg-list.c
+> +++ b/tools/testing/selftests/kvm/aarch64/get-reg-list.c
+> @@ -314,6 +314,8 @@ static void core_reg_fixup(void)
+> 
+>  static void prepare_vcpu_init(struct kvm_vcpu_init *init)
+>  {
+> +	init->features[0] |= 1 << KVM_ARM_VCPU_PMU_V3;
+> +
+>  	if (reg_list_sve())
+>  		init->features[0] |= 1 << KVM_ARM_VCPU_SVE;
+>  }
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Marco Elver <elver@google.com>
----
- include/linux/printk.h | 4 ++++
- 1 file changed, 4 insertions(+)
+Please see Andrew's series[1], which actually deals with options.
 
-diff --git a/include/linux/printk.h b/include/linux/printk.h
-index abe274305d79..f589b8b60806 100644
---- a/include/linux/printk.h
-+++ b/include/linux/printk.h
-@@ -270,6 +270,10 @@ static inline void show_regs_print_info(const char *log_lvl)
- {
- }
- 
-+static inline void dump_stack_lvl(const char *log_lvl)
-+{
-+}
-+
- static inline void dump_stack(void)
- {
- }
+         M.
+
+[1] https://lore.kernel.org/r/20210507200416.198055-1-drjones@redhat.com
 -- 
-2.31.1.607.g51e8a6a459-goog
-
+Jazz is not dead. It just smells funny...
