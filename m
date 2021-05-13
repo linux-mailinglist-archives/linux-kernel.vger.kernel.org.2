@@ -2,133 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F7B037FB67
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 18:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 502AB37FB6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 18:24:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235112AbhEMQXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 12:23:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52087 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235104AbhEMQXj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 12:23:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620922948;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EIx7hWghyOcKHsxnhk7V96UW46vI1Sqd/jZUYBrxrFs=;
-        b=hKlULPkoulYlZIy5SXjnctz4Sn/fCBGk+wDptP8HVw3G1CLr4vTlrSoWCNbO+MokCiYnfW
-        t6b/MX4M2yrnH99zV3UbhNu6svZPrZfrPh+V25oApTFyYDTDYVp3rQ8uj2+5y7lZdXv/vU
-        qQIOphsNd2h7DrjYR7QvJ/aiwHcR0Rk=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-94-4_FY14s6PHSyM52XJW3YDw-1; Thu, 13 May 2021 12:22:24 -0400
-X-MC-Unique: 4_FY14s6PHSyM52XJW3YDw-1
-Received: by mail-qv1-f72.google.com with SMTP id a6-20020a0ce3460000b02901c4f39aa36aso21663955qvm.21
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 09:22:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=EIx7hWghyOcKHsxnhk7V96UW46vI1Sqd/jZUYBrxrFs=;
-        b=JTLT4oNlf3ay8l3cQwfORHuNmvZ08ht5fy1VxiFVFm9rSzujN1M1LowruDDzPrpyJl
-         YQ0rslKUMnCeDmSWOCMEAoh/4hmWIG9A4no2EnQjt5hF2/zv2I35hW4Hr2bb6s1Ex0/4
-         qoe7zTR0CvhaTzatf6KjOTrC5GyW9NCf3DrQqv/qrmjeaw0i3vL6jN1i6zJpE88lffyL
-         aPuC7mvr20Tzt+zTDr7jaHm/nXlr/b4FBJrw9AiRswC2NGdi2/DKaWLkNTJVZkOuAIwl
-         KfNDTyRH8iRv9gfY5xqluel3rCGVpL1Uii5jcXjrKx0F1EQvDXiGUIvpx+z25y0TFmbX
-         hoxQ==
-X-Gm-Message-State: AOAM533gg9ma7LrnrzwAbLTFnIPTIGQsOGzy79A+jVXZdJzBWkggMWix
-        +0RNXd1Waz1rRJ8yv9yhoD8CosNHCpPPRqJvZHoXSfjyOJW/wXaVatW745hpohGvtfIXrkMEp6A
-        BJcNmeK8woOM+GNGQZQzvxmSx
-X-Received: by 2002:ae9:c010:: with SMTP id u16mr36002735qkk.133.1620922944362;
-        Thu, 13 May 2021 09:22:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJypW52z4koXjDm+vseDa/OGAuJKFw35V6mcwKGIJDY6x7ocwRRUfji64raykrWzMhJogEoz0Q==
-X-Received: by 2002:ae9:c010:: with SMTP id u16mr36002717qkk.133.1620922944166;
-        Thu, 13 May 2021 09:22:24 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id c20sm2816714qtm.52.2021.05.13.09.22.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 May 2021 09:22:23 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v5 2/3] mm: memcg/slab: Create a new set of kmalloc-cg-<n>
- caches
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Waiman Long <llong@redhat.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20210505200610.13943-1-longman@redhat.com>
- <20210512145107.6208-1-longman@redhat.com>
- <0919aaab-cc08-f86d-1f9a-8ddfeed7bb31@redhat.com>
- <20210512173212.738f592c36bf0e4c205f628e@linux-foundation.org>
-Message-ID: <5b853795-6583-8527-93d2-68ff0b9b5457@redhat.com>
-Date:   Thu, 13 May 2021 12:22:21 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S235122AbhEMQZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 12:25:29 -0400
+Received: from mout.gmx.net ([212.227.17.20]:55329 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235110AbhEMQZV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 12:25:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1620923047;
+        bh=n5VZorDxJ4E3jMomn5t3g5gHnoDeyVEV26lJvjdJRRI=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=JDyBIhMtzZgrx25iUSpxUB0z4jz1lgj2+J2cnmtQuakwEuGoyRUj17R9x2PkVtE4U
+         iabmZpLOG3Gd9+2LzQdcDY4rJhn6BmrohGJK7usbKagvKPDpVYueSY/Pm2t7E73mbS
+         sAE2kn5gEfh9fo51wGZax8yUKV8LthJ3MxL2QDFM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.214.126]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MLi8m-1lyl0x2fi4-00Hel9; Thu, 13
+ May 2021 18:24:07 +0200
+From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-doc@vger.kernel.org,
+        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH RESEND] scripts/jobserver-exec: Fix a typo ("envirnoment")
+Date:   Thu, 13 May 2021 18:24:02 +0200
+Message-Id: <20210513162403.1726052-1-j.neuschaefer@gmx.net>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210512173212.738f592c36bf0e4c205f628e@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:s4PK8UcCSrXKUnihlvfSqrb0O5+JpfBu6lu0D7A51gSnvAjJmHL
+ pNBuNRGjnBlUahRZ5E1vyacp1KIQVQvTvCmXA2v4ORgi0nuVh9BBiIL0DISLVar932nYvXu
+ KB/JZ9zYbLbF4j/brISIA7FdURr0gcXIEnZTjdANwgvMq9Olx56adtFazk3tq1VRZHNyAbC
+ zej8sJ62m04DmFtRQnwNg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:mQ24yDbn0As=:YCKXE/IiZLC4l7hDJsLwZW
+ GFNcTAJAMtktJqZ4F09au/K1yclZXYywnR5PF3zw2XH2dFDHDz6iZYBwkLR0pxtmEaLHifE2K
+ OAtUI4olmvLrcKDrcb8bKXdyxNblkyiXHZl9XqfxWtcmk32My7EupW8u8YjwcQI2GWMYGOKqN
+ GBaIyPs6Y6qMIihlaGkZWa7gyrIFLPieI5XXLH6oXMSrpFn9S5/JU2xMgWjh/glSUwyMgitZk
+ YcxGnEG1FBCzrtXyO3kfD++e6UrG4L6h0SSwAZECWqFg9T5jWr4FeLTGLnc822BqaG1bhOQuY
+ HSiQ1Em7P2j2y6Yzf5d01NniTROjwM9eWKK3J7rCr7QpXVis5nAHGFiHBfIniwhQZWTBmGYZL
+ +Xe05Kup+13K/DJ2g9whrg4pFXPOcVfWoQ6N9UYuHZW2oBRmcpwI9gFi6O5XhsOMLoA/dPVEZ
+ kkEB+6R4bbgqHecJqL/QmxO9+ilKoV/yCSM1d8vyrvStSTQcBxqLwcKDX/xBkDptXguGw4H1R
+ 0HugbX/NyLmFuEFKxAKQ6R6VGdWyMJhWOMHzuwQGDMndCLQoW6leGDc+h9oyGGfp7gXA3/RaK
+ RGUX6Iep9oEk5STKBTlrMvF82texEdRbiZNxZHhkQJLair8LUIlLOhvGJHuh++tE+rUXgziJm
+ 2aVVtbLDPit536C/QcgkUq+rOpn0EapswbgosJyMWwU0e1dVMf2di/Gd/DHy6T+cp4Poj7aGL
+ nTaORMHKsQszjHt0wy1zunn9CNz5i1R3NRxtkH9vlf/8ypMkXh8jvoA/7FJeDPcVJai84YMJ0
+ OReCVzFuJHdYUp7x+c0wuFHExOUuKwfwNGkvcxWEjQfegbqJwedotvpAJZefKKDOChBaz0EeS
+ Uj047jad+dBnLZ4trVO/+q1KeK18E1oSxgnB0+L8++Nre47wfWsov6w2eEcBG0djyjM42PbBe
+ sVXRyl0Ji3ov/UH7SfR9Pp9SgNCPmD/sx4vUcRq39vJpLYeCIlzK2sIzLULfT10yqbcJ0AX0q
+ fXFQMG76DeeGoONctpPEImwipseVoj5rPpmOHgE0i1sUzQAFNuxM1NLww+QIrGdLjO+VaePKR
+ zI2cZAit3dI6LnTwP+pnW8A7UqNfO5CgP07QH8p02ULajNtRJA2ueH8tJ5Y/TjO00zZfWFCOL
+ MrF59coQuV1yuRvM+QViMdcen9GsdPG8txwaGvguzO8uftlJSkMicJ7Uso041AF07GjeXdb5C
+ pCYZxxgB0ow4s8gmF
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/12/21 8:32 PM, Andrew Morton wrote:
-> On Wed, 12 May 2021 10:54:19 -0400 Waiman Long <llong@redhat.com> wrote:
->
->>>    include/linux/slab.h | 42 +++++++++++++++++++++++++++++++++---------
->>>    mm/slab_common.c     | 25 +++++++++++++++++--------
->>>    2 files changed, 50 insertions(+), 17 deletions(-)
->> The following are the diff's from previous version. It turns out that
->> the previous patch doesn't work if CONFIG_ZONE_DMA isn't defined.
->>
->> diff --git a/include/linux/slab.h b/include/linux/slab.h
->> index a51cad5f561c..aa7f6c222a60 100644
->> --- a/include/linux/slab.h
->> +++ b/include/linux/slab.h
->> @@ -312,16 +312,17 @@ static inline void __check_heap_object(const void
->> *ptr, un
->> signed long n,
->>     */
->>    enum kmalloc_cache_type {
->>        KMALLOC_NORMAL = 0,
->> -#ifdef CONFIG_MEMCG_KMEM
->> -    KMALLOC_CGROUP,
->> -#else
->> +#ifndef CONFIG_ZONE_DMA
->> +    KMALLOC_DMA = KMALLOC_NORMAL,
->> +#endif
->> +#ifndef CONFIG_MEMCG_KMEM
->>        KMALLOC_CGROUP = KMALLOC_NORMAL,
->> +#else
->> +    KMALLOC_CGROUP,
->>    #endif
->>        KMALLOC_RECLAIM,
->>    #ifdef CONFIG_ZONE_DMA
->>        KMALLOC_DMA,
->> -#else
->> -    KMALLOC_DMA = KMALLOC_NORMAL,
->>    #endif
->>        NR_KMALLOC_TYPES
->>    };
-> I assume this fixes
-> https://lkml.kernel.org/r/20210512152806.2492ca42@canb.auug.org.au?
->
-Yes.
+Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+=2D--
+ scripts/jobserver-exec | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Cheers,
-Longman
+diff --git a/scripts/jobserver-exec b/scripts/jobserver-exec
+index 0fdb31a790a81..1c779cd1ccb48 100755
+=2D-- a/scripts/jobserver-exec
++++ b/scripts/jobserver-exec
+@@ -10,7 +10,7 @@ from __future__ import print_function
+ import os, sys, errno
+ import subprocess
+
+-# Extract and prepare jobserver file descriptors from envirnoment.
++# Extract and prepare jobserver file descriptors from environment.
+ claim =3D 0
+ jobs =3D b""
+ try:
+=2D-
+2.29.2
 
