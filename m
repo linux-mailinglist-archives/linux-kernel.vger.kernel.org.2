@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9239C3800DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 01:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBFD3800DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 01:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231665AbhEMXaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 19:30:10 -0400
-Received: from mail.manjaro.org ([176.9.38.148]:44576 "EHLO mail.manjaro.org"
+        id S231644AbhEMXaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 19:30:11 -0400
+Received: from mail.manjaro.org ([176.9.38.148]:44606 "EHLO mail.manjaro.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231540AbhEMXaH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 19:30:07 -0400
+        id S231598AbhEMXaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 19:30:08 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by mail.manjaro.org (Postfix) with ESMTP id C474C220A28;
-        Fri, 14 May 2021 01:28:55 +0200 (CEST)
+        by mail.manjaro.org (Postfix) with ESMTP id CA8F02210AD;
+        Fri, 14 May 2021 01:28:56 +0200 (CEST)
 X-Virus-Scanned: Debian amavisd-new at manjaro.org
 Received: from mail.manjaro.org ([127.0.0.1])
         by localhost (manjaro.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Al4WVnEev9wG; Fri, 14 May 2021 01:28:53 +0200 (CEST)
+        with ESMTP id CT3VL_bqK02D; Fri, 14 May 2021 01:28:54 +0200 (CEST)
 From:   Tobias Schramm <t.schramm@manjaro.org>
 To:     =?UTF-8?q?Jernej=20=C5=A0krabec?= <jernej.skrabec@gmail.com>,
         devicetree@vger.kernel.org
@@ -27,9 +27,9 @@ Cc:     Rob Herring <robh+dt@kernel.org>,
         linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
         linux-kernel@vger.kernel.org,
         Tobias Schramm <t.schramm@manjaro.org>
-Subject: [PATCH v2 2/7] ARM: dts: sun8i: v3s: add DMA properties to peripherals supporting DMA
-Date:   Fri, 14 May 2021 01:30:19 +0200
-Message-Id: <20210513233024.2076725-3-t.schramm@manjaro.org>
+Subject: [PATCH v2 3/7] ARM: dts: sun8i: v3s: add analog codec and frontend to v3s dts
+Date:   Fri, 14 May 2021 01:30:20 +0200
+Message-Id: <20210513233024.2076725-4-t.schramm@manjaro.org>
 In-Reply-To: <20210513233024.2076725-1-t.schramm@manjaro.org>
 References: <20210513233024.2076725-1-t.schramm@manjaro.org>
 MIME-Version: 1.0
@@ -38,63 +38,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit adds DMA properties to all peripherals supporting DMA on the
-Allwinner V3s, enabling accelerated data transfer to them.
+The Allwinner V3s and V3 SoCs feature an integrated analog audio codec.
+Additionally both have an analog frontend with mixers and amplifiers for
+the codec.
+This commit adds both, the analog codec and its frontend to the V3s dtsi.
 
 Signed-off-by: Tobias Schramm <t.schramm@manjaro.org>
 ---
- arch/arm/boot/dts/sun8i-v3s.dtsi | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ arch/arm/boot/dts/sun8i-v3s.dtsi | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
 diff --git a/arch/arm/boot/dts/sun8i-v3s.dtsi b/arch/arm/boot/dts/sun8i-v3s.dtsi
-index f0296ab46137..3eaa8703e2ac 100644
+index 3eaa8703e2ac..236cf45bba91 100644
 --- a/arch/arm/boot/dts/sun8i-v3s.dtsi
 +++ b/arch/arm/boot/dts/sun8i-v3s.dtsi
-@@ -285,6 +285,8 @@ crypto@1c15000 {
- 			interrupts = <GIC_SPI 80 IRQ_TYPE_LEVEL_HIGH>;
- 			clocks = <&ccu CLK_BUS_CE>, <&ccu CLK_CE>;
- 			clock-names = "ahb", "mod";
-+			dmas = <&dma 16>, <&dma 16>;
-+			dma-names = "rx", "tx";
- 			resets = <&ccu RST_BUS_CE>;
- 			reset-names = "ahb";
- 		};
-@@ -446,6 +448,8 @@ uart0: serial@1c28000 {
- 			reg-shift = <2>;
- 			reg-io-width = <4>;
- 			clocks = <&ccu CLK_BUS_UART0>;
-+			dmas = <&dma 6>, <&dma 6>;
-+			dma-names = "rx", "tx";
- 			resets = <&ccu RST_BUS_UART0>;
+@@ -441,6 +441,25 @@ lradc: lradc@1c22800 {
  			status = "disabled";
  		};
-@@ -457,6 +461,8 @@ uart1: serial@1c28400 {
- 			reg-shift = <2>;
- 			reg-io-width = <4>;
- 			clocks = <&ccu CLK_BUS_UART1>;
-+			dmas = <&dma 7>, <&dma 7>;
+ 
++		codec: codec@1c22c00 {
++			#sound-dai-cells = <0>;
++			compatible = "allwinner,sun8i-v3s-codec";
++			reg = <0x01c22c00 0x400>;
++			interrupts = <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&ccu CLK_BUS_CODEC>, <&ccu CLK_AC_DIG>;
++			clock-names = "apb", "codec";
++			resets = <&ccu RST_BUS_CODEC>;
++			dmas = <&dma 15>, <&dma 15>;
 +			dma-names = "rx", "tx";
- 			resets = <&ccu RST_BUS_UART1>;
- 			status = "disabled";
- 		};
-@@ -468,6 +474,8 @@ uart2: serial@1c28800 {
- 			reg-shift = <2>;
- 			reg-io-width = <4>;
- 			clocks = <&ccu CLK_BUS_UART2>;
-+			dmas = <&dma 8>, <&dma 8>;
-+			dma-names = "rx", "tx";
- 			resets = <&ccu RST_BUS_UART2>;
- 			pinctrl-0 = <&uart2_pins>;
- 			pinctrl-names = "default";
-@@ -547,6 +555,8 @@ spi0: spi@1c68000 {
- 			interrupts = <GIC_SPI 65 IRQ_TYPE_LEVEL_HIGH>;
- 			clocks = <&ccu CLK_BUS_SPI0>, <&ccu CLK_SPI0>;
- 			clock-names = "ahb", "mod";
-+			dmas = <&dma 23>, <&dma 23>;
-+			dma-names = "rx", "tx";
- 			pinctrl-names = "default";
- 			pinctrl-0 = <&spi0_pins>;
- 			resets = <&ccu RST_BUS_SPI0>;
++			allwinner,codec-analog-controls = <&codec_analog>;
++			status = "disabled";
++		};
++
++		codec_analog: codec-analog@1c23000 {
++			compatible = "allwinner,sun8i-v3s-codec-analog";
++			reg = <0x01c23000 0x4>;
++		};
++
+ 		uart0: serial@1c28000 {
+ 			compatible = "snps,dw-apb-uart";
+ 			reg = <0x01c28000 0x400>;
 -- 
 2.31.1
 
