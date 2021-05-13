@@ -2,152 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6350A37F971
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 16:10:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBAB837F969
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 16:10:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234358AbhEMOMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 10:12:03 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:35947 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234348AbhEMOLu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 10:11:50 -0400
-Received: from [IPv6:2601:646:8602:8be1:5c7d:57f0:ac0a:2918] ([IPv6:2601:646:8602:8be1:5c7d:57f0:ac0a:2918])
-        (authenticated bits=0)
-        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14DEAJkp2955655
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Thu, 13 May 2021 07:10:20 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14DEAJkp2955655
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2021042801; t=1620915023;
-        bh=lsNwHqYrdOPxDyN6/UREe5pqcpSuK5Odrcfx1pR1LGA=;
-        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
-        b=JhkGbgwsPDO7oHof9rli9KWYZ899bKMCynbbhOdJa7pNACriDEgaac1JDiL0JXIJJ
-         MVM/c8Sd2/lWqV61NDkQg11MPLHPM4Jk2aVPIaV6Q5AYhSeNgS8h794iB7bCGk802R
-         trc9+BIUVqGfbyFJqcAveYUyTNca/8BIPFpWzYhdEEz59YFTgRJUJqrN4VtvUG+7fp
-         b1YqUJNB5ZolmTTYNfVKO/jFvs5pUQGEyLULtfRAeV/3ZQmpKC3PHq8zOUsmQyNHFs
-         sDelNJPe+7b5B6qbFQ9IcZ89NRP5XQ2WQDJ2Z7ibMIToB2bQ3wnJaiNXmr2Vh1t9zp
-         vq6zoqe22K9ZA==
-Date:   Thu, 13 May 2021 07:10:11 -0700
-User-Agent: K-9 Mail for Android
-In-Reply-To: <YJ0RM2JIfFL8a0X2@gmail.com>
-References: <20210513120515.7060879c@canb.auug.org.au> <YJ0Ew9gjprpCByxF@gmail.com> <4A5E6F25-37B6-4114-AB3C-476F6F551DBD@zytor.com> <YJ0RM2JIfFL8a0X2@gmail.com>
+        id S234335AbhEMOLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 10:11:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35815 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234292AbhEMOLe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 10:11:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620915024;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cUgVX0TtQOw33OQHk7jduOTQRZ441iaMNO9LgK0Gtaw=;
+        b=AHZx9IYhxb+Eoaxu8GKScAthgEP6V1hHaCuO72a+Y1SCfKBuKqtNG4usH2B1FRw9jl/qGb
+        DdlXp3R6PXFZRxJdeLzv1oeff88go7L53Ok9umG2PDvAz7cW7mhJ3OUdQeozJO0LEoB7XH
+        /37WToMzkH+8L4hcRCB+FY8NZTQoctA=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-222-ozzgUXLaM_2Xcaa9WdpwxQ-1; Thu, 13 May 2021 10:10:23 -0400
+X-MC-Unique: ozzgUXLaM_2Xcaa9WdpwxQ-1
+Received: by mail-ej1-f70.google.com with SMTP id qk30-20020a170906d9deb02903916754e1b6so8391710ejb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 07:10:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cUgVX0TtQOw33OQHk7jduOTQRZ441iaMNO9LgK0Gtaw=;
+        b=e2KANjqP1fH1IHVPUirB4O3KPfwu2VwtYs6ygP0LVAUxcpqG7opK1mnoro6v1Eh30F
+         7QZVaPjkn12w67SHyOI5MbKkOvOtaROHiiHHkpNoxodd5SULsgn38xuKZQT8O5PtVcHB
+         wsnJwy3ue031rtzk/VlH2faTiuoB3PViqhjWiyzD3sYC+IsME59DB3IWiFBj11jp19gM
+         CHYAoB5KHLMUiztIHkSISnjnNmeQHVvUZqcu1sDPv/vOdoAsn7GgNd0i7P/tevonKK+U
+         Avq7RYdFL53TDBfKgU49bp+UghEuDUF5RZm2LqQZaOdwf8o0/JLbc9ngoJZjJz36Ed5A
+         wq5Q==
+X-Gm-Message-State: AOAM531aix8phOw1jCVkNHtuFl6pz01vLEMnFxY7XA6Tj0HFQ1heLCP7
+        AEhRsbDLc3590kY+L8wOInC9VbLbkWYkVg0CIphaZqQ6LECPn1QzjtNzkCIOeoOpEmgB7bgRe96
+        S21O5OWhheu2PnfKNtXSyWysZ
+X-Received: by 2002:a05:6402:2753:: with SMTP id z19mr50413597edd.158.1620915021933;
+        Thu, 13 May 2021 07:10:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzp3m8czj990oJcgrq3r1y1d2MyGwI6B6St58aGtioobv+NKtOs+1ULQ9LjfW982v9t9xMbEw==
+X-Received: by 2002:a05:6402:2753:: with SMTP id z19mr50413547edd.158.1620915021631;
+        Thu, 13 May 2021 07:10:21 -0700 (PDT)
+Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
+        by smtp.gmail.com with ESMTPSA id z4sm2390717edc.1.2021.05.13.07.10.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 May 2021 07:10:20 -0700 (PDT)
+Date:   Thu, 13 May 2021 16:10:18 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stsp2@yandex.ru, oxffffaa@gmail.com
+Subject: Re: [RFC PATCH v9 00/19] virtio/vsock: introduce SOCK_SEQPACKET
+ support
+Message-ID: <20210513141018.pqsmb5wqbjrbwwho@steredhat>
+References: <20210508163027.3430238-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH] x86/asm: Make <asm/asm.h> valid on cross-builds as well
-To:     Ingo Molnar <mingo@kernel.org>
-CC:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@elte.hu>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-From:   "H. Peter Anvin" <hpa@zytor.com>
-Message-ID: <712482C6-B967-4F3D-A47F-0945219A9CBB@zytor.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210508163027.3430238-1-arseny.krasnov@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Makes sense to me=2E
+Hi Arseny,
 
-Reviewed-by: H=2E Peter Anvin <hpa@zytor=2Ecom>
+On Sat, May 08, 2021 at 07:30:23PM +0300, Arseny Krasnov wrote:
+>	This patchset implements support of SOCK_SEQPACKET for virtio
+>transport.
+>	As SOCK_SEQPACKET guarantees to save record boundaries, so to
+>do it, new bit for field 'flags' was added: SEQ_EOR. This bit is
+>set to 1 in last RW packet of message.
+>	Now as  packets of one socket are not reordered neither on vsock
+>nor on vhost transport layers, such bit allows to restore original
+>message on receiver's side. If user's buffer is smaller than message
+>length, when all out of size data is dropped.
+>	Maximum length of datagram is not limited as in stream socket,
+>because same credit logic is used. Difference with stream socket is
+>that user is not woken up until whole record is received or error
+>occurred. Implementation also supports 'MSG_TRUNC' flags.
+>	Tests also implemented.
+>
+>	Thanks to stsp2@yandex.ru for encouragements and initial design
+>recommendations.
+>
+> Arseny Krasnov (19):
+>  af_vsock: update functions for connectible socket
+>  af_vsock: separate wait data loop
+>  af_vsock: separate receive data loop
+>  af_vsock: implement SEQPACKET receive loop
+>  af_vsock: implement send logic for SEQPACKET
+>  af_vsock: rest of SEQPACKET support
+>  af_vsock: update comments for stream sockets
+>  virtio/vsock: set packet's type in virtio_transport_send_pkt_info()
+>  virtio/vsock: simplify credit update function API
+>  virtio/vsock: defines and constants for SEQPACKET
+>  virtio/vsock: dequeue callback for SOCK_SEQPACKET
+>  virtio/vsock: add SEQPACKET receive logic
+>  virtio/vsock: rest of SOCK_SEQPACKET support
+>  virtio/vsock: enable SEQPACKET for transport
+>  vhost/vsock: enable SEQPACKET for transport
+>  vsock/loopback: enable SEQPACKET for transport
+>  vsock_test: add SOCK_SEQPACKET tests
+>  virtio/vsock: update trace event for SEQPACKET
+>  af_vsock: serialize writes to shared socket
+>
+> drivers/vhost/vsock.c                        |  42 +-
+> include/linux/virtio_vsock.h                 |   9 +
+> include/net/af_vsock.h                       |   8 +
+> .../events/vsock_virtio_transport_common.h   |   5 +-
+> include/uapi/linux/virtio_vsock.h            |   9 +
+> net/vmw_vsock/af_vsock.c                     | 417 +++++++++++------
+> net/vmw_vsock/virtio_transport.c             |  25 +
+> net/vmw_vsock/virtio_transport_common.c      | 129 ++++-
+> net/vmw_vsock/vsock_loopback.c               |  11 +
+> tools/testing/vsock/util.c                   |  32 +-
+> tools/testing/vsock/util.h                   |   3 +
+> tools/testing/vsock/vsock_test.c             |  63 +++
+> 12 files changed, 594 insertions(+), 159 deletions(-)
+>
+> v8 -> v9:
+> General changelog:
+> - see per patch change log.
+>
 
-On May 13, 2021 4:44:51 AM PDT, Ingo Molnar <mingo@kernel=2Eorg> wrote:
->
->* H=2E Peter Anvin <hpa@zytor=2Ecom> wrote:
->
->> Needed some head scratching, but then=2E=2E=2E
->>=20
->> It makes sense for the cross-build: it's building for the host, and a
->
->> non-x86 machine isn't doing to have a register named "%rsp"=2E
->
->Oh, indeed, sfr is building on powerpc64 I think?
->
->> So this needs to be protected from non-kernel use either via
->__KERNEL__=20
->> or by factoring the basic macros out into a separate file=2E
->
->So something like the below?
->
->The exception table stuff is definitely kernel-only=2E The others could,
->in=20
->principle, be used by tooling as well=2E
->
->Thanks,
->
->	Ingo
->
->=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D>
->From: Ingo Molnar <mingo@kernel=2Eorg>
->Date: Thu, 13 May 2021 13:41:41 +0200
->Subject: [PATCH] x86/asm: Make <asm/asm=2Eh> valid on cross-builds as
->well
->
->Stephen Rothwell reported that the objtool cross-build breaks on
->non-x86 hosts:
->
->> tools/arch/x86/include/asm/asm=2Eh:185:24: error: invalid register name
->for 'current_stack_pointer'
->  >   185 | register unsigned long current_stack_pointer asm(_ASM_SP);
->  >       |                        ^~~~~~~~~~~~~~~~~~~~~
->
->The PowerPC host obviously doesn't know much about x86 register names=2E
->
->Protect the kernel-specific bits of <asm/asm=2Eh>, so that it can be
->included by tooling and cross-built=2E
->
->Reported-by: Stephen Rothwell <sfr@canb=2Eauug=2Eorg=2Eau>
->Signed-off-by: Ingo Molnar <mingo@kernel=2Eorg>
->---
-> arch/x86/include/asm/asm=2Eh       | 4 ++++
-> tools/arch/x86/include/asm/asm=2Eh | 4 ++++
-> 2 files changed, 8 insertions(+)
->
->diff --git a/arch/x86/include/asm/asm=2Eh b/arch/x86/include/asm/asm=2Eh
->index 507a37a46027=2E=2E3ad3da9a7d97 100644
->--- a/arch/x86/include/asm/asm=2Eh
->+++ b/arch/x86/include/asm/asm=2Eh
->@@ -120,6 +120,8 @@
-> # define CC_OUT(c) [_cc_ ## c] "=3Dqm"
-> #endif
->=20
->+#ifdef __KERNEL__
->+
-> /* Exception table entry */
-> #ifdef __ASSEMBLY__
-> # define _ASM_EXTABLE_HANDLE(from, to, handler)			\
->@@ -186,4 +188,6 @@ register unsigned long current_stack_pointer
->asm(_ASM_SP);
-> #define ASM_CALL_CONSTRAINT "+r" (current_stack_pointer)
-> #endif /* __ASSEMBLY__ */
->=20
->+#endif /* __KERNEL__ */
->+
-> #endif /* _ASM_X86_ASM_H */
->diff --git a/tools/arch/x86/include/asm/asm=2Eh
->b/tools/arch/x86/include/asm/asm=2Eh
->index 507a37a46027=2E=2E3ad3da9a7d97 100644
->--- a/tools/arch/x86/include/asm/asm=2Eh
->+++ b/tools/arch/x86/include/asm/asm=2Eh
->@@ -120,6 +120,8 @@
-> # define CC_OUT(c) [_cc_ ## c] "=3Dqm"
-> #endif
->=20
->+#ifdef __KERNEL__
->+
-> /* Exception table entry */
-> #ifdef __ASSEMBLY__
-> # define _ASM_EXTABLE_HANDLE(from, to, handler)			\
->@@ -186,4 +188,6 @@ register unsigned long current_stack_pointer
->asm(_ASM_SP);
-> #define ASM_CALL_CONSTRAINT "+r" (current_stack_pointer)
-> #endif /* __ASSEMBLY__ */
->=20
->+#endif /* __KERNEL__ */
->+
-> #endif /* _ASM_X86_ASM_H */
+I reviewed this series and left some comments.
 
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
+Before remove the RFC tag, please check that all the commit messages 
+contains the right information.
+
+Also, I recommend you take a look on how the other commits in the Linux 
+tree are written because the commits in this series look like todo 
+lists.
+For RFC could be fine, but for the final version it would be better to 
+rewrite them following the advice written here: 
+Documentation/process/submitting-patches.rst
+
+Thanks,
+Stefano
+
