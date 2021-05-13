@@ -2,212 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D538C38005B
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 00:34:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B2B238006C
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 00:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233895AbhEMWdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 18:33:54 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:59006 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233593AbhEMWd2 (ORCPT
+        id S233790AbhEMWfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 18:35:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233792AbhEMWf0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 18:33:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Cc:To:From:content-disposition;
-        bh=nQUlL08e6fYIDmWa+tapx3h2eKW2Y2T+0M5pxCBZqjM=; b=herzV9sjnYAG5Hm/Neq+EYQFc0
-        2nHZVQWtTMk1zUgHUuaOujnhUsCZL0XM6PhT8PYyK+X9iKjZxIUdS2PyDrFvSTEGAJrOPpIPiU3pB
-        a4fvKftmnVTiJs5J1dEjEhNSGfBpXnYXZWedqGpdSHT/JLxbQ0brJMjGM7oI/OGPb8e/KFgmM2NFj
-        lSYZspyN4RuY5zH5Tp/SkoPMQ5quEJ5Ccbk8jXUdCAcavoara3VeOAyPPuovoPwItofYMG1eLm8Ah
-        bagyC6Xx/7XdoXv16u1O6ecD0GeKJgGnxI+/HKX1aXW1bPmVW/3Zrttjx8f4qbFuBHwacBUUI3Tao
-        Npgls6+A==;
-Received: from cgy1-donard.priv.deltatee.com ([172.16.1.31])
-        by ale.deltatee.com with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <gunthorp@deltatee.com>)
-        id 1lhJsO-0000nE-Ry; Thu, 13 May 2021 16:32:17 -0600
-Received: from gunthorp by cgy1-donard.priv.deltatee.com with local (Exim 4.92)
-        (envelope-from <gunthorp@deltatee.com>)
-        id 1lhJsJ-0001TW-3M; Thu, 13 May 2021 16:32:11 -0600
-From:   Logan Gunthorpe <logang@deltatee.com>
-To:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org
-Cc:     Stephen Bates <sbates@raithlin.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Logan Gunthorpe <logang@deltatee.com>
-Date:   Thu, 13 May 2021 16:32:03 -0600
-Message-Id: <20210513223203.5542-23-logang@deltatee.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210513223203.5542-1-logang@deltatee.com>
-References: <20210513223203.5542-1-logang@deltatee.com>
+        Thu, 13 May 2021 18:35:26 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28879C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 15:34:09 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id w7so7602237ilg.13
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 15:34:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c8bhFuOKPloIYByahwHFPWgdmRy0Ur+KOze97z1EzA0=;
+        b=iQT7fUSjjkfA0Y/arLSkMA8VtoCxAmrQNAbRo05lrk8GrcQ4uFWjZgG8YdpwKq0ET8
+         wpthMbxKqa4X10x2vA+MQoydIYL1lkvxj1WzZ97mamD1dhde8dR9QQSpwqPWuLwGjY4R
+         fZM8lMwSNcNG3RIqhnOKM7gElhOgslMaKQ9cO0QcXgatiOiK6txOfI02+ziSFMT6rhP5
+         qqhhbxr8PoJ9dcX+mvpQsZvOxRqzuvPJX/KU7RUFAZD/l8VV2QNHOGFe3Zi1eXZH/NRv
+         F90HXjtqSQYfBHcS46F+HBJlugCcRcewa9hjd3I0RZoKj5P+TXZGSmIfZ8MEkquFUu4x
+         ypmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c8bhFuOKPloIYByahwHFPWgdmRy0Ur+KOze97z1EzA0=;
+        b=SJz4Xnrmm0/NCxVKSbB34bbuH3KNiIN2kB6d3sVZ0DA6y83R4QZBgwMgzLLqMGOpbl
+         JFAHsQbUbMB6LjH96P4No6gGHoNfRJGb2rYUqoKutGAJTI9RrD5Onrbs2bi1Euk0KUG7
+         +EtYtCfq5HAG8KfIFRG+HjCvcfE8X3yoDsJud0wb528lDCViNUjnweZiOYLg7HVkIAGo
+         gUBB1xJW8VqCS/CR5StkBnpk9xFKMINZsy6xZPPyvP3WH5Shf65qV8XkAEu19YagcmzS
+         mo1yxgsB24T4hq93bv+6hqkQyzOLQw6RD/FqXz5/zJYe8CyG3IQ9cMmuUnGxzcWjNyZg
+         nE3g==
+X-Gm-Message-State: AOAM533C4/owbSYXC07RRemu0uw8DPw29irWe2MWLyLHZTnF/06q5Lm/
+        rMgdPle7VWiDH0Pe635tiT/JJz6FOzW+E7b5rYwd4g==
+X-Google-Smtp-Source: ABdhPJwavDpIShEpPQaY3KOf9GpUa8lYR73uNHBcU0Gl+rAsejweOnelYA5pihcsuee289UCspem5+8RWG0EU1BR3k4=
+X-Received: by 2002:a05:6e02:1a49:: with SMTP id u9mr40315598ilv.306.1620945248421;
+ Thu, 13 May 2021 15:34:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 172.16.1.31
-X-SA-Exim-Rcpt-To: linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, linux-block@vger.kernel.org, linux-pci@vger.kernel.org, linux-mm@kvack.org, iommu@lists.linux-foundation.org, sbates@raithlin.com, hch@lst.de, jgg@ziepe.ca, christian.koenig@amd.com, jhubbard@nvidia.com, ddutile@redhat.com, willy@infradead.org, daniel.vetter@ffwll.ch, jason@jlekstrand.net, dave.hansen@linux.intel.com, helgaas@kernel.org, dan.j.williams@intel.com, andrzej.jakowski@intel.com, dave.b.minturn@intel.com, jianxin.xiong@intel.com, ira.weiny@intel.com, robin.murphy@arm.com, logang@deltatee.com
-X-SA-Exim-Mail-From: gunthorp@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-6.5 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        MYRULES_FREE,MYRULES_NO_TEXT autolearn=no autolearn_force=no
-        version=3.4.2
-Subject: [PATCH v2 22/22] PCI/P2PDMA: Remove pci_p2pdma_[un]map_sg()
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+References: <20210512214502.2047008-1-axelrasmussen@google.com> <20210512214502.2047008-4-axelrasmussen@google.com>
+In-Reply-To: <20210512214502.2047008-4-axelrasmussen@google.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Thu, 13 May 2021 15:33:57 -0700
+Message-ID: <CANgfPd915=4=dYmxh=qn6Cu75S4uHL753h_x3JHG-mFyO0dggg@mail.gmail.com>
+Subject: Re: [PATCH 3/5] KVM: selftests: create alias mappings when using
+ shared memory
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Aaron Lewis <aaronlewis@google.com>,
+        Alexander Graf <graf@amazon.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jacob Xu <jacobhxu@google.com>,
+        Makarand Sonare <makarandsonare@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Yanan Wang <wangyanan55@huawei.com>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This interface is superseded by support in dma_map_sg() which now supports
-heterogeneous scatterlists. There are no longer any users, so remove it.
+On Wed, May 12, 2021 at 2:45 PM Axel Rasmussen <axelrasmussen@google.com> wrote:
+>
+> When a memory region is added with a src_type specifying that it should
+> use some kind of shared memory, also create an alias mapping to the same
+> underlying physical pages.
+>
+> And, add an API so tests can get access to these alias addresses.
+> Basically, for a guest physical address, let us look up the analogous
+> host *alias* address.
+>
+> In a future commit, we'll modify the demand paging test to take
+> advantage of this to exercise UFFD minor faults. The idea is, we
+> pre-fault the underlying pages *via the alias*. When the *guest*
+> faults, it gets a "minor" fault (PTEs don't exist yet, but a page is
+> already in the page cache). Then, the userfaultfd theads can handle the
+> fault: they could potentially modify the underlying memory *via the
+> alias* if they wanted to, and then they install the PTEs and let the
+> guest carry on via a UFFDIO_CONTINUE ioctl.
+>
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 
-Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
----
- drivers/pci/p2pdma.c       | 65 --------------------------------------
- include/linux/pci-p2pdma.h | 27 ----------------
- 2 files changed, 92 deletions(-)
+Reviewed-by: Ben Gardon <bgardon@google.com>
 
-diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
-index b0d779aeade9..767122e0a43f 100644
---- a/drivers/pci/p2pdma.c
-+++ b/drivers/pci/p2pdma.c
-@@ -873,71 +873,6 @@ enum pci_p2pdma_map_type pci_p2pdma_map_type(struct dev_pagemap *pgmap,
- 	return ret;
- }
- 
--static int __pci_p2pdma_map_sg(struct pci_p2pdma_pagemap *p2p_pgmap,
--		struct device *dev, struct scatterlist *sg, int nents)
--{
--	struct scatterlist *s;
--	int i;
--
--	for_each_sg(sg, s, nents, i) {
--		s->dma_address = sg_phys(s) - p2p_pgmap->bus_offset;
--		sg_dma_len(s) = s->length;
--	}
--
--	return nents;
--}
--
--/**
-- * pci_p2pdma_map_sg_attrs - map a PCI peer-to-peer scatterlist for DMA
-- * @dev: device doing the DMA request
-- * @sg: scatter list to map
-- * @nents: elements in the scatterlist
-- * @dir: DMA direction
-- * @attrs: DMA attributes passed to dma_map_sg() (if called)
-- *
-- * Scatterlists mapped with this function should be unmapped using
-- * pci_p2pdma_unmap_sg_attrs().
-- *
-- * Returns the number of SG entries mapped or 0 on error.
-- */
--int pci_p2pdma_map_sg_attrs(struct device *dev, struct scatterlist *sg,
--		int nents, enum dma_data_direction dir, unsigned long attrs)
--{
--	struct pci_p2pdma_pagemap *p2p_pgmap =
--		to_p2p_pgmap(sg_page(sg)->pgmap);
--
--	switch (pci_p2pdma_map_type(sg_page(sg)->pgmap, dev)) {
--	case PCI_P2PDMA_MAP_THRU_HOST_BRIDGE:
--		return dma_map_sg_attrs(dev, sg, nents, dir, attrs);
--	case PCI_P2PDMA_MAP_BUS_ADDR:
--		return __pci_p2pdma_map_sg(p2p_pgmap, dev, sg, nents);
--	default:
--		return 0;
--	}
--}
--EXPORT_SYMBOL_GPL(pci_p2pdma_map_sg_attrs);
--
--/**
-- * pci_p2pdma_unmap_sg_attrs - unmap a PCI peer-to-peer scatterlist that was
-- *	mapped with pci_p2pdma_map_sg()
-- * @dev: device doing the DMA request
-- * @sg: scatter list to map
-- * @nents: number of elements returned by pci_p2pdma_map_sg()
-- * @dir: DMA direction
-- * @attrs: DMA attributes passed to dma_unmap_sg() (if called)
-- */
--void pci_p2pdma_unmap_sg_attrs(struct device *dev, struct scatterlist *sg,
--		int nents, enum dma_data_direction dir, unsigned long attrs)
--{
--	enum pci_p2pdma_map_type map_type;
--
--	map_type = pci_p2pdma_map_type(sg_page(sg)->pgmap, dev);
--
--	if (map_type == PCI_P2PDMA_MAP_THRU_HOST_BRIDGE)
--		dma_unmap_sg_attrs(dev, sg, nents, dir, attrs);
--}
--EXPORT_SYMBOL_GPL(pci_p2pdma_unmap_sg_attrs);
--
- /**
-  * pci_p2pdma_map_segment - map an sg segment determining the mapping type
-  * @state: State structure that should be declared outside of the for_each_sg()
-diff --git a/include/linux/pci-p2pdma.h b/include/linux/pci-p2pdma.h
-index e5a8d5bc0f51..0c33a40a86e7 100644
---- a/include/linux/pci-p2pdma.h
-+++ b/include/linux/pci-p2pdma.h
-@@ -72,10 +72,6 @@ void pci_p2pmem_free_sgl(struct pci_dev *pdev, struct scatterlist *sgl);
- void pci_p2pmem_publish(struct pci_dev *pdev, bool publish);
- enum pci_p2pdma_map_type pci_p2pdma_map_type(struct dev_pagemap *pgmap,
- 					     struct device *dev);
--int pci_p2pdma_map_sg_attrs(struct device *dev, struct scatterlist *sg,
--		int nents, enum dma_data_direction dir, unsigned long attrs);
--void pci_p2pdma_unmap_sg_attrs(struct device *dev, struct scatterlist *sg,
--		int nents, enum dma_data_direction dir, unsigned long attrs);
- enum pci_p2pdma_map_type
- pci_p2pdma_map_segment(struct pci_p2pdma_map_state *state, struct device *dev,
- 		       struct scatterlist *sg);
-@@ -135,17 +131,6 @@ pci_p2pdma_map_type(struct dev_pagemap *pgmap, struct device *dev)
- {
- 	return PCI_P2PDMA_MAP_NOT_SUPPORTED;
- }
--static inline int pci_p2pdma_map_sg_attrs(struct device *dev,
--		struct scatterlist *sg, int nents, enum dma_data_direction dir,
--		unsigned long attrs)
--{
--	return 0;
--}
--static inline void pci_p2pdma_unmap_sg_attrs(struct device *dev,
--		struct scatterlist *sg, int nents, enum dma_data_direction dir,
--		unsigned long attrs)
--{
--}
- static inline enum pci_p2pdma_map_type
- pci_p2pdma_map_segment(struct pci_p2pdma_map_state *state, struct device *dev,
- 		       struct scatterlist *sg)
-@@ -181,16 +166,4 @@ static inline struct pci_dev *pci_p2pmem_find(struct device *client)
- 	return pci_p2pmem_find_many(&client, 1);
- }
- 
--static inline int pci_p2pdma_map_sg(struct device *dev, struct scatterlist *sg,
--				    int nents, enum dma_data_direction dir)
--{
--	return pci_p2pdma_map_sg_attrs(dev, sg, nents, dir, 0);
--}
--
--static inline void pci_p2pdma_unmap_sg(struct device *dev,
--		struct scatterlist *sg, int nents, enum dma_data_direction dir)
--{
--	pci_p2pdma_unmap_sg_attrs(dev, sg, nents, dir, 0);
--}
--
- #endif /* _LINUX_PCI_P2P_H */
--- 
-2.20.1
+> ---
+>  .../testing/selftests/kvm/include/kvm_util.h  |  1 +
+>  tools/testing/selftests/kvm/lib/kvm_util.c    | 50 +++++++++++++++++++
+>  .../selftests/kvm/lib/kvm_util_internal.h     |  2 +
+>  3 files changed, 53 insertions(+)
+>
+> diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
+> index a8f022794ce3..0624f25a6803 100644
+> --- a/tools/testing/selftests/kvm/include/kvm_util.h
+> +++ b/tools/testing/selftests/kvm/include/kvm_util.h
+> @@ -146,6 +146,7 @@ void virt_map(struct kvm_vm *vm, uint64_t vaddr, uint64_t paddr,
+>  void *addr_gpa2hva(struct kvm_vm *vm, vm_paddr_t gpa);
+>  void *addr_gva2hva(struct kvm_vm *vm, vm_vaddr_t gva);
+>  vm_paddr_t addr_hva2gpa(struct kvm_vm *vm, void *hva);
+> +void *addr_gpa2alias(struct kvm_vm *vm, vm_paddr_t gpa);
+>
+>  /*
+>   * Address Guest Virtual to Guest Physical
+> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+> index 6fbe124e0e16..838d58633f7e 100644
+> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
+> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+> @@ -809,6 +809,19 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
+>
+>         /* Add to linked-list of memory regions. */
+>         list_add(&region->list, &vm->userspace_mem_regions);
+> +
+> +       /* If shared memory, create an alias. */
+> +       if (region->fd >= 0) {
+> +               region->mmap_alias = mmap(NULL, region->mmap_size,
+> +                                         PROT_READ | PROT_WRITE,
+> +                                         vm_mem_backing_src_alias(src_type)->flag,
+> +                                         region->fd, 0);
+> +               TEST_ASSERT(region->mmap_alias != MAP_FAILED,
+> +                           "mmap of alias failed, errno: %i", errno);
+> +
+> +               /* Align host alias address */
+> +               region->host_alias = align(region->mmap_alias, alignment);
+> +       }
+>  }
+>
+>  /*
+> @@ -1237,6 +1250,43 @@ vm_paddr_t addr_hva2gpa(struct kvm_vm *vm, void *hva)
+>         return -1;
+>  }
+>
+> +/*
+> + * Address VM physical to Host Virtual *alias*.
+> + *
+> + * Input Args:
+> + *   vm - Virtual Machine
+> + *   gpa - VM physical address
+> + *
+> + * Output Args: None
+> + *
+> + * Return:
+> + *   Equivalent address within the host virtual *alias* area, or NULL
+> + *   (without failing the test) if the guest memory is not shared (so
+> + *   no alias exists).
+> + *
+> + * When vm_create() and related functions are called with a shared memory
+> + * src_type, we also create a writable, shared alias mapping of the
+> + * underlying guest memory. This allows the host to manipulate guest memory,
+> + * e.g. to implement demand paging.
 
+I would amend this to: "This allows the host to manipulate guest
+memory without mapping that memory in the guest's address space," or
+something to that effect.
+
+> + */
+> +void *addr_gpa2alias(struct kvm_vm *vm, vm_paddr_t gpa)
+> +{
+> +       struct userspace_mem_region *region;
+> +
+> +       list_for_each_entry(region, &vm->userspace_mem_regions, list) {
+> +               if (!region->host_alias)
+> +                       continue;
+> +
+> +               if ((gpa >= region->region.guest_phys_addr)
+> +                       && (gpa <= (region->region.guest_phys_addr
+> +                               + region->region.memory_size - 1)))
+> +                       return (void *) ((uintptr_t) region->host_alias
+> +                               + (gpa - region->region.guest_phys_addr));
+> +       }
+> +
+> +       return NULL;
+> +}
+> +
+>  /*
+>   * VM Create IRQ Chip
+>   *
+> diff --git a/tools/testing/selftests/kvm/lib/kvm_util_internal.h b/tools/testing/selftests/kvm/lib/kvm_util_internal.h
+> index 91ce1b5d480b..a25af33d4a9c 100644
+> --- a/tools/testing/selftests/kvm/lib/kvm_util_internal.h
+> +++ b/tools/testing/selftests/kvm/lib/kvm_util_internal.h
+> @@ -16,7 +16,9 @@ struct userspace_mem_region {
+>         int fd;
+>         off_t offset;
+>         void *host_mem;
+> +       void *host_alias;
+>         void *mmap_start;
+> +       void *mmap_alias;
+>         size_t mmap_size;
+>         struct list_head list;
+>  };
+> --
+> 2.31.1.607.g51e8a6a459-goog
+>
