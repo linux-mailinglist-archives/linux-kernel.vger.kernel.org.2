@@ -2,89 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 653DD37FE27
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 21:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E2A637FE43
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 21:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230154AbhEMTdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 15:33:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54452 "EHLO
+        id S231656AbhEMThl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 15:37:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbhEMTdZ (ORCPT
+        with ESMTP id S230459AbhEMTh3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 15:33:25 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 847E5C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 12:32:14 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id n2so41416010ejy.7
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 12:32:14 -0700 (PDT)
+        Thu, 13 May 2021 15:37:29 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0B8DC06138C
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 12:36:17 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id u126-20020a3792840000b02902e769005fe1so20227509qkd.2
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 12:36:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=+PFEMK3YaHztEuLX/0qHNhPRBEmn2XvXgUGBhkca4xE=;
-        b=K25CsnCq077r/r4B1m2yh81D9qgKhQYnf99ghLEffSrrY380rLAFfdixlvEpKlaY5j
-         oWn0+BYK8RcQPQiQ/TEgcdTJUspxoafxOK2/prjgh5vpSgzu0pabQYjUdMMHdfoe2QwX
-         anfuESWtWPR+nGAI1F2edxjQpghAyY0r7KS6OKQD3Ez4jY6bFBHyzQmP6LJBV+TscYi8
-         I64AsH/yHsdcDnFOHIZaE1PRR5sMlZDFr4j/VIPwYLNM8qSH7fpsyQzuzXgowY9pYTLv
-         UqYwvySdodmLWy4JyoPMkmYEGtjasdEmyo8z6dKbp7DWWea2GlSM1B+CVHvxBwToisXx
-         XP5w==
+        bh=nAjJNcbSrTVyC9xT3GK+BCC2nCovQf7Djw6rij3xpcY=;
+        b=s2dk81EXLTewrXFgaIJ5Gft88QlFAOU8CxoluJsEKYnDIBm61BF58bUGSWxlTI8GFl
+         e6zr5JpAjJRPsoc1fz7cYeFO7+1PDaOYhriqamRkG0sAx8fLZ/R9U0zuVegE2tANSMsy
+         pBwk+Wagwh+5Z9owKl6esNIyD8BAMkHnREIxkPjjCtxZIrjz643cHruLPORYTAufSJYE
+         cL9dFjHxrBZRI2b9Us8Yo0wzro7aIWWBo3XfeIl2Nr9O1LpMoni3hitD36aY8kBV0i/A
+         0c7sbTP4mTa5Khn5JZSExU/HHZTZrQJ9cqvM5bicYteKNMTs21UJ6XxVb6UK0bKWAkGK
+         iDGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+PFEMK3YaHztEuLX/0qHNhPRBEmn2XvXgUGBhkca4xE=;
-        b=UFwvzr5vJa6XyRpukR0WTJi26DQ1D5O4YAqpXLNlPFPFOMRVjuj6ZU2+cbq1dXICPg
-         GGYi74fJXO9kbN7Qn7fFPpRN3dd5IzylfoYwC+vb9hVEJmHjzu4zl/WfQ6z9s7mJCJw/
-         NjscUBydUdRlkxbkIfmVW4Kr9UkHApwBozLs8wg5x06ho9imZs18B6D7QxvV7tlfYiH2
-         U+N8yJxvfpwuwgt9z5O8fMafhT6L8k72HRJ7+bblpUlLqlymTtbRjB9t0KcKYiFuRJ8e
-         M+WcI2BvZQbLNSUMh7YN5GzACArtg1007JUUXX1iaZ3obbfKmiyOSHpWVpRtWI8G837H
-         phOg==
-X-Gm-Message-State: AOAM532KaDm1eni+0c7nnae/qa1mIO6aSkAqkETdjTOWk/Lo8Erns4z9
-        0KcUyYdD0miFuZN33LDCXEkFbtlBIf13AZ4SacY=
-X-Google-Smtp-Source: ABdhPJxfxbrOoBqYhgwMN1FHd94U/QcMTZqsbypSB9DP59c8nitHkqyv7qIslc0RVVZ1JUKtd5OUx2KRWGCZ6L17hxU=
-X-Received: by 2002:a17:906:90d6:: with SMTP id v22mr1608070ejw.98.1620934333317;
- Thu, 13 May 2021 12:32:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <1620904043-71858-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <1620904043-71858-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   Max Filippov <jcmvbkbc@gmail.com>
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=nAjJNcbSrTVyC9xT3GK+BCC2nCovQf7Djw6rij3xpcY=;
+        b=Ncgc0wnC07aGORc44vQsvlsl8YyrDEfgXd9Zr+DMtNsoNtR7R37VxCUSdIguvaEO9H
+         EpNxEYNBBMD8orHe81oOb41P8y/ljM+b+YSA+HRfYHPwTTmceGU1OnRu4d1GIcaRKVDm
+         Yr4NN3/hKXn+Dw3zd3boiyA5Pgx0CmwukVZCvdv6XOqQPMY39ijw0GIJZVsWoyM9VKb+
+         Zrdrbze9lA4R9VjazihLIjf7vRhjZGKOdGYEqESxKjl400sC8Crdv5mM3uEFzh6Rooub
+         +FlIKRtL9dKifSJlvye6pYDz66qOGeMcO/zjoQq8BAbNHkp80y0jxryXgau/+nqc5ix+
+         3XZA==
+X-Gm-Message-State: AOAM530WFxO5jeX6DAZIid0vKQfIxQ7Uzk1FHkguJ7kA7yGRnZ9d9tkh
+        RvQoC+WI+GiS2uVZcqBD4zo2lrKrIkPGoA==
+X-Google-Smtp-Source: ABdhPJzJ2d6Iu+sR/OhwWPYcm/MzemxmYk0K+r/k0ipSW6kbqovaeEikkCXVyDONkFAbwjHR29Up7djv3tRhsw==
+X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:5f61:8ca4:879b:809e])
+ (user=davidgow job=sendgmr) by 2002:a05:6214:d4c:: with SMTP id
+ 12mr32562970qvr.2.1620934576937; Thu, 13 May 2021 12:36:16 -0700 (PDT)
 Date:   Thu, 13 May 2021 12:32:02 -0700
-Message-ID: <CAMo8BfLAsoADU_9G9ZB4PRbw7b98vkRzXpgiB12RkXx1g5aGqA@mail.gmail.com>
-Subject: Re: [PATCH] xtensa: Fix duplicate included linux/unaligned/generic.h
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     Chris Zankel <chris@zankel.net>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>,
-        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20210513193204.816681-1-davidgow@google.com>
+Message-Id: <20210513193204.816681-8-davidgow@google.com>
+Mime-Version: 1.0
+References: <20210513193204.816681-1-davidgow@google.com>
+X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
+Subject: [PATCH v2 08/10] kernel/sysctl-test: Remove some casts which are
+ no-longer required
+From:   David Gow <davidgow@google.com>
+To:     Brendan Higgins <brendanhiggins@google.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>
+Cc:     David Gow <davidgow@google.com>, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiapeng,
+With some of the stricter type checking in KUnit's EXPECT macros
+removed, several casts in sysctl-test are no longer required.
 
-On Thu, May 13, 2021 at 4:07 AM Jiapeng Chong
-<jiapeng.chong@linux.alibaba.com> wrote:
->
-> Clean up the following includecheck warning:
->
-> ./arch/xtensa/include/asm/unaligned.h: linux/unaligned/generic.h is
-> included more than once.
->
-> No functional change.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->  arch/xtensa/include/asm/unaligned.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+Remove the unnecessary casts, making the conditions clearer.
 
-There's a patch series from Arnd Bergman that reworks unaligned
-access posted here:
-https://lore.kernel.org/lkml/20210507220813.365382-14-arnd@kernel.org/
-resulting in removal of this file. I don't think it's worth doing this cleanup
-in the meantime.
+Signed-off-by: David Gow <davidgow@google.com>
+---
+This should be a no-op functionality wise, and while it depends on the
+first couple of patches in this series, it's otherwise independent from
+the others. I think this makes the test more readable, but if you
+particularly dislike it, I'm happy to drop it.
 
---
-Thanks.
--- Max
+ kernel/sysctl-test.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/kernel/sysctl-test.c b/kernel/sysctl-test.c
+index ccb78509f1a8..664ded05dd7a 100644
+--- a/kernel/sysctl-test.c
++++ b/kernel/sysctl-test.c
+@@ -49,7 +49,7 @@ static void sysctl_test_api_dointvec_null_tbl_data(struct kunit *test)
+ 	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&null_data_table,
+ 					       KUNIT_PROC_READ, buffer, &len,
+ 					       &pos));
+-	KUNIT_EXPECT_EQ(test, (size_t)0, len);
++	KUNIT_EXPECT_EQ(test, 0, len);
+ 
+ 	/*
+ 	 * See above.
+@@ -58,7 +58,7 @@ static void sysctl_test_api_dointvec_null_tbl_data(struct kunit *test)
+ 	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&null_data_table,
+ 					       KUNIT_PROC_WRITE, buffer, &len,
+ 					       &pos));
+-	KUNIT_EXPECT_EQ(test, (size_t)0, len);
++	KUNIT_EXPECT_EQ(test, 0, len);
+ }
+ 
+ /*
+@@ -95,7 +95,7 @@ static void sysctl_test_api_dointvec_table_maxlen_unset(struct kunit *test)
+ 	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&data_maxlen_unset_table,
+ 					       KUNIT_PROC_READ, buffer, &len,
+ 					       &pos));
+-	KUNIT_EXPECT_EQ(test, (size_t)0, len);
++	KUNIT_EXPECT_EQ(test, 0, len);
+ 
+ 	/*
+ 	 * See previous comment.
+@@ -104,7 +104,7 @@ static void sysctl_test_api_dointvec_table_maxlen_unset(struct kunit *test)
+ 	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&data_maxlen_unset_table,
+ 					       KUNIT_PROC_WRITE, buffer, &len,
+ 					       &pos));
+-	KUNIT_EXPECT_EQ(test, (size_t)0, len);
++	KUNIT_EXPECT_EQ(test, 0, len);
+ }
+ 
+ /*
+@@ -135,11 +135,11 @@ static void sysctl_test_api_dointvec_table_len_is_zero(struct kunit *test)
+ 
+ 	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, KUNIT_PROC_READ, buffer,
+ 					       &len, &pos));
+-	KUNIT_EXPECT_EQ(test, (size_t)0, len);
++	KUNIT_EXPECT_EQ(test, 0, len);
+ 
+ 	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, KUNIT_PROC_WRITE, buffer,
+ 					       &len, &pos));
+-	KUNIT_EXPECT_EQ(test, (size_t)0, len);
++	KUNIT_EXPECT_EQ(test, 0, len);
+ }
+ 
+ /*
+@@ -174,7 +174,7 @@ static void sysctl_test_api_dointvec_table_read_but_position_set(
+ 
+ 	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, KUNIT_PROC_READ, buffer,
+ 					       &len, &pos));
+-	KUNIT_EXPECT_EQ(test, (size_t)0, len);
++	KUNIT_EXPECT_EQ(test, 0, len);
+ }
+ 
+ /*
+@@ -203,7 +203,7 @@ static void sysctl_test_dointvec_read_happy_single_positive(struct kunit *test)
+ 
+ 	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, KUNIT_PROC_READ,
+ 					       user_buffer, &len, &pos));
+-	KUNIT_ASSERT_EQ(test, (size_t)3, len);
++	KUNIT_ASSERT_EQ(test, 3, len);
+ 	buffer[len] = '\0';
+ 	/* And we read 13 back out. */
+ 	KUNIT_EXPECT_STREQ(test, "13\n", buffer);
+@@ -233,9 +233,9 @@ static void sysctl_test_dointvec_read_happy_single_negative(struct kunit *test)
+ 
+ 	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, KUNIT_PROC_READ,
+ 					       user_buffer, &len, &pos));
+-	KUNIT_ASSERT_EQ(test, (size_t)4, len);
++	KUNIT_ASSERT_EQ(test, 4, len);
+ 	buffer[len] = '\0';
+-	KUNIT_EXPECT_STREQ(test, "-16\n", (char *)buffer);
++	KUNIT_EXPECT_STREQ(test, "-16\n", buffer);
+ }
+ 
+ /*
+@@ -265,7 +265,7 @@ static void sysctl_test_dointvec_write_happy_single_positive(struct kunit *test)
+ 	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, KUNIT_PROC_WRITE,
+ 					       user_buffer, &len, &pos));
+ 	KUNIT_EXPECT_EQ(test, sizeof(input) - 1, len);
+-	KUNIT_EXPECT_EQ(test, sizeof(input) - 1, (size_t)pos);
++	KUNIT_EXPECT_EQ(test, sizeof(input) - 1, pos);
+ 	KUNIT_EXPECT_EQ(test, 9, *((int *)table.data));
+ }
+ 
+@@ -295,7 +295,7 @@ static void sysctl_test_dointvec_write_happy_single_negative(struct kunit *test)
+ 	KUNIT_EXPECT_EQ(test, 0, proc_dointvec(&table, KUNIT_PROC_WRITE,
+ 					       user_buffer, &len, &pos));
+ 	KUNIT_EXPECT_EQ(test, sizeof(input) - 1, len);
+-	KUNIT_EXPECT_EQ(test, sizeof(input) - 1, (size_t)pos);
++	KUNIT_EXPECT_EQ(test, sizeof(input) - 1, pos);
+ 	KUNIT_EXPECT_EQ(test, -9, *((int *)table.data));
+ }
+ 
+-- 
+2.31.1.751.gd2f1c929bd-goog
+
