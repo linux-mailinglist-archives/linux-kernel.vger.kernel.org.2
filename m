@@ -2,138 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E607637FC1D
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 19:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5319337FC25
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 19:09:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230196AbhEMRJ1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 May 2021 13:09:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48806 "EHLO mail.kernel.org"
+        id S230316AbhEMRLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 13:11:04 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:49079 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229877AbhEMRJ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 13:09:26 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3A41561408;
-        Thu, 13 May 2021 17:08:13 +0000 (UTC)
-Date:   Thu, 13 May 2021 18:09:22 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Alexandru Ardelean <ardeleanalex@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Alexandru Tachici <alexandru.tachici@analog.com>
-Subject: Re: [PATCH v1 1/1] iio: dac: ad5770r: Put fwnode in error case
- during ->probe()
-Message-ID: <20210513180922.44e0a0ad@jic23-huawei>
-In-Reply-To: <CAHp75VfFTnS6+6KwqixTXNsMvC_LWGnY0rv3n9g_-i7HK2eq0w@mail.gmail.com>
-References: <20210510095649.3302835-1-andy.shevchenko@gmail.com>
-        <CA+U=DsoX1kTy-NwNFPajWMZnJT+cY9MocSGpgTggmhgXrhXREg@mail.gmail.com>
-        <CAHp75VfFTnS6+6KwqixTXNsMvC_LWGnY0rv3n9g_-i7HK2eq0w@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229906AbhEMRLD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 13:11:03 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4Fgynp0lCSz9sbh;
+        Thu, 13 May 2021 19:09:50 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id HUEn8l5Cd5ay; Thu, 13 May 2021 19:09:50 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4Fgynn6lywz9sbZ;
+        Thu, 13 May 2021 19:09:49 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id CA6438B7F5;
+        Thu, 13 May 2021 19:09:46 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id pzLVMzJYIXGI; Thu, 13 May 2021 19:09:46 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 43A7F8B76C;
+        Thu, 13 May 2021 19:09:46 +0200 (CEST)
+Subject: Re: mmotm 2021-05-12-21-46 uploaded (arch/x86/mm/pgtable.c)
+To:     Randy Dunlap <rdunlap@infradead.org>, akpm@linux-foundation.org,
+        broonie@kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-next@vger.kernel.org, mhocko@suse.cz,
+        mm-commits@vger.kernel.org, sfr@canb.auug.org.au
+References: <20210513044710.MCXhM_NwC%akpm@linux-foundation.org>
+ <151ddd7f-1d3e-a6f7-daab-e32f785426e1@infradead.org>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <54055e72-34b8-d43d-2ad3-87e8c8fa547b@csgroup.eu>
+Date:   Thu, 13 May 2021 19:09:23 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <151ddd7f-1d3e-a6f7-daab-e32f785426e1@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 May 2021 01:00:22 +0300
-Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
 
-> On Wednesday, May 12, 2021, Alexandru Ardelean <ardeleanalex@gmail.com>
-> wrote:
-> 
-> > On Mon, May 10, 2021 at 12:59 PM Andy Shevchenko
-> > <andy.shevchenko@gmail.com> wrote:  
-> > >
-> > > device_for_each_child_node() bumps a reference counting of a returned  
-> > variable.  
-> > > We have to balance it whenever we return to the caller.  
-> >
-> > This feels like the device_for_each_child_node() [and the of_node
-> > variant] iterator[s] need[s] some re-design to account for how easy it
-> > is to slip stuff by.  
-> 
-> 
-> I don’t know how you can do it differently if you wish to give a guarantee
-> that object doesn’t suddenly disappear while you are iterating over it.
-> 
-> Look at the bus_find_device() and similar APIs, they basically do the
-> similar.
-> 
-> 
-> 
-> > But that's something quite out of this scope.
-> >
-> > Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
-> >
-> >  
-> Thanks.
-> 
-Applied to the fixes-togreg branch of iio.git and marked for stable.
 
-Thanks,
-
-Joathan
-
-> 
-> > >
-> > > Fixes: cbbb819837f6 ("iio: dac: ad5770r: Add AD5770R support")
-> > > Cc: Alexandru Tachici <alexandru.tachici@analog.com>
-> > > Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> > > ---
-> > >  drivers/iio/dac/ad5770r.c | 16 +++++++++++-----
-> > >  1 file changed, 11 insertions(+), 5 deletions(-)
-> > >
-> > > diff --git a/drivers/iio/dac/ad5770r.c b/drivers/iio/dac/ad5770r.c
-> > > index 7ab2ccf90863..8107f7bbbe3c 100644
-> > > --- a/drivers/iio/dac/ad5770r.c
-> > > +++ b/drivers/iio/dac/ad5770r.c
-> > > @@ -524,23 +524,29 @@ static int ad5770r_channel_config(struct  
-> > ad5770r_state *st)  
-> > >         device_for_each_child_node(&st->spi->dev, child) {
-> > >                 ret = fwnode_property_read_u32(child, "num", &num);
-> > >                 if (ret)
-> > > -                       return ret;
-> > > -               if (num >= AD5770R_MAX_CHANNELS)
-> > > -                       return -EINVAL;
-> > > +                       goto err_child_out;
-> > > +               if (num >= AD5770R_MAX_CHANNELS) {
-> > > +                       ret = -EINVAL;
-> > > +                       goto err_child_out;
-> > > +               }
-> > >
-> > >                 ret = fwnode_property_read_u32_array(child,
-> > >  
-> > "adi,range-microamp",  
-> > >                                                      tmp, 2);
-> > >                 if (ret)
-> > > -                       return ret;
-> > > +                       goto err_child_out;
-> > >
-> > >                 min = tmp[0] / 1000;
-> > >                 max = tmp[1] / 1000;
-> > >                 ret = ad5770r_store_output_range(st, min, max, num);
-> > >                 if (ret)
-> > > -                       return ret;
-> > > +                       goto err_child_out;
-> > >         }
-> > >
-> > > +       return 0;
-> > > +
-> > > +err_child_out:
-> > > +       fwnode_handle_put(child);
-> > >         return ret;
-> > >  }
-> > >
-> > > --
-> > > 2.31.1
-> > >  
-> >  
+Le 13/05/2021 à 17:54, Randy Dunlap a écrit :
+> On 5/12/21 9:47 PM, akpm@linux-foundation.org wrote:
+>> The mm-of-the-moment snapshot 2021-05-12-21-46 has been uploaded to
+>>
+>>     https://www.ozlabs.org/~akpm/mmotm/
+>>
+>> mmotm-readme.txt says
+>>
+>> README for mm-of-the-moment:
+>>
+>> https://www.ozlabs.org/~akpm/mmotm/
+>>
+>> This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
+>> more than once a week.
+>>
+>> You will need quilt to apply these patches to the latest Linus release (5.x
+>> or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
+>> https://ozlabs.org/~akpm/mmotm/series
 > 
 > 
+> on i386:
+> 
+> ../arch/x86/mm/pgtable.c:703:5: error: redefinition of ‘pud_set_huge’
+>   int pud_set_huge(pud_t *pud, phys_addr_t addr, pgprot_t prot)
+>       ^~~~~~~~~~~~
+> In file included from ../include/linux/mm.h:33:0,
+>                   from ../arch/x86/mm/pgtable.c:2:
+> ../include/linux/pgtable.h:1387:19: note: previous definition of ‘pud_set_huge’ was here
+>   static inline int pud_set_huge(pud_t *pud, phys_addr_t addr, pgprot_t prot)
+>                     ^~~~~~~~~~~~
+> ../arch/x86/mm/pgtable.c:758:5: error: redefinition of ‘pud_clear_huge’
+>   int pud_clear_huge(pud_t *pud)
+>       ^~~~~~~~~~~~~~
+> In file included from ../include/linux/mm.h:33:0,
+>                   from ../arch/x86/mm/pgtable.c:2:
+> ../include/linux/pgtable.h:1391:19: note: previous definition of ‘pud_clear_huge’ was here
+>   static inline int pud_clear_huge(pud_t *pud)
+>                     ^~~~~~~~~~~~~~
 
+Hum ...
+
+Comes from my patch 
+https://patchwork.ozlabs.org/project/linuxppc-dev/patch/5ac5976419350e8e048d463a64cae449eb3ba4b0.1620795204.git.christophe.leroy@csgroup.eu/
+
+But, that happens only if x86 defines __PAGETABLE_PUD_FOLDED. And if PUD is folded, then I can't 
+understand my it has pud_set_huge() and pud_clear_huge() functions.
+
+Christophe
