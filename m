@@ -2,171 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7FF237F438
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 10:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBE4B37F435
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 10:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230115AbhEMIgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 04:36:38 -0400
-Received: from mga14.intel.com ([192.55.52.115]:36780 "EHLO mga14.intel.com"
+        id S232024AbhEMIgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 04:36:18 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39336 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231939AbhEMIgW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 04:36:22 -0400
-IronPort-SDR: vl/G8WVSiMhaaO7V9mKhgypj2oIcXJbzsJSss+JLqmHyb2yueHaUGLfDMOihlw+RUfiKtWwx+a
- mBiWd0yHpkZg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="199582134"
-X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
-   d="scan'208";a="199582134"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 01:35:12 -0700
-IronPort-SDR: IlXJcZXPJBvKTc2D7fwLM8tMiEVwpDvu4Z8Ivwe7y/BMWy3laMroCZ1N9hQHyvw1doHI3ab7vd
- AvIdXE7I7oSg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
-   d="scan'208";a="437577360"
-Received: from lkp-server01.sh.intel.com (HELO ddd90b05c979) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 13 May 2021 01:35:11 -0700
-Received: from kbuild by ddd90b05c979 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lh6oI-00009W-Th; Thu, 13 May 2021 08:35:10 +0000
-Date:   Thu, 13 May 2021 16:34:47 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/urgent] BUILD SUCCESS
- a554e740b66a83c7560b30e6b50bece37555ced3
-Message-ID: <609ce4a7.qt1hEUgCoUguNJi1%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S232017AbhEMIgD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 04:36:03 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1620894892; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mMbyojh6a77y/n4n2x5m5FSvtbZLYhRvkKdMCE0XqIo=;
+        b=f6iDbhj56ru9OVo+GW8gX1a7hFo49kjc71l/SieGk8e/McEB2FQaWhtotl1rQHP0FsuzSZ
+        peEKBaqtnxuV5XgmYts9dYJQ6slqQkQYduFsx0O6YRi04bZShvTWaNbjyAxKSW4Y23n82D
+        35S4vaiboE50cwddR8FkRM/h57FbY/Q=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id ED2EEAD9F;
+        Thu, 13 May 2021 08:34:51 +0000 (UTC)
+Date:   Thu, 13 May 2021 10:34:51 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+Cc:     "josef@toxicpanda.com" <josef@toxicpanda.com>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "rppt@kernel.org" <rppt@kernel.org>,
+        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        linux-power <linux-power@fi.rohmeurope.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "rui.zhang@intel.com" <rui.zhang@intel.com>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux@roeck-us.net" <linux@roeck-us.net>,
+        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "kai.heng.feng@canonical.com" <kai.heng.feng@canonical.com>,
+        "mcroce@microsoft.com" <mcroce@microsoft.com>,
+        "amitk@kernel.org" <amitk@kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
+        "agross@kernel.org" <agross@kernel.org>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "rafael.j.wysocki@intel.com" <rafael.j.wysocki@intel.com>,
+        rostedt@goodmis.org, Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH v9 02/10] reboot: Add hardware protection power-off
+Message-ID: <YJzkq+NPW4ZMB8AF@alley>
+References: <cover.1620645507.git.matti.vaittinen@fi.rohmeurope.com>
+ <97260f8e150abb898a262fade25860609b460912.1620645507.git.matti.vaittinen@fi.rohmeurope.com>
+ <YJuPwAZroVZ/w633@alley>
+ <2149df3f542d25ce15d049e81d6188bb7198478c.camel@fi.rohmeurope.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <2149df3f542d25ce15d049e81d6188bb7198478c.camel@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
-branch HEAD: a554e740b66a83c7560b30e6b50bece37555ced3  x86/boot/compressed: Enable -Wundef
+On Wed 2021-05-12 12:00:46, Vaittinen, Matti wrote:
+> On Wed, 2021-05-12 at 10:20 +0200, Petr Mladek wrote:
+> > On Mon 2021-05-10 14:28:30, Matti Vaittinen wrote:
+> > > There can be few cases when we need to shut-down the system in
+> > > order to
+> > > protect the hardware. Currently this is done at east by the thermal
+> > > core
+> > > when temperature raises over certain limit.
+> > > 
+> > > Some PMICs can also generate interrupts for example for over-
+> > > current or
+> > > over-voltage, voltage drops, short-circuit, ... etc. On some
+> > > systems
+> > > these are a sign of hardware failure and only thing to do is try to
+> > > protect the rest of the hardware by shutting down the system.
+> > > 
+> > > Add shut-down logic which can be used by all subsystems instead of
+> > > implementing the shutdown in each subsystem. The logic is stolen
+> > > from
+> > > thermal_core with difference of using atomic_t instead of a mutex
+> > > in
+> > > order to allow calls directly from IRQ context.
+> > > 
+> > > Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> > > 
+> > > diff --git a/kernel/reboot.c b/kernel/reboot.c
+> > > index a6ad5eb2fa73..5da8c80a2647 100644
+> > > --- a/kernel/reboot.c
+> > > +++ b/kernel/reboot.c
+> > > @@ -518,6 +519,85 @@ void orderly_reboot(void)
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(orderly_reboot);
+> > >  
+> > > +/**
+> > > + * hw_failure_emergency_poweroff_func - emergency poweroff work
+> > > after a known delay
+> > > + * @work: work_struct associated with the emergency poweroff
+> > > function
+> > > + *
+> > > + * This function is called in very critical situations to force
+> > > + * a kernel poweroff after a configurable timeout value.
+> > > + */
+> > > +static void hw_failure_emergency_poweroff_func(struct work_struct
+> > > *work)
+> > > +{
+> > > +	/*
+> > > +	 * We have reached here after the emergency shutdown waiting
+> > > period has
+> > > +	 * expired. This means orderly_poweroff has not been able to
+> > > shut off
+> > > +	 * the system for some reason.
+> > > +	 *
+> > > +	 * Try to shut down the system immediately using
+> > > kernel_power_off
+> > > +	 * if populated
+> > > +	 */
+> > > +	WARN(1, "Hardware protection timed-out. Trying forced
+> > > poweroff\n");
+> > > +	kernel_power_off();
+> > 
+> > WARN() look like an overkill here. It prints many lines that are not
+> > much useful in this case. The function is called from well-known
+> > context (workqueue worker).
+> 
+> This was the existing code which I stole from the thermal_core. I kind
+> of think that eye-catching WARN is actually a good choice here. Doing
+> autonomous power-off without a WARNing does not sound good to me :)
+> 
+> > Also be aware that "panic_on_warn" commandline option will trigger
+> > panic() here.
+> 
+> Hmm.. If panic() hangs the system that might indeed be a problem. Now
+> we are (again) on a territory which I don't know well. I'd appreciate
+> any input from thermal folks and Mark. I don't like the idea of making
+> extreme things like power-off w/o well visible log-trace. Thus I would
+> like to have WARN()-like eye-catcher, even if the call-trace was not
+> too varying. It will at least point to this worker. Any better
+> suggestions than WARN()?
 
-elapsed time: 726m
+Heh, it might make sense to create a system wide API for these. I am
+sure that WARN() is mis-used this way on many other locations.
 
-configs tested: 109
-configs skipped: 93
+There already are two locations that use another eye-catching text.
+A common API might help to avoid duplication of the common parts,
+see
+https://lore.kernel.org/lkml/20210305194206.3165917-2-elver@google.com/
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Well, it might be out of scope for this patchset.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                       imx_v6_v7_defconfig
-mips                          rm200_defconfig
-riscv                             allnoconfig
-mips                         tb0226_defconfig
-m68k                          multi_defconfig
-arm                         nhk8815_defconfig
-powerpc                     tqm8541_defconfig
-powerpc                    socrates_defconfig
-mips                       rbtx49xx_defconfig
-xtensa                generic_kc705_defconfig
-arc                     haps_hs_smp_defconfig
-arm                            lart_defconfig
-mips                             allyesconfig
-parisc                generic-64bit_defconfig
-arm                          simpad_defconfig
-powerpc                       maple_defconfig
-powerpc                 linkstation_defconfig
-powerpc                  storcenter_defconfig
-ia64                             alldefconfig
-nios2                         3c120_defconfig
-powerpc                 mpc834x_itx_defconfig
-arc                              allyesconfig
-arm                      tct_hammer_defconfig
-sh                         apsh4a3a_defconfig
-mips                       bmips_be_defconfig
-m68k                        mvme147_defconfig
-mips                  decstation_64_defconfig
-m68k                          hp300_defconfig
-arm                      footbridge_defconfig
-sh                         ecovec24_defconfig
-i386                             alldefconfig
-sh                         ap325rxa_defconfig
-sh                          sdk7780_defconfig
-mips                           xway_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a003-20210513
-i386                 randconfig-a001-20210513
-i386                 randconfig-a005-20210513
-i386                 randconfig-a004-20210513
-i386                 randconfig-a002-20210513
-i386                 randconfig-a006-20210513
-x86_64               randconfig-a012-20210513
-x86_64               randconfig-a015-20210513
-x86_64               randconfig-a011-20210513
-x86_64               randconfig-a013-20210513
-x86_64               randconfig-a016-20210513
-x86_64               randconfig-a014-20210513
-i386                 randconfig-a016-20210513
-i386                 randconfig-a014-20210513
-i386                 randconfig-a011-20210513
-i386                 randconfig-a015-20210513
-i386                 randconfig-a012-20210513
-i386                 randconfig-a013-20210513
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-x86_64                           allyesconfig
-
-clang tested configs:
-x86_64               randconfig-a003-20210513
-x86_64               randconfig-a004-20210513
-x86_64               randconfig-a001-20210513
-x86_64               randconfig-a005-20210513
-x86_64               randconfig-a002-20210513
-x86_64               randconfig-a006-20210513
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Best Regards,
+Petr
