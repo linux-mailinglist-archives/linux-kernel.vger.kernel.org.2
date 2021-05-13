@@ -2,107 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC6EB37F269
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 06:49:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A39237F26F
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 06:52:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231131AbhEMEt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 00:49:59 -0400
-Received: from mail-il1-f178.google.com ([209.85.166.178]:39669 "EHLO
-        mail-il1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230381AbhEMEtv (ORCPT
+        id S230387AbhEMExI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 00:53:08 -0400
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:56011 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230112AbhEMExF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 00:49:51 -0400
-Received: by mail-il1-f178.google.com with SMTP id o9so16938647ilh.6
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 21:48:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1bFSgP0Vbpje3f5C9DQaOkMAM+6teiK5qo8mAH870dE=;
-        b=o5mzUjq9FIlMakN9tshJzAzifJ0POCE3mHrP5cbfTHTEgV6P4LXn0fEElBE77KLcWx
-         TLaLeD8gbdUQOJlhYcWZHC9fLa72MSYO2gvT0d7Ecy/3t83oLVchp3oUcrUpa02bpVK9
-         xA/NDZa+qmEYdXzjrBGwAVSiuRiTD24s8Ktu37HfSaSlDR2M6PoRf4UU7Z5+3xVZvLCt
-         BLnZPl0vJB+CRUhIhNwKV6enmj3m9mZWTEaype2LrUILV3B7Dha5pAYXAnfYVvZP7714
-         nEPV4r3umx6zb2+/Sx6x1MIgfFupgUd+2OQFbMDX1IncsNhv+76+IlFwq7+1ylggI/cU
-         zoeg==
-X-Gm-Message-State: AOAM53249chf3a+AtV70gAeImh4ZZF/mn9mMs7PUaqn0z/jXPkxxC9aX
-        0ld3LpSjEYhz7lx1vEMz3N8/gfBOdKo=
-X-Google-Smtp-Source: ABdhPJwOJCoVKNUPS/dWECjmQ1m5ZLe8CfXSzpiPqQdB1xAbjy5S2beojtnUISL61Rims7EqsSsDbw==
-X-Received: by 2002:a05:6e02:1c83:: with SMTP id w3mr34743860ill.125.1620881321072;
-        Wed, 12 May 2021 21:48:41 -0700 (PDT)
-Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
-        by smtp.gmail.com with ESMTPSA id b10sm729827ioz.35.2021.05.12.21.48.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 21:48:40 -0700 (PDT)
-Date:   Thu, 13 May 2021 04:48:39 +0000
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-kernel@vger.kernel.org, tj@kernel.org
-Subject: Re: [PATCH] MAINTAINERS: Add lib/percpu* as part of percpu entry
-Message-ID: <YJyvp//Yrva+uUqE@google.com>
-References: <20210511131737.185726-1-nborisov@suse.com>
- <YJqLNBLRP1+wMSWZ@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YJqLNBLRP1+wMSWZ@google.com>
+        Thu, 13 May 2021 00:53:05 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id AE372281C;
+        Thu, 13 May 2021 00:51:53 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Thu, 13 May 2021 00:51:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm2; bh=52aNsqNNX8zD1+Cg/6i/CZRsF/Iq63e
+        zVWrIeuWzduU=; b=If+LRK8+pAH+wPMgRDC+I0+D5VCFj1CJNPco4FjHlEiLYur
+        i2HrblvIrN4aMqNGQWOFpmoN22n/jmuiIH0EdNErcY5jrg7rJjcs/IxPcTtcGQGO
+        DCpx5iM+G3C98w3OuNE2TDFT+EqGCUJNK/iE/fdVLyXU70PPhwD+VGfemaHZcqvN
+        +yH1dtbdLUlZ+5+f56CudOdf0ZxpVG97kmiUcitMQMsoLCzCwPh6eEMAi3270c4/
+        xsO85bFXbWg510RXNfe8dAn3uk2CZRCdiWkdvi7eRngymy/t/zteHEDiMD1ysEyv
+        ZTY5yT5iA+mdKHe/mkPZ/Ii/dR/Pmn2hVr3nuTQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=52aNsq
+        NNX8zD1+Cg/6i/CZRsF/Iq63ezVWrIeuWzduU=; b=CU2iKN6GiGXOyMrXIh16m/
+        kKrkhFer8JMtEy32y84ZkVzT/Gs3RkoyCJet6yKZyua7J5SPxENxq+L9oD352jPr
+        ybKg12Cx/ViEd3HwKu/Ad9yO/Q/+jWacONYuUmbYrpvLvZzy1mmcnegiFjb9Jxs4
+        9EWP6/Zaf5rRz5yO7dwVX3Z38rwZbPFfYbAp/GbGt/9w+JYkUp8DamN5823ktNpb
+        6P9/C3F8tS/kJKK6NowHPU3/Ca2Iz+d+hnK0hq/iWwdCC/Z+1t4UTWrKhbTDPUD4
+        bjXGsBAwpQfcHC0MMnuUhdf9E/xTbKBB3qtodUjp3hpHV7MCzGx6VkbxFCAK5fTg
+        ==
+X-ME-Sender: <xms:aLCcYFCu-eoI_2NuTVDsxQJHfhpCGZCJAQmU85uU6PkdRo9z0erBLg>
+    <xme:aLCcYDg0obh7khA79gAugK_WaZqFCmxeAFHsnhwjBiorU0opM6aN7Dd-s-xBi4hXB
+    7kE6ZOzrfJORzxbSQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdehfedgkeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhepuddttdekueeggedvtddtueekiedutdfguedutdefieeuteefieelteet
+    vddthfeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:aLCcYAnkjRydyGI0qeTeTALJSIOmrjk0NmqCZleB8hJcgLDdcZwncg>
+    <xmx:aLCcYPyZee71nHes7DWOx7vzE8XPktFQyH52nT62ljMVLEa4sgwDDw>
+    <xmx:aLCcYKS8soIm5lDyB_iuyEE_C0VrCc7KQgqxmULFkRO2gJH_XNM04w>
+    <xmx:abCcYHKqGjtmiY1g9WbXAbd7FmsGvx99n5xsoGxaMKEo6LMG32EhZg>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 75B24A00079; Thu, 13 May 2021 00:51:52 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-448-gae190416c7-fm-20210505.004-gae190416
+Mime-Version: 1.0
+Message-Id: <1ffffb47-4846-4769-910f-6606a1364a74@www.fastmail.com>
+In-Reply-To: <20210429205002.70245-3-eajames@linux.ibm.com>
+References: <20210429205002.70245-1-eajames@linux.ibm.com>
+ <20210429205002.70245-3-eajames@linux.ibm.com>
+Date:   Thu, 13 May 2021 14:21:32 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Eddie James" <eajames@linux.ibm.com>, linux-leds@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, "Pavel Machek" <pavel@ucw.cz>,
+        "Jacek Anaszewski" <jacek.anaszewski@gmail.com>, robh+dt@kernel.or,
+        devicetree@vger.kernel.org, vishwa@linux.ibm.com
+Subject: =?UTF-8?Q?Re:_[PATCH_2/5]_leds:_leds-core:_Implement_the_retain-state-sh?=
+ =?UTF-8?Q?utdown_property?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 01:48:36PM +0000, Dennis Zhou wrote:
-> Hello,
-> 
-> On Tue, May 11, 2021 at 04:17:37PM +0300, Nikolay Borisov wrote:
-> > Without this patch get_maintainers.pl on a patch which modified
-> > lib/percpu_refcount.c produces:
-> > 
-> > Jens Axboe <axboe@kernel.dk> (commit_signer:2/5=40%)
-> > Ming Lei <ming.lei@redhat.com> (commit_signer:2/5=40%,authored:2/5=40%,added_lines:99/114=87%,removed_lines:34/43=79%)
-> > "Paul E. McKenney" <paulmck@kernel.org> (commit_signer:1/5=20%,authored:1/5=20%,added_lines:9/114=8%,removed_lines:3/43=7%)
-> > Tejun Heo <tj@kernel.org> (commit_signer:1/5=20%)
-> > Andrew Morton <akpm@linux-foundation.org> (commit_signer:1/5=20%)
-> > Nikolay Borisov <nborisov@suse.com> (authored:1/5=20%,removed_lines:3/43=7%)
-> > Joe Perches <joe@perches.com> (authored:1/5=20%,removed_lines:3/43=7%)
-> > linux-kernel@vger.kernel.org (open list)
-> > 
-> > Whereas with the patch applied it now (properly) prints:
-> > 
-> > Dennis Zhou <dennis@kernel.org> (maintainer:PER-CPU MEMORY ALLOCATOR)
-> > Tejun Heo <tj@kernel.org> (maintainer:PER-CPU MEMORY ALLOCATOR)
-> > Christoph Lameter <cl@linux.com> (maintainer:PER-CPU MEMORY ALLOCATOR)
-> > linux-kernel@vger.kernel.org (open list)
-> > 
-> > Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-> > ---
-> >  MAINTAINERS | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index d92f85ca831d..b18fed606ddd 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -14004,6 +14004,7 @@ S:	Maintained
-> >  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/dennis/percpu.git
-> >  F:	arch/*/include/asm/percpu.h
-> >  F:	include/linux/percpu*.h
-> > +F:	lib/percpu*.c
-> >  F:	mm/percpu*.c
-> >  
-> >  PER-TASK DELAY ACCOUNTING
-> > -- 
-> > 2.25.1
-> > 
-> 
-> Yeah, in the past I've taken percpu_ref stuff, so I think this makes
-> sense. If no one has any objections I'll pick this up and your other
-> patch.
-> 
-> Thanks,
-> Dennis
 
-I've applied this to for-5.13-fixes. I've also updated the mailing list
-to linux-mm.
 
-Thanks,
-Dennis
+On Fri, 30 Apr 2021, at 06:19, Eddie James wrote:
+> Read the retain-state-shutdown device tree property to set the
+> existing LED_RETAIN_AT_SHUTDOWN flag. Then check the flag when
+> unregistering, and if set, don't set the brightness to OFF. This
+> is useful for systems that want to keep the HW state of the LED
+> across reboots.
+> 
+> Signed-off-by: Eddie James <eajames@linux.ibm.com>
+> ---
+>  drivers/leds/led-class.c | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/leds/led-class.c b/drivers/leds/led-class.c
+> index 2e495ff67856..f2f29318d312 100644
+> --- a/drivers/leds/led-class.c
+> +++ b/drivers/leds/led-class.c
+> @@ -354,10 +354,15 @@ int led_classdev_register_ext(struct device *parent,
+>  		if (ret < 0)
+>  			return ret;
+>  
+> -		if (init_data->fwnode)
+> +		if (init_data->fwnode) {
+>  			fwnode_property_read_string(init_data->fwnode,
+>  				"linux,default-trigger",
+>  				&led_cdev->default_trigger);
+> +
+> +			if (fwnode_property_present(init_data->fwnode,
+> +						    "retain-state-shutdown"))
+> +				led_cdev->flags |= LED_RETAIN_AT_SHUTDOWN;
+
+This is what we need, but I notice the pca955x driver is calling 
+through devm_led_classdev_register() which passes NULL through 
+init_data. So we won't get the result we want from this series as I 
+understand it.
+
+Andrew
