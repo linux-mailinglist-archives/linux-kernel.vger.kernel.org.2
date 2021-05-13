@@ -2,111 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C76F37FDA2
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 20:53:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6156037FDB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 20:59:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231793AbhEMSzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 14:55:05 -0400
-Received: from mga18.intel.com ([134.134.136.126]:21422 "EHLO mga18.intel.com"
+        id S231932AbhEMTA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 15:00:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230366AbhEMSzD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 14:55:03 -0400
-IronPort-SDR: bdavYTQgf/Zo8bNZMMVUMwO7biC10MI8sBpElUx0snHgnn5TIOOKRkrV/Xs9rpAlGWM9WzdQa2
- DNoXCjIwpRgA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9983"; a="187438245"
-X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
-   d="scan'208";a="187438245"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 11:53:51 -0700
-IronPort-SDR: 9Up57c0CDb2ZmIMevyH92mTBnr53E6sGPaiKBteRDKCDfWtXeUgBwaGMn3vmPUXfWWGWYM4yMA
- Ije96e4uOsyg==
-X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
-   d="scan'208";a="626346317"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 11:53:50 -0700
-Date:   Thu, 13 May 2021 11:53:49 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "wangzhou1@hisilicon.com" <wangzhou1@hisilicon.com>,
-        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH v4 1/2] iommu/sva: Tighten SVA bind API with explicit
- flags
-Message-ID: <20210513185349.GA801495@agluck-desk2.amr.corp.intel.com>
-References: <20210511091452.721e9a03@jacob-builder>
- <20210511163521.GN1002214@nvidia.com>
- <20210511110550.477a434f@jacob-builder>
- <20210511194726.GP1002214@nvidia.com>
- <YJt3tGlzFK3b4E82@infradead.org>
- <20210513060012.0fcc7653@jacob-builder>
- <20210513133834.GC1002214@nvidia.com>
- <20210513081050.5cf6a6ed@jacob-builder>
- <dd52760ab65a40328b4c1a26ddd0e1d0@intel.com>
- <20210513173303.GL1002214@nvidia.com>
+        id S230352AbhEMTA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 15:00:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9ED4061264;
+        Thu, 13 May 2021 18:59:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620932356;
+        bh=CNlWPuDlH4KO4XDrkInCB6C/vySWY4yRCKjQVEyQquI=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=jbm4kRsmye3VePuEY0uiOXpxuAR45Yth9vGMIuLZA/281w7viNipT9Pkj3hSuhNTn
+         MROnDhqdIMGP1KxFI7cRE15VJR7+3Eyn9jV6EythV+BQZDuC8abju9f7vBEEmCxQOe
+         e2ZWWrYSP7vodJweDjUZtwu5NYx0o6skn/u4qy1SdvhyIJzjMNdEVcybKv6cQ/Ckyo
+         QkZXXiGDcBrmK9nDJ1i3SFQdmBOgaWtfMzZUWJU0NTL2e3QSfuGTucKEPA1bhpNx+7
+         eyWaWJq8HO+8+iHN3d1RoVR66e8oTcxfKqlB3E94hEyffhJ89wsxwaj61l4MIQFXu+
+         mjBK0ZitZL/SA==
+Subject: Re: [PATCH kernel v3] powerpc/makefile: Do not redefine $(CPP) for
+ preprocessor
+To:     Alexey Kardashevskiy <aik@ozlabs.ru>, linuxppc-dev@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Segher Boessenkool <segher@kernel.crashing.org>
+References: <20210513115904.519912-1-aik@ozlabs.ru>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <dedc7262-2956-37b2-ebfd-ae8eb9b56716@kernel.org>
+Date:   Thu, 13 May 2021 11:59:14 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210513173303.GL1002214@nvidia.com>
+In-Reply-To: <20210513115904.519912-1-aik@ozlabs.ru>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 02:33:03PM -0300, Jason Gunthorpe wrote:
-> The page table under the kernel PASID should behave the same way that
-> the kernel would operate the page table assigned to a kernel RID.
+On 5/13/2021 4:59 AM, Alexey Kardashevskiy wrote:
+> The $(CPP) (do only preprocessing) macro is already defined in Makefile.
+> However POWERPC redefines it and adds $(KBUILD_CFLAGS) which results
+> in flags duplication. Which is not a big deal by itself except for
+> the flags which depend on other flags and the compiler checks them
+> as it parses the command line.
 > 
-> If the kernel has security off then the PASID should map to all
-> physical memory, just like the RID does.
+> Specifically, scripts/Makefile.build:304 generates ksyms for .S files.
+> If clang+llvm+sanitizer are enabled, this results in
 > 
-> If security is on then every DMA map needs to be loaded into the
-> PASID's io page table no different than a RID page table.
+> -emit-llvm-bc -fno-lto -flto -fvisibility=hidden \
+>   -fsanitize=cfi-mfcall -fno-lto  ...
 > 
-> "kernel SVA" is, IMHO, not a desirable thing, it completely destroys
-> the kernel's DMA security model.
+> in the clang command line and triggers error:
 > 
-> > If people want to use an accelerator on memory allocated by vmalloc()
-> > things will get more complicated. But maybe we can delay solving that
-> > problem until someone comes up with a real use case that needs to
-> > do this?
+> clang-13: error: invalid argument '-fsanitize=cfi-mfcall' only allowed with '-flto'
 > 
-> If you have a HW limitation that the device can only issue TLPs
-> with a PASID, even for kernel users, then I think the proper thing is
-> to tell the IOMMU layer than a certain 'struct device' enters
-> PASID-only mode and the IOMMU layer should construct an appropriate
-> PASID and flow the dma operations through it.
+> This removes unnecessary CPP redefinition. Which works fine as in most
+> place KBUILD_CFLAGS is passed to $CPP except
+> arch/powerpc/kernel/vdso64/vdso(32|64).lds. To fix vdso, this does:
+> 1. add -m(big|little)-endian to $CPP
+> 2. add target to $KBUILD_CPPFLAGS as otherwise clang ignores -m(big|little)-endian if
+> the building platform does not support big endian (such as x86).
 > 
-> Pretending the DMA layer doesn't exist and that PASID gets a free pass
-> is not OK in the kernel.
+> Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+> ---
+> Changes:
+> v3:
+> * moved vdso cleanup in a separate patch
+> * only add target to KBUILD_CPPFLAGS for CLANG
+> 
+> v2:
+> * fix KBUILD_CPPFLAGS
+> * add CLANG_FLAGS to CPPFLAGS
+> ---
+>   Makefile              | 1 +
+>   arch/powerpc/Makefile | 3 ++-
+>   2 files changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Makefile b/Makefile
+> index 15b6476d0f89..5b545bef7653 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -576,6 +576,7 @@ CC_VERSION_TEXT = $(subst $(pound),,$(shell $(CC) --version 2>/dev/null | head -
+>   ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
+>   ifneq ($(CROSS_COMPILE),)
+>   CLANG_FLAGS	+= --target=$(notdir $(CROSS_COMPILE:%-=%))
+> +KBUILD_CPPFLAGS	+= --target=$(notdir $(CROSS_COMPILE:%-=%))
 
-I can see why a tight security model is needed to stop
-random devices having access to mamory that they should
-not be able to access.  Now that PCIe devices can be plugged
-into Thunderbolt ports on computers, nobody wants to repeat
-the disaster that Firewire ports created for systems over
-a decade ago.
+You can avoid the duplication here by just doing:
 
-But I'd like to challege the one-size-fits-all policy. There's
-a big difference between a random device plugged into a port
-(which may even lie about its VendorID/DeviceID) and a device
-that is part of the CPU socket.
+KBUILD_CPPFLAGS	+= $(CLANG_FLAGS)
 
-I'd like people to think of DSA as an extension to the instruction
-set. It implements asynchronous instructions like "MEMFILL" and
-"MEMCOPY". These can be limited in scope when executed in user
-processes or guests. But when executed by the host OS ring0 code
-they can have all the same access that ring0 code has when it
-dereferences a pointer.
+I am still not super happy about the flag duplication but I am not sure 
+I can think of a better solution. If KBUILD_CPPFLAGS are always included 
+when building .o files, maybe we should just add $(CLANG_FLAGS) to 
+KBUILD_CPPFLAGS instead of KBUILD_CFLAGS?
 
--Tony
+>   endif
+>   ifeq ($(LLVM_IAS),1)
+>   CLANG_FLAGS	+= -integrated-as
+> diff --git a/arch/powerpc/Makefile b/arch/powerpc/Makefile
+> index 3212d076ac6a..306bfd2797ad 100644
+> --- a/arch/powerpc/Makefile
+> +++ b/arch/powerpc/Makefile
+> @@ -76,6 +76,7 @@ endif
+>   
+>   ifdef CONFIG_CPU_LITTLE_ENDIAN
+>   KBUILD_CFLAGS	+= -mlittle-endian
+> +KBUILD_CPPFLAGS	+= -mlittle-endian
+>   KBUILD_LDFLAGS	+= -EL
+>   LDEMULATION	:= lppc
+>   GNUTARGET	:= powerpcle
+> @@ -83,6 +84,7 @@ MULTIPLEWORD	:= -mno-multiple
+>   KBUILD_CFLAGS_MODULE += $(call cc-option,-mno-save-toc-indirect)
+>   else
+>   KBUILD_CFLAGS += $(call cc-option,-mbig-endian)
+> +KBUILD_CPPFLAGS += $(call cc-option,-mbig-endian)
+>   KBUILD_LDFLAGS	+= -EB
+>   LDEMULATION	:= ppc
+>   GNUTARGET	:= powerpc
+> @@ -208,7 +210,6 @@ KBUILD_CPPFLAGS	+= -I $(srctree)/arch/$(ARCH) $(asinstr)
+>   KBUILD_AFLAGS	+= $(AFLAGS-y)
+>   KBUILD_CFLAGS	+= $(call cc-option,-msoft-float)
+>   KBUILD_CFLAGS	+= -pipe $(CFLAGS-y)
+> -CPP		= $(CC) -E $(KBUILD_CFLAGS)
+>   
+>   CHECKFLAGS	+= -m$(BITS) -D__powerpc__ -D__powerpc$(BITS)__
+>   ifdef CONFIG_CPU_BIG_ENDIAN
+> 
+
