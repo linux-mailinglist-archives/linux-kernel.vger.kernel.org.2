@@ -2,83 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0FAB37F8CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 15:30:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C28D37F877
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 15:16:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234030AbhEMNbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 09:31:23 -0400
-Received: from mail.manjaro.org ([176.9.38.148]:57534 "EHLO mail.manjaro.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233682AbhEMNbR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 09:31:17 -0400
-X-Greylist: delayed 1081 seconds by postgrey-1.27 at vger.kernel.org; Thu, 13 May 2021 09:31:16 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by mail.manjaro.org (Postfix) with ESMTP id 03107220FF6;
-        Thu, 13 May 2021 15:12:05 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at manjaro.org
-Received: from mail.manjaro.org ([127.0.0.1])
-        by localhost (manjaro.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id uvKiGvuW2myG; Thu, 13 May 2021 15:12:01 +0200 (CEST)
-From:   Tobias Schramm <t.schramm@manjaro.org>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>
-Cc:     Jernej Skrabec <jernej.skrabec@siol.net>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Tobias Schramm <t.schramm@manjaro.org>
-Subject: [PATCH] clk: sunxi-ng: v3s: fix incorrect postdivider on pll-audio
-Date:   Thu, 13 May 2021 15:13:15 +0200
-Message-Id: <20210513131315.2059451-1-t.schramm@manjaro.org>
+        id S230418AbhEMNRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 09:17:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233463AbhEMNRD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 09:17:03 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23421C061574;
+        Thu, 13 May 2021 06:15:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=CqhS/DjApfCwkLFCvP6kllDyz5SMs1FoNvFzUNiKyfA=; b=d8SS8qgwVEBfC/z564sa+2N9DF
+        Wzl+TkORKwOMT+wsnvHLbotWjCbktxMqEnEd2QDACc1JoP6nuoT0gG+x6tSw0bH/nMZmg3vcFw6bk
+        T9uVRNj0t06RnJG86r4+uzrnLHwlQSMb56hyRRPYQTBnk6U+x/MSZe3SCKnWIz/ozlPPAYy1gj+4q
+        HvSfyuYYfdpXO5LS6n3ggU8Sml9RM0tpfiBgwZrFWjnivtBXZC1AjPstssMqYjg0jJRha16bVMCV1
+        kn3Rz01pS2/4jQSLQY4ZUixfzSpIiGfI8UfZ528pvwk//NUchwwjGJ7iq2xlPLP94iBxGBki80CBw
+        OJddTV1Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lhBB6-009RwN-5m; Thu, 13 May 2021 13:15:10 +0000
+Date:   Thu, 13 May 2021 14:15:00 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Ralph Campbell <rcampbell@nvidia.com>
+Cc:     linux-mm@kvack.org, kvm-ppc@vger.kernel.org,
+        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Bharata B Rao <bharata@linux.ibm.com>,
+        Zi Yan <ziy@nvidia.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [RFC PATCH v3 0/2] mm: remove extra ZONE_DEVICE struct page
+ refcount
+Message-ID: <YJ0mVAK7OjwIGnMe@casper.infradead.org>
+References: <20201001181715.17416-1-rcampbell@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201001181715.17416-1-rcampbell@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 46060be6d840 ("clk: sunxi-ng: v3s: use sigma-delta modulation for audio-pll")
-changed the audio pll on the Allwinner V3s and V3 SoCs to use
-sigma-delta modulation. In the process the declaration of fixed postdivider
-providing "pll-audio" was adjusted to provide the desired clock rates from
-the now sigma-delta modulated pll.
-However, while the divider used for calculations by the clock framework
-was adjusted the actual divider programmed into the hardware in
-sun8i_v3_v3s_ccu_init was left at "divide by four". This broke the
-"pll-audio" clock, now only providing quater the expected clock rate.
-It would in general be desirable to program the postdivider for
-"pll-audio" to four, such that a broader range of frequencies were
-available on the pll outputs. But the clock for the integrated codec
-"ac-dig" does not feature a mux that allows to select from all pll outputs
-as it is just a simple clock gate connected to "pll-audio". Thus we need
-to set the postdivider to one to be able to provide the 22.5792MHz and
-24.576MHz rates required by the internal sun4i codec.
+On Thu, Oct 01, 2020 at 11:17:13AM -0700, Ralph Campbell wrote:
+> This is still an RFC because after looking at the pmem/dax code some
+> more, I realized that the ZONE_DEVICE struct pages are being inserted
+> into the process' page tables with vmf_insert_mixed() and a zero
+> refcount on the ZONE_DEVICE struct page. This is sort of OK because
+> insert_pfn() increments the reference count on the pgmap which is what
+> prevents memunmap_pages() from freeing the struct pages and it doesn't
+> check for a non-zero struct page reference count.
+> But, any calls to get_page() will hit the VM_BUG_ON_PAGE() that
+> checks for a reference count == 0.
 
-This patches fixes the incorrect clock rate by forcing the postdivider to
-one in sun8i_v3_v3s_ccu_init.
-
-Fixes: 46060be6d840 ("clk: sunxi-ng: v3s: use sigma-delta modulation for audio-pll")
-Signed-off-by: Tobias Schramm <t.schramm@manjaro.org>
----
- drivers/clk/sunxi-ng/ccu-sun8i-v3s.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/clk/sunxi-ng/ccu-sun8i-v3s.c b/drivers/clk/sunxi-ng/ccu-sun8i-v3s.c
-index a774942cb153..f49724a22540 100644
---- a/drivers/clk/sunxi-ng/ccu-sun8i-v3s.c
-+++ b/drivers/clk/sunxi-ng/ccu-sun8i-v3s.c
-@@ -817,10 +817,10 @@ static void __init sun8i_v3_v3s_ccu_init(struct device_node *node,
- 		return;
- 	}
- 
--	/* Force the PLL-Audio-1x divider to 4 */
-+	/* Force the PLL-Audio-1x divider to 1 */
- 	val = readl(reg + SUN8I_V3S_PLL_AUDIO_REG);
- 	val &= ~GENMASK(19, 16);
--	writel(val | (3 << 16), reg + SUN8I_V3S_PLL_AUDIO_REG);
-+	writel(val, reg + SUN8I_V3S_PLL_AUDIO_REG);
- 
- 	sunxi_ccu_probe(node, reg, ccu_desc);
- }
--- 
-2.30.1
-
+This seems to have gone quiet.  What needs to happen to resurrect this?
