@@ -2,74 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 928C137F92B
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 15:51:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCBE737F936
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 15:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234265AbhEMNwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 09:52:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57406 "EHLO mail.kernel.org"
+        id S234230AbhEMN51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 09:57:27 -0400
+Received: from mga06.intel.com ([134.134.136.31]:50753 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234240AbhEMNv4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 09:51:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C2029613C8;
-        Thu, 13 May 2021 13:50:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620913846;
-        bh=CEA3FRQtgAztdkKO3KsZGDizTo3tS40qy8xIl9x5pbo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WNfS/rZ0bk0a17LDgRG87v+2N5Xv39RBnKGdAR/l5SGXGb7YIaeE3XRGzi99Hg9vF
-         0B3Nk2edw5woKPNwOoKlxkqiw1nOiox50+gn8uwhr3Ei1CQ7YRlcYzYJievKukdPaV
-         DfkZMUMLy8n30ckSK5jGDCujPQNrwn/gW9hlcC3A=
-Date:   Thu, 13 May 2021 15:50:43 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Gong Ruiqi <gongruiqi1@huawei.com>
-Cc:     Wang Weiyang <wangweiyang2@huawei.com>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH -next] drivers/base/node.c: make CACHE_ATTR define static
- DEVICE_ATTR_RO
-Message-ID: <YJ0usxH4Li+fPRUf@kroah.com>
-References: <20210513110716.25791-1-gongruiqi1@huawei.com>
- <YJ0M5HcXIQQFOTEq@kroah.com>
- <017d9fae-328f-e93f-095e-bdfa0cc2f2ff@huawei.com>
+        id S234247AbhEMN5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 09:57:10 -0400
+IronPort-SDR: eCyfkbWqkK/J+JTmoUOg29SvaEtZO/NgZEvzZpB8BxfSPDZv3Mrhzen4Vq/K+43+nygKXnSole
+ Z7v6+1JWJ16g==
+X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="261192489"
+X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
+   d="scan'208";a="261192489"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 06:55:40 -0700
+IronPort-SDR: E7MsCeLURvjkO8scuNIcUFItxDAsnvhqWBHYpktm7lmYLXo6ysWw8GHdgIjK/e3A1ZeSRxH17p
+ 1xxoRRCsMNSQ==
+X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
+   d="scan'208";a="400995872"
+Received: from bchunch-mobl.amr.corp.intel.com (HELO [10.209.17.244]) ([10.209.17.244])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 06:55:38 -0700
+Subject: Re: [RFC PATCH 2/2] mempolicy: kill MPOL_F_LOCAL bit
+To:     Feng Tang <feng.tang@intel.com>, Michal Hocko <mhocko@suse.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Widawsky, Ben" <ben.widawsky@intel.com>
+Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Williams, Dan J" <dan.j.williams@intel.com>, ying.huang@intel.com
+References: <1615952410-36895-1-git-send-email-feng.tang@intel.com>
+ <1615952410-36895-4-git-send-email-feng.tang@intel.com>
+ <YHblLevoUZ6+AvVZ@dhcp22.suse.cz>
+ <20210420071625.GB48282@shbuild999.sh.intel.com>
+ <20210513072545.GC44993@shbuild999.sh.intel.com>
+From:   Andi Kleen <ak@linux.intel.com>
+Message-ID: <8e1cf4dd-1bb2-fbcb-4960-65db8704ec38@linux.intel.com>
+Date:   Thu, 13 May 2021 06:55:38 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <017d9fae-328f-e93f-095e-bdfa0cc2f2ff@huawei.com>
+In-Reply-To: <20210513072545.GC44993@shbuild999.sh.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 09:22:44PM +0800, Gong Ruiqi wrote:
-> 
-> 
-> On 2021/05/13 19:26, Greg Kroah-Hartman wrote:
-> > On Thu, May 13, 2021 at 07:07:16PM +0800, Ruiqi Gong wrote:
-> > > The Sparse tool reports as follows:
-> > > 
-> > > drivers/base/node.c:239:1: warning:
-> > >   symbol 'dev_attr_line_size' was not declared. Should it be static?
-> > > drivers/base/node.c:240:1: warning:
-> > >   symbol 'dev_attr_indexing' was not declared. Should it be static?
-> > > 
-> > > These symbols (and several others) are defined by DEVICE_ATTR_RO(name) in
-> > > CACHE_ATTR(name, fmt), and all of them are not used outside of node.c. So let's
-> > > mark DEVICE_ATTR_RO(name) static to solve these complains from Sparse.
-> > 
-> > Why not fix them all at once?  Why only one here?
-> 
-> Sorry for not making it clear enough. Actually the patch does fix them all.
-> Those symbols reported by Sparse are generated when two of the following
-> macros are expanded:
-> 
->     CACHE_ATTR(size, "%llu")
->     CACHE_ATTR(line_size, "%u")
->     CACHE_ATTR(indexing, "%u")
->     CACHE_ATTR(write_policy, "%u")
-> 
-> So one fix of the CACHE_ATTR's definition fixs them all.
 
-Ok, can you please rewrite the changelog text to make it more clear?
+On 5/13/2021 12:25 AM, Feng Tang wrote:
+> mempolicy: kill MPOL_F_LOCAL bit
+>
+> Now the only remaining case of actual 'local' policy faked by
+> 'prefer' policy plus MPOL_F_LOCAL bit is:
+>
+> A valid 'prefer' policy with a valid 'preferred' node is 'rebind'
+> to a nodemask which doesn't contains the 'preferred' node, then it
+> will handle allocation with 'local' policy.
+>
+> Add a new 'MPOL_F_LOCAL_TEMP' bit for this case, and kill the
+> MPOL_F_LOCAL bit, which could simplify the code much.
 
-thanks,
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
 
-greg k-h
+
+-Andi
+
