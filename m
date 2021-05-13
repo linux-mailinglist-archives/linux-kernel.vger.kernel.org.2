@@ -2,166 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B002037F700
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 13:44:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1C1237F706
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 13:45:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233589AbhEMLpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 07:45:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34460 "EHLO
+        id S233529AbhEMLqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 07:46:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231443AbhEMLow (ORCPT
+        with ESMTP id S233464AbhEMLqG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 07:44:52 -0400
-Received: from plekste.mt.lv (bute.mt.lv [IPv6:2a02:610:7501:2000::195])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B6CEC061761;
-        Thu, 13 May 2021 04:43:42 -0700 (PDT)
-Received: from [2a02:610:7501:feff:1ccf:41ff:fe50:18b9] (helo=localhost.localdomain)
-        by plekste.mt.lv with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <gatis@mikrotik.com>)
-        id 1lh9kb-0007HF-Hj; Thu, 13 May 2021 14:43:33 +0300
-From:   Gatis Peisenieks <gatis@mikrotik.com>
-To:     chris.snook@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        hkallweit1@gmail.com, jesse.brandeburg@intel.com,
-        dchickles@marvell.com, tully@mikrotik.com, eric.dumazet@gmail.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Gatis Peisenieks <gatis@mikrotik.com>
-Subject: [PATCH net-next v2 5/5] atl1c: improve link detection reliability on Mikrotik 10/25G NIC
-Date:   Thu, 13 May 2021 14:43:26 +0300
-Message-Id: <20210513114326.699663-6-gatis@mikrotik.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210513114326.699663-1-gatis@mikrotik.com>
-References: <20210513114326.699663-1-gatis@mikrotik.com>
+        Thu, 13 May 2021 07:46:06 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75EC5C061574;
+        Thu, 13 May 2021 04:44:54 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id a25so6497271edr.12;
+        Thu, 13 May 2021 04:44:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fwzbWl952fr1P0i3advgiqJAkCDz6mXDvjh1DVmI6Og=;
+        b=hpFaMfGXlNFpwUyf3GqvGgp/CVBDnzn5C/Acnmbqx5YDZ56B0diF/EPDk8I5OjzkCt
+         xiqGQqYocsG8LYxn0SG8GDXvL2Jjytw8VEzS5xUz49cuUOcvFwlqoTK0hW6E0L47OKwz
+         GbEnOkz/c8mpAXwiifYgktaX8cR3xjIUWrlfgELULem0TrqYdf0T63kucbwYzuHKqRpH
+         V1IqqL8Qxhc/Y6yA8K47KM/NGzrYO2m8lvomKC31jWN8LN2L0BwbOJDMo04Vy+vMNUqg
+         a6BpQ4lAtf8hNSVfrevXxA5QtAb+Y8yhlRKqf7U2Jdtb0XjAPO1arkG17YbyE2sgpdkg
+         BQiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=fwzbWl952fr1P0i3advgiqJAkCDz6mXDvjh1DVmI6Og=;
+        b=DeeXIx/PjrS6WVxS3PMxAufxRMdu1MVyJrdwEvvFInmsTVQsJwsVRrX7D6Gw580FRR
+         Ffz3rAsDlxWf1ANlYKpaJuPfccM8UpUJbfDB2TLEEsfg+THH4JAr2aFysAa+T2z8VrfP
+         reM8OLRiiDd7j95vk1KQmAHvQ4dv947EbeglwIOWUQguErUF7FaZmt+dTUde8NBozeHU
+         /EHzmccQWocDK5vz5JABOeLl4Y2BEuI8bcMASdb+mocVBqstGl59N/tuz8e6rQli2Nw4
+         Pl3vos5u/Q4aD2T8xhLq525BlZwbXdob8dtPMXvXepE6hL65MHiL0SNxutjROzY4zmWa
+         iDIQ==
+X-Gm-Message-State: AOAM53362KnYYhKyymAOIIzAI/qVECL/LlsQ26plCXhViO94+DQHVyCI
+        o3qbaS7tnGMmIgWXM7tMkRA=
+X-Google-Smtp-Source: ABdhPJz49bKr2qwULSaCzQhwDbmJIg7e1vfwWmaFbXe1JyB7Tvy61vu10yE5W7cN7cO+asnqdqxiWQ==
+X-Received: by 2002:aa7:cd46:: with SMTP id v6mr48523581edw.16.1620906293180;
+        Thu, 13 May 2021 04:44:53 -0700 (PDT)
+Received: from gmail.com (0526E777.dsl.pool.telekom.hu. [5.38.231.119])
+        by smtp.gmail.com with ESMTPSA id k9sm1792772eje.102.2021.05.13.04.44.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 May 2021 04:44:52 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Thu, 13 May 2021 13:44:51 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     "H. Peter Anvin" <hpa@zytor.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@elte.hu>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: [PATCH] x86/asm: Make <asm/asm.h> valid on cross-builds as well
+Message-ID: <YJ0RM2JIfFL8a0X2@gmail.com>
+References: <20210513120515.7060879c@canb.auug.org.au>
+ <YJ0Ew9gjprpCByxF@gmail.com>
+ <4A5E6F25-37B6-4114-AB3C-476F6F551DBD@zytor.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4A5E6F25-37B6-4114-AB3C-476F6F551DBD@zytor.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mikrotik 10/25G NIC emulates the MDIO accesses, but the emulation is
-not 100% reliable - the MDIO ops occasionally can timeout.
 
-This adds a reliable way of detecting link on Mikrotik 10/25G NIC.
+* H. Peter Anvin <hpa@zytor.com> wrote:
 
-Signed-off-by: Gatis Peisenieks <gatis@mikrotik.com>
+> Needed some head scratching, but then...
+> 
+> It makes sense for the cross-build: it's building for the host, and a 
+> non-x86 machine isn't doing to have a register named "%rsp".
+
+Oh, indeed, sfr is building on powerpc64 I think?
+
+> So this needs to be protected from non-kernel use either via __KERNEL__ 
+> or by factoring the basic macros out into a separate file.
+
+So something like the below?
+
+The exception table stuff is definitely kernel-only. The others could, in 
+principle, be used by tooling as well.
+
+Thanks,
+
+	Ingo
+
+=======================>
+From: Ingo Molnar <mingo@kernel.org>
+Date: Thu, 13 May 2021 13:41:41 +0200
+Subject: [PATCH] x86/asm: Make <asm/asm.h> valid on cross-builds as well
+
+Stephen Rothwell reported that the objtool cross-build breaks on
+non-x86 hosts:
+
+  > tools/arch/x86/include/asm/asm.h:185:24: error: invalid register name for 'current_stack_pointer'
+  >   185 | register unsigned long current_stack_pointer asm(_ASM_SP);
+  >       |                        ^~~~~~~~~~~~~~~~~~~~~
+
+The PowerPC host obviously doesn't know much about x86 register names.
+
+Protect the kernel-specific bits of <asm/asm.h>, so that it can be
+included by tooling and cross-built.
+
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
 ---
- drivers/net/ethernet/atheros/atl1c/atl1c_hw.c | 26 ++++++++++++++-----
- drivers/net/ethernet/atheros/atl1c/atl1c_hw.h |  1 +
- .../net/ethernet/atheros/atl1c/atl1c_main.c   | 18 +++++--------
- 3 files changed, 27 insertions(+), 18 deletions(-)
+ arch/x86/include/asm/asm.h       | 4 ++++
+ tools/arch/x86/include/asm/asm.h | 4 ++++
+ 2 files changed, 8 insertions(+)
 
-diff --git a/drivers/net/ethernet/atheros/atl1c/atl1c_hw.c b/drivers/net/ethernet/atheros/atl1c/atl1c_hw.c
-index ddb9442416cd..7dff20350865 100644
---- a/drivers/net/ethernet/atheros/atl1c/atl1c_hw.c
-+++ b/drivers/net/ethernet/atheros/atl1c/atl1c_hw.c
-@@ -636,6 +636,23 @@ int atl1c_phy_init(struct atl1c_hw *hw)
- 	return 0;
- }
+diff --git a/arch/x86/include/asm/asm.h b/arch/x86/include/asm/asm.h
+index 507a37a46027..3ad3da9a7d97 100644
+--- a/arch/x86/include/asm/asm.h
++++ b/arch/x86/include/asm/asm.h
+@@ -120,6 +120,8 @@
+ # define CC_OUT(c) [_cc_ ## c] "=qm"
+ #endif
  
-+bool atl1c_get_link_status(struct atl1c_hw *hw)
-+{
-+	u16 phy_data;
++#ifdef __KERNEL__
 +
-+	if (hw->nic_type == athr_mt) {
-+		u32 spd;
+ /* Exception table entry */
+ #ifdef __ASSEMBLY__
+ # define _ASM_EXTABLE_HANDLE(from, to, handler)			\
+@@ -186,4 +188,6 @@ register unsigned long current_stack_pointer asm(_ASM_SP);
+ #define ASM_CALL_CONSTRAINT "+r" (current_stack_pointer)
+ #endif /* __ASSEMBLY__ */
+ 
++#endif /* __KERNEL__ */
 +
-+		AT_READ_REG(hw, REG_MT_SPEED, &spd);
-+		return !!spd;
-+	}
+ #endif /* _ASM_X86_ASM_H */
+diff --git a/tools/arch/x86/include/asm/asm.h b/tools/arch/x86/include/asm/asm.h
+index 507a37a46027..3ad3da9a7d97 100644
+--- a/tools/arch/x86/include/asm/asm.h
++++ b/tools/arch/x86/include/asm/asm.h
+@@ -120,6 +120,8 @@
+ # define CC_OUT(c) [_cc_ ## c] "=qm"
+ #endif
+ 
++#ifdef __KERNEL__
 +
-+	/* MII_BMSR must be read twice */
-+	atl1c_read_phy_reg(hw, MII_BMSR, &phy_data);
-+	atl1c_read_phy_reg(hw, MII_BMSR, &phy_data);
-+	return !!(phy_data & BMSR_LSTATUS);
-+}
+ /* Exception table entry */
+ #ifdef __ASSEMBLY__
+ # define _ASM_EXTABLE_HANDLE(from, to, handler)			\
+@@ -186,4 +188,6 @@ register unsigned long current_stack_pointer asm(_ASM_SP);
+ #define ASM_CALL_CONSTRAINT "+r" (current_stack_pointer)
+ #endif /* __ASSEMBLY__ */
+ 
++#endif /* __KERNEL__ */
 +
- /*
-  * Detects the current speed and duplex settings of the hardware.
-  *
-@@ -695,15 +712,12 @@ int atl1c_phy_to_ps_link(struct atl1c_hw *hw)
- 	int ret = 0;
- 	u16 autoneg_advertised = ADVERTISED_10baseT_Half;
- 	u16 save_autoneg_advertised;
--	u16 phy_data;
- 	u16 mii_lpa_data;
- 	u16 speed = SPEED_0;
- 	u16 duplex = FULL_DUPLEX;
- 	int i;
- 
--	atl1c_read_phy_reg(hw, MII_BMSR, &phy_data);
--	atl1c_read_phy_reg(hw, MII_BMSR, &phy_data);
--	if (phy_data & BMSR_LSTATUS) {
-+	if (atl1c_get_link_status(hw)) {
- 		atl1c_read_phy_reg(hw, MII_LPA, &mii_lpa_data);
- 		if (mii_lpa_data & LPA_10FULL)
- 			autoneg_advertised = ADVERTISED_10baseT_Full;
-@@ -726,9 +740,7 @@ int atl1c_phy_to_ps_link(struct atl1c_hw *hw)
- 		if (mii_lpa_data) {
- 			for (i = 0; i < AT_SUSPEND_LINK_TIMEOUT; i++) {
- 				mdelay(100);
--				atl1c_read_phy_reg(hw, MII_BMSR, &phy_data);
--				atl1c_read_phy_reg(hw, MII_BMSR, &phy_data);
--				if (phy_data & BMSR_LSTATUS) {
-+				if (atl1c_get_link_status(hw)) {
- 					if (atl1c_get_speed_and_duplex(hw, &speed,
- 									&duplex) != 0)
- 						dev_dbg(&pdev->dev,
-diff --git a/drivers/net/ethernet/atheros/atl1c/atl1c_hw.h b/drivers/net/ethernet/atheros/atl1c/atl1c_hw.h
-index 73cbc049a63e..c263b326cec5 100644
---- a/drivers/net/ethernet/atheros/atl1c/atl1c_hw.h
-+++ b/drivers/net/ethernet/atheros/atl1c/atl1c_hw.h
-@@ -26,6 +26,7 @@ void atl1c_phy_disable(struct atl1c_hw *hw);
- void atl1c_hw_set_mac_addr(struct atl1c_hw *hw, u8 *mac_addr);
- int atl1c_phy_reset(struct atl1c_hw *hw);
- int atl1c_read_mac_addr(struct atl1c_hw *hw);
-+bool atl1c_get_link_status(struct atl1c_hw *hw);
- int atl1c_get_speed_and_duplex(struct atl1c_hw *hw, u16 *speed, u16 *duplex);
- u32 atl1c_hash_mc_addr(struct atl1c_hw *hw, u8 *mc_addr);
- void atl1c_hash_set(struct atl1c_hw *hw, u32 hash_value);
-diff --git a/drivers/net/ethernet/atheros/atl1c/atl1c_main.c b/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
-index 9693da5028cf..740127a6a21d 100644
---- a/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
-+++ b/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
-@@ -232,15 +232,14 @@ static void atl1c_check_link_status(struct atl1c_adapter *adapter)
- 	struct pci_dev    *pdev   = adapter->pdev;
- 	int err;
- 	unsigned long flags;
--	u16 speed, duplex, phy_data;
-+	u16 speed, duplex;
-+	bool link;
- 
- 	spin_lock_irqsave(&adapter->mdio_lock, flags);
--	/* MII_BMSR must read twise */
--	atl1c_read_phy_reg(hw, MII_BMSR, &phy_data);
--	atl1c_read_phy_reg(hw, MII_BMSR, &phy_data);
-+	link = atl1c_get_link_status(hw);
- 	spin_unlock_irqrestore(&adapter->mdio_lock, flags);
- 
--	if ((phy_data & BMSR_LSTATUS) == 0) {
-+	if (!link) {
- 		/* link down */
- 		netif_carrier_off(netdev);
- 		hw->hibernate = true;
-@@ -284,16 +283,13 @@ static void atl1c_link_chg_event(struct atl1c_adapter *adapter)
- {
- 	struct net_device *netdev = adapter->netdev;
- 	struct pci_dev    *pdev   = adapter->pdev;
--	u16 phy_data;
--	u16 link_up;
-+	bool link;
- 
- 	spin_lock(&adapter->mdio_lock);
--	atl1c_read_phy_reg(&adapter->hw, MII_BMSR, &phy_data);
--	atl1c_read_phy_reg(&adapter->hw, MII_BMSR, &phy_data);
-+	link = atl1c_get_link_status(&adapter->hw);
- 	spin_unlock(&adapter->mdio_lock);
--	link_up = phy_data & BMSR_LSTATUS;
- 	/* notify upper layer link down ASAP */
--	if (!link_up) {
-+	if (!link) {
- 		if (netif_carrier_ok(netdev)) {
- 			/* old link state: Up */
- 			netif_carrier_off(netdev);
--- 
-2.31.1
-
+ #endif /* _ASM_X86_ASM_H */
