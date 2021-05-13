@@ -2,117 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EF5937FCC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 19:46:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 850B037FCC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 19:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231309AbhEMRrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 13:47:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41758 "EHLO mail.kernel.org"
+        id S231319AbhEMRua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 13:50:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230262AbhEMRrq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 13:47:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA72761106;
-        Thu, 13 May 2021 17:46:36 +0000 (UTC)
+        id S230262AbhEMRu2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 13:50:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B7A0E613CB;
+        Thu, 13 May 2021 17:49:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620927997;
-        bh=cJH6sWLGBZOCGMDITaiB1M5zp079qAZFdZYdcJzLAyw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=bYsNxeM0hvgyvxu3isGdMN8UxdB4EHvkefoCYBB1AsPusYH2hZYFf5qqvGtJGAH7A
-         xSw3Vq5YbI7XbGiM5GGf7Q4hdtqX3rSGRbYY5pZS5/lIx07Ek17ZgePb5G7KQwiZJc
-         FXgXRQcoM0VOcEl4VOVn0zM2y3gmLbqJi7ULroU0VdkM/F/xiokLcZGGxK7JfT1qd7
-         3nWmg/K0BL7WhufZ8Bq8oPwPuJ5mJOPHXqiOKSV/8Z0IjizSJjkHUoDmstMZ/r9hMa
-         idV1tBVKB0uRgHXuHbnrmP1+Ea2udj6WDPytMpRhat+iGWHAo29tVzOBoL4IzYqEC/
-         EaM4In/0pvKcQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id AF19F5C014E; Thu, 13 May 2021 10:46:36 -0700 (PDT)
-Date:   Thu, 13 May 2021 10:46:36 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, ying.huang@intel.com, feng.tang@intel.com,
-        zhengjun.xing@intel.com
-Subject: Re: [entry]  47b8ff194c:  will-it-scale.per_process_ops -3.0%
- regression
-Message-ID: <20210513174636.GB975577@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210428071653.GC13086@xsang-OptiPlex-9020>
- <YJzhCX/CqrMQDB+y@hirez.programming.kicks-ass.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YJzhCX/CqrMQDB+y@hirez.programming.kicks-ass.net>
+        s=k20201202; t=1620928158;
+        bh=oJiCrKtQ6fV0+/s+FJKcfvJjceDGTVwAVqgQY2Mrxjw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=f+nRTCJ/d1mYC8KPVjToy47q26Q9FNOY+l1GOn7LfxLkaDpac6GkiCpOt3B1wpvj6
+         PIfNPy2ce4xRs7UFWFcZ8q520A/77uXWVTh8cIfRt/OeAkR7Tv0MgCAUi2Mv7WD2zd
+         SfC0+aN6EuUX8E+H2D3NYlaumL9Gvvhm9Vg9O+Kkkjh2Fpca2ffRv7W8Xvzex70qWv
+         +/5rp7sg9K0OhRzkeRC0KZbdF5Ac3W6fYeq7k8524OUsJYfRw507XBkfPvMMuKZx06
+         xKqhrHufsXOg+QUufiUVniBeZqoAkeZdGPD7fv+r/xPNX5lLqFogfODghaMIOPPDMR
+         r6XTK57LzYaZg==
+Date:   Fri, 14 May 2021 02:49:12 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
+Subject: Re: [PATCH tip/core/rcu 3/4] rcu-tasks: Make ksoftirqd provide RCU
+ Tasks quiescent states
+Message-Id: <20210514024912.a38f755add13a0f1dc73395a@kernel.org>
+In-Reply-To: <20210513142110.GY975577@paulmck-ThinkPad-P17-Gen-1>
+References: <20210512182747.3445812-4-paulmck@kernel.org>
+        <20210513155417.93ab2299139ba35025ec8ef7@kernel.org>
+        <20210513142110.GY975577@paulmck-ThinkPad-P17-Gen-1>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 10:19:21AM +0200, Peter Zijlstra wrote:
-> On Wed, Apr 28, 2021 at 03:16:53PM +0800, kernel test robot wrote:
-> > 
-> > 
-> > Greeting,
-> > 
-> > FYI, we noticed a -3.0% regression of will-it-scale.per_process_ops due to commit:
-> > 
-> > 
-> > commit: 47b8ff194c1fd73d58dc339b597d466fe48c8958 ("entry: Explicitly flush pending rcuog wakeup before last rescheduling point")
-> 
-> So the RCU bits are in rcu_user_enter(), which is called from
-> __context_tracking_enter() aka user_enter(), which is under
-> context_tracking_enabled().
-> 
-> But the new code in entry is not; we now unconditionally call
-> rcu_nocb_flush_deferred_wakeup(). Did that want to be under
-> context_tracking_enabled() as well?
-> 
-> Frederic, Paul?
+On Thu, 13 May 2021 07:21:10 -0700
+"Paul E. McKenney" <paulmck@kernel.org> wrote:
 
-My argument in favor of the change below is that if there is no context
-tracking, then scheduling-clock interrupts will happen on all non-idle
-CPUs.  The next scheduling-clock interrupt will check this deferred-wakeup
-state, and if set, cause rcu_core() to be invoked (for example, within the
-RCU_SOFTIRQ handler).  And rcu_core() invokes do_nocb_deferred_wakeup(),
-which takes care of this.
-
-For idle CPUs, do_idle() invokes rcu_nocb_flush_deferred_wakeup().
-
-Frederic, any cases that I am missing?
-
-							Thanx, Paul
-
-> ---
+> On Thu, May 13, 2021 at 03:54:17PM +0900, Masami Hiramatsu wrote:
+> > Hi Paul,
+> > 
+> > On Wed, 12 May 2021 11:27:46 -0700
+> > "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> > 
+> > > Heavy networking load can cause a CPU to execute continuously and
+> > > indefinitely within ksoftirqd, in which case there will be no voluntary
+> > > task switches and thus no RCU-tasks quiescent states.  This commit
+> > > therefore causes the exiting rcu_softirq_qs() to provide an RCU-tasks
+> > > quiescent state.
+> > > 
+> > > This of course means that __do_softirq() and its callers cannot be
+> > > invoked from within a tracing trampoline.
+> > 
+> > I would like to confirm that you mean "tracing trampoline" here is
+> > the code on the trampoline buffer, not the handler code which is
+> > invoked from the trampoline buffer but it is protected by preempt_disable(),
+> > am I understand correctly?
 > 
-> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> index 9455476c5ba2..f4df001410fc 100644
-> --- a/include/linux/rcupdate.h
-> +++ b/include/linux/rcupdate.h
-> @@ -114,7 +114,12 @@ static inline void rcu_user_exit(void) { }
->  void rcu_init_nohz(void);
->  int rcu_nocb_cpu_offload(int cpu);
->  int rcu_nocb_cpu_deoffload(int cpu);
-> -void rcu_nocb_flush_deferred_wakeup(void);
-> +void __rcu_nocb_flush_deferred_wakeup(void);
-> +static inline void rcu_nocb_flush_deferred_wakeup(void)
-> +{
-> +	if (context_tracking_enabled())
-> +		__rcu_nocb_flush_deferred_wakeup();
-> +}
->  #else /* #ifdef CONFIG_RCU_NOCB_CPU */
->  static inline void rcu_init_nohz(void) { }
->  static inline int rcu_nocb_cpu_offload(int cpu) { return -EINVAL; }
-> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> index ad0156b86937..3cdbbf7fba01 100644
-> --- a/kernel/rcu/tree_plugin.h
-> +++ b/kernel/rcu/tree_plugin.h
-> @@ -2378,7 +2378,7 @@ static bool do_nocb_deferred_wakeup(struct rcu_data *rdp)
->  	return false;
->  }
->  
-> -void rcu_nocb_flush_deferred_wakeup(void)
-> +void __rcu_nocb_flush_deferred_wakeup(void)
->  {
->  	do_nocb_deferred_wakeup(this_cpu_ptr(&rcu_data));
->  }
+> Maybe?  ;-)
 > 
+> If the handler code is invoked from the trampoline buffer, but
+> returns somewhere else, then it is OK for the handler code to invoke
+> __do_softirq() or its callers.
+> 
+> In addition, if the handler code is invoked from the trampoline buffer is
+> guaranteed never to be running in the context of the ksoftirqd kthread,
+> then it is also OK for the handler code to invoke __do_softirq() or
+> its callers.
+> 
+> Otherwise, if the handler code might return back into the trampoline
+> buffer and if that code might be running in the context of the ksoftirqd
+> kthread, invoking __do_softirq() or one of its callers could result in
+> the trampoline buffer no longer being there when it was returned to.
+
+Hmm, the optprobe may be involved in this case. It always return to
+the trampoline and handler does not disable irqs (only disable preempt).
+BTW, what will call the __do_softirq()? Is hardirq safe?
+
+Thank you,
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
