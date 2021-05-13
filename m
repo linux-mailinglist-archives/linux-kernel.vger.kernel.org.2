@@ -2,140 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC0DE37FAE3
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 17:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 516DD37FAE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 17:38:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234956AbhEMPiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 11:38:51 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.53]:16797 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234932AbhEMPis (ORCPT
+        id S234990AbhEMPjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 11:39:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234982AbhEMPjC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 11:38:48 -0400
-X-Greylist: delayed 13644 seconds by postgrey-1.27 at vger.kernel.org; Thu, 13 May 2021 11:38:44 EDT
-ARC-Seal: i=1; a=rsa-sha256; t=1620920245; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=juU15rfsS9PwAkEcGdmkeIe9uzbV9nhUK1ONhA7Dy+RwT+Wfd4l6SHG1lymDZTsBwO
-    mVnFQ9Diu1qwkoxE1woFU2mD+5o/imo51W/Nye43yi0axFgGolLUs2CaqlB5E1y9Yv67
-    3DpaLnJoYONeK8cRq+ElKZssvclbCW3JJsnPnLAPiIP3LmO4cNmqAucxHIBh+I30Rc1a
-    P+71JXbZ229I9vNUsu0QD3jROHnFroYVNwJLooOPxc3bUGc39wk4QvunxI8HWaplaj8/
-    B6Y7KY9mHfZ7loBok2vOqSCauYMKUdVcp4n2T1Ymt38Uu3hyRTXWp9luF87B/SxInCyV
-    QTVw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1620920245;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=p9b5c3IB1K+7is9GeRzTX7tLozoGvL5xMmPv3Z5hQhs=;
-    b=qIRC5Y+VBFsR/r+yc66MJ4wZj1aIi7ALTWP/LhRlaXmdZClLxkp62xGvNFK+h7AoWm
-    OhjndCOpxkZF1cbqgFe37Gf4jKnFHKKWs++oNByhOcksiWqygtTPzhSe59cFfYRMpV9g
-    ytRahTBUlu9hRsC+n9jv7K0AmOuKEsldP1hxhVfxunGV6NBJMSoWF31MmgmIrcLdLNGj
-    /7GJiEZ4OnUoG/zJPHLqliJFgVYYmtZGJ1lvMUkbQoKzWg2k8mjDA+3iuxoRAL7nZjXM
-    gCzPdxKovLsohs1wcMy3AcT7xfeXotN903JEOgu3IpHfjDhNig0fu8Cc7aTlLchN4bQk
-    vbxA==
-ARC-Authentication-Results: i=1; strato.com;
-    dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1620920245;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=p9b5c3IB1K+7is9GeRzTX7tLozoGvL5xMmPv3Z5hQhs=;
-    b=GFwjKEH95MZ8/6NQ1xxSmPYkfTah3tiG+7qFrvRnPsBrP4U1T5l5AnDTImA4W02T35
-    9696eUZFfiP6FhEa7hWb4O15zHX3glmCAmmgeDKS3E9GON/NbTAAZBqVK4wBs4iptFz5
-    POFE3z6RQRf76WBTrziT+5Fy1mqody5GbnC5N/tpkSf68x2nvSRWVgU7h1j7RUCXdn4a
-    ipxRrsPp+0lHp24INxH2kpDIdxIGWPQfDIllFSefvhanttauVoji8fmTn/SFj7s5lnCP
-    C0hDksAYI4ZRkgyN+QmskQxxCyvyKvXxsVFc/Xbw4wLb9V4LvoHzH4LCJrYyc1+hJCfy
-    4b5w==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j6IczCBg=="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 47.25.7 DYNA|AUTH)
-    with ESMTPSA id j06c13x4DFbOCNR
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Thu, 13 May 2021 17:37:24 +0200 (CEST)
-Date:   Thu, 13 May 2021 17:37:19 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Mark Greer <mgreer@animalcreek.com>
-Cc:     Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nfc@lists.01.org,
-        Alex Blasche <alexander.blasche@qt.io>,
-        phone-devel@vger.kernel.org
-Subject: Re: Testing wanted for Linux NFC subsystem
-Message-ID: <YJ1Hr/hov9I42GK1@gerhold.net>
-References: <20210512144319.30852-1-krzysztof.kozlowski@canonical.com>
- <14e78a9a-ed1a-9d7d-b854-db6d811f4622@kontron.de>
- <20210512170135.GB222094@animalcreek.com>
- <YJ0SYWJjq3ZmXMy3@gerhold.net>
- <20210513144855.GA266838@animalcreek.com>
+        Thu, 13 May 2021 11:39:02 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35B4DC06175F;
+        Thu, 13 May 2021 08:37:50 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id h4so39173433lfv.0;
+        Thu, 13 May 2021 08:37:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Uyn2IBTIkLjB9k01rZMUR5OEPKGWdveEkK33rxkPS8w=;
+        b=L0u0rrC8GxqT4Wl04VrQ8cB556v34iFWHE5swPXM6KJcWV1ORAUtToAnAiQkQ9hscY
+         azEiTUh8GV9o/3f31em50RcOMqB0K5oG0Q9h0JF5RCdg7Pi/ZnUkn7ABaIUbGJ/rIUrf
+         WYtYnnpC8zbGKt2Z7sCne8T0Zi9WpDRNLfiHG/wg8CtKVXrf86aJbEyd8ns9ivVb8FD/
+         OUx4PJs3SUTTens6JOIGwH7dkZGgy6b0FkOo4+Zfh2gNIbd3MZ+HNt1cIuuuT5rSeg0x
+         bMBuu2iDmHqob1NKlcD886X6iBRIP7MOwCGztS2qfPXupewUCsQowhljy6I1wpSz26rW
+         rJYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Uyn2IBTIkLjB9k01rZMUR5OEPKGWdveEkK33rxkPS8w=;
+        b=udbKWh8a9Rx3Jii299Y6P2Cw73KJEcdEp1tUz5U4i03fKoBlxPP3lV3TA3dnoCFLj4
+         lviBGl+xBJGtjZavYdT5R9eemEe1ABQP+/CYbce8Sz4jhNCfxO0UPSpfHTI0D5aBkZGK
+         dFplB9jZTqvQCfK5QWYIZYuum6jeHqdG6IFozjstlAyMrvfTnXVofR55rQ8Wh6pVQP+d
+         wxHjifPBaHeet/6+wWb0uZuhcueJKybmDcJQQrij/RRWMLzFVJBxW/MrZbahodZsSlDW
+         r8RivGtPyhfsc8Myw8AfsBVuAvJOlK9IFP61ph6TuJYVWba1upN8EsO13bwftVuMQ4xr
+         sJFg==
+X-Gm-Message-State: AOAM5333IbzYWz25pnIzx/nMJeNsyE+c7dTNXiTbvYVwwD7ajhJ1H8+n
+        PmL6Za7Pk5EXidBtfrMvFv1geTyxvOZ8bM8BEZY=
+X-Google-Smtp-Source: ABdhPJza4h+CNXjRDsbfrR3TqIkIwYuZr/8435FEFmT1yAcyVLwt2LuSaMc/O9Cpk2yXGvbqifq94ovMGbmH+EuxOHA=
+X-Received: by 2002:ac2:43b9:: with SMTP id t25mr28596792lfl.349.1620920269323;
+ Thu, 13 May 2021 08:37:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210513144855.GA266838@animalcreek.com>
+References: <162077975380.14498.11347675368470436331.stgit@web.messagingengine.com>
+ <YJtz6mmgPIwEQNgD@kroah.com> <CAC2o3D+28g67vbNOaVxuF0OfE0RjFGHVwAcA_3t1AAS_b_EnPg@mail.gmail.com>
+ <CAC2o3DJm0ugq60c8mBafjd81nPmhpBKBT5cCKWvc4rYT0dDgGg@mail.gmail.com>
+ <CAC2o3DJdwr0aqT6LwhuRj8kyXt6NAPex2nG5ToadUTJ3Jqr_4w@mail.gmail.com> <4eae44395ad321d05f47571b58fe3fe2413b6b36.camel@themaw.net>
+In-Reply-To: <4eae44395ad321d05f47571b58fe3fe2413b6b36.camel@themaw.net>
+From:   Fox Chen <foxhlchen@gmail.com>
+Date:   Thu, 13 May 2021 23:37:38 +0800
+Message-ID: <CAC2o3DKvq12CrsgWTNmQmu3iDJ+9tytMdCJepdBjUKN1iUJ0RQ@mail.gmail.com>
+Subject: Re: [PATCH v4 0/5] kernfs: proposed locking and concurrency improvement
+To:     Ian Kent <raven@themaw.net>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
+        Eric Sandeen <sandeen@sandeen.net>,
+        Brice Goglin <brice.goglin@gmail.com>,
+        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 07:48:55AM -0700, Mark Greer wrote:
-> On Thu, May 13, 2021 at 01:49:53PM +0200, Stephan Gerhold wrote:
-> > I have a couple of "recycled" smartphones running mainline Linux
-> > and some of them do have NFC chips. I have two with NXP PN547
-> > (supported by nxp,nxp-nci-i2c), one with Samsung S3FWRN5
-> > (samsung,s3fwrn5-i2c) and even one with Broadcom BCM2079x I think
-> > (this one does not have a driver for the Linux NFC subsystem sadly).
-> > 
-> > +Cc phone-devel@vger.kernel.org, in case other people there are
-> > interested in NFC :)
-> > 
-> > The NXP/Samsung ones seems to work just fine. However, since there are
-> > barely any userspace tools making use of Linux NFC all my testing so far
-> > was limited to polling for devices with "nfctool" and being happy enough
-> > when it realizes that I hold some NFC tag close to the device. :S
-> 
-> There is a user-level daemon that is the counterpart for the in-kernel
-> NFC subsystem.  It is called neard and is available here:
-> 
-> 	git://git.kernel.org/pub/scm/network/nfc/neard.git
-> 
-> There are a few test script in it that will let you read and write NFC
-> tags, and do some other things.  We can add some more tests to that set
-> as we go.
-> 
+Hi Ian
 
-Yeah, I packaged that for Alpine Linux / postmarketOS.
-"nfctool" also comes from "neard" as far as I can tell :)
+On Thu, May 13, 2021 at 10:10 PM Ian Kent <raven@themaw.net> wrote:
+>
+> On Wed, 2021-05-12 at 16:54 +0800, Fox Chen wrote:
+> > On Wed, May 12, 2021 at 4:47 PM Fox Chen <foxhlchen@gmail.com> wrote:
+> > >
+> > > Hi,
+> > >
+> > > I ran it on my benchmark (
+> > > https://github.com/foxhlchen/sysfs_benchmark).
+> > >
+> > > machine: aws c5 (Intel Xeon with 96 logical cores)
+> > > kernel: v5.12
+> > > benchmark: create 96 threads and bind them to each core then run
+> > > open+read+close on a sysfs file simultaneously for 1000 times.
+> > > result:
+> > > Without the patchset, an open+read+close operation takes 550-570
+> > > us,
+> > > perf shows significant time(>40%) spending on mutex_lock.
+> > > After applying it, it takes 410-440 us for that operation and perf
+> > > shows only ~4% time on mutex_lock.
+> > >
+> > > It's weird, I don't see a huge performance boost compared to v2,
+> > > even
+> >
+> > I meant I don't see a huge performance boost here and it's way worse
+> > than v2.
+> > IIRC, for v2 fastest one only takes 40us
+>
+> Thanks Fox,
+>
+> I'll have a look at those reports but this is puzzling.
+>
+> Perhaps the added overhead of the check if an update is
+> needed is taking more than expected and more than just
+> taking the lock and being done with it. Then there's
+> the v2 series ... I'll see if I can dig out your reports
+> on those too.
 
-I think I also played with the Neard test scripts a bit at some point,
-and managed to read some NFC tag thing inside an old Yubikey NEO
-that I found, but didn't really know what else to do.
+Apologies, I was mistaken, it's compared to V3, not V2.  The previous
+benchmark report is here.
+https://lore.kernel.org/linux-fsdevel/CAC2o3DKNc=sL2n8291Dpiyb0bRHaX=nd33ogvO_LkJqpBj-YmA@mail.gmail.com/
 
-> > I would be happy to do some more testing if someone has something useful
-> > that can be tested. However, I guess ideally we would have someone who
-> > actually uses Linux NFC actively for some real application. :)
-> 
-> Ideally, you should have some NFC tags of various types.  Types 2, 3,
-> 4A, 4B, and 5 tags are supported.  Peer-to-peer mode is supported too
-> so you should be able to transfer data from one of your phones to the
-> other over NFC (and do a BT hand-over, if you're interested).
-> 
+> >
+> >
+> > > though there is no mutex problem from the perf report.
+> > > I've put console outputs and perf reports on the attachment for
+> > > your reference.
+>
+> Yep, thanks.
+> Ian
+>
 
-I guess this is where I kind of lack hardware as well at the moment,
-I don't have any programmable NFC tags at the moment (although I guess
-those should be quite cheap). I might play with the peer-to-peer mode
-a bit when I find time.
-
-> Note that the specified range for NFC is only 4 cm and poor antenna
-> design, etc. means that the actual range is usually much less (e.g.,
-> they amost have to touch).  Also note that there are timing constraints
-> so you may need to make the scheduling priority of the interrupt thread
-> of your NFC driver real-time.
-> 
-
-Yeah I noticed, always need to search for a while to find the right spot
-on the phone. :)
-
-Stephan
+thanks,
+fox
