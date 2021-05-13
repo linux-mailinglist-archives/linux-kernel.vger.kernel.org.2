@@ -2,96 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6AE137F4FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 11:44:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D92137F501
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 11:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232442AbhEMJpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 05:45:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231193AbhEMJp2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 05:45:28 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76D6EC061574;
-        Thu, 13 May 2021 02:44:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=8lKBmdjvyNJC0zSVS9+cqxL1DCxV5U8RNgB+s7i0tH8=; b=aVEmWKaAYpr2okDCcyt3Yv7zs
-        jWLgwljgaZaCitHkfIJaO6qVaNT2ncb4viijtLJXVnZ8W/dooauIr0wgC1MyFb4qTgK+EfMqPscvM
-        X3KADSYrV7XQ5UE8uESnUcIt2ku4uojePpco/7SfH40CIenjESKrNGpjpDA41p0KF4iV4VkaRvuaf
-        YmZtCyc6O5yYnmyDrbgUSu5vQlDycB9rZUV+aQNOWpP4ac2bmUJ/n2ixqklwv27WoBHQHyXS03Cf5
-        BfHfSdJKUsio36PPqASSXhD8mm4mMtitnNuYCXTkVZ/t8eIg/+PlgIX3EP5UZHo/W3Hrjo0dJyvaT
-        fJDzP/mgg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43922)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lh7tA-0005uI-DM; Thu, 13 May 2021 10:44:16 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lh7t9-0002uD-Vh; Thu, 13 May 2021 10:44:16 +0100
-Date:   Thu, 13 May 2021 10:44:15 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
-        kuba@kernel.org, f.fainelli@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] net: mdio: octeon: Fix some double free issues
-Message-ID: <20210513094415.GV1336@shell.armlinux.org.uk>
-References: <7adc1815237605a0b774efb31a2ab22df51462d3.1620890610.git.christophe.jaillet@wanadoo.fr>
+        id S231193AbhEMJre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 05:47:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49336 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230338AbhEMJr2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 05:47:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6ACFC61439;
+        Thu, 13 May 2021 09:46:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620899178;
+        bh=2YDPX0ZygP42OUgip4Dx4XOsWdN5W0wiW342gHSvIfQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0bKc5x8KTUNZj8xk+2qm0hSx4ORSNFaMpnuyS+FE1DScC2cuH5bQjmEfqoJeZ7wOR
+         9O7vaiQ8l1QvMfqzwNlwGEN/mRYlGiKbfLf7m0FgrEdwW8Gbht1AngzYxGMXuNUhnu
+         6U4360c2l8oXK7OFWETybk5pIVIHwUIFNG6mirOE=
+Date:   Thu, 13 May 2021 11:46:16 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Zou Wei <zou_wei@huawei.com>
+Cc:     vaibhav.sr@gmail.com, mgreer@animalcreek.com, johan@kernel.org,
+        elder@kernel.org, greybus-dev@lists.linaro.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] staging: greybus: audio: Add missing
+ MODULE_DEVICE_TABLE
+Message-ID: <YJz1aFJPaX5lGJsR@kroah.com>
+References: <1620895772-52538-1-git-send-email-zou_wei@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7adc1815237605a0b774efb31a2ab22df51462d3.1620890610.git.christophe.jaillet@wanadoo.fr>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <1620895772-52538-1-git-send-email-zou_wei@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 09:24:55AM +0200, Christophe JAILLET wrote:
-> 'bus->mii_bus' has been allocated with 'devm_mdiobus_alloc_size()' in the
-> probe function. So it must not be freed explicitly or there will be a
-> double free.
+On Thu, May 13, 2021 at 04:49:32PM +0800, Zou Wei wrote:
+> This patch adds missing MODULE_DEVICE_TABLE definition which generates
+> correct modalias for automatic loading of this driver when it is built
+> as an external module.
 > 
-> Remove the incorrect 'mdiobus_free' in the error handling path of the
-> probe function and in remove function.
-> 
-> Suggested-By: Andrew Lunn <andrew@lunn.ch>
-> Fixes: 35d2aeac9810 ("phy: mdio-octeon: Use devm_mdiobus_alloc_size()")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-
-Reviewed-by: Russell King <rmk+kernel@armlinux.org.uk>
-
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zou Wei <zou_wei@huawei.com>
 > ---
-> The 'smi_en.u64 = 0; oct_mdio_writeq()' looks odd to me. Usually the normal
-> path and the error handling path don't write the same value. Here, both
-> write 0.
-> Having '1' somewhere would 'look' more usual. :)
-> More over I think that 'smi_en.s.en = 1;' in the probe is useless.
+>  drivers/staging/greybus/audio_codec.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/staging/greybus/audio_codec.c b/drivers/staging/greybus/audio_codec.c
+> index b589cf6..6fa9781 100644
+> --- a/drivers/staging/greybus/audio_codec.c
+> +++ b/drivers/staging/greybus/audio_codec.c
+> @@ -1086,6 +1086,7 @@ static const struct of_device_id greybus_asoc_machine_of_match[]  = {
+>  	{ .compatible = "toshiba,apb-dummy-codec", },
+>  	{},
+>  };
+> +MODULE_DEVICE_TABLE(of, greybus_asoc_machine_of_match);
+>  
+>  static struct platform_driver gbaudio_codec_driver = {
+>  	.driver = {
+> -- 
+> 2.6.2
+> 
+> 
 
-It looks fine to me.
+I think I will just start rejecting all of thes "missing
+MODULE_DEVICE_TABLE()" patches as they make no sense at all.
 
-        smi_en.u64 = 0;
-        smi_en.s.en = 1;
-        oct_mdio_writeq(smi_en.u64, bus->register_base + SMI_EN);
+If the driver authors had wanted these MODULE_DEVICE_TABLES added, they
+would have done so.  That means they were not using dynamically loaded
+modules because usually, the module is built in, OR it doesn't matter.
 
-smi_en is a union of a u64 and a structure containing a bitfield. s.en
-corresponds on LE systems with the u64 bit 0. So the above has the
-effect of writing a u64 value of '1' to the SMI_EN register, whereas:
+So please, only add this if you have a system that needs them, do not
+add them just based on a rule you have generated by a tool, as that is
+pointless.
 
-        smi_en.u64 = 0;
-        oct_mdio_writeq(smi_en.u64, bus->register_base + SMI_EN);
+thanks,
 
-has the effect of writing a u64 value of '0' to the SMI_EN register.
-
-This code is fine.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+greg k-h
