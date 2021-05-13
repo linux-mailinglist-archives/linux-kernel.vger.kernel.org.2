@@ -2,151 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6EC37F5D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 12:47:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AADC837F5D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 12:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231944AbhEMKs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 06:48:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231282AbhEMKs5 (ORCPT
+        id S232024AbhEMKty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 06:49:54 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:59807 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231956AbhEMKtw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 06:48:57 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C45BAC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 03:47:47 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id k19so21364463pfu.5
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 03:47:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GIWNgKfERCd8ws3NEsOZmkaYsKxmmQTX5MnGldnYq+U=;
-        b=SCfZUxU/raf0MeD34FQA8j/mu/bumWsmxOixENlweE2AnYBqD61gmHC9ekehgIDBPI
-         5/dE6sUjReq6fWS8+gZjwcSEjrwFfOQRhdTXxBrlTfzbNKvLX4LRs8QGak6c0Qtzch/+
-         GftKOFi8Osl41Tv+9wST7Fqoe7pMoFRI9W7n5yJwyDbtn63np1AaETDXHLcS/xgvkfmH
-         MuMxgToZYFVslZohgrQfucmHsb8kdk2j2S2NE7XnbIDrSCMcKyPDpx4XHuvw0OV9vy2W
-         HBSXvr0pPL9GL/9aj5HX7wP7oQ5kFOf1UhrmFnW1G7bzqfUeDAF2mBw3By48eUXbtIYA
-         fEQA==
+        Thu, 13 May 2021 06:49:52 -0400
+Received: from mail-wm1-f72.google.com ([209.85.128.72])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <dimitri.ledkov@canonical.com>)
+        id 1lh8tV-0002Lz-PL
+        for linux-kernel@vger.kernel.org; Thu, 13 May 2021 10:48:41 +0000
+Received: by mail-wm1-f72.google.com with SMTP id r10-20020a05600c2c4ab029014b601975e1so603576wmg.0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 03:48:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=GIWNgKfERCd8ws3NEsOZmkaYsKxmmQTX5MnGldnYq+U=;
-        b=DbY3fLOLkz9muQpuv05YKEIZBlyUatX0SnCX3gTR1Uo5j9qoS1/7X6R/9h51SR75+H
-         F/+V2kqmwmw8ritdy9KW+pA5XE9xraueG2s31vDhJ29pBHkX3i9hNXefzi9P4jV5mKlr
-         ANKXAJ/gm1YdJDEVHNlFCJExOOJl1XkgDh5PP0jMTmCV7xxeKDggb0hc6mvKL8B/KScd
-         RPmx6xTguMbAIWFnnsObMs97+AO66MXfx+zael6sF0qk7Fw8v1IYFNSzfofLiTEJ9hD1
-         efGDwUuteKwzP6s2p8fyBkM4k0QfLIKLBAY9ms26jtLlrF/0KRLKlrYk7mIgH3Y92wH3
-         Rm1g==
-X-Gm-Message-State: AOAM533lHiUCJn3T3Cpy1+5+HCHuGFlZph2J68oxGeSnQ2ExnzEs7ky6
-        3thQbzBBqBWS1A5JkOQMrxY=
-X-Google-Smtp-Source: ABdhPJxpDzutLLKiLP0HXR8ob0jjFkadOQeYuOr3OqUH3oZI6auLLAh5IiVFix5U5vn7DQmb+DGQuQ==
-X-Received: by 2002:a63:1c6:: with SMTP id 189mr30948951pgb.144.1620902867026;
-        Thu, 13 May 2021 03:47:47 -0700 (PDT)
-Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id q24sm2178996pjp.6.2021.05.13.03.47.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 May 2021 03:47:46 -0700 (PDT)
-Subject: Re: [PATCH tip/core/rcu 01/10] kcsan: Add pointer to
- access-marking.txt to data_race() bullet
-To:     "Paul E. McKenney" <paulmck@kernel.org>,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        kernel-team@fb.com, mingo@kernel.org
-Cc:     elver@google.com, andreyknvl@google.com, glider@google.com,
-        dvyukov@google.com, cai@lca.pw, boqun.feng@gmail.com
-References: <20210511231149.GA2895263@paulmck-ThinkPad-P17-Gen-1>
- <20210511232401.2896217-1-paulmck@kernel.org>
-From:   Akira Yokosawa <akiyks@gmail.com>
-Message-ID: <a1675b9f-5727-e767-f835-6ab9ff711ef3@gmail.com>
-Date:   Thu, 13 May 2021 19:47:41 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=kuZkXiug9hdhkwtw393tPFCcAjWKu2EOVq4JY2WC3ag=;
+        b=DJRCFgQ9zxZ4bKN20cG9dnZfkcOgve8bSGQcufFtf85s0RmA1e0nU7LDBg2MS1SXUd
+         F7rhfmr0/fXU4tarnilyn50fwNGqYZHThw3T0vj0xkwbXv6YB2fqagd1J5bZHsoZgRNr
+         wqge1fzx18W53fS3hHHovFLlzvwEVd2/Mo7mAz07ZAIierqocUN1g5XeVDiHvMFqwOpG
+         4h1+NQoqLAjRqEBvIhHRQx8WLWem9API4+zTz4I7TyKUoZzRyhvqx2c5Sk64gThD4+YZ
+         KMh3qPTUkAfC/QgHG5KFYMkytGPA+a1ShJIklBukU4AmXfNhrHB9JBTOAfFRibRRVgPf
+         4nHw==
+X-Gm-Message-State: AOAM532rXkwF4vv1Iz91VsXWMZ+TmiE15r8oWnaNuGGIyOY4kQO4FOFS
+        3VqKnDj/iVj4v5cYfp9kjEP1N6kyMa5HL2eWI0avQvJ0VKD3cMBo9pezCsIPhQfMgG6Yae0Kbcy
+        iRkJ28APNYiBr08q9yh+lSeRQREb78gTZT7DjF46mvQ==
+X-Received: by 2002:a1c:238d:: with SMTP id j135mr3205622wmj.170.1620902921222;
+        Thu, 13 May 2021 03:48:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxiZg1PttR88N5AhNZ3Q7s9Cf+giyBB7Z6cn60s55E/x5qXakwQmFLxiAbOo25RtsizWbLRfA==
+X-Received: by 2002:a1c:238d:: with SMTP id j135mr3205589wmj.170.1620902920975;
+        Thu, 13 May 2021 03:48:40 -0700 (PDT)
+Received: from localhost ([2a01:4b00:85fd:d700:8449:869d:10a:b1b9])
+        by smtp.gmail.com with ESMTPSA id k7sm2522973wro.8.2021.05.13.03.48.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 May 2021 03:48:40 -0700 (PDT)
+From:   Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Dimitri John Ledkov <dimitri.ledkov@canonical.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kyungsik Lee <kyungsik.lee@lge.com>,
+        Yinghai Lu <yinghai@kernel.org>,
+        Bongkyu Kim <bongkyu.kim@lge.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sven Schmidt <4sschmid@informatik.uni-hamburg.de>
+Subject: [RESEND PATCH v1] lib/decompress_unlz4.c: correctly handle zero-padding around initrds.
+Date:   Thu, 13 May 2021 11:48:31 +0100
+Message-Id: <20210513104831.432975-1-dimitri.ledkov@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20210511232401.2896217-1-paulmck@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+lz4 compatible decompressor is simple. The format is underspecified and
+relies on EOF notification to determine when to stop. Initramfs buffer
+format[1] explicitly states that it can have arbitrary number of zero
+padding. Thus when operating without a fill function, be extra careful to
+ensure that sizes less than 4, or apperantly empty chunksizes are treated
+as EOF.
 
-On Tue, 11 May 2021 16:23:52 -0700, Paul E. McKenney wrote:
-> This commit references tools/memory-model/Documentation/access-marking.txt
-> in the bullet introducing data_race().  The access-marking.txt file
-> gives advice on when data_race() should and should not be used.
-> 
-> Suggested-by: Akira Yokosawa <akiyks@gmail.com>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> ---
->  Documentation/dev-tools/kcsan.rst | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/dev-tools/kcsan.rst b/Documentation/dev-tools/kcsan.rst
-> index d85ce238ace7..80894664a44c 100644
-> --- a/Documentation/dev-tools/kcsan.rst
-> +++ b/Documentation/dev-tools/kcsan.rst
-> @@ -106,7 +106,9 @@ the below options are available:
->  
->  * KCSAN understands the ``data_race(expr)`` annotation, which tells KCSAN that
->    any data races due to accesses in ``expr`` should be ignored and resulting
-> -  behaviour when encountering a data race is deemed safe.
-> +  behaviour when encountering a data race is deemed safe.  Please see
-> +  ``tools/memory-model/Documentation/access-marking.txt`` in the kernel source
-> +  tree for more information.
->  
->  * Disabling data race detection for entire functions can be accomplished by
->    using the function attribute ``__no_kcsan``::
-> 
+To test this I have created two cpio initrds, first a normal one,
+main.cpio. And second one with just a single /test-file with content
+"second" second.cpio. Then i compressed both of them with gzip, and with
+lz4 -l. Then I created a padding of 4 bytes (dd if=/dev/zero of=pad4 bs=1
+count=4). To create four testcase initrds:
 
-I think this needs some adjustment for overall consistency.
-A possible follow-up patch (relative to the change above) would look
-like the following.
+ 1) main.cpio.gzip + extra.cpio.gzip = pad0.gzip
+ 2) main.cpio.lz4  + extra.cpio.lz4 = pad0.lz4
+ 3) main.cpio.gzip + pad4 + extra.cpio.gzip = pad4.gzip
+ 4) main.cpio.lz4  + pad4 + extra.cpio.lz4 = pad4.lz4
 
-Thoughts?
+The pad4 test-cases replicate the initrd load by grub, as it pads and
+aligns every initrd it loads.
 
-        Thanks, Akira
+All of the above boot, however /test-file was not accessible in the initrd
+for the testcase #4, as decoding in lz4 decompressor failed. Also an error
+message printed which usually is harmless.
 
--------8<--------
-From: Akira Yokosawa <akiyks@gmail.com>
-Subject: [PATCH] kcsan: Use URL link for pointing access-marking.txt
+Whith a patched kernel, all of the above testcases now pass, and /test-file
+is accessible.
 
-For consistency within kcsan.rst, use a URL link as the same as in
-section "Data Races".
+This fixes lz4 initrd decompress warning on every boot with grub. And
+more importantly this fixes inability to load multiple lz4 compressed
+initrds with grub. This patch has been shipping in Ubuntu kernels
+since January 2021.
 
-Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
-Cc: Paul E. McKenney <paulmck@kernel.org>
+[1] ./Documentation/driver-api/early-userspace/buffer-format.rst
+
+BugLink: https://bugs.launchpad.net/bugs/1835660
+Link: https://lore.kernel.org/lkml/20210114200256.196589-1-xnox@ubuntu.com/ # v0
+Signed-off-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Kyungsik Lee <kyungsik.lee@lge.com>
+Cc: Yinghai Lu <yinghai@kernel.org>
+Cc: Bongkyu Kim <bongkyu.kim@lge.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Sven Schmidt <4sschmid@informatik.uni-hamburg.de>
 ---
- Documentation/dev-tools/kcsan.rst | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ lib/decompress_unlz4.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/Documentation/dev-tools/kcsan.rst b/Documentation/dev-tools/kcsan.rst
-index 80894664a44c..151f96b7fef0 100644
---- a/Documentation/dev-tools/kcsan.rst
-+++ b/Documentation/dev-tools/kcsan.rst
-@@ -107,8 +107,7 @@ the below options are available:
- * KCSAN understands the ``data_race(expr)`` annotation, which tells KCSAN that
-   any data races due to accesses in ``expr`` should be ignored and resulting
-   behaviour when encountering a data race is deemed safe.  Please see
--  ``tools/memory-model/Documentation/access-marking.txt`` in the kernel source
--  tree for more information.
-+  `"Marking Shared-Memory Accesses" in the LKMM`_ for more information.
+diff --git a/lib/decompress_unlz4.c b/lib/decompress_unlz4.c
+index c0cfcfd486be..e6327391b6b6 100644
+--- a/lib/decompress_unlz4.c
++++ b/lib/decompress_unlz4.c
+@@ -112,6 +112,9 @@ STATIC inline int INIT unlz4(u8 *input, long in_len,
+ 				error("data corrupted");
+ 				goto exit_2;
+ 			}
++		} else if (size < 4) {
++			/* empty or end-of-file */
++			goto exit_3;
+ 		}
  
- * Disabling data race detection for entire functions can be accomplished by
-   using the function attribute ``__no_kcsan``::
-@@ -130,6 +129,8 @@ the below options are available:
+ 		chunksize = get_unaligned_le32(inp);
+@@ -125,6 +128,10 @@ STATIC inline int INIT unlz4(u8 *input, long in_len,
+ 			continue;
+ 		}
  
-     KCSAN_SANITIZE := n
++		if (!fill && chunksize == 0) {
++			/* empty or end-of-file */
++			goto exit_3;
++		}
  
-+.. _"Marking Shared-Memory Accesses" in the LKMM: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/memory-model/Documentation/access-marking.txt
-+
- Furthermore, it is possible to tell KCSAN to show or hide entire classes of
- data races, depending on preferences. These can be changed via the following
- Kconfig options:
+ 		if (posp)
+ 			*posp += 4;
+@@ -184,6 +191,7 @@ STATIC inline int INIT unlz4(u8 *input, long in_len,
+ 		}
+ 	}
+ 
++exit_3:
+ 	ret = 0;
+ exit_2:
+ 	if (!input)
 -- 
-2.17.1
-
+2.27.0
 
