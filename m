@@ -2,190 +2,361 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85A4E37F51C
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 11:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4723637F524
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 11:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232288AbhEMJ4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 05:56:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38430 "EHLO
+        id S232386AbhEMJ7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 05:59:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231261AbhEMJ4a (ORCPT
+        with ESMTP id S231261AbhEMJ7x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 05:56:30 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE6DC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 02:55:20 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id o21so23997221iow.13
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 02:55:20 -0700 (PDT)
+        Thu, 13 May 2021 05:59:53 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A72DCC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 02:58:42 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id m12so39125840eja.2
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 02:58:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OQjtHIN8DD1GRyqL6npu5iRZFcZfv7jbqOPudBmj234=;
-        b=KR571OjfjGRU7EPduxHdCzsp8zyXDadZglBKAgsHugklZvh6uUF7ETCczN0zdkkLFb
-         FJtsw+mH+T8jpmA2TqknhDcWZ7+SPVrJWD73+fzpLLWX9xczUI0VlzIcEerqooXWRK0V
-         jtkw0tPtkvr2i6ej6/OdYtMibeM+JcFoX2SgDRW17xL/WNjNFFrdaYe/N/mD7twyZCCX
-         n1ViNvLlMoTu8K3V4a/r44c3DRDruPlw0ont/lm3+CwzgK+nsqABFhF2ESe86ueelit8
-         nqQ60ovdw7PPXPSYVweTvqacqRxGnO1hjWNEHbg4slc7dx4e1ERA0yrwtEiZIJAyR9w6
-         7QWw==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hDj2rPJCI1Pj5glb8VlBF8OccSL7OQayA8NEYYZPhqg=;
+        b=s3FOeUTZ7ZXrnbxaNSMHtyt8Uy4kcW5mCzhcAjnuBnfXn3T9Jq1AeMrjrftJt7kcFY
+         UqxlSg+X+jvyE4sBpo+TkjB72G9dmhJ70RWO4EUQy3gYkdA6TgnpMHtSAq3TMIdimwCF
+         peWr50G+V3q0hKrOK9iXkBF32gy+4UrmSiF4RJMPuUca5y91Y2/xVNP2ymUvjmXB7/yQ
+         xwK5XezGTuEitKRfjZ3Hm0q2G3LfEmg+Cp94YtH0iVqc5b3UT+iSk9d6wGGcQwAk5APE
+         h/TlkA/8TFXzGlCY37WVc/jLI+mlfEH+6/qiwkrAY/mY7VhQBnDIOmCzGYvWTVnQcsWj
+         KZZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OQjtHIN8DD1GRyqL6npu5iRZFcZfv7jbqOPudBmj234=;
-        b=qca2MPZdiQMPBIjcQ25G0iY4Q3iTFXVzMUxxGXIlQIERj/4VZxJhyL6B9nnKT2adr1
-         Vq4U5vjUYjYhylcO7i162UcPC+wu99Pr5fph6SUC4c98dkqNxiGkLf6iSAQgbL6aeewf
-         OScdYdZni6X4VjM2W3lDsJVwpewCxF67sdn4XijIBWMicJIoplATRuU/NzIXqPlp272T
-         i4a+2K+kEPmShSQu9HEUslmdSP6E4cVm+SAbXNHIZUHIe7p7kbVtPF4YFGXTNE79t3Gj
-         7lbO4QfwHLcVBeMEJZD4AtObCxyHHrvEFScCSVOymnLQMgp972boF4In7aGk0aayXrG8
-         Z6fw==
-X-Gm-Message-State: AOAM531kOplZnozlwt72vUiAczFZsmX3xezyennsZ7M1nEu93ZLKbtZv
-        AILDTi/Yi9LafT/RzE77OmDcK9Oc/nq14ykINVY=
-X-Google-Smtp-Source: ABdhPJytuc/g1Ce6PPopObf0K4vYWWrUyaS/62Xlt/kuREkWqv+7arg44dPMsMv5HP9fCA4606DhLa26FZGnJPQjJs8=
-X-Received: by 2002:a5d:8506:: with SMTP id q6mr13633247ion.11.1620899719619;
- Thu, 13 May 2021 02:55:19 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=hDj2rPJCI1Pj5glb8VlBF8OccSL7OQayA8NEYYZPhqg=;
+        b=eqs1EVMZCqS+06rOQkuVh4B7PTDqG1V1YCRFZ+cWJ6OBnv0u9vSQuksP3maVrjBSTk
+         6irlAEpdlh7+oGR4sD6Ou4+62M18gVXpSDfn9L9j38KbEoO+Mp8F9ISqx9pIMxcG0vnO
+         9bLkBZVShLpRRKh/UzvztjsJhjIyQv/HTrmOEW35DOIUjkzr6YSdA1izPiIjHoE6Ckfw
+         YSxKNMiN+b9zuuamGZNJAApKrGhxG0k4VGGx+yu9KTaOfjKtN7hic+GGjAHnQ5trDhOM
+         sJwvL8Y3WXu+SDrmKJg71FUJwEqY3Ei3vKFSL1J2+MB8asN6YSxThb+FZE8fkFYsh6po
+         aQcw==
+X-Gm-Message-State: AOAM533v6leciqtnrHSCLedj7jkym2r5Ewk/hb+wAYwYVX7MJ9paBWZW
+        ed2opRmAUN93m9RNH9hg7hk=
+X-Google-Smtp-Source: ABdhPJx/+hQdQXcZgrK+1z4xNjfMxyLGRXJHyprxxossL8q3fIE7j9g5/fMAEXcBlIj5zr9qbNDxEw==
+X-Received: by 2002:a17:906:1617:: with SMTP id m23mr44391824ejd.352.1620899920636;
+        Thu, 13 May 2021 02:58:40 -0700 (PDT)
+Received: from gmail.com (0526E777.dsl.pool.telekom.hu. [5.38.231.119])
+        by smtp.gmail.com with ESMTPSA id gn31sm1492339ejc.124.2021.05.13.02.58.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 May 2021 02:58:39 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Thu, 13 May 2021 11:58:38 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>, mingo@redhat.com,
+        Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org,
+        x86@kernel.org, Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH 1/4] sched: make nr_running() return 32-bit
+Message-ID: <YJz4TmZ7fmKFchRe@gmail.com>
+References: <20210422200228.1423391-1-adobriyan@gmail.com>
+ <87fsyr5wtj.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20210513064837.3949064-1-ying.huang@intel.com> <176421ba-77d9-8422-21e0-b5e2951533bd@huawei.com>
-In-Reply-To: <176421ba-77d9-8422-21e0-b5e2951533bd@huawei.com>
-From:   Muchun Song <smuchun@gmail.com>
-Date:   Thu, 13 May 2021 17:54:42 +0800
-Message-ID: <CAPSr9jEtdSgr5kDX=ESUrVtbuonUNEeFsOHpYYoFxD3PQ20C2A@mail.gmail.com>
-Subject: Re: [PATCH] mm, swap: Remove unnecessary smp_rmb() in swap_type_to_swap_info()
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     Huang Ying <ying.huang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andrea Parri <andrea.parri@amarulasolutions.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Omar Sandoval <osandov@fb.com>,
-        Paul McKenney <paulmck@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Will Deacon <will.deacon@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87fsyr5wtj.ffs@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 5:11 PM Miaohe Lin <linmiaohe@huawei.com> wrote:
->
-> On 2021/5/13 14:48, Huang Ying wrote:
-> > Before commit c10d38cc8d3e ("mm, swap: bounds check swap_info array
-> > accesses to avoid NULL derefs"), the typical code to reference the
-> > swap_info[] is as follows,
-> >
-> >   type = swp_type(swp_entry);
-> >   if (type >= nr_swapfiles)
-> >           /* handle invalid swp_entry */;
-> >   p = swap_info[type];
-> >   /* access fields of *p.  OOPS! p may be NULL! */
-> >
-> > Because the ordering isn't guaranteed, it's possible that "p" is read
-> > before checking "type".  And that may result in NULL pointer
-> > dereference.
-> >
-> > So in commit c10d38cc8d3e, the code becomes,
-> >
-> >   struct swap_info_struct *swap_type_to_swap_info(int type)
-> >   {
-> >         if (type >= READ_ONCE(nr_swapfiles))
-> >                 return NULL;
-> >         smp_rmb();
-> >         return READ_ONCE(swap_info[type]);
-> >   }
-> >
-> >   /* users */
-> >   type = swp_type(swp_entry);
-> >   p = swap_type_to_swap_info(type);
-> >   if (!p)
-> >         /* handle invalid swp_entry */;
-> >   /* access fields of *p */
-> >
-> > Because "p" is checked to be non-zero before dereference, smp_rmb()
-> > isn't needed anymore.
-> >
-> > We still need to guarantee swap_info[type] is read before dereference.
-> > That can be satisfied via the data dependency ordering of
-> > READ_ONCE(swap_info[type]).  The corresponding smp_wmb() is adjusted
-> > in alloc_swap_info() too.
-> >
-> > And, we don't need to read "nr_swapfiles" too.  Because if
-> > "type >= nr_swapfiles", swap_info[type] will be NULL.  We just need
-> > to make sure we will not access out of the boundary of the array.
-> > With that change, nr_swapfiles will only be accessed with swap_lock
-> > held, except in swapcache_free_entries().  Where the absolute
-> > correctness of the value isn't needed, as described in the comments.
-> >
-> > Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-> > Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
-> > Cc: Dan Carpenter <dan.carpenter@oracle.com>
-> > Cc: Andrea Parri <andrea.parri@amarulasolutions.com>
-> > Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > Cc: Andi Kleen <ak@linux.intel.com>
-> > Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> > Cc: Omar Sandoval <osandov@fb.com>
-> > Cc: Paul McKenney <paulmck@kernel.org>
-> > Cc: Tejun Heo <tj@kernel.org>
-> > Cc: Will Deacon <will.deacon@arm.com>
-> > Cc: Miaohe Lin <linmiaohe@huawei.com>
-> > ---
-> >  mm/swapfile.c | 18 +++++++++---------
-> >  1 file changed, 9 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/mm/swapfile.c b/mm/swapfile.c
-> > index 2aad85751991..4c1fb28bbe0e 100644
-> > --- a/mm/swapfile.c
-> > +++ b/mm/swapfile.c
-> > @@ -100,10 +100,14 @@ atomic_t nr_rotate_swap = ATOMIC_INIT(0);
-> >
-> >  static struct swap_info_struct *swap_type_to_swap_info(int type)
-> >  {
-> > -     if (type >= READ_ONCE(nr_swapfiles))
-> > +     if (type >= MAX_SWAPFILES)
-> >               return NULL;
-> >
-> > -     smp_rmb();      /* Pairs with smp_wmb in alloc_swap_info. */
-> > +     /*
-> > +      * The data dependency ordering from the READ_ONCE() pairs
-> > +      * with smp_wmb() in alloc_swap_info() to guarantee the
-> > +      * swap_info_struct fields are read after swap_info[type].
-> > +      */
-> >       return READ_ONCE(swap_info[type]);
-> >  }
-> >
-> > @@ -2884,14 +2888,10 @@ static struct swap_info_struct *alloc_swap_info(void)
-> >       }
-> >       if (type >= nr_swapfiles) {
-> >               p->type = type;
-> > -             WRITE_ONCE(swap_info[type], p);
-> > -             /*
-> > -              * Write swap_info[type] before nr_swapfiles, in case a
-> > -              * racing procfs swap_start() or swap_next() is reading them.
-> > -              * (We never shrink nr_swapfiles, we never free this entry.)
-> > -              */
-> > +             /* Paired with READ_ONCE() in swap_type_to_swap_info() */
-> >               smp_wmb();
->
-> Many thank for your patch. The patch looks fine to me. There is one question:
->
-> There is no smp_rmb() paired with above smp_wmb(). What is this smp_wmb() used for ?
-> Could you please have a explanation ?
 
-The comment is very clear, it matches READ_ONCE() which implies a
-data dependence barrier on some archs.
+* Thomas Gleixner <tglx@linutronix.de> wrote:
 
-Thanks.
-
->
-> Thanks again!
->
-> > -             WRITE_ONCE(nr_swapfiles, nr_swapfiles + 1);
-> > +             WRITE_ONCE(swap_info[type], p);
-> > +             nr_swapfiles++;
-> >       } else {
-> >               defer = p;
-> >               p = swap_info[type];
+> Alexey,
+> 
+> On Thu, Apr 22 2021 at 23:02, Alexey Dobriyan wrote:
+> > Creating 2**32 tasks is impossible due to futex pid limits and wasteful
+> > anyway. Nobody has done it.
 > >
->
+> 
+> this whole pile lacks useful numbers. What's the actual benefit of that
+> churn?
+
+I applied the 4 patch series from Alexey Dobriyan because they offer four 
+distinct technical advantages to the scheduler code:
+
+ - Shorter instructions generated in nr_running(), nr_iowait(), 
+   nr_iowait_cpu() due to losing the REX prefix.
+
+ - Shorter instructions generated by users of these 3 functions as well.
+
+ - Tighter data packing and structure size reduction in 'struct rt_rq', 
+   'struct dl_rq' and 'struct rq', due to 8-byte 'long' fields shrinking to 
+   4-byte 'int' based fields.
+
+ - Together these 4 patches clean up all derivative uses of the 
+   rq::nr_running base type, which is already 'unsigned int' and that's 
+   pretty fundamental given our PID ABI limits. Having type mismatch where 
+   we use 64-bit data types for certain APIs while 32-bit data types for 
+   others is inconsistent crap I wouldn't accept if it was submitted as new 
+   code.
+
+As to the numbers:
+
+The data structure size improvements are IMO obvious, and they are also 
+measurable, here's the before/after Pahole comparison of 'struct rt_rq':
+
+--- pahole.struct.rt_rq.before	2021-05-13 11:40:53.207077908 +0200
++++ pahole.struct.rt_rq.after	2021-05-13 11:41:42.257385897 +0200
+@@ -7,22 +7,22 @@ struct rt_rq {
+ 		int                curr;                 /*  1624     4 */
+ 		int                next;                 /*  1628     4 */
+ 	} highest_prio;                                  /*  1624     8 */
+-	long unsigned int          rt_nr_migratory;      /*  1632     8 */
+-	long unsigned int          rt_nr_total;          /*  1640     8 */
+-	int                        overloaded;           /*  1648     4 */
++	unsigned int               rt_nr_migratory;      /*  1632     4 */
++	unsigned int               rt_nr_total;          /*  1636     4 */
++	int                        overloaded;           /*  1640     4 */
+ 
+ 	/* XXX 4 bytes hole, try to pack */
+ 
+-	struct plist_head          pushable_tasks;       /*  1656    16 */
+-	/* --- cacheline 26 boundary (1664 bytes) was 8 bytes ago --- */
+-	int                        rt_queued;            /*  1672     4 */
+-	int                        rt_throttled;         /*  1676     4 */
+-	u64                        rt_time;              /*  1680     8 */
+-	u64                        rt_runtime;           /*  1688     8 */
+-	raw_spinlock_t             rt_runtime_lock;      /*  1696     4 */
++	struct plist_head          pushable_tasks;       /*  1648    16 */
++	/* --- cacheline 26 boundary (1664 bytes) --- */
++	int                        rt_queued;            /*  1664     4 */
++	int                        rt_throttled;         /*  1668     4 */
++	u64                        rt_time;              /*  1672     8 */
++	u64                        rt_runtime;           /*  1680     8 */
++	raw_spinlock_t             rt_runtime_lock;      /*  1688     4 */
+ 
+-	/* size: 1704, cachelines: 27, members: 13 */
+-	/* sum members: 1696, holes: 1, sum holes: 4 */
++	/* size: 1696, cachelines: 27, members: 13 */
++	/* sum members: 1688, holes: 1, sum holes: 4 */
+ 	/* padding: 4 */
+-	/* last cacheline: 40 bytes */
++	/* last cacheline: 32 bytes */
+
+'struct rt_rq' got shrunk from 1704 bytes to 1696 bytes, an 8 byte 
+reduction.
+
+'struct dl_rq' shrunk by 8 bytes:
+
+-	/* size: 104, cachelines: 2, members: 10 */
+-	/* sum members: 100, holes: 1, sum holes: 4 */
+-	/* last cacheline: 40 bytes */
++	/* size: 96, cachelines: 2, members: 10 */
++	/* sum members: 92, holes: 1, sum holes: 4 */
++	/* last cacheline: 32 bytes */
+
+'struct rq', which embedds both rt_rq and dl_rq, got 20 bytes smaller:
+
+-	/* sum members: 2967, holes: 10, sum holes: 137 */
++	/* sum members: 2947, holes: 11, sum holes: 157 */
+
+Side note: there's now 20 bytes more new padding holes which could possibly 
+be coalesced a bit more by reordering members sensibly - resulting in even 
+more data footprint savings. (But those should be separate changes and only 
+for fields we truly care about from a performance POV.)
+
+As to code generation improvements:
+
+> Just with the default config for one of my reference machines:
+> 
+>    text		data	bss	dec	 hex	 filename
+> 16679864	6627950	1671296	24979110 17d26a6 ../build/vmlinux-before
+> 16679894	6627950	1671296	24979140 17d26c4 ../build/vmlinux-after
+> ------------------------------------------------------------------------
+>      +30
+
+Using '/usr/bin/size' to compare before/after generated code is the wrong 
+way to measure code generation improvements for smaller changes due to 
+default alignment creating a reserve of 'padding' bytes at the end of most 
+functions. You have to look at the low level generated assembly directly.
+
+For example, the nr_iowait_cpu() commit, with before/after generated code 
+of the callers of the function:
+
+  9745516841a5: ("sched: Make nr_iowait() return 32-bit value")
+
+  ffffffffxxxxxxxx:      e8 49 8e fb ff          call   ffffffffxxxxxxxx <nr_iowait_cpu>
+- ffffffffxxxxxxxx:      48 85 c0                test   %rax,%rax
+
+  ffffffffxxxxxxxx:      e8 64 8e fb ff          call   ffffffffxxxxxxxx <nr_iowait_cpu>
++ ffffffffxxxxxxxx:      85 c0                   test   %eax,%eax
+
+Note how the 'test %rax,%rax' lost the 0x48 64-bit REX prefix and the 
+generated code got one byte shorter from "48 85 c0" to "85 c0".
+
+( Note, my asm generation scripts filter out some of the noise to make it 
+  easier to diff generated asm, hence the ffffffffxxxxxxxx placeholder. )
+
+The nr_iowait() function itself got shorter by two bytes as well, due to:
+
+Before:
+
+ffffffffxxxxxxxx <nr_iowait>:
+ffffffffxxxxxxxx:       41 54                   push   %r12
+ffffffffxxxxxxxx:       48 c7 c7 ff ff ff ff    mov    $0xffffffffxxxxxxxx,%rdi
+ffffffffxxxxxxxx:       45 31 e4                xor    %r12d,%r12d
+ffffffffxxxxxxxx:       55                      push   %rbp
+ffffffffxxxxxxxx:       8b 2d 01 ea 5d 01       mov    0x15dea01(%rip),%ebp        # ffffffffxxxxxxxx <nr_cpu_ids>
+ffffffffxxxxxxxx:       53                      push   %rbx
+ffffffffxxxxxxxx:       48 c7 c3 c0 95 02 00    mov    $0x295c0,%rbx
+ffffffffxxxxxxxx:       eb 17                   jmp    ffffffffxxxxxxxx <nr_iowait+0x34>
+ffffffffxxxxxxxx:       48 98                   cltq   
+ffffffffxxxxxxxx:       48 8b 14 c5 a0 c6 2e    mov    -0x7dd13960(,%rax,8),%rdx
+ffffffffxxxxxxxx:       82 
+ffffffffxxxxxxxx:       48 01 da                add    %rbx,%rdx
+ffffffffxxxxxxxx:       48 63 82 98 09 00 00    movslq 0x998(%rdx),%rax
+ffffffffxxxxxxxx:       49 01 c4                add    %rax,%r12
+ffffffffxxxxxxxx:       48 c7 c6 18 72 67 82    mov    $0xffffffffxxxxxxxx,%rsi
+ffffffffxxxxxxxx:       e8 80 46 39 00          call   ffffffffxxxxxxxx <cpumask_next>
+ffffffffxxxxxxxx:       89 c7                   mov    %eax,%edi
+ffffffffxxxxxxxx:       39 e8                   cmp    %ebp,%eax
+ffffffffxxxxxxxx:       72 d7                   jb     ffffffffxxxxxxxx <nr_iowait+0x1d>
+ffffffffxxxxxxxx:       4c 89 e0                mov    %r12,%rax
+ffffffffxxxxxxxx:       5b                      pop    %rbx
+ffffffffxxxxxxxx:       5d                      pop    %rbp
+ffffffffxxxxxxxx:       41 5c                   pop    %r12
+ffffffffxxxxxxxx:       c3                      ret    
+
+After:
+
+ffffffffxxxxxxxx <nr_iowait>:
+ffffffffxxxxxxxx:       41 54                   push   %r12
+ffffffffxxxxxxxx:       bf ff ff ff ff          mov    $0xffffffff,%edi
+ffffffffxxxxxxxx:       45 31 e4                xor    %r12d,%r12d
+ffffffffxxxxxxxx:       55                      push   %rbp
+ffffffffxxxxxxxx:       8b 2d 03 ea 5d 01       mov    0x15dea03(%rip),%ebp        # ffffffffxxxxxxxx <nr_cpu_ids>
+ffffffffxxxxxxxx:       53                      push   %rbx
+ffffffffxxxxxxxx:       48 c7 c3 c0 95 02 00    mov    $0x295c0,%rbx
+ffffffffxxxxxxxx:       eb 17                   jmp    ffffffffxxxxxxxx <nr_iowait+0x32>
+ffffffffxxxxxxxx:       48 63 c7                movslq %edi,%rax
+ffffffffxxxxxxxx:       48 8b 14 c5 a0 c6 2e    mov    -0x7dd13960(,%rax,8),%rdx
+ffffffffxxxxxxxx:       82 
+ffffffffxxxxxxxx:       48 01 da                add    %rbx,%rdx
+ffffffffxxxxxxxx:       8b 82 98 09 00 00       mov    0x998(%rdx),%eax
+ffffffffxxxxxxxx:       41 01 c4                add    %eax,%r12d
+ffffffffxxxxxxxx:       48 c7 c6 18 72 67 82    mov    $0xffffffffxxxxxxxx,%rsi
+ffffffffxxxxxxxx:       e8 a2 46 39 00          call   ffffffffxxxxxxxx <cpumask_next>
+ffffffffxxxxxxxx:       89 c7                   mov    %eax,%edi
+ffffffffxxxxxxxx:       39 c5                   cmp    %eax,%ebp
+ffffffffxxxxxxxx:       77 d7                   ja     ffffffffxxxxxxxx <nr_iowait+0x1b>
+ffffffffxxxxxxxx:       44 89 e0                mov    %r12d,%eax
+ffffffffxxxxxxxx:       5b                      pop    %rbx
+ffffffffxxxxxxxx:       5d                      pop    %rbp
+ffffffffxxxxxxxx:       41 5c                   pop    %r12
+ffffffffxxxxxxxx:       c3                      ret    
+
+The size of nr_iowait() shrunk from 78 bytes to 76 bytes.
+
+Or the other commit:
+
+  01aee8fd7fb2: ("sched: Make nr_running() return 32-bit value")
+
+  ffffffffxxxxxxxx:       e8 d9 24 e8 ff          call   ffffffffxxxxxxxx <nr_running>
+  ffffffffxxxxxxxx:       4c 8b 05 cc 92 70 01    mov    0x17092cc(%rip),%r8        # ffffffffxxxxxxxx <total_forks>
+  ffffffffxxxxxxxx:       4c 8b 64 24 50          mov    0x50(%rsp),%r12
+- ffffffffxxxxxxxx:       48 89 44 24 08          mov    %rax,0x8(%rsp)
+  ffffffffxxxxxxxx:       4c 89 04 24             mov    %r8,(%rsp)
+
+  ffffffffxxxxxxxx:       e8 f9 24 e8 ff          call   ffffffffxxxxxxxx <nr_running>
+  ffffffffxxxxxxxx:       4c 8b 05 ed 92 70 01    mov    0x17092ed(%rip),%r8        # ffffffffxxxxxxxx <total_forks>
+  ffffffffxxxxxxxx:       4c 8b 64 24 50          mov    0x50(%rsp),%r12
++ ffffffffxxxxxxxx:       89 44 24 08             mov    %eax,0x8(%rsp)
+  ffffffffxxxxxxxx:       4c 89 04 24             mov    %r8,(%rsp)
+
+Note how "mov %rax,0x8(%rsp)" got shortened by one byte to "mov %eax,0x8(%rsp)":
+
+- ffffffffxxxxxxxx:       48 89 44 24 08          mov    %rax,0x8(%rsp)
++ ffffffffxxxxxxxx:       89 44 24 08             mov    %eax,0x8(%rsp)
+
+The nr_running() function itself got shorter by 2 bytes, due to shorter 
+instruction sequences.
+
+The third commit improved code generation too:
+
+  8fc2858e572c: ("sched: Make nr_iowait_cpu() return 32-bit value")
+
+  ffffffffxxxxxxxx <nr_iowait_cpu>:
+  ffffffffxxxxxxxx:       48 63 ff                movslq %edi,%rdi
+  ffffffffxxxxxxxx:       48 c7 c0 c0 95 02 00    mov    $0x295c0,%rax
+  ffffffffxxxxxxxx:       48 03 04 fd a0 46 0f    add    -0x7df0b960(,%rdi,8),%rax
+  ffffffffxxxxxxxx:       82 
+- ffffffffxxxxxxxx:       48 63 80 98 09 00 00    movslq 0x998(%rax),%rax
+  ffffffffxxxxxxxx:       c3                      ret    
+
+  ffffffffxxxxxxxx <nr_iowait_cpu>:
+  ffffffffxxxxxxxx:       48 63 ff                movslq %edi,%rdi
+  ffffffffxxxxxxxx:       48 c7 c0 c0 95 02 00    mov    $0x295c0,%rax
+  ffffffffxxxxxxxx:       48 03 04 fd a0 46 0f    add    -0x7df0b960(,%rdi,8),%rax
+  ffffffffxxxxxxxx:       82 
+- ffffffffxxxxxxxx:       8b 80 98 09 00 00       mov    0x998(%rax),%eax
+  ffffffffxxxxxxxx:       c3                      ret    
+
+Note how the 'movslq 0x998(%rax),%rax' lost the REX prefix and got one byte 
+shorter. Call sites got shorter too:
+
+  ffffffffxxxxxxxx:       e8 e8 73 fa ff          call   ffffffffxxxxxxxx <nr_iowait_cpu>
+- ffffffffxxxxxxxx:       48 85 c0                test   %rax,%rax
+
+  ffffffffxxxxxxxx:       e8 c8 73 fa ff          call   ffffffffxxxxxxxx <nr_iowait_cpu>
+- ffffffffxxxxxxxx:       85 c0                   test   %eax,%eax
+
+You often won't see these effects in the 'size vmlinux' output, because 
+function alignment padding reserves usually hide 1-2 byte size improvements 
+in generated code.
+
+> I'm truly impressed by the massive savings of this change and I'm even 
+> more impressed by the justification:
+> 
+> > Bring nr_running() into 32-bit world to save on REX prefixes.
+> 
+> Aside of the obvious useless churn, REX prefixes are universaly true for 
+> all architectures, right? There is a world outside x86 ...
+
+Even architectures that have the same instruction length for 32-bit and 
+64-bit data types benefit:
+
+ - smaller data structures benefit all 64-bit architectures
+
+ - the cleaner, more coherent nr_running type definitions are now more 
+   consistently 'int' based, not the previous nonsensical 'int/long' mix 
+   that also made the generated code larger on x86.
+
+More importantly, the maintenance benchmark in these cases is not whether a 
+change actively helps every architecture we care about - but whether the 
+change is a *disadvantage* for them - and it isn't here.
+
+Changes that primarily benefit one common architecture, while not others, 
+are still eligible for upstream merging if they otherwise meet the quality 
+threshold and don't hurt the other architectures.
+
+TL;DR:
+
+This benefits from this series are small, but are far from 'useless churn', 
+unless we want to arbitrarily cut off technically valid contributions that 
+improve generated code, data structure size and code readability, submitted 
+by a long-time contributor who has contributed over 1,300 patches to the 
+kernel already, just because we don't think these add up a significant 
+enough benefit?
+
+No doubt the quality barrier must be and is higher for smaller changes - 
+but this series IMO passed that barrier.
+
+Anyway, I've Cc:-ed Linus and Greg, if you are advocating for some sort of 
+cut-off threshold for small but measurable improvements from long-time 
+contributors, it should probably be clearly specified & documented in 
+Documentation/SubmittingPatches ...
+
+Thanks,
+
+	Ingo
