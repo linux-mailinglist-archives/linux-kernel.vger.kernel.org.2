@@ -2,101 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5220237FA6E
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 17:16:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F49B37FA71
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 17:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234793AbhEMPRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 11:17:45 -0400
-Received: from mail-wm1-f43.google.com ([209.85.128.43]:41902 "EHLO
-        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234012AbhEMPRk (ORCPT
+        id S234816AbhEMPR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 11:17:59 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:38984 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234811AbhEMPRy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 11:17:40 -0400
-Received: by mail-wm1-f43.google.com with SMTP id o6-20020a05600c4fc6b029015ec06d5269so55128wmq.0;
-        Thu, 13 May 2021 08:16:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RzW3hfIwG8KNpIuYYvcN7wwNDPoH5ZcYrcAh7yRYkRA=;
-        b=RAQ0FITbYPJ3s/S0fnO2QYnqhd9zmu0tlxqH2Au+NxkrpVx86ailg40lSy74dkJGTx
-         Hg114bcs1nmHTr6CxHHdJilBe6hXvE29kB4aNyfW72WD/XYMU1lS0NwOFHASq/lMH8Fm
-         z3kJAjMqK/O7g+rn0ST4AGG9aS2BWuHlC4ImqqVySgwVZsworxwpOWqEQXOD9yq/eO1z
-         bGzCYTe3yhqt7+CLMXbJ0Ofy97gHl6cOgBgGAIWupQQhGhrMw2soI9SoahMv+Z6PgWkC
-         vPcV1oZfkPks6P0FsBNuR6lBqvUjuYdM5ewQ7UvWW8Qsp/dBvTKxpc8T3Vx6n6FcXzvV
-         dbSQ==
-X-Gm-Message-State: AOAM533WXbQD6eldlnP+bYNOts0pJE/fLu80lHlph/qHGMjvhL2jBiJs
-        J6YdeVzQw46u+yCCcd2ppuU=
-X-Google-Smtp-Source: ABdhPJyX1dK+4m59Uoq3vjk43fmBJYXqnMXrwlVKBN04PYK8JNzlDUGq18NLBqgIGq3DH6jXx9AiHg==
-X-Received: by 2002:a7b:c012:: with SMTP id c18mr4451930wmb.94.1620918988569;
-        Thu, 13 May 2021 08:16:28 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id s83sm2432436wms.16.2021.05.13.08.16.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 08:16:27 -0700 (PDT)
-Date:   Thu, 13 May 2021 15:16:25 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
-        lorenzo.pieralisi@arm.com, sudeep.holla@arm.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-efi@vger.kernel.org,
-        arnd@arndb.de, wei.liu@kernel.org, ardb@kernel.org,
-        daniel.lezcano@linaro.org, kys@microsoft.com
-Subject: Re: [PATCH v10 5/7] arm64: hyperv: Initialize hypervisor on boot
-Message-ID: <20210513151625.ww2cznl4myzwbvg5@liuwe-devbox-debian-v2>
-References: <1620841067-46606-1-git-send-email-mikelley@microsoft.com>
- <1620841067-46606-6-git-send-email-mikelley@microsoft.com>
+        Thu, 13 May 2021 11:17:54 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lhD4q-0004tp-28; Thu, 13 May 2021 15:16:40 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     "J . Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] nfsd: remove redundant assignment to pointer 'this'
+Date:   Thu, 13 May 2021 16:16:39 +0100
+Message-Id: <20210513151639.73435-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1620841067-46606-6-git-send-email-mikelley@microsoft.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 10:37:45AM -0700, Michael Kelley wrote:
-> Add ARM64-specific code to initialize the Hyper-V
-> hypervisor when booting as a guest VM. Provide functions
-> and data structures indicating hypervisor status that
-> are needed by VMbus driver.
-> 
-> This code is built only when CONFIG_HYPERV is enabled.
-> 
-> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
-[...]
->  /*
->   * Declare calls to get and set Hyper-V VP register values on ARM64, which
->   * requires a hypercall.
-> diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
-> index 61845c0..7b17d6a 100644
-> --- a/arch/arm64/kernel/setup.c
-> +++ b/arch/arm64/kernel/setup.c
-> @@ -49,6 +49,7 @@
->  #include <asm/traps.h>
->  #include <asm/efi.h>
->  #include <asm/xen/hypervisor.h>
-> +#include <asm/mshyperv.h>
->  #include <asm/mmu_context.h>
->  
->  static int num_standard_resources;
-> @@ -355,6 +356,9 @@ void __init __no_sanitize_address setup_arch(char **cmdline_p)
->  	if (acpi_disabled)
->  		unflatten_device_tree();
->  
-> +	/* Do after acpi_boot_table_init() so local FADT is available */
-> +	hyperv_early_init();
-> +
+From: Colin Ian King <colin.king@canonical.com>
 
-Arm maintainers, this requires your attention. Thanks.
+The pointer 'this' is being initialized with a value that is never read
+and it is being updated later with a new value. The initialization is
+redundant and can be removed.
 
-The rest is Hyper-V specific, feel free to skip that portion.
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ fs/nfsd/nfs4proc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Wei.
+diff --git a/fs/nfsd/nfs4proc.c b/fs/nfsd/nfs4proc.c
+index f4ce93d7f26e..712df4b7dcb2 100644
+--- a/fs/nfsd/nfs4proc.c
++++ b/fs/nfsd/nfs4proc.c
+@@ -3232,7 +3232,7 @@ bool nfsd4_spo_must_allow(struct svc_rqst *rqstp)
+ {
+ 	struct nfsd4_compoundres *resp = rqstp->rq_resp;
+ 	struct nfsd4_compoundargs *argp = rqstp->rq_argp;
+-	struct nfsd4_op *this = &argp->ops[resp->opcnt - 1];
++	struct nfsd4_op *this;
+ 	struct nfsd4_compound_state *cstate = &resp->cstate;
+ 	struct nfs4_op_map *allow = &cstate->clp->cl_spo_must_allow;
+ 	u32 opiter;
+-- 
+2.30.2
 
->  	bootmem_init();
->  
->  	kasan_init();
-> -- 
-> 1.8.3.1
-> 
