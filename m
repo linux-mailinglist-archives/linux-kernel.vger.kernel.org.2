@@ -2,221 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7229437FA13
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 16:54:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB10D37FA1F
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 16:56:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234789AbhEMOzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 10:55:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48082 "EHLO
+        id S234718AbhEMO5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 10:57:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234720AbhEMOxc (ORCPT
+        with ESMTP id S234709AbhEMO4a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 10:53:32 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71EA3C06134A
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 07:52:06 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id c20so4859411ejm.3
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 07:52:06 -0700 (PDT)
+        Thu, 13 May 2021 10:56:30 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDFA2C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 07:55:19 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id l1so4267250ejb.6
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 07:55:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=0OfZKh7G4FCWvdITFgddq0jjch2im9fcQcbtcvyCbJ0=;
-        b=yGER9sFeqImCRTjxagvrdLG2NXeJuvmnYhHyvT/N3ibkZ0cOji38G2r3ETIQg+Hjkh
-         iWkFpwduPfMD3/zTiaVJ5R/D6Ok2eqmCn9maTaJ/XEGisZQmWko1EbbZbCNg/o0Xndbk
-         UYvAC19wnmE2b1jbVkkvuAd/MEoAVq+usc6vd24X0pLgwurO+L6JcwXQUFVvnneLHfHE
-         N8Wt49yUqefE6Hhrn/kIxCPfhOu7Ka1HDFak1FUkPbIMhdwRWDRVdLBwPcKzg6R38lYQ
-         FHk8DwLtiXp6G+VquVP9NSbHCv4qUZ0WD4WJ/LjTrYVZ5SjRrsW51DB/8qINyepIGEV/
-         r6Dg==
+        bh=/8vd2SAwTdt88nX11VE63bL19uYaNF7maDv4yIT9Ok4=;
+        b=OdlYf21e3GAV7+fJtPuYd/MZ2x4Q9Ktm+p6MDIKe45eorVK0EItJBVTUhfRpEn1FKy
+         wzScKBxoIgLTaEF0kfXWfKAsWcuCcWa3kZRhrmZnRtT3Y8Kyv3BIut7KInyGQK/Q7+82
+         S+MS6SQbce1OEAMhTpVs41rMza/m9fge+6nrVnaUWhQe7KfXS7z/YvfOYIzMysYwE9CT
+         CqdFxylTupNIeHkP1Nqfg4LyMqQGMfcdVkBmNLsTXbZlq6CrAH7kDom2FjfWzECS5b0S
+         mZvicBNTg4i76IA8Udo6EWsXsKvSB93DSIKbcwksVrNZgJEzPIXioVdLDVMMsyH/nVJw
+         M1Qg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0OfZKh7G4FCWvdITFgddq0jjch2im9fcQcbtcvyCbJ0=;
-        b=ClqigriOqMXj+X3RXFBMn3UkekTRLja34MDkxoMRUO9PzzJkvcfYlXN8jievGMfX4t
-         K3MO0WLW8y/WGUS4JxHdYDIkaAIj5hIQ1m6cSVVOLmcWxsHemWZLsWQsBie9g6LMwSEq
-         prZ3JyyIPryWhWH4BApH8p0sfgoqk3YDxHmcxTXn7f8SGE4W9EgGqoSAS+A0mVypZBdD
-         zXC7XJimSRVSP4YQ8KupXSVHK/9EYpm6VZj5gFGODbYVBYjjHoF9l+LKOhij06PLvMYN
-         sey/IgVgGdM3PcF9duHa3sNSUXQHgDV7hDc+fZCcpT7nQ5twUxjUHbp3UibkzdEoCUy9
-         92Zg==
-X-Gm-Message-State: AOAM530ub1bfv7B6rhJ1PAhWI4GXD7du1SL/HXtOkooPlsbW0YhytzjQ
-        SGVgHMn8V2JEgywoYnFw3JTxlfqx3DgGrtVs8IdIyg==
-X-Google-Smtp-Source: ABdhPJxM3ATiNSUpOAOJ9eWZOuQdhYbDZCWVTt9AZfZgddggWQHRJ7iT1otIC6/tIvl+X8AGtpE7CYg8qTpqn1cHFCY=
-X-Received: by 2002:a17:907:b09:: with SMTP id h9mr13061663ejl.430.1620917525095;
- Thu, 13 May 2021 07:52:05 -0700 (PDT)
+        bh=/8vd2SAwTdt88nX11VE63bL19uYaNF7maDv4yIT9Ok4=;
+        b=QWQ8+3RSXpHU/9v3XHHtv55lxG3RNPs0GBq2F67dZNXd1fJvzhSIR4Dqr5bWjXIjNj
+         RaIT3U/+Hk0N5jQTYBj57oR2aSQuUxUNbCaZFwr4Peiu3Yd0nAY0LNx4ica51FejJR68
+         UsapFmRYu2AdGveowVQEMSAk2fnBKiu3eP7IAqJlHhkumTQ+UrkApSWY+AzSsHazG8Fi
+         zuzryFnpQeFdd4qqPQQGpXeEU8MOKs4wE+vBkgsIsRMQz/U53XzGw8xLBMnQYF6aDHeU
+         JTkm3MblO1PCnrXWtu5fvMxZS4vXjoZv0uxnTNx51fTGBbsOJLlQnHLKEF0MssDrshuH
+         fG+w==
+X-Gm-Message-State: AOAM533c5UpPMJYZqHWZReqg4k0KTWJLErUPFSilTiVT1Xh//K0x2JnN
+        DvGb5z9mGbg9fIsAh+OGsCWLnkLCGHPzA3seFrrsqg==
+X-Google-Smtp-Source: ABdhPJzyUVhAWAlVMgDV04Iqsca9WuX0WFa9WkM+n0Abvzy901iwOodylHjwZuY3UIH9Xp68bXI9dnwIoJZkQnfZBmk=
+X-Received: by 2002:a17:906:13db:: with SMTP id g27mr468360ejc.88.1620917718561;
+ Thu, 13 May 2021 07:55:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210421052855.1279713-1-drinkcat@chromium.org> <20210421132841.v13.2.I9f45f5c1f975422d58b5904d11546349e9ccdc94@changeid>
-In-Reply-To: <20210421132841.v13.2.I9f45f5c1f975422d58b5904d11546349e9ccdc94@changeid>
+References: <20210421052855.1279713-1-drinkcat@chromium.org> <c91746ce-88b6-5612-74a5-74600c7761e8@baylibre.com>
+In-Reply-To: <c91746ce-88b6-5612-74a5-74600c7761e8@baylibre.com>
 From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Date:   Thu, 13 May 2021 11:51:53 -0300
-Message-ID: <CAAEAJfBQzTQmZxTeq3gQcDgNbvMtzgNXegnY0MWUOC1MZ-W1mw@mail.gmail.com>
-Subject: Re: [PATCH v13 2/4] arm64: dts: mt8183: Add node for the Mali GPU
-To:     Nicolas Boichat <drinkcat@chromium.org>
-Cc:     Rob Herring <robh@kernel.org>, Steven Price <steven.price@arm.com>,
+Date:   Thu, 13 May 2021 11:55:06 -0300
+Message-ID: <CAAEAJfD3i+L4w1NuE5pUkMuH=R3CfBztDn-ZLcYR=onkcZ4Gxg@mail.gmail.com>
+Subject: Re: [PATCH v13 0/4] drm/panfrost: Add support for mt8183 GPU
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh@kernel.org>,
+        Steven Price <steven.price@arm.com>,
         Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        fshao@chromium.org, hsinyi@chromium.org, hoegsberg@chromium.org,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
         devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>, fshao@chromium.org,
+        David Airlie <airlied@linux.ie>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
         "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
+        <linux-mediatek@lists.infradead.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>, hsinyi@chromium.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        hoegsberg@chromium.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nicolas,
+Hi Neil,
 
-On Wed, 21 Apr 2021 at 02:29, Nicolas Boichat <drinkcat@chromium.org> wrote:
+On Mon, 26 Apr 2021 at 06:59, Neil Armstrong <narmstrong@baylibre.com> wrote:
 >
-> Add a basic GPU node for mt8183.
+> Hi,
 >
-> Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
-> ---
-> The binding we use with out-of-tree Mali drivers includes more
-> clocks, this is used for devfreq: the out-of-tree driver switches
-> clk_mux to clk_sub_parent (26Mhz), adjusts clk_main_parent, then
-> switches clk_mux back to clk_main_parent:
-> (see https://chromium.googlesource.com/chromiumos/third_party/kernel/+/chromeos-4.19/drivers/gpu/arm/midgard/platform/mediatek/mali_kbase_runtime_pm.c#423)
-> clocks =
->         <&topckgen CLK_TOP_MFGPLL_CK>,
->         <&topckgen CLK_TOP_MUX_MFG>,
->         <&clk26m>,
->         <&mfgcfg CLK_MFG_BG3D>;
-> clock-names =
->         "clk_main_parent",
->         "clk_mux",
->         "clk_sub_parent",
->         "subsys_mfg_cg";
-> (based on discussions, this probably belongs in the clock core)
+> On 21/04/2021 07:28, Nicolas Boichat wrote:
+> > Hi!
+> >
+> > This is just a rebase of the v11, untested (but it seems like
+> > Neil Armstrong recently tested it), with small changes in
+> > binding and dts. v11 cover follows:
+> >
+> > Follow-up on the v5 [1], things have gotten significantly
+> > better in the last year, thanks to the efforts on Bifrost
+> > support by the Collabora team (and probably others I'm not
+> > aware of).
+> >
+> > I've been testing this series on a MT8183/kukui device, with a
+> > chromeos-5.10 kernel [2], and got basic Chromium OS UI up with
+> > mesa 20.3.2 (lots of artifacts though).
+> >
+> > devfreq is currently not supported, as we'll need:
+> >  - Clock core support for switching the GPU core clock (see 2/4).
+> >  - Platform-specific handling of the 2-regulator (see 3/4).
+> >
+> > Since the latter is easy to detect, patch 3/4 just disables
+> > devfreq if the more than one regulator is specified in the
+> > compatible matching table.
+> >
+> > [1] https://patchwork.kernel.org/project/linux-mediatek/cover/20200306041345.259332-1-drinkcat@chromium.org/
+> > [2] https://crrev.com/c/2608070
+> >
+> > Changes in v13:
+> >  - devfreq: Fix conflict resolution mistake when rebasing, didn't
+> >    even compile. Oops.
+> >
+> > Changes in v12:
+> >  - binding: Fix min/maxItems logic (Rob Herring)
+> >  - Add gpu node to mt8183-pumpkin.dts as well (Neil Armstrong).
+> >
+> > Changes in v11:
+> >  - binding: power-domain-names not power-domainS-names
+> >  - mt8183*.dts: remove incorrect supply-names
+> >
+> > Changes in v10:
+> >  - Fix the binding to make sure sram-supply property can be provided.
+> >
+> > Changes in v9:
+> >  - Explain why devfreq needs to be disabled for GPUs with >1
+> >    regulators.
+> >
+> > Changes in v8:
+> >  - Use DRM_DEV_INFO instead of ERROR
+> >
+> > Changes in v7:
+> >  - Fix GPU ID in commit message
+> >  - Fix GPU ID in commit message
+> >
+> > Changes in v6:
+> >  - Rebased, actually tested with recent mesa driver.
+> >  - Add gpu regulators to kukui dtsi as well.
+> >  - Power domains are now attached to spm, not scpsys
+> >  - Drop R-B.
+> >  - devfreq: New change
+> >  - Context conflicts, reflow the code.
+> >  - Use ARRAY_SIZE for power domains too.
+> >
+> > Changes in v5:
+> >  - Rename "2d" power domain to "core2"
+> >  - Rename "2d" power domain to "core2" (keep R-B again).
+> >  - Change power domain name from 2d to core2.
+> >
+> > Changes in v4:
+> >  - Add power-domain-names description
+> >    (kept Alyssa's reviewed-by as the change is minor)
+> >  - Add power-domain-names to describe the 3 domains.
+> >    (kept Alyssa's reviewed-by as the change is minor)
+> >  - Add power domain names.
+> >
+> > Changes in v3:
+> >  - Match mt8183-mali instead of bifrost, as we require special
+> >    handling for the 2 regulators and 3 power domains.
+> >
+> > Changes in v2:
+> >  - Use sram instead of mali_sram as SRAM supply name.
+> >  - Rename mali@ to gpu@.
+> >
+> > Nicolas Boichat (4):
+> >   dt-bindings: gpu: mali-bifrost: Add Mediatek MT8183
+> >   arm64: dts: mt8183: Add node for the Mali GPU
+> >   drm/panfrost: devfreq: Disable devfreq when num_supplies > 1
+> >   drm/panfrost: Add mt8183-mali compatible string
+> >
+> >  .../bindings/gpu/arm,mali-bifrost.yaml        |  30 ++++-
+> >  arch/arm64/boot/dts/mediatek/mt8183-evb.dts   |   5 +
+> >  .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi |   5 +
+> >  .../boot/dts/mediatek/mt8183-pumpkin.dts      |   5 +
+> >  arch/arm64/boot/dts/mediatek/mt8183.dtsi      | 105 ++++++++++++++++++
+> >  drivers/gpu/drm/panfrost/panfrost_devfreq.c   |   9 ++
+> >  drivers/gpu/drm/panfrost/panfrost_drv.c       |  10 ++
+> >  7 files changed, 168 insertions(+), 1 deletion(-)
+> >
 >
-> This only matters for devfreq, that is disabled anyway as we don't
-> have platform-specific code to handle >1 supplies.
+> Seems this version is ready to be applied if we get a review on the DT ?
+>
+> Mathias ? could you have a look ?
 >
 
-Nit: I think some of this info could be relevant, so I'd make
-it part of the commit description.
+Given Rob has Acked the DT bindings, I think it's OK to apply patches
+1, 3 and 4 via drm-misc, letting Mediatek people sort out the DT changes.
 
-> (no changes since v12)
->
-> Changes in v12:
->  - Add gpu node to mt8183-pumpkin.dts as well (Neil Armstrong).
->
-> Changes in v11:
->  - mt8183*.dts: remove incorrect supply-names
->
-> Changes in v6:
->  - Add gpu regulators to kukui dtsi as well.
->  - Power domains are now attached to spm, not scpsys
->  - Drop R-B.
->
-> Changes in v5:
->  - Rename "2d" power domain to "core2" (keep R-B again).
->
-> Changes in v4:
->  - Add power-domain-names to describe the 3 domains.
->    (kept Alyssa's reviewed-by as the change is minor)
->
-> Changes in v2:
->  - Use sram instead of mali_sram as SRAM supply name.
->  - Rename mali@ to gpu@.
->
->  arch/arm64/boot/dts/mediatek/mt8183-evb.dts   |   5 +
->  .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi |   5 +
->  .../boot/dts/mediatek/mt8183-pumpkin.dts      |   5 +
->  arch/arm64/boot/dts/mediatek/mt8183.dtsi      | 105 ++++++++++++++++++
->  4 files changed, 120 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-evb.dts b/arch/arm64/boot/dts/mediatek/mt8183-evb.dts
-> index edff1e03e6fe..7bc0a6a7fadf 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8183-evb.dts
-> +++ b/arch/arm64/boot/dts/mediatek/mt8183-evb.dts
-> @@ -42,6 +42,11 @@ &auxadc {
->         status = "okay";
->  };
->
-> +&gpu {
-> +       mali-supply = <&mt6358_vgpu_reg>;
-> +       sram-supply = <&mt6358_vsram_gpu_reg>;
-> +};
-> +
->  &i2c0 {
->         pinctrl-names = "default";
->         pinctrl-0 = <&i2c_pins_0>;
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-> index ff56bcfa3370..e4e54be1c2b2 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-> @@ -279,6 +279,11 @@ dsi_out: endpoint {
->         };
->  };
->
-> +&gpu {
-> +       mali-supply = <&mt6358_vgpu_reg>;
-> +       sram-supply = <&mt6358_vsram_gpu_reg>;
-> +};
-> +
->  &i2c0 {
->         pinctrl-names = "default";
->         pinctrl-0 = <&i2c0_pins>;
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-pumpkin.dts b/arch/arm64/boot/dts/mediatek/mt8183-pumpkin.dts
-> index 0aff5eb52e88..ee912825cfc6 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8183-pumpkin.dts
-> +++ b/arch/arm64/boot/dts/mediatek/mt8183-pumpkin.dts
-> @@ -68,6 +68,11 @@ &auxadc {
->         status = "okay";
->  };
->
-> +&gpu {
-> +       mali-supply = <&mt6358_vgpu_reg>;
-> +       sram-supply = <&mt6358_vsram_gpu_reg>;
-> +};
-> +
->  &i2c0 {
->         pinctrl-names = "default";
->         pinctrl-0 = <&i2c_pins_0>;
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> index c5e822b6b77a..c75fdeea8aa4 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> @@ -1118,6 +1118,111 @@ mfgcfg: syscon@13000000 {
->                         #clock-cells = <1>;
->                 };
->
-> +               gpu: gpu@13040000 {
-> +                       compatible = "mediatek,mt8183-mali", "arm,mali-bifrost";
-> +                       reg = <0 0x13040000 0 0x4000>;
-> +                       interrupts =
-> +                               <GIC_SPI 280 IRQ_TYPE_LEVEL_LOW>,
-> +                               <GIC_SPI 279 IRQ_TYPE_LEVEL_LOW>,
-> +                               <GIC_SPI 278 IRQ_TYPE_LEVEL_LOW>;
-> +                       interrupt-names = "job", "mmu", "gpu";
-> +
-> +                       clocks = <&topckgen CLK_TOP_MFGPLL_CK>;
-> +
-> +                       power-domains =
-> +                               <&spm MT8183_POWER_DOMAIN_MFG_CORE0>,
-> +                               <&spm MT8183_POWER_DOMAIN_MFG_CORE1>,
-> +                               <&spm MT8183_POWER_DOMAIN_MFG_2D>;
-> +                       power-domain-names = "core0", "core1", "core2";
-> +
-> +                       operating-points-v2 = <&gpu_opp_table>;
-> +               };
-> +
-> +               gpu_opp_table: opp_table0 {
+My two unsolicited cents :-)
 
-If my eyes don't fool me, the OPP table being here means it's a child
-of the "soc" node. Given it's not an SoC peripheral,
-it'd make more sense to move it to root "/".
-
-Other than that, I think it looks good:
-
-Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
-
-Thanks!
 Ezequiel
