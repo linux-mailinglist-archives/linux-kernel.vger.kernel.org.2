@@ -2,249 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BF8137F3C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 09:55:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1C7937F3C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 09:56:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231744AbhEMH4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 03:56:54 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:3744 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230393AbhEMH4w (ORCPT
+        id S231791AbhEMH5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 03:57:12 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:34608 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230393AbhEMH5K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 03:56:52 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FgkQV55bCzqSVD;
-        Thu, 13 May 2021 15:52:18 +0800 (CST)
-Received: from [127.0.0.1] (10.40.192.131) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.498.0; Thu, 13 May 2021
- 15:55:34 +0800
-Subject: Re: [PATCH] printk: stop spining waiter when console resume to flush
- prb
-To:     Petr Mladek <pmladek@suse.com>
-CC:     <sergey.senozhatsky@gmail.com>, <rostedt@goodmis.org>,
-        <john.ogness@linutronix.de>, <linux-kernel@vger.kernel.org>,
-        "Sergey Senozhatsky" <senozhatsky@chromium.org>,
-        <linuxarm@huawei.com>, <bobo.shaobowang@huawei.com>
-References: <1620288026-5373-1-git-send-email-luojiaxing@huawei.com>
- <YJPxj83F1sBjHHAE@alley> <f38cd7b9-22a4-b65d-fd37-2d95fe95fc00@huawei.com>
- <YJj9JdhgL88ivHVy@alley> <cf883de9-0fd9-5b84-88e8-1bd73b9ee28a@huawei.com>
- <YJpJlsw6860gZhIt@alley>
-From:   luojiaxing <luojiaxing@huawei.com>
-Message-ID: <f0ce1966-9316-918b-e33e-0f324e148039@huawei.com>
-Date:   Thu, 13 May 2021 15:55:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.2.1
+        Thu, 13 May 2021 03:57:10 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14D7tsmS003169;
+        Thu, 13 May 2021 02:55:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1620892554;
+        bh=+zVUSUkg/G0NNU3XL9lDbVgZBOyUL+C7wchqqWrHSyo=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=D9jhZ2InWu+ff/0bVS93nIVuE1TNYJdF2GzQA0suf1tnx4rWS9pZ9UIaFviIJgI5R
+         zWcwtSjbpjGxrN0gY0ehKL2zjpMTBeVgrAtr4wKTpiLNkPMeUyXJHyQvQNoD7L4Wp5
+         jcGvWUHskrTBdT7YZ2zPKXChELW04xzpbD0poSB4=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14D7tsEW093833
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 13 May 2021 02:55:54 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 13
+ May 2021 02:55:54 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 13 May 2021 02:55:54 -0500
+Received: from [10.250.232.157] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14D7tod9069248;
+        Thu, 13 May 2021 02:55:51 -0500
+Subject: Re: [PATCH 14/14] phy: cadence-torrent: Check PIPE mode PHY status to
+ be ready for operation
+To:     Swapnil Jakhade <sjakhade@cadence.com>, <vkoul@kernel.org>,
+        <p.zabel@pengutronix.de>, <linux-phy@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <mparab@cadence.com>, <lokeshvutla@ti.com>
+References: <1617946456-27773-1-git-send-email-sjakhade@cadence.com>
+ <1617946456-27773-15-git-send-email-sjakhade@cadence.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <1527d8b6-6976-e37e-746f-88ea0f8f7688@ti.com>
+Date:   Thu, 13 May 2021 13:25:49 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <YJpJlsw6860gZhIt@alley>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1617946456-27773-15-git-send-email-sjakhade@cadence.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-X-Originating-IP: [10.40.192.131]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Swapnil,
 
-On 2021/5/11 17:08, Petr Mladek wrote:
-> On Tue 2021-05-11 15:32:13, luojiaxing wrote:
->> On 2021/5/10 17:30, Petr Mladek wrote:
->>> On Mon 2021-05-10 15:41:31, luojiaxing wrote:
->>>> On 2021/5/6 21:39, Petr Mladek wrote:
->> To facilitate debugging, I replaced the implementation code of the kernel
->> thread with the debugfs interface.
->>
->> It's possible that my simulations test were not designed clearly enough, and
->> you might be misunderstood. Sorry.
-> No problem. The simulation is not that important. We all agree that
-> printk() has this problem. I was just curios how much the simulation
-> did meet the real life problem.
->
->
->>> Also, do you see this problem in the real life, please?
->> Yes, the following is part of log found when the user performs S4 suspend
->> and resume on the PC:
->>
->> [  1368979] PM: thaw_processes over
->> [  146.369606] PM: __pm_notifier_call_chain over
->> [  146.374285] cpu1 pid4321 irq0 hisi_sas_debug_I_T_nexus_reset 1844 phy5
->> unlock mutex
->> [  146.374287] cpu1 pid4321 irq0 hisi_sas_debug_I_T_nexus_reset 1845 phy5
->> reset over
->> [  146.374288] cpu2 pid4256 irq0 hisi_sas_debug_I_T_nexus_reset 1780 phy4
->> get mutex
->> [  146.374297] hisi_sas_v3_hw 0000:74:02.0: phydown: phy4 phy_state=0x21
->> [  146.531336] cpu2 pid4256 irq0 hisi_sas_debug_I_T_nexus_reset 1810 phy4
->> wait start 2
->> [  146.533523] hisi_sas_v3_hw 0000:74:02.0: ignore flutter phy4 down
-> So, here is the delay caused by flushing the accumulated printk()
-> messages. Am I right, please?
+On 09/04/21 11:04 am, Swapnil Jakhade wrote:
+> PIPE PHY status is used to communicate the completion of several PHY
+> functions. Check if PHY is ready for operation while configured for
+> PIPE mode during startup.
+> 
+> Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
+> ---
+>  drivers/phy/cadence/phy-cadence-torrent.c | 60 +++++++++++++++++++++++
+>  1 file changed, 60 insertions(+)
+> 
+> diff --git a/drivers/phy/cadence/phy-cadence-torrent.c b/drivers/phy/cadence/phy-cadence-torrent.c
+> index 39145e56e061..42a1bdfd18d5 100644
+> --- a/drivers/phy/cadence/phy-cadence-torrent.c
+> +++ b/drivers/phy/cadence/phy-cadence-torrent.c
+> @@ -51,6 +51,10 @@
+>  #define TORRENT_PHY_PCS_COMMON_OFFSET(block_offset)	\
+>  				(0xC000 << (block_offset))
+>  
+> +#define TORRENT_PHY_PCS_LANE_CDB_OFFSET(ln, block_offset, reg_offset)	\
+> +				((0xD000 << (block_offset)) +		\
+> +				(((ln) << 9) << (reg_offset)))
+> +
+>  #define TORRENT_PHY_PMA_COMMON_OFFSET(block_offset)	\
+>  				(0xE000 << (block_offset))
+>  
+> @@ -218,6 +222,9 @@
+>  #define PHY_PIPE_USB3_GEN2_POST_CFG0	0x0022U
+>  #define PHY_PIPE_USB3_GEN2_POST_CFG1	0x0023U
+>  
+> +/* PHY PCS lane registers */
+> +#define PHY_PCS_ISO_LINK_CTRL		0x000BU
+> +
+>  /* PHY PMA common registers */
+>  #define PHY_PMA_CMN_CTRL1		0x0000U
+>  #define PHY_PMA_CMN_CTRL2		0x0001U
+> @@ -242,6 +249,9 @@ static const struct reg_field phy_pma_pll_raw_ctrl =
+>  static const struct reg_field phy_reset_ctrl =
+>  				REG_FIELD(PHY_RESET, 8, 8);
+>  
+> +static const struct reg_field phy_pcs_iso_link_ctrl_1 =
+> +				REG_FIELD(PHY_PCS_ISO_LINK_CTRL, 1, 1);
+> +
+>  static const struct reg_field phy_pipe_cmn_ctrl1_0 = REG_FIELD(PHY_PIPE_CMN_CTRL1, 0, 0);
+>  
+>  #define REFCLK_OUT_NUM_CMN_CONFIG	5
+> @@ -316,12 +326,14 @@ struct cdns_torrent_phy {
+>  	struct regmap *regmap_phy_pma_common_cdb;
+>  	struct regmap *regmap_tx_lane_cdb[MAX_NUM_LANES];
+>  	struct regmap *regmap_rx_lane_cdb[MAX_NUM_LANES];
+> +	struct regmap *regmap_phy_pcs_lane_cdb[MAX_NUM_LANES];
+>  	struct regmap *regmap_dptx_phy_reg;
+>  	struct regmap_field *phy_pll_cfg;
+>  	struct regmap_field *phy_pma_cmn_ctrl_1;
+>  	struct regmap_field *phy_pma_cmn_ctrl_2;
+>  	struct regmap_field *phy_pma_pll_raw_ctrl;
+>  	struct regmap_field *phy_reset_ctrl;
+> +	struct regmap_field *phy_pcs_iso_link_ctrl_1[MAX_NUM_LANES];
+>  	struct clk *clks[CDNS_TORRENT_REFCLK_DRIVER + 1];
+>  	struct clk_onecell_data clk_data;
+>  };
+> @@ -456,6 +468,22 @@ static const struct regmap_config cdns_torrent_common_cdb_config = {
+>  	.reg_read = cdns_regmap_read,
+>  };
+>  
+> +#define TORRENT_PHY_PCS_LANE_CDB_REGMAP_CONF(n) \
+> +{ \
+> +	.name = "torrent_phy_pcs_lane" n "_cdb", \
+> +	.reg_stride = 1, \
+> +	.fast_io = true, \
+> +	.reg_write = cdns_regmap_write, \
+> +	.reg_read = cdns_regmap_read, \
+> +}
+> +
+> +static const struct regmap_config cdns_torrent_phy_pcs_lane_cdb_config[] = {
+> +	TORRENT_PHY_PCS_LANE_CDB_REGMAP_CONF("0"),
+> +	TORRENT_PHY_PCS_LANE_CDB_REGMAP_CONF("1"),
+> +	TORRENT_PHY_PCS_LANE_CDB_REGMAP_CONF("2"),
+> +	TORRENT_PHY_PCS_LANE_CDB_REGMAP_CONF("3"),
+> +};
+> +
+>  static const struct regmap_config cdns_torrent_phy_pcs_cmn_cdb_config = {
+>  	.name = "torrent_phy_pcs_cmn_cdb",
+>  	.reg_stride = 1,
+> @@ -1546,6 +1574,16 @@ static int cdns_torrent_phy_on(struct phy *phy)
+>  		return ret;
+>  	}
+>  
+> +	if (inst->phy_type == TYPE_PCIE || inst->phy_type == TYPE_USB) {
+> +		ret = regmap_field_read_poll_timeout(cdns_phy->phy_pcs_iso_link_ctrl_1[inst->mlane],
+> +						     read_val, !read_val, 1000,
+> +						     PLL_LOCK_TIMEOUT);
+> +		if (ret == -ETIMEDOUT) {
+> +			dev_err(cdns_phy->dev, "Timeout waiting for PHY status ready\n");
+> +			return ret;
+> +		}
+> +	}
+> +
+>  	mdelay(10);
 
-
-Yes, My personal expectation was that the delay in printk() was about 10ms,
-
-but this situaton was far more than expected,
-
-
->
->
->> [  148.551332] cpu2 pid4256 irq0 hisi_sas_debug_I_T_nexus_reset 1812 phy4
->> wait over 2
->> [  148.552442] cpu0 pid302 irq128 phy_up_v3_hw 1586 phy4
->> [  148.552449] sas: sas_form_port: phy4 belongs to port0 already(1)!
->> [  148.559980] cpu2 pid4256 irq0 hisi_sas_debug_I_T_nexus_reset 182reset
->> timeout
->> [  148.567480] ata5.00: configured for UDMA/133
->> [  148.574743] cpu2 pid4256 irq0 hisi_sas_debug_I_T_nexus_reset 14 phy4
->> unlock mut  148.574744] cpu2 pid4250 hisi_sas_debug_I_T_nexus_reset 1845
->> phy4 reset over
->> [  148.734754] PM: pm_restore_console over
-> I am a bit confused that pm_restore_console is mentioned after the
-> problematic delay.
->
-> I guess that "over" means that the function returned here.
-> Does it mean that resume_console() was called earlier before
-> the above delay?
-
-
-Yes, resume_console() is called before phy up interrupt call printk()
-
-
-These is another log, may be more clear:
-
-[  739.860835] hisi_sas_v3_hw 0000:74:02.0: resuming from operating 
-state [D0]
-[  739.867233] hisi_sas_v3_hw 0000:74:04.0: resuming from operating 
-state [D0]
-
-...
-
-[  742.906981] cpu2 pid4182 irq0 hisi_sas_debug_I_T_nexus_reset 1799 
-phy0 wait start
-[  742.907970] cpu0 pid4107 irq128 phy_up_v3_hw 1463 phy0
-[  744.934979] cpu2 pid4182 irq0 hisi_sas_debug_I_T_nexus_reset 1801 
-phy0 wait over
-[  744.944173] cpu2 pid4182 irq0 hisi_sas_debug_I_T_nexus_reset 1811 
-phy0 reset timeout
-
-
-PC resume, console_resume() is call somewhere between [ 742.906981] and 
-[  739.867233],
-
-Then our driver execute I_T_nexus_reset on phy0 and start to wait phy 
-up. phy up interrupt actually
-
-come back soon, and cache "phy_up_v3_hw 1463 phy0" on [ 742.907970], but 
-as you konw,
-
-printk() is blocked here and after 2s, I_T_nexus_reset wait over and 
-print timeout.
-
-
->
->
->> [  148.738587] PM: atomic_inc over
->> [  148.738588] PM: hibernation exit
->> [  148.738714] PM: hibernation entry
->>
->>
->> You can see "hisi_sas_debug_I_T_nexus_reset 182reset timeout" in the above
->> print, which we added to the kernel.
->>
->> The mean to wait for a phy up interrupt, as the interrupt didn't come back
->> for more than 2s, so driver report a timeout.
->>
->> However, when we check the hardware register, the flag of phy up interrupt
->> has been set, So the interrupt should have returned.
->>
->> After analysis,  we found that dev_info() called by phy up interrupt is
->> blocked for more than 2s. We proved that this dev_info() takes over
->>
->> the job of flushing the prb from console_resume(), and unfortunately, no
->> other kthread call printk() at this moment.
->>
->> So it take more than 2 seconds before returning and prolong phy up interrupt
->> callback func's handle duration, finally misjudgment leading to timeout.
-> OK.
->
->
->>> What motivated you to investigate this scenario, please?
->>
->> I also try to modify it in my own driver to prolong the timeout judgment by
->> several seconds. However, since the time to flush the prb depends
->>
->> on the number of caches in the logbuf, I cannot determine how many seconds
->> to extend the timeout judgment.
-> Unfortunately. there is no hard limit at the moment. There are
-> situations where printk() causes softlockups which means that the
-> console work takes longer than 30 sec.
->
->
->> In addition, I understand that many kernel drivers do not expect printk() to
->> be blocked for more than a few seconds when calling printk(). And,
->>
->> printk is blocked only in a few specific scenarios, and the framework does
->> not need to be modified, so may be it's simple to be fixed.
-> This is very old problem. If I remember correctly, the first attempts
-> to offload the console handling started in 2012. The main problem is
-> that offloading increases the risk that the messages will never reach
-> the console. This blocked any change for years.
->
-> There is finally a consensus to give it a chance. RT people are
-> working hard on it. They put a lot of effort to make lockless
-> ringbuffer. Offload is the next step. But it requires implementing
-> atomic console(s), serialize backtraces from all CPUs in NMI,
-> and try to push the messages immediately when things go wrong
-> or when the kthreads could not get scheduled by definition,
-> for example, early boot, suspend, shutdown, panic.
-
-
-I understand the effect of offload allows the driver to call printk() to 
-return quickly without any blocking, right?
-
-
->
->> Therefore, I proposed this bugfix.
-> The fix is rather a workaround. And it helps only in one particular
-> scenario. It will get obsolete when the console work is offloaded.
-> I would like to be sure that it is important enough.
->
-> Does the fix prevent "only" an extra reset?
-> Is the system functional in the end?
-
-
- From the results, system disk become read-only after resume. We are 
-storage driver.
-
-
-> Is it acceptable to keep it as is and wait for the proper solution?
-
-
-As you said, offload takes more than one year to upstream. If this 
-bugfix is a small one and scenario-specific,
-
-can we fix it first? Perhaps this bugfix will be removed along with the 
-rest of the code when offload upstream.
-
-However other drivers don't sense any change.
-
-If our drive do the workaround, we have to revert it after offload 
-upstream, which may be more troublesome for us.
-
+With the above polling, this mdelay() shouldn't be required.
 
 Thanks
-
-Jiaxing
-
-
->
-> To be honest, it might take a long time (even > 1 year) until
-> the kthreads are upstream. As I already wrote, there was a pushback
-> against it and we need to do it properly.
->
-> Best Regards,
-> Petr
->
-> .
->
-
+Kishon
