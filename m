@@ -2,205 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCC2537F171
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 04:52:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A868437F172
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 04:53:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230423AbhEMCxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 22:53:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52246 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230385AbhEMCxh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 22:53:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E13061417;
-        Thu, 13 May 2021 02:52:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1620874348;
-        bh=SLbN/DBHHqmewlE8uQW14WObooHOO9whfbtyrGVG5b4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=HHlAXi1swYbztV+Xl0lXmdlm3Z62D/XY9oFpu3fdX9TfOekyShsSj+vQncgpZW7KI
-         V5ZGTTo5f+r8od0SCbHo+X9celx0dnl2PvXHYQlmLXs57CaHKYzEeJQnGtu53dn8us
-         HSJMlHfMNx0AkWyONanHd9JPnE3WKYCBojTArl0Y=
-Date:   Wed, 12 May 2021 19:52:27 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc:     vbabka@suse.cz, iamjoonsoo.kim@lge.com, rientjes@google.com,
-        penberg@kernel.org, cl@linux.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Marco Elver <elver@google.com>
-Subject: Re: [PATCH v3] mm, slub: change run-time assertion in
- kmalloc_index() to compile-time
-Message-Id: <20210512195227.245000695c9014242e9a00e5@linux-foundation.org>
-In-Reply-To: <20210511173448.GA54466@hyeyoo>
-References: <20210511173448.GA54466@hyeyoo>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S230468AbhEMCyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 22:54:40 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:35222 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230364AbhEMCyf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 22:54:35 -0400
+X-UUID: 945b5eb47a9b4bac8f61246354f7cf35-20210513
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=DkvV/jPRPm57TuS9uX0S6v2TxWE8Q0xW72CfQJu/OlI=;
+        b=ZsRhWOR7pujiM9EJy3tMvvQG+cF5tsbYsXH3shzwHjc/j/b8Ghd27ZlpKY758giRPJ2yUWMwH24XsBWqosHlniMnsoUT2AjFhFlwwcuGRaxqo2Po/Du2P9N8T9du4Ml1b7T9ufpjB5CF2P2SlyAU+Gq2ZHmspHIk1Y1NG9aIGXA=;
+X-UUID: 945b5eb47a9b4bac8f61246354f7cf35-20210513
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <miles.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1742560615; Thu, 13 May 2021 10:53:23 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 13 May 2021 10:53:21 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 13 May 2021 10:53:21 +0800
+Message-ID: <1620874401.21092.10.camel@mtkswgap22>
+Subject: Re: [PATCH] mm/sparse: fix check_usemap_section_nr warnings
+From:   Miles Chen <miles.chen@mediatek.com>
+To:     Baoquan He <bhe@redhat.com>
+CC:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
+        <k-hagio-ab@nec.com>
+Date:   Thu, 13 May 2021 10:53:21 +0800
+In-Reply-To: <20210513011648.GA6776@MiWiFi-R3L-srv>
+References: <20210511093114.15123-1-miles.chen@mediatek.com>
+         <YJpbWVrgJFLRpzl3@kernel.org> <1620797600.14730.7.camel@mtkswgap22>
+         <YJuh90iYeZ8F4Ain@kernel.org> <20210513011648.GA6776@MiWiFi-R3L-srv>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: 7753801D92E62CBD26FBF274B8115874F75D8956F43F6CF55697AE995F99B2F32000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 12 May 2021 02:34:48 +0900 Hyeonggon Yoo <42.hyeyoo@gmail.com> wrote:
-
-> currently when size is not supported by kmalloc_index, compiler will
-> generate a run-time BUG() while compile-time error is also possible,
-> and better. so changed BUG to BUILD_BUG_ON_MSG to make compile-time
-> check possible.
-> 
-> also removed code that allocates more than 32MB because current
-> implementation supports only up to 32MB.
-> 
-
-This explodes in mysterious ways.  The patch as I have it is appended,
-for reference.
-
-gcc-10.3.0 allmodconfig.
-
-
-mm/kfence/kfence_test.c: In function 'test_free_bulk':
-mm/kfence/kfence_test.c:519:16: warning: unused variable 'size' [-Wunused-variable]
-  519 |   const size_t size = setup_test_cache(test, 8 + prandom_u32_max(300), 0,
-      |                ^~~~
-In file included from <command-line>:
-In function 'kmalloc_index',
-    inlined from 'test_alloc' at mm/kfence/kfence_test.c:270:82:
-././include/linux/compiler_types.h:328:38: error: call to '__compiletime_assert_922' declared with attribute error: unexpected size in kmalloc_index()
-  328 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-      |                                      ^
-././include/linux/compiler_types.h:309:4: note: in definition of macro '__compiletime_assert'
-  309 |    prefix ## suffix();    \
-      |    ^~~~~~
-././include/linux/compiler_types.h:328:2: note: in expansion of macro '_compiletime_assert'
-  328 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-      |  ^~~~~~~~~~~~~~~~~~~
-./include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
-   39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-      |                                     ^~~~~~~~~~~~~~~~~~
-./include/linux/slab.h:389:2: note: in expansion of macro 'BUILD_BUG_ON_MSG'
-  389 |  BUILD_BUG_ON_MSG(1, "unexpected size in kmalloc_index()");
-      |  ^~~~~~~~~~~~~~~~
-make[2]: *** [mm/kfence/kfence_test.o] Error 1
-make[1]: *** [mm/kfence] Error 2
-make: *** [mm] Error 2
-
-This patch suppresses the error:
-
---- a/mm/kfence/kfence_test.c~a
-+++ a/mm/kfence/kfence_test.c
-@@ -318,13 +318,13 @@ static void test_out_of_bounds_read(stru
- 
- 	/* Test both sides. */
- 
--	buf = test_alloc(test, size, GFP_KERNEL, ALLOCATE_LEFT);
-+	buf = test_alloc(test, 32, GFP_KERNEL, ALLOCATE_LEFT);
- 	expect.addr = buf - 1;
- 	READ_ONCE(*expect.addr);
- 	KUNIT_EXPECT_TRUE(test, report_matches(&expect));
- 	test_free(buf);
- 
--	buf = test_alloc(test, size, GFP_KERNEL, ALLOCATE_RIGHT);
-+	buf = test_alloc(test, 32, GFP_KERNEL, ALLOCATE_RIGHT);
- 	expect.addr = buf + size;
- 	READ_ONCE(*expect.addr);
- 	KUNIT_EXPECT_TRUE(test, report_matches(&expect));
-@@ -519,11 +519,11 @@ static void test_free_bulk(struct kunit
- 		const size_t size = setup_test_cache(test, 8 + prandom_u32_max(300), 0,
- 						     (iter & 1) ? ctor_set_x : NULL);
- 		void *objects[] = {
--			test_alloc(test, size, GFP_KERNEL, ALLOCATE_RIGHT),
--			test_alloc(test, size, GFP_KERNEL, ALLOCATE_NONE),
--			test_alloc(test, size, GFP_KERNEL, ALLOCATE_LEFT),
--			test_alloc(test, size, GFP_KERNEL, ALLOCATE_NONE),
--			test_alloc(test, size, GFP_KERNEL, ALLOCATE_NONE),
-+			test_alloc(test, 32, GFP_KERNEL, ALLOCATE_RIGHT),
-+			test_alloc(test, 32, GFP_KERNEL, ALLOCATE_NONE),
-+			test_alloc(test, 32, GFP_KERNEL, ALLOCATE_LEFT),
-+			test_alloc(test, 32, GFP_KERNEL, ALLOCATE_NONE),
-+			test_alloc(test, 32, GFP_KERNEL, ALLOCATE_NONE),
- 		};
- 
- 		kmem_cache_free_bulk(test_cache, ARRAY_SIZE(objects), objects);
-
-
-Is gcc-10.3.0 simply confused?  test_out_of_bounds_read() is clearly
-calling kmalloc_index(32) which is OK.
-
-Anyway, I'll drop this patch for now so I can compile a kernel!
-
-
-
-
-
-
-From: Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Subject: mm, slub: change run-time assertion in kmalloc_index() to compile-time
-
-Currently when size is not supported by kmalloc_index, compiler will
-generate a run-time BUG() while compile-time error is also possible, and
-better.  So change BUG to BUILD_BUG_ON_MSG to make compile-time check
-possible.
-
-Also remove code that allocates more than 32MB because current
-implementation supports only up to 32MB.
-
-Link: https://lkml.kernel.org/r/20210511173448.GA54466@hyeyoo
-Signed-off-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-Cc: Christoph Lameter <cl@linux.com>
-Cc: Pekka Enberg <penberg@kernel.org>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
----
-
- include/linux/slab.h |    7 +++++--
- mm/slab_common.c     |    7 +++----
- 2 files changed, 8 insertions(+), 6 deletions(-)
-
---- a/include/linux/slab.h~mm-slub-change-run-time-assertion-in-kmalloc_index-to-compile-time
-+++ a/include/linux/slab.h
-@@ -346,6 +346,9 @@ static __always_inline enum kmalloc_cach
-  * 1 =  65 .. 96 bytes
-  * 2 = 129 .. 192 bytes
-  * n = 2^(n-1)+1 .. 2^n
-+ *
-+ * Note: there's no need to optimize kmalloc_index because it's evaluated
-+ * in compile-time.
-  */
- static __always_inline unsigned int kmalloc_index(size_t size)
- {
-@@ -382,8 +385,8 @@ static __always_inline unsigned int kmal
- 	if (size <=  8 * 1024 * 1024) return 23;
- 	if (size <=  16 * 1024 * 1024) return 24;
- 	if (size <=  32 * 1024 * 1024) return 25;
--	if (size <=  64 * 1024 * 1024) return 26;
--	BUG();
-+
-+	BUILD_BUG_ON_MSG(1, "unexpected size in kmalloc_index()");
- 
- 	/* Will never be reached. Needed because the compiler may complain */
- 	return -1;
---- a/mm/slab_common.c~mm-slub-change-run-time-assertion-in-kmalloc_index-to-compile-time
-+++ a/mm/slab_common.c
-@@ -755,8 +755,8 @@ struct kmem_cache *kmalloc_slab(size_t s
- 
- /*
-  * kmalloc_info[] is to make slub_debug=,kmalloc-xx option work at boot time.
-- * kmalloc_index() supports up to 2^26=64MB, so the final entry of the table is
-- * kmalloc-67108864.
-+ * kmalloc_index() supports up to 2^25=32MB, so the final entry of the table is
-+ * kmalloc-32M.
-  */
- const struct kmalloc_info_struct kmalloc_info[] __initconst = {
- 	INIT_KMALLOC_INFO(0, 0),
-@@ -784,8 +784,7 @@ const struct kmalloc_info_struct kmalloc
- 	INIT_KMALLOC_INFO(4194304, 4M),
- 	INIT_KMALLOC_INFO(8388608, 8M),
- 	INIT_KMALLOC_INFO(16777216, 16M),
--	INIT_KMALLOC_INFO(33554432, 32M),
--	INIT_KMALLOC_INFO(67108864, 64M)
-+	INIT_KMALLOC_INFO(33554432, 32M)
- };
- 
- /*
-_
+T24gVGh1LCAyMDIxLTA1LTEzIGF0IDA5OjE2ICswODAwLCBCYW9xdWFuIEhlIHdyb3RlOg0KPiBP
+biAwNS8xMi8yMSBhdCAxMjozN3BtLCBNaWtlIFJhcG9wb3J0IHdyb3RlOg0KPiA+IE9uIFdlZCwg
+TWF5IDEyLCAyMDIxIGF0IDAxOjMzOjIwUE0gKzA4MDAsIE1pbGVzIENoZW4gd3JvdGU6DQo+ID4g
+PiBPbiBUdWUsIDIwMjEtMDUtMTEgYXQgMTM6MjQgKzAzMDAsIE1pa2UgUmFwb3BvcnQgd3JvdGU6
+DQo+ID4gPiA+IE9uIFR1ZSwgTWF5IDExLCAyMDIxIGF0IDA1OjMxOjE0UE0gKzA4MDAsIE1pbGVz
+IENoZW4gd3JvdGU6DQo+ID4gPiA+ID4gSW4gY3VycmVudCBpbXBsZW1lbnRhdGlvbiBvZiBub2Rl
+X2RhdGEsIGlmIENPTkZJR19ORUVEX01VTFRJUExFX05PREVTPXksDQo+ID4gPiA+ID4gbm9kZV9k
+YXRhIGlzIGFsbG9jYXRlZCBieSBrem1hbGxvYy4gSWYgQ09ORklHX05FRURfTVVMVElQTEVfTk9E
+RVM9biwNCj4gPiA+ID4gPiB3ZSB1c2UgYSBnbG9iYWwgdmFyaWFibGUgbmFtZWQgImNvbnRpZ19w
+YWdlX2RhdGEiLg0KPiA+ID4gPiA+IA0KPiA+ID4gPiA+IElmIENPTkZJR19ERUJVR19WSVJUVUFM
+IGlzIG5vdCBlbmFibGVkLiBfX3BhKCkgY2FuIGhhbmRsZSBib3RoIGt6YWxsb2MgYW5kDQo+ID4g
+PiA+ID4gc3ltYm9sIGNhc2VzLiBCdXQgaWYgQ09ORklHX0RFQlVHX1ZJUlRVQUwgaXMgc2V0LCB3
+ZSB3aWxsIGhhdmUgdGhlDQo+ID4gPiA+ID4gInZpcnRfdG9fcGh5cyB1c2VkIGZvciBub24tbGlu
+ZWFyIGFkZHJlc3MiIHdhcm5pbmcgd2hlbiBib290aW5nLg0KPiA+ID4gPiANCj4gPiA+ID4gTWF5
+YmUgd2UnbGwganVzdCBhbGxvY2F0ZSBwZ2RhdCBmb3IgQ09ORklHX05FRURfTVVMVElQTEVfTk9E
+RVM9biAod2hpY2ggaXMNCj4gPiA+ID4gZXNzZW50aWFsbHkgIU5VTUEpIGNhc2UgaW4sIHNheSwg
+ZnJlZV9hcmVhX2luaXQoKT8NCj4gPiA+IA0KPiA+ID4gDQo+ID4gPiB0aGFua3MgZm9yIHlvdXIg
+Y29tbWVudC4NCj4gPiA+IA0KPiA+ID4gSSBjaGVjayB0aGUgc291cmNlIHRyZWUgYW5kIGZvdW5k
+IHRoYXQgY29udGlnX3BhZ2VfZGF0YSBpcyB1c2VkIGJ5DQo+ID4gPiBjcmFzaF9jb3JlLmMgYXMg
+YSBzeW1ib2wuIEkgYW0gbm90IGZhbWlsaWFyIHdpdGggY3Jhc2hfY29yZSBidXQgSSBndWVzcw0K
+PiA+ID4gYWxsb2NhdGUgcGdkYXQgbWF5IGJyZWFrIHRoaXMgY3Jhc2hfY29yZSB1c2Vycy4NCj4g
+PiA+IA0KPiA+ID4gRm9yIGV4YW1wbGU6IHNvbWUgdXNlcnNwYWNlIHNjcmlwdHMgd2FudCB0byBy
+ZWFkIHRoZSBhZGRyZXNzIG9mDQo+ID4gPiBjb250aWdfcGFnZV9kYXRhIHN5bWJvbCBmcm9tIGEg
+Y29yZWZpbGUuDQo+ID4gPiANCj4gPiA+IGtlcm5lbC9jcmFzaF9jb3JlLmM6NDYwOiAgICAgICAg
+Vk1DT1JFSU5GT19TWU1CT0woY29udGlnX3BhZ2VfZGF0YSk7DQo+ID4gPiANCj4gPiA+ICNpZm5k
+ZWYgQ09ORklHX05FRURfTVVMVElQTEVfTk9ERVMNCj4gPiA+ICAgICAgICAgVk1DT1JFSU5GT19T
+WU1CT0wobWVtX21hcCk7DQo+ID4gPiAgICAgICAgIFZNQ09SRUlORk9fU1lNQk9MKGNvbnRpZ19w
+YWdlX2RhdGEpOw0KPiA+ID4gI2VuZGlmDQo+ID4gDQo+ID4gTXkgdW5kZXJzdGFuZGluZyBpcyB0
+aGF0IFZNQ09SRUlORk9fU1lNQk9MKCkgc2hvdWxkIGNvcnJlc3BvbmQgdG8gYWN0dWFsDQo+ID4g
+c3ltYm9sLiBJZiB0aGVyZSBpcyBubyBjb250aWdfcGFnZV9kYXRhIHN5bWJvbCwgdGhlcmUgaXMg
+bm8gbmVlZCBmb3INCj4gPiBWTUNPUkVJTkZPX1NZTUJPTCgpIGVpdGhlci4NCj4gDQo+IFllYWgs
+IGl0J3MgZXhwb3J0ZWQgZm9yIG1ha2VkdW1wZmlsZSBhbmQgY3Jhc2ggdXRpbGl0eSB0byBwYXJz
+ZSBhbmQgZ2V0DQo+IHRoZSBtZW1vcnkgbGF5b3V0IG9mIHRoZSBjb3JydXB0ZWQga2VybmVsLiBJ
+ZiByZW1vdmluZyBpdCwgbWFrZWR1bXBmaWxlDQo+IHdpbGwgZ2V0IGl0IGZyb20gbm9kZV9kYXRh
+W10uIExvb2tzIGxpa2UgYSBnb29kIGlkZWEgdG8gdW5pZnkgY29kZSBmb3INCj4gbnVtYXwhbnVt
+YSBvbiBwZ2xpc3RfZGF0YSBpbnN0YW5jZXMuDQo+IA0KPiBBZGQgS2F6dSB0byBDQyBzaW5jZSBo
+ZSBtYWludGFpbiBtYWtlZHVtcGZpbGUgYW5kIENyYXNoIHV0aWxpdGllcy4NCg0KdGhhbmtzIGZv
+ciBhZGRpbmcgdGhlIGV4cGVydHMgaW4uIChJIHNlYXJjaGVkIHRoZSBzb3VyY2UgY29kZSBvZiBj
+cmFzaA0KbGFzdCBuaWdodCBhbmQgZm91bmQgdGhhdCBjb250aWdfcGFnZV9kYXRhIGlzIHVzZWQg
+aW4gbWVtb3J5LmMpDQoNCkkgd2lsbCBtb3ZlIHRoZSBhbGxvY2F0aW9uIGFuZCBpbml0aWFsaXph
+dGlvbiB0byBmcmVlX2FyZWFfaW5pdCgpIGFuZA0Kc3VibWl0IHBhdGNoIHYyLg0KDQoNCk1pbGVz
+DQoNCj4gDQo+IE15IGNvbmNlcm4gaXMgdGhhdCB0aGF0IG9ubHkgaGFwcGVucyBvbiBhcm0vYXJt
+NjQvcmlzY3YsIGRvZXMgaXQgbWVhbiB0aGUNCj4gd2FybmluZyBpcyBub3QgbmVjZXNzYXJ5LCBz
+byBjYW4gYmUgcmVtb3ZlZD8gT3Igd2UgbmVlZCB0byBjaGVjayBpZg0KPiBDT05GSUdfREVCVUdf
+VklSVFVBTCBkb2Vzbid0IHdvcmsgd2VsbCBpbiB0aGlzIGNhc2UuDQo+IA0KPiBUaGFua3MNCj4g
+QmFvcXVhbg0KPiANCg0K
 
