@@ -2,134 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE2A037F0DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 03:11:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B22B437F0DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 03:15:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240326AbhEMBMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 21:12:55 -0400
-Received: from ozlabs.org ([203.11.71.1]:55617 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237612AbhEMBMZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 21:12:25 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S235212AbhEMBQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 21:16:34 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:14060 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233606AbhEMBQ3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 21:16:29 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620868520; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=0HUdi3RVnrIz9MP5yZUO5pEKm9r054S5adp5gghHIuo=;
+ b=EbdiAVMnDiO5yVvbKQu+q17RWHTIudBNPcvvJnAInVzu1cAe3QLtgjDq0WuZN/MDMEt/eiw7
+ 4dxbjlTM7y0MqUlxC1N/AVEc1SJfIN9ftgowDVmRpSPNDuCSFgDBK593v84YnC2Wfe0Dulmh
+ DhfmhRJofLCcD4IuAqMMUEWGJZM=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 609c7da1938a1a6b8f70dd91 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 13 May 2021 01:15:13
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 24EDCC359F4; Thu, 13 May 2021 01:15:12 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FgYWj3tzDz9sWM;
-        Thu, 13 May 2021 11:11:12 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1620868274;
-        bh=FlilBHw+BALVakdHubZxYbaKAe6CCUEFxVUa18sEmcc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=nti1KmGx3u6c4TWKUL8nzpwoF9a3HPhJ04/7Yo9Eu2Byuy+rR1PINAG+++Dwcdv0X
-         ut2/Mqh7OATdy9L33tqCX+LjkDPEtofNeEiCpn5Ow6ps+qJb/4bRZsatSqxySnpv8E
-         mxRdhwTOqReh27sT42x2HOxnvoYRZcPeNG631kXSS9s+4K+R4ZCK8V3buDC7ockb8c
-         XZsXE63R9wFvSJtGm+sd+nsEwZa5hSrRHmEpRvXYilWRu0q+tAaCZjHHtFqkPxMVHj
-         fT0+bcyzDYR6aUpjkgesV7GSMknzMPt+cQvx68U33C5qnfd0r1qoqajWAm6AdZweHE
-         onh+++r4gaEAA==
-Date:   Thu, 13 May 2021 11:11:10 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>, Greg KH <greg@kroah.com>
-Cc:     Loic Poulain <loic.poulain@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Oliver Neukum <oneukum@suse.com>
-Subject: Re: linux-next: build failure after merge of the net-next tree
-Message-ID: <20210513111110.02e1caee@canb.auug.org.au>
-In-Reply-To: <20210512095418.0ad4ea4a@canb.auug.org.au>
-References: <20210512095201.09323cda@canb.auug.org.au>
-        <20210512095418.0ad4ea4a@canb.auug.org.au>
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0EE32C35960;
+        Thu, 13 May 2021 01:15:09 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/VAQ3w9fzd1rupt4ug8HuIr5";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 13 May 2021 09:15:09 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bean Huo <huobean@gmail.com>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 1/2] scsi: ufs: Introduce hba performance monitor sysfs
+ nodes
+In-Reply-To: <cb32c4e786ac73681b80b8af556543f08f076687.camel@gmail.com>
+References: <1619058521-35307-1-git-send-email-cang@codeaurora.org>
+ <1619058521-35307-2-git-send-email-cang@codeaurora.org>
+ <cb32c4e786ac73681b80b8af556543f08f076687.camel@gmail.com>
+Message-ID: <638d9eb678db15e95317c16f2313ea19@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/VAQ3w9fzd1rupt4ug8HuIr5
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 2021-05-13 04:21, Bean Huo wrote:
+> On Wed, 2021-04-21 at 19:28 -0700, Can Guo wrote:
+>> +
+>> 
+>> +static DEVICE_ATTR_RW(monitor_enable);
+>> 
+>> +static DEVICE_ATTR_RW(monitor_chunk_size);
+>> 
+>> +static DEVICE_ATTR_RO(read_total_sectors);
+>> 
+>> +static DEVICE_ATTR_RO(read_total_busy);
+>> 
+>> +static DEVICE_ATTR_RO(read_nr_requests);
+>> 
+>> +static DEVICE_ATTR_RO(read_req_latency_avg);
+>> 
+>> +static DEVICE_ATTR_RO(read_req_latency_max);
+>> 
+>> +static DEVICE_ATTR_RO(read_req_latency_min);
+>> 
+>> +static DEVICE_ATTR_RO(read_req_latency_sum);
+>> 
+>> +static DEVICE_ATTR_RO(write_total_sectors);
+>> 
+>> +static DEVICE_ATTR_RO(write_total_busy);
+>> 
+>> +static DEVICE_ATTR_RO(write_nr_requests);
+>> 
+>> +static DEVICE_ATTR_RO(write_req_latency_avg);
+>> 
+>> +static DEVICE_ATTR_RO(write_req_latency_max);
+>> 
+>> +static DEVICE_ATTR_RO(write_req_latency_min);
+>> 
+>> +static DEVICE_ATTR_RO(write_req_latency_sum);
+> 
+> Can,
+> 
+> I like this series of patches, which can help me monitor UFS
+> performance online. I have a suggestion,  how do you think that we add
+> this to ufs-debugfs. Then we don't need to poll each parameter one by
+> one, just one interface.
+> 
+> Bean
 
-Hi all,
+Hi Bean,
 
-On Wed, 12 May 2021 09:54:18 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> On Wed, 12 May 2021 09:52:01 +1000 Stephen Rothwell <sfr@canb.auug.org.au=
-> wrote:
-> >
-> > After merging the net-next tree, today's linux-next build (x86_64
-> > allmodconfig) failed like this:
-> >=20
-> > drivers/usb/class/cdc-wdm.c: In function 'wdm_wwan_port_stop':
-> > drivers/usb/class/cdc-wdm.c:858:2: error: implicit declaration of funct=
-ion 'kill_urbs' [-Werror=3Dimplicit-function-declaration]
-> >   858 |  kill_urbs(desc);
-> >       |  ^~~~~~~~~
-> >=20
-> > Caused by commit
-> >=20
-> >   cac6fb015f71 ("usb: class: cdc-wdm: WWAN framework integration")
-> >=20
-> > kill_urbs() was removed by commit
-> >=20
-> >   18abf8743674 ("cdc-wdm: untangle a circular dependency between callba=
-ck and softint")
-> >=20
-> > Which is included in v5.13-rc1. =20
->=20
-> Sorry, that commit is only in linux-next (from the usb.current tree).
-> I will do a merge fix up tomorrow - unless someone provides one.
->=20
-> > I have used the net-next tree from next-20210511 for today. =20
+Thanks for your suggestion, put it into debugfs is also an option.
+But on Android, debugfs is not mounted by default (the requirement
+from Google). So it is convenient to have it in sysfs, and one can
+use below cmd (as I listed in the cover letter) to poll all parameters
+at once : "grep ^ /dev/null *".
 
-I have used the following merge fix patch for today.  I don't know if
-this is sufficient (or even correct), but it does build.
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Thu, 13 May 2021 11:04:09 +1000
-Subject: [PATCH] usb: class: cdc-wdm: fix for kill_urbs() removal
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- drivers/usb/class/cdc-wdm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/usb/class/cdc-wdm.c b/drivers/usb/class/cdc-wdm.c
-index c88dcc4b6618..489b0e049402 100644
---- a/drivers/usb/class/cdc-wdm.c
-+++ b/drivers/usb/class/cdc-wdm.c
-@@ -855,7 +855,7 @@ static void wdm_wwan_port_stop(struct wwan_port *port)
- 	struct wdm_device *desc =3D wwan_port_get_drvdata(port);
-=20
- 	/* Stop all transfers and disable WWAN mode */
--	kill_urbs(desc);
-+	poison_urbs(desc);
- 	desc->manage_power(desc->intf, 0);
- 	clear_bit(WDM_READ, &desc->flags);
- 	clear_bit(WDM_WWAN_IN_USE, &desc->flags);
---=20
-2.30.2
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/VAQ3w9fzd1rupt4ug8HuIr5
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCcfK4ACgkQAVBC80lX
-0GzuRAf/Uf9VNeOmIKeR1BSE3mJtt2cnaeFkZTb4wpLemOCdpxIAz3JmtBhhWftP
-NLxUyIOQ7qANroNEv1AIciIShQGX7T0YJioJQHzfsAHvOKUGtIWFxb+Khjnn6JNC
-ROiTIkES7aJdTzK9k7ZCZwrgyB1BGcwJvmRGpJDBI+MWwpl+ht1Kkr8Cc0L5iluV
-Kip7Yx4bjlrMk/zmmBxDZsMc+efYHrb/x7QeM1EGinCktwPfvMOC70C7O/7gu+bj
-UdfRBhNpa7qEowu5DanOBTRh54Sybg/yQcSebHe+Cor0LdKDTvmUjrcKKxvNJn5Q
-Lq2U5QT9q44L8mPSSDt5eDRCG7jdRA==
-=u61s
------END PGP SIGNATURE-----
-
---Sig_/VAQ3w9fzd1rupt4ug8HuIr5--
+Thanks,
+Can Guo.
