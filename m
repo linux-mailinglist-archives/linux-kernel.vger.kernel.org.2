@@ -2,109 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8597637F8F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 15:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDEC637F8F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 15:40:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234123AbhEMNlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 09:41:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60492 "EHLO
+        id S234024AbhEMNlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 09:41:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234024AbhEMNlE (ORCPT
+        with ESMTP id S234133AbhEMNll (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 09:41:04 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4FC8C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 06:39:53 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id b21so14428456plz.0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 06:39:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:mime-version:content-id:date:message-id;
-        bh=53VrDc7yaURaIAvZgMf9bgQZDAm6RoNVwGpY4UD/pBM=;
-        b=dKm7K0GZsyoCl0Zl/bWvwIGL7Of4R0n9eBipNSS/17LsbmjHYWBLhXfk6Y0kNu9qWD
-         cgk+zhrhanxSey77CTsrVODiQ6rUEWkvaxxrtfkPvAsESaGFUPBkRrn3LZJdV8meN5xf
-         Hh0sGe1+xALlDdKpGmcLuisopEgsJpYGpE+oUN2vaAaMUUG0td7msYazg4F4gD7Mqhqw
-         iJcHgri20pTlcscRNo4hyqAxSpnGyPcLkIl5IiBgcEID6UdCc+UshL32hHDGsObOKTd5
-         Czit2Xcfu+QZlofJUOp/Lg+Ax7LSsx35WMgQJ+qabAwDzWoplhvkt8WbE3F4N7Pszm11
-         PrBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:mime-version:content-id:date
-         :message-id;
-        bh=53VrDc7yaURaIAvZgMf9bgQZDAm6RoNVwGpY4UD/pBM=;
-        b=R79Sbu59eUhfK6KwdkpL0ZGC9O+XfgEAEDR2h3ADUMChVkJYC4AQnkqAPbTrHfGvUZ
-         xnzVKERN4JoyBN0jm9XLlGmrmb/LCEbgqXUH20EA+LDZR+Yi3ehfH7gK68NuThVpABqo
-         rPZFh10oKTBV5fJ1oUaAZ80oWNrYVjK31bVPD9/hy3bJvduw0fARgWN341leK0bP/kGW
-         F/cGWClRbHlYno06FXFmiWXx3yiPy9fD9Zws94+0Blhi4IRtEiL6/zjVYCc+evTsmcxL
-         YmHwlpkM+qiHmk/pXK4LLghb07CRIO9/NF5gs10v/wRn9VMXnJFuaH4luEoriYechcKa
-         lMDw==
-X-Gm-Message-State: AOAM532FcIw/OFcg8vp/7dUR4vaD58Z1vSPmX1gu+GsyZA13RjI/UV3v
-        LNb0emntswYne0164RKEGjdjTIcuD5I=
-X-Google-Smtp-Source: ABdhPJzS5UFIePRVKUA9TKQ8cfvpMfi5AeFwbz7/ulDmO1OX8gQwqVfdrBULQihGbcUubr2Bb6gQrg==
-X-Received: by 2002:a17:903:208b:b029:ed:74ad:4c15 with SMTP id d11-20020a170903208bb02900ed74ad4c15mr40630894plc.6.1620913193436;
-        Thu, 13 May 2021 06:39:53 -0700 (PDT)
-Received: from jrobl (h219-110-108-104.catv02.itscom.jp. [219.110.108.104])
-        by smtp.gmail.com with ESMTPSA id t14sm2071701pfg.168.2021.05.13.06.39.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 06:39:53 -0700 (PDT)
-Received: from localhost ([127.0.0.1] helo=jrobl) by jrobl id 1lhBZ9-00080i-LW ; Thu, 13 May 2021 22:39:51 +0900
-From:   "J. R. Okajima" <hooanon05g@gmail.com>
-To:     peterz@infradead.org, penguin-kernel@I-love.SAKURA.ne.jp
-Cc:     linux-kernel@vger.kernel.org
-Subject: LOCKDEP customizable numbers upper limit
+        Thu, 13 May 2021 09:41:41 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CC48C061763
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 06:40:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=LETaaoQDm7+0SUJrdU0yq+SGacSDpz8UZ3z+Vo+OGjU=; b=dYoo2xXkTGJt7WrVetpgLQraf
+        KQGcupC85h8uFfPHXI0vqaxv1TaqLx6btwHo9I7FUX7rz3qN8VncxmqpgXJYCTlN9zHy1tH9HQiH+
+        N8gPwHgCE/3qrCqVa8LDl5G6icWFurrwJzRF5x3rfgBUYtVlsxSEQUYhB8ewIaTvrpqb4qCRuZhXa
+        U1GAbBVF03kSx/FTz3xtchEF6/NsewE0zugMJ8RuVj+ZCMy9caAYckWXOSkJNCqvHLzwZjpDaCXpu
+        wMGfADf81YNw8kX/YCeBmngudJlJ+bR+Q+L6Sij2qeDZu8lXPw+LCkkxc/O2u2GiN5nvmHH9bdY+z
+        fLQTsEFNA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43932)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lhBZZ-0006Du-FM; Thu, 13 May 2021 14:40:17 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lhBZY-00033J-3L; Thu, 13 May 2021 14:40:16 +0100
+Date:   Thu, 13 May 2021 14:40:16 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Stephen Boyd <swboyd@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Rob Clark <robdclark@gmail.com>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH] component: Move host device to end of device lists on
+ binding
+Message-ID: <20210513134016.GY1336@shell.armlinux.org.uk>
+References: <20210508074118.1621729-1-swboyd@chromium.org>
+ <YJlZwYS+oH7W5WjO@phenom.ffwll.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <30794.1620913191.1@jrobl>
-Date:   Thu, 13 May 2021 22:39:51 +0900
-Message-ID: <30795.1620913191@jrobl>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJlZwYS+oH7W5WjO@phenom.ffwll.local>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, May 10, 2021 at 06:05:21PM +0200, Daniel Vetter wrote:
+> Entirely aside, but an s/master/aggregate/ or similar over the entire
+> component.c codebase would help a pile in making it easier to understand
+> which part does what. Or at least I'm always terribly confused about which
+> bind binds what and all that, so maybe an additional review whether we
+> have a clear split into aggregate and individual components after that
+> initial fix is needed.
 
-According to the commit in v5.13-rc1,
-	5dc33592e9553 2021-04-05 lockdep: Allow tuning tracing capacity constants.
-several lockdep numbers have their own range as 10--30.
-But if we set all 30s, we got a compilation error.
+I'm not entirely sure what you mean "which bind binds what".
 
-kernel/locking/lockdep.c:3536:2: note: in expansion of macro 'BUILD_BUG_ON'
-  BUILD_BUG_ON((1UL << 24) <= ARRAY_SIZE(chain_hlocks));
+The component helper solves this problem:
 
-kernel/locking/lockdep.c
-----------------------------------------
-static u16 chain_hlocks[MAX_LOCKDEP_CHAIN_HLOCKS];
-	:::
-	BUILD_BUG_ON((1UL << 24) <= ARRAY_SIZE(chain_hlocks));
-	:::
-----------------------------------------
+We have a master or aggregate device representing a collection of
+individual devices. The aggregate and individual devices may be probed
+by the device model in any order. The aggregate device is only complete
+once all individual and aggregate devices have been successfully probed.
 
-MAX_LOCKDEP_CHAIN_HLOCKS is defined in kernel/locking/lockdep_internal.h
-as this.
+It does this by tracking which devices are present, and only when they
+are all present does it call the bind() operation. Conversely, if one
+happens to be removed, it calls the unbind() operation. To me, that's
+very simple.
 
-#define MAX_LOCKDEP_CHAINS_BITS		CONFIG_LOCKDEP_CHAINS_BITS
-#define MAX_LOCKDEP_CHAINS		(1UL << MAX_LOCKDEP_CHAINS_BITS)
-#define MAX_LOCKDEP_CHAIN_HLOCKS	(MAX_LOCKDEP_CHAINS*5)
+When we start talking about PM, the original idea was for the aggregate
+device to handle that. However, DRM/OF has pushed to change the model a
+bit such that the aggregate device is created as a platform device when
+we detect the presence of one of the individual devices.
 
-I don't know what this 'multiply by 5' means and why
-ARRAY_SIZE(chain_hlocks) is limited to (1UL << 24), but setting 30 to
-CONFIG_LOCKDEP_CHAINS_BITS obviously causes BUILD_BUG.
-'*5' is more than 2 bits shift, so CONFIG_LOCKDEP_CHAINS_BITS has to be
-less than (24-2), limited to the range 10--21.
+I suspect what we actually want is something that, when the first
+individual device gets notified of a transition to a lower power mode,
+we want to place the system formed by all the devices into a low power
+mode. Please realise that it may not be appropriate for every
+individual device to be affected by that transition until it receives
+its own PM call.
 
-Hmm, I tried.
+> One question I have: Why is the bridge component driver not correctly
+> ordered wrt the i2c driver it needs? The idea is that the aggregate driver
+> doesn't access any hw itself, but entirely relies on all its components.
 
-CONFIG_LOCKDEP_BITS=30
-CONFIG_LOCKDEP_CHAINS_BITS=21
-CONFIG_LOCKDEP_STACK_TRACE_BITS=30
-CONFIG_LOCKDEP_STACK_TRACE_HASH_BITS=30
-CONFIG_LOCKDEP_CIRCULAR_QUEUE_BITS=30
+As far as I'm aware, bridge was never converted to use any component
+stuff, so I'm not sure what you're referring to.
 
-Arg, LD failed.
-ld: kernel/locking/lockdep.o: in function `lockdep_hlock_class':
-lockdep.c:(.text+0x84f): relocation truncated to fit: R_X86_64_PC32 against `.bss'
-
-I am afraid these LOCKDEP configurations need some sort of balancing.
-
-
-J. R. Okajima
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
