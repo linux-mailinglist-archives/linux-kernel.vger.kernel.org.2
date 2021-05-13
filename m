@@ -2,99 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A868437F172
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 04:53:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 381D737F174
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 04:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230468AbhEMCyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 22:54:40 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:35222 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230364AbhEMCyf (ORCPT
+        id S230364AbhEMC5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 22:57:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229745AbhEMC5i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 22:54:35 -0400
-X-UUID: 945b5eb47a9b4bac8f61246354f7cf35-20210513
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=DkvV/jPRPm57TuS9uX0S6v2TxWE8Q0xW72CfQJu/OlI=;
-        b=ZsRhWOR7pujiM9EJy3tMvvQG+cF5tsbYsXH3shzwHjc/j/b8Ghd27ZlpKY758giRPJ2yUWMwH24XsBWqosHlniMnsoUT2AjFhFlwwcuGRaxqo2Po/Du2P9N8T9du4Ml1b7T9ufpjB5CF2P2SlyAU+Gq2ZHmspHIk1Y1NG9aIGXA=;
-X-UUID: 945b5eb47a9b4bac8f61246354f7cf35-20210513
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <miles.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1742560615; Thu, 13 May 2021 10:53:23 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 13 May 2021 10:53:21 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 13 May 2021 10:53:21 +0800
-Message-ID: <1620874401.21092.10.camel@mtkswgap22>
-Subject: Re: [PATCH] mm/sparse: fix check_usemap_section_nr warnings
-From:   Miles Chen <miles.chen@mediatek.com>
-To:     Baoquan He <bhe@redhat.com>
-CC:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
-        <k-hagio-ab@nec.com>
-Date:   Thu, 13 May 2021 10:53:21 +0800
-In-Reply-To: <20210513011648.GA6776@MiWiFi-R3L-srv>
-References: <20210511093114.15123-1-miles.chen@mediatek.com>
-         <YJpbWVrgJFLRpzl3@kernel.org> <1620797600.14730.7.camel@mtkswgap22>
-         <YJuh90iYeZ8F4Ain@kernel.org> <20210513011648.GA6776@MiWiFi-R3L-srv>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Wed, 12 May 2021 22:57:38 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEB48C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 19:56:29 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id j26so25730857edf.9
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 19:56:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dfLvpQkOXb/0mc5ID6W6SJ563fzW4AnWs2gl3gOGpKU=;
+        b=iYg4BRRSJEjuIKdzPtyQBs3rZhK7U09uQ7ULwifgp/seJXBoxAsHU4eydyd0epyN1D
+         L/XD99EiCbO8nNHGckQVYURJqPoiMXCh5pmVoBVik0mw/ZY942IQUStgtIaKLRQhAB3b
+         Fmv/ssgLSC2jbl/Nul7kXMcbszjUfHP0eEhu8Hh1QCnstKI3h0/YOgDuoElWXbcSkHOg
+         kE3ZRuUeAD8OfPvmDFsJBMve0B4Wi+ztxK6KHui0epib4y4dn36A1DOkqpnvGz4ePwo0
+         KEM10Cg+ynK1ooTajnzFpq1lA5lvk63SgP/dx83+52K1mFBtuq80oacJvHJ9zQEgN95/
+         w9Ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dfLvpQkOXb/0mc5ID6W6SJ563fzW4AnWs2gl3gOGpKU=;
+        b=FooeFIAvvdi1KwsqwtPIiThCXZIU3oQ5xqw7ozRrvE5KWNkvHPbdDCPeD5Iy3mzhoT
+         +zOv/H8iOS34DYwwsyGpX1m8QRYos4WeOqmygSoVuOKBKlWLXUoR9DspGnd64O+ODN2Z
+         5hcAZwi4RsG22dKRsr1+DW8GKuGPzJcBW0QrKPgnBSCjaXLQXEadpONOzlAhySFKOwmh
+         IjzrbgFCAutz5h593GDtAkTW6Q70xWrARFYiyybwzmqE/TKa9/0EmLn8CAVGBsxTeuQ5
+         QrXnm2Y+qqQ0coIoELJEOBxi1kF4FwwapdUxQ2qB44GOXxGEibH4YX/h5t6ilZ7mAzfE
+         A91A==
+X-Gm-Message-State: AOAM530xkJKQQPPfAteqLWZFBXvstBq95jEfNf+AmlbhZGDSfzwlW8G8
+        O50kralmefcRxhBxJZOonsG6eQjbye7wR/Ag91qw9Q==
+X-Google-Smtp-Source: ABdhPJxKqMzfAVkdnpbhLe5lHlfN9lCK6NxW6G40JdaUWpE9f++vzBOorWIbLAEOt2/zVuDTAfTqIV5HdmyMe5r0tT8=
+X-Received: by 2002:a05:6402:13c3:: with SMTP id a3mr10612489edx.18.1620874588347;
+ Wed, 12 May 2021 19:56:28 -0700 (PDT)
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 7753801D92E62CBD26FBF274B8115874F75D8956F43F6CF55697AE995F99B2F32000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com> <13f8d4117f7b871f20f53403167913803bef87c2.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <13f8d4117f7b871f20f53403167913803bef87c2.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 12 May 2021 19:56:18 -0700
+Message-ID: <CAPcyv4ipWTv7yRyLHA0Un0KZDdXjpCZXMbrEn7SJXbdRhhn=jA@mail.gmail.com>
+Subject: Re: [RFC v2 21/32] x86/boot: Add a trampoline for APs booting in
+ 64-bit mode
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Kai Huang <kai.huang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIxLTA1LTEzIGF0IDA5OjE2ICswODAwLCBCYW9xdWFuIEhlIHdyb3RlOg0KPiBP
-biAwNS8xMi8yMSBhdCAxMjozN3BtLCBNaWtlIFJhcG9wb3J0IHdyb3RlOg0KPiA+IE9uIFdlZCwg
-TWF5IDEyLCAyMDIxIGF0IDAxOjMzOjIwUE0gKzA4MDAsIE1pbGVzIENoZW4gd3JvdGU6DQo+ID4g
-PiBPbiBUdWUsIDIwMjEtMDUtMTEgYXQgMTM6MjQgKzAzMDAsIE1pa2UgUmFwb3BvcnQgd3JvdGU6
-DQo+ID4gPiA+IE9uIFR1ZSwgTWF5IDExLCAyMDIxIGF0IDA1OjMxOjE0UE0gKzA4MDAsIE1pbGVz
-IENoZW4gd3JvdGU6DQo+ID4gPiA+ID4gSW4gY3VycmVudCBpbXBsZW1lbnRhdGlvbiBvZiBub2Rl
-X2RhdGEsIGlmIENPTkZJR19ORUVEX01VTFRJUExFX05PREVTPXksDQo+ID4gPiA+ID4gbm9kZV9k
-YXRhIGlzIGFsbG9jYXRlZCBieSBrem1hbGxvYy4gSWYgQ09ORklHX05FRURfTVVMVElQTEVfTk9E
-RVM9biwNCj4gPiA+ID4gPiB3ZSB1c2UgYSBnbG9iYWwgdmFyaWFibGUgbmFtZWQgImNvbnRpZ19w
-YWdlX2RhdGEiLg0KPiA+ID4gPiA+IA0KPiA+ID4gPiA+IElmIENPTkZJR19ERUJVR19WSVJUVUFM
-IGlzIG5vdCBlbmFibGVkLiBfX3BhKCkgY2FuIGhhbmRsZSBib3RoIGt6YWxsb2MgYW5kDQo+ID4g
-PiA+ID4gc3ltYm9sIGNhc2VzLiBCdXQgaWYgQ09ORklHX0RFQlVHX1ZJUlRVQUwgaXMgc2V0LCB3
-ZSB3aWxsIGhhdmUgdGhlDQo+ID4gPiA+ID4gInZpcnRfdG9fcGh5cyB1c2VkIGZvciBub24tbGlu
-ZWFyIGFkZHJlc3MiIHdhcm5pbmcgd2hlbiBib290aW5nLg0KPiA+ID4gPiANCj4gPiA+ID4gTWF5
-YmUgd2UnbGwganVzdCBhbGxvY2F0ZSBwZ2RhdCBmb3IgQ09ORklHX05FRURfTVVMVElQTEVfTk9E
-RVM9biAod2hpY2ggaXMNCj4gPiA+ID4gZXNzZW50aWFsbHkgIU5VTUEpIGNhc2UgaW4sIHNheSwg
-ZnJlZV9hcmVhX2luaXQoKT8NCj4gPiA+IA0KPiA+ID4gDQo+ID4gPiB0aGFua3MgZm9yIHlvdXIg
-Y29tbWVudC4NCj4gPiA+IA0KPiA+ID4gSSBjaGVjayB0aGUgc291cmNlIHRyZWUgYW5kIGZvdW5k
-IHRoYXQgY29udGlnX3BhZ2VfZGF0YSBpcyB1c2VkIGJ5DQo+ID4gPiBjcmFzaF9jb3JlLmMgYXMg
-YSBzeW1ib2wuIEkgYW0gbm90IGZhbWlsaWFyIHdpdGggY3Jhc2hfY29yZSBidXQgSSBndWVzcw0K
-PiA+ID4gYWxsb2NhdGUgcGdkYXQgbWF5IGJyZWFrIHRoaXMgY3Jhc2hfY29yZSB1c2Vycy4NCj4g
-PiA+IA0KPiA+ID4gRm9yIGV4YW1wbGU6IHNvbWUgdXNlcnNwYWNlIHNjcmlwdHMgd2FudCB0byBy
-ZWFkIHRoZSBhZGRyZXNzIG9mDQo+ID4gPiBjb250aWdfcGFnZV9kYXRhIHN5bWJvbCBmcm9tIGEg
-Y29yZWZpbGUuDQo+ID4gPiANCj4gPiA+IGtlcm5lbC9jcmFzaF9jb3JlLmM6NDYwOiAgICAgICAg
-Vk1DT1JFSU5GT19TWU1CT0woY29udGlnX3BhZ2VfZGF0YSk7DQo+ID4gPiANCj4gPiA+ICNpZm5k
-ZWYgQ09ORklHX05FRURfTVVMVElQTEVfTk9ERVMNCj4gPiA+ICAgICAgICAgVk1DT1JFSU5GT19T
-WU1CT0wobWVtX21hcCk7DQo+ID4gPiAgICAgICAgIFZNQ09SRUlORk9fU1lNQk9MKGNvbnRpZ19w
-YWdlX2RhdGEpOw0KPiA+ID4gI2VuZGlmDQo+ID4gDQo+ID4gTXkgdW5kZXJzdGFuZGluZyBpcyB0
-aGF0IFZNQ09SRUlORk9fU1lNQk9MKCkgc2hvdWxkIGNvcnJlc3BvbmQgdG8gYWN0dWFsDQo+ID4g
-c3ltYm9sLiBJZiB0aGVyZSBpcyBubyBjb250aWdfcGFnZV9kYXRhIHN5bWJvbCwgdGhlcmUgaXMg
-bm8gbmVlZCBmb3INCj4gPiBWTUNPUkVJTkZPX1NZTUJPTCgpIGVpdGhlci4NCj4gDQo+IFllYWgs
-IGl0J3MgZXhwb3J0ZWQgZm9yIG1ha2VkdW1wZmlsZSBhbmQgY3Jhc2ggdXRpbGl0eSB0byBwYXJz
-ZSBhbmQgZ2V0DQo+IHRoZSBtZW1vcnkgbGF5b3V0IG9mIHRoZSBjb3JydXB0ZWQga2VybmVsLiBJ
-ZiByZW1vdmluZyBpdCwgbWFrZWR1bXBmaWxlDQo+IHdpbGwgZ2V0IGl0IGZyb20gbm9kZV9kYXRh
-W10uIExvb2tzIGxpa2UgYSBnb29kIGlkZWEgdG8gdW5pZnkgY29kZSBmb3INCj4gbnVtYXwhbnVt
-YSBvbiBwZ2xpc3RfZGF0YSBpbnN0YW5jZXMuDQo+IA0KPiBBZGQgS2F6dSB0byBDQyBzaW5jZSBo
-ZSBtYWludGFpbiBtYWtlZHVtcGZpbGUgYW5kIENyYXNoIHV0aWxpdGllcy4NCg0KdGhhbmtzIGZv
-ciBhZGRpbmcgdGhlIGV4cGVydHMgaW4uIChJIHNlYXJjaGVkIHRoZSBzb3VyY2UgY29kZSBvZiBj
-cmFzaA0KbGFzdCBuaWdodCBhbmQgZm91bmQgdGhhdCBjb250aWdfcGFnZV9kYXRhIGlzIHVzZWQg
-aW4gbWVtb3J5LmMpDQoNCkkgd2lsbCBtb3ZlIHRoZSBhbGxvY2F0aW9uIGFuZCBpbml0aWFsaXph
-dGlvbiB0byBmcmVlX2FyZWFfaW5pdCgpIGFuZA0Kc3VibWl0IHBhdGNoIHYyLg0KDQoNCk1pbGVz
-DQoNCj4gDQo+IE15IGNvbmNlcm4gaXMgdGhhdCB0aGF0IG9ubHkgaGFwcGVucyBvbiBhcm0vYXJt
-NjQvcmlzY3YsIGRvZXMgaXQgbWVhbiB0aGUNCj4gd2FybmluZyBpcyBub3QgbmVjZXNzYXJ5LCBz
-byBjYW4gYmUgcmVtb3ZlZD8gT3Igd2UgbmVlZCB0byBjaGVjayBpZg0KPiBDT05GSUdfREVCVUdf
-VklSVFVBTCBkb2Vzbid0IHdvcmsgd2VsbCBpbiB0aGlzIGNhc2UuDQo+IA0KPiBUaGFua3MNCj4g
-QmFvcXVhbg0KPiANCg0K
+On Mon, Apr 26, 2021 at 11:03 AM Kuppuswamy Sathyanarayanan
+<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+>
+> From: Sean Christopherson <sean.j.christopherson@intel.com>
+>
+> Add a trampoline for booting APs in 64-bit mode via a software handoff
+> with BIOS, and use the new trampoline for the ACPI MP wake protocol used
+> by TDX.
 
+Lets add a spec reference:
+
+See section "4.1 ACPI-MADT-AP-Wakeup Table" in the Guest-Host
+Communication Interface specification for TDX.
+
+Although, there is not much "wake protocol" in this patch, this
+appears to be the end of the process after the CPU has been messaged
+to start.
+
+> Extend the real mode IDT pointer by four bytes to support LIDT in 64-bit
+> mode.  For the GDT pointer, create a new entry as the existing storage
+> for the pointer occupies the zero entry in the GDT itself.
+>
+> Reported-by: Kai Huang <kai.huang@intel.com>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Reviewed-by: Andi Kleen <ak@linux.intel.com>
+> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> ---
+>  arch/x86/include/asm/realmode.h          |  1 +
+>  arch/x86/kernel/smpboot.c                |  5 +++
+>  arch/x86/realmode/rm/header.S            |  1 +
+>  arch/x86/realmode/rm/trampoline_64.S     | 49 +++++++++++++++++++++++-
+>  arch/x86/realmode/rm/trampoline_common.S |  5 ++-
+>  5 files changed, 58 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/x86/include/asm/realmode.h b/arch/x86/include/asm/realmode.h
+> index 5db5d083c873..5066c8b35e7c 100644
+> --- a/arch/x86/include/asm/realmode.h
+> +++ b/arch/x86/include/asm/realmode.h
+> @@ -25,6 +25,7 @@ struct real_mode_header {
+>         u32     sev_es_trampoline_start;
+>  #endif
+>  #ifdef CONFIG_X86_64
+> +       u32     trampoline_start64;
+>         u32     trampoline_pgd;
+>  #endif
+>         /* ACPI S3 wakeup */
+> diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+> index 16703c35a944..27d8491d753a 100644
+> --- a/arch/x86/kernel/smpboot.c
+> +++ b/arch/x86/kernel/smpboot.c
+> @@ -1036,6 +1036,11 @@ static int do_boot_cpu(int apicid, int cpu, struct task_struct *idle,
+>         unsigned long boot_error = 0;
+>         unsigned long timeout;
+>
+> +#ifdef CONFIG_X86_64
+> +       if (is_tdx_guest())
+> +               start_ip = real_mode_header->trampoline_start64;
+> +#endif
+
+Perhaps wrap this into an inline helper in
+arch/x86/include/asm/realmode.h so that this routine only does one
+assignment to @start_ip at function entry?
+
+> +
+>         idle->thread.sp = (unsigned long)task_pt_regs(idle);
+>         early_gdt_descr.address = (unsigned long)get_cpu_gdt_rw(cpu);
+>         initial_code = (unsigned long)start_secondary;
+> diff --git a/arch/x86/realmode/rm/header.S b/arch/x86/realmode/rm/header.S
+> index 8c1db5bf5d78..2eb62be6d256 100644
+> --- a/arch/x86/realmode/rm/header.S
+> +++ b/arch/x86/realmode/rm/header.S
+> @@ -24,6 +24,7 @@ SYM_DATA_START(real_mode_header)
+>         .long   pa_sev_es_trampoline_start
+>  #endif
+>  #ifdef CONFIG_X86_64
+> +       .long   pa_trampoline_start64
+>         .long   pa_trampoline_pgd;
+>  #endif
+>         /* ACPI S3 wakeup */
+> diff --git a/arch/x86/realmode/rm/trampoline_64.S b/arch/x86/realmode/rm/trampoline_64.S
+> index 84c5d1b33d10..12b734b1da8b 100644
+> --- a/arch/x86/realmode/rm/trampoline_64.S
+> +++ b/arch/x86/realmode/rm/trampoline_64.S
+> @@ -143,13 +143,20 @@ SYM_CODE_START(startup_32)
+>         movl    %eax, %cr3
+>
+>         # Set up EFER
+> +       movl    $MSR_EFER, %ecx
+> +       rdmsr
+> +       cmp     pa_tr_efer, %eax
+> +       jne     .Lwrite_efer
+> +       cmp     pa_tr_efer + 4, %edx
+> +       je      .Ldone_efer
+> +.Lwrite_efer:
+>         movl    pa_tr_efer, %eax
+>         movl    pa_tr_efer + 4, %edx
+> -       movl    $MSR_EFER, %ecx
+>         wrmsr
+
+Is this hunk just a performance optimization to save an unnecessary
+wrmsr when it is pre-populated with the right value? Is it required
+for this patch? If "yes", it was not clear to me from the changelog,
+if "no" seems like it belongs in a standalone optimization patch.
+
+>
+> +.Ldone_efer:
+>         # Enable paging and in turn activate Long Mode
+> -       movl    $(X86_CR0_PG | X86_CR0_WP | X86_CR0_PE), %eax
+> +       movl    $(X86_CR0_PG | X86_CR0_WP | X86_CR0_NE | X86_CR0_PE), %eax
+
+It seems setting X86_CR0_NE is redundant when coming through
+pa_trampoline_compat, is this a standalone fix to make sure that
+'numeric-error' is enabled before startup_64?
+
+>         movl    %eax, %cr0
+>
+>         /*
+> @@ -161,6 +168,19 @@ SYM_CODE_START(startup_32)
+>         ljmpl   $__KERNEL_CS, $pa_startup_64
+>  SYM_CODE_END(startup_32)
+>
+> +SYM_CODE_START(pa_trampoline_compat)
+> +       /*
+> +        * In compatibility mode.  Prep ESP and DX for startup_32, then disable
+> +        * paging and complete the switch to legacy 32-bit mode.
+> +        */
+> +       movl    $rm_stack_end, %esp
+> +       movw    $__KERNEL_DS, %dx
+> +
+> +       movl    $(X86_CR0_NE | X86_CR0_PE), %eax
+> +       movl    %eax, %cr0
+> +       ljmpl   $__KERNEL32_CS, $pa_startup_32
+> +SYM_CODE_END(pa_trampoline_compat)
+> +
+>         .section ".text64","ax"
+>         .code64
+>         .balign 4
+> @@ -169,6 +189,20 @@ SYM_CODE_START(startup_64)
+>         jmpq    *tr_start(%rip)
+>  SYM_CODE_END(startup_64)
+>
+> +SYM_CODE_START(trampoline_start64)
+> +       /*
+> +        * APs start here on a direct transfer from 64-bit BIOS with identity
+> +        * mapped page tables.  Load the kernel's GDT in order to gear down to
+> +        * 32-bit mode (to handle 4-level vs. 5-level paging), and to (re)load
+> +        * segment registers.  Load the zero IDT so any fault triggers a
+> +        * shutdown instead of jumping back into BIOS.
+> +        */
+> +       lidt    tr_idt(%rip)
+> +       lgdt    tr_gdt64(%rip)
+> +
+> +       ljmpl   *tr_compat(%rip)
+> +SYM_CODE_END(trampoline_start64)
+> +
+>         .section ".rodata","a"
+>         # Duplicate the global descriptor table
+>         # so the kernel can live anywhere
+> @@ -182,6 +216,17 @@ SYM_DATA_START(tr_gdt)
+>         .quad   0x00cf93000000ffff      # __KERNEL_DS
+>  SYM_DATA_END_LABEL(tr_gdt, SYM_L_LOCAL, tr_gdt_end)
+>
+> +SYM_DATA_START(tr_gdt64)
+> +       .short  tr_gdt_end - tr_gdt - 1 # gdt limit
+> +       .long   pa_tr_gdt
+> +       .long   0
+> +SYM_DATA_END(tr_gdt64)
+> +
+> +SYM_DATA_START(tr_compat)
+> +       .long   pa_trampoline_compat
+> +       .short  __KERNEL32_CS
+> +SYM_DATA_END(tr_compat)
+> +
+>         .bss
+>         .balign PAGE_SIZE
+>  SYM_DATA(trampoline_pgd, .space PAGE_SIZE)
+> diff --git a/arch/x86/realmode/rm/trampoline_common.S b/arch/x86/realmode/rm/trampoline_common.S
+> index 5033e640f957..506d5897112a 100644
+> --- a/arch/x86/realmode/rm/trampoline_common.S
+> +++ b/arch/x86/realmode/rm/trampoline_common.S
+> @@ -1,4 +1,7 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+>         .section ".rodata","a"
+>         .balign 16
+> -SYM_DATA_LOCAL(tr_idt, .fill 1, 6, 0)
+> +SYM_DATA_START_LOCAL(tr_idt)
+> +       .short  0
+> +       .quad   0
+> +SYM_DATA_END(tr_idt)
+
+Curious, is the following not equivalent?
+
+-SYM_DATA_LOCAL(tr_idt, .fill 1, 6, 0)
++SYM_DATA_LOCAL(tr_idt, .fill 1, 10, 0)
