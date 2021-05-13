@@ -2,87 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F1D637F11E
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 04:05:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99BA737F11F
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 04:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230181AbhEMCGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 22:06:31 -0400
-Received: from ozlabs.org ([203.11.71.1]:58911 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229630AbhEMCG2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 22:06:28 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FgZk472Txz9sWP;
-        Thu, 13 May 2021 12:05:16 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1620871518;
-        bh=l1TnfDBLgZS56JHv3aiPuxRjNqwIJx/l19ZliNilTeE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=sEWWfS2SNUFACnCA+45NHPHXKhcS4ccoEUsuk0x2BLVwvawG1rJqy58Xk8vivDz7E
-         PA8gWt9bDLa21K/zMui5oEo4j3/YmPqfCfTq+553ZHUcER3osa2lFrv9dFslb6Hs/c
-         /v4L0gk8voEmuBkUm1ARb0subK0x3kcBaazxIJBm1nDroJjW/NX1dEgtf9Gs/tmiW+
-         oKwapuUE6v3RN5/bQ9A0KiiiMI1J3MCv+0td6POJquAhaI/neVPzYRbqYn3GsqrAla
-         mx77UawttgQ9EP0QQ5PmjSF8MT5LWD/yNml1N4pi3zBEp+RjYCF31lzN4Ro7bbTeqg
-         GdyULzZEoMrdg==
-Date:   Thu, 13 May 2021 12:05:15 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the tip tree
-Message-ID: <20210513120515.7060879c@canb.auug.org.au>
+        id S230186AbhEMCIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 22:08:25 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:2655 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230017AbhEMCIX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 22:08:23 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FgZjn4J0tzmV9g;
+        Thu, 13 May 2021 10:05:01 +0800 (CST)
+Received: from [10.174.178.208] (10.174.178.208) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 13 May 2021 10:07:09 +0800
+Subject: Re: [PATCH -next] drm/panfrost: Fix PM reference leak in
+ panfrost_job_hw_submit()
+To:     Steven Price <steven.price@arm.com>, <robh@kernel.org>,
+        <tomeu.vizoso@collabora.com>, <airlied@linux.ie>,
+        <daniel@ffwll.ch>, <alyssa.rosenzweig@collabora.com>
+CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+References: <1620714551-106976-1-git-send-email-zou_wei@huawei.com>
+ <7ebf35ef-58c3-7bc7-f0e9-ad487bae6686@arm.com>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <be1d7a48-be86-3713-e623-61bbd08125f7@huawei.com>
+Date:   Thu, 13 May 2021 10:07:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/O1nRwKj67qoBTXuteephxLO";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <7ebf35ef-58c3-7bc7-f0e9-ad487bae6686@arm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.208]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/O1nRwKj67qoBTXuteephxLO
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Steven,
 
-Hi all,
+Thanks for your review and also answer my doubts. Looking forward to 
+your patch.
 
-After merging the tip tree, today's linux-next build (x86_64 allmodconfig)
-failed like this:
-
-In file included from tools/arch/x86/include/asm/nops.h:5,
-                 from arch/x86/decode.c:15:
-tools/arch/x86/include/asm/asm.h:185:24: error: invalid register name for '=
-current_stack_pointer'
-  185 | register unsigned long current_stack_pointer asm(_ASM_SP);
-      |                        ^~~~~~~~~~~~~~~~~~~~~
-
-Caused by commit
-
-  eef23e72b78b ("x86/asm: Use _ASM_BYTES() in <asm/nops.h>")
-
-I have used the tip tree from next-20210512 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/O1nRwKj67qoBTXuteephxLO
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCciVsACgkQAVBC80lX
-0GybeQf/RhJX3EW+Kqukm2IGK+GSkV2T8L9KC0BSyjWBd+JJ9WmW3z/XBgTUOXSC
-8ExtINncxDPcMrDx9qc/RlTicRMz5JBguBaUaWQITQ6tWIzaxBN1Pm6nzk8K/g4Y
-qPAovRULc9FXxaWPCvoEIGL8al1DbeIFJUBANTJQhy2ZG8gzBfzKVMNHiqhFQ5MY
-ps9r/y1LTX9IGTjYI9sBVXAb1iraws/nv3FLONTJQR/CKDKg8btJ650auWIcWt5f
-MUpYu90ZTZZy1q/TBVcBcAdD8T/TcBQALTx/3UzxhQBcZ6xpDoXBibuWVOU7x3PJ
-niyKmF4qpDqpT7ebGyzUficipfkzgw==
-=7c38
------END PGP SIGNATURE-----
-
---Sig_/O1nRwKj67qoBTXuteephxLO--
+On 2021/5/12 23:23, Steven Price wrote:
+> On 11/05/2021 07:29, Zou Wei wrote:
+>> pm_runtime_get_sync will increment pm usage counter even it failed.
+>> Forgetting to putting operation will result in reference leak here.
+>> Fix it by replacing it with pm_runtime_resume_and_get to keep usage
+>> counter balanced.
+>>
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+> 
+> Thanks for the patch, but this is actually incorrect. 
+> panfrost_job_hw_submit() is expected to unconditionally increment the pm 
+> usage counter. This is because panfrost_job_hw_submit() can (currently) 
+> never fail, so in this case the job is considered "submitted" (even 
+> though it never reaches the hardware) and it's handled by the job timeout.
+> 
+> However this is at least the second time[1] this phantom "reference 
+> leak" has been raised, so perhaps it's time to handle this better. I'll 
+> post a patch reworking panfrost_job_hw_submit() so it can fail.
+> 
+> Thanks,
+> 
+> Steve
+> 
+> [1] 
+> https://lore.kernel.org/r/20200520110504.24388-1-dinghao.liu%40zju.edu.cn
+> 
+>> ---
+>>   drivers/gpu/drm/panfrost/panfrost_job.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c 
+>> b/drivers/gpu/drm/panfrost/panfrost_job.c
+>> index 6003cfe..42d8dbc 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_job.c
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_job.c
+>> @@ -157,7 +157,7 @@ static void panfrost_job_hw_submit(struct 
+>> panfrost_job *job, int js)
+>>       panfrost_devfreq_record_busy(&pfdev->pfdevfreq);
+>> -    ret = pm_runtime_get_sync(pfdev->dev);
+>> +    ret = pm_runtime_resume_and_get(pfdev->dev);
+>>       if (ret < 0)
+>>           return;
+>>
+> 
+> .
