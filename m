@@ -2,74 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F5F137FAA2
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 17:24:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 157AB37FAA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 17:25:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234890AbhEMPZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 11:25:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40038 "EHLO mail.kernel.org"
+        id S234827AbhEMP0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 11:26:36 -0400
+Received: from ms.lwn.net ([45.79.88.28]:42982 "EHLO ms.lwn.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232518AbhEMPZQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 11:25:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4826F613B5;
-        Thu, 13 May 2021 15:24:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620919446;
-        bh=1kNuS869OF5IBxShiMjWYu0F7KultguVWQekX/GDkks=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=WNwDzMIwlQGuwPZ+peL1idWwWvCxGP75xXHrZ9lUN/xSTQWDllSKtns/Rg0waJrkx
-         J532DHIvfaxsIUKYUC3wKbOERf9DFpyefWqoRp7pWok08Dw8iiM2MEFRfH/gYmAQTa
-         evkUVMUt68A5LvcMyyghqXqenhYiQutk58hTXlTTR6KYUV2H8yLzJtfcRdr+Nq+dQK
-         24i5Z3GNoPyweaBC9FQdXMkYMWUSkQ5eacP7LE8yF7uoadW0ihjFhEWN/qtkA/4WA7
-         JAc+ELB44uE4FAzjTS4s8KU9ZBjhMqifiR9WCChXKnm+VD1pUbzyiQgt80FNJYWhlG
-         7eIMKxoj3/lrA==
-Date:   Thu, 13 May 2021 08:24:04 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     <davem@davemloft.net>, <olteanv@gmail.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <andriin@fb.com>, <edumazet@google.com>,
-        <weiwan@google.com>, <cong.wang@bytedance.com>,
-        <ap420073@gmail.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
-        <mkl@pengutronix.de>, <linux-can@vger.kernel.org>,
-        <jhs@mojatatu.com>, <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
-        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
-        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
-        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
-        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
-        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
-        <alobakin@pm.me>
-Subject: Re: [PATCH net v7 0/3] fix packet stuck problem for lockless qdisc
-Message-ID: <20210513082404.3e07619b@kicinski-fedora-PC1C0HJN>
-In-Reply-To: <1620868260-32984-1-git-send-email-linyunsheng@huawei.com>
-References: <1620868260-32984-1-git-send-email-linyunsheng@huawei.com>
+        id S234259AbhEMP0X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 11:26:23 -0400
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 4AD80153;
+        Thu, 13 May 2021 15:25:09 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 4AD80153
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1620919509; bh=eU3irNX0Hto0HdXTq4Ht+geqf/k2ZBNvV/8YFySSPzM=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=CEYJJzICjOIpu/fPzv+LvDyImnCsKoQ77Y+Xo+A7HpBe0V982hr1t62LKay0e9VFt
+         fIPziG9vdqi1qeMN5vTvhw0YAKwZFb2Tam1rhy5arLZb+/L2qHLNxOpAdARrRNibll
+         0S5rchKCBcHZtOPub8DIZpj9Fg+4sOXZoyEQf7GoTK9nQicxeAO317Zjj+qLqB98Gf
+         KNq5Z1jGcHEbDucCLQelEKlziOwxPcOIxJadoASWkIBVFCdYGc9aY/apYW/g9Eq4t+
+         lmVK30Ax7mcb/790YOt7CmgzuZ9eNh7DM7I/3fwq7o0KOlIpMLH95XO8cnl8kJYy4R
+         jp0v2w4HVuSuA==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Wei Ming Chen <jj251510319013@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-usb@vger.kernel.org, linux-doc@vger.kernel.org,
+        Wei Ming Chen <jj251510319013@gmail.com>
+Subject: Re: [PATCH] docs: usb: function: Modify path name
+In-Reply-To: <20210506122020.7117-1-jj251510319013@gmail.com>
+References: <20210506122020.7117-1-jj251510319013@gmail.com>
+Date:   Thu, 13 May 2021 09:25:08 -0600
+Message-ID: <878s4i7j1n.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 May 2021 09:10:57 +0800 Yunsheng Lin wrote:
-> This patchset fixes the packet stuck problem mentioned in [1].
-> 
-> Patch 1: Add STATE_MISSED flag to fix packet stuck problem.
-> Patch 2: Fix a tx_action rescheduling problem after STATE_MISSED
->          flag is added in patch 1.
-> Patch 3: Fix the significantly higher CPU consumption problem when
->          multiple threads are competing on a saturated outgoing
->          device.
-> 
-> V7: Fix netif_tx_wake_queue() data race noted by Jakub.
-> V6: Some performance optimization in patch 1 suggested by Jakub
->     and drop NET_XMIT_DROP checking in patch 3.
-> V5: add patch 3 to fix the problem reported by Michal Kubecek.
-> V4: Change STATE_NEED_RESCHEDULE to STATE_MISSED and add patch 2.
+Wei Ming Chen <jj251510319013@gmail.com> writes:
 
-Another review from someone who knows this code better would be great,
-but it seems good to me (w/ minor nit on patch 3 addressed):
+> Original path does not exists, so changed to
+> "Documentation/ABI/testing/configfs-usb-gadget"
+>
+> Signed-off-by: Wei Ming Chen <jj251510319013@gmail.com>
+> ---
+>  Documentation/usb/gadget_configfs.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/Documentation/usb/gadget_configfs.rst b/Documentation/usb/gadget_configfs.rst
+> index 158e48dab586..e4566ffb223f 100644
+> --- a/Documentation/usb/gadget_configfs.rst
+> +++ b/Documentation/usb/gadget_configfs.rst
+> @@ -140,7 +140,7 @@ is an arbitrary string allowed in a filesystem, e.g.::
+>  Each function provides its specific set of attributes, with either read-only
+>  or read-write access. Where applicable they need to be written to as
+>  appropriate.
+> -Please refer to Documentation/ABI/*/configfs-usb-gadget* for more information.
+> +Please refer to Documentation/ABI/testing/configfs-usb-gadget for more information.
 
-Acked-by: Jakub Kicinski <kuba@kernel.org>
+Applied, thanks.
+
+jon
