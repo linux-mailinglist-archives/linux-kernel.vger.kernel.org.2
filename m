@@ -2,77 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9810C37F3E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 10:11:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90FED37F3EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 10:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231695AbhEMIMQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 May 2021 04:12:16 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:29954 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231521AbhEMIML (ORCPT
+        id S231791AbhEMIM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 04:12:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231521AbhEMIMx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 04:12:11 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-38-wSN3IdVMP8OQ2JQTBB0LqA-1; Thu, 13 May 2021 09:10:56 +0100
-X-MC-Unique: wSN3IdVMP8OQ2JQTBB0LqA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Thu, 13 May 2021 09:10:55 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Thu, 13 May 2021 09:10:55 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Maximilian Luz' <luzmaximilian@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
-CC:     "H. Peter Anvin" <hpa@zytor.com>, Sachi King <nakato@nakato.io>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH] x86/i8259: Work around buggy legacy PIC
-Thread-Topic: [PATCH] x86/i8259: Work around buggy legacy PIC
-Thread-Index: AQHXR3+B5Hf0DG1T80+Lb/Y+9zG7TarhDftg
-Date:   Thu, 13 May 2021 08:10:54 +0000
-Message-ID: <9b70d8113c084848b8d9293c4428d71b@AcuMS.aculab.com>
-References: <20210512210459.1983026-1-luzmaximilian@gmail.com>
-In-Reply-To: <20210512210459.1983026-1-luzmaximilian@gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 13 May 2021 04:12:53 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B54ADC061574;
+        Thu, 13 May 2021 01:11:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=U156ZDGv52XDyRmomu81y1AofnnDZp5kY1yCQ1vGoGg=; b=X0R3x/iAxVmHofiyxhzRf8I2a
+        c9jmKXRccdwMjk0Gpk3siFmqoo4ed4tI/eNVAfO+3l7JvCr3xrxV6S3QruWlF8pIz1IZdB/6y1kr5
+        p6+gWk5NYP/DH6bFDi2AkQ5vWgFFxhAN2mO3SjuRHD+rEp4AzRWE+usMviVb6AOdI0RDRZ7Z4xn7t
+        6qmEW1CTwFq+xLp6ChlIIj7gfE79BOGSiTUimuwVDnd2cY4ylUF3XXldbPbNFWKmT9EAXPmOC2NUL
+        fYGpzJHztFpWi+OImr3SJe747G7/tKeG1YNeSsrV3nsS/Q2bofrHBr+UfayN99GeOusfLgBDF5Xx0
+        CukVCZqDA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43918)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lh6RY-0005on-8X; Thu, 13 May 2021 09:11:40 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lh6RX-0002qk-Ic; Thu, 13 May 2021 09:11:39 +0100
+Date:   Thu, 13 May 2021 09:11:39 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, david.daney@cavium.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH V2] net: mdio: thunder: Fix a double free issue in the
+ .remove function
+Message-ID: <20210513081139.GT1336@shell.armlinux.org.uk>
+References: <f8ad9a9e6d7df4cb02731a71a418acca18353380.1620890611.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f8ad9a9e6d7df4cb02731a71a418acca18353380.1620890611.git.christophe.jaillet@wanadoo.fr>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maximilian Luz
-> Sent: 12 May 2021 22:05
+On Thu, May 13, 2021 at 09:44:49AM +0200, Christophe JAILLET wrote:
+> 'bus->mii_bus' have been allocated with 'devm_mdiobus_alloc_size()' in the
+> probe function. So it must not be freed explicitly or there will be a
+> double free.
 > 
-> The legacy PIC on the AMD variant of the Microsoft Surface Laptop 4 has
-> some problems on boot. For some reason it consistently does not respond
-> on the first try, requiring a couple more tries before it finally
-> responds.
+> Remove the incorrect 'mdiobus_free' in the remove function.
 
-That seems very strange, something else must be going on that causes the grief.
-The 8259 will be built into to the one of the cpu support chips.
-I can't imagine that requires anything special.
+This still leaves the unregister of an allocated-but-unregistered bus,
+which you disagreed with - but I hope as I've pointed out the exact
+code path in your v1 patch, you'll now realise is a real possibility.
 
-It's not as though you have a real 8259 - which even a 286 can
-break the inter-cycle recovery on (with the circuit from the
-application note).
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
