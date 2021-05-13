@@ -2,71 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A41CD37FF3E
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 22:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D78137FF59
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 22:36:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233049AbhEMUfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 16:35:17 -0400
-Received: from mail.manjaro.org ([176.9.38.148]:53140 "EHLO mail.manjaro.org"
+        id S233114AbhEMUiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 16:38:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232977AbhEMUfL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 16:35:11 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.manjaro.org (Postfix) with ESMTP id 304C322111A;
-        Thu, 13 May 2021 22:34:00 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at manjaro.org
-Received: from mail.manjaro.org ([127.0.0.1])
-        by localhost (manjaro.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 8j8NsS7U-BOf; Thu, 13 May 2021 22:33:57 +0200 (CEST)
-From:   Tobias Schramm <t.schramm@manjaro.org>
-To:     =?UTF-8?q?Jernej=20=C5=A0krabec?= <jernej.skrabec@gmail.com>,
-        devicetree@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Tobias Schramm <t.schramm@manjaro.org>
-Subject: [PATCH v2 2/2] ARM: dts: sun8i: v3s: add pwm controller to v3s dts
-Date:   Thu, 13 May 2021 22:35:27 +0200
-Message-Id: <20210513203527.2072090-3-t.schramm@manjaro.org>
-In-Reply-To: <20210513203527.2072090-1-t.schramm@manjaro.org>
-References: <20210513203527.2072090-1-t.schramm@manjaro.org>
+        id S232887AbhEMUiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 16:38:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E0F95611CA;
+        Thu, 13 May 2021 20:36:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620938214;
+        bh=VlAuVRbSl70RsF+Hbd+PeL96a/23cRPU8oynfp6C+jk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=rYc4vO9DB9mIHeAO/V6CPrg5l1FJJsoPI/4KYQK5Soy8oNu+zH4fDeCExIGbZZovh
+         DJmsVOjFG8wIbD20jd2/Nw1MeD18st4GdDfMQA7gruaibtyVj9r88oz3NVdkIfoQr3
+         QJ1hBWvkaGgp5EtRMxrxTS0B/pG2oazqTuyKV9LIbTIRUPEx0jfcnBqTgxIwjfTDLV
+         IgTANytJcDMaVGuslvTdffeguorK8moe0zhg0stK5iQuSlGhlWxJ3lPu55WMA18/9w
+         34+hwdkTr0IDDZhk429dYAP0VtpRupkf744Jf6jXzvLG1GQL2qisiRRnnSXhDEQOLe
+         XYvm/do+LI/9A==
+Date:   Thu, 13 May 2021 15:37:30 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Joshua Morris <josh.h.morris@us.ibm.com>,
+        Philip Kelleher <pjk1939@linux.ibm.com>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] rsxx: Use struct_size() in vmalloc()
+Message-ID: <20210513203730.GA212128@embeddedor>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Allwinner V3s and V3 SoCs feature a pwm controller identical to the
-one used in the Allwinner A20.
-This commit adds it to the V3s dtsi.
+Make use of the struct_size() helper instead of an open-coded version,
+in order to avoid any potential type mistakes or integer overflows
+that, in the worst scenario, could lead to heap overflows.
 
-Signed-off-by: Tobias Schramm <t.schramm@manjaro.org>
+This code was detected with the help of Coccinelle and, audited and
+fixed manually.
+
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- arch/arm/boot/dts/sun8i-v3s.dtsi | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/block/rsxx/dma.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/boot/dts/sun8i-v3s.dtsi b/arch/arm/boot/dts/sun8i-v3s.dtsi
-index eb4cb63fef13..456dee9de87f 100644
---- a/arch/arm/boot/dts/sun8i-v3s.dtsi
-+++ b/arch/arm/boot/dts/sun8i-v3s.dtsi
-@@ -422,6 +422,15 @@ wdt0: watchdog@1c20ca0 {
- 			clocks = <&osc24M>;
- 		};
+diff --git a/drivers/block/rsxx/dma.c b/drivers/block/rsxx/dma.c
+index 0574f4495755..ed182f3dd054 100644
+--- a/drivers/block/rsxx/dma.c
++++ b/drivers/block/rsxx/dma.c
+@@ -74,9 +74,6 @@ struct dma_tracker {
+ 	struct rsxx_dma	*dma;
+ };
  
-+		pwm: pwm@1c21400 {
-+			compatible = "allwinner,sun8i-v3s-pwm",
-+				     "allwinner,sun7i-a20-pwm";
-+			reg = <0x01c21400 0xc>;
-+			clocks = <&osc24M>;
-+			#pwm-cells = <3>;
-+			status = "disabled";
-+		};
-+
- 		lradc: lradc@1c22800 {
- 			compatible = "allwinner,sun4i-a10-lradc-keys";
- 			reg = <0x01c22800 0x400>;
+-#define DMA_TRACKER_LIST_SIZE8 (sizeof(struct dma_tracker_list) + \
+-		(sizeof(struct dma_tracker) * RSXX_MAX_OUTSTANDING_CMDS))
+-
+ struct dma_tracker_list {
+ 	spinlock_t		lock;
+ 	int			head;
+@@ -808,7 +805,8 @@ static int rsxx_dma_ctrl_init(struct pci_dev *dev,
+ 
+ 	memset(&ctrl->stats, 0, sizeof(ctrl->stats));
+ 
+-	ctrl->trackers = vmalloc(DMA_TRACKER_LIST_SIZE8);
++	ctrl->trackers = vmalloc(struct_size(ctrl->trackers, list,
++					     RSXX_MAX_OUTSTANDING_CMDS));
+ 	if (!ctrl->trackers)
+ 		return -ENOMEM;
+ 
 -- 
-2.31.1
+2.27.0
 
