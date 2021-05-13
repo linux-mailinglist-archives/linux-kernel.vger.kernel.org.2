@@ -2,144 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D3F37F7EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 14:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B946437F7EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 14:29:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229466AbhEMM2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 08:28:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32213 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233786AbhEMM2Z (ORCPT
+        id S233858AbhEMMao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 08:30:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233305AbhEMMah (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 08:28:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620908835;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bun77zqk7VkzrXJl00b3NEyJ8M8mJCA5zh/pMnmjFG0=;
-        b=MdENMMTXPf4uPiI0M3w9EsxlEPm+4moVWAy3O6j31rBhd0TummwMEq6QtZv7ONnybvNNaF
-        z5ryHynqCmA4Y4V86WcljLNNR+zG7rFaD3RE4cSMfOl9BeGB6HPV/7Hsp58qZqAGDQJFoi
-        UAachT7df9wXYklfONnBc2AC1BwoFOs=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-505-VG0VuzwhP2C7htp-e0ISdA-1; Thu, 13 May 2021 08:27:13 -0400
-X-MC-Unique: VG0VuzwhP2C7htp-e0ISdA-1
-Received: by mail-ej1-f71.google.com with SMTP id z6-20020a17090665c6b02903700252d1ccso8263866ejn.10
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 05:27:13 -0700 (PDT)
+        Thu, 13 May 2021 08:30:37 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A97FC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 05:29:26 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id u19-20020a0568302493b02902d61b0d29adso22649651ots.10
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 05:29:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+ezfSFfJxSbieIos+EnfafkeKIzxk7khtzg+M9RSJd8=;
+        b=sAcBuSmpbS+D8fp3Ei+oMaQjsQjQNu0BkNztT7iN1crix8HzuIh591hLpJjTikEA/q
+         Dcti+KYeyftxmGmDQBIi0UZM6U6Ul777Uh//0pRa24iQBOeZcCQzr2dsSczINxewDKWr
+         j+FyKybKFwejM6NSknzKgLelnIcBpui7MHSjGSt2rabrKgj9yUwnlbNjrUUUMkCF87zL
+         4JwLtSzOhMDd++lQUUzwXMnm//wsU+B0XXWQ/dSp2s5YQHv0M6xuON3hXDhLJ2G3D6oZ
+         Gzt7pS+T0F54Pt5r9zapQ55w0XxgvXisPyKJDzab9YscaWVxepHuns2GVgRI6fCW1CUZ
+         73yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bun77zqk7VkzrXJl00b3NEyJ8M8mJCA5zh/pMnmjFG0=;
-        b=TMf136JPnFBXQbn8d9LnRz0jsBybYObAuDLkaB7TC4ebRsIWCyRlC9GniNzhTG37Ax
-         rzzoG+RbNfNIfpY05hsBvWlX4SKHeK/M9O9ZtH+7lQt4c1Tmzlknq5YiM0etJYhMoHDO
-         S4S87V1QY59tfEgljBezPbSUtZgP2rms13D8R53peCv7w/Y9xH37oNqXDtNup6lsKF1V
-         pc2Toyf02vNV7y2URJHOE0WC3T5BCSbvOjplRhluXt/+Jg+uQ9Tbg/B4ESEXXqYxEPLT
-         0gM5Aw5Juxu37Bc5DceOWpm5C7zGM806ya+gl+vFHPPM8/vsmI9QJpjJMEhKTUUNkEi+
-         f+AQ==
-X-Gm-Message-State: AOAM533J2pe8jMiPmCeqvDRChDU/A2i1i+5w/pZjkLEinvgWgsW7FKIF
-        raHQZFUh6FliOLEjdrDeBFuAJ9V0oCCE81Y9rBao/EWDuXh34il2mpLgox5fv66356bqotY9Nd/
-        zmQWgG5DHn9lCtkSZU79bVtfA
-X-Received: by 2002:a17:907:dab:: with SMTP id go43mr887179ejc.164.1620908832789;
-        Thu, 13 May 2021 05:27:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwue4TmFqWLEu2VxiQaCD7KEItg8q3jSRdx8XvzysQOkYR1mJoopNDC9/BUXvDd7qRZ6CJ1Qw==
-X-Received: by 2002:a17:907:dab:: with SMTP id go43mr887165ejc.164.1620908832621;
-        Thu, 13 May 2021 05:27:12 -0700 (PDT)
-Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
-        by smtp.gmail.com with ESMTPSA id g17sm2863576edv.47.2021.05.13.05.27.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 05:27:12 -0700 (PDT)
-Date:   Thu, 13 May 2021 14:27:08 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Norbert Slusarek <nslusarek@gmx.net>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v9 13/19] virtio/vsock: rest of SOCK_SEQPACKET support
-Message-ID: <20210513122708.mwooglzkhv7du7jo@steredhat>
-References: <20210508163027.3430238-1-arseny.krasnov@kaspersky.com>
- <20210508163558.3432246-1-arseny.krasnov@kaspersky.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+ezfSFfJxSbieIos+EnfafkeKIzxk7khtzg+M9RSJd8=;
+        b=OWgiZ1h9K27Sbf3GoARNQPvS4y2ZjkYKyiTyofq78FJ0vq9u8JxA74IgxAtk0Psi3B
+         XWOBjZ5CZlTfMgKYz9lHoXLQEOwK95Jdw8KOKUPDITJaZnPqCaqVo+CwMOIBZc6gAzb0
+         KDxV12fZ65c4nbhjH3BcCUW0EbXn2cOnm3bev9L8B6QKXuhDz/R+eX84dAh6lwegN59U
+         LydgHyGBoLGW32tvyU+QsBJc4qKuDwQo9m9H7LiMGwKoZmWaRebDk79meJ9n3Vo+HFah
+         6yBj5JxRfD1kApP9J5GFgiXiqzKdXSUogZvQjEIOT+w8D3msbiFcutMtF3CiJXIiPkxR
+         G6bw==
+X-Gm-Message-State: AOAM532JDytp5XFJgHGn9jbcgAJmgVq9cr3kjhPEaYO3emOg6/8o1LTv
+        920Yk2oM4oPmj/nJuZ0v2aKM7/M0CD3ZoPvvA/lRDQ==
+X-Google-Smtp-Source: ABdhPJxwfJ0VI3VMKc0QUe+/3wr9AdpfCaTuLaJ8HM4mJxTqRiy4fBg7C/PMhd3TFygFaSFrQ/99rSn1iMs3EmDVhJY=
+X-Received: by 2002:a9d:1ea9:: with SMTP id n38mr36276163otn.233.1620908965175;
+ Thu, 13 May 2021 05:29:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210508163558.3432246-1-arseny.krasnov@kaspersky.com>
+References: <20210511173448.GA54466@hyeyoo> <20210512195227.245000695c9014242e9a00e5@linux-foundation.org>
+ <20210513031220.GA133011@hyeyoo> <20210512204024.401ff3de38649d7d0f5a45e8@linux-foundation.org>
+ <20210513062809.GA319973@hyeyoo> <a36ab9a1-f07a-42ca-bb11-5bd0c70660bb@suse.cz>
+ <YJ0ACtMpasnoZdUp@elver.google.com> <20210513120339.GA772931@hyeyoo>
+In-Reply-To: <20210513120339.GA772931@hyeyoo>
+From:   Marco Elver <elver@google.com>
+Date:   Thu, 13 May 2021 14:29:13 +0200
+Message-ID: <CANpmjNP9AQ2PH9wtZbZ3bT=0YAqnaPpxAN0LgrjBO_PhzG5tjQ@mail.gmail.com>
+Subject: Re: [PATCH v3] mm, slub: change run-time assertion in kmalloc_index()
+ to compile-time
+To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        David Rientjes <rientjes@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 08, 2021 at 07:35:54PM +0300, Arseny Krasnov wrote:
->This adds rest of logic for SEQPACKET:
->1) Send SHUTDOWN on socket close for SEQPACKET type.
->2) Set SEQPACKET packet type during send.
->3) 'seqpacket_allow' flag to virtio transport.
-
-Please update this commit message, point 3 is not included anymore in 
-this patch, right?
-
->4) Set 'VIRTIO_VSOCK_SEQ_EOR' bit in flags for last
->   packet of message.
+On Thu, 13 May 2021 at 14:03, Hyeonggon Yoo <42.hyeyoo@gmail.com> wrote:
+> On Thu, May 13, 2021 at 12:31:38PM +0200, Marco Elver wrote:
+[...]
+> what about checking size it on top of kmalloc_index? because by definition of
+> KMALLOC_SHIFT_HIGH, it's not always 25. it can be less than 25. for some
+> situations.
 >
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->---
-> v8 -> v9:
-> 1) Use cpu_to_le32() to set VIRTIO_VSOCK_SEQ_EOR.
+> below is what I suggested beofre. for just reference:
+
+This doesn't solve the problem. We want the compiler to complain
+whenever kmalloc_index() is used with non-constant in normal code. But
+it should be possible to use it in allocator tests regardless of size.
+Either that or export kmalloc_slab(), but I think that's worse. I'll
+send my patch with an updated comment.
+
+> --- include/linux/slab.h.orig   2021-05-12 17:56:54.504738768 +0900
+> +++ include/linux/slab.h        2021-05-13 15:06:25.724565850 +0900
+> @@ -346,9 +346,18 @@ static __always_inline enum kmalloc_cach
+>   * 1 =  65 .. 96 bytes
+>   * 2 = 129 .. 192 bytes
+>   * n = 2^(n-1)+1 .. 2^n
+> + *
+> + * Note: there's no need to optimize kmalloc_index because it's evaluated
+> + * in compile-time.
+>   */
+>  static __always_inline unsigned int kmalloc_index(size_t size)
+>  {
+> +       if (__builtin_constant_p(size)) {
+> +               BUILD_BUG_ON_MSG(size > KMALLOC_MAX_CACHE_SIZE , "unexpected size in kmalloc_index()");
+> +       } else if (size > KMALLOC_MAX_CACHE_SIZE) {
+> +               BUG();
+> +       }
+> +
+>         if (!size)
+>                 return 0;
 >
-> include/linux/virtio_vsock.h            |  4 ++++
-> net/vmw_vsock/virtio_transport_common.c | 17 +++++++++++++++--
-> 2 files changed, 19 insertions(+), 2 deletions(-)
+> @@ -382,8 +391,6 @@ static __always_inline unsigned int kmal
+>         if (size <=  8 * 1024 * 1024) return 23;
+>         if (size <=  16 * 1024 * 1024) return 24;
+>         if (size <=  32 * 1024 * 1024) return 25;
+> -       if (size <=  64 * 1024 * 1024) return 26;
+> -       BUG();
 >
->diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
->index 02acf6e9ae04..7360ab7ea0af 100644
->--- a/include/linux/virtio_vsock.h
->+++ b/include/linux/virtio_vsock.h
->@@ -80,6 +80,10 @@ virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
-> 			       struct msghdr *msg,
-> 			       size_t len, int flags);
->
->+int
->+virtio_transport_seqpacket_enqueue(struct vsock_sock *vsk,
->+				   struct msghdr *msg,
->+				   size_t len);
-> ssize_t
-> virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
-> 				   struct msghdr *msg,
->diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
->index 7fea0a2192f7..b6608b4ac7c2 100644
->--- a/net/vmw_vsock/virtio_transport_common.c
->+++ b/net/vmw_vsock/virtio_transport_common.c
->@@ -74,6 +74,10 @@ virtio_transport_alloc_pkt(struct virtio_vsock_pkt_info *info,
-> 		err = memcpy_from_msg(pkt->buf, info->msg, len);
-> 		if (err)
-> 			goto out;
->+
->+		if (info->msg->msg_iter.count == 0)
-
-Also here is better `msg_data_left(info->msg)`
-
->+			pkt->hdr.flags = cpu_to_le32(info->flags |
->+						VIRTIO_VSOCK_SEQ_EOR);
-
-Re-thinking an alternative could be to set EOR here...
-
-			info->flags |= VIRTIO_VSOCK_SEQ_EOR;
-
-> 	}
-
-... and move pkt->hdr.flags assignment after this block:
-
-	pkt->hdr.flags = cpu_to_le32(info->flags);
-
-But I don't have a strong opinion on that.
-
->
-> 	trace_virtio_transport_alloc_pkt(src_cid, src_port,
-
+>         /* Will never be reached. Needed because the compiler may complain */
+>         return -1;
