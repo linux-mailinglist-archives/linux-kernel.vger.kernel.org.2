@@ -2,105 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05AE137FB44
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 18:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9368837FB46
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 18:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235051AbhEMQLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 12:11:18 -0400
-Received: from mout.gmx.net ([212.227.15.15]:45725 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234935AbhEMQLI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 12:11:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1620922192;
-        bh=yHZOanl+7lAyfwZ0IKQ6jvxuiFtoltCg8sl+03ShmH8=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=d+EgMSyb8QmROW7hWrcbZbGSFvtly7XWapxJTLlocdzDTSNRbaXW4JNazd0n/553a
-         mhW3WsvKOKEwylAliV/tEJGsPShzih34d0jZBbzwdfJVT3vRjvfew34h2pe7BUF246
-         ZLHZy8SGrTeVO0pEujSJveVUo3FQSnDY91BFiKgY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.214.126]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MirjS-1l2g1U0sFQ-00eqXh; Thu, 13
- May 2021 18:09:52 +0200
-From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     linux-gpio@vger.kernel.org
-Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        openbmc@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] pinctrl: npcm: Align a few entries in the pin function table
-Date:   Thu, 13 May 2021 18:09:47 +0200
-Message-Id: <20210513160947.1716185-1-j.neuschaefer@gmx.net>
-X-Mailer: git-send-email 2.30.2
+        id S235055AbhEMQMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 12:12:16 -0400
+Received: from mail-40134.protonmail.ch ([185.70.40.134]:25919 "EHLO
+        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235001AbhEMQMO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 12:12:14 -0400
+Date:   Thu, 13 May 2021 16:10:52 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bryanbrattlof.com;
+        s=protonmail3; t=1620922262;
+        bh=xJHsGfB9Cd/p1CC6sw8uwkPBdkmkm1kg3OsjLFWhpGo=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=k/nAz7fNmy5/iAyOgBL++FolfI7K6PWOWuOFkxktk4jKVAFIf1scbJ+NAOmcC79AS
+         HVHJjB4wdFpB7nF1Rsb102Z+/TlE++LPEjAwNUqwv8narndP9QLXcByuXCZ9fCGPMu
+         5GJhL/5bhBdPUAp1JubyUQ9lXVKRlKzyGIujOM3YS4DGJi34/ffoK1BHdKwJKHL7oV
+         yyT1ayep/cyYvonioG/D1mQv8MKDgHhWwxb4q6pXkLQa3bmD+p1T4IHGzPT3tla+LK
+         HjWb1HKj9PeFB/LddJ7NEIAeLTPqQbO/i3OsbUJ4rOcT1z+dPTt0bbHOa0gDJ48HXj
+         VtB8XyxUBZvug==
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From:   Bryan Brattlof <hello@bryanbrattlof.com>
+Cc:     Bryan Brattlof <hello@bryanbrattlof.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Reply-To: Bryan Brattlof <hello@bryanbrattlof.com>
+Subject: [PATCH] staging: rtl8723bs: remove unused argument 'msg'
+Message-ID: <20210513160848.1057564-1-hello@bryanbrattlof.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:4D7VmaLIN+x85KYn/jYiQDttmjIIFuuEsO2Z9vGGTBF4nN3Pbyy
- jU2CGRW7MY+T05JPVnU5O6qUQyKcwTpeX02qZOnpddMw4sHu3ENMXIv0sh4Eo5r7icFf980
- EhANrto7NeDtge2KIaIe/BEy9Rjciet6NG3T3UHmmeJNRHVbiDf31W5YIk6jY18ejr9kR5/
- cqUHc5RnuRndhF29Fd39g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:9KenyV4S/E8=:vGJrOuYx47XMY5OwuK5JWf
- XPG9gkfiAHIoOzCC0lMuMCC3YDFLEVrdAnWU+A0h0Qgry9D6nZpO91+iKKTK2RyWYHDumv05T
- 6BGruyJaDBS/NOuHKz7mL/DMDwXmDQgTEdjBZSPKhF/Od/ypraAMydRilF6E5IFsEWS/gY15A
- mPWD3GP7BIrDiWUBGGFsQqjGdTSIFRliZQyyt8v7vdigttY9DJpA+pFszWUe+godumb75DcLP
- zUQzwliltKxhRgjXt24ihAEH5rHfXulzZJcjYLBxt0t1eH5NEuTrh7TT0yllJ1AomP97HWFQ+
- ErE7jvyWd7Ih7VEajShQZoDYSU5RGkd0l2qWjO1AmyuXQW/HDJpVErd+89RLYNt5/685B9VhR
- cD4CrDSGS7l6B7u/zfVqPnuGF3UP3ZmNo9Rj25x2UoJ9e/kq/cV4OAM3BxjlfFduaTpYzsn+7
- IxaQlemub6Rwoopgp/qH1GSykBm6StTKeduoQVgcRr6oawUhBrIBnms4//thpo4NuS4sT/X1t
- Eb1n/JTTVurLxqh8scfAocCXh4/MJesrFtC88hxm0aL3Zwwsb3ljzyAUZNZN/3O6jttIGRt1p
- lc0TP0H0s+fmuNVZ+pJHlEdcuGb1biGXLKCF2r+TWAziOWDyVil5Z3jU4GwhbZVWlYtOjaQwT
- stRqwH2FjE0/YVYW6oyK3ZEF//j9kwI/4EGovDcx8boiU+Q5n+UlNHs586c25E6CwFQOxTNSa
- N2Qpv7/+cqiQdOLhHOoKgpJgTCYre97DHGDpAzQJchZ3la4ipF91g9BudRp7laCt4cnUvOdGR
- NnNQmmp4twFJsw7y5hLaWp2mma7EJOfFcHO4lWaeznoxz92cN/L7SCq06iZuG8iH+9JTTYrFu
- h7JxxNdDKnL///obFMAC2WsadW1qWMHlZE3u8z+PDilnKGhX1os7obYZvbenDL7OX/cw2Yw5J
- OIRDm22VIm24vtDdah/uUs7TSpVptSuVsRwnAaeixLbmjnCb9zC5DB13h0s6wqHrQAsiDMWfN
- HkvYyc+NWG4623nqOU3w3wb4D28LrSRt86i/TF9jtQ5JrWxdgV/9fr6wVlOxHR3uOp2Adqu/l
- by+g4Q7+CVoJ4sTXuKy6vbWKCBmDBafdD5Hojlub1hsAghTX0tvi3qTn73ISeJU0yqlf8+2la
- gadXZaHPd0/JUOnPEH24iWu6H7A/xt45KiZn673XCYTDhs/bRk8k8+0GumcgE1aMDvLetxehG
- BzbPde71UzTGwdaHX
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The entries for GPIO 33 and 34 are not properly aligned. Fix the
-alignment.
+After the removal of the DBG_871X macros, the 'msg' argument
+for rtw_sctx_wait() is no longer used.
 
-Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-=2D--
- drivers/pinctrl/nuvoton/pinctrl-npcm7xx.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Signed-off-by: Bryan Brattlof <hello@bryanbrattlof.com>
+---
+ drivers/staging/rtl8723bs/core/rtw_cmd.c      | 2 +-
+ drivers/staging/rtl8723bs/core/rtw_mlme_ext.c | 2 +-
+ drivers/staging/rtl8723bs/core/rtw_xmit.c     | 4 ++--
+ drivers/staging/rtl8723bs/include/rtw_xmit.h  | 2 +-
+ 4 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/pinctrl/nuvoton/pinctrl-npcm7xx.c b/drivers/pinctrl/n=
-uvoton/pinctrl-npcm7xx.c
-index 2535ca720668e..bb1ea47ec4c60 100644
-=2D-- a/drivers/pinctrl/nuvoton/pinctrl-npcm7xx.c
-+++ b/drivers/pinctrl/nuvoton/pinctrl-npcm7xx.c
-@@ -958,8 +958,8 @@ static const struct npcm7xx_pincfg pincfg[] =3D {
- 	NPCM7XX_PINCFG(31,	 smb3, MFSEL1, 0,	  none, NONE, 0,	none, NONE, 0,	   =
-  0),
+diff --git a/drivers/staging/rtl8723bs/core/rtw_cmd.c b/drivers/staging/rtl=
+8723bs/core/rtw_cmd.c
+index 3ed996bba98e..ac289e5600b0 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_cmd.c
++++ b/drivers/staging/rtl8723bs/core/rtw_cmd.c
+@@ -693,7 +693,7 @@ int rtw_startbss_cmd(struct adapter  *padapter, int fla=
+gs)
+ =09=09res =3D rtw_enqueue_cmd(pcmdpriv, pcmd);
 
- 	NPCM7XX_PINCFG(32,    spi0cs1, MFSEL1, 3,	  none, NONE, 0,	none, NONE, 0=
-,	     0),
--	NPCM7XX_PINCFG(33,   none, NONE, 0,     none, NONE, 0,	none, NONE, 0,	  =
-   SLEW),
--	NPCM7XX_PINCFG(34,   none, NONE, 0,     none, NONE, 0,	none, NONE, 0,	  =
-   SLEW),
-+	NPCM7XX_PINCFG(33,	 none, NONE, 0,           none, NONE, 0,	none, NONE, =
-0,	     SLEW),
-+	NPCM7XX_PINCFG(34,	 none, NONE, 0,           none, NONE, 0,	none, NONE, =
-0,	     SLEW),
- 	NPCM7XX_PINCFG(37,	smb3c, I2CSEGSEL, 12,	  none, NONE, 0,	none, NONE, 0,=
-	     SLEW),
- 	NPCM7XX_PINCFG(38,	smb3c, I2CSEGSEL, 12,	  none, NONE, 0,	none, NONE, 0,=
-	     SLEW),
- 	NPCM7XX_PINCFG(39,	smb3b, I2CSEGSEL, 11,	  none, NONE, 0,	none, NONE, 0,=
-	     SLEW),
-=2D-
-2.30.2
+ =09=09if (res =3D=3D _SUCCESS && (flags & RTW_CMDF_WAIT_ACK)) {
+-=09=09=09rtw_sctx_wait(&sctx, __func__);
++=09=09=09rtw_sctx_wait(&sctx);
+ =09=09=09if (mutex_lock_interruptible(&pcmdpriv->sctx_mutex) =3D=3D 0) {
+ =09=09=09=09if (sctx.status =3D=3D RTW_SCTX_SUBMITTED)
+ =09=09=09=09=09pcmd->sctx =3D NULL;
+diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/stagin=
+g/rtl8723bs/core/rtw_mlme_ext.c
+index c5430e737bb1..ab68ef608620 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
++++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
+@@ -2137,7 +2137,7 @@ s32 dump_mgntframe_and_wait(struct adapter *padapter,=
+ struct xmit_frame *pmgntfr
+ =09ret =3D rtw_hal_mgnt_xmit(padapter, pmgntframe);
+
+ =09if (ret =3D=3D _SUCCESS)
+-=09=09ret =3D rtw_sctx_wait(&sctx, __func__);
++=09=09ret =3D rtw_sctx_wait(&sctx);
+
+ =09spin_lock_irqsave(&pxmitpriv->lock_sctx, irqL);
+ =09pxmitbuf->sctx =3D NULL;
+diff --git a/drivers/staging/rtl8723bs/core/rtw_xmit.c b/drivers/staging/rt=
+l8723bs/core/rtw_xmit.c
+index 7e3477a45a0f..f21a814c7394 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_xmit.c
++++ b/drivers/staging/rtl8723bs/core/rtw_xmit.c
+@@ -2505,7 +2505,7 @@ void rtw_sctx_init(struct submit_ctx *sctx, int timeo=
+ut_ms)
+ =09sctx->status =3D RTW_SCTX_SUBMITTED;
+ }
+
+-int rtw_sctx_wait(struct submit_ctx *sctx, const char *msg)
++int rtw_sctx_wait(struct submit_ctx *sctx)
+ {
+ =09int ret =3D _FAIL;
+ =09unsigned long expire;
+@@ -2546,7 +2546,7 @@ int rtw_ack_tx_wait(struct xmit_priv *pxmitpriv, u32 =
+timeout_ms)
+ =09pack_tx_ops->timeout_ms =3D timeout_ms;
+ =09pack_tx_ops->status =3D RTW_SCTX_SUBMITTED;
+
+-=09return rtw_sctx_wait(pack_tx_ops, __func__);
++=09return rtw_sctx_wait(pack_tx_ops);
+ }
+
+ void rtw_ack_tx_done(struct xmit_priv *pxmitpriv, int status)
+diff --git a/drivers/staging/rtl8723bs/include/rtw_xmit.h b/drivers/staging=
+/rtl8723bs/include/rtw_xmit.h
+index e45753d17313..676ead0372fa 100644
+--- a/drivers/staging/rtl8723bs/include/rtw_xmit.h
++++ b/drivers/staging/rtl8723bs/include/rtw_xmit.h
+@@ -234,7 +234,7 @@ enum {
+
+
+ void rtw_sctx_init(struct submit_ctx *sctx, int timeout_ms);
+-int rtw_sctx_wait(struct submit_ctx *sctx, const char *msg);
++int rtw_sctx_wait(struct submit_ctx *sctx);
+ void rtw_sctx_done_err(struct submit_ctx **sctx, int status);
+ void rtw_sctx_done(struct submit_ctx **sctx);
+
+--
+2.27.0
+
 
