@@ -2,526 +2,457 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D00B37F1E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 06:16:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D30D37F1CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 06:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230326AbhEMERw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 00:17:52 -0400
-Received: from alt-proxy16.mail.unifiedlayer.com ([70.40.197.35]:42822 "EHLO
-        gproxy9-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229504AbhEMERu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 00:17:50 -0400
-X-Greylist: delayed 1240 seconds by postgrey-1.27 at vger.kernel.org; Thu, 13 May 2021 00:17:50 EDT
-Received: from cmgw14.unifiedlayer.com (unknown [10.9.0.14])
-        by gproxy9.mail.unifiedlayer.com (Postfix) with ESMTP id 0D0028026D8E
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 03:56:00 +0000 (UTC)
-Received: from md-in-79.webhostbox.net ([43.225.55.182])
-        by cmsmtp with ESMTP
-        id h2S5lShzHSr9Ch2S7lc3ks; Wed, 12 May 2021 21:55:59 -0600
-X-Authority-Reason: nr=8
-X-Authority-Analysis: v=2.4 cv=FYZUeLy6 c=1 sm=1 tr=0 ts=609ca350
- a=LfuyaZh/8e9VOkaVZk0aRw==:117 a=LfuyaZh/8e9VOkaVZk0aRw==:17
- a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=5FLXtPjwQuUA:10:nop_rcvd_month_year
- a=oz0wMknONp8A:10:endurance_base64_authed_username_1 a=vU9dKmh3AAAA:8
- a=NcCfH-bgAAAA:8 a=lhsWNlwdHoQvLuVuHl0A:9 a=rsP06fVo5MYu2ilr0aT5:22
- a=nZLUJm6UEJn402BoZzOq:22 a=pHzHmUro8NiASowvMSCR:22 a=Ew2E2A-JSTLzCXPT_086:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=linumiz.com
-        ; s=default; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
-        :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=/zKJcsiZoPWo+582qmodxyzuBnn66jMoofN4LxiRIZA=; b=m1V10hcnAbyBF8tyQFfPCWtbSb
-        cQDC0hOwqD0f5WZUwahZ5VtjOrNii6Sp7Hwd3hoaqCRyKsPwSoCBUNpvOdno17CdVX7wrBlE9NpYl
-        HCxF7qIYp2u+HW/waStn9CHevC2OmXQTu8gptgB89fVV4OcIr+LudQvMg4/ifjC3PWCJJ6l7ucDXb
-        ytG+XpRwEKW4Q74WrZd53+LoXMcp5BkSpILilfsiEGr889j/e6yN14Rklku6pMHtV+W84jVNN+ru1
-        QExBoOuBUnrkowyhtFux3NDx2AKuWlpEVhgJi6N7MqDMfZv1VY0gUcCS5lHwZmweKs5u39WpghW/J
-        zGl7mMnQ==;
-Received: from [59.92.96.39] (port=51956 helo=localhost.localdomain)
-        by md-in-79.webhostbox.net with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <navin@linumiz.com>)
-        id 1lh2S4-0039kV-R5; Thu, 13 May 2021 03:55:56 +0000
-From:   Navin Sankar Velliangiri <navin@linumiz.com>
-Cc:     navin@linumiz.com, Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5] hwmon: Add sht4x Temperature and Humidity Sensor Driver
-Date:   Thu, 13 May 2021 09:26:09 +0530
-Message-Id: <20210513035613.35363-1-navin@linumiz.com>
-X-Mailer: git-send-email 2.31.1
+        id S229480AbhEMECe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 00:02:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54586 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229459AbhEMEC2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 00:02:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EB4B461419;
+        Thu, 13 May 2021 04:01:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620878479;
+        bh=jC52PE3bYP4aBc0jJB+ShI4DqAedjLSXx5nYMmig85A=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=S4fXnC5I49YLPY8LR2NqlF35dB645GtrohceK1ETYETRRbYZnJb8JPEfo8ZdohF2B
+         VxCZKE43Oi3RnyWAi56Q0G7EudelFsiNL6kU1bJoOtw9OXIwFyfhVb0PflI+kiTZ0t
+         PETu/WUDz1p1otk5l3sgCnzhqIzqFlEfhYrkYYIQ94p7ymy3q0ZTNZ0WSy+hrHgX1d
+         grrhFqVYyah6Cztq1M0DlDCKu1MRnFBJ6WmduBAE6F392veELV5B2SIfxWhddQdZwd
+         HM3XTlvIWvUm6wXhcYG2FKPn+QEDDbvMRoJH9bkcTLKWRXzj2afA7ubkSlxTvP/abO
+         s9VK7SNolp3Ew==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id AA6F75C0379; Wed, 12 May 2021 21:01:18 -0700 (PDT)
+Date:   Wed, 12 May 2021 21:01:18 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        john.stultz@linaro.org, sboyd@kernel.org, corbet@lwn.net,
+        Mark.Rutland@arm.com, maz@kernel.org, kernel-team@fb.com,
+        neeraju@codeaurora.org, ak@linux.intel.com,
+        zhengjun.xing@intel.com,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Chris Mason <clm@fb.com>
+Subject: Re: [PATCH v14 clocksource 5/6] clocksource: Provide kernel module
+ to test clocksource watchdog
+Message-ID: <20210513040118.GX975577@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210511233403.GA2896757@paulmck-ThinkPad-P17-Gen-1>
+ <20210511233455.2897068-5-paulmck@kernel.org>
+ <20210513032947.GD78351@shbuild999.sh.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - md-in-79.webhostbox.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - linumiz.com
-X-BWhitelist: no
-X-Source-IP: 59.92.96.39
-X-Source-L: No
-X-Exim-ID: 1lh2S4-0039kV-R5
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: (localhost.localdomain) [59.92.96.39]:51956
-X-Source-Auth: linumcmc
-X-Email-Count: 1
-X-Source-Cap: bGludW1jbWM7aG9zdGdhdG9yO21kLWluLTc5LndlYmhvc3Rib3gubmV0
-X-Local-Domain: yes
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210513032947.GD78351@shbuild999.sh.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds a hwmon driver for the SHT4x Temperature and
-Humidity sensor.
+On Thu, May 13, 2021 at 11:29:47AM +0800, Feng Tang wrote:
+> On Tue, May 11, 2021 at 04:34:54PM -0700, Paul E. McKenney wrote:
+> > When the clocksource watchdog marks a clock as unstable, this might
+> > be due to that clock being unstable or it might be due to delays that
+> > happen to occur between the reads of the two clocks.  It would be good
+> > to have a way of testing the clocksource watchdog's ability to
+> > distinguish between these two causes of clock skew and instability.
+> > 
+> > Therefore, provide a new clocksource-wdtest module selected by a new
+> > TEST_CLOCKSOURCE_WATCHDOG Kconfig option.  This module has a single module
+> > parameter named "holdoff" that provides the number of seconds of delay
+> > before testing should start, which defaults to zero when built as a module
+> > and to 10 seconds when built directly into the kernel.  Very large systems
+> > that boot slowly may need to increase the value of this module parameter.
+> > 
+> > This module uses hand-crafted clocksource structures to do its testing,
+> > thus avoiding messing up timing for the rest of the kernel and for user
+> > applications.  This module first verifies that the ->uncertainty_margin
+> > field of the clocksource structures are set sanely.  It then tests the
+> > delay-detection capability of the clocksource watchdog, increasing the
+> > number of consecutive delays injected, first provoking console messages
+> > complaining about the delays and finally forcing a clock-skew event.
+> > Unexpected test results cause at least one WARN_ON_ONCE() console splat.
+> > If there are no splats, the test has passed.  Finally, it fuzzes the
+> > value returned from a clocksource to test the clocksource watchdog's
+> > ability to detect time skew.
+> > 
+> > This module checks the state of its clocksource after each test, and
+> > uses WARN_ON_ONCE() to emit a console splat if there are any failures.
+> > This should enable all types of test frameworks to detect any such
+> > failures.
+> > 
+> > This facility is intended for diagnostic use only, and should be avoided
+> > on production systems.
+> 
+> I tried the kvm rcutorture way:
+>  "tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 45s
+>  --configs TREE03 --kconfig "CONFIG_TEST_CLOCKSOURCE_WATCHDOG=y"
+>  --bootargs "clo
+>  +cksource.max_cswd_read_retries=1" --trust-make > /tmp/kvm.sh.out 2>&1"
+> 
+> Also I run it through a baremetal laptop with and without "nohpet" in
+> kernel cmdline. The debug messages from this module all look as expected, 
+> so
+> 
+> 	Tested-by: Feng Tang <feng.tang@intel.com>
 
-Signed-off-by: Navin Sankar Velliangiri <navin@linumiz.com>
+Thank you!  I will apply this on my next rebase.
 
-Changes in v2:
+							Thanx, Paul
 
-* Removed unused macro SHT4X_MIN_POLL_INTERVAL
-* Replaced time_after instead of ktime_after
-* Used goto statements for error handling
-* Hardcoded the interval_time instead of clamp_val().
-
-Changes in v3:
-
-* Accept the poll interval if it is greater than SHT4X_MIN_POLL_INTERVAL and
-  return -EINVAL for negative values & less than SHT4X_MIN_POLL_INTERVAL
-* Changed the data type of update_interval and last_updated to long.
-
-Changes in v4:
-
-* "update_interval" is long but msecs_to_jiffies() accepts only unsigned int.
-  clamp_val() api is used to assign the update_interval stays within UINT_MAX.
-
-Changes in v5:
-
-* Added error handling when master unable to send the data.
----
- Documentation/hwmon/index.rst |   1 +
- Documentation/hwmon/sht4x.rst |  45 +++++
- drivers/hwmon/Kconfig         |  11 ++
- drivers/hwmon/Makefile        |   1 +
- drivers/hwmon/sht4x.c         | 307 ++++++++++++++++++++++++++++++++++
- 5 files changed, 365 insertions(+)
- create mode 100644 Documentation/hwmon/sht4x.rst
- create mode 100644 drivers/hwmon/sht4x.c
-
-diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-index 8d5a2df1ecb6..2a20c6616e21 100644
---- a/Documentation/hwmon/index.rst
-+++ b/Documentation/hwmon/index.rst
-@@ -160,6 +160,7 @@ Hardware Monitoring Kernel Drivers
-    sht15
-    sht21
-    sht3x
-+   sht4x
-    shtc1
-    sis5595
-    sl28cpld
-diff --git a/Documentation/hwmon/sht4x.rst b/Documentation/hwmon/sht4x.rst
-new file mode 100644
-index 000000000000..3b37abcd4a46
---- /dev/null
-+++ b/Documentation/hwmon/sht4x.rst
-@@ -0,0 +1,45 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+Kernel driver sht4x
-+===================
-+
-+Supported Chips:
-+
-+  * Sensirion SHT4X
-+
-+    Prefix: 'sht4x'
-+
-+    Addresses scanned: None
-+
-+    Datasheet:
-+
-+      English: https://www.sensirion.com/fileadmin/user_upload/customers/sensirion/Dokumente/2_Humidity_Sensors/Datasheets/Sensirion_Humidity_Sensors_SHT4x_Datasheet.pdf
-+
-+Author: Navin Sankar Velliangiri <navin@linumiz.com>
-+
-+
-+Description
-+-----------
-+
-+This driver implements support for the Sensirion SHT4x chip, a humidity
-+and temperature sensor. Temperature is measured in degree celsius, relative
-+humidity is expressed as a percentage. In sysfs interface, all values are
-+scaled by 1000, i.e. the value for 31.5 degrees celsius is 31500.
-+
-+Usage Notes
-+-----------
-+
-+The device communicates with the I2C protocol. Sensors can have the I2C
-+address 0x44. See Documentation/i2c/instantiating-devices.rst for methods
-+to instantiate the device.
-+
-+Sysfs entries
-+-------------
-+
-+=============== ============================================
-+temp1_input     Measured temperature in millidegrees Celcius
-+humidity1_input Measured humidity in %H
-+update_interval The minimum interval for polling the sensor,
-+                in milliseconds. Writable. Must be at least
-+                2000.
-+============== =============================================
-diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-index 54f04e61fb83..0640e510f3c8 100644
---- a/drivers/hwmon/Kconfig
-+++ b/drivers/hwmon/Kconfig
-@@ -1583,6 +1583,17 @@ config SENSORS_SHT3x
- 	  This driver can also be built as a module. If so, the module
- 	  will be called sht3x.
- 
-+config SENSORS_SHT4x
-+	tristate "Sensiron humidity and temperature sensors. SHT4x and compat."
-+	depends on I2C
-+	select CRC8
-+	help
-+	  If you say yes here you get support for the Sensiron SHT40, SHT41 and
-+	  SHT45 humidity and temperature sensors.
-+
-+	  This driver can also be built as a module. If so, the module
-+	  will be called sht4x.
-+
- config SENSORS_SHTC1
- 	tristate "Sensiron humidity and temperature sensors. SHTC1 and compat."
- 	depends on I2C
-diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
-index fe38e8a5c979..62cee3e03c7f 100644
---- a/drivers/hwmon/Makefile
-+++ b/drivers/hwmon/Makefile
-@@ -170,6 +170,7 @@ obj-$(CONFIG_SENSORS_SL28CPLD)	+= sl28cpld-hwmon.o
- obj-$(CONFIG_SENSORS_SHT15)	+= sht15.o
- obj-$(CONFIG_SENSORS_SHT21)	+= sht21.o
- obj-$(CONFIG_SENSORS_SHT3x)	+= sht3x.o
-+obj-$(CONFIG_SENSORS_SHT4x)	+= sht4x.o
- obj-$(CONFIG_SENSORS_SHTC1)	+= shtc1.o
- obj-$(CONFIG_SENSORS_SIS5595)	+= sis5595.o
- obj-$(CONFIG_SENSORS_SMM665)	+= smm665.o
-diff --git a/drivers/hwmon/sht4x.c b/drivers/hwmon/sht4x.c
-new file mode 100644
-index 000000000000..e1602dc794fb
---- /dev/null
-+++ b/drivers/hwmon/sht4x.c
-@@ -0,0 +1,307 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+/*
-+ * Copyright (c) Linumiz 2021
-+ *
-+ * sht4x.c - Linux hwmon driver for SHT4x Temperature and Humidity sensor
-+ *
-+ * Author: Navin Sankar Velliangiri <navin@linumiz.com>
-+ */
-+
-+#include <linux/crc8.h>
-+#include <linux/delay.h>
-+#include <linux/hwmon.h>
-+#include <linux/i2c.h>
-+#include <linux/jiffies.h>
-+#include <linux/module.h>
-+
-+/*
-+ * Poll intervals (in milliseconds)
-+ */
-+#define SHT4X_MIN_POLL_INTERVAL	2000
-+
-+/*
-+ * I2C command delays (in microseconds)
-+ */
-+#define SHT4X_MEAS_DELAY	1000
-+#define SHT4X_DELAY_EXTRA	10000
-+
-+/*
-+ * Command Bytes
-+ */
-+#define SHT4X_CMD_MEASURE_HPM	0b11111101
-+#define SHT4X_CMD_RESET		0b10010100
-+
-+#define SHT4X_CMD_LEN		1
-+#define SHT4X_CRC8_LEN		1
-+#define SHT4X_WORD_LEN		2
-+#define SHT4X_RESPONSE_LENGTH	6
-+#define SHT4X_CRC8_POLYNOMIAL	0x31
-+#define SHT4X_CRC8_INIT		0xff
-+#define SHT4X_MIN_TEMPERATURE	-45000
-+#define SHT4X_MAX_TEMPERATURE	125000
-+#define SHT4X_MIN_HUMIDITY	0
-+#define SHT4X_MAX_HUMIDITY	100000
-+
-+DECLARE_CRC8_TABLE(sht4x_crc8_table);
-+
-+/**
-+ * struct sht4x_data - All the data required to operate an SHT4X chip
-+ * @client: the i2c client associated with the SHT4X
-+ * @lock: a mutex that is used to prevent parallel access to the i2c client
-+ * @update_interval: the minimum poll interval
-+ * @last_updated: the previous time that the SHT4X was polled
-+ * @temperature: the latest temperature value received from the SHT4X
-+ * @humidity: the latest humidity value received from the SHT4X
-+ */
-+struct sht4x_data {
-+	struct i2c_client	*client;
-+	struct mutex		lock;	/* atomic read data updates */
-+	bool			valid;	/* validity of fields below */
-+	long			update_interval;	/* in milli-seconds */
-+	long			last_updated;	/* in jiffies */
-+	s32			temperature;
-+	s32			humidity;
-+};
-+
-+/**
-+ * sht4x_read_values() - read and parse the raw data from the SHT4X
-+ * @sht4x_data: the struct sht4x_data to use for the lock
-+ * Return: 0 if succesfull, 1 if not
-+ */
-+static int sht4x_read_values(struct sht4x_data *data)
-+{
-+	int ret;
-+	u16 t_ticks, rh_ticks;
-+	unsigned long next_update;
-+	struct i2c_client *client = data->client;
-+	u8 crc, raw_data[SHT4X_RESPONSE_LENGTH],
-+	cmd[] = {SHT4X_CMD_MEASURE_HPM};
-+
-+	mutex_lock(&data->lock);
-+	next_update = data->last_updated +
-+		      msecs_to_jiffies(data->update_interval);
-+	if (!data->valid || time_after(jiffies, next_update)) {
-+		ret = i2c_master_send(client, cmd, SHT4X_CMD_LEN);
-+		if (ret < 0)
-+			goto unlock;
-+
-+		usleep_range(SHT4X_MEAS_DELAY,
-+			     SHT4X_MEAS_DELAY + SHT4X_DELAY_EXTRA);
-+
-+		ret = i2c_master_recv(client, raw_data, SHT4X_RESPONSE_LENGTH);
-+		if (ret != SHT4X_RESPONSE_LENGTH) {
-+			if (ret >= 0)
-+				ret = -ENODATA;
-+
-+			goto unlock;
-+		}
-+
-+		t_ticks = raw_data[0] << 8 | raw_data[1];
-+		rh_ticks = raw_data[3] << 8 | raw_data[4];
-+
-+		crc = crc8(sht4x_crc8_table, &raw_data[0], SHT4X_WORD_LEN, CRC8_INIT_VALUE);
-+		if (crc != raw_data[2]) {
-+			dev_err(&client->dev, "data integrity check failed\n");
-+			ret = -EIO;
-+			goto unlock;
-+		}
-+
-+		crc = crc8(sht4x_crc8_table, &raw_data[3], SHT4X_WORD_LEN, CRC8_INIT_VALUE);
-+		if (crc != raw_data[5]) {
-+			dev_err(&client->dev, "data integrity check failed\n");
-+			ret = -EIO;
-+			goto unlock;
-+		}
-+
-+		data->temperature = ((21875 * (int32_t)t_ticks) >> 13) - 45000;
-+		data->humidity = ((15625 * (int32_t)rh_ticks) >> 13) - 6000;
-+		data->last_updated = jiffies;
-+		data->valid = true;
-+	}
-+
-+unlock:
-+	mutex_unlock(&data->lock);
-+	return ret;
-+}
-+
-+static ssize_t sht4x_interval_write(struct sht4x_data *data,
-+				    long val)
-+{
-+	if (val < SHT4X_MIN_POLL_INTERVAL)
-+		return -EINVAL;
-+
-+	data->update_interval = clamp_val(val, SHT4X_MIN_POLL_INTERVAL,
-+					  UINT_MAX);
-+
-+	return 0;
-+}
-+
-+/**
-+ * sht4x_interval_read() - read the minimum poll interval
-+ *			   in milliseconds
-+ */
-+static size_t sht4x_interval_read(struct sht4x_data *data,
-+				  long *val)
-+{
-+	*val = data->update_interval;
-+	return 0;
-+}
-+
-+/**
-+ * sht4x_temperature1_read() - read the temperature in millidegrees
-+ */
-+static int sht4x_temperature1_read(struct sht4x_data *data, long *val)
-+{
-+	int ret;
-+
-+	ret = sht4x_read_values(data);
-+	if (ret < 0)
-+		return ret;
-+
-+	*val = data->temperature;
-+
-+	return 0;
-+}
-+
-+/**
-+ * sht4x_humidity1_read() - read a relative humidity in millipercent
-+ */
-+static int sht4x_humidity1_read(struct sht4x_data *data, long *val)
-+{
-+	int ret;
-+
-+	ret = sht4x_read_values(data);
-+	if (ret < 0)
-+		return ret;
-+
-+	*val = data->humidity;
-+
-+	return 0;
-+}
-+
-+static umode_t sht4x_hwmon_visible(const void *data,
-+				   enum hwmon_sensor_types type,
-+				   u32 attr, int channel)
-+{
-+	switch (type) {
-+	case hwmon_temp:
-+	case hwmon_humidity:
-+		return 0444;
-+	case hwmon_chip:
-+		return 0644;
-+	default:
-+		return 0;
-+	}
-+}
-+
-+static int sht4x_hwmon_read(struct device *dev, enum hwmon_sensor_types type,
-+			    u32 attr, int channel, long *val)
-+{
-+	struct sht4x_data *data = dev_get_drvdata(dev);
-+
-+	switch (type) {
-+	case hwmon_temp:
-+		return sht4x_temperature1_read(data, val);
-+	case hwmon_humidity:
-+		return sht4x_humidity1_read(data, val);
-+	case hwmon_chip:
-+		return sht4x_interval_read(data, val);
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+}
-+
-+static int sht4x_hwmon_write(struct device *dev, enum hwmon_sensor_types type,
-+			     u32 attr, int channel, long val)
-+{
-+	struct sht4x_data *data = dev_get_drvdata(dev);
-+
-+	switch (type) {
-+	case hwmon_chip:
-+		return sht4x_interval_write(data, val);
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+}
-+
-+static const struct hwmon_channel_info *sht4x_info[] = {
-+	HWMON_CHANNEL_INFO(chip, HWMON_C_UPDATE_INTERVAL),
-+	HWMON_CHANNEL_INFO(temp, HWMON_T_INPUT),
-+	HWMON_CHANNEL_INFO(humidity, HWMON_H_INPUT),
-+	NULL,
-+};
-+
-+static const struct hwmon_ops sht4x_hwmon_ops = {
-+	.is_visible = sht4x_hwmon_visible,
-+	.read = sht4x_hwmon_read,
-+	.write = sht4x_hwmon_write,
-+};
-+
-+static const struct hwmon_chip_info sht4x_chip_info = {
-+	.ops = &sht4x_hwmon_ops,
-+	.info = sht4x_info,
-+};
-+
-+static int sht4x_probe(struct i2c_client *client,
-+		       const struct i2c_device_id *sht4x_id)
-+{
-+	struct device *device = &client->dev;
-+	struct device *hwmon_dev;
-+	struct sht4x_data *data;
-+	u8 cmd[] = {SHT4X_CMD_RESET};
-+	int ret;
-+
-+	/*
-+	 * we require full i2c support since the sht4x uses multi-byte read and
-+	 * writes as well as multi-byte commands which are not supported by
-+	 * the smbus protocol
-+	 */
-+	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C))
-+		return -EOPNOTSUPP;
-+
-+	data = devm_kzalloc(device, sizeof(*data), GFP_KERNEL);
-+	if (!data)
-+		return -ENOMEM;
-+
-+	data->update_interval = SHT4X_MIN_POLL_INTERVAL;
-+	data->client = client;
-+
-+	mutex_init(&data->lock);
-+
-+	crc8_populate_msb(sht4x_crc8_table, SHT4X_CRC8_POLYNOMIAL);
-+
-+	ret = i2c_master_send(client, cmd, SHT4X_CMD_LEN);
-+	if (ret < 0)
-+		return ret;
-+	if (ret != SHT4X_CMD_LEN)
-+		return -EIO;
-+
-+	hwmon_dev = devm_hwmon_device_register_with_info(device,
-+							 client->name,
-+							 data,
-+							 &sht4x_chip_info,
-+							 NULL);
-+
-+	return PTR_ERR_OR_ZERO(hwmon_dev);
-+}
-+
-+static const struct i2c_device_id sht4x_id[] = {
-+	{ "sht4x", 0 },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(i2c, sht4x_id);
-+
-+static struct i2c_driver sht4x_driver = {
-+	.driver = {
-+		.name = "sht4x",
-+	},
-+	.probe		= sht4x_probe,
-+	.id_table	= sht4x_id,
-+};
-+
-+module_i2c_driver(sht4x_driver);
-+
-+MODULE_AUTHOR("Navin Sankar Velliangiri <navin@linumiz.com>");
-+MODULE_DESCRIPTION("Sensirion SHT4x humidity and temperature sensor driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.31.1
-
+> Thanks,
+> Feng
+> 
+> 
+> > Link: https://lore.kernel.org/lkml/202104291438.PuHsxRkl-lkp@intel.com/
+> > Link: https://lore.kernel.org/lkml/20210429140440.GT975577@paulmck-ThinkPad-P17-Gen-1
+> > Link: https://lore.kernel.org/lkml/20210425224540.GA1312438@paulmck-ThinkPad-P17-Gen-1/
+> > Link: https://lore.kernel.org/lkml/20210420064934.GE31773@xsang-OptiPlex-9020/
+> > Link: https://lore.kernel.org/lkml/20210106004013.GA11179@paulmck-ThinkPad-P72/
+> > Link: https://lore.kernel.org/lkml/20210414043435.GA2812539@paulmck-ThinkPad-P17-Gen-1/
+> > Link: https://lore.kernel.org/lkml/20210419045155.GA596058@paulmck-ThinkPad-P17-Gen-1/
+> > Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: John Stultz <john.stultz@linaro.org>
+> > Cc: Stephen Boyd <sboyd@kernel.org>
+> > Cc: Jonathan Corbet <corbet@lwn.net>
+> > Cc: Mark Rutland <Mark.Rutland@arm.com>
+> > Cc: Marc Zyngier <maz@kernel.org>
+> > Cc: Andi Kleen <ak@linux.intel.com>
+> > Cc: Feng Tang <feng.tang@intel.com>
+> > Cc: Xing Zhengjun <zhengjun.xing@linux.intel.com>
+> > Reported-by: Chris Mason <clm@fb.com>
+> > [ paulmck: Export clocksource_verify_percpu per kernel test robot and Stephen Rothwell. ]
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > ---
+> >  .../admin-guide/kernel-parameters.txt         |   6 +
+> >  include/linux/clocksource.h                   |   3 +
+> >  kernel/time/Makefile                          |   1 +
+> >  kernel/time/clocksource-wdtest.c              | 202 ++++++++++++++++++
+> >  kernel/time/clocksource.c                     |  12 +-
+> >  lib/Kconfig.debug                             |  12 ++
+> >  6 files changed, 231 insertions(+), 5 deletions(-)
+> >  create mode 100644 kernel/time/clocksource-wdtest.c
+> > 
+> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> > index 0ef0ee743f65..9da285a98aa6 100644
+> > --- a/Documentation/admin-guide/kernel-parameters.txt
+> > +++ b/Documentation/admin-guide/kernel-parameters.txt
+> > @@ -597,6 +597,12 @@
+> >  			The actual CPUs are chosen randomly, with
+> >  			no replacement if the same CPU is chosen twice.
+> >  
+> > +	clocksource-wdtest.holdoff= [KNL]
+> > +			Set the time in seconds that the clocksource
+> > +			watchdog test waits before commencing its tests.
+> > +			Defaults to zero when built as a module and to
+> > +			10 seconds when built into the kernel.
+> > +
+> >  	clearcpuid=BITNUM[,BITNUM...] [X86]
+> >  			Disable CPUID feature X for the kernel. See
+> >  			arch/x86/include/asm/cpufeatures.h for the valid bit
+> > diff --git a/include/linux/clocksource.h b/include/linux/clocksource.h
+> > index 895203727cb5..1d42d4b17327 100644
+> > --- a/include/linux/clocksource.h
+> > +++ b/include/linux/clocksource.h
+> > @@ -291,4 +291,7 @@ static inline void timer_probe(void) {}
+> >  #define TIMER_ACPI_DECLARE(name, table_id, fn)		\
+> >  	ACPI_DECLARE_PROBE_ENTRY(timer, name, table_id, 0, NULL, 0, fn)
+> >  
+> > +extern ulong max_cswd_read_retries;
+> > +void clocksource_verify_percpu(struct clocksource *cs);
+> > +
+> >  #endif /* _LINUX_CLOCKSOURCE_H */
+> > diff --git a/kernel/time/Makefile b/kernel/time/Makefile
+> > index 1fb1c1ef6a19..1ed85b25b096 100644
+> > --- a/kernel/time/Makefile
+> > +++ b/kernel/time/Makefile
+> > @@ -21,3 +21,4 @@ obj-$(CONFIG_HAVE_GENERIC_VDSO)			+= vsyscall.o
+> >  obj-$(CONFIG_DEBUG_FS)				+= timekeeping_debug.o
+> >  obj-$(CONFIG_TEST_UDELAY)			+= test_udelay.o
+> >  obj-$(CONFIG_TIME_NS)				+= namespace.o
+> > +obj-$(CONFIG_TEST_CLOCKSOURCE_WATCHDOG)		+= clocksource-wdtest.o
+> > diff --git a/kernel/time/clocksource-wdtest.c b/kernel/time/clocksource-wdtest.c
+> > new file mode 100644
+> > index 000000000000..01df12395c0e
+> > --- /dev/null
+> > +++ b/kernel/time/clocksource-wdtest.c
+> > @@ -0,0 +1,202 @@
+> > +// SPDX-License-Identifier: GPL-2.0+
+> > +/*
+> > + * Unit test for the clocksource watchdog.
+> > + *
+> > + * Copyright (C) 2021 Facebook, Inc.
+> > + *
+> > + * Author: Paul E. McKenney <paulmck@kernel.org>
+> > + */
+> > +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> > +
+> > +#include <linux/device.h>
+> > +#include <linux/clocksource.h>
+> > +#include <linux/init.h>
+> > +#include <linux/module.h>
+> > +#include <linux/sched.h> /* for spin_unlock_irq() using preempt_count() m68k */
+> > +#include <linux/tick.h>
+> > +#include <linux/kthread.h>
+> > +#include <linux/delay.h>
+> > +#include <linux/prandom.h>
+> > +#include <linux/cpu.h>
+> > +
+> > +MODULE_LICENSE("GPL");
+> > +MODULE_AUTHOR("Paul E. McKenney <paulmck@kernel.org>");
+> > +
+> > +static int holdoff = IS_BUILTIN(CONFIG_TEST_CLOCKSOURCE_WATCHDOG) ? 10 : 0;
+> > +module_param(holdoff, int, 0444);
+> > +MODULE_PARM_DESC(holdoff, "Time to wait to start test (s).");
+> > +
+> > +/* Watchdog kthread's task_struct pointer for debug purposes. */
+> > +static struct task_struct *wdtest_task;
+> > +
+> > +static u64 wdtest_jiffies_read(struct clocksource *cs)
+> > +{
+> > +	return (u64)jiffies;
+> > +}
+> > +
+> > +/* Assume HZ > 100. */
+> > +#define JIFFIES_SHIFT	8
+> > +
+> > +static struct clocksource clocksource_wdtest_jiffies = {
+> > +	.name			= "wdtest-jiffies",
+> > +	.rating			= 1, /* lowest valid rating*/
+> > +	.uncertainty_margin	= TICK_NSEC,
+> > +	.read			= wdtest_jiffies_read,
+> > +	.mask			= CLOCKSOURCE_MASK(32),
+> > +	.flags			= CLOCK_SOURCE_MUST_VERIFY,
+> > +	.mult			= TICK_NSEC << JIFFIES_SHIFT, /* details above */
+> > +	.shift			= JIFFIES_SHIFT,
+> > +	.max_cycles		= 10,
+> > +};
+> > +
+> > +static int wdtest_ktime_read_ndelays;
+> > +static bool wdtest_ktime_read_fuzz;
+> > +
+> > +static u64 wdtest_ktime_read(struct clocksource *cs)
+> > +{
+> > +	int wkrn = READ_ONCE(wdtest_ktime_read_ndelays);
+> > +	static int sign = 1;
+> > +	u64 ret;
+> > +
+> > +	if (wkrn) {
+> > +		udelay(cs->uncertainty_margin / 250);
+> > +		WRITE_ONCE(wdtest_ktime_read_ndelays, wkrn - 1);
+> > +	}
+> > +	ret = ktime_get_real_fast_ns();
+> > +	if (READ_ONCE(wdtest_ktime_read_fuzz)) {
+> > +		sign = -sign;
+> > +		ret = ret + sign * 100 * NSEC_PER_MSEC;
+> > +	}
+> > +	return ret;
+> > +}
+> > +
+> > +static void wdtest_ktime_cs_mark_unstable(struct clocksource *cs)
+> > +{
+> > +	pr_info("--- Marking %s unstable due to clocksource watchdog.\n", cs->name);
+> > +}
+> > +
+> > +#define KTIME_FLAGS (CLOCK_SOURCE_IS_CONTINUOUS | \
+> > +		     CLOCK_SOURCE_VALID_FOR_HRES | \
+> > +		     CLOCK_SOURCE_MUST_VERIFY | \
+> > +		     CLOCK_SOURCE_VERIFY_PERCPU)
+> > +
+> > +static struct clocksource clocksource_wdtest_ktime = {
+> > +	.name			= "wdtest-ktime",
+> > +	.rating			= 300,
+> > +	.read			= wdtest_ktime_read,
+> > +	.mask			= CLOCKSOURCE_MASK(64),
+> > +	.flags			= KTIME_FLAGS,
+> > +	.mark_unstable		= wdtest_ktime_cs_mark_unstable,
+> > +	.list			= LIST_HEAD_INIT(clocksource_wdtest_ktime.list),
+> > +};
+> > +
+> > +/* Reset the clocksource if needed. */
+> > +static void wdtest_ktime_clocksource_reset(void)
+> > +{
+> > +	if (clocksource_wdtest_ktime.flags & CLOCK_SOURCE_UNSTABLE) {
+> > +		clocksource_unregister(&clocksource_wdtest_ktime);
+> > +		clocksource_wdtest_ktime.flags = KTIME_FLAGS;
+> > +		schedule_timeout_uninterruptible(HZ / 10);
+> > +		clocksource_register_khz(&clocksource_wdtest_ktime, 1000 * 1000);
+> > +	}
+> > +}
+> > +
+> > +/* Run the specified series of watchdog tests. */
+> > +static int wdtest_func(void *arg)
+> > +{
+> > +	unsigned long j1, j2;
+> > +	char *s;
+> > +	int i;
+> > +
+> > +	schedule_timeout_uninterruptible(holdoff * HZ);
+> > +
+> > +	/*
+> > +	 * Verify that jiffies-like clocksources get the manually
+> > +	 * specified uncertainty margin.
+> > +	 */
+> > +	pr_info("--- Verify jiffies-like uncertainty margin.\n");
+> > +	__clocksource_register(&clocksource_wdtest_jiffies);
+> > +	WARN_ON_ONCE(clocksource_wdtest_jiffies.uncertainty_margin != TICK_NSEC);
+> > +
+> > +	j1 = clocksource_wdtest_jiffies.read(&clocksource_wdtest_jiffies);
+> > +	schedule_timeout_uninterruptible(HZ);
+> > +	j2 = clocksource_wdtest_jiffies.read(&clocksource_wdtest_jiffies);
+> > +	WARN_ON_ONCE(j1 == j2);
+> > +
+> > +	clocksource_unregister(&clocksource_wdtest_jiffies);
+> > +
+> > +	/*
+> > +	 * Verify that tsc-like clocksources are assigned a reasonable
+> > +	 * uncertainty margin.
+> > +	 */
+> > +	pr_info("--- Verify tsc-like uncertainty margin.\n");
+> > +	clocksource_register_khz(&clocksource_wdtest_ktime, 1000 * 1000);
+> > +	WARN_ON_ONCE(clocksource_wdtest_ktime.uncertainty_margin < NSEC_PER_USEC);
+> > +
+> > +	j1 = clocksource_wdtest_ktime.read(&clocksource_wdtest_ktime);
+> > +	udelay(1);
+> > +	j2 = clocksource_wdtest_ktime.read(&clocksource_wdtest_ktime);
+> > +	pr_info("--- tsc-like times: %lu - %lu = %lu.\n", j2, j1, j2 - j1);
+> > +	WARN_ON_ONCE(time_before(j2, j1 + NSEC_PER_USEC));
+> > +
+> > +	/* Verify tsc-like stability with various numbers of errors injected. */
+> > +	for (i = 0; i <= max_cswd_read_retries + 1; i++) {
+> > +		if (i <= 1 && i < max_cswd_read_retries)
+> > +			s = "";
+> > +		else if (i <= max_cswd_read_retries)
+> > +			s = ", expect message";
+> > +		else
+> > +			s = ", expect clock skew";
+> > +		pr_info("--- Watchdog with %dx error injection, %lu retries%s.\n", i, max_cswd_read_retries, s);
+> > +		WRITE_ONCE(wdtest_ktime_read_ndelays, i);
+> > +		schedule_timeout_uninterruptible(2 * HZ);
+> > +		WARN_ON_ONCE(READ_ONCE(wdtest_ktime_read_ndelays));
+> > +		WARN_ON_ONCE((i <= max_cswd_read_retries) !=
+> > +			     !(clocksource_wdtest_ktime.flags & CLOCK_SOURCE_UNSTABLE));
+> > +		wdtest_ktime_clocksource_reset();
+> > +	}
+> > +
+> > +	/* Verify tsc-like stability with clock-value-fuzz error injection. */
+> > +	pr_info("--- Watchdog clock-value-fuzz error injection, expect clock skew and per-CPU mismatches.\n");
+> > +	WRITE_ONCE(wdtest_ktime_read_fuzz, true);
+> > +	schedule_timeout_uninterruptible(2 * HZ);
+> > +	WARN_ON_ONCE(!(clocksource_wdtest_ktime.flags & CLOCK_SOURCE_UNSTABLE));
+> > +	clocksource_verify_percpu(&clocksource_wdtest_ktime);
+> > +	WRITE_ONCE(wdtest_ktime_read_fuzz, false);
+> > +
+> > +	clocksource_unregister(&clocksource_wdtest_ktime);
+> > +
+> > +	pr_info("--- Done with test.\n");
+> > +	return 0;
+> > +}
+> > +
+> > +static void wdtest_print_module_parms(void)
+> > +{
+> > +	pr_alert("--- holdoff=%d\n", holdoff);
+> > +}
+> > +
+> > +/* Cleanup function. */
+> > +static void clocksource_wdtest_cleanup(void)
+> > +{
+> > +}
+> > +
+> > +static int __init clocksource_wdtest_init(void)
+> > +{
+> > +	int ret = 0;
+> > +
+> > +	wdtest_print_module_parms();
+> > +
+> > +	/* Create watchdog-test task. */
+> > +	wdtest_task = kthread_run(wdtest_func, NULL, "wdtest");
+> > +	if (IS_ERR(wdtest_task)) {
+> > +		ret = PTR_ERR(wdtest_task);
+> > +		pr_warn("%s: Failed to create wdtest kthread.\n", __func__);
+> > +		wdtest_task = NULL;
+> > +		return ret;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +module_init(clocksource_wdtest_init);
+> > +module_exit(clocksource_wdtest_cleanup);
+> > diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+> > index 9ebf9931f3d6..bbe1bcf44ffa 100644
+> > --- a/kernel/time/clocksource.c
+> > +++ b/kernel/time/clocksource.c
+> > @@ -199,8 +199,9 @@ void clocksource_mark_unstable(struct clocksource *cs)
+> >  	spin_unlock_irqrestore(&watchdog_lock, flags);
+> >  }
+> >  
+> > -static ulong max_read_retries = 3;
+> > -module_param(max_read_retries, ulong, 0644);
+> > +ulong max_cswd_read_retries = 3;
+> > +module_param(max_cswd_read_retries, ulong, 0644);
+> > +EXPORT_SYMBOL_GPL(max_cswd_read_retries);
+> >  static int verify_n_cpus = 8;
+> >  module_param(verify_n_cpus, int, 0644);
+> >  
+> > @@ -210,7 +211,7 @@ static bool cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
+> >  	u64 wd_end, wd_delta;
+> >  	int64_t wd_delay;
+> >  
+> > -	for (nretries = 0; nretries <= max_read_retries; nretries++) {
+> > +	for (nretries = 0; nretries <= max_cswd_read_retries; nretries++) {
+> >  		local_irq_disable();
+> >  		*wdnow = watchdog->read(watchdog);
+> >  		*csnow = cs->read(cs);
+> > @@ -220,7 +221,7 @@ static bool cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
+> >  		wd_delta = clocksource_delta(wd_end, *wdnow, watchdog->mask);
+> >  		wd_delay = clocksource_cyc2ns(wd_delta, watchdog->mult, watchdog->shift);
+> >  		if (wd_delay <= WATCHDOG_MAX_SKEW) {
+> > -			if (nretries > 1 || nretries >= max_read_retries) {
+> > +			if (nretries > 1 || nretries >= max_cswd_read_retries) {
+> >  				pr_warn("timekeeping watchdog on CPU%d: %s retried %d times before success\n",
+> >  					smp_processor_id(), watchdog->name, nretries);
+> >  			}
+> > @@ -293,7 +294,7 @@ static void clocksource_verify_one_cpu(void *csin)
+> >  	csnow_mid = cs->read(cs);
+> >  }
+> >  
+> > -static void clocksource_verify_percpu(struct clocksource *cs)
+> > +void clocksource_verify_percpu(struct clocksource *cs)
+> >  {
+> >  	int64_t cs_nsec, cs_nsec_max = 0, cs_nsec_min = LLONG_MAX;
+> >  	u64 csnow_begin, csnow_end;
+> > @@ -346,6 +347,7 @@ static void clocksource_verify_percpu(struct clocksource *cs)
+> >  		pr_warn("        CPU %d check durations %lldns - %lldns for clocksource %s.\n",
+> >  			testcpu, cs_nsec_min, cs_nsec_max, cs->name);
+> >  }
+> > +EXPORT_SYMBOL_GPL(clocksource_verify_percpu);
+> >  
+> >  static void clocksource_watchdog(struct timer_list *unused)
+> >  {
+> > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> > index 678c13967580..0a5a70c742e6 100644
+> > --- a/lib/Kconfig.debug
+> > +++ b/lib/Kconfig.debug
+> > @@ -2571,6 +2571,18 @@ config TEST_FPU
+> >  
+> >  	  If unsure, say N.
+> >  
+> > +config TEST_CLOCKSOURCE_WATCHDOG
+> > +	tristate "Test clocksource watchdog in kernel space"
+> > +	depends on CLOCKSOURCE_WATCHDOG
+> > +	help
+> > +	  Enable this option to create a kernel module that will trigger
+> > +	  a test of the clocksource watchdog.  This module may be loaded
+> > +	  via modprobe or insmod in which case it will run upon being
+> > +	  loaded, or it may be built in, in which case it will run
+> > +	  shortly after boot.
+> > +
+> > +	  If unsure, say N.
+> > +
+> >  endif # RUNTIME_TESTING_MENU
+> >  
+> >  config ARCH_USE_MEMTEST
+> > -- 
+> > 2.31.1.189.g2e36527f23
