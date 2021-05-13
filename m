@@ -2,219 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC77937F2C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 08:03:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC72A37F2C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 08:04:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231277AbhEMGEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 02:04:35 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:17487 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229748AbhEMGE0 (ORCPT
+        id S231263AbhEMGGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 02:06:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230369AbhEMGF5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 02:04:26 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1620885797; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=Nj5Be3kK1D2msgTgYt8nbcU3bMVB86DVrEruQIQ9nEk=;
- b=Y7jjJunty+Oo78Q5+GBnA23ysHrqKYShmEky4Xgo+DrAdNtyPxZ13PhjJuBfIyv1DjOjCBIX
- t3HTucdCyGSYPDgp22QP1Gh2pKlbnye2WAM4GJbfq1kpIsmQC6HaOIazjYjRdsQdapFE61Jt
- QG1gJFLJtta66ybJ4gaUyF5XtnY=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 609cc121938a1a6b8fd4f743 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 13 May 2021 06:03:13
- GMT
-Sender: taozha=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 80B95C433F1; Thu, 13 May 2021 06:03:13 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: taozha)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 46C7FC433D3;
-        Thu, 13 May 2021 06:03:10 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 13 May 2021 14:03:10 +0800
-From:   taozha@codeaurora.org
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Thu, 13 May 2021 02:05:57 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA7B7C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 23:04:46 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id v184-20020a257ac10000b02904f84a5c5297so29929186ybc.16
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 23:04:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=BKWt80lRxmYSViKcJANT1cCUs7XXzGAp8/6du3DmL1c=;
+        b=pcJXCMW5PN0PYXnKZYY9Bun0flTcmM++Nco06USNrP3Sj7KLWoiS5GqkyrwhhyAyeF
+         04pGnqrTgymZkVkkvWk/GMP7NCMdZS5vVDksmyV220nPMiSVYKgp6k7yA/7SYyDc3441
+         eNYeCO5LEXPRpf2sGTJcmNDZhymSlSdPu5mmRTq/Ka+8JzyjWTBiol9Kt4JiMdPt3+iO
+         PJxYewYY2c0/Cr2/yuzKyB+MZjtzfUcg06hl1kgl5PCdgUSrC3zbsILnxeZsbW9bsDRa
+         imr8A7k8wepd5Lrz0qpKA3rsNSh4UAEZXl+lwhQEGT7mZrN2Ez9oa1FcZssqs3QyMBUt
+         CZnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=BKWt80lRxmYSViKcJANT1cCUs7XXzGAp8/6du3DmL1c=;
+        b=SFJTO+ALhGy1qQwm9JDj9s975WfvuWW89W7zlmJfizIAbz0FeiHcQ9TaNXAezVTy8u
+         +HWdkvSvrmQTmxLKGNRcC1Vm+jCGPm591wmMwoUOgNNkutUgW3d3J6S7vbHCsrlHVyKS
+         AzzErjX1QSCzMT+QrcIx0ld3KvW0bkH+BjUIyVNGgnGh9BdDZkj3oVsWEqxwLuVDhBxk
+         vMA0slw58PbrRqbzwwIZCGOd/6YpYkvd+J1SgB9FLmizhT4VsH4k0jqcxwBJH8562UhK
+         ycRHUFs8+rJezkXgmZ0MjnImg+hzqhZrnu9bNpi+adDEF+HFNx8Rf52lGFeq9hYpSB9G
+         NGUw==
+X-Gm-Message-State: AOAM532KtInxUY1ILUVrniF3Me1DSRU1TuAEiCydBqwl0IOWMjwEI5BF
+        382hENoicfdQlFSt6CFhmBwW2qOr3Cjw
+X-Google-Smtp-Source: ABdhPJzMsrwEsgjOgSX1IoBA0CHbRxHtzIBBIAgeq8zxxo8QFolQAIdIgpl1rWCiVK3Fth1ZcKOexo1FGeT5
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:e4e5:7eca:a5a8:f77c])
+ (user=irogers job=sendgmr) by 2002:a25:1009:: with SMTP id
+ 9mr26792934ybq.386.1620885886115; Wed, 12 May 2021 23:04:46 -0700 (PDT)
+Date:   Wed, 12 May 2021 23:04:41 -0700
+Message-Id: <20210513060441.408507-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
+Subject: [PATCH] perf beauty: Reuse the generic switch.
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Tingwei Zhang <tingwei@codeaurora.org>,
-        Mao Jinlong <jinlmao@codeaurora.org>,
-        Yuanfang Zhang <zhangyuanfang@codeaurora.org>
-Subject: Re: [PATCH v1 0/3] coresight: Support for building more coresight
- paths
-In-Reply-To: <070d1c13-2b3e-2dfb-f51b-9d40f1b45a03@arm.com>
-References: <1620644727-29279-1-git-send-email-taozha@codeaurora.org>
- <070d1c13-2b3e-2dfb-f51b-9d40f1b45a03@arm.com>
-Message-ID: <1cd71b1323e3d635b76c4785f60413a9@codeaurora.org>
-X-Sender: taozha@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-10 21:10, Suzuki K Poulose wrote:
-> Hi Tao
-> 
-> On 10/05/2021 12:05, Tao Zhang wrote:
->> We are trying to achieve more types of Coresight source devices.
->> For example, we have a type of coresight source devic named TPDM.
->> In the process of using, sometimes mulitiple TPDMs need to be
->> connected to the different input ports on the same funnel.
->> Meanwhile, these TPDMs also need to output from different
->> ports on the funnel.
->> But, at present the Coresight driver assumes
->> a) Only support Coresight source type ETM, ETR and ETF
-> 
-> Did you mean ETM and STM here ? ETR & ETF are not source types, rather
-> they are SINK.
-> 
-> 
-Yes, I mean ETM and STM here.
->> b) Funnels only support mulitiple inputs and one output
->> Which doesn't help to add the above feature for our new Coresight
->> source device TPDM. So, in order to accommodate the new device,
->> we develop the following patches.
-> 
-> Where is the TPDM driver ? Could you give us a rough idea of the
-> behavior in terms of the input / output ?
-> 
-> 
-We have plans to upload the TPDM driver in the feature. TPDM is a type 
-of
-hardware component for debugging and monitoring on Qualcomm targets.
-The primary use case of the TPDM is to collect data from different data
-source and send it to a TPDA for packetization, timestamping and 
-funneling.
-And the output of TPDA is a regular AMBA ATB stream and can be thought 
-of as
-any other trace source in the system.
-You can get a general understanding of the TPDM and TPDA driver through 
-the
-following patch.
-https://source.codeaurora.org/quic/la/kernel/msm-5.4/commit/?h=LV.AU.0.2.0.r1&id=a47c3313965c1101f2224e55da2c54d9e5c388dd
->> a) Add support more types of Coresight source devices.
-> 
-> Which ones ? where is the code ?
-> 
-In the patch 
-"0001-coresight-add-support-to-enable-more-coresight-paths.patch",
-we replaced the original path save method with the funcation 
-"coresight_store_path".
-In the original method, "coresight_enable" only can store the tracer 
-path for ETM
-and STM. In the function "coresight_store_path", it can store the tracer 
-path for
-more types of Coresight sources.
->> b) Add support for multiple output ports on funnel and the output
->> ports could be selected by Corsight source.
-> 
-> Does the "TPDM" require programming to switch these output or are
-> these "static" ?
-> 
-> Is this something that can be avoided by having a "fake"
-> static-replicator in the path ?
-> 
-> e.g,              TPDM
-> 	 ________________________________________________
->  In0	|						|  -> Out0
->  In1	|   Static-Funnel   -> Static-Replicator	|  -> Out1
->  In2	|						|  -> Out2
-> 	 ________________________________________________
-> 
-> 
-> Is this something that can be solved ? Again, please give a brief
-> description of the TPDM device and the driver code in the series to
-> give us a complete picture of what you are trying to do.
-> 
-> Reviewing some changes without having the full picture is not going to
-> be helpful.
-> 
-> Suzuki
-Now the link can support multiple out ports, but there are no entries 
-from
-the link's device tree can figure out from which input port to which 
-output
-port.
-This patch provide the entry "source" in device tree, which can 
-associate
-the input port of the link with the output port.
-e.g, if we want to achieve the following link connection.
--------------------------------------------------------------------------
-Source0 -> In0 |		| Out0 ->
-Source1 -> In1 |Funnel 0| Out1 ->
-Source2 -> In2 |		| Out2 ->
--------------------------------------------------------------------------
-We can configure the "source" entries as the following device tree.
-Funnel 0 {
-	out-ports {
-		port@0 {
-			reg = <0>
-			Out0: endpoint {
-				remote-endpoint = <... ...>;
-				source = <Source0>
-			}
+Previously the code would see if, for example,
+tools/perf/arch/arm/include/uapi/asm/errno.h exists and if not generate
+a "generic" switch statement using the asm-generic/errno.h. This creates
+multiple identical "generic" switch statements before the default
+generic switch statement for an unknown architecture. By simplifying the
+archlist to be only for architectures that are not "generic" the amount
+of generated code can be reduced from 14 down to 6 functions.
 
-		}
-		port@1 {
-			reg = <1>
-			Out1: endpoint {
-				remote-endpoint = <... ...>;
-				source = <Source1>
-			}
+Remove the special case of x86, instead reverse the architecture names
+so that it comes first.
 
-		}
-		port@2 {
-			reg = <0>
-			Out2: endpoint {
-				remote-endpoint = <... ...>;
-				source = <Source2>
-			}
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/trace/beauty/arch_errno_names.sh | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-		}
-	}
+diff --git a/tools/perf/trace/beauty/arch_errno_names.sh b/tools/perf/trace/beauty/arch_errno_names.sh
+index 9f9ea45cddc4..2c5f72fa8108 100755
+--- a/tools/perf/trace/beauty/arch_errno_names.sh
++++ b/tools/perf/trace/beauty/arch_errno_names.sh
+@@ -87,14 +87,13 @@ cat <<EoHEADER
+ 
+ EoHEADER
+ 
+-# Create list of architectures and ignore those that do not appear
+-# in tools/perf/arch
++# Create list of architectures that have a specific errno.h.
+ archlist=""
+-for arch in $(find $toolsdir/arch -maxdepth 1 -mindepth 1 -type d -printf "%f\n" | grep -v x86 | sort); do
+-	test -d $toolsdir/perf/arch/$arch && archlist="$archlist $arch"
++for arch in $(find $toolsdir/arch -maxdepth 1 -mindepth 1 -type d -printf "%f\n" | sort -r); do
++	test -f $toolsdir/arch/$arch/include/uapi/asm/errno.h && archlist="$archlist $arch"
+ done
+ 
+-for arch in x86 $archlist generic; do
++for arch in generic $archlist; do
+ 	process_arch "$arch"
+ done
+-create_arch_errno_table_func "x86 $archlist" "generic"
++create_arch_errno_table_func "$archlist" "generic"
+-- 
+2.31.1.751.gd2f1c929bd-goog
 
-	in-ports {
-		port@0 {
-			reg = <0>
-			In0: endpoint {
-				remote-endpoint = <... ...>;
-			}
-
-		}
-		port@1 {
-			reg = <1>
-			Out1: endpoint {
-				remote-endpoint = <... ...>;
-			}
-
-		}
-		port@2 {
-			reg = <0>
-			Out2: endpoint {
-				remote-endpoint = <... ...>;
-			}
-
-		}
-	}
-}
-
-Best,
-Tao
