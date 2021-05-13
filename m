@@ -2,79 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A3D637F79B
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 14:12:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF97B37F7FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 14:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233834AbhEMMOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 08:14:02 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2586 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233747AbhEMMMy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 08:12:54 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Fgr6k5BygzsRJ8;
-        Thu, 13 May 2021 20:09:02 +0800 (CST)
-Received: from huawei.com (10.174.28.241) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Thu, 13 May 2021
- 20:11:36 +0800
-From:   Bixuan Cui <cuibixuan@huawei.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     <abbotti@mev.co.uk>, <hsweeten@visionengravers.com>,
-        <gregkh@linuxfoundation.org>, <grandmaster@al2klimov.de>,
-        <john.wanghui@huawei.com>
-Subject: [PATCH -next] =?UTF-8?q?staging:=20comedi:=20Remove=20unused=20variable?= =?UTF-8?q?=20=E2=80=98min=5Ffull=5Fscale=E2=80=99?=
-Date:   Thu, 13 May 2021 21:34:58 +0800
-Message-ID: <20210513133458.27766-1-cuibixuan@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S233717AbhEMMdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 08:33:45 -0400
+Received: from foss.arm.com ([217.140.110.172]:34630 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232549AbhEMMdk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 08:33:40 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 35DA0169E;
+        Thu, 13 May 2021 05:32:27 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3D7AE3F73B;
+        Thu, 13 May 2021 05:32:22 -0700 (PDT)
+Subject: Re: [RFC PATCH v6 3/4] scheduler: scan idle cpu in cluster for tasks
+ within one LLC
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "msys.mizuma@gmail.com" <msys.mizuma@gmail.com>,
+        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+        "aubrey.li@linux.intel.com" <aubrey.li@linux.intel.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>, "xuwei (O)" <xuwei5@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
+        yangyicong <yangyicong@huawei.com>,
+        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        "hpa@zytor.com" <hpa@zytor.com>
+References: <20210420001844.9116-1-song.bao.hua@hisilicon.com>
+ <20210420001844.9116-4-song.bao.hua@hisilicon.com>
+ <80f489f9-8c88-95d8-8241-f0cfd2c2ac66@arm.com>
+ <b42c762a287b4360bfa3179a5c7c3e8c@hisilicon.com>
+ <CAKfTPtC51eO2mAuW6mHQ-SdznAtfDL3D4UOs4HmnXaPOOCN_cA@mail.gmail.com>
+ <8b5277d9-e367-566d-6bd1-44ac78d21d3f@arm.com>
+ <185746c4d02a485ca8f3509439328b26@hisilicon.com>
+ <d31a65af-d1d5-5fd1-276c-d2318cdba078@arm.com>
+ <4d1f063504b1420c9f836d1f1a7f8e77@hisilicon.com>
+ <142c7192-cde8-6dbe-bb9d-f0fce21ec959@arm.com>
+ <aee3fd353a3a4bfca65aa1b78386f9b5@hisilicon.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <45cce983-79ca-392a-f590-9168da7aefab@arm.com>
+Date:   Thu, 13 May 2021 14:32:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.28.241]
-X-CFilter-Loop: Reflected
+In-Reply-To: <aee3fd353a3a4bfca65aa1b78386f9b5@hisilicon.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following build warnings:
-drivers/comedi/drivers/jr3_pci.c:507:22:
-	warning: variable ‘min_full_scale’ set but not used
+On 07/05/2021 15:07, Song Bao Hua (Barry Song) wrote:
+> 
+> 
+>> -----Original Message-----
+>> From: Dietmar Eggemann [mailto:dietmar.eggemann@arm.com]
 
-And fix build warnings after removing ‘min_full_scale’:
-drivers/comedi/drivers/jr3_pci.c:189:26:
-	warning: ‘get_min_full_scales’ defined but not used
- static struct six_axis_t get_min_full_scales(struct jr3_sensor __iomem *sensor)
-                          ^~~~~~~~~~~~~~~~~~~
+[...]
 
-Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
----
- drivers/comedi/drivers/jr3_pci.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+>> On 03/05/2021 13:35, Song Bao Hua (Barry Song) wrote:
+>>
+>> [...]
+>>
+>>>> From: Song Bao Hua (Barry Song)
+>>
+>> [...]
+>>
+>>>>> From: Dietmar Eggemann [mailto:dietmar.eggemann@arm.com]
+>>
+>> [...]
+>>
+>>>>> On 29/04/2021 00:41, Song Bao Hua (Barry Song) wrote:
+>>>>>>
+>>>>>>
+>>>>>>> -----Original Message-----
+>>>>>>> From: Dietmar Eggemann [mailto:dietmar.eggemann@arm.com]
+>>>>>
+>>>>> [...]
+>>>>>
+>>>>>>>>>> From: Dietmar Eggemann [mailto:dietmar.eggemann@arm.com]
+>>>>>>>
+>>>>>>> [...]
+>>>>>>>
+>>>>>>>>>> On 20/04/2021 02:18, Barry Song wrote:
+>>
+>> [...]
+>>
+>>>
+>>> On the other hand, according to "sched: Implement smarter wake-affine logic"
+>>>
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/
+>> ?id=62470419
+>>>
+>>> Proper factor in wake_wide is mainly beneficial of 1:n tasks like
+>> postgresql/pgbench.
+>>> So using the smaller cluster size as factor might help make wake_affine false
+>> so
+>>> improve pgbench.
+>>>
+>>> From the commit log, while clients =  2*cpus, the commit made the biggest
+>>> improvement. In my case, It should be clients=48 for a machine whose LLC
+>>> size is 24.
+>>>
+>>> In Linux, I created a 240MB database and ran "pgbench -c 48 -S -T 20 pgbench"
+>>> under two different scenarios:
+>>> 1. page cache always hit, so no real I/O for database read
+>>> 2. echo 3 > /proc/sys/vm/drop_caches
+>>>
+>>> For case 1, using cluster_size and using llc_size will result in similar
+>>> tps= ~108000, all of 24 cpus have 100% cpu utilization.
+>>>
+>>> For case 2, using llc_size still shows better performance.
+>>>
+>>> tps for each test round(cluster size as factor in wake_wide):
+>>> 1398.450887 1275.020401 1632.542437 1412.241627 1611.095692 1381.354294
+>> 1539.877146
+>>> avg tps = 1464
+>>>
+>>> tps for each test round(llc size as factor in wake_wide):
+>>> 1718.402983 1443.169823 1502.353823 1607.415861 1597.396924 1745.651814
+>> 1876.802168
+>>> avg tps = 1641  (+12%)
+>>>
+>>> so it seems using cluster_size as factor in "slave >= factor && master >=
+>> slave *
+>>> factor" isn't a good choice for my machine at least.
+>>
+>> So SD size = 4 (instead of 24) seems to be too small for `-c 48`.
+>>
+>> Just curious, have you seen the benefit of using wake wide on SD size =
+>> 24 (LLC) compared to not using it at all?
+> 
+> At least in my benchmark made today, I have not seen any benefit to use
+> llc_size. Always returning 0 in wake_wide() seems to be much better.
+> 
+> postgres@ubuntu:$pgbench -i pgbench
+> postgres@pgbench:$ pgbench -T 120 -c 48 pgbench
+> 
+> using llc_size, it got to 123tps
+> always returning 0 in wake_wide(), it got to 158tps
+> 
+> actually, I really couldn't reproduce the performance improvement
+> the commit "sched: Implement smarter wake-affine logic" mentioned.
+> on the other hand, the commit log didn't present the pgbench command
+> parameter used. I guess the benchmark result will highly depend on
+> the command parameter and disk I/O speed.
 
-diff --git a/drivers/comedi/drivers/jr3_pci.c b/drivers/comedi/drivers/jr3_pci.c
-index 7a02c4fa3cda..122b95dc2bf9 100644
---- a/drivers/comedi/drivers/jr3_pci.c
-+++ b/drivers/comedi/drivers/jr3_pci.c
-@@ -186,7 +186,7 @@ static void set_full_scales(struct jr3_sensor __iomem *sensor,
- 	set_s16(&sensor->command_word0, 0x0a00);
- }
- 
--static struct six_axis_t get_min_full_scales(struct jr3_sensor __iomem *sensor)
-+static __maybe_unused struct six_axis_t get_min_full_scales(struct jr3_sensor __iomem *sensor)
- {
- 	struct six_axis_t result;
- 
-@@ -504,10 +504,8 @@ jr3_pci_poll_subdevice(struct comedi_subdevice *s)
- 			result = poll_delay_min_max(20, 100);
- 		} else {
- 			/* Set full scale */
--			struct six_axis_t min_full_scale;
- 			struct six_axis_t max_full_scale;
- 
--			min_full_scale = get_min_full_scales(sensor);
- 			max_full_scale = get_max_full_scales(sensor);
- 			set_full_scales(sensor, max_full_scale);
- 
--- 
-2.17.1
+I see. And it was a way smaller machine (12 CPUs) back then.
 
+You could run pgbench via mmtests https://github.com/gormanm/mmtests.
+
+I.e the `timed-ro-medium` test.
+
+mmtests# ./run-mmtests.sh --config
+./configs/config-db-pgbench-timed-ro-medium test_tag
+
+/shellpacks/shellpack-bench-pgbench contains all the individual test
+steps. Something you could use as a template for your pgbench standalone
+tests as well.
+
+I ran this test on an Intel Xeon E5-2690 v2 with 40 CPUs and 64GB of
+memory on v5.12 vanilla and w/o wakewide.
+The test uses `scale_factor = 2570` on this machine. I guess this
+relates to ~41GB? At least this was the size of the:
+
+#mmtests/work/testdisk/data/pgdata directory when the test started.
+
+
+mmtests/work/log# ../../compare-kernels.sh --baseline base --compare
+wo_wakewide | grep ^Hmean
+
+
+      #clients  v5.12 vanilla          v5.12 w/o wakewide
+
+Hmean     1     10903.88 (   0.00%)    10792.59 *  -1.02%*
+Hmean     6     28480.60 (   0.00%)    27954.97 *  -1.85%*
+Hmean     12    49197.55 (   0.00%)    47758.16 *  -2.93%*
+Hmean     22    72902.37 (   0.00%)    71314.01 *  -2.18%*
+Hmean     30    75468.16 (   0.00%)    75929.17 *   0.61%*
+Hmean     48    60155.58 (   0.00%)    60471.91 *   0.53%*
+Hmean     80    62202.38 (   0.00%)    60814.76 *  -2.23%*
+
+
+So there are some improvements w/ wakewide but nothing of the scale
+showed in the original wakewide patch.
+
+I'm not an expert on how to set up these pgbench tests though. So maybe
+other pgbench related mmtests configs or some more fine-grained tuning
+can produce bigger diffs?
