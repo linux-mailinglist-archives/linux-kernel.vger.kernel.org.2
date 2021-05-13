@@ -2,75 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B33F637F69E
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 13:20:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED37F37F6A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 13:21:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231742AbhEMLVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 07:21:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37530 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231265AbhEMLVU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 07:21:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D41C1613CA;
-        Thu, 13 May 2021 11:20:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620904811;
-        bh=cwqEWwV9yRq3gYtZuQO7urPFM2+sG+9/kIHoib4Cu/w=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=qIczjlnZnAw2l/yN3RCkzMVDo9Z1Q4dsVj9B91ow7NV6xfEjDobUjgdiQmolJP7AR
-         tJnPZo/IxhsfDrLffcF77VPdDAyUSh0OPBwoizAip+7opXPi/2abUhWI2xz09I1ZQF
-         0yCH8PpkM+vh0c+cte8znLvmcybfAdw06E1iSTgy7nPjS3QHuFmyFlHeRbmBVcFefn
-         YsCVRl9QTuBMxxE6z8X+uSRkNKkLyCm8vY0HBXovXdEmun5iQAJr8AL5hSRGICTzbB
-         /RuGIph93uxUixTfitGf+oUqtu8NXAnYwUiJZPtmD43B+CaQELR1hNwW6hUk5z74dk
-         qv1kdivndJmew==
-Date:   Thu, 13 May 2021 13:20:07 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     =?ISO-8859-15?Q?Uwe_Kleine-K=F6nig?= <uwe@kleine-koenig.org>
-cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/3] HID: intel-ish-hid: Drop if block with an always
- false condition
-In-Reply-To: <e200b949-b909-d5da-8c81-06a57fc50b98@kleine-koenig.org>
-Message-ID: <nycvar.YFH.7.76.2105131318120.28378@cbobk.fhfr.pm>
-References: <20210206151348.14530-1-uwe@kleine-koenig.org> <nycvar.YFH.7.76.2103081107250.12405@cbobk.fhfr.pm> <31028f589e27e246bb3b4b693caeb0b8eae3a285.camel@linux.intel.com> <nycvar.YFH.7.76.2103081716200.12405@cbobk.fhfr.pm>
- <e200b949-b909-d5da-8c81-06a57fc50b98@kleine-koenig.org>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S232645AbhEMLWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 07:22:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232052AbhEMLW0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 07:22:26 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54FD0C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 04:21:15 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id z1so13579999qvo.4
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 04:21:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9jX3Kmh4yazJbjQCzUZL0b86dPSP8ifVWbzi7ZpZFe0=;
+        b=U/7+XkMNdb75WNs1fdZszy0U7zT/cgS49J5rAAoqk+kxZ9LZSMLQfHUXvnpydpkVzW
+         nQr1/3ElzupO24PvPi2m8lw/pXG0EHr+ZAoQA5lsiwMBd19g7L3ivj+7cy69MQFlpy7I
+         83q5wwZ/Zw71MMTML42MUNwigRuqfZB2umCZyrGn8fahBscWrrAz6qpNRQDt0f/JXIPS
+         h2qMJt/Dtfb8VAxZfMjICcKVkgaezXwkon3XSQLIMx1sIFb6+ADflgqZI56f2phLDMqY
+         PPvVISin97apEtjQMKGa4qZhRGRLSd67j3RGKA5iMgV7zUrCEJaNs3dp5fJd7DEtFVeo
+         QB6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9jX3Kmh4yazJbjQCzUZL0b86dPSP8ifVWbzi7ZpZFe0=;
+        b=g7bXTlbg/Ntcf40cAoBd4hZynntCipnpNh0jCp5AsnBzx4Q14RCgYYDqkjQitaK78m
+         /DFxJeCmExGPwqgrHv1C5cGR7prUDrixCLX2DmvuSUiIOfscaFoVQxlGJoOWcY7WxAKh
+         wrJIkTnrislPZpXZVrQsg/GK1IZAe9kiCKMqox+NhqGVe1FyaaFbR3yPXJBem5yBQL6H
+         7uff+4bpBkZGV2asqyJLjAM6YtXlcFFdq6ytW4aHvgVSXIrHTQzcQWLrppbDYGV8cdAP
+         HD2ol8il/ZYoEmp6ftwFGEwGDd0BjonZcdl9KR1rNRgAA91f+CISJdx2W2hGvbVwAKhw
+         ilIQ==
+X-Gm-Message-State: AOAM532vNMyURO0+suG/zwS4ruhrCuZg9O5iBBbp3r0NuMqMdPQqwXXH
+        /gQwVLRGvgoGBZWlvAUj9ilt9UKwyt4sEMyQvcfNtw==
+X-Google-Smtp-Source: ABdhPJyNpFsIPZGbVUc0fftbEOab8/jtF6hQp+DVzULan09PSTXV/RQ3lttMSy39CQsk5hhoTXYDbZe7EQO/RUrhH5g=
+X-Received: by 2002:ad4:5766:: with SMTP id r6mr1529041qvx.23.1620904874369;
+ Thu, 13 May 2021 04:21:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+References: <202105131720.yP4kfiAi-lkp@intel.com> <YJ0KAM0hQev1AmWe@elver.google.com>
+In-Reply-To: <YJ0KAM0hQev1AmWe@elver.google.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Thu, 13 May 2021 13:20:37 +0200
+Message-ID: <CAG_fn=XDfb9dZSBm0N2xTgBb4B6H0tBuKxiTmF+4cy5rC_L0gA@mail.gmail.com>
+Subject: Re: [PATCH] fix for "printk: introduce dump_stack_lvl()"
+To:     Marco Elver <elver@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, kbuild-all@lists.01.org,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        kernel test robot <lkp@intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 10 May 2021, Uwe Kleine-König wrote:
-
-> I expected these patches to go in during the 5.13 merge window, but they
-> didn't. I found your pull request for 5.13
-> (https://lore.kernel.org/lkml/nycvar.YFH.7.76.2104292151220.18270@cbobk.fhfr.pm/)
-> and they were not included there even though the patches were in next since at
-> least next-20210310. Looking at
-> 
-> 	git log --oneline --cherry
-> v5.13-rc1...dce6a0d56a7719efcad438f5c46a9d192fd36a89
-> 
-> (where dce.. was the tip of your for-next for next-20210506 (i.e. before
-> 5.13-rc1 was cut)) and it seems there are quite a few more commits that didn't
-> make it into your pull request.
-> 
-> What am I missing?
-
-You are missing the fact that I am a halfwit and I screwed up the merge :) 
-
-for-5.13/intel-ish branch by mistake didn't make it into final for-linus 
-unfortunately, due to my mistake.
-
-Thanks a lot for pointing it out, I will fix that up.
-
--- 
-Jiri Kosina
-SUSE Labs
-
+On Thu, May 13, 2021 at 1:14 PM Marco Elver <elver@google.com> wrote:
+>
+> Add missing dump_stack_lvl() stub if CONFIG_PRINTK=n.
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Marco Elver <elver@google.com>
+Reviewed-by: Alexander Potapenko <glider@google.com>
