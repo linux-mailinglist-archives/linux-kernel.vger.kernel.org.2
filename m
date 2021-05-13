@@ -2,308 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B90A37F608
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 12:55:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 260DE37F60C
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 12:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232698AbhEMK44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 06:56:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50276 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232851AbhEMK40 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 06:56:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8EE56144B;
-        Thu, 13 May 2021 10:55:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620903311;
-        bh=+pWwtblnPpVpGB/q2c4WYbGx3gEXQhVW/vwXOmX5ACg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XW+hQBNXiueUibidwJKNIlhUVK834VZIqdCAgkXR0BLOpwFDtpJVH8Rn8QINyH2an
-         ibPiJYAPq177mw0NLMakS0ccT00vy6BehhNy8JngeBM8rZ6eoL17oHM7ZzbScIFOeB
-         fGWMUcd0sUgCLwhGEsBrkwxDGWlVPJPXwrBaCZVComqG2Hl2N5Bqt2xHwFP2Ob05to
-         ICwWNzR78fpTudi0PSnk40FOr+k12uZKsV/2EbSMrlHWfxuirjo5YThWH6VeYL8A94
-         hkT7po03BZfQb/AiKsMHUdosiqwbny0LHIBvRokF28tz1qSv5OIkmYzaJgJPmi0CU/
-         EHxj555a9XjHg==
-Date:   Thu, 13 May 2021 13:55:02 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: arm32: panic in move_freepages (Was [PATCH v2 0/4] arm64: drop
- pfn_valid_within() and simplify pfn_valid())
-Message-ID: <YJ0Fhs5krPJ0FgiV@kernel.org>
-References: <82cfbb7f-dd4f-12d8-dc76-847f06172200@huawei.com>
- <b077916e-d3f7-ec6c-8c80-b5b642ee111f@huawei.com>
- <YJUWywpGwOpM8hzo@kernel.org>
- <33c67e13-dc48-9a2f-46d8-a532e17380fb@huawei.com>
- <YJd6QXcmVl+HM4Ob@kernel.org>
- <b91cd653-842b-0e77-5c00-17a0ac9c4b50@huawei.com>
- <YJpEwF2cGjS5mKma@kernel.org>
- <c3006cd0-fff6-ab45-da83-a216d40388f2@huawei.com>
- <YJuRPVWubjQKyKBj@kernel.org>
- <f0034620-b95b-3ba5-f7a2-c8be33d842c7@huawei.com>
+        id S232856AbhEMK6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 06:58:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230063AbhEMK6j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 06:58:39 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE68C061574;
+        Thu, 13 May 2021 03:57:26 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id b19-20020a05600c06d3b029014258a636e8so4451603wmn.2;
+        Thu, 13 May 2021 03:57:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=57Xly+NSWZIBK+8LPQSXeQE/SDWHNEyFnj3/Eukl7lQ=;
+        b=W0wlhn44q5/POP63bcpTV2uCJciJ1MEXSUziZNOGew14vqtsff9uZSErg6xSWYU+Qi
+         1MbSM7V6vjMVSkqw2EUjimnKgv4uE/ChcqdtHuEEG5Cj8nXJL8oYN/U1nVddNKzQIrfz
+         HJAF7f4jqN3Z1V/fJFLsXt2CVNhb6h/bmvPzvTG6Lx8idONyqdIc3lyp18B6YIbHPFGy
+         r4dYxF32ujd0AedZudp/SMbYXiVXoFN5xQLoDnTQLjJQ46XRCr6rU+2hPiFTB2gFjguI
+         IMim/IGLNUKLyyjYIGWip0hUa1+S6dVFLtfSpAWq+NMAkTOnJwo0zM9Gy75I0o0ISkaN
+         mySw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=57Xly+NSWZIBK+8LPQSXeQE/SDWHNEyFnj3/Eukl7lQ=;
+        b=fujkjIscV+rRZBJm1LwaysDcJDysI6x07J8pWPclUWmpjAPVkm9tlrFcHG+gab60cO
+         5MplE3mhwFX9o+MD47OYbTeO8+HtgbXJ5axXGuXBEhNODLMdBcANVPpEZsY9l4xabt3o
+         CXPDhYfeFnyK9+8DxgN+ysr5q+V04AWqfgfow9IWW0+GtO6iHP3gnOXztLJSjZ+EcwFk
+         ChQKq8gM7FwGtwbEA085tCGtXdslStLZp5yKoneJBIGaBLl2OSP5mQEIZv+s6QIhrrCg
+         Hc0DWyZR0VTlNF3rnNywOPGtOkmTtSiLT4Jl20WZEKz2xmLeDMLGzXmOSuehiSGk76xg
+         g/7A==
+X-Gm-Message-State: AOAM530fKejXAi+cVE9ma3l3S8+nAGtedsyXn6nZjRydOf7GjlevZ7T6
+        0ZzKDFMrzt19DZtq+IfP+h8=
+X-Google-Smtp-Source: ABdhPJyrT6nCeLPbtpMlQzD8HKBbbuXODuizgGK+hc11Jg8kSEgIAB4XK5iscql6Vp6fyChKGA1o0w==
+X-Received: by 2002:a05:600c:6d6:: with SMTP id b22mr15574798wmn.134.1620903444871;
+        Thu, 13 May 2021 03:57:24 -0700 (PDT)
+Received: from debian (host-2-98-62-17.as13285.net. [2.98.62.17])
+        by smtp.gmail.com with ESMTPSA id a15sm2988409wrx.9.2021.05.13.03.57.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 May 2021 03:57:24 -0700 (PDT)
+Date:   Thu, 13 May 2021 11:57:22 +0100
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/530] 5.10.37-rc1 review
+Message-ID: <YJ0GEnmv6xfoN1mb@debian>
+References: <20210512144819.664462530@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f0034620-b95b-3ba5-f7a2-c8be33d842c7@huawei.com>
+In-Reply-To: <20210512144819.664462530@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 11:44:00AM +0800, Kefeng Wang wrote:
-> On 2021/5/12 16:26, Mike Rapoport wrote:
-> > On Wed, May 12, 2021 at 11:08:14AM +0800, Kefeng Wang wrote:
-> > > 
-> > > On 2021/5/11 16:48, Mike Rapoport wrote:
-> > > > On Mon, May 10, 2021 at 11:10:20AM +0800, Kefeng Wang wrote:
-> > > > > 
-> > > > > > > The memory is not continuous, see MEMBLOCK:
-> > > > > > >     memory size = 0x4c0fffff reserved size = 0x027ef058
-> > > > > > >     memory.cnt  = 0xa
-> > > > > > >     memory[0x0]    [0x80a00000-0x855fffff], 0x04c00000 bytes flags: 0x0
-> > > > > > >     memory[0x1]    [0x86a00000-0x87dfffff], 0x01400000 bytes flags: 0x0
-> > > > > > >     memory[0x2]    [0x8bd00000-0x8c4fffff], 0x00800000 bytes flags: 0x0
-> > > > > > >     memory[0x3]    [0x8e300000-0x8ecfffff], 0x00a00000 bytes flags: 0x0
-> > > > > > >     memory[0x4]    [0x90d00000-0xbfffffff], 0x2f300000 bytes flags: 0x0
-> > > > > > >     memory[0x5]    [0xcc000000-0xdc9fffff], 0x10a00000 bytes flags: 0x0
-> > > > > > >     memory[0x6]    [0xde700000-0xde9fffff], 0x00300000 bytes flags: 0x0
-> > > > > > > ...
-> > > > > > > 
-> > > > > > > The pfn_range [0xde600,0xde700] => addr_range [0xde600000,0xde700000]
-> > > > > > > is not available memory, and we won't create memmap , so with or without
-> > > > > > > your patch, we can't see the range in free_memmap(), right?
-> > > > > > 
-> > > > > > This is not available memory and we won't see the reange in free_memmap(),
-> > > > > > but we still should create memmap for it and that's what my patch tried to
-> > > > > > do.
-> > > > > > 
-> > > > > > There are a lot of places in core mm that operate on pageblocks and
-> > > > > > free_unused_memmap() should make sure that any pageblock has a valid memory
-> > > > > > map.
-> > > > > > 
-> > > > > > Currently, that's not the case when SPARSEMEM=y and my patch tried to fix
-> > > > > > it.
-> > > > > > 
-> > > > > > Can you please send log with my patch applied and with the printing of
-> > > > > > ranges that are freed in free_unused_memmap() you've used in previous
-> > > > > > mails?
-> > > > 
-> > > > > with your patch[1] and debug print in free_memmap,
-> > > > > ----> free_memmap, start_pfn = 85800,  85800000 end_pfn = 86800, 86800000
-> > > > > ----> free_memmap, start_pfn = 8c800,  8c800000 end_pfn = 8e000, 8e000000
-> > > > > ----> free_memmap, start_pfn = 8f000,  8f000000 end_pfn = 90000, 90000000
-> > > > > ----> free_memmap, start_pfn = dcc00,  dcc00000 end_pfn = de400, de400000
-> > > > > ----> free_memmap, start_pfn = dec00,  dec00000 end_pfn = e0000, e0000000
-> > > > > ----> free_memmap, start_pfn = e0c00,  e0c00000 end_pfn = e4000, e4000000
-> > > > > ----> free_memmap, start_pfn = f7000,  f7000000 end_pfn = f8000, f8000000
-> > > > 
-> > > > It seems that freeing of the memory map is suboptimal still because that
-> > > > code was not designed for memory layout that has more holes than Swiss
-> > > > cheese.
-> > > > 
-> > > > Still, the range [0xde600,0xde700] is not freed and there should be struct
-> > > > pages for this range.
-> > > > 
-> > > > Can you add
-> > > > 
-> > > > 	dump_page(pfn_to_page(0xde600), "");
-> > > > 
-> > > > say, in the end of memblock_free_all()?
-> > > > 
-> > > The range [0xde600,0xde700] is not memory, so it won't create struct page
-> > > for it when sparse_init?
-> > 
-> > sparse_init() indeed does not create memory map for unpopulated memory, but
-> > it has pretty coarse granularity, i.e. 64M in your configuration. A hole
-> > should be at least 64M in order to skip allocation of the memory map for
-> > it.
-> > 
-> > For example, your memory layout has a hole of 192M at pfn 0xc0000 and this
-> > hole won't have the memory map.
-> > 
-> > However the hole 0xdca00 - 0xde70 will still have a memory map in the
-> > section  that covers 0xdc000 - 0xe0000.
-> > 
-> > I've tried outline this in a sketch below, hope it helps.
-> > 
-> > Memory:
-> >                            c0000      cc000                      dca00
-> > --------------------------+          +--------------------------+ +----+
-> >   memory bank              |<- hole ->| memory bank              | | mb |
-> > --------------------------+          +--------------------------+ +----+
-> >                                                                  de700  dea00
-> > 
-> > Memory map:
-> > 
-> > b0000    b4000            c0000      cc000   d0000    d8000    dc000
-> > +--------+--------+- ... -+          +--------+- ... -+--------+---------+
-> > | memmap | memmap | ...   |<- hole ->| memmap |  ...  | memmap | memmap  |
-> > +--------+--------+- ... -+          +--------+- ... -+--------+---------+
-> > 
-> > 
-> Thanks for the sketch, it is more clear,
-> 
-> > > After apply patch[1], the dump_page log,
-> > > 
-> > > page:ef3cc000 is uninitialized and poisoned
-> > > raw: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
-> > > page dumped because:
-> > 
-> > This means that there is a memory map entry, and it got poisoned during the
-> > initialization and never got reinitialized to sensible values, which would
-> > be PageReserved() in this case.
-> > 
-> > I believe this was fixed by commit 0740a50b9baa ("mm/page_alloc.c: refactor
-> > initialization of struct page for holes in memory layout") in the mainline
-> > tree.
-> > 
-> > Can you backport it to your 5.10 tree and check if it helps?
-> Hi Mike, the 0740a50b9baa is already in 5.10, tags/v5.10.24~5
+Hi Greg,
 
-Ah, you are using stable 5.10.y.
- 
-> commit 4c84191cbc3eff49568d3c5cccb628fa382cf7fb
-> Author: Mike Rapoport <rppt@kernel.org>
-> Date:   Fri Mar 12 21:07:12 2021 -0800
+On Wed, May 12, 2021 at 04:41:50PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.37 release.
+> There are 530 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
->     mm/page_alloc.c: refactor initialization of struct page for holes in
-> memory layout
-> 
->     commit 0740a50b9baa4472cfb12442df4b39e2712a64a4 upstream.
-> 
-> but check init_unavailable_range(), we need deal with the hole in the
-> range of one pageblock.
-> 
-> For our scene, pageblock range: 0xde600,0xde7ff, but the available pfn begin
-> with 0xde700.
-> 
-> If pfn(eg, 0xde600) is not valid, the step in init_unavailable_range is
-> pageblock_nr_pages, and ALIGN_DOWN(pfn, pageblock_nr_pages) from 0xde600
-> to 0xde700 is same, so the page range for pfn [0xde600,0xde700] won't be
-> initialized.
+> Responses should be made by Fri, 14 May 2021 14:47:09 +0000.
+> Anything received after that time might be too late.
 
-The pfn 0xde600 is valid in the sense that there is a memory map for that
-pfn. Yet, with ARM's custom pfn_valid() will treat it as invalid because
-there is a hole.
- 
-> After add the following patch, the oom test could passed,
- 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index aaa1655cf682..0c7e04f86f9f 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -6484,13 +6484,14 @@ static u64 __meminit init_unavailable_range(unsigned
-> long spfn,
->                                             unsigned long epfn,
->                                             int zone, int node)
->  {
-> -       unsigned long pfn;
-> +       unsigned long pfn, pfn_down;
-> +       unsigned long epfn_down = ALIGN_DOWN(epfn, pageblock_nr_pages);
->         u64 pgcnt = 0;
-> 
->         for (pfn = spfn; pfn < epfn; pfn++) {
-> -               if (!pfn_valid(ALIGN_DOWN(pfn, pageblock_nr_pages))) {
-> -                       pfn = ALIGN_DOWN(pfn, pageblock_nr_pages)
-> -                               + pageblock_nr_pages - 1;
-> +               pfn_down = ALIGN_DOWN(pfn, pageblock_nr_pages);
-> +               if (!pfn_valid(pfn_down) && pfn_down != epfn_down) {
-> +                       pfn = pfn_down + pageblock_nr_pages - 1;
->                         continue;
->                 }
->                 __init_single_page(pfn_to_page(pfn), pfn, zone, node);
+Build test:
+mips (gcc version 11.1.1 20210430): 63 configs -> 1 new failure
 
-I'd rather prefer to keep init_unavailable_range() and the assumption that
-the memory map always covers an entire pageblock.
+malta_qemu_32r6_defconfig fails due to:
+[PATCH 5.10 052/530] MIPS: Reinstate platform `__div64_32 handler
 
-Can you please try the below hack. Essentially, it makes arm with SPARSEMEM
-to use the generic pfn_valid() and updates the freeing of the memory map to
-have the entire pageblocks covered.
+arm (gcc version 11.1.1 20210430): 105 configs -> no new failure
+x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
 
-If this works I'll send formal patches for those changes.
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression.
 
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
 
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index 24804f11302d..86ee711a3fdb 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -73,7 +73,7 @@ config ARM
- 	select HAVE_ARCH_KGDB if !CPU_ENDIAN_BE32 && MMU
- 	select HAVE_ARCH_KASAN if MMU && !XIP_KERNEL
- 	select HAVE_ARCH_MMAP_RND_BITS if MMU
--	select HAVE_ARCH_PFN_VALID
-+#	select HAVE_ARCH_PFN_VALID
- 	select HAVE_ARCH_SECCOMP
- 	select HAVE_ARCH_SECCOMP_FILTER if AEABI && !OABI_COMPAT
- 	select HAVE_ARCH_THREAD_STRUCT_WHITELIST
-diff --git a/mm/memblock.c b/mm/memblock.c
-index 504435753259..0d7bef1b49c3 100644
---- a/mm/memblock.c
-+++ b/mm/memblock.c
-@@ -1928,9 +1928,11 @@ static void __init free_unused_memmap(void)
- 	unsigned long start, end, prev_end = 0;
- 	int i;
- 
-+#ifndef CONFIG_ARM
- 	if (!IS_ENABLED(CONFIG_HAVE_ARCH_PFN_VALID) ||
- 	    IS_ENABLED(CONFIG_SPARSEMEM_VMEMMAP))
- 		return;
-+#endif
- 
- 	/*
- 	 * This relies on each bank being in address order.
-@@ -1943,14 +1945,13 @@ static void __init free_unused_memmap(void)
- 		 * due to SPARSEMEM sections which aren't present.
- 		 */
- 		start = min(start, ALIGN(prev_end, PAGES_PER_SECTION));
--#else
-+#endif
- 		/*
- 		 * Align down here since the VM subsystem insists that the
- 		 * memmap entries are valid from the bank start aligned to
- 		 * MAX_ORDER_NR_PAGES.
- 		 */
- 		start = round_down(start, MAX_ORDER_NR_PAGES);
--#endif
- 
- 		/*
- 		 * If we had a previous bank, and there is a space
- 
-
-> Before:
-> On node 0 totalpages: 311551
->   Normal zone: 1230 pages used for memmap
->   Normal zone: 0 pages reserved
->   Normal zone: 157440 pages, LIFO batch:31
->   Normal zone: 16384 pages in unavailable ranges
->   HighMem zone: 154111 pages, LIFO batch:31
->   HighMem zone: 1 pages in unavailable ranges
-> 
-> page:ef3cc000 is uninitialized and poisoned
-> raw: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
-> 
-> After:
-> On node 0 totalpages: 311551
->   Normal zone: 1230 pages used for memmap
->   Normal zone: 0 pages reserved
->   Normal zone: 157440 pages, LIFO batch:31
->   Normal zone: 17152 pages in unavailable ranges
->   HighMem zone: 154111 pages, LIFO batch:31
->   HighMem zone: 513 pages in unavailable ranges
-> ...
-> page:(ptrval) refcount:1 mapcount:0 mapping:00000000 index:0x0 pfn:0xde600
-> flags: 0xdd001000(reserved)
-> raw: dd001000 ef3cc004 ef3cc004 00000000 00000000 00000000 ffffffff 00000001
-> 
-
--- 
-Sincerely yours,
-Mike.
+--
+Regards
+Sudip
