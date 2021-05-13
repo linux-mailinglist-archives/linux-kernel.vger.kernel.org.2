@@ -2,125 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C7DD37F18D
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 05:12:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 601C037F191
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 05:14:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230498AbhEMDNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 23:13:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230186AbhEMDNg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 23:13:36 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3645C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 20:12:26 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id i5so15252287pgm.0
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 20:12:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SS5OHlXmmSNON5KatgyYnmlWm3dX+R80ppvdDgNsI1I=;
-        b=hLIBicSaBf1Lm6AE3HsEV8jzzJrDDMDzlf/h+lonjSqFXlkDEDMYFWoikLpcOvu7Rl
-         jIfWTCGeYZnBaztMzq7peZ/CDhAxMO7k9jDtmlBEcD9BkrtMb2jk1YAewJ6/KKFudNh7
-         uqNioDipTn0ALysnZwqT6Tu55SZQTEz8L670sO15O9io4BpvQUQn5rzP0sw4cVs57xUs
-         oGO44BTcbVanHwZA5KZLiY68tT/VjDFbWx3qEJPKZX1HxYLNS1pkxFj4FbQ4klf6fltU
-         Xb3zQo59EwfsZsGk0fKP8iv6pOfyn4DcH1UD3oQdnqdUDqm3z8Y5YKO57BPtYKLK0soi
-         jZxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SS5OHlXmmSNON5KatgyYnmlWm3dX+R80ppvdDgNsI1I=;
-        b=AOcxgQ1G2BdzLTBHtb8MqqWhAgTuGn78TQ6PhTwpON9tD3W+GDrBG3baEino6p3hWJ
-         0NKrsQlvSRvSE2r0iZktbHZsbCqLMx+0kwRphl9VOFNkFa2FZhhavSNrVuF+PzWjxKQG
-         3qjIBMvRchUB83fm2giud2tKGfBZ0LJrrgWyxWynVpF74qNJ7PX/k3t6OBaGSz+a4UuO
-         iDSBFoPdPq6ClI+EFf4hQLUJHVIcl2X410eckHke35zBFJ0Liz9bfJueSx/8S4QJhBgY
-         8/lbTOWcA+oACqPcaR2fqumeUxSuecZV8IBsNZUYuTuNgmtsvzV4OuwsrBvYqbQ9KlKa
-         R8ow==
-X-Gm-Message-State: AOAM533D6CoOY6pxF6l8H967aKMTO56YGyRABYxYTmMU7S2T7E6tmeov
-        Lw/uQ+oApvkcWptQIrxjjlY=
-X-Google-Smtp-Source: ABdhPJzStzG/udPZzt469bOoqFcBL73cSbisYcGoO+yQpZx+qdgmsOKXlt8LoDRNYLiKXovFhdvXlw==
-X-Received: by 2002:a62:ce8c:0:b029:28e:cc4c:3b7e with SMTP id y134-20020a62ce8c0000b029028ecc4c3b7emr38109419pfg.67.1620875546300;
-        Wed, 12 May 2021 20:12:26 -0700 (PDT)
-Received: from hyeyoo ([183.99.11.150])
-        by smtp.gmail.com with ESMTPSA id x6sm874969pfu.120.2021.05.12.20.12.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 20:12:26 -0700 (PDT)
-Date:   Thu, 13 May 2021 12:12:20 +0900
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     vbabka@suse.cz, iamjoonsoo.kim@lge.com, rientjes@google.com,
-        penberg@kernel.org, cl@linux.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Marco Elver <elver@google.com>
-Subject: Re: [PATCH v3] mm, slub: change run-time assertion in
- kmalloc_index() to compile-time
-Message-ID: <20210513031220.GA133011@hyeyoo>
-References: <20210511173448.GA54466@hyeyoo>
- <20210512195227.245000695c9014242e9a00e5@linux-foundation.org>
+        id S231134AbhEMDPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 23:15:22 -0400
+Received: from mga03.intel.com ([134.134.136.65]:24625 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230186AbhEMDPU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 23:15:20 -0400
+IronPort-SDR: JiFzRWpkgCF60x3c9vcbSuzo2tcPZfC7jdY/ktIkvv1FHeTDmdVSn4PRUXGRfjFVXqJ49cYt4k
+ OLfClmCFN6Zw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="199914853"
+X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
+   d="scan'208";a="199914853"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2021 20:14:11 -0700
+IronPort-SDR: UHFyjXZ0aRG7aAZq2qUN0bqJ6mFVnClNga7L6JpsrNrtfT11P3iVJ+5nqoziCsuWdheTMVkNjU
+ Gvc4DUtdHP9g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
+   d="scan'208";a="623089002"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
+  by fmsmga006.fm.intel.com with ESMTP; 12 May 2021 20:14:08 -0700
+Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>, kevin.tian@intel.com,
+        jacob.jun.pan@intel.com, yi.l.liu@intel.com,
+        sanjay.k.kumar@intel.com, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] iommu/vt-d: Tweak the description of a DMA fault
+To:     "Raj, Ashok" <ashok.raj@intel.com>
+References: <20210512065012.3441160-1-baolu.lu@linux.intel.com>
+ <20210512165602.GA102348@otc-nc-03>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <5e1f5d9c-2edc-e01e-a41b-e14a1af2e0f7@linux.intel.com>
+Date:   Thu, 13 May 2021 11:13:21 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210512195227.245000695c9014242e9a00e5@linux-foundation.org>
+In-Reply-To: <20210512165602.GA102348@otc-nc-03>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 07:52:27PM -0700, Andrew Morton wrote:
-> This explodes in mysterious ways.  The patch as I have it is appended,
-> for reference.
+On 5/13/21 12:56 AM, Raj, Ashok wrote:
+> On Wed, May 12, 2021 at 02:50:12PM +0800, Lu Baolu wrote:
+>> The Intel IOMMU driver reports the DMA fault reason in a decimal number
+>> while the VT-d specification uses a hexadecimal one. It's inconvenient
+>> that users need to covert them everytime before consulting the spec.
+>> Let's use hexadecimal number for a DMA fault reason.
+>>
+>> The fault message uses 0xffffffff as PASID for DMA requests w/o PASID.
+>> This is confusing. Tweak this by adding "w/o PASID" explicitly.
+>>
+>> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
 > 
-> gcc-10.3.0 allmodconfig.
-> 
-> This patch suppresses the error:
-> 
-> --- a/mm/kfence/kfence_test.c~a
-> +++ a/mm/kfence/kfence_test.c
-> @@ -318,13 +318,13 @@ static void test_out_of_bounds_read(stru
->  
->  	/* Test both sides. */
->  
-> -	buf = test_alloc(test, size, GFP_KERNEL, ALLOCATE_LEFT);
-> +	buf = test_alloc(test, 32, GFP_KERNEL, ALLOCATE_LEFT);
->  	expect.addr = buf - 1;
->  	READ_ONCE(*expect.addr);
->  	KUNIT_EXPECT_TRUE(test, report_matches(&expect));
->  	test_free(buf);
->
-> -	buf = test_alloc(test, size, GFP_KERNEL, ALLOCATE_RIGHT);
-> +	buf = test_alloc(test, 32, GFP_KERNEL, ALLOCATE_RIGHT);
->  	expect.addr = buf + size;
->  	READ_ONCE(*expect.addr);
->  	KUNIT_EXPECT_TRUE(test, report_matches(&expect));
-> @@ -519,11 +519,11 @@ static void test_free_bulk(struct kunit
->  		const size_t size = setup_test_cache(test, 8 + prandom_u32_max(300), 0,
->  						     (iter & 1) ? ctor_set_x : NULL);
->  		void *objects[] = {
-> -			test_alloc(test, size, GFP_KERNEL, ALLOCATE_RIGHT),
-> -			test_alloc(test, size, GFP_KERNEL, ALLOCATE_NONE),
-> -			test_alloc(test, size, GFP_KERNEL, ALLOCATE_LEFT),
-> -			test_alloc(test, size, GFP_KERNEL, ALLOCATE_NONE),
-> -			test_alloc(test, size, GFP_KERNEL, ALLOCATE_NONE),
-> +			test_alloc(test, 32, GFP_KERNEL, ALLOCATE_RIGHT),
-> +			test_alloc(test, 32, GFP_KERNEL, ALLOCATE_NONE),
-> +			test_alloc(test, 32, GFP_KERNEL, ALLOCATE_LEFT),
-> +			test_alloc(test, 32, GFP_KERNEL, ALLOCATE_NONE),
-> +			test_alloc(test, 32, GFP_KERNEL, ALLOCATE_NONE),
->  		};
->  
->  		kmem_cache_free_bulk(test_cache, ARRAY_SIZE(objects), objects);
->
->
-> Is gcc-10.3.0 simply confused?  test_out_of_bounds_read() is clearly
-> calling kmalloc_index(32) which is OK.
->
-> Anyway, I'll drop this patch for now so I can compile a kernel!
->
+> Maybe simpler to call it NO_PASID, and just PASID 0xxxxx instead?
 
-The error messages isn't so clear to me.
-but one problem I can see is in kfence_test.c, there are many places that
-are using size which is not constant.
+Yeah, it's okay for me.
 
-in kmalloc if size is not constant, it calls dummy function __kmalloc
-which does not make use of size.
+> 
+> with the minor suggestions below
+> 
+> Reviewed-by: Ashok Raj <ashok.raj@intel.com>
+
+Thanks!
+
+> 
+>> ---
+>>   drivers/iommu/intel/dmar.c | 22 ++++++++++++++--------
+>>   1 file changed, 14 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
+>> index 1757ac1e1623..11e37d2c2af2 100644
+>> --- a/drivers/iommu/intel/dmar.c
+>> +++ b/drivers/iommu/intel/dmar.c
+>> @@ -1911,15 +1911,21 @@ static int dmar_fault_do_one(struct intel_iommu *iommu, int type,
+>>   	reason = dmar_get_fault_reason(fault_reason, &fault_type);
+>>   
+>>   	if (fault_type == INTR_REMAP)
+>> -		pr_err("[INTR-REMAP] Request device [%02x:%02x.%d] fault index %llx [fault reason %02d] %s\n",
+>> -			source_id >> 8, PCI_SLOT(source_id & 0xFF),
+>> -			PCI_FUNC(source_id & 0xFF), addr >> 48,
+>> -			fault_reason, reason);
+>> -	else
+>> -		pr_err("[%s] Request device [%02x:%02x.%d] PASID %x fault addr %llx [fault reason %02d] %s\n",
+>> +		pr_err("[INTR-REMAP] Request device [%02x:%02x.%d] fault index %llx [fault reason %02xh] %s\n",
+>> +		       source_id >> 8, PCI_SLOT(source_id & 0xFF),
+>> +		       PCI_FUNC(source_id & 0xFF), addr >> 48,
+>> +		       fault_reason, reason);
+>> +	else if (pasid == INVALID_IOASID)
+>> +		pr_err("[%s w/o PASID] Request device [%02x:%02x.%d] fault addr %llx [fault reason %02xh] %s\n",
+>>   		       type ? "DMA Read" : "DMA Write",
+>>   		       source_id >> 8, PCI_SLOT(source_id & 0xFF),
+>> -		       PCI_FUNC(source_id & 0xFF), pasid, addr,
+>> +		       PCI_FUNC(source_id & 0xFF), addr,
+>> +		       fault_reason, reason);
+>> +	else
+>> +		pr_err("[%s w/ PASID %x] Request device [%02x:%02x.%d] fault addr %llx [fault reason %02xh] %s\n",
+> 
+> Can you always lead hex values with 0x?
+
+Yes.
+
+> 
+>> +		       type ? "DMA Read" : "DMA Write", pasid,
+>> +		       source_id >> 8, PCI_SLOT(source_id & 0xFF),
+>> +		       PCI_FUNC(source_id & 0xFF), addr,
+>>   		       fault_reason, reason);
+>>   	return 0;
+>>   }
+>> @@ -1987,7 +1993,7 @@ irqreturn_t dmar_fault(int irq, void *dev_id)
+>>   		if (!ratelimited)
+>>   			/* Using pasid -1 if pasid is not present */
+>>   			dmar_fault_do_one(iommu, type, fault_reason,
+>> -					  pasid_present ? pasid : -1,
+>> +					  pasid_present ? pasid : INVALID_IOASID,
+>>   					  source_id, guest_addr);
+>>   
+>>   		fault_index++;
+>> -- 
+>> 2.25.1
+>>
+> 
+
+Best regards,
+baolu
