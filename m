@@ -2,66 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62D7B37FB61
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 18:20:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF8937FB64
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 18:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235092AbhEMQVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 12:21:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57476 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235054AbhEMQVf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 12:21:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C7E761435;
-        Thu, 13 May 2021 16:20:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620922825;
-        bh=QVkrX7mN2/40RLW8Kgds/Fa/Z5rjabrfG+EbU64Cj6U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V7sVpCuHd9iAV5tZcOfo7vjxhWts3zezaAhVYNNXWqC1xLVeO2P4M/dvvYmYnClfg
-         7AteXdvNRZ6hS1utiCUN6+u1DjqXHzoXajQ+IGcAYyhF6vH9EJ+EGM1zSIXpHZdhBP
-         2SSxEh8j15F3ibpKZ/0x253+UdHj8ELfEhO+twA7oGhClLwNoN16iot3arusSNv/Cr
-         sXU+odJj8iIXjUG952T1WamigpVWbZrllhTB/nbr61fkUmr++ni+eUnIpvRRBwI5W9
-         BkP1SgaWzLoBkh7MhbQ4q/whuzE21XlgkiWx8I0KZTSaSI3tQFO97j0q1vh+MVs6VP
-         OBChNSPmrBFjg==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1lhE4Y-0007Q2-Dx; Thu, 13 May 2021 18:20:26 +0200
-Date:   Thu, 13 May 2021 18:20:26 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Jiri Slaby <jslaby@suse.cz>, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/35] tty cleanup for 5.14
-Message-ID: <YJ1RyscrL2bNYXou@hovoldconsulting.com>
-References: <20210505091928.22010-1-jslaby@suse.cz>
- <YJ1ACSO+JKRhZZ0/@kroah.com>
+        id S235100AbhEMQXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 12:23:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232251AbhEMQW4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 12:22:56 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04744C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 09:21:47 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id i23-20020a9d68d70000b02902dc19ed4c15so20063561oto.0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 09:21:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:reply-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dgHsi4uL/mIogUUPS9S351fL40I/K3+T9vuN9hTTz7w=;
+        b=iCVdZl0Yn608I/Ise9u2VIbuQosG+fyguuaj2b/r9pzeoPbxOttg4bEjdOO1lKLC5f
+         rLc8KnRcMt5qSnxEemOIyz0H5szo7z1ww+3ovDtnVUnQHzytFEldNouMimQj7H8eVGz3
+         /G4d02VBfKYrWVjoWNN3KLMC1kBNk2UrcDGcxQVIT1KrCrnFMj6wqoTHE7Skqm4f5zps
+         SJUIxHdm3UgIdEpxbPRhzVGbXaKHsXZsH3IDlZJa+hfTVu453XxPq6PPBDxT3P6gaeNq
+         06ttTJshZB7N2dotA45ABZXy+hI7aaEuMvJe5eQHVkpP4+VfFBE+9BLxywanlfkRluRp
+         ZGHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :reply-to:references:mime-version:content-disposition:in-reply-to;
+        bh=dgHsi4uL/mIogUUPS9S351fL40I/K3+T9vuN9hTTz7w=;
+        b=HBYddxrAVjHTUV2LRfPYMuqvZbxJ4w31ajmGuxQwgJZJT+LxkpU2wMjoA/f4NhdqM+
+         6aWYU8CvGVdoSQg8OUi4nPKASEAwGTyvAp8ZIyoDVXRmq/EFkzC1gcpkePB2RTWPmYXs
+         yZN1JH4XfWRggjVa+TVKoqGgvTxd9nAiN+uaV0RMPAJx9r1wQCBnl6XtRzAm2JXLqtey
+         PikIVJbFmYebiOOFYGDerm/NhfBYH65GPlkN8ulC3FuidWwyN3EJv3V6+SgC8cxkJu+A
+         O/NyRyYlcoLMA0sNBDg3XvFLKuyJ2bBnzd8DCIspPBxeEDO1U5kc3umpUsW4OSJ6sRs1
+         tQhg==
+X-Gm-Message-State: AOAM533Q9xXINyTPows8OxDowjifNCRsXoQB9uhdq4UuJuo1oFKNYZBj
+        c4DY85Hspil6b3P2ZXUc+9hd3PbuBQ==
+X-Google-Smtp-Source: ABdhPJyYLp5S/qQBA1OuEVBcW0m4KEGrpE/QwsI8w/jV7EwdlSAbGoLiUdk0ZupldjNaSG1FddaCMQ==
+X-Received: by 2002:a9d:7a88:: with SMTP id l8mr28062977otn.185.1620922906348;
+        Thu, 13 May 2021 09:21:46 -0700 (PDT)
+Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
+        by smtp.gmail.com with ESMTPSA id r189sm683530oif.8.2021.05.13.09.21.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 May 2021 09:21:45 -0700 (PDT)
+Sender: Corey Minyard <tcminyard@gmail.com>
+Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:412b:6b1b:237c:6ae7])
+        by serve.minyard.net (Postfix) with ESMTPSA id DCEC5180052;
+        Thu, 13 May 2021 16:21:43 +0000 (UTC)
+Date:   Thu, 13 May 2021 11:21:42 -0500
+From:   Corey Minyard <minyard@acm.org>
+To:     Petr Pavlu <petr.pavlu@suse.com>
+Cc:     openipmi-developer@lists.sourceforge.net,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ipmi/watchdog: Stop watchdog timer when the current
+ action is 'none'
+Message-ID: <20210513162142.GA2921206@minyard.net>
+Reply-To: minyard@acm.org
+References: <10a41bdc-9c99-089c-8d89-fa98ce5ea080@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YJ1ACSO+JKRhZZ0/@kroah.com>
+In-Reply-To: <10a41bdc-9c99-089c-8d89-fa98ce5ea080@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 05:04:41PM +0200, Greg Kroah-Hartman wrote:
-> On Wed, May 05, 2021 at 11:18:53AM +0200, Jiri Slaby wrote:
-> > Hi,
-> > 
-> > this is again a series of various TTY cleanups. The stats say: 116 files
-> > changed, 661 insertions, 2602 deletions. The major part of the removal
-> > is a drop of BROKEN r3964 ldisc. The rest is mostly removal of dead
-> > code, or adaption to the current tty core state.
+On Thu, May 13, 2021 at 02:26:36PM +0200, Petr Pavlu wrote:
+> When an IPMI watchdog timer is being stopped in ipmi_close() or
+> ipmi_ioctl(WDIOS_DISABLECARD), the current watchdog action is updated to
+> WDOG_TIMEOUT_NONE and _ipmi_set_timeout(IPMI_SET_TIMEOUT_NO_HB) is called
+> to install this action. The latter function ends up invoking
+> __ipmi_set_timeout() which makes the actual 'Set Watchdog Timer' IPMI
+> request.
 > 
-> I've applied the first 33 patches in this series.  Can you resend the
-> last two after you have revised them based on the review?
+> For IPMI 1.0, this operation results in fully stopping the watchdog timer.
+> For IPMI >= 1.5, function __ipmi_set_timeout() always specifies the "don't
+> stop" flag in the prepared 'Set Watchdog Timer' IPMI request. This causes
+> that the watchdog timer has its action correctly updated to 'none' but the
+> timer continues to run. A problem is that IPMI firmware can then still log
+> an expiration event when the configured timeout is reached, which is
+> unexpected because the watchdog timer was requested to be stopped.
+> 
+> The patch fixes this problem by not setting the "don't stop" flag in
+> __ipmi_set_timeout() when the current action is WDOG_TIMEOUT_NONE which
+> results in stopping the watchdog timer. This makes the behaviour for
+> IPMI >= 1.5 consistent with IPMI 1.0. It also matches the logic in
+> __ipmi_heartbeat() which does not allow to reset the watchdog if the
+> current action is WDOG_TIMEOUT_NONE as that would start the timer.
 
-Greg, could you consider dropping the three USB-serial patches from
-tty-testing? They don't have any dependency on the tty changes and we
-can avoid unnecessary merge conflicts if I take them through through my
-tree instead.
+Yes, I believe this is correct, though it took a bit to be sure :).
+Applied for linux-next.  I'm also requesting backport to stable kernels.
 
-	USB: serial: make usb_serial_driver::write_room return uint
-	serial: make usb_serial_driver::chars_in_buffer return uint
-	USB: serial: digi_acceleport, simplify digi_chars_in_buffer
+-corey
 
-Johan
+> 
+> Signed-off-by: Petr Pavlu <petr.pavlu@suse.com>
+> ---
+>  drivers/char/ipmi/ipmi_watchdog.c | 22 ++++++++++++----------
+>  1 file changed, 12 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/char/ipmi/ipmi_watchdog.c b/drivers/char/ipmi/ipmi_watchdog.c
+> index 32c334e34d55..e4ff3b50de7f 100644
+> --- a/drivers/char/ipmi/ipmi_watchdog.c
+> +++ b/drivers/char/ipmi/ipmi_watchdog.c
+> @@ -371,16 +371,18 @@ static int __ipmi_set_timeout(struct ipmi_smi_msg  *smi_msg,
+>  	data[0] = 0;
+>  	WDOG_SET_TIMER_USE(data[0], WDOG_TIMER_USE_SMS_OS);
+>  
+> -	if ((ipmi_version_major > 1)
+> -	    || ((ipmi_version_major == 1) && (ipmi_version_minor >= 5))) {
+> -		/* This is an IPMI 1.5-only feature. */
+> -		data[0] |= WDOG_DONT_STOP_ON_SET;
+> -	} else if (ipmi_watchdog_state != WDOG_TIMEOUT_NONE) {
+> -		/*
+> -		 * In ipmi 1.0, setting the timer stops the watchdog, we
+> -		 * need to start it back up again.
+> -		 */
+> -		hbnow = 1;
+> +	if (ipmi_watchdog_state != WDOG_TIMEOUT_NONE) {
+> +		if ((ipmi_version_major > 1) ||
+> +		    ((ipmi_version_major == 1) && (ipmi_version_minor >= 5))) {
+> +			/* This is an IPMI 1.5-only feature. */
+> +			data[0] |= WDOG_DONT_STOP_ON_SET;
+> +		} else {
+> +			/*
+> +			 * In ipmi 1.0, setting the timer stops the watchdog, we
+> +			 * need to start it back up again.
+> +			 */
+> +			hbnow = 1;
+> +		}
+>  	}
+>  
+>  	data[1] = 0;
+> -- 
+> 2.26.2
+> 
