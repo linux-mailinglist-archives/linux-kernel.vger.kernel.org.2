@@ -2,155 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 735C137F9BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 16:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8766537F9BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 16:35:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234515AbhEMOg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 10:36:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56170 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234494AbhEMOgH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 10:36:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A894761439;
-        Thu, 13 May 2021 14:34:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620916497;
-        bh=xxfQlMD0wezKXwFYz7D8jYYCXmAAXgZnJxiZiy+zERw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=h9wyMZvJCnfOcphUqpJuu+DGLjnYKSne2kKoyNvvrQCh5yv9WAiU+VhRuXZMyRYlA
-         ZZdofZvciEmZE6ny7W2LbRmDjsXyMboATkOt+TlpKxuE3imtxfa0KTMNXV3My7aoc2
-         bb1XkXIhUE9z5vw7QrOd6NN8s9ir+/DkCoWn1yZJAt/p1sTIpgBBTcK6aq7G3UyT7W
-         /JfCpNRrmioEpTw0sw5i0aCP1at7gFzqTrBLdw6l7OEfpFke4l53G3e+dB2Pxd+AGG
-         SrKYnhoYYAbF1uQP+GOEBJ2WbphdD8h4nFv4xIH8Pwlofcc9dKcIfG2zwBDWCa4SS5
-         E/wpodRAxHxTw==
-Received: by mail-ed1-f50.google.com with SMTP id c22so31210098edn.7;
-        Thu, 13 May 2021 07:34:57 -0700 (PDT)
-X-Gm-Message-State: AOAM5310bsc2BIdpsdaXF5mNOa31Re80jsIaCR3jqxZtphQFUJZT+wNJ
-        Q04Xr1ptb0HYSiD/IXpF3ehycHcwvC1WRjqRSg==
-X-Google-Smtp-Source: ABdhPJwEpp9Y9Fpl5bmyoUu5TLouC2jnXOjbcycNr9lgu5xw7SEYdFpsCB7SACyUOYBlugxVcIxqW33hPAfKM5Cv6Ls=
-X-Received: by 2002:a50:c446:: with SMTP id w6mr47224146edf.62.1620916496110;
- Thu, 13 May 2021 07:34:56 -0700 (PDT)
+        id S234533AbhEMOgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 10:36:38 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:8788 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234523AbhEMOgV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 10:36:21 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14DEX7Gc087417;
+        Thu, 13 May 2021 10:35:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=iSwoY2YWZNHhRVQgEZKA16BxLx3zkF5Ug4Bu/fju4tI=;
+ b=S92tX9M4VFpAUSQZ3czHoECoTGAfLXDFlKphattRoc3V2Y2iuxyjCb6gsRi+OCFjBzJx
+ KDoBL9DFDfCUu6XbY1sTi91YQwyfRb3DBUimB+Kvb5pf7qdGDBm7RyjnM7nNzjv0CAYN
+ yjLAKNHVO4a/yNGO9KdMVtExei8YcA06NK+6eSJY//tgKf626HylnuwVkIpDiPtihCLh
+ H/cRqlyB5MFIsDsXbC4MA6TV4HOvZqe9LsR6Nf363tJeh4V8A3k0XzqrVf5mToOTWMLI
+ 3b0KUMYURyvgHWr8ixjwHkEc+aOqGTUyG9nhFOZCUEnB7pgZLILqqr2/W7XR5s6mDzyF DA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38h5a99bb3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 May 2021 10:35:09 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14DEXG1l088341;
+        Thu, 13 May 2021 10:35:08 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38h5a99b9m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 May 2021 10:35:08 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14DEWIO4016419;
+        Thu, 13 May 2021 14:35:07 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma04dal.us.ibm.com with ESMTP id 38dj9a6uhy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 May 2021 14:35:07 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14DEZ6NC21758216
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 13 May 2021 14:35:06 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6697EAC067;
+        Thu, 13 May 2021 14:35:06 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 01D4EAC064;
+        Thu, 13 May 2021 14:35:05 +0000 (GMT)
+Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.177.219])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu, 13 May 2021 14:35:05 +0000 (GMT)
+Subject: Re: [PATCH v2] s390/vfio-ap: fix memory leak in mdev remove callback
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        stable@vger.kernel.org, Tony Krowiak <akrowiak@stny.rr.com>
+References: <20210510214837.359717-1-akrowiak@linux.ibm.com>
+ <20210512203536.4209c29c.pasic@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <4c156ab8-da49-4867-f29c-9712c2628d44@linux.ibm.com>
+Date:   Thu, 13 May 2021 10:35:05 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210504102227.15475-1-nava.manne@xilinx.com> <20210504102227.15475-3-nava.manne@xilinx.com>
- <20210513023104.GA909876@robh.at.kernel.org> <MWHPR02MB262309A8DC5BD857CBB01446C2519@MWHPR02MB2623.namprd02.prod.outlook.com>
-In-Reply-To: <MWHPR02MB262309A8DC5BD857CBB01446C2519@MWHPR02MB2623.namprd02.prod.outlook.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 13 May 2021 09:34:43 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+mHsrgQOrT48gaoqBOUuMf5mxeVauM74RDxELiA8fXKg@mail.gmail.com>
-Message-ID: <CAL_Jsq+mHsrgQOrT48gaoqBOUuMf5mxeVauM74RDxELiA8fXKg@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/4] fpga: Add new properties to support user-key
- encrypted bitstream loading
-To:     Nava kishore Manne <navam@xilinx.com>
-Cc:     "mdf@kernel.org" <mdf@kernel.org>,
-        "trix@redhat.com" <trix@redhat.com>,
-        Michal Simek <michals@xilinx.com>,
-        "arnd@arndb.de" <arnd@arndb.de>, Rajan Vaja <RAJANV@xilinx.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        Amit Sunil Dhamne <amitsuni@xlnx.xilinx.com>,
-        Tejas Patel <tejasp@xlnx.xilinx.com>,
-        "zou_wei@huawei.com" <zou_wei@huawei.com>,
-        Manish Narani <MNARANI@xilinx.com>,
-        Sai Krishna Potthuri <lakshmis@xilinx.com>,
-        Jiaying Liang <jliang@xilinx.com>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>, git <git@xilinx.com>,
-        "chinnikishore369@gmail.com" <chinnikishore369@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210512203536.4209c29c.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: -159Wt7lHllEYWqs8GaGA4Vt71HMrREC
+X-Proofpoint-ORIG-GUID: Z_kVIkLBkVmX9T0QYqRB53St-e7ogXUA
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-13_06:2021-05-12,2021-05-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 phishscore=0
+ mlxlogscore=999 bulkscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0
+ impostorscore=0 adultscore=0 priorityscore=1501 malwarescore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105130108
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 5:55 AM Nava kishore Manne <navam@xilinx.com> wrote=
-:
->
-> Hi Rob,
->
->         Please find my response inline.
->
-> > -----Original Message-----
-> > From: Rob Herring <robh@kernel.org>
-> > Sent: Thursday, May 13, 2021 8:01 AM
-> > To: Nava kishore Manne <navam@xilinx.com>
-> > Cc: mdf@kernel.org; trix@redhat.com; Michal Simek <michals@xilinx.com>;
-> > arnd@arndb.de; Rajan Vaja <RAJANV@xilinx.com>;
-> > gregkh@linuxfoundation.org; linus.walleij@linaro.org; Amit Sunil Dhamne
-> > <amitsuni@xlnx.xilinx.com>; Tejas Patel <tejasp@xlnx.xilinx.com>;
-> > zou_wei@huawei.com; Manish Narani <MNARANI@xilinx.com>; Sai Krishna
-> > Potthuri <lakshmis@xilinx.com>; Jiaying Liang <jliang@xilinx.com>; linu=
-x-
-> > fpga@vger.kernel.org; devicetree@vger.kernel.org; linux-
-> > kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org; git
-> > <git@xilinx.com>; chinnikishore369@gmail.com
-> > Subject: Re: [RFC PATCH 2/4] fpga: Add new properties to support user-k=
-ey
-> > encrypted bitstream loading
-> >
-> > On Tue, May 04, 2021 at 03:52:25PM +0530, Nava kishore Manne wrote:
-> > > This patch Adds =E2=80=98encrypted-key-name=E2=80=99 and
-> > > =E2=80=98encrypted-user-key-fpga-config=E2=80=99 properties to suppor=
-t user-key
-> > > encrypted bitstream loading use case.
-> > >
-> > > Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
-> > > ---
-> > >  Documentation/devicetree/bindings/fpga/fpga-region.txt | 5 +++++
-> > >  1 file changed, 5 insertions(+)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/fpga/fpga-region.txt
-> > > b/Documentation/devicetree/bindings/fpga/fpga-region.txt
-> > > index d787d57491a1..957dc6cbcd9e 100644
-> > > --- a/Documentation/devicetree/bindings/fpga/fpga-region.txt
-> > > +++ b/Documentation/devicetree/bindings/fpga/fpga-region.txt
-> > > @@ -177,6 +177,9 @@ Optional properties:
-> > >     it indicates that the FPGA has already been programmed with this
-> > image.
-> > >     If this property is in an overlay targeting a FPGA region, it is =
-a
-> > >     request to program the FPGA with that image.
-> > > +- encrypted-key-name : should contain the name of an encrypted key f=
-ile
-> > located
-> > > +   on the firmware search path. It will be used to decrypt the FPGA
-> > image
-> > > +   file.
-> > >  - fpga-bridges : should contain a list of phandles to FPGA Bridges t=
-hat must
-> > be
-> > >     controlled during FPGA programming along with the parent FPGA
-> > bridge.
-> > >     This property is optional if the FPGA Manager handles the bridges=
-.
-> > > @@ -187,6 +190,8 @@ Optional properties:
-> > >  - external-fpga-config : boolean, set if the FPGA has already been
-> > configured
-> > >     prior to OS boot up.
-> > >  - encrypted-fpga-config : boolean, set if the bitstream is encrypted
-> > > +- encrypted-user-key-fpga-config : boolean, set if the bitstream is
-> > encrypted
-> > > +   with user key.
-> >
-> > What's the relationship with encrypted-fpga-config? Both present or
-> > mutually exclusive? Couldn't this be implied by encrypted-key-name bein=
-g
-> > present?
-> >
->
-> In Encryption we have two kinds of use case one is Encrypted Bitstream lo=
-ading with Device-key and
-> Other one is Encrypted Bitstream loading with User-key. encrypted-fpga-co=
-nfig and encrypted-user-key-fpga-config
-> are mutually exclusive. To differentiate both the use cases I have added =
-this new flag and Aes Key file(encrypted-key-name)
-> is needed only for encrypted-user-key-fpga-config use cases.
 
-If encrypted-key-name is required for a user key, then why do you need
-encrypted-user-key-fpga-config also?
 
-IOW, why have 3 properties (that's 9 possible combinations) for 2 modes?
+On 5/12/21 2:35 PM, Halil Pasic wrote:
+> On Mon, 10 May 2021 17:48:37 -0400
+> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+>
+>> The mdev remove callback for the vfio_ap device driver bails out with
+>> -EBUSY if the mdev is in use by a KVM guest. The intended purpose was
+>> to prevent the mdev from being removed while in use; however, returning a
+>> non-zero rc does not prevent removal. This could result in a memory leak
+>> of the resources allocated when the mdev was created. In addition, the
+>> KVM guest will still have access to the AP devices assigned to the mdev
+>> even though the mdev no longer exists.
+>>
+>> To prevent this scenario, cleanup will be done - including unplugging the
+>> AP adapters, domains and control domains - regardless of whether the mdev
+>> is in use by a KVM guest or not.
+>>
+>> Fixes: 258287c994de ("s390: vfio-ap: implement mediated device open callback")
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Tony Krowiak <akrowiak@stny.rr.com>
+>> ---
+>>   drivers/s390/crypto/vfio_ap_ops.c | 13 ++-----------
+>>   1 file changed, 2 insertions(+), 11 deletions(-)
+>>
+>> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
+>> index b2c7e10dfdcd..f90c9103dac2 100644
+>> --- a/drivers/s390/crypto/vfio_ap_ops.c
+>> +++ b/drivers/s390/crypto/vfio_ap_ops.c
+>> @@ -26,6 +26,7 @@
+>>
+>>   static int vfio_ap_mdev_reset_queues(struct mdev_device *mdev);
+>>   static struct vfio_ap_queue *vfio_ap_find_queue(int apqn);
+>> +static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev);
+>>
+>>   static int match_apqn(struct device *dev, const void *data)
+>>   {
+>> @@ -366,17 +367,7 @@ static int vfio_ap_mdev_remove(struct mdev_device *mdev)
+>>   	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
+>>
+>>   	mutex_lock(&matrix_dev->lock);
+>> -
+>> -	/*
+>> -	 * If the KVM pointer is in flux or the guest is running, disallow
+>> -	 * un-assignment of control domain.
+>> -	 */
+>> -	if (matrix_mdev->kvm_busy || matrix_mdev->kvm) {
+>> -		mutex_unlock(&matrix_dev->lock);
+>> -		return -EBUSY;
+>> -	}
+>> -
+>> -	vfio_ap_mdev_reset_queues(mdev);
+>> +	vfio_ap_mdev_unset_kvm(matrix_mdev);
+>>   	list_del(&matrix_mdev->node);
+>>   	kfree(matrix_mdev);
+> Are we at risk of handle_pqap() in arch/s390/kvm/priv.c using an
+> already freed pqap_hook (which is a member of the matrix_mdev pointee
+> that is freed just above my comment).
+>
+> I'm aware of the fact that vfio_ap_mdev_unset_kvm() does a
+> matrix_mdev->kvm->arch.crypto.pqap_hook = NULL but that is
+> AFRICT not done under any lock relevant for handle_pqap(). I guess
+> the idea is, I guess, the check cited below
+>
+> static int handle_pqap(struct kvm_vcpu *vcpu)
+> [..]
+>          /*
+>           * Verify that the hook callback is registered, lock the owner
+>           * and call the hook.
+>           */
+>          if (vcpu->kvm->arch.crypto.pqap_hook) {
+>                  if (!try_module_get(vcpu->kvm->arch.crypto.pqap_hook->owner))
+>                          return -EOPNOTSUPP;
+>                  ret = vcpu->kvm->arch.crypto.pqap_hook->hook(vcpu);
+>                  module_put(vcpu->kvm->arch.crypto.pqap_hook->owner);
+>                  if (!ret && vcpu->run->s.regs.gprs[1] & 0x00ff0000)
+>                          kvm_s390_set_psw_cc(vcpu, 3);
+>                  return ret;
+>          }
+>
+> is going to catch it, but I'm not sure it is guaranteed to catch it.
+> Opinions?
 
-Rob
+The hook itself - handle_pqap() function in vfio_ap_ops.c - also checks
+to see if the reference to the hook is set and terminates with an error 
+if it
+is not. If the hook is invoked subsequent to the remove callback above,
+all should be fine since the check is also done under the matrix_dev->lock.
+
+>
+> Regards,
+> Halil
+>
+>
+>>   	mdev_set_drvdata(mdev, NULL);
+
