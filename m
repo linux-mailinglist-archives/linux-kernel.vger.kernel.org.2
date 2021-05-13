@@ -2,88 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E02237FF36
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 22:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4686137FF49
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 22:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232990AbhEMUew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 16:34:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40162 "EHLO
+        id S230305AbhEMUgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 16:36:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232958AbhEMUev (ORCPT
+        with ESMTP id S233056AbhEMUgL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 16:34:51 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC688C061574;
-        Thu, 13 May 2021 13:33:41 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id f18so4963907qko.7;
-        Thu, 13 May 2021 13:33:41 -0700 (PDT)
+        Thu, 13 May 2021 16:36:11 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF7A7C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 13:35:00 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id g4so10817761lfv.6
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 13:35:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BFrw4VPhlC+J41k/oEpkbIyGKduHOIvRYxg0bnJZ2Xc=;
-        b=L7KWpxuHXR7+6y6meBepH+/8H1IkzreG9snTxcdGCnuso9gsRyiBJWIK0M+9oUukIB
-         PJawsztAvMRemyhn9a4MVzXkOkQsvt6MetcQ3JKRqVeuB+jcLPU4/JmP9N9SXxcULtIJ
-         YI+xQ4Gw2zc1rSVqhUrjInGGB3thF86Jl3XpZODEpXTBq9+SiONPRspeQf90Xf3+pM2X
-         14a1qbwm+3d64KCCHwCmOoY+LSsICT6kf7epV0O0gDUVIAbdOi8iB/xV5RFKyYV76BYk
-         RF9NmCyFAIlUcCUMbelWPXHxLedMTBMTRkAvDJDsAapzLVCz287RT/ijeCQt8LLBVo3w
-         Q82w==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KrY5KBxRbqr/N+zWPtbQO+0iHVf/6xLbd2WWFf5zkXE=;
+        b=bxOU9My3lmGVJSFRnbTRSHl9P3N7k0MMbptVK/37OKlEAzjH0g1lnd0ECT+Jisx0wW
+         aHfZsmLawhD0Uf1o43iTvH/4ZzEZk5OQ1sq401azt/4bKq7vO/ZCamvHFKbwcjmMkhJ8
+         4JePMv2sGKK7cXTnjXdXBRB+uFlGScv6TBv5V4SSaEjvFSk/4v2S3cLjyZ5ESI5V8p4r
+         +HAslxEfxHYBwwXkrxeCbvFyjRViqG0tPFkMywbAPO9bpTZ1N8VO6R1VW+BbuPZIaJeZ
+         YxyLnbPjC5+w1amKKeHy1nmgP4goAOhRM7hFsJoUndzEkdmjBJEgNroy39r8uQwWhwLR
+         0xCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=BFrw4VPhlC+J41k/oEpkbIyGKduHOIvRYxg0bnJZ2Xc=;
-        b=UF8T64lvcWaMxjodhGJKtF8hMiZa83ziR/qF7qv58IJTAMnrCi3adwsoVe53uS67KA
-         az4N7q6xkKxBFNExwnzYLuy1h4L7jrR7OMsaqP7HLtwW5XrRm59DyEgsOvqWUq/6xwUV
-         NyUmEkVcuLOLeZZyQSLUJ1mcc2I8lIFfMmgFQCgdOuPpdwHpfTe8tsJxKxbF0O2bvGxF
-         mgQJxgL11Q8umF7xKAXvHT9b43i1VFh3E2GLwbTQd956ZlhvEjuGqixJHCgCoE8o+8Bb
-         2u64ZnmsleI4kJXDTvKylt5q56kdsI1aYTpoL/QTegPuemSQW69Ol2DH3NqrtS64icKW
-         0o7w==
-X-Gm-Message-State: AOAM532D4g4PoW6bKevc6w20607AC0F2IF9VGqU2j/0h80Uv5IlOcGOV
-        pgizUlIKTxSvsx8BPBXpPes=
-X-Google-Smtp-Source: ABdhPJw/8rwE6MvI4qSIocpYB/IxCodL/8zBsvIV4TnM9CONQuMrC5BdvcDSwyac9fIb7Umew9CR+w==
-X-Received: by 2002:a37:ef17:: with SMTP id j23mr36293222qkk.392.1620938021059;
-        Thu, 13 May 2021 13:33:41 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id f66sm3180923qke.42.2021.05.13.13.33.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 13:33:40 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 13 May 2021 13:33:39 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.12 000/677] 5.12.4-rc1 review
-Message-ID: <20210513203339.GD911952@roeck-us.net>
-References: <20210512144837.204217980@linuxfoundation.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KrY5KBxRbqr/N+zWPtbQO+0iHVf/6xLbd2WWFf5zkXE=;
+        b=AZUgEUbr13q93uRmKhGqTIvPSWE4kmIl6v8x3/pLDJJ2YC/+RrfJGgYpjRNQTdPKUH
+         mumLhBkdMNYi1/xbwC+m2Q5Cvro85dv9LX+GT/qhuDs54SROZPGHYU7aeoRrTATu6bru
+         Ui+Oa2GB8nd/TJQHSt6VvC3q2Woxfpc6IbF02krks/CoviLXY1owcAcxWHbz+f7M7fDB
+         1aKVLgpr2VP64zxq/QkENpn8E9aZ28fUj6+t8gLR4Z4ji54vsVGFuas5tCumojC4ngBD
+         QSoEOEW+LbAU/2ypbkfyH/VY/pKHwpDSOKC7WHjx6tRUylqPkbzG6XcedVpokUNbNSeK
+         /y0A==
+X-Gm-Message-State: AOAM530oKUlo/c4J1RE2m2Re0/09fYXSr1/SyQFOxUm6XOCz+w4W61ij
+        vTFP+FqZV+CdUMiGu0su7jbGB8rZOivw8XrDSLF3Rw==
+X-Google-Smtp-Source: ABdhPJznDnZDuChM48wSNc/74Afufn3c4ZSyJOXZKYLWqQTzM8c+e4f0gDHfW8mf48mr+GjGMuFLSRUzwcPsEZv8lQw=
+X-Received: by 2002:ac2:414e:: with SMTP id c14mr30725547lfi.155.1620938099093;
+ Thu, 13 May 2021 13:34:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
+References: <CACK8Z6EPjcRwDB=r6RnsJRjHN4oJXTD0_8zbtUCA+awofY7=5Q@mail.gmail.com>
+ <20210513200550.GA2604592@bjorn-Precision-5520>
+In-Reply-To: <20210513200550.GA2604592@bjorn-Precision-5520>
+From:   Rajat Jain <rajatja@google.com>
+Date:   Thu, 13 May 2021 13:34:23 -0700
+Message-ID: <CACK8Z6HENcAR-rKnQUVWU4jmqYqzsg95kbYRv3o5Gk7C+eXa-g@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] PCI: Add sysfs "removable" attribute
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
+        <linux-usb@vger.kernel.org>, Oliver Neukum <oneukum@suse.com>,
+        David Laight <David.Laight@aculab.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Rajat Jain <rajatxjain@gmail.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Dmitry Torokhov <dtor@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 04:40:46PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.12.4 release.
-> There are 677 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 14 May 2021 14:47:09 +0000.
-> Anything received after that time might be too late.
-> 
+On Thu, May 13, 2021 at 1:05 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> On Thu, May 13, 2021 at 11:02:10AM -0700, Rajat Jain wrote:
+> > On Wed, May 12, 2021 at 2:35 PM Rajat Jain <rajatja@google.com> wrote:
+> > >
+> > > A PCI device is "external_facing" if it's a Root Port with the ACPI
+> > > "ExternalFacingPort" property or if it has the DT "external-facing"
+> > > property.  We consider everything downstream from such a device to
+> > > be removable by user.
+> > >
+> > > We're mainly concerned with consumer platforms with user accessible
+> > > thunderbolt ports that are vulnerable to DMA attacks, and we expect those
+> > > ports to be identified as "ExternalFacingPort". Devices in traditional
+> > > hotplug slots can technically be removed, but the expectation is that
+> > > unless the port is marked with "ExternalFacingPort", such devices are less
+> > > accessible to user / may not be removed by end user, and thus not exposed
+> > > as "removable" to userspace.
+>
+> s/thunderbolt/Thunderbolt/ since I think it's a trademark
+> s/identified as/identified by firmware as/
 
-Build results:
-	total: 151 pass: 151 fail: 0
-Qemu test results:
-	total: 462 pass: 461 fail: 1
-Failed tests:
-	mipsel:mips32r6-generic:malta_32r6_defconfig:nocd:smp:net,pcnet:ide:rootfs
+Ack, will do.
 
-Failure as already reported.
+>
+> > > Set pci_dev_type.supports_removable so the device core exposes the
+> > > "removable" file in sysfs, and tell the device core about removable
+> > > devices.
+> > >
+> > > This can be used by userspace to implment any policies it wants to,
+> > > tailored specifically for user removable devices. Eg usage:
+> > > https://chromium-review.googlesource.com/c/chromiumos/platform2/+/2591812
+> > > https://chromium-review.googlesource.com/c/chromiumos/platform2/+/2795038
+> > > (code uses such an attribute to remove external PCI devicces or disable
+> > > features on them as needed by the policy desired)
+>
+> s/implment/implement/
+> s/devicces/devices/
+>
+> Or maybe something like:
+>
+>   This can be used to implement userspace policies tailored for
+>   user-removable devices.
 
-Guenter
+Ack, will do.
+
+>
+> Not sure exactly what "remove external PCI devices" means.  You're
+> talking about the *code* doing something, so I don't think it means
+> physically unplugging the device from the system.  Maybe preventing a
+> driver from binding to it or something similar?
+
+echo 1 > /sys/bus/pci/devices/<device>/remove
+
+>
+> I hesitate slightly to rely on URLs like googlesource.com in commit
+> logs because we don't know how long they will remain valid.  But I
+> guess there's no real alternative here, since this code probably
+> hasn't been posted to any public mailing lists like the ones archived
+> at https://lore.kernel.org/lists.html, right?
+
+Yes, chromium reviews (userspace code that shall use the new
+attribute) happen over gerrit, and so the publicly available links
+would be googlesource.com.
+
+>
+> > > Signed-off-by: Rajat Jain <rajatja@google.com>
+>
+> > > +static void pci_set_removable(struct pci_dev *dev)
+> > > +{
+> > > +       struct pci_dev *parent = pci_upstream_bridge(dev);
+> > > +       if (parent &&
+> > > +           (parent->external_facing || dev_is_removable(&parent->dev)))
+> > > +               dev_set_removable(&dev->dev, DEVICE_REMOVABLE);
+> > > +       else
+> > > +               dev_set_removable(&dev->dev, DEVICE_FIXED);
+> > > +}
+> >
+> > Copying comments from Krzysztof from another thread:
+> >
+> > [Krzysztof] We were also wondering if we should only set DEVICE_REMOVABLE for
+> > devices known to be behind an external-facing port, and let everything
+> > else be set to "unknown" (or whatever the default would be).
+> >
+> > [Rajat]: I think I'm fine with this proposal if Bjorn & PCI community
+> > also sees this as a better idea. Essentially the question here is,
+> > would it be better for the non-removable PCI devices to be shown as
+> > "fixed" or "unknown"?
+>
+> I think I would rather see this as:
+>
+>   struct pci_dev *parent = pci_upstream_bridge(dev);
+>
+>   if (parent &&
+>       (parent->external_facing || dev_is_removable(&parent->dev)))
+>           dev_set_removable(&dev->dev, DEVICE_REMOVABLE);
+>
+> In other words, assume only that everything below an "external-facing"
+> device is removable.
+>
+> In the absence of an "external-facing" property, we don't know
+> anything about the connection, and I'd rather use the default
+> (probably "unknown") instead of assuming "fixed."
+
+Ack, will do.
+
+One question: Under Greg's latest suggestion, the decision to show
+this attribute does not have to be bus wide / device_type wide i.e.
+subsystem can choose for this attribute to show up only under certain
+devices. So if it is more preferable, I can have this attribute show
+under ONLY PCI devices that attach below "external-facing" PCI devices
+(and any other PCI devices will not have this attribute show up at
+all). I guess this sounds better than having "unknown" show up on the
+rest of the devices that are not removable?
+
+>
+> I don't think we have anything that depends on "fixed," so I don't
+> think there's value in setting it.
+>
+> (Note the blank line between local variables and the "if"; maybe
+> that's what Greg hinted at?)
+
+Ack, will remove the blank line (didn't know that blank lines between
+variables and code is not preferred).
+
+Thanks,
+Rajat
+
+>
+> Bjorn
