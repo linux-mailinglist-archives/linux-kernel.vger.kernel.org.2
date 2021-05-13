@@ -2,181 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8804037F0A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 02:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEAA737F0A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 02:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235801AbhEMArf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 20:47:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233517AbhEMAmA (ORCPT
+        id S238135AbhEMArt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 20:47:49 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:54905 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234800AbhEMAnu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 20:42:00 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92F35C061343
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 17:39:28 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id m13so3429970qtk.13
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 17:39:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=TgKjFxo4GNtA551k9IwbSEG3Ja6mAkE8h5bonM5ao9E=;
-        b=oVAHKRN/CsCFO6Ca0g0oSy97YAiMrDlRrXdfSTmE99E386LTW4gh1ejqcjyGXsuwFq
-         +s+CQvsJthifM1bCfKJwXdZNvH7R/TYfWL1xwttjFhaOJAjes3dUzV7aZzNzpxa/yG5+
-         EJVoHbPl6UTdmHXPULoWq+NgoauD6HSVawdQ7r7o9f6itNLtOT6IJm7K7cP/2lv5A9Nc
-         6vmPs0hAsntCpTkQCKJUanv+cP/Z4/2ikPn+xottqb+BxFFNUTxQStzjDhgHrJtAcLKV
-         BS3UcQgUFtRtCEASeyKg2SVYWcWpKPzrZBVh0bfSG738pTM/jgOtuEMjrWCBbtTJD3wn
-         cRZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=TgKjFxo4GNtA551k9IwbSEG3Ja6mAkE8h5bonM5ao9E=;
-        b=fhapNq58LZ1qLxKWXTmkz/2LwkhG5uzssPHHRtGjp9ikjp08+h/4yRyXDN8dz8hJwP
-         Yelvv55/niVBgfDDB3Uz4+pMYlodhSkxVXQdHUH8DoKng/geZTMuCeZdiz4OEOFHBTKf
-         3WN2d3KnsVw2Tgt/8ZbRFry5Sv8qzMCyqv2zlLDHowVu7335gZ3JBu0YZgQs6KIQHoL+
-         n69Q1IKxvFZTPOfZClEqHdOJnTlIK/yjGqLr+Je1QsCWTke9AcFAIaxHEkxhT73lyBhZ
-         JGOoZV7wsm19mvIBCnAmD3bwXFbGqndF3WEuY65Z15pMxYQX6yB0cKvAKIyp/guvmkBq
-         /LUA==
-X-Gm-Message-State: AOAM533iB4YZaHw/N3fSEc86grCqlEZo9ea9aBj3BwwJBEQGoMt+WlHT
-        ma4GNflKRydEpDu8/GQtcHMZYQ==
-X-Google-Smtp-Source: ABdhPJyzmpbHNmhnEUA/B2MVZlnr/xMDVak3h+t0SqceA73W5LaOXRES7ubMQXiJWuiakHFbrTgEeA==
-X-Received: by 2002:ac8:7a7d:: with SMTP id w29mr35182479qtt.357.1620866367891;
-        Wed, 12 May 2021 17:39:27 -0700 (PDT)
-Received: from localhost.localdomain (modemcable068.184-131-66.mc.videotron.ca. [66.131.184.68])
-        by smtp.gmail.com with ESMTPSA id w16sm1204201qts.70.2021.05.12.17.39.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 17:39:27 -0700 (PDT)
-From:   Jonathan Marek <jonathan@marek.ca>
-To:     freedreno@lists.freedesktop.org
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Eric Anholt <eric@anholt.net>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
-        GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 5/5] drm/msm/a6xx: add a660 hwcg table
-Date:   Wed, 12 May 2021 20:37:49 -0400
-Message-Id: <20210513003811.29578-6-jonathan@marek.ca>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20210513003811.29578-1-jonathan@marek.ca>
-References: <20210513003811.29578-1-jonathan@marek.ca>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Wed, 12 May 2021 20:43:50 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id B8F90580A07;
+        Wed, 12 May 2021 20:42:35 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Wed, 12 May 2021 20:42:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm2; bh=U2X5Fpp7WurHFYDNULPr4jvqE4TsMUm
+        xiyWg3py93w8=; b=XVZ5zUun+J8kNtm16npj5cy/yOsiK0aYW0vQkn+vQOuAlpB
+        Jw3w+CkO+EYR8fcIYtbbSRS3P411bMTRY6IErCor9kjdOje8RlFdAEYd2BnvVA+v
+        a3OAGdDE/J0HJbXUwolQ0D/mrhds69RpGKkqwknfEPKzrQFlWvBIjco5u1gL3lAV
+        W0eygYx/EtCkioJ1xcvppYI39um3N4YtK1WzFGOkqlXpGwebUF6I7DvpfOwe9z25
+        nhr1LmR3ozI3sBcBJ01DIn3M2GD60RFxRQE7o/jW3neDdv26j1EM9SLZMIK06+n2
+        9LlqhouyBzu3reDVOBhCUosJzEp78isDmTj9Qfg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=U2X5Fp
+        p7WurHFYDNULPr4jvqE4TsMUmxiyWg3py93w8=; b=kI6Th+LNaqueEK780/gRVm
+        L4Df3QC0tHEQM8ktCkfU6kQ74TUaGB2R6yE1l3z88iBwadwWkqWUfJxDwDtEgX2U
+        abY28k1Yul0ZLGwJ0bOnt/ixmIIsh8h0iW44CObsiC5OshtCCpJvcFf5/QOWfMBw
+        vrxC5P+L0Kwai4fuN0QoGPhmsrQFRKNuLsEbbR6CYOgFxY9KQsoMXtCyzmmjA0OJ
+        yc0q51FDmeneqp2mV/IScDWBmljK7N2+AUO2/hFtU94nVnL1qPYo0KBn5oMMoILT
+        Gq9ipWlu1cIfZac7FQStQ6R+RhEGqnn/YxAcgr0YWTS/XRgStg9w9boQwc8KSk1g
+        ==
+X-ME-Sender: <xms:-nWcYJnsNIx34myGzV_hJAvbc4t_5W7nnS8_B_i0mTQxUuF_JIb4NA>
+    <xme:-nWcYE1PHFLkDEAk3JvXiXdcVI56hUPN5_SBM80ojRgNJN9fuRqyokXPiz9LC-Atv
+    GP2-Yn1AZNNKAxelQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdehfedgfeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhepudehtddtleektedvfeeitdeljeekveelkeegvdfhtdejhefgfedtfedv
+    jeejledtnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhgurhgvfiesrghjrdhiugdrrghu
+X-ME-Proxy: <xmx:-nWcYPpJqT2JssuVBrRMYEQbDzrEsIOTv6oKlGWqA8smhzKzFOQlYQ>
+    <xmx:-nWcYJmH5pwea_mGu6F6FOtoFZfEw-C-4bYH-RR6E7XlgMEoPGVO0A>
+    <xmx:-nWcYH32SteuOJUYYZTSkQdJbfYTnpjtngb440WEGVG0muJ1CEhSLQ>
+    <xmx:-3WcYO1jLHcooSYkIm7L3VluPPwGPznABBOBxi1wK6U9ASzk7D7cBw>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 3581CA00079; Wed, 12 May 2021 20:42:34 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-448-gae190416c7-fm-20210505.004-gae190416
+Mime-Version: 1.0
+Message-Id: <f063cb34-9a42-4373-a333-cad1d8a9c37b@www.fastmail.com>
+In-Reply-To: <20210510060338.GB6883@aspeedtech.com>
+References: <20210506100312.1638-1-steven_lee@aspeedtech.com>
+ <20210506100312.1638-6-steven_lee@aspeedtech.com>
+ <20210506102458.GA20777@pengutronix.de>
+ <19a81e25-dfa1-4ad3-9628-19f43f4230d2@www.fastmail.com>
+ <20210507062416.GD23749@aspeedtech.com>
+ <2a339218-19d7-4eea-a734-8053dd553dbb@www.fastmail.com>
+ <20210510060338.GB6883@aspeedtech.com>
+Date:   Thu, 13 May 2021 10:12:12 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Steven Lee" <steven_lee@aspeedtech.com>
+Cc:     "Philipp Zabel" <p.zabel@pengutronix.de>,
+        "Ulf Hansson" <ulf.hansson@linaro.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Joel Stanley" <joel@jms.id.au>,
+        "Adrian Hunter" <adrian.hunter@intel.com>,
+        "Ryan Chen" <ryanchen.aspeed@gmail.com>,
+        "moderated list:ASPEED SD/MMC DRIVER" <linux-aspeed@lists.ozlabs.org>,
+        "moderated list:ASPEED SD/MMC DRIVER" <openbmc@lists.ozlabs.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list" <linux-kernel@vger.kernel.org>,
+        "Hongwei Zhang" <Hongweiz@ami.com>,
+        "Ryan Chen" <ryan_chen@aspeedtech.com>,
+        "Chin-Ting Kuo" <chin-ting_kuo@aspeedtech.com>
+Subject: =?UTF-8?Q?Re:_[PATCH_v3_5/5]_mmc:_sdhci-of-aspeed:_Assert/Deassert_reset?=
+ =?UTF-8?Q?_signal_before_probing_eMMC?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a660 hwcg table, ported over from downstream.
 
-Signed-off-by: Jonathan Marek <jonathan@marek.ca>
----
- drivers/gpu/drm/msm/adreno/a6xx_gpu.c      | 53 ++++++++++++++++++++++
- drivers/gpu/drm/msm/adreno/adreno_device.c |  1 +
- drivers/gpu/drm/msm/adreno/adreno_gpu.h    |  2 +-
- 3 files changed, 55 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-index 261a20076f9d..d9753c62035c 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-@@ -427,6 +427,59 @@ const struct adreno_reglist a650_hwcg[] = {
- 	{},
- };
- 
-+const struct adreno_reglist a660_hwcg[] = {
-+	{REG_A6XX_RBBM_CLOCK_CNTL_SP0, 0x02222222},
-+	{REG_A6XX_RBBM_CLOCK_CNTL2_SP0, 0x02222220},
-+	{REG_A6XX_RBBM_CLOCK_DELAY_SP0, 0x00000080},
-+	{REG_A6XX_RBBM_CLOCK_HYST_SP0, 0x0000F3CF},
-+	{REG_A6XX_RBBM_CLOCK_CNTL_TP0, 0x22222222},
-+	{REG_A6XX_RBBM_CLOCK_CNTL2_TP0, 0x22222222},
-+	{REG_A6XX_RBBM_CLOCK_CNTL3_TP0, 0x22222222},
-+	{REG_A6XX_RBBM_CLOCK_CNTL4_TP0, 0x00022222},
-+	{REG_A6XX_RBBM_CLOCK_DELAY_TP0, 0x11111111},
-+	{REG_A6XX_RBBM_CLOCK_DELAY2_TP0, 0x11111111},
-+	{REG_A6XX_RBBM_CLOCK_DELAY3_TP0, 0x11111111},
-+	{REG_A6XX_RBBM_CLOCK_DELAY4_TP0, 0x00011111},
-+	{REG_A6XX_RBBM_CLOCK_HYST_TP0, 0x77777777},
-+	{REG_A6XX_RBBM_CLOCK_HYST2_TP0, 0x77777777},
-+	{REG_A6XX_RBBM_CLOCK_HYST3_TP0, 0x77777777},
-+	{REG_A6XX_RBBM_CLOCK_HYST4_TP0, 0x00077777},
-+	{REG_A6XX_RBBM_CLOCK_CNTL_RB0, 0x22222222},
-+	{REG_A6XX_RBBM_CLOCK_CNTL2_RB0, 0x01002222},
-+	{REG_A6XX_RBBM_CLOCK_CNTL_CCU0, 0x00002220},
-+	{REG_A6XX_RBBM_CLOCK_HYST_RB_CCU0, 0x00040F00},
-+	{REG_A6XX_RBBM_CLOCK_CNTL_RAC, 0x25222022},
-+	{REG_A6XX_RBBM_CLOCK_CNTL2_RAC, 0x00005555},
-+	{REG_A6XX_RBBM_CLOCK_DELAY_RAC, 0x00000011},
-+	{REG_A6XX_RBBM_CLOCK_HYST_RAC, 0x00445044},
-+	{REG_A6XX_RBBM_CLOCK_CNTL_TSE_RAS_RBBM, 0x04222222},
-+	{REG_A6XX_RBBM_CLOCK_MODE_VFD, 0x00002222},
-+	{REG_A6XX_RBBM_CLOCK_MODE_GPC, 0x00222222},
-+	{REG_A6XX_RBBM_CLOCK_DELAY_HLSQ_2, 0x00000002},
-+	{REG_A6XX_RBBM_CLOCK_MODE_HLSQ, 0x00002222},
-+	{REG_A6XX_RBBM_CLOCK_DELAY_TSE_RAS_RBBM, 0x00004000},
-+	{REG_A6XX_RBBM_CLOCK_DELAY_VFD, 0x00002222},
-+	{REG_A6XX_RBBM_CLOCK_DELAY_GPC, 0x00000200},
-+	{REG_A6XX_RBBM_CLOCK_DELAY_HLSQ, 0x00000000},
-+	{REG_A6XX_RBBM_CLOCK_HYST_TSE_RAS_RBBM, 0x00000000},
-+	{REG_A6XX_RBBM_CLOCK_HYST_VFD, 0x00000000},
-+	{REG_A6XX_RBBM_CLOCK_HYST_GPC, 0x04104004},
-+	{REG_A6XX_RBBM_CLOCK_HYST_HLSQ, 0x00000000},
-+	{REG_A6XX_RBBM_CLOCK_CNTL_TEX_FCHE, 0x00000222},
-+	{REG_A6XX_RBBM_CLOCK_DELAY_TEX_FCHE, 0x00000111},
-+	{REG_A6XX_RBBM_CLOCK_HYST_TEX_FCHE, 0x00000000},
-+	{REG_A6XX_RBBM_CLOCK_CNTL_UCHE, 0x22222222},
-+	{REG_A6XX_RBBM_CLOCK_HYST_UCHE, 0x00000004},
-+	{REG_A6XX_RBBM_CLOCK_DELAY_UCHE, 0x00000002},
-+	{REG_A6XX_RBBM_ISDB_CNT, 0x00000182},
-+	{REG_A6XX_RBBM_RAC_THRESHOLD_CNT, 0x00000000},
-+	{REG_A6XX_RBBM_SP_HYST_CNT, 0x00000000},
-+	{REG_A6XX_RBBM_CLOCK_CNTL_GMU_GX, 0x00000222},
-+	{REG_A6XX_RBBM_CLOCK_DELAY_GMU_GX, 0x00000111},
-+	{REG_A6XX_RBBM_CLOCK_HYST_GMU_GX, 0x00000555},
-+	{},
-+};
-+
- static void a6xx_set_hwcg(struct msm_gpu *gpu, bool state)
- {
- 	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
-diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/drm/msm/adreno/adreno_device.c
-index e4db0683d381..6dad8015c9a1 100644
---- a/drivers/gpu/drm/msm/adreno/adreno_device.c
-+++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
-@@ -299,6 +299,7 @@ static const struct adreno_info gpulist[] = {
- 		.inactive_period = DRM_MSM_INACTIVE_PERIOD,
- 		.init = a6xx_gpu_init,
- 		.zapfw = "a660_zap.mdt",
-+		.hwcg = a660_hwcg,
- 	},
- };
- 
-diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.h b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-index 63c050919d85..e6b11e6ec82d 100644
---- a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-+++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-@@ -55,7 +55,7 @@ struct adreno_reglist {
- 	u32 value;
- };
- 
--extern const struct adreno_reglist a630_hwcg[], a640_hwcg[], a650_hwcg[];
-+extern const struct adreno_reglist a630_hwcg[], a640_hwcg[], a650_hwcg[], a660_hwcg[];
- 
- struct adreno_info {
- 	struct adreno_rev rev;
--- 
-2.26.1
+On Mon, 10 May 2021, at 15:33, Steven Lee wrote:
+> The 05/07/2021 15:36, Andrew Jeffery wrote:
+> > 
+> > 
+> > On Fri, 7 May 2021, at 15:54, Steven Lee wrote:
+> > > The 05/07/2021 09:32, Andrew Jeffery wrote:
+> > > > 
+> > > > 
+> > > > On Thu, 6 May 2021, at 19:54, Philipp Zabel wrote:
+> > > > > Hi Steven,
+> > > > > 
+> > > > > On Thu, May 06, 2021 at 06:03:12PM +0800, Steven Lee wrote:
+> > > > > > +	if (info) {
+> > > > > > +		if (info->flag & PROBE_AFTER_ASSET_DEASSERT) {
+> > > > > > +			sdc->rst = devm_reset_control_get(&pdev->dev, NULL);
+> > > > > 
+> > > > > Please use devm_reset_control_get_exclusive() or
+> > > > > devm_reset_control_get_optional_exclusive().
+> > > > > 
+> > > > > > +			if (!IS_ERR(sdc->rst)) {
+> > > > > 
+> > > > > Please just return errors here instead of ignoring them.
+> > > > > The reset_control_get_optional variants return NULL in case the
+> > > > > device node doesn't contain a resets phandle, in case you really
+> > > > > consider this reset to be optional even though the flag is set?
+> > > > 
+> > > > It feels like we should get rid of the flag and leave it to the 
+> > > > devicetree.
+> > > > 
+> > > 
+> > > Do you mean adding a flag, for instance, "mmc-reset" in the
+> > > device tree and call of_property_read_bool() in aspeed_sdc_probe()?
+> > > 
+> > > > I'm still kind of surprised it's not something we want to do for the 
+> > > > 2400 and 2500 as well.
+> > > > 
+> > > 
+> > > Per discussion with the chip designer, AST2400 and AST2500 doesn't need
+> > > this implementation since the chip design is different to AST2600.
+> > 
+> > So digging a bit more deeply on this, it looks like the reset is 
+> > already taken care of by drivers/clk/clk-ast2600.c in the 
+> > clk_prepare_enable() path.
+> > 
+> > clk-ast2600 handles resets when enabling the clock for most peripherals:
+> > 
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/clk/clk-ast2600.c?h=v5.12#n276
+> > 
+> > and this is true for both the SD controller and the eMMC controller:
+> > 
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/clk/clk-ast2600.c?h=v5.12#n94
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/clk/clk-ast2600.c?h=v5.12#n88
+> > 
+> > If this weren't the case you'd specify a reset property in the SD/eMMC 
+> > devicetree nodes for the 2600 and then use 
+> > devm_reset_control_get_optional_exclusive() as Philipp suggested. See 
+> > the reset binding here:
+> > 
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/reset/reset.txt?h=v5.12
+> > 
+> > So on the surface it seems the reset handling in this patch is 
+> > unnecessary. Have you observed an issue with the SoC that means it's 
+> > required?
+> > 
+> 
+> Yes, you are right, aspeed_sdc_probe() calls clk_prepare_enable(),
+> aspeed_g6_clk_enable() does reset eMMC.
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/mmc/host/sdhci-of-aspeed.c#n496
+> 
+> However, the clock of eMMC is enabled in my u-boot(2019.04).
+> So it is retruned in the condition of aspeed_g6_clk_is_enabled() below
+> and doesn't reset eMMC.
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/clk/clk-ast2600.c?h=v5.12#n285
 
+Okay, so what's the issue that the patch addresses? Is there a bug? 
+Presumably if u-boot isn't making use of the eMMC the clock won't be 
+on, so we'll do the reset if the kernel wants to make use of the 
+device. If u-boot _is_ using the eMMC, u-boot will have done the 
+correct clock enable/reset sequence and so the controller should be 
+ready to go?
+
+The only potential issue remaining is u-boot leaving the controller in 
+a configuration the kernel isn't expecting when handing over. If that's 
+the issue then we've forgotten to do some specific initialisation (i.e. 
+not just reset the entire thing) of the controller in the driver probe 
+path, right?
+
+FWIW I haven't recently seen any poor behaviour from the controller or 
+driver. For us (IBM) it seems to be working well since we sorted out 
+the phase configuration.
+
+Andrew
