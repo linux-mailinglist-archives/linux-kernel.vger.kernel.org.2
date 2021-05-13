@@ -2,145 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C9BB37FD2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 20:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1557037FD2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 20:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230144AbhEMSWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 14:22:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229819AbhEMSWb (ORCPT
+        id S230263AbhEMSXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 14:23:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53315 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229819AbhEMSXu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 14:22:31 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F081C061574;
-        Thu, 13 May 2021 11:21:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=6uuUzWl9VoRjV4bYv78VUB4CdgmlKH2pNJlIUhKulm8=; b=NXExP0SppRPIfcFl8xuZPZ/8q
-        hwe9BNAHh1LWQyN8f0WG69abeL20BRHNjHdIWBAjV562Qz8kygXokRSvmaIxpdQpF04UxzIgbhBpV
-        B5p1PSXFWaqwaP5yH3k0LOOVEvLH+nxjQEY/xus4sZ8FKQkm4jpcMJeNLulqReZ4HYDNdR0KF2hzt
-        1CBVDHmCo5F246dT7ExCUYhyYq8lWeBWGm12AJNvpE7JHDHKxqrygJ01jdF99yF1qGvkNcL76dtN7
-        Ns+FC/97V1uJuX4o159qH2rJMbhddBqoxIu5AJnL/zBFfnWz/2CeM0vrrZ4AnpO6SYI1Zfmujx//g
-        nc9kMlz+w==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43946)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lhFxE-0006az-P5; Thu, 13 May 2021 19:21:00 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lhFx2-0003ED-8H; Thu, 13 May 2021 19:20:48 +0100
-Date:   Thu, 13 May 2021 19:20:48 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-Subject: Re: [PATCH net-next v5 4/5] mvpp2: recycle buffers
-Message-ID: <20210513182048.GA12395@shell.armlinux.org.uk>
-References: <20210513165846.23722-1-mcroce@linux.microsoft.com>
- <20210513165846.23722-5-mcroce@linux.microsoft.com>
+        Thu, 13 May 2021 14:23:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620930160;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AX9fzYNM7IwbRCJ6Cx4nrd4avtSql3/q3p0aWPYWWBw=;
+        b=RPNdqBxBwnS/vCxjQfHGuhAq8ofV1SeTAziyjJDRhvbVej9wApjuy/ke/848OkNGQTHc3M
+        Xj21OGqMu/GcuWttR67E234C/gASlb06Oms9uwhq5LJCVOfBa5y69Twt97vL7JbSmnPxhh
+        mSJvX/jLw/mEX+E77h+V8XOaaj78rqE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-80-Ka4HtW3eMs-Nn9xvYjNRuw-1; Thu, 13 May 2021 14:22:38 -0400
+X-MC-Unique: Ka4HtW3eMs-Nn9xvYjNRuw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A9873101C8D4;
+        Thu, 13 May 2021 18:22:33 +0000 (UTC)
+Received: from redhat.com (ovpn-113-225.phx2.redhat.com [10.3.113.225])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F1CD7687F6;
+        Thu, 13 May 2021 18:22:32 +0000 (UTC)
+Date:   Thu, 13 May 2021 12:22:32 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        liulongfang <liulongfang@huawei.com>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+Subject: Re: [Linuxarm]  Re: [RFC PATCH 2/3] vfio/hisilicon: register the
+ driver to vfio
+Message-ID: <20210513122232.589d24d8@redhat.com>
+In-Reply-To: <1035a9a9b03b43dd9f859136ed84a7f8@huawei.com>
+References: <10d53c5d-e6d5-a165-84b2-eaf8a3b7dcce@huawei.com>
+        <20210419123314.GT1370958@nvidia.com>
+        <00c4fa43-21fa-a48b-b95d-a2310ffab725@huawei.com>
+        <20210420125957.GA1370958@nvidia.com>
+        <20210420160457.6b91850a@x1.home.shazbot.org>
+        <25d033e6-1cba-0da0-2ee7-03a14e75b8a5@huawei.com>
+        <20210421121224.62382e5d@redhat.com>
+        <6ea89655-31c5-233b-ca2a-fcc166b5597c@huawei.com>
+        <20210512121053.GT1002214@nvidia.com>
+        <3eaa3114-81b6-1bd9-c7e6-cb1541389b58@huawei.com>
+        <20210513134422.GD1002214@nvidia.com>
+        <e3db0c328da6411ea2ae07595ed5f6c3@huawei.com>
+        <20210513110349.68e3d59d@redhat.com>
+        <1035a9a9b03b43dd9f859136ed84a7f8@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210513165846.23722-5-mcroce@linux.microsoft.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 06:58:45PM +0200, Matteo Croce wrote:
-> diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> index b2259bf1d299..9dceabece56c 100644
-> --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> @@ -3847,6 +3847,7 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
->  	struct mvpp2_pcpu_stats ps = {};
->  	enum dma_data_direction dma_dir;
->  	struct bpf_prog *xdp_prog;
-> +	struct xdp_rxq_info *rxqi;
->  	struct xdp_buff xdp;
->  	int rx_received;
->  	int rx_done = 0;
-> @@ -3912,15 +3913,15 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
->  		else
->  			frag_size = bm_pool->frag_size;
->  
-> +		if (bm_pool->pkt_size == MVPP2_BM_SHORT_PKT_SIZE)
-> +			rxqi = &rxq->xdp_rxq_short;
-> +		else
-> +			rxqi = &rxq->xdp_rxq_long;
->  
-> +		if (xdp_prog) {
-> +			xdp.rxq = rxqi;
->  
-> +			xdp_init_buff(&xdp, PAGE_SIZE, rxqi);
->  			xdp_prepare_buff(&xdp, data,
->  					 MVPP2_MH_SIZE + MVPP2_SKB_HEADROOM,
->  					 rx_bytes, false);
-> @@ -3964,7 +3965,7 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
->  		}
->  
->  		if (pp)
-> +			skb_mark_for_recycle(skb, virt_to_page(data), pp);
->  		else
->  			dma_unmap_single_attrs(dev->dev.parent, dma_addr,
->  					       bm_pool->buf_size, DMA_FROM_DEVICE,
+On Thu, 13 May 2021 17:52:56 +0000
+Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com> wrote:
 
-Looking at the above, which I've only quoted the _resulting_ code after
-your patch above, I don't see why you have moved the
-"bm_pool->pkt_size == MVPP2_BM_SHORT_PKT_SIZE" conditional outside of
-the test for xdp_prog - I don't see rxqi being used except within that
-conditional. Please can you explain the reasoning there?
+> Hi Alex,
+> 
+> > -----Original Message-----
+> > From: Alex Williamson [mailto:alex.williamson@redhat.com]
+> > Sent: 13 May 2021 18:04
+> > To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+> > Cc: Jason Gunthorpe <jgg@nvidia.com>; liulongfang
+> > <liulongfang@huawei.com>; cohuck@redhat.com;
+> > linux-kernel@vger.kernel.org; linuxarm@openeuler.org
+> > Subject: [Linuxarm] Re: [RFC PATCH 2/3] vfio/hisilicon: register the driver to
+> > vfio
+> > 
+> > On Thu, 13 May 2021 15:49:25 +0000
+> > Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+> > wrote:
+> >   
+> > > > -----Original Message-----
+> > > > From: Jason Gunthorpe [mailto:jgg@nvidia.com]
+> > > > Sent: 13 May 2021 14:44
+> > > > To: liulongfang <liulongfang@huawei.com>
+> > > > Cc: Alex Williamson <alex.williamson@redhat.com>; cohuck@redhat.com;
+> > > > linux-kernel@vger.kernel.org; linuxarm@openeuler.org
+> > > > Subject: [Linuxarm] Re: [RFC PATCH 2/3] vfio/hisilicon: register the driver to
+> > > > vfio
+> > > >
+> > > > On Thu, May 13, 2021 at 10:08:28AM +0800, liulongfang wrote:  
+> > > > > On 2021/5/12 20:10, Jason Gunthorpe wrote:  
+> > > > > > On Wed, May 12, 2021 at 04:39:43PM +0800, liulongfang wrote:
+> > > > > >  
+> > > > > >> Therefore, this method of limiting the length of the BAR
+> > > > > >> configuration space can prevent unsafe operations of the memory.  
+> > > > > >
+> > > > > > The issue is DMA controlled by the guest accessing the secure BAR
+> > > > > > area, not the guest CPU.
+> > > > > >
+> > > > > > Jason
+> > > > > > .
+> > > > > >  
+> > > > > This secure BAR area is not presented to the Guest,
+> > > > > which makes it impossible for the Guest to obtain the secure BAR area
+> > > > > when establishing the DMA mapping of the configuration space.
+> > > > > If the DMA controller accesses the secure BAR area, the access will
+> > > > > be blocked by the SMMU.  
+> > > >
+> > > > There are scenarios where this is not true.
+> > > >
+> > > > At a minimum the mdev driver should refuse to work in those cases.
+> > > >  
+> > >
+> > > Hi,
+> > >
+> > > I think the idea here is not a generic solution, but a quirk for this specific dev.
+> > >
+> > > Something like,
+> > >
+> > > --- a/drivers/vfio/pci/vfio_pci.c
+> > > +++ b/drivers/vfio/pci/vfio_pci.c
+> > > @@ -866,7 +866,12 @@ static long vfio_pci_ioctl(struct vfio_device  
+> > *core_vdev,  
+> > >                         break;
+> > >                 case VFIO_PCI_BAR0_REGION_INDEX ...  
+> > VFIO_PCI_BAR5_REGION_INDEX:  
+> > >                         info.offset =  
+> > VFIO_PCI_INDEX_TO_OFFSET(info.index);  
+> > > -                       info.size = pci_resource_len(pdev, info.index);
+> > > +
+> > > +                       if (check_hisi_acc_quirk(pdev, info))
+> > > +                               info.size = new_size;// BAR is limited  
+> > without migration region.  
+> > > +                       else
+> > > +                               info.size = pci_resource_len(pdev,  
+> > info.index);  
+> > > +
+> > >                         if (!info.size) {
+> > >                                 info.flags = 0;
+> > >                                 break;
+> > >
+> > > Is this an acceptable/workable solution here?  
+> > 
+> > As Jason says, this only restricts CPU access to the BAR, the issue is
+> > DMA access.  As the hardware vendor you may be able to guarantee that
+> > a DMA transaction generated by the device targeting the remainder of
+> > the BAR will always go upstream, but can you guarantee the routing
+> > between the device and the SMMU?  For instance if this device can be
+> > implemented as a plugin card, then it can be installed into a
+> > downstream port that may not support ACS.  That downstream port may
+> > implement request redirection allowing the transaction to reflect back
+> > to the device without IOMMU translation.  At that point the userspace
+> > driver can target the kernel driver half of the BAR and potentially
+> > expose a security risk.  Thanks,  
+> 
+> The ACC devices on this platform are not pluggable devices. They are exposed
+> as integrated endpoint devices. So I am not sure the above concern is valid in this
+> case.
+> 
+> I had a look at the userspace driver approach you suggested. But unfortunately
+> the migration state change for the vf has to check some of the pf registers for
+> confirming the state. So even if we move the implementation to Qemu, we
+> still may have to use the migration uAPI to access the pf device registers.
+> 
+> Since the devices we are concerned here are all integrated endpoints and if the 
+> above quirk is an acceptable one, then we can use the uAPI as done in this
+> series without overly complicating things here.
 
-Thanks.
+If you expect this device to appear only as an integrated endpoint, then
+I think Jason's suggestion above is correct.  Your driver that supports
+migration can refuse to load for devices there the topology is other
+than expected and you're effectively guaranteeing DMA isolation of the
+user and in-kernel drivers by hardware DMA semantics and topology.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Requiring access to the PF to support the migration protocol also
+suggests that an in-kernel driver to support migration is our best
+option.  Thanks,
+
+Alex
+
