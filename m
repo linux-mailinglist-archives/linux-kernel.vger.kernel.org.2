@@ -2,119 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C551037F0F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 03:35:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ED5737F100
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 03:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232974AbhEMBgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 21:36:55 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:32829 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232318AbhEMBgv (ORCPT
+        id S231313AbhEMBqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 21:46:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229803AbhEMBqX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 21:36:51 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id A23CE5C0066;
-        Wed, 12 May 2021 21:35:40 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Wed, 12 May 2021 21:35:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=animalcreek.com;
-         h=date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=DpVUZkigS0YBcpQTAee6c+OCcYp
-        kgSAchYFyPrT0G/I=; b=SJFqvRwXKaHVDrp6yAbs5aDuYPqR5dMZEZPNWhqHCNL
-        bAp/P8hbLXXc6IaZOb2xy7dRFIepJJqymysEeBW3wB1Xg4ThHWx2abvyvYkMsrzC
-        5QqwqQHxeIlHwQCH0kwlFwRMMpBP0w5qD8UMMeTBxuOFYvog8m4PQKcn4FHTMrzz
-        7EZeZlZ40d8YQ4pPlzXLdf1mMAno9mnGPeqZ53ZFRzYhmdEHtK7XLYregQrj74NB
-        thZuThM1IkHXX0/JQuIrLdKagNdh7Ve8KwM8tfDkboF2s49HaNAog6wkg+dWC6i6
-        3cIOeKwWunVWTt9t+6wj4Y+aF8hBB3ZGBCdt8yNAmYQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=DpVUZk
-        igS0YBcpQTAee6c+OCcYpkgSAchYFyPrT0G/I=; b=OefKtoattdw537PpJdXfxG
-        jwqYDSvbE9GmGzKaTQTuiuPs1OXiw+fjvIlGUmED1+GIAs/z9S1DIjZo1CfoVaHo
-        bEFSiD2CXGXQUTVSrXJoVLyqI/vz+7/V4nROPpTSwzFkaMEZDR2Q3RP5yTEj3ACV
-        SdDBYE0bJ7S8qfhxVVnsn4d8ogsQSyeB7afqx8JPA7ktTxoRQBY5NmKl59yDzJp5
-        xhVhbLkkZPHWfL/pir7LPTDOV5IWVXa87Y2g+sc1s92jhGT4AiI+eus0KNYMaX74
-        NZOIm4MDCbaMJUdROT5iyT4/EoXt+0cPzZO0LiYUPIROXY8Ra9OAH2xJIOK/aWLg
-        ==
-X-ME-Sender: <xms:a4KcYGnxGmmAIqp-win5FZOhI6MVjVJJve1clAnteo4EXMvo_xaqBw>
-    <xme:a4KcYN07H9hHVzDyk9dTxy-ymPrbn6H0SWhcxFrh7gxwxOeXdQWJ81Ax5VNtnRO-p
-    meGX1em1rgdaRNPwA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdehfedggeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjohesthdtredttddtvdenucfhrhhomhepofgrrhhk
-    ucfirhgvvghruceomhhgrhgvvghrsegrnhhimhgrlhgtrhgvvghkrdgtohhmqeenucggtf
-    frrghtthgvrhhnpedtheegudevteevkeeffeevudffvdejkeeitdekveeugfetleetheeg
-    gfduhfdtieenucffohhmrghinhepqhhtrdhiohenucfkphepjedtrddujedvrdefvddrvd
-    dukeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehm
-    ghhrvggvrhesrghnihhmrghltghrvggvkhdrtghomh
-X-ME-Proxy: <xmx:a4KcYEpjMeKINo4TqU_tJZq6V7NLnxI15BpHwbBsW0M7eWZobcuQgw>
-    <xmx:a4KcYKkuV6dsV-0TvuGu-2uMprVwns-2DC8Sr7P4ZD6xlkbjoErnBg>
-    <xmx:a4KcYE14GmK2tR9Qk9LF1GNOltslgJUEZrA5oK5rUSoZGVJ6CJO-Xw>
-    <xmx:bIKcYOqCu1RbsC7KTxJUOVVctHLIz-D1bmOwIzTvZ55UVgH6kimb6w>
-Received: from blue.animalcreek.com (ip70-172-32-218.ph.ph.cox.net [70.172.32.218])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Wed, 12 May 2021 21:35:39 -0400 (EDT)
-Received: by blue.animalcreek.com (Postfix, from userid 1000)
-        id 431E4136008E; Wed, 12 May 2021 18:35:38 -0700 (MST)
-Date:   Wed, 12 May 2021 18:35:38 -0700
-From:   Mark Greer <mgreer@animalcreek.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Mark Greer <mgreer@animalcreek.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nfc@lists.01.org,
-        Alex Blasche <alexander.blasche@qt.io>
-Subject: Re: [linux-nfc] [PATCH 1/2] MAINTAINERS: nfc: add Krzysztof
- Kozlowski as maintainer
-Message-ID: <20210513013538.GA239989@animalcreek.com>
-References: <20210512144319.30852-1-krzysztof.kozlowski@canonical.com>
- <14e78a9a-ed1a-9d7d-b854-db6d811f4622@kontron.de>
- <20210512170135.GB222094@animalcreek.com>
- <cd7a0110-702a-6e14-527e-fb4b53705870@canonical.com>
+        Wed, 12 May 2021 21:46:23 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F07CDC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 18:45:12 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id c21so19821351pgg.3
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 18:45:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Y9OSOdifwJ/U6Y7EVaNtB+dGpCcruOcZL8rYhMqEey4=;
+        b=Fr4qTZMcIVQwesgH7iOol4OkmW1/52NmyRhF1zWTYJmRVZh7G00+iiQr0xSE7Jn55R
+         bSoByr7woQr/XQI3sZVzZJlUo7RlWqaDd1xyh6mCTJRUF+W2hoSl7SN9RdZnIq1w+HmM
+         A4DBdX0Nx7PnFWJoZO+OXIARomsPVvsJ04ANA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Y9OSOdifwJ/U6Y7EVaNtB+dGpCcruOcZL8rYhMqEey4=;
+        b=GCP52AaGHYIDW+VJF4E6hLk8p+Sf2vsf1fGrKRnr6csV3fRWUWLGfJQTkzG7BnKIQQ
+         J6DoYpxn97N8ySMh/OJqc8bfIaLCd7nldw43ELkJ3sdDEZyaW5Pm/Gfr648rZZUO/p5O
+         osZNfPIugglpsOHD18vI2PD8kKpU3dNYx5+gZONOGD/SjwbMbIuMG6JmH7bNc+LJKWae
+         3T+uSk9cV84jBUimXWygyrqFmjkiNdwF3RhYeuQ1BDWCOuUonNW+x3PuODk2M4/VlIqz
+         O24WHvykngxeVZwfmkPwVzMCYM/ngnHKLytVtd9QLAImrKB+hjW45Rj4YR9/V4BP2RnF
+         VLAA==
+X-Gm-Message-State: AOAM53018jbpKhJyavR3/YrDQaIR9izeTdrL4HTO25qKI9UveGC0w+rs
+        /H06+bdLeBCBuYaHzWOoXsUYlzqQB9Mz9cPCo0g4SQ==
+X-Google-Smtp-Source: ABdhPJx9FdyNW+2z7f/xqG8Mk4Yok0erOgCRj+tZ6RPtmwF2b1M4b7JDdPpu10FSJnZjOXEFDHY2ToGEW5Y+7H7xlX8=
+X-Received: by 2002:a17:90a:4298:: with SMTP id p24mr1758687pjg.144.1620870312282;
+ Wed, 12 May 2021 18:45:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cd7a0110-702a-6e14-527e-fb4b53705870@canonical.com>
-Organization: Animal Creek Technologies, Inc.
+References: <20210510092631.3141204-1-ikjn@chromium.org> <c5a253ba-6451-c538-39ea-c339c176afbb@gmail.com>
+In-Reply-To: <c5a253ba-6451-c538-39ea-c339c176afbb@gmail.com>
+From:   Ikjoon Jang <ikjn@chromium.org>
+Date:   Thu, 13 May 2021 09:45:01 +0800
+Message-ID: <CAATdQgDfQUVQQwL1KQZvRffUgE+ADcwjBReWhCnmNL3SSgoE-A@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: mt8183: add cbas node under cros_ec
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Jiri Kosina <jikos@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>, linux-input@vger.kernel.org,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Hsinyi Wang <hsinyi@chromium.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 04:21:25PM -0400, Krzysztof Kozlowski wrote:
-> On 12/05/2021 13:01, Mark Greer wrote:
+On Thu, May 13, 2021 at 12:38 AM Matthias Brugger
+<matthias.bgg@gmail.com> wrote:
+>
+> Hi Ikjoon,
+>
+> On 10/05/2021 11:26, Ikjoon Jang wrote:
+> > Add a 'cbas' device node for supporting table mode switch in
 
-> > Re: QT - I've already talked to Alex Blasche from QT (CC'd).  With some
-> > work we can get Linux NFC/neard back into their good graces.  I/we need
-> > to find time to put in the work, though.
-> > 
-> > An example of the issues they have seen is:
-> > 
-> > 	https://bugreports.qt.io/browse/QTBUG-43802
-> > 
-> > Another issue I have--and I suspect you, Krzysztof, have as well--is
-> > lack of hardware.  If anyone reading this wants to volunteer to be a
-> > tester, please speak up.
-> 
-> Yes, testing would be very appreciated. I don't know how many unit tests
-> neard has, but maybe some mockups with unit testing would solve some of
-> problems?
+tablet
 
-I'm not sure what you mean by this.  Do you mean creating some tests that
-sit directly on top of the kernel and test the kernel parts (e.g., use
-netlink)?  If so, that would be useful but you may end up implementing
-some of the NFC stack.  If you mean more/better tests that use neard to
-exercise the whole stack then that would be really good too.
+> > kukui devices.
+> >
+> > Kukui platforms with detacheable base have an additional input
+> > device under cros-ec, which reports SW_TABLET_MODE regarding
+> > its base state (e.g. base flipped or detached).
+> >
+> > Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+> > ---
+> >
+> >  arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> >
+> > diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> > index ff56bcfa3370..40030ed48854 100644
+> > --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> > +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> > @@ -816,6 +816,10 @@ usbc_extcon: extcon0 {
+> >                       compatible = "google,extcon-usbc-cros-ec";
+> >                       google,usb-port-id = <0>;
+> >               };
+> > +
+> > +             base_detection: cbas {
+> > +                     compatible = "google,cros-cbas";
+>
+> I'm not able to find any binding description for this. It seems linux-next has
+> driver binding to this compatible, but the description is missing.
+>
+> Can you please clarify.
 
-Speaking of NFC stack, the NFC forum has their specs paywalled which is
-a real bummer/pain.  I can try reaching out to them to see if they will
-help us help their mission but I'm not hopeful.
+Yep, that's correct.
+Let me resend this with v2 after the dt-binding patch is applied.
 
-FYI, most of the issues that I ran into and know still exist are
-timing/race issues in neard.  I'm sure if we tested more, we could find
-some in the kernel though.
+In this series, I requested queueing these to hid tree:
 
-Mark
---
+[v5, 1/2] mfd: google,cros-ec: add DT bindings for a baseboard's switch device
+https://patchwork.kernel.org/project/linux-input/patch/20210415032958.740233-2-ikjn@chromium.org/
+
+[v5, 2/2] HID: google: Add of_match table to Whiskers switch device.
+https://patchwork.kernel.org/project/linux-input/patch/20210415032958.740233-3-ikjn@chromium.org/
+
+Later I found that I missed a comment from [v5, 1/2]
+But only [v5, 2/2] part is already applied to hid tree as I asked for it.
+
+I sent a v6 dt-binding patch is here (not yet applied)
+https://patchwork.kernel.org/project/linux-input/patch/20210512100832.3878138-1-ikjn@chromium.org/
+
+>
+> Thanks,
+> Mathias
+>
+> > +             };
+> >       };
+> >  };
+> >
+> >
