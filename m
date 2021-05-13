@@ -2,129 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CDC537FB4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 18:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAA7F37FB4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 18:13:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235040AbhEMQO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 12:14:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234993AbhEMQOJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 12:14:09 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 673AFC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 09:12:58 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id m13so4878846qtk.13
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 09:12:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=c3FwvvgxpK8Jgr/cfoaMZxB/tNnCRMPVSiFd4uKGvlQ=;
-        b=MADfEPYf8G6gf9l1Gqm6w23OgPrQuI2bxxipGlcCPSPd44+7+DzuPS1pzH2iWgT+zn
-         g0l0Kujhrg6t/Ex9b5j3Bj2W31aY5m/cGA22wYeq4g4Fs+5tr51eUzo8GE32RKHy3tqs
-         ZUR2lUlGtt2nb1daWEbmScvkyl8W0QLZHqCf+7VI4FqhJ8ysakKTz3uwUKW84pK2Es+Y
-         PhjNqocQaILOqO3NUastr7Mjdg9lJyWJ0bTmmM5DB+fua4qZxA7yuFnJblH6b56j19YG
-         C0B7Jg1jnHZHxF6pjL3qHU3Qlum0+j2AIhktMMsVfmuDFDeZLU2YGUNbGiSN/Uozgvsz
-         l+dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=c3FwvvgxpK8Jgr/cfoaMZxB/tNnCRMPVSiFd4uKGvlQ=;
-        b=J7wfnsyx2KAFezdhR+jr3M0p2JrmRax0n1lIWhmWj6T83oKAXNpLvHCREnmdO0iUU1
-         V2OjgC7lQE+8a8abdaHpaxCn4D65Qz6aw0eD7G3FBLCezbLhHQScHTzZ1ty17hYYxSj+
-         OmlUPHjKKCZlP53XC4kfLzYcQ4i7Dl2bBo2ZQVjh72r/MwKbCApSmcZdglnU2b6m5ZpE
-         i3Y8cT+wwWzABljcGv60J/ziCQqDbqaIb8zI1qTYwCyL8Dx2zER3FktXFfINndkjPilH
-         YraS0AIHuH2qVFzVDzPPErvcVTQQ4DIPGjmXsuBdwPcM30+w21qU7WdQV9wOTAnVG0ct
-         6AxQ==
-X-Gm-Message-State: AOAM5331Xe8sn+zvSvhkuY9m552XJScbP8ILbr2MvtufroKhkttA1NMV
-        wGqbOUF7xJXWx6czHNAZuLlzTQ==
-X-Google-Smtp-Source: ABdhPJwx+wWD/0jLrnlCyRW0mf+sBX8loZEaAwXC0cHHBnwlQepFTMFpYKnQX1V8z6efSko/OuvKbQ==
-X-Received: by 2002:ac8:5691:: with SMTP id h17mr39092410qta.185.1620922377413;
-        Thu, 13 May 2021 09:12:57 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c0a8:11d1::1214? ([2620:10d:c091:480::1:7c1f])
-        by smtp.gmail.com with ESMTPSA id h7sm2557702qtj.35.2021.05.13.09.12.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 May 2021 09:12:56 -0700 (PDT)
-Subject: Re: [PATCH] sysctl: Limit the size of I/Os to PAGE_SIZE
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>
-Cc:     linux-abi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Alexey Dobriyan <adobriyan@gmail.com>
-References: <20210513160649.2280429-1-willy@infradead.org>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <47a34aa5-ad1a-6259-d9cb-f85f314f9ffb@toxicpanda.com>
-Date:   Thu, 13 May 2021 12:12:54 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.1
+        id S235071AbhEMQPA convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 May 2021 12:15:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53910 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234993AbhEMQOb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 12:14:31 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BA3EC6142E;
+        Thu, 13 May 2021 16:13:18 +0000 (UTC)
+Date:   Thu, 13 May 2021 17:14:26 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Stephan Gerhold <stephan@gerhold.net>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Robert Yang <decatf@gmail.com>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH 0/3] iio: accel: kxcjk-1013: Add support for KX023-1025
+Message-ID: <20210513171426.27dd6533@jic23-huawei>
+In-Reply-To: <20210511145051.GC4413@qmqm.qmqm.pl>
+References: <20210511095409.9290-1-stephan@gerhold.net>
+        <20210511142847.GA4413@qmqm.qmqm.pl>
+        <YJqWzgmxVEvfElZj@gerhold.net>
+        <20210511145051.GC4413@qmqm.qmqm.pl>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210513160649.2280429-1-willy@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/13/21 12:06 PM, Matthew Wilcox (Oracle) wrote:
-> We currently allow a read or a write that is up to KMALLOC_MAX_SIZE.
-> This has caused problems when cat decides to do a 64kB read and
-> so we allocate a 64kB buffer for the sysctl handler to store into.
-> The immediate problem was fixed by switching to kvmalloc(), but it's
-> ridiculous to allocate so much memory to read what is likely to be a
-> few bytes.
+On Tue, 11 May 2021 16:50:51 +0200
+Michał Mirosław <mirq-linux@rere.qmqm.pl> wrote:
+
+> On Tue, May 11, 2021 at 04:38:06PM +0200, Stephan Gerhold wrote:
+> > Hi Michał,
+> > 
+> > On Tue, May 11, 2021 at 04:28:47PM +0200, Michał Mirosław wrote:  
+> > > On Tue, May 11, 2021 at 11:54:06AM +0200, Stephan Gerhold wrote:  
+> > > > KX023-1025 [1] is another accelerometer from Kionix that has lots
+> > > > of additional functionality compared to KXCJK-1013. It combines the
+> > > > motion interrupt functionality from KXCJK with the tap detection
+> > > > from KXTF9, plus a lot more other functionality.  
+> > > When I researched KXTF9 support it occurred to me that the -10xx part is
+> > > duplicating the information in 'KXyyy' - it seems to be a project number
+> > > or something. I would suggest to use just 'kx023' prefix for the code
+> > > and DT but leave the full identification in the comments/description.  
+> > There do seem to be two different KXTF9 from Kionix, a KXTF9-4100 [1]
+> > and a KXTF9-2050 [2] with separate datasheets. Have you checked if there
+> > is a meaningful difference between them?  
 > 
-> sysfs limits reads and writes to PAGE_SIZE, and I feel we should do the
-> same for sysctl.  The largest sysctl anyone's been able to come up with
-> is 433 bytes for /proc/sys/dev/cdrom/info
+> I haven't compared them thoroughly, but the versions seem to differ only
+> in power consumption (maybe a different manufacturing process?). The
+> register sets seem the same.
+
+Differ in expected Vdd supply voltage. 3.3 vs 1.8V .  Looks like this has
+knock on effects on things like self test values.  So I'd argue it's worth keeping
+the distinction for device tree. 
+
+We could do a double compatible
+
+compatible = kionix,kx023-1024, konix,kx023;
+
+but may be too late to do that now.
+
+Jonathan
+
+
 > 
-> This will allow simplifying the BPF sysctl code later, but I'll leave
-> that for someone who understands it better.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->   fs/proc/proc_sysctl.c | 15 +++++++++------
->   1 file changed, 9 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
-> index dea0f5ee540c..a97a8a4ff270 100644
-> --- a/fs/proc/proc_sysctl.c
-> +++ b/fs/proc/proc_sysctl.c
-> @@ -562,11 +562,14 @@ static ssize_t proc_sys_call_handler(struct kiocb *iocb, struct iov_iter *iter,
->   	if (!table->proc_handler)
->   		goto out;
->   
-> -	/* don't even try if the size is too large */
-> +	/* reads may return short values; large writes must fail now */
-> +	if (count >= PAGE_SIZE) {
-> +		if (write)
-> +			goto out;
-> +		count = PAGE_SIZE;
-> +	}
->   	error = -ENOMEM;
-> -	if (count >= KMALLOC_MAX_SIZE)
-> -		goto out;
-> -	kbuf = kvzalloc(count + 1, GFP_KERNEL);
-> +	kbuf = kmalloc(PAGE_SIZE, GFP_KERNEL);
->   	if (!kbuf)
->   		goto out;
->   
+> Best Regards
+> Michał Mirosław
 
-Below here we have
-
-kbuf[count] = '\0';
-
-with will overflow with this patch.  So maybe instead we do
-
-if (count >= PAGE_SIZE)
-	count = PAGE_SIZE - 1;
-kbuf = kmalloc(count);
-
-and that solves your problem and keeps us from overflowing.  Thanks,
-
-Josef
