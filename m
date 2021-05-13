@@ -2,113 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7EF37FD00
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 19:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4638237FD07
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 20:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231558AbhEMR5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 13:57:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33204 "EHLO
+        id S231580AbhEMSBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 14:01:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231553AbhEMR5J (ORCPT
+        with ESMTP id S231447AbhEMSBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 13:57:09 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F5AC061761
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 10:55:56 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id o27so26329185qkj.9
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 10:55:56 -0700 (PDT)
+        Thu, 13 May 2021 14:01:32 -0400
+Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71D39C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 11:00:22 -0700 (PDT)
+Received: by mail-vs1-xe31.google.com with SMTP id 66so14065806vsk.9
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 11:00:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=G6cunyyCAgFMO8WDuEbxdeQNabsoZvGD6x3wsqvioTQ=;
-        b=HyrbNR3fsh4EG0A55QAyn5sRwI6IQPua85FUNamY/gY5lzI3leCTQdkonmPO4sKNU+
-         8UO2l2vGtUzqXLr9fLE1v8TzWIfz1LAvbwOx+AkisxDO/lji5ddjM42rniKHuX8FBZp1
-         Rx4cdtnAExzCBkW27jbPXOgL/08YTu+BjwqL9FFtme+tio5w5eW7ftpbe2TDEdAQdNIo
-         onhRYs0spK2w66UpW4ggUJuUyjRLctLRKOcM/dZ2XjjhBsXo8dfQwm5AOsZSTF1C7VK+
-         pG66ub4+spOoZ2YyQuXCH8X00s6SERuaT/5xFOdkaRUkVA9T6YAoQ75ABB7SVpWU4qks
-         KBWg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LTxS73qpgw8wyOGx/jay0u9L/v5jsZImh4qhHGmYKZE=;
+        b=tklR2NvpwQw+STERlujGQIte3lDGnRI6uPOx0826wTpa8L8G31Ug6E15953WQ6n6M0
+         TVSmARbFPEwwLv2qPGshTDhs1/5GxN4tTgsbamFHOBCFJXVSA2Ms8YervLbIT4xx55sN
+         8OjYEAzWROaDdGzT083Q2p6/EUpV8xGaUsTIdQiHVNWwEoagQA0glRoo8ESHtr3/IMQ6
+         k25XbMf+bjGnjrkGlsruFYotJuDv3dXice6pgkIWouXap/VXBpsAqoWfizqDZdcJXm4y
+         49iq2IfFK4hO3ZE0t0cdWmRNRGSupk791amSN4Bi66XVSnIpbOEnI7+9m3V6jaTc8Jfk
+         lWRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=G6cunyyCAgFMO8WDuEbxdeQNabsoZvGD6x3wsqvioTQ=;
-        b=LeNJTwXjqGsrIS0lM1ljQsCtwkG7ZaRhh4oman0nVeegSS+EKh9+3qUl7c4cVVC+Pm
-         3wrljNYdrLNCUasz30sw/KzNU8UhBZSibwfPaMRwQw3HffADyJOOJTZAixcGRw85wAsB
-         4q74DjtO7DC7a+vhJjAkDlGWm3bxVP76/p2RiIpXkHF+dBEFoybQszGLamsehJ7ZCxbM
-         Jj+ffuPUdqfE2RUKn3tXJzUuH1xet2WJlKDL7jBSRUlQxsieDHSpF9+AtLvJLHquQDr+
-         ZrY/UK+jBTAd9FvYoSs42+h9FaOYwl+StEFJngcEcUBWGdHruwCWUxSzzIKoSoLr05Ri
-         G1Ow==
-X-Gm-Message-State: AOAM533aTVqkM6WuxOL9nIEMmtMicHWKO0jtHhTwJ0ohVEBtGmi8IGEs
-        xvXbaV8yRJ+hfB7fE3KuMQH/eA2W+kf3TKZGVVg=
-X-Google-Smtp-Source: ABdhPJzHv12G0x5hOV8M/Sof7AYXqEPgmkJQppEK1BFjto9Iyv6o8I7Jg25n8IpHNG3aiGWE2BmxWg==
-X-Received: by 2002:a37:9707:: with SMTP id z7mr39366330qkd.407.1620928555624;
-        Thu, 13 May 2021 10:55:55 -0700 (PDT)
-Received: from localhost.localdomain (modemcable068.184-131-66.mc.videotron.ca. [66.131.184.68])
-        by smtp.gmail.com with ESMTPSA id 44sm2899114qtb.45.2021.05.13.10.55.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 10:55:55 -0700 (PDT)
-From:   Jonathan Marek <jonathan@marek.ca>
-To:     linux-arm-msm@vger.kernel.org
-Cc:     robert.foss@linaro.org, andrey.konovalov@linaro.org,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-i2c@vger.kernel.org (open list:QUALCOMM I2C CCI DRIVER),
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] i2c: qcom-cci: add sm8250 compatible
-Date:   Thu, 13 May 2021 13:55:17 -0400
-Message-Id: <20210513175518.6023-1-jonathan@marek.ca>
-X-Mailer: git-send-email 2.26.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LTxS73qpgw8wyOGx/jay0u9L/v5jsZImh4qhHGmYKZE=;
+        b=kdgDuE38KOmhL8RjVMEEMsjTPQNJ+uxA0W7QQYNSDSOO7ONG4B317peuZUKwI0foNk
+         SHDGOeUcX4XyfGi6MI954Spv9VTagC1EOYR2zy6s+NE1jcsFO7tsUbQqSPJZtdwkjUcl
+         6k/rn6yi169WBsyLacH2K7tZQX1s637g8KT/VJNlLtIT1mDShmEChKe9ujwDPnQnknT1
+         kEYMEiU4V3FhXBDdfTRdLSPDJslu7D5xGuLo7V7LxlVgZZvezCV0ma9RR/ikv3Ai7rLb
+         1GGlySAxLalBtQwOIPf9u2X8FAhFY+gUBUabX8/zZ7X7waoOa3X+gcJMdtAkf3x7wsS6
+         5ZZA==
+X-Gm-Message-State: AOAM5329aAcH0LfzTb/o/P3clhE+X3JaVj8Goj4TKmbNHiYR55zf0Eu/
+        Akm/tC+cynzYaqXzJGgUhROxlhYdfcDvyi4BZFNy0g==
+X-Google-Smtp-Source: ABdhPJzQWS+gGEQp4Nc3rYy1a0+QdLqvtqfdhjg4P2Pun9SSC2Exu7NzJGlLNgeyqAtiU45guOWttSPurIaULWPEbNk=
+X-Received: by 2002:a67:6307:: with SMTP id x7mr37421491vsb.12.1620928821530;
+ Thu, 13 May 2021 11:00:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210510211756.3346954-1-badhri@google.com> <YJ0jDcShxW8400ez@kroah.com>
+In-Reply-To: <YJ0jDcShxW8400ez@kroah.com>
+From:   Badhri Jagan Sridharan <badhri@google.com>
+Date:   Thu, 13 May 2021 10:59:45 -0700
+Message-ID: <CAPTae5J9ctNGgoKPNteTghYMEEqxmEDqnMib82_Qf-v_5m7tqA@mail.gmail.com>
+Subject: Re: [PATCH] usb: typec: tcpm: Fix SINK_DISCOVERY current limit for Rp-default
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        USB <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kyle Tso <kyletso@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SM8250 CCI is the same as SDM845, add an equivalent compatible for SM8250.
+Apologies Greg ! Will pay more attention to the "fixes" string next time.
 
-Signed-off-by: Jonathan Marek <jonathan@marek.ca>
----
- Documentation/devicetree/bindings/i2c/i2c-qcom-cci.txt | 5 +++--
- drivers/i2c/busses/i2c-qcom-cci.c                      | 1 +
- 2 files changed, 4 insertions(+), 2 deletions(-)
+Thanks for fixing it up !
+-Badhri
 
-diff --git a/Documentation/devicetree/bindings/i2c/i2c-qcom-cci.txt b/Documentation/devicetree/bindings/i2c/i2c-qcom-cci.txt
-index c6668b7c66e6..7b9fc0c22eaf 100644
---- a/Documentation/devicetree/bindings/i2c/i2c-qcom-cci.txt
-+++ b/Documentation/devicetree/bindings/i2c/i2c-qcom-cci.txt
-@@ -9,6 +9,7 @@ PROPERTIES:
- 		"qcom,msm8916-cci"
- 		"qcom,msm8996-cci"
- 		"qcom,sdm845-cci"
-+		"qcom,sm8250-cci"
- 
- - reg
- 	Usage: required
-@@ -41,8 +42,8 @@ PROPERTIES:
- 
- SUBNODES:
- 
--The CCI provides I2C masters for one (msm8916) or two i2c busses (msm8996 and
--sdm845), described as subdevices named "i2c-bus@0" and "i2c-bus@1".
-+The CCI provides I2C masters for one (msm8916) or two i2c busses (msm8996,
-+sdm845 and sm8250), described as subdevices named "i2c-bus@0" and "i2c-bus@1".
- 
- PROPERTIES:
- 
-diff --git a/drivers/i2c/busses/i2c-qcom-cci.c b/drivers/i2c/busses/i2c-qcom-cci.c
-index c63d5545fc2a..c1de8eb66169 100644
---- a/drivers/i2c/busses/i2c-qcom-cci.c
-+++ b/drivers/i2c/busses/i2c-qcom-cci.c
-@@ -769,6 +769,7 @@ static const struct of_device_id cci_dt_match[] = {
- 	{ .compatible = "qcom,msm8916-cci", .data = &cci_v1_data},
- 	{ .compatible = "qcom,msm8996-cci", .data = &cci_v2_data},
- 	{ .compatible = "qcom,sdm845-cci", .data = &cci_v2_data},
-+	{ .compatible = "qcom,sm8250-cci", .data = &cci_v2_data},
- 	{}
- };
- MODULE_DEVICE_TABLE(of, cci_dt_match);
--- 
-2.26.1
 
+On Thu, May 13, 2021 at 6:01 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Mon, May 10, 2021 at 02:17:56PM -0700, Badhri Jagan Sridharan wrote:
+> > This is a regression introduced by
+> > <1373fefc6243cc96b3565f0ffffadfac4ccfb977>
+> > "Allow slow charging loops to comply to pSnkStby".
+> >
+> > When Source advertises Rp-default, tcpm would request 500mA when in
+> > SINK_DISCOVERY, Type-C spec advises the sink to follow BC1.2 current
+> > limits when Rp-default is advertised.
+> > [12750.503381] Requesting mux state 1, usb-role 2, orientation 1
+> > [12750.503837] state change SNK_ATTACHED -> SNK_STARTUP [rev3 NONE_AMS]
+> > [12751.003891] state change SNK_STARTUP -> SNK_DISCOVERY
+> > [12751.003900] Setting voltage/current limit 5000 mV 500 mA
+> >
+> > This patch restores the behavior where the tcpm would request 0mA when
+> > Rp-default is advertised by the source.
+> > [   73.174252] Requesting mux state 1, usb-role 2, orientation 1
+> > [   73.174749] state change SNK_ATTACHED -> SNK_STARTUP [rev3 NONE_AMS]
+> > [   73.674800] state change SNK_STARTUP -> SNK_DISCOVERY
+> > [   73.674808] Setting voltage/current limit 5000 mV 0 mA
+> >
+> > During SNK_DISCOVERY, Cap the current limit to PD_P_SNK_STDBY_MW / 5 only
+> > for slow_charger_loop case.
+> >
+> > Fixes: 1373fefc6243 ("Allow slow charging loops to comply to pSnkStby")
+>
+> Your string here was incorrect, I'll fix it up this time, but please be
+> more careful in the future as it will get caught by our scripts.
+>
+> thanks,
+>
+> greg k-h
