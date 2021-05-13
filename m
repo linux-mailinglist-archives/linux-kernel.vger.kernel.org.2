@@ -2,196 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F2D937F9E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 16:44:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAC2E37FA00
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 16:50:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234656AbhEMOpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 10:45:04 -0400
-Received: from mx13.kaspersky-labs.com ([91.103.66.164]:14889 "EHLO
-        mx13.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234630AbhEMOoQ (ORCPT
+        id S234708AbhEMOvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 10:51:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234683AbhEMOtG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 10:44:16 -0400
-Received: from relay13.kaspersky-labs.com (unknown [127.0.0.10])
-        by relay13.kaspersky-labs.com (Postfix) with ESMTP id DD6D6521A48;
-        Thu, 13 May 2021 17:42:59 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
-        s=mail202102; t=1620916980;
-        bh=rrC7pB7ZvT9skg01jvxfGXAPzON2vylog2KME9ggwAg=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
-        b=3QmIv7jjqLWHvcOfz6Q/41DWnTUmZ9uSF0AatbmEyFstDkU19KygWZUgF1BAhYwYl
-         nJ8Qa3E/8Ut21rTQd3bYVv6Rg2zn71ZBu3BPRSwEmFCljAVMU4pJU01IxRYfHRXYIe
-         iZOcwjsRJoBT464miKHP/vztNreeXn1l5Ob0RRES6is43frG1VRcXsTn+yE1Ura0q6
-         DdxTK2pFdmWoJ+g1F56rfFc5r+eAIAgTzWaVkSUxnRTijNIIic1ecMMCITiG/jCnU7
-         F19d6SaG7wBrkyVLx1MVGNhxaekqPC7+/W6hhpf0oun89eXcXNwIm5u6Y9BLeYs30V
-         8+ylbZ+el9s3w==
-Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
-        by mailhub13.kaspersky-labs.com (Postfix) with ESMTPS id 44D5752196F;
-        Thu, 13 May 2021 17:42:57 +0300 (MSK)
-Received: from [10.16.171.77] (10.64.68.129) by hqmailmbx3.avp.ru
- (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 13
- May 2021 17:42:48 +0300
-Subject: Re: [RFC PATCH v9 11/19] virtio/vsock: dequeue callback for
- SOCK_SEQPACKET
-To:     Stefano Garzarella <sgarzare@redhat.com>
-CC:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stsp2@yandex.ru" <stsp2@yandex.ru>,
-        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
-References: <20210508163027.3430238-1-arseny.krasnov@kaspersky.com>
- <20210508163523.3431999-1-arseny.krasnov@kaspersky.com>
- <20210513115816.332nfej4jyra7vrh@steredhat>
-From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Message-ID: <ff5e7e54-e56a-6574-2654-4afc3f10a28c@kaspersky.com>
-Date:   Thu, 13 May 2021 17:42:47 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 13 May 2021 10:49:06 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9F2FC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 07:47:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=GC0BeLIwJitw/05Pke8b1fCxtksraUnKyqn+n8GWAYw=; b=FsomFeG80mvBh+5IqrBYn6Li6V
+        YG2ivLD67q4AhekjxKXEnigL2BWmeB/yubGnP3eFlLgLn2an3p3L0JuvBHmkOaDPI/h+9PQWaKO0l
+        mk83yBJXOR1vuUs6sG0K9X98c3+GJdNM/DYpbpYe31KXqzYEbuw6llCMOZn1d248xLg1dvt6oGNTQ
+        TzOpmiH2yAQa65OtHKbBJ8+6+EY784Tnb+xAsnCbzfVF7j+B0CXM5lwHxLeHlnLpJs8dPFEA2kMQW
+        nftbYlCHuZir6ZwsiEt+oz0+F0anKD5+T+JvZgZi5YMaoZOnDqZm4SHx31C3jn+cXCimYFhTpV6dC
+        DV9KraYw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lhCct-005nP3-1a; Thu, 13 May 2021 14:47:47 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C29D53001E1;
+        Thu, 13 May 2021 16:42:57 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9DC4D2D1A9B5D; Thu, 13 May 2021 16:42:57 +0200 (CEST)
+Date:   Thu, 13 May 2021 16:42:57 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     kan.liang@linux.intel.com
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org, robh@kernel.org,
+        ak@linux.intel.com, acme@kernel.org, mark.rutland@arm.com,
+        luto@amacapital.net, eranian@google.com, namhyung@kernel.org
+Subject: Re: [PATCH V7 1/2] perf: Track per-PMU sched_task() callback users
+Message-ID: <YJ068cA0bGJA0C0T@hirez.programming.kicks-ass.net>
+References: <1620915782-50154-1-git-send-email-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210513115816.332nfej4jyra7vrh@steredhat>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.64.68.129]
-X-ClientProxiedBy: hqmailmbx1.avp.ru (10.64.67.241) To hqmailmbx3.avp.ru
- (10.64.67.243)
-X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/13/2021 14:30:02
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 163644 [May 13 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
-X-KSE-AntiSpam-Info: LuaCore: 445 445 d5f7ae5578b0f01c45f955a2a751ac25953290c9
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;kaspersky.com:7.1.1
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 05/13/2021 14:33:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 13.05.2021 13:39:00
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KLMS-Rule-ID: 52
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Status: not scanned, disabled by settings
-X-KLMS-AntiSpam-Interceptor-Info: not scanned
-X-KLMS-AntiPhishing: Clean, bases: 2021/05/13 13:03:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/05/13 10:44:00 #16575454
-X-KLMS-AntiVirus-Status: Clean, skipped
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1620915782-50154-1-git-send-email-kan.liang@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, May 13, 2021 at 07:23:01AM -0700, kan.liang@linux.intel.com wrote:
+> From: Kan Liang <kan.liang@linux.intel.com>
+> 
+> Current perf only tracks the per-CPU sched_task() callback users, which
+> doesn't work if a callback user is a task. For example, the dirty
+> counters have to be cleared to prevent data leakage when a new RDPMC
+> task is scheduled in. The task may be created on one CPU but running on
+> another CPU. It cannot be tracked by the per-CPU variable. A global
+> variable is not going to work either because of the hybrid PMUs.
+> Add a per-PMU variable to track the callback users.
+> 
+> In theory, the per-PMU variable should be checked everywhere the
+> sched_task() can be called. But the X86 RDPMC is the only user for the
+> per-PMU sched_cb_usage. A callback for the X86 RDPMC is required only
+> when a different context is scheduled in. To avoid unnecessary
+> sched_task() invoke, the per-PMU sched_cb_usage is only checked there.
+> Should there be any other ARCHs which require it in the other places,
+> it can be added later separately.
+> 
+> Suggested-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+> ---
+> 
+> - New patch. Split the V6 to core and x86 parts.
+> 
+>  include/linux/perf_event.h | 3 +++
+>  kernel/events/core.c       | 9 ++++++++-
+>  2 files changed, 11 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+> index c8a3388..c6ee202 100644
+> --- a/include/linux/perf_event.h
+> +++ b/include/linux/perf_event.h
+> @@ -301,6 +301,9 @@ struct pmu {
+>  	/* number of address filters this PMU can do */
+>  	unsigned int			nr_addr_filters;
+>  
+> +	/* Track the per PMU sched_task() callback users */
+> +	atomic_t			sched_cb_usage;
+> +
+>  	/*
+>  	 * Fully disable/enable this PMU, can be used to protect from the PMI
+>  	 * as well as for lazy/batch writing of the MSRs.
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index 1574b70..286b718 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -3851,7 +3851,14 @@ static void perf_event_context_sched_in(struct perf_event_context *ctx,
+>  		cpu_ctx_sched_out(cpuctx, EVENT_FLEXIBLE);
+>  	perf_event_sched_in(cpuctx, ctx, task);
+>  
+> -	if (cpuctx->sched_cb_usage && pmu->sched_task)
+> +	/*
+> +	 * X86 RDPMC is the only user for the per-PMU sched_cb_usage.
 
-On 13.05.2021 14:58, Stefano Garzarella wrote:
-> On Sat, May 08, 2021 at 07:35:20PM +0300, Arseny Krasnov wrote:
->> This adds transport callback and it's logic for SEQPACKET dequeue.
->> Callback fetches RW packets from rx queue of socket until whole record
->> is copied(if user's buffer is full, user is not woken up). This is done
->> to not stall sender, because if we wake up user and it leaves syscall,
->> nobody will send credit update for rest of record, and sender will wait
->> for next enter of read syscall at receiver's side. So if user buffer is
->> full, we just send credit update and drop data.
->>
->> Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->> ---
->> v8 -> v9:
->> 1) Check for RW packet type is removed from loop(all packet now
->>    considered RW).
->> 2) Locking in loop is fixed.
->> 3) cpu_to_le32()/le32_to_cpu() now used.
->> 4) MSG_TRUNC handling removed from transport.
->>
->> include/linux/virtio_vsock.h            |  5 ++
->> net/vmw_vsock/virtio_transport_common.c | 64 +++++++++++++++++++++++++
->> 2 files changed, 69 insertions(+)
->>
->> diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
->> index dc636b727179..02acf6e9ae04 100644
->> --- a/include/linux/virtio_vsock.h
->> +++ b/include/linux/virtio_vsock.h
->> @@ -80,6 +80,11 @@ virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
->> 			       struct msghdr *msg,
->> 			       size_t len, int flags);
->>
->> +ssize_t
->> +virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
->> +				   struct msghdr *msg,
->> +				   int flags,
->> +				   bool *msg_ready);
->> s64 virtio_transport_stream_has_data(struct vsock_sock *vsk);
->> s64 virtio_transport_stream_has_space(struct vsock_sock *vsk);
->>
->> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
->> index ad0d34d41444..f649a21dd23b 100644
->> --- a/net/vmw_vsock/virtio_transport_common.c
->> +++ b/net/vmw_vsock/virtio_transport_common.c
->> @@ -393,6 +393,58 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
->> 	return err;
->> }
->>
->> +static int virtio_transport_seqpacket_do_dequeue(struct vsock_sock *vsk,
->> +						 struct msghdr *msg,
->> +						 int flags,
->> +						 bool *msg_ready)
->> +{
->> +	struct virtio_vsock_sock *vvs = vsk->trans;
->> +	struct virtio_vsock_pkt *pkt;
->> +	int err = 0;
->> +	size_t user_buf_len = msg->msg_iter.count;
->> +
->> +	*msg_ready = false;
->> +	spin_lock_bh(&vvs->rx_lock);
->> +
->> +	while (!*msg_ready && !list_empty(&vvs->rx_queue) && err >= 0) {
->> +		size_t bytes_to_copy;
->> +		size_t pkt_len;
->> +
->> +		pkt = list_first_entry(&vvs->rx_queue, struct virtio_vsock_pkt, list);
->> +		pkt_len = (size_t)le32_to_cpu(pkt->hdr.len);
->> +		bytes_to_copy = min(user_buf_len, pkt_len);
->> +
->> +		if (bytes_to_copy) {
->> +			/* sk_lock is held by caller so no one else can dequeue.
->> +			 * Unlock rx_lock since memcpy_to_msg() may sleep.
->> +			 */
->> +			spin_unlock_bh(&vvs->rx_lock);
->> +
->> +			if (memcpy_to_msg(msg, pkt->buf, bytes_to_copy)) 
->> {
->> +				err = -EINVAL;
->> +			} else {
->> +				err += pkt_len;
-> If `bytes_to_copy == 0` we are not increasing the real length.
->
-> Anyway is a bit confusing increase a variable called `err`, I think is 
-> better to have another variable to store this information that we return 
-> if there aren't errors.
-Ack
->
->
+I think we can do without this line; since we know ARM64 also
+potentially wants this.
+
+> +	 * A callback for the X86 RDPMC is required only when a
+
+Also, I think we spell it: x86.
+
+> +	 * different context is scheduled in.
+> +	 * To avoid unnecessary sched_task() invoke, the per-PMU
+> +	 * sched_cb_usage is only checked here.
+> +	 */
+> +	if (pmu->sched_task && (cpuctx->sched_cb_usage || atomic_read(&pmu->sched_cb_usage)))
+>  		pmu->sched_task(cpuctx->task_ctx, true);
+>  
+>  	perf_pmu_enable(pmu);
+
+I'll sit on these patches a wee bit until Rob has provided feedback, but
+I'm thinking this should do.
