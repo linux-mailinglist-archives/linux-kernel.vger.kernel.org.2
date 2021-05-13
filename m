@@ -2,196 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B71A537F484
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 10:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18EF437F48D
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 10:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232244AbhEMI6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 04:58:21 -0400
-Received: from mga06.intel.com ([134.134.136.31]:35571 "EHLO mga06.intel.com"
+        id S232301AbhEMI7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 04:59:33 -0400
+Received: from mga02.intel.com ([134.134.136.20]:47029 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231176AbhEMI6T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 04:58:19 -0400
-IronPort-SDR: 4fN7iFgejAxJySbwOmkiQMWchUw66iMQ6TEnp4gFDx+tryBPF4ae01laQfaQcoLlmAF6MirHcE
- YIGkDZhvxA1Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="261152189"
+        id S232285AbhEMI7L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 04:59:11 -0400
+IronPort-SDR: Ge4mtf0cn6lSYAhWnhiJXhJVX9ivVdxTCxK2HBZKYvyo3vgMW9HrbPwTxK1bUlmXqpD/OONynx
+ +BFbM8E60cqQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="187032230"
 X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
-   d="scan'208";a="261152189"
+   d="scan'208";a="187032230"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 01:57:08 -0700
-IronPort-SDR: ogjvyMBaS7hJxTgzTfHj/rJSru07AIpL+12N6gLVnLt7seKvo+fJJ2rmp2D+0DoBkBmMezecYB
- 7Ft/q33Ur5rw==
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 01:58:00 -0700
+IronPort-SDR: BAcoaDI44qVcI+FFyL+H50gdAaRjrqFFVgW2+h0lTSQZKgMnBVrpcERcuc4QH7AX1LkrqN3uSX
+ hT3mP2jOkkCQ==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
-   d="scan'208";a="625927982"
-Received: from hongyuni-mobl1.ccr.corp.intel.com (HELO [10.238.1.57]) ([10.238.1.57])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 01:57:06 -0700
-Subject: Re: [tip: sched/core] sched/fair: Add a few assertions
-To:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Don Hiatt <dhiatt@digitalocean.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>, x86@kernel.org
-References: <20210422123308.015639083@infradead.org>
- <162081530827.29796.4612627849821173058.tip-bot2@tip-bot2>
-From:   "Ning, Hongyu" <hongyu.ning@linux.intel.com>
-Message-ID: <532b693a-3699-b3db-f61f-3c8596d8b006@linux.intel.com>
-Date:   Thu, 13 May 2021 16:56:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+   d="scan'208";a="625928216"
+Received: from aipg-stp-03.iil.intel.com ([143.185.92.28])
+  by fmsmga005.fm.intel.com with ESMTP; 13 May 2021 01:57:58 -0700
+From:   Guy Zadicario <guy.zadicario@intel.com>
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
+Cc:     olof@lixom.net, alexander.shishkin@linux.intel.com,
+        andriy.shevchenko@intel.com, yochai.shefi-simchon@intel.com,
+        guy.zadicario@intel.com
+Subject: [PATCH v2 00/15] misc: nnpi: New PCIe driver for Intel's NNP-I pcie device
+Date:   Thu, 13 May 2021 11:57:10 +0300
+Message-Id: <20210513085725.45528-1-guy.zadicario@intel.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-In-Reply-To: <162081530827.29796.4612627849821173058.tip-bot2@tip-bot2>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Organization: Intel Israel (74) Limited
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-On 2021/5/12 18:28, tip-bot2 for Peter Zijlstra wrote:
-> The following commit has been merged into the sched/core branch of tip:
-> 
-> Commit-ID:     9099a14708ce1dfecb6002605594a0daa319b555
-> Gitweb:        https://git.kernel.org/tip/9099a14708ce1dfecb6002605594a0daa319b555
-> Author:        Peter Zijlstra <peterz@infradead.org>
-> AuthorDate:    Tue, 17 Nov 2020 18:19:35 -05:00
-> Committer:     Peter Zijlstra <peterz@infradead.org>
-> CommitterDate: Wed, 12 May 2021 11:43:26 +02:00
-> 
-> sched/fair: Add a few assertions
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Tested-by: Don Hiatt <dhiatt@digitalocean.com>
-> Tested-by: Hongyu Ning <hongyu.ning@linux.intel.com>
-> Tested-by: Vincent Guittot <vincent.guittot@linaro.org>
-> Link: https://lkml.kernel.org/r/20210422123308.015639083@infradead.org
-> ---
->  kernel/sched/fair.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
-> 
+The following series is a driver for a new PCIe device from Intel named NNP-I
+(Nirvana Neural Processor for Inference). NNP-I is a PCIe connected compute
+device used for acceleration of AI deep learning inference applications in the
+data-center.
 
-Add quick test results based on tip tree sched/core merge commit:
+The reason that this driver should be in the kernel is that it aims to serve
+multiple users and user-space applications which might share the same NNP-I
+card. Workloads from multiple applications can be processed simultanously by
+the NNP-I card if enough compute resources exist.
 
-====TEST INFO====
-- kernel under test:
-	-- tip tree sched/core merge: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=60208dac643e24cbc62317de4e486fdcbbf05215
-	-- coresched_v10 kernel source: https://github.com/digitalocean/linux-coresched/commits/coresched/v10-v5.10.y
+Overview of the NNP-I device, driver structure and ABIs used in the driver is in
+patch#1, which adds the info as a document as it might be a useful info for
+anyone trying to understand the driver even past review.
 
-- test machine setup: 
-	CPU(s):              192
-	On-line CPU(s) list: 0-191
-	Thread(s) per core:  2
-	Core(s) per socket:  48
-	Socket(s):           2
-	NUMA node(s):        4
+In order to ease the review process, there will be multiple series for the
+entire driver code. This is the first series, and it implements everything
+necessary to initialize the NNP-I device and allow a user-space inference
+application to use it. Other features, which are mostly related to maintenance,
+device status visibility and error-handling, will be submitted on the next stage.
 
-- performance test workloads: 
-	-- A. sysbench cpu (192 threads) + sysbench cpu (192 threads)
-	-- B. sysbench cpu (192 threads) + sysbench mysql (192 threads)
-	-- C. uperf netperf.xml (192 threads over TCP or UDP protocol separately)
-	-- D. will-it-scale context_switch via pipe (192 threads)
+A basic user-space library and test application which illustrates the flow of
+an NNP-I inference application can be found here: https://github.com/IntelAI/nnpi-host
+(This series is enough for the test application to run)
 
-- negative test:
-	-- A. continuously toggle coresched (enable/disable) thru prctl on task cookies of PGID, during full loading of uperf workload with coresched on
-	-- B. continuously toggle smt (on/off) via /sys/devices/system/cpu/smt/control, during full loading of uperf workload with coresched on
+This patchset has gone through internal review inside Intel, the summary of the
+change log from the internal review follows.
 
-====TEST RESULTS====
-- performance change key info:
-	--workload B: coresched (cs_on), sysbench mysql performance drop around 20% vs coresched_v10
-	--workload C, coresched (cs_on), uperf performance increased almost double vs coresched_v10
-	--workload C, default (cs_off), uperf performance drop over 25% vs coresched_v10, same issue seen on v5.13-rc1 base (w/o coresched patchset)
-	--workload D, coresched (cs_on), wis performance increased almost double vs coresched_v10
+I would appreciate any feedback, questions or comments to this series.
 
-- negative test summary:
-	no platform hang or kernel panic observed for both test
+Changes in v2:
+    - Removed email disclaimer added to the end of each patch.
+    - Small fix to Kconfig requested by Randy
+    - Removed from this cover letter the long Intel internal pre-review change
+      log of this patchset.
 
-- performance info of workloads, normalized based on coresched_v10 results
-	-- performance workload A:
-	Note: 
-	* no performance change compared to coresched_v10
-+---------------------------------------+------+--------------------------------------+----------------------------------------+-------+-------------------------------+---------------------------------+
-|                                       | **   | coresched_tip_merge_base_v5.13-rc1   | coresched_tip_merge_base_v5.13-rc1     | **    | coresched_v10_base_v5.10.11   | coresched_v10_base_v5.10.11     |
-+=======================================+======+======================================+========================================+=======+===============================+=================================+
-| workload                              | **   | sysbench cpu * 192                   | sysbench cpu * 192                     | **    | sysbench cpu * 192            | sysbench cpu * 192              |
-+---------------------------------------+------+--------------------------------------+----------------------------------------+-------+-------------------------------+---------------------------------+
-| prctl/cgroup                          | **   | prctl on workload cpu_0              | prctl on workload cpu_1                | **    | cg_sysbench_cpu_0             | cg_sysbench_cpu_1               |
-+---------------------------------------+------+--------------------------------------+----------------------------------------+-------+-------------------------------+---------------------------------+
-| record_item                           | **   | Tput_avg (events/s)                  | Tput_avg (events/s)                    | **    | Tput_avg (events/s)           | Tput_avg (events/s)             |
-+---------------------------------------+------+--------------------------------------+----------------------------------------+-------+-------------------------------+---------------------------------+
-| coresched normalized vs coresched_v10 | **   | 0.97                                 | 1.05                                   | **    | 1                             | 1                               |
-+---------------------------------------+------+--------------------------------------+----------------------------------------+-------+-------------------------------+---------------------------------+
-| default normalized vs coresched_v10   | **   | 1.03                                 | 0.95                                   | **    | 1                             | 1                               |
-+---------------------------------------+------+--------------------------------------+----------------------------------------+-------+-------------------------------+---------------------------------+
-| smtoff normalized vs coresched_v10    | **   | 0.96                                 | 1.04                                   | **    | 1                             | 1                               |
-+---------------------------------------+------+--------------------------------------+----------------------------------------+-------+-------------------------------+---------------------------------+
+Link to v1 cover letter: https://lwn.net/Articles/856037/
 
+Guy Zadicario (15):
+  misc: nnpi: Document NNP-I's driver overview
+  misc: nnpi: Initialize NNP-I framework and PCIe modules
+  misc: nnpi: Manage and schedule messages to device
+  misc: nnpi: Define host/card ipc protocol
+  misc: nnpi: Manage host memory resources
+  misc: nnpi: Allow usermode to manage host resources
+  misc: nnpi: Disallow host memory resource access if no NNP-I devices
+    exist
+  misc: nnpi: Boot NNP-I device
+  misc: nnpi: Process device response messages
+  misc: nnpi: Query and verify device protocol
+  misc: nnpi: Create comm channel from app to device
+  misc: nnpi: Route device response messages
+  misc: nnpi: Expose command channel file interface
+  misc: nnpi: Create command channel from userspace
+  misc: nnpi: Map host resources to device channel
 
-	-- performance workload B:
-	Note: 
-	* coresched (cs_on), sysbench mysql performance drop around 20% vs coresched_v10
-+---------------------------------------+------+--------------------------------------+----------------------------------------+-------+-------------------------------+---------------------------------+
-|                                       | **   | coresched_tip_merge_base_v5.13-rc1   | coresched_tip_merge_base_v5.13-rc1     | **    | coresched_v10_base_v5.10.11   | coresched_v10_base_v5.10.11     |
-+=======================================+======+======================================+========================================+=======+===============================+=================================+
-| workload                              | **   | sysbench cpu * 192                   | sysbench mysql * 192                   | **    | sysbench cpu * 192            | sysbench mysql * 192            |
-+---------------------------------------+------+--------------------------------------+----------------------------------------+-------+-------------------------------+---------------------------------+
-| prctl/cgroup                          | **   | prctl on workload cpu_0              | prctl on workload mysql_0              | **    | cg_sysbench_cpu_0             | cg_sysbench_mysql_0             |
-+---------------------------------------+------+--------------------------------------+----------------------------------------+-------+-------------------------------+---------------------------------+
-| record_item                           | **   | Tput_avg (events/s)                  | Tput_avg (events/s)                    | **    | Tput_avg (events/s)           | Tput_avg (events/s)             |
-+---------------------------------------+------+--------------------------------------+----------------------------------------+-------+-------------------------------+---------------------------------+
-| coresched normalized vs coresched_v10 | **   | 1.02                                 | 0.81                                   | **    | 1                             | 1                               |
-+---------------------------------------+------+--------------------------------------+----------------------------------------+-------+-------------------------------+---------------------------------+
-| default normalized vs coresched_v10   | **   | 1.01                                 | 0.94                                   | **    | 1                             | 1                               |
-+---------------------------------------+------+--------------------------------------+----------------------------------------+-------+-------------------------------+---------------------------------+
-| smtoff normalized vs coresched_v10    | **   | 0.93                                 | 1.18                                   | **    | 1                             | 1                               |
-+---------------------------------------+------+--------------------------------------+----------------------------------------+-------+-------------------------------+---------------------------------+
+ Documentation/ABI/testing/sysfs-driver-intel_nnpi  |    5 +
+ Documentation/misc-devices/index.rst               |    1 +
+ Documentation/misc-devices/intel-nnpi.rst          |  237 +++++
+ MAINTAINERS                                        |    6 +
+ drivers/misc/Kconfig                               |    1 +
+ drivers/misc/Makefile                              |    1 +
+ drivers/misc/intel-nnpi/Kconfig                    |   18 +
+ drivers/misc/intel-nnpi/Makefile                   |   13 +
+ drivers/misc/intel-nnpi/bootimage.c                |  246 +++++
+ drivers/misc/intel-nnpi/bootimage.h                |   43 +
+ drivers/misc/intel-nnpi/cmd_chan.c                 |  790 ++++++++++++++
+ drivers/misc/intel-nnpi/cmd_chan.h                 |  134 +++
+ drivers/misc/intel-nnpi/device.c                   | 1081 ++++++++++++++++++++
+ drivers/misc/intel-nnpi/device.h                   |  182 ++++
+ drivers/misc/intel-nnpi/device_chardev.c           |  789 ++++++++++++++
+ drivers/misc/intel-nnpi/device_chardev.h           |   14 +
+ drivers/misc/intel-nnpi/host_chardev.c             |  353 +++++++
+ drivers/misc/intel-nnpi/host_chardev.h             |   12 +
+ drivers/misc/intel-nnpi/hostres.c                  |  627 ++++++++++++
+ drivers/misc/intel-nnpi/hostres.h                  |  167 +++
+ .../misc/intel-nnpi/ipc_include/ipc_c2h_events.h   |  198 ++++
+ drivers/misc/intel-nnpi/ipc_include/ipc_protocol.h |  340 ++++++
+ .../misc/intel-nnpi/ipc_include/nnp_boot_defs.h    |   71 ++
+ drivers/misc/intel-nnpi/ipc_include/nnp_elbi.h     |   91 ++
+ drivers/misc/intel-nnpi/msg_scheduler.c            |  319 ++++++
+ drivers/misc/intel-nnpi/msg_scheduler.h            |  153 +++
+ drivers/misc/intel-nnpi/nnp_pcie.c                 |  530 ++++++++++
+ drivers/misc/intel-nnpi/nnp_user.c                 |  131 +++
+ drivers/misc/intel-nnpi/nnp_user.h                 |   79 ++
+ include/uapi/misc/intel_nnpi.h                     |  304 ++++++
+ 30 files changed, 6936 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-driver-intel_nnpi
+ create mode 100644 Documentation/misc-devices/intel-nnpi.rst
+ create mode 100644 drivers/misc/intel-nnpi/Kconfig
+ create mode 100644 drivers/misc/intel-nnpi/Makefile
+ create mode 100644 drivers/misc/intel-nnpi/bootimage.c
+ create mode 100644 drivers/misc/intel-nnpi/bootimage.h
+ create mode 100644 drivers/misc/intel-nnpi/cmd_chan.c
+ create mode 100644 drivers/misc/intel-nnpi/cmd_chan.h
+ create mode 100644 drivers/misc/intel-nnpi/device.c
+ create mode 100644 drivers/misc/intel-nnpi/device.h
+ create mode 100644 drivers/misc/intel-nnpi/device_chardev.c
+ create mode 100644 drivers/misc/intel-nnpi/device_chardev.h
+ create mode 100644 drivers/misc/intel-nnpi/host_chardev.c
+ create mode 100644 drivers/misc/intel-nnpi/host_chardev.h
+ create mode 100644 drivers/misc/intel-nnpi/hostres.c
+ create mode 100644 drivers/misc/intel-nnpi/hostres.h
+ create mode 100644 drivers/misc/intel-nnpi/ipc_include/ipc_c2h_events.h
+ create mode 100644 drivers/misc/intel-nnpi/ipc_include/ipc_protocol.h
+ create mode 100644 drivers/misc/intel-nnpi/ipc_include/nnp_boot_defs.h
+ create mode 100644 drivers/misc/intel-nnpi/ipc_include/nnp_elbi.h
+ create mode 100644 drivers/misc/intel-nnpi/msg_scheduler.c
+ create mode 100644 drivers/misc/intel-nnpi/msg_scheduler.h
+ create mode 100644 drivers/misc/intel-nnpi/nnp_pcie.c
+ create mode 100644 drivers/misc/intel-nnpi/nnp_user.c
+ create mode 100644 drivers/misc/intel-nnpi/nnp_user.h
+ create mode 100644 include/uapi/misc/intel_nnpi.h
 
+-- 
+1.8.3.1
 
-	-- performance workload C:
-	Note: 
-	* coresched (cs_on), uperf performance increased almost double vs coresched_v10
-	* default (cs_off), uperf performance drop over 25% vs coresched_v10, same issue seen on v5.13-rc1 base (w/o coresched patchset)
-+---------------------------------------+------+--------------------------------------+----------------------------------------+-------+-------------------------------+---------------------------------+
-|                                       | **   | coresched_tip_merge_base_v5.13-rc1   | coresched_tip_merge_base_v5.13-rc1     | **    | coresched_v10_base_v5.10.11   | coresched_v10_base_v5.10.11     |
-+=======================================+======+======================================+========================================+=======+===============================+=================================+
-| workload                              | **   | uperf netperf TCP * 192              | uperf netperf UDP * 192                | **    | uperf netperf TCP * 192       | uperf netperf UDP * 192         |
-+---------------------------------------+------+--------------------------------------+----------------------------------------+-------+-------------------------------+---------------------------------+
-| prctl/cgroup                          | **   | prctl on workload uperf              | prctl on workload uperf                | **    | cg_uperf                      | cg_uperf                        |
-+---------------------------------------+------+--------------------------------------+----------------------------------------+-------+-------------------------------+---------------------------------+
-| record_item                           | **   | Tput_avg (Gb/s)                      | Tput_avg (Gb/s)                        | **    | Tput_avg (Gb/s)               | Tput_avg (Gb/s)                 |
-+---------------------------------------+------+--------------------------------------+----------------------------------------+-------+-------------------------------+---------------------------------+
-| coresched normalized vs coresched_v10 | **   | 1.83                                 | 1.93                                   | **    | 1                             | 1                               |
-+---------------------------------------+------+--------------------------------------+----------------------------------------+-------+-------------------------------+---------------------------------+
-| default normalized vs coresched_v10   | **   | 0.75                                 | 0.71                                   | **    | 1                             | 1                               |
-+---------------------------------------+------+--------------------------------------+----------------------------------------+-------+-------------------------------+---------------------------------+
-| smtoff normalized vs coresched_v10    | **   | 1                                    | 1.06                                   | **    | 1                             | 1                               |
-+---------------------------------------+------+--------------------------------------+----------------------------------------+-------+-------------------------------+---------------------------------+
-
-
-	-- performance workload D:
-	Note: 
-	* coresched (cs_on), wis performance increased almost double vs coresched_v10
-	* default (cs_off) and smtoff, wis performance is better vs coresched_v10
-+---------------------------------------+------+--------------------------------------+-------+-------------------------------+
-|                                       | **   | coresched_tip_merge_base_v5.13-rc1   | **    | coresched_v10_base_v5.10.11   |
-+=======================================+======+======================================+=======+===============================+
-| workload                              | **   | will-it-scale  * 192                 | **    | will-it-scale  * 192          |
-|                                       |      | (pipe based context_switch)          |       | (pipe based context_switch)   |
-+---------------------------------------+------+--------------------------------------+-------+-------------------------------+
-| prctl/cgroup                          | **   | prctl on workload wis                | **    | cg_wis                        |
-+---------------------------------------+------+--------------------------------------+-------+-------------------------------+
-| record_item                           | **   | threads_avg                          | **    | threads_avg                   |
-+---------------------------------------+------+--------------------------------------+-------+-------------------------------+
-| coresched normalized vs coresched_v10 | **   | 2.01                                 | **    | 1.00                          |
-+---------------------------------------+------+--------------------------------------+-------+-------------------------------+
-| default normalized vs coresched_v10   | **   | 1.13                                 | **    | 1.00                          |
-+---------------------------------------+------+--------------------------------------+-------+-------------------------------+
-| smtoff normalized vs coresched_v10    | **   | 1.29                                 | **    | 1.00                          |
-+---------------------------------------+------+--------------------------------------+-------+-------------------------------+
-
-
-	-- notes on record_item:
-	* coresched normalized vs coresched_v10: smton, cs enabled, test result normalized by result of coresched_v10 under same config
-	* default normalized vs coresched_v10: smton, cs disabled, test result normalized by result of coresched_v10 under same config
-	* smtoff normalized vs coresched_v10: smtoff, test result normalized by result of coresched_v10 under same config
-
-
-
--- Hongyu Ning
