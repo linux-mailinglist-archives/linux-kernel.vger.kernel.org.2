@@ -2,175 +2,431 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62CB737F8C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 15:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 367AC37F8CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 15:30:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234009AbhEMNae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 09:30:34 -0400
-Received: from mail-dm6nam11on2093.outbound.protection.outlook.com ([40.107.223.93]:15464
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233682AbhEMNa0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 09:30:26 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nxx2s0b0M4AIPqQyR2a9X8uvMbICAKYVTOyJ8fUW0Xnqtej2H5W3Il9IMIs/MtSI5QSOPSmd4KJVnT/1CP3cZOTxJdWLw4+YJEa/VBQsJ1gglmh49UbS90gA24sEjX+VMubn9Bwp9QXbMA7nxlleXB17zSPiyC3X3xAUJWXOI9qtJKl2J9eEL7orDn5uWZHb6j0pbeRj5gR0zG9DpACTpL7Gwepys+vnjCtcOTJR81GiwdjDjAWNZkNSbRYwDRoc4RjZa95ms0HuvQAgeU4dpT8+B0LeuPqldirtG1wK4AaqpAMH5ltPcozSMzsJWJGQMly21mlgfXk7wqVAn9cIrw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BimLK9ORUWDcrfDs6YAMxjSFv5lD8rK0xVQ5rTGJ4ZE=;
- b=RMCGPZTJVijA7+WW/v4d3du1v+5tlRuz9SLH25q3Lmsl93pAu7wOMyDQMQ9P/PBGdlh3aZ/QMHAefQHt4bNUOHcSV6GZPFzXGHtlDhbxnFDsSahpk0OVrAnaInF3cmlqy7e1q8AeyP2qtsNBYFae1b6ccNfDE+uOcyfCweSultbbzeJ4qapVBWWf6lfBdOx804Wg4Tc2tceMRt2/nRaTdI4ILD2UEqqHguVe+BACsTBfqbquHSWat55Tv/TOM3v8CX1HAeXO4U8nYuLBYC1MhphHVhlaeYTmJhpZstLVKKtNn0CoD0bZ1XclzbJN5mz6bfwgZz26qYkPvqnf1yVxFg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BimLK9ORUWDcrfDs6YAMxjSFv5lD8rK0xVQ5rTGJ4ZE=;
- b=eUjNArdLG02uqAeduIWnzpdVl+vEF31ipKLoHFsdfcV9rWQ17m2nr4+4xw4I9WJXVdqrrba4+5vRndogS/adcxpqqMEq1AsTge5q1OpwdNUdRj8wmKYp8feuF3k/e7FT+mlsrJi4oV4ni7c7EGlooPXWHXtmvAwKdQWxAQkiQmc=
-Received: from MWHPR21MB1593.namprd21.prod.outlook.com (2603:10b6:301:7c::11)
- by MWHPR21MB0479.namprd21.prod.outlook.com (2603:10b6:300:ec::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.4; Thu, 13 May
- 2021 13:29:12 +0000
-Received: from MWHPR21MB1593.namprd21.prod.outlook.com
- ([fe80::3c30:6e04:401d:c31f]) by MWHPR21MB1593.namprd21.prod.outlook.com
- ([fe80::3c30:6e04:401d:c31f%4]) with mapi id 15.20.4129.023; Thu, 13 May 2021
- 13:29:12 +0000
-From:   Michael Kelley <mikelley@microsoft.com>
-To:     vkuznets <vkuznets@redhat.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
-CC:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Mohammed Gamal <mgamal@redhat.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2] clocksource/drivers/hyper-v: Re-enable
- VDSO_CLOCKMODE_HVCLOCK on X86
-Thread-Topic: [PATCH v2] clocksource/drivers/hyper-v: Re-enable
- VDSO_CLOCKMODE_HVCLOCK on X86
-Thread-Index: AQHXR8o0RJ8YAiwgrESS6i4iXccGgarhZ+3w
-Date:   Thu, 13 May 2021 13:29:12 +0000
-Message-ID: <MWHPR21MB15932C5EC2FA75D50B268951D7519@MWHPR21MB1593.namprd21.prod.outlook.com>
-References: <20210513073246.1715070-1-vkuznets@redhat.com>
-In-Reply-To: <20210513073246.1715070-1-vkuznets@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=0c66f6c1-eef1-4cc4-8cf4-0d54d5b0de89;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-05-13T13:27:43Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=microsoft.com;
-x-originating-ip: [24.22.167.197]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 8e4423ab-02d7-4ab6-2804-08d9161318a9
-x-ms-traffictypediagnostic: MWHPR21MB0479:
-x-ms-exchange-transport-forked: True
-x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-x-microsoft-antispam-prvs: <MWHPR21MB047935C363DF344EE26E78DFD7519@MWHPR21MB0479.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:454;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 81P2RmFvuBBLe4Pua3JwQPLfu31I4P7+w3hGWekVjpYGCc2kzBvnsFfIiGKVdEwjZWU8p2ebzD84C6/vaw9MQv0FZV4Xfk3+A03Yfrv5QuoXlOSfxYD2pJQZg2ZAf1T1nImY3wBc3oJHJRqXdnb/jySL9xP7i+NlHfPuTs3NDQ7U1Pm2FbCxjaSlNw2RvZOKsFc0uP6pQEIstc53buU+4jgxG121D5Ols1C3L9+kG+6FBKmJb5pidNEJgyIffS6oFRCAd01p0c66seg7MHlDfL+WN7Lwl1LCcwpN3xk2FFhdMzyNcrZ/e/jioNqWQuXD1DDLDLuyqZMaEqYBfpF7mfo+jfihHqnjrDfeBC/jb3NAwiOQSUb4eqetFdjtuDK+rQO70H/3c6+VPefKj6RngF2QAEPjfQy+2gjT+A+Bjy62GcH0yDltqn+rKKPfz2N3Uq+yGTe0+CbauOKEfonNle0/3D9hnqaW9T1jR8+JSvGyUXu7rrHQZ6mM8+y56JWG2u81asp4cmhDoZcnbCqd2XzXf5EwqtstwGlVgpkIjIQkEm28TtUBF0vmF70SarhcpqWYNOQLjRvGkggpTLT1HLfSw62bTaPjG8O+z1tEVk89gR8KotyUuTWyvio3j4FwLmLmodqyf6gV4vqV3YGmg56HeoRBn0+btsOxY2w/VjDj3DIMWYwmqm6oCjui0H8Db2uQUGC8yoQX4k9YhFNqqxOkXxDJTojVRCZZy5yXVqs=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66476007)(186003)(66556008)(66946007)(8936002)(64756008)(76116006)(5660300002)(55016002)(9686003)(52536014)(82950400001)(82960400001)(6506007)(2906002)(8676002)(33656002)(66446008)(110136005)(122000001)(38100700002)(86362001)(498600001)(8990500004)(10290500003)(26005)(7696005)(4326008)(71200400001)(83380400001)(54906003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 2
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?U51pOGybax9tcjD9EqyQuSjtz+XK8IwQ2OBLCzcZMz50BbJBnq5ibshwSojU?=
- =?us-ascii?Q?ia0WVTS8GWZW36S4Vh+4Ok2v24d98AwlfnyZ9Ts5bNlc+POPgtJX2D9eR5g+?=
- =?us-ascii?Q?18JNtAutNoyzqzXAAOD6vac+eerFKvXPydfBGbjnTLw/br5hwWRKdC3hbvMN?=
- =?us-ascii?Q?E+l0q9a+jsFS88PV5NRBpudUxbxKgUkJRtQQHeZlpEmzqeSAvikSCZS9yC+T?=
- =?us-ascii?Q?XmH40GT3Dwh7JmHF8p7DIfbT0Ba7plXTDyRxzZMc8zdi4E5kGi7gZ0yggoz8?=
- =?us-ascii?Q?EFFUa1Dq3ThygX7bxp/RpM1xmwVg7qEAkIZCgeIR529ZMSycmQtdHlqbDo10?=
- =?us-ascii?Q?6C8WucwRPW2MQyxvk8QcYHK3S3oWW8rOAUsezWTA7yDFOhtObTnS5lc5m9AG?=
- =?us-ascii?Q?BiPDDR9NLQNTnv+uXKTOlve77Ho3hLUny8gT1U97CRYFnRhRYZZm8k4pw+rH?=
- =?us-ascii?Q?h6siNgI19ZaA3ln8wGhpTxXWSiP2dectrpMAH8donxfu1jOlvGLShv/MtTaH?=
- =?us-ascii?Q?MkWgKK5kiypEWiyBW/HbDf93Z+hJ5RQl3KhF70lqcplkBFI4BR3MD7oe0+G2?=
- =?us-ascii?Q?IMLeev+7mTAMZHw6i0rnHDJlAdjPo0GWCgHi60l8GaehssFLutnFCRqQidgm?=
- =?us-ascii?Q?gIyhLPtts9TBw5MGk6mCGunF7p0jN3EifdAbBp+IomqD9F5HRuALMrbb53jb?=
- =?us-ascii?Q?woxDTPe9rtSjUjXuvnXiiPmisbAPeIfYveAtNPEwICoc0zMFa8x+XUystZNK?=
- =?us-ascii?Q?HmGODHslBWciywL5gmFw2t0X12g97kX+u6ENy/QNZhb/TwG1f8g6fv6d70I8?=
- =?us-ascii?Q?yKvgM1vIxk4vZSW2/XuQY3H6w1tpzt5F/C1zuXHN1brF8YgCu6lF9r3SDTin?=
- =?us-ascii?Q?Nbp0wCitFXNAaoS40kELL11GdlwAr7xNMKn6/pCybvUE6vKLSkXKRMsim3DG?=
- =?us-ascii?Q?KG8PYDpR/kMtOwZoRtOYhDnbfWq83GhRo7dczwcx?=
-x-ms-exchange-antispam-messagedata-1: BlT9eL/KG9O2gYJG+7w9AvtzKOL3VwKRoEzvjAaMo17vfkjbWnbCrzkxDXqHyV8ltHdjIAu+4lY/3j6iUDtnO3g/Kt/MNycKQ0IdMHVszxt/5Wni/WXAvmRHmVWULuod894CxtOXYza7Aky8E26+WGjUlkCyZgG18WsRt4yqpm4OVbsopH42j4sfPDQFsHIcWyf1ppw/dItgk5xV5SkbTTpwUu/jZhVdL1J15QEuRoi3guQXz3SphZescRzcRcUOJ8smHFmqWujaORlLguvDo0rSsw0F1hhmfz11A48OSW02EFWGmI4BuFSEmXMIDy8xxXtSUcxOmjAZ2+Bwdtg7Pixn
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S233997AbhEMNbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 09:31:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234037AbhEMNbY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 09:31:24 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09E0EC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 06:30:14 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id i67so25420522qkc.4
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 06:30:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vt-edu.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:organization:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=VT1dV6AjLP/QS60i88a5p7kaqLOLYLEelvnbSUxEIOg=;
+        b=YvH7GGtMbIPfScYJI5R0I5sKwfx8E00K4A4JRFJfiahImynvwNOBLFyz8cjPfwWKWw
+         bAex1xUHgfuIPjhspuflEZB9WYGbuLZhDr+yjylwJraU+Bn5pqFBKngoiVrCLj24qHG8
+         QU0LLMMhnHjsqvJ+Vz3IIkTxF/uPk6Rg7AHtlkwW4hencTJt2oMxHRv9ME1OMtu4si38
+         qNc+MHm17XBdsJNcYnqST8fZqmj2wRAfj4XWIRtW1U9KoHYJ6ykrP3dHFQ7JObNxEqdI
+         AKfZsPtR/Q+/ztlTZLiiyoIXTrch2DFnRw2q1E81KbSqbczR5t+hGwZrQ/HnqkxYufB7
+         ESwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:organization
+         :in-reply-to:references:mime-version:content-transfer-encoding;
+        bh=VT1dV6AjLP/QS60i88a5p7kaqLOLYLEelvnbSUxEIOg=;
+        b=t+J7SMRYqm1scV6LUskV0tDTUE19aJhNiC69NFUuNGMsurKlS3qk4yqh3RZWyaolar
+         kCYSeqqZC2kk7MK3CNFMvhwzSeKsp+qIRjTmzR5B4eKfjm5z0Znh0LRr+TnWLw1LVjFV
+         OctPYvqgjWB10Ds7YyMQ3pRgG3qQ5b9HJMeRjAVZ4Z87wKUqYbK+0J7pUYf8v7AB60LD
+         SKT9BEB7japUbx3JXrLlsCUvxsRy/53G3vu554/xP6VeBzgQyYXYQXQfWw2TEaysuBPQ
+         PTkDpD0in9wFwJic2UrAJ+myT6erXWUXW9KH0XsGvxoEVixYshHelwtDel7VVvoVr7+/
+         yKXQ==
+X-Gm-Message-State: AOAM530+dpD7sgvV2F2hB+B83NXmUpDJOxlmiSn5VIQPUuW1ieRKdD3/
+        13kIQBluHpuJGw3tx9ENCkdCZw==
+X-Google-Smtp-Source: ABdhPJwG6H5TQrDb5B18BgB6cVJ7RTemPazIfaoZL95CeCpMViOMwZwRS1/o+TRTCjKKylodNtJ4ag==
+X-Received: by 2002:a37:9ec4:: with SMTP id h187mr39481862qke.200.1620912612949;
+        Thu, 13 May 2021 06:30:12 -0700 (PDT)
+Received: from iron-maiden.localnet ([2600:380:917d:9267:5528:eac3:c4c:5275])
+        by smtp.gmail.com with ESMTPSA id p17sm1471989qtq.87.2021.05.13.06.30.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 May 2021 06:30:12 -0700 (PDT)
+From:   Carlos Bilbao <bilbao@vt.edu>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     gregkh@linuxfoundation.org, Jonathan.Cameron@huawei.com,
+        corbet@lwn.net, hdegoede@redhat.com, linux-kernel@vger.kernel.org,
+        tytso@mit.edu, rdunlap@infradead.org
+Subject: Re: [PATCH v3] Fixed typos in all directories of Documentation/ABI/
+Date:   Thu, 13 May 2021 09:30:09 -0400
+Message-ID: <11748343.O9o76ZdvQC@iron-maiden>
+Organization: Virginia Tech
+In-Reply-To: <20210506185109.1d5ac46d@coco.lan>
+References: <2219636.ElGaqSPkdT@iron-maiden> <4312859.LvFx2qVVIh@iron-maiden> <20210506185109.1d5ac46d@coco.lan>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8e4423ab-02d7-4ab6-2804-08d9161318a9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 May 2021 13:29:12.0836
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 4mo9yDSTE+lzPxlc+nX+hrrrlAnFdWAs7qil4lo4Pi2FJLGFEcCLQGGg34Gdt8zyJK07Hvm+0gj65RfI909dQNhtwRjoIFsfQqTvmyT1TGo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR21MB0479
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vitaly Kuznetsov <vkuznets@redhat.com> Sent: Thursday, May 13, 2021 1=
-2:33 AM
->=20
-> Mohammed reports (https://bugzilla.kernel.org/show_bug.cgi?id=3D213029)
-> the commit e4ab4658f1cf ("clocksource/drivers/hyper-v: Handle vDSO
-> differences inline") broke vDSO on x86. The problem appears to be that
-> VDSO_CLOCKMODE_HVCLOCK is an enum value in 'enum vdso_clock_mode' and
-> '#ifdef VDSO_CLOCKMODE_HVCLOCK' branch evaluates to false (it is not
-> a define). Use a dedicated HAVE_VDSO_CLOCKMODE_HVCLOCK define instead.
->=20
-> Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-> Reported-by: Mohammed Gamal <mgamal@redhat.com>
-> Fixes: e4ab4658f1cf ("clocksource/drivers/hyper-v: Handle vDSO difference=
-s inline")
-> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> ---
->  arch/x86/include/asm/vdso/clocksource.h | 2 ++
->  drivers/clocksource/hyperv_timer.c      | 4 ++--
->  2 files changed, 4 insertions(+), 2 deletions(-)
->=20
-> diff --git a/arch/x86/include/asm/vdso/clocksource.h
-> b/arch/x86/include/asm/vdso/clocksource.h
-> index 119ac8612d89..136e5e57cfe1 100644
-> --- a/arch/x86/include/asm/vdso/clocksource.h
-> +++ b/arch/x86/include/asm/vdso/clocksource.h
-> @@ -7,4 +7,6 @@
->  	VDSO_CLOCKMODE_PVCLOCK,	\
->  	VDSO_CLOCKMODE_HVCLOCK
->=20
-> +#define HAVE_VDSO_CLOCKMODE_HVCLOCK
-> +
->  #endif /* __ASM_VDSO_CLOCKSOURCE_H */
-> diff --git a/drivers/clocksource/hyperv_timer.c b/drivers/clocksource/hyp=
-erv_timer.c
-> index 977fd05ac35f..d6ece7bbce89 100644
-> --- a/drivers/clocksource/hyperv_timer.c
-> +++ b/drivers/clocksource/hyperv_timer.c
-> @@ -419,7 +419,7 @@ static void resume_hv_clock_tsc(struct clocksource *a=
-rg)
->  	hv_set_register(HV_REGISTER_REFERENCE_TSC, tsc_msr);
->  }
->=20
-> -#ifdef VDSO_CLOCKMODE_HVCLOCK
-> +#ifdef HAVE_VDSO_CLOCKMODE_HVCLOCK
->  static int hv_cs_enable(struct clocksource *cs)
->  {
->  	vclocks_set_used(VDSO_CLOCKMODE_HVCLOCK);
-> @@ -435,7 +435,7 @@ static struct clocksource hyperv_cs_tsc =3D {
->  	.flags	=3D CLOCK_SOURCE_IS_CONTINUOUS,
->  	.suspend=3D suspend_hv_clock_tsc,
->  	.resume	=3D resume_hv_clock_tsc,
-> -#ifdef VDSO_CLOCKMODE_HVCLOCK
-> +#ifdef HAVE_VDSO_CLOCKMODE_HVCLOCK
->  	.enable =3D hv_cs_enable,
->  	.vdso_clock_mode =3D VDSO_CLOCKMODE_HVCLOCK,
->  #else
-> --
-> 2.31.1
+Fix the following typos in the Documentation/ABI/ directory:
 
-Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+- In file obsolete/sysfs-cpuidle, change "obselete" for "obsolete".
+
+- In file removed/sysfs-kernel-uids, change "propotional" for "proportional".
+
+- In directory stable/, fix the following words: "associtated" for "associated",
+  "hexidecimal" for "hexadecimal", "vlue" for "value", "csed" for "caused" and 
+  "wrtie" for "write". This updates a total of five files.
+
+- In directory testing/, fix the following words: "subystem" for "subsystem", 
+  "isochrnous" for "isochronous", "Desctiptors" for "Descriptors", "picutre" for 
+  "picture", "capture" for "capture", "occured" for "ocurred", "connnected" for 
+  "connected","agressively" for "aggressively","manufacturee" for "manufacturer"
+  and "transaction" for "transaction", "malformatted" for "incorrectly formated"
+  ,"internel" for "internal", "writtento" for "written to", "specificed" for 
+  "specified", "beyound" for "beyond", "Symetric" for "Symmetric". This updates
+  a total of eleven files.
+
+Signed-off-by: Carlos Bilbao <bilbao@vt.edu>
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+Reviewed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+
+v2: Removed change for "misconfiguration", fixed typos in file 
+    Documentation/ABI/testing/sysfs-devices-system-cpu.
+
+v3: Changed "malformatted" for "incorrectly formatted", which is more readable 
+    than "malformed".
+    |
+    v3.1: Changed spaces for tabs in new line of file testing/sysfs-bus-pci.
+---
+ Documentation/ABI/obsolete/sysfs-cpuidle            |  2 +-
+ Documentation/ABI/removed/sysfs-kernel-uids         |  2 +-
+ Documentation/ABI/stable/sysfs-bus-vmbus            |  2 +-
+ Documentation/ABI/stable/sysfs-bus-xen-backend      |  2 +-
+ Documentation/ABI/stable/sysfs-driver-dma-idxd      |  2 +-
+ Documentation/ABI/stable/sysfs-driver-mlxreg-io     |  4 ++--
+ Documentation/ABI/testing/configfs-iio              |  2 +-
+ Documentation/ABI/testing/configfs-most             |  8 ++++----
+ Documentation/ABI/testing/configfs-usb-gadget       |  2 +-
+ Documentation/ABI/testing/configfs-usb-gadget-uvc   |  4 ++--
+ Documentation/ABI/testing/debugfs-driver-genwqe     |  2 +-
+ Documentation/ABI/testing/debugfs-driver-habanalabs |  2 +-
+ Documentation/ABI/testing/sysfs-bus-fsi             |  2 +-
+ Documentation/ABI/testing/sysfs-bus-pci             |  4 ++--
+ Documentation/ABI/testing/sysfs-devices-system-cpu  | 10 +++++-----
+ Documentation/ABI/testing/sysfs-driver-ufs          |  4 ++--
+ Documentation/ABI/testing/sysfs-fs-f2fs             |  2 +-
+ 17 files changed, 28 insertions(+), 28 deletions(-)
+
+diff --git a/Documentation/ABI/obsolete/sysfs-cpuidle b/Documentation/ABI/obsolete/sysfs-cpuidle
+index e398fb5e542f..972cc11d3434 100644
+--- a/Documentation/ABI/obsolete/sysfs-cpuidle
++++ b/Documentation/ABI/obsolete/sysfs-cpuidle
+@@ -6,4 +6,4 @@ Description:
+ 	with the update that cpuidle governor can be changed at runtime in default,
+ 	both current_governor and current_governor_ro co-exist under
+ 	/sys/devices/system/cpu/cpuidle/ file, it's duplicate so make
+-	current_governor_ro obselete.
++	current_governor_ro obsolete.
+diff --git a/Documentation/ABI/removed/sysfs-kernel-uids b/Documentation/ABI/removed/sysfs-kernel-uids
+index dc4463f190a7..85a90b86ce1e 100644
+--- a/Documentation/ABI/removed/sysfs-kernel-uids
++++ b/Documentation/ABI/removed/sysfs-kernel-uids
+@@ -5,7 +5,7 @@ Contact:	Dhaval Giani <dhaval@linux.vnet.ibm.com>
+ Description:
+ 		The /sys/kernel/uids/<uid>/cpu_shares tunable is used
+ 		to set the cpu bandwidth a user is allowed. This is a
+-		propotional value. What that means is that if there
++		proportional value. What that means is that if there
+ 		are two users logged in, each with an equal number of
+ 		shares, then they will get equal CPU bandwidth. Another
+ 		example would be, if User A has shares = 1024 and user
+diff --git a/Documentation/ABI/stable/sysfs-bus-vmbus b/Documentation/ABI/stable/sysfs-bus-vmbus
+index 42599d9fa161..3066feae1d8d 100644
+--- a/Documentation/ABI/stable/sysfs-bus-vmbus
++++ b/Documentation/ABI/stable/sysfs-bus-vmbus
+@@ -61,7 +61,7 @@ Date:		September. 2017
+ KernelVersion:	4.14
+ Contact:	Stephen Hemminger <sthemmin@microsoft.com>
+ Description:	Directory for per-channel information
+-		NN is the VMBUS relid associtated with the channel.
++		NN is the VMBUS relid associated with the channel.
+ 
+ What:		/sys/bus/vmbus/devices/<UUID>/channels/<N>/cpu
+ Date:		September. 2017
+diff --git a/Documentation/ABI/stable/sysfs-bus-xen-backend b/Documentation/ABI/stable/sysfs-bus-xen-backend
+index e8b60bd766f7..480a89edfa05 100644
+--- a/Documentation/ABI/stable/sysfs-bus-xen-backend
++++ b/Documentation/ABI/stable/sysfs-bus-xen-backend
+@@ -19,7 +19,7 @@ Date:		April 2011
+ KernelVersion:	3.0
+ Contact:	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+ Description:
+-                The major:minor number (in hexidecimal) of the
++                The major:minor number (in hexadecimal) of the
+                 physical device providing the storage for this backend
+                 block device.
+ 
+diff --git a/Documentation/ABI/stable/sysfs-driver-dma-idxd b/Documentation/ABI/stable/sysfs-driver-dma-idxd
+index 55285c136cf0..d431e2d00472 100644
+--- a/Documentation/ABI/stable/sysfs-driver-dma-idxd
++++ b/Documentation/ABI/stable/sysfs-driver-dma-idxd
+@@ -173,7 +173,7 @@ What:           /sys/bus/dsa/devices/wq<m>.<n>/priority
+ Date:           Oct 25, 2019
+ KernelVersion:  5.6.0
+ Contact:        dmaengine@vger.kernel.org
+-Description:    The priority value of this work queue, it is a vlue relative to
++Description:    The priority value of this work queue, it is a value relative to
+ 		other work queue in the same group to control quality of service
+ 		for dispatching work from multiple workqueues in the same group.
+ 
+diff --git a/Documentation/ABI/stable/sysfs-driver-mlxreg-io b/Documentation/ABI/stable/sysfs-driver-mlxreg-io
+index fd9a8045bb0c..b2553df2e786 100644
+--- a/Documentation/ABI/stable/sysfs-driver-mlxreg-io
++++ b/Documentation/ABI/stable/sysfs-driver-mlxreg-io
+@@ -137,7 +137,7 @@ Contact:	Vadim Pasternak <vadimpmellanox.com>
+ Description:	These files show the system reset cause, as following:
+ 		COMEX thermal shutdown; wathchdog power off or reset was derived
+ 		by one of the next components: COMEX, switch board or by Small Form
+-		Factor mezzanine, reset requested from ASIC, reset cuased by BIOS
++		Factor mezzanine, reset requested from ASIC, reset caused by BIOS
+ 		reload. Value 1 in file means this is reset cause, 0 - otherwise.
+ 		Only one of the above causes could be 1 at the same time, representing
+ 		only last reset cause.
+@@ -183,7 +183,7 @@ What:		/sys/devices/platform/mlxplat/mlxreg-io/hwmon/hwmon*/vpd_wp
+ Date:		January 2020
+ KernelVersion:	5.6
+ Contact:	Vadim Pasternak <vadimpmellanox.com>
+-Description:	This file allows to overwrite system VPD hardware wrtie
++Description:	This file allows to overwrite system VPD hardware write
+ 		protection when attribute is set 1.
+ 
+ 		The file is read/write.
+diff --git a/Documentation/ABI/testing/configfs-iio b/Documentation/ABI/testing/configfs-iio
+index aebda53ec0f7..1637fcb50f56 100644
+--- a/Documentation/ABI/testing/configfs-iio
++++ b/Documentation/ABI/testing/configfs-iio
+@@ -31,4 +31,4 @@ Date:		April 2016
+ KernelVersion:	4.7
+ Description:
+ 		Dummy IIO devices directory. Creating a directory here will result
+-		in creating a dummy IIO device in the IIO subystem.
++		in creating a dummy IIO device in the IIO subsystem.
+diff --git a/Documentation/ABI/testing/configfs-most b/Documentation/ABI/testing/configfs-most
+index bc6b8bd18da4..0a4b8649aa5a 100644
+--- a/Documentation/ABI/testing/configfs-most
++++ b/Documentation/ABI/testing/configfs-most
+@@ -20,7 +20,7 @@ Description:
+ 
+ 		subbuffer_size
+ 				configure the sub-buffer size for this channel
+-				(needed for synchronous and isochrnous data)
++				(needed for synchronous and isochronous data)
+ 
+ 
+ 		num_buffers
+@@ -75,7 +75,7 @@ Description:
+ 
+ 		subbuffer_size
+ 				configure the sub-buffer size for this channel
+-				(needed for synchronous and isochrnous data)
++				(needed for synchronous and isochronous data)
+ 
+ 
+ 		num_buffers
+@@ -130,7 +130,7 @@ Description:
+ 
+ 		subbuffer_size
+ 				configure the sub-buffer size for this channel
+-				(needed for synchronous and isochrnous data)
++				(needed for synchronous and isochronous data)
+ 
+ 
+ 		num_buffers
+@@ -196,7 +196,7 @@ Description:
+ 
+ 		subbuffer_size
+ 				configure the sub-buffer size for this channel
+-				(needed for synchronous and isochrnous data)
++				(needed for synchronous and isochronous data)
+ 
+ 
+ 		num_buffers
+diff --git a/Documentation/ABI/testing/configfs-usb-gadget b/Documentation/ABI/testing/configfs-usb-gadget
+index dc351e9af80a..b7943aa7e997 100644
+--- a/Documentation/ABI/testing/configfs-usb-gadget
++++ b/Documentation/ABI/testing/configfs-usb-gadget
+@@ -137,7 +137,7 @@ Description:
+ 		This group contains "OS String" extension handling attributes.
+ 
+ 		=============	===============================================
+-		use		flag turning "OS Desctiptors" support on/off
++		use		flag turning "OS Descriptors" support on/off
+ 		b_vendor_code	one-byte value used for custom per-device and
+ 				per-interface requests
+ 		qw_sign		an identifier to be reported as "OS String"
+diff --git a/Documentation/ABI/testing/configfs-usb-gadget-uvc b/Documentation/ABI/testing/configfs-usb-gadget-uvc
+index ac5e11af79a8..889ed45be4ca 100644
+--- a/Documentation/ABI/testing/configfs-usb-gadget-uvc
++++ b/Documentation/ABI/testing/configfs-usb-gadget-uvc
+@@ -170,7 +170,7 @@ Description:	Default color matching descriptors
+ 		bMatrixCoefficients	  matrix used to compute luma and
+ 					  chroma values from the color primaries
+ 		bTransferCharacteristics  optoelectronic transfer
+-					  characteristic of the source picutre,
++					  characteristic of the source picture,
+ 					  also called the gamma function
+ 		bColorPrimaries		  color primaries and the reference
+ 					  white
+@@ -311,7 +311,7 @@ Description:	Specific streaming header descriptors
+ 					a hardware trigger interrupt event
+ 		bTriggerSupport		flag specifying if hardware
+ 					triggering is supported
+-		bStillCaptureMethod	method of still image caputre
++		bStillCaptureMethod	method of still image capture
+ 					supported
+ 		bTerminalLink		id of the output terminal to which
+ 					the video endpoint of this interface
+diff --git a/Documentation/ABI/testing/debugfs-driver-genwqe b/Documentation/ABI/testing/debugfs-driver-genwqe
+index 1c2f25674e8c..b45b016545d8 100644
+--- a/Documentation/ABI/testing/debugfs-driver-genwqe
++++ b/Documentation/ABI/testing/debugfs-driver-genwqe
+@@ -31,7 +31,7 @@ What:           /sys/kernel/debug/genwqe/genwqe<n>_card/prev_regs
+ Date:           Oct 2013
+ Contact:        haver@linux.vnet.ibm.com
+ Description:    Dump of the error registers before the last reset of
+-                the card occured.
++                the card occurred.
+                 Only available for PF.
+ 
+ What:           /sys/kernel/debug/genwqe/genwqe<n>_card/prev_dbg_uid0
+diff --git a/Documentation/ABI/testing/debugfs-driver-habanalabs b/Documentation/ABI/testing/debugfs-driver-habanalabs
+index c78fc9282876..e89c6351503c 100644
+--- a/Documentation/ABI/testing/debugfs-driver-habanalabs
++++ b/Documentation/ABI/testing/debugfs-driver-habanalabs
+@@ -153,7 +153,7 @@ KernelVersion:  5.1
+ Contact:        ogabbay@kernel.org
+ Description:    Triggers an I2C transaction that is generated by the device's
+                 CPU. Writing to this file generates a write transaction while
+-                reading from the file generates a read transcation
++                reading from the file generates a read transaction
+ 
+ What:           /sys/kernel/debug/habanalabs/hl<n>/i2c_reg
+ Date:           Jan 2019
+diff --git a/Documentation/ABI/testing/sysfs-bus-fsi b/Documentation/ABI/testing/sysfs-bus-fsi
+index d148214181a1..76e0caa0c2b3 100644
+--- a/Documentation/ABI/testing/sysfs-bus-fsi
++++ b/Documentation/ABI/testing/sysfs-bus-fsi
+@@ -12,7 +12,7 @@ KernelVersion:  4.12
+ Contact:        linux-fsi@lists.ozlabs.org
+ Description:
+ 		Sends an FSI BREAK command on a master's communication
+-		link to any connnected slaves.  A BREAK resets connected
++		link to any connected slaves.  A BREAK resets connected
+ 		device's logic and preps it to receive further commands
+ 		from the master.
+ 
+diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
+index ef00fada2efb..93f9c3789d0f 100644
+--- a/Documentation/ABI/testing/sysfs-bus-pci
++++ b/Documentation/ABI/testing/sysfs-bus-pci
+@@ -139,8 +139,8 @@ Description:
+ 		binary file containing the Vital Product Data for the
+ 		device.  It should follow the VPD format defined in
+ 		PCI Specification 2.1 or 2.2, but users should consider
+-		that some devices may have malformatted data.  If the
+-		underlying VPD has a writable section then the
++		that some devices may have incorrectly formatted data.  
++		If the underlying VPD has a writable section then the
+ 		corresponding section of this file will be writable.
+ 
+ What:		/sys/bus/pci/devices/.../virtfnN
+diff --git a/Documentation/ABI/testing/sysfs-devices-system-cpu b/Documentation/ABI/testing/sysfs-devices-system-cpu
+index 0eee30b27ab6..187eb7e97c92 100644
+--- a/Documentation/ABI/testing/sysfs-devices-system-cpu
++++ b/Documentation/ABI/testing/sysfs-devices-system-cpu
+@@ -50,7 +50,7 @@ Description:	Dynamic addition and removal of CPU's.  This is not hotplug
+ 		architecture specific.
+ 
+ 		release: writes to this file dynamically remove a CPU from
+-		the system.  Information writtento the file to remove CPU's
++		the system.  Information written to the file to remove CPU's
+ 		is architecture specific.
+ 
+ What:		/sys/devices/system/cpu/cpu#/node
+@@ -97,7 +97,7 @@ Description:	CPU topology files that describe a logical CPU's relationship
+ 		corresponds to a physical socket number, but the actual value
+ 		is architecture and platform dependent.
+ 
+-		thread_siblings: internel kernel map of cpu#'s hardware
++		thread_siblings: internal kernel map of cpu#'s hardware
+ 		threads within the same core as cpu#
+ 
+ 		thread_siblings_list: human-readable list of cpu#'s hardware
+@@ -280,7 +280,7 @@ Description:	Disable L3 cache indices
+ 		on a processor with this functionality will return the currently
+ 		disabled index for that node. There is one L3 structure per
+ 		node, or per internal node on MCM machines. Writing a valid
+-		index to one of these files will cause the specificed cache
++		index to one of these files will cause the specified cache
+ 		index to be disabled.
+ 
+ 		All AMD processors with L3 caches provide this functionality.
+@@ -295,7 +295,7 @@ Description:	Processor frequency boosting control
+ 
+ 		This switch controls the boost setting for the whole system.
+ 		Boosting allows the CPU and the firmware to run at a frequency
+-		beyound it's nominal limit.
++		beyond it's nominal limit.
+ 
+ 		More details can be found in
+ 		Documentation/admin-guide/pm/cpufreq.rst
+@@ -532,7 +532,7 @@ What:		/sys/devices/system/cpu/smt
+ 		/sys/devices/system/cpu/smt/control
+ Date:		June 2018
+ Contact:	Linux kernel mailing list <linux-kernel@vger.kernel.org>
+-Description:	Control Symetric Multi Threading (SMT)
++Description:	Control Symmetric Multi Threading (SMT)
+ 
+ 		active:  Tells whether SMT is active (enabled and siblings online)
+ 
+diff --git a/Documentation/ABI/testing/sysfs-driver-ufs b/Documentation/ABI/testing/sysfs-driver-ufs
+index d1bc23cb6a9d..eaac6898f0c0 100644
+--- a/Documentation/ABI/testing/sysfs-driver-ufs
++++ b/Documentation/ABI/testing/sysfs-driver-ufs
+@@ -168,7 +168,7 @@ Description:	This file shows the manufacturing date in BCD format.
+ What:		/sys/bus/platform/drivers/ufshcd/*/device_descriptor/manufacturer_id
+ Date:		February 2018
+ Contact:	Stanislav Nijnikov <stanislav.nijnikov@wdc.com>
+-Description:	This file shows the manufacturee ID. This is one of the
++Description:	This file shows the manufacturer ID. This is one of the
+ 		UFS device descriptor parameters. The full information about
+ 		the descriptor could be found at UFS specifications 2.1.
+ 
+@@ -521,7 +521,7 @@ Description:	This file shows maximum VCC, VCCQ and VCCQ2 value for
+ What:		/sys/bus/platform/drivers/ufshcd/*/string_descriptors/manufacturer_name
+ Date:		February 2018
+ Contact:	Stanislav Nijnikov <stanislav.nijnikov@wdc.com>
+-Description:	This file contains a device manufactureer name string.
++Description:	This file contains a device manufacturer name string.
+ 		The full information about the descriptor could be found at
+ 		UFS specifications 2.1.
+ 
+diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
+index 4849b8e84e42..5d9ae27bd462 100644
+--- a/Documentation/ABI/testing/sysfs-fs-f2fs
++++ b/Documentation/ABI/testing/sysfs-fs-f2fs
+@@ -238,7 +238,7 @@ Description:	Shows current reserved blocks in system, it may be temporarily
+ What:		/sys/fs/f2fs/<disk>/gc_urgent
+ Date:		August 2017
+ Contact:	"Jaegeuk Kim" <jaegeuk@kernel.org>
+-Description:	Do background GC agressively when set. When gc_urgent = 1,
++Description:	Do background GC aggressively when set. When gc_urgent = 1,
+ 		background thread starts to do GC by given gc_urgent_sleep_time
+ 		interval. When gc_urgent = 2, F2FS will lower the bar of
+ 		checking idle in order to process outstanding discard commands
+-- 
+2.25.1
+
+
+
 
