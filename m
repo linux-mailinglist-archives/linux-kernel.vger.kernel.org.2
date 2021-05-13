@@ -2,214 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3477937FFDB
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 23:32:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B74A37FFDD
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 23:38:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233549AbhEMVdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 17:33:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233538AbhEMVdd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 17:33:33 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D0C6C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 14:32:22 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id p15so24217650iln.3
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 14:32:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Lj2hPC9XaS5IbCouhWe8TdZQoRzw4YQucnnZ1bS+zjE=;
-        b=SXX27x8C9ACEUhUfo0p/itwuM1nzK5L3HvH+friUer/vSBduS/kCeT7zdk+XA/DyZg
-         vGeRq9PUyI/1ym06sLqrknnLPRI0NReo4IVMrvUJmRDVINv/S/macjS8SX+NVI+2Q2rJ
-         FyhEmo8su4sdvXWa4L8W/f65FYw1j5CfxEmCJhuI2MVYGqit1hBs6BmurfQBv6Pjsxyg
-         zsNADG1bOpZtKS664lvkOCweQy+SMHTG+5VytNXEaCdmFPFFCwrIRp+TBMeJTVB0d/Rt
-         y+G9OnuxDci3MeINA1CpybGs5ObhRsCT2msGpq55ZjG+XgxKUr0AO5BNHbJfmuDj+xxC
-         mSaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Lj2hPC9XaS5IbCouhWe8TdZQoRzw4YQucnnZ1bS+zjE=;
-        b=HvOwjtnmtXEbFtZFNgyq07TjbDGttzaVIN9Iy/3FDR1M0xr5Yqd9o0dOp3/REQCOMg
-         FXgOPZ4TYQZ4LMd0A6pCuhW4gMLONhjHwAikVkQHtH2oQwC/wpZHRuCJIxxYNxT0trC4
-         W2bwkoIZLfk+7YRbCnU5THoUmq7g+byio64P9o0e9FZAxXOO5R6+e7A0pbjjMpMRxx+A
-         KxvXNUrWzoqbO1en8jV1tqkNfYDT+8IRj/objKvW1wwBXlI3xfHstwvzWpjN5xto1VBt
-         YZrG6M8wIqzBc8R85YFFZdQEPJeLWnl7NAXlsR9azyt4M/7zf3pdWExhogDD0AivvpQA
-         kxYw==
-X-Gm-Message-State: AOAM531qffJIZ/EipMGuf0Nbol1/sB/+aytSyruFP9TafzVhLTBgLfug
-        C+5eRolDUj6Z43qP1QKAF/oXbNUmWCZux3A98JK5SQ==
-X-Google-Smtp-Source: ABdhPJyQH51RHopArddVns0tN3N+kQJGsM+a5zNqDB87uz4IYhPGnW1Qj7T3sSmD3C+mgWqKDrJ6sviFr7rLZov9GHE=
-X-Received: by 2002:a92:3f08:: with SMTP id m8mr36844784ila.154.1620941541612;
- Thu, 13 May 2021 14:32:21 -0700 (PDT)
+        id S233525AbhEMVjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 17:39:08 -0400
+Received: from mga14.intel.com ([192.55.52.115]:35443 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233552AbhEMVjH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 17:39:07 -0400
+IronPort-SDR: bIin7/u+8DhB331AbLZgeiBoUV2C0AfYBZuGzLFiof3VJeo9Ot/KQVpWO82ysj1eC3rk+oJniy
+ XjC0pL3WDXeA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9983"; a="199745852"
+X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
+   d="scan'208";a="199745852"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 14:37:56 -0700
+IronPort-SDR: iBYTTYPsnofxGKkaYmQ/knw3koadLNkgUF7n2XWydGi6eMhxssXzKH06BhcE4K3onavPP+HezM
+ fDjfNh+tLLDw==
+X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
+   d="scan'208";a="463451125"
+Received: from mboyd1-mobl1.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.212.67.58])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 14:37:55 -0700
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     Rafael J Wysocki <rjw@rjwysocki.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Andi Kleen <ak@linux.intel.com>
+Subject: [PATCH v4 1/1] x86/acpi, x86/boot: Add multiprocessor wake-up support
+Date:   Thu, 13 May 2021 14:37:32 -0700
+Message-Id: <20210513213732.418398-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <CAJZ5v0hFfVCm25wUCetOm4YdZKwt5h2jknN9ad1nnpxuR16KkQ@mail.gmail.com>
+References: <CAJZ5v0hFfVCm25wUCetOm4YdZKwt5h2jknN9ad1nnpxuR16KkQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210512214502.2047008-1-axelrasmussen@google.com> <20210512214502.2047008-2-axelrasmussen@google.com>
-In-Reply-To: <20210512214502.2047008-2-axelrasmussen@google.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Thu, 13 May 2021 14:32:10 -0700
-Message-ID: <CANgfPd8u0=_yZpkvsw-CqP_iWKbj0XQOnJCaNu4GSoFkqLpzDQ@mail.gmail.com>
-Subject: Re: [PATCH 1/5] KVM: selftests: allow different backing memory types
- for demand paging
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Aaron Lewis <aaronlewis@google.com>,
-        Alexander Graf <graf@amazon.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jacob Xu <jacobhxu@google.com>,
-        Makarand Sonare <makarandsonare@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Yanan Wang <wangyanan55@huawei.com>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 2:45 PM Axel Rasmussen <axelrasmussen@google.com> wrote:
->
-> Add an argument which lets us specify a different backing memory type
-> for the test. The default is just to use anonymous, matching existing
-> behavior (if the argument is omitted).
->
-> This is in preparation for testing UFFD minor faults. For that, we need
-> to use a new backing memory type which is setup with MAP_SHARED.
->
-> This notably requires one other change. Perhaps counter-intuitively,
-> perf_test_args.host_page_size is the host's *native* page size, not the
-> size of the pages the host is using to back the guest. This means, if we
-> try to run the test with e.g. VM_MEM_SRC_ANONYMOUS_HUGETLB, we'll try to
-> do demand paging with 4k pages instead of 2M hugepages.
+As per ACPI specification r6.4, sec 5.2.12.19, a new sub
+structure – multiprocessor wake-up structure - is added to the
+ACPI Multiple APIC Description Table (MADT) to describe the
+information of the mailbox. If a platform firmware produces the
+multiprocessor wake-up structure, then OS may use this new
+mailbox-based mechanism to wake up the APs.
 
-Would it make sense to factor this change out into another commit
-preceding this one? Perhaps only worth it if you send a v2.
+Add ACPI MADT wake table parsing support for x86 platform and if
+MADT wake table is present, update apic->wakeup_secondary_cpu with
+new API which uses MADT wake mailbox to wake-up CPU.
 
-When you say "we'll try to do demand paging with 4k pages instead of
-2M hugepages," what would that mean? Would we only copy 4k worth of
-the contents of the 2M page in, leading to the guest seeing bad
-memory? Do we have the capability to do demand paging at a smaller
-granularity than the backing page size with UFFD?
+Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+---
 
-Otherwise this patch looks reasonable to me. I'll try to review the
-rest of your patches today / Monday.
+Changes since v3:
+ * Removed acpi_mp_wake_mailbox_init() and moved init code to
+   acpi_wakeup_cpu().
+ * Removed redundant NULL pointer check for acpi_mp_wake_mailbox.
+ * Added comments/debug prints as per Rafael's suggestion.
+ * Removed MADT/SVKL ACPI patches from this patchset. It will be
+   merged via ACPICA submission.
 
->
-> So, convert everything to use a new demand_paging_size, computed based
-> on the backing memory type.
->
-> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
-> ---
->  .../selftests/kvm/demand_paging_test.c        | 24 +++++++++++++------
->  1 file changed, 17 insertions(+), 7 deletions(-)
->
-> diff --git a/tools/testing/selftests/kvm/demand_paging_test.c b/tools/testing/selftests/kvm/demand_paging_test.c
-> index 5f7a229c3af1..10c7ba76a9c6 100644
-> --- a/tools/testing/selftests/kvm/demand_paging_test.c
-> +++ b/tools/testing/selftests/kvm/demand_paging_test.c
-> @@ -38,6 +38,7 @@
->
->  static int nr_vcpus = 1;
->  static uint64_t guest_percpu_mem_size = DEFAULT_PER_VCPU_MEM_SIZE;
-> +static size_t demand_paging_size;
->  static char *guest_data_prototype;
->
->  static void *vcpu_worker(void *data)
-> @@ -83,7 +84,7 @@ static int handle_uffd_page_request(int uffd, uint64_t addr)
->
->         copy.src = (uint64_t)guest_data_prototype;
->         copy.dst = addr;
-> -       copy.len = perf_test_args.host_page_size;
-> +       copy.len = demand_paging_size;
->         copy.mode = 0;
->
->         clock_gettime(CLOCK_MONOTONIC, &start);
-> @@ -100,7 +101,7 @@ static int handle_uffd_page_request(int uffd, uint64_t addr)
->         PER_PAGE_DEBUG("UFFDIO_COPY %d \t%ld ns\n", tid,
->                        timespec_to_ns(ts_diff));
->         PER_PAGE_DEBUG("Paged in %ld bytes at 0x%lx from thread %d\n",
-> -                      perf_test_args.host_page_size, addr, tid);
-> +                      demand_paging_size, addr, tid);
->
->         return 0;
->  }
-> @@ -250,6 +251,7 @@ static int setup_demand_paging(struct kvm_vm *vm,
->  struct test_params {
->         bool use_uffd;
->         useconds_t uffd_delay;
-> +       enum vm_mem_backing_src_type src_type;
->         bool partition_vcpu_memory_access;
->  };
->
-> @@ -267,14 +269,16 @@ static void run_test(enum vm_guest_mode mode, void *arg)
->         int r;
->
->         vm = perf_test_create_vm(mode, nr_vcpus, guest_percpu_mem_size,
-> -                                VM_MEM_SRC_ANONYMOUS);
-> +                                p->src_type);
->
->         perf_test_args.wr_fract = 1;
->
-> -       guest_data_prototype = malloc(perf_test_args.host_page_size);
-> +       demand_paging_size = get_backing_src_pagesz(p->src_type);
-> +
-> +       guest_data_prototype = malloc(demand_paging_size);
->         TEST_ASSERT(guest_data_prototype,
->                     "Failed to allocate buffer for guest data pattern");
-> -       memset(guest_data_prototype, 0xAB, perf_test_args.host_page_size);
-> +       memset(guest_data_prototype, 0xAB, demand_paging_size);
->
->         vcpu_threads = malloc(nr_vcpus * sizeof(*vcpu_threads));
->         TEST_ASSERT(vcpu_threads, "Memory allocation failed");
-> @@ -388,7 +392,7 @@ static void help(char *name)
->  {
->         puts("");
->         printf("usage: %s [-h] [-m mode] [-u] [-d uffd_delay_usec]\n"
-> -              "          [-b memory] [-v vcpus] [-o]\n", name);
-> +              "          [-b memory] [-t type] [-v vcpus] [-o]\n", name);
->         guest_modes_help();
->         printf(" -u: use User Fault FD to handle vCPU page\n"
->                "     faults.\n");
-> @@ -398,6 +402,8 @@ static void help(char *name)
->         printf(" -b: specify the size of the memory region which should be\n"
->                "     demand paged by each vCPU. e.g. 10M or 3G.\n"
->                "     Default: 1G\n");
-> +       printf(" -t: The type of backing memory to use. Default: anonymous\n");
-> +       backing_src_help();
->         printf(" -v: specify the number of vCPUs to run.\n");
->         printf(" -o: Overlap guest memory accesses instead of partitioning\n"
->                "     them into a separate region of memory for each vCPU.\n");
-> @@ -409,13 +415,14 @@ int main(int argc, char *argv[])
->  {
->         int max_vcpus = kvm_check_cap(KVM_CAP_MAX_VCPUS);
->         struct test_params p = {
-> +               .src_type = VM_MEM_SRC_ANONYMOUS,
->                 .partition_vcpu_memory_access = true,
->         };
->         int opt;
->
->         guest_modes_append_default();
->
-> -       while ((opt = getopt(argc, argv, "hm:ud:b:v:o")) != -1) {
-> +       while ((opt = getopt(argc, argv, "hm:ud:b:t:v:o")) != -1) {
->                 switch (opt) {
->                 case 'm':
->                         guest_modes_cmdline(optarg);
-> @@ -430,6 +437,9 @@ int main(int argc, char *argv[])
->                 case 'b':
->                         guest_percpu_mem_size = parse_size(optarg);
->                         break;
-> +               case 't':
-> +                       p.src_type = parse_backing_src_type(optarg);
-> +                       break;
->                 case 'v':
->                         nr_vcpus = atoi(optarg);
->                         TEST_ASSERT(nr_vcpus > 0 && nr_vcpus <= max_vcpus,
-> --
-> 2.31.1.607.g51e8a6a459-goog
->
+ arch/x86/include/asm/apic.h |  3 ++
+ arch/x86/kernel/acpi/boot.c | 95 +++++++++++++++++++++++++++++++++++++
+ arch/x86/kernel/apic/apic.c |  8 ++++
+ 3 files changed, 106 insertions(+)
+
+diff --git a/arch/x86/include/asm/apic.h b/arch/x86/include/asm/apic.h
+index 412b51e059c8..3e94e1f402ea 100644
+--- a/arch/x86/include/asm/apic.h
++++ b/arch/x86/include/asm/apic.h
+@@ -487,6 +487,9 @@ static inline unsigned int read_apic_id(void)
+ 	return apic->get_apic_id(reg);
+ }
+
++typedef int (*wakeup_cpu_handler)(int apicid, unsigned long start_eip);
++extern void acpi_wake_cpu_handler_update(wakeup_cpu_handler handler);
++
+ extern int default_apic_id_valid(u32 apicid);
+ extern int default_acpi_madt_oem_check(char *, char *);
+ extern void default_setup_apic_routing(void);
+diff --git a/arch/x86/kernel/acpi/boot.c b/arch/x86/kernel/acpi/boot.c
+index 14cd3186dc77..e81fc605312d 100644
+--- a/arch/x86/kernel/acpi/boot.c
++++ b/arch/x86/kernel/acpi/boot.c
+@@ -65,6 +65,10 @@ int acpi_fix_pin2_polarity __initdata;
+ static u64 acpi_lapic_addr __initdata = APIC_DEFAULT_PHYS_BASE;
+ #endif
+
++static struct acpi_madt_multiproc_wakeup_mailbox *acpi_mp_wake_mailbox;
++static u64 acpi_mp_wake_mailbox_paddr;
++static physid_mask_t apic_id_wakemap = PHYSID_MASK_NONE;
++
+ #ifdef CONFIG_X86_IO_APIC
+ /*
+  * Locks related to IOAPIC hotplug
+@@ -329,6 +333,67 @@ acpi_parse_lapic_nmi(union acpi_subtable_headers * header, const unsigned long e
+ 	return 0;
+ }
+
++static int acpi_wakeup_cpu(int apicid, unsigned long start_ip)
++{
++	u8 timeout = 0xFF;
++
++	/* Remap mailbox memory only for the first call to acpi_wakeup_cpu() */
++	if (physids_empty(apic_id_wakemap))
++		acpi_mp_wake_mailbox = memremap(acpi_mp_wake_mailbox_paddr,
++						sizeof(*acpi_mp_wake_mailbox),
++						MEMREMAP_WB);
++
++	/*
++	 * According to the ACPI specification r6.4, sec 5.2.12.19, the
++	 * mailbox-based wakeup mechanism cannot be used more than once
++	 * for the same CPU, so skip sending wake commands to already
++	 * awake CPU.
++	 */
++	if (physid_isset(apicid, apic_id_wakemap)) {
++		pr_err("CPU already awake (APIC ID %x), skipping wakeup\n",
++		       apicid);
++		return -EINVAL;
++	}
++
++
++	/*
++	 * Mailbox memory is shared between firmware and OS. Firmware will
++	 * listen on mailbox command address, and once it receives the wakeup
++	 * command, CPU associated with the given apicid will be booted. So,
++	 * the value of apic_id and wakeup_vector has to be set before updating
++	 * the wakeup command. So use WRITE_ONCE to let the compiler know about
++	 * it and preserve the order of writes.
++	 */
++	WRITE_ONCE(acpi_mp_wake_mailbox->apic_id, apicid);
++	WRITE_ONCE(acpi_mp_wake_mailbox->wakeup_vector, start_ip);
++	WRITE_ONCE(acpi_mp_wake_mailbox->command, ACPI_MP_WAKE_COMMAND_WAKEUP);
++
++	/*
++	 * After writing wakeup command, wait for maximum timeout of 0xFF
++	 * for firmware to reset the command address back zero to indicate
++	 * the successful reception of command.
++	 * NOTE: 255 as timeout value is decided based on our experiments.
++	 *
++	 * XXX: Change the timeout once ACPI specification comes up with
++	 *      standard maximum timeout value.
++	 */
++	while (READ_ONCE(acpi_mp_wake_mailbox->command) && timeout--)
++		cpu_relax();
++
++	if (timeout) {
++		/*
++		 * If the CPU wakeup process is successful, store the
++		 * status in apic_id_wakemap to prevent re-wakeup
++		 * requests.
++		 */
++		physid_set(apicid, apic_id_wakemap);
++		return 0;
++	}
++
++	/* If timed out (timeout == 0), return error */
++	return -EIO;
++}
++
+ #endif				/*CONFIG_X86_LOCAL_APIC */
+
+ #ifdef CONFIG_X86_IO_APIC
+@@ -1086,6 +1151,30 @@ static int __init acpi_parse_madt_lapic_entries(void)
+ 	}
+ 	return 0;
+ }
++
++static int __init acpi_parse_mp_wake(union acpi_subtable_headers *header,
++				      const unsigned long end)
++{
++	struct acpi_madt_multiproc_wakeup *mp_wake;
++
++	if (acpi_mp_wake_mailbox)
++		return -EINVAL;
++
++	if (!IS_ENABLED(CONFIG_SMP))
++		return -ENODEV;
++
++	mp_wake = (struct acpi_madt_multiproc_wakeup *) header;
++	if (BAD_MADT_ENTRY(mp_wake, end))
++		return -EINVAL;
++
++	acpi_table_print_madt_entry(&header->common);
++
++	acpi_mp_wake_mailbox_paddr = mp_wake->base_address;
++
++	acpi_wake_cpu_handler_update(acpi_wakeup_cpu);
++
++	return 0;
++}
+ #endif				/* CONFIG_X86_LOCAL_APIC */
+
+ #ifdef	CONFIG_X86_IO_APIC
+@@ -1284,6 +1373,12 @@ static void __init acpi_process_madt(void)
+
+ 				smp_found_config = 1;
+ 			}
++
++			/*
++			 * Parse MADT MP Wake entry.
++			 */
++			acpi_table_parse_madt(ACPI_MADT_TYPE_MULTIPROC_WAKEUP,
++					      acpi_parse_mp_wake, 1);
+ 		}
+ 		if (error == -EINVAL) {
+ 			/*
+diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
+index 4f26700f314d..f1b90a4b89e8 100644
+--- a/arch/x86/kernel/apic/apic.c
++++ b/arch/x86/kernel/apic/apic.c
+@@ -2554,6 +2554,14 @@ u32 x86_msi_msg_get_destid(struct msi_msg *msg, bool extid)
+ }
+ EXPORT_SYMBOL_GPL(x86_msi_msg_get_destid);
+
++void __init acpi_wake_cpu_handler_update(wakeup_cpu_handler handler)
++{
++	struct apic **drv;
++
++	for (drv = __apicdrivers; drv < __apicdrivers_end; drv++)
++		(*drv)->wakeup_secondary_cpu = handler;
++}
++
+ /*
+  * Override the generic EOI implementation with an optimized version.
+  * Only called during early boot when only one CPU is active and with
+--
+2.25.1
+
