@@ -2,163 +2,434 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5662837F34F
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 09:01:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA8AC37F35B
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 09:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231496AbhEMHCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 03:02:09 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:34182 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230246AbhEMHB7 (ORCPT
+        id S231563AbhEMHGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 03:06:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43747 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231478AbhEMHG1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 03:01:59 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14D70hi2099772;
-        Thu, 13 May 2021 02:00:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1620889243;
-        bh=ATw62jokpw3S2/vubslMDgTOmV3VoTzaiau5RmJC0dM=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=u/8wfn/Hy6vJeMWlpvOFGbj+vy47dZIb8kQmso0S+8EVcC9PIWuRAXdtbrL7jM50w
-         mXeOAXjILIkT5YL5c780m+ZpaP+l7qfFDdvq2MLuSVNw+iSUvDSzmq61oNYIht2s58
-         gJ+cSz8dQ4qv/cR/SwEYH10No3ujwGZlUa97XxBk=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14D70haO129012
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 13 May 2021 02:00:43 -0500
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 13
- May 2021 02:00:43 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 13 May 2021 02:00:43 -0500
-Received: from [10.250.232.157] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14D70dVO109177;
-        Thu, 13 May 2021 02:00:40 -0500
-Subject: Re: [PATCH 09/14] phy: cadence-torrent: Add separate functions for
- reusable code
-To:     Swapnil Jakhade <sjakhade@cadence.com>, <vkoul@kernel.org>,
-        <p.zabel@pengutronix.de>, <linux-phy@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <mparab@cadence.com>, <lokeshvutla@ti.com>
-References: <1617946456-27773-1-git-send-email-sjakhade@cadence.com>
- <1617946456-27773-10-git-send-email-sjakhade@cadence.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <9d234a02-d1f4-ab09-56e0-81676ef1bf21@ti.com>
-Date:   Thu, 13 May 2021 12:30:38 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 13 May 2021 03:06:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620889516;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2QoN/qYWPKdNHCNDeNjopVzVWXCp3rw9QUNzkAPeIuY=;
+        b=KljcdESNZ4EZDrlmI7upj2HbZdM+L1lSpILceqLOpJWZeq1PiiXzj0IUANd0y2N7CAyduM
+        9Y89AJucbdtxZs2/ZZV4VT7MepX5DwOxyAX/u+oX7627zDkJFQbYELxvsZfp/6Ph0dfyC/
+        2gDXYK4lc8MDrSh7/VFxHlPNiU/a8z0=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-309-_1ENoNw0MO6Ei7ZJwgWc6g-1; Thu, 13 May 2021 03:05:13 -0400
+X-MC-Unique: _1ENoNw0MO6Ei7ZJwgWc6g-1
+Received: by mail-lf1-f71.google.com with SMTP id p10-20020a19f10a0000b02901d675ef8fb8so4767074lfh.16
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 00:05:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=2QoN/qYWPKdNHCNDeNjopVzVWXCp3rw9QUNzkAPeIuY=;
+        b=hn5of8z9HCR+p9Qh8N5CvoVfynusriv3iTDTQH913wTPib7iHt9MKsYoFXzUhcuEtR
+         8wgvGiL+vSi8Yt4XCI2pNCOO51ggCu4tV2oItTdrKnmzGvUA5M3hAhCsFVggoEEPNkLN
+         P37OEnN3pgnGATzQYcS2s89CrzNlmNKNbG8Iia+Fr2tmmqeD3a7U9418DW4zFnB1Lhjn
+         TGfUOhp9muePJ4XDUcPRlnJLy6mM/FrVSwU6FhKaKEs+MJs2KnMSrjr0pFwXlluVBIum
+         RS9zQ1qsWfIOZCSp+m4UxALZ5+9NxPsT3M7QIkxU1uBzeghH6IQlY/3fVkX/8sERs3ac
+         YBag==
+X-Gm-Message-State: AOAM531n6wWLmHx9+s7ihNrToWPN2Cr/5tDmQ+JneO1rjtzWoVa9Y+84
+        P/B0kUJYn1LcbAsMANZLwlaQ/2c2IFFvFPznUcPPT0DL4W1vB3N//Xf/4mgVhhJhKYVtbfcPvwV
+        o5HTMd3ZuuIZFJMprbSfSZeYzqr72Xqy5upUqIGJn
+X-Received: by 2002:a2e:9c91:: with SMTP id x17mr19966966lji.385.1620889511861;
+        Thu, 13 May 2021 00:05:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJypdffzA999uQ35jEl0/R02HLxiu1I8vdnbAGHp8O419AcpiLiofswnRNWgUrtRC0Q50wB0Pi8iuqmBbUuH3KE=
+X-Received: by 2002:a2e:9c91:: with SMTP id x17mr19966931lji.385.1620889511470;
+ Thu, 13 May 2021 00:05:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1617946456-27773-10-git-send-email-sjakhade@cadence.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20210511044253.469034-1-yuri.benditovich@daynix.com>
+ <20210511044253.469034-5-yuri.benditovich@daynix.com> <eb8c4984-f0cc-74ee-537f-fc60deaaaa73@redhat.com>
+ <CAOEp5OdrCDPx4ijLcEOm=Wxma6hc=nyqw4Xm6bggBxvgtR0tbg@mail.gmail.com>
+ <89759261-3a72-df6c-7a81-b7a48abfad44@redhat.com> <CAOEp5Ocm9Q69Fv=oeyCs01F9J4nCTPiOPpw9_BRZ0WnF+LtEFQ@mail.gmail.com>
+ <CACGkMEsZBCzV+d_eLj1aYT+pkS5m1QAy7q8rUkNsdV0C8aL8tQ@mail.gmail.com>
+ <CAOEp5OeSankfA6urXLW_fquSMrZ+WYXDtKNacort1UwR=WgxqA@mail.gmail.com>
+ <CACGkMEt3bZrdqbWtWjSkXvv5v8iCHiN8hkD3T602RZnb6nPd9A@mail.gmail.com>
+ <CAOEp5Odw=eaQWZCXr+U8PipPtO1Avjw-t3gEdKyvNYxuNa5TfQ@mail.gmail.com>
+ <CACGkMEuqXaJxGqC+CLoq7k4XDu+W3E3Kk3WvG-D6tnn2K4ZPNA@mail.gmail.com> <CAOEp5OfB62SQzxMj_GkVD4EM=Z+xf43TPoTZwMbPPa3BsX2ooA@mail.gmail.com>
+In-Reply-To: <CAOEp5OfB62SQzxMj_GkVD4EM=Z+xf43TPoTZwMbPPa3BsX2ooA@mail.gmail.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Thu, 13 May 2021 15:04:59 +0800
+Message-ID: <CACGkMEu4NdyMoFKbyUGG1aGX+K=ShMZuVuMKYPauEBYz5pxYzA@mail.gmail.com>
+Subject: Re: [PATCH 4/4] tun: indicate support for USO feature
+To:     Yuri Benditovich <yuri.benditovich@daynix.com>
+Cc:     Yan Vugenfirer <yan@daynix.com>, davem <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, mst <mst@redhat.com>,
+        netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        willemdebruijn.kernel@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, May 13, 2021 at 12:36 PM Yuri Benditovich
+<yuri.benditovich@daynix.com> wrote:
+>
+> On Thu, May 13, 2021 at 5:07 AM Jason Wang <jasowang@redhat.com> wrote:
+> >
+> > On Wed, May 12, 2021 at 6:37 PM Yuri Benditovich
+> > <yuri.benditovich@daynix.com> wrote:
+> > >
+> > > On Wed, May 12, 2021 at 12:10 PM Jason Wang <jasowang@redhat.com> wro=
+te:
+> > > >
+> > > > On Wed, May 12, 2021 at 4:32 PM Yuri Benditovich
+> > > > <yuri.benditovich@daynix.com> wrote:
+> > > > >
+> > > > > On Wed, May 12, 2021 at 10:50 AM Jason Wang <jasowang@redhat.com>=
+ wrote:
+> > > > > >
+> > > > > > On Wed, May 12, 2021 at 1:24 PM Yuri Benditovich
+> > > > > > <yuri.benditovich@daynix.com> wrote:
+> > > > > > >
+> > > > > > > On Wed, May 12, 2021 at 4:33 AM Jason Wang <jasowang@redhat.c=
+om> wrote:
+> > > > > > > >
+> > > > > > > >
+> > > > > > > > =E5=9C=A8 2021/5/11 =E4=B8=8B=E5=8D=884:33, Yuri Benditovic=
+h =E5=86=99=E9=81=93:
+> > > > > > > > > On Tue, May 11, 2021 at 9:50 AM Jason Wang <jasowang@redh=
+at.com> wrote:
+> > > > > > > > >>
+> > > > > > > > >> =E5=9C=A8 2021/5/11 =E4=B8=8B=E5=8D=8812:42, Yuri Bendit=
+ovich =E5=86=99=E9=81=93:
+> > > > > > > > >>> Signed-off-by: Yuri Benditovich <yuri.benditovich@dayni=
+x.com>
+> > > > > > > > >>> ---
+> > > > > > > > >>>    drivers/net/tun.c | 2 +-
+> > > > > > > > >>>    1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > > > > > >>>
+> > > > > > > > >>> diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+> > > > > > > > >>> index 84f832806313..a35054f9d941 100644
+> > > > > > > > >>> --- a/drivers/net/tun.c
+> > > > > > > > >>> +++ b/drivers/net/tun.c
+> > > > > > > > >>> @@ -2812,7 +2812,7 @@ static int set_offload(struct tun=
+_struct *tun, unsigned long arg)
+> > > > > > > > >>>                        arg &=3D ~(TUN_F_TSO4|TUN_F_TSO6=
+);
+> > > > > > > > >>>                }
+> > > > > > > > >>>
+> > > > > > > > >>> -             arg &=3D ~TUN_F_UFO;
+> > > > > > > > >>> +             arg &=3D ~(TUN_F_UFO|TUN_F_USO);
+> > > > > > > > >>
+> > > > > > > > >> It looks to me kernel doesn't use "USO", so TUN_F_UDP_GS=
+O_L4 is a better
+> > > > > > > > >> name for this
+> > > > > > > > > No problem, I can change it in v2
+> > > > > > > > >
+> > > > > > > > >   and I guess we should toggle NETIF_F_UDP_GSO_l4 here?
+> > > > > > > > >
+> > > > > > > > > No, we do not, because this indicates only the fact that =
+the guest can
+> > > > > > > > > send large UDP packets and have them splitted to UDP segm=
+ents.
+> > > > > > > >
+> > > > > > > >
+> > > > > > > > Actually the reverse. The set_offload() controls the tuntap=
+ TX path
+> > > > > > > > (guest RX path).
+> > > > > > >
+> > > > > > > The set_offloads does 2 things:
+> > > > > > > 1. At the initialization time qemu probes set_offload(somethi=
+ng) to
+> > > > > > > check which features are supported by TAP/TUN.
+> > > > > >
+> > > > > > Note that the probing is used for guest RX features not host RX=
+.
+> > > > >
+> > > > > It looks like the hidden assumption (till now) is that if some fe=
+ature
+> > > > > is present - it exists simultaneously for host and guest.
+> > > > > See QEMU get_features: if the TAP/TUN does not have UFO both HOST=
+ and
+> > > > > GUEST FEATURES are cleared.
+> > > >
+> > > > Kind of, actually the assumption is: if a guest feature
+> > > > (VIRTIO_NET_F_GUEST_XXX) is support, the corresponding host feature
+> > > > (VIRTIO_NET_F_HOST_XXX) is also supported.
+> > >
+> > > So nothing tells us that the TUNSETOFFLOAD is going to set GUEST offl=
+oads.
+> > > From if_tun.h
+> > > #define TUN_F_CSUM      0x01    /* You can hand me unchecksummed pack=
+ets. */
+> > > #define TUN_F_TSO4      0x02    /* I can handle TSO for IPv4 packets =
+*/
+> > > #define TUN_F_TSO6      0x04    /* I can handle TSO for IPv6 packets =
+*/
+> > > #define TUN_F_TSO_ECN   0x08    /* I can handle TSO with ECN bits. */
+> > > #define TUN_F_UFO       0x10    /* I can handle UFO packets */
+> >
+> > Yes, that's why I replied in another thread to say that there's no way
+> > to refuse GSO packets from userspace, even if TUN_F_XXX is not set via
+> > tun_set_offload().
+> >
+> > E.g you can disable sending GSO packets to guests but you can't reject
+> > GSO packets from guest/userspace.
+>
+> We agree here.
+> Sorry for being unclear. I meant following:
+> According to the comment the TUN_F_CSUM is a _host_ capability.
+> According to the comment the TUN_F_UFO is a _guest_ capability.
+>
+> But surprisingly when TUN receives TUN_F_UFO it does not propagate it
+> anywhere, there is no corresponding NETIF flag.
+
+(It looks like I drop the community and other ccs accidentally, adding
+them back and sorry)
+
+Actually, there is one, NETIF_F_GSO_UDP.
+
+Kernel used to have NETIF_F_UFO, but it was removed due to bugs and
+the lack of real hardware support. Then we found it breaks uABI, so
+Willem tries to make it appear for userspace again, and then it was
+renamed to NETIF_F_GSO_UDP.
+
+But I think it's a bug that we don't proporate TUN_F_UFO to NETIF
+flag, this is a must for the driver that doesn't support
+VIRTIO_NET_F_GUEST_UFO. I just try to disable all offloads and
+mrg_rxbuf, then netperf UDP_STREAM from host to guest gives me bad
+length packet in the guest.
+
+Willem, I think we probably need to fix this.
 
 
-On 09/04/21 11:04 am, Swapnil Jakhade wrote:
-> Torrent PHY driver currently supports single link DP configuration.
-> Prepare driver to support multilink DP configurations by adding
-> separate functions for common initialization sequence.
-> 
-> Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
+> So in fact TUN_F_UFO is processed by the TUN/TAP exactly as a host capabi=
+lity.
+>
+> >
+> > >
+> > > So, let's write
+> > >
+> > > #define TUN_F_UDP_L4TX       0x20    /* You can send me large UDP pac=
+kets */
+> >
+> > So if we stick to the assumption "if a guest feature is supported, the
+> > corresponding host feature is supported". There's no need for this.
+> > And I think it's the most clean way.
+>
+> My personal opinion is that it is extremely wrong to extend such an
+> unobvious assumption to each new feature.
 
-Reviewed-by: Kishon Vijay Abraham I <kishon@ti.com>
-> ---
->  drivers/phy/cadence/phy-cadence-torrent.c | 53 +++++++++++++++--------
->  1 file changed, 35 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/phy/cadence/phy-cadence-torrent.c b/drivers/phy/cadence/phy-cadence-torrent.c
-> index 69466481af26..e4dd8d1711a6 100644
-> --- a/drivers/phy/cadence/phy-cadence-torrent.c
-> +++ b/drivers/phy/cadence/phy-cadence-torrent.c
-> @@ -1472,24 +1472,11 @@ static int cdns_torrent_phy_off(struct phy *phy)
->  	return reset_control_assert(inst->lnk_rst);
->  }
->  
-> -static int cdns_torrent_dp_init(struct phy *phy)
-> +static void cdns_torrent_dp_common_init(struct cdns_torrent_phy *cdns_phy,
-> +					struct cdns_torrent_inst *inst)
->  {
-> -	unsigned char lane_bits;
-> -	int ret;
-> -	struct cdns_torrent_inst *inst = phy_get_drvdata(phy);
-> -	struct cdns_torrent_phy *cdns_phy = dev_get_drvdata(phy->dev.parent);
->  	struct regmap *regmap = cdns_phy->regmap_dptx_phy_reg;
-> -
-> -	switch (cdns_phy->ref_clk_rate) {
-> -	case CLK_19_2_MHZ:
-> -	case CLK_25_MHZ:
-> -	case CLK_100_MHZ:
-> -		/* Valid Ref Clock Rate */
-> -		break;
-> -	default:
-> -		dev_err(cdns_phy->dev, "Unsupported Ref Clock Rate\n");
-> -		return -EINVAL;
-> -	}
-> +	unsigned char lane_bits;
->  
->  	cdns_torrent_dp_write(regmap, PHY_AUX_CTRL, 0x0003); /* enable AUX */
->  
-> @@ -1510,8 +1497,10 @@ static int cdns_torrent_dp_init(struct phy *phy)
->  	/* release pma_xcvr_pllclk_en_ln_*, only for the master lane */
->  	cdns_torrent_dp_write(regmap, PHY_PMA_XCVR_PLLCLK_EN, 0x0001);
->  
-> -	/* PHY PMA registers configuration functions */
-> -	/* Initialize PHY with max supported link rate, without SSC. */
-> +	/*
-> +	 * PHY PMA registers configuration functions
-> +	 * Initialize PHY with max supported link rate, without SSC.
-> +	 */
->  	if (cdns_phy->ref_clk_rate == CLK_19_2_MHZ)
->  		cdns_torrent_dp_pma_cmn_vco_cfg_19_2mhz(cdns_phy,
->  							cdns_phy->max_bit_rate,
-> @@ -1530,6 +1519,13 @@ static int cdns_torrent_dp_init(struct phy *phy)
->  
->  	/* take out of reset */
->  	regmap_field_write(cdns_phy->phy_reset_ctrl, 0x1);
-> +}
-> +
-> +static int cdns_torrent_dp_start(struct cdns_torrent_phy *cdns_phy,
-> +				 struct cdns_torrent_inst *inst,
-> +				 struct phy *phy)
-> +{
-> +	int ret;
->  
->  	cdns_torrent_phy_on(phy);
->  
-> @@ -1542,6 +1538,27 @@ static int cdns_torrent_dp_init(struct phy *phy)
->  	return ret;
->  }
->  
-> +static int cdns_torrent_dp_init(struct phy *phy)
-> +{
-> +	struct cdns_torrent_inst *inst = phy_get_drvdata(phy);
-> +	struct cdns_torrent_phy *cdns_phy = dev_get_drvdata(phy->dev.parent);
-> +
-> +	switch (cdns_phy->ref_clk_rate) {
-> +	case CLK_19_2_MHZ:
-> +	case CLK_25_MHZ:
-> +	case CLK_100_MHZ:
-> +		/* Valid Ref Clock Rate */
-> +		break;
-> +	default:
-> +		dev_err(cdns_phy->dev, "Unsupported Ref Clock Rate\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	cdns_torrent_dp_common_init(cdns_phy, inst);
-> +
-> +	return cdns_torrent_dp_start(cdns_phy, inst, phy);
-> +}
-> +
->  static int cdns_torrent_derived_refclk_enable(struct clk_hw *hw)
->  {
->  	struct cdns_torrent_derived_refclk *derived_refclk = to_cdns_torrent_derived_refclk(hw);
-> 
+This results in inconsistency with other GSO/CSUM flags. And will
+complicate the uAPI (two flags, one for RX another for TX).
+
+Considering the current code works for many years, it's not worth
+bothering I think.
+
+>
+> >
+> > > #define TUN_F_UDP4_L4RX     0x40   /* I can coalesce UDPv4 segments *=
+/
+> > > #define TUN_F_UDP6_L4RX     0x80  /* I can coalesce UDPv6 segments */
+> >
+> > Any value to coalesce UDP segments here? It's better to do it in the
+> > TX source (guest).
+>
+> Coalescing is a consent of the guest to receive packets bigger than MTU.
+> Otherwise (if the guest does not agree) the host must segment/fragment
+> packets before transmitting them to the guest.
+
+This looks like a different feature which is not necessarily known by guest=
+s?
+
+Kernel supports GRO which can coalesce packets. (It was not supported
+by TAP yet though).
+
+
+> It is not related to guest TX.
+>
+> For example, Windows guest is not able to handle large UDP packets
+> (this is not supported by the stack yet).
+
+In this case, the corresponding guest or host features will be
+disabled, and the kernel won't send those kinds of GSO packets to
+guests.
+
+>
+> >
+> > >
+> > > >
+> > > > >
+> > > > > >
+> > > > > > > 2. Later it configures the guest RX path according to guest's=
+ needs/capabilities
+> > > > > > > Typical initialization sequence is (in case the QEMU supports=
+ USO feature):
+> > > > > >
+> > > > > > It also depends on whether the backend(TAP) has the support for=
+ guest RX.
+> > > > >
+> > > > > In the code of TAP and TUN I do not see any "if the backend has t=
+he
+> > > > > support for guest RX".
+> > > >
+> > > > Yes, the detection is implied as you described above.
+> > > >
+> > > > > This is just the IOCTL and set of TUN_F_* bits. Their meaning is
+> > > > > defined in the comments.
+> > > > >
+> > > > > >
+> > > > > > > TAP/TUN set offload 11 (probe for UFO support)
+> > > > > > > TAP/TUN set offload 21 (probe for USO support)
+> > > > > > > TAP/TUN set offload 0
+> > > > > > > ...
+> > > > > > > TAP/TUN set offload 7 (configuration of offloads according to=
+ GUEST features)
+> > > > > > >
+> > > > > > > This series of patches is for VIRTIO_NET_F_HOST_USO only, vir=
+tio-net
+> > > > > > > features like VIRTIO_NET_F_GUEST_USO_(4/6/whatever) are not d=
+efined in
+> > > > > > > the spec yet.
+> > > > > > >
+> > > > > >
+> > > > > > I'm a little bit confused here. Consider you want to implement =
+guest
+> > > > > > TX so there's no need for any modification on the set_offload()=
+.
+> > > > >
+> > > > > I do not think so. Please correct me if I'm mistaken:
+> > > > > QEMU needs to indicate the HOST_USO feature (or not indicate).
+> > > > > How can QEMU know the kernel is able to support VIRTIO_NET_HDR_GS=
+O_UDP_L4?
+> > > >
+> > > > Ok, I finally get you idea. Thanks for the patience.
+> > > >
+> > > > But still one issue: Assume we implement VIRTIO_NET_F_HOST_USO. How
+> > > > could we add VIRTIO_NET_F_GUEST_USO in the future? Adding another T=
+UN
+> > > > flag for set_offload()? Seems unnecessary and inconsistency with
+> > > > current TUN flags.
+> > > >
+> > > > >
+> > > > > >
+> > > > > > I think we need to implement both directions at one time as wha=
+t has
+> > > > > > been partially done in this series:
+> > > > > >
+> > > > >
+> > > > > You actually suggest that we need to start from Linux virtio-net
+> > > > > driver and implement on it both TX and RX.
+> > > > > Our main area is virtio-win drivers and all the rest we do when w=
+e can.
+> > > > > Currently we have 2 WIP tasks related to Linux (virtio-net RSS an=
+d
+> > > > > libvirt RSS/eBPF) and (my feeling) we hardly can start with addit=
+ional
+> > > > > one.
+> > > >
+> > > > I can help for the linux driver if you wish.
+> > >
+> > > I understand. Probably I've made a mistake from the beginning:
+> > > At first stage I've prepared the spec change of what we need in hope
+> > > that this will be fast.
+> > > Probably the better way was to prepare RFC patches first then start
+> > > changing the spec.
+> > >
+> > > So the question is what to do now:
+> > > A)
+> > > Finalize patches for guest TX and respective QEMU patches
+> > > Prepare RFC patches for guest RX, get ack on them
+> > > Change the spec
+> > > Finalize patches for guest RX according to the spec
+> > >
+> > > B)
+> > > Reject the patches for guest TX
+> > > Prepare RFC patches for everything, get ack on them
+> > > Change the spec
+> > > Finalize patches for everything according to the spec
+> > >
+> > > I'm for A) of course :)
+> >
+> > I'm for B :)
+> >
+> > The reasons are:
+> >
+> > 1) keep the assumption of tun_set_offload() to simply the logic and
+> > compatibility
+> > 2) it's hard or tricky to touch guest TX path only (e.g the
+> > virtio_net_hdr_from_skb() is called in both RX and TX)
+>
+> I suspect there is _some_ misunderstanding here.
+> I did not touch virtio_net_hdr_from_skb at all.
+>
+
+Typo, actually I meant virtio_net_hdr_to_skb().
+
+Thanks
+
+> >
+> > Thanks
+> >
+> > >
+> > > >
+> > > > Thanks
+> > > >
+> > > > > This is a reason why I've added to the virtio spec only HOST_USO =
+and
+> > > > > not GUEST_USO4/6.
+> > > > > UDP RSC (which is actually guest rx USO) is not available on Wind=
+ows
+> > > > > at the moment.
+> > > > >
+> > > > > > 1) set_offload() is for guest RX.
+> > > > > > 2) virtio_net_hdr_to_skb() is for both guest TX and guest RX.
+> > > > > >
+> > > > > > For testing, you can run VM2VM on the same host, and you will g=
+et
+> > > > > > everything tested.
+> > > > > >
+> > > > > > Thanks
+> > > > > >
+> > > > > > > >
+> > > > > > > > When VIRTIO_NET_F_GUEST_XXX was not negotiated, the corresp=
+onding netdev
+> > > > > > > > features needs to be disabled. When host tries to send thos=
+e packets to
+> > > > > > > > guest, it needs to do software segmentation.
+> > > > > > > >
+> > > > > > > > See virtio_net_apply_guest_offloads().
+> > > > > > > >
+> > > > > > > > There's currently no way (or not need) to prevent tuntap fr=
+om receiving
+> > > > > > > > GSO packets.
+> > > > > > > >
+> > > > > > > > Thanks
+> > > > > > > >
+> > > > > > > >
+> > > > > > > > >
+> > > > > > > > >> And how about macvtap?
+> > > > > > > > > We will check how to do that for macvtap. We will send a =
+separate
+> > > > > > > > > patch for macvtap or ask for advice.
+> > > > > > > > >
+> > > > > > > > >> Thanks
+> > > > > > > > >>
+> > > > > > > > >>
+> > > > > > > > >>>        }
+> > > > > > > > >>>
+> > > > > > > > >>>        /* This gives the user a way to test for new fea=
+tures in future by
+> > > > > > > >
+> > > > > > >
+> > > > > >
+> > > > >
+> > > >
+> > >
+> >
+>
+
