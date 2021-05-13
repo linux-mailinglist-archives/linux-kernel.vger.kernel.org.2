@@ -2,104 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6CF237F5BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 12:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2522137F5C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 12:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231609AbhEMKjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 06:39:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47774 "EHLO
+        id S231635AbhEMKk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 06:40:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231545AbhEMKjA (ORCPT
+        with ESMTP id S231236AbhEMKkX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 06:39:00 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 522DEC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 03:37:50 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id a10-20020a05600c068ab029014dcda1971aso1119179wmn.3
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 03:37:50 -0700 (PDT)
+        Thu, 13 May 2021 06:40:23 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07480C061574;
+        Thu, 13 May 2021 03:39:12 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id gx5so39184041ejb.11;
+        Thu, 13 May 2021 03:39:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=8MRW+RUNJca4AXa5eHgAo8GAC0ZpSS8t7RdPzv49j74=;
-        b=B0gbejrpLRfJnc7OaHsvMS1QG7k7XLm1B6NA5cayaUI06UjWco1rLnhAee8TPlEsR9
-         79AZv5M633+8rl0sKu5uH7Al0KyzlWejVWvOm2eTc4HRIOhDOynreJ9KATnRnd1BsOCt
-         eSp/VhInDLsmakAqEHgBYSDOckMIGwrLNo3ufADJrB+ElQsMpTLL6zUbSXuhm62XSyII
-         Eqc1UT+YS71HYtLU977IyIbFDY+y1ZNvApNRrXJcbYCMjrZYxdGyclZaSu6KaqY2zrK5
-         nt2hAujitIAuD47AfiArnounyddMEmb3fMh8MndjQMENjuL9G4ilVYa13saRTEgJN0Qy
-         j1eg==
+        bh=UtUNJRyrclRlq2GZYbMBzdxMc4UcBRTvZYokrHl2QGk=;
+        b=PZXgd9dJdsiP4g4TY8MjbZtvQLpaGLv9KmNndTy/1i8A2axVajesSq0AV49uvarHW9
+         jyFeJZQMXYxNzoCXUW7aDSQe0mdPApgOvShf83cYZ62Z1SzRUw1m7cjQVuVYfSqJYjZe
+         Kfkvoniy0iNgr3C1bI7FHZTJEOy2LScoeS30fUjF3t9n40ldwnQzJs2J/qDWCk1/gb+D
+         hGAhiFZblUfN+4sv06aEND8NAOZSkj9hmVVWt98y+drh3p42YKDFlCs9uhss+OZNOGxe
+         ST0FHEtsMCb1CgU3WSwrmMVrB3aH25h2pjo0IFYVw4xCI9yecej0tcJgy/FmKjdhd1IT
+         /lLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8MRW+RUNJca4AXa5eHgAo8GAC0ZpSS8t7RdPzv49j74=;
-        b=BmC/2wyqUKDtJxBWDa/kE/C6G31VSv3AOik8Y6RmGj9NBnorKZOclL4cLdrVY/YijP
-         vCtJOKNn8NyIhh8G2xTRdl0NiRmdp00xATyv1h5EPwPqKWQkFeRC0R9C6VHOID2ESK2w
-         HzGlr95Jzz79/qqs9RSphtY/ZYEweWU6PMmFM/8Clx7688LG1KAhhDjWWLKoNk9Keyi4
-         q1Z5RwAA3zowDR5ilT4tDsgNTAgGeWpuGEJ6sVfRXMGpI7vvUp43Hcy02dcy18GG8epo
-         4WkF9+CIAxfZJaCyK8WrDF7Eyn+Y+D9jAuoM+xOsskX6eJ3xaxyjzL+81kwrNYcsesIZ
-         oOOA==
-X-Gm-Message-State: AOAM530st0HQ76Q7XZ9uT8JFhVM1InVRM/BHLBb7RDCErmv2gQZgbdf1
-        kHoqWFnLyRqcpIK61GycfPBkaw==
-X-Google-Smtp-Source: ABdhPJxkdOua6E6ia1U9hG/mRkJmaLRXHDGr+I8c7GOqimHlksaxK1gjHzcXbYjFWt/DNACfe855qw==
-X-Received: by 2002:a7b:c252:: with SMTP id b18mr43936215wmj.32.1620902267606;
-        Thu, 13 May 2021 03:37:47 -0700 (PDT)
-Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id m6sm2417459wrp.29.2021.05.13.03.37.46
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=UtUNJRyrclRlq2GZYbMBzdxMc4UcBRTvZYokrHl2QGk=;
+        b=MxI/DlctmQ81Hh/TWDIaJu10cJPnXBkGza4WsIKKBxbCzMOVAVJRGup/lfxVP68FKh
+         gd6eyTd+PJoyOd8xjgEuH6yTC0FSM9jtkdb7nvhevhTJDyFQxStIdqAsgn8MCd5O7mAf
+         s+n+uhwIerP4OaDbKoXfuB8lF1DWsgvB8Kr8ysXFu/cLx6xqD1uMPSfNHXwDEt2oYuR7
+         asEhmyrPLlieVHSFHRMSNbPA8mPzH4qdj8yJYLoSTRr2dEiARR0KJodn0fL5lsW4fbzR
+         LAt+u52mMmgTKU8mLexYDPCRje6TtWUiMolNvz2B+k/JXAMKQdhDuS9DNysZZfWZVTot
+         jFLg==
+X-Gm-Message-State: AOAM53009yCH9y6N9IfBEpkZrcLrlj4vkNoX7OIdTYy7SNTEMDG5e33H
+        juXM9ttgtOymUb71RAq73Sw=
+X-Google-Smtp-Source: ABdhPJwIl28mdtghWAjSftlijbsM9F1wEfkGpaU4F/Bep3N1rDKnkOHtqR7UxnyQIRHnszycqNUCMw==
+X-Received: by 2002:a17:906:1e0b:: with SMTP id g11mr42469971ejj.291.1620902350840;
+        Thu, 13 May 2021 03:39:10 -0700 (PDT)
+Received: from gmail.com (0526E777.dsl.pool.telekom.hu. [5.38.231.119])
+        by smtp.gmail.com with ESMTPSA id k20sm30488eja.10.2021.05.13.03.39.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 03:37:47 -0700 (PDT)
-Date:   Thu, 13 May 2021 11:37:45 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Brian Masney <masneyb@onstation.org>,
-        Dan Murphy <dmurphy@ti.com>
-Subject: Re: [PATCH v1 1/1] backlight: lm3630a_bl: Put fwnode in error case
- during ->probe()
-Message-ID: <20210513103745.2dzawk7c63ku2vz6@maple.lan>
-References: <20210510095716.3302910-1-andy.shevchenko@gmail.com>
+        Thu, 13 May 2021 03:39:10 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Thu, 13 May 2021 12:39:08 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Huang Rui <ray.huang@amd.com>
+Cc:     Alexander Monakov <amonakov@ispras.ru>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        Jason Bagavatsingham <jason.bagavatsingham@gmail.com>,
+        "Pierre-Loup A . Griffais" <pgriffais@valvesoftware.com>,
+        "Fontenot, Nathan" <Nathan.Fontenot@amd.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Borislav Petkov <bp@suse.de>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH v4] x86, sched: Fix the AMD CPPC maximum perf on some
+ specific generations
+Message-ID: <YJ0BzPs0WPJ42qG1@gmail.com>
+References: <20210425073451.2557394-1-ray.huang@amd.com>
+ <alpine.LNX.2.20.13.2105130130590.10864@monopod.intra.ispras.ru>
+ <YJxdttrorwdlpX33@gmail.com>
+ <20210513042420.GA1621127@hr-amd>
+ <YJz7fp17T1cyed4j@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210510095716.3302910-1-andy.shevchenko@gmail.com>
+In-Reply-To: <YJz7fp17T1cyed4j@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 12:57:16PM +0300, Andy Shevchenko wrote:
-> device_for_each_child_node() bumps a reference counting of a returned variable.
-> We have to balance it whenever we return to the caller.
-> 
-> Fixes: 8fbce8efe15cd ("backlight: lm3630a: Add firmware node support")
-> Cc: Brian Masney <masneyb@onstation.org>
-> Cc: Dan Murphy <dmurphy@ti.com>
-> Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+* Ingo Molnar <mingo@kernel.org> wrote:
 
+> No need to send v5, done!
+> 
+> I have a system that appears to be affected by this bug:
+> 
+>   kepler:~> lscpu | grep -i mhz
+>   CPU MHz:                         4000.000
+>   CPU max MHz:                     7140.6250
+>   CPU min MHz:                     2200.0000
+> 
+> So I should be able to confirm after a reboot.
 
-> ---
->  drivers/video/backlight/lm3630a_bl.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/video/backlight/lm3630a_bl.c b/drivers/video/backlight/lm3630a_bl.c
-> index e88a2b0e5904..662029d6a3dc 100644
-> --- a/drivers/video/backlight/lm3630a_bl.c
-> +++ b/drivers/video/backlight/lm3630a_bl.c
-> @@ -482,8 +482,10 @@ static int lm3630a_parse_node(struct lm3630a_chip *pchip,
->  
->  	device_for_each_child_node(pchip->dev, node) {
->  		ret = lm3630a_parse_bank(pdata, node, &seen_led_sources);
-> -		if (ret)
-> +		if (ret) {
-> +			fwnode_handle_put(node);
->  			return ret;
-> +		}
->  	}
->  
->  	return ret;
-> -- 
-> 2.31.1
-> 
+'CPU max Mhz' seems to be saner now:
+
+  kepler:~> lscpu | grep -i mhz
+
+  CPU MHz:                         2200.000
+  CPU max MHz:                     4917.9678
+  CPU min MHz:                     2200.0000
+
+Thanks,
+
+	Ingo
