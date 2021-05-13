@@ -2,102 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C0BF37FCC1
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 19:46:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EF5937FCC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 19:46:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231307AbhEMRre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 13:47:34 -0400
-Received: from mail-oi1-f173.google.com ([209.85.167.173]:42596 "EHLO
-        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231273AbhEMRr2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 13:47:28 -0400
-Received: by mail-oi1-f173.google.com with SMTP id w22so12175807oiw.9;
-        Thu, 13 May 2021 10:46:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=qtMRaGidq5AIIb5NEfzMSRmyxAUVpPVeHx2ahJS34Sw=;
-        b=VFqb8jRH5S0P9IP6YlKpF69niCSdHokrPRz1A2LPqma+X+YtRSz3t6vD44viA3jMov
-         9A35nBcruyKnE22cr92P7VJgxTpNFCEnhV4v2JN39CVtWBV4wTghWn1cSzWTstnDmY4U
-         HCqgYqLsv5PINCd2Lrx4AIeiStrYjeS4OKnkm0CcmMHeHinZSJQ4LtEZemYeVHSwln3S
-         phyqFeQSxkJbi+L9uSKGGL/GjT1hmxnIXiBevk5OAS0QPtNDtY9AC8pAseOakcYmv3es
-         Qja9K6X4bwwDmS/jVv9411FMbOzS+Mq0+ESQwYyficrFJNDzqO8gcl8fDgDMmFho3LMh
-         9y3w==
-X-Gm-Message-State: AOAM532M7G1SrHXXnkEeQ+IeFal4Mj0WrYPruR6Es50y9cvAIyit5Orb
-        gmhUt0azyqyrTUSlzGrB+w==
-X-Google-Smtp-Source: ABdhPJwuMdqfKqn9iX2iIR2PPwGy55N98LKN3VvKhFptsqRWnJyzDnOhEEPv9Vyxo+12EJy9VC8Ugw==
-X-Received: by 2002:aca:5758:: with SMTP id l85mr4047077oib.120.1620927977614;
-        Thu, 13 May 2021 10:46:17 -0700 (PDT)
-Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.googlemail.com with ESMTPSA id r7sm799574oom.46.2021.05.13.10.46.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 10:46:17 -0700 (PDT)
-From:   Rob Herring <robh@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Matt Fleming <matt.fleming@intel.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org
-Subject: [PATCH 2/2] perf tests: Drop __maybe_unused on x86 test declarations
-Date:   Thu, 13 May 2021 12:46:14 -0500
-Message-Id: <20210513174614.2242210-2-robh@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210513174614.2242210-1-robh@kernel.org>
-References: <20210513174614.2242210-1-robh@kernel.org>
+        id S231309AbhEMRrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 13:47:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41758 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230262AbhEMRrq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 13:47:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA72761106;
+        Thu, 13 May 2021 17:46:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620927997;
+        bh=cJH6sWLGBZOCGMDITaiB1M5zp079qAZFdZYdcJzLAyw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=bYsNxeM0hvgyvxu3isGdMN8UxdB4EHvkefoCYBB1AsPusYH2hZYFf5qqvGtJGAH7A
+         xSw3Vq5YbI7XbGiM5GGf7Q4hdtqX3rSGRbYY5pZS5/lIx07Ek17ZgePb5G7KQwiZJc
+         FXgXRQcoM0VOcEl4VOVn0zM2y3gmLbqJi7ULroU0VdkM/F/xiokLcZGGxK7JfT1qd7
+         3nWmg/K0BL7WhufZ8Bq8oPwPuJ5mJOPHXqiOKSV/8Z0IjizSJjkHUoDmstMZ/r9hMa
+         idV1tBVKB0uRgHXuHbnrmP1+Ea2udj6WDPytMpRhat+iGWHAo29tVzOBoL4IzYqEC/
+         EaM4In/0pvKcQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id AF19F5C014E; Thu, 13 May 2021 10:46:36 -0700 (PDT)
+Date:   Thu, 13 May 2021 10:46:36 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, ying.huang@intel.com, feng.tang@intel.com,
+        zhengjun.xing@intel.com
+Subject: Re: [entry]  47b8ff194c:  will-it-scale.per_process_ops -3.0%
+ regression
+Message-ID: <20210513174636.GB975577@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210428071653.GC13086@xsang-OptiPlex-9020>
+ <YJzhCX/CqrMQDB+y@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJzhCX/CqrMQDB+y@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Function declarations don't need __maybe_unused annotations, only the
-implementations do. Drop them on the perf x86 tests.
+On Thu, May 13, 2021 at 10:19:21AM +0200, Peter Zijlstra wrote:
+> On Wed, Apr 28, 2021 at 03:16:53PM +0800, kernel test robot wrote:
+> > 
+> > 
+> > Greeting,
+> > 
+> > FYI, we noticed a -3.0% regression of will-it-scale.per_process_ops due to commit:
+> > 
+> > 
+> > commit: 47b8ff194c1fd73d58dc339b597d466fe48c8958 ("entry: Explicitly flush pending rcuog wakeup before last rescheduling point")
+> 
+> So the RCU bits are in rcu_user_enter(), which is called from
+> __context_tracking_enter() aka user_enter(), which is under
+> context_tracking_enabled().
+> 
+> But the new code in entry is not; we now unconditionally call
+> rcu_nocb_flush_deferred_wakeup(). Did that want to be under
+> context_tracking_enabled() as well?
+> 
+> Frederic, Paul?
 
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: linux-perf-users@vger.kernel.org
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- tools/perf/arch/x86/include/arch-tests.h | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+My argument in favor of the change below is that if there is no context
+tracking, then scheduling-clock interrupts will happen on all non-idle
+CPUs.  The next scheduling-clock interrupt will check this deferred-wakeup
+state, and if set, cause rcu_core() to be invoked (for example, within the
+RCU_SOFTIRQ handler).  And rcu_core() invokes do_nocb_deferred_wakeup(),
+which takes care of this.
 
-diff --git a/tools/perf/arch/x86/include/arch-tests.h b/tools/perf/arch/x86/include/arch-tests.h
-index 462546bfc5f7..9599e7a3f1af 100644
---- a/tools/perf/arch/x86/include/arch-tests.h
-+++ b/tools/perf/arch/x86/include/arch-tests.h
-@@ -2,12 +2,11 @@
- #ifndef ARCH_TESTS_H
- #define ARCH_TESTS_H
- 
--#include <linux/compiler.h>
- struct test;
- 
- /* Tests */
--int test__rdpmc(struct test *test __maybe_unused, int subtest);
--int test__insn_x86(struct test *test __maybe_unused, int subtest);
-+int test__rdpmc(struct test *test, int subtest);
-+int test__insn_x86(struct test *test, int subtest);
- int test__intel_pt_pkt_decoder(struct test *test, int subtest);
- int test__bp_modify(struct test *test, int subtest);
- int test__x86_sample_parsing(struct test *test, int subtest);
--- 
-2.27.0
+For idle CPUs, do_idle() invokes rcu_nocb_flush_deferred_wakeup().
 
+Frederic, any cases that I am missing?
+
+							Thanx, Paul
+
+> ---
+> 
+> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> index 9455476c5ba2..f4df001410fc 100644
+> --- a/include/linux/rcupdate.h
+> +++ b/include/linux/rcupdate.h
+> @@ -114,7 +114,12 @@ static inline void rcu_user_exit(void) { }
+>  void rcu_init_nohz(void);
+>  int rcu_nocb_cpu_offload(int cpu);
+>  int rcu_nocb_cpu_deoffload(int cpu);
+> -void rcu_nocb_flush_deferred_wakeup(void);
+> +void __rcu_nocb_flush_deferred_wakeup(void);
+> +static inline void rcu_nocb_flush_deferred_wakeup(void)
+> +{
+> +	if (context_tracking_enabled())
+> +		__rcu_nocb_flush_deferred_wakeup();
+> +}
+>  #else /* #ifdef CONFIG_RCU_NOCB_CPU */
+>  static inline void rcu_init_nohz(void) { }
+>  static inline int rcu_nocb_cpu_offload(int cpu) { return -EINVAL; }
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index ad0156b86937..3cdbbf7fba01 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -2378,7 +2378,7 @@ static bool do_nocb_deferred_wakeup(struct rcu_data *rdp)
+>  	return false;
+>  }
+>  
+> -void rcu_nocb_flush_deferred_wakeup(void)
+> +void __rcu_nocb_flush_deferred_wakeup(void)
+>  {
+>  	do_nocb_deferred_wakeup(this_cpu_ptr(&rcu_data));
+>  }
+> 
