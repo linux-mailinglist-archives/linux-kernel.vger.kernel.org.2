@@ -2,166 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3776437F8B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 15:22:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC79B37F89D
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 15:21:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234240AbhEMNX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 09:23:27 -0400
-Received: from mail.aperture-lab.de ([116.203.183.178]:52932 "EHLO
-        mail.aperture-lab.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233998AbhEMNWb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 09:22:31 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 43A983ED8D;
-        Thu, 13 May 2021 15:21:06 +0200 (CEST)
-From:   =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>
-To:     netdev@vger.kernel.org
-Cc:     Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        bridge@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>
-Subject: [net-next v4 08/11] net: bridge: mcast: split router port del+notify for mcast router split
-Date:   Thu, 13 May 2021 15:20:50 +0200
-Message-Id: <20210513132053.23445-9-linus.luessing@c0d3.blue>
-In-Reply-To: <20210513132053.23445-1-linus.luessing@c0d3.blue>
-References: <20210513132053.23445-1-linus.luessing@c0d3.blue>
+        id S233682AbhEMNWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 09:22:46 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51982 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233890AbhEMNWP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 09:22:15 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 19D96AE57;
+        Thu, 13 May 2021 13:21:02 +0000 (UTC)
+From:   Giovanni Gherdovich <ggherdovich@suse.cz>
+To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc:     Len Brown <lenb@kernel.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Giovanni Gherdovich <ggherdovich@suse.cz>
+Subject: [PATCH v2] cpufreq: intel_pstate: Add Icelake servers support in no-HWP mode
+Date:   Thu, 13 May 2021 15:20:51 +0200
+Message-Id: <20210513132051.31465-1-ggherdovich@suse.cz>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <fb6c8a4e284a9b6c043f4ac382387b19bd100976.camel@linux.intel.com>
+References: <fb6c8a4e284a9b6c043f4ac382387b19bd100976.camel@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Last-TLS-Session-Version: TLSv1.2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for the upcoming split of multicast router state into
-their IPv4 and IPv6 variants split router port deletion and notification
-into two functions. When we disable a port for instance later we want to
-only send one notification to switchdev and netlink for compatibility
-and want to avoid sending one for IPv4 and one for IPv6. For that the
-split is needed.
+Users may disable HWP in firmware, in which case intel_pstate wouldn't load
+unless the CPU model is explicitly supported.
 
-Signed-off-by: Linus Lüssing <linus.luessing@c0d3.blue>
+Add ICELAKE_X to the list of CPUs that can register intel_pstate while not
+advertising the HWP capability. Without this change, an ICELAKE_X in no-HWP
+mode could only use the acpi_cpufreq frequency scaling driver.
+
+See also commit d8de7a44e11f ("cpufreq: intel_pstate: Add Skylake servers
+support").
+
+Signed-off-by: Giovanni Gherdovich <ggherdovich@suse.cz>
 ---
- net/bridge/br_multicast.c | 40 ++++++++++++++++++++++++++++++---------
- 1 file changed, 31 insertions(+), 9 deletions(-)
+This replaces https://lore.kernel.org/lkml/20210513075930.22657-1-ggherdovich@suse.cz
 
-diff --git a/net/bridge/br_multicast.c b/net/bridge/br_multicast.c
-index dc95464..30144f9 100644
---- a/net/bridge/br_multicast.c
-+++ b/net/bridge/br_multicast.c
-@@ -60,7 +60,8 @@ static void br_ip4_multicast_leave_group(struct net_bridge *br,
- 					 const unsigned char *src);
- static void br_multicast_port_group_rexmit(struct timer_list *t);
- 
--static void __del_port_router(struct net_bridge_port *p);
-+static void
-+br_multicast_rport_del_notify(struct net_bridge_port *p, bool deleted);
- #if IS_ENABLED(CONFIG_IPV6)
- static void br_ip6_multicast_leave_group(struct net_bridge *br,
- 					 struct net_bridge_port *port,
-@@ -1354,11 +1355,26 @@ static int br_ip6_multicast_add_group(struct net_bridge *br,
- }
- #endif
- 
-+static bool br_multicast_rport_del(struct hlist_node *rlist)
-+{
-+	if (hlist_unhashed(rlist))
-+		return false;
-+
-+	hlist_del_init_rcu(rlist);
-+	return true;
-+}
-+
-+static bool br_ip4_multicast_rport_del(struct net_bridge_port *p)
-+{
-+	return br_multicast_rport_del(&p->ip4_rlist);
-+}
-+
- static void br_multicast_router_expired(struct net_bridge_port *port,
- 					struct timer_list *t,
- 					struct hlist_node *rlist)
- {
- 	struct net_bridge *br = port->br;
-+	bool del;
- 
- 	spin_lock(&br->multicast_lock);
- 	if (port->multicast_router == MDB_RTR_TYPE_DISABLED ||
-@@ -1366,7 +1382,8 @@ static void br_multicast_router_expired(struct net_bridge_port *port,
- 	    timer_pending(t))
- 		goto out;
- 
--	__del_port_router(port);
-+	del = br_multicast_rport_del(rlist);
-+	br_multicast_rport_del_notify(port, del);
- out:
- 	spin_unlock(&br->multicast_lock);
- }
-@@ -1705,19 +1722,20 @@ void br_multicast_disable_port(struct net_bridge_port *port)
- 	struct net_bridge *br = port->br;
- 	struct net_bridge_port_group *pg;
- 	struct hlist_node *n;
-+	bool del = false;
- 
- 	spin_lock(&br->multicast_lock);
- 	hlist_for_each_entry_safe(pg, n, &port->mglist, mglist)
- 		if (!(pg->flags & MDB_PG_FLAGS_PERMANENT))
- 			br_multicast_find_del_pg(br, pg);
- 
--	__del_port_router(port);
--
-+	del |= br_ip4_multicast_rport_del(port);
- 	del_timer(&port->ip4_mc_router_timer);
- 	del_timer(&port->ip4_own_query.timer);
- #if IS_ENABLED(CONFIG_IPV6)
- 	del_timer(&port->ip6_own_query.timer);
- #endif
-+	br_multicast_rport_del_notify(port, del);
- 	spin_unlock(&br->multicast_lock);
- }
- 
-@@ -3538,11 +3556,12 @@ int br_multicast_set_router(struct net_bridge *br, unsigned long val)
- 	return err;
- }
- 
--static void __del_port_router(struct net_bridge_port *p)
-+static void
-+br_multicast_rport_del_notify(struct net_bridge_port *p, bool deleted)
- {
--	if (hlist_unhashed(&p->ip4_rlist))
-+	if (!deleted)
- 		return;
--	hlist_del_init_rcu(&p->ip4_rlist);
-+
- 	br_rtr_notify(p->br->dev, p, RTM_DELMDB);
- 	br_port_mc_router_state_change(p, false);
- 
-@@ -3556,6 +3575,7 @@ int br_multicast_set_port_router(struct net_bridge_port *p, unsigned long val)
- 	struct net_bridge *br = p->br;
- 	unsigned long now = jiffies;
- 	int err = -EINVAL;
-+	bool del = false;
- 
- 	spin_lock(&br->multicast_lock);
- 	if (p->multicast_router == val) {
-@@ -3569,12 +3589,14 @@ int br_multicast_set_port_router(struct net_bridge_port *p, unsigned long val)
- 	switch (val) {
- 	case MDB_RTR_TYPE_DISABLED:
- 		p->multicast_router = MDB_RTR_TYPE_DISABLED;
--		__del_port_router(p);
-+		del |= br_ip4_multicast_rport_del(p);
- 		del_timer(&p->ip4_mc_router_timer);
-+		br_multicast_rport_del_notify(p, del);
- 		break;
- 	case MDB_RTR_TYPE_TEMP_QUERY:
- 		p->multicast_router = MDB_RTR_TYPE_TEMP_QUERY;
--		__del_port_router(p);
-+		del |= br_ip4_multicast_rport_del(p);
-+		br_multicast_rport_del_notify(p, del);
- 		break;
- 	case MDB_RTR_TYPE_PERM:
- 		p->multicast_router = MDB_RTR_TYPE_PERM;
+ drivers/cpufreq/intel_pstate.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+index f0401064d7aa..28c9733e0dce 100644
+--- a/drivers/cpufreq/intel_pstate.c
++++ b/drivers/cpufreq/intel_pstate.c
+@@ -2087,6 +2087,7 @@ static const struct x86_cpu_id intel_pstate_cpu_ids[] = {
+ 	X86_MATCH(ATOM_GOLDMONT,	core_funcs),
+ 	X86_MATCH(ATOM_GOLDMONT_PLUS,	core_funcs),
+ 	X86_MATCH(SKYLAKE_X,		core_funcs),
++	X86_MATCH(ICELAKE_X,		core_funcs),
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(x86cpu, intel_pstate_cpu_ids);
 -- 
-2.31.0
+2.26.2
 
