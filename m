@@ -2,69 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A799E37FC54
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 19:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0281037FC55
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 19:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231130AbhEMRTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 13:19:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52796 "EHLO
+        id S231193AbhEMRTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 13:19:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230154AbhEMRSt (ORCPT
+        with ESMTP id S230472AbhEMRSy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 13:18:49 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B568AC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 10:17:38 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id k127so26212235qkc.6
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 10:17:38 -0700 (PDT)
+        Thu, 13 May 2021 13:18:54 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E958C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 10:17:43 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id v8so8252062qkv.1
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 10:17:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=marek-ca.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=9WG0R1210n0jTNjQDS6goCg7eMSMJrn7+n/wli9p3uE=;
-        b=a7WGuaOMXcdyVbHS1oMtsfrUeHQJr5oaOtSUSS8iouy29cPevPdc+8W0XA+vksHIDi
-         Zm8VeBJ/2aa0zQSwnxPK1+lFXabRRW8S9gUyxrdsir0JPTGoQyYzItinXzZ+KFcV5T8V
-         R5zFT4xsDcG6rP6fh2FWihojqgOORH6V6XzdU4GzV1bMfwrFJNRO9z949T22p6j/mCjy
-         TSI5Ep0DnBYHasjwZHxKm2TePX171Y3CMollCPSJL6Z+E22bv/cMFYG2QQZNLBYO3FEw
-         6pDUNzzqnQxdWqzSeu/QcRN6/2twVbIZLKnYg7A4f3HtegNlibW6a5cIauts/lLBcYr1
-         yQAw==
+        bh=pIW1M607WOPkqZOWdsFBBxS0va9j8xicJ5rtae11iCQ=;
+        b=BHccY3sJgxRFdz6S+NEyeeyF4HopzwD9eigjs+RUkqVACm9rQp8AIeLXzT/1R9KsD8
+         m2fyk3tuYmhkRlm2qf79L5R+T8UIOmMsMnZyoFKRjoUC7WxbkaD74vg/7riCDUEo54D2
+         Gx10zJIt7+dYQkCKh9giOE2ht43AZ5AdDFlQhn9SUZvK9heJZZZkEW7lV6S8wlI39YUK
+         +NJAqckZA+CQ7AKyKGUwMEaXKwN5W9Cx54eoMcZnB3DEjPvw77PKCSb9OR9dvP64K7ub
+         iWku8iwmB7Xcwr+qE+lhyzj+eetxYSli8ebo+uol0fRhnxlyKwI5XqJNrfYk+YT0/wXl
+         rG/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=9WG0R1210n0jTNjQDS6goCg7eMSMJrn7+n/wli9p3uE=;
-        b=JTyXEgnV7MembrentG9hIX1Da4mm27K/eio0lEnFJC+Iy1brP/eImebacpmQP9Bukg
-         xxoSDraaRlxmmXc/AIYnk8LTj3jRZQx4li3sKEfVpxRKVCi8gDZ3RKe1VACNrRmTkk0Q
-         qO2yTVkJ1aqoaPGkFJgIZbId5lV8106tOVbHW/CGQ8HvmPx235n0mozbYwIZKTfKVqDj
-         /CASMjb4ekmyeBq92t0Jovgr7OMPr5Pk0uQ9yTnFKBgfZrFT0GetGVp/PEAD9tNAY0fK
-         4vsq/9KCf1BHKMDFXh2O9jF2MRQJgncH3+YhF6JjsYEakvI+cGIENDO8bcRLn333dtX/
-         13iQ==
-X-Gm-Message-State: AOAM533mc2IpJV9G7MqfE5++gpyi2PP4VLtKP0Rzuk57AIZJfykBY1aQ
-        3qgTXGiZ/kxIYVU3fYqZ2ug28A==
-X-Google-Smtp-Source: ABdhPJwp93NLEhRkl5ZJqxvch8hiavkKa9Ms6pYFfYpvTzCXyNoiML+6spdv3qCly1s5rKn3cnni9w==
-X-Received: by 2002:a05:620a:1201:: with SMTP id u1mr40175153qkj.80.1620926257971;
-        Thu, 13 May 2021 10:17:37 -0700 (PDT)
+        bh=pIW1M607WOPkqZOWdsFBBxS0va9j8xicJ5rtae11iCQ=;
+        b=ZcQOBI2VkM2sv6BC7P4SjMdDYyzC9vHjb+2Hqk0xSLZH8UcthT+R/gbB4StRf3nUzI
+         9sTfxJyF/hgdQlUjBU//c4OgG7NbsNLpDTVyYmAce8ZPjSZN32Am2EQ1chDK9Db9HRFK
+         VJo3C+d6GupBDgIAFNoAwuNOZCYeFLVJy7Z6Oy/GjNHJ4HRexSpndvkDQPFMsd2VJOCp
+         ZI9xf2atJmTCZrjuCHxCJ/2/C1JWo/3xUuWjFyn4fh4cGSUoRSPpL29s8fY09XYbdztH
+         f4KSzoctUeBbls1tgeSvww8lizkMzqukd5XVlOsGPjEcYshSLXSPmF2kOoTBgiQ2VVCG
+         yvWw==
+X-Gm-Message-State: AOAM530fcMW5r92KtJsHIvH6FlaoEOBhabRq+o75QCU12xhLP62YtbxH
+        C0+17aobPafX6xJOVCslIjIxTA==
+X-Google-Smtp-Source: ABdhPJz2OiHdtJe5Ypg5Ccbh+40n1H1MCZpQSz05gcROdbgn3/fCIcP+Cbc4M5blD7QwheBIG/BhkA==
+X-Received: by 2002:a37:e12:: with SMTP id 18mr38901864qko.419.1620926262479;
+        Thu, 13 May 2021 10:17:42 -0700 (PDT)
 Received: from localhost.localdomain (modemcable068.184-131-66.mc.videotron.ca. [66.131.184.68])
-        by smtp.gmail.com with ESMTPSA id f132sm2971117qke.104.2021.05.13.10.17.36
+        by smtp.gmail.com with ESMTPSA id f132sm2971117qke.104.2021.05.13.10.17.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 10:17:37 -0700 (PDT)
+        Thu, 13 May 2021 10:17:42 -0700 (PDT)
 From:   Jonathan Marek <jonathan@marek.ca>
 To:     freedreno@lists.freedesktop.org
 Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
         Jordan Crouse <jordan@cosmicpenguin.net>,
-        Eric Anholt <eric@anholt.net>,
         Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Eric Anholt <eric@anholt.net>,
         Akhil P Oommen <akhilpo@codeaurora.org>,
         Sharat Masetty <smasetty@codeaurora.org>,
         Douglas Anderson <dianders@chromium.org>,
         linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
         dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
         GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 3/8] drm/msm/a6xx: fix incorrectly set uavflagprd_inv field for A650
-Date:   Thu, 13 May 2021 13:13:58 -0400
-Message-Id: <20210513171431.18632-4-jonathan@marek.ca>
+Subject: [PATCH v2 4/8] drm/msm/a6xx: update/fix CP_PROTECT initialization
+Date:   Thu, 13 May 2021 13:13:59 -0400
+Message-Id: <20210513171431.18632-5-jonathan@marek.ca>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20210513171431.18632-1-jonathan@marek.ca>
 References: <20210513171431.18632-1-jonathan@marek.ca>
@@ -74,27 +74,190 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Value was shifted in the wrong direction, resulting in the field always
-being zero, which is incorrect for A650.
+Update CP_PROTECT register programming based on downstream.
 
-Fixes: d0bac4e9cd66 ("drm/msm/a6xx: set ubwc config for A640 and A650")
+A6XX_PROTECT_RW is renamed to A6XX_PROTECT_NORDWR to make things aligned
+and also be more clear about what it does.
+
 Signed-off-by: Jonathan Marek <jonathan@marek.ca>
 ---
- drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 143 +++++++++++++++++++-------
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.h |   2 +-
+ 2 files changed, 109 insertions(+), 36 deletions(-)
 
 diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-index 727d111a413f..45a6a0fce7d7 100644
+index 45a6a0fce7d7..909e3ff08f89 100644
 --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
 +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-@@ -489,7 +489,7 @@ static void a6xx_set_ubwc_config(struct msm_gpu *gpu)
- 		rgb565_predicator << 11 | amsbc << 4 | lower_bit << 1);
- 	gpu_write(gpu, REG_A6XX_TPL1_NC_MODE_CNTL, lower_bit << 1);
- 	gpu_write(gpu, REG_A6XX_SP_NC_MODE_CNTL,
--		uavflagprd_inv >> 4 | lower_bit << 1);
-+		uavflagprd_inv << 4 | lower_bit << 1);
- 	gpu_write(gpu, REG_A6XX_UCHE_MODE_CNTL, lower_bit << 21);
+@@ -462,6 +462,113 @@ static void a6xx_set_hwcg(struct msm_gpu *gpu, bool state)
+ 	gpu_write(gpu, REG_A6XX_RBBM_CLOCK_CNTL, state ? clock_cntl_on : 0);
  }
+ 
++/* For a615, a616, a618, A619, a630, a640 and a680 */
++static const u32 a6xx_protect[] = {
++	A6XX_PROTECT_RDONLY(0x00000, 0x04ff),
++	A6XX_PROTECT_RDONLY(0x00501, 0x0005),
++	A6XX_PROTECT_RDONLY(0x0050b, 0x02f4),
++	A6XX_PROTECT_NORDWR(0x0050e, 0x0000),
++	A6XX_PROTECT_NORDWR(0x00510, 0x0000),
++	A6XX_PROTECT_NORDWR(0x00534, 0x0000),
++	A6XX_PROTECT_NORDWR(0x00800, 0x0082),
++	A6XX_PROTECT_NORDWR(0x008a0, 0x0008),
++	A6XX_PROTECT_NORDWR(0x008ab, 0x0024),
++	A6XX_PROTECT_RDONLY(0x008d0, 0x00bc),
++	A6XX_PROTECT_NORDWR(0x00900, 0x004d),
++	A6XX_PROTECT_NORDWR(0x0098d, 0x0272),
++	A6XX_PROTECT_NORDWR(0x00e00, 0x0001),
++	A6XX_PROTECT_NORDWR(0x00e03, 0x000c),
++	A6XX_PROTECT_NORDWR(0x03c00, 0x00c3),
++	A6XX_PROTECT_RDONLY(0x03cc4, 0x1fff),
++	A6XX_PROTECT_NORDWR(0x08630, 0x01cf),
++	A6XX_PROTECT_NORDWR(0x08e00, 0x0000),
++	A6XX_PROTECT_NORDWR(0x08e08, 0x0000),
++	A6XX_PROTECT_NORDWR(0x08e50, 0x001f),
++	A6XX_PROTECT_NORDWR(0x09624, 0x01db),
++	A6XX_PROTECT_NORDWR(0x09e70, 0x0001),
++	A6XX_PROTECT_NORDWR(0x09e78, 0x0187),
++	A6XX_PROTECT_NORDWR(0x0a630, 0x01cf),
++	A6XX_PROTECT_NORDWR(0x0ae02, 0x0000),
++	A6XX_PROTECT_NORDWR(0x0ae50, 0x032f),
++	A6XX_PROTECT_NORDWR(0x0b604, 0x0000),
++	A6XX_PROTECT_NORDWR(0x0be02, 0x0001),
++	A6XX_PROTECT_NORDWR(0x0be20, 0x17df),
++	A6XX_PROTECT_NORDWR(0x0f000, 0x0bff),
++	A6XX_PROTECT_RDONLY(0x0fc00, 0x1fff),
++	A6XX_PROTECT_NORDWR(0x11c00, 0x0000), /* note: infinite range */
++};
++
++/* These are for a620 and a650 */
++static const u32 a650_protect[] = {
++	A6XX_PROTECT_RDONLY(0x00000, 0x04ff),
++	A6XX_PROTECT_RDONLY(0x00501, 0x0005),
++	A6XX_PROTECT_RDONLY(0x0050b, 0x02f4),
++	A6XX_PROTECT_NORDWR(0x0050e, 0x0000),
++	A6XX_PROTECT_NORDWR(0x00510, 0x0000),
++	A6XX_PROTECT_NORDWR(0x00534, 0x0000),
++	A6XX_PROTECT_NORDWR(0x00800, 0x0082),
++	A6XX_PROTECT_NORDWR(0x008a0, 0x0008),
++	A6XX_PROTECT_NORDWR(0x008ab, 0x0024),
++	A6XX_PROTECT_RDONLY(0x008d0, 0x00bc),
++	A6XX_PROTECT_NORDWR(0x00900, 0x004d),
++	A6XX_PROTECT_NORDWR(0x0098d, 0x0272),
++	A6XX_PROTECT_NORDWR(0x00e00, 0x0001),
++	A6XX_PROTECT_NORDWR(0x00e03, 0x000c),
++	A6XX_PROTECT_NORDWR(0x03c00, 0x00c3),
++	A6XX_PROTECT_RDONLY(0x03cc4, 0x1fff),
++	A6XX_PROTECT_NORDWR(0x08630, 0x01cf),
++	A6XX_PROTECT_NORDWR(0x08e00, 0x0000),
++	A6XX_PROTECT_NORDWR(0x08e08, 0x0000),
++	A6XX_PROTECT_NORDWR(0x08e50, 0x001f),
++	A6XX_PROTECT_NORDWR(0x08e80, 0x027f),
++	A6XX_PROTECT_NORDWR(0x09624, 0x01db),
++	A6XX_PROTECT_NORDWR(0x09e60, 0x0011),
++	A6XX_PROTECT_NORDWR(0x09e78, 0x0187),
++	A6XX_PROTECT_NORDWR(0x0a630, 0x01cf),
++	A6XX_PROTECT_NORDWR(0x0ae02, 0x0000),
++	A6XX_PROTECT_NORDWR(0x0ae50, 0x032f),
++	A6XX_PROTECT_NORDWR(0x0b604, 0x0000),
++	A6XX_PROTECT_NORDWR(0x0b608, 0x0007),
++	A6XX_PROTECT_NORDWR(0x0be02, 0x0001),
++	A6XX_PROTECT_NORDWR(0x0be20, 0x17df),
++	A6XX_PROTECT_NORDWR(0x0f000, 0x0bff),
++	A6XX_PROTECT_RDONLY(0x0fc00, 0x1fff),
++	A6XX_PROTECT_NORDWR(0x18400, 0x1fff),
++	A6XX_PROTECT_NORDWR(0x1a800, 0x1fff),
++	A6XX_PROTECT_NORDWR(0x1f400, 0x0443),
++	A6XX_PROTECT_RDONLY(0x1f844, 0x007b),
++	A6XX_PROTECT_NORDWR(0x1f887, 0x001b),
++	A6XX_PROTECT_NORDWR(0x1f8c0, 0x0000), /* note: infinite range */
++};
++
++static void a6xx_set_cp_protect(struct msm_gpu *gpu)
++{
++	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
++	const u32 *regs = a6xx_protect;
++	unsigned i, count = ARRAY_SIZE(a6xx_protect), count_max = 32;
++
++	BUILD_BUG_ON(ARRAY_SIZE(a6xx_protect) > 32);
++	BUILD_BUG_ON(ARRAY_SIZE(a650_protect) > 48);
++
++	if (adreno_is_a650(adreno_gpu)) {
++		regs = a650_protect;
++		count = ARRAY_SIZE(a650_protect);
++		count_max = 48;
++	}
++
++	/*
++	 * Enable access protection to privileged registers, fault on an access
++	 * protect violation and select the last span to protect from the start
++	 * address all the way to the end of the register address space
++	 */
++	gpu_write(gpu, REG_A6XX_CP_PROTECT_CNTL, BIT(0) | BIT(1) | BIT(3));
++
++	for (i = 0; i < count - 1; i++)
++		gpu_write(gpu, REG_A6XX_CP_PROTECT(i), regs[i]);
++	/* last CP_PROTECT to have "infinite" length on the last entry */
++	gpu_write(gpu, REG_A6XX_CP_PROTECT(count_max - 1), regs[i]);
++}
++
+ static void a6xx_set_ubwc_config(struct msm_gpu *gpu)
+ {
+ 	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
+@@ -776,41 +883,7 @@ static int a6xx_hw_init(struct msm_gpu *gpu)
+ 	}
+ 
+ 	/* Protect registers from the CP */
+-	gpu_write(gpu, REG_A6XX_CP_PROTECT_CNTL, 0x00000003);
+-
+-	gpu_write(gpu, REG_A6XX_CP_PROTECT(0),
+-		A6XX_PROTECT_RDONLY(0x600, 0x51));
+-	gpu_write(gpu, REG_A6XX_CP_PROTECT(1), A6XX_PROTECT_RW(0xae50, 0x2));
+-	gpu_write(gpu, REG_A6XX_CP_PROTECT(2), A6XX_PROTECT_RW(0x9624, 0x13));
+-	gpu_write(gpu, REG_A6XX_CP_PROTECT(3), A6XX_PROTECT_RW(0x8630, 0x8));
+-	gpu_write(gpu, REG_A6XX_CP_PROTECT(4), A6XX_PROTECT_RW(0x9e70, 0x1));
+-	gpu_write(gpu, REG_A6XX_CP_PROTECT(5), A6XX_PROTECT_RW(0x9e78, 0x187));
+-	gpu_write(gpu, REG_A6XX_CP_PROTECT(6), A6XX_PROTECT_RW(0xf000, 0x810));
+-	gpu_write(gpu, REG_A6XX_CP_PROTECT(7),
+-		A6XX_PROTECT_RDONLY(0xfc00, 0x3));
+-	gpu_write(gpu, REG_A6XX_CP_PROTECT(8), A6XX_PROTECT_RW(0x50e, 0x0));
+-	gpu_write(gpu, REG_A6XX_CP_PROTECT(9), A6XX_PROTECT_RDONLY(0x50f, 0x0));
+-	gpu_write(gpu, REG_A6XX_CP_PROTECT(10), A6XX_PROTECT_RW(0x510, 0x0));
+-	gpu_write(gpu, REG_A6XX_CP_PROTECT(11),
+-		A6XX_PROTECT_RDONLY(0x0, 0x4f9));
+-	gpu_write(gpu, REG_A6XX_CP_PROTECT(12),
+-		A6XX_PROTECT_RDONLY(0x501, 0xa));
+-	gpu_write(gpu, REG_A6XX_CP_PROTECT(13),
+-		A6XX_PROTECT_RDONLY(0x511, 0x44));
+-	gpu_write(gpu, REG_A6XX_CP_PROTECT(14), A6XX_PROTECT_RW(0xe00, 0xe));
+-	gpu_write(gpu, REG_A6XX_CP_PROTECT(15), A6XX_PROTECT_RW(0x8e00, 0x0));
+-	gpu_write(gpu, REG_A6XX_CP_PROTECT(16), A6XX_PROTECT_RW(0x8e50, 0xf));
+-	gpu_write(gpu, REG_A6XX_CP_PROTECT(17), A6XX_PROTECT_RW(0xbe02, 0x0));
+-	gpu_write(gpu, REG_A6XX_CP_PROTECT(18),
+-		A6XX_PROTECT_RW(0xbe20, 0x11f3));
+-	gpu_write(gpu, REG_A6XX_CP_PROTECT(19), A6XX_PROTECT_RW(0x800, 0x82));
+-	gpu_write(gpu, REG_A6XX_CP_PROTECT(20), A6XX_PROTECT_RW(0x8a0, 0x8));
+-	gpu_write(gpu, REG_A6XX_CP_PROTECT(21), A6XX_PROTECT_RW(0x8ab, 0x19));
+-	gpu_write(gpu, REG_A6XX_CP_PROTECT(22), A6XX_PROTECT_RW(0x900, 0x4d));
+-	gpu_write(gpu, REG_A6XX_CP_PROTECT(23), A6XX_PROTECT_RW(0x98d, 0x76));
+-	gpu_write(gpu, REG_A6XX_CP_PROTECT(24),
+-			A6XX_PROTECT_RDONLY(0x980, 0x4));
+-	gpu_write(gpu, REG_A6XX_CP_PROTECT(25), A6XX_PROTECT_RW(0xa630, 0x0));
++	a6xx_set_cp_protect(gpu);
+ 
+ 	/* Enable expanded apriv for targets that support it */
+ 	if (gpu->hw_apriv) {
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.h b/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
+index ce0610c5256f..bb544dfe5737 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
+@@ -44,7 +44,7 @@ struct a6xx_gpu {
+  * REG_CP_PROTECT_REG(n) - this will block both reads and writes for _len
+  * registers starting at _reg.
+  */
+-#define A6XX_PROTECT_RW(_reg, _len) \
++#define A6XX_PROTECT_NORDWR(_reg, _len) \
+ 	((1 << 31) | \
+ 	(((_len) & 0x3FFF) << 18) | ((_reg) & 0x3FFFF))
  
 -- 
 2.26.1
