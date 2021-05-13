@@ -2,134 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BE7C37FF94
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 23:03:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C809E37FFA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 23:11:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233262AbhEMVE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 17:04:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233247AbhEMVE6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 17:04:58 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B93F4C061574;
-        Thu, 13 May 2021 14:03:47 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id x5so28124820wrv.13;
-        Thu, 13 May 2021 14:03:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=9MhDBHQ11hDldH6MDOJoiTUDCTHB+WEqxchIZghbcyg=;
-        b=Ki38mtOICZjMluksRQeBO/wgp4JwGvNkt6B2gZ6orvoHMez0c0Eu5rjMRo69ZxPOlL
-         zlmkHvhXeFbAG1PxwvBkWQabumk/1Ajaqb3u38sOMzLAAPh3SwdgOgf2GQctIhX4Dfmr
-         MGkWNEERR9cFUF8vh2svKBhyBWkFsa5oQwH4jlfaMM4YMd/EOGnOZZZjFJO5iWmV2fHD
-         +1NNGJorb6X6IV2qrheTyKLP+s/iVY4ZJkPbdTJlDPHgeNIY+OA1MRhI2iiVihKVYnMw
-         jhh+ihMWQfjVRI489Rk318ATddOkN3uMHMvEu+6XoeXK9xp1VHsZcXcxKzv9WsbPZgqN
-         PX4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9MhDBHQ11hDldH6MDOJoiTUDCTHB+WEqxchIZghbcyg=;
-        b=mGoT+0OOpf7f76aJM1Iy1y5DFPJ+1744+QOOuGR9hYndNysngPnFq54MChIn0L9DhT
-         +IwqiFZNgdN197DNcvKNzDpMe6VllK2xMsD8RVzDMY72wBKafKWZQ+n0Pc+v4v3GyLdm
-         xpPx0E/FjjTgb0QA69A/P48+tOLEWEaA2+ByhpwMkfdSy0NZVWEkh5DR/HCrRU071Ylj
-         ZTo45K0mXuutGSzd+J5qZG0Almn4s3GAWxjw7L9QHfni+ipwApQQrR1gGhoZM81kKKkB
-         dR5NFmEKhcyt10wuxO/mvFdyZ5iCPTefMAi2okU+pClPhc66+9RVfUJHrOKC4ckbHkFp
-         w8Qg==
-X-Gm-Message-State: AOAM533aCq+1WYo++gXWOa2Q2DSMob13nTxB68wd8QSQQol60AWDE3xd
-        M0OvHoBI9jv7LMcmXAnSrSk=
-X-Google-Smtp-Source: ABdhPJx2bYDE2pgnjHSH85hlgL5f0D15mPVm/ZsY4CBCI016xG7533+cCZzPWq80CS2zwE9q6NeWxA==
-X-Received: by 2002:adf:ea82:: with SMTP id s2mr16753023wrm.397.1620939826504;
-        Thu, 13 May 2021 14:03:46 -0700 (PDT)
-Received: from [192.168.8.197] ([148.252.132.196])
-        by smtp.gmail.com with ESMTPSA id p1sm4147974wrs.50.2021.05.13.14.03.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 May 2021 14:03:46 -0700 (PDT)
-Subject: Re: [syzbot] WARNING in io_link_timeout_fn
-To:     syzbot <syzbot+5a864149dd970b546223@syzkaller.appspotmail.com>,
-        axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-References: <00000000000011220705c229aa98@google.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Message-ID: <8915be59-5ac9-232d-878e-b09c141059d5@gmail.com>
-Date:   Thu, 13 May 2021 22:03:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S233325AbhEMVMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 17:12:30 -0400
+Received: from mx3.wp.pl ([212.77.101.10]:19181 "EHLO mx3.wp.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233291AbhEMVMZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 17:12:25 -0400
+Received: (wp-smtpd smtp.wp.pl 8400 invoked from network); 13 May 2021 23:04:33 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
+          t=1620939873; bh=UKMDBnG5p5APpb3tRL0n14Y5bMFveQTAt2xY2r5P3Ys=;
+          h=From:To:Cc:Subject;
+          b=f8x38V4CyT3Kz4WPRlyYZTkzgZKvyzWOm7uGGkgwBMmvzwbKgDsfI3l/Jom6MuEWf
+           5gbFGgtbgGUC8jy+8KJsdKVW2Z8LeZjPA9FwLyMqYIExn0tzl8XodtqD0Ys7ylBw2G
+           2XEs29tBKDgE0jr8FEiB5EGQUW7IT2buQMXusGfc=
+Received: from riviera.nat.ds.pw.edu.pl (HELO LAPTOP-OLEK.lan) (olek2@wp.pl@[194.29.137.1])
+          (envelope-sender <olek2@wp.pl>)
+          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <linus.walleij@linaro.org>; 13 May 2021 23:04:33 +0200
+From:   Aleksander Jan Bajkowski <olek2@wp.pl>
+To:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        robh+dt@kernel.org, john@phrozen.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Aleksander Jan Bajkowski <olek2@wp.pl>
+Subject: [PATCH 1/2] dt-bindings: gpio: stp: convert to json-schema
+Date:   Thu, 13 May 2021 23:03:39 +0200
+Message-Id: <20210513210340.10466-1-olek2@wp.pl>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <00000000000011220705c229aa98@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-WP-DKIM-Status: good (id: wp.pl)                                      
+X-WP-MailID: fb27e803245d34b0a93d3341ec428926
+X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
+X-WP-SPAM: NO 000000A [weOU]                               
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/12/21 11:38 PM, syzbot wrote:
-> Hello,
-> 
-> syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-> WARNING in io_req_complete_failed
+Convert the Lantiq STP Device Tree binding documentation to json-schema.
+Add the missing pinctrl property.
 
-Let's get more info on it
+Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
+---
+ .../bindings/gpio/gpio-stp-xway.txt           |  42 -------
+ .../bindings/gpio/gpio-stp-xway.yaml          | 117 ++++++++++++++++++
+ 2 files changed, 117 insertions(+), 42 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-stp-xway.txt
+ create mode 100644 Documentation/devicetree/bindings/gpio/gpio-stp-xway.yaml
 
-#syz test: https://github.com/isilence/linux.git syz_test6
-
-> 
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 10153 at fs/io_uring.c:1505 req_ref_put_and_test fs/io_uring.c:1505 [inline]
-> WARNING: CPU: 0 PID: 10153 at fs/io_uring.c:1505 io_put_req fs/io_uring.c:2171 [inline]
-> WARNING: CPU: 0 PID: 10153 at fs/io_uring.c:1505 io_req_complete_failed+0x2ee/0x5a0 fs/io_uring.c:1649
-> Modules linked in:
-> CPU: 1 PID: 10153 Comm: syz-executor.3 Not tainted 5.12.0-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:req_ref_put_and_test fs/io_uring.c:1505 [inline]
-> RIP: 0010:io_put_req fs/io_uring.c:2171 [inline]
-> RIP: 0010:io_req_complete_failed+0x2ee/0x5a0 fs/io_uring.c:1649
-> Code: 58 bd da ff be 01 00 00 00 4c 89 f7 e8 5b 78 fe ff e9 09 fe ff ff e8 f1 32 97 ff 4c 89 ef e8 a9 fd 65 ff eb cb e8 e2 32 97 ff <0f> 0b e9 c8 fd ff ff 4c 89 f7 e8 23 0b db ff e9 3c fd ff ff 4c 89
-> RSP: 0018:ffffc9000afbfd10 EFLAGS: 00010293
-> 
-> RAX: 0000000000000000 RBX: 000000000000007f RCX: 0000000000000000
-> RDX: ffff88801f5e0000 RSI: ffffffff81dd35ae RDI: 0000000000000003
-> RBP: ffff888043314dc0 R08: 000000000000007f R09: ffff888043314e1f
-> R10: ffffffff81dd3374 R11: 000000000000000f R12: ffffffffffffffea
-> R13: ffff888043314e1c R14: ffff888043314e18 R15: 00000000ffffffea
-> FS:  00007fac1b577700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f04f797dd40 CR3: 0000000012dfb000 CR4: 00000000001506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  __io_queue_sqe+0x61e/0x10f0 fs/io_uring.c:6440
->  __io_req_task_submit+0x103/0x120 fs/io_uring.c:2037
->  __tctx_task_work fs/io_uring.c:1908 [inline]
->  tctx_task_work+0x24e/0x550 fs/io_uring.c:1922
->  task_work_run+0xdd/0x1a0 kernel/task_work.c:161
->  tracehook_notify_signal include/linux/tracehook.h:212 [inline]
->  handle_signal_work kernel/entry/common.c:145 [inline]
->  exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
->  exit_to_user_mode_prepare+0x24a/0x280 kernel/entry/common.c:208
->  __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
->  syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:301
->  do_syscall_64+0x47/0xb0 arch/x86/entry/common.c:57
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x4665f9
-> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-> 
-> 
-> Tested on:
-> 
-> commit:         a298232e io_uring: fix link timeout refs
-> git tree:       git://git.kernel.dk/linux-block.git io_uring-5.13
-> console output: https://syzkaller.appspot.com/x/log.txt?x=15f82965d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=ae2e6c63d6410fd3
-> dashboard link: https://syzkaller.appspot.com/bug?extid=5a864149dd970b546223
-> compiler:       
-> 
-
+diff --git a/Documentation/devicetree/bindings/gpio/gpio-stp-xway.txt b/Documentation/devicetree/bindings/gpio/gpio-stp-xway.txt
+deleted file mode 100644
+index 78458adbf4b7..000000000000
+--- a/Documentation/devicetree/bindings/gpio/gpio-stp-xway.txt
++++ /dev/null
+@@ -1,42 +0,0 @@
+-Lantiq SoC Serial To Parallel (STP) GPIO controller
+-
+-The Serial To Parallel (STP) is found on MIPS based Lantiq socs. It is a
+-peripheral controller used to drive external shift register cascades. At most
+-3 groups of 8 bits can be driven. The hardware is able to allow the DSL modem
+-to drive the 2 LSBs of the cascade automatically.
+-
+-
+-Required properties:
+-- compatible : Should be "lantiq,gpio-stp-xway"
+-- reg : Address and length of the register set for the device
+-- #gpio-cells : Should be two.  The first cell is the pin number and
+-  the second cell is used to specify optional parameters (currently
+-  unused).
+-- gpio-controller : Marks the device node as a gpio controller.
+-
+-Optional properties:
+-- lantiq,shadow : The default value that we shall assume as already set on the
+-  shift register cascade.
+-- lantiq,groups : Set the 3 bit mask to select which of the 3 groups are enabled
+-  in the shift register cascade.
+-- lantiq,dsl : The dsl core can control the 2 LSBs of the gpio cascade. This 2 bit
+-  property can enable this feature.
+-- lantiq,phy1 : The gphy1 core can control 3 bits of the gpio cascade.
+-- lantiq,phy2 : The gphy2 core can control 3 bits of the gpio cascade.
+-- lantiq,rising : use rising instead of falling edge for the shift register
+-
+-Example:
+-
+-gpio1: stp@e100bb0 {
+-	compatible = "lantiq,gpio-stp-xway";
+-	reg = <0xE100BB0 0x40>;
+-	#gpio-cells = <2>;
+-	gpio-controller;
+-
+-	lantiq,shadow = <0xffff>;
+-	lantiq,groups = <0x7>;
+-	lantiq,dsl = <0x3>;
+-	lantiq,phy1 = <0x7>;
+-	lantiq,phy2 = <0x7>;
+-	/* lantiq,rising; */
+-};
+diff --git a/Documentation/devicetree/bindings/gpio/gpio-stp-xway.yaml b/Documentation/devicetree/bindings/gpio/gpio-stp-xway.yaml
+new file mode 100644
+index 000000000000..a36acc98898c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/gpio/gpio-stp-xway.yaml
+@@ -0,0 +1,117 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/gpio/gpio-stp-xway.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Lantiq SoC Serial To Parallel (STP) GPIO controller
++
++description: |
++  The Serial To Parallel (STP) is found on MIPS based Lantiq socs. It is a
++  peripheral controller used to drive external shift register cascades. At most
++  3 groups of 8 bits can be driven. The hardware is able to allow the DSL modem
++  and Ethernet PHYs to drive some bytes of the cascade automatically.
++
++maintainers:
++  - John Crispin <john@phrozen.org>
++
++properties:
++  $nodename:
++    pattern: "^stp@[0-9a-f]+$"
++
++  compatible:
++    const: lantiq,gpio-stp-xway
++
++  reg:
++    description:
++      Address and length of the register set for the device.
++    maxItems: 1
++
++  gpio-controller:
++    description:
++      Marks the device node as a gpio controller.
++    type: boolean
++
++  "#gpio-cells":
++    description:
++      The first cell is the pin number and the second cell is used to specify
++      consumer flags.
++    const: 2
++
++  pinctrl-0:
++    description: Should specify pin control groups used for this controller.
++
++  pinctrl-names:
++    const: default
++
++  lantiq,shadow:
++    description:
++      The default value that we shall assume as already set on the
++      shift register cascade.
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 0x000000
++    maximum: 0xffffff
++
++  lantiq,groups:
++    description:
++      Set the 3 bit mask to select which of the 3 groups are enabled
++      in the shift register cascade.
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 0x0
++    maximum: 0x7
++
++  lantiq,dsl:
++    description:
++      The dsl core can control the 2 LSBs of the gpio cascade. This 2 bit
++      property can enable this feature.
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 0x0
++    maximum: 0x3
++
++  lantiq,phy1:
++    description:
++      The gphy1 core can control 3 bits of the gpio cascade. Available on
++      the xRX200, xRX300 and xRX330 family.
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 0x0
++    maximum: 0x7
++
++  lantiq,phy2:
++    description:
++      The gphy2 core can control 3 bits of the gpio cascade. Available on
++      the xRX200, xRX300 and xRX330 family.
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 0x0
++    maximum: 0x7
++
++  lantiq,rising:
++    description:
++      Use rising instead of falling edge for the shift register.
++    type: boolean
++
++required:
++  - compatible
++  - reg
++  - gpio-controller
++  - "#gpio-cells"
++
++additionalProperties: false
++
++examples:
++  - |
++    stp: stp@e100bb0 {
++        compatible = "lantiq,gpio-stp-xway";
++        reg = <0xE100BB0 0x40>;
++        #gpio-cells = <2>;
++        gpio-controller;
++
++        pinctrl-0 = <&stp_pins>;
++        pinctrl-names = "default";
++
++        lantiq,shadow = <0xffffff>;
++        lantiq,groups = <0x7>;
++        lantiq,dsl = <0x3>;
++        lantiq,phy1 = <0x7>;
++        lantiq,phy2 = <0x7>;
++    };
++...
 -- 
-Pavel Begunkov
+2.30.2
+
