@@ -2,110 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E596937F576
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 12:16:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3471637F57D
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 12:18:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232454AbhEMKRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 06:17:49 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:56307 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232063AbhEMKRr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 06:17:47 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4Fgncz44FZz9sch;
-        Thu, 13 May 2021 12:16:35 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id elzAeS9dJuuJ; Thu, 13 May 2021 12:16:35 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4Fgncz368bz9scg;
-        Thu, 13 May 2021 12:16:35 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 313FE8B7F3;
-        Thu, 13 May 2021 12:16:35 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id R8jvyF-796Mk; Thu, 13 May 2021 12:16:35 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B59358B76C;
-        Thu, 13 May 2021 12:16:34 +0200 (CEST)
-Subject: Re: [PATCH 8/8] xen/hvc: replace BUG_ON() with negative return value
-To:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-References: <20210513100302.22027-1-jgross@suse.com>
- <20210513100302.22027-9-jgross@suse.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <6da4cc91-ccde-fce8-707c-e7544783c2fa@csgroup.eu>
-Date:   Thu, 13 May 2021 12:16:35 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S232670AbhEMKTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 06:19:47 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:40073 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232851AbhEMKT2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 06:19:28 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 14DAI8dzC016490, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 14DAI8dzC016490
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 13 May 2021 18:18:08 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 13 May 2021 18:18:07 +0800
+Received: from localhost.localdomain (172.21.132.99) by
+ RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 13 May 2021 18:18:06 +0800
+From:   <hildawu@realtek.com>
+To:     <marcel@holtmann.org>
+CC:     <johan.hedberg@gmail.com>, <luiz.dentz@gmail.com>,
+        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <max.chou@realtek.com>, <alex_lu@realsil.com.cn>,
+        <kidman@realtek.com>
+Subject: [PATCH] Bluetooth: btusb: Add support USB ALT 3 for WBS
+Date:   Thu, 13 May 2021 18:18:06 +0800
+Message-ID: <20210513101806.5666-1-hildawu@realtek.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20210513100302.22027-9-jgross@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.21.132.99]
+X-ClientProxiedBy: RTEXMBS02.realtek.com.tw (172.21.6.95) To
+ RTEXMBS04.realtek.com.tw (172.21.6.97)
+X-KSE-ServerInfo: RTEXMBS04.realtek.com.tw, 9
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzUvMTMgpFekyCAwNzo0MzowMA==?=
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/13/2021 09:53:57
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 10
+X-KSE-AntiSpam-Info: Lua profiles 163629 [May 13 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: hildawu@realtek.com
+X-KSE-AntiSpam-Info: LuaCore: 445 445 d5f7ae5578b0f01c45f955a2a751ac25953290c9
+X-KSE-AntiSpam-Info: {Prob_from_in_msgid}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: realtek.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: {Track_Chinese_Simplified, headers_charset}
+X-KSE-AntiSpam-Info: Rate: 10
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 05/13/2021 09:56:00
+X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/13/2021 10:04:01
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 10
+X-KSE-AntiSpam-Info: Lua profiles 163631 [May 13 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: hildawu@realtek.com
+X-KSE-AntiSpam-Info: LuaCore: 445 445 d5f7ae5578b0f01c45f955a2a751ac25953290c9
+X-KSE-AntiSpam-Info: {Prob_from_in_msgid}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;realtek.com:7.1.1
+X-KSE-AntiSpam-Info: Rate: 10
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 05/13/2021 10:07:00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: hildawu <hildawu@realtek.com>
 
+Because mSBC frames do not need to be aligned to the SCO packet
+boundary. Using USB ALT 3 let HCI payload >= 60 bytes, let mSBC
+data satisfy 60 Bytes avoid payload unaligned situation and fixed
+some headset no voise issue.
 
-Le 13/05/2021 à 12:03, Juergen Gross a écrit :
-> Xen frontends shouldn't BUG() in case of illegal data received from
-> their backends. So replace the BUG_ON()s when reading illegal data from
-> the ring page with negative return values.
-> 
-> Signed-off-by: Juergen Gross <jgross@suse.com>
-> ---
->   drivers/tty/hvc/hvc_xen.c | 15 +++++++++++++--
->   1 file changed, 13 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/tty/hvc/hvc_xen.c b/drivers/tty/hvc/hvc_xen.c
-> index 92c9a476defc..30d7ffb1e04c 100644
-> --- a/drivers/tty/hvc/hvc_xen.c
-> +++ b/drivers/tty/hvc/hvc_xen.c
-> @@ -86,6 +86,11 @@ static int __write_console(struct xencons_info *xencons,
->   	cons = intf->out_cons;
->   	prod = intf->out_prod;
->   	mb();			/* update queue values before going on */
-> +
-> +	if (WARN_ONCE((prod - cons) > sizeof(intf->out),
-> +		      "Illegal ring page indices"))
-> +		return -EINVAL;
-> +
->   	BUG_ON((prod - cons) > sizeof(intf->out));
+USB Alt 3 supported also need HFP support transparent MTU in 72 Bytes.
 
-Why keep the BUG_ON() ?
+Signed-off-by: hildawu <hildawu@realtek.com>
+---
+ drivers/bluetooth/btusb.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 6f253378e893..872034e7a232 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -1752,6 +1752,13 @@ static void btusb_work(struct work_struct *work)
+ 			 * which work with WBS at all.
+ 			 */
+ 			new_alts = btusb_find_altsetting(data, 6) ? 6 : 1;
++			/* Because mSBC frames do not need to be aligned to the
++			 * SCO packet boundary. If support the Alt 3, use the
++			 * Alt 3 for HCI payload >= 60 Bytes let air packet
++			 * data satisfy 60 bytes.
++			 */
++			if ((new_alts == 1) && (btusb_find_altsetting(data, 3)))
++				new_alts = 3;
+ 		}
+ 
+ 		if (btusb_switch_alt_setting(hdev, new_alts) < 0)
+-- 
+2.17.1
 
->   
->   	while ((sent < len) && ((prod - cons) < sizeof(intf->out)))
-> @@ -114,7 +119,10 @@ static int domU_write_console(uint32_t vtermno, const char *data, int len)
->   	 */
->   	while (len) {
->   		int sent = __write_console(cons, data, len);
-> -		
-> +
-> +		if (sent < 0)
-> +			return sent;
-> +
->   		data += sent;
->   		len -= sent;
->   
-> @@ -138,7 +146,10 @@ static int domU_read_console(uint32_t vtermno, char *buf, int len)
->   	cons = intf->in_cons;
->   	prod = intf->in_prod;
->   	mb();			/* get pointers before reading ring */
-> -	BUG_ON((prod - cons) > sizeof(intf->in));
-> +
-> +	if (WARN_ONCE((prod - cons) > sizeof(intf->in),
-> +		      "Illegal ring page indices"))
-> +		return -EINVAL;
->   
->   	while (cons != prod && recv < len)
->   		buf[recv++] = intf->in[MASK_XENCONS_IDX(cons++, intf->in)];
-> 
