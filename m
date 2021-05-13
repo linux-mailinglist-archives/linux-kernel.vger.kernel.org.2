@@ -2,70 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E483037F892
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 15:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6665837F896
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 15:21:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234021AbhEMNVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 09:21:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35656 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233961AbhEMNUs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 09:20:48 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A083C61433;
-        Thu, 13 May 2021 13:19:36 +0000 (UTC)
-Date:   Thu, 13 May 2021 09:19:35 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     kgdb-bugreport@lists.sourceforge.net, daniel.thompson@linaro.org,
-        jason.wessel@windriver.com, dianders@chromium.org,
-        mingo@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] kdb: Get rid of redundant kdb_register_flags()
-Message-ID: <20210513091935.5747c12e@gandalf.local.home>
-In-Reply-To: <20210513112842.707103-2-sumit.garg@linaro.org>
-References: <20210513112842.707103-1-sumit.garg@linaro.org>
-        <20210513112842.707103-2-sumit.garg@linaro.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S234024AbhEMNWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 09:22:18 -0400
+Received: from mail.aperture-lab.de ([116.203.183.178]:52598 "EHLO
+        mail.aperture-lab.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233682AbhEMNWK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 09:22:10 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id D00A53E8F5;
+        Thu, 13 May 2021 15:20:56 +0200 (CEST)
+From:   =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>
+To:     netdev@vger.kernel.org
+Cc:     Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        bridge@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v4 00/11] net: bridge: split IPv4/v6 mc router state and export for batman-adv
+Date:   Thu, 13 May 2021 15:20:42 +0200
+Message-Id: <20210513132053.23445-1-linus.luessing@c0d3.blue>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Last-TLS-Session-Version: TLSv1.2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 May 2021 16:58:41 +0530
-Sumit Garg <sumit.garg@linaro.org> wrote:
+Hi,
 
-> Commit e4f291b3f7bb ("kdb: Simplify kdb commands registration")
-> allowed registration of pre-allocated kdb commands with pointer to
-> struct kdbtab_t. Lets switch other users as well to register pre-
-> allocated kdb commands via:
-> - Changing prototype for kdb_register() to pass a pointer to struct
->   kdbtab_t instead.
-> - Embed kdbtab_t structure in defcmd_set rather than individual params.
->   So while at it rename struct defcmd_set to struct kdb_macro_t as that
->   sounds more appropriate given its purpose.
-> 
-> With these changes kdb_register_flags() becomes redundant and hence
-> removed. Also, since we have switched all users to register
-> pre-allocated commands, "is_dynamic" flag in struct kdbtab_t becomes
-> redundant and hence removed as well.
-> 
-> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> ---
->  include/linux/kdb.h            |  27 +++--
->  kernel/debug/kdb/kdb_main.c    | 206 +++++++++++----------------------
->  kernel/debug/kdb/kdb_private.h |  13 ---
->  kernel/trace/trace_kdb.c       |  12 +-
+The following patches are splitting the so far combined multicast router
+state in the Linux bridge into two ones, one for IPv4 and one for IPv6,
+for a more fine-grained detection of multicast routers. This avoids
+sending IPv4 multicast packets to an IPv6-only multicast router and
+avoids sending IPv6 multicast packets to an IPv4-only multicast router.
+This also allows batman-adv to make use of the now split information in
+the final patch.
 
-For the tracing directory.
+The first eight patches prepare the bridge code to avoid duplicate
+code or IPv6-#ifdef clutter for the multicast router state split. And 
+contain no functional changes yet.
 
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+The ninth patch then implements the IPv4+IPv6 multicast router state
+split.
 
--- Steve
+Patch number ten adds IPv4+IPv6 specific timers to the mdb netlink
+router port dump, so that the timers validity can be checked
+individually
+from userspace.
 
->  samples/kdb/kdb_hello.c        |  20 ++--
->  5 files changed, 104 insertions(+), 174 deletions(-)
+The final, eleventh patch exports this now per protocol family multicast
+router state so that batman-adv can then later make full use of the 
+Multicast Router Discovery (MRD) support in the Linux bridge. The 
+batman-adv protocol format currently expects separate multicast router
+states for IPv4 and IPv6, therefore it depends on the first patch.
+batman-adv will then make use of this newly exported functions like
+this[0].
+
+Regards, Linus
+
+[0]:
+https://git.open-mesh.org/batman-adv.git/shortlog/refs/heads/linus/multicast-routeable-mrd
+     ->
+https://git.open-mesh.org/batman-adv.git/commit/d4bed3a92427445708baeb1f2d1841c5fb816fd4
+
+Changelog v4: 
+
+* Patch 01/11:
+  * unchanged
+* Patch 02/11:
+  * renaming br_multicast_rport_from_node() to
+    br_multicast_rport_from_node() to be able to use the name of
+    the former later in Patch 7 in br_multicast.c
+* Patch 03/11 to 06/11:
+  * unchanged
+* Patch 07/11:
+  * fixing >80 characters line length of
+    br_ip4_multicast_get_rport_slot()
+  * restructuring br_(ip4_)multicast_get_rport_slot() and 
+    br_(ip4_)multicast_mark_router() to reduce duplicate code,
+    br_multicast_get_rport_slot() is moved into
+    br_multicast_add_router() and uses hlist_for_each() instead of
+    hlist_for_each_entry() and a helper function to be protocol
+    independent
+  * removed redundant hlist_unhashed(&port->ip4_rlist)) check in
+    __br_multicast_enable_port(), br_ip4_multicast_add_router() already
+    checks this
+* Patch 08/11:
+  * unchanged
+* Patch 09/11:
+  * fixing >80 characters line length of
+    br_ip6_multicast_get_rport_slot()
+  * removed inline attribute from br_ip6_multicast_add_router()
+    and br_ip6_multicast_mark_router() in the !IS_ENABLED(CONFIG_IPV6)
+    case
+  * removed redundant hlist_unhashed(&port->ip6_rlist)) check in
+    __br_multicast_enable_port(), br_ip6_multicast_add_router() already
+    checks this, which removes some IPv6 ifdef clutter in
+     __br_multicast_enable_port()
+* Patch 10/11 + 11/11:
+  * unchanged
+
+Changelog v3: 
+
+* Patch 01/11:
+  * fixed/added missing rename of br->router_list to
+    br->ip4_mc_router_list in br_multicast_flood()
+* Patch 02/11:
+  * moved inline functions from br_forward.c to br_private.h
+* Patch 03/11:
+  * removed inline attribute from functions added to br_mdb.c
+* Patch 04/11:
+  * unchanged
+* Patch 05/11:
+  * converted if()'s into switch-case in br_multicast_is_router()
+* Patch 06/11:
+  * removed inline attribute from function added to br_multicast.c
+* Patch 07/11:
+  * added missing static attribute to function
+    br_ip4_multicast_get_rport_slot() added to br_multicast.c
+* Patch 08/11:
+  * removed inline attribute from function added to br_multicast.c
+* Patch 09/11:
+  * added missing static attribute to function
+    br_ip6_multicast_get_rport_slot() added to br_multicast.c
+  * removed inline attribute from function added to br_multicast.c
+* Patch 10/11:
+  * unchanged
+* Patch 11/11:
+  * simplified bridge check in br_multicast_has_router_adjacent()
+    by using br_port_get_check_rcu()
+  * added missing declaration for br_multicast_has_router_adjacent()
+    in include/linux/if_bridge.h
+
+Changelog v2:
+
+* split into multiple patches as suggested by Nikolay
+* added helper functions to br_multicast_flood(), avoiding
+  IPv6 #ifdef clutter
+* fixed reverse xmas tree ordering in br_rports_fill_info() and
+  added helper functions to avoid IPv6 #ifdef clutter
+* Added a common br_multicast_add_router() and a helper function
+  to retrieve the correct slot to avoid duplicate code for an
+  ip4 and ip6 variant
+* replaced the "1" and "2" constants in br_multicast_is_router()
+  with the appropriate enums
+* added br_{ip4,ip6}_multicast_rport_del() wrappers to reduce
+  IPv6 #ifdef clutter
+* added return values to br_*multicast_rport_del() to only notify
+  if the port was actually removed and did not race with a readdition
+  somewhere else
+* added empty, void br_ip6_multicast_mark_router() if compiled
+  without IPv6, to reduce IPv6 #ifdef clutter
+
 
