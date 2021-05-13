@@ -2,167 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CCC437F1EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 06:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9241237F1F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 06:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbhEMEXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 00:23:18 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:49299 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbhEMEXO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 00:23:14 -0400
-Received: from mail-ot1-f69.google.com ([209.85.210.69])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <chris.chiu@canonical.com>)
-        id 1lh2rM-0000io-OK
-        for linux-kernel@vger.kernel.org; Thu, 13 May 2021 04:22:04 +0000
-Received: by mail-ot1-f69.google.com with SMTP id h10-20020a9d554a0000b02901d8bed80c43so16267519oti.22
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 21:22:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8eS2vX8ZqQoyxo7V8frOg88yNKeaoSqG3TtY0ehSLXg=;
-        b=Y1FJD6i5UOA+oSI7fARLT94+5RWy0NmJ0+HnJ5GQ9fCfryxihBvTBUUsACfXYzgHvr
-         DV6uCEccrvAhcybHC7rF5P9kHuVqH19RMvbaNZ3uf6xuj5Q6kxD5szvUHdnwM6QwuG0w
-         4H2u12wWs43Rvb6xZMuCAMVeW/ahIiBCOhr5u9qRttZzdYylsdtQKI3aZ1UZRka5+S2S
-         xqhT1e1GIE8kdYXg6xInFnaPWhshQG2+QEb25ggkBsb7gKw+dEDbk/Gv/XX5OceD7tWb
-         J4D+QjSMSOsFX/uF8y6mtW0JpDkCjIwYROoxRJ1REmwQOah6xI3FUJvaw+9NEryKL8K6
-         f0rg==
-X-Gm-Message-State: AOAM530ZSIrj1ALYfrXywMV8EKA5amKn9XT8+J7kl2kQMndZKBqucSRc
-        vH6iRl8yTN49JjEzjAco+ED1LF00k3Xy/whf2GYJnPzuPcq/x3dseKDeN6tcd/k25f2MeJ5GXnL
-        vkPzrZJDgozfc/CqhT1oEiaQXEbloWY3W25HoAR9aXz0+JOV/JeNWFgmvLQ==
-X-Received: by 2002:a4a:8dd6:: with SMTP id a22mr30834274ool.74.1620879723656;
-        Wed, 12 May 2021 21:22:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwegQhHplX61u4jTu8V6xwY2Szd4elytM+vvJGalFfbru1X+X7LWsB6CKWtn4hQcRVala9gKmUqq1LcxX2cL5Q=
-X-Received: by 2002:a4a:8dd6:: with SMTP id a22mr30834260ool.74.1620879723402;
- Wed, 12 May 2021 21:22:03 -0700 (PDT)
+        id S230381AbhEMEZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 00:25:45 -0400
+Received: from mail-bn8nam12on2061.outbound.protection.outlook.com ([40.107.237.61]:42423
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229504AbhEMEZm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 00:25:42 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kydMDPnUAmyBvHuIqR5+k6jXaNRp1ZH4tTl8AwX5EyPjD6JuaZBbn4mEzJVUDAGGH4KKblnc2VKeSnoc8Ask5gqHGsiaZlx7WIwOBKMnG0uCFeUKWCU8rBUY0Dp175H840PabbfB6AA40LBlirNvYEs6ZptmgJQgtJ3nDgMzJP/BDPFxd+xH00xSH8Eopq7d0y2Z3hX8CQWxS0KtTBMqjUQOPgvEeHGLkyuNOY2f4VBTH2Ce23wRzEBfBWDIhGJZoze8m+xIgX+LsrqnTd/gk+VOww1ahY/SFALs67U+d1gdYVYopPGAhZs8gM3dPm/2W0K7xB1IvD/lNGF971IT0g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4IiuI/Imf5iZFxLeTCTsIWDM81aI4iR79sc9t7EV0as=;
+ b=VsVQdlHATQrMQxmJSJGNzJNvUp3Rr3+8M1nMXp5DkrLivmAPldYR3nn2N+xuAo2ZYPWOUld86T92TJGEo+13VQRvcsR37eg5CPW2GvDrJURcM0NyxOjsURi1IcqjOQjda/KUkRjY8LqRh0ZQ9vGLC9EqDalQ3zyLeCxOaTkcJdljqXYOWHF0ZMvQNP05pstvJSHt5DfXQ48WEgXWocebloe7nLTGCrQhA/1xz6DuEKLG8cVc5wouaqOqx700Z1AP3ndp8bWEwIQigkJxYM6PYNKWgk+Q6pNW/qcy4UKC2+T67I8VjYU4Zrevyho6zVbz6Al7y5lhKavDPb621SPU8Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4IiuI/Imf5iZFxLeTCTsIWDM81aI4iR79sc9t7EV0as=;
+ b=BCxeAuBT6SFQOM515wgUGq7BY5WDs65kHrlIjiWaCt1/ihK+1Oooq2OxRp2LWTjtcoRNr6jHLCSYh1UWUXibI4T7hVAOlajMDPRhEbjzamuznvH/1QwnZ6Io6iLlYltZRLPa8Ywfy0I7Cn9ax75oiN9qiDZDD6xseMWus0eznOM=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from MWHPR12MB1248.namprd12.prod.outlook.com (2603:10b6:300:12::21)
+ by MWHPR1201MB0045.namprd12.prod.outlook.com (2603:10b6:301:5a::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Thu, 13 May
+ 2021 04:24:30 +0000
+Received: from MWHPR12MB1248.namprd12.prod.outlook.com
+ ([fe80::f07c:dc0f:e7e8:416c]) by MWHPR12MB1248.namprd12.prod.outlook.com
+ ([fe80::f07c:dc0f:e7e8:416c%4]) with mapi id 15.20.4129.026; Thu, 13 May 2021
+ 04:24:30 +0000
+Date:   Thu, 13 May 2021 12:24:20 +0800
+From:   Huang Rui <ray.huang@amd.com>
+To:     Ingo Molnar <mingo@kernel.org>,
+        Alexander Monakov <amonakov@ispras.ru>
+Cc:     Alexander Monakov <amonakov@ispras.ru>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        Jason Bagavatsingham <jason.bagavatsingham@gmail.com>,
+        "Pierre-Loup A . Griffais" <pgriffais@valvesoftware.com>,
+        "Fontenot, Nathan" <Nathan.Fontenot@amd.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Borislav Petkov <bp@suse.de>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH v4] x86, sched: Fix the AMD CPPC maximum perf on some
+ specific generations
+Message-ID: <20210513042420.GA1621127@hr-amd>
+References: <20210425073451.2557394-1-ray.huang@amd.com>
+ <alpine.LNX.2.20.13.2105130130590.10864@monopod.intra.ispras.ru>
+ <YJxdttrorwdlpX33@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJxdttrorwdlpX33@gmail.com>
+X-Originating-IP: [165.204.134.251]
+X-ClientProxiedBy: HK2PR02CA0158.apcprd02.prod.outlook.com
+ (2603:1096:201:1f::18) To MWHPR12MB1248.namprd12.prod.outlook.com
+ (2603:10b6:300:12::21)
 MIME-Version: 1.0
-References: <20210510145030.1495-1-chris.chiu@canonical.com>
- <20210510145030.1495-2-chris.chiu@canonical.com> <20210510150203.GD863718@rowland.harvard.edu>
- <CABTNMG24BOS_+uGEYFLJrmEW10eTGjrOowwS7Zb_U+AvkZWTyQ@mail.gmail.com>
- <20210511163026.GA901897@rowland.harvard.edu> <CABTNMG2OiEFzMwMaUaVL9B6Om87e9qQMFBXRKej7G6zuvBXW=w@mail.gmail.com>
- <20210512150424.GA934575@rowland.harvard.edu>
-In-Reply-To: <20210512150424.GA934575@rowland.harvard.edu>
-From:   Chris Chiu <chris.chiu@canonical.com>
-Date:   Thu, 13 May 2021 12:21:52 +0800
-Message-ID: <CABTNMG0Skqim9UOMqNuaO94iL+Ff6Eu47itmv0RFTwY4xYWhGQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] USB: reset-resume the device when PORT_SUSPEND is
- set but timeout
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, m.v.b@runbox.com,
-        hadess@hadess.net, linux-usb@vger.kernel.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from hr-amd (165.204.134.251) by HK2PR02CA0158.apcprd02.prod.outlook.com (2603:1096:201:1f::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.31 via Frontend Transport; Thu, 13 May 2021 04:24:26 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9ab6cd0b-e986-42a5-e0f7-08d915c70092
+X-MS-TrafficTypeDiagnostic: MWHPR1201MB0045:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR1201MB004571EB7510CA84E62FF4FFEC519@MWHPR1201MB0045.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vPCWlIyS/qcPYwC/knJIhOgG/BwxV4So5xagWOhhNo4U5kuIy2dbsY/6eXIj9tyeK6NK9FAC54lqwfTW1c3uhp9A9XjH/p9e+UjF9FxT/AaWHbejOWagiHHZ2iqHGKyHzzwahgtqLwajaJwRT2ndaAm1c1XxB7e8IhtosPQUd//Fy5QXbFMO1dX1h94+kV54qr7ce52ckg735FN6ulXu73i0S5Ryhp5gKum6y3WMWUEFunPCbYtsu61L3lbSEDBNcqxueODTTW4p8a7tmJrpejTVxa3tTmKboO0O3DjgSmYSaMUPnoBngGcx5nvnJxhZDNU6JIqW5dNTK38FFBnQckG2x0F18nVhvbL0bRRzYmxeAdmI9uuSx766ECdkbrPr9+FmJMDpjhs4Ox6T/e5sXRPaRVEN6aj9JYW3qAYoBbRyS5JHQwImKgoQYJk9XlqlqpkRGOOim/KpKJlDTi4LsmBotAOQB5GjEiQPqur+nog23w0zuC2siwekvTgVXzgD+40bfmO/FnJ9h4WWASWVDRQdB0QBzYJOmMjoGmDZdaNKD+dqyjp1/qOAcGw0FjLZJ1cE5L29JjcpFZjhTNQjCVWLLOJAmIIMYJnzIalJnRtfdkJ8rBI+YmhbfBBrX225t/DVEJpMJvzfjpu+zWMQST+WKq4YF2c+yqG2+aviPdE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR12MB1248.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(39860400002)(376002)(346002)(366004)(55016002)(9686003)(5660300002)(33656002)(1076003)(4326008)(54906003)(38100700002)(7416002)(2906002)(478600001)(86362001)(110136005)(956004)(52116002)(6666004)(16526019)(186003)(26005)(66556008)(66476007)(66946007)(6496006)(316002)(38350700002)(8936002)(83380400001)(33716001)(8676002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?fHnYelYDNEJo7xVPFMW0Hx3lBJHcVhAahvIlaULJiSigm8kY+rY8tDZLNAOv?=
+ =?us-ascii?Q?T6FEV0c8IIg2jM1xWwu/xCcy7pFbqGXm42UyOMZlratQHKBoiuM6kiLutX5N?=
+ =?us-ascii?Q?csOZ2M1Ld/UhcB/XcOXyuDFhQeu7KVGfMgqj3TmRxwMvAkTJzJYqNuPggpcj?=
+ =?us-ascii?Q?KTe41hzXBis8jvw8kmKfVDeJMQR6zAx0EYde3y+AJergVyo1Izh3/DMdHfMs?=
+ =?us-ascii?Q?kAtPUQVqL3LpS7ovDGtishCareE8VBCzoiA2XFhWJJy2C2Zv9gLusYGSg0vs?=
+ =?us-ascii?Q?fS8xLU74/rsTEzQ1d/Rx3rnZhwldpW4ZMLUkRFEGnfhMbLcdl+N5gANTVGdr?=
+ =?us-ascii?Q?ENUXRVXFy30PjUupbVHZbmh5GjoYgYLUzaa/2kHYm6z5gtNEAKWpqPA5XGS0?=
+ =?us-ascii?Q?8oUfC6gnWiGTwIVWfqLNAHeXJyUMC82rcB/XAlSE7jrbqOM59mZUSyQX3LDH?=
+ =?us-ascii?Q?eI2HwScD5IGBbRryrFbhcdfjOrhcEFehvcCbVykND3mqoz4nrbeKACGUT1vD?=
+ =?us-ascii?Q?Jc9Nv4/W7Ttsv1Y9CdbeFZ+haHXQHruaiPklpLj1NnuFqTj3pKK3tcclGP0p?=
+ =?us-ascii?Q?wVbzHm/VKfU0Wnms8jRr8XI6eCO9o8zCDA0XiH87X5Sg8v1N4sIix/pFTbHG?=
+ =?us-ascii?Q?RRZmptTfpblyCeM18emTJdwMUMLlD7kvGqmIBHoHnK1sIvGJGqEnTWz7htQl?=
+ =?us-ascii?Q?ujF3n7lSTUDgp8cnM06YaG82m5CBTHuekxX+3m85j5525PcSYnM6reZMmaDu?=
+ =?us-ascii?Q?4M615P6jyWG5sMTWmbeq210k58Cpg5DbxXent1swJ9cPs/1UB0rfMd4Nzkue?=
+ =?us-ascii?Q?/TJEJytFFuGYrCV4Eyu7/0ov2kCD1ZCmWqr+xX4Yj6L65ckQHhvY0trpfAdo?=
+ =?us-ascii?Q?kWlyw48u6VtUXHKBaYWHE8qhzcbDSQm8aRlxTeQN0LgHD5yV2l7rEfORe8YX?=
+ =?us-ascii?Q?Ss8SWlLoHAof7SmIFmi2LurLsNyRR2zRy64ElCy004Lt2WfEKsC8/UCHCCwz?=
+ =?us-ascii?Q?kUo0/hLoj6kQiSun6uhScKu+PUcqFnLmhVQVidngKgEvmxksybUqpeI/5Sq7?=
+ =?us-ascii?Q?ZlpoNWdjsmXscKKTuYsipda6PeFOIdmypHz8bxfWEVVzRm+En3Wpwnvp8gIC?=
+ =?us-ascii?Q?yNuyHngqc7ruKG2xvzy0pBKjWy/0xkMwzomm/CQQD3H1g05/XdUYr+F0jW99?=
+ =?us-ascii?Q?UC7NeEI11itrrWpEd+0jVTFCyEW9DmkJbdU4xV6RS7Skao9XdPRe+JEaspTN?=
+ =?us-ascii?Q?N+Zw84qr8Vg4UdNOEhhnr0i4p3+sBrf/ooC+KSLSA8u4VQhJbTZZuB57B/L4?=
+ =?us-ascii?Q?4EhiO5fhFv+I/40Z6R5lLJR/?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9ab6cd0b-e986-42a5-e0f7-08d915c70092
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR12MB1248.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2021 04:24:30.4125
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9XbWVHN9h9YhYHgcMouMVkxNdOx5lq4XY/hI+w50Q7D6n4oZWW9w5wmG1Y7vDTZBCeALnsbMkH4R64ICSuyiJA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1201MB0045
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 11:04 PM Alan Stern <stern@rowland.harvard.edu> wrote:
->
-> On Wed, May 12, 2021 at 12:17:12PM +0800, Chris Chiu wrote:
-> > On Wed, May 12, 2021 at 12:30 AM Alan Stern <stern@rowland.harvard.edu> wrote:
-> > >
-> > > On Tue, May 11, 2021 at 01:04:36PM +0800, Chris Chiu wrote:
-> > > > On Mon, May 10, 2021 at 11:02 PM Alan Stern <stern@rowland.harvard.edu> wrote:
-> > > > >
-> > > > > On Mon, May 10, 2021 at 10:50:29PM +0800, chris.chiu@canonical.com wrote:
-> > > > > > From: Chris Chiu <chris.chiu@canonical.com>
-> > > > > >
-> > > > > > On the Realtek high-speed Hub(0bda:5487), the port which has wakeup
-> > > > > > enabled_descendants will sometimes timeout when setting PORT_SUSPEND
-> > > > > > feature. After checking the PORT_SUSPEND bit in wPortStatus, it is
-> > > > > > already set. However, the hub will fail to activate because the
-> > > > > > PORT_SUSPEND feature of that port is not cleared during resume. All
-> > > > > > connected devices are lost after resume.
-> > > > > >
-> > > > > > This commit force reset-resume the device connected to the timeout
-> > > > > > but suspended port so that the hub will have chance to clear the
-> > > > > > PORT_SUSPEND feature during resume.
-> > > > >
-> > > > > Are you certain that the reset-resume is needed?  What happens if you
-> > > > > leave out the line that sets udev->reset_resume?  The rest of the patch
-> > > > > will cause the kernel to realize that the port really is suspended, so
-> > > > > maybe the suspend feature will get cleared properly during resume.
-> > > > >
-> > > > > It's worthwhile to try the experiement and see what happens.
-> > > > >
-> > > > > Alan Stern
-> > > > >
-> > > >
-> > > > If I leave out the udev->reset_resume set, the resume will fail. Please refer
-> > > > to the following kernel log. The usb 1-1 is the hub which has wakeup enabled
-> > > > descendants.
-> > > >
-> > > > [   57.210472] usb 1-1: kworker/u32:7 timed out on ep0out len=0/0
-> > > > [   57.211022] usb 1-1-port3: suspend timeout, status 0507
-> > > > [   57.211130] hub 1-1:1.0: hub_suspend
-> > > > [   57.230500] usb 1-1: usb suspend, wakeup 0
-> > > >
-> > > > The timeout happens at 57.210472 and you can see the PORT_SUSPEND
-> > > > bit is actually set in the "status 0507". The following shows the resume log.
-> > > >
-> > > > [   58.046556] usb 1-1: usb resume
-> > > > [   58.114515] usb 1-1: Waited 0ms for CONNECT
-> > > > [   58.114524] usb 1-1: finish resume
-> > > > [   58.114928] hub 1-1:1.0: hub_resume
-> > > > [   58.116035] usb 1-1-port3: status 0507 change 0000
-> > > > [   58.116720] usb 1-1-port5: status 0503 change 0000
-> > > > [   58.116778] hub 1-1.3:1.0: hub_resume
-> > > > [   58.116908] hub 1-1.3:1.0: hub_ext_port_status failed (err = -71)
-> > > > [   58.116952] usb 1-1.5: Waited 0ms for CONNECT
-> > > > [   58.116955] usb 1-1.5: finish resume
-> > > > [   58.117157] hub 1-1.3:1.0: hub_ext_port_status failed (err = -71)
-> > > > [   58.117397] usb 1-1.3-port5: can't resume, status -71
-> > > > [   58.117782] hub 1-1.3:1.0: hub_ext_port_status failed (err = -71)
-> > > > [   58.118147] usb 1-1.3-port2: can't resume, status -71
-> > > > [   58.118149] usb 1-1.3.2: Waited 0ms for CONNECT
-> > > > [   58.118151] usb 1-1.3-port2: status 07eb.906e after resume, -19
-> > > > [   58.118153] usb 1-1.3.2: can't resume, status -19
-> > > > [   58.118154] usb 1-1.3-port2: logical disconnect
-> > > > [   58.118526] usb 1-1.3-port2: cannot disable (err = -71)
-> > > >
-> > > > As you see in the 58.116035, the hub_resume and activate is OK for the
-> > > > usb 1-1. The "usb 1-1.3: finish resume" is not in the log because it's not
-> > > > considered suspended and no chance to ClearPortFeature.
-> > >
-> > > Wait -- why isn't it considered suspended?  We saw at 57.211022 that
-> > > 1-1-port3's Suspend feature really was set, and thanks to your patch,
-> > > the kernel should now believe that the port is suspended.
-> > >
-> > But it's still in the `if (status)` branch so it will not get
-> > usb_set_device_state
-> > to USB_STATE_SUSPENDED, then usb_resume_both will not do the resume
-> > process for it.
->
-> Ah, yes.  I was mis-reading the patch.
->
-> > My original thought is, we still take this as an abnormal status
-> > because we don't
-> > really know the reason for the timeout. Set reset_resume for the udev
-> > will make the
-> > kernel to reset_resume it. Or  I have to create a new `goto` name in
-> > the `else` branch
-> > to force it back to the successful suspended process. And should I
-> > clean the status to
-> > zero for pm_runtime_put_sync()? What's your suggestion?
->
-> For testing purposes, set status to 0 and jump to a new goto label in
-> the "else" branch.  In other words, treat it as if the suspend really
-> had worked and go back to the successful pathway.  Try this out and see
-> if it fixes the problem.
->
-> If it does then the reset-resume isn't needed.  If it doesn't, post your
-> patch again, and mention in the patch description that testing shows the
-> reset-resume really is necessary.
->
-> Alan Stern
+On Thu, May 13, 2021 at 06:59:02AM +0800, Ingo Molnar wrote:
+> 
+> * Alexander Monakov <amonakov@ispras.ru> wrote:
+> 
+> > On Sun, 25 Apr 2021, Huang Rui wrote:
+> > 
+> > > Some AMD Ryzen generations has different calculation method on maximum
+> > > perf. 255 is not for all asics, some specific generations should use 166
+> > > as the maximum perf. Otherwise, it will report incorrect frequency value
+> > > like below:
+> > 
+> > The commit message says '255', but the code:
+> > 
+> > > --- a/arch/x86/kernel/cpu/amd.c
+> > > +++ b/arch/x86/kernel/cpu/amd.c
+> > > @@ -1170,3 +1170,19 @@ void set_dr_addr_mask(unsigned long mask, int dr)
+> > >  		break;
+> > >  	}
+> > >  }
+> > > +
+> > > +u32 amd_get_highest_perf(void)
+> > > +{
+> > > +	struct cpuinfo_x86 *c = &boot_cpu_data;
+> > > +
+> > > +	if (c->x86 == 0x17 && ((c->x86_model >= 0x30 && c->x86_model < 0x40) ||
+> > > +			       (c->x86_model >= 0x70 && c->x86_model < 0x80)))
+> > > +	    return 166;
+> > > +
+> > > +	if (c->x86 == 0x19 && ((c->x86_model >= 0x20 && c->x86_model < 0x30) ||
+> > > +			       (c->x86_model >= 0x40 && c->x86_model < 0x70)))
+> > > +	    return 166;
+> > > +
+> > > +	return 225;
+> > > +}
+> > 
+> > says 225? This is probably a typo? In any case they are out of sync.
+> > 
+> > Alexander
+> 
+> Ugh - that's indeed a good question ...
+> 
 
-Thanks for the suggestion. I revised the patch to create a new goto
-label in the "else" branch and clear the status to zero if the port is
-really suspended. It fixed the problem in my 100 time suspend/resume
-test. I will send v3 patch w/ the modification.
+Ah sorry! It's my typo. It should be 255 (confirmed in the ucode).
 
-Chris
+Alexander, thanks a lot to catch this!
+
+Ingo, would you mind to update it from 225 -> 255 while you apply this
+patch or let me know if you want me to send v5?
+
+Thanks,
+Ray
