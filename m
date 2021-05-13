@@ -2,145 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D22037FC7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 19:25:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C107F37FC85
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 19:28:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230405AbhEMR00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 13:26:26 -0400
-Received: from mail-bn8nam12on2056.outbound.protection.outlook.com ([40.107.237.56]:2816
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229877AbhEMR0W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 13:26:22 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QPOY/9JmkieURiQUDF3Fmy79M3KVntmvLcnQZEhaM0LyNotO5KfdqE4nLsE7g4wCnDbwq0wMYlebeSu+yg5PiDWwCzizZ5pckVmcv9H0loNrwzo/FsQytAvAsZ8/g8k6Le2q+lNxO1nKwUbjDwPHgv32rWH8F0G+0UhSmO1rTgCM1G8LBOrbJC/6aKo4oMJBUSsy2p+rZLR4AxeD9+0LUGz0YoZNAMtpRksxvgwF1qCzZCFdcoYC5gywl8vGyzcJpz1QNvmsPWdlRb/GnBKiaq9DkiV0tRNxUz5Y6BsqX4hqau2eUKa7Sb1tpdbnoeYOjGxgnNzPvCEcZ+tU2RD+bg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9dsDbQR4wDIlwT7Hxrkn30Y88BIvCX+SUzfIJ5k/wpc=;
- b=IOV5nao6dYLsyjnPrzzV35Abt2eIgGWRurWuRdShH+gBFIvaAXd7G8l0fe8XfFjZ6SSjpF5KNK+nj13WscZSTvAQocLi2sbRDWQ1DuJOOTBx/ZhWHaMC0cafvRzshfK1gbUVm0aMV7ls7jWhSZ4fqINNTOe6tm/xIPoFcBfdTT8gIXCrJiwz3VZSRxv/NtZn2woMrTKJRex7HCv+0NZMtX+raYdnmdJOTWID06j4pgzRghtBTmWC7/EUJzmJ8YEVstfZyhhzpFdJbivjkboMvG9fXRJYRGUqxQN9Wud1wfeWjjcjalTNGFJLOEVvfA/Dge/SjZDjQAKSjOIx+u/2NA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9dsDbQR4wDIlwT7Hxrkn30Y88BIvCX+SUzfIJ5k/wpc=;
- b=HX8zlrY9xQ4SdfS9u967rCKypgqbfE9xloI6aNqDLln1TIv3czzxazkxZxkYpeYE/GC5RA2ufNxp/3DkCTjm5JKXQITEWlIwsj0frXKE9PZRzYjIh+j8xvtn5NiW0zcNzz+I45JMXAJ4Jz6EHO1vr0IxXHC6Hr1w9vycZu29ebhhC8pHwGcMdCrNzM8O/hx6jP/7wNbGuEWIx2JJxZWHOhZp6z9CgR51v7YeI9R7uH9f8Gr4BTchMrNMTeNZKZMtHHP+ygx01xhcD+tZwQVcvm4i3x4Y/IQ8C6CmpbXeB87YGmVKp7RqpFIjrsx5dnoGkxwoeLWNknnQCHY4LNa7RA==
-Authentication-Results: linux.ibm.com; dkim=none (message not signed)
- header.d=none;linux.ibm.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1882.namprd12.prod.outlook.com (2603:10b6:3:112::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.28; Thu, 13 May
- 2021 17:25:11 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4129.026; Thu, 13 May 2021
- 17:25:11 +0000
-Date:   Thu, 13 May 2021 14:25:09 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        borntraeger@de.ibm.com, cohuck@redhat.com,
-        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        stable@vger.kernel.org, Tony Krowiak <akrowiak@stny.rr.com>
-Subject: Re: [PATCH v2] s390/vfio-ap: fix memory leak in mdev remove callback
-Message-ID: <20210513172509.GJ1002214@nvidia.com>
-References: <20210510214837.359717-1-akrowiak@linux.ibm.com>
- <20210512124120.GV1002214@nvidia.com>
- <759f8840-671a-446c-875b-798dceb10d0f@linux.ibm.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <759f8840-671a-446c-875b-798dceb10d0f@linux.ibm.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BL0PR02CA0094.namprd02.prod.outlook.com
- (2603:10b6:208:51::35) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S230423AbhEMR3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 13:29:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229877AbhEMR3O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 13:29:14 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ADCEC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 10:28:04 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id e11so21124741ljn.13
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 10:28:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mrNjY7B7RhMGjzcyAALH6BMidIjG9PYGm2iFaBxLPWU=;
+        b=gw0qVY+MdqpAKcHf8Ifw79XmeEWUl1BMliSmPuZAMcxx3qHwcPr2l4Naqtfy/qgU6/
+         0i1zUFcfG3Hm1Ccf7Gf+DPZ+hax1qb0TfKega+NTTAtqF11dIYbVBy/eSZ68NakuZxVS
+         40LvXCU6UXJ4zswnL0t1ZUL8m26d508CbbdhlPcpaRfsWUw/1IKQMWuTJRL7ao8DtrEI
+         z0ggVgdAUrNv7OvDwpGNVwI6V1pUNj4qFaQ9dvfCWfI4Jf6K34hyGQQSEd5SBCdsDPGu
+         DeJDcJFlQyV0XsPULu6FyOXX4xG4hfd7jFIboqy8+J+P1eKepbIPw5DDvaSh4OPMU6gg
+         XtZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mrNjY7B7RhMGjzcyAALH6BMidIjG9PYGm2iFaBxLPWU=;
+        b=MpKDGhKGMFBO78DHBUi3rz+5NAKGgOiM0VZ83rDLwA7+ywsVjczv8FAzNR3WvCjbgQ
+         ZCI9GLD1NpZu7gNdR441pWpFS4PeiZZyjVb4qD2cMabCsT/zHGyzywnwjooXRF8TVukP
+         4Zljcxu6snQ7AXZxCCFz8+7pj7VFQme/s7b4XYwAsl77enAuwca6iWEPNlFZ5c+7JxOG
+         v2oj6pC4egW9+yxOrwlCJxVrHi1z8O4wRFvhcAq1xmj346tzlvB5n1SUO8ANOTmK4jr1
+         w1Bq9kYs0En5rALp1LBzf1v+M2ftZ/085ub0388LOmgKQDA6HyV728D63ncJSV8YR4xm
+         fx/Q==
+X-Gm-Message-State: AOAM533l7HuuiWA6xiZljEKaiflCTLrf0YfQAeJqZ3JwhbJO5ST09PzN
+        G7dacu9GdeKAo9wZVp5WWsK933S2NtokG6FAalzt1oE+PSrP+g==
+X-Google-Smtp-Source: ABdhPJwBHpmf2wj1X33WBubj32Wbl3S/1AQEWPsj45Yh2mgFzwcnXGX0w8WjCF/Y0zTgEsMYrxbGBwtLGRj/Qi6FOkg=
+X-Received: by 2002:a2e:9b8c:: with SMTP id z12mr35297361lji.267.1620926882716;
+ Thu, 13 May 2021 10:28:02 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BL0PR02CA0094.namprd02.prod.outlook.com (2603:10b6:208:51::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Thu, 13 May 2021 17:25:10 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lhF5B-0077jY-4m; Thu, 13 May 2021 14:25:09 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c39a81f5-0550-4d0f-cca3-08d916340f87
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1882:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR12MB1882DC03414AD56AC0A85622C2519@DM5PR12MB1882.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YYI09951kwkJuxM1khmm97hGz+ZqiibcJwlXIzn/2tg1t5jYMBpARFeWdQvWSvoRc1NJw00cj9wbPi98HTCBJ1hut6bhNuGMjEpuOGihbIdsJzbCnnH1XKVScOSE8aDBOTe7QsqtAE1zuL+uBJRAJG5EkyIRWQ9IQXEsHQxPDzCoYfEokvgCsQxMXg1Vq1qd8HV3brTeIrgtdtQf9gDpjP39qQpm1D9knDYRUt2zN6XVItjH3Dw4/7C9I+AfQLSMdbsrKWCuzI+5dEphMYWhsMFz1+1JUL6B+/VBCW9hh0TTxAAjVzVyvqEUTOf4wxrikUAr4RAWjIFBK3ViR0s/Vs4nI+e2qw1PgcMq6lYoT5T+ZSwfOjfrWOPlX4HneMldE8PE71UlCpsIHhyH0Vrpb3sNLvR/wUUrkUmKBAcPCFwJH1J79LvswP8Jh/Vws8DMuf3t87q5NOgH33FlPfoRP6vY1bRhQdSuCteSGmJdK3fddojRSgJxa/t709QQPz8wbbH7LeDm93RHOdZyoS0VjKizkVxsw2e9hawblIg1qpLguh1/rENA5LReoZQbv7h1dSI2rHPb4atSCDk9zKbdQdufwDOuwyODYxQgI6VBPis=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(396003)(346002)(39850400004)(376002)(53546011)(66946007)(1076003)(26005)(5660300002)(316002)(9786002)(36756003)(2906002)(9746002)(186003)(6916009)(478600001)(86362001)(83380400001)(8936002)(2616005)(38100700002)(66476007)(66556008)(4326008)(426003)(7416002)(33656002)(8676002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?pWokFDLxIzqQCbfci1cjF0LKmbJGBpJZSlqPTueYO4JeCke9OuChj9jhKTpZ?=
- =?us-ascii?Q?QvUv8TqTbDSY3HXGjRlGuIruE1OAQDwqfB5lqZcnbOVmP+miOotDyInWTuu6?=
- =?us-ascii?Q?LLfsdoOph9YkK2xFYEjVf92YkPN1B9iaO0e6eMFTrYdkN1AM+OAQ1x62t2qZ?=
- =?us-ascii?Q?WC50guQA4yO6xoXqoBfx6RIIQywV19ZfD6iL6500ESBFc57TlmpKakizQh6L?=
- =?us-ascii?Q?sN5Z5baikkZA97s/q/rnrxc3ncZEXOvPcZc3i6VnWrkaIRKFvKagYbZmySBI?=
- =?us-ascii?Q?O5HH3OakDW0Xlqkj1cE2/HXYmPweF5PC2/WsFcGWgLIGn7pW8BexLtHq53jE?=
- =?us-ascii?Q?i8rKEKCBAowlH147qaY+vRcVB7SqjrEqabNodH15STh89UItkbDJW2Ei6lc6?=
- =?us-ascii?Q?mxtLFNAr5+TXWHqcXeHzWW8l8SGvF0lGnQUFxP/kArbjqwFc/4WjeWrgGg9g?=
- =?us-ascii?Q?5nSMuMQLMZQXchfBNkDcABNb8t+aMsAh74VqnoTVZ6cqobMuyRtg60XLCniC?=
- =?us-ascii?Q?IjplPdvrT5xnYRSdMsbwiINfKVPpGpcS9TL4EA6ETZYpaM9o14eXNi+mJ2B3?=
- =?us-ascii?Q?JM+cU1g+ugSqV7poVqwrB/hH4b4DkTHaHkm8N+DnCpjOHwPJt4QXb4OOZ6PW?=
- =?us-ascii?Q?SVVF423+AWN0X4OuI/m5QYqL5+Q7jwxWIpyVfBLzQzawVjs4Ui+caFT/nPXD?=
- =?us-ascii?Q?HcCzqlrrK2MSZsj3DOeQqatbQEpAjYMiJGDgGT6WBTfYgXJCXgocQoTkreWG?=
- =?us-ascii?Q?6QZMXYKkUYXE06KWVA/Fy/D7PjaCxOqTORd3HLcR+K2oWVgkeGTJYftF8yg+?=
- =?us-ascii?Q?JMfKxw2cDJpt6Xlu/0PdylcQQH3tcmLO5notLuEZxP7t/F54UnsZIIAKHZPu?=
- =?us-ascii?Q?Dpo4e8jHol0n/zeQ/5/zBA/bbyZvQfUdsubRBgsXDSdiFRwvJK0C7F3WOOk9?=
- =?us-ascii?Q?IbnwrDayuqRdBXrfhvnEqQ+5Rp8xRD1lf2LxjhfI7C9tQtNmqYcyyfxO/2yl?=
- =?us-ascii?Q?SqF4pQ3NTfR1hLt5GzQ6h3K5PXCVAj9nrYYm5/WvMme16PoAVeKkndADTMqu?=
- =?us-ascii?Q?6cT8kQlm86iTOboYR5WP8f3xfBAfFvtoEIrSxC5NWJG5J+Niy/Mci3P2qNn9?=
- =?us-ascii?Q?dMBov2jsz0bKdeSbi0ogKHHNAivqzRe5855kr1YXBd4xNKgTKLG1a9CNu2ke?=
- =?us-ascii?Q?2Z6jPbdqcDSRlJQ3+JtTKWt3j8njYKiJUITtE/9kf52Q9mijN40GhwQjs64v?=
- =?us-ascii?Q?rme0Hwhan6+J5ktgkhgcGRKVx4negoyfOxD5SM2APpevFaFrSEQ4wrd7b23B?=
- =?us-ascii?Q?3KfkwvLQwsKj43xyVvSJFk70?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c39a81f5-0550-4d0f-cca3-08d916340f87
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2021 17:25:10.8601
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pl+yeHjJ4u42+s5xPyWwvK+nqMTcS4UCZxn+55dc5mjLxwRS6YMBTbIFGuyUHt0x
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1882
+References: <20210512213457.1310774-1-rajatja@google.com> <YJ0v4G4UpeAvSEFT@kroah.com>
+ <CACK8Z6E+cpda6p0W+H+ZiEgaJNitf-O98giV_Uv2T7FoxsD4fg@mail.gmail.com> <YJ1WYyh5/A9PUz7T@kroah.com>
+In-Reply-To: <YJ1WYyh5/A9PUz7T@kroah.com>
+From:   Rajat Jain <rajatja@google.com>
+Date:   Thu, 13 May 2021 10:27:26 -0700
+Message-ID: <CACK8Z6EPRdHb3ckMKhh2rPZRpahhLwtqBfLtoRbApRv+XRKLEA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] driver core: Move the "removable" attribute from
+ USB to core
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
+        <linux-usb@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
+        Oliver Neukum <oneukum@suse.com>,
+        David Laight <David.Laight@aculab.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Rajat Jain <rajatxjain@gmail.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Dmitry Torokhov <dtor@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 10:18:44AM -0400, Tony Krowiak wrote:
-> 
-> 
-> On 5/12/21 8:41 AM, Jason Gunthorpe wrote:
-> > On Mon, May 10, 2021 at 05:48:37PM -0400, Tony Krowiak wrote:
-> > > The mdev remove callback for the vfio_ap device driver bails out with
-> > > -EBUSY if the mdev is in use by a KVM guest. The intended purpose was
-> > > to prevent the mdev from being removed while in use; however, returning a
-> > > non-zero rc does not prevent removal. This could result in a memory leak
-> > > of the resources allocated when the mdev was created. In addition, the
-> > > KVM guest will still have access to the AP devices assigned to the mdev
-> > > even though the mdev no longer exists.
-> > > 
-> > > To prevent this scenario, cleanup will be done - including unplugging the
-> > > AP adapters, domains and control domains - regardless of whether the mdev
-> > > is in use by a KVM guest or not.
-> > > 
-> > > Fixes: 258287c994de ("s390: vfio-ap: implement mediated device open callback")
-> > > Cc: stable@vger.kernel.org
-> > > Signed-off-by: Tony Krowiak <akrowiak@stny.rr.com>
-> > >   drivers/s390/crypto/vfio_ap_ops.c | 13 ++-----------
-> > >   1 file changed, 2 insertions(+), 11 deletions(-)
-> > Can you please ensure this goes to a -rc branch or through Alex's
-> > tree?
-> 
-> I'm sorry, I don't know what a -rc branch is nor how to push this
-> to Alex's tree, but I'd be happy to do so if you tell me now:)
+On Thu, May 13, 2021 at 9:40 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Thu, May 13, 2021 at 09:26:26AM -0700, Rajat Jain wrote:
+> > > >  static ssize_t ltm_capable_show(struct device *dev,
+> > > >                               struct device_attribute *attr, char *buf)
+> > > >  {
+> > > > @@ -828,7 +805,6 @@ static struct attribute *dev_attrs[] = {
+> > > >       &dev_attr_avoid_reset_quirk.attr,
+> > > >       &dev_attr_authorized.attr,
+> > > >       &dev_attr_remove.attr,
+> > > > -     &dev_attr_removable.attr,
+> > > >       &dev_attr_ltm_capable.attr,
+> > > >  #ifdef CONFIG_OF
+> > > >       &dev_attr_devspec.attr,
+> > > > diff --git a/drivers/usb/core/usb.c b/drivers/usb/core/usb.c
+> > > > index 62368c4ed37a..ce18e84528cf 100644
+> > > > --- a/drivers/usb/core/usb.c
+> > > > +++ b/drivers/usb/core/usb.c
+> > > > @@ -569,6 +569,7 @@ struct device_type usb_device_type = {
+> > > >  #ifdef CONFIG_PM
+> > > >       .pm =           &usb_device_pm_ops,
+> > > >  #endif
+> > > > +     .supports_removable = true,
+> > > >  };
+> > > >
+> > > >
+> > > > diff --git a/include/linux/device.h b/include/linux/device.h
+> > > > index 38a2071cf776..7e87ab048307 100644
+> > > > --- a/include/linux/device.h
+> > > > +++ b/include/linux/device.h
+> > > > @@ -93,6 +93,8 @@ struct device_type {
+> > > >       void (*release)(struct device *dev);
+> > > >
+> > > >       const struct dev_pm_ops *pm;
+> > > > +
+> > > > +     bool supports_removable:1; /* subsystem can classify removable/fixed */
+> > >
+> > > Why isn't this a bus type?  Shouldn't it go there and not in the device
+> > > type?
+> >
+> > Please see below.
+> >
+> > >
+> > > >  };
+> > > >
+> > > >  /* interface for exporting device attributes */
+> > > > @@ -350,6 +352,19 @@ enum dl_dev_state {
+> > > >       DL_DEV_UNBINDING,
+> > > >  };
+> > > >
+> > > > +/**
+> > > > + * enum device_removable - Whether the device is removable. The criteria for a
+> > > > + * device to be classified as removable is determined by its subsystem or bus.
+> > > > + * @DEVICE_REMOVABLE_UNKNOWN:  Device location is Unknown (default).
+> > > > + * @DEVICE_REMOVABLE: Device is removable by the user.
+> > > > + * @DEVICE_FIXED: Device is not removable by the user.
+> > > > + */
+> > > > +enum device_removable {
+> > > > +     DEVICE_REMOVABLE_UNKNOWN = 0,
+> > > > +     DEVICE_REMOVABLE,
+> > > > +     DEVICE_FIXED,
+> > > > +};
+> > > > +
+> > > >  /**
+> > > >   * struct dev_links_info - Device data related to device links.
+> > > >   * @suppliers: List of links to supplier devices.
+> > > > @@ -431,6 +446,9 @@ struct dev_links_info {
+> > > >   *           device (i.e. the bus driver that discovered the device).
+> > > >   * @iommu_group: IOMMU group the device belongs to.
+> > > >   * @iommu:   Per device generic IOMMU runtime data
+> > > > + * @removable:  Whether the device can be removed from the system. This
+> > > > + *              should be set by the subsystem / bus driver that discovered
+> > > > + *              the device.
+> > > >   *
+> > > >   * @offline_disabled: If set, the device is permanently online.
+> > > >   * @offline: Set after successful invocation of bus type's .offline().
+> > > > @@ -544,6 +562,8 @@ struct device {
+> > > >       struct iommu_group      *iommu_group;
+> > > >       struct dev_iommu        *iommu;
+> > > >
+> > > > +     enum device_removable   removable;
+> > > > +
+> > > >       bool                    offline_disabled:1;
+> > > >       bool                    offline:1;
+> > > >       bool                    of_node_reused:1;
+> > > > @@ -782,6 +802,18 @@ static inline bool dev_has_sync_state(struct device *dev)
+> > > >       return false;
+> > > >  }
+> > > >
+> > > > +static inline void dev_set_removable(struct device *dev,
+> > > > +                                  enum device_removable removable)
+> > > > +{
+> > > > +     dev->removable = removable;
+> > > > +}
+> > > > +
+> > > > +static inline bool dev_is_removable(struct device *dev)
+> > > > +{
+> > > > +     return dev && dev->type && dev->type->supports_removable
+> > > > +         && dev->removable == DEVICE_REMOVABLE;
+> > >
+> > > Again, shouldn't this be a bus type, and not a device type?
+> > >
+> > > Where are you going to have devices of different types on a bus that do,
+> > > or do not, allow this attribute?
+> >
+> > USB. Presently, both the usb_device_type and usb_if_device_type sit on
+> > the usb_bus_type but "removable" only applies to usb_device_type (the
+> > attribute shows up only under usb_devices and not under
+> > usb_interfaces).
+>
+> Ah.  Messy.
+>
+> Then should this be a per-device value and don't worry about the type at
+> all?  You have a field in the device already, why not make it:
+>
+> enum device_removable {
+>         DEVICE_REMOVABLE_NOT_SUPPORTED = 0,     /* must be 0 */
+>         DEVICE_REMOVABLE_UNKNOWN,
+>         DEVICE_REMOVABLE,
+>         DEVICE_FIXED,
+> };
+>
+> And then only show the file if a device does NOT have the value set to
+> DEVICE_REMOVABLE_NOT_SUPPORTED?
+>
+> If a bus/subsystem/whatever wants the device to have a sysfs file and
+> value there, then it needs to set it to anything other than 0 and it
+> will be created?
 
-If Christian takes it for 5.13-rc then that is OK
-
-Otherwise please ask AlexW to take it
+Ack, will do.
 
 Thanks,
-Jason
+
+Rajat
+
+
+>
+> That gets you out of the device bus/type mess and it is localized to
+> only the device itself, allowing for any device to do this?  Should make
+> the logic everywhere a bit simpler as well.
+>
+> thanks,
+>
+> greg k-h
