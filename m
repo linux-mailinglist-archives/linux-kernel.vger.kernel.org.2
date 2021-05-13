@@ -2,132 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCAA337FC99
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 19:36:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97F7B37FCA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 19:42:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231197AbhEMRhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 13:37:54 -0400
-Received: from mail-dm6nam12on2085.outbound.protection.outlook.com ([40.107.243.85]:59233
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230035AbhEMRhd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 13:37:33 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h4fvKmDlLncknHBKMTWjQvVoiEhe/TOg8W8Gt5soL9Ly9Nq4RRlr/zZ/5moz6tBAQp4z95tUXl+QQvYB3i6lSKVDum0A2zF/nmFw4/q2PCR7eLHSEqEGCQvcHT659769phJV+6oOfRCNrUV33apz7Pngu2FD8T9Kd/uD477k2NhthnJ9qOt1Ik5shFOvxwxRkljscQV4LF93L+NuM7asiypXEYmL0XXqlUtKpnxflttmnb7HTy2HS1xsqUog3bip288FHk3g53teVHfrRBIOVqNkIp0LCdaZ2O0+QpPmS5fGtIYHVXwJpAswPFxnf7kMmBKvztACTftQgvFoXWDoaA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ga+YR/cMj9x1Q0EpsICdw5iMy85Owke4nkk/eysm1+o=;
- b=m2BrYS2UxfZ4oMa0l/lQH+K4f7sYDA+1uNNRKq73hmi5eW/ZhQz43UF4ayejPBafk6OxuhSjaTRCsKDCxRXN0IRpmTfSE1b028jcMSUSq+mG6JF7B/lLSuX3bTt/RSlTZ/r7Y0JCo6XuJdv2/dz8Vt/bRkNDjjcwRjRG+eNGFkGWxEdezMRJeqxm0eyywWdBQBJKdvFRmuNEhvTinlm0gdeMm6hVYaa9mFmVz2jyOFShbDZc2GtDwUjoILgkS01V45TZ5oTx+jKmeK1MN2Izpv+UW7YvdphVqkVmvwfxQ40X39SX4fwAg7tYGqDscGfB0fJJx1VmsbxB9eXBenl14Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ga+YR/cMj9x1Q0EpsICdw5iMy85Owke4nkk/eysm1+o=;
- b=K4aPX0+vPeJYST7HNYws/AIWME0p3zePtIHT7YCf8DPO1F9n2hFJGbp0JS+2vIAQTiCwpcEfe9/ZGnmXwMLoAW+1/q3KCt1IeAezSf3+hdYicX0H6R8gQHiGfwhpXLAgzJq+XW5dACvfOcF65Gb9SiJw1Rf8EGdRqhBW4wRsWTpYHzcFxbyTj6Nv+HTZYfOI0aJTB5G17OSeGSBHJSts9w36zdS6l9WAvtghPk5oBXf5tk54aWZzqvdyfPMCIoXiO/nZsxKitgFJTh1xCJvwgpHig8FnMwy/3IDWuUmyp8mX1fPzukcrgBcRStGSwplQcU2i+DZMVzaJsAsSpqS08g==
-Received: from BN9PR03CA0903.namprd03.prod.outlook.com (2603:10b6:408:107::8)
- by BY5PR12MB3906.namprd12.prod.outlook.com (2603:10b6:a03:1a9::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.29; Thu, 13 May
- 2021 17:36:21 +0000
-Received: from BN8NAM11FT026.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:107:cafe::2b) by BN9PR03CA0903.outlook.office365.com
- (2603:10b6:408:107::8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend
- Transport; Thu, 13 May 2021 17:36:20 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- BN8NAM11FT026.mail.protection.outlook.com (10.13.177.51) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4129.25 via Frontend Transport; Thu, 13 May 2021 17:36:20 +0000
-Received: from rcampbell-test.nvidia.com (172.20.145.6) by
- HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 13 May 2021 17:35:39 +0000
-Subject: Re: [RFC PATCH v3 0/2] mm: remove extra ZONE_DEVICE struct page
- refcount
-To:     Matthew Wilcox <willy@infradead.org>
-CC:     <linux-mm@kvack.org>, <kvm-ppc@vger.kernel.org>,
-        <nouveau@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        Zi Yan <ziy@nvidia.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20201001181715.17416-1-rcampbell@nvidia.com>
- <YJ0mVAK7OjwIGnMe@casper.infradead.org>
-From:   Ralph Campbell <rcampbell@nvidia.com>
-Message-ID: <750b6107-71c5-d17f-60b5-b4e8edb3aa99@nvidia.com>
-Date:   Thu, 13 May 2021 10:35:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S230307AbhEMRnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 13:43:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38492 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229964AbhEMRnM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 13:43:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA0E161352;
+        Thu, 13 May 2021 17:42:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620927722;
+        bh=ALM+zyZ7ii+SEw0cD5Jf+wDVvb/5CGSOX1wX3nCR53w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=b0vVVuwxQ0YaglllLHuSAoLMXXoR8EjxMet4x9wSmDQ/GBeOVtHi3ACNJcCc1I1NM
+         PlFGXIHudIIjJ30ajp8gWLEgo5ZukZcryfwM0jroPpcSGAhD9loDkH7OVSMJTkrTcc
+         u6vqjUbRU5zvWr3xT4XiGfVvBSW4ZRfGCoJvTEos=
+Date:   Thu, 13 May 2021 19:41:59 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Rajat Jain <rajatja@google.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
+        <linux-usb@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
+        Oliver Neukum <oneukum@suse.com>,
+        David Laight <David.Laight@aculab.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rajat Jain <rajatxjain@gmail.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Dmitry Torokhov <dtor@google.com>
+Subject: Re: [PATCH v3 2/2] PCI: Add sysfs "removable" attribute
+Message-ID: <YJ1k5w/6g6XFrSJ2@kroah.com>
+References: <20210512213457.1310774-1-rajatja@google.com>
+ <20210512213457.1310774-2-rajatja@google.com>
+ <YJ0wgdUaOyaJpaXi@kroah.com>
+ <CACK8Z6EH7jmw9ODqvhxV7EHQjPsj9z++6OT3NAmhem4v68w7yA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YJ0mVAK7OjwIGnMe@casper.infradead.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c1f6e84d-2006-4a72-a7fa-08d916359f1f
-X-MS-TrafficTypeDiagnostic: BY5PR12MB3906:
-X-Microsoft-Antispam-PRVS: <BY5PR12MB39065A3771119ED23C652555C2519@BY5PR12MB3906.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: L53qcJ1otNCJ++C8SASIh3rh85neljMZmdfwHpyucWvjMLSb/QXlpFYEQEMjoTUVuFf8vVETyLpEna/WxcQMbRepBr8+rNK3F13zOAywb8o1xTLDUAOjQa3x4HxWCP+yj1w7OVcZbQTRIQCzrJuYARsbdkomW88F3qsbstasFuJhKfLt1thhw6vSloJAGJrj265iX8x8zsx9MBGzz6PdLKHJXS0Syx1c0y/bqHPf9M7Y3sfHfrXz8tpdkzT4VhLez6z3OJ2rNYUI81NPZDA7BN4SDwBGv9lzFzvNd/cqpLASGWtWvIkLNwtcgJfC37Whwl1b42qfRFYHb7b/t3Glqd446UKe+zkiCXItvCKgG5n+Udj8x6Utgu75ed/3fETKxcv+XkU8Pp+/5IEcldSpOzUdEAsnhUlCsggiEVUD/T2Hz7hKJJFPEKbZUyqGpv04D8XJuA4D1WSzMjxj2eGd7gRCIlW0gaW/snQpN+5ILNwLIfneBF9UrtARTaE2TDkETq9LgDawmbUciFzYq2btvHnuoB4BnPncHAx1QUlzZCmtVG7aq+ul67rykVKX/jBTzvgFGEr/D7meff9Zix7ZGl8CWKnkFrlx8LMbXlVQ35rIPSm9NRMXwuqElfn+aUW+07jXP/P0xXQlr3LqtvJlMETR1P+2Moltc7TRKXihWPiXP0lakyBXWCNGZXKaP2i6
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(396003)(346002)(376002)(39850400004)(46966006)(36840700001)(26005)(82740400003)(53546011)(8936002)(6916009)(336012)(2906002)(426003)(478600001)(186003)(7416002)(2616005)(86362001)(16526019)(4326008)(7696005)(70586007)(316002)(5660300002)(36906005)(31686004)(54906003)(31696002)(36756003)(356005)(83380400001)(82310400003)(36860700001)(47076005)(7636003)(8676002)(70206006)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2021 17:36:20.6586
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c1f6e84d-2006-4a72-a7fa-08d916359f1f
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT026.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB3906
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACK8Z6EH7jmw9ODqvhxV7EHQjPsj9z++6OT3NAmhem4v68w7yA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 5/13/21 6:15 AM, Matthew Wilcox wrote:
-> On Thu, Oct 01, 2020 at 11:17:13AM -0700, Ralph Campbell wrote:
->> This is still an RFC because after looking at the pmem/dax code some
->> more, I realized that the ZONE_DEVICE struct pages are being inserted
->> into the process' page tables with vmf_insert_mixed() and a zero
->> refcount on the ZONE_DEVICE struct page. This is sort of OK because
->> insert_pfn() increments the reference count on the pgmap which is what
->> prevents memunmap_pages() from freeing the struct pages and it doesn't
->> check for a non-zero struct page reference count.
->> But, any calls to get_page() will hit the VM_BUG_ON_PAGE() that
->> checks for a reference count == 0.
+On Thu, May 13, 2021 at 09:39:58AM -0700, Rajat Jain wrote:
+> Hello,
 > 
-> This seems to have gone quiet.  What needs to happen to resurrect this?
+> On Thu, May 13, 2021 at 6:58 AM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Wed, May 12, 2021 at 02:34:57PM -0700, Rajat Jain wrote:
+> > > A PCI device is "external_facing" if it's a Root Port with the ACPI
+> > > "ExternalFacingPort" property or if it has the DT "external-facing"
+> > > property.  We consider everything downstream from such a device to
+> > > be removable by user.
+> > >
+> > > We're mainly concerned with consumer platforms with user accessible
+> > > thunderbolt ports that are vulnerable to DMA attacks, and we expect those
+> > > ports to be identified as "ExternalFacingPort". Devices in traditional
+> > > hotplug slots can technically be removed, but the expectation is that
+> > > unless the port is marked with "ExternalFacingPort", such devices are less
+> > > accessible to user / may not be removed by end user, and thus not exposed
+> > > as "removable" to userspace.
+> > >
+> > > Set pci_dev_type.supports_removable so the device core exposes the
+> > > "removable" file in sysfs, and tell the device core about removable
+> > > devices.
+> > >
+> > > This can be used by userspace to implment any policies it wants to,
+> > > tailored specifically for user removable devices. Eg usage:
+> > > https://chromium-review.googlesource.com/c/chromiumos/platform2/+/2591812
+> > > https://chromium-review.googlesource.com/c/chromiumos/platform2/+/2795038
+> > > (code uses such an attribute to remove external PCI devicces or disable
+> > > features on them as needed by the policy desired)
+> > >
+> > > Signed-off-by: Rajat Jain <rajatja@google.com>
+> > > ---
+> > > v3: - commit log updated
+> > >     - Rename set_pci_dev_removable() -> pci_set_removable()
+> > >     - Call it after applying early PCI quirks.
+> > > v2: Add documentation
+> > >
+> > >  Documentation/ABI/testing/sysfs-devices-removable |  3 ++-
+> > >  drivers/pci/pci-sysfs.c                           |  1 +
+> > >  drivers/pci/probe.c                               | 12 ++++++++++++
+> > >  3 files changed, 15 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/Documentation/ABI/testing/sysfs-devices-removable b/Documentation/ABI/testing/sysfs-devices-removable
+> > > index 9dabcad7cdcd..ec0b243f5db4 100644
+> > > --- a/Documentation/ABI/testing/sysfs-devices-removable
+> > > +++ b/Documentation/ABI/testing/sysfs-devices-removable
+> > > @@ -14,4 +14,5 @@ Description:
+> > >
+> > >               Currently this is only supported by USB (which infers the
+> > >               information from a combination of hub descriptor bits and
+> > > -             platform-specific data such as ACPI).
+> > > +             platform-specific data such as ACPI) and PCI (which gets this
+> > > +             from ACPI / device tree).
+> > > diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> > > index beb8d1f4fafe..38b3259ba333 100644
+> > > --- a/drivers/pci/pci-sysfs.c
+> > > +++ b/drivers/pci/pci-sysfs.c
+> > > @@ -1541,4 +1541,5 @@ static const struct attribute_group *pci_dev_attr_groups[] = {
+> > >
+> > >  const struct device_type pci_dev_type = {
+> > >       .groups = pci_dev_attr_groups,
+> > > +     .supports_removable = true,
+> > >  };
+> > > diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+> > > index 3a62d09b8869..3515afeeaba8 100644
+> > > --- a/drivers/pci/probe.c
+> > > +++ b/drivers/pci/probe.c
+> > > @@ -1575,6 +1575,16 @@ static void set_pcie_untrusted(struct pci_dev *dev)
+> > >               dev->untrusted = true;
+> > >  }
+> > >
+> > > +static void pci_set_removable(struct pci_dev *dev)
+> > > +{
+> > > +     struct pci_dev *parent = pci_upstream_bridge(dev);
+> > > +     if (parent &&
+> > > +         (parent->external_facing || dev_is_removable(&parent->dev)))
+> > > +             dev_set_removable(&dev->dev, DEVICE_REMOVABLE);
+> > > +     else
+> > > +             dev_set_removable(&dev->dev, DEVICE_FIXED);
+> > > +}
+> >
+> > Always run checkpatch.pl so you don't get grumpy maintainers telling you
+> > to run checkpatch.pl :(
 > 
-The main thing I need is time. I have been tied up with other commitments,
-there has been a lot of changes going on in FS/DAX and the page cache,
-and FS/DAX doesn't use the page reference count to indicate the page is
-"free" but rather that it is "idle" so I need a lot of time to really
-understand why FS/DAX isn't just any FS on top of a DAX block device.
+> Yes, I did (it gave me 0 errors and 0 warnings). Please let me know if
+> I need to fix something and I'll be happy to fix that.
+> 
+> >
+> > And why does external_facing come into play here?  I know you say it
+> > above, but you should also put it here into the code for when we need to
+> > look at it in a few months and wonder what in the world this is doing.
+> 
+> Ack, will do.
+> 
+> >
+> > Also, are you SURE this is correct and will handle the hotpluggable PCI
+> > devices in things like drawers and the like?
+> 
+> Yes, me and Bjorn discussed this in the v2 of this patch
+> (https://patchwork.kernel.org/project/linux-usb/patch/20210424021631.1972022-2-rajatja@google.com/),
+> and yes, this can take care of the hot-pluggable trays if the firmware
+> marks the slots external-facing.
 
-I too wish this was easier to fix.
+Ok, I'll trust you two :)
+
+> > What is the goal here in exposing this information to userspace, who is
+> > going to use it and what is it going to be used for?
+> 
+> The goal here is to implement policies regarding usage of external PCI
+> devices, in userspace. ChromeOS is using it for things like:
+> - Remove external PCI devices when a user logs out.
+
+remove them how?  disconnect the device from the system through what
+method?
+
+> - Don't allow new external PCI devices while the screen is locked.
+
+Don't allow how?  Don't allow the binding of a driver to a device, or
+the device to be discovered at all?  What controls this?
+
+> - collect metrics about usage of external PCI devices (how many users
+> actually use it etc).
+> - disable certain features (that are deemed to be dangerous) for
+> external PCI network cards.
+
+What is a "dangerous" network feature, RDMA?
+
+thanks,
+
+greg k-h
