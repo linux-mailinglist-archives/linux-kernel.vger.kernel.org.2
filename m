@@ -2,109 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0BA037F389
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 09:24:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B75B237F38F
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 09:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231681AbhEMHZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 03:25:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:32872 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231690AbhEMHZP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 03:25:15 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7371DAF0F;
-        Thu, 13 May 2021 07:24:04 +0000 (UTC)
-To:     Johan Hovold <johan@kernel.org>
-Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Joe Perches <joe@perches.com>
-References: <20210505091928.22010-35-jslaby@suse.cz>
- <20210510070054.5397-1-jslaby@suse.cz>
- <YJkBIm4IiaZSrSPw@hovoldconsulting.com>
-From:   Jiri Slaby <jslaby@suse.cz>
-Subject: Re: [PATCH v2 34/35] tty: make tty_get_byte_size available
-Message-ID: <f8f94397-14d8-60d0-f977-8bc982a00b7a@suse.cz>
-Date:   Thu, 13 May 2021 09:24:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S231245AbhEMH0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 03:26:12 -0400
+Received: from smtp09.smtpout.orange.fr ([80.12.242.131]:50688 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231630AbhEMH0J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 03:26:09 -0400
+Received: from localhost.localdomain ([86.243.172.93])
+        by mwinf5d84 with ME
+        id 47Qx2500821Fzsu037QxlK; Thu, 13 May 2021 09:24:59 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Thu, 13 May 2021 09:24:59 +0200
+X-ME-IP: 86.243.172.93
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        davem@davemloft.net, kuba@kernel.org, f.fainelli@gmail.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] net: mdio: octeon: Fix some double free issues
+Date:   Thu, 13 May 2021 09:24:55 +0200
+Message-Id: <7adc1815237605a0b774efb31a2ab22df51462d3.1620890610.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <YJkBIm4IiaZSrSPw@hovoldconsulting.com>
-Content-Type:   text/plain; charset=US-ASCII;
-        format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10. 05. 21, 11:47, Johan Hovold wrote:
->> --- a/drivers/tty/tty_ioctl.c
->> +++ b/drivers/tty/tty_ioctl.c
->> @@ -300,6 +300,48 @@ int tty_termios_hw_change(const struct ktermios *a, const struct ktermios *b)
-...
->> +unsigned char tty_get_byte_size(unsigned int cflag, bool account_flags)
->> +{
->> +	unsigned char bits;
->> +
->> +	switch (cflag & CSIZE) {
->> +	case CS5:
->> +		bits = 5;
->> +		break;
->> +	case CS6:
->> +		bits = 6;
->> +		break;
->> +	case CS7:
->> +		bits = 7;
->> +		break;
->> +	case CS8:
->> +	default:
->> +		bits = 8;
->> +		break;
->> +	}
->> +
->> +	if (!account_flags)
->> +		return bits;
->> +
->> +	if (cflag & CSTOPB)
->> +		bits++;
->> +	if (cflag & PARENB)
->> +		bits++;
->> +
->> +	return bits + 2;
->> +}
->> +EXPORT_SYMBOL_GPL(tty_get_byte_size);
-> 
-> This should really be two functions rather than passing a bool argument.
-> 
-> I think naming them
-> 
-> 	tty_get_word_size()
-> 
-> and
-> 
-> 	tty_get_frame_size()
-> 
-> would be much more clear than than "byte size" + flag.
+'bus->mii_bus' has been allocated with 'devm_mdiobus_alloc_size()' in the
+probe function. So it must not be freed explicitly or there will be a
+double free.
 
-Maybe I am screwed, but word means exactly 2B here. So instead, I would 
-go for:
-s/word/char/ -- might be confused with C's char, 1B, or maybe not -- or
-s/word/data/ -- more generic and generally used in serial terminology.
+Remove the incorrect 'mdiobus_free' in the error handling path of the
+probe function and in remove function.
 
-> I realise that the serial-driver interface only uses a cflag argument,
-> but I think we should consider passing a pointer to the termios
-> structure instead.
+Suggested-By: Andrew Lunn <andrew@lunn.ch>
+Fixes: 35d2aeac9810 ("phy: mdio-octeon: Use devm_mdiobus_alloc_size()")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+The 'smi_en.u64 = 0; oct_mdio_writeq()' looks odd to me. Usually the normal
+path and the error handling path don't write the same value. Here, both
+write 0.
+Having '1' somewhere would 'look' more usual. :)
+More over I think that 'smi_en.s.en = 1;' in the probe is useless.
+I don't know what this code is supposed to do, so I leave it as-is.
+But it looks like a left-over from a6d678645210.
+---
+ drivers/net/mdio/mdio-octeon.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-That's impossible as termios is not always at hand. Examples are:
-pch_uart_startup -> uart_update_timeout
-sunsab_console_setup -> sunsab_convert_to_sab -> uart_update_timeout
-sunsu_kbd_ms_init -> sunsu_change_speed -> uart_update_timeout
-
-Let me document that in the commit.
-
-thanks,
+diff --git a/drivers/net/mdio/mdio-octeon.c b/drivers/net/mdio/mdio-octeon.c
+index 8ce99c4888e1..e096e68ac667 100644
+--- a/drivers/net/mdio/mdio-octeon.c
++++ b/drivers/net/mdio/mdio-octeon.c
+@@ -71,7 +71,6 @@ static int octeon_mdiobus_probe(struct platform_device *pdev)
+ 
+ 	return 0;
+ fail_register:
+-	mdiobus_free(bus->mii_bus);
+ 	smi_en.u64 = 0;
+ 	oct_mdio_writeq(smi_en.u64, bus->register_base + SMI_EN);
+ 	return err;
+@@ -85,7 +84,6 @@ static int octeon_mdiobus_remove(struct platform_device *pdev)
+ 	bus = platform_get_drvdata(pdev);
+ 
+ 	mdiobus_unregister(bus->mii_bus);
+-	mdiobus_free(bus->mii_bus);
+ 	smi_en.u64 = 0;
+ 	oct_mdio_writeq(smi_en.u64, bus->register_base + SMI_EN);
+ 	return 0;
 -- 
-js
-suse labs
+2.30.2
+
