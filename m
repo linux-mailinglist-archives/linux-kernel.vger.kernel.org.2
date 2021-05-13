@@ -2,65 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 053FC37FFB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 23:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B3AA37FFBB
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 23:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233385AbhEMVQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 17:16:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233381AbhEMVQv (ORCPT
+        id S233407AbhEMVT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 17:19:28 -0400
+Received: from mail-pl1-f175.google.com ([209.85.214.175]:42497 "EHLO
+        mail-pl1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233360AbhEMVT1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 17:16:51 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 529C0C061574;
-        Thu, 13 May 2021 14:15:40 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id o26-20020a1c4d1a0000b0290146e1feccdaso1565061wmh.0;
-        Thu, 13 May 2021 14:15:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=JBy/O0ZLfy5u8rFBxaqSpqTiaMXG+jNpqopzCnsfGkY=;
-        b=PzKf9qQPySJRpA2r6V70PkjhsEAV0MOiOQyele0GLcd644rLhrRwrqUjzNIGAWL/j7
-         /ohdpj3F5c0QPnj/rVgM6NW0lMrx/O9M3KtSi4S/XjxbaLToZhmcgw1eO4ohEqNUgTYQ
-         ISMQFGKvorvKhLCZlvcjpf5GyJNw4phDKn6Lp5NjPl1tiihLk3j5xoYHyiu4EJHpg+qo
-         HpXYa0z5qsP2VPeVCWLJj/gyhFYQSnm5CDPw/z4OkgxECR0RKQSsmXTE7QKW7L/IA3GJ
-         Yxu36UnCXqGusbcvkpW22nhB0NkdF8LFANWCvReBb3Lsy9POt+WuhuR3QXZ+15rCawIP
-         /XUA==
+        Thu, 13 May 2021 17:19:27 -0400
+Received: by mail-pl1-f175.google.com with SMTP id v13so15048931ple.9;
+        Thu, 13 May 2021 14:18:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=JBy/O0ZLfy5u8rFBxaqSpqTiaMXG+jNpqopzCnsfGkY=;
-        b=laEbudqwQ4z3/PfhGrw/gheN/V1YdQXliLW5nqoM+hOjOF6dP69miAy4gaknVKqOSg
-         SAe5Ht3eyYFj1/mF6/g0h+wc7iOuTrjzxY0onOqVMBBxZtDSi5xuySsrRbUp2dcMzGDo
-         IWLCc0jz3LQkKjt71STMZCbHWUGcl8/hBSE7bH4JZiHT7/km0sCa8XmtmwVlzB2Pr5u7
-         eooKkOuZp9WAV3xbrPG+hOicu0yfIIQaKB9nfTy8N2nGjz0oKaS586pZEEkerIHtdZqy
-         V0z8EZ8/OEd1LrMeZRpyF0cB/QzWbiihfIiNDVcubeNigkYgz1+jBVOnl0EA6hNRjfgu
-         DYfw==
-X-Gm-Message-State: AOAM533b/0GmhkNnPypBn0bvOX2EGLbiYPVXarCyRnRqfZG5u5xrrAOm
-        JwOYalFPo/RvcbF8nZ0jakQ=
-X-Google-Smtp-Source: ABdhPJw9zhheEHc6WikRvIAR1PV74rFwAGziRAR8X/1APfkslROsPscqZR1qI1q+Cy+yNvyXnj06kw==
-X-Received: by 2002:a05:600c:4e8e:: with SMTP id f14mr3345672wmq.65.1620940539123;
-        Thu, 13 May 2021 14:15:39 -0700 (PDT)
-Received: from [192.168.8.197] ([148.252.132.196])
-        by smtp.gmail.com with ESMTPSA id g66sm3255414wma.11.2021.05.13.14.15.37
+        bh=mvZf3JNCBPnJCp6W7ETlVadxetawitWuzaHn0wwc8uQ=;
+        b=m+BERp7WpecMgXSUo2TqCeMMhexujZybqwtaJl5bIibPHVygfFECcd9NcP+pMJlzSc
+         v/g6lHBNP52HfgTrDqAbpZ2TWfGVOEVUU6HaCPc+N/Bu149Vm8OanAoIxTGeIoDjRPPJ
+         dts1k6x5x/AWeSizxRYXxEY5J6sacxvRF0OU/wHTaqw58l02/uBt0P1/MJceCx7jSO7p
+         dNYeltKVzKL3wtp+JnqBCqk98JG5b7SlY9TWO8uYFN6WpDD3bSY+Qz/fYevQsxrRH+vw
+         tGYZ4DTwpXfsblGeBmzhbJyJSqh9nquu1ND7DsomFMZ7gmOjtsb9i9fL1q7fVsRRC4Fp
+         W5IQ==
+X-Gm-Message-State: AOAM531i+nuGrJ9JnpsSrjuGUk1cpjzhYSzZVYpYyjW31jKMvTla8wg8
+        IXmnHkc7ybpGnjr5bscy98uEL2UApiAJrg==
+X-Google-Smtp-Source: ABdhPJwewpa0foiOfv5+uWT766FJFkGKaXiL58aPMNLdz8Z3MaXuEV5io4OkQpitS3h5OFIBnffzhg==
+X-Received: by 2002:a17:90b:84:: with SMTP id bb4mr6992032pjb.60.1620940697238;
+        Thu, 13 May 2021 14:18:17 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:54a8:4531:57a:cfd8? ([2601:647:4000:d7:54a8:4531:57a:cfd8])
+        by smtp.gmail.com with ESMTPSA id l35sm2809109pgm.10.2021.05.13.14.18.15
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 May 2021 14:15:38 -0700 (PDT)
-Subject: Re: [syzbot] INFO: task hung in io_ring_exit_work
-To:     syzbot <syzbot+93f72b3885406bb09e0d@syzkaller.appspotmail.com>,
-        axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <0000000000002f920305c1c89a25@google.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Message-ID: <eb659001-f646-95e7-2037-8615e116582f@gmail.com>
-Date:   Thu, 13 May 2021 22:15:32 +0100
+        Thu, 13 May 2021 14:18:16 -0700 (PDT)
+Subject: Re: regression: data corruption with ext4 on LUKS on nvme with
+ torvalds master
+To:     Mikulas Patocka <mpatocka@redhat.com>,
+        Milan Broz <gmazyland@gmail.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Changheun Lee <nanich.lee@samsung.com>
+Cc:     alex_y_xu@yahoo.ca, axboe@kernel.dk, bgoncalv@redhat.com,
+        dm-crypt@saout.de, hch@lst.de, jaegeuk@kernel.org,
+        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        ming.lei@redhat.com, yi.zhang@redhat.com, dm-devel@redhat.com
+References: <a01ab479-69e8-9395-7d24-9de1eec28aff@acm.org>
+ <0e7b0b6e-e78c-f22d-af8d-d7bdcb597bea@gmail.com>
+ <alpine.LRH.2.02.2105131510330.21927@file01.intranet.prod.int.rdu2.redhat.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <fdee795d-7a4b-9506-b9ca-359b9bcbec34@acm.org>
+Date:   Thu, 13 May 2021 14:18:14 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <0000000000002f920305c1c89a25@google.com>
+In-Reply-To: <alpine.LRH.2.02.2105131510330.21927@file01.intranet.prod.int.rdu2.redhat.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -68,29 +63,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/8/21 3:50 AM, syzbot wrote:
-> Hello,
+On 5/13/21 12:22 PM, Mikulas Patocka wrote:
+> We already had problems with too large bios in dm-crypt and we fixed it by 
+> adding this piece of code:
 > 
-> syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+>         /*
+>          * Check if bio is too large, split as needed.
+>          */
+>         if (unlikely(bio->bi_iter.bi_size > (BIO_MAX_VECS << PAGE_SHIFT)) &&
+>             (bio_data_dir(bio) == WRITE || cc->on_disk_tag_size))
+>                 dm_accept_partial_bio(bio, ((BIO_MAX_VECS << PAGE_SHIFT) >> SECTOR_SHIFT));
 > 
-> Reported-and-tested-by: syzbot+93f72b3885406bb09e0d@syzkaller.appspotmail.com
+> It will ask the device mapper to split the bio if it is too large. So, 
+> crypt_alloc_buffer can't receive a bio that is larger than BIO_MAX_VECS << 
+> PAGE_SHIFT.
 
-May still be there but silent because of fixed buffers changes,
-test with the old behaviour restored
+Hi Mikulas,
 
-#syz test: https://github.com/isilence/linux.git syz_test7
+Are you perhaps referring to commit 4e870e948fba ("dm crypt: fix error
+with too large bios")? Did that commit go upstream before multi-page
+bvec support? Can larger bios be supported in case of two or more
+contiguous pages now that multi-page bvec support is upstream?
 
-> 
-> Tested on:
-> 
-> commit:         50b7b6f2 x86/process: setup io_threads more like normal us..
-> git tree:       git://git.kernel.dk/linux-block io_uring-5.13
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=f81a36128b448b98
-> dashboard link: https://syzkaller.appspot.com/bug?extid=93f72b3885406bb09e0d
-> compiler:       
-> 
-> Note: testing is done by a robot and is best-effort only.
-> 
+Thanks,
 
--- 
-Pavel Begunkov
+Bart.
