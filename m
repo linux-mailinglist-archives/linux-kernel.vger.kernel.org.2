@@ -2,266 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 381D737F174
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 04:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9775937F178
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 05:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230364AbhEMC5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 22:57:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229745AbhEMC5i (ORCPT
+        id S230445AbhEMDB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 23:01:59 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:3738 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230186AbhEMDB6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 22:57:38 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEB48C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 19:56:29 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id j26so25730857edf.9
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 19:56:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dfLvpQkOXb/0mc5ID6W6SJ563fzW4AnWs2gl3gOGpKU=;
-        b=iYg4BRRSJEjuIKdzPtyQBs3rZhK7U09uQ7ULwifgp/seJXBoxAsHU4eydyd0epyN1D
-         L/XD99EiCbO8nNHGckQVYURJqPoiMXCh5pmVoBVik0mw/ZY942IQUStgtIaKLRQhAB3b
-         Fmv/ssgLSC2jbl/Nul7kXMcbszjUfHP0eEhu8Hh1QCnstKI3h0/YOgDuoElWXbcSkHOg
-         kE3ZRuUeAD8OfPvmDFsJBMve0B4Wi+ztxK6KHui0epib4y4dn36A1DOkqpnvGz4ePwo0
-         KEM10Cg+ynK1ooTajnzFpq1lA5lvk63SgP/dx83+52K1mFBtuq80oacJvHJ9zQEgN95/
-         w9Ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dfLvpQkOXb/0mc5ID6W6SJ563fzW4AnWs2gl3gOGpKU=;
-        b=FooeFIAvvdi1KwsqwtPIiThCXZIU3oQ5xqw7ozRrvE5KWNkvHPbdDCPeD5Iy3mzhoT
-         +zOv/H8iOS34DYwwsyGpX1m8QRYos4WeOqmygSoVuOKBKlWLXUoR9DspGnd64O+ODN2Z
-         5hcAZwi4RsG22dKRsr1+DW8GKuGPzJcBW0QrKPgnBSCjaXLQXEadpONOzlAhySFKOwmh
-         IjzrbgFCAutz5h593GDtAkTW6Q70xWrARFYiyybwzmqE/TKa9/0EmLn8CAVGBsxTeuQ5
-         QrXnm2Y+qqQ0coIoELJEOBxi1kF4FwwapdUxQ2qB44GOXxGEibH4YX/h5t6ilZ7mAzfE
-         A91A==
-X-Gm-Message-State: AOAM530xkJKQQPPfAteqLWZFBXvstBq95jEfNf+AmlbhZGDSfzwlW8G8
-        O50kralmefcRxhBxJZOonsG6eQjbye7wR/Ag91qw9Q==
-X-Google-Smtp-Source: ABdhPJxKqMzfAVkdnpbhLe5lHlfN9lCK6NxW6G40JdaUWpE9f++vzBOorWIbLAEOt2/zVuDTAfTqIV5HdmyMe5r0tT8=
-X-Received: by 2002:a05:6402:13c3:: with SMTP id a3mr10612489edx.18.1620874588347;
- Wed, 12 May 2021 19:56:28 -0700 (PDT)
+        Wed, 12 May 2021 23:01:58 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FgbtD1cpCzpdqH;
+        Thu, 13 May 2021 10:57:24 +0800 (CST)
+Received: from [127.0.0.1] (10.40.193.166) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.498.0; Thu, 13 May 2021
+ 11:00:40 +0800
+Subject: Re: Qestion about device link
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+References: <3c88cf35-6725-1bfa-9e1e-8e9d69147e3b@hisilicon.com>
+ <2149723.iZASKD2KPV@kreacher>
+ <1c1cd889-7e6f-79f7-2650-cd181abc56b2@hisilicon.com>
+ <11764789.O9o76ZdvQC@kreacher>
+CC:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        John Garry <john.garry@huawei.com>, <linuxarm@huawei.com>,
+        <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>
+From:   "chenxiang (M)" <chenxiang66@hisilicon.com>
+Message-ID: <0de9b48f-0d62-9413-943f-cd130bae8335@hisilicon.com>
+Date:   Thu, 13 May 2021 11:00:39 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.2.0
 MIME-Version: 1.0
-References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com> <13f8d4117f7b871f20f53403167913803bef87c2.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <13f8d4117f7b871f20f53403167913803bef87c2.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 12 May 2021 19:56:18 -0700
-Message-ID: <CAPcyv4ipWTv7yRyLHA0Un0KZDdXjpCZXMbrEn7SJXbdRhhn=jA@mail.gmail.com>
-Subject: Re: [RFC v2 21/32] x86/boot: Add a trampoline for APs booting in
- 64-bit mode
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Kai Huang <kai.huang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <11764789.O9o76ZdvQC@kreacher>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.40.193.166]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 11:03 AM Kuppuswamy Sathyanarayanan
-<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+Hi Rafael,
+
+
+在 2021/5/12 22:04, Rafael J. Wysocki 写道:
+> On Wednesday, May 12, 2021 5:24:53 AM CEST chenxiang (M) wrote:
+>> Hi Rafael,
+>>
+>>
+>> 在 2021/5/12 3:16, Rafael J. Wysocki 写道:
+>>> On Tuesday, May 11, 2021 4:39:31 PM CEST Rafael J. Wysocki wrote:
+>>>> On 5/11/2021 5:59 AM, chenxiang (M) wrote:
+>>>>> Hi Rafael and other guys,
+>>>>>
+>>>>> I am trying to add a device link between scsi_host->shost_gendev and
+>>>>> hisi_hba->dev to support runtime PM for hisi_hba driver
+>>>>>
+>>>>> (as it supports runtime PM for scsi host in some scenarios such as
+>>>>> error handler etc, we can avoid to do them again if adding a
+>>>>>
+>>>>> device link between scsi_host->shost_gendev and hisi_hba->dev) as
+>>>>> follows (hisi_sas driver is under directory drivers/scsi/hisi_sas):
+>>>>>
+>>>>> device_link_add(&shost->shost_gendev, hisi_hba->dev,
+>>>>> DL_FLAG_PM_RUNTIME | DL_FLAG_RPM_ACTIVE)
+>>>>>
+>>>>> We have a full test on it, and it works well except when rmmod the
+>>>>> driver, some call trace occurs as follows:
+>>>>>
+>>>>> [root@localhost ~]# rmmod hisi_sas_v3_hw
+>>>>> [  105.377944] BUG: scheduling while atomic: kworker/113:1/811/0x00000201
+>>>>> [  105.384469] Modules linked in: bluetooth rfkill ib_isert
+>>>>> iscsi_target_mod ib_ipoib ib_umad iptable_filter vfio_iommu_type1
+>>>>> vfio_pci vfio_virqfd vfio rpcrdma ib_is                         er
+>>>>> libiscsi scsi_transport_iscsi crct10dif_ce sbsa_gwdt hns_roce_hw_v2
+>>>>> hisi_sec2 hisi_hpre hisi_zip hisi_qm uacce spi_hisi_sfc_v3xx
+>>>>> hisi_trng_v2 rng_core hisi_uncore                         _hha_pmu
+>>>>> hisi_uncore_ddrc_pmu hisi_uncore_l3c_pmu spi_dw_mmio hisi_uncore_pmu
+>>>>> hns3 hclge hnae3 hisi_sas_v3_hw(-) hisi_sas_main libsas
+>>>>> [  105.424841] CPU: 113 PID: 811 Comm: kworker/113:1 Kdump: loaded
+>>>>> Tainted: G        W         5.12.0-rc1+ #1
+>>>>> [  105.434454] Hardware name: Huawei TaiShan 2280 V2/BC82AMDC, BIOS
+>>>>> 2280-V2 CS V5.B143.01 04/22/2021
+>>>>> [  105.443287] Workqueue: rcu_gp srcu_invoke_callbacks
+>>>>> [  105.448154] Call trace:
+>>>>> [  105.450593]  dump_backtrace+0x0/0x1a4
+>>>>> [  105.454245]  show_stack+0x24/0x40
+>>>>> [  105.457548]  dump_stack+0xc8/0x104
+>>>>> [  105.460939]  __schedule_bug+0x68/0x80
+>>>>> [  105.464590]  __schedule+0x73c/0x77c
+>>>>> [  105.465700] BUG: scheduling while atomic: kworker/96:1/791/0x00000201
+>>>>> [  105.468066]  schedule+0x7c/0x110
+>>>>> [  105.468068]  schedule_timeout+0x194/0x1d4
+>>>>> [  105.474490] Modules linked in:
+>>>>> [  105.477692]  wait_for_completion+0x8c/0x12c
+>>>>> [  105.477695]  rcu_barrier+0x1e0/0x2fc
+>>>>> [  105.477697]  scsi_host_dev_release+0x50/0xf0
+>>>>> [  105.477701]  device_release+0x40/0xa0
+>>>>> [  105.477704]  kobject_put+0xac/0x100
+>>>>> [  105.477707]  __device_link_free_srcu+0x50/0x74
+>>>>> [  105.477709]  srcu_invoke_callbacks+0x108/0x1a4
+>>>>> [  105.484743]  process_one_work+0x1dc/0x48c
+>>>>> [  105.492468]  worker_thread+0x7c/0x464
+>>>>> [  105.492471]  kthread+0x168/0x16c
+>>>>> [  105.492473]  ret_from_fork+0x10/0x18
+>>>>> ...
+>>>>>
+>>>>> After analyse the process, we find that it will
+>>>>> device_del(&shost->gendev) in function scsi_remove_host() and then
+>>>>>
+>>>>> put_device(&shost->shost_gendev) in function scsi_host_put() when
+>>>>> removing the driver, if there is a link between shost and hisi_hba->dev,
+>>>>>
+>>>>> it will try to delete the link in device_del(), and also will
+>>>>> call_srcu(__device_link_free_srcu) to put_device() link->consumer and
+>>>>> supplier.
+>>>>>
+>>>>> But if put device() for shost_gendev in device_link_free() is later
+>>>>> than in scsi_host_put(), it will call scsi_host_dev_release() in
+>>>>>
+>>>>> srcu_invoke_callbacks() while it is atomic and there are scheduling in
+>>>>> scsi_host_dev_release(),
+>>>>>
+>>>>> so it reports the BUG "scheduling while atomic:...".
+>>>>>
+>>>>> thread 1                                                   thread2
+>>>>> hisi_sas_v3_remove
+>>>>>       ...
+>>>>>       sas_remove_host()
+>>>>>           ...
+>>>>>           scsi_remove_host()
+>>>>>               ...
+>>>>>               device_del(&shost->shost_gendev)
+>>>>>                   ...
+>>>>>                   device_link_purge()
+>>>>>                       __device_link_del()
+>>>>>                           device_unregister(&link->link_dev)
+>>>>>                               devlink_dev_release
+>>>>> call_srcu(__device_link_free_srcu)    ----------->
+>>>>> srcu_invoke_callbacks  (atomic)
+>>>>>           __device_link_free_srcu
+>>>>>       ...
+>>>>>       scsi_host_put()
+>>>>>           put_device(&shost->shost_gendev) (ref = 1)
+>>>>>                   device_link_free()
+>>>>>                                 put_device(link->consumer)
+>>>>> //shost->gendev ref = 0
+>>>>>                                             ...
+>>>>>                                             scsi_host_dev_release
+>>>>>                                                         ...
+>>>>> rcu_barrier
+>>>>> kthread_stop()
+>>>>>
+>>>>>
+>>>>> We can check kref of shost->shost_gendev to make sure scsi_host_put()
+>>>>> to release scsi host device in LLDD driver to avoid the issue,
+>>>>>
+>>>>> but it seems be a common issue:  function __device_link_free_srcu
+>>>>> calls put_device() for consumer and supplier,
+>>>>>
+>>>>> but if it's ref =0 at that time and there are scheduling or sleep in
+>>>>> dev_release, it may have the issue.
+>>>>>
+>>>>> Do you have any idea about the issue?
+>>>>>
+>>>> Yes, this is a general issue.
+>>>>
+>>>> If I'm not mistaken, it can be addressed by further deferring the
+>>>> device_link_free() invocation through a workqueue.
+>>>>
+>>>> Let me cut a patch doing this.
+>>> Please test the patch below and let me know if it works for you.
+>> I have a test on the patch, and it solves my issue.
+> Great, thanks!
 >
-> From: Sean Christopherson <sean.j.christopherson@intel.com>
+> Please also test the patch appended below (it uses a slightly different approach).
+
+I have a test on this change, and it also solves my issue.
+
 >
-> Add a trampoline for booting APs in 64-bit mode via a software handoff
-> with BIOS, and use the new trampoline for the ACPI MP wake protocol used
-> by TDX.
-
-Lets add a spec reference:
-
-See section "4.1 ACPI-MADT-AP-Wakeup Table" in the Guest-Host
-Communication Interface specification for TDX.
-
-Although, there is not much "wake protocol" in this patch, this
-appears to be the end of the process after the CPU has been messaged
-to start.
-
-> Extend the real mode IDT pointer by four bytes to support LIDT in 64-bit
-> mode.  For the GDT pointer, create a new entry as the existing storage
-> for the pointer occupies the zero entry in the GDT itself.
->
-> Reported-by: Kai Huang <kai.huang@intel.com>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Reviewed-by: Andi Kleen <ak@linux.intel.com>
-> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 > ---
->  arch/x86/include/asm/realmode.h          |  1 +
->  arch/x86/kernel/smpboot.c                |  5 +++
->  arch/x86/realmode/rm/header.S            |  1 +
->  arch/x86/realmode/rm/trampoline_64.S     | 49 +++++++++++++++++++++++-
->  arch/x86/realmode/rm/trampoline_common.S |  5 ++-
->  5 files changed, 58 insertions(+), 3 deletions(-)
+>   drivers/base/core.c    |   37 +++++++++++++++++++++++--------------
+>   include/linux/device.h |    6 ++----
+>   2 files changed, 25 insertions(+), 18 deletions(-)
 >
-> diff --git a/arch/x86/include/asm/realmode.h b/arch/x86/include/asm/realmode.h
-> index 5db5d083c873..5066c8b35e7c 100644
-> --- a/arch/x86/include/asm/realmode.h
-> +++ b/arch/x86/include/asm/realmode.h
-> @@ -25,6 +25,7 @@ struct real_mode_header {
->         u32     sev_es_trampoline_start;
->  #endif
->  #ifdef CONFIG_X86_64
-> +       u32     trampoline_start64;
->         u32     trampoline_pgd;
->  #endif
->         /* ACPI S3 wakeup */
-> diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-> index 16703c35a944..27d8491d753a 100644
-> --- a/arch/x86/kernel/smpboot.c
-> +++ b/arch/x86/kernel/smpboot.c
-> @@ -1036,6 +1036,11 @@ static int do_boot_cpu(int apicid, int cpu, struct task_struct *idle,
->         unsigned long boot_error = 0;
->         unsigned long timeout;
->
-> +#ifdef CONFIG_X86_64
-> +       if (is_tdx_guest())
-> +               start_ip = real_mode_header->trampoline_start64;
-> +#endif
-
-Perhaps wrap this into an inline helper in
-arch/x86/include/asm/realmode.h so that this routine only does one
-assignment to @start_ip at function entry?
-
+> Index: linux-pm/drivers/base/core.c
+> ===================================================================
+> --- linux-pm.orig/drivers/base/core.c
+> +++ linux-pm/drivers/base/core.c
+> @@ -193,6 +193,11 @@ int device_links_read_lock_held(void)
+>   {
+>   	return srcu_read_lock_held(&device_links_srcu);
+>   }
 > +
->         idle->thread.sp = (unsigned long)task_pt_regs(idle);
->         early_gdt_descr.address = (unsigned long)get_cpu_gdt_rw(cpu);
->         initial_code = (unsigned long)start_secondary;
-> diff --git a/arch/x86/realmode/rm/header.S b/arch/x86/realmode/rm/header.S
-> index 8c1db5bf5d78..2eb62be6d256 100644
-> --- a/arch/x86/realmode/rm/header.S
-> +++ b/arch/x86/realmode/rm/header.S
-> @@ -24,6 +24,7 @@ SYM_DATA_START(real_mode_header)
->         .long   pa_sev_es_trampoline_start
->  #endif
->  #ifdef CONFIG_X86_64
-> +       .long   pa_trampoline_start64
->         .long   pa_trampoline_pgd;
->  #endif
->         /* ACPI S3 wakeup */
-> diff --git a/arch/x86/realmode/rm/trampoline_64.S b/arch/x86/realmode/rm/trampoline_64.S
-> index 84c5d1b33d10..12b734b1da8b 100644
-> --- a/arch/x86/realmode/rm/trampoline_64.S
-> +++ b/arch/x86/realmode/rm/trampoline_64.S
-> @@ -143,13 +143,20 @@ SYM_CODE_START(startup_32)
->         movl    %eax, %cr3
->
->         # Set up EFER
-> +       movl    $MSR_EFER, %ecx
-> +       rdmsr
-> +       cmp     pa_tr_efer, %eax
-> +       jne     .Lwrite_efer
-> +       cmp     pa_tr_efer + 4, %edx
-> +       je      .Ldone_efer
-> +.Lwrite_efer:
->         movl    pa_tr_efer, %eax
->         movl    pa_tr_efer + 4, %edx
-> -       movl    $MSR_EFER, %ecx
->         wrmsr
-
-Is this hunk just a performance optimization to save an unnecessary
-wrmsr when it is pre-populated with the right value? Is it required
-for this patch? If "yes", it was not clear to me from the changelog,
-if "no" seems like it belongs in a standalone optimization patch.
-
->
-> +.Ldone_efer:
->         # Enable paging and in turn activate Long Mode
-> -       movl    $(X86_CR0_PG | X86_CR0_WP | X86_CR0_PE), %eax
-> +       movl    $(X86_CR0_PG | X86_CR0_WP | X86_CR0_NE | X86_CR0_PE), %eax
-
-It seems setting X86_CR0_NE is redundant when coming through
-pa_trampoline_compat, is this a standalone fix to make sure that
-'numeric-error' is enabled before startup_64?
-
->         movl    %eax, %cr0
->
->         /*
-> @@ -161,6 +168,19 @@ SYM_CODE_START(startup_32)
->         ljmpl   $__KERNEL_CS, $pa_startup_64
->  SYM_CODE_END(startup_32)
->
-> +SYM_CODE_START(pa_trampoline_compat)
-> +       /*
-> +        * In compatibility mode.  Prep ESP and DX for startup_32, then disable
-> +        * paging and complete the switch to legacy 32-bit mode.
-> +        */
-> +       movl    $rm_stack_end, %esp
-> +       movw    $__KERNEL_DS, %dx
+> +void device_link_synchronize_removal(void)
+> +{
+> +	synchronize_srcu(&device_links_srcu);
+> +}
+>   #else /* !CONFIG_SRCU */
+>   static DECLARE_RWSEM(device_links_lock);
+>   
+> @@ -223,6 +228,10 @@ int device_links_read_lock_held(void)
+>   	return lockdep_is_held(&device_links_lock);
+>   }
+>   #endif
 > +
-> +       movl    $(X86_CR0_NE | X86_CR0_PE), %eax
-> +       movl    %eax, %cr0
-> +       ljmpl   $__KERNEL32_CS, $pa_startup_32
-> +SYM_CODE_END(pa_trampoline_compat)
+> +static inline void device_link_synchronize_removal(void)
+> +{
+> +}
+>   #endif /* !CONFIG_SRCU */
+>   
+>   static bool device_is_ancestor(struct device *dev, struct device *target)
+> @@ -444,8 +453,13 @@ static struct attribute *devlink_attrs[]
+>   };
+>   ATTRIBUTE_GROUPS(devlink);
+>   
+> -static void device_link_free(struct device_link *link)
+> +static void device_link_release_fn(struct work_struct *work)
+>   {
+> +	struct device_link *link = container_of(work, struct device_link, rm_work);
 > +
->         .section ".text64","ax"
->         .code64
->         .balign 4
-> @@ -169,6 +189,20 @@ SYM_CODE_START(startup_64)
->         jmpq    *tr_start(%rip)
->  SYM_CODE_END(startup_64)
+> +	/* Ensure that all references to the link object have been dropped. */
+> +	device_link_synchronize_removal();
+> +
+>   	while (refcount_dec_not_one(&link->rpm_active))
+>   		pm_runtime_put(link->supplier);
+>   
+> @@ -454,24 +468,19 @@ static void device_link_free(struct devi
+>   	kfree(link);
+>   }
+>   
+> -#ifdef CONFIG_SRCU
+> -static void __device_link_free_srcu(struct rcu_head *rhead)
+> -{
+> -	device_link_free(container_of(rhead, struct device_link, rcu_head));
+> -}
+> -
+>   static void devlink_dev_release(struct device *dev)
+>   {
+>   	struct device_link *link = to_devlink(dev);
+>   
+> -	call_srcu(&device_links_srcu, &link->rcu_head, __device_link_free_srcu);
+> -}
+> -#else
+> -static void devlink_dev_release(struct device *dev)
+> -{
+> -	device_link_free(to_devlink(dev));
+> +	INIT_WORK(&link->rm_work, device_link_release_fn);
+> +	/*
+> +	 * It may take a while to complete this work because of the SRCU
+> +	 * synchronization in device_link_release_fn() and if the consumer or
+> +	 * supplier devices get deleted when it runs, so put it into the "long"
+> +	 * workqueue.
+> +	 */
+> +	queue_work(system_long_wq, &link->rm_work);
+>   }
+> -#endif
+>   
+>   static struct class devlink_class = {
+>   	.name = "devlink",
+> Index: linux-pm/include/linux/device.h
+> ===================================================================
+> --- linux-pm.orig/include/linux/device.h
+> +++ linux-pm/include/linux/device.h
+> @@ -570,7 +570,7 @@ struct device {
+>    * @flags: Link flags.
+>    * @rpm_active: Whether or not the consumer device is runtime-PM-active.
+>    * @kref: Count repeated addition of the same link.
+> - * @rcu_head: An RCU head to use for deferred execution of SRCU callbacks.
+> + * @rm_work: Work structure used for removing the link.
+>    * @supplier_preactivated: Supplier has been made active before consumer probe.
+>    */
+>   struct device_link {
+> @@ -583,9 +583,7 @@ struct device_link {
+>   	u32 flags;
+>   	refcount_t rpm_active;
+>   	struct kref kref;
+> -#ifdef CONFIG_SRCU
+> -	struct rcu_head rcu_head;
+> -#endif
+> +	struct work_struct rm_work;
+>   	bool supplier_preactivated; /* Owned by consumer probe. */
+>   };
+>   
 >
-> +SYM_CODE_START(trampoline_start64)
-> +       /*
-> +        * APs start here on a direct transfer from 64-bit BIOS with identity
-> +        * mapped page tables.  Load the kernel's GDT in order to gear down to
-> +        * 32-bit mode (to handle 4-level vs. 5-level paging), and to (re)load
-> +        * segment registers.  Load the zero IDT so any fault triggers a
-> +        * shutdown instead of jumping back into BIOS.
-> +        */
-> +       lidt    tr_idt(%rip)
-> +       lgdt    tr_gdt64(%rip)
-> +
-> +       ljmpl   *tr_compat(%rip)
-> +SYM_CODE_END(trampoline_start64)
-> +
->         .section ".rodata","a"
->         # Duplicate the global descriptor table
->         # so the kernel can live anywhere
-> @@ -182,6 +216,17 @@ SYM_DATA_START(tr_gdt)
->         .quad   0x00cf93000000ffff      # __KERNEL_DS
->  SYM_DATA_END_LABEL(tr_gdt, SYM_L_LOCAL, tr_gdt_end)
 >
-> +SYM_DATA_START(tr_gdt64)
-> +       .short  tr_gdt_end - tr_gdt - 1 # gdt limit
-> +       .long   pa_tr_gdt
-> +       .long   0
-> +SYM_DATA_END(tr_gdt64)
-> +
-> +SYM_DATA_START(tr_compat)
-> +       .long   pa_trampoline_compat
-> +       .short  __KERNEL32_CS
-> +SYM_DATA_END(tr_compat)
-> +
->         .bss
->         .balign PAGE_SIZE
->  SYM_DATA(trampoline_pgd, .space PAGE_SIZE)
-> diff --git a/arch/x86/realmode/rm/trampoline_common.S b/arch/x86/realmode/rm/trampoline_common.S
-> index 5033e640f957..506d5897112a 100644
-> --- a/arch/x86/realmode/rm/trampoline_common.S
-> +++ b/arch/x86/realmode/rm/trampoline_common.S
-> @@ -1,4 +1,7 @@
->  /* SPDX-License-Identifier: GPL-2.0 */
->         .section ".rodata","a"
->         .balign 16
-> -SYM_DATA_LOCAL(tr_idt, .fill 1, 6, 0)
-> +SYM_DATA_START_LOCAL(tr_idt)
-> +       .short  0
-> +       .quad   0
-> +SYM_DATA_END(tr_idt)
+>
+>
+> .
+>
 
-Curious, is the following not equivalent?
 
--SYM_DATA_LOCAL(tr_idt, .fill 1, 6, 0)
-+SYM_DATA_LOCAL(tr_idt, .fill 1, 10, 0)
