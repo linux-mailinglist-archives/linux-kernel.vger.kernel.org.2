@@ -2,80 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC7A37FE0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 21:27:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E49AD37FE11
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 21:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232305AbhEMT2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 15:28:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53248 "EHLO
+        id S232323AbhEMT2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 15:28:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232072AbhEMT2J (ORCPT
+        with ESMTP id S232311AbhEMT2P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 15:28:09 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55BDFC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 12:26:59 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id g4so10588865lfv.6
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 12:26:59 -0700 (PDT)
+        Thu, 13 May 2021 15:28:15 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D045C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 12:27:05 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id j3-20020a05600c4843b02901484662c4ebso365537wmo.0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 12:27:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TcTyI8CdqDYS+DLvWcEReUWNJFD/4vgGxlJYUQdhn98=;
-        b=bVD78BCgzVDTYgRpvMwtI20LjNpcjZE4ug8fPOgkwqZd8jPUisd3g4ekz2la/BIgHF
-         Czg4XeaVQmqDGXkKSjeQpbpG9NqHyTVkGlTnstlgeaSofhF4+VrLOdKZbBJv/BeqO9zC
-         gfVjgew5vXKeNkTAz5Fed195VIoW0t04HzU/c=
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=eRxz/pWXTALO6H3I0wjEAHHa6qtt4usgfqtoKz5U3Bw=;
+        b=SDoVIViQbUjjhanbrPpBJslUuhhXuGOUixKLM4aM/Xni8UB3PfZUwBqSdnqyXcHmOE
+         QWegUOH0EPxlW+QrYpS4iyzpXPEZoGmDQzlxAglfvi6Y1N6q4Dn67gbq7WZQRM5drQXL
+         rmrjV3vScos/2VteiR6GuJdaSi0YT8btL3MaVof9zulzqm7UOk9M+9IIDdkkAcm2BlQ7
+         5M1mJ8U+FCQyn8PDVJwjITjPifC5lD21oM5IVKdHUghZ6Dt/gM+NI029xI4uAJDlae5F
+         QHLJODjN4XMl7VO4eNkJxB/yi/CjBPnHCwWn4qymufqvhK+nWYB9o8ueMSXS3ZdbfrPz
+         s8Hg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TcTyI8CdqDYS+DLvWcEReUWNJFD/4vgGxlJYUQdhn98=;
-        b=RrQ1DhkdTSLNe/6qW4EvLJOE2NfFSVdyGisTHWodFiL8gdPq9HEg7I4O1gVR1YNX7S
-         gca1p8h5LK+yUzFd+AQWZlZOzdab5yk+wHYGRJU+xZFvD0imXhugyje4PZxICvVHjYkZ
-         jAEr4KSrt6iFwZYgkB0I+c1KS0KF7+iZ6zNlHdVLl6R4EhMozrI/eqQm140krE43GroG
-         fg3Z5HYGiChgyQbYka+dHNNJaip0X7Aj5Byax3TNRcroyTgYJz6BeaaknUPe7kRTGKDq
-         2CNktXstOKw24Mx01NEoCcMbVaJlBcoumwbgA/F6t/a1YI6AeEL06R1+DwrC4DJJtqXH
-         AM7g==
-X-Gm-Message-State: AOAM530ReGxgXZMfCk7ZDBvO09ED977JkCzqPA4IrO7hSR+yZnOCblMt
-        bT2bG59qKq8PY0h8MFG3fJEIKWXelD6b7Xai
-X-Google-Smtp-Source: ABdhPJzuJzO+qkAdGYv68vvbqAchNEW1Gv6DK0+a4gvDQd3C6AEGCfw6FISnQy2MYsmDBMGaTNRhwQ==
-X-Received: by 2002:a19:f017:: with SMTP id p23mr29991945lfc.283.1620934017557;
-        Thu, 13 May 2021 12:26:57 -0700 (PDT)
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
-        by smtp.gmail.com with ESMTPSA id y22sm375502lfl.36.2021.05.13.12.26.56
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 May 2021 12:26:57 -0700 (PDT)
-Received: by mail-lj1-f182.google.com with SMTP id v6so35071194ljj.5
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 12:26:56 -0700 (PDT)
-X-Received: by 2002:a2e:c52:: with SMTP id o18mr3512611ljd.411.1620934016634;
- Thu, 13 May 2021 12:26:56 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=eRxz/pWXTALO6H3I0wjEAHHa6qtt4usgfqtoKz5U3Bw=;
+        b=kd0eBy6lIqPVb3uRHTSdtqv7r8OUnXByl2jQsS4rRtXhiEy7UhT5luC7FWqgkrlOOj
+         dblF7ZImZkt+uhjC5yzFDwBGnzujibdfgNChP1/31WgDuCmcJ/ak9o9osgR2yKKMRkbP
+         X/a6075R3hjeB/90bn0NCEARCZRQY/GPYHSwjT+T+RF/IgnjfbLlZPJY01L8h2tvbzQ4
+         W6+VYHwt3hZMH9g48rWHphYsx6aSPDWrgU2qNy27yXkQ90h24ObjZn4/pcvLvLI4cG25
+         WLP80lU2CbAUlp1/heK3k+dGCeI7Z2XVN6aOdp5F5Mwkkrq7w2qIw1SgUBDhf9ThFMMD
+         vJSQ==
+X-Gm-Message-State: AOAM530naqYYpr12XQ92l6eS1PHddU9+hicVga/oNRARemWlLfs/6gSI
+        m0Aw9rj8eBlGtJbbKF5kLMe1DcHoHC/L8A==
+X-Google-Smtp-Source: ABdhPJzyMLZTPcPNKyhY5TxDvljyGM7Bn/ftFSKMJZJ7ETtYuncFkrWBVj7udx7AfFFx7pB9Mel9Nw==
+X-Received: by 2002:a05:600c:4f04:: with SMTP id l4mr45170585wmq.18.1620934024035;
+        Thu, 13 May 2021 12:27:04 -0700 (PDT)
+Received: from localhost.localdomain (2a02-8440-6341-d842-3074-96af-9642-0002.rev.sfr.net. [2a02:8440:6341:d842:3074:96af:9642:2])
+        by smtp.gmail.com with ESMTPSA id h9sm3053621wmb.35.2021.05.13.12.27.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 May 2021 12:27:03 -0700 (PDT)
+From:   Guillaume Ranquet <granquet@baylibre.com>
+Cc:     Sean Wang <sean.wang@mediatek.com>, Vinod Koul <vkoul@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/3] dmaengine: mediatek: free the proper desc in desc_free handler
+Date:   Thu, 13 May 2021 21:26:40 +0200
+Message-Id: <20210513192642.29446-2-granquet@baylibre.com>
+X-Mailer: git-send-email 2.26.3
+In-Reply-To: <20210513192642.29446-1-granquet@baylibre.com>
+References: <20210513192642.29446-1-granquet@baylibre.com>
 MIME-Version: 1.0
-References: <CAJZ5v0in2AeuGt-YRjKE5r4AKhu1kTf=zRfFWfb+cPFZL-NESA@mail.gmail.com>
-In-Reply-To: <CAJZ5v0in2AeuGt-YRjKE5r4AKhu1kTf=zRfFWfb+cPFZL-NESA@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 13 May 2021 12:26:40 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjSF1Vozzmst-H_xgy20XZx0t55uBwn8B6Rqjhe0JfOwA@mail.gmail.com>
-Message-ID: <CAHk-=wjSF1Vozzmst-H_xgy20XZx0t55uBwn8B6Rqjhe0JfOwA@mail.gmail.com>
-Subject: Re: [GIT PULL] ACPI fixes for v5.13-rc2
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 12:06 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
->
-> These revert an unnecessary revert of an ACPI power management
-> commit
+The desc_free handler assumed that the desc we want to free was always
+ the current one associated with the channel.
 
-I think it would be kind of nice to see more of an explanation than
-"was not necessary".
+This is seldom the case and this is causing use after free crashes in
+ multiple places (tx/rx/terminate...).
 
-The original report of problems was apparently wrong - but it would
-maybe have been good to just mention how that all went down..
+  BUG: KASAN: use-after-free in mtk_uart_apdma_rx_handler+0x120/0x304
 
-                Linus
+  Call trace:
+   dump_backtrace+0x0/0x1b0
+   show_stack+0x24/0x34
+   dump_stack+0xe0/0x150
+   print_address_description+0x8c/0x55c
+   __kasan_report+0x1b8/0x218
+   kasan_report+0x14/0x20
+   __asan_load4+0x98/0x9c
+   mtk_uart_apdma_rx_handler+0x120/0x304
+   mtk_uart_apdma_irq_handler+0x50/0x80
+   __handle_irq_event_percpu+0xe0/0x210
+   handle_irq_event+0x8c/0x184
+   handle_fasteoi_irq+0x1d8/0x3ac
+   __handle_domain_irq+0xb0/0x110
+   gic_handle_irq+0x50/0xb8
+   el0_irq_naked+0x60/0x6c
+
+  Allocated by task 3541:
+   __kasan_kmalloc+0xf0/0x1b0
+   kasan_kmalloc+0x10/0x1c
+   kmem_cache_alloc_trace+0x90/0x2dc
+   mtk_uart_apdma_prep_slave_sg+0x6c/0x1a0
+   mtk8250_dma_rx_complete+0x220/0x2e4
+   vchan_complete+0x290/0x340
+   tasklet_action_common+0x220/0x298
+   tasklet_action+0x28/0x34
+   __do_softirq+0x158/0x35c
+
+  Freed by task 3541:
+   __kasan_slab_free+0x154/0x224
+   kasan_slab_free+0x14/0x24
+   slab_free_freelist_hook+0xf8/0x15c
+   kfree+0xb4/0x278
+   mtk_uart_apdma_desc_free+0x34/0x44
+   vchan_complete+0x1bc/0x340
+   tasklet_action_common+0x220/0x298
+   tasklet_action+0x28/0x34
+   __do_softirq+0x158/0x35c
+
+  The buggy address belongs to the object at ffff000063606800
+   which belongs to the cache kmalloc-256 of size 256
+  The buggy address is located 176 bytes inside of
+   256-byte region [ffff000063606800, ffff000063606900)
+  The buggy address belongs to the page:
+  page:fffffe00016d8180 refcount:1 mapcount:0 mapping:ffff00000302f600 index:0x0 compound_mapcount: 0
+  flags: 0xffff00000010200(slab|head)
+  raw: 0ffff00000010200 dead000000000100 dead000000000122 ffff00000302f600
+  raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
+  page dumped because: kasan: bad access detected
+
+Signed-off-by: Guillaume Ranquet <granquet@baylibre.com>
+
+diff --git a/drivers/dma/mediatek/mtk-uart-apdma.c b/drivers/dma/mediatek/mtk-uart-apdma.c
+index 27c07350971d..e38b67fc0c0c 100644
+--- a/drivers/dma/mediatek/mtk-uart-apdma.c
++++ b/drivers/dma/mediatek/mtk-uart-apdma.c
+@@ -131,10 +131,7 @@ static unsigned int mtk_uart_apdma_read(struct mtk_chan *c, unsigned int reg)
+ 
+ static void mtk_uart_apdma_desc_free(struct virt_dma_desc *vd)
+ {
+-	struct dma_chan *chan = vd->tx.chan;
+-	struct mtk_chan *c = to_mtk_uart_apdma_chan(chan);
+-
+-	kfree(c->desc);
++	kfree(container_of(vd, struct mtk_uart_apdma_desc, vd));
+ }
+ 
+ static void mtk_uart_apdma_start_tx(struct mtk_chan *c)
+-- 
+2.26.3
+
