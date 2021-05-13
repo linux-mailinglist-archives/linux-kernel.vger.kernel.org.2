@@ -2,70 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90FED37F3EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 10:11:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3659B37F3EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 10:14:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231791AbhEMIM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 04:12:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43608 "EHLO
+        id S231149AbhEMIPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 04:15:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231521AbhEMIMx (ORCPT
+        with ESMTP id S230318AbhEMIPQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 04:12:53 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B54ADC061574;
-        Thu, 13 May 2021 01:11:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=U156ZDGv52XDyRmomu81y1AofnnDZp5kY1yCQ1vGoGg=; b=X0R3x/iAxVmHofiyxhzRf8I2a
-        c9jmKXRccdwMjk0Gpk3siFmqoo4ed4tI/eNVAfO+3l7JvCr3xrxV6S3QruWlF8pIz1IZdB/6y1kr5
-        p6+gWk5NYP/DH6bFDi2AkQ5vWgFFxhAN2mO3SjuRHD+rEp4AzRWE+usMviVb6AOdI0RDRZ7Z4xn7t
-        6qmEW1CTwFq+xLp6ChlIIj7gfE79BOGSiTUimuwVDnd2cY4ylUF3XXldbPbNFWKmT9EAXPmOC2NUL
-        fYGpzJHztFpWi+OImr3SJe747G7/tKeG1YNeSsrV3nsS/Q2bofrHBr+UfayN99GeOusfLgBDF5Xx0
-        CukVCZqDA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43918)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lh6RY-0005on-8X; Thu, 13 May 2021 09:11:40 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lh6RX-0002qk-Ic; Thu, 13 May 2021 09:11:39 +0100
-Date:   Thu, 13 May 2021 09:11:39 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
-        kuba@kernel.org, david.daney@cavium.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH V2] net: mdio: thunder: Fix a double free issue in the
- .remove function
-Message-ID: <20210513081139.GT1336@shell.armlinux.org.uk>
-References: <f8ad9a9e6d7df4cb02731a71a418acca18353380.1620890611.git.christophe.jaillet@wanadoo.fr>
+        Thu, 13 May 2021 04:15:16 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABF63C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 01:14:05 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id y2so33824106ybq.13
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 01:14:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fdQjvampDreMTbFN7YQGjC8tN7QCrtiBNyMWZhV7gjc=;
+        b=dl9Atk4qOCccN7LDFyrHBvQe6HThvviY8YJr/0u6mGlYRmfSqBi8vhXg/YodHgJYGs
+         Cm4l47I1IHdrwg1VIO3nd+WcFJeQ6DKtEkyHNmxrzstn50W43JMOBaIMXEZzGoZT+DjL
+         1ONa+MQp4Zecs5+ac1WiKlM0JEeoyFD/Z5Ph8TTSCcsvSTDV14ApFtvF5wIuTpG+3Pm8
+         clnHXRfIGoaDPYdfucYUXHgZcMFMtSJbodbKu0UG4PNXROuiH6BTFjnwWJC5jvvU1IJR
+         xGo+EQdCFmxc5r4cRMpCXNROYH2k04r4fnlXKoh8CvWlWcW9B1J02MliiGCRZrEGKrw6
+         uYlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fdQjvampDreMTbFN7YQGjC8tN7QCrtiBNyMWZhV7gjc=;
+        b=KfUkJ3skWHxsk4riM4a1BTNZmjvxlLuR66QNFXE/NTD3BrQzdoo1DHGybHBCh2Mhph
+         8Ui+zcUNpkAdMBq09syZV26CQHva021FDuyWyfO03L8s4x3BjFGyLdzFLuXFWE5AeHr0
+         H0zEgMvHkESEACHl/KvpJRSLcddT/Awm16kCVA2GRsVT9r32anCBgKNa/kDWGSJ4JPqR
+         dixFRnNEtM7P6h9TGFZDapQ5s5W7fhE28ICef2g1XgV+h3oW5P7Ub5N7Uv9FKxYZkyEN
+         5NzMyYq0UqV0hSr6Ip73DOxnOdiOmRMp97An4egutTU/KAmNBxHgUZOS6VMC89blfTEe
+         JLKw==
+X-Gm-Message-State: AOAM533ib07Qz3Zh28Wwhdd0NSVo65jl3EBpusPDUVDrgst3IE/VwaL+
+        Yv6x7Z0mXDcAMXKAPkDzsZ0uJ5iMEVoWJzBQkNg=
+X-Google-Smtp-Source: ABdhPJwVUNbmqtVppeU9RZiVu6YT4YAW30ViuTqWmSCfSwUbc9qud96qQ5pIbT7Ry/Vq7NgozKaQ+GQU336tZmJOlu8=
+X-Received: by 2002:a05:6902:1543:: with SMTP id r3mr21474668ybu.332.1620893645087;
+ Thu, 13 May 2021 01:14:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f8ad9a9e6d7df4cb02731a71a418acca18353380.1620890611.git.christophe.jaillet@wanadoo.fr>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+References: <20210216225555.4976-1-gary@garyguo.net>
+In-Reply-To: <20210216225555.4976-1-gary@garyguo.net>
+From:   Bin Meng <bmeng.cn@gmail.com>
+Date:   Thu, 13 May 2021 16:13:53 +0800
+Message-ID: <CAEUhbmXPAEjozYuoQpATzjS4E6Yo2eRpF6DJzxO8Cumdm57J3A@mail.gmail.com>
+Subject: Re: [PATCH] riscv: fix memmove and optimise memcpy when misalign
+To:     Gary Guo <gary@garyguo.net>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Nick Hu <nickhu@andestech.com>,
+        Nylon Chen <nylon7@andestech.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 09:44:49AM +0200, Christophe JAILLET wrote:
-> 'bus->mii_bus' have been allocated with 'devm_mdiobus_alloc_size()' in the
-> probe function. So it must not be freed explicitly or there will be a
-> double free.
-> 
-> Remove the incorrect 'mdiobus_free' in the remove function.
+On Wed, Feb 17, 2021 at 7:00 AM Gary Guo <gary@garyguo.net> wrote:
+>
+> 04091d6 introduces an assembly version of memmove but
+> it does take misalignment into account (it checks if
+> length is a multiple of machine word size but pointers
+> need also be aligned). As a result it will generate
+> misaligned load/store for the majority of cases and causes
+> significant performance regression on hardware that traps
+> misaligned load/store and emulate them using firmware.
+>
+> The current behaviour of memcpy is that it checks if both
+> src and dest pointers are co-aligned (aka congruent
+> modular SZ_REG). If aligned, it will copy data word-by-word
+> after first aligning pointers to word boundary. If src
+> and dst are not co-aligned, however, byte-wise copy will
+> be performed.
+>
+> This patch fixes the memmove and optimises memcpy for
+> misaligned cases. It will first align destination pointer
+> to word-boundary regardless whether src and dest are
+> co-aligned or not. If they indeed are, then wordwise copy
+> is performed. If they are not co-aligned, then it will
+> load two adjacent words from src and use shifts to assemble
+> a full machine word. Some additional assembly level
+> micro-optimisation is also performed to ensure more
+> instructions can be compressed (e.g. prefer a0 to t6).
+>
+> In my testing this speeds up memcpy 4~5x when src and dest
+> are not co-aligned (which is quite common in networking),
+> and speeds up memmove 1000+x by avoiding trapping to firmware.
+>
+> Signed-off-by: Gary Guo <gary@garyguo.net>
+> ---
+>  arch/riscv/lib/memcpy.S  | 223 ++++++++++++++++++++++++---------------
+>  arch/riscv/lib/memmove.S | 176 ++++++++++++++++++++----------
+>  2 files changed, 257 insertions(+), 142 deletions(-)
+>
 
-This still leaves the unregister of an allocated-but-unregistered bus,
-which you disagreed with - but I hope as I've pointed out the exact
-code path in your v1 patch, you'll now realise is a real possibility.
+Looks this patch remains unapplied.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+This patch fixed an booting failure of U-Boot SPL on SiFive Unleashed
+board, which was built from the latest U-Boot sources that has taken
+the assembly version of mem* from the Linux kernel recently.
+The exact load misalignment happens in the original memmove()
+implementation that it does not handle the alignment correctly. With
+this patch, the U-Boot SPL boots again.
+
+Tested-by: Bin Meng <bmeng.cn@gmail.com>
+
+Regards,
+Bin
