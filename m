@@ -2,136 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D029837F7E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 14:26:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E941E37F7E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 14:27:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230497AbhEMM1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 08:27:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233591AbhEMM0j (ORCPT
+        id S233692AbhEMM2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 08:28:04 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:36610 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231209AbhEMM15 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 08:26:39 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 685ADC061763
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 05:25:17 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id n25so30761722edr.5
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 05:25:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=deviqon.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cpZpdAO1/PMI+7gumAxN/U6hYQSLUF5PVsfG5cbqn/k=;
-        b=V4WRwq8AczyqxazVuYZ5e4aAr/xAe1sdntbER5nBnMoPBY9hKDzzdcqJh4LejggFaX
-         00SjUtRlLaAPZLqOwwVokb3fj2ML/OGxrUKAIVOZjaiLRCQI1wjrim4woUZ8tjyiDrR0
-         rRqfw1CNtBQGx5/0qtmz19UdAbTlAknZ3syssxfaKSJcd0S2ytLgQBCBgbgqztCaYNOv
-         A4nIhSdcW+5LdnTsXzVUivwYWnVDdWCQoQcn2fifQ0vAS6xSXs5luop9blwrnBdULgwy
-         5wD4vc3S+qjtuDVlTt1SnkZbJheizyiVfoFNMv05wlBMTaxXurT1v1n2lYmKJljSq3z7
-         3V9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cpZpdAO1/PMI+7gumAxN/U6hYQSLUF5PVsfG5cbqn/k=;
-        b=Y7U6VMExT8H46ZKVnbAZUYAN4txFD5L/1YYOr5m+gEXAhXCu30yckXS4vTCf4rcF0N
-         fddlVS2O1eIoqbpNnApUIchLGImy23XT9PxGb4dm35yFbOi8iKUiWpYAzxIHT5zoBGHA
-         8/MOst3xMmx4/cbobmtTkWuXGK48Iv8I7yEYluOKSDYA+LH+My6GEpa3lq8hkWbLjF2O
-         jpOZ+j/HKkEY0ZDK1ky4HJ7D28yh4reWdk47Gxux91yBrZ9cO2p+20em8kdc0xgrQuaM
-         j4CAQsi/cI2+kOO8YiWXzi5Dwkku1fZDEZRhNdZYrKJija1Va+4rps9E+HcdLBUabRQg
-         q6TA==
-X-Gm-Message-State: AOAM530vcKJLnvVIdT65z1bOgir4LG9mMM6VfnNLvyTEfq9UtRo+tu+S
-        tzq6fYcTzBiklkO5gER4xTX2aZjVJSxQT0hVHno=
-X-Google-Smtp-Source: ABdhPJzKJg6HadllfR6s9RpfDpBd8peDnG8G7vova3n0iOMy1YUzfrWf35J1H6+0oDFNEZ5wu0AeyQ==
-X-Received: by 2002:a50:fd14:: with SMTP id i20mr5444456eds.60.1620908716168;
-        Thu, 13 May 2021 05:25:16 -0700 (PDT)
-Received: from neptune.. ([5.2.193.191])
-        by smtp.gmail.com with ESMTPSA id e23sm964211edr.80.2021.05.13.05.25.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 05:25:15 -0700 (PDT)
-From:   Alexandru Ardelean <aardelean@deviqon.com>
-To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     jic23@kernel.org, nuno.sa@analog.com,
-        Alexandru Ardelean <aardelean@deviqon.com>
-Subject: [PATCH] iio: imu: remove unused private data assigned with spi_set_drvdata()
-Date:   Thu, 13 May 2021 15:25:12 +0300
-Message-Id: <20210513122512.93187-1-aardelean@deviqon.com>
-X-Mailer: git-send-email 2.31.1
+        Thu, 13 May 2021 08:27:57 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14DCNBxV119669;
+        Thu, 13 May 2021 08:26:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=U/4Dpg6rGeqjovo2MNoB7wa0IvLzTG7wFV72MKbtHnY=;
+ b=PerPeYqc/oSWFWodyRXsCBsU22HDaaCjzzEgxW+LuVbfxsL9bOIzFQ4vHbJCKU4Iuxd9
+ z4XLk1I3YO9h2EOExeRkNRCP+CIXX7Ml18nfH0N8KfSxnUGgOun6kpDvIONSbpvEF7Ih
+ KiDRQCI5s7+G4roNhFAGnYfEMunpoZFs9PIMGIzEGeqLLjrxYX6dAhd8dnKHN90gYeBH
+ dNC1kupnEUPd5YKCNQEiZIFQWC9DNrjpaWG4EPl5A9XTI/Z3SLHvoQzvw+GKXtvVWdYx
+ oRTjOS5GRfgusS1tiJQtLczYOhYZWYYXyxgomTmLcTwl3vazMwj6GkMEO6BI5DltkyA5 Aw== 
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38h2m5ah2e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 May 2021 08:26:29 -0400
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14DCCppv026233;
+        Thu, 13 May 2021 12:26:28 GMT
+Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
+        by ppma01dal.us.ibm.com with ESMTP id 38dj9a5xav-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 May 2021 12:26:28 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14DCQQum16777672
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 13 May 2021 12:26:26 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8CFC7BE04F;
+        Thu, 13 May 2021 12:26:26 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0515EBE05A;
+        Thu, 13 May 2021 12:26:16 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.44.200])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu, 13 May 2021 12:26:16 +0000 (GMT)
+Subject: Re: [RFC 1/4] drivers/nvdimm: Add perf interface to expose nvdimm
+ performance stats
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
+        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org,
+        maddy@linux.vnet.ibm.com, santosh@fossix.org,
+        aneesh.kumar@linux.ibm.com, vaibhav@linux.ibm.com,
+        dan.j.williams@intel.com, ira.weiny@intel.com,
+        atrajeev@linux.vnet.ibm.com, tglx@linutronix.de
+References: <20210512163824.255370-1-kjain@linux.ibm.com>
+ <20210512163824.255370-2-kjain@linux.ibm.com>
+ <YJwP9ByvAcDPixVN@hirez.programming.kicks-ass.net>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <37015d53-050a-acef-2958-b1ff5d02800b@linux.ibm.com>
+Date:   Thu, 13 May 2021 17:56:14 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YJwP9ByvAcDPixVN@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: EvtomYgSIUC0jAMqMvwF4gaUntt7Qasr
+X-Proofpoint-GUID: EvtomYgSIUC0jAMqMvwF4gaUntt7Qasr
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-13_06:2021-05-12,2021-05-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
+ impostorscore=0 phishscore=0 priorityscore=1501 clxscore=1011
+ suspectscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105130093
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These were usually used before the conversion to devm_ functions, so that
-the remove hook would be able to retrieve the pointer and do cleanups on
-remove.
-When the conversion happened, they should have been removed, but were
-omitted.
 
-Some drivers were copied from drivers that fit the criteria described
-above. In any case, in order to prevent more drivers from being used as
-example (and have spi_set_drvdata() needlessly set), this change removes it
-from the IIO IMU group.
 
-Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
----
- drivers/iio/imu/adis16400.c | 2 --
- drivers/iio/imu/adis16460.c | 2 --
- drivers/iio/imu/adis16475.c | 1 -
- drivers/iio/imu/adis16480.c | 2 --
- 4 files changed, 7 deletions(-)
+On 5/12/21 10:57 PM, Peter Zijlstra wrote:
+> On Wed, May 12, 2021 at 10:08:21PM +0530, Kajol Jain wrote:
+>> +static void nvdimm_pmu_read(struct perf_event *event)
+>> +{
+>> +	struct nvdimm_pmu *nd_pmu = to_nvdimm_pmu(event->pmu);
+>> +
+>> +	/* jump to arch/platform specific callbacks if any */
+>> +	if (nd_pmu && nd_pmu->read)
+>> +		nd_pmu->read(event, nd_pmu->dev);
+>> +}
+>> +
+>> +static void nvdimm_pmu_del(struct perf_event *event, int flags)
+>> +{
+>> +	struct nvdimm_pmu *nd_pmu = to_nvdimm_pmu(event->pmu);
+>> +
+>> +	/* jump to arch/platform specific callbacks if any */
+>> +	if (nd_pmu && nd_pmu->del)
+>> +		nd_pmu->del(event, flags, nd_pmu->dev);
+>> +}
+>> +
+>> +static int nvdimm_pmu_add(struct perf_event *event, int flags)
+>> +{
+>> +	struct nvdimm_pmu *nd_pmu = to_nvdimm_pmu(event->pmu);
+>> +
+>> +	if (flags & PERF_EF_START)
+>> +		/* jump to arch/platform specific callbacks if any */
+>> +		if (nd_pmu && nd_pmu->add)
+>> +			return nd_pmu->add(event, flags, nd_pmu->dev);
+>> +	return 0;
+>> +}
+> 
+> What's the value add here? Why can't you directly set driver pointers? I
+> also don't really believe ->{add,del,read} can be optional and still
+> have a sane driver.
+> 
 
-diff --git a/drivers/iio/imu/adis16400.c b/drivers/iio/imu/adis16400.c
-index cb8d3ffab6fc..109b2360a54e 100644
---- a/drivers/iio/imu/adis16400.c
-+++ b/drivers/iio/imu/adis16400.c
-@@ -1164,8 +1164,6 @@ static int adis16400_probe(struct spi_device *spi)
- 		return -ENOMEM;
- 
- 	st = iio_priv(indio_dev);
--	/* this is only used for removal purposes */
--	spi_set_drvdata(spi, indio_dev);
- 
- 	/* setup the industrialio driver allocated elements */
- 	st->variant = &adis16400_chips[spi_get_device_id(spi)->driver_data];
-diff --git a/drivers/iio/imu/adis16460.c b/drivers/iio/imu/adis16460.c
-index 73bf45e859b8..068d98780383 100644
---- a/drivers/iio/imu/adis16460.c
-+++ b/drivers/iio/imu/adis16460.c
-@@ -388,8 +388,6 @@ static int adis16460_probe(struct spi_device *spi)
- 	if (indio_dev == NULL)
- 		return -ENOMEM;
- 
--	spi_set_drvdata(spi, indio_dev);
--
- 	st = iio_priv(indio_dev);
- 
- 	st->chip_info = &adis16460_chip_info;
-diff --git a/drivers/iio/imu/adis16475.c b/drivers/iio/imu/adis16475.c
-index 5654c0c15426..90aec3c9dbcb 100644
---- a/drivers/iio/imu/adis16475.c
-+++ b/drivers/iio/imu/adis16475.c
-@@ -1329,7 +1329,6 @@ static int adis16475_probe(struct spi_device *spi)
- 		return -ENOMEM;
- 
- 	st = iio_priv(indio_dev);
--	spi_set_drvdata(spi, indio_dev);
- 
- 	st->info = device_get_match_data(&spi->dev);
- 	if (!st->info)
-diff --git a/drivers/iio/imu/adis16480.c b/drivers/iio/imu/adis16480.c
-index f81b86690b76..c7dd1150780d 100644
---- a/drivers/iio/imu/adis16480.c
-+++ b/drivers/iio/imu/adis16480.c
-@@ -1279,8 +1279,6 @@ static int adis16480_probe(struct spi_device *spi)
- 	if (indio_dev == NULL)
- 		return -ENOMEM;
- 
--	spi_set_drvdata(spi, indio_dev);
--
- 	st = iio_priv(indio_dev);
- 
- 	st->chip_info = &adis16480_chip_info[id->driver_data];
--- 
-2.31.1
+Hi Peter,
+
+  The intend for adding these callbacks  is to give flexibility to the
+arch/platform specific driver code to use its own routine for getting 
+counter data or specific checks/operations. Arch/platform driver code
+would have different method to get the counter data like IBM pseries
+nmem* device which uses a hypervisor call(hcall).
+
+But yes the current read/add/del functions are not adding value. We
+could  add an arch/platform specific function which could handle the
+capturing of the counter data and do the rest of the operation here,
+is this approach better?
+
+Thanks,
+Kajol Jain
+
+
 
