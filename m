@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 367AC37F8CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 15:30:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 524EF37F8CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 15:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233997AbhEMNbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 09:31:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58330 "EHLO
+        id S233896AbhEMNcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 09:32:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234037AbhEMNbY (ORCPT
+        with ESMTP id S229964AbhEMNcX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 09:31:24 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09E0EC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 06:30:14 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id i67so25420522qkc.4
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 06:30:13 -0700 (PDT)
+        Thu, 13 May 2021 09:32:23 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05812C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 06:31:13 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id a2so25422888qkh.11
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 06:31:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=vt-edu.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:organization:in-reply-to
          :references:mime-version:content-transfer-encoding;
         bh=VT1dV6AjLP/QS60i88a5p7kaqLOLYLEelvnbSUxEIOg=;
-        b=YvH7GGtMbIPfScYJI5R0I5sKwfx8E00K4A4JRFJfiahImynvwNOBLFyz8cjPfwWKWw
-         bAex1xUHgfuIPjhspuflEZB9WYGbuLZhDr+yjylwJraU+Bn5pqFBKngoiVrCLj24qHG8
-         QU0LLMMhnHjsqvJ+Vz3IIkTxF/uPk6Rg7AHtlkwW4hencTJt2oMxHRv9ME1OMtu4si38
-         qNc+MHm17XBdsJNcYnqST8fZqmj2wRAfj4XWIRtW1U9KoHYJ6ykrP3dHFQ7JObNxEqdI
-         AKfZsPtR/Q+/ztlTZLiiyoIXTrch2DFnRw2q1E81KbSqbczR5t+hGwZrQ/HnqkxYufB7
-         ESwg==
+        b=XxJNT17PrhUId+eibSxgEQ9ulf1wmyW1ibdlWYdY16qbUdbp4jXbkTdZR4BImRZgGP
+         PwFh9sa1eA2Ry9uWr4xtuxdBTVmg9XPfdJrzxGN0yTQlb7V1oMWoyr0TSQlj8fMpMfoZ
+         +7PnVdeNHFUKE+g4eJHh//zTGKTThftd0j5X9uulenp6/SGeg0TqkE/UYxJNRKWV/CFh
+         Rj0/fa5kMJGleFtyshPIlGfQe8tr5f1nBKItfEWYJ6DsKAEdWLESNGKyJPWmS+prEJlr
+         4TbgiYGG2yOweTocXvrZYP8nzFiMXRJsjinXwL/sclmfFoMkWK0NoSHmSwlE369GEK7D
+         H7tA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:organization
          :in-reply-to:references:mime-version:content-transfer-encoding;
         bh=VT1dV6AjLP/QS60i88a5p7kaqLOLYLEelvnbSUxEIOg=;
-        b=t+J7SMRYqm1scV6LUskV0tDTUE19aJhNiC69NFUuNGMsurKlS3qk4yqh3RZWyaolar
-         kCYSeqqZC2kk7MK3CNFMvhwzSeKsp+qIRjTmzR5B4eKfjm5z0Znh0LRr+TnWLw1LVjFV
-         OctPYvqgjWB10Ds7YyMQ3pRgG3qQ5b9HJMeRjAVZ4Z87wKUqYbK+0J7pUYf8v7AB60LD
-         SKT9BEB7japUbx3JXrLlsCUvxsRy/53G3vu554/xP6VeBzgQyYXYQXQfWw2TEaysuBPQ
-         PTkDpD0in9wFwJic2UrAJ+myT6erXWUXW9KH0XsGvxoEVixYshHelwtDel7VVvoVr7+/
-         yKXQ==
-X-Gm-Message-State: AOAM530+dpD7sgvV2F2hB+B83NXmUpDJOxlmiSn5VIQPUuW1ieRKdD3/
-        13kIQBluHpuJGw3tx9ENCkdCZw==
-X-Google-Smtp-Source: ABdhPJwG6H5TQrDb5B18BgB6cVJ7RTemPazIfaoZL95CeCpMViOMwZwRS1/o+TRTCjKKylodNtJ4ag==
-X-Received: by 2002:a37:9ec4:: with SMTP id h187mr39481862qke.200.1620912612949;
-        Thu, 13 May 2021 06:30:12 -0700 (PDT)
+        b=NW7/1ih7xjsLo85xyObFlKylmYCg8Si1IR/4KvL8CUK/xG9lyrHTdREwtzSDs9I8Yy
+         Dg49+l06q1RsNOi4h5pPHzpOjw8JPu6Dhd9wi5+VTTSE9hzb3QEshcM6//P32cKIaA+8
+         dNla7S05DwXYhKQkov5M/rbkUTW9v9PBYfjyQR7kSKth8zqPBsTFxKw9Y83pQy3U36+r
+         1RTKcaODqIBvVaEHg9SycvPGyoMqa6Heu9ToQaKRcEBITtdf8HpzWeWBm7AMQxqBDiQw
+         cquJQuqKWe1zTl+s5jKwORmx3j8pVSa4t+wuuKCwlt5hbMFizH9VWSt3aKLhVPdybrq0
+         1AAg==
+X-Gm-Message-State: AOAM530LpRAAe1KZimFN2wLCHYfX+1l6eW87qAH8VjeAzJO0i6IgZw/R
+        VRDq6E7cz6RRfEs/6T6qsQG/dQ==
+X-Google-Smtp-Source: ABdhPJyzD/6JEG15j15/CTgocl47zxGwtho3stoAP/auRSfhPGTX3chIpwhIumrFlPWHeXARKVpW9g==
+X-Received: by 2002:a37:a301:: with SMTP id m1mr38885330qke.491.1620912672001;
+        Thu, 13 May 2021 06:31:12 -0700 (PDT)
 Received: from iron-maiden.localnet ([2600:380:917d:9267:5528:eac3:c4c:5275])
-        by smtp.gmail.com with ESMTPSA id p17sm1471989qtq.87.2021.05.13.06.30.11
+        by smtp.gmail.com with ESMTPSA id v4sm169522qto.59.2021.05.13.06.31.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 06:30:12 -0700 (PDT)
+        Thu, 13 May 2021 06:31:11 -0700 (PDT)
 From:   Carlos Bilbao <bilbao@vt.edu>
 To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Cc:     gregkh@linuxfoundation.org, Jonathan.Cameron@huawei.com,
         corbet@lwn.net, hdegoede@redhat.com, linux-kernel@vger.kernel.org,
         tytso@mit.edu, rdunlap@infradead.org
-Subject: Re: [PATCH v3] Fixed typos in all directories of Documentation/ABI/
-Date:   Thu, 13 May 2021 09:30:09 -0400
-Message-ID: <11748343.O9o76ZdvQC@iron-maiden>
+Subject: [PATCH v3.1] Fixed typos in all directories of Documentation/ABI/
+Date:   Thu, 13 May 2021 09:31:10 -0400
+Message-ID: <5710038.lOV4Wx5bFT@iron-maiden>
 Organization: Virginia Tech
-In-Reply-To: <20210506185109.1d5ac46d@coco.lan>
-References: <2219636.ElGaqSPkdT@iron-maiden> <4312859.LvFx2qVVIh@iron-maiden> <20210506185109.1d5ac46d@coco.lan>
+In-Reply-To: <11748343.O9o76ZdvQC@iron-maiden>
+References: <2219636.ElGaqSPkdT@iron-maiden> <20210506185109.1d5ac46d@coco.lan> <11748343.O9o76ZdvQC@iron-maiden>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
