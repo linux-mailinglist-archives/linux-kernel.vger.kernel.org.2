@@ -2,274 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D6B37F918
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 15:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B832C37F91B
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 15:48:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234160AbhEMNs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 09:48:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23516 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234145AbhEMNsk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 09:48:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620913650;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=A0dkUXbD61yHxsoYQsJu5ao3/IUZG53e3Y4MDccE/hg=;
-        b=dR/EPBRuSjW4N/CYZEMIyy73JeRb47RXJX2QZuD2KV5PoB8TTi6lAOnj+oswUD50l1PddJ
-        Ng0U9z+hWxQKutzhngNrx1kkrYLzl6h/wJnMQTHI4sWRunbCUcaHt6KxKNnZ2Xy/BVDr4w
-        J1/FB60L3Gnr2KG0NHLBoVwlhRXCv4s=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-109-7cRMlFEVNNGsvme9aIRY4A-1; Thu, 13 May 2021 09:47:27 -0400
-X-MC-Unique: 7cRMlFEVNNGsvme9aIRY4A-1
-Received: by mail-ej1-f72.google.com with SMTP id yh1-20020a17090706e1b029038d0f848c7aso8438872ejb.12
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 06:47:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=A0dkUXbD61yHxsoYQsJu5ao3/IUZG53e3Y4MDccE/hg=;
-        b=M0P34/xv+8burgSyHmFXOHwMsuqLBzaNYvuhs2voq6/S8S/4Y2wq71E90pRK+UIs8s
-         BP1B7Tf2iBlct84XuJovJGU9IA4teB9PuCi5MmHs9ivaA5n8ndfo/cpc+kywbJqdMXY5
-         v2ayStTQrGYnjelpyZj+JtrD5pD6RHTHR60Ueh05P7OK7msE0Cz7SRk/W/5z6ks9gAOJ
-         VGEko3N/MFLJjieJzuHgK3vS+o8hpy4Qv7xZ3Phj6T0MI6HE+0QHtaaDkBs1Io4xRAn7
-         iLCFal38S8gBEAoqAlywPr4MovthbUFmgN5fyzglLVj8AlPmetDY3DG9eVPjZwMweMTa
-         mHKg==
-X-Gm-Message-State: AOAM530u1Rirr7jXT2KEtcK/WQ6xEKhPFWfmnSv+Tf0zDXBrPK+AA+Ad
-        kvoJvjCiUZMT+3zE2OYX8IrtJKEZ03hsRfuYQyEPjVHG5dkwx30S/ov5X2fZdtwUZv5IM19F7SR
-        3dIsaH60znfQsIFReRIt2mhkH
-X-Received: by 2002:a05:6402:1a:: with SMTP id d26mr50917863edu.99.1620913646399;
-        Thu, 13 May 2021 06:47:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxguXOshUlXIdgN5o0x789QBKRhPy8p6rcPd+Tw/RguN6tZBLRGwCFOYqpyXK4ryGcq9iJdZw==
-X-Received: by 2002:a05:6402:1a:: with SMTP id d26mr50917841edu.99.1620913646200;
-        Thu, 13 May 2021 06:47:26 -0700 (PDT)
-Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
-        by smtp.gmail.com with ESMTPSA id x18sm1882118eju.45.2021.05.13.06.47.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 06:47:25 -0700 (PDT)
-Date:   Thu, 13 May 2021 15:47:22 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Norbert Slusarek <nslusarek@gmx.net>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v9 17/19] vsock_test: add SOCK_SEQPACKET tests
-Message-ID: <20210513134722.i2mn54fsi5pyq4vq@steredhat>
-References: <20210508163027.3430238-1-arseny.krasnov@kaspersky.com>
- <20210508163704.3432731-1-arseny.krasnov@kaspersky.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+        id S234197AbhEMNtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 09:49:06 -0400
+Received: from mail-co1nam11on2051.outbound.protection.outlook.com ([40.107.220.51]:7521
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234149AbhEMNsn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 09:48:43 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=g7G55PvY4AZfH6YBAg0lLk3J6fxdIuyJ3AijzPFmN3TMaoeUpmoCCEsDi0tTuhwt8l5sLYspNKMs61/axbJUByL38wArFQiNNestcMUZg3M8tBBrAV2YobaklYPhLOLLEB5k+mZMC3vS9UH2uAD0doj0FXmhdwBxJHFKfcjeGMH/LCj4/YyWrXlAu2qSDLhRtKuc42XyUjxXnQcD4Xt4FbuKTAC0K/3XtZg/pmi/wMEbaoNFNW1mCvDdLxH8HN2XHzce7PcSznx0InpBY3KPJLt5lb1GrJ2XDtJwebG1XubT0c+w+2WtbGvnUCu48sYUj4bbvYs9EasC+VnVuQLCLA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Yn6P6jydaDq74ixTmQS68qfeXyTOdSo8M/DaBA5Bh78=;
+ b=XMVAVCPZFjikFFVuDSlkmNFvJC0wNwbIo8FAIBQDSNzcfaZl+PLXJnC6zhPv+AENofJNa6M1C64RQ+QcLhKwgspXFjxQV7Bmqt6k1SVHsucY/AEazR/MK1/k+lnGGVxmYnkXxUsCOw6LTc4i6cjim5rja8wDoqN4tiqyxd+8JD1Hmwf1ooNbqAYq7Eo96PVNyPVpAsyH0Uf1jmmpqsd/odt2HGWhF0gj3cYa302nlu1PhZpm1mY3USmHCowS9Lowg+IWsfUIaBNPzNsfiPjGKtzPwZ4BsDgxITN7JfTQYXAA8izraemWIEdchUrWvObpBt6Auvkt5RRhRabq9+VeiA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Yn6P6jydaDq74ixTmQS68qfeXyTOdSo8M/DaBA5Bh78=;
+ b=FIlpBqZwj/3A0tCksE+4DSDLM/n7i/3slGK5HuQ8bgUCYggc1Ye/CTwjTxxo37SKZ3XuMbFI4BV9AOuJ6RRb9kA0U0DS/hs4ZT1XPrGNmUotpdhtXvAhSqNapKPc8X3LAoRPqe3LE2KhX3TNv3pApc0GMyEmLRruF95EA5tZcj/tzBHi5WIdw2l3CQDazaEwSI4riss2+5+9tBuIbVe7C7WNHOz4zdsU6mDz2/wfaAETqO7QItqLovJQqBLQGzWqa3jzgv/imEYlIbT5fb78q+hmT/kc3WpsKE2Lc5C6+UF4co2EF4qvfM2hxX6APccIeW6kLDocmAlg1CCB5qad8w==
+Authentication-Results: gibson.dropbear.id.au; dkim=none (message not signed)
+ header.d=none;gibson.dropbear.id.au; dmarc=none action=none
+ header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4499.namprd12.prod.outlook.com (2603:10b6:5:2ab::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Thu, 13 May
+ 2021 13:47:30 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4129.026; Thu, 13 May 2021
+ 13:47:30 +0000
+Date:   Thu, 13 May 2021 10:47:28 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     David Gibson <david@gibson.dropbear.id.au>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210513134728.GE1002214@nvidia.com>
+References: <20210422111337.6ac3624d@redhat.com>
+ <YIeYJZOdgMN/orl0@yekko.fritz.box>
+ <20210427172432.GE1370958@nvidia.com>
+ <YIi5G4Wg/hpFqNdX@yekko.fritz.box>
+ <20210429002149.GZ1370958@nvidia.com>
+ <YIol9p3z8BTWFRh8@yekko>
+ <20210503160530.GL1370958@nvidia.com>
+ <YJDFj+sAv41JRIo4@yekko>
+ <20210504181537.GC1370958@nvidia.com>
+ <YJzAsBNF1irJxRGg@yekko>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210508163704.3432731-1-arseny.krasnov@kaspersky.com>
+In-Reply-To: <YJzAsBNF1irJxRGg@yekko>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: BL0PR01CA0024.prod.exchangelabs.com (2603:10b6:208:71::37)
+ To DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by BL0PR01CA0024.prod.exchangelabs.com (2603:10b6:208:71::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Thu, 13 May 2021 13:47:29 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lhBgW-006pPa-DE; Thu, 13 May 2021 10:47:28 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f5649297-d03c-41d7-ffc7-08d91615a6e2
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4499:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB4499E5CBE1A783DBDA1B0F2BC2519@DM6PR12MB4499.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5YoT0kjxGWI5ESgbYxYcR+oF5eq5sm8EgtrN8QJxDY5jicOXKRthjInO82bHsc+J8y0EMAxh9ZTciI40lyuAcDVJsCbVg0JkNBbPrriSLmsNM1IZjYc9an9l1744qhIYYq0XcKYm3826gD1Q83cA7ZeqYBCrDmAVOoA8LcU7jq6WGyPWtJ+qM2OmUZh5mtNRWop/SGiamG+aOHuz8r/kgJ84+/h7aHBe/jTwmqUB7wR1fLv2Rh5G0g4fAjtO0hPa09PcT9oZLUihsXJGUpwvU/acE6HSB9fbEFMWLFyE0su/m+LJPZJMGp3lmNcAtyHuUCgdnAjP6WBp4vsThY4shDbJM/ICGm2NIKRQRWNB1xE394Ku/ZJEoo+w0qsvuX8B2GvPgJKziq+UmIjAfGBtjZKMGsXInTTefwlEwZlHCmIBFMJ2l6PfROZmdNrri8hBpJi9Cv85vqrwSFTSH2c9ONA8RbjMKWdBFY6iBdQL7UEBH3nYt/rwEqVaBIxh4wD6ojVZm8GsD7oD6pmwXPdZk8iyZx8e8ufc/HkYg9+b2+x/kRXD2g+2i+EA9cH5nr0KnIzPp0c3Gvg+NpifXAECs4NW00W8GMQGhBoYF3BvWyA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(396003)(346002)(136003)(39850400004)(5660300002)(2906002)(1076003)(66556008)(7416002)(186003)(316002)(38100700002)(26005)(2616005)(86362001)(426003)(6916009)(478600001)(36756003)(66476007)(66946007)(33656002)(8936002)(8676002)(9786002)(9746002)(4326008)(54906003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?g50ZP4mVxyhXICNrv8cOn4kK0qQjFDPB7g/r9pcJHYk/FL5gMj8kbBcK4O9J?=
+ =?us-ascii?Q?uZAFxyj0auBj58BAvS88jBmHREvEz0a+q/SItd/92sMTfhR2S5NidRTXPb4d?=
+ =?us-ascii?Q?gz3KBh1DKaQtHlTkKrlzmFBBLDFL51b+DX8jdWIXk0smertsKrmUtLi+WYIb?=
+ =?us-ascii?Q?UKxKv5BY8YFuRL+bL09gy1UTLcaNOb5rVg2UDbR/0QfEuuS+XLNnBEiRziZj?=
+ =?us-ascii?Q?ixyK61otsODzELmItUAQ19gnMCdDRYSs/iHKJqKzGqmvvE/xFbE/YPS7aahc?=
+ =?us-ascii?Q?08ZCjbNIDRV0IB7E+Un/D0UBcqXhYBm+K8M8eLcs4NGVtgE5/lyulAm3gCdV?=
+ =?us-ascii?Q?uqa1dumD6jRzpc6JKXnicCxMLWDoMnrf+rxm0cMlmpehaEA6ZGUj8dXIkHym?=
+ =?us-ascii?Q?Nh0HRydLcPe0u9ZMO//q7GqZvU19/GyP7PwXD3l4iqU+zRSJGgAzn75lN6cW?=
+ =?us-ascii?Q?30Ig/TtpAUZorqGzN5W6niV+toobVW1u3UkCqGtXxOcd1Vlgo59IpKJNs5ol?=
+ =?us-ascii?Q?YZFquqgJYX/fPrWjNIWbuyHDLOKyyO4vx6bvPJAwMsX9e47ileN1lgwqMCLF?=
+ =?us-ascii?Q?yOOmujv1rqtWr+OLztYOj1VMPSQaBzR6b0fao0NX7c53BcC//JhevgeFhl0x?=
+ =?us-ascii?Q?TNW/TaYOogw/DBarNIM2ebwuoTGRZsgyIAXpShccqJqfPz4t1D9T86UMjCox?=
+ =?us-ascii?Q?XrMfaGhJXzjS+O9TYmj7Gv5U7SgLvVFNxJrcxVYMrYsOJyt9FzUXIzUETGiq?=
+ =?us-ascii?Q?C9n3dQLS3Xx9H1Tlzkf8Qgu4k7eI0Epb4SfhyjGHoZbkSQnSbeSgzFO82pIF?=
+ =?us-ascii?Q?FFcbhtpEy6Wapzacwr/y+fBNTWEQpYv30S7JcuJKO7rfJE6ONjFUcNVmGMHl?=
+ =?us-ascii?Q?jPOMQYsAlpGp2OQmMeco9IL9FzUor7yUtbTNndWLFuRYy/P1+cSlK0VhaJUp?=
+ =?us-ascii?Q?TA2Hc1cvAo8S8Fk/LqufATTngoA6UiUDE4mF+faKFpUme5MMBUm1A2gF7uJv?=
+ =?us-ascii?Q?eeEccDZoDYSRp1DzydeDIGVq6MJoI04adF1LYWVrH2aWOkR8Oq2KXo04fGem?=
+ =?us-ascii?Q?qyIadoone4AmJVToeLsTxU1FdL9UvnFfUPVRWPatv3xyDd5PJZbYmrhMBuAc?=
+ =?us-ascii?Q?hfhKuzz2KcL7Ev9OVboGmpFpRdKD8Ik6KBuk5lsTELc1Chf5ob7VlBvB9dls?=
+ =?us-ascii?Q?6ZOCGBuoos1+WHoRe45hCzJ3TaCiHb0k9jTTHomKgcFsHwdcLCPseUb6Sl5o?=
+ =?us-ascii?Q?OA420x6o1M1bdofXCcAGfZHTt2bCYyjpEaI1syEIyE9axba/YjYLaolkr8SR?=
+ =?us-ascii?Q?RvGW0skURnSP6CO21dioc/1A?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f5649297-d03c-41d7-ffc7-08d91615a6e2
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2021 13:47:30.2692
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: OmbE8GxA+vLZ2l9p54bYFM/axlpkqxhWTEnIrr4aP1f2wsi/m3jjAiIkJ5jZnrxt
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4499
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 08, 2021 at 07:37:00PM +0300, Arseny Krasnov wrote:
->This adds two tests of SOCK_SEQPACKET socket: both transfer data and
->then test MSG_EOR and MSG_TRUNC flags. Cases for connect(), bind(),
-            ^
-We removed the MSG_EOR tests, right?
+On Thu, May 13, 2021 at 04:01:20PM +1000, David Gibson wrote:
 
->etc. are not tested, because it is same as for stream socket.
->
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->---
-> tools/testing/vsock/util.c       | 32 +++++++++++++---
-> tools/testing/vsock/util.h       |  3 ++
-> tools/testing/vsock/vsock_test.c | 63 ++++++++++++++++++++++++++++++++
-> 3 files changed, 93 insertions(+), 5 deletions(-)
->
->diff --git a/tools/testing/vsock/util.c b/tools/testing/vsock/util.c
->index 93cbd6f603f9..2acbb7703c6a 100644
->--- a/tools/testing/vsock/util.c
->+++ b/tools/testing/vsock/util.c
->@@ -84,7 +84,7 @@ void vsock_wait_remote_close(int fd)
-> }
->
-> /* Connect to <cid, port> and return the file descriptor. */
->-int vsock_stream_connect(unsigned int cid, unsigned int port)
->+static int vsock_connect(unsigned int cid, unsigned int port, int type)
-> {
-> 	union {
-> 		struct sockaddr sa;
->@@ -101,7 +101,7 @@ int vsock_stream_connect(unsigned int cid, unsigned int port)
->
-> 	control_expectln("LISTENING");
->
->-	fd = socket(AF_VSOCK, SOCK_STREAM, 0);
->+	fd = socket(AF_VSOCK, type, 0);
->
-> 	timeout_begin(TIMEOUT);
-> 	do {
->@@ -120,11 +120,21 @@ int vsock_stream_connect(unsigned int cid, unsigned int port)
-> 	return fd;
-> }
->
->+int vsock_stream_connect(unsigned int cid, unsigned int port)
->+{
->+	return vsock_connect(cid, port, SOCK_STREAM);
->+}
->+
->+int vsock_seqpacket_connect(unsigned int cid, unsigned int port)
->+{
->+	return vsock_connect(cid, port, SOCK_SEQPACKET);
->+}
->+
-> /* Listen on <cid, port> and return the first incoming connection.  The remote
->  * address is stored to clientaddrp.  clientaddrp may be NULL.
->  */
->-int vsock_stream_accept(unsigned int cid, unsigned int port,
->-			struct sockaddr_vm *clientaddrp)
->+static int vsock_accept(unsigned int cid, unsigned int port,
->+			struct sockaddr_vm *clientaddrp, int type)
-> {
-> 	union {
-> 		struct sockaddr sa;
->@@ -145,7 +155,7 @@ int vsock_stream_accept(unsigned int cid, unsigned int port,
-> 	int client_fd;
-> 	int old_errno;
->
->-	fd = socket(AF_VSOCK, SOCK_STREAM, 0);
->+	fd = socket(AF_VSOCK, type, 0);
->
-> 	if (bind(fd, &addr.sa, sizeof(addr.svm)) < 0) {
-> 		perror("bind");
->@@ -189,6 +199,18 @@ int vsock_stream_accept(unsigned int cid, unsigned int port,
-> 	return client_fd;
-> }
->
->+int vsock_stream_accept(unsigned int cid, unsigned int port,
->+			struct sockaddr_vm *clientaddrp)
->+{
->+	return vsock_accept(cid, port, clientaddrp, SOCK_STREAM);
->+}
->+
->+int vsock_seqpacket_accept(unsigned int cid, unsigned int port,
->+			   struct sockaddr_vm *clientaddrp)
->+{
->+	return vsock_accept(cid, port, clientaddrp, SOCK_SEQPACKET);
->+}
->+
-> /* Transmit one byte and check the return value.
->  *
->  * expected_ret:
->diff --git a/tools/testing/vsock/util.h b/tools/testing/vsock/util.h
->index e53dd09d26d9..a3375ad2fb7f 100644
->--- a/tools/testing/vsock/util.h
->+++ b/tools/testing/vsock/util.h
->@@ -36,8 +36,11 @@ struct test_case {
-> void init_signals(void);
-> unsigned int parse_cid(const char *str);
-> int vsock_stream_connect(unsigned int cid, unsigned int port);
->+int vsock_seqpacket_connect(unsigned int cid, unsigned int port);
-> int vsock_stream_accept(unsigned int cid, unsigned int port,
-> 			struct sockaddr_vm *clientaddrp);
->+int vsock_seqpacket_accept(unsigned int cid, unsigned int port,
->+			   struct sockaddr_vm *clientaddrp);
-> void vsock_wait_remote_close(int fd);
-> void send_byte(int fd, int expected_ret, int flags);
-> void recv_byte(int fd, int expected_ret, int flags);
->diff --git a/tools/testing/vsock/vsock_test.c b/tools/testing/vsock/vsock_test.c
->index 5a4fb80fa832..ffec985fd36f 100644
->--- a/tools/testing/vsock/vsock_test.c
->+++ b/tools/testing/vsock/vsock_test.c
->@@ -14,6 +14,8 @@
-> #include <errno.h>
-> #include <unistd.h>
-> #include <linux/kernel.h>
->+#include <sys/types.h>
->+#include <sys/socket.h>
->
-> #include "timeout.h"
-> #include "control.h"
->@@ -279,6 +281,62 @@ static void test_stream_msg_peek_server(const struct test_opts *opts)
-> 	close(fd);
-> }
->
->+#define MESSAGE_TRUNC_SZ 32
->+static void test_seqpacket_msg_trunc_client(const struct test_opts *opts)
->+{
->+	int fd;
->+	char buf[MESSAGE_TRUNC_SZ];
->+
->+	fd = vsock_seqpacket_connect(opts->peer_cid, 1234);
->+	if (fd < 0) {
->+		perror("connect");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	if (send(fd, buf, sizeof(buf), 0) != sizeof(buf)) {
->+		perror("send failed");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	control_writeln("SENDDONE");
->+	close(fd);
->+}
->+
->+static void test_seqpacket_msg_trunc_server(const struct test_opts *opts)
->+{
->+	int fd;
->+	char buf[MESSAGE_TRUNC_SZ / 2];
->+	struct msghdr msg = {0};
->+	struct iovec iov = {0};
->+
->+	fd = vsock_seqpacket_accept(VMADDR_CID_ANY, 1234, NULL);
->+	if (fd < 0) {
->+		perror("accept");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	control_expectln("SENDDONE");
->+	iov.iov_base = buf;
->+	iov.iov_len = sizeof(buf);
->+	msg.msg_iov = &iov;
->+	msg.msg_iovlen = 1;
->+
->+	ssize_t ret = recvmsg(fd, &msg, MSG_TRUNC);
->+
->+	if (ret != MESSAGE_TRUNC_SZ) {
->+		printf("%zi\n", ret);
->+		perror("MSG_TRUNC doesn't work");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	if (!(msg.msg_flags & MSG_TRUNC)) {
->+		fprintf(stderr, "MSG_TRUNC expected\n");
->+		exit(EXIT_FAILURE);
->+	}
->+
->+	close(fd);
->+}
->+
-> static struct test_case test_cases[] = {
-> 	{
-> 		.name = "SOCK_STREAM connection reset",
->@@ -309,6 +367,11 @@ static struct test_case test_cases[] = {
-> 		.run_client = test_stream_msg_peek_client,
-> 		.run_server = test_stream_msg_peek_server,
-> 	},
->+	{
->+		.name = "SOCK_SEQPACKET send data MSG_TRUNC",
->+		.run_client = test_seqpacket_msg_trunc_client,
->+		.run_server = test_seqpacket_msg_trunc_server,
->+	},
-> 	{},
-> };
->
->-- 
->2.25.1
->
+> But.. even if you're exposing page tables to userspace.. with hardware
+> that has explicit support for nesting you can probably expose the hw
+> tables directly which is great for the cases that works for.  But
+> surely for older IOMMUs which don't do nesting you must have some way
+> of shadowing guest IO page tables to host IO page tables to translate
+> GPA to HPA at least?
 
+I expect this would be in quemu and would be part of the expensive
+emulation I suggested. Converting the guest's page table structure
+into a sequence of map/unmaps to a non-nestable IOASID.
+
+> If you're doing that, I don't see that converting page table format
+> is really any harder
+
+It isn't, but it is a completely different flow and custom from the
+normal HW accelerated nesting.
+
+> It might not be a theoretically complete emulation of the vIOMMU, but
+> it can support in-practice usage.  In particular it works pretty well
+> if your backend has a nice big IOVA range (like x86 IOMMUS) but your
+> guest platform typically uses relatively small IOVA windows.  PAPR on
+> x86 is exactly that... well.. possibly not the 64-bit window, but
+> because of old PAPR platforms that didn't support that, we can choose
+> not to advertise that and guests will cope.
+
+So maybe this multi-window thing is generic API somehow. You'll have
+to check what Kevin comes up with to ensure it fits in
+
+Jason
