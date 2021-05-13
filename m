@@ -2,70 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8762E37FB75
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 18:27:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 417DF37FB78
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 18:28:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235158AbhEMQ2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 12:28:24 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:49774 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235129AbhEMQ2P (ORCPT
+        id S235100AbhEMQ3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 12:29:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37818 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235170AbhEMQ3H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 12:28:15 -0400
-Received: by mail-io1-f71.google.com with SMTP id z14-20020a6be20e0000b029043a04a24070so8555549ioc.16
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 09:27:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=YKYMJN0wOTOdIhbhWJ09zW38cF2+wNMxDEkbWJQv620=;
-        b=nyxD/JrZxMurG0+sKuQ780qaIiOna/QucmvmQSCod5nZIXxzHTuEjMHyuDGP9nTsiO
-         lGVYNYsrGEGAVvy7K8gvagc/bKR2XZ2HD71X2dvl4tdbVG2/8HgBT1Q87vQrfItbr+O/
-         MhBnAYxBMHt55jmfN6sw7cOPkF47AqRtnILAJjoMsfvSKZ5XiCrQvOUXgPv8BkHs/zUw
-         0uTN5JNV8Hbibsptbz/FmVpW9GQ1mAi+HkFfwSDKWfs0p073igrZ6C6XAV5Giooa0QIC
-         sWO+B4ZlQn67Ud4cf0JMzXkLaLsOPfaLyQ0ieV5dQ2U7YJ1scz2R/0cqo8LJB7OBsC2e
-         ceSg==
-X-Gm-Message-State: AOAM531Kczh+yg6Wgx4DGSGc8TVXNVEb/uUFPC0Hw91Jjr8w39oE31pg
-        nDb2VHq3I7oK5zRTv9Y0vGRCS4pjGlxZQXHU4a1XFUt3Yv9T
-X-Google-Smtp-Source: ABdhPJyDfQsqI4Kf8+DTE946kH5/MEOSEHJVBdeLXA8kLQzSGICDYM4ZCGvRpL5XacZosrDhcc4hXoWum6QCXdcpQ6jqvPq3mm23
+        Thu, 13 May 2021 12:29:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620923277;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tuYp5/3obltv5r7eq8xKVUNYQlDv3pda6zIjqU9HN2U=;
+        b=H+PL5U//NXLpnpo9Egg8S9xSfIzAVgJ+HVIRnXWXE0VXzXF0qlW3KaMXTcBsoYtgI1xon1
+        Mr/v6TqaGzJ+QabkDr6U2ZZSnEaalQWyED0R+tKcznKOxTWo/3Nl5kUalZESuZy9MKDHta
+        efGI2Q7ft6PtKfQL0ICJlDR3VIDWwCw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-487-YOsAi3fFNcaukYidOwfrtQ-1; Thu, 13 May 2021 12:27:53 -0400
+X-MC-Unique: YOsAi3fFNcaukYidOwfrtQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A08701922035;
+        Thu, 13 May 2021 16:27:51 +0000 (UTC)
+Received: from localhost (ovpn-113-21.ams2.redhat.com [10.36.113.21])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1324C17264;
+        Thu, 13 May 2021 16:27:46 +0000 (UTC)
+Date:   Thu, 13 May 2021 17:27:46 +0100
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, xieyongji@bytedance.com,
+        file@sect.tu-berlin.de, ashish.kalra@amd.com,
+        konrad.wilk@oracle.com, kvm@vger.kernel.org, hch@infradead.org
+Subject: Re: [RFC PATCH V2 0/7] Do not read from descripto ring
+Message-ID: <YJ1TgoFSwOkQrC+1@stefanha-x1.localdomain>
+References: <20210423080942.2997-1-jasowang@redhat.com>
 MIME-Version: 1.0
-X-Received: by 2002:a02:b717:: with SMTP id g23mr39955248jam.109.1620923224227;
- Thu, 13 May 2021 09:27:04 -0700 (PDT)
-Date:   Thu, 13 May 2021 09:27:04 -0700
-In-Reply-To: <000000000000aaa4a905ac646223@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fd05a005c2389844@google.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in __queue_work (3)
-From:   syzbot <syzbot+77e5e02c6c81136cdaff@syzkaller.appspotmail.com>
-To:     Markus.Elfring@web.de, anant.thazhemadam@gmail.com,
-        davem@davemloft.net, gregkh@linuxfoundation.org, hdanton@sina.com,
-        johan.hedberg@gmail.com, kuba@kernel.org, linma@zju.edu.cn,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luiz.dentz@gmail.com, marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="kSjLBUWR7rqI1Fnp"
+Content-Disposition: inline
+In-Reply-To: <20210423080942.2997-1-jasowang@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
 
-commit e2cb6b891ad2b8caa9131e3be70f45243df82a80
-Author: Lin Ma <linma@zju.edu.cn>
-Date:   Mon Apr 12 11:17:57 2021 +0000
+--kSjLBUWR7rqI1Fnp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-    bluetooth: eliminate the potential race condition when removing the HCI controller
+On Fri, Apr 23, 2021 at 04:09:35PM +0800, Jason Wang wrote:
+> Sometimes, the driver doesn't trust the device. This is usually
+> happens for the encrtpyed VM or VDUSE[1].
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=127b3593d00000
-start commit:   c0842fbc random32: move the pseudo-random 32-bit definitio..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=cf567e8c7428377e
-dashboard link: https://syzkaller.appspot.com/bug?extid=77e5e02c6c81136cdaff
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=140e36a4900000
+Thanks for doing this.
 
-If the result looks correct, please mark the issue as fixed by replying with:
+Can you describe the overall memory safety model that virtio drivers
+must follow? For example:
 
-#syz fix: bluetooth: eliminate the potential race condition when removing the HCI controller
+- Driver-to-device buffers must be on dedicated pages to avoid
+  information leaks.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+- Driver-to-device buffers must be on dedicated pages to avoid memory
+  corruption.
+
+When I say "pages" I guess it's the IOMMU page size that matters?
+
+What is the memory access granularity of VDUSE?
+
+I'm asking these questions because there is driver code that exposes
+kernel memory to the device and I'm not sure it's safe. For example:
+
+  static int virtblk_add_req(struct virtqueue *vq, struct virtblk_req *vbr,
+                  struct scatterlist *data_sg, bool have_data)
+  {
+          struct scatterlist hdr, status, *sgs[3];
+          unsigned int num_out = 0, num_in = 0;
+
+          sg_init_one(&hdr, &vbr->out_hdr, sizeof(vbr->out_hdr));
+	                    ^^^^^^^^^^^^^
+          sgs[num_out++] = &hdr;
+
+          if (have_data) {
+                  if (vbr->out_hdr.type & cpu_to_virtio32(vq->vdev, VIRTIO_BLK_T_OUT))
+                          sgs[num_out++] = data_sg;
+                  else
+                          sgs[num_out + num_in++] = data_sg;
+          }
+
+          sg_init_one(&status, &vbr->status, sizeof(vbr->status));
+                               ^^^^^^^^^^^^
+          sgs[num_out + num_in++] = &status;
+
+          return virtqueue_add_sgs(vq, sgs, num_out, num_in, vbr, GFP_ATOMIC);
+  }
+
+I guess the drivers don't need to be modified as long as swiotlb is used
+to bounce the buffers through "insecure" memory so that the memory
+surrounding the buffers is not exposed?
+
+Stefan
+
+--kSjLBUWR7rqI1Fnp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmCdU4EACgkQnKSrs4Gr
+c8jIXQf/bDxDNATkynJc8tGJ7x7Bp5ZiiG3XuUvb5LEsvtzjs+2kmYIZyhESbHN6
+pasUhocXLHhIiBmRf5XAHiSbQI+cdOgjgf/Owykd4xM5esusvzNOQy8I8oUCrbX/
+yxPI+spnxLyM3U7f7He68vjS86KPn/5pvwbXiRNfFF9KPjk6qE7w+daSgZLOh/NP
+BafdMFIW1E7csCnTPZjqEr2gw8WqHAAwD6vd2dkytBkoGfL1UHT4OwUpP1Ig5Vmb
+ytJDZ/tx+mG2JVfBfzXAj0n1FOXosho5Md9BcUPMNw1yqwwzJrmzfg22wdJacPzQ
+D+K0W3qs/r3YDv++4i/cJa96khB/ng==
+=T94O
+-----END PGP SIGNATURE-----
+
+--kSjLBUWR7rqI1Fnp--
+
