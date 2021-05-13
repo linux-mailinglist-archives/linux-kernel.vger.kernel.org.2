@@ -2,79 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95CFF37FFAF
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 23:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 053FC37FFB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 23:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233365AbhEMVPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 17:15:02 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:39290 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233276AbhEMVPB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 17:15:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=mGpK26Mb+uqhFf1LLz52H7ke22MaI/Hpa228UC+2GwM=; b=x1TTkXeXeBcyX6BmDqj3k4ExtK
-        /CKVun7INmxbNFmAeQMgEIeQDQ7/HteZ55RHItx/GtLFktd2FyJyzZVtSrzASayuvLXPk7+bzRZj6
-        f7jgE61U/+fS90NvtzBtgx3+SBQHy0NpgbOu799qMXDa6FlR02n32hsL/sW+uJwHJPy0=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lhIeB-0046qA-4e; Thu, 13 May 2021 23:13:31 +0200
-Date:   Thu, 13 May 2021 23:13:31 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Dario Binacchi <dariobin@libero.it>
-Cc:     linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Tong Zhang <ztong0001@gmail.com>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] can: c_can: add ethtool support
-Message-ID: <YJ2We1T+34oj8Mm1@lunn.ch>
-References: <20210513193638.11201-2-dariobin@libero.it>
+        id S233385AbhEMVQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 17:16:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233381AbhEMVQv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 17:16:51 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 529C0C061574;
+        Thu, 13 May 2021 14:15:40 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id o26-20020a1c4d1a0000b0290146e1feccdaso1565061wmh.0;
+        Thu, 13 May 2021 14:15:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=JBy/O0ZLfy5u8rFBxaqSpqTiaMXG+jNpqopzCnsfGkY=;
+        b=PzKf9qQPySJRpA2r6V70PkjhsEAV0MOiOQyele0GLcd644rLhrRwrqUjzNIGAWL/j7
+         /ohdpj3F5c0QPnj/rVgM6NW0lMrx/O9M3KtSi4S/XjxbaLToZhmcgw1eO4ohEqNUgTYQ
+         ISMQFGKvorvKhLCZlvcjpf5GyJNw4phDKn6Lp5NjPl1tiihLk3j5xoYHyiu4EJHpg+qo
+         HpXYa0z5qsP2VPeVCWLJj/gyhFYQSnm5CDPw/z4OkgxECR0RKQSsmXTE7QKW7L/IA3GJ
+         Yxu36UnCXqGusbcvkpW22nhB0NkdF8LFANWCvReBb3Lsy9POt+WuhuR3QXZ+15rCawIP
+         /XUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JBy/O0ZLfy5u8rFBxaqSpqTiaMXG+jNpqopzCnsfGkY=;
+        b=laEbudqwQ4z3/PfhGrw/gheN/V1YdQXliLW5nqoM+hOjOF6dP69miAy4gaknVKqOSg
+         SAe5Ht3eyYFj1/mF6/g0h+wc7iOuTrjzxY0onOqVMBBxZtDSi5xuySsrRbUp2dcMzGDo
+         IWLCc0jz3LQkKjt71STMZCbHWUGcl8/hBSE7bH4JZiHT7/km0sCa8XmtmwVlzB2Pr5u7
+         eooKkOuZp9WAV3xbrPG+hOicu0yfIIQaKB9nfTy8N2nGjz0oKaS586pZEEkerIHtdZqy
+         V0z8EZ8/OEd1LrMeZRpyF0cB/QzWbiihfIiNDVcubeNigkYgz1+jBVOnl0EA6hNRjfgu
+         DYfw==
+X-Gm-Message-State: AOAM533b/0GmhkNnPypBn0bvOX2EGLbiYPVXarCyRnRqfZG5u5xrrAOm
+        JwOYalFPo/RvcbF8nZ0jakQ=
+X-Google-Smtp-Source: ABdhPJw9zhheEHc6WikRvIAR1PV74rFwAGziRAR8X/1APfkslROsPscqZR1qI1q+Cy+yNvyXnj06kw==
+X-Received: by 2002:a05:600c:4e8e:: with SMTP id f14mr3345672wmq.65.1620940539123;
+        Thu, 13 May 2021 14:15:39 -0700 (PDT)
+Received: from [192.168.8.197] ([148.252.132.196])
+        by smtp.gmail.com with ESMTPSA id g66sm3255414wma.11.2021.05.13.14.15.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 May 2021 14:15:38 -0700 (PDT)
+Subject: Re: [syzbot] INFO: task hung in io_ring_exit_work
+To:     syzbot <syzbot+93f72b3885406bb09e0d@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <0000000000002f920305c1c89a25@google.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Message-ID: <eb659001-f646-95e7-2037-8615e116582f@gmail.com>
+Date:   Thu, 13 May 2021 22:15:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210513193638.11201-2-dariobin@libero.it>
+In-Reply-To: <0000000000002f920305c1c89a25@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 09:36:37PM +0200, Dario Binacchi wrote:
-> With commit 132f2d45fb23 ("can: c_can: add support to 64 message objects")
-> the number of message objects used for reception / transmission depends
-> on FIFO size.
-> The ethtools API support allows you to retrieve this info. Driver info
-> has been added too.
+On 5/8/21 3:50 AM, syzbot wrote:
+> Hello,
+> 
+> syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+> 
+> Reported-and-tested-by: syzbot+93f72b3885406bb09e0d@syzkaller.appspotmail.com
 
-Hi Dario
+May still be there but silent because of fixed buffers changes,
+test with the old behaviour restored
 
-Nice to see the API being re-used for something other than Ethernet.
+#syz test: https://github.com/isilence/linux.git syz_test7
 
-> +static void c_can_get_drvinfo(struct net_device *netdev,
-> +			      struct ethtool_drvinfo *info)
-> +{
-> +	struct c_can_priv *priv = netdev_priv(netdev);
-> +	struct platform_device	*pdev = to_platform_device(priv->device);
-> +
-> +	strscpy(info->driver, "c_can", sizeof(info->driver));
-> +	strscpy(info->version, "1.0", sizeof(info->version));
+> 
+> Tested on:
+> 
+> commit:         50b7b6f2 x86/process: setup io_threads more like normal us..
+> git tree:       git://git.kernel.dk/linux-block io_uring-5.13
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=f81a36128b448b98
+> dashboard link: https://syzkaller.appspot.com/bug?extid=93f72b3885406bb09e0d
+> compiler:       
+> 
+> Note: testing is done by a robot and is best-effort only.
+> 
 
-version is pretty meaningless. This driver could be backported into
-some enterprise kernel with a huge number of patches. Or more likely,
-some in car infotainment kernel with a lot of vendor patches. Lots of
-things around the driver change, but it still tells you version
-1.0. So we don't recommend filling this in. The ethtool core will then
-fill the version what kernel the driver is actually being used in:
-
-https://elixir.bootlin.com/linux/latest/source/net/ethtool/ioctl.c#L706
-
-	Andrew
+-- 
+Pavel Begunkov
