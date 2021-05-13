@@ -2,73 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3443237F97D
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 16:15:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A82537F980
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 16:16:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234326AbhEMOQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 10:16:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234254AbhEMOQN (ORCPT
+        id S234357AbhEMORP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 10:17:15 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:44976 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234249AbhEMORK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 10:16:13 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D30C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 07:15:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ldkD/MCCMVjwjxuDDMNeDne6TaE3nCcY0it9FfXwvCU=; b=uKXX+1H/3+98XMqN0odMR1kgfP
-        ACOL56wtYNxN5TVRAYpbubvwGX6w+DtzuoEaW37btjwTd0dwdN1zVKCfzXM36SCwqg1zkTthH0KPN
-        +bgggiubcdIfAFQZmgjMLHgLiO7QOuBqj6pVWp/HxLdFqWgvOpyEPrSXV3Xw899SPy5PFhgR8Yozk
-        unitwHuEnpBuxcAp89WlJg/7M3p3yUuF5xoID9M3ydts8vlcXmSNUGWLAQwSaAbm1DdWjdGHZKwJT
-        HnO6Ho+EOJbQMwrHWOFO3fBRLP4nnPDCF04G1DaJbfxzRXW9K6BTdj+rwcFsIFGfVpazzhQ474h8o
-        wiJaIK8Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lhC5q-009Uyr-Dy; Thu, 13 May 2021 14:13:45 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4882030019C;
-        Thu, 13 May 2021 16:13:37 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 01F1A2D3CBAF5; Thu, 13 May 2021 16:13:36 +0200 (CEST)
-Date:   Thu, 13 May 2021 16:13:36 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>,
-        Tejun Heo <tj@kernel.org>, Quentin Perret <qperret@google.com>,
-        Wei Wang <wvw@google.com>, Yun Hsiang <hsiang023167@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND 0/2] Uclamp cgroup fixes
-Message-ID: <YJ00EB3MeUo3Inoy@hirez.programming.kicks-ass.net>
-References: <20210510145032.1934078-1-qais.yousef@arm.com>
+        Thu, 13 May 2021 10:17:10 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 14DEFVOa009307
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 May 2021 10:15:32 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 9B67515C3B1D; Thu, 13 May 2021 10:15:31 -0400 (EDT)
+Date:   Thu, 13 May 2021 10:15:31 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Changheun Lee <nanich.lee@samsung.com>
+Cc:     alex_y_xu@yahoo.ca, axboe@kernel.dk, bgoncalv@redhat.com,
+        bvanassche@acm.org, dm-crypt@saout.de, hch@lst.de,
+        jaegeuk@kernel.org, linux-block@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org, ming.lei@redhat.com,
+        yi.zhang@redhat.com
+Subject: Re: regression: data corruption with ext4 on LUKS on nvme with
+ torvalds master
+Message-ID: <YJ00g8oBZkduQXIe@mit.edu>
+References: <CGME20210513100034epcas1p4b23892cd77bde73c777eea6dc51c16a4@epcas1p4.samsung.com>
+ <20210513094222.17635-1-nanich.lee@samsung.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210510145032.1934078-1-qais.yousef@arm.com>
+In-Reply-To: <20210513094222.17635-1-nanich.lee@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 03:50:30PM +0100, Qais Yousef wrote:
-> A couple of fixes for uclamp cgroup. The first one is addressing wrong
-> implementation details that is restricting usability of uclamp in cgroup. The
-> 2nd is fixing locking issues.
+On Thu, May 13, 2021 at 06:42:22PM +0900, Changheun Lee wrote:
 > 
-> This is a resend since I forgot to CC LKML...
-> 
-> Qais Yousef (2):
->   sched/uclamp: Fix wrong implementation of cpu.uclamp.min
->   sched/uclamp: Fix locking around cpu_util_update_eff()
-> 
->  kernel/sched/core.c | 28 ++++++++++++++++++++++++----
->  1 file changed, 24 insertions(+), 4 deletions(-)
+> Problem might be casued by exhausting of memory. And memory exhausting
+> would be caused by setting of small bio_max_size. Actually it was not
+> reproduced in my VM environment at first. But, I reproduced same problem
+> when bio_max_size is set with 8KB forced. Too many bio allocation would
+> be occurred by setting of 8KB bio_max_size.
 
-Thanks!
+Hmm... I'm not sure how to align your diagnosis with the symptoms in
+the bug report.  If we were limited by memory, that should slow down
+the I/O, but we should still be making forward progress, no?  And a
+forced reboot should not result in data corruption, unless maybe there
+was a missing check for a failed memory allocation, causing data to be
+written to the wrong location, a missing error check leading to the
+block or file system layer not noticing that a write had failed
+(although again, memory exhaustion should not lead to failed writes;
+it might slow us down, sure, but if writes are being failed, something
+is Badly Going Wrong --- things like writes to the swap device or
+writes by the page cleaner must succeed, or else Things Would Go Bad
+In A Hurry).
+
+						- Ted
