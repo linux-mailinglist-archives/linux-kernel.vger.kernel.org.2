@@ -2,193 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58FD637FA0D
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 16:54:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7229437FA13
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 16:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234798AbhEMOyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 10:54:14 -0400
-Received: from mx13.kaspersky-labs.com ([91.103.66.164]:18212 "EHLO
-        mx13.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234757AbhEMOwX (ORCPT
+        id S234789AbhEMOzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 10:55:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234720AbhEMOxc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 10:52:23 -0400
-Received: from relay13.kaspersky-labs.com (unknown [127.0.0.10])
-        by relay13.kaspersky-labs.com (Postfix) with ESMTP id 1EE04521B34;
-        Thu, 13 May 2021 17:51:02 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
-        s=mail202102; t=1620917462;
-        bh=8Z+AEBBNVuPdayXwm8/hcRhwkkMnC40weKuhNq36cyc=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
-        b=F4DQSZIwEAVMegm6Jn563O4PGrcfb31RgDjVqFRppQy78EKlpAxjbFfFIghmYWeUT
-         hK0cdz+cv9M64cJpdV3RPTpiZ2II9heCnAv4gojhlzdMOU8EcDCjuQXd7+V4HxmPJI
-         RXwN/GADtkrRAX5+GsCzQJMo5pnk2J2oBO3m1m391afc0zMEBTJKMO20+oLHaRLlhP
-         rR/dLR06A99nG27mLeBOAqUt9e3fSRjcOQaFsfYX/+4wEAQlBvGlqo7wkTMY60eDzi
-         Zd0+elBhoZsf7cZZjkYCb54yROAF8FjVOUrtQLzlDHQz0l1bsMyhH5e2em3Bn3BWeS
-         UczL7u2bBjeLA==
-Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
-        by mailhub13.kaspersky-labs.com (Postfix) with ESMTPS id B829F521B2D;
-        Thu, 13 May 2021 17:51:01 +0300 (MSK)
-Received: from [10.16.171.77] (10.64.68.129) by hqmailmbx3.avp.ru
- (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 13
- May 2021 17:51:00 +0300
-Subject: Re: [RFC PATCH v9 19/19] af_vsock: serialize writes to shared socket
-To:     Stefano Garzarella <sgarzare@redhat.com>
-CC:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stsp2@yandex.ru" <stsp2@yandex.ru>,
-        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
-References: <20210508163027.3430238-1-arseny.krasnov@kaspersky.com>
- <20210508163738.3432975-1-arseny.krasnov@kaspersky.com>
- <20210513140150.ugw6foy742fxan4w@steredhat>
-From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Message-ID: <3c46d5c3-f5a2-d232-c585-b93d761e6fb6@kaspersky.com>
-Date:   Thu, 13 May 2021 17:51:00 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 13 May 2021 10:53:32 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71EA3C06134A
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 07:52:06 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id c20so4859411ejm.3
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 07:52:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0OfZKh7G4FCWvdITFgddq0jjch2im9fcQcbtcvyCbJ0=;
+        b=yGER9sFeqImCRTjxagvrdLG2NXeJuvmnYhHyvT/N3ibkZ0cOji38G2r3ETIQg+Hjkh
+         iWkFpwduPfMD3/zTiaVJ5R/D6Ok2eqmCn9maTaJ/XEGisZQmWko1EbbZbCNg/o0Xndbk
+         UYvAC19wnmE2b1jbVkkvuAd/MEoAVq+usc6vd24X0pLgwurO+L6JcwXQUFVvnneLHfHE
+         N8Wt49yUqefE6Hhrn/kIxCPfhOu7Ka1HDFak1FUkPbIMhdwRWDRVdLBwPcKzg6R38lYQ
+         FHk8DwLtiXp6G+VquVP9NSbHCv4qUZ0WD4WJ/LjTrYVZ5SjRrsW51DB/8qINyepIGEV/
+         r6Dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0OfZKh7G4FCWvdITFgddq0jjch2im9fcQcbtcvyCbJ0=;
+        b=ClqigriOqMXj+X3RXFBMn3UkekTRLja34MDkxoMRUO9PzzJkvcfYlXN8jievGMfX4t
+         K3MO0WLW8y/WGUS4JxHdYDIkaAIj5hIQ1m6cSVVOLmcWxsHemWZLsWQsBie9g6LMwSEq
+         prZ3JyyIPryWhWH4BApH8p0sfgoqk3YDxHmcxTXn7f8SGE4W9EgGqoSAS+A0mVypZBdD
+         zXC7XJimSRVSP4YQ8KupXSVHK/9EYpm6VZj5gFGODbYVBYjjHoF9l+LKOhij06PLvMYN
+         sey/IgVgGdM3PcF9duHa3sNSUXQHgDV7hDc+fZCcpT7nQ5twUxjUHbp3UibkzdEoCUy9
+         92Zg==
+X-Gm-Message-State: AOAM530ub1bfv7B6rhJ1PAhWI4GXD7du1SL/HXtOkooPlsbW0YhytzjQ
+        SGVgHMn8V2JEgywoYnFw3JTxlfqx3DgGrtVs8IdIyg==
+X-Google-Smtp-Source: ABdhPJxM3ATiNSUpOAOJ9eWZOuQdhYbDZCWVTt9AZfZgddggWQHRJ7iT1otIC6/tIvl+X8AGtpE7CYg8qTpqn1cHFCY=
+X-Received: by 2002:a17:907:b09:: with SMTP id h9mr13061663ejl.430.1620917525095;
+ Thu, 13 May 2021 07:52:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210513140150.ugw6foy742fxan4w@steredhat>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.64.68.129]
-X-ClientProxiedBy: hqmailmbx3.avp.ru (10.64.67.243) To hqmailmbx3.avp.ru
- (10.64.67.243)
-X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/13/2021 14:36:05
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 163646 [May 13 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
-X-KSE-AntiSpam-Info: LuaCore: 445 445 d5f7ae5578b0f01c45f955a2a751ac25953290c9
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;kaspersky.com:7.1.1
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 05/13/2021 14:38:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 13.05.2021 13:39:00
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KLMS-Rule-ID: 52
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Status: not scanned, disabled by settings
-X-KLMS-AntiSpam-Interceptor-Info: not scanned
-X-KLMS-AntiPhishing: Clean, bases: 2021/05/13 13:03:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/05/13 10:44:00 #16575454
-X-KLMS-AntiVirus-Status: Clean, skipped
+References: <20210421052855.1279713-1-drinkcat@chromium.org> <20210421132841.v13.2.I9f45f5c1f975422d58b5904d11546349e9ccdc94@changeid>
+In-Reply-To: <20210421132841.v13.2.I9f45f5c1f975422d58b5904d11546349e9ccdc94@changeid>
+From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Date:   Thu, 13 May 2021 11:51:53 -0300
+Message-ID: <CAAEAJfBQzTQmZxTeq3gQcDgNbvMtzgNXegnY0MWUOC1MZ-W1mw@mail.gmail.com>
+Subject: Re: [PATCH v13 2/4] arm64: dts: mt8183: Add node for the Mali GPU
+To:     Nicolas Boichat <drinkcat@chromium.org>
+Cc:     Rob Herring <robh@kernel.org>, Steven Price <steven.price@arm.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        fshao@chromium.org, hsinyi@chromium.org, hoegsberg@chromium.org,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Nicolas,
 
-On 13.05.2021 17:01, Stefano Garzarella wrote:
-> On Sat, May 08, 2021 at 07:37:35PM +0300, Arseny Krasnov wrote:
->> This add logic, that serializes write access to single socket
->> by multiple threads. It is implemented be adding field with TID
->> of current writer. When writer tries to send something, it checks
->> that field is -1(free), else it sleep in the same way as waiting
->> for free space at peers' side.
->>
->> Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->> ---
->> include/net/af_vsock.h   |  1 +
->> net/vmw_vsock/af_vsock.c | 10 +++++++++-
->> 2 files changed, 10 insertions(+), 1 deletion(-)
-> I think you forgot to move this patch at the beginning of the series.
-> It's important because in this way we can backport to stable branches 
-> easily.
+On Wed, 21 Apr 2021 at 02:29, Nicolas Boichat <drinkcat@chromium.org> wrote:
 >
-> About the implementation, can't we just add a mutex that we hold until 
-> we have sent all the payload?
+> Add a basic GPU node for mt8183.
 >
-> I need to check other implementations like TCP.
+> Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+> ---
+> The binding we use with out-of-tree Mali drivers includes more
+> clocks, this is used for devfreq: the out-of-tree driver switches
+> clk_mux to clk_sub_parent (26Mhz), adjusts clk_main_parent, then
+> switches clk_mux back to clk_main_parent:
+> (see https://chromium.googlesource.com/chromiumos/third_party/kernel/+/chromeos-4.19/drivers/gpu/arm/midgard/platform/mediatek/mali_kbase_runtime_pm.c#423)
+> clocks =
+>         <&topckgen CLK_TOP_MFGPLL_CK>,
+>         <&topckgen CLK_TOP_MUX_MFG>,
+>         <&clk26m>,
+>         <&mfgcfg CLK_MFG_BG3D>;
+> clock-names =
+>         "clk_main_parent",
+>         "clk_mux",
+>         "clk_sub_parent",
+>         "subsys_mfg_cg";
+> (based on discussions, this probably belongs in the clock core)
 >
->> diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
->> index 1747c0b564ef..413343f18e99 100644
->> --- a/include/net/af_vsock.h
->> +++ b/include/net/af_vsock.h
->> @@ -69,6 +69,7 @@ struct vsock_sock {
->> 	u64 buffer_size;
->> 	u64 buffer_min_size;
->> 	u64 buffer_max_size;
->> +	pid_t tid_owner;
->>
->> 	/* Private to transport. */
->> 	void *trans;
->> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
->> index 7790728465f4..1fb4a1860f6d 100644
->> --- a/net/vmw_vsock/af_vsock.c
->> +++ b/net/vmw_vsock/af_vsock.c
->> @@ -757,6 +757,7 @@ static struct sock *__vsock_create(struct net *net,
->> 	vsk->peer_shutdown = 0;
->> 	INIT_DELAYED_WORK(&vsk->connect_work, vsock_connect_timeout);
->> 	INIT_DELAYED_WORK(&vsk->pending_work, vsock_pending_work);
->> +	vsk->tid_owner = -1;
->>
->> 	psk = parent ? vsock_sk(parent) : NULL;
->> 	if (parent) {
->> @@ -1765,7 +1766,9 @@ static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
->> 		ssize_t written;
->>
->> 		add_wait_queue(sk_sleep(sk), &wait);
->> -		while (vsock_stream_has_space(vsk) == 0 &&
->> +		while ((vsock_stream_has_space(vsk) == 0 ||
->> +			(vsk->tid_owner != current->pid &&
->> +			 vsk->tid_owner != -1)) &&
->> 		       sk->sk_err == 0 &&
->> 		       !(sk->sk_shutdown & SEND_SHUTDOWN) &&
->> 		       !(vsk->peer_shutdown & RCV_SHUTDOWN)) {
->> @@ -1796,6 +1799,8 @@ static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
->> 				goto out_err;
->> 			}
->> 		}
->> +
->> +		vsk->tid_owner = current->pid;
->> 		remove_wait_queue(sk_sleep(sk), &wait);
->>
->> 		/* These checks occur both as part of and after the loop
->> @@ -1852,7 +1857,10 @@ static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
->> 			err = total_written;
->> 	}
->> out:
->> +	vsk->tid_owner = -1;
->> 	release_sock(sk);
->> +	sk->sk_write_space(sk);
->> +
-> Is this change related? Can you explain in the commit message why it is 
-> needed?
-This is "unlocking" of socket
+> This only matters for devfreq, that is disabled anyway as we don't
+> have platform-specific code to handle >1 supplies.
 >
->> 	return err;
->> }
->>
->> -- 
->> 2.25.1
->>
+
+Nit: I think some of this info could be relevant, so I'd make
+it part of the commit description.
+
+> (no changes since v12)
 >
+> Changes in v12:
+>  - Add gpu node to mt8183-pumpkin.dts as well (Neil Armstrong).
+>
+> Changes in v11:
+>  - mt8183*.dts: remove incorrect supply-names
+>
+> Changes in v6:
+>  - Add gpu regulators to kukui dtsi as well.
+>  - Power domains are now attached to spm, not scpsys
+>  - Drop R-B.
+>
+> Changes in v5:
+>  - Rename "2d" power domain to "core2" (keep R-B again).
+>
+> Changes in v4:
+>  - Add power-domain-names to describe the 3 domains.
+>    (kept Alyssa's reviewed-by as the change is minor)
+>
+> Changes in v2:
+>  - Use sram instead of mali_sram as SRAM supply name.
+>  - Rename mali@ to gpu@.
+>
+>  arch/arm64/boot/dts/mediatek/mt8183-evb.dts   |   5 +
+>  .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi |   5 +
+>  .../boot/dts/mediatek/mt8183-pumpkin.dts      |   5 +
+>  arch/arm64/boot/dts/mediatek/mt8183.dtsi      | 105 ++++++++++++++++++
+>  4 files changed, 120 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-evb.dts b/arch/arm64/boot/dts/mediatek/mt8183-evb.dts
+> index edff1e03e6fe..7bc0a6a7fadf 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183-evb.dts
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183-evb.dts
+> @@ -42,6 +42,11 @@ &auxadc {
+>         status = "okay";
+>  };
+>
+> +&gpu {
+> +       mali-supply = <&mt6358_vgpu_reg>;
+> +       sram-supply = <&mt6358_vsram_gpu_reg>;
+> +};
+> +
+>  &i2c0 {
+>         pinctrl-names = "default";
+>         pinctrl-0 = <&i2c_pins_0>;
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> index ff56bcfa3370..e4e54be1c2b2 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> @@ -279,6 +279,11 @@ dsi_out: endpoint {
+>         };
+>  };
+>
+> +&gpu {
+> +       mali-supply = <&mt6358_vgpu_reg>;
+> +       sram-supply = <&mt6358_vsram_gpu_reg>;
+> +};
+> +
+>  &i2c0 {
+>         pinctrl-names = "default";
+>         pinctrl-0 = <&i2c0_pins>;
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-pumpkin.dts b/arch/arm64/boot/dts/mediatek/mt8183-pumpkin.dts
+> index 0aff5eb52e88..ee912825cfc6 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183-pumpkin.dts
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183-pumpkin.dts
+> @@ -68,6 +68,11 @@ &auxadc {
+>         status = "okay";
+>  };
+>
+> +&gpu {
+> +       mali-supply = <&mt6358_vgpu_reg>;
+> +       sram-supply = <&mt6358_vsram_gpu_reg>;
+> +};
+> +
+>  &i2c0 {
+>         pinctrl-names = "default";
+>         pinctrl-0 = <&i2c_pins_0>;
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> index c5e822b6b77a..c75fdeea8aa4 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> @@ -1118,6 +1118,111 @@ mfgcfg: syscon@13000000 {
+>                         #clock-cells = <1>;
+>                 };
+>
+> +               gpu: gpu@13040000 {
+> +                       compatible = "mediatek,mt8183-mali", "arm,mali-bifrost";
+> +                       reg = <0 0x13040000 0 0x4000>;
+> +                       interrupts =
+> +                               <GIC_SPI 280 IRQ_TYPE_LEVEL_LOW>,
+> +                               <GIC_SPI 279 IRQ_TYPE_LEVEL_LOW>,
+> +                               <GIC_SPI 278 IRQ_TYPE_LEVEL_LOW>;
+> +                       interrupt-names = "job", "mmu", "gpu";
+> +
+> +                       clocks = <&topckgen CLK_TOP_MFGPLL_CK>;
+> +
+> +                       power-domains =
+> +                               <&spm MT8183_POWER_DOMAIN_MFG_CORE0>,
+> +                               <&spm MT8183_POWER_DOMAIN_MFG_CORE1>,
+> +                               <&spm MT8183_POWER_DOMAIN_MFG_2D>;
+> +                       power-domain-names = "core0", "core1", "core2";
+> +
+> +                       operating-points-v2 = <&gpu_opp_table>;
+> +               };
+> +
+> +               gpu_opp_table: opp_table0 {
+
+If my eyes don't fool me, the OPP table being here means it's a child
+of the "soc" node. Given it's not an SoC peripheral,
+it'd make more sense to move it to root "/".
+
+Other than that, I think it looks good:
+
+Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
+
+Thanks!
+Ezequiel
