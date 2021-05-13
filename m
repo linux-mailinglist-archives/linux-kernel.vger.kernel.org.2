@@ -2,95 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A02537F99F
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 16:24:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFDC137F9A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 16:26:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234458AbhEMOZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 10:25:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53470 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234405AbhEMOZY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 10:25:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 18B9461438;
-        Thu, 13 May 2021 14:24:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620915854;
-        bh=SW1ymyNTu4aCXy6HP1+WjOhWh+LV/joCZ43Hn91qvsk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rdaFDuw5r7zBesVjHO6elOHNpi1MmXhJ3Gcr5Cq9jEkBU+rMEN2q4zhklkQbYs1Gf
-         +XToyDC9n+hMObzZKgrqzjNNORFzh6Ni9EiUXW3ppEnhzgZLcbp3GOGmViVUaXAUBB
-         m4YY+dfinalmO3jLTqj3kylgXmQlXRtQmLg5EpEI=
-Date:   Thu, 13 May 2021 16:24:12 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Vegard Nossum <vegard.nossum@oracle.com>
-Cc:     linux-serial@vger.kernel.org,
-        syzbot+4c7f1a69dfe24c6b3aeb@syzkaller.appspotmail.com,
-        syzbot+92f32d4e21fb246d31a2@syzkaller.appspotmail.com,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        Peter Hurley <peter@hurleysoftware.com>,
-        Caleb Connolly <caleb@connolly.tech>
-Subject: Re: [PATCH] serial: 8250: fix NULL pointer dereference in
- serial8250_do_startup()
-Message-ID: <YJ02jIEDHduLbQ3f@kroah.com>
-References: <00000000000044a65205994a7e13@google.com>
- <20210426161433.20829-1-vegard.nossum@oracle.com>
- <YIbnq2ljdQzaN8gy@kroah.com>
- <e3617587-7ff1-720c-00ab-434608705652@oracle.com>
+        id S234254AbhEMO1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 10:27:04 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:33647 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S234391AbhEMO1C (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 10:27:02 -0400
+Received: (qmail 968340 invoked by uid 1000); 13 May 2021 10:25:52 -0400
+Date:   Thu, 13 May 2021 10:25:52 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Hayes Wang <hayeswang@realtek.com>
+Cc:     syzbot <syzbot+95afd23673f5dd295c57@syzkaller.appspotmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
+        nic_swsd <nic_swsd@realtek.com>
+Subject: Re: [syzbot] WARNING in rtl8152_probe
+Message-ID: <20210513142552.GA967812@rowland.harvard.edu>
+References: <0000000000009df1b605c21ecca8@google.com>
+ <7de0296584334229917504da50a0ac38@realtek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e3617587-7ff1-720c-00ab-434608705652@oracle.com>
+In-Reply-To: <7de0296584334229917504da50a0ac38@realtek.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 06:33:01PM +0200, Vegard Nossum wrote:
-> On 2021-04-26 18:17, Greg Kroah-Hartman wrote:
-> > On Mon, Apr 26, 2021 at 06:14:33PM +0200, Vegard Nossum wrote:
-> > >   static void set_io_from_upio(struct uart_port *p)
-> > >   {
-> > >   	struct uart_8250_port *up = up_to_u8250p(p);
-> > > @@ -2151,6 +2178,11 @@ int serial8250_do_startup(struct uart_port *port)
-> > >   	unsigned char lsr, iir;
-> > >   	int retval;
-> > > +	if (WARN_ON_ONCE(needs_membase(port->iotype) && !port->membase))
-> > > +		return -ENODEV;
-> > > +	if (WARN_ON_ONCE(needs_iobase(port->iotype) && !port->iobase))
-> > > +		return -ENODEV;
-> > 
-> > These WARN_ON() will still trigger syzbot.  Are you sure you tested this
-> > and had syzbot verify it?
+On Thu, May 13, 2021 at 03:13:36AM +0000, Hayes Wang wrote:
+> syzbot <syzbot+95afd23673f5dd295c57@syzkaller.appspotmail.com>
+> > Sent: Wednesday, May 12, 2021 5:40 PM
+> [...] 
+> > usb 1-1: New USB device found, idVendor=045e, idProduct=0927, bcdDevice=89.4f
+> > usb 1-1: New USB device strings: Mfr=0, Product=4, SerialNumber=0
+> > usb 1-1: Product: syz
+> > usb 1-1: config 0 descriptor??
 > 
-> I tested it locally and the WARN_ON()s don't trigger -- presumably
-> because serial8250_verify_port() is called from uart_set_info() before
-> we get to serial8250_do_startup():
-> 
->         /*
->          * Ask the low level driver to verify the settings.
->          */
->         if (uport->ops->verify_port)
->                 retval = uport->ops->verify_port(uport, new_info);
-> 
-> [...]
-> 
->                 retval = uart_startup(tty, state, 1);
-> 
-> At least, this was my intention. Although now that I look at it again,
-> it looks like this check may be skipped in some cases; is that what
-> you're referring to?
-> 
-> I didn't have syzbot verify it -- I thought it would do that when
-> submitting my patch. Looks like I need to push somewhere and ask syzbot
-> to test it using this?
-> 
-> #syz test: git://repo/address.git commit-hash
-> 
-> (I assume I can send this privately as long as I use the right
-> syzbot+...@ To-address?)
-> 
+> The bcdDevice is strange. Could you dump your USB descriptor?
 
-Dropping this now until you get this tested properly...
+Syzbot doesn't test real devices.  It tests emulations, and the emulated 
+devices usually behave very strangely and in very peculiar and 
+unexpected ways, so as to trigger bugs in the kernel.  That's why the 
+USB devices you see in syzbot logs usually have bizarre descriptors.
 
-thanks,
-
-greg k-h
+Alan Stern
