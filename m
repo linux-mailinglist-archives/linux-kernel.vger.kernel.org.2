@@ -2,227 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C621E37F5AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 12:35:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3788737F5B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 12:36:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231384AbhEMKge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 06:36:34 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57684 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231327AbhEMKga (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 06:36:30 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1620902120; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=l+1H/9jM69aEPW1WCPM7kc1bXwCVtwgd7W9dCCgN4U4=;
-        b=SG/F+9szzAizgSdu4WxkNLmSs6ockCS8mv2MQB+XEtNJOFMYKlgJDeep7SJBvh9x4iNDZB
-        e1cFuHuG0T2Vh3led5v+BxXmD8oc7FLAD283eyJPcN6NpNlz0ZA5Q5YYziOaY4aBlzLMPO
-        1T8X9xFV9GlN35X6EA7FikB2iUKV6Ow=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 30ECCB177;
-        Thu, 13 May 2021 10:35:20 +0000 (UTC)
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     xen-devel@lists.xenproject.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>
-References: <20210513100302.22027-1-jgross@suse.com>
- <20210513100302.22027-9-jgross@suse.com> <YJz+qK8snI64/TKh@kroah.com>
-From:   Juergen Gross <jgross@suse.com>
-Subject: Re: [PATCH 8/8] xen/hvc: replace BUG_ON() with negative return value
-Message-ID: <cb1c403e-8919-024e-4a3d-1d17d36c85a4@suse.com>
-Date:   Thu, 13 May 2021 12:35:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S231461AbhEMKhM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 May 2021 06:37:12 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2495 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231231AbhEMKhJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 06:37:09 -0400
+Received: from dggeml755-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fgp0S6ClhzRgKY;
+        Thu, 13 May 2021 18:33:28 +0800 (CST)
+Received: from dggpemm100008.china.huawei.com (7.185.36.125) by
+ dggeml755-chm.china.huawei.com (10.1.199.136) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 13 May 2021 18:35:57 +0800
+Received: from dggpeml500016.china.huawei.com (7.185.36.70) by
+ dggpemm100008.china.huawei.com (7.185.36.125) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 13 May 2021 18:35:57 +0800
+Received: from dggpeml500016.china.huawei.com ([7.185.36.70]) by
+ dggpeml500016.china.huawei.com ([7.185.36.70]) with mapi id 15.01.2176.012;
+ Thu, 13 May 2021 18:35:57 +0800
+From:   "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
+        <longpeng2@huawei.com>
+To:     Stefano Garzarella <sgarzare@redhat.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Gonglei (Arei)" <arei.gonglei@huawei.com>,
+        "Subo (Subo, Cloud Infrastructure Service Product Dept.)" 
+        <subo7@huawei.com>, "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        "David Brazdil" <dbrazdil@google.com>,
+        Alexander Popov <alex.popov@linux.com>,
+        "lixianming (E)" <lixianming5@huawei.com>
+Subject: RE: [RFC] vsock: notify server to shutdown when client has pending
+ signal
+Thread-Topic: [RFC] vsock: notify server to shutdown when client has pending
+ signal
+Thread-Index: AQHXRkna70IyCpulcUmMFYMN4BnQYKrgpa2AgACTRtA=
+Date:   Thu, 13 May 2021 10:35:57 +0000
+Message-ID: <558d53dd31dc4841b94c4ec35249ac80@huawei.com>
+References: <20210511094127.724-1-longpeng2@huawei.com>
+ <20210513094143.pir5vzsludut3xdc@steredhat>
+In-Reply-To: <20210513094143.pir5vzsludut3xdc@steredhat>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.148.223]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-In-Reply-To: <YJz+qK8snI64/TKh@kroah.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="p8KsZYxN25YcQ1oOBHYXw2yKXKcq6rvnq"
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---p8KsZYxN25YcQ1oOBHYXw2yKXKcq6rvnq
-Content-Type: multipart/mixed; boundary="FZBttakujcGFgjGf6InMpgFXVJMrsK0RM";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: xen-devel@lists.xenproject.org, linuxppc-dev@lists.ozlabs.org,
- linux-kernel@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <cb1c403e-8919-024e-4a3d-1d17d36c85a4@suse.com>
-Subject: Re: [PATCH 8/8] xen/hvc: replace BUG_ON() with negative return value
-References: <20210513100302.22027-1-jgross@suse.com>
- <20210513100302.22027-9-jgross@suse.com> <YJz+qK8snI64/TKh@kroah.com>
-In-Reply-To: <YJz+qK8snI64/TKh@kroah.com>
+Hi Stefano,
 
---FZBttakujcGFgjGf6InMpgFXVJMrsK0RM
-Content-Type: multipart/mixed;
- boundary="------------FC559BA52F5CD7817E6BBA02"
-Content-Language: en-US
+> -----Original Message-----
+> From: Stefano Garzarella [mailto:sgarzare@redhat.com]
+> Sent: Thursday, May 13, 2021 5:42 PM
+> To: Longpeng (Mike, Cloud Infrastructure Service Product Dept.)
+> <longpeng2@huawei.com>
+> Cc: netdev@vger.kernel.org; linux-kernel@vger.kernel.org; Gonglei (Arei)
+> <arei.gonglei@huawei.com>; Subo (Subo, Cloud Infrastructure Service Product
+> Dept.) <subo7@huawei.com>; David S . Miller <davem@davemloft.net>; Jakub
+> Kicinski <kuba@kernel.org>; Jorgen Hansen <jhansen@vmware.com>; Norbert
+> Slusarek <nslusarek@gmx.net>; Andra Paraschiv <andraprs@amazon.com>;
+> Colin Ian King <colin.king@canonical.com>; David Brazdil
+> <dbrazdil@google.com>; Alexander Popov <alex.popov@linux.com>;
+> lixianming (E) <lixianming5@huawei.com>
+> Subject: Re: [RFC] vsock: notify server to shutdown when client has pending
+> signal
+> 
+> Hi,
+> thanks for this patch, comments below...
+> 
+> On Tue, May 11, 2021 at 05:41:27PM +0800, Longpeng(Mike) wrote:
+> >The client's sk_state will be set to TCP_ESTABLISHED if the server
+> >replay the client's connect request.
+> >However, if the client has pending signal, its sk_state will be set to
+> >TCP_CLOSE without notify the server, so the server will hold the
+> >corrupt connection.
+> >
+> >            client                        server
+> >
+> >1. sk_state=TCP_SYN_SENT         |
+> >2. call ->connect()              |
+> >3. wait reply                    |
+> >                                 | 4. sk_state=TCP_ESTABLISHED
+> >                                 | 5. insert to connected list
+> >                                 | 6. reply to the client
+> >7. sk_state=TCP_ESTABLISHED      |
+> >8. insert to connected list      |
+> >9. *signal pending* <--------------------- the user kill client
+> >10. sk_state=TCP_CLOSE           |
+> >client is exiting...             |
+> >11. call ->release()             |
+> >     virtio_transport_close
+> >      if (!(sk->sk_state == TCP_ESTABLISHED ||
+> >	      sk->sk_state == TCP_CLOSING))
+> >		return true; <------------- return at here As a result, the server
+> >cannot notice the connection is corrupt.
+> >So the client should notify the peer in this case.
+> >
+> >Cc: David S. Miller <davem@davemloft.net>
+> >Cc: Jakub Kicinski <kuba@kernel.org>
+> >Cc: Stefano Garzarella <sgarzare@redhat.com>
+> >Cc: Jorgen Hansen <jhansen@vmware.com>
+> >Cc: Norbert Slusarek <nslusarek@gmx.net>
+> >Cc: Andra Paraschiv <andraprs@amazon.com>
+> >Cc: Colin Ian King <colin.king@canonical.com>
+> >Cc: David Brazdil <dbrazdil@google.com>
+> >Cc: Alexander Popov <alex.popov@linux.com>
+> >Signed-off-by: lixianming <lixianming5@huawei.com>
+> >Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
+> >---
+> > net/vmw_vsock/af_vsock.c | 1 +
+> > 1 file changed, 1 insertion(+)
+> >
+> >diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c index
+> >92a72f0..d5df908 100644
+> >--- a/net/vmw_vsock/af_vsock.c
+> >+++ b/net/vmw_vsock/af_vsock.c
+> >@@ -1368,6 +1368,7 @@ static int vsock_stream_connect(struct socket *sock,
+> struct sockaddr *addr,
+> > 		lock_sock(sk);
+> >
+> > 		if (signal_pending(current)) {
+> >+			vsock_send_shutdown(sk, SHUTDOWN_MASK);
+> 
+> I see the issue, but I'm not sure is okay to send the shutdown in any case,
+> think about the server didn't setup the connection.
+> 
+> Maybe is better to set TCP_CLOSING if the socket state was TCP_ESTABLISHED,
+> so the shutdown will be handled by the
+> transport->release() as usual.
+> 
+> What do you think?
+> 
 
-This is a multi-part message in MIME format.
---------------FC559BA52F5CD7817E6BBA02
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Your method looks more gracefully, we'll try it and get back to you, thanks.
 
-On 13.05.21 12:25, Greg Kroah-Hartman wrote:
-> On Thu, May 13, 2021 at 12:03:02PM +0200, Juergen Gross wrote:
->> Xen frontends shouldn't BUG() in case of illegal data received from
->> their backends. So replace the BUG_ON()s when reading illegal data fro=
-m
->> the ring page with negative return values.
->>
->> Signed-off-by: Juergen Gross <jgross@suse.com>
->> ---
->>   drivers/tty/hvc/hvc_xen.c | 15 +++++++++++++--
->>   1 file changed, 13 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/tty/hvc/hvc_xen.c b/drivers/tty/hvc/hvc_xen.c
->> index 92c9a476defc..30d7ffb1e04c 100644
->> --- a/drivers/tty/hvc/hvc_xen.c
->> +++ b/drivers/tty/hvc/hvc_xen.c
->> @@ -86,6 +86,11 @@ static int __write_console(struct xencons_info *xen=
-cons,
->>   	cons =3D intf->out_cons;
->>   	prod =3D intf->out_prod;
->>   	mb();			/* update queue values before going on */
->> +
->> +	if (WARN_ONCE((prod - cons) > sizeof(intf->out),
->> +		      "Illegal ring page indices"))
->> +		return -EINVAL;
->=20
-> How nice, you just rebooted on panic-on-warn systems :(
->=20
->> +
->>   	BUG_ON((prod - cons) > sizeof(intf->out));
->=20
-> Why keep this line?
+> Anyway, also without the patch, the server should receive a RST if it
+> sends any data to the client, but of course, is better to let it know
+> the socket is closed in advance.
+> 
 
-Failed to delete it, sorry.
+Yes, agree.
 
->=20
-> Please just fix this up properly, if userspace can trigger this, then
-> both the WARN_ON() and BUG_ON() are not correct and need to be correctl=
-y
-> handled.
+> Thanks,
+> Stefano
 
-It can be triggered by the console backend, but I agree a WARN isn't the
-way to go here.
-
-
-Juergen
-
---------------FC559BA52F5CD7817E6BBA02
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------FC559BA52F5CD7817E6BBA02--
-
---FZBttakujcGFgjGf6InMpgFXVJMrsK0RM--
-
---p8KsZYxN25YcQ1oOBHYXw2yKXKcq6rvnq
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmCdAOcFAwAAAAAACgkQsN6d1ii/Ey+S
-rAf/S17iqdeQXUSbhwOIxZaD6ktKNYhdz5k7TVLwIhOuu1CgDJ4OAbC//Hy2nieJrihOylnFDb0O
-XhTsBTF08lVyRedghCnkYJUOq6jU8cd52Ao/dDYynTcgT8xFUnHxtJ13A5629ahRri4H+WIRCbmI
-OGXrAmELfNYPcaYlBoGzG8CdN8MhUH9Vf8zvZnaJCzZNBV1c9bPuRmiZf0azNDBj72c0UfHc8VBT
-FABpYLcOCJR4W1G/Kjo3xRN4yCk35Yg6uW7yXuaah/sSmjbLuWW8ExBKywmppLUEw2q0Wz6gJgIS
-Jtx9O+TQn3MTrmI+6ltoVUr49axe+Ftb9w1OlLlEig==
-=oe+P
------END PGP SIGNATURE-----
-
---p8KsZYxN25YcQ1oOBHYXw2yKXKcq6rvnq--
