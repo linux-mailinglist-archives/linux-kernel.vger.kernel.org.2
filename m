@@ -2,140 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4B8C37FB1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 17:59:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6027D37FB28
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 18:01:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234935AbhEMQAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 12:00:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48316 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232830AbhEMQAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 12:00:18 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9AFE9613BC;
-        Thu, 13 May 2021 15:59:04 +0000 (UTC)
-Date:   Thu, 13 May 2021 17:00:12 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Lucas Stankus <lucas.p.stankus@gmail.com>
-Cc:     lars@metafoo.de, Michael.Hennerich@analog.com,
-        gregkh@linuxfoundation.org, linux-iio@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] staging: iio: cdc: ad7746: clean up driver comments
- and probe return
-Message-ID: <20210513170012.78326bfa@jic23-huawei>
-In-Reply-To: <687a1923add71303da13e3a838e97a6ffc7dcda7.1620766020.git.lucas.p.stankus@gmail.com>
-References: <cover.1620766020.git.lucas.p.stankus@gmail.com>
-        <687a1923add71303da13e3a838e97a6ffc7dcda7.1620766020.git.lucas.p.stankus@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S234997AbhEMQCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 12:02:54 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:60314 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232391AbhEMQCu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 12:02:50 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 262901C0B87; Thu, 13 May 2021 18:01:38 +0200 (CEST)
+Date:   Thu, 13 May 2021 18:01:37 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/acpi: Switch to pr_xxx log functions
+Message-ID: <20210513160137.GB19588@duo.ucw.cz>
+References: <8436da08-4812-d383-8f2a-1c07181ebfb8@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="H+4ONPRPur6+Ovig"
+Content-Disposition: inline
+In-Reply-To: <8436da08-4812-d383-8f2a-1c07181ebfb8@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 May 2021 17:54:01 -0300
-Lucas Stankus <lucas.p.stankus@gmail.com> wrote:
 
-> Remove vague comments, align temperature comment with indent block and
-> simplify probe return on device register.
-> 
-> Also fix the following checkpatch warning:
-> CHECK: Alignment should match open parenthesis
-> 
-> Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
+--H+4ONPRPur6+Ovig
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-As Fabio pointed out, finer grained patches with one type of change per
-patch would be good.
+Hi!
 
-> ---
->  drivers/staging/iio/cdc/ad7746.c | 31 ++++++++++---------------------
->  1 file changed, 10 insertions(+), 21 deletions(-)
-> 
-> diff --git a/drivers/staging/iio/cdc/ad7746.c b/drivers/staging/iio/cdc/ad7746.c
-> index dfd71e99e872..e03d010b2f4c 100644
-> --- a/drivers/staging/iio/cdc/ad7746.c
-> +++ b/drivers/staging/iio/cdc/ad7746.c
-> @@ -84,10 +84,6 @@
->  #define AD7746_CAPDAC_DACEN		BIT(7)
->  #define AD7746_CAPDAC_DACP(x)		((x) & 0x7F)
->  
-> -/*
-> - * struct ad7746_chip_info - chip specific information
-> - */
-> -
->  struct ad7746_chip_info {
->  	struct i2c_client *client;
->  	struct mutex lock; /* protect sensor state */
-> @@ -232,13 +228,14 @@ static int ad7746_select_channel(struct iio_dev *indio_dev,
->  
->  		if (chip->capdac_set != chan->channel) {
->  			ret = i2c_smbus_write_byte_data(chip->client,
-> -				AD7746_REG_CAPDACA,
-> -				chip->capdac[chan->channel][0]);
-> +							AD7746_REG_CAPDACA,
-> +							chip->capdac[chan->channel][0]);
->  			if (ret < 0)
->  				return ret;
-> +
->  			ret = i2c_smbus_write_byte_data(chip->client,
-> -				AD7746_REG_CAPDACB,
-> -				chip->capdac[chan->channel][1]);
-> +							AD7746_REG_CAPDACB,
-> +							chip->capdac[chan->channel][1]);
->  			if (ret < 0)
->  				return ret;
+> Switching to pr_debug et al has two benefits:
+> - We don't have to add PREFIX to each log statement
+> - Debug output is suppressed except DEBUG is defined or dynamic
+>   debugging is enabled for the respective code piece.
+>=20
+> In addition ensure that longer messages aren't split to multiple lines
+> in source code, checkpatch complains otherwise.
+>=20
+> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
 
-I wondered if it might be sensible to factor this code out to reduce the indent
-and make things more readable.  Having taken a look it seems there is another
-place with exactly the same call sequence.  From how it's used there, I'm
-assuming this is updating the offsets.  As such, I would introduce an
+Acked-by: Pavel Machek <pavel@ucw.cz>
 
-ad7746_offsets_set(struct iio_dev *indio_dev, int channel)
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
 
-or similar.
+--H+4ONPRPur6+Ovig
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
->  
-> @@ -564,10 +561,10 @@ static int ad7746_read_raw(struct iio_dev *indio_dev,
->  
->  		switch (chan->type) {
->  		case IIO_TEMP:
-> -		/*
-> -		 * temperature in milli degrees Celsius
-> -		 * T = ((*val / 2048) - 4096) * 1000
-> -		 */
-> +			/*
-> +			 * temperature in milli degrees Celsius
-> +			 * T = ((*val / 2048) - 4096) * 1000
-> +			 */
->  			*val = (*val * 125) / 256;
->  			break;
->  		case IIO_VOLTAGE:
-> @@ -669,10 +666,6 @@ static const struct iio_info ad7746_info = {
->  	.write_raw = ad7746_write_raw,
->  };
->  
-> -/*
-> - * device probe and remove
-> - */
-> -
->  static int ad7746_probe(struct i2c_client *client,
->  			const struct i2c_device_id *id)
->  {
-> @@ -730,11 +723,7 @@ static int ad7746_probe(struct i2c_client *client,
->  	if (ret < 0)
->  		return ret;
->  
-> -	ret = devm_iio_device_register(indio_dev->dev.parent, indio_dev);
-> -	if (ret)
-> -		return ret;
-> -
-> -	return 0;
-> +	return devm_iio_device_register(indio_dev->dev.parent, indio_dev);
->  }
->  
->  static const struct i2c_device_id ad7746_id[] = {
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYJ1NYQAKCRAw5/Bqldv6
+8jjoAKDCAf0bfCosCwpNYAfYM7ExTZ8KbwCfbqGkEyPdJ/bmJka4HFw+tSoVM44=
+=lc0P
+-----END PGP SIGNATURE-----
 
+--H+4ONPRPur6+Ovig--
