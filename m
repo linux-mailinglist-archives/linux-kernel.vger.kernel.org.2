@@ -2,80 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B2437F4E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 11:38:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 279DF37F4E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 11:39:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232750AbhEMJjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 05:39:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231253AbhEMJjJ (ORCPT
+        id S232735AbhEMJkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 05:40:55 -0400
+Received: from out28-169.mail.aliyun.com ([115.124.28.169]:46057 "EHLO
+        out28-169.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230393AbhEMJkx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 05:39:09 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC63AC061574;
-        Thu, 13 May 2021 02:37:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=KrP6SOX0x86614uuETg88bVN1b1PzU7zY1Br0j675x8=; b=gTwifMER8vPwjYLdlxTA/a53n
-        sSOCrP2RU7dVECBvzYNhbxkfzmANsJ0sT/CxThy/wAEeDErWCDf1X8PPActc7U7svENFTDJT8cutu
-        u7q0eEZar+qI5H3LSNho/KL9eInQ7VqnVZS5myngOU7Ay0OX2+1rFBtsk9JM3Wu0HRSf8sZ8kk/9Q
-        yCLaNHjkMWVLdL8Hw5/3h70AEKgzg7Wjeplq1aTAtvlWTSiHj+gChHxkx/zLLHKi3MKCm9hb8SWiy
-        ShPVGoMQSVH8gIetv4JQASI/99LBzsPg6pF6vkQoefzVj2iV3JtVyzyykVXYxCxdqse+uKItu0yGa
-        ah6bpU8oA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43920)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lh7mz-0005tm-Jo; Thu, 13 May 2021 10:37:53 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lh7mx-0002t7-Ne; Thu, 13 May 2021 10:37:51 +0100
-Date:   Thu, 13 May 2021 10:37:51 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
-        kuba@kernel.org, david.daney@cavium.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH V2] net: mdio: thunder: Fix a double free issue in the
- .remove function
-Message-ID: <20210513093751.GU1336@shell.armlinux.org.uk>
-References: <f8ad9a9e6d7df4cb02731a71a418acca18353380.1620890611.git.christophe.jaillet@wanadoo.fr>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f8ad9a9e6d7df4cb02731a71a418acca18353380.1620890611.git.christophe.jaillet@wanadoo.fr>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+        Thu, 13 May 2021 05:40:53 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.197983|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0093466-3.37296e-05-0.99062;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047199;MF=liu.xiang@zlingsmart.com;NM=1;PH=DS;RN=6;RT=6;SR=0;TI=SMTPD_---.KClSHxe_1620898781;
+Received: from localhost(mailfrom:liu.xiang@zlingsmart.com fp:SMTPD_---.KClSHxe_1620898781)
+          by smtp.aliyun-inc.com(10.194.99.21);
+          Thu, 13 May 2021 17:39:41 +0800
+From:   Liu Xiang <liu.xiang@zlingsmart.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        liuxiang_1999@126.com, liuxiang1999@gmail.com,
+        Liu Xiang <liu.xiang@zlingsmart.com>
+Subject: [PATCH] mm/memory.c: fix comment of finish_mkwrite_fault()
+Date:   Thu, 13 May 2021 17:39:31 +0800
+Message-Id: <20210513093931.15234-1-liu.xiang@zlingsmart.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 09:44:49AM +0200, Christophe JAILLET wrote:
-> 'bus->mii_bus' have been allocated with 'devm_mdiobus_alloc_size()' in the
-> probe function. So it must not be freed explicitly or there will be a
-> double free.
-> 
-> Remove the incorrect 'mdiobus_free' in the remove function.
-> 
-> Fixes: 379d7ac7ca31 ("phy: mdio-thunder: Add driver for Cavium Thunder SoC MDIO buses.")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Fix the return value in comment of finish_mkwrite_fault().
 
-Also note that I did review your patch, and give you a reviewed-by for
-it, which I think should have been carried over to v2 since Andrew's
-comment was only concerning the formatting of the subject line. The
-patch content is entirely fine. So, I'll give it again, so patchwork
-gets the right information:
+Signed-off-by: Liu Xiang <liu.xiang@zlingsmart.com>
+---
+ mm/memory.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: Russell King <rmk+kernel@armlinux.org.uk>
-
-My comments about the unregistration are a separate bug that should be
-addressed in a separate follow-on patch. Thanks.
-
+diff --git a/mm/memory.c b/mm/memory.c
+index 730daa009..b844afded 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -3035,7 +3035,7 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
+  * The function expects the page to be locked or other protection against
+  * concurrent faults / writeback (such as DAX radix tree locks).
+  *
+- * Return: %VM_FAULT_WRITE on success, %0 when PTE got changed before
++ * Return: %0 on success, %VM_FAULT_NOPAGE when PTE got changed before
+  * we acquired PTE lock.
+  */
+ vm_fault_t finish_mkwrite_fault(struct vm_fault *vmf)
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.17.1
+
