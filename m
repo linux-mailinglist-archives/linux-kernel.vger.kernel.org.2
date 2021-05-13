@@ -2,130 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0707637F2C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 08:02:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC77937F2C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 08:03:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231266AbhEMGDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 02:03:20 -0400
-Received: from mail-mw2nam10on2115.outbound.protection.outlook.com ([40.107.94.115]:31073
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229748AbhEMGDR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 02:03:17 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AMHRsKgg+STYjEy+IAoY82czpm6MRKl1yzPvOlmWLrpv2szaUXRENiB4fVhMhQM8I3XegKCV60uE/LGUWDMVaaTRPjlfKNBdM3dT8RoZBYrgiJtrVKqgii/b2mGfxYKIa6Q28mfhpY3PHRPJg7sWpDU5OdA18wAgzPTvXol78VM3LHRJu5J+xDBtPumF+feA3jFpKWJNPiDVDpgemn+EDwTP3ouN5uWYDZpEYfIFTjH7Yd83EztPN6N5bgb0WCgCiRnzdlQFRcMXcaL4K8CSe7eGSfVQ+j53XOAhIPFH4o6ThBmMtlYkQ2Nm8ClEBbKozRpN2PmqS66NADNyG0b+7g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9408YTzEEtLE4VrhzpN2/a5tyuy+2yuUedmaEuwqz9U=;
- b=Y+3qIYR6BpoOiLyi0XmA5K9T5pYwOcyNr+GhoIrPUmsNI5DwsRYtgyhk/4MupC7XySbvwpkOyEllU3W2oCuV0Q60Ns2J7FGjv2plwk8FMfu1t89WKI001/dT3zS0yZFOPRaV6aP0QyRWFyOYE+DuAEAWtkjL0mcVSKo8hb/siHZ7skq1X+QMNrzDVMcBInWf+9KmEem1gF3xH/dp5rTlURktrr6Mdi0XM5g1sv620R9vo9BQtve7XO48brUdNVt8g+VYap5VxbSDeuDbD8F6dR+F+RKd/nJSVuZ/ufaMMcj/X5gUhvusOde5aSDTeh0ZGRQel1Fp9M72jjbmZ16ulQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9408YTzEEtLE4VrhzpN2/a5tyuy+2yuUedmaEuwqz9U=;
- b=ZOUsKTSnPddqafx9Gk3rmJxqmffKb8E9svBgOIqtpdH2zU5aPdySmQtqcxJBWtGzGF5Ggzp7DW+zrKZDAURIScC3SVGuz76VgVjtDiSWwEE1UAvjYK8VtknRCd82WC2P9HCxi+m8w1zJc3Eh3FJ8aA6ZUAaBD52+Kxau37kD3NY=
-Received: from MW2PR2101MB0892.namprd21.prod.outlook.com
- (2603:10b6:302:10::24) by MW4PR21MB1939.namprd21.prod.outlook.com
- (2603:10b6:303:76::8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.5; Thu, 13 May
- 2021 06:02:07 +0000
-Received: from MW2PR2101MB0892.namprd21.prod.outlook.com
- ([fe80::5548:cbd8:43cd:aa3d]) by MW2PR2101MB0892.namprd21.prod.outlook.com
- ([fe80::5548:cbd8:43cd:aa3d%5]) with mapi id 15.20.4150.012; Thu, 13 May 2021
- 06:02:07 +0000
-From:   Dexuan Cui <decui@microsoft.com>
-To:     "'netfilter-devel@vger.kernel.org'" <netfilter-devel@vger.kernel.org>,
-        "'netdev@vger.kernel.org'" <netdev@vger.kernel.org>
-CC:     Stephen Hemminger <sthemmin@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>
-Subject: RE: netfilter: iptables-restore: setsockopt(3, SOL_IP,
- IPT_SO_SET_REPLACE, "security...", ...) return -EAGAIN 
-Thread-Topic: netfilter: iptables-restore: setsockopt(3, SOL_IP,
- IPT_SO_SET_REPLACE, "security...", ...) return -EAGAIN 
-Thread-Index: AddHdN+snMbFwQLHQSmZ6J2vO7HZjQAM7kqQAAUT/wA=
-Date:   Thu, 13 May 2021 06:02:07 +0000
-Message-ID: <MW2PR2101MB08925E481FFFF8AB7A3ACDAFBF519@MW2PR2101MB0892.namprd21.prod.outlook.com>
-References: <MW2PR2101MB0892FC0F67BD25661CDCE149BF529@MW2PR2101MB0892.namprd21.prod.outlook.com>
- <MW2PR2101MB0892864684CFDB096E0DBF02BF519@MW2PR2101MB0892.namprd21.prod.outlook.com>
-In-Reply-To: <MW2PR2101MB0892864684CFDB096E0DBF02BF519@MW2PR2101MB0892.namprd21.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=356357d2-2a65-4b3e-86cf-03509df80d8d;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-05-12T21:20:54Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=microsoft.com;
-x-originating-ip: [2601:600:8b00:6b90:9d16:8ec9:e190:4c0c]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: efe575fa-4412-4a1d-de32-08d915d4a3cf
-x-ms-traffictypediagnostic: MW4PR21MB1939:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MW4PR21MB193924F34F18A92E50615B21BF519@MW4PR21MB1939.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:989;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: m3ewiVkPZVv54rpxWS8CvM+KyZd6KCPx1vMoPg6CO61nFnpg/CRIp64odDVEIcYozILtbQNOzA4RZ0vfA9XkHZFP8qN+rWbLgD7F4Lv/8QZBxB77Y1rJ5A8XPAJzekic/DliMv5sst/aWTtcwjC7yZ+tImky1S9DCb3Z17R6EdKzSLJ9ER+qmsjVXwYdgwkr6gwAE+a3MkjvGcIXQJhyqbjYfE79InsRsezo3q/QxazHZ7sayobrctErV4+GqHfKHdkdEhTV8ekKJFQlH82KtGZhvY3Xm0yMkAFfOcLX+EXelwzi9ihpsjlIbnJ93K8AEolhGpsY4cdo7stajDczBvVrIPu0FeQpghRnd6HtpX8BUkyqhY7R6+4w9qZiR4LEMrlNMFDIHNPH8g4D6fTUFR/mEpXcoRec9mENmfgvQGVDU9KrzFl4vF3bMh2zTpHS3iPN639Kp72A2NCi1VRvECzZUsUk5LeIjUPmzwshy5xXpOUSCFIjdlI9pd8qINlMH4PQldAwYWKzrOp2m+VAACx+VL6P5zS9oiu+rMElPKnjSEcJuxdpBogUG+D9NHFfO2Q4d49RAVx4p6yKsstNSFA6hnhdcnBnws4s32KIs/h6Al5Xle1BzJhRirC7KIVjNmwbdA+Sq8VR8FiIMVjr6chzVSxMRW9vcX7MrFItmAQq5ONtIEIfQpLJXVCX9f1Ufg8HACpq3AaObd92WTUtRu8SjWjLM2fAZ1MB6CXu9R+ynEM0Dp3n3R3cSBpifXBH2ecJ1PR8Jag9mWz6i9BmCg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR2101MB0892.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(82950400001)(82960400001)(86362001)(5660300002)(8936002)(52536014)(66476007)(4743002)(478600001)(33656002)(110136005)(54906003)(8676002)(10290500003)(186003)(55016002)(4744005)(9686003)(8990500004)(2940100002)(71200400001)(7696005)(38100700002)(122000001)(450100002)(4326008)(76116006)(316002)(6506007)(2906002)(66556008)(64756008)(66446008)(66946007)(491001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 2
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?dZFJEIL6AAmlX4yzZHTXDw7CGmwN8TrxJ9bmtp+espqQnvtPkuXx564R7Mdj?=
- =?us-ascii?Q?JoXuYwKvpejzB1VGNJDIemHnHD4zDkAppfZfTbWL9XydKDkgrn0UyQdrPAms?=
- =?us-ascii?Q?a9/XcDTm9nC0lAwj3kRN7XxH4RsQzlTByzVMzlkQQMUl1fxnbSXHl8j2L559?=
- =?us-ascii?Q?t/783T3C5kNRlTA5pXPvudrFY88YpztFAWo55jECFL1VksFju6TktbdAYfxV?=
- =?us-ascii?Q?5E48QAPI+UgrQYnfFgdxnALneADjmckM5fBW2TndLwbgxG+LvVuyef7sK3tQ?=
- =?us-ascii?Q?kokRtmeqWI0vnzdh5QJoR3lzyU/NiUyqO2Sh3W4OyZ6K2PZJrMSxr6dJHqYC?=
- =?us-ascii?Q?3fiRh5pEPJ3RnmTLDyFQLXX1EpJDa2Bm8HuhIFgUaH+P4BWrqbYzjs239yHc?=
- =?us-ascii?Q?o6nh1KRLBTK5nN/e8Twr/0MWZMoZDmdXTH9LQBw/XebVztz4Y2pzhU+nNqIp?=
- =?us-ascii?Q?pWRsx2EV6EvCP1J62D29feEKE0WNz5htbcrKA5TWvbfFDInz2Eq1mpv4lxGz?=
- =?us-ascii?Q?4xr/noIksWyDU4vP23rNwHROm5BX97CWLnQIwgtB7m1GQHaIebhXfCsEIXme?=
- =?us-ascii?Q?cojtHp7t949PtJncLTGSAArqxiD6DcUseBetzFOKo2/0+FsWbfUT9vYxKHdk?=
- =?us-ascii?Q?VIIgORpBltAS++R6BxCihC/LgNKjHgci4ZsiX1NJya1bYUabadpMv8M8Ywm6?=
- =?us-ascii?Q?dkZgwZrtuJDWl6oePnSTVQ30pn2DBW0T5x/erGWzeRjOP124f2LghCBCMDlw?=
- =?us-ascii?Q?k1KNXw6fhW6KRPwPzYkr0luh9i0F3XhTYOqSNtI4evJYRDdjWEXK5YimOfhw?=
- =?us-ascii?Q?tvAOCSqNaxiJDtoDaQ56gW+Jw03qpS0wmPxEmi4S0aFHRDE0WsDdF17M3VUZ?=
- =?us-ascii?Q?wlqaIyiqlpA2cjdzivzMLo8dmreDCDas5nZEFFYZsqUnGvU9SHOsjzf9gwyQ?=
- =?us-ascii?Q?wv+aBz04z2pGDh2bLl8CfeulJH4d0F/jP/cXWHlA?=
-x-ms-exchange-antispam-messagedata-1: aWKuH5LMf20VMINsuVGNfvCQoJ9NjWKu0SaYoxX64kokkXHwW8pElxM+d1rUPQoQX1LM8qAU7rADUrrSNnFhL4iyHDvYaxoG5MrbaD9UGU6HkVh/8PNyln5uLkCRpweW+dkC99HjNKCht/WCraEWma3JOlZLWEKPhMhe4uLjq/cOIsDZRWMBIFPXVDX8e8JpIw6Z2Q7l98uEa/cIUuBFD3qGI336ftzLN130ZNoJTZJ+yODNOZjB7YivOI4C+RC0QSSZnCMXoxO7DZ8LnF6qclPnUrFZeSe1qoNo5g1Ilk6yXdgwprpv1p9XGv+GzYNYvoIDQ0uUYZ21hD4acu5tLbbXpKmYWXtCWakhumQLRa9Mz2xpCNx2kRNGhgfhE0aBksFSfkM6fSH0hJOjrYsYG/g+
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S231277AbhEMGEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 02:04:35 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:17487 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229748AbhEMGE0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 02:04:26 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620885797; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Nj5Be3kK1D2msgTgYt8nbcU3bMVB86DVrEruQIQ9nEk=;
+ b=Y7jjJunty+Oo78Q5+GBnA23ysHrqKYShmEky4Xgo+DrAdNtyPxZ13PhjJuBfIyv1DjOjCBIX
+ t3HTucdCyGSYPDgp22QP1Gh2pKlbnye2WAM4GJbfq1kpIsmQC6HaOIazjYjRdsQdapFE61Jt
+ QG1gJFLJtta66ybJ4gaUyF5XtnY=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 609cc121938a1a6b8fd4f743 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 13 May 2021 06:03:13
+ GMT
+Sender: taozha=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 80B95C433F1; Thu, 13 May 2021 06:03:13 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: taozha)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 46C7FC433D3;
+        Thu, 13 May 2021 06:03:10 +0000 (UTC)
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW2PR2101MB0892.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: efe575fa-4412-4a1d-de32-08d915d4a3cf
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 May 2021 06:02:07.3755
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: xyyoVi/8cvv7taYHWK8I/358Pis0AdlqK6JrUy4DE1aUJb0YtfDpvOFa/w50Gl1zT7JzSDTYI+d3duz+2rNKeQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR21MB1939
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 13 May 2021 14:03:10 +0800
+From:   taozha@codeaurora.org
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Tingwei Zhang <tingwei@codeaurora.org>,
+        Mao Jinlong <jinlmao@codeaurora.org>,
+        Yuanfang Zhang <zhangyuanfang@codeaurora.org>
+Subject: Re: [PATCH v1 0/3] coresight: Support for building more coresight
+ paths
+In-Reply-To: <070d1c13-2b3e-2dfb-f51b-9d40f1b45a03@arm.com>
+References: <1620644727-29279-1-git-send-email-taozha@codeaurora.org>
+ <070d1c13-2b3e-2dfb-f51b-9d40f1b45a03@arm.com>
+Message-ID: <1cd71b1323e3d635b76c4785f60413a9@codeaurora.org>
+X-Sender: taozha@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Dexuan Cui
-> Sent: Wednesday, May 12, 2021 9:19 PM
-> ...
-> I think the latest mainline kernel should also have the same race.
-> It looks like this by-design race exists since day one?
+On 2021-05-10 21:10, Suzuki K Poulose wrote:
+> Hi Tao
+> 
+> On 10/05/2021 12:05, Tao Zhang wrote:
+>> We are trying to achieve more types of Coresight source devices.
+>> For example, we have a type of coresight source devic named TPDM.
+>> In the process of using, sometimes mulitiple TPDMs need to be
+>> connected to the different input ports on the same funnel.
+>> Meanwhile, these TPDMs also need to output from different
+>> ports on the funnel.
+>> But, at present the Coresight driver assumes
+>> a) Only support Coresight source type ETM, ETR and ETF
+> 
+> Did you mean ETM and STM here ? ETR & ETF are not source types, rather
+> they are SINK.
+> 
+> 
+Yes, I mean ETM and STM here.
+>> b) Funnels only support mulitiple inputs and one output
+>> Which doesn't help to add the above feature for our new Coresight
+>> source device TPDM. So, in order to accommodate the new device,
+>> we develop the following patches.
+> 
+> Where is the TPDM driver ? Could you give us a rough idea of the
+> behavior in terms of the input / output ?
+> 
+> 
+We have plans to upload the TPDM driver in the feature. TPDM is a type 
+of
+hardware component for debugging and monitoring on Qualcomm targets.
+The primary use case of the TPDM is to collect data from different data
+source and send it to a TPDA for packetization, timestamping and 
+funneling.
+And the output of TPDA is a regular AMBA ATB stream and can be thought 
+of as
+any other trace source in the system.
+You can get a general understanding of the TPDM and TPDA driver through 
+the
+following patch.
+https://source.codeaurora.org/quic/la/kernel/msm-5.4/commit/?h=LV.AU.0.2.0.r1&id=a47c3313965c1101f2224e55da2c54d9e5c388dd
+>> a) Add support more types of Coresight source devices.
+> 
+> Which ones ? where is the code ?
+> 
+In the patch 
+"0001-coresight-add-support-to-enable-more-coresight-paths.patch",
+we replaced the original path save method with the funcation 
+"coresight_store_path".
+In the original method, "coresight_enable" only can store the tracer 
+path for ETM
+and STM. In the function "coresight_store_path", it can store the tracer 
+path for
+more types of Coresight sources.
+>> b) Add support for multiple output ports on funnel and the output
+>> ports could be selected by Corsight source.
+> 
+> Does the "TPDM" require programming to switch these output or are
+> these "static" ?
+> 
+> Is this something that can be avoided by having a "fake"
+> static-replicator in the path ?
+> 
+> e.g,              TPDM
+> 	 ________________________________________________
+>  In0	|						|  -> Out0
+>  In1	|   Static-Funnel   -> Static-Replicator	|  -> Out1
+>  In2	|						|  -> Out2
+> 	 ________________________________________________
+> 
+> 
+> Is this something that can be solved ? Again, please give a brief
+> description of the TPDM device and the driver code in the series to
+> give us a complete picture of what you are trying to do.
+> 
+> Reviewing some changes without having the full picture is not going to
+> be helpful.
+> 
+> Suzuki
+Now the link can support multiple out ports, but there are no entries 
+from
+the link's device tree can figure out from which input port to which 
+output
+port.
+This patch provide the entry "source" in device tree, which can 
+associate
+the input port of the link with the output port.
+e.g, if we want to achieve the following link connection.
+-------------------------------------------------------------------------
+Source0 -> In0 |		| Out0 ->
+Source1 -> In1 |Funnel 0| Out1 ->
+Source2 -> In2 |		| Out2 ->
+-------------------------------------------------------------------------
+We can configure the "source" entries as the following device tree.
+Funnel 0 {
+	out-ports {
+		port@0 {
+			reg = <0>
+			Out0: endpoint {
+				remote-endpoint = <... ...>;
+				source = <Source0>
+			}
 
-I indeed reproduced the issue with the latest stable tree (v5.12.3) as well=
-.
+		}
+		port@1 {
+			reg = <1>
+			Out1: endpoint {
+				remote-endpoint = <... ...>;
+				source = <Source1>
+			}
 
-> > BTW, iptables does have a retry mechanism for getsockopt():
-> > 2f93205b375e ("Retry ruleset dump when kernel returns EAGAIN.")
-> >
-> (https://git.netfilter.org/iptables/commit/libiptc?id=3D2f93205b375e&cont=
-ext=3D10
-> > &ignorews=3D0&dt=3D0)
-> >
-> > But it looks like this is enough?=20
-I missed a "not". IMO 2f93205b375e is not enough.
+		}
+		port@2 {
+			reg = <0>
+			Out2: endpoint {
+				remote-endpoint = <... ...>;
+				source = <Source2>
+			}
 
-Thanks,
--- Dexuan
+		}
+	}
+
+	in-ports {
+		port@0 {
+			reg = <0>
+			In0: endpoint {
+				remote-endpoint = <... ...>;
+			}
+
+		}
+		port@1 {
+			reg = <1>
+			Out1: endpoint {
+				remote-endpoint = <... ...>;
+			}
+
+		}
+		port@2 {
+			reg = <0>
+			Out2: endpoint {
+				remote-endpoint = <... ...>;
+			}
+
+		}
+	}
+}
+
+Best,
+Tao
