@@ -2,107 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3589537F0DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 03:17:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2459D37F0E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 03:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231425AbhEMBSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 21:18:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58924 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234683AbhEMBSG (ORCPT
+        id S230233AbhEMBWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 21:22:54 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:42721 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230096AbhEMBWw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 21:18:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620868617;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8rIOlce/5RXrT16ramfLpoZjAAz9w2C7JWd/JQK5isA=;
-        b=Sz87xDnH113sWSHdeLObUgq6frhPNvVcr/FYNy+VTQimg0j87ykJSENRXaTQIkhiwzoPHF
-        VvLZsdw5G3uj0yn05owGhPPU22sJRk/XbJ8bo9mFw4dl24w0jd/2rbrj1V8xircJpLlei8
-        RYDXJFLj1ZyNi6Lwqjiju0CN1zbn5CU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-466-mgF-RyesNwGIJLXXb7cNcw-1; Wed, 12 May 2021 21:16:53 -0400
-X-MC-Unique: mgF-RyesNwGIJLXXb7cNcw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 14FC9801B12;
-        Thu, 13 May 2021 01:16:52 +0000 (UTC)
-Received: from localhost (ovpn-12-82.pek2.redhat.com [10.72.12.82])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 15A0B63BA7;
-        Thu, 13 May 2021 01:16:50 +0000 (UTC)
-Date:   Thu, 13 May 2021 09:16:48 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Mike Rapoport <rppt@kernel.org>,
-        Miles Chen <miles.chen@mediatek.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        wsd_upstream@mediatek.com, k-hagio-ab@nec.com
-Subject: Re: [PATCH] mm/sparse: fix check_usemap_section_nr warnings
-Message-ID: <20210513011648.GA6776@MiWiFi-R3L-srv>
-References: <20210511093114.15123-1-miles.chen@mediatek.com>
- <YJpbWVrgJFLRpzl3@kernel.org>
- <1620797600.14730.7.camel@mtkswgap22>
- <YJuh90iYeZ8F4Ain@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YJuh90iYeZ8F4Ain@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        Wed, 12 May 2021 21:22:52 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 09D7D33E;
+        Wed, 12 May 2021 21:21:42 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Wed, 12 May 2021 21:21:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm2; bh=LJMBBhe/zWnSoQmdd8FrIcwa5mli+J+
+        /2kpGJdDlKyM=; b=YlpKlfQ8Z7b/EAlOKqNPnRyUpYDOaRjvdNu6e/Z1SO1+DE7
+        kv2Zsj7Lk+XK6Bn9zaUto3AxXx17FUmv19YxYeNgGuuysQUwFgZpHD1n+te1K8kD
+        KBIw1yMVpBtneVwmK7bVb3q3NRi+QPg+Uo7BswTZzVL2neg6JiQOfl1hf/ChJFGX
+        DRy8GENqT98fLaeKtbiX4ASQGmx1ggaYcAuf+S8UfVz6LwQTUqRvQi9SV3cq5w5s
+        WHTSGwTleikD+l4j6YBXbpRkXuFcz8e//0T7fV1SZ+HdE+VoL8x6vX9KKhJ0MT1f
+        xm4+r//F7sPZcSyO7dasGT22GRkDIFYuEn2wyNg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=LJMBBh
+        e/zWnSoQmdd8FrIcwa5mli+J+/2kpGJdDlKyM=; b=X4TahsqJdPc1vgMqeEavXh
+        Kr4ZwWNGnb80ReXiGlX5HuVvKu0XXB65abj9azzpHWxPlVbpM+alyOpzYYc/x/V8
+        TQTrMNRIS37U2XD8jiHuJZS/hdu+cS1hRSZCi6PwvszmxHeWD/LJ20gfVbQjFztG
+        Dzob5ZEXOjtkhHZQJ9ICS5hDfZ9ur4+EB3VOit1ILLkQECVLIoHR7D4ObP0u8GZJ
+        dixM3gJSCKfom3gxI9IkY/l4eBowSkKT660COyI/rgWWsrBGMLifPSEsjRvUTLnb
+        4jU+bTJtFuCsApofhELlVrm5Fpm3OTOt0R8osffmBoTLron5MG26o5c1PNYCxETA
+        ==
+X-ME-Sender: <xms:JX-cYPa92C0dVyIBnN9b7Immm2wwzXMFL9CE24byqOFjeOaP-uuY4Q>
+    <xme:JX-cYOYBsvoGXFC4X-9oNg3y6MLZEcK3-wvWglJ7C83b9m99sIgQ65vIKiXzr1y4Q
+    8vCIp_3W3eqBZuWTA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdehfedggeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhepuddttdekueeggedvtddtueekiedutdfguedutdefieeuteefieelteet
+    vddthfeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:JX-cYB_L59YOZXJZsC5ffHczu50thD6OTOSOZWZ2k2JGArbcSf4qjQ>
+    <xmx:JX-cYFrCpigqJKtUj2ygAT-lzoXp0xQZrx1VzOA2hFQwwGxBOASUmA>
+    <xmx:JX-cYKpg2ZRp0BkbmcQwAInKpmyALkIGMN5B1TAalvOIlqFMV-759Q>
+    <xmx:Jn-cYKLR1xkgOdcZjHJ4Uvm_abGQ5kcATKVbw-a_RD6ko5kzEYYDhw>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 5D47EA00079; Wed, 12 May 2021 21:21:41 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-448-gae190416c7-fm-20210505.004-gae190416
+Mime-Version: 1.0
+Message-Id: <a8ebfb09-e2d8-4c23-b479-860a116cdb49@www.fastmail.com>
+In-Reply-To: <20210510014231.647-2-zev@bewilderbeest.net>
+References: <20210510014231.647-1-zev@bewilderbeest.net>
+ <20210510014231.647-2-zev@bewilderbeest.net>
+Date:   Thu, 13 May 2021 10:51:20 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Zev Weiss" <zev@bewilderbeest.net>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
+Cc:     openbmc@lists.ozlabs.org, "Jiri Slaby" <jirislaby@kernel.org>,
+        "Joel Stanley" <joel@jms.id.au>, "Johan Hovold" <johan@kernel.org>,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: =?UTF-8?Q?Re:_[PATCH_1/3]_serial:_8250=5Faspeed=5Fvuart:_factor_out_aspe?=
+ =?UTF-8?Q?ed=5Fvuart=5F{read,_write}b()_helper_functions?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/12/21 at 12:37pm, Mike Rapoport wrote:
-> On Wed, May 12, 2021 at 01:33:20PM +0800, Miles Chen wrote:
-> > On Tue, 2021-05-11 at 13:24 +0300, Mike Rapoport wrote:
-> > > On Tue, May 11, 2021 at 05:31:14PM +0800, Miles Chen wrote:
-> > > > In current implementation of node_data, if CONFIG_NEED_MULTIPLE_NODES=y,
-> > > > node_data is allocated by kzmalloc. If CONFIG_NEED_MULTIPLE_NODES=n,
-> > > > we use a global variable named "contig_page_data".
-> > > > 
-> > > > If CONFIG_DEBUG_VIRTUAL is not enabled. __pa() can handle both kzalloc and
-> > > > symbol cases. But if CONFIG_DEBUG_VIRTUAL is set, we will have the
-> > > > "virt_to_phys used for non-linear address" warning when booting.
-> > > 
-> > > Maybe we'll just allocate pgdat for CONFIG_NEED_MULTIPLE_NODES=n (which is
-> > > essentially !NUMA) case in, say, free_area_init()?
-> > 
-> > 
-> > thanks for your comment.
-> > 
-> > I check the source tree and found that contig_page_data is used by
-> > crash_core.c as a symbol. I am not familiar with crash_core but I guess
-> > allocate pgdat may break this crash_core users.
-> > 
-> > For example: some userspace scripts want to read the address of
-> > contig_page_data symbol from a corefile.
-> > 
-> > kernel/crash_core.c:460:        VMCOREINFO_SYMBOL(contig_page_data);
-> > 
-> > #ifndef CONFIG_NEED_MULTIPLE_NODES
-> >         VMCOREINFO_SYMBOL(mem_map);
-> >         VMCOREINFO_SYMBOL(contig_page_data);
-> > #endif
+
+
+On Mon, 10 May 2021, at 11:12, Zev Weiss wrote:
+> This is a small prepatory step for changing the way this driver does
+> its I/O accesses.
 > 
-> My understanding is that VMCOREINFO_SYMBOL() should correspond to actual
-> symbol. If there is no contig_page_data symbol, there is no need for
-> VMCOREINFO_SYMBOL() either.
+> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
 
-Yeah, it's exported for makedumpfile and crash utility to parse and get
-the memory layout of the corrupted kernel. If removing it, makedumpfile
-will get it from node_data[]. Looks like a good idea to unify code for
-numa|!numa on pglist_data instances.
-
-Add Kazu to CC since he maintain makedumpfile and Crash utilities.
-
-My concern is that that only happens on arm/arm64/riscv, does it mean the
-warning is not necessary, so can be removed? Or we need to check if
-CONFIG_DEBUG_VIRTUAL doesn't work well in this case.
-
-Thanks
-Baoquan
-
+Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
