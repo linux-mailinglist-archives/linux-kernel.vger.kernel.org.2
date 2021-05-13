@@ -2,68 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 995393800A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 01:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B970F3800A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 01:02:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231424AbhEMXCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 19:02:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49082 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231278AbhEMXC2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 19:02:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1742261363;
-        Thu, 13 May 2021 23:01:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620946878;
-        bh=uN3yahKzBwkB+gvkdxWGKQOVS3XTusPU7ZhMIZnGDxg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=VhIteCOOz2hyzdB7KWnX31mJ/jwWRmgYODHNwr12yHXS7kFIq2eqOChX8N240WNJ9
-         315412YAXRjUnOd+u6iJY3ZOFOe3sDRi3Er3CwHVDs/IjSay7rMU5RbWGhCI6RvioC
-         k4bo1L2jS79wlkwd3hYKOohsE0B0BDhoj3HiRw75dAmJi0PjsNPMZVjti1crtUhETB
-         MpJmv/8bbH7uMBVnvJC7wcso+wyu2meCdShKfHI0AIHMyGZQXDFcs1Mm7UOcGyWwV9
-         MRfscd9E8SyuOMwV1hCCwaWb4vviuJQNcP725m3tod75sLU3QSJRABZoYZmWGK8g1N
-         kuAKYNp6vkOww==
-Date:   Thu, 13 May 2021 18:01:55 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] vfio/iommu_type1: Use struct_size() for kzalloc()
-Message-ID: <20210513230155.GA217517@embeddedor>
+        id S231465AbhEMXDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 19:03:37 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:49577 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230446AbhEMXDg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 19:03:36 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lhKLY-0002Iw-Kp; Thu, 13 May 2021 23:02:24 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] serial: kgdb_nmi: remove redundant initialization of variable c
+Date:   Fri, 14 May 2021 00:02:24 +0100
+Message-Id: <20210513230224.138859-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make use of the struct_size() helper instead of an open-coded version,
-in order to avoid any potential type mistakes or integer overflows
-that, in the worst scenario, could lead to heap overflows.
+From: Colin Ian King <colin.king@canonical.com>
 
-This code was detected with the help of Coccinelle and, audited and
-fixed manually.
+The variable c is being initialized with a value that is never
+read, it is being updated later on. The assignment is redundant and
+can be removed.
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- drivers/vfio/vfio_iommu_type1.c | 2 +-
+ drivers/tty/serial/kgdb_nmi.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-index a0747c35a778..a3e925a41b0d 100644
---- a/drivers/vfio/vfio_iommu_type1.c
-+++ b/drivers/vfio/vfio_iommu_type1.c
-@@ -2795,7 +2795,7 @@ static int vfio_iommu_iova_build_caps(struct vfio_iommu *iommu,
- 		return 0;
- 	}
- 
--	size = sizeof(*cap_iovas) + (iovas * sizeof(*cap_iovas->iova_ranges));
-+	size = struct_size(cap_iovas, iova_ranges, iovas);
- 
- 	cap_iovas = kzalloc(size, GFP_KERNEL);
- 	if (!cap_iovas)
+diff --git a/drivers/tty/serial/kgdb_nmi.c b/drivers/tty/serial/kgdb_nmi.c
+index db059b66438e..7e07ee915f3f 100644
+--- a/drivers/tty/serial/kgdb_nmi.c
++++ b/drivers/tty/serial/kgdb_nmi.c
+@@ -115,7 +115,7 @@ static void kgdb_tty_recv(int ch)
+ static int kgdb_nmi_poll_one_knock(void)
+ {
+ 	static int n;
+-	int c = -1;
++	int c;
+ 	const char *magic = kgdb_nmi_magic;
+ 	size_t m = strlen(magic);
+ 	bool printch = false;
 -- 
-2.27.0
+2.30.2
 
