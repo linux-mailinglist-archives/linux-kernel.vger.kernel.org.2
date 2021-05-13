@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F271037F78D
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 14:09:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE60D37F791
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 14:11:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233804AbhEMMLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 08:11:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40066 "EHLO
+        id S233830AbhEMMMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 08:12:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233698AbhEMMJS (ORCPT
+        with ESMTP id S233705AbhEMMJU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 08:09:18 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54939C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 05:08:08 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id l7so30749227edb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 05:08:08 -0700 (PDT)
+        Thu, 13 May 2021 08:09:20 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C020C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 05:08:09 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id r11so6660308edt.13
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 05:08:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=deviqon.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=uc0zdIjPCIp6p3E6v5GazM0pebh4DygGLW4ST5XuVM0=;
-        b=meABjWyjJzNCmMmk4uABA27da+3g1Rm0qYKHF6KbuXw8Pnf0wpfrJRxnnunsgzRbwF
-         9rZj3la9fEWk7ePr9pXJWHuxGPkLu6nU0CNkY7UQoDN0o5wWM9mNiiv+gpo5aQzt8k34
-         J+ED/E0pBhEoL9qxwgBKNT6ZOztVIZ6TQQODCE11Unkok1tEo72vqZQhfP8j8FZdZw7h
-         ZPqg1kDeIMk3RKaI0O/1DkoBBpbXMQVVGA2dUePI8WTEBS2Pz5SO/fwjMtALFIqKNn/6
-         q0SlMFRRvzz1xJ7vir7UJgFnRln4qK8WDRSqh+TA1mvo7Ovyok0ppqqKn7qyE2Xma4jV
-         GM5g==
+        bh=Hy3IcRDvRV5+tK+ZRLaGDhqpXCfFka7PQKuph7JiP4Y=;
+        b=Y2Qg773FvUVyXUSZo0qA0Ufrbs2J17MmauND0QOgH96B1yBC5SPhl2XgSASxQtaC/x
+         USkdibM6EdiFNEOwsXEFFc+F838k8y40MTBQQJ7QnN/ysrUQJhMSeqKGG/dBKISBvkzn
+         hTmjJ04JHpLmOWU8YEk1SJJg1fZeLx47oddDMlkTkoaTaAf8hUDhBXczFwYTix23wJPP
+         hvKg8kBt/VzwOO0yyJ4jO8Qv33CStQWervRwa7WAjT5rLFtQesRxNzKEtnTfR+R4mi6P
+         Ew8AilIUcoIDiqlMn3REaLvz431U4Kzqn48Hy8qr3i/sEleVhNVTBVmPC2NSnvfwsQvm
+         aiYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=uc0zdIjPCIp6p3E6v5GazM0pebh4DygGLW4ST5XuVM0=;
-        b=lcAe7lcWITETXueDlYxiz1Q8RH20+y5e2/fpd1TOdqOQtY14lxVeXKf5APTUbQc+5F
-         6LzOUodBBEcqihkIvtXir9N62GF+OvpNSODAI/EbGQ8gs6J0Q1JXfM4lWxZXWXHJdXji
-         2rIzfhXiWUL96F4i94e5AX/qC5CJ1iU2A/C204ZCF1zjI6VTiMY1UirPpHco+Ue2BnJb
-         Ju7Tkv4Ag34iwiRVI7PH3Mrhxbvua8T/+hHvDI6L/W8RVmlsqXUAbNGyOHOaD8//IpDZ
-         10omMufXKn+DSZcrtkFdjMJ74Or6j2R9C9Ubxo64UEnhN8pTme3QzYUBHmjnYn2wCX9H
-         C2rA==
-X-Gm-Message-State: AOAM531ed5xXwcgLLKCG3m+l+rAOydWsx49Vdg907g0q0xHDXmlGVgCl
-        qz+funljzR/IgJo91J7+53b/2g==
-X-Google-Smtp-Source: ABdhPJzDDUdu8llXB1/j62SmZAhmCS+7LxStlTRv8lKnpNYr7NwOwuLEpB7BqGBMJb/OqUJCGPMGIA==
-X-Received: by 2002:aa7:c9cf:: with SMTP id i15mr50286207edt.4.1620907687135;
-        Thu, 13 May 2021 05:08:07 -0700 (PDT)
+        bh=Hy3IcRDvRV5+tK+ZRLaGDhqpXCfFka7PQKuph7JiP4Y=;
+        b=aTwLEMJ8Y1MxQBrOlhj01YeAlXIBBvJN3iEj333KJicfn2XUdLTuuf/8oT0whMwnpC
+         Qp6SnnD6R8+F3rI7Zl+1QOR6rf4TwqAQZfwqoED1zvnexJl4rq8TWXfiY/9pzuna9Shz
+         uDopqUMoHDO+p1Qq39wyUgNNwCHd/gc+r55c7hgEjXlr8W/CisK3Sh/uO7x7Uhvtb9no
+         5B3da3K88QzpyEQAjXgubFvEkk46qII52PXAdTtitIme0fBpZrF+ohv9Wq/nOD7l4yiw
+         yED69V9SdE36MJLKbIjxgPdP4TsgmdPDGeeC3Bkvjz+C2bozlE8XBcyXsmCiKEvYMg4u
+         rz0g==
+X-Gm-Message-State: AOAM533z6Hw6uPkCEpALqeE3Os36ddQIBRyldbHlND47O3slsdk8TYpX
+        SXSWVd5NDRpdlard2ka28bhbmw==
+X-Google-Smtp-Source: ABdhPJzgUPJMDuolRPi8aBMo2dNDP6Rq3oicyRvMxnIN5hd/q4y6rnZR8nVCND4j3vBEIXWyWbAoAw==
+X-Received: by 2002:aa7:cd46:: with SMTP id v6mr48645873edw.16.1620907688231;
+        Thu, 13 May 2021 05:08:08 -0700 (PDT)
 Received: from neptune.. ([5.2.193.191])
-        by smtp.gmail.com with ESMTPSA id ga28sm1717809ejc.20.2021.05.13.05.08.06
+        by smtp.gmail.com with ESMTPSA id ga28sm1717809ejc.20.2021.05.13.05.08.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 05:08:06 -0700 (PDT)
+        Thu, 13 May 2021 05:08:07 -0700 (PDT)
 From:   Alexandru Ardelean <aardelean@deviqon.com>
 To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     jic23@kernel.org, Jonathan.Cameron@huawei.com,
         alexandru.tachici@analog.com, linux@deviqon.com,
         Alexandru Ardelean <aardelean@deviqon.com>
-Subject: [PATCH v4 08/12] iio: adc: ad7780: convert to device-managed functions
-Date:   Thu, 13 May 2021 15:07:48 +0300
-Message-Id: <20210513120752.90074-9-aardelean@deviqon.com>
+Subject: [PATCH v4 09/12] iio: adc: ad7192: use devm_clk_get_optional() for mclk
+Date:   Thu, 13 May 2021 15:07:49 +0300
+Message-Id: <20210513120752.90074-10-aardelean@deviqon.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210513120752.90074-1-aardelean@deviqon.com>
 References: <20210513120752.90074-1-aardelean@deviqon.com>
@@ -65,93 +65,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the devm_ad_sd_setup_buffer_and_trigger() helper, it's a bit easier
-now to convert the probe of the AD7780 driver to use device-managed
-functions.
+The devm_clk_get_optional() helper returns NULL when devm_clk_get() returns
+-ENOENT.
+This makes things slightly cleaner. The added benefit is mostly cosmetic.
 
-Only the regulator disable requires a devm_add_action_or_reset() callback.
-
-This change does that, cleaning up the driver a bit.
+Also, a minor detail with this call, is that the reference for the parent
+device is taken as `spi->dev` instead of `&st->sd.spi->dev` (which looks a
+little quirky).
 
 Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
 ---
- drivers/iio/adc/ad7780.c | 38 ++++++++++----------------------------
- 1 file changed, 10 insertions(+), 28 deletions(-)
+ drivers/iio/adc/ad7192.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/iio/adc/ad7780.c b/drivers/iio/adc/ad7780.c
-index 42e7e8e595d1..42bb952f4738 100644
---- a/drivers/iio/adc/ad7780.c
-+++ b/drivers/iio/adc/ad7780.c
-@@ -300,6 +300,11 @@ static int ad7780_init_gpios(struct device *dev, struct ad7780_state *st)
- 	return 0;
- }
+diff --git a/drivers/iio/adc/ad7192.c b/drivers/iio/adc/ad7192.c
+index 1141cc13a124..523cf3bc955b 100644
+--- a/drivers/iio/adc/ad7192.c
++++ b/drivers/iio/adc/ad7192.c
+@@ -326,7 +326,7 @@ static int ad7192_of_clock_select(struct ad7192_state *st)
+ 	clock_sel = AD7192_CLK_INT;
  
-+static void ad7780_reg_disable(void *reg)
-+{
-+	regulator_disable(reg);
-+}
-+
- static int ad7780_probe(struct spi_device *spi)
- {
- 	struct ad7780_state *st;
-@@ -318,8 +323,6 @@ static int ad7780_probe(struct spi_device *spi)
- 	st->chip_info =
- 		&ad7780_chip_info_tbl[spi_get_device_id(spi)->driver_data];
+ 	/* use internal clock */
+-	if (PTR_ERR(st->mclk) == -ENOENT) {
++	if (st->mclk) {
+ 		if (of_property_read_bool(np, "adi,int-clock-output-enable"))
+ 			clock_sel = AD7192_CLK_INT_CO;
+ 	} else {
+@@ -978,8 +978,8 @@ static int ad7192_probe(struct spi_device *spi)
  
--	spi_set_drvdata(spi, indio_dev);
--
- 	indio_dev->name = spi_get_device_id(spi)->name;
- 	indio_dev->modes = INDIO_DIRECT_MODE;
- 	indio_dev->channels = &st->chip_info->channel;
-@@ -340,35 +343,15 @@ static int ad7780_probe(struct spi_device *spi)
- 		return ret;
+ 	st->fclk = AD7192_INT_FREQ_MHZ;
+ 
+-	st->mclk = devm_clk_get(&st->sd.spi->dev, "mclk");
+-	if (IS_ERR(st->mclk) && PTR_ERR(st->mclk) != -ENOENT) {
++	st->mclk = devm_clk_get_optional(&spi->dev, "mclk");
++	if (IS_ERR(st->mclk)) {
+ 		ret = PTR_ERR(st->mclk);
+ 		goto error_remove_trigger;
  	}
- 
--	ret = ad_sd_setup_buffer_and_trigger(indio_dev);
-+	ret = devm_add_action_or_reset(&spi->dev, ad7780_reg_disable, st->reg);
- 	if (ret)
--		goto error_disable_reg;
-+		return ret;
- 
--	ret = iio_device_register(indio_dev);
-+	ret = devm_ad_sd_setup_buffer_and_trigger(&spi->dev, indio_dev);
- 	if (ret)
--		goto error_cleanup_buffer_and_trigger;
--
--	return 0;
--
--error_cleanup_buffer_and_trigger:
--	ad_sd_cleanup_buffer_and_trigger(indio_dev);
--error_disable_reg:
--	regulator_disable(st->reg);
--
--	return ret;
--}
--
--static int ad7780_remove(struct spi_device *spi)
--{
--	struct iio_dev *indio_dev = spi_get_drvdata(spi);
--	struct ad7780_state *st = iio_priv(indio_dev);
--
--	iio_device_unregister(indio_dev);
--	ad_sd_cleanup_buffer_and_trigger(indio_dev);
--
--	regulator_disable(st->reg);
-+		return ret;
- 
--	return 0;
-+	return devm_iio_device_register(&spi->dev, indio_dev);
- }
- 
- static const struct spi_device_id ad7780_id[] = {
-@@ -385,7 +368,6 @@ static struct spi_driver ad7780_driver = {
- 		.name	= "ad7780",
- 	},
- 	.probe		= ad7780_probe,
--	.remove		= ad7780_remove,
- 	.id_table	= ad7780_id,
- };
- module_spi_driver(ad7780_driver);
 -- 
 2.31.1
 
