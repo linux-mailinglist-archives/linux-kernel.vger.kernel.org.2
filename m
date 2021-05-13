@@ -2,88 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90DE737F868
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 15:08:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1D2F37F86A
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 15:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233803AbhEMNJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 09:09:32 -0400
-Received: from mail-m2454.qiye.163.com ([220.194.24.54]:25454 "EHLO
-        mail-m2454.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229466AbhEMNJ3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S233870AbhEMNJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 09:09:38 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43640 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230498AbhEMNJ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 13 May 2021 09:09:29 -0400
-Received: from localhost.localdomain (unknown [106.75.220.3])
-        by mail-m2454.qiye.163.com (Hmail) with ESMTPA id 9EE7CC00202;
-        Thu, 13 May 2021 21:08:14 +0800 (CST)
-From:   Tao Liu <thomas.liu@ucloud.cn>
-To:     pshelar@ovn.org
-Cc:     dev@openvswitch.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, i.maximets@ovn.org,
-        jean.tourrilhes@hpe.com, kuba@kernel.org, davem@davemloft.net,
-        thomas.liu@ucloud.cn, wenxu@ucloud.cn
-Subject: [ovs-dev] [PATCH net v2] openvswitch: meter: fix race when getting now_ms.
-Date:   Thu, 13 May 2021 21:08:00 +0800
-Message-Id: <20210513130800.31913-1-thomas.liu@ucloud.cn>
-X-Mailer: git-send-email 2.23.0
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1976BAE57;
+        Thu, 13 May 2021 13:08:19 +0000 (UTC)
+Subject: Re: [PATCH -next] drm/aperture: Fix missing unlock on error in
+ devm_aperture_acquire()
+To:     Zou Wei <zou_wei@huawei.com>, maarten.lankhorst@linux.intel.com,
+        mripard@kernel.org, airlied@linux.ie, daniel@ffwll.ch
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <1620895564-52367-1-git-send-email-zou_wei@huawei.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <bc0b8b71-507d-c6c2-9029-359c7f27daf4@suse.de>
+Date:   Thu, 13 May 2021 15:08:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSUI3V1ktWUFJV1kPCR
-        oVCBIfWUFZQx1MSlZMQ0NCSB5JTEodQx9VGRETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OE06LTo4OT0yKBQrEh9CKTgC
-        HigKCUhVSlVKTUlLQkpKSUJOSUlIVTMWGhIXVQ8TFBYaCFUXEg47DhgXFA4fVRgVRVlXWRILWUFZ
-        SktNVUxOVUlJS1VIWVdZCAFZQUlNQk83Bg++
-X-HM-Tid: 0a7965d789ec8c13kuqt9ee7cc00202
+In-Reply-To: <1620895564-52367-1-git-send-email-zou_wei@huawei.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="2LYd2hGxsv9U9ONrL0OFzeYrSnmGgUNVz"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have observed meters working unexpected if traffic is 3+Gbit/s
-with multiple connections.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--2LYd2hGxsv9U9ONrL0OFzeYrSnmGgUNVz
+Content-Type: multipart/mixed; boundary="Pv7MotVf5ovpQSqaWZ0JWXWfLBQj6bAYF";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Zou Wei <zou_wei@huawei.com>, maarten.lankhorst@linux.intel.com,
+ mripard@kernel.org, airlied@linux.ie, daniel@ffwll.ch
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Message-ID: <bc0b8b71-507d-c6c2-9029-359c7f27daf4@suse.de>
+Subject: Re: [PATCH -next] drm/aperture: Fix missing unlock on error in
+ devm_aperture_acquire()
+References: <1620895564-52367-1-git-send-email-zou_wei@huawei.com>
+In-Reply-To: <1620895564-52367-1-git-send-email-zou_wei@huawei.com>
 
-now_ms is not pretected by meter->lock, we may get a negative
-long_delta_ms when another cpu updated meter->used, then:
-    delta_ms = (u32)long_delta_ms;
-which will be a large value.
+--Pv7MotVf5ovpQSqaWZ0JWXWfLBQj6bAYF
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-    band->bucket += delta_ms * band->rate;
-then we get a wrong band->bucket.
+Hi
 
-OpenVswitch userspace datapath has fixed the same issue[1] some
-time ago, and we port the implementation to kernel datapath.
+Am 13.05.21 um 10:46 schrieb Zou Wei:
+> Add the missing unlock before return from function devm_aperture_acquir=
+e()
+> in the error handling case.
+>=20
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zou Wei <zou_wei@huawei.com>
 
-[1] https://patchwork.ozlabs.org/project/openvswitch/patch/20191025114436.9746-1-i.maximets@ovn.org/
+I added a Fixes tag and queued up the patch for drm-misc-next. Thanks!
 
-Fixes: 96fbc13d7e77 ("openvswitch: Add meter infrastructure")
-Signed-off-by: Tao Liu <thomas.liu@ucloud.cn>
-Suggested-by: Ilya Maximets <i.maximets@ovn.org>
----
-Changelog:
-v2: just set negative long_delta_ms to zero in case of race for meter lock.
-v1: make now_ms protected by meter lock.
----
- net/openvswitch/meter.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Best regards
+Thomas
 
-diff --git a/net/openvswitch/meter.c b/net/openvswitch/meter.c
-index 96b524c..896b8f5 100644
---- a/net/openvswitch/meter.c
-+++ b/net/openvswitch/meter.c
-@@ -611,6 +611,14 @@ bool ovs_meter_execute(struct datapath *dp, struct sk_buff *skb,
- 	spin_lock(&meter->lock);
- 
- 	long_delta_ms = (now_ms - meter->used); /* ms */
-+	if (long_delta_ms < 0) {
-+		/* This condition means that we have several threads fighting
-+		 * for a meter lock, and the one who received the packets a
-+		 * bit later wins. Assuming that all racing threads received
-+		 * packets at the same time to avoid overflow.
-+		 */
-+		long_delta_ms = 0;
-+	}
- 
- 	/* Make sure delta_ms will not be too large, so that bucket will not
- 	 * wrap around below.
--- 
-1.8.3.1
+> ---
+>   drivers/gpu/drm/drm_aperture.c | 8 ++++++--
+>   1 file changed, 6 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/drm_aperture.c b/drivers/gpu/drm/drm_apert=
+ure.c
+> index 33bf018..9335d9d 100644
+> --- a/drivers/gpu/drm/drm_aperture.c
+> +++ b/drivers/gpu/drm/drm_aperture.c
+> @@ -164,13 +164,17 @@ static int devm_aperture_acquire(struct drm_devic=
+e *dev,
+>  =20
+>   	list_for_each(pos, &drm_apertures) {
+>   		ap =3D container_of(pos, struct drm_aperture, lh);
+> -		if (overlap(base, end, ap->base, ap->base + ap->size))
+> +		if (overlap(base, end, ap->base, ap->base + ap->size)) {
+> +			mutex_unlock(&drm_apertures_lock);
+>   			return -EBUSY;
+> +		}
+>   	}
+>  =20
+>   	ap =3D devm_kzalloc(dev->dev, sizeof(*ap), GFP_KERNEL);
+> -	if (!ap)
+> +	if (!ap) {
+> +		mutex_unlock(&drm_apertures_lock);
+>   		return -ENOMEM;
+> +	}
+>  =20
+>   	ap->dev =3D dev;
+>   	ap->base =3D base;
+>=20
 
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--Pv7MotVf5ovpQSqaWZ0JWXWfLBQj6bAYF--
+
+--2LYd2hGxsv9U9ONrL0OFzeYrSnmGgUNVz
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmCdJMEFAwAAAAAACgkQlh/E3EQov+Bh
+fw//T1Y3PBtm36xSAjECT3jg/7zd4WOP89zbgzF6GBPFGoDf+63SbcAP6AkbA9U8/wU1XwmMC5tn
+7SqaE7h1mMp2d0+h/OtU7/WVInyFEVoYG3S1KtmdiqjNMu+YAtIbTbwaYnw+4NdgRD3pZ0VTYc1Z
+fhyce77rCvruYxWLgPdUell2SylKe8URuGB8Rgh40v5DkAx/6DZ1m4RKSS8sKWZxydDliVWayXAs
+uYzBdydq/XOoq+Nq8rzaJMC+MUCiE0T2iqLgC9PR5UYMIBM84VK/jefiLWrYWatUk5HLScPQmAb1
++7y5y4Aqt0kiom810plXO+DneYcCHm0q9PNPYEOHdsoaCE3+wHoV/VHnnzZ5ShTgJl6ovGrRMRm0
+pxJ6p8aqALIQUDXJyBQPZLkTlMKS+92SR49WmKZzHAtvmXOKx6Vzx0Fuk3WKot2UHuNHiS3XAh/l
+URyyDmylCGc5wm4YDR8NQRFf9FeYTqvPSxMxHro9s49y2JhXU2MC1qLCmm6TApceoI9Tw2yoEX/W
+cejQGquZPKtNThZtVRPOejXwKNJbXhsGlDLKDJghVAkw+szKFartVXYpnS6U5sErAhEvOTGZFGlY
+3h/eQ99RnnGLimHc4PFjmSwFKKCATkpslGbd8TEXCT+Al4myMRUnTYOYkkFExQtzYy98/vh8GjvN
+JpQ=
+=vxrH
+-----END PGP SIGNATURE-----
+
+--2LYd2hGxsv9U9ONrL0OFzeYrSnmGgUNVz--
