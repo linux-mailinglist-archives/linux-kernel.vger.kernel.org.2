@@ -2,55 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C73FD37F11C
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 04:05:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F1D637F11E
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 04:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbhEMCGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 22:06:23 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:36801 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229630AbhEMCGV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 22:06:21 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R821e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UYhvDA-_1620871505;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UYhvDA-_1620871505)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 13 May 2021 10:05:11 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     wim@linux-watchdog.org
-Cc:     linux@roeck-us.net, p.zabel@pengutronix.de,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] watchdog: dw_wdt: Fix duplicate included linux/kernel.h
-Date:   Thu, 13 May 2021 10:05:03 +0800
-Message-Id: <1620871503-100900-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S230181AbhEMCGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 22:06:31 -0400
+Received: from ozlabs.org ([203.11.71.1]:58911 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229630AbhEMCG2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 22:06:28 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FgZk472Txz9sWP;
+        Thu, 13 May 2021 12:05:16 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1620871518;
+        bh=l1TnfDBLgZS56JHv3aiPuxRjNqwIJx/l19ZliNilTeE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=sEWWfS2SNUFACnCA+45NHPHXKhcS4ccoEUsuk0x2BLVwvawG1rJqy58Xk8vivDz7E
+         PA8gWt9bDLa21K/zMui5oEo4j3/YmPqfCfTq+553ZHUcER3osa2lFrv9dFslb6Hs/c
+         /v4L0gk8voEmuBkUm1ARb0subK0x3kcBaazxIJBm1nDroJjW/NX1dEgtf9Gs/tmiW+
+         oKwapuUE6v3RN5/bQ9A0KiiiMI1J3MCv+0td6POJquAhaI/neVPzYRbqYn3GsqrAla
+         mx77UawttgQ9EP0QQ5PmjSF8MT5LWD/yNml1N4pi3zBEp+RjYCF31lzN4Ro7bbTeqg
+         GdyULzZEoMrdg==
+Date:   Thu, 13 May 2021 12:05:15 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the tip tree
+Message-ID: <20210513120515.7060879c@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/O1nRwKj67qoBTXuteephxLO";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clean up the following includecheck warning:
+--Sig_/O1nRwKj67qoBTXuteephxLO
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-./drivers/watchdog/dw_wdt.c: linux/kernel.h is included more than once.
+Hi all,
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/watchdog/dw_wdt.c | 1 -
- 1 file changed, 1 deletion(-)
+After merging the tip tree, today's linux-next build (x86_64 allmodconfig)
+failed like this:
 
-diff --git a/drivers/watchdog/dw_wdt.c b/drivers/watchdog/dw_wdt.c
-index 32d0e17..b1642e2 100644
---- a/drivers/watchdog/dw_wdt.c
-+++ b/drivers/watchdog/dw_wdt.c
-@@ -19,7 +19,6 @@
- #include <linux/delay.h>
- #include <linux/err.h>
- #include <linux/io.h>
--#include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/moduleparam.h>
- #include <linux/interrupt.h>
--- 
-1.8.3.1
+In file included from tools/arch/x86/include/asm/nops.h:5,
+                 from arch/x86/decode.c:15:
+tools/arch/x86/include/asm/asm.h:185:24: error: invalid register name for '=
+current_stack_pointer'
+  185 | register unsigned long current_stack_pointer asm(_ASM_SP);
+      |                        ^~~~~~~~~~~~~~~~~~~~~
 
+Caused by commit
+
+  eef23e72b78b ("x86/asm: Use _ASM_BYTES() in <asm/nops.h>")
+
+I have used the tip tree from next-20210512 for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/O1nRwKj67qoBTXuteephxLO
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCciVsACgkQAVBC80lX
+0GybeQf/RhJX3EW+Kqukm2IGK+GSkV2T8L9KC0BSyjWBd+JJ9WmW3z/XBgTUOXSC
+8ExtINncxDPcMrDx9qc/RlTicRMz5JBguBaUaWQITQ6tWIzaxBN1Pm6nzk8K/g4Y
+qPAovRULc9FXxaWPCvoEIGL8al1DbeIFJUBANTJQhy2ZG8gzBfzKVMNHiqhFQ5MY
+ps9r/y1LTX9IGTjYI9sBVXAb1iraws/nv3FLONTJQR/CKDKg8btJ650auWIcWt5f
+MUpYu90ZTZZy1q/TBVcBcAdD8T/TcBQALTx/3UzxhQBcZ6xpDoXBibuWVOU7x3PJ
+niyKmF4qpDqpT7ebGyzUficipfkzgw==
+=7c38
+-----END PGP SIGNATURE-----
+
+--Sig_/O1nRwKj67qoBTXuteephxLO--
