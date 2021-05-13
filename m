@@ -2,271 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80A3237F4C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 11:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2788437F4CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 11:24:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232566AbhEMJXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 05:23:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231707AbhEMJXE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 05:23:04 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6840C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 02:21:54 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id a2so16642219lfc.9
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 02:21:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=a5TZl7Xv0d/UcN3AO5XRTQ1YNYwxrNRqE46BtHPiztM=;
-        b=XkeXKdhBfXmKZtxCw28f6HrDItAc38yiBOaXnF2bXtmEA+UC0Dv9nJpHWX1CqmuNn0
-         sNFeTl8+0X/wouKvQPDcIxSa2iDMIaRLI04UnsE6SDl9iDOLQXE7Jo2pQJbNNxmDfetr
-         iD8aKYoOw49WyeIvNHFsjzwHT81q8Zw830itc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=a5TZl7Xv0d/UcN3AO5XRTQ1YNYwxrNRqE46BtHPiztM=;
-        b=AeycoAJtiqmZKa8ssrwVa0G9SyrFLOnbUQn1FPPN0WOlfRWKioeWmwLSlIlG4+v+3g
-         EhZe9noVm0N40bg+KQJWcpw/OWLcvWu2wLgN2BPtfP/92C+z2y8c8+eFGhOCBJ/JZ7mr
-         l2BqEaglBKHubW9ak3QFtz5dLbdXCZhWiq4EnBKPoSi2Uj8mDawK/dbfC4dNbOlMMGz1
-         ohXidGobuXfbcZWqUzW+/TU53BW6UXQGhj2Dk0Cb0FuR/K3Xko1RfSxXtoFr0BX5UV9H
-         FoKGPkjpw/auIwX5VBmm4Dve75kQSbCWrgT7SxP4FgaSShcWMXfDrPL+NKyliw5YnXVf
-         BRWA==
-X-Gm-Message-State: AOAM531c4U35P1AVzenGvtRXL8dePy0UyzpSdcXiMQoiKl7NrK1gcmyf
-        jsmgr9scOXd8sTP/qdFpv8jyV642WdP7/A==
-X-Google-Smtp-Source: ABdhPJzANIUEmJexcT7JnVUuQ1shnWscJes0azFV0eh4aHiBVysKyXEvrlWHINS6h7EBt06UTwUm3Q==
-X-Received: by 2002:a19:386:: with SMTP id 128mr27834534lfd.533.1620897712952;
-        Thu, 13 May 2021 02:21:52 -0700 (PDT)
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
-        by smtp.gmail.com with ESMTPSA id f17sm230057lfu.215.2021.05.13.02.21.52
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 May 2021 02:21:52 -0700 (PDT)
-Received: by mail-lj1-f172.google.com with SMTP id v6so32987650ljj.5
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 02:21:52 -0700 (PDT)
-X-Received: by 2002:a2e:a58f:: with SMTP id m15mr5926332ljp.212.1620897711807;
- Thu, 13 May 2021 02:21:51 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210427111526.1772293-1-acourbot@chromium.org>
- <20210427111526.1772293-6-acourbot@chromium.org> <2aa7f058-38b2-2a31-d59b-bba96c39cc29@collabora.com>
-In-Reply-To: <2aa7f058-38b2-2a31-d59b-bba96c39cc29@collabora.com>
-From:   Alexandre Courbot <acourbot@chromium.org>
-Date:   Thu, 13 May 2021 18:21:40 +0900
-X-Gmail-Original-Message-ID: <CAPBb6MUOLfZi4YPp=VFdkhrPXKiUwAn-70LrAxG=i-HhmxLnEA@mail.gmail.com>
-Message-ID: <CAPBb6MUOLfZi4YPp=VFdkhrPXKiUwAn-70LrAxG=i-HhmxLnEA@mail.gmail.com>
-Subject: Re: [PATCH v4 05/15] media: mtk-vcodec: vdec: support stateless API
-To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Cc:     Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
+        id S232582AbhEMJZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 05:25:53 -0400
+Received: from mga18.intel.com ([134.134.136.126]:15082 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231251AbhEMJZu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 05:25:50 -0400
+IronPort-SDR: QX7SX4+ijqnJUw2IKWrmjOEIewigFDrPwaVE5P1Q7pOTRl8Oj875l12cQpneblec5h/Fk02oJY
+ nmcp8xGY22eA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="187329059"
+X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
+   d="scan'208";a="187329059"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 02:24:41 -0700
+IronPort-SDR: H4Gqj9DacfSzWaR4kJIShugBfyL026qAkKauyCu13dsOPw64JHwCN3v+nhr+bYXOgMgjbDJvOK
+ auOJGmQ0aLBA==
+X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
+   d="scan'208";a="431156491"
+Received: from adithyav-mobl.amr.corp.intel.com ([10.212.100.160])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 02:24:37 -0700
+Message-ID: <3fdc70c267d40561bed10fc722a8223a0b161200.camel@linux.intel.com>
+Subject: Re: [PATCH] cpufreq: intel_pstate: Force intel_pstate to load when
+ HWP disabled in firmware
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Giovanni Gherdovich <ggherdovich@suse.cz>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Len Brown <lenb@kernel.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 13 May 2021 02:24:32 -0700
+In-Reply-To: <20210513075930.22657-1-ggherdovich@suse.cz>
+References: <20210513075930.22657-1-ggherdovich@suse.cz>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dafna,
+On Thu, 2021-05-13 at 09:59 +0200, Giovanni Gherdovich wrote:
+> On CPUs succeeding SKX, eg. ICELAKE_X, intel_pstate doesn't load
+> unless
+> CPUID advertises support for the HWP feature. Some OEMs, however, may
+> offer
+> users the possibility to disable HWP from the BIOS config utility by
+> altering the output of CPUID.
+Is someone providing a utility? What is the case for broken HWP?
 
-On Thu, Apr 29, 2021 at 9:10 PM Dafna Hirschfeld
-<dafna.hirschfeld@collabora.com> wrote:
->
->
->
-> On 27.04.21 13:15, Alexandre Courbot wrote:
-> > From: Yunfei Dong <yunfei.dong@mediatek.com>
-> >
-> > Support the stateless codec API that will be used by MT8183.
-> >
-> > Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
-> > [acourbot: refactor, cleanup and split]
-> > Co-developed-by: Alexandre Courbot <acourbot@chromium.org>
-> > Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
-> > ---
-> >   drivers/media/platform/mtk-vcodec/Makefile    |   1 +
-> >   .../platform/mtk-vcodec/mtk_vcodec_dec.c      |  66 +++-
-> >   .../platform/mtk-vcodec/mtk_vcodec_dec.h      |   9 +-
-> >   .../mtk-vcodec/mtk_vcodec_dec_stateless.c     | 370 ++++++++++++++++++
-> >   .../platform/mtk-vcodec/mtk_vcodec_drv.h      |   3 +
-> >   5 files changed, 446 insertions(+), 3 deletions(-)
-> >   create mode 100644 drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_stateless.c
-> >
-> > diff --git a/drivers/media/platform/mtk-vcodec/Makefile b/drivers/media/platform/mtk-vcodec/Makefile
-> > index 9c3cbb5b800e..4ba93d838ab6 100644
-> > --- a/drivers/media/platform/mtk-vcodec/Makefile
-> > +++ b/drivers/media/platform/mtk-vcodec/Makefile
-> > @@ -12,6 +12,7 @@ mtk-vcodec-dec-y := vdec/vdec_h264_if.o \
-> >               vdec_vpu_if.o \
-> >               mtk_vcodec_dec.o \
-> >               mtk_vcodec_dec_stateful.o \
-> > +             mtk_vcodec_dec_stateless.o \
-> >               mtk_vcodec_dec_pm.o \
-> >
-> >   mtk-vcodec-enc-y := venc/venc_vp8_if.o \
-> > diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.c
-> > index 4ad2662a43b2..01c5333d6cff 100644
-> > --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.c
-> > +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.c
-> > @@ -46,6 +46,13 @@ static struct mtk_q_data *mtk_vdec_get_q_data(struct mtk_vcodec_ctx *ctx,
-> >   static int vidioc_try_decoder_cmd(struct file *file, void *priv,
-> >                               struct v4l2_decoder_cmd *cmd)
-> >   {
-> > +     struct mtk_vcodec_ctx *ctx = fh_to_ctx(priv);
-> > +
-> > +     /* Use M2M stateless helper if relevant */
-> > +     if (ctx->dev->vdec_pdata->uses_stateless_api)
-> > +             return v4l2_m2m_ioctl_stateless_try_decoder_cmd(file, priv,
-> > +                                                             cmd);
-> > +
-> >       switch (cmd->cmd) {
-> >       case V4L2_DEC_CMD_STOP:
-> >       case V4L2_DEC_CMD_START:
-> > @@ -72,6 +79,10 @@ static int vidioc_decoder_cmd(struct file *file, void *priv,
-> >       if (ret)
-> >               return ret;
-> >
-> > +     /* Use M2M stateless helper if relevant */
-> > +     if (ctx->dev->vdec_pdata->uses_stateless_api)
-> > +             return v4l2_m2m_ioctl_stateless_decoder_cmd(file, priv, cmd);
-> > +
-> >       mtk_v4l2_debug(1, "decoder cmd=%u", cmd->cmd);
-> >       dst_vq = v4l2_m2m_get_vq(ctx->m2m_ctx,
-> >                               V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE);
-> > @@ -414,7 +425,8 @@ static int vidioc_vdec_s_fmt(struct file *file, void *priv,
-> >        * Setting OUTPUT format after OUTPUT buffers are allocated is invalid
-> >        * if using the stateful API.
-> >        */
-> > -     if ((f->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE) &&
-> > +     if (!dec_pdata->uses_stateless_api &&
-> > +         (f->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE) &&
-> >           vb2_is_busy(&ctx->m2m_ctx->out_q_ctx.q)) {
-> >               mtk_v4l2_err("out_q_ctx buffers already requested");
-> >               ret = -EBUSY;
-> > @@ -457,6 +469,7 @@ static int vidioc_vdec_s_fmt(struct file *file, void *priv,
-> >               ctx->quantization = pix_mp->quantization;
-> >               ctx->xfer_func = pix_mp->xfer_func;
-> >
-> > +             ctx->current_codec = fmt->fourcc;
-> >               if (ctx->state == MTK_STATE_FREE) {
-> >                       ret = vdec_if_init(ctx, q_data->fmt->fourcc);
-> >                       if (ret) {
-> > @@ -468,6 +481,49 @@ static int vidioc_vdec_s_fmt(struct file *file, void *priv,
-> >               }
-> >       }
-> >
-> > +     /*
-> > +      * If using the stateless API, S_FMT should have the effect of setting
-> > +      * the CAPTURE queue resolution no matter which queue it was called on.
-> > +      */
-> > +     if (dec_pdata->uses_stateless_api) {
-> > +             ctx->picinfo.pic_w = pix_mp->width;
-> > +             ctx->picinfo.pic_h = pix_mp->height;
-> > +
-> > +             ret = vdec_if_get_param(ctx, GET_PARAM_PIC_INFO, &ctx->picinfo);
-> > +             if (ret) {
-> > +                     mtk_v4l2_err("[%d]Error!! Get GET_PARAM_PICTURE_INFO Fail",
-> > +                             ctx->id);
-> > +                     return -EINVAL;
-> > +             }
-> > +
-> > +             ctx->last_decoded_picinfo = ctx->picinfo;
-> > +
-> > +             if (ctx->q_data[MTK_Q_DATA_DST].fmt->num_planes == 1) {
-> > +                     ctx->q_data[MTK_Q_DATA_DST].sizeimage[0] =
-> > +                             ctx->picinfo.fb_sz[0] +
-> > +                             ctx->picinfo.fb_sz[1];
-> > +                     ctx->q_data[MTK_Q_DATA_DST].bytesperline[0] =
-> > +                             ctx->picinfo.buf_w;
-> > +             } else {
-> > +                     ctx->q_data[MTK_Q_DATA_DST].sizeimage[0] =
-> > +                             ctx->picinfo.fb_sz[0];
-> > +                     ctx->q_data[MTK_Q_DATA_DST].bytesperline[0] =
-> > +                             ctx->picinfo.buf_w;
-> > +                     ctx->q_data[MTK_Q_DATA_DST].sizeimage[1] =
-> > +                             ctx->picinfo.fb_sz[1];
-> > +                     ctx->q_data[MTK_Q_DATA_DST].bytesperline[1] =
-> > +                             ctx->picinfo.buf_w;
-> > +             }
-> > +
-> > +             ctx->q_data[MTK_Q_DATA_DST].coded_width = ctx->picinfo.buf_w;
-> > +             ctx->q_data[MTK_Q_DATA_DST].coded_height = ctx->picinfo.buf_h;
-> > +             mtk_v4l2_debug(2, "[%d] vdec_if_init() num_plane = %d wxh=%dx%d pic wxh=%dx%d sz[0]=0x%x sz[1]=0x%x",
-> > +                     ctx->id, pix_mp->num_planes,
-> > +                     ctx->picinfo.buf_w, ctx->picinfo.buf_h,
-> > +                     ctx->picinfo.pic_w, ctx->picinfo.pic_h,
-> > +                     ctx->q_data[MTK_Q_DATA_DST].sizeimage[0],
-> > +                     ctx->q_data[MTK_Q_DATA_DST].sizeimage[1]);
-> > +     }
-> >       return 0;
-> >   }
-> >
-> > @@ -765,9 +821,15 @@ void vb2ops_vdec_stop_streaming(struct vb2_queue *q)
-> >               while ((src_buf = v4l2_m2m_src_buf_remove(ctx->m2m_ctx))) {
-> >                       struct mtk_video_dec_buf *buf_info = container_of(
-> >                                src_buf, struct mtk_video_dec_buf, m2m_buf.vb);
-> > -                     if (!buf_info->lastframe)
-> > +                     if (!buf_info->lastframe) {
-> > +                             struct media_request *req =
-> > +                                     src_buf->vb2_buf.req_obj.req;
-> >                               v4l2_m2m_buf_done(src_buf,
-> >                                               VB2_BUF_STATE_ERROR);
-> > +                             if (req)
-> > +                                     v4l2_ctrl_request_complete(req,
-> > +                                                             &ctx->ctrl_hdl);
-> > +                     }
-> >               }
-> >               return;
-> >       }
-> > diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.h b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.h
-> > index 6a18cb3bfe07..6b29d7d9ae15 100644
-> > --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.h
-> > +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.h
-> > @@ -45,6 +45,7 @@ struct vdec_fb {
-> >    * @lastframe:              Intput buffer is last buffer - EOS
-> >    * @error:          An unrecoverable error occurs on this buffer.
-> >    * @frame_buffer:   Decode status, and buffer information of Capture buffer
-> > + * @bs_buffer:       Output buffer info
-> >    *
-> >    * Note : These status information help us track and debug buffer state
-> >    */
-> > @@ -55,12 +56,18 @@ struct mtk_video_dec_buf {
-> >       bool    queued_in_vb2;
-> >       bool    queued_in_v4l2;
-> >       bool    lastframe;
-> > +
-> >       bool    error;
-> > -     struct vdec_fb  frame_buffer;
-> > +
-> > +     union {
-> > +             struct vdec_fb  frame_buffer;
-> > +             struct mtk_vcodec_mem   bs_buffer;
-> > +     };
-> >   };
-> >
-> >   extern const struct v4l2_ioctl_ops mtk_vdec_ioctl_ops;
-> >   extern const struct v4l2_m2m_ops mtk_vdec_m2m_ops;
-> > +extern const struct media_device_ops mtk_vcodec_media_ops;
-> >
-> >
-> >   /*
-> > diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_stateless.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_stateless.c
-> > new file mode 100644
-> > index 000000000000..75ddf53e2876
-> > --- /dev/null
-> > +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_stateless.c
->
-> Hi, when compiling with -DDEBUG flag, I got some compilation errors for this file.
-
-Nice catch, I've made sure the whole driver compiles with -DDEBUG.
+It is possible that some user don't want to use HWP, because there
+workloads works better without HWP. But that doesn't mean HWP is
+broken.
 
 Thanks,
-Alex.
+Srinivas
+
+> 
+> Add the command line option "intel_pstate=hwp_broken_firmware" so
+> that
+> intel_pstate still loads in that case, providing OS-driven frequency
+> scaling.
+> 
+> Signed-off-by: Giovanni Gherdovich <ggherdovich@suse.cz>
+> ---
+>  Documentation/admin-guide/kernel-parameters.txt | 7 +++++++
+>  Documentation/admin-guide/pm/intel_pstate.rst   | 7 +++++++
+>  drivers/cpufreq/intel_pstate.c                  | 7 ++++++-
+>  3 files changed, 20 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt
+> b/Documentation/admin-guide/kernel-parameters.txt
+> index cb89dbdedc46..278ec0718dc9 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -1951,6 +1951,13 @@
+>                         per_cpu_perf_limits
+>                           Allow per-logical-CPU P-State performance
+> control limits using
+>                           cpufreq sysfs interface
+> +                       hwp_broken_firmware
+> +                         Register intel_pstate as the scaling driver
+> despite the
+> +                         hardware-managed P-states (HWP) feature
+> being disabled in
+> +                         firmware. On CPU models succeeding SKX,
+> intel_pstate expects
+> +                         HWP to be supported. Some OEMs may use
+> firmware that hides the
+> +                         feature from the OS. With this option
+> intel_pstate will
+> +                         load regardless.
+>  
+>         intremap=       [X86-64, Intel-IOMMU]
+>                         on      enable Interrupt Remapping (default)
+> diff --git a/Documentation/admin-guide/pm/intel_pstate.rst
+> b/Documentation/admin-guide/pm/intel_pstate.rst
+> index df29b4f1f219..1e6f139d5b05 100644
+> --- a/Documentation/admin-guide/pm/intel_pstate.rst
+> +++ b/Documentation/admin-guide/pm/intel_pstate.rst
+> @@ -689,6 +689,13 @@ of them have to be prepended with the
+> ``intel_pstate=`` prefix.
+>         Use per-logical-CPU P-State limits (see `Coordination of P-
+> state
+>         Limits`_ for details).
+>  
+> +``hwp_broken_firmware``
+> +       Register ``intel_pstate`` as the scaling driver despite the
+> +       hardware-managed P-states (HWP) feature being disabled in
+> firmware.
+> +
+> +       On CPU models succeeding SKX, ``intel_pstate`` expects HWP to
+> be
+> +       supported. Some OEMs may use firmware that hides the feature
+> from the
+> +       OS. With this option ``intel_pstate`` will load regardless.
+>  
+>  Diagnostics and Tuning
+>  ======================
+> diff --git a/drivers/cpufreq/intel_pstate.c
+> b/drivers/cpufreq/intel_pstate.c
+> index f0401064d7aa..8635251f86f2 100644
+> --- a/drivers/cpufreq/intel_pstate.c
+> +++ b/drivers/cpufreq/intel_pstate.c
+> @@ -2856,6 +2856,7 @@ static int intel_pstate_update_status(const
+> char *buf, size_t size)
+>  static int no_load __initdata;
+>  static int no_hwp __initdata;
+>  static int hwp_only __initdata;
+> +static int hwp_broken_firmware __initdata;
+>  static unsigned int force_load __initdata;
+>  
+>  static int __init intel_pstate_msrs_not_valid(void)
+> @@ -3066,7 +3067,7 @@ static int __init intel_pstate_init(void)
+>                 }
+>         } else {
+>                 id = x86_match_cpu(intel_pstate_cpu_ids);
+> -               if (!id) {
+> +               if (!id && !hwp_broken_firmware) {
+>                         pr_info("CPU model not supported\n");
+>                         return -ENODEV;
+>                 }
+> @@ -3149,6 +3150,10 @@ static int __init intel_pstate_setup(char
+> *str)
+>                 force_load = 1;
+>         if (!strcmp(str, "hwp_only"))
+>                 hwp_only = 1;
+> +       if (!strcmp(str, "hwp_broken_firmware")) {
+> +               pr_info("HWP disabled by firmware\n");
+> +               hwp_broken_firmware = 1;
+> +       }
+>         if (!strcmp(str, "per_cpu_perf_limits"))
+>                 per_cpu_limits = true;
+>  
+
+
