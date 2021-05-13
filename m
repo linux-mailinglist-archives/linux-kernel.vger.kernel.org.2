@@ -2,89 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE1037FB58
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 18:17:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62D7B37FB61
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 18:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235083AbhEMQTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 12:19:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56674 "EHLO mail.kernel.org"
+        id S235092AbhEMQVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 12:21:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229521AbhEMQTA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 12:19:00 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 89FA26108D;
-        Thu, 13 May 2021 16:17:47 +0000 (UTC)
-Date:   Thu, 13 May 2021 17:18:55 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Stephan Gerhold <stephan@gerhold.net>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Robert Yang <decatf@gmail.com>, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?B?TWlj?= =?UTF-8?B?aGHFgiBNaXJvc8WCYXc=?= 
-        <mirq-linux@rere.qmqm.pl>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH v2 0/3] iio: accel: kxcjk-1013: Add support for
- KX023-1025
-Message-ID: <20210513171855.4bbeca6b@jic23-huawei>
-In-Reply-To: <20210511142402.4457-1-stephan@gerhold.net>
-References: <20210511142402.4457-1-stephan@gerhold.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S235054AbhEMQVf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 12:21:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C7E761435;
+        Thu, 13 May 2021 16:20:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620922825;
+        bh=QVkrX7mN2/40RLW8Kgds/Fa/Z5rjabrfG+EbU64Cj6U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=V7sVpCuHd9iAV5tZcOfo7vjxhWts3zezaAhVYNNXWqC1xLVeO2P4M/dvvYmYnClfg
+         7AteXdvNRZ6hS1utiCUN6+u1DjqXHzoXajQ+IGcAYyhF6vH9EJ+EGM1zSIXpHZdhBP
+         2SSxEh8j15F3ibpKZ/0x253+UdHj8ELfEhO+twA7oGhClLwNoN16iot3arusSNv/Cr
+         sXU+odJj8iIXjUG952T1WamigpVWbZrllhTB/nbr61fkUmr++ni+eUnIpvRRBwI5W9
+         BkP1SgaWzLoBkh7MhbQ4q/whuzE21XlgkiWx8I0KZTSaSI3tQFO97j0q1vh+MVs6VP
+         OBChNSPmrBFjg==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1lhE4Y-0007Q2-Dx; Thu, 13 May 2021 18:20:26 +0200
+Date:   Thu, 13 May 2021 18:20:26 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Jiri Slaby <jslaby@suse.cz>, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/35] tty cleanup for 5.14
+Message-ID: <YJ1RyscrL2bNYXou@hovoldconsulting.com>
+References: <20210505091928.22010-1-jslaby@suse.cz>
+ <YJ1ACSO+JKRhZZ0/@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJ1ACSO+JKRhZZ0/@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 May 2021 16:23:59 +0200
-Stephan Gerhold <stephan@gerhold.net> wrote:
+On Thu, May 13, 2021 at 05:04:41PM +0200, Greg Kroah-Hartman wrote:
+> On Wed, May 05, 2021 at 11:18:53AM +0200, Jiri Slaby wrote:
+> > Hi,
+> > 
+> > this is again a series of various TTY cleanups. The stats say: 116 files
+> > changed, 661 insertions, 2602 deletions. The major part of the removal
+> > is a drop of BROKEN r3964 ldisc. The rest is mostly removal of dead
+> > code, or adaption to the current tty core state.
+> 
+> I've applied the first 33 patches in this series.  Can you resend the
+> last two after you have revised them based on the review?
 
-> KX023-1025 [1] is another accelerometer from Kionix that has lots
-> of additional functionality compared to KXCJK-1013. It combines the
-> motion interrupt functionality from KXCJK with the tap detection
-> from KXTF9, plus a lot more other functionality.
-> 
-> This patch set does not add support for any of the extra functionality,
-> but makes basic functionality work with the existing kxcjk-1013 driver.
-> 
-> At first, the register map for the KX023-1025 seems quite different
-> from the other accelerometers supported by the kxcjk-1013.
-> However, it turns out that at least most of the register bits
-> still mean the same for KX023-1025.
-> 
-> This patch set refactors the kxcjk-1013 driver a little bit
-> to get the register addresses from a chip-specific struct.
-> The register bits can be re-used for all the different chips.
-> 
-> The KX023-1025 is used in several smartphones from Huawei.
-> I tested these changes on a Huawei Ascend G7, someone else reported
-> they also work fine on the Huawei Honor 5X (codename "kiwi").
-> 
-> [1]: https://kionixfs.azureedge.net/en/datasheet/KX023-1025%20Specifications%20Rev%2012.0.pdf
+Greg, could you consider dropping the three USB-serial patches from
+tty-testing? They don't have any dependency on the tty changes and we
+can avoid unnecessary merge conflicts if I take them through through my
+tree instead.
 
-Series applied to the togreg branch of iio.git and pushed out as testing
-for the bots to see if they can find anything we missed.
+	USB: serial: make usb_serial_driver::write_room return uint
+	serial: make usb_serial_driver::chars_in_buffer return uint
+	USB: serial: digi_acceleport, simplify digi_chars_in_buffer
 
-Thanks,
-
-Jonathan
-
-> ---
-> Changes in v2:
->   - Make register structs static (reported by kernel test robot)
-> 
-> Stephan Gerhold (3):
->   dt-bindings: iio: kionix,kxcjk1013: Document kionix,kx023-1025
->   iio: accel: kxcjk-1013: Refactor configuration registers into struct
->   iio: accel: kxcjk-1013: Add support for KX023-1025
-> 
->  .../bindings/iio/accel/kionix,kxcjk1013.yaml  |   1 +
->  drivers/iio/accel/kxcjk-1013.c                | 217 ++++++++++++++----
->  2 files changed, 176 insertions(+), 42 deletions(-)
-> 
-
+Johan
