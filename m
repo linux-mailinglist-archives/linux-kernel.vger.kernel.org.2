@@ -2,144 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52ED837F85A
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 15:03:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69A5737F85C
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 15:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233815AbhEMNEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 09:04:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30161 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233591AbhEMNE3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 09:04:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620910999;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=reFKUH6rrlF+AA2394T7GVrIVtOgj3DePRS0lsPMuB0=;
-        b=iU1pLIUggdeYLMe1RxV77TwP4TKS8095Zp61qXjpBza/f0Z8Tm+JsWicylTuwZTxBpBrKC
-        Rqkw/KsfHRHLh/R13T3ePwUM0gMWfOkE/KmJcdYmKPiqRmN9woLdMtj/2u5lQlKJcvltKG
-        s0fWXco4hNiFJdguvQQkM6PSNkzmPv4=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-57-mmepGcJ8PzeyoPHKRzu0Ew-1; Thu, 13 May 2021 09:03:17 -0400
-X-MC-Unique: mmepGcJ8PzeyoPHKRzu0Ew-1
-Received: by mail-ed1-f72.google.com with SMTP id i19-20020a05640242d3b0290388cea34ed3so14582318edc.15
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 06:03:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=reFKUH6rrlF+AA2394T7GVrIVtOgj3DePRS0lsPMuB0=;
-        b=rkhIIAiTdJW59RLU3qiAHliyJB2Et/Dposk4zhF14ugdAc5pv7xUJzdlyIURwDyVDz
-         JmrvDAEZ3I4I+uh7g5Tnv4cuy8J01HzpPG46Lqxs3fZLjtAWCuj/lwEBFwsB1nsO2En6
-         HtDWMVJanctCzTryrR4UIsGesL1EvrShxId2IYk0javtOMM8auesbHCXQafN2XpBznQK
-         Z9PLMu2YciJzaBjONEDZmSXaVM3DlScKCsQ07TKK1n7UFgsl84851SntxXfacj9U3Ycm
-         axOdH9m9vXC5hv1FgYGFhaBRDi7rj7mp7pBrrJue3jlAbRL3fxeXouM0fU+S0qlYkm/P
-         Ih4Q==
-X-Gm-Message-State: AOAM531ScApNaJ/dh9fvig32UTWIaD2IgZOVaNBXvl8FpLd5REO97zLP
-        XGQS239FtC+FQJz+nn0rVPON55FD+FAYCjo3Cct+veyLgoaVBxUfYRaL8699GfEZBteE33JscjL
-        4UtTpWUV/3v0AHJzvunWMWB06
-X-Received: by 2002:a17:906:a017:: with SMTP id p23mr44269249ejy.460.1620910996140;
-        Thu, 13 May 2021 06:03:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxlZU02TavvxbBUmfRJG32boBnlj1iP4tM0Qg/JAmvchXWsqL5Ii9AcVBluYmGFZU6Zj7oJcg==
-X-Received: by 2002:a17:906:a017:: with SMTP id p23mr44269235ejy.460.1620910995957;
-        Thu, 13 May 2021 06:03:15 -0700 (PDT)
-Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
-        by smtp.gmail.com with ESMTPSA id h4sm2157154edv.97.2021.05.13.06.03.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 06:03:15 -0700 (PDT)
-Date:   Thu, 13 May 2021 15:03:13 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        kvm <kvm@vger.kernel.org>,
-        Linux Virtualization <virtualization@lists.linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        stsp <stsp2@yandex.ru>, Krasnov Arseniy <oxffffaa@gmail.com>
-Subject: Re: [RFC PATCH v9 13/19] virtio/vsock: rest of SOCK_SEQPACKET support
-Message-ID: <CAGxU2F5M8rMCTAoQLnEorwtnmJ14L3v9mJpywjAsUwUCtNCjDg@mail.gmail.com>
-References: <20210508163027.3430238-1-arseny.krasnov@kaspersky.com>
- <20210508163558.3432246-1-arseny.krasnov@kaspersky.com>
- <20210513122708.mwooglzkhv7du7jo@steredhat>
+        id S233801AbhEMNFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 09:05:10 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41544 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232864AbhEMNEw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 09:04:52 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2ABF9B1AB;
+        Thu, 13 May 2021 13:03:41 +0000 (UTC)
+Subject: Re: [PATCH -next] drm: simpledrm: print resource info using '%pr'
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     dri-devel@lists.freedesktop.org
+References: <20210512233459.19534-1-rdunlap@infradead.org>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <7bc970ed-007f-6374-b7f8-71707606a6b9@suse.de>
+Date:   Thu, 13 May 2021 15:03:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210513122708.mwooglzkhv7du7jo@steredhat>
+In-Reply-To: <20210512233459.19534-1-rdunlap@infradead.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="dak79HA3qMhgihHuHU08I4mi89otf7oWG"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sdf
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--dak79HA3qMhgihHuHU08I4mi89otf7oWG
+Content-Type: multipart/mixed; boundary="KhcWyEjhF4h3QqCazWrFGqRbaZorvBSf5";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org
+Message-ID: <7bc970ed-007f-6374-b7f8-71707606a6b9@suse.de>
+Subject: Re: [PATCH -next] drm: simpledrm: print resource info using '%pr'
+References: <20210512233459.19534-1-rdunlap@infradead.org>
+In-Reply-To: <20210512233459.19534-1-rdunlap@infradead.org>
 
-On Thu, May 13, 2021 at 2:27 PM Stefano Garzarella <sgarzare@redhat.com> wrote:
->
-> On Sat, May 08, 2021 at 07:35:54PM +0300, Arseny Krasnov wrote:
-> >This adds rest of logic for SEQPACKET:
-> >1) Send SHUTDOWN on socket close for SEQPACKET type.
-> >2) Set SEQPACKET packet type during send.
-> >3) 'seqpacket_allow' flag to virtio transport.
->
-> Please update this commit message, point 3 is not included anymore in
-> this patch, right?
->
-> >4) Set 'VIRTIO_VSOCK_SEQ_EOR' bit in flags for last
-> >   packet of message.
-> >
-> >Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
-> >---
-> > v8 -> v9:
-> > 1) Use cpu_to_le32() to set VIRTIO_VSOCK_SEQ_EOR.
-> >
-> > include/linux/virtio_vsock.h            |  4 ++++
-> > net/vmw_vsock/virtio_transport_common.c | 17 +++++++++++++++--
-> > 2 files changed, 19 insertions(+), 2 deletions(-)
-> >
-> >diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
-> >index 02acf6e9ae04..7360ab7ea0af 100644
-> >--- a/include/linux/virtio_vsock.h
-> >+++ b/include/linux/virtio_vsock.h
-> >@@ -80,6 +80,10 @@ virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
-> >                              struct msghdr *msg,
-> >                              size_t len, int flags);
-> >
-> >+int
-> >+virtio_transport_seqpacket_enqueue(struct vsock_sock *vsk,
-> >+                                 struct msghdr *msg,
-> >+                                 size_t len);
-> > ssize_t
-> > virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
-> >                                  struct msghdr *msg,
-> >diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
-> >index 7fea0a2192f7..b6608b4ac7c2 100644
-> >--- a/net/vmw_vsock/virtio_transport_common.c
-> >+++ b/net/vmw_vsock/virtio_transport_common.c
-> >@@ -74,6 +74,10 @@ virtio_transport_alloc_pkt(struct virtio_vsock_pkt_info *info,
-> >               err = memcpy_from_msg(pkt->buf, info->msg, len);
-> >               if (err)
-> >                       goto out;
-> >+
-> >+              if (info->msg->msg_iter.count == 0)
->
-> Also here is better `msg_data_left(info->msg)`
->
-> >+                      pkt->hdr.flags = cpu_to_le32(info->flags |
-> >+                                              VIRTIO_VSOCK_SEQ_EOR);
->
-> Re-thinking an alternative could be to set EOR here...
->
->                         info->flags |= VIRTIO_VSOCK_SEQ_EOR;
+--KhcWyEjhF4h3QqCazWrFGqRbaZorvBSf5
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Or just `pkt->hdr.flags |= cpu_to_le32(VIRTIO_VSOCK_SEQ_EOR)`, as you 
-did in vhost-vsock :-)
+Hi
 
+Am 13.05.21 um 01:34 schrieb Randy Dunlap:
+> struct resource start and end fields are not always long long,
+> so using %llx to print them can cause build warnings (below).
+> Fix these by using the special "%pr" for printing struct resource info.=
+
+>=20
+> ../drivers/gpu/drm/tiny/simpledrm.c: In function =E2=80=98simpledrm_dev=
+ice_init_mm=E2=80=99:
+> ../include/drm/drm_print.h:412:32: warning: format =E2=80=98%llx=E2=80=99=20
+expects argument of type =E2=80=98long long unsigned int=E2=80=99, but ar=
+gument 3 has type =E2=80=98resource_size_t {aka unsigned int}=E2=80=99 [-=
+Wformat=3D]
+> ../drivers/gpu/drm/tiny/simpledrm.c:533:54: note: format string is defi=
+ned here
+>     drm_err(dev, "could not acquire memory range [0x%llx:0x%llx]: error=20
+%d\n",
+>                                                     ~~~^
+>                                                     %x
+> ../include/drm/drm_print.h:412:32: warning: format =E2=80=98%llx=E2=80=99=20
+expects argument of type =E2=80=98long long unsigned int=E2=80=99, but ar=
+gument 4 has type =E2=80=98resource_size_t {aka unsigned int}=E2=80=99 [-=
+Wformat=3D]
+> ../drivers/gpu/drm/tiny/simpledrm.c:533:61: note: format string is defi=
+ned here
+>     drm_err(dev, "could not acquire memory range [0x%llx:0x%llx]: error=20
+%d\n",
+>                                                            ~~~^
+>                                                            %x
+>=20
+> Fixes: 4aae79f77e3a ("drm/simpledrm: Acquire memory aperture for frameb=
+uffer")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Thomas Zimmermann <tzimmermann@suse.de>
+> Cc: dri-devel@lists.freedesktop.org
+
+Queued up for drm-misc-next. Thanks a lot.
+
+Best regards
+Thomas
+
+> ---
+>   drivers/gpu/drm/tiny/simpledrm.c |    4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> --- linux-next-20210512.orig/drivers/gpu/drm/tiny/simpledrm.c
+> +++ linux-next-20210512/drivers/gpu/drm/tiny/simpledrm.c
+> @@ -530,8 +530,8 @@ static int simpledrm_device_init_mm(stru
+>  =20
+>   	ret =3D devm_aperture_acquire_from_firmware(dev, mem->start, resourc=
+e_size(mem));
+>   	if (ret) {
+> -		drm_err(dev, "could not acquire memory range [0x%llx:0x%llx]: error =
+%d\n",
+> -			mem->start, mem->end, ret);
+> +		drm_err(dev, "could not acquire memory range %pr: error %d\n",
+> +			mem, ret);
+>   		return ret;
+>   	}
+>  =20
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--KhcWyEjhF4h3QqCazWrFGqRbaZorvBSf5--
+
+--dak79HA3qMhgihHuHU08I4mi89otf7oWG
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmCdI6wFAwAAAAAACgkQlh/E3EQov+D2
+oRAAlm3YwzQg7SISFqmaJ+lXLJUv0eRBctw3inqSWTrwYCw+VoLwAkyOhXp8iVHDX9vkjGYO/5pO
+WXyAmOZUFQVlRkTAl+woOZsvulqRdRnDc+xf/1Zir7gMnrvhefUXJCdQpQiG+DYaYy6Fw9NzlFfU
+jYTDohglR/ha4CBS6eOQGj/+/sjrdWdgmTEvZhftTuxwYUZ1hIL/26Qt0RceNH4PBOAhgi6JwqrO
+ICa1k+gfi2Of3H+aaROR2BhK7xGplD7rO+EgRgZOxRTytIjkcl4vUqtxQFeUHOQuyfqy3dJhalVH
+Drqy0fYoqC2EvDy/wysOPoPL0M25bqQYZvxWzfZNGv5fZYAWnvBFmB1cdinnxpHR9k53QGSn1i6j
+hjG1+F7KZ6cau6n3NzlEKcq9i0U5rgncMA3aYMnobddaGCQ3p53O/ZQWDnLDfptFZZoRFIWlyqfz
+3Ls9DU/vTU65mtwQBXwv32e9Z8+EIzSpPz+PNVzbKQzd88WQEI+43G5872y6HBSaehKoz39cDS4d
+D+SU+QWBCIDwH7XDe93JrN3jlTt3P3wQ3CHRCeFKDSFiUayQeD0yXTeVAbh3f90C1CSIPQDh6HmZ
+j0zmqJyE6DJ+i6BLLwJYZxujMJMFvwTp5g8x7JtSZ2GmD3nvuuxaT5Lz0zl8C2IYouJyt8F9cN2x
+eY0=
+=ygU8
+-----END PGP SIGNATURE-----
+
+--dak79HA3qMhgihHuHU08I4mi89otf7oWG--
