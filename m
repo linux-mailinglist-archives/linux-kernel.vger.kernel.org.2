@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DBBB37F645
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 13:03:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D712E37F646
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 13:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232320AbhEMLEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 07:04:40 -0400
-Received: from mga02.intel.com ([134.134.136.20]:45138 "EHLO mga02.intel.com"
+        id S233048AbhEMLEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 07:04:42 -0400
+Received: from mga02.intel.com ([134.134.136.20]:45133 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233005AbhEMLCp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 07:02:45 -0400
-IronPort-SDR: gsgjK1e+Alj0hiVeqIOnhJ9G0RP3ZxJox2DpQmBJJkHXWD4EDQigf0iPRr1/E6ljh2dbkBZZ3f
- 7i3oNh823nuA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="187048318"
+        id S233045AbhEMLDN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 07:03:13 -0400
+IronPort-SDR: hT1ayGq15qKTYwcRzmTzZHlNwRb+7VeN3kHC7oLUleUpr1HyYx29V2aEZGRkKonH85MTlWGEza
+ fZGxd6heEK8g==
+X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="187048326"
 X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
-   d="scan'208";a="187048318"
+   d="scan'208";a="187048326"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 04:01:15 -0700
-IronPort-SDR: WDqL5pUq6oEQTnbtMHQdbvwmFOPdhRIUPvy5Gyb0dFIb8pJRacW5Cc8W0j7xpZyZ1Akdq18xpV
- CHbmkAv1GTcw==
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 04:01:18 -0700
+IronPort-SDR: ToPHSBDP9c9XBYqZw8ScJSi6Fx/wp+iCjFvL9OKpezyvKWTF9FCZi14ZCzliM5ntJ4mezeYatm
+ pHx9Qrbxoa2Q==
 X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
-   d="scan'208";a="625984102"
+   d="scan'208";a="625984125"
 Received: from gna-dev.igk.intel.com ([10.102.80.34])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 04:01:13 -0700
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 04:01:15 -0700
 From:   Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Arnd Bergmann <arnd@arndb.de>,
@@ -35,10 +35,12 @@ Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
         Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>,
         Tomasz Jankowski <tomasz1.jankowski@intel.com>,
         Savo Novakovic <savox.novakovic@intel.com>,
+        Anisha Dattatraya Kulkarni 
+        <anisha.dattatraya.kulkarni@intel.com>,
         Jianxun Zhang <jianxun.zhang@linux.intel.com>
-Subject: [PATCH v3 08/14] intel_gna: implement scoring
-Date:   Thu, 13 May 2021 13:00:34 +0200
-Message-Id: <20210513110040.2268-9-maciej.kwapulinski@linux.intel.com>
+Subject: [PATCH v3 09/14] intel_gna: add a work queue to process scoring requests
+Date:   Thu, 13 May 2021 13:00:35 +0200
+Message-Id: <20210513110040.2268-10-maciej.kwapulinski@linux.intel.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20210513110040.2268-1-maciej.kwapulinski@linux.intel.com>
 References: <20210513110040.2268-1-maciej.kwapulinski@linux.intel.com>
@@ -50,338 +52,221 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Tomasz Jankowski <tomasz1.jankowski@intel.com>
 
-Add a new component for scoring logic such as configuring and kicking
-off the hardware.
+The new workqueue is responsible to process the list of requests
+in a FIFO manner. It waits for the hardware to complete	on every
+request until it is woken up by an interrupt that will be addressed
+in following changes.
 
 Signed-off-by: Tomasz Jankowski <tomasz1.jankowski@intel.com>
 Tested-by: Savo Novakovic <savox.novakovic@intel.com>
+Co-developed-by: Anisha Dattatraya Kulkarni <anisha.dattatraya.kulkarni@intel.com>
+Signed-off-by: Anisha Dattatraya Kulkarni <anisha.dattatraya.kulkarni@intel.com>
 Co-developed-by: Jianxun Zhang <jianxun.zhang@linux.intel.com>
 Signed-off-by: Jianxun Zhang <jianxun.zhang@linux.intel.com>
 Co-developed-by: Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>
 Signed-off-by: Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>
 ---
- drivers/misc/intel/gna/Kbuild   |   2 +-
- drivers/misc/intel/gna/device.c |   3 +
- drivers/misc/intel/gna/device.h |   5 +
- drivers/misc/intel/gna/score.c  | 291 ++++++++++++++++++++++++++++++++
- drivers/misc/intel/gna/score.h  |  17 ++
- include/uapi/misc/intel/gna.h   |   4 +
- 6 files changed, 321 insertions(+), 1 deletion(-)
- create mode 100644 drivers/misc/intel/gna/score.c
- create mode 100644 drivers/misc/intel/gna/score.h
+ drivers/misc/intel/gna/device.c  |  34 +++++++++
+ drivers/misc/intel/gna/device.h  |  14 ++++
+ drivers/misc/intel/gna/request.c | 115 +++++++++++++++++++++++++++++++
+ drivers/misc/intel/gna/request.h |   2 +
+ 4 files changed, 165 insertions(+)
 
-diff --git a/drivers/misc/intel/gna/Kbuild b/drivers/misc/intel/gna/Kbuild
-index 81d8da8f24aa..38ff97360ed8 100644
---- a/drivers/misc/intel/gna/Kbuild
-+++ b/drivers/misc/intel/gna/Kbuild
-@@ -1,5 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0-only
- 
--intel_gna-y := device.o hw.o mem.o pci.o request.o
-+intel_gna-y := device.o hw.o mem.o pci.o request.o score.o
- 
- obj-$(CONFIG_INTEL_GNA) += intel_gna.o
 diff --git a/drivers/misc/intel/gna/device.c b/drivers/misc/intel/gna/device.c
-index 375342c3c140..c8a127cc3039 100644
+index c8a127cc3039..ca988d3ec408 100644
 --- a/drivers/misc/intel/gna/device.c
 +++ b/drivers/misc/intel/gna/device.c
-@@ -82,6 +82,9 @@ int gna_probe(struct device *parent, struct gna_dev_info *dev_info, void __iomem
+@@ -23,6 +23,34 @@ static void gna_devm_idr_destroy(void *data)
+ 	idr_destroy(idr);
+ }
  
- 	mutex_init(&gna_priv->memidr_lock);
- 
-+	mutex_init(&gna_priv->flist_lock);
-+	INIT_LIST_HEAD(&gna_priv->file_list);
-+
- 	atomic_set(&gna_priv->request_count, 0);
- 
- 	mutex_init(&gna_priv->reqlist_lock);
-diff --git a/drivers/misc/intel/gna/device.h b/drivers/misc/intel/gna/device.h
-index 6345295ea589..e879ac045928 100644
---- a/drivers/misc/intel/gna/device.h
-+++ b/drivers/misc/intel/gna/device.h
-@@ -30,6 +30,11 @@ struct gna_file_private {
- };
- 
- struct gna_private {
-+	/* list of opened files */
-+	struct list_head file_list;
-+	/* protects file_list */
-+	struct mutex flist_lock;
-+
- 	int index;
- 
- 	int recovery_timeout_jiffies;
-diff --git a/drivers/misc/intel/gna/score.c b/drivers/misc/intel/gna/score.c
-new file mode 100644
-index 000000000000..a3be0d62393a
---- /dev/null
-+++ b/drivers/misc/intel/gna/score.c
-@@ -0,0 +1,291 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+// Copyright(c) 2017-2021 Intel Corporation
-+
-+#include <linux/device.h>
-+#include <linux/idr.h>
-+#include <linux/mm.h>
-+#include <linux/mutex.h>
-+#include <linux/string.h>
-+#include <linux/uaccess.h>
-+#include <linux/vmalloc.h>
-+
-+#include <uapi/misc/intel/gna.h>
-+
-+#include "device.h"
-+#include "mem.h"
-+#include "request.h"
-+#include "score.h"
-+
-+int gna_validate_score_config(struct gna_compute_cfg *compute_cfg,
-+			      struct gna_file_private *file_priv)
++static void gna_devm_destroy_workqueue(void *data)
 +{
-+	struct gna_private *gna_priv;
-+	size_t buffers_size;
++	struct workqueue_struct *request_wq = data;
 +
-+	gna_priv = file_priv->gna_priv;
-+
-+	if (compute_cfg->gna_mode > GNA_MODE_XNN) {
-+		dev_err(gna_dev(gna_priv), "invalid mode\n");
-+		return -EINVAL;
-+	}
-+
-+	if (compute_cfg->layer_count > gna_priv->info.max_layer_count) {
-+		dev_err(gna_dev(gna_priv), "max layer count exceeded\n");
-+		return -EINVAL;
-+	}
-+
-+	if (compute_cfg->buffer_count == 0) {
-+		dev_err(gna_dev(gna_priv), "no buffers\n");
-+		return -EINVAL;
-+	}
-+
-+	buffers_size = sizeof(struct gna_buffer) * compute_cfg->buffer_count;
-+	if (!access_ok(u64_to_user_ptr(compute_cfg->buffers_ptr), buffers_size)) {
-+		dev_err(gna_dev(gna_priv), "invalid buffers pointer\n");
-+		return -EINVAL;
-+	}
-+
-+	return 0;
++	destroy_workqueue(request_wq);
 +}
 +
-+static int gna_do_patch_memory(struct gna_private *gna_priv, struct gna_memory_object *mo,
-+			       struct gna_memory_patch *patch, void *vaddr)
++static int gna_devm_create_singlethread_workqueue(struct gna_private *gna_priv)
 +{
-+	size_t size;
-+	void *dest;
-+	u64 value;
++	struct device *dev = gna_parent(gna_priv);
++	const char *name = gna_name(gna_priv);
++	int ret;
 +
-+	value = patch->value;
-+	size = patch->size;
-+	dest = (u8 *)vaddr + patch->offset;
-+	dev_dbg(gna_dev(gna_priv), "patch offset: %llu, size: %zu, value: %llu\n",
-+		patch->offset, size, value);
-+
-+	switch (size) {
-+	case 0:
++	gna_priv->request_wq = create_singlethread_workqueue(name);
++	if (!gna_priv->request_wq) {
++		dev_err(dev, "could not create %s workqueue\n", name);
 +		return -EFAULT;
-+	case sizeof(u8):
-+		*((u8 *)dest) = (u8)value;
-+		break;
-+	case sizeof(u16):
-+		*((u16 *)dest) = (u16)value;
-+		break;
-+	case sizeof(u32):
-+		*((u32 *)dest) = (u32)value;
-+		break;
-+	case sizeof(u64):
-+		*((u64 *)dest) = (u64)value;
-+		break;
-+	default:
-+		// should never happen
-+		return -EINVAL;
 +	}
 +
-+	return 0;
-+}
-+
-+static int gna_mem_patch_memory(struct gna_private *gna_priv, struct gna_buffer *buffer)
-+{
-+	struct gna_memory_patch *patch;
-+	struct gna_memory_object *mo;
-+	void *vaddr;
-+	int ret = 0;
-+	u32 i;
-+
-+	dev_dbg(gna_dev(gna_priv), "memory_id: %llu, patch_count, %llu\n",
-+		buffer->memory_id, buffer->patch_count);
-+
-+	mutex_lock(&gna_priv->memidr_lock);
-+	mo = idr_find(&gna_priv->memory_idr, buffer->memory_id);
-+	mutex_unlock(&gna_priv->memidr_lock);
-+	if (!mo)
-+		return -EINVAL;
-+
-+	mutex_lock(&mo->page_lock);
-+	ret = mo->ops->get_pages(mo, buffer->offset, buffer->size);
-+	mutex_unlock(&mo->page_lock);
-+	if (ret)
-+		return ret;
-+
-+	if (buffer->patch_count) {
-+		vaddr = vm_map_ram(mo->pages, mo->num_pinned, 0);
-+		if (!vaddr)
-+			return -ENOMEM;
-+
-+		patch = (struct gna_memory_patch *)(uintptr_t)buffer->patches_ptr;
-+		for (i = 0; i < buffer->patch_count; i++, patch++) {
-+			ret = gna_do_patch_memory(gna_priv, mo, patch, vaddr + buffer->offset);
-+			if (ret)
-+				break;
-+		}
-+
-+		kvfree((void *)(uintptr_t)buffer->patches_ptr);
-+		buffer->patches_ptr = 0;
-+		vm_unmap_ram(vaddr, mo->num_pages);
-+
-+		if (ret)
-+			return ret;
++	ret = devm_add_action(dev, gna_devm_destroy_workqueue, gna_priv->request_wq);
++	if (ret) {
++		dev_err(dev, "could not add devm action for %s workqueue\n", name);
++		gna_devm_destroy_workqueue(gna_priv->request_wq);
 +	}
-+
-+	gna_mmu_add(gna_priv, mo);
 +
 +	return ret;
 +}
 +
-+static struct gna_buffer *gna_find_buffer(struct gna_buffer *buffer_list, u32 buffer_count,
-+					  u32 mmu_offset, u32 *memory_offset)
+ int gna_probe(struct device *parent, struct gna_dev_info *dev_info, void __iomem *iobase)
+ {
+ 	static atomic_t dev_last_idx = ATOMIC_INIT(-1);
+@@ -90,6 +118,12 @@ int gna_probe(struct device *parent, struct gna_dev_info *dev_info, void __iomem
+ 	mutex_init(&gna_priv->reqlist_lock);
+ 	INIT_LIST_HEAD(&gna_priv->request_list);
+ 
++	init_waitqueue_head(&gna_priv->dev_busy_waitq);
++
++	ret = gna_devm_create_singlethread_workqueue(gna_priv);
++	if (ret)
++		return ret;
++
+ 	return 0;
+ }
+ 
+diff --git a/drivers/misc/intel/gna/device.h b/drivers/misc/intel/gna/device.h
+index e879ac045928..65856d08729f 100644
+--- a/drivers/misc/intel/gna/device.h
++++ b/drivers/misc/intel/gna/device.h
+@@ -16,6 +16,7 @@
+ 
+ #define GNA_DV_NAME	"intel_gna"
+ 
++struct workqueue_struct;
+ struct device;
+ struct file;
+ 
+@@ -42,6 +43,9 @@ struct gna_private {
+ 	const char *name;
+ 	struct device *parent;
+ 
++	/* hardware status set by interrupt handler */
++	u32 hw_status;
++
+ 	/* device related resources */
+ 	void __iomem *iobase;
+ 	struct gna_dev_info info;
+@@ -50,9 +54,14 @@ struct gna_private {
+ 	struct gna_mmu_object mmu;
+ 	struct mutex mmu_lock;
+ 
++	/* if true, then gna device is processing */
++	bool dev_busy;
++	struct wait_queue_head dev_busy_waitq;
++
+ 	struct list_head request_list;
+ 	/* protects request_list */
+ 	struct mutex reqlist_lock;
++	struct workqueue_struct *request_wq;
+ 	atomic_t request_count;
+ 
+ 	/* memory objects' store */
+@@ -78,6 +87,11 @@ static inline struct device *gna_parent(struct gna_private *gna_priv)
+ 	return gna_priv->parent;
+ }
+ 
++static inline const char *gna_name(struct gna_private *gna_priv)
 +{
-+	struct gna_buffer *buffer;
-+	u32 page_offset;
-+	u32 memory_size;
-+	u32 offset;
-+	u32 i;
-+
-+	offset = 0;
-+	for (i = 0; i < buffer_count; i++) {
-+		buffer = buffer_list + i;
-+		page_offset = buffer->offset & ~PAGE_MASK;
-+		memory_size = round_up(page_offset + buffer->size, PAGE_SIZE);
-+		if (mmu_offset < offset + memory_size) {
-+			*memory_offset = offset;
-+			return buffer;
-+		}
-+		offset += memory_size;
-+	}
-+
-+	return NULL;
++	return gna_priv->name;
 +}
 +
-+static int gna_copy_gmm_config(struct gna_private *gna_priv,
-+			       struct gna_buffer *buffer_list,
-+			       u32 buffer_count, u32 mmu_offset)
+ static inline struct device *gna_dev(struct gna_private *gna_priv)
+ {
+ 	return gna_priv->parent;
+diff --git a/drivers/misc/intel/gna/request.c b/drivers/misc/intel/gna/request.c
+index d9e7bc5d2d3a..eabbab8924be 100644
+--- a/drivers/misc/intel/gna/request.c
++++ b/drivers/misc/intel/gna/request.c
+@@ -10,8 +10,118 @@
+ #include <linux/slab.h>
+ 
+ #include "device.h"
++#include "hw.h"
+ #include "mem.h"
+ #include "request.h"
++#include "score.h"
++
++static void gna_request_update_status(struct gna_request *score_request)
 +{
-+	struct gna_hw_descriptor *hwdesc;
++	struct gna_private *gna_priv = score_request->gna_priv;
++	/* The gna_priv's hw_status should be updated first */
++	u32 hw_status = gna_priv->hw_status;
++	u32 stall_cycles;
++	u32 total_cycles;
++
++	/* Technically, the time stamp can be a bit later than
++	 * when the hw actually completed scoring. Here we just
++	 * do our best in a deferred work, unless we want to
++	 * tax isr for a more accurate record.
++	 */
++	score_request->drv_perf.hw_completed = ktime_get_ns();
++
++	score_request->hw_status = hw_status;
++
++	score_request->status = gna_parse_hw_status(gna_priv, hw_status);
++
++	if (gna_hw_perf_enabled(gna_priv)) {
++		if (hw_status & GNA_STS_STATISTICS_VALID) {
++			total_cycles = gna_reg_read(gna_priv, GNA_MMIO_PTC);
++			stall_cycles = gna_reg_read(gna_priv, GNA_MMIO_PSC);
++			score_request->hw_perf.total = total_cycles;
++			score_request->hw_perf.stall = stall_cycles;
++		} else
++			dev_warn(gna_dev(gna_priv), "GNA statistics missing\n");
++	}
++	if (unlikely(hw_status & GNA_ERROR))
++		gna_print_error_status(gna_priv, hw_status);
++}
++
++static void gna_request_process(struct work_struct *work)
++{
++	struct gna_request *score_request;
 +	struct gna_memory_object *mo;
-+	struct gna_mmu_object *mmu;
-+	struct gna_buffer *buffer;
-+	u32 memory_offset;
-+	u32 skip_offset;
-+	u8 *gmm_desc;
-+	void *vaddr;
-+
-+	mmu = &gna_priv->mmu;
-+	hwdesc = mmu->hwdesc;
-+
-+	buffer = gna_find_buffer(buffer_list, buffer_count, mmu_offset, &memory_offset);
-+	if (!buffer) {
-+		dev_dbg(gna_dev(gna_priv), "buffer not found\n");
-+		return -EINVAL;
-+	}
-+
-+	mutex_lock(&gna_priv->memidr_lock);
-+	mo = idr_find(&gna_priv->memory_idr, buffer->memory_id);
-+	mutex_unlock(&gna_priv->memidr_lock);
-+	if (!mo) {
-+		dev_dbg(gna_dev(gna_priv), "memory object not found\n");
-+		return -EFAULT;
-+	}
-+
-+	vaddr = vm_map_ram(mo->pages, mo->num_pinned, 0);
-+	if (!vaddr) {
-+		dev_dbg(gna_dev(gna_priv), "mapping failed\n");
-+		return -EFAULT;
-+	}
-+
-+	skip_offset = round_down(buffer->offset, PAGE_SIZE);
-+	gmm_desc = (u8 *)vaddr + skip_offset + (mmu_offset - memory_offset);
-+	memcpy(&hwdesc->xnn_config, gmm_desc, sizeof(struct gna_xnn_descriptor));
-+	vm_unmap_ram(vaddr, mo->num_pages);
-+
-+	return 0;
-+}
-+
-+int gna_score(struct gna_request *score_request)
-+{
-+	struct gna_xnn_descriptor *xnn_config;
-+	struct gna_compute_cfg *compute_cfg;
 +	struct gna_private *gna_priv;
-+	struct gna_memory_object *mo;
-+	struct gna_mmu_object *mmu;
 +	struct gna_buffer *buffer;
-+	bool mo_valid = true;
-+	u64 buffer_count;
-+	u32 desc_base;
++	unsigned long hw_timeout;
 +	int ret;
 +	u64 i;
 +
-+	ret = 0;
-+
++	score_request = container_of(work, struct gna_request, work);
 +	gna_priv = score_request->gna_priv;
++	dev_dbg(gna_dev(gna_priv), "processing request %llu\n", score_request->request_id);
 +
-+	mmu = &gna_priv->mmu;
-+	xnn_config = &mmu->hwdesc->xnn_config;
-+	compute_cfg = &score_request->compute_cfg;
++	score_request->state = ACTIVE;
++
++	score_request->drv_perf.pre_processing = ktime_get_ns();
++
++	/* Set busy flag before kicking off HW. The isr will clear it and wake up us. There is
++	 * no difference if isr is missed in a timeout situation of the last request. We just
++	 * always set it busy and let the wait_event_timeout check the reset.
++	 * wq:  X -> true
++	 * isr: X -> false
++	 */
++	gna_priv->dev_busy = true;
++
++	ret = gna_score(score_request);
++	if (ret) {
++		score_request->status = ret;
++		goto end;
++	}
++
++	score_request->drv_perf.processing = ktime_get_ns();
++
++	hw_timeout = gna_priv->recovery_timeout_jiffies;
++
++	hw_timeout = wait_event_timeout(gna_priv->dev_busy_waitq,
++			!gna_priv->dev_busy, hw_timeout);
++
++	if (!hw_timeout)
++		dev_warn(gna_dev(gna_priv), "hardware timeout occurred\n");
++
++	gna_priv->hw_status = gna_reg_read(gna_priv, GNA_MMIO_STS);
++
++	gna_request_update_status(score_request);
++	gna_abort_hw(gna_priv);
 +
 +	buffer = score_request->buffer_list;
-+	buffer_count = score_request->buffer_count;
-+	dev_dbg(gna_dev(gna_priv), "buffer count: %llu\n", buffer_count);
-+	for (i = 0; i < buffer_count; i++, buffer++) {
-+		dev_dbg(gna_dev(gna_priv), "patch count: %llu\n", buffer->patch_count);
-+		ret = gna_mem_patch_memory(gna_priv, buffer);
-+		if (ret)
-+			goto err_put_pages;
-+	}
-+
-+	switch (compute_cfg->gna_mode) {
-+	case GNA_MODE_XNN:
-+		dev_dbg(gna_dev(gna_priv), "xNN mode, labase: %d, lacount: %d\n",
-+			compute_cfg->layer_base, compute_cfg->layer_count);
-+		xnn_config->labase = compute_cfg->layer_base;
-+		xnn_config->lacount = compute_cfg->layer_count;
-+		break;
-+	case GNA_MODE_GMM:
-+		dev_dbg(gna_dev(gna_priv), "GMM mode, offset: %d\n", compute_cfg->layer_base);
-+		ret = gna_copy_gmm_config(gna_priv, score_request->buffer_list,
-+					  buffer_count, compute_cfg->layer_base);
-+		if (ret)
-+			goto err_put_pages_decr;
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		goto err_put_pages_decr;
-+	}
-+
-+	desc_base = (u32)(mmu->hwdesc_dma >> PAGE_SHIFT);
-+	gna_reg_write(gna_priv, GNA_MMIO_DESBASE, desc_base);
-+
-+	gna_start_scoring(gna_priv, compute_cfg);
-+
-+	return 0;
-+
-+err_put_pages_decr:
-+	i--;
-+	buffer--;
-+err_put_pages:
-+	do {
++	for (i = 0; i < score_request->buffer_count; i++, buffer++) {
 +		mutex_lock(&gna_priv->memidr_lock);
 +		mo = idr_find(&gna_priv->memory_idr, buffer->memory_id);
 +		mutex_unlock(&gna_priv->memidr_lock);
@@ -390,62 +275,87 @@ index 000000000000..a3be0d62393a
 +			mo->ops->put_pages(mo);
 +			mutex_unlock(&mo->page_lock);
 +		} else {
-+			mo_valid = false;
-+			dev_warn(gna_dev(gna_priv), "memory object not found %llu\n",
-+				 buffer->memory_id);
++			dev_warn(gna_dev(gna_priv), "mo not found %llu\n", buffer->memory_id);
 +		}
-+		buffer--;
-+	} while (i--);
-+
-+	if (mo_valid) {
-+		i = score_request->buffer_count;
-+		while (i--)
-+			kvfree((void *)(uintptr_t)score_request->buffer_list[i].patches_ptr);
-+		kvfree(score_request->buffer_list);
 +	}
++
++	/* patches_ptr's are already freed by ops->score() function */
++	kvfree(score_request->buffer_list);
 +	score_request->buffer_list = NULL;
 +	score_request->buffer_count = 0;
 +
-+	return ret;
++	gna_mmu_clear(gna_priv);
++
++end:
++	score_request->drv_perf.completion = ktime_get_ns();
++	dev_dbg(gna_dev(gna_priv), "request %llu done, waking processes\n",
++		score_request->request_id);
++	score_request->state = DONE;
++	wake_up_interruptible_all(&score_request->waitq);
 +}
-diff --git a/drivers/misc/intel/gna/score.h b/drivers/misc/intel/gna/score.h
-new file mode 100644
-index 000000000000..28aeab33e452
---- /dev/null
-+++ b/drivers/misc/intel/gna/score.h
-@@ -0,0 +1,17 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/* Copyright(c) 2017-2021 Intel Corporation */
-+
-+#ifndef __GNA_SCORE_H__
-+#define __GNA_SCORE_H__
-+
-+struct gna_file_private;
-+struct gna_compute_cfg;
-+struct gna_private;
-+struct gna_request;
-+
-+int gna_validate_score_config(struct gna_compute_cfg *compute_cfg,
-+			struct gna_file_private *file_priv);
-+
-+int gna_score(struct gna_request *score_request);
-+
-+#endif // __GNA_SCORE_H__
-diff --git a/include/uapi/misc/intel/gna.h b/include/uapi/misc/intel/gna.h
-index 473ce569d146..b531beb35bd9 100644
---- a/include/uapi/misc/intel/gna.h
-+++ b/include/uapi/misc/intel/gna.h
-@@ -10,6 +10,10 @@ extern "C" {
  
+ static struct gna_request *gna_request_create(struct gna_file_private *file_priv,
+ 				       struct gna_compute_cfg *compute_cfg)
+@@ -37,6 +147,7 @@ static struct gna_request *gna_request_create(struct gna_file_private *file_priv
+ 	score_request->gna_priv = gna_priv;
+ 	score_request->state = NEW;
+ 	init_waitqueue_head(&score_request->waitq);
++	INIT_WORK(&score_request->work, gna_request_process);
+ 
+ 	return score_request;
+ }
+@@ -245,6 +356,7 @@ int gna_enqueue_request(struct gna_compute_cfg *compute_cfg,
+ 	list_add_tail(&score_request->node, &gna_priv->request_list);
+ 	mutex_unlock(&gna_priv->reqlist_lock);
+ 
++	queue_work(gna_priv->request_wq, &score_request->work);
+ 	kref_put(&score_request->refcount, gna_request_release);
+ 
+ 	*request_id = score_request->request_id;
+@@ -295,6 +407,7 @@ void gna_delete_request_by_id(u64 req_id, struct gna_private *gna_priv)
+ 		list_for_each_entry_safe(req, temp_req, reqs_list, node) {
+ 			if (req->request_id == req_id) {
+ 				list_del(&req->node);
++				cancel_work_sync(&req->work);
+ 				kref_put(&req->refcount, gna_request_release);
+ 				break;
+ 			}
+@@ -316,6 +429,7 @@ void gna_delete_file_requests(struct file *fd, struct gna_private *gna_priv)
+ 		list_for_each_entry_safe(req, temp_req, reqs_list, node) {
+ 			if (req->fd == fd) {
+ 				list_del(&req->node);
++				cancel_work_sync(&req->work);
+ 				kref_put(&req->refcount, gna_request_release);
+ 				break;
+ 			}
+@@ -339,6 +453,7 @@ void gna_delete_memory_requests(u64 memory_id, struct gna_private *gna_priv)
+ 			for (i = 0; i < req->buffer_count; ++i) {
+ 				if (req->buffer_list[i].memory_id == memory_id) {
+ 					list_del(&req->node);
++					cancel_work_sync(&req->work);
+ 					kref_put(&req->refcount, gna_request_release);
+ 					break;
+ 				}
+diff --git a/drivers/misc/intel/gna/request.h b/drivers/misc/intel/gna/request.h
+index f34e974ad25c..f95947dd7272 100644
+--- a/drivers/misc/intel/gna/request.h
++++ b/drivers/misc/intel/gna/request.h
+@@ -8,6 +8,7 @@
+ #include <linux/list.h>
  #include <linux/types.h>
+ #include <linux/wait.h>
++#include <linux/workqueue.h>
  
-+/* Operation modes */
-+#define GNA_MODE_GMM	0
-+#define GNA_MODE_XNN	1
-+
- #define GNA_STS_SCORE_COMPLETED		_BITUL(0)
- #define GNA_STS_STATISTICS_VALID	_BITUL(3)
- #define GNA_STS_PCI_MMU_ERR		_BITUL(4)
+ #include <uapi/misc/intel/gna.h>
+ 
+@@ -46,6 +47,7 @@ struct gna_request {
+ 	struct gna_buffer *buffer_list;
+ 	u64 buffer_count;
+ 
++	struct work_struct work;
+ 	struct wait_queue_head waitq;
+ };
+ 
 -- 
 2.28.0
 
