@@ -2,207 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB55737FFD6
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 23:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3477937FFDB
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 23:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233537AbhEMVca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 17:32:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53092 "EHLO
+        id S233549AbhEMVdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 17:33:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233421AbhEMVc3 (ORCPT
+        with ESMTP id S233538AbhEMVdd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 17:32:29 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76E5AC061574;
-        Thu, 13 May 2021 14:31:16 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id z17so9107673wrq.7;
-        Thu, 13 May 2021 14:31:16 -0700 (PDT)
+        Thu, 13 May 2021 17:33:33 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D0C6C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 14:32:22 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id p15so24217650iln.3
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 14:32:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lxHw7TCKx2hb6boyZbIG+fYmxV77qEn49Hr1UVMTS54=;
-        b=p6tSv+EobEgxpfTu7MOWPBpaPi+pAvB27G9OnWs1OJ7XAukfEAXkGogtlBEDpwXNYz
-         GgKoln0EQ73SsHnTJEIbqxDe2GiMM/ncQubJM0EHEoIN+j4v4dkWd9m3CAas50g//PWz
-         9RXSwRizHyD0EyvXX5MzGVw+4VUSDl0cwbvRBDRkqxRLTcQX7KJyL2QVzBhIVHRByz3x
-         ZWH+Wc7TSwRdBHY404XxGm7lI7kkVjdSM8FeOekmBzCGspByyB2xeEyM88gdpRPCNg63
-         g/kVTAzgaL24zxPtWHKpBeNjpHtG9uhxrVAsy6TPq8pReppgrgEWbDOKMPNQz/2mHio1
-         PQ5A==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Lj2hPC9XaS5IbCouhWe8TdZQoRzw4YQucnnZ1bS+zjE=;
+        b=SXX27x8C9ACEUhUfo0p/itwuM1nzK5L3HvH+friUer/vSBduS/kCeT7zdk+XA/DyZg
+         vGeRq9PUyI/1ym06sLqrknnLPRI0NReo4IVMrvUJmRDVINv/S/macjS8SX+NVI+2Q2rJ
+         FyhEmo8su4sdvXWa4L8W/f65FYw1j5CfxEmCJhuI2MVYGqit1hBs6BmurfQBv6Pjsxyg
+         zsNADG1bOpZtKS664lvkOCweQy+SMHTG+5VytNXEaCdmFPFFCwrIRp+TBMeJTVB0d/Rt
+         y+G9OnuxDci3MeINA1CpybGs5ObhRsCT2msGpq55ZjG+XgxKUr0AO5BNHbJfmuDj+xxC
+         mSaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lxHw7TCKx2hb6boyZbIG+fYmxV77qEn49Hr1UVMTS54=;
-        b=ClPtA1kAyVLYJu9wTsvjPWXgv7bTeo+L8devvNNDGWIG2PoXHfhttXJdHxvpXYbXLd
-         bjjqn3N3JJX47FzNHQTTxH63z0KWeRVTHTOE7J7+6ep2bPtfOtSFSdOE+wqaaDh5pd+N
-         bf78dHW0lKd0dF2ucvZdkVo/EUaSOrXyQURDX3uE6ap4DCxa3p8llVESRjz+XIKbmWIq
-         hzUlKXKpnOlk/2ainvxhEMqSKDuUa8bOotlLnf8jkfAT6eiqGJN8EuWHd01JpHoDDaeN
-         C8A9auQq2lH96piVKbvpwSth7jl+pc1CRFWT9mw8O5lWqmtvJj3cBrO2KfarFhm+1ScM
-         nLJg==
-X-Gm-Message-State: AOAM533D9aMcNKlA6BrKSJd78FYwlfOwmZNic5F5xltuF7fVgTgngDrV
-        NPClltd/muEUEQA99RcgD5Q=
-X-Google-Smtp-Source: ABdhPJyHaWXXv3rRmpRSOfvbxLms2cUi+X/Rb8DeCy3tuDsAnGwpwo2NEx/cYuZaDSOeF1KWSJUmDQ==
-X-Received: by 2002:adf:f751:: with SMTP id z17mr53177099wrp.175.1620941475211;
-        Thu, 13 May 2021 14:31:15 -0700 (PDT)
-Received: from [192.168.8.197] ([148.252.132.196])
-        by smtp.gmail.com with ESMTPSA id u5sm4219848wrt.38.2021.05.13.14.31.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 May 2021 14:31:14 -0700 (PDT)
-Subject: Re: INFO: task hung in io_uring_cancel_sqpoll
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     Palash Oswal <oswalpalash@gmail.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzbot+11bf59db879676f59e52@syzkaller.appspotmail.com
-References: <0000000000000c97e505bdd1d60e@google.com>
- <cfa0f9b8-91ec-4772-a6c2-c5206f32373fn@googlegroups.com>
- <53a22ab4-7a2d-4ebd-802d-9d1b4ce4e087n@googlegroups.com>
- <CAGyP=7fpNBhbmczjDq-vpzbSDyqwCw2jS7xQo4XO=bxwsy2ddQ@mail.gmail.com>
- <d5844c03-fa61-d256-be0d-b40446414299@gmail.com>
- <CAGyP=7e-3QtS-Z3KoAyFAbvm4y+9=725WR_+PyADYDi8HYxMXA@mail.gmail.com>
- <af911546-72e4-5525-6b31-1ad1f555799e@gmail.com>
- <CAGyP=7eoSfh7z638PnP5UF4xVKcrG1jB_qmFo6uPZ7iWfu_2sQ@mail.gmail.com>
- <4127fb94-89d2-4e36-8835-514118cb1cce@gmail.com>
-Message-ID: <7c993a83-392f-39d0-7a6f-c78f121f5ae2@gmail.com>
-Date:   Thu, 13 May 2021 22:31:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Lj2hPC9XaS5IbCouhWe8TdZQoRzw4YQucnnZ1bS+zjE=;
+        b=HvOwjtnmtXEbFtZFNgyq07TjbDGttzaVIN9Iy/3FDR1M0xr5Yqd9o0dOp3/REQCOMg
+         FXgOPZ4TYQZ4LMd0A6pCuhW4gMLONhjHwAikVkQHtH2oQwC/wpZHRuCJIxxYNxT0trC4
+         W2bwkoIZLfk+7YRbCnU5THoUmq7g+byio64P9o0e9FZAxXOO5R6+e7A0pbjjMpMRxx+A
+         KxvXNUrWzoqbO1en8jV1tqkNfYDT+8IRj/objKvW1wwBXlI3xfHstwvzWpjN5xto1VBt
+         YZrG6M8wIqzBc8R85YFFZdQEPJeLWnl7NAXlsR9azyt4M/7zf3pdWExhogDD0AivvpQA
+         kxYw==
+X-Gm-Message-State: AOAM531qffJIZ/EipMGuf0Nbol1/sB/+aytSyruFP9TafzVhLTBgLfug
+        C+5eRolDUj6Z43qP1QKAF/oXbNUmWCZux3A98JK5SQ==
+X-Google-Smtp-Source: ABdhPJyQH51RHopArddVns0tN3N+kQJGsM+a5zNqDB87uz4IYhPGnW1Qj7T3sSmD3C+mgWqKDrJ6sviFr7rLZov9GHE=
+X-Received: by 2002:a92:3f08:: with SMTP id m8mr36844784ila.154.1620941541612;
+ Thu, 13 May 2021 14:32:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4127fb94-89d2-4e36-8835-514118cb1cce@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210512214502.2047008-1-axelrasmussen@google.com> <20210512214502.2047008-2-axelrasmussen@google.com>
+In-Reply-To: <20210512214502.2047008-2-axelrasmussen@google.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Thu, 13 May 2021 14:32:10 -0700
+Message-ID: <CANgfPd8u0=_yZpkvsw-CqP_iWKbj0XQOnJCaNu4GSoFkqLpzDQ@mail.gmail.com>
+Subject: Re: [PATCH 1/5] KVM: selftests: allow different backing memory types
+ for demand paging
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Aaron Lewis <aaronlewis@google.com>,
+        Alexander Graf <graf@amazon.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jacob Xu <jacobhxu@google.com>,
+        Makarand Sonare <makarandsonare@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Yanan Wang <wangyanan55@huawei.com>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/13/21 10:28 PM, Pavel Begunkov wrote:
-> On 5/10/21 5:47 AM, Palash Oswal wrote:
->> On Mon, May 3, 2021 at 4:15 PM Pavel Begunkov <asml.silence@gmail.com>
->> wrote:
->>
->>> On 5/3/21 5:41 AM, Palash Oswal wrote:
->>>> On Mon, May 3, 2021 at 3:42 AM Pavel Begunkov <asml.silence@gmail.com>
->>> wrote:
->>>>> The test might be very useful. Would you send a patch to
->>>>> liburing? Or mind the repro being taken as a test?
->>>>
->>>> Pavel,
->>>>
->>>> I'm working on a PR for liburing with this test. Do you know how I can
->>>
->>> Perfect, thanks
->>>
->>>> address this behavior?
->>>
->>> As the hang is sqpoll cancellations, it's most probably
->>> fixed in 5.13 + again awaits to be taken for stable.
->>>
->>> Don't know about segfaults, but it was so for long, and
->>> syz reproducers are ofthen faults for me, and exit with 0
->>> in the end. So, I wouldn't worry about it.
->>>
->>>
->> Hey Pavel,
->> The bug actually fails to reproduce on 5.12 when the fork() call is made by
->> the runtests.sh script. This causes the program to end correctly, and the
->> hang does not occur. I verified this on 5.12 where the bug isn't patched.
->> Just running the `sqpoll-cancel-hang` triggers the bug; whereas running it
->> after being forked from runtests.sh does not trigger the bug.
-> 
-> I see. fyi, it's always good to wait for 5 minutes, because some useful
-> logs are not generated immediately but do timeout based hang detection.
-> 
-> I'd think that may be due CLONE_IO and how to whom it binds workers,
-> but can you try first:
-> 
-> 1) timeout -s INT -k $TIMEOUT $TIMEOUT ./sqpoll-cancel-hang
+On Wed, May 12, 2021 at 2:45 PM Axel Rasmussen <axelrasmussen@google.com> wrote:
+>
+> Add an argument which lets us specify a different backing memory type
+> for the test. The default is just to use anonymous, matching existing
+> behavior (if the argument is omitted).
+>
+> This is in preparation for testing UFFD minor faults. For that, we need
+> to use a new backing memory type which is setup with MAP_SHARED.
+>
+> This notably requires one other change. Perhaps counter-intuitively,
+> perf_test_args.host_page_size is the host's *native* page size, not the
+> size of the pages the host is using to back the guest. This means, if we
+> try to run the test with e.g. VM_MEM_SRC_ANONYMOUS_HUGETLB, we'll try to
+> do demand paging with 4k pages instead of 2M hugepages.
 
-edit:
+Would it make sense to factor this change out into another commit
+preceding this one? Perhaps only worth it if you send a v2.
 
-timeout -s INT -k 60 60 ./sqpoll-cancel-hang
+When you say "we'll try to do demand paging with 4k pages instead of
+2M hugepages," what would that mean? Would we only copy 4k worth of
+the contents of the 2M page in, leading to the guest seeing bad
+memory? Do we have the capability to do demand paging at a smaller
+granularity than the backing page size with UFFD?
 
-And privileged, root/sudo
+Otherwise this patch looks reasonable to me. I'll try to review the
+rest of your patches today / Monday.
 
-> 
-> 2) remove timeout from <liburing>/tests/Makefile and run
-> "./runtests.sh sqpoll-cancel-hang" again looking for faults?
-> 
-> diff --git a/test/runtests.sh b/test/runtests.sh
-> index e8f4ae5..2b51dca 100755
-> --- a/test/runtests.sh
-> +++ b/test/runtests.sh
-> @@ -91,7 +91,8 @@ run_test()
->  	fi
->  
->  	# Run the test
-> -	timeout -s INT -k $TIMEOUT $TIMEOUT ./$test_name $dev
-> +	# timeout -s INT -k $TIMEOUT $TIMEOUT ./$test_name $dev
-> +	./$test_name $dev
->  	local status=$?
->  
->  	# Check test status
-> 
-> 
->>
->> The segfaults are benign, but notice the "All tests passed" in the previous
->> mail. It should not have passed, as the run was on 5.12. Therefore I wanted
->> to ask your input on how to address this odd behaviour, where the
->> involvement of runtests.sh actually mitigated the bug.
->>
->>
->>
->>>> root@syzkaller:~/liburing/test# ./runtests.sh sqpoll-cancel-hang
->>>> Running test sqp[   15.310997] Running test sqpoll-cancel-hang:
->>>> oll-cancel-hang:
->>>> [   15.333348] sqpoll-cancel-h[305]: segfault at 0 ip 000055ad00e265e3
->>> sp]
->>>> [   15.334940] Code: 89 d8 8d 34 90 8b 45 04 ba 03 00 00 00 c1 e0 04 03
->>> 46
->>>> All tests passed
->>>>
->>>> root@syzkaller:~/liburing/test# ./sqpoll-cancel-hang
->>>> [   13.572639] sqpoll-cancel-h[298]: segfault at 0 ip 00005634c4a455e3
->>> sp]
->>>> [   13.576506] Code: 89 d8 8d 34 90 8b 45 04 ba 03 00 00 00 c1 e0 04 03
->>> 46
->>>> [   23.350459] random: crng init done
->>>> [   23.352837] random: 7 urandom warning(s) missed due to ratelimiting
->>>> [  243.090865] INFO: task iou-sqp-298:299 blocked for more than 120
->>> secon.
->>>> [  243.095187]       Not tainted 5.12.0 #142
->>>> [  243.099800] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
->>> disable.
->>>> [  243.105928] task:iou-sqp-298     state:D stack:    0 pid:  299 ppid:
->>> 4
->>>> [  243.111044] Call Trace:
->>>> [  243.112855]  __schedule+0xb1d/0x1130
->>>> [  243.115549]  ? __sched_text_start+0x8/0x8
->>>> [  243.118328]  ? io_wq_worker_sleeping+0x145/0x500
->>>> [  243.121790]  schedule+0x131/0x1c0
->>>> [  243.123698]  io_uring_cancel_sqpoll+0x288/0x350
->>>> [  243.125977]  ? io_sq_thread_unpark+0xd0/0xd0
->>>> [  243.128966]  ? mutex_lock+0xbb/0x130
->>>> [  243.132572]  ? init_wait_entry+0xe0/0xe0
->>>> [  243.135429]  ? wait_for_completion_killable_timeout+0x20/0x20
->>>> [  243.138303]  io_sq_thread+0x174c/0x18c0
->>>> [  243.140162]  ? io_rsrc_put_work+0x380/0x380
->>>> [  243.141613]  ? init_wait_entry+0xe0/0xe0
->>>> [  243.143686]  ? _raw_spin_lock_irq+0xa5/0x180
->>>> [  243.145619]  ? _raw_spin_lock_irqsave+0x190/0x190
->>>> [  243.147671]  ? calculate_sigpending+0x6b/0xa0
->>>> [  243.149036]  ? io_rsrc_put_work+0x380/0x380
->>>> [  243.150694]  ret_from_fork+0x22/0x30
->>>>
->>>> Palash
->>>>
->>>
->>> --
->>> Pavel Begunkov
->>>
->>
-> 
-
--- 
-Pavel Begunkov
+>
+> So, convert everything to use a new demand_paging_size, computed based
+> on the backing memory type.
+>
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+> ---
+>  .../selftests/kvm/demand_paging_test.c        | 24 +++++++++++++------
+>  1 file changed, 17 insertions(+), 7 deletions(-)
+>
+> diff --git a/tools/testing/selftests/kvm/demand_paging_test.c b/tools/testing/selftests/kvm/demand_paging_test.c
+> index 5f7a229c3af1..10c7ba76a9c6 100644
+> --- a/tools/testing/selftests/kvm/demand_paging_test.c
+> +++ b/tools/testing/selftests/kvm/demand_paging_test.c
+> @@ -38,6 +38,7 @@
+>
+>  static int nr_vcpus = 1;
+>  static uint64_t guest_percpu_mem_size = DEFAULT_PER_VCPU_MEM_SIZE;
+> +static size_t demand_paging_size;
+>  static char *guest_data_prototype;
+>
+>  static void *vcpu_worker(void *data)
+> @@ -83,7 +84,7 @@ static int handle_uffd_page_request(int uffd, uint64_t addr)
+>
+>         copy.src = (uint64_t)guest_data_prototype;
+>         copy.dst = addr;
+> -       copy.len = perf_test_args.host_page_size;
+> +       copy.len = demand_paging_size;
+>         copy.mode = 0;
+>
+>         clock_gettime(CLOCK_MONOTONIC, &start);
+> @@ -100,7 +101,7 @@ static int handle_uffd_page_request(int uffd, uint64_t addr)
+>         PER_PAGE_DEBUG("UFFDIO_COPY %d \t%ld ns\n", tid,
+>                        timespec_to_ns(ts_diff));
+>         PER_PAGE_DEBUG("Paged in %ld bytes at 0x%lx from thread %d\n",
+> -                      perf_test_args.host_page_size, addr, tid);
+> +                      demand_paging_size, addr, tid);
+>
+>         return 0;
+>  }
+> @@ -250,6 +251,7 @@ static int setup_demand_paging(struct kvm_vm *vm,
+>  struct test_params {
+>         bool use_uffd;
+>         useconds_t uffd_delay;
+> +       enum vm_mem_backing_src_type src_type;
+>         bool partition_vcpu_memory_access;
+>  };
+>
+> @@ -267,14 +269,16 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+>         int r;
+>
+>         vm = perf_test_create_vm(mode, nr_vcpus, guest_percpu_mem_size,
+> -                                VM_MEM_SRC_ANONYMOUS);
+> +                                p->src_type);
+>
+>         perf_test_args.wr_fract = 1;
+>
+> -       guest_data_prototype = malloc(perf_test_args.host_page_size);
+> +       demand_paging_size = get_backing_src_pagesz(p->src_type);
+> +
+> +       guest_data_prototype = malloc(demand_paging_size);
+>         TEST_ASSERT(guest_data_prototype,
+>                     "Failed to allocate buffer for guest data pattern");
+> -       memset(guest_data_prototype, 0xAB, perf_test_args.host_page_size);
+> +       memset(guest_data_prototype, 0xAB, demand_paging_size);
+>
+>         vcpu_threads = malloc(nr_vcpus * sizeof(*vcpu_threads));
+>         TEST_ASSERT(vcpu_threads, "Memory allocation failed");
+> @@ -388,7 +392,7 @@ static void help(char *name)
+>  {
+>         puts("");
+>         printf("usage: %s [-h] [-m mode] [-u] [-d uffd_delay_usec]\n"
+> -              "          [-b memory] [-v vcpus] [-o]\n", name);
+> +              "          [-b memory] [-t type] [-v vcpus] [-o]\n", name);
+>         guest_modes_help();
+>         printf(" -u: use User Fault FD to handle vCPU page\n"
+>                "     faults.\n");
+> @@ -398,6 +402,8 @@ static void help(char *name)
+>         printf(" -b: specify the size of the memory region which should be\n"
+>                "     demand paged by each vCPU. e.g. 10M or 3G.\n"
+>                "     Default: 1G\n");
+> +       printf(" -t: The type of backing memory to use. Default: anonymous\n");
+> +       backing_src_help();
+>         printf(" -v: specify the number of vCPUs to run.\n");
+>         printf(" -o: Overlap guest memory accesses instead of partitioning\n"
+>                "     them into a separate region of memory for each vCPU.\n");
+> @@ -409,13 +415,14 @@ int main(int argc, char *argv[])
+>  {
+>         int max_vcpus = kvm_check_cap(KVM_CAP_MAX_VCPUS);
+>         struct test_params p = {
+> +               .src_type = VM_MEM_SRC_ANONYMOUS,
+>                 .partition_vcpu_memory_access = true,
+>         };
+>         int opt;
+>
+>         guest_modes_append_default();
+>
+> -       while ((opt = getopt(argc, argv, "hm:ud:b:v:o")) != -1) {
+> +       while ((opt = getopt(argc, argv, "hm:ud:b:t:v:o")) != -1) {
+>                 switch (opt) {
+>                 case 'm':
+>                         guest_modes_cmdline(optarg);
+> @@ -430,6 +437,9 @@ int main(int argc, char *argv[])
+>                 case 'b':
+>                         guest_percpu_mem_size = parse_size(optarg);
+>                         break;
+> +               case 't':
+> +                       p.src_type = parse_backing_src_type(optarg);
+> +                       break;
+>                 case 'v':
+>                         nr_vcpus = atoi(optarg);
+>                         TEST_ASSERT(nr_vcpus > 0 && nr_vcpus <= max_vcpus,
+> --
+> 2.31.1.607.g51e8a6a459-goog
+>
