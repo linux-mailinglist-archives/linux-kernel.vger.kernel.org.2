@@ -2,67 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 157AB37FAA6
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 17:25:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 875AD37FAAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 17:26:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234827AbhEMP0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 11:26:36 -0400
-Received: from ms.lwn.net ([45.79.88.28]:42982 "EHLO ms.lwn.net"
+        id S234869AbhEMP1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 11:27:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234259AbhEMP0X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 11:26:23 -0400
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 4AD80153;
-        Thu, 13 May 2021 15:25:09 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 4AD80153
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1620919509; bh=eU3irNX0Hto0HdXTq4Ht+geqf/k2ZBNvV/8YFySSPzM=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=CEYJJzICjOIpu/fPzv+LvDyImnCsKoQ77Y+Xo+A7HpBe0V982hr1t62LKay0e9VFt
-         fIPziG9vdqi1qeMN5vTvhw0YAKwZFb2Tam1rhy5arLZb+/L2qHLNxOpAdARrRNibll
-         0S5rchKCBcHZtOPub8DIZpj9Fg+4sOXZoyEQf7GoTK9nQicxeAO317Zjj+qLqB98Gf
-         KNq5Z1jGcHEbDucCLQelEKlziOwxPcOIxJadoASWkIBVFCdYGc9aY/apYW/g9Eq4t+
-         lmVK30Ax7mcb/790YOt7CmgzuZ9eNh7DM7I/3fwq7o0KOlIpMLH95XO8cnl8kJYy4R
-         jp0v2w4HVuSuA==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Wei Ming Chen <jj251510319013@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-usb@vger.kernel.org, linux-doc@vger.kernel.org,
-        Wei Ming Chen <jj251510319013@gmail.com>
-Subject: Re: [PATCH] docs: usb: function: Modify path name
-In-Reply-To: <20210506122020.7117-1-jj251510319013@gmail.com>
-References: <20210506122020.7117-1-jj251510319013@gmail.com>
-Date:   Thu, 13 May 2021 09:25:08 -0600
-Message-ID: <878s4i7j1n.fsf@meer.lwn.net>
+        id S234885AbhEMP0r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 11:26:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 28E59613BF;
+        Thu, 13 May 2021 15:25:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620919537;
+        bh=foFE/3HGOiVwbmdkUBxDhc/bQzdfVzKQdZ5U+jRRBo8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zC2/654ihZIAJmLWlcLGHhhZ1b6DjiC8KyZKalOZoHGWeOHN1usLxRYd0FgnT6NFW
+         Bqeu9qM5BTIBTrnMs6O2Nr6bQE1DHG1chhKWnUrz2uXLjs/zvaaCB22q1zYAvpPgip
+         mCpf65HjypoCRbOdvInt/3AoLEznLv6cr0ebivb0=
+Date:   Thu, 13 May 2021 17:25:35 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Phillip Potter <phil@philpotter.co.uk>,
+        stable <stable@vger.kernel.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        Pavel Machek <pavel@ucw.cz>
+Subject: Re: [PATCH 09/69] leds: lp5523: check return value of lp5xx_read and
+ jump to cleanup code
+Message-ID: <YJ1E7/2f0OXVHR2V@kroah.com>
+References: <20210503115736.2104747-1-gregkh@linuxfoundation.org>
+ <20210503115736.2104747-10-gregkh@linuxfoundation.org>
+ <f821d2a3-3801-66a6-3c5b-0e00a8289ec1@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f821d2a3-3801-66a6-3c5b-0e00a8289ec1@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wei Ming Chen <jj251510319013@gmail.com> writes:
+On Mon, May 03, 2021 at 09:36:14PM +0200, Jacek Anaszewski wrote:
+> On 5/3/21 1:56 PM, Greg Kroah-Hartman wrote:
+> > From: Phillip Potter <phil@philpotter.co.uk>
+> > 
+> > Check return value of lp5xx_read and if non-zero, jump to code at end of
+> > the function, causing lp5523_stop_all_engines to be executed before
+> > returning the error value up the call chain. This fixes the original
+> > commit (248b57015f35) which was reverted due to the University of Minnesota
+> > problems.
+> > 
+> > Cc: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+> > Cc: stable <stable@vger.kernel.org>
+> > Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > ---
+> >   drivers/leds/leds-lp5523.c | 4 +++-
+> >   1 file changed, 3 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/leds/leds-lp5523.c b/drivers/leds/leds-lp5523.c
+> > index 5036d7d5f3d4..b1590cb4a188 100644
+> > --- a/drivers/leds/leds-lp5523.c
+> > +++ b/drivers/leds/leds-lp5523.c
+> > @@ -305,7 +305,9 @@ static int lp5523_init_program_engine(struct lp55xx_chip *chip)
+> >   	/* Let the programs run for couple of ms and check the engine status */
+> >   	usleep_range(3000, 6000);
+> > -	lp55xx_read(chip, LP5523_REG_STATUS, &status);
+> > +	ret = lp55xx_read(chip, LP5523_REG_STATUS, &status);
+> > +	if (ret)
+> > +		goto out;
+> >   	status &= LP5523_ENG_STATUS_MASK;
+> >   	if (status != LP5523_ENG_STATUS_MASK) {
+> > 
+> 
+> Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
 
-> Original path does not exists, so changed to
-> "Documentation/ABI/testing/configfs-usb-gadget"
->
-> Signed-off-by: Wei Ming Chen <jj251510319013@gmail.com>
-> ---
->  Documentation/usb/gadget_configfs.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/Documentation/usb/gadget_configfs.rst b/Documentation/usb/gadget_configfs.rst
-> index 158e48dab586..e4566ffb223f 100644
-> --- a/Documentation/usb/gadget_configfs.rst
-> +++ b/Documentation/usb/gadget_configfs.rst
-> @@ -140,7 +140,7 @@ is an arbitrary string allowed in a filesystem, e.g.::
->  Each function provides its specific set of attributes, with either read-only
->  or read-write access. Where applicable they need to be written to as
->  appropriate.
-> -Please refer to Documentation/ABI/*/configfs-usb-gadget* for more information.
-> +Please refer to Documentation/ABI/testing/configfs-usb-gadget for more information.
-
-Applied, thanks.
-
-jon
+Thanks for the review!
