@@ -2,132 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3471637F57D
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 12:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ED9737F587
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 12:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232670AbhEMKTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 06:19:47 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:40073 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232851AbhEMKT2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 06:19:28 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 14DAI8dzC016490, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 14DAI8dzC016490
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 13 May 2021 18:18:08 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 13 May 2021 18:18:07 +0800
-Received: from localhost.localdomain (172.21.132.99) by
- RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 13 May 2021 18:18:06 +0800
-From:   <hildawu@realtek.com>
-To:     <marcel@holtmann.org>
-CC:     <johan.hedberg@gmail.com>, <luiz.dentz@gmail.com>,
-        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <max.chou@realtek.com>, <alex_lu@realsil.com.cn>,
-        <kidman@realtek.com>
-Subject: [PATCH] Bluetooth: btusb: Add support USB ALT 3 for WBS
-Date:   Thu, 13 May 2021 18:18:06 +0800
-Message-ID: <20210513101806.5666-1-hildawu@realtek.com>
-X-Mailer: git-send-email 2.17.1
+        id S232822AbhEMKWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 06:22:13 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50114 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232643AbhEMKVq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 06:21:46 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1620901236; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Gv3oECQ46RpkqjsSmVdu+DBDmUv5de8Z0G7uM0jmSok=;
+        b=jUliB6QB+yR8m7zRmYNUYKDKJ3/1vxpyky3PJGw3F93zhwBoHSkhylkgwQb1Vaq7l1dlm1
+        2KogYYZd78ZTwfzoJSBPcNNs5osgvCANhvLt7vleAdSAVPhIeb3n8SETjdMtUSokPWGDd5
+        Ownp3SVZ9wWKrhXoIPaI4X6u/QbH9/0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 47268B15E;
+        Thu, 13 May 2021 10:20:36 +0000 (UTC)
+Subject: Re: [PATCH 8/8] xen/hvc: replace BUG_ON() with negative return value
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        xen-devel@lists.xenproject.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+References: <20210513100302.22027-1-jgross@suse.com>
+ <20210513100302.22027-9-jgross@suse.com>
+ <6da4cc91-ccde-fce8-707c-e7544783c2fa@csgroup.eu>
+From:   Juergen Gross <jgross@suse.com>
+Message-ID: <e62b12e7-6dbe-3d26-2196-9cbc2c0d4160@suse.com>
+Date:   Thu, 13 May 2021 12:20:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.21.132.99]
-X-ClientProxiedBy: RTEXMBS02.realtek.com.tw (172.21.6.95) To
- RTEXMBS04.realtek.com.tw (172.21.6.97)
-X-KSE-ServerInfo: RTEXMBS04.realtek.com.tw, 9
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzUvMTMgpFekyCAwNzo0MzowMA==?=
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/13/2021 09:53:57
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 10
-X-KSE-AntiSpam-Info: Lua profiles 163629 [May 13 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: hildawu@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 445 445 d5f7ae5578b0f01c45f955a2a751ac25953290c9
-X-KSE-AntiSpam-Info: {Prob_from_in_msgid}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: realtek.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: {Track_Chinese_Simplified, headers_charset}
-X-KSE-AntiSpam-Info: Rate: 10
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 05/13/2021 09:56:00
-X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/13/2021 10:04:01
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 10
-X-KSE-AntiSpam-Info: Lua profiles 163631 [May 13 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: hildawu@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 445 445 d5f7ae5578b0f01c45f955a2a751ac25953290c9
-X-KSE-AntiSpam-Info: {Prob_from_in_msgid}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;realtek.com:7.1.1
-X-KSE-AntiSpam-Info: Rate: 10
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 05/13/2021 10:07:00
+In-Reply-To: <6da4cc91-ccde-fce8-707c-e7544783c2fa@csgroup.eu>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="PNhWaVfjD0otdP9RzGGQdOMphOo0bj07j"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: hildawu <hildawu@realtek.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--PNhWaVfjD0otdP9RzGGQdOMphOo0bj07j
+Content-Type: multipart/mixed; boundary="yyRuUPzqcs5EAOdYBXLJTxPGRA5Ebq4bt";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>,
+ xen-devel@lists.xenproject.org, linuxppc-dev@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <e62b12e7-6dbe-3d26-2196-9cbc2c0d4160@suse.com>
+Subject: Re: [PATCH 8/8] xen/hvc: replace BUG_ON() with negative return value
+References: <20210513100302.22027-1-jgross@suse.com>
+ <20210513100302.22027-9-jgross@suse.com>
+ <6da4cc91-ccde-fce8-707c-e7544783c2fa@csgroup.eu>
+In-Reply-To: <6da4cc91-ccde-fce8-707c-e7544783c2fa@csgroup.eu>
 
-Because mSBC frames do not need to be aligned to the SCO packet
-boundary. Using USB ALT 3 let HCI payload >= 60 bytes, let mSBC
-data satisfy 60 Bytes avoid payload unaligned situation and fixed
-some headset no voise issue.
+--yyRuUPzqcs5EAOdYBXLJTxPGRA5Ebq4bt
+Content-Type: multipart/mixed;
+ boundary="------------8C09C99EF5386C5A52D248BD"
+Content-Language: en-US
 
-USB Alt 3 supported also need HFP support transparent MTU in 72 Bytes.
+This is a multi-part message in MIME format.
+--------------8C09C99EF5386C5A52D248BD
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: hildawu <hildawu@realtek.com>
----
- drivers/bluetooth/btusb.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+On 13.05.21 12:16, Christophe Leroy wrote:
+>=20
+>=20
+> Le 13/05/2021 =C3=A0 12:03, Juergen Gross a =C3=A9crit=C2=A0:
+>> Xen frontends shouldn't BUG() in case of illegal data received from
+>> their backends. So replace the BUG_ON()s when reading illegal data fro=
+m
+>> the ring page with negative return values.
+>>
+>> Signed-off-by: Juergen Gross <jgross@suse.com>
+>> ---
+>> =C2=A0 drivers/tty/hvc/hvc_xen.c | 15 +++++++++++++--
+>> =C2=A0 1 file changed, 13 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/tty/hvc/hvc_xen.c b/drivers/tty/hvc/hvc_xen.c
+>> index 92c9a476defc..30d7ffb1e04c 100644
+>> --- a/drivers/tty/hvc/hvc_xen.c
+>> +++ b/drivers/tty/hvc/hvc_xen.c
+>> @@ -86,6 +86,11 @@ static int __write_console(struct xencons_info=20
+>> *xencons,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cons =3D intf->out_cons;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 prod =3D intf->out_prod;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mb();=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* update queue values before going on */
+>> +
+>> +=C2=A0=C2=A0=C2=A0 if (WARN_ONCE((prod - cons) > sizeof(intf->out),
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 "Illegal ring page indices"))
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -EINVAL;
+>> +
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BUG_ON((prod - cons) > sizeof(intf->out=
+));
+>=20
+> Why keep the BUG_ON() ?
 
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 6f253378e893..872034e7a232 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -1752,6 +1752,13 @@ static void btusb_work(struct work_struct *work)
- 			 * which work with WBS at all.
- 			 */
- 			new_alts = btusb_find_altsetting(data, 6) ? 6 : 1;
-+			/* Because mSBC frames do not need to be aligned to the
-+			 * SCO packet boundary. If support the Alt 3, use the
-+			 * Alt 3 for HCI payload >= 60 Bytes let air packet
-+			 * data satisfy 60 bytes.
-+			 */
-+			if ((new_alts == 1) && (btusb_find_altsetting(data, 3)))
-+				new_alts = 3;
- 		}
- 
- 		if (btusb_switch_alt_setting(hdev, new_alts) < 0)
--- 
-2.17.1
+Oh, failed to delete it. Thanks for noticing.
 
+
+Juergen
+
+--------------8C09C99EF5386C5A52D248BD
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------8C09C99EF5386C5A52D248BD--
+
+--yyRuUPzqcs5EAOdYBXLJTxPGRA5Ebq4bt--
+
+--PNhWaVfjD0otdP9RzGGQdOMphOo0bj07j
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmCc/XMFAwAAAAAACgkQsN6d1ii/Ey/C
+FQf+OD+N3eBcm476rbHE/SMrRCrdPemYIIfTIa5eniRP163hc8D1XpMWlkcy5Im93pdCIpKY0tTp
+2W2b04SywD+i6CehGWJ+nKEvRh1wNiJdGF+EWyf5QQGdmixgOhHzWEcOdn+uI770XafZTPT2w3x2
+Ki7nKgGa7Gjr6xCJhexpnMYtQe4uo1SXTRT9j+W10jA6ppaG8zB4pE8ONyHG2c+CN7Ue354XBM4X
+QVNLngs5PFy8LbNyhfU1IU1kG/0rrFmwsd2+CRRx0iCgtlcxaVwkPsIEF0e17l2rXGj0+aniQXW8
+NcRQ00qw+18DPctnaLB1OU2GUgEJnuLWGzEuR6NdDg==
+=tAfr
+-----END PGP SIGNATURE-----
+
+--PNhWaVfjD0otdP9RzGGQdOMphOo0bj07j--
