@@ -2,121 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3395137FCD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 19:50:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3F9037FCD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 19:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231345AbhEMRvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 13:51:25 -0400
-Received: from mga17.intel.com ([192.55.52.151]:51923 "EHLO mga17.intel.com"
+        id S231375AbhEMRvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 13:51:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230262AbhEMRvQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 13:51:16 -0400
-IronPort-SDR: CdvNtVfKL6QJRfy/Rjazn4oaesbMgL7KH9L9u1qkXik6Qnivz16ARccPHPVwQi+WUBBDTI5G2s
- TGaXLp+lEX1w==
-X-IronPort-AV: E=McAfee;i="6200,9189,9983"; a="180273878"
-X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
-   d="scan'208";a="180273878"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 10:50:01 -0700
-IronPort-SDR: gRqyz+Jxl+Idi3ttB1ybT0zwFNTeT4h9GJC9PcjqbpXkwFNnB8Vq1TgHlKIoTiJJGe8B8/qhJr
- Sv8zuGUD4zHA==
-X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
-   d="scan'208";a="456721043"
-Received: from rgandiko-mobl.amr.corp.intel.com (HELO [10.212.226.208]) ([10.212.226.208])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 10:50:00 -0700
-Subject: Re: [RFC v2 26/32] x86/mm: Move force_dma_unencrypted() to common
- code
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
-References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <7c5adf75d69ea327b22b404b7c37b29712d73640.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <5536639a-918d-de8d-ff32-934a13902a03@intel.com>
- <d04e5992-8800-a8df-99de-4dbb40e45d09@linux.intel.com>
- <bbcb688c-5aa0-eeb1-192a-45edaccc2f32@intel.com>
- <20210512130821.7r2rtzcyjltecun7@box.shutemov.name>
- <e8886298-83fa-212e-ab3a-5e5b21a7ab6c@intel.com>
- <YJv6EWJmDYQL4Eqt@google.com>
- <c6b40305-d643-6023-907b-e6858d422a36@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <943645b7-3974-bf05-073c-03ef4f889379@intel.com>
-Date:   Thu, 13 May 2021 10:49:58 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231351AbhEMRvd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 13:51:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FE1E613CB;
+        Thu, 13 May 2021 17:50:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620928223;
+        bh=3PVEo3OV+xFT1p8Y9C/KZVbC3Uw7dg+uLbcU4y6Hfc4=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=P4cjcE91z02F08n5/lneabewj3RA1KYztzMrfMYe62oM0Ba0MSV+45mWCkkphjWlV
+         pnq+3ArMsq9cdhfUwJR8eKLQK3lS2Vi84eo7vbkz5dO0j82ShGU1nx62MUr9KxQl6y
+         HrsNr0c+E5zHOIw5Qm1s7e6QrM8eBjHlYXfFpoJMqwo0UI0fdum6wPYZyu1ieBgpWi
+         Xg39rNj7oY3dCQ7nb8NtCdqoXOIj2G4p6VGEnIBuduTz18Lv2dvYDFrQOc1ZIXrw0e
+         Aub0vu+byrqPGW6tVdPstZAkspxW1LfIzarpjbvP+lbt7wvNGGPj5A9bL4pwzmQ/gf
+         hz6sf0H5avVcQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 22B995C014E; Thu, 13 May 2021 10:50:23 -0700 (PDT)
+Date:   Thu, 13 May 2021 10:50:23 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Marco Elver <elver@google.com>
+Cc:     Akira Yokosawa <akiyks@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>, kernel-team@fb.com,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>, Qian Cai <cai@lca.pw>,
+        Boqun Feng <boqun.feng@gmail.com>
+Subject: Re: [PATCH tip/core/rcu 01/10] kcsan: Add pointer to
+ access-marking.txt to data_race() bullet
+Message-ID: <20210513175023.GD975577@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210511231149.GA2895263@paulmck-ThinkPad-P17-Gen-1>
+ <20210511232401.2896217-1-paulmck@kernel.org>
+ <a1675b9f-5727-e767-f835-6ab9ff711ef3@gmail.com>
+ <CANpmjNM48id0b+H=PqFkCBDSyK76RFTB3Uk0mNeE2htu3v8qfw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <c6b40305-d643-6023-907b-e6858d422a36@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNM48id0b+H=PqFkCBDSyK76RFTB3Uk0mNeE2htu3v8qfw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/13/21 9:40 AM, Kuppuswamy, Sathyanarayanan wrote:
+On Thu, May 13, 2021 at 12:53:44PM +0200, Marco Elver wrote:
+> On Thu, 13 May 2021 at 12:47, Akira Yokosawa <akiyks@gmail.com> wrote:
+> >
+> > Hi Paul,
+> >
+> > On Tue, 11 May 2021 16:23:52 -0700, Paul E. McKenney wrote:
+> > > This commit references tools/memory-model/Documentation/access-marking.txt
+> > > in the bullet introducing data_race().  The access-marking.txt file
+> > > gives advice on when data_race() should and should not be used.
+> > >
+> > > Suggested-by: Akira Yokosawa <akiyks@gmail.com>
+> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > ---
+> > >  Documentation/dev-tools/kcsan.rst | 4 +++-
+> > >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/Documentation/dev-tools/kcsan.rst b/Documentation/dev-tools/kcsan.rst
+> > > index d85ce238ace7..80894664a44c 100644
+> > > --- a/Documentation/dev-tools/kcsan.rst
+> > > +++ b/Documentation/dev-tools/kcsan.rst
+> > > @@ -106,7 +106,9 @@ the below options are available:
+> > >
+> > >  * KCSAN understands the ``data_race(expr)`` annotation, which tells KCSAN that
+> > >    any data races due to accesses in ``expr`` should be ignored and resulting
+> > > -  behaviour when encountering a data race is deemed safe.
+> > > +  behaviour when encountering a data race is deemed safe.  Please see
+> > > +  ``tools/memory-model/Documentation/access-marking.txt`` in the kernel source
+> > > +  tree for more information.
+> > >
+> > >  * Disabling data race detection for entire functions can be accomplished by
+> > >    using the function attribute ``__no_kcsan``::
+> > >
+> >
+> > I think this needs some adjustment for overall consistency.
+> > A possible follow-up patch (relative to the change above) would look
+> > like the following.
+> >
+> > Thoughts?
+> >
+> >         Thanks, Akira
+> >
+> > -------8<--------
+> > From: Akira Yokosawa <akiyks@gmail.com>
+> > Subject: [PATCH] kcsan: Use URL link for pointing access-marking.txt
+> >
+> > For consistency within kcsan.rst, use a URL link as the same as in
+> > section "Data Races".
+> >
+> > Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
+> > Cc: Paul E. McKenney <paulmck@kernel.org>
 > 
-> +#define PROTECTED_GUEST_BITMAP_LEN    128
-> +
-> +/* Protected Guest vendor types */
-> +#define GUEST_TYPE_TDX            (1)
-> +#define GUEST_TYPE_SEV            (2)
-> +
-> +/* Protected Guest features */
-> +#define MEMORY_ENCRYPTION        (20)
+> Good catch. I'd be in favour of this change, as it makes it simpler to
+> just follow the link. Because in most cases I usually just point folks
+> at the rendered version of this:
+> https://www.kernel.org/doc/html/latest/dev-tools/kcsan.html
+> 
+> Acked-by: Marco Elver <elver@google.com>
 
-I was assuming we'd reuse the X86_FEATURE infrastructure somehow.  Is
-there a good reason not to?
+Queued with Marco's ack, thank you both!
 
-That gives us all the compile-time optimization (via
-en/disabled-features.h) and static branches for "free".
+							Thanx, Paul
+
+> > ---
+> >  Documentation/dev-tools/kcsan.rst | 5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/Documentation/dev-tools/kcsan.rst b/Documentation/dev-tools/kcsan.rst
+> > index 80894664a44c..151f96b7fef0 100644
+> > --- a/Documentation/dev-tools/kcsan.rst
+> > +++ b/Documentation/dev-tools/kcsan.rst
+> > @@ -107,8 +107,7 @@ the below options are available:
+> >  * KCSAN understands the ``data_race(expr)`` annotation, which tells KCSAN that
+> >    any data races due to accesses in ``expr`` should be ignored and resulting
+> >    behaviour when encountering a data race is deemed safe.  Please see
+> > -  ``tools/memory-model/Documentation/access-marking.txt`` in the kernel source
+> > -  tree for more information.
+> > +  `"Marking Shared-Memory Accesses" in the LKMM`_ for more information.
+> >
+> >  * Disabling data race detection for entire functions can be accomplished by
+> >    using the function attribute ``__no_kcsan``::
+> > @@ -130,6 +129,8 @@ the below options are available:
+> >
+> >      KCSAN_SANITIZE := n
+> >
+> > +.. _"Marking Shared-Memory Accesses" in the LKMM: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/memory-model/Documentation/access-marking.txt
+> > +
+> >  Furthermore, it is possible to tell KCSAN to show or hide entire classes of
+> >  data races, depending on preferences. These can be changed via the following
+> >  Kconfig options:
+> > --
+> > 2.17.1
