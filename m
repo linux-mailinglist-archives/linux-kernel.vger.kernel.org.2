@@ -2,295 +2,334 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E46437FCF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 19:54:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73B3037FCFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 19:56:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231551AbhEMRz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 13:55:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60980 "EHLO
+        id S231466AbhEMR5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 13:57:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231466AbhEMRzL (ORCPT
+        with ESMTP id S231486AbhEMR43 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 13:55:11 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 403AFC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 10:54:00 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id i18-20020aa787d20000b02902ceff7cf271so4203977pfo.14
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 10:54:00 -0700 (PDT)
+        Thu, 13 May 2021 13:56:29 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07D28C06138B
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 10:54:28 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id n2so41043633ejy.7
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 10:54:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=4h31K2eiyFYJECD6jlXNAVHQd0JiCpNhIBmP2KCnD4c=;
-        b=ofKtuEEcDD4yCmeEIuSCquHKovbV1slPISxwCQTyw4iykw/j2ncspJ0htUgP4AWxYm
-         rSlAVzTDcK+inbYAWvLiarcwGutQB6dA5ySpZo+TT4zzJ0CuGmfcZfvem1/Rlhzt5xjs
-         PD7X0d7fA30y+r8JmzzpGw6DXAFut/Bq2H184JYsu8js4vbXNOXQCqxa6W8R2B2I005W
-         pdn6PN+RmkQNuZldg5kDR/QKAfGUpwHDkehDFK4Hw5ljWMF5uDt8Ou2FjZrHC0Q6nyzv
-         ceIRFzEONJGOKB43ddrTtEQJf9Dg3oovy+TYa0zqrl5ob1hruZa2BSqWZJrSGeixShBq
-         rqmQ==
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=5Jy97aMm7VEGQNVs4spkiz3xhAyYCzC385iFjGUTMn8=;
+        b=QDXEMRVGDZPGERNVWO+0LDZqnYdDRVmF2ThgP7px72YvKxY1EvaW8emeauyXh5hBAx
+         e1lc8ykXc5tpyxmnNkcmNZYVodOa91zsRKdMo15pFdWTGNQt0G/8nNoDLL+x3vMA1aFf
+         IjBOlNCAOPTWMYzBqj3+67GqcWXmdxmWh3wNhgZTtk4XBnjpgRdNdvqj/wWv9rGSg+Cp
+         T/25gnOzd2AOSRvTGkn+qLtwfvWbbdD2sPgUbVlNyBGgOQHIGo6imy7BSEtBNSxKXFYn
+         UzeEPYXenOY6QDZKHpg5WRuw0Dk8hBAyddW07F9ti9P2/zccdID9CshInlXXExpO1r61
+         +nRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=4h31K2eiyFYJECD6jlXNAVHQd0JiCpNhIBmP2KCnD4c=;
-        b=cjJ8EBgrVnzJMs7hPa73ssCy0UavY6Bc79iSgc2+Hm/LDudOW7aPhtVQXd+VvqmL2d
-         O+T1uIEKBSyh449IqRh5W9HC7ba6hTGSgsPxiE3GsodxvnfOyyP4a45YywmSWYJjNC8s
-         7xAahDnLTXQXDna5U6/lZJIEM1SZ+ViZWS9EL1XVV87x9kBm/5pfrKS9kdVPMNwiIq8i
-         Ux/nGyK1EJZ+jNw1kCQbygiJO/mtnBtQDzaaZ0BSR8Hbre5dia/w5KO+sLSq6TeK7aTI
-         DAa9vByGgWJQK5J53ko4L+gbW6HouRjKZlEt3fZHNBTZz9rBcXBG6Vi2e0YMSJlQwSXA
-         Nkmw==
-X-Gm-Message-State: AOAM530odTmYP3De1QCFG2EBIM2SDvj9s/8p70oyWGiWJ9fpOCpFd39D
-        NDnFO6Uk6w6qhndCE2iM5AJNFERVdSo=
-X-Google-Smtp-Source: ABdhPJxHPu2QPsy8y6naNODAyq0c2q6tVGXFYvsc/7U+J2gWtm/+DmC2EGP8TzQrAjoke41LFE3sDd3/QLk=
-X-Received: from surenb1.mtv.corp.google.com ([2620:15c:211:200:f5d3:2ce1:2b19:735e])
- (user=surenb job=sendgmr) by 2002:a17:90a:4487:: with SMTP id
- t7mr533181pjg.1.1620928439289; Thu, 13 May 2021 10:53:59 -0700 (PDT)
-Date:   Thu, 13 May 2021 10:53:49 -0700
-Message-Id: <20210513175349.959661-1-surenb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
-Subject: [PATCH 1/1] cgroup: make per-cgroup pressure stall tracking configurable
-From:   Suren Baghdasaryan <surenb@google.com>
-To:     tj@kernel.org
-Cc:     hannes@cmpxchg.org, lizefan.x@bytedance.com, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        minchan@kernel.org, corbet@lwn.net, bristot@redhat.com,
-        paulmck@kernel.org, rdunlap@infradead.org,
-        akpm@linux-foundation.org, tglx@linutronix.de, macro@orcam.me.uk,
-        viresh.kumar@linaro.org, mike.kravetz@oracle.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, surenb@google.com, kernel-team@android.com
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=5Jy97aMm7VEGQNVs4spkiz3xhAyYCzC385iFjGUTMn8=;
+        b=rQR/BKLH6LV6PHiPuQkpM2nKUhGFEw2rw0jgp3E9qLRvclTzyS+YbXjtjDYK3QUrDT
+         tDwRbRTwRv0FxWYMZi9EjekshY4V7qUirbgXTK/b42pLF3nlCoQOvsfuCOQE6Gh9KWbQ
+         Qbysy4g7cnNc1UKAGsHmaejYQRmYKUgRjgGUs7fDW17kc3uwenSkIXZ1MWQ0qGb1EhWm
+         VDbIouhWeQK/iwYzCUw9bOsp3aA3B9G1G+SYQb+21Be/nbNlcBNl0b4ahTKL5bSds3JT
+         0viPXe1DrzgqBIigykmGSZAShGXCX5GJuy2WIKcQvTuLd6jiWTffnvQ3cdR6+9iWBE2e
+         oxqA==
+X-Gm-Message-State: AOAM5307UZD2Tz4GJm0B5hVjX+9SnpsU5CqZ3Ikq7z175kJ2H5HSnzkP
+        1PSD9eEIAs4jb8XxkwHSnNyMU4jpQpnGXd63eKWiwQ==
+X-Google-Smtp-Source: ABdhPJyjJrIe5NfB/SgNpUbbYhp5PwWZevJfF2nDS2rzDV/COs7JX2gE8nAaUKkvcfbYNdtm7H3JDS1XSpUPuzuF3P0=
+X-Received: by 2002:a17:906:c448:: with SMTP id ck8mr13902565ejb.497.1620928467472;
+ Thu, 13 May 2021 10:54:27 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210407123438.224551-1-mindal@semihalf.com> <20210511030658.GG3425@dragon>
+ <AM0PR04MB67542D30A9424D455DB3ADD496539@AM0PR04MB6754.eurprd04.prod.outlook.com>
+ <20210513021214.GJ3425@dragon> <20210513141921.i7sfmekbcw2m7vxd@skbuf>
+In-Reply-To: <20210513141921.i7sfmekbcw2m7vxd@skbuf>
+From:   Marcin Wojtas <mw@semihalf.com>
+Date:   Thu, 13 May 2021 19:54:15 +0200
+Message-ID: <CAPv3WKfnWFjfZw39avZBEyUpEsH2f=NCs8VfjeR+wzk4qV3GmA@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: fsl-ls1028a: Correct ECAM PCIE window ranges
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Kornel Duleba <mindal@semihalf.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Leo Li <leoyang.li@nxp.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "tn@semihalf.com" <tn@semihalf.com>,
+        "upstream@semihalf.com" <upstream@semihalf.com>,
+        Alexandru Marginean <alexandru.marginean@nxp.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PSI accounts stalls for each cgroup separately and aggregates it at each
-level of the hierarchy. This causes additional overhead with psi_avgs_work
-being called for each cgroup in the hierarchy. psi_avgs_work has been
-highly optimized, however on systems with large number of cgroups the
-overhead becomes noticeable.
-Systems which use PSI only at the system level could avoid this overhead
-if PSI can be configured to skip per-cgroup stall accounting.
-Add "cgroup_disable=pressure" kernel command-line option to allow
-requesting system-wide only pressure stall accounting. When set, it
-keeps system-wide accounting under /proc/pressure/ but skips accounting
-for individual cgroups and does not expose PSI nodes in cgroup hierarchy.
+Hi Vladimir,
 
-Signed-off-by: Suren Baghdasaryan <surenb@google.com>
----
- .../admin-guide/kernel-parameters.txt         |  9 +++-
- include/linux/cgroup-defs.h                   |  1 +
- include/linux/cgroup.h                        |  7 +++
- kernel/cgroup/cgroup.c                        | 46 +++++++++++++++++++
- kernel/sched/psi.c                            |  8 +++-
- 5 files changed, 67 insertions(+), 4 deletions(-)
+czw., 13 maj 2021 o 16:19 Vladimir Oltean <vladimir.oltean@nxp.com> napisa=
+=C5=82(a):
+>
+> On Thu, May 13, 2021 at 10:12:15AM +0800, Shawn Guo wrote:
+> > On Tue, May 11, 2021 at 09:48:22AM +0000, Claudiu Manoil wrote:
+> > > >-----Original Message-----
+> > > >From: Shawn Guo <shawnguo@kernel.org>
+> > > >Sent: Tuesday, May 11, 2021 6:07 AM
+> > > [...]
+> > > >Subject: Re: [PATCH] arm64: dts: fsl-ls1028a: Correct ECAM PCIE wind=
+ow
+> > > >ranges
+> > > >
+> > > >+ Claudiu
+> > > >
+> > > >On Wed, Apr 07, 2021 at 02:34:38PM +0200, Kornel Duleba wrote:
+> > > >> Currently all PCIE windows point to bus address 0x0, which does no=
+t match
+> > > >> the values obtained from hardware during EA.
+> > > >> Replace those values with CPU addresses, since in reality we
+> > > >> have a 1:1 mapping between the two.
+> > > >>
+> > > >> Signed-off-by: Kornel Duleba <mindal@semihalf.com>
+> > > >
+> > > >Claudiu,
+> > > >
+> > > >Do you have any comment on this?
+> > > >
+> > >
+> > > Well, probing is still working with this change, I've just tested it.
+> > >
+> > > PCI listing at boot time changes from:
+> > >
+> > > pci-host-generic 1f0000000.pcie: host bridge /soc/pcie@1f0000000 rang=
+es:
+> > > pci-host-generic 1f0000000.pcie:      MEM 0x01f8000000..0x01f815ffff =
+-> 0x0000000000
+> > > pci-host-generic 1f0000000.pcie:      MEM 0x01f8160000..0x01f81cffff =
+-> 0x0000000000
+> > >
+> > > to:
+> > >
+> > > pci-host-generic 1f0000000.pcie: host bridge /soc/pcie@1f0000000 rang=
+es:
+> > > pci-host-generic 1f0000000.pcie:      MEM 0x01f8000000..0x01f815ffff =
+-> 0x01f8000000
+> > > pci-host-generic 1f0000000.pcie:      MEM 0x01f8160000..0x01f81cffff =
+-> 0x01f8160000
+> > >
+> > > and looks reasonable.
+> > > Adding Vladimir and Alex just in case.
+> > >
+> > > Acked-by: Claudiu Manoil <claudiu.manoil@nxp.com>
+> >
+> > Thanks, Claudiu.
+> >
+> > Kornel,
+> >
+> > Do we need a Fixes tag for this patch?
+> >
+> > Shawn
+>
+> Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+>
+> I am not sure whether "incorrect data that is unused" deserves a Fixes:
+> tag or not, probably not.
+>
+> Bjorn Helgaas did point out before that "The fact that all these windows
+> map to PCI bus address 0 looks broken", so there's that:
+>
+> https://patchwork.kernel.org/project/linux-pci/cover/20201129230743.30069=
+78-1-kw@linux.com/
+>
+> And while it does look "broken", with the Enhanced Allocation capability
+> and the pci-host-ecam-generic driver, there is no address translation
+> taking place, so no inbound/outbound windows are configured, so the
+> range.pci_addr calculated in devm_of_pci_get_host_bridge_resources() is
+> not used for anything except for printing.
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index cb89dbdedc46..653c62142f07 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -497,16 +497,21 @@
- 	ccw_timeout_log	[S390]
- 			See Documentation/s390/common_io.rst for details.
- 
--	cgroup_disable=	[KNL] Disable a particular controller
--			Format: {name of the controller(s) to disable}
-+	cgroup_disable=	[KNL] Disable a particular controller or optional feature
-+			Format: {name of the controller(s) or feature(s) to disable}
- 			The effects of cgroup_disable=foo are:
- 			- foo isn't auto-mounted if you mount all cgroups in
- 			  a single hierarchy
- 			- foo isn't visible as an individually mountable
- 			  subsystem
-+			- if foo is an optional feature then the feature is
-+			  disabled and corresponding cgroup files are not
-+			  created
- 			{Currently only "memory" controller deal with this and
- 			cut the overhead, others just disable the usage. So
- 			only cgroup_disable=memory is actually worthy}
-+			Specifying "pressure" disables per-cgroup pressure
-+			stall information accounting feature
- 
- 	cgroup_no_v1=	[KNL] Disable cgroup controllers and named hierarchies in v1
- 			Format: { { controller | "all" | "named" }
-diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-index 559ee05f86b2..671f55cac0f0 100644
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -110,6 +110,7 @@ enum {
- 	CFTYPE_NO_PREFIX	= (1 << 3),	/* (DON'T USE FOR NEW FILES) no subsys prefix */
- 	CFTYPE_WORLD_WRITABLE	= (1 << 4),	/* (DON'T USE FOR NEW FILES) S_IWUGO */
- 	CFTYPE_DEBUG		= (1 << 5),	/* create when cgroup_debug */
-+	CFTYPE_PRESSURE		= (1 << 6),	/* only if pressure feature is enabled */
- 
- 	/* internal flags, do not use outside cgroup core proper */
- 	__CFTYPE_ONLY_ON_DFL	= (1 << 16),	/* only on default hierarchy */
-diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-index 4f2f79de083e..b929f589968b 100644
---- a/include/linux/cgroup.h
-+++ b/include/linux/cgroup.h
-@@ -676,6 +676,8 @@ static inline struct psi_group *cgroup_psi(struct cgroup *cgrp)
- 	return &cgrp->psi;
- }
- 
-+bool cgroup_psi_enabled(void);
-+
- static inline void cgroup_init_kthreadd(void)
- {
- 	/*
-@@ -735,6 +737,11 @@ static inline struct psi_group *cgroup_psi(struct cgroup *cgrp)
- 	return NULL;
- }
- 
-+static inline bool cgroup_psi_enabled(void)
-+{
-+	return false;
-+}
-+
- static inline bool task_under_cgroup_hierarchy(struct task_struct *task,
- 					       struct cgroup *ancestor)
- {
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index e049edd66776..c4b16c82e199 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -209,6 +209,22 @@ struct cgroup_namespace init_cgroup_ns = {
- static struct file_system_type cgroup2_fs_type;
- static struct cftype cgroup_base_files[];
- 
-+/* cgroup optional features */
-+enum cgroup_opt_features {
-+#ifdef CONFIG_PSI
-+	OPT_FEATURE_PRESSURE,
-+#endif
-+	OPT_FEATURE_COUNT
-+};
-+
-+static const char *cgroup_opt_feature_names[OPT_FEATURE_COUNT] = {
-+#ifdef CONFIG_PSI
-+	"pressure",
-+#endif
-+};
-+
-+static u16 cgroup_feature_disable_mask __read_mostly;
-+
- static int cgroup_apply_control(struct cgroup *cgrp);
- static void cgroup_finalize_control(struct cgroup *cgrp, int ret);
- static void css_task_iter_skip(struct css_task_iter *it,
-@@ -3631,6 +3647,18 @@ static void cgroup_pressure_release(struct kernfs_open_file *of)
- {
- 	psi_trigger_replace(&of->priv, NULL);
- }
-+
-+bool cgroup_psi_enabled(void)
-+{
-+	return (cgroup_feature_disable_mask & (1 << OPT_FEATURE_PRESSURE)) == 0;
-+}
-+
-+#else /* CONFIG_PSI */
-+bool cgroup_psi_enabled(void)
-+{
-+	return false;
-+}
-+
- #endif /* CONFIG_PSI */
- 
- static int cgroup_freeze_show(struct seq_file *seq, void *v)
-@@ -3881,6 +3909,8 @@ static int cgroup_addrm_files(struct cgroup_subsys_state *css,
- restart:
- 	for (cft = cfts; cft != cft_end && cft->name[0] != '\0'; cft++) {
- 		/* does cft->flags tell us to skip this file on @cgrp? */
-+		if ((cft->flags & CFTYPE_PRESSURE) && !cgroup_psi_enabled())
-+			continue;
- 		if ((cft->flags & __CFTYPE_ONLY_ON_DFL) && !cgroup_on_dfl(cgrp))
- 			continue;
- 		if ((cft->flags & __CFTYPE_NOT_ON_DFL) && cgroup_on_dfl(cgrp))
-@@ -3958,6 +3988,9 @@ static int cgroup_init_cftypes(struct cgroup_subsys *ss, struct cftype *cfts)
- 
- 		WARN_ON(cft->ss || cft->kf_ops);
- 
-+		if ((cft->flags & CFTYPE_PRESSURE) && !cgroup_psi_enabled())
-+			continue;
-+
- 		if (cft->seq_start)
- 			kf_ops = &cgroup_kf_ops;
- 		else
-@@ -4866,6 +4899,7 @@ static struct cftype cgroup_base_files[] = {
- #ifdef CONFIG_PSI
- 	{
- 		.name = "io.pressure",
-+		.flags = CFTYPE_PRESSURE,
- 		.seq_show = cgroup_io_pressure_show,
- 		.write = cgroup_io_pressure_write,
- 		.poll = cgroup_pressure_poll,
-@@ -4873,6 +4907,7 @@ static struct cftype cgroup_base_files[] = {
- 	},
- 	{
- 		.name = "memory.pressure",
-+		.flags = CFTYPE_PRESSURE,
- 		.seq_show = cgroup_memory_pressure_show,
- 		.write = cgroup_memory_pressure_write,
- 		.poll = cgroup_pressure_poll,
-@@ -4880,6 +4915,7 @@ static struct cftype cgroup_base_files[] = {
- 	},
- 	{
- 		.name = "cpu.pressure",
-+		.flags = CFTYPE_PRESSURE,
- 		.seq_show = cgroup_cpu_pressure_show,
- 		.write = cgroup_cpu_pressure_write,
- 		.poll = cgroup_pressure_poll,
-@@ -6216,6 +6252,13 @@ static int __init cgroup_disable(char *str)
- 				continue;
- 			cgroup_disable_mask |= 1 << i;
- 		}
-+
-+		for (i = 0; i < OPT_FEATURE_COUNT; i++) {
-+			if (strcmp(token, cgroup_opt_feature_names[i]))
-+				continue;
-+			cgroup_feature_disable_mask |= 1 << i;
-+			break;
-+		}
- 	}
- 	return 1;
- }
-@@ -6514,6 +6557,9 @@ static ssize_t show_delegatable_files(struct cftype *files, char *buf,
- 		if (!(cft->flags & CFTYPE_NS_DELEGATABLE))
- 			continue;
- 
-+		if ((cft->flags & CFTYPE_PRESSURE) && !cgroup_psi_enabled())
-+			continue;
-+
- 		if (prefix)
- 			ret += snprintf(buf + ret, size - ret, "%s.", prefix);
- 
-diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-index cc25a3cff41f..c73efd7d4fba 100644
---- a/kernel/sched/psi.c
-+++ b/kernel/sched/psi.c
-@@ -747,9 +747,12 @@ static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
- #ifdef CONFIG_CGROUPS
- 	struct cgroup *cgroup = NULL;
- 
--	if (!*iter)
-+	if (!*iter) {
-+		/* Skip to psi_system if per-cgroup accounting is disabled */
-+		if (!cgroup_psi_enabled())
-+			goto update_sys;
- 		cgroup = task->cgroups->dfl_cgrp;
--	else if (*iter == &psi_system)
-+	} else if (*iter == &psi_system)
- 		return NULL;
- 	else
- 		cgroup = cgroup_parent(*iter);
-@@ -758,6 +761,7 @@ static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
- 		*iter = cgroup;
- 		return cgroup_psi(cgroup);
- 	}
-+update_sys:
- #else
- 	if (*iter)
- 		return NULL;
--- 
-2.31.1.607.g51e8a6a459-goog
+...in Linux. Please note Linux device trees can be used as-is by other
+projects. Regardless my opinion on how that's unfortunate, FreeBSD
+does additional ranges check before performing EA and fails. Since the
+current DT description is imo broken and the change is transparent for
+Linux, it would be great to get this change merged into tree in case
+there are are no objections.
 
+Thanks,
+Marcin
+
+>
+> FWIW here's a more complete image of what changes with Kornel's patch
+> ("-" is before, "+" is after) - again all is limited to the dmesg output.
+>
+>  pci-host-generic 1f0000000.pcie: host bridge /soc/pcie@1f0000000 ranges:
+>  pci-host-generic 1f0000000.pcie: Parsing ranges property...
+> -pci-host-generic 1f0000000.pcie:      MEM 0x01f8000000..0x01f815ffff -> =
+0x0000000000
+> +pci-host-generic 1f0000000.pcie:      MEM 0x01f8000000..0x01f815ffff -> =
+0x01f8000000
+>  pci-host-generic 1f0000000.pcie: devm_of_pci_get_host_bridge_resources: =
+tmp_res start 0x01f8000000 end 0x01f815ffff
+> -pci-host-generic 1f0000000.pcie: devm_of_pci_get_host_bridge_resources: =
+pci_addr 0x0000000000 =3D> offset 0x01f8000000
+> -pci-host-generic 1f0000000.pcie:      MEM 0x01f8160000..0x01f81cffff -> =
+0x0000000000
+> +pci-host-generic 1f0000000.pcie: devm_of_pci_get_host_bridge_resources: =
+pci_addr 0x01f8000000 =3D> offset 0x0000000000
+> +pci-host-generic 1f0000000.pcie:      MEM 0x01f8160000..0x01f81cffff -> =
+0x01f8160000
+>  pci-host-generic 1f0000000.pcie: devm_of_pci_get_host_bridge_resources: =
+tmp_res start 0x01f8160000 end 0x01f81cffff
+> -pci-host-generic 1f0000000.pcie: devm_of_pci_get_host_bridge_resources: =
+pci_addr 0x0000000000 =3D> offset 0x01f8160000
+> -pci-host-generic 1f0000000.pcie:      MEM 0x01f81d0000..0x01f81effff -> =
+0x0000000000
+> +pci-host-generic 1f0000000.pcie: devm_of_pci_get_host_bridge_resources: =
+pci_addr 0x01f8160000 =3D> offset 0x0000000000
+> +pci-host-generic 1f0000000.pcie:      MEM 0x01f81d0000..0x01f81effff -> =
+0x01f81d0000
+>  pci-host-generic 1f0000000.pcie: devm_of_pci_get_host_bridge_resources: =
+tmp_res start 0x01f81d0000 end 0x01f81effff
+> -pci-host-generic 1f0000000.pcie: devm_of_pci_get_host_bridge_resources: =
+pci_addr 0x0000000000 =3D> offset 0x01f81d0000
+> -pci-host-generic 1f0000000.pcie:      MEM 0x01f81f0000..0x01f820ffff -> =
+0x0000000000
+> +pci-host-generic 1f0000000.pcie: devm_of_pci_get_host_bridge_resources: =
+pci_addr 0x01f81d0000 =3D> offset 0x0000000000
+> +pci-host-generic 1f0000000.pcie:      MEM 0x01f81f0000..0x01f820ffff -> =
+0x01f81f0000
+>  pci-host-generic 1f0000000.pcie: devm_of_pci_get_host_bridge_resources: =
+tmp_res start 0x01f81f0000 end 0x01f820ffff
+> -pci-host-generic 1f0000000.pcie: devm_of_pci_get_host_bridge_resources: =
+pci_addr 0x0000000000 =3D> offset 0x01f81f0000
+> -pci-host-generic 1f0000000.pcie:      MEM 0x01f8210000..0x01f822ffff -> =
+0x0000000000
+> +pci-host-generic 1f0000000.pcie: devm_of_pci_get_host_bridge_resources: =
+pci_addr 0x01f81f0000 =3D> offset 0x0000000000
+> +pci-host-generic 1f0000000.pcie:      MEM 0x01f8210000..0x01f822ffff -> =
+0x01f8210000
+>  pci-host-generic 1f0000000.pcie: devm_of_pci_get_host_bridge_resources: =
+tmp_res start 0x01f8210000 end 0x01f822ffff
+> -pci-host-generic 1f0000000.pcie: devm_of_pci_get_host_bridge_resources: =
+pci_addr 0x0000000000 =3D> offset 0x01f8210000
+> -pci-host-generic 1f0000000.pcie:      MEM 0x01f8230000..0x01f824ffff -> =
+0x0000000000
+> +pci-host-generic 1f0000000.pcie: devm_of_pci_get_host_bridge_resources: =
+pci_addr 0x01f8210000 =3D> offset 0x0000000000
+> +pci-host-generic 1f0000000.pcie:      MEM 0x01f8230000..0x01f824ffff -> =
+0x01f8230000
+>  pci-host-generic 1f0000000.pcie: devm_of_pci_get_host_bridge_resources: =
+tmp_res start 0x01f8230000 end 0x01f824ffff
+> -pci-host-generic 1f0000000.pcie: devm_of_pci_get_host_bridge_resources: =
+pci_addr 0x0000000000 =3D> offset 0x01f8230000
+> -pci-host-generic 1f0000000.pcie:      MEM 0x01fc000000..0x01fc3fffff -> =
+0x0000000000
+> +pci-host-generic 1f0000000.pcie: devm_of_pci_get_host_bridge_resources: =
+pci_addr 0x01f8230000 =3D> offset 0x0000000000
+> +pci-host-generic 1f0000000.pcie:      MEM 0x01fc000000..0x01fc3fffff -> =
+0x01fc000000
+>  pci-host-generic 1f0000000.pcie: devm_of_pci_get_host_bridge_resources: =
+tmp_res start 0x01fc000000 end 0x01fc3fffff
+> -pci-host-generic 1f0000000.pcie: devm_of_pci_get_host_bridge_resources: =
+pci_addr 0x0000000000 =3D> offset 0x01fc000000
+> +pci-host-generic 1f0000000.pcie: devm_of_pci_get_host_bridge_resources: =
+pci_addr 0x01fc000000 =3D> offset 0x0000000000
+>  pci-host-generic 1f0000000.pcie: ECAM at [mem 0x1f0000000-0x1f00fffff] f=
+or [bus 00]
+>  pci-host-generic 1f0000000.pcie: PCI host bridge to bus 0000:00
+>  pci_bus 0000:00: root bus resource [bus 00]
+> -pci_bus 0000:00: root bus resource [mem 0x1f8000000-0x1f815ffff] (bus ad=
+dress [0x00000000-0x0015ffff])
+> -pci_bus 0000:00: root bus resource [mem 0x1f8160000-0x1f81cffff pref] (b=
+us address [0x00000000-0x0006ffff])
+> -pci_bus 0000:00: root bus resource [mem 0x1f81d0000-0x1f81effff] (bus ad=
+dress [0x00000000-0x0001ffff])
+> -pci_bus 0000:00: root bus resource [mem 0x1f81f0000-0x1f820ffff pref] (b=
+us address [0x00000000-0x0001ffff])
+> -pci_bus 0000:00: root bus resource [mem 0x1f8210000-0x1f822ffff] (bus ad=
+dress [0x00000000-0x0001ffff])
+> -pci_bus 0000:00: root bus resource [mem 0x1f8230000-0x1f824ffff pref] (b=
+us address [0x00000000-0x0001ffff])
+> -pci_bus 0000:00: root bus resource [mem 0x1fc000000-0x1fc3fffff] (bus ad=
+dress [0x00000000-0x003fffff])
+> +pci_bus 0000:00: root bus resource [mem 0x1f8000000-0x1f815ffff]
+> +pci_bus 0000:00: root bus resource [mem 0x1f8160000-0x1f81cffff pref]
+> +pci_bus 0000:00: root bus resource [mem 0x1f81d0000-0x1f81effff]
+> +pci_bus 0000:00: root bus resource [mem 0x1f81f0000-0x1f820ffff pref]
+> +pci_bus 0000:00: root bus resource [mem 0x1f8210000-0x1f822ffff]
+> +pci_bus 0000:00: root bus resource [mem 0x1f8230000-0x1f824ffff pref]
+> +pci_bus 0000:00: root bus resource [mem 0x1fc000000-0x1fc3fffff]
+>  pci 0000:00:00.0: [1957:e100] type 00 class 0x020001
+>  pci 0000:00:00.0: BAR 0: [mem 0x1f8000000-0x1f803ffff 64bit] (from Enhan=
+ced Allocation, properties 0x0)
+>  pci 0000:00:00.0: BAR 2: [mem 0x1f8160000-0x1f816ffff 64bit pref] (from =
+Enhanced Allocation, properties 0x1)
+>
+> My understanding might be wrong, but it should be possible for the PCIe
+> host bridge driver to initialize some of its resources by enumerating
+> the functions which have the EA capability, and not require the device
+> tree writer to add a "ranges" entry for them at all. Then this discussion
+> would be moot - that resource would have no way to be incorrect.
+>
+> $ lspci -vvv
+> 0000:00:00.0 Ethernet controller: Freescale Semiconductor Inc Device e100=
+ (rev 01) (prog-if 01)
+>         Subsystem: Freescale Semiconductor Inc Device e100
+> (...)
+>         Capabilities: [9c] Enhanced Allocation (EA): NumEntries=3D4
+>                 Entry 0: Enable+ Writable- EntrySize=3D3
+>                          BAR Equivalent Indicator: BAR 0
+>                          PrimaryProperties: memory space, non-prefetchabl=
+e
+>                          SecondaryProperties: entry unavailable for use, =
+PrimaryProperties should be used
+>                          Base: 1f8000000
+>                          MaxOffset: 0003ffff
+>                 Entry 1: Enable+ Writable- EntrySize=3D3
+>                          BAR Equivalent Indicator: BAR 2
+>                          PrimaryProperties: memory space, prefetchable
+>                          SecondaryProperties: memory space, non-prefetcha=
+ble
+>                          Base: 1f8160000
+>                          MaxOffset: 0000ffff
+>                 Entry 2: Enable+ Writable- EntrySize=3D3
+>                          BAR Equivalent Indicator: VF-BAR 0
+>                          PrimaryProperties: VF memory space, non-prefetch=
+able
+>                          SecondaryProperties: entry unavailable for use, =
+PrimaryProperties should be used
+>                          Base: 1f81d0000
+>                          MaxOffset: 0000ffff
+>                 Entry 3: Enable+ Writable- EntrySize=3D3
+>                          BAR Equivalent Indicator: VF-BAR 2
+>                          PrimaryProperties: VF memory space, prefetchable
+>                          SecondaryProperties: VF memory space, prefetchab=
+le
+>                          Base: 1f81f0000
+>                          MaxOffset: 0000ffff
+>
+> This information, which is already present in the hardware, needs to be
+> duplicated here (now I do see that the 'ranges' property declares them
+> larger than they really are, too):
+>
+>                                   /* PF0-6 BAR0 - non-prefetchable memory=
+ */
+>                         ranges =3D <0x82000000 0x0 0x00000000  0x1 0xf800=
+0000  0x0 0x160000
+>                                   /* PF0-6 BAR2 - prefetchable memory */
+>                                   0xc2000000 0x0 0x00000000  0x1 0xf81600=
+00  0x0 0x070000
+>                                   /* PF0: VF0-1 BAR0 - non-prefetchable m=
+emory */
+>                                   0x82000000 0x0 0x00000000  0x1 0xf81d00=
+00  0x0 0x020000
+>                                   /* PF0: VF0-1 BAR2 - prefetchable memor=
+y */
+>                                   0xc2000000 0x0 0x00000000  0x1 0xf81f00=
+00  0x0 0x020000
