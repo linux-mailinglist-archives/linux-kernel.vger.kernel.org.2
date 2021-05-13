@@ -2,92 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FAFF37FBDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 18:56:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D76337FBE6
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 18:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229780AbhEMQ6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 12:58:01 -0400
-Received: from mout.gmx.net ([212.227.17.22]:45599 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229551AbhEMQ57 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 12:57:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1620924998;
-        bh=onM5oOku5nIepbwCuEcRoT5fQJgFFwHGcBnZTVFqqPA=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=G63fcJo5Rq1QnD7RuBjMuWx9GiLjKrTo4RNzUOucxmJPex7IiGq78XvtooDeBrSq7
-         VAA80U5jw1FG0LgleO3SLcLl5r1xvE5PHjyP7eKlNYM6Bk8M63b9skZplmtlW827dn
-         6dhOxIQdQq/6FeFcw5MxFyatwgOMKQGob4qHR0RQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.214.126]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1M2wGi-1ldvmj3T2q-003QgJ; Thu, 13
- May 2021 18:56:37 +0200
-From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Russell King <linux@armlinux.org.uk>, openbmc@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: npcm: wpcm450: select interrupt controller driver
-Date:   Thu, 13 May 2021 18:56:27 +0200
-Message-Id: <20210513165627.1767093-1-j.neuschaefer@gmx.net>
-X-Mailer: git-send-email 2.30.2
+        id S229837AbhEMQ77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 12:59:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229471AbhEMQ7z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 12:59:55 -0400
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29D50C061574;
+        Thu, 13 May 2021 09:58:44 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id v18so3964490qvx.10;
+        Thu, 13 May 2021 09:58:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4TWjC1hfXEfVrvLAQnVOIqFRZBHVMMLoVo982DH+h84=;
+        b=vX0N2sa4uRb9zLH+H7/Sxi4hez/NpFkjMK2ANDZqVkPDbZzvtHmM+tk9hKc07zskuD
+         3h7KUb7FWxM21v/Ap66RcKwe81OeDyyHfOnSueHaAeeivGf/eySQwoo8OUKfsIdoy/dH
+         g5EMU+oekrJl1lit5fdN05qUmDYbp9Sxi99mYpGrPBwF60EEGAa+4T6kjW549/cHob5A
+         gr18NoJHB7vYZ79KO85mbeeYuVrPxflZGdJ+IvF10DXPh1toNjp0gLS++74vWL80U7kh
+         Wy21S4+iKT3xJzgG+2nErwSZyV5DZ4j3BbkpkwQ5i3XP303usS2xw1UbWyXRfM8gcHVx
+         T+Bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=4TWjC1hfXEfVrvLAQnVOIqFRZBHVMMLoVo982DH+h84=;
+        b=arentv2+hNXFuHD64ydRGdIoivK6EiyfIDqCmNWMkjrCeHIIvL++9X0Fi/DUNACVtQ
+         7+ub4DgECHbAGdQITycP0yyi5YrfjYTr7p5qRw9uuR/JQ3nQFo99WpkQMiU22Zdi26TP
+         1BV1/BvFbo4vSZhl7xDh/Qa9dfn1uxia0pG+2AASvHz4HRhCxzYL95SasoTtrgfThUZ7
+         PI+KJNyS09JrX/og3HQqQjFFDeA5+7Sdvo9PjHt2o0KXs8Om966+njFxF5IzU3wEFwgh
+         7v4BqvxZW3LVP4iiXF+3002nKVJopjIvmwI6+GroD+nPq0xkraz76N2pRtdVpzeFx5Th
+         2BCw==
+X-Gm-Message-State: AOAM532GpsoV+6GBaOeNBMGe/0O4NU8eGCVBywto/mAERgP9iLNQXDWu
+        vAhO1tadQ8LH0wfDW1WCzgLqh7uVxqY=
+X-Google-Smtp-Source: ABdhPJw1UQWRxdqcLhAoOeZVbQw9joMbO460MCL1F23+mzsh9tbUcS38w7+jxHYbJ2WsxbG6ZhTnIw==
+X-Received: by 2002:a0c:ee62:: with SMTP id n2mr33186135qvs.20.1620925123331;
+        Thu, 13 May 2021 09:58:43 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id l16sm2693356qtj.30.2021.05.13.09.58.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 May 2021 09:58:42 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     "David S . Miller" <davem@davemloft.net>
+Cc:     Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH] net: caif: Drop unnecessary NULL check after container_of
+Date:   Thu, 13 May 2021 09:58:40 -0700
+Message-Id: <20210513165840.1339544-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:yvWbUY0amL+EGA42SjfSv8uHl/1arFixkeOF/iCkbk3WakCW7Iw
- QRdbFAOqgXggqvTXEcu5oOyz4thNUT1haRDCanj5143z/le6Q5alTeQRX/qtP1SrJ5yIeDL
- 45vG0LGzAqavvIwtm/j6cqygxj47uuEfRnikyGp/iaE8QV/1kmgww8httzUekko2zQVyNHM
- Es8ezYv9FfiBlNKXsrCkg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:2vzx7pOgkXo=:nkh20ckrSg9oskYZfWWcgU
- h4u8+xo8fGH1yocKdKQsFGBhXiDwu9qrpZ5NyCFuWobRgICro3oA7amWk80Wac5IuuIwpFGgi
- eZbhFVNXeqDFjNzGSwkFB9GOWFaE31Qmq9aJqOXvveRcy9R3l1dzQWHc84jvU2eADLRu1+7JK
- lRQXEr4Gl6+S0NnzhC43l06z1aTUXNSJdGb2aSzhisxeKp7yaaOViU+yNPJzSjKcfs3DRVRmL
- 5p2U7H6VPApw7c6UAXQ4pazQGraeHPqRyk9qgi7oXuFYjsjPSTw0rnGTSNTJ1TNEBihZ4bOru
- HpgrH9wZretxts9dsLO/zZdaC6ee91KV9rDWlj/PVJ5rkTLAO9M45LmwDKptvc4Mgj/pdXqBP
- pjkABeYfzAJHnR87J6bh1GNGcaN2vNg07XVU9z6WX73OofbdzW0qpccVYkoOBM6ujDtyMemAj
- 2zqWTgtmv1aKKDI49/pvvlbQAHjCvqxsTfzAYF16mEUAyUS8/DoJUwToyvLZOnAviI9GPzeNv
- 2y2T9LJ+ej1jBa0iCvpcMCiSDBsx0v/MbVzdiMkO5s5nP7BCelXQ315Uq7DXk56XvGQx9C70R
- F9rAe9ByU3uQBvyiQM0cMfzw3S9sbPL1/SN9IVjO38ZEcq/uUwVsxTjcD75D5YSNzmUVclP6K
- GjhowTTaibc2YGdpnd2YY40lknZYmY00gHAGIaH8PugrmmkVgZWaYRwv3EaisviFNNQnf+msE
- DESmqCiW5ezHC5HxNBSJ7fdQcbJ865bWyZmBenFFoi7Cgs9R+3sG7r5DvFrVVcQk3zCssYNBP
- gj33kgT8e5yTEiE7KMBSXywv0S8RzWma/oeEYsgp5oWSOwOLIn+AiHnfomFu/WDCWvpSNcb2+
- gHvUtDfJwfrCewSUO4kMou/tSa2J0sQlt4A+HkxP8b0wR7LXbggFyIQ8QB/y3S9Uq0lZMjSfe
- B7C3tJSWeFY7j6PdlHiaBtlMS8/PC3V4yZ3Wv6wy4s/DINJ8QZjZXZmvygjlo8yULMUEM8PS4
- mNhhOoTGn9gaAvloNUY3duomlAHF/2DWxXxldzoOI5Qv4FuufThOFH2avqEBU1E5HfZQL+/AN
- VPLvzJnYsUSkZgSP0kc1M9ZRi6CQ/tsrwzYw7MZ4SmiNUz6muF4CSnEtwpmIn5fDCq3rkcyOH
- dYtZ1HeZPDPFGxfaYANkxto9s1QRf8XwjpsCxKzyI2HHfEIuEEQ1CxSSvoHKZUpWWPvpG5fQM
- 84OA0S+9tZtMDxrK8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The interrupt controller driver is necessary in order to have a
-functioning Linux system on WPCM450. Select it in mach-npcm/Kconfig.
+The first parameter passed to chnl_recv_cb() can never be NULL since all
+callers dereferenced it. Consequently, container_of() on it is also never
+NULL, even though the reference into the structure points to the first
+element of the structure. The NULL check is therefore unnecessary.
+On top of that, it is misleading to perform a NULL check on the result of
+container_of() because the position of the contained element could change,
+which would make the test invalid. Remove the unnecessary NULL check.
 
-Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-=2D--
- arch/arm/mach-npcm/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+This change was made automatically with the following Coccinelle script.
 
-diff --git a/arch/arm/mach-npcm/Kconfig b/arch/arm/mach-npcm/Kconfig
-index 658c8efb4ca14..a71cf1d189ae5 100644
-=2D-- a/arch/arm/mach-npcm/Kconfig
-+++ b/arch/arm/mach-npcm/Kconfig
-@@ -10,6 +10,7 @@ config ARCH_WPCM450
- 	bool "Support for WPCM450 BMC (Hermon)"
- 	depends on ARCH_MULTI_V5
- 	select CPU_ARM926T
-+	select WPCM450_AIC
- 	select NPCM7XX_TIMER
- 	help
- 	  General support for WPCM450 BMC (Hermon).
-=2D-
-2.30.2
+@@
+type t;
+identifier v;
+statement s;
+@@
+
+<+...
+(
+  t v = container_of(...);
+|
+  v = container_of(...);
+)
+  ...
+  when != v
+- if (\( !v \| v == NULL \) ) s
+...+>
+
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+ net/caif/chnl_net.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/net/caif/chnl_net.c b/net/caif/chnl_net.c
+index fadc7c8a3107..37b67194c0df 100644
+--- a/net/caif/chnl_net.c
++++ b/net/caif/chnl_net.c
+@@ -76,8 +76,6 @@ static int chnl_recv_cb(struct cflayer *layr, struct cfpkt *pkt)
+ 	u8 buf;
+ 
+ 	priv = container_of(layr, struct chnl_net, chnl);
+-	if (!priv)
+-		return -EINVAL;
+ 
+ 	skb = (struct sk_buff *) cfpkt_tonative(pkt);
+ 
+-- 
+2.25.1
 
