@@ -2,100 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4568537FD4D
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 20:35:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E150937FD57
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 20:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231513AbhEMSge convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 May 2021 14:36:34 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2430 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230125AbhEMSgb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 14:36:31 -0400
-Received: from dggeml765-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fh0dK4SNkz61XZ;
-        Fri, 14 May 2021 02:32:37 +0800 (CST)
-Received: from dggemi712-chm.china.huawei.com (10.3.20.111) by
- dggeml765-chm.china.huawei.com (10.1.199.175) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 14 May 2021 02:35:18 +0800
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- dggemi712-chm.china.huawei.com (10.3.20.111) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 14 May 2021 02:35:17 +0800
-Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
- lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
- 15.01.2176.012; Thu, 13 May 2021 19:35:15 +0100
-From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     Alex Williamson <alex.williamson@redhat.com>,
-        liulongfang <liulongfang@huawei.com>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-Subject: RE: [Linuxarm]  Re: [RFC PATCH 2/3] vfio/hisilicon: register the
- driver to vfio
-Thread-Topic: [Linuxarm]  Re: [RFC PATCH 2/3] vfio/hisilicon: register the
- driver to vfio
-Thread-Index: AQHXMkL9mza0TJ8TfUm11z5ygPSvFqq7zAN3gAL2j3WAAIzL6IAgnBJYgAGsWYGAACE9wIAABZSAgAAb/VD///p5gIAAEurA
-Date:   Thu, 13 May 2021 18:35:15 +0000
-Message-ID: <46db963416df47d0b2552e62f57855dc@huawei.com>
-References: <20210420160457.6b91850a@x1.home.shazbot.org>
- <25d033e6-1cba-0da0-2ee7-03a14e75b8a5@huawei.com>
- <20210421121224.62382e5d@redhat.com>
- <6ea89655-31c5-233b-ca2a-fcc166b5597c@huawei.com>
- <20210512121053.GT1002214@nvidia.com>
- <3eaa3114-81b6-1bd9-c7e6-cb1541389b58@huawei.com>
- <20210513134422.GD1002214@nvidia.com>
- <e3db0c328da6411ea2ae07595ed5f6c3@huawei.com>
- <20210513110349.68e3d59d@redhat.com>
- <1035a9a9b03b43dd9f859136ed84a7f8@huawei.com>
- <20210513182413.GO1002214@nvidia.com>
-In-Reply-To: <20210513182413.GO1002214@nvidia.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.47.81.63]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S231593AbhEMSnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 14:43:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38770 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231326AbhEMSnH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 14:43:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C96E6100C;
+        Thu, 13 May 2021 18:41:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620931316;
+        bh=5LLelLIQygK+U6IAj1y8uyQ90yjIXf4BkwkxKjJGayI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rGBA/HAp+QKbShTL0cZPYwlAVfh3PAhdtEBd92G2pxGJnvMO3kQR3DuZUaM9Igo/d
+         It5dGilVhp7yMHn4tQ5kJMkJhEp+E+ITWYNDI9/KrlTmi2Pcg9EkxvMnFiB/oPAyqh
+         XHwJGF0/dmtUtZZH1x+JmMxMNzEMuYXzUNS/k2P0=
+Date:   Thu, 13 May 2021 20:41:54 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] driver core: make device_set_deferred_probe_reason a
+ no-op when !CONFIG_DEBUG_FS
+Message-ID: <YJ1y8rJNUlwtrOoN@kroah.com>
+References: <20210419104256.1709253-1-linux@rasmusvillemoes.dk>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210419104256.1709253-1-linux@rasmusvillemoes.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> -----Original Message-----
-> From: Jason Gunthorpe [mailto:jgg@nvidia.com]
-> Sent: 13 May 2021 19:24
-> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-> Cc: Alex Williamson <alex.williamson@redhat.com>; liulongfang
-> <liulongfang@huawei.com>; cohuck@redhat.com;
-> linux-kernel@vger.kernel.org; linuxarm@openeuler.org
-> Subject: Re: [Linuxarm] Re: [RFC PATCH 2/3] vfio/hisilicon: register the driver to
-> vfio
+On Mon, Apr 19, 2021 at 12:42:56PM +0200, Rasmus Villemoes wrote:
+> When debugfs is not enabled, the deferred_probe_reason string is never
+> read. So there's no reason to spend time and memory on recording it.
 > 
-> On Thu, May 13, 2021 at 05:52:56PM +0000, Shameerali Kolothum Thodi
-> wrote:
+> There's still a bunch of redundant kfree(NULL) calls and NULL
+> assignments, but this gives most of the benefit (avoiding two
+> vsnprintf() and a kmalloc()) for the minimal amount of ifdeffery.
 > 
-> > Since the devices we are concerned here are all integrated endpoints and if
-> the
-> > above quirk is an acceptable one, then we can use the uAPI as done in this
-> > series without overly complicating things here.
+> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> ---
+>  drivers/base/dd.c | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
-> IMHO such a quirk in the core code should not be done. You need to
-> override this in your own driver like Max was showing.
+> diff --git a/drivers/base/dd.c b/drivers/base/dd.c
+> index 37a5e5f8b221..6a197336c6a4 100644
+> --- a/drivers/base/dd.c
+> +++ b/drivers/base/dd.c
+> @@ -216,9 +216,13 @@ void device_unblock_probing(void)
+>   * device_set_deferred_probe_reason() - Set defer probe reason message for device
+>   * @dev: the pointer to the struct device
+>   * @vaf: the pointer to va_format structure with message
+> + *
+> + * The ->deferred_probe_reason string is only ever read when debugfs
+> + * is enabled, so this is a no-op for !CONFIG_DEBUG_FS.
+>   */
+>  void device_set_deferred_probe_reason(const struct device *dev, struct va_format *vaf)
+>  {
+> +#ifdef CONFIG_DEBUG_FS
+>  	const char *drv = dev_driver_string(dev);
+>  
+>  	mutex_lock(&deferred_probe_mutex);
+> @@ -227,6 +231,7 @@ void device_set_deferred_probe_reason(const struct device *dev, struct va_format
+>  	dev->p->deferred_probe_reason = kasprintf(GFP_KERNEL, "%s: %pV", drv, vaf);
+>  
+>  	mutex_unlock(&deferred_probe_mutex);
+> +#endif
 
-Ok. Sure, will take a look at that.
+Can you move the #ifdef to a .h file and do this properly instead of
+cutting up the function like this?
 
-> I think we are very close to having worked out a great solution to the
-> lingering questions on Max's last RFC, hopefully we can post an
-> updated version soon
+thanks,
 
-Cool. If possible kindly CC us when it happens.
-
-Thanks,
-Shameer
-
+greg k-h
