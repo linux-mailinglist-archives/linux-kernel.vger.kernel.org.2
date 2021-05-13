@@ -2,108 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E9E37F042
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 02:12:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D81A37F043
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 02:13:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232289AbhEMANb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 20:13:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35840 "EHLO mail.kernel.org"
+        id S234762AbhEMAOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 20:14:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242877AbhEMAIS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 20:08:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 43427613DF
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 00:07:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620864426;
-        bh=v2Nqrzk8IMsTBDnwOsCTq2LatPsRSKHVbANck2rKQ8o=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=QITqSl9VhSZwPCtmR6nhxI1fDkmIBopcdtEI0C2u5AFCsqvKozQIeO1AfTOKvm73I
-         JHxXVjs6V1Fkl+tgfvxkv9HRu1FPEq7ZK+MGeQGN4WIqDP/hWBwP+hI953RjlgO26r
-         3ofNU3OLpGJNDSbemkAQsCStml7pzuMgN1bplo2yrzaXQydqd1pijrdwUEK0JtzEK1
-         Qf9xiQT8Gt/ftUr39L7fWm/G31VcT2/zDKGDjxnd6MCWtBiW+HCjrHuzSaESKpbS2f
-         QdP1Hhqo4bdqGPPFzE2Us/Ha/udH91kWHfNPUe+CBdlx3qH8II1PVmhSnF0Lej6muD
-         5DKHY63tzl3Jg==
-Received: by mail-ej1-f45.google.com with SMTP id s20so31981717ejr.9
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 17:07:06 -0700 (PDT)
-X-Gm-Message-State: AOAM533IM8MXIQcI/Zx0gBO48yu8ouin1YgNTQ8GpVlGHJA/iLCTgXlG
-        wr1XhShnnMYv942b86nj/VZ8hGreQKOWe7VLAQ==
-X-Google-Smtp-Source: ABdhPJyfh9opbiHkboCndggh2+uLHJvaZkDGaqHLCtZT/4YagZu6vDBz+VrubRjLiXkTfTnqyKa2x9kZeO9mRpM4LKo=
-X-Received: by 2002:a17:906:b755:: with SMTP id fx21mr941485ejb.267.1620864424849;
- Wed, 12 May 2021 17:07:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210419073244.2678688-1-narmstrong@baylibre.com>
-In-Reply-To: <20210419073244.2678688-1-narmstrong@baylibre.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Thu, 13 May 2021 08:06:54 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_-amQXXF2Opi6vddosnx94TMPw5xDQy5peHpsrXSp0h4g@mail.gmail.com>
-Message-ID: <CAAOTY_-amQXXF2Opi6vddosnx94TMPw5xDQy5peHpsrXSp0h4g@mail.gmail.com>
-Subject: Re: [PATCH v3 0/5] mediatek: hdmi: add MT8167 configuration
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S242992AbhEMAIf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 20:08:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FF94611F0;
+        Thu, 13 May 2021 00:07:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1620864446;
+        bh=24R24Rv/5s/FYQFsygQTGuMbS5mHRX+N/jGv9R0gjZo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=iOyDKeioYQQXWFwXp70+Z87M3vG9d1wMmg1X9PjmACMFBJufW+6qemzEhqokue5pu
+         zyW/7zYwq2+s6LSNIETVRdTYgEdBfrtm2PJzp8bRTPb5zue1CFSLAGpGfp143jzEBw
+         t1B9DHcAMTynwnhqktD2ZpDPv6fLdI8XW/x4opZo=
+Date:   Wed, 12 May 2021 17:07:25 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     glittao@gmail.com, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH] mm/slub: use stackdepot to save stack trace in objects
+Message-Id: <20210512170725.de759a49cb116e5d4c303925@linux-foundation.org>
+In-Reply-To: <f9dd0692-e490-56ce-3cd8-b99aea559e79@suse.cz>
+References: <20210414163434.4376-1-glittao@gmail.com>
+        <20210509214603.d2a5faaa3fe0d71c3517cb36@linux-foundation.org>
+        <f9dd0692-e490-56ce-3cd8-b99aea559e79@suse.cz>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Neil:
+On Wed, 12 May 2021 16:33:50 +0200 Vlastimil Babka <vbabka@suse.cz> wrote:
 
-Neil Armstrong <narmstrong@baylibre.com> =E6=96=BC 2021=E5=B9=B44=E6=9C=881=
-9=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=883:33=E5=AF=AB=E9=81=93=EF=
-=BC=9A
->
-> The MT8167 SoC have a hard limit on the maximal supported HDMI TMDS clock=
-,
-> and is not validated and supported for HDMI modes out of HDMI CEA modes.
+> On 5/10/21 6:46 AM, Andrew Morton wrote:
+> > On Wed, 14 Apr 2021 18:34:34 +0200 glittao@gmail.com wrote:
+> > 
+> >> Many stack traces are similar so there are many similar arrays.
+> >> Stackdepot saves each unique stack only once.
+> >> 
+> >> Replace field addrs in struct track with depot_stack_handle_t handle.
+> >> Use stackdepot to save stack trace.
+> >> 
+> >> The benefits are smaller memory overhead and possibility to aggregate
+> >> per-cache statistics in the future using the stackdepot handle
+> >> instead of matching stacks manually.
+> > 
+> > Which tree was this prepared against?  5.12's kmem_obj_info() is
+> > significantly different from the version you were working on.
+> 
+> It was based on -next at the time of submission, which contained patch in Paul's
+> tree that expands kmem_obj_info to print also free call stack [1] so that also
+> needs to be switched to stackdepot to work.
 
-For this series, applied to mediatek-drm-next [1], thanks.
+OK, sorry, I should have checked.
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
-log/?h=3Dmediatek-drm-next
+> > Please take a look, redo, retest and resend?  Thanks.
+> 
+> I expected [1] to be in 5.13-rc1, but as Paul explained to me, it's queued for
+> 5.14. So if we (Oliver) rebase on current -next, can you queue it in the section
+> of mmotm series that goes after -next?
 
-Regards,
-Chun-Kuang.
+I grabbed this version and queued it after the linux-next patches,
+thanks.
 
->
-> To achieve this:
-> - switch the mediatek HDMI bindings to YAML
-> - add the MT8167 compatible
-> - add a boolean to discard the non-CEA modes
-> - add a value to specify mac TMDS supported clock
-> - add a conf entry for the MT8167 compatible
->
-> Changes since v4:
-> - fixed bindings
->
-> Neil Armstrong (5):
->   dt-bindings: display: mediatek,hdmi: Convert to use graph schema
->   dt-bindings: mediatek: add mt8167 to hdmi, hdmi-ddc and cec bindings
->   gpu/drm: mediatek: hdmi: add check for CEA modes only
->   gpu/drm: mediatek: hdmi: add optional limit on maximal HDMI mode clock
->   gpu/drm: mediatek: hdmi: add MT8167 configuration
->
->  .../display/mediatek/mediatek,cec.yaml        |  52 +++++++
->  .../display/mediatek/mediatek,hdmi-ddc.yaml   |  58 ++++++++
->  .../display/mediatek/mediatek,hdmi.txt        | 136 ------------------
->  .../display/mediatek/mediatek,hdmi.yaml       | 133 +++++++++++++++++
->  drivers/gpu/drm/mediatek/mtk_hdmi.c           |  17 +++
->  5 files changed, 260 insertions(+), 136 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/display/mediatek/me=
-diatek,cec.yaml
->  create mode 100644 Documentation/devicetree/bindings/display/mediatek/me=
-diatek,hdmi-ddc.yaml
->  delete mode 100644 Documentation/devicetree/bindings/display/mediatek/me=
-diatek,hdmi.txt
->  create mode 100644 Documentation/devicetree/bindings/display/mediatek/me=
-diatek,hdmi.yaml
->
-> --
-> 2.25.1
->
