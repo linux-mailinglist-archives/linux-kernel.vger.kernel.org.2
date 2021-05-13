@@ -2,145 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B4937F4F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 11:41:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5463937F4F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 11:41:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232349AbhEMJmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 05:42:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46958 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232256AbhEMJmO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 05:42:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 03E1361285;
-        Thu, 13 May 2021 09:41:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620898865;
-        bh=4RCeSG/8I2YEcyfkQAn6l5a3+wVhDU5yuKFCH+BWySU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YeX/Ez60pBT0qXffqd2P751H8nqJGQPO/1UVn5wUnfm8VDyE064sOCPS6faI4Q/QX
-         8kpBfFP9feJyYABJzCtGXLm3mpT24nV92bXvTZ0c49/WVVTSGvudd2bSLxET7I1EcF
-         7EmwcC+bt7ddvSCM+Hv5ahqBEJDjv+VLF9pN0PY3GgBzIvvKDYuXqptlL11f7DeRhv
-         D4HScjopbBu5lMowvYBnG3oSwlfMUuasNXRYiuuUgECxNjItA78nA8MXDi3aWLuOEh
-         MxpdmTlm0EPOJFVXgtdVWL6T46Oew9h/qWSY4Mn0kOQO6PUIFj6NESiJjehIiVlnBF
-         c1I1MZvnxUm0A==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1lh7q6-0005sk-Es; Thu, 13 May 2021 11:41:07 +0200
-Date:   Thu, 13 May 2021 11:41:06 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Jiri Slaby <jslaby@suse.cz>
-Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Joe Perches <joe@perches.com>
-Subject: Re: [PATCH v2 34/35] tty: make tty_get_byte_size available
-Message-ID: <YJz0MqOOzrIBjDBL@hovoldconsulting.com>
-References: <20210505091928.22010-35-jslaby@suse.cz>
- <20210510070054.5397-1-jslaby@suse.cz>
- <YJkBIm4IiaZSrSPw@hovoldconsulting.com>
- <f8f94397-14d8-60d0-f977-8bc982a00b7a@suse.cz>
+        id S231523AbhEMJnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 05:43:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23352 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231980AbhEMJm7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 05:42:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620898909;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tEXPPpt56VkLlB1sxfQc5mmkjZ2bJkUMWLVzzmgeQlI=;
+        b=g9o6wpU+8VTBS7VpIZIMZZRpLOo51yOeSlkdwgfphXHFJRkGYTwThsvKS+xDTJIi55mNhG
+        SgVK/aJjlHPKw+EoxY2UhXpKSjM6xJSZe1MJFt77tV59oxzkBSZI0J51B/uetjmzZLFjJO
+        9omk93p7CiVo1YP0ml9g1Pn9SgJ3ShA=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-154-WBt4t_ISOCWKDAm_5W0VSg-1; Thu, 13 May 2021 05:41:47 -0400
+X-MC-Unique: WBt4t_ISOCWKDAm_5W0VSg-1
+Received: by mail-ed1-f70.google.com with SMTP id x3-20020a50ba830000b029038caed0dd2eso3220264ede.7
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 02:41:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tEXPPpt56VkLlB1sxfQc5mmkjZ2bJkUMWLVzzmgeQlI=;
+        b=ahmUYrUngV6CkHqU2zQSaMZ/etvXpngd9UV9eVV9MpU/70+Ghu6HClQ8NgkXhssyi3
+         cs2Y5Ym9nI8RuiNR+qxcT/e37eHSRXgg8LHkdMDPrkcHoIBrLr7ZW1LKaGZAN+LTB+f1
+         YVPWSPopr+DHNoPEGJqm8Me1meG3MXYj9zVmFrtlkQZ93eFzJ5PPfQUnyHl1pTeO04mr
+         WO5SRgnB+/n69SSRkXuGJv6PPCodc24yNS8RmQ7SuVmCMMuTGf9ubBTllhrfR1E2RPjQ
+         3OnMoXmzgwpNg3lviAYRaCopUXkV6eP8T3kyTxybC00S/G01BUHORlSzN00jFxZkfnAu
+         kFsw==
+X-Gm-Message-State: AOAM532mJFA0Evkvijh5EyCoKgqLXssmUBKZEQ9bdwcV5sgeFT2abXTM
+        DmrwVoLSTRCOe3JeeewphgklZreD2NIg8y19bJ8FpizRPkwYyPhETbQtcUuE6y67DkK4yxTvE10
+        bITk4pz6UktxtMK7r4KMIRIc9
+X-Received: by 2002:a05:6402:2218:: with SMTP id cq24mr32137406edb.213.1620898905994;
+        Thu, 13 May 2021 02:41:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxJVi1oEMy1G+Ywub1hPnPWN5TD5l/FhJybfYGA5Yj2BjUVuK2h8oCU1i60XTsPyqrKWp64mg==
+X-Received: by 2002:a05:6402:2218:: with SMTP id cq24mr32137390edb.213.1620898905840;
+        Thu, 13 May 2021 02:41:45 -0700 (PDT)
+Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
+        by smtp.gmail.com with ESMTPSA id by20sm1493666ejc.74.2021.05.13.02.41.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 May 2021 02:41:45 -0700 (PDT)
+Date:   Thu, 13 May 2021 11:41:43 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     "Longpeng(Mike)" <longpeng2@huawei.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        arei.gonglei@huawei.com, subo7@huawei.com,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Alexander Popov <alex.popov@linux.com>,
+        lixianming <lixianming5@huawei.com>
+Subject: Re: [RFC] vsock: notify server to shutdown when client has pending
+ signal
+Message-ID: <20210513094143.pir5vzsludut3xdc@steredhat>
+References: <20210511094127.724-1-longpeng2@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <f8f94397-14d8-60d0-f977-8bc982a00b7a@suse.cz>
+In-Reply-To: <20210511094127.724-1-longpeng2@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 09:24:03AM +0200, Jiri Slaby wrote:
-> On 10. 05. 21, 11:47, Johan Hovold wrote:
-> >> --- a/drivers/tty/tty_ioctl.c
-> >> +++ b/drivers/tty/tty_ioctl.c
-> >> @@ -300,6 +300,48 @@ int tty_termios_hw_change(const struct ktermios *a, const struct ktermios *b)
-> ...
-> >> +unsigned char tty_get_byte_size(unsigned int cflag, bool account_flags)
-> >> +{
-> >> +	unsigned char bits;
-> >> +
-> >> +	switch (cflag & CSIZE) {
-> >> +	case CS5:
-> >> +		bits = 5;
-> >> +		break;
-> >> +	case CS6:
-> >> +		bits = 6;
-> >> +		break;
-> >> +	case CS7:
-> >> +		bits = 7;
-> >> +		break;
-> >> +	case CS8:
-> >> +	default:
-> >> +		bits = 8;
-> >> +		break;
-> >> +	}
-> >> +
-> >> +	if (!account_flags)
-> >> +		return bits;
-> >> +
-> >> +	if (cflag & CSTOPB)
-> >> +		bits++;
-> >> +	if (cflag & PARENB)
-> >> +		bits++;
-> >> +
-> >> +	return bits + 2;
-> >> +}
-> >> +EXPORT_SYMBOL_GPL(tty_get_byte_size);
-> > 
-> > This should really be two functions rather than passing a bool argument.
-> > 
-> > I think naming them
-> > 
-> > 	tty_get_word_size()
-> > 
-> > and
-> > 
-> > 	tty_get_frame_size()
-> > 
-> > would be much more clear than than "byte size" + flag.
-> 
-> Maybe I am screwed, but word means exactly 2B here.
+Hi,
+thanks for this patch, comments below...
 
-No, not in this context.
+On Tue, May 11, 2021 at 05:41:27PM +0800, Longpeng(Mike) wrote:
+>The client's sk_state will be set to TCP_ESTABLISHED if the
+>server replay the client's connect request.
+>However, if the client has pending signal, its sk_state will
+>be set to TCP_CLOSE without notify the server, so the server
+>will hold the corrupt connection.
+>
+>            client                        server
+>
+>1. sk_state=TCP_SYN_SENT         |
+>2. call ->connect()              |
+>3. wait reply                    |
+>                                 | 4. sk_state=TCP_ESTABLISHED
+>                                 | 5. insert to connected list
+>                                 | 6. reply to the client
+>7. sk_state=TCP_ESTABLISHED      |
+>8. insert to connected list      |
+>9. *signal pending* <--------------------- the user kill client
+>10. sk_state=TCP_CLOSE           |
+>client is exiting...             |
+>11. call ->release()             |
+>     virtio_transport_close
+>      if (!(sk->sk_state == TCP_ESTABLISHED ||
+>	      sk->sk_state == TCP_CLOSING))
+>		return true; <------------- return at here
+>As a result, the server cannot notice the connection is corrupt.
+>So the client should notify the peer in this case.
+>
+>Cc: David S. Miller <davem@davemloft.net>
+>Cc: Jakub Kicinski <kuba@kernel.org>
+>Cc: Stefano Garzarella <sgarzare@redhat.com>
+>Cc: Jorgen Hansen <jhansen@vmware.com>
+>Cc: Norbert Slusarek <nslusarek@gmx.net>
+>Cc: Andra Paraschiv <andraprs@amazon.com>
+>Cc: Colin Ian King <colin.king@canonical.com>
+>Cc: David Brazdil <dbrazdil@google.com>
+>Cc: Alexander Popov <alex.popov@linux.com>
+>Signed-off-by: lixianming <lixianming5@huawei.com>
+>Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
+>---
+> net/vmw_vsock/af_vsock.c | 1 +
+> 1 file changed, 1 insertion(+)
+>
+>diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+>index 92a72f0..d5df908 100644
+>--- a/net/vmw_vsock/af_vsock.c
+>+++ b/net/vmw_vsock/af_vsock.c
+>@@ -1368,6 +1368,7 @@ static int vsock_stream_connect(struct socket *sock, struct sockaddr *addr,
+> 		lock_sock(sk);
+>
+> 		if (signal_pending(current)) {
+>+			vsock_send_shutdown(sk, SHUTDOWN_MASK);
 
-Some UART datasheets use "word" and "word length", while others use
-"character length" or "data bits" (and variations thereof).
+I see the issue, but I'm not sure is okay to send the shutdown in any 
+case, think about the server didn't setup the connection.
 
-> So instead, I would 
-> go for:
-> s/word/char/ -- might be confused with C's char, 1B, or maybe not -- or
-> s/word/data/ -- more generic and generally used in serial terminology.
+Maybe is better to set TCP_CLOSING if the socket state was 
+TCP_ESTABLISHED, so the shutdown will be handled by the 
+transport->release() as usual.
 
-But "data size" it not very precise.
+What do you think?
 
-I'd go for either
+Anyway, also without the patch, the server should receive a RST if it 
+sends any data to the client, but of course, is better to let it know 
+the socket is closed in advance.
 
-	tty_get_word_size() or tty_get_char_size(), and
-	tty_get_frame_size()
+Thanks,
+Stefano
 
-or possibly
-
-	tty_get_data_bits(), and
-	tty_get_frame_bits()
-
-Since posix and the termios interface use "CSIZE" (even if that "C" is
-ambiguous) and our man pages use "character size" perhaps we should
-stick with that and use:
-
-	tty_get_char_size(), and
-	tty_get_frame_size()
-
-That should be clear enough for everyone.
-
-> > I realise that the serial-driver interface only uses a cflag argument,
-> > but I think we should consider passing a pointer to the termios
-> > structure instead.
-> 
-> That's impossible as termios is not always at hand. Examples are:
-> pch_uart_startup -> uart_update_timeout
-> sunsab_console_setup -> sunsab_convert_to_sab -> uart_update_timeout
-> sunsu_kbd_ms_init -> sunsu_change_speed -> uart_update_timeout
-> 
-> Let me document that in the commit.
-
-Sounds good.
-
-Johan
