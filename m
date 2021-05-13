@@ -2,134 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1317C37FB52
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 18:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F7FD37FB55
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 18:17:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235069AbhEMQQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 12:16:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235063AbhEMQQv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 12:16:51 -0400
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42464C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 09:15:38 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id 5so10062900qvk.0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 09:15:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CpBtM9FtVod+gxuw6KNEPrQb2ZhUJeUilXqd0/IO794=;
-        b=DN5jcTcLpBHfkTzhvP2qoL4+j/duZboAI+AhIqXz9rIzbb88ZYycKnHkU0kuBuqXet
-         az4OM1BI9TOBhEjJAWL1oC8m8bW7bOMXFivKDZU4MUjryJl9uI9HwJwQd4sPSQ41J3+k
-         iPlIXalLS3sxhGUneTjqGGkBVO988Ct/AJxmm2h5fHv9X+cuy3gKxzied/lA5LWm1KO8
-         8doAgeX0r+zTSE83qwhfAxg3P3KRMjwJuT4cA2YkTp8vcLXpC8egM2smWSHABaJb/Jy+
-         U8e0daOmJZroEgrlejKt+Gmd0Rtu3uBWr1g16cEUPeUfm/DSCL2VuHjqcICKkO0azTo2
-         uUZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CpBtM9FtVod+gxuw6KNEPrQb2ZhUJeUilXqd0/IO794=;
-        b=KYgId6MdkmMiiUIWrLuW96Y7jh56fX3eoFTsYcfX/HT7aAhJX4zrknNQiHJFv/ss2H
-         4t3l1H/qR1mggD7EabeKKzuGXa04UJDNmOxg/ViiZABwVcZDaeP12YTtYu5mWtY4AGRn
-         QLpf3/maRKSZ+34xQ3qq/QsBpPAcx3dNhlUzrro6+61dkRlmlZx+oW1qP1t1vPD27cdQ
-         Kgwdkm2fA4xbcoz3tLtsAaFnsmuBhwj+au7lSsnX43NmcDRkiSn/e7g1ter7psNdLYAi
-         WMqufP1fYy3kpQ/gIjpTEyObR0+DYgMTezMme66iVP/mYJGDRr4/oJlFc4AQwVUPHLXh
-         /mIw==
-X-Gm-Message-State: AOAM5336ZtyLZnBgIGE13mxUVgS9aw6S8I9jFUCn96J5ewxZwKxXAx0V
-        hXxvWYhDsUs67VsJbouxnqpxw5lqTWFwxQ==
-X-Google-Smtp-Source: ABdhPJywKKBopGqqNbrU7LyfT+1v4Ml63xfWJnUPwe6ZxHDg+JSo9DQGpYv8RHHtSCP02lk15n/ukA==
-X-Received: by 2002:a05:6214:964:: with SMTP id do4mr42076512qvb.36.1620922537453;
-        Thu, 13 May 2021 09:15:37 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c0a8:11d1::1214? ([2620:10d:c091:480::1:7c1f])
-        by smtp.gmail.com with ESMTPSA id h12sm2764158qkj.52.2021.05.13.09.15.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 May 2021 09:15:36 -0700 (PDT)
-Subject: Re: [PATCH] sysctl: Limit the size of I/Os to PAGE_SIZE
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>
-Cc:     linux-abi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Alexey Dobriyan <adobriyan@gmail.com>
-References: <20210513160649.2280429-1-willy@infradead.org>
- <47a34aa5-ad1a-6259-d9cb-f85f314f9ffb@toxicpanda.com>
-Message-ID: <b761c108-25c4-634a-8aed-d88cc00aedfe@toxicpanda.com>
-Date:   Thu, 13 May 2021 12:15:34 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.1
+        id S235074AbhEMQSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 12:18:38 -0400
+Received: from mout.gmx.net ([212.227.17.20]:44135 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235012AbhEMQSf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 12:18:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1620922632;
+        bh=qcKzTKCSddo160zYY1C/zfO0rIDl0AEk7qhy2DrxVVA=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=Cj1hmNAM8N6HWzkuLNtLcDXcmVxvGVld/5YCa9Ye/fMjwsdMzy6B/CbogYHni4Nks
+         WHwZUCDCSxQcUUoWLqcMqAiOAK6iQhyQwWrc6MrbeqMOwsEXV+8XvOQfphLVC46+se
+         ZwH2ps2vZTFRD5zGOaaLfc4zOuU4uQMwBdCkFpOI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.214.126]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MnJlc-1lFu5r3iCa-00jGTw; Thu, 13
+ May 2021 18:17:11 +0200
+From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH RESEND] kthread: Switch to new kerneldoc syntax for named variable macro argument
+Date:   Thu, 13 May 2021 18:17:01 +0200
+Message-Id: <20210513161702.1721039-1-j.neuschaefer@gmx.net>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <47a34aa5-ad1a-6259-d9cb-f85f314f9ffb@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:HpH9niYyRuRivQZWERtV8ZkCts+oaO5iOIps5uiL2OYJlQFFwH1
+ GPl7aH65D/bR1CFF96LLvQw9+zXyHlgZrw2XO8JBhzdAXvGRRV1SrpxRMMXUscE2XR+N9wY
+ gpkNQWC+q288mmNWTvQcGuJK1CET7+Jflx9hPHwK2Z06PrC0oWoxBNhD97R4HeM5PQsjD4K
+ 7dUZnTzLdvkMCnyAVmLdw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Ds6tdE+jM6U=:8wy9gb1DWsSQCf07ekRNWK
+ L6s9ojoaxj7BZF2EMSfVJytGQN3FLmbLu+PQmUhT3wokY3UsXIrkSbbOUaXtAZjurG+BJBOLF
+ 2Ybkz6jYISNCI7dtEEkc76T2+TUnooG3lpdphgcobNjfoAG9SMlbZc4rlCyGBTpn6OuR1f+M1
+ l5X9NyRxtoEwQjy1geJdOZkdCxE3Sheae52EvjMnuMW/Yr+zcm2zVo8pPBTBCaIltAfGAljB9
+ ObJ2yHouDQS0rXoGjqCVDdZ2/mYMyujLrqriI+TQMEGP6XQIGk34+9h2/It8aVGXhBv/kSv74
+ X9vBaahZ86bpTc/GMpLlA55HdADzShnnmBKV8dP7Z7MAWs0oBpTskIZRzTzBi++VEvU9Jc9Ye
+ 3DKH7x3fDdRJYki52mg3zraqQo4nZmBU7V4AtIQPzyG13SoLNVgPIUUQzKKQ9mJ4zjkJ4mnNN
+ M6bUloJmCApt/8g8juxCavpiCOtwiVDZ2h5U+Vk3EN4ARnfQC33k8pqwnHdJRKs3cdmdXQn3J
+ +h5bn+BKwqKGLJBQg4Le8lodIFw4xX+BKmm9L87p64mEZ2x+RCDh4N08QJwdX1Jb1o6jyyyRl
+ m/Wr9dChWAnhQS+Cn0aY9fXObEkvN94BfU+DiDgdSAEwsAuvg2hJIiUwV6uDbCD0DKc9mnTfy
+ d0IamYuu4lYNXtR535VEQWkc6flpW4cQuOZaBKTiB2hQUDrtFK6wyIevt9fGQMuzZ9TKAUtzX
+ FaCcX1ptXSE/tfSyLVNwzsum6b/tyB5WgZaxfX2OdRgl/9YHYqmLXROCL8QqRKs4M3R1cbmhG
+ sOpXLDIAcOZjaE7q4uynIndzGRmKjtwl6UpSCtiQkxGTOV0tMs+m6TKoyPf6Ei6tclAgvNDUp
+ I6BT5kwqNJC7EVegjduRbkVGj7f89Moomcl60MVPUN+cqgZ23yi66OXJx3XsIfGkW5aGyShkO
+ w/LbhKd6T0lk3WyDW+4HkvGtSbQvnGOq/nR38zhPmEv0vYz4pnnYrL/vYudjXGd8s/MaZ3L/m
+ X7/nNvA1L+zXaU3cNkiycl7bLKbsetIqGQ8ZcWM5B3BT0WsqmSq8Y65KBQc2DtqxKkHP9Y6Kt
+ vUKhEADUSU2x9uEfN23N9FqlfsPyfwYEOCaeO3ImN+nc24jhwf6AsuOL2AsFKZk0aMw6kbM6s
+ A+rQah3Jmr4HwfEIZidLnq9iy/XhpiK7SYnxqnTmpqNYIFyM+u53l5bPCeW2oAujczvsJla4o
+ Z5HyYPSBiwKT3NXKJ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/13/21 12:12 PM, Josef Bacik wrote:
-> On 5/13/21 12:06 PM, Matthew Wilcox (Oracle) wrote:
->> We currently allow a read or a write that is up to KMALLOC_MAX_SIZE.
->> This has caused problems when cat decides to do a 64kB read and
->> so we allocate a 64kB buffer for the sysctl handler to store into.
->> The immediate problem was fixed by switching to kvmalloc(), but it's
->> ridiculous to allocate so much memory to read what is likely to be a
->> few bytes.
->>
->> sysfs limits reads and writes to PAGE_SIZE, and I feel we should do the
->> same for sysctl.  The largest sysctl anyone's been able to come up with
->> is 433 bytes for /proc/sys/dev/cdrom/info
->>
->> This will allow simplifying the BPF sysctl code later, but I'll leave
->> that for someone who understands it better.
->>
->> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
->> ---
->>   fs/proc/proc_sysctl.c | 15 +++++++++------
->>   1 file changed, 9 insertions(+), 6 deletions(-)
->>
->> diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
->> index dea0f5ee540c..a97a8a4ff270 100644
->> --- a/fs/proc/proc_sysctl.c
->> +++ b/fs/proc/proc_sysctl.c
->> @@ -562,11 +562,14 @@ static ssize_t proc_sys_call_handler(struct kiocb *iocb, 
->> struct iov_iter *iter,
->>       if (!table->proc_handler)
->>           goto out;
->> -    /* don't even try if the size is too large */
->> +    /* reads may return short values; large writes must fail now */
->> +    if (count >= PAGE_SIZE) {
->> +        if (write)
->> +            goto out;
->> +        count = PAGE_SIZE;
->> +    }
->>       error = -ENOMEM;
->> -    if (count >= KMALLOC_MAX_SIZE)
->> -        goto out;
->> -    kbuf = kvzalloc(count + 1, GFP_KERNEL);
->> +    kbuf = kmalloc(PAGE_SIZE, GFP_KERNEL);
->>       if (!kbuf)
->>           goto out;
-> 
-> Below here we have
-> 
-> kbuf[count] = '\0';
-> 
+The syntax without dots is available since commit 43756e347f21
+("scripts/kernel-doc: Add support for named variable macro arguments").
 
-Nevermind I just re-read it and it's
+The same HTML output is produced with and without this patch.
 
-if (write)
-	kbuf[count] = '\0';
+Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+=2D--
+ include/linux/kthread.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I'm stupid, you can add
+diff --git a/include/linux/kthread.h b/include/linux/kthread.h
+index 2484ed97e72f5..db3eafea168ff 100644
+=2D-- a/include/linux/kthread.h
++++ b/include/linux/kthread.h
+@@ -18,7 +18,7 @@ struct task_struct *kthread_create_on_node(int (*threadf=
+n)(void *data),
+  * @threadfn: the function to run in the thread
+  * @data: data pointer for @threadfn()
+  * @namefmt: printf-style format string for the thread name
+- * @arg...: arguments for @namefmt.
++ * @arg: arguments for @namefmt.
+  *
+  * This macro will create a kthread on the current node, leaving it in
+  * the stopped state.  This is just a helper for kthread_create_on_node()=
+;
+=2D-
+2.30.1
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-
-Thanks,
-
-Josef
