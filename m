@@ -2,134 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DE0037FE9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 22:11:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3C7A37FEAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 22:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232517AbhEMUMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 16:12:33 -0400
-Received: from mail-ej1-f50.google.com ([209.85.218.50]:34499 "EHLO
-        mail-ej1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232290AbhEMUMb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 16:12:31 -0400
-Received: by mail-ej1-f50.google.com with SMTP id j14so231666ejy.1;
-        Thu, 13 May 2021 13:11:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6FqUDVg3RjZo3zQPVZeJKwzzDqDWCnGa+0mOwc8cESo=;
-        b=T8mRvtStQLOKtL3M+kzEL1wMuxogC/PvwxZ2HNGRbQDUWRCKK+1XzBq2zKLt6ZnVmG
-         fQ9By0HocFCQyIHwIgwJ6ge73u5bRN2yfp194dvy2mGy8d0StNXrGKwfU52VbzOw/NGd
-         1cWvI6q8ney8SMzWpw017d3XLuwMjunEqMGnu2z9YDbxVnWjkkKQYT9w6tJDCLI2X0mi
-         T7sVQ2lO4k8afD3odE0dVfdsYJPbdYzdvMvI1QIWyi6EFMacKdyvfF7296dAx1mgH7tG
-         vuVGo9wG8+Bd8KxuACH4n57JGz5UlSEr7azZy45JPyYvU9uGo2jKVVEEWsQi4w0J2sp8
-         iFpg==
-X-Gm-Message-State: AOAM532R3KVys4lGgUlFyGqWkDGtoJupMvDiyxasaZGhT3ggKFfe+zZw
-        wuaOiyLA2eFPQpmLmmJWjP4=
-X-Google-Smtp-Source: ABdhPJzgcLH+eU5+IgWuqwAPcNFg0q1fMfnsNHtxst9kd6kY1SHf8O1F9SpKZYk6gyyj6i6nGBkNhQ==
-X-Received: by 2002:a17:907:6289:: with SMTP id nd9mr44132905ejc.384.1620936679255;
-        Thu, 13 May 2021 13:11:19 -0700 (PDT)
-Received: from localhost ([2a02:8308:387:c900:a7b5:b859:9449:c07b])
-        by smtp.gmail.com with ESMTPSA id hz15sm2344019ejc.57.2021.05.13.13.11.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 May 2021 13:11:18 -0700 (PDT)
-From:   =?UTF-8?q?V=C3=A1clav=20Kubern=C3=A1t?= <kubernat@cesnet.cz>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?V=C3=A1clav=20Kubern=C3=A1t?= <kubernat@cesnet.cz>
-Subject: [PATCH] hwmon: (pmbus/fsp-3y) Fix FSP-3Y YH-5151E VOUT
-Date:   Thu, 13 May 2021 22:11:10 +0200
-Message-Id: <20210513201110.313523-1-kubernat@cesnet.cz>
-X-Mailer: git-send-email 2.31.1
+        id S232578AbhEMUP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 16:15:27 -0400
+Received: from mga11.intel.com ([192.55.52.93]:24182 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231742AbhEMUPZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 16:15:25 -0400
+IronPort-SDR: 0xWxLh56tE2BA+nI61rYacXbQHZ/W1ZY6RQTPHgO4Tps+AH4GPXMZYqHyLt4gOuq5kshl9b150
+ 9alFA0C892RA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9983"; a="196952103"
+X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
+   d="scan'208";a="196952103"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 13:14:14 -0700
+IronPort-SDR: NvPTOf05gZMS+EjR0DEIQoFpEP4aX1Sr7ruY4X3+EkGGTfHmMG7733eIDsu6hBM8ROg6BYkTU8
+ FDkuIpuvvrgw==
+X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
+   d="scan'208";a="456786263"
+Received: from rgandiko-mobl.amr.corp.intel.com (HELO [10.212.226.208]) ([10.212.226.208])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 13:14:13 -0700
+Subject: Re: [RFC v2 08/32] x86/traps: Add #VE support for TDX guest
+To:     Andi Kleen <ak@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tony Luck <tony.luck@intel.com>
+Cc:     Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <8a1d6930f784cb57c957cf20cea870947db91e05.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <afd85e8f-ab26-aa3b-e4e9-a0b3bfd472c8@intel.com>
+ <73752227-6eaf-2de6-3ac6-5ee280980c18@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <28e706d4-960e-a320-e8ea-84aff42ad6a4@intel.com>
+Date:   Thu, 13 May 2021 13:14:11 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <73752227-6eaf-2de6-3ac6-5ee280980c18@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After testing new YH-5151E devices, we found out that not all YH-5151E
-work the same. The newly tested devices actually report vout correctly
-in linear16 (even though they're still YH-5151E). We suspect that it is
-because these new devices have a different firmware version, but that is
-unconfirmed. The version cannot be queried through PMBus.
+On 5/13/21 12:47 PM, Andi Kleen wrote:
+> I don't see what could be added. If you have concrete suggestions please
+> just propose something.
 
-The compliant versions of YH-5151E report VOUT_MODE normally, so we turn
-on the linear11 workaround only if VOUT_MODE doesn't report anything.
+Oh, boy, I love writing changelogs!  I was hoping that the TDX folks
+would chip in to write their own changelogs, but oh well.  You made my day!
 
-Signed-off-by: Václav Kubernát <kubernat@cesnet.cz>
----
- drivers/hwmon/pmbus/fsp-3y.c | 32 +++++++++++++++++++++++++-------
- 1 file changed, 25 insertions(+), 7 deletions(-)
+--
 
-diff --git a/drivers/hwmon/pmbus/fsp-3y.c b/drivers/hwmon/pmbus/fsp-3y.c
-index 46252b17c008..073d960a0af5 100644
---- a/drivers/hwmon/pmbus/fsp-3y.c
-+++ b/drivers/hwmon/pmbus/fsp-3y.c
-@@ -37,6 +37,8 @@ struct fsp3y_data {
- 	struct pmbus_driver_info info;
- 	int chip;
- 	int page;
-+
-+	bool vout_linear_11;
- };
- 
- #define to_fsp3y_data(x) container_of(x, struct fsp3y_data, info)
-@@ -108,11 +110,9 @@ static int fsp3y_read_byte_data(struct i2c_client *client, int page, int reg)
- 	int rv;
- 
- 	/*
--	 * YH5151-E outputs vout in linear11. The conversion is done when
--	 * reading. Here, we have to inject pmbus_core with the correct
--	 * exponent (it is -6).
-+	 * Inject an exponent for non-compliant YH5151-E.
- 	 */
--	if (data->chip == yh5151e && reg == PMBUS_VOUT_MODE)
-+	if (data->vout_linear_11 && reg == PMBUS_VOUT_MODE)
- 		return 0x1A;
- 
- 	rv = set_page(client, page);
-@@ -161,10 +161,9 @@ static int fsp3y_read_word_data(struct i2c_client *client, int page, int phase,
- 		return rv;
- 
- 	/*
--	 * YH-5151E is non-compliant and outputs output voltages in linear11
--	 * instead of linear16.
-+	 * Handle YH-5151E non-compliant linear11 vout voltage.
- 	 */
--	if (data->chip == yh5151e && reg == PMBUS_READ_VOUT)
-+	if (data->vout_linear_11 && reg == PMBUS_READ_VOUT)
- 		rv = sign_extend32(rv, 10) & 0xffff;
- 
- 	return rv;
-@@ -256,6 +255,25 @@ static int fsp3y_probe(struct i2c_client *client)
- 
- 	data->info = fsp3y_info[data->chip];
- 
-+	/*
-+	 * YH-5151E sometimes reports vout in linear11 and sometimes in
-+	 * linear16. This depends on the exact individual piece of hardware. One
-+	 * YH-5151E can use linear16 and another might use linear11 instead.
-+	 *
-+	 * The format can be recognized by reading VOUT_MODE - if it doesn't
-+	 * report a valid exponent, then vout uses linear11. Otherwise, the
-+	 * device is compliant and uses linear16.
-+	 */
-+	data->vout_linear_11 = false;
-+	if (data->chip == yh5151e) {
-+		rv = i2c_smbus_read_byte_data(client, PMBUS_VOUT_MODE);
-+		if (rv < 0)
-+			return rv;
-+
-+		if (rv == 0xFF)
-+			data->vout_linear_11 = true;
-+	}
-+
- 	return pmbus_do_probe(client, &data->info);
- }
- 
--- 
-2.31.1
+Virtualization Exceptions (#VE) are delivered to TDX guests due to
+specific guest actions which may happen in either userspace or the kernel:
 
+ * Specific instructions (WBINVD, for example)
+ * Specific MSR accesses
+ * Specific CPUID leaf accesses
+ * Access to TD-shared memory, which includes MMIO
+
+#VE exceptions are never generated on accesses to normal, TD-private memory.
+
+The entry paths do not access TD-shared memory or use those specific
+MSRs, instructions, CPUID leaves.  In addition, all interrupts including
+NMIs are blocked by the hardware starting with #VE delivery until
+TDGETVEINFO is called.  This eliminates the chance of a #VE during the
+syscall gap or paranoid entry paths and simplifies #VE handling.
+
+If a guest kernel action which would normally cause a #VE occurs in the
+interrupt-disabled region before TDGETVEINFO, a #DF is delivered to the
+guest.
+
+Add basic infrastructure to handle any #VE which occurs in the kernel or
+userspace.  Later patches will add handling for specific #VE scenarios.
+
+Convert unhandled #VE's (everything, until later in this series) so that
+they appear just like a #GP by calling do_general_protection() directly.
+
+--
+
+Did I miss anything?
