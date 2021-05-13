@@ -2,156 +2,328 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AD8437FDB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 21:00:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E43D737FDC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 21:02:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231956AbhEMTBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 15:01:54 -0400
-Received: from mail-dm6nam11on2082.outbound.protection.outlook.com ([40.107.223.82]:63936
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230352AbhEMTBx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 15:01:53 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZwNBgzvb5epnrfoKLSQQPVouVWWafhejMTxySSNe5EgAy/b9/iXxVq3GVpQjRtZ4PjqfowlFsQ11kpebeThZWzve+0nSL6DLlBN1h2sMZBOPYJYOjKXpGsczu1e5hKZ6EH4GGZ8pSicss2EK9VTS+a2Z1IVvZYjSibeowp2rffzPSVvJaG6QWbuoScMUnQuTJjtf2pEiAr7LyRezIia4xjzqKistH/7xZux3Gt8M78BIG1WYYh5EfjoeVDzy22LqrWSOZcD+JBkT4vxy993ABgEZdi7fW6NtooGXSkztmzhZemRCR2nT4MqjPSTt3TTtUVljQsu3/3IofKdotjby9g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HyHaMtzCSJ52GDmS3pGzAgMFEuBKd56PoPL5zAknI/E=;
- b=n2LpZrIF7Y+00bO9+2YAA6sHWCrJA+NPAIOW0VQc1xxfyWYfd9HM0E1HuGmdTMT5s4pVYya45/LUqoaQVMnXkhbhI4Bdwb4Q4jc8RXVUup1Yz9S/ynEGw/SsOIys+EMAMsZuq+9q13VGsnqYncv2q2v4kR2Ucp19bzaq9T3iTTD3GJmmxsggsSn6A0LyJDYEqwOd9A/YOkIJlB0OCmV9Hrq1Wv8FPT7YYh6CeJvHkLrpfZiiHWXfAQOZMP2DIEOfmgvAwKMmcj0CcSRlCmPheOrd5zNAMYuHJn3RVgT+2ZjbTaLXEyXapyEnUz4E4F8NupX+LdcMWzl3qV/4Uef/WA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HyHaMtzCSJ52GDmS3pGzAgMFEuBKd56PoPL5zAknI/E=;
- b=YZs5oCdgyzaA96+XxCg9SZSoAAfZXODn430HozmueVguDJzhoxHyHXYpoUx14/+bPBwiKwLteJmdwQrtrHUsCFjgbM5/fK0lFWPOoZTXJOaexbXAgNWE3rMGP2/P4F4ikZ2j3KpnrciCd1ydIrXZmu8sizuvUCUinMA4RuJodsBqhSZVMmz4SvIoQ4H6y04Z7+UIAyq5Y2i1PI4pyj8GU7f5zhJXKxs7RIZNtJnv5rFXs6wgjRl+ThZ0vIlmGcKIowig6Mfj0wSdoaNp/7rF/+AaqoqTe1c5KEWRQ21uuJ1K1ZdsPYWCY3wTw4YrPAb2jfeHU16p+cW9Ak8oMb60Lw==
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB2488.namprd12.prod.outlook.com (2603:10b6:4:b5::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Thu, 13 May
- 2021 19:00:42 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4129.026; Thu, 13 May 2021
- 19:00:42 +0000
-Date:   Thu, 13 May 2021 16:00:40 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "wangzhou1@hisilicon.com" <wangzhou1@hisilicon.com>,
-        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH v4 1/2] iommu/sva: Tighten SVA bind API with explicit
- flags
-Message-ID: <20210513190040.GR1002214@nvidia.com>
-References: <20210511163521.GN1002214@nvidia.com>
- <20210511110550.477a434f@jacob-builder>
- <20210511194726.GP1002214@nvidia.com>
- <YJt3tGlzFK3b4E82@infradead.org>
- <20210513060012.0fcc7653@jacob-builder>
- <20210513133834.GC1002214@nvidia.com>
- <20210513081050.5cf6a6ed@jacob-builder>
- <dd52760ab65a40328b4c1a26ddd0e1d0@intel.com>
- <20210513173303.GL1002214@nvidia.com>
- <20210513185349.GA801495@agluck-desk2.amr.corp.intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210513185349.GA801495@agluck-desk2.amr.corp.intel.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BL1PR13CA0431.namprd13.prod.outlook.com
- (2603:10b6:208:2c3::16) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S232014AbhEMTDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 15:03:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48196 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232006AbhEMTDM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 15:03:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0614E61177;
+        Thu, 13 May 2021 19:02:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620932522;
+        bh=9guKlJigLYp8p4HCEIDQk0OVbR3mviGu5v3NaidJa1Q=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=jrrQTre9rYtC27ESJTnknT/gJeG6Hh1fJaFSHy8noAzCITwu7dF0UefSJCtgELHgH
+         fEYmHCV3E4RweM3REQO2pcztVmA+bs9Rebu5deEoCQTzXSdsl08cuP6o21IZYQmoE0
+         XQTYAT0sYgD+1GAgHtOMqdtuSJq5ly9grTvjEW9oA0xn0erA2Dn7G9XD6io/laiHRE
+         qXNcwiGie0vYVgUmhUT+eUG34rDTlWf31z6QOxsr7b4eszYly0/orP57y2DLAM0j+B
+         UCVqzUHQCFH4V+i/TBHf1xUWGWYTdMjr+A3eYK1PBbdP9Y7AOCIJNrVOSXxhrfULCU
+         Qk1pHLaRTFhdQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id C42415C036A; Thu, 13 May 2021 12:02:01 -0700 (PDT)
+Date:   Thu, 13 May 2021 12:02:01 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Manfred Spraul <manfred@colorfullife.com>
+Cc:     kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Davidlohr Bueso <dbueso@suse.de>, 1vier1@web.de
+Subject: Re: ipc/sem, ipc/msg, ipc/mqueue.c kcsan questions
+Message-ID: <20210513190201.GE975577@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <a9b36c77-dc42-4ab2-9740-f27b191dd403@colorfullife.com>
+ <20210512201743.GW975577@paulmck-ThinkPad-P17-Gen-1>
+ <343390da-2307-442e-8073-d1e779c85eeb@colorfullife.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BL1PR13CA0431.namprd13.prod.outlook.com (2603:10b6:208:2c3::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.11 via Frontend Transport; Thu, 13 May 2021 19:00:41 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lhGZc-0079j8-Ox; Thu, 13 May 2021 16:00:40 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f4effb25-11ef-4be0-41c5-08d9164167cf
-X-MS-TrafficTypeDiagnostic: DM5PR12MB2488:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB24881AB7F09A8380F779545CC2519@DM5PR12MB2488.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: pHube+C/7Hn0/uTo9+CjFdGJICfTBdvM/c4jbGqzcUoH8cWP64hgsokOdkAjOqfMwBo6OzYZjgsPfs2J1OrOuxxOnWE/cgGjK1DdXnnk7u8gaLiplKv3zXpe7iywtk1EFLdA9te4aZBTD43cdqoLL+cbuUe0tiOUMmkjlsu3K6JyJ4+YvanDszW6pet/dz0w291ePjknOSVjFnRJ0u2LQ7wWr3HaAItO4wZw3d2zAss7Cf4Kt8WOCN0wtH/5qxM0f3iInoNf15wLfehu5vbo+AlnY40L9Zp6cWpKmMMZbpt/aDulXnklmO/JonE8rdM7aAegLMaFSDj1Rl59GVdq27GHC54MbXbHQ3cqQnuTEdCULXNSl9ka0RdcIhfh+LwayH32ZCl8zhB1sWU7G6TO8wrMY1O3XFUNOfxGVEYykic85YfU+HLXEMs9+MJbVM9mlIncYLP8mPyGtP266ppaz1Y/4/vzzgDw/md4izPylFzLYof9Z47MTC3787q58bcgAa9VXV+GreqD3s3YeDPLqkTFZxD5PeS9kFvg0bH0B9cgh2NsAB9lZWAFHIIbSmMIC0vUEgIfNFAnqfNoN8Wssmf4QmSaMT7BX3EhE3osd60=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(346002)(39860400002)(396003)(366004)(5660300002)(7416002)(66556008)(66946007)(33656002)(26005)(186003)(54906003)(426003)(1076003)(8936002)(316002)(83380400001)(478600001)(86362001)(9786002)(2906002)(9746002)(38100700002)(36756003)(4326008)(8676002)(6916009)(66476007)(2616005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Y+NlvAe7he48+13ro2EG95DA+/9aMxfVtLloBRydC5Y9DY5PlzJUSw/+vNuY?=
- =?us-ascii?Q?b67NmUnDaWa3G9Y38M9sbGG8X0E7VygBN7Hu9Bp7Oy55fEkDNJHizNz1OGMV?=
- =?us-ascii?Q?Z3mMUjkDLIlWpQ0uNw09XxE6N0EAj5Tv4ld/2ki5zoDF6RXwEaPLbJpNnXBU?=
- =?us-ascii?Q?PYgHsPD777g/YngLNZ2ASg6ft+7KU0BMa4GouszpTdBcf91Hp2by1scZi18J?=
- =?us-ascii?Q?wHQB6QR0//BYLA4G90v27G5cLac/6WANvO3yd6v6n6tQQVZY3h1qF8llNNJ5?=
- =?us-ascii?Q?kw+D7U4TPa93ok6FQOh2VWMuHTMUFyRsyTi0LG0v1QRqXgBXdoufReIevnb+?=
- =?us-ascii?Q?BVT5IkO+ky+C9WFEx3JTZOGCl2X7kCenYwv+yIflXRLrwvohfu7OVbvissA7?=
- =?us-ascii?Q?wpNqsKkugrdGtyUhIQ0d9QJGFq80285a/XNzXfNKl/L6VcYaaWK6ZmnJHeXB?=
- =?us-ascii?Q?D1s0yZXRLCIFwqO1SewlGcgaXHc5Eh6lrRGdygtYb0pojLaah56wvouaaQ/z?=
- =?us-ascii?Q?DKvrJzeWn+Ced+VZLYw4L2rSzFdSRN4hfQcsqcefOrZOQSf6U6iMMjXtwo6t?=
- =?us-ascii?Q?Ol7VOgVaBRaRir/8FnkY1f6O8RMRXuI15ptcbZtyEHnZrnqt0y52aa24PThg?=
- =?us-ascii?Q?TD2U96Esqe1jmuxeMEHByKdzPrzUmzNF0nSGpbELdw9b4pV9rumhYFXfajRL?=
- =?us-ascii?Q?FNMgLS80V0W1cC7kbaVp6KGZMupM82hFAMSNKdEv5v7Gt1p9c1LIsMYbD5Ti?=
- =?us-ascii?Q?QLrl9RolHHtQ2zbUxWMcnXnwErsgfS9ZZeNumenu18u0Aq+biaMdrt2DN5zj?=
- =?us-ascii?Q?sBHac3TNJgX2uI5gTSYd6huYUpiq5slXbHBLTj/dWlp+XT9gz7QSCijUluGF?=
- =?us-ascii?Q?ZhM1CJbjq9oLiRnvoKQEyTwhb1FQP79Wya7f22IZ4W9vwTr29468nS1YTu+W?=
- =?us-ascii?Q?YSzMAOxNdnBzy7P4u36XHSm203lPhGUokLw69QX4HQK7i/Y5FinPbVlOIN2o?=
- =?us-ascii?Q?uN0kMjOjNIzP+W9JEFk9EvWZLIS7uXysj0DxMFStauA4lY9cK2Pf4LEc79MI?=
- =?us-ascii?Q?+6nnrdNN6uMKgpcbFHnKZwqpxG+0/K/dh6zo535Zsh59RCfZKct5d8iJL/vz?=
- =?us-ascii?Q?G3iZKmgPZM5AMq8PaAAFDuCkGYYqYwy68GCMpghRiZw+9jRoZJZ8if+NTYEv?=
- =?us-ascii?Q?325ao20RH5alx3GG601OZxp4XrtnUo2AHGDLq/lPsJRuYS0e6wrb75CoD5+F?=
- =?us-ascii?Q?CbSgVBoZTzuGapSoYoS5r88HNQ6qzlz5RuiBVhcoz7JennuHXhd/RfG68gw+?=
- =?us-ascii?Q?ITOb/mZrG3wU2kHtGTsD9imj?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f4effb25-11ef-4be0-41c5-08d9164167cf
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2021 19:00:42.1246
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BGelbPIbrHpAdq2VyrO3XbXVugdLjZATjEuWLfTC5PLtqTHPzKj0gum1JRHvkXeF
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB2488
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <343390da-2307-442e-8073-d1e779c85eeb@colorfullife.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 11:53:49AM -0700, Luck, Tony wrote:
+On Thu, May 13, 2021 at 08:10:51AM +0200, Manfred Spraul wrote:
+> Hi Paul,
+> 
+> On 5/12/21 10:17 PM, Paul E. McKenney wrote:
+> > On Wed, May 12, 2021 at 09:58:18PM +0200, Manfred Spraul wrote:
+> > > [...]
+> > > sma->use_global_lock is evaluated in sem_lock() twice:
+> > > 
+> > > >         /*
+> > > >           * Initial check for use_global_lock. Just an optimization,
+> > > >           * no locking, no memory barrier.
+> > > >           */
+> > > >          if (!sma->use_global_lock) {
+> > > Both sides of the if-clause handle possible data races.
+> > > 
+> > > Is
+> > > 
+> > >      if (!data_race(sma->use_global_lock)) {
+> > > 
+> > > the correct thing to suppress the warning?
+> > Most likely READ_ONCE() rather than data_race(), but please see
+> > the end of this message.
+> 
+> Based on the document, I would say data_race() is sufficient:
+> 
+> I have replaced the code with "if (jiffies %2)", and it runs fine.
 
-> I'd like people to think of DSA as an extension to the instruction
-> set. It implements asynchronous instructions like "MEMFILL" and
-> "MEMCOPY". These can be limited in scope when executed in user
-> processes or guests. But when executed by the host OS ring0 code
-> they can have all the same access that ring0 code has when it
-> dereferences a pointer.
+OK, but please note that "jiffies" is marked volatile, which prevents the
+compiler from fusing loads.  You just happen to be OK in this particular
+case, as described below.  Use of the "jiffies_64" non-volatile synonym
+for "jiffies" is better for this sort of checking.  But even so, just
+because a particular version of a particular compiler refrains from
+fusing loads in a particular situation does not mean that all future
+versions of all future compilers will behave so nicely.
 
-If you want this then be explicit about what it is you are making when
-building the API. Don't try to hide it under some generic idea of
-"kernel PCI DMA SVA"
+Again, you are OK in this particular situation, as described below.
 
-Add appropriately safe APIs that might have a chance of making it
-secure, eg by confirming it is a physically trusted on-socket device.
+> Thus I don't see which evil things a compiler could do, ... .
 
-It is not just Thunderbolt devices that could trigger this, many
-devices with programmable firmware can spoof PCI DID/VID - having an
-exploit chain that compromises a in-system FW device, chains it to
-faking a IDXD HW, then accessing the all-memory PASID is pretty
-alarming if the admin thought they had protection against DMA attacks.
+Fair enough, and your example is covered by the section "Reads Feeding
+Into Error-Tolerant Heuristics".  The worst that the compiler can do is
+to force an unnecessary acquisition of the global lock.
 
-I could easially see an admin option to "turn this off" entirely as
-being too dangerous, especially if the users have no interest in IDXD.
+This cannot cause incorrect execution, but could results in poor
+scalability.  This could be a problem is load fusing were possible, that
+is, if successes calls to this function were inlined and the compiler
+just reused the value initially loaded.
 
-Which is why being explicit of intent is really important.
+The reason that load fusing cannot happen in this case is that the
+load is immediately followed by a lock acquisition, which implies a
+barrier(), which prevents the compiler from fusing loads on opposite
+sides of that barrier().
 
-Jason
+> [...]
+> 
+> Does tools/memory-model/Documentation/access-marking.txt, shown below,
+> > help?
+> > 
+> [...]
+> > 	int foo;
+> > 	DEFINE_RWLOCK(foo_rwlock);
+> > 
+> > 	void update_foo(int newval)
+> > 	{
+> > 		write_lock(&foo_rwlock);
+> > 		foo = newval;
+> > 		do_something(newval);
+> > 		write_unlock(&foo_rwlock);
+> > 	}
+> > 
+> > 	int read_foo(void)
+> > 	{
+> > 		int ret;
+> > 
+> > 		read_lock(&foo_rwlock);
+> > 		do_something_else();
+> > 		ret = foo;
+> > 		read_unlock(&foo_rwlock);
+> > 		return ret;
+> > 	}
+> > 
+> > 	int read_foo_diagnostic(void)
+> > 	{
+> > 		return data_race(foo);
+> > 	}
+> 
+> The text didn't help, the example has helped:
+> 
+> It was not clear to me if I have to use data_race() both on the read and the
+> write side, or only on one side.
+> 
+> Based on this example: plain C may be paired with data_race(), there is no
+> need to mark both sides.
+
+Actually, you just demonstrated that this example is quite misleading.
+That data_race() works only because the read is for diagnostic
+purposes.  I am queuing a commit with your Reported-by that makes
+read_foo_diagnostic() just do a pr_info(), like this:
+
+	void read_foo_diagnostic(void)
+	{
+		pr_info("Current value of foo: %d\n", data_race(foo));
+	}
+
+So thank you for that!
+
+> Attached is a dummy change to ipc/sem.c, where I have added comments to
+> every access.
+
+Please see below.
+
+> If data_race() is sufficient, then I think I have understood the rules, and
+> I would recheck ipc/*.c and the netfilter code.
+> 
+> --
+> 
+>     Manfred
+> 
+> 
+
+> diff --git a/ipc/sem.c b/ipc/sem.c
+> index bf534c74293e..6026187f79f8 100644
+> --- a/ipc/sem.c
+> +++ b/ipc/sem.c
+> @@ -87,6 +87,7 @@
+>  #include <linux/sched/wake_q.h>
+>  #include <linux/nospec.h>
+>  #include <linux/rhashtable.h>
+> +#include <linux/jiffies.h>
+>  
+>  #include <linux/uaccess.h>
+>  #include "util.h"
+> @@ -336,20 +337,43 @@ static void complexmode_enter(struct sem_array *sma)
+>  	int i;
+>  	struct sem *sem;
+>  
+> +	/* caller owns sem_perm.lock -> plain C access */
+>  	if (sma->use_global_lock > 0)  {
+>  		/*
+>  		 * We are already in global lock mode.
+>  		 * Nothing to do, just reset the
+>  		 * counter until we return to simple mode.
+>  		 */
+> +		/* a change from a non-zero value to another
+> +		 * non-zero value. Plain C is sufficient, as all
+> +		 * readers either own sem_perm.lock or are using
+> +		 * data_race() or smp_load_acquire().
+
+This is OK, but only because all of the bits are confined to a byte.
+If (say) 0x10000 and 0x0ffff were legal values, then store tearing could
+result in a momentary zero when switching between them.  There has
+been a claim that compilers should not tear stores, but there was
+recently one that would do so when storing certain 32-bit constants.
+And the standard does not prohibit tearing unmarked loads and stores,
+even if all the value are confined to a single byte.  (But a compiler
+that tore stores bit-at-a-time would be of questionable value on any of
+the architectures that the Linux kernel support.)
+
+> +		 */
+>  		sma->use_global_lock = USE_GLOBAL_LOCK_HYSTERESIS;
+>  		return;
+>  	}
+> +	/* Question: This pairs with the smp_load_acquire
+> +	 * in sem_lock(), in a racy way:
+> +	 * The reader in sem_lock() may see the new value
+> +	 * immediately, ...
+> +	 */
+>  	sma->use_global_lock = USE_GLOBAL_LOCK_HYSTERESIS;
+
+In my code, I would make this use WRITE_ONCE().  One fewer set of compiler
+tricks to worry about.
+
+>  	for (i = 0; i < sma->sem_nsems; i++) {
+>  		sem = &sma->sems[i];
+>  		spin_lock(&sem->lock);
+> +		/* ..., or much later.
+> +		 * But this is the latest possible time:
+> +		 * sem_lock() owns one of the sem->lock locks
+> +		 * when using smp_load_acquire(). Thus one of the
+> +		 * spin_unlock()s in this loop is the _release for
+> +		 * the plain C write above.
+> +		 * My current understanding: Plain C is correct,
+> +		 * as the reader is either using data_race() or
+> +		 * smp_load_acquire(), or it is a trivial case
+> +		 * of the reader owns sem_perm.lock - and we own
+> +		 * that lock all the time.
+
+Yes, once we release a given sem->lock, any future acquisitions of that
+lock must see the new value of sma->use_global_lock.  If they get to
+their sem->lock before we do, then the above spin_lock() acquisition
+will wait for them.  This use of locks is an unusual form of RCU.  ;-)
+
+(Grace-period latencies might be a bit long for actual RCU here.)
+
+> +		 */
+>  		spin_unlock(&sem->lock);
+>  	}
+>  }
+> @@ -366,11 +390,21 @@ static void complexmode_tryleave(struct sem_array *sma)
+>  		 */
+>  		return;
+>  	}
+> +	/* sem_perm.lock owned, and all writes to sma->use_global_lock
+> +	 * happen under that lock -> plain C
+
+Other than the smp_store_release()?
+
+> +	 */
+>  	if (sma->use_global_lock == 1) {
+>  
+>  		/* See SEM_BARRIER_1 for purpose/pairing */
+>  		smp_store_release(&sma->use_global_lock, 0);
+>  	} else {
+> +		/* the read side is maked -> plain C.
+
+s/maked/marked/?
+
+> +		 * Question: Old value 4, new value 3.
+> +		 * If it might happen that the actual
+> +		 * change is 4 -> 0 -> 3 (i.e. first:
+> +		 * clear bit 2, then set bits 0&1, then
+> +		 * this would break the algorithm.
+> +		 * Is therefore WRITE_ONCE() required? */
+>  		sma->use_global_lock--;
+
+In my code, I would use WRITE_ONCE() here.
+
+>  	}
+>  }
+> @@ -412,7 +446,20 @@ static inline int sem_lock(struct sem_array *sma, struct sembuf *sops,
+>  	 * Initial check for use_global_lock. Just an optimization,
+>  	 * no locking, no memory barrier.
+>  	 */
+> -	if (!sma->use_global_lock) {
+> +#if 1
+> +	/* the code works fine regardless of the returned value
+> +	 * -> data_race().
+> +	 */
+> +	if (!data_race(sma->use_global_lock)) {
+> +#else
+> +	/* proof of the claim that the code always works:
+> +	 * My benchmarks ran fine with this implementation :-)
+> +	 */
+> +	if (jiffies%2) {
+
+As noted above, use of jiffies_64 would be more convincing because
+jiffies is immune from load fusing and jiffies_64 is not.  But this
+still does not constitute a proof.  You have instead only shown that a
+given version of a given compiler does what you want.  ;-)
+
+> +		pr_info("jiffies mod 2 is 1.\n");
+> +	} else {
+> +		pr_info("jiffies mod 2 is 0.\n");
+> +#endif
+>  		/*
+>  		 * It appears that no complex operation is around.
+>  		 * Acquire the per-semaphore lock.
+> @@ -420,6 +467,11 @@ static inline int sem_lock(struct sem_array *sma, struct sembuf *sops,
+>  		spin_lock(&sem->lock);
+>  
+>  		/* see SEM_BARRIER_1 for purpose/pairing */
+> +		/* sma->use_global_lock is written to with plain C
+> +		 * within a spinlock protected region (but: another
+> +		 * lock, not the sem->lock that we own). No need
+> +		 * for data_race(), as we use smp_load_acquire().
+> +		 */
+>  		if (!smp_load_acquire(&sma->use_global_lock)) {
+>  			/* fast path successful! */
+>  			return sops->sem_num;
+> @@ -430,6 +482,10 @@ static inline int sem_lock(struct sem_array *sma, struct sembuf *sops,
+>  	/* slow path: acquire the full lock */
+>  	ipc_lock_object(&sma->sem_perm);
+>  
+> +	/* Trivial case: All writes to sma->use_global_lock happen under
+> +	 * sma->sem_perm.lock. We own that lock, thus plain C access is
+> +	 * correct.
+> +	 */
+>  	if (sma->use_global_lock == 0) {
+>  		/*
+>  		 * The use_global_lock mode ended while we waited for
+
