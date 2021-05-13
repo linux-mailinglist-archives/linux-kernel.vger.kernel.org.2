@@ -2,152 +2,295 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE65437FCE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 19:53:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E46437FCF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 19:54:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231397AbhEMRyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 13:54:16 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:5108 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231447AbhEMRyM (ORCPT
+        id S231551AbhEMRz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 13:55:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231466AbhEMRzL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 13:54:12 -0400
-Received: from dggeml765-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Fgzhl1PtBzYhVL;
-        Fri, 14 May 2021 01:50:31 +0800 (CST)
-Received: from dggemi710-chm.china.huawei.com (10.3.20.109) by
- dggeml765-chm.china.huawei.com (10.1.199.175) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 14 May 2021 01:53:00 +0800
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- dggemi710-chm.china.huawei.com (10.3.20.109) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 14 May 2021 01:52:58 +0800
-Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
- lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
- 15.01.2176.012; Thu, 13 May 2021 18:52:57 +0100
-From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-CC:     Jason Gunthorpe <jgg@nvidia.com>,
-        liulongfang <liulongfang@huawei.com>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-Subject: RE: [Linuxarm]  Re: [RFC PATCH 2/3] vfio/hisilicon: register the
- driver to vfio
-Thread-Topic: [Linuxarm]  Re: [RFC PATCH 2/3] vfio/hisilicon: register the
- driver to vfio
-Thread-Index: AQHXMkL9mza0TJ8TfUm11z5ygPSvFqq7zAN3gAL2j3WAAIzL6IAgnBJYgAGsWYGAACE9wIAABZSAgAAb/VA=
-Date:   Thu, 13 May 2021 17:52:56 +0000
-Message-ID: <1035a9a9b03b43dd9f859136ed84a7f8@huawei.com>
-References: <10d53c5d-e6d5-a165-84b2-eaf8a3b7dcce@huawei.com>
-        <20210419123314.GT1370958@nvidia.com>
-        <00c4fa43-21fa-a48b-b95d-a2310ffab725@huawei.com>
-        <20210420125957.GA1370958@nvidia.com>
-        <20210420160457.6b91850a@x1.home.shazbot.org>
-        <25d033e6-1cba-0da0-2ee7-03a14e75b8a5@huawei.com>
-        <20210421121224.62382e5d@redhat.com>
-        <6ea89655-31c5-233b-ca2a-fcc166b5597c@huawei.com>
-        <20210512121053.GT1002214@nvidia.com>
-        <3eaa3114-81b6-1bd9-c7e6-cb1541389b58@huawei.com>
-        <20210513134422.GD1002214@nvidia.com>
-        <e3db0c328da6411ea2ae07595ed5f6c3@huawei.com>
- <20210513110349.68e3d59d@redhat.com>
-In-Reply-To: <20210513110349.68e3d59d@redhat.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.47.81.63]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+        Thu, 13 May 2021 13:55:11 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 403AFC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 10:54:00 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id i18-20020aa787d20000b02902ceff7cf271so4203977pfo.14
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 10:54:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=4h31K2eiyFYJECD6jlXNAVHQd0JiCpNhIBmP2KCnD4c=;
+        b=ofKtuEEcDD4yCmeEIuSCquHKovbV1slPISxwCQTyw4iykw/j2ncspJ0htUgP4AWxYm
+         rSlAVzTDcK+inbYAWvLiarcwGutQB6dA5ySpZo+TT4zzJ0CuGmfcZfvem1/Rlhzt5xjs
+         PD7X0d7fA30y+r8JmzzpGw6DXAFut/Bq2H184JYsu8js4vbXNOXQCqxa6W8R2B2I005W
+         pdn6PN+RmkQNuZldg5kDR/QKAfGUpwHDkehDFK4Hw5ljWMF5uDt8Ou2FjZrHC0Q6nyzv
+         ceIRFzEONJGOKB43ddrTtEQJf9Dg3oovy+TYa0zqrl5ob1hruZa2BSqWZJrSGeixShBq
+         rqmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=4h31K2eiyFYJECD6jlXNAVHQd0JiCpNhIBmP2KCnD4c=;
+        b=cjJ8EBgrVnzJMs7hPa73ssCy0UavY6Bc79iSgc2+Hm/LDudOW7aPhtVQXd+VvqmL2d
+         O+T1uIEKBSyh449IqRh5W9HC7ba6hTGSgsPxiE3GsodxvnfOyyP4a45YywmSWYJjNC8s
+         7xAahDnLTXQXDna5U6/lZJIEM1SZ+ViZWS9EL1XVV87x9kBm/5pfrKS9kdVPMNwiIq8i
+         Ux/nGyK1EJZ+jNw1kCQbygiJO/mtnBtQDzaaZ0BSR8Hbre5dia/w5KO+sLSq6TeK7aTI
+         DAa9vByGgWJQK5J53ko4L+gbW6HouRjKZlEt3fZHNBTZz9rBcXBG6Vi2e0YMSJlQwSXA
+         Nkmw==
+X-Gm-Message-State: AOAM530odTmYP3De1QCFG2EBIM2SDvj9s/8p70oyWGiWJ9fpOCpFd39D
+        NDnFO6Uk6w6qhndCE2iM5AJNFERVdSo=
+X-Google-Smtp-Source: ABdhPJxHPu2QPsy8y6naNODAyq0c2q6tVGXFYvsc/7U+J2gWtm/+DmC2EGP8TzQrAjoke41LFE3sDd3/QLk=
+X-Received: from surenb1.mtv.corp.google.com ([2620:15c:211:200:f5d3:2ce1:2b19:735e])
+ (user=surenb job=sendgmr) by 2002:a17:90a:4487:: with SMTP id
+ t7mr533181pjg.1.1620928439289; Thu, 13 May 2021 10:53:59 -0700 (PDT)
+Date:   Thu, 13 May 2021 10:53:49 -0700
+Message-Id: <20210513175349.959661-1-surenb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
+Subject: [PATCH 1/1] cgroup: make per-cgroup pressure stall tracking configurable
+From:   Suren Baghdasaryan <surenb@google.com>
+To:     tj@kernel.org
+Cc:     hannes@cmpxchg.org, lizefan.x@bytedance.com, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        minchan@kernel.org, corbet@lwn.net, bristot@redhat.com,
+        paulmck@kernel.org, rdunlap@infradead.org,
+        akpm@linux-foundation.org, tglx@linutronix.de, macro@orcam.me.uk,
+        viresh.kumar@linaro.org, mike.kravetz@oracle.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, surenb@google.com, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQWxleCwNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBBbGV4IFdp
-bGxpYW1zb24gW21haWx0bzphbGV4LndpbGxpYW1zb25AcmVkaGF0LmNvbV0NCj4gU2VudDogMTMg
-TWF5IDIwMjEgMTg6MDQNCj4gVG86IFNoYW1lZXJhbGkgS29sb3RodW0gVGhvZGkgPHNoYW1lZXJh
-bGkua29sb3RodW0udGhvZGlAaHVhd2VpLmNvbT4NCj4gQ2M6IEphc29uIEd1bnRob3JwZSA8amdn
-QG52aWRpYS5jb20+OyBsaXVsb25nZmFuZw0KPiA8bGl1bG9uZ2ZhbmdAaHVhd2VpLmNvbT47IGNv
-aHVja0ByZWRoYXQuY29tOw0KPiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBsaW51eGFy
-bUBvcGVuZXVsZXIub3JnDQo+IFN1YmplY3Q6IFtMaW51eGFybV0gUmU6IFtSRkMgUEFUQ0ggMi8z
-XSB2ZmlvL2hpc2lsaWNvbjogcmVnaXN0ZXIgdGhlIGRyaXZlciB0bw0KPiB2ZmlvDQo+IA0KPiBP
-biBUaHUsIDEzIE1heSAyMDIxIDE1OjQ5OjI1ICswMDAwDQo+IFNoYW1lZXJhbGkgS29sb3RodW0g
-VGhvZGkgPHNoYW1lZXJhbGkua29sb3RodW0udGhvZGlAaHVhd2VpLmNvbT4NCj4gd3JvdGU6DQo+
-IA0KPiA+ID4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPiA+IEZyb206IEphc29uIEd1
-bnRob3JwZSBbbWFpbHRvOmpnZ0BudmlkaWEuY29tXQ0KPiA+ID4gU2VudDogMTMgTWF5IDIwMjEg
-MTQ6NDQNCj4gPiA+IFRvOiBsaXVsb25nZmFuZyA8bGl1bG9uZ2ZhbmdAaHVhd2VpLmNvbT4NCj4g
-PiA+IENjOiBBbGV4IFdpbGxpYW1zb24gPGFsZXgud2lsbGlhbXNvbkByZWRoYXQuY29tPjsgY29o
-dWNrQHJlZGhhdC5jb207DQo+ID4gPiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBsaW51
-eGFybUBvcGVuZXVsZXIub3JnDQo+ID4gPiBTdWJqZWN0OiBbTGludXhhcm1dIFJlOiBbUkZDIFBB
-VENIIDIvM10gdmZpby9oaXNpbGljb246IHJlZ2lzdGVyIHRoZSBkcml2ZXIgdG8NCj4gPiA+IHZm
-aW8NCj4gPiA+DQo+ID4gPiBPbiBUaHUsIE1heSAxMywgMjAyMSBhdCAxMDowODoyOEFNICswODAw
-LCBsaXVsb25nZmFuZyB3cm90ZToNCj4gPiA+ID4gT24gMjAyMS81LzEyIDIwOjEwLCBKYXNvbiBH
-dW50aG9ycGUgd3JvdGU6DQo+ID4gPiA+ID4gT24gV2VkLCBNYXkgMTIsIDIwMjEgYXQgMDQ6Mzk6
-NDNQTSArMDgwMCwgbGl1bG9uZ2Zhbmcgd3JvdGU6DQo+ID4gPiA+ID4NCj4gPiA+ID4gPj4gVGhl
-cmVmb3JlLCB0aGlzIG1ldGhvZCBvZiBsaW1pdGluZyB0aGUgbGVuZ3RoIG9mIHRoZSBCQVINCj4g
-PiA+ID4gPj4gY29uZmlndXJhdGlvbiBzcGFjZSBjYW4gcHJldmVudCB1bnNhZmUgb3BlcmF0aW9u
-cyBvZiB0aGUgbWVtb3J5Lg0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gVGhlIGlzc3VlIGlzIERNQSBj
-b250cm9sbGVkIGJ5IHRoZSBndWVzdCBhY2Nlc3NpbmcgdGhlIHNlY3VyZSBCQVINCj4gPiA+ID4g
-PiBhcmVhLCBub3QgdGhlIGd1ZXN0IENQVS4NCj4gPiA+ID4gPg0KPiA+ID4gPiA+IEphc29uDQo+
-ID4gPiA+ID4gLg0KPiA+ID4gPiA+DQo+ID4gPiA+IFRoaXMgc2VjdXJlIEJBUiBhcmVhIGlzIG5v
-dCBwcmVzZW50ZWQgdG8gdGhlIEd1ZXN0LA0KPiA+ID4gPiB3aGljaCBtYWtlcyBpdCBpbXBvc3Np
-YmxlIGZvciB0aGUgR3Vlc3QgdG8gb2J0YWluIHRoZSBzZWN1cmUgQkFSIGFyZWENCj4gPiA+ID4g
-d2hlbiBlc3RhYmxpc2hpbmcgdGhlIERNQSBtYXBwaW5nIG9mIHRoZSBjb25maWd1cmF0aW9uIHNw
-YWNlLg0KPiA+ID4gPiBJZiB0aGUgRE1BIGNvbnRyb2xsZXIgYWNjZXNzZXMgdGhlIHNlY3VyZSBC
-QVIgYXJlYSwgdGhlIGFjY2VzcyB3aWxsDQo+ID4gPiA+IGJlIGJsb2NrZWQgYnkgdGhlIFNNTVUu
-DQo+ID4gPg0KPiA+ID4gVGhlcmUgYXJlIHNjZW5hcmlvcyB3aGVyZSB0aGlzIGlzIG5vdCB0cnVl
-Lg0KPiA+ID4NCj4gPiA+IEF0IGEgbWluaW11bSB0aGUgbWRldiBkcml2ZXIgc2hvdWxkIHJlZnVz
-ZSB0byB3b3JrIGluIHRob3NlIGNhc2VzLg0KPiA+ID4NCj4gPg0KPiA+IEhpLA0KPiA+DQo+ID4g
-SSB0aGluayB0aGUgaWRlYSBoZXJlIGlzIG5vdCBhIGdlbmVyaWMgc29sdXRpb24sIGJ1dCBhIHF1
-aXJrIGZvciB0aGlzIHNwZWNpZmljIGRldi4NCj4gPg0KPiA+IFNvbWV0aGluZyBsaWtlLA0KPiA+
-DQo+ID4gLS0tIGEvZHJpdmVycy92ZmlvL3BjaS92ZmlvX3BjaS5jDQo+ID4gKysrIGIvZHJpdmVy
-cy92ZmlvL3BjaS92ZmlvX3BjaS5jDQo+ID4gQEAgLTg2Niw3ICs4NjYsMTIgQEAgc3RhdGljIGxv
-bmcgdmZpb19wY2lfaW9jdGwoc3RydWN0IHZmaW9fZGV2aWNlDQo+ICpjb3JlX3ZkZXYsDQo+ID4g
-ICAgICAgICAgICAgICAgICAgICAgICAgYnJlYWs7DQo+ID4gICAgICAgICAgICAgICAgIGNhc2Ug
-VkZJT19QQ0lfQkFSMF9SRUdJT05fSU5ERVggLi4uDQo+IFZGSU9fUENJX0JBUjVfUkVHSU9OX0lO
-REVYOg0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgIGluZm8ub2Zmc2V0ID0NCj4gVkZJT19Q
-Q0lfSU5ERVhfVE9fT0ZGU0VUKGluZm8uaW5kZXgpOw0KPiA+IC0gICAgICAgICAgICAgICAgICAg
-ICAgIGluZm8uc2l6ZSA9IHBjaV9yZXNvdXJjZV9sZW4ocGRldiwgaW5mby5pbmRleCk7DQo+ID4g
-Kw0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIGlmIChjaGVja19oaXNpX2FjY19xdWlyayhw
-ZGV2LCBpbmZvKSkNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGluZm8uc2l6
-ZSA9IG5ld19zaXplOy8vIEJBUiBpcyBsaW1pdGVkDQo+IHdpdGhvdXQgbWlncmF0aW9uIHJlZ2lv
-bi4NCj4gPiArICAgICAgICAgICAgICAgICAgICAgICBlbHNlDQo+ID4gKyAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICBpbmZvLnNpemUgPSBwY2lfcmVzb3VyY2VfbGVuKHBkZXYsDQo+IGlu
-Zm8uaW5kZXgpOw0KPiA+ICsNCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICBpZiAoIWluZm8u
-c2l6ZSkgew0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaW5mby5mbGFncyA9
-IDA7DQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBicmVhazsNCj4gPg0KPiA+
-IElzIHRoaXMgYW4gYWNjZXB0YWJsZS93b3JrYWJsZSBzb2x1dGlvbiBoZXJlPw0KPiANCj4gQXMg
-SmFzb24gc2F5cywgdGhpcyBvbmx5IHJlc3RyaWN0cyBDUFUgYWNjZXNzIHRvIHRoZSBCQVIsIHRo
-ZSBpc3N1ZSBpcw0KPiBETUEgYWNjZXNzLiAgQXMgdGhlIGhhcmR3YXJlIHZlbmRvciB5b3UgbWF5
-IGJlIGFibGUgdG8gZ3VhcmFudGVlIHRoYXQNCj4gYSBETUEgdHJhbnNhY3Rpb24gZ2VuZXJhdGVk
-IGJ5IHRoZSBkZXZpY2UgdGFyZ2V0aW5nIHRoZSByZW1haW5kZXIgb2YNCj4gdGhlIEJBUiB3aWxs
-IGFsd2F5cyBnbyB1cHN0cmVhbSwgYnV0IGNhbiB5b3UgZ3VhcmFudGVlIHRoZSByb3V0aW5nDQo+
-IGJldHdlZW4gdGhlIGRldmljZSBhbmQgdGhlIFNNTVU/ICBGb3IgaW5zdGFuY2UgaWYgdGhpcyBk
-ZXZpY2UgY2FuIGJlDQo+IGltcGxlbWVudGVkIGFzIGEgcGx1Z2luIGNhcmQsIHRoZW4gaXQgY2Fu
-IGJlIGluc3RhbGxlZCBpbnRvIGENCj4gZG93bnN0cmVhbSBwb3J0IHRoYXQgbWF5IG5vdCBzdXBw
-b3J0IEFDUy4gIFRoYXQgZG93bnN0cmVhbSBwb3J0IG1heQ0KPiBpbXBsZW1lbnQgcmVxdWVzdCBy
-ZWRpcmVjdGlvbiBhbGxvd2luZyB0aGUgdHJhbnNhY3Rpb24gdG8gcmVmbGVjdCBiYWNrDQo+IHRv
-IHRoZSBkZXZpY2Ugd2l0aG91dCBJT01NVSB0cmFuc2xhdGlvbi4gIEF0IHRoYXQgcG9pbnQgdGhl
-IHVzZXJzcGFjZQ0KPiBkcml2ZXIgY2FuIHRhcmdldCB0aGUga2VybmVsIGRyaXZlciBoYWxmIG9m
-IHRoZSBCQVIgYW5kIHBvdGVudGlhbGx5DQo+IGV4cG9zZSBhIHNlY3VyaXR5IHJpc2suICBUaGFu
-a3MsDQoNClRoZSBBQ0MgZGV2aWNlcyBvbiB0aGlzIHBsYXRmb3JtIGFyZSBub3QgcGx1Z2dhYmxl
-IGRldmljZXMuIFRoZXkgYXJlIGV4cG9zZWQNCmFzIGludGVncmF0ZWQgZW5kcG9pbnQgZGV2aWNl
-cy4gU28gSSBhbSBub3Qgc3VyZSB0aGUgYWJvdmUgY29uY2VybiBpcyB2YWxpZCBpbiB0aGlzDQpj
-YXNlLg0KDQpJIGhhZCBhIGxvb2sgYXQgdGhlIHVzZXJzcGFjZSBkcml2ZXIgYXBwcm9hY2ggeW91
-IHN1Z2dlc3RlZC4gQnV0IHVuZm9ydHVuYXRlbHkNCnRoZSBtaWdyYXRpb24gc3RhdGUgY2hhbmdl
-IGZvciB0aGUgdmYgaGFzIHRvIGNoZWNrIHNvbWUgb2YgdGhlIHBmIHJlZ2lzdGVycyBmb3INCmNv
-bmZpcm1pbmcgdGhlIHN0YXRlLiBTbyBldmVuIGlmIHdlIG1vdmUgdGhlIGltcGxlbWVudGF0aW9u
-IHRvIFFlbXUsIHdlDQpzdGlsbCBtYXkgaGF2ZSB0byB1c2UgdGhlIG1pZ3JhdGlvbiB1QVBJIHRv
-IGFjY2VzcyB0aGUgcGYgZGV2aWNlIHJlZ2lzdGVycy4NCg0KU2luY2UgdGhlIGRldmljZXMgd2Ug
-YXJlIGNvbmNlcm5lZCBoZXJlIGFyZSBhbGwgaW50ZWdyYXRlZCBlbmRwb2ludHMgYW5kIGlmIHRo
-ZSANCmFib3ZlIHF1aXJrIGlzIGFuIGFjY2VwdGFibGUgb25lLCB0aGVuIHdlIGNhbiB1c2UgdGhl
-IHVBUEkgYXMgZG9uZSBpbiB0aGlzDQpzZXJpZXMgd2l0aG91dCBvdmVybHkgY29tcGxpY2F0aW5n
-IHRoaW5ncyBoZXJlLg0KDQpQbGVhc2UgbGV0IG1lIGtub3cgeW91ciB0aG91Z2h0cywNCg0KVGhh
-bmtzLA0KU2hhbWVlcg0KDQoNCg0KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXw0KPiBMaW51eGFybSBtYWlsaW5nIGxpc3QgLS0gbGludXhhcm1Ab3BlbmV1
-bGVyLm9yZw0KPiBUbyB1bnN1YnNjcmliZSBzZW5kIGFuIGVtYWlsIHRvIGxpbnV4YXJtLWxlYXZl
-QG9wZW5ldWxlci5vcmcNCg==
+PSI accounts stalls for each cgroup separately and aggregates it at each
+level of the hierarchy. This causes additional overhead with psi_avgs_work
+being called for each cgroup in the hierarchy. psi_avgs_work has been
+highly optimized, however on systems with large number of cgroups the
+overhead becomes noticeable.
+Systems which use PSI only at the system level could avoid this overhead
+if PSI can be configured to skip per-cgroup stall accounting.
+Add "cgroup_disable=pressure" kernel command-line option to allow
+requesting system-wide only pressure stall accounting. When set, it
+keeps system-wide accounting under /proc/pressure/ but skips accounting
+for individual cgroups and does not expose PSI nodes in cgroup hierarchy.
+
+Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+---
+ .../admin-guide/kernel-parameters.txt         |  9 +++-
+ include/linux/cgroup-defs.h                   |  1 +
+ include/linux/cgroup.h                        |  7 +++
+ kernel/cgroup/cgroup.c                        | 46 +++++++++++++++++++
+ kernel/sched/psi.c                            |  8 +++-
+ 5 files changed, 67 insertions(+), 4 deletions(-)
+
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index cb89dbdedc46..653c62142f07 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -497,16 +497,21 @@
+ 	ccw_timeout_log	[S390]
+ 			See Documentation/s390/common_io.rst for details.
+ 
+-	cgroup_disable=	[KNL] Disable a particular controller
+-			Format: {name of the controller(s) to disable}
++	cgroup_disable=	[KNL] Disable a particular controller or optional feature
++			Format: {name of the controller(s) or feature(s) to disable}
+ 			The effects of cgroup_disable=foo are:
+ 			- foo isn't auto-mounted if you mount all cgroups in
+ 			  a single hierarchy
+ 			- foo isn't visible as an individually mountable
+ 			  subsystem
++			- if foo is an optional feature then the feature is
++			  disabled and corresponding cgroup files are not
++			  created
+ 			{Currently only "memory" controller deal with this and
+ 			cut the overhead, others just disable the usage. So
+ 			only cgroup_disable=memory is actually worthy}
++			Specifying "pressure" disables per-cgroup pressure
++			stall information accounting feature
+ 
+ 	cgroup_no_v1=	[KNL] Disable cgroup controllers and named hierarchies in v1
+ 			Format: { { controller | "all" | "named" }
+diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+index 559ee05f86b2..671f55cac0f0 100644
+--- a/include/linux/cgroup-defs.h
++++ b/include/linux/cgroup-defs.h
+@@ -110,6 +110,7 @@ enum {
+ 	CFTYPE_NO_PREFIX	= (1 << 3),	/* (DON'T USE FOR NEW FILES) no subsys prefix */
+ 	CFTYPE_WORLD_WRITABLE	= (1 << 4),	/* (DON'T USE FOR NEW FILES) S_IWUGO */
+ 	CFTYPE_DEBUG		= (1 << 5),	/* create when cgroup_debug */
++	CFTYPE_PRESSURE		= (1 << 6),	/* only if pressure feature is enabled */
+ 
+ 	/* internal flags, do not use outside cgroup core proper */
+ 	__CFTYPE_ONLY_ON_DFL	= (1 << 16),	/* only on default hierarchy */
+diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+index 4f2f79de083e..b929f589968b 100644
+--- a/include/linux/cgroup.h
++++ b/include/linux/cgroup.h
+@@ -676,6 +676,8 @@ static inline struct psi_group *cgroup_psi(struct cgroup *cgrp)
+ 	return &cgrp->psi;
+ }
+ 
++bool cgroup_psi_enabled(void);
++
+ static inline void cgroup_init_kthreadd(void)
+ {
+ 	/*
+@@ -735,6 +737,11 @@ static inline struct psi_group *cgroup_psi(struct cgroup *cgrp)
+ 	return NULL;
+ }
+ 
++static inline bool cgroup_psi_enabled(void)
++{
++	return false;
++}
++
+ static inline bool task_under_cgroup_hierarchy(struct task_struct *task,
+ 					       struct cgroup *ancestor)
+ {
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index e049edd66776..c4b16c82e199 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -209,6 +209,22 @@ struct cgroup_namespace init_cgroup_ns = {
+ static struct file_system_type cgroup2_fs_type;
+ static struct cftype cgroup_base_files[];
+ 
++/* cgroup optional features */
++enum cgroup_opt_features {
++#ifdef CONFIG_PSI
++	OPT_FEATURE_PRESSURE,
++#endif
++	OPT_FEATURE_COUNT
++};
++
++static const char *cgroup_opt_feature_names[OPT_FEATURE_COUNT] = {
++#ifdef CONFIG_PSI
++	"pressure",
++#endif
++};
++
++static u16 cgroup_feature_disable_mask __read_mostly;
++
+ static int cgroup_apply_control(struct cgroup *cgrp);
+ static void cgroup_finalize_control(struct cgroup *cgrp, int ret);
+ static void css_task_iter_skip(struct css_task_iter *it,
+@@ -3631,6 +3647,18 @@ static void cgroup_pressure_release(struct kernfs_open_file *of)
+ {
+ 	psi_trigger_replace(&of->priv, NULL);
+ }
++
++bool cgroup_psi_enabled(void)
++{
++	return (cgroup_feature_disable_mask & (1 << OPT_FEATURE_PRESSURE)) == 0;
++}
++
++#else /* CONFIG_PSI */
++bool cgroup_psi_enabled(void)
++{
++	return false;
++}
++
+ #endif /* CONFIG_PSI */
+ 
+ static int cgroup_freeze_show(struct seq_file *seq, void *v)
+@@ -3881,6 +3909,8 @@ static int cgroup_addrm_files(struct cgroup_subsys_state *css,
+ restart:
+ 	for (cft = cfts; cft != cft_end && cft->name[0] != '\0'; cft++) {
+ 		/* does cft->flags tell us to skip this file on @cgrp? */
++		if ((cft->flags & CFTYPE_PRESSURE) && !cgroup_psi_enabled())
++			continue;
+ 		if ((cft->flags & __CFTYPE_ONLY_ON_DFL) && !cgroup_on_dfl(cgrp))
+ 			continue;
+ 		if ((cft->flags & __CFTYPE_NOT_ON_DFL) && cgroup_on_dfl(cgrp))
+@@ -3958,6 +3988,9 @@ static int cgroup_init_cftypes(struct cgroup_subsys *ss, struct cftype *cfts)
+ 
+ 		WARN_ON(cft->ss || cft->kf_ops);
+ 
++		if ((cft->flags & CFTYPE_PRESSURE) && !cgroup_psi_enabled())
++			continue;
++
+ 		if (cft->seq_start)
+ 			kf_ops = &cgroup_kf_ops;
+ 		else
+@@ -4866,6 +4899,7 @@ static struct cftype cgroup_base_files[] = {
+ #ifdef CONFIG_PSI
+ 	{
+ 		.name = "io.pressure",
++		.flags = CFTYPE_PRESSURE,
+ 		.seq_show = cgroup_io_pressure_show,
+ 		.write = cgroup_io_pressure_write,
+ 		.poll = cgroup_pressure_poll,
+@@ -4873,6 +4907,7 @@ static struct cftype cgroup_base_files[] = {
+ 	},
+ 	{
+ 		.name = "memory.pressure",
++		.flags = CFTYPE_PRESSURE,
+ 		.seq_show = cgroup_memory_pressure_show,
+ 		.write = cgroup_memory_pressure_write,
+ 		.poll = cgroup_pressure_poll,
+@@ -4880,6 +4915,7 @@ static struct cftype cgroup_base_files[] = {
+ 	},
+ 	{
+ 		.name = "cpu.pressure",
++		.flags = CFTYPE_PRESSURE,
+ 		.seq_show = cgroup_cpu_pressure_show,
+ 		.write = cgroup_cpu_pressure_write,
+ 		.poll = cgroup_pressure_poll,
+@@ -6216,6 +6252,13 @@ static int __init cgroup_disable(char *str)
+ 				continue;
+ 			cgroup_disable_mask |= 1 << i;
+ 		}
++
++		for (i = 0; i < OPT_FEATURE_COUNT; i++) {
++			if (strcmp(token, cgroup_opt_feature_names[i]))
++				continue;
++			cgroup_feature_disable_mask |= 1 << i;
++			break;
++		}
+ 	}
+ 	return 1;
+ }
+@@ -6514,6 +6557,9 @@ static ssize_t show_delegatable_files(struct cftype *files, char *buf,
+ 		if (!(cft->flags & CFTYPE_NS_DELEGATABLE))
+ 			continue;
+ 
++		if ((cft->flags & CFTYPE_PRESSURE) && !cgroup_psi_enabled())
++			continue;
++
+ 		if (prefix)
+ 			ret += snprintf(buf + ret, size - ret, "%s.", prefix);
+ 
+diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+index cc25a3cff41f..c73efd7d4fba 100644
+--- a/kernel/sched/psi.c
++++ b/kernel/sched/psi.c
+@@ -747,9 +747,12 @@ static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
+ #ifdef CONFIG_CGROUPS
+ 	struct cgroup *cgroup = NULL;
+ 
+-	if (!*iter)
++	if (!*iter) {
++		/* Skip to psi_system if per-cgroup accounting is disabled */
++		if (!cgroup_psi_enabled())
++			goto update_sys;
+ 		cgroup = task->cgroups->dfl_cgrp;
+-	else if (*iter == &psi_system)
++	} else if (*iter == &psi_system)
+ 		return NULL;
+ 	else
+ 		cgroup = cgroup_parent(*iter);
+@@ -758,6 +761,7 @@ static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
+ 		*iter = cgroup;
+ 		return cgroup_psi(cgroup);
+ 	}
++update_sys:
+ #else
+ 	if (*iter)
+ 		return NULL;
+-- 
+2.31.1.607.g51e8a6a459-goog
+
