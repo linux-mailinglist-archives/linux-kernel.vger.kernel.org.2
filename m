@@ -2,88 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E474837F32C
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 08:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF2E637F333
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 08:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231398AbhEMGqk convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 May 2021 02:46:40 -0400
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:39683 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230063AbhEMGqg (ORCPT
+        id S231411AbhEMGrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 02:47:39 -0400
+Received: from lucky1.263xmail.com ([211.157.147.134]:51266 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230063AbhEMGrf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 02:46:36 -0400
-X-Originating-IP: 90.89.138.59
-Received: from xps13 (lfbn-tou-1-1325-59.w90-89.abo.wanadoo.fr [90.89.138.59])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 0FED220004;
-        Thu, 13 May 2021 06:45:24 +0000 (UTC)
-Date:   Thu, 13 May 2021 08:45:23 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     ycllin@mxic.com.tw
-Cc:     juliensu@mxic.com.tw, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, richard@nod.at, vigneshr@ti.com,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 0/2] Fix double counting of S/W ECC engines' ECC stat
-Message-ID: <20210513084523.41d1cdd6@xps13>
-In-Reply-To: <OFAD6CC9BD.1F0CDB53-ON482586D4.000A51D2-482586D4.000BFF66@mxic.com.tw>
-References: <1620697235-7829-1-git-send-email-ycllin@mxic.com.tw>
-        <20210511105319.0c077fd5@xps13>
-        <OFAD6CC9BD.1F0CDB53-ON482586D4.000A51D2-482586D4.000BFF66@mxic.com.tw>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+        Thu, 13 May 2021 02:47:35 -0400
+Received: from localhost (unknown [192.168.167.223])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 87E12C8699;
+        Thu, 13 May 2021 14:46:11 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P22004T139994226214656S1620888367858788_;
+        Thu, 13 May 2021 14:46:10 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <33e9ab100598d444a69fb444c920c885>
+X-RL-SENDER: cl@rock-chips.com
+X-SENDER: cl@rock-chips.com
+X-LOGIN-NAME: cl@rock-chips.com
+X-FST-TO: heiko@sntech.de
+X-RCPT-COUNT: 30
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   <cl@rock-chips.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, jagan@amarulasolutions.com, wens@csie.org,
+        uwe@kleine-koenig.org, mail@david-bauer.net, jbx6244@gmail.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        jensenhuang@friendlyarm.com, michael@amarulasolutions.com,
+        cnsztl@gmail.com, devicetree@vger.kernel.org,
+        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
+        gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-i2c@vger.kernel.org, jay.xu@rock-chips.com,
+        shawn.lin@rock-chips.com, david.wu@rock-chips.com,
+        zhangqing@rock-chips.com, huangtao@rock-chips.com,
+        cl@rock-chips.com, wim@linux-watchdog.org, linux@roeck-us.net,
+        jamie@jamieiles.com, linux-watchdog@vger.kernel.org, maz@kernel.org
+Subject: [RESEND PATCH v4 06/10] dt-bindings: gpio: change items restriction of clock for rockchip,gpio-bank
+Date:   Thu, 13 May 2021 14:46:06 +0800
+Message-Id: <20210513064606.18397-1-cl@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210429081151.17558-1-cl@rock-chips.com>
+References: <20210429081151.17558-1-cl@rock-chips.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi YouChing,
+From: Liang Chen <cl@rock-chips.com>
 
-ycllin@mxic.com.tw wrote on Thu, 13 May 2021 10:11:02 +0800:
+The clock property need 2 items on some rockchip chips.
 
-> > "Miquel Raynal" <miquel.raynal@bootlin.com>   
-> <deleted>
-> > 
-> > Good catch!
-> > 
-> > However I don't think the current fix is valid because these engines
-> > are meant to be used by the raw NAND core as well, I propose something
-> > like the below, can you please tell me if it works as expected? (not
-> > even build tested)
-> > 
-> > Thanks,
-> > Miquèl
-> > 
-> >   
-> <deleted>
-> 
-> Thanks for your work.
-> 
-> I tested the two patches(yours and mine) separately in our environment: 
-> 1) MXIC NFC(&raw NAND),2) MXIC SPI host(&SPI-NAND) with S/W BCH engine. 
-> Both patches are valid(using nandtest/nandbiterrs, values of ecc_stats are 
-> normal).
-> 
-> This seems to be because the function(nand_ecc_sw_bch_finish_io_req() 
-> in ecc-sw-bch.c) that would increase the ecc_stats counter is not used 
-> in the raw NAND world. Am I misunderstanding or is it platform dependency?
+Signed-off-by: Liang Chen <cl@rock-chips.com>
+---
+ Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.yaml | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-I don't think it can be called a platform dependency, it's more like
-legacy from the raw NAND world which makes the use of the generic ECC
-framework hard and thus is limited to a given set of functions.
+diff --git a/Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.yaml b/Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.yaml
+index d993e00..0d62c28 100644
+--- a/Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.yaml
++++ b/Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.yaml
+@@ -22,7 +22,10 @@ properties:
+     maxItems: 1
+ 
+   clocks:
+-    maxItems: 1
++    minItems: 1
++    items:
++      - description: APB interface clock source
++      - description: GPIO debounce reference clock source
+ 
+   gpio-controller: true
+ 
+-- 
+2.7.4
 
-> BTW, I think your modification should be more in line with the design 
-> spirit 
-> of generic ECC engine framework.
 
-Yes, ideally raw NAND should fully comply to this framework but this
-would require a hundred days of work and dozens of available boards to
-test. During the past 20 years people assumed NAND controller and ECC
-engine were a single entity which makes the use of the generic ECC
-framework hard to implemented in the raw NAND. So I decided not to put
-all my energy there in order to first get this framework available to
-SPI-NAND devices.
 
-Thanks,
-Miquèl
