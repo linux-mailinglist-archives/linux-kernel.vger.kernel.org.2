@@ -2,52 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63E9937F0AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 02:51:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78BD637F0B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 02:56:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231730AbhEMAwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 20:52:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36956 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240410AbhEMAv5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 20:51:57 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C4B58613EB;
-        Thu, 13 May 2021 00:50:47 +0000 (UTC)
-Date:   Wed, 12 May 2021 20:50:46 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        netdev@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, sassmann@redhat.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, stable-rt@vger.kernel.org
-Subject: Re: [PATCH net-next] net: Treat __napi_schedule_irqoff() as
- __napi_schedule() on PREEMPT_RT
-Message-ID: <20210512205046.7eabe8fc@oasis.local.home>
-In-Reply-To: <87k0o360zx.ffs@nanos.tec.linutronix.de>
-References: <YJofplWBz8dT7xiw@localhost.localdomain>
-        <20210512214324.hiaiw3e2tzmsygcz@linutronix.de>
-        <87k0o360zx.ffs@nanos.tec.linutronix.de>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233461AbhEMA5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 20:57:23 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:60024 "EHLO
+        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231640AbhEMA5V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 20:57:21 -0400
+Received: from us.es (unknown [90.77.255.23])
+        by mail.netfilter.org (Postfix) with ESMTPSA id EB03E64143;
+        Thu, 13 May 2021 02:55:21 +0200 (CEST)
+Date:   Thu, 13 May 2021 02:56:08 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+154bd5be532a63aa778b@syzkaller.appspotmail.com>,
+        coreteam@netfilter.org, David Miller <davem@davemloft.net>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        NetFilter <netfilter-devel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: [syzbot] WARNING in __nf_unregister_net_hook (4)
+Message-ID: <20210513005608.GA23780@salvia>
+References: <0000000000008ce91e05bf9f62bc@google.com>
+ <CACT4Y+a6L_x22XNJVX+VYY-XKmLQ0GaYndCVYnaFmoxk58GPgw@mail.gmail.com>
+ <20210508144657.GC4038@breakpoint.cc>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210508144657.GC4038@breakpoint.cc>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 May 2021 00:28:02 +0200
-Thomas Gleixner <tglx@linutronix.de> wrote:
+On Sat, May 08, 2021 at 04:46:57PM +0200, Florian Westphal wrote:
+> Dmitry Vyukov <dvyukov@google.com> wrote:
+> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > Reported-by: syzbot+154bd5be532a63aa778b@syzkaller.appspotmail.com
+> > 
+> > Is this also fixed by "netfilter: arptables: use pernet ops struct
+> > during unregister"?
+> > The warning is the same, but the stack is different...
+> 
+> No, this is a different bug.
+> 
+> In both cases the caller attempts to unregister a hook that the core
+> can't find, but in this case the caller is nftables, not arptables.
 
-> No matter which variant we end up with, this needs to go into all stable
-> RT kernels ASAP.
+I see no reproducer for this bug. Maybe I broke the dormant flag handling?
 
-Is this in rt-devel already?
-
-I'll start pulling in whatever is in there.
-
--- Steve
+Or maybe syzbot got here after the arptables bug has been hitted?
