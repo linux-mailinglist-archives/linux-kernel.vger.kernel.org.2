@@ -2,145 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96AE737FDFD
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 21:22:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A73E037FE01
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 21:23:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232277AbhEMTX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 15:23:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25938 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232259AbhEMTX5 (ORCPT
+        id S232287AbhEMTYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 15:24:45 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:33934 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230104AbhEMTYn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 15:23:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620933767;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UChYrtJTiYVZT+Wv2GpTYs4oyHUTct1kWqfb8kWb1Kc=;
-        b=La+HEyIEtu29NA23LU2jNjwVOhkPJTTm43BtsSbu2n7JPqS/WpW0RP3dsExzydnv8ndNzR
-        MPDYfKJMW22aupfj5lCRQZstujlDP7Jmj8OIuKFbTR+L76sSjPYNPkS1ITCM3vsH119Emj
-        9SAxxMpqK+EI+hV42ln/igCgeRLO+mA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-324-oFdgpTWIM7yVaYjq-cClig-1; Thu, 13 May 2021 15:22:44 -0400
-X-MC-Unique: oFdgpTWIM7yVaYjq-cClig-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DE173CC623;
-        Thu, 13 May 2021 19:22:40 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D2EAF19172;
-        Thu, 13 May 2021 19:22:29 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 14DJMTP4022674;
-        Thu, 13 May 2021 15:22:29 -0400
-Received: from localhost (mpatocka@localhost)
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 14DJMPNw022669;
-        Thu, 13 May 2021 15:22:25 -0400
-X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
-Date:   Thu, 13 May 2021 15:22:25 -0400 (EDT)
-From:   Mikulas Patocka <mpatocka@redhat.com>
-X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
-To:     Milan Broz <gmazyland@gmail.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Changheun Lee <nanich.lee@samsung.com>
-cc:     alex_y_xu@yahoo.ca, axboe@kernel.dk, bgoncalv@redhat.com,
-        dm-crypt@saout.de, hch@lst.de, jaegeuk@kernel.org,
-        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        ming.lei@redhat.com, yi.zhang@redhat.com, dm-devel@redhat.com
-Subject: Re: regression: data corruption with ext4 on LUKS on nvme with
- torvalds master
-In-Reply-To: <0e7b0b6e-e78c-f22d-af8d-d7bdcb597bea@gmail.com>
-Message-ID: <alpine.LRH.2.02.2105131510330.21927@file01.intranet.prod.int.rdu2.redhat.com>
-References: <a01ab479-69e8-9395-7d24-9de1eec28aff@acm.org> <0e7b0b6e-e78c-f22d-af8d-d7bdcb597bea@gmail.com>
-User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
+        Thu, 13 May 2021 15:24:43 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14DJ560m101841;
+        Thu, 13 May 2021 15:23:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=b8mKTnFqpv7SilKKm2gG5pFFlAz9lOrBb+xsgVQXuhc=;
+ b=lMj/nVyJyOjB9KhkXfXvVSkFE2NVDHY1w4Ygbl66OlX7zmaWQu9nRd0Y8//5G2vo+zIn
+ uGrN3kg1HKq5qlPr/Syedg9kJgaQ3wjBk+epZ7WrTrPRpPTeleYvOTH+99heiZhuH57V
+ BiC4Z/ubd69oqjGxPBeNBn0FZRGNMW0xUdbvycHNOj40xNLaLoy53kaa71Cx5WMZsOvW
+ 6KAs3BuPrDnjkNtLVYZX7tCGKp4QTMKPMv87f6R+h/2nd+CiyGHGZRJ4qekX4jE2FLNS
+ zJQueE4l71t0KL/yFpiK1zm4TE4YfYJWN3jVjYTjEdNMIJ61rlURvJFSVTEdaSLPqJ0M vg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38h9vp0gjf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 May 2021 15:23:31 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14DJ590Y102341;
+        Thu, 13 May 2021 15:23:31 -0400
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38h9vp0gj1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 May 2021 15:23:31 -0400
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14DJI7fG010535;
+        Thu, 13 May 2021 19:23:30 GMT
+Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
+        by ppma03wdc.us.ibm.com with ESMTP id 38dj99f738-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 May 2021 19:23:30 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14DJNTrY41288092
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 13 May 2021 19:23:29 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 35BE5AC05B;
+        Thu, 13 May 2021 19:23:29 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 388CBAC05E;
+        Thu, 13 May 2021 19:23:28 +0000 (GMT)
+Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.177.219])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu, 13 May 2021 19:23:27 +0000 (GMT)
+Subject: Re: [PATCH v2] s390/vfio-ap: fix memory leak in mdev remove callback
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        stable@vger.kernel.org, Tony Krowiak <akrowiak@stny.rr.com>
+References: <20210510214837.359717-1-akrowiak@linux.ibm.com>
+ <20210512203536.4209c29c.pasic@linux.ibm.com>
+ <4c156ab8-da49-4867-f29c-9712c2628d44@linux.ibm.com>
+ <20210513194541.58d1628a.pasic@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <243086e2-08a0-71ed-eb7e-618a62b007e4@linux.ibm.com>
+Date:   Thu, 13 May 2021 15:23:27 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20210513194541.58d1628a.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: O9wNLxUst5TIJGsb7h6L37k4cpWe43nh
+X-Proofpoint-ORIG-GUID: HRlaSfjJmSrnuG9ElxDs8xF0IYqU6skB
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-13_12:2021-05-12,2021-05-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ mlxlogscore=999 suspectscore=0 mlxscore=0 adultscore=0 phishscore=0
+ clxscore=1015 bulkscore=0 priorityscore=1501 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105130132
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-> On 5/13/21 7:15 AM, Theodore Ts'o wrote:
-> > On Thu, May 13, 2021 at 06:42:22PM +0900, Changheun Lee wrote:
-> >>
-> >> Problem might be casued by exhausting of memory. And memory exhausting
-> >> would be caused by setting of small bio_max_size. Actually it was not
-> >> reproduced in my VM environment at first. But, I reproduced same problem
-> >> when bio_max_size is set with 8KB forced. Too many bio allocation would
-> >> be occurred by setting of 8KB bio_max_size.
-> > 
-> > Hmm... I'm not sure how to align your diagnosis with the symptoms in
-> > the bug report.  If we were limited by memory, that should slow down
-> > the I/O, but we should still be making forward progress, no?  And a
-> > forced reboot should not result in data corruption, unless maybe there
-> > was a missing check for a failed memory allocation, causing data to be
-> > written to the wrong location, a missing error check leading to the
-> > block or file system layer not noticing that a write had failed
-> > (although again, memory exhaustion should not lead to failed writes;
-> > it might slow us down, sure, but if writes are being failed, something
-> > is Badly Going Wrong --- things like writes to the swap device or
-> > writes by the page cleaner must succeed, or else Things Would Go Bad
-> > In A Hurry).
-> 
-> After the LUKS data corruption issue was reported I decided to take a
-> look at the dm-crypt code. In that code I found the following:
-> 
-> static void clone_init(struct dm_crypt_io *io, struct bio *clone)
-> {
-> 	struct crypt_config *cc = io->cc;
-> 
-> 	clone->bi_private = io;
-> 	clone->bi_end_io  = crypt_endio;
-> 	bio_set_dev(clone, cc->dev->bdev);
-> 	clone->bi_opf	  = io->base_bio->bi_opf;
-> }
-> [ ... ]
-> static struct bio *crypt_alloc_buffer(struct dm_crypt_io *io, unsigned size)
-> {
-> 	[ ... ]
-> 	clone = bio_alloc_bioset(GFP_NOIO, nr_iovecs, &cc->bs);
-> 	[ ... ]
-> 	clone_init(io, clone);
-> 	[ ... ]
-> 	for (i = 0; i < nr_iovecs; i++) {
-> 		[ ... ]
-> 		bio_add_page(clone, page, len, 0);
-> 
-> 		remaining_size -= len;
-> 	}
-> 	[ ... ]
-> }
-> 
-> My interpretation is that crypt_alloc_buffer() allocates a bio,
-> associates it with the underlying device and clones a bio. The input bio
-> may have a size up to UINT_MAX while the new limit for the size of the
-> cloned bio is max_sectors * 512. That causes bio_add_page() to fail if
-> the input bio is larger than max_sectors * 512, hence the data
-> corruption. Please note that this is a guess only and that I'm not
-> familiar with the dm-crypt code.
-> 
-> Bart.
+On 5/13/21 1:45 PM, Halil Pasic wrote:
+> On Thu, 13 May 2021 10:35:05 -0400
+> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+>
+>> On 5/12/21 2:35 PM, Halil Pasic wrote:
+>>> On Mon, 10 May 2021 17:48:37 -0400
+>>> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+>>>   
+>>>> The mdev remove callback for the vfio_ap device driver bails out with
+>>>> -EBUSY if the mdev is in use by a KVM guest. The intended purpose was
+>>>> to prevent the mdev from being removed while in use; however, returning a
+>>>> non-zero rc does not prevent removal. This could result in a memory leak
+>>>> of the resources allocated when the mdev was created. In addition, the
+>>>> KVM guest will still have access to the AP devices assigned to the mdev
+>>>> even though the mdev no longer exists.
+>>>>
+>>>> To prevent this scenario, cleanup will be done - including unplugging the
+>>>> AP adapters, domains and control domains - regardless of whether the mdev
+>>>> is in use by a KVM guest or not.
+>>>>
+>>>> Fixes: 258287c994de ("s390: vfio-ap: implement mediated device open callback")
+>>>> Cc: stable@vger.kernel.org
+>>>> Signed-off-by: Tony Krowiak <akrowiak@stny.rr.com>
+>>>> ---
+>>>>    drivers/s390/crypto/vfio_ap_ops.c | 13 ++-----------
+>>>>    1 file changed, 2 insertions(+), 11 deletions(-)
+>>>>
+>>>> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
+>>>> index b2c7e10dfdcd..f90c9103dac2 100644
+>>>> --- a/drivers/s390/crypto/vfio_ap_ops.c
+>>>> +++ b/drivers/s390/crypto/vfio_ap_ops.c
+>>>> @@ -26,6 +26,7 @@
+>>>>
+>>>>    static int vfio_ap_mdev_reset_queues(struct mdev_device *mdev);
+>>>>    static struct vfio_ap_queue *vfio_ap_find_queue(int apqn);
+>>>> +static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev);
+>>>>
+>>>>    static int match_apqn(struct device *dev, const void *data)
+>>>>    {
+>>>> @@ -366,17 +367,7 @@ static int vfio_ap_mdev_remove(struct mdev_device *mdev)
+>>>>    	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
+>>>>
+>>>>    	mutex_lock(&matrix_dev->lock);
+>>>> -
+>>>> -	/*
+>>>> -	 * If the KVM pointer is in flux or the guest is running, disallow
+>>>> -	 * un-assignment of control domain.
+>>>> -	 */
+>>>> -	if (matrix_mdev->kvm_busy || matrix_mdev->kvm) {
+>>>> -		mutex_unlock(&matrix_dev->lock);
+>>>> -		return -EBUSY;
+>>>> -	}
+>>>> -
+>>>> -	vfio_ap_mdev_reset_queues(mdev);
+>>>> +	vfio_ap_mdev_unset_kvm(matrix_mdev);
+>>>>    	list_del(&matrix_mdev->node);
+>>>>    	kfree(matrix_mdev);
+>>> Are we at risk of handle_pqap() in arch/s390/kvm/priv.c using an
+>>> already freed pqap_hook (which is a member of the matrix_mdev pointee
+>>> that is freed just above my comment).
+>>>
+>>> I'm aware of the fact that vfio_ap_mdev_unset_kvm() does a
+>>> matrix_mdev->kvm->arch.crypto.pqap_hook = NULL but that is
+>>> AFRICT not done under any lock relevant for handle_pqap(). I guess
+>>> the idea is, I guess, the check cited below
+>>>
+>>> static int handle_pqap(struct kvm_vcpu *vcpu)
+>>> [..]
+>>>           /*
+>>>            * Verify that the hook callback is registered, lock the owner
+>>>            * and call the hook.
+>>>            */
+>>>           if (vcpu->kvm->arch.crypto.pqap_hook) {
+>>>                   if (!try_module_get(vcpu->kvm->arch.crypto.pqap_hook->owner))
+>>>                           return -EOPNOTSUPP;
+>>>                   ret = vcpu->kvm->arch.crypto.pqap_hook->hook(vcpu);
+>>>                   module_put(vcpu->kvm->arch.crypto.pqap_hook->owner);
+>>>                   if (!ret && vcpu->run->s.regs.gprs[1] & 0x00ff0000)
+>>>                           kvm_s390_set_psw_cc(vcpu, 3);
+>>>                   return ret;
+>>>           }
+>>>
+>>> is going to catch it, but I'm not sure it is guaranteed to catch it.
+>>> Opinions?
+>> The hook itself - handle_pqap() function in vfio_ap_ops.c - also checks
+>> to see if the reference to the hook is set and terminates with an error
+>> if it
+>> is not. If the hook is invoked subsequent to the remove callback above,
+>> all should be fine since the check is also done under the matrix_dev->lock.
+>>
+> I don't quite understand your logic. Let us assume matrix_mdev was freed,
+> but vcpu->kvm->arch.crypto.pqap_hook still points to what used to be
+> (*matrix_mdev).pqap_hook. In that case the function pointer
+> vcpu->kvm->arch.crypto.pqap_hook->hook is used after it was freed, and
+> may not point to the handle_pqap() function in vfio_ap_ops.c, thus the
+> check you are referring to ain't necessarily relevant. Than is
+> if you mean the check in the  handle_pqap() function in vfio_ap_ops.c; if
+> you mean the check in handle_pqap() in arch/s390/kvm/priv.c, that one is
+> not done under the matrix_dev->lock. Or do I have a hole somewhere in my
+> reasoning?
 
-We already had problems with too large bios in dm-crypt and we fixed it by 
-adding this piece of code:
+What I am saying is the vcpu->kvm->arch.crypto.pqap_hook
+will either be NULL or point to the handle_pqap() function in the
+vfio_ap driver. In the latter case, the handler in the driver will get
+called and try to acquire the matrix_dev->lock. The function that
+sets the vcpu->kvm->arch.crypto.pqap_hook to NULL also takes that
+lock. If the pointer is still active, then the handler will do its thing.
+If not, then the handler will return without enabling or disabling
+IRQs. That should not be a problem since the unset_kvm function
+resets the queues which will disable the IRQs.
 
-        /*
-         * Check if bio is too large, split as needed.
-         */
-        if (unlikely(bio->bi_iter.bi_size > (BIO_MAX_VECS << PAGE_SHIFT)) &&
-            (bio_data_dir(bio) == WRITE || cc->on_disk_tag_size))
-                dm_accept_partial_bio(bio, ((BIO_MAX_VECS << PAGE_SHIFT) >> SECTOR_SHIFT));
+I don't see how
+the vcpu->kvm->arch.crypto.pqap_hook can point to anything
+other than the handler or be NULL unless KVM is gone. Based on
+my observations of the behavior, unless there is some
+other way for the remove callback to be invoked other than in
+response to a request from userspace via the sysfs remove
+attribute, it will not get called until the file descriptor is
+closed in which case the release callback will also unset_kvm.
+I think you are worrying about something that will likely never
+happen.
 
-It will ask the device mapper to split the bio if it is too large. So, 
-crypt_alloc_buffer can't receive a bio that is larger than BIO_MAX_VECS << 
-PAGE_SHIFT.
-
-Mikulas
+>
+> Regards,
+> Halil
+>
 
