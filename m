@@ -2,75 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD7137F812
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 14:37:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3419937F813
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 14:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233908AbhEMMix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 08:38:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57130 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232660AbhEMMir (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 08:38:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 87A24613DA
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 12:37:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620909457;
-        bh=qeKUmOFQwUuzccQ7OPyu+xzYII9VVza4a7QOpxn6M64=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cmFTFjJ+7y/+1jcDyFTdQpHLWvR/xS6UhokysM12iTSV5KzZz9/TI4/vxRbJYgri3
-         BWhgqdzrZAK9tnPjgZrmbjw/6XCXyk0rRS4c4tClbcDcXNs9w1aXixVnEXie43MxCj
-         WzcyESId5GvCn2U9vHba7a25wUWzPLIsWOxhbbQFDdZ0rmFl9HSCye+tt469GJT21V
-         fhrQ210q1+vyqHFdZO3i+42CiWiRQGH5/0sOUshxpCEXl160XX2ERvzQ5nt3rOdB5A
-         KKgE641cvjtXr4ijN+d07AIum4mnAEfrxbp+t4VaMoDOdWjg/qoEpU2AMAk89/GjSo
-         ZEdS7uoz5eEuA==
-Received: by mail-ed1-f49.google.com with SMTP id r11so6753154edt.13
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 05:37:37 -0700 (PDT)
-X-Gm-Message-State: AOAM532z1ZwTPtCWT7jA/RMemQhaQbjmZlUcVWS6V0ZfT7CpFIBEXI4n
-        k2Hw8oH7OQMUaW1LKYxJhyGU1q1lc7QbhGqFBQ==
-X-Google-Smtp-Source: ABdhPJziudrJ40RQ4MMCAOpgwbf56oardORl1c2Ld7FXnTjUwjnLiVgB51drEJ586sz3Hl42A7RumoGGhpAFRn0yAQw=
-X-Received: by 2002:a05:6402:234b:: with SMTP id r11mr49991488eda.137.1620909456065;
- Thu, 13 May 2021 05:37:36 -0700 (PDT)
+        id S233787AbhEMMjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 08:39:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233028AbhEMMjm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 08:39:42 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8849BC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 05:38:29 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id 10so21751302pfl.1
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 05:38:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6yM/wopgJf4+n6fWiQONoFUEzOPSr/VKODj2KnuocMc=;
+        b=hA41ma5HOAxSYREyye75mEk/+G6y2z0v1vyBPxka2TGH2ITkZhkX/5aKDgYlsuLCFE
+         ZtEL47wW4rIkbyqBl00kYxlVgXJwU909L6yB+bLuy05sZVnpTNoDyPjT+yi/3WxuW5LV
+         ViQ+v8wZjHBkbOlIsUrrgcBlfub+8bOas1v4wKSX97cbLgieIifYul7q1VGZnLFENCVG
+         Xgjaql5iN2IY8g1UtA3vLhVCNX+iNIgX+lJDII1YZvRYF/HiNtOgBxGbURBEWm1f4l5Z
+         X1hT8ECKkmDZUZ9/24rNpIiXNimRCx9O+Fiog4/LGrhazeU0U3vwHq5lv4gurei7VGTM
+         CUYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6yM/wopgJf4+n6fWiQONoFUEzOPSr/VKODj2KnuocMc=;
+        b=jD33/XAkNPDhvloMrnRaZugr3wNmXZzNwiSEpx071LmU54vvvTMgrFPOm2CQELXiWI
+         eyPhfn5fv6Kce/mSkCMRK0QeLUcdAe2jWDLJxtHoCDVjisnbyCSTacCX2mXQOeuc4wCe
+         7R48wPogO6FNIK63zFS1tkVFkDBWVTLS5TXwRo8ETSsAgujC44Hx+RM2S1E3+kuX+ojR
+         TqQVGK8Azcf/W7nSliTa+XV4ovHmRdZbj9jyfD8bS9sfTzgPDducOuf+msFHzXwN9B1G
+         2BHIt/1umKUIQl+zZ1I8jy1Xpdh4ApdO5GR+AMZt70sF4DD86pBQf6ia+PSDQE7AWP1S
+         BrwQ==
+X-Gm-Message-State: AOAM531LpCl2AypHfZcrWoUJc1/+bQNNQiiIE8S02gvL9LWpiVbqaBZh
+        +7TZPWiWt5Mnv2ooL6OCc9c=
+X-Google-Smtp-Source: ABdhPJyyWrCYqFhvtFa+uKcMKzQjnMcbzHn1vcTqJuKjL/hACzbbodsf0WrGU+6ydTrcOxXwtaUTvw==
+X-Received: by 2002:a63:4a44:: with SMTP id j4mr40868160pgl.283.1620909509064;
+        Thu, 13 May 2021 05:38:29 -0700 (PDT)
+Received: from hyeyoo ([121.135.181.35])
+        by smtp.gmail.com with ESMTPSA id t19sm2148448pgv.75.2021.05.13.05.38.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 May 2021 05:38:28 -0700 (PDT)
+Date:   Thu, 13 May 2021 21:38:22 +0900
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Marco Elver <elver@google.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        David Rientjes <rientjes@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] mm, slub: change run-time assertion in
+ kmalloc_index() to compile-time
+Message-ID: <20210513123822.GA776220@hyeyoo>
+References: <20210511173448.GA54466@hyeyoo>
+ <20210512195227.245000695c9014242e9a00e5@linux-foundation.org>
+ <20210513031220.GA133011@hyeyoo>
+ <20210512204024.401ff3de38649d7d0f5a45e8@linux-foundation.org>
+ <20210513062809.GA319973@hyeyoo>
+ <a36ab9a1-f07a-42ca-bb11-5bd0c70660bb@suse.cz>
+ <YJ0ACtMpasnoZdUp@elver.google.com>
+ <20210513120339.GA772931@hyeyoo>
+ <CANpmjNP9AQ2PH9wtZbZ3bT=0YAqnaPpxAN0LgrjBO_PhzG5tjQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210420031511.2348977-1-robh@kernel.org> <20210420031511.2348977-8-robh@kernel.org>
- <OSBPR01MB4600B56CA4CE59935DDCC8B7F7519@OSBPR01MB4600.jpnprd01.prod.outlook.com>
-In-Reply-To: <OSBPR01MB4600B56CA4CE59935DDCC8B7F7519@OSBPR01MB4600.jpnprd01.prod.outlook.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 13 May 2021 07:37:24 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKazmW6_2dQBz49zPkMDYreDBnCvKbHSqm5MucefmGZ5Q@mail.gmail.com>
-Message-ID: <CAL_JsqKazmW6_2dQBz49zPkMDYreDBnCvKbHSqm5MucefmGZ5Q@mail.gmail.com>
-Subject: Re: [PATCH v7 7/9] perf: arm64: Add test for userspace counter access
- on heterogeneous systems
-To:     "nakamura.shun@fujitsu.com" <nakamura.shun@fujitsu.com>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        "honnappa.nagarahalli@arm.com" <honnappa.nagarahalli@arm.com>,
-        "Zachary.Leaf@arm.com" <Zachary.Leaf@arm.com>,
-        Raphael Gault <raphael.gault@arm.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNP9AQ2PH9wtZbZ3bT=0YAqnaPpxAN0LgrjBO_PhzG5tjQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 4:06 AM nakamura.shun@fujitsu.com
-<nakamura.shun@fujitsu.com> wrote:
->
-> Hi Rob
->
-> > Userspace counter access only works on heterogeneous systems with some
-> > restrictions. The userspace process must be pinned to a homogeneous
-> > subset of CPUs and must open the corresponding PMU for those CPUs. This
-> > commit adds a test implementing these requirements.
->
-> Are you planning to change x86 tests (tools/perf/arch/x86/tests/rdpmc.c)
-> to use libperf as well?
+On Thu, May 13, 2021 at 02:29:13PM +0200, Marco Elver wrote:
+> On Thu, 13 May 2021 at 14:03, Hyeonggon Yoo <42.hyeyoo@gmail.com> wrote:
+> > On Thu, May 13, 2021 at 12:31:38PM +0200, Marco Elver wrote:
+> [...]
+> > what about checking size it on top of kmalloc_index? because by definition of
+> > KMALLOC_SHIFT_HIGH, it's not always 25. it can be less than 25. for some
+> > situations.
+> >
+> > below is what I suggested beofre. for just reference:
+> 
+> This doesn't solve the problem. We want the compiler to complain
+> whenever kmalloc_index() is used with non-constant in normal code.
 
-The test can be removed as the libperf unit tests have an equivalent
-test. I had a patch doing this, but there were objections removing it
-until 'perf test' can run the libperf tests.
+in the beginning, I thought kmalloc_index is called only from kmalloc.
+but if kmalloc_index is called from other place, I think it should
+correctly check its size. that's what kmalloc_index should do.
 
-Rob
+or... should it be solved as another patch?
