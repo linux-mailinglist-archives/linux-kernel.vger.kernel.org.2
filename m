@@ -2,105 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02F4937F9D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 16:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C81237F9D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 16:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234559AbhEMOkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 10:40:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42240 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234483AbhEMOkw (ORCPT
+        id S234578AbhEMOlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 10:41:37 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:57695 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S234530AbhEMOl2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 10:40:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620916781;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=N82rohKdFGCk54k/eUtcJuWMLMB8kINj7ETlJh00UJQ=;
-        b=SA8Z53k3/63BzYNTnc9m6WIxbJWLa6fsEcHfbLTYja59q6PcivhXvOKluqy4D6pG3q3En4
-        LwsTjLc3fqGzW0t7KgkkstS6g7cnQlByrw9NV6G3EPpO1aUrvqokYa+4FaW8HZqUf5Jgu+
-        NR1OdVOZ/qrS5fyQhVtG/1QlONClL+8=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-9-Z9olGVilNmKjeu5BJvS9eA-1; Thu, 13 May 2021 10:39:39 -0400
-X-MC-Unique: Z9olGVilNmKjeu5BJvS9eA-1
-Received: by mail-ej1-f70.google.com with SMTP id j16-20020a1709062a10b02903ba544485d0so4759159eje.3
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 07:39:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=N82rohKdFGCk54k/eUtcJuWMLMB8kINj7ETlJh00UJQ=;
-        b=cylVsSsknsulwCOR9PSrFuzHJU9gKCv2FqQhUiRT4wQ7DCHzS/t0kTwlbPUDVMzkA0
-         Wc7jcMy/OIbKLIx8OGL5yHbeJsTAhuGqBo5Wcb7eqWsyCN2rj5woIKMD1t4jusFq2Prn
-         4f5V5GWXpm7Ksugdseq5KmqAq2l9gnWsm1392A+2dasEq81J0kxiPW1sBDjd/0qwtIhE
-         +LB516IrspCKXkfyFpKoSxenV4PK0TJtsHgHn+GaE6AIUQSBLrLNTvreTEmXbPlWbJ8w
-         ZMO4tIOKLrN9w/+LOk+B1ONeNCAbvvroCXLMANM9MocCT3cHATcnPVPoL5dDkd3FrBdq
-         HIDw==
-X-Gm-Message-State: AOAM530NuogPRtmbcvLoBlDq6zhdgM2xqYp/1PC8tR2IZre1QWUaO0gT
-        DQd9e6Yknwg5MusL26BhIXJP9OB7egoVgWY5yWNTajEexLtjM0sGU7JwyQgqnab/xlQhEVIvlPX
-        TezwMZ8KBMI8fGQP+kxSOHNHk
-X-Received: by 2002:a17:907:961e:: with SMTP id gb30mr10339761ejc.58.1620916778021;
-        Thu, 13 May 2021 07:39:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx6bjGbGDFHaUHXa1mTNhvmWCWVj4h9WkeUZyes40YkuxE3JFn0GzZuWQ5ezvv5REXRd3xrtQ==
-X-Received: by 2002:a17:907:961e:: with SMTP id gb30mr10339740ejc.58.1620916777865;
-        Thu, 13 May 2021 07:39:37 -0700 (PDT)
-Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
-        by smtp.gmail.com with ESMTPSA id b5sm2360100edz.88.2021.05.13.07.39.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 07:39:37 -0700 (PDT)
-Date:   Thu, 13 May 2021 16:39:35 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     mst@redhat.com, jasowang@redhat.com,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, wanjiabing@vivo.com
-Subject: Re: [PATCH] vdpa_sim_blk: Fix duplicate included linux/blkdev.h
-Message-ID: <20210513143935.7zlpo35d5uvr3ok6@steredhat>
-References: <1620903900-69738-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+        Thu, 13 May 2021 10:41:28 -0400
+Received: (qmail 968858 invoked by uid 1000); 13 May 2021 10:40:18 -0400
+Date:   Thu, 13 May 2021 10:40:18 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     chris.chiu@canonical.com
+Cc:     gregkh@linuxfoundation.org, m.v.b@runbox.com, hadess@hadess.net,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] Revert "USB: Add reset-resume quirk for WD19's
+ Realtek Hub"
+Message-ID: <20210513144018.GE967812@rowland.harvard.edu>
+References: <20210513041446.3082-1-chris.chiu@canonical.com>
+ <20210513041446.3082-3-chris.chiu@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1620903900-69738-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <20210513041446.3082-3-chris.chiu@canonical.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 07:05:00PM +0800, Jiapeng Chong wrote:
->Clean up the following includecheck warning:
->
->./drivers/vdpa/vdpa_sim/vdpa_sim_blk.c: linux/blkdev.h is included more
->than once.
->
->No functional change.
->
->Reported-by: Abaci Robot <abaci@linux.alibaba.com>
->Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
->---
-> drivers/vdpa/vdpa_sim/vdpa_sim_blk.c | 1 -
-> 1 file changed, 1 deletion(-)
+On Thu, May 13, 2021 at 12:14:46PM +0800, chris.chiu@canonical.com wrote:
+> From: Chris Chiu <chris.chiu@canonical.com>
+> 
+> This reverts commit ca91fd8c7643d93bfc18a6fec1a0d3972a46a18a. The
 
-Wan sent a similar patch a couple of days ago:
-https://lore.kernel.org/patchwork/patch/1422992/
+Use the proper format for referring to commits: just the first 12 hex 
+digits of the commit ID, followed by the commit's name in parentheses 
+and quotation marks.  See other patch submissions in the mailing list 
+archives for examples.
 
-Thanks,
-Stefano
+> problematic hub should be taken care for each setting PORT_SUSPEND
+> feature timeout instead of reset-resume all the time.
 
->
->diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c b/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
->index 5bfe1c2..a790903 100644
->--- a/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
->+++ b/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
->@@ -15,7 +15,6 @@
-> #include <linux/blkdev.h>
-> #include <linux/vringh.h>
-> #include <linux/vdpa.h>
->-#include <linux/blkdev.h>
-> #include <uapi/linux/virtio_blk.h>
->
-> #include "vdpa_sim.h"
->-- 
->1.8.3.1
->
+The last sentence is not grammatical.  It should say something more 
+like:
 
+	The previous patch in this series now handles problematic hubs
+	by checking the port status when a PORT_SUSPEND timeout occurs,
+	so we don't need to use reset-resume all the time.
+
+Alan Stern
+
+> 
+> Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
+> ---
+>  drivers/usb/core/quirks.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
+> index 21e7522655ac..6114cf83bb44 100644
+> --- a/drivers/usb/core/quirks.c
+> +++ b/drivers/usb/core/quirks.c
+> @@ -406,7 +406,6 @@ static const struct usb_device_id usb_quirk_list[] = {
+>  
+>  	/* Realtek hub in Dell WD19 (Type-C) */
+>  	{ USB_DEVICE(0x0bda, 0x0487), .driver_info = USB_QUIRK_NO_LPM },
+> -	{ USB_DEVICE(0x0bda, 0x5487), .driver_info = USB_QUIRK_RESET_RESUME },
+>  
+>  	/* Generic RTL8153 based ethernet adapters */
+>  	{ USB_DEVICE(0x0bda, 0x8153), .driver_info = USB_QUIRK_NO_LPM },
+> -- 
+> 2.20.1
+> 
