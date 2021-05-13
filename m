@@ -2,96 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C027637FDE1
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 21:09:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 622E337FDEF
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 21:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232243AbhEMTKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 15:10:37 -0400
-Received: from mail.manjaro.org ([176.9.38.148]:42494 "EHLO mail.manjaro.org"
+        id S232014AbhEMTQK convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 May 2021 15:16:10 -0400
+Received: from mga09.intel.com ([134.134.136.24]:59001 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232196AbhEMTKY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 15:10:24 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.manjaro.org (Postfix) with ESMTP id B6D2B221121;
-        Thu, 13 May 2021 21:09:12 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at manjaro.org
-Received: from mail.manjaro.org ([127.0.0.1])
-        by localhost (manjaro.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id ITykIUlOmmXw; Thu, 13 May 2021 21:09:08 +0200 (CEST)
-From:   Tobias Schramm <t.schramm@manjaro.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Tobias Schramm <t.schramm@manjaro.org>
-Subject: [PATCH 4/4] ARM: dts: sun8i: V3: add I2S interface to V3 dts
-Date:   Thu, 13 May 2021 21:09:49 +0200
-Message-Id: <20210513190949.2069235-5-t.schramm@manjaro.org>
-In-Reply-To: <20210513190949.2069235-1-t.schramm@manjaro.org>
-References: <20210513190949.2069235-1-t.schramm@manjaro.org>
+        id S230394AbhEMTQH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 15:16:07 -0400
+IronPort-SDR: KHly6+fCOkPbbg5ahhEZxygiwK/6IS0qWWIqyg/eR2r/ZuAaPMF/nxazFDLgBrbePMwxmE8cys
+ hZltrnjORE8w==
+X-IronPort-AV: E=McAfee;i="6200,9189,9983"; a="200082105"
+X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
+   d="scan'208";a="200082105"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 12:14:57 -0700
+IronPort-SDR: 7WEggcpESFwbovgw4qCaZtkJ0dnpYOGOo+UvuJZn9NCMESFuAGSr/nAaGZZYjsp3VWNrGfznTf
+ SBUHkmiZmNHQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
+   d="scan'208";a="401132951"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmsmga007.fm.intel.com with ESMTP; 13 May 2021 12:14:56 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Thu, 13 May 2021 12:14:55 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 13 May 2021 12:14:54 -0700
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2106.013;
+ Thu, 13 May 2021 12:14:54 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "Joerg Roedel" <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "wangzhou1@hisilicon.com" <wangzhou1@hisilicon.com>,
+        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>
+Subject: RE: [PATCH v4 1/2] iommu/sva: Tighten SVA bind API with explicit
+ flags
+Thread-Topic: [PATCH v4 1/2] iommu/sva: Tighten SVA bind API with explicit
+ flags
+Thread-Index: AQHXR/foStIq1WXEVUyqodFI447jQarh3/IAgAAZyAD//6FJIIAAhnOA//+hPACAAHc/AP//jORg
+Date:   Thu, 13 May 2021 19:14:54 +0000
+Message-ID: <e9dd39aa8a144c23beffa5ca58936385@intel.com>
+References: <20210511163521.GN1002214@nvidia.com>
+ <20210511110550.477a434f@jacob-builder> <20210511194726.GP1002214@nvidia.com>
+ <YJt3tGlzFK3b4E82@infradead.org> <20210513060012.0fcc7653@jacob-builder>
+ <20210513133834.GC1002214@nvidia.com> <20210513081050.5cf6a6ed@jacob-builder>
+ <dd52760ab65a40328b4c1a26ddd0e1d0@intel.com>
+ <20210513173303.GL1002214@nvidia.com>
+ <20210513185349.GA801495@agluck-desk2.amr.corp.intel.com>
+ <20210513190040.GR1002214@nvidia.com>
+In-Reply-To: <20210513190040.GR1002214@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Allwinner V3 SoC features an I2S interface. The I2C peripheral is
-identical to that in the Allwinner H3 SoC.
-This commit adds it to the Allwinner V3 dts.
+> If you want this then be explicit about what it is you are making when
+> building the API. Don't try to hide it under some generic idea of
+> "kernel PCI DMA SVA"
 
-Signed-off-by: Tobias Schramm <t.schramm@manjaro.org>
----
- arch/arm/boot/dts/sun8i-v3.dtsi | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+So, a special API call (that Dave can call from IDXD) to set up this
+kernel PASID. With suitable documentation to explain the scope.
+Maybe with a separate CONFIG option so it can be completely
+stubbed out (IDXD does *NOT* "select" this option ... users have
+to explicitly pick it).
 
-diff --git a/arch/arm/boot/dts/sun8i-v3.dtsi b/arch/arm/boot/dts/sun8i-v3.dtsi
-index c279e13583ba..0061c49523f2 100644
---- a/arch/arm/boot/dts/sun8i-v3.dtsi
-+++ b/arch/arm/boot/dts/sun8i-v3.dtsi
-@@ -1,10 +1,30 @@
- // SPDX-License-Identifier: (GPL-2.0+ OR MIT)
- /*
-  * Copyright (C) 2019 Icenowy Zheng <icenowy@aosc.io>
-+ * Copyright (C) 2021 Tobias Schramm <t.schramm@manjaro.org>
-  */
- 
- #include "sun8i-v3s.dtsi"
- 
-+/ {
-+	soc {
-+			i2s0: i2s@1c22000 {
-+				#sound-dai-cells = <0>;
-+				compatible = "allwinner,sun8i-h3-i2s";
-+				reg = <0x01c22000 0x400>;
-+				interrupts = <GIC_SPI 13 IRQ_TYPE_LEVEL_HIGH>;
-+				clocks = <&ccu CLK_BUS_I2S0>, <&ccu CLK_I2S0>;
-+				clock-names = "apb", "mod";
-+				dmas = <&dma 3>, <&dma 3>;
-+				dma-names = "rx", "tx";
-+				pinctrl-names = "default";
-+				pinctrl-0 = <&i2s0_pins>;
-+				resets = <&ccu RST_BUS_I2S0>;
-+				status = "disabled";
-+			};
-+	};
-+};
-+
- &ccu {
- 	compatible = "allwinner,sun8i-v3-ccu";
- };
-@@ -25,6 +45,11 @@ external_mdio: mdio@2 {
- &pio {
- 	compatible = "allwinner,sun8i-v3-pinctrl";
- 
-+	i2s0_pins: i2s0-pins {
-+		pins = "PG10", "PG11", "PG12", "PG13";
-+		function = "i2s";
-+	};
-+
- 	uart1_pg_pins: uart1-pg-pins {
- 		pins = "PG6", "PG7";
- 		function = "uart1";
--- 
-2.30.1
+> I could easily see an admin option to "turn this off" entirely as
+> being too dangerous, especially if the users have no interest in IDXD.
 
+And a kernel command line option to block IDXD from using that
+special API ... for users on generic kernels who want to block
+this use model (but still use IDXD in non-kernel cases). Users
+who don't want IDXD at all can block loading of the driver.
+
+Would that work?
+
+-Tony
