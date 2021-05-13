@@ -2,123 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EE0437F939
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 15:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A9FE37F93A
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 15:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234294AbhEMN6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 09:58:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234247AbhEMN6O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 09:58:14 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66923C061760;
-        Thu, 13 May 2021 06:57:03 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id h21so16013089qtu.5;
-        Thu, 13 May 2021 06:57:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=arftsi62dSBN19yvGjl+C2XG24kDnUGAVeP/gS4up7c=;
-        b=X7RhQN5/DuAlBJyEhUbAO8tCN2qeQKZweyP/2MM9TVH3QPVEnz1CSbj+LHRt2eKoO/
-         GEyZ+LydFpZw4n1ZCTBCJtRB0WNucUJH/4SOSqmq1pxvRogzfzyJlwLLmakUFj9ZjJ0i
-         amxtAbxV8ZApzgQvFRDhXzC05MsvVJU06bfS82K/TXXqUgLWTNmKmL1jUSiHWbNHmL01
-         M0lmQtwbRvXJ0hhA95/dnUMF1WdLGlZiY+Bhnhqx5wrtHdJ3ZaEb3ynzzPieZ/r+nVC7
-         gR8IQJA8A7SdOQ82nckbZ5jelW0O+UqHK48gDAueI0DNt1SDtTYZPmWcSAdCNCSbu1WA
-         NuhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=arftsi62dSBN19yvGjl+C2XG24kDnUGAVeP/gS4up7c=;
-        b=ukSku/tUiYvAaKS2wB68AS9WlCPOVe7BeH7BMvFb6KWOWOfgG/1+AHEupJmcr659Pn
-         G2LzATIiUBF66Vz4pyGFKncNMSJy1dIjjz71JUCpb7+hbBXx2l6H0U32HbCgzEcREDMt
-         1g60RHCQFzTTxEb1tFau5y8NuckSv0RfvE/8LZtJGUjqDE69smp9XzhJuCJWo9oJQhsN
-         oXWxHZPcqsyDhe1GOxx49arAQbCfUPrJPCcqc26lvbKV1XTRmw2inPFqG79C8+OCPDPw
-         SeIFWC434jLe2h9CIVCSMXB+obbSEZg0gWf87SgnllOXWuz8SiF3MDjS9Nasq1CzmQbx
-         hTOA==
-X-Gm-Message-State: AOAM533lhY7iBBu2GO37y2cGOqf/TTtfcpT4MxyJ+lC4xkycxjA4vVBa
-        1E2fn3uODjrwNYWNfQaLA6RLgxcCuBY=
-X-Google-Smtp-Source: ABdhPJyi5gnqhh1MrlCkqxEZPq1HNsnzgnEGh9XANlWvKRdzd4/51JAIacii7sG+vPI5mdSx3sQXPQ==
-X-Received: by 2002:a05:622a:138c:: with SMTP id o12mr39557486qtk.190.1620914222360;
-        Thu, 13 May 2021 06:57:02 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id b3sm1037373qtg.55.2021.05.13.06.57.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 May 2021 06:57:01 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v2] watchdog: dw_wdt: Fix duplicate included
- linux/kernel.h
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        wim@linux-watchdog.org
-Cc:     p.zabel@pengutronix.de, linux-watchdog@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1620904182-74107-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <8b670d5a-dc16-0709-c55a-42832ac17bfe@roeck-us.net>
-Date:   Thu, 13 May 2021 06:56:59 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S234313AbhEMN7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 09:59:05 -0400
+Received: from foss.arm.com ([217.140.110.172]:36104 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234292AbhEMN6d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 09:58:33 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 79EB61713;
+        Thu, 13 May 2021 06:57:23 -0700 (PDT)
+Received: from [10.57.81.122] (unknown [10.57.81.122])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0D0533F73B;
+        Thu, 13 May 2021 06:57:20 -0700 (PDT)
+Subject: Re: [RFC PATCH] perf cs-etm: Handle valid-but-zero timestamps
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     coresight@lists.linaro.org, mathieu.poirier@linaro.org,
+        al.grant@arm.com, branislav.rankov@arm.com, denik@chromium.org,
+        suzuki.poulose@arm.com, anshuman.khandual@arm.com,
+        Mike Leach <mike.leach@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210507095814.17933-1-james.clark@arm.com>
+ <3926c523-3fdb-66de-8b9c-b68290a5053e@arm.com>
+ <20210510053904.GB4835@leoy-ThinkPad-X240s>
+ <da07f930-ccd7-2b46-7b0f-0e9da3bf9482@arm.com>
+ <20210512012002.GB249068@leoy-ThinkPad-X240s>
+From:   James Clark <james.clark@arm.com>
+Message-ID: <b0279722-2746-bf58-0e84-224db0d85222@arm.com>
+Date:   Thu, 13 May 2021 16:57:19 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <1620904182-74107-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210512012002.GB249068@leoy-ThinkPad-X240s>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/13/21 4:09 AM, Jiapeng Chong wrote:
-> Clean up the following includecheck warning:
-> 
-> ./drivers/watchdog/dw_wdt.c: linux/kernel.h is included more than once.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-> Changes in v2:
->    -Adjust header file order, for the follow advice:
->     https://lore.kernel.org/patchwork/patch/1428192/
+On 12/05/2021 04:20, Leo Yan wrote:
+> On Tue, May 11, 2021 at 04:53:35PM +0300, James Clark wrote:
 > 
->   drivers/watchdog/dw_wdt.c | 9 ++++-----
->   1 file changed, 4 insertions(+), 5 deletions(-)
+> [...]
 > 
-> diff --git a/drivers/watchdog/dw_wdt.c b/drivers/watchdog/dw_wdt.c
-> index 32d0e17..cd57884 100644
-> --- a/drivers/watchdog/dw_wdt.c
-> +++ b/drivers/watchdog/dw_wdt.c
-> @@ -13,22 +13,21 @@
->    */
->   
->   #include <linux/bitops.h>
-> -#include <linux/limits.h>
-> -#include <linux/kernel.h>
->   #include <linux/clk.h>
-> +#include <linux/debugfs.h>
->   #include <linux/delay.h>
->   #include <linux/err.h>
-> +#include <linux/interrupt.h>
->   #include <linux/io.h>
->   #include <linux/kernel.h>
-> +#include <linux/limits.h>
->   #include <linux/module.h>
->   #include <linux/moduleparam.h>
-> -#include <linux/interrupt.h>
->   #include <linux/of.h>
-> -#include <linux/pm.h>
->   #include <linux/platform_device.h>
-> +#include <linux/pm.h>
->   #include <linux/reset.h>
->   #include <linux/watchdog.h>
-> -#include <linux/debugfs.h>
->   
->   #define WDOG_CONTROL_REG_OFFSET		    0x00
->   #define WDOG_CONTROL_REG_WDT_EN_MASK	    0x01
+>> Do you have any idea about what to do in the overflow case?
 > 
+> A quick thinking is to connect the kernel timestamp and correlate the
+> overflow case for CoreSight's timestamp, but this approach will cause
+> complexity.  And considering if the overflow occurs for not only once
+> before the new kernel timestamp is updated, it's hard to handle for
+> this case.  So seems to me, printing warning is a better choice.
+> 
+>> I think I will submit a
+>> new patchset that makes the new 'Z' timeless --itrace option work, because that also
+>> fixes this issue, without having to do the original workaround change in this RFC.
+> 
+> Good finding for these options for zero timestamps!
+> 
+>> But I'd also like to fix this overflow because it masks the issue by making non-zero
+>> timestamps appear even though they aren't valid ones.
+>>
+>> I was thinking that printing a warning in the overflow case would work, but then I would
+>> also print a warning for the zero timestamps, and that would make just a single case,
+>> rather than two. Unless we just have slightly different warning text?
+> 
+> Printing two different warnings is okay for me, which is more clear
+> for users.
+> 
+>> Something like this? Without the zero timestamp issue, the underflow issue probably wouldn't
+>> be encountered. But at least there would be some visibility if it did:
+>>
+>> diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+>> index 059bcec3f651..5d8abccd34ab 100644
+>> --- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+>> +++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+>> @@ -17,6 +17,7 @@
+>>  
+>>  #include "cs-etm.h"
+>>  #include "cs-etm-decoder.h"
+>> +#include "debug.h"
+>>  #include "intlist.h"
+>>  
+>>  /* use raw logging */
+>> @@ -294,9 +295,11 @@ cs_etm_decoder__do_soft_timestamp(struct cs_etm_queue *etmq,
+>>  static ocsd_datapath_resp_t
+>>  cs_etm_decoder__do_hard_timestamp(struct cs_etm_queue *etmq,
+>>                                   const ocsd_generic_trace_elem *elem,
+>> -                                 const uint8_t trace_chan_id)
+>> +                                 const uint8_t trace_chan_id,
+>> +                                 const ocsd_trc_index_t indx)
+> 
+> Do we really need the new argument "indx"?  If print "trace_chan_id",
+> can it give the info that the timestamp is attached to which tracer?
+
+I thought that just the channel ID wouldn't be very useful for locating where the
+issue is when doing --dump-raw-trace.
+
+By printing "Idx:..." it can be pasted straight into the search in perf and you'll
+jump straight to the part where the error happened. If you only have the channel
+ID then you'd still need to get a debugger out and find out the index if you want
+to look into the problem.
+
+I will include the index in the new patch I will submit now, but I don't insist on
+keeping it so let me know what you think.
+
+James
 
