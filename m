@@ -2,234 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D48337F6A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 13:23:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EAAE37F6A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 13:24:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232948AbhEMLY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 07:24:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232873AbhEMLYz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 07:24:55 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA9A0C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 04:23:45 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id w3so39389306ejc.4
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 04:23:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=uk3Nuoqi9WrrlO8LNdfRu9oeJEhzgooAvqOd7EA2bC0=;
-        b=FOqK6+boQCGhL7F7JNoJsU/9mIn/Y1xKY2MqKgw4q9fraenfRraM/G6k6jrjiUe9RK
-         hLG2N8fFV8t5Z4xoSTlicXV/YV2BeeA1F3O/rLSZoD8/Lb3cL++5o10WE1Oz8RXf2g1j
-         WYKmryrZRvEIf4WF2T4IwKxQrUQWtFrhL4aJCaci5puuVwW8CDQptlFiQF/OZgbdRhm5
-         BmoS5AP98UWyP/qcW5+CTGJibOt6EzoW++ijBclTm3R5VL5zsDG78d1F1a+8kNWYQlS0
-         eWrgyais1Lfc3lYifNHi4I11W1qpB/UUX67YxZDkX4cTAcENzt2Xm9S5PFMMDuxYFjtd
-         r+zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=uk3Nuoqi9WrrlO8LNdfRu9oeJEhzgooAvqOd7EA2bC0=;
-        b=P4FvhCa94DMxTGhJJlX/0JHlFSg6cw9pCTiEWwMuncfDVGnjqy03xiVx7KCVQ/cRz3
-         TQG0zSJpDf5y4CUxMSAnOhmOuiddAQESzvssc739ZQjP8yfu1Gcemn47ZRjrBQTmaeMg
-         CXg6CrZdnyvD+bDv1iOVHVe5/UjYtFQVgb/qUHMSj5pgFiUkcAwSgvjSmlbgrDFKrupk
-         laatHL2HmqyJFfaON+wrEVg+XatbicGIVFyhsIBn+g7CWO1j6w5BRMgjdpffRh8kqDHx
-         BeKO/GroB6GrWsfLUpjaXeNgbiolQ4kqoh2+zLGr6Ar646BLdVF8ZshSacUOxAW5aReC
-         3Mmg==
-X-Gm-Message-State: AOAM530OGdX1U3uQtV+lx0fvg2ZAHte5hHrtSutTLgDfoMRrInFCNzaV
-        Er1prVyvAJCurCp2uyr6WoqsXTtuCKXaPudF5wLldiukgNxvzpG/
-X-Google-Smtp-Source: ABdhPJwBanYJkhng8FkxMKDscdU9yWBNt8sAdYEoJgKHghtwkyMRGaR6oLeFVKCWg0NAvYnalMGjSxoqqJO21/lsDtI=
-X-Received: by 2002:a17:906:c211:: with SMTP id d17mr8002065ejz.247.1620905024349;
- Thu, 13 May 2021 04:23:44 -0700 (PDT)
+        id S233018AbhEMLZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 07:25:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40400 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232450AbhEMLZZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 07:25:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7E87613DE;
+        Thu, 13 May 2021 11:24:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620905054;
+        bh=jzzh35qDGkFoSJTAN06Jm3tfQzmk5CV26trrlgg59EQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dD7VcROXWD6E7T8dtHaIFbqf9fFpHi4QIi8aUjcZMwxD+0fLBFO4P1oh2R1dq4eiy
+         epx0Yo4aBCJPBJOpU/xeByjcnzYhaSvZox03GCygcQo7WkhIxhji0lI6Bn8wcfV2Ls
+         8AY37DTxYLhVBRD+gl8TvPwv4vARpQpWVr5wVkPw=
+Date:   Thu, 13 May 2021 13:24:12 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jonathan Corbet <corbet@lwn.net>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Tomasz Jankowski <tomasz1.jankowski@intel.com>,
+        Savo Novakovic <savox.novakovic@intel.com>,
+        Jianxun Zhang <jianxun.zhang@linux.intel.com>
+Subject: Re: [PATCH v3 11/14] intel_gna: add ioctl handler
+Message-ID: <YJ0MXK2XSISC1fIl@kroah.com>
+References: <20210513110040.2268-1-maciej.kwapulinski@linux.intel.com>
+ <20210513110040.2268-12-maciej.kwapulinski@linux.intel.com>
 MIME-Version: 1.0
-References: <20210512144827.811958675@linuxfoundation.org>
-In-Reply-To: <20210512144827.811958675@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 13 May 2021 16:53:32 +0530
-Message-ID: <CA+G9fYtrG5TERBDNHewFP7fJnxbpbaqxBvm=psvLxvVFup8suw@mail.gmail.com>
-Subject: Re: [PATCH 5.11 000/601] 5.11.21-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210513110040.2268-12-maciej.kwapulinski@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 12 May 2021 at 20:57, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.11.21 release.
-> There are 601 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 14 May 2021 14:47:09 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.11.21-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.11.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Thu, May 13, 2021 at 01:00:37PM +0200, Maciej Kwapulinski wrote:
+> From: Tomasz Jankowski <tomasz1.jankowski@intel.com>
+> 
+> Add ioctl handler into GNA driver.
+> The ioctl interface provides the ability to do the following:
+>  - Map and unmap memory buffers for GNA computation requests.
+>  - Retrieve capabilities of the underlying GNA IP.
+>  - Submit GNA computation requests.
+>  - Request notification of scoring completion.
+
+Do you have a pointer to the userspace code that uses this ioctl?
+That's kind of required here, otherwise we have no idea how this all
+works.
+
+> 
+> Signed-off-by: Tomasz Jankowski <tomasz1.jankowski@intel.com>
+> Tested-by: Savo Novakovic <savox.novakovic@intel.com>
+> Co-developed-by: Jianxun Zhang <jianxun.zhang@linux.intel.com>
+> Signed-off-by: Jianxun Zhang <jianxun.zhang@linux.intel.com>
+> Co-developed-by: Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>
+> Signed-off-by: Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>
+> ---
+>  drivers/misc/intel/gna/Kbuild   |   2 +-
+>  drivers/misc/intel/gna/device.c |  47 ++++++
+>  drivers/misc/intel/gna/device.h |   2 +
+>  drivers/misc/intel/gna/ioctl.c  | 257 ++++++++++++++++++++++++++++++++
+>  drivers/misc/intel/gna/ioctl.h  |  11 ++
+>  include/uapi/misc/intel/gna.h   |  53 +++++++
+>  6 files changed, 371 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/misc/intel/gna/ioctl.c
+>  create mode 100644 drivers/misc/intel/gna/ioctl.h
+> 
+> diff --git a/drivers/misc/intel/gna/Kbuild b/drivers/misc/intel/gna/Kbuild
+> index 38ff97360ed8..745a192a7304 100644
+> --- a/drivers/misc/intel/gna/Kbuild
+> +++ b/drivers/misc/intel/gna/Kbuild
+> @@ -1,5 +1,5 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+>  
+> -intel_gna-y := device.o hw.o mem.o pci.o request.o score.o
+> +intel_gna-y := device.o hw.o ioctl.o mem.o pci.o request.o score.o
+>  
+>  obj-$(CONFIG_INTEL_GNA) += intel_gna.o
+> diff --git a/drivers/misc/intel/gna/device.c b/drivers/misc/intel/gna/device.c
+> index 75d8e1675485..0e31b8c6bb70 100644
+> --- a/drivers/misc/intel/gna/device.c
+> +++ b/drivers/misc/intel/gna/device.c
+> @@ -6,8 +6,11 @@
+>  #include <linux/interrupt.h>
+>  #include <linux/module.h>
+>  
+> +#include <uapi/misc/intel/gna.h>
+> +
+>  #include "device.h"
+>  #include "hw.h"
+> +#include "ioctl.h"
+>  #include "request.h"
+>  
+>  static int recovery_timeout = 60;
+> @@ -145,6 +148,50 @@ int gna_probe(struct device *parent, struct gna_dev_info *dev_info, void __iomem
+>  	return 0;
+>  }
+>  
+> +static u32 gna_device_type_by_hwid(u32 hwid)
+> +{
+> +	switch (hwid) {
+> +	case GNA_DEV_HWID_CNL:
+> +		return GNA_DEV_TYPE_0_9;
+> +	case GNA_DEV_HWID_GLK:
+> +	case GNA_DEV_HWID_EHL:
+> +	case GNA_DEV_HWID_ICL:
+> +		return GNA_DEV_TYPE_1_0;
+> +	case GNA_DEV_HWID_JSL:
+> +	case GNA_DEV_HWID_TGL:
+> +	case GNA_DEV_HWID_RKL:
+> +		return GNA_DEV_TYPE_2_0;
+> +	case GNA_DEV_HWID_ADL:
+> +	case GNA_DEV_HWID_RPL:
+> +		return GNA_DEV_TYPE_3_0;
+> +	default:
+> +		return 0;
+> +	}
+> +}
+> +
+> +int gna_getparam(struct gna_private *gna_priv, union gna_parameter *param)
+> +{
+> +	switch (param->in.id) {
+> +	case GNA_PARAM_DEVICE_ID:
+> +		param->out.value = gna_priv->info.hwid;
+> +		break;
+
+Why do you need an ioctl to get the device id?  What's wrong with sysfs?
+
+> +	case GNA_PARAM_RECOVERY_TIMEOUT:
+> +		param->out.value = jiffies_to_msecs(gna_priv->recovery_timeout_jiffies) / 1000;
+> +		break;
+> +	case GNA_PARAM_INPUT_BUFFER_S:
+> +		param->out.value = gna_priv->hw_info.in_buf_s;
+> +		break;
+> +	case GNA_PARAM_DEVICE_TYPE:
+> +		param->out.value = gna_device_type_by_hwid(gna_priv->info.hwid);
+
+Same here, why isn't this a sysfs file?
+
+> +		break;
+> +	default:
+> +		dev_err(gna_dev(gna_priv), "unknown parameter id %llu\n", param->in.id);
+
+Userspace can cause syslog DoS?  Not nice :(
+
+Please just eat the error and move on.
+
+> +		return -EINVAL;
+
+Wrong error value for invalid ioctl value.
 
 
-Results from Linaro=E2=80=99s test farm.
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  MODULE_AUTHOR("Intel Corporation");
+>  MODULE_DESCRIPTION("Intel(R) Gaussian & Neural Accelerator (Intel(R) GNA) Driver");
+>  MODULE_LICENSE("GPL");
+> diff --git a/drivers/misc/intel/gna/device.h b/drivers/misc/intel/gna/device.h
+> index d3c86d649b5c..75784882f57c 100644
+> --- a/drivers/misc/intel/gna/device.h
+> +++ b/drivers/misc/intel/gna/device.h
+> @@ -17,6 +17,7 @@
+>  #define GNA_DV_NAME	"intel_gna"
+>  
+>  struct workqueue_struct;
+> +union gna_parameter;
+>  struct device;
+>  struct file;
+>  
+> @@ -71,6 +72,7 @@ struct gna_private {
+>  };
+>  
+>  int gna_probe(struct device *parent, struct gna_dev_info *dev_info, void __iomem *iobase, int irq);
+> +int gna_getparam(struct gna_private *gna_priv, union gna_parameter *param);
+>  
+>  static inline u32 gna_reg_read(struct gna_private *gna_priv, u32 reg)
+>  {
+> diff --git a/drivers/misc/intel/gna/ioctl.c b/drivers/misc/intel/gna/ioctl.c
+> new file mode 100644
+> index 000000000000..4a90135b3cc6
+> --- /dev/null
+> +++ b/drivers/misc/intel/gna/ioctl.c
+> @@ -0,0 +1,257 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +// Copyright(c) 2017-2021 Intel Corporation
+> +
+> +#include <linux/device.h>
+> +#include <linux/fs.h>
+> +#include <linux/idr.h>
+> +#include <linux/jiffies.h>
+> +#include <linux/kref.h>
+> +#include <linux/list.h>
+> +#include <linux/mutex.h>
+> +#include <linux/uaccess.h>
+> +#include <linux/wait.h>
+> +#include <linux/workqueue.h>
+> +
+> +#include <uapi/misc/intel/gna.h>
+> +
+> +#include "device.h"
+> +#include "ioctl.h"
+> +#include "mem.h"
+> +#include "request.h"
+> +#include "score.h"
+> +
+> +static int gna_ioctl_score(struct gna_file_private *file_priv, void __user *argptr)
+> +{
+> +	union gna_compute score_args;
+> +	struct gna_private *gna_priv;
+> +	u64 request_id;
+> +	int ret;
+> +
+> +	gna_priv = file_priv->gna_priv;
+> +
+> +	if (copy_from_user(&score_args, argptr, sizeof(score_args))) {
+> +		dev_err(gna_dev(gna_priv), "could not copy score ioctl config from user\n");
 
-Apart from mips clang build failures no other new test failures noticed.
+No need for errors that userspace can cause, please drop, you already
+got a message if there needed to be one.
 
-## Build
-* kernel: 5.11.21-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.11.y
-* git commit: 1ec08480ab8706a140351f1c2e58d1624a1e0942
-* git describe: v5.11.19-944-g1ec08480ab87
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.11.y/build/v5.11=
-.19-944-g1ec08480ab87
+> +		return -EFAULT;
+> +	}
+> +
+> +	ret = gna_validate_score_config(&score_args.in.config, file_priv);
 
-## Regressions (compared to v5.11.19-342-g601189766731)
+This function is in a different patch?  Now I have to dig through that
+to try to figure out if you really are validating the data properly?
+That's just mean to reviewers, would you want to review code like this?
+Please fix.
 
-* mips, build
-  - clang-10-allnoconfig
-  - clang-10-defconfig
-  - clang-10-tinyconfig
-  - clang-11-allnoconfig
-  - clang-11-defconfig
-  - clang-11-tinyconfig
-  - clang-12-allnoconfig
-  - clang-12-defconfig
-  - clang-12-tinyconfig
+> +	if (ret) {
+> +		dev_err(gna_dev(gna_priv), "request not valid\n");
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Same here, clean up all error reporting in your ioctl to be none at all
+please.
 
-## No fixes (compared to v5.11.19-342-g601189766731)
+> +		return ret;
+> +	}
+> +
+> +	ret = gna_enqueue_request(&score_args.in.config, file_priv, &request_id);
 
-## Test result summary
- total: 72537, pass: 61040, fail: 1006, skip: 10228, xfail: 263,
+Same here, where is this function to review?
 
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 193 total, 193 passed, 0 failed
-* arm64: 27 total, 27 passed, 0 failed
-* i386: 25 total, 25 passed, 0 failed
-* mips: 45 total, 36 passed, 9 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x86_64: 27 total, 27 passed, 0 failed
+Same for all your other ioctl handlers, please fix up, this is rough to
+review...
 
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* kselftest-android
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kvm
-* kselftest-lib
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* timesync-off
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+greg k-h
