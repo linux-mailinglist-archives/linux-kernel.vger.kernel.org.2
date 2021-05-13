@@ -2,135 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF7337F387
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 09:24:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 695A837F38A
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 09:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231675AbhEMHZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 03:25:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231570AbhEMHY6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 03:24:58 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 122C0C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 00:23:48 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id x8so3669073wrq.9
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 00:23:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=d/xMPZN/gkmLGfGxs7msx2GU38JzvKK2WFczkjQZpiI=;
-        b=dB0fAMfFuQVGYCrgNpX+RwED0/vQye1LAK4k6YNq5K723Hbb1ds0TCT6alwocBwcAq
-         3PEmJaJ6ca3+Wue+somAn6R0+N0/1t7Uk7bElSGYy6+ZdhKLWUv1XhoqvpCE1CcNbkyV
-         hhH0XyghKV4mCvtqGAWOyFAUcpFwIvsGyroiaBb2RaAk2yDi614+1xdus2eOTV2xoQqZ
-         vxqsyBCXlVCu/9NSha3CbL5V2woXsN+VaMkVItithBIlhsiFRkdE2dFm/R/2O42f28cj
-         3e/GVke6prmVv8tjyEJpwL1p8NR1vmn4xu0HCsxVM1vNwDwRJ+HooyW88VHLgleRuz7D
-         JepA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=d/xMPZN/gkmLGfGxs7msx2GU38JzvKK2WFczkjQZpiI=;
-        b=nBCeTAipG73tkBtVPyx2Sf6bwJ6FPVFcIbeGLAW0iWE1QWI52WQHs6fzXzgvf+JwkW
-         WPeSAUrrUaB9loGWctNeocuE7EbOtgEtCp6LQqDtpSEIueKvd7vsy66MEj6aQ+SyLJ/L
-         R1kpPyYHY3vYTXdn7EuxJawPC4tKer7vwQWYQnlf+UzOxvKtGyiF75YTCpQFLwYCgLC8
-         FDM/0lEZlmmCTsIseV+ouxTzEhFh845HR2Pf+aoT5g8wcEKupXrFqujm8nQmRannM+3N
-         kJj6eN6sTirPcedUqh/FViyFTefqYnfi5sxdkfD5H5BsvifMs+op8tgSzeg/SResKIJI
-         3ArQ==
-X-Gm-Message-State: AOAM532gaz+ZD3FwUSk6twAiNOuUvF4vfc7bnSoZaCdkdWY9Ll2fB6iw
-        Ta5XgmP134NbJ5zl2bvoug==
-X-Google-Smtp-Source: ABdhPJwZCf98tsoyYoYqUPuhoStuVW7xWIO7jN8+/hTfY08peaZXJ4st+ZfCRPDEEWUqWBomORbaog==
-X-Received: by 2002:adf:e3c6:: with SMTP id k6mr50347217wrm.236.1620890626749;
-        Thu, 13 May 2021 00:23:46 -0700 (PDT)
-Received: from localhost.localdomain ([46.53.251.101])
-        by smtp.gmail.com with ESMTPSA id i11sm1932816wrp.56.2021.05.13.00.23.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 00:23:46 -0700 (PDT)
-Date:   Thu, 13 May 2021 10:23:44 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     mingo@redhat.com, peterz@infradead.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH 1/4] sched: make nr_running() return 32-bit
-Message-ID: <YJzUAHQwFj1x2HCH@localhost.localdomain>
-References: <20210422200228.1423391-1-adobriyan@gmail.com>
- <87fsyr5wtj.ffs@nanos.tec.linutronix.de>
+        id S231699AbhEMHZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 03:25:33 -0400
+Received: from mga06.intel.com ([134.134.136.31]:29100 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231626AbhEMHZV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 03:25:21 -0400
+IronPort-SDR: aKlQupy4DDdl5UQdyYVgT7D9PmfEoRbE059RU7C0JDNYqZwubq+bBM086AU7+lNScsQ8UBhmkf
+ qpQWcQ/p7VJQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="261138254"
+X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
+   d="scan'208";a="261138254"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 00:23:56 -0700
+IronPort-SDR: Fxhbhcb7CPja7qc1bALQnbiZn28dcWXEFArRdDaRF8+q934+FIp4adQrHUwPFBlmiyes6I/Xo8
+ bvjTvev1KfbA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
+   d="scan'208";a="393101595"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
+  by orsmga006.jf.intel.com with ESMTP; 13 May 2021 00:23:51 -0700
+Date:   Thu, 13 May 2021 15:23:50 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Michal Hocko <mhocko@suse.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Widawsky, Ben" <ben.widawsky@intel.com>
+Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>, ying.huang@intel.com
+Subject: Re: [PATCH v4 03/13] mm/mempolicy: Add MPOL_PREFERRED_MANY for
+ multiple preferred nodes
+Message-ID: <20210513072350.GB44993@shbuild999.sh.intel.com>
+References: <1615952410-36895-1-git-send-email-feng.tang@intel.com>
+ <1615952410-36895-4-git-send-email-feng.tang@intel.com>
+ <YHblLevoUZ6+AvVZ@dhcp22.suse.cz>
+ <20210420071625.GB48282@shbuild999.sh.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87fsyr5wtj.ffs@nanos.tec.linutronix.de>
+In-Reply-To: <20210420071625.GB48282@shbuild999.sh.intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 01:58:16AM +0200, Thomas Gleixner wrote:
-> Alexey,
-> 
-> On Thu, Apr 22 2021 at 23:02, Alexey Dobriyan wrote:
-> > Creating 2**32 tasks is impossible due to futex pid limits and wasteful
-> > anyway. Nobody has done it.
-> >
-> 
-> this whole pile lacks useful numbers. What's the actual benefit of that
-> churn?
+mempolicy: don't handle MPOL_LOCAL as a fake MPOL_PREFERRED policy
 
-The long term goal is to use 32-bit data more. People will see it in
-core kernel and copy everywhere elase.
+MPOL_LOCAL policy has been setup as a real policy, but it is still
+handled as a faked POL_PREFERRED policy with one internal
+MPOL_F_LOCAL flag bit set, and there are many places having to
+judge the real 'prefer' or the 'local' policy, which are quite
+confusing.
 
-> Just with the default config for one of my reference machines:
-> 
->    text		data	bss	dec	 hex	 filename
-> 16679864	6627950	1671296	24979110 17d26a6 ../build/vmlinux-before
-> 16679894	6627950	1671296	24979140 17d26c4 ../build/vmlinux-after
-> ------------------------------------------------------------------------
->      +30
-> 
-> I'm truly impressed by the massive savings of this change and I'm even
-> more impressed by the justification:
-> 
-> > Bring nr_running() into 32-bit world to save on REX prefixes.
+In current code, there are four cases that MPOL_LOCAL are used:
+* user specifies 'local' policy
+* user specifies 'prefer' policy, but with empty nodemask
+* system 'default' policy is used
+* 'prefer' policy + valid 'preferred' node with MPOL_F_STATIC_NODES
+  flag set, and when it is 'rebind' to a nodemask which doesn't
+  contains the 'preferred' node, it will add the MPOL_F_LOCAL bit
+  and performs as 'local' policy. In future if it is 'rebind' again
+  with valid nodemask, the policy will be restored back to 'prefer'
 
-I collected numbers initially but then stopped because noone cared and
-they can be config and arch dependent.
+So for the first three cases, we make 'local' a real policy
+instead of a fake 'prefer' one, this will reduce confusion and
+make it easier to integrate our new 'prefer-many' policy
 
-> Aside of the obvious useless churn,
+And next optional patch will kill the 'MPOL_F_LOCAL' bit.
 
-oh... Sometimes I think churn is the whole point.
+Signed-off-by: Feng Tang <feng.tang@intel.com>
+---
+ mm/mempolicy.c | 60 ++++++++++++++++++++++++++++++++--------------------------
+ 1 file changed, 33 insertions(+), 27 deletions(-)
 
-> REX prefixes are universaly true for
-> all architectures, right? There is a world outside x86 ...
-
-In general, 32-bitness is preferred for code generation.
-
-32-bit RISCs naturally prefers 32-bit.
-
-64-bit RISCs don't care because they remember 32-bit roots and
-have necessary 32-bit fixed width(!) instructions.
-
-x86_64 is the only arch where going 64-bit generally adds more bytes
-to the instruction stream.
-
-Effects can be smudged by compilers of course, in this case, percpu
-stuff. That "unsigned int i" is a mistake. Proper diff looks like this:
-
-	-ffffffff811115fa: 8b 44 18 04      mov    eax,DWORD PTR [rax+rbx*1+0x4]
-	-ffffffff811115fe: 49 01 c4         add    r12,rax
-	+ffffffff811115fa: 44 03 64 18 04   add    r12d,DWORD PTR [rax+rbx*1+0x4]
-
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -4348,9 +4348,10 @@ context_switch(struct rq *rq, struct task_struct *prev,
-  * externally visible scheduler statistics: current number of runnable
-  * threads, total number of context switches performed since bootup.
+diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+index d79fa29..2f20f079 100644
+--- a/mm/mempolicy.c
++++ b/mm/mempolicy.c
+@@ -121,8 +121,7 @@ enum zone_type policy_zone = 0;
   */
--unsigned long nr_running(void)
-+unsigned int nr_running(void)
- {
--	unsigned long i, sum = 0;
-+	unsigned int sum = 0;
-+	unsigned long i;
+ static struct mempolicy default_policy = {
+ 	.refcnt = ATOMIC_INIT(1), /* never free it */
+-	.mode = MPOL_PREFERRED,
+-	.flags = MPOL_F_LOCAL,
++	.mode = MPOL_LOCAL,
+ };
  
- 	for_each_online_cpu(i)
- 		sum += cpu_rq(i)->nr_running;
+ static struct mempolicy preferred_node_policy[MAX_NUMNODES];
+@@ -200,12 +199,9 @@ static int mpol_new_interleave(struct mempolicy *pol, const nodemask_t *nodes)
+ 
+ static int mpol_new_preferred(struct mempolicy *pol, const nodemask_t *nodes)
+ {
+-	if (!nodes)
+-		pol->flags |= MPOL_F_LOCAL;	/* local allocation */
+-	else if (nodes_empty(*nodes))
+-		return -EINVAL;			/*  no allowed nodes */
+-	else
+-		pol->v.preferred_node = first_node(*nodes);
++	if (nodes_empty(*nodes))
++		return -EINVAL;
++	pol->v.preferred_node = first_node(*nodes);
+ 	return 0;
+ }
+ 
+@@ -239,25 +235,19 @@ static int mpol_set_nodemask(struct mempolicy *pol,
+ 		  cpuset_current_mems_allowed, node_states[N_MEMORY]);
+ 
+ 	VM_BUG_ON(!nodes);
+-	if (pol->mode == MPOL_PREFERRED && nodes_empty(*nodes))
+-		nodes = NULL;	/* explicit local allocation */
+-	else {
+-		if (pol->flags & MPOL_F_RELATIVE_NODES)
+-			mpol_relative_nodemask(&nsc->mask2, nodes, &nsc->mask1);
+-		else
+-			nodes_and(nsc->mask2, *nodes, nsc->mask1);
+ 
+-		if (mpol_store_user_nodemask(pol))
+-			pol->w.user_nodemask = *nodes;
+-		else
+-			pol->w.cpuset_mems_allowed =
+-						cpuset_current_mems_allowed;
+-	}
++	if (pol->flags & MPOL_F_RELATIVE_NODES)
++		mpol_relative_nodemask(&nsc->mask2, nodes, &nsc->mask1);
++	else
++		nodes_and(nsc->mask2, *nodes, nsc->mask1);
+ 
+-	if (nodes)
+-		ret = mpol_ops[pol->mode].create(pol, &nsc->mask2);
++	if (mpol_store_user_nodemask(pol))
++		pol->w.user_nodemask = *nodes;
+ 	else
+-		ret = mpol_ops[pol->mode].create(pol, NULL);
++		pol->w.cpuset_mems_allowed =
++					cpuset_current_mems_allowed;
++
++	ret = mpol_ops[pol->mode].create(pol, &nsc->mask2);
+ 	return ret;
+ }
+ 
+@@ -290,13 +280,14 @@ static struct mempolicy *mpol_new(unsigned short mode, unsigned short flags,
+ 			if (((flags & MPOL_F_STATIC_NODES) ||
+ 			     (flags & MPOL_F_RELATIVE_NODES)))
+ 				return ERR_PTR(-EINVAL);
++
++			mode = MPOL_LOCAL;
+ 		}
+ 	} else if (mode == MPOL_LOCAL) {
+ 		if (!nodes_empty(*nodes) ||
+ 		    (flags & MPOL_F_STATIC_NODES) ||
+ 		    (flags & MPOL_F_RELATIVE_NODES))
+ 			return ERR_PTR(-EINVAL);
+-		mode = MPOL_PREFERRED;
+ 	} else if (nodes_empty(*nodes))
+ 		return ERR_PTR(-EINVAL);
+ 	policy = kmem_cache_alloc(policy_cache, GFP_KERNEL);
+@@ -427,6 +418,9 @@ static const struct mempolicy_operations mpol_ops[MPOL_MAX] = {
+ 		.create = mpol_new_bind,
+ 		.rebind = mpol_rebind_nodemask,
+ 	},
++	[MPOL_LOCAL] = {
++		.rebind = mpol_rebind_default,
++	},
+ };
+ 
+ static int migrate_page_add(struct page *page, struct list_head *pagelist,
+@@ -1960,6 +1954,8 @@ unsigned int mempolicy_slab_node(void)
+ 							&policy->v.nodes);
+ 		return z->zone ? zone_to_nid(z->zone) : node;
+ 	}
++	case MPOL_LOCAL:
++		return node;
+ 
+ 	default:
+ 		BUG();
+@@ -2084,6 +2080,11 @@ bool init_nodemask_of_mempolicy(nodemask_t *mask)
+ 		*mask =  mempolicy->v.nodes;
+ 		break;
+ 
++	case MPOL_LOCAL:
++		nid = numa_node_id();
++		init_nodemask_of_node(mask, nid);
++		break;
++
+ 	default:
+ 		BUG();
+ 	}
+@@ -2344,6 +2345,8 @@ bool __mpol_equal(struct mempolicy *a, struct mempolicy *b)
+ 		if (a->flags & MPOL_F_LOCAL)
+ 			return true;
+ 		return a->v.preferred_node == b->v.preferred_node;
++	case MPOL_LOCAL:
++		return true;
+ 	default:
+ 		BUG();
+ 		return false;
+@@ -2487,6 +2490,10 @@ int mpol_misplaced(struct page *page, struct vm_area_struct *vma, unsigned long
+ 			polnid = pol->v.preferred_node;
+ 		break;
+ 
++	case MPOL_LOCAL:
++		polnid = numa_node_id();
++		break;
++
+ 	case MPOL_BIND:
+ 		/* Optimize placement among multiple nodes via NUMA balancing */
+ 		if (pol->flags & MPOL_F_MORON) {
+@@ -2931,7 +2938,6 @@ int mpol_parse_str(char *str, struct mempolicy **mpol)
+ 		 */
+ 		if (nodelist)
+ 			goto out;
+-		mode = MPOL_PREFERRED;
+ 		break;
+ 	case MPOL_DEFAULT:
+ 		/*
+@@ -2975,7 +2981,7 @@ int mpol_parse_str(char *str, struct mempolicy **mpol)
+ 	else if (nodelist)
+ 		new->v.preferred_node = first_node(nodes);
+ 	else
+-		new->flags |= MPOL_F_LOCAL;
++		new->mode = MPOL_LOCAL;
+ 
+ 	/*
+ 	 * Save nodes for contextualization: this will be used to "clone"
+-- 
+2.7.4
+
