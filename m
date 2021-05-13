@@ -2,84 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B32E37F7E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 14:25:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D029837F7E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 14:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233842AbhEMM00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 08:26:26 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:54213 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233843AbhEMM0M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 08:26:12 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1620908703; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=pr01Ly3p5hRG+lG2/BBp6EqnyJFCtnIgYRylZWwtXRM=; b=YY6IkGvd214AaNM1l8saMtnsi71GXy7rFEQGrrJz7Ey/btyer1g4PzVXiESztbfCiItZ5T+F
- 5f9xm06+LE0ayJuUFk3QkuL3hAmyUmO7aC1Oz4+KfVeNcYg8FcDWjAhoX5vrwkchedaDnHXv
- oCZbfuHZkakx+JiE/yTBvNUGQkE=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 609d1a8da4c86a394a363f36 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 13 May 2021 12:24:45
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0C0C4C4323A; Thu, 13 May 2021 12:24:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D557BC433F1;
-        Thu, 13 May 2021 12:24:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D557BC433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rohitkr@codeaurora.org,
-        srinivas.kandagatla@linaro.org, dianders@chromium.org,
-        swboyd@chromium.org, judyhsiao@chromium.org
-Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Subject: [PATCH] arm64: dts: qcom: Add wakeup delay for adau codec
-Date:   Thu, 13 May 2021 17:54:29 +0530
-Message-Id: <20210513122429.25295-1-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.29.0
+        id S230497AbhEMM1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 08:27:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233591AbhEMM0j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 08:26:39 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 685ADC061763
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 05:25:17 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id n25so30761722edr.5
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 05:25:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=deviqon.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cpZpdAO1/PMI+7gumAxN/U6hYQSLUF5PVsfG5cbqn/k=;
+        b=V4WRwq8AczyqxazVuYZ5e4aAr/xAe1sdntbER5nBnMoPBY9hKDzzdcqJh4LejggFaX
+         00SjUtRlLaAPZLqOwwVokb3fj2ML/OGxrUKAIVOZjaiLRCQI1wjrim4woUZ8tjyiDrR0
+         rRqfw1CNtBQGx5/0qtmz19UdAbTlAknZ3syssxfaKSJcd0S2ytLgQBCBgbgqztCaYNOv
+         A4nIhSdcW+5LdnTsXzVUivwYWnVDdWCQoQcn2fifQ0vAS6xSXs5luop9blwrnBdULgwy
+         5wD4vc3S+qjtuDVlTt1SnkZbJheizyiVfoFNMv05wlBMTaxXurT1v1n2lYmKJljSq3z7
+         3V9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cpZpdAO1/PMI+7gumAxN/U6hYQSLUF5PVsfG5cbqn/k=;
+        b=Y7U6VMExT8H46ZKVnbAZUYAN4txFD5L/1YYOr5m+gEXAhXCu30yckXS4vTCf4rcF0N
+         fddlVS2O1eIoqbpNnApUIchLGImy23XT9PxGb4dm35yFbOi8iKUiWpYAzxIHT5zoBGHA
+         8/MOst3xMmx4/cbobmtTkWuXGK48Iv8I7yEYluOKSDYA+LH+My6GEpa3lq8hkWbLjF2O
+         jpOZ+j/HKkEY0ZDK1ky4HJ7D28yh4reWdk47Gxux91yBrZ9cO2p+20em8kdc0xgrQuaM
+         j4CAQsi/cI2+kOO8YiWXzi5Dwkku1fZDEZRhNdZYrKJija1Va+4rps9E+HcdLBUabRQg
+         q6TA==
+X-Gm-Message-State: AOAM530vcKJLnvVIdT65z1bOgir4LG9mMM6VfnNLvyTEfq9UtRo+tu+S
+        tzq6fYcTzBiklkO5gER4xTX2aZjVJSxQT0hVHno=
+X-Google-Smtp-Source: ABdhPJzKJg6HadllfR6s9RpfDpBd8peDnG8G7vova3n0iOMy1YUzfrWf35J1H6+0oDFNEZ5wu0AeyQ==
+X-Received: by 2002:a50:fd14:: with SMTP id i20mr5444456eds.60.1620908716168;
+        Thu, 13 May 2021 05:25:16 -0700 (PDT)
+Received: from neptune.. ([5.2.193.191])
+        by smtp.gmail.com with ESMTPSA id e23sm964211edr.80.2021.05.13.05.25.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 May 2021 05:25:15 -0700 (PDT)
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     jic23@kernel.org, nuno.sa@analog.com,
+        Alexandru Ardelean <aardelean@deviqon.com>
+Subject: [PATCH] iio: imu: remove unused private data assigned with spi_set_drvdata()
+Date:   Thu, 13 May 2021 15:25:12 +0300
+Message-Id: <20210513122512.93187-1-aardelean@deviqon.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add wakeup delay for fixing PoP noise during capture begin.
+These were usually used before the conversion to devm_ functions, so that
+the remove hook would be able to retrieve the pointer and do cleanups on
+remove.
+When the conversion happened, they should have been removed, but were
+omitted.
 
-Signed-off-by: Judy Hsiao <judyhsiao@chromium.org>
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Some drivers were copied from drivers that fit the criteria described
+above. In any case, in order to prevent more drivers from being used as
+example (and have spi_set_drvdata() needlessly set), this change removes it
+from the IIO IMU group.
+
+Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
 ---
- arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/iio/imu/adis16400.c | 2 --
+ drivers/iio/imu/adis16460.c | 2 --
+ drivers/iio/imu/adis16475.c | 1 -
+ drivers/iio/imu/adis16480.c | 2 --
+ 4 files changed, 7 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
-index 4c6e433c8226..3eb8550da1fc 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
-@@ -23,6 +23,7 @@ / {
- 	adau7002: audio-codec-1 {
- 		compatible = "adi,adau7002";
- 		IOVDD-supply = <&pp1800_l15a>;
-+		wakeup-delay-ms = <15>;
- 		#sound-dai-cells = <0>;
- 	};
- };
+diff --git a/drivers/iio/imu/adis16400.c b/drivers/iio/imu/adis16400.c
+index cb8d3ffab6fc..109b2360a54e 100644
+--- a/drivers/iio/imu/adis16400.c
++++ b/drivers/iio/imu/adis16400.c
+@@ -1164,8 +1164,6 @@ static int adis16400_probe(struct spi_device *spi)
+ 		return -ENOMEM;
+ 
+ 	st = iio_priv(indio_dev);
+-	/* this is only used for removal purposes */
+-	spi_set_drvdata(spi, indio_dev);
+ 
+ 	/* setup the industrialio driver allocated elements */
+ 	st->variant = &adis16400_chips[spi_get_device_id(spi)->driver_data];
+diff --git a/drivers/iio/imu/adis16460.c b/drivers/iio/imu/adis16460.c
+index 73bf45e859b8..068d98780383 100644
+--- a/drivers/iio/imu/adis16460.c
++++ b/drivers/iio/imu/adis16460.c
+@@ -388,8 +388,6 @@ static int adis16460_probe(struct spi_device *spi)
+ 	if (indio_dev == NULL)
+ 		return -ENOMEM;
+ 
+-	spi_set_drvdata(spi, indio_dev);
+-
+ 	st = iio_priv(indio_dev);
+ 
+ 	st->chip_info = &adis16460_chip_info;
+diff --git a/drivers/iio/imu/adis16475.c b/drivers/iio/imu/adis16475.c
+index 5654c0c15426..90aec3c9dbcb 100644
+--- a/drivers/iio/imu/adis16475.c
++++ b/drivers/iio/imu/adis16475.c
+@@ -1329,7 +1329,6 @@ static int adis16475_probe(struct spi_device *spi)
+ 		return -ENOMEM;
+ 
+ 	st = iio_priv(indio_dev);
+-	spi_set_drvdata(spi, indio_dev);
+ 
+ 	st->info = device_get_match_data(&spi->dev);
+ 	if (!st->info)
+diff --git a/drivers/iio/imu/adis16480.c b/drivers/iio/imu/adis16480.c
+index f81b86690b76..c7dd1150780d 100644
+--- a/drivers/iio/imu/adis16480.c
++++ b/drivers/iio/imu/adis16480.c
+@@ -1279,8 +1279,6 @@ static int adis16480_probe(struct spi_device *spi)
+ 	if (indio_dev == NULL)
+ 		return -ENOMEM;
+ 
+-	spi_set_drvdata(spi, indio_dev);
+-
+ 	st = iio_priv(indio_dev);
+ 
+ 	st->chip_info = &adis16480_chip_info[id->driver_data];
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+2.31.1
 
