@@ -2,124 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85CA737F0DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 03:12:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F97237F0C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 03:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240779AbhEMBNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 21:13:05 -0400
-Received: from mslow1.mail.gandi.net ([217.70.178.240]:34571 "EHLO
-        mslow1.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236407AbhEMBMa (ORCPT
+        id S235302AbhEMBHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 21:07:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234765AbhEMBH2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 21:12:30 -0400
-Received: from relay9-d.mail.gandi.net (unknown [217.70.183.199])
-        by mslow1.mail.gandi.net (Postfix) with ESMTP id 9814A100963;
-        Thu, 13 May 2021 01:01:08 +0000 (UTC)
-X-Originating-IP: 68.203.5.165
-Received: from [192.168.1.186] (cpe-68-203-5-165.austin.res.rr.com [68.203.5.165])
-        (Authenticated sender: frank@zago.net)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 8E8A2FF804;
-        Thu, 13 May 2021 01:00:43 +0000 (UTC)
-Subject: Re: [PATCH v2 1/2] Revert "USB: serial: ch341: add new Product ID for
- CH341A"
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        Jan-Niklas Burfeind <kernel@aiyionpri.me>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Wolfram Sang <wsa@kernel.org>, linux-usb@vger.kernel.org,
-        gunar@schorcht.net
-References: <20210423002852.3904-1-frank@zago.net>
- <YJjjfx49nCflzFbR@hovoldconsulting.com>
- <8b3c348f-9e05-29f9-9197-8ddf1c8a9e8b@zago.net>
- <YJumDN4w4KS3Iuap@hovoldconsulting.com>
-From:   Frank Zago <frank@zago.net>
-Message-ID: <17a4178a-48b7-284c-1c3d-85c570bccf01@zago.net>
-Date:   Wed, 12 May 2021 20:00:41 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 12 May 2021 21:07:28 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D9EBC061574;
+        Wed, 12 May 2021 18:06:19 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id n3so1352646plf.7;
+        Wed, 12 May 2021 18:06:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JdjLenGm8qjHYQsyQoKVaW3PTpEveC22o5czLzfvk6Y=;
+        b=loq1VJUyP3/kDLOrzwSNufspWWWMh0fp2SKxkcsSBhXkowmGIIe77TWUY9162Gw0PX
+         ORNhAADve2zXOpzqO3CA8NZHZdYMxO/gGRNmz01q2c6tWBEB/KZiJe+c31focjlL0Jst
+         9CHZOLVuvsuevl8pZ4MJT8/DrxVugQ1lNDdulks8XQU5cLN32VHNTWBJrtZoChrgGB1p
+         7kWPFmp/5oSbX5T3lm5SxBKfeFyewPToZuAeEgLznzYjMNyHkgxcLoRQ/nPV8P781Khz
+         L9Z1xrEngA4cQcMcGeZF+Qvy1UvyT5l1ghSN237qfLb+BpT+DNkWy3L3z1sT6LYJ/EIG
+         Tmhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JdjLenGm8qjHYQsyQoKVaW3PTpEveC22o5czLzfvk6Y=;
+        b=Lo6+0kCBAEkx5qnRIvJdr8aaWxEirlVQT6DG9xCUOdD55j9PDtUqiskzfCL/XebC8T
+         Qh4Th3GuK1TPbxxEgPal2EH1Y569kccK1RKaY/m6S5p/zQudNPfiKKgHSOvmYusF7I5g
+         XMxe6ClEO9IVAsSepTKu13shcXQLOpANs0v7o5dYgGfrJMsQqEaVUX30V9W2BLhzxFVj
+         JUHkVWk6b85dPfoh62Z5Ot7uOK2BGIu2JmK5n/RKA5Hu64VtWOYm/1/oAHAW9LqKyQLf
+         R5CMxIlJLlV1Ml5yHZpuIYRazObKdAgLW4jmWBH4mAyH1z+YRjS7Ht0pC1k/jYoLztAz
+         imlA==
+X-Gm-Message-State: AOAM533T6O6iQ7r0nbOmpQ2g8OiR8oZStEf7kVBtVLwJJ7Rxp8GP0TUl
+        z7v84c7n99mMA3roR6+MKXs=
+X-Google-Smtp-Source: ABdhPJzRlb5fpSedqGJZ1QVc911yW3TBNyDU55CHyi1sTZiBC+SzxoJ5Z0IGJ9dj6BjoJpxN4QQK0w==
+X-Received: by 2002:a17:902:7c91:b029:ed:5748:901e with SMTP id y17-20020a1709027c91b02900ed5748901emr37788961pll.27.1620867978613;
+        Wed, 12 May 2021 18:06:18 -0700 (PDT)
+Received: from localhost ([203.87.99.126])
+        by smtp.gmail.com with ESMTPSA id d3sm792225pfn.141.2021.05.12.18.06.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 18:06:17 -0700 (PDT)
+Date:   Thu, 13 May 2021 11:06:14 +1000
+From:   Balbir Singh <bsingharora@gmail.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Kees Cook <keescook@chromium.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+        "jpoimboe@redhat.com" <jpoimboe@redhat.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "dave.hansen@intel.com" <dave.hansen@intel.com>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v4 0/5] Next revision of the L1D flush patches
+Message-ID: <20210513010614.GH4236@balbir-desktop>
+References: <20210108121056.21940-1-sblbir@amazon.com>
+ <cf89f0389379daaaff0cbce9c5f1550866e55e91.camel@amazon.com>
+ <202104081319.DAB1D817@keescook>
+ <87y2d5tpjh.ffs@nanos.tec.linutronix.de>
+ <87tunsofan.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <YJumDN4w4KS3Iuap@hovoldconsulting.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87tunsofan.ffs@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/12/21 4:55 AM, Johan Hovold wrote:
-> On Tue, May 11, 2021 at 08:07:31PM -0500, Frank Zago wrote:
->> Hello,
->> 
->> On 5/10/21 2:40 AM, Johan Hovold wrote:
->>> On Thu, Apr 22, 2021 at 07:28:51PM -0500, Frank Zago wrote:
->>>> From: frank zago <frank@zago.net>
->>>> 
->>>> The 0x5512 USB PID is for the I2C/GPIO/SPI interfaces. UART is
->>>>  still present but only the TX and RX pins are available; DTS,
->>>> DTR, ... are used for other things. Remove the PID, and let a
->>>> I2C driver bind to it.
->>>> 
->>>> Existing CH341 boards usually have physical jumpers to switch 
->>>> between the 3 modes.
->>>> 
->>>> This reverts commit 46ee4abb10a07bd8f8ce910ee6b4ae6a947d7f63.
->>> 
->>> You can't just revert something which people clearly depend on
->>> and therefore added to the kernel in the first place.
->> 
->> That device in UART mode was already supported by the serial
->> driver. The original submitter just had to move a jumper on his
->> board. There was no need to patch the kernel.
+On Tue, Apr 27, 2021 at 12:24:16AM +0200, Thomas Gleixner wrote:
+> On Mon, Apr 26 2021 at 10:31, Thomas Gleixner wrote:
+> > On Thu, Apr 08 2021 at 13:23, Kees Cook wrote:
+> >>
+> >> I'd still really like to see this -- it's a big hammer, but that's the
+> >> point for cases where some new flaw appears and we can point to the
+> >> toolbox and say "you can mitigate it with this while you wait for new
+> >> kernel/CPU."
+> >>
+> >> Any further thoughts from x86 maintainers? This seems like it addressed
+> >> all of tglx's review comments.
+> >
+> > Sorry for dropping the ball on this. It's in my list of things to deal
+> > with. Starting to look at it now.
 > 
-> How do you know that the author used a dev board? And are you really 
-> sure that there are no devices out there which always operate in
-> this mode?
+> So I went through the pile and for remorse I sat down and made the
+> tweaks I think are necessary myself.
+> 
+> I've pushed out the result to
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git x86/l1dflush
+>
 
-The author of commit 46ee4abb10a07bd8 put a link to his device. I have 
-the same one (or a clone) and it works fine in serial mode without the patch.
-I have a different model that works the same way. A jumper selects the mode.
+Thank you I'll take a look and test it.
+ 
+> The only thing I did not address yet is that the documentation lacks any
+> mentioning of the SIGBUS mechanism which is invoked when a task which
+> asked for L1D flush protection ends up on a SMT sibling for whatever
+> reason. That's essential to have because it's part of the contract of
+> that prctl.
 
-I can't be sure that no one has ever built a board with that chip, selecting
-the wrong mode. But the chip is about 10 years old now; someone would have noticed.
+IIRC I documented it, I'll double check.
 
 > 
->> That product ID also supports UART but in a limited way, as only
->> the RX and TX pins are available. However it is the only one that
->> supports i2c/spi/gpio, and that's why I have to revert the patch.
+> Balbir, can you please double check the result and prepare an updated
+> version from there?
 > 
-> I understand why you did it. My point is that you cannot just claim
-> that PID and say that it's only to be used for I2C/SPI without even
-> trying to make a case for why that should be ok.
+> If you don't have cycles, please let me know.
+>
 
-That's the only PID that works for I2C/SPI/GPIO. Right now the serial driver is 
-claiming it. I don't know what else to say. If I can't revert that patch, my driver
-can't be used without blacklisting the serial driver.
+I might have some cycles for testing and re-review. Thanks for all the
+hard work on this
 
-> 
->> If that's desired, the new driver could add support for that as
->> well, but I don't think it's worth the effort.
-> 
-> We obviously don't want a second serial driver for these devices.
-> 
->>> Can you reprogram the device with a newly allocated PID to be
->>> used for i2c-only instead?
->> 
->> It is possible if the device has an SPI flash connected to it, but
->> none of the cheap boards have that.
-> 
-> That's unfortunate. In principle, your approach is the right one,
-> that is, to use a dedicated PID do determine when to configure an
-> alternate mode. But since we already know that some people are using
-> the PID in question in serial mode, it's not that clear cut.
-> 
-> How do you intend to switch between i2c and spi mode?
-
-i2c, spi and gpio can all be used simultaneously. I have a working spi implementation,
-but I'm still testing it. Basically if a user wants to use spi, then 3 specific gpios
-will be reserved for MOSI/MISO/CLK (using gpiochip_request_own_desc), with possibly 
-one or more used for the chip select. 
-How a user books spi is up in the air right now. That might be done through a sysfs command.
-
-Frank.
-
+Balbir Singh. 
