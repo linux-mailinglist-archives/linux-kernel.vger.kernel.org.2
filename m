@@ -2,60 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F323937FBC9
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 18:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C94B237FBCD
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 18:51:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233785AbhEMQui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 12:50:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46454 "EHLO
+        id S233125AbhEMQwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 12:52:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232140AbhEMQub (ORCPT
+        with ESMTP id S230037AbhEMQwU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 12:50:31 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6997C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 09:49:18 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id z9so39393982lfu.8
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 09:49:18 -0700 (PDT)
+        Thu, 13 May 2021 12:52:20 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75530C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 09:51:09 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id c22so12685147ejd.12
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 09:51:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=ifX/TCH5rawOP6jn8/ioXZKUoRKViHdA5bwNP4NDIDM=;
-        b=tBLOkbeJ2N3P78VAo02g1fwla7455PUnmA8SNwvMnt04NBJ6XKV5PIJ9FHpYvJbOAV
-         lcSEPICMrP49WTsa1YUkD0Muv+4rzLHfu6VpHSTbGgKCHbvZNzUk62PxcnaEkxn0YBME
-         IXvKRcfsLoCbL6pQ0fWECeW1edBoPUrEKCRg7R+AZkCNCDmxcDZfsj5q3n+NZOhD/tV0
-         cvDfSHisjXLg+fhRLfS+7VwR11a9Qdshh3S+oLUPiHgO1MGZI3nIMTpkYdWQQmWFAzGA
-         gG26BFhmkR83KnAL8i/hb8qW+EIMg2S9SltoN9yBf+oTo0owSabWf71ahnS17gMPI4HZ
-         HKoQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=d+x/gpF6l0HoceprgaR+m+dBIab4JXxPwBNySb5f8CY=;
+        b=kdPIZROcykp+3ZiaBH0uhIag+D1DVbvcU9m/td9lrDAczqXZpBOG5Hs7cAdSisxAdE
+         uk4MgspLwNUEwKFAklFzc0EdjPEjcLUJGk2hw0mSAwxg+w6epSfnA8U6I3eRep5D+qWn
+         duQ1M6VVn4SvIC5qr556hZrkGEhAaezP7GyUrxMe8gYriwyKywEm2Yvgt8IjJQqTJTPa
+         BeM85Ij2irgx9pHQyLOMLz8z40A04ZOcWtug+fSq9oru/j6eYFqu76YBD9WPiaqHBMS1
+         VuJ/MjB5lT0zOke0wIpdSqVq07LvM3u2i3sGafCL/PVCZ/6SZ69N/mFroEPzwwqempas
+         cHHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=ifX/TCH5rawOP6jn8/ioXZKUoRKViHdA5bwNP4NDIDM=;
-        b=uUbhUQCADAN3ibmTTjQbt3AXl3n9fMthXMOkv+UqacfqETP/2NvIAI7b4nPnp/buaR
-         TroirbgOCvgn506dsYGUHlycldQYJVd+nAwAIhlkmdcYJ8KEpafnHOtZFdO6mJbVKRlj
-         5WxPDP3lvqjUmyjWUkS11/SGxfH2/to4bou8yBroUq/elilH1ODE49A9krGJ1hxEdmJB
-         A8+NKkkRFKDkqyOVFwwTip9RwVewKqMNXQ3VEtwQdZQM2O9SiIy1mlHdaKJlU7qfwPft
-         Ct7xfrLaCO63pkltSRf578jcW28j43USGHCm7/ypsq42KSrjwIY6gejPhXmNUEoXz9hu
-         jvXw==
-X-Gm-Message-State: AOAM531ic8Hfp9iN6JjBdXG87xX04b3UOtb4fwJIKp2GWPdqN2KnHg33
-        hEbRfu2K5+C9nknkBhoooHivWhqIGbdbJAz+Kqw=
-X-Google-Smtp-Source: ABdhPJxrEViRwBEWKIG9PAJDBjykysQIRcPO4i4qpsRpQ5M+b/5tF4yvE9C8Tg0EAvGWYILUOtI3nKgsNCBxwN9xJTY=
-X-Received: by 2002:a05:6512:31cd:: with SMTP id j13mr14530473lfe.27.1620924556380;
- Thu, 13 May 2021 09:49:16 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=d+x/gpF6l0HoceprgaR+m+dBIab4JXxPwBNySb5f8CY=;
+        b=nf4H9EfWn79dpCS7Q2mTYUm3NhaXOuHY8X2qUX9LPsp4n4wRheP87Aq1trOPxab2zi
+         jmM0GuVpkUAu513qgpr/Izl2NBlrYyK12e6Txp2DIqus4co418+0vpmYRwiM+l1tETSq
+         rnbGRZ3DhDPg0MIEDalEk25s4x7wFvId0z98zb4krOO7/VPrKArGkoao21l+UJimBQqp
+         9UCmZeSexpQgMJOJJafvQ9q/CcQWhHhqi5EbDboxkavZQ3y5gu0PuWmyHs4dw07hPAK8
+         N6amNWlbe8yCDNcb7Lwrv98aA3s0XOmPAF7Yj03RCfADgKr2mO9X8n/o+eH8pB0PSCr6
+         bl0g==
+X-Gm-Message-State: AOAM532ItAm1cQVDZu3kSkEsJ+OzX9CTk+trgDRgQy3cJ1WsZiUUoJrS
+        DGBmBDMV9bjt/hxqg3zWnL1A2g1mPZBQc6CtxndWR0lfaTU=
+X-Google-Smtp-Source: ABdhPJyFr0RFygozyGcTC/b9RkCKOMNOZWjjgUbBTTPNQdqjs0ul0Up6iQhjq31yiRfEYzPNpkGONjY/sEQCndNfYr0=
+X-Received: by 2002:a17:906:a51:: with SMTP id x17mr44621223ejf.25.1620924668070;
+ Thu, 13 May 2021 09:51:08 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a2e:b535:0:0:0:0:0 with HTTP; Thu, 13 May 2021 09:49:15
- -0700 (PDT)
-Reply-To: aaliyah.ahmes@gmail.com
-From:   Aaliyah Ahmed <xaviergbesse.2020@gmail.com>
-Date:   Thu, 13 May 2021 16:49:15 +0000
-Message-ID: <CABEvWUJkZNXee-z1zDnSSh+0wod36EcJs1_FmAOAtxEdSLs2_w@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
+References: <1620890438-9127-1-git-send-email-anshuman.khandual@arm.com>
+In-Reply-To: <1620890438-9127-1-git-send-email-anshuman.khandual@arm.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Thu, 13 May 2021 09:50:55 -0700
+Message-ID: <CAHbLzkpMF9b148ois7vMPrB9TVQNAfObWD=b02RFFvYBGhX3mg@mail.gmail.com>
+Subject: Re: [RFC] mm/thp: Update mm's MM_ANONPAGES stat in set_huge_zero_page()
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Zi Yan <ziy@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Diid you see my message i send to you ?
+On Thu, May 13, 2021 at 12:20 AM Anshuman Khandual
+<anshuman.khandual@arm.com> wrote:
+>
+> Although the zero huge page is being shared across various processes, each
+> mapping needs to update its mm's MM_ANONPAGES stat by HPAGE_PMD_NR in order
+> to be consistent. This just updates the stats in set_huge_zero_page() after
+> the mapping gets created.
+
+I don't get why MM_ANONPAGES needs to be inc'ed when huge zero page is
+installed. This may cause inconsistency between some counters, for
+example, MM_ANONPAGES may be much bigger than anon LRU.
+
+MM_ANONPAGES should not be inc'ed unless a new page is allocated and
+installed, right?
+
+>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Zi Yan <ziy@nvidia.com>
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+> Should it update MM_SHMEM_PAGES instead ? Applies on latest mainline.
+>
+>  mm/huge_memory.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 63ed6b25deaa..262703304807 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -706,6 +706,7 @@ static void set_huge_zero_page(pgtable_t pgtable, struct mm_struct *mm,
+>         if (pgtable)
+>                 pgtable_trans_huge_deposit(mm, pmd, pgtable);
+>         set_pmd_at(mm, haddr, pmd, entry);
+> +       add_mm_counter(mm, MM_ANONPAGES, HPAGE_PMD_NR);
+>         mm_inc_nr_ptes(mm);
+>  }
+>
+> --
+> 2.20.1
+>
+>
