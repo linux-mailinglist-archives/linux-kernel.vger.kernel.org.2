@@ -2,78 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56BE837F7F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 14:29:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A3D637F79B
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 14:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233774AbhEMMbC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 May 2021 08:31:02 -0400
-Received: from aposti.net ([89.234.176.197]:43604 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233305AbhEMMa6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 08:30:58 -0400
-Date:   Thu, 13 May 2021 13:29:30 +0100
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH] drm/ingenic: Fix pixclock rate for 24-bit serial panels
-To:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>
-Cc:     Sam Ravnborg <sam@ravnborg.org>, od@zcrc.me,
-        linux-mips@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Message-Id: <6DP1TQ.W6B9JRRW1OY5@crapouillou.net>
-In-Reply-To: <20210323144008.166248-1-paul@crapouillou.net>
-References: <20210323144008.166248-1-paul@crapouillou.net>
+        id S233834AbhEMMOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 08:14:02 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:2586 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233747AbhEMMMy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 08:12:54 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Fgr6k5BygzsRJ8;
+        Thu, 13 May 2021 20:09:02 +0800 (CST)
+Received: from huawei.com (10.174.28.241) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Thu, 13 May 2021
+ 20:11:36 +0800
+From:   Bixuan Cui <cuibixuan@huawei.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <abbotti@mev.co.uk>, <hsweeten@visionengravers.com>,
+        <gregkh@linuxfoundation.org>, <grandmaster@al2klimov.de>,
+        <john.wanghui@huawei.com>
+Subject: [PATCH -next] =?UTF-8?q?staging:=20comedi:=20Remove=20unused=20variable?= =?UTF-8?q?=20=E2=80=98min=5Ffull=5Fscale=E2=80=99?=
+Date:   Thu, 13 May 2021 21:34:58 +0800
+Message-ID: <20210513133458.27766-1-cuibixuan@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.28.241]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Fix the following build warnings:
+drivers/comedi/drivers/jr3_pci.c:507:22:
+	warning: variable ‘min_full_scale’ set but not used
 
-Almost two months later,
+And fix build warnings after removing ‘min_full_scale’:
+drivers/comedi/drivers/jr3_pci.c:189:26:
+	warning: ‘get_min_full_scales’ defined but not used
+ static struct six_axis_t get_min_full_scales(struct jr3_sensor __iomem *sensor)
+                          ^~~~~~~~~~~~~~~~~~~
 
+Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+---
+ drivers/comedi/drivers/jr3_pci.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Le mar., mars 23 2021 at 14:40:08 +0000, Paul Cercueil 
-<paul@crapouillou.net> a �crit :
-> When using a 24-bit panel on a 8-bit serial bus, the pixel clock
-> requested by the panel has to be multiplied by 3, since the subpixels
-> are shifted sequentially.
-> 
-> The code (in ingenic_drm_encoder_atomic_check) already computed
-> crtc_state->adjusted_mode->crtc_clock accordingly, but clk_set_rate()
-> used crtc_state->adjusted_mode->clock instead.
-> 
-> Fixes: 28ab7d35b6e0 ("drm/ingenic: Properly compute timings when 
-> using a 3x8-bit panel")
-> Cc: stable@vger.kernel.org # v5.10
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-
-Can I get an ACK for my patch?
-
-Thanks!
--Paul
-
-> ---
->  drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c 
-> b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> index d60e1eefc9d1..cba68bf52ec5 100644
-> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> @@ -342,7 +342,7 @@ static void ingenic_drm_crtc_atomic_flush(struct 
-> drm_crtc *crtc,
->  	if (priv->update_clk_rate) {
->  		mutex_lock(&priv->clk_mutex);
->  		clk_set_rate(priv->pix_clk,
-> -			     crtc_state->adjusted_mode.clock * 1000);
-> +			     crtc_state->adjusted_mode.crtc_clock * 1000);
->  		priv->update_clk_rate = false;
->  		mutex_unlock(&priv->clk_mutex);
->  	}
-> --
-> 2.30.2
-> 
-
+diff --git a/drivers/comedi/drivers/jr3_pci.c b/drivers/comedi/drivers/jr3_pci.c
+index 7a02c4fa3cda..122b95dc2bf9 100644
+--- a/drivers/comedi/drivers/jr3_pci.c
++++ b/drivers/comedi/drivers/jr3_pci.c
+@@ -186,7 +186,7 @@ static void set_full_scales(struct jr3_sensor __iomem *sensor,
+ 	set_s16(&sensor->command_word0, 0x0a00);
+ }
+ 
+-static struct six_axis_t get_min_full_scales(struct jr3_sensor __iomem *sensor)
++static __maybe_unused struct six_axis_t get_min_full_scales(struct jr3_sensor __iomem *sensor)
+ {
+ 	struct six_axis_t result;
+ 
+@@ -504,10 +504,8 @@ jr3_pci_poll_subdevice(struct comedi_subdevice *s)
+ 			result = poll_delay_min_max(20, 100);
+ 		} else {
+ 			/* Set full scale */
+-			struct six_axis_t min_full_scale;
+ 			struct six_axis_t max_full_scale;
+ 
+-			min_full_scale = get_min_full_scales(sensor);
+ 			max_full_scale = get_max_full_scales(sensor);
+ 			set_full_scales(sensor, max_full_scale);
+ 
+-- 
+2.17.1
 
