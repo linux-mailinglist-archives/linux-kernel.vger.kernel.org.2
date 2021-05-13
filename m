@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18EF437F48D
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 10:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AEDB37F48B
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 10:58:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232301AbhEMI7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 04:59:33 -0400
-Received: from mga02.intel.com ([134.134.136.20]:47029 "EHLO mga02.intel.com"
+        id S232290AbhEMI7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 04:59:21 -0400
+Received: from mga02.intel.com ([134.134.136.20]:47031 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232285AbhEMI7L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 04:59:11 -0400
-IronPort-SDR: Ge4mtf0cn6lSYAhWnhiJXhJVX9ivVdxTCxK2HBZKYvyo3vgMW9HrbPwTxK1bUlmXqpD/OONynx
- +BFbM8E60cqQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="187032230"
+        id S232288AbhEMI7M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 04:59:12 -0400
+IronPort-SDR: 0Kcv8M8qDSO/iEIzxCgOpL6l/4z8gzXAnII6wiZvY6u5vZ7O5X4XscLxHkzXjRP+eEKOKGGTkM
+ KJRGIRfqa7zA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="187032232"
 X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
-   d="scan'208";a="187032230"
+   d="scan'208";a="187032232"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 01:58:00 -0700
-IronPort-SDR: BAcoaDI44qVcI+FFyL+H50gdAaRjrqFFVgW2+h0lTSQZKgMnBVrpcERcuc4QH7AX1LkrqN3uSX
- hT3mP2jOkkCQ==
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 01:58:02 -0700
+IronPort-SDR: 5yS78dNZlCzjSC0Tkr7wAv9h95TyVxINE/GlEVqgdv/Dw3CIgvQk5VxhWWqodAQWR8v/IvmQYS
+ CN8Bo1v9oASg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
-   d="scan'208";a="625928216"
+   d="scan'208";a="625928233"
 Received: from aipg-stp-03.iil.intel.com ([143.185.92.28])
-  by fmsmga005.fm.intel.com with ESMTP; 13 May 2021 01:57:58 -0700
+  by fmsmga005.fm.intel.com with ESMTP; 13 May 2021 01:58:00 -0700
 From:   Guy Zadicario <guy.zadicario@intel.com>
 To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
 Cc:     olof@lixom.net, alexander.shishkin@linux.intel.com,
         andriy.shevchenko@intel.com, yochai.shefi-simchon@intel.com,
         guy.zadicario@intel.com
-Subject: [PATCH v2 00/15] misc: nnpi: New PCIe driver for Intel's NNP-I pcie device
-Date:   Thu, 13 May 2021 11:57:10 +0300
-Message-Id: <20210513085725.45528-1-guy.zadicario@intel.com>
+Subject: [PATCH v2 01/15] misc: nnpi: Document NNP-I's driver overview
+Date:   Thu, 13 May 2021 11:57:11 +0300
+Message-Id: <20210513085725.45528-2-guy.zadicario@intel.com>
 X-Mailer: git-send-email 2.25.0
+In-Reply-To: <20210513085725.45528-1-guy.zadicario@intel.com>
+References: <20210513085725.45528-1-guy.zadicario@intel.com>
 MIME-Version: 1.0
 Organization: Intel Israel (74) Limited
 Content-Transfer-Encoding: 8bit
@@ -41,121 +43,273 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Introduce overview documentation for NNP-I card and driver
+to let new readers of the driver understand better the
+driver and the NNP-I device.
 
-The following series is a driver for a new PCIe device from Intel named NNP-I
-(Nirvana Neural Processor for Inference). NNP-I is a PCIe connected compute
-device used for acceleration of AI deep learning inference applications in the
-data-center.
-
-The reason that this driver should be in the kernel is that it aims to serve
-multiple users and user-space applications which might share the same NNP-I
-card. Workloads from multiple applications can be processed simultanously by
-the NNP-I card if enough compute resources exist.
-
-Overview of the NNP-I device, driver structure and ABIs used in the driver is in
-patch#1, which adds the info as a document as it might be a useful info for
-anyone trying to understand the driver even past review.
-
-In order to ease the review process, there will be multiple series for the
-entire driver code. This is the first series, and it implements everything
-necessary to initialize the NNP-I device and allow a user-space inference
-application to use it. Other features, which are mostly related to maintenance,
-device status visibility and error-handling, will be submitted on the next stage.
-
-A basic user-space library and test application which illustrates the flow of
-an NNP-I inference application can be found here: https://github.com/IntelAI/nnpi-host
-(This series is enough for the test application to run)
-
-This patchset has gone through internal review inside Intel, the summary of the
-change log from the internal review follows.
-
-I would appreciate any feedback, questions or comments to this series.
-
-Changes in v2:
-    - Removed email disclaimer added to the end of each patch.
-    - Small fix to Kconfig requested by Randy
-    - Removed from this cover letter the long Intel internal pre-review change
-      log of this patchset.
-
-Link to v1 cover letter: https://lwn.net/Articles/856037/
-
-Guy Zadicario (15):
-  misc: nnpi: Document NNP-I's driver overview
-  misc: nnpi: Initialize NNP-I framework and PCIe modules
-  misc: nnpi: Manage and schedule messages to device
-  misc: nnpi: Define host/card ipc protocol
-  misc: nnpi: Manage host memory resources
-  misc: nnpi: Allow usermode to manage host resources
-  misc: nnpi: Disallow host memory resource access if no NNP-I devices
-    exist
-  misc: nnpi: Boot NNP-I device
-  misc: nnpi: Process device response messages
-  misc: nnpi: Query and verify device protocol
-  misc: nnpi: Create comm channel from app to device
-  misc: nnpi: Route device response messages
-  misc: nnpi: Expose command channel file interface
-  misc: nnpi: Create command channel from userspace
-  misc: nnpi: Map host resources to device channel
-
- Documentation/ABI/testing/sysfs-driver-intel_nnpi  |    5 +
- Documentation/misc-devices/index.rst               |    1 +
- Documentation/misc-devices/intel-nnpi.rst          |  237 +++++
- MAINTAINERS                                        |    6 +
- drivers/misc/Kconfig                               |    1 +
- drivers/misc/Makefile                              |    1 +
- drivers/misc/intel-nnpi/Kconfig                    |   18 +
- drivers/misc/intel-nnpi/Makefile                   |   13 +
- drivers/misc/intel-nnpi/bootimage.c                |  246 +++++
- drivers/misc/intel-nnpi/bootimage.h                |   43 +
- drivers/misc/intel-nnpi/cmd_chan.c                 |  790 ++++++++++++++
- drivers/misc/intel-nnpi/cmd_chan.h                 |  134 +++
- drivers/misc/intel-nnpi/device.c                   | 1081 ++++++++++++++++++++
- drivers/misc/intel-nnpi/device.h                   |  182 ++++
- drivers/misc/intel-nnpi/device_chardev.c           |  789 ++++++++++++++
- drivers/misc/intel-nnpi/device_chardev.h           |   14 +
- drivers/misc/intel-nnpi/host_chardev.c             |  353 +++++++
- drivers/misc/intel-nnpi/host_chardev.h             |   12 +
- drivers/misc/intel-nnpi/hostres.c                  |  627 ++++++++++++
- drivers/misc/intel-nnpi/hostres.h                  |  167 +++
- .../misc/intel-nnpi/ipc_include/ipc_c2h_events.h   |  198 ++++
- drivers/misc/intel-nnpi/ipc_include/ipc_protocol.h |  340 ++++++
- .../misc/intel-nnpi/ipc_include/nnp_boot_defs.h    |   71 ++
- drivers/misc/intel-nnpi/ipc_include/nnp_elbi.h     |   91 ++
- drivers/misc/intel-nnpi/msg_scheduler.c            |  319 ++++++
- drivers/misc/intel-nnpi/msg_scheduler.h            |  153 +++
- drivers/misc/intel-nnpi/nnp_pcie.c                 |  530 ++++++++++
- drivers/misc/intel-nnpi/nnp_user.c                 |  131 +++
- drivers/misc/intel-nnpi/nnp_user.h                 |   79 ++
- include/uapi/misc/intel_nnpi.h                     |  304 ++++++
- 30 files changed, 6936 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-driver-intel_nnpi
+Signed-off-by: Guy Zadicario <guy.zadicario@intel.com>
+Reviewed-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+---
+ Documentation/misc-devices/index.rst      |   1 +
+ Documentation/misc-devices/intel-nnpi.rst | 237 ++++++++++++++++++++++++++++++
+ 2 files changed, 238 insertions(+)
  create mode 100644 Documentation/misc-devices/intel-nnpi.rst
- create mode 100644 drivers/misc/intel-nnpi/Kconfig
- create mode 100644 drivers/misc/intel-nnpi/Makefile
- create mode 100644 drivers/misc/intel-nnpi/bootimage.c
- create mode 100644 drivers/misc/intel-nnpi/bootimage.h
- create mode 100644 drivers/misc/intel-nnpi/cmd_chan.c
- create mode 100644 drivers/misc/intel-nnpi/cmd_chan.h
- create mode 100644 drivers/misc/intel-nnpi/device.c
- create mode 100644 drivers/misc/intel-nnpi/device.h
- create mode 100644 drivers/misc/intel-nnpi/device_chardev.c
- create mode 100644 drivers/misc/intel-nnpi/device_chardev.h
- create mode 100644 drivers/misc/intel-nnpi/host_chardev.c
- create mode 100644 drivers/misc/intel-nnpi/host_chardev.h
- create mode 100644 drivers/misc/intel-nnpi/hostres.c
- create mode 100644 drivers/misc/intel-nnpi/hostres.h
- create mode 100644 drivers/misc/intel-nnpi/ipc_include/ipc_c2h_events.h
- create mode 100644 drivers/misc/intel-nnpi/ipc_include/ipc_protocol.h
- create mode 100644 drivers/misc/intel-nnpi/ipc_include/nnp_boot_defs.h
- create mode 100644 drivers/misc/intel-nnpi/ipc_include/nnp_elbi.h
- create mode 100644 drivers/misc/intel-nnpi/msg_scheduler.c
- create mode 100644 drivers/misc/intel-nnpi/msg_scheduler.h
- create mode 100644 drivers/misc/intel-nnpi/nnp_pcie.c
- create mode 100644 drivers/misc/intel-nnpi/nnp_user.c
- create mode 100644 drivers/misc/intel-nnpi/nnp_user.h
- create mode 100644 include/uapi/misc/intel_nnpi.h
 
+diff --git a/Documentation/misc-devices/index.rst b/Documentation/misc-devices/index.rst
+index 30ac58f..7f14fc4 100644
+--- a/Documentation/misc-devices/index.rst
++++ b/Documentation/misc-devices/index.rst
+@@ -22,6 +22,7 @@ fit into other categories.
+    dw-xdata-pcie
+    ibmvmc
+    ics932s401
++   intel-nnpi
+    isl29003
+    lis3lv02d
+    max6875
+diff --git a/Documentation/misc-devices/intel-nnpi.rst b/Documentation/misc-devices/intel-nnpi.rst
+new file mode 100644
+index 0000000..cb67fb4
+--- /dev/null
++++ b/Documentation/misc-devices/intel-nnpi.rst
+@@ -0,0 +1,237 @@
++.. SPDX-License-Identifier: GPL-2.0-ONLY
++
++======================================================================
++Device driver for Intel NNP-I (Neural Network Processor for Inference)
++======================================================================
++
++Terminology
++===========
++To avoid confusion and for better understanding of the code for new reviewers,
++here is a list of few definitions used throughout this document, in commit
++messages and in the code:
++
++card:
++    The NNP-I card, including hardware and embedded software running inside it,
++    which is connected to the host through PCIe.
++
++host:
++    The computer the NNP-I card is attached to through PCIe, and which runs the
++    Linux kernel with NNP-I driver.
++
++IPC protocol:
++    Protocol of messages exchanged between the host and card.
++
++command:
++    A message sent from host to card, typically a command to execute on the
++    card.
++
++response:
++    A message sent from card to the host, typically as a response to a command
++    sent previously from the host. or, a message sent from card to indicate some
++    event, such as an error condition, or the completion of an asynchronous request.
++
++nnp_user:
++    An object created for each file descriptor opened for /dev/nnpi_host. It
++    manages host memory resources. Each nnp_user has its own set of host resources which
++    cannot be shared with other nnp_user objects.
++
++channel, cmd_chan:
++    An object which manages communication between user-space applications and
++    cards. It provides an interface to send commands to the card and receive responses
++    from the card. Each application can create one or more channels to the same
++    or different cards. One channel connects a single nnp_user to a single card.
++    Each channel is associated with one NNP-I card and one nnp_user.
++    The channel can only access host memory resources belonging to that
++    nnp_user.
++
++ELBI:
++    This acronym refers to the set of hardware registers of the NNP-I card which
++    are accessible through BAR0. It stands for: "External Local Bus Interface".
++
++model:
++    A neural network used to process input data and generate output data
++
++Description
++===========
++NNP-I is a PCIe card which accelerates deep-learning inference
++applications. The card is equipped with LPDDR4 memory, a DMA engine, x86 cores
++and specialized compute units called Inference Compute Engines (ICE). These
++compute engines are designed for power-efficient inference-related computations.
++
++The card DRAM as well as the ICEs and other hardware components on the card
++are not accessible from host CPU; they are programmed and controlled by
++software components running on the card's x86 cores. Communication between the
++SW components on the card and the host is done through three interfaces:
++
++- A small size "command queue" and "response queue", through which commands
++  and responses can be sent and received to/from the card.
++- Two doorbell registers, through which the host and card can communicate state.
++- A DMA engine on the card, which copies big memory chunks between host and card
++  DRAM.
++
++A typical flow of an inference application running on the host is the following:
++
++1) Allocate memory on host to hold the model, input and output data.
++2) Request card's software to allocate space on the card DRAM for the model,
++   input and output data.
++3) Load a model into host DRAM, and request the card's DMA engine to copy it
++   over to the card's DRAM.
++4) Load host memory with input data.
++5) Schedule commands to the card to copy the input data to the card
++   DRAM, execute the model on this input, and copy the output data back to
++   host memory.
++
++The card's software stack consists of a BIOS image which is flashed on
++the card and kept in a dedicated persistent memory, and a full embedded Linux image
++which is loaded to the card during boot/reset process.
++During power-on, the card BIOS and host driver communicate through
++the doorbell registers and the "command queue". The card boot flow consists of
++loading a "boot image" to host memory and communicating the location of this
++image to the card's BIOS, the card's BIOS copies that boot image to card
++DRAM using the DMA engine and starts booting the embedded Linux running on the
++card's x86 cores.
++
++Each NNP-I card can support multiple inference application contexts; each
++context has its own space for card and host resource IDs.
++There is no hardware level restriction on one context to access resources of
++another context, however this is prevented by the card software stack by having a
++separate resource ID space for each of the contexts.
++
++There may be multiple NNP-I cards connected to one host. An inference application can
++hold channels to multiple NNP-I cards and should be able to map and access
++the same host resource memory on all cards, however only if the host resource
++and all device contexts are created by the same application. Possible use cases
++for this capability is to run different models on different cards in parallel
++on the same data, or passing output of one model ran on one card as input to
++another model which is loaded on another card. The driver implements
++that requirement by exporting two char devices, one for host resource management
++and another for card access. The application must provide host resource file
++descriptor to the card's character device to allow access to host resources created from
++the same file descriptor.
++
++ABI
++===
++There are two character device classes created by the driver with IOCTL
++interface, provided by include/uapi/misc/intel_nnpi.h:
++
++/dev/nnpi_host:
++
++ A character device which is not related to physical NNP-I  card.
++ It has 4 IOCTLs for creating, destroying,
++ locking and unlocking host resources. "host resource" is a
++ set of pinned memory pages on host which can be mapped
++ to PCI space and accessed by the card's DMA engine.
++ This character device is created on the first probed NNP-I card
++ so it will not be present on systems with no NNP-I cards.
++
++/dev/nnpi%d:
++
++ A character device with instance for each NNP-I card.
++ It support 5 IOCTLs for:
++
++ *  Creating a channel - A "channel" gives user-space the ability to
++    send commands and receive responses from the card.
++    For each channel an anonymous file descriptor is created and
++    returned to the user. Commands and responses to the card
++    are sent and received using write and read operations on
++    the channel file descriptor. The driver validates each
++    command sent and will reject unsupported or invalid commands.
++    Commands written to a channel are added to a queue; each
++    channel has its own command queue. For each card in the system
++    there's one kernel thread (msg_scheduler) which drains the
++    command queues to this card hardware command queue.
++    The channel is destroyed by closing the returned channel file
++    descriptor.
++    When creating a channel an open file descriptor for
++    /dev/nnpi_host needs to be provided. The channel object holds
++    a reference to that file, and the channel can map/unmap only
++    host resources which were created through that same file
++    descriptor.
++    Each channel has a unique 10-bit ID allocated by the driver.
++    Channel IDs in a range [0, 255] are used for inference
++    contexts.
++    Channel with ID greater than 255 is used for non-inference
++    related communication with the card (mainly maintenance,
++    stats query, etc).
++ *  Map/Unmap host resource - Maps a host resource to card PCI
++    space and sends to the card a pointer to a page table of
++    the physical addresses of the resource pages.
++    Each map has a unique 16-bit ID. Commands sent to the card
++    can include such ID in order to reference a host resource.
++    The ID space for host resources is private for each channel.
++ *  Create/Delete "ringbuffer" - This is exactly the same as
++    map/unmap host resource, but for special host resources,
++    called ring buffers, used to transfer data along with
++    some commands. There may be up to two host-to-card ring
++    buffers and two card-to-host ring buffers.
++
++sysfs
++=====
++There are multiple sysfs attributes for NNP-I card allowing to display
++card information and status, and some for control operations like enable/disable
++the card.
++
++Attributes are documented in `Documentation/ABI/testing/sysfs-driver-intel_nnpi`.
++
++PCI BARs
++========
++The card exposes two 64-bit BARs:
++
++BAR0-1:
++    4KB including card registers to control the command and response hardware
++    queues (FIFOs), doorbell registers and control/interrupt status registers.
++    The offsets and bitfields of those registers are defined in
++    if_include/nnpi_elbi.h
++
++BAR2-3:
++    Card Memory region of 64MB. The host has read/write access to this region.
++    The first 16KB of this region hold card crash dump in case the card
++    software stack has crashed (Obviously, this is an erroneous state that should
++    never happen, but when it does the crash dump helps debugging).
++    The layout of this 16KB is defined in if_include/nnp_inbound_mem.h.
++    This region will be filled by the card on event of crash and can be
++    read by the host for debugging purposes. When a crash is detected on card,
++    the card will send an event response message to indicate that event.
++    The Rest of this memory region (64MB - 16KB) is used by peer-to-peer
++    applications to transfer data between two NNP-I cards. A single application
++    can use multiple cards, there are commands to the card which allows such
++    application to allocate device resources in this BAR space as well as commands
++    to issue DMA copy request to copy data from one card DRAM memory to a second
++    card memory if the destination resource address is within BAR 2-3 space.
++
++Card's command protocol
++=======================
++Commands to the card include 1, 2 or 3 64-bit values. The lower 6 bits in the
++command specify the command opcode. The opcode also defines the command size as
++each command has constant size. Commands which are targeted to a specific channel
++include the channel ID in bits 15:6 of the command and must use opcode value
++above or equal to 32.
++
++The definition of other bits is specific to each command.
++Responses from the card have the same format.
++
++The opcodes and structure of the command and responses are defined in
++drivers/misc/intel-nnpi/ipc_include/ipc_protocol.h
++
++Driver architecture
++===================
++Since the NNP-I card has its own software stack and the way to program it is
++mainly by sending commands and receive responses, the driver is split into
++two modules.
++
++The PCIe device driver module, intel_nnpi_pcie, is responsible for detecting
++the NNP-I card and provide functionality for sending it commands, receive
++responses and perform few control operations. This module does not understand
++the IPC protocol, it only provides the mechanism to send and receive raw data.
++This module does not also provide any user space interfaces. The intel_nnpi_pcie
++module is a pci driver for the Intel NNP-I card and glue it into the NNP-I
++framework module.
++
++The NNP-I framework module, intel_nnpi, is the "logical" module that provides the
++user space interfaces, understands the IPC protocol, packs and unpacks commands
++and responses and control the card by calling to interfaces implemented by the
++device driver module. The main structure for an NNP-I card device in the framework
++is &struct nnp_device.
++
++These two modules serve similar roles to the "transport" and "application" layers
++in the `standard TCP/IP terminology <https://www.guru99.com/tcp-ip-model.html#3>`_.
 -- 
 1.8.3.1
 
