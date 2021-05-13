@@ -2,176 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C415A37F259
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 06:36:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A62937F264
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 06:45:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231134AbhEMEh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 00:37:28 -0400
-Received: from mail-co1nam11on2074.outbound.protection.outlook.com ([40.107.220.74]:31403
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229471AbhEMEhW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 00:37:22 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gjqJo5JrI0/B1IpdOOBQabqJMxWbxdZbp7asFUu+Fu7m0ipudTy3OeBHcgox6vMyq9msKPsX6lBPQs4MMoE2ARwpPBBkmdodiyZkg1VGQ9ZXyGh14MYyxdw/tEbILRP0jM3U0gPlurTzQIYT5kz3fIRloMh6o7DMGemAc//YvL0kpU6kcsJsREtx+fMGbFdUwz12HaZFG2snokxiOCDWsW18i4FQuj9LwbWKVmxgcrbnocm/EAGJoreL1wcWK0k5iaoxFJIzBLKgoriMoU10GKos9Jw7patzBq0K4QRTmD3M/eO/6YONNH6iQQKmph46aGv12rwxt4Zin5IVz+u0iQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y4AwDUSlQNjPwRXsPz01bK32LfhQ3pqQpry2sil7lVg=;
- b=OHXfRvTvNkrJnGSgJoATrHvEgUmOrB+4KhPPHD5BhG0SOYNFkGQdcZOZ2YmAtc+TfFl1GjdnEWrDoJRIwe2wsimphHxUHHc1cMfZxvqvzq1+YHSKRMUxUJprZ8HpjdyHGMBteILqYdeo3hBLzThznhmqJb2vEUkSUqr7hl0ZCdnxRLWnETOXv8V+OlbtNBQKl2DxNsm8easdMA1RP7ET0XaMNm3hSnDLcUaJq0SLrx0RkEhBRcBsykMH8nwMOhMzMB/9TvNQmT8dF0RdY+yy49zXWH3wi75a7mbMSUvs2grCPDSGBNRtxnIt2+iFMNP8+sdkpJLXUYtOeHPB4LMNfA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y4AwDUSlQNjPwRXsPz01bK32LfhQ3pqQpry2sil7lVg=;
- b=lv9oNXEyb6wd7zi1iUJ2n/h53l7BUhR4doT62qm4Gq5ctmj8+Btt8NI9FN8aX5psSF4MvP/0Dz2aOw5LTW3udtIj1qOcI0jS+1StzCx10DNFSKVSopBj4OaoJRKvqXq/6fhy9GqE5X2TjgqYmZ61phHGVflZziL1lwB4vtono4M=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
- by SA0PR12MB4573.namprd12.prod.outlook.com (2603:10b6:806:9c::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Thu, 13 May
- 2021 04:36:11 +0000
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::1fb:7d59:2c24:615e]) by SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::1fb:7d59:2c24:615e%6]) with mapi id 15.20.4129.026; Thu, 13 May 2021
- 04:36:11 +0000
-Date:   Thu, 13 May 2021 04:36:09 +0000
-From:   Ashish Kalra <ashish.kalra@amd.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        X86 ML <x86@kernel.org>, kvm@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        srutherford@google.com, Sean Christopherson <seanjc@google.com>,
-        venu.busireddy@oracle.com, Brijesh Singh <brijesh.singh@amd.com>,
-        linux-efi <linux-efi@vger.kernel.org>
-Subject: Re: [PATCH v2 3/4] EFI: Introduce the new AMD Memory Encryption GUID.
-Message-ID: <20210513043609.GB28019@ashkalra_ubuntu_server>
-References: <cover.1619193043.git.ashish.kalra@amd.com>
- <f9d22080293f24bd92684915fcee71a4974593a3.1619193043.git.ashish.kalra@amd.com>
- <YJvV9yKclJWLppWU@zn.tnic>
- <CAMj1kXE0U4JxCLYPhetENDpXKMOAEXs8-dpce+CvBcgifQz2Ww@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXE0U4JxCLYPhetENDpXKMOAEXs8-dpce+CvBcgifQz2Ww@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [165.204.77.1]
-X-ClientProxiedBy: SN7PR04CA0170.namprd04.prod.outlook.com
- (2603:10b6:806:125::25) To SN6PR12MB2767.namprd12.prod.outlook.com
- (2603:10b6:805:75::23)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ashkalra_ubuntu_server (165.204.77.1) by SN7PR04CA0170.namprd04.prod.outlook.com (2603:10b6:806:125::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.24 via Frontend Transport; Thu, 13 May 2021 04:36:10 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a1cad826-b653-4c7c-34c5-08d915c8a280
-X-MS-TrafficTypeDiagnostic: SA0PR12MB4573:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA0PR12MB45731A2AF4EFE0AF4C374A698E519@SA0PR12MB4573.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: muL7Udw+A4ky4honAGWXSSwC3gCM1Jc+xsmAw1QMO0Uu4dsI+7J7iIU2FOqc8Ita8HNyToY+hbGilBMW88iYXqmCWRASguUyNHU8Qall3NF47eWazSRZMHtQjMTTbYcnvfcR2hFQAGPtj0/48dB2890zMh5rgwbyORPj3xUhN1+jinoHiCOArxEHAr43Rj+CbNb92OsujnDZ6ou1mh50H4uJqNMFgGRXRgvY927G9satq0/sVDnGSIvCJgxaszTqvXhT6j2gsiorShsLcZ0ZN44c5UdKqQyeA2HOe6675ne4ZCLFIRHo7sM3XBcJgluevJiqTWc9iBqwDLCbvAcrB9Fvv/Ume1xgiD2MAxddk7xBEr5Jx3LEToSv464UKWZWOuLOVJIZJ+BuPckFQrCtyr8dWnQ95qqDntzGP/DyYRLOB8fmERjYYIm1C/JQhULxHE8JAusFvi85apTK1M0j5apPTxiLS8xcIeSNAj0hIsE6/E8xG1KuWX3RwGvTu3kvtJVIktq3JMsGpIzrmbUSN4hO4be9jYRo0SYS8Y+KoFMuuYeoRSQGbjPiWK8px3pQ9+vRHJ41hG6gY+LB1lGlIu0++1uXAInKa3yGiJOLKhvoXvdk/u+GiAwtnq8gHSKGQrd0Vv+5L9C+x2kxoWf/s8BpbLYEkEJI0JZDVPq+Jyc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(136003)(366004)(39860400002)(33716001)(7416002)(26005)(6496006)(83380400001)(44832011)(4326008)(2906002)(55016002)(52116002)(9686003)(8676002)(1076003)(478600001)(5660300002)(16526019)(38350700002)(186003)(316002)(38100700002)(8936002)(66946007)(66556008)(66476007)(54906003)(33656002)(6916009)(956004)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?tD3fY9YME0Rcfa1fcTcAaJDiln4IfuAYq5OIWf+bxqPxFDZJ0A9wJruAU1iT?=
- =?us-ascii?Q?DKERZUqLJ7jbRXhMpvbG8ZY4eOh1fuhZrSEzpdyv/lgOlHlqPsGRE8ttmSCD?=
- =?us-ascii?Q?FbMyFolVEuDjsBUrprLbePK7oNHI6fR1PM3WAUSRGfH7c0Z+Mz0ct7qdEkWB?=
- =?us-ascii?Q?Vea6SDcvwx2nlOok++lcECmntmutxDFm/II+QaVUlzcHEw4FwIBYXe8jUJhc?=
- =?us-ascii?Q?kxPSC3+la0LtVr15vpFoXYyWoz1oso463vQ9T6tF3KIrb/Wb00llE3O7qKD9?=
- =?us-ascii?Q?eF0/DaiXYH59yT4GiHSVbX3fnt7aUl7fdcK8vvoI1WNWidfKk7TKGtM2GmHF?=
- =?us-ascii?Q?Xz4KG3FgCOAI5z/kCNrro8YC0U1wyBE9RPdX/bVEHhYF7WfpTTzpcJ9POGHG?=
- =?us-ascii?Q?fTCiYAg4qYV7Nn+HcMm0e3j2aiYmO0xXygvLDe+XKoGnqzUsudvsuR2cIrQ3?=
- =?us-ascii?Q?MBhLPf8x8iX85LOnnmaraYtY9PNKt14XwuungbncBoUvAiRwOi0+N6hZ9DE9?=
- =?us-ascii?Q?G7A2PxQB2fjcg7/zNMAsHcyVw82WlzPRDceOU6iW2Dd6XPj/RDxhjL60EUXe?=
- =?us-ascii?Q?aeiHEqBuiXkdat7w6j4x7aXeMb68YwmamtZiLOUyE0/Hk+fNjJL2mDUK86n7?=
- =?us-ascii?Q?3u4DCPf3ZtOXqzxhB9oqMYgxmcXh1IZA/XtHssQRXduoHYBVX3TUeLHTvNC6?=
- =?us-ascii?Q?JFafW/HzIhsTVw3QUGmTalxnHEMXZmBHGYOdxq7ay0YHZ4hSrQdEu1VULzJQ?=
- =?us-ascii?Q?sFtqg4YRnu6s/KksNP29EUTpWah5pbNhaQcekr6y5PrWP1OqqqCTWzp8Wq56?=
- =?us-ascii?Q?0BYirgda1XtjQEV+jAN3DGhkUgCorrecx5cU18SDPUBjbf9OQfPX0XEzvZIo?=
- =?us-ascii?Q?svOEMjVdc3MYbZIBEuIRdbsfJAG5rRT4CTRTvJzOGZ0iMZY3Ifa8wbB2cNSa?=
- =?us-ascii?Q?L9TgPxg96qmo0/kHMggQ+SktVlANQ6AB9puuZzPO9qAj7TRK3F4VK0HJpVhR?=
- =?us-ascii?Q?UjGEjtC4Q1cwfovrIJvXkSUO6UQ0Ho5C/rE93+eGHmlmnH/5H6+4cTprrHww?=
- =?us-ascii?Q?7m3fnhJ+dl9O0Uu6PLiKjXMpnffxY61fz647vMHoYBtWyUppoe7wFkQdLmT+?=
- =?us-ascii?Q?naN4loCcLyqCL5f2BJ9C9nGMx+ja7yly51P9y9Jd6mQ6tSQpEvkiRYR3huGM?=
- =?us-ascii?Q?fHtRInmFJTH9DL8OZBSA2AcUnXCWmrIcwDayLJmFwdRVquk7y2RPnYeD3Gra?=
- =?us-ascii?Q?1KjuKRwPHD5kYM7jxzOneTpDRdZnzQ80N38FYjqgJM26q8+Ibmgif0TdfUbi?=
- =?us-ascii?Q?cl//zOkXw43JMcHpRDmOHmnI?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a1cad826-b653-4c7c-34c5-08d915c8a280
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2021 04:36:11.5638
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: w4xXj0wAkhIWtIAXTOxU+1+z5NR4lXDiKBhBPdffO+Z58ZPGl6YHu7gWcBd574LZ/RRgiBUn7un5IDxolzfPrw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4573
+        id S230176AbhEMEpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 00:45:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229470AbhEMEpu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 00:45:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B568761425;
+        Thu, 13 May 2021 04:44:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1620881081;
+        bh=0eRCsa825ZZVZO1LVEosg5gh2uAc3o9YDAtZzjcpTKE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=g82xDo6hWnPw/vISDdZ/uV5dxS47t99wzcTl2GWVxJvToXBPeBvpz0ShQzBVBG5ND
+         bh0BOdcplDTX/CDAvtipQJ2fHDQWWLbtt8l7WJ92nrCDY6dGjfrUXTyH4VHUH3uwr8
+         efXjZ4SgAaznw8o7IG5u3CXr2HxNJbQMwHP0Nmj8=
+Date:   Wed, 12 May 2021 21:44:40 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     glittao@gmail.com
+Cc:     brendanhiggins@google.com, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com, vbabka@suse.cz,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-mm@kvack.org, elver@google.com,
+        dlatypov@google.com
+Subject: Re: [PATCH v5 2/3] mm/slub, kunit: add a KUnit test for SLUB
+ debugging functionality
+Message-Id: <20210512214440.e2cb47f751137db9802da62e@linux-foundation.org>
+In-Reply-To: <20210511150734.3492-2-glittao@gmail.com>
+References: <20210511150734.3492-1-glittao@gmail.com>
+        <20210511150734.3492-2-glittao@gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 04:53:21PM +0200, Ard Biesheuvel wrote:
-> On Wed, 12 May 2021 at 15:19, Borislav Petkov <bp@alien8.de> wrote:
-> >
-> > On Fri, Apr 23, 2021 at 03:59:01PM +0000, Ashish Kalra wrote:
-> > > From: Ashish Kalra <ashish.kalra@amd.com>
-> > >
-> > > Introduce a new AMD Memory Encryption GUID which is currently
-> > > used for defining a new UEFI environment variable which indicates
-> > > UEFI/OVMF support for the SEV live migration feature. This variable
-> > > is setup when UEFI/OVMF detects host/hypervisor support for SEV
-> > > live migration and later this variable is read by the kernel using
-> > > EFI runtime services to verify if OVMF supports the live migration
-> > > feature.
-> > >
-> > > Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-> > > ---
-> > >  include/linux/efi.h | 1 +
-> > >  1 file changed, 1 insertion(+)
-> > >
-> > > diff --git a/include/linux/efi.h b/include/linux/efi.h
-> > > index 8710f5710c1d..e95c144d1d02 100644
-> > > --- a/include/linux/efi.h
-> > > +++ b/include/linux/efi.h
-> > > @@ -360,6 +360,7 @@ void efi_native_runtime_setup(void);
-> > >
-> > >  /* OEM GUIDs */
-> > >  #define DELLEMC_EFI_RCI2_TABLE_GUID          EFI_GUID(0x2d9f28a2, 0xa886, 0x456a,  0x97, 0xa8, 0xf1, 0x1e, 0xf2, 0x4f, 0xf4, 0x55)
-> > > +#define MEM_ENCRYPT_GUID                     EFI_GUID(0x0cf29b71, 0x9e51, 0x433a,  0xa3, 0xb7, 0x81, 0xf3, 0xab, 0x16, 0xb8, 0x75)
-> > >
-> > >  typedef struct {
-> > >       efi_guid_t guid;
-> > > --
-> >
-> > When you apply this patch locally, you do:
-> >
-> > $ git log -p -1 | ./scripts/get_maintainer.pl
-> > Ard Biesheuvel <ardb@kernel.org> (maintainer:EXTENSIBLE FIRMWARE INTERFACE (EFI))
-> > linux-efi@vger.kernel.org (open list:EXTENSIBLE FIRMWARE INTERFACE (EFI))
-> > linux-kernel@vger.kernel.org (open list)
-> >
-> > and this tells you that you need to CC EFI folks too.
-> >
-> > I've CCed linux-efi now - please make sure you use that script to CC the
-> > relevant parties on patches, in the future.
-> >
-> 
-> Thanks Boris.
-> 
-> You are adding this GUID to the 'OEM GUIDs' section, in which case I'd
-> prefer the identifier to include which OEM.
-> 
-> Or alternatively, put it somewhere else, but in this case, putting
-> something like AMD_SEV in the identifier would still help to make it
-> more self-documenting.
+On Tue, 11 May 2021 17:07:33 +0200 glittao@gmail.com wrote:
 
-I will add AMD_SEV in the identifier above.
+> From: Oliver Glitta <glittao@gmail.com>
+> 
+> SLUB has resiliency_test() function which is hidden behind #ifdef
+> SLUB_RESILIENCY_TEST that is not part of Kconfig, so nobody
+> runs it. KUnit should be a proper replacement for it.
+> 
+> Try changing byte in redzone after allocation and changing
+> pointer to next free node, first byte, 50th byte and redzone
+> byte. Check if validation finds errors.
+> 
+> There are several differences from the original resiliency test:
+> Tests create own caches with known state instead of corrupting
+> shared kmalloc caches.
+> 
+> The corruption of freepointer uses correct offset, the original
+> resiliency test got broken with freepointer changes.
+> 
+> Scratch changing random byte test, because it does not have
+> meaning in this form where we need deterministic results.
+> 
+> Add new option CONFIG_SLUB_KUNIT_TEST in Kconfig.
+> Tests next_pointer, first_word and clobber_50th_byte do not run
+> with KASAN option on. Because the test deliberately modifies non-allocated
+> objects.
+> 
+> Use kunit_resource to count errors in cache and silence bug reports.
+> Count error whenever slab_bug() or slab_fix() is called or when
+> the count of pages is wrong.
+> 
+> ...
+>
+>  lib/slub_kunit.c  | 155 ++++++++++++++++++++++++++++++++++++++++++++++
+>  mm/slab.h         |   1 +
+>  mm/slub.c         |  46 +++++++++++++-
+>  5 files changed, 212 insertions(+), 3 deletions(-)
+>  create mode 100644 lib/slub_kunit.c
+> 
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 678c13967580..7723f58a9394 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -2429,6 +2429,18 @@ config BITS_TEST
+> 
+>  	  If unsure, say N.
+> 
+> +config SLUB_KUNIT_TEST
+> +	tristate "KUnit test for SLUB cache error detection" if !KUNIT_ALL_TESTS
 
-Thanks,
-Ashish
+This means it can be compiled as a kernel module.  Did you runtime test the
+code as a module?
+
+ERROR: modpost: "kasan_enable_current" [lib/slub_kunit.ko] undefined!
+ERROR: modpost: "kasan_disable_current" [lib/slub_kunit.ko] undefined!
+
+--- a/mm/kasan/common.c~a
++++ a/mm/kasan/common.c
+@@ -51,11 +51,14 @@ void kasan_enable_current(void)
+ {
+ 	current->kasan_depth++;
+ }
++EXPORT_SYMBOL(kasan_enable_current);
+ 
+ void kasan_disable_current(void)
+ {
+ 	current->kasan_depth--;
+ }
++EXPORT_SYMBOL(kasan_disable_current);
++
+ #endif /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS */
+ 
+ void __kasan_unpoison_range(const void *address, size_t size)
+_
+
