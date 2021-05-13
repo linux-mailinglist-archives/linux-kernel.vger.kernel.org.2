@@ -2,72 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D1437F99C
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 16:22:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A02537F99F
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 16:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234391AbhEMOXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 10:23:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52796 "EHLO mail.kernel.org"
+        id S234458AbhEMOZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 10:25:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234416AbhEMOX0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 10:23:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BEA8D613BC;
-        Thu, 13 May 2021 14:22:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620915736;
-        bh=G4vCXEGiMxTe526VUaPffNnPoAYhrWSx6k1fW7Br7iA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=JeScwqKGVsgr8dhA6KWFOjRAaoDSlcmtHzUWvf6gUXHzloUyQoJxbsaB4huYd3P36
-         lAFHgMB2WIX4en8vqNUCsk05TNuzhIyf8ed4r1qYS91kZ14pbCNfs8LvFaoXtazihE
-         qVFpkOidoo2M0iOyZG3iersgwhHkFrUl8DNJkAtDEqxF/Qie9y8TjIW1k46BydMDKY
-         OuhWmqohwaD6MA1RXvT2/c/BjCkRCKM3YETSZnE+rLWXLppMJPgaJEZUUxKow5XWKX
-         lowu3OXrZ/6mMjI3OWpXc8bCAuD9mrDDMC+QqzkJJ2hV6jRfsTVx1id1buvsoigxZT
-         unJPgCEppFlDQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 8100C5C014E; Thu, 13 May 2021 07:22:16 -0700 (PDT)
-Date:   Thu, 13 May 2021 07:22:16 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Paul Gortmaker <paul.gortmaker@windriver.com>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH] sched/isolation: reconcile rcu_nocbs= and nohz_full=
-Message-ID: <20210513142216.GZ975577@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210419042659.1134916-1-paul.gortmaker@windriver.com>
- <20210422212448.GJ975577@paulmck-ThinkPad-P17-Gen-1>
- <YJ0X6MciAc36TMJc@gmail.com>
+        id S234405AbhEMOZY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 10:25:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 18B9461438;
+        Thu, 13 May 2021 14:24:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620915854;
+        bh=SW1ymyNTu4aCXy6HP1+WjOhWh+LV/joCZ43Hn91qvsk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rdaFDuw5r7zBesVjHO6elOHNpi1MmXhJ3Gcr5Cq9jEkBU+rMEN2q4zhklkQbYs1Gf
+         +XToyDC9n+hMObzZKgrqzjNNORFzh6Ni9EiUXW3ppEnhzgZLcbp3GOGmViVUaXAUBB
+         m4YY+dfinalmO3jLTqj3kylgXmQlXRtQmLg5EpEI=
+Date:   Thu, 13 May 2021 16:24:12 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Vegard Nossum <vegard.nossum@oracle.com>
+Cc:     linux-serial@vger.kernel.org,
+        syzbot+4c7f1a69dfe24c6b3aeb@syzkaller.appspotmail.com,
+        syzbot+92f32d4e21fb246d31a2@syzkaller.appspotmail.com,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        Peter Hurley <peter@hurleysoftware.com>,
+        Caleb Connolly <caleb@connolly.tech>
+Subject: Re: [PATCH] serial: 8250: fix NULL pointer dereference in
+ serial8250_do_startup()
+Message-ID: <YJ02jIEDHduLbQ3f@kroah.com>
+References: <00000000000044a65205994a7e13@google.com>
+ <20210426161433.20829-1-vegard.nossum@oracle.com>
+ <YIbnq2ljdQzaN8gy@kroah.com>
+ <e3617587-7ff1-720c-00ab-434608705652@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YJ0X6MciAc36TMJc@gmail.com>
+In-Reply-To: <e3617587-7ff1-720c-00ab-434608705652@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 02:13:28PM +0200, Ingo Molnar wrote:
-> 
-> * Paul E. McKenney <paulmck@kernel.org> wrote:
-> 
-> > On Mon, Apr 19, 2021 at 12:26:59AM -0400, Paul Gortmaker wrote:
-> > > We have a mismatch between RCU and isolation -- in relation to what is
-> > > considered the maximum valid CPU number.
-> > > 
-> > > This matters because nohz_full= and rcu_nocbs= are joined at the hip; in
-> > > fact the former will enforce the latter.  So we don't want a CPU mask to
-> > > be valid for one and denied for the other.
-> > > 
-> > > The difference 1st appeared as of v4.15; further details are below.
+On Mon, Apr 26, 2021 at 06:33:01PM +0200, Vegard Nossum wrote:
+> On 2021-04-26 18:17, Greg Kroah-Hartman wrote:
+> > On Mon, Apr 26, 2021 at 06:14:33PM +0200, Vegard Nossum wrote:
+> > >   static void set_io_from_upio(struct uart_port *p)
+> > >   {
+> > >   	struct uart_8250_port *up = up_to_u8250p(p);
+> > > @@ -2151,6 +2178,11 @@ int serial8250_do_startup(struct uart_port *port)
+> > >   	unsigned char lsr, iir;
+> > >   	int retval;
+> > > +	if (WARN_ON_ONCE(needs_membase(port->iotype) && !port->membase))
+> > > +		return -ENODEV;
+> > > +	if (WARN_ON_ONCE(needs_iobase(port->iotype) && !port->iobase))
+> > > +		return -ENODEV;
 > > 
-> > I pulled this into -rcu for testing and further review.
-> > 
-> > If it should instead go through some other tree:
-> > 
-> > Acked-by: Paul E. McKenney <paulmck@kernel.org>
+> > These WARN_ON() will still trigger syzbot.  Are you sure you tested this
+> > and had syzbot verify it?
 > 
-> Thanks - added this fix to tip:sched/core.
+> I tested it locally and the WARN_ON()s don't trigger -- presumably
+> because serial8250_verify_port() is called from uart_set_info() before
+> we get to serial8250_do_startup():
+> 
+>         /*
+>          * Ask the low level driver to verify the settings.
+>          */
+>         if (uport->ops->verify_port)
+>                 retval = uport->ops->verify_port(uport, new_info);
+> 
+> [...]
+> 
+>                 retval = uart_startup(tty, state, 1);
+> 
+> At least, this was my intention. Although now that I look at it again,
+> it looks like this check may be skipped in some cases; is that what
+> you're referring to?
+> 
+> I didn't have syzbot verify it -- I thought it would do that when
+> submitting my patch. Looks like I need to push somewhere and ask syzbot
+> to test it using this?
+> 
+> #syz test: git://repo/address.git commit-hash
+> 
+> (I assume I can send this privately as long as I use the right
+> syzbot+...@ To-address?)
+> 
 
-Very good, I will drop it from -rcu later today, Pacific Time.
+Dropping this now until you get this tested properly...
 
-							Thanx, Paul
+thanks,
+
+greg k-h
