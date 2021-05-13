@@ -2,266 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB2BD37F6B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 13:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DD1537F6B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 13:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233371AbhEMLaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 07:30:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233341AbhEMLaY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 07:30:24 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61737C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 04:29:14 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id a11so14193626plh.3
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 04:29:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=XQmvefvqDAIM2m93Dqn+5OWuAmfoCSh4wprgQC9L5y4=;
-        b=bARh98kdNIeWnUNdR7lZ7iMKaVe74TlDxAqQ501voh9Xfkfvy8QsAdaf6es4rUKVRW
-         sjEsQcfLVAQci28C4at1ySWCbVLgBnjhGU6WaOa4THw/8gvJCGiO5FDCLEwgLigIW1cp
-         KUFKEyF6MOBboBzIEKU+peJBkKRqd4/O7woaf79OlQLNxgOD2IvL2YUtSiCuko+ADUvZ
-         tjSgrnERr6Su3OTdj+drqKzQrTt9B5639sivIa/acE3Yx39a95/IGeh6EjI66ybGixC/
-         gl4SttTMS2KgcsWBFVDJ3IJ3yKGYHdEFbLdE72ci3In304zmbV9xUkpgS3IHNZvQPVMI
-         Di8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XQmvefvqDAIM2m93Dqn+5OWuAmfoCSh4wprgQC9L5y4=;
-        b=SyLFaEKVKI9tel+mL0Z+Dsgu/Pr0nrwLN/mNene+B4yyOqRcSP07rANgHjVmMexYtl
-         bfbTdSZgKJ95aAAY8PjPW6sEPRjl5RQZJaO39HMiAn/cIXW1uXpPne0MFGz+r96P3/Xl
-         41l1JLRj8UmoJKZtb0GYCu3l2N117949FhmZuSSUw4lYqXxINI1h0Hd6lY+FPaHIrbQV
-         DM5YxpNc3acVAR6PV6crTFEzerCvLNk9asrROaphTnA6JqkZu7RCgCAJpIPFToVJbU6q
-         EiyggB4PAH08lTuaD1xFk2/ZD/JEJz35OmnrVvDpqxVDfqqrFUB7MqXJMkoE7z47zlrG
-         dqAw==
-X-Gm-Message-State: AOAM533vYTGCx+/m/8CR0LQWNklux11RrDnc4a2z3va+AG1i0ihW9F5r
-        XQmgROVuj0vKdezn71+JhA7bzA==
-X-Google-Smtp-Source: ABdhPJzml5y1gkHqZOUNmAha0jFdJl552EWmqHBbPSYZeLlK6GGMVDhEbLVKy/tHPMM2dGpM3V0wfg==
-X-Received: by 2002:a17:902:f203:b029:ee:e32f:2a28 with SMTP id m3-20020a170902f203b02900eee32f2a28mr38903392plc.45.1620905353950;
-        Thu, 13 May 2021 04:29:13 -0700 (PDT)
-Received: from localhost.localdomain ([223.236.157.188])
-        by smtp.gmail.com with ESMTPSA id p9sm6768807pjb.32.2021.05.13.04.29.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 04:29:13 -0700 (PDT)
-From:   Sumit Garg <sumit.garg@linaro.org>
-To:     kgdb-bugreport@lists.sourceforge.net
-Cc:     daniel.thompson@linaro.org, jason.wessel@windriver.com,
-        dianders@chromium.org, rostedt@goodmis.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org, Sumit Garg <sumit.garg@linaro.org>
-Subject: [PATCH v3 2/2] kdb: Simplify kdb_defcmd macro logic
-Date:   Thu, 13 May 2021 16:58:42 +0530
-Message-Id: <20210513112842.707103-3-sumit.garg@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210513112842.707103-1-sumit.garg@linaro.org>
-References: <20210513112842.707103-1-sumit.garg@linaro.org>
-MIME-Version: 1.0
+        id S232494AbhEMLau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 07:30:50 -0400
+Received: from mail-dm6nam11on2062.outbound.protection.outlook.com ([40.107.223.62]:7296
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233379AbhEMLal (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 07:30:41 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aO5mgl8VG5khDGhBMj4vAc/YRTleGa4/8mN3oRWciTKzGwAX7YwKTFXOmIUpR/ks/r1gehVfK1HzMnwrEU29erd1FhWruFr80AuMcEvBqCGw+D2Gg17scaCAlGbsqyzkTgQawJqQSIaT3Ppk18Gx0/wBgm6N/eEq3bLqnXN8z04Lg6p0BvgUVq3qnPm9WJ3NW2CTjsa1+HWiPLvAE8FZIcsUspFYLrtisOZ27mnPpsH5E2wc+3IBo+4HQNiV9YBc7KyPx4oZo8l/vLjwe6GZJqr+1Yzffz1720OOfcow1mmO8ov6SAkBPdnauni2O/2JUi7B5yd1CsUOi8B+aFhPEA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Z1E/lC5Sf5SIPVMoorqPSt74xMA/vuk13tqjIEYp1Ao=;
+ b=UOChtaAvOInjyaN7soTR8lBunPs4/qJiUJVD13O7wEN/9QT1awfdRt/P+sexTxf3uYtnW5IynVEDMlcgTZ5nYbwuwuCTxrTrbcFycSD/Lq4DTjUKWYqd8Ih9Q60VQstKmIw+4cHY8AxFsBrs0vWdET/e+39iumiOjfL/1erTpbxf/Q/cDlTOB9kyr+xSV0Vo6m6K6hIIHaXDStZOWPBgOuyJazz6MXZDMHWQvXFla3hH7+I2ZuV0utiRH/HfGPWSTUDkoQPikMb5dyjTM7jEBYCyffxER9gN+qJ81qVrAjqIRVQ/+iHP3xr4KNGPGGlT04G/IbDg3DFk1YWJBQVWzA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Z1E/lC5Sf5SIPVMoorqPSt74xMA/vuk13tqjIEYp1Ao=;
+ b=lcRgzbgUtgWm8bViz1d3Obhh05CCRTNiFsUD4uDgR0mHtpAUF8xWOLN9r3dQFHvrDDtdXOJzCT9GVI5NxD6hFqJaXsXWntl9UCHAnD3n7koyIFqa8TPfnn9r6/H3VmHVGafU0ALwmJpP02yyRQuio9+GCOgiUdHS/hCH6tSorUUOvgI1R2sMZTRyBgRTxTVFDb3HkJ4y3nodr7Jv0oiGE3tE8yowtWNZTys46wQC09Nrm7IdLZxyMqDj9xUkJ0oCdVCVQz8AHunmdSJ2cYTUtr3QJj3dtEdmheJEoD3/De4ozOPM4fQlU/ptRAGASnDTegIvkosOLAjfhlU3BnzL8Q==
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=nvidia.com;
+Received: from DM4PR12MB5278.namprd12.prod.outlook.com (2603:10b6:5:39e::17)
+ by DM8PR12MB5399.namprd12.prod.outlook.com (2603:10b6:8:34::5) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4129.26; Thu, 13 May 2021 11:29:26 +0000
+Received: from DM4PR12MB5278.namprd12.prod.outlook.com
+ ([fe80::d556:5155:7243:5f0f]) by DM4PR12MB5278.namprd12.prod.outlook.com
+ ([fe80::d556:5155:7243:5f0f%6]) with mapi id 15.20.4129.026; Thu, 13 May 2021
+ 11:29:26 +0000
+Subject: Re: [net-next v3 01/11] net: bridge: mcast: rename multicast router
+ lists and timers
+To:     =?UTF-8?Q?Linus_L=c3=bcssing?= <linus.luessing@c0d3.blue>,
+        netdev@vger.kernel.org
+Cc:     Roopa Prabhu <roopa@nvidia.com>, Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        bridge@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+References: <20210512231941.19211-1-linus.luessing@c0d3.blue>
+ <20210512231941.19211-2-linus.luessing@c0d3.blue>
+From:   Nikolay Aleksandrov <nikolay@nvidia.com>
+Message-ID: <2e58a4ab-1e40-d11c-d84e-798dd36ad679@nvidia.com>
+Date:   Thu, 13 May 2021 14:29:19 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+In-Reply-To: <20210512231941.19211-2-linus.luessing@c0d3.blue>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [213.179.129.39]
+X-ClientProxiedBy: ZR0P278CA0146.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:910:41::7) To DM4PR12MB5278.namprd12.prod.outlook.com
+ (2603:10b6:5:39e::17)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.21.241.170] (213.179.129.39) by ZR0P278CA0146.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:41::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.25 via Frontend Transport; Thu, 13 May 2021 11:29:24 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: da65ec41-970b-4c76-6708-08d916025d5c
+X-MS-TrafficTypeDiagnostic: DM8PR12MB5399:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM8PR12MB5399F897F1F4A3B127F819A7DF519@DM8PR12MB5399.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vYMWq1ugInQfOe2SzrfZ/tQ3N2SsMbeaRYxb8eXrtNaxycDqTBGeESVLu351z571xalGvOG9yMWqq+A4fhcvBzGB803LOEp7tTKQUKtRcBWZsXCd6fp2hXy/7LAmEDix18uqLxgm38BDgJd6Tyz/N86pCEiU8ESyQkMB3HMz395qJ/TvuV/QT+X2D9VtqmAK5hyS1O2aIkI4SZ73E/9ef5gT4WUkqw8CvIuf5FwciZSifaHF58nG9g9C6N8DzP1FYnvMqmW28/sKNMRsp1j2qCPrLmQrbBVsaIwr5J/kzIYXUG4FygGHuGUy5z3P4KhsPQYIVsto9YgsJucDBUc+V/Vdw40d7VRMFbfR9liF+MqO7uxsZeHW1hNfBKoEH5vnOYoSvdxZA7MJw9r1CPR69BR8ZrSlltzLl49+a46yVsD4qgApkcq+r9CZhKD3hsndCEoew6roak4FZG4bi6OFtSV95xv1ztEBlt6UN2jc4J0kC1OUBDjF5kR1n4FrdgaVQvEvNtu1DX1ZMPhEenHTXR+dZ66MNHllva8pgLcmEROkpmqGoWnjPHbWSX3ikAJdFK7PCyKz+BeP8Yw2YPt3wdSpbbBwhGFv6qcpslrrFBp9UuhEXvUVTOBoS/lBExJcogNkLBZ6jiO3zv+5rd0RFJ6lS4paj34DlBeHU7Q3UCOz98rgLr7HChjG/vhOEGx7
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5278.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(376002)(136003)(346002)(396003)(8676002)(38100700002)(4326008)(26005)(4744005)(6666004)(478600001)(186003)(36756003)(53546011)(2906002)(31686004)(8936002)(6486002)(66946007)(54906003)(16576012)(31696002)(66556008)(83380400001)(86362001)(66574015)(66476007)(316002)(5660300002)(16526019)(956004)(2616005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?MGthSWp5SGhNdWNzVUxySERsOTluZWw3UHlzUWFaMEl0Wjl6Rm51VEFabCtl?=
+ =?utf-8?B?UE1QZXVzSE40YmtNeHBBK3IrL2dVMUFQdEhjUlpwMXQxSVlJek0zWlgrUzdE?=
+ =?utf-8?B?S3ZFc1p1YU5xM1c5dnRONWtPQk9lcVlHYnlYQ050OGVsNFQxR3Z6MjIyUThP?=
+ =?utf-8?B?MlR1OTRUdW9Cd3cyUkxTYThFd1lEUElXODU3UjdzYkl4TzQyZEVnL2htZWlk?=
+ =?utf-8?B?M1RWSHlRMzJleUttNWZMWmVSZXFiR3JpN0loRFRFVW9XYXQvWUpFVkV1c2du?=
+ =?utf-8?B?SzM1Y0hxNXd5aHlXaWgzdi9qSHdDOEk1NG5FZHFQeVQ3Umc0czBTT0lidnZM?=
+ =?utf-8?B?NnpndkcrdW1EUzRoWnNQbFNxK2VYZ1FHWXlBZ0wrMkdSYjhRMzVXeTgxQXFy?=
+ =?utf-8?B?MjVYa0xhUk5lRmVvbE9YanV4b1JkMkM3b3o4N21aRGxlVlVxZnUxclNFRllL?=
+ =?utf-8?B?RSs3T2ZNR3Zvb25rMGo1YUtmd1dwcm1GdG0zVElBVVZRQjZKRmU5R29paWli?=
+ =?utf-8?B?OXpoTk1QMDloYWJROFA3M2sxNEV6aE9nUGRUczFySEtQT1UrdEVtMWxvblVI?=
+ =?utf-8?B?TlNuQnFnaHNSV2ZQNjNRdC80UlJrTm1kc21KbWRVTEZuRFRhd2c5OFJvdnJo?=
+ =?utf-8?B?WmNGSUd6d2ltZ05FUDg2d1gvTjJMUGkwcEc1aFIwSFNSdWN0T05RMnV3eEly?=
+ =?utf-8?B?VFZTVEVxbnUrcGVJcUhpdHpuVXFiU0huRURnclNDWkpSRnVpK0RwVWlvVDAr?=
+ =?utf-8?B?Z1lTOFg5L0VrenFoWWp4NzNUaHlSL1NGOVVBNXoxenQwWjloNGQvN1pkczNi?=
+ =?utf-8?B?d29seXFwR28wbmwweEV2L2FVNFRRcjN5Nml2N2dESmYxMStKMHNINS8vdmV2?=
+ =?utf-8?B?K09nVmE5ZHU3VVpNdVM3Y0tsa1ZwMFNhVWo0TDRhS2ZaLzV0UEdJbFdpcDF5?=
+ =?utf-8?B?RGx3bkY1QUcxTXNxVisvbmlZeXIzc0tvYVZCWnVoVjIzNUFMY2MxdHlKV0JM?=
+ =?utf-8?B?bjJ6N2pUT3VoZVc5THNPelNmYVJQZlpoQUlvMEEvd28wL0hPOERIcE9xN0JK?=
+ =?utf-8?B?NExkMlhVWnJ1d01XS2REa0pseTVNYjVnZWlSZitMNW5PWmtRMm9ZTzczL2RB?=
+ =?utf-8?B?ekJYaU92WlR4TVNPOVE3NURzSDF0WXNKcDdYM0tPSUpjVVBKOTBBNjZ3ekxz?=
+ =?utf-8?B?amxhWWc4emowS0pyQ0lkOGFWRGtLQjZudVhtcE9aakVrOW5ZMnBOMzc5WnBB?=
+ =?utf-8?B?enlSS3cySVhDTnY4LzR3TEFFNm5LRzROVGhuM3Ayay96M0ZXV0hpR3djUFNz?=
+ =?utf-8?B?clZQS1BkRnVLNVUrSUpUdXBnWHNYaU1oT2JNeHFUVDcyL0hBd0d1OU9GTkF1?=
+ =?utf-8?B?K3VPSFo2dTRVY0ZFaGpuSVAyQWMwZDF6L2lzSE1HWnNtQ2dIanJyay9TZWxu?=
+ =?utf-8?B?SkM2L0x1Uk13VGVwdTZ6ZWpoZjREa1RVdE1OU1VCM25ZbER1OEM2M2dCT0Uv?=
+ =?utf-8?B?THVIcTFSY3lJR21WS0xkd1Iva1VoVTJKc3dDU0x0VWtlRlc2aTJJa21nVVQ2?=
+ =?utf-8?B?d1Y0SmNLak1sc0tLOTVUSllZdjYxc003VXlPRUR1dzEwa2k1UStCUjk1Y1lI?=
+ =?utf-8?B?bVhEUFNhNXA3bGxwNDFIWWw5bXVYWGllN2VaaUJYVkIzV3dvaXoyOWF3U1di?=
+ =?utf-8?B?elFnK1FvZEp1OVhLNVN1NFFDanA3dE4vbUl5blJSeVI1OFJPTFV3NEtPc0Nl?=
+ =?utf-8?Q?uCXS4oaUDtXChquJg1JjxCbNeds2q2UtbkuCobw?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: da65ec41-970b-4c76-6708-08d916025d5c
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5278.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2021 11:29:26.4157
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 74dYOofyEtGY1A99bYA5/xUwKGgthxd70UICQH8Br8APrDgG2FhRFHvXxr0obZlNBfEdwtgHa5HXStpnck0h5Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR12MB5399
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch to use a linked list instead of dynamic array which makes
-allocation of kdb macro and traversing the kdb macro commands list
-simpler.
+On 13/05/2021 02:19, Linus Lüssing wrote:
+> In preparation for the upcoming split of multicast router state into
+> their IPv4 and IPv6 variants, rename the affected variable to the IPv4
+> version first to avoid some renames in later commits.
+> 
+> Signed-off-by: Linus Lüssing <linus.luessing@c0d3.blue>
+> ---
+>  net/bridge/br_forward.c   |  4 ++--
+>  net/bridge/br_mdb.c       |  6 ++---
+>  net/bridge/br_multicast.c | 48 +++++++++++++++++++--------------------
+>  net/bridge/br_private.h   | 10 ++++----
+>  4 files changed, 34 insertions(+), 34 deletions(-)
+> 
 
-Suggested-by: Daniel Thompson <daniel.thompson@linaro.org>
-Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
----
- kernel/debug/kdb/kdb_main.c | 107 +++++++++++++++++++-----------------
- 1 file changed, 58 insertions(+), 49 deletions(-)
+Acked-by: Nikolay Aleksandrov <nikolay@nvidia.com>
 
-diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
-index de685b2a8ce7..ce7f4c71992d 100644
---- a/kernel/debug/kdb/kdb_main.c
-+++ b/kernel/debug/kdb/kdb_main.c
-@@ -654,13 +654,16 @@ static void kdb_cmderror(int diag)
-  *	zero for success, a kdb diagnostic if error
-  */
- struct kdb_macro_t {
--	int count;
--	bool usable;
--	kdbtab_t cmd;
--	char **command;
-+	kdbtab_t cmd;			/* Macro command name */
-+	struct list_head commands;	/* Associated command list */
- };
-+
-+struct kdb_macro_cmd_t {
-+	char *cmd;			/* Command name */
-+	struct list_head list_node;	/* Command list node */
-+};
-+
- static struct kdb_macro_t *kdb_macro;
--static int kdb_macro_count;
- static bool defcmd_in_progress;
- 
- /* Forward references */
-@@ -668,34 +671,33 @@ static int kdb_exec_defcmd(int argc, const char **argv);
- 
- static int kdb_defcmd2(const char *cmdstr, const char *argv0)
- {
--	struct kdb_macro_t *s = kdb_macro + kdb_macro_count - 1;
--	char **save_command = s->command;
-+	struct kdb_macro_cmd_t *kmc;
-+
-+	if (!kdb_macro)
-+		return KDB_NOTIMP;
-+
- 	if (strcmp(argv0, "endefcmd") == 0) {
- 		defcmd_in_progress = false;
--		if (!s->count)
--			s->usable = false;
--		if (s->usable)
--			kdb_register(&s->cmd);
-+		if (!list_empty(&kdb_macro->commands))
-+			kdb_register(&kdb_macro->cmd);
- 		return 0;
- 	}
--	if (!s->usable)
--		return KDB_NOTIMP;
--	s->command = kcalloc(s->count + 1, sizeof(*(s->command)), GFP_KDB);
--	if (!s->command) {
--		kdb_printf("Could not allocate new kdb_defcmd table for %s\n",
-+
-+	kmc = kmalloc(sizeof(*kmc), GFP_KDB);
-+	if (!kmc) {
-+		kdb_printf("Could not allocate new kdb macro command: %s\n",
- 			   cmdstr);
--		s->usable = false;
- 		return KDB_NOTIMP;
- 	}
--	memcpy(s->command, save_command, s->count * sizeof(*(s->command)));
--	s->command[s->count++] = kdb_strdup(cmdstr, GFP_KDB);
--	kfree(save_command);
-+
-+	kmc->cmd = kdb_strdup(cmdstr, GFP_KDB);
-+	list_add_tail(&kmc->list_node, &kdb_macro->commands);
-+
- 	return 0;
- }
- 
- static int kdb_defcmd(int argc, const char **argv)
- {
--	struct kdb_macro_t *save_kdb_macro = kdb_macro, *s;
- 	kdbtab_t *mp;
- 
- 	if (defcmd_in_progress) {
-@@ -704,13 +706,21 @@ static int kdb_defcmd(int argc, const char **argv)
- 		kdb_defcmd2("endefcmd", "endefcmd");
- 	}
- 	if (argc == 0) {
--		int i;
--		for (s = kdb_macro; s < kdb_macro + kdb_macro_count; ++s) {
--			kdb_printf("defcmd %s \"%s\" \"%s\"\n", s->cmd.cmd_name,
--				   s->cmd.cmd_usage, s->cmd.cmd_help);
--			for (i = 0; i < s->count; ++i)
--				kdb_printf("%s", s->command[i]);
--			kdb_printf("endefcmd\n");
-+		kdbtab_t *kp;
-+		struct kdb_macro_t *kmp;
-+		struct kdb_macro_cmd_t *kmc;
-+
-+		list_for_each_entry(kp, &kdb_cmds_head, list_node) {
-+			if (kp->cmd_func == kdb_exec_defcmd) {
-+				kdb_printf("defcmd %s \"%s\" \"%s\"\n",
-+					   kp->cmd_name, kp->cmd_usage,
-+					   kp->cmd_help);
-+				kmp = container_of(kp, struct kdb_macro_t, cmd);
-+				list_for_each_entry(kmc, &kmp->commands,
-+						    list_node)
-+					kdb_printf("%s", kmc->cmd);
-+				kdb_printf("endefcmd\n");
-+			}
- 		}
- 		return 0;
- 	}
-@@ -720,17 +730,11 @@ static int kdb_defcmd(int argc, const char **argv)
- 		kdb_printf("Command only available during kdb_init()\n");
- 		return KDB_NOTIMP;
- 	}
--	kdb_macro = kmalloc_array(kdb_macro_count + 1, sizeof(*kdb_macro),
--				   GFP_KDB);
-+	kdb_macro = kzalloc(sizeof(*kdb_macro), GFP_KDB);
- 	if (!kdb_macro)
- 		goto fail_defcmd;
--	memcpy(kdb_macro, save_kdb_macro,
--	       kdb_macro_count * sizeof(*kdb_macro));
--	s = kdb_macro + kdb_macro_count;
--	memset(s, 0, sizeof(*s));
--	s->usable = true;
- 
--	mp = &s->cmd;
-+	mp = &kdb_macro->cmd;
- 	mp->cmd_func = kdb_exec_defcmd;
- 	mp->cmd_minlen = 0;
- 	mp->cmd_flags = KDB_ENABLE_ALWAYS_SAFE;
-@@ -751,9 +755,9 @@ static int kdb_defcmd(int argc, const char **argv)
- 		strcpy(mp->cmd_help, argv[3]+1);
- 		mp->cmd_help[strlen(mp->cmd_help)-1] = '\0';
- 	}
--	++kdb_macro_count;
-+
-+	INIT_LIST_HEAD(&kdb_macro->commands);
- 	defcmd_in_progress = true;
--	kfree(save_kdb_macro);
- 	return 0;
- fail_help:
- 	kfree(mp->cmd_usage);
-@@ -763,7 +767,6 @@ static int kdb_defcmd(int argc, const char **argv)
- 	kfree(kdb_macro);
- fail_defcmd:
- 	kdb_printf("Could not allocate new kdb_macro entry for %s\n", argv[1]);
--	kdb_macro = save_kdb_macro;
- 	return KDB_NOTIMP;
- }
- 
-@@ -778,25 +781,31 @@ static int kdb_defcmd(int argc, const char **argv)
-  */
- static int kdb_exec_defcmd(int argc, const char **argv)
- {
--	int i, ret;
--	struct kdb_macro_t *s;
-+	int ret;
-+	kdbtab_t *kp;
-+	struct kdb_macro_t *kmp;
-+	struct kdb_macro_cmd_t *kmc;
-+
- 	if (argc != 0)
- 		return KDB_ARGCOUNT;
--	for (s = kdb_macro, i = 0; i < kdb_macro_count; ++i, ++s) {
--		if (strcmp(s->cmd.cmd_name, argv[0]) == 0)
-+
-+	list_for_each_entry(kp, &kdb_cmds_head, list_node) {
-+		if (strcmp(kp->cmd_name, argv[0]) == 0)
- 			break;
- 	}
--	if (i == kdb_macro_count) {
-+	if (list_entry_is_head(kp, &kdb_cmds_head, list_node)) {
- 		kdb_printf("kdb_exec_defcmd: could not find commands for %s\n",
- 			   argv[0]);
- 		return KDB_NOTIMP;
- 	}
--	for (i = 0; i < s->count; ++i) {
--		/* Recursive use of kdb_parse, do not use argv after
--		 * this point */
-+	kmp = container_of(kp, struct kdb_macro_t, cmd);
-+	list_for_each_entry(kmc, &kmp->commands, list_node) {
-+		/*
-+		 * Recursive use of kdb_parse, do not use argv after this point.
-+		 */
- 		argv = NULL;
--		kdb_printf("[%s]kdb> %s\n", s->cmd.cmd_name, s->command[i]);
--		ret = kdb_parse(s->command[i]);
-+		kdb_printf("[%s]kdb> %s\n", kmp->cmd.cmd_name, kmc->cmd);
-+		ret = kdb_parse(kmc->cmd);
- 		if (ret)
- 			return ret;
- 	}
--- 
-2.25.1
 
