@@ -2,507 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B4D237F5CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 12:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B44FE37F5CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 12:43:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231760AbhEMKov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 06:44:51 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:29964 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230329AbhEMKoi (ORCPT
+        id S231742AbhEMKo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 06:44:56 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:57672 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231282AbhEMKon (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 06:44:38 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1620902604; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=dvWio0d3C8tL3wz0u7Aw03KSFZNNqVxKslWGB6i+DlnhnWgSctrtqBcHWRADycHPP5
-    0ggBp4WDnIdIBimDPXgdE743AOvIEkz26G45lXuS8EfYZ2kIDNhwtXN6498iXAL8tLkU
-    KdH7g0VHMDnshrC519c+kadjhOZGN756hSFKU8O3qAbOwTclvF3XP8lWjBzc/IXlE8s+
-    dz9dye4UNND0TtHd9ubjNyzPBPzELIZoqVXechVwsH/eqnAOU21sZUuBYrTuDAAtYfjU
-    3qpkz+nTlUT8g4PFkPezUUjPIIDpAgFbhuSRg9bEsTAf7rgJatMCJj5vSUueo0JZua+a
-    5MmA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1620902604;
-    s=strato-dkim-0002; d=strato.com;
-    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=IsbpEsgbbvnnzGPsaDkOD9zDycMHYyB7lT+Wai1GJkc=;
-    b=j2tfLwZS8MHtBTsQRs2AW0V70F6gL7BgHyaqtbR95O9n4DAxrZygPDS+dZOTCHI7u0
-    9jBL3TAOr/me23OiXuQIYMeTKQkLeSQqNyDrZVXny6v/6NqXXk9DLtGaSxL24/YdilxT
-    W/J9j1c7TlncQ/M56uDTMclMbIpjbfMBhINAo/hs83+TRYqnpy/5Wj5QbG13fAzDhZOI
-    tCoKqs+k5mPOe3dqV79UtvY71e0BhDsN8J8KkLX1ORMiNaE6rtUs+8PiEIdD1xHGkgMl
-    WqdRT5MdkfE2rdj9w+1HCO1PIXaK8UlAbOpr1U6FEP717Z6AyQTLRb6pfOTXNksn/aMt
-    iFPg==
-ARC-Authentication-Results: i=1; strato.com;
-    dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1620902604;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=IsbpEsgbbvnnzGPsaDkOD9zDycMHYyB7lT+Wai1GJkc=;
-    b=J3C5Qu+07hwTC16auimdIAGIBCgOKV2hO1D41JelEdSI6GnJxacYTiFlzTDLGmRH22
-    IX6SVNW7kso5McsSaZKQT5H4zcjLsQpXyUanCQE77ifa05ZCbdWe8Tsy1HRwq80tdZKr
-    iqLqooYfCN8jyLkUoD5S8FpDYRy8JU7bplSPHfACNc9J5ZLaaRu6jqGAf2Lmb9z5mZ1f
-    NOHgz6amF4vq17ZutjXXwvI28+EBKz9Ho4M8abDQQsghTyElAjhk4p2uVyScQdBr4g2F
-    JG7WGQk/tyt47tyVqXKJKyZTFjeOSrZJjlyfILa37hElFYUYjP984iQtW5GsP/SiQZ9D
-    bcZA==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXS7IYBkLahKxB4G6OJCs="
-X-RZG-CLASS-ID: mo00
-Received: from droid..
-    by smtp.strato.de (RZmta 47.25.7 DYNA|AUTH)
-    with ESMTPSA id j06c13x4DAhNA9I
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Thu, 13 May 2021 12:43:23 +0200 (CEST)
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, phone-devel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        linux-kernel@vger.kernel.org,
-        Vincent Knecht <vincent.knecht@mailoo.org>,
-        Stephan Gerhold <stephan@gerhold.net>
-Subject: [RFC PATCH 2/2] ASoC: codecs: Add driver for NXP/Goodix TFA989x (TFA1) amplifiers
-Date:   Thu, 13 May 2021 12:41:29 +0200
-Message-Id: <20210513104129.36583-2-stephan@gerhold.net>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210513104129.36583-1-stephan@gerhold.net>
-References: <20210513104129.36583-1-stephan@gerhold.net>
+        Thu, 13 May 2021 06:44:43 -0400
+Date:   Thu, 13 May 2021 10:43:29 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1620902610;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2bei8HvHXreDZV/dPca+C6OA12b/jqyOqS4Fl7f66PM=;
+        b=psPXThA64w+8U9NQ2fsa9bcSpbkitGi89+KwH6LzCRend51flYDVMzqph52H5mwh5Dw6p1
+        n+obnWP7KhzVHlmDihQEpUnuRN1njP8MglSlL3Oi9INtJ74SIH0WZDhc5pHI/24tCz9C4E
+        xE+7Jb17jPEmZMQ6eETju2rTS2ezkQiNUqyYu+i3RYME3QhlaXcnyysjfDdH/OCGX5mjJl
+        wzDlOShcDExw8zdaLUYdokuzU4IIQHubIsJP1tfzxwv+CAOzRxls2+P+lDwe+F5r9O2+jv
+        xq5pgaKXHjZ8CGBfUbkllUxPr5Xpkuc7Jt/r0Kyi9cLaZ7R3aJDsRt5DNr1+gw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1620902610;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2bei8HvHXreDZV/dPca+C6OA12b/jqyOqS4Fl7f66PM=;
+        b=oqc4+WBsmyc3BsMAN1rmtEWyNzvB2BvIpZolt3/gbjhjkVx5NVG7cGADfVT36CXfD7cn1k
+        4S3/948l69mfJZDA==
+From:   "tip-bot2 for Huang Rui" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/urgent] x86, sched: Fix the AMD CPPC maximum performance
+ value on certain AMD Ryzen generations
+Cc:     Jason Bagavatsingham <jason.bagavatsingham@gmail.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Huang Rui <ray.huang@amd.com>, Ingo Molnar <mingo@kernel.org>,
+        stable@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210425073451.2557394-1-ray.huang@amd.com>
+References: <20210425073451.2557394-1-ray.huang@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Message-ID: <162090260985.29796.14619213138729710355.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-NXP's TFA98xx (now part of Goodix) are fairly popular speaker amplifiers
-used in many smartphones and tablets. Most of them are sold as "smart
-amplifiers" with built-in "CoolFlux DSP" that is used for volume control,
-plus a "sophisticated speaker-boost and protection algorithm".
+The following commit has been merged into the sched/urgent branch of tip:
 
-Unfortunately, they are also almost entirely undocumented. The short
-datasheets (e.g. [1] for TFA9897) describe the available features,
-but do not provide any information about the registers or how to use
-the "CoolFlux DSP".
+Commit-ID:     3743d55b289c203d8f77b7cd47c24926b9d186ae
+Gitweb:        https://git.kernel.org/tip/3743d55b289c203d8f77b7cd47c24926b9d=
+186ae
+Author:        Huang Rui <ray.huang@amd.com>
+AuthorDate:    Sun, 25 Apr 2021 15:34:51 +08:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Thu, 13 May 2021 12:10:24 +02:00
 
-The amplifiers are most often configured through proprietary userspace
-libraries. There are also some (rather complex) kernel drivers (e.g. [2])
-but even those rely on obscure firmware blobs for configuration (so-called
-"containers"). They seem to contain different "profiles" with tuned speaker
-settings, sample rates and volume steps (which would be better exposed
-as separate ALSA mixers).
+x86, sched: Fix the AMD CPPC maximum performance value on certain AMD Ryzen g=
+enerations
 
-The format of the firmware files seems to have changed a lot over the time,
-so it's not even possible to simply re-use the firmware originally provided
-by the vendor.
+Some AMD Ryzen generations has different calculation method on maximum
+performance. 255 is not for all ASICs, some specific generations should use 1=
+66
+as the maximum performance. Otherwise, it will report incorrect frequency val=
+ue
+like below:
 
-Overall, it seems close to impossible to develop a proper mainline driver
-for these amplifiers that could make proper use of the built-in DSP.
+  ~ =E2=86=92 lscpu | grep MHz
+  CPU MHz:                         3400.000
+  CPU max MHz:                     7228.3198
+  CPU min MHz:                     2200.0000
 
-This commit implements a compromise: At least the TFA1 family of the
-TFA98xx amplifiers (usually called TFA989x) provide a way to *bypass*
-the DSP using a special register sequence. The register sequence can be
-found in similar variations in the kernel drivers from lots of vendors
-e.g. in [3] and was probably mainly used for factory testing.
+[ mingo: Tidied up whitespace use. ]
+[ Alexander Monakov <amonakov@ispras.ru>: fix 225 -> 255 typo. ]
 
-With the DSP bypassed, the amplifier acts mostly like a dumb standard
-speaker amplifier, without (hardware) volume control. However, the setup
-is much simpler and it works without any obscure firmware.
-
-This driver implements the DSP bypass combined with chip-specific
-initialization sequences adapted from [2]. Only TFA9895 is supported in
-this initial commit. Except for the lack of volume control I can not hear
-any difference with or without the DSP, it works just fine.
-
-This driver allows the speaker to work on mainline Linux running on the
-Samsung Galaxy A3/A5 (2015) [TFA9895] and Alcatel Idol 3 [TFA9897].
-TFA9897 support will be added in separate patch set later.
-
-[1]: https://product.goodix.com/en/docview/TFA9897%20SDS_Rev.3.1?objectId=47&objectType=document&version=78
-[2]: https://source.codeaurora.org/external/mas/tfa98xx
-[3]: https://github.com/sonyxperiadev/kernel/blob/57b5050e340f40a88e1ddb8d16fd9adb44418923/sound/soc/codecs/tfa98xx.c#L1422-L1462
-
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Fixes: 41ea667227ba ("x86, sched: Calculate frequency invariance for AMD syst=
+ems")
+Fixes: 3c55e94c0ade ("cpufreq: ACPI: Extend frequency tables to cover boost f=
+requencies")
+Reported-by: Jason Bagavatsingham <jason.bagavatsingham@gmail.com>
+Fixed-by: Alexander Monakov <amonakov@ispras.ru>
+Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Huang Rui <ray.huang@amd.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Tested-by: Jason Bagavatsingham <jason.bagavatsingham@gmail.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210425073451.2557394-1-ray.huang@amd.com
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=3D211791
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
 ---
- MAINTAINERS                |   7 +
- sound/soc/codecs/Kconfig   |  11 ++
- sound/soc/codecs/Makefile  |   2 +
- sound/soc/codecs/tfa989x.c | 298 +++++++++++++++++++++++++++++++++++++
- 4 files changed, 318 insertions(+)
- create mode 100644 sound/soc/codecs/tfa989x.c
+ arch/x86/include/asm/processor.h |  2 ++
+ arch/x86/kernel/cpu/amd.c        | 16 ++++++++++++++++
+ arch/x86/kernel/smpboot.c        |  2 +-
+ drivers/cpufreq/acpi-cpufreq.c   |  6 +++++-
+ 4 files changed, 24 insertions(+), 2 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index bd7aff0c120f..33079fddc7b8 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -13204,6 +13204,13 @@ S:	Maintained
- F:	Documentation/devicetree/bindings/sound/tfa9879.txt
- F:	sound/soc/codecs/tfa9879*
- 
-+NXP/Goodix TFA989X (TFA1) DRIVER
-+M:	Stephan Gerhold <stephan@gerhold.net>
-+L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml
-+F:	sound/soc/codecs/tfa989x.c
+diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processo=
+r.h
+index 154321d..556b2b1 100644
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -787,8 +787,10 @@ DECLARE_PER_CPU(u64, msr_misc_features_shadow);
+=20
+ #ifdef CONFIG_CPU_SUP_AMD
+ extern u32 amd_get_nodes_per_socket(void);
++extern u32 amd_get_highest_perf(void);
+ #else
+ static inline u32 amd_get_nodes_per_socket(void)	{ return 0; }
++static inline u32 amd_get_highest_perf(void)		{ return 0; }
+ #endif
+=20
+ static inline uint32_t hypervisor_cpuid_base(const char *sig, uint32_t leave=
+s)
+diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+index 2d11384..6d7b3b3 100644
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -1165,3 +1165,19 @@ void set_dr_addr_mask(unsigned long mask, int dr)
+ 		break;
+ 	}
+ }
 +
- NXP-NCI NFC DRIVER
- M:	Clément Perrochaud <clement.perrochaud@effinnov.com>
- R:	Charles Gorand <charles.gorand@effinnov.com>
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 2a7b3e363069..196919bc27ab 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -211,6 +211,7 @@ config SND_SOC_ALL_CODECS
- 	imply SND_SOC_TAS6424
- 	imply SND_SOC_TDA7419
- 	imply SND_SOC_TFA9879
-+	imply SND_SOC_TFA989X
- 	imply SND_SOC_TLV320ADCX140
- 	imply SND_SOC_TLV320AIC23_I2C
- 	imply SND_SOC_TLV320AIC23_SPI
-@@ -1408,6 +1409,16 @@ config SND_SOC_TFA9879
- 	tristate "NXP Semiconductors TFA9879 amplifier"
- 	depends on I2C
- 
-+config SND_SOC_TFA989X
-+	tristate "NXP/Goodix TFA989X (TFA1) amplifiers"
-+	depends on I2C
-+	select REGMAP_I2C
-+	help
-+	  Enable support for NXP (now Goodix) TFA989X (TFA1 family) speaker
-+	  amplifiers, e.g. TFA9895.
-+	  Note that the driver currently bypasses the built-in "CoolFlux DSP"
-+	  and does not support (hardware) volume control.
-+
- config SND_SOC_TLV320AIC23
- 	tristate
- 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 0efdba609048..8c7257035e4c 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -229,6 +229,7 @@ snd-soc-tas6424-objs := tas6424.o
- snd-soc-tda7419-objs := tda7419.o
- snd-soc-tas2770-objs := tas2770.o
- snd-soc-tfa9879-objs := tfa9879.o
-+snd-soc-tfa989x-objs := tfa989x.o
- snd-soc-tlv320aic23-objs := tlv320aic23.o
- snd-soc-tlv320aic23-i2c-objs := tlv320aic23-i2c.o
- snd-soc-tlv320aic23-spi-objs := tlv320aic23-spi.o
-@@ -551,6 +552,7 @@ obj-$(CONFIG_SND_SOC_TAS6424)	+= snd-soc-tas6424.o
- obj-$(CONFIG_SND_SOC_TDA7419)	+= snd-soc-tda7419.o
- obj-$(CONFIG_SND_SOC_TAS2770) += snd-soc-tas2770.o
- obj-$(CONFIG_SND_SOC_TFA9879)	+= snd-soc-tfa9879.o
-+obj-$(CONFIG_SND_SOC_TFA989X)	+= snd-soc-tfa989x.o
- obj-$(CONFIG_SND_SOC_TLV320AIC23)	+= snd-soc-tlv320aic23.o
- obj-$(CONFIG_SND_SOC_TLV320AIC23_I2C)	+= snd-soc-tlv320aic23-i2c.o
- obj-$(CONFIG_SND_SOC_TLV320AIC23_SPI)	+= snd-soc-tlv320aic23-spi.o
-diff --git a/sound/soc/codecs/tfa989x.c b/sound/soc/codecs/tfa989x.c
-new file mode 100644
-index 000000000000..408e26eee108
---- /dev/null
-+++ b/sound/soc/codecs/tfa989x.c
-@@ -0,0 +1,298 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) 2021 Stephan Gerhold
-+ *
-+ * Register definitions/sequences taken from various tfa98xx kernel drivers:
-+ * Copyright (C) 2014-2020 NXP Semiconductors, All Rights Reserved.
-+ * Copyright (C) 2013 Sony Mobile Communications Inc.
-+ */
-+
-+#include <linux/i2c.h>
-+#include <linux/module.h>
-+#include <linux/regmap.h>
-+#include <sound/soc.h>
-+
-+#define TFA989X_STATUSREG		0x00
-+#define TFA989X_BATTERYVOLTAGE		0x01
-+#define TFA989X_TEMPERATURE		0x02
-+#define TFA989X_REVISIONNUMBER		0x03
-+#define TFA989X_REVISIONNUMBER_REV_MSK	GENMASK(7, 0)	/* device revision */
-+#define TFA989X_I2SREG			0x04
-+#define TFA989X_I2SREG_CHSA		6	/* amplifier input select */
-+#define TFA989X_I2SREG_CHSA_MSK		GENMASK(7, 6)
-+#define TFA989X_I2SREG_I2SSR		12	/* sample rate */
-+#define TFA989X_I2SREG_I2SSR_MSK	GENMASK(15, 12)
-+#define TFA989X_BAT_PROT		0x05
-+#define TFA989X_AUDIO_CTR		0x06
-+#define TFA989X_DCDCBOOST		0x07
-+#define TFA989X_SPKR_CALIBRATION	0x08
-+#define TFA989X_SYS_CTRL		0x09
-+#define TFA989X_SYS_CTRL_PWDN		0	/* power down */
-+#define TFA989X_SYS_CTRL_I2CR		1	/* I2C reset */
-+#define TFA989X_SYS_CTRL_CFE		2	/* enable CoolFlux DSP */
-+#define TFA989X_SYS_CTRL_AMPE		3	/* enable amplifier */
-+#define TFA989X_SYS_CTRL_DCA		4	/* enable boost */
-+#define TFA989X_SYS_CTRL_SBSL		5	/* DSP configured */
-+#define TFA989X_SYS_CTRL_AMPC		6	/* amplifier enabled by DSP */
-+#define TFA989X_I2S_SEL_REG		0x0a
-+#define TFA989X_I2S_SEL_REG_SPKR_MSK	GENMASK(10, 9)	/* speaker impedance */
-+#define TFA989X_I2S_SEL_REG_DCFG_MSK	GENMASK(14, 11)	/* DCDC compensation */
-+#define TFA989X_PWM_CONTROL		0x41
-+#define TFA989X_CURRENTSENSE1		0x46
-+#define TFA989X_CURRENTSENSE2		0x47
-+#define TFA989X_CURRENTSENSE3		0x48
-+#define TFA989X_CURRENTSENSE4		0x49
-+
-+#define TFA9895_REVISION		0x12
-+
-+struct tfa989x_rev {
-+	unsigned int rev;
-+	int (*init)(struct regmap *regmap);
-+};
-+
-+static bool tfa989x_writeable_reg(struct device *dev, unsigned int reg)
++u32 amd_get_highest_perf(void)
 +{
-+	return reg > TFA989X_REVISIONNUMBER;
++	struct cpuinfo_x86 *c =3D &boot_cpu_data;
++
++	if (c->x86 =3D=3D 0x17 && ((c->x86_model >=3D 0x30 && c->x86_model < 0x40) =
+||
++			       (c->x86_model >=3D 0x70 && c->x86_model < 0x80)))
++		return 166;
++
++	if (c->x86 =3D=3D 0x19 && ((c->x86_model >=3D 0x20 && c->x86_model < 0x30) =
+||
++			       (c->x86_model >=3D 0x40 && c->x86_model < 0x70)))
++		return 166;
++
++	return 255;
 +}
++EXPORT_SYMBOL_GPL(amd_get_highest_perf);
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index 0ad5214..7770245 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -2043,7 +2043,7 @@ static bool amd_set_max_freq_ratio(void)
+ 		return false;
+ 	}
+=20
+-	highest_perf =3D perf_caps.highest_perf;
++	highest_perf =3D amd_get_highest_perf();
+ 	nominal_perf =3D perf_caps.nominal_perf;
+=20
+ 	if (!highest_perf || !nominal_perf) {
+diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufreq.c
+index d1bbc16..7e74504 100644
+--- a/drivers/cpufreq/acpi-cpufreq.c
++++ b/drivers/cpufreq/acpi-cpufreq.c
+@@ -646,7 +646,11 @@ static u64 get_max_boost_ratio(unsigned int cpu)
+ 		return 0;
+ 	}
+=20
+-	highest_perf =3D perf_caps.highest_perf;
++	if (boot_cpu_data.x86_vendor =3D=3D X86_VENDOR_AMD)
++		highest_perf =3D amd_get_highest_perf();
++	else
++		highest_perf =3D perf_caps.highest_perf;
 +
-+static bool tfa989x_volatile_reg(struct device *dev, unsigned int reg)
-+{
-+	return reg < TFA989X_REVISIONNUMBER;
-+}
-+
-+static const struct regmap_config tfa989x_regmap = {
-+	.reg_bits = 8,
-+	.val_bits = 16,
-+
-+	.writeable_reg	= tfa989x_writeable_reg,
-+	.volatile_reg	= tfa989x_volatile_reg,
-+	.cache_type	= REGCACHE_RBTREE,
-+};
-+
-+static const char * const chsa_text[] = { "Left", "Right", /* "DSP" */ };
-+static SOC_ENUM_SINGLE_DECL(chsa_enum, TFA989X_I2SREG, TFA989X_I2SREG_CHSA, chsa_text);
-+static const struct snd_kcontrol_new chsa_mux = SOC_DAPM_ENUM("Amp Input", chsa_enum);
-+
-+static const struct snd_soc_dapm_widget tfa989x_dapm_widgets[] = {
-+	SND_SOC_DAPM_OUTPUT("OUT"),
-+	SND_SOC_DAPM_SUPPLY("POWER", TFA989X_SYS_CTRL, TFA989X_SYS_CTRL_PWDN, 1, NULL, 0),
-+	SND_SOC_DAPM_OUT_DRV("AMPE", TFA989X_SYS_CTRL, TFA989X_SYS_CTRL_AMPE, 0, NULL, 0),
-+
-+	SND_SOC_DAPM_MUX("Amp Input", SND_SOC_NOPM, 0, 0, &chsa_mux),
-+	SND_SOC_DAPM_AIF_IN("AIFINL", "HiFi Playback", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("AIFINR", "HiFi Playback", 1, SND_SOC_NOPM, 0, 0),
-+};
-+
-+static const struct snd_soc_dapm_route tfa989x_dapm_routes[] = {
-+	{"OUT", NULL, "AMPE"},
-+	{"AMPE", NULL, "POWER"},
-+	{"AMPE", NULL, "Amp Input"},
-+	{"Amp Input", "Left", "AIFINL"},
-+	{"Amp Input", "Right", "AIFINR"},
-+};
-+
-+static const struct snd_soc_component_driver tfa989x_component = {
-+	.dapm_widgets		= tfa989x_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(tfa989x_dapm_widgets),
-+	.dapm_routes		= tfa989x_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(tfa989x_dapm_routes),
-+	.use_pmdown_time	= 1,
-+	.endianness		= 1,
-+	.non_legacy_dai_naming	= 1,
-+};
-+
-+static const unsigned int tfa989x_rates[] = {
-+	8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000
-+};
-+
-+static int tfa989x_find_sample_rate(unsigned int rate)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(tfa989x_rates); ++i)
-+		if (tfa989x_rates[i] == rate)
-+			return i;
-+
-+	return -EINVAL;
-+}
-+
-+static int tfa989x_hw_params(struct snd_pcm_substream *substream,
-+			     struct snd_pcm_hw_params *params,
-+			     struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_component *component = dai->component;
-+	int sr;
-+
-+	sr = tfa989x_find_sample_rate(params_rate(params));
-+	if (sr < 0)
-+		return sr;
-+
-+	return snd_soc_component_update_bits(component, TFA989X_I2SREG,
-+					     TFA989X_I2SREG_I2SSR_MSK,
-+					     sr << TFA989X_I2SREG_I2SSR);
-+}
-+
-+static const struct snd_soc_dai_ops tfa989x_dai_ops = {
-+	.hw_params = tfa989x_hw_params,
-+};
-+
-+static struct snd_soc_dai_driver tfa989x_dai = {
-+	.name = "tfa989x-hifi",
-+	.playback = {
-+		.stream_name	= "HiFi Playback",
-+		.formats	= SNDRV_PCM_FMTBIT_S16_LE,
-+		.rates		= SNDRV_PCM_RATE_8000_48000,
-+		.rate_min	= 8000,
-+		.rate_max	= 48000,
-+		.channels_min	= 1,
-+		.channels_max	= 2,
-+	},
-+	.ops = &tfa989x_dai_ops,
-+};
-+
-+static const struct reg_sequence tfa9895_reg_init[] = {
-+	/* some other registers must be set for optimal amplifier behaviour */
-+	{ TFA989X_BAT_PROT, 0x13ab },
-+	{ TFA989X_AUDIO_CTR, 0x001f },
-+
-+	/* peak voltage protection is always on, but may be written */
-+	{ TFA989X_SPKR_CALIBRATION, 0x3c4e },
-+
-+	/* TFA989X_SYSCTRL_DCA = 0 */
-+	{ TFA989X_SYS_CTRL, 0x024d },
-+	{ TFA989X_PWM_CONTROL, 0x0308 },
-+	{ TFA989X_CURRENTSENSE4, 0x0e82 },
-+};
-+
-+static int tfa9895_init(struct regmap *regmap)
-+{
-+	return regmap_multi_reg_write(regmap, tfa9895_reg_init,
-+				      ARRAY_SIZE(tfa9895_reg_init));
-+}
-+
-+static const struct tfa989x_rev tfa9895_rev = {
-+	.rev	= TFA9895_REVISION,
-+	.init	= tfa9895_init,
-+};
-+
-+/*
-+ * Note: At the moment this driver bypasses the "CoolFlux DSP" built into the
-+ * TFA989X amplifiers. Unfortunately, there seems to be absolutely
-+ * no documentation for it - the public "short datasheets" do not provide
-+ * any information about the DSP or available registers.
-+ *
-+ * Usually the TFA989X amplifiers are configured through proprietary userspace
-+ * libraries. There are also some (rather complex) kernel drivers but even those
-+ * rely on obscure firmware blobs for configuration (so-called "containers").
-+ * They seem to contain different "profiles" with tuned speaker settings, sample
-+ * rates and volume steps (which would be better exposed as separate ALSA mixers).
-+ *
-+ * Bypassing the DSP disables volume control (and perhaps some speaker
-+ * optimization?), but at least allows using the speaker without obscure
-+ * kernel drivers and firmware.
-+ *
-+ * Ideally NXP (or now Goodix) should release proper documentation for these
-+ * amplifiers so that support for the "CoolFlux DSP" can be implemented properly.
-+ */
-+static int tfa989x_dsp_bypass(struct regmap *regmap)
-+{
-+	int ret;
-+
-+	/* Clear CHSA to bypass DSP and take input from I2S 1 left channel */
-+	ret = regmap_clear_bits(regmap, TFA989X_I2SREG, TFA989X_I2SREG_CHSA_MSK);
-+	if (ret)
-+		return ret;
-+
-+	/* Set DCDC compensation to off and speaker impedance to 8 ohm */
-+	ret = regmap_update_bits(regmap, TFA989X_I2S_SEL_REG,
-+				 TFA989X_I2S_SEL_REG_DCFG_MSK |
-+				 TFA989X_I2S_SEL_REG_SPKR_MSK,
-+				 TFA989X_I2S_SEL_REG_SPKR_MSK);
-+	if (ret)
-+		return ret;
-+
-+	/* Set DCDC to follower mode and disable CoolFlux DSP */
-+	return regmap_clear_bits(regmap, TFA989X_SYS_CTRL,
-+				 BIT(TFA989X_SYS_CTRL_DCA) |
-+				 BIT(TFA989X_SYS_CTRL_CFE) |
-+				 BIT(TFA989X_SYS_CTRL_AMPC));
-+}
-+
-+static int tfa989x_i2c_probe(struct i2c_client *i2c)
-+{
-+	struct device *dev = &i2c->dev;
-+	const struct tfa989x_rev *rev;
-+	struct regmap *regmap;
-+	unsigned int val;
-+	int ret;
-+
-+	rev = device_get_match_data(dev);
-+	if (!rev) {
-+		dev_err(dev, "unknown device revision\n");
-+		return -ENODEV;
-+	}
-+
-+	regmap = devm_regmap_init_i2c(i2c, &tfa989x_regmap);
-+	if (IS_ERR(regmap))
-+		return PTR_ERR(regmap);
-+
-+	/* Bypass regcache for reset and init sequence */
-+	regcache_cache_bypass(regmap, true);
-+
-+	/* Dummy read to generate i2c clocks, required on some devices */
-+	regmap_read(regmap, TFA989X_REVISIONNUMBER, &val);
-+
-+	ret = regmap_read(regmap, TFA989X_REVISIONNUMBER, &val);
-+	if (ret) {
-+		dev_err(dev, "failed to read revision number: %d\n", ret);
-+		return ret;
-+	}
-+
-+	val &= TFA989X_REVISIONNUMBER_REV_MSK;
-+	if (val != rev->rev) {
-+		dev_err(dev, "invalid revision number, expected %#x, got %#x\n",
-+			rev->rev, val);
-+		return -ENODEV;
-+	}
-+
-+	ret = regmap_write(regmap, TFA989X_SYS_CTRL, BIT(TFA989X_SYS_CTRL_I2CR));
-+	if (ret) {
-+		dev_err(dev, "failed to reset I2C registers: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = rev->init(regmap);
-+	if (ret) {
-+		dev_err(dev, "failed to initialize registers: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = tfa989x_dsp_bypass(regmap);
-+	if (ret) {
-+		dev_err(dev, "failed to enable DSP bypass: %d\n", ret);
-+		return ret;
-+	}
-+	regcache_cache_bypass(regmap, false);
-+
-+	return devm_snd_soc_register_component(dev, &tfa989x_component,
-+					       &tfa989x_dai, 1);
-+}
-+
-+static const struct of_device_id tfa989x_of_match[] = {
-+	{ .compatible = "nxp,tfa9895", .data = &tfa9895_rev },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, tfa989x_of_match);
-+
-+static struct i2c_driver tfa989x_i2c_driver = {
-+	.driver = {
-+		.name = "tfa989x",
-+		.of_match_table = tfa989x_of_match,
-+	},
-+	.probe_new = tfa989x_i2c_probe,
-+};
-+module_i2c_driver(tfa989x_i2c_driver);
-+
-+MODULE_DESCRIPTION("ASoC NXP/Goodix TFA989X (TFA1) driver");
-+MODULE_AUTHOR("Stephan Gerhold <stephan@gerhold.net>");
-+MODULE_LICENSE("GPL");
--- 
-2.31.1
-
+ 	nominal_perf =3D perf_caps.nominal_perf;
+=20
+ 	if (!highest_perf || !nominal_perf) {
