@@ -2,66 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4C9237FA1D
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 16:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD9B737FA20
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 16:57:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234659AbhEMO4v convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 May 2021 10:56:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33402 "EHLO mail.kernel.org"
+        id S234664AbhEMO6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 10:58:55 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:54934 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234782AbhEMOz4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 10:55:56 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        id S229925AbhEMO6x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 10:58:53 -0400
+Received: from zn.tnic (p200300ec2f0e440021f4b7a45291c72c.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:4400:21f4:b7a4:5291:c72c])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 65AF961433;
-        Thu, 13 May 2021 14:54:44 +0000 (UTC)
-Date:   Thu, 13 May 2021 15:55:52 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <ardeleanalex@gmail.com>
-Cc:     Alexandru Lazar <alazar@startmail.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] iio: adc: remove unused private data assigned with
- spi_set_drvdata()
-Message-ID: <20210513155552.12f64241@jic23-huawei>
-In-Reply-To: <CA+U=DsrSjQa-iL5FHyiwXN=Hv72jd5b99tzcNoO97ckXgiuGzA@mail.gmail.com>
-References: <20210513111035.77950-1-aardelean@deviqon.com>
-        <a31b6d94-24cc-6f01-dc36-90c0001ea396@startmail.com>
-        <CA+U=DsrSjQa-iL5FHyiwXN=Hv72jd5b99tzcNoO97ckXgiuGzA@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7CBD11EC023E;
+        Thu, 13 May 2021 16:57:41 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1620917861;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=AbgyPKG5ZtG/4WqxP4kIpo39kNw3OZzOO2nwU/C30hg=;
+        b=oRJpIZArC9T1M+9MNwcVtDwjwfbntLsBzjjToIMCKWfzI3s0eG1Hr+RerU06xPGRegGdNV
+        4kXRfxt+dIQV3oe9KG2yNlBVoNz4nQFBNgRjaiKItSEZNZpwuZcOKQHamI3kAxT17XuauI
+        AOQFZrfNvojet7MBk7JzSn81CuVsorc=
+Date:   Thu, 13 May 2021 16:57:37 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     "Joshi, Mukul" <Mukul.Joshi@amd.com>, x86-ml <x86@kernel.org>,
+        "Kasiviswanathan, Harish" <Harish.Kasiviswanathan@amd.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>
+Subject: Re: [PATCH] drm/amdgpu: Register bad page handler for Aldebaran
+Message-ID: <YJ0+YbwSpxTrghpo@zn.tnic>
+References: <20210512013058.6827-1-mukul.joshi@amd.com>
+ <YJuhs1WsqtJ7ta1L@zn.tnic>
+ <DM4PR12MB5263797EB7B2D37C21427A88EE529@DM4PR12MB5263.namprd12.prod.outlook.com>
+ <YJxDIhGnZ5XdukiS@zn.tnic>
+ <DM4PR12MB52631035F875B77974FA8D21EE519@DM4PR12MB5263.namprd12.prod.outlook.com>
+ <YJz3CMBFFIDBzVwX@zn.tnic>
+ <CADnq5_Or5maEWTZFzS6iksyoFC=q9=y=-YmPTdPuWRKFhdw0yg@mail.gmail.com>
+ <YJ04D8a6LaVRMuGH@zn.tnic>
+ <CADnq5_NQonmqtFDpfsWygGzA2kv-W-daDSkxkY2ALf9a1eby9g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CADnq5_NQonmqtFDpfsWygGzA2kv-W-daDSkxkY2ALf9a1eby9g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 May 2021 15:14:57 +0300
-Alexandru Ardelean <ardeleanalex@gmail.com> wrote:
+On Thu, May 13, 2021 at 10:32:45AM -0400, Alex Deucher wrote:
+> Right.  The sys admin can query the bad page count and decide when to
+> retire the card.
 
-> On Thu, May 13, 2021 at 3:06 PM Alexandru Lazar <alazar@startmail.com> wrote:
-> >
-> >  
-> > > Some drivers were copied from drivers that fit the criteria described
-> > > above. In any case, in order to prevent more drivers from being used as
-> > > example (and have spi_set_drvdata() needlessly set), this change removes it
-> > > from the IIO ADC group.  
-> >
-> > Oh yeah, I'm pretty sure that's how I ended up adding it in the max1241
-> > code, too. Code monkey presents humble apologies :-).  
-> 
-> Well, I also added one in the AD9467 driver in the same manner.
-> So  ¯\_(ツ)_/¯
-> 
-All look correct to me. I'll let this sit on the list for a few days before
-picking it up.
+Yap, although the driver should actively "tell" the sysadmin when some
+critical counts of retired VRAM pages are reached because I doubt all
+admins would go look at those counts on their own.
 
-Thanks,
+Btw, you say "admin" - am I to understand that those are some high end
+GPU cards with ECC memory? If consumer grade stuff has this too, then
+the driver should very much warn on such levels on its own because
+normal users won't know what and where to look.
 
-Jonathan
+Other than that, the big picture sounds good to me.
 
-> >
-> > All the best,
-> > Alex  
+Thx.
 
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
