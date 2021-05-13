@@ -2,106 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D339337F158
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 04:31:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAFF837F169
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 04:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230366AbhEMCcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 22:32:17 -0400
-Received: from mail-oi1-f169.google.com ([209.85.167.169]:33503 "EHLO
-        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229630AbhEMCcP (ORCPT
+        id S230472AbhEMCjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 22:39:10 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:22972 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230445AbhEMCjA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 22:32:15 -0400
-Received: by mail-oi1-f169.google.com with SMTP id b25so18861096oic.0;
-        Wed, 12 May 2021 19:31:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=T4+xGNATKcG7KI85jTdzNk3Jk4cn9OQmVyTgwdUELT4=;
-        b=MVc6Tu5L+gWRMzWWxvWFKg+uHCZUqixWE9BY/2qe7cIq2ol18hN3np/Mf6hpC3OWHG
-         TY7mg+NIMBIOpYHIMKUj5oaqfsEzQtwVQs+/Y4fabhTG+4I0QqPjCH1dQvjn3pTDu1ZE
-         rEEOPrFoq8U9Z8Ra/IGIijHmeYxCzhRVHkISunHAOERWbK5DOXWj0iCzT8DQt8qEMIXt
-         UbVM5+LLSK8WhBqCMiMjKkHhcBmrysSejO2l5ErDszJmP2bAFYUeIbN8YSJ49tyzCl3c
-         RE9vufyRYQSouVYUH61AIKx6NhIaiM07Bkg7Q8/lVTpdpTM1N86ok+YiLkd+FgqTF336
-         PMrg==
-X-Gm-Message-State: AOAM5331O7GO5Na73Nxj3ixSCwk5/eG2lOXrA8X39FQFlJ1oSNGjFvI4
-        FpD99wiXStVmy/Lp774eKw==
-X-Google-Smtp-Source: ABdhPJxIya1KtJJCP0zHTCZ9HTvBQXnDwZACRLxhvG7Fef9QzsKVQJg2i1alUZulkd/o1lRaiwrfXQ==
-X-Received: by 2002:a54:4396:: with SMTP id u22mr1237417oiv.118.1620873066476;
-        Wed, 12 May 2021 19:31:06 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id e6sm360792otk.64.2021.05.12.19.31.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 19:31:05 -0700 (PDT)
-Received: (nullmailer pid 912364 invoked by uid 1000);
-        Thu, 13 May 2021 02:31:04 -0000
-Date:   Wed, 12 May 2021 21:31:04 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Nava kishore Manne <nava.manne@xilinx.com>
-Cc:     mdf@kernel.org, trix@redhat.com, michal.simek@xilinx.com,
-        arnd@arndb.de, rajan.vaja@xilinx.com, gregkh@linuxfoundation.org,
-        linus.walleij@linaro.org, amit.sunil.dhamne@xilinx.com,
-        tejas.patel@xilinx.com, zou_wei@huawei.com,
-        manish.narani@xilinx.com, lakshmi.sai.krishna.potthuri@xilinx.com,
-        wendy.liang@xilinx.com, linux-fpga@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, git@xilinx.com,
-        chinnikishore369@gmail.com
-Subject: Re: [RFC PATCH 2/4] fpga: Add new properties to support user-key
- encrypted bitstream loading
-Message-ID: <20210513023104.GA909876@robh.at.kernel.org>
-References: <20210504102227.15475-1-nava.manne@xilinx.com>
- <20210504102227.15475-3-nava.manne@xilinx.com>
+        Wed, 12 May 2021 22:39:00 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210513023750epoutp04300d69f744048332e2667721d61665b0~_f9VR0M573274732747epoutp04A
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 02:37:50 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210513023750epoutp04300d69f744048332e2667721d61665b0~_f9VR0M573274732747epoutp04A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1620873470;
+        bh=YwYqzf4migoNc3CLffZtdmBl6XUsE0z40O9rpgKoT8k=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=Gpbk0fa9WRLiKzoO5e4MR6Cm1o7v0aou9ClfQePPV6YAUAhq4iEwRF64Nb0cZVjz0
+         ybGFUkPkgCGMYJU6cvkv+yDW0nu+uiIvWvty4gYU2JupwGpfLsqdFQyM3fZNqfwTIa
+         SRXSuNilDBH4n0mYZ3lE/9az3kOjRfM85H5Q91Lg=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+        20210513023749epcas1p46be1e76873d0804f5ddac25b97d08461~_f9UV-1kl1954819548epcas1p4H;
+        Thu, 13 May 2021 02:37:49 +0000 (GMT)
+Received: from epsmges1p4.samsung.com (unknown [182.195.40.163]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4FgbRb4z2fz4x9Q0; Thu, 13 May
+        2021 02:37:47 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        15.E5.10258.BF09C906; Thu, 13 May 2021 11:37:47 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210513023747epcas1p23502f390781d1a5a8f6512982af1fd65~_f9Sbcz9s2434224342epcas1p2H;
+        Thu, 13 May 2021 02:37:47 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210513023747epsmtrp151e4711383e4cc6bee433bdb75095065~_f9San5XD0351503515epsmtrp1t;
+        Thu, 13 May 2021 02:37:47 +0000 (GMT)
+X-AuditID: b6c32a38-42fff70000002812-3a-609c90fb4ba8
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        53.5E.08163.AF09C906; Thu, 13 May 2021 11:37:46 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.100.232]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210513023746epsmtip27f714062765237453d4d854d326f237b~_f9SK5uV02662926629epsmtip2t;
+        Thu, 13 May 2021 02:37:46 +0000 (GMT)
+From:   Chanwoo Lee <cw9316.lee@samsung.com>
+To:     adrian.hunter@intel.com, riteshh@codeaurora.org,
+        asutoshd@codeaurora.org, ulf.hansson@linaro.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     grant.jung@samsung.com, jt77.jang@samsung.com,
+        dh0421.hwang@samsung.com, sh043.lee@samsung.com,
+        cw9316.lee@samsung.com
+Subject: [PATCH] Unnecessary code change in spin_lock section.
+Date:   Thu, 13 May 2021 11:33:07 +0900
+Message-Id: <20210513023307.12435-1-cw9316.lee@samsung.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210504102227.15475-3-nava.manne@xilinx.com>
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprKJsWRmVeSWpSXmKPExsWy7bCmvu7vCXMSDG59UbY4+WQNm8XethPs
+        FjNOtbFa7Lt2kt3i19/17BY7np9ht7i8aw6bxZH//YwW+19fYLVo+rOPxeL42nAHbo/Lfb1M
+        Hov3vGTyuHNtD5tH35ZVjB6fN8kFsEbl2GSkJqakFimk5iXnp2TmpdsqeQfHO8ebmhkY6hpa
+        WpgrKeQl5qbaKrn4BOi6ZeYAXaakUJaYUwoUCkgsLlbSt7Mpyi8tSVXIyC8usVVKLUjJKTA0
+        KNArTswtLs1L10vOz7UyNDAwMgWqTMjJ+NV+jrngGFvFgmvr2RoYD7N2MXJySAiYSGxc1MPS
+        xcjFISSwg1Fi39z1zBDOJ0aJ9s1T2SCcz4wSH9acZ4Rp2ftrGlRiF6PE/LWnwRJCAl8YJd5O
+        0Oti5OBgE9CSuH3MG6RGRGAho8TynhlsIDXMAjUS8xZ8ZwaxhQXsJG4f3s4EYrMIqEosavsM
+        NodXwFpi+84l7BDL5CX+3O9hhogLSpyc+YQFYo68RPPW2WCnSgh8ZJdYsekpM0SDi8Sm1ceY
+        IGxhiVfHt0ANkpJ42d/GDtHQzChxavY5KKeFUeL1lRtQVcYSnz6DnMEBtEJTYv0ufYiwosTO
+        33MZITbzSbz72sMKUiIhwCvR0SYEUaIiMafrHBvMro83HkMD2ENiRtcFVkgAxUrs7F7KMoFR
+        fhaSf2Yh+WcWwuIFjMyrGMVSC4pz01OLDQtMkKN1EyM4fWpZ7GCc+/aD3iFGJg7GQ4wSHMxK
+        IrxiSbMThHhTEiurUovy44tKc1KLDzGaAkN4IrOUaHI+MIHnlcQbmhoZGxtbmJiZm5kaK4nz
+        pjtXJwgJpCeWpGanphakFsH0MXFwSjUwZTBuPFp36X76ktqle158f8F4ODPd/sSlsrzwd4an
+        V/r7NJ2S8Hgu53OSt6Ao9cyO39Wvp4gc2S0RbD7j7czY5O+M1ez/zt37dWBGa9fC6x9T5j9d
+        L62dOX0q70WmWTbnapY7HQy9oLDLbv+MmrmbUrK+zLh/t+ibmLrUxSVOzYx3e0JUV91/F+9T
+        ttQ+LS14dX+hXt6GSJ9tXDYnVZxu/2JWPaD7YrNZaOTbgvvuIam3C19KN+pNFK+W9F0mmCKx
+        a+UnKe9ioxVFXz1P/+814ppuw7BWN7z5fHfPN12mDxoGQrd9/nYxXHx1eNOrxVMyWqV0goUX
+        czZcvvZqVYx4leGkXXKzl/58P/8p8wu3HUosxRmJhlrMRcWJABUXuqcoBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrELMWRmVeSWpSXmKPExsWy7bCSvO6vCXMSDCbMM7M4+WQNm8XethPs
+        FjNOtbFa7Lt2kt3i19/17BY7np9ht7i8aw6bxZH//YwW+19fYLVo+rOPxeL42nAHbo/Lfb1M
+        Hov3vGTyuHNtD5tH35ZVjB6fN8kFsEZx2aSk5mSWpRbp2yVwZfxqP8dccIytYsG19WwNjIdZ
+        uxg5OSQETCT2/prG1sXIxSEksINRYs/PKYwQCSmJ3fvPAyU4gGxhicOHiyFqPjFKrH66lhEk
+        ziagJXH7mDdIXERgOaPEr+07mUEcZoEmRomjBzrANggL2EncPrydCcRmEVCVWNT2GWwBr4C1
+        xPadS9ghlslL/LnfwwwRF5Q4OfMJC4jNDBRv3jqbeQIj3ywkqVlIUgsYmVYxSqYWFOem5xYb
+        FhjlpZbrFSfmFpfmpesl5+duYgQHs5bWDsY9qz7oHWJk4mA8xCjBwawkwiuWNDtBiDclsbIq
+        tSg/vqg0J7X4EKM0B4uSOO+FrpPxQgLpiSWp2ampBalFMFkmDk6pBqbzBzvurb2Z4OPALvL8
+        S9uMO7fWM7maZRwTWphzL6Q+s/DFhl3XF7jtdjFIdMxW9j7/8Ugi17KHz64wRnH+vnf18oGJ
+        e61Fnhae1TQse1Z2cEnK8/W7FeLZ63M/zJl797NAwXfljZw+PvkOvRn/Nu5UFpWp/Ot5XLrz
+        zIJtTA8nyjL3nzf/4cGpeXCD9JMNRgfXCO9u5JzpYaJ+Z721/feH1+sSnPgd6rZd6Go5+/gu
+        l03Cn++yui1dcYdmSpUmSn/Mq3dXKNqlOHFq6bx21l8eO3md93Eb6P6uv/Lyq43zZ7bIfUq6
+        fNXJ7Ouitv7nkq03PJF7+uOVa3xG20Q6LTTuWBU673193dGyf95hJz8lluKMREMt5qLiRABp
+        f4lV1QIAAA==
+X-CMS-MailID: 20210513023747epcas1p23502f390781d1a5a8f6512982af1fd65
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210513023747epcas1p23502f390781d1a5a8f6512982af1fd65
+References: <CGME20210513023747epcas1p23502f390781d1a5a8f6512982af1fd65@epcas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 03:52:25PM +0530, Nava kishore Manne wrote:
-> This patch Adds ‘encrypted-key-name’ and
-> ‘encrypted-user-key-fpga-config’ properties
-> to support user-key encrypted bitstream loading
-> use case.
-> 
-> Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
-> ---
->  Documentation/devicetree/bindings/fpga/fpga-region.txt | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/fpga/fpga-region.txt b/Documentation/devicetree/bindings/fpga/fpga-region.txt
-> index d787d57491a1..957dc6cbcd9e 100644
-> --- a/Documentation/devicetree/bindings/fpga/fpga-region.txt
-> +++ b/Documentation/devicetree/bindings/fpga/fpga-region.txt
-> @@ -177,6 +177,9 @@ Optional properties:
->  	it indicates that the FPGA has already been programmed with this image.
->  	If this property is in an overlay targeting a FPGA region, it is a
->  	request to program the FPGA with that image.
-> +- encrypted-key-name : should contain the name of an encrypted key file located
-> +	on the firmware search path. It will be used to decrypt the FPGA image
-> +	file.
->  - fpga-bridges : should contain a list of phandles to FPGA Bridges that must be
->  	controlled during FPGA programming along with the parent FPGA bridge.
->  	This property is optional if the FPGA Manager handles the bridges.
-> @@ -187,6 +190,8 @@ Optional properties:
->  - external-fpga-config : boolean, set if the FPGA has already been configured
->  	prior to OS boot up.
->  - encrypted-fpga-config : boolean, set if the bitstream is encrypted
-> +- encrypted-user-key-fpga-config : boolean, set if the bitstream is encrypted
-> +	with user key.
+From: ChanWoo Lee <cw9316.lee@samsung.com>
 
-What's the relationship with encrypted-fpga-config? Both present or 
-mutually exclusive? Couldn't this be implied by encrypted-key-name being 
-present?
+This is the spin_lock section for cq_host, and mmc setting is unnecessary.
 
->  - region-unfreeze-timeout-us : The maximum time in microseconds to wait for
->  	bridges to successfully become enabled after the region has been
->  	programmed.
-> -- 
-> 2.17.1
-> 
+Signed-off-by: ChanWoo Lee <cw9316.lee@samsung.com>
+---
+ drivers/mmc/host/cqhci-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-core.c
+index 93b0432bb601..4d76c858d45f 100644
+--- a/drivers/mmc/host/cqhci-core.c
++++ b/drivers/mmc/host/cqhci-core.c
+@@ -1090,8 +1090,8 @@ static void cqhci_recovery_finish(struct mmc_host *mmc)
+ 	spin_lock_irqsave(&cq_host->lock, flags);
+ 	cq_host->qcnt = 0;
+ 	cq_host->recovery_halt = false;
+-	mmc->cqe_on = false;
+ 	spin_unlock_irqrestore(&cq_host->lock, flags);
++	mmc->cqe_on = false;
+ 
+ 	/* Ensure all writes are done before interrupts are re-enabled */
+ 	wmb();
+-- 
+2.29.0
+
