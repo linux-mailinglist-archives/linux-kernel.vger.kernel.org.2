@@ -2,210 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8842237FC33
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 19:14:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3865937FC34
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 19:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbhEMRPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 13:15:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52034 "EHLO
+        id S230289AbhEMRQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 13:16:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230121AbhEMRP3 (ORCPT
+        with ESMTP id S230235AbhEMRQW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 13:15:29 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F772C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 10:14:19 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id i5so17320031pgm.0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 10:14:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kSs+1tBj3VUYIMuFlEEx58LmywfW1aed7E8E2k9YJrU=;
-        b=Qb4KCDH67UjllIopYlb1nqkuOcpV8gfLoK/X/8+ToEConK64B5kY9kueyUreIOSwn8
-         TZqzo+n/lUBLNtRO/LsEjSPUhLS9YVa+eZqf0EdSv4nhHBWsysq5QR+C4c+Eh0Fy5Ywi
-         QgD92NU5Rzg7PabDrwSovVVYENDtF3/w2zmj8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kSs+1tBj3VUYIMuFlEEx58LmywfW1aed7E8E2k9YJrU=;
-        b=FMINhF02sPPXJI7bNeN4PQ9XU/Es2Kz1aSM+Nkk7t1gCxwzhl9oE1tRdH/H1oCfEGN
-         eBgY15DIP5zw8zi9eXSPNYCCe9oNTqNVdowwRaYj0th4L7W6dMVGS0g9wyeFovOoM5hc
-         w8+XBH5hlRKaoB5jKfjCNCm9vyXSN8tcAJkKvyWkMThFvFCJs+9ul80sQKV2n+gTyebU
-         b+lmmZgl4to+865CRCxurwjpiRKUR/mirYSgX3S9QLYXqwqMPMrv02vu9SGwDSo0uIz4
-         kmLr2gMZ+7JboP42ZBEJxCdKrbMa3Jf8gGvlOWigaDcrQiMLEe/1eRZQu2f1vECbNlnC
-         EIUQ==
-X-Gm-Message-State: AOAM533N13uRd/1zCBRe8o5xR+55FkUmvJpwNHPUoORaBjXmXIrNBsp+
-        pg9Qi51agZTKhcOv7m6E2NBKMg==
-X-Google-Smtp-Source: ABdhPJxlZ9XLksNeF3rW1kBEnzOLBwWdzU5gFedyz4E7+6DbgjIgL+4tmb8BSdVm/frRfGe97vMuKQ==
-X-Received: by 2002:a63:fb05:: with SMTP id o5mr41545190pgh.316.1620926058610;
-        Thu, 13 May 2021 10:14:18 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:4c2:8d34:961f:de80])
-        by smtp.gmail.com with UTF8SMTPSA id t192sm2355328pfc.56.2021.05.13.10.14.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 May 2021 10:14:17 -0700 (PDT)
-Date:   Thu, 13 May 2021 10:14:16 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     bjorn.andersson@linaro.org, dianders@chromium.org,
-        viresh.kumar@linaro.org, sboyd@kernel.org, agross@kernel.org,
-        robh+dt@kernel.org, rjw@rjwysocki.net,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] arm64: dts: qcom: sc7280: Add cpu OPP tables
-Message-ID: <YJ1eaECY6VDN94dr@google.com>
-References: <1620807083-5451-1-git-send-email-sibis@codeaurora.org>
- <1620807083-5451-3-git-send-email-sibis@codeaurora.org>
+        Thu, 13 May 2021 13:16:22 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 719B8C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 10:15:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=GYMhmXsmdrjlnWGnL6+nxVrgu8lGFEA0H37PhG86aQ8=; b=mqBXwPBQla6ml+BrpmXll5BPBb
+        hGWRqaOvtw0wlMp8Z1oUwrQq+b9dqQJh03s9QFITWnYm+vDnAulcfCTVIPtcEgz9Rype9eM8mPeex
+        KextsbC5cMovd2AoiVEC1yYQngVsI5V8otPiSqEI86QrpHLmnSeJU+3XR/whOqdaX2lxhKTRsmlPq
+        AmnFjkGOJZtpEgyzULWjfoUt0VC1M0P/9kfg8Pg9yruuyWu4ZlNvnmfrKla+/kvrQxAg7HQrO2oJ0
+        wxpaT9GcGRC5uPJLBe07vYYgzvRU3GOHspO7QhiqigLeaDFVRESjrtrIAewsRWbcKELbgA5thBoqE
+        mVren8Dw==;
+Received: from [2601:1c0:6280:3f0::7376] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lhEvW-00BPTy-Nu; Thu, 13 May 2021 17:15:10 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH -next] buildid: fix build when CONFIG_MODULES is not set
+Date:   Thu, 13 May 2021 10:15:10 -0700
+Message-Id: <20210513171510.20328-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1620807083-5451-3-git-send-email-sibis@codeaurora.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 01:41:23PM +0530, Sibi Sankar wrote:
-> Add OPP tables required to scale DDR/L3 per freq-domain on SC7280 SoCs.
-> 
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-> ---
-> 
-> V3:
->  * Rename cpu opp table nodes [Matthias]
->  * Rename opp phandles [Doug]
-> 
-> Depends on the following patch series:
-> L3 Provider Support: https://lore.kernel.org/lkml/1618556290-28303-1-git-send-email-okukatla@codeaurora.org/
-> CPUfreq Support: https://lore.kernel.org/lkml/1618020280-5470-2-git-send-email-tdas@codeaurora.org/
-> RPMH Provider Support: https://lore.kernel.org/lkml/1619517059-12109-1-git-send-email-okukatla@codeaurora.org/
-> 
-> It also depends on L3 and cpufreq dt nodes from the ^^ series to not have
-> overlapping memory regions.
-> 
->  arch/arm64/boot/dts/qcom/sc7280.dtsi | 215 +++++++++++++++++++++++++++++++++++
->  1 file changed, 215 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> index 0bb835aeae33..89ec11eb7fc0 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -7,6 +7,7 @@
->  
->  #include <dt-bindings/clock/qcom,gcc-sc7280.h>
->  #include <dt-bindings/clock/qcom,rpmh.h>
-> +#include <dt-bindings/interconnect/qcom,osm-l3.h>
->  #include <dt-bindings/interconnect/qcom,sc7280.h>
->  #include <dt-bindings/interrupt-controller/arm-gic.h>
->  #include <dt-bindings/mailbox/qcom-ipcc.h>
-> @@ -71,6 +72,9 @@
->  					   &LITTLE_CPU_SLEEP_1
->  					   &CLUSTER_SLEEP_0>;
->  			next-level-cache = <&L2_0>;
-> +			operating-points-v2 = <&cpu0_opp_table>;
-> +			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
-> +					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
->  			qcom,freq-domain = <&cpufreq_hw 0>;
->  			L2_0: l2-cache {
->  				compatible = "cache";
-> @@ -90,6 +94,9 @@
->  					   &LITTLE_CPU_SLEEP_1
->  					   &CLUSTER_SLEEP_0>;
->  			next-level-cache = <&L2_100>;
-> +			operating-points-v2 = <&cpu0_opp_table>;
-> +			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
-> +					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
->  			qcom,freq-domain = <&cpufreq_hw 0>;
->  			L2_100: l2-cache {
->  				compatible = "cache";
-> @@ -106,6 +113,9 @@
->  					   &LITTLE_CPU_SLEEP_1
->  					   &CLUSTER_SLEEP_0>;
->  			next-level-cache = <&L2_200>;
-> +			operating-points-v2 = <&cpu0_opp_table>;
-> +			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
-> +					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
->  			qcom,freq-domain = <&cpufreq_hw 0>;
->  			L2_200: l2-cache {
->  				compatible = "cache";
-> @@ -122,6 +132,9 @@
->  					   &LITTLE_CPU_SLEEP_1
->  					   &CLUSTER_SLEEP_0>;
->  			next-level-cache = <&L2_300>;
-> +			operating-points-v2 = <&cpu0_opp_table>;
-> +			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
-> +					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
->  			qcom,freq-domain = <&cpufreq_hw 0>;
->  			L2_300: l2-cache {
->  				compatible = "cache";
-> @@ -138,6 +151,9 @@
->  					   &BIG_CPU_SLEEP_1
->  					   &CLUSTER_SLEEP_0>;
->  			next-level-cache = <&L2_400>;
-> +			operating-points-v2 = <&cpu4_opp_table>;
-> +			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
-> +					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
->  			qcom,freq-domain = <&cpufreq_hw 1>;
->  			L2_400: l2-cache {
->  				compatible = "cache";
-> @@ -154,6 +170,9 @@
->  					   &BIG_CPU_SLEEP_1
->  					   &CLUSTER_SLEEP_0>;
->  			next-level-cache = <&L2_500>;
-> +			operating-points-v2 = <&cpu4_opp_table>;
-> +			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
-> +					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
->  			qcom,freq-domain = <&cpufreq_hw 1>;
->  			L2_500: l2-cache {
->  				compatible = "cache";
-> @@ -170,6 +189,9 @@
->  					   &BIG_CPU_SLEEP_1
->  					   &CLUSTER_SLEEP_0>;
->  			next-level-cache = <&L2_600>;
-> +			operating-points-v2 = <&cpu4_opp_table>;
-> +			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
-> +					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
->  			qcom,freq-domain = <&cpufreq_hw 1>;
->  			L2_600: l2-cache {
->  				compatible = "cache";
-> @@ -186,6 +208,9 @@
->  					   &BIG_CPU_SLEEP_1
->  					   &CLUSTER_SLEEP_0>;
->  			next-level-cache = <&L2_700>;
-> +			operating-points-v2 = <&cpu7_opp_table>;
-> +			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
-> +					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
->  			qcom,freq-domain = <&cpufreq_hw 2>;
->  			L2_700: l2-cache {
->  				compatible = "cache";
-> @@ -248,6 +273,196 @@
->  		};
->  	};
->  
-> +	cpu0_opp_table: cpu0-opp-table {
-> +		compatible = "operating-points-v2";
-> +		opp-shared;
-> +
-> +		cpu0_opp_300mhz: opp-300000000 {
-> +			opp-hz = /bits/ 64 <300000000>;
-> +			opp-peak-kBps = <800000 9600000>;
-> +		};
-> +
-> +		cpu0_opp_691mhz: opp-691200000 {
-> +			opp-hz = /bits/ 64 <691200000>;
-> +			opp-peak-kBps = <800000 17817600>;
-> +		};
-> +
-> +		cpu0_opp_806mhz: opp-806400000 {
-> +			opp-hz = /bits/ 64 <806400000>;
-> +			opp-peak-kBps = <800000 20889600>;
-> +		};
-> +
-> +		cpu0_opp_940mhz: opp-940800000 {
+Omit the static_assert() when CONFIG_MODULES is not set/enabled.
+Fixes these build errors:
 
-nit: one could argue that rounded it's 941 MHz. Same for some other OPPs.
+../kernel/kallsyms.c: In function ‘__sprint_symbol’:
+../include/linux/kernel.h:53:43: error: dereferencing pointer to incomplete type ‘struct module’
+ #define typeof_member(T, m) typeof(((T*)0)->m)
+                                           ^
+../include/linux/build_bug.h:78:41: error: static assertion failed: "sizeof(typeof_member(struct module, build_id)) == 20"
+ #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+                                         ^
+../kernel/kallsyms.c:454:4: note: in expansion of macro ‘static_assert’
+    static_assert(sizeof(typeof_member(struct module, build_id)) == 20);
+    ^~~~~~~~~~~~~
 
-Not super-important though, so:
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Stephen Boyd <swboyd@chromium.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+---
+ kernel/kallsyms.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+--- linux-next-20210513.orig/kernel/kallsyms.c
++++ linux-next-20210513/kernel/kallsyms.c
+@@ -451,7 +451,9 @@ static int __sprint_symbol(char *buffer,
+ #if IS_ENABLED(CONFIG_STACKTRACE_BUILD_ID)
+ 		if (add_buildid && buildid) {
+ 			/* build ID should match length of sprintf */
++#if IS_ENABLED(CONFIG_MODULES)
+ 			static_assert(sizeof(typeof_member(struct module, build_id)) == 20);
++#endif
+ 			len += sprintf(buffer + len, " %20phN", buildid);
+ 		}
+ #endif
