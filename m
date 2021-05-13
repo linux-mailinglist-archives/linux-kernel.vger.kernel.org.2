@@ -2,93 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 809F737FA46
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 17:08:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB8D837FA50
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 17:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233598AbhEMPJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 11:09:39 -0400
-Received: from mga18.intel.com ([134.134.136.126]:64242 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232156AbhEMPJf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 11:09:35 -0400
-IronPort-SDR: 2MkuJgSUn0Vaf3qug1rS09q0Ou+mVTTeMCEK8tRbAV/TRx08MYDHnLF5uyDSFhKlOVgwwVRSbV
- 7RWWhbLNBhpA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="187382670"
-X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
-   d="scan'208";a="187382670"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 08:08:24 -0700
-IronPort-SDR: h8cnr1lRgYszrkpIKJZgTT5deHWSNW4DKLnW4hv/nIRhPifQYiZdb19NeQKFI2GUvfxErDsCe7
- cGsYelF/g5Lg==
-X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
-   d="scan'208";a="409665304"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 08:08:24 -0700
-Date:   Thu, 13 May 2021 08:10:50 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Yi Liu <yi.l.liu@intel.com>, Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>, wangzhou1@hisilicon.com,
-        zhangfei.gao@linaro.org, vkoul@kernel.org,
-        David Woodhouse <dwmw2@infradead.org>,
-        "Luck, Tony" <tony.luck@intel.com>, jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH v4 1/2] iommu/sva: Tighten SVA bind API with explicit
- flags
-Message-ID: <20210513081050.5cf6a6ed@jacob-builder>
-In-Reply-To: <20210513133834.GC1002214@nvidia.com>
-References: <1620653108-44901-2-git-send-email-jacob.jun.pan@linux.intel.com>
-        <20210510233749.GG1002214@nvidia.com>
-        <20210510203145.086835cc@jacob-builder>
-        <20210511114848.GK1002214@nvidia.com>
-        <20210511091452.721e9a03@jacob-builder>
-        <20210511163521.GN1002214@nvidia.com>
-        <20210511110550.477a434f@jacob-builder>
-        <20210511194726.GP1002214@nvidia.com>
-        <YJt3tGlzFK3b4E82@infradead.org>
-        <20210513060012.0fcc7653@jacob-builder>
-        <20210513133834.GC1002214@nvidia.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S234198AbhEMPM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 11:12:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230401AbhEMPMR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 11:12:17 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB8B6C061574;
+        Thu, 13 May 2021 08:11:07 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id C43321F42C58
+Received: by earth.universe (Postfix, from userid 1000)
+        id 20E0D3C0C95; Thu, 13 May 2021 17:11:03 +0200 (CEST)
+Date:   Thu, 13 May 2021 17:11:03 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Antoni Aloy Torrens <aaloytorrens@gmail.com>,
+        Nikola =?utf-8?Q?Milosavljevi=C4=87?= <mnidza@outlook.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/2] power: supply: sbs-battery: Silence warning about
+ unknown chemistry
+Message-ID: <20210513151103.hihvxg7kvych4nwr@earth.universe>
+References: <20210510220827.11595-1-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="lyzvqae6qiq3zjju"
+Content-Disposition: inline
+In-Reply-To: <20210510220827.11595-1-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
 
-On Thu, 13 May 2021 10:38:34 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
+--lyzvqae6qiq3zjju
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> On Thu, May 13, 2021 at 06:00:12AM -0700, Jacob Pan wrote:
-> > > > If you want to do SVA PASID then it also must come with DMA APIs to
-> > > > manage the CPU cache coherence that are all NOP's on x86.    
-> > > 
-> > > Yes.  And we have plenty of precende where an IOMMU is in "bypass"
-> > > mode to allow access to all memory and then uses the simple
-> > > dma-direct case.  
-> > I agree it is better not to expose the entire direct map. But the
-> > missing piece of using DMA APIs is the PASID. The caller needs the
-> > PASID value to do work submission once buffer is mapped.  
-> 
-> You still haven't explained why the kernel driver should have a PASID at
-> all.
-> 
-For shared workqueue, it can only generate DMA request with PASID. The
-submission is done by ENQCMDS (S for supervisor) instruction.
+Hi,
 
-If we were not to share page tables with init_mm, we need a system PASID
-that doing the same direct mapping in IOMMU page tables.
+On Tue, May 11, 2021 at 01:08:26AM +0300, Dmitry Osipenko wrote:
+> Older variants of controller don't support reporting type of the battery.
+> Make warning message about unknown chemistry to be printed only once in
+> order to stop flooding kernel log with the message on each request of the
+> property. This patch fixes the noisy messages on Asus Transformer TF101.
+>=20
+> Tested-by: Antoni Aloy Torrens <aaloytorrens@gmail.com> # TF101
+> Tested-by: Nikola Milosavljevi=C4=87 <mnidza@outlook.com> # TF101
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
 
-> Jason
+I believe the problem should be fixed as side-effect of the
+following patch:
 
+https://lore.kernel.org/linux-pm/20210513020308.4011440-1-ikjn@chromium.org/
 
-Thanks,
+With my suggested change the message is printed once for each
+battery plug, so probably only once per boot for most users.
 
-Jacob
+-- Sebastian
+
+>  drivers/power/supply/sbs-battery.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/power/supply/sbs-battery.c b/drivers/power/supply/sb=
+s-battery.c
+> index 8d7a10730e43..b71fbf543428 100644
+> --- a/drivers/power/supply/sbs-battery.c
+> +++ b/drivers/power/supply/sbs-battery.c
+> @@ -814,7 +814,7 @@ static int sbs_get_chemistry(struct i2c_client *clien=
+t,
+>  		val->intval =3D POWER_SUPPLY_TECHNOLOGY_UNKNOWN;
+> =20
+>  	if (val->intval =3D=3D POWER_SUPPLY_TECHNOLOGY_UNKNOWN)
+> -		dev_warn(&client->dev, "Unknown chemistry: %s\n", chemistry);
+> +		dev_warn_once(&client->dev, "Unknown chemistry: %s\n", chemistry);
+> =20
+>  	return 0;
+>  }
+> --=20
+> 2.30.2
+>=20
+
+--lyzvqae6qiq3zjju
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmCdQYEACgkQ2O7X88g7
++pqVwg//cYFlMccwaqLE2aR3E40lWPQM14FlZYq8FCJLeuCYXnE6NRcZDMZkH1A8
+DcskPOxpNUNPvhKjCZMMzYCZU4vPv8ZqdUTrsxC6H0B4xAa3zgMWVvgdrDWtu5+1
+wBZ9rHeIs7ko/vTcn3TNbj9EaRuuFYvUbjVzVHp7N2S7NFNOtSHu4r/FSksuCWEN
+qcd2YtvkZECN6i7FESQ1PxDN8gR2VzDSDF0fkEBzLkkVXcZ90se74Kq8wfmc4uMC
+XMM/9MDhJpZxaXfHE/xMhhF1SntAfGJ5pjpPhhRxbNh71K80OxMcGM2V3rhrrt5a
+4kostmwHoEoVb1d/fQ/nxTSusUO9ujhE2Qrda2qfTIzp7wahMrPQTdp70tzf/rEI
+Udr85I7c5dC3OTZkGossB/e1Za6XdllWu7KpoQkiLsPL444EaMKuMaCveC617X0a
+5rPQxIKmc3QKxvC2TKsr9mbd0akZ5xhDVnE/+JJ4EoEwd2rpaa9Mbu5MSdO18B1W
+RchfbmRFsaXtSvBzGRZCWMLdNOJSJnm+5n7aGc6nKsyRRHs6z/uzHDn8WHXrVt6v
+bOOxmjb/1WQlhybnA0UC6pkzJNMsPOlZtwpTG4C9Tlh3rbaJ9yKMFnbkO313RyRa
+UI3UM+L5ruL4FiplM0K6nW9gK+lSc69NUQmcTsxhumkg3yqcYg4=
+=hYys
+-----END PGP SIGNATURE-----
+
+--lyzvqae6qiq3zjju--
