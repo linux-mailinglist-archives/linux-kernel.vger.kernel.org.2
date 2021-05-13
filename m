@@ -2,94 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FCA837FA8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 17:21:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E2AA37FA8F
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 17:22:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234853AbhEMPW7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 May 2021 11:22:59 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:59498 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234765AbhEMPW4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 11:22:56 -0400
-Received: from smtpclient.apple (p4fefc9d6.dip0.t-ipconnect.de [79.239.201.214])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 440AECED28;
-        Thu, 13 May 2021 17:29:36 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.80.0.2.43\))
-Subject: Re: [PATCH v3 4/5] dt-bindings: net: bluetooth: Convert Qualcomm BT
- binding to DT schema
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <CAL_JsqKy-wyrG8hvg2yTBdB44BgPa11hcTPwKTD-WgVykvpLaw@mail.gmail.com>
-Date:   Thu, 13 May 2021 17:21:43 +0200
-Cc:     Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        devicetree@vger.kernel.org, Matthias Kaehlcke <mka@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Bluetooth Kernel Mailing List 
-        <linux-bluetooth@vger.kernel.org>,
-        Hemantg <hemantg@codeaurora.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        Balakrishna Godavarthi <bgodavar@codeaurora.org>,
-        Rocky Liao <rjliao@codeaurora.org>, hbandi@codeaurora.org,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <C6C73C77-669D-4552-AC0B-74BAA3FF583F@holtmann.org>
-References: <1620322392-27148-1-git-send-email-gubbaven@codeaurora.org>
- <1620322392-27148-5-git-send-email-gubbaven@codeaurora.org>
- <20210507011753.GB1126886@robh.at.kernel.org>
- <C81968AD-1C0B-4764-9631-FF227D026ED7@holtmann.org>
- <CAL_JsqKy-wyrG8hvg2yTBdB44BgPa11hcTPwKTD-WgVykvpLaw@mail.gmail.com>
-To:     Rob Herring <robh@kernel.org>
-X-Mailer: Apple Mail (2.3654.80.0.2.43)
+        id S234865AbhEMPXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 11:23:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39396 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234688AbhEMPXN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 11:23:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AEE8261176;
+        Thu, 13 May 2021 15:22:00 +0000 (UTC)
+Date:   Thu, 13 May 2021 16:21:58 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: Re: [PATCH v11 2/6] arm64: kvm: Introduce MTE VM feature
+Message-ID: <20210513152158.GB6801@arm.com>
+References: <20210416154309.22129-3-steven.price@arm.com>
+ <20210428170705.GB4022@arm.com>
+ <c3293d47-a5f2-ea4a-6730-f5cae26d8a7e@arm.com>
+ <YJGHApOCXl811VK3@arm.com>
+ <329286e8-a8f3-ea1a-1802-58813255a4a5@arm.com>
+ <20210507182538.GF26528@arm.com>
+ <20210510183506.GA10910@arm.com>
+ <c891d4eb-b388-1658-8c8a-e76477062463@arm.com>
+ <20210512174502.GC12391@arm.com>
+ <7c1cb7c8-6ab4-62bd-fa17-2fb7be6d7f09@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7c1cb7c8-6ab4-62bd-fa17-2fb7be6d7f09@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
->>>> Converted Qualcomm Bluetooth binidings to DT schema.
->>>> 
->>>> Signed-off-by: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
->>>> ---
->>>> .../devicetree/bindings/net/qualcomm-bluetooth.txt |  69 -------------
->>>> .../bindings/net/qualcomm-bluetooth.yaml           | 111 +++++++++++++++++++++
->>>> 2 files changed, 111 insertions(+), 69 deletions(-)
->>>> delete mode 100644 Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt
->>>> create mode 100644 Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml
->>> 
->>> 
->>>> diff --git a/Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml b/Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml
->>>> new file mode 100644
->>>> index 0000000..3f3ec4d
->>>> --- /dev/null
->>>> +++ b/Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml
->>>> @@ -0,0 +1,111 @@
->>>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->>>> +%YAML 1.2
->>>> +---
->>>> +$id: http://devicetree.org/schemas/net/qualcomm-bluetooth.yaml#
->>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>>> +
->>>> +title: Qualcomm Bluetooth Chips
->>>> +
->>>> +maintainers:
->>>> +  - Marcel Holtmann <marcel@holtmann.org>
->>> 
->>> This should be someone who cares about Qcom BT.
->> 
->> yes, please, assign this to someone that knows the hardware.
->> 
->> Rob, can we leave this out for now if there is no dedicated person?
+On Thu, May 13, 2021 at 11:57:39AM +0100, Steven Price wrote:
+> On 12/05/2021 18:45, Catalin Marinas wrote:
+> > On Wed, May 12, 2021 at 04:46:48PM +0100, Steven Price wrote:
+> >> On 10/05/2021 19:35, Catalin Marinas wrote:
+> >>>> On Thu, May 06, 2021 at 05:15:25PM +0100, Steven Price wrote:
+> >>>>>> On Thu, Apr 29, 2021 at 05:06:41PM +0100, Steven Price wrote:
+> >>>>>>> Given the changes to set_pte_at() which means that tags are restored from
+> >>>>>>> swap even if !PROT_MTE, the only race I can see remaining is the creation of
+> >>>>>>> new PROT_MTE mappings. As you mention an attempt to change mappings in the
+> >>>>>>> VMM memory space should involve a mmu notifier call which I think serialises
+> >>>>>>> this. So the remaining issue is doing this in a separate address space.
+> >>>>>>>
+> >>>>>>> So I guess the potential problem is:
+> >>>>>>>
+> >>>>>>>    * allocate memory MAP_SHARED but !PROT_MTE
+> >>>>>>>    * fork()
+> >>>>>>>    * VM causes a fault in parent address space
+> >>>>>>>    * child does a mprotect(PROT_MTE)
+> >>>>>>>
+> >>>>>>> With the last two potentially racing. Sadly I can't see a good way of
+> >>>>>>> handling that.
+> > [...]
+> >>> Options:
+> >>>
+> >>> 1. Change the mte_sync_tags() code path to set the flag after clearing
+> >>>     and avoid reading stale tags. We document that mprotect() on
+> >>>     MAP_SHARED may lead to tag loss. Maybe we can intercept this in the
+> >>>     arch code and return an error.
+> >>
+> >> This is the best option I've come up with so far - but it's not a good
+> >> one! We can replace the set_bit() with a test_and_set_bit() to catch the
+> >> race after it has occurred - but I'm not sure what we can do about it
+> >> then (we've already wiped the data). Returning an error doesn't seem
+> >> particularly useful at that point, a message in dmesg is about the best
+> >> I can come up with.
+> > 
+> > What I meant about intercepting is on something like
+> > arch_validate_flags() to prevent VM_SHARED and VM_MTE together but only
+> > for mprotect(), not mmap(). However, arch_validate_flags() is currently
+> > called on both mmap() and mprotect() paths.
 > 
-> No, it's required. It can be me if it comes to that. However, if no
-> one can be bothered to step up, then we should just remove it perhaps.
-> QCom is a big company, I'm sure they can find some name.
+> I think even if we were to restrict mprotect() there would be corner
+> cases around swapping in. For example if a page mapped VM_SHARED|VM_MTE
+> is faulted simultaneously in both processes then we have the same situation:
+> 
+>  * with test_and_set_bit() one process could potentially see the tags
+> before they have been restored - i.e. a data leak.
+> 
+>  * with separated test and set then one process could write to the tags
+> before the second restore has completed causing a lost update.
 
-I hope so as well since my name is clearly the wrong one there. I have too little knowledge about that hardware and the platforms it is used in.
+I don't think this can happen. We have shmem_swapin_page() which I think
+would be called on any faulting pte that was sharing such page. It takes
+the page lock around arch_swap_restore().
 
-Regards
-
-Marcel
-
+-- 
+Catalin
