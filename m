@@ -2,111 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5185037FB39
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 18:07:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BE4637FB38
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 18:07:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235028AbhEMQI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 12:08:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37252 "EHLO
+        id S235012AbhEMQIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 12:08:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235021AbhEMQIy (ORCPT
+        with ESMTP id S235002AbhEMQIp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 12:08:54 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D59E7C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 09:07:44 -0700 (PDT)
+        Thu, 13 May 2021 12:08:45 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0FFBC061574;
+        Thu, 13 May 2021 09:07:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=xEFVCLX7oEk1Wo8Bzc+Xn0yM1lRRGXKF9g6bs1YJzFs=; b=kQKdj44vfiwNddBWqh1xtBxau1
-        Z17i+wewEuEgBCdjGXgz6Jk+51D9t/lYd9M7K3x7umEBVVd3oNOhsxjIj9SImyqdaMcMHtv0rXOVb
-        v/rEHRZSp/X55ZDxxCKPcnfNK2qUscG9msX+MZldtGMYdh5DoETa+44/LYNw3ZakY1geS2ZxHL2dn
-        rDWbSmkVHk9EaDrIsZAA1R7PhhKyItsE+SAJSxP3NcwnhJWyJGh6RkkPiuXFrfBFMcgp3jRB4o4CL
-        d6FDHKr73TJ2YQuVMebjPHstqwRtaHOEcA5dbgO71loxkKknHhEwCZkaeTur4BxNButGjNiOKuEOL
-        hr+cMsAg==;
-Received: from c-73-157-219-8.hsd1.or.comcast.net ([73.157.219.8] helo=[10.0.0.253])
-        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lhDsB-00BNHR-Vt; Thu, 13 May 2021 16:07:40 +0000
-Subject: Re: [PATCH v2] init: Print out unknown kernel parameters
-To:     Andrew Halaney <ahalaney@redhat.com>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Borislav Petkov <bp@suse.de>
-References: <20210511211009.42259-1-ahalaney@redhat.com>
- <cbd3c07e-9dae-44b2-761e-653bd8d0e930@infradead.org>
- <20210513130050.6czigy6cpz34ovz7@halaneylaptop>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <d77f6819-9d3b-8d50-16cb-fff1a62dc67d@infradead.org>
-Date:   Thu, 13 May 2021 09:06:35 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=qE75pAUGQVDDCijtyhQQzwQRQrPrtPIyFgbLTPxgxEM=; b=jNrgIeLb/4RcpygXlGApYPgOWs
+        w5ipkSvQBQlD2dTCL8+dTS19yLiTuOZzFo1gLSMl3PGbYtEu8pS66aD3V4oSt5B2iy5hwJ5UBfq2L
+        EwmTTdSpM373PPiHe8yzd2Mcez8/tnKTQHfQ+TgdtSmT7zfiecm5JKmf82wc+4/xPBEKTRDl7V21J
+        zS70VzJ9d1lRe/eeWS/JqzcDIzK64Gw/LNsO8rcB/7L9+7RXd5XPPbl+IaAq6x2pIz0LFIp97yEFW
+        yDhQmThQcDado/hzRYoDyGs9xLY2gb+G7PQpOgDDmgHtHfjDOiZN9WZ3JjhgWWcyJ7Gn3s0QeOjKt
+        nfYdyN/Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lhDrQ-009ZFz-TC; Thu, 13 May 2021 16:06:58 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     linux-kernel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-abi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Alexey Dobriyan <adobriyan@gmail.com>
+Subject: [PATCH] sysctl: Limit the size of I/Os to PAGE_SIZE
+Date:   Thu, 13 May 2021 17:06:48 +0100
+Message-Id: <20210513160649.2280429-1-willy@infradead.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210513130050.6czigy6cpz34ovz7@halaneylaptop>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/13/21 6:00 AM, Andrew Halaney wrote:
-> On Wed, May 12, 2021 at 04:00:21PM -0700, Randy Dunlap wrote:
->> On 5/11/21 2:10 PM, Andrew Halaney wrote:
->>> It is easy to foobar setting a kernel parameter on the command line
->>> without realizing it, there's not much output that you can use to
->>> assess what the kernel did with that parameter by default.
->>>
->>> Make it a little more explicit which parameters on the command line
->>> _looked_ like a valid parameter for the kernel, but did not match
->>> anything and ultimately got tossed to init. This is very similar to the
->>> unknown parameter message received when loading a module.
->>>
->>> This assumes the parameters are processed in a normal fashion, some
->>> parameters (dyndbg= for example) don't register their
->>> parameter with the rest of the kernel's parameters, and therefore
->>> always show up in this list (and are also given to init - like the
->>> rest of this list).
->>>
->>> Another example is BOOT_IMAGE= is highlighted as an offender, which it
->>> technically is, but is passed by LILO and GRUB so most systems will see
->>> that complaint.
->>>
->>> An example output where "foobared" and "unrecognized" are intentionally
->>> invalid parameters:
->>>
->>>   Kernel command line: BOOT_IMAGE=/boot/vmlinuz-5.12-dirty debug log_buf_len=4M foobared unrecognized=foo
->>>   Unknown command line parameters: foobared BOOT_IMAGE=/boot/vmlinuz-5.12-dirty unrecognized=foo
->>
->> Hi Andrew,
->> What order is the list of unknown command line parameters listed in?
-> 
-> Hi Randy,
-> 
-> That's a good question considering that they are out of order in my
-> example output compared to the command line. The order is parameters
-> without an "=val", then those with an "=val", and within those groups
-> they should be ordered as they are on the command line.
-> 
-> This is because I'm using the processing work done by
-> unknown_bootoption(), which stores them in two separate lists to pass to
-> init later (for arguments and environment). I am "stealing" from those
-> here:
-> 
-> 	for (p = &argv_init[1]; *p; p++)
-> 		end += sprintf(end, " %s", *p);
-> 	for (p = &envp_init[2]; *p; p++)
-> 		end += sprintf(end, " %s", *p);
-> 
-> hence the differing output order from the command line. I didn't
-> see much value in trying to duplicate that processing logic to get them in
-> a single list in the order of the command line itself. I debated looking
-> at the command line and searching each of the offending lists for that
-> entry to get them in the order of the command line but decided to keep
-> it simple here since it was achieving what I wanted.
+We currently allow a read or a write that is up to KMALLOC_MAX_SIZE.
+This has caused problems when cat decides to do a 64kB read and
+so we allocate a 64kB buffer for the sysctl handler to store into.
+The immediate problem was fixed by switching to kvmalloc(), but it's
+ridiculous to allocate so much memory to read what is likely to be a
+few bytes.
 
-Thanks for explaining. That's what I was looking for.
+sysfs limits reads and writes to PAGE_SIZE, and I feel we should do the
+same for sysctl.  The largest sysctl anyone's been able to come up with
+is 433 bytes for /proc/sys/dev/cdrom/info
 
+This will allow simplifying the BPF sysctl code later, but I'll leave
+that for someone who understands it better.
+
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
+ fs/proc/proc_sysctl.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
+
+diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
+index dea0f5ee540c..a97a8a4ff270 100644
+--- a/fs/proc/proc_sysctl.c
++++ b/fs/proc/proc_sysctl.c
+@@ -562,11 +562,14 @@ static ssize_t proc_sys_call_handler(struct kiocb *iocb, struct iov_iter *iter,
+ 	if (!table->proc_handler)
+ 		goto out;
+ 
+-	/* don't even try if the size is too large */
++	/* reads may return short values; large writes must fail now */
++	if (count >= PAGE_SIZE) {
++		if (write)
++			goto out;
++		count = PAGE_SIZE;
++	}
+ 	error = -ENOMEM;
+-	if (count >= KMALLOC_MAX_SIZE)
+-		goto out;
+-	kbuf = kvzalloc(count + 1, GFP_KERNEL);
++	kbuf = kmalloc(PAGE_SIZE, GFP_KERNEL);
+ 	if (!kbuf)
+ 		goto out;
+ 
+@@ -582,12 +585,12 @@ static ssize_t proc_sys_call_handler(struct kiocb *iocb, struct iov_iter *iter,
+ 	if (error)
+ 		goto out_free_buf;
+ 
+-	/* careful: calling conventions are nasty here */
+ 	error = table->proc_handler(table, write, kbuf, &count, &iocb->ki_pos);
+ 	if (error)
+ 		goto out_free_buf;
+ 
+ 	if (!write) {
++		/* Give BPF the chance to override a read result here? */
+ 		error = -EFAULT;
+ 		if (copy_to_iter(kbuf, count, iter) < count)
+ 			goto out_free_buf;
+@@ -595,7 +598,7 @@ static ssize_t proc_sys_call_handler(struct kiocb *iocb, struct iov_iter *iter,
+ 
+ 	error = count;
+ out_free_buf:
+-	kvfree(kbuf);
++	kfree(kbuf);
+ out:
+ 	sysctl_head_finish(head);
+ 
 -- 
-~Randy
+2.30.2
 
