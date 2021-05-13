@@ -2,81 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C1F37FA9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 17:23:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F5F137FAA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 17:24:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234844AbhEMPYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 11:24:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230406AbhEMPYd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 11:24:33 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E18A8C061574;
-        Thu, 13 May 2021 08:23:22 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 91724153;
-        Thu, 13 May 2021 15:23:22 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 91724153
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1620919402; bh=nCLDeCCv39g0a3SBIn30K6a6wMHFoEfUP22lU3VdG0E=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=ZQcDFVMtPryOuy1uWN+52z4pCdeqPQnkV0nns8YJUifoBCi2aS4lKYUFUCNQvNq1F
-         UMPrnVJ5NUyGSEIA3/ALJLwlV6fR7mqSTAUg7Jl0PqcxqnC3CIijOTbPhUpQVtgBQk
-         EK77GjZjmtM/8oZ62RLOfn2CgPCV7BZX2P4FNzKvoNcn2iGn9aiEnGbmN95ynECjh+
-         33LVthL5y9iWwdJtPjvV0/FkCxgLK4euOAjBQtCn6No1d08N58AkYACZMnlydmS5G2
-         ygXCKy4OS8gAia0BHecOu4VpIMpOHhPmGZwL6CbRE5rfdLsMhNFc8wJph1fvMbrMNc
-         bKoU+ueknyd1Q==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Kay Sievers <kay.sievers@vrfy.org>,
-        Greg Kroah-Hartman <gregkh@suse.de>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] docs: admin-guide: update description for
- kernel.hotplug sysctl
-In-Reply-To: <20210420120638.1104016-1-linux@rasmusvillemoes.dk>
-References: <20210420120638.1104016-1-linux@rasmusvillemoes.dk>
-Date:   Thu, 13 May 2021 09:23:21 -0600
-Message-ID: <87cztu7j4m.fsf@meer.lwn.net>
+        id S234890AbhEMPZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 11:25:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40038 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232518AbhEMPZQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 11:25:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4826F613B5;
+        Thu, 13 May 2021 15:24:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620919446;
+        bh=1kNuS869OF5IBxShiMjWYu0F7KultguVWQekX/GDkks=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=WNwDzMIwlQGuwPZ+peL1idWwWvCxGP75xXHrZ9lUN/xSTQWDllSKtns/Rg0waJrkx
+         J532DHIvfaxsIUKYUC3wKbOERf9DFpyefWqoRp7pWok08Dw8iiM2MEFRfH/gYmAQTa
+         evkUVMUt68A5LvcMyyghqXqenhYiQutk58hTXlTTR6KYUV2H8yLzJtfcRdr+Nq+dQK
+         24i5Z3GNoPyweaBC9FQdXMkYMWUSkQ5eacP7LE8yF7uoadW0ihjFhEWN/qtkA/4WA7
+         JAc+ELB44uE4FAzjTS4s8KU9ZBjhMqifiR9WCChXKnm+VD1pUbzyiQgt80FNJYWhlG
+         7eIMKxoj3/lrA==
+Date:   Thu, 13 May 2021 08:24:04 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     <davem@davemloft.net>, <olteanv@gmail.com>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <andriin@fb.com>, <edumazet@google.com>,
+        <weiwan@google.com>, <cong.wang@bytedance.com>,
+        <ap420073@gmail.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        <mkl@pengutronix.de>, <linux-can@vger.kernel.org>,
+        <jhs@mojatatu.com>, <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
+        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
+        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
+        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
+        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
+        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
+        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
+        <alobakin@pm.me>
+Subject: Re: [PATCH net v7 0/3] fix packet stuck problem for lockless qdisc
+Message-ID: <20210513082404.3e07619b@kicinski-fedora-PC1C0HJN>
+In-Reply-To: <1620868260-32984-1-git-send-email-linyunsheng@huawei.com>
+References: <1620868260-32984-1-git-send-email-linyunsheng@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rasmus Villemoes <linux@rasmusvillemoes.dk> writes:
+On Thu, 13 May 2021 09:10:57 +0800 Yunsheng Lin wrote:
+> This patchset fixes the packet stuck problem mentioned in [1].
+> 
+> Patch 1: Add STATE_MISSED flag to fix packet stuck problem.
+> Patch 2: Fix a tx_action rescheduling problem after STATE_MISSED
+>          flag is added in patch 1.
+> Patch 3: Fix the significantly higher CPU consumption problem when
+>          multiple threads are competing on a saturated outgoing
+>          device.
+> 
+> V7: Fix netif_tx_wake_queue() data race noted by Jakub.
+> V6: Some performance optimization in patch 1 suggested by Jakub
+>     and drop NET_XMIT_DROP checking in patch 3.
+> V5: add patch 3 to fix the problem reported by Michal Kubecek.
+> V4: Change STATE_NEED_RESCHEDULE to STATE_MISSED and add patch 2.
 
-> It's been a few releases since this defaulted to /sbin/hotplug. Update
-> the text, and include pointers to the two CONFIG_UEVENT_HELPER{,_PATH}
-> config knobs whose help text could provide more info, but also hint
-> that the user probably doesn't need to care at all.
->
-> Fixes: 7934779a69f1 ("Driver-Core: disable /sbin/hotplug by default")
-> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> ---
->  Documentation/admin-guide/sysctl/kernel.rst | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
->
-> diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
-> index 1d56a6b73a4e..c24f57f2c782 100644
-> --- a/Documentation/admin-guide/sysctl/kernel.rst
-> +++ b/Documentation/admin-guide/sysctl/kernel.rst
-> @@ -333,7 +333,12 @@ hotplug
->  =======
->  
->  Path for the hotplug policy agent.
-> -Default value is "``/sbin/hotplug``".
-> +Default value is ``CONFIG_UEVENT_HELPER_PATH``, which in turn defaults
-> +to the empty string.
-> +
-> +This file only exists when ``CONFIG_UEVENT_HELPER`` is enabled. Most
-> +modern systems rely exclusively on the netlink-based uevent source and
-> +don't need this.
+Another review from someone who knows this code better would be great,
+but it seems good to me (w/ minor nit on patch 3 addressed):
 
-Applied, thanks.
-
-jon
+Acked-by: Jakub Kicinski <kuba@kernel.org>
