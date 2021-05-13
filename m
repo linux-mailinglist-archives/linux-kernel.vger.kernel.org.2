@@ -2,104 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0094A37FC8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 19:32:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 426FC37FC90
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 19:33:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230518AbhEMRd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 13:33:29 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:64020 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230003AbhEMRdY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 13:33:24 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14DH3o4t018583;
-        Thu, 13 May 2021 13:32:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=hPaGR7/oBR2n564nVIX+Qno0Rnz64aTYCztemg+ak/A=;
- b=i5jJYWGTAzPFMizgfDtB98PDC9FNvmhMDLf/lqQJHx8MTAwWBvTjLcb7V5vc2DnK/+kr
- KrZcsSrM+Z5gCx58T4mvUV19OLcPIeJqNfWS7ZmrFexD7PUqMqX6H+5UuIHITjNfF5AH
- ytikIEj+PG2iRWC6f0NfOgA1ZUCdTlGtJQ2XwdDC1B7nhk6r3JaiN2qqWAQ0icMP5x9f
- Jq0zNZzuclAS/9cGxfWjweFlVcjO6H3D4Jw0JjdEL2kJ5ktlaI6dVDvGej+FUkOr7GRf
- fig2T+/3kXV0XhKv7AUIbq+AEHvz2EYcFkR3nBpbbtpvhuUk2BBtsHWMTZX51bWTGLzJ 9g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38h76rjecg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 13 May 2021 13:32:12 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14DH3uEo019038;
-        Thu, 13 May 2021 13:32:11 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38h76rjebs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 13 May 2021 13:32:11 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14DHOHY9027965;
-        Thu, 13 May 2021 17:32:09 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03ams.nl.ibm.com with ESMTP id 38dj98atra-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 13 May 2021 17:32:09 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14DHW67Q40894816
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 13 May 2021 17:32:06 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1C193A4060;
-        Thu, 13 May 2021 17:32:06 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4D248A405C;
-        Thu, 13 May 2021 17:32:05 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.9.250])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Thu, 13 May 2021 17:32:05 +0000 (GMT)
-Date:   Thu, 13 May 2021 19:32:03 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, borntraeger@de.ibm.com,
-        cohuck@redhat.com, pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        stable@vger.kernel.org, Tony Krowiak <akrowiak@stny.rr.com>
-Subject: Re: [PATCH v2] s390/vfio-ap: fix memory leak in mdev remove
- callback
-Message-ID: <20210513193203.2cc75952.pasic@linux.ibm.com>
-In-Reply-To: <20210513172509.GJ1002214@nvidia.com>
-References: <20210510214837.359717-1-akrowiak@linux.ibm.com>
-        <20210512124120.GV1002214@nvidia.com>
-        <759f8840-671a-446c-875b-798dceb10d0f@linux.ibm.com>
-        <20210513172509.GJ1002214@nvidia.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S231128AbhEMReS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 13:34:18 -0400
+Received: from mail-mw2nam12on2061.outbound.protection.outlook.com ([40.107.244.61]:29921
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229964AbhEMReR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 13:34:17 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bOPzJo5r4PM1qwLqANUfd7lK0GSHiHB+ermwEfHO7zKJLH7eY/2kuQFHm5rY7EpYhw0FpYPKz9dkru7tzcTT+BkW9owfR35SuXprCzsHdyJ4rw3E2p7f5WTWTtY0kBChsisdpr/zByauwYFTD4v/rBC7k9bq/UHsv/MDsvVzQKM/CFLVlFDFdAiomDEcw/QoQRpnmQYnqbSJDWpkQjxfSSY5Cv9JfQlXGMEsvimAZdaI+yRDbwz/OyaR9d56Uym69MwEnIpBgLJp3x1Q4veU5/d+F4NYcJqhmo3qkcs7KQJ66dClBWRHqvTVfxQytw4t/Gmr1uBh/5YGrqpn27RrzA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=R6gk7OCnWs1PR9hN4AhqkKefxyKid2l90DXeruNiw1Q=;
+ b=FBpPNz9n73I5a0ZTIRgxlYP1kT9LeOYBUbvuRtQA7XBpu+47pbfxzCrAn2/KyUY/r4vtW7Yx6FBmz01Hhwmh/m5YS2TjJHE35NdocxgGmKVCKYUqjRwfQf5OtrAwl3RXMtW0V2UdqPErHyLxyZv95/rD6Qk4U5p3RYk+igVGpPO0/2/NlRjvtwe0+xafyiHWFjh4d6vg9/TdCpMrFXAL+YfzHclsM+VBLiYvfCnVuSaXkCZdW14LBs1cUpWL/GUPN/lUvu7W2rW+Kby7yBUWbrFDZJP1bJ86sQV9W+fupaXprucPMI5okzIAtC+FuBxtjZoa/TZ+kw+0W34y3n1txQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=R6gk7OCnWs1PR9hN4AhqkKefxyKid2l90DXeruNiw1Q=;
+ b=DcSrnvaV8TThVxuMns8sNDUfRK591NdYgCxAKxQX9ApcDQ76Jmmn/YHcfpo61d+koGABE0R9VVNPmLI6Gv2SGpwN53aTt7E4k+M+BPjBRZzvAL/3C0S8Ej4Q6hNLPANlU532RiVSyDnJoStlkzneH6WjL5mGJa7y/1CjUJ7NkFL+lT0gMea3ulcFE0YuAc7chAkWSePSbGxiVhMn4xVPxHv++9I8H8eFCwMs76BG/242ObJ2c/Z7AJrQtnnkVjug4HNVdd5aVpG6e2KHdPh3xBeUBWQ3J4RpQwpjuCPeUCP0rkIXzqCEvHET2iuDQ1Cy5H3vJcpkzVkU6aAoXc07sQ==
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB1433.namprd12.prod.outlook.com (2603:10b6:3:73::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.25; Thu, 13 May
+ 2021 17:33:05 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4129.026; Thu, 13 May 2021
+ 17:33:05 +0000
+Date:   Thu, 13 May 2021 14:33:03 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Luck, Tony" <tony.luck@intel.com>
+Cc:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "wangzhou1@hisilicon.com" <wangzhou1@hisilicon.com>,
+        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH v4 1/2] iommu/sva: Tighten SVA bind API with explicit
+ flags
+Message-ID: <20210513173303.GL1002214@nvidia.com>
+References: <20210511114848.GK1002214@nvidia.com>
+ <20210511091452.721e9a03@jacob-builder>
+ <20210511163521.GN1002214@nvidia.com>
+ <20210511110550.477a434f@jacob-builder>
+ <20210511194726.GP1002214@nvidia.com>
+ <YJt3tGlzFK3b4E82@infradead.org>
+ <20210513060012.0fcc7653@jacob-builder>
+ <20210513133834.GC1002214@nvidia.com>
+ <20210513081050.5cf6a6ed@jacob-builder>
+ <dd52760ab65a40328b4c1a26ddd0e1d0@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dd52760ab65a40328b4c1a26ddd0e1d0@intel.com>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: BL0PR0102CA0072.prod.exchangelabs.com
+ (2603:10b6:208:25::49) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: PrqHOzYAQPemNRMGquh_shyS6gzU00K3
-X-Proofpoint-GUID: t0vKOAsR7gE_ClG0EydzR8iFgpdk-5hg
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-13_10:2021-05-12,2021-05-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1015
- impostorscore=0 lowpriorityscore=0 mlxlogscore=973 mlxscore=0
- malwarescore=0 phishscore=0 suspectscore=0 spamscore=0 priorityscore=1501
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105130118
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by BL0PR0102CA0072.prod.exchangelabs.com (2603:10b6:208:25::49) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Thu, 13 May 2021 17:33:05 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lhFCp-0077qy-OJ; Thu, 13 May 2021 14:33:03 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f3ad7715-8bb8-41b8-c357-08d916352a7f
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1433:
+X-Microsoft-Antispam-PRVS: <DM5PR12MB143338859FB5F171AA0B332BC2519@DM5PR12MB1433.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: G63U4ALDWK0xusXqJ/ZiINCrcnxOPZ6GUMROVWo610dE618300PzzpTfcFWiHSkTGVTLIyPzZW+kv1MGmm3XJzjZB1BeDKrxy5T499HmoIbrRWmx9Z18LPfm/k1HMeyedglS4jkZ+eZkrNXKCQHZsuE9n0s/tUkX7r+pHmP/rJYHLuqamQgws5uAfb2ur4JSZ7zjqTiOKfwvT5jPh4XQJBESx+RPYo3Acp3bQuxZJyHpF2DD8Mriq9Xqf9lshtFDPjGTF14g9bVRkh1PFApCytOHe29slkU1MUfB1kjZrJgE+1g6LUBTH9/cxv1ftODZUg/g9hjsxf/aPhoxFqQpos93cUSYKA+ymhP7Vb0bEMan7X5hFaWqhxb4f2B/UCPGO2XwRqPPAwU0npNttk/26Ta+5drBlHwvtF2IZa4rHtDWuqgGPoqSH74TRNhsoQhlJR9BUhs239t7ue83pw3H0cEZyuND7VlK805Ngt7l3f7HwJyV4/FYu6+VXHVqXfcAElO6r5zPsWrEY3IHk0nmaB17dM77ILeTeUUYOhZ8jS2ukuvMYKPmJReqPqLGvvxNbDB8mEMmXIbVpAQOrzA8AuznitF374+rGzxdmn+wCEo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(136003)(376002)(396003)(39850400004)(36756003)(86362001)(33656002)(38100700002)(7416002)(83380400001)(26005)(66556008)(66946007)(1076003)(2616005)(2906002)(4326008)(316002)(54906003)(6916009)(8676002)(478600001)(426003)(186003)(8936002)(9786002)(9746002)(66476007)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?SrAzC7yBRRsjRDwQOOI0lqKnPsRh6o5eZz/a/E5H22KqzGD/aYDdaxpoPn5E?=
+ =?us-ascii?Q?f94eoAl+Gqm7ux8xU0LrZ05n6YflcFNro11BG9c0Yvj6ORTW3PFgsamlwaRJ?=
+ =?us-ascii?Q?x9G7IiuE7scr6uCMF6OcfCEM/oLdnojTTozxdqepMr9spRZqkWe08x1WwTjw?=
+ =?us-ascii?Q?a5FYVIm+8oznrMxuJcKgHj8FzKnx+OlBjPOdp8OpQRXjxxu2B0outbpy145F?=
+ =?us-ascii?Q?58s+mBxeURia1l3BkTfCXAd6zbBpwPpq8O6h2lR8RaMfqBBKHyYDj2KXNBOl?=
+ =?us-ascii?Q?fZ4G63OycAajiOQ65EC4OQey6B8bH5iVtmVn/NWo+ZBOjqGpPbs3Qwbm2AaN?=
+ =?us-ascii?Q?yuGzFdFAOoC1ptgClzAvAKKu4GCDiWh4hXv8wrUcviMbt6QY7RzLq4VpX7F9?=
+ =?us-ascii?Q?JVoxBk075sULw0uYrAPGWpyhSg2CeWxYih133zWtBlmfotRlSzVP13eCDtVB?=
+ =?us-ascii?Q?GdFNt6s2rJh/rQ75CGCX8DErqpauPmv1Rru0tLRZpn13fr3xOOiQle33XBcC?=
+ =?us-ascii?Q?mRj2LVlWTiqttgivR/YDmPNMhidCuT4nNDy0tntBb9mivHTDEAx9bV7Hi3gh?=
+ =?us-ascii?Q?RJc2wHg8fLwWAIGbhkdOVqw1cPbAJDulK07QRTPf3KSASJpuZHC1gfqEwvoi?=
+ =?us-ascii?Q?bgp87Ce+Im0Hd0wretRG6f9wRorGdm+BFi6I9OAD6WpiVbDZtgJK4r/K1kdK?=
+ =?us-ascii?Q?JrPaBSy/KCMtm+/AbyczXcXgkbpq6HG+7RF6hv1ktkUteynUWCz8LLZF8wej?=
+ =?us-ascii?Q?7yIxbo57BHBmS/eTA63ZQLrqtEGL0BikfBIYA+RG1An8hilUMmdUOcQG/5ju?=
+ =?us-ascii?Q?Uhf4cETmxlRHuGgJzttMnFr545wZQp8Y2a8VRWzvGYFkCCTL5rwVfzYoFSL8?=
+ =?us-ascii?Q?EOFheS3hm1jbxNE0u79f15bCnKYGTmg0s57O2mCi2wxuQr0shzhc0QB8INfg?=
+ =?us-ascii?Q?rQEXrA6AwXBdB9srcY8kOY7oLPnRRiU81hNzqrN8VjFnBfg2tRDwY5Huv046?=
+ =?us-ascii?Q?824j6wbwqWsSCNJ3IN3r9KarbyX+Y7YH3KaEq5fCZKVSSl9GjQNs3bAaEN89?=
+ =?us-ascii?Q?fcdbF2G0EbwoXSpiLrtf0xcHUIG85tWgUBOsIl0yJa7UrCGRkW04TWRazlQh?=
+ =?us-ascii?Q?i8/HgntSw9qGKBX+RpaqxN2J+yFzpth4aoGTTrNoPIl9jQgJy4FBzWZAY3FO?=
+ =?us-ascii?Q?Cd/gZuLa9vMyuJmoeWq5NCWchHPIvu/eYKvaT0nksKqoLaTvAhqAZ3or3V4L?=
+ =?us-ascii?Q?LAajJELpMPpULorTo0Q3xtpLm87mzHNaqJdcecob7ZzWyFlHVR5DFlJKVFFN?=
+ =?us-ascii?Q?DQd/W99XKxamN8nZ2RBmTQ5k?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f3ad7715-8bb8-41b8-c357-08d916352a7f
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2021 17:33:05.3938
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: AjX/WMHlmCA0MpiB8BORFY+SrVtyz8djgraqKyvEYGmJFvcC1YFoE0UtevFflKtK
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1433
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 May 2021 14:25:09 -0300
-Jason Gunthorpe <jgg@nvidia.com> wrote:
-
-> > I'm sorry, I don't know what a -rc branch is nor how to push this
-> > to Alex's tree, but I'd be happy to do so if you tell me now:)  
+On Thu, May 13, 2021 at 04:44:14PM +0000, Luck, Tony wrote:
+> > For shared workqueue, it can only generate DMA request with PASID. The
+> > submission is done by ENQCMDS (S for supervisor) instruction.
+> >
+> > If we were not to share page tables with init_mm, we need a system PASID
+> > that doing the same direct mapping in IOMMU page tables.
 > 
-> If Christian takes it for 5.13-rc then that is OK
+> Note that for the currently envisioned kernel use cases for accelerators it
+> would be OK for this system PASID to just provide either:
+> 
+> 1) A 1:1 mapping for physical addresses.  Kernel users of the accelerators
+>   would provide physical addresses in descriptors.
+> 2) The same mapping that the kernel uses for its "1:1" map of all physical
+>     memory. Users would use kernel virtual addresses in that "1:1" range
+>     (e.g. those obtained from page_to_virt(struct page *p);)
 
-I'm pretty confident that Christian is handling this. IMHO there is
-no need to bother Alex with it.
+Well, no, neither of those are OK.
 
-Regards,
-Halil
+The page table under the kernel PASID should behave the same way that
+the kernel would operate the page table assigned to a kernel RID.
+
+If the kernel has security off then the PASID should map to all
+physical memory, just like the RID does.
+
+If security is on then every DMA map needs to be loaded into the
+PASID's io page table no different than a RID page table.
+
+"kernel SVA" is, IMHO, not a desirable thing, it completely destroys
+the kernel's DMA security model.
+
+> If people want to use an accelerator on memory allocated by vmalloc()
+> things will get more complicated. But maybe we can delay solving that
+> problem until someone comes up with a real use case that needs to
+> do this?
+
+If you have a HW limitation that the device can only issue TLPs
+with a PASID, even for kernel users, then I think the proper thing is
+to tell the IOMMU layer than a certain 'struct device' enters
+PASID-only mode and the IOMMU layer should construct an appropriate
+PASID and flow the dma operations through it.
+
+Pretending the DMA layer doesn't exist and that PASID gets a free pass
+is not OK in the kernel.
+
+Jason
