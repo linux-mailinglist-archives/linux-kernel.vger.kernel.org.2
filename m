@@ -2,163 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3788737F5B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 12:36:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D5C137F5BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 12:36:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231461AbhEMKhM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 May 2021 06:37:12 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2495 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231231AbhEMKhJ (ORCPT
+        id S231570AbhEMKhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 06:37:52 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:52346 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231476AbhEMKhl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 06:37:09 -0400
-Received: from dggeml755-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Fgp0S6ClhzRgKY;
-        Thu, 13 May 2021 18:33:28 +0800 (CST)
-Received: from dggpemm100008.china.huawei.com (7.185.36.125) by
- dggeml755-chm.china.huawei.com (10.1.199.136) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Thu, 13 May 2021 18:35:57 +0800
-Received: from dggpeml500016.china.huawei.com (7.185.36.70) by
- dggpemm100008.china.huawei.com (7.185.36.125) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 13 May 2021 18:35:57 +0800
-Received: from dggpeml500016.china.huawei.com ([7.185.36.70]) by
- dggpeml500016.china.huawei.com ([7.185.36.70]) with mapi id 15.01.2176.012;
- Thu, 13 May 2021 18:35:57 +0800
-From:   "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
-        <longpeng2@huawei.com>
-To:     Stefano Garzarella <sgarzare@redhat.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Thu, 13 May 2021 06:37:41 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-224-rC7ecZ6kMiy0NzftmwzKAQ-1; Thu, 13 May 2021 11:36:29 +0100
+X-MC-Unique: rC7ecZ6kMiy0NzftmwzKAQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Thu, 13 May 2021 11:36:27 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Thu, 13 May 2021 11:36:27 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Maximilian Luz' <luzmaximilian@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
+CC:     "H. Peter Anvin" <hpa@zytor.com>, Sachi King <nakato@nakato.io>,
+        "x86@kernel.org" <x86@kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Gonglei (Arei)" <arei.gonglei@huawei.com>,
-        "Subo (Subo, Cloud Infrastructure Service Product Dept.)" 
-        <subo7@huawei.com>, "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        "David Brazdil" <dbrazdil@google.com>,
-        Alexander Popov <alex.popov@linux.com>,
-        "lixianming (E)" <lixianming5@huawei.com>
-Subject: RE: [RFC] vsock: notify server to shutdown when client has pending
- signal
-Thread-Topic: [RFC] vsock: notify server to shutdown when client has pending
- signal
-Thread-Index: AQHXRkna70IyCpulcUmMFYMN4BnQYKrgpa2AgACTRtA=
-Date:   Thu, 13 May 2021 10:35:57 +0000
-Message-ID: <558d53dd31dc4841b94c4ec35249ac80@huawei.com>
-References: <20210511094127.724-1-longpeng2@huawei.com>
- <20210513094143.pir5vzsludut3xdc@steredhat>
-In-Reply-To: <20210513094143.pir5vzsludut3xdc@steredhat>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH] x86/i8259: Work around buggy legacy PIC
+Thread-Topic: [PATCH] x86/i8259: Work around buggy legacy PIC
+Thread-Index: AQHXR3+B5Hf0DG1T80+Lb/Y+9zG7TarhDftggAATCoCAABWukA==
+Date:   Thu, 13 May 2021 10:36:27 +0000
+Message-ID: <e43d9a823c9e44bab0cdbf32a000c373@AcuMS.aculab.com>
+References: <20210512210459.1983026-1-luzmaximilian@gmail.com>
+ <9b70d8113c084848b8d9293c4428d71b@AcuMS.aculab.com>
+ <e7dbd4d1-f23f-42f0-e912-032ba32f9ec8@gmail.com>
+In-Reply-To: <e7dbd4d1-f23f-42f0-e912-032ba32f9ec8@gmail.com>
+Accept-Language: en-GB, en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.148.223]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stefano,
-
-> -----Original Message-----
-> From: Stefano Garzarella [mailto:sgarzare@redhat.com]
-> Sent: Thursday, May 13, 2021 5:42 PM
-> To: Longpeng (Mike, Cloud Infrastructure Service Product Dept.)
-> <longpeng2@huawei.com>
-> Cc: netdev@vger.kernel.org; linux-kernel@vger.kernel.org; Gonglei (Arei)
-> <arei.gonglei@huawei.com>; Subo (Subo, Cloud Infrastructure Service Product
-> Dept.) <subo7@huawei.com>; David S . Miller <davem@davemloft.net>; Jakub
-> Kicinski <kuba@kernel.org>; Jorgen Hansen <jhansen@vmware.com>; Norbert
-> Slusarek <nslusarek@gmx.net>; Andra Paraschiv <andraprs@amazon.com>;
-> Colin Ian King <colin.king@canonical.com>; David Brazdil
-> <dbrazdil@google.com>; Alexander Popov <alex.popov@linux.com>;
-> lixianming (E) <lixianming5@huawei.com>
-> Subject: Re: [RFC] vsock: notify server to shutdown when client has pending
-> signal
-> 
-> Hi,
-> thanks for this patch, comments below...
-> 
-> On Tue, May 11, 2021 at 05:41:27PM +0800, Longpeng(Mike) wrote:
-> >The client's sk_state will be set to TCP_ESTABLISHED if the server
-> >replay the client's connect request.
-> >However, if the client has pending signal, its sk_state will be set to
-> >TCP_CLOSE without notify the server, so the server will hold the
-> >corrupt connection.
-> >
-> >            client                        server
-> >
-> >1. sk_state=TCP_SYN_SENT         |
-> >2. call ->connect()              |
-> >3. wait reply                    |
-> >                                 | 4. sk_state=TCP_ESTABLISHED
-> >                                 | 5. insert to connected list
-> >                                 | 6. reply to the client
-> >7. sk_state=TCP_ESTABLISHED      |
-> >8. insert to connected list      |
-> >9. *signal pending* <--------------------- the user kill client
-> >10. sk_state=TCP_CLOSE           |
-> >client is exiting...             |
-> >11. call ->release()             |
-> >     virtio_transport_close
-> >      if (!(sk->sk_state == TCP_ESTABLISHED ||
-> >	      sk->sk_state == TCP_CLOSING))
-> >		return true; <------------- return at here As a result, the server
-> >cannot notice the connection is corrupt.
-> >So the client should notify the peer in this case.
-> >
-> >Cc: David S. Miller <davem@davemloft.net>
-> >Cc: Jakub Kicinski <kuba@kernel.org>
-> >Cc: Stefano Garzarella <sgarzare@redhat.com>
-> >Cc: Jorgen Hansen <jhansen@vmware.com>
-> >Cc: Norbert Slusarek <nslusarek@gmx.net>
-> >Cc: Andra Paraschiv <andraprs@amazon.com>
-> >Cc: Colin Ian King <colin.king@canonical.com>
-> >Cc: David Brazdil <dbrazdil@google.com>
-> >Cc: Alexander Popov <alex.popov@linux.com>
-> >Signed-off-by: lixianming <lixianming5@huawei.com>
-> >Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
-> >---
-> > net/vmw_vsock/af_vsock.c | 1 +
-> > 1 file changed, 1 insertion(+)
-> >
-> >diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c index
-> >92a72f0..d5df908 100644
-> >--- a/net/vmw_vsock/af_vsock.c
-> >+++ b/net/vmw_vsock/af_vsock.c
-> >@@ -1368,6 +1368,7 @@ static int vsock_stream_connect(struct socket *sock,
-> struct sockaddr *addr,
-> > 		lock_sock(sk);
-> >
-> > 		if (signal_pending(current)) {
-> >+			vsock_send_shutdown(sk, SHUTDOWN_MASK);
-> 
-> I see the issue, but I'm not sure is okay to send the shutdown in any case,
-> think about the server didn't setup the connection.
-> 
-> Maybe is better to set TCP_CLOSING if the socket state was TCP_ESTABLISHED,
-> so the shutdown will be handled by the
-> transport->release() as usual.
-> 
-> What do you think?
-> 
-
-Your method looks more gracefully, we'll try it and get back to you, thanks.
-
-> Anyway, also without the patch, the server should receive a RST if it
-> sends any data to the client, but of course, is better to let it know
-> the socket is closed in advance.
-> 
-
-Yes, agree.
-
-> Thanks,
-> Stefano
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTWF4aW1pbGlhbiBMdXog
+PGx1em1heGltaWxpYW5AZ21haWwuY29tPg0KPiBTZW50OiAxMyBNYXkgMjAyMSAxMToxMg0KPiBU
+bzogRGF2aWQgTGFpZ2h0IDxEYXZpZC5MYWlnaHRAQUNVTEFCLkNPTT47IFRob21hcyBHbGVpeG5l
+ciA8dGdseEBsaW51dHJvbml4LmRlPjsgSW5nbyBNb2xuYXINCj4gPG1pbmdvQHJlZGhhdC5jb20+
+OyBCb3Jpc2xhdiBQZXRrb3YgPGJwQGFsaWVuOC5kZT4NCj4gQ2M6IEguIFBldGVyIEFudmluIDxo
+cGFAenl0b3IuY29tPjsgU2FjaGkgS2luZyA8bmFrYXRvQG5ha2F0by5pbz47IHg4NkBrZXJuZWwu
+b3JnOyBsaW51eC0NCj4ga2VybmVsQHZnZXIua2VybmVsLm9yZzsgc3RhYmxlQHZnZXIua2VybmVs
+Lm9yZw0KPiBTdWJqZWN0OiBSZTogW1BBVENIXSB4ODYvaTgyNTk6IFdvcmsgYXJvdW5kIGJ1Z2d5
+IGxlZ2FjeSBQSUMNCj4gDQo+IE9uIDUvMTMvMjEgMTA6MTAgQU0sIERhdmlkIExhaWdodCB3cm90
+ZToNCj4gPiBGcm9tOiBNYXhpbWlsaWFuIEx1eg0KPiA+PiBTZW50OiAxMiBNYXkgMjAyMSAyMjow
+NQ0KPiA+Pg0KPiA+PiBUaGUgbGVnYWN5IFBJQyBvbiB0aGUgQU1EIHZhcmlhbnQgb2YgdGhlIE1p
+Y3Jvc29mdCBTdXJmYWNlIExhcHRvcCA0IGhhcw0KPiA+PiBzb21lIHByb2JsZW1zIG9uIGJvb3Qu
+IEZvciBzb21lIHJlYXNvbiBpdCBjb25zaXN0ZW50bHkgZG9lcyBub3QgcmVzcG9uZA0KPiA+PiBv
+biB0aGUgZmlyc3QgdHJ5LCByZXF1aXJpbmcgYSBjb3VwbGUgbW9yZSB0cmllcyBiZWZvcmUgaXQg
+ZmluYWxseQ0KPiA+PiByZXNwb25kcy4NCj4gPg0KPiA+IFRoYXQgc2VlbXMgdmVyeSBzdHJhbmdl
+LCBzb21ldGhpbmcgZWxzZSBtdXN0IGJlIGdvaW5nIG9uIHRoYXQgY2F1c2VzIHRoZSBncmllZi4N
+Cj4gPiBUaGUgODI1OSB3aWxsIGJlIGJ1aWx0IGludG8gdG8gdGhlIG9uZSBvZiB0aGUgY3B1IHN1
+cHBvcnQgY2hpcHMuDQo+ID4gSSBjYW4ndCBpbWFnaW5lIHRoYXQgcmVxdWlyZXMgYW55dGhpbmcg
+c3BlY2lhbC4NCj4gDQo+IFJpZ2h0LCBpdCdzIGRlZmluaXRlbHkgc3RyYW5nZS4gQm90aCBTYWNo
+aSAoSSBpbWFnaW5lKSBhbmQgSSBkb24ndCBrbm93DQo+IG11Y2ggYWJvdXQgdGhlc2UgZGV2aWNl
+cywgc28gd2UncmUgb3BlbiBmb3Igc3VnZ2VzdGlvbnMuDQoNCkkgZm91bmQgYSBjb3B5IG9mIHRo
+ZSBkYXRhc2hlZXQgKEkgZG9uJ3Qgc2VlbSB0byBoYXZlIHRoZSBibGFjayBib29rKToNCg0KaHR0
+cHM6Ly9wZG9zLmNzYWlsLm1pdC5lZHUvNi44MjgvMjAxMC9yZWFkaW5ncy9oYXJkd2FyZS84MjU5
+QS5wZGYNCg0KVGhlIFBDIGhhcmR3YXJlIGhhcyB0d28gODI1OSBpbiBjYXNjYWRlIG1vZGUuDQoo
+Q2FzY2FkZWQgdXNpbmcgYW4gaW50ZXJydXB0IHRoYXQgd2Fzbid0IHJlYWxseSB1c2luZyBpbiB0
+aGUgb3JpZ2luYWwNCjgwODggUEMgd2hpY2ggb25seSBoYWQgb25lIDgyNTkuKQ0KDQpJIHdvbmRl
+ciBpZiB0aGUgYmlvcyBoYXMgYWN0dWFsbHkgaW5pdGlhbGlzZWQgaXMgcHJvcGVybHkuDQpTb21l
+IGluaXRpYWxpc2F0aW9uIHdyaXRlcyBoYXZlIHRvIGJlIGRvbmUgdG8gc2V0IGV2ZXJ5dGhpbmcg
+dXAuDQoNCkl0IGlzIGFsc28gd29ydGggbm90aW5nIHRoYXQgdGhlIHByb2JlIGNvZGUgaXMgc3Bl
+Y3RhY3VsYXJseSBjcmFwLg0KSXQgd3JpdGVzIDB4ZmYgYW5kIHRoZW4gY2hlY2tzIHRoYXQgMHhm
+ZiBpcyByZWFkIGJhY2suDQpBbG1vc3QgYW55dGhpbmcgKGluY2x1ZGluZyBhIGZhaWxlZCBQQ0ll
+IHJlYWQgdG8gdGhlIElTQSBicmlkZ2UpDQp3aWxsIHJldHVybiAweGZmIGFuZCBtYWtlIHRoZSB0
+ZXN0IHBhc3MuDQoNCkl0J3MgYWJvdXQgMzUgeWVhcnMgc2luY2UgSSBsYXN0IHdyb3RlIHRoZSBj
+b2RlIHRvIGluaXRpYWxpc2UgYW4gODI1OS4NClRoZSBtZW1vcnkgY2VsbHMgYXJlIGZvZ2d5Lg0K
+DQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQs
+IE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86
+IDEzOTczODYgKFdhbGVzKQ0K
 
