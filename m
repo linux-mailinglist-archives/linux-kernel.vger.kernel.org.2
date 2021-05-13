@@ -2,61 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F49B37FA71
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 17:16:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 533FC37FA76
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 17:18:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234816AbhEMPR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 11:17:59 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:38984 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234811AbhEMPRy (ORCPT
+        id S234743AbhEMPTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 11:19:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233100AbhEMPTN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 11:17:54 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lhD4q-0004tp-28; Thu, 13 May 2021 15:16:40 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     "J . Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] nfsd: remove redundant assignment to pointer 'this'
-Date:   Thu, 13 May 2021 16:16:39 +0100
-Message-Id: <20210513151639.73435-1-colin.king@canonical.com>
+        Thu, 13 May 2021 11:19:13 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4589EC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 08:18:03 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id c3so39019763lfs.7
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 08:18:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XlvwCCIdITRchgnLI4aBvUaly8ZCfQga7tYhkkseWUs=;
+        b=W6oOwKrsxJUkXrG9nV7ohcodGea4LlJRdCLxV8Pl+2vYrd0Edmy3eDF4YgVQDfcoHX
+         MROKB7ePqNAnQahgvrGnAK35fEHj3eVfd2lZ3ONkJ48kcnRZiUdP97ucq9V9S/PMjgYw
+         z3+kZZBnGHfzEc0PrwPd3miz75Vx9xMRVfIyg/eyWnlduCRVoSCrg2J+IfwwiJ71xk5P
+         kz7fIeN5B9/D6Vs3mnEO58Csud8OkBv33B70AHJzQ3mM8y6nbqBZKmMc1jEMBM+L+wO5
+         15dXvwOlocINMp/zB85SUuc5RLvt5FMDBcCzlEOG/H7jTCsvejuyNPpKqvuz6ufLyjwF
+         8dOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XlvwCCIdITRchgnLI4aBvUaly8ZCfQga7tYhkkseWUs=;
+        b=AUdFIsVhTj6qzAKOf4S59kcFfUVYo7Twsz4DV/4upPdl/usAN9qhn+Hxg2wBlAHxW0
+         KFGHlIhmb2lNnknPdnRGtN23jaGg3VzgtNCLitUqDHovF6xgrABsM/CvR5anIDD01eVn
+         M99wGWEcuAyVkPYGd8uX8cU6/dg410JxXUCIuAF8Dv5WkIEqMGdM+TAZC1yebC8MV2JQ
+         XCSH7fV9m5sXuEDEQkeybgQhUvj8tCR/4ysPBcT53QGyMGuMFKcVIYlviJGT2TtQixvY
+         pDdMAkNF3imBbd0eYYQGry0Am9lS1XSz3XvOP3K6PE15zDheEYa84rEZQ8RXgaT7pEAc
+         QD1w==
+X-Gm-Message-State: AOAM5317gSaRuWog6MPByhXfGEva45VFzypa9X/JeDZp9HqZY2TKKu72
+        f7F//4xwZr8MWTOMQmJy9XfJwAfmyWtCZg==
+X-Google-Smtp-Source: ABdhPJync3ne4bHMwBvY5lVPmKQnE//1dV687R6a6gpoj17rBF6uorI5DgdLtOl2FbmbTksOk/jUeg==
+X-Received: by 2002:a05:6512:2287:: with SMTP id f7mr28282266lfu.475.1620919081440;
+        Thu, 13 May 2021 08:18:01 -0700 (PDT)
+Received: from eriador.lan ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id y19sm485491ljj.125.2021.05.13.08.18.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 May 2021 08:18:01 -0700 (PDT)
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To:     linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH] kbuild: allow checking single device tree file
+Date:   Thu, 13 May 2021 18:18:00 +0300
+Message-Id: <20210513151800.1059435-1-dmitry.baryshkov@linaro.org>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Add support for testing single device tree file by running
+'make tree.dt.yaml', e.g. 'make ARCH=arm64 qcom/qrb5165-rb5.dt.yaml'.
+This looks useful for checking idividual changes to dts files.
 
-The pointer 'this' is being initialized with a value that is never read
-and it is being updated later with a new value. The initialization is
-redundant and can be removed.
-
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Cc: Rob Herring <robh@kernel.org>
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 ---
- fs/nfsd/nfs4proc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Makefile | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/fs/nfsd/nfs4proc.c b/fs/nfsd/nfs4proc.c
-index f4ce93d7f26e..712df4b7dcb2 100644
---- a/fs/nfsd/nfs4proc.c
-+++ b/fs/nfsd/nfs4proc.c
-@@ -3232,7 +3232,7 @@ bool nfsd4_spo_must_allow(struct svc_rqst *rqstp)
- {
- 	struct nfsd4_compoundres *resp = rqstp->rq_resp;
- 	struct nfsd4_compoundargs *argp = rqstp->rq_argp;
--	struct nfsd4_op *this = &argp->ops[resp->opcnt - 1];
-+	struct nfsd4_op *this;
- 	struct nfsd4_compound_state *cstate = &resp->cstate;
- 	struct nfs4_op_map *allow = &cstate->clp->cl_spo_must_allow;
- 	u32 opiter;
+diff --git a/Makefile b/Makefile
+index 53d09c414635..b36a3d48eb68 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1383,6 +1383,10 @@ ifneq ($(dtstree),)
+ %.dtbo: include/config/kernel.release scripts_dtc
+ 	$(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@
+ 
++%.dt.yaml: include/config/kernel.release scripts_dtc
++	$(Q)$(MAKE) $(build)=Documentation/devicetree/bindings Documentation/devicetree/bindings/processed-schema.json
++	$(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@ CHECK_DTBS=y
++
+ PHONY += dtbs dtbs_install dtbs_check
+ dtbs: include/config/kernel.release scripts_dtc
+ 	$(Q)$(MAKE) $(build)=$(dtstree)
 -- 
 2.30.2
 
