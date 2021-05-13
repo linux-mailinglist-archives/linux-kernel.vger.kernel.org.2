@@ -2,152 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DBBC37F0B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 02:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85CA737F0DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 03:12:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235914AbhEMA7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 20:59:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232453AbhEMA7f (ORCPT
+        id S240779AbhEMBNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 21:13:05 -0400
+Received: from mslow1.mail.gandi.net ([217.70.178.240]:34571 "EHLO
+        mslow1.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236407AbhEMBMa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 20:59:35 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CD0BC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 17:58:26 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id n25so29193137edr.5
-        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 17:58:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=SAkFgMmSDBXWFgXDmF2oLvN6riN4KtH7cvTnFetkyEQ=;
-        b=s6kvF/PEuBEHlhVlNGKgmD9IlAE9BIkGL87m8ZrGkif5ql4HQSsG+dV3zHluDFJUMT
-         5VLuGXyNfkif1KWHltToEaWlzAbECHERtijpqQdWOdrnT+7VapH5MMq3e8vtslEwAEko
-         zqsdHmdNlCB3J0GO1uJpFegDSu4cGcemvT08gFP72tW8ptshuGLtaK67nbzko4cyD1zl
-         uAM1kVeumpnvWvZ5HYoxv9mCYHlVHZDQ29GfSLk2uZUf02QbrER0W9uNXWaZ6Gh5mIj3
-         4SITj5AWz+dECsgrvP1sUSTHY9yg9tzCZtfF3NlX0LJn/Eg0W3FCvSYod4Sm2X0ZvzDf
-         aX+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=SAkFgMmSDBXWFgXDmF2oLvN6riN4KtH7cvTnFetkyEQ=;
-        b=GJsx70FS3Wzm+JHMLa3n5P3UH34EVO0qebm4l8obYd9aJiT3bF88fAfzi72VijN70Z
-         /jh1Oz5Wa2GjcKtTeBdarAMNIQUxLVOtC51b5k+V8AXzE6Cv9RSrfjhem4znRkHlGVVj
-         I0yPRmnjgkiFiftyDZUO6P3yqGWZpKrvAu7haQAo/90MoS4qbe3Da3tdwttTpXaK+lNv
-         08ZAM8qj+ukPTiGo+7Yl0sDTJXT28rGAazEs0oab55St31nNdePYBhaMzi/v690yp5mu
-         SJRP5huWFjnwZvAaNJqZ7uw9pWb/UmEcsadnB/3k4RWVj3JRfTcnvLNuuvfbvgikQxpz
-         ZI/A==
-X-Gm-Message-State: AOAM531h5cYSbRx4luKeT4eYgLaNO7rt4Q8Z7Qllm77P77NeiziauMW+
-        Z0v8L5m09oM+JsiyIHzdOGebK7fxcLSAqPk7QKI=
-X-Google-Smtp-Source: ABdhPJz0pGvYY6oiZfoyOXeRbLauc3nsXbEBPV8qDGP+JGGnx0Z0jCpRgQ/8iYGeYBv7UBRVXBYv2HpOOSeNAqohyt8=
-X-Received: by 2002:a05:6402:234b:: with SMTP id r11mr46747517eda.137.1620867505040;
- Wed, 12 May 2021 17:58:25 -0700 (PDT)
+        Wed, 12 May 2021 21:12:30 -0400
+Received: from relay9-d.mail.gandi.net (unknown [217.70.183.199])
+        by mslow1.mail.gandi.net (Postfix) with ESMTP id 9814A100963;
+        Thu, 13 May 2021 01:01:08 +0000 (UTC)
+X-Originating-IP: 68.203.5.165
+Received: from [192.168.1.186] (cpe-68-203-5-165.austin.res.rr.com [68.203.5.165])
+        (Authenticated sender: frank@zago.net)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 8E8A2FF804;
+        Thu, 13 May 2021 01:00:43 +0000 (UTC)
+Subject: Re: [PATCH v2 1/2] Revert "USB: serial: ch341: add new Product ID for
+ CH341A"
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        Jan-Niklas Burfeind <kernel@aiyionpri.me>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Wolfram Sang <wsa@kernel.org>, linux-usb@vger.kernel.org,
+        gunar@schorcht.net
+References: <20210423002852.3904-1-frank@zago.net>
+ <YJjjfx49nCflzFbR@hovoldconsulting.com>
+ <8b3c348f-9e05-29f9-9197-8ddf1c8a9e8b@zago.net>
+ <YJumDN4w4KS3Iuap@hovoldconsulting.com>
+From:   Frank Zago <frank@zago.net>
+Message-ID: <17a4178a-48b7-284c-1c3d-85c570bccf01@zago.net>
+Date:   Wed, 12 May 2021 20:00:41 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <921e53f3-4b13-aab8-4a9e-e83ff15371e4@nec.com> <CALvZod6J8Nk2Vv8eMo020F-jfKHii3Lu1KxOOaut4U88AH3gfw@mail.gmail.com>
- <CAHbLzkppo+cc1B=K4A5nRyso0UxdaRVe-OqBo7PGPXA-nLSGAg@mail.gmail.com> <701b3c80-b6f0-dcb3-7f3d-da6b74dfc1db@nec.com>
-In-Reply-To: <701b3c80-b6f0-dcb3-7f3d-da6b74dfc1db@nec.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Wed, 12 May 2021 17:58:13 -0700
-Message-ID: <CAHbLzkrRP_KzpKfkTUCHR4hZHD+DtO7isBPqKtcpQbNhSrbNoA@mail.gmail.com>
-Subject: Re: [REGRESSION v5.13-rc1] NULL dereference in do_shrink_slab()
-To:     =?UTF-8?B?Tk9NVVJBIEpVTklDSEko6YeO5p2RIOa3s+S4gCk=?= 
-        <junichi.nomura@nec.com>
-Cc:     Shakeel Butt <shakeelb@google.com>, Tejun Heo <tj@kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "vbabka@suse.cz" <vbabka@suse.cz>,
-        "ktkhai@virtuozzo.com" <ktkhai@virtuozzo.com>,
-        "guro@fb.com" <guro@fb.com>,
-        "david@fromorbit.com" <david@fromorbit.com>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "mhocko@suse.com" <mhocko@suse.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YJumDN4w4KS3Iuap@hovoldconsulting.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 5:10 PM NOMURA JUNICHI(=E9=87=8E=E6=9D=91=E3=80=80=
-=E6=B7=B3=E4=B8=80)
-<junichi.nomura@nec.com> wrote:
->
-> On 2021/05/13 1:31, Yang Shi wrote:
-> > On Wed, May 12, 2021 at 5:36 AM Shakeel Butt <shakeelb@google.com> wrot=
-e:
-> >>
-> >> +Tejun Heo
-> >>
-> >> On Wed, May 12, 2021 at 3:48 AM NOMURA JUNICHI(=E9=87=8E=E6=9D=91=E3=
-=80=80=E6=B7=B3=E4=B8=80)
-> >> <junichi.nomura@nec.com> wrote:
-> >>> With the commit 476b30a0949a, if a memcg-aware shrinker is registered=
- before
-> >>> cgroup_init(), shrinker->nr_deferred is NULL.  However xchg_nr_deferr=
-ed()
-> >>> tries to use it as memcg is turned off via "cgroup_disable=3Dmemory".
-> >>>
-> >>> Any thoughts?
-> >
-> > Thanks for the report.
-> >
-> >>
-> >> Is there a way to find the call chain of "memcg-aware shrinker is
-> >> registered before cgroup_init()"?
-> >
-> > Other than adding some printk in prealloc_memcg_shrinker() then
-> > checking out the output of dmesg I didn't think of a better way. Not
-> > sure if we have something like early trace.
->
-> This is the first registration of memcg-aware shrinker:
->
-> [    1.933693] Call Trace:
-> [    1.934694]  sget_fc+0x20d/0x2f0
-> [    1.935693]  ? compare_single+0x10/0x10
-> [    1.936693]  ? shmem_create+0x30/0x30
-> [    1.937693]  vfs_get_super+0x3e/0x100
-> [    1.938693]  get_tree_nodev+0x16/0x20
-> [    1.939693]  shmem_get_tree+0x15/0x20
-> [    1.940693]  vfs_get_tree+0x2a/0xc0
-> [    1.941693]  fc_mount+0x12/0x40
-> [    1.942693]  vfs_kern_mount.part.43+0x61/0xa0
-> [    1.943693]  kern_mount+0x24/0x40
-> [    1.944693]  shmem_init+0x5c/0xc8
-> [    1.945693]  mnt_init+0x12f/0x24a
-> [    1.946693]  ? __percpu_counter_init+0x8f/0xb0
-> [    1.947693]  vfs_caches_init+0xce/0xda
-> [    1.948693]  start_kernel+0x479/0x4e3
-> [    1.949693]  x86_64_start_reservations+0x24/0x26
-> [    1.950693]  x86_64_start_kernel+0x8a/0x8d
-> [    1.951693]  secondary_startup_64_no_verify+0xc2/0xcb
->
-> That is done after command line parsing but before cgroup_init.
+On 5/12/21 4:55 AM, Johan Hovold wrote:
+> On Tue, May 11, 2021 at 08:07:31PM -0500, Frank Zago wrote:
+>> Hello,
+>> 
+>> On 5/10/21 2:40 AM, Johan Hovold wrote:
+>>> On Thu, Apr 22, 2021 at 07:28:51PM -0500, Frank Zago wrote:
+>>>> From: frank zago <frank@zago.net>
+>>>> 
+>>>> The 0x5512 USB PID is for the I2C/GPIO/SPI interfaces. UART is
+>>>>  still present but only the TX and RX pins are available; DTS,
+>>>> DTR, ... are used for other things. Remove the PID, and let a
+>>>> I2C driver bind to it.
+>>>> 
+>>>> Existing CH341 boards usually have physical jumpers to switch 
+>>>> between the 3 modes.
+>>>> 
+>>>> This reverts commit 46ee4abb10a07bd8f8ce910ee6b4ae6a947d7f63.
+>>> 
+>>> You can't just revert something which people clearly depend on
+>>> and therefore added to the kernel in the first place.
+>> 
+>> That device in UART mode was already supported by the serial
+>> driver. The original submitter just had to move a jumper on his
+>> board. There was no need to patch the kernel.
+> 
+> How do you know that the author used a dev board? And are you really 
+> sure that there are no devices out there which always operate in
+> this mode?
 
-Thanks for sharing the log. I was not aware that shmem is initialized
-and mounted so early.
+The author of commit 46ee4abb10a07bd8 put a link to his device. I have 
+the same one (or a clone) and it works fine in serial mode without the patch.
+I have a different model that works the same way. A jumper selects the mode.
 
->
-> >> Irrespective I think we can revert a3e72739b7a7e ("cgroup: fix too
-> >> early usage of static_branch_disable()") as 6041186a3258 ("init:
-> >> initialize jump labels before command line option parsing") has moved
-> >> the initialization of jump labels before command line parsing.
-> >
-> > Seems make sense to me. If some memcg aware shrinker is registered
-> > before cgroup_init(), the mem_cgroup_disabled() check in
-> > prealloc_memcg_shrinker() would return false negative. And I don't
-> > think any shrinker could be registered before parsing boot
-> > commandline.
->
-> Thank you.  Shakeel 's patch works for me:
->
->    [PATCH] cgroup: disable controllers at parse time
->    https://lore.kernel.org/linux-mm/20210512201946.2949351-1-shakeelb@goo=
-gle.com/
+I can't be sure that no one has ever built a board with that chip, selecting
+the wrong mode. But the chip is about 10 years old now; someone would have noticed.
 
-Thanks for running the test.
+> 
+>> That product ID also supports UART but in a limited way, as only
+>> the RX and TX pins are available. However it is the only one that
+>> supports i2c/spi/gpio, and that's why I have to revert the patch.
+> 
+> I understand why you did it. My point is that you cannot just claim
+> that PID and say that it's only to be used for I2C/SPI without even
+> trying to make a case for why that should be ok.
 
->
-> --
-> Jun'ichi Nomura, NEC Corporation / NEC Solution Innovators, Ltd.
+That's the only PID that works for I2C/SPI/GPIO. Right now the serial driver is 
+claiming it. I don't know what else to say. If I can't revert that patch, my driver
+can't be used without blacklisting the serial driver.
+
+> 
+>> If that's desired, the new driver could add support for that as
+>> well, but I don't think it's worth the effort.
+> 
+> We obviously don't want a second serial driver for these devices.
+> 
+>>> Can you reprogram the device with a newly allocated PID to be
+>>> used for i2c-only instead?
+>> 
+>> It is possible if the device has an SPI flash connected to it, but
+>> none of the cheap boards have that.
+> 
+> That's unfortunate. In principle, your approach is the right one,
+> that is, to use a dedicated PID do determine when to configure an
+> alternate mode. But since we already know that some people are using
+> the PID in question in serial mode, it's not that clear cut.
+> 
+> How do you intend to switch between i2c and spi mode?
+
+i2c, spi and gpio can all be used simultaneously. I have a working spi implementation,
+but I'm still testing it. Basically if a user wants to use spi, then 3 specific gpios
+will be reserved for MOSI/MISO/CLK (using gpiochip_request_own_desc), with possibly 
+one or more used for the chip select. 
+How a user books spi is up in the air right now. That might be done through a sysfs command.
+
+Frank.
+
