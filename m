@@ -2,139 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E87D237F7B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 14:19:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EB4037F7B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 14:21:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233558AbhEMMU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 08:20:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43580 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233868AbhEMMTx (ORCPT
+        id S233028AbhEMMWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 08:22:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231249AbhEMMVz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 08:19:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620908323;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IK5KASvNIAH9Eni0vYhJFRLrKtUI3CSzvduC524we5U=;
-        b=Io0l+xS9CDQYBO0fe3bNCJ60Euj0LLrCzh1UrJ3rOYlDf9JTokrQ3fj072/IYi1H3PW1bN
-        W6CW0t+sqUMt0wcUFiHqdQOtrVc7AZU35pGEzognsJfMiDonVICqEZF5uNJkcKH71ZwgQG
-        GjWxNJ8eJUDozjRlLUkI8Xv6RnZgXYU=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-366-sPgjk-hBMQ6jnoSMJZiZvw-1; Thu, 13 May 2021 08:18:42 -0400
-X-MC-Unique: sPgjk-hBMQ6jnoSMJZiZvw-1
-Received: by mail-ed1-f72.google.com with SMTP id y17-20020a0564023591b02903886c26ada4so14553400edc.5
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 05:18:41 -0700 (PDT)
+        Thu, 13 May 2021 08:21:55 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00862C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 05:20:45 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id u21so39529322ejo.13
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 05:20:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=399CU6FoVrAwohQZCEAKYJ/S5aFaMtgvcWQSU++tNeg=;
+        b=BeFoPu4TSujc1wZTDS/TrysxrXtliF2kQZjftGgllngHqqky65t+naFcSYty2PMht2
+         564XeU/iGtzoa+LJFUMHHee9/vEA/tZ1bUpN5lMi8d0coLwhVg4FSLbj/3UJrTkTYJyP
+         y1XLYEI02HyixJ743dPhteP51D6oKh4cepQ40SrGp1gr0vq9Xi7mucciKNy3mzYu/LLx
+         +lj9HdeXKLqDwLh4o/Es7cTxH/LwPJmsYBFJoiLi9pCr3v/kNGckq4i82I/daUqlhS3f
+         0TX3Q3gLtiAbkTuKSmznNCkCoNOzG5ayKqAIYI8ro6ryryZtgQh817khs70vuLWpXGjo
+         f5qg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IK5KASvNIAH9Eni0vYhJFRLrKtUI3CSzvduC524we5U=;
-        b=EiLUKmfAh9w0VwoHbDIMfy0EjAm2riHQpvbU20U7eetB/MSWl7BEANerCibfAGf2bF
-         Y2W+W+2NuB7+HIDY4kjbNtQ5x3svsSLAGoi5SmlyTH3NlaTuVnid+M9a21k70LJ3UTSM
-         sJcmSbzAce2EFtpXsyyYq4Z9ysqf4hRcvVnME4hBBV5ZucbUY0ZjxSglXh1yUyxKViZX
-         Tq0m5LJ2YOW1DTnK0hdrnQrrBUJyY6VSe5c6DYFuHOhzreAeKUZrivDHt6lavEvdzxCA
-         4K74J1mC3c1VJUm+hCm9F58FKTuKFjAMWld/o5QPyqagejjc6dARjcJa4fNDSSwNgwJl
-         jK3Q==
-X-Gm-Message-State: AOAM530QDI3acC5wMTn/1KcsflRuuhB2BpCVmItgWTuWQnQ+I9bzwfbr
-        dbcbU/w2cbXI1lO1mwd91bUc7egxYWAWgxW1ZnIOq1W/k1h4ItqK/YN7fXhPMmuuWZO5UdspYmm
-        UlfxtNHpE70ZhInProLVKG9Qg
-X-Received: by 2002:a17:906:604a:: with SMTP id p10mr4996073ejj.148.1620908320991;
-        Thu, 13 May 2021 05:18:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz1Vg66JpJOxLpGs+6NIjUxFfgVCqpT78vMAZP1rCCIR2bhxg+eIcIxHZ+9opyz96knLH1DNA==
-X-Received: by 2002:a17:906:604a:: with SMTP id p10mr4996058ejj.148.1620908320779;
-        Thu, 13 May 2021 05:18:40 -0700 (PDT)
-Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
-        by smtp.gmail.com with ESMTPSA id t14sm1697687ejc.121.2021.05.13.05.18.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 05:18:40 -0700 (PDT)
-Date:   Thu, 13 May 2021 14:18:38 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Norbert Slusarek <nslusarek@gmx.net>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v9 11/19] virtio/vsock: dequeue callback for
- SOCK_SEQPACKET
-Message-ID: <20210513121838.ndpgj56gwcww3pfc@steredhat>
-References: <20210508163027.3430238-1-arseny.krasnov@kaspersky.com>
- <20210508163523.3431999-1-arseny.krasnov@kaspersky.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=399CU6FoVrAwohQZCEAKYJ/S5aFaMtgvcWQSU++tNeg=;
+        b=nAIP/njt5qUpIhdk2ErJcx6gBZaH4DGdJtG1x+VXoZ0mu6W3YbsfHX3qSmyH9eOQ90
+         GhSeEJAnq9YYt4zVaYPZk/CBbx1pb+QqcbVR3DvrStCFoA32y14Je/9HQcqsb2/uyxZe
+         sj6J/3HoN8EqUpwc0UnKWFbmcnbA2/P5JZZjBbUVn1BGZBMSjQQhwd6lfNP+LpLsf0NH
+         2EFEPbpjYwHxfXm2cFcxgyFk7DxWwUf+y94oOyDK2coWa2yL+QzjJUQ8FQPfYo/Jt4BA
+         jCwnamduOn6+qadExMOMP2SXaD1zeKmClvEeZboCSxmLuV1ksDxJaeSNn45mshlP9912
+         7lzw==
+X-Gm-Message-State: AOAM530jprungfRt+940FmOXWvwTk/7je+48kuJmefv3ZDsWfq/wU+BE
+        mnQ4bMp87331Z5RaXXm/1r29wHDCnQoKTZLT1zMoPyxn2D1zkzGW
+X-Google-Smtp-Source: ABdhPJx5Ui+iWa4w2gQ9QwGBWGtlInf1eMY6SBXbqURGnqY2dDfJnCjw4OTJmxlCchg1Po9TVAI5cDGZrui7OHP5twc=
+X-Received: by 2002:a17:906:fcdc:: with SMTP id qx28mr11531261ejb.375.1620908443510;
+ Thu, 13 May 2021 05:20:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210508163523.3431999-1-arseny.krasnov@kaspersky.com>
+References: <20210512144819.664462530@linuxfoundation.org>
+In-Reply-To: <20210512144819.664462530@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 13 May 2021 17:50:32 +0530
+Message-ID: <CA+G9fYvR7epBnYDWODEvc-OoVab0aqLx3PNAaCXxR2wM2oQOuQ@mail.gmail.com>
+Subject: Re: [PATCH 5.10 000/530] 5.10.37-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 08, 2021 at 07:35:20PM +0300, Arseny Krasnov wrote:
->This adds transport callback and it's logic for SEQPACKET dequeue.
->Callback fetches RW packets from rx queue of socket until whole record
->is copied(if user's buffer is full, user is not woken up). This is done
->to not stall sender, because if we wake up user and it leaves syscall,
->nobody will send credit update for rest of record, and sender will wait
->for next enter of read syscall at receiver's side. So if user buffer is
->full, we just send credit update and drop data.
+On Wed, 12 May 2021 at 20:34, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->---
-> v8 -> v9:
-> 1) Check for RW packet type is removed from loop(all packet now
->    considered RW).
-> 2) Locking in loop is fixed.
-> 3) cpu_to_le32()/le32_to_cpu() now used.
-> 4) MSG_TRUNC handling removed from transport.
+> This is the start of the stable review cycle for the 5.10.37 release.
+> There are 530 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> include/linux/virtio_vsock.h            |  5 ++
-> net/vmw_vsock/virtio_transport_common.c | 64 +++++++++++++++++++++++++
-> 2 files changed, 69 insertions(+)
+> Responses should be made by Fri, 14 May 2021 14:47:09 +0000.
+> Anything received after that time might be too late.
 >
->diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
->index dc636b727179..02acf6e9ae04 100644
->--- a/include/linux/virtio_vsock.h
->+++ b/include/linux/virtio_vsock.h
->@@ -80,6 +80,11 @@ virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
-> 			       struct msghdr *msg,
-> 			       size_t len, int flags);
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.10.37-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.10.y
+> and the diffstat can be found below.
 >
->+ssize_t
->+virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
->+				   struct msghdr *msg,
->+				   int flags,
->+				   bool *msg_ready);
-> s64 virtio_transport_stream_has_data(struct vsock_sock *vsk);
-> s64 virtio_transport_stream_has_space(struct vsock_sock *vsk);
+> thanks,
 >
->diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
->index ad0d34d41444..f649a21dd23b 100644
->--- a/net/vmw_vsock/virtio_transport_common.c
->+++ b/net/vmw_vsock/virtio_transport_common.c
->@@ -393,6 +393,58 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
-> 	return err;
-> }
->
->+static int virtio_transport_seqpacket_do_dequeue(struct vsock_sock *vsk,
->+						 struct msghdr *msg,
->+						 int flags,
->+						 bool *msg_ready)
->+{
->+	struct virtio_vsock_sock *vvs = vsk->trans;
->+	struct virtio_vsock_pkt *pkt;
->+	int err = 0;
->+	size_t user_buf_len = msg->msg_iter.count;
+> greg k-h
 
-Forgot to mention that also here is better to use `msg_data_left(msg)`
+Results from Linaro=E2=80=99s test farm.
 
-Thanks,
-Stefano
+Apart from mips clang build failures no other new test failures noticed.
 
+## Build
+* kernel: 5.10.37-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.10.y
+* git commit: 77806d1ee43e1bea3aa5095445eb7a69f02ec8d3
+* git describe: v5.10.35-831-g77806d1ee43e
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
+.35-831-g77806d1ee43e
+
+## Regressions (compared to v5.10.35-300-g4edc8f7e8676)
+
+* mips, build
+  - clang-10-allnoconfig
+  - clang-10-defconfig
+  - clang-10-tinyconfig
+  - clang-11-allnoconfig
+  - clang-11-defconfig
+  - clang-11-tinyconfig
+  - clang-12-allnoconfig
+  - clang-12-defconfig
+  - clang-12-tinyconfig
+
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## No fixes (compared to v5.10.35-300-g4edc8f7e8676)
+
+
+## Test result summary
+ total: 71368, pass: 60228, fail: 866, skip: 10020, xfail: 254,
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 193 total, 193 passed, 0 failed
+* arm64: 27 total, 27 passed, 0 failed
+* i386: 25 total, 25 passed, 0 failed
+* mips: 45 total, 36 passed, 9 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x86_64: 27 total, 27 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* kselftest-android
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kvm
+* kselftest-lib
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
