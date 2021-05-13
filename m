@@ -2,277 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1514F37FFF0
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 00:03:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAC5037FFF3
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 00:03:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhEMWCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 18:02:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33802 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229459AbhEMWCh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 18:02:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4896F60FEE;
-        Thu, 13 May 2021 22:01:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620943287;
-        bh=BkGUV2ZMsXdtiWTT3PHpRDFQj7XuCX+9woroygc9f8g=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=bGR7MMaYtpEDLR86OTwoqT1YUzshuYKyR4kPv42RuinwWRnTnBZ1ii7ibQBQMpXs/
-         BZh+77rDEjIsB8bYb8QxTIIwRF4KTummHaH+6pH+URda2/G6UFuC+X7cAshif5rPt1
-         abZ3cBAj5QirNg4ONuGrtBKfFP685HoKJIRyp3DAt7ctVFroBCYIeTamdAjiMz4ihP
-         GAHHhRhF/TV7MdkL3BK7z5cnKGAxqsoYfyGowMa75dcmvTVq+EJpkzm5c4fUU+V706
-         5NRBB44GKIJlaW2oYdQ+NtYFQD+asraEEEK1jdxjItN2c46S2Jz8jVmD8lOHYY+gLx
-         /+kuuXi092Eww==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 0FD6C5C036A; Thu, 13 May 2021 15:01:27 -0700 (PDT)
-Date:   Thu, 13 May 2021 15:01:27 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Manfred Spraul <manfred@colorfullife.com>
-Cc:     kasan-dev <kasan-dev@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Davidlohr Bueso <dbueso@suse.de>, 1vier1@web.de
-Subject: Re: ipc/sem, ipc/msg, ipc/mqueue.c kcsan questions
-Message-ID: <20210513220127.GA3511242@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <a9b36c77-dc42-4ab2-9740-f27b191dd403@colorfullife.com>
- <20210512201743.GW975577@paulmck-ThinkPad-P17-Gen-1>
- <343390da-2307-442e-8073-d1e779c85eeb@colorfullife.com>
- <20210513190201.GE975577@paulmck-ThinkPad-P17-Gen-1>
+        id S230503AbhEMWER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 18:04:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229459AbhEMWEQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 18:04:16 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10C0FC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 15:03:06 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id k25so26382797iob.6
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 15:03:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=T/ZWfzVFcxgYSarPowOvBUX0uVefuthIIQJ8YRw+u1E=;
+        b=SEnnq54LGYEDzdIATveL857bcri0Ioy5Q+U/lfOeOH9dSYnNYa74k2y62SW45oazHA
+         kB/x3qXa0x8MPi7UQ+D31bFmlOSaWl9d/1Mm844HEJbuiQoXUbVymjAkucZ+nkXDjHqA
+         bxWbaYl78xIQdSKNy9OQp7f7BZ1jlF8JkQDJxclKDzawo8iPljCMz6vLWDGkYW5OkS1c
+         buM4bXPIajmE69xuKEGLZTDjbAt3dUGF7YERXq9q5BxMh7jYJYuSgTzLE0MAH5AXISDc
+         3GO2n9YyFwtiCO2atxl/MMmyYmJyGv2ot9mRWegQWj7fbto/WdIsg4sCLAshTm6FDykU
+         kzvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=T/ZWfzVFcxgYSarPowOvBUX0uVefuthIIQJ8YRw+u1E=;
+        b=QAwJruPrK/JLH4yeGSVw5k8SaW/Qu2xAQPs1ecP0R7VCUMovtkg33fhOUkvQ7PpvAQ
+         8a5+40ytS/QRMyytkT6FkeasJONKjmwODkZk56Nrb1YbFc+AUJmiuyyhZf14ceOJ8k5f
+         tgSEX8NLAMaubIdOMT9WJPQpxw1BnBbMWL6gfOrfMlhQl/n/nfRwDdBruIdK9AV5T8ht
+         Nk1F6D/DshYo33aHMNamQEdrg+6pOUwcbMSOm9j60hYL5FepJ+LYC+hSuSA8ZNugATwe
+         g7Nr4FsqgNbj43AFIFc6tL1x6YNhx/+gmWb5NKCr9PBfQSUDFXcDtHZFbPN886it4gJD
+         yvZA==
+X-Gm-Message-State: AOAM532OVnPWCuy+RaU77OJ9XnpQ+580BqloBdp3+Dt+rvIbPXsqxVdY
+        3qigd9LSaNCuPa4ouwwW0c8oz7kqbjhtTVE55E0jQQ==
+X-Google-Smtp-Source: ABdhPJwFSeuV8HG27grrM0xnFPqsKC+UL3zivh2UTRi7VTA0Fg/WDh6PBYorrZ3JqFuXwg4z7RX+/y4VIXWMYWs8vOI=
+X-Received: by 2002:a6b:b409:: with SMTP id d9mr31259682iof.57.1620943385135;
+ Thu, 13 May 2021 15:03:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210513190201.GE975577@paulmck-ThinkPad-P17-Gen-1>
+References: <20210512214502.2047008-1-axelrasmussen@google.com>
+ <20210512214502.2047008-2-axelrasmussen@google.com> <CANgfPd8u0=_yZpkvsw-CqP_iWKbj0XQOnJCaNu4GSoFkqLpzDQ@mail.gmail.com>
+In-Reply-To: <CANgfPd8u0=_yZpkvsw-CqP_iWKbj0XQOnJCaNu4GSoFkqLpzDQ@mail.gmail.com>
+From:   Axel Rasmussen <axelrasmussen@google.com>
+Date:   Thu, 13 May 2021 15:02:28 -0700
+Message-ID: <CAJHvVchQUz9VnpSsh_3jJ7o6qKMF0-NWhw42E7tO8m6+R9Uf8g@mail.gmail.com>
+Subject: Re: [PATCH 1/5] KVM: selftests: allow different backing memory types
+ for demand paging
+To:     Ben Gardon <bgardon@google.com>
+Cc:     Aaron Lewis <aaronlewis@google.com>,
+        Alexander Graf <graf@amazon.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jacob Xu <jacobhxu@google.com>,
+        Makarand Sonare <makarandsonare@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Yanan Wang <wangyanan55@huawei.com>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 12:02:01PM -0700, Paul E. McKenney wrote:
-> On Thu, May 13, 2021 at 08:10:51AM +0200, Manfred Spraul wrote:
-> > Hi Paul,
-> > 
-> > On 5/12/21 10:17 PM, Paul E. McKenney wrote:
-> > > On Wed, May 12, 2021 at 09:58:18PM +0200, Manfred Spraul wrote:
-> > > > [...]
-> > > > sma->use_global_lock is evaluated in sem_lock() twice:
-> > > > 
-> > > > >         /*
-> > > > >           * Initial check for use_global_lock. Just an optimization,
-> > > > >           * no locking, no memory barrier.
-> > > > >           */
-> > > > >          if (!sma->use_global_lock) {
-> > > > Both sides of the if-clause handle possible data races.
-> > > > 
-> > > > Is
-> > > > 
-> > > >      if (!data_race(sma->use_global_lock)) {
-> > > > 
-> > > > the correct thing to suppress the warning?
-> > > Most likely READ_ONCE() rather than data_race(), but please see
-> > > the end of this message.
-> > 
-> > Based on the document, I would say data_race() is sufficient:
-> > 
-> > I have replaced the code with "if (jiffies %2)", and it runs fine.
-> 
-> OK, but please note that "jiffies" is marked volatile, which prevents the
-> compiler from fusing loads.  You just happen to be OK in this particular
-> case, as described below.  Use of the "jiffies_64" non-volatile synonym
-> for "jiffies" is better for this sort of checking.  But even so, just
-> because a particular version of a particular compiler refrains from
-> fusing loads in a particular situation does not mean that all future
-> versions of all future compilers will behave so nicely.
-> 
-> Again, you are OK in this particular situation, as described below.
-> 
-> > Thus I don't see which evil things a compiler could do, ... .
-> 
-> Fair enough, and your example is covered by the section "Reads Feeding
-> Into Error-Tolerant Heuristics".  The worst that the compiler can do is
-> to force an unnecessary acquisition of the global lock.
-> 
-> This cannot cause incorrect execution, but could results in poor
-> scalability.  This could be a problem is load fusing were possible, that
-> is, if successes calls to this function were inlined and the compiler
-> just reused the value initially loaded.
-> 
-> The reason that load fusing cannot happen in this case is that the
-> load is immediately followed by a lock acquisition, which implies a
-> barrier(), which prevents the compiler from fusing loads on opposite
-> sides of that barrier().
-> 
-> > [...]
-> > 
-> > Does tools/memory-model/Documentation/access-marking.txt, shown below,
-> > > help?
-> > > 
-> > [...]
-> > > 	int foo;
-> > > 	DEFINE_RWLOCK(foo_rwlock);
-> > > 
-> > > 	void update_foo(int newval)
-> > > 	{
-> > > 		write_lock(&foo_rwlock);
-> > > 		foo = newval;
-> > > 		do_something(newval);
-> > > 		write_unlock(&foo_rwlock);
-> > > 	}
-> > > 
-> > > 	int read_foo(void)
-> > > 	{
-> > > 		int ret;
-> > > 
-> > > 		read_lock(&foo_rwlock);
-> > > 		do_something_else();
-> > > 		ret = foo;
-> > > 		read_unlock(&foo_rwlock);
-> > > 		return ret;
-> > > 	}
-> > > 
-> > > 	int read_foo_diagnostic(void)
-> > > 	{
-> > > 		return data_race(foo);
-> > > 	}
-> > 
-> > The text didn't help, the example has helped:
-> > 
-> > It was not clear to me if I have to use data_race() both on the read and the
-> > write side, or only on one side.
-> > 
-> > Based on this example: plain C may be paired with data_race(), there is no
-> > need to mark both sides.
-> 
-> Actually, you just demonstrated that this example is quite misleading.
-> That data_race() works only because the read is for diagnostic
-> purposes.  I am queuing a commit with your Reported-by that makes
-> read_foo_diagnostic() just do a pr_info(), like this:
-> 
-> 	void read_foo_diagnostic(void)
-> 	{
-> 		pr_info("Current value of foo: %d\n", data_race(foo));
-> 	}
-> 
-> So thank you for that!
+On Thu, May 13, 2021 at 2:32 PM Ben Gardon <bgardon@google.com> wrote:
+>
+> On Wed, May 12, 2021 at 2:45 PM Axel Rasmussen <axelrasmussen@google.com> wrote:
+> >
+> > Add an argument which lets us specify a different backing memory type
+> > for the test. The default is just to use anonymous, matching existing
+> > behavior (if the argument is omitted).
+> >
+> > This is in preparation for testing UFFD minor faults. For that, we need
+> > to use a new backing memory type which is setup with MAP_SHARED.
+> >
+> > This notably requires one other change. Perhaps counter-intuitively,
+> > perf_test_args.host_page_size is the host's *native* page size, not the
+> > size of the pages the host is using to back the guest. This means, if we
+> > try to run the test with e.g. VM_MEM_SRC_ANONYMOUS_HUGETLB, we'll try to
+> > do demand paging with 4k pages instead of 2M hugepages.
+>
+> Would it make sense to factor this change out into another commit
+> preceding this one? Perhaps only worth it if you send a v2.
+>
+> When you say "we'll try to do demand paging with 4k pages instead of
+> 2M hugepages," what would that mean? Would we only copy 4k worth of
+> the contents of the 2M page in, leading to the guest seeing bad
+> memory? Do we have the capability to do demand paging at a smaller
+> granularity than the backing page size with UFFD?
 
-And please see below for an example better illustrating your use case.
-Anything messed up or missing?
+Basically I think the existing behavior is to always use 4k - so we
+UFFDIO_COPY that size at a time.
 
-							Thanx, Paul
+This is totally fine for anonymous, or even for THPs. But, once we're
+using hugetlbfs, the UFFDIO_COPY ioctl will just fail unless we do 2M
+(or some multiple thereof) at a time. If memory serves it returns
+-EINVAL in this case.
 
-------------------------------------------------------------------------
+It wouldn't be so much trouble to factor it out, so just let me know
+what is preferred. For now, I'll do it if a v2 is needed for other
+reasons.
 
-commit b4287410ee93109501defc4695ccc29144e8f3a3
-Author: Paul E. McKenney <paulmck@kernel.org>
-Date:   Thu May 13 14:54:58 2021 -0700
-
-    tools/memory-model: Add example for heuristic lockless reads
-    
-    This commit adds example code for heuristic lockless reads, based loosely
-    on the sem_lock() and sem_unlock() functions.
-    
-    Reported-by: Manfred Spraul <manfred@colorfullife.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/tools/memory-model/Documentation/access-marking.txt b/tools/memory-model/Documentation/access-marking.txt
-index 58bff2619876..e4a20ebf565d 100644
---- a/tools/memory-model/Documentation/access-marking.txt
-+++ b/tools/memory-model/Documentation/access-marking.txt
-@@ -319,6 +319,98 @@ of the ASSERT_EXCLUSIVE_WRITER() is to allow KCSAN to check for a buggy
- concurrent lockless write.
- 
- 
-+Lock-Protected Writes With Heuristic Lockless Reads
-+---------------------------------------------------
-+
-+For another example, suppose that the code can normally make use of
-+a per-data-structure lock, but there are times when a global lock is
-+required.  These times are indicated via a global flag.  The code might
-+look as follows, and is based loosely on sem_lock() and sem_unlock():
-+
-+	bool global_flag;
-+	DEFINE_SPINLOCK(global_lock);
-+	struct foo {
-+		spinlock_t f_lock;
-+		int f_data;
-+	};
-+
-+	/* All foo structures are in the following array. */
-+	int nfoo;
-+	struct foo *foo_array;
-+
-+	void do_something_locked(struct foo *fp)
-+	{
-+		/* IMPORTANT: Heuristic plus spin_lock()! */
-+		if (!data_race(global_flag)) {
-+			spin_lock(&fp->f_lock);
-+			if (!smp_load_acquire(&global_flag)) {
-+				do_something(fp);
-+				spin_unlock(&fp->f_lock);
-+				return;
-+			}
-+			spin_unlock(&fp->f_lock);
-+		}
-+		spin_lock(&global_flag);
-+		/* Lock held, thus global flag cannot change. */
-+		if (!global_flag) {
-+			spin_lock(&fp->f_lock);
-+			spin_unlock(&global_flag);
-+		}
-+		do_something(fp);
-+		if (global_flag)
-+			spin_unlock(&global_flag);
-+		else
-+			spin_lock(&fp->f_lock);
-+	}
-+
-+	void begin_global(void)
-+	{
-+		int i;
-+
-+		spin_lock(&global_flag);
-+		WRITE_ONCE(global_flag, true);
-+		for (i = 0; i < nfoo; i++) {
-+			/* Wait for pre-existing local locks. */
-+			spin_lock(&fp->f_lock);
-+			spin_unlock(&fp->f_lock);
-+		}
-+		spin_unlock(&global_flag);
-+	}
-+
-+	void end_global(void)
-+	{
-+		spin_lock(&global_flag);
-+		smp_store_release(&global_flag, false);
-+		/* Pre-existing global lock acquisitions will recheck. */
-+		spin_unlock(&global_flag);
-+	}
-+
-+All code paths leading from the do_something_locked() function's first
-+read from global_flag acquire a lock, so endless load fusing cannot
-+happen.
-+
-+If the value read from global_flag is true, then global_flag is rechecked
-+while holding global_lock, which prevents global_flag from changing.
-+If this recheck finds that global_flag is now false, the acquisition
-+of ->f_lock prior to the release of global_lock will result in any subsequent
-+begin_global() invocation waiting to acquire ->f_lock.
-+
-+On the other hand, if the value read from global_flag is false, then
-+global_flag, then rechecking under ->f_lock combined with synchronization
-+with begin_global() guarantees than any erroneous read will cause the
-+do_something_locked() function's first do_something() invocation to happen
-+before begin_global() returns.  The combination of the smp_load_acquire()
-+in do_something_locked() and the smp_store_release() in end_global()
-+guarantees that either the do_something_locked() function's first
-+do_something() invocation happens after the call to end_global() or that
-+do_something_locked() acquires global_lock() and rechecks under the lock.
-+
-+For this to work, only those foo structures in foo_array[] may be
-+passed to do_something_locked().  The reason for this is that the
-+synchronization with begin_global() relies on momentarily locking each
-+and every foo structure.
-+
-+
- Lockless Reads and Writes
- -------------------------
- 
+>
+> Otherwise this patch looks reasonable to me. I'll try to review the
+> rest of your patches today / Monday.
+>
+> >
+> > So, convert everything to use a new demand_paging_size, computed based
+> > on the backing memory type.
+> >
+> > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+> > ---
+> >  .../selftests/kvm/demand_paging_test.c        | 24 +++++++++++++------
+> >  1 file changed, 17 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/kvm/demand_paging_test.c b/tools/testing/selftests/kvm/demand_paging_test.c
+> > index 5f7a229c3af1..10c7ba76a9c6 100644
+> > --- a/tools/testing/selftests/kvm/demand_paging_test.c
+> > +++ b/tools/testing/selftests/kvm/demand_paging_test.c
+> > @@ -38,6 +38,7 @@
+> >
+> >  static int nr_vcpus = 1;
+> >  static uint64_t guest_percpu_mem_size = DEFAULT_PER_VCPU_MEM_SIZE;
+> > +static size_t demand_paging_size;
+> >  static char *guest_data_prototype;
+> >
+> >  static void *vcpu_worker(void *data)
+> > @@ -83,7 +84,7 @@ static int handle_uffd_page_request(int uffd, uint64_t addr)
+> >
+> >         copy.src = (uint64_t)guest_data_prototype;
+> >         copy.dst = addr;
+> > -       copy.len = perf_test_args.host_page_size;
+> > +       copy.len = demand_paging_size;
+> >         copy.mode = 0;
+> >
+> >         clock_gettime(CLOCK_MONOTONIC, &start);
+> > @@ -100,7 +101,7 @@ static int handle_uffd_page_request(int uffd, uint64_t addr)
+> >         PER_PAGE_DEBUG("UFFDIO_COPY %d \t%ld ns\n", tid,
+> >                        timespec_to_ns(ts_diff));
+> >         PER_PAGE_DEBUG("Paged in %ld bytes at 0x%lx from thread %d\n",
+> > -                      perf_test_args.host_page_size, addr, tid);
+> > +                      demand_paging_size, addr, tid);
+> >
+> >         return 0;
+> >  }
+> > @@ -250,6 +251,7 @@ static int setup_demand_paging(struct kvm_vm *vm,
+> >  struct test_params {
+> >         bool use_uffd;
+> >         useconds_t uffd_delay;
+> > +       enum vm_mem_backing_src_type src_type;
+> >         bool partition_vcpu_memory_access;
+> >  };
+> >
+> > @@ -267,14 +269,16 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+> >         int r;
+> >
+> >         vm = perf_test_create_vm(mode, nr_vcpus, guest_percpu_mem_size,
+> > -                                VM_MEM_SRC_ANONYMOUS);
+> > +                                p->src_type);
+> >
+> >         perf_test_args.wr_fract = 1;
+> >
+> > -       guest_data_prototype = malloc(perf_test_args.host_page_size);
+> > +       demand_paging_size = get_backing_src_pagesz(p->src_type);
+> > +
+> > +       guest_data_prototype = malloc(demand_paging_size);
+> >         TEST_ASSERT(guest_data_prototype,
+> >                     "Failed to allocate buffer for guest data pattern");
+> > -       memset(guest_data_prototype, 0xAB, perf_test_args.host_page_size);
+> > +       memset(guest_data_prototype, 0xAB, demand_paging_size);
+> >
+> >         vcpu_threads = malloc(nr_vcpus * sizeof(*vcpu_threads));
+> >         TEST_ASSERT(vcpu_threads, "Memory allocation failed");
+> > @@ -388,7 +392,7 @@ static void help(char *name)
+> >  {
+> >         puts("");
+> >         printf("usage: %s [-h] [-m mode] [-u] [-d uffd_delay_usec]\n"
+> > -              "          [-b memory] [-v vcpus] [-o]\n", name);
+> > +              "          [-b memory] [-t type] [-v vcpus] [-o]\n", name);
+> >         guest_modes_help();
+> >         printf(" -u: use User Fault FD to handle vCPU page\n"
+> >                "     faults.\n");
+> > @@ -398,6 +402,8 @@ static void help(char *name)
+> >         printf(" -b: specify the size of the memory region which should be\n"
+> >                "     demand paged by each vCPU. e.g. 10M or 3G.\n"
+> >                "     Default: 1G\n");
+> > +       printf(" -t: The type of backing memory to use. Default: anonymous\n");
+> > +       backing_src_help();
+> >         printf(" -v: specify the number of vCPUs to run.\n");
+> >         printf(" -o: Overlap guest memory accesses instead of partitioning\n"
+> >                "     them into a separate region of memory for each vCPU.\n");
+> > @@ -409,13 +415,14 @@ int main(int argc, char *argv[])
+> >  {
+> >         int max_vcpus = kvm_check_cap(KVM_CAP_MAX_VCPUS);
+> >         struct test_params p = {
+> > +               .src_type = VM_MEM_SRC_ANONYMOUS,
+> >                 .partition_vcpu_memory_access = true,
+> >         };
+> >         int opt;
+> >
+> >         guest_modes_append_default();
+> >
+> > -       while ((opt = getopt(argc, argv, "hm:ud:b:v:o")) != -1) {
+> > +       while ((opt = getopt(argc, argv, "hm:ud:b:t:v:o")) != -1) {
+> >                 switch (opt) {
+> >                 case 'm':
+> >                         guest_modes_cmdline(optarg);
+> > @@ -430,6 +437,9 @@ int main(int argc, char *argv[])
+> >                 case 'b':
+> >                         guest_percpu_mem_size = parse_size(optarg);
+> >                         break;
+> > +               case 't':
+> > +                       p.src_type = parse_backing_src_type(optarg);
+> > +                       break;
+> >                 case 'v':
+> >                         nr_vcpus = atoi(optarg);
+> >                         TEST_ASSERT(nr_vcpus > 0 && nr_vcpus <= max_vcpus,
+> > --
+> > 2.31.1.607.g51e8a6a459-goog
+> >
