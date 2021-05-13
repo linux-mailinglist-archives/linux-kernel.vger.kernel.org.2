@@ -2,182 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97F7B37FCA4
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 19:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7B5837FCAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 19:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230307AbhEMRnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 13:43:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38492 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229964AbhEMRnM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 13:43:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA0E161352;
-        Thu, 13 May 2021 17:42:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620927722;
-        bh=ALM+zyZ7ii+SEw0cD5Jf+wDVvb/5CGSOX1wX3nCR53w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=b0vVVuwxQ0YaglllLHuSAoLMXXoR8EjxMet4x9wSmDQ/GBeOVtHi3ACNJcCc1I1NM
-         PlFGXIHudIIjJ30ajp8gWLEgo5ZukZcryfwM0jroPpcSGAhD9loDkH7OVSMJTkrTcc
-         u6vqjUbRU5zvWr3xT4XiGfVvBSW4ZRfGCoJvTEos=
-Date:   Thu, 13 May 2021 19:41:59 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Rajat Jain <rajatja@google.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
-        <linux-usb@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
-        Oliver Neukum <oneukum@suse.com>,
-        David Laight <David.Laight@aculab.com>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rajat Jain <rajatxjain@gmail.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Dmitry Torokhov <dtor@google.com>
-Subject: Re: [PATCH v3 2/2] PCI: Add sysfs "removable" attribute
-Message-ID: <YJ1k5w/6g6XFrSJ2@kroah.com>
-References: <20210512213457.1310774-1-rajatja@google.com>
- <20210512213457.1310774-2-rajatja@google.com>
- <YJ0wgdUaOyaJpaXi@kroah.com>
- <CACK8Z6EH7jmw9ODqvhxV7EHQjPsj9z++6OT3NAmhem4v68w7yA@mail.gmail.com>
+        id S230471AbhEMRoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 13:44:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230463AbhEMRoc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 13:44:32 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E83C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 10:43:21 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id j75so26012386oih.10
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 10:43:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=rmirlcoRqiQkPgRG3x53Crex7jCaDOSES3PYSmlMKwM=;
+        b=O6u3p5AvPdivCUE35+1pKcX4yC/UonePeGPLCiwwtckCVhU4E6DI8zHcXOd1UCkjqB
+         ddgSB9M2q78ms+QYQMd7HdH5mxCpAhZy17+zayMNoVZY2wElACd396OLuoOxrfpslau9
+         aQ2UTSjvZL7Pq4oN3Ol3mytOpO4cc8L6giDzwqc/xzjD1ETzNMsVYZXP9+MpmriLoUOn
+         +mVQ/limknIY3VjtsoM7nWrpcUCoSDUpgBLG7IJOvskMBnrSXU1nlRzsTx19VjOjTVGP
+         KclVkU1c8IImyzBjXSJmU3zK1hFbw2nUUD2tEqnSdzgSrKOLkrVfqVgjK7x3XuS7Besc
+         QzkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=rmirlcoRqiQkPgRG3x53Crex7jCaDOSES3PYSmlMKwM=;
+        b=DV3q9RBqS46Ll1fHt0+yIpd22WQM5XmIX7IRv+yicEy4xBpxh/Mc/XQIVZVZE512UK
+         u32mJciir/iS0Plwp/9Z3dfFRFMjPlnInYpFlc0KyoTCgmxp4KQEfSnjNPiX8SJhRfgN
+         T82L799uZD4y9Oryl6WGxwEm+J77McXy+mGVMF8B7eCWpxijVsDsTBywb3h6FOB1Stt7
+         VkN8YV7GiZ7S7+LLBu+FPMjpK4gNpBo4xqx3F7o8zfG06b4PckOYSRQPzFbfjn1Szx+E
+         SIr8xYERKGPFFJS623lanz15V6HSiZ1URMVS1b2CeK10jHI8DpCP38m+TgEdscpRo5uu
+         2Q5Q==
+X-Gm-Message-State: AOAM531iNYvtfvS4PZ7/kCdRk5dK6fZEuAFSl3uCHUaTf35Msm1r3bst
+        sF2zN7IQ08E7EaaxEyoaUnseLg==
+X-Google-Smtp-Source: ABdhPJy2yWVoN94XJYQGrENPiReo4mj33+y4Jyhc4dXw69CkJll+MePV5Gs1TpseS4y9OscTeLhr7A==
+X-Received: by 2002:a05:6808:2d2:: with SMTP id a18mr5353611oid.82.1620927800590;
+        Thu, 13 May 2021 10:43:20 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id c13sm759750oto.18.2021.05.13.10.43.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 May 2021 10:43:20 -0700 (PDT)
+Date:   Thu, 13 May 2021 12:43:17 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Uwe Kleine-K?nig <u.kleine-koenig@pengutronix.de>
+Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Martin Botka <martin.botka1@gmail.com>,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v6 2/4] leds: Add driver for Qualcomm LPG
+Message-ID: <20210513174317.GM2484@yoga>
+References: <20201021201224.3430546-1-bjorn.andersson@linaro.org>
+ <20201021201224.3430546-3-bjorn.andersson@linaro.org>
+ <20210505051534.id36dvocqfqg3jqc@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CACK8Z6EH7jmw9ODqvhxV7EHQjPsj9z++6OT3NAmhem4v68w7yA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210505051534.id36dvocqfqg3jqc@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 09:39:58AM -0700, Rajat Jain wrote:
-> Hello,
+On Wed 05 May 00:15 CDT 2021, Uwe Kleine-K?nig wrote:
+
+> Hello Bjorn,
 > 
-> On Thu, May 13, 2021 at 6:58 AM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Wed, May 12, 2021 at 02:34:57PM -0700, Rajat Jain wrote:
-> > > A PCI device is "external_facing" if it's a Root Port with the ACPI
-> > > "ExternalFacingPort" property or if it has the DT "external-facing"
-> > > property.  We consider everything downstream from such a device to
-> > > be removable by user.
-> > >
-> > > We're mainly concerned with consumer platforms with user accessible
-> > > thunderbolt ports that are vulnerable to DMA attacks, and we expect those
-> > > ports to be identified as "ExternalFacingPort". Devices in traditional
-> > > hotplug slots can technically be removed, but the expectation is that
-> > > unless the port is marked with "ExternalFacingPort", such devices are less
-> > > accessible to user / may not be removed by end user, and thus not exposed
-> > > as "removable" to userspace.
-> > >
-> > > Set pci_dev_type.supports_removable so the device core exposes the
-> > > "removable" file in sysfs, and tell the device core about removable
-> > > devices.
-> > >
-> > > This can be used by userspace to implment any policies it wants to,
-> > > tailored specifically for user removable devices. Eg usage:
-> > > https://chromium-review.googlesource.com/c/chromiumos/platform2/+/2591812
-> > > https://chromium-review.googlesource.com/c/chromiumos/platform2/+/2795038
-> > > (code uses such an attribute to remove external PCI devicces or disable
-> > > features on them as needed by the policy desired)
-> > >
-> > > Signed-off-by: Rajat Jain <rajatja@google.com>
-> > > ---
-> > > v3: - commit log updated
-> > >     - Rename set_pci_dev_removable() -> pci_set_removable()
-> > >     - Call it after applying early PCI quirks.
-> > > v2: Add documentation
-> > >
-> > >  Documentation/ABI/testing/sysfs-devices-removable |  3 ++-
-> > >  drivers/pci/pci-sysfs.c                           |  1 +
-> > >  drivers/pci/probe.c                               | 12 ++++++++++++
-> > >  3 files changed, 15 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/Documentation/ABI/testing/sysfs-devices-removable b/Documentation/ABI/testing/sysfs-devices-removable
-> > > index 9dabcad7cdcd..ec0b243f5db4 100644
-> > > --- a/Documentation/ABI/testing/sysfs-devices-removable
-> > > +++ b/Documentation/ABI/testing/sysfs-devices-removable
-> > > @@ -14,4 +14,5 @@ Description:
-> > >
-> > >               Currently this is only supported by USB (which infers the
-> > >               information from a combination of hub descriptor bits and
-> > > -             platform-specific data such as ACPI).
-> > > +             platform-specific data such as ACPI) and PCI (which gets this
-> > > +             from ACPI / device tree).
-> > > diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-> > > index beb8d1f4fafe..38b3259ba333 100644
-> > > --- a/drivers/pci/pci-sysfs.c
-> > > +++ b/drivers/pci/pci-sysfs.c
-> > > @@ -1541,4 +1541,5 @@ static const struct attribute_group *pci_dev_attr_groups[] = {
-> > >
-> > >  const struct device_type pci_dev_type = {
-> > >       .groups = pci_dev_attr_groups,
-> > > +     .supports_removable = true,
-> > >  };
-> > > diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> > > index 3a62d09b8869..3515afeeaba8 100644
-> > > --- a/drivers/pci/probe.c
-> > > +++ b/drivers/pci/probe.c
-> > > @@ -1575,6 +1575,16 @@ static void set_pcie_untrusted(struct pci_dev *dev)
-> > >               dev->untrusted = true;
-> > >  }
-> > >
-> > > +static void pci_set_removable(struct pci_dev *dev)
-> > > +{
-> > > +     struct pci_dev *parent = pci_upstream_bridge(dev);
-> > > +     if (parent &&
-> > > +         (parent->external_facing || dev_is_removable(&parent->dev)))
-> > > +             dev_set_removable(&dev->dev, DEVICE_REMOVABLE);
-> > > +     else
-> > > +             dev_set_removable(&dev->dev, DEVICE_FIXED);
-> > > +}
-> >
-> > Always run checkpatch.pl so you don't get grumpy maintainers telling you
-> > to run checkpatch.pl :(
+
+Thanks for your feedback, and the input on extending the PWM api related
+to patterns. I'll revisit the calculations, and PWM_DEBUG accordingly.
+
+Regards,
+Bjorn
+
+> On Wed, Oct 21, 2020 at 01:12:22PM -0700, Bjorn Andersson wrote:
+> > +static const unsigned int lpg_clk_table[NUM_PWM_PREDIV][NUM_PWM_CLK] = {
+> > +	{
+> > +		1 * (NSEC_PER_SEC / 1024),
+> > +		1 * (NSEC_PER_SEC / 32768),
+> > +		1 * (NSEC_PER_SEC / 19200000),
+> > +	},
+> > +	{
+> > +		3 * (NSEC_PER_SEC / 1024),
+> > +		3 * (NSEC_PER_SEC / 32768),
 > 
-> Yes, I did (it gave me 0 errors and 0 warnings). Please let me know if
-> I need to fix something and I'll be happy to fix that.
+> 1000000000 / 32768 is 30517.578125. Because of the parenthesis this is
+> truncated to 30517. Multiplied by 3 this results in 91551. The exact
+> result is 91552.734375 however.
 > 
-> >
-> > And why does external_facing come into play here?  I know you say it
-> > above, but you should also put it here into the code for when we need to
-> > look at it in a few months and wonder what in the world this is doing.
+> > +		3 * (NSEC_PER_SEC / 19200000),
+> > +	},
+> > +	{
+> > +		5 * (NSEC_PER_SEC / 1024),
+> > +		5 * (NSEC_PER_SEC / 32768),
+> > +		5 * (NSEC_PER_SEC / 19200000),
+> > +	},
+> > +	{
+> > +		6 * (NSEC_PER_SEC / 1024),
+> > +		6 * (NSEC_PER_SEC / 32768),
+> > +		6 * (NSEC_PER_SEC / 19200000),
+> > +	},
+> > +};
+> > +
+> > +/*
+> > + * PWM Frequency = Clock Frequency / (N * T)
+> > + *      or
+> > + * PWM Period = Clock Period * (N * T)
+> > + *      where
+> > + * N = 2^9 or 2^6 for 9-bit or 6-bit PWM size
+> > + * T = Pre-divide * 2^m, where m = 0..7 (exponent)
+> > + *
+> > + * This is the formula to figure out m for the best pre-divide and clock:
+> > + * (PWM Period / N) = (Pre-divide * Clock Period) * 2^m
+> > + */
+> > +static void lpg_calc_freq(struct lpg_channel *chan, unsigned int period_us)
+> > +{
+> > +	int             n, m, clk, div;
+> > +	int             best_m, best_div, best_clk;
+> > +	unsigned int    last_err, cur_err, min_err;
+> > +	unsigned int    tmp_p, period_n;
+> > +
+> > +	if (period_us == chan->period_us)
+> > +		return;
+> > +
+> > +	/* PWM Period / N */
+> > +	if (period_us < UINT_MAX / NSEC_PER_USEC)
+> > +		n = 6;
+> > +	else
+> > +		n = 9;
+> > +
+> > +	period_n = ((u64)period_us * NSEC_PER_USEC) >> n;
+> > +
+> > +	min_err = UINT_MAX;
+> > +	last_err = UINT_MAX;
+> > +	best_m = 0;
+> > +	best_clk = 0;
+> > +	best_div = 0;
+> > +	for (clk = 0; clk < NUM_PWM_CLK; clk++) {
+> > +		for (div = 0; div < NUM_PWM_PREDIV; div++) {
+> > +			/* period_n = (PWM Period / N) */
+> > +			/* tmp_p = (Pre-divide * Clock Period) * 2^m */
+> > +			tmp_p = lpg_clk_table[div][clk];
+> > +			for (m = 0; m <= NUM_EXP; m++) {
+> > +				cur_err = abs(period_n - tmp_p);
+> > +				if (cur_err < min_err) {
+> > +					min_err = cur_err;
+> > +					best_m = m;
+> > +					best_clk = clk;
+> > +					best_div = div;
+> > +				}
+> > +
+> > +				if (m && cur_err > last_err)
+> > +					/* Break for bigger cur_err */
+> > +					break;
+> > +
+> > +				last_err = cur_err;
+> > +				tmp_p <<= 1;
 > 
-> Ack, will do.
+> This is inexact. Consider again the case where tmp_p is
+> 3 * (NSEC_PER_SEC / 32768). The values you use and the exact values are:
 > 
-> >
-> > Also, are you SURE this is correct and will handle the hotpluggable PCI
-> > devices in things like drawers and the like?
+> 	m     |       0        |      1       |      2      |      3     | ... |        7 |
+> 	tmp_p |   91551        | 183102       | 366204      | 732408     |     | 11718528 |
+>         actual|   91552.734375 | 183105.46875 | 366210.9375 | 732421.875 | ... | 11718750 |
 > 
-> Yes, me and Bjorn discussed this in the v2 of this patch
-> (https://patchwork.kernel.org/project/linux-usb/patch/20210424021631.1972022-2-rajatja@google.com/),
-> and yes, this can take care of the hot-pluggable trays if the firmware
-> marks the slots external-facing.
-
-Ok, I'll trust you two :)
-
-> > What is the goal here in exposing this information to userspace, who is
-> > going to use it and what is it going to be used for?
+> So while you save some cycles by precalculating the values in
+> lpg_clk_table, you trade that for lost precision.
 > 
-> The goal here is to implement policies regarding usage of external PCI
-> devices, in userspace. ChromeOS is using it for things like:
-> - Remove external PCI devices when a user logs out.
+> > +			}
+> > +		}
+> > +	}
+> 
+> Please don't pick a period that is longer than the requested period (for
+> the PWM functionality that is).
+> 
+> This can be simplified, you can at least calculate the optimal m
+> directly.
+> 
+> > +	/* Use higher resolution */
+> > +	if (best_m >= 3 && n == 6) {
+> > +		n += 3;
+> > +		best_m -= 3;
+> > +	}
+> > +
+> > +	chan->clk = best_clk;
+> > +	chan->pre_div = best_div;
+> > +	chan->pre_div_exp = best_m;
+> > +	chan->pwm_size = n;
+> > +
+> > +	chan->period_us = period_us;
+> > +}
+> > +
+> > +static void lpg_calc_duty(struct lpg_channel *chan, unsigned int duty_us)
+> > +{
+> > +	unsigned int max = (1 << chan->pwm_size) - 1;
+> > +	unsigned int val = div_u64((u64)duty_us << chan->pwm_size, chan->period_us);
+> 
+> Please use the actually implemented period here instead of the
+> requested. This improves precision, see commit
+> 8035e6c66a5e98f098edf7441667de74affb4e78 for a similar case.
+> 
+> > +
+> > +	chan->pwm_value = min(val, max);
+> > +}
+> > +
+> > [...]
+> > +static const struct pwm_ops lpg_pwm_ops = {
+> > +	.request = lpg_pwm_request,
+> > +	.apply = lpg_pwm_apply,
+> 
+> Can you please test your driver with PWM_DEBUG enabled? The first thing
+> this will critizise is that there is no .get_state callback.
+> 
+> > +	.owner = THIS_MODULE,
+> > +};
+> > +
+> > +static int lpg_add_pwm(struct lpg *lpg)
+> > +{
+> > +	int ret;
+> > +
+> > +	lpg->pwm.base = -1;
+> 
+> Please drop this assignment.
+> 
+> > +	lpg->pwm.dev = lpg->dev;
+> > +	lpg->pwm.npwm = lpg->num_channels;
+> > +	lpg->pwm.ops = &lpg_pwm_ops;
+> > +
+> > +	ret = pwmchip_add(&lpg->pwm);
+> > +	if (ret)
+> > +		dev_err(lpg->dev, "failed to add PWM chip: ret %d\n", ret);
+> > +
+> > +	return ret;
+> > +}
+> 
+> Best regards
+> Uwe
+> 
+> -- 
+> Pengutronix e.K.                           | Uwe Kleine-König            |
+> Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-remove them how?  disconnect the device from the system through what
-method?
 
-> - Don't allow new external PCI devices while the screen is locked.
-
-Don't allow how?  Don't allow the binding of a driver to a device, or
-the device to be discovered at all?  What controls this?
-
-> - collect metrics about usage of external PCI devices (how many users
-> actually use it etc).
-> - disable certain features (that are deemed to be dangerous) for
-> external PCI network cards.
-
-What is a "dangerous" network feature, RDMA?
-
-thanks,
-
-greg k-h
