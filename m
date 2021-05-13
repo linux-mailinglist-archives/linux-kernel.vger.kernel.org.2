@@ -2,559 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6385437F6CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 13:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1350637F6CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 13:32:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233371AbhEMLdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 07:33:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232660AbhEMLdI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 07:33:08 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22CE1C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 04:31:58 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id m11so21632816lfg.3
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 04:31:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cTo26+B1RXsx/u3jPL8gfy4H/bbnVup7+e2X8WU8tLw=;
-        b=n/fux0tLgW+btWbfTRLBKYchwr+zLVON7lnoZu02ZN3YAWrlyj5Ahh1029NWtJbZk8
-         eZfUasDG0hohGQfnm1Zzg9jgvvV69P4D4bab45ouV83LYVlhVlsGExs+8rjLgyyrdW1k
-         /+LBb1/XDi7GmI9DFUofTVAuNgLGlSTlW8z+og8sHVsn96GrMe7OQ6einCQgD1s26wIJ
-         EkDIFZrXMp7NMlNhVSBIl7wMQMMRQ2AqID/aG2bezkaoB9FRlKi85X4p58iLlU6LpUNv
-         SIp5rZvPAQtIka+MDPhWK7fEOlF+BKnvscAIFJT96PeOBsJT+7Bj4pALd9KrSjeZEKxr
-         nbiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cTo26+B1RXsx/u3jPL8gfy4H/bbnVup7+e2X8WU8tLw=;
-        b=dJXpUh082a8PJSj3RhBf39xYnxPoyu/CgIwtsL3DU10uLGRLoIx6UF5sZDNA1FoTMw
-         io6W8dxbHAtxgXGuzp2n5zM9eDsjpDZADWaz9uQ7cvEoipftxNt4Pp9hwm8jc8U52uV9
-         Cfyo9RK2WfP9brwBKchGkXwx3mnjGibRLpyv7bKYjGe20MQHPM2CCvnwxmW920c70wE8
-         pQ+A1IgPch4Romc3PtduiYHa/w7DaSS9ScR4PEp/TTSnptVWOnvkd1Kt0pz4UkHXo6tO
-         GRgcdMX1G4C/sqYlGWxT9uno+XSpw53E67X6RZ6P3WlF0JFE3iQk3OIDqAw2loD/Wuuj
-         Jgxg==
-X-Gm-Message-State: AOAM533DWovrAhmOJum5vsulh6QmbthWaPIIRag+ThAFeNT1nXoUeWvJ
-        x61X+xKnbfhtBDNEftURLzSnMSOM9G8fRXXWQMZbYQ==
-X-Google-Smtp-Source: ABdhPJw9jVOLCy9SEHBlLxcXEbUW4GujEHzlaAzhFYQaMM6zNUZDIt8g53Fto2IHQCnP79iLfPK3RvBnG46wi/EG3XI=
-X-Received: by 2002:ac2:4ed0:: with SMTP id p16mr17903506lfr.546.1620905516238;
- Thu, 13 May 2021 04:31:56 -0700 (PDT)
+        id S233424AbhEMLdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 07:33:32 -0400
+Received: from mail-mw2nam12on2087.outbound.protection.outlook.com ([40.107.244.87]:35393
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233374AbhEMLd1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 07:33:27 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YiHaj6ItR/ttmaOmWIWEvhrK9HNLzPVjiRkSMtUE5SGdu+JdcUL5VBlgiegD4m0USMRHUWP0kV/InibPAQGqMo9LI0a/lERRv/Pu+2yDawDF3s2FL58Q1l9MRhjAs3tIYe2K5ancqFsff100Z2yANJjzCPK+TjXwZIGXme9ORTok9Lvy+tJH0R361TiRzRBWHJ/ChfCF3wbh2+dyAPNoq9h0sOvNNTd/BoeuwcXZybk76/vYgYHzAKyENuXZFUDaE3J51YxFsTElQx+YbHNQ9acEF5pxfI0uUnejnufq3A/8tFRK3V4OrwMWIFybe7p7tewk309hLwYoTUDdauoqFw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BbzVia14gGixUTi2PiNzvrcGuAixaykfj10i3Izqs/U=;
+ b=L/t8I2VacNDFq/KYcSgd83zI9IRyK2cRAPkC0xDPSoORax+TR72Da5k2UMgXkCeD1CCokeO4MjMHPTENMLwbD76syqIkc5l2BZAcyOqs8Zg3qJOKJHgCNTtxrEdSwIxvRk9b7BDu+AH0iOidoEQ3U6Kiz1yFehn/3cyDNGJgmJiGSdWoptWbNa3zFGj6v6Oc/68GUeiCgXlay42HqgXeqBzAkDXnt8tw/QHls8MFe5hPTeXTecjQYtWaWplbfX81/Y1U9Rq4lh2J7T0HQ3DuCopagzPx7JYP7qZTdFBmmMUk3Qnjcx541J5hlTrzl6LD+tup2ujapCywqSma6ohJAw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BbzVia14gGixUTi2PiNzvrcGuAixaykfj10i3Izqs/U=;
+ b=TTLHoP5fIJNwHZIiBa+NWWapp6joBsfViglzCJoqPeUXScAMEIxapaK2z+k9Q2uq+jyNILAnXPUKgj0nERaXqFK1Koo80cxsf0Z+0N3dfqHhSistCHLKsJDzShd1CY1eH2I8lRGlxNKx9Xy/+IvYYRyjQDzNLpunVYJp+kG0NHd9sGbsvzLlAYKjCGlyOEDxDeivHe+jVGFwYyISRK8TzdYflWT0C8p7XDjTl5CJzxFMnlhVdWQV0yw/2CEbdfFc5SnByPxL6igSeFOkHOfwanO1vCp0ULTGYSAPf/djHg4DGySAFad/wCpVPEJEPQdXnlsnk3OSfJSRV0phsy7cxw==
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=nvidia.com;
+Received: from DM4PR12MB5278.namprd12.prod.outlook.com (2603:10b6:5:39e::17)
+ by DM6PR12MB5517.namprd12.prod.outlook.com (2603:10b6:5:1be::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.25; Thu, 13 May
+ 2021 11:32:17 +0000
+Received: from DM4PR12MB5278.namprd12.prod.outlook.com
+ ([fe80::d556:5155:7243:5f0f]) by DM4PR12MB5278.namprd12.prod.outlook.com
+ ([fe80::d556:5155:7243:5f0f%6]) with mapi id 15.20.4129.026; Thu, 13 May 2021
+ 11:32:17 +0000
+Subject: Re: [net-next v3 05/11] net: bridge: mcast: prepare is-router
+ function for mcast router split
+To:     =?UTF-8?Q?Linus_L=c3=bcssing?= <linus.luessing@c0d3.blue>,
+        netdev@vger.kernel.org
+Cc:     Roopa Prabhu <roopa@nvidia.com>, Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        bridge@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+References: <20210512231941.19211-1-linus.luessing@c0d3.blue>
+ <20210512231941.19211-6-linus.luessing@c0d3.blue>
+From:   Nikolay Aleksandrov <nikolay@nvidia.com>
+Message-ID: <1e18b246-1efd-98ef-60a9-3bbf2a7f06e7@nvidia.com>
+Date:   Thu, 13 May 2021 14:32:10 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+In-Reply-To: <20210512231941.19211-6-linus.luessing@c0d3.blue>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [213.179.129.39]
+X-ClientProxiedBy: ZRAP278CA0009.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:910:10::19) To DM4PR12MB5278.namprd12.prod.outlook.com
+ (2603:10b6:5:39e::17)
 MIME-Version: 1.0
-References: <20210513112842.707103-1-sumit.garg@linaro.org> <20210513112842.707103-2-sumit.garg@linaro.org>
-In-Reply-To: <20210513112842.707103-2-sumit.garg@linaro.org>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Thu, 13 May 2021 17:01:44 +0530
-Message-ID: <CAFA6WYOwcETmzMux7zH1EPEp4O0o=pbArfmkbnQoJ-QGEJuF6A@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] kdb: Get rid of redundant kdb_register_flags()
-To:     kgdb-bugreport@lists.sourceforge.net
-Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>, mingo@redhat.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.21.241.170] (213.179.129.39) by ZRAP278CA0009.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:10::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Thu, 13 May 2021 11:32:15 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5ce636e0-1913-426d-f953-08d91602c341
+X-MS-TrafficTypeDiagnostic: DM6PR12MB5517:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB551733B25FB7A00C257BCFFADF519@DM6PR12MB5517.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: huaEi1u5bzfOAqcn4PfAkBlxNQyCGpnqrtIKm/v3eZfE0B8FBrDHAsUz1PqeS4i2u7HDYH3LurvDK4OVMnH/UaPdWTasigUjHUsljFFamu1rn6/SWspfUdxb+zS8kub2Hn3jVX7I0kaCq8/eMWKrthiEMA5gK7UHpPvWccEQLRhNSpG3qvzteYOp1uvjkpv++YXOLpzFfLUNDRUvjdEob9Lab6nUOLddfIjwo2vvXYmgmlRyi21GhXdKLvUKerxC95ZsQW/mRsxc+i3QauV6sm9IVPBtAK7URAPeHj5NwzVI0Ryscd2v+MoOcsqclFFEb/bH8/uUJfjgvHJJe5wh50N26mrxdmM+MR1/6wOqxGvqNBnf4KdtBuYSPT3R5ltxuoa7FXcjpJ803PoFi5AOTy/6uePCCcU7+jzVoG+lm3xto60RhJ8srbU8dcLoSgLutoMF+5RzQgnUe4v1PJdebquWXviiVP4kOXltk/2BX756vgklTKN7KwP6rdMJh/FY44JyCXz2Cl5Xu5X6BceY8RY5yEvLbnBRGPUGeDZz1dLIFLKwTUQCN8GRSmDH+A4FrEhdy/I7BOTAc5300ZDM8r6PhbgvNIwV2IeZOpz1ty60y2sO6xB5qAnTOt2czfdExPSDq97aRh09P5mRzWJH4bCUn0qoA1OX0ehxgxRNTPn7inJEgMlrqCznH7qG7nI9
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5278.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(39860400002)(376002)(396003)(366004)(6486002)(8676002)(54906003)(316002)(16576012)(478600001)(16526019)(186003)(956004)(2616005)(4326008)(2906002)(53546011)(5660300002)(8936002)(31686004)(4744005)(26005)(38100700002)(66574015)(36756003)(31696002)(86362001)(6666004)(66556008)(83380400001)(66946007)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?cjFvNERQcHY5Mnd1TGNNTjFCeDJ6NFRzTjRVS2VSR1FNU0VFbnAraVdLM0hC?=
+ =?utf-8?B?eTBsSnRiWTJzbHpEWEs4QnEwYkdhMXh0TEpYbHM1UDJDMDBLdVdRMlk5T1FU?=
+ =?utf-8?B?UkRSK1h0d2RrUXNtL1lDb28yWnV3NEZTbzVHTU8xNElZenV4bUdPNnBGYU4r?=
+ =?utf-8?B?emtzUXFJaS96SFQzdjFrcFp4ZEx5b0pGKzNSUmRKUmdqZksxZXhxQXk1bGly?=
+ =?utf-8?B?WDdFWXYyR0c2YVFZOEVTSFk3endpcFFVUmc1bjVCeWNFL3JWMkgrME5yQnV2?=
+ =?utf-8?B?MTQ2MHRoSUhvQzJVNFE0ZUxRU2tOR1hMOUVGZGVhYzdXWDAzRE1sVEVkV3J5?=
+ =?utf-8?B?UzJ6ZldFekpjcU5aT0ovYUJNbk5iOUlhRWtETHFJSDJKZFdnOGRhaVJXRkdw?=
+ =?utf-8?B?OE95QzVUckhhS3ZXUFlnaktiMmgyWXhIN2RBSXVpNXRMck1VcC9tYmNXZFVl?=
+ =?utf-8?B?WjExYjZpbXZLamRtQzE0RE9BUkdmaGY4djFOUEg3MnlkQUY2ME80bXEraGlj?=
+ =?utf-8?B?RzF6ek9ZL1RjRzdzRXhqRG80cEtqOHZrTXpUZDBzRUozOXgzaUNHUWNnYmsr?=
+ =?utf-8?B?RGJKTExMekY2Rmg1YUE1aWlJQVAzaVluVXl0bFFaNVR1NENOZWZBRkQyOXpL?=
+ =?utf-8?B?dXJHR1BiQmpQaGYrNjNnWDhKb1Vpd3IxQnJWOEJDK0p2TGk0NHVCSEM3VjR3?=
+ =?utf-8?B?TzdrS1VsWURNRDZxR3ZuMUEyb1ZXRDIwTGtQQWFVblZ4WFNMSjJiSVZxWW9Y?=
+ =?utf-8?B?RzVjdktKS3B3R2tDY0NqTkY4bXg4WDBkd2xweUFOempjYWtBakE0cGdHNHRj?=
+ =?utf-8?B?N2FNV1NVdEpxTFZia0lBSXpMd05DclZoanJQMy96RHFGWWN1c0FMZ1JQWVBh?=
+ =?utf-8?B?TklhZ3BNU3JFcUlZVDVtNTVXOVdxbUE4SWEzSThiaDRSMDBtT21NQVVNTzUy?=
+ =?utf-8?B?NHBROVdpM3k4Zmdzdm9weXhmVDN1Mmg4VnVCS1FVcEJSMVpjbk1lNEY3VFdl?=
+ =?utf-8?B?Z0VxNjlMcVdOWG5OVHJyY2xwZFhKT1M1cmdTd1NGT0ZqSWVGSzVBcFFPZU1D?=
+ =?utf-8?B?UTF3MEQvM0V3cHRxSktOa1p4bU9tK3JQS3J1aUVkTEZxWmdrWnhiL21IanhI?=
+ =?utf-8?B?Y3VlTkJ5eVpiTmNNZlhuc2haNGgxY0xYc2d6dWt6UHJ1eHdRNEViYTdqS3g2?=
+ =?utf-8?B?M1dEWm84bS92WWxNelBiRWpYcWNIcmtHemlWUnVVKy81NHZBQ3ZzV3N6NVo2?=
+ =?utf-8?B?WE9hSjRmOUJXZEw5bEllYk1acVNVVUEvSk9JdHMrZDI1aGhyeW1zaDVoTnJV?=
+ =?utf-8?B?T0RNZkZrdlI3Z2k3QW14UzRHdUlIRGpoZWZYRVBsUlFWRWtFNzU5cDZSb3cy?=
+ =?utf-8?B?UUdVQ3BaakJDVjdQc0hONHE4SzY0ZUlhazM0T0w2NEM5Y3d4WXYxL0E3Z0po?=
+ =?utf-8?B?QzFjTlhSNnQ3S3dsbzRpRGM4d0h2K3ZqeXBUbFVJdFdBV003THhKMlVaa2Mw?=
+ =?utf-8?B?Z2k3SC9kZ3dINDZUOWhwU0FOdCtBd3VsOStSNHErd2xpNzlwNENwd2xGMVpy?=
+ =?utf-8?B?SVUvRjBSYlpMWDlOVGFvblZjVlMyS1J4RlNQYmpwcElsTlh2eXE0SEVFenZs?=
+ =?utf-8?B?dFFMWHloSHRFMlVNeEgrcFBFN1JIb25NTjdiQTJpYldBLzZmbnNDNmtkbjZk?=
+ =?utf-8?B?Z3dFdkQ0b3l2REJxcEZvenVOMktCU3hJbDBzbUF2TTFsOThBYnlLNktCa1Yv?=
+ =?utf-8?Q?r6pJrc4zWqIZeMZse+eipU0/nmJ2zkBJcdfTJtE?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5ce636e0-1913-426d-f953-08d91602c341
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5278.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2021 11:32:17.2496
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yN4XuzINJ4TLPHTWroas76qNEF22MB6TFMf1sukCqgDBHBbxh26El5nS3eah16F+nb+S913pYsS5qSIpOe2pqw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB5517
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 May 2021 at 16:59, Sumit Garg <sumit.garg@linaro.org> wrote:
->
-> Commit e4f291b3f7bb ("kdb: Simplify kdb commands registration")
-> allowed registration of pre-allocated kdb commands with pointer to
-> struct kdbtab_t. Lets switch other users as well to register pre-
-> allocated kdb commands via:
-> - Changing prototype for kdb_register() to pass a pointer to struct
->   kdbtab_t instead.
-> - Embed kdbtab_t structure in defcmd_set rather than individual params.
->   So while at it rename struct defcmd_set to struct kdb_macro_t as that
->   sounds more appropriate given its purpose.
->
-> With these changes kdb_register_flags() becomes redundant and hence
-> removed. Also, since we have switched all users to register
-> pre-allocated commands, "is_dynamic" flag in struct kdbtab_t becomes
-> redundant and hence removed as well.
->
-
-Missed Daniel's suggested by tag, so here it is:
-
-Suggested-by: Daniel Thompson <daniel.thompson@linaro.org>
-> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+On 13/05/2021 02:19, Linus Lüssing wrote:
+> In preparation for the upcoming split of multicast router state into
+> their IPv4 and IPv6 variants make br_multicast_is_router() protocol
+> family aware.
+> 
+> Note that for now br_ip6_multicast_is_router() uses the currently still
+> common ip4_mc_router_timer for now. It will be renamed to
+> ip6_mc_router_timer later when the split is performed.
+> 
+> While at it also renames the "1" and "2" constants in
+> br_multicast_is_router() to the MDB_RTR_TYPE_TEMP_QUERY and
+> MDB_RTR_TYPE_PERM enums.
+> 
+> Signed-off-by: Linus Lüssing <linus.luessing@c0d3.blue>
 > ---
->  include/linux/kdb.h            |  27 +++--
->  kernel/debug/kdb/kdb_main.c    | 206 +++++++++++----------------------
->  kernel/debug/kdb/kdb_private.h |  13 ---
->  kernel/trace/trace_kdb.c       |  12 +-
->  samples/kdb/kdb_hello.c        |  20 ++--
->  5 files changed, 104 insertions(+), 174 deletions(-)
->
-> diff --git a/include/linux/kdb.h b/include/linux/kdb.h
-> index 0125a677b67f..9e893279b2ea 100644
-> --- a/include/linux/kdb.h
-> +++ b/include/linux/kdb.h
-> @@ -13,6 +13,8 @@
->   * Copyright (C) 2009 Jason Wessel <jason.wessel@windriver.com>
->   */
->
-> +#include <linux/list.h>
-> +
->  /* Shifted versions of the command enable bits are be used if the command
->   * has no arguments (see kdb_check_flags). This allows commands, such as
->   * go, to have different permissions depending upon whether it is called
-> @@ -64,6 +66,17 @@ typedef enum {
->
->  typedef int (*kdb_func_t)(int, const char **);
->
-> +/* The KDB shell command table */
-> +typedef struct _kdbtab {
-> +       char    *cmd_name;              /* Command name */
-> +       kdb_func_t cmd_func;            /* Function to execute command */
-> +       char    *cmd_usage;             /* Usage String for this command */
-> +       char    *cmd_help;              /* Help message for this command */
-> +       short    cmd_minlen;            /* Minimum legal # cmd chars required */
-> +       kdb_cmdflags_t cmd_flags;       /* Command behaviour flags */
-> +       struct list_head list_node;     /* Command list */
-> +} kdbtab_t;
-> +
->  #ifdef CONFIG_KGDB_KDB
->  #include <linux/init.h>
->  #include <linux/sched.h>
-> @@ -193,19 +206,13 @@ static inline const char *kdb_walk_kallsyms(loff_t *pos)
->  #endif /* ! CONFIG_KALLSYMS */
->
->  /* Dynamic kdb shell command registration */
-> -extern int kdb_register(char *, kdb_func_t, char *, char *, short);
-> -extern int kdb_register_flags(char *, kdb_func_t, char *, char *,
-> -                             short, kdb_cmdflags_t);
-> -extern int kdb_unregister(char *);
-> +extern int kdb_register(kdbtab_t *cmd);
-> +extern int kdb_unregister(kdbtab_t *cmd);
->  #else /* ! CONFIG_KGDB_KDB */
->  static inline __printf(1, 2) int kdb_printf(const char *fmt, ...) { return 0; }
->  static inline void kdb_init(int level) {}
-> -static inline int kdb_register(char *cmd, kdb_func_t func, char *usage,
-> -                              char *help, short minlen) { return 0; }
-> -static inline int kdb_register_flags(char *cmd, kdb_func_t func, char *usage,
-> -                                    char *help, short minlen,
-> -                                    kdb_cmdflags_t flags) { return 0; }
-> -static inline int kdb_unregister(char *cmd) { return 0; }
-> +static inline int kdb_register(kdbtab_t *cmd) { return 0; }
-> +static inline int kdb_unregister(kdbtab_t *cmd) { return 0; }
->  #endif /* CONFIG_KGDB_KDB */
->  enum {
->         KDB_NOT_INITIALIZED,
-> diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
-> index 1baa96a2ecb8..de685b2a8ce7 100644
-> --- a/kernel/debug/kdb/kdb_main.c
-> +++ b/kernel/debug/kdb/kdb_main.c
-> @@ -33,7 +33,6 @@
->  #include <linux/kallsyms.h>
->  #include <linux/kgdb.h>
->  #include <linux/kdb.h>
-> -#include <linux/list.h>
->  #include <linux/notifier.h>
->  #include <linux/interrupt.h>
->  #include <linux/delay.h>
-> @@ -654,16 +653,14 @@ static void kdb_cmderror(int diag)
->   * Returns:
->   *     zero for success, a kdb diagnostic if error
->   */
-> -struct defcmd_set {
-> +struct kdb_macro_t {
->         int count;
->         bool usable;
-> -       char *name;
-> -       char *usage;
-> -       char *help;
-> +       kdbtab_t cmd;
->         char **command;
->  };
-> -static struct defcmd_set *defcmd_set;
-> -static int defcmd_set_count;
-> +static struct kdb_macro_t *kdb_macro;
-> +static int kdb_macro_count;
->  static bool defcmd_in_progress;
->
->  /* Forward references */
-> @@ -671,20 +668,14 @@ static int kdb_exec_defcmd(int argc, const char **argv);
->
->  static int kdb_defcmd2(const char *cmdstr, const char *argv0)
->  {
-> -       struct defcmd_set *s = defcmd_set + defcmd_set_count - 1;
-> +       struct kdb_macro_t *s = kdb_macro + kdb_macro_count - 1;
->         char **save_command = s->command;
->         if (strcmp(argv0, "endefcmd") == 0) {
->                 defcmd_in_progress = false;
->                 if (!s->count)
->                         s->usable = false;
->                 if (s->usable)
-> -                       /* macros are always safe because when executed each
-> -                        * internal command re-enters kdb_parse() and is
-> -                        * safety checked individually.
-> -                        */
-> -                       kdb_register_flags(s->name, kdb_exec_defcmd, s->usage,
-> -                                          s->help, 0,
-> -                                          KDB_ENABLE_ALWAYS_SAFE);
-> +                       kdb_register(&s->cmd);
->                 return 0;
->         }
->         if (!s->usable)
-> @@ -704,7 +695,9 @@ static int kdb_defcmd2(const char *cmdstr, const char *argv0)
->
->  static int kdb_defcmd(int argc, const char **argv)
->  {
-> -       struct defcmd_set *save_defcmd_set = defcmd_set, *s;
-> +       struct kdb_macro_t *save_kdb_macro = kdb_macro, *s;
-> +       kdbtab_t *mp;
-> +
->         if (defcmd_in_progress) {
->                 kdb_printf("kdb: nested defcmd detected, assuming missing "
->                            "endefcmd\n");
-> @@ -712,9 +705,9 @@ static int kdb_defcmd(int argc, const char **argv)
->         }
->         if (argc == 0) {
->                 int i;
-> -               for (s = defcmd_set; s < defcmd_set + defcmd_set_count; ++s) {
-> -                       kdb_printf("defcmd %s \"%s\" \"%s\"\n", s->name,
-> -                                  s->usage, s->help);
-> +               for (s = kdb_macro; s < kdb_macro + kdb_macro_count; ++s) {
-> +                       kdb_printf("defcmd %s \"%s\" \"%s\"\n", s->cmd.cmd_name,
-> +                                  s->cmd.cmd_usage, s->cmd.cmd_help);
->                         for (i = 0; i < s->count; ++i)
->                                 kdb_printf("%s", s->command[i]);
->                         kdb_printf("endefcmd\n");
-> @@ -727,45 +720,50 @@ static int kdb_defcmd(int argc, const char **argv)
->                 kdb_printf("Command only available during kdb_init()\n");
->                 return KDB_NOTIMP;
->         }
-> -       defcmd_set = kmalloc_array(defcmd_set_count + 1, sizeof(*defcmd_set),
-> +       kdb_macro = kmalloc_array(kdb_macro_count + 1, sizeof(*kdb_macro),
->                                    GFP_KDB);
-> -       if (!defcmd_set)
-> +       if (!kdb_macro)
->                 goto fail_defcmd;
-> -       memcpy(defcmd_set, save_defcmd_set,
-> -              defcmd_set_count * sizeof(*defcmd_set));
-> -       s = defcmd_set + defcmd_set_count;
-> +       memcpy(kdb_macro, save_kdb_macro,
-> +              kdb_macro_count * sizeof(*kdb_macro));
-> +       s = kdb_macro + kdb_macro_count;
->         memset(s, 0, sizeof(*s));
->         s->usable = true;
-> -       s->name = kdb_strdup(argv[1], GFP_KDB);
-> -       if (!s->name)
-> +
-> +       mp = &s->cmd;
-> +       mp->cmd_func = kdb_exec_defcmd;
-> +       mp->cmd_minlen = 0;
-> +       mp->cmd_flags = KDB_ENABLE_ALWAYS_SAFE;
-> +       mp->cmd_name = kdb_strdup(argv[1], GFP_KDB);
-> +       if (!mp->cmd_name)
->                 goto fail_name;
-> -       s->usage = kdb_strdup(argv[2], GFP_KDB);
-> -       if (!s->usage)
-> +       mp->cmd_usage = kdb_strdup(argv[2], GFP_KDB);
-> +       if (!mp->cmd_usage)
->                 goto fail_usage;
-> -       s->help = kdb_strdup(argv[3], GFP_KDB);
-> -       if (!s->help)
-> +       mp->cmd_help = kdb_strdup(argv[3], GFP_KDB);
-> +       if (!mp->cmd_help)
->                 goto fail_help;
-> -       if (s->usage[0] == '"') {
-> -               strcpy(s->usage, argv[2]+1);
-> -               s->usage[strlen(s->usage)-1] = '\0';
-> +       if (mp->cmd_usage[0] == '"') {
-> +               strcpy(mp->cmd_usage, argv[2]+1);
-> +               mp->cmd_usage[strlen(mp->cmd_usage)-1] = '\0';
->         }
-> -       if (s->help[0] == '"') {
-> -               strcpy(s->help, argv[3]+1);
-> -               s->help[strlen(s->help)-1] = '\0';
-> +       if (mp->cmd_help[0] == '"') {
-> +               strcpy(mp->cmd_help, argv[3]+1);
-> +               mp->cmd_help[strlen(mp->cmd_help)-1] = '\0';
->         }
-> -       ++defcmd_set_count;
-> +       ++kdb_macro_count;
->         defcmd_in_progress = true;
-> -       kfree(save_defcmd_set);
-> +       kfree(save_kdb_macro);
->         return 0;
->  fail_help:
-> -       kfree(s->usage);
-> +       kfree(mp->cmd_usage);
->  fail_usage:
-> -       kfree(s->name);
-> +       kfree(mp->cmd_name);
->  fail_name:
-> -       kfree(defcmd_set);
-> +       kfree(kdb_macro);
->  fail_defcmd:
-> -       kdb_printf("Could not allocate new defcmd_set entry for %s\n", argv[1]);
-> -       defcmd_set = save_defcmd_set;
-> +       kdb_printf("Could not allocate new kdb_macro entry for %s\n", argv[1]);
-> +       kdb_macro = save_kdb_macro;
->         return KDB_NOTIMP;
->  }
->
-> @@ -781,14 +779,14 @@ static int kdb_defcmd(int argc, const char **argv)
->  static int kdb_exec_defcmd(int argc, const char **argv)
->  {
->         int i, ret;
-> -       struct defcmd_set *s;
-> +       struct kdb_macro_t *s;
->         if (argc != 0)
->                 return KDB_ARGCOUNT;
-> -       for (s = defcmd_set, i = 0; i < defcmd_set_count; ++i, ++s) {
-> -               if (strcmp(s->name, argv[0]) == 0)
-> +       for (s = kdb_macro, i = 0; i < kdb_macro_count; ++i, ++s) {
-> +               if (strcmp(s->cmd.cmd_name, argv[0]) == 0)
->                         break;
->         }
-> -       if (i == defcmd_set_count) {
-> +       if (i == kdb_macro_count) {
->                 kdb_printf("kdb_exec_defcmd: could not find commands for %s\n",
->                            argv[0]);
->                 return KDB_NOTIMP;
-> @@ -797,7 +795,7 @@ static int kdb_exec_defcmd(int argc, const char **argv)
->                 /* Recursive use of kdb_parse, do not use argv after
->                  * this point */
->                 argv = NULL;
-> -               kdb_printf("[%s]kdb> %s\n", s->name, s->command[i]);
-> +               kdb_printf("[%s]kdb> %s\n", s->cmd.cmd_name, s->command[i]);
->                 ret = kdb_parse(s->command[i]);
->                 if (ret)
->                         return ret;
-> @@ -2620,55 +2618,6 @@ static int kdb_grep_help(int argc, const char **argv)
->         return 0;
->  }
->
-> -/*
-> - * kdb_register_flags - This function is used to register a kernel
-> - *     debugger command.
-> - * Inputs:
-> - *     cmd     Command name
-> - *     func    Function to execute the command
-> - *     usage   A simple usage string showing arguments
-> - *     help    A simple help string describing command
-> - *     repeat  Does the command auto repeat on enter?
-> - * Returns:
-> - *     zero for success, one if a duplicate command.
-> - */
-> -int kdb_register_flags(char *cmd,
-> -                      kdb_func_t func,
-> -                      char *usage,
-> -                      char *help,
-> -                      short minlen,
-> -                      kdb_cmdflags_t flags)
-> -{
-> -       kdbtab_t *kp;
-> -
-> -       list_for_each_entry(kp, &kdb_cmds_head, list_node) {
-> -               if (strcmp(kp->cmd_name, cmd) == 0) {
-> -                       kdb_printf("Duplicate kdb command registered: "
-> -                               "%s, func %px help %s\n", cmd, func, help);
-> -                       return 1;
-> -               }
-> -       }
-> -
-> -       kp = kmalloc(sizeof(*kp), GFP_KDB);
-> -       if (!kp) {
-> -               kdb_printf("Could not allocate new kdb_command table\n");
-> -               return 1;
-> -       }
-> -
-> -       kp->cmd_name   = cmd;
-> -       kp->cmd_func   = func;
-> -       kp->cmd_usage  = usage;
-> -       kp->cmd_help   = help;
-> -       kp->cmd_minlen = minlen;
-> -       kp->cmd_flags  = flags;
-> -       kp->is_dynamic = true;
-> -
-> -       list_add_tail(&kp->list_node, &kdb_cmds_head);
-> -
-> -       return 0;
-> -}
-> -EXPORT_SYMBOL_GPL(kdb_register_flags);
-> -
->  /*
->   * kdb_register_table() - This function is used to register a kdb command
->   *                        table.
-> @@ -2684,54 +2633,37 @@ void kdb_register_table(kdbtab_t *kp, size_t len)
->  }
->
->  /*
-> - * kdb_register - Compatibility register function for commands that do
-> - *     not need to specify a repeat state.  Equivalent to
-> - *     kdb_register_flags with flags set to 0.
-> - * Inputs:
-> - *     cmd     Command name
-> - *     func    Function to execute the command
-> - *     usage   A simple usage string showing arguments
-> - *     help    A simple help string describing command
-> - * Returns:
-> - *     zero for success, one if a duplicate command.
-> + * kdb_register() - This function is used to register a kernel debugger
-> + *                  command.
-> + * @cmd: pointer to kdb command
->   */
-> -int kdb_register(char *cmd,
-> -            kdb_func_t func,
-> -            char *usage,
-> -            char *help,
-> -            short minlen)
-> -{
-> -       return kdb_register_flags(cmd, func, usage, help, minlen, 0);
-> -}
-> -EXPORT_SYMBOL_GPL(kdb_register);
-> -
-> -/*
-> - * kdb_unregister - This function is used to unregister a kernel
-> - *     debugger command.  It is generally called when a module which
-> - *     implements kdb commands is unloaded.
-> - * Inputs:
-> - *     cmd     Command name
-> - * Returns:
-> - *     zero for success, one command not registered.
-> - */
-> -int kdb_unregister(char *cmd)
-> +int kdb_register(kdbtab_t *cmd)
->  {
->         kdbtab_t *kp;
->
-> -       /*
-> -        *  find the command.
-> -        */
->         list_for_each_entry(kp, &kdb_cmds_head, list_node) {
-> -               if (strcmp(kp->cmd_name, cmd) == 0) {
-> -                       list_del(&kp->list_node);
-> -                       if (kp->is_dynamic)
-> -                               kfree(kp);
-> -                       return 0;
-> +               if (strcmp(kp->cmd_name, cmd->cmd_name) == 0) {
-> +                       kdb_printf("Duplicate kdb cmd: %s, func %p help %s\n",
-> +                                  cmd->cmd_name, cmd->cmd_func, cmd->cmd_help);
-> +                       return 1;
->                 }
->         }
->
-> -       /* Couldn't find it.  */
-> -       return 1;
-> +       list_add_tail(&cmd->list_node, &kdb_cmds_head);
-> +       return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(kdb_register);
-> +
-> +/*
-> + * kdb_unregister() - This function is used to unregister a kernel debugger
-> + *                    command. It is generally called when a module which
-> + *                    implements kdb command is unloaded.
-> + * @cmd: pointer to kdb command
-> + */
-> +int kdb_unregister(kdbtab_t *cmd)
-> +{
-> +       list_del(&cmd->list_node);
-> +       return 0;
->  }
->  EXPORT_SYMBOL_GPL(kdb_unregister);
->
-> diff --git a/kernel/debug/kdb/kdb_private.h b/kernel/debug/kdb/kdb_private.h
-> index 95d2b730af4d..608d57f3c419 100644
-> --- a/kernel/debug/kdb/kdb_private.h
-> +++ b/kernel/debug/kdb/kdb_private.h
-> @@ -164,19 +164,6 @@ typedef struct _kdb_bp {
->  #ifdef CONFIG_KGDB_KDB
->  extern kdb_bp_t kdb_breakpoints[/* KDB_MAXBPT */];
->
-> -/* The KDB shell command table */
-> -typedef struct _kdbtab {
-> -       char    *cmd_name;              /* Command name */
-> -       kdb_func_t cmd_func;            /* Function to execute command */
-> -       char    *cmd_usage;             /* Usage String for this command */
-> -       char    *cmd_help;              /* Help message for this command */
-> -       short    cmd_minlen;            /* Minimum legal # command
-> -                                        * chars required */
-> -       kdb_cmdflags_t cmd_flags;       /* Command behaviour flags */
-> -       struct list_head list_node;     /* Command list */
-> -       bool    is_dynamic;             /* Command table allocation type */
-> -} kdbtab_t;
-> -
->  extern void kdb_register_table(kdbtab_t *kp, size_t len);
->  extern int kdb_bt(int, const char **); /* KDB display back trace */
->
-> diff --git a/kernel/trace/trace_kdb.c b/kernel/trace/trace_kdb.c
-> index 9da76104f7a2..6c4f92c79e43 100644
-> --- a/kernel/trace/trace_kdb.c
-> +++ b/kernel/trace/trace_kdb.c
-> @@ -147,11 +147,17 @@ static int kdb_ftdump(int argc, const char **argv)
->         return 0;
->  }
->
-> +static kdbtab_t ftdump_cmd = {
-> +       .cmd_name = "ftdump",
-> +       .cmd_func = kdb_ftdump,
-> +       .cmd_usage = "[skip_#entries] [cpu]",
-> +       .cmd_help = "Dump ftrace log; -skip dumps last #entries",
-> +       .cmd_flags = KDB_ENABLE_ALWAYS_SAFE,
-> +};
-> +
->  static __init int kdb_ftrace_register(void)
->  {
-> -       kdb_register_flags("ftdump", kdb_ftdump, "[skip_#entries] [cpu]",
-> -                           "Dump ftrace log; -skip dumps last #entries", 0,
-> -                           KDB_ENABLE_ALWAYS_SAFE);
-> +       kdb_register(&ftdump_cmd);
->         return 0;
->  }
->
-> diff --git a/samples/kdb/kdb_hello.c b/samples/kdb/kdb_hello.c
-> index c1c2fa0f62c2..9ad514a6648b 100644
-> --- a/samples/kdb/kdb_hello.c
-> +++ b/samples/kdb/kdb_hello.c
-> @@ -28,28 +28,26 @@ static int kdb_hello_cmd(int argc, const char **argv)
->         return 0;
->  }
->
-> +static kdbtab_t hello_cmd = {
-> +       .cmd_name = "hello",
-> +       .cmd_func = kdb_hello_cmd,
-> +       .cmd_usage = "[string]",
-> +       .cmd_help = "Say Hello World or Hello [string]",
-> +};
->
->  static int __init kdb_hello_cmd_init(void)
->  {
->         /*
->          * Registration of a dynamically added kdb command is done with
-> -        * kdb_register() with the arguments being:
-> -        *   1: The name of the shell command
-> -        *   2: The function that processes the command
-> -        *   3: Description of the usage of any arguments
-> -        *   4: Descriptive text when you run help
-> -        *   5: Number of characters to complete the command
-> -        *      0 == type the whole command
-> -        *      1 == match both "g" and "go" for example
-> +        * kdb_register().
->          */
-> -       kdb_register("hello", kdb_hello_cmd, "[string]",
-> -                    "Say Hello World or Hello [string]", 0);
-> +       kdb_register(&hello_cmd);
->         return 0;
->  }
->
->  static void __exit kdb_hello_cmd_exit(void)
->  {
-> -       kdb_unregister("hello");
-> +       kdb_unregister(&hello_cmd);
->  }
->
->  module_init(kdb_hello_cmd_init);
-> --
-> 2.25.1
->
+>  net/bridge/br_input.c     |  2 +-
+>  net/bridge/br_multicast.c |  5 +++--
+>  net/bridge/br_private.h   | 37 +++++++++++++++++++++++++++++++++----
+>  3 files changed, 37 insertions(+), 7 deletions(-)
+> 
+
+Acked-by: Nikolay Aleksandrov <nikolay@nvidia.com>
+
