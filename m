@@ -2,158 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B374037FFC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 23:23:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B681B37FFCA
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 23:27:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233442AbhEMVYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 17:24:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51364 "EHLO
+        id S233477AbhEMV2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 17:28:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230252AbhEMVYr (ORCPT
+        with ESMTP id S230252AbhEMV2g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 17:24:47 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D616BC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 14:23:37 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id gq14-20020a17090b104eb029015be008ab0fso256447pjb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 14:23:37 -0700 (PDT)
+        Thu, 13 May 2021 17:28:36 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FF9BC061574;
+        Thu, 13 May 2021 14:27:25 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id y2so36369830ybq.13;
+        Thu, 13 May 2021 14:27:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zKjERDKMyhua0PjhqCNVM2rE/Zi4pz1d2TcF1K6coiw=;
-        b=vcxAw4es3ae/p0vfEkPw30Wii9+5l8PzPxy1wKHBtSRJW/eMJ4Qzl5Dgp/r1vIpKSc
-         YkPqk09yCEs5j2TwF5MT2QsxblvxARCT799z0pbhJZ6Ry1CsuZoRCZ150z1uOp3FXXg6
-         WEpmVlXKWbppkCJKn+DlwO7y4n8zFn71kRd/nNE2N5oW0tHB9/w2UvIAfOXIIUA/MdxI
-         YglYroORejTaOQnAv269G7WoimW9L11myTKMZiBMxxw9udK53hQoPWMTikj0/0biq7Ak
-         N53FMd/90Ug8R5PpMwNYSI8nlJZiP7LVIOVs0AppF596MGxevq/ecWRnqM5e0XDu5kFU
-         YIbg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rbTldncIG1R7Fujzu+SrZXcoHjUsC/NtSFciWQKO7BU=;
+        b=NUEQjdh05U8yZ4SNtyD3y+Nb2N7XtToF3/W/KQ7ALwYV4BZcjlfY59BXp9U4Fn4PNw
+         E/hdKSMeheU+KT78XmXqzBGkVybnh04t89qT2Q+g3sB19zZEZ7wPujBSXxU03UZZsD+p
+         CIrpBJjLZrAJpyHjLHZFFqQk4QIU6Z+trZ5rDnSjhiwXdhh4t0tU6p7ZxZCb8nKqlQQ3
+         Q2fJGncSbsmS4MevhzvrWXFJKLp2xtnWHsx+5/FKTOo+zWjSTlJa8KqNvg7nE4s/TzDg
+         zabx+S+ZDSGA++TKlS1CtN6bLY5JsOsKZv7Q8cA5zpumBCsNUP+5E5dvAfnolRnP8nmu
+         GZ8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zKjERDKMyhua0PjhqCNVM2rE/Zi4pz1d2TcF1K6coiw=;
-        b=W7wRryIPQZY1mS7cA4LE6gjdc25j7gc9AF/SEmLiV5uQ0LbrXhLN7l88XYH85Q50pw
-         M/+CpFCHSZZ6njKQrTrsq3FgteDAtWbP4b2AAkQfTfWi3ZiNz1k4hxPeAO5Y82BxyMKO
-         JTa40nssoZTVuMo30TGj1nsXl7KN1HpZ2EOgH+6ggLV0aFI+h/1F0H89HLjWkr+3DOCz
-         96Td2wLH+QGUxcruCAAG2L+H84LW52ENA3opQ0PRUfraP9uXFvI6hH5mNsHMhec4ZFWq
-         0/E4Xl59InTXKapLlYbQogOcI/Xq+kJ1PL3ak2Djq5wJQmEZvkMn8nurjbEL+rIf6RZp
-         vezA==
-X-Gm-Message-State: AOAM531Xmzz1aCGhDdiMfwCYUAP4W7ysYmli6HeaVnBJSpQ2CRd4ehGE
-        jePqWaWqxBRT8PhPr0ODjYE=
-X-Google-Smtp-Source: ABdhPJwFOU23ftSv4xH5XJzisA/8ym0azHja6b7g155adVUUvy2ifygY9HcMcOGq0R+JMRCgLQVEYg==
-X-Received: by 2002:a17:902:b104:b029:ee:beb3:ef0a with SMTP id q4-20020a170902b104b02900eebeb3ef0amr42241191plr.80.1620941017397;
-        Thu, 13 May 2021 14:23:37 -0700 (PDT)
-Received: from localhost.localdomain (c-73-93-239-127.hsd1.ca.comcast.net. [73.93.239.127])
-        by smtp.gmail.com with ESMTPSA id b9sm145926pfo.107.2021.05.13.14.23.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 14:23:36 -0700 (PDT)
-From:   Yang Shi <shy828301@gmail.com>
-To:     ziy@nvidia.com, kirill.shutemov@linux.intel.com,
-        wangyugui@e16-tech.com, hughd@google.com, akpm@linux-foundation.org
-Cc:     shy828301@gmail.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [v2 PATCH] mm: thp: check total_mapcount instead of page_mapcount
-Date:   Thu, 13 May 2021 14:23:34 -0700
-Message-Id: <20210513212334.217424-1-shy828301@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rbTldncIG1R7Fujzu+SrZXcoHjUsC/NtSFciWQKO7BU=;
+        b=GQiBaxLxUOpjRC/Lf7K9cLN7HNKsahDhu6XY7YAXWHZJwFZ7iGnz/MLqJ3DJH6Wjum
+         y8xbC3oZvsRY1p8oMEJlove50ATKm5n9aRX27rhoom4+jPh/OxwKDXJd5zVYKr8woX0J
+         dVJG9uuzWDpnoRMC+/gywKANCXRgWpSIJ9BoaiVCZWKZXZkaALR7/W2WvNOH7e7OGQcB
+         2qug4L3oxfuReomG6u9ge/eDresvv2Gc+jP/7bDJ7jQqSQdR5KyPyBF/Kt5WnDa1nJFl
+         rjETKkOs8BiUgc4k9d9nlxZIqqVDksgFsYWDO3qBzUXkLlJmZfKWT6NT16sJXe7iNOFW
+         X28w==
+X-Gm-Message-State: AOAM530lHMD7zXkrL20bUmmUgdHdeheA0JTKVMzFJYFVqMjeyH66zMSF
+        iNcEcQw4UCs070JTbWhdUwphDt3SL0lVBlU3u70=
+X-Google-Smtp-Source: ABdhPJyhRlEerJPn3ZOQRpk/XGvXBcphdUae+i+F5u6QR+BlZpCGx4TYshKrGAxFkMuCS2xjpdhIJhy1btqGl+CJGr0=
+X-Received: by 2002:a5b:f05:: with SMTP id x5mr14770712ybr.425.1620941244645;
+ Thu, 13 May 2021 14:27:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210510034433.52818-1-kuniyu@amazon.co.jp>
+In-Reply-To: <20210510034433.52818-1-kuniyu@amazon.co.jp>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 13 May 2021 14:27:13 -0700
+Message-ID: <CAEf4BzYumt7BO1BgN8kLXZmbYXuJweH0bWiT-CiDRQfvaRg0kQ@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 00/11] Socket migration for SO_REUSEPORT.
+To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Benjamin Herrenschmidt <benh@amazon.com>,
+        Kuniyuki Iwashima <kuni1840@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When debugging the bug reported by Wang Yugui [1], try_to_unmap() may
-return false positive for PTE-mapped THP since page_mapcount() is used
-to check if the THP is unmapped, but it just checks compound mapount and
-head page's mapcount.  If the THP is PTE-mapped and head page is not
-mapped, it may return false positive.
+On Sun, May 9, 2021 at 8:45 PM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
+>
+> The SO_REUSEPORT option allows sockets to listen on the same port and to
+> accept connections evenly. However, there is a defect in the current
+> implementation [1]. When a SYN packet is received, the connection is tied
+> to a listening socket. Accordingly, when the listener is closed, in-flight
+> requests during the three-way handshake and child sockets in the accept
+> queue are dropped even if other listeners on the same port could accept
+> such connections.
+>
+> This situation can happen when various server management tools restart
+> server (such as nginx) processes. For instance, when we change nginx
+> configurations and restart it, it spins up new workers that respect the new
+> configuration and closes all listeners on the old workers, resulting in the
+> in-flight ACK of 3WHS is responded by RST.
+>
+> To avoid such a situation, users have to know deeply how the kernel handles
+> SYN packets and implement connection draining by eBPF [2]:
+>
+>   1. Stop routing SYN packets to the listener by eBPF.
+>   2. Wait for all timers to expire to complete requests
+>   3. Accept connections until EAGAIN, then close the listener.
+>
+>   or
+>
+>   1. Start counting SYN packets and accept syscalls using the eBPF map.
+>   2. Stop routing SYN packets.
+>   3. Accept connections up to the count, then close the listener.
+>
+> In either way, we cannot close a listener immediately. However, ideally,
+> the application need not drain the not yet accepted sockets because 3WHS
+> and tying a connection to a listener are just the kernel behaviour. The
+> root cause is within the kernel, so the issue should be addressed in kernel
+> space and should not be visible to user space. This patchset fixes it so
+> that users need not take care of kernel implementation and connection
+> draining. With this patchset, the kernel redistributes requests and
+> connections from a listener to the others in the same reuseport group
+> at/after close or shutdown syscalls.
+>
+> Although some software does connection draining, there are still merits in
+> migration. For some security reasons, such as replacing TLS certificates,
+> we may want to apply new settings as soon as possible and/or we may not be
+> able to wait for connection draining. The sockets in the accept queue have
+> not started application sessions yet. So, if we do not drain such sockets,
+> they can be handled by the newer listeners and could have a longer
+> lifetime. It is difficult to drain all connections in every case, but we
+> can decrease such aborted connections by migration. In that sense,
+> migration is always better than draining.
+>
+> Moreover, auto-migration simplifies user space logic and also works well in
+> a case where we cannot modify and build a server program to implement the
+> workaround.
+>
+> Note that the source and destination listeners MUST have the same settings
+> at the socket API level; otherwise, applications may face inconsistency and
+> cause errors. In such a case, we have to use the eBPF program to select a
+> specific listener or to cancel migration.
+>
+> Special thanks to Martin KaFai Lau for bouncing ideas and exchanging code
+> snippets along the way.
+>
+>
+> Link:
+>  [1] The SO_REUSEPORT socket option
+>  https://lwn.net/Articles/542629/
+>
+>  [2] Re: [PATCH 1/1] net: Add SO_REUSEPORT_LISTEN_OFF socket option as drain mode
+>  https://lore.kernel.org/netdev/1458828813.10868.65.camel@edumazet-glaptop3.roam.corp.google.com/
+>
+>
+> Changelog:
+>  v5:
+>   * Move initializtion of sk_node from 6th to 5th patch
+>   * Initialize sk_refcnt in reqsk_clone()
+>   * Modify some definitions in reqsk_timer_handler()
+>   * Validate in which path/state migration happens in selftest
+>
+>  v4:
+>  https://lore.kernel.org/bpf/20210427034623.46528-1-kuniyu@amazon.co.jp/
+>   * Make some functions and variables 'static' in selftest
+>   * Remove 'scalability' from the cover letter
+>
+>  v3:
+>  https://lore.kernel.org/bpf/20210420154140.80034-1-kuniyu@amazon.co.jp/
+>   * Add sysctl back for reuseport_grow()
+>   * Add helper functions to manage socks[]
+>   * Separate migration related logic into functions: reuseport_resurrect(),
+>     reuseport_stop_listen_sock(), reuseport_migrate_sock()
+>   * Clone request_sock to be migrated
+>   * Migrate request one by one
+>   * Pass child socket to eBPF prog
+>
+>  v2:
+>  https://lore.kernel.org/netdev/20201207132456.65472-1-kuniyu@amazon.co.jp/
+>   * Do not save closed sockets in socks[]
+>   * Revert 607904c357c61adf20b8fd18af765e501d61a385
+>   * Extract inet_csk_reqsk_queue_migrate() into a single patch
+>   * Change the spin_lock order to avoid lockdep warning
+>   * Add static to __reuseport_select_sock
+>   * Use refcount_inc_not_zero() in reuseport_select_migrated_sock()
+>   * Set the default attach type in bpf_prog_load_check_attach()
+>   * Define new proto of BPF_FUNC_get_socket_cookie
+>   * Fix test to be compiled successfully
+>   * Update commit messages
+>
+>  v1:
+>  https://lore.kernel.org/netdev/20201201144418.35045-1-kuniyu@amazon.co.jp/
+>   * Remove the sysctl option
+>   * Enable migration if eBPF progam is not attached
+>   * Add expected_attach_type to check if eBPF program can migrate sockets
+>   * Add a field to tell migration type to eBPF program
+>   * Support BPF_FUNC_get_socket_cookie to get the cookie of sk
+>   * Allocate an empty skb if skb is NULL
+>   * Pass req_to_sk(req)->sk_hash because listener's hash is zero
+>   * Update commit messages and coverletter
+>
+>  RFC:
+>  https://lore.kernel.org/netdev/20201117094023.3685-1-kuniyu@amazon.co.jp/
+>
+>
+> Kuniyuki Iwashima (11):
+>   net: Introduce net.ipv4.tcp_migrate_req.
+>   tcp: Add num_closed_socks to struct sock_reuseport.
+>   tcp: Keep TCP_CLOSE sockets in the reuseport group.
+>   tcp: Add reuseport_migrate_sock() to select a new listener.
+>   tcp: Migrate TCP_ESTABLISHED/TCP_SYN_RECV sockets in accept queues.
+>   tcp: Migrate TCP_NEW_SYN_RECV requests at retransmitting SYN+ACKs.
+>   tcp: Migrate TCP_NEW_SYN_RECV requests at receiving the final ACK.
+>   bpf: Support BPF_FUNC_get_socket_cookie() for
+>     BPF_PROG_TYPE_SK_REUSEPORT.
+>   bpf: Support socket migration by eBPF.
+>   libbpf: Set expected_attach_type for BPF_PROG_TYPE_SK_REUSEPORT.
+>   bpf: Test BPF_SK_REUSEPORT_SELECT_OR_MIGRATE.
+>
+>  Documentation/networking/ip-sysctl.rst        |  20 +
+>  include/linux/bpf.h                           |   1 +
+>  include/linux/filter.h                        |   2 +
+>  include/net/netns/ipv4.h                      |   1 +
+>  include/net/request_sock.h                    |   2 +
+>  include/net/sock_reuseport.h                  |   9 +-
+>  include/uapi/linux/bpf.h                      |  16 +
+>  kernel/bpf/syscall.c                          |  13 +
+>  net/core/filter.c                             |  23 +-
+>  net/core/request_sock.c                       |  39 ++
+>  net/core/sock_reuseport.c                     | 337 +++++++++--
+>  net/ipv4/inet_connection_sock.c               | 146 ++++-
+>  net/ipv4/inet_hashtables.c                    |   2 +-
+>  net/ipv4/sysctl_net_ipv4.c                    |   9 +
+>  net/ipv4/tcp_ipv4.c                           |  20 +-
+>  net/ipv6/tcp_ipv6.c                           |  14 +-
+>  tools/include/uapi/linux/bpf.h                |  16 +
+>  tools/lib/bpf/libbpf.c                        |   5 +-
+>  tools/testing/selftests/bpf/network_helpers.c |   2 +-
+>  tools/testing/selftests/bpf/network_helpers.h |   1 +
+>  .../bpf/prog_tests/migrate_reuseport.c        | 532 ++++++++++++++++++
+>  .../bpf/progs/test_migrate_reuseport.c        |  67 +++
+>  22 files changed, 1217 insertions(+), 60 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_migrate_reuseport.c
+>
+> --
+> 2.30.2
+>
 
-Use total_mapcount() instead of page_mapcount() for try_to_unmap() and
-do so for the VM_BUG_ON_PAGE in split_huge_page_to_list as well.
+One test is failing in CI ([0]), please take a look.
 
-This changed the semantic of try_to_unmap(), but I don't see there is
-any usecase that expects try_to_unmap() just unmap one subpage of a huge
-page.  So using page_mapcount() seems like a bug.
-
-[1] https://lore.kernel.org/linux-mm/20210412180659.B9E3.409509F4@e16-tech.com/
-
-Signed-off-by: Yang Shi <shy828301@gmail.com>
----
-v2: Removed dead code and updated the comment of try_to_unmap() per Zi
-    Yan.
-
- mm/huge_memory.c | 11 +----------
- mm/rmap.c        | 10 ++++++----
- 2 files changed, 7 insertions(+), 14 deletions(-)
-
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 63ed6b25deaa..3b08b9ba1578 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2348,7 +2348,6 @@ static void unmap_page(struct page *page)
- 		ttu_flags |= TTU_SPLIT_FREEZE;
- 
- 	unmap_success = try_to_unmap(page, ttu_flags);
--	VM_BUG_ON_PAGE(!unmap_success, page);
- }
- 
- static void remap_page(struct page *page, unsigned int nr)
-@@ -2718,7 +2717,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
- 	}
- 
- 	unmap_page(head);
--	VM_BUG_ON_PAGE(compound_mapcount(head), head);
-+	VM_BUG_ON_PAGE(total_mapcount(head), head);
- 
- 	/* block interrupt reentry in xa_lock and spinlock */
- 	local_irq_disable();
-@@ -2758,14 +2757,6 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
- 		__split_huge_page(page, list, end);
- 		ret = 0;
- 	} else {
--		if (IS_ENABLED(CONFIG_DEBUG_VM) && mapcount) {
--			pr_alert("total_mapcount: %u, page_count(): %u\n",
--					mapcount, count);
--			if (PageTail(page))
--				dump_page(head, NULL);
--			dump_page(page, "total_mapcount(head) > 0");
--			BUG();
--		}
- 		spin_unlock(&ds_queue->split_queue_lock);
- fail:		if (mapping)
- 			xa_unlock(&mapping->i_pages);
-diff --git a/mm/rmap.c b/mm/rmap.c
-index 693a610e181d..f52825b1330d 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -1742,12 +1742,14 @@ static int page_not_mapped(struct page *page)
- }
- 
- /**
-- * try_to_unmap - try to remove all page table mappings to a page
-- * @page: the page to get unmapped
-+ * try_to_unmap - try to remove all page table mappings to a page and the
-+ *                compound page it belongs to
-+ * @page: the page or the subpages of compound page to get unmapped
-  * @flags: action and flags
-  *
-  * Tries to remove all the page table entries which are mapping this
-- * page, used in the pageout path.  Caller must hold the page lock.
-+ * page and the compound page it belongs to, used in the pageout path.
-+ * Caller must hold the page lock.
-  *
-  * If unmap is successful, return true. Otherwise, false.
-  */
-@@ -1777,7 +1779,7 @@ bool try_to_unmap(struct page *page, enum ttu_flags flags)
- 	else
- 		rmap_walk(page, &rwc);
- 
--	return !page_mapcount(page) ? true : false;
-+	return !total_mapcount(page) ? true : false;
- }
- 
- /**
--- 
-2.26.2
-
+  [0] https://travis-ci.com/github/kernel-patches/bpf/builds/225784969
