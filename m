@@ -2,144 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3C5837F81E
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 14:47:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1758537F822
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 14:47:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233842AbhEMMsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 08:48:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48668 "EHLO
+        id S233910AbhEMMtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 08:49:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233709AbhEMMrp (ORCPT
+        with ESMTP id S230253AbhEMMst (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 08:47:45 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02358C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 05:46:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=jkWbVhK6bN6jf9Y4RTIuGYvQYWWOv6acRUUjRrSacgA=; b=RVVSyLZLVK1PgCAQEIn+GeEafj
-        qEUOn0zNn3WEsETvFKyhHI/xEQBAVIV6YCLDCIzXdhe3VIOb7l58MsiLTfS7Dcwwtwn63Ve/N+FpT
-        W1KBYYHfTxR3urphyVQYEQZRadTORI+GdNPfRmWk65ca/HvllEPbLT3zBwhd5XHCl+NmXMyg3oT6a
-        3E3bZC3CJcv1hJUlliZ5x4dS4JjRggCn1TB9BuVNToJEQMoPPm6fJvtyHC+JJz3YY47NeIewfgGJn
-        cqexSJL/6QCwQ5LHszst10Uiv5+vnCv0LeaVRGlXXm3M0o7vYnGE/UqKaUC9V23z8GPkUQEGWn5YQ
-        oO1Y7GOw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lhAjD-005YUW-4X; Thu, 13 May 2021 12:46:11 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3D4D130019C;
-        Thu, 13 May 2021 14:46:10 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 22E332BCF622A; Thu, 13 May 2021 14:46:10 +0200 (CEST)
-Date:   Thu, 13 May 2021 14:46:10 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Huang Ying <ying.huang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andrea Parri <andrea.parri@amarulasolutions.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Omar Sandoval <osandov@fb.com>,
-        Paul McKenney <paulmck@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Miaohe Lin <linmiaohe@huawei.com>
-Subject: Re: [PATCH] mm, swap: Remove unnecessary smp_rmb() in
- swap_type_to_swap_info()
-Message-ID: <YJ0fkhuAZ7JnNmEw@hirez.programming.kicks-ass.net>
-References: <20210513064837.3949064-1-ying.huang@intel.com>
+        Thu, 13 May 2021 08:48:49 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B7C4C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 05:47:38 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id c20so4278126ejm.3
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 05:47:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=0Vqwnb3HW4wJhL2DdPMyNO6LUb0kC2UBgW7LGw4Exzk=;
+        b=kuiZzV3YowzlkLotjIqt5NigyH/HsLv02c28eTSWyHC8NOrZk4Cy9wJO/vT6MvrncJ
+         3rE9nyYGKnNv00L6AGVTEzGRSIaycd9f9LAVcxTJjqfaSp76acBtASo/UzaiJxdAEpWj
+         Ez/xpKFMknz4SooBx+Qb6GS88CAQFCPatv8MEcOf5kagfvqfXreuMdaWmbJnIbN43pqs
+         2njVb7EdHA/pI6O26X34mD826i9JRz/wK2iQV1ffBmsPOrlngijMb9Juoly7S4n4OyoT
+         unIOALc8X4sYj5iXBt/GXlnxbD9dks494xhovW5PpmQiJbYKYKSpLVvrD78U6VMp2LGm
+         a2jA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=0Vqwnb3HW4wJhL2DdPMyNO6LUb0kC2UBgW7LGw4Exzk=;
+        b=q05mTrtotbsqbGyweiF9Vl1diWaNJPimnNphklU4sNvOk1G4N/ct1fhnt7mLLE7yhA
+         BIgWMQTL8TUCuPHihQjF4qmjc0q7cNgZgL6ufiLDgIycO4TkxdO9uKH0C9S5njhHCVqw
+         +X4Ri+a98zX8pmNRyN4yZCE+jEo2sjL0/aK66yyW6lOL0ytT3g+A0aVBDbHWeliLVBlg
+         9P94YEckM+V/n4q49sef7fsrbBAzXLS5iM6XwzRtel/bE22TjDkJYAVvwvmZvmFOrMc4
+         TmSIj/UQbMfwnF4Pw+LM5lnjSh/m5tiDpPjLObPYJ9dYES3fuu51SGg9z0deLGe8Jpfr
+         Ey6g==
+X-Gm-Message-State: AOAM533+NrusTmcsBAxiLdFDickCTv6w1RwwOwJvhED+26GJ6RQIOaOc
+        s+XDeAHgIiL/Nr8y1shyTl/y9prQ/vhxbUFnnSB3rJSSPbbeP2N3
+X-Google-Smtp-Source: ABdhPJxLCTnmrS0FxDexJS8BUi6yS3NFxGZvwfx6rBPeoTO1tGtSktgJZHmhtA7m/pi4McQuQzTCaGg1ODJluD5KmYI=
+X-Received: by 2002:a17:906:4f91:: with SMTP id o17mr43371030eju.503.1620910056785;
+ Thu, 13 May 2021 05:47:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210513064837.3949064-1-ying.huang@intel.com>
+References: <20210512144743.039977287@linuxfoundation.org>
+In-Reply-To: <20210512144743.039977287@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 13 May 2021 18:17:25 +0530
+Message-ID: <CA+G9fYsYS1bYuXLrWjPmFzLajr8U0aE_g7KjNvVrUjVZXUOs7w@mail.gmail.com>
+Subject: Re: [PATCH 5.4 000/244] 5.4.119-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 02:48:37PM +0800, Huang Ying wrote:
->  mm/swapfile.c | 18 +++++++++---------
->  1 file changed, 9 insertions(+), 9 deletions(-)
-> 
-> diff --git a/mm/swapfile.c b/mm/swapfile.c
-> index 2aad85751991..4c1fb28bbe0e 100644
-> --- a/mm/swapfile.c
-> +++ b/mm/swapfile.c
-> @@ -100,10 +100,14 @@ atomic_t nr_rotate_swap = ATOMIC_INIT(0);
->  
->  static struct swap_info_struct *swap_type_to_swap_info(int type)
->  {
-> -	if (type >= READ_ONCE(nr_swapfiles))
-> +	if (type >= MAX_SWAPFILES)
->  		return NULL;
->  
-> -	smp_rmb();	/* Pairs with smp_wmb in alloc_swap_info. */
-> +	/*
-> +	 * The data dependency ordering from the READ_ONCE() pairs
-> +	 * with smp_wmb() in alloc_swap_info() to guarantee the
-> +	 * swap_info_struct fields are read after swap_info[type].
-> +	 */
->  	return READ_ONCE(swap_info[type]);
->  }
->  
-> @@ -2884,14 +2888,10 @@ static struct swap_info_struct *alloc_swap_info(void)
->  	}
->  	if (type >= nr_swapfiles) {
->  		p->type = type;
-> -		WRITE_ONCE(swap_info[type], p);
-> -		/*
-> -		 * Write swap_info[type] before nr_swapfiles, in case a
-> -		 * racing procfs swap_start() or swap_next() is reading them.
-> -		 * (We never shrink nr_swapfiles, we never free this entry.)
-> -		 */
-> +		/* Paired with READ_ONCE() in swap_type_to_swap_info() */
->  		smp_wmb();
-> -		WRITE_ONCE(nr_swapfiles, nr_swapfiles + 1);
-> +		WRITE_ONCE(swap_info[type], p);
-> +		nr_swapfiles++;
+On Wed, 12 May 2021 at 20:22, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.119 release.
+> There are 244 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 14 May 2021 14:47:09 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.119-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Ah, I think I see what you meant to say, it would perhaps help if you
-write it like so:
+Results from Linaro=E2=80=99s test farm.
+
+Apart from the mips clang build failures no other new test failures noticed=
+.
+
+## Build
+* kernel: 5.4.119-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.4.y
+* git commit: 12be7a21d6221f3522c583c1d0407ac22578bd85
+* git describe: v5.4.117-430-g12be7a21d622
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.1=
+17-430-g12be7a21d622
+
+## Regressions (compared to v5.4.117)
+* arm, build
+  - clang-10-axm55xx_defconfig
+  - clang-11-axm55xx_defconfig
+  - clang-12-axm55xx_defconfig
+  - gcc-10-axm55xx_defconfig
+  - gcc-8-axm55xx_defconfig
+  - gcc-9-axm55xx_defconfig
 
 
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 149e77454e3c..94735248dcd2 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -99,11 +99,10 @@ atomic_t nr_rotate_swap = ATOMIC_INIT(0);
- 
- static struct swap_info_struct *swap_type_to_swap_info(int type)
- {
--	if (type >= READ_ONCE(nr_swapfiles))
-+	if (type >= MAX_SWAPFILES)
- 		return NULL;
- 
--	smp_rmb();	/* Pairs with smp_wmb in alloc_swap_info. */
--	return READ_ONCE(swap_info[type]);
-+	return READ_ONCE(swap_info[type]); /* rcu_dereference() */
- }
- 
- static inline unsigned char swap_count(unsigned char ent)
-@@ -2869,14 +2868,11 @@ static struct swap_info_struct *alloc_swap_info(void)
- 	}
- 	if (type >= nr_swapfiles) {
- 		p->type = type;
--		WRITE_ONCE(swap_info[type], p);
- 		/*
--		 * Write swap_info[type] before nr_swapfiles, in case a
--		 * racing procfs swap_start() or swap_next() is reading them.
--		 * (We never shrink nr_swapfiles, we never free this entry.)
-+		 * Publish the swap_info_struct.
- 		 */
--		smp_wmb();
--		WRITE_ONCE(nr_swapfiles, nr_swapfiles + 1);
-+		smp_store_release(&swap_info[type], p); /* rcu_assign_pointer() */
-+		nr_swapfiles++;
- 	} else {
- 		defer = p;
- 		p = swap_info[type];
+* mips, build
+  - clang-10-allnoconfig
+  - clang-10-defconfig
+  - clang-10-tinyconfig
+  - clang-11-allnoconfig
+  - clang-11-defconfig
+  - clang-11-tinyconfig
+  - clang-12-allnoconfig
+  - clang-12-defconfig
+  - clang-12-tinyconfig
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## No fixes (compared to v5.4.117)
+
+## Test result summary
+ total: 69342, pass: 57571, fail: 1395, skip: 10128, xfail: 248,
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 192 total, 186 passed, 6 failed
+* arm64: 26 total, 26 passed, 0 failed
+* i386: 14 total, 14 passed, 0 failed
+* mips: 45 total, 36 passed, 9 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 9 total, 9 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x86_64: 26 total, 26 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* kselftest-android
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kvm
+* kselftest-lib
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
