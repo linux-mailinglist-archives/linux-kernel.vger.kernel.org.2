@@ -2,69 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF3D337F122
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 04:08:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3170337F124
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 04:09:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230126AbhEMCJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 22:09:44 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:3737 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229630AbhEMCJm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 22:09:42 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FgZjx5xjqzpdrS;
-        Thu, 13 May 2021 10:05:09 +0800 (CST)
-Received: from [10.67.102.118] (10.67.102.118) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 13 May 2021 10:08:28 +0800
-Subject: Re: [RFC PATCH 2/3] vfio/hisilicon: register the driver to vfio
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     Alex Williamson <alex.williamson@redhat.com>, <cohuck@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>
-References: <1618284983-55581-3-git-send-email-liulongfang@huawei.com>
- <20210415220137.GA1672608@nvidia.com>
- <10d53c5d-e6d5-a165-84b2-eaf8a3b7dcce@huawei.com>
- <20210419123314.GT1370958@nvidia.com>
- <00c4fa43-21fa-a48b-b95d-a2310ffab725@huawei.com>
- <20210420125957.GA1370958@nvidia.com>
- <20210420160457.6b91850a@x1.home.shazbot.org>
- <25d033e6-1cba-0da0-2ee7-03a14e75b8a5@huawei.com>
- <20210421121224.62382e5d@redhat.com>
- <6ea89655-31c5-233b-ca2a-fcc166b5597c@huawei.com>
- <20210512121053.GT1002214@nvidia.com>
-From:   liulongfang <liulongfang@huawei.com>
-Message-ID: <3eaa3114-81b6-1bd9-c7e6-cb1541389b58@huawei.com>
-Date:   Thu, 13 May 2021 10:08:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S230218AbhEMCKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 22:10:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55888 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229630AbhEMCKO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 12 May 2021 22:10:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 04F0660FE9;
+        Thu, 13 May 2021 02:09:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620871745;
+        bh=VGw1fMdv7a1LyI1pnnicV4IuFjxiNwdg/mYbWWDFhHA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Cra+afcn4f04+Ui4+XAyl1MzvES37KAqkJocA6GKzLJcNHurLa02CD7gEnj0JR0X6
+         v/o1/o3oukhhXGJIB0d4ggspmzvuoututtLhbjI2Y3g4OF3I42uw5LA0NDtL4AJcBb
+         ECh1W5NDfGGu64DXkDsXrTjr7YUg+yGvkirWZK9MtNwcb1XtAOhX6LKQ9KNZ0GvQXf
+         asMbA5yOQPeWUJZp2najeUon31au7gPkA/abtobbb7Nu1gKKTVjOpttt0OyOoGc5I8
+         XD1GXTizzHkxkRJtOa7/Mt7nlh3iQkAPlQeQU/puVMYF6+fCuogGehC0ENouoKj3hO
+         VVLPaSw983b7w==
+Date:   Thu, 13 May 2021 10:09:00 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Robin Gong <yibin.gong@nxp.com>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] arm64: dts: imx8mn: Add spba1 bus
+Message-ID: <20210513020859.GI3425@dragon>
+References: <20210406013344.124255-1-aford173@gmail.com>
+ <20210511024604.GE3425@dragon>
+ <CAHCN7xLFpL=9BF9M5gUA6sMhc2ZZMNz+GP0OLmLfpJAWdD7W-w@mail.gmail.com>
+ <VE1PR04MB6688CD4AA4826EEEBBA2651689539@VE1PR04MB6688.eurprd04.prod.outlook.com>
+ <CAHCN7xJ5Hq6bRpEgE8Pi9VbQ_Kejy-sgKQsJ93pQEG3U_Wsu=Q@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210512121053.GT1002214@nvidia.com>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.118]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHCN7xJ5Hq6bRpEgE8Pi9VbQ_Kejy-sgKQsJ93pQEG3U_Wsu=Q@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/5/12 20:10, Jason Gunthorpe wrote:
-> On Wed, May 12, 2021 at 04:39:43PM +0800, liulongfang wrote:
+On Tue, May 11, 2021 at 09:48:38AM -0500, Adam Ford wrote:
+> On Tue, May 11, 2021 at 7:20 AM Robin Gong <yibin.gong@nxp.com> wrote:
+> >
+> > On 2021/05/11 18:45 Adam Ford <aford173@gmail.com> wrote:
+> > > > Also may I ask if you have a real use case for this bus node?
+> > >
+> > > The reference manual shows the SPBA bus tells the DMA controller which
+> > > peripherals are associated with it.  Nearly all the i.MX boards use this.  The
+> > > boards I support have Bluetooth devices connected to a UART running high
+> > > speeds, and if the DMA driver isn't loaded, I can see a performance change.
+> > Compare PIO with DMA on UART, but not w/o this  'spba bus node ' patch?
+> >
+> > > In fact, if the DMA firmware isn't loaded, I often get transfer errors.
+> > UART use SDMA ROM firmware instead of RAM firmware, so it should work
+> > even without sdma RAM firmware loaded.  Still curious what really happen in
+> > your board without this patch.
 > 
->> Therefore, this method of limiting the length of the BAR
->> configuration space can prevent unsafe operations of the memory.
+> What I am seeing is that at times, the HCI UART loading before the DMA
+> firmware is loaded.
 > 
-> The issue is DMA controlled by the guest accessing the secure BAR
-> area, not the guest CPU.
+> [   10.582037] Bluetooth: HCI UART driver ver 2.3
+> [   10.586867] Bluetooth: HCI UART protocol H4 registered
+> [   10.593566] imx-sdma 30bd0000.dma-controller: sdma firmware not ready!
+> [   10.594548] Bluetooth: HCI UART protocol Broadcom registered
+> [   10.600108] imx-uart 30860000.serial: We cannot prepare for the RX slave dma!
 > 
-> Jason
-> .
+> When I get the above message, the bluetooth chip I have throws
+> timeouts and does not function.
 > 
-This secure BAR area is not presented to the Guest,
-which makes it impossible for the Guest to obtain the secure BAR area
-when establishing the DMA mapping of the configuration space.
-If the DMA controller accesses the secure BAR area, the access will
-be blocked by the SMMU.
+> [   10.615090] imx-sdma 302c0000.dma-controller: loaded firmware 4.5
+> 
+> Once the firmware is loaded, I can unload the HCI Uart driver and
+> re-load Bluetooth works again.
+> 
+> Based on that, I've been having my system delay the loading of the
+> Bluetooth modules until after the firmware is loaded, but this tells
+> me there is a relationship between the DMA and UART.
 
-Thanks
-Longfang.
+Yeah, I can see how DMA firmware impacts your Bluetooth device, but do
+not follow how this spba node change make a difference here.
+
+Nevertheless, patches look good.  Applied, thanks.
+
+Shawn
