@@ -2,120 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B09DB37F99B
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 16:22:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D1437F99C
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 16:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234453AbhEMOXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 10:23:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50806 "EHLO mail.kernel.org"
+        id S234391AbhEMOXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 10:23:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234421AbhEMOWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 10:22:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B5CB9610A0;
-        Thu, 13 May 2021 14:21:11 +0000 (UTC)
+        id S234416AbhEMOX0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 10:23:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BEA8D613BC;
+        Thu, 13 May 2021 14:22:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620915671;
-        bh=6gxmTjd9VZ/ZgASdqIhtkGQj9eTx0nRfnVBXcwAaqOs=;
+        s=k20201202; t=1620915736;
+        bh=G4vCXEGiMxTe526VUaPffNnPoAYhrWSx6k1fW7Br7iA=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=SIqd6nSkEswbRIKqx34D/mktxOmQUfdOCQ3OcqvuCCLjGpqMP9RqfPvTq4kSIRJ8r
-         OBMicROqiIzuALz9JNkDESL7Siu1XDSXq8cuXPm7tOivxwCuxA1GNzdUGCX7vJVyAw
-         18TvN5MiFmZfVEj51DxZ1IXjR2bMB24UldOvL5BId/kN39uUnxoIR4J9TztPDCZdTs
-         wjLeB2VwMssVNo4hGXcHYBm9wM0LD2wFdCVI42sMq4oYqfhnApHEuHBfVvyOyNLZpy
-         DdfwTNaGiZxo9+9twnS0MMiTamdYb+LwxULo5uaHcX1m5BBoHUNSSSIuO85RI3gjhU
-         3QoKIeT2ghVrQ==
+        b=JeScwqKGVsgr8dhA6KWFOjRAaoDSlcmtHzUWvf6gUXHzloUyQoJxbsaB4huYd3P36
+         lAFHgMB2WIX4en8vqNUCsk05TNuzhIyf8ed4r1qYS91kZ14pbCNfs8LvFaoXtazihE
+         qVFpkOidoo2M0iOyZG3iersgwhHkFrUl8DNJkAtDEqxF/Qie9y8TjIW1k46BydMDKY
+         OuhWmqohwaD6MA1RXvT2/c/BjCkRCKM3YETSZnE+rLWXLppMJPgaJEZUUxKow5XWKX
+         lowu3OXrZ/6mMjI3OWpXc8bCAuD9mrDDMC+QqzkJJ2hV6jRfsTVx1id1buvsoigxZT
+         unJPgCEppFlDQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 69E925C014E; Thu, 13 May 2021 07:21:10 -0700 (PDT)
-Date:   Thu, 13 May 2021 07:21:10 -0700
+        id 8100C5C014E; Thu, 13 May 2021 07:22:16 -0700 (PDT)
+Date:   Thu, 13 May 2021 07:22:16 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCH tip/core/rcu 3/4] rcu-tasks: Make ksoftirqd provide RCU
- Tasks quiescent states
-Message-ID: <20210513142110.GY975577@paulmck-ThinkPad-P17-Gen-1>
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Paul Gortmaker <paul.gortmaker@windriver.com>,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH] sched/isolation: reconcile rcu_nocbs= and nohz_full=
+Message-ID: <20210513142216.GZ975577@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20210512182747.3445812-4-paulmck@kernel.org>
- <20210513155417.93ab2299139ba35025ec8ef7@kernel.org>
+References: <20210419042659.1134916-1-paul.gortmaker@windriver.com>
+ <20210422212448.GJ975577@paulmck-ThinkPad-P17-Gen-1>
+ <YJ0X6MciAc36TMJc@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210513155417.93ab2299139ba35025ec8ef7@kernel.org>
+In-Reply-To: <YJ0X6MciAc36TMJc@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 03:54:17PM +0900, Masami Hiramatsu wrote:
-> Hi Paul,
+On Thu, May 13, 2021 at 02:13:28PM +0200, Ingo Molnar wrote:
 > 
-> On Wed, 12 May 2021 11:27:46 -0700
-> "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> * Paul E. McKenney <paulmck@kernel.org> wrote:
 > 
-> > Heavy networking load can cause a CPU to execute continuously and
-> > indefinitely within ksoftirqd, in which case there will be no voluntary
-> > task switches and thus no RCU-tasks quiescent states.  This commit
-> > therefore causes the exiting rcu_softirq_qs() to provide an RCU-tasks
-> > quiescent state.
+> > On Mon, Apr 19, 2021 at 12:26:59AM -0400, Paul Gortmaker wrote:
+> > > We have a mismatch between RCU and isolation -- in relation to what is
+> > > considered the maximum valid CPU number.
+> > > 
+> > > This matters because nohz_full= and rcu_nocbs= are joined at the hip; in
+> > > fact the former will enforce the latter.  So we don't want a CPU mask to
+> > > be valid for one and denied for the other.
+> > > 
+> > > The difference 1st appeared as of v4.15; further details are below.
 > > 
-> > This of course means that __do_softirq() and its callers cannot be
-> > invoked from within a tracing trampoline.
+> > I pulled this into -rcu for testing and further review.
+> > 
+> > If it should instead go through some other tree:
+> > 
+> > Acked-by: Paul E. McKenney <paulmck@kernel.org>
 > 
-> I would like to confirm that you mean "tracing trampoline" here is
-> the code on the trampoline buffer, not the handler code which is
-> invoked from the trampoline buffer but it is protected by preempt_disable(),
-> am I understand correctly?
+> Thanks - added this fix to tip:sched/core.
 
-Maybe?  ;-)
-
-If the handler code is invoked from the trampoline buffer, but
-returns somewhere else, then it is OK for the handler code to invoke
-__do_softirq() or its callers.
-
-In addition, if the handler code is invoked from the trampoline buffer is
-guaranteed never to be running in the context of the ksoftirqd kthread,
-then it is also OK for the handler code to invoke __do_softirq() or
-its callers.
-
-Otherwise, if the handler code might return back into the trampoline
-buffer and if that code might be running in the context of the ksoftirqd
-kthread, invoking __do_softirq() or one of its callers could result in
-the trampoline buffer no longer being there when it was returned to.
+Very good, I will drop it from -rcu later today, Pacific Time.
 
 							Thanx, Paul
-
-> Thank you,
-> 
-> > 
-> > Reported-by: Toke Høiland-Jørgensen <toke@redhat.com>
-> > Tested-by: Toke Høiland-Jørgensen <toke@redhat.com>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> > ---
-> >  kernel/rcu/tree.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 8e78b2430c16..f4daa4e60b14 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -242,6 +242,7 @@ void rcu_softirq_qs(void)
-> >  {
-> >  	rcu_qs();
-> >  	rcu_preempt_deferred_qs(current);
-> > +	rcu_tasks_qs(current, false);
-> >  }
-> >  
-> >  /*
-> > -- 
-> > 2.31.1.189.g2e36527f23
-> > 
-> 
-> 
-> -- 
-> Masami Hiramatsu <mhiramat@kernel.org>
