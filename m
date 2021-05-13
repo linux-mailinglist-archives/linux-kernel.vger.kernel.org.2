@@ -2,111 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 958C437FBFD
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 19:00:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F05137FC11
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 19:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230316AbhEMRBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 13:01:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230164AbhEMRA5 (ORCPT
+        id S229993AbhEMRFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 13:05:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33139 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229797AbhEMRFM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 13:00:57 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEEAAC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 09:59:47 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id c22so12720223ejd.12
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 09:59:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qlfKotu9sca7LHhOUQlejV4TMBT38h8R33rjxE+jdW8=;
-        b=Zqr3iG+q0GJOewBqwZhZyyP9OMzSabGqlImo0bNoJVzWNtvVPzvEP4Eq5tNFu3YVCy
-         GhfQsgXXr2hD2WSkbDSAM6y1eOseCYhVMPBgMO6rs9OZST5ITs6bRMSE2ooZzbHO6hcg
-         yTWC/G33pE9f1kH7cxRgHRs0MeGiTmsciBFOhYqqSWjafMzr93SpShiV7tgEBi6bL43d
-         aAbnvQ1uzcaqBNMOwwBveKW+jJn++qrSPPEhNd5fnyk+xjQDEzsQjFtXsazEimGRydJ9
-         FvAkDicbe8lru1funJlzYAkUsOtq7+jAUIwGBaspsNp6/Zmjr3J21Sv4wxQVxD+rD3To
-         qhOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qlfKotu9sca7LHhOUQlejV4TMBT38h8R33rjxE+jdW8=;
-        b=B6Sqo3P3KIL6BcRXe2uqg/ck+EGKuX+EeJo0aNiD+rAU/5kBY0vgxW4AzEt0XCzahg
-         dwvfsvuGSj8KKl/giIxU7zYWhbjecbWH7sBNtPXe3XXQEAlZdTG2VPQQARD32bvR58YA
-         zFjTWTOPpQTqOgukT73f+datJZtG9Q3DaAJZMzwaZ3qLl2EVbJKOhXf8qjrCBMFdZsTZ
-         q7zu/mINpHW9VQohxnvl3IXNGPUJqGcV8QnmKPDDaEinw5AgMJEL/a7PLOTeX/VKqm7P
-         7nbZbYWhvDJDq34nC9/cLYiJ7AHsIXffuxEyKyEaBeDaTsUdefzSF2fggbOQtQ9ZREVh
-         +q1A==
-X-Gm-Message-State: AOAM531Ra89AcHbdJ9OaV4olDPSuEsWXiqG389591NmNN/r61+nCE03E
-        lzzCCxX5HEhBCUAeN3vMyOc5kFc6WZgX9iSVnOM=
-X-Google-Smtp-Source: ABdhPJwTw/EhzpOLvZKoM7wzshi7JIeiZlRD0pSH09UR1VbFoI380Mgzy6S0IYW9rB5Yrs2Pq87gtWFtP0E92gIExkE=
-X-Received: by 2002:a17:906:b7d6:: with SMTP id fy22mr1236673ejb.383.1620925186436;
- Thu, 13 May 2021 09:59:46 -0700 (PDT)
+        Thu, 13 May 2021 13:05:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620925442;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6XHtWTJwoKdOVyre3rarGGWeKcs5gW4EDT/RmZfYri4=;
+        b=HK6aBDJoMzhfO1mtkh4N3GdLv4Ngw1aWzG5idDzbHpGw9grkx94FbRw14qBRjc1uxnVTx6
+        P1xK0SGJpGO0Sz0+w6M35YBegfkqORG1CRGFtxe0xFrHYdHVlzMeiLBgfWOcG9N71HHvgf
+        vHQnJ9nclYducORo/+wlKLAsd2lSlWM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-78-sdOr2M0eN3Gim5mW2u_iFQ-1; Thu, 13 May 2021 13:04:00 -0400
+X-MC-Unique: sdOr2M0eN3Gim5mW2u_iFQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0DDBD809CD4;
+        Thu, 13 May 2021 17:03:51 +0000 (UTC)
+Received: from redhat.com (ovpn-113-225.phx2.redhat.com [10.3.113.225])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 41B0619704;
+        Thu, 13 May 2021 17:03:50 +0000 (UTC)
+Date:   Thu, 13 May 2021 11:03:49 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        liulongfang <liulongfang@huawei.com>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+Subject: Re: [Linuxarm]  Re: [RFC PATCH 2/3] vfio/hisilicon: register the
+ driver to vfio
+Message-ID: <20210513110349.68e3d59d@redhat.com>
+In-Reply-To: <e3db0c328da6411ea2ae07595ed5f6c3@huawei.com>
+References: <10d53c5d-e6d5-a165-84b2-eaf8a3b7dcce@huawei.com>
+        <20210419123314.GT1370958@nvidia.com>
+        <00c4fa43-21fa-a48b-b95d-a2310ffab725@huawei.com>
+        <20210420125957.GA1370958@nvidia.com>
+        <20210420160457.6b91850a@x1.home.shazbot.org>
+        <25d033e6-1cba-0da0-2ee7-03a14e75b8a5@huawei.com>
+        <20210421121224.62382e5d@redhat.com>
+        <6ea89655-31c5-233b-ca2a-fcc166b5597c@huawei.com>
+        <20210512121053.GT1002214@nvidia.com>
+        <3eaa3114-81b6-1bd9-c7e6-cb1541389b58@huawei.com>
+        <20210513134422.GD1002214@nvidia.com>
+        <e3db0c328da6411ea2ae07595ed5f6c3@huawei.com>
 MIME-Version: 1.0
-References: <1620890438-9127-1-git-send-email-anshuman.khandual@arm.com> <CAHbLzkpMF9b148ois7vMPrB9TVQNAfObWD=b02RFFvYBGhX3mg@mail.gmail.com>
-In-Reply-To: <CAHbLzkpMF9b148ois7vMPrB9TVQNAfObWD=b02RFFvYBGhX3mg@mail.gmail.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Thu, 13 May 2021 09:59:34 -0700
-Message-ID: <CAHbLzkqcyjL6L5UUvf1+=_8T3FuJxHXi8qHnevcFub+8rjc27A@mail.gmail.com>
-Subject: Re: [RFC] mm/thp: Update mm's MM_ANONPAGES stat in set_huge_zero_page()
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Zi Yan <ziy@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 9:50 AM Yang Shi <shy828301@gmail.com> wrote:
->
-> On Thu, May 13, 2021 at 12:20 AM Anshuman Khandual
-> <anshuman.khandual@arm.com> wrote:
-> >
-> > Although the zero huge page is being shared across various processes, each
-> > mapping needs to update its mm's MM_ANONPAGES stat by HPAGE_PMD_NR in order
-> > to be consistent. This just updates the stats in set_huge_zero_page() after
-> > the mapping gets created.
->
-> I don't get why MM_ANONPAGES needs to be inc'ed when huge zero page is
-> installed. This may cause inconsistency between some counters, for
-> example, MM_ANONPAGES may be much bigger than anon LRU.
->
-> MM_ANONPAGES should not be inc'ed unless a new page is allocated and
-> installed, right?
+On Thu, 13 May 2021 15:49:25 +0000
+Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com> wrote:
 
-I just realized I mixed MM_ANONPAGES up with the global anon pages
-counter. Take back my comment. Sorry for the confusion.
+> > -----Original Message-----
+> > From: Jason Gunthorpe [mailto:jgg@nvidia.com]
+> > Sent: 13 May 2021 14:44
+> > To: liulongfang <liulongfang@huawei.com>
+> > Cc: Alex Williamson <alex.williamson@redhat.com>; cohuck@redhat.com;
+> > linux-kernel@vger.kernel.org; linuxarm@openeuler.org
+> > Subject: [Linuxarm] Re: [RFC PATCH 2/3] vfio/hisilicon: register the driver to
+> > vfio
+> > 
+> > On Thu, May 13, 2021 at 10:08:28AM +0800, liulongfang wrote:  
+> > > On 2021/5/12 20:10, Jason Gunthorpe wrote:  
+> > > > On Wed, May 12, 2021 at 04:39:43PM +0800, liulongfang wrote:
+> > > >  
+> > > >> Therefore, this method of limiting the length of the BAR
+> > > >> configuration space can prevent unsafe operations of the memory.  
+> > > >
+> > > > The issue is DMA controlled by the guest accessing the secure BAR
+> > > > area, not the guest CPU.
+> > > >
+> > > > Jason
+> > > > .
+> > > >  
+> > > This secure BAR area is not presented to the Guest,
+> > > which makes it impossible for the Guest to obtain the secure BAR area
+> > > when establishing the DMA mapping of the configuration space.
+> > > If the DMA controller accesses the secure BAR area, the access will
+> > > be blocked by the SMMU.  
+> > 
+> > There are scenarios where this is not true.
+> > 
+> > At a minimum the mdev driver should refuse to work in those cases.
+> >   
+> 
+> Hi,
+> 
+> I think the idea here is not a generic solution, but a quirk for this specific dev.
+> 
+> Something like, 
+> 
+> --- a/drivers/vfio/pci/vfio_pci.c
+> +++ b/drivers/vfio/pci/vfio_pci.c
+> @@ -866,7 +866,12 @@ static long vfio_pci_ioctl(struct vfio_device *core_vdev,
+>                         break;
+>                 case VFIO_PCI_BAR0_REGION_INDEX ... VFIO_PCI_BAR5_REGION_INDEX:
+>                         info.offset = VFIO_PCI_INDEX_TO_OFFSET(info.index);
+> -                       info.size = pci_resource_len(pdev, info.index);
+> +
+> +                       if (check_hisi_acc_quirk(pdev, info))
+> +                               info.size = new_size;// BAR is limited without migration region.
+> +                       else
+> +                               info.size = pci_resource_len(pdev, info.index);
+> +
+>                         if (!info.size) {
+>                                 info.flags = 0;
+>                                 break;
+> 
+> Is this an acceptable/workable solution here?
 
->
-> >
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: Zi Yan <ziy@nvidia.com>
-> > Cc: linux-mm@kvack.org
-> > Cc: linux-kernel@vger.kernel.org
-> > Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> > ---
-> > Should it update MM_SHMEM_PAGES instead ? Applies on latest mainline.
-> >
-> >  mm/huge_memory.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> > index 63ed6b25deaa..262703304807 100644
-> > --- a/mm/huge_memory.c
-> > +++ b/mm/huge_memory.c
-> > @@ -706,6 +706,7 @@ static void set_huge_zero_page(pgtable_t pgtable, struct mm_struct *mm,
-> >         if (pgtable)
-> >                 pgtable_trans_huge_deposit(mm, pmd, pgtable);
-> >         set_pmd_at(mm, haddr, pmd, entry);
-> > +       add_mm_counter(mm, MM_ANONPAGES, HPAGE_PMD_NR);
-> >         mm_inc_nr_ptes(mm);
-> >  }
-> >
-> > --
-> > 2.20.1
-> >
-> >
+As Jason says, this only restricts CPU access to the BAR, the issue is
+DMA access.  As the hardware vendor you may be able to guarantee that
+a DMA transaction generated by the device targeting the remainder of
+the BAR will always go upstream, but can you guarantee the routing
+between the device and the SMMU?  For instance if this device can be
+implemented as a plugin card, then it can be installed into a
+downstream port that may not support ACS.  That downstream port may
+implement request redirection allowing the transaction to reflect back
+to the device without IOMMU translation.  At that point the userspace
+driver can target the kernel driver half of the BAR and potentially
+expose a security risk.  Thanks,
+
+Alex
+
