@@ -2,94 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99BA737F11F
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 04:07:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF3D337F122
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 04:08:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230186AbhEMCIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 22:08:25 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:2655 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230017AbhEMCIX (ORCPT
+        id S230126AbhEMCJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 22:09:44 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:3737 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229630AbhEMCJm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 22:08:23 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FgZjn4J0tzmV9g;
-        Thu, 13 May 2021 10:05:01 +0800 (CST)
-Received: from [10.174.178.208] (10.174.178.208) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 13 May 2021 10:07:09 +0800
-Subject: Re: [PATCH -next] drm/panfrost: Fix PM reference leak in
- panfrost_job_hw_submit()
-To:     Steven Price <steven.price@arm.com>, <robh@kernel.org>,
-        <tomeu.vizoso@collabora.com>, <airlied@linux.ie>,
-        <daniel@ffwll.ch>, <alyssa.rosenzweig@collabora.com>
-CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-References: <1620714551-106976-1-git-send-email-zou_wei@huawei.com>
- <7ebf35ef-58c3-7bc7-f0e9-ad487bae6686@arm.com>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <be1d7a48-be86-3713-e623-61bbd08125f7@huawei.com>
-Date:   Thu, 13 May 2021 10:07:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 12 May 2021 22:09:42 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FgZjx5xjqzpdrS;
+        Thu, 13 May 2021 10:05:09 +0800 (CST)
+Received: from [10.67.102.118] (10.67.102.118) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 13 May 2021 10:08:28 +0800
+Subject: Re: [RFC PATCH 2/3] vfio/hisilicon: register the driver to vfio
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     Alex Williamson <alex.williamson@redhat.com>, <cohuck@redhat.com>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>
+References: <1618284983-55581-3-git-send-email-liulongfang@huawei.com>
+ <20210415220137.GA1672608@nvidia.com>
+ <10d53c5d-e6d5-a165-84b2-eaf8a3b7dcce@huawei.com>
+ <20210419123314.GT1370958@nvidia.com>
+ <00c4fa43-21fa-a48b-b95d-a2310ffab725@huawei.com>
+ <20210420125957.GA1370958@nvidia.com>
+ <20210420160457.6b91850a@x1.home.shazbot.org>
+ <25d033e6-1cba-0da0-2ee7-03a14e75b8a5@huawei.com>
+ <20210421121224.62382e5d@redhat.com>
+ <6ea89655-31c5-233b-ca2a-fcc166b5597c@huawei.com>
+ <20210512121053.GT1002214@nvidia.com>
+From:   liulongfang <liulongfang@huawei.com>
+Message-ID: <3eaa3114-81b6-1bd9-c7e6-cb1541389b58@huawei.com>
+Date:   Thu, 13 May 2021 10:08:28 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <7ebf35ef-58c3-7bc7-f0e9-ad487bae6686@arm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.208]
+In-Reply-To: <20210512121053.GT1002214@nvidia.com>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.118]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steven,
-
-Thanks for your review and also answer my doubts. Looking forward to 
-your patch.
-
-On 2021/5/12 23:23, Steven Price wrote:
-> On 11/05/2021 07:29, Zou Wei wrote:
->> pm_runtime_get_sync will increment pm usage counter even it failed.
->> Forgetting to putting operation will result in reference leak here.
->> Fix it by replacing it with pm_runtime_resume_and_get to keep usage
->> counter balanced.
->>
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+On 2021/5/12 20:10, Jason Gunthorpe wrote:
+> On Wed, May 12, 2021 at 04:39:43PM +0800, liulongfang wrote:
 > 
-> Thanks for the patch, but this is actually incorrect. 
-> panfrost_job_hw_submit() is expected to unconditionally increment the pm 
-> usage counter. This is because panfrost_job_hw_submit() can (currently) 
-> never fail, so in this case the job is considered "submitted" (even 
-> though it never reaches the hardware) and it's handled by the job timeout.
+>> Therefore, this method of limiting the length of the BAR
+>> configuration space can prevent unsafe operations of the memory.
 > 
-> However this is at least the second time[1] this phantom "reference 
-> leak" has been raised, so perhaps it's time to handle this better. I'll 
-> post a patch reworking panfrost_job_hw_submit() so it can fail.
+> The issue is DMA controlled by the guest accessing the secure BAR
+> area, not the guest CPU.
 > 
-> Thanks,
-> 
-> Steve
-> 
-> [1] 
-> https://lore.kernel.org/r/20200520110504.24388-1-dinghao.liu%40zju.edu.cn
-> 
->> ---
->>   drivers/gpu/drm/panfrost/panfrost_job.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c 
->> b/drivers/gpu/drm/panfrost/panfrost_job.c
->> index 6003cfe..42d8dbc 100644
->> --- a/drivers/gpu/drm/panfrost/panfrost_job.c
->> +++ b/drivers/gpu/drm/panfrost/panfrost_job.c
->> @@ -157,7 +157,7 @@ static void panfrost_job_hw_submit(struct 
->> panfrost_job *job, int js)
->>       panfrost_devfreq_record_busy(&pfdev->pfdevfreq);
->> -    ret = pm_runtime_get_sync(pfdev->dev);
->> +    ret = pm_runtime_resume_and_get(pfdev->dev);
->>       if (ret < 0)
->>           return;
->>
-> 
+> Jason
 > .
+> 
+This secure BAR area is not presented to the Guest,
+which makes it impossible for the Guest to obtain the secure BAR area
+when establishing the DMA mapping of the configuration space.
+If the DMA controller accesses the secure BAR area, the access will
+be blocked by the SMMU.
+
+Thanks
+Longfang.
