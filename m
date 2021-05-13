@@ -2,92 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96C1737F805
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 14:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 575A737F808
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 14:35:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233832AbhEMMfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 08:35:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50598 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233357AbhEMMfg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 08:35:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 05AC861263;
-        Thu, 13 May 2021 12:34:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620909264;
-        bh=OIpXmWLiw+xWB2AxFsY+5NcMcsldq5MSVHFAlxapjRM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eA4lzZ6IEh7JfpEnHMGkcc9Rq3zRqE+MYIfyG3SGKF7lfb8Fz1qRGLJ23etZIgseE
-         b5uUFEnSlmoVG2Yd34K5HJzQEf1ppGBXUjNj4/ZNNg8fH1AhPriVLQqGP2tGlTE+2j
-         6MBDOlk1mPv7p/ijYBDjprlDhcpWbXySW4ks/2tM=
-Date:   Thu, 13 May 2021 14:34:22 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Bixuan Cui <cuibixuan@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, abbotti@mev.co.uk,
-        hsweeten@visionengravers.com, grandmaster@al2klimov.de,
-        john.wanghui@huawei.com
-Subject: Re: [PATCH -next] staging: =?utf-8?Q?comed?=
- =?utf-8?Q?i=3A_Remove_unused_variable_=E2=80=98min=5Ffull=5Fscale?=
- =?utf-8?B?4oCZ?=
-Message-ID: <YJ0czj6EOwW/l4sq@kroah.com>
-References: <20210513133458.27766-1-cuibixuan@huawei.com>
+        id S233882AbhEMMg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 08:36:28 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:58130 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233357AbhEMMgY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 08:36:24 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14DCZCeD112244;
+        Thu, 13 May 2021 07:35:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1620909312;
+        bh=6hkZN1ufAaRZSekrRI6opIq0EU23mi/iUO/k+A69uZo=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=eQlrpVtLmJqw9nG7x3gpEoL6lXwkCHKDxWG7CLAHSGyChYOAL7lalG4o5mO8shlkB
+         rjjfzJcau9eSco+o9ZuWC3E+QvAnjQMeQLIL4SJmTBxusY3VjEBTJxk0fWrjmU+ATy
+         MVOFxkGjre/Oaqt9FQ/G5RlDhlyGmcpPia3Oncuo=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14DCZCIx080340
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 13 May 2021 07:35:12 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 13
+ May 2021 07:35:11 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 13 May 2021 07:35:11 -0500
+Received: from [10.250.232.183] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14DCZ7gP130234;
+        Thu, 13 May 2021 07:35:09 -0500
+Subject: Re: [PATCH 4/5] arm64: dts: ti: k3-am642-sk: Enable USB Super-Speed
+ HOST port
+To:     Nishanth Menon <nm@ti.com>
+CC:     Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>, <a-govindraju@ti.com>
+References: <20210512150107.26793-1-kishon@ti.com>
+ <20210512150107.26793-5-kishon@ti.com>
+ <20210512194022.27h53llpxmvg3eoe@splurge>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <595af264-a962-cf3f-81ae-6398bc1e5d20@ti.com>
+Date:   Thu, 13 May 2021 18:05:06 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210513133458.27766-1-cuibixuan@huawei.com>
+In-Reply-To: <20210512194022.27h53llpxmvg3eoe@splurge>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 09:34:58PM +0800, Bixuan Cui wrote:
-> Fix the following build warnings:
-> drivers/comedi/drivers/jr3_pci.c:507:22:
-> 	warning: variable ‘min_full_scale’ set but not used
+Hi Nishanth,
+
+On 13/05/21 1:10 am, Nishanth Menon wrote:
+> On 20:31-20210512, Kishon Vijay Abraham I wrote:
+>> Enable USB Super-Speed HOST port.
+>>
+>> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+>> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+>> ---
+>>  arch/arm64/boot/dts/ti/k3-am642-sk.dts | 39 ++++++++++++++++++++++++++
+>>  1 file changed, 39 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/ti/k3-am642-sk.dts b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
+>> index 8424cd071955..056c1b2df559 100644
+>> --- a/arch/arm64/boot/dts/ti/k3-am642-sk.dts
+>> +++ b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
+>> @@ -5,6 +5,8 @@
+>>  
+>>  /dts-v1/;
+>>  
+>> +#include <dt-bindings/mux/ti-serdes.h>
+>> +#include <dt-bindings/phy/phy.h>
+>>  #include <dt-bindings/gpio/gpio.h>
+>>  #include <dt-bindings/net/ti-dp83867.h>
+>>  #include "k3-am642.dtsi"
+>> @@ -85,6 +87,12 @@
+>>  		>;
+>>  	};
+>>  
+>> +	main_usb0_pins_default: main-usb0-pins-default {
+>> +		pinctrl-single,pins = <
+>> +			AM64X_IOPAD(0x02a8, PIN_OUTPUT, 0) /* (E19) USB0_DRVVBUS */
+>> +		>;
+>> +	};
+>> +
+>>  	main_i2c1_pins_default: main-i2c1-pins-default {
+>>  		pinctrl-single,pins = <
+>>  			AM64X_IOPAD(0x0268, PIN_INPUT_PULLUP, 0) /* (C18) I2C1_SCL */
+>> @@ -235,6 +243,37 @@
+>>  	disable-wp;
+>>  };
+>>  
+>> +&serdes_ln_ctrl {
+>> +	idle-states = <AM64_SERDES0_LANE0_USB>;
+>> +};
+>> +
+>> +&serdes_wiz0 {
+>> +	status = "okay";
 > 
-> And fix build warnings after removing ‘min_full_scale’:
-> drivers/comedi/drivers/jr3_pci.c:189:26:
-> 	warning: ‘get_min_full_scales’ defined but not used
->  static struct six_axis_t get_min_full_scales(struct jr3_sensor __iomem *sensor)
->                           ^~~~~~~~~~~~~~~~~~~
 > 
-> Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
-> ---
->  drivers/comedi/drivers/jr3_pci.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/comedi/drivers/jr3_pci.c b/drivers/comedi/drivers/jr3_pci.c
-> index 7a02c4fa3cda..122b95dc2bf9 100644
-> --- a/drivers/comedi/drivers/jr3_pci.c
-> +++ b/drivers/comedi/drivers/jr3_pci.c
-> @@ -186,7 +186,7 @@ static void set_full_scales(struct jr3_sensor __iomem *sensor,
->  	set_s16(&sensor->command_word0, 0x0a00);
->  }
->  
-> -static struct six_axis_t get_min_full_scales(struct jr3_sensor __iomem *sensor)
-> +static __maybe_unused struct six_axis_t get_min_full_scales(struct jr3_sensor __iomem *sensor)
+> not sure I understand why default of okay needs to be explicitly stated
+> as okay in board dts.
 
-If it really is not used, then remove it, don't paper over a compiler
-warning for no good reason please.
+hmm, not required. Will remove it.
 
-Fix this properly.
-
->  {
->  	struct six_axis_t result;
->  
-> @@ -504,10 +504,8 @@ jr3_pci_poll_subdevice(struct comedi_subdevice *s)
->  			result = poll_delay_min_max(20, 100);
->  		} else {
->  			/* Set full scale */
-> -			struct six_axis_t min_full_scale;
->  			struct six_axis_t max_full_scale;
->  
-> -			min_full_scale = get_min_full_scales(sensor);
->  			max_full_scale = get_max_full_scales(sensor);
-
-Did you just break the driver by messing with the order of reading from
-the device?
-
-thanks,
-
-greg k-h
+Thanks
+Kishon
