@@ -2,103 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D926137F283
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 07:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 245BF37F28F
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 07:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231190AbhEMFOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 01:14:31 -0400
-Received: from foss.arm.com ([217.140.110.172]:56890 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229780AbhEMFOa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 01:14:30 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CD77F101E;
-        Wed, 12 May 2021 22:13:20 -0700 (PDT)
-Received: from [10.163.78.16] (unknown [10.163.78.16])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ECE7E3F73B;
-        Wed, 12 May 2021 22:13:18 -0700 (PDT)
-Subject: Re: [PATCH] arm64/mm: Remove [PUD|PMD]_TABLE_BIT from [pud|pmd]_bad()
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
-References: <1620644871-26280-1-git-send-email-anshuman.khandual@arm.com>
- <20210510144337.GA92897@C02TD0UTHF1T.local>
- <4a36d7b7-6b27-31cc-d701-ebe3c6e4946e@arm.com>
- <20210511140708.GC8933@C02TD0UTHF1T.local>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <8023de56-e6d5-8df0-9920-35fe7dbde640@arm.com>
-Date:   Thu, 13 May 2021 10:44:04 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230328AbhEMFUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 01:20:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229512AbhEMFUb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 01:20:31 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 582C5C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 22:19:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=Cm54OP8Ip4n5Z4caMv5bXkbmyXna7O0BsIgm7mDjFxw=; b=PVxxZ8WKF02OpATB54M0eiJnh5
+        m+iITP7Och1az5lKnmCGTONxLRezOY3hf+WFT4SLokRXNcRkZySL0Lz/21fszgseZLhRZy6BWoM0m
+        zicbHZgdxd5SMfNGSl0epOW8MNuk+UnTJaWrqfCJe5k3EGCJU4lcmkPg0WHGAQw/WcX/PEzYvnOg2
+        7zOBiDiymweNw5vkg/8LiXuMa9zl2BULwN9lsIfM8cIpvfQR9lVbUsa5H5AWDjZ/ZERg3hIG47zOM
+        i88uX8K6OW7da358Bfa10YOw7u8pUR5a303aN8GI2QXtvhxbhBi7Dr5shdJ1ytoqYfE6QTYBraJBI
+        6V70MXyw==;
+Received: from [2601:1c0:6280:3f0::7376] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lh3kn-00B1Q0-Jd; Thu, 13 May 2021 05:19:21 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Oliver Glitta <glittao@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Subject: [PATCH -mm] slub: STACKDEPOT: rename save_stack_trace()
+Date:   Wed, 12 May 2021 22:19:20 -0700
+Message-Id: <20210513051920.29320-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20210511140708.GC8933@C02TD0UTHF1T.local>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+save_stack_trace() already exists, so change the one in
+CONFIG_STACKDEPOT to be save_stack_depot_trace().
+
+Fixes this build error:
+
+../mm/slub.c:607:29: error: conflicting types for ‘save_stack_trace’
+ static depot_stack_handle_t save_stack_trace(gfp_t flags)
+                             ^~~~~~~~~~~~~~~~
+In file included from ../include/linux/page_ext.h:6:0,
+                 from ../include/linux/mm.h:25,
+                 from ../mm/slub.c:13:
+../include/linux/stacktrace.h:86:13: note: previous declaration of ‘save_stack_trace’ was here
+ extern void save_stack_trace(struct stack_trace *trace);
+             ^~~~~~~~~~~~~~~~
+
+from this patch in mmotm:
+  Subject: mm/slub: use stackdepot to save stack trace in objects
 
 
-On 5/11/21 7:37 PM, Mark Rutland wrote:
-> On Tue, May 11, 2021 at 09:21:46AM +0530, Anshuman Khandual wrote:
->>
->> On 5/10/21 8:13 PM, Mark Rutland wrote:
->>> On Mon, May 10, 2021 at 04:37:51PM +0530, Anshuman Khandual wrote:
->>>> Semantics wise, [pud|pmd]_bad() have always implied that a given [PUD|PMD]
->>>> entry does not have a pointer to the next level page table. This had been
->>>> made clear in the commit a1c76574f345 ("arm64: mm: use *_sect to check for
->>>> section maps"). Hence explicitly check for a table entry rather than just
->>>> testing a single bit. This basically redefines [pud|pmd]_bad() in terms of
->>>> [pud|pmd]_table() making the semantics clear.
->>>>
->>>> Cc: Catalin Marinas <catalin.marinas@arm.com>
->>>> Cc: Will Deacon <will@kernel.org>
->>>> Cc: Mark Rutland <mark.rutland@arm.com>
->>>> Cc: linux-arm-kernel@lists.infradead.org
->>>> Cc: linux-kernel@vger.kernel.org
->>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->>>
->>> I have no strong feelings either way, so: 
->>>
->>> Acked-by: Mark Rutland <mark.rutland@arm.com>
->>>
->>> ... that said, I think that the "bad" naming is unclear and misleading,
->>> and it'd be really nice if we could clean that up treewide with
->>> something clearer than "bad".
->>
->> Agreed, the name is misleading.
->>
->>> It does seem that would roughly fit p??_leaf() if we had
->>
->> But what if the platform does not support huge page aka leaf mapping
->> at the given level ? Also a non table i.e bad entry might not always
->> mean a leaf/section/huge page mapping, it could simply imply that the
->> entry is not just pointing to next level and might be just in an bad
->> intermediate or invalid state.
-> 
-> Ah, so that's also covering swap entries, too? It's not entirely clear
-> to me what "bad intermediate or invalid state" means, because I assume
-> it's not arbitrary junk or this wouldn't be sound genrally.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Oliver Glitta <glittao@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org
+---
+ mm/slub.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Intermediate states like swap, migration or probably even splitting THP.
-Though I am not really sure whether pxx_bad() only gets used for valid
-table or leaf entries i.e things which are mapped. Hence checking just
-for non table entry is better and even safer, than looking out for what
-other states the entry could be in.
-
-> 
-> I had assumed it was only covering *valid* non-table entries.
-> 
->>> p??_clear_leaf() and p??_none_or_clear_leaf() helpers.
->>
->> Could you please elaborate how these new helpers might help define
->> pxx_bad() ?
-> 
-> This was based on my (evidently wrong) prior understanding above.
-> 
-> Thanks,
-> Mark.
-> 
+--- mmotm-2021-0512-2146.orig/mm/slub.c
++++ mmotm-2021-0512-2146/mm/slub.c
+@@ -604,7 +604,7 @@ static struct track *get_track(struct km
+ }
+ 
+ #ifdef CONFIG_STACKDEPOT
+-static depot_stack_handle_t save_stack_trace(gfp_t flags)
++static depot_stack_handle_t save_stack_depot_trace(gfp_t flags)
+ {
+ 	unsigned long entries[TRACK_ADDRS_COUNT];
+ 	depot_stack_handle_t handle;
+@@ -623,7 +623,7 @@ static void set_track(struct kmem_cache
+ 
+ 	if (addr) {
+ #ifdef CONFIG_STACKDEPOT
+-		p->handle = save_stack_trace(GFP_KERNEL);
++		p->handle = save_stack_depot_trace(GFP_KERNEL);
+ #endif
+ 		p->addr = addr;
+ 		p->cpu = smp_processor_id();
