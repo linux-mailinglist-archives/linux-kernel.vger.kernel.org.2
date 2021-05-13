@@ -2,58 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87B2037F274
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 06:59:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A32C837F279
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 07:03:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230517AbhEMFAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 01:00:42 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:2464 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230176AbhEMFAk (ORCPT
+        id S231209AbhEMFE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 01:04:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230176AbhEMFE4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 01:00:40 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FgfX00y2HzBv0t
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 12:56:48 +0800 (CST)
-Received: from huawei.com (10.175.103.91) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.498.0; Thu, 13 May 2021
- 12:59:26 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     <tglx@linutronix.de>
-Subject: [PATCH -next] irqchip/ath79-cpu: ath79_cpu_irq_init() can be static
-Date:   Thu, 13 May 2021 13:01:52 +0800
-Message-ID: <20210513050152.623951-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 13 May 2021 01:04:56 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC457C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 22:03:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=uRMBUjl6/vrG2aHYjuG4PJqVirIhMBCEUqRi98xb0gc=; b=l78r0KUeWt1tr9jKX/D61vZ/Gk
+        qSyrYMkRliIKsWw22de7ZP/C3kzr0hHr7UW8mz7o8C48VsqQTGcDjwHxMVYth8/RcSF90KMmjXDQZ
+        U3C/gVX411gQIZSPCxKcx4vwIVewDXgIO1xpkyaWXc9a35Hpgx3Y4GIJzLW+eFci3BHtoT5p2wfyw
+        PDCipRjQT5ew4XZ3nVHm5JadQ0LhLPowIh86vqxsRB1M6DIRCWyBE6LSlQEeif0isJt/VJCpMxdMa
+        t7mltUS1/mgBgqpKTRyFn2ViyQ8CKb4nbdjjZsPge9/sWFlRbWvRtJTdhuf2glH7HbZy2giYjEWsw
+        8wkso12g==;
+Received: from [2601:1c0:6280:3f0::7376] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lh3Vi-00B15p-Co; Thu, 13 May 2021 05:03:46 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH] thread_info.h: include limits.h for INT_MAX
+Date:   Wed, 12 May 2021 22:03:44 -0700
+Message-Id: <20210513050344.28303-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ath79_cpu_irq_init() only used within this file. It should be static.
+Add header file <linux/limits.h> to make thread_info.h be
+self-contained.
+Fixes multiple occurrences of this error:
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+../include/linux/thread_info.h: In function ‘check_copy_size’:
+../include/linux/thread_info.h:215:27: error: ‘INT_MAX’ undeclared (first use in this function)
+  if (WARN_ON_ONCE(bytes > INT_MAX))
+                           ^
+
+Fixes: 6d13de1489b6 ("uaccess: disallow > INT_MAX copy sizes")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
 ---
- drivers/irqchip/irq-ath79-cpu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/thread_info.h |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/irqchip/irq-ath79-cpu.c b/drivers/irqchip/irq-ath79-cpu.c
-index 923e4bba3776..9f6a18f01447 100644
---- a/drivers/irqchip/irq-ath79-cpu.c
-+++ b/drivers/irqchip/irq-ath79-cpu.c
-@@ -86,7 +86,7 @@ static int __init ar79_cpu_intc_of_init(
- IRQCHIP_DECLARE(ar79_cpu_intc, "qca,ar7100-cpu-intc",
- 		ar79_cpu_intc_of_init);
+--- mmotm-2021-0512-2146.orig/include/linux/thread_info.h
++++ mmotm-2021-0512-2146/include/linux/thread_info.h
+@@ -10,6 +10,7 @@
  
--void __init ath79_cpu_irq_init(unsigned irq_wb_chan2, unsigned irq_wb_chan3)
-+static void __init ath79_cpu_irq_init(unsigned irq_wb_chan2, unsigned irq_wb_chan3)
- {
- 	irq_wb_chan[2] = irq_wb_chan2;
- 	irq_wb_chan[3] = irq_wb_chan3;
--- 
-2.25.1
-
+ #include <linux/types.h>
+ #include <linux/bug.h>
++#include <linux/limits.h>
+ #include <linux/restart_block.h>
+ #include <linux/errno.h>
+ 
