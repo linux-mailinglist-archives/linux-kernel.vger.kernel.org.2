@@ -2,113 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8AE937F58A
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 12:22:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 432D137F590
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 12:25:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232810AbhEMKXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 06:23:30 -0400
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:59711 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232615AbhEMKWs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 06:22:48 -0400
-X-Originating-IP: 78.45.89.65
-Received: from [192.168.1.23] (ip-78-45-89-65.net.upcbroadband.cz [78.45.89.65])
-        (Authenticated sender: i.maximets@ovn.org)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 66E12E0002;
-        Thu, 13 May 2021 10:21:32 +0000 (UTC)
-Subject: Re: [ovs-dev] [PATCH net] openvswitch: meter: fix race when getting
- now_ms.
-To:     Tao Liu <thomas.liu@ucloud.cn>, pshelar@ovn.org
-Cc:     dev@openvswitch.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, i.maximets@ovn.org,
-        jean.tourrilhes@hpe.com, kuba@kernel.org, davem@davemloft.net,
-        Eelco Chaudron <echaudro@redhat.com>
-References: <20210513100300.22735-1-thomas.liu@ucloud.cn>
-From:   Ilya Maximets <i.maximets@ovn.org>
-Message-ID: <801322d2-5b39-2497-bf0a-1ec08122a5c7@ovn.org>
-Date:   Thu, 13 May 2021 12:21:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S232675AbhEMK1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 06:27:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37672 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231572AbhEMK05 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 06:26:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA2A661104;
+        Thu, 13 May 2021 10:25:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620901547;
+        bh=tGSbnJbV9mpjOtoS4fZRDhnpTdRQz/IXHDW4kTYpYAs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1I/jANeD3wLrWb04k8nKmsR8WskdmDEfQnDlB/qG+eYesSbsCu01am3HAH+SUqveR
+         7+y3F7VupADfNGsh3gkbc+FnaFq7W5XgtRmTEB2t2fychkG4zIpPchE/u1K4NCOF8I
+         5m1vFoYGXFebcrvbSvQbM6suE/okEvakNcJNX74Q=
+Date:   Thu, 13 May 2021 12:25:44 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     xen-devel@lists.xenproject.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>
+Subject: Re: [PATCH 8/8] xen/hvc: replace BUG_ON() with negative return value
+Message-ID: <YJz+qK8snI64/TKh@kroah.com>
+References: <20210513100302.22027-1-jgross@suse.com>
+ <20210513100302.22027-9-jgross@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <20210513100300.22735-1-thomas.liu@ucloud.cn>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210513100302.22027-9-jgross@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/13/21 12:03 PM, Tao Liu wrote:
-> We have observed meters working unexpected if traffic is 3+Gbit/s
-> with multiple connections.
+On Thu, May 13, 2021 at 12:03:02PM +0200, Juergen Gross wrote:
+> Xen frontends shouldn't BUG() in case of illegal data received from
+> their backends. So replace the BUG_ON()s when reading illegal data from
+> the ring page with negative return values.
 > 
-> now_ms is not pretected by meter->lock, we may get a negative
-> long_delta_ms when another cpu updated meter->used, then:
->     delta_ms = (u32)long_delta_ms;
-> which will be a large value.
-> 
->     band->bucket += delta_ms * band->rate;
-> then we get a wrong band->bucket.
-> 
-> Fixes: 96fbc13d7e77 ("openvswitch: Add meter infrastructure")
-> Signed-off-by: Tao Liu <thomas.liu@ucloud.cn>
+> Signed-off-by: Juergen Gross <jgross@suse.com>
 > ---
+>  drivers/tty/hvc/hvc_xen.c | 15 +++++++++++++--
+>  1 file changed, 13 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/tty/hvc/hvc_xen.c b/drivers/tty/hvc/hvc_xen.c
+> index 92c9a476defc..30d7ffb1e04c 100644
+> --- a/drivers/tty/hvc/hvc_xen.c
+> +++ b/drivers/tty/hvc/hvc_xen.c
+> @@ -86,6 +86,11 @@ static int __write_console(struct xencons_info *xencons,
+>  	cons = intf->out_cons;
+>  	prod = intf->out_prod;
+>  	mb();			/* update queue values before going on */
+> +
+> +	if (WARN_ONCE((prod - cons) > sizeof(intf->out),
+> +		      "Illegal ring page indices"))
+> +		return -EINVAL;
 
-Hi.  Thanks for the patch!
-We fixed the same issue in userspace datapath some time ago and
-we did that a bit differently by just setting negative long_delta_ms
-to zero in assumption that all threads received their packets at
-the same millisecond (which is most likely true if we have this
-kind of race).  This should be also cheaper from form the performance
-point of view to not have an extra call and a division under the
-spinlock.   What do you think?
+How nice, you just rebooted on panic-on-warn systems :(
 
-It's also a good thing to have more or less similar implementation
-for all datapaths.
+> +
+>  	BUG_ON((prod - cons) > sizeof(intf->out));
 
-Here is a userspace patch:
+Why keep this line?
 
-commit acc5df0e3cb036524d49891fdb9ba89b609dd26a
-Author: Ilya Maximets <i.maximets@ovn.org>
-Date:   Thu Oct 24 15:15:07 2019 +0200
+Please just fix this up properly, if userspace can trigger this, then
+both the WARN_ON() and BUG_ON() are not correct and need to be correctly
+handled.
 
-    dpif-netdev: Fix time delta overflow in case of race for meter lock.
-    
-    There is a race window between getting the time and getting the meter
-    lock.  This could lead to situation where the thread with larger
-    current time (this thread called time_{um}sec() later than others)
-    will acquire meter lock first and update meter->used to the large
-    value.  Next threads will try to calculate time delta by subtracting
-    the large meter->used from their lower time getting the negative value
-    which will be converted to a big unsigned delta.
-    
-    Fix that by assuming that all these threads received packets in the
-    same time in this case, i.e. dropping negative delta to 0.
-    
-    CC: Jarno Rajahalme <jarno@ovn.org>
-    Fixes: 4b27db644a8c ("dpif-netdev: Simple DROP meter implementation.")
-    Reported-at: https://mail.openvswitch.org/pipermail/ovs-dev/2019-September/363126.html
-    Signed-off-by: Ilya Maximets <i.maximets@ovn.org>
-    Acked-by: William Tu <u9012063@gmail.com>
 
-diff --git a/lib/dpif-netdev.c b/lib/dpif-netdev.c
-index c09b8fd95..4720ba1ab 100644
---- a/lib/dpif-netdev.c
-+++ b/lib/dpif-netdev.c
-@@ -5646,6 +5646,14 @@ dp_netdev_run_meter(struct dp_netdev *dp, struct dp_packet_batch *packets_,
-     /* All packets will hit the meter at the same time. */
-     long_delta_t = now / 1000 - meter->used / 1000; /* msec */
- 
-+    if (long_delta_t < 0) {
-+        /* This condition means that we have several threads fighting for a
-+           meter lock, and the one who received the packets a bit later wins.
-+           Assuming that all racing threads received packets at the same time
-+           to avoid overflow. */
-+        long_delta_t = 0;
-+    }
-+
-     /* Make sure delta_t will not be too large, so that bucket will not
-      * wrap around below. */
-     delta_t = (long_delta_t > (long long int)meter->max_delta_t)
----
+>  
+>  	while ((sent < len) && ((prod - cons) < sizeof(intf->out)))
+> @@ -114,7 +119,10 @@ static int domU_write_console(uint32_t vtermno, const char *data, int len)
+>  	 */
+>  	while (len) {
+>  		int sent = __write_console(cons, data, len);
+> -		
+> +
+> +		if (sent < 0)
+> +			return sent;
+> +
+>  		data += sent;
+>  		len -= sent;
+>  
+> @@ -138,7 +146,10 @@ static int domU_read_console(uint32_t vtermno, char *buf, int len)
+>  	cons = intf->in_cons;
+>  	prod = intf->in_prod;
+>  	mb();			/* get pointers before reading ring */
+> -	BUG_ON((prod - cons) > sizeof(intf->in));
+> +
+> +	if (WARN_ONCE((prod - cons) > sizeof(intf->in),
+> +		      "Illegal ring page indices"))
+> +		return -EINVAL;
+
+Same here, you still just paniced a machine :(
+
+thanks,
+
+greg k-h
