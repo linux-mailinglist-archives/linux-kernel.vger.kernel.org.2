@@ -2,81 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D92137F501
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 11:46:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33CF937F503
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 11:47:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231193AbhEMJre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 05:47:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49336 "EHLO mail.kernel.org"
+        id S232159AbhEMJsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 05:48:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230338AbhEMJr2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 05:47:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6ACFC61439;
-        Thu, 13 May 2021 09:46:18 +0000 (UTC)
+        id S230338AbhEMJs1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 05:48:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D3C6613D6;
+        Thu, 13 May 2021 09:47:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620899178;
-        bh=2YDPX0ZygP42OUgip4Dx4XOsWdN5W0wiW342gHSvIfQ=;
+        s=korg; t=1620899238;
+        bh=looiwLoQHvd8WUv42tfSdRfqQq+O2ue3rQjtB+aKGM4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0bKc5x8KTUNZj8xk+2qm0hSx4ORSNFaMpnuyS+FE1DScC2cuH5bQjmEfqoJeZ7wOR
-         9O7vaiQ8l1QvMfqzwNlwGEN/mRYlGiKbfLf7m0FgrEdwW8Gbht1AngzYxGMXuNUhnu
-         6U4360c2l8oXK7OFWETybk5pIVIHwUIFNG6mirOE=
-Date:   Thu, 13 May 2021 11:46:16 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Zou Wei <zou_wei@huawei.com>
-Cc:     vaibhav.sr@gmail.com, mgreer@animalcreek.com, johan@kernel.org,
-        elder@kernel.org, greybus-dev@lists.linaro.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] staging: greybus: audio: Add missing
- MODULE_DEVICE_TABLE
-Message-ID: <YJz1aFJPaX5lGJsR@kroah.com>
-References: <1620895772-52538-1-git-send-email-zou_wei@huawei.com>
+        b=d25DAWPl0Wadx7snGmbHJGUKfkeZQ42tLvhVwSwh5faGy3rGsUOlYKWMPZtJLdach
+         oa+KPoEg/n7ixHmS3mxY6C3Ly9wDWJ58u77TGnxgcuCDYFoG+kheMCFPKIr6MyS4Yk
+         QSlMMczzVl3VNYB/PWYyqXkOa66oZVUDez1s8SP0=
+Date:   Thu, 13 May 2021 11:47:15 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 050/530] md: md_open returns -EBUSY when entering
+ racing area
+Message-ID: <YJz1o17zGaqfCH0X@kroah.com>
+References: <20210512144819.664462530@linuxfoundation.org>
+ <20210512144821.386618889@linuxfoundation.org>
+ <20210513075940.GA22156@amd>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1620895772-52538-1-git-send-email-zou_wei@huawei.com>
+In-Reply-To: <20210513075940.GA22156@amd>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 04:49:32PM +0800, Zou Wei wrote:
-> This patch adds missing MODULE_DEVICE_TABLE definition which generates
-> correct modalias for automatic loading of this driver when it is built
-> as an external module.
+On Thu, May 13, 2021 at 09:59:41AM +0200, Pavel Machek wrote:
+> Hi!
 > 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
-> ---
->  drivers/staging/greybus/audio_codec.c | 1 +
->  1 file changed, 1 insertion(+)
+> > commit 6a4db2a60306eb65bfb14ccc9fde035b74a4b4e7 upstream.
+> > 
+> > commit d3374825ce57 ("md: make devices disappear when they are no longer
+> > needed.") introduced protection between mddev creating & removing. The
+> > md_open shouldn't create mddev when all_mddevs list doesn't contain
+> > mddev. With currently code logic, there will be very easy to trigger
+> > soft lockup in non-preempt env.
+> > 
+> > This patch changes md_open returning from -ERESTARTSYS to -EBUSY, which
+> > will break the infinitely retry when md_open enter racing area.
+> > 
+> > This patch is partly fix soft lockup issue, full fix needs mddev_find
+> > is split into two functions: mddev_find & mddev_find_or_alloc. And
+> > md_open should call new mddev_find (it only does searching job).
+> > 
+> > For more detail, please refer with Christoph's "split mddev_find" patch
+> > in later commits.
 > 
-> diff --git a/drivers/staging/greybus/audio_codec.c b/drivers/staging/greybus/audio_codec.c
-> index b589cf6..6fa9781 100644
-> --- a/drivers/staging/greybus/audio_codec.c
-> +++ b/drivers/staging/greybus/audio_codec.c
-> @@ -1086,6 +1086,7 @@ static const struct of_device_id greybus_asoc_machine_of_match[]  = {
->  	{ .compatible = "toshiba,apb-dummy-codec", },
->  	{},
->  };
-> +MODULE_DEVICE_TABLE(of, greybus_asoc_machine_of_match);
->  
->  static struct platform_driver gbaudio_codec_driver = {
->  	.driver = {
-> -- 
-> 2.6.2
-> 
-> 
+> Something went wrong here; changelog is truncated, in particular it
+> does not contain required sign-offs.
 
-I think I will just start rejecting all of thes "missing
-MODULE_DEVICE_TABLE()" patches as they make no sense at all.
+That's really odd, let me figure out what went wrong there, might be a
+quilt thing...
 
-If the driver authors had wanted these MODULE_DEVICE_TABLES added, they
-would have done so.  That means they were not using dynamically loaded
-modules because usually, the module is built in, OR it doesn't matter.
-
-So please, only add this if you have a system that needs them, do not
-add them just based on a rule you have generated by a tool, as that is
-pointless.
-
-thanks,
-
-greg k-h
+greg k-hj
