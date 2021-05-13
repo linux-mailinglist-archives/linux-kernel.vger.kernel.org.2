@@ -2,129 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42CE837FD36
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 20:24:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71BD837FD3A
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 20:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230509AbhEMSZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 14:25:48 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:31570 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229819AbhEMSZr (ORCPT
+        id S231370AbhEMS1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 14:27:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229819AbhEMS1K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 14:25:47 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1620930275; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=BaXSqLqMDPD3YmeTDdHz61FFopAPciI40QzVEV0Fqwg8H5pn+IJzv7pj/+mARoqrzl
-    nBJFfqMaTwC68nJ2Pyt0iUqMg2CPdaMSvYG1ZN7PfPUJXY4pJMuuMVTJ7E9zujy06SVt
-    GylIRQO5PK/QQAWtOhTmu+Yrm11iDYwWwCcQ808JjnWtAwTUSz8Ops9omx7jeHD4h1Hy
-    e7R1ek+PN8H3N6u07V+rPqxK5roFDKh6XB5jBTq5mUOqZV+n0DSlelRmJAGEoPH66XoB
-    PxKyar7sfsYmm0m2i0L0oDbuW5DBML3WwQ15KgZUQCam5TCoBH3dNUedK01gYNRe2/NJ
-    +2Xg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1620930275;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=La2k3otlW4DaTcwOkpooer6L76+dh9I6/tmKprhZSh4=;
-    b=d/9InNVUIWZT1VxK67TwIcYB/qawmlRR8rrtaCTqjhRmJGkrhmHyW51HbHSzOmELpm
-    moNL79FzqitaC2udJa49F/Ygdh7k1Hz4J9uLwUrEeeL/akSvLh7Sn5MwYZSnR4SCczF5
-    H7YJcHyR1lt+r5IzDoMzUWIwO8OeNDtrH94PX9OgDAVS0aSywCAYwW8mDPSMLw5sP5tV
-    2k6fmXdyBIN4vfT2mk6MecvI11b1ASH9wVEd1TAC+ndp60Ct4m8i9OGaMLR+uVej2jgI
-    N5DX7BBAMmRc9a84UuNmLyj+bXFw3FmIQB2udwqXGzgFpld6NV93Lwp2astsXe77MtaC
-    sGGg==
-ARC-Authentication-Results: i=1; strato.com;
-    dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1620930275;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=La2k3otlW4DaTcwOkpooer6L76+dh9I6/tmKprhZSh4=;
-    b=WKcOGm1ZNWj5TzAudxvR5g0HRpzlXyWcR7t3UjWIUX8ub/Mc1hFqKSjGkjjxUAg63a
-    stwZ0QAlOUYhxevJBKNfFZ4hp1i5roOGpVTFYLxAc+rAc3iUgCPADQYlijlJKywjRimF
-    4V40lHfk2787klBLqzFSmFrdpSSGjzJ0XdinvDSNMzFB98AaeFbscMxURLFyG7Rbc7Ze
-    03bbhqmPTtIqCHwb+uwWRy5J/JhC0fxlT7K1k6S3OqRd+iXeMTelx0ywrW7PFwv4K4rt
-    ZW8VkffLGbtF1wH1UM277tRA1M9Puyx0lx+vLq8pNE/JAI7N0weng9u4b2VsUhCZXEDO
-    lgmw==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j6IczCBg=="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 47.25.7 DYNA|AUTH)
-    with ESMTPSA id j06c13x4DIOZD6V
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Thu, 13 May 2021 20:24:35 +0200 (CEST)
-Date:   Thu, 13 May 2021 20:24:30 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Bartosz Dudziak <bartosz.dudziak@snejp.pl>
-Cc:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        David Sterba <dsterba@suse.com>, Jens Axboe <axboe@kernel.dk>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH 2/2] cpuidle: qcom: Add SPM register data for APQ8026 and
- MSM8226
-Message-ID: <YJ1u3syIquKRyuv2@gerhold.net>
-References: <20210513150150.51464-1-bartosz.dudziak@snejp.pl>
- <20210513150150.51464-2-bartosz.dudziak@snejp.pl>
+        Thu, 13 May 2021 14:27:10 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFB12C061574;
+        Thu, 13 May 2021 11:25:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=6mLn4KuZkGwmj8EyTRAdkwrTMuYQZu+zTcF+KB+C+6w=; b=zP+VI5n5VLaL7a2YAmNQaQ6Q/
+        h9hC1O6YFU2S+rN8VBJ2dPGExrHr8kpgRUflliOrfgUAKVcryjZvqF0bzzNd4e4f1kFlIPWGMSFKU
+        GGwzvaic1hAUBWiMdzcCruB1beWt9v0WUBMupX1t8I3gpX0kccy2AopS9sjdwkWAMy/kWtshR+254
+        cD/qQatXHF6hYt0YaLMK8ic+AHf2YrYqmu6y0N90L7ohecaWcYu74WEfrR7jRl6iCuyPc6jflAdSQ
+        ujidyExsMhj8G1ls7LdIVNCy1mzto0Q4csgRAEixsy7qnouGzBVobEB16LRiTAVVT4dAjtHjN48Yt
+        3KpG3hXmQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43948)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lhG20-0006cx-RA; Thu, 13 May 2021 19:25:56 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lhG1y-0003FE-Kv; Thu, 13 May 2021 19:25:54 +0100
+Date:   Thu, 13 May 2021 19:25:54 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>
+Subject: Re: [PATCH net-next v5 5/5] mvneta: recycle buffers
+Message-ID: <20210513182554.GB12395@shell.armlinux.org.uk>
+References: <20210513165846.23722-1-mcroce@linux.microsoft.com>
+ <20210513165846.23722-6-mcroce@linux.microsoft.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210513150150.51464-2-bartosz.dudziak@snejp.pl>
+In-Reply-To: <20210513165846.23722-6-mcroce@linux.microsoft.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, May 13, 2021 at 06:58:46PM +0200, Matteo Croce wrote:
+> From: Matteo Croce <mcroce@microsoft.com>
+> 
+> Use the new recycling API for page_pool.
+> In a drop rate test, the packet rate increased di 10%,
 
-On Thu, May 13, 2021 at 05:01:50PM +0200, Bartosz Dudziak wrote:
-> Add APQ8026 and MSM8226 SoCs register data to SPM AVS Wrapper 2 (SAW2)
-> power controller driver.
+Typo - "by" ?
+
+> from 269 Kpps to 296 Kpps.
 > 
-> Signed-off-by: Bartosz Dudziak <bartosz.dudziak@snejp.pl>
+> perf top on a stock system shows:
+> 
+> Overhead  Shared Object     Symbol
+>   21.78%  [kernel]          [k] __pi___inval_dcache_area
+>   21.66%  [mvneta]          [k] mvneta_rx_swbm
+>    7.00%  [kernel]          [k] kmem_cache_alloc
+>    6.05%  [kernel]          [k] eth_type_trans
+>    4.44%  [kernel]          [k] kmem_cache_free.part.0
+>    3.80%  [kernel]          [k] __netif_receive_skb_core
+>    3.68%  [kernel]          [k] dev_gro_receive
+>    3.65%  [kernel]          [k] get_page_from_freelist
+>    3.43%  [kernel]          [k] page_pool_release_page
+>    3.35%  [kernel]          [k] free_unref_page
+> 
+> And this is the same output with recycling enabled:
+> 
+> Overhead  Shared Object     Symbol
+>   24.10%  [kernel]          [k] __pi___inval_dcache_area
+>   23.02%  [mvneta]          [k] mvneta_rx_swbm
+>    7.19%  [kernel]          [k] kmem_cache_alloc
+>    6.50%  [kernel]          [k] eth_type_trans
+>    4.93%  [kernel]          [k] __netif_receive_skb_core
+>    4.77%  [kernel]          [k] kmem_cache_free.part.0
+>    3.93%  [kernel]          [k] dev_gro_receive
+>    3.03%  [kernel]          [k] build_skb
+>    2.91%  [kernel]          [k] page_pool_put_page
+>    2.85%  [kernel]          [k] __xdp_return
+> 
+> The test was done with mausezahn on the TX side with 64 byte raw
+> ethernet frames.
+> 
+> Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+
+Other than the typo, I have no objection to the patch.
+
+Acked-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+
 > ---
->  drivers/cpuidle/cpuidle-qcom-spm.c | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
+>  drivers/net/ethernet/marvell/mvneta.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/cpuidle/cpuidle-qcom-spm.c b/drivers/cpuidle/cpuidle-qcom-spm.c
-> index adf91a6e4d..9711a98d68 100644
-> --- a/drivers/cpuidle/cpuidle-qcom-spm.c
-> +++ b/drivers/cpuidle/cpuidle-qcom-spm.c
-> @@ -87,6 +87,18 @@ static const struct spm_reg_data spm_reg_8974_8084_cpu  = {
->  	.start_index[PM_SLEEP_MODE_SPC] = 3,
->  };
->  
-> +/* SPM register data for 8026, 8226 */
-> +static const struct spm_reg_data spm_reg_8x26_cpu  = {
-> +	.reg_offset = spm_reg_offset_v2_1,
-> +	.spm_cfg = 0x0,
-> +	.spm_dly = 0x3C102800,
-> +	.seq = { 0x60, 0x03, 0x60, 0x0B, 0x0F, 0x20, 0x10, 0x80, 0x30, 0x90,
-> +		0x5B, 0x60, 0x03, 0x60, 0x3B, 0x76, 0x76, 0x0B, 0x94, 0x5B,
-> +		0x80, 0x10, 0x26, 0x30, 0x0F },
-> +	.start_index[PM_SLEEP_MODE_STBY] = 0,
-> +	.start_index[PM_SLEEP_MODE_SPC] = 5,
-> +};
-> +
->  static const u8 spm_reg_offset_v1_1[SPM_REG_NR] = {
->  	[SPM_REG_CFG]		= 0x08,
->  	[SPM_REG_SPM_CTL]	= 0x20,
-> @@ -259,6 +271,10 @@ static struct spm_driver_data *spm_get_drv(struct platform_device *pdev,
+> diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
+> index 7d5cd9bc6c99..6d2f8dce4900 100644
+> --- a/drivers/net/ethernet/marvell/mvneta.c
+> +++ b/drivers/net/ethernet/marvell/mvneta.c
+> @@ -2320,7 +2320,7 @@ mvneta_swbm_add_rx_fragment(struct mvneta_port *pp,
 >  }
 >  
->  static const struct of_device_id spm_match_table[] = {
-> +	{ .compatible = "qcom,apq8026-saw2-v2.1-cpu",
-> +	  .data = &spm_reg_8x26_cpu },
-> +	{ .compatible = "qcom,msm8226-saw2-v2.1-cpu",
-> +	  .data = &spm_reg_8x26_cpu },
+>  static struct sk_buff *
+> -mvneta_swbm_build_skb(struct mvneta_port *pp, struct mvneta_rx_queue *rxq,
+> +mvneta_swbm_build_skb(struct mvneta_port *pp, struct page_pool *pool,
+>  		      struct xdp_buff *xdp, u32 desc_status)
+>  {
+>  	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
+> @@ -2331,7 +2331,7 @@ mvneta_swbm_build_skb(struct mvneta_port *pp, struct mvneta_rx_queue *rxq,
+>  	if (!skb)
+>  		return ERR_PTR(-ENOMEM);
+>  
+> -	page_pool_release_page(rxq->page_pool, virt_to_page(xdp->data));
+> +	skb_mark_for_recycle(skb, virt_to_page(xdp->data), pool);
+>  
+>  	skb_reserve(skb, xdp->data - xdp->data_hard_start);
+>  	skb_put(skb, xdp->data_end - xdp->data);
+> @@ -2343,7 +2343,10 @@ mvneta_swbm_build_skb(struct mvneta_port *pp, struct mvneta_rx_queue *rxq,
+>  		skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags,
+>  				skb_frag_page(frag), skb_frag_off(frag),
+>  				skb_frag_size(frag), PAGE_SIZE);
+> -		page_pool_release_page(rxq->page_pool, skb_frag_page(frag));
+> +		/* We don't need to reset pp_recycle here. It's already set, so
+> +		 * just mark fragments for recycling.
+> +		 */
+> +		page_pool_store_mem_info(skb_frag_page(frag), pool);
+>  	}
+>  
+>  	return skb;
+> @@ -2425,7 +2428,7 @@ static int mvneta_rx_swbm(struct napi_struct *napi,
+>  		    mvneta_run_xdp(pp, rxq, xdp_prog, &xdp_buf, frame_sz, &ps))
+>  			goto next;
+>  
+> -		skb = mvneta_swbm_build_skb(pp, rxq, &xdp_buf, desc_status);
+> +		skb = mvneta_swbm_build_skb(pp, pp, &xdp_buf, desc_status);
+>  		if (IS_ERR(skb)) {
+>  			struct mvneta_pcpu_stats *stats = this_cpu_ptr(pp->stats);
+>  
+> -- 
+> 2.31.1
+> 
+> 
 
-What is the reason for having a separate compatible for APQ8026?
-
-If the difference between MSM8226 and APQ8026 is similar to other qcom
-SoCs (just lack of modem), both will end up using the same device tree
-include anyway. Then it's easier to have both use qcom,msm8226-saw2-v2.1-cpu.
-
-Thanks,
-Stephan
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
