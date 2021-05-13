@@ -2,148 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A18D37F4B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 11:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 250A337F4B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 11:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232493AbhEMJJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 05:09:21 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:37351 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232418AbhEMJJI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 05:09:08 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4Fgm5k1wbJz9sbZ;
-        Thu, 13 May 2021 11:07:54 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 6s838qCcO9bm; Thu, 13 May 2021 11:07:54 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4Fgm5j5bH0z9sbQ;
-        Thu, 13 May 2021 11:07:53 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7F7958B7F3;
-        Thu, 13 May 2021 11:07:53 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 7BOwx6cbSXtS; Thu, 13 May 2021 11:07:53 +0200 (CEST)
-Received: from po15610vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4925A8B76C;
-        Thu, 13 May 2021 11:07:53 +0200 (CEST)
-Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 261DC64185; Thu, 13 May 2021 09:07:53 +0000 (UTC)
-Message-Id: <ec5e85f9f9abcfecc959a03495f4a7858eb4d203.1620896780.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <40a43d6df1fdf41ade36e9a46e60a4df774ca9f6.1620896780.git.christophe.leroy@csgroup.eu>
-References: <40a43d6df1fdf41ade36e9a46e60a4df774ca9f6.1620896780.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2 2/2] powerpc/kprobes: Replace ppc_optinsn by common optinsn
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
-        davem@davemloft.net, mhiramat@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        clang-built-linux@googlegroups.com
-Date:   Thu, 13 May 2021 09:07:53 +0000 (UTC)
+        id S232419AbhEMJL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 05:11:28 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:57975 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231539AbhEMJLU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 05:11:20 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mtapsc-4-O-l6zddbOw-DLiJ4G39p_w-1; Thu, 13 May 2021 10:10:08 +0100
+X-MC-Unique: O-l6zddbOw-DLiJ4G39p_w-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Thu, 13 May 2021 10:10:07 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Thu, 13 May 2021 10:10:07 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Colin King' <colin.king@canonical.com>,
+        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
+        Srinivas Neeli <srinivas.neeli@xilinx.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH][next] gpio: xilinx: Fix potential integer overflow on
+ shift of a u32 int
+Thread-Topic: [PATCH][next] gpio: xilinx: Fix potential integer overflow on
+ shift of a u32 int
+Thread-Index: AQHXR9VSZMAtotrvl0OPmMzLRkGfrKrhHwxw
+Date:   Thu, 13 May 2021 09:10:07 +0000
+Message-ID: <ca5918c4d9a240bc80bad1ad16d929f9@AcuMS.aculab.com>
+References: <20210513085227.54392-1-colin.king@canonical.com>
+In-Reply-To: <20210513085227.54392-1-colin.king@canonical.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 51c9c0843993 ("powerpc/kprobes: Implement Optprobes")
-implemented a powerpc specific version of optinsn in order
-to workaround the 32Mb limitation for direct branches.
-
-Instead of implementing a dedicated powerpc version, use the
-common optinsn and override the allocation and freeing functions.
-
-This also indirectly remove the CLANG warning about
-is_kprobe_ppc_optinsn_slot() not being use, and the powerpc will
-now benefit from commit 5b485629ba0d ("kprobes, extable: Identify
-kprobes trampolines as kernel text area")
-
-Suggested-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
----
-v2: no change
----
- arch/powerpc/kernel/optprobes.c | 23 +++++------------------
- 1 file changed, 5 insertions(+), 18 deletions(-)
-
-diff --git a/arch/powerpc/kernel/optprobes.c b/arch/powerpc/kernel/optprobes.c
-index cdf87086fa33..a370190cd02a 100644
---- a/arch/powerpc/kernel/optprobes.c
-+++ b/arch/powerpc/kernel/optprobes.c
-@@ -31,11 +31,9 @@
- #define TMPL_END_IDX		\
- 	(optprobe_template_end - optprobe_template_entry)
- 
--DEFINE_INSN_CACHE_OPS(ppc_optinsn);
--
- static bool insn_page_in_use;
- 
--static void *__ppc_alloc_insn_page(void)
-+void *alloc_optinsn_page(void)
- {
- 	if (insn_page_in_use)
- 		return NULL;
-@@ -43,20 +41,11 @@ static void *__ppc_alloc_insn_page(void)
- 	return &optinsn_slot;
- }
- 
--static void __ppc_free_insn_page(void *page __maybe_unused)
-+void free_optinsn_page(void *page)
- {
- 	insn_page_in_use = false;
- }
- 
--struct kprobe_insn_cache kprobe_ppc_optinsn_slots = {
--	.mutex = __MUTEX_INITIALIZER(kprobe_ppc_optinsn_slots.mutex),
--	.pages = LIST_HEAD_INIT(kprobe_ppc_optinsn_slots.pages),
--	/* insn_size initialized later */
--	.alloc = __ppc_alloc_insn_page,
--	.free = __ppc_free_insn_page,
--	.nr_garbage = 0,
--};
--
- /*
-  * Check if we can optimize this probe. Returns NIP post-emulation if this can
-  * be optimized and 0 otherwise.
-@@ -136,7 +125,7 @@ NOKPROBE_SYMBOL(optimized_callback);
- void arch_remove_optimized_kprobe(struct optimized_kprobe *op)
- {
- 	if (op->optinsn.insn) {
--		free_ppc_optinsn_slot(op->optinsn.insn, 1);
-+		free_optinsn_slot(op->optinsn.insn, 1);
- 		op->optinsn.insn = NULL;
- 	}
- }
-@@ -203,14 +192,12 @@ int arch_prepare_optimized_kprobe(struct optimized_kprobe *op, struct kprobe *p)
- 	unsigned long nip, size;
- 	int rc, i;
- 
--	kprobe_ppc_optinsn_slots.insn_size = MAX_OPTINSN_SIZE;
--
- 	nip = can_optimize(p);
- 	if (!nip)
- 		return -EILSEQ;
- 
- 	/* Allocate instruction slot for detour buffer */
--	buff = get_ppc_optinsn_slot();
-+	buff = get_optinsn_slot();
- 	if (!buff)
- 		return -ENOMEM;
- 
-@@ -297,7 +284,7 @@ int arch_prepare_optimized_kprobe(struct optimized_kprobe *op, struct kprobe *p)
- 	return 0;
- 
- error:
--	free_ppc_optinsn_slot(buff, 0);
-+	free_optinsn_slot(buff, 0);
- 	return -ERANGE;
- 
- }
--- 
-2.25.0
+RnJvbTogQ29saW4gS2luZw0KPiBTZW50OiAxMyBNYXkgMjAyMSAwOTo1Mg0KPiANCj4gRnJvbTog
+Q29saW4gSWFuIEtpbmcgPGNvbGluLmtpbmdAY2Fub25pY2FsLmNvbT4NCj4gDQo+IFRoZSBsZWZ0
+IHNoaWZ0IG9mIHRoZSB1MzIgaW50ZWdlciB2IGlzIGV2YWx1YXRlZCB1c2luZyAzMiBiaXQNCj4g
+YXJpdGhtZXRpYyBhbmQgdGhlbiBhc3NpZ25lZCB0byBhIHU2NCBpbnRlZ2VyLiBUaGVyZSBhcmUg
+Y2FzZXMNCj4gd2hlcmUgdiB3aWxsIGN1cnJlbnRseSBvdmVyZmxvdyBvbiB0aGUgc2hpZnQuIEF2
+b2lkIHRoaXMgYnkNCj4gY2FzdGluZyBpdCB0byB1bnNpZ25lZCBsb25nIChzYW1lIHR5cGUgYXMg
+bWFwW10pIGJlZm9yZSBzaGlmdGluZw0KPiBpdC4NCj4gDQo+IEFkZHJlc3Nlcy1Db3Zlcml0eTog
+KCJVbmludGVudGlvbmFsIGludGVnZXIgb3ZlcmZsb3ciKQ0KPiBGaXhlczogMDJiM2Y4NGQ5MDgw
+ICgiZ3BpbzogeGlsaW54OiBTd2l0Y2ggdG8gdXNlIGJpdG1hcCBBUElzIikNCj4gU2lnbmVkLW9m
+Zi1ieTogQ29saW4gSWFuIEtpbmcgPGNvbGluLmtpbmdAY2Fub25pY2FsLmNvbT4NCj4gLS0tDQo+
+ICBkcml2ZXJzL2dwaW8vZ3Bpby14aWxpbnguYyB8IDIgKy0NCj4gIDEgZmlsZSBjaGFuZ2VkLCAx
+IGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
+Z3Bpby9ncGlvLXhpbGlueC5jIGIvZHJpdmVycy9ncGlvL2dwaW8teGlsaW54LmMNCj4gaW5kZXgg
+MTA5YjMyMTA0ODY3Li4xNjRhM2E1YTkzOTMgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvZ3Bpby9n
+cGlvLXhpbGlueC5jDQo+ICsrKyBiL2RyaXZlcnMvZ3Bpby9ncGlvLXhpbGlueC5jDQo+IEBAIC05
+OSw3ICs5OSw3IEBAIHN0YXRpYyBpbmxpbmUgdm9pZCB4Z3Bpb19zZXRfdmFsdWUzMih1bnNpZ25l
+ZCBsb25nICptYXAsIGludCBiaXQsIHUzMiB2KQ0KPiAgCWNvbnN0IHVuc2lnbmVkIGxvbmcgb2Zm
+c2V0ID0gKGJpdCAlIEJJVFNfUEVSX0xPTkcpICYgQklUKDUpOw0KPiANCj4gIAltYXBbaW5kZXhd
+ICY9IH4oMHhGRkZGRkZGRnVsIDw8IG9mZnNldCk7DQo+IC0JbWFwW2luZGV4XSB8PSB2IDw8IG9m
+ZnNldDsNCj4gKwltYXBbaW5kZXhdIHw9ICh1bnNpZ25lZCBsb25nKXYgPDwgb2Zmc2V0Ow0KPiAg
+fQ0KDQpUaGF0IGNvZGUgbG9va3MgZHViaW91cyBvbiAzMmJpdCBhcmNoaXRlY3R1cmVzLg0KDQpJ
+IGRvbid0IGhhdmUgMDJiM2Y4NGQ5MDgwIGluIGFueSBvZiBteSBzb3VyY2UgdHJlZXMuDQpCdXQg
+dGhhdCBwYXRjaCBtYXkgaXRzZWxmIGJlIHZlcnkgZHViaW91cy4NCg0KU2luY2UgdGhlIGhhcmR3
+YXJlIHJlcXVpcmVzIGV4cGxpY2l0IGJpdHMgYmUgc2V0LCByZWx5aW5nDQpvbiB0aGUgYml0bWFw
+IGZ1bmN0aW9ucyBzZWVtcyBwb2ludGxlc3MgYW5kIHBvc3NpYmx5IHdyb25nLg0KQ2xlYXJseSB0
+aGV5IGNhdXNlIGFkZGl0aW9uYWwgcHJvYmxlbXMgYmVjYXVzZSB0aGV5IHVzZSBsb25nW10NCmFu
+ZCBoZXJlIHRoZSBjb2RlIG5lZWRzIHUzMltdLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBB
+ZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMs
+IE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
