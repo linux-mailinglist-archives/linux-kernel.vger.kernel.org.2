@@ -2,91 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5410A37F399
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 09:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61FAD37F39A
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 09:38:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231582AbhEMHi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 03:38:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230443AbhEMHiZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 03:38:25 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04EF4C061574;
-        Thu, 13 May 2021 00:37:15 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id b21so13953862plz.0;
-        Thu, 13 May 2021 00:37:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=6yTFbxHIwd6peJbwP7HMxe6U7ibZ/XoARK8j3+NqR0w=;
-        b=NulSibhiF7JvAs92E6W3p0PUHmmJGYATFmdnegbjySKKm66VCmmHY5hzo5W/Uyut8o
-         jkBttrgQ5nHb/SAU6qIvj8d9xoiEI7HeSw1aENXYtTPoIaSq3arkKG8JvFYD2a5eX6R1
-         GxQvZCAveJkwMnbbE3M+F+LUxVzODmvLsbKDwf9nBBBTYHylEAZtG+WVSvpV3+/Zx7rH
-         0YpPysDGS0NV0SAIDN1jjTzdEbYYUKH7pCrnsPk8sH70tTm9piSKs8YpD/Q4bUNCAJz1
-         kK0DBXAbDhcoGw1hqN6jjaz1pFg693XYxPhMgIlXyFMpDsbW+IR3SZb7S90Yyp/28WzH
-         WytA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=6yTFbxHIwd6peJbwP7HMxe6U7ibZ/XoARK8j3+NqR0w=;
-        b=Jy+kq39VXwUmiVtpi2Cq6ePIDKhDZNKER4+obKv/FX/eP4HWxrKQSDqLQvKFG9svHo
-         gAqzwlNT1waJAGWlrI2ZIDlGJmxBSRSV2IXauyc4UykquSTMXDIon43GA9EUYWHXnBkK
-         u6ZNzV9xXy7PFCr7QES1hLaqNcFFLI//nKvQX4CoVjenpCh4XkEMRIMytUh+siuZzyz0
-         Kr0hU4qAKL398CsGsAy5uKdFoIYSdWtAcWsgD6y1QnjuvFWl6MjX01J7gF33hnneRE4Q
-         oUE34RqrExN1i2rDMUGfhtANiPIWbyzJYPq/vVyGxhKoZCmErXvRIwkFLKH//TIhlfXY
-         D03g==
-X-Gm-Message-State: AOAM531zVX1hC5e/tMHDw/BUHxHMLj1gcm8YZ4ZDoRDeg6KrdSOwxPYU
-        9D2MSleCgojUAi/IHf480rjsAKS16joYq64ciQg=
-X-Google-Smtp-Source: ABdhPJzb2c5ZAzTtPUDmgx+Ms6jID9WyetnRzh6Ch4XMR1DWdVU4aj9RqIYK5BpPzMagLyaToj+Xfg==
-X-Received: by 2002:a17:902:d386:b029:ee:bf5f:c037 with SMTP id e6-20020a170902d386b02900eebf5fc037mr38844993pld.31.1620891434150;
-        Thu, 13 May 2021 00:37:14 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [71.19.144.195])
-        by smtp.gmail.com with ESMTPSA id q184sm1433476pfc.208.2021.05.13.00.37.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 00:37:13 -0700 (PDT)
-Message-ID: <609cd729.1c69fb81.e9822.5bbf@mx.google.com>
-Date:   Thu, 13 May 2021 00:37:13 -0700 (PDT)
-X-Google-Original-Date: Thu, 13 May 2021 07:37:07 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20210512144819.664462530@linuxfoundation.org>
-Subject: RE: [PATCH 5.10 000/530] 5.10.37-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
+        id S231631AbhEMHj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 03:39:27 -0400
+Received: from mga09.intel.com ([134.134.136.24]:12054 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230443AbhEMHjX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 03:39:23 -0400
+IronPort-SDR: wrf6HB7z9Lh6LZbHr+D8WcWiW81DJmuj4jOuTEvZ8/Cqj8DxnbeoWgsk3+97bC2gnZcy1EW77p
+ t+jRPLqQ+AmQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="199946309"
+X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
+   d="scan'208";a="199946309"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 00:38:12 -0700
+IronPort-SDR: h054T5oskAPSIwTYyuDJVcIFklKSbpXD8Cad4UFUk9sqBlV7Pj5gvLztJgQIQsRPHm5omOynCG
+ 61LZXNgHSdrQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
+   d="scan'208";a="456140338"
+Received: from lkp-server01.sh.intel.com (HELO ddd90b05c979) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 13 May 2021 00:38:10 -0700
+Received: from kbuild by ddd90b05c979 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lh5v8-00008b-9D; Thu, 13 May 2021 07:38:10 +0000
+Date:   Thu, 13 May 2021 15:37:23 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:objtool/urgent] BUILD SUCCESS
+ f66c05d6baf36069c01a02f869bebb75586f2318
+Message-ID: <609cd733.RV1JsbYJVYDno0kI%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 12 May 2021 16:41:50 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.10.37 release.
-> There are 530 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 14 May 2021 14:47:09 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.37-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git objtool/urgent
+branch HEAD: f66c05d6baf36069c01a02f869bebb75586f2318  objtool/x86: Fix elf_add_alternative() endianness
 
-5.10.37-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+elapsed time: 726m
 
+configs tested: 148
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                       aspeed_g4_defconfig
+powerpc                 mpc834x_itx_defconfig
+powerpc                      mgcoge_defconfig
+powerpc                   lite5200b_defconfig
+sparc64                          alldefconfig
+arm                       imx_v6_v7_defconfig
+mips                          rm200_defconfig
+riscv                             allnoconfig
+mips                         tb0226_defconfig
+m68k                          multi_defconfig
+arm                         nhk8815_defconfig
+sparc64                             defconfig
+powerpc                     tqm8555_defconfig
+arm                         vf610m4_defconfig
+nds32                               defconfig
+arc                     haps_hs_smp_defconfig
+powerpc                      cm5200_defconfig
+powerpc                      katmai_defconfig
+sh                          lboxre2_defconfig
+arm                           h5000_defconfig
+h8300                               defconfig
+powerpc                     tqm8541_defconfig
+powerpc                    socrates_defconfig
+mips                       rbtx49xx_defconfig
+xtensa                generic_kc705_defconfig
+arm                            lart_defconfig
+mips                             allyesconfig
+parisc                generic-64bit_defconfig
+arm                          simpad_defconfig
+powerpc                     powernv_defconfig
+sparc                       sparc64_defconfig
+m68k                            mac_defconfig
+powerpc                     kmeter1_defconfig
+nios2                         3c120_defconfig
+arc                              allyesconfig
+arm                      tct_hammer_defconfig
+sh                         apsh4a3a_defconfig
+mips                       bmips_be_defconfig
+m68k                        mvme147_defconfig
+mips                  decstation_64_defconfig
+mips                           gcw0_defconfig
+arm                          ixp4xx_defconfig
+sh                        sh7785lcr_defconfig
+mips                           ci20_defconfig
+mips                           ip27_defconfig
+sh                           se7751_defconfig
+arm                       spear13xx_defconfig
+arc                          axs103_defconfig
+sh                           se7722_defconfig
+sh                          polaris_defconfig
+alpha                               defconfig
+arm                         assabet_defconfig
+mips                        bcm47xx_defconfig
+arm                       mainstone_defconfig
+arm                             mxs_defconfig
+arc                         haps_hs_defconfig
+sparc                       sparc32_defconfig
+x86_64                           allyesconfig
+sh                           se7343_defconfig
+mips                      maltasmvp_defconfig
+mips                         tb0219_defconfig
+arm                         palmz72_defconfig
+arm                          pxa910_defconfig
+powerpc                 mpc836x_mds_defconfig
+i386                             alldefconfig
+sh                         ap325rxa_defconfig
+sh                          sdk7780_defconfig
+mips                           xway_defconfig
+arm                         s5pv210_defconfig
+powerpc                     mpc83xx_defconfig
+ia64                          tiger_defconfig
+powerpc                       holly_defconfig
+arm                   milbeaut_m10v_defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nds32                             allnoconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a003-20210513
+i386                 randconfig-a001-20210513
+i386                 randconfig-a005-20210513
+i386                 randconfig-a004-20210513
+i386                 randconfig-a002-20210513
+i386                 randconfig-a006-20210513
+x86_64               randconfig-a012-20210513
+x86_64               randconfig-a015-20210513
+x86_64               randconfig-a011-20210513
+x86_64               randconfig-a013-20210513
+x86_64               randconfig-a016-20210513
+x86_64               randconfig-a014-20210513
+i386                 randconfig-a016-20210513
+i386                 randconfig-a014-20210513
+i386                 randconfig-a011-20210513
+i386                 randconfig-a015-20210513
+i386                 randconfig-a012-20210513
+i386                 randconfig-a013-20210513
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a003-20210513
+x86_64               randconfig-a004-20210513
+x86_64               randconfig-a001-20210513
+x86_64               randconfig-a005-20210513
+x86_64               randconfig-a002-20210513
+x86_64               randconfig-a006-20210513
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
