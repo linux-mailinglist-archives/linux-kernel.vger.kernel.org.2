@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78D2037F6E4
+	by mail.lfdr.de (Postfix) with ESMTP id C1A7D37F6E5
 	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 13:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233527AbhEMLjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 07:39:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46665 "EHLO
+        id S233541AbhEMLjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 07:39:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30594 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233437AbhEMLic (ORCPT
+        by vger.kernel.org with ESMTP id S233444AbhEMLid (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 07:38:32 -0400
+        Thu, 13 May 2021 07:38:33 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620905842;
+        s=mimecast20190719; t=1620905843;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=UhaBh7WNzH+s9VEh0BxBI8Vn/q+6nukasREEoL6o+Qs=;
-        b=e5INuvhka9CTrrQo1i3NPL0LjJYyr0kTFiiaGbC5EnE3LSXDFboaO1K3TCOMD3kOev5uDA
-        O05SxAwy7K8FWLTUYqhEjJuy1pchOcULOObu7Ek7WF8Qz7PQK2BFsOr1V2OGd6xeZ6LGlD
-        FaRZKkjcGAu4l6f5/CAdkaHWfnd44E0=
+        bh=POOI9TCezc4J5RJIxcGbqShjc8zde1SEv1yU+Nd1U/A=;
+        b=GCTOEl3DffpkAvmDRiIC6Pin4lQlfBMulwc5gR1KogrHIjWyNw0wGl5+ctAPDxxmWtw0O5
+        pZrbwF2aQTEChJcs8kKRJ9NbKXxiUIPMaBmqfuARpq7cBpeW1cNQaS+J3cH7FrneYZR9Tg
+        JZypR4HTmqfmdwV4eKuqK0ESll5m9QM=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-520-uffO6t6JPV2W2BpK7g8hrw-1; Thu, 13 May 2021 07:37:19 -0400
-X-MC-Unique: uffO6t6JPV2W2BpK7g8hrw-1
+ us-mta-395-FwTgx3IBPfy3bDywU2sc7Q-1; Thu, 13 May 2021 07:37:21 -0400
+X-MC-Unique: FwTgx3IBPfy3bDywU2sc7Q-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D0A556123C;
-        Thu, 13 May 2021 11:37:17 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 78E518015DB;
+        Thu, 13 May 2021 11:37:20 +0000 (UTC)
 Received: from vitty.brq.redhat.com (unknown [10.40.193.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 883AA100763C;
-        Thu, 13 May 2021 11:37:15 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4183010074E5;
+        Thu, 13 May 2021 11:37:18 +0000 (UTC)
 From:   Vitaly Kuznetsov <vkuznets@redhat.com>
 To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -42,9 +42,9 @@ Cc:     Sean Christopherson <seanjc@google.com>,
         Kechen Lu <kechenl@nvidia.com>,
         Maxim Levitsky <mlevitsk@redhat.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] KVM: x86: Invert APICv/AVIC enablement check
-Date:   Thu, 13 May 2021 13:37:09 +0200
-Message-Id: <20210513113710.1740398-2-vkuznets@redhat.com>
+Subject: [PATCH 2/2] KVM: x86: hyper-v: Deactivate APICv only when AutoEOI feature is in use
+Date:   Thu, 13 May 2021 13:37:10 +0200
+Message-Id: <20210513113710.1740398-3-vkuznets@redhat.com>
 In-Reply-To: <20210513113710.1740398-1-vkuznets@redhat.com>
 References: <20210513113710.1740398-1-vkuznets@redhat.com>
 MIME-Version: 1.0
@@ -54,132 +54,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, APICv/AVIC enablement is global ('enable_apicv' module parameter
-for Intel, 'avic' module parameter for AMD) but there's no way to check
-it from vendor-neutral code. Add 'apicv_supported()' to kvm_x86_ops and
-invert kvm_apicv_init() (which now doesn't need to be called from arch-
-specific code).
+APICV_INHIBIT_REASON_HYPERV is currently unconditionally forced upon
+SynIC activation as SynIC's AutoEOI is incompatible with APICv/AVIC. It is,
+however, possible to track whether the feature was actually used by the
+guest and only inhibit APICv/AVIC when needed.
 
-No functional change intended.
+TLFS suggests a dedicated 'HV_DEPRECATING_AEOI_RECOMMENDED' flag to let
+Windows know that AutoEOI feature should be avoided. While it's up to
+KVM userspace to set the flag, KVM can help a bit by exposing global
+APICv/AVIC enablement: in case APICv/AVIC usage is impossible, AutoEOI
+is still preferred.
 
 Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 ---
- arch/x86/include/asm/kvm_host.h | 2 +-
- arch/x86/kvm/svm/svm.c          | 7 ++++++-
- arch/x86/kvm/vmx/vmx.c          | 7 ++++++-
- arch/x86/kvm/x86.c              | 6 +++---
- 4 files changed, 16 insertions(+), 6 deletions(-)
+ arch/x86/include/asm/kvm_host.h |  3 +++
+ arch/x86/kvm/hyperv.c           | 27 +++++++++++++++++++++------
+ 2 files changed, 24 insertions(+), 6 deletions(-)
 
 diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 55efbacfc244..ffafdb7b24cb 100644
+index ffafdb7b24cb..98391c9c18df 100644
 --- a/arch/x86/include/asm/kvm_host.h
 +++ b/arch/x86/include/asm/kvm_host.h
-@@ -1205,6 +1205,7 @@ struct kvm_x86_ops {
- 	void (*hardware_unsetup)(void);
- 	bool (*cpu_has_accelerated_tpr)(void);
- 	bool (*has_emulated_msr)(struct kvm *kvm, u32 index);
-+	bool (*apicv_supported)(void);
- 	void (*vcpu_after_set_cpuid)(struct kvm_vcpu *vcpu);
+@@ -936,6 +936,9 @@ struct kvm_hv {
+ 	/* How many vCPUs have VP index != vCPU index */
+ 	atomic_t num_mismatched_vp_indexes;
  
- 	unsigned int vm_size;
-@@ -1661,7 +1662,6 @@ gpa_t kvm_mmu_gva_to_gpa_system(struct kvm_vcpu *vcpu, gva_t gva,
- 				struct x86_exception *exception);
- 
- bool kvm_apicv_activated(struct kvm *kvm);
--void kvm_apicv_init(struct kvm *kvm, bool enable);
- void kvm_vcpu_update_apicv(struct kvm_vcpu *vcpu);
- void kvm_request_apicv_update(struct kvm *kvm, bool activate,
- 			      unsigned long bit);
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 4dd9b7856e5b..360b3000c5a8 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -4470,16 +4470,21 @@ static int svm_vm_init(struct kvm *kvm)
- 			return ret;
- 	}
- 
--	kvm_apicv_init(kvm, avic);
- 	return 0;
- }
- 
-+static bool svm_avic_supported(void)
-+{
-+	return avic;
-+}
++	/* How many SynICs use 'AutoEOI' feature */
++	atomic_t synic_auto_eoi_used;
 +
- static struct kvm_x86_ops svm_x86_ops __initdata = {
- 	.hardware_unsetup = svm_hardware_teardown,
- 	.hardware_enable = svm_hardware_enable,
- 	.hardware_disable = svm_hardware_disable,
- 	.cpu_has_accelerated_tpr = svm_cpu_has_accelerated_tpr,
- 	.has_emulated_msr = svm_has_emulated_msr,
-+	.apicv_supported = svm_avic_supported,
- 
- 	.vcpu_create = svm_create_vcpu,
- 	.vcpu_free = svm_free_vcpu,
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index f2fd447eed45..3b0f4f9c21b3 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -7034,7 +7034,6 @@ static int vmx_vm_init(struct kvm *kvm)
- 			break;
- 		}
- 	}
--	kvm_apicv_init(kvm, enable_apicv);
- 	return 0;
- }
- 
-@@ -7645,6 +7644,11 @@ static bool vmx_check_apicv_inhibit_reasons(ulong bit)
- 	return supported & BIT(bit);
- }
- 
-+static bool vmx_apicv_supported(void)
-+{
-+	return enable_apicv;
-+}
-+
- static struct kvm_x86_ops vmx_x86_ops __initdata = {
- 	.hardware_unsetup = hardware_unsetup,
- 
-@@ -7652,6 +7656,7 @@ static struct kvm_x86_ops vmx_x86_ops __initdata = {
- 	.hardware_disable = hardware_disable,
- 	.cpu_has_accelerated_tpr = report_flexpriority,
- 	.has_emulated_msr = vmx_has_emulated_msr,
-+	.apicv_supported = vmx_apicv_supported,
- 
- 	.vm_size = sizeof(struct kvm_vmx),
- 	.vm_init = vmx_vm_init,
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 5bd550eaf683..fe7248e11e13 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -8342,16 +8342,15 @@ bool kvm_apicv_activated(struct kvm *kvm)
- }
- EXPORT_SYMBOL_GPL(kvm_apicv_activated);
- 
--void kvm_apicv_init(struct kvm *kvm, bool enable)
-+static void kvm_apicv_init(struct kvm *kvm)
+ 	struct hv_partition_assist_pg *hv_pa_pg;
+ 	struct kvm_hv_syndbg hv_syndbg;
+ };
+diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+index f98370a39936..e1ecc2143794 100644
+--- a/arch/x86/kvm/hyperv.c
++++ b/arch/x86/kvm/hyperv.c
+@@ -87,6 +87,10 @@ static bool synic_has_vector_auto_eoi(struct kvm_vcpu_hv_synic *synic,
+ static void synic_update_vector(struct kvm_vcpu_hv_synic *synic,
+ 				int vector)
  {
--	if (enable)
-+	if (kvm_x86_ops.apicv_supported())
- 		clear_bit(APICV_INHIBIT_REASON_DISABLE,
- 			  &kvm->arch.apicv_inhibit_reasons);
++	struct kvm_vcpu *vcpu = hv_synic_to_vcpu(synic);
++	struct kvm_hv *hv = to_kvm_hv(vcpu->kvm);
++	int auto_eoi_old, auto_eoi_new;
++
+ 	if (vector < HV_SYNIC_FIRST_VALID_VECTOR)
+ 		return;
+ 
+@@ -95,10 +99,25 @@ static void synic_update_vector(struct kvm_vcpu_hv_synic *synic,
  	else
- 		set_bit(APICV_INHIBIT_REASON_DISABLE,
- 			&kvm->arch.apicv_inhibit_reasons);
+ 		__clear_bit(vector, synic->vec_bitmap);
+ 
++	auto_eoi_old = bitmap_weight(synic->auto_eoi_bitmap, 256);
++
+ 	if (synic_has_vector_auto_eoi(synic, vector))
+ 		__set_bit(vector, synic->auto_eoi_bitmap);
+ 	else
+ 		__clear_bit(vector, synic->auto_eoi_bitmap);
++
++	auto_eoi_new = bitmap_weight(synic->auto_eoi_bitmap, 256);
++
++	/* Hyper-V SynIC auto EOI SINTs are not compatible with APICV */
++	if (!auto_eoi_old && auto_eoi_new) {
++		if (atomic_inc_return(&hv->synic_auto_eoi_used) == 1)
++			kvm_request_apicv_update(vcpu->kvm, false,
++						 APICV_INHIBIT_REASON_HYPERV);
++	} else if (!auto_eoi_new && auto_eoi_old) {
++		if (atomic_dec_return(&hv->synic_auto_eoi_used) == 0)
++			kvm_request_apicv_update(vcpu->kvm, true,
++						 APICV_INHIBIT_REASON_HYPERV);
++	}
  }
--EXPORT_SYMBOL_GPL(kvm_apicv_init);
  
- static void kvm_sched_yield(struct kvm_vcpu *vcpu, unsigned long dest_id)
- {
-@@ -10727,6 +10726,7 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
- 	INIT_DELAYED_WORK(&kvm->arch.kvmclock_update_work, kvmclock_update_fn);
- 	INIT_DELAYED_WORK(&kvm->arch.kvmclock_sync_work, kvmclock_sync_fn);
+ static int synic_set_sint(struct kvm_vcpu_hv_synic *synic, int sint,
+@@ -931,12 +950,6 @@ int kvm_hv_activate_synic(struct kvm_vcpu *vcpu, bool dont_zero_synic_pages)
  
-+	kvm_apicv_init(kvm);
- 	kvm_hv_init_vm(kvm);
- 	kvm_page_track_init(kvm);
- 	kvm_mmu_init_vm(kvm);
+ 	synic = to_hv_synic(vcpu);
+ 
+-	/*
+-	 * Hyper-V SynIC auto EOI SINT's are
+-	 * not compatible with APICV, so request
+-	 * to deactivate APICV permanently.
+-	 */
+-	kvm_request_apicv_update(vcpu->kvm, false, APICV_INHIBIT_REASON_HYPERV);
+ 	synic->active = true;
+ 	synic->dont_zero_synic_pages = dont_zero_synic_pages;
+ 	synic->control = HV_SYNIC_CONTROL_ENABLE;
+@@ -2198,6 +2211,8 @@ int kvm_get_hv_cpuid(struct kvm_vcpu *vcpu, struct kvm_cpuid2 *cpuid,
+ 				ent->eax |= HV_X64_ENLIGHTENED_VMCS_RECOMMENDED;
+ 			if (!cpu_smt_possible())
+ 				ent->eax |= HV_X64_NO_NONARCH_CORESHARING;
++			if (kvm_x86_ops.apicv_supported())
++				ent->eax |= HV_DEPRECATING_AEOI_RECOMMENDED;
+ 			/*
+ 			 * Default number of spinlock retry attempts, matches
+ 			 * HyperV 2016.
 -- 
 2.31.1
 
