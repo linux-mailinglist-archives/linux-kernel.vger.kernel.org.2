@@ -2,136 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1590237F6A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 13:23:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D48337F6A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 13:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232700AbhEMLYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 07:24:51 -0400
-Received: from smtp-35-i2.italiaonline.it ([213.209.12.35]:59971 "EHLO
-        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231269AbhEMLYn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 07:24:43 -0400
-Received: from oxapps-15-086.iol.local ([10.101.8.96])
-        by smtp-35.iol.local with ESMTPA
-        id h9RDla74apK9wh9RDl9TCH; Thu, 13 May 2021 13:23:31 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1620905011; bh=WOgoY8/LAB0nyFGWSAnRMCy3MHmckZrV+4bY4yJvUBE=;
-        h=From;
-        b=Qzf5TJkL6A5Ccnzeyd0qpITWG9zuwKddm4Wkjbs2EEpckaQ2KY0tM8Ma4XViIq5Yd
-         O6Ah7aUA14kqpjM1jUPvpVkVZSAiy9T+Xarvs2Mp5bzDiXKaRcIcAf1ZcOwMEYZ7mg
-         S0690CmXN+T59H2SzqzDIjyBz4oVaPqPNYZB9Tl5mWDGNbBN19J1rbRDKLaQNbP1I+
-         c60ZBPt/coKuwukMcZnKyJXaOQGlKJTPZDtAwHwuZgoahvsAeIyWFFND3Ik4NOrQhr
-         3aBe/M1uJMIGUWbl4MSHYJ9Y8KnuGLLNyP4maayzmxTdALgll8YiAfRarDoOZNw90l
-         Ur18YMR8im1TQ==
-X-CNFS-Analysis: v=2.4 cv=A9ipg4aG c=1 sm=1 tr=0 ts=609d0c33 cx=a_exe
- a=v+7NFWUWLAxl90LcUtT8lA==:117 a=C-c6dMTymFoA:10 a=IkcTkHD0fZMA:10
- a=vesc6bHxzc4A:10 a=bGNZPXyTAAAA:8 a=wn1pJw0M0rjdo80TUYYA:9
- a=qVAXYMN7La3Y-hfU:21 a=DukbQzopxqIU8XLG:21 a=QEXdDO2ut3YA:10
- a=yL4RfsBhuEsimFDS2qtJ:22
-Date:   Thu, 13 May 2021 13:23:31 +0200 (CEST)
-From:   Dario Binacchi <dariobin@libero.it>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Gianluca Falavigna <gianluca.falavigna@inwind.it>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org
-Message-ID: <434926916.298425.1620905011355@mail1.libero.it>
-In-Reply-To: <20210510123608.wywx3bb3vrgkzq2o@pengutronix.de>
-References: <20210509124309.30024-1-dariobin@libero.it>
- <20210509124309.30024-4-dariobin@libero.it>
- <20210510122512.5lcvvvwzk6ujamzb@pengutronix.de>
- <20210510123608.wywx3bb3vrgkzq2o@pengutronix.de>
-Subject: Re: [PATCH 3/3] can: c_can: cache frames to operate as a true FIFO
+        id S232948AbhEMLY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 07:24:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232873AbhEMLYz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 07:24:55 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA9A0C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 04:23:45 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id w3so39389306ejc.4
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 04:23:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=uk3Nuoqi9WrrlO8LNdfRu9oeJEhzgooAvqOd7EA2bC0=;
+        b=FOqK6+boQCGhL7F7JNoJsU/9mIn/Y1xKY2MqKgw4q9fraenfRraM/G6k6jrjiUe9RK
+         hLG2N8fFV8t5Z4xoSTlicXV/YV2BeeA1F3O/rLSZoD8/Lb3cL++5o10WE1Oz8RXf2g1j
+         WYKmryrZRvEIf4WF2T4IwKxQrUQWtFrhL4aJCaci5puuVwW8CDQptlFiQF/OZgbdRhm5
+         BmoS5AP98UWyP/qcW5+CTGJibOt6EzoW++ijBclTm3R5VL5zsDG78d1F1a+8kNWYQlS0
+         eWrgyais1Lfc3lYifNHi4I11W1qpB/UUX67YxZDkX4cTAcENzt2Xm9S5PFMMDuxYFjtd
+         r+zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=uk3Nuoqi9WrrlO8LNdfRu9oeJEhzgooAvqOd7EA2bC0=;
+        b=P4FvhCa94DMxTGhJJlX/0JHlFSg6cw9pCTiEWwMuncfDVGnjqy03xiVx7KCVQ/cRz3
+         TQG0zSJpDf5y4CUxMSAnOhmOuiddAQESzvssc739ZQjP8yfu1Gcemn47ZRjrBQTmaeMg
+         CXg6CrZdnyvD+bDv1iOVHVe5/UjYtFQVgb/qUHMSj5pgFiUkcAwSgvjSmlbgrDFKrupk
+         laatHL2HmqyJFfaON+wrEVg+XatbicGIVFyhsIBn+g7CWO1j6w5BRMgjdpffRh8kqDHx
+         BeKO/GroB6GrWsfLUpjaXeNgbiolQ4kqoh2+zLGr6Ar646BLdVF8ZshSacUOxAW5aReC
+         3Mmg==
+X-Gm-Message-State: AOAM530OGdX1U3uQtV+lx0fvg2ZAHte5hHrtSutTLgDfoMRrInFCNzaV
+        Er1prVyvAJCurCp2uyr6WoqsXTtuCKXaPudF5wLldiukgNxvzpG/
+X-Google-Smtp-Source: ABdhPJwBanYJkhng8FkxMKDscdU9yWBNt8sAdYEoJgKHghtwkyMRGaR6oLeFVKCWg0NAvYnalMGjSxoqqJO21/lsDtI=
+X-Received: by 2002:a17:906:c211:: with SMTP id d17mr8002065ejz.247.1620905024349;
+ Thu, 13 May 2021 04:23:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Mailer: Open-Xchange Mailer v7.10.3-Rev34
-X-Originating-IP: 185.33.57.41
-X-Originating-Client: open-xchange-appsuite
-x-libjamsun: XzH5u9jq99NX4od7nxgeKsNPlzXQ8dBq
-x-libjamv: mhMvMv7o5XE=
-X-CMAE-Envelope: MS4xfGQ5Om7oJwdC3MVFnBmyX6LdXNhOleC6Qc/QB9BTz7Sn6uu2mOPvhGn+2atHH1UKPFo8TtR3ffZW7ErWPktjRAkDyxf/hSD6n/+GQRsmSVdf+Pb0McgU
- doGxJCOF5nTizrPbff1StvkFTTP1SRLV38m+JR0Z4b9C5V6Dy0Qfb0nR/kSNwMLHyFq4x7twb6vt8JtzoM6jPgzdME3vl1iIzsa6hbg16G7M2gB1nDdIoVLG
- Qee4uenIquALwWcIBSj3n5br4FYEHkHR0ugHf+gJ122qmF9Zx7DsYzWjPS0dA3yRlw9pzTGOzLyr3OWGh9l9De1XNRy4pik8GetHmqX+ubyXV4M42Jma2ZX1
- FRyBXaTP3rVIxVJjUUVHpZsjzHza5DrL+iB+cwGYuwG87jj3kXlcbJ21QPDnkOnpd62kme+WWR0l+z2mFLIQtdz0AL5bKskbUljDGXzHyK5kn18wIxFcBp1V
- bH/4+/a9Uv4GThFIIB6hMkYKsVr1Zb3ZZrGh+w==
+References: <20210512144827.811958675@linuxfoundation.org>
+In-Reply-To: <20210512144827.811958675@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 13 May 2021 16:53:32 +0530
+Message-ID: <CA+G9fYtrG5TERBDNHewFP7fJnxbpbaqxBvm=psvLxvVFup8suw@mail.gmail.com>
+Subject: Re: [PATCH 5.11 000/601] 5.11.21-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+On Wed, 12 May 2021 at 20:57, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.11.21 release.
+> There are 601 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 14 May 2021 14:47:09 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.11.21-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.11.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-> Il 10/05/2021 14:36 Marc Kleine-Budde <mkl@pengutronix.de> ha scritto:
-> 
->  
-> On 10.05.2021 14:25:15, Marc Kleine-Budde wrote:
-> > On 09.05.2021 14:43:09, Dario Binacchi wrote:
-> > > As reported by a comment in the c_can_start_xmit() this was not a FIFO.
-> > > C/D_CAN controller sends out the buffers prioritized so that the lowest
-> > > buffer number wins.
-> > > 
-> > > What did c_can_start_xmit() do if it found tx_active = 0x80000000 ? It
-> > > waited until the only frame of the FIFO was actually transmitted by the
-> > > controller. Only one message in the FIFO but we had to wait for it to
-> > > empty completely to ensure that the messages were transmitted in the
-> > > order in which they were loaded.
-> > > 
-> > > By storing the frames in the FIFO without requiring its transmission, we
-> > > will be able to use the full size of the FIFO even in cases such as the
-> > > one described above. The transmission interrupt will trigger their
-> > > transmission only when all the messages previously loaded but stored in
-> > > less priority positions of the buffers have been transmitted.
-> > 
-> > The algorithm you implemented looks a bit too complicated to me. Let me
-> > sketch the algorithm that's implemented by several other drivers.
-> > 
-> > - have a power of two number of TX objects
-> > - add a number of objects to struct priv (tx_num)
-> >   (or make it a define, if the number of tx objects is compile time fixed)
-> > - add two "unsigned int" variables to your struct priv,
-> >   one "tx_head", one "tx_tail"
-> > - the hard_start_xmit() writes to priv->tx_head & (priv->tx_num - 1)
-> > - increment tx_head
-> > - stop the tx_queue if there is no space or if the object with the
-> >   lowest prio has been written
-> > - in TX complete IRQ, handle priv->tx_tail object
-> > - increment tx_tail
-> > - wake queue if there is space but don't wake if we wait for the lowest
-> >   prio object to be TX completed.
-> > 
-> > Special care needs to be taken to implement that lock-less and race
-> > free. I suggest to look the the mcp251xfd driver.
-> 
-> After converting the driver to the above outlined implementation it
-> should be more straight forward to add the caching you implemented.  
-> 
 
-I took some time to think about your suggestions.
-The submitted patch was developed trying to improve the
-CAN transmission using the current driver design for minimize
-the creation of bugs.
-If I'm not missing something you suggest me to change the
-driver design as a pre-condition to apply an updated version
-of my patch. IMHO this would increase the possibility of generating
-bugs, even for parts of the code that are considered stable.
-If the algorithm I have implemented is a bit too complicated,
-let's try to simplify it starting from the submitted patch.
+Results from Linaro=E2=80=99s test farm.
 
-Waiting for your reply, thanks and regards
-Dario
+Apart from mips clang build failures no other new test failures noticed.
 
-> regards,
-> Marc
-> 
-> -- 
-> Pengutronix e.K.                 | Marc Kleine-Budde           |
-> Embedded Linux                   | https://www.pengutronix.de  |
-> Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-> Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+## Build
+* kernel: 5.11.21-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.11.y
+* git commit: 1ec08480ab8706a140351f1c2e58d1624a1e0942
+* git describe: v5.11.19-944-g1ec08480ab87
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.11.y/build/v5.11=
+.19-944-g1ec08480ab87
+
+## Regressions (compared to v5.11.19-342-g601189766731)
+
+* mips, build
+  - clang-10-allnoconfig
+  - clang-10-defconfig
+  - clang-10-tinyconfig
+  - clang-11-allnoconfig
+  - clang-11-defconfig
+  - clang-11-tinyconfig
+  - clang-12-allnoconfig
+  - clang-12-defconfig
+  - clang-12-tinyconfig
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## No fixes (compared to v5.11.19-342-g601189766731)
+
+## Test result summary
+ total: 72537, pass: 61040, fail: 1006, skip: 10228, xfail: 263,
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 193 total, 193 passed, 0 failed
+* arm64: 27 total, 27 passed, 0 failed
+* i386: 25 total, 25 passed, 0 failed
+* mips: 45 total, 36 passed, 9 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x86_64: 27 total, 27 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* kselftest-android
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kvm
+* kselftest-lib
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* timesync-off
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
