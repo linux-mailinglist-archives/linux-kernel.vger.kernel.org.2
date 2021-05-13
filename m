@@ -2,275 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAE8238006F
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 00:37:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4B5238007A
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 00:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232865AbhEMWiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 18:38:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230435AbhEMWiW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 18:38:22 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF07DC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 15:37:10 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id w13so12157685ilv.11
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 15:37:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=D+DoXl+8zslUlPBGQ8St7n+zP/EI6EJDDALbA5soQAY=;
-        b=DX51pErfJbc4V55hpCakqjrk16G/qM4vcgQ1XSIY+AB9C57RMMcHqkbWZOY7AxA7+K
-         TP4D6NZfotaMW1jL57zlBM5uPzxFw2CtgQXg+anCLIKU1LAhFm/HWXRYkiT2DffuccUn
-         4K/lYbm7pklyKvmN2i2ZHN4k94VAfrc6Dqoio3Sa4ViaVfu/dDtBUl2Ots9VPzzZjsHy
-         uBkIqwiUPskpKCet4cfM7IKiUpCkYItk/Nf5f8Eo9JuZ0noJC4tBSdJQ8ggohtqWEo7s
-         twGULxwNstH83oFHkCJ6pLXUpGm3qgUbQ086B5VI36x6mk/qCFr6Waz5sivGhDuN/2ov
-         eg3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=D+DoXl+8zslUlPBGQ8St7n+zP/EI6EJDDALbA5soQAY=;
-        b=Po5y9l0V+C60PId3qANpWBxxj/Bk+Dme9q/YCghaZkEA29fLlXBpMGnbpNzsU8De6X
-         WObjSRL5soq+JJqQ2W0mXAxtoFgagG94kZgKkOnn5Cf5TAbrxnQXM9gchuS8k/DmL9Hc
-         XhfDI4ZZ4dQM+OwJA1imzkw+C00Kw0p+8iWIIEJ6++WbMhIvH5DxZGLN82QCQ9Bkf8PE
-         bFfIyg7Qu4Mtzksiy6O2wRQv+tamWz622gsXywV7xPYgutdxudec6RHW/SGeOTVBMDli
-         TSpMzTQgepPoJRYK+zuOREB81V2ETctJcP6FeFZBBn8o1Kb+MNXKHSSoOOuqAjQ+OiKG
-         7ZRQ==
-X-Gm-Message-State: AOAM5323qfbMQZYH2Rk9h/7hnsv6ob7NdlObaHaT1LJvQDQKMpsVhgzb
-        u4z3JpWk21UNP8nAC8lIIsHy7etq+EfBNw2fWuNm8w==
-X-Google-Smtp-Source: ABdhPJxEPF7930CBGUeUs8cLWEfzFA/46S/da6Id3rJVOBNV2PMJcEtcrSenEtTLlNZzWXFQC9wu5nyNPK3kA1T2oi8=
-X-Received: by 2002:a05:6e02:1062:: with SMTP id q2mr38036489ilj.194.1620945429995;
- Thu, 13 May 2021 15:37:09 -0700 (PDT)
+        id S233709AbhEMWjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 18:39:55 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:34054 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229466AbhEMWjy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 18:39:54 -0400
+Received: from p5b127fd3.dip0.t-ipconnect.de ([91.18.127.211] helo=phil.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1lhJyU-0007NB-NC; Fri, 14 May 2021 00:38:34 +0200
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Jacob Chen <jacob-chen@iotwrt.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH v5 07/25] media: rockchip/rga: use pm_runtime_resume_and_get()
+Date:   Fri, 14 May 2021 00:38:34 +0200
+Message-ID: <14678575.uLZWGnKmhe@phil>
+In-Reply-To: <ce18a4f9ca1bdcf4c68e77eaa410ec03a6ec8fe2.1620314616.git.mchehab+huawei@kernel.org>
+References: <cover.1620314616.git.mchehab+huawei@kernel.org> <ce18a4f9ca1bdcf4c68e77eaa410ec03a6ec8fe2.1620314616.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-References: <20210513200350.854429-1-davidgow@google.com> <CAGS_qxoOM_STeiDQSdrYu6_5upOMMeBcg8NXjZuKCJ=rc=7Vag@mail.gmail.com>
- <CABVgOSmi01-DpECo0AYSGJWMbPTEHzhA4pRG-vSimfMsF_xpFw@mail.gmail.com>
-In-Reply-To: <CABVgOSmi01-DpECo0AYSGJWMbPTEHzhA4pRG-vSimfMsF_xpFw@mail.gmail.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Thu, 13 May 2021 15:36:58 -0700
-Message-ID: <CAGS_qxpQ4KYVX9OWc6LBo2ZS1Txoq0uQTmnP41N+FH9LC2_Okg@mail.gmail.com>
-Subject: Re: [PATCH] kunit: Add gnu_printf specifiers
-To:     David Gow <davidgow@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 1:48 PM David Gow <davidgow@google.com> wrote:
->
-> On Fri, May 14, 2021 at 4:25 AM Daniel Latypov <dlatypov@google.com> wrot=
-e:
-> >
-> > On Thu, May 13, 2021 at 1:03 PM 'David Gow' via KUnit Development
-> > <kunit-dev@googlegroups.com> wrote:
-> > >
-> > > Some KUnit functions use variable arguments to implement a printf-lik=
-e
-> > > format string. Use the __printf() attribute to let the compiler warn =
-if
-> > > invalid format strings are passed in.
-> > >
-> > > If the kernel is build with W=3D1, it complained about the lack of th=
-ese
-> > > specifiers, e.g.:
-> > > ../lib/kunit/test.c:72:2: warning: function =E2=80=98kunit_log_append=
-=E2=80=99 might be a candidate for =E2=80=98gnu_printf=E2=80=99 format attr=
-ibute [-Wsuggest-attribute=3Dformat]
-> > >
-> > > Signed-off-by: David Gow <davidgow@google.com>
-> >
-> > Reviewed-by: Daniel Latypov <dlatypov@google.com>
-> >
-> > As noted below, these additions don't really do anything.
-> > Unfortunately, they just make compiler warnings noisier in the case of
-> > kunit_log_append().
-> >
-> > But if this silences a W=3D1 warning, then we should probably add them =
-in.
-> > I guess it also serves as documentation that we're using the same
-> > standard format specifiers and not something custom, which is nice.
-> >
->
-> Yeah: I did this to get rid of the W=3D1 warnings. I don't know if
-> there's a way of doing this which would be less verbose: I do think
-> that the format checking is worthwhile in general, even if we're
-> hitting a few nasty cases where things are nested in macros.
+Am Donnerstag, 6. Mai 2021, 17:25:45 CEST schrieb Mauro Carvalho Chehab:
+> Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+> added pm_runtime_resume_and_get() in order to automatically handle
+> dev->power.usage_count decrement on errors.
+> 
+> Use the new API, in order to cleanup the error check logic.
+> 
+> Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  drivers/media/platform/rockchip/rga/rga-buf.c | 3 +--
+>  drivers/media/platform/rockchip/rga/rga.c     | 4 +++-
+>  2 files changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/media/platform/rockchip/rga/rga-buf.c b/drivers/media/platform/rockchip/rga/rga-buf.c
+> index bf9a75b75083..81508ed5abf3 100644
+> --- a/drivers/media/platform/rockchip/rga/rga-buf.c
+> +++ b/drivers/media/platform/rockchip/rga/rga-buf.c
+> @@ -79,9 +79,8 @@ static int rga_buf_start_streaming(struct vb2_queue *q, unsigned int count)
+>  	struct rockchip_rga *rga = ctx->rga;
+>  	int ret;
+>  
+> -	ret = pm_runtime_get_sync(rga->dev);
+> +	ret = pm_runtime_resume_and_get(rga->dev);
+>  	if (ret < 0) {
+> -		pm_runtime_put_noidle(rga->dev);
+>  		rga_buf_return_buffers(q, VB2_BUF_STATE_QUEUED);
+>  		return ret;
+>  	}
 
-Yeah. In case it wasn't clear, I think both annotations are clearly
-worth having if they silence W=3D1 warnings.
-We're more likely to produce more noise w/ those warnings than the
-extra noise of someone making a typo or forgetting in a kunit_info()
-somewhere while writing a test.
+looks ok
 
-It's just a bit sad that doing what the compiler suggests doesn't
-really make life better :(
+> diff --git a/drivers/media/platform/rockchip/rga/rga.c b/drivers/media/platform/rockchip/rga/rga.c
+> index 9d122429706e..bf3fd71ec3af 100644
+> --- a/drivers/media/platform/rockchip/rga/rga.c
+> +++ b/drivers/media/platform/rockchip/rga/rga.c
+> @@ -866,7 +866,9 @@ static int rga_probe(struct platform_device *pdev)
+>  		goto unreg_video_dev;
+>  	}
+>  
+> -	pm_runtime_get_sync(rga->dev);
+> +	ret = pm_runtime_resume_and_get(rga->dev);
+> +	if (ret < 0)
+> +		goto unreg_video_dev;
+>  
+>  	rga->version.major = (rga_read(rga, RGA_VERSION_INFO) >> 24) & 0xFF;
+>  	rga->version.minor = (rga_read(rga, RGA_VERSION_INFO) >> 20) & 0x0F;
 
->
->
-> > > ---
-> > >  include/kunit/test.h      | 2 +-
-> > >  lib/kunit/string-stream.h | 6 +++---
-> > >  2 files changed, 4 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/include/kunit/test.h b/include/kunit/test.h
-> > > index 49601c4b98b8..af2e386b867c 100644
-> > > --- a/include/kunit/test.h
-> > > +++ b/include/kunit/test.h
-> > > @@ -610,7 +610,7 @@ static inline void *kunit_kzalloc(struct kunit *t=
-est, size_t size, gfp_t gfp)
-> > >
-> > >  void kunit_cleanup(struct kunit *test);
-> > >
-> > > -void kunit_log_append(char *log, const char *fmt, ...);
-> > > +void __printf(2, 3) kunit_log_append(char *log, const char *fmt, ...=
-);
-> >
-> > Before this patch:
-> > ../lib/kunit/kunit-example-test.c: In function =E2=80=98example_simple_=
-test=E2=80=99:
-> > ../include/linux/kern_levels.h:5:18: warning: format =E2=80=98%s=E2=80=
-=99 expects
-> > argument of type =E2=80=98char *=E2=80=99, but argument 3 has type =E2=
-=80=98int=E2=80=99 [-Wformat=3D]
-> >     5 | #define KERN_SOH "\001"  /* ASCII Start Of Header */
-> >       |                  ^~~~~~
-> > ../include/kunit/test.h:622:10: note: in definition of macro =E2=80=98k=
-unit_log=E2=80=99
-> >   622 |   printk(lvl fmt, ##__VA_ARGS__);    \
-> >       |          ^~~
-> > ../include/kunit/test.h:641:2: note: in expansion of macro =E2=80=98kun=
-it_printk=E2=80=99
-> >   641 |  kunit_printk(KERN_INFO, test, fmt, ##__VA_ARGS__)
-> >       |  ^~~~~~~~~~~~
-> > ../include/linux/kern_levels.h:14:19: note: in expansion of macro =E2=
-=80=98KERN_SOH=E2=80=99
-> >    14 | #define KERN_INFO KERN_SOH "6" /* informational */
-> >       |                   ^~~~~~~~
-> > ../include/kunit/test.h:641:15: note: in expansion of macro =E2=80=98KE=
-RN_INFO=E2=80=99
-> >   641 |  kunit_printk(KERN_INFO, test, fmt, ##__VA_ARGS__)
-> >       |               ^~~~~~~~~
-> > ../lib/kunit/kunit-example-test.c:23:2: note: in expansion of macro =E2=
-=80=98kunit_info=E2=80=99
-> >    23 |  kunit_info(test, "invalid: %s", 42);
-> >
-> > After this patch, it gets noisier:
-> > In file included from ../lib/kunit/kunit-example-test.c:9:
-> > ../lib/kunit/kunit-example-test.c: In function =E2=80=98example_simple_=
-test=E2=80=99:
-> > ../include/linux/kern_levels.h:5:18: warning: format =E2=80=98%s=E2=80=
-=99 expects
-> > argument of type =E2=80=98char *=E2=80=99, but argument 3 has type =E2=
-=80=98int=E2=80=99 [-Wformat=3D]
-> >     5 | #define KERN_SOH "\001"  /* ASCII Start Of Header */
-> >       |                  ^~~~~~
-> > ../include/kunit/test.h:622:10: note: in definition of macro =E2=80=98k=
-unit_log=E2=80=99
-> >   622 |   printk(lvl fmt, ##__VA_ARGS__);    \
-> >       |          ^~~
-> > ../include/kunit/test.h:641:2: note: in expansion of macro =E2=80=98kun=
-it_printk=E2=80=99
-> >   641 |  kunit_printk(KERN_INFO, test, fmt, ##__VA_ARGS__)
-> >       |  ^~~~~~~~~~~~
-> > ../include/linux/kern_levels.h:14:19: note: in expansion of macro =E2=
-=80=98KERN_SOH=E2=80=99
-> >    14 | #define KERN_INFO KERN_SOH "6" /* informational */
-> >       |                   ^~~~~~~~
-> > ../include/kunit/test.h:641:15: note: in expansion of macro =E2=80=98KE=
-RN_INFO=E2=80=99
-> >   641 |  kunit_printk(KERN_INFO, test, fmt, ##__VA_ARGS__)
-> >       |               ^~~~~~~~~
-> > ../lib/kunit/kunit-example-test.c:23:2: note: in expansion of macro =E2=
-=80=98kunit_info=E2=80=99
-> >    23 |  kunit_info(test, "invalid: %s", 42);
-> >       |  ^~~~~~~~~~
-> > ../include/kunit/test.h:105:31: warning: format =E2=80=98%s=E2=80=99 ex=
-pects argument
-> > of type =E2=80=98char *=E2=80=99, but argument 4 has type =E2=80=98int=
-=E2=80=99 [-Wformat=3D]
-> >   105 | #define KUNIT_SUBTEST_INDENT  "    "
-> >       |                               ^~~~~~
-> > ../include/kunit/test.h:623:42: note: in definition of macro =E2=80=98k=
-unit_log=E2=80=99
-> >   623 |   kunit_log_append((test_or_suite)->log, fmt "\n", \
-> >       |                                          ^~~
-> > ../include/kunit/test.h:628:23: note: in expansion of macro
-> > =E2=80=98KUNIT_SUBTEST_INDENT=E2=80=99
-> >   628 |  kunit_log(lvl, test, KUNIT_SUBTEST_INDENT "# %s: " fmt,  \
-> >       |                       ^~~~~~~~~~~~~~~~~~~~
-> > ../include/kunit/test.h:641:2: note: in expansion of macro =E2=80=98kun=
-it_printk=E2=80=99
-> >   641 |  kunit_printk(KERN_INFO, test, fmt, ##__VA_ARGS__)
-> >       |  ^~~~~~~~~~~~
-> > ../lib/kunit/kunit-example-test.c:23:2: note: in expansion of macro =E2=
-=80=98kunit_info=E2=80=99
-> >    23 |  kunit_info(test, "invalid: %s", 42);
-> >       |  ^~~~~~~~~~
-> >
-> >
->
-> Yeah: that is pretty ugly. TBH, it was pretty ugly beforehand, and
-> this does make it worse. I guess that's the price we pay for having so
-> many nested macros, as well.
-> Personally, I suspect this is still worth it to get rid of the
-> compiler warnings, but only just.
->
-> > >
-> > >  /*
-> > >   * printk and log to per-test or per-suite log buffer.  Logging only=
- done
-> > > diff --git a/lib/kunit/string-stream.h b/lib/kunit/string-stream.h
-> > > index fe98a00b75a9..5e94b623454f 100644
-> > > --- a/lib/kunit/string-stream.h
-> > > +++ b/lib/kunit/string-stream.h
-> > > @@ -35,9 +35,9 @@ struct string_stream *alloc_string_stream(struct ku=
-nit *test, gfp_t gfp);
-> > >  int __printf(2, 3) string_stream_add(struct string_stream *stream,
-> > >                                      const char *fmt, ...);
-> > >
-> > > -int string_stream_vadd(struct string_stream *stream,
-> > > -                      const char *fmt,
-> > > -                      va_list args);
-> > > +int __printf(2, 0) string_stream_vadd(struct string_stream *stream,
-> > > +                                     const char *fmt,
-> > > +                                     va_list args);
-> >
-> > This is never called with a literal `fmt` string.
-> > It's currently only ever called through the _add variant, which does
-> > have __printf(2,3).
-> >
-> > So this can't catch any mistakes currently.
-> > And I think it's hard to imagine we'd ever pass in a literal format
-> > string w/ a va_list.
-> >
->
-> Yeah: I was tempted to leave this one out, but it was triggering
-> warnings with the "you should use __printf()" heuristic. In fact, it
-> had two warnings.
-> The __printf() specifier documentation does specifically call out
-> cases where a va_list is passed in as a case to use '0' for the
-> positional argument, but only the format string is checked for
-> validity: there's no typechecking.
->
-> > >
-> > >  char *string_stream_get_string(struct string_stream *stream);
-> > >
-> > > --
-> > > 2.31.1.751.gd2f1c929bd-goog
-> > >
-> > > --
-> > > You received this message because you are subscribed to the Google Gr=
-oups "KUnit Development" group.
-> > > To unsubscribe from this group and stop receiving emails from it, sen=
-d an email to kunit-dev+unsubscribe@googlegroups.com.
-> > > To view this discussion on the web visit https://groups.google.com/d/=
-msgid/kunit-dev/20210513200350.854429-1-davidgow%40google.com.
+hmm, the whole error handling in rga_probe looks fishy to my untrained eyes.
+
+But I guess the easiest will be to apply your patch first and then
+investigate and clean up the non-matching alloc - releae calls, so
+
+Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+
+
+
