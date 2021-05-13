@@ -2,101 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B2F737FF9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 23:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94DC837FFA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 23:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233287AbhEMVJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 17:09:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47992 "EHLO
+        id S233310AbhEMVMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 17:12:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233221AbhEMVJn (ORCPT
+        with ESMTP id S232569AbhEMVMA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 17:09:43 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FDE4C061574;
-        Thu, 13 May 2021 14:08:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=puMCBatXvbMaxJ2hgetoloHiCLuOQHxAQ0mJZIFbNO4=; b=lnkdnmEFdc96TvOfe+wgZjwi8T
-        wHYrRqnF/Q3VjUvdkqzVp4p+/N+PoSHFJsxDq654rkmB8gf6/3iqBGRwec+9BwDP2W7skuy/qlKR6
-        xeFwqYaXXfVmdPn8kW1kFGbNaDHXzGTlhV8bwiU7B70Acd6t0SNtHFX4m2GYw0kJ+Q5fUn14XeZCJ
-        HMXi9g6UfjrwABORcO+yyWP9wEwtB0ThbvKINLKZjLMgEXopt7o7p0kCbegGfysNVBoCOizzWYhIS
-        qtzA7gM4QlCPoQ8K/eqvBLEeCE+veP90WBsul6d/+UGj25k9wZFiO1LexQV2r5rqDuaZZ7R7VuaZD
-        8repElig==;
-Received: from [2601:1c0:6280:3f0::7376]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lhIZJ-00BX4A-TH; Thu, 13 May 2021 21:08:29 +0000
-Subject: Re: mmotm 2021-05-12-21-46 uploaded (arch/x86/mm/pgtable.c)
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     broonie@kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-next@vger.kernel.org, mhocko@suse.cz,
-        mm-commits@vger.kernel.org, sfr@canb.auug.org.au
-References: <20210513044710.MCXhM_NwC%akpm@linux-foundation.org>
- <151ddd7f-1d3e-a6f7-daab-e32f785426e1@infradead.org>
- <54055e72-34b8-d43d-2ad3-87e8c8fa547b@csgroup.eu>
- <20210513134754.ab3f1a864b0156ef99248401@linux-foundation.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <a3ac0b42-f779-ffaf-c6d7-0d4b40dc25f2@infradead.org>
-Date:   Thu, 13 May 2021 14:08:29 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Thu, 13 May 2021 17:12:00 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1CB6C061574;
+        Thu, 13 May 2021 14:10:49 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id n2so41763607ejy.7;
+        Thu, 13 May 2021 14:10:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=7UYaHIQgi80Po9Ce1GNSBB3/msApKtw49od1OnpSRLQ=;
+        b=VXz8Kew7i2eGa5UHzAe1QVYj+AmbXsMnYMDQhXWHZJQSIgyjBshES+6miK3urq7OiZ
+         3Q4JY3lhZRUqmRnB/6Iz2BJSIexrUyW1KelraUQ7JnU6xLr7HxMnKCflLkL2w2kBew0Q
+         uYSzRudFJuoRroNyu9SQQ7g8JVaMGbAoHJaArIsd7K7wEcfFXtvHMPuBqBCdM4fQ+oRm
+         /tsQd+lcJEoZgUKLN55BeAGHNtaNDfsAW80QXNrV+kDIJwGJzQ4sRIE4IBG929cSNBgs
+         Z8/Tk0D6Gc3rN8ie6F8xQJmOdR1L3a4OMbj0B8HqGbKIK3PHf8DlDTzLUaIeM0b0GQe+
+         TgVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=7UYaHIQgi80Po9Ce1GNSBB3/msApKtw49od1OnpSRLQ=;
+        b=elCrjpk7UGc5w3sdaGXGDHWFVGmier3Ek0KErrFamTrNeAbgddnqikmRTiVC9ENGcd
+         Sl9JteUilJwThjLN+Z6eA6+ZRsaOybRoq1DNiv7Y+pt9A+hUyYkL8MqAaKmrsK6h64Oq
+         POatydwLrHYmvrmbc/SIKTErfyhJiQWjjgM0illyJYsz8wwV0c5bWsobeLNOLOHmRGhU
+         qkVEQtLMzaLIjl6Ar3Nf7VFzttHo2p8QZYt1tJiRvIELeVB83PcHqHQpSaf2C/NbdQ1w
+         RDq8DaTyaUWnXHpt135j+DHDek6N1Tj3DjFOCs/C2rS5p2/uxNVbyBA0JY8QWsi00mm7
+         /J+Q==
+X-Gm-Message-State: AOAM532IkOTs9ZITq0ytbo57JuQk+N+kdsVneqyS5AgYKnjZtqSLE6b8
+        101i0f6EBXnWMTltsLPM3Iw=
+X-Google-Smtp-Source: ABdhPJzlzbuNl/iYjUl+eN6U/N9N0HLEZ4ZUh0nZsLbeqB4aY46nRr7hl1DgDp9b/osKmBwDyIJ1vw==
+X-Received: by 2002:a17:906:28d4:: with SMTP id p20mr45929283ejd.552.1620940248659;
+        Thu, 13 May 2021 14:10:48 -0700 (PDT)
+Received: from ubuntu-laptop (ip5f5bec5d.dynamic.kabel-deutschland.de. [95.91.236.93])
+        by smtp.googlemail.com with ESMTPSA id v12sm3125600edb.81.2021.05.13.14.10.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 May 2021 14:10:48 -0700 (PDT)
+Message-ID: <28226dc0f9c91e9bbbf9db830a3a63524d673b8a.camel@gmail.com>
+Subject: Re: [PATCH v5 1/2] scsi: ufs: Introduce hba performance monitor
+ sysfs nodes
+From:   Bean Huo <huobean@gmail.com>
+To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Thu, 13 May 2021 23:10:45 +0200
+In-Reply-To: <1619058521-35307-2-git-send-email-cang@codeaurora.org>
+References: <1619058521-35307-1-git-send-email-cang@codeaurora.org>
+         <1619058521-35307-2-git-send-email-cang@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-In-Reply-To: <20210513134754.ab3f1a864b0156ef99248401@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/13/21 1:47 PM, Andrew Morton wrote:
-> On Thu, 13 May 2021 19:09:23 +0200 Christophe Leroy <christophe.leroy@csgroup.eu> wrote:
+On Wed, 2021-04-21 at 19:28 -0700, Can Guo wrote:
+> Add a new sysfs group which has nodes to monitor data/request
+> transfer
 > 
->>
->>
->>> on i386:
->>>
->>> ../arch/x86/mm/pgtable.c:703:5: error: redefinition of ‘pud_set_huge’
->>>   int pud_set_huge(pud_t *pud, phys_addr_t addr, pgprot_t prot)
->>>       ^~~~~~~~~~~~
->>> In file included from ../include/linux/mm.h:33:0,
->>>                   from ../arch/x86/mm/pgtable.c:2:
->>> ../include/linux/pgtable.h:1387:19: note: previous definition of ‘pud_set_huge’ was here
->>>   static inline int pud_set_huge(pud_t *pud, phys_addr_t addr, pgprot_t prot)
->>>                     ^~~~~~~~~~~~
->>> ../arch/x86/mm/pgtable.c:758:5: error: redefinition of ‘pud_clear_huge’
->>>   int pud_clear_huge(pud_t *pud)
->>>       ^~~~~~~~~~~~~~
->>> In file included from ../include/linux/mm.h:33:0,
->>>                   from ../arch/x86/mm/pgtable.c:2:
->>> ../include/linux/pgtable.h:1391:19: note: previous definition of ‘pud_clear_huge’ was here
->>>   static inline int pud_clear_huge(pud_t *pud)
->>>                     ^~~~~~~~~~~~~~
->>
->> Hum ...
->>
->> Comes from my patch 
->> https://patchwork.ozlabs.org/project/linuxppc-dev/patch/5ac5976419350e8e048d463a64cae449eb3ba4b0.1620795204.git.christophe.leroy@csgroup.eu/
->>
->> But, that happens only if x86 defines __PAGETABLE_PUD_FOLDED. And if PUD is folded, then I can't 
->> understand my it has pud_set_huge() and pud_clear_huge() functions.
+> performance. This sysfs group has nodes showing total
+> sectors/requests
 > 
-> Probably because someone messed something up ;)
+> transferred, total busy time spent and max/min/avg/sum latencies.
+> This
 > 
-> Let's try this.
+> group can be enhanced later to show more UFS driver layer performance
 > 
-> --- a/arch/x86/mm/pgtable.c~mm-pgtable-add-stubs-for-pmd-pub_set-clear_huge-fix
-> +++ a/arch/x86/mm/pgtable.c
-
-That also works_for_me.
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-
-thanks.
--- 
-~Randy
+> statistics data during runtime.
+> 
+> 
+> 
+> Signed-off-by: Can Guo <cang@codeaurora.org>
+Acked-by: Bean Huo <beanhuo@micron.com>
 
