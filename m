@@ -2,117 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC5C937F9C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 16:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE8BB37F9C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 16:36:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234539AbhEMOg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 10:36:59 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:51319 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S234496AbhEMOgk (ORCPT
+        id S234634AbhEMOhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 10:37:23 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:55027 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234544AbhEMOhD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 10:36:40 -0400
-Received: (qmail 968704 invoked by uid 1000); 13 May 2021 10:35:29 -0400
-Date:   Thu, 13 May 2021 10:35:29 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     chris.chiu@canonical.com
-Cc:     gregkh@linuxfoundation.org, m.v.b@runbox.com, hadess@hadess.net,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] USB: Verify the port status when timeout happens
- during port suspend
-Message-ID: <20210513143529.GD967812@rowland.harvard.edu>
-References: <20210513041446.3082-1-chris.chiu@canonical.com>
- <20210513041446.3082-2-chris.chiu@canonical.com>
+        Thu, 13 May 2021 10:37:03 -0400
+Received: from [192.168.1.23] (ip-78-45-89-65.net.upcbroadband.cz [78.45.89.65])
+        (Authenticated sender: i.maximets@ovn.org)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 0B755100002;
+        Thu, 13 May 2021 14:35:48 +0000 (UTC)
+Subject: Re: [ovs-dev] [PATCH net v2] openvswitch: meter: fix race when
+ getting now_ms.
+To:     Tao Liu <thomas.liu@ucloud.cn>, pshelar@ovn.org
+Cc:     dev@openvswitch.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, i.maximets@ovn.org,
+        jean.tourrilhes@hpe.com, kuba@kernel.org, davem@davemloft.net,
+        wenxu@ucloud.cn
+References: <20210513130800.31913-1-thomas.liu@ucloud.cn>
+From:   Ilya Maximets <i.maximets@ovn.org>
+Message-ID: <f26c37b5-487c-0399-e65b-e0a9d2259c03@ovn.org>
+Date:   Thu, 13 May 2021 16:35:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210513041446.3082-2-chris.chiu@canonical.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210513130800.31913-1-thomas.liu@ucloud.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 12:14:45PM +0800, chris.chiu@canonical.com wrote:
-> From: Chris Chiu <chris.chiu@canonical.com>
+On 5/13/21 3:08 PM, Tao Liu wrote:
+> We have observed meters working unexpected if traffic is 3+Gbit/s
+> with multiple connections.
 > 
-> On the Realtek high-speed Hub(0bda:5487), the port which has wakeup
-> enabled_descendants will sometimes timeout when setting PORT_SUSPEND
-> feature. After checking the PORT_SUSPEND bit in wPortStatus, it is
-> already set. However, the hub will fail to activate because the
-> PORT_SUSPEND feature of that port is not cleared during resume. All
-> connected devices are lost after resume.
-
-The last two sentences of this paragraph are now inaccurate.  Please fix 
-them up to match the current patch version.
-
-> Check the port status to verify whether it's really suspended when
-> timeout happpens. If yes, mark it as suspended so the device can
-> be resumed correctly.
+> now_ms is not pretected by meter->lock, we may get a negative
+> long_delta_ms when another cpu updated meter->used, then:
+>     delta_ms = (u32)long_delta_ms;
+> which will be a large value.
 > 
-> Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
+>     band->bucket += delta_ms * band->rate;
+> then we get a wrong band->bucket.
+> 
+> OpenVswitch userspace datapath has fixed the same issue[1] some
+> time ago, and we port the implementation to kernel datapath.
+> 
+> [1] https://patchwork.ozlabs.org/project/openvswitch/patch/20191025114436.9746-1-i.maximets@ovn.org/
+> 
+> Fixes: 96fbc13d7e77 ("openvswitch: Add meter infrastructure")
+> Signed-off-by: Tao Liu <thomas.liu@ucloud.cn>
+> Suggested-by: Ilya Maximets <i.maximets@ovn.org>
 > ---
-> 
 > Changelog:
->   v3:
->     - create a new goto target for the timeout case instead of
->       reset_resume
->     - Revise the commit title/message because reset_resume is not
->       required.
->   v2:
->     - create a new variable to keep the result of hub_port_status
->       when suspend timeout.
+> v2: just set negative long_delta_ms to zero in case of race for meter lock.
+> v1: make now_ms protected by meter lock.
+> ---
+
+Thanks!
+I didn't test it, but the change looks good to me.
+
+Reviewed-by: Ilya Maximets <i.maximets@ovn.org>
+
+>  net/openvswitch/meter.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 > 
->  drivers/usb/core/hub.c | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
-> 
-> diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
-> index b2bc4b7c4289..c5d64175eaa9 100644
-> --- a/drivers/usb/core/hub.c
-> +++ b/drivers/usb/core/hub.c
-> @@ -3385,6 +3385,21 @@ int usb_port_suspend(struct usb_device *udev, pm_message_t msg)
->  		status = 0;
->  	}
->  	if (status) {
-> +		if (status == -ETIMEDOUT) {
-> +			u16 portstatus, portchange;
-> +
-
-Extra blank line.
-
-> +			int ret = hub_port_status(hub, port1, &portstatus,
-> +					&portchange);
-> +
-> +			dev_dbg(&port_dev->dev,
-> +				"suspend timeout, status %04x\n", portstatus);
-
-The portstatus value shouldn't be printed if ret < 0, because it won't 
-be initialized.  If you want, initialize portstatus to 0 in the 
-declaration.
-
-Also, there should be a comment here explaining why this code is needed.  
-It should say pretty the same thing as the patch description, but more 
-briefly (two sentences should be sufficient).
-
-Alan Stern
-
-> +
-> +			if (ret == 0 && port_is_suspended(hub, portstatus)) {
-> +				status = 0;
-> +				goto suspend_done;
-> +			}
-> +		}
-> +
->  		dev_dbg(&port_dev->dev, "can't suspend, status %d\n", status);
+> diff --git a/net/openvswitch/meter.c b/net/openvswitch/meter.c
+> index 96b524c..896b8f5 100644
+> --- a/net/openvswitch/meter.c
+> +++ b/net/openvswitch/meter.c
+> @@ -611,6 +611,14 @@ bool ovs_meter_execute(struct datapath *dp, struct sk_buff *skb,
+>  	spin_lock(&meter->lock);
 >  
->  		/* Try to enable USB3 LTM again */
-> @@ -3401,6 +3416,7 @@ int usb_port_suspend(struct usb_device *udev, pm_message_t msg)
->  		if (!PMSG_IS_AUTO(msg))
->  			status = 0;
->  	} else {
-> + suspend_done:
->  		dev_dbg(&udev->dev, "usb %ssuspend, wakeup %d\n",
->  				(PMSG_IS_AUTO(msg) ? "auto-" : ""),
->  				udev->do_remote_wakeup);
-> -- 
-> 2.20.1
+>  	long_delta_ms = (now_ms - meter->used); /* ms */
+> +	if (long_delta_ms < 0) {
+> +		/* This condition means that we have several threads fighting
+> +		 * for a meter lock, and the one who received the packets a
+> +		 * bit later wins. Assuming that all racing threads received
+> +		 * packets at the same time to avoid overflow.
+> +		 */
+> +		long_delta_ms = 0;
+> +	}
+>  
+>  	/* Make sure delta_ms will not be too large, so that bucket will not
+>  	 * wrap around below.
 > 
+
