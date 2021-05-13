@@ -2,126 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5FA237F0F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 03:34:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C551037F0F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 03:35:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231764AbhEMBfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 21:35:40 -0400
-Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:60195 "EHLO
-        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230097AbhEMBfi (ORCPT
+        id S232974AbhEMBgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 21:36:55 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:32829 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232318AbhEMBgv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 21:35:38 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.west.internal (Postfix) with ESMTP id 7E1A01FDC;
-        Wed, 12 May 2021 21:34:28 -0400 (EDT)
-Received: from imap2 ([10.202.2.52])
-  by compute3.internal (MEProxy); Wed, 12 May 2021 21:34:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm2; bh=SWVR8Emae5xp73d7j3kk9BUVMAV+TJP
-        pcPLvVYttHEI=; b=QYAPy4NFRvDeoipjFKZtMfKy7SsQAQAdE1qgEDJXLKBP1u6
-        4kWpDvtUQgvtcN4I9v1YpdLFW36cLnrUZij45Pf5J9CzXAZ2si7rGkDAbaBN4zAV
-        8zm/LJ6KJodfkRYB8qK9VRGjKmnYmSG7QrbEMaHF8RnQc8t13dxz0wHXHNnch+RF
-        aHa6u7WLlq68BdFIehVaGSDXSHTzION+Ve+4rZ3DOJV3Ael5nbqHDfF6sayl7FZO
-        rOkmKXt5nbRnZrog4uXLLI46L+WA/t+2enI0YBA0d43IY+OVpMg3V/XWHOOzw9/4
-        XLD3A7kgySSTlMHohjN6Gn16/WBQ4aENriPZ1ww==
+        Wed, 12 May 2021 21:36:51 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id A23CE5C0066;
+        Wed, 12 May 2021 21:35:40 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Wed, 12 May 2021 21:35:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=animalcreek.com;
+         h=date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=DpVUZkigS0YBcpQTAee6c+OCcYp
+        kgSAchYFyPrT0G/I=; b=SJFqvRwXKaHVDrp6yAbs5aDuYPqR5dMZEZPNWhqHCNL
+        bAp/P8hbLXXc6IaZOb2xy7dRFIepJJqymysEeBW3wB1Xg4ThHWx2abvyvYkMsrzC
+        5QqwqQHxeIlHwQCH0kwlFwRMMpBP0w5qD8UMMeTBxuOFYvog8m4PQKcn4FHTMrzz
+        7EZeZlZ40d8YQ4pPlzXLdf1mMAno9mnGPeqZ53ZFRzYhmdEHtK7XLYregQrj74NB
+        thZuThM1IkHXX0/JQuIrLdKagNdh7Ve8KwM8tfDkboF2s49HaNAog6wkg+dWC6i6
+        3cIOeKwWunVWTt9t+6wj4Y+aF8hBB3ZGBCdt8yNAmYQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-type:date:from:in-reply-to
         :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=SWVR8E
-        mae5xp73d7j3kk9BUVMAV+TJPpcPLvVYttHEI=; b=r3b7d7XKm3AEANfyaa0MPq
-        oTUBY1VA3eRDIwVUQFHjdizMuFd0fQc6xHCqzkA31DX/ufrEr5ZYb0sMYcbhfPPh
-        23u8qUe1lm4udWmxpkQBJeUw1OE++AG7uXHtjfLX8VkAD6gXvBxAF6yptIToSmSR
-        lHsOtSsOC0iGaXvU3nuHbOQgqXGWUKV+pM+5L6Cu0PxPsGzfXIxotlvdjZnMtOzK
-        aDGYo8gDNq2yoHCBEHq8FjH4MAf9zvZJXjBLjtowVlqyQoTWPQ/C/T0ZvKe2oO3I
-        NLbwuykJWcgAO+Sxbh+ow1cZ7p0ZXH2mh76OdfqTZqiQ/p1eWVfA25k+kIQt6mRA
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=DpVUZk
+        igS0YBcpQTAee6c+OCcYpkgSAchYFyPrT0G/I=; b=OefKtoattdw537PpJdXfxG
+        jwqYDSvbE9GmGzKaTQTuiuPs1OXiw+fjvIlGUmED1+GIAs/z9S1DIjZo1CfoVaHo
+        bEFSiD2CXGXQUTVSrXJoVLyqI/vz+7/V4nROPpTSwzFkaMEZDR2Q3RP5yTEj3ACV
+        SdDBYE0bJ7S8qfhxVVnsn4d8ogsQSyeB7afqx8JPA7ktTxoRQBY5NmKl59yDzJp5
+        xhVhbLkkZPHWfL/pir7LPTDOV5IWVXa87Y2g+sc1s92jhGT4AiI+eus0KNYMaX74
+        NZOIm4MDCbaMJUdROT5iyT4/EoXt+0cPzZO0LiYUPIROXY8Ra9OAH2xJIOK/aWLg
         ==
-X-ME-Sender: <xms:IoKcYPYAcrA-ektTVMh_s0FTU3GrHaivuPK3XWTiLdQEctQu0w76ww>
-    <xme:IoKcYOaIJQy8BucmVvwV2BEO6a5gxXvSGIlWHLx_ojnKzMbrwVUB1_-y_MHUHd0mS
-    hDPPCU9u5OYowhF-Q>
+X-ME-Sender: <xms:a4KcYGnxGmmAIqp-win5FZOhI6MVjVJJve1clAnteo4EXMvo_xaqBw>
+    <xme:a4KcYN07H9hHVzDyk9dTxy-ymPrbn6H0SWhcxFrh7gxwxOeXdQWJ81Ax5VNtnRO-p
+    meGX1em1rgdaRNPwA>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdehfedggeefucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
-    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
-    grthhtvghrnhepudehtddtleektedvfeeitdeljeekveelkeegvdfhtdejhefgfedtfedv
-    jeejledtnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiii
-    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhgurhgvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:IoKcYB9GYoSK00WkYVTCKhz42FvY_-lFtGbytKYkGVm7tV9fcZZ5AQ>
-    <xmx:IoKcYFohT3SBwuvlr9DhIgfSl9Haddig_rBDsj-OLjMJh-goJz0Hvg>
-    <xmx:IoKcYKrT46SoI-qphwnsTaVVRyGzodsqutHI3MDInuWqqzN71d_kKg>
-    <xmx:JIKcYGf0Ov-KiUGmAOFbQfNwr5X29TGoLSA5oaleTqS0llwFYlJdfJWbs9Q>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id B0692A00079; Wed, 12 May 2021 21:34:26 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-448-gae190416c7-fm-20210505.004-gae190416
-Mime-Version: 1.0
-Message-Id: <6d4338e2-d9be-411a-aeb7-7d46121b73d4@www.fastmail.com>
-In-Reply-To: <20210510014231.647-3-zev@bewilderbeest.net>
-References: <20210510014231.647-1-zev@bewilderbeest.net>
- <20210510014231.647-3-zev@bewilderbeest.net>
-Date:   Thu, 13 May 2021 11:04:06 +0930
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Zev Weiss" <zev@bewilderbeest.net>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Jeremy Kerr" <jk@ozlabs.org>
-Cc:     openbmc@lists.ozlabs.org, "Jiri Slaby" <jirislaby@kernel.org>,
-        "Joel Stanley" <joel@jms.id.au>, "Johan Hovold" <johan@kernel.org>,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: =?UTF-8?Q?Re:_[PATCH_2/3]_serial:_8250=5Faspeed=5Fvuart:_initialize_vuar?=
- =?UTF-8?Q?t->port_in_aspeed=5Fvuart=5Fprobe()?=
-Content-Type: text/plain
+    cujfgurhepfffhvffukfhfgggtuggjohesthdtredttddtvdenucfhrhhomhepofgrrhhk
+    ucfirhgvvghruceomhhgrhgvvghrsegrnhhimhgrlhgtrhgvvghkrdgtohhmqeenucggtf
+    frrghtthgvrhhnpedtheegudevteevkeeffeevudffvdejkeeitdekveeugfetleetheeg
+    gfduhfdtieenucffohhmrghinhepqhhtrdhiohenucfkphepjedtrddujedvrdefvddrvd
+    dukeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehm
+    ghhrvggvrhesrghnihhmrghltghrvggvkhdrtghomh
+X-ME-Proxy: <xmx:a4KcYEpjMeKINo4TqU_tJZq6V7NLnxI15BpHwbBsW0M7eWZobcuQgw>
+    <xmx:a4KcYKkuV6dsV-0TvuGu-2uMprVwns-2DC8Sr7P4ZD6xlkbjoErnBg>
+    <xmx:a4KcYE14GmK2tR9Qk9LF1GNOltslgJUEZrA5oK5rUSoZGVJ6CJO-Xw>
+    <xmx:bIKcYOqCu1RbsC7KTxJUOVVctHLIz-D1bmOwIzTvZ55UVgH6kimb6w>
+Received: from blue.animalcreek.com (ip70-172-32-218.ph.ph.cox.net [70.172.32.218])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Wed, 12 May 2021 21:35:39 -0400 (EDT)
+Received: by blue.animalcreek.com (Postfix, from userid 1000)
+        id 431E4136008E; Wed, 12 May 2021 18:35:38 -0700 (MST)
+Date:   Wed, 12 May 2021 18:35:38 -0700
+From:   Mark Greer <mgreer@animalcreek.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Mark Greer <mgreer@animalcreek.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nfc@lists.01.org,
+        Alex Blasche <alexander.blasche@qt.io>
+Subject: Re: [linux-nfc] [PATCH 1/2] MAINTAINERS: nfc: add Krzysztof
+ Kozlowski as maintainer
+Message-ID: <20210513013538.GA239989@animalcreek.com>
+References: <20210512144319.30852-1-krzysztof.kozlowski@canonical.com>
+ <14e78a9a-ed1a-9d7d-b854-db6d811f4622@kontron.de>
+ <20210512170135.GB222094@animalcreek.com>
+ <cd7a0110-702a-6e14-527e-fb4b53705870@canonical.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cd7a0110-702a-6e14-527e-fb4b53705870@canonical.com>
+Organization: Animal Creek Technologies, Inc.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, May 12, 2021 at 04:21:25PM -0400, Krzysztof Kozlowski wrote:
+> On 12/05/2021 13:01, Mark Greer wrote:
 
-
-On Mon, 10 May 2021, at 11:12, Zev Weiss wrote:
-> Previously this had only been initialized if we hit the throttling path
-> in aspeed_vuart_handle_irq(); moving it to the probe function is a
-> slight consistency improvement and avoids redundant reinitialization in
-> the interrupt handler.  It also serves as preparation for converting the
-> driver's I/O accesses to use port->port.membase instead of its own
-> vuart->regs.
+> > Re: QT - I've already talked to Alex Blasche from QT (CC'd).  With some
+> > work we can get Linux NFC/neard back into their good graces.  I/we need
+> > to find time to put in the work, though.
+> > 
+> > An example of the issues they have seen is:
+> > 
+> > 	https://bugreports.qt.io/browse/QTBUG-43802
+> > 
+> > Another issue I have--and I suspect you, Krzysztof, have as well--is
+> > lack of hardware.  If anyone reading this wants to volunteer to be a
+> > tester, please speak up.
 > 
-> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
-> ---
->  drivers/tty/serial/8250/8250_aspeed_vuart.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/8250/8250_aspeed_vuart.c 
-> b/drivers/tty/serial/8250/8250_aspeed_vuart.c
-> index 9e8b2e8e32b6..249164dc397b 100644
-> --- a/drivers/tty/serial/8250/8250_aspeed_vuart.c
-> +++ b/drivers/tty/serial/8250/8250_aspeed_vuart.c
-> @@ -349,11 +349,9 @@ static int aspeed_vuart_handle_irq(struct 
-> uart_port *port)
->  			struct aspeed_vuart *vuart = port->private_data;
->  			__aspeed_vuart_set_throttle(up, true);
->  
-> -			if (!timer_pending(&vuart->unthrottle_timer)) {
-> -				vuart->port = up;
-> +			if (!timer_pending(&vuart->unthrottle_timer))
->  				mod_timer(&vuart->unthrottle_timer,
->  					  jiffies + unthrottle_timeout);
-> -			}
->  
->  		} else {
->  			count = min(space, 256);
-> @@ -511,6 +509,7 @@ static int aspeed_vuart_probe(struct platform_device *pdev)
->  		goto err_clk_disable;
->  
->  	vuart->line = rc;
-> +	vuart->port = serial8250_get_port(vuart->line);
+> Yes, testing would be very appreciated. I don't know how many unit tests
+> neard has, but maybe some mockups with unit testing would solve some of
+> problems?
 
-The documentation of serial8250_get_port() is somewhat concerning wrt 
-the use:
+I'm not sure what you mean by this.  Do you mean creating some tests that
+sit directly on top of the kernel and test the kernel parts (e.g., use
+netlink)?  If so, that would be useful but you may end up implementing
+some of the NFC stack.  If you mean more/better tests that use neard to
+exercise the whole stack then that would be really good too.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/tty/serial/8250/8250_core.c?h=v5.13-rc1#n399
+Speaking of NFC stack, the NFC forum has their specs paywalled which is
+a real bummer/pain.  I can try reaching out to them to see if they will
+help us help their mission but I'm not hopeful.
 
-However, given the existing behaviour it shouldn't be problematic?
+FYI, most of the issues that I ran into and know still exist are
+timing/race issues in neard.  I'm sure if we tested more, we could find
+some in the kernel though.
 
-Andrew
+Mark
+--
