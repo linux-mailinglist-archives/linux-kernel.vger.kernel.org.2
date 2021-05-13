@@ -2,100 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7652137F161
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 04:35:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6D9837F16D
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 04:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230427AbhEMCg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 May 2021 22:36:29 -0400
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:35778 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230414AbhEMCg2 (ORCPT
+        id S230335AbhEMCtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 May 2021 22:49:03 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:50050 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229813AbhEMCtC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 May 2021 22:36:28 -0400
-Received: by mail-ot1-f43.google.com with SMTP id 69-20020a9d0a4b0000b02902ed42f141e1so12314487otg.2;
-        Wed, 12 May 2021 19:35:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hfnH5ox5sIbZsFybiEh4+BvXlULRF03zb/DaICpNQpw=;
-        b=azhDMD+jKorZjlG24rOl+GEiyVC4Amhfa1a9VmxI+3VfuvE1S07u18ismXVA1Ijfbb
-         Rd5Tr7tpR/QuDwf5oATOqhWMZx67VNerc86cAPFSoLXCdZvffFLIPNnbOpHI/hclxHhz
-         XwQKTRNa6XY0lMMzrCR9s1UqbjSEwvwAHa56QQWDhcmNW5c9CutWjXbs/xm3w7XBTMO1
-         gl5Iv0ukxG4KrfpGCOoZaVRhK/tvvQiPCuLxo61LpCLLc4uT+0JYteg1UwlVGWms1D/5
-         LlhBWnNzueM7r6zlW2dKfckzKiTrc2txcSCtyMOosmuXnSQjXZ/VpSnniKqrcXX6bG1+
-         uRsw==
-X-Gm-Message-State: AOAM531kECAwyyOW0jtr5GKput35RqM86ciPD98c3FppcimLweUpdJB6
-        EU87hzZilsRvXF9qQ0N/9A==
-X-Google-Smtp-Source: ABdhPJyZu9UDn0xbfSe6yHeZ+FFvMolE/2vMtP7VEUiqXD7Fqc+X9aYORrK2plMiaOxxFRP4a7OBiw==
-X-Received: by 2002:a05:6830:1605:: with SMTP id g5mr32562398otr.22.1620873319079;
-        Wed, 12 May 2021 19:35:19 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id m81sm383283oig.43.2021.05.12.19.35.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 19:35:18 -0700 (PDT)
-Received: (nullmailer pid 918772 invoked by uid 1000);
-        Thu, 13 May 2021 02:35:17 -0000
-Date:   Wed, 12 May 2021 21:35:17 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     devicetree@vger.kernel.org,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-renesas-soc@vger.kernel.org,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        linux-pwm@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v2 2/2] dt-bindings: timer: renesas,tpu: Convert to
- json-schema
-Message-ID: <20210513023517.GA918693@robh.at.kernel.org>
-References: <cover.1620648868.git.geert+renesas@glider.be>
- <1c33e62c3a74979c3ca9580176e6cf89384caea9.1620648868.git.geert+renesas@glider.be>
+        Wed, 12 May 2021 22:49:02 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14D2ljqr012163;
+        Wed, 12 May 2021 21:47:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1620874065;
+        bh=CVL24IXjC7hS/rORC2nMLVaPFRAth7V3AD9AbT6OxgY=;
+        h=Subject:From:To:CC:References:Date:In-Reply-To;
+        b=ohtqtg3h70b1QcdUPjyCMG0N9JyIV82M+uk+TEsSdLZDUq8Uhq8G61Gj9M7mD2aWO
+         h7EnD5cTwYy8nLP1fSpTWp4+Z+QG60mmeiMwOH5BKYJzYcIFtNP2jEYEUBvWuLaBW5
+         0jJZGF7JYZrHPLS3r2U3D37oH/50BjDGilvaKYU8=
+Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14D2lid3070216
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 12 May 2021 21:47:44 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 12
+ May 2021 21:47:44 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Wed, 12 May 2021 21:47:44 -0500
+Received: from [10.250.33.185] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14D2li1V024269;
+        Wed, 12 May 2021 21:47:44 -0500
+Subject: Re: [PATCH v2 1/2] dt-bindings: remoteproc: k3-r5f: Update bindings
+ for AM64x SoCs
+From:   Suman Anna <s-anna@ti.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     Lokesh Vutla <lokeshvutla@ti.com>,
+        <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210327143117.1840-1-s-anna@ti.com>
+ <20210327143117.1840-2-s-anna@ti.com>
+ <8948a30c-1a2f-1fb0-05bb-37be9c02c5d5@ti.com>
+Message-ID: <ff8edffb-d926-9641-740b-2c292139aa07@ti.com>
+Date:   Wed, 12 May 2021 21:47:44 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1c33e62c3a74979c3ca9580176e6cf89384caea9.1620648868.git.geert+renesas@glider.be>
+In-Reply-To: <8948a30c-1a2f-1fb0-05bb-37be9c02c5d5@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 10 May 2021 14:18:35 +0200, Geert Uytterhoeven wrote:
-> Convert the Renesas H8/300 Timer Pulse Unit Device Tree binding
-> documentation to json-schema.
+Hi Rob,
+
+On 4/19/21 8:55 AM, Suman Anna wrote:
+> Hi Rob,
 > 
-> Correct clock-names, as "peripheral_clk" is the name of the supplier,
-> and all users use "fck".
+> On 3/27/21 9:31 AM, Suman Anna wrote:
+>> The K3 AM64x SoCs have two dual-core Arm R5F clusters/subsystems, with
+>> 2 R5F cores each, both in the MAIN voltage domain.
+>>
+>> These clusters are a revised IP version compared to those present on
+>> J721E and J7200 SoCs, and supports a new "Single-CPU" mode instead of
+>> LockStep mode. Update the K3 R5F remoteproc bindings with the compatible
+>> info relevant to these R5F clusters/subsystems on K3 AM64x SoCs.
+>>
+>> Signed-off-by: Suman Anna <s-anna@ti.com>
+>> ---
+>> v2: No changes
+>>
+>>  .../bindings/remoteproc/ti,k3-r5f-rproc.yaml  | 31 ++++++++++++++++---
 > 
-> Note that there are two different bindings for the TPU, both using
-> "renesas,tpu": this one for using the TPU as a clock source (used on
-> H8/300), and a second use for using the TPU as a PWM controller (used on
-> ARM).  To avoid conflicts, both bindings are marked with the appropriate
-> "select" logic, to check for the absence respectively presence of the
-> "#pwm-cells" property.
+> Looks like this patch has fallen through the cracks, can you please review and
+> give your ack for this patch so that Bjorn can pick up the series for 5.13?
+
+Gentle reminder, do you have any comments on this patch. Appreciate your ack so
+that we can get this in for 5.14?
+
+regards
+Suman
+
 > 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> ---
-> v2:
->   - Drop unneeded "'#pwm-cells': true" from "select" section in
->     renesas,tpu-pwm.yaml,
->   - Add Reviewed-by.
+> regards
+> Suman
 > 
-> I have listed Sato-san as the maintainer, as he wrote the original
-> driver and bindings.
-> Sato-san: Please scream if this is inappropriate ;-)
-> ---
->  .../bindings/pwm/renesas,tpu-pwm.yaml         |  9 +++
->  .../devicetree/bindings/timer/renesas,tpu.txt | 21 -------
->  .../bindings/timer/renesas,tpu.yaml           | 56 +++++++++++++++++++
->  3 files changed, 65 insertions(+), 21 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/timer/renesas,tpu.txt
->  create mode 100644 Documentation/devicetree/bindings/timer/renesas,tpu.yaml
+>>  1 file changed, 26 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/remoteproc/ti,k3-r5f-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/ti,k3-r5f-rproc.yaml
+>> index d905d614502b..130fbaacc4b1 100644
+>> --- a/Documentation/devicetree/bindings/remoteproc/ti,k3-r5f-rproc.yaml
+>> +++ b/Documentation/devicetree/bindings/remoteproc/ti,k3-r5f-rproc.yaml
+>> @@ -14,8 +14,12 @@ description: |
+>>    processor subsystems/clusters (R5FSS). The dual core cluster can be used
+>>    either in a LockStep mode providing safety/fault tolerance features or in a
+>>    Split mode providing two individual compute cores for doubling the compute
+>> -  capacity. These are used together with other processors present on the SoC
+>> -  to achieve various system level goals.
+>> +  capacity on most SoCs. These are used together with other processors present
+>> +  on the SoC to achieve various system level goals.
+>> +
+>> +  AM64x SoCs do not support LockStep mode, but rather a new non-safety mode
+>> +  called "Single-CPU" mode, where only Core0 is used, but with ability to use
+>> +  Core1's TCMs as well.
+>>  
+>>    Each Dual-Core R5F sub-system is represented as a single DTS node
+>>    representing the cluster, with a pair of child DT nodes representing
+>> @@ -33,6 +37,7 @@ properties:
+>>        - ti,am654-r5fss
+>>        - ti,j721e-r5fss
+>>        - ti,j7200-r5fss
+>> +      - ti,am64-r5fss
+>>  
+>>    power-domains:
+>>      description: |
+>> @@ -56,11 +61,12 @@ properties:
+>>  
+>>    ti,cluster-mode:
+>>      $ref: /schemas/types.yaml#/definitions/uint32
+>> -    enum: [0, 1]
+>>      description: |
+>>        Configuration Mode for the Dual R5F cores within the R5F cluster.
+>> -      Should be either a value of 1 (LockStep mode) or 0 (Split mode),
+>> -      default is LockStep mode if omitted.
+>> +      Should be either a value of 1 (LockStep mode) or 0 (Split mode) on
+>> +      most SoCs (AM65x, J721E, J7200), default is LockStep mode if omitted;
+>> +      and should be either a value of 0 (Split mode) or 2 (Single-CPU mode)
+>> +      on AM64x SoCs, default is Split mode if omitted.
+>>  
+>>  # R5F Processor Child Nodes:
+>>  # ==========================
+>> @@ -97,6 +103,7 @@ patternProperties:
+>>            - ti,am654-r5f
+>>            - ti,j721e-r5f
+>>            - ti,j7200-r5f
+>> +          - ti,am64-r5f
+>>  
+>>        reg:
+>>          items:
+>> @@ -198,6 +205,20 @@ patternProperties:
+>>  
+>>      unevaluatedProperties: false
+>>  
+>> +if:
+>> +  properties:
+>> +    compatible:
+>> +      enum:
+>> +        - ti,am64-r5fss
+>> +then:
+>> +  properties:
+>> +    ti,cluster-mode:
+>> +      enum: [0, 2]
+>> +else:
+>> +  properties:
+>> +    ti,cluster-mode:
+>> +      enum: [0, 1]
+>> +
+>>  required:
+>>    - compatible
+>>    - power-domains
+>>
 > 
 
-Applied, thanks!
