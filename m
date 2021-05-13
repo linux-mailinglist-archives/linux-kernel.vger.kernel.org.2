@@ -2,93 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17BDD37F26A
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 06:49:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC6EB37F269
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 06:49:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231190AbhEMEuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 00:50:08 -0400
-Received: from smtprelay0198.hostedemail.com ([216.40.44.198]:33110 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230362AbhEMEtv (ORCPT
+        id S231131AbhEMEt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 00:49:59 -0400
+Received: from mail-il1-f178.google.com ([209.85.166.178]:39669 "EHLO
+        mail-il1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230381AbhEMEtv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 13 May 2021 00:49:51 -0400
-Received: from omf07.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 9CEC4BA02;
-        Thu, 13 May 2021 04:48:40 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf07.hostedemail.com (Postfix) with ESMTPA id 1CAF7315D73;
-        Thu, 13 May 2021 04:48:39 +0000 (UTC)
-Message-ID: <f2e616645f311ccaf6e0acb996f8c4360a0480ec.camel@perches.com>
-Subject: Re: [PATCH] watchdog: Use sysfs_emit() and sysfs_emit_at() in
- "show" functions
-From:   Joe Perches <joe@perches.com>
-To:     Juerg Haefliger <juerg.haefliger@canonical.com>,
-        wim@linux-watchdog.org, linux@roeck-us.net, joel@jms.id.au,
-        linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org
-Cc:     andrew@aj.id.au, linux-kernel@vger.kernel.org,
-        Juerg Haefliger <juergh@canonical.com>
-Date:   Wed, 12 May 2021 21:48:37 -0700
-In-Reply-To: <20210511061812.480172-1-juergh@canonical.com>
-References: <20210511061812.480172-1-juergh@canonical.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+Received: by mail-il1-f178.google.com with SMTP id o9so16938647ilh.6
+        for <linux-kernel@vger.kernel.org>; Wed, 12 May 2021 21:48:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1bFSgP0Vbpje3f5C9DQaOkMAM+6teiK5qo8mAH870dE=;
+        b=o5mzUjq9FIlMakN9tshJzAzifJ0POCE3mHrP5cbfTHTEgV6P4LXn0fEElBE77KLcWx
+         TLaLeD8gbdUQOJlhYcWZHC9fLa72MSYO2gvT0d7Ecy/3t83oLVchp3oUcrUpa02bpVK9
+         xA/NDZa+qmEYdXzjrBGwAVSiuRiTD24s8Ktu37HfSaSlDR2M6PoRf4UU7Z5+3xVZvLCt
+         BLnZPl0vJB+CRUhIhNwKV6enmj3m9mZWTEaype2LrUILV3B7Dha5pAYXAnfYVvZP7714
+         nEPV4r3umx6zb2+/Sx6x1MIgfFupgUd+2OQFbMDX1IncsNhv+76+IlFwq7+1ylggI/cU
+         zoeg==
+X-Gm-Message-State: AOAM53249chf3a+AtV70gAeImh4ZZF/mn9mMs7PUaqn0z/jXPkxxC9aX
+        0ld3LpSjEYhz7lx1vEMz3N8/gfBOdKo=
+X-Google-Smtp-Source: ABdhPJwOJCoVKNUPS/dWECjmQ1m5ZLe8CfXSzpiPqQdB1xAbjy5S2beojtnUISL61Rims7EqsSsDbw==
+X-Received: by 2002:a05:6e02:1c83:: with SMTP id w3mr34743860ill.125.1620881321072;
+        Wed, 12 May 2021 21:48:41 -0700 (PDT)
+Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
+        by smtp.gmail.com with ESMTPSA id b10sm729827ioz.35.2021.05.12.21.48.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 21:48:40 -0700 (PDT)
+Date:   Thu, 13 May 2021 04:48:39 +0000
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-kernel@vger.kernel.org, tj@kernel.org
+Subject: Re: [PATCH] MAINTAINERS: Add lib/percpu* as part of percpu entry
+Message-ID: <YJyvp//Yrva+uUqE@google.com>
+References: <20210511131737.185726-1-nborisov@suse.com>
+ <YJqLNBLRP1+wMSWZ@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.04
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: 1CAF7315D73
-X-Stat-Signature: 6kzj9cfeptqsg315pdhjnu5ex5kpbywt
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/YmSWARqT1SSQJOYqo5pk6qOvYyh48NP4=
-X-HE-Tag: 1620881318-714369
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJqLNBLRP1+wMSWZ@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-05-11 at 08:18 +0200, Juerg Haefliger wrote:
-> Convert sprintf() in sysfs "show" functions to sysfs_emit() and
-> sysfs_emit_at() in order to check for buffer overruns in sysfs outputs.
-[]
-> diff --git a/drivers/watchdog/ziirave_wdt.c b/drivers/watchdog/ziirave_wdt.c
-[]
-> @@ -445,8 +445,9 @@ static ssize_t ziirave_wdt_sysfs_show_firm(struct device *dev,
->  	if (ret)
->  		return ret;
->  
+On Tue, May 11, 2021 at 01:48:36PM +0000, Dennis Zhou wrote:
+> Hello,
 > 
-> -	ret = sprintf(buf, ZIIRAVE_FW_VERSION_FMT, w_priv->firmware_rev.major,
-> -		      w_priv->firmware_rev.minor);
-> +	ret = sysfs_emit(buf, ZIIRAVE_FW_VERSION_FMT,
-> +			 w_priv->firmware_rev.major,
-> +			 w_priv->firmware_rev.minor);
->  
+> On Tue, May 11, 2021 at 04:17:37PM +0300, Nikolay Borisov wrote:
+> > Without this patch get_maintainers.pl on a patch which modified
+> > lib/percpu_refcount.c produces:
+> > 
+> > Jens Axboe <axboe@kernel.dk> (commit_signer:2/5=40%)
+> > Ming Lei <ming.lei@redhat.com> (commit_signer:2/5=40%,authored:2/5=40%,added_lines:99/114=87%,removed_lines:34/43=79%)
+> > "Paul E. McKenney" <paulmck@kernel.org> (commit_signer:1/5=20%,authored:1/5=20%,added_lines:9/114=8%,removed_lines:3/43=7%)
+> > Tejun Heo <tj@kernel.org> (commit_signer:1/5=20%)
+> > Andrew Morton <akpm@linux-foundation.org> (commit_signer:1/5=20%)
+> > Nikolay Borisov <nborisov@suse.com> (authored:1/5=20%,removed_lines:3/43=7%)
+> > Joe Perches <joe@perches.com> (authored:1/5=20%,removed_lines:3/43=7%)
+> > linux-kernel@vger.kernel.org (open list)
+> > 
+> > Whereas with the patch applied it now (properly) prints:
+> > 
+> > Dennis Zhou <dennis@kernel.org> (maintainer:PER-CPU MEMORY ALLOCATOR)
+> > Tejun Heo <tj@kernel.org> (maintainer:PER-CPU MEMORY ALLOCATOR)
+> > Christoph Lameter <cl@linux.com> (maintainer:PER-CPU MEMORY ALLOCATOR)
+> > linux-kernel@vger.kernel.org (open list)
+> > 
+> > Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> > ---
+> >  MAINTAINERS | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index d92f85ca831d..b18fed606ddd 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -14004,6 +14004,7 @@ S:	Maintained
+> >  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/dennis/percpu.git
+> >  F:	arch/*/include/asm/percpu.h
+> >  F:	include/linux/percpu*.h
+> > +F:	lib/percpu*.c
+> >  F:	mm/percpu*.c
+> >  
+> >  PER-TASK DELAY ACCOUNTING
+> > -- 
+> > 2.25.1
+> > 
 > 
->  	mutex_unlock(&w_priv->sysfs_mutex);
->  
+> Yeah, in the past I've taken percpu_ref stuff, so I think this makes
+> sense. If no one has any objections I'll pick this up and your other
+> patch.
 > 
-> @@ -468,8 +469,9 @@ static ssize_t ziirave_wdt_sysfs_show_boot(struct device *dev,
->  	if (ret)
->  		return ret;
->  
-> 
-> -	ret = sprintf(buf, ZIIRAVE_BL_VERSION_FMT, w_priv->bootloader_rev.major,
-> -		      w_priv->bootloader_rev.minor);
-> +	ret = sysfs_emit(buf, ZIIRAVE_BL_VERSION_FMT,
-> +			 w_priv->bootloader_rev.major,
-> +			 w_priv->bootloader_rev.minor);
->  
-> 
->  	mutex_unlock(&w_priv->sysfs_mutex);
->  
-> 
-> @@ -491,7 +493,7 @@ static ssize_t ziirave_wdt_sysfs_show_reason(struct device *dev,
->  	if (ret)
->  		return ret;
->  
-> 
-> -	ret = sprintf(buf, "%s", ziirave_reasons[w_priv->reset_reason]);
-> +	ret = sysfs_emit(buf, "%s", ziirave_reasons[w_priv->reset_reason]);
+> Thanks,
+> Dennis
 
-All of these formats should probably end with a newline
-and the ZIIRAVE_<FOO>_VERSION_FMT defines are to me unnecessary.
+I've applied this to for-5.13-fixes. I've also updated the mailing list
+to linux-mm.
 
+Thanks,
+Dennis
