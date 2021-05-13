@@ -2,101 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEBFB37FE6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 21:54:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39E8237FE70
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 21:56:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232197AbhEMTzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 15:55:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44008 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232108AbhEMTzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 15:55:15 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7CFABAC36;
-        Thu, 13 May 2021 19:54:04 +0000 (UTC)
-Date:   Thu, 13 May 2021 12:53:57 -0700
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     a.darwish@linutronix.de, bigeasy@linutronix.de, tglx@linutronix.de,
-        shung-hsi.yu@suse.com, linux-kernel@vger.kernel.org,
-        Davidlohr Bueso <dbueso@suse.de>
-Subject: Re: [PATCH v2] seqlock,lockdep: Only check for preemption_disabled
- in non-rt
-Message-ID: <20210513195357.xq57b2t26hhhmdn4@offworld>
-References: <20210507233951.78950-1-dave@stgolabs.net>
- <20210507234713.86097-1-dave@stgolabs.net>
- <YJuVhR9C6pUmZBOs@hirez.programming.kicks-ass.net>
+        id S232241AbhEMT6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 15:58:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231939AbhEMT56 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 15:57:58 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C60B9C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 12:56:48 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id y12so20661643qtx.11
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 12:56:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5bEQcUz043gHSOI81cTAg7K/WzddoUEXUtqRGFxEF/s=;
+        b=pCDMF4WeEQcTGNVyQhSUARuPUJYzOHZudSVaLbJLoP5LXYu85R7jkvr1hg/YYPVWw9
+         s0JuAUnU276nLCks1Vr3OwKJrtEt1HOHjm2NhMYgEaTH9gfXNxHYcxNgf6aa1isXG44I
+         QtHu0y1uKdyrQoJ7Hhq0MrPkTCOlfmLgIHNqAl5rWPRNCqT+ECvSMZ/41mMTvypL5nzY
+         1wlTII6Sl2uh945DXPYLKsIKXFlVDdygPECbOnE9pe3OJniteK4UEH9PHi41bL8dDA88
+         sc1fjuGLL/l6+QAy3m5y5o2ZMz8iULeJvJxwOeUgtwKKmPsF7LLRESXEVct8Y9+cp5em
+         I2Fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5bEQcUz043gHSOI81cTAg7K/WzddoUEXUtqRGFxEF/s=;
+        b=otX9sSAEH8Z4C6cjHhdFOIlOWHoVojlsRj4ZKPsTGc1aorDSTB8tQMKy1bP5xfEbvD
+         VTpq784kLTff9qBgPMQ5ZwQmpVM9R/8a2TMl6ODfQA6iseNwl3XTjpvgJLoPiuqcUyhi
+         sNVFYL3xKlteM2Dk0tJtnXioJnU9yAFfQ9CuVf1xmF3oTx/F+UN1qczLzsuSrPOSb+Ed
+         c4GQqhCANe1WP9/wRG+3N+2FZIPVSwoYCuxjzlVo6ZSImKCLPImEhgB6ylIJeqUMFcxR
+         ojF0adIT7pCnKdwFojC8IiU2bCJzWsyXd8tziurKVh5K78mpSQNVpvzSLIhPWztHW0nG
+         zz6w==
+X-Gm-Message-State: AOAM530YKDbykVYDY86hZ6hEW+3JYCMAw7nMJfF84hzdwR/gZTtBY8Fw
+        qnmZaUiBmT6H9Foaud7uzlSZuA==
+X-Google-Smtp-Source: ABdhPJzfP1vVPSACv3rr93bWKLIazkFuLnzLzgLmMmukBJyBc4/PDb9tm2xeBihh/9BW81JOG8x1bw==
+X-Received: by 2002:a05:622a:183:: with SMTP id s3mr18828276qtw.115.1620935808023;
+        Thu, 13 May 2021 12:56:48 -0700 (PDT)
+Received: from localhost.localdomain (modemcable068.184-131-66.mc.videotron.ca. [66.131.184.68])
+        by smtp.gmail.com with ESMTPSA id h12sm3211228qkj.52.2021.05.13.12.56.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 May 2021 12:56:47 -0700 (PDT)
+From:   Jonathan Marek <jonathan@marek.ca>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-clk@vger.kernel.org (open list:COMMON CLK FRAMEWORK),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/2] clk: qcom: add support for SM8350 DISPCC
+Date:   Thu, 13 May 2021 15:56:16 -0400
+Message-Id: <20210513195617.15068-1-jonathan@marek.ca>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <YJuVhR9C6pUmZBOs@hirez.programming.kicks-ass.net>
-User-Agent: NeoMutt/20201120
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 12 May 2021, Peter Zijlstra wrote:
+Add support to the SM8350 display clock controller by extending the SM8250
+display clock controller, which is almost identical but has some minor
+differences.
 
->I'm confused, and the Changelog is useless. The code you actually
->changed is for seqcount_t, which doesn't have an associated LOCK. If
+Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+---
+ drivers/clk/qcom/Kconfig         |  4 +-
+ drivers/clk/qcom/dispcc-sm8250.c | 84 +++++++++++++++++++++++++++-----
+ 2 files changed, 75 insertions(+), 13 deletions(-)
 
-Hmm it was never my intention to touch seqcount_t, I now see the error of
-my ways.
+diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
+index 45646b867cdb..cc60e6ee1654 100644
+--- a/drivers/clk/qcom/Kconfig
++++ b/drivers/clk/qcom/Kconfig
+@@ -484,11 +484,11 @@ config SDX_GCC_55
+ 	  SPI, I2C, USB, SD/UFS, PCIe etc.
+ 
+ config SM_DISPCC_8250
+-	tristate "SM8150 and SM8250 Display Clock Controller"
++	tristate "SM8150/SM8250/SM8350 Display Clock Controller"
+ 	depends on SM_GCC_8150 || SM_GCC_8250
+ 	help
+ 	  Support for the display clock controller on Qualcomm Technologies, Inc
+-	  SM8150 and SM8250 devices.
++	  SM8150/SM8250/SM8350 devices.
+ 	  Say Y if you want to support display devices and functionality such as
+ 	  splash screen.
+ 
+diff --git a/drivers/clk/qcom/dispcc-sm8250.c b/drivers/clk/qcom/dispcc-sm8250.c
+index de09cd5c209f..1fcf8085a109 100644
+--- a/drivers/clk/qcom/dispcc-sm8250.c
++++ b/drivers/clk/qcom/dispcc-sm8250.c
+@@ -36,6 +36,10 @@ static struct pll_vco vco_table[] = {
+ 	{ 249600000, 2000000000, 0 },
+ };
+ 
++static struct pll_vco lucid_5lpe_vco[] = {
++	{ 249600000, 1750000000, 0 },
++};
++
+ static struct alpha_pll_config disp_cc_pll0_config = {
+ 	.l = 0x47,
+ 	.alpha = 0xE000,
+@@ -1039,6 +1043,7 @@ static const struct qcom_cc_desc disp_cc_sm8250_desc = {
+ static const struct of_device_id disp_cc_sm8250_match_table[] = {
+ 	{ .compatible = "qcom,sm8150-dispcc" },
+ 	{ .compatible = "qcom,sm8250-dispcc" },
++	{ .compatible = "qcom,sm8350-dispcc" },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, disp_cc_sm8250_match_table);
+@@ -1051,19 +1056,76 @@ static int disp_cc_sm8250_probe(struct platform_device *pdev)
+ 	if (IS_ERR(regmap))
+ 		return PTR_ERR(regmap);
+ 
+-	/* note: trion == lucid, except for the prepare() op */
+-	BUILD_BUG_ON(CLK_ALPHA_PLL_TYPE_TRION != CLK_ALPHA_PLL_TYPE_LUCID);
+-	if (of_device_is_compatible(pdev->dev.of_node, "qcom,sm8150-dispcc")) {
+-		disp_cc_pll0_config.config_ctl_hi_val = 0x00002267;
+-		disp_cc_pll0_config.config_ctl_hi1_val = 0x00000024;
+-		disp_cc_pll0_config.user_ctl_hi1_val = 0x000000D0;
+-		disp_cc_pll0_init.ops = &clk_alpha_pll_trion_ops;
+-		disp_cc_pll1_config.config_ctl_hi_val = 0x00002267;
+-		disp_cc_pll1_config.config_ctl_hi1_val = 0x00000024;
+-		disp_cc_pll1_config.user_ctl_hi1_val = 0x000000D0;
+-		disp_cc_pll1_init.ops = &clk_alpha_pll_trion_ops;
++	/* SM8350 has _SRC clocks offset by 4, and some other differences */
++	if (of_device_is_compatible(pdev->dev.of_node, "qcom,sm8350-dispcc")) {
++		static struct clk_rcg2* const rcgs[] = {
++			&disp_cc_mdss_byte0_clk_src,
++			&disp_cc_mdss_byte1_clk_src,
++			&disp_cc_mdss_dp_aux1_clk_src,
++			&disp_cc_mdss_dp_aux_clk_src,
++			&disp_cc_mdss_dp_link1_clk_src,
++			&disp_cc_mdss_dp_link_clk_src,
++			&disp_cc_mdss_dp_pixel1_clk_src,
++			&disp_cc_mdss_dp_pixel2_clk_src,
++			&disp_cc_mdss_dp_pixel_clk_src,
++			&disp_cc_mdss_esc0_clk_src,
++			&disp_cc_mdss_mdp_clk_src,
++			&disp_cc_mdss_pclk0_clk_src,
++			&disp_cc_mdss_pclk1_clk_src,
++			&disp_cc_mdss_rot_clk_src,
++			&disp_cc_mdss_vsync_clk_src,
++		};
++		static struct clk_regmap_div* const divs[] = {
++			&disp_cc_mdss_byte0_div_clk_src,
++			&disp_cc_mdss_byte1_div_clk_src,
++			&disp_cc_mdss_dp_link1_div_clk_src,
++			&disp_cc_mdss_dp_link_div_clk_src,
++		};
++		unsigned i;
++		static bool offset_applied = false;
++
++		/* only apply the offsets once (in case of deferred probe) */
++		if (!offset_applied) {
++			for (i = 0; i < ARRAY_SIZE(rcgs); i++)
++				rcgs[i]->cmd_rcgr -= 4;
++
++			for (i = 0; i < ARRAY_SIZE(divs); i++) {
++				divs[i]->reg -= 4;
++				divs[i]->width = 4;
++			}
++
++			disp_cc_mdss_ahb_clk.halt_reg -= 4;
++			disp_cc_mdss_ahb_clk.clkr.enable_reg -= 4;
++
++			offset_applied = true;
++		}
++
++		disp_cc_mdss_ahb_clk_src.cmd_rcgr = 0x22a0;
++
++		disp_cc_pll0_config.config_ctl_hi1_val = 0x2A9A699C;
++		disp_cc_pll0_config.test_ctl_hi1_val = 0x01800000;
++		disp_cc_pll0_init.ops = &clk_alpha_pll_lucid_5lpe_ops;
++		disp_cc_pll0.vco_table = lucid_5lpe_vco;
++		disp_cc_pll1_config.config_ctl_hi1_val = 0x2A9A699C;
++		disp_cc_pll1_config.test_ctl_hi1_val = 0x01800000;
++		disp_cc_pll1_init.ops = &clk_alpha_pll_lucid_5lpe_ops;
++		disp_cc_pll1.vco_table = lucid_5lpe_vco;
++	} else {
++		/* note: trion == lucid, except for the prepare() op */
++		BUILD_BUG_ON(CLK_ALPHA_PLL_TYPE_TRION != CLK_ALPHA_PLL_TYPE_LUCID);
++		if (of_device_is_compatible(pdev->dev.of_node, "qcom,sm8150-dispcc")) {
++			disp_cc_pll0_config.config_ctl_hi_val = 0x00002267;
++			disp_cc_pll0_config.config_ctl_hi1_val = 0x00000024;
++			disp_cc_pll0_config.user_ctl_hi1_val = 0x000000D0;
++			disp_cc_pll0_init.ops = &clk_alpha_pll_trion_ops;
++			disp_cc_pll1_config.config_ctl_hi_val = 0x00002267;
++			disp_cc_pll1_config.config_ctl_hi1_val = 0x00000024;
++			disp_cc_pll1_config.user_ctl_hi1_val = 0x000000D0;
++			disp_cc_pll1_init.ops = &clk_alpha_pll_trion_ops;
++		}
+ 	}
+ 
++	/* note for SM8350: downstream lucid_5lpe configure differs slightly */
+ 	clk_lucid_pll_configure(&disp_cc_pll0, regmap, &disp_cc_pll0_config);
+ 	clk_lucid_pll_configure(&disp_cc_pll1, regmap, &disp_cc_pll1_config);
+ 
+-- 
+2.26.1
 
->there is a lock, the code should be changed to use the appropriate
->seqcount_LOCKNAME_t and the assertion will change into the one found in
->__seqprop_##lockname##_assert(), namely:
->
->  lockdep_assert_held(lockmember)
->
->
->But as is, seqcount_t usage relies on being non-preemptible, even for
->PREEMPT_RT, and this is a good thing. Please describe the site that goes
->boom and explain things..
-
-So the splat is:
-     WARNING: CPU: 0 PID: 15 at kernel/locking/lockdep.c:5363 lockdep_assert_preemption_disabled+0x7a/0xa0
-     CPU: 0 PID: 15 Comm: kworker/0:1 Tainted: G            E      5.3.18-rt_syzkaller #1
-     Workqueue: events xfrm_hash_resize
-     RIP: 0010:lockdep_assert_preemption_disabled+0x7a/0xa0
-     Code: 09 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 0f b6 04 02 84 c0 74 04 3c 03 7e 1c 8b 83 c8 09 00 00 85 c0 74 02 <0f> 0b 5b c3 48 c7 c7 54 39 ce 83 e8 c6 0d 43 00 eb 9f e8 bf 0d 43
-     RSP: 0018:ffff888118497ca0 EFLAGS: 00010202
-     RAX: 0000000000000001 RBX: ffff88811847ce40 RCX: 1ffffffff079c72a
-     RDX: 1ffff1102308fb01 RSI: 0000000000000022 RDI: ffff88811847d808
-     RBP: ffffffff83b9ebb0 R08: 0000000000000001 R09: ffff888118497bd8
-     R10: ffff888118497c47 R11: 0000000000000001 R12: ffff88811b232200
-     R13: ffff888118497dc0 R14: 0000000000000010 R15: ffff88811847ce40
-      xfrm_hash_resize+0xd7/0x1490
-      process_one_work+0x78e/0x16e0
-      ? pwq_dec_nr_in_flight+0x2e0/0x2e0
-      ? do_raw_spin_lock+0x11a/0x250
-      ? _raw_spin_lock_irq+0xa/0x40
-      worker_thread+0x5f5/0x1080
-      ? process_one_work+0x16e0/0x16e0
-      kthread+0x401/0x4f0
-      ? __kthread_parkme+0x290/0x290
-      ret_from_fork+0x24/0x30
-
-I was initially chasing (and hence why the preemption check wasn't making sense):
-
-	seqcount_mutex_init(&xfrm_policy_hash_generation, &hash_resize_mutex);
-
-But there are actually two xfrm_hash_resize() calls (*sigh*). And the other
-one, the right one, is/was indeed seqcount_t xfrm_state_hash_generation:
-
-xfrm_hash_resize() // kworker callback, task context
-     spin_lock_bh(&net->xfrm.xfrm_policy_lock); // disables softirq, preemption still enabled
-     write_seqcount_begin(&xfrm_state_hash_generation);
-	__seqprop_assert() <-- boom
-
-And therefore converting it to an associated spinlock would avoid the preemption
-check, which is exactly what Ahmed has already done:
-
-bc8e0adff34 (net: xfrm: Use sequence counter with associated spinlock)
-e88add19f68 (net: xfrm: Localize sequence counter per network namespace)
-
-Sorry for the noise.
-
-Thanks,
-Davidlohr
