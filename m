@@ -2,145 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6853F37FB02
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 17:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C72BD37FB0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 17:51:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231771AbhEMPuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 11:50:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47503 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230493AbhEMPuN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 11:50:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620920943;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OXFg9yT+SRP4aJjvJsKPgnXEZ8W+KPtuhwXQgp0wnKU=;
-        b=MB4mmajmb3I8VtS26f7BMKuIvcFeL3WI+YMCAwrlRcXQ63rj+Tgd898W8C6pGUCstzFI2M
-        QN508vgjDqRBUNAxBhYSuSLtkl/6T2bOkO+lKHUYOEXaZ8e1kLkOqpiyyyr0+2z3KYXJcA
-        u0Qy5g01DCRwYML0EWoNw4BPbOa0b3A=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-149-ceYRqYX4NTqQXKPtwqNlgw-1; Thu, 13 May 2021 11:49:01 -0400
-X-MC-Unique: ceYRqYX4NTqQXKPtwqNlgw-1
-Received: by mail-qt1-f199.google.com with SMTP id d10-20020a05622a100ab02901b8224bae03so18209110qte.2
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 08:49:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=OXFg9yT+SRP4aJjvJsKPgnXEZ8W+KPtuhwXQgp0wnKU=;
-        b=o3vxAneZr0qwBl7fcKlcBjy7pIQseEOjyHERKHakJXk81O1rSkUfwBDriF7zl/6NE/
-         QyVqn2z7Yxpk1F7wYL4cs5Lxt2zJTfXfS7VGTv8InjxcbE5N1Bni1Wpz1jAsMyygdgPb
-         0Jh3OYbGoEN1gyrk7sE1O5+c46GcgMQwK7J0qw94T877t+Ovv5gbK3WEtBNontBxIJVB
-         SqBe7nBEcqjnfeuZPW451o5fTdgoMSrNdWCmRD9yoXHed00QfqvMptsRO6myoOurmhPe
-         UnAH5kd1vB+5Kq5bUK1uSpdXuJhD6hvChsyeAD2OhNe3BfcxtQjPhUvKvRN5LXfY9xxL
-         5TlA==
-X-Gm-Message-State: AOAM530/2KzYbVuv00xzg04B2nQ6MZL9lCH3ozx9v58YaXUznF17AYXs
-        D1Jh8SrOIk0cDffz5UqyezwtSgab64Ywp61mRCQiHwqSmv9aXU8nKOB+OZ45ob/n0aBWqfuIgDh
-        InY9Umgk2dC0I5kh7MLueQGtv
-X-Received: by 2002:a37:98c4:: with SMTP id a187mr38940510qke.277.1620920941060;
-        Thu, 13 May 2021 08:49:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwUyK6JS8Fjz7RmzsmXIRnyG/yAEecKiFii/ajYNOLBY3TFUJO/jJ58x9Xer/nE8I7bMnTXWw==
-X-Received: by 2002:a37:98c4:: with SMTP id a187mr38940499qke.277.1620920940893;
-        Thu, 13 May 2021 08:49:00 -0700 (PDT)
-Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id 195sm2645020qkj.1.2021.05.13.08.48.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 May 2021 08:49:00 -0700 (PDT)
-Subject: Re: [PATCH V6 XRT Alveo 16/20] fpga: xrt: clock driver
-To:     Lizhi Hou <lizhi.hou@xilinx.com>, linux-kernel@vger.kernel.org
-Cc:     linux-fpga@vger.kernel.org, maxz@xilinx.com,
-        sonal.santan@xilinx.com, yliu@xilinx.com, michal.simek@xilinx.com,
-        stefanos@xilinx.com, devicetree@vger.kernel.org, mdf@kernel.org,
-        robh@kernel.org, Max Zhen <max.zhen@xilinx.com>
-References: <20210512015339.5649-1-lizhi.hou@xilinx.com>
- <20210512015339.5649-17-lizhi.hou@xilinx.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <f4a18fa4-f023-d4e5-0622-e15108de90b9@redhat.com>
-Date:   Thu, 13 May 2021 08:48:57 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230202AbhEMPwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 11:52:05 -0400
+Received: from mga12.intel.com ([192.55.52.136]:24114 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232418AbhEMPvN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 11:51:13 -0400
+IronPort-SDR: Fr4f6t6w0N1vAlMDogBTxJjScs7MHmQdvB6j5vExWu66sWk5OZ5jPI++3TSpABLIK+WKuAWCME
+ 4Z/fMVC06weA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="179568904"
+X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
+   d="scan'208";a="179568904"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 08:49:59 -0700
+IronPort-SDR: byZaZfiEz25Q+1bpN14ZhaFKifHc/nXjHhdGv2IlmgtKleGnAHnHNRKvqV2bRFohkVw6BhYZ+b
+ 41QWXjjg3XPg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
+   d="scan'208";a="610418827"
+Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
+  by orsmga005.jf.intel.com with ESMTP; 13 May 2021 08:49:58 -0700
+From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+To:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Len Brown <len.brown@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Ricardo Neri <ricardo.neri@intel.com>,
+        Quentin Perret <qperret@google.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Subject: [PATCH v3 0/6] sched/fair: Fix load balancing of SMT siblings with ASYM_PACKING
+Date:   Thu, 13 May 2021 08:49:03 -0700
+Message-Id: <20210513154909.6385-1-ricardo.neri-calderon@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20210512015339.5649-17-lizhi.hou@xilinx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is v3 the series. v1 and v2 patches and test results can be found in
+[1] and [2], respectively.
 
+=== Problem statement ===
+On SMT-enabled hardware, ASYM_PACKING can cause the load balancer to choose
+low priority CPUs over medium priority CPUs.
 
-> +
-> +static int get_freq(struct clock *clock, u16 *freq)
-> +{
+When balancing load in scheduling domains with the SD_ASYM_PACKING flag,
+idle CPUs of higher priority pull tasks from CPUs of lower priority. This
+balancing is done by comparing pairs of scheduling groups. There may also
+be scheduling groups composed of CPUs that are SMT siblings.
 
-> +
-> +	/*
-> +	 * Multiply both numerator (mul0) and the denominator (div1) with
-> +	 * 1000 to account for fractional portion of divider
-> +	 */
-> +
-> +	div1 *= 1000;
-> +	div1 += div_frac1;
-> +	div0 *= div1;
-> +	mul0 *= 1000;
-> +	if (div0 == 0) {
-> +		CLOCK_ERR(clock, "clockwiz 0 divider");
+When using SD_ASYM_PACKING on x86 with Intel Turbo Boost Max Technology 3.0
+(ITMT), the priorities of a scheduling group of CPUs that has N SMT
+siblings are assigned as N*P, N*P/2, N*P/3, ..., P, where P is the
+priority assigned by the hardware to the physical core and N is the number
+of SMT siblings.
 
-This prevents a divide by zero, but returns 0 without setting freq
+Systems such as Intel Comet Lake can have some cores supporting SMT, while
+others do not. As a result, it is possible to have medium non-SMT
+priorities, Q, such that N*P > Q > P.
 
-A -EINVAL should be returned or freq initialized to some default value
+When comparing groups for load balancing, the priority of the CPU doing the
+load balancing is only compared with the preferred CPU of the candidate
+busiest group (N*P vs Q in the example above). Thus, scheduling groups
+with a preferred CPU with priority N*P always pull tasks from the
+scheduling group with priority Q and then such tasks are spread across the
+“SMT” domain. Conversely, since N*P > Q, CPUs with priority Q cannot
+pull tasks from a group with a preferred CPU with priority N*P, even
+though Q > P.
 
-> +		return 0;
-> +	}
-> +
-> +	input = mul0 * 100;
-> +	do_div(input, div0);
-> +	*freq = (u16)input;
-> +
-> +	return 0;
-> +}
-> +
->
-> +
-> +static int clock_verify_freq(struct clock *clock)
-> +{
-> +	u32 lookup_freq, clock_freq_counter, request_in_khz, tolerance;
-> +	int err = 0;
-> +	u16 freq;
-> +
-> +	mutex_lock(&clock->clock_lock);
-> +
-> +	err = get_freq(clock, &freq);
-> +	if (err) {
-> +		xrt_err(clock->xdev, "get freq failed, %d", err);
-> +		goto end;
-> +	}
-> +
-> +	err = get_freq_counter(clock, &clock_freq_counter);
-> +	if (err) {
-> +		xrt_err(clock->xdev, "get freq counter failed, %d", err);
-> +		goto end;
-> +	}
-> +
-> +	lookup_freq = find_matching_freq(freq, frequency_table,
-> +					 ARRAY_SIZE(frequency_table));
+Doing load balancing based on load (i.e. if the busiest group is of type
+group_overloaded) will not help if the system is not fully busy as the
+involved groups will have only one task and load balancing will
+not be deemed as necessary.
 
-I am running v6 through clang's static analyzer, it shows a problem here
+The behavior described above results in leaving CPUs with medium priority
+idle, while CPUs with lower priority are busy. Furthermore, such CPUs of
+lower priority are SMT siblings of high priority CPUs, which are also busy.
 
-drivers/fpga/xrt/lib/xleaf/clock.c:474:16: warning: 1st function call 
-argument is an uninitialized value
-         lookup_freq = find_matching_freq(freq, frequency_table,
-                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This patchset fixes this behavior by also checking the idle state of the
+SMT siblings of both the CPU doing the load balance and the busiest
+candidate group.
 
-See problem with get_freq above
+I ran a few benchmarks with and without this version of the patchset on
+an Intel(R) Core(TM) i9-7900X CPU. I kept online both SMT siblings of two
+high priority cores. I offlined the lower priority SMT siblings of four
+low priority cores. I offlined the rest of the cores. The resulting
+priority configuration meets the N*P > Q > P condition described above.
 
-Tom
+The baseline for the results is an unmodified v5.12 kernel. Results
+show a comparative percentage of improvement (positive) or degradation
+(negative). Each test case is repeated five times, and the standard
+deviation among repetitions is also documented.
 
+In order to judge only the improvements this patchset provides, Table 1
+shows the results when setting the CPU's frequency at 1000MHz. It can be
+observed that the patches bring an overall positive impact for tests
+that exhibit low variance. Some of the test cases, however, show a high
+variance and it is difficult to assess the impact. Still, a few test
+cases with low variance exhibit slight degradation.
+
+Table 2 shows the results when using hardware-controlled performance
+performance states (HWP), a common use case. In this case, the impact of
+the patches is also overall positive with a few test cases showing slight
+degradation.
+
+Thanks and BR,
+Ricardo
+
+========
+Changes since v2:
+  * Removed arch_sched_asym_prefer_early() and re-evaluation of the
+    candidate busiest group in update_sd_pick_busiest(). (PeterZ)
+  * Introduced sched_group::flags to reflect the properties of CPUs
+    in the scheduling group. This helps to identify scheduling groups
+    whose CPUs are SMT siblings. (PeterZ)
+  * Modified update_sg_lb_stats() to get statistics of the scheduling
+    domain as an argument. This provides it with the statistics of the
+    local domain. (PeterZ)
+  * Introduced sched_asym() to decide if a busiest candidate group can
+    be marked for asymmetric packing.
+  * Reworded patch 1 for clarity. (PeterZ)
+
+========
+Changes since v1:
+  * Don't bailout in update_sd_pick_busiest() if dst_cpu cannot pull
+    tasks. Instead, reclassify the candidate busiest group, as it
+    may still be selected. (PeterZ)
+  * Avoid an expensive and unnecessary call to cpumask_weight() when
+    determining if a sched_group is comprised of SMT siblings.
+    (PeterZ).
+  * Updated test results using the v2 patches.
+
+========      Table 1. Test results of patches at 10000MHz     ========
+=======================================================================
+hackbench
+=========
+case                    load            baseline(std%)  compare%( std%)
+process-pipe            group-2          1.00 (  4.17)   +0.41 (  1.35)
+process-pipe            group-4          1.00 (  5.26)   +4.02 (  3.80)
+process-pipe            group-8          1.00 ( 12.57)   +1.34 ( 16.28)
+process-sockets         group-2          1.00 (  1.04)   +0.83 (  0.58)
+process-sockets         group-4          1.00 (  0.57)   -0.38 (  1.13)
+process-sockets         group-8          1.00 (  6.39)   +1.15 (  3.44)
+threads-pipe            group-2          1.00 (  2.50)   +1.47 (  1.78)
+threads-pipe            group-4          1.00 (  5.55)   +2.68 (  4.88)
+threads-pipe            group-8          1.00 ( 12.85)   -0.89 ( 10.56)
+threads-sockets         group-2          1.00 (  2.11)   +1.77 (  0.77)
+threads-sockets         group-4          1.00 (  0.70)   +1.11 (  0.92)
+threads-sockets         group-8          1.00 (  1.20)   -1.79 (  1.88)
+
+netperf
+=======
+case                    load            baseline(std%)  compare%( std%)
+TCP_RR                  thread-2         1.00 (  0.72)   -1.42 (  0.45)
+TCP_RR                  thread-4         1.00 (  0.38)   +4.57 (  0.44)
+TCP_RR                  thread-8         1.00 (  9.29)   +1.09 ( 15.02)
+TCP_RR                  thread-16        1.00 ( 21.18)   +0.88 ( 23.62)
+UDP_RR                  thread-2         1.00 (  0.23)   -2.41 (  0.49)
+UDP_RR                  thread-4         1.00 (  0.19)   +4.54 (  0.37)
+UDP_RR                  thread-8         1.00 (  6.83)   -0.78 (  7.70)
+UDP_RR                  thread-16        1.00 ( 20.85)   -0.00 ( 19.52)
+
+tbench
+======
+case                    load            baseline(std%)  compare%( std%)
+loopback                thread-2         1.00 (  0.15)   -1.48 (  0.15)
+loopback                thread-4         1.00 (  0.25)   +3.65 (  0.36)
+loopback                thread-8         1.00 (  0.16)   +0.74 (  0.28)
+loopback                thread-16        1.00 (  0.32)   +0.85 (  0.32)
+
+schbench
+========
+case                    load            baseline(std%)  compare%( std%)
+normal                  mthread-2        1.00 (  0.10)   -0.05 (  0.00)
+normal                  mthread-4        1.00 (  0.00)   +0.00 (  0.00)
+normal                  mthread-8        1.00 (  4.81)   +5.57 (  2.61)
+
+========      Table 2. Test results of patches with HWP        ========
+=======================================================================
+
+hackbench
+=========
+case                    load            baseline(std%)  compare%( std%)
+process-pipe            group-2          1.00 (  2.59)   +2.93 (  2.10)
+process-pipe            group-4          1.00 (  4.05)   +5.82 (  4.55)
+process-pipe            group-8          1.00 (  7.37)   -0.09 ( 15.19)
+process-sockets         group-2          1.00 (  1.64)   -1.48 (  1.61)
+process-sockets         group-4          1.00 (  0.95)   -1.97 (  1.44)
+process-sockets         group-8          1.00 (  1.84)   -0.64 (  2.08)
+threads-pipe            group-2          1.00 (  3.02)   -0.09 (  1.70)
+threads-pipe            group-4          1.00 (  5.39)   +3.42 (  4.59)
+threads-pipe            group-8          1.00 (  5.56)   +1.96 ( 10.98)
+threads-sockets         group-2          1.00 (  1.10)   +1.99 (  1.67)
+threads-sockets         group-4          1.00 (  0.45)   +1.56 (  1.10)
+threads-sockets         group-8          1.00 (  3.56)   +3.27 (  1.47)
+
+netperf
+=======
+case                    load            baseline(std%)  compare%( std%)
+TCP_RR                  thread-2         1.00 (  0.36)  +21.26 (  1.40)
+TCP_RR                  thread-4         1.00 (  0.31)   +1.74 (  0.31)
+TCP_RR                  thread-8         1.00 ( 11.70)   -1.03 ( 13.55)
+TCP_RR                  thread-16        1.00 ( 23.49)   -0.43 ( 22.79)
+UDP_RR                  thread-2         1.00 (  0.19)  +16.29 (  0.97)
+UDP_RR                  thread-4         1.00 (  0.13)   +3.51 (  0.51)
+UDP_RR                  thread-8         1.00 (  8.95)   +0.05 ( 10.84)
+UDP_RR                  thread-16        1.00 ( 21.54)   +0.10 ( 22.89)
+
+tbench
+======
+case                    load            baseline(std%)  compare%( std%)
+loopback                thread-2         1.00 (  0.22)  +10.81 (  1.23)
+loopback                thread-4         1.00 (  2.56)  +61.43 (  0.56)
+loopback                thread-8         1.00 (  0.41)   -0.10 (  0.42)
+loopback                thread-16        1.00 (  0.60)   +0.59 (  0.21)
+
+schbench
+========
+case                    load            baseline(std%)  compare%( std%)
+normal                  mthread-2        1.00 (  0.00)   +0.00 (  0.00)
+normal                  mthread-4        1.00 (  0.00)   +0.00 (  0.00)
+normal                  mthread-8        1.00 (  0.00)   -2.67 (  5.20)
+
+========
+[1]. https://lore.kernel.org/lkml/20210406041108.7416-1-ricardo.neri-calderon@linux.intel.com/
+[2]. https://lore.kernel.org/lkml/20210414020436.12980-1-ricardo.neri-calderon@linux.intel.com/
+
+Ricardo Neri (6):
+  sched/topology: Introduce sched_group::flags
+  sched/fair: Optimize checking for group_asym_packing
+  sched/fair: Provide update_sg_lb_stats() with sched domain statistics
+  sched/fair: Carve out logic to mark a group for asymmetric packing
+  sched/fair: Consider SMT in ASYM_PACKING load balance
+  x86/sched: Enable SMT checks for asymmetric packing in load balancing
+
+ arch/x86/kernel/itmt.c         |  10 +++
+ include/linux/sched/topology.h |   1 +
+ kernel/sched/fair.c            | 135 ++++++++++++++++++++++++++++++---
+ kernel/sched/sched.h           |   1 +
+ kernel/sched/topology.c        |   7 +-
+ 5 files changed, 142 insertions(+), 12 deletions(-)
+
+-- 
+2.17.1
 
