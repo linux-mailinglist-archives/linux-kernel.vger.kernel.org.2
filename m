@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ACCD37F493
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 10:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C482137F496
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 10:59:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232394AbhEMJAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 05:00:14 -0400
-Received: from mga02.intel.com ([134.134.136.20]:47045 "EHLO mga02.intel.com"
+        id S232414AbhEMJAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 05:00:21 -0400
+Received: from mga02.intel.com ([134.134.136.20]:47046 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232311AbhEMI7h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 04:59:37 -0400
-IronPort-SDR: r/nv81QT6nBO5pwbO4wj5fO2fUFmP+ZbzrLVKV34KUD7vhAl/VB4ozX5awsvKvahqWslfn0gv+
- jWvh3E0CYMIQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="187032256"
+        id S232312AbhEMI7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 04:59:38 -0400
+IronPort-SDR: PONA4P1febegJs/r+jX9GhzFjgkG8FUpl9CQ3EB0DaOejAvInvEjyJ4EAE0mI+OpDDFOiowSiu
+ dQeFcY8SRdig==
+X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="187032264"
 X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
-   d="scan'208";a="187032256"
+   d="scan'208";a="187032264"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 01:58:12 -0700
-IronPort-SDR: 7lxjYkaJucjDUudNJuHW/f2babtAl8+Fola8NMZ0ek7BaZrVuJk75oUh1WKqeNkeKWmWRy+auj
- wzr9cHuivBRA==
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 01:58:15 -0700
+IronPort-SDR: /Z/mCwiOLJMnE3LEKdgRTqiJBEKN9juN3xHNHJKyV4Rl6UXzQJgGqbTMJtTMCiE7znG0rrDcMn
+ syCHXgeBATEQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
-   d="scan'208";a="625928278"
+   d="scan'208";a="625928287"
 Received: from aipg-stp-03.iil.intel.com ([143.185.92.28])
-  by fmsmga005.fm.intel.com with ESMTP; 13 May 2021 01:58:10 -0700
+  by fmsmga005.fm.intel.com with ESMTP; 13 May 2021 01:58:12 -0700
 From:   Guy Zadicario <guy.zadicario@intel.com>
 To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
 Cc:     olof@lixom.net, alexander.shishkin@linux.intel.com,
         andriy.shevchenko@intel.com, yochai.shefi-simchon@intel.com,
         guy.zadicario@intel.com
-Subject: [PATCH v2 05/15] misc: nnpi: Manage host memory resources
-Date:   Thu, 13 May 2021 11:57:15 +0300
-Message-Id: <20210513085725.45528-6-guy.zadicario@intel.com>
+Subject: [PATCH v2 06/15] misc: nnpi: Allow usermode to manage host resources
+Date:   Thu, 13 May 2021 11:57:16 +0300
+Message-Id: <20210513085725.45528-7-guy.zadicario@intel.com>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <20210513085725.45528-1-guy.zadicario@intel.com>
 References: <20210513085725.45528-1-guy.zadicario@intel.com>
@@ -43,854 +43,850 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provide interface for creating a "host resource" - a memory object
-which can be mapped to a dma address space of one or more NNP-I
-devices. These host resource objects manage memory blocks from which
-big chunks of data, such as inference tensors, the device's embedded OS
-and telemtry data are DMA'ed to and from the NNP-I device.
+Provide an IOCTL interface for creating and destroying host memory
+resources through a character device (/dev/nnpi_host).
+
+There is a single instance of this character device in the system
+regardless of the number of NNP-I devices attached because it
+controls host resources which may be shared between different devices.
+
+A nnp_user object, created when an application opens this character
+device, identifies the user (client) of the driver and holds a list of
+all host resources allocated by that user through the opened file
+descriptor.
+
+Host memory resources created through this character device can be mapped
+to device access through IOCTLs made to a different, per-device, chardev
+(will be introduced on next commits).
+
+All resources will be destroyed when the application closes the connection
+or exits.
+
+The IOCTL interface is defined in: include/uapi/misc/intel_nnpi.h
 
 Signed-off-by: Guy Zadicario <guy.zadicario@intel.com>
 Reviewed-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
 ---
- Documentation/ABI/testing/sysfs-driver-intel_nnpi |   5 +
- drivers/misc/intel-nnpi/Makefile                  |   2 +-
- drivers/misc/intel-nnpi/hostres.c                 | 627 ++++++++++++++++++++++
- drivers/misc/intel-nnpi/hostres.h                 | 167 ++++++
- 4 files changed, 800 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/ABI/testing/sysfs-driver-intel_nnpi
- create mode 100644 drivers/misc/intel-nnpi/hostres.c
- create mode 100644 drivers/misc/intel-nnpi/hostres.h
+ MAINTAINERS                            |   1 +
+ drivers/misc/intel-nnpi/Makefile       |   2 +-
+ drivers/misc/intel-nnpi/device.c       |  14 ++
+ drivers/misc/intel-nnpi/host_chardev.c | 346 +++++++++++++++++++++++++++++++++
+ drivers/misc/intel-nnpi/host_chardev.h |  12 ++
+ drivers/misc/intel-nnpi/nnp_user.c     | 131 +++++++++++++
+ drivers/misc/intel-nnpi/nnp_user.h     |  79 ++++++++
+ include/uapi/misc/intel_nnpi.h         | 150 ++++++++++++++
+ 8 files changed, 734 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/misc/intel-nnpi/host_chardev.c
+ create mode 100644 drivers/misc/intel-nnpi/host_chardev.h
+ create mode 100644 drivers/misc/intel-nnpi/nnp_user.c
+ create mode 100644 drivers/misc/intel-nnpi/nnp_user.h
+ create mode 100644 include/uapi/misc/intel_nnpi.h
 
-diff --git a/Documentation/ABI/testing/sysfs-driver-intel_nnpi b/Documentation/ABI/testing/sysfs-driver-intel_nnpi
-new file mode 100644
-index 0000000..b09880f
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-driver-intel_nnpi
-@@ -0,0 +1,5 @@
-+What:           /sys/class/nnpi_host/nnpi_host/total_hostres_size
-+Date:           Mar 2021
-+Kernelversion:  5.13
-+Contact:        guy.zadicario@intel.com
-+Description:    Total size in bytes of all allocated NNP-I host resources.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index ff0c3d7..42f3e54 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9320,6 +9320,7 @@ INTEL NNP-I PCI DRIVER
+ M:	Guy Zadicario <guy.zadicario@intel.com>
+ S:	Supported
+ F:	drivers/misc/intel-nnpi/
++F:	include/uapi/misc/intel_nnpi.h
+ 
+ INTEL P-Unit IPC DRIVER
+ M:	Zha Qipeng <qipeng.zha@intel.com>
 diff --git a/drivers/misc/intel-nnpi/Makefile b/drivers/misc/intel-nnpi/Makefile
-index 43f09c0..3713d51 100644
+index 3713d51..da2863b 100644
 --- a/drivers/misc/intel-nnpi/Makefile
 +++ b/drivers/misc/intel-nnpi/Makefile
 @@ -5,7 +5,7 @@
  
  obj-$(CONFIG_INTEL_NNPI) := intel_nnpi.o intel_nnpi_pcie.o
  
--intel_nnpi-y := device.o msg_scheduler.o
-+intel_nnpi-y := device.o msg_scheduler.o hostres.o
+-intel_nnpi-y := device.o msg_scheduler.o hostres.o
++intel_nnpi-y := device.o msg_scheduler.o hostres.o host_chardev.o nnp_user.o
  
  intel_nnpi_pcie-y := nnp_pcie.o
  
-diff --git a/drivers/misc/intel-nnpi/hostres.c b/drivers/misc/intel-nnpi/hostres.c
+diff --git a/drivers/misc/intel-nnpi/device.c b/drivers/misc/intel-nnpi/device.c
+index 60c5a94..0f98398 100644
+--- a/drivers/misc/intel-nnpi/device.c
++++ b/drivers/misc/intel-nnpi/device.c
+@@ -8,6 +8,7 @@
+ #include <linux/module.h>
+ 
+ #include "device.h"
++#include "host_chardev.h"
+ #include "msg_scheduler.h"
+ 
+ static DEFINE_IDA(dev_ida);
+@@ -99,6 +100,19 @@ void nnpdev_destroy(struct nnp_device *nnpdev)
+ }
+ EXPORT_SYMBOL(nnpdev_destroy);
+ 
++static int __init nnp_init(void)
++{
++	return nnp_init_host_interface();
++}
++subsys_initcall(nnp_init);
++
++static void __exit nnp_cleanup(void)
++{
++	nnp_release_host_interface();
++	/* dev_ida is already empty here - no point calling ida_destroy */
++}
++module_exit(nnp_cleanup);
++
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("Intel(R) NNPI Framework");
+ MODULE_AUTHOR("Intel Corporation");
+diff --git a/drivers/misc/intel-nnpi/host_chardev.c b/drivers/misc/intel-nnpi/host_chardev.c
 new file mode 100644
-index 0000000..e0d71c0
+index 0000000..6048fda
 --- /dev/null
-+++ b/drivers/misc/intel-nnpi/hostres.c
-@@ -0,0 +1,627 @@
++++ b/drivers/misc/intel-nnpi/host_chardev.c
+@@ -0,0 +1,346 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/* Copyright (C) 2019-2021 Intel Corporation */
 +
 +#define pr_fmt(fmt)   KBUILD_MODNAME ": " fmt
 +
-+#include <linux/bitfield.h>
-+#include <linux/err.h>
-+#include <linux/mutex.h>
-+#include <linux/pagemap.h>
-+#include <linux/pfn.h>
++#include <linux/cdev.h>
++#include <linux/device.h>
++#include <linux/file.h>
++#include <linux/fs.h>
++#include <linux/hashtable.h>
++#include <linux/idr.h>
 +#include <linux/printk.h>
-+#include <linux/sched/mm.h>
 +#include <linux/slab.h>
-+#include <linux/vmalloc.h>
++#include <uapi/misc/intel_nnpi.h>
 +
-+#include "hostres.h"
++#include "device.h"
++#include "host_chardev.h"
 +#include "ipc_protocol.h"
++#include "nnp_user.h"
 +
-+/**
-+ * struct host_resource - structure for host memory resource object
-+ * @ref: kref for that host resource object
-+ * @size: size of the memory resource, in bytes
-+ * @devices: list of devices this resource is mapped to (list of nnpdev_mapping)
-+ * @lock: protects @devices
-+ * @dir: DMA direction mask possible for this resource, when mapped to device.
-+ * @pinned_mm: mm object used to pin the user allocated resource memory. NULL
-+ *             if the resource was not allocated by user-space.
-+ * @vptr: virtual pointer to the resource memory if allocated by
-+ *        nnp_hostres_alloc(). NULL otherwise.
-+ * @start_offset: holds the offset within the first pinned page where resource
-+ *                memory starts (relevant only when @pinned_mm is not NULL).
-+ * @pages: array of resource memory pages.
-+ * @n_pages: size of pages array.
-+ */
-+struct host_resource {
-+	struct kref       ref;
-+	size_t            size;
-+	struct list_head  devices;
-+	spinlock_t        lock;
-+	enum dma_data_direction dir;
++static struct cdev cdev;
++static dev_t       devnum;
++static struct class *class;
++static struct device *dev;
 +
-+	struct mm_struct  *pinned_mm;
-+	void              *vptr;
-+	unsigned int      start_offset;
++static inline int is_host_file(struct file *f);
 +
-+	struct page       **pages;
-+	unsigned int      n_pages;
-+};
-+
-+/**
-+ * struct nnpdev_mapping - mapping information of host resource to one device
-+ * @ref: kref for that mapping object
-+ * @res: pointer to the host resource
-+ * @dev: the device the resource is mapped to
-+ * @sgt: scatter table of host resource pages in memory
-+ * @dma_chain_sgt: sg_table of dma_chain blocks (see description below).
-+ * @dma_chain_order: order used to allocate scatterlist of @dma_chain_sgt.
-+ * @node: list head to attach this object to a list of mappings
-+ *
-+ * This structure holds mapping information of one host resource to one
-+ * NNP-I device. @sgt is the sg_table describes the DMA addresses of the
-+ * resource chunks.
-+ *
-+ * When mapping a host memory resource for NNP-I device access, we need to send
-+ * the DMA page table of the resource to the device. The device uses this page
-+ * table when programming its DMA engine to read/write the host resource.
-+ *
-+ * The format of that page table is a chain of continuous DMA buffers, each
-+ * starts with a 24 bytes header (&struct dma_chain_header) followed by 8 bytes
-+ * entries, each describe a continuous block of the resource
-+ * (&struct nnp_dma_chain_entry).
-+ *
-+ * The header of the chain has a pointer to the next buffer in the chain for
-+ * the case where multiple DMA blocks are required to describe the
-+ * entire resource. The address of the first block in the chain is sent to
-+ * the device, which then fetches the entire chain when the resource is
-+ * mapped. @dma_chain_sgt is an sg_table of memory mapped to the device and
-+ * initialized with the resource page table in the above described format.
-+ */
-+struct nnpdev_mapping {
-+	struct kref                 ref;
-+	struct host_resource        *res;
-+	struct device               *dev;
-+	struct sg_table             *sgt;
-+	struct sg_table             dma_chain_sgt;
-+	unsigned int                dma_chain_order;
-+	struct list_head            node;
-+};
-+
-+/*
-+ * Since host resources are pinned for their entire lifetime, it
-+ * is useful to monitor the total size of NNP-I host resources
-+ * allocated in the system.
-+ */
-+static size_t total_hostres_size;
-+static DEFINE_MUTEX(total_size_mutex);
-+
-+/* Destroys host resource, when all references to it are released */
-+static void release_hostres(struct kref *kref)
++static enum dma_data_direction to_dma_dir(unsigned int nnp_dir)
 +{
-+	struct host_resource *r = container_of(kref, struct host_resource, ref);
-+
-+	if (r->pinned_mm) {
-+		unpin_user_pages(r->pages, r->n_pages);
-+		account_locked_vm(r->pinned_mm, r->n_pages, false);
-+		mmdrop(r->pinned_mm);
-+	} else {
-+		vfree(r->vptr);
++	/* Ignore IOCTL_INF_RES_NETWORK */
++	switch (nnp_dir & (IOCTL_INF_RES_INPUT | IOCTL_INF_RES_OUTPUT)) {
++	case (IOCTL_INF_RES_INPUT | IOCTL_INF_RES_OUTPUT):
++		return DMA_BIDIRECTIONAL;
++	case IOCTL_INF_RES_INPUT:
++		return DMA_TO_DEVICE;
++	case IOCTL_INF_RES_OUTPUT:
++		return DMA_FROM_DEVICE;
++	default:
++		break;
 +	}
 +
-+	kvfree(r->pages);
-+	mutex_lock(&total_size_mutex);
-+	total_hostres_size -= r->size;
-+	mutex_unlock(&total_size_mutex);
-+	kfree(r);
++	return DMA_NONE;
 +}
 +
-+void nnp_hostres_get(struct host_resource *res)
-+{
-+	kref_get(&res->ref);
-+};
-+
-+void nnp_hostres_put(struct host_resource *res)
-+{
-+	kref_put(&res->ref, release_hostres);
-+}
-+
-+/* Really destroys mapping to device, when refcount is zero */
-+static void release_mapping(struct kref *kref)
-+{
-+	struct nnpdev_mapping *m = container_of(kref, struct nnpdev_mapping, ref);
-+
-+	spin_lock(&m->res->lock);
-+	list_del(&m->node);
-+	spin_unlock(&m->res->lock);
-+
-+	dma_unmap_sgtable(m->dev, &m->dma_chain_sgt, DMA_TO_DEVICE, 0);
-+	sgl_free_order(m->dma_chain_sgt.sgl, m->dma_chain_order);
-+
-+	dma_unmap_sg(m->dev, m->sgt->sgl, m->sgt->orig_nents, m->res->dir);
-+	sg_free_table(m->sgt);
-+	kfree(m->sgt);
-+
-+	nnp_hostres_put(m->res);
-+
-+	kfree(m);
-+}
-+
-+static struct host_resource *alloc_hostres(size_t size, enum dma_data_direction dir)
-+{
-+	struct host_resource *r;
-+
-+	r = kzalloc(sizeof(*r), GFP_KERNEL);
-+	if (!r)
-+		return r;
-+
-+	kref_init(&r->ref);
-+	spin_lock_init(&r->lock);
-+	r->dir = dir;
-+	r->size = size;
-+	INIT_LIST_HEAD(&r->devices);
-+
-+	return r;
-+}
-+
-+struct host_resource *nnp_hostres_alloc(size_t size, enum dma_data_direction dir)
-+{
-+	struct host_resource *r;
-+	unsigned int i;
-+	char *p;
-+
-+	if (size == 0 || dir == DMA_NONE)
-+		return ERR_PTR(-EINVAL);
-+
-+	r = alloc_hostres(size, dir);
-+	if (!r)
-+		return ERR_PTR(-ENOMEM);
-+
-+	r->n_pages = PFN_UP(size);
-+	r->vptr = vmalloc(r->n_pages * PAGE_SIZE);
-+	if (!r->vptr)
-+		goto free_res;
-+
-+	r->pages = kvmalloc_array(r->n_pages, sizeof(struct page *), GFP_KERNEL);
-+	if (!r->pages)
-+		goto free_vptr;
-+
-+	for (i = 0, p = r->vptr; i < r->n_pages; i++, p += PAGE_SIZE) {
-+		r->pages[i] = vmalloc_to_page(p);
-+		if (!r->pages[i])
-+			goto free_pages;
-+	}
-+
-+	mutex_lock(&total_size_mutex);
-+	total_hostres_size += size;
-+	mutex_unlock(&total_size_mutex);
-+
-+	return r;
-+
-+free_pages:
-+	kvfree(r->pages);
-+free_vptr:
-+	vfree(r->vptr);
-+free_res:
-+	kfree(r);
-+	return ERR_PTR(-ENOMEM);
-+}
-+
-+struct host_resource *nnp_hostres_from_usermem(void __user *user_ptr, size_t size,
-+					       enum dma_data_direction dir)
-+{
-+	/*
-+	 * user_ptr is not being accessed, it is only used as parameter to
-+	 * pin_user_pages(), so it is OK to remove the __user annotation.
-+	 */
-+	uintptr_t user_addr = (__force uintptr_t)user_ptr;
-+	struct host_resource *r;
-+	int err;
-+	int gup_flags = 0;
-+	int n, pinned;
-+
-+	if (size == 0 || dir == DMA_NONE)
-+		return ERR_PTR(-EINVAL);
-+
-+	/* Restrict for 4 byte alignment */
-+	if (user_addr & 0x3)
-+		return ERR_PTR(-EINVAL);
-+
-+	if (!access_ok(user_ptr, size))
-+		return ERR_PTR(-EFAULT);
-+
-+	r = alloc_hostres(size, dir);
-+	if (!r)
-+		return ERR_PTR(-ENOMEM);
-+
-+	r->start_offset = offset_in_page(user_addr);
-+	user_addr &= PAGE_MASK;
-+
-+	r->n_pages = PFN_UP(size + r->start_offset);
-+	r->pages = kvmalloc_array(r->n_pages, sizeof(struct page *), GFP_KERNEL);
-+	if (!r->pages) {
-+		err = -ENOMEM;
-+		goto free_res;
-+	}
-+
-+	err = account_locked_vm(current->mm, r->n_pages, true);
-+	if (err)
-+		goto free_pages;
-+
-+	if (nnp_hostres_is_input(r))
-+		gup_flags = FOLL_WRITE;
-+
-+	/*
-+	 * The host resource is being re-used for multiple DMA
-+	 * transfers for streaming data into the device.
-+	 * In most situations will live long term.
-+	 */
-+	gup_flags |= FOLL_LONGTERM;
-+
-+	for (pinned = 0; pinned < r->n_pages; pinned += n) {
-+		n = pin_user_pages(user_addr + pinned * PAGE_SIZE,
-+				   r->n_pages - pinned, gup_flags,
-+				   &r->pages[pinned], NULL);
-+		if (n < 0) {
-+			err = -ENOMEM;
-+			goto unaccount;
-+		}
-+	}
-+
-+	r->pinned_mm = current->mm;
-+	mmgrab(r->pinned_mm);
-+
-+	mutex_lock(&total_size_mutex);
-+	total_hostres_size += size;
-+	mutex_unlock(&total_size_mutex);
-+
-+	return r;
-+
-+unaccount:
-+	account_locked_vm(current->mm, r->n_pages, false);
-+	unpin_user_pages(r->pages, pinned);
-+free_pages:
-+	kvfree(r->pages);
-+free_res:
-+	kfree(r);
-+	return ERR_PTR(err);
-+}
-+
-+/* Finds mapping by device and increase its refcount. NULL if not found */
-+static struct nnpdev_mapping *get_mapping_for_dev(struct host_resource *res,
-+						  struct device *dev)
-+{
-+	struct nnpdev_mapping *m;
-+
-+	spin_lock(&res->lock);
-+
-+	list_for_each_entry(m, &res->devices, node) {
-+		if (m->dev == dev) {
-+			kref_get(&m->ref);
-+			goto out;
-+		}
-+	}
-+
-+	m = NULL;
-+out:
-+	spin_unlock(&res->lock);
-+	return m;
-+}
-+
-+static bool entry_valid(struct scatterlist *sgl, u64 ipc_entry)
-+{
-+	unsigned long long dma_pfn;
-+	unsigned long n_pages;
-+
-+	dma_pfn = FIELD_GET(DMA_CHAIN_ENTRY_PFN_MASK, ipc_entry);
-+	if (NNP_IPC_DMA_PFN_TO_ADDR(dma_pfn) != sg_dma_address(sgl))
-+		return false;
-+
-+	n_pages = FIELD_GET(DMA_CHAIN_ENTRY_NPAGES_MASK, ipc_entry);
-+	if (n_pages != DIV_ROUND_UP(sg_dma_len(sgl), NNP_PAGE_SIZE))
-+		return false;
-+
-+	return true;
-+}
-+
-+/**
-+ * build_ipc_dma_chain_array() - builds page list of the resource for IPC usage
-+ * @m: pointer to device mapping info struct
-+ * @use_one_entry: if true will generate all page table in one continuous
-+ *                 DMA chunk. otherwise a chain of blocks will be used
-+ *                 each of one page size.
-+ * @start_offset: offset in first mapped page where resource memory starts,
-+ *
-+ * This function allocates scatterlist, map it to device and populate it with
-+ * page table of the device mapped resource in format suitable to be used
-+ * in the IPC protocol for sending the resource page table to the card.
-+ * The format of the page table is described in the documentation of &struct
-+ * nnpdev_mapping.
-+ *
-+ * Return: 0 on success, error value otherwise
-+ */
-+static int build_ipc_dma_chain_array(struct nnpdev_mapping *m, bool use_one_entry,
-+				     unsigned int start_offset)
-+{
-+	unsigned int i, k = 0;
-+	u64 *p = NULL;
-+	u64 e;
-+	unsigned long long dma_addr, dma_pfn, size;
-+	struct nnp_dma_chain_header *h;
-+	struct scatterlist *sg, *map_sg;
-+	struct scatterlist *chain_sg;
-+	unsigned long n_pages;
-+	unsigned int chain_size;
-+	unsigned int chain_order;
-+	unsigned int chain_nents;
-+	unsigned int nents_per_entry;
-+	unsigned int start_off = start_offset;
-+	int rc;
-+
-+	if (use_one_entry) {
-+		/*
-+		 * Allocate enough pages in one chunk that will fit
-+		 * the header and nnp_dma_chain_entry for all the sg_table
-+		 * entries.
-+		 */
-+		nents_per_entry = m->sgt->nents;
-+		chain_size = sizeof(struct nnp_dma_chain_header) +
-+			     m->sgt->nents * DMA_CHAIN_ENTRY_SIZE;
-+		chain_order = get_order(chain_size);
-+	} else {
-+		/*
-+		 * Calc number of one page DMA buffers needed to hold the
-+		 * entire page table.
-+		 * NENTS_PER_PAGE is how much DMA chain entries fits
-+		 * in a single page following the chain header, must be at
-+		 * positive.
-+		 */
-+		nents_per_entry = NENTS_PER_PAGE;
-+		chain_size = DIV_ROUND_UP(m->sgt->nents, nents_per_entry) *
-+			     NNP_PAGE_SIZE;
-+		chain_order = 0;
-+	}
-+
-+	chain_sg = sgl_alloc_order(chain_size, chain_order, false, GFP_KERNEL,
-+				   &chain_nents);
-+	if (!chain_sg)
-+		return -ENOMEM;
-+
-+	m->dma_chain_sgt.sgl = chain_sg;
-+	m->dma_chain_sgt.nents = chain_nents;
-+	m->dma_chain_sgt.orig_nents = chain_nents;
-+	m->dma_chain_order = chain_order;
-+	rc = dma_map_sgtable(m->dev, &m->dma_chain_sgt, DMA_TO_DEVICE, 0);
-+	if (rc)
-+		goto free_chain_sg;
-+
-+	/* Initialize chain entry blocks */
-+	map_sg = m->sgt->sgl;
-+	for_each_sg(chain_sg, sg, chain_nents, i) {
-+		/*
-+		 * Check that the allocated DMA address fits in IPC protocol.
-+		 * In the protocol, DMA addresses are sent as 4K page numbers
-+		 * and must fit in 45 bits.
-+		 * Meaning, if the DMA address is larger than 57 bits it will
-+		 * not fit.
-+		 */
-+		if (sg_dma_address(sg) > NNP_IPC_DMA_MAX_ADDR)
-+			goto unmap_chain_sg;
-+
-+		/* h: points to the header of current block */
-+		h = sg_virt(sg);
-+
-+		/* p: points to current chunk entry in block */
-+		p = (u64 *)(h + 1);
-+
-+		size = 0;
-+		for (k = 0; k < nents_per_entry && map_sg; ++k) {
-+			/*
-+			 * Build entry with DMA address as page number and
-+			 * size in pages
-+			 */
-+			dma_addr = sg_dma_address(map_sg);
-+			dma_pfn = NNP_IPC_DMA_ADDR_TO_PFN(dma_addr);
-+			n_pages = DIV_ROUND_UP(sg_dma_len(map_sg), NNP_PAGE_SIZE);
-+
-+			e = FIELD_PREP(DMA_CHAIN_ENTRY_PFN_MASK, dma_pfn);
-+			e |= FIELD_PREP(DMA_CHAIN_ENTRY_NPAGES_MASK, n_pages);
-+
-+			/*
-+			 * Check that packed entry matches the DMA chunk.
-+			 * (Will fail if either dma_pfn or n_pages fields overflows)
-+			 */
-+			if (!entry_valid(map_sg, e))
-+				goto unmap_chain_sg;
-+
-+			/* Fill entry value (should be 64-bit little-endian) */
-+			p[k] = cpu_to_le64(e);
-+
-+			size += sg_dma_len(map_sg);
-+
-+			map_sg = sg_next(map_sg);
-+		}
-+
-+		/* Initialize block header and link to next block */
-+		h->total_nents = cpu_to_le32(m->sgt->nents);
-+		h->start_offset = cpu_to_le32(start_off);
-+		h->size = cpu_to_le64(size);
-+		if (sg_next(sg))
-+			h->dma_next = cpu_to_le64(sg_dma_address(sg_next(sg)));
-+		else
-+			h->dma_next = 0;
-+		start_off = 0;
-+	}
-+
-+	return 0;
-+
-+unmap_chain_sg:
-+	dma_unmap_sgtable(m->dev, &m->dma_chain_sgt, DMA_TO_DEVICE, 0);
-+free_chain_sg:
-+	sgl_free_order(chain_sg, chain_order);
-+	memset(&m->dma_chain_sgt, 0, sizeof(m->dma_chain_sgt));
-+	return -ENOMEM;
-+}
-+
-+struct nnpdev_mapping *nnp_hostres_map_device(struct host_resource *res,
-+					      struct nnp_device *nnpdev,
-+					      bool use_one_entry,
-+					      dma_addr_t *page_list,
-+					      u32 *total_chunks)
++static long create_hostres(struct nnp_user_info *user_info, void __user *arg,
++			   unsigned int size)
 +{
 +	int ret;
-+	struct nnpdev_mapping *m;
-+	struct scatterlist *sge;
++	struct nnpdrv_ioctl_create_hostres req;
++	struct host_resource *hostres;
++	struct user_hostres *user_hostres_entry;
++	void __user *uptr;
++	unsigned int io_size = sizeof(req);
 +
-+	if (!res || !nnpdev || !page_list)
-+		return ERR_PTR(-EINVAL);
++	if (size != io_size)
++		return -EINVAL;
 +
-+	/* Check if already mapped for the device */
-+	m = get_mapping_for_dev(res, nnpdev->dev);
-+	if (m)
-+		goto done;
++	if (copy_from_user(&req, arg, io_size))
++		return -EFAULT;
 +
-+	nnp_hostres_get(res);
++	if (req.usage_flags & ~IOCTL_RES_USAGE_VALID_MASK)
++		return -EINVAL;
 +
-+	m = kmalloc(sizeof(*m), GFP_KERNEL);
-+	if (!m) {
-+		ret = -ENOMEM;
-+		goto put_resource;
++	uptr = u64_to_user_ptr(req.user_ptr);
++	hostres = nnp_hostres_from_usermem(uptr, req.size,
++					   to_dma_dir(req.usage_flags));
++
++	if (IS_ERR(hostres))
++		return PTR_ERR(hostres);
++
++	ret = nnp_user_add_hostres(user_info, hostres, &user_hostres_entry);
++	if (ret < 0) {
++		nnp_hostres_put(hostres);
++		return ret;
 +	}
 +
-+	kref_init(&m->ref);
++	req.size = nnp_hostres_size(hostres);
 +
-+	m->dev = nnpdev->dev;
-+	m->res = res;
++	/*
++	 * The created user_hostres_entry holds refcount to the resource,
++	 * no need to keep another one here.
++	 */
++	nnp_hostres_put(hostres);
 +
-+	m->sgt = kmalloc(sizeof(*m->sgt), GFP_KERNEL);
-+	if (!m->sgt) {
-+		ret = -ENOMEM;
-+		goto free_mapping;
++	req.user_handle = user_hostres_entry->user_handle;
++	if (copy_to_user(arg, &req, io_size)) {
++		ret = -EFAULT;
++		goto destroy_hostres_entry;
 +	}
-+
-+	sge = __sg_alloc_table_from_pages(m->sgt, res->pages, res->n_pages, 0,
-+					  res->size + res->start_offset,
-+					  NNP_MAX_CHUNK_SIZE, NULL, 0, GFP_KERNEL);
-+	if (IS_ERR(sge)) {
-+		ret = PTR_ERR(sge);
-+		goto free_sgt_struct;
-+	}
-+
-+	ret = dma_map_sg(m->dev, m->sgt->sgl, m->sgt->orig_nents, res->dir);
-+	if (ret <= 0) {
-+		/* dma_map_sg returns 0 on error with no error value */
-+		ret = -ENOMEM;
-+		goto free_sgt;
-+	}
-+
-+	m->sgt->nents = ret;
-+
-+	ret = build_ipc_dma_chain_array(m, use_one_entry, res->start_offset);
-+	if (ret < 0)
-+		goto unmap;
-+
-+	spin_lock(&res->lock);
-+	list_add(&m->node, &res->devices);
-+	spin_unlock(&res->lock);
-+
-+done:
-+	*page_list = sg_dma_address(m->dma_chain_sgt.sgl);
-+	if (total_chunks)
-+		*total_chunks = m->sgt->nents;
-+
-+	return m;
-+
-+unmap:
-+	dma_unmap_sg(m->dev, m->sgt->sgl, m->sgt->orig_nents, res->dir);
-+free_sgt:
-+	sg_free_table(m->sgt);
-+free_sgt_struct:
-+	kfree(m->sgt);
-+free_mapping:
-+	kfree(m);
-+put_resource:
-+	nnp_hostres_put(res);
-+	return ERR_PTR(ret);
-+}
-+
-+void nnp_hostres_unmap_device(struct nnpdev_mapping *mapping)
-+{
-+	kref_put(&mapping->ref, release_mapping);
-+}
-+
-+int nnp_hostres_user_lock(struct host_resource *res)
-+{
-+	struct nnpdev_mapping *m;
-+
-+	spin_lock(&res->lock);
-+	list_for_each_entry(m, &res->devices, node)
-+		dma_sync_sg_for_cpu(m->dev, m->sgt->sgl, m->sgt->orig_nents, res->dir);
-+	spin_unlock(&res->lock);
 +
 +	return 0;
-+}
 +
-+int nnp_hostres_user_unlock(struct host_resource *res)
-+{
-+	struct nnpdev_mapping *m;
-+
-+	spin_lock(&res->lock);
-+	list_for_each_entry(m, &res->devices, node)
-+		dma_sync_sg_for_device(m->dev, m->sgt->sgl, m->sgt->orig_nents,
-+				       res->dir);
-+	spin_unlock(&res->lock);
-+
-+	return 0;
-+}
-+
-+bool nnp_hostres_is_input(struct host_resource *res)
-+{
-+	return res->dir == DMA_TO_DEVICE || res->dir == DMA_BIDIRECTIONAL;
-+}
-+
-+bool nnp_hostres_is_output(struct host_resource *res)
-+{
-+	return res->dir == DMA_FROM_DEVICE || res->dir == DMA_BIDIRECTIONAL;
-+}
-+
-+size_t nnp_hostres_size(struct host_resource *res)
-+{
-+	return res->size;
-+}
-+
-+void *nnp_hostres_vptr(struct host_resource *res)
-+{
-+	return res->vptr;
-+}
-+
-+static ssize_t total_hostres_size_show(struct device *dev,
-+				       struct device_attribute *attr, char *buf)
-+{
-+	ssize_t ret;
-+
-+	mutex_lock(&total_size_mutex);
-+	ret = sysfs_emit(buf, "%zu\n", total_hostres_size);
-+	mutex_unlock(&total_size_mutex);
++destroy_hostres_entry:
++	nnp_user_remove_hostres(user_hostres_entry);
 +
 +	return ret;
 +}
-+static DEVICE_ATTR_RO(total_hostres_size);
 +
-+static struct attribute *nnp_host_attrs[] = {
-+	&dev_attr_total_hostres_size.attr,
-+	NULL
-+};
-+
-+static struct attribute_group nnp_host_attrs_grp = {
-+	.attrs = nnp_host_attrs,
-+};
-+
-+int nnp_hostres_init_sysfs(struct device *dev)
++static long destroy_hostres(struct nnp_user_info *user_info, void __user *arg,
++			    unsigned int size)
 +{
-+	return sysfs_create_group(&dev->kobj, &nnp_host_attrs_grp);
++	struct nnpdrv_ioctl_destroy_hostres destroy_args;
++	struct user_hostres *user_hostres_entry;
++	unsigned int io_size = sizeof(destroy_args);
++	int ret = 0;
++
++	if (size != io_size)
++		return -EINVAL;
++
++	if (copy_from_user(&destroy_args, arg, io_size))
++		return -EFAULT;
++
++	/* errno must be cleared on entry */
++	if (destroy_args.o_errno)
++		return -EINVAL;
++
++	mutex_lock(&user_info->mutex);
++	user_hostres_entry = idr_find(&user_info->idr, destroy_args.user_handle);
++	if (user_hostres_entry) {
++		nnp_user_remove_hostres_locked(user_hostres_entry);
++	} else {
++		destroy_args.o_errno = NNPER_NO_SUCH_RESOURCE;
++		if (copy_to_user(arg, &destroy_args, io_size))
++			ret = -EFAULT;
++	}
++
++	mutex_unlock(&user_info->mutex);
++	return ret;
 +}
 +
-+void nnp_hostres_fini_sysfs(struct device *dev)
++static long lock_hostres(struct nnp_user_info *user_info, void __user *arg,
++			 unsigned int size)
 +{
-+	sysfs_remove_group(&dev->kobj, &nnp_host_attrs_grp);
++	int ret = 0;
++	struct nnpdrv_ioctl_lock_hostres lock_args;
++	struct user_hostres *user_hostres_entry;
++	unsigned int io_size = sizeof(lock_args);
++
++	if (size != io_size)
++		return -EINVAL;
++
++	if (copy_from_user(&lock_args, arg, io_size))
++		return -EFAULT;
++
++	/* errno must be cleared on entry */
++	if (lock_args.o_errno)
++		return -EINVAL;
++
++	mutex_lock(&user_info->mutex);
++	user_hostres_entry = idr_find(&user_info->idr, lock_args.user_handle);
++	if (user_hostres_entry) {
++		ret = nnp_hostres_user_lock(user_hostres_entry->hostres);
++	} else {
++		lock_args.o_errno = NNPER_NO_SUCH_RESOURCE;
++		if (copy_to_user(arg, &lock_args, io_size))
++			ret = -EFAULT;
++	}
++
++	mutex_unlock(&user_info->mutex);
++	return ret;
 +}
-diff --git a/drivers/misc/intel-nnpi/hostres.h b/drivers/misc/intel-nnpi/hostres.h
++
++static long unlock_hostres(struct nnp_user_info *user_info, void __user *arg,
++			   unsigned int size)
++{
++	int ret = 0;
++	struct user_hostres *user_hostres_entry;
++	struct nnpdrv_ioctl_lock_hostres lock_args;
++	unsigned int io_size = sizeof(lock_args);
++
++	if (size != io_size)
++		return -EINVAL;
++
++	if (copy_from_user(&lock_args, arg, io_size))
++		return -EFAULT;
++
++	/* errno must be cleared on entry */
++	if (lock_args.o_errno)
++		return -EINVAL;
++
++	mutex_lock(&user_info->mutex);
++	user_hostres_entry = idr_find(&user_info->idr, lock_args.user_handle);
++	if (user_hostres_entry) {
++		ret = nnp_hostres_user_unlock(user_hostres_entry->hostres);
++	} else {
++		lock_args.o_errno = NNPER_NO_SUCH_RESOURCE;
++		if (copy_to_user(arg, &lock_args, sizeof(lock_args)))
++			ret = -EFAULT;
++	}
++
++	mutex_unlock(&user_info->mutex);
++	return ret;
++}
++
++struct file *nnp_host_file_get(int host_fd)
++{
++	struct file *host_file;
++
++	host_file = fget(host_fd);
++	if (is_host_file(host_file))
++		return host_file;
++
++	if (host_file)
++		fput(host_file);
++
++	return NULL;
++}
++
++/*
++ * Inference host cdev (/dev/nnpi_host) file operation functions
++ */
++
++static int host_open(struct inode *inode, struct file *f)
++{
++	struct nnp_user_info *user_info;
++
++	if (!is_host_file(f))
++		return -EINVAL;
++
++	user_info = kzalloc(sizeof(*user_info), GFP_KERNEL);
++	if (!user_info)
++		return -ENOMEM;
++
++	nnp_user_init(user_info);
++
++	f->private_data = user_info;
++
++	return 0;
++}
++
++static int host_release(struct inode *inode, struct file *f)
++{
++	struct nnp_user_info *user_info;
++
++	if (!is_host_file(f))
++		return -EINVAL;
++
++	user_info = f->private_data;
++
++	nnp_user_destroy_all(user_info);
++	f->private_data = NULL;
++
++	return 0;
++}
++
++static long host_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
++{
++	long ret = 0;
++	struct nnp_user_info *user_info = f->private_data;
++	unsigned int ioc_nr, size;
++
++	if (!is_host_file(f))
++		return -ENOTTY;
++
++	if (_IOC_TYPE(cmd) != 'h')
++		return -EINVAL;
++
++	ioc_nr = _IOC_NR(cmd);
++	size = _IOC_SIZE(cmd);
++
++	switch (ioc_nr) {
++	case _IOC_NR(IOCTL_INF_CREATE_HOST_RESOURCE):
++		ret = create_hostres(user_info, (void __user *)arg, size);
++		break;
++	case _IOC_NR(IOCTL_INF_DESTROY_HOST_RESOURCE):
++		ret = destroy_hostres(user_info, (void __user *)arg, size);
++		break;
++	case _IOC_NR(IOCTL_INF_UNLOCK_HOST_RESOURCE):
++		ret = unlock_hostres(user_info, (void __user *)arg, size);
++		break;
++	case _IOC_NR(IOCTL_INF_LOCK_HOST_RESOURCE):
++		ret = lock_hostres(user_info, (void __user *)arg, size);
++		break;
++	default:
++		ret = -EINVAL;
++	}
++
++	return ret;
++}
++
++static const struct file_operations host_fops = {
++	.owner = THIS_MODULE,
++	.open = host_open,
++	.release = host_release,
++	.unlocked_ioctl = host_ioctl,
++	.compat_ioctl = host_ioctl,
++};
++
++static inline int is_host_file(struct file *f)
++{
++	return f && f->f_op == &host_fops;
++}
++
++int nnp_init_host_interface(void)
++{
++	int ret;
++
++	ret = alloc_chrdev_region(&devnum, 0, 1, NNPDRV_INF_HOST_DEV_NAME);
++	if (ret < 0)
++		return ret;
++
++	cdev_init(&cdev, &host_fops);
++	cdev.owner = THIS_MODULE;
++
++	ret = cdev_add(&cdev, devnum, 1);
++	if (ret < 0)
++		goto err_region;
++
++	class = class_create(THIS_MODULE, NNPDRV_INF_HOST_DEV_NAME);
++	if (IS_ERR(class)) {
++		ret = PTR_ERR(class);
++		goto err_cdev;
++	}
++
++	dev = device_create(class, NULL, devnum, NULL, NNPDRV_INF_HOST_DEV_NAME);
++	if (IS_ERR(dev)) {
++		ret = PTR_ERR(dev);
++		goto err_class;
++	}
++
++	ret = nnp_hostres_init_sysfs(dev);
++	if (ret < 0)
++		goto err_device;
++
++	return 0;
++
++err_device:
++	device_destroy(class, devnum);
++err_class:
++	class_destroy(class);
++err_cdev:
++	cdev_del(&cdev);
++err_region:
++	unregister_chrdev_region(devnum, 1);
++
++	return ret;
++}
++
++void nnp_release_host_interface(void)
++{
++	nnp_hostres_fini_sysfs(dev);
++	device_destroy(class, devnum);
++	class_destroy(class);
++	cdev_del(&cdev);
++	unregister_chrdev_region(devnum, 1);
++}
+diff --git a/drivers/misc/intel-nnpi/host_chardev.h b/drivers/misc/intel-nnpi/host_chardev.h
 new file mode 100644
-index 0000000..6397c73
+index 0000000..5812e0f
 --- /dev/null
-+++ b/drivers/misc/intel-nnpi/hostres.h
-@@ -0,0 +1,167 @@
++++ b/drivers/misc/intel-nnpi/host_chardev.h
+@@ -0,0 +1,12 @@
 +/* SPDX-License-Identifier: GPL-2.0-only */
 +/* Copyright (C) 2019-2021 Intel Corporation */
 +
-+#ifndef _NNPDRV_HOSTRES_H
-+#define _NNPDRV_HOSTRES_H
++#ifndef _NNPDRV_INFERENCE_H
++#define _NNPDRV_INFERENCE_H
 +
-+#include <linux/dma-mapping.h>
-+#include "device.h"
++int nnp_init_host_interface(void);
++void nnp_release_host_interface(void);
 +
-+/**
-+ * nnp_hostres_alloc() - allocate memory and create host resource
-+ * @size: Size of the host resource to be created
-+ * @dir:  Resource direction (read or write or both)
-+ *
-+ * This function allocates memory pages and provides host resource handle.
-+ * The memory is mapped to kernel virtual address.
-+ * The resource can be Input(read by device), Output(write by device) and both.
-+ *
-+ * The return handle can be used as argument to one of the other nnpi_hostres*
-+ * functions for:
-+ *    - mapping/unmapping the resource for NNP-I device.
-+ *    - pointer to the allocated memory can be retrieved by nnp_hostres_vptr()
-+ *
-+ * The handle should be released when no longer needed by a call to
-+ * nnp_hostres_put.
-+ *
-+ * Return: pointer to created resource or error value
-+ */
-+struct host_resource *nnp_hostres_alloc(size_t size, enum dma_data_direction dir);
-+
-+/**
-+ * nnp_hostres_from_usermem() - Creates host resource from user-space memory
-+ * @user_ptr: user virtual memory to pin
-+ * @size: size of user buffer to pin
-+ * @dir: Resource direction (read or write or both)
-+ *
-+ * This function pins the provided user memory and create a host resource
-+ * handle managing this memory.
-+ * The provided handle can be used the same as the handle created by
-+ * nnp_hostres_alloc.
-+ * The resource can be Input(read by device), Output(write by device) and both.
-+ *
-+ * The handle should be released when no longer needed by a call to
-+ * nnp_hostres_put.
-+ *
-+ * Return: pointer to created resource or error value
-+ */
-+struct host_resource *nnp_hostres_from_usermem(void __user *user_ptr, size_t size,
-+					       enum dma_data_direction dir);
-+
-+/**
-+ * nnp_hostres_map_device() - Maps the host resource to NNP-I device
-+ * @res: handle to host resource
-+ * @nnpdev: handle to nnp device struct
-+ * @use_one_entry: when true will produce ipc dma chain page table descriptor
-+ *                 of the mapping in a single concurrent dma block.
-+ *                 otherwise a chain of multiple blocks might be generated.
-+ * @page_list: returns the dma address of the ipc dma chain page table
-+ *             descriptor.
-+ * @total_chunks: returns the total number of elements in the mapping's
-+ *                sg_table. Can be NULL if this info is not required.
-+ *
-+ * This function maps the host resource to be accessible from device
-+ * and returns the dma page list of DMA addresses packed in format
-+ * suitable to be used in IPC protocol to be sent to the card.
-+ *
-+ * The resource can be mapped to multiple devices.
-+ *
-+ * Return: pointer to the mapping object or error on failure.
-+ */
-+struct nnpdev_mapping *nnp_hostres_map_device(struct host_resource *res,
-+					      struct nnp_device *nnpdev,
-+					      bool use_one_entry,
-+					      dma_addr_t *page_list,
-+					      u32 *total_chunks);
-+
-+/**
-+ * nnp_hostres_unmap_device() - Unmaps the host resource from NNP-I device
-+ * @mapping: mapping pointer, returned from nnp_hostres_map_device
-+ *
-+ * This function unmaps previously mapped host resource from device.
-+ */
-+void nnp_hostres_unmap_device(struct nnpdev_mapping *mapping);
-+
-+/**
-+ * nnp_hostres_user_lock() - Lock the host resource to access from userspace
-+ * @res: handle to host resource
-+ *
-+ * This function should be called before user-space application is accessing
-+ * the host resource content (either for read or write). The function
-+ * invalidates  or flashes the cpu caches when necessary.
-+ * The function does *not* impose any synchronization between application and
-+ * device accesses to the resource memory. Such synchronization is handled
-+ * in user-space.
-+ *
-+ * Return: error on failure.
-+ */
-+int nnp_hostres_user_lock(struct host_resource *res);
-+
-+/**
-+ * nnp_hostres_user_unlock() - Unlocks the host resource from userspace access
-+ * @res: handle to host resource
-+ *
-+ * This function should be called after user-space application is finished
-+ * accessing the host resource content (either for read or write). The function
-+ * invalidates  or flashes the cpu caches when necessary.
-+ *
-+ * Return: error on failure.
-+ */
-+int nnp_hostres_user_unlock(struct host_resource *res);
-+
-+/**
-+ * nnp_hostres_get() - Increases refcount of the hostres
-+ * @res: handle to host resource
-+ *
-+ * This function increases refcount of the host resource.
-+ */
-+void nnp_hostres_get(struct host_resource *res);
-+
-+/**
-+ * nnp_hostres_put() - Decreases refcount of the hostres
-+ * @res: handle to host resource
-+ *
-+ * This function decreases refcount of the host resource and destroys it
-+ * when it reaches 0.
-+ */
-+void nnp_hostres_put(struct host_resource *res);
-+
-+/**
-+ * nnp_hostres_is_input() - Returns if the host resource is input resource
-+ * @res: handle to host resource
-+ *
-+ * This function returns true if the host resource can be read by device.
-+ * The "input" terminology is used here since such resources are usually
-+ * used as inputs to device inference network.
-+ *
-+ * Return: true if the reasource is readable.
-+ */
-+bool nnp_hostres_is_input(struct host_resource *res);
-+
-+/**
-+ * nnp_hostres_is_output() - Returns if the host resource is output resource
-+ * @res: handle to host resource
-+ *
-+ * This function returns true if the host resource can be modified by device.
-+ * The term "output" is used here since usually such resources are used for
-+ * outputs of device inference network.
-+ *
-+ * Return: true if the reasource is writable.
-+ */
-+bool nnp_hostres_is_output(struct host_resource *res);
-+
-+size_t nnp_hostres_size(struct host_resource *res);
-+
-+/**
-+ * nnp_hostres_vptr() - returns the virtual pointer to the resource buffer
-+ * @res: handle to host resource
-+ *
-+ * Return: pointer to resource data or NULL if was not allocated by
-+ * nnp_hostres_alloc()
-+ */
-+void *nnp_hostres_vptr(struct host_resource *res);
-+
-+int nnp_hostres_init_sysfs(struct device *dev);
-+void nnp_hostres_fini_sysfs(struct device *dev);
++struct file *nnp_host_file_get(int host_fd);
 +
 +#endif
+diff --git a/drivers/misc/intel-nnpi/nnp_user.c b/drivers/misc/intel-nnpi/nnp_user.c
+new file mode 100644
+index 0000000..51d7418
+--- /dev/null
++++ b/drivers/misc/intel-nnpi/nnp_user.c
+@@ -0,0 +1,131 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/* Copyright (C) 2019-2021 Intel Corporation */
++
++#include <linux/slab.h>
++
++#include "nnp_user.h"
++
++void nnp_user_init(struct nnp_user_info *user_info)
++{
++	INIT_LIST_HEAD(&user_info->hostres_list);
++	mutex_init(&user_info->mutex);
++	kref_init(&user_info->ref);
++	idr_init(&user_info->idr);
++}
++
++void nnp_user_get(struct nnp_user_info *user_info)
++{
++	kref_get(&user_info->ref);
++}
++
++static void nnp_user_release(struct kref *kref)
++{
++	struct nnp_user_info *user_info =
++		container_of(kref, struct nnp_user_info, ref);
++	struct completion *completion = user_info->close_completion;
++
++	idr_destroy(&user_info->idr);
++	kfree(user_info);
++	complete(completion);
++}
++
++void nnp_user_put(struct nnp_user_info *user_info)
++{
++	kref_put(&user_info->ref, nnp_user_release);
++}
++
++int nnp_user_add_hostres(struct nnp_user_info *user_info,
++			 struct host_resource *hostres,
++			 struct user_hostres **user_hostres_entry)
++{
++	struct user_hostres *hr_entry;
++	int id;
++
++	hr_entry = kmalloc(sizeof(*hr_entry), GFP_KERNEL);
++	if (!hr_entry)
++		return -ENOMEM;
++
++	/*
++	 * Increment refcount to hostres for the entry reference.
++	 * (caller holds reference to it, so we know it exist).
++	 */
++	nnp_hostres_get(hostres);
++	hr_entry->hostres = hostres;
++
++	/*
++	 * We are called from ioctl of file that own this user_info,
++	 * So it safe to assume it exist.
++	 */
++	nnp_user_get(user_info);
++	hr_entry->user_info = user_info;
++
++	mutex_lock(&user_info->mutex);
++	/*
++	 * We allocate handle starting from 1 and not 0 to allow
++	 * user-space treat zero as invalid handle
++	 */
++	id = idr_alloc(&user_info->idr, hr_entry, 1, -1, GFP_KERNEL);
++	if (id < 0) {
++		nnp_user_put(user_info);
++		nnp_hostres_put(hostres);
++		kfree(hr_entry);
++		mutex_unlock(&user_info->mutex);
++		return -ENOSPC;
++	}
++	hr_entry->user_handle = id;
++	list_add(&hr_entry->node, &user_info->hostres_list);
++	mutex_unlock(&user_info->mutex);
++
++	*user_hostres_entry = hr_entry;
++
++	return 0;
++}
++
++void nnp_user_remove_hostres_locked(struct user_hostres *hr_entry)
++{
++	struct nnp_user_info *user_info = hr_entry->user_info;
++
++	idr_remove(&user_info->idr, hr_entry->user_handle);
++	list_del(&hr_entry->node);
++
++	nnp_hostres_put(hr_entry->hostres);
++
++	kfree(hr_entry);
++	nnp_user_put(user_info);
++}
++
++void nnp_user_remove_hostres(struct user_hostres *hr_entry)
++{
++	struct nnp_user_info *user_info = hr_entry->user_info;
++
++	mutex_lock(&user_info->mutex);
++	nnp_user_remove_hostres_locked(hr_entry);
++	mutex_unlock(&user_info->mutex);
++}
++
++void nnp_user_destroy_all(struct nnp_user_info *user_info)
++{
++	struct user_hostres *user_hostres_entry;
++	DECLARE_COMPLETION_ONSTACK(completion);
++
++	mutex_lock(&user_info->mutex);
++
++	/* destroy all hostreses owned by the "user" */
++	while (!list_empty(&user_info->hostres_list)) {
++		user_hostres_entry = list_first_entry(&user_info->hostres_list,
++						      struct user_hostres, node);
++		/*
++		 * We can safely destroy this object without checking
++		 * its refcount since we get here only after the host char-dev
++		 * as well as all cmd_chan char-devs that may hold temporary
++		 * reference to this object are already released.
++		 */
++		nnp_user_remove_hostres_locked(user_hostres_entry);
++	}
++	mutex_unlock(&user_info->mutex);
++
++	/* wait for all channels and hostreses to be destroyed */
++	user_info->close_completion = &completion;
++	nnp_user_put(user_info);
++	wait_for_completion(&completion);
++}
+diff --git a/drivers/misc/intel-nnpi/nnp_user.h b/drivers/misc/intel-nnpi/nnp_user.h
+new file mode 100644
+index 0000000..429ac13
+--- /dev/null
++++ b/drivers/misc/intel-nnpi/nnp_user.h
+@@ -0,0 +1,79 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/* Copyright (C) 2019-2021 Intel Corporation */
++
++#ifndef _NNPDRV_INF_PROC_H
++#define _NNPDRV_INF_PROC_H
++
++#include <linux/kref.h>
++#include <linux/types.h>
++
++#include "hostres.h"
++
++/**
++ * struct nnp_user_info - structure for per-user info
++ * @ref: refcount to this "user" object
++ * @hostres_list: list of host resources
++ * @close_completion: used to wait for all channels of this user to be
++ *                    destroyed before closing the user.
++ * @mutex: protects hostres_list and idr modifications
++ * @idr: used to generate user handles to created host resources
++ * @user_list_node: list node to attach this struct in "list of users".
++ *
++ * structure to hold per-user info,
++ * a "user" is created for each open made to the host char dev (/dev/nnpi_host).
++ * It holds a list of all host resources created through requests from
++ * the same client ("user").
++ * device communication "channels", created by device char dev (/dev/nnpi%d)
++ * must be correlated with a "user" object which is supplied from user-space
++ * by the opened file descriptor to /dev/nnpi_host. Such "channel" may access
++ * only host resources created by the same "user".
++ * The lifetime of this object last at least for the duration of the host char
++ * device file struct but can last longer if some channel objects still hold
++ * a reference to it (this is why @ref is needed).
++ */
++struct nnp_user_info {
++	struct kref         ref;
++	struct list_head    hostres_list;
++	struct completion   *close_completion;
++	struct mutex        mutex;
++	struct idr          idr;
++	struct list_head    user_list_node;
++};
++
++/**
++ * struct user_hostres - structure for host resource created by user
++ * @node: list node to attach this struct to nnp_user_info::hostres_list
++ * @hostres: the actual host resource object
++ * @user_handle: handle allocated from idr object, used as handle to this
++ *               object in ioctl ABI.
++ * @user_info: pointer to "user" which created this resource.
++ *             it is used only during destruction of the object.
++ *
++ * structure for a host resource object which created through host char dev
++ * request. The lifetime of this structure ends when the user request to
++ * destroy it through ioctl call. The underlying @hostres may still continue
++ * to exist if command channel (cmd_chan) objects has mapped the resource to
++ * device access.
++ */
++struct user_hostres {
++	struct list_head             node;
++	struct host_resource         *hostres;
++	int                          user_handle;
++	struct nnp_user_info         *user_info;
++};
++
++void nnp_user_init(struct nnp_user_info *user_info);
++
++void nnp_user_get(struct nnp_user_info *user_info);
++void nnp_user_put(struct nnp_user_info *user_info);
++
++int nnp_user_add_hostres(struct nnp_user_info *user_info,
++			 struct host_resource *hostres,
++			 struct user_hostres **user_hostres_entry);
++
++void nnp_user_remove_hostres(struct user_hostres *hr_entry);
++void nnp_user_remove_hostres_locked(struct user_hostres *hr_entry);
++
++void nnp_user_destroy_all(struct nnp_user_info *user_info);
++
++#endif
+diff --git a/include/uapi/misc/intel_nnpi.h b/include/uapi/misc/intel_nnpi.h
+new file mode 100644
+index 0000000..5114aea
+--- /dev/null
++++ b/include/uapi/misc/intel_nnpi.h
+@@ -0,0 +1,150 @@
++/* SPDX-License-Identifier: GPL-2.0-only WITH Linux-syscall-note */
++/* Copyright (C) 2019-2021 Intel Corporation */
++
++#ifndef _NNP_UAPI_H
++#define _NNP_UAPI_H
++
++#include <linux/types.h>
++#include <linux/ioctl.h>
++#include <stdbool.h>
++
++#define NNPDRV_INF_HOST_DEV_NAME "nnpi_host"
++
++/*
++ * ioctls for /dev/nnpi_host device
++ */
++
++/*
++ * IOCTL_INF_CREATE_HOST_RESOURCE:
++ *
++ * A request to create a host memory resource object that can then be mapped
++ * and accessed by the NNP-I device's DMA engine.
++ * The created host resource is pinned in memory for its entire lifecycle.
++ * The memory of the resource is backed by user allocated memory which
++ * get pinned by the IOCTL.
++ *
++ * See description of nnpdrv_ioctl_create_hostres structure for more details.
++ *
++ * The ioctl returns a handle to the created host resource.
++ */
++#define IOCTL_INF_CREATE_HOST_RESOURCE      \
++	_IOWR('h', 0, struct nnpdrv_ioctl_create_hostres)
++
++/*
++ * IOCTL_INF_DESTROY_HOST_RESOURCE:
++ *
++ * A request to destoy a host resource object.
++ */
++#define IOCTL_INF_DESTROY_HOST_RESOURCE     \
++	_IOWR('h', 2, struct nnpdrv_ioctl_destroy_hostres)
++
++/*
++ * IOCTL_INF_LOCK_HOST_RESOURCE:
++ *
++ * A request to lock a host resource for cpu access for either
++ * read or write.
++ *
++ * This IOCTL does *not* synchronize accessed to host memory between host
++ * cpu and the device's DMA engine. It is used only for either flush or
++ * invalidate cpu caches to let the device see the last writes made from
++ * host cpu and let cpu read up-to-date content of the resource after the
++ * device changed it.
++ *
++ * This synchronization is not required on all platforms, when mapping
++ * the resource for device access, using IOCTL_NNPI_DEVICE_CHANNEL_MAP_HOSTRES,
++ * the application receive an indication if such synchronization is needed
++ * or not with that device.
++ *
++ * When such synchronization is needed:
++ * When application wants to change host resource content to be read by the
++ * device, it should first lock it for write, change its content by accessing
++ * it's mapped virtual address and then call this ioctl again to unlock it
++ * before sending a command to the device which may read the resource.
++ * When the application received indication that the device has changed the
++ * resource content, it should first lock the resource for reading before
++ * accessing its memory.
++ */
++#define IOCTL_INF_LOCK_HOST_RESOURCE        \
++	_IOWR('h', 3, struct nnpdrv_ioctl_lock_hostres)
++
++/*
++ * IOCTL_INF_UNLOCK_HOST_RESOURCE:
++ *
++ * A request to unlock a host resource that was previously locked for cpu access.
++ */
++#define IOCTL_INF_UNLOCK_HOST_RESOURCE      \
++	_IOWR('h', 4, struct nnpdrv_ioctl_lock_hostres)
++
++/*
++ * The below are possible bit masks that can be specified in
++ * usage_flags field of struct nnpdrv_ioctl_create_hostres.
++ * It specify attribute and usage flags for a host resource.
++ */
++#define IOCTL_INF_RES_INPUT     (1u << 0) /* being read by the NNP-I device */
++#define IOCTL_INF_RES_OUTPUT    (1u << 1) /* being written by the device */
++#define IOCTL_RES_USAGE_VALID_MASK (IOCTL_INF_RES_INPUT | IOCTL_INF_RES_OUTPUT)
++
++/**
++ * struct nnpdrv_ioctl_create_hostres - IOCTL_INF_CREATE_HOST_RESOURCE payload
++ * @user_ptr: User virtual address.
++ * @size: User memory size on input. Host resource size on output.
++ * @usage_flags: resource usage flag bits, IOCTL_INF_RES_*
++ * @user_handle: resource handle on output.
++ *
++ * argument structure for IOCTL_INF_CREATE_HOST_RESOURCE ioctl
++ *
++ * @user_ptr should be initialized to a user virtual address and @size
++ * should be initialized with it's size, the user memory will be pinned and will
++ * hold the host resource content.
++ *
++ * On output, @user_handle is a handle to the created host resource that can be
++ * used later with other IOCTLs and @size is the size of the host resource.
++ */
++struct nnpdrv_ioctl_create_hostres {
++	__u64 user_ptr;
++	__u64 size;
++	__u32 usage_flags;
++	__s32 user_handle;
++};
++
++/**
++ * struct nnpdrv_ioctl_lock_hostres - IOCTL_INF_LOCK_HOST_RESOURCE payload
++ * @user_handle: handle to host resource object
++ * @o_errno: On input, must be set to 0.
++ *           On output, 0 on success, one of the NNPERR_* error codes on error.
++ *
++ * argument structure for IOCTL_INF_LOCK_HOST_RESOURCE and
++ * IOCTL_INF_LOCK_HOST_RESOURCE ioctl calls.
++ */
++struct nnpdrv_ioctl_lock_hostres {
++	__s32 user_handle;
++	__u32 o_errno;
++};
++
++/**
++ * struct nnpdrv_ioctl_destroy_hostres - IOCTL_INF_DESTROY_HOST_RESOURCE payload
++ * @user_handle: handle to host resource object
++ * @o_errno: On input, must be set to 0.
++ *           On output, 0 on success, one of the NNPERR_* error codes on error.
++ *
++ * argument structure for IOCTL_INF_DESTROY_HOST_RESOURCE ioctl
++ */
++struct nnpdrv_ioctl_destroy_hostres {
++	__s32 user_handle;
++	__u32 o_errno;
++};
++
++/****************************************************************
++ * Error code values - errors returned in o_errno fields of
++ * above structures.
++ ****************************************************************/
++#define	NNP_ERRNO_BASE	                        200
++#define	NNPER_DEVICE_NOT_READY			(NNP_ERRNO_BASE + 1)
++#define	NNPER_NO_SUCH_RESOURCE			(NNP_ERRNO_BASE + 2)
++#define	NNPER_INCOMPATIBLE_RESOURCES		(NNP_ERRNO_BASE + 3)
++#define	NNPER_DEVICE_ERROR			(NNP_ERRNO_BASE + 4)
++#define NNPER_NO_SUCH_CHANNEL                   (NNP_ERRNO_BASE + 5)
++#define NNPER_NO_SUCH_HOSTRES_MAP               (NNP_ERRNO_BASE + 6)
++#define NNPER_VERSIONS_MISMATCH                 (NNP_ERRNO_BASE + 7)
++
++#endif /* of _NNP_UAPI_H */
 -- 
 1.8.3.1
 
