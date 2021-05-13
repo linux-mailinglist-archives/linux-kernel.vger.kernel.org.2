@@ -2,164 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FC4837F325
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 08:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE74A37F32B
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 08:43:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231383AbhEMGlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 02:41:18 -0400
-Received: from mail-co1nam11on2042.outbound.protection.outlook.com ([40.107.220.42]:46497
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230063AbhEMGlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 02:41:15 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I7ITl16xTsB8n79N9ObK8nwXpPs0Zxnnlruwew/1ES/N0h0Sh+IODNGV43E7CDWyokTN6mDprx7s4L+YVY4MS4Zt35/MUNPEmN9SVkD8yGrmknmSYfLgxDQfVdSz/MJjy84udVNnH/T1mmApsCGo7aYl77mHgURDrfJ3Qx+huJgIsNivqdRi7WMoKfZBSelvW0mUPJTWSE+2wjTLTp4TkYucUk1hTpGkhq9bs06L6+LiyiOuxgZzZMuie0AbggBaFT8oW3qMffx9Dx6/QgeNA2ErZQetSarB4Lojys2+6t4kGN3tYRqbFpQECHriwJwOjonNQ8w+50YNViTmQPrqEA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pXfJlPn00Ee4R1bjyWY+94pyHb6aKlnAHCG4D9Y7WRw=;
- b=T8vjkkSlVAnkhdznw9O31wjW0xMmN8L5Byt334pon6HSh10/uW3m4IBAZKpb4jvm2hv7ywDXhXEcw/GHAA/JlrrFbZS7aun1XVkndvrtrN/gXXeX3dbFgbsm+WEakoAbq3Fyon04Fn4vUiltAo80pbasqMqVoBvYSe3DKGNKgk4EVuVKI8AC5KOlT4q/tb6hdJAyjE8GCc3nOeKqmeQARU0fjg0f0gXzmlw1xqvyvlY62wLBM/ZveG6MN6uPGGMxV9VFTCheDyLsbSZwUPQA2+Kb+fQblmZFzIcY+cMWMqyL3+s1z2SdpCUTVGhZf8gyMWEJoKzY7RUYrT2qiWFW5A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pXfJlPn00Ee4R1bjyWY+94pyHb6aKlnAHCG4D9Y7WRw=;
- b=LpU9AYbfQ7P44GcTFpdf3Scy/khrokfVOynpyBteBGNhsqCcBELJp9LegTJWBMfgT0HBt3M6qePsrlSzO1NaVqYKPsvHB0DbVGCIgJD6ip/tfUfj4I5GlgqUhL18t+cWomUUD60kuP8X8/hd0TZyqoAJm8bx/aHCccrgRuW4UUQ=
-Authentication-Results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none
- header.from=synaptics.com;
-Received: from BN9PR03MB6058.namprd03.prod.outlook.com (2603:10b6:408:137::15)
- by BN8PR03MB5041.namprd03.prod.outlook.com (2603:10b6:408:d5::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Thu, 13 May
- 2021 06:40:03 +0000
-Received: from BN9PR03MB6058.namprd03.prod.outlook.com
- ([fe80::308b:9168:78:9791]) by BN9PR03MB6058.namprd03.prod.outlook.com
- ([fe80::308b:9168:78:9791%4]) with mapi id 15.20.4129.026; Thu, 13 May 2021
- 06:40:02 +0000
-Date:   Thu, 13 May 2021 14:39:53 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Jon Bloomfield <jon.bloomfield@intel.com>
-Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Ville =?UTF-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
-Subject: [PATCH V3 RESEND] drm/i915: Fix "mitigations" parsing if i915 is
- builtin
-Message-ID: <20210513143953.1f8a82e7@xhacker.debian>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.147.44.204]
-X-ClientProxiedBy: BYAPR02CA0056.namprd02.prod.outlook.com
- (2603:10b6:a03:54::33) To BN9PR03MB6058.namprd03.prod.outlook.com
- (2603:10b6:408:137::15)
+        id S231331AbhEMGpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 02:45:03 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:44798 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230063AbhEMGpA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 02:45:00 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14D6hhRM101748;
+        Thu, 13 May 2021 01:43:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1620888223;
+        bh=+zblT7RxxicQpxktUE5x2p+78Rd6Nj/CZXdekxNjmPE=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=NQ8hkYH/Q7xZJMDX2tERTxgAcumhPAUOQuKyZamuBpcHTl1cubAyu51zU1fAh1xZx
+         7JSeSQ+VhPdSJ4INBkl3vyX/LFq1X6icI2Q06IqqSBfJVIaW1MeOGtlPW79lNDuAO7
+         1eTk12kcLtZmiccbZcIOBBQPzi7D7BeDkQzGnsJQ=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14D6hhL8036606
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 13 May 2021 01:43:43 -0500
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 13
+ May 2021 01:43:42 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 13 May 2021 01:43:42 -0500
+Received: from [10.250.232.157] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14D6hcju064420;
+        Thu, 13 May 2021 01:43:39 -0500
+Subject: Re: [PATCH 03/14] phy: cadence-torrent: Add enum to support different
+ input reference clocks
+To:     Swapnil Jakhade <sjakhade@cadence.com>, <vkoul@kernel.org>,
+        <p.zabel@pengutronix.de>, <linux-phy@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <mparab@cadence.com>, <lokeshvutla@ti.com>
+References: <1617946456-27773-1-git-send-email-sjakhade@cadence.com>
+ <1617946456-27773-4-git-send-email-sjakhade@cadence.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <3f1897aa-be23-c2ba-9e33-0d1983abb853@ti.com>
+Date:   Thu, 13 May 2021 12:13:37 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xhacker.debian (192.147.44.204) by BYAPR02CA0056.namprd02.prod.outlook.com (2603:10b6:a03:54::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Thu, 13 May 2021 06:39:59 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 35301b51-949f-465a-f0b8-08d915d9eff6
-X-MS-TrafficTypeDiagnostic: BN8PR03MB5041:
-X-Microsoft-Antispam-PRVS: <BN8PR03MB50411CC299AD088EFFAE0D59ED519@BN8PR03MB5041.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OehM+pyZrDIb3o69uOfbZIfBMXtmD5rvrsrCdIeA9VZvtwpiKGhO3p81nYP3X2DKZ+voTUzl3h6Da5CTQX70fsINLjNDliuf45SuxPm0v0YQoIUmqpLaQ9nGfOqZ3wJ6kKYfRdHxWkYwwS4Ppc7UN+oMB2IAzSD3ITDHmi3Ao1J7lZgiSJspwYCWobQ0HOBc6rXdJlE+tKdtEZAjcofjspPtyiSqWajTtS+P5+qEyqbb5KUCBu1HAIAxgCSPQMkHJt9gHdn1DbYPptKbuJCFjDOxWy71KGRmFlxGmUFDLJASGNOvy8ZF6NEETPFmkM92WMpAo+gI+Lc5BEoYlnAhnSv7r/3d/yHnjezX+0aEg3gQ/hjogHYjpmCM/zNLpKkWmUtpwn4wWq/UhelbQtdTNphqBFgfEZKK0qQJIetnesfHz6houVRMYWV3+GGrIY9DKBo0EaCSfFY+kNmoHzXkDohGx8TVAiHxjM+V6oPXmaaN+QKMmQpxcYKaxr2pd8vluVnLjnR+aYcXdtTsl8WL5nFiWHRIvy9vtHjWxb3GnIyKtW+tzu7wwtXeQdU97G94aVjay0jjLn5ndlLgP7J57o7qU678wDfBuAKuNmVJc18fX7x9sExJuCxBaLU2FBeGD/QG00sgo4zvAI5rBXnjhenUOj2RxztL/QmtwBXl5Lo=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR03MB6058.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(366004)(376002)(396003)(39830400003)(8676002)(86362001)(9686003)(66556008)(7416002)(52116002)(16526019)(66476007)(7696005)(478600001)(8936002)(55016002)(38100700002)(316002)(38350700002)(956004)(2906002)(110136005)(83380400001)(6666004)(26005)(1076003)(66946007)(6506007)(4326008)(5660300002)(186003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?ouWjBckXTmvZAPe8F+0YSf1IWG6QofDIcyST66l08KrFDRiGn8S/ZhB11p7q?=
- =?us-ascii?Q?2pPGbCjc4S+YKqYLFsZSKI11Xpwc1SAl00wfnTZFs90beDvNLFjXXJ6E8tlJ?=
- =?us-ascii?Q?yjrxabutLeEJvWRDOuNnfG/cJNsqKsWwgG/kJVm/iivi9F7GpBQ2Bxwd0I2A?=
- =?us-ascii?Q?BRK0NbfllB8b6VZ4x9ZHQgvzRZhnOpkhmJvJHcHOMUxfYCyQhQtqIYfU/ita?=
- =?us-ascii?Q?NFF6/vaPIpXnSfpygsujZdfo/q7OP0Bu/ccGm8CIN8WNmeqeInZP/KTjDig2?=
- =?us-ascii?Q?aMCO9ELLTLg0dx3ENCAs8Qiby+yU6XggYTLP7M3VRX1LQ4OPvydIdFIznQKx?=
- =?us-ascii?Q?Gxjd5m/F9tPny1km1iSjkQxGNp4ux4dunB/StDXDPQGQBQf5rGzHVfoISNjO?=
- =?us-ascii?Q?eOYQUTCNxInHi8Hh2CkCBSNGiza0vz6OIwcXIzDjRqSiMVrNQ4PFiqmjgESC?=
- =?us-ascii?Q?lN6Keb5jMLM2lJ5SdpDkR/h0NleyzZdwbB2hxlq71+Nnu+CRYsJWI3AUWSDX?=
- =?us-ascii?Q?nAAz5dmSnyFQD+uNnC7FEng2dmHhKgVltidBKWuF4jsfKXSMw9hTxcy8xJQu?=
- =?us-ascii?Q?Rl4st3LtfkkOMk6bwt3x1mKyY1ju9IBiZ6zSlGTUVTW+hV3A6NFXjNR/lcUM?=
- =?us-ascii?Q?HRHLhp128JE7ai4Wbt23r5yx5jWI8CZ7158lk9zdLlSwkwzpE572xNQo7LwV?=
- =?us-ascii?Q?1+7Bsvm5oFTQ1v8J3DiOOo5xS42dBR43It74BJXzYUdPW4LdLsT3q45uPyyF?=
- =?us-ascii?Q?R1OjxT1ot4MdXH6MMbfYjTyYd9X6b5fF1Tw4HUYbe5KMms+MqkflcYNWT32o?=
- =?us-ascii?Q?WK1Wo2sjndgh4AHIC8kDO3yCjIoHBv/10THi5tSZzPLK5WiywM7xx7gaDm1r?=
- =?us-ascii?Q?0Ni1+ujLl6vgpcKEtc9uVy8YtxpeKcWbZo/S8gRtyHgB6i55ektW1qblddfh?=
- =?us-ascii?Q?4diAQSWuB/3yOBN6KG85ksbcBy1olZi+vxYFOl5z88Qu5uz+ArdIx0/YC5Zj?=
- =?us-ascii?Q?qOpLM2l+r0uSGdnQMD4QbW62wExiwIRByP0aspc8HOxSLYqaNNz4OgnlqhXJ?=
- =?us-ascii?Q?6KF7pVVj58zSjys9ESgDf2p9ku894jbylt9yWjMs6tUsDAOngo5CuRyihM7X?=
- =?us-ascii?Q?4p9zSXvO8T+NO1kJco/8vZiXRGTKm1Oe1NO7MDEd/h3yHJjvy6Is5eMfhpsE?=
- =?us-ascii?Q?yWaL3OkbaqtSpCzhFzoucb4PTIgFL9VS65QZJHc9Lz6XTI0eVqTZ/HFp/110?=
- =?us-ascii?Q?c9LVEap8BBwpLXrOr774ivBq6rtr8XiUZufeAZU+4R+of9NlLiRO7tf+DilA?=
- =?us-ascii?Q?I1esXXuzEiyDx6A2jGcXXkZt?=
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 35301b51-949f-465a-f0b8-08d915d9eff6
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR03MB6058.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2021 06:40:02.8168
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tLiWzjiqSp/cL4Yh89nHUrUNuB8cLG//DIbPxaX2PlsrHRtzRp1XXbfkTYoi0mRNjn3UDwdylMN45hQ77Mp+eg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR03MB5041
+In-Reply-To: <1617946456-27773-4-git-send-email-sjakhade@cadence.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I met below error during boot with i915 builtin if pass
-"i915.mitigations=off":
-[    0.015589] Booting kernel: `off' invalid for parameter `i915.mitigations'
+Hi Swapnil,
 
-The reason is slab subsystem isn't ready at that time, so kstrdup()
-returns NULL. Fix this issue by using stack var instead of kstrdup().
+On 09/04/21 11:04 am, Swapnil Jakhade wrote:
+> Torrent PHY supports different input reference clock frequencies.
+> Register configurations will be different based on reference clock value.
+> Prepare driver to support register configs for multiple reference clocks.
+> 
+> Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
 
-Fixes: 984cadea032b ("drm/i915: Allow the sysadmin to override security mitigations")
-Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
----
-Since v2:
- - Use strscpy() per Ville's suggestion
+$subject can be changed to something like "Add enum for supported input
+reference clocks frequencies"
 
-Since v1:
- - Ensure "str" is properly terminated. Thanks Ville for pointing this out
-
- drivers/gpu/drm/i915/i915_mitigations.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/gpu/drm/i915/i915_mitigations.c b/drivers/gpu/drm/i915/i915_mitigations.c
-index 84f12598d145..70944764a77e 100644
---- a/drivers/gpu/drm/i915/i915_mitigations.c
-+++ b/drivers/gpu/drm/i915/i915_mitigations.c
-@@ -29,15 +29,13 @@ bool i915_mitigate_clear_residuals(void)
- static int mitigations_set(const char *val, const struct kernel_param *kp)
- {
- 	unsigned long new = ~0UL;
--	char *str, *sep, *tok;
-+	char str[64], *sep, *tok;
- 	bool first = true;
- 	int err = 0;
- 
- 	BUILD_BUG_ON(ARRAY_SIZE(names) >= BITS_PER_TYPE(mitigations));
- 
--	str = kstrdup(val, GFP_KERNEL);
--	if (!str)
--		return -ENOMEM;
-+	strscpy(str, val, sizeof(str));
- 
- 	for (sep = str; (tok = strsep(&sep, ","));) {
- 		bool enable = true;
-@@ -86,7 +84,6 @@ static int mitigations_set(const char *val, const struct kernel_param *kp)
- 			break;
- 		}
- 	}
--	kfree(str);
- 	if (err)
- 		return err;
- 
--- 
-2.31.0
-
+With that fixed
+Reviewed-by: Kishon Vijay Abraham I <kishon@ti.com>
+> ---
+>  drivers/phy/cadence/phy-cadence-torrent.c | 51 +++++++++++++++++------
+>  1 file changed, 38 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/phy/cadence/phy-cadence-torrent.c b/drivers/phy/cadence/phy-cadence-torrent.c
+> index 6eeb753fbb78..252920ea7fdf 100644
+> --- a/drivers/phy/cadence/phy-cadence-torrent.c
+> +++ b/drivers/phy/cadence/phy-cadence-torrent.c
+> @@ -26,11 +26,13 @@
+>  
+>  #define REF_CLK_19_2MHZ		19200000
+>  #define REF_CLK_25MHZ		25000000
+> +#define REF_CLK_100MHZ		100000000
+>  
+>  #define MAX_NUM_LANES		4
+>  #define DEFAULT_MAX_BIT_RATE	8100 /* in Mbps */
+>  
+>  #define NUM_SSC_MODE		3
+> +#define NUM_REF_CLK		3
+>  #define NUM_PHY_TYPE		6
+>  
+>  #define POLL_TIMEOUT_US		5000
+> @@ -273,6 +275,12 @@ enum cdns_torrent_phy_type {
+>  	TYPE_USB,
+>  };
+>  
+> +enum cdns_torrent_ref_clk {
+> +	CLK_19_2_MHZ,
+> +	CLK_25_MHZ,
+> +	CLK_100_MHZ
+> +};
+> +
+>  enum cdns_torrent_ssc_mode {
+>  	NO_SSC,
+>  	EXTERNAL_SSC,
+> @@ -296,7 +304,7 @@ struct cdns_torrent_phy {
+>  	struct reset_control *apb_rst;
+>  	struct device *dev;
+>  	struct clk *clk;
+> -	unsigned long ref_clk_rate;
+> +	enum cdns_torrent_ref_clk ref_clk_rate;
+>  	struct cdns_torrent_inst phys[MAX_NUM_LANES];
+>  	int nsubnodes;
+>  	const struct cdns_torrent_data *init_data;
+> @@ -817,12 +825,12 @@ static int cdns_torrent_dp_configure_rate(struct cdns_torrent_phy *cdns_phy,
+>  	ndelay(200);
+>  
+>  	/* DP Rate Change - VCO Output settings. */
+> -	if (cdns_phy->ref_clk_rate == REF_CLK_19_2MHZ) {
+> +	if (cdns_phy->ref_clk_rate == CLK_19_2_MHZ) {
+>  		/* PMA common configuration 19.2MHz */
+>  		cdns_torrent_dp_pma_cmn_vco_cfg_19_2mhz(cdns_phy, dp->link_rate,
+>  							dp->ssc);
+>  		cdns_torrent_dp_pma_cmn_cfg_19_2mhz(cdns_phy);
+> -	} else if (cdns_phy->ref_clk_rate == REF_CLK_25MHZ) {
+> +	} else if (cdns_phy->ref_clk_rate == CLK_25_MHZ) {
+>  		/* PMA common configuration 25MHz */
+>  		cdns_torrent_dp_pma_cmn_vco_cfg_25mhz(cdns_phy, dp->link_rate,
+>  						      dp->ssc);
+> @@ -1165,8 +1173,8 @@ static int cdns_torrent_dp_init(struct phy *phy)
+>  	struct regmap *regmap = cdns_phy->regmap_dptx_phy_reg;
+>  
+>  	switch (cdns_phy->ref_clk_rate) {
+> -	case REF_CLK_19_2MHZ:
+> -	case REF_CLK_25MHZ:
+> +	case CLK_19_2_MHZ:
+> +	case CLK_25_MHZ:
+>  		/* Valid Ref Clock Rate */
+>  		break;
+>  	default:
+> @@ -1198,11 +1206,11 @@ static int cdns_torrent_dp_init(struct phy *phy)
+>  
+>  	/* PHY PMA registers configuration functions */
+>  	/* Initialize PHY with max supported link rate, without SSC. */
+> -	if (cdns_phy->ref_clk_rate == REF_CLK_19_2MHZ)
+> +	if (cdns_phy->ref_clk_rate == CLK_19_2_MHZ)
+>  		cdns_torrent_dp_pma_cmn_vco_cfg_19_2mhz(cdns_phy,
+>  							cdns_phy->max_bit_rate,
+>  							false);
+> -	else if (cdns_phy->ref_clk_rate == REF_CLK_25MHZ)
+> +	else if (cdns_phy->ref_clk_rate == CLK_25_MHZ)
+>  		cdns_torrent_dp_pma_cmn_vco_cfg_25mhz(cdns_phy,
+>  						      cdns_phy->max_bit_rate,
+>  						      false);
+> @@ -1228,10 +1236,10 @@ static void cdns_torrent_dp_pma_cfg(struct cdns_torrent_phy *cdns_phy,
+>  {
+>  	unsigned int i;
+>  
+> -	if (cdns_phy->ref_clk_rate == REF_CLK_19_2MHZ)
+> +	if (cdns_phy->ref_clk_rate == CLK_19_2_MHZ)
+>  		/* PMA common configuration 19.2MHz */
+>  		cdns_torrent_dp_pma_cmn_cfg_19_2mhz(cdns_phy);
+> -	else if (cdns_phy->ref_clk_rate == REF_CLK_25MHZ)
+> +	else if (cdns_phy->ref_clk_rate == CLK_25_MHZ)
+>  		/* PMA common configuration 25MHz */
+>  		cdns_torrent_dp_pma_cmn_cfg_25mhz(cdns_phy);
+>  
+> @@ -1636,10 +1644,10 @@ static void cdns_torrent_dp_pma_lane_cfg(struct cdns_torrent_phy *cdns_phy,
+>  					 unsigned int lane)
+>  {
+>  	/* Per lane, refclock-dependent receiver detection setting */
+> -	if (cdns_phy->ref_clk_rate == REF_CLK_19_2MHZ)
+> +	if (cdns_phy->ref_clk_rate == CLK_19_2_MHZ)
+>  		cdns_torrent_phy_write(cdns_phy->regmap_tx_lane_cdb[lane],
+>  				       TX_RCVDET_ST_TMR, 0x0780);
+> -	else if (cdns_phy->ref_clk_rate == REF_CLK_25MHZ)
+> +	else if (cdns_phy->ref_clk_rate == CLK_25_MHZ)
+>  		cdns_torrent_phy_write(cdns_phy->regmap_tx_lane_cdb[lane],
+>  				       TX_RCVDET_ST_TMR, 0x09C4);
+>  
+> @@ -2270,6 +2278,7 @@ static int cdns_torrent_reset(struct cdns_torrent_phy *cdns_phy)
+>  static int cdns_torrent_clk(struct cdns_torrent_phy *cdns_phy)
+>  {
+>  	struct device *dev = cdns_phy->dev;
+> +	unsigned long ref_clk_rate;
+>  	int ret;
+>  
+>  	cdns_phy->clk = devm_clk_get(dev, "refclk");
+> @@ -2284,13 +2293,29 @@ static int cdns_torrent_clk(struct cdns_torrent_phy *cdns_phy)
+>  		return ret;
+>  	}
+>  
+> -	cdns_phy->ref_clk_rate = clk_get_rate(cdns_phy->clk);
+> -	if (!(cdns_phy->ref_clk_rate)) {
+> +	ref_clk_rate = clk_get_rate(cdns_phy->clk);
+> +	if (!ref_clk_rate) {
+>  		dev_err(cdns_phy->dev, "Failed to get ref clock rate\n");
+>  		clk_disable_unprepare(cdns_phy->clk);
+>  		return -EINVAL;
+>  	}
+>  
+> +	switch (ref_clk_rate) {
+> +	case REF_CLK_19_2MHZ:
+> +		cdns_phy->ref_clk_rate = CLK_19_2_MHZ;
+> +		break;
+> +	case REF_CLK_25MHZ:
+> +		cdns_phy->ref_clk_rate = CLK_25_MHZ;
+> +		break;
+> +	case REF_CLK_100MHZ:
+> +		cdns_phy->ref_clk_rate = CLK_100_MHZ;
+> +		break;
+> +	default:
+> +		dev_err(cdns_phy->dev, "Invalid Ref Clock Rate\n");
+> +		clk_disable_unprepare(cdns_phy->clk);
+> +		return -EINVAL;
+> +	}
+> +
+>  	return 0;
+>  }
+>  
+> 
