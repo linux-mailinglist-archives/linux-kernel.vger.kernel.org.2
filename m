@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 010A837F48F
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 10:58:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBB9437F490
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 10:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232304AbhEMI7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 04:59:55 -0400
-Received: from mga02.intel.com ([134.134.136.20]:47035 "EHLO mga02.intel.com"
+        id S232300AbhEMJAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 05:00:02 -0400
+Received: from mga02.intel.com ([134.134.136.20]:47039 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232274AbhEMI7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232281AbhEMI7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 13 May 2021 04:59:19 -0400
-IronPort-SDR: iFx5R0FRydYcIObflD9eECkyw6X7IKs52CATTVRknCPBKZVc3ufLs/Yv/i/qzA+Jptq9NGRp3V
- YNiWGpBJEzOg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="187032242"
+IronPort-SDR: V86TY2vH33cA8Gtzq2qZ0rAsv5fblnUXDYvGIgdntJhEfniDGNdnXVbgctvMTYvyOH6EdhW1hW
+ dkNTAVEVHjhg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9982"; a="187032248"
 X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
-   d="scan'208";a="187032242"
+   d="scan'208";a="187032248"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 01:58:08 -0700
-IronPort-SDR: ymejRcmLPhV9prK0XPK009m8VrXdso5fEYPVfd0ZPH4Y2RzAytBEQcIceLW7/GCk/t45+O8czq
- HKmKGn5TL6uA==
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 01:58:09 -0700
+IronPort-SDR: g66Zm0P8RTurVX+azkKRZVVOz0j3vDvhJZrT0F2R9LmziH8b+G1iCaxElxZV64VGtmjzwf2QbA
+ hho/mE8F64iA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,296,1613462400"; 
-   d="scan'208";a="625928254"
+   d="scan'208";a="625928267"
 Received: from aipg-stp-03.iil.intel.com ([143.185.92.28])
-  by fmsmga005.fm.intel.com with ESMTP; 13 May 2021 01:58:05 -0700
+  by fmsmga005.fm.intel.com with ESMTP; 13 May 2021 01:58:07 -0700
 From:   Guy Zadicario <guy.zadicario@intel.com>
 To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
 Cc:     olof@lixom.net, alexander.shishkin@linux.intel.com,
         andriy.shevchenko@intel.com, yochai.shefi-simchon@intel.com,
         guy.zadicario@intel.com
-Subject: [PATCH v2 03/15] misc: nnpi: Manage and schedule messages to device
-Date:   Thu, 13 May 2021 11:57:13 +0300
-Message-Id: <20210513085725.45528-4-guy.zadicario@intel.com>
+Subject: [PATCH v2 04/15] misc: nnpi: Define host/card ipc protocol
+Date:   Thu, 13 May 2021 11:57:14 +0300
+Message-Id: <20210513085725.45528-5-guy.zadicario@intel.com>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <20210513085725.45528-1-guy.zadicario@intel.com>
 References: <20210513085725.45528-1-guy.zadicario@intel.com>
@@ -43,812 +43,359 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allocate a msg_scheduler object for each NNP-I device. Each object
-manages multiple command queues - one for driver initiated commands
-(called "cmdq"), and the rest for commands coming from user-space. A
-kernel thread in the msg_scheduler schedules sending the commands from
-these queues to the NNP-I device by using the cmdq_write_mesg function of
-the NNP-I device driver ops.
-
-The msg_scheduler object allows multiple user-mode applications to put
-messages into the queue without blocking or waiting on a lock. It's
-created on device creation and destroyed on device removal.
+Define the commands and memory block structures which can be sent to
+the NNP-I device from the "device" layer.
 
 Signed-off-by: Guy Zadicario <guy.zadicario@intel.com>
 Reviewed-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
 ---
- drivers/misc/intel-nnpi/Makefile        |   2 +-
- drivers/misc/intel-nnpi/device.c        |  20 ++
- drivers/misc/intel-nnpi/device.h        |   9 +
- drivers/misc/intel-nnpi/msg_scheduler.c | 319 ++++++++++++++++++++++++++++++++
- drivers/misc/intel-nnpi/msg_scheduler.h | 153 +++++++++++++++
- drivers/misc/intel-nnpi/nnp_pcie.c      | 153 +++++++++++++++
- 6 files changed, 655 insertions(+), 1 deletion(-)
- create mode 100644 drivers/misc/intel-nnpi/msg_scheduler.c
- create mode 100644 drivers/misc/intel-nnpi/msg_scheduler.h
+ drivers/misc/intel-nnpi/ipc_include/ipc_protocol.h | 337 +++++++++++++++++++++
+ 1 file changed, 337 insertions(+)
+ create mode 100644 drivers/misc/intel-nnpi/ipc_include/ipc_protocol.h
 
-diff --git a/drivers/misc/intel-nnpi/Makefile b/drivers/misc/intel-nnpi/Makefile
-index 84b7528..43f09c0 100644
---- a/drivers/misc/intel-nnpi/Makefile
-+++ b/drivers/misc/intel-nnpi/Makefile
-@@ -5,7 +5,7 @@
- 
- obj-$(CONFIG_INTEL_NNPI) := intel_nnpi.o intel_nnpi_pcie.o
- 
--intel_nnpi-y := device.o
-+intel_nnpi-y := device.o msg_scheduler.o
- 
- intel_nnpi_pcie-y := nnp_pcie.o
- 
-diff --git a/drivers/misc/intel-nnpi/device.c b/drivers/misc/intel-nnpi/device.c
-index 3d80e95..60c5a94 100644
---- a/drivers/misc/intel-nnpi/device.c
-+++ b/drivers/misc/intel-nnpi/device.c
-@@ -8,6 +8,7 @@
- #include <linux/module.h>
- 
- #include "device.h"
-+#include "msg_scheduler.h"
- 
- static DEFINE_IDA(dev_ida);
- 
-@@ -45,7 +46,25 @@ int nnpdev_init(struct nnp_device *nnpdev, struct device *dev,
- 	nnpdev->dev = dev;
- 	nnpdev->ops = ops;
- 
-+	nnpdev->cmdq_sched = nnp_msched_create(nnpdev);
-+	if (!nnpdev->cmdq_sched) {
-+		ret = -ENOMEM;
-+		goto err_ida;
-+	}
-+
-+	nnpdev->cmdq = nnp_msched_queue_create(nnpdev->cmdq_sched);
-+	if (!nnpdev->cmdq) {
-+		ret = -ENOMEM;
-+		goto err_msg_sched;
-+	}
-+
- 	return 0;
-+
-+err_msg_sched:
-+	nnp_msched_destroy(nnpdev->cmdq_sched);
-+err_ida:
-+	ida_simple_remove(&dev_ida, nnpdev->id);
-+	return ret;
- }
- EXPORT_SYMBOL(nnpdev_init);
- 
-@@ -75,6 +94,7 @@ void nnpdev_destroy(struct nnp_device *nnpdev)
- {
- 	dev_dbg(nnpdev->dev, "Destroying NNP-I device\n");
- 
-+	nnp_msched_destroy(nnpdev->cmdq_sched);
- 	ida_simple_remove(&dev_ida, nnpdev->id);
- }
- EXPORT_SYMBOL(nnpdev_destroy);
-diff --git a/drivers/misc/intel-nnpi/device.h b/drivers/misc/intel-nnpi/device.h
-index 4ff7aa9..7d7ef60 100644
---- a/drivers/misc/intel-nnpi/device.h
-+++ b/drivers/misc/intel-nnpi/device.h
-@@ -11,20 +11,29 @@
-  * @ops: device operations implemented by the underlying device driver
-  * @dev: pointer to struct device representing the NNP-I card.
-  * @id: NNP-I device number
-+ * @cmdq_sched: message scheduler thread which schedules and serializes command
-+ *              submissions to the device's command queue.
-+ * @cmdq: input queue to @cmdq_sched used to schedule driver internal commands
-+ *        to be sent to the device.
-  */
- struct nnp_device {
- 	const struct nnp_device_ops *ops;
- 	struct device               *dev;
- 	int                         id;
-+
-+	struct nnp_msched       *cmdq_sched;
-+	struct nnp_msched_queue *cmdq;
- };
- 
- /**
-  * struct nnp_device_ops - operations implemented by underlying device driver
-  * @cmdq_flush: empties the device command queue, discarding all queued
-  *              commands.
-+ * @cmdq_write_mesg: inserts a command message to the card's command queue.
-  */
- struct nnp_device_ops {
- 	int (*cmdq_flush)(struct nnp_device *hw_dev);
-+	int (*cmdq_write_mesg)(struct nnp_device *nnpdev, u64 *msg, u32 size);
- };
- 
- /*
-diff --git a/drivers/misc/intel-nnpi/msg_scheduler.c b/drivers/misc/intel-nnpi/msg_scheduler.c
+diff --git a/drivers/misc/intel-nnpi/ipc_include/ipc_protocol.h b/drivers/misc/intel-nnpi/ipc_include/ipc_protocol.h
 new file mode 100644
-index 0000000..c018630
+index 0000000..59b4a79
 --- /dev/null
-+++ b/drivers/misc/intel-nnpi/msg_scheduler.c
-@@ -0,0 +1,319 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Copyright (C) 2019-2021 Intel Corporation */
-+
-+/*
-+ * message scheduler implementation.
-+ *
-+ * That implements a scheduler object which is used to serialize
-+ * command submission to an NNP-I device.
-+ * It manages a list of message queues which hold command messages
-+ * to be submitted to the card.
-+ * It also implements a kernel thread which schedules draining
-+ * the message queues in round-robin fashion.
-+ *
-+ * An instance of this object is created for each NNP-I device.
-+ * A message queue is created for each user created channel as well
-+ * as one message queue which is used by the kernel driver itself.
-+ */
-+
-+#include <linux/err.h>
-+#include <linux/kthread.h>
-+#include <linux/list.h>
-+#include <linux/mutex.h>
-+#include <linux/printk.h>
-+#include <linux/sched.h>
-+#include <linux/slab.h>
-+#include <linux/spinlock.h>
-+
-+#include "device.h"
-+#include "msg_scheduler.h"
-+
-+/**
-+ * struct msg_entry - struct to hold a single command message
-+ * @msg: command message payload
-+ * @size: size in 64-bit words
-+ * @node: node to be included in list of command messages.
-+ */
-+struct msg_entry {
-+	u64              msg[MSG_SCHED_MAX_MSG_SIZE];
-+	unsigned int     size;
-+	struct list_head node;
-+};
-+
-+/**
-+ * do_sched() - fetch and write a message from one message queue.
-+ * @sched: the scheduler
-+ * @q: the queue to handle
-+ *
-+ * This function is called from the main scheduler thread to handle single
-+ * message queue. It fetches one message from the queue and send it to the
-+ * NNP-I device.
-+ *
-+ * The function should be called when the scheduler mutex is held to prevent
-+ * the queue from being destroyed.
-+ */
-+static void do_sched(struct nnp_msched *sched, struct nnp_msched_queue *q)
-+{
-+	struct nnp_device *nnpdev = sched->nnpdev;
-+	struct msg_entry *msg;
-+	unsigned int left_msgs;
-+
-+	lockdep_assert_held(&sched->mutex);
-+
-+	/* Fetch one message from the queue */
-+	spin_lock(&q->list_lock);
-+	if (list_empty(&q->msgs)) {
-+		spin_unlock(&q->list_lock);
-+		return;
-+	}
-+
-+	msg = list_first_entry(&q->msgs, struct msg_entry, node);
-+	list_del(&msg->node);
-+	q->msgs_num--;
-+	left_msgs = q->msgs_num;
-+	spin_lock(&sched->total_msgs_lock);
-+	sched->total_msgs--;
-+	spin_unlock(&sched->total_msgs_lock);
-+	spin_unlock(&q->list_lock);
-+
-+	/*
-+	 * Write the fetched message out.
-+	 * Note that cmdq_write_mesg function may sleep.
-+	 */
-+	nnpdev->ops->cmdq_write_mesg(nnpdev, msg->msg, msg->size);
-+
-+	kmem_cache_free(sched->slab_cache_ptr, msg);
-+
-+	/*
-+	 * Wake any waiting sync thread if the queue just
-+	 * became empty
-+	 */
-+	if (!left_msgs)
-+		wake_up_all(&q->sync_waitq);
-+}
-+
-+/**
-+ * msg_sched_thread() - the main function of the scheduler thread.
-+ * @data: pointer to the msg scheduler object.
-+ *
-+ * This is the main function of the scheduler kernel thread.
-+ * It loops in round-robin fashion on all queues, pulls one message
-+ * each time and send it to the NNP-I device.
-+ * For each application created channel, a different queue of
-+ * command messages is allocated. This thread schedules and serializes
-+ * accesses to the NNP-I device's command queue.
-+ *
-+ * Return: 0 when thread is stopped
-+ */
-+static int msg_sched_thread(void *data)
-+{
-+	struct nnp_msched *dev_sched = data;
-+	struct nnp_msched_queue *q;
-+	bool need_sched;
-+
-+	while (!kthread_should_stop()) {
-+		mutex_lock(&dev_sched->mutex);
-+		list_for_each_entry(q, &dev_sched->queues, node)
-+			do_sched(dev_sched, q);
-+
-+		/*
-+		 * Wait for new messages to be available in some queue
-+		 * if no messages are known to exist
-+		 */
-+		spin_lock(&dev_sched->total_msgs_lock);
-+		set_current_state(TASK_INTERRUPTIBLE);
-+		need_sched = !dev_sched->total_msgs;
-+		spin_unlock(&dev_sched->total_msgs_lock);
-+		mutex_unlock(&dev_sched->mutex);
-+		if (need_sched)
-+			schedule();
-+		set_current_state(TASK_RUNNING);
-+	}
-+
-+	return 0;
-+}
-+
-+struct nnp_msched_queue *nnp_msched_queue_create(struct nnp_msched *scheduler)
-+{
-+	struct nnp_msched_queue *queue;
-+
-+	queue = kzalloc(sizeof(*queue), GFP_KERNEL);
-+	if (!queue)
-+		return NULL;
-+
-+	INIT_LIST_HEAD(&queue->msgs);
-+	spin_lock_init(&queue->list_lock);
-+	queue->msgs_num = 0;
-+	queue->scheduler = scheduler;
-+	init_waitqueue_head(&queue->sync_waitq);
-+
-+	mutex_lock(&scheduler->mutex);
-+	list_add_tail(&queue->node, &scheduler->queues);
-+	mutex_unlock(&scheduler->mutex);
-+
-+	return queue;
-+}
-+
-+int nnp_msched_queue_destroy(struct nnp_msched_queue *queue)
-+{
-+	struct msg_entry *msg;
-+
-+	/* detach the queue from list of scheduled queues */
-+	mutex_lock(&queue->scheduler->mutex);
-+	list_del(&queue->node);
-+	mutex_unlock(&queue->scheduler->mutex);
-+
-+	/* destroy all the messages of the queue */
-+	spin_lock(&queue->list_lock);
-+	while (!list_empty(&queue->msgs)) {
-+		msg = list_first_entry(&queue->msgs, struct msg_entry, node);
-+		list_del(&msg->node);
-+		kmem_cache_free(queue->scheduler->slab_cache_ptr, msg);
-+	}
-+	spin_unlock(&queue->list_lock);
-+
-+	kfree(queue);
-+
-+	return 0;
-+}
-+
-+static inline bool is_queue_empty(struct nnp_msched_queue *queue)
-+{
-+	bool ret;
-+
-+	spin_lock(&queue->list_lock);
-+	ret = list_empty(&queue->msgs);
-+	spin_unlock(&queue->list_lock);
-+
-+	return ret;
-+}
-+
-+int nnp_msched_queue_sync(struct nnp_msched_queue *queue)
-+{
-+	int ret;
-+
-+	/* Wait for the queue to be empty */
-+	ret = wait_event_interruptible(queue->sync_waitq, is_queue_empty(queue));
-+
-+	return ret;
-+}
-+
-+int nnp_msched_queue_add_msg(struct nnp_msched_queue *queue, u64 *msg,
-+			     unsigned int size)
-+{
-+	unsigned int i;
-+	struct msg_entry *m;
-+	bool throttled;
-+
-+	if (size > MSG_SCHED_MAX_MSG_SIZE)
-+		return -EINVAL;
-+
-+	m = kmem_cache_alloc(queue->scheduler->slab_cache_ptr, GFP_KERNEL);
-+	if (!m)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < size; i++)
-+		m->msg[i] = msg[i];
-+
-+	m->size = size;
-+
-+	spin_lock(&queue->list_lock);
-+	throttled = queue->throttled;
-+	if (!throttled) {
-+		list_add_tail(&m->node, &queue->msgs);
-+		queue->msgs_num++;
-+		spin_lock(&queue->scheduler->total_msgs_lock);
-+		queue->scheduler->total_msgs++;
-+		spin_unlock(&queue->scheduler->total_msgs_lock);
-+	}
-+	spin_unlock(&queue->list_lock);
-+
-+	/* if queue flagged as throttled - silently ignore the message */
-+	if (throttled) {
-+		kmem_cache_free(queue->scheduler->slab_cache_ptr, m);
-+		return 0;
-+	}
-+
-+	wake_up_process(queue->scheduler->thread);
-+
-+	return 0;
-+}
-+
-+struct nnp_msched *nnp_msched_create(struct nnp_device *nnpdev)
-+{
-+	struct nnp_msched *dev_sched;
-+
-+	dev_sched = kzalloc(sizeof(*dev_sched), GFP_KERNEL);
-+	if (!dev_sched)
-+		return NULL;
-+
-+	dev_sched->slab_cache_ptr = kmem_cache_create("msg_sched_slab",
-+						      sizeof(struct msg_entry),
-+						      0, 0, NULL);
-+	if (!dev_sched->slab_cache_ptr) {
-+		kfree(dev_sched);
-+		return NULL;
-+	}
-+
-+	INIT_LIST_HEAD(&dev_sched->queues);
-+
-+	spin_lock_init(&dev_sched->total_msgs_lock);
-+	mutex_init(&dev_sched->mutex);
-+	dev_sched->nnpdev = nnpdev;
-+
-+	dev_sched->thread = kthread_run(msg_sched_thread, dev_sched,
-+					"msg_sched_thread");
-+	if (!dev_sched->thread) {
-+		kmem_cache_destroy(dev_sched->slab_cache_ptr);
-+		kfree(dev_sched);
-+		return NULL;
-+	}
-+
-+	return dev_sched;
-+}
-+
-+void nnp_msched_destroy(struct nnp_msched *sched)
-+{
-+	struct nnp_msched_queue *q, *tmp;
-+
-+	nnp_msched_throttle_all(sched);
-+
-+	kthread_stop(sched->thread);
-+
-+	mutex_lock(&sched->mutex);
-+	list_for_each_entry_safe(q, tmp, &sched->queues, node) {
-+		/* destroy the queue */
-+		list_del(&q->node);
-+		kfree(q);
-+	}
-+	mutex_unlock(&sched->mutex);
-+
-+	kmem_cache_destroy(sched->slab_cache_ptr);
-+
-+	kfree(sched);
-+}
-+
-+void nnp_msched_throttle_all(struct nnp_msched *sched)
-+{
-+	struct nnp_msched_queue *q;
-+	struct msg_entry *msg, *tmp;
-+
-+	/*
-+	 * For each queue:
-+	 * 1) throttle the queue, so that no more messages will be inserted
-+	 * 2) delete all existing messages
-+	 */
-+	mutex_lock(&sched->mutex);
-+	list_for_each_entry(q, &sched->queues, node) {
-+		spin_lock(&q->list_lock);
-+		q->throttled = true;
-+		list_for_each_entry_safe(msg, tmp, &q->msgs, node) {
-+			list_del(&msg->node);
-+			kmem_cache_free(sched->slab_cache_ptr, msg);
-+		}
-+		q->msgs_num = 0;
-+		spin_unlock(&q->list_lock);
-+		wake_up_all(&q->sync_waitq);
-+	}
-+	mutex_unlock(&sched->mutex);
-+}
-diff --git a/drivers/misc/intel-nnpi/msg_scheduler.h b/drivers/misc/intel-nnpi/msg_scheduler.h
-new file mode 100644
-index 0000000..c8033f2
---- /dev/null
-+++ b/drivers/misc/intel-nnpi/msg_scheduler.h
-@@ -0,0 +1,153 @@
++++ b/drivers/misc/intel-nnpi/ipc_include/ipc_protocol.h
+@@ -0,0 +1,337 @@
 +/* SPDX-License-Identifier: GPL-2.0-only */
 +/* Copyright (C) 2019-2021 Intel Corporation */
 +
-+#ifndef _NNP_MSGF_SCHEDULER_H
-+#define _NNP_MSGF_SCHEDULER_H
++#ifndef _IPC_PROTOCOL_H
++#define _IPC_PROTOCOL_H
 +
-+#include <linux/mutex.h>
-+#include <linux/wait.h>
-+#include <linux/workqueue.h>
++#include <linux/bits.h>
++#include <linux/bitfield.h>
++#include <linux/dma-mapping.h>
++#include <linux/types.h>
 +
-+#define MSG_SCHED_MAX_MSG_SIZE 3  /* maximum command message size, i qwords */
++#define IPC_OP_MAX          BIT(6)
++#define NNP_IPC_OPCODE_MASK GENMASK(5, 0)
 +
-+/**
-+ * struct nnp_msched - structure for msg scheduler object
-+ * @thread: kernel thread which schedules message writes to device
-+ * @nnpdev: the device the scheduler writes to
-+ * @queues: list of message queues to schedule from
-+ * @total_msgs_lock: protects accesses to @total_msgs
-+ * @mutex: protects modifications to @queues
-+ * @total_msgs: total count of messages in all queues yet to be written.
-+ * @slab_cache_ptr: used to allocate entries in msg queue list.
-+ *
-+ * We have one msg scheduler object allocated for each NNP-I device,
-+ * It manages a list of command message queues and a kernel thread
-+ * which schedules sending the command messages to the device in a
-+ * round-robin fashion.
-+ */
-+struct nnp_msched {
-+	struct task_struct *thread;
-+	struct nnp_device  *nnpdev;
-+	struct list_head   queues;
-+	spinlock_t         total_msgs_lock;
-+	struct mutex       mutex;
-+	unsigned int       total_msgs;
-+	struct kmem_cache  *slab_cache_ptr;
-+};
-+
-+/**
-+ * struct nnp_msched_queue - structure to hold one list of command messages
-+ * @scheduler: the scheduler object this queue belongs to
-+ * @node: node of this element in @queues in msg_sched
-+ * @msgs: list of command messages
-+ * @sync_waitq: waitq used for waiting until queue becomes empty
-+ * @throttled: if true, all messages in the queue should be discarded and no new
-+ *             messages can be added to it until it will become un-throttled.
-+ * @msgs_num: number of messages in the queue
-+ * @list_lock: protects @msgs
-+ *
-+ * This structure holds a list of command messages to be queued for submission
-+ * to the device. Each application holding a channel for command submissions
-+ * has its own command message queue.
-+ */
-+struct nnp_msched_queue {
-+	struct nnp_msched *scheduler;
-+	struct list_head  node;
-+	struct list_head  msgs;
-+	wait_queue_head_t sync_waitq;
-+	bool              throttled;
-+	unsigned int      msgs_num;
-+	spinlock_t        list_lock;
-+};
-+
-+/**
-+ * nnp_msched_create() - creates msg scheduler object
-+ * @nnpdev: the device this scheduler writes messages to.
-+ *
-+ * This function creates a message scheduler object which can hold
-+ * multiple message queues and a scheduling thread which pop messages
-+ * from the different queues and synchronously sends them down to the device
-+ * for transmission.
-+ *
-+ * Return: pointer to allocated scheduler object or NULL on failure
-+ */
-+struct nnp_msched *nnp_msched_create(struct nnp_device *nnpdev);
-+
-+/**
-+ * nnp_msched_destroy() - destroys a msg scheduler object
-+ * @sched: pointer to msg scheduler object
-+ *
-+ * This function will wait for the scheduler thread to complete
-+ * and destroys the scheduler object as well as all messages and message
-+ * queues.
-+ * NOTE: caller must make sure that no new queues and messages will be added
-+ * to this scheduler object while this function is in progress! There is no
-+ * mutex to protect this, should be handled by the caller.
-+ */
-+void nnp_msched_destroy(struct nnp_msched *sched);
-+
-+/**
-+ * nnp_msched_throttle_all() - Remove all messages and throttle all queues
-+ * @sched: pointer to msg scheduler object
-+ *
-+ * This function removes all messages from all queues and marks all queues
-+ * as throttled. No new messages can be added to a throttled queue until it
-+ * becomes unthrottled.
-+ *
-+ * This function is called before the device is reset in order to stop sending
-+ * any more messages to the device. When the reset is complete, the message
-+ * queues are unthrottled. This is done to make sure that no messages generated
-+ * before the reset will be sent to the device, also after the reset completes.
-+ */
-+void nnp_msched_throttle_all(struct nnp_msched *sched);
-+
-+/**
-+ * nnp_msched_queue_create() - create a queue of messages handled by scheduler
-+ * @scheduler: the msg scheduler object
-+ *
-+ * Return: pointer to msg scheduler queue object, NULL on failure.
-+ */
-+struct nnp_msched_queue *nnp_msched_queue_create(struct nnp_msched *scheduler);
-+
-+/**
-+ * nnp_msched_queue_destroy() - destroy a message queue object
-+ * @queue: the message queue object to be destroyed.
-+ *
-+ * This function destroys a message queue object, if the queue is not empty
-+ * and still contains messages, the messages will be discarded and not sent to
-+ * the device.
-+ *
-+ * Return: 0 on success.
-+ */
-+int nnp_msched_queue_destroy(struct nnp_msched_queue *queue);
-+
-+/**
-+ * nnp_msched_queue_sync() - wait for message queue to be empty
-+ * @queue: the message queue object
-+ *
-+ * Return: 0 on success, error value otherwise.
-+ */
-+int nnp_msched_queue_sync(struct nnp_msched_queue *queue);
-+
-+/**
-+ * nnp_msched_queue_add_msg() - adds a message packet to a message queue
-+ * @queue: the message queue object
-+ * @msg: pointer to message content
-+ * @size: size of message in 64-bit units
-+ *
-+ * This function adds a message to the queue. The message will be sent
-+ * once the scheduler thread drains it from the queue.
-+ *
-+ * Return: 0 on success, error value otherwise
-+ */
-+int nnp_msched_queue_add_msg(struct nnp_msched_queue *queue, u64 *msg,
-+			     unsigned int size);
++#define NNP_MSG_SIZE(msg) (sizeof(msg) / sizeof(__le64))
 +
 +/*
-+ * Utility macro for calling nnp_msched_queue_add_msg by passing u64 array
-+ * object which forms the message.
++ * NNP_PAGE_SIZE is a size of a page in the protocol.
++ * We do not use just PAGE_SIZE since it may differ between
++ * card and host.
 + */
-+#define nnp_msched_queue_msg(q, m) \
-+	nnp_msched_queue_add_msg((q), (u64 *)&(m), sizeof((m)) / sizeof(u64))
++#define NNP_PAGE_SHIFT       12
++#define NNP_PAGE_SIZE        BIT(12)
 +
-+#endif /* _NNP_MSGF_SCHEDULER_H */
-diff --git a/drivers/misc/intel-nnpi/nnp_pcie.c b/drivers/misc/intel-nnpi/nnp_pcie.c
-index 88280d1..7aa9074 100644
---- a/drivers/misc/intel-nnpi/nnp_pcie.c
-+++ b/drivers/misc/intel-nnpi/nnp_pcie.c
-@@ -38,10 +38,14 @@
-  *                    queue.
-  * @card_doorbell_val: card's doorbell register value, updated when doorbell
-  *                     interrupt is received.
-+ * @cmdq_free_slots: number of slots in the device's command queue which is known
-+ *                   to be available.
-+ * @cmdq_lock: protects @cmdq_free_slots calculation.
-  * @card_status: Last device interrupt status register, updated in interrupt
-  *               handler.
-  * @cmd_read_update_count: number of times the device has updated its read
-  *                         pointer to the device command queue.
-+ * @removing: true if device remove is in progress.
-  */
- struct nnp_pci {
- 	struct nnp_device nnpdev;
-@@ -55,8 +59,12 @@ struct nnp_pci {
- 	wait_queue_head_t card_status_wait;
- 	u32             card_doorbell_val;
- 
-+	u32             cmdq_free_slots;
-+	spinlock_t      cmdq_lock;
++#define NNP_VERSION_DOT_MASK   GENMASK(4, 0)
++#define NNP_VERSION_MINOR_MASK GENMASK(9, 5)
++#define NNP_VERSION_MAJOR_MASK GENMASK(14, 10)
++#define NNP_VERSION_MAJOR(ver) FIELD_GET(NNP_VERSION_MAJOR_MASK, (ver))
++#define NNP_VERSION_MINOR(ver) FIELD_GET(NNP_VERSION_MINOR_MASK, (ver))
++#define NNP_VERSION_DOT(ver)   FIELD_GET(NNP_VERSION_DOT_MASK, (ver))
++#define NNP_MAKE_VERSION(major, minor, dot) \
++	(FIELD_PREP(NNP_VERSION_MAJOR_MASK, (major)) | \
++	 FIELD_PREP(NNP_VERSION_MINOR_MASK, (minor)) | \
++	 FIELD_PREP(NNP_VERSION_DOT_MASK, (dot)))
 +
- 	u32             card_status;
- 	u32             cmd_read_update_count;
-+	bool            removing;
- };
- 
- #define NNP_DRIVER_NAME  "nnp_pcie"
-@@ -228,6 +236,135 @@ static void nnp_free_interrupts(struct nnp_pci *nnp_pci, struct pci_dev *pdev)
- 	pci_free_irq_vectors(pdev);
- }
- 
-+/**
-+ * nnp_cmdq_write_mesg_nowait() - tries to write full message to command queue
-+ * @nnp_pci: the device
-+ * @msg: pointer to the command message
-+ * @size: size of the command message in qwords
-+ * @read_update_count: returns current cmd_read_update_count value,
-+ *                     valid only if function returns -EAGAIN.
-+ *
-+ * Return:
-+ * * 0: Success, command has been written
-+ * * -EAGAIN: command queue does not have room for the entire command
-+ *            message.
-+ *            read_update_count returns the current value of
-+ *            cmd_read_update_count counter which increments when the device
-+ *            advance its command queue read pointer. The caller may wait
-+ *            for this counter to be advanced past this point before calling
-+ *            this function again to re-try the write.
-+ * * -ENODEV: device remove is in progress.
++#define NNP_IPC_PROTOCOL_VERSION NNP_MAKE_VERSION(4, 1, 0)
++
++#define NNP_IPC_DMA_PFN_BITS         45 /* size of physical address in protocol */
++#ifdef CONFIG_ARCH_DMA_ADDR_T_64BIT
++#define NNP_IPC_DMA_PFN_MASK         GENMASK_ULL(56, 12)
++#define NNP_IPC_DMA_MAX_ADDR         GENMASK_ULL(56, 0)
++#else
++#define NNP_IPC_DMA_PFN_MASK         GENMASK_ULL(31, 12)
++#define NNP_IPC_DMA_MAX_ADDR         GENMASK_ULL(31, 0)
++#endif
++#define NNP_IPC_DMA_ADDR_TO_PFN(dma_addr) \
++				     FIELD_GET(NNP_IPC_DMA_PFN_MASK, (dma_addr))
++#define NNP_IPC_DMA_PFN_TO_ADDR(dma_pfn)  \
++				     FIELD_PREP(NNP_IPC_DMA_PFN_MASK, (dma_pfn))
++
++#define NNP_IPC_INF_CHANNEL_BITS 8
++#define NNP_IPC_CHANNEL_BITS     10
++#define NNP_IPC_MAX_CHANNEL_RB   2
++
++/*
++ * Structures used inside data packets transferred in the protocol
 + */
-+static int nnp_cmdq_write_mesg_nowait(struct nnp_pci *nnp_pci, u64 *msg,
-+				      u32 size, u32 *read_update_count)
-+{
-+	u32 cmd_iosf_control;
-+	u32 read_pointer, write_pointer;
-+	int i;
++struct nnp_dma_chain_header {
++	__le64 dma_next;
++	__le32 total_nents;
++	__le32 start_offset;
++	__le64 size;
++} __packed;
 +
-+	if (nnp_pci->removing)
-+		return -ENODEV;
++#define DMA_CHAIN_ENTRY_SIZE  sizeof(__le64)
++#define DMA_CHAIN_HEADER_SIZE  sizeof(struct nnp_dma_chain_header)
++#define DMA_CHAIN_ENTRY_NPAGES_BITS \
++	(sizeof(__le64) * __CHAR_BIT__ - NNP_IPC_DMA_PFN_BITS)
++#define NNP_MAX_CHUNK_SIZE \
++	(((1lu << DMA_CHAIN_ENTRY_NPAGES_BITS) - 1) << NNP_PAGE_SHIFT)
 +
-+	if (!size)
-+		return 0;
++struct nnp_dma_chain_entry {
++	u64 dma_chunk_pfn  : NNP_IPC_DMA_PFN_BITS;
++	u64 n_pages        : DMA_CHAIN_ENTRY_NPAGES_BITS;
++} __packed;
 +
-+	spin_lock(&nnp_pci->cmdq_lock);
++#define DMA_CHAIN_ENTRY_PFN_MASK    GENMASK_ULL(NNP_IPC_DMA_PFN_BITS - 1, 0)
++#define DMA_CHAIN_ENTRY_NPAGES_MASK GENMASK_ULL(63, NNP_IPC_DMA_PFN_BITS)
 +
-+	if (nnp_pci->cmdq_free_slots < size) {
-+		/* read command fifo pointers and compute free slots in fifo */
-+		spin_lock(&nnp_pci->lock);
-+		cmd_iosf_control = nnp_mmio_read(nnp_pci, ELBI_COMMAND_IOSF_CONTROL);
-+		read_pointer = FIELD_GET(CMDQ_READ_PTR_MASK, cmd_iosf_control);
-+		write_pointer =
-+			FIELD_GET(CMDQ_WRITE_PTR_MASK, cmd_iosf_control);
++#define NENTS_PER_PAGE \
++	((NNP_PAGE_SIZE - DMA_CHAIN_HEADER_SIZE) / DMA_CHAIN_ENTRY_SIZE)
 +
-+		nnp_pci->cmdq_free_slots = ELBI_COMMAND_FIFO_DEPTH -
-+					   (write_pointer - read_pointer);
-+
-+		if (nnp_pci->cmdq_free_slots < size) {
-+			*read_update_count = nnp_pci->cmd_read_update_count;
-+			spin_unlock(&nnp_pci->lock);
-+			spin_unlock(&nnp_pci->cmdq_lock);
-+			return -EAGAIN;
-+		}
-+		spin_unlock(&nnp_pci->lock);
-+	}
-+
-+	/* Write all but the last qword without generating msi on card */
-+	for (i = 0; i < size - 1; i++)
-+		nnp_mmio_write_8b(nnp_pci, ELBI_COMMAND_WRITE_WO_MSI_LOW, msg[i]);
-+
-+	/* Write last qword with generating interrupt on card */
-+	nnp_mmio_write_8b(nnp_pci, ELBI_COMMAND_WRITE_W_MSI_LOW, msg[i]);
-+
-+	nnp_pci->cmdq_free_slots -= size;
-+
-+	spin_unlock(&nnp_pci->cmdq_lock);
-+
-+	return 0;
-+}
-+
-+/**
-+ * check_read_count() - check if device has read commands from command FIFO
-+ * @nnp_pci: the device
-+ * @count: last known 'cmd_read_update_count' value
-+ *
-+ * cmd_read_update_count is advanced on each interrupt received because the
-+ * device has advanced its read pointer into the command FIFO.
-+ * This function checks the current cmd_read_update_count against @count and
-+ * returns true if it is different. This is used to check if the device has
-+ * freed some entries in the command FIFO after it became full.
-+ *
-+ * Return: true if current device read update count has been advanced
++/*
++ * IPC messages layout definition
 + */
-+static bool check_read_count(struct nnp_pci *nnp_pci, u32 count)
-+{
-+	bool ret;
 +
-+	spin_lock(&nnp_pci->lock);
-+	ret = (count != nnp_pci->cmd_read_update_count);
-+	spin_unlock(&nnp_pci->lock);
++#define NNP_C2H_OP_MASK       GENMASK_ULL(5, 0)
 +
-+	return ret;
-+}
++/* NNP_IPC_C2H_OP_QUERY_VERSION_REPLY3 - 3 qwords */
++/* qword 0: */
++#define NNP_C2H_VERSION_REPLY_QW0_OP_MASK       NNP_C2H_OP_MASK
++#define NNP_C2H_VERSION_REPLY_QW0_PROT_VER_MASK GENMASK_ULL(21, 6)
++#define NNP_C2H_VERSION_REPLY_QW0_FW_VER_MASK   GENMASK_ULL(37, 22)
++#define NNP_C2H_VERSION_REPLY_QW0_CHAN_VER_MASK GENMASK_ULL(53, 38)
++/* qword 1: two bits for each possible response opcode specifying its size */
++/* qword 2: two bits for each possible command opcode specifying its size */
 +
-+/**
-+ * nnp_cmdq_write_mesg() - writes a command message to device's command queue
-+ * @nnpdev: the device handle
-+ * @msg: The command message to write
-+ * @size: size of the command message in qwords
-+ *
-+ * Return:
-+ * * 0: Success, command has been written
-+ * * -ENODEV: device remove is in progress.
++/* NNP_IPC_C2H_OP_EVENT_REPORT  - 1 qword */
++#define NNP_C2H_EVENT_REPORT_OP_MASK         NNP_C2H_OP_MASK
++#define NNP_C2H_EVENT_REPORT_CODE_MASK       GENMASK_ULL(12, 6)
++#define NNP_C2H_EVENT_REPORT_CHAN_ID_MASK    GENMASK_ULL(20, 13)
++#define NNP_C2H_EVENT_REPORT_OBJ_ID_MASK     GENMASK_ULL(36, 21)
++#define NNP_C2H_EVENT_REPORT_OBJ_ID2_MASK    GENMASK_ULL(52, 37)
++#define NNP_C2H_EVENT_REPORT_VAL_MASK        GENMASK_ULL(60, 53)
++#define NNP_C2H_EVENT_REPORT_CHAN_VALID_MASK BIT_ULL(61)
++#define NNP_C2H_EVENT_REPORT_OBJ_VALID_MASK  BIT_ULL(62)
++#define NNP_C2H_EVENT_REPORT_OBJ2_VALID_MASK BIT_ULL(63)
++
++/* NNP_IPC_C2H_OP_SYS_INFO - 1 qword */
++#define NNP_C2H_SYS_INFO_OP_MASK  NNP_C2H_OP_MASK
++
++#define NNP_H2C_OP_MASK       GENMASK_ULL(5, 0)
++
++/* NNP_IPC_H2C_OP_QUERY_VERSION - 1 qword */
++#define NNP_H2C_QUERY_VERSION_OP_MASK  NNP_H2C_OP_MASK
++
++/* NNP_IPC_H2C_OP_SETUP_CRASH_DUMP - 2 qwords */
++/* qword 0: */
++#define NNP_H2C_SETUP_CRASH_DUMP_QW0_OP_MASK       NNP_H2C_OP_MASK
++#define NNP_H2C_SETUP_CRASH_DUMP_QW0_DMA_ADDR_MASK GENMASK_ULL(63, 19)
++/* qword 1: physical address of BAR2 */
++
++/* NNP_IPC_H2C_OP_SETUP_SYS_INFO_PAGE - 1 qword */
++#define NNP_H2C_SETUP_SYS_INFO_OP_MASK       NNP_H2C_OP_MASK
++#define NNP_H2C_SETUP_SYS_INFO_NPAGES        GENMASK_ULL(15, 6)
++#define NNP_H2C_SETUP_SYS_INFO_DMA_ADDR_MASK GENMASK_ULL(63, 19)
++
++/* NNP_IPC_H2C_OP_CHANNEL_OP - 1 qword */
++#define NNP_H2C_CHANNEL_OP_OP_MASK      NNP_H2C_OP_MASK
++#define NNP_H2C_CHANNEL_OP_CHAN_ID_MASK GENMASK_ULL(15, 6)
++#define NNP_H2C_CHANNEL_OP_DESTROY_MASK BIT_ULL(16)
++#define NNP_H2C_CHANNEL_OP_PRIV_MASK    BIT_ULL(31)
++#define NNP_H2C_CHANNEL_OP_UID_MASK     GENMASK_ULL(63, 32)
++
++/* NNP_IPC_H2C_OP_CHANNEL_RB_OP - 1 qword */
++#define NNP_H2C_CHANNEL_RB_OP_OP_MASK      NNP_H2C_OP_MASK
++#define NNP_H2C_CHANNEL_RB_OP_CHAN_ID_MASK GENMASK_ULL(15, 6)
++#define NNP_H2C_CHANNEL_RB_OP_H2C_MASK     BIT_ULL(16)
++#define NNP_H2C_CHANNEL_RB_OP_ID_MASK      BIT_ULL(17)
++#define NNP_H2C_CHANNEL_RB_OP_DESTROY_MASK BIT_ULL(18)
++#define NNP_H2C_CHANNEL_RB_OP_HOST_PFN_MASK GENMASK_ULL(63, 19)
++
++/* NNP_IPC_H2C_OP_CHANNEL_HOSTRES_OP - 2 qwords */
++/* qword 0: */
++#define NNP_H2C_CHANNEL_HOSTRES_QW0_OP_MASK      NNP_H2C_OP_MASK
++#define NNP_H2C_CHANNEL_HOSTRES_QW0_CHAN_ID_MASK GENMASK_ULL(15, 6)
++#define NNP_H2C_CHANNEL_HOSTRES_QW0_ID_MASK      GENMASK_ULL(31, 16)
++#define NNP_H2C_CHANNEL_HOSTRES_QW0_UNMAP_MASK   BIT_ULL(32)
++/* qword 1: */
++#define NNP_H2C_CHANNEL_HOSTRES_QW1_HOST_PFN_MASK GENMASK_ULL(44, 0)
++
++/* NNP_IPC_H2C_OP_CLOCK_STAMP - 2 qwords */
++/* qword 0: */
++#define NNP_H2C_CLOCK_STAMP_QW0_OP_MASK   NNP_H2C_OP_MASK
++#define NNP_H2C_CLOCK_STAMP_QW0_TYPE_MASK GENMASK_ULL(63, 8)
++/* qword 1: clock stamp value */
++
++/*
++ * IPC messages opcodes and related utility macros
 + */
-+static int nnp_cmdq_write_mesg(struct nnp_device *nnpdev, u64 *msg, u32 size)
-+{
-+	int rc;
-+	u32 rcnt = 0;
-+	struct nnp_pci *nnp_pci = container_of(nnpdev, struct nnp_pci, nnpdev);
++#define H2C_OPCODE_NAME(name)          NNP_IPC_H2C_OP_ ## name
++#define H2C_OPCODE_NAME_STR(name)      #name
++#define C2H_OPCODE_NAME(name)          NNP_IPC_C2H_OP_ ## name
++#define C2H_OPCODE_NAME_STR(name)      #name
 +
-+	do {
-+		rc = nnp_cmdq_write_mesg_nowait(nnp_pci, msg, size, &rcnt);
-+		if (rc != -EAGAIN)
-+			break;
++/*
++ * Define Host-to-card opcodes  (valid range is 0 - 31)
++ */
++enum nnp_h2c_opcodes {
++	H2C_OPCODE_NAME(QUERY_VERSION)       = 0,
++	H2C_OPCODE_NAME(CLOCK_STAMP)         = 2,
++	H2C_OPCODE_NAME(SETUP_CRASH_DUMP)    = 6,
++	H2C_OPCODE_NAME(SETUP_SYS_INFO_PAGE) = 7,
++	H2C_OPCODE_NAME(CHANNEL_OP)          = 22,
++	H2C_OPCODE_NAME(CHANNEL_RB_OP)       = 23,
++	H2C_OPCODE_NAME(CHANNEL_HOSTRES_OP)  = 24,
 +
-+		rc = wait_event_interruptible(nnp_pci->card_status_wait,
-+					      check_read_count(nnp_pci, rcnt) ||
-+					      nnp_pci->removing);
-+		if (!rc && nnp_pci->removing) {
-+			rc = -ENODEV;
-+			break;
-+		}
-+	} while (!rc);
++	H2C_OPCODE_NAME(BIOS_PROTOCOL)       = 31,
++	H2C_OPCODE_NAME(LAST)                = NNP_IPC_H2C_OP_BIOS_PROTOCOL,
++};
 +
-+	if (rc)
-+		dev_dbg(&nnp_pci->pdev->dev,
-+			"Failed to write message size %u rc=%d!\n", size, rc);
++/*
++ * Define Card-to-host opcodes
++ */
++enum nnp_c2h_opcodes {
++	NNP_IPC_C2H_OP_QUERY_VERSION_REPLY  = 0,
++	NNP_IPC_C2H_OP_QUERY_VERSION_REPLY2 = 1,
++	NNP_IPC_C2H_OP_QUERY_VERSION_REPLY3 = 2,
++	NNP_IPC_C2H_OP_EVENT_REPORT         = 4,
++	NNP_IPC_C2H_OP_SYS_INFO             = 11,
 +
-+	return rc;
-+}
++	NNP_IPC_C2H_OP_BIOS_PROTOCOL        = 31,
++	NNP_IPC_C2H_OPCODE_LAST             = NNP_IPC_C2H_OP_BIOS_PROTOCOL,
++};
 +
- static int nnp_cmdq_flush(struct nnp_device *nnpdev)
- {
- 	struct nnp_pci *nnp_pci = container_of(nnpdev, struct nnp_pci, nnpdev);
-@@ -240,6 +377,7 @@ static int nnp_cmdq_flush(struct nnp_device *nnpdev)
- 
- static struct nnp_device_ops nnp_device_ops = {
- 	.cmdq_flush = nnp_cmdq_flush,
-+	.cmdq_write_mesg = nnp_cmdq_write_mesg,
- };
- 
- static void set_host_boot_state(struct nnp_pci *nnp_pci, int boot_state)
-@@ -271,6 +409,7 @@ static int nnp_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 
- 	init_waitqueue_head(&nnp_pci->card_status_wait);
- 	spin_lock_init(&nnp_pci->lock);
-+	spin_lock_init(&nnp_pci->cmdq_lock);
- 
- 	rc = pcim_enable_device(pdev);
- 	if (rc)
-@@ -328,6 +467,20 @@ static void nnp_remove(struct pci_dev *pdev)
- 	nnp_free_interrupts(nnp_pci, nnp_pci->pdev);
- 
- 	/*
-+	 * Flag that the device is being removed and wake any possible
-+	 * thread waiting on the card's command queue.
-+	 * During the remove flow, we want to immediately fail any thread
-+	 * that is using the device without waiting for pending device
-+	 * requests to complete. We rather give precedance to device
-+	 * removal over waiting for all pending requests to finish.
-+	 * When we set the host boot state to "NOT_READY" in the doorbell
-+	 * register, the card will cleanup any state, so this "hard remove"
-+	 * is not an issue for next time the device will get inserted.
-+	 */
-+	nnp_pci->removing = true;
-+	wake_up_all(&nnp_pci->card_status_wait);
++/*
++ * IPC messages protocol between the host driver and card BIOS
++ */
 +
-+	/*
- 	 * Inform card that host driver is down.
- 	 * This will also clear any state on the card so that
- 	 * if card is inserted again, it will be in a good, clear
++enum nnp_bios_c2h_msg_types {
++	NNP_IPC_C2H_TYPE_BIOS_VERSION  = 0x1,
++};
++
++enum nnp_bios_h2c_msg_types {
++	NNP_IPC_H2C_TYPE_BOOT_IMAGE_READY  = 0x10,
++	NNP_IPC_H2C_TYPE_SYSTEM_INFO_REQ   = 0x11,
++};
++
++/* NNP_IPC_C2H_OP_BIOS_PROTOCOL - 1 qword */
++#define NNP_C2H_BIOS_PROTOCOL_OP_MASK   NNP_C2H_OP_MASK
++/* bios message type */
++#define NNP_C2H_BIOS_PROTOCOL_TYPE_MASK GENMASK_ULL(15, 8)
++/* message size in bytes */
++#define NNP_C2H_BIOS_PROTOCOL_SIZE_MASK GENMASK_ULL(31, 16)
++
++/* BIOS Revision Identification Specification, Rev. 2.0, 01/30/2015 */
++struct nnp_c2h_bios_version {
++	__le16 board_id[7];
++	__le16 board_rev;
++	__le16 dot1;
++	__le16 board_ext[3];
++	__le16 dot2;
++	__le16 version_major[4];
++	__le16 dot3;
++	__le16 build_type;
++	__le16 version_minor[2];
++	__le16 dot4;
++	__le16 time_stamp[10];
++	__le16 null_terminator;
++} __packed;
++
++struct nnp_c2h_bios_fw_ver_ack_data {
++	__le16  code_minor;
++	__le16  code_major;
++	__le16  code_build_no;
++	__le16  code_hot_fix;
++	__le16  rcvyminor;
++	__le16  rcvymajor;
++	__le16  rcvybuildno;
++	__le16  rcvy_hot_fix;
++	__le16  fitc_minor;
++	__le16  fitc_major;
++	__le16  fitcbuildno;
++	__le16  fitc_hot_fix;
++} __packed;
++
++struct nnp_c2h_fw_version {
++	__le16  major;
++	__le16  minor;
++	__le16  hotfix;
++	__le16  build;
++} __packed;
++
++struct nnp_c2h_cpu_info {
++	__le32 cpu_family;      /* CPU Family: 0x000906D0 */
++	__u8  cpu_stepping;    /* CPU Stepping */
++	__u8  cpu_sku;         /* CPU SKU */
++	__le16 cpu_did;         /* range 0x4580-0x45FF */
++	__le16 cpu_core_count;   /* Number of enabled cores */
++	__le16 cpu_thread_count; /* Number of threads */
++} __packed;
++
++struct nnp_c2h_ice_info {
++	__le16 ice_count;
++	__le32 ice_available_mask;
++} __packed;
++
++struct nnp_c2h_system_info {
++	__u8  version; /* NNP_SYSTEM_INFO structure version */
++	__le16 board_id; /* Board identification- for RVP = 0x25 */
++	__u8  fab_id;   /* Board Revision identification */
++	__u8  bom_id;   /* Board Bill Of Material identification */
++	__u8  platform_type;   /* For RVP= 0x2, M.2 = 0x3 */
++	__u8  platform_flavor; /* For NNP = 0x5- Embedded */
++	struct nnp_c2h_cpu_info cpu_info; /* CPU Information */
++	struct nnp_c2h_ice_info ice_info; /* ICE Information */
++	struct nnp_c2h_bios_version bios_ver; /* BIOS version string */
++	struct nnp_c2h_bios_fw_ver_ack_data csme_version;
++	struct nnp_c2h_fw_version pmc_version;
++} __packed;
++
++/* NNP_H2C_BOOT_IMAGE_READY command - 3 qwords */
++/* qword 0: */
++/* op should be set to NNP_IPC_H2C_OP_BIOS_PROTOCOL */
++#define NNP_H2C_BOOT_IMAGE_READY_QW0_OP_MASK         NNP_H2C_OP_MASK
++/* bios message type = NNP_IPC_H2C_TYPE_BOOT_IMAGE_READY */
++#define NNP_H2C_BOOT_IMAGE_READY_QW0_TYPE_MASK       GENMASK_ULL(15, 8)
++/* message size in bytes = 2*sizeof(u64) */
++#define NNP_H2C_BOOT_IMAGE_READY_QW0_SIZE_MASK       GENMASK_ULL(31, 16)
++/* qword 1: page table describtor address */
++/* qword 2: */
++#define NNP_H2C_BOOT_IMAGE_READY_QW2_DESC_SIZE_MASK  GENMASK_ULL(31, 0)
++#define NNP_H2C_BOOT_IMAGE_READY_QW2_IMAGE_SIZE_MASK GENMASK_ULL(63, 32)
++
++/* NNP_H2C_BIOS_SYS_INFO_REQ command - 3 qwords */
++/* qword 0: */
++/* op should be set to NNP_IPC_H2C_OP_BIOS_PROTOCOL */
++#define NNP_H2C_BIOS_SYS_INFO_REQ_QW0_OP_MASK         NNP_H2C_OP_MASK
++/* bios message type = NNP_IPC_H2C_TYPE_SYSTEM_INFO_REQ */
++#define NNP_H2C_BIOS_SYS_INFO_REQ_QW0_TYPE_MASK       GENMASK_ULL(15, 8)
++/* message size in bytes = 2*sizeof(u64) */
++#define NNP_H2C_BIOS_SYS_INFO_REQ_QW0_SIZE_MASK       GENMASK_ULL(31, 16)
++/* qword 1: allocate sys info page address */
++/* qword 2: */
++#define NNP_H2C_BIOS_SYS_INFO_REQ_QW2_SIZE_MASK       GENMASK_ULL(31, 0)
++
++#define NNP_BIOS_VERSION_LEN  \
++		(sizeof(struct nnp_c2h_bios_version) / sizeof(__le16))
++#define NNP_BOARD_NAME_LEN      72
++#define NNP_IMAGE_VERSION_LEN   128
++#define NNP_PRD_SERIAL_LEN      16
++#define NNP_PART_NUM_LEN        12
++
++struct nnp_sys_info {
++	__le32 ice_mask;
++	char bios_version[NNP_BIOS_VERSION_LEN];
++	char board_name[NNP_BOARD_NAME_LEN];
++	char image_version[NNP_IMAGE_VERSION_LEN];
++	char prd_serial[NNP_PRD_SERIAL_LEN];
++	char brd_part_no[NNP_PART_NUM_LEN];
++	__le16  fpga_rev;
++	__le64 total_unprotected_memory;
++	__le64 total_ecc_memory;
++	__u8 stepping;
++} __packed;
++
++/*
++ * Define header structure for all "channel" message protocols.
++ * This protocol defines communication between host UMD and card.
++ */
++#define NNP_H2C_CHAN_MSG_OP_MASK      NNP_H2C_OP_MASK
++#define NNP_H2C_CHAN_MSG_CHAN_ID_MASK GENMASK_ULL(15, 6)
++
++#define NNP_C2H_CHAN_MSG_OP_MASK      NNP_C2H_OP_MASK
++#define NNP_C2H_CHAN_MSG_CHAN_ID_MASK GENMASK_ULL(15, 6)
++
++#endif /* of _IPC_PROTOCOL_H */
 -- 
 1.8.3.1
 
