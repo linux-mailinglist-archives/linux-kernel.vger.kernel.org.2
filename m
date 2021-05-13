@@ -2,71 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C28D37F877
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 15:16:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E524E37F876
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 15:16:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230418AbhEMNRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 09:17:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233463AbhEMNRD (ORCPT
+        id S233860AbhEMNRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 09:17:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26927 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233333AbhEMNRC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 09:17:03 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23421C061574;
-        Thu, 13 May 2021 06:15:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=CqhS/DjApfCwkLFCvP6kllDyz5SMs1FoNvFzUNiKyfA=; b=d8SS8qgwVEBfC/z564sa+2N9DF
-        Wzl+TkORKwOMT+wsnvHLbotWjCbktxMqEnEd2QDACc1JoP6nuoT0gG+x6tSw0bH/nMZmg3vcFw6bk
-        T9uVRNj0t06RnJG86r4+uzrnLHwlQSMb56hyRRPYQTBnk6U+x/MSZe3SCKnWIz/ozlPPAYy1gj+4q
-        HvSfyuYYfdpXO5LS6n3ggU8Sml9RM0tpfiBgwZrFWjnivtBXZC1AjPstssMqYjg0jJRha16bVMCV1
-        kn3Rz01pS2/4jQSLQY4ZUixfzSpIiGfI8UfZ528pvwk//NUchwwjGJ7iq2xlPLP94iBxGBki80CBw
-        OJddTV1Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lhBB6-009RwN-5m; Thu, 13 May 2021 13:15:10 +0000
-Date:   Thu, 13 May 2021 14:15:00 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Ralph Campbell <rcampbell@nvidia.com>
-Cc:     linux-mm@kvack.org, kvm-ppc@vger.kernel.org,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        Zi Yan <ziy@nvidia.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [RFC PATCH v3 0/2] mm: remove extra ZONE_DEVICE struct page
- refcount
-Message-ID: <YJ0mVAK7OjwIGnMe@casper.infradead.org>
-References: <20201001181715.17416-1-rcampbell@nvidia.com>
+        Thu, 13 May 2021 09:17:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620911743;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qsfYYVuA4z4/qDu23wSBRsngQvHS7+tVBTsrP7EpQa4=;
+        b=cbNmWUDmPJI8AsNCR7j6MFnyXHyl8iG5qMOULumNH/9P93AvMH41b8ezjbz3TRKBV2xX6X
+        DqBx83xDtm9RysUm0bOScvqPk33xKGxILTBPK9kIbjWPIvvzBU1ip8EWLBRIvaXykBMrR+
+        GKEHmHnJSm/madsRpbqjsTvKzMr0qv8=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-159-5Ih0h98oNAupRIE5OqkbOw-1; Thu, 13 May 2021 09:15:42 -0400
+X-MC-Unique: 5Ih0h98oNAupRIE5OqkbOw-1
+Received: by mail-qk1-f199.google.com with SMTP id a24-20020a05620a1038b02902fa6ba180ffso7733813qkk.0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 06:15:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=qsfYYVuA4z4/qDu23wSBRsngQvHS7+tVBTsrP7EpQa4=;
+        b=UVBY4ntGsBqp0jXK3y1N2pLprJg2nJI5i3+jnQJHyxN8HX6UoQ12XeS8kXkwTiispc
+         pkld050KZ0HIlbSLKV0/nufhE5i/gf39D3ssAE5wpsc5f4gvXSauDEQSj89Iy9Kz8O6M
+         0YRMM/6QgKph/TDAVnFnsB7N4ZWGgwdFHg90YZLOIKIlVRBW3wYfTUzI7pEQzVhC+eZg
+         bI8KGXkVFZADqoK/pNKxFj3PI5LVmFr4QDhCjd7rhA0pZNUzv8/9RRY11p/tcn2Mi0rY
+         /P7ZmlJphiPovwOOVPeM2NHCbu+pPPhDMKjZAw5iFWjx6nLXU889n/EiYykm+aFb1Z/r
+         1iuQ==
+X-Gm-Message-State: AOAM531NJF6glz/WDB/hBvEE7UneRP6wxQG4NDzR5/IwUNqMshOyh1uJ
+        sycgkMClPZl8ITNQ1MMi6uTEBJSCUYgqWphDOIBM5NGTG2h3J2MK0bPjU1K/0qq/7ThBVoBYrol
+        7OGCWCChYhI7DsciTejKpma0gdtrDHaBbfGKydElVzUgASLR+nM1uIqMCPCxYBodnDGS7WlE=
+X-Received: by 2002:a05:622a:341:: with SMTP id r1mr9994084qtw.307.1620911741436;
+        Thu, 13 May 2021 06:15:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzwEjyY3u1J/G6+Cm8z9/t8ewZ6vW2TOaD0qCa1us8rfNgrCbblKdYRP+6ulsrYSiTB+uVbAA==
+X-Received: by 2002:a05:622a:341:: with SMTP id r1mr9994062qtw.307.1620911741198;
+        Thu, 13 May 2021 06:15:41 -0700 (PDT)
+Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id l10sm2519572qtn.28.2021.05.13.06.15.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 May 2021 06:15:40 -0700 (PDT)
+Subject: Re: [PATCH v4] HID: ft260: improve error handling of
+ ft260_hid_feature_report_get()
+To:     Jiri Kosina <jikos@kernel.org>,
+        Michael Zaidman <michael.zaidman@gmail.com>
+Cc:     benjamin.tissoires@redhat.com, linux-i2c@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210511101208.16401-1-michael.zaidman@gmail.com>
+ <nycvar.YFH.7.76.2105131308260.28378@cbobk.fhfr.pm>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <8c48cdcc-ee47-3352-4023-db24b7a94759@redhat.com>
+Date:   Thu, 13 May 2021 06:15:38 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201001181715.17416-1-rcampbell@nvidia.com>
+In-Reply-To: <nycvar.YFH.7.76.2105131308260.28378@cbobk.fhfr.pm>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 11:17:13AM -0700, Ralph Campbell wrote:
-> This is still an RFC because after looking at the pmem/dax code some
-> more, I realized that the ZONE_DEVICE struct pages are being inserted
-> into the process' page tables with vmf_insert_mixed() and a zero
-> refcount on the ZONE_DEVICE struct page. This is sort of OK because
-> insert_pfn() increments the reference count on the pgmap which is what
-> prevents memunmap_pages() from freeing the struct pages and it doesn't
-> check for a non-zero struct page reference count.
-> But, any calls to get_page() will hit the VM_BUG_ON_PAGE() that
-> checks for a reference count == 0.
 
-This seems to have gone quiet.  What needs to happen to resurrect this?
+On 5/13/21 4:09 AM, Jiri Kosina wrote:
+> On Tue, 11 May 2021, Michael Zaidman wrote:
+>
+>> Fixes: 6a82582d9fa4 ("HID: ft260: add usb hid to i2c host bridge driver")
+>>
+>> The ft260_hid_feature_report_get() checks if the return size matches
+>> the requested size. But the function can also fail with at least -ENOMEM.
+>> Add the < 0 checks.
+>>
+>> In ft260_hid_feature_report_get(), do not do the memcpy to the caller's
+>> buffer if there is an error.
+>>
+>> ---
+>> v4   Fixed commit message
+>> ---
+>> v3   Simplify and optimize the changes
+>> ---
+>> v2:  add unlikely()'s for error conditions
+>> ---
+>>
+>> Signed-off-by: Tom Rix <trix@redhat.com>
+>> Signed-off-by: Michael Zaidman <michael.zaidman@gmail.com>
+> Who should be the author of the git commit?
+
+Go with the latest patch's author, Micheal.
+
+Tom
+
+>
+> Thanks,
+>
+
