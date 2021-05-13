@@ -2,148 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42EBB37FAF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 17:45:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6853F37FB02
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 17:49:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230480AbhEMPqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 11:46:24 -0400
-Received: from m12-18.163.com ([220.181.12.18]:37122 "EHLO m12-18.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229724AbhEMPqT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 11:46:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=Vg1i4
-        JnEVrC30pUtE31hOKpLd5CgEV4D/izw1/ldg84=; b=dKRCqS4neoJV+S1Vvcelq
-        gw2kl9YmmMEFCt636ixXpu4pB3FxBMZZri9ItgOCQuh/RrFCXuE0XdiWulRpxfn1
-        6/IJGLV8UcVuVocSCznjn5CrW1nW20jaTuSQ1fb3ySTQVOqp4oBzDnwbMeRauoKr
-        1ZYzVzFXixmrYYngf8FDvw=
-Received: from localhost.localdomain (unknown [36.170.37.157])
-        by smtp14 (Coremail) with SMTP id EsCowACHe7tvSZ1gxy72jA--.63931S2;
-        Thu, 13 May 2021 23:44:48 +0800 (CST)
-From:   Hailong Liu <liuhailongg6@163.com>
-To:     Alex Shi <alexs@kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Hailong Liu <liu.hailong6@zte.com.cn>
-Subject: [PATCH] docs/zh_CN: Add zh_CN/admin-guide/lockup-watchdogs.rst
-Date:   Thu, 13 May 2021 23:44:25 +0800
-Message-Id: <20210513154425.93603-1-liuhailongg6@163.com>
-X-Mailer: git-send-email 2.17.1
+        id S231771AbhEMPuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 11:50:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47503 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230493AbhEMPuN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 11:50:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620920943;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OXFg9yT+SRP4aJjvJsKPgnXEZ8W+KPtuhwXQgp0wnKU=;
+        b=MB4mmajmb3I8VtS26f7BMKuIvcFeL3WI+YMCAwrlRcXQ63rj+Tgd898W8C6pGUCstzFI2M
+        QN508vgjDqRBUNAxBhYSuSLtkl/6T2bOkO+lKHUYOEXaZ8e1kLkOqpiyyyr0+2z3KYXJcA
+        u0Qy5g01DCRwYML0EWoNw4BPbOa0b3A=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-149-ceYRqYX4NTqQXKPtwqNlgw-1; Thu, 13 May 2021 11:49:01 -0400
+X-MC-Unique: ceYRqYX4NTqQXKPtwqNlgw-1
+Received: by mail-qt1-f199.google.com with SMTP id d10-20020a05622a100ab02901b8224bae03so18209110qte.2
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 08:49:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=OXFg9yT+SRP4aJjvJsKPgnXEZ8W+KPtuhwXQgp0wnKU=;
+        b=o3vxAneZr0qwBl7fcKlcBjy7pIQseEOjyHERKHakJXk81O1rSkUfwBDriF7zl/6NE/
+         QyVqn2z7Yxpk1F7wYL4cs5Lxt2zJTfXfS7VGTv8InjxcbE5N1Bni1Wpz1jAsMyygdgPb
+         0Jh3OYbGoEN1gyrk7sE1O5+c46GcgMQwK7J0qw94T877t+Ovv5gbK3WEtBNontBxIJVB
+         SqBe7nBEcqjnfeuZPW451o5fTdgoMSrNdWCmRD9yoXHed00QfqvMptsRO6myoOurmhPe
+         UnAH5kd1vB+5Kq5bUK1uSpdXuJhD6hvChsyeAD2OhNe3BfcxtQjPhUvKvRN5LXfY9xxL
+         5TlA==
+X-Gm-Message-State: AOAM530/2KzYbVuv00xzg04B2nQ6MZL9lCH3ozx9v58YaXUznF17AYXs
+        D1Jh8SrOIk0cDffz5UqyezwtSgab64Ywp61mRCQiHwqSmv9aXU8nKOB+OZ45ob/n0aBWqfuIgDh
+        InY9Umgk2dC0I5kh7MLueQGtv
+X-Received: by 2002:a37:98c4:: with SMTP id a187mr38940510qke.277.1620920941060;
+        Thu, 13 May 2021 08:49:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwUyK6JS8Fjz7RmzsmXIRnyG/yAEecKiFii/ajYNOLBY3TFUJO/jJ58x9Xer/nE8I7bMnTXWw==
+X-Received: by 2002:a37:98c4:: with SMTP id a187mr38940499qke.277.1620920940893;
+        Thu, 13 May 2021 08:49:00 -0700 (PDT)
+Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id 195sm2645020qkj.1.2021.05.13.08.48.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 May 2021 08:49:00 -0700 (PDT)
+Subject: Re: [PATCH V6 XRT Alveo 16/20] fpga: xrt: clock driver
+To:     Lizhi Hou <lizhi.hou@xilinx.com>, linux-kernel@vger.kernel.org
+Cc:     linux-fpga@vger.kernel.org, maxz@xilinx.com,
+        sonal.santan@xilinx.com, yliu@xilinx.com, michal.simek@xilinx.com,
+        stefanos@xilinx.com, devicetree@vger.kernel.org, mdf@kernel.org,
+        robh@kernel.org, Max Zhen <max.zhen@xilinx.com>
+References: <20210512015339.5649-1-lizhi.hou@xilinx.com>
+ <20210512015339.5649-17-lizhi.hou@xilinx.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <f4a18fa4-f023-d4e5-0622-e15108de90b9@redhat.com>
+Date:   Thu, 13 May 2021 08:48:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=y
+In-Reply-To: <20210512015339.5649-17-lizhi.hou@xilinx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EsCowACHe7tvSZ1gxy72jA--.63931S2
-X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUDHqcUUUUU
-X-Originating-IP: [36.170.37.157]
-X-CM-SenderInfo: xolxxtxlor0wjjw6il2tof0z/1tbiDRCRYFQHWILGqAAAsL
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hailong Liu <liu.hailong6@zte.com.cn>
 
-Add translation zh_CN/admin-guide/lockup-watchdogs.rst and link it to
-zh_CN/admin-guide/index.rst while clean its todo entry.
 
-Signed-off-by: Hailong Liu <liu.hailong6@zte.com.cn>
----
- .../translations/zh_CN/admin-guide/index.rst  |  2 +-
- .../zh_CN/admin-guide/lockup-watchdogs.rst    | 65 +++++++++++++++++++
- 2 files changed, 66 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/translations/zh_CN/admin-guide/lockup-watchdogs.rst
+> +
+> +static int get_freq(struct clock *clock, u16 *freq)
+> +{
 
-diff --git a/Documentation/translations/zh_CN/admin-guide/index.rst b/Documentation/translations/zh_CN/admin-guide/index.rst
-index be835ec8e632..460034cbc2ab 100644
---- a/Documentation/translations/zh_CN/admin-guide/index.rst
-+++ b/Documentation/translations/zh_CN/admin-guide/index.rst
-@@ -65,6 +65,7 @@ Todolist:
- 
-    clearing-warn-once
-    cpu-load
-+   lockup-watchdogs
-    unicode
- 
- Todolist:
-@@ -100,7 +101,6 @@ Todolist:
-    laptops/index
-    lcd-panel-cgram
-    ldm
--   lockup-watchdogs
-    LSM/index
-    md
-    media/index
-diff --git a/Documentation/translations/zh_CN/admin-guide/lockup-watchdogs.rst b/Documentation/translations/zh_CN/admin-guide/lockup-watchdogs.rst
-new file mode 100644
-index 000000000000..1dd1e8061781
---- /dev/null
-+++ b/Documentation/translations/zh_CN/admin-guide/lockup-watchdogs.rst
-@@ -0,0 +1,65 @@
-+===============================================================
-+Softlockup与hardlockup检测机制(又名:nmi_watchdog)
-+===============================================================
-+
-+Linux中内核实现了一种用以检测系统发生softlockup和hardlockup的
-+看门狗机制。
-+
-+Softlockup是一种在内核持续循使用CPU超过20秒（详见下面“实现”小节）
-+导致其他任务无法得到运行的内核问题。一旦检测到'softlockup'发生，默认
-+情况下系统会打印当前堆栈跟踪信息并进入锁定状态。也可配置使其在检测到
-+'softlockup'后进入panic状态；通过sysctl命令设置
-+“kernel.softlockup_panic”、使用内核启动参数“softlockup_panic”（详见
-+Documentation/admin-guide/kernel-parameters.rst）以及使能内核编译选项
-+“BOOTPARAM_SOFTLOCKUP_PANIC”都可实现这种配置。
-+
-+而'hardlockup'是内核中持续循环超过10秒钟（详见"实现"小节）导致其他中
-+断无法运行的问题。与'softlockup'情况类似，除了使用sysctl命令设置
-+'hardlockup_panic'、使能内核选项“BOOTPARAM_HARDLOCKUP_PANIC”以及使用
-+内核参数"nmi_watchdog"(详见:
-+”Documentation/admin-guide/kernel-parameters.rst“)外，一旦检测到
-+'hardlockup'默认情况下系统打印当前堆栈跟踪信息，然后进入锁定状态。
-+
-+这个panic选项也可以与panic_timeout结合使用（这个panic_timeout是通过稍
-+具迷惑性的sysctl命令"kernel.panic"来设置），使系统在panic指定时间后自
-+动重启。
-+
-+实现
-+==============
-+
-+Softlockup和hardlockup分别建立hrtimer(高精度定时器)和perf两个子系统上
-+而实现。这也就意味着理论上任何架构只要实现了这两个子系统就支持这两种
-+检测机制。
-+
-+Hrtimer用于周期性产生中断并唤醒watchdog任务；而NMI perf事件则以
-+”watchdog_thresh“(编译时默认初始化为10秒，也可通过”watchdog_thresh“这
-+个sysctl接口来进行配置修改)为间隔周期产生以检测 hardlockups。如果一个
-+CPU在这个时间段内没有检测到hrtimer中断发生，'hardlockup 检测器'(即
-+NMI perf事件处理函数)将会视系统配置而选择产生内核告警或者直接panic。
-+
-+而watchdog任务本质上是一个高优先级内核线程，每调度一次就对时间戳进行一
-+次更新。如果在时间戳在2*watchdog_thresh秒(这个是softlockup的触发门限)
-+都未更新那么"softlocup 检测器"(内部hrtimer定时器回调函数)会将相关的调试
-+信息打印到系统日志中，然后如果系统配置了进入panic流程则进入panic，否则
-+内核继续执行。
-+
-+Hrtimer定时器的周期是2*watchdog_thresh/5，也就是说在hardlockup被触发前
-+hrtimer有2~3次机会产生时钟中断。
-+
-+如上所述,内核相当于为系统管理员提供了一个可调节hrtimer定时器和perf事件
-+的周期长短的旋钮。对于特定的场景通过这个旋钮配置一个合理的周期值需要权
-+衡lockups检测的响应速度和检测的开销。
-+
-+默认情况下所有在线cpu上都会运行一个watchdog任务。不过在内核配置了
-+”NO_HZ_FULL“的情况下watchdog默认只会运行在管家(housekeeping)cpu上，而
-+”nohz_full“启动参数指定的cpu上则不会有watchdog任务运行。想象一下，如果
-+我们允许watchdog任务在”nohz_full“指定的cpu上运行，这些cpu上必须得运行时
-+钟定时器来激发watchdog任务调度；这样一来就会使”nohz_full“保护用户程序免
-+受内核干扰的功能失效。当然，副作用就是”nohz_full“指定的cpu即使在内核产生
-+了lockup问题我们也无法检测到。不过，至少我们可以允许watchdog在管家
-+(non-tickless)核上继续运行以便我们能够继续正常的监测这些cpus上的lockups
-+事件。
-+
-+不论哪种情况都可以通过sysctl命令kernel.watchdog_cpumask来调节未运行
-+watchdog的cpu集合.对于nohz_full而言,如果nohz_full cpu上有异常挂住的情况,
-+通过这种方式打开这些cpu上的watchdog进行调试可能会有所作用。
--- 
-2.17.1
+> +
+> +	/*
+> +	 * Multiply both numerator (mul0) and the denominator (div1) with
+> +	 * 1000 to account for fractional portion of divider
+> +	 */
+> +
+> +	div1 *= 1000;
+> +	div1 += div_frac1;
+> +	div0 *= div1;
+> +	mul0 *= 1000;
+> +	if (div0 == 0) {
+> +		CLOCK_ERR(clock, "clockwiz 0 divider");
+
+This prevents a divide by zero, but returns 0 without setting freq
+
+A -EINVAL should be returned or freq initialized to some default value
+
+> +		return 0;
+> +	}
+> +
+> +	input = mul0 * 100;
+> +	do_div(input, div0);
+> +	*freq = (u16)input;
+> +
+> +	return 0;
+> +}
+> +
+>
+> +
+> +static int clock_verify_freq(struct clock *clock)
+> +{
+> +	u32 lookup_freq, clock_freq_counter, request_in_khz, tolerance;
+> +	int err = 0;
+> +	u16 freq;
+> +
+> +	mutex_lock(&clock->clock_lock);
+> +
+> +	err = get_freq(clock, &freq);
+> +	if (err) {
+> +		xrt_err(clock->xdev, "get freq failed, %d", err);
+> +		goto end;
+> +	}
+> +
+> +	err = get_freq_counter(clock, &clock_freq_counter);
+> +	if (err) {
+> +		xrt_err(clock->xdev, "get freq counter failed, %d", err);
+> +		goto end;
+> +	}
+> +
+> +	lookup_freq = find_matching_freq(freq, frequency_table,
+> +					 ARRAY_SIZE(frequency_table));
+
+I am running v6 through clang's static analyzer, it shows a problem here
+
+drivers/fpga/xrt/lib/xleaf/clock.c:474:16: warning: 1st function call 
+argument is an uninitialized value
+         lookup_freq = find_matching_freq(freq, frequency_table,
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+See problem with get_freq above
+
+Tom
 
 
