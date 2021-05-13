@@ -2,129 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9368837FB46
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 18:11:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CDC537FB4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 18:13:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235055AbhEMQMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 12:12:16 -0400
-Received: from mail-40134.protonmail.ch ([185.70.40.134]:25919 "EHLO
-        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235001AbhEMQMO (ORCPT
+        id S235040AbhEMQO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 12:14:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234993AbhEMQOJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 12:12:14 -0400
-Date:   Thu, 13 May 2021 16:10:52 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bryanbrattlof.com;
-        s=protonmail3; t=1620922262;
-        bh=xJHsGfB9Cd/p1CC6sw8uwkPBdkmkm1kg3OsjLFWhpGo=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=k/nAz7fNmy5/iAyOgBL++FolfI7K6PWOWuOFkxktk4jKVAFIf1scbJ+NAOmcC79AS
-         HVHJjB4wdFpB7nF1Rsb102Z+/TlE++LPEjAwNUqwv8narndP9QLXcByuXCZ9fCGPMu
-         5GJhL/5bhBdPUAp1JubyUQ9lXVKRlKzyGIujOM3YS4DGJi34/ffoK1BHdKwJKHL7oV
-         yyT1ayep/cyYvonioG/D1mQv8MKDgHhWwxb4q6pXkLQa3bmD+p1T4IHGzPT3tla+LK
-         HjWb1HKj9PeFB/LddJ7NEIAeLTPqQbO/i3OsbUJ4rOcT1z+dPTt0bbHOa0gDJ48HXj
-         VtB8XyxUBZvug==
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-From:   Bryan Brattlof <hello@bryanbrattlof.com>
-Cc:     Bryan Brattlof <hello@bryanbrattlof.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Reply-To: Bryan Brattlof <hello@bryanbrattlof.com>
-Subject: [PATCH] staging: rtl8723bs: remove unused argument 'msg'
-Message-ID: <20210513160848.1057564-1-hello@bryanbrattlof.com>
+        Thu, 13 May 2021 12:14:09 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 673AFC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 09:12:58 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id m13so4878846qtk.13
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 09:12:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=c3FwvvgxpK8Jgr/cfoaMZxB/tNnCRMPVSiFd4uKGvlQ=;
+        b=MADfEPYf8G6gf9l1Gqm6w23OgPrQuI2bxxipGlcCPSPd44+7+DzuPS1pzH2iWgT+zn
+         g0l0Kujhrg6t/Ex9b5j3Bj2W31aY5m/cGA22wYeq4g4Fs+5tr51eUzo8GE32RKHy3tqs
+         ZUR2lUlGtt2nb1daWEbmScvkyl8W0QLZHqCf+7VI4FqhJ8ysakKTz3uwUKW84pK2Es+Y
+         PhjNqocQaILOqO3NUastr7Mjdg9lJyWJ0bTmmM5DB+fua4qZxA7yuFnJblH6b56j19YG
+         C0B7Jg1jnHZHxF6pjL3qHU3Qlum0+j2AIhktMMsVfmuDFDeZLU2YGUNbGiSN/Uozgvsz
+         l+dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=c3FwvvgxpK8Jgr/cfoaMZxB/tNnCRMPVSiFd4uKGvlQ=;
+        b=J7wfnsyx2KAFezdhR+jr3M0p2JrmRax0n1lIWhmWj6T83oKAXNpLvHCREnmdO0iUU1
+         V2OjgC7lQE+8a8abdaHpaxCn4D65Qz6aw0eD7G3FBLCezbLhHQScHTzZ1ty17hYYxSj+
+         OmlUPHjKKCZlP53XC4kfLzYcQ4i7Dl2bBo2ZQVjh72r/MwKbCApSmcZdglnU2b6m5ZpE
+         i3Y8cT+wwWzABljcGv60J/ziCQqDbqaIb8zI1qTYwCyL8Dx2zER3FktXFfINndkjPilH
+         YraS0AIHuH2qVFzVDzPPErvcVTQQ4DIPGjmXsuBdwPcM30+w21qU7WdQV9wOTAnVG0ct
+         6AxQ==
+X-Gm-Message-State: AOAM5331Xe8sn+zvSvhkuY9m552XJScbP8ILbr2MvtufroKhkttA1NMV
+        wGqbOUF7xJXWx6czHNAZuLlzTQ==
+X-Google-Smtp-Source: ABdhPJwx+wWD/0jLrnlCyRW0mf+sBX8loZEaAwXC0cHHBnwlQepFTMFpYKnQX1V8z6efSko/OuvKbQ==
+X-Received: by 2002:ac8:5691:: with SMTP id h17mr39092410qta.185.1620922377413;
+        Thu, 13 May 2021 09:12:57 -0700 (PDT)
+Received: from ?IPv6:2620:10d:c0a8:11d1::1214? ([2620:10d:c091:480::1:7c1f])
+        by smtp.gmail.com with ESMTPSA id h7sm2557702qtj.35.2021.05.13.09.12.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 May 2021 09:12:56 -0700 (PDT)
+Subject: Re: [PATCH] sysctl: Limit the size of I/Os to PAGE_SIZE
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>
+Cc:     linux-abi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Alexey Dobriyan <adobriyan@gmail.com>
+References: <20210513160649.2280429-1-willy@infradead.org>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <47a34aa5-ad1a-6259-d9cb-f85f314f9ffb@toxicpanda.com>
+Date:   Thu, 13 May 2021 12:12:54 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+In-Reply-To: <20210513160649.2280429-1-willy@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After the removal of the DBG_871X macros, the 'msg' argument
-for rtw_sctx_wait() is no longer used.
+On 5/13/21 12:06 PM, Matthew Wilcox (Oracle) wrote:
+> We currently allow a read or a write that is up to KMALLOC_MAX_SIZE.
+> This has caused problems when cat decides to do a 64kB read and
+> so we allocate a 64kB buffer for the sysctl handler to store into.
+> The immediate problem was fixed by switching to kvmalloc(), but it's
+> ridiculous to allocate so much memory to read what is likely to be a
+> few bytes.
+> 
+> sysfs limits reads and writes to PAGE_SIZE, and I feel we should do the
+> same for sysctl.  The largest sysctl anyone's been able to come up with
+> is 433 bytes for /proc/sys/dev/cdrom/info
+> 
+> This will allow simplifying the BPF sysctl code later, but I'll leave
+> that for someone who understands it better.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> ---
+>   fs/proc/proc_sysctl.c | 15 +++++++++------
+>   1 file changed, 9 insertions(+), 6 deletions(-)
+> 
+> diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
+> index dea0f5ee540c..a97a8a4ff270 100644
+> --- a/fs/proc/proc_sysctl.c
+> +++ b/fs/proc/proc_sysctl.c
+> @@ -562,11 +562,14 @@ static ssize_t proc_sys_call_handler(struct kiocb *iocb, struct iov_iter *iter,
+>   	if (!table->proc_handler)
+>   		goto out;
+>   
+> -	/* don't even try if the size is too large */
+> +	/* reads may return short values; large writes must fail now */
+> +	if (count >= PAGE_SIZE) {
+> +		if (write)
+> +			goto out;
+> +		count = PAGE_SIZE;
+> +	}
+>   	error = -ENOMEM;
+> -	if (count >= KMALLOC_MAX_SIZE)
+> -		goto out;
+> -	kbuf = kvzalloc(count + 1, GFP_KERNEL);
+> +	kbuf = kmalloc(PAGE_SIZE, GFP_KERNEL);
+>   	if (!kbuf)
+>   		goto out;
+>   
 
-Signed-off-by: Bryan Brattlof <hello@bryanbrattlof.com>
----
- drivers/staging/rtl8723bs/core/rtw_cmd.c      | 2 +-
- drivers/staging/rtl8723bs/core/rtw_mlme_ext.c | 2 +-
- drivers/staging/rtl8723bs/core/rtw_xmit.c     | 4 ++--
- drivers/staging/rtl8723bs/include/rtw_xmit.h  | 2 +-
- 4 files changed, 5 insertions(+), 5 deletions(-)
+Below here we have
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_cmd.c b/drivers/staging/rtl=
-8723bs/core/rtw_cmd.c
-index 3ed996bba98e..ac289e5600b0 100644
---- a/drivers/staging/rtl8723bs/core/rtw_cmd.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-@@ -693,7 +693,7 @@ int rtw_startbss_cmd(struct adapter  *padapter, int fla=
-gs)
- =09=09res =3D rtw_enqueue_cmd(pcmdpriv, pcmd);
+kbuf[count] = '\0';
 
- =09=09if (res =3D=3D _SUCCESS && (flags & RTW_CMDF_WAIT_ACK)) {
--=09=09=09rtw_sctx_wait(&sctx, __func__);
-+=09=09=09rtw_sctx_wait(&sctx);
- =09=09=09if (mutex_lock_interruptible(&pcmdpriv->sctx_mutex) =3D=3D 0) {
- =09=09=09=09if (sctx.status =3D=3D RTW_SCTX_SUBMITTED)
- =09=09=09=09=09pcmd->sctx =3D NULL;
-diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/stagin=
-g/rtl8723bs/core/rtw_mlme_ext.c
-index c5430e737bb1..ab68ef608620 100644
---- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-@@ -2137,7 +2137,7 @@ s32 dump_mgntframe_and_wait(struct adapter *padapter,=
- struct xmit_frame *pmgntfr
- =09ret =3D rtw_hal_mgnt_xmit(padapter, pmgntframe);
+with will overflow with this patch.  So maybe instead we do
 
- =09if (ret =3D=3D _SUCCESS)
--=09=09ret =3D rtw_sctx_wait(&sctx, __func__);
-+=09=09ret =3D rtw_sctx_wait(&sctx);
+if (count >= PAGE_SIZE)
+	count = PAGE_SIZE - 1;
+kbuf = kmalloc(count);
 
- =09spin_lock_irqsave(&pxmitpriv->lock_sctx, irqL);
- =09pxmitbuf->sctx =3D NULL;
-diff --git a/drivers/staging/rtl8723bs/core/rtw_xmit.c b/drivers/staging/rt=
-l8723bs/core/rtw_xmit.c
-index 7e3477a45a0f..f21a814c7394 100644
---- a/drivers/staging/rtl8723bs/core/rtw_xmit.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_xmit.c
-@@ -2505,7 +2505,7 @@ void rtw_sctx_init(struct submit_ctx *sctx, int timeo=
-ut_ms)
- =09sctx->status =3D RTW_SCTX_SUBMITTED;
- }
+and that solves your problem and keeps us from overflowing.  Thanks,
 
--int rtw_sctx_wait(struct submit_ctx *sctx, const char *msg)
-+int rtw_sctx_wait(struct submit_ctx *sctx)
- {
- =09int ret =3D _FAIL;
- =09unsigned long expire;
-@@ -2546,7 +2546,7 @@ int rtw_ack_tx_wait(struct xmit_priv *pxmitpriv, u32 =
-timeout_ms)
- =09pack_tx_ops->timeout_ms =3D timeout_ms;
- =09pack_tx_ops->status =3D RTW_SCTX_SUBMITTED;
-
--=09return rtw_sctx_wait(pack_tx_ops, __func__);
-+=09return rtw_sctx_wait(pack_tx_ops);
- }
-
- void rtw_ack_tx_done(struct xmit_priv *pxmitpriv, int status)
-diff --git a/drivers/staging/rtl8723bs/include/rtw_xmit.h b/drivers/staging=
-/rtl8723bs/include/rtw_xmit.h
-index e45753d17313..676ead0372fa 100644
---- a/drivers/staging/rtl8723bs/include/rtw_xmit.h
-+++ b/drivers/staging/rtl8723bs/include/rtw_xmit.h
-@@ -234,7 +234,7 @@ enum {
-
-
- void rtw_sctx_init(struct submit_ctx *sctx, int timeout_ms);
--int rtw_sctx_wait(struct submit_ctx *sctx, const char *msg);
-+int rtw_sctx_wait(struct submit_ctx *sctx);
- void rtw_sctx_done_err(struct submit_ctx **sctx, int status);
- void rtw_sctx_done(struct submit_ctx **sctx);
-
---
-2.27.0
-
-
+Josef
