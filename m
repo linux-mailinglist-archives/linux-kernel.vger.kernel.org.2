@@ -2,55 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D52537F373
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 09:14:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70BCC37F37B
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 May 2021 09:18:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231523AbhEMHPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 03:15:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43016 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229786AbhEMHPf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 03:15:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5688E611AE;
-        Thu, 13 May 2021 07:14:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620890065;
-        bh=0fEBt5fI0Eg0nGajGJJ6qWeJfhNCHhY52h4OwQz6Wu4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BfHwhKtaQ7Si5X1OQiJW4V+ztM7xOdofCREI3K6vzbp/U/avbG2gcyQerQlVMCDEz
-         aOAzO/vd9xD2lpXh4ECFQCFP1AQNyRFKELxbHjLsEafayuUekuutMAm9R5L7f0P5sW
-         GklgMB9e3PqynRU9NGfFSLFd1r1HMaR1ZvAfWiQafl9hU09f7S3mQyxtXy40RPFmWR
-         wfsZbsXGcDycipH5pyKF1KL8/jpJpK4H9vZXPugoEHkoymyZtfEq6CGQsoe/bjBxpI
-         w3xNHEDJV6pGA+1D+77FtKhkATpi3Gtd27LgJ8BtipMnrNlrX4lE6b6uJpqnszFm4g
-         r0zpfi41qKatQ==
-Date:   Thu, 13 May 2021 15:14:21 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Richard Zhu <hongxing.zhu@nxp.com>
-Cc:     l.stach@pengutronix.de, linux-imx@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: imx8mq-evk: add one regulator used to power
- up pcie phy
-Message-ID: <20210513071420.GQ3425@dragon>
-References: <1618367174-30968-1-git-send-email-hongxing.zhu@nxp.com>
- <1618367174-30968-2-git-send-email-hongxing.zhu@nxp.com>
+        id S231544AbhEMHTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 03:19:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60165 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229786AbhEMHTw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 03:19:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620890322;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gLt6isweW7Of4V0VRlG6qMcSWB/PO2aDoJW/Li5V43Y=;
+        b=dj/LR/IExB2tonRIjbFeYARtrrfTebazTgh61wKlVNGKQhvt39ejMSfl+RaGuVUTGg7EPw
+        nZ5xO+mPa1ALnnwgDqFwc/hA3dZlcAB2XAuA41rOHch24JJbaUhoocM4ACLMNI2UnkcgfG
+        UK//GXq7k10bbBaoPBU9IECq+mXoR0Q=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-202-3JW2RQR4MGmelWqONsOjVg-1; Thu, 13 May 2021 03:18:40 -0400
+X-MC-Unique: 3JW2RQR4MGmelWqONsOjVg-1
+Received: by mail-wr1-f69.google.com with SMTP id 93-20020adf80e60000b0290106fab45006so11195523wrl.20
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 00:18:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=gLt6isweW7Of4V0VRlG6qMcSWB/PO2aDoJW/Li5V43Y=;
+        b=oWD9yicralENuJ/7RzT98JmsQjpgLv87LtcK22FR65Az7oX2I4rb/F1j/JjtkqudHh
+         TiF4B4oE5YhuToPGdodNrmOZwoRkZ4P4IHLyiicPcXx1HRihr6llmIBp14zoCWBbGWUd
+         7ewlm0hZSDM2c2vz6Sp0NOe9wkcZydidsGQqm14fLPgnsbiHKNWhj5D4t4fcDPzmeY0F
+         BSQXPSLRQ6DA5XmkMB0KNVQq3nJK3GHaPJWB61Y0g6/vyJpDDZ9GzhUXxVSs6G9V+wup
+         tuCeJnqJxEQKs+aZ0GP5I9ymm/p+eIXnCYS8noKTvqSGBYDD3fXvZDkBkAPE+L3kt2Y6
+         mGxw==
+X-Gm-Message-State: AOAM5328HtFJ1CPKM6rHSSyP2h66Stmd0i5E22Y6Q+IkGLpB9tmktTDS
+        ySe1KOti3CSWSz1LviV/lAWAhSE1hmaLU74ViV4k2Jt3pc1WyKTKe9RAjGRJzRGqz5MpplRL1Fc
+        4tbwIE5uO2LVjbuOWDguXosLFup9lljYRlAI52oyBUuw6vMHZahF5MuUqALyv9ev9vifnCSyBga
+        VO
+X-Received: by 2002:a05:600c:2102:: with SMTP id u2mr2348416wml.124.1620890319539;
+        Thu, 13 May 2021 00:18:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw58sP/KR07sIuGOMVJD/MVh/vb1GdsVaVmjtJVN7q1nGkqTTfrcasqqGWKpaqu3VfdHiL4aA==
+X-Received: by 2002:a05:600c:2102:: with SMTP id u2mr2348383wml.124.1620890319307;
+        Thu, 13 May 2021 00:18:39 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id p14sm1966485wrm.70.2021.05.13.00.18.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 May 2021 00:18:38 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Thomas Gleixner <tglx@linutronix.de>, linux-hyperv@vger.kernel.org
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Mohammed Gamal <mgamal@redhat.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] clocksource/drivers/hyper-v: Re-enable
+ VDSO_CLOCKMODE_HVCLOCK on X86
+In-Reply-To: <87tun766kv.ffs@nanos.tec.linutronix.de>
+References: <20210512084630.1662011-1-vkuznets@redhat.com>
+ <87tun766kv.ffs@nanos.tec.linutronix.de>
+Date:   Thu, 13 May 2021 09:18:37 +0200
+Message-ID: <8735urw182.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1618367174-30968-2-git-send-email-hongxing.zhu@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 10:26:14AM +0800, Richard Zhu wrote:
-> Both 1.8v and 3.3v power supplies can be used by i.MX8MQ PCIe PHY.
-> In default, the PCIE_VPH voltage is suggested to be 1.8v refer to data
-> sheet. When PCIE_VPH is supplied by 3.3v in the HW schematic design,
-> the VREG_BYPASS bits of GPR registers should be cleared from default
-> value 1b'1 to 1b'0. Thus, the internal 3v3 to 1v8 translator would be
-> turned on.
-> 
-> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
-> Reviewed-by: Lucas Stach <l.stach@pengutronix.de>
+Thomas Gleixner <tglx@linutronix.de> writes:
 
-Applied, thanks.
+> On Wed, May 12 2021 at 10:46, Vitaly Kuznetsov wrote:
+>> Mohammed reports (https://bugzilla.kernel.org/show_bug.cgi?id=213029)
+>> the commit e4ab4658f1cf ("clocksource/drivers/hyper-v: Handle vDSO
+>> differences inline") broke vDSO on x86. The problem appears to be that
+>> VDSO_CLOCKMODE_HVCLOCK is an enum value in 'enum vdso_clock_mode' and
+>> '#ifdef VDSO_CLOCKMODE_HVCLOCK' branch evaluates to false (it is not
+>> a define). Replace it with CONFIG_X86 as it is the only arch which
+>> has this mode currently.
+>>
+>> Reported-by: Mohammed Gamal <mgamal@redhat.com>
+>> Fixes: e4ab4658f1cf ("clocksource/drivers/hyper-v: Handle vDSO differences inline")
+>> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+>> ---
+>>  drivers/clocksource/hyperv_timer.c | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/clocksource/hyperv_timer.c b/drivers/clocksource/hyperv_timer.c
+>> index 977fd05ac35f..e17421f5e47d 100644
+>> --- a/drivers/clocksource/hyperv_timer.c
+>> +++ b/drivers/clocksource/hyperv_timer.c
+>> @@ -419,7 +419,7 @@ static void resume_hv_clock_tsc(struct clocksource *arg)
+>>  	hv_set_register(HV_REGISTER_REFERENCE_TSC, tsc_msr);
+>>  }
+>>  
+>> -#ifdef VDSO_CLOCKMODE_HVCLOCK
+>> +#ifdef CONFIG_X86
+>>  static int hv_cs_enable(struct clocksource *cs)
+>>  {
+>>  	vclocks_set_used(VDSO_CLOCKMODE_HVCLOCK);
+>> @@ -435,7 +435,7 @@ static struct clocksource hyperv_cs_tsc = {
+>>  	.flags	= CLOCK_SOURCE_IS_CONTINUOUS,
+>>  	.suspend= suspend_hv_clock_tsc,
+>>  	.resume	= resume_hv_clock_tsc,
+>> -#ifdef VDSO_CLOCKMODE_HVCLOCK
+>> +#ifdef CONFIG_X86
+>>  	.enable = hv_cs_enable,
+>>  	.vdso_clock_mode = VDSO_CLOCKMODE_HVCLOCK,
+>>  #else
+>
+> That's lame as it needs to be patched differently once ARM64 gains
+> support. What about the below?
+>
+
+The solution I liked the most was Michael's: no need to do anything
+except for adding VDSO_CLOCKMODE_HVCLOCK to the enum. Too bad it didn't
+work)
+
+You proposal seems to be slightly better than mine: when adding
+VDSO_CLOCKMODE_HVCLOCK to ARM the change will be limited to
+drivers/clocksource/hyperv_timer.c will stay intact.
+
+I'll send v2 shortly, thanks!
+
+
+> Thanks,
+>
+>         tglx
+> ---
+> --- a/arch/x86/include/asm/vdso/clocksource.h
+> +++ b/arch/x86/include/asm/vdso/clocksource.h
+> @@ -7,4 +7,6 @@
+>  	VDSO_CLOCKMODE_PVCLOCK,	\
+>  	VDSO_CLOCKMODE_HVCLOCK
+>  
+> +#define HAVE_VDSO_CLOCKMODE_HVCLOCK
+> +
+>  #endif /* __ASM_VDSO_CLOCKSOURCE_H */
+> --- a/drivers/clocksource/hyperv_timer.c
+> +++ b/drivers/clocksource/hyperv_timer.c
+> @@ -419,7 +419,7 @@ static void resume_hv_clock_tsc(struct c
+>  	hv_set_register(HV_REGISTER_REFERENCE_TSC, tsc_msr);
+>  }
+>  
+> -#ifdef VDSO_CLOCKMODE_HVCLOCK
+> +#ifdef HAVE_VDSO_CLOCKMODE_HVCLOCK
+>  static int hv_cs_enable(struct clocksource *cs)
+>  {
+>  	vclocks_set_used(VDSO_CLOCKMODE_HVCLOCK);
+> @@ -435,7 +435,7 @@ static struct clocksource hyperv_cs_tsc
+>  	.flags	= CLOCK_SOURCE_IS_CONTINUOUS,
+>  	.suspend= suspend_hv_clock_tsc,
+>  	.resume	= resume_hv_clock_tsc,
+> -#ifdef VDSO_CLOCKMODE_HVCLOCK
+> +#ifdef HAVE_VDSO_CLOCKMODE_HVCLOCK
+>  	.enable = hv_cs_enable,
+>  	.vdso_clock_mode = VDSO_CLOCKMODE_HVCLOCK,
+>  #else
+>
+
+-- 
+Vitaly
+
