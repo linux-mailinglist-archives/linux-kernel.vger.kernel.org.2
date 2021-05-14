@@ -2,271 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E132380C18
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 16:43:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 345E8380C00
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 16:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234536AbhENOoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 10:44:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55640 "EHLO
+        id S234496AbhENOkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 10:40:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231792AbhENOoJ (ORCPT
+        with ESMTP id S231792AbhENOky (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 10:44:09 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A78AEC061574;
-        Fri, 14 May 2021 07:42:55 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id h20so16271047plr.4;
-        Fri, 14 May 2021 07:42:55 -0700 (PDT)
+        Fri, 14 May 2021 10:40:54 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB8FAC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 07:39:42 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id d11so30253215wrw.8
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 07:39:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=+5VAehxotQaf0MdoTRxk7ubGUjnGk0bi6i0xDUEnFP4=;
-        b=kFHG4PXCxyny33W2C4oFm+BTiYhvafaZ4yX8gf7TpFDj2284LOMQVj2NawbrVoR4If
-         Q49ps0EgsTxSk7Xzz/xWmoA5ZfSNTknEmpUhGCSBG5/KU6DIKYKv0Otisf40i2GGzt7u
-         /m3e4VlMgdztfGQaUWE5l4Kd/UKlKt0U56whYVf59Vfkag25EqJrjXsb6814ALBhaGQY
-         QGeuLyBTMd+S49bnimZ7oZOnB+U2Qsg+lY0Rq/6rw74Ul2ke/PbcVZVOooffGkJVxeqT
-         qDyLNKejz2D4Qyjmb7wUegBU/ZvBQMuSlq5qHAmreNHXsx2LSPLYACKFfJXVl8Mkq8dP
-         iEiQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nmVdek38n6ibAH38hNuyn9kJ/P/QzS89Xl7MFzWBQdg=;
+        b=Q74GPtmCp4TQWo9xCXfgT6OXTZ61f9mM1Qxl5aRf8eE8qTkiM3yVFFuGY2iE6wzJWo
+         xivybmhlWyGmXadxsp2PSGF6wk4nNzFeaxblwLc95pveWWX7BDpDQ77p4Tp8yW/z7qjz
+         sovajZtyngvWCqjxJnXAciGqcxDjR5nGlzFQJ6lW+eYWhU9jPwzavwGpMs4ow38rsa5A
+         2fdi2s4sa+l1Jp3NUyPukOLnRla6Zmn64KdnNGmXlaZB1JzN/GTKO63euWLy79QIofSW
+         nptpuZby224rqden50KQ9/7wOqyYwrs3nmWIl0+K5zbGdH9j3l8vcKahL1UD0B0Lapth
+         HWTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=+5VAehxotQaf0MdoTRxk7ubGUjnGk0bi6i0xDUEnFP4=;
-        b=UEurlcmqrgl6mqFAtvaBwc5lHS9xZtdb6fc8k2F30yhxvB99bkPB8O75YYQ455hRJu
-         BUJf/1hFRiiuIHBOetXFeNhCAtWP2UUdLi0wTqo3B/ZQ3uI2/UVNm2IjqAICKbHBVZwY
-         t0dxwefLEzwEf+eH4UgudK8Lcv9zDs2wsEjyELnxe4GLFlqwsMERL1SDwgnJt6GJZ8pQ
-         FEFDantTzHrqRqxooVTipz7MuvsddAXVUrHGRH39uSIjOIAvS72sIXbsnf22XlholbkO
-         hjVULzxYZIGF+CuLfeWnRa1GPSu7s68lOxy2b3Lgaqr9jOP6sdRE3mkPi0B19gSHnRrG
-         42gw==
-X-Gm-Message-State: AOAM531WoaGg5TMjOTFAqLOf9E6Xl0uwvSy5LVzCiguuFYO6WhYPTIWz
-        /Dr1zQXGM5hYfgACUWbkGbaNDgXWfBIkPw==
-X-Google-Smtp-Source: ABdhPJxUmG03i2gZWfUXZMPSl1l8h/jKrCOC8uD3eYBHapIX+GOhkm01EKvVSzD5ttZenZS2KE7hpA==
-X-Received: by 2002:a17:90b:17cd:: with SMTP id me13mr11712751pjb.128.1621003374939;
-        Fri, 14 May 2021 07:42:54 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:600d:a93f:3d36:ea03:6cce:19ef])
-        by smtp.googlemail.com with ESMTPSA id k186sm4354592pgk.82.2021.05.14.07.42.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 07:42:54 -0700 (PDT)
-From:   Aditya Srivastava <yashsri421@gmail.com>
-To:     corbet@lwn.net
-Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com, willy@infradead.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC v4] scripts: kernel-doc: reduce repeated regex expressions into variables
-Date:   Fri, 14 May 2021 20:12:44 +0530
-Message-Id: <20210514144244.25341-1-yashsri421@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <87bl9ujy2r.fsf@meer.lwn.net>
-References: <87bl9ujy2r.fsf@meer.lwn.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nmVdek38n6ibAH38hNuyn9kJ/P/QzS89Xl7MFzWBQdg=;
+        b=e6G+Fn3+P86cDtE6Be5oxBg9fKTZ9mFisIfOhT0zBTvU6ahhqF4/CBT6q7Dk8SZdaR
+         1+9/w253nFSXrnOE4pew39AbPa5DHcwaRhDP0o/WEF8QP9NNY6Ii0DSIGILCj2GQOYdR
+         gtl+DUM2UlL82cEJ4XTZErnejY0BJFteqsfemEspB9O1Zz+VlScpTGjPFtqMejKVm4AS
+         5lBRGPWDWA552rmj7m2202htC8ExYm24sDB/Dq9WmRqfwxvcG/QTo6FDhtpGeR33SjNu
+         2NE4iHtaQNeRPPeXcXDy2ZSJkirx7llQuG3ZHDlSq7SKbMc+wMeHzcUuD3ps+7AX+4ZU
+         IDRA==
+X-Gm-Message-State: AOAM531imDWPVpomJIcE5loHHydUtWVe0MeLXguXktxguGReUvOQ2L6t
+        dAtsl9GZR0EI/r6SJ+FV4rGQmLW9jw6BpZ7ihWQ=
+X-Google-Smtp-Source: ABdhPJwkR4yo6sndBjrXrB4Am0lNwfUlDlmc10ZO4aVBCoqiy4Ixurx4ZbW0J4M3WeY5RK51zPsMKL2kbqzxfyjxrCE=
+X-Received: by 2002:adf:e84a:: with SMTP id d10mr59196019wrn.132.1621003181361;
+ Fri, 14 May 2021 07:39:41 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210508195641.397198-1-robdclark@gmail.com> <20210508195641.397198-2-robdclark@gmail.com>
+ <YJlb3GO41hiu4pWw@phenom.ffwll.local> <CAF6AEGsGb1jZgRRUqDvf+j+E6pNEtSck=r3xh4VL7FmZMPszBQ@mail.gmail.com>
+ <CAKMK7uGPGbOPRtJaiG5oNCDhYQ27+V3bO5Wcgv7C9fqdyp8LeA@mail.gmail.com>
+ <CAF6AEGto1PQcEbYeWfXqMatK0z3dW-mpLNVh=VJb=9gwrPfCWg@mail.gmail.com>
+ <YJq0YVi4O4zGkb3j@phenom.ffwll.local> <20210512112330.0130a62a@eldfell>
+ <CAF6AEGu4B2wXhbjUxT36tKUhz7R_Mg=TzD7yOA-90L7VBCHpMQ@mail.gmail.com> <20210514105404.6e5e44bc@eldfell>
+In-Reply-To: <20210514105404.6e5e44bc@eldfell>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Fri, 14 May 2021 07:43:23 -0700
+Message-ID: <CAF6AEGv2JVk6Zm8C1HreRbkqYorx36fcUQHeSYNd4ykdRYEm6A@mail.gmail.com>
+Subject: Re: [PATCH 1/2] drm: Fix dirtyfb stalls
+To:     Pekka Paalanen <ppaalanen@gmail.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        Rob Clark <robdclark@chromium.org>,
+        David Airlie <airlied@linux.ie>,
+        open list <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are some regex expressions in the kernel-doc script, which are used
-repeatedly in the script.
+On Fri, May 14, 2021 at 12:54 AM Pekka Paalanen <ppaalanen@gmail.com> wrote:
+>
+> On Wed, 12 May 2021 07:57:26 -0700
+> Rob Clark <robdclark@gmail.com> wrote:
+>
+> > On Wed, May 12, 2021 at 1:23 AM Pekka Paalanen <ppaalanen@gmail.com> wrote:
+> > >
+> > > On Tue, 11 May 2021 18:44:17 +0200
+> > > Daniel Vetter <daniel@ffwll.ch> wrote:
+> > >
+> > > > On Mon, May 10, 2021 at 12:06:05PM -0700, Rob Clark wrote:
+> > > > > On Mon, May 10, 2021 at 10:44 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > > > > >
+> > > > > > On Mon, May 10, 2021 at 6:51 PM Rob Clark <robdclark@gmail.com> wrote:
+> > > > > > >
+> > > > > > > On Mon, May 10, 2021 at 9:14 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > > > > > > >
+> > > > > > > > On Sat, May 08, 2021 at 12:56:38PM -0700, Rob Clark wrote:
+> > > > > > > > > From: Rob Clark <robdclark@chromium.org>
+> > > > > > > > >
+> > > > > > > > > drm_atomic_helper_dirtyfb() will end up stalling for vblank on "video
+> > > > > > > > > mode" type displays, which is pointless and unnecessary.  Add an
+> > > > > > > > > optional helper vfunc to determine if a plane is attached to a CRTC
+> > > > > > > > > that actually needs dirtyfb, and skip over them.
+> > > > > > > > >
+> > > > > > > > > Signed-off-by: Rob Clark <robdclark@chromium.org>
+>
+> ...
+>
+> > > > > > > But we could re-work drm_framebuffer_funcs::dirty to operate on a
+> > > > > > > per-crtc basis and hoist the loop and check if dirtyfb is needed out
+> > > > > > > of drm_atomic_helper_dirtyfb()
+> > > > > >
+> > > > > > That's still using information that userspace doesn't have, which is a
+> > > > > > bit irky. We might as well go with your thing here then.
+> > > > >
+> > > > > arguably, this is something we should expose to userspace.. for DSI
+> > > > > command-mode panels, you probably want to make a different decision
+> > > > > with regard to how many buffers in your flip-chain..
+> > > > >
+> > > > > Possibly we should add/remove the fb_damage_clips property depending
+> > > > > on the display type (ie. video/pull vs cmd/push mode)?
+> > > >
+> > > > I'm not sure whether atomic actually needs this exposed:
+> > > > - clients will do full flips for every frame anyway, I've not heard of
+> > > >   anyone seriously doing frontbuffer rendering.
+> > >
+> > > That may or may not be changing, depending on whether the DRM drivers
+> > > will actually support tearing flips. There has been a huge amount of
+> > > debate for needing tearing for Wayland [1], and while I haven't really
+> > > joined that discussion, using front-buffer rendering (blits) to work
+> > > around the driver inability to flip-tear might be something some people
+> > > will want.
+> >
+> > jfwiw, there is a lot of hw that just can't do tearing pageflips.. I
+> > think this probably includes most arm hw.  What is done instead is to
+> > skip the pageflip and render directly to the front-buffer.
+> >
+> > EGL_KHR_mutable_render_buffer is a thing you might be interested in..
+> > it is wired up for android on i965 and there is a WIP MR[1] for
+> > mesa/st (gallium):
+> >
+> > Possibly it could be useful to add support for platform_wayland?
+> >
+> > [1] https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/10685
+>
+> Thanks Rob, that's interesting.
+>
+> I would like to say that EGL Wayland platform cannot and has no reason
+> to support frontbuffer rendering in Wayland clients, because the
+> compositor may be reading the current client frontbuffer at any time,
+> including *not reading it again* until another update is posted via
+> Wayland. So if a Wayland client is doing frontbuffer rendering, then I
+> would expect it to be very likely that the window might almost never
+> show a "good" picture, meaning that it is literally just the
+> half-rendered frame after the current one with continuously updating
+> clients.
+>
+> That is because a Wayland client doing frontbuffer rendering is
+> completely unrelated to the Wayland compositor putting the client
+> buffer on scanout.
+>
+> Frontbuffer rendering used by a Wayland compositor would be used for
+> fallback tearing updates, where the rendering is roughly just a blit
+> from a client buffer. By definition, it means blit instead of scanout
+> from client buffers, so the performance/power hit is going to be...
+> let's say observable.
+>
+> If a Wayland client did frontbuffer rendering, and then it used a
+> shadow buffer of its own to minimise the level of garbage on screen by
+> doing only blits into the frontbuffer, that would again be a blit. And
+> then the compositor might be doing another blit because it doesn't know
+> the client is doing frontbuffer rendering which would theoretically
+> allow the compositor to scan out the client buffer.
+>
+> There emerges the need for a Wayland extension for clients to be
+> telling the compositor explicitly that they are going to be doing
+> frontbuffer rendering now, it is ok to put the client buffer on scanout
+> even if you want to do tearing updates on hardware that cannot
+> tear-flip.
+>
+> However, knowing that a client buffer is good for scanout is not
+> sufficient for scanout in a compositor, so it might still not be
+> scanned out. If the compositor is instead render-compositing, you have
+> the first problem of "likely never a good picture".
 
-Reduce such expressions into variables, which can be used everywhere.
+I think if a client is doing front-buffer rendering, then "tearing" is
+the clients problem.
 
-A quick manual check found that no errors and warnings were added/removed
-in this process.
+The super-big-deal use-case for this is stylus, because you want to
+minimize the latency of pen-to-pixel.. tearing isn't really a problem
+because things aren't changing much from-by-frame
 
-Suggested-by: Jonathan Corbet <corbet@lwn.net>
-Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
----
-Changes in v4:
-- Fix htmldocs warning at function parsing, involving repeated $type2 identifiers capture
-- Re-tested against all files in kernel tree
+I'm going to predict there will be at least one wayland compositor
+supporting this, maybe via custom protocol, idk. ;-)
 
-Changes in v3:
-- Remove variables for separate qualifiers in "sub dump_struct"
-- Make a common variable for all the qualifiers
-- Make $attribute global variable to use it at "sub check_sections" as well
+BR,
+-R
 
-Changes in v2:
-- Rename $pointer_function to $function_pointer
-- Combine elsif-block expressions at "sub dump_function" into lesser regex expressions
-- Combine $prototype_end1,$prototype_end2 expressions into a common $prototype_end
-
- scripts/kernel-doc | 71 ++++++++++++++++++++++------------------------
- 1 file changed, 34 insertions(+), 37 deletions(-)
-
-diff --git a/scripts/kernel-doc b/scripts/kernel-doc
-index 4840e748fca8..7c4a6a507ac4 100755
---- a/scripts/kernel-doc
-+++ b/scripts/kernel-doc
-@@ -406,6 +406,8 @@ my $doc_inline_sect = '\s*\*\s*(@\s*[\w][\w\.]*\s*):(.*)';
- my $doc_inline_end = '^\s*\*/\s*$';
- my $doc_inline_oneline = '^\s*/\*\*\s*(@[\w\s]+):\s*(.*)\s*\*/\s*$';
- my $export_symbol = '^\s*EXPORT_SYMBOL(_GPL)?\s*\(\s*(\w+)\s*\)\s*;';
-+my $function_pointer = qr{([^\(]*\(\*)\s*\)\s*\(([^\)]*)\)};
-+my $attribute = qr{__attribute__\s*\(\([a-z0-9,_\*\s\(\)]*\)\)}i;
- 
- my %parameterdescs;
- my %parameterdesc_start_lines;
-@@ -694,7 +696,7 @@ sub output_function_man(%) {
- 	    $post = ");";
- 	}
- 	$type = $args{'parametertypes'}{$parameter};
--	if ($type =~ m/([^\(]*\(\*)\s*\)\s*\(([^\)]*)\)/) {
-+	if ($type =~ m/$function_pointer/) {
- 	    # pointer-to-function
- 	    print ".BI \"" . $parenth . $1 . "\" " . " \") (" . $2 . ")" . $post . "\"\n";
- 	} else {
-@@ -974,7 +976,7 @@ sub output_function_rst(%) {
- 	$count++;
- 	$type = $args{'parametertypes'}{$parameter};
- 
--	if ($type =~ m/([^\(]*\(\*)\s*\)\s*\(([^\)]*)\)/) {
-+	if ($type =~ m/$function_pointer/) {
- 	    # pointer-to-function
- 	    print $1 . $parameter . ") (" . $2 . ")";
- 	} else {
-@@ -1211,7 +1213,9 @@ sub dump_struct($$) {
-     my $members;
-     my $type = qr{struct|union};
-     # For capturing struct/union definition body, i.e. "{members*}qualifiers*"
--    my $definition_body = qr{\{(.*)\}(?:\s*(?:__packed|__aligned|____cacheline_aligned_in_smp|____cacheline_aligned|__attribute__\s*\(\([a-z0-9,_\s\(\)]*\)\)))*};
-+    my $qualifiers = qr{$attribute|__packed|__aligned|____cacheline_aligned_in_smp|____cacheline_aligned};
-+    my $definition_body = qr{\{(.*)\}\s*$qualifiers*};
-+    my $struct_members = qr{($type)([^\{\};]+)\{([^\{\}]*)\}([^\{\}\;]*)\;};
- 
-     if ($x =~ /($type)\s+(\w+)\s*$definition_body/) {
- 	$decl_type = $1;
-@@ -1235,27 +1239,27 @@ sub dump_struct($$) {
- 	# strip comments:
- 	$members =~ s/\/\*.*?\*\///gos;
- 	# strip attributes
--	$members =~ s/\s*__attribute__\s*\(\([a-z0-9,_\*\s\(\)]*\)\)/ /gi;
-+	$members =~ s/\s*$attribute/ /gi;
- 	$members =~ s/\s*__aligned\s*\([^;]*\)/ /gos;
- 	$members =~ s/\s*__packed\s*/ /gos;
- 	$members =~ s/\s*CRYPTO_MINALIGN_ATTR/ /gos;
- 	$members =~ s/\s*____cacheline_aligned_in_smp/ /gos;
- 	$members =~ s/\s*____cacheline_aligned/ /gos;
- 
-+	my $args = qr{([^,)]+)};
- 	# replace DECLARE_BITMAP
- 	$members =~ s/__ETHTOOL_DECLARE_LINK_MODE_MASK\s*\(([^\)]+)\)/DECLARE_BITMAP($1, __ETHTOOL_LINK_MODE_MASK_NBITS)/gos;
--	$members =~ s/DECLARE_BITMAP\s*\(([^,)]+),\s*([^,)]+)\)/unsigned long $1\[BITS_TO_LONGS($2)\]/gos;
-+	$members =~ s/DECLARE_BITMAP\s*\($args,\s*$args\)/unsigned long $1\[BITS_TO_LONGS($2)\]/gos;
- 	# replace DECLARE_HASHTABLE
--	$members =~ s/DECLARE_HASHTABLE\s*\(([^,)]+),\s*([^,)]+)\)/unsigned long $1\[1 << (($2) - 1)\]/gos;
-+	$members =~ s/DECLARE_HASHTABLE\s*\($args,\s*$args\)/unsigned long $1\[1 << (($2) - 1)\]/gos;
- 	# replace DECLARE_KFIFO
--	$members =~ s/DECLARE_KFIFO\s*\(([^,)]+),\s*([^,)]+),\s*([^,)]+)\)/$2 \*$1/gos;
-+	$members =~ s/DECLARE_KFIFO\s*\($args,\s*$args,\s*$args\)/$2 \*$1/gos;
- 	# replace DECLARE_KFIFO_PTR
--	$members =~ s/DECLARE_KFIFO_PTR\s*\(([^,)]+),\s*([^,)]+)\)/$2 \*$1/gos;
--
-+	$members =~ s/DECLARE_KFIFO_PTR\s*\($args,\s*$args\)/$2 \*$1/gos;
- 	my $declaration = $members;
- 
- 	# Split nested struct/union elements as newer ones
--	while ($members =~ m/(struct|union)([^\{\};]+)\{([^\{\}]*)\}([^\{\}\;]*)\;/) {
-+	while ($members =~ m/$struct_members/) {
- 		my $newmember;
- 		my $maintype = $1;
- 		my $ids = $4;
-@@ -1315,7 +1319,7 @@ sub dump_struct($$) {
- 				}
- 			}
- 		}
--		$members =~ s/(struct|union)([^\{\};]+)\{([^\{\}]*)\}([^\{\}\;]*)\;/$newmember/;
-+		$members =~ s/$struct_members/$newmember/;
- 	}
- 
- 	# Ignore other nested elements, like enums
-@@ -1555,8 +1559,9 @@ sub create_parameterlist($$$$) {
-     my $param;
- 
-     # temporarily replace commas inside function pointer definition
--    while ($args =~ /(\([^\),]+),/) {
--	$args =~ s/(\([^\),]+),/$1#/g;
-+    my $arg_expr = qr{\([^\),]+};
-+    while ($args =~ /$arg_expr,/) {
-+	$args =~ s/($arg_expr),/$1#/g;
-     }
- 
-     foreach my $arg (split($splitter, $args)) {
-@@ -1707,7 +1712,7 @@ sub check_sections($$$$$) {
- 		foreach $px (0 .. $#prms) {
- 			$prm_clean = $prms[$px];
- 			$prm_clean =~ s/\[.*\]//;
--			$prm_clean =~ s/__attribute__\s*\(\([a-z,_\*\s\(\)]*\)\)//i;
-+			$prm_clean =~ s/$attribute//i;
- 			# ignore array size in a parameter string;
- 			# however, the original param string may contain
- 			# spaces, e.g.:  addr[6 + 2]
-@@ -1809,8 +1814,14 @@ sub dump_function($$) {
-     # - parport_register_device (function pointer parameters)
-     # - atomic_set (macro)
-     # - pci_match_device, __copy_to_user (long return type)
--
--    if ($define && $prototype =~ m/^()([a-zA-Z0-9_~:]+)\s+/) {
-+    my $name = qr{[a-zA-Z0-9_~:]+};
-+    my $prototype_end1 = qr{[^\(]*};
-+    my $prototype_end2 = qr{[^\{]*};
-+    my $prototype_end = qr{\(($prototype_end1|$prototype_end2)\)};
-+    my $type1 = qr{[\w\s]+};
-+    my $type2 = qr{$type1\*+};
-+
-+    if ($define && $prototype =~ m/^()($name)\s+/) {
-         # This is an object-like macro, it has no return type and no parameter
-         # list.
-         # Function-like macros are not allowed to have spaces between
-@@ -1818,23 +1829,9 @@ sub dump_function($$) {
-         $return_type = $1;
-         $declaration_name = $2;
-         $noret = 1;
--    } elsif ($prototype =~ m/^()([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
--	$prototype =~ m/^(\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
--	$prototype =~ m/^(\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
--	$prototype =~ m/^(\w+\s+\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
--	$prototype =~ m/^(\w+\s+\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
--	$prototype =~ m/^(\w+\s+\w+\s+\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
--	$prototype =~ m/^(\w+\s+\w+\s+\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\(]*)\)/ ||
--	$prototype =~ m/^()([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
--	$prototype =~ m/^(\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
--	$prototype =~ m/^(\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
--	$prototype =~ m/^(\w+\s+\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
--	$prototype =~ m/^(\w+\s+\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
--	$prototype =~ m/^(\w+\s+\w+\s+\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
--	$prototype =~ m/^(\w+\s+\w+\s+\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
--	$prototype =~ m/^(\w+\s+\w+\s+\w+\s+\w+)\s+([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
--	$prototype =~ m/^(\w+\s+\w+\s+\w+\s+\w+\s*\*+)\s*([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/ ||
--	$prototype =~ m/^(\w+\s+\w+\s*\*+\s*\w+\s*\*+\s*)\s*([a-zA-Z0-9_~:]+)\s*\(([^\{]*)\)/)  {
-+    } elsif ($prototype =~ m/^()($name)\s*$prototype_end/ ||
-+	$prototype =~ m/^($type1)\s+($name)\s*$prototype_end/ ||
-+	$prototype =~ m/^($type2+)\s*($name)\s*$prototype_end/)  {
- 	$return_type = $1;
- 	$declaration_name = $2;
- 	my $args = $3;
-@@ -2111,12 +2108,12 @@ sub process_name($$) {
-     } elsif (/$doc_decl/o) {
- 	$identifier = $1;
- 	my $is_kernel_comment = 0;
--	my $decl_start = qr{\s*\*};
-+	my $decl_start = qr{$doc_com};
- 	# test for pointer declaration type, foo * bar() - desc
- 	my $fn_type = qr{\w+\s*\*\s*}; 
- 	my $parenthesis = qr{\(\w*\)};
- 	my $decl_end = qr{[-:].*};
--	if (/^$decl_start\s*([\w\s]+?)$parenthesis?\s*$decl_end?$/) {
-+	if (/^$decl_start([\w\s]+?)$parenthesis?\s*$decl_end?$/) {
- 	    $identifier = $1;
- 	}
- 	if ($identifier =~ m/^(struct|union|enum|typedef)\b\s*(\S*)/) {
-@@ -2126,8 +2123,8 @@ sub process_name($$) {
- 	}
- 	# Look for foo() or static void foo() - description; or misspelt
- 	# identifier
--	elsif (/^$decl_start\s*$fn_type?(\w+)\s*$parenthesis?\s*$decl_end?$/ ||
--	    /^$decl_start\s*$fn_type?(\w+.*)$parenthesis?\s*$decl_end$/) {
-+	elsif (/^$decl_start$fn_type?(\w+)\s*$parenthesis?\s*$decl_end?$/ ||
-+	    /^$decl_start$fn_type?(\w+.*)$parenthesis?\s*$decl_end$/) {
- 	    $identifier = $1;
- 	    $decl_type = 'function';
- 	    $identifier =~ s/^define\s+//;
--- 
-2.17.1
-
+> I'm sure there can be specialised use cases (e.g. a game console
+> Wayland compositor) where scanout can be guaranteed, but generally
+> for desktops it's not so.
+>
+> I believe there will be people wanting EGL Wayland platform frontbuffer
+> rendering for very special cases, and I also believe it will just break
+> horribly everywhere else. Would it be worth it to implement? No idea.
+>
+> Maybe there would need to be a Wayland extension so that compositors
+> can control the availability of frontbuffer rendering in EGL Wayland
+> platform?
+>
+> There is the dmabuf-hints Wayland addition that is aimed at dynamically
+> providing information to help optimise for scanout and
+> render-compositing. If a compositor could control frontbuffer rendering
+> in a client, it could tell the client to use frontbuffer rendering when
+> it does hit scanout, and tell the client to stop frontbuffer rendering
+> when scanout is no longer possible. The problem with the latter is a
+> glitch, but since frontbuffer rendering is by definition glitchy (when
+> done in clients), maybe that is acceptable to some?
+>
+>
+> Thanks,
+> pq
