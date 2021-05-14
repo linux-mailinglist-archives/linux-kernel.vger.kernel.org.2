@@ -2,221 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33EA938017A
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 03:24:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89673380184
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 03:43:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231754AbhENBZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 21:25:46 -0400
-Received: from mga04.intel.com ([192.55.52.120]:20295 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229459AbhENBZp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 21:25:45 -0400
-IronPort-SDR: oHXCSjqLSOuriHdcNFKRGCJ+dALoDmQOk/f/1+lGWNPg3H3B7LjGrQ+yPALxrBzHeM8eaHhscl
- HV6x7zcfg88g==
-X-IronPort-AV: E=McAfee;i="6200,9189,9983"; a="198133918"
-X-IronPort-AV: E=Sophos;i="5.82,298,1613462400"; 
-   d="scan'208";a="198133918"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 18:24:34 -0700
-IronPort-SDR: gueUklMoyCdFMI9L040LK4bsg/ZctAhCRD1yHOn+Wapj+OEJ4J7aUCAMi6Kal1yAbh/3YEq1JS
- hPjG+5yzFR9g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,298,1613462400"; 
-   d="scan'208";a="436111194"
-Received: from lkp-server01.sh.intel.com (HELO ddd90b05c979) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 13 May 2021 18:24:33 -0700
-Received: from kbuild by ddd90b05c979 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lhMZ6-0000UB-W9; Fri, 14 May 2021 01:24:32 +0000
-Date:   Fri, 14 May 2021 09:24:10 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/core] BUILD SUCCESS WITH WARNING
- 915a2bc3c6b71e9802b89c5c981b2d5367e1ae3f
-Message-ID: <609dd13a.0ETlwbVNJL5N+MT7%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S232050AbhENBfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 21:35:51 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:54226 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231768AbhENBfu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 21:35:50 -0400
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 5934620B8025;
+        Thu, 13 May 2021 18:34:39 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5934620B8025
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1620956079;
+        bh=F6CQz2+nsZGJ/pzdpTT9AQzTkNqlEEh7RPiPcleWx28=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=faO6iLDAO28ixLe7L/yD0bTgdHVbHQHH50nT/E3+H29jlY0+SVN74BpEWL4SVttz+
+         wuvfaSxvKIiZcbfU+jVF8zBSuexAOEpHzli9Ff3FWUP6k0OiPAYdxjursVIaAYLIAs
+         Ni9UufA/1lWZPwE49CKBP3hzHElj5Pw7+EuFbpLg=
+Received: by mail-pj1-f48.google.com with SMTP id v11-20020a17090a6b0bb029015cba7c6bdeso552619pjj.0;
+        Thu, 13 May 2021 18:34:39 -0700 (PDT)
+X-Gm-Message-State: AOAM532otodcctuWU3lw48HRbKRSAiBIj8MZngqydIMqtH3qHU6hLtsQ
+        hGGbciP+sujzLQCILdLXc+a+Pwl9Ssw7AugyK+I=
+X-Google-Smtp-Source: ABdhPJwv/YtlK8W/E0i23QQxf4xSLtEBhJx0WbxP9KKGOfWRVCcDM1mjk/0uCIMlC94A0zbVcQof5us1WWyA5xLHK40=
+X-Received: by 2002:a17:90a:174e:: with SMTP id 14mr11885116pjm.187.1620956078745;
+ Thu, 13 May 2021 18:34:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20210513165846.23722-1-mcroce@linux.microsoft.com>
+ <20210513165846.23722-2-mcroce@linux.microsoft.com> <YJ3Lrdx1oIm/MDV8@casper.infradead.org>
+In-Reply-To: <YJ3Lrdx1oIm/MDV8@casper.infradead.org>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Fri, 14 May 2021 03:34:02 +0200
+X-Gmail-Original-Message-ID: <CAFnufp3pCrywDFXZqDSw+-2K7p9yHfYY9C5WveaXMWDJ_oViAA@mail.gmail.com>
+Message-ID: <CAFnufp3pCrywDFXZqDSw+-2K7p9yHfYY9C5WveaXMWDJ_oViAA@mail.gmail.com>
+Subject: Re: [PATCH net-next v5 1/5] mm: add a signature in struct page
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
-branch HEAD: 915a2bc3c6b71e9802b89c5c981b2d5367e1ae3f  sched/isolation: Reconcile rcu_nocbs= and nohz_full=
+On Fri, May 14, 2021 at 3:01 AM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Thu, May 13, 2021 at 06:58:42PM +0200, Matteo Croce wrote:
+> >               struct {        /* page_pool used by netstack */
+> > +                     /**
+> > +                      * @pp_magic: magic value to avoid recycling non
+> > +                      * page_pool allocated pages.
+> > +                      * It aliases with page->lru.next
+>
+> I'm not really keen on documenting what aliases with what.
+> pp_magic also aliases with compound_head, 'next' (for slab),
+> and dev_pagemap.  This is an O(n^2) documentation problem ...
+>
 
-possible Warning in current branch:
+Eric asked to document what page->signature aliases, so I did it in
+the commit message and in a comment.
+I can drop the code comment and leave it just the commit message.
 
-include/linux/spinlock_api_smp.h:160:9: sparse: sparse: context imbalance in 'sched_core_update_cookie' - wrong count at exit
+> I feel like I want to document the pfmemalloc bit in mm_types.h,
+> but I don't have a concrete suggestion yet.
+>
+> > +++ b/include/net/page_pool.h
+> > @@ -63,6 +63,8 @@
+> >   */
+> >  #define PP_ALLOC_CACHE_SIZE  128
+> >  #define PP_ALLOC_CACHE_REFILL        64
+> > +#define PP_SIGNATURE         (POISON_POINTER_DELTA + 0x40)
+>
+> I wonder if this wouldn't be better in linux/poison.h?
+>
 
-Warning ids grouped by kconfigs:
+I was thinking the same, I'll do it in the v6.
 
-gcc_recent_errors
-`-- arm64-randconfig-s031-20210513
-    `-- include-linux-spinlock_api_smp.h:sparse:sparse:context-imbalance-in-sched_core_update_cookie-wrong-count-at-exit
-
-elapsed time: 726m
-
-configs tested: 152
-configs skipped: 3
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                     tqm8541_defconfig
-xtensa                         virt_defconfig
-powerpc64                           defconfig
-arm                             rpc_defconfig
-arm                        cerfcube_defconfig
-powerpc                      ep88xc_defconfig
-sh                         apsh4a3a_defconfig
-m68k                        mvme16x_defconfig
-mips                      bmips_stb_defconfig
-arm                            mmp2_defconfig
-powerpc                   currituck_defconfig
-sh                         ap325rxa_defconfig
-mips                  maltasmvp_eva_defconfig
-mips                           mtx1_defconfig
-arm                           u8500_defconfig
-powerpc                     taishan_defconfig
-sh                 kfr2r09-romimage_defconfig
-m68k                         apollo_defconfig
-sh                          r7785rp_defconfig
-arm                        mini2440_defconfig
-xtensa                              defconfig
-mips                        workpad_defconfig
-mips                     decstation_defconfig
-riscv                            alldefconfig
-powerpc                       maple_defconfig
-powerpc                 linkstation_defconfig
-powerpc                  storcenter_defconfig
-ia64                             alldefconfig
-arm                        clps711x_defconfig
-powerpc                      mgcoge_defconfig
-sh                         microdev_defconfig
-arm                  colibri_pxa270_defconfig
-xtensa                  cadence_csp_defconfig
-h8300                       h8s-sim_defconfig
-arm                      tct_hammer_defconfig
-mips                      fuloong2e_defconfig
-arm                       cns3420vb_defconfig
-powerpc                        fsp2_defconfig
-mips                       bmips_be_defconfig
-mips                        bcm63xx_defconfig
-m68k                          hp300_defconfig
-arm                      footbridge_defconfig
-mips                       rbtx49xx_defconfig
-sh                         ecovec24_defconfig
-powerpc                  iss476-smp_defconfig
-sh                           se7712_defconfig
-powerpc                     sequoia_defconfig
-riscv             nommu_k210_sdcard_defconfig
-mips                           ip27_defconfig
-sh                           se7751_defconfig
-arm                       spear13xx_defconfig
-arc                          axs103_defconfig
-powerpc                       ebony_defconfig
-arm                            lart_defconfig
-m68k                           sun3_defconfig
-um                            kunit_defconfig
-riscv                          rv32_defconfig
-mips                      malta_kvm_defconfig
-arm                       imx_v6_v7_defconfig
-arc                            hsdk_defconfig
-arm                         lubbock_defconfig
-sh                              ul2_defconfig
-sh                           se7619_defconfig
-powerpc                 mpc832x_rdb_defconfig
-mips                          rb532_defconfig
-h8300                               defconfig
-ia64                             allyesconfig
-powerpc                          allyesconfig
-powerpc                 mpc8560_ads_defconfig
-powerpc                     asp8347_defconfig
-powerpc                     tqm8540_defconfig
-xtensa                       common_defconfig
-arm                           viper_defconfig
-sh                     sh7710voipgw_defconfig
-sh                        edosk7705_defconfig
-powerpc                 mpc85xx_cds_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a003-20210513
-i386                 randconfig-a001-20210513
-i386                 randconfig-a005-20210513
-i386                 randconfig-a004-20210513
-i386                 randconfig-a002-20210513
-i386                 randconfig-a006-20210513
-x86_64               randconfig-a012-20210513
-x86_64               randconfig-a015-20210513
-x86_64               randconfig-a011-20210513
-x86_64               randconfig-a013-20210513
-x86_64               randconfig-a016-20210513
-x86_64               randconfig-a014-20210513
-i386                 randconfig-a016-20210513
-i386                 randconfig-a014-20210513
-i386                 randconfig-a011-20210513
-i386                 randconfig-a015-20210513
-i386                 randconfig-a012-20210513
-i386                 randconfig-a013-20210513
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a003-20210513
-x86_64               randconfig-a004-20210513
-x86_64               randconfig-a001-20210513
-x86_64               randconfig-a005-20210513
-x86_64               randconfig-a002-20210513
-x86_64               randconfig-a006-20210513
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Regards,
+-- 
+per aspera ad upstream
