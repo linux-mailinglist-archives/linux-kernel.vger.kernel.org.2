@@ -2,39 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 171B4380CCC
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 17:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD428380CCD
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 17:23:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231563AbhENPY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 11:24:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39462 "EHLO mail.kernel.org"
+        id S233684AbhENPYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 11:24:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233639AbhENPYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 11:24:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A59D361458;
-        Fri, 14 May 2021 15:23:13 +0000 (UTC)
+        id S233732AbhENPY2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 11:24:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 269AF61458;
+        Fri, 14 May 2021 15:23:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621005794;
-        bh=T5JNKtuv44YwOupv5OHt57JCSRdA5+YtQ22wupXqpz0=;
+        s=k20201202; t=1621005796;
+        bh=p5zqoz8w803888+pXGNwIAiyWxv42TTRebNBM9Rqzro=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B5MUVHpaf6d6zPZ3RrckpW0E7JlTP0epDpJ1MFuLVe9jRk9+AlrLkhJDECMor8OyI
-         5ps7Z+ormuWWKO96LUU2CHJH1dfeS74Ws2PPUnEf/jtI3JgX+mXBiqRMvy6RpAoEpa
-         9XHaY8k3EB3psYO+mJPUTIhzaFSKsO/3dxALANrWC2LKczL97u5qJO8dYaSsb2luWX
-         CJe8cMFPJj3b1GX8kavEBJCmeq/V4crbgH7AMfx3qehG0XuTN4i9OKyV76ZvmSO5K7
-         CMk51bWol9rH7ypKrMo6P9iA8Uauk/0/+bBd2NIxyAFJwDZ5itVEshmySWSTn3Skf0
-         xcLWnsgBfGqUw==
+        b=GBpDf/v5P9uU3MczNBadXP4klM6TBViTSsSzGF64zJ0sEVEg8hWI5//04vYv/4Z9t
+         D1rwFrAvCfnQ9xCbs+hcPkY60/TJBGYFBFSeNPTRZCIwiLA4J+peE9wTz5tIt4SvIa
+         0wuHlw8ZWk9VrUORGXmiMYdADjIpo93/Pl2HmT5FyxOLM/i5psTODAMT7SACbZc1VO
+         9qAyjSR891GXQW6qwAj0i+cEJiody0A8cjhiOS2xCk1oOKxRX1eiq/SyPlVO03Xe8v
+         7LZPUW5uai6/1pqrVXRl1S1cV4LfNYQxsPjqCAoGY2QN+98B2mp9NB646LHLvKMnXn
+         v/rmm8RyagNyQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lucas Tanure <tanureal@opensource.cirrus.com>
-Cc:     Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com,
+To:     sathyanarayana.nujella@intel.com, brent.lu@intel.com,
+        tiwai@suse.com, Zou Wei <zou_wei@huawei.com>,
+        liam.r.girdwood@linux.intel.com, ranjani.sridharan@linux.intel.com,
+        yang.jie@linux.intel.com, dharageswari.r@intel.com,
+        kuninori.morimoto.gx@renesas.com, kai.vehmanen@linux.intel.com,
+        perex@perex.cz, tzungbi@google.com, yong.zhi@intel.com,
+        cezary.rojewski@intel.com, fred.oh@linux.intel.com
+Cc:     Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] regmap-i2c: Set regmap max raw r/w from quirks
-Date:   Fri, 14 May 2021 16:22:28 +0100
-Message-Id: <162100563578.50624.2004166251363064735.b4-ty@kernel.org>
+Subject: Re: [PATCH -next] ASoC: intel/boards: add missing MODULE_DEVICE_TABLE
+Date:   Fri, 14 May 2021 16:22:29 +0100
+Message-Id: <162100559150.50429.5814132881880654217.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210512135222.223203-1-tanureal@opensource.cirrus.com>
-References: <20210512135222.223203-1-tanureal@opensource.cirrus.com>
+In-Reply-To: <1620791647-16024-1-git-send-email-zou_wei@huawei.com>
+References: <1620791647-16024-1-git-send-email-zou_wei@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -42,18 +46,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 12 May 2021 14:52:22 +0100, Lucas Tanure wrote:
-> Set regmap raw read/write from i2c quirks max read/write
-> so regmap_raw_read/write can split the access into chunks
+On Wed, 12 May 2021 11:54:07 +0800, Zou Wei wrote:
+> This patch adds missing MODULE_DEVICE_TABLE definition which generates
+> correct modalias for automatic loading of this driver when it is built
+> as an external module.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
 
-[1/1] regmap-i2c: Set regmap max raw r/w from quirks
-      commit: ea030ca688193462b8d612c1628c37129aa30072
+[1/1] ASoC: intel/boards: add missing MODULE_DEVICE_TABLE
+      commit: a75e5cdf4dd1307bb1541edbb0c008f40896644c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
