@@ -2,235 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E537E38018E
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 03:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8527C380190
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 03:53:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232161AbhENBxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 21:53:50 -0400
-Received: from mga01.intel.com ([192.55.52.88]:41839 "EHLO mga01.intel.com"
+        id S232176AbhENBy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 21:54:26 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:43843 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230460AbhENBxt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 21:53:49 -0400
-IronPort-SDR: AFxc/TDIUymPIfTjQjiKWw68X4mARq+ZdSOPL4/95wUt+OlYTZjgSxWWHjnMAWARUIboF6woGj
- 0ODwJh+roUgA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9983"; a="221100816"
-X-IronPort-AV: E=Sophos;i="5.82,298,1613462400"; 
-   d="scan'208";a="221100816"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 18:52:36 -0700
-IronPort-SDR: JN7Fd6fV7aUtScR3r3z5WADsnvc3W31sJ7UoBy9zY/gQerr9squlWlaCO5zS7IRakFgQzkERmP
- kQR/h2lpogWg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,298,1613462400"; 
-   d="scan'208";a="436132853"
-Received: from lkp-server01.sh.intel.com (HELO ddd90b05c979) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 13 May 2021 18:52:35 -0700
-Received: from kbuild by ddd90b05c979 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lhN0E-0000WA-Nm; Fri, 14 May 2021 01:52:34 +0000
-Date:   Fri, 14 May 2021 09:51:34 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- aa96d0d0b147f71518a6bf084c10cc8a8a071e35
-Message-ID: <609dd7a6.aJ9in601Yx3oT73I%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S231154AbhENByZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 21:54:25 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FhBPf6TFDz9sWY;
+        Fri, 14 May 2021 11:53:10 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1620957193;
+        bh=OVB81s1AxgX/uB6VuQoYBHD9V+ti3hCW+342aDl0Wv0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=k5Brhjj44Wfazae3J6C2Ofxph0Qdgdm0YFDi56DqOWJTasUGrjYSvecx3okmJXrd6
+         f4BsPr30vmlA8tkdDio6rwjqNL2RMmwbw48F+xxY+Y95Oh9NOGE5XIYhy7zzqtsH0s
+         DRuHCj6mIY1Q0u+RJN+xom6ERTt2TtZGZIOVu1XeHKZ8QzsNa8yxlkPGdFWxywNSrU
+         Y76DpF8uTkPu1HkeceizuFrKQ6y3TABrGyITLfPEAJGbF5+eXQVUG+bABjM1lc06mQ
+         yjisUl61E9Ug43I5M055ltip0AFk+emeAt431Zzc401erNAaTzAZNO8hzj6aMedGuQ
+         jbFJGRdV1JxDQ==
+Date:   Fri, 14 May 2021 11:53:07 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     DRI <dri-devel@lists.freedesktop.org>,
+        Dave Airlie <airlied@redhat.com>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: linux-next: manual merge of the drm-intel tree with the drm
+ tree
+Message-ID: <20210514115307.4364aff9@canb.auug.org.au>
+In-Reply-To: <20210430082321.3bd9c4a5@canb.auug.org.au>
+References: <20210317140824.0a28ffec@canb.auug.org.au>
+        <20210318125241.5fdfeffd@canb.auug.org.au>
+        <20210430082321.3bd9c4a5@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/xXOZ1H1+5Gl.tnx8dTNuvTz";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: aa96d0d0b147f71518a6bf084c10cc8a8a071e35  Merge branch 'core/urgent'
+--Sig_/xXOZ1H1+5Gl.tnx8dTNuvTz
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-elapsed time: 724m
+Hi all,
 
-configs tested: 173
-configs skipped: 2
+On Fri, 30 Apr 2021 08:23:21 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> On Thu, 18 Mar 2021 12:52:41 +1100 Stephen Rothwell <sfr@canb.auug.org.au=
+> wrote:
+> >=20
+> > On Wed, 17 Mar 2021 14:08:24 +1100 Stephen Rothwell <sfr@canb.auug.org.=
+au> wrote: =20
+> > >
+> > > Today's linux-next merge of the drm-intel tree got a conflict in:
+> > >=20
+> > >   drivers/gpu/drm/i915/display/intel_sprite.c
+> > >=20
+> > > between commit:
+> > >=20
+> > >   92f1d09ca4ed ("drm: Switch to %p4cc format modifier")
+> > >=20
+> > > from the drm tree and commit:
+> > >=20
+> > >   46d12f911821 ("drm/i915: migrate skl planes code new file (v5)")
+> > >=20
+> > > from the drm-intel tree.
+> > >=20
+> > > I fixed it up (I used the latter version of the file and applied the
+> > > following patch) and can carry the fix as necessary. This is now fixed
+> > > as far as linux-next is concerned, but any non trivial conflicts shou=
+ld
+> > > be mentioned to your upstream maintainer when your tree is submitted =
+for
+> > > merging.  You may also want to consider cooperating with the maintain=
+er
+> > > of the conflicting tree to minimise any particularly complex conflict=
+s.
+> > >=20
+> > > From: Stephen Rothwell <sfr@canb.auug.org.au>
+> > > Date: Wed, 17 Mar 2021 14:05:42 +1100
+> > > Subject: [PATCH] merge fix for "drm: Switch to %p4cc format modifier"
+> > >=20
+> > > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> > > ---
+> > >  drivers/gpu/drm/i915/display/skl_universal_plane.c | 6 ++----
+> > >  1 file changed, 2 insertions(+), 4 deletions(-)
+> > >=20
+> > > diff --git a/drivers/gpu/drm/i915/display/skl_universal_plane.c b/dri=
+vers/gpu/drm/i915/display/skl_universal_plane.c
+> > > index 1f335cb09149..45ceff436bf7 100644
+> > > --- a/drivers/gpu/drm/i915/display/skl_universal_plane.c
+> > > +++ b/drivers/gpu/drm/i915/display/skl_universal_plane.c
+> > > @@ -1120,7 +1120,6 @@ static int skl_plane_check_fb(const struct inte=
+l_crtc_state *crtc_state,
+> > >  	struct drm_i915_private *dev_priv =3D to_i915(plane->base.dev);
+> > >  	const struct drm_framebuffer *fb =3D plane_state->hw.fb;
+> > >  	unsigned int rotation =3D plane_state->hw.rotation;
+> > > -	struct drm_format_name_buf format_name;
+> > > =20
+> > >  	if (!fb)
+> > >  		return 0;
+> > > @@ -1168,9 +1167,8 @@ static int skl_plane_check_fb(const struct inte=
+l_crtc_state *crtc_state,
+> > >  		case DRM_FORMAT_XVYU12_16161616:
+> > >  		case DRM_FORMAT_XVYU16161616:
+> > >  			drm_dbg_kms(&dev_priv->drm,
+> > > -				    "Unsupported pixel format %s for 90/270!\n",
+> > > -				    drm_get_format_name(fb->format->format,
+> > > -							&format_name));
+> > > +				    "Unsupported pixel format %p4cc for 90/270!\n",
+> > > +				    &fb->format->format);
+> > >  			return -EINVAL;
+> > >  		default:
+> > >  			break;
+> > > --=20
+> > > 2.30.0   =20
+> >=20
+> > The above fix up patch now needs to be applied to the drm tree. =20
+>=20
+> I am still applying the above patch, but it applies to Linus' tree now.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+I am going to stop applying this.  You guys can apply it if you want to
+some time.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                         tb0219_defconfig
-ia64                          tiger_defconfig
-powerpc                      acadia_defconfig
-powerpc                 mpc836x_mds_defconfig
-sh                         ap325rxa_defconfig
-mips                  maltasmvp_eva_defconfig
-mips                           mtx1_defconfig
-arm                           u8500_defconfig
-powerpc                     taishan_defconfig
-mips                        workpad_defconfig
-powerpc                 linkstation_defconfig
-mips                malta_qemu_32r6_defconfig
-um                             i386_defconfig
-arm                         lpc32xx_defconfig
-riscv             nommu_k210_sdcard_defconfig
-arc                              alldefconfig
-riscv                    nommu_virt_defconfig
-m68k                                defconfig
-mips                     decstation_defconfig
-riscv                            alldefconfig
-sh                          r7785rp_defconfig
-sh                        edosk7760_defconfig
-mips                       capcella_defconfig
-arm                   milbeaut_m10v_defconfig
-arm                        multi_v5_defconfig
-powerpc                     tqm8540_defconfig
-mips                          ath79_defconfig
-powerpc                       maple_defconfig
-powerpc                  storcenter_defconfig
-ia64                             alldefconfig
-arm                       mainstone_defconfig
-powerpc                      mgcoge_defconfig
-arm                          exynos_defconfig
-powerpc                     ppa8548_defconfig
-sh                     magicpanelr2_defconfig
-arc                     haps_hs_smp_defconfig
-powerpc                    klondike_defconfig
-openrisc                            defconfig
-powerpc                      bamboo_defconfig
-sh                   sh7770_generic_defconfig
-arm                        mini2440_defconfig
-riscv                    nommu_k210_defconfig
-powerpc                   lite5200b_defconfig
-powerpc                    gamecube_defconfig
-arm                          simpad_defconfig
-powerpc                      ppc44x_defconfig
-powerpc                         ps3_defconfig
-m68k                        m5307c3_defconfig
-m68k                       m5275evb_defconfig
-arm                          iop32x_defconfig
-powerpc                 mpc8315_rdb_defconfig
-sh                          landisk_defconfig
-m68k                         amcore_defconfig
-sh                        apsh4ad0a_defconfig
-arm                        keystone_defconfig
-um                               alldefconfig
-sh                        edosk7705_defconfig
-arm                     davinci_all_defconfig
-sh                           sh2007_defconfig
-m68k                          hp300_defconfig
-arm                      footbridge_defconfig
-mips                       rbtx49xx_defconfig
-sh                         ecovec24_defconfig
-powerpc                  iss476-smp_defconfig
-powerpc                      ep88xc_defconfig
-sh                           se7712_defconfig
-powerpc                     sequoia_defconfig
-arm                          gemini_defconfig
-mips                     cu1000-neo_defconfig
-mips                      maltasmvp_defconfig
-mips                           ip27_defconfig
-sh                           se7751_defconfig
-arm                       spear13xx_defconfig
-arc                          axs103_defconfig
-nios2                            alldefconfig
-powerpc                      pcm030_defconfig
-arm                        spear6xx_defconfig
-m68k                       m5249evb_defconfig
-arm                           h5000_defconfig
-sh                           se7206_defconfig
-mips                     loongson2k_defconfig
-powerpc                     tqm5200_defconfig
-mips                          rb532_defconfig
-h8300                               defconfig
-arm                      jornada720_defconfig
-powerpc                     mpc512x_defconfig
-openrisc                 simple_smp_defconfig
-mips                           ip22_defconfig
-powerpc                 mpc832x_rdb_defconfig
-ia64                             allyesconfig
-powerpc                          allyesconfig
-powerpc                 mpc8560_ads_defconfig
-powerpc                     asp8347_defconfig
-h8300                       h8s-sim_defconfig
-powerpc                     ksi8560_defconfig
-xtensa                       common_defconfig
-arm                           viper_defconfig
-sh                     sh7710voipgw_defconfig
-powerpc                 mpc85xx_cds_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a003-20210513
-i386                 randconfig-a001-20210513
-i386                 randconfig-a006-20210513
-i386                 randconfig-a005-20210513
-i386                 randconfig-a004-20210513
-i386                 randconfig-a002-20210513
-x86_64               randconfig-a012-20210513
-x86_64               randconfig-a015-20210513
-x86_64               randconfig-a011-20210513
-x86_64               randconfig-a013-20210513
-x86_64               randconfig-a016-20210513
-x86_64               randconfig-a014-20210513
-i386                 randconfig-a016-20210513
-i386                 randconfig-a014-20210513
-i386                 randconfig-a011-20210513
-i386                 randconfig-a015-20210513
-i386                 randconfig-a012-20210513
-i386                 randconfig-a013-20210513
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+--=20
+Cheers,
+Stephen Rothwell
 
-clang tested configs:
-x86_64               randconfig-a003-20210513
-x86_64               randconfig-a004-20210513
-x86_64               randconfig-a001-20210513
-x86_64               randconfig-a005-20210513
-x86_64               randconfig-a002-20210513
-x86_64               randconfig-a006-20210513
+--Sig_/xXOZ1H1+5Gl.tnx8dTNuvTz
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCd2AMACgkQAVBC80lX
+0GzhVAf/fbuHprJ9IVbUr42Nxw3yUKRfFqGfOwipymb1KFWPs8UXWZK5+ZzL5uYw
+FCQCCdeIxh7Nl40GObZYZDuyB1hQEBYLhwLDvjFLeSmyMevWt4kTH3ypQQU7AlfI
+eS9ZR+GD2y7ruSJIiScuxv/lakP1wLa/qhuSUF19j1rODD56A03lJW1uvzP7ozV/
+UNlMojdAwDOzG+47QDd/JBV/Y06UN8yYtneyXByPImXob/MgefoVqMDzpdVcqJTW
+VI9PSjPmOpoNYqhJ+LSa64GQaKW4r5Hfm0JAuhW35tfRdRg5Dk8/lJe3pJuGxKGJ
+1ZTlyk7DoJu1eGOGsCcTrOYh9cgJcQ==
+=4RRO
+-----END PGP SIGNATURE-----
+
+--Sig_/xXOZ1H1+5Gl.tnx8dTNuvTz--
