@@ -2,101 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2153C38019E
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 03:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 267D638019B
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 03:56:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232255AbhENB51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 21:57:27 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:57523 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232197AbhENB5Y (ORCPT
+        id S232243AbhENB5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 21:57:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232197AbhENB5T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 21:57:24 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id B07A1580E97;
-        Thu, 13 May 2021 21:56:13 -0400 (EDT)
-Received: from imap2 ([10.202.2.52])
-  by compute3.internal (MEProxy); Thu, 13 May 2021 21:56:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm2; bh=yu5svNfn1bqCNsbfoBd3B8VenMeM5wJ
-        vXsoRZy33RJA=; b=sRiS9No7laMnkVWC+PL33B3RejcHw8dL1u+8PUJScroHf9E
-        k4Zc3xUR2/uFRcyg9N4igSn5oTjwFqRFsODDNVb/6wmCdBGC+gJXcttsUairUKee
-        Vu6ut2MCxjMcdEStGsHIUsXh2C0A/RT1KXXyJ4UCj2ACdYtloDorAyEC9S23L5cm
-        51WAfxEqU1oVM8SJo+uYPge+L4Emv8R8mRgtdYgkHXjx+Quu2c2odiUo9tT9zEz7
-        IYmx9hnWgTxbIuyo3fkUa0BGoc2H6tn+DV8jedlDoqqdWmJfgFEYNJUpyH09RiqF
-        MdfOoTvh03DqychHNsVm4yvSv+dTWmqiTS/CXyA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=yu5svN
-        fn1bqCNsbfoBd3B8VenMeM5wJvXsoRZy33RJA=; b=RBOXLkE9mJ0hLWvdDFSgel
-        R0zOLc438Kpj8pRr5xuCIl0RtMLExMP7uBvf1ogUi1RTl4pR5OOMD/QBwaFcpa4x
-        xHWXcSv01ZWniDgNkdGoI9z+P2UkP4j+GeNzRN/5Mc/Hqm0PJdY2H+DWP2VxkX6h
-        4ctlcciTV1/73nUfBBLQc0TSaMB1zBkb+9L8GBJGlrZTUy575pPt3Ff0bQaGJyXD
-        k8/xiq62Jvp+8i1e7jEB//9foQPYEZ+30mPHoHOex3gEB33PuICBndPnJZ5bnW/P
-        kz9I4oW+gYQbgUKrc4S5NLhzKc5eBnlmoELlTqv5ceEzoiDl6OnS8oXgJ0MVi//Q
-        ==
-X-ME-Sender: <xms:vNidYD6BrVjO_32DFMfMIivyLKxZAbcI1HuG3QlC3WP6Dks279E_Xg>
-    <xme:vNidYI7XG9Wt7Cq6TMhfTqTlY33ohwDCtz9zBpYn6L3tzk0rLfhgBoOag_aH1ACkk
-    PufarDMWYKDQjahUw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdehhedghedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
-    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
-    grthhtvghrnhepuddttdekueeggedvtddtueekiedutdfguedutdefieeuteefieelteet
-    vddthfeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eprghnughrvgifsegrjhdrihgurdgruh
-X-ME-Proxy: <xmx:vNidYKezzJIYiAZoVPdgRscAUA0MC0PWtN6oMRmU5m5a4M1Z0Hk1WA>
-    <xmx:vNidYEL0Zx-HTb5zDmJ7oPF_7up0mZCNaW-ewcEXGnhvDFFwNQ-heg>
-    <xmx:vNidYHIQ0mnaQjVVJBvmBFrSfLELjySORBi9dmw3iuVQgvRDqEWD2A>
-    <xmx:vdidYJwKEEuhRERg2Et6jkBZsQx1cRKEtvEL5yWhXGhBiRHLgfJK3g>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 7EBCAA00079; Thu, 13 May 2021 21:56:12 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-448-gae190416c7-fm-20210505.004-gae190416
-Mime-Version: 1.0
-Message-Id: <24e8c5e8-d1eb-4e42-b8de-c60c5cceaf85@www.fastmail.com>
-In-Reply-To: <20210513193204.816681-6-davidgow@google.com>
-References: <20210513193204.816681-1-davidgow@google.com>
- <20210513193204.816681-6-davidgow@google.com>
-Date:   Fri, 14 May 2021 11:25:51 +0930
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "David Gow" <davidgow@google.com>,
-        "Brendan Higgins" <brendanhiggins@google.com>,
-        "Daniel Latypov" <dlatypov@google.com>,
-        "Shuah Khan" <skhan@linuxfoundation.org>,
-        "Adrian Hunter" <adrian.hunter@intel.com>,
-        "Ulf Hansson" <ulf.hansson@linaro.org>,
-        "Joel Stanley" <joel@jms.id.au>
-Cc:     kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: =?UTF-8?Q?Re:_[PATCH_v2_06/10]_mmc:_sdhci-of-aspeed:_Remove_some_unneces?=
- =?UTF-8?Q?sary_casts_from_KUnit_tests?=
-Content-Type: text/plain
+        Thu, 13 May 2021 21:57:19 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35960C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 18:56:09 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id u76so606206pfc.11
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 18:56:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=N2iyxhvY8HuVpNdOOBZq1NpZlD91R7+QI6hopy2Mk2Q=;
+        b=19J/++URiFUjrk+oenyeI9BhvaveKztadya3XD5BC77hYM5hbpMflirOKNIy2sii/b
+         F/Vkb/wM8+iMN6wp+Cpqs9GegHfoZE9b8o26505w1GIRSRKXOcpinLlMqG566glFgVlQ
+         Zp1R8TDxqgl0XivBH79Ta7HmmziBn4LDKyA6ZlIEW7+wmHA6b3DKfj0/QTYETEzBPO14
+         mipcigIaXUwjRF6bR9qNJ2XSxvOocPdlhzqguslf/uL19yekWW45GgiX+/BvdZiiCN2c
+         5i/HVIX6rNcdwpuVjA4KGRiP/v59y4dsgJaHf+3LBqxSAMoR+Dr9u/h1qaI051dmqZQ4
+         gcxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=N2iyxhvY8HuVpNdOOBZq1NpZlD91R7+QI6hopy2Mk2Q=;
+        b=ClaK/H0CzH7qoMHxP9GBEoOgOxgDyLaxVV0uosET2mMsSUvNadzjdyhbaCz1FLYP/H
+         mx8CR5dRyuBKNwlzNXA7FWb245kcTXtxb5bcJRCbO8j8UpxOVhcrw1UALMvgfAV9Bvqf
+         ajs3jdaBDqk9r31GyCwfYtB3kptWo38g0AsDBGNySOdQAaPKkLlYLj2DEdBFQ6GGhjzi
+         U5+tmy6culHKitDAJrEo4wpEK7BdBPLV7aTtoAKrNbI3dXJnGIvbwbMBWFC3wCp6bV4q
+         jsz4+i4ouSmYMSJnwovGnwkSZw+i3PBueVWIwEoAC4n/yymcUeCWC3O3wKwQHQLzXPrP
+         PlFw==
+X-Gm-Message-State: AOAM530PiiTlhkkhtf3JJu+uax0d0XuwuK+n5QAWBvoPnL5ecqr494zz
+        AXtYJTvENiddgT71YnfA0WEeIg==
+X-Google-Smtp-Source: ABdhPJygIn6W7AEsgikd3SeUywjO8Xv+3iaYAxvfacJmtcfsOeDyomYAg06OosKWdL4GB8DevmhKzw==
+X-Received: by 2002:a63:b94b:: with SMTP id v11mr43699851pgo.76.1620957368493;
+        Thu, 13 May 2021 18:56:08 -0700 (PDT)
+Received: from localhost (ppp121-45-194-51.cbr-trn-nor-bras38.tpg.internode.on.net. [121.45.194.51])
+        by smtp.gmail.com with UTF8SMTPSA id w127sm2937460pfw.4.2021.05.13.18.56.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 May 2021 18:56:07 -0700 (PDT)
+Message-ID: <af1e3d74-a373-09ae-ba61-8db2a906d71a@ozlabs.ru>
+Date:   Fri, 14 May 2021 11:56:01 +1000
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:88.0) Gecko/20100101
+ Thunderbird/88.0
+Subject: Re: [PATCH kernel v3] powerpc/makefile: Do not redefine $(CPP) for
+ preprocessor
+Content-Language: en-US
+To:     Nathan Chancellor <nathan@kernel.org>,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Segher Boessenkool <segher@kernel.crashing.org>
+References: <20210513115904.519912-1-aik@ozlabs.ru>
+ <dedc7262-2956-37b2-ebfd-ae8eb9b56716@kernel.org>
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+In-Reply-To: <dedc7262-2956-37b2-ebfd-ae8eb9b56716@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On Fri, 14 May 2021, at 05:02, David Gow wrote:
-> With KUnit's EXPECT macros no longer typechecking arguments as strictly,
-> get rid of a number of now unnecessary casts.
+On 14/05/2021 04:59, Nathan Chancellor wrote:
+> On 5/13/2021 4:59 AM, Alexey Kardashevskiy wrote:
+>> The $(CPP) (do only preprocessing) macro is already defined in Makefile.
+>> However POWERPC redefines it and adds $(KBUILD_CFLAGS) which results
+>> in flags duplication. Which is not a big deal by itself except for
+>> the flags which depend on other flags and the compiler checks them
+>> as it parses the command line.
+>>
+>> Specifically, scripts/Makefile.build:304 generates ksyms for .S files.
+>> If clang+llvm+sanitizer are enabled, this results in
+>>
+>> -emit-llvm-bc -fno-lto -flto -fvisibility=hidden \
+>>   -fsanitize=cfi-mfcall -fno-lto  ...
+>>
+>> in the clang command line and triggers error:
+>>
+>> clang-13: error: invalid argument '-fsanitize=cfi-mfcall' only allowed 
+>> with '-flto'
+>>
+>> This removes unnecessary CPP redefinition. Which works fine as in most
+>> place KBUILD_CFLAGS is passed to $CPP except
+>> arch/powerpc/kernel/vdso64/vdso(32|64).lds. To fix vdso, this does:
+>> 1. add -m(big|little)-endian to $CPP
+>> 2. add target to $KBUILD_CPPFLAGS as otherwise clang ignores 
+>> -m(big|little)-endian if
+>> the building platform does not support big endian (such as x86).
+>>
+>> Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+>> ---
+>> Changes:
+>> v3:
+>> * moved vdso cleanup in a separate patch
+>> * only add target to KBUILD_CPPFLAGS for CLANG
+>>
+>> v2:
+>> * fix KBUILD_CPPFLAGS
+>> * add CLANG_FLAGS to CPPFLAGS
+>> ---
+>>   Makefile              | 1 +
+>>   arch/powerpc/Makefile | 3 ++-
+>>   2 files changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/Makefile b/Makefile
+>> index 15b6476d0f89..5b545bef7653 100644
+>> --- a/Makefile
+>> +++ b/Makefile
+>> @@ -576,6 +576,7 @@ CC_VERSION_TEXT = $(subst $(pound),,$(shell $(CC) 
+>> --version 2>/dev/null | head -
+>>   ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
+>>   ifneq ($(CROSS_COMPILE),)
+>>   CLANG_FLAGS    += --target=$(notdir $(CROSS_COMPILE:%-=%))
+>> +KBUILD_CPPFLAGS    += --target=$(notdir $(CROSS_COMPILE:%-=%))
 > 
-> Signed-off-by: David Gow <davidgow@google.com>
-> ---
-> This should be a no-op functionality wise, and while it depends on the
-> first couple of patches in this series, it's otherwise independent from
-> the others. I think this makes the test more readable, but if you
-> particularly dislike it, I'm happy to drop it.
+> You can avoid the duplication here by just doing:
+> 
+> KBUILD_CPPFLAGS    += $(CLANG_FLAGS)
 
-No, happy to have that cleaned up.
+This has potential of duplicating even more flags which is exactly what 
+I am trying to avoid here.
 
-Thanks David.
 
-Acked-by: Andrew Jeffery <andrew@aj.id.au>
+> I am still not super happy about the flag duplication but I am not sure 
+> I can think of a better solution. If KBUILD_CPPFLAGS are always included 
+> when building .o files,
+
+
+My understanding is that KBUILD_CPPFLAGS should not be added for .o. Who 
+does know or decide for sure about what CPPFLAGS are for? :)
+
+
+> maybe we should just add $(CLANG_FLAGS) to 
+> KBUILD_CPPFLAGS instead of KBUILD_CFLAGS?
+> 
+>>   endif
+>>   ifeq ($(LLVM_IAS),1)
+>>   CLANG_FLAGS    += -integrated-as
+>> diff --git a/arch/powerpc/Makefile b/arch/powerpc/Makefile
+>> index 3212d076ac6a..306bfd2797ad 100644
+>> --- a/arch/powerpc/Makefile
+>> +++ b/arch/powerpc/Makefile
+>> @@ -76,6 +76,7 @@ endif
+>>   ifdef CONFIG_CPU_LITTLE_ENDIAN
+>>   KBUILD_CFLAGS    += -mlittle-endian
+>> +KBUILD_CPPFLAGS    += -mlittle-endian
+>>   KBUILD_LDFLAGS    += -EL
+>>   LDEMULATION    := lppc
+>>   GNUTARGET    := powerpcle
+>> @@ -83,6 +84,7 @@ MULTIPLEWORD    := -mno-multiple
+>>   KBUILD_CFLAGS_MODULE += $(call cc-option,-mno-save-toc-indirect)
+>>   else
+>>   KBUILD_CFLAGS += $(call cc-option,-mbig-endian)
+>> +KBUILD_CPPFLAGS += $(call cc-option,-mbig-endian)
+>>   KBUILD_LDFLAGS    += -EB
+>>   LDEMULATION    := ppc
+>>   GNUTARGET    := powerpc
+>> @@ -208,7 +210,6 @@ KBUILD_CPPFLAGS    += -I $(srctree)/arch/$(ARCH) 
+>> $(asinstr)
+>>   KBUILD_AFLAGS    += $(AFLAGS-y)
+>>   KBUILD_CFLAGS    += $(call cc-option,-msoft-float)
+>>   KBUILD_CFLAGS    += -pipe $(CFLAGS-y)
+>> -CPP        = $(CC) -E $(KBUILD_CFLAGS)
+>>   CHECKFLAGS    += -m$(BITS) -D__powerpc__ -D__powerpc$(BITS)__
+>>   ifdef CONFIG_CPU_BIG_ENDIAN
+>>
+> 
+
+-- 
+Alexey
