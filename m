@@ -2,147 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B6C2380647
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 11:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26118380649
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 11:32:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233736AbhENJcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 05:32:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41744 "EHLO
+        id S231503AbhENJd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 05:33:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230440AbhENJct (ORCPT
+        with ESMTP id S230440AbhENJd6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 05:32:49 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EEFBC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 02:31:37 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id l1so7772815ejb.6
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 02:31:37 -0700 (PDT)
+        Fri, 14 May 2021 05:33:58 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C40FAC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 02:32:46 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id j14so2446450ejy.1
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 02:32:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=HvoBw86ctVXyhbWOgqr0xC6pEc+fFV76B2CUFf5kjSI=;
-        b=ixbflPe1nhsPohr943bOZRN0CJ+ifoIo0TDjt48YRc4xHRRCPSrahZoEgrS5nzfzZb
-         PONow1l+ujnBhdNyMHuqJQdz3N84k2ah+t7CE1DVLjfjuYw5mCU8B0M7IYfl8rg1qju1
-         HssrGdLLzIgvXR4bt6VHeZwvddqLLcwh6Pa3ruvgWHL8/jS21QDK/SGqXypD4053Gsmp
-         gBJ4E8glAaO98vKkkOIwyrpwQPZ7/Iu/ao0s1VInzy/sVRFTDgXrwK1ByT/uUpjAiCxY
-         u4Jt2w3dijAU++3Z1mptel+cC6+WWwvGOcJ074K275VTqlnC1P3/ipsYgYafCu8FXHsL
-         DYVA==
+        d=deviqon.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5dkvYwQ8CxkFUQyQjEPLhL9qrknOLCMJxEkbIJ8p7Y0=;
+        b=d8nrf1ZEXN+YlTdYR7CzId6MkTm2bgp/XSLkF1P3iju9JCjVKlOe8XCQn+EzfInSri
+         KPoqeZoKROzo9jwPli15zjn2AW+VVCIqxveeuMGNr8vBw2t8LSHB5WZNJb23+vjPnRq+
+         2D4AbW3CXw2Top2DUHUhIiD8Tq5O9R2HKH+VSjCKH/HNE1mystBLrMCF5VrS1Aep0qAK
+         bOGsmDJvL9LOkFTzjH1MdHMvo6j/7WPZ9jDUvw7ETMKUfv4MpgL2wyaZpqgJQvCpux8v
+         gmx+NJMmwhjuEqPmOeS7TqhYBan554QKf/Z+YmQ1XZxpTXDgc88Oc+NuXYQMOPau1ITb
+         MXJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=HvoBw86ctVXyhbWOgqr0xC6pEc+fFV76B2CUFf5kjSI=;
-        b=nUxO1tVMUvyR+uc+JxvvzN65wkN5s5v4/E4gaIhHNKZeZgsZTKpHXTyO5shrHleu9i
-         kxYnfb9F1hPyLEla2DGOaZRoRLt2p5FPpPCyjDkjW+aTG2mLz35LI9s7xGrpEWqi78IM
-         XbtvsR86dhEoleVuY8fJkQW323CVVyQGfO/t/PKWbSR3u7GG3vdOn/pgrxpqEn019uRP
-         faHGoCtbO89f/pOp7W19Ai1pgWQlMeU87EICiGtwy0kBOjqF04LkMacRCFy7nlcgjBsj
-         zOb8XlHpZ0X9T/QkjAKsmb2cunxyTy5BxBKevKG28OX6QvIk5nmEfr3nseN8UfKzZis5
-         Q9Rw==
-X-Gm-Message-State: AOAM533fO6BnlCr1Gb02Ey1Ld9GVc0P89sVyjLpI7w/EL0qY3SagvOjk
-        slURMKIwB7czYuOFHFgGFPo=
-X-Google-Smtp-Source: ABdhPJyMMG/8Kf6iC2x/uQf7CA6SwYK6+F8q8EGAG4/wT5mAAZPcB0VU/MD/prGUZ6iseHDub9Lu+A==
-X-Received: by 2002:a17:906:c1ca:: with SMTP id bw10mr20705685ejb.512.1620984695970;
-        Fri, 14 May 2021 02:31:35 -0700 (PDT)
-Received: from agape.jhs ([5.171.81.81])
-        by smtp.gmail.com with ESMTPSA id o20sm4047302eds.20.2021.05.14.02.31.32
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5dkvYwQ8CxkFUQyQjEPLhL9qrknOLCMJxEkbIJ8p7Y0=;
+        b=nciDl/Jglcm/mrcFdZzjtluUhMkfyp2PMYTBm8dOtsVh1UHJ8J/Qf6a9AUdsnEMuNn
+         q1CrCIqEwzNEHHWNAHWX42VsDUu3245hcHF0XhDFz2iQu3ZVczntKDEaTxjxpyHwArTI
+         2z15JIyjwzN1kwYdyOvwdwg+XmObkW4sGPoVdwTG8P+9QaUoQPLOLBA4wr3xMvqJXG5g
+         kiu61Gm3axIelNfnAO/LiI+c8SgNj39Fx0Ex9aKhfAVWD0mWgO/79R5s2iNJ9iBlKHdv
+         PDMxYh2O965/eyynQWAWCZQOG6VYWvRV3oPecvUNTzDTdnR3bZzIs2NJBgEamnEYhEFp
+         jInw==
+X-Gm-Message-State: AOAM531VXaAng9zFD7MtUn+UgbUsuOp0Grc/a9rmKKJnteWZrBlViuKA
+        ump+R8ZdyPm/vXR5XOzl5o6IVA==
+X-Google-Smtp-Source: ABdhPJxK3ofuQ149WFqgphHtPVKXcZBh/6pjFirMjY0I2Er9Z9n9PHIhQV2aL/R+tNFcFuzITWJZLQ==
+X-Received: by 2002:a17:906:e105:: with SMTP id gj5mr49528017ejb.388.1620984765596;
+        Fri, 14 May 2021 02:32:45 -0700 (PDT)
+Received: from neptune.. ([5.2.193.191])
+        by smtp.gmail.com with ESMTPSA id r10sm3250024ejd.112.2021.05.14.02.32.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 02:31:35 -0700 (PDT)
-Date:   Fri, 14 May 2021 11:31:20 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
-        youling 257 <youling257@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: staging: rtl8723bs: questions on TODO list
-Message-ID: <20210514093119.GB13800@agape.jhs>
-References: <20210514083856.GA13800@agape.jhs>
- <85289dbc-e986-9beb-f7d6-eca9e8750c8a@redhat.com>
+        Fri, 14 May 2021 02:32:45 -0700 (PDT)
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+To:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        andy@kernel.org, Alexandru Ardelean <aardelean@deviqon.com>
+Subject: [PATCH] gpio: gpio-crystalcove: remove platform_set_drvdata() + cleanup probe
+Date:   Fri, 14 May 2021 12:32:26 +0300
+Message-Id: <20210514093226.22703-1-aardelean@deviqon.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <85289dbc-e986-9beb-f7d6-eca9e8750c8a@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 11:15:42AM +0200, Hans de Goede wrote:
-> Hi Fabio,
-> 
-> On 5/14/21 10:38 AM, Fabio Aiuto wrote:
-> > Hello all,
-> > 
-> > I'd like to have some clarifications about rtl8723bs driver.
-> > In order to make this driver ready for moving out of staging
-> > I would like to know:
-> > 
-> > - find and remove remaining code valid only for 5 GHz. Most of the obvious
-> >   ones have been removed, but things like channel > 14 still exist.
-> > 
-> > is it possible to remove all 5g code, even the one related to power
-> > regulation when on band 5g? As far as I know about this card is that
-> > it doesn't support 5g, so may I just delete all 5g code or there are some
-> > constraints I'd take care of?
-> 
-> These cards are 2.4G only so any code of which you are sure it is for
-> 5G only can be removed.
-> 
-> > - find and remove any code for other chips that is left over
-> > 
-> > Ok this seems clear, are there some suggestion to do it safely?
-> 
-> Get some hardware and test that things still work, preferably
-> against multiple access-points.
-> 
-> > - convert any remaining unusual variable types
-> > 
-> > Ok (but feel free to suggest anything)
-> > 
-> > - find codes that can use %pM and %Nph formatting
-> > 
-> > Ok (but feel free to suggest anything)
-> > 
-> > - checkpatch.pl fixes - most of the remaining ones are lines too long. Many
-> >   of them will require refactoring
-> > 
-> > Ok
-> > 
-> > - merge Realtek's bugfixes and new features into the driver
-> > 
-> > Please, can you explain what one could do that?
-> 
-> I know that "youling 257 <youling257@gmail.com>" is using a different
-> version of the original (out-of-tree, non cleaned-up) Realtek driver
-> code for the Android-X86 kernels he works on. You should probably
-> ask youling why that version is being used and try to get a copy of
-> the original Realtek sources on which the staging driver is based
-> and do a "diff -ur" between them and see what is different.
-> 
-> > - switch to use LIB80211
-> > - switch to use MAC80211
-> > 
-> > I think I need a few details for these last points as well.
-> 
-> I'm afraid I cannot help there, you should ask for help with this
-> on the linux wireless email list.
-> 
-> > Do you think that one will need real hardware to complete
-> > these tasks? I don't have rtl8723bs card at the moment, so
-> > I think I will focus on those TODO activities which
-> > don't need it.
-> 
-> Yes you really do need hardware, even simple coding style
-> cleanups are known to (accidentally) break driver functionality,
-> so you really should ensure that you are capable of testing your
-> changes on real hardware.
-> 
-> Regards,
-> 
-> Hans
-> 
-> 
+The platform_set_drvdata() call is only useful if we need to retrieve back
+the private information.
+Since the driver doesn't do that, it's not useful to have it.
 
-thank you for your answer Hans,
+If this is removed, we can also just do a direct return on
+devm_gpiochip_add_data(). We don't need to print that this call failed as
+there are other ways to log/see this during probe.
 
-fabio
+Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+---
+ drivers/gpio/gpio-crystalcove.c | 10 +---------
+ 1 file changed, 1 insertion(+), 9 deletions(-)
+
+diff --git a/drivers/gpio/gpio-crystalcove.c b/drivers/gpio/gpio-crystalcove.c
+index 2ba225720086..5a909f3c79e8 100644
+--- a/drivers/gpio/gpio-crystalcove.c
++++ b/drivers/gpio/gpio-crystalcove.c
+@@ -339,8 +339,6 @@ static int crystalcove_gpio_probe(struct platform_device *pdev)
+ 	if (!cg)
+ 		return -ENOMEM;
+ 
+-	platform_set_drvdata(pdev, cg);
+-
+ 	mutex_init(&cg->buslock);
+ 	cg->chip.label = KBUILD_MODNAME;
+ 	cg->chip.direction_input = crystalcove_gpio_dir_in;
+@@ -372,13 +370,7 @@ static int crystalcove_gpio_probe(struct platform_device *pdev)
+ 		return retval;
+ 	}
+ 
+-	retval = devm_gpiochip_add_data(&pdev->dev, &cg->chip, cg);
+-	if (retval) {
+-		dev_warn(&pdev->dev, "add gpio chip error: %d\n", retval);
+-		return retval;
+-	}
+-
+-	return 0;
++	return devm_gpiochip_add_data(&pdev->dev, &cg->chip, cg);
+ }
+ 
+ static struct platform_driver crystalcove_gpio_driver = {
+-- 
+2.31.1
+
