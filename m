@@ -2,196 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 209553812DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 23:31:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2E9B3812E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 23:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232565AbhENVck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 17:32:40 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39560 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232548AbhENVci (ORCPT
+        id S232816AbhENVeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 17:34:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232548AbhENVeW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 17:32:38 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1621027885;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=c2iBZbwZGJR0/+vpVrDDLpOeD8ubQkI/5otbnREwFSc=;
-        b=AHg+FxV4YMUxfj86qbO4FGmf4eBQtCenD5rJBjyWUWJKnAd/Z8YjpmOojgQ/hzQhsPtPCD
-        pendwZAm7UpZOFdBnYOrkedfj3qEW+cl9ef1/F2frHGbPLpqxJw5z9yihYyWAD3yHUSAeC
-        CkQz4rSZgnzRKXNcNiNmBnDldqh/GSfjYSj5Lw2DLROAWkz9+fRnu08PqzuTVGmv17ZmPp
-        bQnYiEXcF0/bXADiYODHXaUD87SSo17vN3fd3qL9bghg7KY5lfZTqt1IeI8drxOEuEovRA
-        c0yUokmpTA/YnTBr1riRoAtg/q1g9QeYitrN2VreCVb3C3/Ka0g/RwGDNtJLww==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1621027885;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=c2iBZbwZGJR0/+vpVrDDLpOeD8ubQkI/5otbnREwFSc=;
-        b=EharRv4SmBkNxFxo2Z+dGLQQAzyKweNoqZ5ju/ktcSRtovsc1lM1UhqoFpUQUuVgfSidmW
-        7ORIGoFXNiD4tlCA==
-To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Jacob Pan <jacob.jun.pan@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
-        iommu@lists.linux-foundation.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Ricardo Neri <ricardo.neri@intel.com>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        Andi Kleen <andi.kleen@intel.com>,
-        David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [RFC PATCH v5 5/7] iommu/vt-d: Fixup delivery mode of the HPET hardlockup interrupt
-In-Reply-To: <20210504191049.22661-6-ricardo.neri-calderon@linux.intel.com>
-References: <20210504191049.22661-1-ricardo.neri-calderon@linux.intel.com> <20210504191049.22661-6-ricardo.neri-calderon@linux.intel.com>
-Date:   Fri, 14 May 2021 23:31:24 +0200
-Message-ID: <87a6ox2eab.ffs@nanos.tec.linutronix.de>
+        Fri, 14 May 2021 17:34:22 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98E47C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 14:33:10 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id z9so320583lfu.8
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 14:33:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DgAKwIM9zch8xYFNPJtzcIGRCfmQye33dMFzHuDOjA8=;
+        b=Ma9YTpFKv2FKqspm+/+nOYKxqwaYNdETxuDqxtZyA7ZnVB17mpdfo0ZQZ1QAMyP7bQ
+         2NoTwneXD9c+6ebVHoiqc6oePXLumrECPiQv+8vOzySGekm4yv4qyr/1A5OQgNBWIdOc
+         GC91s86KWPnv8OcKzcAtpmA6LtDhi2dV4QHzddOOZPk3XWb4BwhtopFJddjuMGi0t41q
+         Jt0ib/JJrlJ/eTK/VFDyP2XjLu/w++ESDctvgTGDtx+T4x5lrWiNYYxvwr1aWxUfB5gb
+         DYjv0/UJb4ygI1UCeFfyaQGMxfketFlRyTTSsDTQ0S3dPSWKpNzYhoYbxy3ooFhgS+3n
+         2mNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DgAKwIM9zch8xYFNPJtzcIGRCfmQye33dMFzHuDOjA8=;
+        b=cL0diZN3jkWu1SF1Gq+YEi6zTFLwWhkaYOLCCy784FmfYoK0+kyyF/l1jvdLnnHEms
+         w7tEbHILSC8iRrkmTeKM1+UO0SCmfp7//zQK0BHPxHKKqevBLDadVCwjtcopujKTEvPS
+         0MvrV9utJnzwW2p003khBEFu+YacQDzelzKrNxHUcCAXtEmInMRpWNOj2HssgM/cNezp
+         s1kCeZLlIaclz2R+DdX38tC1uIo/EOtskLkB2Q6shNVsOAe+YwjwTd0BGa/2RPo4Agez
+         5AfakYoMDboVsNR2RkWPQzzheNgBGOWfO0a5I32+sMJbLN4qeQuJq6SiUIoOBLqvIIE8
+         NsHA==
+X-Gm-Message-State: AOAM531I2G208w4R6B8ychfkon+lLe5YT01mzpuZQPHfHuOLvh17JLM+
+        xnhKRuxa2fBgKJHZE8TEgl0VsGY+y8ZZeBI1JjNQJQ==
+X-Google-Smtp-Source: ABdhPJwaWVyRTYrod/pJttPl6eOfPN7YN4oV2Ff7Rx7cDDSMWwaxFsTSlvdmGRhuFsgKwiPdwp1Wmw5xH9pEHIajUKQ=
+X-Received: by 2002:a05:6512:2243:: with SMTP id i3mr33685984lfu.46.1621027988910;
+ Fri, 14 May 2021 14:33:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <1620871189-4763-1-git-send-email-wanpengli@tencent.com>
+In-Reply-To: <1620871189-4763-1-git-send-email-wanpengli@tencent.com>
+From:   David Matlack <dmatlack@google.com>
+Date:   Fri, 14 May 2021 14:32:42 -0700
+Message-ID: <CALzav=e98KRgG+z5oezPmENKDt+NqtEA57ijYh3kMBZyduQUZg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/4] KVM: X86: Bail out of direct yield in case of
+ under-comitted scenarios
+To:     Wanpeng Li <kernellwp@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, kvm list <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04 2021 at 12:10, Ricardo Neri wrote:
+On Wed, May 12, 2021 at 7:01 PM Wanpeng Li <kernellwp@gmail.com> wrote:
+>
+> From: Wanpeng Li <wanpengli@tencent.com>
+>
+> In case of under-comitted scenarios, vCPU can get scheduling easily,
+> kvm_vcpu_yield_to adds extra overhead, we can observe a lot of race
+> between vcpu->ready is true and yield fails due to p->state is
+> TASK_RUNNING. Let's bail out in such scenarios by checking the length
+> of current cpu runqueue, it can be treated as a hint of under-committed
+> instead of guarantee of accuracy.
+>
+> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+> ---
+> v1 -> v2:
+>  * move the check after attempted counting
+>  * update patch description
+>
+>  arch/x86/kvm/x86.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 9b6bca6..dfb7c32 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -8360,6 +8360,9 @@ static void kvm_sched_yield(struct kvm_vcpu *vcpu, unsigned long dest_id)
+>
+>         vcpu->stat.directed_yield_attempted++;
+>
+> +       if (single_task_running())
+> +               goto no_yield;
 
-Resending as the original one did not make it on the list because of
-fatfingers. Sorry for the noise.
+Since this is a heuristic, do you have any experimental or real world
+results that show the benefit?
 
-> In x86 there is not an IRQF_NMI flag that can be used to indicate the
-
-There exists no IRQF_NMI flag at all. No architecture provides that.
-
-> delivery mode when requesting an interrupt (via request_irq()). Thus,
-> there is no way for the interrupt remapping driver to know and set
-> the delivery mode.
-
-There is no support for this today. So what?
-
-> Hence, when allocating an interrupt, check if such interrupt belongs to
-> the HPET hardlockup detector and fixup the delivery mode accordingly.
-
-What?
-
-> +		/*
-> +		 * If we find the HPET hardlockup detector irq, fixup the
-> +		 * delivery mode.
-> +		 */
-> +		if (is_hpet_irq_hardlockup_detector(info))
-> +			irq_cfg->delivery_mode = APIC_DELIVERY_MODE_NMI;
-
-Again. We are not sticking some random device checks into that
-code. It's wrong and I explained it to you before.
-
-  https://lore.kernel.org/lkml/alpine.DEB.2.21.1906161042080.1760@nanos.tec.linutronix.de/
-
-But I'm happy to repeat it again:
-
-  "No. This is horrible hackery violating all the layering which we carefully
-   put into place to avoid exactly this kind of sprinkling conditionals into
-   all code pathes.
-
-   With some thought the existing irqdomain hierarchy can be used to achieve
-   the same thing without tons of extra functions and conditionals."
-
-So the outcome of thought and using the irqdomain hierarchy is:
-
-   Replacing an hpet specific conditional in one place with an hpet
-   specific conditional in a different place.
-
-Impressive.
-
-hpet_assign_irq(...., bool nmi)
-  init_info(info)
-    ...
-    if (nmi)
-        info.flags |= X86_IRQ_ALLOC_AS_NMI;
-
-   irq_domain_alloc_irqs(domain, 1, NUMA_NO_NODE, &info)
-     intel_irq_remapping_alloc(..., info)
-       irq_domain_alloc_irq_parents(..., info)
-         x86_vector_alloc_irqs(..., info)
-         {   
-           if (info->flags & X86_IRQ_ALLOC_AS_NMI && nr_irqs != 1)
-      	    return -EINVAL;
-
-           for (i = 0; i < nr_irqs; i++) {
-             ....
-             if (info->flags & X86_IRQ_ALLOC_AS_NMI) {
-      	   irq_cfg_setup_nmi(apicd);
-      	   continue;
-             }
-             ...
-         }
-
-irq_cfg_setup_nmi() sets irq_cfg->delivery_mode and whatever is required
-and everything else just works. Of course this needs a few other minor
-tweaks but none of those introduces random hpet quirks all over the
-place. Not convoluted enough, right?
-
-But that solves none of other problems. Let me summarize again which
-options or non-options we have:
-
-    1) Selective IPIs from NMI context cannot work
-
-       As explained in the other thread.
-
-    2) Shorthand IPI allbutself from NMI
-
-       This should work, but that obviously does not take the watchdog
-       cpumask into account.
-
-       Also this only works when IPI shorthand mode is enabled. See
-       apic_smt_update() for details.
-
-    3) Sending the IPIs from irq_work
-
-       This would solve the problem, but if the CPU which is the NMI
-       target is really stuck in an interrupt disabled region then the
-       IPIs won't be sent.
-
-       OTOH, if that's the case then the CPU which was processing the
-       NMI will continue to be stuck until the next NMI hits which
-       will detect that the CPU is stuck which is a good enough
-       reason to send a shorthand IPI to all CPUs ignoring the
-       watchdog cpumask.
-
-       Same limitation vs. shorthand mode as #2
-
-    4) Changing affinity of the HPET NMI from NMI
-
-       As we established two years ago that cannot work with interrupt
-       remapping
-
-    5) Changing affinity of the HPET NMI from irq_work
-
-       Same issues as #3
-
-Anything else than #2 is just causing more problems than it solves, but
-surely the NOHZ_FULL/isolation people might have opinions on this.
-
-OTOH, as this is opt-in, anything which wants a watchdog mask which is
-not the full online set, has to accept that HPET has these restrictions.
-
-And that's exactly what I suggested two years ago:
-
- https://lore.kernel.org/lkml/alpine.DEB.2.21.1906172343120.1963@nanos.tec.linutronix.de/
-
-  "It definitely would be worthwhile to experiment with that. if we
-   could use shorthands (also for regular IPIs) that would be a great
-   improvement in general and would nicely solve that NMI issue. Beware
-   of the dragons though."
-
-As a consequence of this conversation I implemented shorthand IPIs...
-
-But I haven't seen any mentioning that this has been tried, why the
-approach was not chosen or any discussion about that matter.
-
-Not that I'm surprised.
-
-Thanks,
-
-        tglx
+> +
+>         rcu_read_lock();
+>         map = rcu_dereference(vcpu->kvm->arch.apic_map);
+>
+> --
+> 2.7.4
+>
