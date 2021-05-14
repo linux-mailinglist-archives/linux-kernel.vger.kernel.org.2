@@ -2,186 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3114380ADF
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 15:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3152380AE6
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 15:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232532AbhENN74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 09:59:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232455AbhENN7y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 09:59:54 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AC74C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 06:58:43 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id j12so25881569ils.4
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 06:58:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bfYFyDNOaHNznWD3QdjOTFC8+ozDhd6BMb68HdfprOU=;
-        b=c01F5hKE8Z6Bx4tcWxeDqSwTHAQXEuTzA80kuP5Y/4gWobUYbKnf5x5a93aCLtQt+7
-         /T4/ZcijHUQ5pkR6PldpwKw+JI6Wt4AAZTEsno0EtwfWn+Dl5vO/fCwWQvoiYrmKDXm1
-         8JHA5ipjZoX8GXyEiaK011JEGH291V6SxSpiqWFZOc8TQLsacNXWfjBVTK86yx+znbq/
-         iuYuY2/1bkI2uResvm8SG90jQPrWRWDeyKphHoX/dFo69ehgrmgAXPLd0W7LLHECpkDo
-         w58oYYU5YoSVmTEL5KEmHEhzQseJVKY5XZkkNSZq9VIvqb9F9DvJbrBjY/d86yxRvplT
-         0XhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bfYFyDNOaHNznWD3QdjOTFC8+ozDhd6BMb68HdfprOU=;
-        b=n0hPNit9Hx5S63rqASnOPfRE+MDGBVBmuB4INxqDb5LEbMbdk+j/ljQpvhC+2l0I1e
-         Ss1Rq7gQ0UNYFOAl8KHkTOdqfiO7G4a2xqa5uq9oSIePc27nhp7jUJaRAzSFWhkJwHwT
-         e4DwncvJoRBSKvNpRpPhFZGqfwwWcs7sz1ru8BTkitAMPyPC0XSOf7pimMbacfN/FACB
-         PfycZ0kitAXn8Ef8eW35wLguErAC9lFIVkpDZSmgR7uS0a37T26sHiG8tD+TOcue91VD
-         M0y2BCZmY2jIQkOtjDgDEHszuGV2CB+deg6ZLO/nPKb2Ie+bkAyOGtUSLfAjzP1G7FGG
-         ACDg==
-X-Gm-Message-State: AOAM532+PbVsuGRWF3bh1qjjAn8YKWU/9RGLDhij+Eennq0wZcAWGQD+
-        3UNHBfUNU9T+C169qxFPg2yzhChTrs9RDoBwm070
-X-Google-Smtp-Source: ABdhPJxalKKFR43HiA8yCE0dJ8wr0xiO9hBKUHab9MyXauJN2iIVjG1vmjJpu9op6ncTeNps+BNJ6gnsJ8KcevdkWRw=
-X-Received: by 2002:a92:c884:: with SMTP id w4mr40269472ilo.186.1621000722714;
- Fri, 14 May 2021 06:58:42 -0700 (PDT)
+        id S232658AbhENOBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 10:01:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59328 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232103AbhENOBD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 10:01:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 793C3613E9;
+        Fri, 14 May 2021 13:59:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621000792;
+        bh=Ow2qpjN+bkVwWRQxi7G/HA/bPZRg73EV0cI+Qppnl1g=;
+        h=From:To:Cc:Subject:Date:From;
+        b=uVSWX0VdAgwE8oNHi7N4hUyTxIxHIEBmiX409MwQtsBRhSynnvCSa7SS9yc663Pin
+         gvRpy2Pl1l9/1FETAhVWQqHuBsn4ksqPz4qAy73tc769g2FOmmSiVgFVRLCsDGImXM
+         xMAvl1qUfYv1TdIzRX5z/+XBvwzUfjDLBeq/g1NbYbpsiO6g26Yo7te61I4O2IuD/n
+         UYvjTaWGm+Empwkz2bGBBQ4twSebbk7ESa+71Ks0CmU60YhcS/PBLPj98m4Ww/BuHt
+         QXNBbRM1GZh9TcFQ9NCanHVp3iJKrl398meP1DkEMJ2V8zh+0CREOGdJ+cnBi9Uq9S
+         QPwP1q3MMxgVQ==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Julian Sax <jsbc@gmx.de>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Hans de Goede <hdegoede@redhat.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Xiaofei Tan <tanxiaofei@huawei.com>,
+        Coiby Xu <coiby.xu@gmail.com>, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [PATCH] HID: i2c-hid: fix format string mismatch
+Date:   Fri, 14 May 2021 15:58:50 +0200
+Message-Id: <20210514135901.2924982-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210423080942.2997-1-jasowang@redhat.com> <YJ1TgoFSwOkQrC+1@stefanha-x1.localdomain>
- <CACGkMEv0uWd+X87cYoG-GGjTXBvRztp2CY3RKyq9jFbSYK1n0Q@mail.gmail.com>
- <YJ5cKe0egklXDpng@stefanha-x1.localdomain> <CACycT3u+hQbDJtf5gxS1NVVpiTffMz1skuhTExy5d_oRjYKoxg@mail.gmail.com>
- <20210514073452-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20210514073452-mutt-send-email-mst@kernel.org>
-From:   Yongji Xie <xieyongji@bytedance.com>
-Date:   Fri, 14 May 2021 21:58:32 +0800
-Message-ID: <CACycT3ttN=t3LQGSVUbt9mbsgUsKOrZuRRziMkZJSiQkBP77iw@mail.gmail.com>
-Subject: Re: Re: Re: [RFC PATCH V2 0/7] Do not read from descripto ring
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        file@sect.tu-berlin.de, ashish.kalra@amd.com,
-        konrad.wilk@oracle.com, kvm <kvm@vger.kernel.org>,
-        Christoph Hellwig <hch@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 7:36 PM Michael S. Tsirkin <mst@redhat.com> wrote:
->
-> On Fri, May 14, 2021 at 07:27:22PM +0800, Yongji Xie wrote:
-> > On Fri, May 14, 2021 at 7:17 PM Stefan Hajnoczi <stefanha@redhat.com> wrote:
-> > >
-> > > On Fri, May 14, 2021 at 03:29:20PM +0800, Jason Wang wrote:
-> > > > On Fri, May 14, 2021 at 12:27 AM Stefan Hajnoczi <stefanha@redhat.com> wrote:
-> > > > >
-> > > > > On Fri, Apr 23, 2021 at 04:09:35PM +0800, Jason Wang wrote:
-> > > > > > Sometimes, the driver doesn't trust the device. This is usually
-> > > > > > happens for the encrtpyed VM or VDUSE[1].
-> > > > >
-> > > > > Thanks for doing this.
-> > > > >
-> > > > > Can you describe the overall memory safety model that virtio drivers
-> > > > > must follow?
-> > > >
-> > > > My understanding is that, basically the driver should not trust the
-> > > > device (since the driver doesn't know what kind of device that it
-> > > > tries to drive)
-> > > >
-> > > > 1) For any read only metadata (required at the spec level) which is
-> > > > mapped as coherent, driver should not depend on the metadata that is
-> > > > stored in a place that could be wrote by the device. This is what this
-> > > > series tries to achieve.
-> > > > 2) For other metadata that is produced by the device, need to make
-> > > > sure there's no malicious device triggered behavior, this is somehow
-> > > > similar to what vhost did. No DOS, loop, kernel bug and other stuffs.
-> > > > 3) swiotb is a must to enforce memory access isolation. (VDUSE or encrypted VM)
-> > > >
-> > > > > For example:
-> > > > >
-> > > > > - Driver-to-device buffers must be on dedicated pages to avoid
-> > > > >   information leaks.
-> > > >
-> > > > It looks to me if swiotlb is used, we don't need this since the
-> > > > bouncing is not done at byte not page.
-> > > >
-> > > > But if swiotlb is not used, we need to enforce this.
-> > > >
-> > > > >
-> > > > > - Driver-to-device buffers must be on dedicated pages to avoid memory
-> > > > >   corruption.
-> > > >
-> > > > Similar to the above.
-> > > >
-> > > > >
-> > > > > When I say "pages" I guess it's the IOMMU page size that matters?
-> > > > >
-> > > >
-> > > > And the IOTLB page size.
-> > > >
-> > > > > What is the memory access granularity of VDUSE?
-> > > >
-> > > > It has an swiotlb, but the access and bouncing is done per byte.
-> > > >
-> > > > >
-> > > > > I'm asking these questions because there is driver code that exposes
-> > > > > kernel memory to the device and I'm not sure it's safe. For example:
-> > > > >
-> > > > >   static int virtblk_add_req(struct virtqueue *vq, struct virtblk_req *vbr,
-> > > > >                   struct scatterlist *data_sg, bool have_data)
-> > > > >   {
-> > > > >           struct scatterlist hdr, status, *sgs[3];
-> > > > >           unsigned int num_out = 0, num_in = 0;
-> > > > >
-> > > > >           sg_init_one(&hdr, &vbr->out_hdr, sizeof(vbr->out_hdr));
-> > > > >                             ^^^^^^^^^^^^^
-> > > > >           sgs[num_out++] = &hdr;
-> > > > >
-> > > > >           if (have_data) {
-> > > > >                   if (vbr->out_hdr.type & cpu_to_virtio32(vq->vdev, VIRTIO_BLK_T_OUT))
-> > > > >                           sgs[num_out++] = data_sg;
-> > > > >                   else
-> > > > >                           sgs[num_out + num_in++] = data_sg;
-> > > > >           }
-> > > > >
-> > > > >           sg_init_one(&status, &vbr->status, sizeof(vbr->status));
-> > > > >                                ^^^^^^^^^^^^
-> > > > >           sgs[num_out + num_in++] = &status;
-> > > > >
-> > > > >           return virtqueue_add_sgs(vq, sgs, num_out, num_in, vbr, GFP_ATOMIC);
-> > > > >   }
-> > > > >
-> > > > > I guess the drivers don't need to be modified as long as swiotlb is used
-> > > > > to bounce the buffers through "insecure" memory so that the memory
-> > > > > surrounding the buffers is not exposed?
-> > > >
-> > > > Yes, swiotlb won't bounce the whole page. So I think it's safe.
-> > >
-> > > Thanks Jason and Yongji Xie for clarifying. Seems like swiotlb or a
-> > > similar mechanism can handle byte-granularity isolation so the drivers
-> > > not need to worry about information leaks or memory corruption outside
-> > > the mapped byte range.
-> > >
-> > > We still need to audit virtio guest drivers to ensure they don't trust
-> > > data that can be modified by the device. I will look at virtio-blk and
-> > > virtio-fs next week.
-> > >
-> >
-> > Oh, that's great. Thank you!
-> >
-> > I also did some audit work these days and will send a new version for
-> > reviewing next Monday.
-> >
-> > Thanks,
-> > Yongji
->
-> Doing it in a way that won't hurt performance for simple
-> configs that trust the device is a challenge though.
-> Pls take a look at the discussion with Christoph for some ideas
-> on how to do this.
->
+From: Arnd Bergmann <arnd@arndb.de>
 
-I see. Thanks for the reminder.
+clang doesn't like printing a 32-bit integer using %hX format string:
 
-Thanks,
-Yongji
+drivers/hid/i2c-hid/i2c-hid-core.c:994:18: error: format specifies type 'unsigned short' but the argument has type '__u32' (aka 'unsigned int') [-Werror,-Wformat]
+                 client->name, hid->vendor, hid->product);
+                               ^~~~~~~~~~~
+drivers/hid/i2c-hid/i2c-hid-core.c:994:31: error: format specifies type 'unsigned short' but the argument has type '__u32' (aka 'unsigned int') [-Werror,-Wformat]
+                 client->name, hid->vendor, hid->product);
+                                            ^~~~~~~~~~~~
+
+Use an explicit cast to truncate it to the low 16 bits instead.
+
+Fixes: 9ee3e06610fd ("HID: i2c-hid: override HID descriptors for certain devices")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/hid/i2c-hid/i2c-hid-core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
+index 9993133989a5..f9d28ad17d9c 100644
+--- a/drivers/hid/i2c-hid/i2c-hid-core.c
++++ b/drivers/hid/i2c-hid/i2c-hid-core.c
+@@ -990,8 +990,8 @@ int i2c_hid_core_probe(struct i2c_client *client, struct i2chid_ops *ops,
+ 	hid->vendor = le16_to_cpu(ihid->hdesc.wVendorID);
+ 	hid->product = le16_to_cpu(ihid->hdesc.wProductID);
+ 
+-	snprintf(hid->name, sizeof(hid->name), "%s %04hX:%04hX",
+-		 client->name, hid->vendor, hid->product);
++	snprintf(hid->name, sizeof(hid->name), "%s %04X:%04X",
++		 client->name, (u16)hid->vendor, (u16)hid->product);
+ 	strlcpy(hid->phys, dev_name(&client->dev), sizeof(hid->phys));
+ 
+ 	ihid->quirks = i2c_hid_lookup_quirk(hid->vendor, hid->product);
+-- 
+2.29.2
+
