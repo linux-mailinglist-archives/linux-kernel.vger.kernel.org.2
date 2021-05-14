@@ -2,170 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2286380CE1
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 17:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D719380CE3
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 17:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234662AbhENP2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 11:28:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37416 "EHLO
+        id S234675AbhENP2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 11:28:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231419AbhENP2n (ORCPT
+        with ESMTP id S231419AbhENP2u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 11:28:43 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B7CFC061574;
-        Fri, 14 May 2021 08:27:30 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id t15so7457010edr.11;
-        Fri, 14 May 2021 08:27:30 -0700 (PDT)
+        Fri, 14 May 2021 11:28:50 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 747FEC061574;
+        Fri, 14 May 2021 08:27:38 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id a2so29052990qkh.11;
+        Fri, 14 May 2021 08:27:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=i3brosy5XXCkmKkwn4l+AKR0pDfb4h3+yvaYa21wYq8=;
-        b=mvupAA+p79dUWGrk5E9BhZLhvX9JvYDYdfPKI0wDBotNmCLqg3UFxsUrKQkKJqiY8S
-         XhsJVW4vb1kD1hglJRcJzKssA5UudA7JhrLNQ70yXUK4P4dNVfNhXsyKC0nashJtSiwZ
-         orl4sFrJASzL4RelDgUo65UasmHetoYz+MTm7rZzbxDsooDJ25IlZrMV4oru0CiIu91y
-         5XSaX9kx2z5I0tlTHvbX+dikC1jfIQFiTiLHQSZ1UPlIAfmPlZBSGc/IxYepE/4l+o2L
-         AMV6zGQOuc4Rr9IeLJ61y/xUYZV3gHWJZg7j1Q9Po+Gj1YWHfdXEj8coPnAq9LwhRmbF
-         /LgA==
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=o3MbfhHMqR6RZ/tABsLXYCCJMCeOjvYQWOcgKDa5UEY=;
+        b=ZFO8qT+igxKqjq8PUjvP1muLiH05uDD5WYBrxu/iQqZcXyItVn4hbNZaoqLjAk701P
+         fthy1BHQUw/m/oD+9TPkggbWXqCybQ7nFKccsA+71qeznhG6diJAoYVzD0ZCdsuR1fQo
+         y5Ggi9TblT1pJwevy8KxoF+E2AG+RTyKS3tn7pYLd6JhyF/+3pqUh2LyfsbluCBrEmmR
+         IJPrZbxPIALvHCvtwKD+nP71WdKvJfuP9UauoscFmg7k0U018Dtk1f3pO37U2XGcKvDy
+         QuBet7ELx6wjljuF2QtPyFdGqOke+C57M3ayd7fsvpv8Qc2UbtTqsjk7rt+n6zOyKSDV
+         tr9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i3brosy5XXCkmKkwn4l+AKR0pDfb4h3+yvaYa21wYq8=;
-        b=dJgC9Q7QtNLjy7e4cs6j9cyBX5CP5pgAsX5N5qlcA3yX+1npO96WyqtLGM/6+6aXCq
-         oVoBKV0jMKioStzsf/CFUrBRxGEJbXwzq5xuKFF19isweaNwGlq4o17k0W6hccW8kI+a
-         pT53eVQXTOaul2YMv2UGTaC0nhBAgayYQQiyrU3tMUyAisJKTwFcCd+6wprVSfUmLDXd
-         SKTAUBTWR+tj6eqLPeLO/PRlvzuSQrzmRG4tlhJnl7j/Zox08vY/ZSAaO72EW2VNuE3S
-         8DtTlD25DmKj2HijfWSU3hBNuEikJzycybpSy+vqdS/DQg7F2dOVFYFyiWEQt1soPNq5
-         jFeg==
-X-Gm-Message-State: AOAM530n4sJkaETlkk/d4qDbzl9KSi2mOj+0Gn646wzgpcnzWo8ivlgR
-        gaRKk7cO3+AhFjmyT6ANe59ydMPayh04sBm/IwE=
-X-Google-Smtp-Source: ABdhPJzxzvECOpWhrEYSAUed+9/+7dKEurVBbGT3SafR8RZsxzrkQZPj+cNf2hwM9Z2zBQsI6YC4+h9k5GCJ+ejBCoQ=
-X-Received: by 2002:a05:6402:310a:: with SMTP id dc10mr56815244edb.38.1621006049041;
- Fri, 14 May 2021 08:27:29 -0700 (PDT)
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=o3MbfhHMqR6RZ/tABsLXYCCJMCeOjvYQWOcgKDa5UEY=;
+        b=VMk7l8emhWkrCcnEGqHHGHL06PlJpBIG0vnH5cQaTcXxosglKgAFC99SWsLW+9cRfL
+         +jvY1bDXkORJhrvUhXtQvC7wueGXf6QrD3fP3B+uZwdW/tUVodHLrilOQUgG/P3nXfit
+         0/5xpDBz57K1qnalWmnG5naOb/qK//fRIEHjbuCGg9A61KL97PjOw4+/L77KvA8rRgV6
+         1pe+ryDJVMQYugm5tWO4Tq7PGQmYlILoUhIfIRj89p2J8kiihLaKoehc8YBTdhX5H6wW
+         Rljs5h2CE5yNI96b6jRsvRtmLyC2uG5BPA3KtqJs5M/vUqwyUiBfbpf3ndi6MLK+171H
+         vbpw==
+X-Gm-Message-State: AOAM5317JX/s9CUFs43j1+zMgN8zlp49XZWzRKwCssv3EQZWyOCqRq8W
+        IdqsMU80abV+lBAQPx8acKqFdW9JcsA=
+X-Google-Smtp-Source: ABdhPJwv6L/FlMKAmAhwcA4pvFa/j/o4K4J/XyF+oF1gA97E/UyVz3l0Xjjg+D5b4bgm3qz3CXsbVg==
+X-Received: by 2002:a05:620a:448c:: with SMTP id x12mr12870831qkp.52.1621006057701;
+        Fri, 14 May 2021 08:27:37 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id b3sm3359782qtg.55.2021.05.14.08.27.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 May 2021 08:27:37 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH] media: media/test_drivers: Drop unnecessary NULL check after container_of
+Date:   Fri, 14 May 2021 08:27:34 -0700
+Message-Id: <20210514152734.1363809-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210406013344.124255-1-aford173@gmail.com> <20210511024604.GE3425@dragon>
- <CAHCN7xLFpL=9BF9M5gUA6sMhc2ZZMNz+GP0OLmLfpJAWdD7W-w@mail.gmail.com>
- <VE1PR04MB6688CD4AA4826EEEBBA2651689539@VE1PR04MB6688.eurprd04.prod.outlook.com>
- <CAHCN7xJ5Hq6bRpEgE8Pi9VbQ_Kejy-sgKQsJ93pQEG3U_Wsu=Q@mail.gmail.com> <VE1PR04MB668860A19062925162C40F3C89509@VE1PR04MB6688.eurprd04.prod.outlook.com>
-In-Reply-To: <VE1PR04MB668860A19062925162C40F3C89509@VE1PR04MB6688.eurprd04.prod.outlook.com>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Fri, 14 May 2021 10:27:17 -0500
-Message-ID: <CAHCN7xJ0xPJJaxMrzpZSGKjgh46bSEGgtsECd9ZqnpHKSCH9EA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] arm64: dts: imx8mn: Add spba1 bus
-To:     Robin Gong <yibin.gong@nxp.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 9:57 AM Robin Gong <yibin.gong@nxp.com> wrote:
->
-> On 5/11/21 22:49 Adam Ford <aford173@gmail.com> wrote:
->
-> > > Compare PIO with DMA on UART, but not w/o this  'spba bus node ' patch?
-> > >
-> > > > In fact, if the DMA firmware isn't loaded, I often get transfer errors.
-> > > UART use SDMA ROM firmware instead of RAM firmware, so it should work
-> > > even without sdma RAM firmware loaded.  Still curious what really
-> > > happen in your board without this patch.
-> >
-> > What I am seeing is that at times, the HCI UART loading before the DMA
-> > firmware is loaded.
-> >
-> > [   10.582037] Bluetooth: HCI UART driver ver 2.3
-> > [   10.586867] Bluetooth: HCI UART protocol H4 registered
-> > [   10.593566] imx-sdma 30bd0000.dma-controller: sdma firmware not
-> > ready!
-> Seems you apply my patch set ' add ecspi ERR009165 for i.mx6/7 soc family'
-> https://www.spinics.net/lists/linux-spi/msg26728.html
+The result of container_of() operations is never NULL unless the embedded
+element is the first element of the structure. This is not the case here.
+The NULL check is therefore unnecessary and misleading. Remove it.
 
-I did this on the 5.13-rc1 which appears to have this series applied.
+This change was made automatically with the following Coccinelle script.
 
-> where 'sdma firmware not ready' added?
->
-> > [   10.594548] Bluetooth: HCI UART protocol Broadcom registered
-> > [   10.600108] imx-uart 30860000.serial: We cannot prepare for the RX slave
-> > dma!
-> Why not use ROM script for UART as mailine linux-next did (even the above patch set)?
+@@
+type t;
+identifier v;
+statement s;
+@@
 
+<+...
+(
+  t v = container_of(...);
+|
+  v = container_of(...);
+)
+  ...
+  when != v
+- if (\( !v \| v == NULL \) ) s
+...+>
 
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+ drivers/media/test-drivers/vim2m.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-> If so, I don't think you could such issue on your board. What script(peripheral types) you
-> set in uart dts such as below is 4-- MCU domain UART-> IMX_DMATYPE_UART->app_2_mcu:
->
-> dmas = <&sdma1 22 4 0>, <&sdma1 23 4 0>;
+diff --git a/drivers/media/test-drivers/vim2m.c b/drivers/media/test-drivers/vim2m.c
+index a24624353f9e..d714fe50afe5 100644
+--- a/drivers/media/test-drivers/vim2m.c
++++ b/drivers/media/test-drivers/vim2m.c
+@@ -624,11 +624,6 @@ static void device_work(struct work_struct *w)
+ 
+ 	curr_ctx = container_of(w, struct vim2m_ctx, work_run.work);
+ 
+-	if (!curr_ctx) {
+-		pr_err("Instance released before the end of transaction\n");
+-		return;
+-	}
+-
+ 	vim2m_dev = curr_ctx->dev;
+ 
+ 	src_vb = v4l2_m2m_src_buf_remove(curr_ctx->fh.m2m_ctx);
+-- 
+2.25.1
 
-I didn't change the DMA references from the default, and I didn't
-check to verify whether they are right or not.
-
->
-> >
-> > When I get the above message, the bluetooth chip I have throws timeouts and
-> > does not function.
-> >
-> > [   10.615090] imx-sdma 302c0000.dma-controller: loaded firmware 4.5
-> >
-> > Once the firmware is loaded, I can unload the HCI Uart driver and re-load
-> > Bluetooth works again.
-> >
-> > Based on that, I've been having my system delay the loading of the Bluetooth
-> > modules until after the firmware is loaded, but this tells me there is a
-> > relationship between the DMA and UART.
-> If you use ram script, of course you should use it after firmware loaded. Actually
-> Spba bus in dts is only used for per_2_per script judging if the peripheral address
-> could be accessed directly by SDMA over SPBA, if yes, set SDMA_WATERMARK_LEVEL_SP
-> to let per_2_per script access peripheral over SPBA, otherwise, access peripheral by
-> AIPS instead like ARM side did. Please check with below commit for more.
-> Besides, per_2_per script is used for audio data sample rate convert between ASRC and
-> various audio input. So audio peripherals include ASRC should be in register scope of
-> 'spba-bus' . But with your patch, there are two 'spba-bus' device node in dts, so the first
-> Spba-bus should contain audio peripheral, otherwise, 'of_find_compatible_node
-> (NULL, NULL, "fsl,spba-bus")' may find the wrong one so that SDMA_WATERMARK_LEVEL_SP
-> Never be set.
-
-I don't pretend to understand the details of the dma driver, but I
-attempted to make the patch match the address range of both spba
-busses from the technical reference manual,so there should be an spba
-bus for the audio peripherals and an spba bus for the serial
-peripherals like UART and SPI.  I only named them spba1 and spba2
-based on the memory ranges defined in the ref manual. Table 2-5 shows
-SBPA1 is 3080_0000 and table 2-3 shows SPBA2 starts at 3000_0000 which
-is what I believe I did in this patch.
-
->
-> BTW, do you mean the above firmware load issue you met is gone if this patch applied?
-> If yes, that really surprised me...
-
-I wasn't trying to imply that adding the spba-bus fixes my Bluetooth
-issue.  I was just stating there is some relationship between the DMA
-and the UART and if the UART throws a DMA error, the Bluetooth will
-fail too.  What I have been doing to ensure the order of operations is
-to make the imx_sdma and the Bluetooth system as modules.  I tell my
-sysfs to load the imx_sdma module first, then load the Bluetooth
-modules.  When done in that order, I never see the DMA errors. With
-UART baud rates at 3Mbps+, I wanted to make sure the DMA was
-operational to help potentially reduce the A53 workload.
-
-adam
->
-> commit 8391ecf465ec5c8ccef547267df6d40beb8999a4
-> Author: Shengjiu Wang <shengjiu.wang@freescale.com>
-> Date:   Fri Jul 10 17:08:16 2015 +0800
->
->     dmaengine: imx-sdma: Add device to device support
->
->
->
->
->
