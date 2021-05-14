@@ -2,156 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E57F38140A
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 01:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B50438140D
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 01:02:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234218AbhENXCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 19:02:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54162 "EHLO
+        id S234243AbhENXDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 19:03:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230371AbhENXCw (ORCPT
+        with ESMTP id S230371AbhENXDI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 19:02:52 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20DF1C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 16:01:39 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id m9so681507wrx.3
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 16:01:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=DLT6T+7ahT3h2bp+/MpRlemcgEcaSpw+T8SFb1iKTRY=;
-        b=ME8G7Ttrwp2hl1pEO1Hq+favoCo0/xyhpVNX+BYpqqCc67I2rPhNyXZW7jCZqSBEqY
-         y3jw82fAevRLebeQQuqbp1m/t53C2WS3FTwp6d9HyXmRO5bnyy8Hap2AlJazF97a1WN8
-         Cd12gpu997Np6kgChJQ80J8I/jBwYnCNZ0w05RDgbg1djGucLrz9M7wb6VWaVEvvVfDH
-         XyFPYNc04E+EFHMqlF2wnrIOETkDCckyxE0eOB8KlR2fH8O5jmqb7ZSK0lorLljL0xY5
-         ryvCv9l0OVoo6Ryn5VsY0SYZr4PqXSnT7cYAVcy0vrO26Wjf3prPvN1V18KRtFvdQ0sq
-         8BXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=DLT6T+7ahT3h2bp+/MpRlemcgEcaSpw+T8SFb1iKTRY=;
-        b=mFu76vXzseWyQv6D29028T8gEmiVNBaFVNS4lfj9cusprrjhsyDC4OvnFHaOw1QPvk
-         62g1qBJzku+is5YgfK/jQS/7b7V6O83hfUFaDru3WmHM5QeBGgOTXbFBe5nxt6nHDcmy
-         3xvcQugDvHlc3aK/Qx4w4VBMmFdGSXh5TlsN3U/F71F364uqvHZnuV9gFD+6yVTjzAbm
-         5ZpU2VvPKdaAyAsIv3Hb/sSMgjatm5YYforDkmegyQyAI4HTWFTo1JMolh7nZbBQg2p+
-         GSJdC7RCR39triOwz27WtKB1Y5XnlgPPGzsxKxGbEZPlYEMl5CMeuElsB09DH1yeLP+A
-         5KaA==
-X-Gm-Message-State: AOAM532DJwqO2n56vVPk9l4rIGdHJkdAPS+9drCxmkFH338pCbhV30ZQ
-        RzahGQ8it1EAqMiQa+2ejUn53Q==
-X-Google-Smtp-Source: ABdhPJxdod0nC7XsXp6cAVXd5UCUxr2L/44kajcNFxWWrw3+2Af1X+NAzqRSq0dV6msara9IOFbydg==
-X-Received: by 2002:a5d:4886:: with SMTP id g6mr49446327wrq.225.1621033297714;
-        Fri, 14 May 2021 16:01:37 -0700 (PDT)
-Received: from elver.google.com ([2a00:79e0:15:13:9bfa:6490:ea29:a5dc])
-        by smtp.gmail.com with ESMTPSA id h9sm6323784wmb.35.2021.05.14.16.01.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 16:01:36 -0700 (PDT)
-Date:   Sat, 15 May 2021 01:01:31 +0200
-From:   Marco Elver <elver@google.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH] kcsan: fix debugfs initcall return type
-Message-ID: <YJ8BS9fs5qrtQIzg@elver.google.com>
-References: <20210514140015.2944744-1-arnd@kernel.org>
- <0ad11966-b286-395e-e9ca-e278de6ef872@kernel.org>
- <20210514193657.GM975577@paulmck-ThinkPad-P17-Gen-1>
- <534d9b03-6fb2-627a-399d-36e7127e19ff@kernel.org>
- <20210514201808.GO975577@paulmck-ThinkPad-P17-Gen-1>
- <CAK8P3a3O=DPgsXZpBxz+cPEHAzGaW+64GBDM4BMzAZQ+5w6Dow@mail.gmail.com>
+        Fri, 14 May 2021 19:03:08 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBD45C06174A;
+        Fri, 14 May 2021 16:01:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=CgABsLE4zHihJEV07T+Hib4mnYLS7sMe5ozAuoSAx20=; b=eE1UkWbaG4+8LTWEZlhPq5BWN
+        +7Ge7+VZs+aBpOtfg5UbE/mBdqT1J4979FB5yW/WB5P2Byd4dmqDBIgYdBJYcaf+3RUqkvTAGSQb0
+        oba1BJMSKf9tWjUPQwHcN+KHPE3bpUR9uJcxNvMg7wdqJnDskIZK0rSbgWxu+srHB8NFu44rSIezV
+        eKLMkUWAaxM8LmjpM/WwGM1C7FnRvGqWMWdcVMPizxwUJo7VphSTLftuyCKq50+xbbDreaaGYHLit
+        KcvZl9Tii2Nz5fP5khAtnM5n8K5Hl2gRtJGvnOpIBxOSBoKzoMTcRGUzAPxev9GPf6Tvb+Kx09tfI
+        oFm3X+FNA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43992)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lhgob-0000Yf-85; Sat, 15 May 2021 00:01:53 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lhgoa-0004PG-Or; Sat, 15 May 2021 00:01:52 +0100
+Date:   Sat, 15 May 2021 00:01:52 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v6 05/25] net: dsa: qca8k: handle error with
+ qca8k_read operation
+Message-ID: <20210514230152.GL12395@shell.armlinux.org.uk>
+References: <20210514210015.18142-1-ansuelsmth@gmail.com>
+ <20210514210015.18142-6-ansuelsmth@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a3O=DPgsXZpBxz+cPEHAzGaW+64GBDM4BMzAZQ+5w6Dow@mail.gmail.com>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+In-Reply-To: <20210514210015.18142-6-ansuelsmth@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 11:16PM +0200, Arnd Bergmann wrote:
-> On Fri, May 14, 2021 at 10:18 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > On Fri, May 14, 2021 at 01:11:05PM -0700, Nathan Chancellor wrote:
-> 
-> > > You can see my response to Marco here:
-> > >
-> > > https://lore.kernel.org/r/ad7fa126-f371-5a24-1d80-27fe8f655b05@kernel.org/
-> > >
-> > > Maybe some improved wording might look like
-> > >
-> > > clang with CONFIG_LTO_CLANG points out that an initcall function should
-> > > return an 'int' due to the changes made to the initcall macros in commit
-> > > 3578ad11f3fb ("init: lto: fix PREL32 relocations"):
-> >
-> > OK, so the naive reading was correct, thank you!
-> >
-> > > ...
-> > >
-> > > Arnd, do you have any objections?
-> >
-> > In the meantime, here is what I have.  Please let me know of any needed
-> > updates.
-> >
-> 
-> Looks good to me, thanks for the improvements!
+On Fri, May 14, 2021 at 10:59:55PM +0200, Ansuel Smith wrote:
+> -static void
+> +static int
+>  qca8k_fdb_read(struct qca8k_priv *priv, struct qca8k_fdb *fdb)
+>  {
+> -	u32 reg[4];
+> +	u32 reg[4], val;
 
-FWIW, this prompted me to see if I can convince the compiler to complain
-in all configs. The below is what I came up with and will send once the
-fix here has landed. Need to check a few other config+arch combinations
-(allyesconfig with gcc on x86_64 is good).
+val is unsigned.
 
-Thanks,
--- Marco
+>  	int i;
+>  
+>  	/* load the ARL table into an array */
+> -	for (i = 0; i < 4; i++)
+> -		reg[i] = qca8k_read(priv, QCA8K_REG_ATU_DATA0 + (i * 4));
+> +	for (i = 0; i < 4; i++) {
+> +		val = qca8k_read(priv, QCA8K_REG_ATU_DATA0 + (i * 4));
+> +		if (val < 0)
+> +			return val;
 
------- >8 ------
+So this return statement will never be reached.
 
-From 96c1c4e9902e96485268909d5ea8f91b9595e187 Mon Sep 17 00:00:00 2001
-From: Marco Elver <elver@google.com>
-Date: Fri, 14 May 2021 21:08:50 +0200
-Subject: [PATCH] init: verify that function is initcall_t at compile-time
+> @@ -374,6 +386,8 @@ qca8k_fdb_access(struct qca8k_priv *priv, enum qca8k_fdb_cmd cmd, int port)
+>  	/* Check for table full violation when adding an entry */
+>  	if (cmd == QCA8K_FDB_LOAD) {
+>  		reg = qca8k_read(priv, QCA8K_REG_ATU_FUNC);
+> +		if (reg < 0)
+> +			return reg;
 
-In the spirit of making it hard to misuse an interface, add a
-compile-time assertion in the CONFIG_HAVE_ARCH_PREL32_RELOCATIONS case
-to verify the initcall function matches initcall_t, because the inline
-asm bypasses any type-checking the compiler would otherwise do. This
-will help developers catch incorrect API use in all configurations.
+"reg" here is also a u32, and therefore unsigned, so this will have no
+effect.
 
-A recent example of this is:
-https://lkml.kernel.org/r/20210514140015.2944744-1-arnd@kernel.org
+>  		if (reg & QCA8K_ATU_FUNC_FULL)
+>  			return -1;
+>  	}
+> @@ -388,10 +402,10 @@ qca8k_fdb_next(struct qca8k_priv *priv, struct qca8k_fdb *fdb, int port)
+>  
+>  	qca8k_fdb_write(priv, fdb->vid, fdb->port_mask, fdb->mac, fdb->aging);
+>  	ret = qca8k_fdb_access(priv, QCA8K_FDB_NEXT, port);
+> -	if (ret >= 0)
+> -		qca8k_fdb_read(priv, fdb);
+> +	if (ret < 0)
+> +		return ret;
 
-Signed-off-by: Marco Elver <elver@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Joe Perches <joe@perches.com>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Miguel Ojeda <ojeda@kernel.org>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
----
- include/linux/init.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+This looks fine to me.
 
-diff --git a/include/linux/init.h b/include/linux/init.h
-index 045ad1650ed1..d82b4b2e1d25 100644
---- a/include/linux/init.h
-+++ b/include/linux/init.h
-@@ -242,7 +242,8 @@ extern bool initcall_debug;
- 	asm(".section	\"" __sec "\", \"a\"		\n"	\
- 	    __stringify(__name) ":			\n"	\
- 	    ".long	" __stringify(__stub) " - .	\n"	\
--	    ".previous					\n");
-+	    ".previous					\n");	\
-+	static_assert(__same_type(initcall_t, &fn));
- #else
- #define ____define_initcall(fn, __unused, __name, __sec)	\
- 	static initcall_t __name __used 			\
+>  
+> -	return ret;
+> +	return qca8k_fdb_read(priv, fdb);
+>  }
+>  
+>  static int
+> @@ -449,6 +463,8 @@ qca8k_vlan_access(struct qca8k_priv *priv, enum qca8k_vlan_cmd cmd, u16 vid)
+>  	/* Check for table full violation when adding an entry */
+>  	if (cmd == QCA8K_VLAN_LOAD) {
+>  		reg = qca8k_read(priv, QCA8K_REG_VTU_FUNC1);
+> +		if (reg < 0)
+> +			return reg;
+
+reg is unsigned... unreachable.
+
+>  		if (reg & QCA8K_VTU_FUNC1_FULL)
+>  			return -ENOMEM;
+>  	}
+> @@ -475,6 +491,8 @@ qca8k_vlan_add(struct qca8k_priv *priv, u8 port, u16 vid, bool untagged)
+>  		goto out;
+>  
+>  	reg = qca8k_read(priv, QCA8K_REG_VTU_FUNC0);
+> +	if (reg < 0)
+> +		return reg;
+
+reg is unsigned... unreachable.
+
+>  	reg |= QCA8K_VTU_FUNC0_VALID | QCA8K_VTU_FUNC0_IVL_EN;
+>  	reg &= ~(QCA8K_VTU_FUNC0_EG_MODE_MASK << QCA8K_VTU_FUNC0_EG_MODE_S(port));
+>  	if (untagged)
+> @@ -506,6 +524,8 @@ qca8k_vlan_del(struct qca8k_priv *priv, u8 port, u16 vid)
+>  		goto out;
+>  
+>  	reg = qca8k_read(priv, QCA8K_REG_VTU_FUNC0);
+> +	if (reg < 0)
+> +		return reg;
+
+reg is unsigned... unreachable.
+
+>  	reg &= ~(3 << QCA8K_VTU_FUNC0_EG_MODE_S(port));
+>  	reg |= QCA8K_VTU_FUNC0_EG_MODE_NOT <<
+>  			QCA8K_VTU_FUNC0_EG_MODE_S(port);
+> @@ -621,8 +641,11 @@ qca8k_mdio_read(struct qca8k_priv *priv, int port, u32 regnum)
+>  			    QCA8K_MDIO_MASTER_BUSY))
+>  		return -ETIMEDOUT;
+>  
+> -	val = (qca8k_read(priv, QCA8K_MDIO_MASTER_CTRL) &
+> -		QCA8K_MDIO_MASTER_DATA_MASK);
+> +	val = qca8k_read(priv, QCA8K_MDIO_MASTER_CTRL);
+> +	if (val < 0)
+> +		return val;
+
+val is unsigned... unreachable.
+
+> +
+> +	val &= QCA8K_MDIO_MASTER_DATA_MASK;
+>  
+>  	return val;
+>  }
+> @@ -978,6 +1001,8 @@ qca8k_phylink_mac_link_state(struct dsa_switch *ds, int port,
+>  	u32 reg;
+>  
+>  	reg = qca8k_read(priv, QCA8K_REG_PORT_STATUS(port));
+> +	if (reg < 0)
+> +		return reg;
+
+reg is unsigned... unreachable.
+
+>  
+>  	state->link = !!(reg & QCA8K_PORT_STATUS_LINK_UP);
+>  	state->an_complete = state->link;
+> @@ -1078,18 +1103,26 @@ qca8k_get_ethtool_stats(struct dsa_switch *ds, int port,
+>  {
+>  	struct qca8k_priv *priv = (struct qca8k_priv *)ds->priv;
+>  	const struct qca8k_mib_desc *mib;
+> -	u32 reg, i;
+> +	u32 reg, i, val;
+>  	u64 hi;
+>  
+>  	for (i = 0; i < ARRAY_SIZE(ar8327_mib); i++) {
+>  		mib = &ar8327_mib[i];
+>  		reg = QCA8K_PORT_MIB_COUNTER(port) + mib->offset;
+>  
+> -		data[i] = qca8k_read(priv, reg);
+> +		val = qca8k_read(priv, reg);
+> +		if (val < 0)
+> +			continue;
+
+val is unsigned... unreachable....
+
+> +
+>  		if (mib->size == 2) {
+>  			hi = qca8k_read(priv, reg + 4);
+> -			data[i] |= hi << 32;
+> +			if (hi < 0)
+> +				continue;
+
+hi is a u64, so this condition is always false.
+
+>  		}
+> +
+> +		data[i] = val;
+> +		if (mib->size == 2)
+> +			data[i] |= hi << 32;
+>  	}
+>  }
+>  
+> @@ -1107,18 +1140,25 @@ qca8k_set_mac_eee(struct dsa_switch *ds, int port, struct ethtool_eee *eee)
+>  {
+>  	struct qca8k_priv *priv = (struct qca8k_priv *)ds->priv;
+>  	u32 lpi_en = QCA8K_REG_EEE_CTRL_LPI_EN(port);
+> +	int ret = 0;
+
+No need to zero-initialise this.
+
+>  	u32 reg;
+>  
+>  	mutex_lock(&priv->reg_mutex);
+>  	reg = qca8k_read(priv, QCA8K_REG_EEE_CTRL);
+> +	if (reg < 0) {
+> +		ret = reg;
+> +		goto exit;
+> +	}
+> +
+>  	if (eee->eee_enabled)
+>  		reg |= lpi_en;
+>  	else
+>  		reg &= ~lpi_en;
+>  	qca8k_write(priv, QCA8K_REG_EEE_CTRL, reg);
+> -	mutex_unlock(&priv->reg_mutex);
+>  
+> -	return 0;
+> +exit:
+> +	mutex_unlock(&priv->reg_mutex);
+> +	return ret;
+>  }
+>  
+>  static int
+> @@ -1443,6 +1483,9 @@ qca8k_sw_probe(struct mdio_device *mdiodev)
+>  
+>  	/* read the switches ID register */
+>  	id = qca8k_read(priv, QCA8K_REG_MASK_CTRL);
+> +	if (id < 0)
+> +		return id;
+
+id is unsigned ...
+
 -- 
-2.31.1.751.gd2f1c929bd-goog
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
