@@ -2,105 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAD4638061A
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 11:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69C5038061E
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 11:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233656AbhENJXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 05:23:20 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:50172 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232196AbhENJXP (ORCPT
+        id S231856AbhENJYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 05:24:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229525AbhENJYs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 05:23:15 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14E942w4023930
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 05:22:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=Lw53QcKAhXAqL73o7z+2CqmqyU/QfBSa29MxlZ3YVWk=;
- b=JvauBU3iLHfAhpc50BvbuEil56u3lGqDgiZ3YFKKR3OmjJ+HCyTfgTZwBAnYZ0H+xuyg
- CNC03LL7kN37Z4Ck5sIj0V9gazm9fWoJRgnS/cVNABni64AEDvTc6UsFP7uEM6rMThtp
- lHWhlSSXHLPUVtra5PADX8mEaIr9Kbb/CH2o+wYLrJUtbGkKWyU+NekXqTBDKG7yLmBM
- DMF0mGCN+tbSwRMQmsY/PCcI7pgKBTJ2l9uqEQ5H4pRTpEj1Zu6ahrtIc909LdiiRaK1
- /3Mb80fnlo31omx0LnbxbP/V5LUa0l4l/ieLsn7jJmSXNaQhc9KbO7R6G3A8I/8OG00t gg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38hjet5fxj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 05:22:04 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14E9DUPA059741
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 05:22:04 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38hjet5fww-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 May 2021 05:22:04 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14E9CbYk004461;
-        Fri, 14 May 2021 09:22:02 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma04ams.nl.ibm.com with ESMTP id 38hc77g6rr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 May 2021 09:22:02 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14E9Lxs816187682
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 14 May 2021 09:21:59 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 25699A4065;
-        Fri, 14 May 2021 09:21:59 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1C3CFA405F;
-        Fri, 14 May 2021 09:21:59 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Fri, 14 May 2021 09:21:59 +0000 (GMT)
-Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 55390)
-        id D1787E05BC; Fri, 14 May 2021 11:21:58 +0200 (CEST)
-From:   Sven Schnelle <svens@linux.ibm.com>
-To:     Marco Elver <elver@google.com>
-Cc:     linux-kernel@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>
-Subject: [PATCH 2/2] kfence: only handle kernel mode faults
-Date:   Fri, 14 May 2021 11:21:39 +0200
-Message-Id: <20210514092139.3225509-3-svens@linux.ibm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210514092139.3225509-1-svens@linux.ibm.com>
-References: <20210514092139.3225509-1-svens@linux.ibm.com>
+        Fri, 14 May 2021 05:24:48 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8653CC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 02:23:37 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id t4so43831596ejo.0
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 02:23:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=deviqon.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lmlUFVkQ6uD6pUb8XfWfoeJo9HT3302ShZH0nB1le0I=;
+        b=KmgSKURBJx/Vc2rhXTYKGXTtIterSj4KTcg1FcgtQ5x984hBMLS2XqBtX3s9u4Eegh
+         qfjjT0NcE+L3r8/e/b4eCZX+uFQS16+cMdJLO4n8IL6XJHVDk1OrZWHxA2CVz4cegpPj
+         JUHjecTd0VKxF4UIdPssGWpvs3TqIz6i06s+NWUHEUPycSw7Lacay3LU4lZ3700xZIKB
+         tndi7UVe4z/cSgC9dzGCKAtnPV8ibgDeJfFO44Cx7+GUb37Qa1yUIRQll9UNtl7hMDMl
+         9bIZ6t1eegwdWnCfjwGXyNuDtV1O30OGtJWNOb911vNkogq4/5HXv/ZIG9xrOgKD1dBD
+         GnMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lmlUFVkQ6uD6pUb8XfWfoeJo9HT3302ShZH0nB1le0I=;
+        b=EUCJTprByyA50agtNF9NrcvVn3QoBbmCf72ELqy8UAcn2y+dVIhMTMIN8H8BQf2adB
+         pO7xqKnp739JD94/nB8sZucBsc0kjwe5rtvP2sgz3Vs4R077OqnY4ZmCbjLJTiEsgfjD
+         +0cRaNSTy38KbWbL3POOFPyKfYDNZfGzcFdBihDnjGS3EmWwH36bXM4zHS/Mi03Y3+P2
+         D+B1m20HTv7lQAtALqf1ByBLmfSAz/p/kjdt0R03MjYDYGxI9G0xKUQeWayg6c8W7sj+
+         2p7VgTP/mJ01cEuY/6m6uXETquL3BDhnt//AHv5Q+4WdZP2LJ3ffeim6UBVHRtOi04br
+         VhkQ==
+X-Gm-Message-State: AOAM531QPDUkE6PLHsMeeUgpnLnRlLk+oKm63ts6XGzglvqYaBhJmG65
+        ZAX4hL9NnwxS/e5QAS7eP165fw==
+X-Google-Smtp-Source: ABdhPJxm204+NKwNwHBbo83HCeUN5nr7NJj9e+yftkEfM2nkUwYN8vMR34iiNYtaUeYjDQ6HpHgAPA==
+X-Received: by 2002:a17:906:8299:: with SMTP id h25mr3619511ejx.81.1620984216327;
+        Fri, 14 May 2021 02:23:36 -0700 (PDT)
+Received: from neptune.. ([5.2.193.191])
+        by smtp.gmail.com with ESMTPSA id c3sm4264226edn.16.2021.05.14.02.23.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 May 2021 02:23:36 -0700 (PDT)
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+To:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        support.opensource@diasemi.com,
+        Alexandru Ardelean <aardelean@deviqon.com>
+Subject: [PATCH] gpio: gpio-da9055: remove platform_set_drvdata() + cleanup probe
+Date:   Fri, 14 May 2021 12:23:32 +0300
+Message-Id: <20210514092332.19966-1-aardelean@deviqon.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: chwnlh6K2NWARONykIlWrooc2c2I2uX2
-X-Proofpoint-ORIG-GUID: yb_aH7aRGvem5Y9aOKY9lX60fUh3Y1Nc
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-14_04:2021-05-12,2021-05-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
- mlxlogscore=843 malwarescore=0 bulkscore=0 priorityscore=1501 mlxscore=0
- suspectscore=0 impostorscore=0 phishscore=0 lowpriorityscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105140070
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
----
- mm/kfence/core.c | 3 +++
- 1 file changed, 3 insertions(+)
+The platform_set_drvdata() call is only useful if we need to retrieve back
+the private information.
+Since the driver doesn't do that, it's not useful to have it.
 
-diff --git a/mm/kfence/core.c b/mm/kfence/core.c
-index bc15e3cb71d5..161df492750c 100644
---- a/mm/kfence/core.c
-+++ b/mm/kfence/core.c
-@@ -813,6 +813,9 @@ bool kfence_handle_page_fault(unsigned long addr, bool is_write, struct pt_regs
- 	enum kfence_error_type error_type;
- 	unsigned long flags;
+If this is removed, we can also just do a direct return on
+devm_gpiochip_add_data(). We don't need to print that this call failed as
+there are other ways to log/see this during probe.
+
+Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+---
+ drivers/gpio/gpio-da9055.c | 11 +----------
+ 1 file changed, 1 insertion(+), 10 deletions(-)
+
+diff --git a/drivers/gpio/gpio-da9055.c b/drivers/gpio/gpio-da9055.c
+index 6ad0c37b862e..49446a030f10 100644
+--- a/drivers/gpio/gpio-da9055.c
++++ b/drivers/gpio/gpio-da9055.c
+@@ -133,7 +133,6 @@ static int da9055_gpio_probe(struct platform_device *pdev)
+ {
+ 	struct da9055_gpio *gpio;
+ 	struct da9055_pdata *pdata;
+-	int ret;
  
-+	if (user_mode(regs))
-+		return false;
-+
- 	if (!is_kfence_address((void *)addr))
- 		return false;
+ 	gpio = devm_kzalloc(&pdev->dev, sizeof(*gpio), GFP_KERNEL);
+ 	if (!gpio)
+@@ -146,15 +145,7 @@ static int da9055_gpio_probe(struct platform_device *pdev)
+ 	if (pdata && pdata->gpio_base)
+ 		gpio->gp.base = pdata->gpio_base;
  
+-	ret = devm_gpiochip_add_data(&pdev->dev, &gpio->gp, gpio);
+-	if (ret < 0) {
+-		dev_err(&pdev->dev, "Could not register gpiochip, %d\n", ret);
+-		return ret;
+-	}
+-
+-	platform_set_drvdata(pdev, gpio);
+-
+-	return 0;
++	return devm_gpiochip_add_data(&pdev->dev, &gpio->gp, gpio);
+ }
+ 
+ static struct platform_driver da9055_gpio_driver = {
 -- 
-2.25.1
+2.31.1
 
