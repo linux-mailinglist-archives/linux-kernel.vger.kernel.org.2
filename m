@@ -2,101 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DFB738059D
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 10:55:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2D2A38059A
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 10:55:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233647AbhENI40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 04:56:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233765AbhENI4X (ORCPT
+        id S233751AbhENI4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 04:56:20 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:49734 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230478AbhENI4S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 04:56:23 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8248C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 01:55:11 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id t15so6202305edr.11
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 01:55:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=deviqon.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8hS70I1OP3BGBi55KMUKhZ8NUqBfuKwEk/1jKvD89Tc=;
-        b=sNDt00YtYYATKB+/+HmFsyPqLmPazpMGXY8lo+0xQbxa/CP3DCupoZDw8xzBpIcoVi
-         gHWh5BIUqoj+baT7E0578NQu2/m5QqetCzHL7UUkjvYCR7NI/SoiFx2gddfhmQE5NClm
-         F9RJXMInhU+jtgrm9iQKDT/6bVAzDNaXxBnc+b0VmsF+99HKyBjEOefVEHKbsc2gLNbR
-         oo1Tk3P3YWf7zQTH4lH8UNMIE0q8Jl3yxAZjT1ZXtaHqtIllY0qCqxVSjqTtzSiLNyfV
-         UTeK5Fs3c7Z0NpnYelQVN1dGFePHz+C3DgSRuDKmWwm+JOPEEfgTPRuyG1+D/oYWepj+
-         Mohg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8hS70I1OP3BGBi55KMUKhZ8NUqBfuKwEk/1jKvD89Tc=;
-        b=YRtHNt3u7454kggHwE4ca7gs5TBtLFHm2AAylEynK3YxLdX98vFDAafoB45R07zsf0
-         Jz2lA73MJKIYqCQXYYYvA7tdrKkCOssiDCgcY+ZaGPobhJEPHtLlN0YuoqPu940/53zf
-         GYlRjIxSbCUPLxXDwaaV+f/d9asS4uiumBItrSc5eKbkRboSOoAiGuWf6UGdqY58WSj+
-         1K3C3/btD7XHD1rqaLAFYxoRdDBuoplbpkjcxXAofcH7ev8nmDPsw1yu+wRDo15zQDJQ
-         toJSxxEeDtOCCOieE/5iIJWmnkoEXxvkXps8iCiAMEnFmqys4QsEp+MnqWxRyJ+22CoS
-         aTaQ==
-X-Gm-Message-State: AOAM5326FEOTxZyWcY5W56wx9su18BaMeIDem3NQZQv8MVnwLKUc3tqO
-        JSmyR9pMLYt7Uo/HDM+R3lunpA==
-X-Google-Smtp-Source: ABdhPJxFPTzi70JPIGbujAw6X1JyfuQW/pbecxxq2Sz/l2U3aJ5OtSKv15VeGC8aBFUwXOXbb5dRXg==
-X-Received: by 2002:a05:6402:cb0:: with SMTP id cn16mr54456013edb.15.1620982510375;
-        Fri, 14 May 2021 01:55:10 -0700 (PDT)
-Received: from neptune.. ([5.2.193.191])
-        by smtp.gmail.com with ESMTPSA id p4sm3249329ejr.81.2021.05.14.01.55.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 01:55:09 -0700 (PDT)
-From:   Alexandru Ardelean <aardelean@deviqon.com>
-To:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        nobuhiro1.iwamatsu@toshiba.co.jp,
-        Alexandru Ardelean <aardelean@deviqon.com>
-Subject: [PATCH] gpio: gpio-visconti: remove platform_set_drvdata() + cleanup probe
-Date:   Fri, 14 May 2021 11:55:00 +0300
-Message-Id: <20210514085500.10761-1-aardelean@deviqon.com>
-X-Mailer: git-send-email 2.31.1
+        Fri, 14 May 2021 04:56:18 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 2055F1F430D3
+Subject: Re: [PATCH] arm64: dts: mt8183: add cbas node under cros_ec
+To:     Ikjoon Jang <ikjn@chromium.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Jiri Kosina <jikos@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>, linux-input@vger.kernel.org,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Hsinyi Wang <hsinyi@chromium.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210510092631.3141204-1-ikjn@chromium.org>
+ <c5a253ba-6451-c538-39ea-c339c176afbb@gmail.com>
+ <CAATdQgDfQUVQQwL1KQZvRffUgE+ADcwjBReWhCnmNL3SSgoE-A@mail.gmail.com>
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Message-ID: <daeb031a-1992-704b-49bf-c935078f15f8@collabora.com>
+Date:   Fri, 14 May 2021 10:55:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAATdQgDfQUVQQwL1KQZvRffUgE+ADcwjBReWhCnmNL3SSgoE-A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The platform_set_drvdata() call is only useful if we need to retrieve back
-the private information.
-Since the driver doesn't do that, it's not useful to have it.
+Hi Ikjoon,
 
-If this is removed, we can also just do a direct return on
-devm_gpiochip_add_data(). We don't need to print that this call failed as
-there are other ways to log/see this during probe.
+Thank you for the patch.
 
-Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
----
- drivers/gpio/gpio-visconti.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
+On 13/5/21 3:45, Ikjoon Jang wrote:
+> On Thu, May 13, 2021 at 12:38 AM Matthias Brugger
+> <matthias.bgg@gmail.com> wrote:
+>>
+>> Hi Ikjoon,
+>>
+>> On 10/05/2021 11:26, Ikjoon Jang wrote:
+>>> Add a 'cbas' device node for supporting table mode switch in
+> 
+> tablet
+> 
+>>> kukui devices.
+>>>
+>>> Kukui platforms with detacheable base have an additional input
+>>> device under cros-ec, which reports SW_TABLET_MODE regarding
+>>> its base state (e.g. base flipped or detached).
+>>>
+>>> Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+>>> ---
+>>>
+>>>  arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi | 4 ++++
+>>>  1 file changed, 4 insertions(+)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+>>> index ff56bcfa3370..40030ed48854 100644
+>>> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+>>> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+>>> @@ -816,6 +816,10 @@ usbc_extcon: extcon0 {
+>>>                       compatible = "google,extcon-usbc-cros-ec";
+>>>                       google,usb-port-id = <0>;
+>>>               };
+>>> +
+>>> +             base_detection: cbas {
 
-diff --git a/drivers/gpio/gpio-visconti.c b/drivers/gpio/gpio-visconti.c
-index 0e3d19828eb1..47455810bdb9 100644
---- a/drivers/gpio/gpio-visconti.c
-+++ b/drivers/gpio/gpio-visconti.c
-@@ -187,15 +187,7 @@ static int visconti_gpio_probe(struct platform_device *pdev)
- 	girq->default_type = IRQ_TYPE_NONE;
- 	girq->handler = handle_level_irq;
- 
--	ret = devm_gpiochip_add_data(dev, &priv->gpio_chip, priv);
--	if (ret) {
--		dev_err(dev, "failed to add GPIO chip\n");
--		return ret;
--	}
--
--	platform_set_drvdata(pdev, priv);
--
--	return ret;
-+	return devm_gpiochip_add_data(dev, &priv->gpio_chip, priv);
- }
- 
- static const struct of_device_id visconti_gpio_of_match[] = {
--- 
-2.31.1
 
+This should be just cbas, remove base_detection. It was a bit confusing follow
+these series. If [v5, 2/2] is already applied in hid tree, I'd suggest send a v7
+version including:
+
+[v7, 1/2] mfd: google,cros-ec: add DT bindings for a baseboard's switch device
+[v7, 2/2] arm64: dts: mt8183: add cbas node under cros_ec
+
+Both patches can go through the Matthias tree, but the first one also needs an
+Ack from Lee Jones, MFD maintainer, which I think is not cc'ied, so unlikely to
+give you the needed ack.
+
+Thanks,
+  Enric
+
+
+>>> +                     compatible = "google,cros-cbas";
+>>
+>> I'm not able to find any binding description for this. It seems linux-next has
+>> driver binding to this compatible, but the description is missing.
+>>
+>> Can you please clarify.
+> 
+> Yep, that's correct.
+> Let me resend this with v2 after the dt-binding patch is applied.
+> 
+> In this series, I requested queueing these to hid tree:
+> 
+> [v5, 1/2] mfd: google,cros-ec: add DT bindings for a baseboard's switch device
+> https://patchwork.kernel.org/project/linux-input/patch/20210415032958.740233-2-ikjn@chromium.org/
+> 
+> [v5, 2/2] HID: google: Add of_match table to Whiskers switch device.
+> https://patchwork.kernel.org/project/linux-input/patch/20210415032958.740233-3-ikjn@chromium.org/
+> 
+> Later I found that I missed a comment from [v5, 1/2]
+> But only [v5, 2/2] part is already applied to hid tree as I asked for it.
+> 
+> I sent a v6 dt-binding patch is here (not yet applied)
+> https://patchwork.kernel.org/project/linux-input/patch/20210512100832.3878138-1-ikjn@chromium.org/
+> 
+>>
+>> Thanks,
+>> Mathias
+>>
+>>> +             };
+>>>       };
+>>>  };
+>>>
+>>>
