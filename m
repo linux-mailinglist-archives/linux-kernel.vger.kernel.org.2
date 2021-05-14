@@ -2,145 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D2BD380913
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 13:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD1C5380916
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 14:03:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233019AbhENMAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 08:00:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46888 "EHLO
+        id S232532AbhENMEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 08:04:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232532AbhENMAF (ORCPT
+        with ESMTP id S231394AbhENMEI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 08:00:05 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 558BDC061574;
-        Fri, 14 May 2021 04:58:53 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id o26-20020a1c4d1a0000b0290146e1feccdaso2303710wmh.0;
-        Fri, 14 May 2021 04:58:53 -0700 (PDT)
+        Fri, 14 May 2021 08:04:08 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C436C061574;
+        Fri, 14 May 2021 05:02:56 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id s6so34355892edu.10;
+        Fri, 14 May 2021 05:02:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aCQ7Xti4PZasTG5XmR78Be2WTvCnA6stEZ6OIez+DO8=;
-        b=hvgDeFxdax+NDVnn7GjHSsv5ovdVpKDKzRxyHuLZFge8HXhtM1zYd/uoGMKcVMBsBG
-         xL6LF7a7H9ZF5Bbpf9665XCE5UShHwZPvKj6v8furjKeTyTsmZtsUmmsqWpUqSw8lhm/
-         rDwTN6U+eiKNOG1T6nhV91Ab7FUTn70tTw1KKIeT4rNAfKC60J2LnWwaMF0eiFvKszUP
-         7qvXsVG0Gi8jh7H2deqaDxTBfxXoYXyJTmSmA6irYCp1Se+vo3rDr4lG3AuS4LZ6HOJQ
-         CONjS9+HLdj/pPPnVQi5rr5t+FFFAwDw3tIP1r3jSXP5T4+LLvarDLvXEdmN1VetC/MC
-         GH7A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Pocb49nzdeqrWwdmjQ0ZJ+vWbjj70MiL2/8rMr/J5ZA=;
+        b=vU3xhnwgCmRyn2T2bAdoNR21kUL5/bWTBNS4Tf2oK47aneMTF+lcIludTTdGxpzXjG
+         uG1Y+p8Wd6HlF8Sse5JQ9U66sgMAYkWSDN9PRq7SZ2HrPzw4j1zv/2mLHzCjz54YjWxd
+         pQGXpFegj1w8QljEtUHSdeaRy2UKR6hXKu/vC3pYNhedLvRsdrIN1stmMSAvb4sR48r0
+         JdCVencOlRKoy1gl6dRyfVfuMnhH+Q6l0TAHMyai2Z/tozKhFCuhka0f5/zi9dqpHHCx
+         ai+w2EViJEEYNEJuXqIJbhFqqXZy/AhbKUQtBCRiGRK0z7h4IIJODvIrWKde1E8Jfh29
+         Nu8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aCQ7Xti4PZasTG5XmR78Be2WTvCnA6stEZ6OIez+DO8=;
-        b=gYIyNG2wC5zovKM7OXG/4mVUyIPVzgM+jbFEsQDH+YIUUGOmk2u1/RQyQLT1RtMCdQ
-         m6WIP1qKBIAnZCSOLdKziNrMwNQxbT87XBbPEluhdazDXfGGpASFwjJU0hy2jpCzpboU
-         zvg0OA0LJDE3cIB9z7zatTjCkgvjkQEmMeiNKA8SlSpTYGPp8/0A8sP91z0XyhHZsNnX
-         vp3cKFhT7NOhjDa9VWGesW5DYAVWeTtpsbf6X3Ul8ShJca0HrRJz4I1dAv9o2gUcHv4t
-         rh6gzs1HKF+7SKdYKMPJL5mMKu3D73eZ1o4ucKgwk3++OeL5yWtbk3feTAvKVx7bKqZu
-         CCjg==
-X-Gm-Message-State: AOAM533gp8Wg4+MfYFNgBhljc7PkwyL/Na1B4ia3sW/SAx7XMGB2bZuJ
-        EAe8KtY91pJel5B80F2NXqDqAE8v38c=
-X-Google-Smtp-Source: ABdhPJxJcWpIatDjv4qP3+6HFs5PtIFhum46hfqDCzSYDKPmcqaM//DX+T/yKDmuALnbO1uiotvbGQ==
-X-Received: by 2002:a1c:7c03:: with SMTP id x3mr9282653wmc.168.1620993531485;
-        Fri, 14 May 2021 04:58:51 -0700 (PDT)
-Received: from [192.168.2.202] (pd9e5a369.dip0.t-ipconnect.de. [217.229.163.105])
-        by smtp.gmail.com with ESMTPSA id o21sm6292260wrf.91.2021.05.14.04.58.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 May 2021 04:58:51 -0700 (PDT)
-Subject: Re: [PATCH] x86/i8259: Work around buggy legacy PIC
-To:     Sachi King <nakato@nakato.io>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        David Laight <David.Laight@aculab.com>
-Cc:     "H. Peter Anvin" <hpa@zytor.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-References: <20210512210459.1983026-1-luzmaximilian@gmail.com>
- <e7dbd4d1-f23f-42f0-e912-032ba32f9ec8@gmail.com>
- <e43d9a823c9e44bab0cdbf32a000c373@AcuMS.aculab.com> <3034083.sOBWI1P7ec@yuki>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <5c08541a-2615-f075-a189-0462f1005007@gmail.com>
-Date:   Fri, 14 May 2021 13:58:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Pocb49nzdeqrWwdmjQ0ZJ+vWbjj70MiL2/8rMr/J5ZA=;
+        b=uFV/TtUxpG6faB5yzwnHLzsq6BS52VACvRpup+PAJZyDc1uOiMnRIetVHPZDLupAnj
+         XG4QqWOs5gSDkawyAdvnEFlzOrYpyrAMVU5IqQhHD9visBJhhEr3J6lJXCiUfGsFd2iF
+         mYGskUSwjkmrfF77vnjpj+NowdxoQDBAGQJoK9qDmh+xPDcP3uvg7sRMomMFfzoVNY5V
+         pGy4Qfh0Pm60O3eXS6tHnDOILYewc5iguGrQRiA/gLC3CxMuCwRx/Z6CGzqL3TRNCH3J
+         RReTkSGiNcQRimaAwZ/sw6j0vkE8HAimPBrd738jJhnrmnk9o9h952vbKs5G5aNcAI0Z
+         6H0w==
+X-Gm-Message-State: AOAM530/cW66e5GrI0OsiHbQRAE2cSNGqdiT7n3SDHvQtEnHHk2XK2xj
+        gggRJd/3Y1f2GFcNFAZCxda3d+cFohIHFEGDBfjLn+ByTk93h70Qjw8wForq
+X-Google-Smtp-Source: ABdhPJwvEhI2OU3pE0RqtzIkEDWFTvBnQ9J15MZw26hwWx3D4smbU0sqGAOGtJ9zBZgAFcA978wTCJ2dQzDXfik8NE4=
+X-Received: by 2002:a50:f41a:: with SMTP id r26mr55516745edm.339.1620993775228;
+ Fri, 14 May 2021 05:02:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <3034083.sOBWI1P7ec@yuki>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210514110317.2041580-1-mudongliangabcd@gmail.com>
+ <YJ5bllCkul/X+iNk@kroah.com> <CAD-N9QVUNRMB43RocnLZc6WxG+tUSjLcdHC5XXS=x7663Yom8Q@mail.gmail.com>
+ <YJ5klcRZW0I5SShX@kroah.com>
+In-Reply-To: <YJ5klcRZW0I5SShX@kroah.com>
+From:   =?UTF-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
+Date:   Fri, 14 May 2021 20:02:17 +0800
+Message-ID: <CAD-N9QW+HA9F=CiWUJseLggNA6qJ=TLomE4rja1x-NGgEX_jpg@mail.gmail.com>
+Subject: Re: [PATCH] misc/uss720: fix memory leak in uss720_probe
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        syzbot+636c58f40a86b4a879e7@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/14/21 9:41 PM, Sachi King wrote:
-> On Thursday, May 13, 2021 8:36:27 PM AEST David Laight wrote:
->>> -----Original Message-----
->>> From: Maximilian Luz <luzmaximilian@gmail.com>
->>> Sent: 13 May 2021 11:12
->>> To: David Laight <David.Laight@ACULAB.COM>; Thomas Gleixner
->>> <tglx@linutronix.de>; Ingo Molnar <mingo@redhat.com>; Borislav Petkov
->>> <bp@alien8.de>
->>> Cc: H. Peter Anvin <hpa@zytor.com>; Sachi King <nakato@nakato.io>;
->>> x86@kernel.org; linux-kernel@vger.kernel.org; stable@vger.kernel.org
->>> Subject: Re: [PATCH] x86/i8259: Work around buggy legacy PIC
->>>
->>> On 5/13/21 10:10 AM, David Laight wrote:
->>>
->>>> From: Maximilian Luz
->>>>
->>>>> Sent: 12 May 2021 22:05
->>>>>
->>>>>
->>>>>
->>>>> The legacy PIC on the AMD variant of the Microsoft Surface Laptop 4
->>>>> has
->>>>> some problems on boot. For some reason it consistently does not
->>>>> respond
->>>>> on the first try, requiring a couple more tries before it finally
->>>>> responds.
->>>>
->>>>
->>>>
->>>> That seems very strange, something else must be going on that causes the
->>>> grief.
->>>> The 8259 will be built into to the one of the cpu support
->>>> chips.
->>>> I can't imagine that requires anything special.
->>>
->>>
->>> Right, it's definitely strange. Both Sachi (I imagine) and I don't know
->>> much about these devices, so we're open for suggestions.
->>
->>
->> I found a copy of the datasheet (I don't seem to have the black book):
->>
->> https://pdos.csail.mit.edu/6.828/2010/readings/hardware/8259A.pdf
->>
->> The PC hardware has two 8259 in cascade mode.
->> (Cascaded using an interrupt that wasn't really using in the original
->> 8088 PC which only had one 8259.)
->>
->> I wonder if the bios has actually initialised is properly.
->> Some initialisation writes have to be done to set everything up.
-> 
-> I suspect by the displayed behaviour you are correct and that it has
-> not.  I'm struggling to figure out who to talk to to see that is
-> something that can be fixed in the firmware.
+On Fri, May 14, 2021 at 7:52 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Fri, May 14, 2021 at 07:48:57PM +0800, =E6=85=95=E5=86=AC=E4=BA=AE wro=
+te:
+> > On Fri, May 14, 2021 at 7:14 PM Greg KH <gregkh@linuxfoundation.org> wr=
+ote:
+> > >
+> > > On Fri, May 14, 2021 at 07:03:17PM +0800, Dongliang Mu wrote:
+> > > > uss720_probe forgets to decrease the refcount of usbdev in uss720_p=
+robe.
+> > > > Fix this by decreasing the refcount of usbdev by usb_put_dev.
+> > > >
+> > > > BUG: memory leak
+> > > > unreferenced object 0xffff888101113800 (size 2048):
+> > > >   comm "kworker/0:1", pid 7, jiffies 4294956777 (age 28.870s)
+> > > >   hex dump (first 32 bytes):
+> > > >     ff ff ff ff 31 00 00 00 00 00 00 00 00 00 00 00  ....1.........=
+..
+> > > >     00 00 00 00 00 00 00 00 00 00 00 00 03 00 00 00  ..............=
+..
+> > > >   backtrace:
+> > > >     [<ffffffff82b8e822>] kmalloc include/linux/slab.h:554 [inline]
+> > > >     [<ffffffff82b8e822>] kzalloc include/linux/slab.h:684 [inline]
+> > > >     [<ffffffff82b8e822>] usb_alloc_dev+0x32/0x450 drivers/usb/core/=
+usb.c:582
+> > > >     [<ffffffff82b98441>] hub_port_connect drivers/usb/core/hub.c:51=
+29 [inline]
+> > > >     [<ffffffff82b98441>] hub_port_connect_change drivers/usb/core/h=
+ub.c:5363 [inline]
+> > > >     [<ffffffff82b98441>] port_event drivers/usb/core/hub.c:5509 [in=
+line]
+> > > >     [<ffffffff82b98441>] hub_event+0x1171/0x20c0 drivers/usb/core/h=
+ub.c:5591
+> > > >     [<ffffffff81259229>] process_one_work+0x2c9/0x600 kernel/workqu=
+eue.c:2275
+> > > >     [<ffffffff81259b19>] worker_thread+0x59/0x5d0 kernel/workqueue.=
+c:2421
+> > > >     [<ffffffff81261228>] kthread+0x178/0x1b0 kernel/kthread.c:292
+> > > >     [<ffffffff8100227f>] ret_from_fork+0x1f/0x30 arch/x86/entry/ent=
+ry_64.S:294
+> > > >
+> > > > Reported-by: syzbot+636c58f40a86b4a879e7@syzkaller.appspotmail.com
+> > > > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> > > > ---
+> > > >  drivers/usb/misc/uss720.c | 1 +
+> > > >  1 file changed, 1 insertion(+)
+> > > >
+> > > > diff --git a/drivers/usb/misc/uss720.c b/drivers/usb/misc/uss720.c
+> > > > index b5d661644263..748139d26263 100644
+> > > > --- a/drivers/usb/misc/uss720.c
+> > > > +++ b/drivers/usb/misc/uss720.c
+> > > > @@ -736,6 +736,7 @@ static int uss720_probe(struct usb_interface *i=
+ntf,
+> > > >       parport_announce_port(pp);
+> > > >
+> > > >       usb_set_intfdata(intf, pp);
+> > > > +     usb_put_dev(usbdev);
+> > > >       return 0;
+> > > >
+> > > >  probe_abort:
+> > > > --
+> > > > 2.25.1
+> > > >
+> > >
+> > > Nice catch!
+> >
+> > Thanks.
+> >
+> > This should be a bug fix. From the document, "Fixes" tag is needed for
+> > bug fixes.
+>
+> It would be good, yes, please resend with that added.
 
-I'd assume that _some_ sort of interrupt setup is done by the BIOS/UEFI.
-The UEFI on those devices is fairly well-featured, with touch support
-via SPI and all. Furthermore, keyboard (also supported in the device's
-UEFI) is handled via a custom UART protocol. Unless they rely on polling
-for all of that, I believe they'd have to set up some interrupts.
+Sure. I will resend the patch.
 
-Although, as you mention later on, that could also be handled via the
-IOAPIC and the PIC is actually not supposed to be used. Maybe some
-legacy component that never got tested and just broke with some new
-hardware/firmware revision without anyone noticing? And since Linux
-still seems to rely on that, we might be the first to notice.
+>
+> > How do I quickly get this bug-inducing commit? Any
+> > suggestion here?
+>
+> look at the log for this one file to find where the offending change
+> happend.  Try `git log -p drivers/usb/misc/uss720.c`
 
-Regards,
-Max
+0f36163d3abefbda1b21a330b3fdf3c2dc076d94 [PATCH] usb: fix uss720
+schedule with interrupts off
+
+@@ -536,93 +682,91 @@ static struct parport_operations parport_uss720_ops =
+=3D
+static int uss720_probe(struct usb_interface *intf,
+const struct usb_device_id *id)
+{
+- struct usb_device *usbdev =3D interface_to_usbdev(intf);
++ struct usb_device *usbdev =3D usb_get_dev(interface_to_usbdev(intf));
+
+Then only the code only decreases the refcount at failure sites.
+
+>
+> thanks,
+>
+> greg k-h
