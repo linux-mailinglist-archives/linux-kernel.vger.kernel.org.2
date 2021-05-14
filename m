@@ -2,123 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 117E0380E34
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 18:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03B4B380DD6
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 18:13:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232859AbhENQbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 12:31:06 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:21614 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230009AbhENQbF (ORCPT
+        id S233809AbhENQOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 12:14:16 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:39558 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232438AbhENQOL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 12:31:05 -0400
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14EGPuvd011562;
-        Fri, 14 May 2021 11:29:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=pURXyEbufO34s3H/mKKyt6oXSIaLkoflKS02BSTQm1A=;
- b=djQIDzJ/vuj9kK9AqV77XJhzqR8P7VYpX4UgcS6MEfeyiKODhuZVyRKCuFmFuJOpz/Bz
- RPk4qgDYDtCYTClbQJMFl6539zlCjscbi/SiJ50Y1KewlYuffnLwvmQy3oh6ag9ixnVI
- eiZ4ZrZOTdO7Vu7mS4Xee3yozZAj43mAvQIXYAQJpssNzB+i2fAZ/nAVa+ucn402bmoh
- y29HN0H0DdCmx+kSUTuaT5voR4us2+IsDf+Sn+7hOXs4mGCXsGDHMeuxvYOHjH6FwFku
- Xsw2D3N1XF9Po0rktVO5IPkHoHxPsXkwlCAMJpy3hlDUXV8IRJYopaPlVk7Php+DTuvX bw== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 38hdbrh1xb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 14 May 2021 11:29:20 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Fri, 14 May
- 2021 17:12:14 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Fri, 14 May 2021 17:12:14 +0100
-Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.65.125])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1464611CD;
-        Fri, 14 May 2021 16:12:14 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <pmladek@suse.com>, <rostedt@goodmis.org>,
-        <sergey.senozhatsky@gmail.com>,
-        <andriy.shevchenko@linux.intel.com>, <linux@rasmusvillemoes.dk>,
-        <shuah@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <patches@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH v8 RESEND 4/4] selftests: lib: Add wrapper script for test_scanf
-Date:   Fri, 14 May 2021 17:12:06 +0100
-Message-ID: <20210514161206.30821-4-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210514161206.30821-1-rf@opensource.cirrus.com>
-References: <20210514161206.30821-1-rf@opensource.cirrus.com>
+        Fri, 14 May 2021 12:14:11 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14EGCqlw083265;
+        Fri, 14 May 2021 11:12:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1621008772;
+        bh=OQ+Ix9MIKU9XQ3zLGXvsa0ysovBtndx9AhnqN1l25i8=;
+        h=From:To:CC:Subject:Date;
+        b=vo88a/V6/b955trrrBR1Xn52swmO2EE31c1lc0Sm0NCWXOzCBVoDS5FoV0z1zrj6e
+         Uz/r9B42w4lVvSkJ6rUocu0kM0b7GqVJc9M7IMDzQik6YqD5IhvPtcWShf8b5/UgeV
+         hJV9jm8E+nTB/Dr9XuebX2R6dq2bgQvtVRZyZSJs=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14EGCqnM007526
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 14 May 2021 11:12:52 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 14
+ May 2021 11:12:51 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 14 May 2021 11:12:51 -0500
+Received: from fllv0103.dal.design.ti.com (fllv0103.dal.design.ti.com [10.247.120.73])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14EGCpr0042030;
+        Fri, 14 May 2021 11:12:51 -0500
+Received: from localhost ([10.250.35.60])
+        by fllv0103.dal.design.ti.com (8.14.7/8.14.7) with ESMTP id 14EGCp7u035302;
+        Fri, 14 May 2021 11:12:51 -0500
+From:   Suman Anna <s-anna@ti.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
+CC:     Deepak Saxena <dsaxena@plexity.net>,
+        Tero Kristo <kristo@kernel.org>, Keerthy <j-keerthy@ti.com>,
+        Gowtham Tammana <g-tammana@ti.com>,
+        Vaibhav Gupta <v_gupta@ti.com>, <linux-crypto@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Suman Anna <s-anna@ti.com>
+Subject: [PATCH 0/6] Misc. SA2UL fixes/cleanups
+Date:   Fri, 14 May 2021 11:12:40 -0500
+Message-ID: <20210514161246.22517-1-s-anna@ti.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: BfgYvkxBsmuFc-exjcHroR4RsLwSEwxp
-X-Proofpoint-ORIG-GUID: BfgYvkxBsmuFc-exjcHroR4RsLwSEwxp
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 priorityscore=1501
- spamscore=0 bulkscore=0 phishscore=0 impostorscore=0 malwarescore=0
- adultscore=0 clxscore=1015 mlxlogscore=999 mlxscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105140130
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds a wrapper shell script for the test_scanf module.
+Hi All,
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-Changed since v6:
-Fixed typo in tools/testing/selftests/lib/config:
+The following series includes various fixes for multiple minor
+cleanup issues on failure paths in the TI K3 SA2UL Crypto driver.
+The patches are all based on top of 5.13-rc1.
 
-	-CONFIG_TEST_SCANTF=m
-	+CONFIG_TEST_SCANF=m
+Patch 1 is the only non SA2UL patch, and allows the OMAP RNG driver
+to be built for K3 platforms and probed properly when SA2UL is
+selected, and the SA2UL driver is probed (the rng device is a child
+of the sa2ul device).
 
-As this is a trivial change I have kept Petr Mladek's Reviewed-by and
-Andy Shevchenko's ack.
----
- tools/testing/selftests/lib/Makefile | 2 +-
- tools/testing/selftests/lib/config   | 1 +
- tools/testing/selftests/lib/scanf.sh | 4 ++++
- 3 files changed, 6 insertions(+), 1 deletion(-)
- create mode 100755 tools/testing/selftests/lib/scanf.sh
+regards
+Suman
 
-diff --git a/tools/testing/selftests/lib/Makefile b/tools/testing/selftests/lib/Makefile
-index a105f094676e..ee71fc99d5b5 100644
---- a/tools/testing/selftests/lib/Makefile
-+++ b/tools/testing/selftests/lib/Makefile
-@@ -4,6 +4,6 @@
- # No binaries, but make sure arg-less "make" doesn't trigger "run_tests"
- all:
- 
--TEST_PROGS := printf.sh bitmap.sh prime_numbers.sh strscpy.sh
-+TEST_PROGS := printf.sh bitmap.sh prime_numbers.sh scanf.sh strscpy.sh
- 
- include ../lib.mk
-diff --git a/tools/testing/selftests/lib/config b/tools/testing/selftests/lib/config
-index b80ee3f6e265..645839b50b0a 100644
---- a/tools/testing/selftests/lib/config
-+++ b/tools/testing/selftests/lib/config
-@@ -1,4 +1,5 @@
- CONFIG_TEST_PRINTF=m
-+CONFIG_TEST_SCANF=m
- CONFIG_TEST_BITMAP=m
- CONFIG_PRIME_NUMBERS=m
- CONFIG_TEST_STRSCPY=m
-diff --git a/tools/testing/selftests/lib/scanf.sh b/tools/testing/selftests/lib/scanf.sh
-new file mode 100755
-index 000000000000..b59b8ba561c3
---- /dev/null
-+++ b/tools/testing/selftests/lib/scanf.sh
-@@ -0,0 +1,4 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+# Tests the scanf infrastructure using test_scanf kernel module.
-+$(dirname $0)/../kselftest/module.sh "scanf" test_scanf
+Suman Anna (6):
+  hwrng: omap - Enable driver for TI K3 family
+  crypto: sa2ul - Fix leaks on failure paths with sa_dma_init()
+  crypto: sa2ul - Fix pm_runtime enable in sa_ul_probe()
+  crypto: sa2ul - Use of_device_get_match_data() helper
+  crypto: sa2ul - Use devm_platform_ioremap_resource()
+  crypto: sa2ul - Remove child devices in remove
+
+ drivers/char/hw_random/Kconfig |  2 +-
+ drivers/crypto/sa2ul.c         | 46 ++++++++++++++++++----------------
+ 2 files changed, 25 insertions(+), 23 deletions(-)
+
 -- 
-2.20.1
+2.30.1
 
