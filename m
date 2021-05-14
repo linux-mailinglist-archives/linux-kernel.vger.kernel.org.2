@@ -2,175 +2,343 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB6343801EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 04:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE6413801C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 04:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231334AbhENC1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 22:27:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230129AbhENC1d (ORCPT
+        id S232300AbhENCHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 22:07:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20110 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230233AbhENCHE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 22:27:33 -0400
-Received: from mxout013.mail.hostpoint.ch (mxout013.mail.hostpoint.ch [IPv6:2a00:d70:0:e::313])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FF2EC061574;
-        Thu, 13 May 2021 19:26:22 -0700 (PDT)
-Received: from [10.0.2.45] (helo=asmtp012.mail.hostpoint.ch)
-        by mxout013.mail.hostpoint.ch with esmtp (Exim 4.94.2 (FreeBSD))
-        (envelope-from <code@reto-schneider.ch>)
-        id 1lhNCK-000HmU-VR; Fri, 14 May 2021 04:05:04 +0200
-Received: from [2a02:168:6182:1:4ea5:a8cc:a141:509c] (helo=ryzen2700.home.reto-schneider.ch)
-        by asmtp012.mail.hostpoint.ch with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2 (FreeBSD))
-        (envelope-from <code@reto-schneider.ch>)
-        id 1lhNCK-000L6T-Ne; Fri, 14 May 2021 04:05:04 +0200
-X-Authenticated-Sender-Id: reto-schneider@reto-schneider.ch
-From:   Reto Schneider <code@reto-schneider.ch>
-To:     Jes.Sorensen@gmail.com, linux-wireless@vger.kernel.org,
-        pkshih@realtek.com
-Cc:     yhchuang@realtek.com, Larry.Finger@lwfinger.net,
-        tehuang@realtek.com, reto.schneider@husqvarnagroup.com,
-        ccchiu77@gmail.com, kvalo@codeaurora.org, davem@davemloft.net,
-        kuba@kernel.org, Chris Chiu <chiu@endlessos.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH 7/7] rtl8xxxu: Fix ampdu_action to get block ack session work
-Date:   Fri, 14 May 2021 04:04:42 +0200
-Message-Id: <20210514020442.946-8-code@reto-schneider.ch>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210514020442.946-1-code@reto-schneider.ch>
-References: <a31d9500-73a3-f890-bebd-d0a4014f87da@reto-schneider.ch>
- <20210514020442.946-1-code@reto-schneider.ch>
+        Thu, 13 May 2021 22:07:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620957954;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uxHhtzEejlgB7z3HturAUX2jNJWh/gHzO4+BhaTc+pk=;
+        b=iG2P22eCtQ89UMURHHvUg8TML5kpAtlC863pwapdY6u1ZpdU3Jl5/AtaBynbzfRUSLtO0I
+        AuynFXR8/1OBe54PuYvSEY9sdUHTQdy7dY4pKZzIAcQuhpO6eANAuTpzDdLeJ2cfZ3fq1+
+        Zo5pXEH7G91NITGqsDO/wExJr8TPaQY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-460-97jTsrOpM2CYmArtRqmo7A-1; Thu, 13 May 2021 22:05:52 -0400
+X-MC-Unique: 97jTsrOpM2CYmArtRqmo7A-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 02C4B800D62;
+        Fri, 14 May 2021 02:05:51 +0000 (UTC)
+Received: from T590 (ovpn-12-87.pek2.redhat.com [10.72.12.87])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8B09B5F9B8;
+        Fri, 14 May 2021 02:05:43 +0000 (UTC)
+Date:   Fri, 14 May 2021 10:05:39 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     John Garry <john.garry@huawei.com>
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        kashyap.desai@broadcom.com, chenxiang66@hisilicon.com,
+        yama@redhat.com, dgilbert@interlog.com
+Subject: Re: [PATCH v3 2/2] blk-mq: Use request queue-wide tags for
+ tagset-wide sbitmap
+Message-ID: <YJ3a86bBMVGKa0+l@T590>
+References: <1620907258-30910-1-git-send-email-john.garry@huawei.com>
+ <1620907258-30910-3-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1620907258-30910-3-git-send-email-john.garry@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Chiu <chiu@endlessos.org>
+On Thu, May 13, 2021 at 08:00:58PM +0800, John Garry wrote:
+> The tags used for an IO scheduler are currently per hctx.
+> 
+> As such, when q->nr_hw_queues grows, so does the request queue total IO
+> scheduler tag depth.
+> 
+> This may cause problems for SCSI MQ HBAs whose total driver depth is
+> fixed.
+> 
+> Ming and Yanhui report higher CPU usage and lower throughput in scenarios
+> where the fixed total driver tag depth is appreciably lower than the total
+> scheduler tag depth:
+> https://lore.kernel.org/linux-block/440dfcfc-1a2c-bd98-1161-cec4d78c6dfc@huawei.com/T/#mc0d6d4f95275a2743d1c8c3e4dc9ff6c9aa3a76b
+> 
+> In that scenario, since the scheduler tag is got first, much contention
+> is introduced since a driver tag may not be available after we have got
+> the sched tag.
+> 
+> Improve this scenario by introducing request queue-wide tags for when
+> a tagset-wide sbitmap is used. The static sched requests are still
+> allocated per hctx, as requests are initialised per hctx, as in
+> blk_mq_init_request(..., hctx_idx, ...) ->
+> set->ops->init_request(.., hctx_idx, ...).
+> 
+> For simplicity of resizing the request queue sbitmap when updating the
+> request queue depth, just init at the max possible size, so we don't need
+> to deal with the possibly with swapping out a new sbitmap for old if
+> we need to grow.
+> 
+> Signed-off-by: John Garry <john.garry@huawei.com>
+> ---
+>  block/blk-mq-sched.c   | 67 ++++++++++++++++++++++++++++++++++--------
+>  block/blk-mq-sched.h   |  2 ++
+>  block/blk-mq-tag.c     | 11 ++++---
+>  block/blk-mq.c         | 13 ++++++--
+>  include/linux/blkdev.h |  4 +++
+>  5 files changed, 76 insertions(+), 21 deletions(-)
+> 
+> diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
+> index 42a365b1b9c0..6485969fce9c 100644
+> --- a/block/blk-mq-sched.c
+> +++ b/block/blk-mq-sched.c
+> @@ -507,11 +507,9 @@ static void blk_mq_sched_free_tags(struct blk_mq_tag_set *set,
+>  				   struct blk_mq_hw_ctx *hctx,
+>  				   unsigned int hctx_idx)
+>  {
+> -	unsigned int flags = set->flags & ~BLK_MQ_F_TAG_HCTX_SHARED;
+> -
+>  	if (hctx->sched_tags) {
+>  		blk_mq_free_rqs(set, hctx->sched_tags, hctx_idx);
+> -		blk_mq_free_rq_map(hctx->sched_tags, flags);
+> +		blk_mq_free_rq_map(hctx->sched_tags, set->flags);
+>  		hctx->sched_tags = NULL;
+>  	}
+>  }
+> @@ -521,12 +519,10 @@ static int blk_mq_sched_alloc_tags(struct request_queue *q,
+>  				   unsigned int hctx_idx)
+>  {
+>  	struct blk_mq_tag_set *set = q->tag_set;
+> -	/* Clear HCTX_SHARED so tags are init'ed */
+> -	unsigned int flags = set->flags & ~BLK_MQ_F_TAG_HCTX_SHARED;
+>  	int ret;
+>  
+>  	hctx->sched_tags = blk_mq_alloc_rq_map(set, hctx_idx, q->nr_requests,
+> -					       set->reserved_tags, flags);
+> +					       set->reserved_tags, set->flags);
+>  	if (!hctx->sched_tags)
+>  		return -ENOMEM;
+>  
+> @@ -544,16 +540,50 @@ static void blk_mq_sched_tags_teardown(struct request_queue *q)
+>  	int i;
+>  
+>  	queue_for_each_hw_ctx(q, hctx, i) {
+> -		/* Clear HCTX_SHARED so tags are freed */
+> -		unsigned int flags = hctx->flags & ~BLK_MQ_F_TAG_HCTX_SHARED;
+> -
+>  		if (hctx->sched_tags) {
+> -			blk_mq_free_rq_map(hctx->sched_tags, flags);
+> +			blk_mq_free_rq_map(hctx->sched_tags, hctx->flags);
+>  			hctx->sched_tags = NULL;
+>  		}
+>  	}
+>  }
+>  
+> +static int blk_mq_init_sched_shared_sbitmap(struct request_queue *queue)
+> +{
+> +	struct blk_mq_tag_set *set = queue->tag_set;
+> +	int alloc_policy = BLK_MQ_FLAG_TO_ALLOC_POLICY(set->flags);
+> +	struct blk_mq_hw_ctx *hctx;
+> +	int ret, i;
+> +
+> +	/*
+> +	 * Set initial depth at max so that we don't need to reallocate for
+> +	 * updating nr_requests.
+> +	 */
+> +	ret = blk_mq_init_bitmaps(&queue->sched_bitmap_tags,
+> +				  &queue->sched_breserved_tags,
+> +				  MAX_SCHED_RQ, set->reserved_tags,
+> +				  set->numa_node, alloc_policy);
+> +	if (ret)
+> +		return ret;
+> +
+> +	queue_for_each_hw_ctx(queue, hctx, i) {
+> +		hctx->sched_tags->bitmap_tags =
+> +					&queue->sched_bitmap_tags;
+> +		hctx->sched_tags->breserved_tags =
+> +					&queue->sched_breserved_tags;
+> +	}
+> +
+> +	sbitmap_queue_resize(&queue->sched_bitmap_tags,
+> +			     queue->nr_requests - set->reserved_tags);
+> +
+> +	return 0;
+> +}
+> +
+> +static void blk_mq_exit_sched_shared_sbitmap(struct request_queue *queue)
+> +{
+> +	sbitmap_queue_free(&queue->sched_bitmap_tags);
+> +	sbitmap_queue_free(&queue->sched_breserved_tags);
+> +}
+> +
+>  int blk_mq_init_sched(struct request_queue *q, struct elevator_type *e)
+>  {
+>  	struct blk_mq_hw_ctx *hctx;
+> @@ -578,12 +608,18 @@ int blk_mq_init_sched(struct request_queue *q, struct elevator_type *e)
+>  	queue_for_each_hw_ctx(q, hctx, i) {
+>  		ret = blk_mq_sched_alloc_tags(q, hctx, i);
+>  		if (ret)
+> -			goto err;
+> +			goto err_free_tags;
+> +	}
+> +
+> +	if (blk_mq_is_sbitmap_shared(q->tag_set->flags)) {
+> +		ret = blk_mq_init_sched_shared_sbitmap(q);
+> +		if (ret)
+> +			goto err_free_tags;
+>  	}
+>  
+>  	ret = e->ops.init_sched(q, e);
+>  	if (ret)
+> -		goto err;
+> +		goto err_free_sbitmap;
+>  
+>  	blk_mq_debugfs_register_sched(q);
+>  
+> @@ -603,7 +639,10 @@ int blk_mq_init_sched(struct request_queue *q, struct elevator_type *e)
+>  
+>  	return 0;
+>  
+> -err:
+> +err_free_sbitmap:
+> +	if (blk_mq_is_sbitmap_shared(q->tag_set->flags))
+> +		blk_mq_exit_sched_shared_sbitmap(q);
+> +err_free_tags:
+>  	blk_mq_sched_free_requests(q);
+>  	blk_mq_sched_tags_teardown(q);
+>  	q->elevator = NULL;
+> @@ -641,5 +680,7 @@ void blk_mq_exit_sched(struct request_queue *q, struct elevator_queue *e)
+>  	if (e->type->ops.exit_sched)
+>  		e->type->ops.exit_sched(e);
+>  	blk_mq_sched_tags_teardown(q);
+> +	if (blk_mq_is_sbitmap_shared(q->tag_set->flags))
+> +		blk_mq_exit_sched_shared_sbitmap(q);
+>  	q->elevator = NULL;
+>  }
+> diff --git a/block/blk-mq-sched.h b/block/blk-mq-sched.h
+> index 5b18ab915c65..aff037cfd8e7 100644
+> --- a/block/blk-mq-sched.h
+> +++ b/block/blk-mq-sched.h
+> @@ -5,6 +5,8 @@
+>  #include "blk-mq.h"
+>  #include "blk-mq-tag.h"
+>  
+> +#define MAX_SCHED_RQ (16 * BLKDEV_MAX_RQ)
+> +
+>  void blk_mq_sched_assign_ioc(struct request *rq);
+>  
+>  bool blk_mq_sched_try_merge(struct request_queue *q, struct bio *bio,
+> diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+> index 45479c0f88a2..c65d1b8891cf 100644
+> --- a/block/blk-mq-tag.c
+> +++ b/block/blk-mq-tag.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/delay.h>
+>  #include "blk.h"
+>  #include "blk-mq.h"
+> +#include "blk-mq-sched.h"
+>  #include "blk-mq-tag.h"
+>  
+>  /*
+> @@ -563,8 +564,6 @@ int blk_mq_tag_update_depth(struct blk_mq_hw_ctx *hctx,
+>  	 */
+>  	if (tdepth > tags->nr_tags) {
+>  		struct blk_mq_tag_set *set = hctx->queue->tag_set;
+> -		/* Only sched tags can grow, so clear HCTX_SHARED flag  */
+> -		unsigned int flags = set->flags & ~BLK_MQ_F_TAG_HCTX_SHARED;
+>  		struct blk_mq_tags *new;
+>  		bool ret;
+>  
+> @@ -575,21 +574,21 @@ int blk_mq_tag_update_depth(struct blk_mq_hw_ctx *hctx,
+>  		 * We need some sort of upper limit, set it high enough that
+>  		 * no valid use cases should require more.
+>  		 */
+> -		if (tdepth > 16 * BLKDEV_MAX_RQ)
+> +		if (tdepth > MAX_SCHED_RQ)
+>  			return -EINVAL;
+>  
+>  		new = blk_mq_alloc_rq_map(set, hctx->queue_num, tdepth,
+> -				tags->nr_reserved_tags, flags);
+> +				tags->nr_reserved_tags, set->flags);
+>  		if (!new)
+>  			return -ENOMEM;
+>  		ret = blk_mq_alloc_rqs(set, new, hctx->queue_num, tdepth);
+>  		if (ret) {
+> -			blk_mq_free_rq_map(new, flags);
+> +			blk_mq_free_rq_map(new, set->flags);
+>  			return -ENOMEM;
+>  		}
+>  
+>  		blk_mq_free_rqs(set, *tagsptr, hctx->queue_num);
+> -		blk_mq_free_rq_map(*tagsptr, flags);
+> +		blk_mq_free_rq_map(*tagsptr, set->flags);
+>  		*tagsptr = new;
+>  	} else {
+>  		/*
+> diff --git a/block/blk-mq.c b/block/blk-mq.c
+> index 499ad5462f7e..8b5ecc801d3f 100644
+> --- a/block/blk-mq.c
+> +++ b/block/blk-mq.c
+> @@ -3564,15 +3564,24 @@ int blk_mq_update_nr_requests(struct request_queue *q, unsigned int nr)
+>  		} else {
+>  			ret = blk_mq_tag_update_depth(hctx, &hctx->sched_tags,
+>  							nr, true);
+> +			if (blk_mq_is_sbitmap_shared(set->flags)) {
+> +				hctx->sched_tags->bitmap_tags =
+> +					&q->sched_bitmap_tags;
+> +				hctx->sched_tags->breserved_tags =
+> +					&q->sched_breserved_tags;
+> +			}
+>  		}
+>  		if (ret)
+>  			break;
+>  		if (q->elevator && q->elevator->type->ops.depth_updated)
+>  			q->elevator->type->ops.depth_updated(hctx);
+>  	}
+> -
+> -	if (!ret)
+> +	if (!ret) {
+>  		q->nr_requests = nr;
+> +		if (q->elevator && blk_mq_is_sbitmap_shared(set->flags))
+> +			sbitmap_queue_resize(&q->sched_bitmap_tags,
+> +					     nr - set->reserved_tags);
+> +	}
+>  
+>  	blk_mq_unquiesce_queue(q);
+>  	blk_mq_unfreeze_queue(q);
+> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+> index 1255823b2bc0..4092c2a38f10 100644
+> --- a/include/linux/blkdev.h
+> +++ b/include/linux/blkdev.h
+> @@ -25,6 +25,7 @@
+>  #include <linux/scatterlist.h>
+>  #include <linux/blkzoned.h>
+>  #include <linux/pm.h>
+> +#include <linux/sbitmap.h>
+>  
+>  struct module;
+>  struct scsi_ioctl_command;
+> @@ -493,6 +494,9 @@ struct request_queue {
+>  
+>  	atomic_t		nr_active_requests_shared_sbitmap;
+>  
+> +	struct sbitmap_queue	sched_bitmap_tags;
+> +	struct sbitmap_queue	sched_breserved_tags;
+> +
+>  	struct list_head	icq_list;
+>  #ifdef CONFIG_BLK_CGROUP
+>  	DECLARE_BITMAP		(blkcg_pols, BLKCG_MAX_POLS);
+> -- 
+> 2.26.2
+> 
 
-The HAS_RATE_CONTROL hw capability needs to be unset for the mac80211
-rate control to work. The mac80211 rate control will be in charge
-of the TX aggregation related work so the AMPDU TX part in each
-driver should be modified accordingly.
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
 
-Signed-off-by: Chris Chiu <chiu@endlessos.org>
-(cherry picked from commit c470f7aed67f223d941e3da6e9d2a464dd0083ee)
 
-Signed-off-by: Reto Schneider <reto.schneider@husqvarnagroup.com>
----
-
- .../net/wireless/realtek/rtl8xxxu/rtl8xxxu.h  |  1 +
- .../wireless/realtek/rtl8xxxu/rtl8xxxu_core.c | 35 ++++++++++++-------
- 2 files changed, 24 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h
-index 3d16d6c9ff39..65620ecf9ac2 100644
---- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h
-+++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h
-@@ -1384,6 +1384,7 @@ struct rtl8xxxu_priv {
- 	u8 no_pape:1;
- 	u8 int_buf[USB_INTR_CONTENT_LENGTH];
- 	u8 rssi_level;
-+	u8 agg_state_bitmap;
- 	/*
- 	 * Only one virtual interface permitted because only STA mode
- 	 * is supported and no iface_combinations are provided.
-diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
-index 088e007e8bd0..7ce27d1bb27a 100644
---- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
-+++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
-@@ -5030,6 +5030,8 @@ rtl8xxxu_fill_txdesc_v1(struct ieee80211_hw *hw, struct ieee80211_hdr *hdr,
- 	struct ieee80211_rate *tx_rate = ieee80211_get_tx_rate(hw, tx_info);
- 	struct rtl8xxxu_priv *priv = hw->priv;
- 	struct device *dev = &priv->udev->dev;
-+	u8 *qc = ieee80211_get_qos_ctl(hdr);
-+	u8 tid = qc[0] & IEEE80211_QOS_CTL_TID_MASK;
- 	u32 rate;
- 	u16 rate_flags = tx_info->control.rates[0].flags;
- 	u16 seq_number;
-@@ -5053,10 +5055,12 @@ rtl8xxxu_fill_txdesc_v1(struct ieee80211_hw *hw, struct ieee80211_hdr *hdr,
- 
- 	tx_desc->txdw3 = cpu_to_le32((u32)seq_number << TXDESC32_SEQ_SHIFT);
- 
--	if (ampdu_enable)
-+	if (ampdu_enable && (priv->agg_state_bitmap & BIT(tid)) &&
-+	    (tx_info->flags & IEEE80211_TX_CTL_AMPDU)) {
- 		tx_desc->txdw1 |= cpu_to_le32(TXDESC32_AGG_ENABLE);
--	else
-+	} else {
- 		tx_desc->txdw1 |= cpu_to_le32(TXDESC32_AGG_BREAK);
-+	}
- 
- 	if (ieee80211_is_mgmt(hdr->frame_control)) {
- 		tx_desc->txdw5 = cpu_to_le32(rate);
-@@ -5101,6 +5105,8 @@ rtl8xxxu_fill_txdesc_v2(struct ieee80211_hw *hw, struct ieee80211_hdr *hdr,
- 	struct rtl8xxxu_priv *priv = hw->priv;
- 	struct device *dev = &priv->udev->dev;
- 	struct rtl8xxxu_txdesc40 *tx_desc40;
-+	u8 *qc = ieee80211_get_qos_ctl(hdr);
-+	u8 tid = qc[0] & IEEE80211_QOS_CTL_TID_MASK;
- 	u32 rate;
- 	u16 rate_flags = tx_info->control.rates[0].flags;
- 	u16 seq_number;
-@@ -5127,10 +5133,13 @@ rtl8xxxu_fill_txdesc_v2(struct ieee80211_hw *hw, struct ieee80211_hdr *hdr,
- 
- 	tx_desc40->txdw9 = cpu_to_le32((u32)seq_number << TXDESC40_SEQ_SHIFT);
- 
--	if (ampdu_enable)
-+	if (ampdu_enable && (priv->agg_state_bitmap & BIT(tid)) &&
-+	    (tx_info->flags & IEEE80211_TX_CTL_AMPDU)) {
- 		tx_desc40->txdw2 |= cpu_to_le32(TXDESC40_AGG_ENABLE);
--	else
-+		tx_desc40->txdw3 |= cpu_to_le32(0x1f << 17);
-+	} else {
- 		tx_desc40->txdw2 |= cpu_to_le32(TXDESC40_AGG_BREAK);
-+	}
- 
- 	if (ieee80211_is_mgmt(hdr->frame_control)) {
- 		tx_desc40->txdw4 = cpu_to_le32(rate);
-@@ -6299,6 +6308,7 @@ rtl8xxxu_ampdu_action(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 	struct device *dev = &priv->udev->dev;
- 	u8 ampdu_factor, ampdu_density;
- 	struct ieee80211_sta *sta = params->sta;
-+	u16 tid = params->tid;
- 	enum ieee80211_ampdu_mlme_action action = params->action;
- 
- 	switch (action) {
-@@ -6311,17 +6321,19 @@ rtl8xxxu_ampdu_action(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 		dev_dbg(dev,
- 			"Changed HT: ampdu_factor %02x, ampdu_density %02x\n",
- 			ampdu_factor, ampdu_density);
--		break;
-+		return IEEE80211_AMPDU_TX_START_IMMEDIATE;
-+	case IEEE80211_AMPDU_TX_STOP_CONT:
- 	case IEEE80211_AMPDU_TX_STOP_FLUSH:
--		dev_dbg(dev, "%s: IEEE80211_AMPDU_TX_STOP_FLUSH\n", __func__);
--		rtl8xxxu_set_ampdu_factor(priv, 0);
--		rtl8xxxu_set_ampdu_min_space(priv, 0);
--		break;
- 	case IEEE80211_AMPDU_TX_STOP_FLUSH_CONT:
--		dev_dbg(dev, "%s: IEEE80211_AMPDU_TX_STOP_FLUSH_CONT\n",
--			 __func__);
-+		dev_dbg(dev, "%s: IEEE80211_AMPDU_TX_STOP\n", __func__);
- 		rtl8xxxu_set_ampdu_factor(priv, 0);
- 		rtl8xxxu_set_ampdu_min_space(priv, 0);
-+		priv->agg_state_bitmap &= ~BIT(tid);
-+		ieee80211_stop_tx_ba_cb_irqsafe(vif, sta->addr, tid);
-+		break;
-+	case IEEE80211_AMPDU_TX_OPERATIONAL:
-+		dev_dbg(dev, "%s: IEEE80211_AMPDU_TX_OPERATIONAL\n", __func__);
-+		priv->agg_state_bitmap |= BIT(tid);
- 		break;
- 	case IEEE80211_AMPDU_RX_START:
- 		dev_dbg(dev, "%s: IEEE80211_AMPDU_RX_START\n", __func__);
-@@ -6893,7 +6905,6 @@ static int rtl8xxxu_probe(struct usb_interface *interface,
- 	/*
- 	 * The firmware handles rate control
- 	 */
--	ieee80211_hw_set(hw, HAS_RATE_CONTROL);
- 	ieee80211_hw_set(hw, AMPDU_AGGREGATION);
- 
- 	wiphy_ext_feature_set(hw->wiphy, NL80211_EXT_FEATURE_CQM_RSSI_LIST);
--- 
-2.29.2
+Thanks,
+Ming
 
