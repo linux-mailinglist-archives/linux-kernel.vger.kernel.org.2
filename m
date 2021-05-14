@@ -2,109 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69C5038061E
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 11:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C7F6380622
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 11:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231856AbhENJYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 05:24:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39948 "EHLO
+        id S229477AbhENJZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 05:25:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbhENJYs (ORCPT
+        with ESMTP id S229525AbhENJZS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 05:24:48 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8653CC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 02:23:37 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id t4so43831596ejo.0
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 02:23:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=deviqon.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lmlUFVkQ6uD6pUb8XfWfoeJo9HT3302ShZH0nB1le0I=;
-        b=KmgSKURBJx/Vc2rhXTYKGXTtIterSj4KTcg1FcgtQ5x984hBMLS2XqBtX3s9u4Eegh
-         qfjjT0NcE+L3r8/e/b4eCZX+uFQS16+cMdJLO4n8IL6XJHVDk1OrZWHxA2CVz4cegpPj
-         JUHjecTd0VKxF4UIdPssGWpvs3TqIz6i06s+NWUHEUPycSw7Lacay3LU4lZ3700xZIKB
-         tndi7UVe4z/cSgC9dzGCKAtnPV8ibgDeJfFO44Cx7+GUb37Qa1yUIRQll9UNtl7hMDMl
-         9bIZ6t1eegwdWnCfjwGXyNuDtV1O30OGtJWNOb911vNkogq4/5HXv/ZIG9xrOgKD1dBD
-         GnMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lmlUFVkQ6uD6pUb8XfWfoeJo9HT3302ShZH0nB1le0I=;
-        b=EUCJTprByyA50agtNF9NrcvVn3QoBbmCf72ELqy8UAcn2y+dVIhMTMIN8H8BQf2adB
-         pO7xqKnp739JD94/nB8sZucBsc0kjwe5rtvP2sgz3Vs4R077OqnY4ZmCbjLJTiEsgfjD
-         +0cRaNSTy38KbWbL3POOFPyKfYDNZfGzcFdBihDnjGS3EmWwH36bXM4zHS/Mi03Y3+P2
-         D+B1m20HTv7lQAtALqf1ByBLmfSAz/p/kjdt0R03MjYDYGxI9G0xKUQeWayg6c8W7sj+
-         2p7VgTP/mJ01cEuY/6m6uXETquL3BDhnt//AHv5Q+4WdZP2LJ3ffeim6UBVHRtOi04br
-         VhkQ==
-X-Gm-Message-State: AOAM531QPDUkE6PLHsMeeUgpnLnRlLk+oKm63ts6XGzglvqYaBhJmG65
-        ZAX4hL9NnwxS/e5QAS7eP165fw==
-X-Google-Smtp-Source: ABdhPJxm204+NKwNwHBbo83HCeUN5nr7NJj9e+yftkEfM2nkUwYN8vMR34iiNYtaUeYjDQ6HpHgAPA==
-X-Received: by 2002:a17:906:8299:: with SMTP id h25mr3619511ejx.81.1620984216327;
-        Fri, 14 May 2021 02:23:36 -0700 (PDT)
-Received: from neptune.. ([5.2.193.191])
-        by smtp.gmail.com with ESMTPSA id c3sm4264226edn.16.2021.05.14.02.23.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 02:23:36 -0700 (PDT)
-From:   Alexandru Ardelean <aardelean@deviqon.com>
-To:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        support.opensource@diasemi.com,
-        Alexandru Ardelean <aardelean@deviqon.com>
-Subject: [PATCH] gpio: gpio-da9055: remove platform_set_drvdata() + cleanup probe
-Date:   Fri, 14 May 2021 12:23:32 +0300
-Message-Id: <20210514092332.19966-1-aardelean@deviqon.com>
-X-Mailer: git-send-email 2.31.1
+        Fri, 14 May 2021 05:25:18 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFE70C061574;
+        Fri, 14 May 2021 02:24:07 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0b2c00e3a8a74f5e6ed04b.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:2c00:e3a8:a74f:5e6e:d04b])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4939A1EC03A0;
+        Fri, 14 May 2021 11:24:06 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1620984246;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=3L2pN2C7pvwIMORYei93VLaKVD2Mv4ej5v0DHAWsgjo=;
+        b=mrMJTKp8SRrQk1dHV9Pue7ne6iLTxJTzmrKZwEmnfMTYzqH9P+/FgsaiUFt3GW1XZJiFnm
+        6e1bTgZNLEDMwV9b8Gu5GnYEHp3694yzumwWJOwwK/0hIkhEQtkN/vLWSpsuUln9W4I0/k
+        ca6hSVoEDVdvsgXyDUE/w/uWbXCKdUM=
+Date:   Fri, 14 May 2021 11:24:03 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Ashish Kalra <ashish.kalra@amd.com>, seanjc@google.com,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        joro@8bytes.org, thomas.lendacky@amd.com, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        srutherford@google.com, venu.busireddy@oracle.com,
+        brijesh.singh@amd.com
+Subject: Re: [PATCH v2 2/4] mm: x86: Invoke hypercall when page encryption
+ status is changed
+Message-ID: <YJ5Bs6WLocS0vRp/@zn.tnic>
+References: <cover.1619193043.git.ashish.kalra@amd.com>
+ <ff68a73e0cdaf89e56add5c8b6e110df881fede1.1619193043.git.ashish.kalra@amd.com>
+ <YJvU+RAvetAPT2XY@zn.tnic>
+ <20210513043441.GA28019@ashkalra_ubuntu_server>
+ <YJ4n2Ypmq/7U1znM@zn.tnic>
+ <7ac12a36-5886-cb07-cc77-a96daa76b854@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <7ac12a36-5886-cb07-cc77-a96daa76b854@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The platform_set_drvdata() call is only useful if we need to retrieve back
-the private information.
-Since the driver doesn't do that, it's not useful to have it.
+On Fri, May 14, 2021 at 10:03:18AM +0200, Paolo Bonzini wrote:
+> Ok, so explain to me how this looks from the submitter standpoint: he reads
+> your review of his patch, he acknowledges your point with "Yes, it makes
+> sense to signal it with a WARN or so", and still is treated as shit.
 
-If this is removed, we can also just do a direct return on
-devm_gpiochip_add_data(). We don't need to print that this call failed as
-there are other ways to log/see this during probe.
+How is me asking about the user experience of it all, treating him like
+shit?!
 
-Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
----
- drivers/gpio/gpio-da9055.c | 11 +----------
- 1 file changed, 1 insertion(+), 10 deletions(-)
+How should I have asked this so that it is not making you think I'm
+treating him like shit?
 
-diff --git a/drivers/gpio/gpio-da9055.c b/drivers/gpio/gpio-da9055.c
-index 6ad0c37b862e..49446a030f10 100644
---- a/drivers/gpio/gpio-da9055.c
-+++ b/drivers/gpio/gpio-da9055.c
-@@ -133,7 +133,6 @@ static int da9055_gpio_probe(struct platform_device *pdev)
- {
- 	struct da9055_gpio *gpio;
- 	struct da9055_pdata *pdata;
--	int ret;
- 
- 	gpio = devm_kzalloc(&pdev->dev, sizeof(*gpio), GFP_KERNEL);
- 	if (!gpio)
-@@ -146,15 +145,7 @@ static int da9055_gpio_probe(struct platform_device *pdev)
- 	if (pdata && pdata->gpio_base)
- 		gpio->gp.base = pdata->gpio_base;
- 
--	ret = devm_gpiochip_add_data(&pdev->dev, &gpio->gp, gpio);
--	if (ret < 0) {
--		dev_err(&pdev->dev, "Could not register gpiochip, %d\n", ret);
--		return ret;
--	}
--
--	platform_set_drvdata(pdev, gpio);
--
--	return 0;
-+	return devm_gpiochip_add_data(&pdev->dev, &gpio->gp, gpio);
- }
- 
- static struct platform_driver da9055_gpio_driver = {
+Because treating someone like shit is not in my goals.
+
 -- 
-2.31.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
