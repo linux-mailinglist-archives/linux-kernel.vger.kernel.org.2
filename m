@@ -2,76 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A0BA380708
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 12:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D10E38070E
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 12:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233064AbhENKTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 06:19:11 -0400
-Received: from foss.arm.com ([217.140.110.172]:46566 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232983AbhENKTJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 06:19:09 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D2BA5169E;
-        Fri, 14 May 2021 03:17:57 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.0.219])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 89D813F719;
-        Fri, 14 May 2021 03:17:50 -0700 (PDT)
-Date:   Fri, 14 May 2021 11:17:41 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Stafford Horne <shorne@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, will@kernel.org,
-        boqun.feng@gmail.com, peterz@infradead.org, aou@eecs.berkeley.edu,
-        arnd@arndb.de, bcain@codeaurora.org, benh@kernel.crashing.org,
-        chris@zankel.net, dalias@libc.org, davem@davemloft.net,
-        deanbo422@gmail.com, deller@gmx.de, geert@linux-m68k.org,
-        green.hu@gmail.com, guoren@kernel.org, ink@jurassic.park.msu.ru,
-        James.Bottomley@hansenpartnership.com, jcmvbkbc@gmail.com,
-        jonas@southpole.se, ley.foon.tan@intel.com, linux@armlinux.org.uk,
-        mattst88@gmail.com, monstr@monstr.eu, mpe@ellerman.id.au,
-        nickhu@andestech.com, palmer@dabbelt.com, paulus@samba.org,
-        paul.walmsley@sifive.com, rth@twiddle.net,
-        stefan.kristiansson@saunalahti.fi, tsbogend@alpha.franken.de,
-        vgupta@synopsys.com, ysato@users.sourceforge.jp
-Subject: Re: [PATCH 05/33] locking/atomic: openrisc: avoid
- asm-generic/atomic.h
-Message-ID: <20210514101741.GA30645@C02TD0UTHF1T.local>
-References: <20210510093753.40683-1-mark.rutland@arm.com>
- <20210510093753.40683-6-mark.rutland@arm.com>
- <YJ2dud8alZgKmiQ3@antec>
+        id S231801AbhENKVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 06:21:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230063AbhENKVk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 06:21:40 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26C63C061574;
+        Fri, 14 May 2021 03:20:28 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id l7so34178741edb.1;
+        Fri, 14 May 2021 03:20:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8i+pf5KCrVeLRq3B2i8legEoTNI+x7ywbPg+dol1Za4=;
+        b=Ofa29xzeHuZWjIRdcrnX1Fiy1+VtlJ9wmiFLh3b1PqdXhRoZqebV8mlYRzNXo6qZit
+         XOMRmHLX6SW7YXL43Lsx1WVEzNVhVjKRbZg9IQLQVJ3tiyGf+zTgpZDE3UWCPRPCPHoj
+         Tw/Z29x9btFybglaQyWVAZNMH6D3Y/covTj655sUUhEEzFh6sRKjmJ7Is24b0+/s3nK8
+         CnAQptSvsEwWE8chKiynWA1BDlRRXGnMpBojA2hdZzmR+gCKE/EdAyWHWH8DXzYed7sm
+         g57dnVG7gpT9ZZ0MmWt4n77+VnMKv9eCYHkA69pK0aJc2FudX9XF5WXFaMayPBMyXvDP
+         B8Ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=8i+pf5KCrVeLRq3B2i8legEoTNI+x7ywbPg+dol1Za4=;
+        b=hFFSY2ux3RMa3C85wU6ClhGyira1T6fqMaoj6oUtHEQ9kI66z0q7nQDAz1+D7C3reF
+         kYdy8WeY0gT1h7x9lxgzTg8kJlncdIjOk/IBl733sN07Ka9fKakxD8IcwIds2Be/UCkN
+         oNG6uhTselxqckaTmdL4sVQ3rp1U/WaDod0zW4UyNskOaD/ZoRb/52aTVMCdRJcnw47n
+         7ZNeTHxo2sh7G9w5zl8j4Exv2KkcsgxYA6/gHAGfmvHY32NPllXf1yaZQQg0mSNYMQwI
+         U1TDs68ozGt/QjyVKJhpkcsxhd7+QHlNJdl9XJA5cOfhlEKpgGdOaj/QKuynD0OOuC9Q
+         R9rg==
+X-Gm-Message-State: AOAM530Fg6fmpsZSyGH5ycAD8Cx8IF9veaGQWN17dYu9B486RymAVdhn
+        EfnY/IR54BEakUeS3LiSXJM=
+X-Google-Smtp-Source: ABdhPJxRrQtfpg0fJWU3VVLvJWVbpQR6tyWKP1T497y5x6ol68Ecyb35h9Ogv/KVrLNrFg/drxyBEw==
+X-Received: by 2002:aa7:cb0a:: with SMTP id s10mr54839694edt.36.1620987626925;
+        Fri, 14 May 2021 03:20:26 -0700 (PDT)
+Received: from gmail.com (0526E777.dsl.pool.telekom.hu. [5.38.231.119])
+        by smtp.gmail.com with ESMTPSA id ay4sm4121972edb.12.2021.05.14.03.20.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 May 2021 03:20:24 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Fri, 14 May 2021 12:20:22 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] x86/acpi: Switch to pr_xxx log functions
+Message-ID: <YJ5O5gytKMDOCnFz@gmail.com>
+References: <8436da08-4812-d383-8f2a-1c07181ebfb8@gmail.com>
+ <YJ4hrrUkKRkKsUtf@gmail.com>
+ <CAJZ5v0h0Z3pfwpL2SsJ53=SfqE2d+7PrG+nt0PXjYrqeAkc27g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YJ2dud8alZgKmiQ3@antec>
+In-Reply-To: <CAJZ5v0h0Z3pfwpL2SsJ53=SfqE2d+7PrG+nt0PXjYrqeAkc27g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 06:44:25AM +0900, Stafford Horne wrote:
-> On Mon, May 10, 2021 at 10:37:25AM +0100, Mark Rutland wrote:
-> > OpenRISC is the only architecture which uses asm-generic/atomic.h and
-> > also provides its own implementation of some functions, requiring
-> > ifdeferry in the asm-generic header. As OpenRISC provides the vast
-> > majority of functions itself, it would be simpler overall if it also
-> > provided the few functions it cribs from asm-generic.
-> > 
-> > This patch decouples OpenRISC from asm-generic/atomic.h. Subsequent
-> > patches will simplify the asm-generic implementation.
+
+* Rafael J. Wysocki <rafael@kernel.org> wrote:
+
+> On Fri, May 14, 2021 at 9:07 AM Ingo Molnar <mingo@kernel.org> wrote:
+> >
+> >
+> > * Heiner Kallweit <hkallweit1@gmail.com> wrote:
+> >
+> > > Switching to pr_debug et al has two benefits:
+> > > - We don't have to add PREFIX to each log statement
+> > > - Debug output is suppressed except DEBUG is defined or dynamic
+> > >   debugging is enabled for the respective code piece.
+> > >
+> > > In addition ensure that longer messages aren't split to multiple lines
+> > > in source code, checkpatch complains otherwise.
+> > >
+> > > Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+> > > ---
+> > >  arch/x86/kernel/acpi/boot.c | 118 ++++++++++++++----------------------
+> > >  1 file changed, 47 insertions(+), 71 deletions(-)
+> >
+> > Reviewed-by: Ingo Molnar <mingo@kernel.org>
 > 
-> This is fine, but just a thought.  If OpenRISC is the only architecture to do
-> this then after this patch could we remove the ifndefs from
-> asm-generic/atomic.h as additional cleanup?
+> So I'm going to take this through the ACPI tree if that's OK.
 
-Yup! That's done in patch 8. :)
+Sure!
 
-I'll expand the wording in this commit message to explicitly mention
-that subsequent patches will remove the ifdeferry, rather than just
-simplfying the asm-generic implementation.
+Thanks,
 
-[...]
-
-> Acked-by: Stafford Horne <shorne@gmail.com>
-
-Thanks!
-
-Mark.
+	Ingo
