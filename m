@@ -2,68 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B950C3804B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 09:55:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B02383804BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 09:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233315AbhENH4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 03:56:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39776 "EHLO mail.kernel.org"
+        id S233349AbhENH5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 03:57:17 -0400
+Received: from m12-13.163.com ([220.181.12.13]:47603 "EHLO m12-13.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229491AbhENH4P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 03:56:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EF4C61446;
-        Fri, 14 May 2021 07:55:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620978904;
-        bh=HYCcBNA9s/3WlXx2fAx7Gep3zr4GVt6z0pVJMAZej9o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=E9LPvEyjxrYsQUl1zJPaJ/oPd2OFCgHfZmMyV3jsiwH44uT2EHSGQERjfI6eTt6h0
-         dsr9hQRHncdQXGyO0OBJQJQHBqh9EzXbEeYpaDD2WfgTjea5IFmC4qaE1RcXYsgFNk
-         O9S38w0f33PItmkpPKF0Xtetg5eV+FsJMgOMo2mM=
-Date:   Fri, 14 May 2021 09:55:01 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 245/530] tty: actually undefine superseded ASYNC
- flags
-Message-ID: <YJ4s1Ut2HYyjL0H7@kroah.com>
-References: <20210512144819.664462530@linuxfoundation.org>
- <20210512144827.885941093@linuxfoundation.org>
- <YJvxjC5qyyRmLSyB@hovoldconsulting.com>
+        id S232903AbhENH5P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 03:57:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=CBLat
+        +ZXhC8qxPjdaARxRUWnTKRDHA0cZBqWH1oRFFc=; b=B9gQs9L4XDbWA7T2k8nJh
+        839Z+b6dLSsv60RZR1sH50Oi1HFi6ZCO2QeXZ0ALy6S5FNNbScpq7bnDKGXQF5r2
+        nnch87v/e/JlQ0pA+hbVQglLcwy6qjcPj2NAoAmjCutT5yUwHHoPoef1B4hTwa+j
+        40zAEIPKWst0nxLe1ilALo=
+Received: from COOL-20201210PM.ccdomain.com (unknown [218.94.48.178])
+        by smtp9 (Coremail) with SMTP id DcCowAB3mffjLJ5gGvMlAg--.37879S2;
+        Fri, 14 May 2021 15:55:19 +0800 (CST)
+From:   zuoqilin1@163.com
+To:     steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zuoqilin <zuoqilin@yulong.com>
+Subject: [PATCH] net: Remove unnecessary variables
+Date:   Fri, 14 May 2021 15:55:13 +0800
+Message-Id: <20210514075513.1801-1-zuoqilin1@163.com>
+X-Mailer: git-send-email 2.28.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YJvxjC5qyyRmLSyB@hovoldconsulting.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: DcCowAB3mffjLJ5gGvMlAg--.37879S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7GF1fGrWrur4UJryfXFykGrg_yoW8Jr4xpF
+        4UGryDu3yUtrWaga1rJF4Du34Syw18GrsFk34rXwn3Zw1vgw1rta48trWj9FnY9rW8C3Wf
+        JFWqgr4v9F4jkrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j5cTQUUUUU=
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: 52xr1xpolqiqqrwthudrp/1tbiHgeSiVSIug-K0gAAsz
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 05:17:32PM +0200, Johan Hovold wrote:
-> On Wed, May 12, 2021 at 04:45:55PM +0200, Greg Kroah-Hartman wrote:
-> > From: Johan Hovold <johan@kernel.org>
-> > 
-> > [ Upstream commit d09845e98a05850a8094ea8fd6dd09a8e6824fff ]
-> > 
-> > Some kernel-internal ASYNC flags have been superseded by tty-port flags
-> > and should no longer be used by kernel drivers.
-> > 
-> > Fix the misspelled "__KERNEL__" compile guards which failed their sole
-> > purpose to break out-of-tree drivers that have not yet been updated.
-> > 
-> > Fixes: 5c0517fefc92 ("tty: core: Undefine ASYNC_* flags superceded by TTY_PORT* flags")
-> > Signed-off-by: Johan Hovold <johan@kernel.org>
-> > Link: https://lore.kernel.org/r/20210407095208.31838-2-johan@kernel.org
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> 
-> I don't think this should be backported to any stable tree and the
-> stable tag was left out on purpose.
+From: zuoqilin <zuoqilin@yulong.com>
 
-It's about time that userspace gets this right, so this should be fine
-as it's something that any out-of-tree code is going to have to get
-correct eventually.
+It is not necessary to define variables to receive -ENOMEM,
+directly return -ENOMEM.
 
-thanks,
+Signed-off-by: zuoqilin <zuoqilin@yulong.com>
+---
+ net/key/af_key.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-greg k-h
+diff --git a/net/key/af_key.c b/net/key/af_key.c
+index ef9b4ac..de24a7d 100644
+--- a/net/key/af_key.c
++++ b/net/key/af_key.c
+@@ -141,7 +141,6 @@ static int pfkey_create(struct net *net, struct socket *sock, int protocol,
+ 	struct netns_pfkey *net_pfkey = net_generic(net, pfkey_net_id);
+ 	struct sock *sk;
+ 	struct pfkey_sock *pfk;
+-	int err;
+ 
+ 	if (!ns_capable(net->user_ns, CAP_NET_ADMIN))
+ 		return -EPERM;
+@@ -150,10 +149,9 @@ static int pfkey_create(struct net *net, struct socket *sock, int protocol,
+ 	if (protocol != PF_KEY_V2)
+ 		return -EPROTONOSUPPORT;
+ 
+-	err = -ENOMEM;
+ 	sk = sk_alloc(net, PF_KEY, GFP_KERNEL, &key_proto, kern);
+ 	if (sk == NULL)
+-		goto out;
++		return -ENOMEM;
+ 
+ 	pfk = pfkey_sk(sk);
+ 	mutex_init(&pfk->dump_lock);
+@@ -169,8 +167,6 @@ static int pfkey_create(struct net *net, struct socket *sock, int protocol,
+ 	pfkey_insert(sk);
+ 
+ 	return 0;
+-out:
+-	return err;
+ }
+ 
+ static int pfkey_release(struct socket *sock)
+-- 
+1.9.1
+
+
