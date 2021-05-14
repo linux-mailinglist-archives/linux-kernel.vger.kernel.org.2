@@ -2,109 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4BCF380668
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 11:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39DF1380666
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 11:41:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233932AbhENJme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 05:42:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43948 "EHLO
+        id S233922AbhENJmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 05:42:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230236AbhENJmd (ORCPT
+        with ESMTP id S230236AbhENJmY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 05:42:33 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60FADC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 02:41:22 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id n25so34032270edr.5
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 02:41:22 -0700 (PDT)
+        Fri, 14 May 2021 05:42:24 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00C12C061574;
+        Fri, 14 May 2021 02:41:13 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2so42269004lft.4;
+        Fri, 14 May 2021 02:41:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=deviqon.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vegfStSBvOKattHTaAj1hKOTQJXg06rzpIZp2U2ScrY=;
-        b=qLZ3UAUk/dsKcABCxxgNfrXO01w/ruzJEPHbnVxJvHnaz2X1/srjThNWwRk/tVLvDb
-         9bNryC+5ZPq39s25c9Bh5YSLTP9YpCuzicAg9YvZ5F7NqWYHS2BoATgw+S/ki6cFYqXP
-         Y3V4aeq2pv9Kk86bEfilDnC5qn1FdB/a6Xn0S51QXHXQGQn3mPo6KFz33gM0qnb+ElbU
-         IwKvwPk9t2gnHlq86KyVzpicOV0512IYY70nqDKXdNUZH84DR/ha17T3qWlFX66lahH4
-         CT6vyLjfnq66m6Z6owDrhP7MGD+BWP2qYgef2mJMlSA361IWx7idmgdCORmpgDooDB3n
-         NnDQ==
+        d=gmail.com; s=20161025;
+        h=references:user-agent:from:to:cc:subject:message-id:in-reply-to
+         :date:mime-version;
+        bh=4hJ30fWm7RsO0kSIGl3Kayg5yiFXwH8nUEOvArTykrw=;
+        b=JWfge9nV+InBvM/EqnUoT17zmBJrrcEYdUMZFuy2pBar94wt8pbm0ex0KHR5MGIdRb
+         cG8C6+3RksoWIOxXX40Rm3cTQP9u0cmXjetTRRbG4WWLFTKIk3az5Zxn5Dtwc7T+JaGY
+         A5s8hxucjaZux4/fKmhmeWxB8lPanTU4jIwlad8ugLPZYyjhPbZWlfhZnur9KDB+mn9J
+         EROpLxxC29VFPLB3bOpWAhzOks40xm0u3pMy6yz2WZoI5TlGT2YudX6TwI5YvWGp47Lx
+         0uJm/oMY4BUioBogl5H//2bRw2JGH1rurgfuoubI0xc2sdPCFGnURml4RY99b7DMfWSl
+         eR4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vegfStSBvOKattHTaAj1hKOTQJXg06rzpIZp2U2ScrY=;
-        b=F3SPb8Z2vkuln6m0eFP1jWsYFBuMxXDIxEwlVUq4/xFQwgXdXOxYvtZUCFxp7schnD
-         X9Yo7LB3kXXdW6GrsE4+TJkkQ4HJ6qL73SX9aiJdxaGxqkfpCC2NU3jvAMwQ2jgDnG8t
-         5aYCPGDEtZ5p/TFx/pehraUW5zLzbwm+KpwkceBCdCkHHCtV7AMrEgcyusSGw6rGsUq1
-         JHGJQm4flpTgYSFrtTg3hBaSdKBZpIihd8ilw9tw+Acx27jDzQNG7fZvJmpE7rYm0xG4
-         kfktEimaq+YKNpGQxYUHPvlEoGltVhmrSFOXZtNBPAw9wEECdeynRDiAaWN+gl4CNQSX
-         aL+Q==
-X-Gm-Message-State: AOAM531HSSQtOEmnq2UD4laoSmq3rBZJCE+Wopbj42pOo7DcsIh3k3b8
-        sWgIvcg8CSLKD6VZ9Jj3kTBHTw==
-X-Google-Smtp-Source: ABdhPJzQQEnxmCitg0MwOq1MBV/D4pi0SCCm+QpjVvgy4uppOLZXzQyO0VeBnApGejv2fXwiphASNw==
-X-Received: by 2002:a05:6402:8da:: with SMTP id d26mr55425093edz.161.1620985281146;
-        Fri, 14 May 2021 02:41:21 -0700 (PDT)
-Received: from neptune.. ([5.2.193.191])
-        by smtp.gmail.com with ESMTPSA id x13sm2751263ejs.93.2021.05.14.02.41.20
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :message-id:in-reply-to:date:mime-version;
+        bh=4hJ30fWm7RsO0kSIGl3Kayg5yiFXwH8nUEOvArTykrw=;
+        b=pGKWNNWa4uzWDBlfmAyPSij58UMRJAsix6iqKqNFhhwBRwt2SeRQJE9PJZOUQoHRRJ
+         L91M1evqCQtsy4xfiBrfYMxMPx0syzL3fQoCyb7Jy2/UjZNQbZ8RN/sRHtfnLUyQlqBe
+         uMM3NgADTxG/L6+Rm+C8nBxGId441OKwC5aXulASfzMS3cmjW/mNk+zprPU7I3Tl2KRj
+         h9druBcK3cKYwUSDzEWMcrujluSMP/NWExG803L/P4q/qI0MIU9zlo77seQCdVy4lEVq
+         RDd73YBnYIDaJRxCUpj2f528onlraFCx06+MjXEKKNeP1ur65PGLszi39uJbnfTV8/Fu
+         KnCg==
+X-Gm-Message-State: AOAM530E/zisWNl/tcbwPfxEuPtisM2gPwXmE2fgXQ92Pl2E9NnieWfn
+        /yd4VBTOtsfYDhnKHAwm3iMVl2oGrMy75g==
+X-Google-Smtp-Source: ABdhPJzGtR4iLxVX/JBgdp47GxPmPWYdSsrh2l3S0kd2tJNdcrJnTbBpfhlOamj1REe5h6B4Y3JBng==
+X-Received: by 2002:a19:380e:: with SMTP id f14mr31332115lfa.538.1620985271237;
+        Fri, 14 May 2021 02:41:11 -0700 (PDT)
+Received: from razdolb ([85.249.34.38])
+        by smtp.gmail.com with ESMTPSA id x25sm584799lfu.181.2021.05.14.02.41.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 02:41:20 -0700 (PDT)
-From:   Alexandru Ardelean <aardelean@deviqon.com>
-To:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        Alexandru Ardelean <aardelean@deviqon.com>
-Subject: [PATCH] gpio: gpio-tps68470: remove platform_set_drvdata() + cleanup probe
+        Fri, 14 May 2021 02:41:10 -0700 (PDT)
+References: <20210509233010.2477973-1-mike.rudenko@gmail.com>
+ <d1bac6c3-aa52-5d76-1f2a-4af9edef71c5@broadcom.com>
+User-agent: mu4e 1.4.15; emacs 27.2
+From:   Mikhail Rudenko <mike.rudenko@gmail.com>
+To:     Arend van Spriel <arend.vanspriel@broadcom.com>
+Cc:     Arend van Spriel <aspriel@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
+        Wright Feng <wright.feng@infineon.com>,
+        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Double Lo <double.lo@cypress.com>,
+        Remi Depommier <rde@setrix.com>,
+        Amar Shankar <amsr@cypress.com>,
+        Saravanan Shanmugham <saravanan.shanmugham@cypress.com>,
+        Frank Kao <frank.kao@cypress.com>,
+        linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] brcmfmac: use separate firmware for 43430 revision 2
+Message-ID: <87a6oxpsn8.fsf@gmail.com>
+In-reply-to: <d1bac6c3-aa52-5d76-1f2a-4af9edef71c5@broadcom.com>
 Date:   Fri, 14 May 2021 12:41:08 +0300
-Message-Id: <20210514094108.28890-1-aardelean@deviqon.com>
-X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The platform_set_drvdata() call is only useful if we need to retrieve back
-the private information.
-Since the driver doesn't do that, it's not useful to have it.
 
-If this is removed, we can also just do a direct return on
-devm_gpiochip_add_data(). We don't need to print that this call failed as
-there are other ways to log/see this during probe.
+On 2021-05-10 at 11:06 MSK, Arend van Spriel <arend.vanspriel@broadcom.com> wrote:
+> On 5/10/2021 1:30 AM, Mikhail Rudenko wrote:
+>> A separate firmware is needed for Broadcom 43430 revision 2.  This
+>> chip can be found in e.g. certain revisions of Ampak AP6212 wireless
+>> IC. Original firmware file from IC vendor is named
+>> 'fw_bcm43436b0.bin', but brcmfmac and also btbcm drivers report chip
+>
+> That is bad naming. There already is a 43436 USB device.
+>
+>> id 43430, so requested firmware file name is
+>> 'brcmfmac43430b0-sdio.bin' in line with other 43430 revisions.
+>
+> As always there is the question about who will be publishing this
+> particular firmware file to linux-firmware.
 
-Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
----
- drivers/gpio/gpio-tps68470.c | 12 +-----------
- 1 file changed, 1 insertion(+), 11 deletions(-)
+The above mentioned file can be easily found by web search. Also, the
+corresponding patch for the bluetooth part has just been accepted
+[1]. Is it strictly necessary to have firmware file in linux-firmware in
+order to have this patch accepted?
 
-diff --git a/drivers/gpio/gpio-tps68470.c b/drivers/gpio/gpio-tps68470.c
-index f7f5f770e0fb..423b7bc30ae8 100644
---- a/drivers/gpio/gpio-tps68470.c
-+++ b/drivers/gpio/gpio-tps68470.c
-@@ -125,7 +125,6 @@ static const char *tps68470_names[TPS68470_N_GPIO] = {
- static int tps68470_gpio_probe(struct platform_device *pdev)
- {
- 	struct tps68470_gpio_data *tps68470_gpio;
--	int ret;
- 
- 	tps68470_gpio = devm_kzalloc(&pdev->dev, sizeof(*tps68470_gpio),
- 				     GFP_KERNEL);
-@@ -146,16 +145,7 @@ static int tps68470_gpio_probe(struct platform_device *pdev)
- 	tps68470_gpio->gc.base = -1;
- 	tps68470_gpio->gc.parent = &pdev->dev;
- 
--	ret = devm_gpiochip_add_data(&pdev->dev, &tps68470_gpio->gc,
--				     tps68470_gpio);
--	if (ret < 0) {
--		dev_err(&pdev->dev, "Failed to register gpio_chip: %d\n", ret);
--		return ret;
--	}
--
--	platform_set_drvdata(pdev, tps68470_gpio);
--
--	return ret;
-+	return devm_gpiochip_add_data(&pdev->dev, &tps68470_gpio->gc, tps68470_gpio);
- }
- 
- static struct platform_driver tps68470_gpio_driver = {
--- 
-2.31.1
+--
+Regards,
+Mikhail
 
+[1] https://lore.kernel.org/linux-bluetooth/E8A21908-1D48-4B89-8A88-7E82A71E0DA4@holtmann.org/
