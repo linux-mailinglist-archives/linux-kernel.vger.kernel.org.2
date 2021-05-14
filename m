@@ -2,95 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A267D380570
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 10:45:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 246C838056E
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 10:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233705AbhENIqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 04:46:44 -0400
-Received: from mga06.intel.com ([134.134.136.31]:2925 "EHLO mga06.intel.com"
+        id S233687AbhENIq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 04:46:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231839AbhENIqn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 04:46:43 -0400
-IronPort-SDR: l4e5DGRN86ONAeZfXa6utUVo8amSBRPu8oKaJbFwxl80CBXD5WhiV3RWRkwBcqThd5ZaxAq4LS
- o9e3xItDLUMQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9983"; a="261379995"
-X-IronPort-AV: E=Sophos;i="5.82,299,1613462400"; 
-   d="scan'208";a="261379995"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 May 2021 01:45:31 -0700
-IronPort-SDR: GWVlx1jD/WhhKk0Pyewb9aPU/D6oWp9TNtglPJKLRhY1pr62N0XD6c5OWGIz0W5r7jqP3JmbpJ
- u4RpKUnL1Dqw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,299,1613462400"; 
-   d="scan'208";a="538739299"
-Received: from clx-ap-likexu.sh.intel.com ([10.239.48.108])
-  by fmsmga001.fm.intel.com with ESMTP; 14 May 2021 01:45:28 -0700
-From:   Like Xu <like.xu@linux.intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Like Xu <like.xu@linux.intel.com>
-Subject: [PATCH] KVM: x86/pt: Do not inject TraceToPAPMI when guest PT isn't supported
-Date:   Fri, 14 May 2021 16:44:36 +0800
-Message-Id: <20210514084436.848396-1-like.xu@linux.intel.com>
-X-Mailer: git-send-email 2.31.1
+        id S231839AbhENIq2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 04:46:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BEBCB61287;
+        Fri, 14 May 2021 08:45:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620981917;
+        bh=GChweA7UlqSx0jPjazErNbjNcvyuSkWf5X3Y2ZUsotQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MvWUOmakKlJzxnJ7mfH2vpBVjO6aFNbomZjVJq6ELYPB1SxnzTuFle+rVHEyPHaLI
+         5ig3SNgFW+X1B9PwUthmctkEuiSAjGa/+DBK72w5n2FlDuQKlI9Wxy5qgrh14YhCZt
+         cSMtUfOJX7xcbOwY1k+FqAk2PqtU8WNLzsTnGlR4=
+Date:   Fri, 14 May 2021 10:45:14 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Fabio Aiuto <fabioaiuto83@gmail.com>
+Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: staging: rtl8723bs: questions on TODO list
+Message-ID: <YJ44mtOUVZwhxW4m@kroah.com>
+References: <20210514083856.GA13800@agape.jhs>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210514083856.GA13800@agape.jhs>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a PT perf user is running in system-wide mode on the host,
-the guest (w/ pt_mode=0) will warn about anonymous NMIs from
-kvm_handle_intel_pt_intr():
+On Fri, May 14, 2021 at 10:38:57AM +0200, Fabio Aiuto wrote:
+> Hello all,
+> 
+> I'd like to have some clarifications about rtl8723bs driver.
+> In order to make this driver ready for moving out of staging
+> I would like to know:
+> 
+> - find and remove remaining code valid only for 5 GHz. Most of the obvious
+>   ones have been removed, but things like channel > 14 still exist.
+> 
+> is it possible to remove all 5g code, even the one related to power
+> regulation when on band 5g? As far as I know about this card is that
+> it doesn't support 5g, so may I just delete all 5g code or there are some
+> constraints I'd take care of?
+> 
+> - find and remove any code for other chips that is left over
+> 
+> Ok this seems clear, are there some suggestion to do it safely?
+> 
+> - convert any remaining unusual variable types
+> 
+> Ok (but feel free to suggest anything)
+> 
+> - find codes that can use %pM and %Nph formatting
+> 
+> Ok (but feel free to suggest anything)
+> 
+> - checkpatch.pl fixes - most of the remaining ones are lines too long. Many
+>   of them will require refactoring
+> 
+> Ok
+> 
+> - merge Realtek's bugfixes and new features into the driver
+> 
+> Please, can you explain what one could do that?
+> 
+> - switch to use LIB80211
+> - switch to use MAC80211
+> 
+> I think I need a few details for these last points as well.
+> 
+> Do you think that one will need real hardware to complete
+> these tasks? I don't have rtl8723bs card at the moment, so
+> I think I will focus on those TODO activities which
+> don't need it.
 
-[   18.126444] Uhhuh. NMI received for unknown reason 10 on CPU 0.
-[   18.126447] Do you have a strange power saving mode enabled?
-[   18.126448] Dazed and confused, but trying to continue
+I recommend getting one of these devices to do the more complex tasks as
+described above.  Otherwise it's going to be hard to verify that your
+changes are valid.
 
-In this case, these PMIs should be handled by the host PT handler().
-When PT is used in guest-only mode, it's harmless to call host handler.
+thanks,
 
-Fix: 8479e04e7d("KVM: x86: Inject PMI for KVM guest")
-Signed-off-by: Like Xu <like.xu@linux.intel.com>
----
- arch/x86/events/intel/core.c | 3 +--
- arch/x86/kvm/x86.c           | 3 +++
- 2 files changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 2521d03de5e0..2f09eb0853de 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -2853,8 +2853,7 @@ static int handle_pmi_common(struct pt_regs *regs, u64 status)
- 		if (unlikely(perf_guest_cbs && perf_guest_cbs->is_in_guest() &&
- 			perf_guest_cbs->handle_intel_pt_intr))
- 			perf_guest_cbs->handle_intel_pt_intr();
--		else
--			intel_pt_interrupt();
-+		intel_pt_interrupt();
- 	}
- 
- 	/*
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 6529e2023147..6660f3948cea 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -8087,6 +8087,9 @@ static void kvm_handle_intel_pt_intr(void)
- {
- 	struct kvm_vcpu *vcpu = __this_cpu_read(current_vcpu);
- 
-+	if (!guest_cpuid_has(vcpu, X86_FEATURE_INTEL_PT))
-+		return;
-+
- 	kvm_make_request(KVM_REQ_PMI, vcpu);
- 	__set_bit(MSR_CORE_PERF_GLOBAL_OVF_CTRL_TRACE_TOPA_PMI_BIT,
- 			(unsigned long *)&vcpu->arch.pmu.global_status);
--- 
-2.31.1
-
+greg k-h
