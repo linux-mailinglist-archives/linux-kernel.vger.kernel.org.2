@@ -2,92 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F594380A36
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 15:11:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E254380A3A
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 15:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232003AbhENNMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 09:12:38 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:23292 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229469AbhENNMg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 09:12:36 -0400
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14ED17JA018629;
-        Fri, 14 May 2021 13:11:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type : in-reply-to;
- s=corp-2020-01-29; bh=7fC04BucLpGRD/n2GA1XspszHQIl4ZHLmE65wctplAY=;
- b=Q8HL8oJDlLSH/LMF6fpUfBnDb2UpqrVz5qTgJrOQK7f0FHB9AXACy4Yl/C3r4iPFI1st
- DqmqznPjv8bnG7F60XUc6xJ21cxy8GyFWSbT8ll5/H5SpX4zIWb4SnQ/4dkyCWNVlX2x
- O6QS87ui3Wb0eBpaPabaSNuu/ssPZAUNhaOA/ZIDPx/8BPyAS7xp2CNb2L7gP9++hYN+
- U+z9g18cVX34o5RMXle7MMJTsuyEnDaKAZoAhIT+aDURnNmTsg5SKJQwgvgeMBc/9Qzu
- QabLzhPSsyZWEwjV9uZxR+kT2pebGi8Z0IbKJuEtxeFm/z4YTS5eCGsKGt0t/UdDECeC QQ== 
-Received: from oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 38gppjgp89-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 14 May 2021 13:11:10 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14EDB9kO188514;
-        Fri, 14 May 2021 13:11:09 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 38gppe5mqc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 14 May 2021 13:11:09 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14EDB7oh187959;
-        Fri, 14 May 2021 13:11:07 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 38gppe5mgm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 14 May 2021 13:11:07 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 14EDB2fJ015206;
-        Fri, 14 May 2021 13:11:02 GMT
-Received: from mwanda (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 14 May 2021 06:11:01 -0700
-Date:   Fri, 14 May 2021 16:10:55 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Joe Sandom <joe.g.sandom@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH 2/2] iio: light: tsl2591: delete a stray tab
-Message-ID: <YJ523y0dhc1IwCOB@mwanda>
+        id S232140AbhENNOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 09:14:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229469AbhENNOi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 09:14:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 077EC61574
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 13:13:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620998007;
+        bh=SmwYCABWe6UtJJQITJQgDO4TF8ussa7o7rcyJCcW3jM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=jzEKKT97yHy83+VE5A7eBpx5qmSengX4EKGR7h6fuEqV0+IsUVoGsayvpOe4l0Ylz
+         jW6IF4qdOhb+VzyyZIXvzp7pB3iwjvOPnqGudTxhwFZZ8lalNCZpRMFgc3WIADa0Ex
+         YP93iD0pPuj75X7RDJtzmBdfH1GAnJbBSQfVeDj8XREJ/Fox2TfCJlgeWzSoGmv5c+
+         5KKPlMOxa8kYibsyZSw97vtd60WyxMeXSlJ0tso7qgLkCK7Bx6XLCebAWIuofVRHbA
+         MPcc6a/O3yCtxVtkU0QoChj+6D99SgSqkS88Y8DFSpxlMI+LeF1c5ktfbeq1JkjEUD
+         qBAi/egw2RaLw==
+Received: by mail-ej1-f51.google.com with SMTP id t4so44685478ejo.0
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 06:13:26 -0700 (PDT)
+X-Gm-Message-State: AOAM531UqK67jPs/OnF8J8Dc/RTKbgZTk7gtwwGfDY+CkyRJFqz7XKFq
+        8iT7NrnVLH98idb85s+JB36IstGX2sSUgnGdK0k=
+X-Google-Smtp-Source: ABdhPJyJFYlQHxYwJwW1HWQkWIt4FmFQw2iVqFqpHi7k1yurIHr7dHKncO5nHW8f2uUpXjRHUD/uNNhdFYJEq9epAcs=
+X-Received: by 2002:a17:907:9729:: with SMTP id jg41mr18509480ejc.385.1620998005643;
+ Fri, 14 May 2021 06:13:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YJ52r1XZ44myD9Xx@mwanda>
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-ORIG-GUID: AKY68wcUczUoxFVjFD-8bC0o0aQH1_9J
-X-Proofpoint-GUID: AKY68wcUczUoxFVjFD-8bC0o0aQH1_9J
+References: <202105082122.yrF7ploN-lkp@intel.com>
+In-Reply-To: <202105082122.yrF7ploN-lkp@intel.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Fri, 14 May 2021 09:13:13 -0400
+X-Gmail-Original-Message-ID: <CAJKOXPcbDkuDpq3YCgKVW-9eUTJDymO1icb6BNnwzx3=9BRR8Q@mail.gmail.com>
+Message-ID: <CAJKOXPcbDkuDpq3YCgKVW-9eUTJDymO1icb6BNnwzx3=9BRR8Q@mail.gmail.com>
+Subject: Re: ERROR: modpost: "rt_sysc_membase" [drivers/watchdog/rt2880_wdt.ko]
+ undefined!
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This return statement is indented one more tab than it should be.
+On Sat, 8 May 2021 at 09:30, kernel test robot <lkp@intel.com> wrote:
+>
+> Hi Krzysztof,
+>
+> First bad commit (maybe != root cause):
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   dd860052c99b1e088352bdd4fb7aef46f8d2ef47
+> commit: 7a69a6f68da5084e7f42df18bbc3b38f3785cccf mfd: omap-usb: Depend on COMMON_CLK to fix compile tests
+> date:   5 months ago
+> config: mips-randconfig-c023-20210508 (attached as .config)
+> compiler: mipsel-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7a69a6f68da5084e7f42df18bbc3b38f3785cccf
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 7a69a6f68da5084e7f42df18bbc3b38f3785cccf
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross W=1 ARCH=mips
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>, old ones prefixed by <<):
+>
+> >> ERROR: modpost: "rt_sysc_membase" [drivers/watchdog/rt2880_wdt.ko] undefined!
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/iio/light/tsl2591.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I sent a fix for this one.
 
-diff --git a/drivers/iio/light/tsl2591.c b/drivers/iio/light/tsl2591.c
-index 26e3cb6c4ff8..39e68d0c9d6a 100644
---- a/drivers/iio/light/tsl2591.c
-+++ b/drivers/iio/light/tsl2591.c
-@@ -451,7 +451,7 @@ static int tsl2591_read_channel_data(struct iio_dev *indio_dev,
- 					    sizeof(als_data), als_data);
- 	if (ret < 0) {
- 		dev_err(&client->dev, "Failed to read data bytes");
--			return ret;
-+		return ret;
- 	}
- 
- 	als_ch0 = get_unaligned_le16(&als_data[0]);
--- 
-2.30.2
-
+Best regards,
+Krzysztof
