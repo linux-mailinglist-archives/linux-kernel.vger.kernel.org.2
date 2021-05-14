@@ -2,86 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89E1638105F
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 21:16:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74E1A3810C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 21:28:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233449AbhENTRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 15:17:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41498 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229610AbhENTRx (ORCPT
+        id S231339AbhENT32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 15:29:28 -0400
+Received: from relmlor2.renesas.com ([210.160.252.172]:15521 "EHLO
+        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229524AbhENT3Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 15:17:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621019801;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=R27Jf03ZxREnKxwqc3tfY/ljdTBme23N34D66vuvIQg=;
-        b=Ow3SrpMTq+C+149YXjvsGd3ozjSYy+P7XYbL32TSDl+RSYcX1qCzuU/q9J3EU6kuqiJZtd
-        BsPPd7WzlMUjlfcqurGUvXAQ0eU3RfYZdoDx1hKiwNJEKnEJubWarev8Pcdee2FXT/49eS
-        JEFdkvN36RVfGYJ+0sOxxLCrLb8inww=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-477-El8uDjjVPU6KTbnK_GampA-1; Fri, 14 May 2021 15:16:39 -0400
-X-MC-Unique: El8uDjjVPU6KTbnK_GampA-1
-Received: by mail-qt1-f197.google.com with SMTP id v13-20020ac8578d0000b02901e4f5d48831so311181qta.14
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 12:16:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=R27Jf03ZxREnKxwqc3tfY/ljdTBme23N34D66vuvIQg=;
-        b=UtL0OZUD7vk/oPVuemriv7w+odXt61WtKaMKBMxcgI4D9fjMVRSj7uBo9lQWbldiZp
-         MmXCxKqOg0PKAQsenF7NhhJhslqe4JxVqVtXbsK/DOZpLN+s2PXIllelGgHmHpPbdf0v
-         3HBLn6KHdExsQNjpzWl1Mk7KKBZUwFs7zJo9YuEtZ9v8DQaBWJripvOwAKucc3DLlhex
-         0eqFBZyJJYmxiHkyp5iWwl85H84ErnwdrKdd5kAjZlisY3R/nR8eGee+gaJa7W6u4IeE
-         1VKosCdGhg36JGRywHo2t0Ey54vu9/Irh8Doln3kwckPYVgn4bMOeGqtV4iFPpegZKEA
-         Xvfg==
-X-Gm-Message-State: AOAM533sLfLG1JpkuiH1IssimePRqwhzO0eKL5g9tSdc88L+LstXcWxw
-        M0iZBARXFfnLiYiTJ+AyT5aOGsdPIyMQgmR1/iJZFFwMKsW6TNqCehemRRUIYTAu/Evf8+5dGz7
-        0nZMkX4ftXMl94I36il9uq4yf
-X-Received: by 2002:ae9:e80c:: with SMTP id a12mr32290581qkg.85.1621019799290;
-        Fri, 14 May 2021 12:16:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxJs+ha/rpm7/oDhLt+mOMNO1Kxmt5d5fuW6jdVLELsSygkTzBiRgTBeOiTpRSfxRjcymOgfA==
-X-Received: by 2002:ae9:e80c:: with SMTP id a12mr32290560qkg.85.1621019799027;
-        Fri, 14 May 2021 12:16:39 -0700 (PDT)
-Received: from t490s (bras-base-toroon474qw-grc-72-184-145-4-219.dsl.bell.ca. [184.145.4.219])
-        by smtp.gmail.com with ESMTPSA id i11sm5069427qtv.8.2021.05.14.12.16.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 12:16:38 -0700 (PDT)
-Date:   Fri, 14 May 2021 15:16:36 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Mina Almasry <almasrymina@google.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm, hugetlb: fix resv_huge_pages underflow on UFFDIO_COPY
-Message-ID: <YJ7MlJaYzzJ/01R1@t490s>
-References: <20210513234309.366727-1-almasrymina@google.com>
- <CAHS8izNkBvS9gkSjy8FbWBOPDynwr8PXXXbMHt_2=5sZJsa6-Q@mail.gmail.com>
- <09dc0712-48e8-8ba2-f170-4c2febcfff83@oracle.com>
- <CAHS8izPFc+bSrKN-6gRguGefAqrj6kXaMUvgeUL5U7QxhXfWDw@mail.gmail.com>
- <f9c85756-62e1-3d5c-9fbc-f38c6e8f07f3@oracle.com>
- <YJ5tjWKyVZk2mvxo@t490s>
- <dd83c970-797e-6b7a-194d-790df5d53867@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <dd83c970-797e-6b7a-194d-790df5d53867@oracle.com>
+        Fri, 14 May 2021 15:29:25 -0400
+X-Greylist: delayed 303 seconds by postgrey-1.27 at vger.kernel.org; Fri, 14 May 2021 15:29:24 EDT
+X-IronPort-AV: E=Sophos;i="5.82,300,1613401200"; 
+   d="scan'208";a="81147945"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie6.idc.renesas.com with ESMTP; 15 May 2021 04:23:07 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir5.idc.renesas.com (Postfix) with ESMTP id D8EC34010906;
+        Sat, 15 May 2021 04:23:03 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Biju Das <biju.das.jz@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Subject: [PATCH 00/16] Add new Renesas RZ/G2L SoC and Renesas RZ/G2L SMARC EVK support
+Date:   Fri, 14 May 2021 20:22:02 +0100
+Message-Id: <20210514192218.13022-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 10:56:36AM -0700, Mike Kravetz wrote:
-> Since this is a shared mapping, can we not have a 'regular' mapping to
-> the same range that is uffd registered?  And, that regular mappings could
-> fault and race with the uffd copy code?
+Hi All,
 
-Yeah we can..  Please ignore the paragraph in the parenthesis.  Sorry.
+This patch series adds initial support for Renesas RZ/G2L SoC and
+Renesas RZ/G2L SMARC EVK.
+
+The RZ/G2L SoC includes a single/dual Cortex-A55 CPU including
+below list of IP's:
+* Cortex-M33
+* 3D Graphics engine (Arm Mali-G31)
+* Video Codec (H.264)
+* Camera interface (MIPI-CSI or Parallel-IF)
+* Display interface (MIPI-DSI or Parallel-IF)
+* USB2.0 interface 2ch, SD interface 2ch
+* CAN interface (CAN-FD)
+* Giga bit Ethernet 2ch
+
+Initial patches enables minimal peripherals on Renesas RZ/G2L
+SMARC EVK and booted via initramfs.
+* Documentation for RZ/G2{L,LC,UL} SoC variants
+* SoC identification support
+* CPG core support
+* Minimal SoC DTSi
+* Minimal DTS for SMARC EVK
+
+Patches are based on top of [1] master branch.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers.git/
+
+Links for SoC and EVK:
+[*] https://www.renesas.com/us/en/products/microcontrollers-microprocessors/
+rz-arm-based-high-end-32-64-bit-mpus/rzg2l-general-purpose-microprocessors-
+dual-core-arm-cortex-a55-12-ghz-cpus-3d-graphics-and-video-codec
+[*] https://www.renesas.com/us/en/products/microcontrollers-microprocessors/
+rz-arm-based-high-end-32-64-bit-mpus/rzg2lc-general-purpose-microprocessors-
+dual-core-arm-cortex-a55-12-ghz-cpus-3d-graphics
+[*] https://renesas.info/wiki/RZ-G/RZ-G2L_SMARC
+
+Cheers,
+Prabhakar
+
+Biju Das (1):
+  serial: sh-sci: Add support for RZ/G2L SoC
+
+Lad Prabhakar (15):
+  dt-bindings: arm: renesas: Document Renesas RZ/G2UL SoC
+  dt-bindings: arm: renesas: Document Renesas RZ/G2{L,LC} SoC variants
+  dt-bindings: arm: renesas: Document SMARC EVK
+  soc: renesas: Add ARCH_R9A07G044{L,LC} for the new RZ/G2{L,LC} SoC's
+  arm64: defconfig: Enable ARCH_R9A07G044{L,LC}
+  dt-bindings: arm: renesas,prr: Add new compatible string for
+    RZ/G{L,LC,UL}
+  soc: renesas: Add support to read LSI DEVID register
+  soc: renesas: Add support to identify RZ/G2{L,LC} SoC's
+  dt-bindings: serial: renesas,scif: Document r9a07g044 bindings
+  dt-bindings: clock: renesas: Document RZ/G2L SoC CPG driver
+  clk: renesas: Define RZ/G2L CPG Clock Definitions
+  clk: renesas: Add CPG core wrapper for RZ/G2L SoC
+  clk: renesas: Add support for R9A07G044L SoC
+  arm64: dts: renesas: Add initial DTSI for RZ/G2{L,LC} SoC's
+  arm64: dts: renesas: Add initial device tree for RZ/G2L SMARC EVK
+
+ .../devicetree/bindings/arm/renesas,prr.yaml  |   6 +-
+ .../devicetree/bindings/arm/renesas.yaml      |  18 +
+ .../bindings/clock/renesas,rzg2l-cpg.yaml     |  80 ++
+ .../bindings/serial/renesas,scif.yaml         |   4 +
+ arch/arm64/boot/dts/renesas/Makefile          |   2 +
+ arch/arm64/boot/dts/renesas/g2l-smarc.dtsi    |  27 +
+ arch/arm64/boot/dts/renesas/r9a07g044.dtsi    |  70 ++
+ arch/arm64/boot/dts/renesas/r9a07g044l.dtsi   |  21 +
+ arch/arm64/boot/dts/renesas/r9a07g044l1.dtsi  |  43 +
+ .../boot/dts/renesas/r9a07g044l2-smarc.dts    |  21 +
+ arch/arm64/boot/dts/renesas/r9a07g044l2.dtsi  |  62 ++
+ arch/arm64/configs/defconfig                  |   2 +
+ drivers/clk/renesas/Kconfig                   |  12 +
+ drivers/clk/renesas/Makefile                  |   2 +
+ drivers/clk/renesas/r9a07g044l-cpg.c          | 372 +++++++
+ drivers/clk/renesas/renesas-rzg2l-cpg.c       | 964 ++++++++++++++++++
+ drivers/clk/renesas/renesas-rzg2l-cpg.h       | 223 ++++
+ drivers/soc/renesas/Kconfig                   |  10 +
+ drivers/soc/renesas/renesas-soc.c             |  33 +-
+ drivers/tty/serial/sh-sci.c                   |  11 +
+ drivers/tty/serial/sh-sci.h                   |   1 +
+ include/dt-bindings/clock/r9a07g044l-cpg.h    |  89 ++
+ 22 files changed, 2070 insertions(+), 3 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/renesas,rzg2l-cpg.yaml
+ create mode 100644 arch/arm64/boot/dts/renesas/g2l-smarc.dtsi
+ create mode 100644 arch/arm64/boot/dts/renesas/r9a07g044.dtsi
+ create mode 100644 arch/arm64/boot/dts/renesas/r9a07g044l.dtsi
+ create mode 100644 arch/arm64/boot/dts/renesas/r9a07g044l1.dtsi
+ create mode 100644 arch/arm64/boot/dts/renesas/r9a07g044l2-smarc.dts
+ create mode 100644 arch/arm64/boot/dts/renesas/r9a07g044l2.dtsi
+ create mode 100644 drivers/clk/renesas/r9a07g044l-cpg.c
+ create mode 100644 drivers/clk/renesas/renesas-rzg2l-cpg.c
+ create mode 100644 drivers/clk/renesas/renesas-rzg2l-cpg.h
+ create mode 100644 include/dt-bindings/clock/r9a07g044l-cpg.h
 
 -- 
-Peter Xu
+2.17.1
 
