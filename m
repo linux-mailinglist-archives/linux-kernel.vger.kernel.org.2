@@ -2,171 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49514380186
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 03:43:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E537E38018E
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 03:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232119AbhENBfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 21:35:54 -0400
-Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:50859 "EHLO
-        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232048AbhENBfw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 21:35:52 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.west.internal (Postfix) with ESMTP id 4E85B1A46;
-        Thu, 13 May 2021 21:34:40 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Thu, 13 May 2021 21:34:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
-        message-id:subject:from:to:cc:date:in-reply-to:references
-        :content-type:mime-version:content-transfer-encoding; s=fm3; bh=
-        iJ6t80zLP0jWqMOoc66bwpFFYMy/M+FeT/hsKOcsIP0=; b=UlhAn9ULIpiewiOn
-        sw3r6mCXvWpepQq8FJGftxzra62MxZHTI9MqOwKL6lMVd6CErYsERaxC5NgsiEjS
-        wfeGf04MZyFN2lt/8OXwMTkbVo8F4/RpiKkVcKFq2wvbI1XzYb2c0v1Rgd46YxHr
-        d0PRCBrLnHk2s76pTKqVmp2n40vhghfICXhtr1mmRVjTge48LjUtLM8fM6TPW9OX
-        kUIzt4PDeHUUCclJbmiJ0kplStE6fltv2pbjtg4UaXaLRLggfmtvxFyNGbUuyQ0X
-        Q9CDogd79/e62kL5qWF2QRrgZkERE+85l7IVO/17D9qMew+gFMY8s8qefUkX+tGv
-        0cCiNw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=iJ6t80zLP0jWqMOoc66bwpFFYMy/M+FeT/hsKOcsI
-        P0=; b=lEd8jsbu0hoqgJ0evGdolBB3dcF8AuJUU+t3HTAoetF5BOKOi1p+drA2d
-        f6Kcas2nalOW0xmTe8qeozZTQoy9H8NWiVZr+P4fLgpkt8UTLW8Y1lYEv7Zztrdz
-        cFq9kOBDbvVOzMxohynr3AEzgxS89kBsvVWdXhVw/0/bT9DV5vTT+hRydWjDFSCk
-        y5CvrLHlgNbRwAiVmQoUEC8zWMe3wA/PxGuo/80/KfN9Zcm1dGwbmdjmrvnyI7Mi
-        6J+OfZkS28Nov6Ows2AZIxXZ7wdkZNmycKEN5f2HyzMloLFti4tiB5nG+j5M6X6c
-        nF5MBvAueWDFm7gXwwDb8ZOEJAxAw==
-X-ME-Sender: <xms:r9OdYPUvnNh-0_azgDvOodinXYLI-PZvWjFGPxy3Z9NxsSJTQoZlRA>
-    <xme:r9OdYHmlaIGt0SlQr74Tx9hnoDWw0E5PztKeE6a61KdWD-5sBL6B5tMjJXBJgO7L7
-    Q2_5fufMbE4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdehhedggeekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkffuhffvffgjfhgtfggggfesthekredttderjeenucfhrhhomhepkfgrnhcu
-    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
-    elgedtleeltdffteejudetfefgieehheekffehuefhkeegkeeuleehffehieegjeenucff
-    ohhmrghinhepghhithhhuhgsrdgtohhmpdhkvghrnhgvlhdrohhrghenucfkphepuddtie
-    drieelrddvfedurdeggeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgr
-    ihhlfhhrohhmpehrrghvvghnsehthhgvmhgrfidrnhgvth
-X-ME-Proxy: <xmx:r9OdYLaCJY9bryAsSZZ6m1JdsKXyHluPQDpzRnsV11j8H-pUQUGaiw>
-    <xmx:r9OdYKWXEz-uYl0LoAKASuCMfUjMHmq7mcolf4UwfcYAVXccpLsoSg>
-    <xmx:r9OdYJmT9ZPhmc2qjn1QsZoPZOg2hqdcCQk0CD7b_t0HCCQsPwjCnA>
-    <xmx:r9OdYL6EslUBsfRWJ2vzHjJukID7DFwDVnuaoQMqC3oUxb6cQbDla7dTeWI>
-Received: from mickey.long.domain.name.themaw.net (106-69-231-44.dyn.iinet.net.au [106.69.231.44])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Thu, 13 May 2021 21:34:34 -0400 (EDT)
-Message-ID: <bc9650145291b6e568a8f75d02663b9e4f2bcfd7.camel@themaw.net>
-Subject: Re: [PATCH v4 0/5] kernfs: proposed locking and concurrency
- improvement
-From:   Ian Kent <raven@themaw.net>
-To:     Fox Chen <foxhlchen@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        Eric Sandeen <sandeen@sandeen.net>,
-        Brice Goglin <brice.goglin@gmail.com>,
-        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Fri, 14 May 2021 09:34:31 +0800
-In-Reply-To: <CAC2o3DKvq12CrsgWTNmQmu3iDJ+9tytMdCJepdBjUKN1iUJ0RQ@mail.gmail.com>
-References: <162077975380.14498.11347675368470436331.stgit@web.messagingengine.com>
-         <YJtz6mmgPIwEQNgD@kroah.com>
-         <CAC2o3D+28g67vbNOaVxuF0OfE0RjFGHVwAcA_3t1AAS_b_EnPg@mail.gmail.com>
-         <CAC2o3DJm0ugq60c8mBafjd81nPmhpBKBT5cCKWvc4rYT0dDgGg@mail.gmail.com>
-         <CAC2o3DJdwr0aqT6LwhuRj8kyXt6NAPex2nG5ToadUTJ3Jqr_4w@mail.gmail.com>
-         <4eae44395ad321d05f47571b58fe3fe2413b6b36.camel@themaw.net>
-         <CAC2o3DKvq12CrsgWTNmQmu3iDJ+9tytMdCJepdBjUKN1iUJ0RQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S232161AbhENBxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 21:53:50 -0400
+Received: from mga01.intel.com ([192.55.52.88]:41839 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230460AbhENBxt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 21:53:49 -0400
+IronPort-SDR: AFxc/TDIUymPIfTjQjiKWw68X4mARq+ZdSOPL4/95wUt+OlYTZjgSxWWHjnMAWARUIboF6woGj
+ 0ODwJh+roUgA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9983"; a="221100816"
+X-IronPort-AV: E=Sophos;i="5.82,298,1613462400"; 
+   d="scan'208";a="221100816"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 18:52:36 -0700
+IronPort-SDR: JN7Fd6fV7aUtScR3r3z5WADsnvc3W31sJ7UoBy9zY/gQerr9squlWlaCO5zS7IRakFgQzkERmP
+ kQR/h2lpogWg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,298,1613462400"; 
+   d="scan'208";a="436132853"
+Received: from lkp-server01.sh.intel.com (HELO ddd90b05c979) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 13 May 2021 18:52:35 -0700
+Received: from kbuild by ddd90b05c979 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lhN0E-0000WA-Nm; Fri, 14 May 2021 01:52:34 +0000
+Date:   Fri, 14 May 2021 09:51:34 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ aa96d0d0b147f71518a6bf084c10cc8a8a071e35
+Message-ID: <609dd7a6.aJ9in601Yx3oT73I%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-05-13 at 23:37 +0800, Fox Chen wrote:
-> Hi Ian
-> 
-> On Thu, May 13, 2021 at 10:10 PM Ian Kent <raven@themaw.net> wrote:
-> > 
-> > On Wed, 2021-05-12 at 16:54 +0800, Fox Chen wrote:
-> > > On Wed, May 12, 2021 at 4:47 PM Fox Chen <foxhlchen@gmail.com>
-> > > wrote:
-> > > > 
-> > > > Hi,
-> > > > 
-> > > > I ran it on my benchmark (
-> > > > https://github.com/foxhlchen/sysfs_benchmark).
-> > > > 
-> > > > machine: aws c5 (Intel Xeon with 96 logical cores)
-> > > > kernel: v5.12
-> > > > benchmark: create 96 threads and bind them to each core then
-> > > > run
-> > > > open+read+close on a sysfs file simultaneously for 1000 times.
-> > > > result:
-> > > > Without the patchset, an open+read+close operation takes 550-
-> > > > 570
-> > > > us,
-> > > > perf shows significant time(>40%) spending on mutex_lock.
-> > > > After applying it, it takes 410-440 us for that operation and
-> > > > perf
-> > > > shows only ~4% time on mutex_lock.
-> > > > 
-> > > > It's weird, I don't see a huge performance boost compared to
-> > > > v2,
-> > > > even
-> > > 
-> > > I meant I don't see a huge performance boost here and it's way
-> > > worse
-> > > than v2.
-> > > IIRC, for v2 fastest one only takes 40us
-> > 
-> > Thanks Fox,
-> > 
-> > I'll have a look at those reports but this is puzzling.
-> > 
-> > Perhaps the added overhead of the check if an update is
-> > needed is taking more than expected and more than just
-> > taking the lock and being done with it. Then there's
-> > the v2 series ... I'll see if I can dig out your reports
-> > on those too.
-> 
-> Apologies, I was mistaken, it's compared to V3, not V2.  The previous
-> benchmark report is here.
-> https://lore.kernel.org/linux-fsdevel/CAC2o3DKNc=sL2n8291Dpiyb0bRHaX=nd33ogvO_LkJqpBj-YmA@mail.gmail.com/
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: aa96d0d0b147f71518a6bf084c10cc8a8a071e35  Merge branch 'core/urgent'
 
-Are all these tests using a single file name in the open/read/close
-loop?
+elapsed time: 724m
 
-That being the case the per-object inode lock will behave like a
-mutex and once contention occurs any speed benefits of a spinlock
-over a mutex (or rwsem) will disappear.
+configs tested: 173
+configs skipped: 2
 
-In this case changing from a write lock to a read lock in those
-functions and adding the inode mutex will do nothing but add the
-overhead of taking the read lock. And similarly adding the update
-check function also just adds overhead and, as we see, once
-contention starts it has a cumulative effect that's often not
-linear.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-The whole idea of a read lock/per-object spin lock was to reduce
-the possibility of contention for paths other than the same path
-while not impacting same path accesses too much for an overall
-gain. Based on this I'm thinking the update check function is
-probably not worth keeping, it just adds unnecessary churn and
-has a negative impact for same file contention access patterns.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+mips                         tb0219_defconfig
+ia64                          tiger_defconfig
+powerpc                      acadia_defconfig
+powerpc                 mpc836x_mds_defconfig
+sh                         ap325rxa_defconfig
+mips                  maltasmvp_eva_defconfig
+mips                           mtx1_defconfig
+arm                           u8500_defconfig
+powerpc                     taishan_defconfig
+mips                        workpad_defconfig
+powerpc                 linkstation_defconfig
+mips                malta_qemu_32r6_defconfig
+um                             i386_defconfig
+arm                         lpc32xx_defconfig
+riscv             nommu_k210_sdcard_defconfig
+arc                              alldefconfig
+riscv                    nommu_virt_defconfig
+m68k                                defconfig
+mips                     decstation_defconfig
+riscv                            alldefconfig
+sh                          r7785rp_defconfig
+sh                        edosk7760_defconfig
+mips                       capcella_defconfig
+arm                   milbeaut_m10v_defconfig
+arm                        multi_v5_defconfig
+powerpc                     tqm8540_defconfig
+mips                          ath79_defconfig
+powerpc                       maple_defconfig
+powerpc                  storcenter_defconfig
+ia64                             alldefconfig
+arm                       mainstone_defconfig
+powerpc                      mgcoge_defconfig
+arm                          exynos_defconfig
+powerpc                     ppa8548_defconfig
+sh                     magicpanelr2_defconfig
+arc                     haps_hs_smp_defconfig
+powerpc                    klondike_defconfig
+openrisc                            defconfig
+powerpc                      bamboo_defconfig
+sh                   sh7770_generic_defconfig
+arm                        mini2440_defconfig
+riscv                    nommu_k210_defconfig
+powerpc                   lite5200b_defconfig
+powerpc                    gamecube_defconfig
+arm                          simpad_defconfig
+powerpc                      ppc44x_defconfig
+powerpc                         ps3_defconfig
+m68k                        m5307c3_defconfig
+m68k                       m5275evb_defconfig
+arm                          iop32x_defconfig
+powerpc                 mpc8315_rdb_defconfig
+sh                          landisk_defconfig
+m68k                         amcore_defconfig
+sh                        apsh4ad0a_defconfig
+arm                        keystone_defconfig
+um                               alldefconfig
+sh                        edosk7705_defconfig
+arm                     davinci_all_defconfig
+sh                           sh2007_defconfig
+m68k                          hp300_defconfig
+arm                      footbridge_defconfig
+mips                       rbtx49xx_defconfig
+sh                         ecovec24_defconfig
+powerpc                  iss476-smp_defconfig
+powerpc                      ep88xc_defconfig
+sh                           se7712_defconfig
+powerpc                     sequoia_defconfig
+arm                          gemini_defconfig
+mips                     cu1000-neo_defconfig
+mips                      maltasmvp_defconfig
+mips                           ip27_defconfig
+sh                           se7751_defconfig
+arm                       spear13xx_defconfig
+arc                          axs103_defconfig
+nios2                            alldefconfig
+powerpc                      pcm030_defconfig
+arm                        spear6xx_defconfig
+m68k                       m5249evb_defconfig
+arm                           h5000_defconfig
+sh                           se7206_defconfig
+mips                     loongson2k_defconfig
+powerpc                     tqm5200_defconfig
+mips                          rb532_defconfig
+h8300                               defconfig
+arm                      jornada720_defconfig
+powerpc                     mpc512x_defconfig
+openrisc                 simple_smp_defconfig
+mips                           ip22_defconfig
+powerpc                 mpc832x_rdb_defconfig
+ia64                             allyesconfig
+powerpc                          allyesconfig
+powerpc                 mpc8560_ads_defconfig
+powerpc                     asp8347_defconfig
+h8300                       h8s-sim_defconfig
+powerpc                     ksi8560_defconfig
+xtensa                       common_defconfig
+arm                           viper_defconfig
+sh                     sh7710voipgw_defconfig
+powerpc                 mpc85xx_cds_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a003-20210513
+i386                 randconfig-a001-20210513
+i386                 randconfig-a006-20210513
+i386                 randconfig-a005-20210513
+i386                 randconfig-a004-20210513
+i386                 randconfig-a002-20210513
+x86_64               randconfig-a012-20210513
+x86_64               randconfig-a015-20210513
+x86_64               randconfig-a011-20210513
+x86_64               randconfig-a013-20210513
+x86_64               randconfig-a016-20210513
+x86_64               randconfig-a014-20210513
+i386                 randconfig-a016-20210513
+i386                 randconfig-a014-20210513
+i386                 randconfig-a011-20210513
+i386                 randconfig-a015-20210513
+i386                 randconfig-a012-20210513
+i386                 randconfig-a013-20210513
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-I think that using multiple paths, at least one per test process
-(so if you are running 16 processes use at least 16 different
-files, the same in each process), and selecting one at random
-for each loop of the open would better simulate real world
-access patterns.
+clang tested configs:
+x86_64               randconfig-a003-20210513
+x86_64               randconfig-a004-20210513
+x86_64               randconfig-a001-20210513
+x86_64               randconfig-a005-20210513
+x86_64               randconfig-a002-20210513
+x86_64               randconfig-a006-20210513
 
-
-Ian
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
