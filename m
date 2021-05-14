@@ -2,169 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A65BF3811C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 22:25:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21EB93811CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 22:26:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbhENU0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 16:26:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47690 "EHLO
+        id S230157AbhENU1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 16:27:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229819AbhENU0d (ORCPT
+        with ESMTP id S230394AbhENU1J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 16:26:33 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A549C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 13:25:20 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id r11so11978901edt.13
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 13:25:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorfullife-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=VBnqNiOUccDKwPHZcvRpD/cDYiw6UO3907bwYc6Zs50=;
-        b=kgi56kuQCm2ZuTZhyCRYlNh89otEHEzYypAejvkX2gd3N7+k+R4McFlVIQGTYKhRz/
-         KWfnyaikvB6qzt/uxaOOaKVBUKUcl2b2+FLbKzLvhWjf0v1DQGLhtD4o31rQ4WXVRsM5
-         12Kfz1Pxn5/hKVhTodiUuQ5ISOND9VIT4aiZxahqu5TRjCr13U4lMsdhULBAsYGuiip+
-         6qY7l+hYYFEmaES6cXdYu0huG//seb9CYAyKXKxgt+VjgVe4wjLK09FwEnt2OZ1uN+Ys
-         e9XRanRzcsI6J6rZuXrfx8LuWOppQRiBLXOZLsCCCMvOyzWCfYUFHr6SJsgEcfVLro++
-         o0vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=VBnqNiOUccDKwPHZcvRpD/cDYiw6UO3907bwYc6Zs50=;
-        b=g0ommeUSqSqYAvMAWDe4aYBP2mM1g/A2IZslNrZ1IS9rjo9tTIrcmyUp8xCjHeTWXu
-         7Ll6UXh5pHscB3k8nPe/WABBaoQJ1392u1qAR1S32+z5hfZVGvQdjo8ZJNbS0R+9fYf9
-         uNnBDaIWvg/ST0M3RZDcYOZyfmVff+Ryt2ULMdG7T2Te6bmjmSu3ayYBljRmwMyJWj07
-         7jLLSXxfQWxjbja26DMB/sCn07jrrhW9f+tLdHleiU6wQTLa4NROZtzNZYoi+SkENZD+
-         8c6vB9Y0fR6MVOFLGue9ZUMD7Gr4N5dAiOUH/VwKTafnz5THS+4k2flWAAls95YnEF3w
-         i22w==
-X-Gm-Message-State: AOAM531dlxK6heJt5w5du97sy79PL7QN0LphCn0rw0ZVc7pDRdoZkzB+
-        Oqxqc7qcYmHReuQJrPKeU0cCJA==
-X-Google-Smtp-Source: ABdhPJwioDaBn45MlqtK3UheBT+V6TCJPcVnRYT9ytz3gpwDicxq9zrDWREcX/o0SrQo/fqXb9RwYA==
-X-Received: by 2002:a05:6402:10c6:: with SMTP id p6mr58690437edu.241.1621023919241;
-        Fri, 14 May 2021 13:25:19 -0700 (PDT)
-Received: from localhost.localdomain (p200300d9970469005bb43495a574ac97.dip0.t-ipconnect.de. [2003:d9:9704:6900:5bb4:3495:a574:ac97])
-        by smtp.googlemail.com with ESMTPSA id ga3sm4130472ejb.34.2021.05.14.13.25.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 May 2021 13:25:18 -0700 (PDT)
-Subject: Re: [PATCH] ipc/sem.c: use READ_ONCE()/WRITE_ONCE() for
- use_global_lock
-To:     paulmck@kernel.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Andrew Morton <akpm@linux-foundation.org>, 1vier1@web.de
-References: <20210514175319.12195-1-manfred@colorfullife.com>
- <20210514194407.GN975577@paulmck-ThinkPad-P17-Gen-1>
-From:   Manfred Spraul <manfred@colorfullife.com>
-Message-ID: <c3a1f1a3-8fc1-29b5-92e0-bf45e1cc438f@colorfullife.com>
-Date:   Fri, 14 May 2021 22:25:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Fri, 14 May 2021 16:27:09 -0400
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3833BC061574;
+        Fri, 14 May 2021 13:25:57 -0700 (PDT)
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id F21B192009C; Fri, 14 May 2021 22:25:53 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id EAA2B92009B;
+        Fri, 14 May 2021 22:25:53 +0200 (CEST)
+Date:   Fri, 14 May 2021 22:25:53 +0200 (CEST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Colin King <colin.king@canonical.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        "Antonino A. Daplas" <adaplas@gmail.com>
+Subject: Re: [PATCH] video: fbdev: vga16fb: fix OOB write in
+ vga16fb_imageblit()
+In-Reply-To: <CAHk-=wguwhFpjhyMtDaH2hhjoV62gDgByC=aPyTrW9CkM5hqvA@mail.gmail.com>
+Message-ID: <alpine.DEB.2.21.2105142150460.3032@angie.orcam.me.uk>
+References: <0000000000006bbd0c05c14f1b09@google.com> <6e21483c-06f6-404b-4018-e00ee85c456c@i-love.sakura.ne.jp> <87d928e4-b2b9-ad30-f3f0-1dfb8e4e03ed@i-love.sakura.ne.jp> <05acdda8-dc1c-5119-4326-96eed24bea0c@i-love.sakura.ne.jp>
+ <CAHk-=wguwhFpjhyMtDaH2hhjoV62gDgByC=aPyTrW9CkM5hqvA@mail.gmail.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <20210514194407.GN975577@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+On Fri, 14 May 2021, Linus Torvalds wrote:
 
-On 5/14/21 9:44 PM, Paul E. McKenney wrote:
-> On Fri, May 14, 2021 at 07:53:19PM +0200, Manfred Spraul wrote:
->> The patch solves two weaknesses in ipc/sem.c:
->>
->> 1) The initial read of use_global_lock in sem_lock() is an
->> intentional race. KCSAN detects these accesses and prints
->> a warning.
->>
->> 2) The code assumes that plain C read/writes are not
->> mangled by the CPU or the compiler.
->>
->> To solve both issues, use READ_ONCE()/WRITE_ONCE().
->> Plain C reads are used in code that owns sma->sem_perm.lock.
->>
->> Signed-off-by: Manfred Spraul <manfred@colorfullife.com>
-> Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
->
-> One follow-up question: If I am reading the code correctly, there is
-> a call to complexmode_enter() from sysvipc_sem_proc_show() that does
-> not hold the global lock.  Does this mean that the first check of
-> ->use_global_lock in complexmode_enter() should be marked?
+> > Currently it is impossible to control upper limit of rows/columns values
+> > based on amount of memory reserved for the graphical screen, for
+> > resize_screen() calls vc->vc_sw->con_resize() only if vc->vc_mode is not
+> > already KD_GRAPHICS
+> 
+> Honestly, the saner approach would seem to be to simply error out if
+> vc_mode is KD_GRAPHICS.
+> 
+> Doing VT_RESIZE while in KD_GRAPHICS mode seems _very_ questionable,
+> and is clearly currently very buggy.
 
-Now you made me nervous, usually I do not test the proc interface.
-According to the documentation in sysvipc_sem_proc_show(), 
-sysvipc_find_ipc() acquires the global lock.
+ I haven't looked into it any further beyond tracking down (again, using 
+the LMO tree) the originating change as the other fix took precedence.  It 
+came with:
 
->         /*
->          * The proc interface isn't aware of sem_lock(), it calls
->          * ipc_lock_object() directly (in sysvipc_find_ipc).
->          * In order to stay compatible with sem_lock(), we must
->          * enter / leave complex_mode.
->          */
-I have just tested it again: Yes, this is still true.
+commit 094e0a9cdbdf1e11a28dd756a6cbd750b6303d10
+Author: Ralf Baechle <ralf@linux-mips.org>
+Date:   Sun Jun 1 12:07:37 2003 +0000
 
-Perhaps, as future improvement: The rest of ipc/sem.c speaks about 
-"sem_perm.lock", and here we suddenly use a function name instead of the 
-structure member name.
+    Merge with Linux 2.5.51
 
- > "it calls ipc_lock_object() (i.e.: spin_lock(&sma->sem_perm.lock)).
+along with framebuffer console support:
 
-> 							Thanx, Paul
->
->> ---
->>   ipc/sem.c | 11 +++++++----
->>   1 file changed, 7 insertions(+), 4 deletions(-)
->>
->> diff --git a/ipc/sem.c b/ipc/sem.c
->> index bf534c74293e..a0ad3a3edde2 100644
->> --- a/ipc/sem.c
->> +++ b/ipc/sem.c
->> @@ -217,6 +217,8 @@ static int sysvipc_sem_proc_show(struct seq_file *s, void *it);
->>    * this smp_load_acquire(), this is guaranteed because the smp_load_acquire()
->>    * is inside a spin_lock() and after a write from 0 to non-zero a
->>    * spin_lock()+spin_unlock() is done.
->> + * To prevent the compiler/cpu temporarily writing 0 to use_global_lock,
->> + * READ_ONCE()/WRITE_ONCE() is used.
->>    *
->>    * 2) queue.status: (SEM_BARRIER_2)
->>    * Initialization is done while holding sem_lock(), so no further barrier is
->> @@ -342,10 +344,10 @@ static void complexmode_enter(struct sem_array *sma)
->>   		 * Nothing to do, just reset the
->>   		 * counter until we return to simple mode.
->>   		 */
->> -		sma->use_global_lock = USE_GLOBAL_LOCK_HYSTERESIS;
->> +		WRITE_ONCE(sma->use_global_lock, USE_GLOBAL_LOCK_HYSTERESIS);
->>   		return;
->>   	}
->> -	sma->use_global_lock = USE_GLOBAL_LOCK_HYSTERESIS;
->> +	WRITE_ONCE(sma->use_global_lock, USE_GLOBAL_LOCK_HYSTERESIS);
->>   
->>   	for (i = 0; i < sma->sem_nsems; i++) {
->>   		sem = &sma->sems[i];
->> @@ -371,7 +373,8 @@ static void complexmode_tryleave(struct sem_array *sma)
->>   		/* See SEM_BARRIER_1 for purpose/pairing */
->>   		smp_store_release(&sma->use_global_lock, 0);
->>   	} else {
->> -		sma->use_global_lock--;
->> +		WRITE_ONCE(sma->use_global_lock,
->> +				sma->use_global_lock-1);
->>   	}
->>   }
->>   
->> @@ -412,7 +415,7 @@ static inline int sem_lock(struct sem_array *sma, struct sembuf *sops,
->>   	 * Initial check for use_global_lock. Just an optimization,
->>   	 * no locking, no memory barrier.
->>   	 */
->> -	if (!sma->use_global_lock) {
->> +	if (!READ_ONCE(sma->use_global_lock)) {
->>   		/*
->>   		 * It appears that no complex operation is around.
->>   		 * Acquire the per-semaphore lock.
->> -- 
->> 2.31.1
->>
++inline int resize_screen(int currcons, int width, int height)
++{
++	/* Resizes the resolution of the display adapater */
++	int err = 0;
++
++	if (vcmode != KD_GRAPHICS && sw->con_resize)
++		err = sw->con_resize(vc_cons[currcons].d, width, height);
++	return err;
++}
++
 
+A handler for fbcon was added shortly afterwards with:
+
+commit bab384bdbe279efd7acc2146ef13b0b0395b2a42
+Author: Ralf Baechle <ralf@linux-mips.org>
+Date:   Tue Jun 3 17:04:10 2003 +0000
+
+    Merge with Linux 2.5.59.
+
+however vgacon didn't have a handler for it until commit 28254d439b8c 
+("[PATCH] vga text console and stty cols/rows") two years later only.
+
+ Overall I think it does make sense to resize the text console at any 
+time, even if the visible console (VT) chosen is in the graphics mode, as 
+my understanding (and experience at least with vgacon) is that resizing 
+the console applies globally across all the VTs.  So the intent of the 
+original change appears valid to me, and the choice not to reprogram the 
+visible console and only store the settings for a future use if it's in 
+the graphics mode correct.
+
+ Which means any bug triggered here needs to be fixed elsewhere rather 
+than by making the request fail.
+
+ NB for fbcon the usual ioctl to resize the console is FBIOPUT_VSCREENINFO 
+rather than VT_RESIZEX; fbset(8) uses it, and I actually experimented with 
+it and a TGA-like (SFB+) framebuffer when at my lab last time, as Linux is 
+kind enough to know how to fiddle with its clockchip.  It works just fine.
+
+  Maciej
