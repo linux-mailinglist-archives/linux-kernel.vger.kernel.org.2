@@ -2,142 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79C74380775
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 12:38:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D5B638077D
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 12:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231132AbhENKjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 06:39:22 -0400
-Received: from foss.arm.com ([217.140.110.172]:46938 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229554AbhENKjU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 06:39:20 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 21F251713;
-        Fri, 14 May 2021 03:38:09 -0700 (PDT)
-Received: from e125579.fritz.box (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 6E10C3F719;
-        Fri, 14 May 2021 03:38:07 -0700 (PDT)
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Xuewen Yan <xuewen.yan94@gmail.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>
-Cc:     Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>,
-        Quentin Perret <qperret@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] sched/fair: Fix util_est UTIL_AVG_UNCHANGED handling
-Date:   Fri, 14 May 2021 12:37:48 +0200
-Message-Id: <20210514103748.737809-1-dietmar.eggemann@arm.com>
-X-Mailer: git-send-email 2.25.1
+        id S231872AbhENKjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 06:39:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231687AbhENKjo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 06:39:44 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F5EDC061574;
+        Fri, 14 May 2021 03:38:33 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0b2c00e75fd5d24a8a460d.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:2c00:e75f:d5d2:4a8a:460d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 092671EC03A0;
+        Fri, 14 May 2021 12:38:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1620988712;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=rLpwvEOD+SNcjjXRD4phEAovRMr9hdeOp4DAy+p8b70=;
+        b=LkMUW4pF2xxHQYTCTnka0bu5Wz9HyZm2q49dv7dJinrd3+TwB3aBK4lXadYs8DDmEVUz2U
+        F0hsFhKj4CLsJ/kG5zDikpqQHGtb6UUiGiKcpnqPxaYKWvq+PvLfpqd/NSrq/BHIXDlgkB
+        8+TeVAvDSD9oTvljXGDLRcYCU97MKJI=
+Date:   Fri, 14 May 2021 12:38:27 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Ashish Kalra <ashish.kalra@amd.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, seanjc@google.com,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        joro@8bytes.org, thomas.lendacky@amd.com, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        srutherford@google.com, venu.busireddy@oracle.com,
+        brijesh.singh@amd.com
+Subject: Re: [PATCH v2 2/4] mm: x86: Invoke hypercall when page encryption
+ status is changed
+Message-ID: <YJ5TI2LD2PB35QYE@zn.tnic>
+References: <cover.1619193043.git.ashish.kalra@amd.com>
+ <ff68a73e0cdaf89e56add5c8b6e110df881fede1.1619193043.git.ashish.kalra@amd.com>
+ <YJvU+RAvetAPT2XY@zn.tnic>
+ <20210513043441.GA28019@ashkalra_ubuntu_server>
+ <YJ4n2Ypmq/7U1znM@zn.tnic>
+ <7ac12a36-5886-cb07-cc77-a96daa76b854@redhat.com>
+ <20210514090523.GA21627@ashkalra_ubuntu_server>
+ <YJ5EKPLA9WluUdFG@zn.tnic>
+ <20210514100519.GA21705@ashkalra_ubuntu_server>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210514100519.GA21705@ashkalra_ubuntu_server>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The util_est internal UTIL_AVG_UNCHANGED flag which is used to prevent
-unnecessary util_est updates uses the LSB of util_est.enqueued. It is
-exposed via _task_util_est() (and task_util_est()).
+On Fri, May 14, 2021 at 10:05:19AM +0000, Ashish Kalra wrote:
+> No, actually notify_addr_enc_status_changed() is called whenever a range
+> of memory is marked as encrypted or decrypted, so it has nothing to do
+> with migration as such. 
+> 
+> This is basically modifying the encryption attributes on the page tables
+> and correspondingly also making the hypercall to inform the hypervisor about
+> page status encryption changes. The hypervisor will use this information
+> during an ongoing or future migration, so this information is maintained
+> even though migration might never be initiated here.
 
-Commit 92a801e5d5b7 ("sched/fair: Mask UTIL_AVG_UNCHANGED usages")
-mentions that the LSB is lost for util_est resolution but
-find_energy_efficient_cpu() checks if task_util_est() returns 0 to
-return prev_cpu early.
+Doh, ofcourse. This doesn't make it easier.
 
-_task_util_est() returns the max value of util_est.ewma and
-util_est.enqueued or'ed w/ UTIL_AVG_UNCHANGED.
-So task_util_est() returning the max of task_util() and
-_task_util_est() will never return 0 under the default
-SCHED_FEAT(UTIL_EST, true).
+> The error value cannot be propogated up the callchain directly
+> here,
 
-To fix this use the MSB of util_est.enqueued instead and keep the flag
-util_est internal, i.e. don't export it via _task_util_est().
+Yeah, my thinking was way wrong here - sorry about that.
 
-The maximal possible util_avg value for a task is 1024 so the MSB of
-'unsigned int util_est.enqueued' isn't used to store a util value.
+> but one possibility is to leverage the hypercall and use Sean's
+> proposed hypercall interface to notify the host/hypervisor to block/stop
+> any future/ongoing migration.
+>
+> Or as from Paolo's response, writing 0 to MIGRATION_CONTROL MSR seems
+> more ideal.
 
-As a caveat the code behind the util_est_se trace point has to filter
-UTIL_AVG_UNCHANGED to see the real util_est.enqueued value which should
-be easy to do.
+Ok.
 
-This also fixes an issue report by Xuewen Yan that util_est_update()
-only used UTIL_AVG_UNCHANGED for the subtrahend of the equation:
+So to sum up: notify_addr_enc_status_changed() should warn but not
+because of migration but because regardless, we should tell the users
+when page enc attributes updating fails as that is potentially hinting
+at a bigger problem so we better make sufficient noise here.
 
-  last_enqueued_diff = ue.enqueued - (task_util() | UTIL_AVG_UNCHANGED)
+Thx.
 
-Fixes: b89997aa88f0b sched/pelt: Fix task util_est update filtering
-Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
----
- kernel/sched/fair.c |  5 +++--
- kernel/sched/pelt.h | 13 +++++++------
- 2 files changed, 10 insertions(+), 8 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 161b92aa1c79..0150d440b0a2 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3856,7 +3856,7 @@ static inline unsigned long _task_util_est(struct task_struct *p)
- {
- 	struct util_est ue = READ_ONCE(p->se.avg.util_est);
- 
--	return (max(ue.ewma, ue.enqueued) | UTIL_AVG_UNCHANGED);
-+	return max(ue.ewma, (ue.enqueued & ~UTIL_AVG_UNCHANGED));
- }
- 
- static inline unsigned long task_util_est(struct task_struct *p)
-@@ -3956,7 +3956,7 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
- 	 * Reset EWMA on utilization increases, the moving average is used only
- 	 * to smooth utilization decreases.
- 	 */
--	ue.enqueued = (task_util(p) | UTIL_AVG_UNCHANGED);
-+	ue.enqueued = task_util(p);
- 	if (sched_feat(UTIL_EST_FASTUP)) {
- 		if (ue.ewma < ue.enqueued) {
- 			ue.ewma = ue.enqueued;
-@@ -4005,6 +4005,7 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
- 	ue.ewma  += last_ewma_diff;
- 	ue.ewma >>= UTIL_EST_WEIGHT_SHIFT;
- done:
-+	ue.enqueued |= UTIL_AVG_UNCHANGED;
- 	WRITE_ONCE(p->se.avg.util_est, ue);
- 
- 	trace_sched_util_est_se_tp(&p->se);
-diff --git a/kernel/sched/pelt.h b/kernel/sched/pelt.h
-index 9ed6d8c414ad..178290a8d150 100644
---- a/kernel/sched/pelt.h
-+++ b/kernel/sched/pelt.h
-@@ -43,13 +43,14 @@ static inline u32 get_pelt_divider(struct sched_avg *avg)
- }
- 
- /*
-- * When a task is dequeued, its estimated utilization should not be update if
-- * its util_avg has not been updated at least once.
-+ * When a task is dequeued, its estimated utilization should not be updated if
-+ * its util_avg has not been updated in the meantime.
-  * This flag is used to synchronize util_avg updates with util_est updates.
-- * We map this information into the LSB bit of the utilization saved at
-- * dequeue time (i.e. util_est.dequeued).
-+ * We map this information into the MSB bit of util_est.enqueued at dequeue
-+ * time. Since max value of util_est.enqueued for a task is 1024 (PELT
-+ * util_avg for a task) it is safe to use MSB here.
-  */
--#define UTIL_AVG_UNCHANGED 0x1
-+#define UTIL_AVG_UNCHANGED 0x80000000
- 
- static inline void cfs_se_util_change(struct sched_avg *avg)
- {
-@@ -58,7 +59,7 @@ static inline void cfs_se_util_change(struct sched_avg *avg)
- 	if (!sched_feat(UTIL_EST))
- 		return;
- 
--	/* Avoid store if the flag has been already set */
-+	/* Avoid store if the flag has been already reset */
- 	enqueued = avg->util_est.enqueued;
- 	if (!(enqueued & UTIL_AVG_UNCHANGED))
- 		return;
 -- 
-2.25.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
