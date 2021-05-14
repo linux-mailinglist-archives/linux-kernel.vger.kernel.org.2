@@ -2,229 +2,541 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C00C381116
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 21:45:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E252B38111B
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 21:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232882AbhENTqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 15:46:54 -0400
-Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:56818 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230495AbhENTqw (ORCPT
+        id S231580AbhENTul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 15:50:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53016 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230459AbhENTuk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 15:46:52 -0400
-Received: from mailhost.synopsys.com (sv1-mailhost1.synopsys.com [10.205.2.131])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client CN "mailhost.synopsys.com", Issuer "SNPSica2" (verified OK))
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id B5C25400E5;
-        Fri, 14 May 2021 19:45:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1621021540; bh=XmG4n8vJxbRH7bBrVjUXsvPsTWs/midRcduQpFfikI0=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-        b=EbEeU8FKtL/UmcNdyOSAK6Qg7k4N1z2b6T9DoMNKXhBVvX+RwPpyMWpQ21GJNYZnu
-         jUaOkIKGbLB6f8wGIKd1Xr2Eqpw9S/p5d/hr+wQ9sASVER4s8epDNb405MxXaraFMw
-         6lOyCVi6X5ETslJJVjy3JCqDoeyHuMJ0wzAh2aB+t/gtH/wG50lcISuABeCehG1yMS
-         moeu9Di2xjRTv9Od87ioybFzxiN+wVbCwR+bzOueFeJIHiWANK783loiizH6LXJ/0f
-         baHiiFUo3bqjt4lMn0Bi1GO5L446Tnye7VTJL9STzgZMzSD8QmhgWH1bN3ikeb4KU7
-         nWdLOkv0uXMFg==
-Received: from o365relay-in.synopsys.com (us03-o365relay1.synopsys.com [10.4.161.137])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mailhost.synopsys.com (Postfix) with ESMTPS id 7C07AA006A;
-        Fri, 14 May 2021 19:45:30 +0000 (UTC)
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11lp2174.outbound.protection.outlook.com [104.47.56.174])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "mail.protection.outlook.com", Issuer "DigiCert Cloud Services CA-1" (verified OK))
-        by o365relay-in.synopsys.com (Postfix) with ESMTPS id 3A359800C4;
-        Fri, 14 May 2021 19:45:19 +0000 (UTC)
-Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
-Authentication-Results: o365relay-in.synopsys.com; spf=pass smtp.mailfrom=vgupta@synopsys.com
-Authentication-Results: o365relay-in.synopsys.com;
-        dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.b="pqbBrRsd";
-        dkim-atps=neutral
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g13J+ZE7cmd6aASpzItin32ziGymgtzESlEeEd8thP7kezQriRJHclLAlKPp8qskuY0fYRdAb+7+nOWeMNbwBtxqiealsifYm78UhORxMLi6auDwguOlbeKg5VIael9N4hzai87CLZuBWzmgEaCwpeP9Q4d28t7OxfogcLeEDHVi+cjK8SCu8cXF3DOHO/FOil0bv86osG79u4drogl+NaiQJW/YMtO4Vt2gFeQHxYJcQWDSWDkX7oh70gcI5E2l2zHR0sY/wJxymouSqNfCaQEOFP9fgnd7C3dbwsAmAJaP/eM4vjQIfUWNmKdTdkgWIlKY5XMk+hI9+dIVW47iEw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XmG4n8vJxbRH7bBrVjUXsvPsTWs/midRcduQpFfikI0=;
- b=iFGm0APjAMam7MLwEK5NzQT8lQdk22rwGZU1f0Zzyzq/QDv7vRfxkC1oRkLD6wx1y+IaaGWhSGJ4yRG171xFBv3MT3GDUARJVE8rfWikgC5YZBfr50OLXVQuR0r01u6/uQvdGC69haNnsUS0gnCpg5OyG7ZY/D3rnscn0kbfnHwVi4Uh+lpzyZj8ME1eKcVqPezdHdR6BvSe1QWiO8jdUWlGneY3K4TEU7xZMmTnzB37hileFSq6dRpk32IpcTgeWzktZTlg0tMELwjEHbig1yqPr+n6mHb5+ddAgY+iZCUoQb3Dd4R+Cprke35GahKHh5IOgODm/Axr8CA5qU0nww==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
- dkim=pass header.d=synopsys.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XmG4n8vJxbRH7bBrVjUXsvPsTWs/midRcduQpFfikI0=;
- b=pqbBrRsdzHkve5erFrn0KJX/6qveXM1TqPgoVVT1JKF5QGfHFgQobm8LxAzkmtYlamCs2rvx2LkcyWpscvLqwc8WYViqvo/9GrvVsFzHGnpiirxBi7JBVRLfZTNbkJ9NHSrdBUYoKth1xECtgiiP7Tj0pqzGJLeW34yDI9E48WI=
-Received: from BYAPR12MB3479.namprd12.prod.outlook.com (2603:10b6:a03:dc::26)
- by BY5PR12MB4918.namprd12.prod.outlook.com (2603:10b6:a03:1df::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.25; Fri, 14 May
- 2021 19:45:17 +0000
-Received: from BYAPR12MB3479.namprd12.prod.outlook.com
- ([fe80::d1a0:ed05:b9cc:e94d]) by BYAPR12MB3479.namprd12.prod.outlook.com
- ([fe80::d1a0:ed05:b9cc:e94d%7]) with mapi id 15.20.4108.036; Fri, 14 May 2021
- 19:45:17 +0000
-X-SNPS-Relay: synopsys.com
-From:   Vineet Gupta <Vineet.Gupta1@synopsys.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Vineet Gupta <Vineet.Gupta1@synopsys.com>
-CC:     Arnd Bergmann <arnd@kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        James Morris <jmorris@namei.org>, Jens Axboe <axboe@kernel.dk>,
-        John Johansen <john.johansen@canonical.com>,
-        Jonas Bonn <jonas@southpole.se>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>,
-        Rich Felker <dalias@libc.org>,
-        "Richard Russon (FlatCap)" <ldm@flatcap.org>,
-        Russell King <linux@armlinux.org.uk>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
-        Stafford Horne <shorne@gmail.com>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        "openrisc@lists.librecores.org" <openrisc@lists.librecores.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        linux-sparc <sparclinux@vger.kernel.org>,
-        "linux-ntfs-dev@lists.sourceforge.net" 
-        <linux-ntfs-dev@lists.sourceforge.net>,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>
-Subject: Re: [PATCH v2 00/13] Unify asm/unaligned.h around struct helper
-Thread-Topic: [PATCH v2 00/13] Unify asm/unaligned.h around struct helper
-Thread-Index: AQHXSKg19FKoFxcBX0+yXT8p8kMtfqrjPPKAgAAWKgCAAAiYAIAABkwA
-Date:   Fri, 14 May 2021 19:45:16 +0000
-Message-ID: <14016937-b9c3-c131-db18-f97081806c7f@synopsys.com>
-References: <20210514100106.3404011-1-arnd@kernel.org>
- <CAHk-=whGObOKruA_bU3aPGZfoDqZM1_9wBkwREp0H0FgR-90uQ@mail.gmail.com>
- <2408c893-4ae7-4f53-f58c-497c91f5b034@synopsys.com>
- <CAHk-=wih8UHDwJ8x6m-p0PQ7o4S4gOBwGNs=w=q10GNY7A-70w@mail.gmail.com>
-In-Reply-To: <CAHk-=wih8UHDwJ8x6m-p0PQ7o4S4gOBwGNs=w=q10GNY7A-70w@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-authentication-results: linux-foundation.org; dkim=none (message not signed)
- header.d=none;linux-foundation.org; dmarc=none action=none
- header.from=synopsys.com;
-x-originating-ip: [149.117.75.11]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5aff8a86-dc2f-4587-f7be-08d91710ccd4
-x-ms-traffictypediagnostic: BY5PR12MB4918:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BY5PR12MB49187A75ECC97544DAF92C2AB6509@BY5PR12MB4918.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3968;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: BYaXSC3TslWRkzsViqCiF1+Wxp9ZRdRQeChNpCHqFojES9rxJcWKNb0aQn3ba1j1eHw1lhWLivOzkP7ST7eqae7VyAlocuyIm7zFVSWFwC573EHkc9ysVGP1OT57JYg4lhGRB+zUL/QN8/gxAlW3aaTN25UIc4zo9QJaEY8IJ1oNRP483/bqXJ6e0eGRvrtLBSxI7qGscKgJPnAA7+LXqcHlvCU/1JbMMmbNA2EpRvk3ANPp6HhgROzFjtSQxpov1LbDn7uf7vd5G954cpAp/ByoLyLc0a7eX1tUb7Ts9aUhxpLmHAmpsX8ZlUg0dpGrXYKdPQUqmXhYgaBjZlTphwRh1VCD/pQ+v3DGwN1USDB8meAh8zTuVBMY8cF8/6TZdvVeConeAGm7YRuAKJKTGbSyF8Qe4IuODHZxB8AZJshJo+SLxmLhjieKUtfnRe18hx1fvpxNjMuy9pvUMdBJGHgxPLuJ/oSro+muliSqkS9peSV5ftb4i4VrCXhE/qx81Uw9T9fWlTX9BadBDKUY183cgt25W3InSN4DApd8UlTYN03fUPxaC0wMIwIbkMaFgAeZICX+/tXpb16+gLxh/mO68owoJcmkIhFDzzvY9xb6vJWCFIBPZr1fh8S0X7LvxseKYAcuO3UK8dhxg4/X9M+Qk1+9pLtWuW2iFA2BiHFNEvGWGetGFVRrYuQaj2aq
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3479.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(346002)(376002)(396003)(39850400004)(31696002)(36756003)(86362001)(38100700002)(66946007)(66476007)(83380400001)(26005)(7416002)(7406005)(66556008)(71200400001)(64756008)(2616005)(2906002)(4326008)(54906003)(316002)(6512007)(110136005)(122000001)(6486002)(8676002)(186003)(478600001)(66446008)(8936002)(31686004)(6506007)(53546011)(5660300002)(76116006)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?eXpKSWxoSEtpUWlxU0x0OElweWd4YnlKVGNubEVaZDI1OTBKTTNXdGFNR1RZ?=
- =?utf-8?B?R01Kcnd5MEhXbldycDlDNDdla050UmJmNkc5WnBBTFZXYXVVVUhpUnM3VGty?=
- =?utf-8?B?OGNFOVVkZ2pTVm1NZ2dIckt0TTdyUHhDa2ZKRGp4M0krckJRYnlZOHUwQ1Yr?=
- =?utf-8?B?UlRBZktOQlFQNHB5VlkzcEZrclB5U25Mcjl3U1ZBM0RFYVJiOGtyL1NzQWMr?=
- =?utf-8?B?OEFsTFdzNTd0T0xVazZPM0Z1NWR2Z0JldnFkOUpLZlgySGl0LzFxcXJlNFBL?=
- =?utf-8?B?ejlwU05tMjkzcGozNkFwWFBFa3A3RzN4elloa1VKenRya3dpWE9NN0szWFlu?=
- =?utf-8?B?ZTFXN1VLaHdRdmdYRFltN3B3dHZxOWNZaFF2UEYwcjk1bkI0cEV6cDF6ZWVo?=
- =?utf-8?B?dGRqMS8rK0R5NU15d1VWM1BZME04MTZ6QVg4N1doUndhKy9lQlp2Q2M2TmVC?=
- =?utf-8?B?aldpQk5YUEsrS2FCMEhSd2ZmajNJRnBDR0xPdW55RXhTanNXUEllTGpDa2pU?=
- =?utf-8?B?ZnlicW51dlBxRGFJUDNXRU9EVitiSTBGcXgxWG9TYTV0eDFXVmI2MmcwS2FY?=
- =?utf-8?B?VUlUTnlaN3JPR0NFOGhoeDhheWxUdTNJUjdoZ2l2L2FqcFkyQTlhaGppV0lr?=
- =?utf-8?B?b1RPdldzSHZIYXI0MUFxMmVkanhTNjNCZUJnOHE3cERLU2doT01kZytBV1p2?=
- =?utf-8?B?aldhZjBkWitsQndUMkhuMXhuUlVNNzk4RlJhVVc2Z1F4RXAvUVI5ODJLaXNh?=
- =?utf-8?B?K25kR0xBbHdIZndOazdYdk9FN0VjOGdndks5SUc5UExic0M2SWJqSkM3SHAr?=
- =?utf-8?B?NTRKOGxUakVJSy9ZSVNId1I3M0M2aTVDOEZNSUxDVlpzeCtBWS8zWDk5YXVR?=
- =?utf-8?B?YVY0dS9Nem0xVEVQUmUxbjlLRGtOeE50QzdrRnpzbWV2TnI3OWMzc3Z6eDB6?=
- =?utf-8?B?UllDUlRJaVhCSGJ5MHRqeXNQSDRJN2tZblkzVE00M1ZzaXhaaTU4Tk5MS042?=
- =?utf-8?B?eU9JcFpySk15WUx2SXQ2K1diQWZnZjhoLzRmRTN6U2R2N0NndFVMUHBzb0k2?=
- =?utf-8?B?VUZ0TnFkYW5sN1dWYURpWjBuM0VjQVRtNkdib2VqNGlCaTVKZGdKUVBLc0VN?=
- =?utf-8?B?K1NxYnF4NUVQOVc4RWM5NjR0a0dzNUVGY1ZQYTdSZzdyUGMyRWdibmFmaGZB?=
- =?utf-8?B?NWhNMFpyNmtiRzFPckR0blBiSnpqMWhrVXpnTnZ0OC9KRTgxV01iaTUzRTJq?=
- =?utf-8?B?VEJuYTgrQkNJTVVhek83REQ3ZE04N3NFUStUS2JYZmZ5M0E4Wm0yTDhDZy80?=
- =?utf-8?B?OFZKcFZKaFBZLzdXcEdVYlBUb1N5NVo2S2w3di85SWpNWnVhb1BQZ1pDQXZX?=
- =?utf-8?B?L3k5d2F3QURTMW1USVNqWmt5WS93QWhOa0dVeW5PQnlQYXplYzI4MGN1VlJB?=
- =?utf-8?B?VVI5cmNJTllLZVZrZE4xbEhkSUZCaWlqZ3poV2c1R1ZTRUlDWVNSOHV5bDY2?=
- =?utf-8?B?T0tnV1N0Z0s0L284TUNTaWtSVVRzalRJQThBd2hVSm9jSDJnMEFzbGFsZXVD?=
- =?utf-8?B?dXlMR3hPVGpsQ1hobmdHdXVPMTUxOEtmeUUrQWVCdUtqZFdlUmN0blluN2la?=
- =?utf-8?B?ZUVsUjJteHdKSmxQRlRWR0ErVE84aGM5bGlseHhqN0FKR1JrejRpa010KzN2?=
- =?utf-8?B?cHlCUmswbXhIbEhrd3dSbkZZUldHWGtISUl1Ry94Zi9yNGV5MjVZcTlRZnI0?=
- =?utf-8?Q?EObv19a7YEYIAM6Ebg=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <280212593F4F8844BA7CA332FCBE0B2A@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Fri, 14 May 2021 15:50:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621021767;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=266EQPEccFInaUM7y4vs1WJCDuGwK9YKcVNNvrvvj+s=;
+        b=Kgz7fKvZiu7SvrJV0rCprxOagok2NECRnqWlBC8QdBTOdeONj17N5cuuP/As8+PT4Roje/
+        XrexurkiOiUJEvt5BNA6xqhQebJJMoStXjEWoG4t0uW2mEzXoOj4ySLdVOB2b1NguDQxEi
+        CTiAjdxTgQJr6lHcvIkwArJ8qe5m/Ms=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-321-zClyYNWHNYuMGP1ZHwwcNQ-1; Fri, 14 May 2021 15:49:26 -0400
+X-MC-Unique: zClyYNWHNYuMGP1ZHwwcNQ-1
+Received: by mail-ed1-f72.google.com with SMTP id h16-20020a0564020950b029038cbdae8cbaso5413742edz.6
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 12:49:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=266EQPEccFInaUM7y4vs1WJCDuGwK9YKcVNNvrvvj+s=;
+        b=FZWIfTILXSYAWL66xRVUhM7cXNHmstecC6yX0D/pSjpw8uQhK2nwKje6V/P3HYgRyx
+         ktW397GJfS00VkMPZC3RVU0pISvEGeF0sa4ML4aqWa3+vGO/l0Q2RKDdSiQ+ly9bB7qu
+         QuyV2zhVdXuatrexrUvPrgW08Zq0RU5Om58dEhsMn2YbPhq0K+vjYRhenCM0+jYNqgkX
+         owZ3i22+jbzsHRcMWIAWNC/mPrbs74mSKSh2mKpaDtj2q9eR2LI0TrNUwCsOk9n4Acdo
+         L2+x6pF3CbrEpuTv+OkIWYz4Y88o7+7WWiZksFVlkicjdi7Ds6SBcpHeakaz6odnKX68
+         da/Q==
+X-Gm-Message-State: AOAM530i0llSRnCYUMdQkbZRlOtL+KOk4ucF2bY0FLrql+pDuNP9m1xR
+        6vU/fcyRFOYqttJzhGXm2K4S+aC+ttJlTOMd3QSjks4AW7/tHnEAazhJDF9NeohbTC+zUElcBX0
+        mf7ZdJcxU6sa4gunwt2ESlhs3HyzrKEKdwNuaE1GDS6MiBivnPfmSVs+ebFGQ3z52/LIWwPcGaI
+        ya
+X-Received: by 2002:a17:906:640c:: with SMTP id d12mr21633136ejm.70.1621021764404;
+        Fri, 14 May 2021 12:49:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwft7wa5XJqb0qpS8a7I4ZWNUAeFiFkYS7cbHQIe/40GYH9SVV/RcPIjWTL6xafUqtQnj87gQ==
+X-Received: by 2002:a17:906:640c:: with SMTP id d12mr21633114ejm.70.1621021764124;
+        Fri, 14 May 2021 12:49:24 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id u3sm302046edy.77.2021.05.14.12.49.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 May 2021 12:49:23 -0700 (PDT)
+Subject: Re: [PATCH] platform/x86: acer-wmi: Add support for Acer Helios 300
+ RGB keyboard backlight
+To:     Jafar Akhondali <jafar.akhoondali@gmail.com>, jlee@suse.com,
+        mgross@linux.intel.com, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <CAMW3L+24ZGowtpURUbjoCoA+eZMF0wDae1izxS+HM2uz1L9Rig@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <9e455325-d9d6-557d-e9a5-779f59e2af4c@redhat.com>
+Date:   Fri, 14 May 2021 21:49:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-X-OriginatorOrg: synopsys.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3479.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5aff8a86-dc2f-4587-f7be-08d91710ccd4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 May 2021 19:45:16.9872
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: VNdnXkbVpoFAdxneSiaJHaxdJz58kbCGlzZbu2j6F9WUrz8DCRRNO202snd5252dKG1PqcAqjBeu5v4ac9n/IQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4918
+In-Reply-To: <CAMW3L+24ZGowtpURUbjoCoA+eZMF0wDae1izxS+HM2uz1L9Rig@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gNS8xNC8yMSAxMjoyMiBQTSwgTGludXMgVG9ydmFsZHMgd3JvdGU6DQo+IE9uIEZyaSwgTWF5
-IDE0LCAyMDIxIGF0IDExOjUyIEFNIFZpbmVldCBHdXB0YQ0KPiA8VmluZWV0Lkd1cHRhMUBzeW5v
-cHN5cy5jb20+IHdyb3RlOg0KPj4gV2Fzbid0IHRoZSBuZXcgemxpYiBjb2RlIHNsYXRlZCBmb3Ig
-NS4xNC4gSSBkb24ndCBzZWUgaXQgaW4geW91ciBtYXN0ZXIgeWV0DQo+IFlvdSdyZSByaWdodCwg
-SSBuZXZlciBhY3R1YWxseSBjb21taXR0ZWQgaXQsIHNpbmNlIGl0IHdhcyBzcGVjaWZpYyB0bw0K
-PiBBUkMgYW5kIC1PMw0KDQpXZWxsLCBub3QgcmVhbGx5LCB0aGUgaXNzdWUgbWFuaWZlc3RlZCBp
-biBBUkMgTzMgdGVzdGluZywgYnV0IEkgc2hvd2VkIA0KdGhlIHByb2JsZW0gZXhpc3RlZCBmb3Ig
-YXJtNjQgZ2NjIHRvby4NCg0KPiBhbmQgSSB3YXNuJ3QgZW50aXJlbHkgaGFwcHkgd2l0aCB0aGUg
-YW1vdW50IG9mIHRlc3RpbmcgaXQNCj4gZ290ICh3aXRoIEhlaWtvIHBvaW50aW5nIG91dCB0aGF0
-IHRoZSBzMzkwIHN0dWZmIG5lZWRlZCBtb3JlIGZpeGVzIGZvcg0KPiB0aGUgY2hhbmdlKS4NCg0K
-V2l0aCBoaXMgYWRkb24gcGF0Y2ggZXZlcnl0aGluZyBzZWVtZWQgaHVua3kgZG9yeS4NCg0KPiBU
-aGUgcGF0Y2ggYmVsb3cgaXMgcmVxdWlyZWQgb24gdG9wIG9mIHlvdXIgcGF0Y2ggdG8gbWFrZSBp
-dCBjb21waWxlDQo+IGZvciBzMzkwIGFzIHdlbGwuDQo+IFRlc3RlZCB3aXRoIGtlcm5lbCBpbWFn
-ZSBkZWNvbXByZXNzaW9uLCBhbmQgYWxzbyBidHJmcyB3aXRoIGZpbGUNCj4gY29tcHJlc3Npb247
-IGJvdGggc29mdHdhcmUgYW5kIGhhcmR3YXJlIGNvbXByZXNzaW9uLg0KPiBFdmVyeXRoaW5nIHNl
-ZW1zIHRvIHdvcmsuDQoNCj4gU28gaW4gZmFjdCBpdCdzIG5vdCBldmVuIHF1ZXVlZCB1cCBmb3Ig
-NS4xNCBkdWUgdG8gdGhpcyBhbGwsIEkganVzdCBkcm9wcGVkIGl0Lg0KDQpCdXQgV2h5LiBDYW4n
-dCB3ZSB0aHJvdyBpdCBpbiBsaW51eC1uZXh0IGZvciA1LjE0LiBJIHByb21pc2UgdG8gdGVzdCBp
-dCANCi0gYW5kIHdpbGwgbGlrZWx5IGhpdCBhbnkgY29ybmVyIGNhc2VzLiBBbHNvIGZvciB0aGUg
-dGltZSBiZWluZyB3ZSBjb3VsZCANCmZvcmNlIGp1c3QgdGhhdCBmaWxlL2ZpbGVzIHRvIGJ1aWxk
-IGZvciAtTzMgdG8gc3RyZXNzIHRlc3QgdGhlIGFzcGVjdHMgDQp0aGF0IHdlcmUgZnJhZ2lsZS4N
-Cg0KPj4+ICAgIGFuZCB0aGUgYmlnZ3kNCj4+PiBjYXNlIGRpZG4ndCBldmVuIHVzZSAiZ2V0X3Vu
-YWxpZ25lZCgpIikuDQo+PiBJbmRlZWQgdGhpcyBzZXJpZXMgaXMgc29ydCBvZiBvcnRob2dvbmFs
-IHRvIHRoYXQgYnVnLCBidXQgSU1PIHRoYXQgYnVnDQo+PiBzdGlsbCBleGlzdHMgaW4gNS4xMyBm
-b3IgLU8zIGJ1aWxkLCBncmFudGVkIHRoYXQgaXMgbm90IGVuYWJsZWQgZm9yICFBUkMuDQo+IFJp
-Z2h0LCB0aGUgemxpYiBidWcgaXMgc3RpbGwgdGhlcmUuDQo+DQo+IEJ1dCBBcm5kJ3Mgc2VyaWVz
-IHdvdWxkbid0IGV2ZW4gZml4IGl0OiByaWdodCBub3cgaW5mZmFzdCBoYXMgaXRzIG93bg0KPiAt
-IHVnbHkgYW5kIHNsb3cgLSBzcGVjaWFsIDItYnl0ZS1vbmx5IHZlcnNpb24gb2YgImdldF91bmFs
-aWduZWQoKSIsDQo+IGNhbGxlZCAiZ2V0X3VuYWxpZ25lZDE2KCkiLg0KDQpJIGtub3cgdGhhdCdz
-IHdoeSBzYWlkIHRoZXkgYXJlIG9ydGhvZ29uYWwuDQoNCg0KPiBBbmQgYmVjYXVzZSBpdCdzIHVn
-bHkgYW5kIHNsb3csIGl0J3Mgbm90IGFjdHVhbGx5IHVzZWQgZm9yDQo+IENPTkZJR19IQVZFX0VG
-RklDSUVOVF9VTkFMSUdORURfQUNDRVNTLg0KPg0KPiBWaW5lZXQgLSBtYXliZSB0aGUgZml4IGlz
-IHRvIG5vdCB0YWtlIG15IHBhdGNoIHRvIHVwZGF0ZSB0byBhIG5ld2VyDQo+IHpsaWIsIGJ1dCB0
-byBqdXN0IGZpeCBpbmZmYXN0IHRvIHVzZSB0aGUgcHJvcGVyIGdldF91bmFsaWduZWQoKS4gVGhl
-bg0KPiBBcm5kJ3Mgc2VyaWVzIF93b3VsZF8gYWN0dWFsbHkgZml4IGFsbCB0aGlzLi4NCg0KT0sg
-aWYgeW91IHNheSBzby4NCg0KLVZpbmVldA0K
+Hi Jafar,
+
+On 5/14/21 2:06 PM, Jafar Akhondali wrote:
+> From e65b0ddbf559aa3ca8a7998404e7e67e64b705e9 Mon Sep 17 00:00:00 2001
+> From: JafarAkhondali <jafar.akhoondali@gmail.com>
+> Date: Fri, 14 May 2021 08:26:47 +0430
+> Subject: [PATCH] platform/x86: acer-wmi: Add support for Acer Helios
+> 300 rgb keyboard backlight
+> 
+> The Acer helios 300 provides gaming functions WMI that is available in
+> Windows, however this was not implemented in Linux. The process of finding
+> the related method was done by decompiling PredatorSense(official Acer
+> gaming functions software for Predator series) and decompiling WQ
+> buffers. This patch provides a gaming interface which will then expose a
+> character device named "acer-gkbbl". This character device accepts 16
+> bytes long config, which is specific for the backlight method. The
+> meaning of each bytes ordered by bit position is as follows:
+> 
+> Bit 0 -> Backlight modes:
+> 1: Breath
+> 2: Neon
+> 3: Wave
+> 4: Shifting
+> 5: Zoom
+> Bit 1 -> Animation Speed: from 1 to 9 ( 1 is slowest, 9 is fastest)
+> Bit 2 -> Brightness from 0 to 100 ( 0 is no backlight, 100 is brightest)
+> Bit 3 -> Unknown. Wave effect uses 8, other modes must use 0
+> Bit 4 -> Animation Direction:
+> 1: Right-to-Left
+> 2: Left-to-Right
+> Bit 5 -> Red Color Selection
+> Bit 6 -> Green Color Selection
+> Bit 7 -> Blue Color Selection
+> Bit 8 -> Currently unknown, or not used in known model
+> Bit 9 -> Currently unknown, or not used in known model
+> Bit 10 -> Currently unknown, or not used in known model
+> Bit 11 -> Currently unknown, or not used in known model
+> Bit 12 -> Currently unknown, or not used in known model
+> Bit 13 -> Currently unknown, or not used in known model
+> Bit 14 -> Currently unknown, or not used in known model
+> Bit 15 -> Currently unknown, or not used in known model
+> 
+> Filling this config is out of scope for the kernel module, and this module
+> only acts as an interface.
+> 
+> Currently, I'm not sure with the method for communicating with user-space,
+> but since leds.h subsystem wouldn't fit for complex actions such as this
+> complex config, I couldn't find any better method than char dev.
+
+Thank you for your patch, given that there is no existing kernel
+interface which is a good match for the features exported by this
+keyboard I'm fine with just having a raw interface where userspace
+writes GAMING_KBBL_CONFIG_LEN bytes as you suggest.
+
+But lets not use a classdev + chardev for this please, you can
+just add a binary write-only sysfs-atrribute under the wmi-dev for
+this with a name like (for example) gaming_kbd_backlight_config
+and then userspace can write to that without needing a class + char
+dev just for this single write.
+
+Regards,
+
+Hans
+
+
+> 
+> Signed-off-by: JafarAkhondali <jafar.akhoondali@gmail.com>
+> ---
+>  drivers/platform/x86/acer-wmi.c | 228 ++++++++++++++++++++++++++++++--
+>  1 file changed, 216 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/acer-wmi.c b/drivers/platform/x86/acer-wmi.c
+> index 85db9403cc14..a2cb0d4bbec8 100644
+> --- a/drivers/platform/x86/acer-wmi.c
+> +++ b/drivers/platform/x86/acer-wmi.c
+> @@ -27,13 +27,16 @@
+>  #include <linux/debugfs.h>
+>  #include <linux/slab.h>
+>  #include <linux/input.h>
+> +#include <linux/cdev.h>
+>  #include <linux/input/sparse-keymap.h>
+>  #include <acpi/video.h>
+> 
+> +
+>  MODULE_AUTHOR("Carlos Corbacho");
+>  MODULE_DESCRIPTION("Acer Laptop WMI Extras Driver");
+>  MODULE_LICENSE("GPL");
+> 
+> +
+>  /*
+>   * Magic Number
+>   * Meaning is unknown - this number is required for writing to ACPI for AMW0
+> @@ -59,6 +62,8 @@ MODULE_LICENSE("GPL");
+>  #define ACER_WMID_SET_BRIGHTNESS_METHODID 6
+>  #define ACER_WMID_GET_THREEG_METHODID 10
+>  #define ACER_WMID_SET_THREEG_METHODID 11
+> +#define ACER_WMID_SET_GAMINGKBBL_METHODID 20
+> +#define ACER_WMID_GET_GAMINGKBBL_METHODID 21
+> 
+>  /*
+>   * Acer ACPI method GUIDs
+> @@ -68,6 +73,7 @@ MODULE_LICENSE("GPL");
+>  #define WMID_GUID1 "6AF4F258-B401-42FD-BE91-3D4AC2D7C0D3"
+>  #define WMID_GUID2 "95764E09-FB56-4E83-B31A-37761F60994A"
+>  #define WMID_GUID3 "61EF69EA-865C-4BC3-A502-A0DEBA0CB531"
+> +#define WMID_GUID4 "7A4DDFE7-5B5D-40B4-8595-4408E0CC7F56"
+> 
+>  /*
+>   * Acer ACPI event GUIDs
+> @@ -144,6 +150,14 @@ struct event_return_value {
+> 
+>  #define ACER_WMID3_GDS_TOUCHPAD (1<<1) /* Touchpad */
+> 
+> +/*
+> + * Gaming functions user-space communication
+> + * A character drive will be exposed in /dev/acer-gkbbl as char block
+> for keyboard backlight config
+> + * Config length is 16 bytes
+> + */
+> +#define GAMING_KBBL_CHR "acer-gkbbl"
+> +#define GAMING_KBBL_CONFIG_LEN 16
+> +
+>  /* Hotkey Customized Setting and Acer Application Status.
+>   * Set Device Default Value and Report Acer Application Status.
+>   * When Acer Application starts, it will run this method to inform
+> @@ -215,6 +229,7 @@ struct hotkey_function_type_aa {
+>  #define ACER_CAP_THREEG BIT(4)
+>  #define ACER_CAP_SET_FUNCTION_MODE BIT(5)
+>  #define ACER_CAP_KBD_DOCK BIT(6)
+> +#define ACER_CAP_GAMINGKB BIT(7)
+> 
+>  /*
+>   * Interface type flags
+> @@ -224,6 +239,7 @@ enum interface_flags {
+>   ACER_AMW0_V2,
+>   ACER_WMID,
+>   ACER_WMID_v2,
+> + ACER_WMID_GAMING,
+>  };
+> 
+>  #define ACER_DEFAULT_WIRELESS  0
+> @@ -290,6 +306,20 @@ struct wmi_interface {
+>  /* The static interface pointer, points to the currently detected interface */
+>  static struct wmi_interface *interface;
+> 
+> +/* The static gaming interface pointer, points to the currently
+> detected gaming interface */
+> +static struct wmi_interface *gaming_interface;
+> +
+> +/*
+> + * Character device registration
+> + * GAMING_KBBL_MINOR -> used to configure gaming rgb keyboard
+> backlights from user-space
+> + */
+> +
+> +#define GAMING_KBBL_MINOR 0
+> +
+> +
+> +static int dev_major; // Global variable to store major number of driver
+> +
+> +
+>  /*
+>   * Embedded Controller quirks
+>   * Some laptops require us to directly access the EC to either enable or query
+> @@ -903,7 +933,7 @@ static acpi_status __init AMW0_set_capabilities(void)
+>   */
+>   if (wmi_has_guid(AMW0_GUID2)) {
+>   if ((quirks != &quirk_unknown) ||
+> -     !AMW0_set_cap_acpi_check_device())
+> + !AMW0_set_cap_acpi_check_device())
+>   interface->capability |= ACER_CAP_WIRELESS;
+>   return AE_OK;
+>   }
+> @@ -1344,6 +1374,64 @@ static struct wmi_interface wmid_v2_interface = {
+>   .type = ACER_WMID_v2,
+>  };
+> 
+> +
+> +/*
+> + * WMID Gaming interface
+> + */
+> +
+> +static struct wmi_interface wmid_gaming_interface = {
+> + .type = ACER_WMID_GAMING
+> +};
+> +
+> +static acpi_status
+> +WMI_gaming_execute_u8_array(u32 method_id, u8 array[], size_t
+> array_size, u32 *out)
+> +{
+> + struct acpi_buffer input = { (acpi_size) array_size, (void *)(array) };
+> + struct acpi_buffer result = { ACPI_ALLOCATE_BUFFER, NULL };
+> + union acpi_object *obj;
+> + u32 tmp = 0;
+> + acpi_status status;
+> +
+> + status = wmi_evaluate_method(WMID_GUID4, 0, method_id, &input, &result);
+> +
+> + if (ACPI_FAILURE(status))
+> + return status;
+> +
+> + obj = (union acpi_object *) result.pointer;
+> + if (obj) {
+> + if (obj->type == ACPI_TYPE_BUFFER &&
+> + (obj->buffer.length == sizeof(u32) ||
+> + obj->buffer.length == sizeof(u64))) {
+> + tmp = *((u32 *) obj->buffer.pointer);
+> + } else if (obj->type == ACPI_TYPE_INTEGER) {
+> + tmp = (u32) obj->integer.value;
+> + }
+> + }
+> +
+> + if (out)
+> + *out = tmp;
+> +
+> + kfree(result.pointer);
+> +
+> + return status;
+> +}
+> +
+> +static acpi_status WMID_gaming_set_u8_array(u8 array[], size_t
+> array_size, u32 cap)
+> +{
+> + u32 method_id = 0;
+> +
+> + switch (cap) {
+> + case ACER_CAP_GAMINGKB:
+> + if (array_size != GAMING_KBBL_CONFIG_LEN)
+> + return AE_BAD_PARAMETER;
+> + method_id = ACER_WMID_SET_GAMINGKBBL_METHODID;
+> + break;
+> + default:
+> + return AE_ERROR;
+> + }
+> + return WMI_gaming_execute_u8_array(method_id, array, array_size, NULL);
+> +}
+> +
+>  /*
+>   * Generic Device (interface-independent)
+>   */
+> @@ -1422,6 +1510,29 @@ static acpi_status set_u32(u32 value, u32 cap)
+>   return AE_BAD_PARAMETER;
+>  }
+> 
+> +static acpi_status set_u8_array(u8 array[], size_t array_size, u32 cap)
+> +{
+> + acpi_status status;
+> +
+> + if (interface->capability & cap) {
+> + switch (interface->type) {
+> + default:
+> + return AE_BAD_PARAMETER;
+> + }
+> + } else if (gaming_interface->capability & cap) {
+> + switch (gaming_interface->type) {
+> + case ACER_WMID_GAMING:
+> + status = WMID_gaming_set_u8_array(array, array_size, cap);
+> + if (ACPI_FAILURE(status))
+> + return status;
+> + fallthrough;
+> + default:
+> + return AE_BAD_PARAMETER;
+> + }
+> + }
+> + return AE_BAD_PARAMETER;
+> +}
+> +
+>  static void __init acer_commandline_init(void)
+>  {
+>   /*
+> @@ -1461,6 +1572,88 @@ static void acer_led_exit(void)
+>   led_classdev_unregister(&mail_led);
+>  }
+> 
+> +/*
+> + * Keyboard RGB backlight character device handler.
+> + * On systems supporting Acer gaming functions, a char device
+> + * will be exposed to communicate with user space
+> + * for keyboard RGB backlight configurations.
+> + */
+> +
+> +static ssize_t gkbbl_drv_write(struct file *file,
+> + const char __user *buf, size_t count, loff_t *offset)
+> +{
+> + u8 config_buf[GAMING_KBBL_CONFIG_LEN];
+> + unsigned long err;
+> +
+> + if (count != GAMING_KBBL_CONFIG_LEN) {
+> + pr_err("Invalid data given to gaming keyboard backlight");
+> + return 0;
+> + }
+> + err = copy_from_user(config_buf, buf, GAMING_KBBL_CONFIG_LEN);
+> + if (err < 0)
+> + pr_err("Copying data from userspace failed with code: %lu\n", err);
+> +
+> + set_u8_array(config_buf, GAMING_KBBL_CONFIG_LEN, ACER_CAP_GAMINGKB);
+> + return count;
+> +}
+> +
+> +
+> +static const struct file_operations gkbbl_dev_fops = {
+> + .owner      = THIS_MODULE,
+> + .write       = gkbbl_drv_write
+> +};
+> +
+> +struct gkbbl_device_data {
+> + struct cdev cdev;
+> +};
+> +
+> +static struct class *gkbbl_dev_class;
+> +static struct gkbbl_device_data gkbbl_dev_data;
+> +
+> +static int gkbbl_dev_uevent(struct device *dev, struct kobj_uevent_env *env)
+> +{
+> + add_uevent_var(env, "DEVMODE=%#o", 0666);
+> + return 0;
+> +}
+> +
+> +static int __init gaming_kbbl_cdev_init(void)
+> +{
+> + dev_t dev;
+> + int err;
+> +
+> + err = alloc_chrdev_region(&dev, 0, 1, GAMING_KBBL_CHR);
+> + if (err < 0) {
+> + pr_err("Char drive registering for gaming keyboard backlight failed:
+> %d\n", err);
+> + return err;
+> + }
+> +
+> + dev_major = MAJOR(dev);
+> +
+> + gkbbl_dev_class = class_create(THIS_MODULE, GAMING_KBBL_CHR);
+> + gkbbl_dev_class->dev_uevent = gkbbl_dev_uevent;
+> +
+> + cdev_init(&gkbbl_dev_data.cdev, &gkbbl_dev_fops);
+> + gkbbl_dev_data.cdev.owner = THIS_MODULE;
+> +
+> + cdev_add(&gkbbl_dev_data.cdev, MKDEV(dev_major, GAMING_KBBL_MINOR), 1);
+> +
+> + device_create(gkbbl_dev_class, NULL, MKDEV(dev_major,
+> GAMING_KBBL_MINOR), NULL, "%s-%d",
+> +    GAMING_KBBL_CHR,
+> +    GAMING_KBBL_MINOR);
+> +
+> + return 0;
+> +}
+> +
+> +static void __exit gaming_kbbl_cdev_exit(void)
+> +{
+> + device_destroy(gkbbl_dev_class, MKDEV(dev_major, GAMING_KBBL_MINOR));
+> +
+> + class_unregister(gkbbl_dev_class);
+> + class_destroy(gkbbl_dev_class);
+> +
+> + unregister_chrdev_region(MKDEV(dev_major, GAMING_KBBL_MINOR), MINORMASK);
+> +}
+> +
+>  /*
+>   * Backlight device
+>   */
+> @@ -1501,7 +1694,7 @@ static int acer_backlight_init(struct device *dev)
+>   props.type = BACKLIGHT_PLATFORM;
+>   props.max_brightness = max_brightness;
+>   bd = backlight_device_register("acer-wmi", dev, NULL, &acer_bl_ops,
+> -        &props);
+> +    &props);
+>   if (IS_ERR(bd)) {
+>   pr_err("Could not register Acer backlight device\n");
+>   acer_backlight_device = NULL;
+> @@ -1605,7 +1798,7 @@ static void acer_kbd_dock_get_initial_state(void)
+>   status = wmi_evaluate_method(WMID_GUID3, 0, 0x2, &input_buf, &output_buf);
+>   if (ACPI_FAILURE(status)) {
+>   pr_err("Error getting keyboard-dock initial status: %s\n",
+> -        acpi_format_exception(status));
+> +    acpi_format_exception(status));
+>   return;
+>   }
+> 
+> @@ -1618,7 +1811,7 @@ static void acer_kbd_dock_get_initial_state(void)
+>   output = obj->buffer.pointer;
+>   if (output[0] != 0x00 || (output[3] != 0x05 && output[3] != 0x45)) {
+>   pr_err("Unexpected output [0]=0x%02x [3]=0x%02x getting
+> keyboard-dock initial status\n",
+> -        output[0], output[3]);
+> +    output[0], output[3]);
+>   goto out_free_obj;
+>   }
+> 
+> @@ -1759,7 +1952,7 @@ static int acer_rfkill_init(struct device *dev)
+>   rfkill_inited = true;
+> 
+>   if ((ec_raw_mode || !wmi_has_guid(ACERWMID_EVENT_GUID)) &&
+> -     has_cap(ACER_CAP_WIRELESS | ACER_CAP_BLUETOOTH | ACER_CAP_THREEG))
+> + has_cap(ACER_CAP_WIRELESS | ACER_CAP_BLUETOOTH | ACER_CAP_THREEG))
+>   schedule_delayed_work(&acer_rfkill_work,
+>   round_jiffies_relative(HZ));
+> 
+> @@ -1782,7 +1975,7 @@ static int acer_rfkill_init(struct device *dev)
+>  static void acer_rfkill_exit(void)
+>  {
+>   if ((ec_raw_mode || !wmi_has_guid(ACERWMID_EVENT_GUID)) &&
+> -     has_cap(ACER_CAP_WIRELESS | ACER_CAP_BLUETOOTH | ACER_CAP_THREEG))
+> + has_cap(ACER_CAP_WIRELESS | ACER_CAP_BLUETOOTH | ACER_CAP_THREEG))
+>   cancel_delayed_work_sync(&acer_rfkill_work);
+> 
+>   if (has_cap(ACER_CAP_WIRELESS)) {
+> @@ -2251,8 +2444,8 @@ static int __init acer_wmi_init(void)
+>   * in the past quirk list.
+>   */
+>   if (wmi_has_guid(AMW0_GUID1) &&
+> -     !dmi_check_system(amw0_whitelist) &&
+> -     quirks == &quirk_unknown) {
+> + !dmi_check_system(amw0_whitelist) &&
+> + quirks == &quirk_unknown) {
+>   pr_debug("Unsupported machine has AMW0_GUID1, unable to load\n");
+>   return -ENODEV;
+>   }
+> @@ -2266,9 +2459,12 @@ static int __init acer_wmi_init(void)
+>   if (!wmi_has_guid(AMW0_GUID1) && wmi_has_guid(WMID_GUID1))
+>   interface = &wmid_interface;
+> 
+> - if (wmi_has_guid(WMID_GUID3))
+> + if (wmi_has_guid(WMID_GUID3)) {
+>   interface = &wmid_v2_interface;
+> -
+> + if (wmi_has_guid(WMID_GUID4))
+> + gaming_interface = &wmid_gaming_interface;
+> + }
+> +
+>   if (interface)
+>   dmi_walk(type_aa_dmi_decode, NULL);
+> 
+> @@ -2309,14 +2505,19 @@ static int __init acer_wmi_init(void)
+>   if (acpi_video_get_backlight_type() != acpi_backlight_vendor)
+>   interface->capability &= ~ACER_CAP_BRIGHTNESS;
+> 
+> - if (wmi_has_guid(WMID_GUID3))
+> + if (wmi_has_guid(WMID_GUID3)) {
+>   interface->capability |= ACER_CAP_SET_FUNCTION_MODE;
+> + if (wmi_has_guid(WMID_GUID4)) {
+> + gaming_interface->capability |= ACER_CAP_GAMINGKB;
+> + gaming_kbbl_cdev_init();
+> + }
+> + }
+> 
+>   if (force_caps != -1)
+>   interface->capability = force_caps;
+> 
+>   if (wmi_has_guid(WMID_GUID3) &&
+> -     (interface->capability & ACER_CAP_SET_FUNCTION_MODE)) {
+> + (interface->capability & ACER_CAP_SET_FUNCTION_MODE)) {
+>   if (ACPI_FAILURE(acer_wmi_enable_rf_button()))
+>   pr_warn("Cannot enable RF Button Driver\n");
+> 
+> @@ -2389,6 +2590,9 @@ static void __exit acer_wmi_exit(void)
+>   if (acer_wmi_accel_dev)
+>   input_unregister_device(acer_wmi_accel_dev);
+> 
+> + if (wmi_has_guid(WMID_GUID4))
+> + gaming_kbbl_cdev_exit();
+> +
+>   remove_debugfs();
+>   platform_device_unregister(acer_platform_device);
+>   platform_driver_unregister(&acer_platform_driver);
+> 
+
