@@ -2,90 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94E07380D22
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 17:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D44A380D1F
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 17:31:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234837AbhENPcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 11:32:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45410 "EHLO mail.kernel.org"
+        id S233627AbhENPcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 11:32:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45280 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234820AbhENPcH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 11:32:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F26DD61454;
-        Fri, 14 May 2021 15:30:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621006255;
-        bh=Jw5WbrKaK58stPthP0QwAZkov+5hEKRXAOBHxLndh7c=;
+        id S234811AbhENPb7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 11:31:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 992F6613F5;
+        Fri, 14 May 2021 15:30:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621006248;
+        bh=wvQXAA7iEFAZXPIqe1MPvEn3FH3LNsiDt9NLAI5SQjM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QB3622KhuCsNng+oVdaxcDzh2R5t96nGI19NPmYMGLLKmTBXRWP2a6P7euJGePKGd
-         1Zv3f5aHzzLvuNRi8vi6fsEMjA8ivVQaVxJ8sXgkeeG9EZnNPcs5O7akVYOy7qGRKb
-         CHbTDyD7n13upd0sz1lSzdcTyzYs+yQs6OU0vPMX0koyVZzc46MPa1S8rV7487ypzz
-         SsSEfZwWtB9MFGAzpJH7h6zuIUW02jeYToRGRMxnlguDuW2jnNTWcgK+TW7lJo1OsY
-         nF5fRj64C8U56hURXnmrX7/66KUqNTpLIgnFUJrgzGgCvTYLJOjMDSGC+l61g3MAD7
-         OIQx1x4LE66qg==
-Date:   Fri, 14 May 2021 16:30:14 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
-        perex@perex.cz, tiwai@suse.com, srinivas.kandagatla@linaro.org,
-        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, swboyd@chromium.org,
-        judyhsiao@chromium.org
-Subject: Re: [PATCH] ASoC: qcom: lpass-cpu: Fix pop noise during audio
- capture begin
-Message-ID: <20210514153014.GB6516@sirena.org.uk>
-References: <20210513114539.4813-1-srivasam@codeaurora.org>
- <20210513133132.GC5813@sirena.org.uk>
- <a6649fad-c2ca-1808-4227-8bcb373f66bd@codeaurora.org>
+        b=GWojKTjbxH449vjmx13AL1XfvwschgKEtkvGfYdVutZv3KJ/XTCbWwu+ACcl7XmCx
+         14CFY61McYwNG5DP58yJnxrgPtFruO/VCAuwelH251QLV/hHqnJAcYJqFewZf/bVIX
+         OP9b/eQORM/KQyEqlWmJfFWwST7xcVpMT6pS9E74=
+Date:   Fri, 14 May 2021 17:30:45 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+Cc:     pure.logic@nexus-software.ie, johan@kernel.org, elder@kernel.org,
+        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: greybus: fix gb_loopback_stats_attrs definition
+Message-ID: <YJ6XpUMliWQOS8MB@kroah.com>
+References: <20210514133039.304760-1-chouhan.shreyansh630@gmail.com>
+ <YJ582f3O9K9YD3QA@kroah.com>
+ <YJ5/tqFfcjxOLsF0@fedora>
+ <YJ6DrLiMsdkG5loA@kroah.com>
+ <YJ6H/WsojYcN/bLO@fedora>
+ <YJ6Jf+Z1ReVgDt64@kroah.com>
+ <YJ6TUAowTI75h/sl@fedora>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Bn2rw/3z4jIqBvZU"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a6649fad-c2ca-1808-4227-8bcb373f66bd@codeaurora.org>
-X-Cookie: Necessity is a mother.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YJ6TUAowTI75h/sl@fedora>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, May 14, 2021 at 08:42:16PM +0530, Shreyansh Chouhan wrote:
+> On Fri, May 14, 2021 at 04:30:23PM +0200, Greg KH wrote:
+> > On Fri, May 14, 2021 at 07:53:57PM +0530, Shreyansh Chouhan wrote:
+> > > On Fri, May 14, 2021 at 04:05:32PM +0200, Greg KH wrote:
+> > > > On Fri, May 14, 2021 at 07:18:38PM +0530, Shreyansh Chouhan wrote:
+> > > > > On Fri, May 14, 2021 at 03:36:25PM +0200, Greg KH wrote:
+> > > > > > On Fri, May 14, 2021 at 07:00:39PM +0530, Shreyansh Chouhan wrote:
+> > > > > > > The gb_loopback_stats_attrs macro, (defined in loopback.c,) is a
+> > > > > > > multiline macro whose statements were not enclosed in a do while
+> > > > > > > loop.
+> > > > > > >
+> > > > > > > This patch adds a do while loop around the statements of the said
+> > > > > > > macro.
+> > > > > > >
+> > > > > > > Signed-off-by: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+> > > > > > > ---
+> > > > > > >  drivers/staging/greybus/loopback.c | 10 ++++++----
+> > > > > > >  1 file changed, 6 insertions(+), 4 deletions(-)
+> > > > > > >
+> > > > > > > diff --git a/drivers/staging/greybus/loopback.c b/drivers/staging/greybus/loopback.c
+> > > > > > > index 2471448ba42a..c88ef3e894fa 100644
+> > > > > > > --- a/drivers/staging/greybus/loopback.c
+> > > > > > > +++ b/drivers/staging/greybus/loopback.c
+> > > > > > > @@ -162,10 +162,12 @@ static ssize_t name##_avg_show(struct device *dev,		\
+> > > > > > >  }									\
+> > > > > > >  static DEVICE_ATTR_RO(name##_avg)
+> > > > > > >
+> > > > > > > -#define gb_loopback_stats_attrs(field)				\
+> > > > > > > -	gb_loopback_ro_stats_attr(field, min, u);		\
+> > > > > > > -	gb_loopback_ro_stats_attr(field, max, u);		\
+> > > > > > > -	gb_loopback_ro_avg_attr(field)
+> > > > > > > +#define gb_loopback_stats_attrs(field)					\
+> > > > > > > +	do {								\
+> > > > > > > +		gb_loopback_ro_stats_attr(field, min, u);		\
+> > > > > > > +		gb_loopback_ro_stats_attr(field, max, u);		\
+> > > > > > > +		gb_loopback_ro_avg_attr(field);				\
+> > > > > > > +	} while (0)
+> > > > > > >
+> > > > > > >  #define gb_loopback_attr(field, type)					\
+> > > > > > >  static ssize_t field##_show(struct device *dev,				\
+> > > > > > > --
+> > > > > > > 2.31.1
+> > > > > > >
+> > > > > > >
+> > > > > >
+> > > > > > Did you test build this change?
+> > > > >
+> > > > > I built the module using make -C . M=drivers/staging/greybus to test
+> > > > > build it. I didn't get any errors.
+> > > >
+> > > > Really?  Can you provide the full build output for this file with your
+> > > > change?  I don't think you really built this file for the obvious
+> > > > reasons...
+> > >
+> > > I ran make -C . M=drivers/staging/greybus
+> > >
+> > > I got a three line output saying:
+> > > make: Entering directory '/work/linux'
+> > >   MODPOST drivers/staging/greybus//Module.symvers
+> > > make: Leaving directory '/work/linux'
+> > >
+> > > I just tried rebuilding the kernel with CONFIG_GREYBUS=m, and now I can
+> > > see what you are talking about. Why weren't these errors reported when I
+> > > ran the previous make command? Does that too check for the config
+> > > variables even when I specifically asked it to build a module?
+> >
+> > You were just asking it to build a subdirectory, not a specific
+> > individual file, and when you do that it looks at the configuration
+> > settings.
+> >
+> 
+> I see.
+> 
+> > It's always good to ensure that you actually build the files you modify
+> > before sending patches out.
+> 
+> Sorry, I googled about building a single module, and thought running
+> that command would have built it. Moreover, since the change was so
+> simple I didn't suspect anything when it got built correctly the first
+> time around.
+> 
+> I didn't look at how/where was the macro called and missed a very
+> obvious error. Now that I have looked at it, the only way I can think of
+> fixing this is changing the macro to a (inline?) function. Will
+> that be a desirable change?
 
---Bn2rw/3z4jIqBvZU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+No, it can't be a function, the code is fine as-is, checkpatch is just a
+perl script and does not always know what needs to be done.
 
-On Fri, May 14, 2021 at 12:20:46PM +0530, Srinivasa Rao Mandadapu wrote:
-> On 5/13/2021 7:01 PM, Mark Brown wrote:
+thanks,
 
-> > This commit doesn't remove the matching update in triger() so we'd have
-> > two redundant updates.  I guess it's unlikely to be harmful but it looks
-> > wrong/confusing.
-
-> Yes, It's not harmful, as clk_prepare_enable is enabling clock only once but
-> maintaining count.
-
-> As Some times in Suspend/resume Sequence not hitting startup/shutdown, but
-> Trigger, so for maintaining
-
-> consistency not removed in trigger.
-
-This at least needs some commenting so that it's clear, it looks buggy
-at the minute.
-
---Bn2rw/3z4jIqBvZU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCel4UACgkQJNaLcl1U
-h9AtTAf+LYcPOf6JSMImI2cuYbGIbm6pkW/Gx2rR/b2MwTYRacf5Y69rz++r39VM
-W1M2i1v9UGvb4CoYMeGn4NMA1m0r94UDo6vRC0xqx+WIbXglUiFmrT/h76K+1uEr
-e8jabqpQT3dcdeY938IJ7TFdGCyRafKd/1Dr5nazc7xRb8yc2i5SPV0RRsiFpYO2
-otRmdXuyqgNyIV7t77179ZiZUGZvH7/l/Fod8mZXLM9GkpEJkzAe7xIxZicP+EHg
-piX4zMQJg2agEhKhFDo9aRTl9erYxOAoMTXIcrBAuxG4JJLnF0sEOhhqCAcILPqm
-r+qkC06Hv8IgT0CVDC4yDXiM3b7dMQ==
-=D5DP
------END PGP SIGNATURE-----
-
---Bn2rw/3z4jIqBvZU--
+greg k-h
