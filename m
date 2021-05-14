@@ -2,136 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5320B3807DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 12:59:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7243807E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 13:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232196AbhENLBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 07:01:04 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:23124 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232134AbhENLBC (ORCPT
+        id S232238AbhENLDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 07:03:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231777AbhENLDv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 07:01:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1620989989;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zugs79pSAgXzkEQM9lNhDUOLg7k//I+6nOz0Mb+zfdY=;
-        b=j4qC8CKAOF8tViJGiSo1Vo2ocVOhy1IPJAwLPE6/nhBDMGffG3+pwDoBSl1Bj7pZPFALhg
-        /RgxKGeGe+NSI2+Aj76WyvQWGUZ0Q9JsIPMkAGA505VYfeHrvudjJ21x+OHDAyL9nr39eK
-        /syGHapOltislIospCsxoPlOGPVoP8Y=
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com
- (mail-he1eur04lp2058.outbound.protection.outlook.com [104.47.13.58]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-15-LNzM6ylnM8eJOXsoCfas2A-1; Fri, 14 May 2021 12:59:48 +0200
-X-MC-Unique: LNzM6ylnM8eJOXsoCfas2A-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=c9NkOzqeArNMmD1qVFoW5561rGF/5l/ZXdAtF0gEGPCuUCUxC2hg9lMiXb18eeNR2B8+Zdu5hHUPuYsSmwfTZpY3qdN4bGRUQOqZL9R1VKUNh/ozfOsl2ToSTiAERLdrOPGH0uGIjFckqQnSDeL383WuNVw2U0+Dp85nJR3sEompC+cFzhaMrOBV5IpfRPNNlt2sfN9a/RdVrNWqYIxDps0Vdo24MJQtz9SGIIi0zorzV4hk13PtXXubMBJlb9R8hJBw2MbKOYsG0H3WZFaiAUMVtdG36EGybuqvWpolI0W6PpIySKP31d6qyIk/3l0qlOJPO3TdOsp0JdKCPzXbbw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zugs79pSAgXzkEQM9lNhDUOLg7k//I+6nOz0Mb+zfdY=;
- b=e5x/BhzcYaBZYzb39jriYTorfb17BuuJOStLIVNbnOVCEPEBgIiYZ3M/qWRUamRPZIn8kZYmA49AgmKrBdW6f0qlkMHo4KPv+Xvb23YHKbt4f/Bp8D+h9/9Tm+c71PeLNWDWPW/a0Eq933/M6owgwb/PC7tw7YisfD/pvr5LREmyMf8exCguEK8tgG7BtVVxQvq0pZZmYBfABddTKQJsiA3Jx/70cQl6k4onHW4LR7KgVE3CbL9OLqmeihYCFCSbEzSSgMRQkp2rNBawECsEC3Chr4yW0WZyAUyAo8rRLKVFp4hlBBmVJnbsVB9VY4SjY0/yrq1pTolk173h/BF+tA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: gwmail.gwu.edu; dkim=none (message not signed)
- header.d=none;gwmail.gwu.edu; dmarc=none action=none header.from=suse.com;
-Received: from VI1PR0402MB3359.eurprd04.prod.outlook.com (2603:10a6:803:3::28)
- by VE1PR04MB7485.eurprd04.prod.outlook.com (2603:10a6:800:1a6::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Fri, 14 May
- 2021 10:59:46 +0000
-Received: from VI1PR0402MB3359.eurprd04.prod.outlook.com
- ([fe80::3c87:7c9e:2597:4d94]) by VI1PR0402MB3359.eurprd04.prod.outlook.com
- ([fe80::3c87:7c9e:2597:4d94%5]) with mapi id 15.20.4129.028; Fri, 14 May 2021
- 10:59:46 +0000
-From:   =?utf-8?Q?Aur=C3=A9lien?= Aptel <aaptel@suse.com>
-To:     wenhuizhang <wenhui@gwmail.gwu.edu>
-Cc:     wenhuizhang <wenhui@gwmail.gwu.edu>,
-        Steve French <sfrench@samba.org>, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cifs: remove deadstore in cifs_close_all_deferred_files()
-In-Reply-To: <20210513165516.17723-1-wenhui@gwmail.gwu.edu>
-References: <20210509233327.22241-1-wenhui@gwmail.gwu.edu>
- <20210513165516.17723-1-wenhui@gwmail.gwu.edu>
-Date:   Fri, 14 May 2021 12:59:43 +0200
-Message-ID: <87sg2pshr4.fsf@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [2003:fa:713:d396:524:65d3:25:9e8c]
-X-ClientProxiedBy: ZRAP278CA0003.CHEP278.PROD.OUTLOOK.COM
- (2603:10a6:910:10::13) To VI1PR0402MB3359.eurprd04.prod.outlook.com
- (2603:10a6:803:3::28)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost (2003:fa:713:d396:524:65d3:25:9e8c) by ZRAP278CA0003.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:10::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.32 via Frontend Transport; Fri, 14 May 2021 10:59:45 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8934cbe4-67a6-4b4c-0aa2-08d916c762a8
-X-MS-TrafficTypeDiagnostic: VE1PR04MB7485:
-X-Microsoft-Antispam-PRVS: <VE1PR04MB74859327419EB797CEEB332CA8509@VE1PR04MB7485.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1728;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: b/T6oQenlnQQv/yKmzL8tPjskgzY+FdA/hQpncmDHgo5QAsjSLqk9Fb0GebsVC56PsNzq59BW8D3UVOhXBaR3L2wSKqYqf4yqpXyRoQZM5THbUM6MFlvUiAmQkl0oKjCtd23oimPSYATfqcz1LK+r/nQHz9PUJKVRkAX5XcbxBeCwEMsBdL7CDH3GZVHA95gaJe8alc2j7je47/nskl1GsZrH+9tpjMh3Z40Nd25sZlzCylWx3bSjxN0QSx2U9D3XGtt+FHH+4WQJtWDo8oWoqD2IhVdGARQtxiyVOTVJ9LffCAAhCRUBdeuZDPRsdeDD1EnjdtDH6TSKuAaae+U6fXRPj1+FryfjRhGkpg3pVfVI/VwNqg7RXU0ldj4/tBDXmjbEvpqmIDEHHIRUT7e09VZW8e2hipQPdp5zJ9XP7cwr8myH+VEDsg6LRsVxtV/F4Gf2efTj1605MoPdMCfus18GlRbUCRb434APEi2RRyA/u5Lha1yvuBBV3QDarccazXZaJ+mJzjuzwVFQSl4Y1j2ewQwTGjMx6gA+5n6PP/kjCckBm5VTaKLm47X0gYofskcVvhKTedJgJNmVk0iLg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3359.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(376002)(136003)(346002)(39850400004)(6496006)(316002)(66946007)(36756003)(4326008)(478600001)(66476007)(8936002)(52116002)(66556008)(8676002)(54906003)(6486002)(5660300002)(2906002)(2616005)(86362001)(558084003)(186003)(16526019)(38100700002)(6916009);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?dDVJYkNEMkg1NDRoZzF3OFFYQXVyN3hML3Z0dW44eGdLRFVRY3pxdnlEUzhz?=
- =?utf-8?B?N3YrRHU5Ly9URVFSbU0vcXBGZ0VSajlrUkhWMHI3amhiOStiZyt2WXdtVi9p?=
- =?utf-8?B?SWhDc1hLZE9HWG5uREwvWXNEQlV0QkkvQlZHc1BieVpJbStUM0JLV2YxMktM?=
- =?utf-8?B?WVZ6NzhrWE9kRXdoUkU2R2pvUm5VSUtxcnFGYkFabmRaWENhckNVTldlTWhw?=
- =?utf-8?B?N2cwd3kxbFJOajVMOGswakRTSjh1QzNMQ3NZRmd3QzdmbFdTSVhzMWZTWW8w?=
- =?utf-8?B?TkVabDV4Vm9SeENqZWg1VXR4QWpTU1UwVmZlM3JmeEwySnBBSDk5UVhmS2po?=
- =?utf-8?B?NmsrK1hBM1psM3oycUF3L0pIZTVxU2xNSkk0dzF0aFMvaThTbVZacno5cEp2?=
- =?utf-8?B?TVBicFhydGNweUlkaUFqMHdoQ1k5T1VhSURFQ1JLME1pd3lHc0JOeDhUSDBx?=
- =?utf-8?B?bHlpd3hBUExzV2FvUUZ5WTg1U2FrbnRKcG5qYVNXZEMycC8zQlBmdmkxR2hk?=
- =?utf-8?B?eERZbWljQ3FlZHNIRDBtbW5pYlZFN1JiL216RW1VanJiRm53WWJQT3BoemtH?=
- =?utf-8?B?SlJlUU9VMTYwVEhQdkh1WmRGZmk3ZG1TY1NiVmFJb1BqUy9iS3FVV3o5L2pE?=
- =?utf-8?B?U04vemMxU0pCc0NDSUV0R1g4NUNsbWpvbFFPK2VSejVVUmUxUXR4b1AxWG1C?=
- =?utf-8?B?K2JVb3djeEpEM3k0NEtzR2k1V2lpelFSNnNzM0hRdzl4MjM3TnkrbUVjenVx?=
- =?utf-8?B?dXJ6ZmY4NDd5b29OV3J1SGp0eHBnR3hxMkN5NnZ2L0I5dWNvNlRuOXprK3lO?=
- =?utf-8?B?cjFqcGhNOThlNTZlcXN3VFhyMFJiZ1pTVnJWYXRrcTRmM21EZ3B3SHp6NzJs?=
- =?utf-8?B?N1J6dnR0cXFJTllEdVZ4RUFWRld1WDNSa0J5Y1hrdlkzbFZreldVQXoxSXZT?=
- =?utf-8?B?ZlNlbVVTRVNoWjBaaURFUnppNWsxbUJFRUlXTzQzWmNOS2p0eVhtbE1xQm54?=
- =?utf-8?B?eVY5SUFjakhRQ1hyNkJpVjNTVG5iRE5OakZ1WlIvTFNPQUx3TUIxWjEvU2FR?=
- =?utf-8?B?Z1ZSOUY3WDkySlc2d0IzbmJFdWpYUytneHZmam45ZmpnV2Q5Qmx1MnRvcjk4?=
- =?utf-8?B?dzJyR2xyaXh0MzlhTEpad2lHV3dIQSs5eVI4c203dzJaR29TcEZHWTV1Znhu?=
- =?utf-8?B?Y2QwRmpvdUNwWXRwMDdaQkhzVkpqU05OYzJtMzM2OFlCMklIOThNUU9KTVY4?=
- =?utf-8?B?dEt6RkZWRm1TU21sMUtnOGZVZVZiaVZkMDdiRHRyVG5STmVscHQvbDFmMSs3?=
- =?utf-8?B?TkVxUFRldXFiaEVZQkZSR0ZnNVZvT2c5MGhueW1WbFdXZGRoSjA5UjNaMjN3?=
- =?utf-8?B?Z2FCcVExTXA3NWNPMFVUVmVsWkhCOGFPMmtTSFBRSWhHRW85a3pGaFJlVWdR?=
- =?utf-8?B?eUVydmlUeW9Tak1TR2ZXdHVsaVAybHcrbVdsV0JRY0lTdWR3bHpjODFlREsx?=
- =?utf-8?B?UFVCcW5tbVIxQkVTUTFEZE50Y0hrZUlZdlVtd0NlWUxkU2NXWlVWVnpaUTlU?=
- =?utf-8?B?Mnk5Z3JpSEhUSDhNOTF2bHdrb1d6SGpyYzhDT2JSUjRjKzAxd0hrR0hjTnVC?=
- =?utf-8?B?OStLc05WMjRCeWc5bjRqY0tsbEhGWmVUakJ5Tm0yMDJoVDV5OUNUcXB2aVBk?=
- =?utf-8?B?c0hzUVIwdmsydVVZaGhNbk90c0JSS2pDLzlFc3VFZEpsdHAxQldweVQ2djBp?=
- =?utf-8?B?cngzRVlQdmdvZllZMFgycmFIV0tnalQ2MjkyS0l6d1lDRVdrc0NGaG9YYXUy?=
- =?utf-8?Q?S8QHRhwnzlixMlNvjtO5laAPgfl7j0ie5DNTI=3D?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8934cbe4-67a6-4b4c-0aa2-08d916c762a8
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3359.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 May 2021 10:59:46.0268
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1Ko8PRYpvth0eGQt0lR1VTqX9htw09qtVaqJq04wPzZ5TSpsixP87jEz/7lt5zVG
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7485
+        Fri, 14 May 2021 07:03:51 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C6F0C061574;
+        Fri, 14 May 2021 04:02:38 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id i5so19112324pgm.0;
+        Fri, 14 May 2021 04:02:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=g7DkEbR2JcQCbOxkMhdC26BeBE1YwkunloMTb/SDIZc=;
+        b=TPBiLWV/NQn/o4Os0P4M/SsGh0ZuidyhHWzGQieQPX0qaKdDvntKEKGuI2k+UWP9UV
+         0JFkGypQMuPK9kdymjMT64VZofeIz/FLcvpZCvW+PhnPxq1r4pWFKWwjKZ45IqUlKIqI
+         xnRQgvBUQOvQCunnoMxY32zrpKwgT9WQ0PAbnwPaFGvjoGBlsTaTnBi8sp2dFyd+FcWM
+         a7cOOgn+mMaTwe2xrA11UcqPbOPVi8xMo/BtDOIt73434TAsPV5ngVnQFTWLVl9ixZfV
+         Efmz2Rji/0z1brCmNAums5zhFOO+uLGKXDgUTMsDJwBi/KnhY+lqIew0SINYzuNVSfzS
+         zw0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=g7DkEbR2JcQCbOxkMhdC26BeBE1YwkunloMTb/SDIZc=;
+        b=qxiDBRPnq3lCeiYWPxaYJ8D/8y6GwcOphjzs1zGZmcu5NVOmdgoy5JXvqT0k1QJdJX
+         gL5aqRKpCNWrvASqNNbbZBkjiF1ps1ate6eotr+qL6C80LI+y4pkJn2zAjLx/7D4eonY
+         2HIn1re5mLA2A7gDdzAIHDGChj2Lag5XDMLKvicvu0+nyWHFVqU3R3xZnO+YS+RE8wc1
+         W7I3z+1iX9UZxqbwYcVgMMbVMdhDf80Ke4uBkI9czndFWqo7Wvlw31PeudibRe16s89z
+         XGDn6FzJ8PSELUt3QGyVEZZtM9nMDYElUodG/wlkFRb8bIMC4GhOYrNY7eVcKP5KURER
+         h90Q==
+X-Gm-Message-State: AOAM531vUdcEAirFRsyZaYpyYRNEidr074T5Qs/OrxvupTTpOlE6FqN7
+        9Bbacq52fVLaBqidBVXuu98=
+X-Google-Smtp-Source: ABdhPJzI0fGVTZCZdc30Z3TaVpb0GVm4cmbsGmevnEN/twwgl1TCynmfAE+pe70r417S9GkSp3vXSA==
+X-Received: by 2002:a63:465f:: with SMTP id v31mr13437876pgk.6.1620990157678;
+        Fri, 14 May 2021 04:02:37 -0700 (PDT)
+Received: from fmin-OptiPlex-7060.nreal.work ([137.59.103.165])
+        by smtp.gmail.com with ESMTPSA id 202sm4193402pgg.59.2021.05.14.04.02.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 14 May 2021 04:02:37 -0700 (PDT)
+From:   dillon.minfei@gmail.com
+To:     patrice.chotard@foss.st.com, pierre-yves.mordret@foss.st.com,
+        alain.volmat@foss.st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@foss.st.com, sumit.semwal@linaro.org,
+        christian.koenig@amd.com, mturquette@baylibre.com
+Cc:     sboyd@kernel.org, linux-i2c@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, linux-clk@vger.kernel.org,
+        Dillon Min <dillon.minfei@gmail.com>
+Subject: [PATCH 0/4] Fix the i2c/clk bug of stm32 mcu platform
+Date:   Fri, 14 May 2021 19:02:28 +0800
+Message-Id: <1620990152-19255-1-git-send-email-dillon.minfei@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Dillon Min <dillon.minfei@gmail.com>
 
-Reviewed-by: Aurelien Aptel <aaptel@suse.com>
+This seriese fix three i2c/clk bug for stm32 f4/f7
+- kernel runing in sdram, i2c driver get data timeout
+- ltdc clk turn off after kernel console active
+- kernel hang in set ltdc clock rate
 
-Cheers,
---=20
-Aur=C3=A9lien Aptel / SUSE Labs Samba Team
-GPG: 1839 CB5F 9F5B FB9B AA97  8C99 03C8 A49B 521B D5D3
-SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 N=C3=BCrnberg, D=
-E
-GF: Felix Imend=C3=B6rffer, Mary Higgins, Sri Rasiah HRB 247165 (AG M=C3=BC=
-nchen)
+clk bug found on stm32f429/f469-disco board
+
+Hi Patrice:
+below is the guide to verify the patch:
+
+setup test env with following files(link at below 'files link'):
+[1] u-boot-dtb.bin
+[2] rootfs zip file (used in kernel initramfs)
+[3] u-boot's mkimage to create itb file
+[4] kernel config file
+[5] my itb with-or-without i2c patch
+
+This patch based on kernel commit:
+88b06399c9c766c283e070b022b5ceafa4f63f19
+
+Note:
+panel-ilitek-ili9341.c is the driver which was submitted last year, but not
+get accepted. it's used to setup touch screen calibration, then test i2c.
+
+create itb file(please correct path of 'data'):
+./mkimage -f stm32.its stm32.itb
+
+HW setup:
+console:
+       PA9, PA10
+       usart0
+       serial@40011000
+       115200 8n1
+
+-- flash u-boot.bin to stm32f429-disco on PC
+$ sudo openocd -f board/stm32f429discovery.cfg -c \
+  '{PATH-TO-YOUR-UBOOT}/u-boot-dtb.bin 0x08000000 exit reset'
+
+-- setup kernel load bootargs at u-boot
+U-Boot > setenv bootargs 'console=tty0 console=ttySTM0,115200
+                    root=/dev/ram rdinit=/linuxrc loglevel=8 fbcon=rotate:2'
+U-Boot > loady;bootm
+(download stm32.dtb or your kernel with itb format, or download zImage, dtb)
+
+-- setup ts_calibrate running env on stm32f429-disco
+/ # export TSLIB_CONFFILE=/etc/ts.conf
+/ # export TSLIB_TSDEVICE=/dev/input/event0
+/ # export TSLIB_CONSOLEDEVICE=none
+/ # export TSLIB_FBDEVICE=/dev/fb0
+
+-- clear screen
+/ # ./fb
+
+-- run ts_calibrate 
+/ # ts_calibrate
+(you can calibrate touchscreen now, and get below errors)
+
+[  113.942087] stmpe-i2c0-0041: failed to read regs 0x52: -110
+[  114.063598] stmpe-i2c 0-0041: failed to read reg 0x4b: -16
+[  114.185629] stmpe-i2c 0-0041: failed to read reg 0x40: -16
+[  114.307257] stmpe-i2c 0-0041: failed to write reg 0xb: -16
+
+...
+with i2c patch applied, you will find below logs:
+
+RAW---------------------> 3164 908 183 118.110884
+TS_READ_RAW----> x = 3164, y =908, pressure = 183
+RAW---------------------> 3166 922 126 118.138946
+TS_READ_RAW----> x = 3166, y = 922, pressure = 126
+....
+
+files link:
+https://drive.google.com/drive/folders/1qNbjChcB6UGtKzne2F5x9_WG_sZFyo3o?usp=sharing
+
+
+
+
+Dillon Min (4):
+  drm/panel: Add ilitek ili9341 panel driver
+  i2c: stm32f4: Fix stmpe811 get xyz data timeout issue
+  clk: stm32: Fix stm32f429's ltdc driver hang in set clock rate
+  clk: stm32: Fix ltdc's clock turn off by clk_disable_unused() after
+    kernel startup
+
+ drivers/clk/clk-stm32f4.c                    |   10 +-
+ drivers/gpu/drm/panel/Kconfig                |   12 +
+ drivers/gpu/drm/panel/Makefile               |    1 +
+ drivers/gpu/drm/panel/panel-ilitek-ili9341.c | 1285 ++++++++++++++++++++++++++
+ drivers/i2c/busses/i2c-stm32f4.c             |   12 +-
+ 5 files changed, 1310 insertions(+), 10 deletions(-)
+ create mode 100755 drivers/gpu/drm/panel/panel-ilitek-ili9341.c
+
+-- 
+2.7.4
 
