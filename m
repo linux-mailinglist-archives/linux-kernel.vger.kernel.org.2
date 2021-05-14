@@ -2,133 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD7773802AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 06:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32CAA3802B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 06:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232103AbhENENq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 00:13:46 -0400
-Received: from mga01.intel.com ([192.55.52.88]:44441 "EHLO mga01.intel.com"
+        id S232113AbhENET1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 00:19:27 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:42963 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231171AbhENENp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 00:13:45 -0400
-IronPort-SDR: rVhVUzAY4F+N5X7tT5Lh38+zZPoWBLLjxtxCivMHxOYxgz3a4mfisELiEOCGS5ifNxFVAU+s22
- bcQui/ow95oA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9983"; a="221117157"
-X-IronPort-AV: E=Sophos;i="5.82,299,1613462400"; 
-   d="scan'208";a="221117157"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 21:11:50 -0700
-IronPort-SDR: hYRIpW6aBE6MiqIDrdQnVlOo012hB3FulWhH36IyRxk+56BPaqBvkld8Dj9vmNapbRIuUwZNso
- mmE/0tQ0AEBg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,299,1613462400"; 
-   d="scan'208";a="456942727"
-Received: from aubrey-app.sh.intel.com (HELO [10.239.53.25]) ([10.239.53.25])
-  by fmsmga004.fm.intel.com with ESMTP; 13 May 2021 21:11:47 -0700
-Subject: Re: [PATCH v2 6/8] sched/idle: Move busy_cpu accounting to idle
- callback
-To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Rik van Riel <riel@surriel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Parth Shah <parth@linux.ibm.com>
-References: <20210506164543.90688-1-srikar@linux.vnet.ibm.com>
- <20210506164543.90688-7-srikar@linux.vnet.ibm.com>
- <47d29f1d-cea6-492a-5125-85db6bce0fa7@linux.intel.com>
- <20210513073112.GV2633526@linux.vnet.ibm.com>
-From:   Aubrey Li <aubrey.li@linux.intel.com>
-Message-ID: <5823f298-6fae-5a73-3ab8-f708d90a7e52@linux.intel.com>
-Date:   Fri, 14 May 2021 12:11:50 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230516AbhENETZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 00:19:25 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620965895; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=uqj54DykBKkGvq8sPKZliQtP//zOrXCAaysz9V6pI8E=;
+ b=bi9jTbETIh4LhYJ8k8KiyVYca2xwXR8HfkcPhNK1p1vNFIndqmvCiQ/qCZYAJMWQrhdgRE2L
+ mV9IhnZ3qMvnSKAqnClsamru82vY9qr1HWXUHX4298s8mepCmsTUkj5W1f75NILUiQkGdLLK
+ uXdX2SPLU8Ears7pC5YiqRzx5eQ=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 609df9f3ff1bb9beece912e6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 14 May 2021 04:17:55
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4F412C4338A; Fri, 14 May 2021 04:17:54 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DFF43C433F1;
+        Fri, 14 May 2021 04:17:52 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20210513073112.GV2633526@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Fri, 14 May 2021 12:17:52 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 6/6] scsi: ufs: Update the fast abort path in
+ ufshcd_abort() for PM requests
+In-Reply-To: <a124700a-e507-e593-d6f5-2da452f3ae7e@acm.org>
+References: <1620885319-15151-1-git-send-email-cang@codeaurora.org>
+ <1620885319-15151-8-git-send-email-cang@codeaurora.org>
+ <a124700a-e507-e593-d6f5-2da452f3ae7e@acm.org>
+Message-ID: <4fba6bc358b293de345258c48fc61f79@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/13/21 3:31 PM, Srikar Dronamraju wrote:
-> * Aubrey Li <aubrey.li@linux.intel.com> [2021-05-12 16:08:24]:
+On 2021-05-14 12:05, Bart Van Assche wrote:
+> On 5/12/21 10:55 PM, Can Guo wrote:
+>> If PM requests fail during runtime suspend/resume, RPM framework saves 
+>> the
+>> error to dev->power.runtime_error. Before the runtime_error gets 
+>> cleared,
+>> runtime PM on this specific device won't work again, leaving the 
+>> device
+>> in either suspended or active state permanently.
+>> 
+>> When task abort happens to a PM request sent during runtime 
+>> suspend/resume,
+>> even if it can be successfully aborted, RPM framework anyways saves 
+>> the
+>> (TIMEOUT) error. But we want more and we can do better - let error 
+>> handling
+>> recover and clear the runtime_error. So, let PM requests take the fast
+>> abort path in ufshcd_abort().
 > 
->> On 5/7/21 12:45 AM, Srikar Dronamraju wrote:
->>> Currently we account nr_busy_cpus in no_hz idle functions.
->>> There is no reason why nr_busy_cpus should updated be in NO_HZ_COMMON
->>> configs only. Also scheduler can mark a CPU as non-busy as soon as an
->>> idle class task starts to run. Scheduler can then mark a CPU as busy
->>> as soon as its woken up from idle or a new task is placed on it's
->>> runqueue.
->>
->> IIRC, we discussed this before, if a SCHED_IDLE task is placed on the
->> CPU's runqueue, this CPU should be still taken as a wakeup target.
->>
+> The only RQF_PM requests I know of are START STOP UNIT and SYNCHRONIZE
+> CACHE. Are there devices for which these commands can time out or do
+> these commands perhaps only time out as the result of error injection?
+
+There are also REQUEST SENSE requests sent with RQF_PM flag set from
+pm ops. And they do time out (device does not respond in 60s) in real
+cases, at least I have seen quite a lot of related issues reported
+from customers these years.
+
 > 
-> Yes, this CPU is still a wakeup target, its only when this CPU is busy, that
-> we look at other CPUs
+>> -	if (lrbp->lun == UFS_UPIU_UFS_DEVICE_WLUN) {
+>> +	if (lrbp->lun == UFS_UPIU_UFS_DEVICE_WLUN ||
+>> +	    (cmd->request->rq_flags & RQF_PM)) {
 > 
->> Also, for those frequent context-switching tasks with very short idle,
->> it's expensive for scheduler to mark idle/busy every time, that's why
->> my patch only marks idle every time and marks busy ratelimited in
->> scheduler tick.
->>
-> 
-> I have tried few tasks with very short idle times and updating nr_busy
-> everytime, doesnt seem to be impacting. Infact, it seems to help in picking
-> the idler-llc more often.
+> Which are the RQF_PM commands that are not sent to a WLUN? Are these
+> START STOP UNIT and SYNCHRONIZE CACHE only?
 > 
 
-How many CPUs in your LLC?
+There are also REQUEST SENSE cmds sent to the RPMB W-LU, in 
+ufshcd_add_wlus(),
+ufshcd_err_handler() and ufshcd_rpmb_resume() and/or ufshcd_wl_resume().
 
-This is a system with 192 CPUs, 4 nodes and each node has 48 CPUs in LLC
-domain.
+And SYNCHRONIZE CACHE cmd is only sent to general LUs, but not W-LUs.
 
-It looks like for netperf both TCP and UDP cases have the notable change
-under 2 x overcommit, it may be not interesting though.
+Thanks,
+Can Guo.
 
-
-hackbench(48 tasks per group)
-=========
-case            	load    	baseline(std%)	compare%( std%)
-process-pipe    	group-1 	 1.00 (  6.74)	 -4.61 (  8.97)
-process-pipe    	group-2 	 1.00 ( 36.84)	+11.53 ( 26.35)
-process-pipe    	group-3 	 1.00 ( 24.97)	+12.21 ( 19.05)
-process-pipe    	group-4 	 1.00 ( 18.27)	 -2.62 ( 17.60)
-process-pipe    	group-8 	 1.00 (  4.33)	 -2.22 (  3.08)
-process-sockets 	group-1 	 1.00 (  7.88)	-20.26 ( 15.97)
-process-sockets 	group-2 	 1.00 (  5.38)	-19.41 (  9.25)
-process-sockets 	group-3 	 1.00 (  4.22)	 -5.70 (  3.00)
-process-sockets 	group-4 	 1.00 (  1.44)	 -1.80 (  0.79)
-process-sockets 	group-8 	 1.00 (  0.44)	 -2.86 (  0.06)
-threads-pipe    	group-1 	 1.00 (  5.43)	 -3.69 (  3.59)
-threads-pipe    	group-2 	 1.00 ( 18.00)	 -2.69 ( 16.79)
-threads-pipe    	group-3 	 1.00 ( 21.72)	 -9.01 ( 21.34)
-threads-pipe    	group-4 	 1.00 ( 21.58)	 -6.43 ( 16.26)
-threads-pipe    	group-8 	 1.00 (  3.05)	 -0.15 (  2.31)
-threads-sockets 	group-1 	 1.00 ( 14.51)	 -5.35 ( 13.85)
-threads-sockets 	group-2 	 1.00 (  3.97)	-24.15 (  4.40)
-threads-sockets 	group-3 	 1.00 (  4.97)	 -9.05 (  2.46)
-threads-sockets 	group-4 	 1.00 (  1.98)	 -3.44 (  0.49)
-threads-sockets 	group-8 	 1.00 (  0.37)	 -2.13 (  0.20)
-
-netperf
-=======
-case            	load    	baseline(std%)	compare%( std%)
-TCP_RR          	thread-48	 1.00 (  3.84)	 -2.20 (  3.83)
-TCP_RR          	thread-96	 1.00 (  5.22)	 -4.97 (  3.90)
-TCP_RR          	thread-144	 1.00 (  7.97)	 -0.75 (  4.39)
-TCP_RR          	thread-192	 1.00 (  3.03)	 -0.67 (  4.40)
-TCP_RR          	thread-384	 1.00 ( 22.27)	-14.15 ( 36.28)
-UDP_RR          	thread-48	 1.00 (  2.08)	 -0.39 (  2.29)
-UDP_RR          	thread-96	 1.00 (  2.48)	 -4.26 ( 16.06)
-UDP_RR          	thread-144	 1.00 ( 49.50)	 -3.28 ( 34.86)
-UDP_RR          	thread-192	 1.00 (  6.39)	 +8.07 ( 88.15)
-UDP_RR          	thread-384	 1.00 ( 31.54)	-12.76 ( 35.98)
+> Thanks,
+> 
+> Bart.
