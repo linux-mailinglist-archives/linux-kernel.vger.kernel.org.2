@@ -2,85 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB9D63810E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 21:32:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3671F3810F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 21:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233044AbhENTd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 15:33:57 -0400
-Received: from smtprelay0251.hostedemail.com ([216.40.44.251]:36100 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231386AbhENTdy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 15:33:54 -0400
-Received: from omf07.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 40FFD1810DA54;
-        Fri, 14 May 2021 19:32:42 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf07.hostedemail.com (Postfix) with ESMTPA id D7010315D74;
-        Fri, 14 May 2021 19:32:40 +0000 (UTC)
-Message-ID: <89a62ed669547eb989dd008b67165f3d0c9f4265.camel@perches.com>
-Subject: Re: [PATCH] staging: greybus: fix gb_loopback_stats_attrs definition
-From:   Joe Perches <joe@perches.com>
-To:     Alex Elder <elder@ieee.org>, Greg KH <gregkh@linuxfoundation.org>,
-        Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
-Cc:     pure.logic@nexus-software.ie, johan@kernel.org, elder@kernel.org,
-        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 14 May 2021 12:32:39 -0700
-In-Reply-To: <88d7da63-d03c-7fa3-a881-aff8e7b4a618@ieee.org>
-References: <20210514133039.304760-1-chouhan.shreyansh630@gmail.com>
-         <YJ582f3O9K9YD3QA@kroah.com> <YJ5/tqFfcjxOLsF0@fedora>
-         <YJ6DrLiMsdkG5loA@kroah.com> <YJ6H/WsojYcN/bLO@fedora>
-         <YJ6Jf+Z1ReVgDt64@kroah.com> <YJ6TUAowTI75h/sl@fedora>
-         <YJ6XpUMliWQOS8MB@kroah.com>
-         <bccbec1a0ffbf6c31b5e6a78cedd78cd64f2b8fe.camel@perches.com>
-         <88d7da63-d03c-7fa3-a881-aff8e7b4a618@ieee.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S231503AbhENTiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 15:38:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54344 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229981AbhENTiJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 15:38:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A854610F7;
+        Fri, 14 May 2021 19:36:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621021017;
+        bh=Hh0QonQZjmEOkFxHlLabLQ/ulBr/IzaZmwAVlG28RlU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Nw1yr7gmTaNsIqyvluuIzuWg6ihBMfQ8R3/UpA1cYXHmf9PUzKOLZ2NVCJl2L+A6j
+         1ggAtjNhOZnsbRJeIOSTCqL9bspCVgo+6Y6je9N25iyGeFAr6RwXj2/qBQNrj+0NAL
+         0jvzrIWJp6ZnvGxAl2FzdwKZe8OiSQbH25nUOIg3Nm57COWkR0H4VRDZ+yChJ6GwmD
+         o4qEdc8BxG/ESQuj6ZaQX4a4S0TJJYWMWRjLWQ3jczpeoyL4xZgDuUKFLuWvBfz6iH
+         kx5+YKHoJxXxQ+onmBZSbKARukQagkJiBAC3pk1uVqIXcd2bDk7jBZ9nVXjdRkEbeD
+         BKWqkmdTCU6vA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 0AE945C02A5; Fri, 14 May 2021 12:36:57 -0700 (PDT)
+Date:   Fri, 14 May 2021 12:36:57 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>, Marco Elver <elver@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] kcsan: fix debugfs initcall return type
+Message-ID: <20210514193657.GM975577@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210514140015.2944744-1-arnd@kernel.org>
+ <0ad11966-b286-395e-e9ca-e278de6ef872@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: D7010315D74
-X-Spam-Status: No, score=-1.40
-X-Stat-Signature: cwerr3zmihx55crpj6cfhty19yuuzfrx
-X-Rspamd-Server: rspamout03
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX19FMxcCDKW900tDgf5rcwkgG+LUGqTv8gY=
-X-HE-Tag: 1621020760-252553
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0ad11966-b286-395e-e9ca-e278de6ef872@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-05-14 at 13:53 -0500, Alex Elder wrote:
-> On 5/14/21 10:56 AM, Joe Perches wrote:
-> > On Fri, 2021-05-14 at 17:30 +0200, Greg KH wrote:
-> > > On Fri, May 14, 2021 at 08:42:16PM +0530, Shreyansh Chouhan wrote:
-> > []
-> > > > I didn't look at how/where was the macro called and missed a very
-> > > > obvious error. Now that I have looked at it, the only way I can think of
-> > > > fixing this is changing the macro to a (inline?) function. Will
-> > > > that be a desirable change?
-> > > 
-> > > No, it can't be a function, the code is fine as-is, checkpatch is just a
-> > > perl script and does not always know what needs to be done.
+On Fri, May 14, 2021 at 11:29:18AM -0700, Nathan Chancellor wrote:
+> On 5/14/2021 7:00 AM, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
 > > 
-> > true.
+> > clang points out that an initcall funciton should return an 'int':
 > > 
-> > perhaps better though to rename these declaring macros to start with declare_
+> > kernel/kcsan/debugfs.c:274:15: error: returning 'void' from a function with incompatible result type 'int'
+> > late_initcall(kcsan_debugfs_init);
+> > ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
+> > include/linux/init.h:292:46: note: expanded from macro 'late_initcall'
+> >   #define late_initcall(fn)               __define_initcall(fn, 7)
+> > 
+> > Fixes: e36299efe7d7 ("kcsan, debugfs: Move debugfs file creation out of early init")
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > 
-> I don't disagree with your suggestion, but it's not clear it
-> would have prevented submission of the erroneous initial patch
-> (nor future ones from people who blindly follow checkpatch.pl
-> suggestions).
+> For the record, this requires CONFIG_LTO_CLANG to be visible.
+> 
+> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 
-With my checkpatch maintainer hat on:
+Queued with the three Reviewed-by tags, thank you all!
 
-Yeah Alex, I know.  checkpatch can't teach people c either.
-There's not much to do other than try to make the code clearer.
-Adding exceptions to checkpatch only leads to other exceptions
-and false negatives...
+Nathan, I lost the thread on exactly what it is that requires that
+CONFIG_LTO_CLANG be visible.  A naive reader might conclude that the
+compiler diagnostic does not appear unless CONFIG_LTO_CLANG=y, but
+that would be surprising (and yes, I have been surprised many times).
+If you are suggesting that the commit log be upgraded, could you please
+supply suggested wording?
 
-> PS  Lots of negatives in that sentence.
+Once this is nailed down (or by Wednesday if I hear no more), I will
+rebase it to the bottom of the current kcsan stack, let it soak in -next
+for a couple of days, then send to Linus as a fix for a regression.
+Hopefully some time next week.
 
-Only positives...
+							Thanx, Paul
 
-cheers, Joe
-
+> > ---
+> >   kernel/kcsan/debugfs.c | 3 ++-
+> >   1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/kcsan/debugfs.c b/kernel/kcsan/debugfs.c
+> > index c1dd02f3be8b..e65de172ccf7 100644
+> > --- a/kernel/kcsan/debugfs.c
+> > +++ b/kernel/kcsan/debugfs.c
+> > @@ -266,9 +266,10 @@ static const struct file_operations debugfs_ops =
+> >   	.release = single_release
+> >   };
+> > -static void __init kcsan_debugfs_init(void)
+> > +static int __init kcsan_debugfs_init(void)
+> >   {
+> >   	debugfs_create_file("kcsan", 0644, NULL, NULL, &debugfs_ops);
+> > +	return 0;
+> >   }
+> >   late_initcall(kcsan_debugfs_init);
+> > 
+> 
