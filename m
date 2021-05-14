@@ -2,124 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99FB23813E1
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 00:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E6A73813F0
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 00:52:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234129AbhENWtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 18:49:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51100 "EHLO
+        id S234131AbhENWxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 18:53:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230371AbhENWtA (ORCPT
+        with ESMTP id S230371AbhENWxl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 18:49:00 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6021C06174A;
-        Fri, 14 May 2021 15:47:47 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id n17-20020a7bc5d10000b0290169edfadac9so2107019wmk.1;
-        Fri, 14 May 2021 15:47:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3sv6+sy6PPyQ0Uy7YaZsaRssphjHxRbRKJe2gYyNEm4=;
-        b=qCQAJEPQVoVk4DsbU0zQUCM/XhX+Q96mX0Z137mcADPsf76OMYDKc/Da95ZZkuhf8u
-         vwg78ZnmIhfb3qpNWfl4ovLfDy7fxY+MHngvynA41dnb/gbYkQu6kPUvX4dKwJGFUYaC
-         JdBf7WxzA+hTgq5hcPIfA/1qO+PnSSMl0mnMHIvpVTtNlWK8XoiwAMC5NmsGIt63vQwa
-         YfuAsdSbFdByOyDnxG52ijn4J500u98SEEHwUiUdfR7WE3z4VexoND2haPVo1oVs9CGW
-         m7oC5FAtOxJqY6sH1HgbUgsye4Bp9Atv8WgxSdWfFOpUq1WsjWvHoSPMkE9HkKxOFMgA
-         dD6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3sv6+sy6PPyQ0Uy7YaZsaRssphjHxRbRKJe2gYyNEm4=;
-        b=YA3QYGNKV/NmOW0iWNBlcbB5RoEcVdsZ8FGwP56hfXIeyREqduGz1jydu1zFKFfo1A
-         iib9yDtymKL/J54suwnenht75Ted6qEmb9qx2N84aGGzZCj7GUeLQMlWEE9E3inQ4Dv6
-         9mo1IZD2jfcCL6CnARG8nkg/n0AMu5Kk/5st5DxSBySOT5EGsL8g5ZMoRSL9sXO+BXKN
-         xUmqbA5HR65/krXJg5DNBqSs4v7/8d9sa7yGWwxRtWJSiJdVRcbvV1sHPEoTmAPjxg3Y
-         HO1/UyDHPzlV171CMdXfOXCaduEKn69HuTViWXTdyIImC8TaA/UsmG8pWP+41pDnvJRx
-         tubg==
-X-Gm-Message-State: AOAM531vVwxdlUvK5VqBrlNOZi13ADCa4VRq+GO/vjAaTmt+WiY1ictC
-        BjtMTfmfQBl907V/Y3zEQjBKu96C9Bk=
-X-Google-Smtp-Source: ABdhPJyWDtULJ6dqVycOKAKJ41tvBm9xgxIXe7faKsSHAU/f0/nIeD8awCqvGHH5XpqkTK9usA9X/g==
-X-Received: by 2002:a1c:e908:: with SMTP id q8mr52032966wmc.136.1621032465798;
-        Fri, 14 May 2021 15:47:45 -0700 (PDT)
-Received: from [192.168.2.202] (pd9e5a369.dip0.t-ipconnect.de. [217.229.163.105])
-        by smtp.gmail.com with ESMTPSA id m22sm12910664wml.40.2021.05.14.15.47.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 May 2021 15:47:45 -0700 (PDT)
-Subject: Re: [PATCH] x86/i8259: Work around buggy legacy PIC
-To:     "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sachi King <nakato@nakato.io>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        David Laight <David.Laight@aculab.com>
-Cc:     "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-References: <20210512210459.1983026-1-luzmaximilian@gmail.com>
- <e7dbd4d1-f23f-42f0-e912-032ba32f9ec8@gmail.com>
- <e43d9a823c9e44bab0cdbf32a000c373@AcuMS.aculab.com> <3034083.sOBWI1P7ec@yuki>
- <5c08541a-2615-f075-a189-0462f1005007@gmail.com>
- <87im3l43w9.ffs@nanos.tec.linutronix.de>
- <c26954e1-bb2f-086a-9c7f-68382978efe7@zytor.com>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <087c418e-53fb-b3a6-0d9b-e738e4c821c7@gmail.com>
-Date:   Sat, 15 May 2021 00:47:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Fri, 14 May 2021 18:53:41 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED107C06174A;
+        Fri, 14 May 2021 15:52:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=xgSsfKWkA74e0iXAMwBxkWJB/DtTeegQWgf7EKPF2SU=; b=Sy+SUM4cfMuNPa9aN/X8S7cGM
+        MPQs+haIZnGFUHksu//RCxpMISA9lmq7A6dtz4c9cvKubmw6YAYBS0VHhklpf8KQspJDeVtOcFn5+
+        xSzSjSTEGdwOoH6iMNnUoZVf9HImUXCd9y612TTQGVfYJDhZRWupnOyt39pNiegoSUUN5TqffaKix
+        S6GsZygOAb6ZQhpLnMAcV3zmvofxdYiNp5nn/LQQgPtNoFcx0ptKR4H1emIZT5iJs12XTmKd27bJ1
+        fw67LdkX8VdUMk6iQDGS9MPAVSwGt27muDBfStLdxcBC9mE0YqqXKJOxMulelisERs/n/85QSUMNk
+        E7wH92Dtg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43986)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lhgfR-0000Wu-Qf; Fri, 14 May 2021 23:52:25 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lhgfR-0004NM-Db; Fri, 14 May 2021 23:52:25 +0100
+Date:   Fri, 14 May 2021 23:52:25 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v6 02/25] net: dsa: qca8k: use iopoll macro for
+ qca8k_busy_wait
+Message-ID: <20210514225225.GI12395@shell.armlinux.org.uk>
+References: <20210514210015.18142-1-ansuelsmth@gmail.com>
+ <20210514210015.18142-3-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <c26954e1-bb2f-086a-9c7f-68382978efe7@zytor.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210514210015.18142-3-ansuelsmth@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/14/21 7:35 PM, H. Peter Anvin wrote:
-> On 5/14/21 10:32 AM, Thomas Gleixner wrote:
->>
->> That's a valid assumption. As I said, we can make IOAPIC work even w/o
->> PIC. I'll have a look how much PIC assumptions are still around.
->>
+On Fri, May 14, 2021 at 10:59:52PM +0200, Ansuel Smith wrote:
+> Use iopoll macro instead of while loop.
 > 
-> As far as I read, the problem isn't actually the absence of a PIC (we definitely boot systems without PICs all the time now), but rather that the PIC is advertised in ACPI but is buggy or absent; a similar platform with different firmware doesn't have problem.
-> 
-> If my understanding of the thread is correct, it's quirk fodder.
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-I believe the theory was that, while the PIC is advertised in ACPI, it
-might be expected to not be used and only present for some legacy reason
-(therefore untested and buggy). Which I believe led to the question
-whether we shouldn't prefer IOAPIC on systems like that in general. So I
-guess it comes down to how you define "systems like that". By Tomas'
-comment, I guess it should be possible to implement this as "systems
-that should prefer IOAPIC over legacy PIC" quirk.
+This doesn't look quite right to me.
 
-I guess all modern machines should have an IOAPIC, so it might also be
-preferable to expand that definition, maybe over time and with enough
-testing.
+>  static int
+>  qca8k_busy_wait(struct qca8k_priv *priv, u32 reg, u32 mask)
+>  {
+> -	unsigned long timeout;
+> -
+> -	timeout = jiffies + msecs_to_jiffies(20);
+> +	u32 val;
 
-If possible, I think that would be preferable to the "just retry until
-it works" kind of workaround.
+val is unsigned here.
 
-As Sachi mentioned in her reply:
+> +	/* Check if qca8k_read has failed for a different reason
+> +	 * before returning -ETIMEDOUT
+> +	 */
+> +	if (ret < 0 && val < 0)
 
-> I'm not sure the i8259 is needed on the device, as the interrupts
-> appear to function on the device if I bypass the nr_legacy_irqs() check
-> while the legacy_pic is set to the null_legacy_pic.
-> 
-> The null_legacy_pic however specifies having 0 irqs, and the io_apic
-> does not allow us to set the pin attributes unless the pin we are
-> attempting to set is less than nr_legacy_irqs.
-> 
-> The IOAPIC seems to take responsibility for the 0-15 interrupts on this
-> specific hardware, should we maybe be ignoring the i8259 and looking
-> into allowing interrupts 0-15 to be setup even when the legacy_pic is
-> not available?
+but here you are checking it for a negative number - this will always be
+false, making the conditional code unreachable. Either the test is wrong,
+or the type of val is wrong. Please resolve.
 
-Just my two cents, please keep in mind that I'm out of my depth here.
-
-Regards,
-Max
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
