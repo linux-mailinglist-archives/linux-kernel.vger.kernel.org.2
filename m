@@ -2,217 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F2293801A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 03:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10D6C3801A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 03:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232161AbhENB7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 21:59:49 -0400
-Received: from mga18.intel.com ([134.134.136.126]:51130 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230096AbhENB7r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 21:59:47 -0400
-IronPort-SDR: e2Yve/ImpJcT490UpnjJjOEJ9LhRAQRCgqDvq6ZSaECZzOsog/2xisLKVIJ124MPKwSob3DGf9
- WnAlKY4NIGZg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9983"; a="187508836"
-X-IronPort-AV: E=Sophos;i="5.82,298,1613462400"; 
-   d="scan'208";a="187508836"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 18:58:36 -0700
-IronPort-SDR: +amoTEPJ69s2snxXyepxyCLQnvPHdTfZvsiiAzENGm61CmMEfiE/iA+ao/iY6V2jQSL9c9udYg
- ntF1SY2zFM6A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,298,1613462400"; 
-   d="scan'208";a="538631277"
-Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by fmsmga001.fm.intel.com with ESMTP; 13 May 2021 18:58:35 -0700
-Date:   Thu, 13 May 2021 18:57:48 -0700
-From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        "woodhouse, Jacob Pan" <jacob.jun.pan@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
-        iommu@lists.linux-foundation.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Ricardo Neri <ricardo.neri@intel.com>,
-        Andi Kleen <andi.kleen@intel.com>,
-        David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [RFC PATCH v5 5/7] iommu/vt-d: Fixup delivery mode of the HPET
- hardlockup interrupt
-Message-ID: <20210514015748.GA8236@ranerica-svr.sc.intel.com>
-References: <20210504191049.22661-1-ricardo.neri-calderon@linux.intel.com>
- <20210504191049.22661-6-ricardo.neri-calderon@linux.intel.com>
- <87lf8uhzk9.ffs@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87lf8uhzk9.ffs@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S232284AbhENCAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 22:00:23 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:35793 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230183AbhENCAV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 22:00:21 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 1A2D5580FC6;
+        Thu, 13 May 2021 21:59:11 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Thu, 13 May 2021 21:59:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm2; bh=WmqIQTqnEJWvVrfGX+C2FLyHx7PJc6n
+        Zc8QqMEYpaKc=; b=VWdzUswQmSUFWkCmVSY8g2rGY5uWPT8QMRK0Q4IJRi3IQFR
+        PiZj/goblkVDb7uC95KdWiRqtIvt+ePhwu+rXJuh29DTQdDal62vclssDyKhqjiT
+        e1SrF/qE7Asjc8cHJdlkorGscmO0xJpuXzryNuufNnN6sTX9vIORTlD2LxvhD3RK
+        qnuw87fm+5d5T05POisfA3m78URHDrV0Ijw1znQS3aOnyv++OqcHGb6F50utHov6
+        Bos5jwqF6PUHeQdw9fMMFJfpk863rS3403Gzcqn0CPn9e+kciIvT79LS4Lr4Zmze
+        /mgZYfwoOM2KYQEq8HbAeRXtcSdQeCjJ4/bvmDA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=WmqIQT
+        qnEJWvVrfGX+C2FLyHx7PJc6nZc8QqMEYpaKc=; b=S+nXEMIH7sQwiRHH9ajJU2
+        lHbljkxbBQgv0Cr07hKCRpUSssZS7YvdankJzslZIn4ahyWvp0eU+N2vCw/rHNw9
+        PS3CPQYlCyCfajw6tSzHdCD8xcZid4lqvhEFzjA8AX68awwXbri/cPKis+SyGydR
+        vaWVjlA/Jtmm/YFtJ6UXAUgCMpyczN6RHaQfWCESaxbHyhMh9R4H3hnsV0ZVz+mX
+        q90cESyu4ftexbtHQWj3Z3zu5nRg704iCRfij7T4UEBGe/7en9J2XjDRIq7Owg5V
+        NAJ5BdNVTiQ5OZmxJ2kvm2pl5smiJ0F2GA2d8E9BEVnUswdqMisOAPLJrSPzrbiA
+        ==
+X-ME-Sender: <xms:bdmdYGoRzAGXkFuI5E-3JG7OGqfrILIh_Q8m7m0Z39M_mC3JO-UKpg>
+    <xme:bdmdYErCNl2z3yT_P2vu51-1SoKugdOQYgY6XCLHuSYVVvDW2Y9awXztcrrPvY-zU
+    dQmoKXh_TOpd4QRoQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdehhedgheefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhepudehtddtleektedvfeeitdeljeekveelkeegvdfhtdejhefgfedtfedv
+    jeejledtnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhgurhgvfiesrghjrdhiugdrrghu
+X-ME-Proxy: <xmx:bdmdYLONdyLo5c0IBglkOiM1X3HYVdoHtEmX1UhywuFygccdWoe0gQ>
+    <xmx:bdmdYF6THTYgFKDvT25YS0RwNg0eHAHtMtmM0_abOUCh_h25eXU9Rg>
+    <xmx:bdmdYF736TcMnSmPyKydAXQvUV_SDVzFibg4nPc0gW6Yw82gLtzcnA>
+    <xmx:b9mdYPtIQTyTtrQwpRYqTjYFWm9a9A-vvVif0bI7JwctFXEBHtWN6Q>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id C3F3AA00079; Thu, 13 May 2021 21:59:09 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-448-gae190416c7-fm-20210505.004-gae190416
+Mime-Version: 1.0
+Message-Id: <6f530a9e-7d73-4ed8-90d4-29af079c0c2f@www.fastmail.com>
+In-Reply-To: <YJ19LMLV1HXk6BMf@hatter.bewilderbeest.net>
+References: <20210510014231.647-1-zev@bewilderbeest.net>
+ <20210510014231.647-3-zev@bewilderbeest.net>
+ <6d4338e2-d9be-411a-aeb7-7d46121b73d4@www.fastmail.com>
+ <YJ19LMLV1HXk6BMf@hatter.bewilderbeest.net>
+Date:   Fri, 14 May 2021 11:28:49 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Zev Weiss" <zev@bewilderbeest.net>
+Cc:     "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "Jeremy Kerr" <jk@ozlabs.org>, openbmc@lists.ozlabs.org,
+        "Jiri Slaby" <jirislaby@kernel.org>,
+        "Joel Stanley" <joel@jms.id.au>, "Johan Hovold" <johan@kernel.org>,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: =?UTF-8?Q?Re:_[PATCH_2/3]_serial:_8250=5Faspeed=5Fvuart:_initialize_vuar?=
+ =?UTF-8?Q?t->port_in_aspeed=5Fvuart=5Fprobe()?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 01:03:18AM +0200, Thomas Gleixner wrote:
-> On Tue, May 04 2021 at 12:10, Ricardo Neri wrote:
 
-Thank you very much for your feedback, Thomas. I am sorry it took me a
-while to reply to your email. I needed to digest and research your
-comments.
 
-> > In x86 there is not an IRQF_NMI flag that can be used to indicate the
+On Fri, 14 May 2021, at 04:55, Zev Weiss wrote:
+> On Wed, May 12, 2021 at 08:34:06PM CDT, Andrew Jeffery wrote:
+> >
+> >
+> >On Mon, 10 May 2021, at 11:12, Zev Weiss wrote:
+> >> Previously this had only been initialized if we hit the throttling path
+> >> in aspeed_vuart_handle_irq(); moving it to the probe function is a
+> >> slight consistency improvement and avoids redundant reinitialization in
+> >> the interrupt handler.  It also serves as preparation for converting the
+> >> driver's I/O accesses to use port->port.membase instead of its own
+> >> vuart->regs.
+> >>
+> >> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+> >> ---
+> >>  drivers/tty/serial/8250/8250_aspeed_vuart.c | 5 ++---
+> >>  1 file changed, 2 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/drivers/tty/serial/8250/8250_aspeed_vuart.c
+> >> b/drivers/tty/serial/8250/8250_aspeed_vuart.c
+> >> index 9e8b2e8e32b6..249164dc397b 100644
+> >> --- a/drivers/tty/serial/8250/8250_aspeed_vuart.c
+> >> +++ b/drivers/tty/serial/8250/8250_aspeed_vuart.c
+> >> @@ -349,11 +349,9 @@ static int aspeed_vuart_handle_irq(struct
+> >> uart_port *port)
+> >>  			struct aspeed_vuart *vuart = port->private_data;
+> >>  			__aspeed_vuart_set_throttle(up, true);
+> >>
+> >> -			if (!timer_pending(&vuart->unthrottle_timer)) {
+> >> -				vuart->port = up;
+> >> +			if (!timer_pending(&vuart->unthrottle_timer))
+> >>  				mod_timer(&vuart->unthrottle_timer,
+> >>  					  jiffies + unthrottle_timeout);
+> >> -			}
+> >>
+> >>  		} else {
+> >>  			count = min(space, 256);
+> >> @@ -511,6 +509,7 @@ static int aspeed_vuart_probe(struct platform_device *pdev)
+> >>  		goto err_clk_disable;
+> >>
+> >>  	vuart->line = rc;
+> >> +	vuart->port = serial8250_get_port(vuart->line);
+> >
+> >The documentation of serial8250_get_port() is somewhat concerning wrt
+> >the use:
+> >
+> >https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/tty/serial/8250/8250_core.c?h=v5.13-rc1#n399
 > 
-> There exists no IRQF_NMI flag at all. No architecture provides that.
+> Hmm, good point -- though despite that comment it looks like there is 
+> some existing code using it outside of suspend/resume callbacks (in 
+> 8250_pci.c and 8250_pnp.c).  I'm not certain if those would necessarily 
+> be considered good precedent to follow for this, but I don't see any 
+> obvious better way of getting hold of the corresponding uart_8250_port 
+> (or its port.membase).
+> 
+> I did receive a notification that Greg had added this series to his 
+> tty-testing branch; not sure if that means he thinks it's OK or if it 
+> just kind of slipped by unnoticed though.
 
-Thank you for the clarification. I think I meant to say that there is a
-request_nmi() function but AFAIK it is only used in the ARM PMU and
-would not work on x86.
+Yeah, I just highlighted it in case anyone else wanted to weigh in.
 
-> 
-> > delivery mode when requesting an interrupt (via request_irq()). Thus,
-> > there is no way for the interrupt remapping driver to know and set
-> > the delivery mode.
-> 
-> There is no support for this today. So what?
-
-Using request_irq() plus a HPET quirk looked to me a reasonable
-way to use the irqdomain hierarchy to allocate an interrupt with NMI as
-the delivery mode.
-
-> 
-> > Hence, when allocating an interrupt, check if such interrupt belongs to
-> > the HPET hardlockup detector and fixup the delivery mode accordingly.
-> 
-> What?
-> 
-> > +		/*
-> > +		 * If we find the HPET hardlockup detector irq, fixup the
-> > +		 * delivery mode.
-> > +		 */
-> > +		if (is_hpet_irq_hardlockup_detector(info))
-> > +			irq_cfg->delivery_mode = APIC_DELIVERY_MODE_NMI;
-> 
-> Again. We are not sticking some random device checks into that
-> code. It's wrong and I explained it to you before.
-> 
->   https://lore.kernel.org/lkml/alpine.DEB.2.21.1906161042080.1760@nanos.tec.linutronix.de/
-> 
-> But I'm happy to repeat it again:
-> 
->   "No. This is horrible hackery violating all the layering which we carefully
->    put into place to avoid exactly this kind of sprinkling conditionals into
->    all code pathes.
-> 
->    With some thought the existing irqdomain hierarchy can be used to achieve
->    the same thing without tons of extra functions and conditionals."
-> 
-> So the outcome of thought and using the irqdomain hierarchy is:
-> 
->    Replacing an hpet specific conditional in one place with an hpet
->    specific conditional in a different place.
-> 
-> Impressive.
-
-I am sorry Thomas, I did try to make the quirk less hacky but I did not
-think of the solution you provide below.
-
-> 
-> hpet_assign_irq(...., bool nmi)
->   init_info(info)
->     ...
->     if (nmi)
->         info.flags |= X86_IRQ_ALLOC_AS_NMI;
->   
->    irq_domain_alloc_irqs(domain, 1, NUMA_NO_NODE, &info)
->      intel_irq_remapping_alloc(..., info)
->        irq_domain_alloc_irq_parents(..., info)
->          x86_vector_alloc_irqs(..., info)
->          {   
->            if (info->flags & X86_IRQ_ALLOC_AS_NMI && nr_irqs != 1)
->                   return -EINVAL;
-> 
->            for (i = 0; i < nr_irqs; i++) {
->              ....
->              if (info->flags & X86_IRQ_ALLOC_AS_NMI) {
->                  irq_cfg_setup_nmi(apicd);
->                  continue;
->              }
->              ...
->          }
-> 
-> irq_cfg_setup_nmi() sets irq_cfg->delivery_mode and whatever is required
-> and everything else just works. Of course this needs a few other minor
-> tweaks but none of those introduces random hpet quirks all over the
-> place. Not convoluted enough, right?
-
-Thanks for the detailed demonstration! It does seem cleaner than what I
-implemented.
+Essentially I'm just deferring to Greg. If he's picked them up, great!
 
 > 
-> But that solves none of other problems. Let me summarize again which
-> options or non-options we have:
+> >
+> >However, given the existing behaviour it shouldn't be problematic?
+> >
 > 
->     1) Selective IPIs from NMI context cannot work
-> 
->        As explained in the other thread.
-> 
->     2) Shorthand IPI allbutself from NMI
->     
->        This should work, but that obviously does not take the watchdog
->        cpumask into account.
-> 
->        Also this only works when IPI shorthand mode is enabled. See
->        apic_smt_update() for details.
-> 
->     3) Sending the IPIs from irq_work
-> 
->        This would solve the problem, but if the CPU which is the NMI
->        target is really stuck in an interrupt disabled region then the
->        IPIs won't be sent.
-> 
->        OTOH, if that's the case then the CPU which was processing the
->        NMI will continue to be stuck until the next NMI hits which
->        will detect that the CPU is stuck which is a good enough
->        reason to send a shorthand IPI to all CPUs ignoring the
->        watchdog cpumask.
-> 
->        Same limitation vs. shorthand mode as #2
-> 
->     4) Changing affinity of the HPET NMI from NMI
-> 
->        As we established two years ago that cannot work with interrupt
->        remapping
-> 
->     5) Changing affinity of the HPET NMI from irq_work
-> 
->        Same issues as #3
-> 
-> Anything else than #2 is just causing more problems than it solves, but
-> surely the NOHZ_FULL/isolation people might have opinions on this.
-> 
-> OTOH, as this is opt-in, anything which wants a watchdog mask which is
-> not the full online set, has to accept that HPET has these restrictions.
-> 
-> And that's exactly what I suggested two years ago:
-> 
->  https://lore.kernel.org/lkml/alpine.DEB.2.21.1906172343120.1963@nanos.tec.linutronix.de/
-> 
->   "It definitely would be worthwhile to experiment with that. if we
->    could use shorthands (also for regular IPIs) that would be a great
->    improvement in general and would nicely solve that NMI issue. Beware
->    of the dragons though."
-> 
-> As a consequence of this conversation I implemented shorthand IPIs...
-> 
-> But I haven't seen any mentioning that this has been tried, why the
-> approach was not chosen or any discussion about that matter.
+> "existing behaviour" referring to what here?
 
-Indeed, I focused on 5) and I overlooked your comment on using your
-new support for shortand IPIs.
+Well, we were poking at the registers through vuart->regs anyway.
 
-I'll go back and see to implement option #2, or perhaps the alternative
-solution you proposed on a separate thread.
+So I don't think what you've done is any less correct.
 
-Thanks and BR,
-Ricardo
+Andrew
