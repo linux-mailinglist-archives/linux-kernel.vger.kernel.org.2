@@ -2,243 +2,328 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E7B7380117
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 02:15:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A95338011A
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 02:18:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231452AbhENAQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 20:16:27 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:44502 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230316AbhENAQZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 20:16:25 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14E048e1085003;
-        Thu, 13 May 2021 20:15:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=ew18GcdY68bDpJ4ATrq5M2XMc1dSczG2ts8kLhtM0gA=;
- b=k0Wvx7u6VlzEbaB2wCiiPG+WcY6hWETcf2Krcp4MiWtM+Z+8fkvwlsi9om3CFrnpbs0K
- 5BVPIX8zp0JEL6JC5hmoMBAISnsGpz994fWTR6IBnDbIYNE2QnXxSDIG/FGBcJ+xmese
- b8k43bA+KjkMhN3lfpXaZcidO0K6mnZ01qVo9DNFpEaYlydqIkYLZjKLwmudMjUferQb
- di0lQQFb7Q7PWWunCwta2DFFAePUzsjP5aSCAXQKbAP3tuGUQ0xJBQvqFvMsWCp8nGgn
- bVpw6PyjKkgS6/S32Qi9EmpU5/vzAL2rmkEaKquffhebAeNe3fagvSgdGI3+6fL9wIBO WQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38hcr1t2ww-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 13 May 2021 20:15:09 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14E04kSd090141;
-        Thu, 13 May 2021 20:15:08 -0400
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38hcr1t2w6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 13 May 2021 20:15:08 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14E0D63K021612;
-        Fri, 14 May 2021 00:15:06 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma01fra.de.ibm.com with ESMTP id 38hc6u80pb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 May 2021 00:15:06 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14E0F3jA23527844
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 14 May 2021 00:15:03 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7855042045;
-        Fri, 14 May 2021 00:15:03 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A19344203F;
-        Fri, 14 May 2021 00:15:02 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.9.250])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Fri, 14 May 2021 00:15:02 +0000 (GMT)
-Date:   Fri, 14 May 2021 02:15:00 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        borntraeger@de.ibm.com, cohuck@redhat.com,
-        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        stable@vger.kernel.org, Tony Krowiak <akrowiak@stny.rr.com>
-Subject: Re: [PATCH v2] s390/vfio-ap: fix memory leak in mdev remove
- callback
-Message-ID: <20210514021500.60ad2a22.pasic@linux.ibm.com>
-In-Reply-To: <243086e2-08a0-71ed-eb7e-618a62b007e4@linux.ibm.com>
-References: <20210510214837.359717-1-akrowiak@linux.ibm.com>
-        <20210512203536.4209c29c.pasic@linux.ibm.com>
-        <4c156ab8-da49-4867-f29c-9712c2628d44@linux.ibm.com>
-        <20210513194541.58d1628a.pasic@linux.ibm.com>
-        <243086e2-08a0-71ed-eb7e-618a62b007e4@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: lHd0HWLEuKiiq5JpHBsW7ApSTXv4v9S-
-X-Proofpoint-ORIG-GUID: 0_b2CFNW0cRRNoj0GTZtBAC3O_XqitVD
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-13_16:2021-05-12,2021-05-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- spamscore=0 impostorscore=0 lowpriorityscore=0 clxscore=1015
- malwarescore=0 bulkscore=0 mlxlogscore=999 mlxscore=0 adultscore=0
- phishscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104190000 definitions=main-2105130171
+        id S231590AbhENATr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 20:19:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36036 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229701AbhENATq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 20:19:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BFFC2613F6;
+        Fri, 14 May 2021 00:18:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1620951515;
+        bh=BCtAIV+naC/cjsdPiXpYD0ihgDrIbIBEcRLBJ1trrqc=;
+        h=Date:From:To:Subject:From;
+        b=VOqi0BVg1YpWSjUVGkPWUt10RrmIfH3OneR19VI8tfw1UT6xRPsnx8LUryopx3d9+
+         tsaVuXBZigUTngO5cniWzD1Q8tn2TXhPCQ8Z6+b5wLXGUMxYS9XybsZtNgpF51ZuV8
+         SA9840XhH1PfrFkLP/xTQqLAfsaEh0A6NaCoFjBk=
+Date:   Thu, 13 May 2021 17:18:34 -0700
+From:   akpm@linux-foundation.org
+To:     broonie@kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-next@vger.kernel.org, mhocko@suse.cz,
+        mm-commits@vger.kernel.org, sfr@canb.auug.org.au
+Subject:  mmotm 2021-05-13-17-18 uploaded
+Message-ID: <20210514001834.yeO9dhMeg%akpm@linux-foundation.org>
+User-Agent: s-nail v14.8.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 May 2021 15:23:27 -0400
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+The mm-of-the-moment snapshot 2021-05-13-17-18 has been uploaded to
 
-> On 5/13/21 1:45 PM, Halil Pasic wrote:
-> > On Thu, 13 May 2021 10:35:05 -0400
-> > Tony Krowiak <akrowiak@linux.ibm.com> wrote:
-> >  
-> >> On 5/12/21 2:35 PM, Halil Pasic wrote:  
-> >>> On Mon, 10 May 2021 17:48:37 -0400
-> >>> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
-> >>>     
-> >>>> The mdev remove callback for the vfio_ap device driver bails out with
-> >>>> -EBUSY if the mdev is in use by a KVM guest. The intended purpose was
-> >>>> to prevent the mdev from being removed while in use; however, returning a
-> >>>> non-zero rc does not prevent removal. This could result in a memory leak
-> >>>> of the resources allocated when the mdev was created. In addition, the
-> >>>> KVM guest will still have access to the AP devices assigned to the mdev
-> >>>> even though the mdev no longer exists.
-> >>>>
-> >>>> To prevent this scenario, cleanup will be done - including unplugging the
-> >>>> AP adapters, domains and control domains - regardless of whether the mdev
-> >>>> is in use by a KVM guest or not.
-> >>>>
-> >>>> Fixes: 258287c994de ("s390: vfio-ap: implement mediated device open callback")
-> >>>> Cc: stable@vger.kernel.org
-> >>>> Signed-off-by: Tony Krowiak <akrowiak@stny.rr.com>
-> >>>> ---
-> >>>>    drivers/s390/crypto/vfio_ap_ops.c | 13 ++-----------
-> >>>>    1 file changed, 2 insertions(+), 11 deletions(-)
-> >>>>
-> >>>> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-> >>>> index b2c7e10dfdcd..f90c9103dac2 100644
-> >>>> --- a/drivers/s390/crypto/vfio_ap_ops.c
-> >>>> +++ b/drivers/s390/crypto/vfio_ap_ops.c
-> >>>> @@ -26,6 +26,7 @@
-> >>>>
-> >>>>    static int vfio_ap_mdev_reset_queues(struct mdev_device *mdev);
-> >>>>    static struct vfio_ap_queue *vfio_ap_find_queue(int apqn);
-> >>>> +static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev);
-> >>>>
-> >>>>    static int match_apqn(struct device *dev, const void *data)
-> >>>>    {
-> >>>> @@ -366,17 +367,7 @@ static int vfio_ap_mdev_remove(struct mdev_device *mdev)
-> >>>>    	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
-> >>>>
-> >>>>    	mutex_lock(&matrix_dev->lock);
-> >>>> -
-> >>>> -	/*
-> >>>> -	 * If the KVM pointer is in flux or the guest is running, disallow
-> >>>> -	 * un-assignment of control domain.
-> >>>> -	 */
-> >>>> -	if (matrix_mdev->kvm_busy || matrix_mdev->kvm) {
-> >>>> -		mutex_unlock(&matrix_dev->lock);
-> >>>> -		return -EBUSY;
-> >>>> -	}
-> >>>> -
-> >>>> -	vfio_ap_mdev_reset_queues(mdev);
-> >>>> +	vfio_ap_mdev_unset_kvm(matrix_mdev);
-> >>>>    	list_del(&matrix_mdev->node);
-> >>>>    	kfree(matrix_mdev);  
-> >>> Are we at risk of handle_pqap() in arch/s390/kvm/priv.c using an
-> >>> already freed pqap_hook (which is a member of the matrix_mdev pointee
-> >>> that is freed just above my comment).
-> >>>
-> >>> I'm aware of the fact that vfio_ap_mdev_unset_kvm() does a
-> >>> matrix_mdev->kvm->arch.crypto.pqap_hook = NULL but that is
-> >>> AFRICT not done under any lock relevant for handle_pqap(). I guess
-> >>> the idea is, I guess, the check cited below
-> >>>
-> >>> static int handle_pqap(struct kvm_vcpu *vcpu)
-> >>> [..]
-> >>>           /*
-> >>>            * Verify that the hook callback is registered, lock the owner
-> >>>            * and call the hook.
-> >>>            */
-> >>>           if (vcpu->kvm->arch.crypto.pqap_hook) {
-> >>>                   if (!try_module_get(vcpu->kvm->arch.crypto.pqap_hook->owner))
-> >>>                           return -EOPNOTSUPP;
-> >>>                   ret = vcpu->kvm->arch.crypto.pqap_hook->hook(vcpu);
-> >>>                   module_put(vcpu->kvm->arch.crypto.pqap_hook->owner);
-> >>>                   if (!ret && vcpu->run->s.regs.gprs[1] & 0x00ff0000)
-> >>>                           kvm_s390_set_psw_cc(vcpu, 3);
-> >>>                   return ret;
-> >>>           }
-> >>>
-> >>> is going to catch it, but I'm not sure it is guaranteed to catch it.
-> >>> Opinions?  
-> >> The hook itself - handle_pqap() function in vfio_ap_ops.c - also checks
-> >> to see if the reference to the hook is set and terminates with an error
-> >> if it
-> >> is not. If the hook is invoked subsequent to the remove callback above,
-> >> all should be fine since the check is also done under the matrix_dev->lock.
-> >>  
-> > I don't quite understand your logic. Let us assume matrix_mdev was freed,
-> > but vcpu->kvm->arch.crypto.pqap_hook still points to what used to be
-> > (*matrix_mdev).pqap_hook. In that case the function pointer
-> > vcpu->kvm->arch.crypto.pqap_hook->hook is used after it was freed, and
-> > may not point to the handle_pqap() function in vfio_ap_ops.c, thus the
-> > check you are referring to ain't necessarily relevant. Than is
-> > if you mean the check in the  handle_pqap() function in vfio_ap_ops.c; if
-> > you mean the check in handle_pqap() in arch/s390/kvm/priv.c, that one is
-> > not done under the matrix_dev->lock. Or do I have a hole somewhere in my
-> > reasoning?  
-> 
-> What I am saying is the vcpu->kvm->arch.crypto.pqap_hook
-> will either be NULL or point to the handle_pqap() function in the
-> vfio_ap driver.
+   https://www.ozlabs.org/~akpm/mmotm/
 
-Please read the code again. In my reading of the code
-vcpu->kvm->arch.crypto.pqap_hook is never supposed to point to >(or does
-point to) the handle_pqap() function defined in vfio_ap_ops.c. It points
-to the pqap_hook member of struct ap_matrix_mdev (the type of the member
-is struct kvm_s390_module_hook, which in turn has a function pointer
-member called hook, which is supposed to hold the address of
-handle_pqap() function defined in vfio_ap_ops.c, and thus point to
-it).
+mmotm-readme.txt says
 
-Because of this, I don't think the rest of your argument is valid.
-Furthermore I believe we first need to get to common ground on this
-one before proceeding any further. If you happen to preserve your
-opinion after checking again, I think we should try to discuss this
-offline, as one of us is likely looking at the wrong code.
+README for mm-of-the-moment:
 
-Regards,
-Halil
+https://www.ozlabs.org/~akpm/mmotm/
 
-> In the latter case, the handler in the driver will get
-> called and try to acquire the matrix_dev->lock. The function that
-> sets the vcpu->kvm->arch.crypto.pqap_hook to NULL also takes that
-> lock. If the pointer is still active, then the handler will do its thing.
-> If not, then the handler will return without enabling or disabling
-> IRQs. That should not be a problem since the unset_kvm function
-> resets the queues which will disable the IRQs.
-> 
-> I don't see how
-> the vcpu->kvm->arch.crypto.pqap_hook can point to anything
-> other than the handler or be NULL unless KVM is gone. Based on
-> my observations of the behavior, unless there is some
-> other way for the remove callback to be invoked other than in
-> response to a request from userspace via the sysfs remove
-> attribute, it will not get called until the file descriptor is
-> closed in which case the release callback will also unset_kvm.
-> I think you are worrying about something that will likely never
-> happen.
-> 
-> >
-> > Regards,
-> > Halil
-> >  
-> 
+This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
+more than once a week.
 
+You will need quilt to apply these patches to the latest Linus release (5.x
+or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
+https://ozlabs.org/~akpm/mmotm/series
+
+The file broken-out.tar.gz contains two datestamp files: .DATE and
+.DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
+followed by the base kernel version against which this patch series is to
+be applied.
+
+This tree is partially included in linux-next.  To see which patches are
+included in linux-next, consult the `series' file.  Only the patches
+within the #NEXT_PATCHES_START/#NEXT_PATCHES_END markers are included in
+linux-next.
+
+
+A full copy of the full kernel tree with the linux-next and mmotm patches
+already applied is available through git within an hour of the mmotm
+release.  Individual mmotm releases are tagged.  The master branch always
+points to the latest release, so it's constantly rebasing.
+
+	https://github.com/hnaz/linux-mm
+
+The directory https://www.ozlabs.org/~akpm/mmots/ (mm-of-the-second)
+contains daily snapshots of the -mm tree.  It is updated more frequently
+than mmotm, and is untested.
+
+A git copy of this tree is also available at
+
+	https://github.com/hnaz/linux-mm
+
+
+
+This mmotm tree contains the following patches against 5.13-rc1:
+(patches marked "*" will be included in linux-next)
+
+  origin.patch
+* mm-hugetlb-fix-f_seal_future_write.patch
+* mm-hugetlb-fix-cow-where-page-writtable-in-child.patch
+* mm-slub-move-slub_debug-static-key-enabling-outside-slab_mutex.patch
+* kernel-resource-fix-return-code-check-in-__request_free_mem_region.patch
+* squashfs-fix-divide-error-in-calculate_skip.patch
+* userfaultfd-release-page-in-error-path-to-avoid-bug_on.patch
+* ksm-revert-use-get_ksm_page_nolock-to-get-ksm-page-in-remove_rmap_item_from_tree.patch
+* mm-fix-struct-page-layout-on-32-bit-systems.patch
+* kasan-fix-unit-tests-with-config_ubsan_local_bounds-enabled.patch
+* mm-filemap-fix-readahead-return-types.patch
+* hfsplus-prevent-corruption-in-shrinking-truncate.patch
+* docs-admin-guide-update-description-for-kernelmodprobe-sysctl.patch
+* mm-ioremap-fix-iomap_max_page_shift.patch
+* revert-mm-gup-check-page-posion-status-for-coredump.patch
+* ipc-mqueue-msg-sem-avoid-relying-on-a-stack-reference-past-its-expiry.patch
+* proc-kpageflags-prevent-an-integer-overflow-in-stable_page_flags.patch
+* proc-kpageflags-do-not-use-uninitialized-struct-pages.patch
+* kthread-switch-to-new-kerneldoc-syntax-for-named-variable-macro-argument.patch
+* ia64-headers-drop-duplicated-words.patch
+* streamline_configpl-make-spacing-consistent.patch
+* streamline_configpl-add-softtabstop=4-for-vim-users.patch
+* ocfs2-remove-unnecessary-init_list_head.patch
+* ocfs2-fix-snprintf-checking.patch
+* ocfs2-remove-redundant-assignment-to-pointer-queue.patch
+* ocfs2-remove-repeated-uptodate-check-for-buffer.patch
+* ocfs2-clear-links-count-in-ocfs2_mknod-if-an-error-occurs.patch
+* ocfs2-fix-ocfs2-corrupt-when-iputting-an-inode.patch
+* kernel-watchdog-modify-the-explanation-related-to-watchdog-thread.patch
+* doc-watchdog-modify-the-explanation-related-to-watchdog-thread.patch
+* doc-watchdog-modify-the-doc-related-to-watchdog-%u.patch
+  mm.patch
+* kunit-make-test-lock-irq-safe.patch
+* mm-slub-kunit-add-a-kunit-test-for-slub-debugging-functionality.patch
+* mm-slub-kunit-add-a-kunit-test-for-slub-debugging-functionality-fix.patch
+* mm-slub-kunit-add-a-kunit-test-for-slub-debugging-functionality-fix-2.patch
+* slub-remove-resiliency_test-function.patch
+* mm-slub-change-run-time-assertion-in-kmalloc_index-to-compile-time.patch
+* mm-slub-change-run-time-assertion-in-kmalloc_index-to-compile-time-fix.patch
+* tools-vm-page_owner_sortc-fix-the-potential-stack-overflow-risk.patch
+* mm-page-writeback-kill-get_writeback_state-comments.patch
+* mm-page-writeback-fix-performance-when-bdis-share-of-ratio-is-0.patch
+* mm-page-writeback-update-the-comment-of-dirty-position-control.patch
+* mm-page-writeback-use-__this_cpu_inc-in-account_page_dirtied.patch
+* mm-gup_benchmark-support-threading.patch
+* mm-gup-allow-foll_pin-to-scale-in-smp.patch
+* mm-gup-pack-has_pinned-in-mmf_has_pinned.patch
+* mm-gup-pack-has_pinned-in-mmf_has_pinned-checkpatch-fixes.patch
+* mm-gup-pack-has_pinned-in-mmf_has_pinned-fix.patch
+* mm-swapfile-use-percpu_ref-to-serialize-against-concurrent-swapoff.patch
+* swap-fix-do_swap_page-race-with-swapoff.patch
+* mm-swap-remove-confusing-checking-for-non_swap_entry-in-swap_ra_info.patch
+* mm-shmem-fix-shmem_swapin-race-with-swapoff.patch
+* mm-memcg-move-mod_objcg_state-to-memcontrolc.patch
+* mm-memcg-cache-vmstat-data-in-percpu-memcg_stock_pcp.patch
+* mm-memcg-improve-refill_obj_stock-performance.patch
+* mm-memcg-optimize-user-context-object-stock-access.patch
+* mm-memcg-optimize-user-context-object-stock-access-checkpatch-fixes.patch
+* mm-memcg-slab-properly-set-up-gfp-flags-for-objcg-pointer-array.patch
+* mm-memcg-slab-create-a-new-set-of-kmalloc-cg-n-caches.patch
+* mm-memcg-slab-create-a-new-set-of-kmalloc-cg-n-caches-fix.patch
+* mm-memcg-slab-create-a-new-set-of-kmalloc-cg-n-caches-v5.patch
+* mm-memcg-slab-create-a-new-set-of-kmalloc-cg-n-caches-v5-fix.patch
+* mm-memcg-slab-disable-cache-merging-for-kmalloc_normal-caches.patch
+* mm-memcontrol-fix-root_mem_cgroup-charging.patch
+* mm-memcontrol-fix-page-charging-in-page-replacement.patch
+* mm-memcontrol-bail-out-early-when-mm-in-get_mem_cgroup_from_mm.patch
+* mm-memcontrol-remove-the-pgdata-parameter-of-mem_cgroup_page_lruvec.patch
+* mm-memcontrol-simplify-lruvec_holds_page_lru_lock.patch
+* mm-memcontrol-rename-lruvec_holds_page_lru_lock-to-page_matches_lruvec.patch
+* mm-memcontrol-simplify-the-logic-of-objcg-pinning-memcg.patch
+* mm-memcontrol-move-obj_cgroup_uncharge_pages-out-of-css_set_lock.patch
+* mm-vmscan-remove-noinline_for_stack.patch
+* mm-improve-mprotectrw-efficiency-on-pages-referenced-once.patch
+* mm-improve-mprotectrw-efficiency-on-pages-referenced-once-fix.patch
+* perf-map_executable-does-not-indicate-vm_mayexec.patch
+* binfmt-remove-in-tree-usage-of-map_executable.patch
+* binfmt-remove-in-tree-usage-of-map_executable-fix.patch
+* mm-ignore-map_executable-in-ksys_mmap_pgoff.patch
+* mm-mmapc-logic-of-find_vma_intersection-repeated-in-__do_munmap.patch
+* mm-mmap-introduce-unlock_range-for-code-cleanup.patch
+* mm-mmap-introduce-unlock_range-for-code-cleanup-fix.patch
+* mm-mmap-use-find_vma_intersection-in-do_mmap-for-overlap.patch
+* mm-memoryc-fix-comment-of-finish_mkwrite_fault.patch
+* selftest-mremap_test-update-the-test-to-handle-pagesize-other-than-4k.patch
+* selftest-mremap_test-avoid-crash-with-static-build.patch
+* mm-mremap-use-pmd-pud_poplulate-to-update-page-table-entries.patch
+* powerpc-mm-book3s64-fix-possible-build-error.patch
+* powerpc-mm-book3s64-update-tlb-flush-routines-to-take-a-page-walk-cache-flush-argument.patch
+* mm-mremap-use-range-flush-that-does-tlb-and-page-walk-cache-flush.patch
+* mm-mremap-move-tlb-flush-outside-page-table-lock.patch
+* mm-mremap-allow-arch-runtime-override.patch
+* powerpc-mm-enable-move-pmd-pud.patch
+* printk-introduce-dump_stack_lvl.patch
+* printk-introduce-dump_stack_lvl-fix.patch
+* kasan-use-dump_stack_lvlkern_err-to-print-stacks.patch
+* mm-page_alloc-__alloc_pages_bulk-do-bounds-check-before-accessing-array.patch
+* mm-mmzoneh-simplify-is_highmem_idx.patch
+* mm-make-__dump_page-static.patch
+* mm-debug-factor-pagepoisoned-out-of-__dump_page.patch
+* mm-page_owner-constify-dump_page_owner.patch
+* mm-make-compound_head-const-preserving.patch
+* mm-constify-get_pfnblock_flags_mask-and-get_pfnblock_migratetype.patch
+* mm-constify-page_count-and-page_ref_count.patch
+* mm-optimise-nth_page-for-contiguous-memmap.patch
+* mm-page_alloc-switch-to-pr_debug.patch
+* mm-page_alloc-split-per-cpu-page-lists-and-zone-stats.patch
+* mm-page_alloc-convert-per-cpu-list-protection-to-local_lock.patch
+* mm-vmstat-convert-numa-statistics-to-basic-numa-counters.patch
+* mm-vmstat-inline-numa-event-counter-updates.patch
+* mm-page_alloc-batch-the-accounting-updates-in-the-bulk-allocator.patch
+* mm-page_alloc-reduce-duration-that-irqs-are-disabled-for-vm-counters.patch
+* mm-page_alloc-explicitly-acquire-the-zone-lock-in-__free_pages_ok.patch
+* mm-page_alloc-avoid-conflating-irqs-disabled-with-zone-lock.patch
+* mm-page_alloc-update-pgfree-outside-the-zone-lock-in-__free_pages_ok.patch
+* mm-memory_hotplug-factor-out-bootmem-core-functions-to-bootmem_infoc.patch
+* mm-hugetlb-introduce-a-new-config-hugetlb_page_free_vmemmap.patch
+* mm-hugetlb-gather-discrete-indexes-of-tail-page.patch
+* mm-hugetlb-free-the-vmemmap-pages-associated-with-each-hugetlb-page.patch
+* mm-hugetlb-defer-freeing-of-hugetlb-pages.patch
+* mm-hugetlb-alloc-the-vmemmap-pages-associated-with-each-hugetlb-page.patch
+* mm-hugetlb-add-a-kernel-parameter-hugetlb_free_vmemmap.patch
+* mm-memory_hotplug-disable-memmap_on_memory-when-hugetlb_free_vmemmap-enabled.patch
+* mm-memory_hotplug-disable-memmap_on_memory-when-hugetlb_free_vmemmap-enabled-fix.patch
+* mm-hugetlb-introduce-nr_free_vmemmap_pages-in-the-struct-hstate.patch
+* mm-debug_vm_pgtable-move-pmd-pud_huge_tests-out-of-config_transparent_hugepage.patch
+* mm-debug_vm_pgtable-remove-redundant-pfn_pmd-pte-and-fix-one-comment-mistake.patch
+* mm-huge_memoryc-remove-dedicated-macro-hpage_cache_index_mask.patch
+* mm-huge_memoryc-use-page-deferred_list.patch
+* mm-huge_memoryc-add-missing-read-only-thp-checking-in-transparent_hugepage_enabled.patch
+* mm-huge_memoryc-remove-unnecessary-tlb_remove_page_size-for-huge-zero-pmd.patch
+* mm-huge_memoryc-dont-discard-hugepage-if-other-processes-are-mapping-it.patch
+* mm-hugetlb-change-parameters-of-arch_make_huge_pte.patch
+* mm-pgtable-add-stubs-for-pmd-pub_set-clear_huge.patch
+* mm-pgtable-add-stubs-for-pmd-pub_set-clear_huge-fix-2.patch
+* mm-vmalloc-enable-mapping-of-huge-pages-at-pte-level-in-vmap.patch
+* mm-vmalloc-enable-mapping-of-huge-pages-at-pte-level-in-vmalloc.patch
+* powerpc-8xx-add-support-for-huge-pages-on-vmap-and-vmalloc.patch
+* userfaultfd-selftests-use-user-mode-only.patch
+* userfaultfd-selftests-remove-the-time-check-on-delayed-uffd.patch
+* userfaultfd-selftests-dropping-verify-check-in-locking_thread.patch
+* userfaultfd-selftests-only-dump-counts-if-mode-enabled.patch
+* userfaultfd-selftests-unify-error-handling.patch
+* mm-thp-simplify-copying-of-huge-zero-page-pmd-when-fork.patch
+* mm-userfaultfd-fix-uffd-wp-special-cases-for-fork.patch
+* mm-userfaultfd-fix-a-few-thp-pmd-missing-uffd-wp-bit.patch
+* mm-userfaultfd-fail-uffd-wp-registeration-if-not-supported.patch
+* mm-pagemap-export-uffd-wp-protection-information.patch
+* userfaultfd-selftests-add-pagemap-uffd-wp-test.patch
+* userfaultfd-shmem-combine-shmem_mcopy_atomicmfill_zeropage_pte.patch
+* userfaultfd-shmem-support-minor-fault-registration-for-shmem.patch
+* userfaultfd-shmem-support-uffdio_continue-for-shmem.patch
+* userfaultfd-shmem-advertise-shmem-minor-fault-support.patch
+* userfaultfd-shmem-modify-shmem_mfill_atomic_pte-to-use-install_pte.patch
+* userfaultfd-selftests-use-memfd_create-for-shmem-test-type.patch
+* userfaultfd-selftests-create-alias-mappings-in-the-shmem-test.patch
+* userfaultfd-selftests-reinitialize-test-context-in-each-test.patch
+* userfaultfd-selftests-exercise-minor-fault-handling-shmem-support.patch
+* mm-move-holes_in_zone-into-mm.patch
+* docs-procrst-meminfo-briefly-describe-gaps-in-memory-accounting.patch
+* include-linux-mmzoneh-add-documentation-for-pfn_valid.patch
+* memblock-update-initialization-of-reserved-pages.patch
+* arm64-decouple-check-whether-pfn-is-in-linear-map-from-pfn_valid.patch
+* arm64-drop-pfn_valid_within-and-simplify-pfn_valid.patch
+* arm64-drop-pfn_valid_within-and-simplify-pfn_valid-fix.patch
+* mm-thp-relax-the-vm_denywrite-constraint-on-file-backed-thps.patch
+* mm-thp-check-total_mapcount-instead-of-page_mapcount.patch
+* nommu-remove-__gfp_highmem-in-vmalloc-vzalloc.patch
+* nommu-remove-__gfp_highmem-in-vmalloc-vzalloc-checkpatch-fixes.patch
+* mm-make-variable-names-for-populate_vma_page_range-consistent.patch
+* mm-madvise-introduce-madv_populate_readwrite-to-prefault-page-tables.patch
+* mm-madvise-introduce-madv_populate_readwrite-to-prefault-page-tables-checkpatch-fixes.patch
+* maintainers-add-tools-testing-selftests-vm-to-memory-management.patch
+* selftests-vm-add-protection_keys_32-protection_keys_64-to-gitignore.patch
+* selftests-vm-add-test-for-madv_populate_readwrite.patch
+* mm-memory_hotplug-rate-limit-page-migration-warnings.patch
+* mm-highmem-remove-deprecated-kmap_atomic.patch
+* mm-fix-typos-and-grammar-error-in-comments.patch
+* mm-fix-comments-mentioning-i_mutex.patch
+* info-task-hung-in-generic_file_write_iter.patch
+* info-task-hung-in-generic_file_write-fix.patch
+* kernel-hung_taskc-monitor-killed-tasks.patch
+* proc-avoid-mixing-integer-types-in-mem_rw.patch
+* procfs-allow-reading-fdinfo-with-ptrace_mode_read.patch
+* procfs-dmabuf-add-inode-number-to-proc-fdinfo.patch
+* sysctl-remove-redundant-assignment-to-first.patch
+* proc-sysctl-make-protected_-world-readable.patch
+* kernelh-split-out-panic-and-oops-helpers.patch
+* kernelh-split-out-panic-and-oops-helpers-fix.patch
+* lib-decompress_bunzip2-remove-an-unneeded-semicolon.patch
+* lib-string_helpers-switch-to-use-bit-macro.patch
+* lib-string_helpers-move-escape_np-check-inside-else-branch-in-a-loop.patch
+* lib-string_helpers-drop-indentation-level-in-string_escape_mem.patch
+* lib-string_helpers-introduce-escape_na-for-escaping-non-ascii.patch
+* lib-string_helpers-introduce-escape_nap-to-escape-non-ascii-and-non-printable.patch
+* lib-string_helpers-allow-to-append-additional-characters-to-be-escaped.patch
+* lib-test-string_helpers-print-flags-in-hexadecimal-format.patch
+* lib-test-string_helpers-get-rid-of-trailing-comma-in-terminators.patch
+* lib-test-string_helpers-add-test-cases-for-new-features.patch
+* maintainers-add-myself-as-designated-reviewer-for-generic-string-library.patch
+* seq_file-introduce-seq_escape_mem.patch
+* seq_file-add-seq_escape_str-as-replica-of-string_escape_str.patch
+* seq_file-convert-seq_escape-to-use-seq_escape_str.patch
+* nfsd-avoid-non-flexible-api-in-seq_quote_mem.patch
+* seq_file-drop-unused-_escape_mem_ascii.patch
+* lz4_decompress-declare-lz4_decompress_safe_withprefix64k-static.patch
+* lib-decompress_unlz4c-correctly-handle-zero-padding-around-initrds.patch
+* checkpatch-scripts-spdxcheckpy-now-requires-python3.patch
+* init-print-out-unknown-kernel-parameters.patch
+* hfsplus-fix-out-of-bounds-warnings-in-__hfsplus_setxattr.patch
+* x86-signal-dont-do-sas_ss_reset-until-we-are-certain-that-sigframe-wont-be-abandoned.patch
+* aio-simplify-read_events.patch
+* ipc-sem-use-kvmalloc-for-sem_undo-allocation.patch
+* ipc-use-kmalloc-for-msg_queue-and-shmid_kernel.patch
+  linux-next.patch
+* mm-define-default-value-for-first_user_address.patch
+* mm-slub-use-stackdepot-to-save-stack-trace-in-objects.patch
+* mm-slub-use-stackdepot-to-save-stack-trace-in-objects-fix.patch
+* mmap-make-mlock_future_check-global.patch
+* riscv-kconfig-make-direct-map-manipulation-options-depend-on-mmu.patch
+* set_memory-allow-set_direct_map__noflush-for-multiple-pages.patch
+* set_memory-allow-querying-whether-set_direct_map_-is-actually-enabled.patch
+* mm-introduce-memfd_secret-system-call-to-create-secret-memory-areas.patch
+* pm-hibernate-disable-when-there-are-active-secretmem-users.patch
+* arch-mm-wire-up-memfd_secret-system-call-where-relevant.patch
+* secretmem-test-add-basic-selftest-for-memfd_secret2.patch
+* buildid-only-consider-gnu-notes-for-build-id-parsing.patch
+* buildid-add-api-to-parse-build-id-out-of-buffer.patch
+* buildid-stash-away-kernels-build-id-on-init.patch
+* dump_stack-add-vmlinux-build-id-to-stack-traces.patch
+* module-add-printk-formats-to-add-module-build-id-to-stacktraces.patch
+* module-add-printk-formats-to-add-module-build-id-to-stacktraces-fix.patch
+* module-add-printk-formats-to-add-module-build-id-to-stacktraces-fix-2.patch
+* arm64-stacktrace-use-%psb-for-backtrace-printing.patch
+* x86-dumpstack-use-%psb-%pbb-for-backtrace-printing.patch
+* scripts-decode_stacktracesh-support-debuginfod.patch
+* scripts-decode_stacktracesh-silence-stderr-messages-from-addr2line-nm.patch
+* scripts-decode_stacktracesh-indicate-auto-can-be-used-for-base-path.patch
+* buildid-mark-some-arguments-const.patch
+* buildid-fix-kernel-doc-notation.patch
+* kdump-use-vmlinux_build_id-to-simplify.patch
+  make-sure-nobodys-leaking-resources.patch
+  releasing-resources-with-children.patch
+  mutex-subsystem-synchro-test-module.patch
+  kernel-forkc-export-kernel_thread-to-modules.patch
+  workaround-for-a-pci-restoring-bug.patch
