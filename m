@@ -2,422 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4566A380FA2
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 20:16:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AE20380F7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 20:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235340AbhENSRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 14:17:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36971 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235276AbhENSRi (ORCPT
+        id S233159AbhENSQg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 14 May 2021 14:16:36 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:58237 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231454AbhENSQf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 14:17:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621016186;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Bzhcy6YdAwznyrcpBoxvcGe+zJ5jKAE5OaU3W4PehZU=;
-        b=Tk+S0800CyIxz9Kc3xI42D2i+5KqlQSeM4EnybtW4PbMBhv+LLdShlDEqkHQQnUhFCeNMX
-        Sp3BedLsyV42VnfJYjgiYtQRlDOC3hXGEdI7EwGnYmG0ZNC5vufIAD9Mbdb4IgWYwpE+9U
-        GBZnCXOk0Jnfp9WTYFH1FnS06piUABU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-604-Ovs6nYruP3utNdJfIYCGfA-1; Fri, 14 May 2021 14:16:21 -0400
-X-MC-Unique: Ovs6nYruP3utNdJfIYCGfA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5BE7C801817;
-        Fri, 14 May 2021 18:16:20 +0000 (UTC)
-Received: from Whitewolf.redhat.com (ovpn-118-140.rdu2.redhat.com [10.10.118.140])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F385F1971B;
-        Fri, 14 May 2021 18:16:18 +0000 (UTC)
-From:   Lyude Paul <lyude@redhat.com>
-To:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org
-Cc:     Rajeev Nandan <rajeevny@codeaurora.org>, greg.depoire@gmail.com,
-        Jani Nikula <jani.nikula@intel.com>,
-        Dave Airlie <airlied@gmail.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Airlie <airlied@redhat.com>,
-        James Jones <jajones@nvidia.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v6 9/9] drm/nouveau/kms/nv50-: Add basic DPCD backlight support for nouveau
-Date:   Fri, 14 May 2021 14:15:03 -0400
-Message-Id: <20210514181504.565252-10-lyude@redhat.com>
-In-Reply-To: <20210514181504.565252-1-lyude@redhat.com>
-References: <20210514181504.565252-1-lyude@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        Fri, 14 May 2021 14:16:35 -0400
+Received: from smtpclient.apple (p4fefc9d6.dip0.t-ipconnect.de [79.239.201.214])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 13DD0CEC82;
+        Fri, 14 May 2021 20:23:14 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.80.0.2.43\))
+Subject: Re: [PATCH v2] Bluetooth: Shutdown controller after workqueues are
+ flushed or cancelled
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210514071452.25220-1-kai.heng.feng@canonical.com>
+Date:   Fri, 14 May 2021 20:15:20 +0200
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "open list:BLUETOOTH SUBSYSTEM" <linux-bluetooth@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <576B26FD-81F8-4632-82F6-57C4A7C096C4@holtmann.org>
+References: <20210514071452.25220-1-kai.heng.feng@canonical.com>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+X-Mailer: Apple Mail (2.3654.80.0.2.43)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds support for controlling panel backlights over eDP using VESA's
-standard backlight control interface. Luckily, Nvidia was cool enough to
-never come up with their own proprietary backlight control interface (at
-least, not any that I or the laptop manufacturers I've talked to are aware
-of), so this should work for any laptop panels which support the VESA
-backlight control interface.
+Hi Kai-Heng,
 
-Note that we don't yet provide the panel backlight frequency to the DRM DP
-backlight helpers. This should be fine for the time being, since it's not
-required to get basic backlight controls working.
+> Rfkill block and unblock Intel USB Bluetooth [8087:0026] may make it
+> stops working:
+> [  509.691509] Bluetooth: hci0: HCI reset during shutdown failed
+> [  514.897584] Bluetooth: hci0: MSFT filter_enable is already on
+> [  530.044751] usb 3-10: reset full-speed USB device number 5 using xhci_hcd
+> [  545.660350] usb 3-10: device descriptor read/64, error -110
+> [  561.283530] usb 3-10: device descriptor read/64, error -110
+> [  561.519682] usb 3-10: reset full-speed USB device number 5 using xhci_hcd
+> [  566.686650] Bluetooth: hci0: unexpected event for opcode 0x0500
+> [  568.752452] Bluetooth: hci0: urb 0000000096cd309b failed to resubmit (113)
+> [  578.797955] Bluetooth: hci0: Failed to read MSFT supported features (-110)
+> [  586.286565] Bluetooth: hci0: urb 00000000c522f633 failed to resubmit (113)
+> [  596.215302] Bluetooth: hci0: Failed to read MSFT supported features (-110)
+> 
+> Or kernel panics because other workqueues already freed skb:
+> [ 2048.663763] BUG: kernel NULL pointer dereference, address: 0000000000000000
+> [ 2048.663775] #PF: supervisor read access in kernel mode
+> [ 2048.663779] #PF: error_code(0x0000) - not-present page
+> [ 2048.663782] PGD 0 P4D 0
+> [ 2048.663787] Oops: 0000 [#1] SMP NOPTI
+> [ 2048.663793] CPU: 3 PID: 4491 Comm: rfkill Tainted: G        W         5.13.0-rc1-next-20210510+ #20
+> [ 2048.663799] Hardware name: HP HP EliteBook 850 G8 Notebook PC/8846, BIOS T76 Ver. 01.01.04 12/02/2020
+> [ 2048.663801] RIP: 0010:__skb_ext_put+0x6/0x50
+> [ 2048.663814] Code: 8b 1b 48 85 db 75 db 5b 41 5c 5d c3 be 01 00 00 00 e8 de 13 c0 ff eb e7 be 02 00 00 00 e8 d2 13 c0 ff eb db 0f 1f 44 00 00 55 <8b> 07 48 89 e5 83 f8 01 74 14 b8 ff ff ff ff f0 0f c1
+> 07 83 f8 01
+> [ 2048.663819] RSP: 0018:ffffc1d105b6fd80 EFLAGS: 00010286
+> [ 2048.663824] RAX: 0000000000000000 RBX: ffff9d9ac5649000 RCX: 0000000000000000
+> [ 2048.663827] RDX: ffffffffc0d1daf6 RSI: 0000000000000206 RDI: 0000000000000000
+> [ 2048.663830] RBP: ffffc1d105b6fd98 R08: 0000000000000001 R09: ffff9d9ace8ceac0
+> [ 2048.663834] R10: ffff9d9ace8ceac0 R11: 0000000000000001 R12: ffff9d9ac5649000
+> [ 2048.663838] R13: 0000000000000000 R14: 00007ffe0354d650 R15: 0000000000000000
+> [ 2048.663843] FS:  00007fe02ab19740(0000) GS:ffff9d9e5f8c0000(0000) knlGS:0000000000000000
+> [ 2048.663849] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 2048.663853] CR2: 0000000000000000 CR3: 0000000111a52004 CR4: 0000000000770ee0
+> [ 2048.663856] PKRU: 55555554
+> [ 2048.663859] Call Trace:
+> [ 2048.663865]  ? skb_release_head_state+0x5e/0x80
+> [ 2048.663873]  kfree_skb+0x2f/0xb0
+> [ 2048.663881]  btusb_shutdown_intel_new+0x36/0x60 [btusb]
+> [ 2048.663905]  hci_dev_do_close+0x48c/0x5e0 [bluetooth]
+> [ 2048.663954]  ? __cond_resched+0x1a/0x50
+> [ 2048.663962]  hci_rfkill_set_block+0x56/0xa0 [bluetooth]
+> [ 2048.664007]  rfkill_set_block+0x98/0x170
+> [ 2048.664016]  rfkill_fop_write+0x136/0x1e0
+> [ 2048.664022]  vfs_write+0xc7/0x260
+> [ 2048.664030]  ksys_write+0xb1/0xe0
+> [ 2048.664035]  ? exit_to_user_mode_prepare+0x37/0x1c0
+> [ 2048.664042]  __x64_sys_write+0x1a/0x20
+> [ 2048.664048]  do_syscall_64+0x40/0xb0
+> [ 2048.664055]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [ 2048.664060] RIP: 0033:0x7fe02ac23c27
+> [ 2048.664066] Code: 0d 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
+> [ 2048.664070] RSP: 002b:00007ffe0354d638 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+> [ 2048.664075] RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007fe02ac23c27
+> [ 2048.664078] RDX: 0000000000000008 RSI: 00007ffe0354d650 RDI: 0000000000000003
+> [ 2048.664081] RBP: 0000000000000000 R08: 0000559b05998440 R09: 0000559b05998440
+> [ 2048.664084] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
+> [ 2048.664086] R13: 0000000000000000 R14: ffffffff00000000 R15: 00000000ffffffff
+> 
+> So move the shutdown callback to a place where workqueues are either
+> flushed or cancelled to resolve the issue.
+> 
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> ---
+> v2:
+> - Rebased on bluetooth-next.
+> 
+> net/bluetooth/hci_core.c | 16 ++++++++--------
+> 1 file changed, 8 insertions(+), 8 deletions(-)
 
-For reference: there's some mentions of PWM backlight values in
-nouveau_reg.h, but I'm not sure these are the values we would want to use.
-If we figure out how to get this information in the future, we'll have the
-benefit of more granular backlight control.
+patch has been applied to bluetooth-next tree.
 
-Signed-off-by: Lyude Paul <lyude@redhat.com>
-Cc: Jani Nikula <jani.nikula@intel.com>
-Cc: Dave Airlie <airlied@gmail.com>
-Cc: greg.depoire@gmail.com
----
- drivers/gpu/drm/nouveau/dispnv50/disp.c     |  28 ++++
- drivers/gpu/drm/nouveau/nouveau_backlight.c | 166 ++++++++++++++++++--
- drivers/gpu/drm/nouveau/nouveau_connector.h |   9 +-
- drivers/gpu/drm/nouveau/nouveau_encoder.h   |   1 +
- 4 files changed, 186 insertions(+), 18 deletions(-)
+Regards
 
-diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.c b/drivers/gpu/drm/nouveau/dispnv50/disp.c
-index c46d0374b6e6..80ad2d6b7e4b 100644
---- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
-+++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
-@@ -31,6 +31,7 @@
- #include <linux/dma-mapping.h>
- #include <linux/hdmi.h>
- #include <linux/component.h>
-+#include <linux/iopoll.h>
- 
- #include <drm/drm_atomic.h>
- #include <drm/drm_atomic_helper.h>
-@@ -1648,15 +1649,30 @@ nv50_sor_update(struct nouveau_encoder *nv_encoder, u8 head,
- 	core->func->sor->ctrl(core, nv_encoder->or, nv_encoder->ctrl, asyh);
- }
- 
-+/* TODO: Should we extend this to PWM-only backlights?
-+ * As well, should we add a DRM helper for waiting for the backlight to acknowledge
-+ * the panel backlight has been shut off? Intel doesn't seem to do this, and uses a
-+ * fixed time delay from the vbios…
-+ */
- static void
- nv50_sor_atomic_disable(struct drm_encoder *encoder, struct drm_atomic_state *state)
- {
- 	struct nouveau_encoder *nv_encoder = nouveau_encoder(encoder);
-+	struct nouveau_drm *drm = nouveau_drm(nv_encoder->base.base.dev);
- 	struct nouveau_crtc *nv_crtc = nouveau_crtc(nv_encoder->crtc);
- 	struct nouveau_connector *nv_connector = nv50_outp_get_old_connector(state, nv_encoder);
-+	struct nouveau_backlight *backlight = nv_connector->backlight;
- 	struct drm_dp_aux *aux = &nv_connector->aux;
-+	int ret;
- 	u8 pwr;
- 
-+	if (backlight && backlight->uses_dpcd) {
-+		ret = drm_edp_backlight_disable(aux, &backlight->edp_info);
-+		if (ret < 0)
-+			NV_ERROR(drm, "Failed to disable backlight on [CONNECTOR:%d:%s]: %d\n",
-+				 nv_connector->base.base.id, nv_connector->base.name, ret);
-+	}
-+
- 	if (nv_encoder->dcb->type == DCB_OUTPUT_DP) {
- 		int ret = drm_dp_dpcd_readb(aux, DP_SET_POWER, &pwr);
- 
-@@ -1695,6 +1711,9 @@ nv50_sor_atomic_enable(struct drm_encoder *encoder, struct drm_atomic_state *sta
- 	struct drm_device *dev = encoder->dev;
- 	struct nouveau_drm *drm = nouveau_drm(dev);
- 	struct nouveau_connector *nv_connector;
-+#ifdef CONFIG_DRM_NOUVEAU_BACKLIGHT
-+	struct nouveau_backlight *backlight;
-+#endif
- 	struct nvbios *bios = &drm->vbios;
- 	bool hda = false;
- 	u8 proto = NV507D_SOR_SET_CONTROL_PROTOCOL_CUSTOM;
-@@ -1769,6 +1788,14 @@ nv50_sor_atomic_enable(struct drm_encoder *encoder, struct drm_atomic_state *sta
- 			proto = NV887D_SOR_SET_CONTROL_PROTOCOL_DP_B;
- 
- 		nv50_audio_enable(encoder, nv_crtc, nv_connector, state, mode);
-+
-+#ifdef CONFIG_DRM_NOUVEAU_BACKLIGHT
-+		backlight = nv_connector->backlight;
-+		if (backlight && backlight->uses_dpcd)
-+			drm_edp_backlight_enable(&nv_connector->aux, &backlight->edp_info,
-+						 (u16)backlight->dev->props.brightness);
-+#endif
-+
- 		break;
- 	default:
- 		BUG();
-@@ -2294,6 +2321,7 @@ nv50_disp_atomic_commit_tail(struct drm_atomic_state *state)
- 	nv50_crc_atomic_start_reporting(state);
- 	if (!flushed)
- 		nv50_crc_atomic_release_notifier_contexts(state);
-+
- 	drm_atomic_helper_commit_hw_done(state);
- 	drm_atomic_helper_cleanup_planes(dev, state);
- 	drm_atomic_helper_commit_cleanup_done(state);
-diff --git a/drivers/gpu/drm/nouveau/nouveau_backlight.c b/drivers/gpu/drm/nouveau/nouveau_backlight.c
-index 72f35a2babcb..1cbd71abc80a 100644
---- a/drivers/gpu/drm/nouveau/nouveau_backlight.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_backlight.c
-@@ -42,11 +42,6 @@
- static struct ida bl_ida;
- #define BL_NAME_SIZE 15 // 12 for name + 2 for digits + 1 for '\0'
- 
--struct nouveau_backlight {
--	struct backlight_device *dev;
--	int id;
--};
--
- static bool
- nouveau_get_backlight_name(char backlight_name[BL_NAME_SIZE],
- 			   struct nouveau_backlight *bl)
-@@ -148,6 +143,98 @@ static const struct backlight_ops nv50_bl_ops = {
- 	.update_status = nv50_set_intensity,
- };
- 
-+/*
-+ * eDP brightness callbacks need to happen under lock, since we need to
-+ * enable/disable the backlight ourselves for modesets
-+ */
-+static int
-+nv50_edp_get_brightness(struct backlight_device *bd)
-+{
-+	struct drm_connector *connector = dev_get_drvdata(bd->dev.parent);
-+	struct drm_device *dev = connector->dev;
-+	struct drm_crtc *crtc;
-+	struct drm_modeset_acquire_ctx ctx;
-+	int ret = 0;
-+
-+	drm_modeset_acquire_init(&ctx, 0);
-+
-+retry:
-+	ret = drm_modeset_lock(&dev->mode_config.connection_mutex, &ctx);
-+	if (ret == -EDEADLK)
-+		goto deadlock;
-+	else if (ret < 0)
-+		goto out;
-+
-+	crtc = connector->state->crtc;
-+	if (!crtc)
-+		goto out;
-+
-+	ret = drm_modeset_lock(&crtc->mutex, &ctx);
-+	if (ret == -EDEADLK)
-+		goto deadlock;
-+	else if (ret < 0)
-+		goto out;
-+
-+	if (!crtc->state->active)
-+		goto out;
-+
-+	ret = bd->props.brightness;
-+out:
-+	drm_modeset_drop_locks(&ctx);
-+	drm_modeset_acquire_fini(&ctx);
-+	return ret;
-+deadlock:
-+	drm_modeset_backoff(&ctx);
-+	goto retry;
-+}
-+
-+static int
-+nv50_edp_set_brightness(struct backlight_device *bd)
-+{
-+	struct drm_connector *connector = dev_get_drvdata(bd->dev.parent);
-+	struct nouveau_connector *nv_connector = nouveau_connector(connector);
-+	struct drm_device *dev = connector->dev;
-+	struct drm_crtc *crtc;
-+	struct drm_dp_aux *aux = &nv_connector->aux;
-+	struct nouveau_backlight *nv_bl = nv_connector->backlight;
-+	struct drm_modeset_acquire_ctx ctx;
-+	int ret = 0;
-+
-+	drm_modeset_acquire_init(&ctx, 0);
-+retry:
-+	ret = drm_modeset_lock(&dev->mode_config.connection_mutex, &ctx);
-+	if (ret == -EDEADLK)
-+		goto deadlock;
-+	else if (ret < 0)
-+		goto out;
-+
-+	crtc = connector->state->crtc;
-+	if (!crtc)
-+		goto out;
-+
-+	ret = drm_modeset_lock(&crtc->mutex, &ctx);
-+	if (ret == -EDEADLK)
-+		goto deadlock;
-+	else if (ret < 0)
-+		goto out;
-+
-+	if (crtc->state->active)
-+		ret = drm_edp_backlight_set_level(aux, &nv_bl->edp_info, bd->props.brightness);
-+
-+out:
-+	drm_modeset_drop_locks(&ctx);
-+	drm_modeset_acquire_fini(&ctx);
-+	return ret;
-+deadlock:
-+	drm_modeset_backoff(&ctx);
-+	goto retry;
-+}
-+
-+static const struct backlight_ops nv50_edp_bl_ops = {
-+	.get_brightness = nv50_edp_get_brightness,
-+	.update_status = nv50_edp_set_brightness,
-+};
-+
- static int
- nva3_get_intensity(struct backlight_device *bd)
- {
-@@ -194,8 +281,13 @@ static const struct backlight_ops nva3_bl_ops = {
- 	.update_status = nva3_set_intensity,
- };
- 
-+/* FIXME: perform backlight probing for eDP _before_ this, this only gets called after connector
-+ * registration which happens after the initial modeset
-+ */
- static int
--nv50_backlight_init(struct nouveau_encoder *nv_encoder,
-+nv50_backlight_init(struct nouveau_backlight *bl,
-+		    struct nouveau_connector *nv_conn,
-+		    struct nouveau_encoder *nv_encoder,
- 		    struct backlight_properties *props,
- 		    const struct backlight_ops **ops)
- {
-@@ -205,6 +297,41 @@ nv50_backlight_init(struct nouveau_encoder *nv_encoder,
- 	if (!nvif_rd32(device, NV50_PDISP_SOR_PWM_CTL(ffs(nv_encoder->dcb->or) - 1)))
- 		return -ENODEV;
- 
-+	if (nv_conn->type == DCB_CONNECTOR_eDP) {
-+		int ret;
-+		u16 current_level;
-+		u8 edp_dpcd[EDP_DISPLAY_CTL_CAP_SIZE];
-+		u8 current_mode;
-+
-+		ret = drm_dp_dpcd_read(&nv_conn->aux, DP_EDP_DPCD_REV, edp_dpcd,
-+				       EDP_DISPLAY_CTL_CAP_SIZE);
-+		if (ret < 0)
-+			return ret;
-+
-+		if (drm_edp_backlight_supported(edp_dpcd)) {
-+			NV_DEBUG(drm, "DPCD backlight controls supported on %s\n",
-+				 nv_conn->base.name);
-+
-+			ret = drm_edp_backlight_init(&nv_conn->aux, &bl->edp_info, 0, edp_dpcd,
-+						     &current_level, &current_mode);
-+			if (ret < 0)
-+				return ret;
-+
-+			ret = drm_edp_backlight_enable(&nv_conn->aux, &bl->edp_info, current_level);
-+			if (ret < 0) {
-+				NV_ERROR(drm, "Failed to enable backlight on %s: %d\n",
-+					 nv_conn->base.name, ret);
-+				return ret;
-+			}
-+
-+			*ops = &nv50_edp_bl_ops;
-+			props->brightness = current_level;
-+			props->max_brightness = bl->edp_info.max;
-+			bl->uses_dpcd = true;
-+			return 0;
-+		}
-+	}
-+
- 	if (drm->client.device.info.chipset <= 0xa0 ||
- 	    drm->client.device.info.chipset == 0xaa ||
- 	    drm->client.device.info.chipset == 0xac)
-@@ -245,6 +372,10 @@ nouveau_backlight_init(struct drm_connector *connector)
- 	if (!nv_encoder)
- 		return 0;
- 
-+	bl = kzalloc(sizeof(*bl), GFP_KERNEL);
-+	if (!bl)
-+		return -ENOMEM;
-+
- 	switch (device->info.family) {
- 	case NV_DEVICE_INFO_V0_CURIE:
- 		ret = nv40_backlight_init(nv_encoder, &props, &ops);
-@@ -257,20 +388,19 @@ nouveau_backlight_init(struct drm_connector *connector)
- 	case NV_DEVICE_INFO_V0_VOLTA:
- 	case NV_DEVICE_INFO_V0_TURING:
- 	case NV_DEVICE_INFO_V0_AMPERE: //XXX: not confirmed
--		ret = nv50_backlight_init(nv_encoder, &props, &ops);
-+		ret = nv50_backlight_init(bl, nouveau_connector(connector),
-+					  nv_encoder, &props, &ops);
- 		break;
- 	default:
--		return 0;
-+		ret = 0;
-+		goto fail_alloc;
- 	}
- 
--	if (ret == -ENODEV)
--		return 0;
--	else if (ret)
--		return ret;
--
--	bl = kzalloc(sizeof(*bl), GFP_KERNEL);
--	if (!bl)
--		return -ENOMEM;
-+	if (ret) {
-+		if (ret == -ENODEV)
-+			ret = 0;
-+		goto fail_alloc;
-+	}
- 
- 	if (!nouveau_get_backlight_name(backlight_name, bl)) {
- 		NV_ERROR(drm, "Failed to retrieve a unique name for the backlight interface\n");
-@@ -287,7 +417,9 @@ nouveau_backlight_init(struct drm_connector *connector)
- 	}
- 
- 	nouveau_connector(connector)->backlight = bl;
--	bl->dev->props.brightness = bl->dev->ops->get_brightness(bl->dev);
-+	if (!bl->dev->props.brightness)
-+		bl->dev->props.brightness =
-+			bl->dev->ops->get_brightness(bl->dev);
- 	backlight_update_status(bl->dev);
- 
- 	return 0;
-diff --git a/drivers/gpu/drm/nouveau/nouveau_connector.h b/drivers/gpu/drm/nouveau/nouveau_connector.h
-index d0b859c4a80e..40f90e353540 100644
---- a/drivers/gpu/drm/nouveau/nouveau_connector.h
-+++ b/drivers/gpu/drm/nouveau/nouveau_connector.h
-@@ -46,7 +46,14 @@ struct nvkm_i2c_port;
- struct dcb_output;
- 
- #ifdef CONFIG_DRM_NOUVEAU_BACKLIGHT
--struct nouveau_backlight;
-+struct nouveau_backlight {
-+	struct backlight_device *dev;
-+
-+	struct drm_edp_backlight_info edp_info;
-+	bool uses_dpcd : 1;
-+
-+	int id;
-+};
- #endif
- 
- #define nouveau_conn_atom(p)                                                   \
-diff --git a/drivers/gpu/drm/nouveau/nouveau_encoder.h b/drivers/gpu/drm/nouveau/nouveau_encoder.h
-index 1ffcc0a491fd..77c2fed76e8b 100644
---- a/drivers/gpu/drm/nouveau/nouveau_encoder.h
-+++ b/drivers/gpu/drm/nouveau/nouveau_encoder.h
-@@ -30,6 +30,7 @@
- #include <subdev/bios/dcb.h>
- 
- #include <drm/drm_encoder_slave.h>
-+#include <drm/drm_dp_helper.h>
- #include <drm/drm_dp_mst_helper.h>
- #include "dispnv04/disp.h"
- struct nv50_head_atom;
--- 
-2.31.1
+Marcel
 
