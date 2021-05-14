@@ -2,123 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A1B38137E
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 00:07:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F21C2381383
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 00:10:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233367AbhENWIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 18:08:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42178 "EHLO
+        id S233615AbhENWLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 18:11:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232880AbhENWIp (ORCPT
+        with ESMTP id S230144AbhENWLD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 18:08:45 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0475CC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 15:07:32 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id t7so725024qtn.3
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 15:07:32 -0700 (PDT)
+        Fri, 14 May 2021 18:11:03 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D09AEC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 15:09:51 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id z4so305809pgb.9
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 15:09:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IbrQjxkb0K3z7ZkPDbwumBPr7QnDKgJDV9MYg72KtXI=;
-        b=dx1Df5/yzY+AeZz/rdkuLnqLf65GYwH3dHIFCdSBqpHR3fWG5VtvM11+v8Pz0I424K
-         /CTN93UfyjlVQMv7eSajh07I4QztMYX0OMg0CHIOA2eA2JA68b/3utBkLzotkWwEGMYo
-         pnph5wO/Gl8XUyBVgaIP6DIgLVnP/tHjlk/sY1uNq1c5iAz2ltn/TpK+gz9uARdDWfNz
-         KE0Nouw9d71fwOyDTx1rde2xAF4byNR1HtLY4UzwVp7KueySru6gKGgLUrpUX49QoMAW
-         qLKZzxO74ljfE8ocXZcXcgy7UgDj2/GzwxBgMcm3+7UlIM8aqyxYD+tC5H2LRLvBx7cp
-         eZKg==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EVEwKEdVLlVVJVxedoNBc4BWAXFfR9V6+rvEkmkqNqo=;
+        b=lf/df1n6657u4+dZTrwF6xxCFyjzE5ovnQgCJaDGuK17YTXI0MQoYgqn2DBtrXTM9y
+         6qmBCVv4NMVI9HnQMblrhm2Y8iWZpF12WPu40pq/Vru87pc9BbgDit95m2cv8C4RmXY5
+         i6IBr1nP44ztPdfmUclXOAZkOG/tjzQ5koJ1E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IbrQjxkb0K3z7ZkPDbwumBPr7QnDKgJDV9MYg72KtXI=;
-        b=gqBnF9t8vNUubhaB9A3OEC0KjnHDcHXOGv+5myXCdbrIdMkV0I3Qrf/eBjhEESKDXE
-         RcvTtr7WRde6fNM/8VWgWVMhT46Q6ywCQDk4BgrsK1exOEEY9H1PbgGTPxRKmELYBuCI
-         NDQOUZ9g3ttxMa+iZgIZMveoqDZEFHpa8CKSs2YnlwOfxSw6asOmj3vSsKa49rNe8/55
-         l37Wqg6u6PwqSA09VYc248tVidlpniEe2aiwltakibxc0xe4O6MC5hg5JjchJtWLH6QB
-         0qocByzcT8Y4P+oGDcOnycYqwnxSe1MN4jUZDe3dqVAZe2JszgIP/lTvX6eDeEIeVoya
-         oScw==
-X-Gm-Message-State: AOAM530g4CZRvfiHHOa+hTezdOwey7x4LOVumbcCsRfy1UBFt76U5UoT
-        abb/kOWiUlQc8fWZmHq8LUf6UI8yjgbQa4401QC1aQ==
-X-Google-Smtp-Source: ABdhPJxaEbRftY4lIHCyF5Rw8nvdMm5/lCdHTk5LXSje8/I/5yu/Xzt4icnH9N8EPP/ne043QHlIxNTO/PeJv6d+lKQ=
-X-Received: by 2002:ac8:5810:: with SMTP id g16mr44371397qtg.135.1621030052188;
- Fri, 14 May 2021 15:07:32 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EVEwKEdVLlVVJVxedoNBc4BWAXFfR9V6+rvEkmkqNqo=;
+        b=lHXLQtnSvMediOZajdutvhKAmaPK992jGFEU4tQMS5q935aIM5byfN+IDeEDDBhqW0
+         8G/19yoQuO5L0Jqb6NS26ghcz8lKD/4kK8AE6Lz4OZF6RJn4pSUdXgJjtkUm/ce4ZQ3i
+         JYNM//b/7JnocITCWChqzdBVff58ncztFOnsD/Dxcly5UFP2c4nYKAkSMLlFLvQ2LCvJ
+         tg4uBSc189OVP8CbU1jIh2ahe4m8yYqr5M1MQrpsnpqxrfvVXBkettcwBHPJTR6De1Rb
+         jLTwwHkVoNKF+o1RGi517iaCqUvPKVXyXCWyJhMzzVI3HSEjm0yvrj5pFZES3PHAznLa
+         SY9g==
+X-Gm-Message-State: AOAM530Zo8CiMQ9pLMVA0dpUkI+wAnDoMS0ipxtvsEa4Aio1mABuacFk
+        YMuS0DXlC8BnE626clG5yxTL5A==
+X-Google-Smtp-Source: ABdhPJwq18GMShSHikNPymoScSOxvtF7YXVCscqGBVyyUnLW5CUGpxUPQ8en98R5qUf4KEmP5j2zxw==
+X-Received: by 2002:a63:d64f:: with SMTP id d15mr48686658pgj.137.1621030191378;
+        Fri, 14 May 2021 15:09:51 -0700 (PDT)
+Received: from kuabhs-cdev.c.googlers.com.com (254.80.82.34.bc.googleusercontent.com. [34.82.80.254])
+        by smtp.gmail.com with ESMTPSA id j4sm6446156pjm.10.2021.05.14.15.09.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 May 2021 15:09:51 -0700 (PDT)
+From:   Abhishek Kumar <kuabhs@chromium.org>
+To:     Johannes Berg <johannes.berg@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>
+Cc:     briannorris@chromium.org, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org,
+        Jouni Malinen <jouni@codeaurora.org>,
+        Wen Gong <wgong@codeaurora.org>, kuabhs@chromium.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH] ath10k: remove unused variable in ath10k_htt_rx_h_frag_pn_check
+Date:   Fri, 14 May 2021 22:07:42 +0000
+Message-Id: <20210514220644.1.Iad576de95836b74aba80a5fc28d7131940eca190@changeid>
+X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
 MIME-Version: 1.0
-References: <20210514213032.575161-1-arnd@kernel.org>
-In-Reply-To: <20210514213032.575161-1-arnd@kernel.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Sat, 15 May 2021 01:07:21 +0300
-Message-ID: <CAA8EJpoo=VS1Nk-3CpyraDFzF+0xe3SWxkVt7M=8aBNhbdh_hQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm/dsi: fix 32-bit clang warning
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 15 May 2021 at 00:31, Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> clang is a little overzealous with warning about a constant conversion
-> in an untaken branch of a ternary expression:
->
-> drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c:975:48: error: implicit conversion from 'unsigned long long' to 'unsigned long' changes value from 5000000000 to 705032704 [-Werror,-Wconstant-conversion]
->         .max_pll_rate = (5000000000ULL < ULONG_MAX) ? 5000000000UL : ULONG_MAX,
->                                                       ^~~~~~~~~~~~
->
-> Rewrite this to use a preprocessor conditional instead to avoid the
-> warning.
->
-> Fixes: 076437c9e360 ("drm/msm/dsi: move min/max PLL rate to phy config")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+The local variable more_frags in ath10k_htt_rx_h_frag_pn_check is not
+used. This patch is to remove that.
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Fixes: a1166b2653db ("ath10k: add CCMP PN replay protection for fragmented
+frames for PCIe")
+Signed-off-by: Abhishek Kumar <kuabhs@chromium.org>
+---
 
-> ---
-> As found with another patch, using __builtin_choose_expr() would
-> likely also work here, but doesn't seem any more readable.
-> ---
->  drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
-> index e76ce40a12ab..accd6b4eb7c2 100644
-> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
-> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
-> @@ -972,7 +972,11 @@ const struct msm_dsi_phy_cfg dsi_phy_7nm_cfgs = {
->                 .restore_pll_state = dsi_7nm_pll_restore_state,
->         },
->         .min_pll_rate = 600000000UL,
-> -       .max_pll_rate = (5000000000ULL < ULONG_MAX) ? 5000000000ULL : ULONG_MAX,
-> +#ifdef CONFIG_64BIT
-> +       .max_pll_rate = 5000000000UL,
-> +#else
-> +       .max_pll_rate = ULONG_MAX,
-> +#endif
->         .io_start = { 0xae94400, 0xae96400 },
->         .num_dsi_phy = 2,
->         .quirks = DSI_PHY_7NM_QUIRK_V4_1,
-> --
-> 2.29.2
->
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 7ffb5d5b2a70..adbaeb67eedf 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -1787,7 +1787,6 @@ static bool ath10k_htt_rx_h_frag_pn_check(struct ath10k *ar,
+ 	struct ath10k_peer *peer;
+ 	union htt_rx_pn_t *last_pn, new_pn = {0};
+ 	struct ieee80211_hdr *hdr;
+-	bool more_frags;
+ 	u8 tid, frag_number;
+ 	u32 seq;
+ 
+@@ -1805,7 +1804,6 @@ static bool ath10k_htt_rx_h_frag_pn_check(struct ath10k *ar,
+ 
+ 	last_pn = &peer->frag_tids_last_pn[tid];
+ 	new_pn.pn48 = ath10k_htt_rx_h_get_pn(ar, skb, offset, enctype);
+-	more_frags = ieee80211_has_morefrags(hdr->frame_control);
+ 	frag_number = le16_to_cpu(hdr->seq_ctrl) & IEEE80211_SCTL_FRAG;
+ 	seq = (__le16_to_cpu(hdr->seq_ctrl) & IEEE80211_SCTL_SEQ) >> 4;
+ 
 -- 
-With best wishes
-Dmitry
+2.31.1.751.gd2f1c929bd-goog
+
