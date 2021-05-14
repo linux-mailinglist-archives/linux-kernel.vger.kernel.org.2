@@ -2,88 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7787380A5C
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 15:23:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8884A380A5E
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 15:25:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233946AbhENNZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 09:25:01 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:52266 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230075AbhENNY6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 09:24:58 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 39A851F432DE
-Subject: Re: [RESEND PATCH v7 2/2] arm64: dts: mt8183: add cbas node under
- cros_ec
-To:     Ikjoon Jang <ikjn@chromium.org>, devicetree@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Guenter Roeck <groeck@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        linux-input@vger.kernel.org, Hsin-Yi Wang <hsinyi@chromium.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>
-References: <20210514122051.266169-1-ikjn@chromium.org>
- <20210514122051.266169-3-ikjn@chromium.org>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <2a216922-c93b-0e1b-0dee-add6cdc9a3c9@collabora.com>
-Date:   Fri, 14 May 2021 15:23:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S233970AbhENN0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 09:26:03 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:40250 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230075AbhENN0C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 09:26:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=bKrIdux+WQDhbsuj/L6O78Gu9Fpi7TdC9aFvwWVLPns=; b=Uu7s+m0wpC6i6cokaQjN2ujZPy
+        46SprCmSQxX+gHsLgzdWIUPaC9JeDRtKNZh9U+08/n3Uf2SG6hGMEmCcbC5UHLqBXrzd48DFJ2NaX
+        XzWrdLAk3WP9OOzcX1jfQqypi2sbqw70RFOrOweG/bdCxUOUElNSDsOjni+IxUiSisNM=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lhXo3-004BmE-AI; Fri, 14 May 2021 15:24:43 +0200
+Date:   Fri, 14 May 2021 15:24:43 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Peter Geis <pgwipeout@gmail.com>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH v3] net: phy: add driver for Motorcomm yt8511 phy
+Message-ID: <YJ56G23e930pg4Iv@lunn.ch>
+References: <20210514115826.3025223-1-pgwipeout@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210514122051.266169-3-ikjn@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210514115826.3025223-1-pgwipeout@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ikjoon,
+On Fri, May 14, 2021 at 07:58:26AM -0400, Peter Geis wrote:
+> Add a driver for the Motorcomm yt8511 phy that will be used in the
+> production Pine64 rk3566-quartz64 development board.
+> It supports gigabit transfer speeds, rgmii, and 125mhz clk output.
 
-Thank you for the patch.
+Thanks for adding RGMII support.
 
-On 14/5/21 14:20, Ikjoon Jang wrote:
-> Add a 'cbas' device node for supporting tablet mode switch in
-> kukui devices.
-> 
-> Kukui platforms with detacheable base have an additional input
-> device under cros-ec, which reports SW_TABLET_MODE regarding
-> its base state (e.g. base flipped or detached).
-> 
-> Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
-> 
+> +#define PHY_ID_YT8511		0x0000010a
 
-Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+No OUI in the PHY ID?
 
-> ---
-> 
-> Changes in v7:
-> - remove a label in cbas node
-> - fix an erratum in commit message (table --> tablet)
-> - dt-binding patchess merged altogether with mt8183 dts
-> 
->  arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-> index ff56bcfa3370..1512605a438e 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-> @@ -816,6 +816,10 @@ usbc_extcon: extcon0 {
->  			compatible = "google,extcon-usbc-cros-ec";
->  			google,usb-port-id = <0>;
->  		};
+Humm, the datasheet says it defaults to zero. That is not very
+good. This could be a source of problems in the future, if some other
+manufacture also does not use an OUI.
+
+> +/* RX Delay enabled = 1.8ns 1000T, 8ns 10/100T */
+> +#define YT8511_DELAY_RX		BIT(0)
 > +
-> +		cbas {
-> +			compatible = "google,cros-cbas";
-> +		};
->  	};
->  };
->  
-> 
+> +/* TX Delay is bits 7:4, default 0x5
+> + * Delay = 150ps * N - 250ps, Default = 500ps
+> + */
+> +#define YT8511_DELAY_TX		(0x5 << 4)
+
+> +
+> +	switch (phydev->interface) {
+> +	case PHY_INTERFACE_MODE_RGMII:
+> +		val &= ~(YT8511_DELAY_RX | YT8511_DELAY_TX);
+> +		break;
+
+This is not correct. YT8511_DELAY_TX will only mask the 2 bits in 0x5,
+not all the bits in 7:4. And since the formula is
+
+Delay = 150ps * N - 250ps
+
+setting N to 0 is not what you want. You probably want N=2, so you end up with 50ps
+
+> +	case PHY_INTERFACE_MODE_RGMII_ID:
+> +		val |= YT8511_DELAY_RX | YT8511_DELAY_TX;
+> +		break;
+> +	case PHY_INTERFACE_MODE_RGMII_RXID:
+> +		val &= ~(YT8511_DELAY_TX);
+> +		val |= YT8511_DELAY_RX;
+
+The delay should be around 2ns. For RX you only have 1.8ns, which is
+probably good enough. But for TX you have more flexibility. You are
+setting it to the default of 500ps which is too small. I would suggest
+1.85ns, N=14, so it is the same as RX.
+
+I also wonder about bits 15:12 of PHY EXT ODH: Delay and driver
+strength CFG register.
+
+	 Andrew
