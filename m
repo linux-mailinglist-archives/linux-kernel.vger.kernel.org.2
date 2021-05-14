@@ -2,161 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC4F7380671
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 11:44:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 926003806A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 12:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231783AbhENJp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 05:45:29 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:54389 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230059AbhENJp2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 05:45:28 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id CB3255C0182;
-        Fri, 14 May 2021 05:44:16 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Fri, 14 May 2021 05:44:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nakato.io; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding:content-type; s=fm1; bh=
-        9i4NUL/YeDArFkP1t4LXD0ajcgqjLMEAiieLzS+3mpg=; b=Fu8ZLZflJ8gxXjqc
-        pTs63whQpIL5TfPZgdovE41yoW9FWCxIbRgLhyEHtTudwATCEDWIpRKoQjHsNrur
-        E6r4oPtebHSNophrbQYPyLMAwFYg6NZdoIrrB8cBlUswDsbE8FixQqTeK6YsO7Ge
-        2pgVxsz+PMqTTadhLBL2o5R+QAIDakbVmwb9d2c20FVCEmYQCFSnKm5T2o5+a8hL
-        e1tx2R3X+FbbCf5GDYFDP+714ODwh/90Cj10TmB23b7M8WOr9+FXRBG7TK3lo6Sf
-        8tndYgKZ4lm8Kt/KWAWJFTa9RTiJTd27rf8ndeehGggwTjNgyzPC1b4Z3Y7lQ5uJ
-        R8Syrw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=9i4NUL/YeDArFkP1t4LXD0ajcgqjLMEAiieLzS+3m
-        pg=; b=VMW+xoy6vQ9tzysdguUpgE6RP60HVvWpMGQWT0Tedc4TjC3uqfjg/Kmd9
-        A1RvRravFiIl62l4vp0ONOW7AjTgZjLq+U/PcLoqRP5UVEvGU12+vYfxf2eH6Xoh
-        k7eD7rwn2UevT6ShFr0Q0q9THxWHl9ZK+FlmmkYOI5o7/a9g3/5t0Amgom/JNLu+
-        zIorVavP9Ir8BpyN/A0CF4HpmuRDM4IvX05reXnzLAHRM7ExtMf/JmcEs8Bk/JjO
-        LZDpXhoM9H9tBR0afU0GZ4zTjftzymmMFp+i/387n3EAtXdEicpwxHdCEOt9cmdl
-        GR8OB8S8QiACIR+yjoePrbk56NjnA==
-X-ME-Sender: <xms:b0aeYNJIkeaPBga9_LwaSJgwQyY1Cs1D8_6ZIyhcNJiC2xy9f8AorQ>
-    <xme:b0aeYJLJ1jjYa_1JQsxnIbUU65rFHYpVhmBVaSE-yh81T_OywxWxnE16U1AYS9P4v
-    91p4jXIJBNnu2BVFg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdehhedgudegjecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefhvffufffkjghfggfgtgesthfuredttddtvdenucfhrhhomhepufgrtghh
-    ihcumfhinhhguceonhgrkhgrthhosehnrghkrghtohdrihhoqeenucggtffrrghtthgvrh
-    hnpeegvdfgtdfhueevjedvgeeugfeghffggffhieevhfejkedvfeevudduiefgfefhieen
-    ucffohhmrghinhepmhhithdrvgguuhenucfkphepvddvtddrvdegtddrkedtrdeitdenuc
-    evlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehnrghkrght
-    ohesnhgrkhgrthhordhioh
-X-ME-Proxy: <xmx:b0aeYFtXhZKzatpOcZAYox89hyeX17bxeThG-vQlFjxomu8ogmN8DA>
-    <xmx:b0aeYOZfCeZFEDPNEIysVsltf2WUQJBCEmSgHPyHlDK0QIT0oRiQqg>
-    <xmx:b0aeYEY9cnY0BD_I7cGHwttdY_J9Df5BMUzoIvmqbbrMOV-4dEeWxw>
-    <xmx:cEaeYJOGChidYlUIdDVqcXii1gSuSYrit0K0WZTIay-BPXulve5nVQ>
-Received: from yuki.localnet (unknown [220.240.80.60])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Fri, 14 May 2021 05:44:12 -0400 (EDT)
-From:   Sachi King <nakato@nakato.io>
-To:     'Maximilian Luz' <luzmaximilian@gmail.com>,
+        id S231558AbhENKDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 06:03:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58672 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230023AbhENKDR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 06:03:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB4D2613BC;
+        Fri, 14 May 2021 10:01:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620986526;
+        bh=GrjPHc36lucdUSuooC9aqhL2Od7+jfK0fPUigqnZcVA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=iCIXGblwqBis0HCCaKglHVxXgHdjY+ZnJUEpxhS25qd0YTOmPIMwFqlt0gAwqFaCn
+         H6TYlYBWCxImWVPxQaXnme+hpROYqMTCLF2Ei6uKrfHadRhs+ayz5bA3lk5FtTeO/J
+         kbiLtSut3lU229IM7sF582cRjJivSN3xcEhAoo9aZUac6zWidfJ8NHVAJjY3Rp7yEE
+         dYKIekHBKs/JVyWBTb6nx0reJMz2nGFhAf8LBgLNfsP72b9qNOGH6t05d70F9GjPY+
+         8sZc7aQR/6sMfmjSb+dYlYAWu/wuLtjPqPhcgnm4RJEAMEiB7smvyJnpuMYADmfYdd
+         sGrgg1bm/9cMA==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     linux-arch@vger.kernel.org
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        James Morris <jmorris@namei.org>, Jens Axboe <axboe@kernel.dk>,
+        John Johansen <john.johansen@canonical.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Rich Felker <dalias@libc.org>,
+        "Richard Russon (FlatCap)" <ldm@flatcap.org>,
+        Russell King <linux@armlinux.org.uk>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
+        Stafford Horne <shorne@gmail.com>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        David Laight <David.Laight@aculab.com>
-Cc:     "H. Peter Anvin" <hpa@zytor.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH] x86/i8259: Work around buggy legacy PIC
-Date:   Sat, 15 May 2021 05:41:07 +1000
-Message-ID: <3034083.sOBWI1P7ec@yuki>
-In-Reply-To: <e43d9a823c9e44bab0cdbf32a000c373@AcuMS.aculab.com>
-References: <20210512210459.1983026-1-luzmaximilian@gmail.com> <e7dbd4d1-f23f-42f0-e912-032ba32f9ec8@gmail.com> <e43d9a823c9e44bab0cdbf32a000c373@AcuMS.aculab.com>
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org, linux-crypto@vger.kernel.org,
+        openrisc@lists.librecores.org, linuxppc-dev@lists.ozlabs.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net, linux-block@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: [PATCH v2 00/13] Unify asm/unaligned.h around struct helper
+Date:   Fri, 14 May 2021 12:00:48 +0200
+Message-Id: <20210514100106.3404011-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, May 13, 2021 8:36:27 PM AEST David Laight wrote:
-> > -----Original Message-----
-> > From: Maximilian Luz <luzmaximilian@gmail.com>
-> > Sent: 13 May 2021 11:12
-> > To: David Laight <David.Laight@ACULAB.COM>; Thomas Gleixner
-> > <tglx@linutronix.de>; Ingo Molnar <mingo@redhat.com>; Borislav Petkov
-> > <bp@alien8.de>
-> > Cc: H. Peter Anvin <hpa@zytor.com>; Sachi King <nakato@nakato.io>;
-> > x86@kernel.org; linux-kernel@vger.kernel.org; stable@vger.kernel.org
-> > Subject: Re: [PATCH] x86/i8259: Work around buggy legacy PIC
-> > 
-> > On 5/13/21 10:10 AM, David Laight wrote:
-> > 
-> > > From: Maximilian Luz
-> > > 
-> > >> Sent: 12 May 2021 22:05
-> > >>
-> > >>
-> > >>
-> > >> The legacy PIC on the AMD variant of the Microsoft Surface Laptop 4
-> > >> has
-> > >> some problems on boot. For some reason it consistently does not
-> > >> respond
-> > >> on the first try, requiring a couple more tries before it finally
-> > >> responds.
-> > >
-> > >
-> > >
-> > > That seems very strange, something else must be going on that causes the
-> > > grief.
-> > > The 8259 will be built into to the one of the cpu support
-> > > chips.
-> > > I can't imagine that requires anything special.
-> > 
-> > 
-> > Right, it's definitely strange. Both Sachi (I imagine) and I don't know
-> > much about these devices, so we're open for suggestions.
-> 
-> 
-> I found a copy of the datasheet (I don't seem to have the black book):
-> 
-> https://pdos.csail.mit.edu/6.828/2010/readings/hardware/8259A.pdf
-> 
-> The PC hardware has two 8259 in cascade mode.
-> (Cascaded using an interrupt that wasn't really using in the original
-> 8088 PC which only had one 8259.)
-> 
-> I wonder if the bios has actually initialised is properly.
-> Some initialisation writes have to be done to set everything up.
+From: Arnd Bergmann <arnd@arndb.de>
 
-I suspect by the displayed behaviour you are correct and that it has
-not.  I'm struggling to figure out who to talk to to see that is
-something that can be fixed in the firmware.
+The get_unaligned()/put_unaligned() helpers are traditionally architecture
+specific, with the two main variants being the "access-ok.h" version
+that assumes unaligned pointer accesses always work on a particular
+architecture, and the "le-struct.h" version that casts the data to a
+byte aligned type before dereferencing, for architectures that cannot
+always do unaligned accesses in hardware.
 
-> It is also worth noting that the probe code is spectacularly crap.
-> It writes 0xff and then checks that 0xff is read back.
-> Almost anything (including a failed PCIe read to the ISA bridge)
-> will return 0xff and make the test pass.
+Based on the discussion linked below, it appears that the access-ok
+version is not realiable on any architecture, but the struct version
+probably has no downsides. This series changes the code to use the
+same implementation on all architectures, addressing the few exceptions
+separately.
 
-I was under the impression that it wrote 0xfb, and 0xff would be
-considered a failure.
+I've included this version in the asm-generic tree for 5.14 already,
+addressing the few issues that were pointed out in the RFC. If there
+are any remaining problems, I hope those can be addressed as follow-up
+patches.
 
-> It's about 35 years since I last wrote the code to initialise an 8259.
-> The memory cells are foggy.
+        Arnd
 
-I'm not sure the i8259 is needed on the device, as the interrupts
-appear to function on the device if I bypass the nr_legacy_irqs() check
-while the legacy_pic is set to the null_legacy_pic.
+Link: https://lore.kernel.org/lkml/75d07691-1e4f-741f-9852-38c0b4f520bc@synopsys.com/
+Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=100363
+Link: https://lore.kernel.org/lkml/20210507220813.365382-14-arnd@kernel.org/
+Link: git://git.kernel.org/pub/scm/linux/kernel/git/arnd/asm-generic.git unaligned-rework-v2
 
-The null_legacy_pic however specifies having 0 irqs, and the io_apic
-does not allow us to set the pin attributes unless the pin we are
-attempting to set is less than nr_legacy_irqs.
 
-The IOAPIC seems to take responsibility for the 0-15 interrupts on this
-specific hardware, should we maybe be ignoring the i8259 and looking
-into allowing interrupts 0-15 to be setup even when the legacy_pic is
-not available?
+Arnd Bergmann (13):
+  asm-generic: use asm-generic/unaligned.h for most architectures
+  openrisc: always use unaligned-struct header
+  sh: remove unaligned access for sh4a
+  m68k: select CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+  powerpc: use linux/unaligned/le_struct.h on LE power7
+  asm-generic: unaligned: remove byteshift helpers
+  asm-generic: unaligned always use struct helpers
+  partitions: msdos: fix one-byte get_unaligned()
+  apparmor: use get_unaligned() only for multi-byte words
+  mwifiex: re-fix for unaligned accesses
+  netpoll: avoid put_unaligned() on single character
+  asm-generic: uaccess: 1-byte access is always aligned
+  asm-generic: simplify asm/unaligned.h
 
-Cheers,
-Sachi
+ arch/alpha/include/asm/unaligned.h          |  12 --
+ arch/arm/include/asm/unaligned.h            |  27 ---
+ arch/ia64/include/asm/unaligned.h           |  12 --
+ arch/m68k/Kconfig                           |   1 +
+ arch/m68k/include/asm/unaligned.h           |  26 ---
+ arch/microblaze/include/asm/unaligned.h     |  27 ---
+ arch/mips/crypto/crc32-mips.c               |   2 +-
+ arch/openrisc/include/asm/unaligned.h       |  47 -----
+ arch/parisc/include/asm/unaligned.h         |   6 +-
+ arch/powerpc/include/asm/unaligned.h        |  22 ---
+ arch/sh/include/asm/unaligned-sh4a.h        | 199 --------------------
+ arch/sh/include/asm/unaligned.h             |  13 --
+ arch/sparc/include/asm/unaligned.h          |  11 --
+ arch/x86/include/asm/unaligned.h            |  15 --
+ arch/xtensa/include/asm/unaligned.h         |  29 ---
+ block/partitions/ldm.h                      |   2 +-
+ block/partitions/msdos.c                    |   2 +-
+ drivers/net/wireless/marvell/mwifiex/pcie.c |  10 +-
+ include/asm-generic/uaccess.h               |   4 +-
+ include/asm-generic/unaligned.h             | 141 +++++++++++---
+ include/linux/unaligned/access_ok.h         |  68 -------
+ include/linux/unaligned/be_byteshift.h      |  71 -------
+ include/linux/unaligned/be_memmove.h        |  37 ----
+ include/linux/unaligned/be_struct.h         |  37 ----
+ include/linux/unaligned/generic.h           | 115 -----------
+ include/linux/unaligned/le_byteshift.h      |  71 -------
+ include/linux/unaligned/le_memmove.h        |  37 ----
+ include/linux/unaligned/le_struct.h         |  37 ----
+ include/linux/unaligned/memmove.h           |  46 -----
+ net/core/netpoll.c                          |   4 +-
+ security/apparmor/policy_unpack.c           |   2 +-
+ 31 files changed, 131 insertions(+), 1002 deletions(-)
+ delete mode 100644 arch/alpha/include/asm/unaligned.h
+ delete mode 100644 arch/arm/include/asm/unaligned.h
+ delete mode 100644 arch/ia64/include/asm/unaligned.h
+ delete mode 100644 arch/m68k/include/asm/unaligned.h
+ delete mode 100644 arch/microblaze/include/asm/unaligned.h
+ delete mode 100644 arch/openrisc/include/asm/unaligned.h
+ delete mode 100644 arch/powerpc/include/asm/unaligned.h
+ delete mode 100644 arch/sh/include/asm/unaligned-sh4a.h
+ delete mode 100644 arch/sh/include/asm/unaligned.h
+ delete mode 100644 arch/sparc/include/asm/unaligned.h
+ delete mode 100644 arch/x86/include/asm/unaligned.h
+ delete mode 100644 arch/xtensa/include/asm/unaligned.h
+ delete mode 100644 include/linux/unaligned/access_ok.h
+ delete mode 100644 include/linux/unaligned/be_byteshift.h
+ delete mode 100644 include/linux/unaligned/be_memmove.h
+ delete mode 100644 include/linux/unaligned/be_struct.h
+ delete mode 100644 include/linux/unaligned/generic.h
+ delete mode 100644 include/linux/unaligned/le_byteshift.h
+ delete mode 100644 include/linux/unaligned/le_memmove.h
+ delete mode 100644 include/linux/unaligned/le_struct.h
+ delete mode 100644 include/linux/unaligned/memmove.h
+
+-- 
+2.29.2
+
+Cc: Amitkumar Karwar <amitkarwar@gmail.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Florian Fainelli <f.fainelli@gmail.com>
+Cc: Ganapathi Bhat <ganapathi017@gmail.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: James Morris <jmorris@namei.org>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: John Johansen <john.johansen@canonical.com>
+Cc: Jonas Bonn <jonas@southpole.se>
+Cc: Kalle Valo <kvalo@codeaurora.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Rich Felker <dalias@libc.org>
+Cc: "Richard Russon (FlatCap)" <ldm@flatcap.org>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: "Serge E. Hallyn" <serge@hallyn.com>
+Cc: Sharvari Harisangam <sharvari.harisangam@nxp.com>
+Cc: Stafford Horne <shorne@gmail.com>
+Cc: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc: Xinming Hu <huxinming820@gmail.com>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: x86@kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-crypto@vger.kernel.org
+Cc: openrisc@lists.librecores.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-sh@vger.kernel.org
+Cc: sparclinux@vger.kernel.org
+Cc: linux-ntfs-dev@lists.sourceforge.net
+Cc: linux-block@vger.kernel.org
+Cc: linux-wireless@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: linux-arch@vger.kernel.org
+Cc: linux-security-module@vger.kernel.org
 
 
