@@ -2,144 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F452380491
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 09:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AEAE380493
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 09:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233199AbhENHoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 03:44:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230102AbhENHoN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 03:44:13 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA527C061574;
-        Fri, 14 May 2021 00:43:02 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id b21so15845683plz.0;
-        Fri, 14 May 2021 00:43:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cHaPvQmto+Bhanxbj9NMPMs12GXkBO31FUth1AEaHek=;
-        b=FrDgQLtER5/YdbTwCRCrwoevZ/VwPgEnAhp4jszaUaMmiakqXrEk+3n0S1gFLVMnnY
-         tfe9P9fj8EbpXppRnuobTQnjDz7T3EIlTgFEx59/8VTIfRCWNGP86BA9iiH3FLXtDwRF
-         S2yEnr2VsO1QA5IY+O3R7DwLRNuZRFYNEtpOXDsiH9zIFY1X1PsDo6OZHCC+agiwGCdu
-         D3hJBbmIL7WelGrdRVlUITdFDk4LQUKG24WnOZ6dGFYaf6BVzrDEtnSDxBEML12oiLYS
-         EKkaDHmE/lGfEl4Hg4wmmsgH18IjsowZEx7iRe6dO5X9vvT1LYcV6ZU90Vkse6a1vizv
-         /4TQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cHaPvQmto+Bhanxbj9NMPMs12GXkBO31FUth1AEaHek=;
-        b=DIB2+nsUhvupFbo/jbp/diULFeE3DuSAsxtQ0Jx6EhR4QPRKhaykahtjuFsQhSxfhj
-         tQXf11j5eFKv1uWPdE53ClMFFGy8SbeB5AOAKspq7OM0yJl19cRFruzCD1ChopB540Yb
-         PyXgBLUQPs3kh93uD9tLWwM6z6AhYWobvGIM0wdTxb0BZMZi1K1sqMtxnZF0EtmOr3me
-         tAG3jI2zGFxCHLsLy+osdSYhqpyC9QJssA1WiOneZW07XLkQwDbHHHHjCtY/EpvZDvba
-         U8neuHiUIFCnUyZ5B3A2FwdMiQz5Ahlvzs/ZDj1K6afqBwngtv2iRrdbsGsynWjkbl9B
-         7jGg==
-X-Gm-Message-State: AOAM532aTfY67Sx3d0jqNiefIOe3Cq5H1qSF+FACCAzkNS4IyLxgxBM1
-        nY6l4VNGaspmBuZexo6elDH5YuSqk58Nr8YjoA9Ayw==
-X-Google-Smtp-Source: ABdhPJxV16yttVfW058Hp47noZTL/oMwnx9HrRTufQxH5EmjKT6Xrc5oUS+RKyNzCIldjH5gEdS+sw==
-X-Received: by 2002:a17:902:e84c:b029:ee:d129:3b1c with SMTP id t12-20020a170902e84cb02900eed1293b1cmr43573452plg.73.1620978182363;
-        Fri, 14 May 2021 00:43:02 -0700 (PDT)
-Received: from localhost.localdomain ([45.135.186.84])
-        by smtp.gmail.com with ESMTPSA id n53sm122817pfv.67.2021.05.14.00.42.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 00:43:01 -0700 (PDT)
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, gregkh@linuxfoundation.org,
-        bongsu.jeon@samsung.com, andrew@lunn.ch, wanghai38@huawei.com,
-        zhengyongjun3@huawei.com, alexs@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dongliang Mu <mudongliangabcd@gmail.com>,
-        syzbot+19bcfc64a8df1318d1c3@syzkaller.appspotmail.com
-Subject: [PATCH] NFC: nci: fix memory leak in nci_allocate_device
-Date:   Fri, 14 May 2021 15:42:48 +0800
-Message-Id: <20210514074248.780647-1-mudongliangabcd@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S233217AbhENHoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 03:44:34 -0400
+Received: from mga05.intel.com ([192.55.52.43]:50506 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230102AbhENHod (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 03:44:33 -0400
+IronPort-SDR: iU7McgdhDO1W3jEywjiW/zKguaSHLjnRoJluUideNKYa9NO45SkvMtK1jVDYViPnTVekCutegP
+ kl0KoLdSqFPA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9983"; a="285654579"
+X-IronPort-AV: E=Sophos;i="5.82,299,1613462400"; 
+   d="scan'208";a="285654579"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 May 2021 00:43:21 -0700
+IronPort-SDR: uGd6Dzj01XqWZyWW5NQBPa1UT+JhZwyssbmhP19KKa1UMhJbDTXrSasAxmg48S0Unn/xcyb5Ps
+ k6BpBba3uneA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,299,1613462400"; 
+   d="scan'208";a="626726936"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
+  by fmsmga005.fm.intel.com with ESMTP; 14 May 2021 00:43:17 -0700
+Date:   Fri, 14 May 2021 15:43:14 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        0day robot <lkp@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        ying.huang@intel.com, zhengjun.xing@intel.com, kernel-team@fb.com,
+        neeraju@codeaurora.org
+Subject: Re: [clocksource]  388450c708:  netperf.Throughput_tps -65.1%
+ regression
+Message-ID: <20210514074314.GB5384@shbuild999.sh.intel.com>
+References: <20210501003247.2448287-4-paulmck@kernel.org>
+ <20210513155515.GB23902@xsang-OptiPlex-9020>
+ <20210513170707.GA975577@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210513170707.GA975577@paulmck-ThinkPad-P17-Gen-1>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-nfcmrvl_disconnect fails to free the hci_dev field in struct nci_dev.
-Fix this by freeing hci_dev in nci_free_device.
+Hi Paul,
 
-BUG: memory leak
-unreferenced object 0xffff888111ea6800 (size 1024):
-  comm "kworker/1:0", pid 19, jiffies 4294942308 (age 13.580s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 60 fd 0c 81 88 ff ff  .........`......
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<000000004bc25d43>] kmalloc include/linux/slab.h:552 [inline]
-    [<000000004bc25d43>] kzalloc include/linux/slab.h:682 [inline]
-    [<000000004bc25d43>] nci_hci_allocate+0x21/0xd0 net/nfc/nci/hci.c:784
-    [<00000000c59cff92>] nci_allocate_device net/nfc/nci/core.c:1170 [inline]
-    [<00000000c59cff92>] nci_allocate_device+0x10b/0x160 net/nfc/nci/core.c:1132
-    [<00000000006e0a8e>] nfcmrvl_nci_register_dev+0x10a/0x1c0 drivers/nfc/nfcmrvl/main.c:153
-    [<000000004da1b57e>] nfcmrvl_probe+0x223/0x290 drivers/nfc/nfcmrvl/usb.c:345
-    [<00000000d506aed9>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
-    [<00000000bc632c92>] really_probe+0x159/0x4a0 drivers/base/dd.c:554
-    [<00000000f5009125>] driver_probe_device+0x84/0x100 drivers/base/dd.c:740
-    [<000000000ce658ca>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:846
-    [<000000007067d05f>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
-    [<00000000f8e13372>] __device_attach+0x122/0x250 drivers/base/dd.c:914
-    [<000000009cf68860>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
-    [<00000000359c965a>] device_add+0x5be/0xc30 drivers/base/core.c:3109
-    [<00000000086e4bd3>] usb_set_configuration+0x9d9/0xb90 drivers/usb/core/message.c:2164
-    [<00000000ca036872>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
-    [<00000000d40d36f6>] usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
-    [<00000000bc632c92>] really_probe+0x159/0x4a0 drivers/base/dd.c:554
+On Thu, May 13, 2021 at 10:07:07AM -0700, Paul E. McKenney wrote:
+> On Thu, May 13, 2021 at 11:55:15PM +0800, kernel test robot wrote:
+> > 
+> > 
+> > Greeting,
+> > 
+> > FYI, we noticed a -65.1% regression of netperf.Throughput_tps due to commit:
+> > 
+> > 
+> > commit: 388450c7081ded73432e2b7148c1bb9a0b039963 ("[PATCH v12 clocksource 4/5] clocksource: Reduce clocksource-skew threshold for TSC")
+> > url: https://github.com/0day-ci/linux/commits/Paul-E-McKenney/Do-not-mark-clocks-unstable-due-to-delays-for-v5-13/20210501-083404
+> > base: https://git.kernel.org/cgit/linux/kernel/git/tip/tip.git 2d036dfa5f10df9782f5278fc591d79d283c1fad
+> > 
+> > in testcase: netperf
+> > on test machine: 96 threads 2 sockets Ice Lake with 256G memory
+> > with following parameters:
+> > 
+> > 	ip: ipv4
+> > 	runtime: 300s
+> > 	nr_threads: 25%
+> > 	cluster: cs-localhost
+> > 	test: UDP_RR
+> > 	cpufreq_governor: performance
+> > 	ucode: 0xb000280
+> > 
+> > test-description: Netperf is a benchmark that can be use to measure various aspect of networking performance.
+> > test-url: http://www.netperf.org/netperf/
+> > 
+> > 
+> > 
+> > If you fix the issue, kindly add following tag
+> > Reported-by: kernel test robot <oliver.sang@intel.com>
+> > 
+> > 
+> > also as Feng Tang checked, this is a "unstable clocksource" case.
+> > attached dmesg FYI.
+> 
+> Agreed, given the clock-skew event and the resulting switch to HPET,
+> performance regressions are expected behavior.
+> 
+> That dmesg output does demonstrate the value of Feng Tang's patch!
+> 
+> I don't see how to obtain the values of ->mult and ->shift that would
+> allow me to compute the delta.  So if you don't tell me otherwise, I
+> will assume that the skew itself was expected on this hardware, perhaps
+> somehow due to the tpm_tis_status warning immediately preceding the
+> clock-skew event.  If my assumption is incorrect, please let me know.
 
-Reported-by: syzbot+19bcfc64a8df1318d1c3@syzkaller.appspotmail.com
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
----
- include/net/nfc/nci_core.h | 1 +
- net/nfc/nci/core.c         | 1 +
- net/nfc/nci/hci.c          | 5 +++++
- 3 files changed, 7 insertions(+)
+I run the case with the debug patch applied, the info is:
 
-diff --git a/include/net/nfc/nci_core.h b/include/net/nfc/nci_core.h
-index bd76e8e082c0..aa2e0f169015 100644
---- a/include/net/nfc/nci_core.h
-+++ b/include/net/nfc/nci_core.h
-@@ -298,6 +298,7 @@ int nci_nfcc_loopback(struct nci_dev *ndev, void *data, size_t data_len,
- 		      struct sk_buff **resp);
- 
- struct nci_hci_dev *nci_hci_allocate(struct nci_dev *ndev);
-+void nci_hci_allocate(struct nci_dev *ndev);
- int nci_hci_send_event(struct nci_dev *ndev, u8 gate, u8 event,
- 		       const u8 *param, size_t param_len);
- int nci_hci_send_cmd(struct nci_dev *ndev, u8 gate,
-diff --git a/net/nfc/nci/core.c b/net/nfc/nci/core.c
-index 9a585332ea84..da7fe9db1b00 100644
---- a/net/nfc/nci/core.c
-+++ b/net/nfc/nci/core.c
-@@ -1191,6 +1191,7 @@ EXPORT_SYMBOL(nci_allocate_device);
- void nci_free_device(struct nci_dev *ndev)
- {
- 	nfc_free_device(ndev->nfc_dev);
-+	nci_hci_deallocate(ndev);
- 	kfree(ndev);
- }
- EXPORT_SYMBOL(nci_free_device);
-diff --git a/net/nfc/nci/hci.c b/net/nfc/nci/hci.c
-index 6b275a387a92..96865142104f 100644
---- a/net/nfc/nci/hci.c
-+++ b/net/nfc/nci/hci.c
-@@ -792,3 +792,8 @@ struct nci_hci_dev *nci_hci_allocate(struct nci_dev *ndev)
- 
- 	return hdev;
- }
-+
-+void nci_hci_deallocate(struct nci_dev *ndev)
-+{
-+	kfree(ndev->hci_dev);
-+}
--- 
-2.25.1
+[   13.796429] clocksource: timekeeping watchdog on CPU19: Marking clocksource 'tsc' as unstable because the skew is too large:
+[   13.797413] clocksource:                       'hpet' wd_nesc: 505192062 wd_now: 10657158 wd_last: fac6f97 mask: ffffffff
+[   13.797413] clocksource:                       'tsc' cs_nsec: 504008008 cs_now: 3445570292aa5 cs_last: 344551f0cad6f mask: ffffffffffffffff
+[   13.797413] clocksource:                       'tsc' is current clocksource.
+[   13.797413] tsc: Marking TSC unstable due to clocksource watchdog
+[   13.844513] clocksource: Checking clocksource tsc synchronization from CPU 50 to CPUs 0-1,12,22,32-33,60,65.
+[   13.855080] clocksource: Switched to clocksource hpet
 
+So the delta is 1184 us (505192062 - 504008008), and I agree with
+you that it should be related with the tpm_tis_status warning stuff.
+
+But this re-trigger my old concerns, that if the margins calculated
+for tsc, hpet are too small?
+
+With current math algorithm, the 'uncertainty_margin' is
+calculated against the frequency, and those tsc/hpet/acpi_pm
+timer is multiple of MHz or GHz, which gives them to have margin of
+100 us. It works with normal systems. But in the wild world, there
+could be some sparkles due to some immature HW components, their
+firmwares or drivers etc, just like this case. 
+
+Thanks,
+Feng
+
+
+> 							Thanx, Paul
+> 
