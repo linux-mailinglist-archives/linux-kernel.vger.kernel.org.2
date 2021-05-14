@@ -2,256 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 326CA38063D
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 11:28:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5675D380642
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 11:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232626AbhENJ3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 05:29:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52676 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232512AbhENJ3E (ORCPT
+        id S232617AbhENJbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 05:31:31 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:2924 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230440AbhENJb3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 05:29:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620984473;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lCFOeXXuHqZj/3n5W4PkDf5UJ0V8NO/Y5/poalLCeQU=;
-        b=doEV/osVmgQ4E2qonk1MwbTRonAvztAxV0UpO6phcTOAXqfbH1NKOqZfCEHk9x2lVnOk2o
-        csEOklxirAkGqsic5gcu/kDbCb5LToyo6pIxnlri6tuqCqPr/HC7oMpdZUdKA6QS0g9mMF
-        u8gUE53evgj+umwiX02/idBTe9U3534=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-61-AiKdg7S8P-Sk4xbFgZN3JQ-1; Fri, 14 May 2021 05:27:51 -0400
-X-MC-Unique: AiKdg7S8P-Sk4xbFgZN3JQ-1
-Received: by mail-ej1-f71.google.com with SMTP id o18-20020a17090637d2b02903bf3465db95so5286665ejc.18
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 02:27:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=lCFOeXXuHqZj/3n5W4PkDf5UJ0V8NO/Y5/poalLCeQU=;
-        b=PV77zNEQAkYZUAPlxRUQzW3nD9OAd8Nh2VMg+z9yILp9aOybwfAXmA0baA+XQAPTv1
-         kD/6sfgCRmlxmA6jzPqETsNjpQe+i2BJlBFh+tE2pPYLmGodqHk0mAtY1z2H15RZUcWV
-         N3l0GgPbwSJjdICzg68bn7VNi/ohJQ8X7n3Tr/Bv0vcKO3/m1fLkpCaFrFJU138DBlTX
-         VtSYj0t/a/rCu/IwkMw9C9LWhe7QeCfPUNuKbs2sKQP3v7AZwlbXe+cbtcrhQGB7AqG4
-         dvUQ1T536VIgHjs9zfdfp5ZFJXn6c6kybooKzWHY9Lv3dQUqwPrO2O4TnqAcdDmwALcC
-         oR0g==
-X-Gm-Message-State: AOAM530L1XoF5awAPqDisYAmHMj26ajyacK5FMaBqsXA6717kHW9w6L7
-        uiLEX4q0yBbKI80wxCJu2DX74PwuB8biuOfExApmVQ/ZIm93UbPVDQxeHlW383O7T/sTtFGJRmp
-        Izs3ZiPuiAtyfK1Ext1HhHSpQ
-X-Received: by 2002:a05:6402:1713:: with SMTP id y19mr11073781edu.286.1620984470700;
-        Fri, 14 May 2021 02:27:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxfJBqZFBKWj/4MZ8aMrds7gZKR5l1ZQNZ/fzLhEZqsf7ePvhUBKvxtTbsw6S08p7GvU/DmLA==
-X-Received: by 2002:a05:6402:1713:: with SMTP id y19mr11073750edu.286.1620984470525;
-        Fri, 14 May 2021 02:27:50 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6501.dip0.t-ipconnect.de. [91.12.101.1])
-        by smtp.gmail.com with ESMTPSA id t20sm3351530ejc.61.2021.05.14.02.27.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 May 2021 02:27:50 -0700 (PDT)
-Subject: Re: [PATCH v19 7/8] arch, mm: wire up memfd_secret system call where
- relevant
-To:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Hagen Paul Pfeifer <hagen@jauu.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        Yury Norov <yury.norov@gmail.com>, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-References: <20210513184734.29317-1-rppt@kernel.org>
- <20210513184734.29317-8-rppt@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <227cabb7-17a4-9b39-5893-df825fd2e29b@redhat.com>
-Date:   Fri, 14 May 2021 11:27:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 14 May 2021 05:31:29 -0400
+Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FhNTx60vVzBvL9;
+        Fri, 14 May 2021 17:27:33 +0800 (CST)
+Received: from dggeme703-chm.china.huawei.com (10.1.199.99) by
+ dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Fri, 14 May 2021 17:30:16 +0800
+Received: from huawei.com (10.175.104.170) by dggeme703-chm.china.huawei.com
+ (10.1.199.99) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 14
+ May 2021 17:30:15 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <akpm@linux-foundation.org>
+CC:     <ziy@nvidia.com>, <william.kucharski@oracle.com>,
+        <willy@infradead.org>, <yang.shi@linux.alibaba.com>,
+        <aneesh.kumar@linux.ibm.com>, <rcampbell@nvidia.com>,
+        <songliubraving@fb.com>, <kirill.shutemov@linux.intel.com>,
+        <riel@surriel.com>, <hannes@cmpxchg.org>, <minchan@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <shy828301@gmail.com>, <linmiaohe@huawei.com>
+Subject: [PATCH v4] mm/huge_memory.c: add missing read-only THP checking in transparent_hugepage_enabled()
+Date:   Fri, 14 May 2021 17:30:07 +0800
+Message-ID: <20210514093007.4117906-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-In-Reply-To: <20210513184734.29317-8-rppt@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.170]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggeme703-chm.china.huawei.com (10.1.199.99)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.05.21 20:47, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> Wire up memfd_secret system call on architectures that define
-> ARCH_HAS_SET_DIRECT_MAP, namely arm64, risc-v and x86.
-> 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> Cc: Andy Lutomirski <luto@kernel.org>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: Christopher Lameter <cl@linux.com>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Elena Reshetova <elena.reshetova@intel.com>
-> Cc: Hagen Paul Pfeifer <hagen@jauu.net>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: James Bottomley <jejb@linux.ibm.com>
-> Cc: "Kirill A. Shutemov" <kirill@shutemov.name>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Michael Kerrisk <mtk.manpages@gmail.com>
-> Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> Cc: Paul Walmsley <paul.walmsley@sifive.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Rick Edgecombe <rick.p.edgecombe@intel.com>
-> Cc: Roman Gushchin <guro@fb.com>
-> Cc: Shakeel Butt <shakeelb@google.com>
-> Cc: Shuah Khan <shuah@kernel.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Tycho Andersen <tycho@tycho.ws>
-> Cc: Will Deacon <will@kernel.org>
-> ---
->   arch/arm64/include/uapi/asm/unistd.h   | 1 +
->   arch/riscv/include/asm/unistd.h        | 1 +
->   arch/x86/entry/syscalls/syscall_32.tbl | 1 +
->   arch/x86/entry/syscalls/syscall_64.tbl | 1 +
->   include/linux/syscalls.h               | 1 +
->   include/uapi/asm-generic/unistd.h      | 7 ++++++-
->   scripts/checksyscalls.sh               | 4 ++++
->   7 files changed, 15 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/include/uapi/asm/unistd.h b/arch/arm64/include/uapi/asm/unistd.h
-> index f83a70e07df8..ce2ee8f1e361 100644
-> --- a/arch/arm64/include/uapi/asm/unistd.h
-> +++ b/arch/arm64/include/uapi/asm/unistd.h
-> @@ -20,5 +20,6 @@
->   #define __ARCH_WANT_SET_GET_RLIMIT
->   #define __ARCH_WANT_TIME32_SYSCALLS
->   #define __ARCH_WANT_SYS_CLONE3
-> +#define __ARCH_WANT_MEMFD_SECRET
->   
->   #include <asm-generic/unistd.h>
-> diff --git a/arch/riscv/include/asm/unistd.h b/arch/riscv/include/asm/unistd.h
-> index 977ee6181dab..6c316093a1e5 100644
-> --- a/arch/riscv/include/asm/unistd.h
-> +++ b/arch/riscv/include/asm/unistd.h
-> @@ -9,6 +9,7 @@
->    */
->   
->   #define __ARCH_WANT_SYS_CLONE
-> +#define __ARCH_WANT_MEMFD_SECRET
->   
->   #include <uapi/asm/unistd.h>
->   
-> diff --git a/arch/x86/entry/syscalls/syscall_32.tbl b/arch/x86/entry/syscalls/syscall_32.tbl
-> index 28a1423ce32e..e44519020a43 100644
-> --- a/arch/x86/entry/syscalls/syscall_32.tbl
-> +++ b/arch/x86/entry/syscalls/syscall_32.tbl
-> @@ -451,3 +451,4 @@
->   444	i386	landlock_create_ruleset	sys_landlock_create_ruleset
->   445	i386	landlock_add_rule	sys_landlock_add_rule
->   446	i386	landlock_restrict_self	sys_landlock_restrict_self
-> +447	i386	memfd_secret		sys_memfd_secret
-> diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
-> index ecd551b08d05..a06f16106f24 100644
-> --- a/arch/x86/entry/syscalls/syscall_64.tbl
-> +++ b/arch/x86/entry/syscalls/syscall_64.tbl
-> @@ -368,6 +368,7 @@
->   444	common	landlock_create_ruleset	sys_landlock_create_ruleset
->   445	common	landlock_add_rule	sys_landlock_add_rule
->   446	common	landlock_restrict_self	sys_landlock_restrict_self
-> +447	common	memfd_secret		sys_memfd_secret
->   
->   #
->   # Due to a historical design error, certain syscalls are numbered differently
-> diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
-> index 050511e8f1f8..1a1b5d724497 100644
-> --- a/include/linux/syscalls.h
-> +++ b/include/linux/syscalls.h
-> @@ -1050,6 +1050,7 @@ asmlinkage long sys_landlock_create_ruleset(const struct landlock_ruleset_attr _
->   asmlinkage long sys_landlock_add_rule(int ruleset_fd, enum landlock_rule_type rule_type,
->   		const void __user *rule_attr, __u32 flags);
->   asmlinkage long sys_landlock_restrict_self(int ruleset_fd, __u32 flags);
-> +asmlinkage long sys_memfd_secret(unsigned int flags);
->   
->   /*
->    * Architecture-specific system calls
-> diff --git a/include/uapi/asm-generic/unistd.h b/include/uapi/asm-generic/unistd.h
-> index 6de5a7fc066b..28b388368cf6 100644
-> --- a/include/uapi/asm-generic/unistd.h
-> +++ b/include/uapi/asm-generic/unistd.h
-> @@ -873,8 +873,13 @@ __SYSCALL(__NR_landlock_add_rule, sys_landlock_add_rule)
->   #define __NR_landlock_restrict_self 446
->   __SYSCALL(__NR_landlock_restrict_self, sys_landlock_restrict_self)
->   
-> +#ifdef __ARCH_WANT_MEMFD_SECRET
-> +#define __NR_memfd_secret 447
-> +__SYSCALL(__NR_memfd_secret, sys_memfd_secret)
-> +#endif
-> +
->   #undef __NR_syscalls
-> -#define __NR_syscalls 447
-> +#define __NR_syscalls 448
->   
->   /*
->    * 32 bit systems traditionally used different
-> diff --git a/scripts/checksyscalls.sh b/scripts/checksyscalls.sh
-> index a18b47695f55..b7609958ee36 100755
-> --- a/scripts/checksyscalls.sh
-> +++ b/scripts/checksyscalls.sh
-> @@ -40,6 +40,10 @@ cat << EOF
->   #define __IGNORE_setrlimit	/* setrlimit */
->   #endif
->   
-> +#ifndef __ARCH_WANT_MEMFD_SECRET
-> +#define __IGNORE_memfd_secret
-> +#endif
-> +
->   /* Missing flags argument */
->   #define __IGNORE_renameat	/* renameat2 */
->   
-> 
+Since commit 99cb0dbd47a1 ("mm,thp: add read-only THP support for
+(non-shmem) FS"), read-only THP file mapping is supported. But it
+forgot to add checking for it in transparent_hugepage_enabled().
+To fix it, we add checking for read-only THP file mapping and also
+introduce helper transhuge_vma_enabled() to check whether thp is
+enabled for specified vma to reduce duplicated code. We rename
+transparent_hugepage_enabled to transparent_hugepage_active to make
+the code easier to follow as suggested by David Hildenbrand.
 
-Acked-by: David Hildenbrand <david@redhat.com>
+Fixes: 99cb0dbd47a1 ("mm,thp: add read-only THP support for (non-shmem) FS")
+Reviewed-by: Yang Shi <shy828301@gmail.com>
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+v3->v4:
+  collect Reviewed-by tag
+  define transhuge_vma_enabled next to transhuge_vma_suitable
+---
+ fs/proc/task_mmu.c      |  2 +-
+ include/linux/huge_mm.h | 57 +++++++++++++++++++++++++----------------
+ mm/huge_memory.c        | 11 +++++++-
+ mm/khugepaged.c         |  4 +--
+ mm/shmem.c              |  3 +--
+ 5 files changed, 48 insertions(+), 29 deletions(-)
 
+diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+index fc9784544b24..7389df326edd 100644
+--- a/fs/proc/task_mmu.c
++++ b/fs/proc/task_mmu.c
+@@ -832,7 +832,7 @@ static int show_smap(struct seq_file *m, void *v)
+ 	__show_smap(m, &mss, false);
+ 
+ 	seq_printf(m, "THPeligible:    %d\n",
+-		   transparent_hugepage_enabled(vma));
++		   transparent_hugepage_active(vma));
+ 
+ 	if (arch_pkeys_enabled())
+ 		seq_printf(m, "ProtectionKey:  %8u\n", vma_pkey(vma));
+diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+index 0a526f211fec..7b7f7b52ccb8 100644
+--- a/include/linux/huge_mm.h
++++ b/include/linux/huge_mm.h
+@@ -115,9 +115,34 @@ extern struct kobj_attribute shmem_enabled_attr;
+ 
+ extern unsigned long transparent_hugepage_flags;
+ 
++static inline bool transhuge_vma_suitable(struct vm_area_struct *vma,
++		unsigned long haddr)
++{
++	/* Don't have to check pgoff for anonymous vma */
++	if (!vma_is_anonymous(vma)) {
++		if (!IS_ALIGNED((vma->vm_start >> PAGE_SHIFT) - vma->vm_pgoff,
++				HPAGE_PMD_NR))
++			return false;
++	}
++
++	if (haddr < vma->vm_start || haddr + HPAGE_PMD_SIZE > vma->vm_end)
++		return false;
++	return true;
++}
++
++static inline bool transhuge_vma_enabled(struct vm_area_struct *vma,
++					  unsigned long vm_flags)
++{
++	/* Explicitly disabled through madvise. */
++	if ((vm_flags & VM_NOHUGEPAGE) ||
++	    test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags))
++		return false;
++	return true;
++}
++
+ /*
+  * to be used on vmas which are known to support THP.
+- * Use transparent_hugepage_enabled otherwise
++ * Use transparent_hugepage_active otherwise
+  */
+ static inline bool __transparent_hugepage_enabled(struct vm_area_struct *vma)
+ {
+@@ -128,15 +153,12 @@ static inline bool __transparent_hugepage_enabled(struct vm_area_struct *vma)
+ 	if (transparent_hugepage_flags & (1 << TRANSPARENT_HUGEPAGE_NEVER_DAX))
+ 		return false;
+ 
+-	if (vma->vm_flags & VM_NOHUGEPAGE)
++	if (!transhuge_vma_enabled(vma, vma->vm_flags))
+ 		return false;
+ 
+ 	if (vma_is_temporary_stack(vma))
+ 		return false;
+ 
+-	if (test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags))
+-		return false;
+-
+ 	if (transparent_hugepage_flags & (1 << TRANSPARENT_HUGEPAGE_FLAG))
+ 		return true;
+ 
+@@ -150,22 +172,7 @@ static inline bool __transparent_hugepage_enabled(struct vm_area_struct *vma)
+ 	return false;
+ }
+ 
+-bool transparent_hugepage_enabled(struct vm_area_struct *vma);
+-
+-static inline bool transhuge_vma_suitable(struct vm_area_struct *vma,
+-		unsigned long haddr)
+-{
+-	/* Don't have to check pgoff for anonymous vma */
+-	if (!vma_is_anonymous(vma)) {
+-		if (!IS_ALIGNED((vma->vm_start >> PAGE_SHIFT) - vma->vm_pgoff,
+-				HPAGE_PMD_NR))
+-			return false;
+-	}
+-
+-	if (haddr < vma->vm_start || haddr + HPAGE_PMD_SIZE > vma->vm_end)
+-		return false;
+-	return true;
+-}
++bool transparent_hugepage_active(struct vm_area_struct *vma);
+ 
+ #define transparent_hugepage_use_zero_page()				\
+ 	(transparent_hugepage_flags &					\
+@@ -351,7 +358,7 @@ static inline bool __transparent_hugepage_enabled(struct vm_area_struct *vma)
+ 	return false;
+ }
+ 
+-static inline bool transparent_hugepage_enabled(struct vm_area_struct *vma)
++static inline bool transparent_hugepage_active(struct vm_area_struct *vma)
+ {
+ 	return false;
+ }
+@@ -362,6 +369,12 @@ static inline bool transhuge_vma_suitable(struct vm_area_struct *vma,
+ 	return false;
+ }
+ 
++static inline bool transhuge_vma_enabled(struct vm_area_struct *vma,
++					  unsigned long vm_flags)
++{
++	return false;
++}
++
+ static inline void prep_transhuge_page(struct page *page) {}
+ 
+ static inline bool is_transparent_hugepage(struct page *page)
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 76ca1eb2a223..4f37867eed12 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -63,7 +63,14 @@ static struct shrinker deferred_split_shrinker;
+ static atomic_t huge_zero_refcount;
+ struct page *huge_zero_page __read_mostly;
+ 
+-bool transparent_hugepage_enabled(struct vm_area_struct *vma)
++static inline bool file_thp_enabled(struct vm_area_struct *vma)
++{
++	return transhuge_vma_enabled(vma, vma->vm_flags) && vma->vm_file &&
++	       !inode_is_open_for_write(vma->vm_file->f_inode) &&
++	       (vma->vm_flags & VM_EXEC);
++}
++
++bool transparent_hugepage_active(struct vm_area_struct *vma)
+ {
+ 	/* The addr is used to check if the vma size fits */
+ 	unsigned long addr = (vma->vm_end & HPAGE_PMD_MASK) - HPAGE_PMD_SIZE;
+@@ -74,6 +81,8 @@ bool transparent_hugepage_enabled(struct vm_area_struct *vma)
+ 		return __transparent_hugepage_enabled(vma);
+ 	if (vma_is_shmem(vma))
+ 		return shmem_huge_enabled(vma);
++	if (IS_ENABLED(CONFIG_READ_ONLY_THP_FOR_FS))
++		return file_thp_enabled(vma);
+ 
+ 	return false;
+ }
+diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+index 6c0185fdd815..d97b20fad6e8 100644
+--- a/mm/khugepaged.c
++++ b/mm/khugepaged.c
+@@ -442,9 +442,7 @@ static inline int khugepaged_test_exit(struct mm_struct *mm)
+ static bool hugepage_vma_check(struct vm_area_struct *vma,
+ 			       unsigned long vm_flags)
+ {
+-	/* Explicitly disabled through madvise. */
+-	if ((vm_flags & VM_NOHUGEPAGE) ||
+-	    test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags))
++	if (!transhuge_vma_enabled(vma, vm_flags))
+ 		return false;
+ 
+ 	/* Enabled via shmem mount options or sysfs settings. */
+diff --git a/mm/shmem.c b/mm/shmem.c
+index a08cedefbfaa..1dcbec313c70 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -4032,8 +4032,7 @@ bool shmem_huge_enabled(struct vm_area_struct *vma)
+ 	loff_t i_size;
+ 	pgoff_t off;
+ 
+-	if ((vma->vm_flags & VM_NOHUGEPAGE) ||
+-	    test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags))
++	if (!transhuge_vma_enabled(vma, vma->vm_flags))
+ 		return false;
+ 	if (shmem_huge == SHMEM_HUGE_FORCE)
+ 		return true;
 -- 
-Thanks,
-
-David / dhildenb
+2.23.0
 
