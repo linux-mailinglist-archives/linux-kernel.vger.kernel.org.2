@@ -2,91 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9EA380FD1
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 20:34:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0DD6380FDD
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 20:39:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231659AbhENSfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 14:35:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51076 "EHLO
+        id S230190AbhENSkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 14:40:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229952AbhENSfx (ORCPT
+        with ESMTP id S229906AbhENSko (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 14:35:53 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B49E8C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 11:34:41 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id v191so342807pfc.8
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 11:34:41 -0700 (PDT)
+        Fri, 14 May 2021 14:40:44 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72372C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 11:39:32 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id i204so286408yba.4
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 11:39:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lELtbwQEctdIwPQb3wCQp5OuKO4/lkfT92gv1xyToGE=;
-        b=gSrEImsqcT8WUGbSMZ53B7UmwxHd+LIibGRNufbT852dWJIzp0i8btI4zX7WXhaYtG
-         XvOIwJcw8HHEeQkgQHQ5YeVjBnSpqI8AgJNG4QNiIkHMitswBlzQoq4kHxTrUiXytj0Z
-         RsCHapE64niz5srWtsa12N8xR/tqm/VLRfqtU=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nl4h5VrkNWHTD0QE6o8pfvE3+k011rhQeeh+IZIlLww=;
+        b=hNg9UuY89zbrmzgYLlDaITwKxisv6kz6gQ32GwWvHOUgwmBeX67umCGO7uyPcFh7tx
+         vALrfWFR4ktZyZv+xtgOrKkHroXVKAaiPFlVT0f0k4IHHjfp7Ih57V7xlsgABOQ/Yv5i
+         Qe9tW1tXxAlqQUE+dhqKXwwXzCmYI5bQB1RJ4AmYgEkiapAVevDNiUYZoYUrNWRhO+B5
+         nB9v0OIuxd8SjyQUQhNrpq4D/ZT4ZKLijsdkIM2600gnop2qNCZNanf9s+WKDE6+F++f
+         nQrPmF4AD/95eyOGCEjfYpHVZ2Xix3hDp4ulJVEuYDPrZoWJhBB2ib/XZOA1YAdVgV5M
+         35Mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lELtbwQEctdIwPQb3wCQp5OuKO4/lkfT92gv1xyToGE=;
-        b=ie4bARibNE2qp/b5Kra2sbMStfQ2nnkA2uzdXNandoxyeHZJWPFcHu9BKEvbXlzkt4
-         +f9rxQNvmwVQI0OdovQDCClhAAinbWMMyKUnrnxJeyhPU//XerJhjbKYqip1wVnne7Qt
-         37fWtFyJEtowDRXfzUn0Ddpi45cxPZKOU/hdILxOeFNcL7IztNoVvVva/V4+ErDikPVY
-         3tmvUJ8V+kGCs/N0Mcy6+lGfqS/604tKgdRiHeGkwdLw//0tV5f7rdJkAtc4H1RN7r3c
-         YndN0r+6zJ3XnPMHFf7mHHju2CMM6eEhmshFPX982GrBg1BUUR3QPTqnjuh7TEt/6prG
-         RD9Q==
-X-Gm-Message-State: AOAM532qcj4VxABOuiNndPrIP6adeugvOPjXzN6LAjHv+32naUBIEM8d
-        DsiD8KixZ3b1dftrFDiGXnhZgw==
-X-Google-Smtp-Source: ABdhPJwwG0FPWg4ZVysBvGRUFzN69CmNe/Rog4IBIjy9UL84MRc8Br5Uk3bUyMH30eFS+wfxZ/h4fQ==
-X-Received: by 2002:a62:585:0:b029:2a2:3976:60a9 with SMTP id 127-20020a6205850000b02902a2397660a9mr42984565pff.47.1621017281302;
-        Fri, 14 May 2021 11:34:41 -0700 (PDT)
-Received: from sujitka-glaptop.hsd1.ca.comcast.net ([2601:646:8e00:b2f0:6d29:e373:344b:8862])
-        by smtp.gmail.com with ESMTPSA id ga1sm5375127pjb.5.2021.05.14.11.34.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 11:34:40 -0700 (PDT)
-From:   Sujit Kautkar <sujitka@chromium.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Sujit Kautkar <sujitka@chromium.org>,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: qcom: sc7180: Move rmtfs memory region
-Date:   Fri, 14 May 2021 11:34:34 -0700
-Message-Id: <20210514113430.1.Ic2d032cd80424af229bb95e2c67dd4de1a70cb0c@changeid>
-X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nl4h5VrkNWHTD0QE6o8pfvE3+k011rhQeeh+IZIlLww=;
+        b=TzP86r4WGV/5+dOfOec+M8J5QdJ6VBDOzpe0d5yTaoZkDlvh6bxPkZhYO1wUMbH5h/
+         S52sqWxJPiL0jbAiDz4pcYyE7T+CM5GjWbNnXTSkmYTVmBH90Md83fXufUSHUd6tDiyk
+         W7pjUgQVieZeK/yLBr81Wmz2okgSVtQa7X80F0SGBG+O4GU/cxUPDrydSXIf7qOUpNS7
+         PnYM3x5jukrO3iSckgtRQX5G19/eXXq2l7vI+Fv4wmhmItnVOAuf+w6Y8KrvmAGcTbQK
+         IpkZB4g8eA6O66VFvW3q/ks5J/BgxUb105o0iwXpk2pn1r8TyqcXiOfehMlV899fRT9A
+         enrQ==
+X-Gm-Message-State: AOAM533M5m59Xgo5cdt43jn8iHiHASOK+nu7wzrn4q8Ez9RmZo5C4nB5
+        F6aNfI2+Jjtyx5q6X3+loUlXgEptzqPtmlDX+lTCQw==
+X-Google-Smtp-Source: ABdhPJyWGURmH+UxwDzOuonuEVARTnJZlA/nuSy8mzBtcKF/SbfBNFOSEbAvferWaohoMqujF5efpN4ZarWMnC+x8O0=
+X-Received: by 2002:a5b:8cc:: with SMTP id w12mr67435835ybq.32.1621017571357;
+ Fri, 14 May 2021 11:39:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <11761395.O9o76ZdvQC@kreacher> <4326215.LvFx2qVVIh@kreacher>
+ <CAGETcx87y-tpSaKRpugons1RZaPC-rdvdueUPuNFJHWDDyrNwQ@mail.gmail.com> <CAJZ5v0ik0GMYg9ru7G=P3-=vmg-LEQo1ZO0Sn99=DJwsPN5-uw@mail.gmail.com>
+In-Reply-To: <CAJZ5v0ik0GMYg9ru7G=P3-=vmg-LEQo1ZO0Sn99=DJwsPN5-uw@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Fri, 14 May 2021 11:38:55 -0700
+Message-ID: <CAGETcx-uPLxsQrLK_9R=4-iXZ-ZF-FaZESPGt=O6S8ePuBCs4g@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] drivers: base: Reduce device link removal code duplication
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        chenxiang <chenxiang66@hisilicon.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move rmtfs memory region so that it does not overlap with system
-RAM (kernel data) when KAsan is enabled. This puts rmtfs right
-after mba_mem which is not supposed to increase beyond 0x94600000
+On Fri, May 14, 2021 at 11:33 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+>
+> On Fri, May 14, 2021 at 6:05 PM Saravana Kannan <saravanak@google.com> wrote:
+> >
+> > On Fri, May 14, 2021 at 5:12 AM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+> > >
+> > > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > >
+> > > Reduce device link removal code duplication between the cases when
+> > > SRCU is enabled and when it is disabled by moving the only differing
+> > > piece of it (which is the removal of the link from the consumer and
+> > > supplier lists) into a separate wrapper function (defined differently
+> > > for each of the cases in question).
+> > >
+> > > No intentional functional impact.
+> > >
+> > > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > > ---
+> > >  drivers/base/core.c |   31 +++++++++++++------------------
+> > >  1 file changed, 13 insertions(+), 18 deletions(-)
+> > >
+> > > Index: linux-pm/drivers/base/core.c
+> > > ===================================================================
+> > > --- linux-pm.orig/drivers/base/core.c
+> > > +++ linux-pm/drivers/base/core.c
+> > > @@ -198,6 +198,12 @@ static void device_link_synchronize_remo
+> > >  {
+> > >         synchronize_srcu(&device_links_srcu);
+> > >  }
+> > > +
+> > > +static void device_link_remove_from_lists(struct device_link *link)
+> > > +{
+> > > +       list_del_rcu(&link->s_node);
+> > > +       list_del_rcu(&link->c_node);
+> > > +}
+> > >  #else /* !CONFIG_SRCU */
+> > >  static DECLARE_RWSEM(device_links_lock);
+> > >
+> > > @@ -232,6 +238,12 @@ int device_links_read_lock_held(void)
+> > >  static inline void device_link_synchronize_removal(void)
+> > >  {
+> > >  }
+> > > +
+> > > +static void device_link_remove_from_lists(struct device_link *link)
+> > > +{
+> > > +       list_del(&link->s_node);
+> > > +       list_del(&link->c_node);
+> > > +}
+> > >  #endif /* !CONFIG_SRCU */
+> > >
+> > >  static bool device_is_ancestor(struct device *dev, struct device *target)
+> > > @@ -854,7 +866,6 @@ out:
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(device_link_add);
+> > >
+> > > -#ifdef CONFIG_SRCU
+> > >  static void __device_link_del(struct kref *kref)
+> > >  {
+> > >         struct device_link *link = container_of(kref, struct device_link, kref);
+> > > @@ -864,25 +875,9 @@ static void __device_link_del(struct kre
+> > >
+> > >         pm_runtime_drop_link(link);
+> > >
+> > > -       list_del_rcu(&link->s_node);
+> > > -       list_del_rcu(&link->c_node);
+> > > +       device_link_remove_from_lists(link);
+> >
+> > Remind me again why we can't do the synchronize_srcu() here (I'm not
+> > too familiar with the SRCU API semantics)? Is it because
+> > synchronize_srcu() can take indefinitely long?
+>
+> Not indefinitely, but it may take time.
 
-Signed-off-by: Sujit Kautkar <sujitka@chromium.org>
----
+More than if we had used normal mutex around these I suppose.
 
- arch/arm64/boot/dts/qcom/sc7180-idp.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>  And because it is not
+> actually useful before we end up freeing the device link memory.  And
+> I'd rather not do it under the device links write lock.
+>
+> > I just vaguely remember
+> > it does some checks during CPUs going idle (which can be a long time
+> > later) but I'm not sure if that's the earliest you can synchronize. If
+> > it's not indefinitely long and we just need to wait for other SRCU
+> > critical sections to exit, maybe we can just synchronize here and make
+> > the code a lot simpler?
+>
+> Well, maybe not  "a lot".
+>
+> > This function is anyway called in a sleepable context.
+>
+> But I'm not sure how long this context expects to be sleeping and
+> sleeping under a mutex potentially blocks others.
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-idp.dts b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
-index e77a7926034a7..afe0f9c258164 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-idp.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
-@@ -45,7 +45,7 @@ chosen {
- 
- /* Increase the size from 2MB to 8MB */
- &rmtfs_mem {
--	reg = <0x0 0x84400000 0x0 0x800000>;
-+	reg = <0x0 0x94600000 0x0 0x800000>;
- };
- 
- / {
--- 
-2.31.1.751.gd2f1c929bd-goog
+Ack.
 
+Reviewed-by: Saravana Kannan <saravanak@google.com>
+
+-Saravana
