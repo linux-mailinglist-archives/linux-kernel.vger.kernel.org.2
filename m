@@ -2,188 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 020E5380722
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 12:24:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32CDD380727
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 12:26:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233204AbhENK0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 06:26:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39072 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230295AbhENKZ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 06:25:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7E5061353;
-        Fri, 14 May 2021 10:24:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620987887;
-        bh=z/miKyvmY7M8tNXyT/t8zRBrMdfgoa7t4pQ+ZnLdxB0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=E9N/LBStsXpDQmWrGLlzHoMKpcQe4SQXulr8OyJ0SFFwJvv6DKbDirmB3ve6f958c
-         efxVpm/fxrIAOE1kUb5RBoduJwsW9iHb6HcYCuw0FFVgRk0vxbI7dCt+h6SIr1Y2hf
-         lDgdinh35eI09Z5YdOjbm5HYFHwXeOENzkDkenEUlfQ9of+Y/BmrIgpTC3pTYVOtkg
-         ZgdhC0L7rdYUibpNtDENp6/q92x6Aul7VBt/tktdlWdm0q4Ps9I00IpWHFEEmmaHGh
-         P6NoRiEBbtprQ20U1KDpCnSzQTcKhICH/0NQdkQiY0cN1UUVz5/+WKIt+l5rVwLrhs
-         y4zBNQzixtMsg==
-Date:   Fri, 14 May 2021 13:24:41 +0300
-From:   Abel Vesa <abelvesa@kernel.org>
-To:     Shawn Guo <shawnguo@kernel.org>
-Cc:     "Mirela Rabulea (OSS)" <mirela.rabulea@oss.nxp.com>,
-        robh+dt@kernel.org, aisheng.dong@nxp.com, guoniu.zhou@nxp.com,
-        linux-arm-kernel@lists.infradead.org, peng.fan@nxp.com,
-        s.hauer@pengutronix.de, linux-imx@nxp.com,
-        devicetree@vger.kernel.org, mchehab@kernel.org,
-        hverkuil-cisco@xs4all.nl, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, paul.kocialkowski@bootlin.com,
-        daniel.baluta@nxp.com, robert.chiras@nxp.com,
-        laurentiu.palcu@nxp.com, p.zabel@pengutronix.de,
-        ezequiel@collabora.com, Mirela Rabulea <mirela.rabulea@nxp.com>
-Subject: Re: [PATCH v11] arm64: dts: imx8qxp: Add jpeg encoder/decoder nodes
-Message-ID: <YJ5P6ZdAMIsYrTMX@ryzen.lan>
-References: <20210423101414.20068-1-mirela.rabulea@oss.nxp.com>
- <20210513073832.GS3425@dragon>
+        id S233228AbhENK1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 06:27:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230295AbhENK1w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 06:27:52 -0400
+Received: from mail.manjaro.org (mail.manjaro.org [IPv6:2a01:4f8:150:448b::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 149A0C061574;
+        Fri, 14 May 2021 03:26:41 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.manjaro.org (Postfix) with ESMTP id 74A2122259F;
+        Fri, 14 May 2021 12:26:39 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at manjaro.org
+Received: from mail.manjaro.org ([127.0.0.1])
+        by localhost (manjaro.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id dn_VdLJ88t-6; Fri, 14 May 2021 12:26:36 +0200 (CEST)
+From:   Tobias Schramm <t.schramm@manjaro.org>
+To:     linux-usb@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-phy@lists.infradead.org, devicetree@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Tobias Schramm <t.schramm@manjaro.org>
+Subject: [PATCH 0/4] Add USB support for RK3308 SoC
+Date:   Fri, 14 May 2021 12:27:30 +0200
+Message-Id: <20210514102734.2091238-1-t.schramm@manjaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210513073832.GS3425@dragon>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-05-13 15:38:33, Shawn Guo wrote:
-> On Fri, Apr 23, 2021 at 01:14:14PM +0300, Mirela Rabulea (OSS) wrote:
-> > From: Mirela Rabulea <mirela.rabulea@nxp.com>
-> > 
-> > Add dts for imaging subsytem, include jpeg nodes here.
-> > Tested on imx8qxp only, should work on imx8qm, but it was not tested.
-> > 
-> > Signed-off-by: Mirela Rabulea <mirela.rabulea@nxp.com>
-> 
-> So the bindings and driver parts have been accepted already?
-> 
-> > ---
-> > Changes in v11:
-> >   Adress feedback from Aisheng Dong:
-> >   - Rename img_jpeg_dec_clk/img_jpeg_enc_clk to jpeg_dec_lpcg/jpeg_enc_lpcg to make it visible it's lpcg not other type of clk
-> >   - Drop the cameradev node, not needed for jpeg
-> >   - Match assigned-clocks & assigned-clock-rates
-> > 
-> >  .../arm64/boot/dts/freescale/imx8-ss-img.dtsi | 82 +++++++++++++++++++
-> >  arch/arm64/boot/dts/freescale/imx8qxp.dtsi    |  1 +
-> >  2 files changed, 83 insertions(+)
-> >  create mode 100644 arch/arm64/boot/dts/freescale/imx8-ss-img.dtsi
-> > 
-> > diff --git a/arch/arm64/boot/dts/freescale/imx8-ss-img.dtsi b/arch/arm64/boot/dts/freescale/imx8-ss-img.dtsi
-> > new file mode 100644
-> > index 000000000000..c508e5d0c92b
-> > --- /dev/null
-> > +++ b/arch/arm64/boot/dts/freescale/imx8-ss-img.dtsi
-> > @@ -0,0 +1,82 @@
-> > +// SPDX-License-Identifier: GPL-2.0+
-> > +/*
-> > + * Copyright 2019-2021 NXP
-> > + * Zhou Guoniu <guoniu.zhou@nxp.com>
-> > + */
-> > +img_subsys: bus@58000000 {
-> > +	compatible = "simple-bus";
-> > +	#address-cells = <1>;
-> > +	#size-cells = <1>;
-> > +	ranges = <0x58000000 0x0 0x58000000 0x1000000>;
-> > +
-> > +	img_ipg_clk: clock-img-ipg {
-> > +		compatible = "fixed-clock";
-> > +		#clock-cells = <0>;
-> > +		clock-frequency = <200000000>;
-> > +		clock-output-names = "img_ipg_clk";
-> > +	};
-> 
-> Hmm, not sure a fixed-clock should be in the subsystem.
-> 
+The RK3308 SoC features integrated USB controllers and PHYs. The USB
+controller is compatible with the usual RK3066 USB controller, the phy is
+in general compatible with the inno-usb2 phy structure but is not quite
+the same as any of the phys supported yet.
+This patchset adds USB support for the RK3308 SoC to both the RK3308 dtsi
+and Rockchip inno-usb2 phy driver.
+I've tested this patchset on a Rock Pi S, works flawlessly with HS, FS and
+LS devices.
 
-Agreed. Assuming the img_ipg_clk is only used on 8QXP, you could move it
-into imx8qxp-ss-img.dtsi. This way every other platform that uses this
-ss file will not be impacted.
+Cheers,
+Tobias
 
-> > +
-> > +	img_jpeg_dec_lpcg: clock-controller@585d0000 {
-> > +		compatible = "fsl,imx8qxp-lpcg";
-> > +		reg = <0x585d0000 0x10000>;
-> > +		#clock-cells = <1>;
-> > +		clocks = <&img_ipg_clk>, <&img_ipg_clk>;
-> > +		clock-indices = <IMX_LPCG_CLK_0>,
-> > +				<IMX_LPCG_CLK_4>;
-> > +		clock-output-names = "img_jpeg_dec_lpcg_clk",
-> > +				     "img_jpeg_dec_lpcg_ipg_clk";
-> > +		power-domains = <&pd IMX_SC_R_MJPEG_DEC_MP>;
-> > +	};
-> > +
-> > +	img_jpeg_enc_lpcg: clock-controller@585f0000 {
-> > +		compatible = "fsl,imx8qxp-lpcg";
-> > +		reg = <0x585f0000 0x10000>;
-> > +		#clock-cells = <1>;
-> > +		clocks = <&img_ipg_clk>, <&img_ipg_clk>;
-> > +		clock-indices = <IMX_LPCG_CLK_0>,
-> > +				<IMX_LPCG_CLK_4>;
-> > +		clock-output-names = "img_jpeg_enc_lpcg_clk",
-> > +				     "img_jpeg_enc_lpcg_ipg_clk";
-> > +		power-domains = <&pd IMX_SC_R_MJPEG_ENC_MP>;
-> > +	};
-> > +
-> > +	jpegdec: jpegdec@58400000 {
-> 
-> Keep nodes sorted in unit address.
-> 
-> Shawn
-> 
-> > +		compatible = "nxp,imx8qxp-jpgdec";
-> > +		reg = <0x58400000 0x00050000 >;
-> > +		interrupts = <GIC_SPI 309 IRQ_TYPE_LEVEL_HIGH>,
-> > +			     <GIC_SPI 310 IRQ_TYPE_LEVEL_HIGH>,
-> > +			     <GIC_SPI 311 IRQ_TYPE_LEVEL_HIGH>,
-> > +			     <GIC_SPI 312 IRQ_TYPE_LEVEL_HIGH>;
-> > +		clocks = <&img_jpeg_dec_lpcg 0>,
-> > +			 <&img_jpeg_dec_lpcg 1>;
-> > +		clock-names = "per", "ipg";
-> > +		assigned-clocks = <&img_jpeg_dec_lpcg 0>,
-> > +				  <&img_jpeg_dec_lpcg 1>;
-> > +		assigned-clock-rates = <200000000>, <200000000>;
-> > +		power-domains = <&pd IMX_SC_R_MJPEG_DEC_MP>,
-> > +				<&pd IMX_SC_R_MJPEG_DEC_S0>,
-> > +				<&pd IMX_SC_R_MJPEG_DEC_S1>,
-> > +				<&pd IMX_SC_R_MJPEG_DEC_S2>,
-> > +				<&pd IMX_SC_R_MJPEG_DEC_S3>;
-> > +	};
-> > +
-> > +	jpegenc: jpegenc@58450000 {
-> > +		compatible = "nxp,imx8qxp-jpgenc";
-> > +		reg = <0x58450000 0x00050000 >;
-> > +		interrupts = <GIC_SPI 305 IRQ_TYPE_LEVEL_HIGH>,
-> > +			     <GIC_SPI 306 IRQ_TYPE_LEVEL_HIGH>,
-> > +			     <GIC_SPI 307 IRQ_TYPE_LEVEL_HIGH>,
-> > +			     <GIC_SPI 308 IRQ_TYPE_LEVEL_HIGH>;
-> > +		clocks = <&img_jpeg_enc_lpcg 0>,
-> > +			 <&img_jpeg_enc_lpcg 1>;
-> > +		clock-names = "per", "ipg";
-> > +		assigned-clocks = <&img_jpeg_enc_lpcg 0>,
-> > +				  <&img_jpeg_enc_lpcg 1>;
-> > +		assigned-clock-rates = <200000000>, <200000000>;
-> > +		power-domains = <&pd IMX_SC_R_MJPEG_ENC_MP>,
-> > +				<&pd IMX_SC_R_MJPEG_ENC_S0>,
-> > +				<&pd IMX_SC_R_MJPEG_ENC_S1>,
-> > +				<&pd IMX_SC_R_MJPEG_ENC_S2>,
-> > +				<&pd IMX_SC_R_MJPEG_ENC_S3>;
-> > +	};
-> > +};
-> > diff --git a/arch/arm64/boot/dts/freescale/imx8qxp.dtsi b/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
-> > index 1e6b4995091e..2d9589309bd0 100644
-> > --- a/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
-> > +++ b/arch/arm64/boot/dts/freescale/imx8qxp.dtsi
-> > @@ -258,6 +258,7 @@
-> >  	};
-> >  
-> >  	/* sorted in register address */
-> > +	#include "imx8-ss-img.dtsi"
-> >  	#include "imx8-ss-adma.dtsi"
-> >  	#include "imx8-ss-conn.dtsi"
-> >  	#include "imx8-ss-ddr.dtsi"
-> > -- 
-> > 2.17.1
-> > 
+Tobias Schramm (4):
+  Documentation: bindings: phy: add compatible for RK3308 USB phy
+  phy: phy-rockchip-inno-usb2: add support for RK3308 USB phy
+  dt-bindings: usb: dwc2: add compatible for RK3308 USB controller
+  arm64: dts: rockchip: add USB support to RK3308 dts
+
+ .../bindings/phy/rockchip-usb-phy.txt         |  1 +
+ .../devicetree/bindings/usb/dwc2.yaml         |  1 +
+ arch/arm64/boot/dts/rockchip/rk3308.dtsi      | 75 +++++++++++++++++++
+ drivers/phy/rockchip/phy-rockchip-inno-usb2.c | 44 +++++++++++
+ 4 files changed, 121 insertions(+)
+
+-- 
+2.31.1
+
