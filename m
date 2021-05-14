@@ -2,27 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEBEB38047F
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 09:38:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11FAD380483
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 09:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233159AbhENHj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 03:39:56 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53432 "EHLO mx2.suse.de"
+        id S233201AbhENHkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 03:40:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53786 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230252AbhENHjx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 03:39:53 -0400
+        id S232801AbhENHkY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 03:40:24 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id F3E4DB01E;
-        Fri, 14 May 2021 07:38:40 +0000 (UTC)
-Date:   Fri, 14 May 2021 09:38:40 +0200
-Message-ID: <s5h35upahof.wl-tiwai@suse.de>
+        by mx2.suse.de (Postfix) with ESMTP id 594B4B01E;
+        Fri, 14 May 2021 07:39:12 +0000 (UTC)
+Date:   Fri, 14 May 2021 09:39:12 +0200
+Message-ID: <s5h1ra9ahnj.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
-To:     Huilong Deng <denghuilong@cdjrlc.com>
-Cc:     perex@perex.cz, tiwai@suse.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ALSA: Remove trailing semicolon in macros
-In-Reply-To: <20210511154710.24481-1-denghuilong@cdjrlc.com>
-References: <20210511154710.24481-1-denghuilong@cdjrlc.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] ALSA: hda: generic: Remove redundant assignment to dac
+In-Reply-To: <1620904271-76027-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+References: <1620904271-76027-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -32,12 +33,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 May 2021 17:47:10 +0200,
-Huilong Deng wrote:
+On Thu, 13 May 2021 13:11:11 +0200,
+Jiapeng Chong wrote:
 > 
-> Macros should not use a trailing semicolon.
+> Variable dac is set to zero, but this value is never read as it is
+> overwritten or not used later on, hence it is a redundant assignment
+> and can be removed.
 > 
-> Signed-off-by: Huilong Deng <denghuilong@cdjrlc.com>
+> Clean up the following clang-analyzer warning:
+> 
+> sound/pci/hda/hda_generic.c:1436:4: warning: Value stored to 'dac' is
+> never read [clang-analyzer-deadcode.DeadStores].
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+> Changes in v2:
+>   -For the follow advice: https://lore.kernel.org/patchwork/patch/1423536/
 
 Thanks, applied.
 
