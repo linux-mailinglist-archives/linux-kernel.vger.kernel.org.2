@@ -2,131 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31866380488
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 09:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F452380491
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 09:43:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232870AbhENHnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 03:43:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45408 "EHLO
+        id S233199AbhENHoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 03:44:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230102AbhENHnb (ORCPT
+        with ESMTP id S230102AbhENHoN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 03:43:31 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79362C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 00:42:20 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id u21so43338879ejo.13
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 00:42:20 -0700 (PDT)
+        Fri, 14 May 2021 03:44:13 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA527C061574;
+        Fri, 14 May 2021 00:43:02 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id b21so15845683plz.0;
+        Fri, 14 May 2021 00:43:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Ybj0Wo1OiQ8Ih6tzwUC6wscj3urV7h1h6AdU5SM1LE0=;
-        b=F0zJ7RdevA957kyra8pX0GVIfrIRss54HmSxrtAuCRoBRK4AY6wppw8UQeJ5O1xuXu
-         8keIq4smmOvM8Dfue8T9zdGd+K1B7kBqZ1KCNR3PSGqECVXKokzx0ezXkOs1PSmo+HJN
-         X3q/3gXnZTey7rcub1FsgNjw9/A8DKvOTRxEc+8M7mancPSuwIAwfcmIB354sXxJRTe1
-         kyJOaCwYVyPQ5I7iz65YbV8XBZU5hojsof014j/NMLNdRJ/YxlV7Ze7DWk3TkZBMpNEW
-         /nEETmMPhRc9dlmuSp0zhxWWuj1BdmzsfeP2gMnf/9Zuif7FR5oyVzYpYOiwqVeXrSyc
-         ML2w==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cHaPvQmto+Bhanxbj9NMPMs12GXkBO31FUth1AEaHek=;
+        b=FrDgQLtER5/YdbTwCRCrwoevZ/VwPgEnAhp4jszaUaMmiakqXrEk+3n0S1gFLVMnnY
+         tfe9P9fj8EbpXppRnuobTQnjDz7T3EIlTgFEx59/8VTIfRCWNGP86BA9iiH3FLXtDwRF
+         S2yEnr2VsO1QA5IY+O3R7DwLRNuZRFYNEtpOXDsiH9zIFY1X1PsDo6OZHCC+agiwGCdu
+         D3hJBbmIL7WelGrdRVlUITdFDk4LQUKG24WnOZ6dGFYaf6BVzrDEtnSDxBEML12oiLYS
+         EKkaDHmE/lGfEl4Hg4wmmsgH18IjsowZEx7iRe6dO5X9vvT1LYcV6ZU90Vkse6a1vizv
+         /4TQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Ybj0Wo1OiQ8Ih6tzwUC6wscj3urV7h1h6AdU5SM1LE0=;
-        b=fGdupyMUdoB+Gk5ywtBtlJQsllMMCojElSrxU8kOh6MjpB7PFWU0Vx1YsXjsdyfcZz
-         L0a7FNmgfO1yVqgITGxXxhPzbaRa1vMZthrx9qcbtPNKoEa3rubVn88t3QGASJMRj4qv
-         DzTdzS2sVhGwEc+YLpy8JQ3SVcm7v6UGEpqtoQR29GNOq4TjG2I8qGCBko3dT7omhKq6
-         3rfcy0ARTf0BxU39jZhwGktQIZ42sOjkZqANZ5jvA68bVaeqx1gbJcwMjiv49vZU6S42
-         0lfnWfJFFIM8Dn0DQqeraTWKm6kwzvY3lolVsP0UO7hMHD4n7xzgaqgNeU+BEX+RoNSX
-         yhDw==
-X-Gm-Message-State: AOAM5337GdvXAvOeKQjVtOORi66cAxsNVZIudiUlNf5sUkbTs2rtp9P0
-        cxfvoa0NbJ+1tY3eA8liaMigf9VNpIpKPg==
-X-Google-Smtp-Source: ABdhPJxahJ6vtjso9lqzXnK0wyNWsRQpHMI2oL6nA+MWQ2uhmCvgwnSbErgZY0I+d+y/V0Be+JkJ4w==
-X-Received: by 2002:a17:906:7302:: with SMTP id di2mr28471115ejc.409.1620978139208;
-        Fri, 14 May 2021 00:42:19 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.126.134])
-        by smtp.gmail.com with ESMTPSA id h8sm3086528ejb.104.2021.05.14.00.42.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 May 2021 00:42:18 -0700 (PDT)
-Subject: Re: [PATCH] arm64: configs: remove redundant CONFIG_MTK_PMIC_WRAP
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Luo Longjun <luolongjun@huawei.com>
-Cc:     will@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, sangyan@huawei.com,
-        ningyu9@huawei.com, luchunhua@huawei.com
-References: <20210507182410.10515-1-luolongjun@huawei.com>
- <20210511172020.GB21033@arm.com>
- <6ef5c7a0-3596-a67c-c99d-c8e0def8a96a@collabora.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <aa3d0bf1-8330-42e0-d11b-c554194c3b81@gmail.com>
-Date:   Fri, 14 May 2021 09:42:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        bh=cHaPvQmto+Bhanxbj9NMPMs12GXkBO31FUth1AEaHek=;
+        b=DIB2+nsUhvupFbo/jbp/diULFeE3DuSAsxtQ0Jx6EhR4QPRKhaykahtjuFsQhSxfhj
+         tQXf11j5eFKv1uWPdE53ClMFFGy8SbeB5AOAKspq7OM0yJl19cRFruzCD1ChopB540Yb
+         PyXgBLUQPs3kh93uD9tLWwM6z6AhYWobvGIM0wdTxb0BZMZi1K1sqMtxnZF0EtmOr3me
+         tAG3jI2zGFxCHLsLy+osdSYhqpyC9QJssA1WiOneZW07XLkQwDbHHHHjCtY/EpvZDvba
+         U8neuHiUIFCnUyZ5B3A2FwdMiQz5Ahlvzs/ZDj1K6afqBwngtv2iRrdbsGsynWjkbl9B
+         7jGg==
+X-Gm-Message-State: AOAM532aTfY67Sx3d0jqNiefIOe3Cq5H1qSF+FACCAzkNS4IyLxgxBM1
+        nY6l4VNGaspmBuZexo6elDH5YuSqk58Nr8YjoA9Ayw==
+X-Google-Smtp-Source: ABdhPJxV16yttVfW058Hp47noZTL/oMwnx9HrRTufQxH5EmjKT6Xrc5oUS+RKyNzCIldjH5gEdS+sw==
+X-Received: by 2002:a17:902:e84c:b029:ee:d129:3b1c with SMTP id t12-20020a170902e84cb02900eed1293b1cmr43573452plg.73.1620978182363;
+        Fri, 14 May 2021 00:43:02 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.84])
+        by smtp.gmail.com with ESMTPSA id n53sm122817pfv.67.2021.05.14.00.42.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 May 2021 00:43:01 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, gregkh@linuxfoundation.org,
+        bongsu.jeon@samsung.com, andrew@lunn.ch, wanghai38@huawei.com,
+        zhengyongjun3@huawei.com, alexs@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dongliang Mu <mudongliangabcd@gmail.com>,
+        syzbot+19bcfc64a8df1318d1c3@syzkaller.appspotmail.com
+Subject: [PATCH] NFC: nci: fix memory leak in nci_allocate_device
+Date:   Fri, 14 May 2021 15:42:48 +0800
+Message-Id: <20210514074248.780647-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <6ef5c7a0-3596-a67c-c99d-c8e0def8a96a@collabora.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+nfcmrvl_disconnect fails to free the hci_dev field in struct nci_dev.
+Fix this by freeing hci_dev in nci_free_device.
 
-On 11/05/2021 22:04, Enric Balletbo i Serra wrote:
-> Hi Catalin,
-> 
-> Thanks for cc'ing me.
-> 
-> On 11/5/21 19:20, Catalin Marinas wrote:
->> On Sat, May 08, 2021 at 02:24:10AM +0800, Luo Longjun wrote:
->>> When I compile kernel in ARM64, it produces the following output:
->>>
->>> *** Default configuration is based on 'defconfig'
->>> arch/arm64/configs/defconfig:1018:warning: override: reassigning to
->>> symbol MTK_PMIC_WRAP
->>>
->>> After checking defcofnig, I found two CONFIG_MTK_PMIC_WRAP options.
->>>
->>> Signed-off-by: Luo Longjun <luolongjun@huawei.com>
->>> ---
->>>  arch/arm64/configs/defconfig | 1 -
->>>  1 file changed, 1 deletion(-)
->>>
->>> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
->>> index 08c6f769df9a..9907a431db0d 100644
->>> --- a/arch/arm64/configs/defconfig
->>> +++ b/arch/arm64/configs/defconfig
->>> @@ -491,7 +491,6 @@ CONFIG_SPI_S3C64XX=y
->>>  CONFIG_SPI_SH_MSIOF=m
->>>  CONFIG_SPI_SUN6I=y
->>>  CONFIG_SPI_SPIDEV=m
->>> -CONFIG_MTK_PMIC_WRAP=m
->>>  CONFIG_SPMI=y
->>>  CONFIG_PINCTRL_SINGLE=y
->>>  CONFIG_PINCTRL_MAX77620=y
->>
->> Adding Matthias and Enric. This change looks fine to me but I think it
->> should go in via the arm-soc tree. Commit 9fd5449e061e introduced the =m
->> option while commit fbbe38309d56 introduced the =y variant.
->>
->> You could add:
->>
->> Fixes: fbbe38309d56 ("arm64: defconfig: Allow mt8173-based boards to boot from usb")
->>
-> 
-> I sent the same patch some time ago [1].
-> 
-> I agree, either land this patch or mine. In any case,
-> 
-> Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> 
-> Matthias is this something that should go through your tree?
-> 
+BUG: memory leak
+unreferenced object 0xffff888111ea6800 (size 1024):
+  comm "kworker/1:0", pid 19, jiffies 4294942308 (age 13.580s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 60 fd 0c 81 88 ff ff  .........`......
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<000000004bc25d43>] kmalloc include/linux/slab.h:552 [inline]
+    [<000000004bc25d43>] kzalloc include/linux/slab.h:682 [inline]
+    [<000000004bc25d43>] nci_hci_allocate+0x21/0xd0 net/nfc/nci/hci.c:784
+    [<00000000c59cff92>] nci_allocate_device net/nfc/nci/core.c:1170 [inline]
+    [<00000000c59cff92>] nci_allocate_device+0x10b/0x160 net/nfc/nci/core.c:1132
+    [<00000000006e0a8e>] nfcmrvl_nci_register_dev+0x10a/0x1c0 drivers/nfc/nfcmrvl/main.c:153
+    [<000000004da1b57e>] nfcmrvl_probe+0x223/0x290 drivers/nfc/nfcmrvl/usb.c:345
+    [<00000000d506aed9>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+    [<00000000bc632c92>] really_probe+0x159/0x4a0 drivers/base/dd.c:554
+    [<00000000f5009125>] driver_probe_device+0x84/0x100 drivers/base/dd.c:740
+    [<000000000ce658ca>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:846
+    [<000000007067d05f>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
+    [<00000000f8e13372>] __device_attach+0x122/0x250 drivers/base/dd.c:914
+    [<000000009cf68860>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
+    [<00000000359c965a>] device_add+0x5be/0xc30 drivers/base/core.c:3109
+    [<00000000086e4bd3>] usb_set_configuration+0x9d9/0xb90 drivers/usb/core/message.c:2164
+    [<00000000ca036872>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
+    [<00000000d40d36f6>] usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
+    [<00000000bc632c92>] really_probe+0x159/0x4a0 drivers/base/dd.c:554
 
-Yes, this should go through my tree. I'll take care of it.
+Reported-by: syzbot+19bcfc64a8df1318d1c3@syzkaller.appspotmail.com
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+---
+ include/net/nfc/nci_core.h | 1 +
+ net/nfc/nci/core.c         | 1 +
+ net/nfc/nci/hci.c          | 5 +++++
+ 3 files changed, 7 insertions(+)
 
-Regards,
-Matthias
+diff --git a/include/net/nfc/nci_core.h b/include/net/nfc/nci_core.h
+index bd76e8e082c0..aa2e0f169015 100644
+--- a/include/net/nfc/nci_core.h
++++ b/include/net/nfc/nci_core.h
+@@ -298,6 +298,7 @@ int nci_nfcc_loopback(struct nci_dev *ndev, void *data, size_t data_len,
+ 		      struct sk_buff **resp);
+ 
+ struct nci_hci_dev *nci_hci_allocate(struct nci_dev *ndev);
++void nci_hci_allocate(struct nci_dev *ndev);
+ int nci_hci_send_event(struct nci_dev *ndev, u8 gate, u8 event,
+ 		       const u8 *param, size_t param_len);
+ int nci_hci_send_cmd(struct nci_dev *ndev, u8 gate,
+diff --git a/net/nfc/nci/core.c b/net/nfc/nci/core.c
+index 9a585332ea84..da7fe9db1b00 100644
+--- a/net/nfc/nci/core.c
++++ b/net/nfc/nci/core.c
+@@ -1191,6 +1191,7 @@ EXPORT_SYMBOL(nci_allocate_device);
+ void nci_free_device(struct nci_dev *ndev)
+ {
+ 	nfc_free_device(ndev->nfc_dev);
++	nci_hci_deallocate(ndev);
+ 	kfree(ndev);
+ }
+ EXPORT_SYMBOL(nci_free_device);
+diff --git a/net/nfc/nci/hci.c b/net/nfc/nci/hci.c
+index 6b275a387a92..96865142104f 100644
+--- a/net/nfc/nci/hci.c
++++ b/net/nfc/nci/hci.c
+@@ -792,3 +792,8 @@ struct nci_hci_dev *nci_hci_allocate(struct nci_dev *ndev)
+ 
+ 	return hdev;
+ }
++
++void nci_hci_deallocate(struct nci_dev *ndev)
++{
++	kfree(ndev->hci_dev);
++}
+-- 
+2.25.1
+
