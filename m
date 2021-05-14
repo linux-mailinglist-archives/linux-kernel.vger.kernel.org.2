@@ -2,125 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CEAA38073E
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 12:32:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3F11380742
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 12:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231839AbhENKd7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 14 May 2021 06:33:59 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:35111 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230018AbhENKd7 (ORCPT
+        id S231674AbhENKfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 06:35:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230018AbhENKfl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 06:33:59 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 14EAWQLD0000693, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 14EAWQLD0000693
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 14 May 2021 18:32:26 +0800
-Received: from RTEXMBS02.realtek.com.tw (172.21.6.95) by
- RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 14 May 2021 18:32:25 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS02.realtek.com.tw (172.21.6.95) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 14 May 2021 18:32:24 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::1d8:ba7d:61ca:bd74]) by
- RTEXMBS04.realtek.com.tw ([fe80::1d8:ba7d:61ca:bd74%5]) with mapi id
- 15.01.2106.013; Fri, 14 May 2021 18:32:24 +0800
-From:   Hayes Wang <hayeswang@realtek.com>
-To:     Greg KH <greg@kroah.com>
-CC:     Alan Stern <stern@rowland.harvard.edu>,
-        syzbot <syzbot+95afd23673f5dd295c57@syzkaller.appspotmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
-        nic_swsd <nic_swsd@realtek.com>
-Subject: RE: [syzbot] WARNING in rtl8152_probe
-Thread-Topic: [syzbot] WARNING in rtl8152_probe
-Thread-Index: AQHXRxMNo04dZcfiN0eNJrSRsQsh6qrguwNggAA4ewCAAVQHMP//vp6AgACQRgD//4sbgIAApcsA
-Date:   Fri, 14 May 2021 10:32:24 +0000
-Message-ID: <d7ea3cfd8bde4b8ba7ed6ea4c545c9dc@realtek.com>
-References: <0000000000009df1b605c21ecca8@google.com>
- <7de0296584334229917504da50a0ac38@realtek.com>
- <20210513142552.GA967812@rowland.harvard.edu>
- <bde8fc1229ec41e99ec77f112cc5ee01@realtek.com> <YJ4dU3yCwd2wMq5f@kroah.com>
- <bddf302301f5420db0fa049c895c9b14@realtek.com> <YJ40S1eHnbg1dsYv@kroah.com>
-In-Reply-To: <YJ40S1eHnbg1dsYv@kroah.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.177.203]
-x-kse-serverinfo: RTEXMBS02.realtek.com.tw, 9
-x-kse-antivirus-interceptor-info: scan successful
-x-kse-antivirus-info: =?us-ascii?Q?Clean,_bases:_2021/5/14_=3F=3F_06:04:00?=
-x-kse-attachment-filter-triggered-rules: Clean
-x-kse-attachment-filter-triggered-filters: Clean
-x-kse-bulkmessagesfiltering-scan-result: protection disabled
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Fri, 14 May 2021 06:35:41 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 676BFC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 03:34:30 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id n17-20020a7bc5d10000b0290169edfadac9so1201911wmk.1
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 03:34:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cxFsMw/ASck33U7Mqk3LoU2yKCnAFtEobb/NZjQDAzg=;
+        b=HCH05kXusEupK+2z01YypSWqf1XAM3/UEcHjRE30Rtf9PGVfhguIgLfaHK2R9z3gte
+         Bjkpgp4fbKH6FPZp8glUZk5npkxGdPyNBoPBnl0h+spYsdjOYSDS8wny9edEG2zTPkZm
+         Jeev3GRTV21oJ8PHJOmh4G1Ejoqv74sGgH2o8432uSGBXy2LN72lnM1PZyhI+0wFhVrI
+         NhNSPxK478e70u5q0zLwJQr/yckz9E7xNe9fC4j0cmybJuF9k4nqoLRbgtdM7mtz3dFe
+         rL9MU4BTu3j4uBxoJ+lBDSLu7IoDOzJXtYFZo8t4A0eec1+kk4XOCkfV4gcGT+FDa/sF
+         BYkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cxFsMw/ASck33U7Mqk3LoU2yKCnAFtEobb/NZjQDAzg=;
+        b=jeoBpdlwoM24VM6zos4Ywa604EOnwz6PJ1VVx3bTBKZ6VdRPtgdTttMOx2rlrKr6UM
+         2l8lDc238TRSICzqxBfScivASHkVf5gzdkbd53CnKxkYlhHO/4S4As98n+EvBaZcTURm
+         uAuqvdMw/c8vdR/F1iC+ldscDJrg6zIABhFtY46OpQmrdJTdnzupp6ZjFUsRi5u1BCcN
+         y5p4l7HSiCgRigFq39Cwznb5fNcLKdUGG+HPi+Is7JIr0NBkslyJw9HL3zwOpt7TSEN2
+         EsPmAfnk7rRQZ/BIkN9ZRVOodkqhSw6ETQ1ePjdXShkni3v9aUt5fupmrCslwfXS6D6j
+         EK8w==
+X-Gm-Message-State: AOAM533J6UP/2yV15ERbJyLEbMrFqF6DOdhk6UMBh6splaAAaXUoMomZ
+        lyICDkwuTV88IiwVZlHYVfe6Fg==
+X-Google-Smtp-Source: ABdhPJw3PZi7Kk90pacZhiEh2rY6D9unoLQP2qXm9HOpxu03dxLTtfCVZt956NwC36DOpUCB1R1Dvw==
+X-Received: by 2002:a05:600c:4150:: with SMTP id h16mr9081252wmm.45.1620988469093;
+        Fri, 14 May 2021 03:34:29 -0700 (PDT)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id k16sm5015498wmi.44.2021.05.14.03.34.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 May 2021 03:34:28 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     broonie@kernel.org
+Cc:     robh@kernel.org, devicetree@vger.kernel.org, perex@perex.cz,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        lgirdwood@gmail.com,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v5 0/9] ASoC: codecs: add wcd938x support
+Date:   Fri, 14 May 2021 11:33:56 +0100
+Message-Id: <20210514103405.29927-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/14/2021 10:22:47
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 163662 [May 14 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: hayeswang@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 445 445 d5f7ae5578b0f01c45f955a2a751ac25953290c9
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: realtek.com:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 05/14/2021 10:10:00
-X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/14/2021 10:12:41
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 163661 [May 14 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: hayeswang@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 445 445 d5f7ae5578b0f01c45f955a2a751ac25953290c9
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;realtek.com:7.1.1
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 05/14/2021 10:15:00
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg KH <greg@kroah.com>
-> Sent: Friday, May 14, 2021 4:27 PM
-[...]
-> Checking the whole USB decriptor is fine, yes, they can duplicate that.
-> So that means you need to validate _ALL_ data coming from the device
-> that it is in an acceptable range of values that the driver can
-> correctly handle.
+This patchset adds support for Qualcomm WCD938X codec.
 
-I see.
+Qualcomm WCD9380/WCD9385 Codec is a standalone Hi-Fi audio codec IC
+connected over SoundWire. This device has two SoundWire devices, RX and
+TX respectively supporting 4 x ADCs, ClassH, Ear, Aux PA, 2xHPH,
+7 x TX diff inputs, 8 DMICs and MBHC.
 
-Best Regards,
-Hayes
+Eventhough this device has two SoundWire devices, only tx device has
+access to main codec Control/Status Registers!
+
+For codec driver to be functional it would need both tx and rx Soundwire devices
+to be up and this is taken care by using device component framework and device-links
+are used to ensure proper pm dependencies. Ex tx does not enter suspend
+before rx or codec is suspended.
+
+This patchset along with other SoundWire patches on the list
+have been tested on SM8250 MTP device.
+
+Thanks,
+srini
+
+Changes since v4:
+	- updated dt-bindings and example as suggested by RobH
+	- moved SoundWire specific functions to sdw driver.
+	- fixed wrong indentation reported by kernel test robot
+
+Srinivas Kandagatla (9):
+  ASoC: dt-bindings: wcd938x: add bindings for wcd938x
+  ASoC: codecs: wcd-clsh: add new version support
+  ASoC: codecs: wcd938x: add basic driver
+  ASoC: dt-bindings: wcd938x-sdw: add bindings for wcd938x-sdw
+  ASoC: codecs: wcd938x-sdw: add SoundWire driver
+  ASoC: codecs: wcd938x: add basic controls
+  ASoC: codecs: wcd938x: add playback dapm widgets
+  ASoC: codecs: wcd938x: add capture dapm widgets
+  ASoC: codecs: wcd938x: add audio routing
+
+ .../bindings/sound/qcom,wcd938x-sdw.yaml      |   70 +
+ .../bindings/sound/qcom,wcd938x.yaml          |  149 +
+ sound/soc/codecs/Kconfig                      |   13 +
+ sound/soc/codecs/Makefile                     |    4 +
+ sound/soc/codecs/wcd-clsh-v2.c                |  348 +-
+ sound/soc/codecs/wcd-clsh-v2.h                |   16 +
+ sound/soc/codecs/wcd938x-sdw.c                |  298 ++
+ sound/soc/codecs/wcd938x.c                    | 3753 +++++++++++++++++
+ sound/soc/codecs/wcd938x.h                    |  705 ++++
+ 9 files changed, 5346 insertions(+), 10 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,wcd938x-sdw.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml
+ create mode 100644 sound/soc/codecs/wcd938x-sdw.c
+ create mode 100644 sound/soc/codecs/wcd938x.c
+ create mode 100644 sound/soc/codecs/wcd938x.h
+
+-- 
+2.21.0
 
