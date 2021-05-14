@@ -2,105 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D10E38070E
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 12:20:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B77A380712
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 12:21:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231801AbhENKVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 06:21:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52730 "EHLO
+        id S232714AbhENKW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 06:22:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230063AbhENKVk (ORCPT
+        with ESMTP id S232579AbhENKW5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 06:21:40 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26C63C061574;
-        Fri, 14 May 2021 03:20:28 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id l7so34178741edb.1;
-        Fri, 14 May 2021 03:20:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8i+pf5KCrVeLRq3B2i8legEoTNI+x7ywbPg+dol1Za4=;
-        b=Ofa29xzeHuZWjIRdcrnX1Fiy1+VtlJ9wmiFLh3b1PqdXhRoZqebV8mlYRzNXo6qZit
-         XOMRmHLX6SW7YXL43Lsx1WVEzNVhVjKRbZg9IQLQVJ3tiyGf+zTgpZDE3UWCPRPCPHoj
-         Tw/Z29x9btFybglaQyWVAZNMH6D3Y/covTj655sUUhEEzFh6sRKjmJ7Is24b0+/s3nK8
-         CnAQptSvsEwWE8chKiynWA1BDlRRXGnMpBojA2hdZzmR+gCKE/EdAyWHWH8DXzYed7sm
-         g57dnVG7gpT9ZZ0MmWt4n77+VnMKv9eCYHkA69pK0aJc2FudX9XF5WXFaMayPBMyXvDP
-         B8Ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=8i+pf5KCrVeLRq3B2i8legEoTNI+x7ywbPg+dol1Za4=;
-        b=hFFSY2ux3RMa3C85wU6ClhGyira1T6fqMaoj6oUtHEQ9kI66z0q7nQDAz1+D7C3reF
-         kYdy8WeY0gT1h7x9lxgzTg8kJlncdIjOk/IBl733sN07Ka9fKakxD8IcwIds2Be/UCkN
-         oNG6uhTselxqckaTmdL4sVQ3rp1U/WaDod0zW4UyNskOaD/ZoRb/52aTVMCdRJcnw47n
-         7ZNeTHxo2sh7G9w5zl8j4Exv2KkcsgxYA6/gHAGfmvHY32NPllXf1yaZQQg0mSNYMQwI
-         U1TDs68ozGt/QjyVKJhpkcsxhd7+QHlNJdl9XJA5cOfhlEKpgGdOaj/QKuynD0OOuC9Q
-         R9rg==
-X-Gm-Message-State: AOAM530Fg6fmpsZSyGH5ycAD8Cx8IF9veaGQWN17dYu9B486RymAVdhn
-        EfnY/IR54BEakUeS3LiSXJM=
-X-Google-Smtp-Source: ABdhPJxRrQtfpg0fJWU3VVLvJWVbpQR6tyWKP1T497y5x6ol68Ecyb35h9Ogv/KVrLNrFg/drxyBEw==
-X-Received: by 2002:aa7:cb0a:: with SMTP id s10mr54839694edt.36.1620987626925;
-        Fri, 14 May 2021 03:20:26 -0700 (PDT)
-Received: from gmail.com (0526E777.dsl.pool.telekom.hu. [5.38.231.119])
-        by smtp.gmail.com with ESMTPSA id ay4sm4121972edb.12.2021.05.14.03.20.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 03:20:24 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Fri, 14 May 2021 12:20:22 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] x86/acpi: Switch to pr_xxx log functions
-Message-ID: <YJ5O5gytKMDOCnFz@gmail.com>
-References: <8436da08-4812-d383-8f2a-1c07181ebfb8@gmail.com>
- <YJ4hrrUkKRkKsUtf@gmail.com>
- <CAJZ5v0h0Z3pfwpL2SsJ53=SfqE2d+7PrG+nt0PXjYrqeAkc27g@mail.gmail.com>
+        Fri, 14 May 2021 06:22:57 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D207C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 03:21:31 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lhUwe-0000C7-2O; Fri, 14 May 2021 12:21:24 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lhUwc-0006R5-5z; Fri, 14 May 2021 12:21:22 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        David Jander <david@protonic.nl>, devicetree@vger.kernel.org
+Subject: [PATCH v1] dt-bindings: touchscreen: Convert resistive-adc-touch binding to json schema
+Date:   Fri, 14 May 2021 12:21:20 +0200
+Message-Id: <20210514102120.24596-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0h0Z3pfwpL2SsJ53=SfqE2d+7PrG+nt0PXjYrqeAkc27g@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Convert the resistive-adc-touch binding to DT schema format using json-schema.
 
-* Rafael J. Wysocki <rafael@kernel.org> wrote:
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+---
+ .../input/touchscreen/resistive-adc-touch.txt | 33 ------------
+ .../touchscreen/resistive-adc-touch.yaml      | 52 +++++++++++++++++++
+ 2 files changed, 52 insertions(+), 33 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.txt
+ create mode 100644 Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.yaml
 
-> On Fri, May 14, 2021 at 9:07 AM Ingo Molnar <mingo@kernel.org> wrote:
-> >
-> >
-> > * Heiner Kallweit <hkallweit1@gmail.com> wrote:
-> >
-> > > Switching to pr_debug et al has two benefits:
-> > > - We don't have to add PREFIX to each log statement
-> > > - Debug output is suppressed except DEBUG is defined or dynamic
-> > >   debugging is enabled for the respective code piece.
-> > >
-> > > In addition ensure that longer messages aren't split to multiple lines
-> > > in source code, checkpatch complains otherwise.
-> > >
-> > > Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-> > > ---
-> > >  arch/x86/kernel/acpi/boot.c | 118 ++++++++++++++----------------------
-> > >  1 file changed, 47 insertions(+), 71 deletions(-)
-> >
-> > Reviewed-by: Ingo Molnar <mingo@kernel.org>
-> 
-> So I'm going to take this through the ACPI tree if that's OK.
+diff --git a/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.txt b/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.txt
+deleted file mode 100644
+index af5223bb5bdd..000000000000
+--- a/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.txt
++++ /dev/null
+@@ -1,33 +0,0 @@
+-Generic resistive touchscreen ADC
+-
+-Required properties:
+-
+- - compatible: must be "resistive-adc-touch"
+-The device must be connected to an ADC device that provides channels for
+-position measurement and optional pressure.
+-Refer to
+-https://github.com/devicetree-org/dt-schema/blob/master/schemas/iio/iio-consumer.yaml
+-for details
+-
+- - iio-channels: must have at least two channels connected to an ADC device.
+-These should correspond to the channels exposed by the ADC device and should
+-have the right index as the ADC device registers them. These channels
+-represent the relative position on the "x" and "y" axes.
+- - iio-channel-names: must have all the channels' names. Mandatory channels
+-are "x" and "y".
+-
+-Optional properties:
+- - iio-channels: The third channel named "pressure" is optional and can be
+-used if the ADC device also measures pressure besides position.
+-If this channel is missing, pressure will be ignored and the touchscreen
+-will only report position.
+- - iio-channel-names: optional channel named "pressure".
+-
+-Example:
+-
+-	resistive_touch: resistive_touch {
+-		compatible = "resistive-adc-touch";
+-		touchscreen-min-pressure = <50000>;
+-		io-channels = <&adc 24>, <&adc 25>, <&adc 26>;
+-		io-channel-names = "x", "y", "pressure";
+-	};
+diff --git a/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.yaml b/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.yaml
+new file mode 100644
+index 000000000000..d8963068a05e
+--- /dev/null
++++ b/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.yaml
+@@ -0,0 +1,52 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/input/touchscreen/resistive-adc-touch.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Generic resistive touchscreen ADC
++
++maintainers:
++  - Oleksij Rempel <o.rempel@pengutronix.de>
++
++description: |
++  Generic ADC based resistive touchscreen controller
++  The device must be connected to an ADC device that provides channels for
++  position measurement and optional pressure.
++
++allOf:
++  - $ref: touchscreen.yaml#
++
++properties:
++  compatible:
++    const: resistive-adc-touch
++
++  io-channels:
++    minItems: 2
++    maxItems: 3
++    items:
++      - description: x
++      - description: y
++      - description: pressure (optional)
++
++  io-channel-names:
++    items:
++      - const: x
++      - const: y
++      - const: pressure
++
++required:
++  - compatible
++  - io-channels
++  - io-channel-names
++
++additionalProperties: false
++
++examples:
++  - |
++    resistive_touch {
++      compatible = "resistive-adc-touch";
++      touchscreen-min-pressure = <50000>;
++      io-channels = <&adc 24>, <&adc 25>, <&adc 26>;
++      io-channel-names = "x", "y", "pressure";
++    };
+-- 
+2.29.2
 
-Sure!
-
-Thanks,
-
-	Ingo
