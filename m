@@ -2,79 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 254353804E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 10:10:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4173B3804DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 10:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233430AbhENIMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 04:12:00 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:42600 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229654AbhENIL6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 04:11:58 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Axfch8MJ5gSVQWAA--.937S2;
-        Fri, 14 May 2021 16:10:37 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Marc Koderer <marc@koderer.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Jisheng Zhang <jszhang@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v2] samples/kprobes: Fix typo in handler_post()
-Date:   Fri, 14 May 2021 16:10:10 +0800
-Message-Id: <1620979810-12779-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Axfch8MJ5gSVQWAA--.937S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrKryDZF1fWFy5Ww13ArWfGrg_yoWfZFX_A3
-        srtr92grW8Jr98uF1YkrsYqFsIqw1fWr4xG392qr9FvFnxJ3y7C3yv9r4DKa1fZ398GFyU
-        Jr42q34IvF47WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbV8YjsxI4VWxJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwV
-        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Gr0_Cr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY
-        04v7MxkIecxEwVAFwVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
-        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
-        wI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
-        v20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
-        DU0xZFpf9x07jwtxhUUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S233416AbhENILy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 04:11:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43028 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229654AbhENILx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 04:11:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 87A2B61451;
+        Fri, 14 May 2021 08:10:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620979842;
+        bh=ChdJtnXGfwPwSfJqxRHdRCzodI2o/6/gSbEMsLKE7H8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=L9veiuUvhaP+6mRKND1UX0jGh2wR/jgQUXpkc3hrjQ+alC09x2g1oLiuv/tABxsTB
+         pcVq1ky8+df2/VPEGylBL3C0wRpDpVto9V7nXWbWjkTgGXmazvJVTa0TiTCZ1J+apc
+         STV5rYt/u4t0hAsK1g3HxXefO7+mZbJuIUUQHcuFhsDcSqmq2N4FAvsJw3hMDub7wJ
+         IV0R746R0fLJiM/S6yjFa/PjPT+ML2OFzGtD9eSLuMInGEVLdT+KL/nChGzo5Q6PUl
+         /JucOUT95EQ7RrtwuMcyY7bX3arVFz0MTXZVUAQACSUvArEUNe0JSqW87Ps1XIkUep
+         pTIsQhd5rNnjQ==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1lhSuA-0008Uw-74; Fri, 14 May 2021 10:10:42 +0200
+Date:   Fri, 14 May 2021 10:10:42 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.10 245/530] tty: actually undefine superseded ASYNC
+ flags
+Message-ID: <YJ4wgpBvKOlPl4lg@hovoldconsulting.com>
+References: <20210512144819.664462530@linuxfoundation.org>
+ <20210512144827.885941093@linuxfoundation.org>
+ <YJvxjC5qyyRmLSyB@hovoldconsulting.com>
+ <YJ4s1Ut2HYyjL0H7@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJ4s1Ut2HYyjL0H7@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It should use post_handler instead of pre_handler in handler_post().
+On Fri, May 14, 2021 at 09:55:01AM +0200, Greg Kroah-Hartman wrote:
+> On Wed, May 12, 2021 at 05:17:32PM +0200, Johan Hovold wrote:
+> > On Wed, May 12, 2021 at 04:45:55PM +0200, Greg Kroah-Hartman wrote:
+> > > From: Johan Hovold <johan@kernel.org>
+> > > 
+> > > [ Upstream commit d09845e98a05850a8094ea8fd6dd09a8e6824fff ]
+> > > 
+> > > Some kernel-internal ASYNC flags have been superseded by tty-port flags
+> > > and should no longer be used by kernel drivers.
+> > > 
+> > > Fix the misspelled "__KERNEL__" compile guards which failed their sole
+> > > purpose to break out-of-tree drivers that have not yet been updated.
+> > > 
+> > > Fixes: 5c0517fefc92 ("tty: core: Undefine ASYNC_* flags superceded by TTY_PORT* flags")
+> > > Signed-off-by: Johan Hovold <johan@kernel.org>
+> > > Link: https://lore.kernel.org/r/20210407095208.31838-2-johan@kernel.org
+> > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> > 
+> > I don't think this should be backported to any stable tree and the
+> > stable tag was left out on purpose.
+> 
+> It's about time that userspace gets this right, so this should be fine
+> as it's something that any out-of-tree code is going to have to get
+> correct eventually.
 
-Fixes: e16c5dd5157e ("samples/kprobes: Add s390 case in kprobe example module")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
+Eventually, yes. Just doesn't seem right to break stuff on purpose in a
+minor stable update.
 
-v2: rebase on the latest mainline kernel
+That said, I really don't care one bit about out-of-tree drivers so go
+ahead if you want to.
 
- samples/kprobes/kprobe_example.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/samples/kprobes/kprobe_example.c b/samples/kprobes/kprobe_example.c
-index c495664..602db3f 100644
---- a/samples/kprobes/kprobe_example.c
-+++ b/samples/kprobes/kprobe_example.c
-@@ -89,7 +89,7 @@ static void __kprobes handler_post(struct kprobe *p, struct pt_regs *regs,
- 		p->symbol_name, p->addr, regs->status);
- #endif
- #ifdef CONFIG_S390
--	pr_info("<%s> pre_handler: p->addr, 0x%p, flags = 0x%lx\n",
-+	pr_info("<%s> post_handler: p->addr, 0x%p, flags = 0x%lx\n",
- 		p->symbol_name, p->addr, regs->flags);
- #endif
- }
--- 
-2.1.0
-
+Johan
