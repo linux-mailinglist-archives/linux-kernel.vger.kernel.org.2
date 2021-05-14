@@ -2,116 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34ED5380BC7
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 16:29:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAF33380BD0
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 16:30:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234411AbhENOaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 10:30:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231720AbhENOaR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 10:30:17 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6C54C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 07:29:05 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id s5-20020a7bc0c50000b0290147d0c21c51so1553710wmh.4
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 07:29:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ajP5fbTlV7Xk8Ece3WpQsvs9eX1/DimIoZ0u1+o/eDg=;
-        b=bksMeYi/sY2KQH7SYm+hGmrRM7WJNk8GSHTFjNZe2P5eYDi9vor+MGBvEG2ZLhqcPt
-         rLhzii4iojHiiSEeYpogplBuNK7VbgSiSBkgqzome3g/Z7p1cgqDtCRAILgqq383A95H
-         UWwzAiDQsCzyTpRJiKtviNEBNiQPfZPDjer0zOtMg9vISA8fKUErWdBTeC8JhesTdzp9
-         uVGeeZoPi69Eb3uYS6kSK/JaMTHGSH+T8TLP8sizz316uLgoWq06ilxWOOde4Y7OerkI
-         T/7qnYuOaa1VCHsxsliAjyKM/ydOAcwj/0+GujZ5E4iHvTbvX+63j1fvGTEpbuH01m6L
-         pLYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=ajP5fbTlV7Xk8Ece3WpQsvs9eX1/DimIoZ0u1+o/eDg=;
-        b=pbz78BGx3ifq8Kb4kpW3i5ssvIpk22cIpe4cnAb1pOX2+KR4R5yU0A3ozA1E4m+Pbs
-         oQQ63t1yeQbxP2tKLzrd81kSUC76fabDfufTTBiY6mJ0ANYOD2Al6bTRVj3PYFoZIRwb
-         4WxYvkeuNg4AH+UJW8eBVgz1qjTe7YtL1qmdCZVwdzy1Fz8/RzEOyZyaRCkAe09XLhw8
-         Ocowbj9BCF77VIXvu59QfTlte5kUjoPbr94es41FFGoUgdzxP/9UkMJooCat5pwb+S5h
-         pvqDxkvSuc5UZc6WM8Xf4YcMg9xWb0toBb8+tsXZ7yMDUS/fO1LjjCYPc+JamgTmtnPh
-         r9Cg==
-X-Gm-Message-State: AOAM5331ctYXw3o6ufIYZsUJFJ8q2z4jLr5LgU/eheCAdjJVXfpG55DI
-        wBxKQMJJFnh2aSXbfX0eqXht/2MiXdbrDuQJ
-X-Google-Smtp-Source: ABdhPJxNZTxCs6GT6OXAXvuzvpZW/JitfY+kukfZ7CVj3oJCqJN8g/gVdH5KTqhW1yjuEiQolFgwuQ==
-X-Received: by 2002:a7b:cd98:: with SMTP id y24mr10053342wmj.4.1621002543926;
-        Fri, 14 May 2021 07:29:03 -0700 (PDT)
-Received: from [172.20.10.7] ([37.173.48.34])
-        by smtp.gmail.com with ESMTPSA id t17sm6740080wrx.40.2021.05.14.07.29.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 May 2021 07:29:03 -0700 (PDT)
-Subject: Re: [PATCH v2 3/3] arm64: dts: meson-sm1: add Banana PI BPI-M5 board
- dts
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     khilman@baylibre.com, jbrunet@baylibre.com,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210505073248.3816183-1-narmstrong@baylibre.com>
- <20210505073248.3816183-4-narmstrong@baylibre.com>
- <CAFBinCBa=rHQ+Sho2Lq0cA0dYnhKX4ZJaQUqBcaiOxNzD+bFiA@mail.gmail.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <089dfcb8-e821-da98-d93f-f3aea3d45ad3@baylibre.com>
-Date:   Fri, 14 May 2021 16:29:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S234418AbhENObi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 10:31:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41364 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230141AbhENObh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 10:31:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 52DDE6144A;
+        Fri, 14 May 2021 14:30:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621002626;
+        bh=cVKN89jy54XBxo7mbdNUEkDVIEVc5l44VDPutDRAdro=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EKiwz62p8TsvPeBC8c+eTJ0ZEj7i/hJVD14Fb/UFzGe9bvtb/CA9P4TenTtNTAxwh
+         oggBfBiJbxoWsCJUsVBPBVvNzPznEIojyCztm5s174/G5mIGY3hJXndfXBP3LDyQ8E
+         dELuuLmhCOIes//fKW3qd6NZsvaTp4+x0g0Uu664=
+Date:   Fri, 14 May 2021 16:30:23 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+Cc:     pure.logic@nexus-software.ie, johan@kernel.org, elder@kernel.org,
+        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: greybus: fix gb_loopback_stats_attrs definition
+Message-ID: <YJ6Jf+Z1ReVgDt64@kroah.com>
+References: <20210514133039.304760-1-chouhan.shreyansh630@gmail.com>
+ <YJ582f3O9K9YD3QA@kroah.com>
+ <YJ5/tqFfcjxOLsF0@fedora>
+ <YJ6DrLiMsdkG5loA@kroah.com>
+ <YJ6H/WsojYcN/bLO@fedora>
 MIME-Version: 1.0
-In-Reply-To: <CAFBinCBa=rHQ+Sho2Lq0cA0dYnhKX4ZJaQUqBcaiOxNzD+bFiA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJ6H/WsojYcN/bLO@fedora>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/05/2021 22:20, Martin Blumenstingl wrote:
-> Hi Neil,
+On Fri, May 14, 2021 at 07:53:57PM +0530, Shreyansh Chouhan wrote:
+> On Fri, May 14, 2021 at 04:05:32PM +0200, Greg KH wrote:
+> > On Fri, May 14, 2021 at 07:18:38PM +0530, Shreyansh Chouhan wrote:
+> > > On Fri, May 14, 2021 at 03:36:25PM +0200, Greg KH wrote:
+> > > > On Fri, May 14, 2021 at 07:00:39PM +0530, Shreyansh Chouhan wrote:
+> > > > > The gb_loopback_stats_attrs macro, (defined in loopback.c,) is a
+> > > > > multiline macro whose statements were not enclosed in a do while
+> > > > > loop.
+> > > > > 
+> > > > > This patch adds a do while loop around the statements of the said
+> > > > > macro.
+> > > > > 
+> > > > > Signed-off-by: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+> > > > > ---
+> > > > >  drivers/staging/greybus/loopback.c | 10 ++++++----
+> > > > >  1 file changed, 6 insertions(+), 4 deletions(-)
+> > > > > 
+> > > > > diff --git a/drivers/staging/greybus/loopback.c b/drivers/staging/greybus/loopback.c
+> > > > > index 2471448ba42a..c88ef3e894fa 100644
+> > > > > --- a/drivers/staging/greybus/loopback.c
+> > > > > +++ b/drivers/staging/greybus/loopback.c
+> > > > > @@ -162,10 +162,12 @@ static ssize_t name##_avg_show(struct device *dev,		\
+> > > > >  }									\
+> > > > >  static DEVICE_ATTR_RO(name##_avg)
+> > > > >  
+> > > > > -#define gb_loopback_stats_attrs(field)				\
+> > > > > -	gb_loopback_ro_stats_attr(field, min, u);		\
+> > > > > -	gb_loopback_ro_stats_attr(field, max, u);		\
+> > > > > -	gb_loopback_ro_avg_attr(field)
+> > > > > +#define gb_loopback_stats_attrs(field)					\
+> > > > > +	do {								\
+> > > > > +		gb_loopback_ro_stats_attr(field, min, u);		\
+> > > > > +		gb_loopback_ro_stats_attr(field, max, u);		\
+> > > > > +		gb_loopback_ro_avg_attr(field);				\
+> > > > > +	} while (0)
+> > > > >  
+> > > > >  #define gb_loopback_attr(field, type)					\
+> > > > >  static ssize_t field##_show(struct device *dev,				\
+> > > > > -- 
+> > > > > 2.31.1
+> > > > > 
+> > > > > 
+> > > > 
+> > > > Did you test build this change?
+> > > 
+> > > I built the module using make -C . M=drivers/staging/greybus to test
+> > > build it. I didn't get any errors.
+> > 
+> > Really?  Can you provide the full build output for this file with your
+> > change?  I don't think you really built this file for the obvious
+> > reasons...
 > 
-> On Wed, May 5, 2021 at 9:32 AM Neil Armstrong <narmstrong@baylibre.com> wrote:
->>
->> Banana Pi BPI-M5 is a credit card format SBC with the following features:
->> - Amlogic S905X3 quad core Cortex-A55
->> - Mali-G31 GPU
->> - 4GB LPDDR4
->> - 16GB eMMC flash
->> - 4 USB 3.0
->> - 1 GbE ethernet
->> - HDMI output
->> - 2x LEDS
->> - SDCard
->> - 2.5mm Jack with Stereo Audio + CVBS
->> - Infrared Received
->> - ADC Button
->> - GPIO Button
->> - 40 pins header + 3pins debug header
->>
->> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-> one nit-pick below, but still this gets my:
-> Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> I ran make -C . M=drivers/staging/greybus
 > 
-> [...]
->> +       /*
->> +        * WARNING: The USB Hub on the BPI-M54 needs a reset signal
-> s/BPI-M5/BPI-M54/
-> I am hoping that Kevin can fix this while applying
+> I got a three line output saying:
+> make: Entering directory '/work/linux'
+>   MODPOST drivers/staging/greybus//Module.symvers
+> make: Leaving directory '/work/linux'
+> 
+> I just tried rebuilding the kernel with CONFIG_GREYBUS=m, and now I can
+> see what you are talking about. Why weren't these errors reported when I
+> ran the previous make command? Does that too check for the config
+> variables even when I specifically asked it to build a module?
 
-I'll send a v3 since I forgot to CC DT maintainers for patch 2 anyway..
+You were just asking it to build a subdirectory, not a specific
+individual file, and when you do that it looks at the configuration
+settings.
 
-Neil
+It's always good to ensure that you actually build the files you modify
+before sending patches out.
 
-> 
-> 
-> Best regards,
-> Martin
-> 
+thanks,
 
+greg k-h
