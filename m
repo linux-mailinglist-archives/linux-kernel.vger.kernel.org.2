@@ -2,56 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0A1D38095C
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 14:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D2BD380963
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 14:21:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233276AbhENMVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 08:21:50 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:44034 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232996AbhENMVs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 08:21:48 -0400
-Received: from p5b127fa9.dip0.t-ipconnect.de ([91.18.127.169] helo=phil.fritz.box)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1lhWny-0002bC-00; Fri, 14 May 2021 14:20:34 +0200
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     Johan Jonker <jbx6244@gmail.com>
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: rockchip: fix regulator-gpio states array
-Date:   Fri, 14 May 2021 14:20:30 +0200
-Message-Id: <162099477649.1967349.15932194686004438889.b4-ty@sntech.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210510215840.16270-1-jbx6244@gmail.com>
-References: <20210510215840.16270-1-jbx6244@gmail.com>
+        id S233019AbhENMWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 08:22:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233133AbhENMWw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 08:22:52 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5A06C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 05:21:41 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id c13so11074514pfv.4
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 05:21:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KAk0g8z1opxg9hfh3kwLSOD5nwvqQ9x4A08bZ0cKY9w=;
+        b=Vv7GxJ+avWscMnlmLiMf6D2oS3wGO1ZcpThAMmHGb1DHdUM4W5Rz5+MqtZQQpZRUrS
+         xrc1dl/g5MLarwNbqEr652jU1Pt96IEPpDYjqr0wJ916PYRX8DkDHb6EAbvUZ1vg2G5i
+         yZi63vZzjFy+3tC6zNYdS35rQF71aPLopWObk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KAk0g8z1opxg9hfh3kwLSOD5nwvqQ9x4A08bZ0cKY9w=;
+        b=Uq5Togj1wYyDkzlnoyLIq3EDmgC2izW+ydAx52+CSKLKg+wbr8T3udHabPo7TmYQAa
+         wASZrlFTWtQhOAIf0UifVGaGcGIXng81GVErLBKvTV8aDmyjliOaUmdVh2VpVK4TFqHL
+         epRqqaau+Tl1Hd1G/maj1erRYCvZr/7OauVMHSRZ1Bw1CgqbjlnjpPufe7x9PurQJwj/
+         skcU6jmtbMwZzs4lmwYif7nfx+baj5gvpakBDmDmNFuehGmqKOVXW3zGBjMrvpain52l
+         aeXE0Bc0tUcKoUzsPoBHl2OpVe2VG6lkAyyRfRaRPPq37IXQQn5Ubkf2h5ARdNrK8kvY
+         jLaQ==
+X-Gm-Message-State: AOAM5320jegWYGYWY3ORNYgtIchYW60Uk4asATumd/YmWQdIBmnFf+KH
+        WZWXxNT0brxlLVcmE6r9MP9aiQ==
+X-Google-Smtp-Source: ABdhPJwt4o8oA04eyCHn4vJGf09Zt3E8GowUbhMUPyQDnK9/ps6C0oIEWEaLnH+zB0o3wMGm5mLzZQ==
+X-Received: by 2002:a65:68d5:: with SMTP id k21mr40662150pgt.383.1620994901377;
+        Fri, 14 May 2021 05:21:41 -0700 (PDT)
+Received: from ikjn-p920.tpe.corp.google.com ([2401:fa00:1:b:7641:4b1d:694e:6ea2])
+        by smtp.gmail.com with ESMTPSA id u17sm4010117pfm.113.2021.05.14.05.21.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 May 2021 05:21:41 -0700 (PDT)
+From:   Ikjoon Jang <ikjn@chromium.org>
+To:     devicetree@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Guenter Roeck <groeck@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Benson Leung <bleung@chromium.org>,
+        linux-input@vger.kernel.org, Hsin-Yi Wang <hsinyi@chromium.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Ikjoon Jang <ikjn@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: [RESEND PATCH v7 0/2] Add support cbas tablet mode switch to mt8183
+Date:   Fri, 14 May 2021 20:20:48 +0800
+Message-Id: <20210514122051.266169-1-ikjn@chromium.org>
+X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 10 May 2021 23:58:40 +0200, Johan Jonker wrote:
-> A test with the command below gives this error:
-> 
-> /arch/arm64/boot/dts/rockchip/rk3328-nanopi-r2s.dt.yaml:
-> sdmmcio-regulator: states:0:
-> [1800000, 1, 3300000, 0] is too long
-> 
-> dtbs_check expects regulator-gpio states in a format
-> of 2 per item, so fix them all.
-> 
-> [...]
 
-Applied, thanks!
+Adding a cbas support for kukui platforms which has a tablet mode
+switch through cros-ec interface.
 
-[1/1] arm64: dts: rockchip: fix regulator-gpio states array
-      commit: b82f8e2992534aab0fa762a37376be30df263701
+---
+Sorry for resending v7, I found some CCs were missing
+and errata in email addresses.
 
-Best regards,
+Changes in v7:
+- remove a label in cbas node in mt8183-kukui.dtsi
+- fix an erratum in commit message (table --> tablet)
+- dt-binding patche merged altogether with mt8183 dts
+
+Changes in v6:
+ - Remove a label for cbas node in a example of dt-binding doc
+
+Changes in v5:
+ - Add missing blank lines and change the description property's position.
+ - Add a note to description: "this device cannot be detected at runtime."
+
+Changes in v4:
+ - Define cros-cbase bindings inside google,cros-ec.yaml instead of
+   a separated binding document.
+
+Ikjoon Jang (2):
+  mfd: google,cros-ec: add DT bindings for a baseboard's switch device
+  arm64: dts: mt8183: add cbas node under cros_ec
+
+ .../bindings/mfd/google,cros-ec.yaml          | 20 +++++++++++++++++++
+ .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi |  4 ++++
+ 2 files changed, 24 insertions(+)
+
 -- 
-Heiko Stuebner <heiko@sntech.de>
+2.31.1.751.gd2f1c929bd-goog
+
