@@ -2,127 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC3C0380EDA
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 19:24:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70CCC380EE7
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 19:26:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235160AbhENRZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 13:25:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52730 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235157AbhENRZT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 13:25:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621013047;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ulvwg2ZaPIw7oToA7TTsrb85Bhlj+6R6HqazJ1k8M40=;
-        b=iupD3UYXfvhVRHuMJ+xXQ0wfljY4JtsRCHz7Xf92Sh+eFFP03dfcoR9DKUbGDTh8lAR9pU
-        2+pWt3wmhtfpbMToDdubBR3GVmdqJK9jaFiDdga1EywU7Pmivm6lamcYmHDPsj/kI4Pvn1
-        lJtD3ow2x8UEAjxL2L5Eu9lckdRCLCc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-50-OcdPAodxOoS1AkW-8Jin5A-1; Fri, 14 May 2021 13:24:06 -0400
-X-MC-Unique: OcdPAodxOoS1AkW-8Jin5A-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D179B8015DB;
-        Fri, 14 May 2021 17:24:03 +0000 (UTC)
-Received: from t480s.redhat.com (ovpn-114-113.ams2.redhat.com [10.36.114.113])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F07801971B;
-        Fri, 14 May 2021 17:23:54 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Steven Price <steven.price@arm.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Aili Yao <yaoaili@kingsoft.com>, Jiri Bohac <jbohac@suse.cz>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        linux-hyperv@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH v2 6/6] fs/proc/kcore: use page_offline_(freeze|thaw)
-Date:   Fri, 14 May 2021 19:22:47 +0200
-Message-Id: <20210514172247.176750-7-david@redhat.com>
-In-Reply-To: <20210514172247.176750-1-david@redhat.com>
-References: <20210514172247.176750-1-david@redhat.com>
+        id S231129AbhENR1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 13:27:43 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50030 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230230AbhENR1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 13:27:42 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id ADD97B05D;
+        Fri, 14 May 2021 17:26:29 +0000 (UTC)
+Subject: Re: [PATCH] drm/ingenic: Fix pixclock rate for 24-bit serial panels
+To:     Paul Cercueil <paul@crapouillou.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     linux-mips@vger.kernel.org, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org, od@zcrc.me,
+        dri-devel@lists.freedesktop.org, Sam Ravnborg <sam@ravnborg.org>
+References: <20210323144008.166248-1-paul@crapouillou.net>
+ <6DP1TQ.W6B9JRRW1OY5@crapouillou.net>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <a42b2e5d-49e7-a15b-5f5f-9eb858e8fdf6@suse.de>
+Date:   Fri, 14 May 2021 19:26:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <6DP1TQ.W6B9JRRW1OY5@crapouillou.net>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="G7VCp2Z0I1tFZjwjRdIoitLmgxDDw7plp"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's properly synchronize with drivers that set PageOffline().
-Unfreeze/thaw every now and then, so drivers that want to set PageOffline()
-can make progress.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--G7VCp2Z0I1tFZjwjRdIoitLmgxDDw7plp
+Content-Type: multipart/mixed; boundary="OhnXwSyToQ4awsPKWuJhB0YdMEH22aaoz";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Paul Cercueil <paul@crapouillou.net>, David Airlie <airlied@linux.ie>,
+ Daniel Vetter <daniel@ffwll.ch>
+Cc: linux-mips@vger.kernel.org, stable@vger.kernel.org,
+ linux-kernel@vger.kernel.org, od@zcrc.me, dri-devel@lists.freedesktop.org,
+ Sam Ravnborg <sam@ravnborg.org>
+Message-ID: <a42b2e5d-49e7-a15b-5f5f-9eb858e8fdf6@suse.de>
+Subject: Re: [PATCH] drm/ingenic: Fix pixclock rate for 24-bit serial panels
+References: <20210323144008.166248-1-paul@crapouillou.net>
+ <6DP1TQ.W6B9JRRW1OY5@crapouillou.net>
+In-Reply-To: <6DP1TQ.W6B9JRRW1OY5@crapouillou.net>
 
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- fs/proc/kcore.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+--OhnXwSyToQ4awsPKWuJhB0YdMEH22aaoz
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/fs/proc/kcore.c b/fs/proc/kcore.c
-index 92ff1e4436cb..982e694aae77 100644
---- a/fs/proc/kcore.c
-+++ b/fs/proc/kcore.c
-@@ -313,6 +313,7 @@ read_kcore(struct file *file, char __user *buffer, size_t buflen, loff_t *fpos)
- {
- 	char *buf = file->private_data;
- 	size_t phdrs_offset, notes_offset, data_offset;
-+	size_t page_offline_frozen = 1;
- 	size_t phdrs_len, notes_len;
- 	struct kcore_list *m;
- 	size_t tsz;
-@@ -322,6 +323,11 @@ read_kcore(struct file *file, char __user *buffer, size_t buflen, loff_t *fpos)
- 	int ret = 0;
- 
- 	down_read(&kclist_lock);
-+	/*
-+	 * Don't race against drivers that set PageOffline() and expect no
-+	 * further page access.
-+	 */
-+	page_offline_freeze();
- 
- 	get_kcore_size(&nphdr, &phdrs_len, &notes_len, &data_offset);
- 	phdrs_offset = sizeof(struct elfhdr);
-@@ -480,6 +486,12 @@ read_kcore(struct file *file, char __user *buffer, size_t buflen, loff_t *fpos)
- 			}
- 		}
- 
-+		if (page_offline_frozen++ % MAX_ORDER_NR_PAGES == 0) {
-+			page_offline_thaw();
-+			cond_resched();
-+			page_offline_freeze();
-+		}
-+
- 		if (&m->list == &kclist_head) {
- 			if (clear_user(buffer, tsz)) {
- 				ret = -EFAULT;
-@@ -565,6 +577,7 @@ read_kcore(struct file *file, char __user *buffer, size_t buflen, loff_t *fpos)
- 	}
- 
- out:
-+	page_offline_thaw();
- 	up_read(&kclist_lock);
- 	if (ret)
- 		return ret;
--- 
-2.31.1
 
+
+Am 13.05.21 um 14:29 schrieb Paul Cercueil:
+> Hi,
+>=20
+> Almost two months later,
+>=20
+>=20
+> Le mar., mars 23 2021 at 14:40:08 +0000, Paul Cercueil=20
+> <paul@crapouillou.net> a =C3=A9crit :
+>> When using a 24-bit panel on a 8-bit serial bus, the pixel clock
+>> requested by the panel has to be multiplied by 3, since the subpixels
+>> are shifted sequentially.
+>>
+>> The code (in ingenic_drm_encoder_atomic_check) already computed
+>> crtc_state->adjusted_mode->crtc_clock accordingly, but clk_set_rate()
+>> used crtc_state->adjusted_mode->clock instead.
+>>
+>> Fixes: 28ab7d35b6e0 ("drm/ingenic: Properly compute timings when using=20
+
+>> a 3x8-bit panel")
+>> Cc: stable@vger.kernel.org # v5.10
+>> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>=20
+> Can I get an ACK for my patch?
+
+Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+
+>=20
+> Thanks!
+> -Paul
+>=20
+>> ---
+>> =C2=A0drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 2 +-
+>> =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c=20
+>> b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>> index d60e1eefc9d1..cba68bf52ec5 100644
+>> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>> @@ -342,7 +342,7 @@ static void ingenic_drm_crtc_atomic_flush(struct=20
+>> drm_crtc *crtc,
+>> =C2=A0=C2=A0=C2=A0=C2=A0 if (priv->update_clk_rate) {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mutex_lock(&priv->clk=
+_mutex);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 clk_set_rate(priv->pi=
+x_clk,
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 crtc_state->adjusted_mode.clock * 1000);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 crtc_state->adjusted_mode.crtc_clock * 1000);=
+
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 priv->update_clk_rate=20
+=3D false;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mutex_unlock(&priv->c=
+lk_mutex);
+>> =C2=A0=C2=A0=C2=A0=C2=A0 }
+>> --=20
+>> 2.30.2
+>>
+>=20
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--OhnXwSyToQ4awsPKWuJhB0YdMEH22aaoz--
+
+--G7VCp2Z0I1tFZjwjRdIoitLmgxDDw7plp
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmCessQFAwAAAAAACgkQlh/E3EQov+Di
+Gw/+PpBVTvAcF4ltDId9QyywkeJ/xdvRf41hqgazerZAWctCXWwOVIIAYn5lHcazl/dL4olLKNsO
+F3eD7Si7RWmXe4+b2NqaweIesaDafGK4vdcS4mHS4JVHMkd1DhCxdwpy3uBbW5ZNXOv5TJldB3Jt
+Ikm2sm6psm3h5D2li+j6ew6qcVxK+3Cp8uVvHp6RH4cEcOIwbWZp/B4H1P5tMDzq7lpvjGYUQH3H
+MEwy8RYfX+igmRI9rdVXV/hEfBNOq1gLBmZQgGQR1EnRgL/rRTJ2AFci1NddETnMwuiOdpY6A0DS
+XK+Iy+XtUozzkJ8TO2rjwo/NyQYB3tvpnJJ6kkxHpWaowztqqIjrOL5snrw+jhqu7+EwJikbrPm3
+AXBEgwFz2/+Dk28We1onnRn6MIEC+0iy08yE+E67iCb0JXw+CiLadtqSVtzw9qNebMFn8vEjz2if
+6vv6bCWk2ae4LKh5LENpWI07WvzOWnzuDn0jUFa6P1yyx2AMgKd9tot0/p6MxX3oD/LY/b9aIXSG
+LzGFncU3gh/e2h+vUwzkb1coE2cgF+j5HIj0ot0qNJIAyoqUCN3GYBvcKr3nSUZwAv9J3aRmCtmY
+uPetTQRJH4psx/+oI09jkt4/Wn/kxlLUoB7a/JJvyMWEC+9FkKhQntLEdJasGd6tVP1OySrrCQGv
++zo=
+=JL3k
+-----END PGP SIGNATURE-----
+
+--G7VCp2Z0I1tFZjwjRdIoitLmgxDDw7plp--
