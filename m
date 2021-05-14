@@ -2,157 +2,454 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A4D13813D1
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 00:38:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 736E13813D2
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 00:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233996AbhENWjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 18:39:49 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:42680 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230330AbhENWjs (ORCPT
+        id S234016AbhENWk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 18:40:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230330AbhENWk5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 18:39:48 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lhgS0-004tzQ-9N; Fri, 14 May 2021 16:38:32 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lhgRz-004D3L-AH; Fri, 14 May 2021 16:38:31 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Florian Weimer <fweimer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Marco Elver <elver@google.com>
-References: <YIpkvGrBFGlB5vNj@elver.google.com>
-        <m11rat9f85.fsf@fess.ebiederm.org>
-        <CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com>
-        <m15z031z0a.fsf@fess.ebiederm.org> <YIxVWkT03TqcJLY3@elver.google.com>
-        <m1zgxfs7zq.fsf_-_@fess.ebiederm.org>
-        <m1r1irpc5v.fsf@fess.ebiederm.org>
-        <CANpmjNNfiSgntiOzgMc5Y41KVAV_3VexdXCMADekbQEqSP3vqQ@mail.gmail.com>
-        <m1czuapjpx.fsf@fess.ebiederm.org>
-        <CANpmjNNyifBNdpejc6ofT6+n6FtUw-Cap_z9Z9YCevd7Wf3JYQ@mail.gmail.com>
-        <m14kfjh8et.fsf_-_@fess.ebiederm.org>
-        <m1tuni8ano.fsf_-_@fess.ebiederm.org>
-        <m1a6oxewym.fsf_-_@fess.ebiederm.org>
-        <CAHk-=wikDD+gCUECg9NZAVSV6W_FUdyZFHzK4isfrwES_+sH-w@mail.gmail.com>
-        <m14kf5aufb.fsf@fess.ebiederm.org>
-Date:   Fri, 14 May 2021 17:38:25 -0500
-In-Reply-To: <m14kf5aufb.fsf@fess.ebiederm.org> (Eric W. Biederman's message
-        of "Fri, 14 May 2021 16:15:36 -0500")
-Message-ID: <m1tun57xge.fsf@fess.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Fri, 14 May 2021 18:40:57 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F8CEC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 15:39:45 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id c21so381481pgg.3
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 15:39:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=W4hf3u12PlcZB6Z2XAoOoHVKZLL/o1vJSpAvXe3XWn8=;
+        b=iFH4sVFI4NPqVJH7j2Ay3Kx91SqirsFRFkb0jgrPjgF2DJdapjdvX2C107rOgTcrYD
+         Y368vCd8us+27w3hOVSyvP1cD3KGFHgzaJjFIZ55N66e1ZVUhPebLnkaX/gPh7quzXA+
+         po5PrCDaPToUvNn4P2i9VcvrNmufkrIZprGdo6ylcUBvG2RAfW25L+MHbTSyhTXvUq7O
+         dhnhJ0Mg0fkoFMnIcaEJ+yENKI52vb+oEfHDaKNND/kQDgu/gXNJ80KT5trPPs3UjYKr
+         Ist9YCytg1K5JgJjKycA7ziTWwam3JeLKk4CMNN9skAsxopl44bY/2UAu8wgQyF0767b
+         rVTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=W4hf3u12PlcZB6Z2XAoOoHVKZLL/o1vJSpAvXe3XWn8=;
+        b=fcPNBLoo0/WgEzr4CUkDSueO78A+8y8k7E3zUnhxD2WbiSbnXQbNCsfuvT7WGbvOlE
+         jH47+AI1ub0qWjcqFJC5YUl/JnPLQvHYMvhFbTGmKW2rsaGJpWCO5Vuk5qLoXv2vAzF+
+         ynjU5MPIlPaO3fA3X0F1EPkp7bD03xBxGJogMgRsqM74caWZN97mhPqh1u6giS6SwyQ9
+         oFlTA0LoWMA8fOaPFnB+eoQT2Q/+vJIZYt+CDdoUP05OkBJBf5LJd04GTfW+ujfDwRN6
+         9rB+0za3MGlJaZZ4UDJ1n/pgrIetAlzB68mZk6G95PcazyoIO8VPDPEUqe/7PWdQMUSW
+         IMMw==
+X-Gm-Message-State: AOAM5330vTLcXWjeKEnuOangiY635S+L0Jsy1Fp8MSuOWZ0CavKmQpGr
+        7P89WilvrY+eYr7r2Qvnv6TsVkbTq1FUlzQF
+X-Google-Smtp-Source: ABdhPJxQJx/QkQgZtnV6Qofkp0JST220UoLID72zhNgv68tYLkfKCS+ybHvxyW9ObgBNfp0DnxTCIw==
+X-Received: by 2002:a65:590a:: with SMTP id f10mr49034429pgu.358.1621031984632;
+        Fri, 14 May 2021 15:39:44 -0700 (PDT)
+Received: from localhost.localdomain ([49.37.6.234])
+        by smtp.gmail.com with ESMTPSA id j29sm4974325pgl.30.2021.05.14.15.39.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 May 2021 15:39:43 -0700 (PDT)
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+To:     lukas.bulwahn@gmail.com
+Cc:     linux-kernel@vger.kernel.org,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>
+Subject: [PATCH] docs: Add more message type documentations to checkpatch
+Date:   Sat, 15 May 2021 04:09:37 +0530
+Message-Id: <20210514223937.17458-1-dwaipayanray1@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lhgRz-004D3L-AH;;;mid=<m1tun57xge.fsf@fess.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19odSp5HEfI42QhPUSRdilH+u4toHAL8FY=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.3 required=8.0 tests=ALL_TRUSTED,BAYES_20,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        XMSubMetaSxObfu_03,XMSubMetaSx_00 autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.0 BAYES_20 BODY: Bayes spam probability is 5 to 20%
-        *      [score: 0.1368]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  1.0 XMSubMetaSx_00 1+ Sexy Words
-        *  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Linus Torvalds <torvalds@linux-foundation.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 412 ms - load_scoreonly_sql: 0.08 (0.0%),
-        signal_user_changed: 11 (2.7%), b_tie_ro: 10 (2.4%), parse: 1.06
-        (0.3%), extract_message_metadata: 15 (3.7%), get_uri_detail_list: 1.72
-        (0.4%), tests_pri_-1000: 22 (5.4%), tests_pri_-950: 1.19 (0.3%),
-        tests_pri_-900: 1.02 (0.2%), tests_pri_-90: 63 (15.3%), check_bayes:
-        61 (14.9%), b_tokenize: 11 (2.7%), b_tok_get_all: 9 (2.3%),
-        b_comp_prob: 2.4 (0.6%), b_tok_touch_all: 34 (8.3%), b_finish: 0.99
-        (0.2%), tests_pri_0: 285 (69.1%), check_dkim_signature: 0.51 (0.1%),
-        check_dkim_adsp: 2.6 (0.6%), poll_dns_idle: 1.02 (0.2%), tests_pri_10:
-        2.1 (0.5%), tests_pri_500: 7 (1.8%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [GIT PULL] siginfo: ABI fixes for v5.13-rc2
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ebiederm@xmission.com (Eric W. Biederman) writes:
+- Document a couple of more checkpatch message types.
+- Add a blank line before all `See:` lines to improve the
+  rst output.
+- Create a new subsection `Permissions` and move a few types
+  to it.
 
-> Linus Torvalds <torvalds@linux-foundation.org> writes:
->
->> On Thu, May 13, 2021 at 9:55 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
->>>
->>> Please pull the for-v5.13-rc2 branch from the git tree:
->>
->> I really don't like this tree.
->>
->> The immediate cause for "no" is the silly
->>
->>  #if IS_ENABLED(CONFIG_SPARC)
->>
->> and
->>
->>  #if IS_ENABLED(CONFIG_ALPHA)
->>
->> code in kernel/signal.c. It has absolutely zero business being there,
->> when those architectures have a perfectly fine arch/*/kernel/signal.c
->> file where that code would make much more sense *WITHOUT* any odd
->> preprocessor games.
->
-> The code is generic it just happens those functions are only used on
-> sparc and alpha.  Further I really want to make filling out siginfo_t
-> happen in dedicated functions as much as possible in kernel/signal.c.
-> The probably of getting it wrong without a helper functions is very
-> strong.  As the code I am fixing demonstrates.
->
-> The IS_ENABLED(arch) is mostly there so we can delete the code if/when
-> the architectures are retired in another decade or so.
+Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+---
+ Documentation/dev-tools/checkpatch.rst | 170 ++++++++++++++++++++++++-
+ 1 file changed, 163 insertions(+), 7 deletions(-)
 
-There is also the question of why alpha allows userspace to block
-SIGFPE.
+diff --git a/Documentation/dev-tools/checkpatch.rst b/Documentation/dev-tools/checkpatch.rst
+index 51fed1bd72ec..e409f27f48b6 100644
+--- a/Documentation/dev-tools/checkpatch.rst
++++ b/Documentation/dev-tools/checkpatch.rst
+@@ -246,6 +246,7 @@ Allocation style
+     The first argument for kcalloc or kmalloc_array should be the
+     number of elements.  sizeof() as the first argument is generally
+     wrong.
++
+     See: https://www.kernel.org/doc/html/latest/core-api/memory-allocation.html
+ 
+   **ALLOC_SIZEOF_STRUCT**
+@@ -264,6 +265,7 @@ Allocation style
+   **ALLOC_WITH_MULTIPLY**
+     Prefer kmalloc_array/kcalloc over kmalloc/kzalloc with a
+     sizeof multiply.
++
+     See: https://www.kernel.org/doc/html/latest/core-api/memory-allocation.html
+ 
+ 
+@@ -284,6 +286,7 @@ API usage
+     BUG() or BUG_ON() should be avoided totally.
+     Use WARN() and WARN_ON() instead, and handle the "impossible"
+     error condition as gracefully as possible.
++
+     See: https://www.kernel.org/doc/html/latest/process/deprecated.html#bug-and-bug-on
+ 
+   **CONSIDER_KSTRTO**
+@@ -292,12 +295,23 @@ API usage
+     may lead to unexpected results in callers.  The respective kstrtol(),
+     kstrtoll(), kstrtoul(), and kstrtoull() functions tend to be the
+     correct replacements.
++
+     See: https://www.kernel.org/doc/html/latest/process/deprecated.html#simple-strtol-simple-strtoll-simple-strtoul-simple-strtoull
+ 
++  **IN_ATOMIC**
++    in_atomic() is not for driver use so any such use is reported as an ERROR.
++    Also in_atomic() is often used to determine if we may sleep, but it is not
++    reliable in this use model therefore its use is strongly discouraged.
++
++    However, in_atomic() is ok for core kernel use.
++
++    See: https://lore.kernel.org/lkml/20080320201723.b87b3732.akpm@linux-foundation.org/
++
+   **LOCKDEP**
+     The lockdep_no_validate class was added as a temporary measure to
+     prevent warnings on conversion of device->sem to device->mutex.
+     It should not be used for any other purpose.
++
+     See: https://lore.kernel.org/lkml/1268959062.9440.467.camel@laptop/
+ 
+   **MALFORMED_INCLUDE**
+@@ -308,11 +322,18 @@ API usage
+   **USE_LOCKDEP**
+     lockdep_assert_held() annotations should be preferred over
+     assertions based on spin_is_locked()
++
+     See: https://www.kernel.org/doc/html/latest/locking/lockdep-design.html#annotations
+ 
+   **UAPI_INCLUDE**
+     No #include statements in include/uapi should use a uapi/ path.
+ 
++  **USLEEP_RANGE**
++    usleep_range() should be preferred over udelay(). The proper way of
++    using usleep_range() is mentioned in the kernel docs.
++
++    See: https://www.kernel.org/doc/html/latest/timers/timers-howto.html#delays-information-on-the-various-kernel-delay-sleep-mechanisms
++
+ 
+ Comment style
+ -------------
+@@ -338,6 +359,7 @@ Comment style
+   **C99_COMMENTS**
+     C99 style single line comments (//) should not be used.
+     Prefer the block comment style instead.
++
+     See: https://www.kernel.org/doc/html/latest/process/coding-style.html#commenting
+ 
+ 
+@@ -347,6 +369,7 @@ Commit message
+   **BAD_SIGN_OFF**
+     The signed-off-by line does not fall in line with the standards
+     specified by the community.
++
+     See: https://www.kernel.org/doc/html/latest/process/submitting-patches.html#developer-s-certificate-of-origin-1-1
+ 
+   **BAD_STABLE_ADDRESS_STYLE**
+@@ -368,12 +391,26 @@ Commit message
+   **COMMIT_MESSAGE**
+     The patch is missing a commit description.  A brief
+     description of the changes made by the patch should be added.
++
+     See: https://www.kernel.org/doc/html/latest/process/submitting-patches.html#describe-your-changes
+ 
++  **FROM_SIGN_OFF_MISMATCH**
++    The author's email does not match with that in the Signed-off-by:
++    line(s). This can be sometimes caused due to an improperly configured
++    email client.
++
++    This message is emitted due to any of the following reasons::
++
++      - The email names do not match.
++      - The email addresses do not match.
++      - The email subaddresses do not match.
++      - The email comments do not match.
++
+   **MISSING_SIGN_OFF**
+     The patch is missing a Signed-off-by line.  A signed-off-by
+     line should be added according to Developer's certificate of
+     Origin.
++
+     See: https://www.kernel.org/doc/html/latest/process/submitting-patches.html#sign-your-work-the-developer-s-certificate-of-origin
+ 
+   **NO_AUTHOR_SIGN_OFF**
+@@ -382,6 +419,7 @@ Commit message
+     end of explanation of the patch to denote that the author has
+     written it or otherwise has the rights to pass it on as an open
+     source patch.
++
+     See: https://www.kernel.org/doc/html/latest/process/submitting-patches.html#sign-your-work-the-developer-s-certificate-of-origin
+ 
+   **DIFF_IN_COMMIT_MSG**
+@@ -389,6 +427,7 @@ Commit message
+     This causes problems when one tries to apply a file containing both
+     the changelog and the diff because patch(1) tries to apply the diff
+     which it found in the changelog.
++
+     See: https://lore.kernel.org/lkml/20150611134006.9df79a893e3636019ad2759e@linux-foundation.org/
+ 
+   **GERRIT_CHANGE_ID**
+@@ -431,6 +470,7 @@ Comparison style
+   **BOOL_COMPARISON**
+     Comparisons of A to true and false are better written
+     as A and !A.
++
+     See: https://lore.kernel.org/lkml/1365563834.27174.12.camel@joe-AO722/
+ 
+   **COMPARISON_TO_NULL**
+@@ -492,6 +532,7 @@ Macros, Attributes and Symbols
+     The kernel does *not* use the ``__DATE__`` and ``__TIME__`` macros,
+     and enables warnings if they are used as they can lead to
+     non-deterministic builds.
++
+     See: https://www.kernel.org/doc/html/latest/kbuild/reproducible-builds.html#timestamps
+ 
+   **DEFINE_ARCH_HAS**
+@@ -502,6 +543,7 @@ Macros, Attributes and Symbols
+     want architectures able to override them with optimized ones, we
+     should either use weak functions (appropriate for some cases), or
+     the symbol that protects them should be the same symbol we use.
++
+     See: https://lore.kernel.org/lkml/CA+55aFycQ9XJvEOsiM3txHL5bjUc8CeKWJNR_H+MiicaddB42Q@mail.gmail.com/
+ 
+   **INIT_ATTRIBUTE**
+@@ -528,6 +570,20 @@ Macros, Attributes and Symbols
+               ...
+       }
+ 
++  **MISPLACED_INIT**
++    It is possible to use section markers on variables in a way
++    which gcc doesn't understand (or at least not the way the
++    developer intended)::
++
++      static struct __initdata samsung_pll_clock exynos4_plls[nr_plls] = {
++
++    does not put exynos4_plls in the .initdata section. The __initdata
++    marker can be virtually anywhere on the line, except right after
++    "struct". The preferred location is before the "=" sign if there is
++    one, or before the trailing ";" otherwise.
++
++    See: https://lore.kernel.org/lkml/1377655732.3619.19.camel@joe-AO722/
++
+   **MULTISTATEMENT_MACRO_USE_DO_WHILE**
+     Macros with multiple statements should be enclosed in a
+     do - while block.  Same should also be the case for macros
+@@ -541,6 +597,10 @@ Macros, Attributes and Symbols
+ 
+     See: https://www.kernel.org/doc/html/latest/process/coding-style.html#macros-enums-and-rtl
+ 
++  **PREFER_FALLTHROUGH**
++    Use the `fallthrough;` pseudo keyword instead of
++    `/* fallthrough */` like comments.
++
+   **WEAK_DECLARATION**
+     Using weak declarations like __attribute__((weak)) or __weak
+     can have unintended link defects.  Avoid using them.
+@@ -551,6 +611,7 @@ Functions and Variables
+ 
+   **CAMELCASE**
+     Avoid CamelCase Identifiers.
++
+     See: https://www.kernel.org/doc/html/latest/process/coding-style.html#naming
+ 
+   **FUNCTION_WITHOUT_ARGS**
+@@ -583,6 +644,27 @@ Functions and Variables
+       return bar;
+ 
+ 
++Permissions
++-----------
++
++  **EXECUTE_PERMISSIONS**
++    There is no reason for source files to be executable.  The executable
++    bit can be removed safely.
++
++  **EXPORTED_WORLD_WRITABLE**
++    Exporting world writable sysfs/debugfs files is usually a bad thing.
++    When done arbitrarily they can introduce serious security bugs.
++    In the past, some of the debugfs vulnerabilities would seemingly allow
++    any local user to write arbitrary values into device registers - a
++    situation from which little good can be expected to emerge.
++
++    See: https://lore.kernel.org/linux-arm-kernel/cover.1296818921.git.segoon@openwall.com/
++
++  **NON_OCTAL_PERMISSIONS**
++    Permission bits should use 4 digit octal permissions (like 0700 or 0444).
++    Avoid using any other base like decimal.
++
++
+ Spacing and Brackets
+ --------------------
+ 
+@@ -616,7 +698,7 @@ Spacing and Brackets
+ 
+     1. With a type on the left::
+ 
+-        ;int [] a;
++        int [] a;
+ 
+     2. At the beginning of a line for slice initialisers::
+ 
+@@ -630,6 +712,7 @@ Spacing and Brackets
+     Code indent should use tabs instead of spaces.
+     Outside of comments, documentation and Kconfig,
+     spaces are never used for indentation.
++
+     See: https://www.kernel.org/doc/html/latest/process/coding-style.html#indentation
+ 
+   **CONCATENATED_STRING**
+@@ -644,17 +727,20 @@ Spacing and Brackets
+ 
+   **ELSE_AFTER_BRACE**
+     `else {` should follow the closing block `}` on the same line.
++
+     See: https://www.kernel.org/doc/html/latest/process/coding-style.html#placing-braces-and-spaces
+ 
+   **LINE_SPACING**
+     Vertical space is wasted given the limited number of lines an
+     editor window can display when multiple blank lines are used.
++
+     See: https://www.kernel.org/doc/html/latest/process/coding-style.html#spaces
+ 
+   **OPEN_BRACE**
+     The opening brace should be following the function definitions on the
+     next line.  For any non-functional block it should be on the same line
+     as the last construct.
++
+     See: https://www.kernel.org/doc/html/latest/process/coding-style.html#placing-braces-and-spaces
+ 
+   **POINTER_LOCATION**
+@@ -671,6 +757,7 @@ Spacing and Brackets
+ 
+   **SPACING**
+     Whitespace style used in the kernel sources is described in kernel docs.
++
+     See: https://www.kernel.org/doc/html/latest/process/coding-style.html#spaces
+ 
+   **SWITCH_CASE_INDENT_LEVEL**
+@@ -700,8 +787,40 @@ Spacing and Brackets
+     Trailing whitespace should always be removed.
+     Some editors highlight the trailing whitespace and cause visual
+     distractions when editing files.
++
+     See: https://www.kernel.org/doc/html/latest/process/coding-style.html#spaces
+ 
++  **UNNECESSARY_PARENTHESES**
++    Parentheses are not required in the following cases::
++
++      1. Function pointer uses::
++
++          (foo->bar)();
++
++        could be::
++
++          foo->bar();
++
++      2. Comparisons in if::
++
++          if ((foo->bar) && (foo->baz))
++          if ((foo == bar))
++
++        could be::
++
++          if (foo->bar && foo->baz)
++          if (foo == bar)
++
++      3. addressof/dereference single Lvalues::
++
++          &(foo->bar)
++          *(foo->bar)
++
++        could be::
++
++          &foo->bar
++          *foo->bar
++
+   **WHILE_AFTER_BRACE**
+     while should follow the closing bracket on the same line::
+ 
+@@ -727,13 +846,40 @@ Others
+     For DOS-formatted patches, there are extra ^M symbols at the end of
+     the line.  These should be removed.
+ 
+-  **EXECUTE_PERMISSIONS**
+-    There is no reason for source files to be executable.  The executable
+-    bit can be removed safely.
++  **FSF_MAILING_ADDRESS**
++    Kernel maintainers reject new instances of the GPL boilerplate paragraph
++    directing people to write to the FSF for a copy of the GPL, since the
++    FSF has moved in the past and may do so again.
++    So do not write paragraphs about writing to the Free Software Foundation's
++    mailing address.
+ 
+-  **NON_OCTAL_PERMISSIONS**
+-    Permission bits should use 4 digit octal permissions (like 0700 or 0444).
+-    Avoid using any other base like decimal.
++    See: https://lore.kernel.org/lkml/20131006222342.GT19510@leaf/
++
++  **LONG_LINE**
++    The line has exceeded the specified maximum length. Consider refactoring
++    it.
++    To use a different maximum line length, the --max-line-length=n option
++    may be added while invoking checkpatch.
++
++    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#breaking-long-lines-and-strings
++
++  **LONG_LINE_STRING**
++    A string starts before but extends beyond the maximum line length.
++    To use a different maximum line length, the --max-line-length=n option
++    may be added while invoking checkpatch.
++
++    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#breaking-long-lines-and-strings
++
++  **LONG_LINE_COMMENT**
++    A comment starts before but extends beyond the maximum line length.
++    To use a different maximum line length, the --max-line-length=n option
++    may be added while invoking checkpatch.
++
++    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#breaking-long-lines-and-strings
++
++  **MEMSET**
++    The memset use appears to be incorrect.  This may be caused due to
++    badly ordered parameters.  Please recheck the usage.
+ 
+   **NOT_UNIFIED_DIFF**
+     The patch file does not appear to be in unified-diff format.  Please
+@@ -742,6 +888,13 @@ Others
+   **PRINTF_0XDECIMAL**
+     Prefixing 0x with decimal output is defective and should be corrected.
+ 
++  **SPDX_LICENSE_TAG**
++    The source file is missing or has an improper SPDX identifier tag.
++    The Linux kernel requires the precise SPDX identifier in all source files,
++    and it is thoroughly documented in the kernel docs.
++
++    See: https://www.kernel.org/doc/html/latest/process/license-rules.html
++
+   **TRAILING_STATEMENTS**
+     Trailing statements (for example after any conditional) should be
+     on the next line.
+@@ -753,3 +906,6 @@ Others
+ 
+       if (x == y)
+               break;
++
++  **TYPO_SPELLING**
++    Some words may have been misspelled.  Consider reviewing them.
+-- 
+2.28.0
 
-If it turns out that alpha is just silly by allowing synchronous
-exceptions to be blocked, then the code really becomes generic and
-shared shared between sparc and alpha.
-
-Which is really why the code does not make sense in some architecture
-specific version of signal.c.  That and the fact the two functions
-are almost identical.
-
-If you want I can remove the #ifdefs and we can take up slightly more
-space until someone implements -ffunction-sections.
-
-Do you know if alpha will be stuck triggering the same floating point
-error if the SIGFPE is blocked or can alpha somehow continue past it?
-
-If alpha using send_sig instead of force_sig is historical and does not
-reflect the reality of the hardware alpha can be converted and several
-of the send_sig variants can be removed.  Otherwise alpha remains the
-odd man out, and the code can remain until all of the alpha hardware
-dies.  (I don't think anyone is manufacturing alpha hardware anymore).
-
-I would look it up but I have lost access to whatever alpha
-documentation I had.
-
-Eric
