@@ -2,98 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D5B638077D
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 12:38:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19FEF380779
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 12:38:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231872AbhENKjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 06:39:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231687AbhENKjo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S231721AbhENKjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 14 May 2021 06:39:44 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F5EDC061574;
-        Fri, 14 May 2021 03:38:33 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0b2c00e75fd5d24a8a460d.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:2c00:e75f:d5d2:4a8a:460d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 092671EC03A0;
-        Fri, 14 May 2021 12:38:32 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1620988712;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=rLpwvEOD+SNcjjXRD4phEAovRMr9hdeOp4DAy+p8b70=;
-        b=LkMUW4pF2xxHQYTCTnka0bu5Wz9HyZm2q49dv7dJinrd3+TwB3aBK4lXadYs8DDmEVUz2U
-        F0hsFhKj4CLsJ/kG5zDikpqQHGtb6UUiGiKcpnqPxaYKWvq+PvLfpqd/NSrq/BHIXDlgkB
-        8+TeVAvDSD9oTvljXGDLRcYCU97MKJI=
-Date:   Fri, 14 May 2021 12:38:27 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Ashish Kalra <ashish.kalra@amd.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, seanjc@google.com,
-        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        joro@8bytes.org, thomas.lendacky@amd.com, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        srutherford@google.com, venu.busireddy@oracle.com,
-        brijesh.singh@amd.com
-Subject: Re: [PATCH v2 2/4] mm: x86: Invoke hypercall when page encryption
- status is changed
-Message-ID: <YJ5TI2LD2PB35QYE@zn.tnic>
-References: <cover.1619193043.git.ashish.kalra@amd.com>
- <ff68a73e0cdaf89e56add5c8b6e110df881fede1.1619193043.git.ashish.kalra@amd.com>
- <YJvU+RAvetAPT2XY@zn.tnic>
- <20210513043441.GA28019@ashkalra_ubuntu_server>
- <YJ4n2Ypmq/7U1znM@zn.tnic>
- <7ac12a36-5886-cb07-cc77-a96daa76b854@redhat.com>
- <20210514090523.GA21627@ashkalra_ubuntu_server>
- <YJ5EKPLA9WluUdFG@zn.tnic>
- <20210514100519.GA21705@ashkalra_ubuntu_server>
+Received: from mail.kernel.org ([198.145.29.99]:45926 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229525AbhENKjn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 06:39:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CA8061457;
+        Fri, 14 May 2021 10:38:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620988712;
+        bh=mOpzQx5hfR8rcNY8S8uuarhuN/WjFaes5/dIxgPAEzI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=couzxGbMlwfzbJn6BDauX9QR9FI8zVAO0K1sZlCSMc+CfciCs8nlCXu+Uwoh6XuLb
+         6Bjg2Vj6ogy8jA0dkG6HKWqsAYQKCvyqACvS35aTmNDtLEFY9Ihaye24dVirJFbFf/
+         RLhi+HOGU6xSurdm6RkSIRXlL/+/pzFMToDzpy+SDFiRRo7QZK3c/SnkgNUXHchmWv
+         VTun1RcHqaRRPmN+v9SW39tgQQXImZgiCzegmRQD1vCZw05A3xLpb3I19IWXVv5yCa
+         9JRcXiPizs/Vofik9Qhxk5QBdJkCOXWmqXkNve5+jTJ5rPMft+hZztikBBl3vr/9n/
+         CSZFaZ7WAusWw==
+Date:   Fri, 14 May 2021 16:08:28 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, sbillaka@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] phy: qcom: Introduce new eDP PHY driver
+Message-ID: <YJ5TJFD/RFEQc5z+@vkoul-mobl.Dlink>
+References: <20210511041930.592483-1-bjorn.andersson@linaro.org>
+ <20210511041930.592483-2-bjorn.andersson@linaro.org>
+ <CAE-0n50qWuny_1oYEMSZ+cfmCvnumk_UTPxUvZ-3wWdgOCioNA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210514100519.GA21705@ashkalra_ubuntu_server>
+In-Reply-To: <CAE-0n50qWuny_1oYEMSZ+cfmCvnumk_UTPxUvZ-3wWdgOCioNA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 10:05:19AM +0000, Ashish Kalra wrote:
-> No, actually notify_addr_enc_status_changed() is called whenever a range
-> of memory is marked as encrypted or decrypted, so it has nothing to do
-> with migration as such. 
+On 10-05-21, 22:22, Stephen Boyd wrote:
+> Quoting Bjorn Andersson (2021-05-10 21:19:30)
+> > Many recent Qualcomm platforms comes with native DP and eDP support.
+> > This consists of a controller int he MDSS and a QMP-like PHY.
+> >
+> > While similar to the well known QMP block, the eDP PHY only has TX lanes
+> > and the programming sequences are slightly different. Rather than
+> > continuing the trend of parameterize the QMP driver to pieces, this
+> > introduces the support as a new driver.
 > 
-> This is basically modifying the encryption attributes on the page tables
-> and correspondingly also making the hypercall to inform the hypervisor about
-> page status encryption changes. The hypervisor will use this information
-> during an ongoing or future migration, so this information is maintained
-> even though migration might never be initiated here.
+> Thank you for not slamming it into the same mega driver.
+> 
+> >
+> > The registration of link and pixel clocks are borrowed from the QMP
+> > driver. The non-DP link frequencies are omitted for now.
+> 
+> Can we make some library code for "DP" stuff in qmp that the two can
+> call to share the logic?
 
-Doh, ofcourse. This doesn't make it easier.
-
-> The error value cannot be propogated up the callchain directly
-> here,
-
-Yeah, my thinking was way wrong here - sorry about that.
-
-> but one possibility is to leverage the hypercall and use Sean's
-> proposed hypercall interface to notify the host/hypervisor to block/stop
-> any future/ongoing migration.
->
-> Or as from Paolo's response, writing 0 to MIGRATION_CONTROL MSR seems
-> more ideal.
-
-Ok.
-
-So to sum up: notify_addr_enc_status_changed() should warn but not
-because of migration but because regardless, we should tell the users
-when page enc attributes updating fails as that is potentially hinting
-at a bigger problem so we better make sufficient noise here.
-
-Thx.
+I think we should split QMP into a library of common code which the
+respective function driver DP, UFS, USB QMP drivers (re)use across...
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+~Vinod
