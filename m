@@ -2,221 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B4CA38056B
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 10:43:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A267D380570
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 10:45:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233554AbhENIos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 04:44:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48024 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231889AbhENIoq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 04:44:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620981815;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lsAavQGtZZQfxxuNta+2PaMZ+gKpW3kyTUx2+4IIAWk=;
-        b=JiMEd8pQZmZeGJR5SfsEN9Xj7aAWl7ahr3kI/jkZbfoHa3dYKpu7hAilU7K7s0crVTVZdN
-        XYuJfnkNvLuKvADSyxsvA7Yp6w1ApPAP/u1utRDK81rzuNjxAY2k8e+Yf/THJI76ZU9SCZ
-        C3th9TBK6+XQCFETS8n4BF/kEl9hrGU=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-425-PBdOcpiFOs2oO1lMwz2rng-1; Fri, 14 May 2021 04:43:32 -0400
-X-MC-Unique: PBdOcpiFOs2oO1lMwz2rng-1
-Received: by mail-ed1-f72.google.com with SMTP id n6-20020a0564020606b029038cdc241890so2509977edv.20
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 01:43:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=lsAavQGtZZQfxxuNta+2PaMZ+gKpW3kyTUx2+4IIAWk=;
-        b=r39W1xoQZ7wxL05pgZ7ehAkcbKu2JVI8xq3xzm8JVHdFYgp39pMpqnM1kdndcN7i/Y
-         mL2M2MqyOEYXU/TuiDBFu08bgJwYKSlJRaGG2aaNofN6gdDZf6XLQyYnWnBx2gsoPsqy
-         bFHuEcQEKyny56e7S299d14yW9iefbMIpGCKLVK090bov2KX/uPHSftIPWVPYYnXR9D0
-         6pXiiYx2n0ycKdbKtzJxBm/o6ycVOVcVQy0JbYS3CNlg2VHfTyGvZWfLNvWubtMt1Psr
-         ffAA0coy6VqR0pMFLnQMWgA4Yxlc/fCX5PBHi7vWhmhO1loImddhw8XHynTFsulit8ik
-         OEpQ==
-X-Gm-Message-State: AOAM533opOaZhbQJ/1fD0vM1oNhDPApz/znrXcARn6HwelBK6K6IdrJ1
-        u7uNuOKPRPGZ5GqWsm6/UC29QDxVP4trGzL7GcrC2vERzTMkm/NQllB3XM2SMPRWHxexHeU2i+h
-        yjfh9E7bSVyAKxWP/IHgH1i43
-X-Received: by 2002:a50:ed0c:: with SMTP id j12mr54641155eds.12.1620981811580;
-        Fri, 14 May 2021 01:43:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJypI4ge2hxqi/JfrvWJM2sA3w80IXDC+WmQ5wQdEdZZtqA+keJm9IEpbNTASfWRrXFPNSGQBQ==
-X-Received: by 2002:a50:ed0c:: with SMTP id j12mr54641100eds.12.1620981811327;
-        Fri, 14 May 2021 01:43:31 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6501.dip0.t-ipconnect.de. [91.12.101.1])
-        by smtp.gmail.com with ESMTPSA id k12sm3969468edo.50.2021.05.14.01.43.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 May 2021 01:43:31 -0700 (PDT)
-To:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Hagen Paul Pfeifer <hagen@jauu.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
+        id S233705AbhENIqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 04:46:44 -0400
+Received: from mga06.intel.com ([134.134.136.31]:2925 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231839AbhENIqn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 04:46:43 -0400
+IronPort-SDR: l4e5DGRN86ONAeZfXa6utUVo8amSBRPu8oKaJbFwxl80CBXD5WhiV3RWRkwBcqThd5ZaxAq4LS
+ o9e3xItDLUMQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9983"; a="261379995"
+X-IronPort-AV: E=Sophos;i="5.82,299,1613462400"; 
+   d="scan'208";a="261379995"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 May 2021 01:45:31 -0700
+IronPort-SDR: GWVlx1jD/WhhKk0Pyewb9aPU/D6oWp9TNtglPJKLRhY1pr62N0XD6c5OWGIz0W5r7jqP3JmbpJ
+ u4RpKUnL1Dqw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,299,1613462400"; 
+   d="scan'208";a="538739299"
+Received: from clx-ap-likexu.sh.intel.com ([10.239.48.108])
+  by fmsmga001.fm.intel.com with ESMTP; 14 May 2021 01:45:28 -0700
+From:   Like Xu <like.xu@linux.intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        Yury Norov <yury.norov@gmail.com>, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-References: <20210513184734.29317-1-rppt@kernel.org>
- <20210513184734.29317-4-rppt@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v19 3/8] set_memory: allow set_direct_map_*_noflush() for
- multiple pages
-Message-ID: <858e5561-bc7d-4ce1-5cb8-3c333199d52a@redhat.com>
-Date:   Fri, 14 May 2021 10:43:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Like Xu <like.xu@linux.intel.com>
+Subject: [PATCH] KVM: x86/pt: Do not inject TraceToPAPMI when guest PT isn't supported
+Date:   Fri, 14 May 2021 16:44:36 +0800
+Message-Id: <20210514084436.848396-1-like.xu@linux.intel.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210513184734.29317-4-rppt@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.05.21 20:47, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> The underlying implementations of set_direct_map_invalid_noflush() and
-> set_direct_map_default_noflush() allow updating multiple contiguous pages
-> at once.
-> 
-> Add numpages parameter to set_direct_map_*_noflush() to expose this
-> ability with these APIs.
-> 
+When a PT perf user is running in system-wide mode on the host,
+the guest (w/ pt_mode=0) will warn about anonymous NMIs from
+kvm_handle_intel_pt_intr():
 
-[...]
+[   18.126444] Uhhuh. NMI received for unknown reason 10 on CPU 0.
+[   18.126447] Do you have a strange power saving mode enabled?
+[   18.126448] Dazed and confused, but trying to continue
 
-Finally doing some in-depth review, sorry for not having a detailed look 
-earlier.
+In this case, these PMIs should be handled by the host PT handler().
+When PT is used in guest-only mode, it's harmless to call host handler.
 
+Fix: 8479e04e7d("KVM: x86: Inject PMI for KVM guest")
+Signed-off-by: Like Xu <like.xu@linux.intel.com>
+---
+ arch/x86/events/intel/core.c | 3 +--
+ arch/x86/kvm/x86.c           | 3 +++
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
->   
-> -int set_direct_map_invalid_noflush(struct page *page)
-> +int set_direct_map_invalid_noflush(struct page *page, int numpages)
->   {
->   	struct page_change_data data = {
->   		.set_mask = __pgprot(0),
->   		.clear_mask = __pgprot(PTE_VALID),
->   	};
-> +	unsigned long size = PAGE_SIZE * numpages;
->   
-
-Nit: I'd have made this const and added an early exit for !numpages. But 
-whatever you prefer.
-
->   	if (!debug_pagealloc_enabled() && !rodata_full)
->   		return 0;
->   
->   	return apply_to_page_range(&init_mm,
->   				   (unsigned long)page_address(page),
-> -				   PAGE_SIZE, change_page_range, &data);
-> +				   size, change_page_range, &data);
->   }
->   
-> -int set_direct_map_default_noflush(struct page *page)
-> +int set_direct_map_default_noflush(struct page *page, int numpages)
->   {
->   	struct page_change_data data = {
->   		.set_mask = __pgprot(PTE_VALID | PTE_WRITE),
->   		.clear_mask = __pgprot(PTE_RDONLY),
->   	};
-> +	unsigned long size = PAGE_SIZE * numpages;
->   
-
-Nit: dito
-
->   	if (!debug_pagealloc_enabled() && !rodata_full)
->   		return 0;
->   
->   	return apply_to_page_range(&init_mm,
->   				   (unsigned long)page_address(page),
-> -				   PAGE_SIZE, change_page_range, &data);
-> +				   size, change_page_range, &data);
->   }
->   
-
-
-[...]
-
->   extern int kernel_set_to_readonly;
-> diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
-> index 156cd235659f..15a55d6e9cec 100644
-> --- a/arch/x86/mm/pat/set_memory.c
-> +++ b/arch/x86/mm/pat/set_memory.c
-> @@ -2192,14 +2192,14 @@ static int __set_pages_np(struct page *page, int numpages)
->   	return __change_page_attr_set_clr(&cpa, 0);
->   }
->   
-> -int set_direct_map_invalid_noflush(struct page *page)
-> +int set_direct_map_invalid_noflush(struct page *page, int numpages)
->   {
-> -	return __set_pages_np(page, 1);
-> +	return __set_pages_np(page, numpages);
->   }
->   
-> -int set_direct_map_default_noflush(struct page *page)
-> +int set_direct_map_default_noflush(struct page *page, int numpages)
->   {
-> -	return __set_pages_p(page, 1);
-> +	return __set_pages_p(page, numpages);
->   }
->   
-
-So, what happens if we succeeded setting 
-set_direct_map_invalid_noflush() for some pages but fail when having to 
-split a large mapping?
-
-Did I miss something or would the current code not undo what it 
-partially did? Or do we simply not care?
-
-I guess to handle this cleanly we would either have to catch all error 
-cases first (esp. splitting large mappings) before actually performing 
-the set to invalid, or have some recovery code in place if possible.
-
-
-AFAIKs, your patch #5 right now only calls it with 1 page, do we need 
-this change at all? Feels like a leftover from older versions to me 
-where we could have had more than a single page.
-
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index 2521d03de5e0..2f09eb0853de 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -2853,8 +2853,7 @@ static int handle_pmi_common(struct pt_regs *regs, u64 status)
+ 		if (unlikely(perf_guest_cbs && perf_guest_cbs->is_in_guest() &&
+ 			perf_guest_cbs->handle_intel_pt_intr))
+ 			perf_guest_cbs->handle_intel_pt_intr();
+-		else
+-			intel_pt_interrupt();
++		intel_pt_interrupt();
+ 	}
+ 
+ 	/*
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 6529e2023147..6660f3948cea 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -8087,6 +8087,9 @@ static void kvm_handle_intel_pt_intr(void)
+ {
+ 	struct kvm_vcpu *vcpu = __this_cpu_read(current_vcpu);
+ 
++	if (!guest_cpuid_has(vcpu, X86_FEATURE_INTEL_PT))
++		return;
++
+ 	kvm_make_request(KVM_REQ_PMI, vcpu);
+ 	__set_bit(MSR_CORE_PERF_GLOBAL_OVF_CTRL_TRACE_TOPA_PMI_BIT,
+ 			(unsigned long *)&vcpu->arch.pmu.global_status);
 -- 
-Thanks,
-
-David / dhildenb
+2.31.1
 
