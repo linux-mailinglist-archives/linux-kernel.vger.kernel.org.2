@@ -2,92 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80A5D3802A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 06:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DFD03802A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 06:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231991AbhENEHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 00:07:00 -0400
-Received: from mail-pj1-f50.google.com ([209.85.216.50]:44696 "EHLO
-        mail-pj1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231171AbhENEG6 (ORCPT
+        id S232049AbhENEHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 00:07:47 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:34890 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231171AbhENEHo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 00:06:58 -0400
-Received: by mail-pj1-f50.google.com with SMTP id lj11-20020a17090b344bb029015bc3073608so1004036pjb.3;
-        Thu, 13 May 2021 21:05:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=h43Pdi9RV6SUWb4LkocJ+mvTm3hFUW7mF7EJTMuXFqI=;
-        b=LmyXf0DhTaQYOWm5bPXTUM4mq5RZUYGRMP2AVMcyOwVhBnOs9NNrSYI4ZqA0Em2mAY
-         Y0gZfuiCBQ7j4c92xgK/n/OIWuo8ckkqZ8IYYCimHxkpkdBQuWPaOph3Lggj/u8gGJLk
-         YwBqS6VDRHHFQmGFjfGAt2SaC5uPmG2R2qA8GlW9211CPeAfjcQbdOw+Gh/ZAWyHBilE
-         1QIFTAjfv17DwCMMeN5qNXBVDwRTdgWh9Zcv7FVLZASUi2dElQPjS/HLbS0FV1UHQ8aW
-         OgFkSV6JLxyykhd6AQLrfeBrZHr1SII8BiJufjjQ7a1/qurciwJB0KNXv0h9BioVcJEU
-         VZBA==
-X-Gm-Message-State: AOAM5328SRGxMkt0IxSQzEIeukrQJ96dKAE7VlUF91mpHONqt6Z0kAf7
-        D33LFZSxZzB598icwv9iSBVjbOdHV5H/xw==
-X-Google-Smtp-Source: ABdhPJxOJxLH0k+NYgL/gZZay3TD8usN0M3v38xulQG6vrzDfVbMLeJqSD5vM9SYupv5OVjwrtmE2Q==
-X-Received: by 2002:a17:90a:6347:: with SMTP id v7mr19240246pjs.209.1620965146039;
-        Thu, 13 May 2021 21:05:46 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:53a7:2faa:e07b:6134? ([2601:647:4000:d7:53a7:2faa:e07b:6134])
-        by smtp.gmail.com with ESMTPSA id f13sm3129849pfa.207.2021.05.13.21.05.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 May 2021 21:05:45 -0700 (PDT)
-Subject: Re: [PATCH v1 6/6] scsi: ufs: Update the fast abort path in
- ufshcd_abort() for PM requests
-To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        ziqichen@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1620885319-15151-1-git-send-email-cang@codeaurora.org>
- <1620885319-15151-8-git-send-email-cang@codeaurora.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <a124700a-e507-e593-d6f5-2da452f3ae7e@acm.org>
-Date:   Thu, 13 May 2021 21:05:43 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Fri, 14 May 2021 00:07:44 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=yunbo.xufeng@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0UYof4N3_1620965189;
+Received: from IT-C02XP11YJHD2.local(mailfrom:yunbo.xufeng@linux.alibaba.com fp:SMTPD_---0UYof4N3_1620965189)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 14 May 2021 12:06:30 +0800
+Subject: Re: [RFC] [PATCH bpf-next 1/1] bpf: Add a BPF helper for getting the
+ cgroup path of current task
+To:     kpsingh@kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, revest@chromium.org,
+        jackmanb@chromium.org, yhs@fb.com, songliubraving@fb.com,
+        kafai@fb.com, john.fastabend@gmail.com, joe@cilium.io,
+        quentin@isovalent.com,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+References: <20210512095823.99162-1-yunbo.xufeng@linux.alibaba.com>
+ <20210512095823.99162-2-yunbo.xufeng@linux.alibaba.com>
+ <20210512225504.3kt6ij4xqzbtyej5@ast-mbp.dhcp.thefacebook.com>
+From:   xufeng zhang <yunbo.xufeng@linux.alibaba.com>
+Message-ID: <1b6dfe61-29ed-5d4d-fa1f-1bd46a4f5860@linux.alibaba.com>
+Date:   Fri, 14 May 2021 12:06:29 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <1620885319-15151-8-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210512225504.3kt6ij4xqzbtyej5@ast-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/12/21 10:55 PM, Can Guo wrote:
-> If PM requests fail during runtime suspend/resume, RPM framework saves the
-> error to dev->power.runtime_error. Before the runtime_error gets cleared,
-> runtime PM on this specific device won't work again, leaving the device
-> in either suspended or active state permanently.
-> 
-> When task abort happens to a PM request sent during runtime suspend/resume,
-> even if it can be successfully aborted, RPM framework anyways saves the
-> (TIMEOUT) error. But we want more and we can do better - let error handling
-> recover and clear the runtime_error. So, let PM requests take the fast
-> abort path in ufshcd_abort().
 
-The only RQF_PM requests I know of are START STOP UNIT and SYNCHRONIZE
-CACHE. Are there devices for which these commands can time out or do
-these commands perhaps only time out as the result of error injection?
+ÔÚ 2021/5/13 ÉÏÎç6:55, Alexei Starovoitov Ð´µÀ:
+> On Wed, May 12, 2021 at 05:58:23PM +0800, Xufeng Zhang wrote:
+>> To implement security rules for application containers by utilizing
+>> bpf LSM, the container to which the current running task belongs need
+>> to be known in bpf context. Think about this scenario: kubernetes
+>> schedules a pod into one host, before the application container can run,
+>> the security rules for this application need to be loaded into bpf
+>> maps firstly, so that LSM bpf programs can make decisions based on
+>> this rule maps.
+>>
+>> However, there is no effective bpf helper to achieve this goal,
+>> especially for cgroup v1. In the above case, the only available information
+>> from user side is container-id, and the cgroup path for this container
+>> is certain based on container-id, so in order to make a bridge between
+>> user side and bpf programs, bpf programs also need to know the current
+>> cgroup path of running task.
+> ...
+>> +#ifdef CONFIG_CGROUPS
+>> +BPF_CALL_2(bpf_get_current_cpuset_cgroup_path, char *, buf, u32, buf_len)
+>> +{
+>> +	struct cgroup_subsys_state *css;
+>> +	int retval;
+>> +
+>> +	css = task_get_css(current, cpuset_cgrp_id);
+>> +	retval = cgroup_path_ns(css->cgroup, buf, buf_len, &init_cgroup_ns);
+>> +	css_put(css);
+>> +	if (retval >= buf_len)
+>> +		retval = -ENAMETOOLONG;
+> Manipulating string path to check the hierarchy will be difficult to do
+> inside bpf prog. It seems to me this helper will be useful only for
+> simplest cgroup setups where there is no additional cgroup nesting
+> within containers.
+> Have you looked at *ancestor_cgroup_id and *cgroup_id helpers?
+> They're a bit more flexible when dealing with hierarchy and
+> can be used to achieve the same correlation between kernel and user cgroup ids.
 
-> -	if (lrbp->lun == UFS_UPIU_UFS_DEVICE_WLUN) {
-> +	if (lrbp->lun == UFS_UPIU_UFS_DEVICE_WLUN ||
-> +	    (cmd->request->rq_flags & RQF_PM)) {
 
-Which are the RQF_PM commands that are not sent to a WLUN? Are these
-START STOP UNIT and SYNCHRONIZE CACHE only?
+KP,
 
-Thanks,
+do you have any suggestion?
 
-Bart.
+what I am thinking is the internal kernel object(cgroup id or ns.inum) 
+is not so user friendly, we can get the container-context from them for 
+tracing scenario, but not for LSM blocking cases, I'm not sure how 
+Google internally resolve similar issue.
+
+
+Thanks!
+
+Xufeng
+
