@@ -2,199 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16B71380525
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 10:25:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34F46380526
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 10:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231510AbhENI0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 04:26:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230459AbhENI0b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 04:26:31 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ED0EC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 01:25:20 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id u21so43496062ejo.13
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 01:25:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=PV2s94YrOisqT7vMow1MSTArbLb4x54m3t4M6sxYgd4=;
-        b=mszs3i61VpgEcW+HhPVGH8seTyGbkLh7fyiVAwvdyu5YG279nwzxdH0nq8ZJSwPTTO
-         epGalcRCLv6KsUjFWW6RNzeua5NbNtseN5BrbXtMS3ZWuSkJ8Z4Tw1iCDHJ4jFWpDMBm
-         DhansTsqpezKeGUTYk8MLDUY6vLuF2UzzK16AWXAE6kiT8trDSSkpp75J4+Re850oRfM
-         1xInEBmHT5mOSj4sswnW0rVUvIKW2aCn1wURSi5nrTMbynQ9yEXxL+UTg+XBLrKu/SbA
-         J1KuWq4yy8iM/BJfucYyNzbP6BlvIdLrDDIsHIxmMcDkrWT2Qlq9v6AWq9bPyzIPJ/mf
-         q0YA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=PV2s94YrOisqT7vMow1MSTArbLb4x54m3t4M6sxYgd4=;
-        b=so8bfSq0Ix/xNzFJKh4sQmqSOD/YtaZShFchPgTJV1zw4uedmEgvfsfKG3hmSNiwmH
-         S4XI/akVDfQg4r1wvqqmf/eac870FkHW2iYmjrTzOY8C8qG0vkgrN5sLQPSoSRSTFuf1
-         L1YBC/mcilNfhY4IYZ5565NQWF9GKEsYJhDXq8EYdUTgMPsCmufK2tRZdPxu8XUOgcAh
-         CsAZu8zdrK5g1eVXegfCk9dFYL6aqisI8i1Hu7g4C/7I+Hc1T9q2qnhmygBUH9j7BPMK
-         k3OhuhUiBImZZ2+Hc8pw2f6a1lap/dUMUBnQmQ+XlSgjWaeT/HXJ083algy5W7S72yHK
-         PKdg==
-X-Gm-Message-State: AOAM532Hg+kZjV0iFplv04wf9veFN8iepxuYEVn4vtRxe9C0dluM0x3a
-        aJXsTsoFTGNpk7s88nmlpsvTZ4UcohypbkABZqimag==
-X-Google-Smtp-Source: ABdhPJzvcfolTJJGELzA1NbWGzfPhoG5rqgQHhAsYFVH5w6zh66Wfl3cLyM9JlAR/cDKDRUohcKGJin39+nb++iBxow=
-X-Received: by 2002:a17:906:15c7:: with SMTP id l7mr26355348ejd.167.1620980718039;
- Fri, 14 May 2021 01:25:18 -0700 (PDT)
+        id S233528AbhENI06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 04:26:58 -0400
+Received: from mga11.intel.com ([192.55.52.93]:42279 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230459AbhENI05 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 04:26:57 -0400
+IronPort-SDR: SUy9smRe4vVeWNJ1TlG+GsgYoWBRBlqrZQ0V65FPRwZfFBFo33+VvoKuUiLfvs99yNkA/NVHd3
+ oFFtTohEDeMw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9983"; a="197052394"
+X-IronPort-AV: E=Sophos;i="5.82,299,1613462400"; 
+   d="scan'208";a="197052394"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 May 2021 01:25:46 -0700
+IronPort-SDR: BuypO+HpOVZSCiQzdscVOG6/zC0fKoeruGxQGmUA4rRpHKn+sJAuUkhOA7UIYs9o8UutQpXa6T
+ KNUo164GEaJw==
+X-IronPort-AV: E=Sophos;i="5.82,299,1613462400"; 
+   d="scan'208";a="626813096"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.82]) ([10.238.4.82])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 May 2021 01:25:44 -0700
+Subject: Re: [PATCH v3 2/2] perf header: Support HYBRID_CPU_PMU_CAPS feature
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20210511053003.27015-1-yao.jin@linux.intel.com>
+ <20210511053003.27015-3-yao.jin@linux.intel.com> <YJ4x0usa1ljPT5DV@krava>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <4381cb3b-a0de-e8e9-baf9-c6e202c5abef@linux.intel.com>
+Date:   Fri, 14 May 2021 16:25:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20210407123438.224551-1-mindal@semihalf.com> <20210511030658.GG3425@dragon>
- <AM0PR04MB67542D30A9424D455DB3ADD496539@AM0PR04MB6754.eurprd04.prod.outlook.com>
- <20210513021214.GJ3425@dragon> <20210513141921.i7sfmekbcw2m7vxd@skbuf>
- <CAPv3WKfnWFjfZw39avZBEyUpEsH2f=NCs8VfjeR+wzk4qV3GmA@mail.gmail.com> <20210513183102.6dflgb4v2oekdlq5@skbuf>
-In-Reply-To: <20210513183102.6dflgb4v2oekdlq5@skbuf>
-From:   =?UTF-8?Q?Kornel_Dul=C4=99ba?= <mindal@semihalf.com>
-Date:   Fri, 14 May 2021 10:25:07 +0200
-Message-ID: <CAKpxNiyxDi66CXW4Z_exC=uy6mNbfhdBG5czgqNZqxmszegB0A@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: fsl-ls1028a: Correct ECAM PCIE window ranges
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     Marcin Wojtas <mw@semihalf.com>, Shawn Guo <shawnguo@kernel.org>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Leo Li <leoyang.li@nxp.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "tn@semihalf.com" <tn@semihalf.com>,
-        "upstream@semihalf.com" <upstream@semihalf.com>,
-        Alexandru Marginean <alexandru.marginean@nxp.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YJ4x0usa1ljPT5DV@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vladimir,
+Hi Jiri,
 
-On Thu, May 13, 2021 at 8:31 PM Vladimir Oltean <vladimir.oltean@nxp.com> w=
-rote:
->
-> Hi Marcin,
->
-> On Thu, May 13, 2021 at 07:54:15PM +0200, Marcin Wojtas wrote:
-> > Hi Vladimir,
-> >
-> > czw., 13 maj 2021 o 16:19 Vladimir Oltean <vladimir.oltean@nxp.com> nap=
-isa=C5=82(a):
-> > >
-> > > On Thu, May 13, 2021 at 10:12:15AM +0800, Shawn Guo wrote:
-> > > > On Tue, May 11, 2021 at 09:48:22AM +0000, Claudiu Manoil wrote:
-> > > > > >-----Original Message-----
-> > > > > >From: Shawn Guo <shawnguo@kernel.org>
-> > > > > >Sent: Tuesday, May 11, 2021 6:07 AM
-> > > > > [...]
-> > > > > >Subject: Re: [PATCH] arm64: dts: fsl-ls1028a: Correct ECAM PCIE =
-window
-> > > > > >ranges
-> > > > > >
-> > > > > >+ Claudiu
-> > > > > >
-> > > > > >On Wed, Apr 07, 2021 at 02:34:38PM +0200, Kornel Duleba wrote:
-> > > > > >> Currently all PCIE windows point to bus address 0x0, which doe=
-s not match
-> > > > > >> the values obtained from hardware during EA.
-> > > > > >> Replace those values with CPU addresses, since in reality we
-> > > > > >> have a 1:1 mapping between the two.
-> > > > > >>
-> > > > > >> Signed-off-by: Kornel Duleba <mindal@semihalf.com>
-> > > > > >
-> > > > > >Claudiu,
-> > > > > >
-> > > > > >Do you have any comment on this?
-> > > > > >
-> > > > >
-> > > > > Well, probing is still working with this change, I've just tested=
- it.
-> > > > >
-> > > > > PCI listing at boot time changes from:
-> > > > >
-> > > > > pci-host-generic 1f0000000.pcie: host bridge /soc/pcie@1f0000000 =
-ranges:
-> > > > > pci-host-generic 1f0000000.pcie:      MEM 0x01f8000000..0x01f815f=
-fff -> 0x0000000000
-> > > > > pci-host-generic 1f0000000.pcie:      MEM 0x01f8160000..0x01f81cf=
-fff -> 0x0000000000
-> > > > >
-> > > > > to:
-> > > > >
-> > > > > pci-host-generic 1f0000000.pcie: host bridge /soc/pcie@1f0000000 =
-ranges:
-> > > > > pci-host-generic 1f0000000.pcie:      MEM 0x01f8000000..0x01f815f=
-fff -> 0x01f8000000
-> > > > > pci-host-generic 1f0000000.pcie:      MEM 0x01f8160000..0x01f81cf=
-fff -> 0x01f8160000
-> > > > >
-> > > > > and looks reasonable.
-> > > > > Adding Vladimir and Alex just in case.
-> > > > >
-> > > > > Acked-by: Claudiu Manoil <claudiu.manoil@nxp.com>
-> > > >
-> > > > Thanks, Claudiu.
-> > > >
-> > > > Kornel,
-> > > >
-> > > > Do we need a Fixes tag for this patch?
-> > > >
-> > > > Shawn
-> > >
-> > > Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> > >
-> > > I am not sure whether "incorrect data that is unused" deserves a Fixe=
-s:
-> > > tag or not, probably not.
-> > >
-> > > Bjorn Helgaas did point out before that "The fact that all these wind=
-ows
-> > > map to PCI bus address 0 looks broken", so there's that:
-> > >
-> > > https://patchwork.kernel.org/project/linux-pci/cover/20201129230743.3=
-006978-1-kw@linux.com/
-> > >
-> > > And while it does look "broken", with the Enhanced Allocation capabil=
-ity
-> > > and the pci-host-ecam-generic driver, there is no address translation
-> > > taking place, so no inbound/outbound windows are configured, so the
-> > > range.pci_addr calculated in devm_of_pci_get_host_bridge_resources() =
-is
-> > > not used for anything except for printing.
-> >
-> > ...in Linux. Please note Linux device trees can be used as-is by other
-> > projects. Regardless my opinion on how that's unfortunate, FreeBSD
-> > does additional ranges check before performing EA and fails. Since the
-> > current DT description is imo broken and the change is transparent for
-> > Linux, it would be great to get this change merged into tree in case
-> > there are are no objections.
->
-> Just for my curiosity, can you please link me to the extra FreeBSD checks=
-?
+On 5/14/2021 4:16 PM, Jiri Olsa wrote:
+> On Tue, May 11, 2021 at 01:30:03PM +0800, Jin Yao wrote:
+> 
+> SNIP
+> 
+>> diff --git a/tools/perf/Documentation/perf.data-file-format.txt b/tools/perf/Documentation/perf.data-file-format.txt
+>> index fbee9e580ee4..e6ff8c898ada 100644
+>> --- a/tools/perf/Documentation/perf.data-file-format.txt
+>> +++ b/tools/perf/Documentation/perf.data-file-format.txt
+>> @@ -419,6 +419,22 @@ Example:
+>>     cpu_core cpu list : 0-15
+>>     cpu_atom cpu list : 16-23
+>>   
+>> +	HEADER_HYBRID_CPU_PMU_CAPS = 31,
+>> +
+>> +	A list of hybrid CPU PMU capabilities.
+>> +
+>> +struct {
+>> +	u32 nr_pmu;
+>> +	struct {
+>> +		u32 nr_cpu_pmu_caps;
+>> +		{
+>> +			char	name[];
+>> +			char	value[];
+>> +		} [nr_cpu_pmu_caps];
+>> +		char pmu_name[];
+>> +	} [nr_pmu];
+>> +};
+> 
+> when I saw it's similar to the previous one I thought we could have
+> one big hybrid feature.. but that would be probably more complex and
+> we might not be able to reuse the code as much as you did
+> 
 
-FreeBSD parses values from "ranges" and uses "rman" API to store them.
-Now "rman", or Resource manager is used in the FreeBSD kernel to
-manage memory regions.
-In particular it checks if any two regions inserted into the same
-"manager" overlap.
-If they do it is treated as a fatal error, which in our case causes
-the PCI driver to fail to probe.
-code: https://github.com/freebsd/freebsd-src/blob/main/sys/dev/pci/pci_host=
-_generic.c#L148.
+Yes. Actually I had the same idea before but as you said the code would be more complex.
 
->
-> Anyway, I'm not sure what is more "broken", to have a "ranges" property
-> when no address translation takes place, or for that "ranges" property
-> to be set to a confusing "child address space" value. That's not to say
-> I have an objection against Shawn merging the patch.
->
-> My main point was slightly different though, the "ranges" property is
-> currently mandatory, although in this case it provides no information
-> which cannot be retrieved directly from the config space. Properties
-> that have no other use except to be pedantic are, well, useless.
-> Maybe we can do something about that too.
+> 
+>>   free_value:
+>> @@ -3142,6 +3208,64 @@ static int process_cpu_pmu_caps(struct feat_fd *ff,
+>>   	return -1;
+>>   }
+>>   
+>> +static int process_cpu_pmu_caps(struct feat_fd *ff,
+>> +				void *data __maybe_unused)
+>> +{
+>> +	int ret;
+>> +
+>> +	ret = process_per_cpu_pmu_caps(ff, &ff->ph->env.nr_cpu_pmu_caps,
+>> +				       &ff->ph->env.cpu_pmu_caps,
+>> +				       &ff->ph->env.max_branches);
+>> +	return ret;
+> 
+> why the 'ret' var? could be just:
+> 
+>     return process_per_cpu_pmu_caps(...
+> 
+
+OK, I will fix it in v4.
+
+>> +}
+>> +
+>> +static int process_hybrid_cpu_pmu_caps(struct feat_fd *ff,
+>> +				       void *data __maybe_unused)
+>> +{
+>> +	struct hybrid_cpc_node *nodes;
+>> +	u32 nr_pmu, i;
+>> +	int ret;
+>> +
+>> +	if (do_read_u32(ff, &nr_pmu))
+>> +		return -1;
+>> +
+>> +	if (!nr_pmu) {
+>> +		pr_debug("hybrid cpu pmu capabilities not available\n");
+>> +		return 0;
+>> +	}
+>> +
+>> +	nodes = zalloc(sizeof(*nodes) * nr_pmu);
+>> +	if (!nodes)
+>> +		return -ENOMEM;
+>> +
+>> +	for (i = 0; i < nr_pmu; i++) {
+>> +		struct hybrid_cpc_node *n = &nodes[i];
+>> +
+>> +		ret = process_per_cpu_pmu_caps(ff, &n->nr_cpu_pmu_caps,
+>> +					       &n->cpu_pmu_caps,
+>> +					       &n->max_branches);
+>> +		if (ret)
+>> +			goto err;
+>> +
+>> +		n->pmu_name = do_read_string(ff);
+>> +		if (!n->pmu_name)
+> 
+> should you set 'ret = -1' in here?
+> 
+
+Yes, I should add 'ret = -1' before 'n->pmu_name = do_read_string(ff);'.
+
+> other than this both patches look good to me
+> 
+
+Thanks, I will prepare v4 soon.
+
+Thanks
+Jin Yao
+
+> thanks,
+> jirka
+> 
+>> +			goto err;
+>> +	}
+>> +
+>> +	ff->ph->env.nr_hybrid_cpc_nodes = nr_pmu;
+>> +	ff->ph->env.hybrid_cpc_nodes = nodes;
+>> +	return 0;
+>> +
+>> +err:
+>> +	for (i = 0; i < nr_pmu; i++) {
+>> +		free(nodes[i].cpu_pmu_caps);
+> 
+> SNIP
+> 
