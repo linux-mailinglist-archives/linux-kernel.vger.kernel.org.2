@@ -2,219 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E140438092F
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 14:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99336380939
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 14:12:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232769AbhENMLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 08:11:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231394AbhENMLC (ORCPT
+        id S232764AbhENMNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 08:13:17 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:54638 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232862AbhENMNP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 08:11:02 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08511C061574;
-        Fri, 14 May 2021 05:09:50 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id k10so13117876ejj.8;
-        Fri, 14 May 2021 05:09:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Go5OSz4/H+uPDLDGGgQ0MKW8Mm4VQjGQmcRsSfCNjhk=;
-        b=nD4+69L0GyZ2kV1uA2c1GTo/HMZ/EwsYCcl5GHssbzJpZ+D9vMPWQCPTEaQD39HZas
-         SMqHD02OWB4MeDbgtjJiRznlEVZ4oAL7xBeX1jKBOqN0JFLQLwqLpsdH2H4iWAyK3t5l
-         ekdbOWF2G6Js328yV3c4NJzRJWujby5zvV6XP90+7maeQ5yF7u8NV7QaAG+NrSKY/0ZN
-         ohGCc8yaGYndmDKouASKQlLz4/OLbKU9mdJeC93rcApDsP7fY+/6tUrpYTa+Q1/3v/Xp
-         4e+LRZ/sK2MeoFOvS683JBwCUp9a030AItFCwn4rI541vd396RfYD+a/3zypC6Xadphn
-         Ho5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Go5OSz4/H+uPDLDGGgQ0MKW8Mm4VQjGQmcRsSfCNjhk=;
-        b=qVljTajgMQmOWSXBfAltptRivkoEASRzn6tG1KWjSOdIV3cBvqKcM66m8o8jCBH1lG
-         5GYOoUIVITHPh+p+Xs36FT+KeDy5gmktRyJuo/dcxGlXU2YthQhV42yOrmiinEQHhUW9
-         jSE4NEnF4RtXjrS9BV9PtNbPCeFiH/jWKJNiWnmxCW/02Mla34jENpCht08cyRhNlSJU
-         hVpEwuEiE4+3neOIPs8dw5GCGjuAUi4BGFVcWT8pI7ZVbQqb6TPiJkZ8LlcRRNWRVTKJ
-         bE4D+X2mKl9AbGKGmP4gtMaDHV1uF1szmGlKo21ktLZkWmr6LEko0gnLcHSQNdSnGqK/
-         HGfA==
-X-Gm-Message-State: AOAM532Ez8LsY4I59AXIoCyIct1Im5P7mABnIWJUAa7STouxDby7y2ZS
-        +FABZAj7/lMIiV/wrUQbgNXVC6Vz0bs=
-X-Google-Smtp-Source: ABdhPJyAnROvySSX2j8qEuTumlWsloarcCjIII71QSFBa3JDkrFykrLpk6GMnrwn96PJCPZnt2nMIA==
-X-Received: by 2002:a17:906:60d6:: with SMTP id f22mr48909457ejk.177.1620994188724;
-        Fri, 14 May 2021 05:09:48 -0700 (PDT)
-Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id i5sm749805ejv.120.2021.05.14.05.09.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 May 2021 05:09:48 -0700 (PDT)
-Subject: Re: [PATCH 4/4] arm64: dts: rockchip: add USB support to RK3308 dts
-To:     Tobias Schramm <t.schramm@manjaro.org>, linux-usb@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210514102734.2091238-1-t.schramm@manjaro.org>
- <20210514102734.2091238-5-t.schramm@manjaro.org>
-From:   Johan Jonker <jbx6244@gmail.com>
-Message-ID: <01388394-603e-6a43-2044-ae1e93eb0ff3@gmail.com>
-Date:   Fri, 14 May 2021 14:09:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux i686; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Fri, 14 May 2021 08:13:15 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.0.5)
+ id 8bc34d5d7da46eca; Fri, 14 May 2021 14:12:02 +0200
+Received: from kreacher.localnet (89-64-80-69.dynamic.chello.pl [89.64.80.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id C743F66969E;
+        Fri, 14 May 2021 14:12:01 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Saravana Kannan <saravanak@google.com>,
+        chenxiang <chenxiang66@hisilicon.com>
+Subject: [PATCH v1 1/2] drivers: base: Fix device link removal
+Date:   Fri, 14 May 2021 14:10:15 +0200
+Message-ID: <5722787.lOV4Wx5bFT@kreacher>
+In-Reply-To: <11761395.O9o76ZdvQC@kreacher>
+References: <11761395.O9o76ZdvQC@kreacher>
 MIME-Version: 1.0
-In-Reply-To: <20210514102734.2091238-5-t.schramm@manjaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 89.64.80.69
+X-CLIENT-HOSTNAME: 89-64-80-69.dynamic.chello.pl
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrvdehiedgvdehucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvjeelgffhiedukedtleekkedvudfggefhgfegjefgueekjeelvefggfdvledutdenucfkphepkeelrdeigedrkedtrdeileenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeekledrieegrdektddrieelpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtohepghhrvghgkhhhsehlihhnuhigfhhouhhnuggrthhiohhnrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprhgrfhgrvghlsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehsrghrrghvrghnrghksehgohhoghhlvgdrtghomhdprhgtphhtthhopegthhgvnhigihgrnhhgieeisehhihhsihhlihgtohhnrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tobias,
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Just sent a patch for grf.yaml and rockchip-usb-phy.yaml conversion myself.
+When device_link_free() drops references to the supplier and
+consumer devices of the device link going away and the reference
+being dropped turns out to be the last one for any of those
+device objects, its ->release callback will be invoked and it
+may sleep which goes against the SRCU callback execution
+requirements.
 
-Added { .compatible = "rockchip,rk3308-usb2phy", .data =
-&rk3308_phy_cfgs }, to phy-rockchip-inno-usb2.c
+To address this issue, make the device link removal code carry out
+the device_link_free() actions preceded by SRCU synchronization from
+a separate work item (the "long" workqueue is used for that, because
+it does not matter when the device link memory is released and it may
+take time to get to that point) instead of using SRCU callbacks.
 
-Added is "rockchip,rk3308-usb-phy" to rockchip-usb-phy.txt
+While at it, make the code work analogously when SRCU is not enabled
+to reduce the differences between the SRCU and non-SRCU cases.
 
-compatible = "rockchip,rk3308-usb2phy"; is used in this patch.
+Fixes: 843e600b8a2b ("driver core: Fix sleeping in invalid context during device link deletion")
+Reported-by: chenxiang (M) <chenxiang66@hisilicon.com>
+Tested-by: chenxiang (M) <chenxiang66@hisilicon.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Saravana Kannan <saravanak@google.com>
+---
+ drivers/base/core.c    |   37 +++++++++++++++++++++++--------------
+ include/linux/device.h |    6 ++----
+ 2 files changed, 25 insertions(+), 18 deletions(-)
 
-Maybe try phy-rockchip-inno-usb2.yaml?
+Index: linux-pm/drivers/base/core.c
+===================================================================
+--- linux-pm.orig/drivers/base/core.c
++++ linux-pm/drivers/base/core.c
+@@ -193,6 +193,11 @@ int device_links_read_lock_held(void)
+ {
+ 	return srcu_read_lock_held(&device_links_srcu);
+ }
++
++static void device_link_synchronize_removal(void)
++{
++	synchronize_srcu(&device_links_srcu);
++}
+ #else /* !CONFIG_SRCU */
+ static DECLARE_RWSEM(device_links_lock);
+ 
+@@ -223,6 +228,10 @@ int device_links_read_lock_held(void)
+ 	return lockdep_is_held(&device_links_lock);
+ }
+ #endif
++
++static inline void device_link_synchronize_removal(void)
++{
++}
+ #endif /* !CONFIG_SRCU */
+ 
+ static bool device_is_ancestor(struct device *dev, struct device *target)
+@@ -444,8 +453,13 @@ static struct attribute *devlink_attrs[]
+ };
+ ATTRIBUTE_GROUPS(devlink);
+ 
+-static void device_link_free(struct device_link *link)
++static void device_link_release_fn(struct work_struct *work)
+ {
++	struct device_link *link = container_of(work, struct device_link, rm_work);
++
++	/* Ensure that all references to the link object have been dropped. */
++	device_link_synchronize_removal();
++
+ 	while (refcount_dec_not_one(&link->rpm_active))
+ 		pm_runtime_put(link->supplier);
+ 
+@@ -454,24 +468,19 @@ static void device_link_free(struct devi
+ 	kfree(link);
+ }
+ 
+-#ifdef CONFIG_SRCU
+-static void __device_link_free_srcu(struct rcu_head *rhead)
+-{
+-	device_link_free(container_of(rhead, struct device_link, rcu_head));
+-}
+-
+ static void devlink_dev_release(struct device *dev)
+ {
+ 	struct device_link *link = to_devlink(dev);
+ 
+-	call_srcu(&device_links_srcu, &link->rcu_head, __device_link_free_srcu);
+-}
+-#else
+-static void devlink_dev_release(struct device *dev)
+-{
+-	device_link_free(to_devlink(dev));
++	INIT_WORK(&link->rm_work, device_link_release_fn);
++	/*
++	 * It may take a while to complete this work because of the SRCU
++	 * synchronization in device_link_release_fn() and if the consumer or
++	 * supplier devices get deleted when it runs, so put it into the "long"
++	 * workqueue.
++	 */
++	queue_work(system_long_wq, &link->rm_work);
+ }
+-#endif
+ 
+ static struct class devlink_class = {
+ 	.name = "devlink",
+Index: linux-pm/include/linux/device.h
+===================================================================
+--- linux-pm.orig/include/linux/device.h
++++ linux-pm/include/linux/device.h
+@@ -570,7 +570,7 @@ struct device {
+  * @flags: Link flags.
+  * @rpm_active: Whether or not the consumer device is runtime-PM-active.
+  * @kref: Count repeated addition of the same link.
+- * @rcu_head: An RCU head to use for deferred execution of SRCU callbacks.
++ * @rm_work: Work structure used for removing the link.
+  * @supplier_preactivated: Supplier has been made active before consumer probe.
+  */
+ struct device_link {
+@@ -583,9 +583,7 @@ struct device_link {
+ 	u32 flags;
+ 	refcount_t rpm_active;
+ 	struct kref kref;
+-#ifdef CONFIG_SRCU
+-	struct rcu_head rcu_head;
+-#endif
++	struct work_struct rm_work;
+ 	bool supplier_preactivated; /* Owned by consumer probe. */
+ };
+ 
 
-"rockchip,rk3308-usb2phy-grf", "syscon", "simple-mfd" document missing.
 
-Could someone recheck the reg memory size?
-Is this still correct then?
 
-===
-compatible = "rockchip,rk3308-grf", "syscon", "simple-mfd";
-reg = <0x0 0xff000000 0x0 0x10000>;
-
-Do we still need "0x0 0x10000" here?
-===
-compatible = "rockchip,rk3308-usb2phy-grf", "syscon", "simple-mfd";
-reg = <0x0 0xff008000 0x0 0x4000>;
-===
-compatible = "rockchip,rk3308-detect-grf", "syscon", "simple-mfd";
-reg = <0x0 0xff00b000 0x0 0x1000>;
-===
-compatible = "rockchip,rk3308-core-grf", "syscon", "simple-mfd";
-reg = <0x0 0xff00c000 0x0 0x1000>;
-===
-
-Johan
-
-On 5/14/21 12:27 PM, Tobias Schramm wrote:
-> The Rockchip RK3308 features an integrated USB 2.0 phy, an USB OTG
-> controller and OHCI/EHCI interfaces.
-> This patch adds all of those to the RK3308 dtsi and thereby enables USB
-> support on the RK3308.
-> 
-> Signed-off-by: Tobias Schramm <t.schramm@manjaro.org>
-> ---
->  arch/arm64/boot/dts/rockchip/rk3308.dtsi | 75 ++++++++++++++++++++++++
->  1 file changed, 75 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3308.dtsi b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-> index 0c5fa9801e6f..80fd802d6c15 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-> @@ -177,6 +177,43 @@ reboot-mode {
->  		};
->  	};
->  
-> +	usb2phy_grf: syscon@ff008000 {
-> +		compatible = "rockchip,rk3308-usb2phy-grf", "syscon",
-> +			     "simple-mfd";
-> +		reg = <0x0 0xff008000 0x0 0x4000>;
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +
-> +		u2phy: usb2-phy@100 {
-
-> +			compatible = "rockchip,rk3308-usb2phy";
-> +			reg = <0x100 0x10>;
-> +			clocks = <&cru SCLK_USBPHY_REF>;
-> +			clock-names = "phyclk";
-> +			clock-output-names = "usb480m_phy";
-> +			#clock-cells = <0>;
-> +			assigned-clocks = <&cru USB480M>;
-> +			assigned-clock-parents = <&u2phy>;
-> +			status = "disabled";
-> +
-
-Looks like
-
-> +			u2phy_otg: otg-port {
-> +				#phy-cells = <0>;
-> +				interrupts = <GIC_SPI 67 IRQ_TYPE_LEVEL_HIGH>,
-> +					     <GIC_SPI 68 IRQ_TYPE_LEVEL_HIGH>,
-> +					     <GIC_SPI 69 IRQ_TYPE_LEVEL_HIGH>;
-> +				interrupt-names = "otg-bvalid", "otg-id",
-> +						  "linestate";
-> +				status = "disabled";
-> +			};
-> +
-> +			u2phy_host: host-port {
-> +				#phy-cells = <0>;
-> +				interrupts = <GIC_SPI 74 IRQ_TYPE_LEVEL_HIGH>;
-> +				interrupt-names = "linestate";
-> +				status = "disabled";
-> +			};
-> +		};
-> +	};
-> +
->  	detect_grf: syscon@ff00b000 {
->  		compatible = "rockchip,rk3308-detect-grf", "syscon", "simple-mfd";
->  		reg = <0x0 0xff00b000 0x0 0x1000>;
-> @@ -579,6 +616,44 @@ spdif_tx: spdif-tx@ff3a0000 {
->  		status = "disabled";
->  	};
->  
-> +	usb20_otg: usb@ff400000 {
-> +		compatible = "rockchip,rk3308-usb", "rockchip,rk3066-usb",
-> +			     "snps,dwc2";
-> +		reg = <0x0 0xff400000 0x0 0x40000>;
-> +		interrupts = <GIC_SPI 66 IRQ_TYPE_LEVEL_HIGH>;
-> +		clocks = <&cru HCLK_OTG>;
-> +		clock-names = "otg";
-> +		dr_mode = "otg";
-> +		g-np-tx-fifo-size = <16>;
-> +		g-rx-fifo-size = <280>;
-> +		g-tx-fifo-size = <256 128 128 64 32 16>;
-> +		phys = <&u2phy_otg>;
-> +		phy-names = "usb2-phy";
-> +		status = "disabled";
-> +	};
-> +
-> +	usb_host_ehci: usb@ff440000 {
-> +		compatible = "generic-ehci";
-> +		reg = <0x0 0xff440000 0x0 0x10000>;
-> +		interrupts = <GIC_SPI 71 IRQ_TYPE_LEVEL_HIGH>;
-> +		clocks = <&cru HCLK_HOST>, <&cru HCLK_HOST_ARB>, <&u2phy>;
-> +		clock-names = "usbhost", "arbiter", "utmi";
-> +		phys = <&u2phy_host>;
-> +		phy-names = "usb";
-> +		status = "disabled";
-> +	};
-> +
-> +	usb_host_ohci: usb@ff450000 {
-> +		compatible = "generic-ohci";
-> +		reg = <0x0 0xff450000 0x0 0x10000>;
-> +		interrupts = <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>;
-> +		clocks = <&cru HCLK_HOST>, <&cru HCLK_HOST_ARB>, <&u2phy>;
-> +		clock-names = "usbhost", "arbiter", "utmi";
-> +		phys = <&u2phy_host>;
-> +		phy-names = "usb";
-> +		status = "disabled";
-> +	};
-> +
->  	sdmmc: mmc@ff480000 {
->  		compatible = "rockchip,rk3308-dw-mshc", "rockchip,rk3288-dw-mshc";
->  		reg = <0x0 0xff480000 0x0 0x4000>;
-> 
