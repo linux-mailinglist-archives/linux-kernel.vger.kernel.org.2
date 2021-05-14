@@ -2,142 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE2A381074
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 21:23:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF77C3810B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 21:25:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233719AbhENTY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 15:24:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbhENTYZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 15:24:25 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91793C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 12:23:11 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id n2so242994ejy.7
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 12:23:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=l72hh61/tsn5KiliU7+ZN3a6OPF8Vv4B7h1Pke4bt3c=;
-        b=aWXI51EnV/k9pge5GKaDOkkJQD5K/MYP7A5XMnLlSW2Sy2l/sTiI3B9cP8d8ZTB5m2
-         R3v2CKeD8i8Tb7rfnKNvLFWu6ekM3Dp1YyH8ufyfZgWCClPGJSZE/oeAn63KZeLaEQ45
-         fGizC1SmBVw+3SgkMIXS5j/6qsc7gTws56N4g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l72hh61/tsn5KiliU7+ZN3a6OPF8Vv4B7h1Pke4bt3c=;
-        b=Rjeq3BIisiiv/uXSvdtnLkU1uZ0hir717CERRGVdFlyNM09fPPA1tz/TPNKklY9nAK
-         X7/DFgTPSrbNNVA6IG0Qlpox0Yjtkb1z185SbJ97WFPnWWbe4Zd9/HHoZNV3gJs9h30t
-         w7QYDa0CZUOT6ANDONQp9l8Uj+v5ihZqLGkvxxXzYej23ksr85IR0AFP1AQDBLslkJxQ
-         l6pA4WYajp7x9mFSC0RpeULg9Zdw6pXzKqBfm5y0l6/t0pXX2a65vaZnx+usv9aZb50w
-         QmdR35M+hvjXzSSDHKY/pKu5BaU4tEbY/D5LGZJH7Gu3sEc+RCmsoN9VFTNJVdSfCWik
-         ADzg==
-X-Gm-Message-State: AOAM531mMbk0KgnNfIg1ci7ubRuTaPg3xp1C30QP4E16suB58ZQTYAyT
-        Y8dQxAJCG5UZFmBUS7MA+785R5TVswDhXnqGYGo=
-X-Google-Smtp-Source: ABdhPJxaKNHOJEn7GQn+V0VCXLJoIw/tn8Ra0G3r0NYnBJqqlHZBzyDIoiATGm5YznEr8jQw4mW2oQ==
-X-Received: by 2002:a17:906:355a:: with SMTP id s26mr48622726eja.528.1621020190149;
-        Fri, 14 May 2021 12:23:10 -0700 (PDT)
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com. [209.85.221.53])
-        by smtp.gmail.com with ESMTPSA id b5sm4897590edz.88.2021.05.14.12.23.08
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 May 2021 12:23:09 -0700 (PDT)
-Received: by mail-wr1-f53.google.com with SMTP id q5so290612wrs.4
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 12:23:08 -0700 (PDT)
-X-Received: by 2002:a05:651c:33a:: with SMTP id b26mr40099556ljp.220.1621020178319;
- Fri, 14 May 2021 12:22:58 -0700 (PDT)
+        id S233057AbhENT0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 15:26:07 -0400
+Received: from mga02.intel.com ([134.134.136.20]:20662 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233092AbhENTZw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 15:25:52 -0400
+IronPort-SDR: YBEYYGSxL2fcznPfGMVsGLixfMjwLZ9JAuOI35rjoDW+MARPWV73W/EN/g74b+tU2aIkl50cQ5
+ S3s9AAJ6zlKw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9984"; a="187348601"
+X-IronPort-AV: E=Sophos;i="5.82,300,1613462400"; 
+   d="scan'208";a="187348601"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 May 2021 12:24:40 -0700
+IronPort-SDR: up4JP/1h/1bEgExxRr9YFGfgjFWM74XoFcA0G5UY6IZ0S6fqEZU9GKuSQ3y2daPuaF5sPR1xvd
+ C61+Pfc4Kelw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,300,1613462400"; 
+   d="scan'208";a="393726005"
+Received: from lkp-server01.sh.intel.com (HELO ddd90b05c979) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 14 May 2021 12:24:39 -0700
+Received: from kbuild by ddd90b05c979 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lhdQM-0000qA-O1; Fri, 14 May 2021 19:24:38 +0000
+Date:   Sat, 15 May 2021 03:23:40 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/asm] BUILD SUCCESS
+ 41f45fb045bcc20e71eb705b361356e715682162
+Message-ID: <609ece3c.wzXGDSAvWR9n7O0C%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20210514100106.3404011-1-arnd@kernel.org> <CAHk-=whGObOKruA_bU3aPGZfoDqZM1_9wBkwREp0H0FgR-90uQ@mail.gmail.com>
- <2408c893-4ae7-4f53-f58c-497c91f5b034@synopsys.com>
-In-Reply-To: <2408c893-4ae7-4f53-f58c-497c91f5b034@synopsys.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 14 May 2021 12:22:42 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wih8UHDwJ8x6m-p0PQ7o4S4gOBwGNs=w=q10GNY7A-70w@mail.gmail.com>
-Message-ID: <CAHk-=wih8UHDwJ8x6m-p0PQ7o4S4gOBwGNs=w=q10GNY7A-70w@mail.gmail.com>
-Subject: Re: [PATCH v2 00/13] Unify asm/unaligned.h around struct helper
-To:     Vineet Gupta <Vineet.Gupta1@synopsys.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        James Morris <jmorris@namei.org>, Jens Axboe <axboe@kernel.dk>,
-        John Johansen <john.johansen@canonical.com>,
-        Jonas Bonn <jonas@southpole.se>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>,
-        Rich Felker <dalias@libc.org>,
-        "Richard Russon (FlatCap)" <ldm@flatcap.org>,
-        Russell King <linux@armlinux.org.uk>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
-        Stafford Horne <shorne@gmail.com>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        "openrisc@lists.librecores.org" <openrisc@lists.librecores.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        linux-sparc <sparclinux@vger.kernel.org>,
-        "linux-ntfs-dev@lists.sourceforge.net" 
-        <linux-ntfs-dev@lists.sourceforge.net>,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 11:52 AM Vineet Gupta
-<Vineet.Gupta1@synopsys.com> wrote:
->
-> Wasn't the new zlib code slated for 5.14. I don't see it in your master yet
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/asm
+branch HEAD: 41f45fb045bcc20e71eb705b361356e715682162  x86/asm: Make <asm/asm.h> valid on cross-builds as well
 
-You're right, I never actually committed it, since it was specific to
-ARC and -O3 and I wasn't entirely happy with the amount of testing it
-got (with Heiko pointing out that the s390 stuff needed more fixes for
-the change).
+elapsed time: 722m
 
-So in fact it's not even queued up for 5.14 due to this all, I just dropped it.
+configs tested: 125
+configs skipped: 2
 
-> >   and the biggy
-> > case didn't even use "get_unaligned()").
->
-> Indeed this series is sort of orthogonal to that bug, but IMO that bug
-> still exists in 5.13 for -O3 build, granted that is not enabled for !ARC.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Right, the zlib bug is still there.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                                  defconfig
+arc                              allyesconfig
+powerpc                 mpc8313_rdb_defconfig
+m68k                        mvme16x_defconfig
+m68k                       m5249evb_defconfig
+arc                          axs103_defconfig
+powerpc                 mpc836x_rdk_defconfig
+sh                          rsk7264_defconfig
+arm                         lpc32xx_defconfig
+powerpc                 mpc834x_mds_defconfig
+sh                         ecovec24_defconfig
+xtensa                  cadence_csp_defconfig
+openrisc                         alldefconfig
+m68k                       m5208evb_defconfig
+m68k                        m5407c3_defconfig
+powerpc                      arches_defconfig
+arm                           omap1_defconfig
+arm                         mv78xx0_defconfig
+mips                  maltasmvp_eva_defconfig
+riscv                    nommu_virt_defconfig
+powerpc                     taishan_defconfig
+riscv             nommu_k210_sdcard_defconfig
+arc                              alldefconfig
+m68k                                defconfig
+powerpc                         ps3_defconfig
+m68k                        m5307c3_defconfig
+m68k                       m5275evb_defconfig
+arm                          iop32x_defconfig
+powerpc                 mpc8315_rdb_defconfig
+openrisc                  or1klitex_defconfig
+powerpc                    amigaone_defconfig
+sh                          sdk7786_defconfig
+powerpc                 mpc832x_mds_defconfig
+ia64                          tiger_defconfig
+powerpc                   currituck_defconfig
+riscv                               defconfig
+arc                                 defconfig
+m68k                           sun3_defconfig
+powerpc                     mpc512x_defconfig
+openrisc                 simple_smp_defconfig
+mips                           ip22_defconfig
+arc                          axs101_defconfig
+m68k                          hp300_defconfig
+powerpc                         wii_defconfig
+riscv                          rv32_defconfig
+xtensa                  nommu_kc705_defconfig
+arm                       mainstone_defconfig
+openrisc                            defconfig
+arm                        mvebu_v5_defconfig
+arc                           tb10x_defconfig
+sparc64                          alldefconfig
+openrisc                    or1ksim_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+nios2                               defconfig
+nds32                             allnoconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20210514
+x86_64               randconfig-a003-20210514
+x86_64               randconfig-a001-20210514
+x86_64               randconfig-a005-20210514
+x86_64               randconfig-a002-20210514
+x86_64               randconfig-a006-20210514
+i386                 randconfig-a003-20210514
+i386                 randconfig-a001-20210514
+i386                 randconfig-a004-20210514
+i386                 randconfig-a005-20210514
+i386                 randconfig-a002-20210514
+i386                 randconfig-a006-20210514
+i386                 randconfig-a016-20210514
+i386                 randconfig-a014-20210514
+i386                 randconfig-a011-20210514
+i386                 randconfig-a012-20210514
+i386                 randconfig-a015-20210514
+i386                 randconfig-a013-20210514
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                            allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-But Arnd's series wouldn't even fix it: right now inffast has its own
-- ugly and slow - special 2-byte-only version of "get_unaligned()",
-called "get_unaligned16()".
+clang tested configs:
+x86_64               randconfig-a015-20210514
+x86_64               randconfig-a012-20210514
+x86_64               randconfig-a011-20210514
+x86_64               randconfig-a013-20210514
+x86_64               randconfig-a016-20210514
+x86_64               randconfig-a014-20210514
 
-And because it's ugly and slow, it's not actually used for
-CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS.
-
-Vineet - maybe the fix is to not take my patch to update to a newer
-zlib, but to just fix inffast to use the proper get_unaligned(). Then
-Arnd's series _would_ actually fix all this..
-
-              Linus
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
