@@ -2,164 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41CAB38124A
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 23:01:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2861B381265
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 23:01:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233077AbhENVCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 17:02:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44312 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231476AbhENVBk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 17:01:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 925CB613EB;
-        Fri, 14 May 2021 21:00:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621026027;
-        bh=EJSSCj8OOVI3N65uFjlEgbTTHDyMjowlET81oNMQdRU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=l7LqZu1JIys3LK0PBkqOenWYaEK3ySNAQurzGAG5Wy3QkoiqFqQA4DMT8AUsK9m+p
-         MoTYmE1XutoMc46hqGR0LmieHX96F1noR7MkO4YRGFQBBk4jsl/tEDd+vCW4+Qamod
-         5Mf/HUie27GOYbrJ/oSkOWzUh/WMrnlZ+nXOPsXBQubK0IZU5/BeV/CQ1Z/LIj3rev
-         hGTRhn2jBeNF2bh9MnqD+e8B1FZViz7iR5Qrb1TM+VPiv1lXKZ8mctUcWc/DwqSCrv
-         StpHOEDtPWdck+KE7TTnaAveaQFnGYfu5I+5V/Zyvfr6/U/0lr1PHG5yosbtMc+hZB
-         yodPq6U+Mo83g==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5C96E5C02A5; Fri, 14 May 2021 14:00:27 -0700 (PDT)
-Date:   Fri, 14 May 2021 14:00:27 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Manfred Spraul <manfred@colorfullife.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Andrew Morton <akpm@linux-foundation.org>, 1vier1@web.de
-Subject: Re: [PATCH] ipc/sem.c: use READ_ONCE()/WRITE_ONCE() for
- use_global_lock
-Message-ID: <20210514210027.GP975577@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210514175319.12195-1-manfred@colorfullife.com>
- <20210514194407.GN975577@paulmck-ThinkPad-P17-Gen-1>
- <c3a1f1a3-8fc1-29b5-92e0-bf45e1cc438f@colorfullife.com>
+        id S233051AbhENVDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 17:03:01 -0400
+Received: from mail-il1-f180.google.com ([209.85.166.180]:46635 "EHLO
+        mail-il1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231658AbhENVBt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 17:01:49 -0400
+Received: by mail-il1-f180.google.com with SMTP id w7so855171ilg.13;
+        Fri, 14 May 2021 14:00:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TeLhWehijG54mouce8ikq7VtYZj7/i4EvjKXhny3Jfo=;
+        b=eDgF07Og/uBtIlYHqpy7GvWKrGo4e4BNwsZbKMQ1YXaA76hDYocd6reY/B07KsdCvX
+         voTGlr44LTrZvEcUjPIu28itJ9wTyfcCeYtkoFg2DXZ/IkiK2lh6KS3x1B+jNi8WFV0C
+         yo7UNL3i9r0727TlVXthzcF7jCwU0Gg2X1AACfKDHVEMAP4lU14/+viWFvyn1apY+OD0
+         YLbWTfngy2fklHBc5L5hb1KTFqLw5wexT8vK0zg09kyianJHJ/EGZxjzuXZN4N9Q4qcp
+         nmQeAmOMgGOrfjJgNabpiSP7g1r9X3P0S0KtjrNua+ztDp6APhvhz+LfOZluHVe0cfwx
+         FVdg==
+X-Gm-Message-State: AOAM531MC9K2t1aTof8KB+nGgLXNW0hWXdjqPACtepOYVbzv+q8aNdHR
+        LqZ84AbJQc7LL4m6o0Knf/w=
+X-Google-Smtp-Source: ABdhPJyXHLR18z9BtQ5R8acjjU7PO+hmO2IzJ2vd1o3DUpSbN0+MoCAa3c70t6m0+yZfR8ehgrRZsw==
+X-Received: by 2002:a92:510:: with SMTP id q16mr28805400ile.41.1621026037202;
+        Fri, 14 May 2021 14:00:37 -0700 (PDT)
+Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
+        by smtp.gmail.com with ESMTPSA id s14sm3560458ilj.14.2021.05.14.14.00.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 May 2021 14:00:36 -0700 (PDT)
+Date:   Fri, 14 May 2021 21:00:35 +0000
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Wei Yongjun <weiyongjun1@huawei.com>
+Cc:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Hulk Robot <hulkci@huawei.com>
+Subject: Re: [PATCH -next] percpu: make symbol 'pcpu_free_slot' static
+Message-ID: <YJ7k8zWAOoDA5i3t@google.com>
+References: <20210514063952.3240527-1-weiyongjun1@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c3a1f1a3-8fc1-29b5-92e0-bf45e1cc438f@colorfullife.com>
+In-Reply-To: <20210514063952.3240527-1-weiyongjun1@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 10:25:17PM +0200, Manfred Spraul wrote:
-> Hi Paul,
+Hello,
+
+On Fri, May 14, 2021 at 06:39:52AM +0000, Wei Yongjun wrote:
+> The sparse tool complains as follows:
 > 
-> On 5/14/21 9:44 PM, Paul E. McKenney wrote:
-> > On Fri, May 14, 2021 at 07:53:19PM +0200, Manfred Spraul wrote:
-> > > The patch solves two weaknesses in ipc/sem.c:
-> > > 
-> > > 1) The initial read of use_global_lock in sem_lock() is an
-> > > intentional race. KCSAN detects these accesses and prints
-> > > a warning.
-> > > 
-> > > 2) The code assumes that plain C read/writes are not
-> > > mangled by the CPU or the compiler.
-> > > 
-> > > To solve both issues, use READ_ONCE()/WRITE_ONCE().
-> > > Plain C reads are used in code that owns sma->sem_perm.lock.
-> > > 
-> > > Signed-off-by: Manfred Spraul <manfred@colorfullife.com>
-> > Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-> > 
-> > One follow-up question: If I am reading the code correctly, there is
-> > a call to complexmode_enter() from sysvipc_sem_proc_show() that does
-> > not hold the global lock.  Does this mean that the first check of
-> > ->use_global_lock in complexmode_enter() should be marked?
+> mm/percpu.c:138:5: warning:
+>  symbol 'pcpu_free_slot' was not declared. Should it be static?
 > 
-> Now you made me nervous, usually I do not test the proc interface.
-> According to the documentation in sysvipc_sem_proc_show(),
-> sysvipc_find_ipc() acquires the global lock.
-
-"It is a service that I provide."  ;-)
-
-> >         /*
-> >          * The proc interface isn't aware of sem_lock(), it calls
-> >          * ipc_lock_object() directly (in sysvipc_find_ipc).
-> >          * In order to stay compatible with sem_lock(), we must
-> >          * enter / leave complex_mode.
-> >          */
-> I have just tested it again: Yes, this is still true.
-
-OK, so the sequence of events is as follow?
-
-o	sysvipc_proc_start() is invoked to start, as the name implies.
-
-o	sysvipc_proc_start() invokes sysvipc_find_ipc(), which
-	scans the IDs and invokes ipc_lock_object() on the one
-	at pos.
-
-o	ipc_lock_object() acquires the corresponding lock, which
-	seems unlikely to be sem_perm.lock, though I freely admit
-	that I do not know this code very well.
-
-Ah, I see it now.  The kernel_ipc_perm that sysvipc_find_ipc is looking
-at is the first member of the sem_array structure, and that member is
-named sem_perm.
-
-> Perhaps, as future improvement: The rest of ipc/sem.c speaks about
-> "sem_perm.lock", and here we suddenly use a function name instead of the
-> structure member name.
+> This symbol is not used outside of percpu.c, so marks it static.
 > 
-> > "it calls ipc_lock_object() (i.e.: spin_lock(&sma->sem_perm.lock)).
-
-As usual, it seems obvious once you know the trick.  ;-)
-
-							Thanx, Paul
-
-> > > ---
-> > >   ipc/sem.c | 11 +++++++----
-> > >   1 file changed, 7 insertions(+), 4 deletions(-)
-> > > 
-> > > diff --git a/ipc/sem.c b/ipc/sem.c
-> > > index bf534c74293e..a0ad3a3edde2 100644
-> > > --- a/ipc/sem.c
-> > > +++ b/ipc/sem.c
-> > > @@ -217,6 +217,8 @@ static int sysvipc_sem_proc_show(struct seq_file *s, void *it);
-> > >    * this smp_load_acquire(), this is guaranteed because the smp_load_acquire()
-> > >    * is inside a spin_lock() and after a write from 0 to non-zero a
-> > >    * spin_lock()+spin_unlock() is done.
-> > > + * To prevent the compiler/cpu temporarily writing 0 to use_global_lock,
-> > > + * READ_ONCE()/WRITE_ONCE() is used.
-> > >    *
-> > >    * 2) queue.status: (SEM_BARRIER_2)
-> > >    * Initialization is done while holding sem_lock(), so no further barrier is
-> > > @@ -342,10 +344,10 @@ static void complexmode_enter(struct sem_array *sma)
-> > >   		 * Nothing to do, just reset the
-> > >   		 * counter until we return to simple mode.
-> > >   		 */
-> > > -		sma->use_global_lock = USE_GLOBAL_LOCK_HYSTERESIS;
-> > > +		WRITE_ONCE(sma->use_global_lock, USE_GLOBAL_LOCK_HYSTERESIS);
-> > >   		return;
-> > >   	}
-> > > -	sma->use_global_lock = USE_GLOBAL_LOCK_HYSTERESIS;
-> > > +	WRITE_ONCE(sma->use_global_lock, USE_GLOBAL_LOCK_HYSTERESIS);
-> > >   	for (i = 0; i < sma->sem_nsems; i++) {
-> > >   		sem = &sma->sems[i];
-> > > @@ -371,7 +373,8 @@ static void complexmode_tryleave(struct sem_array *sma)
-> > >   		/* See SEM_BARRIER_1 for purpose/pairing */
-> > >   		smp_store_release(&sma->use_global_lock, 0);
-> > >   	} else {
-> > > -		sma->use_global_lock--;
-> > > +		WRITE_ONCE(sma->use_global_lock,
-> > > +				sma->use_global_lock-1);
-> > >   	}
-> > >   }
-> > > @@ -412,7 +415,7 @@ static inline int sem_lock(struct sem_array *sma, struct sembuf *sops,
-> > >   	 * Initial check for use_global_lock. Just an optimization,
-> > >   	 * no locking, no memory barrier.
-> > >   	 */
-> > > -	if (!sma->use_global_lock) {
-> > > +	if (!READ_ONCE(sma->use_global_lock)) {
-> > >   		/*
-> > >   		 * It appears that no complex operation is around.
-> > >   		 * Acquire the per-semaphore lock.
-> > > -- 
-> > > 2.31.1
-> > > 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+> ---
+>  mm/percpu.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
+> diff --git a/mm/percpu.c b/mm/percpu.c
+> index a257c3efdf18..73c249f3b6a3 100644
+> --- a/mm/percpu.c
+> +++ b/mm/percpu.c
+> @@ -135,7 +135,7 @@ static int pcpu_unit_size __ro_after_init;
+>  static int pcpu_nr_units __ro_after_init;
+>  static int pcpu_atom_size __ro_after_init;
+>  int pcpu_nr_slots __ro_after_init;
+> -int pcpu_free_slot __ro_after_init;
+> +static int pcpu_free_slot __ro_after_init;
+>  int pcpu_sidelined_slot __ro_after_init;
+>  int pcpu_to_depopulate_slot __ro_after_init;
+>  static size_t pcpu_chunk_struct_size __ro_after_init;
+> 
+
+Ah that's my bad. I've applied this for-5.14.
+
+Thanks,
+Dennis
