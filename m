@@ -2,187 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2B1A38139F
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 00:12:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A6883813A2
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 00:13:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231783AbhENWNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 18:13:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230024AbhENWNr (ORCPT
+        id S232634AbhENWOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 18:14:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24354 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231616AbhENWOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 18:13:47 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAAFEC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 15:12:35 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id d24so297437ios.2
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 15:12:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=telus.net; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dZMndnk0T1uTjKIdZ8gA20TvCc8i9uHipdNCN8I7bSE=;
-        b=VUmg4Ex+eKEwF5VKUcH/ujoG6JcjCuJ0zGB5+OIXqcHbLmCt0eCgACXtirFrtF8W41
-         qbKpF/7sXH0hzK6mjMTeISJ6NNh57jahyLXdAUpM8MLM2I4W44QYA5kWXJcC39l4tL3X
-         v1Bk3CLdvdFCcjWgVVN+hvnmSj2qBfdAz/hxZF01gXF5JMrVKx10WuWWACY05i6YiGT9
-         vFA61sAQeWOOSn+18nhmNiKQF2eLf0F2x7WvrdSpvuls4rT0CymJdC8+ST/+aRCv7Uwx
-         xVr5kafehUxaVZpIT09Mf61JV5VuPG4hDNKQO2+QuW+Tqrx7lU8wga6s/jGB4GdekPde
-         10Gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dZMndnk0T1uTjKIdZ8gA20TvCc8i9uHipdNCN8I7bSE=;
-        b=bhJKFHUW26YIsvpJP4s+Z1LrF3eWBM23mcSc6m4otKyF7sQQKcelzLWKXghZO+IjFr
-         mFaVc2cueQ3VC5JPZ0LuftbPQCV58VtIW1ld1fuqNKYvOttu5VUTlQBh6AajCbKRe/Y6
-         8XDwSLld5HoBaQP5Ll9gaXz1AoodNbp+xohidQdZ1J5MOmSyScjlenOxO2JBCR5hWgc5
-         bvihDfNfu5PKScG8iwJ13VDVFEkGLU6OQ2HmOF/24sVSR82X4GqBN1PxCNXWWaqvnJL9
-         P78M34khjslr8AVSgTUt4FO0sm8sj7dfEquYSuJMbSUm9XYylq2fdvRZKEQu5IL6keUF
-         0T9Q==
-X-Gm-Message-State: AOAM531Z9WzkOY2pFIfWZxRQN6AAdduSB6kVwtdnk6xyB1n8nBdxpGZb
-        1tzyVR/yjoTBM+2EqfIQ70uq2g3x96TLefd/wn9r3A==
-X-Google-Smtp-Source: ABdhPJxG4E9bc+8tnH9GPoUVS4PvC6gplyn4zWhN22jL6nWcJLIGUclw2CUF55y9tIEhlYc8yzN0dE55zeN0hmGvCqQ=
-X-Received: by 2002:a05:6602:204f:: with SMTP id z15mr15400564iod.99.1621030355132;
- Fri, 14 May 2021 15:12:35 -0700 (PDT)
+        Fri, 14 May 2021 18:14:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621030398;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2mg2n4gV17bGOVE68OZPsALQKP2f9toztfRI91bC8mM=;
+        b=SJSmS+USCzJOYlC9+mAE5L8T1qzPlZEan88d/Y5+D+ZWh3KpLMcjCKksR33/T+yOCBvZQa
+        KQfW0dLFIRRuOeTIvVf7pF8oOD+c/ubowsg8GRmf6+21DSxszND2u4T6N7oIgRiy+zLb/6
+        gJ9Tm5e/O+2w3JuK6Q69SGfNrdGca84=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-16-Ml9oYVQjOmqIWf6tu5Dykg-1; Fri, 14 May 2021 18:13:14 -0400
+X-MC-Unique: Ml9oYVQjOmqIWf6tu5Dykg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 53E53FC9C;
+        Fri, 14 May 2021 22:13:13 +0000 (UTC)
+Received: from Whitewolf.redhat.com (ovpn-118-140.rdu2.redhat.com [10.10.118.140])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 652D019D7D;
+        Fri, 14 May 2021 22:13:12 +0000 (UTC)
+From:   Lyude Paul <lyude@redhat.com>
+To:     dri-devel@lists.freedesktop.org,
+        Thierry Reding <thierry.reding@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-tegra@vger.kernel.org, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2] drm/tegra: Get ref for DP AUX channel, not its ddc adapter
+Date:   Fri, 14 May 2021 18:13:05 -0400
+Message-Id: <20210514221305.1783892-1-lyude@redhat.com>
+In-Reply-To: <20210423182146.185633-2-lyude@redhat.com>
+References: <20210423182146.185633-2-lyude@redhat.com>
 MIME-Version: 1.0
-References: <fb6c8a4e284a9b6c043f4ac382387b19bd100976.camel@linux.intel.com>
- <20210513132051.31465-1-ggherdovich@suse.cz> <CAAYoRsUcyFsFWDE=r+aMgDBa6hcgXgtE2jJ_NHas5e4TdgiBTg@mail.gmail.com>
- <067ee60e47a0350d01f0c3f216c1032818044b36.camel@suse.cz>
-In-Reply-To: <067ee60e47a0350d01f0c3f216c1032818044b36.camel@suse.cz>
-From:   Doug Smythies <dsmythies@telus.net>
-Date:   Fri, 14 May 2021 15:12:25 -0700
-Message-ID: <CAAYoRsX0xJf1mm1a_YUCzDy86r8q4QE98iVtS1AMLaUx+KTgQQ@mail.gmail.com>
-Subject: Re: [PATCH v2] cpufreq: intel_pstate: Add Icelake servers support in
- no-HWP mode
-To:     Giovanni Gherdovich <ggherdovich@suse.cz>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Len Brown <lenb@kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dsmythies <dsmythies@telus.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 1:33 PM Giovanni Gherdovich <ggherdovich@suse.cz> wrote:
-> On Fri, 2021-05-14 at 08:31 -0700, Doug Smythies wrote:
->
-> > Can I on-board to this patch or do you want me to submit another?
-> > I want to add COMETLAKE (tested), as below:
-> >
-> > ... Doug
->
-> Hello Doug!
+While we're taking a reference of the DDC adapter for a DP AUX channel in
+tegra_sor_probe() because we're going to be using that adapter with the
+SOR, now that we've moved where AUX registration happens the actual device
+structure for the DDC adapter isn't initialized yet. Which means that we
+can't really take a reference from it to try to keep it around anymore.
 
-Hi Giovanni,
-Thank you for your reply.
->
-> Wait, why you don't want to use HWP? It's such a fantastic technology!
->
-> :) I'm just teasing you.
->
-> More seriously:
->
-> when COMETLAKE is not in that list, can you confirm that if you go into the
-> BIOS config at boot, and disable HWP from there, then intel_pstate does *not* load?
+This should be fine though, because we can just take a reference of its
+parent instead.
 
-Yes, already tested before my original reply.
+v2:
+* Avoid calling i2c_put_adapter() in tegra_output_remove() for eDP/DP cases
 
-> Does it say "intel_pstate: CPU model not supported" in the dmesg log?
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+Fixes: 39c17ae60ea9 ("drm/tegra: Don't register DP AUX channels before connectors")
+Cc: Lyude Paul <lyude@redhat.com>
+Cc: Thierry Reding <thierry.reding@gmail.com>
+Cc: Jonathan Hunter <jonathanh@nvidia.com>
+Cc: dri-devel@lists.freedesktop.org
+Cc: linux-tegra@vger.kernel.org
+---
+ drivers/gpu/drm/tegra/output.c | 5 ++++-
+ drivers/gpu/drm/tegra/sor.c    | 6 +++---
+ 2 files changed, 7 insertions(+), 4 deletions(-)
 
-That I did not check, but if I boot now with an unmodified kernel
-5.13-rc1 (i.e. without this patch):
+diff --git a/drivers/gpu/drm/tegra/output.c b/drivers/gpu/drm/tegra/output.c
+index 47d26b5d9945..2dacce1ab6ee 100644
+--- a/drivers/gpu/drm/tegra/output.c
++++ b/drivers/gpu/drm/tegra/output.c
+@@ -180,10 +180,13 @@ int tegra_output_probe(struct tegra_output *output)
+ 
+ void tegra_output_remove(struct tegra_output *output)
+ {
++	int connector_type = output->connector.connector_type;
++
+ 	if (output->hpd_gpio)
+ 		free_irq(output->hpd_irq, output);
+ 
+-	if (output->ddc)
++	if (connector_type != DRM_MODE_CONNECTOR_eDP &&
++	    connector_type != DRM_MODE_CONNECTOR_DisplayPort && output->ddc)
+ 		i2c_put_adapter(output->ddc);
+ }
+ 
+diff --git a/drivers/gpu/drm/tegra/sor.c b/drivers/gpu/drm/tegra/sor.c
+index 7b88261f57bb..4e0e3a63e586 100644
+--- a/drivers/gpu/drm/tegra/sor.c
++++ b/drivers/gpu/drm/tegra/sor.c
+@@ -3739,11 +3739,11 @@ static int tegra_sor_probe(struct platform_device *pdev)
+ 		if (!sor->aux)
+ 			return -EPROBE_DEFER;
+ 
+-		if (get_device(&sor->aux->ddc.dev)) {
+-			if (try_module_get(sor->aux->ddc.owner))
++		if (get_device(sor->aux->dev)) {
++			if (try_module_get(sor->aux->dev->driver->owner))
+ 				sor->output.ddc = &sor->aux->ddc;
+ 			else
+-				put_device(&sor->aux->ddc.dev);
++				put_device(sor->aux->dev);
+ 		}
+ 	}
+ 
+-- 
+2.31.1
 
-[    0.369323] intel_pstate: CPU model not supported
-
-> The control may be somewhere around "power mangement" in the BIOS config, and
-> may be called "Enable/disable Intel Speed Shift".
-
-Yes.
-
-> I'm asking because I've just checked on two Dell laptops, one Skylake and the
-> other Kabylake, and the menu is there in the BIOS config to disable HWP,
-> but if I disable it... nothing happens. "lscpu" shows all the hwp flags as usual:
-
-Motherboard here is ASUS PRIME Z490-A.
-CPU: Intel(R) Core(TM) i5-10600K CPU @ 4.10GHz
-
->     # lscpu | grep Flags | tr ' ' '\n' | grep hwp
->     hwp
->     hwp_notify
->     hwp_act_window
->     hwp_epp
-
-Here, for some reason I have to do it this way (sudo) or your command
-doesn't work properly. Results herein confirmed by looking at the
-"Flags" output manually without filtering:
-
-intel_speed_shift = Disabled in BIOS:
-
-doug@s19:~$ sudo lscpu | tr ' ' '\n' | grep hwp
-doug@s19:~$
-
-intel_speed_shift = Auto in BIOS
-
-$ sudo lscpu | tr ' ' '\n' | grep hwp
-hwp
-hwp_notify
-hwp_act_window
-hwp_epp
-
-> and turbostat gives me:
->
->     # turbostat -Summary -i 1 : 2>&1 | grep MSR_PM_ENABLE
->     cpu0: MSR_PM_ENABLE: 0x00000001 (HWP)
-
-Here:
-
-intel_speed_shift = Disabled in BIOS:
-
-root@s19:/home/doug#
-/home/doug/temp-k-git/linux/tools/power/x86/turbostat/turbostat
--Summary -i 1 : 2>&1 | grep MSR_PM_ENABLE
-root@s19:/home/doug#
-
-intel_speed_shift = Auto in BIOS (the default setting)
-
-root@s19:/home/doug#
-/home/doug/temp-k-git/linux/tools/power/x86/turbostat/turbostat
--Summary -i 1 : 2>&1 | grep MSR_PM_ENABLE
-cpu0: MSR_PM_ENABLE: 0x00000001 (HWP)
-
-or with "intel_pstate=no_hwp"
-
-root@s19:/home/doug#
-/home/doug/temp-k-git/linux/tools/power/x86/turbostat/turbostat
--Summary -i 1 : 2>&1 | grep MSR_PM_ENABLE
-cpu0: MSR_PM_ENABLE: 0x00000000 (No-HWP)
-
-> Which is to say, on the Intel client machines I have, the firmware doesn't
-> seem to be able to hide HWP from the OS. Buggy BIOS? Maybe, the fact of the
-> matter is, I wouldn't need to add, say, KABYLAKE to that list, based on my
-> experience.
-
-My experience (hardware) differs from yours with respect to this.
-
-> The other side of the issue is that, from my understanding, the
-> preferred/supported way to disable HWP is to boot with intel_pstate=no_hwp,
-> and that list is a sort of "known exceptions" that people really can't live
-> without (it's mostly server CPUs, and mostly because of unfortunate firmware
-> defaults). Otherwise you'd see the entire intel-family.h file in there.
-
-I'm not sure how to respond here. Yes, I'd expect to see a big list
-here, and in the recently added TCC Offset thermal stuff and in the
-recently added turbostat patches to deal with a TCC offset. I do not
-understand doing things partially only. But that is a bigger/broader
-subject than herein.
-
-That said, yes, "intel_pstate=no_hwp" is what I normally do. And my
-BIOS normally has "Intel Speed Shift = AUTO", which is the default.
-
-... deleted the rest ...
-
-... Doug
