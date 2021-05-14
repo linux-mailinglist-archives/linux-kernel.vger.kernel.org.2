@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89C5E38041C
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 09:23:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F4AC380420
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 09:25:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232997AbhENHYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 03:24:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55166 "EHLO mail.kernel.org"
+        id S233032AbhENH0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 03:26:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231331AbhENHYJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 03:24:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D30BD61446;
-        Fri, 14 May 2021 07:22:56 +0000 (UTC)
+        id S230326AbhENH0L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 03:26:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A436561446;
+        Fri, 14 May 2021 07:24:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620976978;
-        bh=4uovLNiP8wL68lGCib+smMClDIwTXY6Ukg4CRe7CnP8=;
+        s=k20201202; t=1620977100;
+        bh=15ezUcoX2Tp5onmLNEbYjA7IRAW1s32VZAsjPbUMDow=;
         h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=ITGEB8B6AJcfppHTwVi+HPsQkxeB17rkdQoYrTT9ZjSVXqEyKjB2AvCgXmRnjc7O0
-         LHbeyUuAvcR/CfaggQApqS0PRmum5ZcTANOS5f0MkIBZ3pJ4avCeijhkZXFJyOUTwU
-         Vs0zIPTEQQr6Bloh5d41hxeLW7YdqRtEbPBZTvDEh6ynmcstqG+U7bynTkSgaF7Ltf
-         PjCLJd704QPYyvATxteP/lEhiTIeVewXAgjoTnsPkyRkdooUnAWDnBVOWNveMzvcaM
-         ytI24IzTTaBN6BLVx/q+Gaw+i458xryZQ3Y6+aCQKzCAsA6zEvScT8PDT4+O18smwu
-         +rA2qbxm8is4g==
+        b=ZygTqMk0DJgrTsghfeYNhwDq/A2Re2zuZq73koYZX9dSAxSTJGNGMewoHynPWP9OK
+         tyjXLV8feLl1cQW7K51qvI9gaDAbyNLf9fsuTC8GWNcUmQAcQNrYeRo3LvWOKusKfC
+         u+dFSPgr6AQVUmiLbYGM5XiFxmqTNDSdHardsgZLnDDWVwRHUbfFSYWUhozMLl3NWu
+         xKWI0tvuk0bqyn1cax0UPNkX8M479xy960BvU8QwGFa+tjs5+SITjval+q4fvNUGs2
+         g5WWMQ1p6q+srbokCw8B3UuBQAfG2MFcaSnOX3XyFlgQHZY2zzs/48wy52snIqq3QT
+         g24j/t25VVGDQ==
 From:   Felipe Balbi <balbi@kernel.org>
-To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-usb@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: Re: [PATCH] usb: gadget: tegra-xudc: Constify static structs
-In-Reply-To: <20210513200908.448351-1-rikard.falkeborn@gmail.com>
-References: <20210513200908.448351-1-rikard.falkeborn@gmail.com>
-Date:   Fri, 14 May 2021 10:22:50 +0300
-Message-ID: <87o8dd7p9x.fsf@kernel.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] usb: gadget: s3c-hsudc: Use struct_size() in
+ devm_kzalloc()
+In-Reply-To: <20210513193353.GA196565@embeddedor>
+References: <20210513193353.GA196565@embeddedor>
+Date:   Fri, 14 May 2021 10:24:50 +0300
+Message-ID: <87k0o17p6l.fsf@kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; boundary="=-=-=";
         micalg=pgp-sha256; protocol="application/pgp-signature"
@@ -47,12 +46,16 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
-Rikard Falkeborn <rikard.falkeborn@gmail.com> writes:
+"Gustavo A. R. Silva" <gustavoars@kernel.org> writes:
 
-> Constify a couple of ops-structs that are never modified, to let the
-> compiler put them in read-only memory.
+> Make use of the struct_size() helper instead of an open-coded version,
+> in order to avoid any potential type mistakes or integer overflows
+> that, in the worse scenario, could lead to heap overflows.
 >
-> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+> This code was detected with the help of Coccinelle and, audited and
+> fixed manually.
+>
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
 Acked-by: Felipe Balbi <balbi@kernel.org>
 
@@ -64,13 +67,13 @@ Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQFFBAEBCAAvFiEE9DumQ60WEZ09LIErzlfNM9wDzUgFAmCeJUoRHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzlfNM9wDzUhY1wf+ISKWTzlCSJcnNPfbpwl4UlNbvUhEz6a/
-E+E4KH/UViPlYw5RX12wXNr0FlLtiZqTo39DnOTWXvMV/gcSqBxrJxc3Vwhovti4
-MBktFvJesYOrnp8CQA4awBASoyF1ZzcOyFMlejNqh40TrUtZBiHDyL1g7hfMzDHC
-F0k8hUDoGWLCgkabUXFIcEI+1qTuM9yA7PpuWHq+YOo8tLgQi6oRGJUPL6dLXvJA
-U7H8QMB8piqnx31BYaphkLLxTta1lxSThzor+rKcgfIjYs8qKA6tJZq+L7g+qWaq
-HBHavJO1E9xI+DJes5tpkhsMPNCzQVwhHe33dAB10/tJH1PlLrDEKQ==
-=HS5v
+iQFFBAEBCAAvFiEE9DumQ60WEZ09LIErzlfNM9wDzUgFAmCeJcIRHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzlfNM9wDzUh9UQgAoHsTFS64PtkTiiLe9txwadAGZu1jUqWd
+rifBnWCjW0qkcPu6k74kykvO743iZ8S1NBFifgaARaSmiPvH3v6hIYbiN+co+QWR
+dvkErw3FeTn5FqhAJdamv4nXcRecdmiutseGRUBExLA+vjbDKrCAp+3MNzf9emws
+cTyBJaRgp0GCshhHyGKzvxRLRDt3USNBvN67vIxJMNgC0C2gg1D8Kp6qok5PzJCq
+ppiCSPMw6ytSbKUGh5XBATPcgxE64jRoFFNObtPxByKlmvqTKC6rYQ0I9y48un+c
+/Lo/5hc2yiepHWuwx6LE+LSSCkoFDQnhZt28yDELxP7Tl0bXqDnK3g==
+=3cIq
 -----END PGP SIGNATURE-----
 --=-=-=--
