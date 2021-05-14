@@ -2,108 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0BB9380992
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 14:32:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97A7D38099A
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 14:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233538AbhENMdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 08:33:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233184AbhENMdb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 08:33:31 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D14C061574;
-        Fri, 14 May 2021 05:32:19 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id b13-20020a17090a8c8db029015cd97baea9so1282255pjo.0;
-        Fri, 14 May 2021 05:32:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ErfaclmgSuY2taH4Itt0ooytROATSvud8f5aTV69WAo=;
-        b=AE8IgbEoqds1qWkqppD3M7OpxY161mIGNY13sgGhyiRq9OV/ulCons6vizDU5abkZl
-         QgmSYl0W6ARIJV6+SZqf+FliUxbeXXZ8PzPMqwgtA3P3FSItY3Z/qs6x0uLOtA+PKY5K
-         aiYFpRPdNibCNoTBbS3ABFVtERd/39rFvCwy/zyrZ1irneM8AhfesVx/zPs2YpYTZ0pp
-         /+VEzfL7mqtNCykkJCxou+Lw7UQ8/VUA0SNqtnpWUT5qoJozPYzArVtf3jN0Ks+RYY6T
-         ugTbHRVsTYCBMMoceF2an+3rjDBAVbvU/TfoC3XcH+Zt6EY4g07OCcN4P05PTqJgDO8S
-         7lsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ErfaclmgSuY2taH4Itt0ooytROATSvud8f5aTV69WAo=;
-        b=m/P0YBoxNCYj5fmC2fUkEheRylqcnGR7/yZZ3R6fuob9F1wdg4KnKedppLCIDxs0w3
-         alf9/7IXzYxJGPDY3XDa4YVQIL9O3e0sqdTF2CfFHkGc+ZxDFxr3r3ACyi8Deb6kY6VR
-         SvacVy/xgJKw32MEooWEWtSkQ8PIk+r9+n8xHxgx24AVjCYCwFEoaFz+2vRe4Y0fDwN9
-         P8vii8P0GER5Bq+i+l/uUB6WZayXuvk7CKIBQnviP5iQfURogeg6XFmqiRQj6HriwxmV
-         B9FxkpdMZ4AfK9oUb8fJB0NaA5qo0V75ELWZzmWiW74AJ8tlkWZuwkxQKSwM3NJFmBh5
-         6iZQ==
-X-Gm-Message-State: AOAM531waWk3TMUC3eu4N0GXjvwlXYOHqfhhjQY53zmMr8DPP1h28E9S
-        39ZjAGR0dUOKppkoAK/ohYpM6mclQCwcuZ0kjP3n4Q==
-X-Google-Smtp-Source: ABdhPJzK+P1R4mISmjZlHZsoNN2G9ntOEmwmyNM6uUuYkflaeCeff3aXTD8ZafGBC7TvXLp4926Wkg==
-X-Received: by 2002:a17:90a:8b12:: with SMTP id y18mr49906560pjn.153.1620995538446;
-        Fri, 14 May 2021 05:32:18 -0700 (PDT)
-Received: from localhost.localdomain ([45.135.186.114])
-        by smtp.gmail.com with ESMTPSA id ms2sm4719485pjb.8.2021.05.14.05.32.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 05:32:17 -0700 (PDT)
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dongliang Mu <mudongliangabcd@gmail.com>,
-        syzbot+636c58f40a86b4a879e7@syzkaller.appspotmail.com
-Subject: [PATCH] misc/uss720: fix memory leak in uss720_probe
-Date:   Fri, 14 May 2021 20:31:56 +0800
-Message-Id: <20210514123156.6193-1-mudongliangabcd@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S233573AbhENMef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 08:34:35 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41232 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233202AbhENMec (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 08:34:32 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A1492B071;
+        Fri, 14 May 2021 12:33:19 +0000 (UTC)
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
+Subject: [PATCH v5 1/2] gpio: Add support for IDT 79RC3243x GPIO controller
+Date:   Fri, 14 May 2021 14:33:07 +0200
+Message-Id: <20210514123309.134048-1-tsbogend@alpha.franken.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-uss720_probe forgets to decrease the refcount of usbdev in uss720_probe.
-Fix this by decreasing the refcount of usbdev by usb_put_dev.
+IDT 79RC3243x SoCs integrated a gpio controller, which handles up
+to 32 gpios. All gpios could be used as an interrupt source.
 
-BUG: memory leak
-unreferenced object 0xffff888101113800 (size 2048):
-  comm "kworker/0:1", pid 7, jiffies 4294956777 (age 28.870s)
-  hex dump (first 32 bytes):
-    ff ff ff ff 31 00 00 00 00 00 00 00 00 00 00 00  ....1...........
-    00 00 00 00 00 00 00 00 00 00 00 00 03 00 00 00  ................
-  backtrace:
-    [<ffffffff82b8e822>] kmalloc include/linux/slab.h:554 [inline]
-    [<ffffffff82b8e822>] kzalloc include/linux/slab.h:684 [inline]
-    [<ffffffff82b8e822>] usb_alloc_dev+0x32/0x450 drivers/usb/core/usb.c:582
-    [<ffffffff82b98441>] hub_port_connect drivers/usb/core/hub.c:5129 [inline]
-    [<ffffffff82b98441>] hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
-    [<ffffffff82b98441>] port_event drivers/usb/core/hub.c:5509 [inline]
-    [<ffffffff82b98441>] hub_event+0x1171/0x20c0 drivers/usb/core/hub.c:5591
-    [<ffffffff81259229>] process_one_work+0x2c9/0x600 kernel/workqueue.c:2275
-    [<ffffffff81259b19>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2421
-    [<ffffffff81261228>] kthread+0x178/0x1b0 kernel/kthread.c:292
-    [<ffffffff8100227f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-Reported-by: syzbot+636c58f40a86b4a879e7@syzkaller.appspotmail.com
-Fixes: 0f36163d3abe ("usb: fix uss720 schedule with interrupts off")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 ---
- drivers/usb/misc/uss720.c | 1 +
- 1 file changed, 1 insertion(+)
+Changes in v5:
+ - use bgpio spinlock
+ - made interrupt controller optional
+ - made ngpios optional
 
-diff --git a/drivers/usb/misc/uss720.c b/drivers/usb/misc/uss720.c
-index b5d661644263..748139d26263 100644
---- a/drivers/usb/misc/uss720.c
-+++ b/drivers/usb/misc/uss720.c
-@@ -736,6 +736,7 @@ static int uss720_probe(struct usb_interface *intf,
- 	parport_announce_port(pp);
+Changes in v4:
+ - added spinlock to serialize access to irq registers
+ - reworked checking of irq sense bits
+ - start with handle_bad_irq and set handle_level_irq in idt_gpio_irq_set_type
+ - cleaned up #includes
+ - use platform_get_irq
+
+Changes in v3:
+ - changed compatible string to idt,32434-gpio
+ - registers now start with gpio direction register and leaves
+   out alternate function register for pinmux/pinctrl driver
+
+Changes in v2:
+ - made driver buildable as module
+ - use for_each_set_bit() in irq dispatch handler
+ - use gpiochip_get_data instead of own container_of helper
+ - use module_platform_driver() instead of arch_initcall
+ - don't default y for Mikrotik RB532
+
+ drivers/gpio/Kconfig         |  12 ++
+ drivers/gpio/Makefile        |   1 +
+ drivers/gpio/gpio-idt3243x.c | 206 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 219 insertions(+)
+ create mode 100644 drivers/gpio/gpio-idt3243x.c
+
+diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+index 1dd0ec6727fd..ae2721967191 100644
+--- a/drivers/gpio/Kconfig
++++ b/drivers/gpio/Kconfig
+@@ -782,6 +782,18 @@ config GPIO_MSC313
+ 	  Say Y here to support the main GPIO block on MStar/SigmaStar
+ 	  ARMv7 based SoCs.
  
- 	usb_set_intfdata(intf, pp);
-+	usb_put_dev(usbdev);
- 	return 0;
++config GPIO_IDT3243X
++	tristate "IDT 79RC3243X GPIO support"
++	depends on MIKROTIK_RB532 || COMPILE_TEST
++	select GPIO_GENERIC
++	select GPIOLIB_IRQCHIP
++	help
++	  Select this option to enable GPIO driver for
++	  IDT 79RC3243X based devices like Mikrotik RB532.
++
++	  To compile this driver as a module, choose M here: the module will
++	  be called gpio-idt3243x.
++
+ endmenu
  
- probe_abort:
+ menu "Port-mapped I/O GPIO drivers"
+diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
+index d7c81e1611a4..32a32659866a 100644
+--- a/drivers/gpio/Makefile
++++ b/drivers/gpio/Makefile
+@@ -68,6 +68,7 @@ obj-$(CONFIG_GPIO_HISI)                 += gpio-hisi.o
+ obj-$(CONFIG_GPIO_HLWD)			+= gpio-hlwd.o
+ obj-$(CONFIG_HTC_EGPIO)			+= gpio-htc-egpio.o
+ obj-$(CONFIG_GPIO_ICH)			+= gpio-ich.o
++obj-$(CONFIG_GPIO_IDT3243X)		+= gpio-idt3243x.o
+ obj-$(CONFIG_GPIO_IOP)			+= gpio-iop.o
+ obj-$(CONFIG_GPIO_IT87)			+= gpio-it87.o
+ obj-$(CONFIG_GPIO_IXP4XX)		+= gpio-ixp4xx.o
+diff --git a/drivers/gpio/gpio-idt3243x.c b/drivers/gpio/gpio-idt3243x.c
+new file mode 100644
+index 000000000000..e961acee1571
+--- /dev/null
++++ b/drivers/gpio/gpio-idt3243x.c
+@@ -0,0 +1,206 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Driver for IDT/Renesas 79RC3243x Interrupt Controller  */
++
++#include <linux/bitops.h>
++#include <linux/gpio/driver.h>
++#include <linux/irq.h>
++#include <linux/module.h>
++#include <linux/mod_devicetable.h>
++#include <linux/platform_device.h>
++#include <linux/spinlock.h>
++
++#define IDT_PIC_IRQ_PEND	0x00
++#define IDT_PIC_IRQ_MASK	0x08
++
++#define IDT_GPIO_DIR		0x00
++#define IDT_GPIO_DATA		0x04
++#define IDT_GPIO_ILEVEL		0x08
++#define IDT_GPIO_ISTAT		0x0C
++
++struct idt_gpio_ctrl {
++	struct gpio_chip gc;
++	void __iomem *pic;
++	void __iomem *gpio;
++	u32 mask_cache;
++};
++
++static void idt_gpio_dispatch(struct irq_desc *desc)
++{
++	struct gpio_chip *gc = irq_desc_get_handler_data(desc);
++	struct idt_gpio_ctrl *ctrl = gpiochip_get_data(gc);
++	struct irq_chip *host_chip = irq_desc_get_chip(desc);
++	unsigned int bit, virq;
++	unsigned long pending;
++
++	chained_irq_enter(host_chip, desc);
++
++	pending = readl(ctrl->pic + IDT_PIC_IRQ_PEND);
++	pending &= ~ctrl->mask_cache;
++	for_each_set_bit(bit, &pending, gc->ngpio) {
++		virq = irq_linear_revmap(gc->irq.domain, bit);
++		if (virq)
++			generic_handle_irq(virq);
++	}
++
++	chained_irq_exit(host_chip, desc);
++}
++
++static int idt_gpio_irq_set_type(struct irq_data *d, unsigned int flow_type)
++{
++	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
++	struct idt_gpio_ctrl *ctrl = gpiochip_get_data(gc);
++	unsigned int sense = flow_type & IRQ_TYPE_SENSE_MASK;
++	unsigned long flags;
++	u32 ilevel;
++
++	/* hardware only supports level triggered */
++	if (sense == IRQ_TYPE_NONE || (sense & IRQ_TYPE_EDGE_BOTH))
++		return -EINVAL;
++
++	spin_lock_irqsave(&gc->bgpio_lock, flags);
++
++	ilevel = readl(ctrl->gpio + IDT_GPIO_ILEVEL);
++	if (sense & IRQ_TYPE_LEVEL_HIGH)
++		ilevel |= BIT(d->hwirq);
++	else if (sense & IRQ_TYPE_LEVEL_LOW)
++		ilevel &= ~BIT(d->hwirq);
++
++	writel(ilevel, ctrl->gpio + IDT_GPIO_ILEVEL);
++	irq_set_handler_locked(d, handle_level_irq);
++
++	spin_unlock_irqrestore(&gc->bgpio_lock, flags);
++	return 0;
++}
++
++static void idt_gpio_ack(struct irq_data *d)
++{
++	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
++	struct idt_gpio_ctrl *ctrl = gpiochip_get_data(gc);
++
++	writel(~BIT(d->hwirq), ctrl->gpio + IDT_GPIO_ISTAT);
++}
++
++static void idt_gpio_mask(struct irq_data *d)
++{
++	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
++	struct idt_gpio_ctrl *ctrl = gpiochip_get_data(gc);
++	unsigned long flags;
++
++	spin_lock_irqsave(&gc->bgpio_lock, flags);
++
++	ctrl->mask_cache |= BIT(d->hwirq);
++	writel(ctrl->mask_cache, ctrl->pic + IDT_PIC_IRQ_MASK);
++
++	spin_unlock_irqrestore(&gc->bgpio_lock, flags);
++}
++
++static void idt_gpio_unmask(struct irq_data *d)
++{
++	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
++	struct idt_gpio_ctrl *ctrl = gpiochip_get_data(gc);
++	unsigned long flags;
++
++	spin_lock_irqsave(&gc->bgpio_lock, flags);
++
++	ctrl->mask_cache &= ~BIT(d->hwirq);
++	writel(ctrl->mask_cache, ctrl->pic + IDT_PIC_IRQ_MASK);
++
++	spin_unlock_irqrestore(&gc->bgpio_lock, flags);
++}
++
++static int idt_gpio_irq_init_hw(struct gpio_chip *gc)
++{
++	struct idt_gpio_ctrl *ctrl = gpiochip_get_data(gc);
++
++	/* Mask interrupts. */
++	ctrl->mask_cache = 0xffffffff;
++	writel(ctrl->mask_cache, ctrl->pic + IDT_PIC_IRQ_MASK);
++
++	return 0;
++}
++
++static struct irq_chip idt_gpio_irqchip = {
++	.name = "IDTGPIO",
++	.irq_mask = idt_gpio_mask,
++	.irq_ack = idt_gpio_ack,
++	.irq_unmask = idt_gpio_unmask,
++	.irq_set_type = idt_gpio_irq_set_type
++};
++
++static int idt_gpio_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct gpio_irq_chip *girq;
++	struct idt_gpio_ctrl *ctrl;
++	unsigned int parent_irq;
++	int ngpios;
++	int ret;
++
++
++	ctrl = devm_kzalloc(dev, sizeof(*ctrl), GFP_KERNEL);
++	if (!ctrl)
++		return -ENOMEM;
++
++	ctrl->gpio = devm_platform_ioremap_resource_byname(pdev, "gpio");
++	if (!ctrl->gpio)
++		return -ENOMEM;
++
++	ctrl->gc.parent = dev;
++
++	ret = bgpio_init(&ctrl->gc, &pdev->dev, 4, ctrl->gpio + IDT_GPIO_DATA,
++			 NULL, NULL, ctrl->gpio + IDT_GPIO_DIR, NULL, 0);
++	if (ret) {
++		dev_err(dev, "bgpio_init failed\n");
++		return ret;
++	}
++
++	ret = device_property_read_u32(dev, "ngpios", &ngpios);
++	if (!ret)
++		ctrl->gc.ngpio = ngpios;
++
++	if (device_property_read_bool(dev, "interrupt-controller")) {
++		ctrl->pic = devm_platform_ioremap_resource_byname(pdev, "pic");
++		if (!ctrl->pic)
++			return -ENOMEM;
++
++		parent_irq = platform_get_irq(pdev, 0);
++		if (!parent_irq)
++			return -EINVAL;
++
++		girq = &ctrl->gc.irq;
++		girq->chip = &idt_gpio_irqchip;
++		girq->init_hw = idt_gpio_irq_init_hw;
++		girq->parent_handler = idt_gpio_dispatch;
++		girq->num_parents = 1;
++		girq->parents = devm_kcalloc(dev, girq->num_parents,
++					     sizeof(*girq->parents),
++					     GFP_KERNEL);
++		if (!girq->parents)
++			return -ENOMEM;
++
++		girq->parents[0] = parent_irq;
++		girq->default_type = IRQ_TYPE_NONE;
++		girq->handler = handle_bad_irq;
++	}
++
++	return devm_gpiochip_add_data(&pdev->dev, &ctrl->gc, ctrl);
++}
++
++static const struct of_device_id idt_gpio_of_match[] = {
++	{ .compatible = "idt,32434-gpio" },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, idt_gpio_of_match);
++
++static struct platform_driver idt_gpio_driver = {
++	.probe = idt_gpio_probe,
++	.driver = {
++		.name = "idt3243x-gpio",
++		.of_match_table = idt_gpio_of_match,
++	},
++};
++module_platform_driver(idt_gpio_driver);
++
++MODULE_DESCRIPTION("IDT 79RC3243x GPIO/PIC Driver");
++MODULE_AUTHOR("Thomas Bogendoerfer <tsbogend@alpha.franken.de>");
++MODULE_LICENSE("GPL");
 -- 
-2.25.1
+2.29.2
 
