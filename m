@@ -2,61 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1D5380B51
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 16:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27C7D380B85
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 16:17:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234266AbhENOQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 10:16:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230462AbhENOQC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 10:16:02 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5277EC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 07:14:51 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id t4-20020a05683014c4b02902ed26dd7a60so16423776otq.7
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 07:14:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=6l45LOm9glgq8dJBn+eBHIeM+iMSj2dst1lcnVuOYiU=;
-        b=H0Ke9JrN1t/6wbdxIiBD6f/FGc3xHlhTzIpa94gVWufB/tHk2MNza94AxqKQr/9+gI
-         kox2geDV2vG5sURH+Irf0riCRSIZ1p2a+1Nqgc6UKPXrBOSbOVBjkkVYg+t4+FjO8T/R
-         CxZuqUVgTDDekqX3W5vxX9ZwyWIwq9A/fZS0+m8SDtWGacuRu2kkJw9O+xx99rzLaQce
-         Yv65Pmw0O7aRttVaaKpBkWZT0Ss3qLTQJPaStOwdnHx3P4qkHUtngJF6O6Xx8CvDDmo4
-         wB9o2v6Byhj4SjmsbJ8L78iv2+amxyYV3b8D1Sla/unW+NGsJh7LJtGGFZuThiGWMk8Y
-         ZLfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=6l45LOm9glgq8dJBn+eBHIeM+iMSj2dst1lcnVuOYiU=;
-        b=NhyxmGIUA0Om6KZcBXmLxwrX6SVYhqIeUNhpinxsyu/TCx+iXpbvgTaNKB192ggSVv
-         qoZHILnZ6fgU21feSrWMqZxkwh+GRMnAKFFlsHwhL5axs5l+Kh4VBpiDGNq9b+2dH257
-         SptcQPoEpAn0FQtwoILns+DMZudeiw8QawLJ8gw0qUdrHuhhw6lwjzmgdfoC0l+CCzNs
-         1ZVfZE8vObAVdk0mSZvzEQvwA4yCGB1OsiZINk+2pD3YZbaR1CjuHBAr9iWigNvqM8sK
-         H41k9HnsRt7oPY3FIWXrECPlSNiYfMZm/xC2uIJ5iu6r1BUmSmC0f9Gfn1medMi9PNc2
-         zvnA==
-X-Gm-Message-State: AOAM5310IHIO1mSk3v4SZAf7kN3iMSjvfLnOI7NQc0193WMd2c4xReGa
-        UzEf4Unp4y3flfdvkK3bSWVNMbfjRKGhyWLNSfI=
-X-Google-Smtp-Source: ABdhPJwplsUqZVpbUlBFs77+wUJYnmq/iSvFtGZsz2UsLVHANZjB58kGS+8jrOz6bUJL4tY5V1JzR7/COPjHVVtsMiw=
-X-Received: by 2002:a05:6830:124a:: with SMTP id s10mr40147443otp.300.1621001690814;
- Fri, 14 May 2021 07:14:50 -0700 (PDT)
+        id S234312AbhENOS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 10:18:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36178 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234505AbhENORY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 10:17:24 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9F3AF61404;
+        Fri, 14 May 2021 14:16:11 +0000 (UTC)
+Date:   Fri, 14 May 2021 10:16:10 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Steven Rostedt (VMware)" <rostedt@godmis.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Qiujun Huang <hqjagain@gmail.com>, Tom Rix <trix@redhat.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] tracing: events_hist: avoid using excessive stack space
+Message-ID: <20210514101610.4392adbc@gandalf.local.home>
+In-Reply-To: <20210514140429.3334181-1-arnd@kernel.org>
+References: <20210514140429.3334181-1-arnd@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Received: by 2002:a4a:a581:0:0:0:0:0 with HTTP; Fri, 14 May 2021 07:14:50
- -0700 (PDT)
-Reply-To: jennifervk200@gmail.com
-From:   Jennifer Vivian Komula <veronicegbenou@gmail.com>
-Date:   Fri, 14 May 2021 07:14:50 -0700
-Message-ID: <CAKidhbK93_oTwn+pU6j=Ekx7nuWetKsjCyctpkh-diqk3pxEew@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm Ms.Jennifer Vivian Komula the only daughter of late  Mr & Mrs
-Komula, I have business Investment  worth of  (US $3.500 to share with
-you.Please reply for more details.
+On Fri, 14 May 2021 16:04:25 +0200
+Arnd Bergmann <arnd@kernel.org> wrote:
+
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> In some configurations, clang produces a warning about an overly large
+> amount of stack space used in hist_trigger_print_key():
+> 
+> kernel/trace/trace_events_hist.c:4594:13: error: stack frame size of 1248 bytes in function 'hist_trigger_print_key' [-Werror,-Wframe-larger-than=]
+> static void hist_trigger_print_key(struct seq_file *m,
+> 
+> Moving the 'str' variable into a more local scope in the two places
+> where it gets used actually reduces the the used stack space here
+> and gets it below the warning limit, because the compiler can now
+> assume that it is safe to use the same stack slot that it has for
+> the stack of any inline function.
+
+Thanks Arnd for the nice explanation of the rationale for this change.
+
+But I still find it too subtle to my liking that we need to move the
+declaration like this (and duplicate it twice) for internal behavior of the
+compiler (where it can't figure out itself by the use cases if it can
+optimize the stack).
+
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  kernel/trace/trace_events_hist.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+> index c1abd63f1d6c..e3fe84f017a8 100644
+> --- a/kernel/trace/trace_events_hist.c
+> +++ b/kernel/trace/trace_events_hist.c
+> @@ -4597,7 +4597,6 @@ static void hist_trigger_print_key(struct seq_file *m,
+>  				   struct tracing_map_elt *elt)
+>  {
+>  	struct hist_field *key_field;
+> -	char str[KSYM_SYMBOL_LEN];
+
+Instead, I think we should just make str static, as this should only be
+called under the event_mutex. To be sure, we can also add:
+
+	/* To protect the static str variable */
+	lockdep_assert_held(&event_mutex);
+
+-- Steve
+
+>  	bool multiline = false;
+>  	const char *field_name;
+>  	unsigned int i;
+> @@ -4617,11 +4616,13 @@ static void hist_trigger_print_key(struct seq_file *m,
+>  			uval = *(u64 *)(key + key_field->offset);
+>  			seq_printf(m, "%s: %llx", field_name, uval);
+>  		} else if (key_field->flags & HIST_FIELD_FL_SYM) {
+> +			char str[KSYM_SYMBOL_LEN];
+>  			uval = *(u64 *)(key + key_field->offset);
+>  			sprint_symbol_no_offset(str, uval);
+>  			seq_printf(m, "%s: [%llx] %-45s", field_name,
+>  				   uval, str);
+>  		} else if (key_field->flags & HIST_FIELD_FL_SYM_OFFSET) {
+> +			char str[KSYM_SYMBOL_LEN];
+>  			uval = *(u64 *)(key + key_field->offset);
+>  			sprint_symbol(str, uval);
+>  			seq_printf(m, "%s: [%llx] %-55s", field_name,
+
