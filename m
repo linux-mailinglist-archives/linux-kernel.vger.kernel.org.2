@@ -2,92 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B00E380400
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 09:07:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 898D0380401
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 09:07:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232912AbhENHIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 03:08:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37632 "EHLO
+        id S232410AbhENHJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 03:09:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232410AbhENHIl (ORCPT
+        with ESMTP id S232078AbhENHJC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 03:08:41 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2879EC061574;
-        Fri, 14 May 2021 00:07:30 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id t3so1116298edc.7;
-        Fri, 14 May 2021 00:07:30 -0700 (PDT)
+        Fri, 14 May 2021 03:09:02 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91FBCC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 00:07:51 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id j12so17447786pgh.7
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 00:07:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kAz87Mlx4WSb3cL27SNEkL0I2UewaZV6o5vYLNdlON4=;
-        b=UuXtFRUP0O+sV7ASRFo0cUu1obDqwq9kWCVBEGqWbIE1/oq3zJkToBPnlcQR3LxSNh
-         iw1Q8hDqukIyY8MIeNUvcGHc0vH0kOOYqlnBlYq5qdkK0IN55ZaMWtsjbcvQaKf5xtIc
-         PbIrB7LuKBzklzoyB8+wkMkUiCcDxGXFePOj9BLPY/hcU/tOjiNg20FHu55zXq2WEeBV
-         ehEeHFT1FbPxFaLrasK0zLM9eaBWGeeNNPnWr2yOI20x6de2n8w7PYwuEq9fg8ZqBVfL
-         CjuVNDZJ9b9rukAyI8bdd9jY1Q3VwBH+ECBtals1Mj7QuqpxX7ejGBYQLs42m10+cjXw
-         1XuA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=uMgRMGg/r3gIQINvH+QzQw4VB9eKfNkU/NWagyALQy0=;
+        b=PbVOBlIX5vaNdsa+smKUweNt1LFR3XYJHTQMw1vBkxnXZxn4mb0CHtm+PJwGXlspIi
+         AVZuIhwVKu9c1KehnCjg7xYut3FJp6vO437EX+SJRPW74HPYsOzDElqTDOPvjs6t/x2Z
+         Er6+pGXd74YtlJNXGZVXTTTIMKQFldIeB39fR6md//OrAqD15tctErLDh9FilL/LKgzP
+         +NrGrlqa3hVMGB7xFRYRamHzDUigJHmc1x9cJ6th1wyZU+B9VCpL5XVnXrkduOCoQdYW
+         Hob5oKcfVRtACnBf3/PC8dM6TLAF4J6t1efJblLyO6YM3XOhrAv93inv/Y0VAFD09T57
+         OA4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=kAz87Mlx4WSb3cL27SNEkL0I2UewaZV6o5vYLNdlON4=;
-        b=YNeUeZVbfaX2vbUzquA3ZN0z6kDuSbgglZek4cgE496lsP7yGzGgod+tg/N/jjFAmH
-         SK1kapUDlUYhdidvuQXwjubvlzQKL3ZFVukEWAM7lkSus3m1Xfe2/zQUQBxVonROpZUn
-         TAeGr5lAYcG/uZ9h1mhnFfRqoQKKsYbYO+qkvNBeeh+YU2L3mfoJUSg/KAElcx3A+Y9C
-         UUIqU2oiwaq0qW+St6XaCImBMrq/V9xIlKWo52n6q+LtUUAvwa8Cij4sqb9VjqrlcBN3
-         wxx3LkI8597pJPh4q9ZkX25B6SCX3D4zRMEaMSiWvEgz7qyL/+jhKddR5qahcp0FhGs4
-         /b8g==
-X-Gm-Message-State: AOAM532Um71ZGrDVv7RdCfePdkNlUe51/wrH9T5+IQDmnV6TWPy9+I/b
-        6M84tiEPyCWeTwD11RDpNZU=
-X-Google-Smtp-Source: ABdhPJzkToVSfe5UqgCC/8i7ain6D8alwEi8DJsz9F+jFa7GnmwdmmP0iB7MB/ckXKhbeysd+y/aSQ==
-X-Received: by 2002:aa7:d6c6:: with SMTP id x6mr53451578edr.193.1620976048967;
-        Fri, 14 May 2021 00:07:28 -0700 (PDT)
-Received: from gmail.com (0526E777.dsl.pool.telekom.hu. [5.38.231.119])
-        by smtp.gmail.com with ESMTPSA id k9sm4067820edv.69.2021.05.14.00.07.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 00:07:28 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Fri, 14 May 2021 09:07:26 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/acpi: Switch to pr_xxx log functions
-Message-ID: <YJ4hrrUkKRkKsUtf@gmail.com>
-References: <8436da08-4812-d383-8f2a-1c07181ebfb8@gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=uMgRMGg/r3gIQINvH+QzQw4VB9eKfNkU/NWagyALQy0=;
+        b=LsYbe2wBGvF2yllTzhP3vB49ffRNce719o2WQVJ/1nKsf4Eh9E8mkyjNIBY+SAvJUJ
+         E/gWsvu/7qBbQR0GH41xklEHE1JX0szazDqSNi04H87l33kscNmMNg3o+Pyt5PPFuCNT
+         v2i7hodeXmD2Jv4xm8YR1zP07xCRVZhkmqgLFEPTwv68ZI2ncqidhh4Wz+5o0pA6yGtL
+         iBcspa4AVwsEJxPoSKAwpSJjP5DZoZmABXT3ke/QAsTc9Xp0Jaob2X5/jyfI8hQ8EQ4D
+         DZpC1VTM2tWfL2Knwnzi7E6JnAWdsjeEC0KlVnG6Sr+bbTXydCe6B8ahr+xwTl1NAiQT
+         COyA==
+X-Gm-Message-State: AOAM530awFeRPLVB6OTov8hwpPrId4NpLOtdzQV3xfLn6FzOxZGdMjzb
+        QnkHz1LKQ/mS6ZFCFeDrfpnXpQ==
+X-Google-Smtp-Source: ABdhPJwAVGQcyFu8huddUFoRGDzEvr7xGXtt8NmG/sXBUnLfl67u8rYlL3910hnQ0PeqKG/ewx893w==
+X-Received: by 2002:a63:1165:: with SMTP id 37mr45959674pgr.295.1620976070717;
+        Fri, 14 May 2021 00:07:50 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id n11sm3460701pfu.121.2021.05.14.00.07.49
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Fri, 14 May 2021 00:07:50 -0700 (PDT)
+Date:   Fri, 14 May 2021 00:07:38 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Peter Xu <peterx@redhat.com>
+cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Hugh Dickins <hughd@google.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>
+Subject: Re: [PATCH v2 00/24] userfaultfd-wp: Support shmem and hugetlbfs
+In-Reply-To: <YJwl1wNM18trv7px@t490s>
+Message-ID: <alpine.LSU.2.11.2105132312350.3969@eggly.anvils>
+References: <20210427161317.50682-1-peterx@redhat.com> <YJwl1wNM18trv7px@t490s>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8436da08-4812-d383-8f2a-1c07181ebfb8@gmail.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-* Heiner Kallweit <hkallweit1@gmail.com> wrote:
-
-> Switching to pr_debug et al has two benefits:
-> - We don't have to add PREFIX to each log statement
-> - Debug output is suppressed except DEBUG is defined or dynamic
->   debugging is enabled for the respective code piece.
+On Wed, 12 May 2021, Peter Xu wrote:
+> On Tue, Apr 27, 2021 at 12:12:53PM -0400, Peter Xu wrote:
+> > This is v2 of uffd-wp shmem & hugetlbfs support, which completes uffd-wp as a
+> > kernel full feature, as it only supports anonymous before this series.
 > 
-> In addition ensure that longer messages aren't split to multiple lines
-> in source code, checkpatch complains otherwise.
+> Ping..
 > 
-> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-> ---
->  arch/x86/kernel/acpi/boot.c | 118 ++++++++++++++----------------------
->  1 file changed, 47 insertions(+), 71 deletions(-)
+> Thinking about a repost, as this series shouldn't be able to apply after we've
+> got more relevant patches into -mm.  E.g., the full minor fault, and also some
+> small stuff like pagemap, as we need one more patch to support shmem/hugetlbfs
+> too.
+> 
+> Hugh, haven't received any further comment from you on shmem side (or on the
+> general idea).  It would be great to still have some of your input.
+> 
+> Let me know if you prefer to read a fresh new version otherwise.
 
-Reviewed-by: Ingo Molnar <mingo@kernel.org>
+I am very sorry to let you down, Peter, repeatedly; but it is now very
+clear that I shall *never* have time to review your patchset - I am too
+slow, have too much else to attend to, and take too long each time to
+sink myself deep enough into userfaultfd.
+
+I realize that you're being considerate, and expecting no more than
+a few comments from me, rather than asking for formal review; but it's
+still too much for me to get into.
+
+The only reason I was involved at all, was when you were wondering how
+to handle the pagetable entries for shmem.  I suggested one encoding,
+Andrea suggested slightly differently: Andrea's was more elegant (no
+"swap type" required), and it looked like you went with his - good.
+
+I wonder whether you noticed
+https://lore.kernel.org/linux-mm/20210407084238.20443-2-apopple@nvidia.com/
+which might interfere.  I've had no more time to look at that than yours,
+so no opinion on it (and I don't know what happened to it after that).
+
+Please keep uppermost in mind when modifying mm/shmem.c for userfaultfd,
+the difference between shared and private; and be on guard against the
+ways in which CONFIG_USERFAULTFD=y might open a door to abuse.
 
 Thanks,
-
-	Ingo
+Hugh
