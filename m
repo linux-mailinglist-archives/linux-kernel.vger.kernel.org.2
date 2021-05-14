@@ -2,86 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44474380B0A
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 16:05:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 354C3380B0C
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 16:05:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234064AbhENOGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 10:06:32 -0400
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:45995 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234099AbhENOGa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 10:06:30 -0400
-Received: by mail-ot1-f53.google.com with SMTP id t10-20020a05683022eab0290304ed8bc759so5397777otc.12;
-        Fri, 14 May 2021 07:05:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GvnE1ADB9+I/WYT7tF9DV2btsg6bTF8SeNiQgcN4m0w=;
-        b=End/WvO6iOlMXu/U9VAHI2zZW3dn3UUlul2ljYPao0+WCj3rUeFeZwPxhcN15+sZNW
-         tQpanrGhSsohXN8LTnlFB71avK1X2Zrh0sDv5MeJtMxwmNRLIrFrKGiWnUMyr8UgAd1I
-         gIkSCi5PC8qz1gf7Hq5hDif7FwjsDnbr5kqecnFFTpdS7uTZ743L+BEkXjzwZ2UkA3oq
-         pVlYH1vtxmEas2Zdv8bdS1AjIjaIhv+3PJUCDwlkP07xehJWX8qTWlxNbcajaGIhYWxh
-         XuY3HW6M2aRfDI39yZL1HiXZisVZl0mCin2OiAkqo2pGQOHa758Xm2M2wDXV2vBguMYa
-         x7hw==
-X-Gm-Message-State: AOAM531Krp2tJlUPxgPiVqD4qATfJk6ivH5zk7Kso2YDbEieFtbC5tNH
-        xz2fotfBmg91MLMekofrlLI4D2CfIs/5jOJj4PF8rTesXy4=
-X-Google-Smtp-Source: ABdhPJzeaoY6xz4M2hQ6Bbv7PLM1iJ74+qY3c+/pXro1wEBAxQ7wotJ3aSHgxmHSlzyuZAlfDqOFTQ3bwxiXGrS5IcI=
-X-Received: by 2002:a9d:3bcb:: with SMTP id k69mr41505230otc.206.1621001117692;
- Fri, 14 May 2021 07:05:17 -0700 (PDT)
+        id S234132AbhENOGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 10:06:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60564 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234118AbhENOGr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 10:06:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE8A461476;
+        Fri, 14 May 2021 14:05:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621001135;
+        bh=3X/2sKQU+VZtoQXXKlhTlk6dEmdniKN4gTMiCrvOMc0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tvYrwjHIwDwJSCuKkETrP6xd3VDwge8PFmjLcHVFnuqc7tt89/W999mgBAIXoqhQJ
+         m76RaDjoo/X+aES92ivmdXX6/g4gvMoAfOlHOJsy8mTN5bX9XgLQ7syOyOU7bzwg5E
+         M5qCopTvSqeIAaNVZR3LQg4JkOra9kCf2xZffS5s=
+Date:   Fri, 14 May 2021 16:05:32 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+Cc:     pure.logic@nexus-software.ie, johan@kernel.org, elder@kernel.org,
+        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: greybus: fix gb_loopback_stats_attrs definition
+Message-ID: <YJ6DrLiMsdkG5loA@kroah.com>
+References: <20210514133039.304760-1-chouhan.shreyansh630@gmail.com>
+ <YJ582f3O9K9YD3QA@kroah.com>
+ <YJ5/tqFfcjxOLsF0@fedora>
 MIME-Version: 1.0
-References: <20210430124224.6383-1-wsj20369@163.com>
-In-Reply-To: <20210430124224.6383-1-wsj20369@163.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 14 May 2021 16:05:06 +0200
-Message-ID: <CAJZ5v0g--YTuzHiMTiVwuEH2Z87k+JCmynqqFshZ70yNXuUHew@mail.gmail.com>
-Subject: Re: [PATCH] Revert "ACPI: power: Turn off unused power resources unconditionally"
-To:     Shujun Wang <wsj20369@163.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJ5/tqFfcjxOLsF0@fedora>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 2:43 PM Shujun Wang <wsj20369@163.com> wrote:
->
-> This reverts commit 7e4fdeafa61f2b653fcf9678f09935e55756aed2.
-> It may cause some NVMe device probes to fail, and the system may get
-> stuck when using an NVMe device as the root filesystem.
->
-> In the function nvme_pci_enable(struct nvme_dev *dev), as shown below,
-> readl(NVME_REG_CSTS) always returns -1 with the commit, which results in
-> the probe failed.
->
->   if (readl(dev->bar + NVME_REG_CSTS) == -1) {
->         result = -ENODEV;
->         goto disable;
->   }
->
-> dmesg:
->   [    1.106280] nvme 0000:04:00.0: platform quirk: setting simple suspend
->   [    1.109111] nvme nvme0: pci function 0000:04:00.0
->   [    1.113066] nvme 0000:04:00.0: enabling device (0000 -> 0002)
->   [    1.121040] nvme nvme0: Removing after probe failure status: -19
->
-> lspci:
->   Non-Volatile memory controller: KIOXIA Corporation Device 0001
->
-> device uevent:
->   DRIVER=nvme
->   PCI_CLASS=10802
->   PCI_ID=1E0F:0001
->   PCI_SUBSYS_ID=1E0F:0001
->   PCI_SLOT_NAME=0000:04:00.0
->   MODALIAS=pci:v00001E0Fd00000001sv00001E0Fsd00000001bc01sc08i02
->
-> This patch was tested in Lenovo Thinkpad X1.
+On Fri, May 14, 2021 at 07:18:38PM +0530, Shreyansh Chouhan wrote:
+> On Fri, May 14, 2021 at 03:36:25PM +0200, Greg KH wrote:
+> > On Fri, May 14, 2021 at 07:00:39PM +0530, Shreyansh Chouhan wrote:
+> > > The gb_loopback_stats_attrs macro, (defined in loopback.c,) is a
+> > > multiline macro whose statements were not enclosed in a do while
+> > > loop.
+> > > 
+> > > This patch adds a do while loop around the statements of the said
+> > > macro.
+> > > 
+> > > Signed-off-by: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+> > > ---
+> > >  drivers/staging/greybus/loopback.c | 10 ++++++----
+> > >  1 file changed, 6 insertions(+), 4 deletions(-)
+> > > 
+> > > diff --git a/drivers/staging/greybus/loopback.c b/drivers/staging/greybus/loopback.c
+> > > index 2471448ba42a..c88ef3e894fa 100644
+> > > --- a/drivers/staging/greybus/loopback.c
+> > > +++ b/drivers/staging/greybus/loopback.c
+> > > @@ -162,10 +162,12 @@ static ssize_t name##_avg_show(struct device *dev,		\
+> > >  }									\
+> > >  static DEVICE_ATTR_RO(name##_avg)
+> > >  
+> > > -#define gb_loopback_stats_attrs(field)				\
+> > > -	gb_loopback_ro_stats_attr(field, min, u);		\
+> > > -	gb_loopback_ro_stats_attr(field, max, u);		\
+> > > -	gb_loopback_ro_avg_attr(field)
+> > > +#define gb_loopback_stats_attrs(field)					\
+> > > +	do {								\
+> > > +		gb_loopback_ro_stats_attr(field, min, u);		\
+> > > +		gb_loopback_ro_stats_attr(field, max, u);		\
+> > > +		gb_loopback_ro_avg_attr(field);				\
+> > > +	} while (0)
+> > >  
+> > >  #define gb_loopback_attr(field, type)					\
+> > >  static ssize_t field##_show(struct device *dev,				\
+> > > -- 
+> > > 2.31.1
+> > > 
+> > > 
+> > 
+> > Did you test build this change?
+> 
+> I built the module using make -C . M=drivers/staging/greybus to test
+> build it. I didn't get any errors.
 
-Please send me the dmidecode output from this machine or (better)
-attach it at https://bugzilla.kernel.org/show_bug.cgi?id=213019
+Really?  Can you provide the full build output for this file with your
+change?  I don't think you really built this file for the obvious
+reasons...
 
-Thanks!
+thanks,
+
+greg k-h
