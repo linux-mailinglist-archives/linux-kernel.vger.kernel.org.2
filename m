@@ -2,161 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7377E38024E
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 05:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76250380285
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 05:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231327AbhENDMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 23:12:37 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:2663 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231296AbhENDMf (ORCPT
+        id S231790AbhENDee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 23:34:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229724AbhENDeb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 23:12:35 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FhD5L6qvYzmWBC;
-        Fri, 14 May 2021 11:09:10 +0800 (CST)
-Received: from huawei.com (10.175.113.32) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Fri, 14 May 2021
- 11:11:15 +0800
-From:   Liu Shixin <liushixin2@huawei.com>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>
-CC:     <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <kasan-dev@googlegroups.com>, Liu Shixin <liushixin2@huawei.com>
-Subject: [PATCH RFC v2] riscv: Enable KFENCE for riscv64
-Date:   Fri, 14 May 2021 11:44:32 +0800
-Message-ID: <20210514034432.2004082-1-liushixin2@huawei.com>
-X-Mailer: git-send-email 2.18.0.huawei.25
+        Thu, 13 May 2021 23:34:31 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02416C061574;
+        Thu, 13 May 2021 20:33:20 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id o27so27599470qkj.9;
+        Thu, 13 May 2021 20:33:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=dikOEtKsjpSnaSM6EeOCvys/XjUwuAHcvPk4ndAPdHw=;
+        b=R8a18YS6HJp3phFIY2QEf9KyEjYwVhdcNOeUaJyfG0KGADoFZ5pz9/xsXV9JlkcuEs
+         /Nr0nnynrNh/3r0YE2lk/n1yar78j+m8Z2Fe60fVaF/IL2JasnaR4TpZP7qVqtPyiMD+
+         8nMAOWDYFkaIjXgBX5cPZ8IKen5SRatdTarJKG4FSt7C3Q/awJUmaAspZj3d4TfnWkug
+         WFvLhAcEgpZsbKJOy2ZwNPmZl+iLnq+IB+jxGYBbqIYRehNUsXBePAuMvu0G7CDGNRow
+         0sueRRVqGIZddz3s0UOPYjXcJR29p7CKBdb2rUKNyZ5NB7oEoCyZMF0b2RO/NviwU6AK
+         9V8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dikOEtKsjpSnaSM6EeOCvys/XjUwuAHcvPk4ndAPdHw=;
+        b=AtMkunXrErGth9XOLYtTCP3f9yTjMPKEWzYo3PIzgD9gQfMxRzq8+hXsrpItJyFX+w
+         CePoYTIGV6653rP7hvWvno74WWUp/6YkM8wB9/8JKezCJC5oXw6jV+H7V2bbVT5lbujY
+         s/05+wkw13DSCJ5ZknzPd4a682YSyHBqdnll03dCkFIHyq14c/BcSsOC/+GN7X/piieT
+         JuAagjgALmvoamhc1XiQmPD078gWEZkpeEHMDAYNMMOx0pqFQL7KLf1AKuaSUUl5RXHU
+         OaRhxtNAUtqmIu/wiw4W5X3/3NaXG9NFmtjIMYx6wfiYAWCCJUXNAN3PydsOb/hNfJVp
+         +Dow==
+X-Gm-Message-State: AOAM530bhk7G/sVhY+49UVr9aYXQe1pGRP/BB7kuRAlO0FK2+eWY+oSo
+        qXpqdGSfkW9aITtEpKivGFA=
+X-Google-Smtp-Source: ABdhPJxKUhy1wkjiDM88Lx/kWnHYTq+k4qyZ1TgnfXEQA/btpVvWYWl1NPYV9wQnb2DoFgGXCNAICg==
+X-Received: by 2002:a05:620a:753:: with SMTP id i19mr27343988qki.320.1620963199268;
+        Thu, 13 May 2021 20:33:19 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id v22sm3738581qtq.77.2021.05.13.20.33.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 May 2021 20:33:18 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     Roger Lu <roger.lu@mediatek.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Enric Balletbo Serra <eballetbo@gmail.com>,
+        Kevin Hilman <khilman@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Fan Chen <fan.chen@mediatek.com>,
+        HenryC Chen <HenryC.Chen@mediatek.com>,
+        YT Lee <yt.lee@mediatek.com>,
+        Xiaoqing Liu <Xiaoqing.Liu@mediatek.com>,
+        Charles Yang <Charles.Yang@mediatek.com>,
+        Angus Lin <Angus.Lin@mediatek.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Nishanth Menon <nm@ti.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20210428065440.3704-1-roger.lu@mediatek.com>
+ <20210428065440.3704-4-roger.lu@mediatek.com>
+ <20210506045115.GA767398@roeck-us.net>
+ <7a7a07adedf5d3f430fecf81aed35c6321e5b634.camel@mediatek.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH v16 3/7] soc: mediatek: SVS: introduce MTK SVS engine
+Message-ID: <ec5f064f-41f1-f8f9-9a6d-fdf02c43cb8d@roeck-us.net>
+Date:   Thu, 13 May 2021 20:33:14 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.32]
-X-CFilter-Loop: Reflected
+In-Reply-To: <7a7a07adedf5d3f430fecf81aed35c6321e5b634.camel@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add architecture specific implementation details for KFENCE and enable
-KFENCE for the riscv64 architecture. In particular, this implements the
-required interface in <asm/kfence.h>.
+On 5/13/21 8:10 PM, Roger Lu wrote:
+> Hi Guenter,
+> 
+> Sorry for the late reply and thanks for the notice.
+> 
+> On Wed, 2021-05-05 at 21:51 -0700, Guenter Roeck wrote:
+>> On Wed, Apr 28, 2021 at 02:54:36PM +0800, Roger Lu wrote:
+>>> The Smart Voltage Scaling(SVS) engine is a piece of hardware
+>>> which calculates suitable SVS bank voltages to OPP voltage table.
+>>> Then, DVFS driver could apply those SVS bank voltages to PMIC/Buck
+>>> when receiving OPP_EVENT_ADJUST_VOLTAGE.
+>>>
+>>> Signed-off-by: Roger Lu <roger.lu@mediatek.com>
+>>> ---
+>>>   drivers/soc/mediatek/Kconfig   |   10 +
+>>>   drivers/soc/mediatek/Makefile  |    1 +
+>>>   drivers/soc/mediatek/mtk-svs.c | 1723
+>>> ++++++++++++++++++++++++++++++++
+>>>   3 files changed, 1734 insertions(+)
+>>>   create mode 100644 drivers/soc/mediatek/mtk-svs.c
+>>>
+>>
+>> [ ... ]
+>>
+>>> +
+>>> +	svsp_irq = irq_of_parse_and_map(svsp->dev->of_node, 0);
+>>> +	ret = devm_request_threaded_irq(svsp->dev, svsp_irq, NULL,
+>>> svs_isr,
+>>> +					svsp->irqflags, svsp->name,
+>>> svsp);
+>>
+>> 0-day reports:
+>>
+>> drivers/soc/mediatek/mtk-svs.c:1663:7-32: ERROR:
+>> 	Threaded IRQ with no primary handler requested without
+>> IRQF_ONESHOT
+>>
+>> I would be a bit concerned about this. There is no primary (hard)
+>> interrupt handler, meaning the hard interrupt may be re-enabled after
+>> the default hard interrupt handler runs. This might result in endless
+>> interrupts.
+> 
+> Oh, we add IRQF_ONESHOT in "svs_get_svs_mt8183_platform_data()" for
+> threaded irq. So, please kindly let us know if we need to set more
+> flags or any other potential risks we should be aware. Thanks in
+> advance.
+> 
 
-KFENCE requires that attributes for pages from its memory pool can
-individually be set. Therefore, force the kfence pool to be mapped at
-page granularity.
+After reviewing the code, I think this was actually a false alarm,
+at least if svsp->irqflags always includes IRQF_ONESHOT.
+The code is kind of unusual, though. Unless I am missing something,
+svsp->irqflags is only set in one place and it is always set
+to IRQF_TRIGGER_LOW | IRQF_ONESHOT. If there is a remote chance
+that the flag is ever different, it would have been better (and less
+confusing) to specify IRQF_ONESHOT directly when requesting the
+interrupt (because it is always needed, no matter which SOC).
+If the flags are always the same, there is no reason for having
+the svsp->irqflags variable in the first place.
 
-I tested this patch using the testcases in kfence_test.c and all passed.
-
-Signed-off-by: Liu Shixin <liushixin2@huawei.com>
----
-v1->v2: Change kmalloc() to pte_alloc_one_kernel() for allocating pte.
-
- arch/riscv/Kconfig              |  1 +
- arch/riscv/include/asm/kfence.h | 51 +++++++++++++++++++++++++++++++++
- arch/riscv/mm/fault.c           | 11 ++++++-
- 3 files changed, 62 insertions(+), 1 deletion(-)
- create mode 100644 arch/riscv/include/asm/kfence.h
-
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index c426e7d20907..000d8aba1030 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -64,6 +64,7 @@ config RISCV
- 	select HAVE_ARCH_JUMP_LABEL_RELATIVE
- 	select HAVE_ARCH_KASAN if MMU && 64BIT
- 	select HAVE_ARCH_KASAN_VMALLOC if MMU && 64BIT
-+	select HAVE_ARCH_KFENCE if MMU && 64BIT
- 	select HAVE_ARCH_KGDB
- 	select HAVE_ARCH_KGDB_QXFER_PKT
- 	select HAVE_ARCH_MMAP_RND_BITS if MMU
-diff --git a/arch/riscv/include/asm/kfence.h b/arch/riscv/include/asm/kfence.h
-new file mode 100644
-index 000000000000..c25d67e0b8ba
---- /dev/null
-+++ b/arch/riscv/include/asm/kfence.h
-@@ -0,0 +1,51 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifndef _ASM_RISCV_KFENCE_H
-+#define _ASM_RISCV_KFENCE_H
-+
-+#include <linux/kfence.h>
-+#include <linux/pfn.h>
-+#include <asm-generic/pgalloc.h>
-+#include <asm/pgtable.h>
-+
-+static inline bool arch_kfence_init_pool(void)
-+{
-+	int i;
-+	unsigned long addr;
-+	pte_t *pte;
-+	pmd_t *pmd;
-+
-+	for (addr = (unsigned long)__kfence_pool; is_kfence_address((void *)addr);
-+	     addr += PAGE_SIZE) {
-+		pte = virt_to_kpte(addr);
-+		pmd = pmd_off_k(addr);
-+
-+		if (!pmd_leaf(*pmd) && pte_present(*pte))
-+			continue;
-+
-+		pte = pte_alloc_one_kernel(&init_mm);
-+		for (i = 0; i < PTRS_PER_PTE; i++)
-+			set_pte(pte + i, pfn_pte(PFN_DOWN(__pa((addr & PMD_MASK) + i * PAGE_SIZE)), PAGE_KERNEL));
-+
-+		set_pmd(pmd, pfn_pmd(PFN_DOWN(__pa(pte)), PAGE_TABLE));
-+		flush_tlb_kernel_range(addr, addr + PMD_SIZE);
-+	}
-+
-+	return true;
-+}
-+
-+static inline bool kfence_protect_page(unsigned long addr, bool protect)
-+{
-+	pte_t *pte = virt_to_kpte(addr);
-+
-+	if (protect)
-+		set_pte(pte, __pte(pte_val(*pte) & ~_PAGE_PRESENT));
-+	else
-+		set_pte(pte, __pte(pte_val(*pte) | _PAGE_PRESENT));
-+
-+	flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
-+
-+	return true;
-+}
-+
-+#endif /* _ASM_RISCV_KFENCE_H */
-diff --git a/arch/riscv/mm/fault.c b/arch/riscv/mm/fault.c
-index 096463cc6fff..aa08dd2f8fae 100644
---- a/arch/riscv/mm/fault.c
-+++ b/arch/riscv/mm/fault.c
-@@ -14,6 +14,7 @@
- #include <linux/signal.h>
- #include <linux/uaccess.h>
- #include <linux/kprobes.h>
-+#include <linux/kfence.h>
- 
- #include <asm/ptrace.h>
- #include <asm/tlbflush.h>
-@@ -45,7 +46,15 @@ static inline void no_context(struct pt_regs *regs, unsigned long addr)
- 	 * Oops. The kernel tried to access some bad page. We'll have to
- 	 * terminate things with extreme prejudice.
- 	 */
--	msg = (addr < PAGE_SIZE) ? "NULL pointer dereference" : "paging request";
-+	if (addr < PAGE_SIZE)
-+		msg = "NULL pointer dereference";
-+	else {
-+		if (kfence_handle_page_fault(addr, regs->cause == EXC_STORE_PAGE_FAULT, regs))
-+			return;
-+
-+		msg = "paging request";
-+	}
-+
- 	die_kernel_fault(msg, addr, regs);
- }
- 
--- 
-2.18.0.huawei.25
-
+Thanks,
+Guenter
