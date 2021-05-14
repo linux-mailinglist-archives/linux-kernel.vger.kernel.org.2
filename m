@@ -2,167 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8588C3805D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 11:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B6C2380647
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 11:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233857AbhENJGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 05:06:05 -0400
-Received: from mail-eopbgr30066.outbound.protection.outlook.com ([40.107.3.66]:34582
-        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229981AbhENJGC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 05:06:02 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hEgRXfgGQ7zyvsXbn/VibrXA+wxehwV5P0I2k2IwwCx+aPk5vwF/VVsxWTTOrclQejhWTaHbtD7zbzhlhJO8zI9RO9DQpqOEzn0cQePX6goWrp076CBhyNdMj650FefHm9zFgIXnZ8Dh5QjLmT5SIm3MkprHSVp1b4CNBzEQ4I2qJvKZaI8rjDYdyPit1oHV2P5ObP5FFhQkVDXBLWp9w2njoFIXE3w7VSauNicKSpEeCvJkO2H99VNDfL8RGirEcLXVCKyvseLV06RNPAXDlIrYwdozLDzpGHmxGFBWwEblyr4ot/xoHrqTTIdtG1iX/Zrlcgf3zqF8R8lUK6PGOw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O2ikud2sBoFPzs8BHjFUyxowV5mT/JOXYolNXjIZ2oE=;
- b=h4OO3sGwiWSQH4P/QrNU2NRZVy3sDQvpVjaYJAMnL43MgbIEd0wVv/OGvOU20KcWFawi2Kj5gOQavgHhuvKoFHRC+tC3narKN/BsOWUpmJtPHMozlwXhXem+q+7aKXAMs1RM0XKGTv9LsnpldvRrZt7JOSRYTc1iaZehCoPIGBTBwnMkRwCK+VIAQnm37a0LlW87MV9Dsno6ROuCfd6C2greT3of678uy1MmSx+k1Eah++jBCk4ZuhLTB7LmNrdZXOmeNPCCAT0JXIiaFPKqNHpXjsTN5s6K2kdi+gbxu8oCmPXz5gCrQTXpTBRllaaUpA8SKpFNGrIJCF03G/7Qvg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O2ikud2sBoFPzs8BHjFUyxowV5mT/JOXYolNXjIZ2oE=;
- b=YWDGG5EmnN0zojClepqoyx+/suou3kewfJnBFco99trtL4YDVw2z3Hz7kdhLMRu5hF2u6YduzsoB8vpFkUXlDEnm4sNQQBXL6b8wpPCr4+itAtg7rA/GuQLnxKS8eQ6Bp8Ku20F1ccJLvwjXbbAFUR/UUisE09Kuj2pQ+6qxn/w=
-Authentication-Results: linux-watchdog.org; dkim=none (message not signed)
- header.d=none;linux-watchdog.org; dmarc=none action=none header.from=nxp.com;
-Received: from VE1PR04MB6688.eurprd04.prod.outlook.com (2603:10a6:803:127::25)
- by VI1PR04MB4317.eurprd04.prod.outlook.com (2603:10a6:803:3f::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Fri, 14 May
- 2021 09:04:49 +0000
-Received: from VE1PR04MB6688.eurprd04.prod.outlook.com
- ([fe80::bcfe:215c:1b66:6011]) by VE1PR04MB6688.eurprd04.prod.outlook.com
- ([fe80::bcfe:215c:1b66:6011%4]) with mapi id 15.20.4129.026; Fri, 14 May 2021
- 09:04:49 +0000
-From:   Robin Gong <yibin.gong@nxp.com>
-To:     wim@linux-watchdog.org, linux@roeck-us.net, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, festevam@gmail.com
-Cc:     linux-imx@nxp.com, kernel@pengutronix.de,
-        linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] watchdog: imx2_wdt: avoid to ping before resume back
-Date:   Sat, 15 May 2021 01:21:15 +0800
-Message-Id: <1621012875-22667-1-git-send-email-yibin.gong@nxp.com>
-X-Mailer: git-send-email 2.7.4
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: SG2PR03CA0167.apcprd03.prod.outlook.com
- (2603:1096:4:c9::22) To VE1PR04MB6688.eurprd04.prod.outlook.com
- (2603:10a6:803:127::25)
+        id S233736AbhENJcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 05:32:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230440AbhENJct (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 05:32:49 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EEFBC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 02:31:37 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id l1so7772815ejb.6
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 02:31:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=HvoBw86ctVXyhbWOgqr0xC6pEc+fFV76B2CUFf5kjSI=;
+        b=ixbflPe1nhsPohr943bOZRN0CJ+ifoIo0TDjt48YRc4xHRRCPSrahZoEgrS5nzfzZb
+         PONow1l+ujnBhdNyMHuqJQdz3N84k2ah+t7CE1DVLjfjuYw5mCU8B0M7IYfl8rg1qju1
+         HssrGdLLzIgvXR4bt6VHeZwvddqLLcwh6Pa3ruvgWHL8/jS21QDK/SGqXypD4053Gsmp
+         gBJ4E8glAaO98vKkkOIwyrpwQPZ7/Iu/ao0s1VInzy/sVRFTDgXrwK1ByT/uUpjAiCxY
+         u4Jt2w3dijAU++3Z1mptel+cC6+WWwvGOcJ074K275VTqlnC1P3/ipsYgYafCu8FXHsL
+         DYVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=HvoBw86ctVXyhbWOgqr0xC6pEc+fFV76B2CUFf5kjSI=;
+        b=nUxO1tVMUvyR+uc+JxvvzN65wkN5s5v4/E4gaIhHNKZeZgsZTKpHXTyO5shrHleu9i
+         kxYnfb9F1hPyLEla2DGOaZRoRLt2p5FPpPCyjDkjW+aTG2mLz35LI9s7xGrpEWqi78IM
+         XbtvsR86dhEoleVuY8fJkQW323CVVyQGfO/t/PKWbSR3u7GG3vdOn/pgrxpqEn019uRP
+         faHGoCtbO89f/pOp7W19Ai1pgWQlMeU87EICiGtwy0kBOjqF04LkMacRCFy7nlcgjBsj
+         zOb8XlHpZ0X9T/QkjAKsmb2cunxyTy5BxBKevKG28OX6QvIk5nmEfr3nseN8UfKzZis5
+         Q9Rw==
+X-Gm-Message-State: AOAM533fO6BnlCr1Gb02Ey1Ld9GVc0P89sVyjLpI7w/EL0qY3SagvOjk
+        slURMKIwB7czYuOFHFgGFPo=
+X-Google-Smtp-Source: ABdhPJyMMG/8Kf6iC2x/uQf7CA6SwYK6+F8q8EGAG4/wT5mAAZPcB0VU/MD/prGUZ6iseHDub9Lu+A==
+X-Received: by 2002:a17:906:c1ca:: with SMTP id bw10mr20705685ejb.512.1620984695970;
+        Fri, 14 May 2021 02:31:35 -0700 (PDT)
+Received: from agape.jhs ([5.171.81.81])
+        by smtp.gmail.com with ESMTPSA id o20sm4047302eds.20.2021.05.14.02.31.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 May 2021 02:31:35 -0700 (PDT)
+Date:   Fri, 14 May 2021 11:31:20 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
+        youling 257 <youling257@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: staging: rtl8723bs: questions on TODO list
+Message-ID: <20210514093119.GB13800@agape.jhs>
+References: <20210514083856.GA13800@agape.jhs>
+ <85289dbc-e986-9beb-f7d6-eca9e8750c8a@redhat.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from robin-OptiPlex-790.ap.freescale.net (119.31.174.66) by SG2PR03CA0167.apcprd03.prod.outlook.com (2603:1096:4:c9::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4150.11 via Frontend Transport; Fri, 14 May 2021 09:04:45 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ada7213f-feda-4287-17ac-08d916b75390
-X-MS-TrafficTypeDiagnostic: VI1PR04MB4317:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB43176DDE3039D9A144D214BA89509@VI1PR04MB4317.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0NOHi5+A1qAv0b14OA9I54OEig0BVN59ELINLh4PcKmp9L5RoAiWc+XF/0BmxWaj1YprLGZ0cauk2KXZxSObmvvBIaf6twvNmfZi1i/BsSS68oeDpF9yewhF3c+XSxwvMUrtOtxoJ0VwnC2TMXGBwwDzr3tCU356WBFC/Vki59ab2+IKHYBvG+kFop6wIYwlTnK/VVCwREQMuSKyrTJr50eNeKa6gFABAkNqjrylnsxcf7EgOBce6gP/aZub4bosecyXIcTDJjsN4/2UDVQ0p8TChd3p8D3IQRYO+x0gigpU65oy8Lg1BGFgGMqPo/RO+lvbNWQpCz4CoI2Qm+wbpNb1eqrO6md5o1btQ4neJucxEgjQAXvGUuC58suI3I60Ek+LJF7Vbj/ZcD4ec12IPkdFbDprAs1/9/P3Lm6udnjC/Tx+UIUtmk4V6ZA72ttcsB3aipY+0sQ3Jfu6bsLiOVNJPFRge2ZVnZqN3R7tSXaL4s3F0SVKHE7EkEObImP2sD5ybKJ2VfdjyU1kJNQIgYHO2fhb09mQPOftsnIurlDL29kuaU05ilnHuWi7/tU1g0zjQx+BJqd9F1ol3+V0iw7Q9hbiKZzWiFwU0YmQTc0IrA2s7Mfefps54QlPVCgkX9aMzKZbEjP/Fq+GmUM3RHTRkNqNSH2Z8BLzksVYpGU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6688.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(396003)(346002)(366004)(39860400002)(956004)(2616005)(2906002)(26005)(86362001)(16526019)(186003)(83380400001)(38100700002)(66946007)(52116002)(66556008)(8936002)(66476007)(478600001)(316002)(6512007)(36756003)(5660300002)(6666004)(6506007)(6486002)(4326008)(8676002)(38350700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?6OCxojCJLkWEXhyXQz4GDL/kv2PlhvnAJ84l6OM/b5uMsce4DUeDFkE0Su2/?=
- =?us-ascii?Q?+fZW/gSh2bkE+JmRwNOVTZXy+qHKdbENrpr/wiNIeBo/S5CZVI4F9B+9aRY6?=
- =?us-ascii?Q?QslXYb967vmnEPQ3OUcIVBgJX27wVciWl5xQkofYcJB2Z2gImqSDVaJfQgLV?=
- =?us-ascii?Q?VM7eQQQAtVha+c+tEz0ts3XJgA3QN44NhWFzIdkjHKJAe2/p7R+jXTONuCp+?=
- =?us-ascii?Q?f8NXL+hZhuJ/c0ucF1NTwwWqQYvGTB8Uw2C+DdDcJ106bY0xvnBsLv0D80QU?=
- =?us-ascii?Q?Mv+TwQawlNumQr3IrDB5FZ6v0GTM5mbHwZWHnDC4gDOwocT0JB76xlI3guLm?=
- =?us-ascii?Q?QqNHVf8AOand3aHbeKkpTubMgatxuSCzxOiHlPZNHcBX3S7IYOHBZTPkLGof?=
- =?us-ascii?Q?m3yYnfzdL39RcUCSQjlh14pYqLYNnSYf8Dw6ZIs/rkU18/3fhjKEvpwo4mg8?=
- =?us-ascii?Q?Q4cQA3fX2t7+qbI1BsPqzwEyC0PDUAwXZXFjBAoKEIAZfM7FFjRmxiNg2cQv?=
- =?us-ascii?Q?wEZwOiPmxXmSbJN9+2eb+c20Jn3qMZ1qCOu7hW0CIBWnc/e5s+9jHWCjG7NY?=
- =?us-ascii?Q?2aiFzhSNvk8OPykByp+R+/6wGKrPcn82+yURsoG8kBtx/zXNi8oDDjM4Rwvc?=
- =?us-ascii?Q?7rBW9kIOEdiWU/+JMHH987eFDM6fp0V8FF6qtFgeNAjCm6Ta3EfiAbMQDDdQ?=
- =?us-ascii?Q?NKPom7wkOY3ydX8r8UxA761rH5A7e4sF4hwaguOfP/195T4JakK9Mw8XPi1o?=
- =?us-ascii?Q?YwB2+kwf84eYCv9g1cxEV2/dNDGRwA31k4chwrWtAnWmmSueGBHiqAqZHqjG?=
- =?us-ascii?Q?bZfeiQyMWYhl/YnVlEAAdZKlI2m2lcTzlYiszxadEOvGItPydB402xnup4hL?=
- =?us-ascii?Q?xT4A8Wxegg5XuCoJvTkxysCVpwRrogIm9XqZgcx+6rnTTcKNahQz9RPBb2IQ?=
- =?us-ascii?Q?nrfOosCzqDm9pFuBcAqZv6PilkCIig8KjAlcjeIiTmmAQWNYEEBGWC9gUzfv?=
- =?us-ascii?Q?dnwjeeWPP/3x7BtRoSfSVm4/2p89YGVL7a/LW30uVTkleWws+L7lVn/BTxzs?=
- =?us-ascii?Q?PRtZkbXt7pdxFQ1KphFOwX2gg+0KtIHPP0R78nj/TaN3BGmxr9DX81GXGaR4?=
- =?us-ascii?Q?KveGs58nqrTNmHbDbQ220MYJR/dSIFtMOiESRn1CXqgU2jnCEtz3Heaymu4Z?=
- =?us-ascii?Q?Ox49vcyjlG2vBzeSMIQf8hf/k/ho2EO4LkcPIOwZODJJOMfs4Yv4mpDh5Vcj?=
- =?us-ascii?Q?HSNNUKBKGxksnBpfWx1LdBErrNxo1SSIPFMdaxELBV5q+BvmMDLHBQmbAO7Z?=
- =?us-ascii?Q?Z4diazCLP6PN+CSF68jOy5I0?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ada7213f-feda-4287-17ac-08d916b75390
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6688.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 May 2021 09:04:48.8373
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kt6AYcJ6S1cXU9lYTzGhwnEDv5hfYvSvjrURCwfjrSYGQ5bwqPv3aDSaxN03nCXKMSXSTTgGHAntsn2bA4NrzA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4317
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <85289dbc-e986-9beb-f7d6-eca9e8750c8a@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since watchdog_ping_work is not freezable so that it maybe scheduled before
-imx2_wdt_resume where watchdog clock enabled, hence, kernel will hang in
-imx2_wdt_ping without clock, and then watchdog reset happen. Add clk_is_on
-to prevent the above case by ignoring ping until watchdog driver resume
-back indeed.
+On Fri, May 14, 2021 at 11:15:42AM +0200, Hans de Goede wrote:
+> Hi Fabio,
+> 
+> On 5/14/21 10:38 AM, Fabio Aiuto wrote:
+> > Hello all,
+> > 
+> > I'd like to have some clarifications about rtl8723bs driver.
+> > In order to make this driver ready for moving out of staging
+> > I would like to know:
+> > 
+> > - find and remove remaining code valid only for 5 GHz. Most of the obvious
+> >   ones have been removed, but things like channel > 14 still exist.
+> > 
+> > is it possible to remove all 5g code, even the one related to power
+> > regulation when on band 5g? As far as I know about this card is that
+> > it doesn't support 5g, so may I just delete all 5g code or there are some
+> > constraints I'd take care of?
+> 
+> These cards are 2.4G only so any code of which you are sure it is for
+> 5G only can be removed.
+> 
+> > - find and remove any code for other chips that is left over
+> > 
+> > Ok this seems clear, are there some suggestion to do it safely?
+> 
+> Get some hardware and test that things still work, preferably
+> against multiple access-points.
+> 
+> > - convert any remaining unusual variable types
+> > 
+> > Ok (but feel free to suggest anything)
+> > 
+> > - find codes that can use %pM and %Nph formatting
+> > 
+> > Ok (but feel free to suggest anything)
+> > 
+> > - checkpatch.pl fixes - most of the remaining ones are lines too long. Many
+> >   of them will require refactoring
+> > 
+> > Ok
+> > 
+> > - merge Realtek's bugfixes and new features into the driver
+> > 
+> > Please, can you explain what one could do that?
+> 
+> I know that "youling 257 <youling257@gmail.com>" is using a different
+> version of the original (out-of-tree, non cleaned-up) Realtek driver
+> code for the Android-X86 kernels he works on. You should probably
+> ask youling why that version is being used and try to get a copy of
+> the original Realtek sources on which the staging driver is based
+> and do a "diff -ur" between them and see what is different.
+> 
+> > - switch to use LIB80211
+> > - switch to use MAC80211
+> > 
+> > I think I need a few details for these last points as well.
+> 
+> I'm afraid I cannot help there, you should ask for help with this
+> on the linux wireless email list.
+> 
+> > Do you think that one will need real hardware to complete
+> > these tasks? I don't have rtl8723bs card at the moment, so
+> > I think I will focus on those TODO activities which
+> > don't need it.
+> 
+> Yes you really do need hardware, even simple coding style
+> cleanups are known to (accidentally) break driver functionality,
+> so you really should ensure that you are capable of testing your
+> changes on real hardware.
+> 
+> Regards,
+> 
+> Hans
+> 
+> 
 
-Signed-off-by: Robin Gong <yibin.gong@nxp.com>
----
- drivers/watchdog/imx2_wdt.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+thank you for your answer Hans,
 
-diff --git a/drivers/watchdog/imx2_wdt.c b/drivers/watchdog/imx2_wdt.c
-index b84f80f..cc86018 100644
---- a/drivers/watchdog/imx2_wdt.c
-+++ b/drivers/watchdog/imx2_wdt.c
-@@ -65,6 +65,7 @@ struct imx2_wdt_device {
- 	struct regmap *regmap;
- 	struct watchdog_device wdog;
- 	bool ext_reset;
-+	bool clk_is_on;
- };
- 
- static bool nowayout = WATCHDOG_NOWAYOUT;
-@@ -160,6 +161,9 @@ static int imx2_wdt_ping(struct watchdog_device *wdog)
- {
- 	struct imx2_wdt_device *wdev = watchdog_get_drvdata(wdog);
- 
-+	if (!wdev->clk_is_on)
-+		return 0;
-+
- 	regmap_write(wdev->regmap, IMX2_WDT_WSR, IMX2_WDT_SEQ1);
- 	regmap_write(wdev->regmap, IMX2_WDT_WSR, IMX2_WDT_SEQ2);
- 	return 0;
-@@ -301,6 +305,8 @@ static int __init imx2_wdt_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
-+	wdev->clk_is_on = true;
-+
- 	regmap_read(wdev->regmap, IMX2_WDT_WRSR, &val);
- 	wdog->bootstatus = val & IMX2_WDT_WRSR_TOUT ? WDIOF_CARDRESET : 0;
- 
-@@ -361,6 +367,8 @@ static int __maybe_unused imx2_wdt_suspend(struct device *dev)
- 
- 	clk_disable_unprepare(wdev->clk);
- 
-+	wdev->clk_is_on = false;
-+
- 	return 0;
- }
- 
-@@ -375,6 +383,8 @@ static int __maybe_unused imx2_wdt_resume(struct device *dev)
- 	if (ret)
- 		return ret;
- 
-+	wdev->clk_is_on = true;
-+
- 	if (watchdog_active(wdog) && !imx2_wdt_is_running(wdev)) {
- 		/*
- 		 * If the watchdog is still active and resumes
--- 
-2.7.4
-
+fabio
