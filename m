@@ -2,126 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03E8E380A06
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 14:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05607380A08
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 14:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230480AbhENNAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 09:00:17 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:36628 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230233AbhENNAQ (ORCPT
+        id S231173AbhENNAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 09:00:47 -0400
+Received: from mail-wm1-f44.google.com ([209.85.128.44]:51893 "EHLO
+        mail-wm1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229459AbhENNAp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 09:00:16 -0400
-Date:   Fri, 14 May 2021 12:59:03 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620997144;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RA5xS7f4ejLOEDBZcWJrzacApLY1RiYGUqm+bDE3Dwo=;
-        b=q6q6xWYFlYi5/qUm+M2dd1NNSxzYLkhm0VEfqb/Y5LsJi7wLVYZRSnkFIaLU1U/a8LXcMd
-        P5iYJ3am3mxjGPsTDr58yocT9Z5TjnMi7cJdHs5QK5tIPTmV5NeYAljtPOmNzWt0afrpIf
-        +kHNRkaEdSBZGsignH0yHvGbfqLlcNucW8SkkXFc8s+6397/4D1GpFBq5NgxEAhGVlybox
-        rMgSkpGVLoGCWlppb/WhCr9X91DJcqtYdmtMjpMFbbQgR93nvG7VmSWsGfxwyvQmHRH0ud
-        Q8eQPVZjjicSqqRnzVEzVDON048fUXNHFmM7ElIHAIx05Ep+ou0YJJf0DRENHw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620997144;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RA5xS7f4ejLOEDBZcWJrzacApLY1RiYGUqm+bDE3Dwo=;
-        b=xOTuOEoEVaS1hooCBmbAEPWUEZs0zoTBcsPUbKO5Ry/bwyAeop48aAzF5NE0d2FF3/fxXp
-        qGzXsqCPMSG3H0BQ==
-From:   "tip-bot2 for Vitaly Kuznetsov" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/urgent] clocksource/drivers/hyper-v: Re-enable
- VDSO_CLOCKMODE_HVCLOCK on X86
-Cc:     Mohammed Gamal <mgamal@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Michael Kelley <mikelley@microsoft.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210513073246.1715070-1-vkuznets@redhat.com>
-References: <20210513073246.1715070-1-vkuznets@redhat.com>
+        Fri, 14 May 2021 09:00:45 -0400
+Received: by mail-wm1-f44.google.com with SMTP id u133so4723849wmg.1;
+        Fri, 14 May 2021 05:59:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=rju+o9Aajm1ncJmVfe9LBvPra3PbTVnQ4yeZB3yC1zA=;
+        b=DYGLrI8b5P5wVBNqJvKlPVp0n5IcxM433RLLXOXIzXzhZJecUKfUZPyyxzgwcXojK5
+         BfzjmfjZdtD2XBIk551Vs42NZpPybt3pDAAUm8DQtA9Ob/HWksqpFWsoH9ApL89HClsM
+         JTDjJRzB1msfJYzZJ3OCQtEqvnVPa8IDVvW28/CherCmK/Md0YpZkv0wCpNKLDEfJzTD
+         T60qYvh40rTv+7Ko8xuXe7fmaZXU4x2UNrbsRqcsyHqkxHI00cR0x1dOylBf573Ds+hj
+         8Tijer14qz+fjjWb+rPPqWsi+RNNbVLxbzEpPkSGcf2lFpARzuf/brjWAdgHEJQDboPC
+         /7rg==
+X-Gm-Message-State: AOAM5339NEsLQP2VaUSnkMs+R4m+yirBwDSXKVBY1YTk4osghJAcbnP8
+        /OgCJb/rrDv+gwsk8bAnJrGiyuCxS42UZoj0
+X-Google-Smtp-Source: ABdhPJzQ9SpSJ+e+wCnztJ9hXrrcphBLuAxQKG15b7jG3dXPidwCpCRShgDRjfv4MqOYIjl3MX4U/Q==
+X-Received: by 2002:a1c:2985:: with SMTP id p127mr50450896wmp.165.1620997172732;
+        Fri, 14 May 2021 05:59:32 -0700 (PDT)
+Received: from rocinante.localdomain ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id o129sm11877532wmo.22.2021.05.14.05.59.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 May 2021 05:59:32 -0700 (PDT)
+Date:   Fri, 14 May 2021 14:59:31 +0200
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Zou Wei <zou_wei@huawei.com>
+Cc:     ryder.lee@mediatek.com, jianjun.wang@mediatek.com,
+        lorenzo.pieralisi@arm.com, robh@kernel.org, bhelgaas@google.com,
+        matthias.bgg@gmail.com, linux-pci@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH -next] PCI: mediatek-gen3: Add missing MODULE_DEVICE_TABLE
+Message-ID: <20210514125931.GC9537@rocinante.localdomain>
+References: <1620717091-108691-1-git-send-email-zou_wei@huawei.com>
 MIME-Version: 1.0
-Message-ID: <162099714364.29796.11946407878774637795.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1620717091-108691-1-git-send-email-zou_wei@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/urgent branch of tip:
+Hi Zou,
 
-Commit-ID:     3486d2c9be652a31033363bdd50391b0c8a8fe21
-Gitweb:        https://git.kernel.org/tip/3486d2c9be652a31033363bdd50391b0c8a8fe21
-Author:        Vitaly Kuznetsov <vkuznets@redhat.com>
-AuthorDate:    Thu, 13 May 2021 09:32:46 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Fri, 14 May 2021 14:55:13 +02:00
+> This patch adds missing MODULE_DEVICE_TABLE definition which generates
+> correct modalias for automatic loading of this driver when it is built
+> as an external module.
+[...]
 
-clocksource/drivers/hyper-v: Re-enable VDSO_CLOCKMODE_HVCLOCK on X86
+Thank you!
 
-Mohammed reports (https://bugzilla.kernel.org/show_bug.cgi?id=213029)
-the commit e4ab4658f1cf ("clocksource/drivers/hyper-v: Handle vDSO
-differences inline") broke vDSO on x86. The problem appears to be that
-VDSO_CLOCKMODE_HVCLOCK is an enum value in 'enum vdso_clock_mode' and
-'#ifdef VDSO_CLOCKMODE_HVCLOCK' branch evaluates to false (it is not
-a define).
+Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
 
-Use a dedicated HAVE_VDSO_CLOCKMODE_HVCLOCK define instead.
-
-Fixes: e4ab4658f1cf ("clocksource/drivers/hyper-v: Handle vDSO differences inline")
-Reported-by: Mohammed Gamal <mgamal@redhat.com>
-Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Michael Kelley <mikelley@microsoft.com>
-Link: https://lore.kernel.org/r/20210513073246.1715070-1-vkuznets@redhat.com
-
----
- arch/x86/include/asm/vdso/clocksource.h | 2 ++
- drivers/clocksource/hyperv_timer.c      | 4 ++--
- 2 files changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/include/asm/vdso/clocksource.h b/arch/x86/include/asm/vdso/clocksource.h
-index 119ac86..136e5e5 100644
---- a/arch/x86/include/asm/vdso/clocksource.h
-+++ b/arch/x86/include/asm/vdso/clocksource.h
-@@ -7,4 +7,6 @@
- 	VDSO_CLOCKMODE_PVCLOCK,	\
- 	VDSO_CLOCKMODE_HVCLOCK
- 
-+#define HAVE_VDSO_CLOCKMODE_HVCLOCK
-+
- #endif /* __ASM_VDSO_CLOCKSOURCE_H */
-diff --git a/drivers/clocksource/hyperv_timer.c b/drivers/clocksource/hyperv_timer.c
-index 977fd05..d6ece7b 100644
---- a/drivers/clocksource/hyperv_timer.c
-+++ b/drivers/clocksource/hyperv_timer.c
-@@ -419,7 +419,7 @@ static void resume_hv_clock_tsc(struct clocksource *arg)
- 	hv_set_register(HV_REGISTER_REFERENCE_TSC, tsc_msr);
- }
- 
--#ifdef VDSO_CLOCKMODE_HVCLOCK
-+#ifdef HAVE_VDSO_CLOCKMODE_HVCLOCK
- static int hv_cs_enable(struct clocksource *cs)
- {
- 	vclocks_set_used(VDSO_CLOCKMODE_HVCLOCK);
-@@ -435,7 +435,7 @@ static struct clocksource hyperv_cs_tsc = {
- 	.flags	= CLOCK_SOURCE_IS_CONTINUOUS,
- 	.suspend= suspend_hv_clock_tsc,
- 	.resume	= resume_hv_clock_tsc,
--#ifdef VDSO_CLOCKMODE_HVCLOCK
-+#ifdef HAVE_VDSO_CLOCKMODE_HVCLOCK
- 	.enable = hv_cs_enable,
- 	.vdso_clock_mode = VDSO_CLOCKMODE_HVCLOCK,
- #else
+Krzysztof
