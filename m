@@ -2,129 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7826C380FA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 20:18:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC90C380FAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 20:20:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232977AbhENSUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 14:20:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47436 "EHLO
+        id S233329AbhENSVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 14:21:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232747AbhENSUA (ORCPT
+        with ESMTP id S233202AbhENSVk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 14:20:00 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52BB9C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 11:18:48 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1621016325;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OrPAQ0MvuanIbFhGukWyMzAMiIH4hXac42mqWV38eMo=;
-        b=nylC2wppY4c9I9q63k0HvmTuZ+Aim8HkAEENDFbp7flwuJkXr9yYTIsaTSmi5TTT6VCyMc
-        DZLimLXSjbxKhYCtmwcPaF0d5Yky6vac5NU/N1Y5gS6JlNpv+2+bCqw5pvPQlwRNAo+X6r
-        aDZOMw8uBM+uYpyWFdV73xCxsgG+HXAMrrmGe/+FGfkt9ZstbViynxAD8N9GgFDv5par7R
-        Rn4kSa/cEY/fgr5jyMVukQd1b0drV/ZE/5gFVfxLHn73Rl1lVXzh10zvVwHaKwVUQw2kWD
-        xFq4raLbTUs/Wot/cbVXkVcMhEg40cTlNzAiN8XgIh8i85C+3hqMVLJ8hUMc/w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1621016325;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OrPAQ0MvuanIbFhGukWyMzAMiIH4hXac42mqWV38eMo=;
-        b=EQwlFl1vLZ++1K7rQcAPtrUBtjlNbY+xkecRv2HW49YinRNF2J5LwR1aUtAAkWM3baR/ln
-        RVxHfFYGlq+LiTBA==
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>, mingo@redhat.com,
-        Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org,
-        x86@kernel.org, Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH 1/4] sched: make nr_running() return 32-bit
-In-Reply-To: <YJz4TmZ7fmKFchRe@gmail.com>
-References: <20210422200228.1423391-1-adobriyan@gmail.com> <87fsyr5wtj.ffs@nanos.tec.linutronix.de> <YJz4TmZ7fmKFchRe@gmail.com>
-Date:   Fri, 14 May 2021 20:18:44 +0200
-Message-ID: <87eee941rv.ffs@nanos.tec.linutronix.de>
+        Fri, 14 May 2021 14:21:40 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C291C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 11:20:22 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id h202so174115ybg.11
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 11:20:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rdMfTFq+p2AV3NKNFb0bpljlABY/TwfShHFjcvSUVzg=;
+        b=dHn86QCPxrUvY85Zj+PW33DwYOe9blB+d2udQfcFv8w9pPd+Hzej+ND5IUhQwtZuqg
+         cMOrKJNDRwpk99Y+8FeEjjSMSL/EhHGLx/MWDfeZaAujF6T5zDYK30+l5dYWMx0LMUeW
+         VekZb/Uvk1L03y3M3UqYt8gQvm9EAPPTROEYYdTJUhI2xu/nIGNoIXVWLZoVDalfo6Lw
+         FA0Qy3IDOHz26sNAAybAR+8mS+Vy410ooDwBfwA3oMLWOecQON4aLYvVnbL0TtnKVFJG
+         A+KKNTFk/y+ajft7d7pt8Vs2Qu067QdkpiGBZJPFwdGgEkwqxLigeiGvNX928QxdR489
+         1+LQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rdMfTFq+p2AV3NKNFb0bpljlABY/TwfShHFjcvSUVzg=;
+        b=nDpN4hlEPmXsaZQAMPKZWBW+EWi3uqVViYEP3yjFhK5AHxwahnK9EZUmtvFmM8TODz
+         SSYVgSv0qNIns64L0zIsGByecP04BfidD5MSbRHq7hCLN3OQhiIp+lIlxKkCy+W4mwtX
+         JWkUb2mpIB45ubsleQTq8NEjp3bbi5bPtu3JcQwh9cgpYSySopZjadi6Az3Gc9/lcSUZ
+         z2vhij25jJogQWIYdoylnPN0Qd8tZ7RRmguYMrQGAZApwiR18/G1eXph3saqBAZ0U1v/
+         dL//ql08W1qPrWok3XoSU9UFR1DESe5gVGS7xsKbczDl3GSXn67RD8MMaOxWWlp1eU5S
+         2M6Q==
+X-Gm-Message-State: AOAM532+njOJRaOnEO2pdD5ndarLUKQ+auHACw9cDhRxzHc1tADbYzNI
+        ny+4NlT0eOfkTroAyzrVFiB3VbRcs79Hn2Fo2APg5A==
+X-Google-Smtp-Source: ABdhPJwPvGsv0HV3Wu67Frygjs5O+Rf2SflsOq+JYzjjmiIgcxKRdpVWnbyhvcDJgqolZZOW3W3wyrY93l3p36P1clw=
+X-Received: by 2002:a5b:7c5:: with SMTP id t5mr63587418ybq.190.1621016421569;
+ Fri, 14 May 2021 11:20:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210513175349.959661-1-surenb@google.com> <YJ5iAvqAmIhzJRot@hirez.programming.kicks-ass.net>
+ <CAJuCfpHy+MknCepfjx9XYUA1j42Auauv7MFQbt+zOU-tA4gasA@mail.gmail.com> <YJ64xHoogrowXTok@hirez.programming.kicks-ass.net>
+In-Reply-To: <YJ64xHoogrowXTok@hirez.programming.kicks-ass.net>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Fri, 14 May 2021 11:20:10 -0700
+Message-ID: <CAJuCfpGkj9HxbkXnYN58JXJp1j6kVkvQhqscnEfjyB5unKg1NQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] cgroup: make per-cgroup pressure stall tracking configurable
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+        lizefan.x@bytedance.com, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>, mgorman@suse.de,
+        Minchan Kim <minchan@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, bristot@redhat.com,
+        "Paul E . McKenney" <paulmck@kernel.org>, rdunlap@infradead.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>, macro@orcam.me.uk,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        mike.kravetz@oracle.com, linux-doc@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        cgroups mailinglist <cgroups@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13 2021 at 11:58, Ingo Molnar wrote:
-> * Thomas Gleixner <tglx@linutronix.de> wrote:
-> As to the numbers:
-> -	/* size: 1704, cachelines: 27, members: 13 */
-> -	/* sum members: 1696, holes: 1, sum holes: 4 */
-> +	/* size: 1696, cachelines: 27, members: 13 */
-> +	/* sum members: 1688, holes: 1, sum holes: 4 */
->  	/* padding: 4 */
-> -	/* last cacheline: 40 bytes */
-> +	/* last cacheline: 32 bytes */
+On Fri, May 14, 2021 at 10:52 AM Peter Zijlstra <peterz@infradead.org> wrote:
 >
-> 'struct rt_rq' got shrunk from 1704 bytes to 1696 bytes, an 8 byte 
-> reduction.
-
-Amazing and it still occupies 27 cache lines
-
->   ffffffffxxxxxxxx:      e8 49 8e fb ff          call   ffffffffxxxxxxxx <nr_iowait_cpu>
-> - ffffffffxxxxxxxx:      48 85 c0                test   %rax,%rax
+> On Fri, May 14, 2021 at 08:54:47AM -0700, Suren Baghdasaryan wrote:
 >
->   ffffffffxxxxxxxx:      e8 64 8e fb ff          call   ffffffffxxxxxxxx <nr_iowait_cpu>
-> + ffffffffxxxxxxxx:      85 c0                   test   %eax,%eax
+> > Correct, for this function CONFIG_CGROUPS=n and
+> > cgroup_disable=pressure are treated the same. True, from the code it's
+> > not very obvious. Do you have some refactoring in mind that would make
+> > it more explicit?
 >
-> Note how the 'test %rax,%rax' lost the 0x48 64-bit REX prefix and the 
-> generated code got one byte shorter from "48 85 c0" to "85 c0".
-
-Which will surely be noticable big time. None of this truly matters
-because once the data is in L1 the REX prefix is just noise.
-
-> ( Note, my asm generation scripts filter out some of the noise to make it 
->   easier to diff generated asm, hence the ffffffffxxxxxxxx placeholder. )
+> Does this make sense?
 >
-> The nr_iowait() function itself got shorter by two bytes as well, due to:
+> --- a/kernel/sched/psi.c
+> +++ b/kernel/sched/psi.c
+> @@ -744,24 +744,26 @@ static void psi_group_change(struct psi_
 >
-> The size of nr_iowait() shrunk from 78 bytes to 76 bytes.
+>  static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
+>  {
+> +       if (cgroup_psi_enabled()) {
+>  #ifdef CONFIG_CGROUPS
+> -       struct cgroup *cgroup = NULL;
+> +               struct cgroup *cgroup = NULL;
+>
+> -       if (!*iter)
+> -               cgroup = task->cgroups->dfl_cgrp;
+> -       else if (*iter == &psi_system)
+> -               return NULL;
+> -       else
+> -               cgroup = cgroup_parent(*iter);
+> +               if (!*iter)
+> +                       cgroup = task->cgroups->dfl_cgrp;
+> +               else if (*iter == &psi_system)
+> +                       return NULL;
+> +               else
+> +                       cgroup = cgroup_parent(*iter);
+>
+> -       if (cgroup && cgroup_parent(cgroup)) {
+> -               *iter = cgroup;
+> -               return cgroup_psi(cgroup);
+> -       }
+> -#else
+> -       if (*iter)
+> -               return NULL;
+> +               if (cgroup && cgroup_parent(cgroup)) {
+> +                       *iter = cgroup;
+> +                       return cgroup_psi(cgroup);
+> +               }
+>  #endif
+> +       } else {
+> +               if (*iter)
+> +                       return NULL;
+> +       }
+>         *iter = &psi_system;
+>         return &psi_system;
+>  }
 
-That's important because nr_iowait() is truly a hotpath function...
+Hmm. Looks like the case when cgroup_psi_enabled()==true and
+CONFIG_CGROUPS=n would miss the "if (*iter) return NULL;" condition.
+Effectively with CONFIG_CGROUPS=n this becomes:
 
-> The nr_running() function itself got shorter by 2 bytes, due to shorter 
-> instruction sequences.
+       if (cgroup_psi_enabled()) {           <== assume this is true
+#ifdef CONFIG_CGROUPS                <== compiled out
+#endif
+       } else {
+               if (*iter)                                  <== this
+statement will never execute
+                       return NULL;
+       }
+       *iter = &psi_system;
+        return &psi_system;
 
-along with nr_running() which both feed /proc/stat. The latter feeds
-/proc/loadavg as well.
-
-Point well taken.
-
-But looking at the /proc/stat usage there is obviously way bigger fish
-to fry.
-
-   seq_printf(...., nr_running(), nr_iowait());
-
-which is outright stupid because both functions iterate over CPUs
-instead of doing it once, which definitely would be well measurable on
-large machines.
-
-But looking at nr_running() and nr_iowait():
-
-    nr_running() walks all CPUs in cpu_online_mask
-
-    nr_iowait() walks all CPUs in cpu_possible_mask
-
-The latter is because rq::nr_iowait is not transferred to an online CPU
-when a CPU goes offline. Oh well.
-
-That aside:
-
-I'm not against the change per se, but I'm disagreeing with patches
-which come with zero information, are clearly focussed on one
-architecture and obviously nobody bothered to check whether there is an
-impact on others.
-
-Thanks,
-
-        tglx
-
-
-
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+>
