@@ -2,95 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A13838024C
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 05:10:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19752380252
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 05:12:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231271AbhENDLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 23:11:31 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:57267 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229980AbhENDLa (ORCPT
+        id S231348AbhENDNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 23:13:14 -0400
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:29425 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230330AbhENDNN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 23:11:30 -0400
-X-UUID: 204295a1734d4112a3a504ac72d00fe2-20210514
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=TJGSji2ZQJC1gEeWYsGmPT+9twgITBZ7l92YrBaGz8M=;
-        b=SoWdPOz3pfiJwRPOvFp279daIN5ITE7Md38PT5PdvvFpwJZ/tKpE+R0dacuO4nkF85HglmlKaavPWtaJN856mPmni/wErlYQNcGQynL6wfpmAcRq5AgQdIkeXA1d/MBDmjG7J1tTMQE1baYOT3mxVWsET4N05vhF+7omMYoF3H8=;
-X-UUID: 204295a1734d4112a3a504ac72d00fe2-20210514
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <roger.lu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 555409809; Fri, 14 May 2021 11:10:15 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 14 May 2021 11:10:13 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 14 May 2021 11:10:13 +0800
-Message-ID: <7a7a07adedf5d3f430fecf81aed35c6321e5b634.camel@mediatek.com>
-Subject: Re: [PATCH v16 3/7] soc: mediatek: SVS: introduce MTK SVS engine
-From:   Roger Lu <roger.lu@mediatek.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-CC:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Enric Balletbo Serra <eballetbo@gmail.com>,
-        Kevin Hilman <khilman@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Nicolas Boichat <drinkcat@google.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Fan Chen <fan.chen@mediatek.com>,
-        HenryC Chen <HenryC.Chen@mediatek.com>,
-        YT Lee <yt.lee@mediatek.com>,
-        Xiaoqing Liu <Xiaoqing.Liu@mediatek.com>,
-        "Charles Yang" <Charles.Yang@mediatek.com>,
-        Angus Lin <Angus.Lin@mediatek.com>,
-        "Mark Rutland" <mark.rutland@arm.com>, Nishanth Menon <nm@ti.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Date:   Fri, 14 May 2021 11:10:13 +0800
-In-Reply-To: <20210506045115.GA767398@roeck-us.net>
-References: <20210428065440.3704-1-roger.lu@mediatek.com>
-         <20210428065440.3704-4-roger.lu@mediatek.com>
-         <20210506045115.GA767398@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Thu, 13 May 2021 23:13:13 -0400
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 14E3BSus008374;
+        Fri, 14 May 2021 12:11:28 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 14E3BSus008374
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1620961888;
+        bh=pbbpGUR6yrf1GL48OQICvHJRZXOz0W4ICJk5HTCek/0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=D8RoOex7HXdNnqzlUi6SGs+AS81/YKPmxUEWjsheZ8sqRps0YxLVqvcClM3T5vC6S
+         Qgf/7CEvSP9CQ5Tbj1iUYkaPgD6Sj2waGimagtqiyTCAnddIlD+8qnLm+S/2RCxmlI
+         v1i6BAe6EEXVf2LAHXFf4y3YdIfVme6JotJA5VtYnXrLe7C12r+GpKfKjvP7TdaqS8
+         egQkG7Kzkpv+aalnUFbaG7jh7nFk/Az/JIWjG+MVPam2gAt4soQbqYoqQBfF4ueZ89
+         9hM7EJyunXDQZY4q2wReM0HtJz+5BPU3MD8hWeP4tMMkmaGrum4xZr8zl0yBiDIqSZ
+         oJH1vHSTGxyzA==
+X-Nifty-SrcIP: [209.85.216.52]
+Received: by mail-pj1-f52.google.com with SMTP id pf4-20020a17090b1d84b029015ccffe0f2eso948107pjb.0;
+        Thu, 13 May 2021 20:11:28 -0700 (PDT)
+X-Gm-Message-State: AOAM531plmzureqs/jNcYRBnWuuaUuLg0zeQ0KMTefcahKYeRYbhXm/z
+        UhGnv8u0CULFGMF7e/gt1t+JU2QT6nGByRp3WhI=
+X-Google-Smtp-Source: ABdhPJxhAZAfrz1qW8hiBEhhGIJjcZw6SR9M/Z4p4EKvBxTiWaVJoBYtJidqCl9RopQQTFhtzLXYTJJPTw3KxDjZ3lI=
+X-Received: by 2002:a17:902:bcc7:b029:ed:6f73:ffc4 with SMTP id
+ o7-20020a170902bcc7b02900ed6f73ffc4mr42803945pls.1.1620961887766; Thu, 13 May
+ 2021 20:11:27 -0700 (PDT)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20210511044812.267965-1-aik@ozlabs.ru> <20210511112019.GK10366@gate.crashing.org>
+ <1795b9efa40.27bb.1ca38dd7e845b990cd13d431eb58563d@ozlabs.ru>
+ <20210511231635.GR10366@gate.crashing.org> <80ae1561-ed8d-cf3a-f3bb-d89cd07bfc24@ozlabs.ru>
+ <20210512102640.GT10366@gate.crashing.org>
+In-Reply-To: <20210512102640.GT10366@gate.crashing.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 14 May 2021 12:10:51 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQkDDVigJbPKsPEcqQNz0z0Hc0r8h22MGB=8vMxMiMuDg@mail.gmail.com>
+Message-ID: <CAK7LNAQkDDVigJbPKsPEcqQNz0z0Hc0r8h22MGB=8vMxMiMuDg@mail.gmail.com>
+Subject: Re: [PATCH kernel v2] powerpc/makefile: Do not redefine $(CPP) for preprocessor
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgR3VlbnRlciwNCg0KU29ycnkgZm9yIHRoZSBsYXRlIHJlcGx5IGFuZCB0aGFua3MgZm9yIHRo
-ZSBub3RpY2UuDQoNCk9uIFdlZCwgMjAyMS0wNS0wNSBhdCAyMTo1MSAtMDcwMCwgR3VlbnRlciBS
-b2VjayB3cm90ZToNCj4gT24gV2VkLCBBcHIgMjgsIDIwMjEgYXQgMDI6NTQ6MzZQTSArMDgwMCwg
-Um9nZXIgTHUgd3JvdGU6DQo+ID4gVGhlIFNtYXJ0IFZvbHRhZ2UgU2NhbGluZyhTVlMpIGVuZ2lu
-ZSBpcyBhIHBpZWNlIG9mIGhhcmR3YXJlDQo+ID4gd2hpY2ggY2FsY3VsYXRlcyBzdWl0YWJsZSBT
-VlMgYmFuayB2b2x0YWdlcyB0byBPUFAgdm9sdGFnZSB0YWJsZS4NCj4gPiBUaGVuLCBEVkZTIGRy
-aXZlciBjb3VsZCBhcHBseSB0aG9zZSBTVlMgYmFuayB2b2x0YWdlcyB0byBQTUlDL0J1Y2sNCj4g
-PiB3aGVuIHJlY2VpdmluZyBPUFBfRVZFTlRfQURKVVNUX1ZPTFRBR0UuDQo+ID4gDQo+ID4gU2ln
-bmVkLW9mZi1ieTogUm9nZXIgTHUgPHJvZ2VyLmx1QG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4g
-PiAgZHJpdmVycy9zb2MvbWVkaWF0ZWsvS2NvbmZpZyAgIHwgICAxMCArDQo+ID4gIGRyaXZlcnMv
-c29jL21lZGlhdGVrL01ha2VmaWxlICB8ICAgIDEgKw0KPiA+ICBkcml2ZXJzL3NvYy9tZWRpYXRl
-ay9tdGstc3ZzLmMgfCAxNzIzDQo+ID4gKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysN
-Cj4gPiAgMyBmaWxlcyBjaGFuZ2VkLCAxNzM0IGluc2VydGlvbnMoKykNCj4gPiAgY3JlYXRlIG1v
-ZGUgMTAwNjQ0IGRyaXZlcnMvc29jL21lZGlhdGVrL210ay1zdnMuYw0KPiA+IA0KPiANCj4gWyAu
-Li4gXQ0KPiANCj4gPiArDQo+ID4gKwlzdnNwX2lycSA9IGlycV9vZl9wYXJzZV9hbmRfbWFwKHN2
-c3AtPmRldi0+b2Zfbm9kZSwgMCk7DQo+ID4gKwlyZXQgPSBkZXZtX3JlcXVlc3RfdGhyZWFkZWRf
-aXJxKHN2c3AtPmRldiwgc3ZzcF9pcnEsIE5VTEwsDQo+ID4gc3ZzX2lzciwNCj4gPiArCQkJCQlz
-dnNwLT5pcnFmbGFncywgc3ZzcC0+bmFtZSwNCj4gPiBzdnNwKTsNCj4gDQo+IDAtZGF5IHJlcG9y
-dHM6DQo+IA0KPiBkcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstc3ZzLmM6MTY2Mzo3LTMyOiBFUlJP
-UjoNCj4gCVRocmVhZGVkIElSUSB3aXRoIG5vIHByaW1hcnkgaGFuZGxlciByZXF1ZXN0ZWQgd2l0
-aG91dA0KPiBJUlFGX09ORVNIT1QNCj4gDQo+IEkgd291bGQgYmUgYSBiaXQgY29uY2VybmVkIGFi
-b3V0IHRoaXMuIFRoZXJlIGlzIG5vIHByaW1hcnkgKGhhcmQpDQo+IGludGVycnVwdCBoYW5kbGVy
-LCBtZWFuaW5nIHRoZSBoYXJkIGludGVycnVwdCBtYXkgYmUgcmUtZW5hYmxlZCBhZnRlcg0KPiB0
-aGUgZGVmYXVsdCBoYXJkIGludGVycnVwdCBoYW5kbGVyIHJ1bnMuIFRoaXMgbWlnaHQgcmVzdWx0
-IGluIGVuZGxlc3MNCj4gaW50ZXJydXB0cy4NCg0KT2gsIHdlIGFkZCBJUlFGX09ORVNIT1QgaW4g
-InN2c19nZXRfc3ZzX210ODE4M19wbGF0Zm9ybV9kYXRhKCkiIGZvcg0KdGhyZWFkZWQgaXJxLiBT
-bywgcGxlYXNlIGtpbmRseSBsZXQgdXMga25vdyBpZiB3ZSBuZWVkIHRvIHNldCBtb3JlDQpmbGFn
-cyBvciBhbnkgb3RoZXIgcG90ZW50aWFsIHJpc2tzIHdlIHNob3VsZCBiZSBhd2FyZS4gVGhhbmtz
-IGluDQphZHZhbmNlLg0KDQo+IA0KPiBHdWVudGVyDQo=
+On Wed, May 12, 2021 at 7:29 PM Segher Boessenkool
+<segher@kernel.crashing.org> wrote:
+>
+> On Wed, May 12, 2021 at 01:48:53PM +1000, Alexey Kardashevskiy wrote:
+> > >Oh!  I completely missed those few lines.  Sorry for that :-(
+> >
+> > Well, I probably should have made it a separate patch anyway, I'll
+> > repost separately.
+>
+> Thanks.
+>
+> > >To compensate a bit:
+> > >
+> > >>It still puzzles me why we need -C
+> > >>(preserve comments in the preprocessor output) flag here.
+> > >
+> > >It is so that a human can look at the output and read it.  Comments are
+> > >very significant to human readers :-)
+> >
+> > I seriously doubt anyone ever read those :)
+>
+> I am pretty sure whoever wrote it did!
 
+
+Keeping comments in the pre-processed linker scripts
+is troublesome.
+
+That is why -C was removed from scripts/Makefile.build
+
+
+commit 5cb0512c02ecd7e6214e912e4c150f4219ac78e0
+Author: Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu Nov 2 14:10:37 2017 -0700
+
+    Kbuild: don't pass "-C" to preprocessor when processing linker scripts
+
+
+
+
+You can entirely remove
+
+ CPPFLAGS_vdso32.lds += -P -C -Upowerpc
+
+
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
