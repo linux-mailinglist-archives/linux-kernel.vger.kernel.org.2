@@ -2,112 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E0538098C
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 14:31:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0BB9380992
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 14:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233554AbhENMca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 08:32:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21612 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233446AbhENMcY (ORCPT
+        id S233538AbhENMdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 08:33:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233184AbhENMdb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 08:32:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620995473;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0wcDpE/Q+m1DFHQZr7axynmSMqacQ9s1VDrFV+vCPSw=;
-        b=jIznZmZ3EOlhmOrWjLQzDMRfhw6NlAqwAhoxyVUqgN0nk+BQfIC1gDSjdXW+ACg6EddNaM
-        fYkpY4KtNVQFDzQDeSVF+BBk8wlM5thbGBT5t7AyNq1ssN7H+ljIKPxICm9VByKbN/Aoin
-        vXOhvQMtPSut/6mPidrrkjcERZk//wI=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-560-RLiJ6h0xPMWD24XduIprzQ-1; Fri, 14 May 2021 08:31:11 -0400
-X-MC-Unique: RLiJ6h0xPMWD24XduIprzQ-1
-Received: by mail-qk1-f198.google.com with SMTP id v1-20020a05620a1221b02902ea88445e01so18571083qkj.9
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 05:31:11 -0700 (PDT)
+        Fri, 14 May 2021 08:33:31 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D14C061574;
+        Fri, 14 May 2021 05:32:19 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id b13-20020a17090a8c8db029015cd97baea9so1282255pjo.0;
+        Fri, 14 May 2021 05:32:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ErfaclmgSuY2taH4Itt0ooytROATSvud8f5aTV69WAo=;
+        b=AE8IgbEoqds1qWkqppD3M7OpxY161mIGNY13sgGhyiRq9OV/ulCons6vizDU5abkZl
+         QgmSYl0W6ARIJV6+SZqf+FliUxbeXXZ8PzPMqwgtA3P3FSItY3Z/qs6x0uLOtA+PKY5K
+         aiYFpRPdNibCNoTBbS3ABFVtERd/39rFvCwy/zyrZ1irneM8AhfesVx/zPs2YpYTZ0pp
+         /+VEzfL7mqtNCykkJCxou+Lw7UQ8/VUA0SNqtnpWUT5qoJozPYzArVtf3jN0Ks+RYY6T
+         ugTbHRVsTYCBMMoceF2an+3rjDBAVbvU/TfoC3XcH+Zt6EY4g07OCcN4P05PTqJgDO8S
+         7lsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0wcDpE/Q+m1DFHQZr7axynmSMqacQ9s1VDrFV+vCPSw=;
-        b=mHGvMdZv9yeN9hNy0tbl4h9Qv110S9uTJboXvn5v3dRGS9HoF3JDESK73ZegE3Bp3M
-         mb2yoSd+jjezyG1Mu9NXukUbspk5vmVbn1Z0spWk4Lz1KyVEB/dfWQRm7kxMnJ/gE0rF
-         /A0BaIP33fjW9BSMJds5U1pmeUFikvvC1+95vE+oUXIUxmHDoIyvAwCwRivHFhPnYVyK
-         w5y41e9/hWTzv/M3htpUZTFE1B/m92NQef4J5UPkTiCNv2J/HryB9yyAd+gBZv/zJdVi
-         GtmgkmlEZeLf0Jg0dDysQAUCXEE6M+875eZwLJWrmNwl1wfXnQv8dhn52zvxII4QwKzd
-         RZuQ==
-X-Gm-Message-State: AOAM533x4XvUL5dMqvFdZRLcFnwJC8bdN9dw6E3yVgwi7B+4nkXnznby
-        4uhz5DaY6xK6iely0GzUClxuPCcPz4CA3r9mDX0p0aiTWPEBiGwVfvy3gcQ2LJyc6b3rBY4VLgB
-        hMJ7ZWoY6E2zxso8wdCANvru3
-X-Received: by 2002:a37:f512:: with SMTP id l18mr42878514qkk.89.1620995470943;
-        Fri, 14 May 2021 05:31:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyUc7ycbD+8M+157LnMfInY8crn9Z3vRgQFv1/EnGb3Xrs/M5OLOrdoQdqzSDyHPZxJim98iQ==
-X-Received: by 2002:a37:f512:: with SMTP id l18mr42878477qkk.89.1620995470612;
-        Fri, 14 May 2021 05:31:10 -0700 (PDT)
-Received: from t490s (bras-base-toroon474qw-grc-72-184-145-4-219.dsl.bell.ca. [184.145.4.219])
-        by smtp.gmail.com with ESMTPSA id n15sm4462637qti.51.2021.05.14.05.31.09
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ErfaclmgSuY2taH4Itt0ooytROATSvud8f5aTV69WAo=;
+        b=m/P0YBoxNCYj5fmC2fUkEheRylqcnGR7/yZZ3R6fuob9F1wdg4KnKedppLCIDxs0w3
+         alf9/7IXzYxJGPDY3XDa4YVQIL9O3e0sqdTF2CfFHkGc+ZxDFxr3r3ACyi8Deb6kY6VR
+         SvacVy/xgJKw32MEooWEWtSkQ8PIk+r9+n8xHxgx24AVjCYCwFEoaFz+2vRe4Y0fDwN9
+         P8vii8P0GER5Bq+i+l/uUB6WZayXuvk7CKIBQnviP5iQfURogeg6XFmqiRQj6HriwxmV
+         B9FxkpdMZ4AfK9oUb8fJB0NaA5qo0V75ELWZzmWiW74AJ8tlkWZuwkxQKSwM3NJFmBh5
+         6iZQ==
+X-Gm-Message-State: AOAM531waWk3TMUC3eu4N0GXjvwlXYOHqfhhjQY53zmMr8DPP1h28E9S
+        39ZjAGR0dUOKppkoAK/ohYpM6mclQCwcuZ0kjP3n4Q==
+X-Google-Smtp-Source: ABdhPJzK+P1R4mISmjZlHZsoNN2G9ntOEmwmyNM6uUuYkflaeCeff3aXTD8ZafGBC7TvXLp4926Wkg==
+X-Received: by 2002:a17:90a:8b12:: with SMTP id y18mr49906560pjn.153.1620995538446;
+        Fri, 14 May 2021 05:32:18 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.114])
+        by smtp.gmail.com with ESMTPSA id ms2sm4719485pjb.8.2021.05.14.05.32.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 05:31:10 -0700 (PDT)
-Date:   Fri, 14 May 2021 08:31:09 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Mina Almasry <almasrymina@google.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm, hugetlb: fix resv_huge_pages underflow on UFFDIO_COPY
-Message-ID: <YJ5tjWKyVZk2mvxo@t490s>
-References: <20210513234309.366727-1-almasrymina@google.com>
- <CAHS8izNkBvS9gkSjy8FbWBOPDynwr8PXXXbMHt_2=5sZJsa6-Q@mail.gmail.com>
- <09dc0712-48e8-8ba2-f170-4c2febcfff83@oracle.com>
- <CAHS8izPFc+bSrKN-6gRguGefAqrj6kXaMUvgeUL5U7QxhXfWDw@mail.gmail.com>
- <f9c85756-62e1-3d5c-9fbc-f38c6e8f07f3@oracle.com>
+        Fri, 14 May 2021 05:32:17 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dongliang Mu <mudongliangabcd@gmail.com>,
+        syzbot+636c58f40a86b4a879e7@syzkaller.appspotmail.com
+Subject: [PATCH] misc/uss720: fix memory leak in uss720_probe
+Date:   Fri, 14 May 2021 20:31:56 +0800
+Message-Id: <20210514123156.6193-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <f9c85756-62e1-3d5c-9fbc-f38c6e8f07f3@oracle.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Mike,
+uss720_probe forgets to decrease the refcount of usbdev in uss720_probe.
+Fix this by decreasing the refcount of usbdev by usb_put_dev.
 
-On Thu, May 13, 2021 at 09:02:15PM -0700, Mike Kravetz wrote:
+BUG: memory leak
+unreferenced object 0xffff888101113800 (size 2048):
+  comm "kworker/0:1", pid 7, jiffies 4294956777 (age 28.870s)
+  hex dump (first 32 bytes):
+    ff ff ff ff 31 00 00 00 00 00 00 00 00 00 00 00  ....1...........
+    00 00 00 00 00 00 00 00 00 00 00 00 03 00 00 00  ................
+  backtrace:
+    [<ffffffff82b8e822>] kmalloc include/linux/slab.h:554 [inline]
+    [<ffffffff82b8e822>] kzalloc include/linux/slab.h:684 [inline]
+    [<ffffffff82b8e822>] usb_alloc_dev+0x32/0x450 drivers/usb/core/usb.c:582
+    [<ffffffff82b98441>] hub_port_connect drivers/usb/core/hub.c:5129 [inline]
+    [<ffffffff82b98441>] hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
+    [<ffffffff82b98441>] port_event drivers/usb/core/hub.c:5509 [inline]
+    [<ffffffff82b98441>] hub_event+0x1171/0x20c0 drivers/usb/core/hub.c:5591
+    [<ffffffff81259229>] process_one_work+0x2c9/0x600 kernel/workqueue.c:2275
+    [<ffffffff81259b19>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2421
+    [<ffffffff81261228>] kthread+0x178/0x1b0 kernel/kthread.c:292
+    [<ffffffff8100227f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
 
-[...]
+Reported-by: syzbot+636c58f40a86b4a879e7@syzkaller.appspotmail.com
+Fixes: 0f36163d3abe ("usb: fix uss720 schedule with interrupts off")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+---
+ drivers/usb/misc/uss720.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> I am also concerned with the semantics of this approach and what happens
-> when a fault races with the userfaultfd copy.  Previously I asked Peter
-> if we could/should use a page found in the cache for the copy.  His
-> answer was as follows:
-> 
->  AFAICT that's the expected behavior, and it need to be like that so as to avoid
->  silent data corruption (if the page cache existed, it means the page is not
->  "missing" at all, then it does not suite for a UFFDIO_COPY as it's only used
->  for uffd page missing case).
-
-I didn't follow the rest discussion in depth yet... but just to mention that
-the above answer was for the question whether we can "update the page in the
-page cache", rather than "use a page found in the page cache".
-
-I think reuse the page should be fine, however it'll definitely break existing
-user interface (as it'll expect -EEXIST for now - we have kselftest covers
-that), meanwhile I don't see why the -EEXIST bothers a lot: it still tells the
-user that this page was filled in already.  Normally it was filled in by
-another UFFDIO_COPY (as we could have multiple uffd service threads) along with
-a valid pte, then this userspace thread can simply skip this message as it
-means the event has been handled by some other servicing thread.
-
-(This also reminded me that there won't be a chance of UFFDIO_COPY race on page
- no page fault at least, since no page fault will always go into the uffd
- missing handling rather than filling in the page cache for a VM_UFFD_MISSING
- vma; while mmap read lock should guarantee VM_UFFD_MISSING be persistent)
-
-Thanks,
-
+diff --git a/drivers/usb/misc/uss720.c b/drivers/usb/misc/uss720.c
+index b5d661644263..748139d26263 100644
+--- a/drivers/usb/misc/uss720.c
++++ b/drivers/usb/misc/uss720.c
+@@ -736,6 +736,7 @@ static int uss720_probe(struct usb_interface *intf,
+ 	parport_announce_port(pp);
+ 
+ 	usb_set_intfdata(intf, pp);
++	usb_put_dev(usbdev);
+ 	return 0;
+ 
+ probe_abort:
 -- 
-Peter Xu
+2.25.1
 
