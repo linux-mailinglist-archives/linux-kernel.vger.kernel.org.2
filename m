@@ -2,135 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EB85380662
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 11:41:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4BCF380668
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 11:41:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231479AbhENJmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 05:42:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52486 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230236AbhENJmH (ORCPT
+        id S233932AbhENJme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 05:42:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230236AbhENJmd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 05:42:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620985256;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bvT1h5Dtf95/bClBJ8t/oO4/WMLk+en4nCrG5Kuj0DQ=;
-        b=YHwHH2ihE7MF9kaK0vsik5rPLpZbkAUFbP8cqiMPKL842Jxo4sKcRWxdJaKlQxdLN0ogu5
-        AhCDbUdwKZBMnFEFSiTR47nPfi/9qV7pOUIxsDX1FeV+S8ay0s+SgT0GdlGvkPlmz0S6Ij
-        yW93BW+P5qecf0Cij/30E7Za6KCFfM8=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-326-5Gbzex9GPk6JmuiDfWekYQ-1; Fri, 14 May 2021 05:40:55 -0400
-X-MC-Unique: 5Gbzex9GPk6JmuiDfWekYQ-1
-Received: by mail-ed1-f70.google.com with SMTP id p8-20020aa7c8880000b029038ce714c8d6so1734868eds.10
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 02:40:54 -0700 (PDT)
+        Fri, 14 May 2021 05:42:33 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60FADC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 02:41:22 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id n25so34032270edr.5
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 02:41:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=deviqon.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vegfStSBvOKattHTaAj1hKOTQJXg06rzpIZp2U2ScrY=;
+        b=qLZ3UAUk/dsKcABCxxgNfrXO01w/ruzJEPHbnVxJvHnaz2X1/srjThNWwRk/tVLvDb
+         9bNryC+5ZPq39s25c9Bh5YSLTP9YpCuzicAg9YvZ5F7NqWYHS2BoATgw+S/ki6cFYqXP
+         Y3V4aeq2pv9Kk86bEfilDnC5qn1FdB/a6Xn0S51QXHXQGQn3mPo6KFz33gM0qnb+ElbU
+         IwKvwPk9t2gnHlq86KyVzpicOV0512IYY70nqDKXdNUZH84DR/ha17T3qWlFX66lahH4
+         CT6vyLjfnq66m6Z6owDrhP7MGD+BWP2qYgef2mJMlSA361IWx7idmgdCORmpgDooDB3n
+         NnDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=bvT1h5Dtf95/bClBJ8t/oO4/WMLk+en4nCrG5Kuj0DQ=;
-        b=pZlue6KDF5G1q37LfWbi7yPeCGeijhHD1o9navMTvtHouNkdNsbY/N7X8paW76rPja
-         igVFG9X7cnimLsufsDyybnr0JzmAXGB2WmxaHlopG5RuD8PgPYvu4toWX06uM0U3LZAM
-         2hHTEFLX3REGQNXTme86JmdfBcfeMLkcU9ND4JrmqkOv+JKGEJpgTttHqq1nta+hGjqj
-         DR2ueJ1y4OhOQGK15qL3fWq8r1JI0z5mkbcfjKBs6aD5gYlHHmLDQ6qPAmqT8GvXivlo
-         Hd/JBfWj3p1k52YFamw+nDCq/7SOqBoqFpY1I5ovtRlk5Ce4uBraA3v36Ym6fElPgf3+
-         Ifig==
-X-Gm-Message-State: AOAM532/7JKXZYE7rrAcu33TuQA25pqyZZ82nzwk2cZS914TCkSMqSIa
-        AgyZYV9X1f1NDNtYjpOj0zHuuIiXCMbJxikq6zAxmHF8b+83ZzussstJrSlXwvXyJLeBYe0MkmQ
-        nBPdeE68CIT2bcqiylYiHnweq
-X-Received: by 2002:a05:6402:2d6:: with SMTP id b22mr55674442edx.274.1620985253913;
-        Fri, 14 May 2021 02:40:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwNzAwSfBkG72zB94sJxDLgDbZ+DEQn4gYm5J85sFFQeIUDMZK27eq70zvt8ZCsSnIvH+CO+w==
-X-Received: by 2002:a05:6402:2d6:: with SMTP id b22mr55674419edx.274.1620985253764;
-        Fri, 14 May 2021 02:40:53 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6501.dip0.t-ipconnect.de. [91.12.101.1])
-        by smtp.gmail.com with ESMTPSA id g10sm2885347ejd.109.2021.05.14.02.40.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 May 2021 02:40:53 -0700 (PDT)
-To:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Hagen Paul Pfeifer <hagen@jauu.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        Yury Norov <yury.norov@gmail.com>, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-References: <20210513184734.29317-1-rppt@kernel.org>
- <20210513184734.29317-9-rppt@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v19 8/8] secretmem: test: add basic selftest for
- memfd_secret(2)
-Message-ID: <a573f11d-7716-46cd-1d08-6840560d6877@redhat.com>
-Date:   Fri, 14 May 2021 11:40:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vegfStSBvOKattHTaAj1hKOTQJXg06rzpIZp2U2ScrY=;
+        b=F3SPb8Z2vkuln6m0eFP1jWsYFBuMxXDIxEwlVUq4/xFQwgXdXOxYvtZUCFxp7schnD
+         X9Yo7LB3kXXdW6GrsE4+TJkkQ4HJ6qL73SX9aiJdxaGxqkfpCC2NU3jvAMwQ2jgDnG8t
+         5aYCPGDEtZ5p/TFx/pehraUW5zLzbwm+KpwkceBCdCkHHCtV7AMrEgcyusSGw6rGsUq1
+         JHGJQm4flpTgYSFrtTg3hBaSdKBZpIihd8ilw9tw+Acx27jDzQNG7fZvJmpE7rYm0xG4
+         kfktEimaq+YKNpGQxYUHPvlEoGltVhmrSFOXZtNBPAw9wEECdeynRDiAaWN+gl4CNQSX
+         aL+Q==
+X-Gm-Message-State: AOAM531HSSQtOEmnq2UD4laoSmq3rBZJCE+Wopbj42pOo7DcsIh3k3b8
+        sWgIvcg8CSLKD6VZ9Jj3kTBHTw==
+X-Google-Smtp-Source: ABdhPJzQQEnxmCitg0MwOq1MBV/D4pi0SCCm+QpjVvgy4uppOLZXzQyO0VeBnApGejv2fXwiphASNw==
+X-Received: by 2002:a05:6402:8da:: with SMTP id d26mr55425093edz.161.1620985281146;
+        Fri, 14 May 2021 02:41:21 -0700 (PDT)
+Received: from neptune.. ([5.2.193.191])
+        by smtp.gmail.com with ESMTPSA id x13sm2751263ejs.93.2021.05.14.02.41.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 May 2021 02:41:20 -0700 (PDT)
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+To:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        Alexandru Ardelean <aardelean@deviqon.com>
+Subject: [PATCH] gpio: gpio-tps68470: remove platform_set_drvdata() + cleanup probe
+Date:   Fri, 14 May 2021 12:41:08 +0300
+Message-Id: <20210514094108.28890-1-aardelean@deviqon.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210513184734.29317-9-rppt@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.05.21 20:47, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> The test verifies that file descriptor created with memfd_secret does not
-> allow read/write operations, that secret memory mappings respect
-> RLIMIT_MEMLOCK and that remote accesses with process_vm_read() and
-> ptrace() to the secret memory fail.
-> 
+The platform_set_drvdata() call is only useful if we need to retrieve back
+the private information.
+Since the driver doesn't do that, it's not useful to have it.
 
-[...]
+If this is removed, we can also just do a direct return on
+devm_gpiochip_add_data(). We don't need to print that this call failed as
+there are other ways to log/see this during probe.
 
-> @@ -0,0 +1,296 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright IBM Corporation, 2020
+Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+---
+ drivers/gpio/gpio-tps68470.c | 12 +-----------
+ 1 file changed, 1 insertion(+), 11 deletions(-)
 
-2021 ?
-
-
+diff --git a/drivers/gpio/gpio-tps68470.c b/drivers/gpio/gpio-tps68470.c
+index f7f5f770e0fb..423b7bc30ae8 100644
+--- a/drivers/gpio/gpio-tps68470.c
++++ b/drivers/gpio/gpio-tps68470.c
+@@ -125,7 +125,6 @@ static const char *tps68470_names[TPS68470_N_GPIO] = {
+ static int tps68470_gpio_probe(struct platform_device *pdev)
+ {
+ 	struct tps68470_gpio_data *tps68470_gpio;
+-	int ret;
+ 
+ 	tps68470_gpio = devm_kzalloc(&pdev->dev, sizeof(*tps68470_gpio),
+ 				     GFP_KERNEL);
+@@ -146,16 +145,7 @@ static int tps68470_gpio_probe(struct platform_device *pdev)
+ 	tps68470_gpio->gc.base = -1;
+ 	tps68470_gpio->gc.parent = &pdev->dev;
+ 
+-	ret = devm_gpiochip_add_data(&pdev->dev, &tps68470_gpio->gc,
+-				     tps68470_gpio);
+-	if (ret < 0) {
+-		dev_err(&pdev->dev, "Failed to register gpio_chip: %d\n", ret);
+-		return ret;
+-	}
+-
+-	platform_set_drvdata(pdev, tps68470_gpio);
+-
+-	return ret;
++	return devm_gpiochip_add_data(&pdev->dev, &tps68470_gpio->gc, tps68470_gpio);
+ }
+ 
+ static struct platform_driver tps68470_gpio_driver = {
 -- 
-Thanks,
-
-David / dhildenb
+2.31.1
 
