@@ -2,138 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEEAA381193
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 22:16:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F964381199
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 22:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232331AbhENUR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 16:17:56 -0400
-Received: from mail.efficios.com ([167.114.26.124]:47584 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229701AbhENUR4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 16:17:56 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 243152B8753;
-        Fri, 14 May 2021 16:16:44 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id EH_EZa7z_b1E; Fri, 14 May 2021 16:16:43 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 2A0EF2B86DC;
-        Fri, 14 May 2021 16:16:43 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 2A0EF2B86DC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1621023403;
-        bh=9TPfKsrWNTWjMuRzOgMfqO7nFVmgGuNpVQNMyB0qLd8=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=tT2AGbWjaeqjRPFJsnvrbz0Vt0KaUwJt6NTu4LXRnEqqFkUUwn6TZu4xg7BVvQfty
-         I2FoNWu2oceuS0lQR8/V53+6FOJE5w1VPWXHOw8f+JkR142Z1ipvaAJAtJuPJDoW2D
-         s30Fx7/lXQvb8gVY7yMx2aROmXV48F5T7UBWpkcVnuaGzqY6L1pFdi6Hnee8KU2FbF
-         MIeLQSkSnP5OcSVIfqn8LElBpxiMVlnHouPQx8utIrjt73lRd8hdMmj/1WRB3PZE6M
-         42pY5FO6A76NGpLw/CR1y+UhUaNr7BLOwoGHtVSPvDlRDDYPD+5Ekvu/bWJdlcl6vG
-         1Pl1134h0j3oA==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id fz-5Jf-HqOng; Fri, 14 May 2021 16:16:43 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 1CDE52B8835;
-        Fri, 14 May 2021 16:16:43 -0400 (EDT)
-Date:   Fri, 14 May 2021 16:16:43 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     lttng-dev <lttng-dev@lists.lttng.org>,
-        Diamon discuss <diamon-discuss@lists.linuxfoundation.org>,
-        linux-trace-users <linux-trace-users@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Cc:     Genevieve Bastien <gbastien+lttng@versatic.net>
-Message-ID: <1811223777.46126.1621023403092.JavaMail.zimbra@efficios.com>
-In-Reply-To: <1336422991.46023.1621021967687.JavaMail.zimbra@efficios.com>
-References: <1336422991.46023.1621021967687.JavaMail.zimbra@efficios.com>
-Subject: Re: [RELEASE] LTTng-modules 2.11.9 and 2.12.6 (Linux kernel tracer)
+        id S232332AbhENUTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 16:19:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33162 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229701AbhENUTU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 16:19:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF9206121E;
+        Fri, 14 May 2021 20:18:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621023489;
+        bh=3N0GNmVDgTeE+9IO7jkM8kisClVzCGSHAfDkGTS1HoA=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=AX8h9jH/cAObRl8toqU5F1PAM7M4Qe4E8gmS+sTrrtd498JXw+ZGyM9ANU4li7Lgd
+         E8QRk3Hb3qdxGTSeeFQnrKXm3jNiAygQ7msfylOe9NVCPZNrGYraGiXL59TVyNALTO
+         nyUhkZrBkTDejtlmQ/kI2FbZGCUaydMi7c0zXNWHCjdA5rS+qP+v7byXxxRyO2gaMl
+         nqxVw8HFTlxzdO9vQlRhhuaJzhmDhkZpLm1yJSKci/YGX311R6mtGtbCS+VfG+wRQA
+         DbIpsUXKpcwms17r23LhuyHpHXFW4pq0oFBOAPb+MLVvT14/lPkV9Upoe0vYm45bF3
+         FF6eujyhXoWzw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id B87EF5C02A5; Fri, 14 May 2021 13:18:08 -0700 (PDT)
+Date:   Fri, 14 May 2021 13:18:08 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>, Marco Elver <elver@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] kcsan: fix debugfs initcall return type
+Message-ID: <20210514201808.GO975577@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210514140015.2944744-1-arnd@kernel.org>
+ <0ad11966-b286-395e-e9ca-e278de6ef872@kernel.org>
+ <20210514193657.GM975577@paulmck-ThinkPad-P17-Gen-1>
+ <534d9b03-6fb2-627a-399d-36e7127e19ff@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4018 (ZimbraWebClient - FF88 (Linux)/8.8.15_GA_4007)
-Thread-Topic: LTTng-modules 2.11.9 and 2.12.6 (Linux kernel tracer)
-Thread-Index: 7GWFwXFXkLY7KtGgWu1JPUyXPl1BvkX71erz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <534d9b03-6fb2-627a-399d-36e7127e19ff@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On May 14, 2021, at 3:52 PM, Mathieu Desnoyers mathieu.desnoyers@efficios.com wrote:
-
-> Hi,
+On Fri, May 14, 2021 at 01:11:05PM -0700, Nathan Chancellor wrote:
+> Hi Paul,
 > 
-> The 2.11.9 and 2.12.6 releases of the LTTng kernel tracer are the latest bug fix
-> releases
-> of the 2.11 and 2.12 stable branches of the LTTng modules project.
+> On 5/14/2021 12:36 PM, Paul E. McKenney wrote:
+> > On Fri, May 14, 2021 at 11:29:18AM -0700, Nathan Chancellor wrote:
+> > > On 5/14/2021 7:00 AM, Arnd Bergmann wrote:
+> > > > From: Arnd Bergmann <arnd@arndb.de>
+> > > > 
+> > > > clang points out that an initcall funciton should return an 'int':
+> > > > 
+> > > > kernel/kcsan/debugfs.c:274:15: error: returning 'void' from a function with incompatible result type 'int'
+> > > > late_initcall(kcsan_debugfs_init);
+> > > > ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
+> > > > include/linux/init.h:292:46: note: expanded from macro 'late_initcall'
+> > > >    #define late_initcall(fn)               __define_initcall(fn, 7)
+> > > > 
+> > > > Fixes: e36299efe7d7 ("kcsan, debugfs: Move debugfs file creation out of early init")
+> > > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > > 
+> > > For the record, this requires CONFIG_LTO_CLANG to be visible.
+> > > 
+> > > Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+> > 
+> > Queued with the three Reviewed-by tags, thank you all!
+> > 
+> > Nathan, I lost the thread on exactly what it is that requires that
+> > CONFIG_LTO_CLANG be visible.  A naive reader might conclude that the
+> > compiler diagnostic does not appear unless CONFIG_LTO_CLANG=y, but
+> > that would be surprising (and yes, I have been surprised many times).
+> > If you are suggesting that the commit log be upgraded, could you please
+> > supply suggested wording?
 > 
-> There are a few minor bug fixes, but those are the noteworthy changes:
+> You can see my response to Marco here:
 > 
-> - Support for 5.12 Linux kernels,
-> - Support recent stable kernel branches 4.14, 4.19, 5.4,
-> - Support for newer Ubuntu 4.15, 5.4 and RHEL 8.2/8.3 kernels,
-> - Fix: increment buffer offset when failing to copy from user-space:
+> https://lore.kernel.org/r/ad7fa126-f371-5a24-1d80-27fe8f655b05@kernel.org/
 > 
->    Upon failure to copy from user-space due to failing access ok check, the
->    ring buffer offset is not incremented, which could generate unreadable
->    traces because we don't account for the padding we write into the ring
->    buffer.
->    
->    Note that this typically won't affect a common use-case of copying
->    strings from user-space, because unless mprotect is invoked within a
->    narrow race window (between user strlen and user strcpy), the strlen
->    will fail on access ok when calculating the space to reserve, which will
->    match what happens on strcpy.
-
-There is one additional noteworthy set of changes in lttng-modules 2.12.6:
-
-        * Disable block rwbs bitwise enum in default build
-        * Disable sched_switch bitwise enum in default build
-        * Add experimental bitwise enum config option
-
-The block rwbs bitwise enum and sched switch bitwise enum were introduced late
-in the 2.12 rc cycle, and ended up producing traces which were not strictly
-conformant with the CTF 1.8 specifications: they were producing enumerations
-with values associated with no known labels.
-
-This causes Babeltrace 1 and 2, with default options, to generate warnings when
-viewing kernel traces.
-
-So those commits introduce a new build-time option which can optionally enable
-those bitwise enumerations, e.g.:
-
- make CONFIG_LTTNG_EXPERIMENTAL_BITWISE_ENUM=y
-
-So until we finalize the CTF2 specification and its implementation in the tracers
-and trace viewers, this provides a way for experimental users of LTTng-modules to
-keep generating those bitwise enumerations without producing warnings in the
-default use-case.
-
-Without this option, a simple integer field is emitted in the trace rather than a
-bitwise enumeration.
-
-Thanks,
-
-Mathieu
-
-
+> Maybe some improved wording might look like
 > 
-> Thanks,
-> 
-> Mathieu
-> 
-> Project website: https://lttng.org
-> Documentation: https://lttng.org/docs
-> Download link: https://lttng.org/download
-> 
-> --
-> Mathieu Desnoyers
-> EfficiOS Inc.
-> http://www.efficios.com
+> clang with CONFIG_LTO_CLANG points out that an initcall function should
+> return an 'int' due to the changes made to the initcall macros in commit
+> 3578ad11f3fb ("init: lto: fix PREL32 relocations"):
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+OK, so the naive reading was correct, thank you!
+
+> ...
+> 
+> Arnd, do you have any objections?
+
+In the meantime, here is what I have.  Please let me know of any needed
+updates.
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit fe1f4e1b099797d06bd8c66681eed4024c3cad67
+Author: Arnd Bergmann <arnd@arndb.de>
+Date:   Fri May 14 16:00:08 2021 +0200
+
+    kcsan: Fix debugfs initcall return type
+    
+    clang with CONFIG_LTO_CLANG points out that an initcall function should
+    return an 'int' due to the changes made to the initcall macros in commit
+    3578ad11f3fb ("init: lto: fix PREL32 relocations"):
+    
+    kernel/kcsan/debugfs.c:274:15: error: returning 'void' from a function with incompatible result type 'int'
+    late_initcall(kcsan_debugfs_init);
+    ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
+    include/linux/init.h:292:46: note: expanded from macro 'late_initcall'
+     #define late_initcall(fn)               __define_initcall(fn, 7)
+    
+    Fixes: e36299efe7d7 ("kcsan, debugfs: Move debugfs file creation out of early init")
+    Cc: stable <stable@vger.kernel.org>
+    Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Reviewed-by: Marco Elver <elver@google.com>
+    Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+    Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/kcsan/debugfs.c b/kernel/kcsan/debugfs.c
+index c1dd02f3be8b..e65de172ccf7 100644
+--- a/kernel/kcsan/debugfs.c
++++ b/kernel/kcsan/debugfs.c
+@@ -266,9 +266,10 @@ static const struct file_operations debugfs_ops =
+ 	.release = single_release
+ };
+ 
+-static void __init kcsan_debugfs_init(void)
++static int __init kcsan_debugfs_init(void)
+ {
+ 	debugfs_create_file("kcsan", 0644, NULL, NULL, &debugfs_ops);
++	return 0;
+ }
+ 
+ late_initcall(kcsan_debugfs_init);
