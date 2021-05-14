@@ -2,132 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39276380FCD
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 20:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09625380FCF
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 20:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231625AbhENSeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 14:34:50 -0400
-Received: from mail-co1nam11on2077.outbound.protection.outlook.com ([40.107.220.77]:54689
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229952AbhENSer (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 14:34:47 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hNCkCoUF7xXy26HSMomy7RlVyVxGwzmc1kb54vAPsSlITyIR5+LWl055mTNSitD9zU2t8xBgojK/RntBzzjammOSaATrCFu89/7dl2SSKU8Fz2IyEFO3vvv4oMG28/vCtGlW12NgyMkq0TOu4ccxX4nqRUa+myZEnGQ0pUoYf0LtAC0ZLc6/fEW0NuWKeLhDHwJnFSy21f06WAdEWpC+TcjXJN53GVgpC0Gm7pWrE07ZZSEpKdcuOAaIZatrGgXj1gmKW3EHqUnRf7ewZiuToQ1VULZsgxVxcqIOnAfRH/SUdD8/l3JjGurdaVQqF7uImKFRreFXyUOEXpagExpZlg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DyncnrtnmsqdCYWoTItodDCTsxSlEJbtQewwIaqpopQ=;
- b=GearDeVHRkSFepaChBourZyKeMjuwngmAI61XsAN7s94EWKZQM5epwWccOE/VneRcApHr6eR4auD1M3j/QfNC6tVFiAds3SK/YJ9IJt+zCMjl38PBByNBFMOl6fAJUoikjjL7RCSy4uI6urHEHu0VkJDGbJ1MWisx/IHaFHWtNzEDQ9aiQywlvIx1a48K8hjd1V0LHndLCtnDKnITas5LK/NHAMm1STMlem8bhTMiFihF9L7BYEcoKgCATW9gqbC1DlPv5Nw93a39JLurkAK9QludNChpr/Mhg0ILXEHHQbRGmSyNsW+OMgUuUqXloA7hSGrYA/WAr6HbmA3YwTAnw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
- dkim=pass header.d=vmware.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DyncnrtnmsqdCYWoTItodDCTsxSlEJbtQewwIaqpopQ=;
- b=aLnRYVra4oOg4jJdxn0of86OSA5kGDNXMZJFD/MfAlpGxXsilfy5wfGFiPDUNm2o1ISpS6Bjyw8EMglsnziIW8q3SQqizaE8Xns15+i2PckXV4Z8XISNL4Wx2EyMCd6cUCm8vPeNjnY/+DqTOX7JxVCl0y1/sy60T9guhj6QfG4=
-Authentication-Results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=vmware.com;
-Received: from MN2PR05MB6624.namprd05.prod.outlook.com (2603:10b6:208:d8::18)
- by MN2PR05MB7037.namprd05.prod.outlook.com (2603:10b6:208:189::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.11; Fri, 14 May
- 2021 18:33:34 +0000
-Received: from MN2PR05MB6624.namprd05.prod.outlook.com
- ([fe80::603b:4954:dbec:c02]) by MN2PR05MB6624.namprd05.prod.outlook.com
- ([fe80::603b:4954:dbec:c02%7]) with mapi id 15.20.4129.027; Fri, 14 May 2021
- 18:33:34 +0000
-Subject: Re: [PATCH -next] drm/vmwgfx: Fix return value check in
- vmw_setup_pci_resources()
-To:     Qiheng Lin <linqiheng@huawei.com>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, Hulk Robot <hulkci@huawei.com>
-References: <20210514082812.1697-1-linqiheng@huawei.com>
-From:   Zack Rusin <zackr@vmware.com>
-Message-ID: <d8f8ef46-5a27-5011-3c93-198ad57dafb3@vmware.com>
-Date:   Fri, 14 May 2021 14:33:31 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-In-Reply-To: <20210514082812.1697-1-linqiheng@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [108.36.85.85]
-X-ClientProxiedBy: BL0PR02CA0072.namprd02.prod.outlook.com
- (2603:10b6:207:3d::49) To MN2PR05MB6624.namprd05.prod.outlook.com
- (2603:10b6:208:d8::18)
+        id S233706AbhENSe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 14:34:59 -0400
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:34577 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229952AbhENSe6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 14:34:58 -0400
+Received: by mail-ot1-f53.google.com with SMTP id u25-20020a0568302319b02902ac3d54c25eso96105ote.1
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 11:33:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=N6GbbFUH/VMpBMHoheQ0ldYJeT1OXV4JklGm9ik7JP4=;
+        b=hV2vFjB2wLo7eIFhqYJS+GLViaVmDeQ/efCW+I8QA53cZZUp1uGwLPKF3DUZzujznu
+         lcCmkcw/VLeVKuE6mK8rLx8wa9jKomkWTjDihEfjmvg2mdYmzpBwoHtpedeIZ9tzDGN7
+         i56sfOiEc45rMre3z01WYRKmpSTIYILrWfqEZHgCuhe8Sh+JO1SoB18JrF7vozYylkBU
+         MMjJUO2v8dhGlPMBhsOSSyvsgSKFE/V3w2oSKeY9829N5KGAMGvPoq6/PZtraLASif2Y
+         prQUUYZSurbGfiZ+ziBj3aRjuqy5Vf8/GcXAUQy6S7hQlfT+YM0WCiTV8PJ5gynG1/qa
+         FJuw==
+X-Gm-Message-State: AOAM531dvUoN3Tw6/UpX0kQ3GRUIEqjicLpqMfA3E0dEskciLDQHKh87
+        wkpvpybKiRuLhwEYMhXz2xHFdAAh5N12qJRNUlI=
+X-Google-Smtp-Source: ABdhPJxbSAWd5d5gmdDdLEgVhf8RZAjBUvLvCQmpkx6a1NqsGWwgML/oVA0pBg5rl85fIc0DM+TaFqohf9bYqe4Q3qo=
+X-Received: by 2002:a05:6830:55b:: with SMTP id l27mr40664239otb.260.1621017224275;
+ Fri, 14 May 2021 11:33:44 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.0.193] (108.36.85.85) by BL0PR02CA0072.namprd02.prod.outlook.com (2603:10b6:207:3d::49) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Fri, 14 May 2021 18:33:32 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ea2ab3ca-d14d-40be-5f7a-08d91706c758
-X-MS-TrafficTypeDiagnostic: MN2PR05MB7037:
-X-LD-Processed: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0,ExtAddr
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR05MB7037DF90531910CF3DA70DACCE509@MN2PR05MB7037.namprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3383;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: D4o6vbfYj7VkxWm6Z3508EWsptueTE089jesa21aReeGdzkt9aappmtzfyE7zu05/DEnoW/K3YoczOonEjz5g+0R6uQoyvez8efK3YIX3FEElSxoTCJqoplnW6CVTfiyiAvuzh8hnFldo9WSu9tSbIki0EO3k5oAJ/ij51fBE1U2BCAZP1gcECKbdDrj5qB6HcSWIh3dvYykLfti11LbQmSxpwu5+KO4syWOb9T/M4EA53xHNblBwA3T4zGbCY+CzSa1dVT+hF6q6LeJZrxkfnNEorlq6SGWLn5jyuIjxZFdJidw8alkvYUUqoV4Zgv6AVrMImvE5Z6J81wDOCksQqgRAWpagTHeMtVYkM7i+yCUoEn9dIVAvE4grd7F5SugnsQ+U3rxPvWWBuZdVlM5vrH+c/wfgZuGCt1dHRvvg2M+she7If6N3SIph3fxRvodKNokmOIuuDcwWDr/IJYt8w2nShTHrbYvTDDvsA8tF6J7cKImDoQju1Gxu7CbdDuy6oFwaaWfBqQXO81lSPaAv6Qvxp57nagc8fKHDeVWWWJxiw9muIbJIKwVeoedcovtJOlelQqFSGN/JbgT2o+N41/iTWjXKDFaj6HP1VYQHRJ/hxkdCD37p5rccj1Atwo3yWlQkmfqQv9v8Z+AUCC6IWyTrfn0AsmI54Ji6Y+yM1n+qT32Aine22QuL/M5NBQ4
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR05MB6624.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(39860400002)(366004)(396003)(346002)(5660300002)(6486002)(956004)(2616005)(2906002)(8936002)(38100700002)(8676002)(26005)(4326008)(4744005)(66556008)(66476007)(110136005)(16526019)(53546011)(66946007)(36756003)(31696002)(86362001)(186003)(16576012)(316002)(478600001)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?WmlkZEYxUGtZWFdtdHRHQVl1WnRINWJCYnZ3QVVZUGM3UzdNeWRhV3JMMlg5?=
- =?utf-8?B?TmV4amx0TGJRaUVNYVBBcjd6cENLVUZZS3RjUGZlYVg1eHBhTmcwVjZzQlVS?=
- =?utf-8?B?Ums0YTRpcHV3NndpTndwdkpsb2J1VEZPK1V1M0hUdDJvSWs1QTVJdUpLclhq?=
- =?utf-8?B?US9nL242VlYxaUN4MjNpY0VaMUxwdVVmMEhXYVFmaXc5L09neU15SVc3U1dV?=
- =?utf-8?B?d2Nxbkh2U2tsbUpzUGNvelNkTXY4RjhqbkJEeFU2ajFBcDJYV3M5TVN3UDZm?=
- =?utf-8?B?Um5GalhMWkJHTUh2OVdQSy9nZ3FFRkhwV1lJTy9Ta3NuczBzMzd4RkQxWXdZ?=
- =?utf-8?B?aWJyaG5zempSMklHLy9FSWpsYXZCc0RuZzFXdTdOc0NpV0VxY29iT3BkS3ZB?=
- =?utf-8?B?YUt6ekczWnhYQm9ubDg3RU0wR0FneXFhNUNZVWlWZXlKUTVwVVV6b01mdnZW?=
- =?utf-8?B?SzNZSW53UldETjlRMEt5aklsKzAzZi8zb1RGeE5vcjZRYUJUWk8zYVdWZDVT?=
- =?utf-8?B?cEczUlo4ZFgwNFJKVFp3OTlKYi9LOWJNSkVCUnlvelNkRWk0OGhyWU9NUDdD?=
- =?utf-8?B?L2x1QktuOW1XZzQ5bHczQTE0Y0tzQWI0WlRiRUtoMW1BTTB2UVlyK0ZnbXda?=
- =?utf-8?B?bTNiMkxuR3NBWmhhMHdzSSttRG5WbEg1dTFBTHFmQ3RFb3ltZ2puVmlyREFm?=
- =?utf-8?B?bjZ0S0g1Umd2bVNlVlpwdGRaNERxb3ZyRi9iU3YrV2s3WVJsYm84ZUJVaWQw?=
- =?utf-8?B?Zk50QTZlcVI1N2Q0MmJWMFFlVTRPK0huMVNUQkNZbzkwYkN1N2x3UU1NQVRH?=
- =?utf-8?B?OFdjYXVPcWZRL1ZyakZEbG1zODR2c1g1OHc0UHNNbXVyOWFCbTl1NmFKWlVM?=
- =?utf-8?B?cStTeU14SmgwbUpEdlo5cmpLMzhQSDVHTTFicjZoQUFiY0U5QjlKTGZsYUx4?=
- =?utf-8?B?V2V0YmdldkVxdTY2VUV1aEhtR243KzQ5WEJuNitlaVVDcUR6amdPSDdDV2Jr?=
- =?utf-8?B?Qi90Rmx6Um5PY3MraWRmMW1FSTFDZ0MyYTdVZnBGZzlMR1pXZW5NR3Z1cmc3?=
- =?utf-8?B?Nm1GbHhleWtrNFFIUDkrK3U4ZktTYnIzZFJaTHNUWEFtRi9kS3I0aVdwelBk?=
- =?utf-8?B?V0hUNHVrTHpWMUJXcXhWcXZxY2FtMHZDZXVOeHFTNldQSlFjelNQbUlralRk?=
- =?utf-8?B?ZklDVXRUODJOMm1pK3NqL2g5UndBdUJxK0VDWFU5V0NPTElSaFhsQk5ZVHdx?=
- =?utf-8?B?SlB5eUdwSWhpTzhuVktBZ2hvaGh0QlJLVzNSd3h3MEVndkI1S245VDJPdDkv?=
- =?utf-8?B?bWdsYnFJWE5GbVpHMVcwUVd0OXhtd2JNM3NieGJjMDMrOEFWMzhoT25POVp2?=
- =?utf-8?B?enJtQnBUQW5sdjFDRjRxS2MxQ2hVcUNSVGNFdWlzU0lkSzQyS0kwTHpCeW9Z?=
- =?utf-8?B?S21EWjVJK0FvbDNkSk1LMGhJWVZ2ZlA1RHQ3a2FNdC9OeFd5d2w0eFdCMk83?=
- =?utf-8?B?dDgxZ3gwU0RnVFp4Z2JFaklNVm8rVTFBT1lhWXVSLy9UUlNjQU9NcnhabDFB?=
- =?utf-8?B?ZU5sVXYrK21DaWZncE9hbVlZSDhoQlQ2ZGNZZ0pZclRRbWoxcmFrWFVUQVps?=
- =?utf-8?B?VVdyeUNqQm1HV1dGRDJYakMxdDlUSUVJTjg1TVp1NUNnZXJzWnJ3REdzU2Rp?=
- =?utf-8?B?OCtkT3hnRnVwSUJoU1VDY0F3bXhKNXhMM1dZSHRiRDNwMk4vV3ZVZlp0ZFVt?=
- =?utf-8?Q?uyN3EdG9H6sk6Q3nQHiy1fwhB/jAeKssccMwx5q?=
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ea2ab3ca-d14d-40be-5f7a-08d91706c758
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR05MB6624.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 May 2021 18:33:33.5223
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +ezQoCAwOKdgDP6UxfSfItLksXAvmk0+TN+A/gs3wgIEmsiNw+CjDE34R/Oo2F7DWbe6cmUjWHnoFFCfDxj1Dw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR05MB7037
+References: <11761395.O9o76ZdvQC@kreacher> <4326215.LvFx2qVVIh@kreacher> <CAGETcx87y-tpSaKRpugons1RZaPC-rdvdueUPuNFJHWDDyrNwQ@mail.gmail.com>
+In-Reply-To: <CAGETcx87y-tpSaKRpugons1RZaPC-rdvdueUPuNFJHWDDyrNwQ@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 14 May 2021 20:33:33 +0200
+Message-ID: <CAJZ5v0ik0GMYg9ru7G=P3-=vmg-LEQo1ZO0Sn99=DJwsPN5-uw@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] drivers: base: Reduce device link removal code duplication
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        chenxiang <chenxiang66@hisilicon.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/14/21 4:28 AM, Qiheng Lin wrote:
-> In case of error, the function devm_ioremap() returns NULL pointer not ERR_PTR().
-> The IS_ERR() test in the return value check should be replaced with NULL test.
-> After that, the error code -ENOMEM should be returned.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Qiheng Lin <linqiheng@huawei.com>
+On Fri, May 14, 2021 at 6:05 PM Saravana Kannan <saravanak@google.com> wrote:
+>
+> On Fri, May 14, 2021 at 5:12 AM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+> >
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > Reduce device link removal code duplication between the cases when
+> > SRCU is enabled and when it is disabled by moving the only differing
+> > piece of it (which is the removal of the link from the consumer and
+> > supplier lists) into a separate wrapper function (defined differently
+> > for each of the cases in question).
+> >
+> > No intentional functional impact.
+> >
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > ---
+> >  drivers/base/core.c |   31 +++++++++++++------------------
+> >  1 file changed, 13 insertions(+), 18 deletions(-)
+> >
+> > Index: linux-pm/drivers/base/core.c
+> > ===================================================================
+> > --- linux-pm.orig/drivers/base/core.c
+> > +++ linux-pm/drivers/base/core.c
+> > @@ -198,6 +198,12 @@ static void device_link_synchronize_remo
+> >  {
+> >         synchronize_srcu(&device_links_srcu);
+> >  }
+> > +
+> > +static void device_link_remove_from_lists(struct device_link *link)
+> > +{
+> > +       list_del_rcu(&link->s_node);
+> > +       list_del_rcu(&link->c_node);
+> > +}
+> >  #else /* !CONFIG_SRCU */
+> >  static DECLARE_RWSEM(device_links_lock);
+> >
+> > @@ -232,6 +238,12 @@ int device_links_read_lock_held(void)
+> >  static inline void device_link_synchronize_removal(void)
+> >  {
+> >  }
+> > +
+> > +static void device_link_remove_from_lists(struct device_link *link)
+> > +{
+> > +       list_del(&link->s_node);
+> > +       list_del(&link->c_node);
+> > +}
+> >  #endif /* !CONFIG_SRCU */
+> >
+> >  static bool device_is_ancestor(struct device *dev, struct device *target)
+> > @@ -854,7 +866,6 @@ out:
+> >  }
+> >  EXPORT_SYMBOL_GPL(device_link_add);
+> >
+> > -#ifdef CONFIG_SRCU
+> >  static void __device_link_del(struct kref *kref)
+> >  {
+> >         struct device_link *link = container_of(kref, struct device_link, kref);
+> > @@ -864,25 +875,9 @@ static void __device_link_del(struct kre
+> >
+> >         pm_runtime_drop_link(link);
+> >
+> > -       list_del_rcu(&link->s_node);
+> > -       list_del_rcu(&link->c_node);
+> > +       device_link_remove_from_lists(link);
+>
+> Remind me again why we can't do the synchronize_srcu() here (I'm not
+> too familiar with the SRCU API semantics)? Is it because
+> synchronize_srcu() can take indefinitely long?
 
-Looks good. Thank you. I'll push it with some other fixes via drm-misc-next.
+Not indefinitely, but it may take time.  And because it is not
+actually useful before we end up freeing the device link memory.  And
+I'd rather not do it under the device links write lock.
 
-z
+> I just vaguely remember
+> it does some checks during CPUs going idle (which can be a long time
+> later) but I'm not sure if that's the earliest you can synchronize. If
+> it's not indefinitely long and we just need to wait for other SRCU
+> critical sections to exit, maybe we can just synchronize here and make
+> the code a lot simpler?
+
+Well, maybe not  "a lot".
+
+> This function is anyway called in a sleepable context.
+
+But I'm not sure how long this context expects to be sleeping and
+sleeping under a mutex potentially blocks others.
