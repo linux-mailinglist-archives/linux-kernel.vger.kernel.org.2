@@ -2,113 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 938D9380869
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 13:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83FA2380872
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 13:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231926AbhENLY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 07:24:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38854 "EHLO
+        id S231920AbhENL2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 07:28:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbhENLY5 (ORCPT
+        with ESMTP id S229445AbhENL2x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 07:24:57 -0400
-Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F322C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 04:23:45 -0700 (PDT)
-Received: by mail-oo1-xc2f.google.com with SMTP id s20-20020a4ae9940000b02902072d5df239so3797789ood.2
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 04:23:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nrX7Y1hC+nFf54KNExFqPzRBO4yUoXGtLaJKecZ8/sc=;
-        b=byJy0nDw+WqgW95ExtKsQ3rg4UBjy6ux1T+CdQOIMFWLD/q77VMDkIQzPsl8dKRHtB
-         lMyKc2AAkRlOi2ap5m3knKT/qSP4z3UE/vxEDoITO6/Lm2I6GQZ2x/SsmXiQD7n6Cckd
-         8F2cfgXHxHW+BOI30xx4Q5Kqrp+UkkpvdJ6AXTOr5T+KCPBWc+EhZyzrKPoSTe2k/CLo
-         NH0tSRxv35Q2AtmFgb0RYrxWR9mjEw031AcJDkweApN7ZRZEcQW6N8ecN8XKUidTkv+z
-         oKdUyAlddLAuzXIOGKa8xts9Ync8onDKKYRoBEXvnlL2kM79kZuK8mmr/FMZ/Y88CGOE
-         2HoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nrX7Y1hC+nFf54KNExFqPzRBO4yUoXGtLaJKecZ8/sc=;
-        b=k5ZzNukYYIXelWfxlFfuan2odpkgcWSjMpwVP7ntFJropAbRvPW3SXykrW3GMVHIAV
-         Bz+FL01UqpWxoY32vvTuoYFuIohB9hEq5hC36+fVvwxAAAGdWQ92oJsCITK9QjIpzFLp
-         z+BUsK4KnAhmV+uLmOL6Ag2XTJo9LciMM2LdJdeHEiGm7VsyA1yi008RQwd8gFyxk7PB
-         00YJWqFybvy+LIJJKlbxObnCY7WvghLxUeo1FyzelPFbPt0RnOTzw5WHO2tQarqIPjuY
-         GIRi50RpKs3blZ+S++11engDn//Vi+7Vi4LQVVBIwosT3VahgkhoJOLV04vUqpe+mcVA
-         DK1Q==
-X-Gm-Message-State: AOAM530DCEZTVSY3z0AlnIjKfn5Wc9nNrEqQYxwDT/iSBWAzWvkhaEFu
-        OF3b/4+57131senqeioqSlv9bosKbNO9oRR5Wqpxx2RQsMG/gA==
-X-Google-Smtp-Source: ABdhPJxN9zAXrJF7szxVELtHZSUJpP1auywZkOn9A+9bbNFFbAQ4SxlmG+ypTQ71KahM/fH50SXIy2UML/dkQsSARs0=
-X-Received: by 2002:a4a:6202:: with SMTP id x2mr35903358ooc.36.1620991424458;
- Fri, 14 May 2021 04:23:44 -0700 (PDT)
+        Fri, 14 May 2021 07:28:53 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0837C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 04:27:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=mCCyvpSutI8noyt1HNcq373sVHNhz9AT4dX+rpfCZkQ=; b=leLuXHsAYlKLMBPzk/T2noDdB0
+        iQwvag3bNqeyX1jJhtpNdbdKIRS+SSmLTZYR8DehrZTrn0HM88g+PhX5UWIZGO6tMw6ZmQCRf32ii
+        ooSaBFFzI/XBm/eMmW7ursLe211u6/w0WxbsTQkU07MjTRIBz0WaV+7F/4xkUjJXpoOyMFtptTXAy
+        rXpjsF3YTPorbxjUjUcTLazh6ZIhg7yVn0FrQQsCtOOV4Z9sB8Nogy3a+LFyRji/ZZ7z6qGR31KRo
+        UbGPvRW1sxqPsLfgZAymXplaE4v1xp9GqyQZFVjAlekFPmYpkZS4GAIrhYZjo9BS3dDlNgbpHzzoG
+        hcXr+C2w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lhVyM-007tq5-Fb; Fri, 14 May 2021 11:27:14 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CE55530001C;
+        Fri, 14 May 2021 13:27:13 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id AF4EE20298BDE; Fri, 14 May 2021 13:27:13 +0200 (CEST)
+Date:   Fri, 14 May 2021 13:27:13 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Liam Howlett <liam.howlett@oracle.com>
+Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Song Liu <songliubraving@fb.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        David Rientjes <rientjes@google.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Rik van Riel <riel@surriel.com>,
+        Michel Lespinasse <walken.cr@gmail.com>
+Subject: Re: [PATCH 26/94] Maple Tree: Add new data structure
+Message-ID: <YJ5ekZAddvWI3Hzk@hirez.programming.kicks-ass.net>
+References: <20210428153542.2814175-1-Liam.Howlett@Oracle.com>
+ <20210428153542.2814175-27-Liam.Howlett@Oracle.com>
+ <YJ5bbw70JLfNi8Q7@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20210514092139.3225509-1-svens@linux.ibm.com> <20210514092139.3225509-2-svens@linux.ibm.com>
- <CANpmjNNB=KTDBb65qtNwrPbwnbD2ThAFchA1HSCg9HKETkQvCg@mail.gmail.com> <yt9dfsypinlk.fsf@linux.ibm.com>
-In-Reply-To: <yt9dfsypinlk.fsf@linux.ibm.com>
-From:   Marco Elver <elver@google.com>
-Date:   Fri, 14 May 2021 13:23:33 +0200
-Message-ID: <CANpmjNPAS5kDsADb-DwvdFR9nRnX47-mFuEG2vmMPn5U3i3sGQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] kfence: add function to mask address bits
-To:     Sven Schnelle <svens@linux.ibm.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Alexander Potapenko <glider@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJ5bbw70JLfNi8Q7@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 May 2021 at 13:03, Sven Schnelle <svens@linux.ibm.com> wrote:
->
-> Marco Elver <elver@google.com> writes:
->
-> >> diff --git a/mm/kfence/core.c b/mm/kfence/core.c
-> >> index e18fbbd5d9b4..bc15e3cb71d5 100644
-> >> --- a/mm/kfence/core.c
-> >> +++ b/mm/kfence/core.c
-> >> @@ -50,6 +50,11 @@ static unsigned long kfence_sample_interval __read_mostly = CONFIG_KFENCE_SAMPLE
-> >>  #endif
-> >>  #define MODULE_PARAM_PREFIX "kfence."
-> >>
-> >> +unsigned long __weak kfence_arch_mask_addr(unsigned long addr)
-> >> +{
-> >> +       return addr;
-> >> +}
-> >
-> > I don't think this belongs here, because it's test-specific,
-> > furthermore if possible we'd like to put all arch-specific code into
-> > <asm/kfence.h> (whether or not your arch will have 'static inline'
-> > functions only, like x86 and arm64, or not is up to you).
-> >
-> > Because I don't see this function being terribly complex, also let's
-> > just make it a macro.
-> >
-> > Then in kfence_test.c, we can have:
-> >
-> > #ifndef kfence_test_mask_address
-> > #define kfence_test_mask_address(addr) (addr)
-> > #endif
-> >
-> > and then have it include <asm/kfence.h>. And in your <asm/kfence.h>
-> > you can simply say:
-> >
-> > #define kfence_test_mask_address(addr) (.........)
-> >
-> > It also avoids having to export kfence_test_mask_address, because
-> > kfence_test can be built as a module.
->
-> Ok, i'll change my patch accordingly. Thanks!
+On Fri, May 14, 2021 at 01:13:51PM +0200, Peter Zijlstra wrote:
+> On Wed, Apr 28, 2021 at 03:36:02PM +0000, Liam Howlett wrote:
 
-Sounds good. Also please add a brief comment on top of the
-"kfence_test_mask_address" part in kfence_test, like "/* May be
-overridden by <asm/kfence.h>. */" -- we have something similar in
-mm/kfence/report.c. Also, I think we want to call the macro
-"arch_kfence_test_address" -- the "mask" part is very much
-arch-dependent, and might not even be a mask on some other weird
-hypothetical architecture.
+> > +static inline struct maple_node *mte_to_node(const struct maple_enode *entry)
+> > +{
+> > +	return (struct maple_node *)((unsigned long)entry & ~127);
+> > +}
+> 
+> > +static inline struct maple_topiary *mte_to_mat(const struct maple_enode *entry)
+> > +{
+> > +	return (struct maple_topiary *)((unsigned long)entry & ~127);
+> > +}
+> 
+> Can we please write masks as hex, also do they want a pretty name?
+> 
+> 
+> This has more magic mask values, proper names might be good:
+> 
+> > +static inline void mte_set_parent(struct maple_enode *enode,
+> > +				 const struct maple_enode *parent,
+> > +				 unsigned char slot)
+> > +{
+> > +	unsigned long bitmask = 0x78;
+> > +	unsigned long val = (unsigned long) parent;
+> > +	unsigned long type = 0;
+> > +
+> > +	switch (mte_node_type(parent)) {
+> > +	case maple_range_64:
+> > +	case maple_arange_64:
+> > +		type = 6;
+> > +		break;
+> > +	default:
+> > +		break;
+> > +	}
+> > +
+> > +	val &= ~bitmask; // Remove any old slot number.
+> > +	val |= (slot << MAPLE_PARENT_SHIFT); // Set the slot.
+> > +	val |= type;
+> > +	mte_to_node(enode)->parent = ma_parent_ptr(val);
+> > +}
+> 
+> > +static inline unsigned int mte_parent_slot(const struct maple_enode *enode)
+> > +{
+> > +	unsigned long bitmask = 0x7C;
+> > +	unsigned long val = (unsigned long) mte_to_node(enode)->parent;
+> > +
+> > +	if (val & 1)
+> > +		return 0; // Root.
+> > +
+> > +	return (val & bitmask) >> MAPLE_PARENT_SHIFT;
+> 
+> 7c is 1111100, but then you're shifting out the one bit that makes the
+> difference from the above magic 0x78. What gives?
 
-Thanks,
--- Marco
+IMO the more obvious way is something like:
+
+	(val >> MAPLE_PARENT_SHIFT) & ((1 << MAPLE_SLOT_BITS)-1);
+
+And then we also see that 3+4 gives 7, which is that magical 127 above,
+are them the same? Related names would be good in that case.
