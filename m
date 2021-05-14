@@ -2,90 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B02383804BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 09:56:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCC993804C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 09:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233349AbhENH5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 03:57:17 -0400
-Received: from m12-13.163.com ([220.181.12.13]:47603 "EHLO m12-13.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232903AbhENH5P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 03:57:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=CBLat
-        +ZXhC8qxPjdaARxRUWnTKRDHA0cZBqWH1oRFFc=; b=B9gQs9L4XDbWA7T2k8nJh
-        839Z+b6dLSsv60RZR1sH50Oi1HFi6ZCO2QeXZ0ALy6S5FNNbScpq7bnDKGXQF5r2
-        nnch87v/e/JlQ0pA+hbVQglLcwy6qjcPj2NAoAmjCutT5yUwHHoPoef1B4hTwa+j
-        40zAEIPKWst0nxLe1ilALo=
-Received: from COOL-20201210PM.ccdomain.com (unknown [218.94.48.178])
-        by smtp9 (Coremail) with SMTP id DcCowAB3mffjLJ5gGvMlAg--.37879S2;
-        Fri, 14 May 2021 15:55:19 +0800 (CST)
-From:   zuoqilin1@163.com
-To:     steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zuoqilin <zuoqilin@yulong.com>
-Subject: [PATCH] net: Remove unnecessary variables
-Date:   Fri, 14 May 2021 15:55:13 +0800
-Message-Id: <20210514075513.1801-1-zuoqilin1@163.com>
-X-Mailer: git-send-email 2.28.0.windows.1
+        id S233315AbhENH6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 03:58:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231259AbhENH6u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 03:58:50 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5CD5C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 00:57:39 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lhShQ-0001hC-LK; Fri, 14 May 2021 09:57:32 +0200
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1lhShP-0005IV-Vo; Fri, 14 May 2021 09:57:31 +0200
+Date:   Fri, 14 May 2021 09:57:31 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>,
+        Robin van der Gracht <robin@protonic.nl>,
+        linux-iio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: Re: [PATCH v6 0/3] mainline ti tsc2046 adc driver
+Message-ID: <20210514075731.ipxq2o4cdxd3piu3@pengutronix.de>
+References: <20210428073208.19570-1-o.rempel@pengutronix.de>
+ <20210503122818.59f50e45@jic23-huawei>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DcCowAB3mffjLJ5gGvMlAg--.37879S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7GF1fGrWrur4UJryfXFykGrg_yoW8Jr4xpF
-        4UGryDu3yUtrWaga1rJF4Du34Syw18GrsFk34rXwn3Zw1vgw1rta48trWj9FnY9rW8C3Wf
-        JFWqgr4v9F4jkrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j5cTQUUUUU=
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 52xr1xpolqiqqrwthudrp/1tbiHgeSiVSIug-K0gAAsz
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210503122818.59f50e45@jic23-huawei>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 09:44:59 up 162 days, 21:51, 46 users,  load average: 0.01, 0.04,
+ 0.00
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zuoqilin <zuoqilin@yulong.com>
+Hi Jonathan,
 
-It is not necessary to define variables to receive -ENOMEM,
-directly return -ENOMEM.
+On Mon, May 03, 2021 at 12:28:18PM +0100, Jonathan Cameron wrote:
+> On Wed, 28 Apr 2021 09:32:05 +0200
+> Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+> 
+> Hi Oleksij,
+> 
+> Series applied with the tweaks as per review to patch 3.  Please
+> check I didn't mess those up though.
+> 
+> Applied to the togreg branch of iio.git and pushed out as testing for
+> the autobuilders to poke at it.
 
-Signed-off-by: zuoqilin <zuoqilin@yulong.com>
----
- net/key/af_key.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+It works. Thx!
 
-diff --git a/net/key/af_key.c b/net/key/af_key.c
-index ef9b4ac..de24a7d 100644
---- a/net/key/af_key.c
-+++ b/net/key/af_key.c
-@@ -141,7 +141,6 @@ static int pfkey_create(struct net *net, struct socket *sock, int protocol,
- 	struct netns_pfkey *net_pfkey = net_generic(net, pfkey_net_id);
- 	struct sock *sk;
- 	struct pfkey_sock *pfk;
--	int err;
- 
- 	if (!ns_capable(net->user_ns, CAP_NET_ADMIN))
- 		return -EPERM;
-@@ -150,10 +149,9 @@ static int pfkey_create(struct net *net, struct socket *sock, int protocol,
- 	if (protocol != PF_KEY_V2)
- 		return -EPROTONOSUPPORT;
- 
--	err = -ENOMEM;
- 	sk = sk_alloc(net, PF_KEY, GFP_KERNEL, &key_proto, kern);
- 	if (sk == NULL)
--		goto out;
-+		return -ENOMEM;
- 
- 	pfk = pfkey_sk(sk);
- 	mutex_init(&pfk->dump_lock);
-@@ -169,8 +167,6 @@ static int pfkey_create(struct net *net, struct socket *sock, int protocol,
- 	pfkey_insert(sk);
- 
- 	return 0;
--out:
--	return err;
- }
- 
- static int pfkey_release(struct socket *sock)
+Now i need to make configurable iio buffer layout
+
+for the drivers/input/touchscreen/resistive-adc-touch.c
+
+Do you have ideas what is the proper way to make it?
+
+Regards,
+Oleksij
+
+> 
+> Jonathan
+> 
+> > changes v6:
+> > - get blessing from Dmitry Torokhov
+> > - rebase against latest iio/testing
+> > - use simple name for iio_dev->name
+> > - use Jonathan's version for oversampling-ratio description 
+> > 
+> > changes v5:
+> > - remove type for the settling-time-us property
+> > 
+> > changes v4:
+> > - spell fixes
+> > - add more comments
+> > - make code more readable
+> > - move scan_buf to the priv
+> > - use FIELD_GET to extract ADC data
+> > - make some multi line code as one line
+> > - do not use atomic API for trig_more_count
+> > - fix build warning on 64bit system
+> > - add NULL check for the devm_kasprintf()
+> > - use return devm_iio_device_register(), without additional error
+> >   printing.
+> > 
+> > changes v3:
+> > - different spell fixes
+> > - add some notes about driver structure
+> > - rename the trigger to point on the touchscreen nature of it
+> > - rename DT binding to oversampling-ratio
+> > - make sure we have some defaults in case no DT property is set
+> > 
+> > changes v2:
+> > - rework and extend DT binding properties
+> > - remove touchscreen related code from the IIO ADC driver
+> > - make trigger be active longer then IRQ is requesting. This is needed
+> >   to get "inactive" samples
+> > - make oversampling and settle time configurable
+> > 
+> > TI TSC2046 is a touchscreen controller based on 8 channel ADC. Since most of
+> > this ADC based touchscreen controller share same set of challenges, it
+> > is better keep then as simple IIO ADC devices attached to a generic
+> > resistive-adc-touch driver.
+> > 
+> > This driver can replace drivers/input/touchscreen/ads7846.c and has
+> > following advantages over it:
+> > - less code to maintain
+> > - shared code paths (resistive-adc-touch, iio-hwmon, etc)
+> > - can be used as plain IIO ADC to investigate signaling issues or test
+> >   real capacity of the plates and attached low-pass filters
+> >   (or use the touchscreen as a microphone if you like ;) )
+> > 
+> > Oleksij Rempel (3):
+> >   dt-bindings:iio:adc: add generic settling-time-us and
+> >     oversampling-ratio channel properties
+> >   dt-bindings:iio:adc: add documentation for TI TSC2046 controller
+> >   iio: adc: add ADC driver for the TI TSC2046 controller
+> > 
+> >  .../devicetree/bindings/iio/adc/adc.yaml      |  12 +
+> >  .../bindings/iio/adc/ti,tsc2046.yaml          | 115 +++
+> >  MAINTAINERS                                   |   8 +
+> >  drivers/iio/adc/Kconfig                       |  12 +
+> >  drivers/iio/adc/Makefile                      |   1 +
+> >  drivers/iio/adc/ti-tsc2046.c                  | 720 ++++++++++++++++++
+> >  6 files changed, 868 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,tsc2046.yaml
+> >  create mode 100644 drivers/iio/adc/ti-tsc2046.c
+> > 
+> 
+> 
+
 -- 
-1.9.1
-
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
