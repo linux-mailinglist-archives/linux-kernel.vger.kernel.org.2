@@ -2,68 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E36373803F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 09:05:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF1AC3803FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 09:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232313AbhENHHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 03:07:00 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:53954 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230371AbhENHG6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 03:06:58 -0400
-Received: from zn.tnic (p200300ec2f0b2c00f343c5c4aba7bf62.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:2c00:f343:c5c4:aba7:bf62])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 53A011EC04DA;
-        Fri, 14 May 2021 09:05:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1620975946;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=ksvjS+87xkTe7D27QtQxqyp950apFsTl5xWaEGXi3kc=;
-        b=qhnrjx2G/KZbOulEdl4/k8AjV0q1t3cStG639U1CPcyXvIcykEZabxBIxbDnMwIBRzYxQJ
-        S0LV/8jrTZmKnQfyHo3SAUtpT20f9XKZPDzwX0XwRbkyTXwt48kwrthR+Cfo4mhUgAICel
-        abDNIIwC6BEOp0iaJUzHpLZ0G4FBWmw=
-Date:   Fri, 14 May 2021 09:05:47 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Joshi, Mukul" <Mukul.Joshi@amd.com>
-Cc:     "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "Kasiviswanathan, Harish" <Harish.Kasiviswanathan@amd.com>,
-        x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] drm/amdgpu: Register bad page handler for Aldebaran
-Message-ID: <YJ4hS/SJYmCC9Rpd@zn.tnic>
-References: <20210512013058.6827-1-mukul.joshi@amd.com>
- <YJuhs1WsqtJ7ta1L@zn.tnic>
- <DM4PR12MB5263797EB7B2D37C21427A88EE529@DM4PR12MB5263.namprd12.prod.outlook.com>
- <YJxDIhGnZ5XdukiS@zn.tnic>
- <DM4PR12MB52631035F875B77974FA8D21EE519@DM4PR12MB5263.namprd12.prod.outlook.com>
- <YJz3CMBFFIDBzVwX@zn.tnic>
- <DM4PR12MB5263A719B11C6DF8EF9F3A4BEE519@DM4PR12MB5263.namprd12.prod.outlook.com>
+        id S232933AbhENHHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 03:07:13 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:2918 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230371AbhENHHL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 03:07:11 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FhKHT2njszBsGN;
+        Fri, 14 May 2021 15:03:17 +0800 (CST)
+Received: from ubuntu1804.huawei.com (10.67.174.98) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 14 May 2021 15:05:54 +0800
+From:   Pu Lehui <pulehui@huawei.com>
+To:     <stefanr@s5r6.in-berlin.de>
+CC:     <linux1394-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <pulehui@huawei.com>
+Subject: [PATCH -next] firewire: net: remove unused variable 'guid'
+Date:   Fri, 14 May 2021 15:06:21 +0800
+Message-ID: <20210514070621.73356-1-pulehui@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <DM4PR12MB5263A719B11C6DF8EF9F3A4BEE519@DM4PR12MB5263.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.174.98]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 11:10:34PM +0000, Joshi, Mukul wrote:
-> That's probably not the best example to look at.
+GCC reports the following warning with W=1:
 
-Oh, it is the *perfect* example but...
+drivers/firewire/net.c:493:9: warning:
+ variable ‘guid’ set but not used [-Wunused-but-set-variable]
+  493 |  __be64 guid;
+      |         ^~~~
 
-> smca_get_long_name() is used in drivers/edac/mce_amd.c and this file
-> doesn't get compiled when CONFIG_X86_MCE_AMD is not defined.
->
-> And amdgpu driver has no dependency on CONFIG_X86_MCE_AMD.
+This variable is not used in function , this commit
+remove it to fix the warning.
 
-... maybe this will make you see it the right way: how much of the
-amdgpu RAS functionality you're adding, is going to even function
-without CONFIG_X86_MCE_AMD?
+Signed-off-by: Pu Lehui <pulehui@huawei.com>
+---
+ drivers/firewire/net.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
+diff --git a/drivers/firewire/net.c b/drivers/firewire/net.c
+index 715e491dfbc3..4c3fd2eed1da 100644
+--- a/drivers/firewire/net.c
++++ b/drivers/firewire/net.c
+@@ -488,9 +488,7 @@ static int fwnet_finish_incoming_packet(struct net_device *net,
+ 					struct sk_buff *skb, u16 source_node_id,
+ 					bool is_broadcast, u16 ether_type)
+ {
+-	struct fwnet_device *dev;
+ 	int status;
+-	__be64 guid;
+ 
+ 	switch (ether_type) {
+ 	case ETH_P_ARP:
+@@ -503,7 +501,6 @@ static int fwnet_finish_incoming_packet(struct net_device *net,
+ 		goto err;
+ 	}
+ 
+-	dev = netdev_priv(net);
+ 	/* Write metadata, and then pass to the receive level */
+ 	skb->dev = net;
+ 	skb->ip_summed = CHECKSUM_NONE;
+@@ -512,7 +509,6 @@ static int fwnet_finish_incoming_packet(struct net_device *net,
+ 	 * Parse the encapsulation header. This actually does the job of
+ 	 * converting to an ethernet-like pseudo frame header.
+ 	 */
+-	guid = cpu_to_be64(dev->card->guid);
+ 	if (dev_hard_header(skb, net, ether_type,
+ 			   is_broadcast ? net->broadcast : net->dev_addr,
+ 			   NULL, skb->len) >= 0) {
 -- 
-Regards/Gruss,
-    Boris.
+2.17.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
