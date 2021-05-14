@@ -2,220 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFBF2380248
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 05:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A13838024C
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 05:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231217AbhENDLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 23:11:02 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:3668 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229980AbhENDLB (ORCPT
+        id S231271AbhENDLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 23:11:31 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:57267 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229980AbhENDLa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 23:11:01 -0400
-Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FhD2z1kWvz1BMP2;
-        Fri, 14 May 2021 11:07:07 +0800 (CST)
-Received: from dggema765-chm.china.huawei.com (10.1.198.207) by
- dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 14 May 2021 11:09:48 +0800
-Received: from [10.174.185.210] (10.174.185.210) by
- dggema765-chm.china.huawei.com (10.1.198.207) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 14 May 2021 11:09:47 +0800
-Subject: Re: [PATCH v15 07/12] iommu/smmuv3: Implement cache_invalidate
-To:     Eric Auger <eric.auger@redhat.com>, <eric.auger.pro@gmail.com>,
-        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <kvm@vger.kernel.org>, <kvmarm@lists.cs.columbia.edu>,
-        <will@kernel.org>, <maz@kernel.org>, <robin.murphy@arm.com>,
-        <joro@8bytes.org>, <alex.williamson@redhat.com>, <tn@semihalf.com>,
-        <zhukeqian1@huawei.com>
-CC:     <jacob.jun.pan@linux.intel.com>, <yi.l.liu@intel.com>,
-        <wangxingang5@huawei.com>, <jean-philippe@linaro.org>,
-        <zhangfei.gao@linaro.org>, <zhangfei.gao@gmail.com>,
-        <vivek.gautam@arm.com>, <shameerali.kolothum.thodi@huawei.com>,
-        <yuzenghui@huawei.com>, <nicoleotsuka@gmail.com>,
-        <lushenming@huawei.com>, <vsethi@nvidia.com>,
-        <chenxiang66@hisilicon.com>, <vdumpa@nvidia.com>,
-        <wanghaibin.wang@huawei.com>
-References: <20210411111228.14386-1-eric.auger@redhat.com>
- <20210411111228.14386-8-eric.auger@redhat.com>
-From:   Kunkun Jiang <jiangkunkun@huawei.com>
-Message-ID: <e6483bc3-192b-9b68-b3e1-641b1bed4bf6@huawei.com>
-Date:   Fri, 14 May 2021 11:09:47 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Thu, 13 May 2021 23:11:30 -0400
+X-UUID: 204295a1734d4112a3a504ac72d00fe2-20210514
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=TJGSji2ZQJC1gEeWYsGmPT+9twgITBZ7l92YrBaGz8M=;
+        b=SoWdPOz3pfiJwRPOvFp279daIN5ITE7Md38PT5PdvvFpwJZ/tKpE+R0dacuO4nkF85HglmlKaavPWtaJN856mPmni/wErlYQNcGQynL6wfpmAcRq5AgQdIkeXA1d/MBDmjG7J1tTMQE1baYOT3mxVWsET4N05vhF+7omMYoF3H8=;
+X-UUID: 204295a1734d4112a3a504ac72d00fe2-20210514
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <roger.lu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 555409809; Fri, 14 May 2021 11:10:15 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 14 May 2021 11:10:13 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 14 May 2021 11:10:13 +0800
+Message-ID: <7a7a07adedf5d3f430fecf81aed35c6321e5b634.camel@mediatek.com>
+Subject: Re: [PATCH v16 3/7] soc: mediatek: SVS: introduce MTK SVS engine
+From:   Roger Lu <roger.lu@mediatek.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Enric Balletbo Serra <eballetbo@gmail.com>,
+        Kevin Hilman <khilman@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Fan Chen <fan.chen@mediatek.com>,
+        HenryC Chen <HenryC.Chen@mediatek.com>,
+        YT Lee <yt.lee@mediatek.com>,
+        Xiaoqing Liu <Xiaoqing.Liu@mediatek.com>,
+        "Charles Yang" <Charles.Yang@mediatek.com>,
+        Angus Lin <Angus.Lin@mediatek.com>,
+        "Mark Rutland" <mark.rutland@arm.com>, Nishanth Menon <nm@ti.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Date:   Fri, 14 May 2021 11:10:13 +0800
+In-Reply-To: <20210506045115.GA767398@roeck-us.net>
+References: <20210428065440.3704-1-roger.lu@mediatek.com>
+         <20210428065440.3704-4-roger.lu@mediatek.com>
+         <20210506045115.GA767398@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-In-Reply-To: <20210411111228.14386-8-eric.auger@redhat.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.185.210]
-X-ClientProxiedBy: dggeme706-chm.china.huawei.com (10.1.199.102) To
- dggema765-chm.china.huawei.com (10.1.198.207)
-X-CFilter-Loop: Reflected
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/4/11 19:12, Eric Auger wrote:
-> Implement domain-selective, pasid selective and page-selective
-> IOTLB invalidations.
->
-> Signed-off-by: Eric Auger <eric.auger@redhat.com>
->
-> ---
-> v4 -> v15:
-> - remove the redundant arm_smmu_cmdq_issue_sync(smmu)
->    in IOMMU_INV_GRANU_ADDR case (Zenghui)
-> - if RIL is not supported by the host, make sure the granule_size
->    that is passed by the userspace is supported or fix it
->    (Chenxiang)
->
-> v13 -> v14:
-> - Add domain invalidation
-> - do global inval when asid is not provided with addr
->    granularity
->
-> v7 -> v8:
-> - ASID based invalidation using iommu_inv_pasid_info
-> - check ARCHID/PASID flags in addr based invalidation
-> - use __arm_smmu_tlb_inv_context and __arm_smmu_tlb_inv_range_nosync
->
-> v6 -> v7
-> - check the uapi version
->
-> v3 -> v4:
-> - adapt to changes in the uapi
-> - add support for leaf parameter
-> - do not use arm_smmu_tlb_inv_range_nosync or arm_smmu_tlb_inv_context
->    anymore
->
-> v2 -> v3:
-> - replace __arm_smmu_tlb_sync by arm_smmu_cmdq_issue_sync
->
-> v1 -> v2:
-> - properly pass the asid
-> ---
->   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 89 +++++++++++++++++++++
->   1 file changed, 89 insertions(+)
->
-> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> index 56a301fbe75a..bfc112cc0d38 100644
-> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> @@ -2961,6 +2961,94 @@ static void arm_smmu_detach_pasid_table(struct iommu_domain *domain)
->   	mutex_unlock(&smmu_domain->init_mutex);
->   }
->   
-> +static int
-> +arm_smmu_cache_invalidate(struct iommu_domain *domain, struct device *dev,
-> +			  struct iommu_cache_invalidate_info *inv_info)
-> +{
-> +	struct arm_smmu_cmdq_ent cmd = {.opcode = CMDQ_OP_TLBI_NSNH_ALL};
-> +	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
-> +	struct arm_smmu_device *smmu = smmu_domain->smmu;
-> +
-> +	if (smmu_domain->stage != ARM_SMMU_DOMAIN_NESTED)
-> +		return -EINVAL;
-> +
-> +	if (!smmu)
-> +		return -EINVAL;
-> +
-> +	if (inv_info->version != IOMMU_CACHE_INVALIDATE_INFO_VERSION_1)
-> +		return -EINVAL;
-> +
-> +	if (inv_info->cache & IOMMU_CACHE_INV_TYPE_PASID ||
-> +	    inv_info->cache & IOMMU_CACHE_INV_TYPE_DEV_IOTLB) {
-> +		return -ENOENT;
-> +	}
-> +
-> +	if (!(inv_info->cache & IOMMU_CACHE_INV_TYPE_IOTLB))
-> +		return -EINVAL;
-> +
-> +	/* IOTLB invalidation */
-> +
-> +	switch (inv_info->granularity) {
-> +	case IOMMU_INV_GRANU_PASID:
-> +	{
-> +		struct iommu_inv_pasid_info *info =
-> +			&inv_info->granu.pasid_info;
-> +
-> +		if (info->flags & IOMMU_INV_ADDR_FLAGS_PASID)
-> +			return -ENOENT;
-> +		if (!(info->flags & IOMMU_INV_PASID_FLAGS_ARCHID))
-> +			return -EINVAL;
-> +
-> +		__arm_smmu_tlb_inv_context(smmu_domain, info->archid);
-> +		return 0;
-> +	}
-> +	case IOMMU_INV_GRANU_ADDR:
-> +	{
-> +		struct iommu_inv_addr_info *info = &inv_info->granu.addr_info;
-> +		size_t granule_size  = info->granule_size;
-> +		size_t size = info->nb_granules * info->granule_size;
-> +		bool leaf = info->flags & IOMMU_INV_ADDR_FLAGS_LEAF;
-> +		int tg;
-> +
-> +		if (info->flags & IOMMU_INV_ADDR_FLAGS_PASID)
-> +			return -ENOENT;
-> +
-> +		if (!(info->flags & IOMMU_INV_ADDR_FLAGS_ARCHID))
-> +			break;
-> +
-> +		tg = __ffs(granule_size);
-> +		if (granule_size & ~(1 << tg))
-> +			return -EINVAL;
-This check looks like to confirm the granule_size is a power of 2.
-Does the granule_size have to be a power of 2?
-I think it should also be handled correctly, even if the granule_size is 
-not a power of 2.
-> +		/*
-> +		 * When RIL is not supported, make sure the granule size that is
-> +		 * passed is supported. In RIL mode, this is enforced in
-> +		 * __arm_smmu_tlb_inv_range()
-> +		 */
-> +		if (!(smmu->features & ARM_SMMU_FEAT_RANGE_INV) &&
-> +		    !(granule_size & smmu_domain->domain.pgsize_bitmap)) {
-> +			tg = __ffs(smmu_domain->domain.pgsize_bitmap);
-> +			granule_size = 1 << tg;
-> +			size = size >> tg;
-Why does size need to be shifted tg bits to the right?
-
-Thanks,
-Kunkun Jiang
-> +		}
-> +
-> +		arm_smmu_tlb_inv_range_domain(info->addr, size,
-> +					      granule_size, leaf,
-> +					      info->archid, smmu_domain);
-> +		return 0;
-> +	}
-> +	case IOMMU_INV_GRANU_DOMAIN:
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* Global S1 invalidation */
-> +	cmd.tlbi.vmid   = smmu_domain->s2_cfg.vmid;
-> +	arm_smmu_cmdq_issue_cmd(smmu, &cmd);
-> +	arm_smmu_cmdq_issue_sync(smmu);
-> +	return 0;
-> +}
-> +
->   static bool arm_smmu_dev_has_feature(struct device *dev,
->   				     enum iommu_dev_features feat)
->   {
-> @@ -3060,6 +3148,7 @@ static struct iommu_ops arm_smmu_ops = {
->   	.put_resv_regions	= generic_iommu_put_resv_regions,
->   	.attach_pasid_table	= arm_smmu_attach_pasid_table,
->   	.detach_pasid_table	= arm_smmu_detach_pasid_table,
-> +	.cache_invalidate	= arm_smmu_cache_invalidate,
->   	.dev_has_feat		= arm_smmu_dev_has_feature,
->   	.dev_feat_enabled	= arm_smmu_dev_feature_enabled,
->   	.dev_enable_feat	= arm_smmu_dev_enable_feature,
-
+SGkgR3VlbnRlciwNCg0KU29ycnkgZm9yIHRoZSBsYXRlIHJlcGx5IGFuZCB0aGFua3MgZm9yIHRo
+ZSBub3RpY2UuDQoNCk9uIFdlZCwgMjAyMS0wNS0wNSBhdCAyMTo1MSAtMDcwMCwgR3VlbnRlciBS
+b2VjayB3cm90ZToNCj4gT24gV2VkLCBBcHIgMjgsIDIwMjEgYXQgMDI6NTQ6MzZQTSArMDgwMCwg
+Um9nZXIgTHUgd3JvdGU6DQo+ID4gVGhlIFNtYXJ0IFZvbHRhZ2UgU2NhbGluZyhTVlMpIGVuZ2lu
+ZSBpcyBhIHBpZWNlIG9mIGhhcmR3YXJlDQo+ID4gd2hpY2ggY2FsY3VsYXRlcyBzdWl0YWJsZSBT
+VlMgYmFuayB2b2x0YWdlcyB0byBPUFAgdm9sdGFnZSB0YWJsZS4NCj4gPiBUaGVuLCBEVkZTIGRy
+aXZlciBjb3VsZCBhcHBseSB0aG9zZSBTVlMgYmFuayB2b2x0YWdlcyB0byBQTUlDL0J1Y2sNCj4g
+PiB3aGVuIHJlY2VpdmluZyBPUFBfRVZFTlRfQURKVVNUX1ZPTFRBR0UuDQo+ID4gDQo+ID4gU2ln
+bmVkLW9mZi1ieTogUm9nZXIgTHUgPHJvZ2VyLmx1QG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4g
+PiAgZHJpdmVycy9zb2MvbWVkaWF0ZWsvS2NvbmZpZyAgIHwgICAxMCArDQo+ID4gIGRyaXZlcnMv
+c29jL21lZGlhdGVrL01ha2VmaWxlICB8ICAgIDEgKw0KPiA+ICBkcml2ZXJzL3NvYy9tZWRpYXRl
+ay9tdGstc3ZzLmMgfCAxNzIzDQo+ID4gKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysN
+Cj4gPiAgMyBmaWxlcyBjaGFuZ2VkLCAxNzM0IGluc2VydGlvbnMoKykNCj4gPiAgY3JlYXRlIG1v
+ZGUgMTAwNjQ0IGRyaXZlcnMvc29jL21lZGlhdGVrL210ay1zdnMuYw0KPiA+IA0KPiANCj4gWyAu
+Li4gXQ0KPiANCj4gPiArDQo+ID4gKwlzdnNwX2lycSA9IGlycV9vZl9wYXJzZV9hbmRfbWFwKHN2
+c3AtPmRldi0+b2Zfbm9kZSwgMCk7DQo+ID4gKwlyZXQgPSBkZXZtX3JlcXVlc3RfdGhyZWFkZWRf
+aXJxKHN2c3AtPmRldiwgc3ZzcF9pcnEsIE5VTEwsDQo+ID4gc3ZzX2lzciwNCj4gPiArCQkJCQlz
+dnNwLT5pcnFmbGFncywgc3ZzcC0+bmFtZSwNCj4gPiBzdnNwKTsNCj4gDQo+IDAtZGF5IHJlcG9y
+dHM6DQo+IA0KPiBkcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstc3ZzLmM6MTY2Mzo3LTMyOiBFUlJP
+UjoNCj4gCVRocmVhZGVkIElSUSB3aXRoIG5vIHByaW1hcnkgaGFuZGxlciByZXF1ZXN0ZWQgd2l0
+aG91dA0KPiBJUlFGX09ORVNIT1QNCj4gDQo+IEkgd291bGQgYmUgYSBiaXQgY29uY2VybmVkIGFi
+b3V0IHRoaXMuIFRoZXJlIGlzIG5vIHByaW1hcnkgKGhhcmQpDQo+IGludGVycnVwdCBoYW5kbGVy
+LCBtZWFuaW5nIHRoZSBoYXJkIGludGVycnVwdCBtYXkgYmUgcmUtZW5hYmxlZCBhZnRlcg0KPiB0
+aGUgZGVmYXVsdCBoYXJkIGludGVycnVwdCBoYW5kbGVyIHJ1bnMuIFRoaXMgbWlnaHQgcmVzdWx0
+IGluIGVuZGxlc3MNCj4gaW50ZXJydXB0cy4NCg0KT2gsIHdlIGFkZCBJUlFGX09ORVNIT1QgaW4g
+InN2c19nZXRfc3ZzX210ODE4M19wbGF0Zm9ybV9kYXRhKCkiIGZvcg0KdGhyZWFkZWQgaXJxLiBT
+bywgcGxlYXNlIGtpbmRseSBsZXQgdXMga25vdyBpZiB3ZSBuZWVkIHRvIHNldCBtb3JlDQpmbGFn
+cyBvciBhbnkgb3RoZXIgcG90ZW50aWFsIHJpc2tzIHdlIHNob3VsZCBiZSBhd2FyZS4gVGhhbmtz
+IGluDQphZHZhbmNlLg0KDQo+IA0KPiBHdWVudGVyDQo=
 
