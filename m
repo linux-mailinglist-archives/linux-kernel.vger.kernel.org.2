@@ -2,102 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09320380A2F
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 15:09:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F594380A36
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 15:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232059AbhENNK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 09:10:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230306AbhENNKY (ORCPT
+        id S232003AbhENNMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 09:12:38 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:23292 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229469AbhENNMg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 09:10:24 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F291C06174A;
-        Fri, 14 May 2021 06:09:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=BXqAC1pbKs3j4NOO8yWXGrt0LNNTBr4iLV2yAP7ms80=; b=OgwWUSq1igQM+qijDhyiGpZbB
-        7pJhTLrdVnAZ5DZ3iS5WTWxGeL+xy8flu9DxXz2OkAC+kU5Vf/DMusm6P3V9sMJSWrz4SqgBJeFTU
-        fmI8iThYjOUYoR7z3wz+2xklLyju2B9NLCEQi09WwkXwo4BRs3k3O5BnAnl6/mK0Vak55wjvlKEHR
-        O91YCtVgJcoS/7vJOzu4DkGu5iTk/x9u/UNK8QvK47UO1m1TcIuG8Wdmuh97HFjzNCxpxy6RU5EBF
-        npNVpKRklFtY0KrDX597FXumGg26Id1krUVYbQ2hrBo4LCA8lkivL1pmswzIKPnNVI30X3enx4uS9
-        El6wrBUFA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43972)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lhXZ0-0008Bd-5t; Fri, 14 May 2021 14:09:10 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lhXYy-00042P-TJ; Fri, 14 May 2021 14:09:08 +0100
-Date:   Fri, 14 May 2021 14:09:08 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Peter Geis <pgwipeout@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH v3] net: phy: add driver for Motorcomm yt8511 phy
-Message-ID: <20210514130908.GD12395@shell.armlinux.org.uk>
-References: <20210514115826.3025223-1-pgwipeout@gmail.com>
+        Fri, 14 May 2021 09:12:36 -0400
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14ED17JA018629;
+        Fri, 14 May 2021 13:11:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type : in-reply-to;
+ s=corp-2020-01-29; bh=7fC04BucLpGRD/n2GA1XspszHQIl4ZHLmE65wctplAY=;
+ b=Q8HL8oJDlLSH/LMF6fpUfBnDb2UpqrVz5qTgJrOQK7f0FHB9AXACy4Yl/C3r4iPFI1st
+ DqmqznPjv8bnG7F60XUc6xJ21cxy8GyFWSbT8ll5/H5SpX4zIWb4SnQ/4dkyCWNVlX2x
+ O6QS87ui3Wb0eBpaPabaSNuu/ssPZAUNhaOA/ZIDPx/8BPyAS7xp2CNb2L7gP9++hYN+
+ U+z9g18cVX34o5RMXle7MMJTsuyEnDaKAZoAhIT+aDURnNmTsg5SKJQwgvgeMBc/9Qzu
+ QabLzhPSsyZWEwjV9uZxR+kT2pebGi8Z0IbKJuEtxeFm/z4YTS5eCGsKGt0t/UdDECeC QQ== 
+Received: from oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 38gppjgp89-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 14 May 2021 13:11:10 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14EDB9kO188514;
+        Fri, 14 May 2021 13:11:09 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 38gppe5mqc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 14 May 2021 13:11:09 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14EDB7oh187959;
+        Fri, 14 May 2021 13:11:07 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 38gppe5mgm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 14 May 2021 13:11:07 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 14EDB2fJ015206;
+        Fri, 14 May 2021 13:11:02 GMT
+Received: from mwanda (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 14 May 2021 06:11:01 -0700
+Date:   Fri, 14 May 2021 16:10:55 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Joe Sandom <joe.g.sandom@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH 2/2] iio: light: tsl2591: delete a stray tab
+Message-ID: <YJ523y0dhc1IwCOB@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210514115826.3025223-1-pgwipeout@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <YJ52r1XZ44myD9Xx@mwanda>
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-ORIG-GUID: AKY68wcUczUoxFVjFD-8bC0o0aQH1_9J
+X-Proofpoint-GUID: AKY68wcUczUoxFVjFD-8bC0o0aQH1_9J
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+This return statement is indented one more tab than it should be.
 
-On Fri, May 14, 2021 at 07:58:26AM -0400, Peter Geis wrote:
-> +	/* set rgmii delay mode */
-> +	val = __phy_read(phydev, YT8511_PAGE);
-> +
-> +	switch (phydev->interface) {
-> +	case PHY_INTERFACE_MODE_RGMII:
-> +		val &= ~(YT8511_DELAY_RX | YT8511_DELAY_TX);
-> +		break;
-> +	case PHY_INTERFACE_MODE_RGMII_ID:
-> +		val |= YT8511_DELAY_RX | YT8511_DELAY_TX;
-> +		break;
-> +	case PHY_INTERFACE_MODE_RGMII_RXID:
-> +		val &= ~(YT8511_DELAY_TX);
-> +		val |= YT8511_DELAY_RX;
-> +		break;
-> +	case PHY_INTERFACE_MODE_RGMII_TXID:
-> +		val &= ~(YT8511_DELAY_RX);
-> +		val |= YT8511_DELAY_TX;
-> +		break;
-> +	default: /* leave everything alone in other modes */
-> +		break;
-> +	}
-> +
-> +	ret = __phy_write(phydev, YT8511_PAGE, val);
-> +	if (ret < 0)
-> +		goto err_restore_page;
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ drivers/iio/light/tsl2591.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Another way of writing the above is to set "val" to be the value of the
-YT8511_DELAY_RX and YT8511_DELAY_TX bits, and then do:
-
-	ret = __phy_modify(phydev, YT8511_PAGE,
-			   (YT8511_DELAY_RX | YT8511_DELAY_TX), val);
-	if (ret < 0)
-		goto err_restore_page;
-
-which moves the read-modify-write out of the driver into core code and
-makes the driver code smaller. It also handles your missing error check
-on __phy_read() above - would you want the above code to attempt to
-write a -ve error number back to this register? I suspect not!
-
+diff --git a/drivers/iio/light/tsl2591.c b/drivers/iio/light/tsl2591.c
+index 26e3cb6c4ff8..39e68d0c9d6a 100644
+--- a/drivers/iio/light/tsl2591.c
++++ b/drivers/iio/light/tsl2591.c
+@@ -451,7 +451,7 @@ static int tsl2591_read_channel_data(struct iio_dev *indio_dev,
+ 					    sizeof(als_data), als_data);
+ 	if (ret < 0) {
+ 		dev_err(&client->dev, "Failed to read data bytes");
+-			return ret;
++		return ret;
+ 	}
+ 
+ 	als_ch0 = get_unaligned_le16(&als_data[0]);
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.30.2
+
