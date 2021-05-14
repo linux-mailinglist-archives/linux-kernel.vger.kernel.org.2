@@ -2,84 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE67381044
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 21:05:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F119138104A
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 21:07:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232302AbhENTGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 15:06:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57896 "EHLO
+        id S233861AbhENTIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 15:08:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232273AbhENTGQ (ORCPT
+        with ESMTP id S231302AbhENTIp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 15:06:16 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48A43C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 12:05:04 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id ep16-20020a17090ae650b029015d00f578a8so288822pjb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 12:05:04 -0700 (PDT)
+        Fri, 14 May 2021 15:08:45 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C710C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 12:07:32 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id g24so347143pji.4
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 12:07:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=2oyWB47DVh2Z1QlH8RDV8bFzaQjwvqlwdoVeOlHpTjY=;
-        b=N7xVGKEZAXnH63GpXE5YnML5NzFhi5pHSpODhdP/+SHXypBf+ks4urojkWF+Ax4bXJ
-         H9elgm+fGXV0S5oqzNOAJNQmqcxAsHqbr2rN+1FBkvyF2WznF6gFOSPjTXX5SglQyi2y
-         LXNsTtw2ir4m0hJtlXyLOuM593MKZvmymmOBg=
+        bh=oXxhPizKNi5C4ycrbnrV7C0cq58T1/euLe6jwkV8J18=;
+        b=lc0pNM3GTuqYGseYNV8m6amseWmX/bmJCURusUYDwExyji38vhah90YVTqHaNyru6t
+         3JUnuGvOhHXIt6bnusS4D1SoZFR6v5ZmnS9KnBtGc7FuTd3Trz+JVoaZgiPrzzjhind7
+         t4Xyj3EPI92UuprT0V5o5ldd5Vn3CwcciS4Pt1SNhjePKIJ9iUmH6gKUSkUQ6mh/srkM
+         /jGT/PJzh1SqKLmU6dlxmoT3dfQKaZM9+p/oV6SHr6QuPFuGcZ4RXusEuk0iPzE9Tuvk
+         1DioV3fz9bcwBe6nDg+Ix5xHEBPCE0CAzGO2ICzFPZyXityWtxVMRP63Nladu7hF1zlp
+         k0YQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=2oyWB47DVh2Z1QlH8RDV8bFzaQjwvqlwdoVeOlHpTjY=;
-        b=Asx3wU9q2livkBlCWDTNFavwDF2Lxbs9BqDZYDrWWV+nE5Mm+g2emAJeg0l+H3vX9C
-         +TJoQBfAFmI+GYcW+JhI8ypEYHodYSOLO6J9C9MSRRNLK03uBcT/UlhM7tHZ0QHAJ2du
-         cVOZkC8UqjtvEgb4JfinLRvwU5fa/DIPeQjyk7S8IHIZRjjuUZP/o9NL+kQZ2gdvduG2
-         JJKWCSEP/imrLnowMF76Sy6IZ3QOpg55ARI7uFhvPhd/L30qulqbBu73qPtUNoYJ48yH
-         +aY6iA0OrLVOJrFl5o/h6HRS0BWBotvQFBNWQ7fGoTuUAgKXHKWEmChGXcpmWddfai2V
-         xZow==
-X-Gm-Message-State: AOAM531CKMKoUNR2XOpSMzn6vbcd15xJxBzACOnTDK8VFcPdYJ2UCQEl
-        hzhXKuc1ErlqqCT6iFJZPScIHw==
-X-Google-Smtp-Source: ABdhPJyUObluMNbfEqWcZJnBSUzUGr8HvBPdxmzJ89o/blQ7U0kb+Fxmtnzn6tpGLVDTKLmFXMSQzQ==
-X-Received: by 2002:a17:902:860b:b029:ef:46b8:886e with SMTP id f11-20020a170902860bb02900ef46b8886emr24070539plo.18.1621019103903;
-        Fri, 14 May 2021 12:05:03 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id v67sm4506950pfb.205.2021.05.14.12.05.02
+        bh=oXxhPizKNi5C4ycrbnrV7C0cq58T1/euLe6jwkV8J18=;
+        b=jBYrg6fPiYGEpArIB+Ui1LDhddTrbQC+HY0YcItw6ONliczlcL3t3JyEeCKhaqNsWI
+         6zH4rIhtiz78hVVHao5kNoCzwmLOlVWXkrTcl73XYNtoMGRbfKWl0KuJ+BE/fJDn6tG6
+         6gLetLBcYkHEIitWqY56hyk+3f3Kh67TZq8Il7mEUdHsA9/PbzB+mIo1R5BnKRPra28Y
+         goHnc/mrlVHjG0uxocSfzSxE0+jj8kBFrldz89eVFLo9x2hZeMU1Sf9BreL49I725fJv
+         Rddh2r9qCAzA605lvGQ4uhxfz+RM1q4WOAgqI+gecVMhUfqA465dT3msFRAJ7My13SDu
+         BTCw==
+X-Gm-Message-State: AOAM531dDdkLmpClswBrZZ4/s9bR8OiO9iMZ/l/el/YyBYw1V4g2/Y/w
+        8S/KU4hkO6nu3am1CXHKMYw=
+X-Google-Smtp-Source: ABdhPJxv6QbnZggLOzS4U+8rDAaF6Sebnql6R06W3DOk+R7nA2OPR+Py9KJ85FLea/y7i1yYNsVYOg==
+X-Received: by 2002:a17:90b:70c:: with SMTP id s12mr10245868pjz.98.1621019252029;
+        Fri, 14 May 2021 12:07:32 -0700 (PDT)
+Received: from fedora ([2405:201:6008:61b4:4e16:5348:d963:c66d])
+        by smtp.gmail.com with ESMTPSA id d3sm9732449pjw.35.2021.05.14.12.07.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 12:05:03 -0700 (PDT)
-Date:   Fri, 14 May 2021 12:05:02 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     casey.schaufler@intel.com, jmorris@namei.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        linux-audit@redhat.com, john.johansen@canonical.com,
-        penguin-kernel@i-love.sakura.ne.jp, paul@paul-moore.com,
-        sds@tycho.nsa.gov, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH v26 08/25] LSM: Use lsmblob in security_secid_to_secctx
-Message-ID: <202105141204.B7691DAD26@keescook>
-References: <20210513200807.15910-1-casey@schaufler-ca.com>
- <20210513200807.15910-9-casey@schaufler-ca.com>
+        Fri, 14 May 2021 12:07:31 -0700 (PDT)
+Date:   Sat, 15 May 2021 00:37:25 +0530
+From:   Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+To:     Alex Elder <elder@ieee.org>
+Cc:     Joe Perches <joe@perches.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        pure.logic@nexus-software.ie, johan@kernel.org, elder@kernel.org,
+        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: greybus: fix gb_loopback_stats_attrs definition
+Message-ID: <YJ7Kbb5U71l8ukBD@fedora>
+References: <20210514133039.304760-1-chouhan.shreyansh630@gmail.com>
+ <YJ582f3O9K9YD3QA@kroah.com>
+ <YJ5/tqFfcjxOLsF0@fedora>
+ <YJ6DrLiMsdkG5loA@kroah.com>
+ <YJ6H/WsojYcN/bLO@fedora>
+ <YJ6Jf+Z1ReVgDt64@kroah.com>
+ <YJ6TUAowTI75h/sl@fedora>
+ <YJ6XpUMliWQOS8MB@kroah.com>
+ <bccbec1a0ffbf6c31b5e6a78cedd78cd64f2b8fe.camel@perches.com>
+ <88d7da63-d03c-7fa3-a881-aff8e7b4a618@ieee.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210513200807.15910-9-casey@schaufler-ca.com>
+In-Reply-To: <88d7da63-d03c-7fa3-a881-aff8e7b4a618@ieee.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 01:07:50PM -0700, Casey Schaufler wrote:
-> Change security_secid_to_secctx() to take a lsmblob as input
-> instead of a u32 secid. It will then call the LSM hooks
-> using the lsmblob element allocated for that module. The
-> callers have been updated as well. This allows for the
-> possibility that more than one module may be called upon
-> to translate a secid to a string, as can occur in the
-> audit code.
+On Fri, May 14, 2021 at 01:53:49PM -0500, Alex Elder wrote:
+> On 5/14/21 10:56 AM, Joe Perches wrote:
+> > On Fri, 2021-05-14 at 17:30 +0200, Greg KH wrote:
+> > > On Fri, May 14, 2021 at 08:42:16PM +0530, Shreyansh Chouhan wrote:
+> > []
+> > > > I didn't look at how/where was the macro called and missed a very
+> > > > obvious error. Now that I have looked at it, the only way I can think of
+> > > > fixing this is changing the macro to a (inline?) function. Will
+> > > > that be a desirable change?
+> > > 
+> > > No, it can't be a function, the code is fine as-is, checkpatch is just a
+> > > perl script and does not always know what needs to be done.
+> > 
+> > true.
+> > 
+> > perhaps better though to rename these declaring macros to start with declare_
 > 
-> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+> I don't disagree with your suggestion, but it's not clear it
+> would have prevented submission of the erroneous initial patch
+> (nor future ones from people who blindly follow checkpatch.pl
+> suggestions).
+> 
 
-This looks sensible.
+Well if it makes any difference, I think such a name would at least make
+things a little more clear. Also, adding a comment to the macro definition
+might help with the problem of future erronous patches.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Regards,
+Shreyansh Chouhan
 
--- 
-Kees Cook
+> 					-Alex
+> 
+> PS  Lots of negatives in that sentence.
+> 
+> > Something like this:
+> > (with miscellaneous realigning of the macros line ending continuations \)
+> > ---
+> >   drivers/staging/greybus/loopback.c | 72 +++++++++++++++++++-------------------
+> >   1 file changed, 36 insertions(+), 36 deletions(-)
+> > 
+> > diff --git a/drivers/staging/greybus/loopback.c b/drivers/staging/greybus/loopback.c
+> > index 2471448ba42a..dc399792f35f 100644
+> > --- a/drivers/staging/greybus/loopback.c
+> > +++ b/drivers/staging/greybus/loopback.c
+> > @@ -119,18 +119,18 @@ module_param(kfifo_depth, uint, 0444);
+> >   #define GB_LOOPBACK_US_WAIT_MAX				1000000
+> >   /* interface sysfs attributes */
+> > -#define gb_loopback_ro_attr(field)				\
+> > -static ssize_t field##_show(struct device *dev,			\
+> > +#define declare_gb_loopback_ro_attr(field)				\
+> > +static ssize_t field##_show(struct device *dev,				\
+> >   			    struct device_attribute *attr,		\
+> >   			    char *buf)					\
+> >   {									\
+> >   	struct gb_loopback *gb = dev_get_drvdata(dev);			\
+> > -	return sprintf(buf, "%u\n", gb->field);			\
+> > +	return sprintf(buf, "%u\n", gb->field);				\
+> >   }									\
+> >   static DEVICE_ATTR_RO(field)
+> > -#define gb_loopback_ro_stats_attr(name, field, type)		\
+> > -static ssize_t name##_##field##_show(struct device *dev,	\
+> > +#define declare_gb_loopback_ro_stats_attr(name, field, type)		\
+> > +static ssize_t name##_##field##_show(struct device *dev,		\
+> >   			    struct device_attribute *attr,		\
+> >   			    char *buf)					\
+> >   {									\
+> > @@ -142,8 +142,8 @@ static ssize_t name##_##field##_show(struct device *dev,	\
+> >   }									\
+> >   static DEVICE_ATTR_RO(name##_##field)
+> > -#define gb_loopback_ro_avg_attr(name)			\
+> > -static ssize_t name##_avg_show(struct device *dev,		\
+> > +#define declare_gb_loopback_ro_avg_attr(name)				\
+> > +static ssize_t name##_avg_show(struct device *dev,			\
+> >   			    struct device_attribute *attr,		\
+> >   			    char *buf)					\
+> >   {									\
+> > @@ -151,8 +151,8 @@ static ssize_t name##_avg_show(struct device *dev,		\
+> >   	struct gb_loopback *gb;						\
+> >   	u64 avg, rem;							\
+> >   	u32 count;							\
+> > -	gb = dev_get_drvdata(dev);			\
+> > -	stats = &gb->name;					\
+> > +	gb = dev_get_drvdata(dev);					\
+> > +	stats = &gb->name;						\
+> >   	count = stats->count ? stats->count : 1;			\
+> >   	avg = stats->sum + count / 2000000; /* round closest */		\
+> >   	rem = do_div(avg, count);					\
+> > @@ -162,12 +162,12 @@ static ssize_t name##_avg_show(struct device *dev,		\
+> >   }									\
+> >   static DEVICE_ATTR_RO(name##_avg)
+> > -#define gb_loopback_stats_attrs(field)				\
+> > -	gb_loopback_ro_stats_attr(field, min, u);		\
+> > -	gb_loopback_ro_stats_attr(field, max, u);		\
+> > -	gb_loopback_ro_avg_attr(field)
+> > +#define declare_gb_loopback_stats_attrs(field)				\
+> > +	declare_gb_loopback_ro_stats_attr(field, min, u);		\
+> > +	declare_gb_loopback_ro_stats_attr(field, max, u);		\
+> > +	declare_gb_loopback_ro_avg_attr(field)
+> > -#define gb_loopback_attr(field, type)					\
+> > +#define declare_gb_loopback_attr(field, type)				\
+> >   static ssize_t field##_show(struct device *dev,				\
+> >   			    struct device_attribute *attr,		\
+> >   			    char *buf)					\
+> > @@ -193,8 +193,8 @@ static ssize_t field##_store(struct device *dev,			\
+> >   }									\
+> >   static DEVICE_ATTR_RW(field)
+> > -#define gb_dev_loopback_ro_attr(field, conn)				\
+> > -static ssize_t field##_show(struct device *dev,		\
+> > +#define declare_gb_dev_loopback_ro_attr(field, conn)			\
+> > +static ssize_t field##_show(struct device *dev,				\
+> >   			    struct device_attribute *attr,		\
+> >   			    char *buf)					\
+> >   {									\
+> > @@ -203,7 +203,7 @@ static ssize_t field##_show(struct device *dev,		\
+> >   }									\
+> >   static DEVICE_ATTR_RO(field)
+> > -#define gb_dev_loopback_rw_attr(field, type)				\
+> > +#define declare_gb_dev_loopback_rw_attr(field, type)			\
+> >   static ssize_t field##_show(struct device *dev,				\
+> >   			    struct device_attribute *attr,		\
+> >   			    char *buf)					\
+> > @@ -223,7 +223,7 @@ static ssize_t field##_store(struct device *dev,			\
+> >   	if (ret != 1)							\
+> >   		len = -EINVAL;						\
+> >   	else								\
+> > -		gb_loopback_check_attr(gb);		\
+> > +		gb_loopback_check_attr(gb);				\
+> >   	mutex_unlock(&gb->mutex);					\
+> >   	return len;							\
+> >   }									\
+> > @@ -268,26 +268,26 @@ static void gb_loopback_check_attr(struct gb_loopback *gb)
+> >   }
+> >   /* Time to send and receive one message */
+> > -gb_loopback_stats_attrs(latency);
+> > +declare_gb_loopback_stats_attrs(latency);
+> >   /* Number of requests sent per second on this cport */
+> > -gb_loopback_stats_attrs(requests_per_second);
+> > +declare_gb_loopback_stats_attrs(requests_per_second);
+> >   /* Quantity of data sent and received on this cport */
+> > -gb_loopback_stats_attrs(throughput);
+> > +declare_gb_loopback_stats_attrs(throughput);
+> >   /* Latency across the UniPro link from APBridge's perspective */
+> > -gb_loopback_stats_attrs(apbridge_unipro_latency);
+> > +declare_gb_loopback_stats_attrs(apbridge_unipro_latency);
+> >   /* Firmware induced overhead in the GPBridge */
+> > -gb_loopback_stats_attrs(gbphy_firmware_latency);
+> > +declare_gb_loopback_stats_attrs(gbphy_firmware_latency);
+> >   /* Number of errors encountered during loop */
+> > -gb_loopback_ro_attr(error);
+> > +declare_gb_loopback_ro_attr(error);
+> >   /* Number of requests successfully completed async */
+> > -gb_loopback_ro_attr(requests_completed);
+> > +declare_gb_loopback_ro_attr(requests_completed);
+> >   /* Number of requests timed out async */
+> > -gb_loopback_ro_attr(requests_timedout);
+> > +declare_gb_loopback_ro_attr(requests_timedout);
+> >   /* Timeout minimum in useconds */
+> > -gb_loopback_ro_attr(timeout_min);
+> > +declare_gb_loopback_ro_attr(timeout_min);
+> >   /* Timeout minimum in useconds */
+> > -gb_loopback_ro_attr(timeout_max);
+> > +declare_gb_loopback_ro_attr(timeout_max);
+> >   /*
+> >    * Type of loopback message to send based on protocol type definitions
+> > @@ -297,21 +297,21 @@ gb_loopback_ro_attr(timeout_max);
+> >    *					   payload returned in response)
+> >    * 4 => Send a sink message (message with payload, no payload in response)
+> >    */
+> > -gb_dev_loopback_rw_attr(type, d);
+> > +declare_gb_dev_loopback_rw_attr(type, d);
+> >   /* Size of transfer message payload: 0-4096 bytes */
+> > -gb_dev_loopback_rw_attr(size, u);
+> > +declare_gb_dev_loopback_rw_attr(size, u);
+> >   /* Time to wait between two messages: 0-1000 ms */
+> > -gb_dev_loopback_rw_attr(us_wait, d);
+> > +declare_gb_dev_loopback_rw_attr(us_wait, d);
+> >   /* Maximum iterations for a given operation: 1-(2^32-1), 0 implies infinite */
+> > -gb_dev_loopback_rw_attr(iteration_max, u);
+> > +declare_gb_dev_loopback_rw_attr(iteration_max, u);
+> >   /* The current index of the for (i = 0; i < iteration_max; i++) loop */
+> > -gb_dev_loopback_ro_attr(iteration_count, false);
+> > +declare_gb_dev_loopback_ro_attr(iteration_count, false);
+> >   /* A flag to indicate synchronous or asynchronous operations */
+> > -gb_dev_loopback_rw_attr(async, u);
+> > +declare_gb_dev_loopback_rw_attr(async, u);
+> >   /* Timeout of an individual asynchronous request */
+> > -gb_dev_loopback_rw_attr(timeout, u);
+> > +declare_gb_dev_loopback_rw_attr(timeout, u);
+> >   /* Maximum number of in-flight operations before back-off */
+> > -gb_dev_loopback_rw_attr(outstanding_operations_max, u);
+> > +declare_gb_dev_loopback_rw_attr(outstanding_operations_max, u);
+> >   static struct attribute *loopback_attrs[] = {
+> >   	&dev_attr_latency_min.attr,
+> > 
+> 
