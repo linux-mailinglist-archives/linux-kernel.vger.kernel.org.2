@@ -2,259 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B50438140D
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 01:02:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9375138140E
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 01:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234243AbhENXDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 19:03:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230371AbhENXDI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 19:03:08 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBD45C06174A;
-        Fri, 14 May 2021 16:01:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=CgABsLE4zHihJEV07T+Hib4mnYLS7sMe5ozAuoSAx20=; b=eE1UkWbaG4+8LTWEZlhPq5BWN
-        +7Ge7+VZs+aBpOtfg5UbE/mBdqT1J4979FB5yW/WB5P2Byd4dmqDBIgYdBJYcaf+3RUqkvTAGSQb0
-        oba1BJMSKf9tWjUPQwHcN+KHPE3bpUR9uJcxNvMg7wdqJnDskIZK0rSbgWxu+srHB8NFu44rSIezV
-        eKLMkUWAaxM8LmjpM/WwGM1C7FnRvGqWMWdcVMPizxwUJo7VphSTLftuyCKq50+xbbDreaaGYHLit
-        KcvZl9Tii2Nz5fP5khAtnM5n8K5Hl2gRtJGvnOpIBxOSBoKzoMTcRGUzAPxev9GPf6Tvb+Kx09tfI
-        oFm3X+FNA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43992)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lhgob-0000Yf-85; Sat, 15 May 2021 00:01:53 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lhgoa-0004PG-Or; Sat, 15 May 2021 00:01:52 +0100
-Date:   Sat, 15 May 2021 00:01:52 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v6 05/25] net: dsa: qca8k: handle error with
- qca8k_read operation
-Message-ID: <20210514230152.GL12395@shell.armlinux.org.uk>
-References: <20210514210015.18142-1-ansuelsmth@gmail.com>
- <20210514210015.18142-6-ansuelsmth@gmail.com>
+        id S234246AbhENXGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 19:06:36 -0400
+Received: from mail-eopbgr150135.outbound.protection.outlook.com ([40.107.15.135]:26606
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230371AbhENXG2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 19:06:28 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aTgw3UKz84QUTZTRyKv71y5XuFR/fZZqxzKx2m7WrPYQxfQZ6hoeIq9zrIFWzFkQL4OJbMC1eB59GV1zjrFW7sdvVCtVSeargYEvWRByL04NS5QEMV34tmM0d8jBDF1Ogt/Iim4+diG8XSC4SqQHGVjHmrJaX1zdhRseCANGsW1dF53wiFhXi7XWkYdaodxgTI5OlMr1SANNmCUN67Tib5+zqNykw7uI41i7QNv4/CiRdDUkyTs58HpLmQuitmQu4mIIesBUK7jcWRpewf6xLbCLEn2FUKJ5eq6UxOW7dus6k9qYEt4MGZ+HJFPQNvHkrM9i2A6rQ8GX5sXNPUd4hA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HLj2UnzjpxQSPa9QTq8kUmfi7+FNx2bkZAmUWfkhnzc=;
+ b=LWeT/EWdibomDaVRBO8nOojo3Tw8KARIx2N5V8NU2h6dsYOmCrNWbqG0LottQYq3JZ7f8ZEupbcRKsevolrgoRbkHBKu4+IlW8Pp2z5BrN8Lbr02sYhGkY9x3vVDigQvbyPZnLyKVvK83HRNjbhlZjjLJ6VaOa8KUd035tS9Ij11yStguPMw2+rOe2ThjTs6RttkmCt2zxsiNt4BvouGL84ut9e/3cBjuwh2NoTN+lZhbzypSNGdvjVMhl9qzEqD3fdsQbAIsH2OdDoBEd7bk+sa1e7E65ra4RyWXN73YKe36o3orYcN9HV/AZq234Y+615kaRxFg5H103Ix8yBiLw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=isep.ipp.pt; dmarc=pass action=none header.from=isep.ipp.pt;
+ dkim=pass header.d=isep.ipp.pt; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=myisepipp.onmicrosoft.com; s=selector2-myisepipp-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HLj2UnzjpxQSPa9QTq8kUmfi7+FNx2bkZAmUWfkhnzc=;
+ b=sw22+IA01wi/4+AS9XZPHUjPpE6ZDeMG/B+W3nKXmiPn71CP5nRLIRL3rYao3v6Qr96w8mK0CfuHnwdePB7YMpnEgzcVMV7sieVqyiqmcPMNnDRs2mjxSbE2FRmzF67nD6EsyFycY3X3qekaCxUUOYpZTOwB70cAAxlEZtavqkQ=
+Authentication-Results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=isep.ipp.pt;
+Received: from AM6PR04MB4823.eurprd04.prod.outlook.com (2603:10a6:20b:10::27)
+ by AM6PR04MB5783.eurprd04.prod.outlook.com (2603:10a6:20b:a2::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.28; Fri, 14 May
+ 2021 23:05:14 +0000
+Received: from AM6PR04MB4823.eurprd04.prod.outlook.com
+ ([fe80::3c5a:27ef:fda1:1530]) by AM6PR04MB4823.eurprd04.prod.outlook.com
+ ([fe80::3c5a:27ef:fda1:1530%7]) with mapi id 15.20.4129.026; Fri, 14 May 2021
+ 23:05:14 +0000
+From:   clrrm@isep.ipp.pt
+To:     gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Cl=C3=A1udio=20Maia?= <clrrm@isep.ipp.pt>
+Subject: [PATCH] staging: rtl8192u: Fix variable shadowing warning
+Date:   Sat, 15 May 2021 00:04:59 +0100
+Message-Id: <20210514230459.15752-1-clrrm@isep.ipp.pt>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [2001:818:eb48:b500:fb6a:ad7e:1216:96b9]
+X-ClientProxiedBy: PR0P264CA0185.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:100:1c::29) To AM6PR04MB4823.eurprd04.prod.outlook.com
+ (2603:10a6:20b:10::27)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210514210015.18142-6-ansuelsmth@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from hyperion.lan (2001:818:eb48:b500:fb6a:ad7e:1216:96b9) by PR0P264CA0185.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:1c::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Fri, 14 May 2021 23:05:14 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2373ef72-2651-42b3-bc90-08d9172cbbae
+X-MS-TrafficTypeDiagnostic: AM6PR04MB5783:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM6PR04MB5783E8195599598BBA84B78BFA509@AM6PR04MB5783.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2733;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 12Sh5xjk8F+D37gyj0OCcXJfhFTaWZa1WUMbfMoMvJz8hWohsvEKqjAjXOia+bekM9Ee+hx1az8A2AHJglxqwC7thac3zxo70X94CJqLw0+76bJ1YVVFsx0OBi2nUhTRp/Nr5/pttGAgs4XsCwmYl65XaEJtcvlg0B6eDoA2BZ/+ka6gzYAFJEgUWLbbDuUXc8ucJ/Bot6YzKoeDIgTvSMS/DvLjC/Qs03CUtppc5tsxVFPi8iBjvXenQSB8J7aXUyYhcIz3BfrYgri0yNKp6WU7KHYt8eNNqY3JTTs1uf7fGtsVnXVWsEChl50d5aRI2fQhIyWfoTIrMgErYhmt8GbNGBCsIiuKmbRD9W5lv5sstwV7uYOLMsdmrBdi6nJ7tCaiRRMNiYSHAwY7itmrwcrwHgObXdYXD52y8seKXKRsZPQ7+8bvIBgtoiwt0Alql08umicJ1bdWbwEr2DwIMogXWmVzxm2k0pESpN4ftI7Nye5BcZWEjoJAoCYSEAW3pZZlcuQvYaGL2Njlq4LejO5zyrZHaiC9evPHFwaKOUbBUCSqhICLU2bMRL1gVgRNwRfN6vgKIneaWFivWW5/eu6+uPQBgs6aT4rMk3FKB9s=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4823.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(346002)(39840400004)(376002)(366004)(66556008)(2616005)(316002)(107886003)(66476007)(786003)(6486002)(66946007)(52116002)(8936002)(5660300002)(8886007)(6506007)(8676002)(4326008)(1076003)(478600001)(6916009)(86362001)(6666004)(2906002)(38100700002)(6512007)(83380400001)(9686003)(66574015)(16526019)(186003)(36756003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?WDM1dTJodjhLSk1majlnUm5Lc1M2d1I4ZkpoZnZ6UXAxTE1nbUNZREk4VzJp?=
+ =?utf-8?B?Szl5Y1N5dHY5bFIyUTJXWHIxQ2M5MEN0TTE1T3hCWDlnV2REdEhLMGlaSStN?=
+ =?utf-8?B?RHFNMFBkajJGTXlXREhaMXNVNzJQUStHSDJQa3puNDFrS0kyTktGUjZUYXJX?=
+ =?utf-8?B?djdKdnlCNjJZVXBqa0lUcVNDd2xLQ2l2RU96UndOOCtVWXo3bEMxTWNYU09D?=
+ =?utf-8?B?YlZuZjBBMExFWVM4L3lrbUNhSFVvdFNvVHZYd1d6UkVyeXk5TDhKNkRNMnBO?=
+ =?utf-8?B?QW9uUUdoaXJRbUZ6a3ZZMXVlWjd1RkxlalJUMGdTNFNCbElCeCtKa25qczlp?=
+ =?utf-8?B?UmFXWlJZcDFvTzYxT2lxaUMyd3ZZYkRUaHhPcWdMR2tSbDhhU21NS3JnTkwv?=
+ =?utf-8?B?MjVBcXVUQ3NtdC9SaE5iVUR2TWVydXU2V2xxdDZlNmZCbjdQY3c2WTZDVDdu?=
+ =?utf-8?B?UERpRlg4ajRjNW8vYVZxRlowQTNzNlZ2WDZqTWU0SE5sYTlQN1hSNUh1ajVU?=
+ =?utf-8?B?WmZaVUxPV2ZveGJic2hMNFhLTmlyUkFVZnVudEJEWlI0eGJRcS9CcW9GNi9y?=
+ =?utf-8?B?Wlp1MjZuMzBGWVcxa0pEakhVR3RteGxzR3lkREw0eG1uMjV2MFRWdkxkMmd4?=
+ =?utf-8?B?SmVXTXZUVHQyTkdVU1dvNmVvMjZMSXgrbDFXOEduZ2lPZWdSV0Vya1cwY0ZZ?=
+ =?utf-8?B?N3pIdnlTWHoraDlEUGpYUnR5dUtFejZLeWtyTW1YNU1WYnpRdU5NVzNVSzNS?=
+ =?utf-8?B?bFlaM2xRYjRTTVY0V0REazZvSDlISFprVVg3NzVlTUtXMkhvZ2pqQTB1bzBK?=
+ =?utf-8?B?S08yaE9tKzlqSGFFbHhDZE5qSHFzaU9MdEpjRnRBUno2c05lTC8xY0JJWlZi?=
+ =?utf-8?B?VkM2OS93U3pRK0cxa1RGODF5Mzc4Y2dVaDg5V2wwdjJKQU9LNGhYMHVWak9x?=
+ =?utf-8?B?blJkRDVDMHBiUVFLMzcxV0cvdXhIN1RXUnVRbHhJQVhzMDRqMWVmV1V2SzR2?=
+ =?utf-8?B?RDFWRURnOFVKajhNcEZCNXRmVGR0SHU2ODBSUEVWaS83T24yWjNIWWNXNnJy?=
+ =?utf-8?B?ZXRWZDhJcDNmR2hBWU9udFlJVjJSeWw0Z0IwTzZyMXVyd1o5VVUvWEpiMmtj?=
+ =?utf-8?B?RmVteUE5OE1nd0diMmZxYXMxamxpUHNUdWtvb3J1Qmd5VGtTYlRXTkVBTjI1?=
+ =?utf-8?B?Q0tzc1hoYWdJRWJFeVdoVDd4S1pzUkYzZ0xnMGwrS3drWHBsK21iV21tVllq?=
+ =?utf-8?B?YTJxUFJveGxkYTJhdW84WFFydmhlWVJ3TitXYW54UkdhaWN2bVN4MzhndENR?=
+ =?utf-8?B?UE9qQ2hjb3J0WnNkNlFzUm9IV1dpMDVHU2tURWp1YkF1Wis4SXFFcjhzcCtI?=
+ =?utf-8?B?T1MzaXE0TE1iY294aHF6K01OdkdPNWp1WDJYYmZWalczK0VkbzdXSkN1eExX?=
+ =?utf-8?B?cmwzWG9YcUFhNEIxcXRkRTVXM3hMbEtvRVlwT1RtMU54YTVxaHBuVEtjUWsw?=
+ =?utf-8?B?TDJiRk9JRHE1VVptempEeUNvazZNOHVzTkFlSXBuN1NVM0EwTHJpRjNkakgv?=
+ =?utf-8?B?WEU1bGNjczJpRVk1MUc1ZmVwYXNEcEI5U0RibnFibXE2ZXVuNXVJK2NrdGxP?=
+ =?utf-8?B?YWhpdVdYTnN2Z2FLVFpNd1YyT0hxelNpQmRlSndGM0R4QVBBVTcxRWdnWHNt?=
+ =?utf-8?B?NFRFdk1Mbk9jcHM3NVRmSHFESWJ2b1NLeEt4NXhhbHpsdE1GQVdoWWZRdHdv?=
+ =?utf-8?B?dEFiZXcrYkNCVkZJQldwcjBUbFpiVDRWS1pHVktZUC9PVEEvcWluZ1dGd3cw?=
+ =?utf-8?B?L2FqcUdWWVpsQnZVdllUeUtRSnNYRENmeEVHNDRFbENmNHZOK0ZwNTVsbUQ0?=
+ =?utf-8?Q?x3bp4piFuBY3j?=
+X-OriginatorOrg: isep.ipp.pt
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2373ef72-2651-42b3-bc90-08d9172cbbae
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4823.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 May 2021 23:05:14.6625
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 7a60a629-e61f-430c-9c63-266653b2b899
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WTtmaHTYJcIt8QVIS2j8zJO3HG6pLvvt7p2sgPL24JSZT6xHO526Kqn2Q0fz5umxhLmX9phD9y4toKCS5HiATg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB5783
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 10:59:55PM +0200, Ansuel Smith wrote:
-> -static void
-> +static int
->  qca8k_fdb_read(struct qca8k_priv *priv, struct qca8k_fdb *fdb)
->  {
-> -	u32 reg[4];
-> +	u32 reg[4], val;
+From: Cláudio Maia <clrrm@isep.ipp.pt>
 
-val is unsigned.
+Fixes the following sparse warnings:
 
->  	int i;
->  
->  	/* load the ARL table into an array */
-> -	for (i = 0; i < 4; i++)
-> -		reg[i] = qca8k_read(priv, QCA8K_REG_ATU_DATA0 + (i * 4));
-> +	for (i = 0; i < 4; i++) {
-> +		val = qca8k_read(priv, QCA8K_REG_ATU_DATA0 + (i * 4));
-> +		if (val < 0)
-> +			return val;
+drivers/staging/rtl8192u/r8192U_core.c:2306:21: warning: symbol 'i' shadows an earlier one
+drivers/staging/rtl8192u/r8192U_core.c:2254:13: originally declared here
+drivers/staging/rtl8192u/r8192U_core.c:2371:29: warning: symbol 'i' shadows an earlier one
+drivers/staging/rtl8192u/r8192U_core.c:2254:13: originally declared here
 
-So this return statement will never be reached.
+Signed-off-by: Cláudio Maia <clrrm@isep.ipp.pt>
+---
+ drivers/staging/rtl8192u/r8192U_core.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-> @@ -374,6 +386,8 @@ qca8k_fdb_access(struct qca8k_priv *priv, enum qca8k_fdb_cmd cmd, int port)
->  	/* Check for table full violation when adding an entry */
->  	if (cmd == QCA8K_FDB_LOAD) {
->  		reg = qca8k_read(priv, QCA8K_REG_ATU_FUNC);
-> +		if (reg < 0)
-> +			return reg;
-
-"reg" here is also a u32, and therefore unsigned, so this will have no
-effect.
-
->  		if (reg & QCA8K_ATU_FUNC_FULL)
->  			return -1;
->  	}
-> @@ -388,10 +402,10 @@ qca8k_fdb_next(struct qca8k_priv *priv, struct qca8k_fdb *fdb, int port)
->  
->  	qca8k_fdb_write(priv, fdb->vid, fdb->port_mask, fdb->mac, fdb->aging);
->  	ret = qca8k_fdb_access(priv, QCA8K_FDB_NEXT, port);
-> -	if (ret >= 0)
-> -		qca8k_fdb_read(priv, fdb);
-> +	if (ret < 0)
-> +		return ret;
-
-This looks fine to me.
-
->  
-> -	return ret;
-> +	return qca8k_fdb_read(priv, fdb);
->  }
->  
->  static int
-> @@ -449,6 +463,8 @@ qca8k_vlan_access(struct qca8k_priv *priv, enum qca8k_vlan_cmd cmd, u16 vid)
->  	/* Check for table full violation when adding an entry */
->  	if (cmd == QCA8K_VLAN_LOAD) {
->  		reg = qca8k_read(priv, QCA8K_REG_VTU_FUNC1);
-> +		if (reg < 0)
-> +			return reg;
-
-reg is unsigned... unreachable.
-
->  		if (reg & QCA8K_VTU_FUNC1_FULL)
->  			return -ENOMEM;
->  	}
-> @@ -475,6 +491,8 @@ qca8k_vlan_add(struct qca8k_priv *priv, u8 port, u16 vid, bool untagged)
->  		goto out;
->  
->  	reg = qca8k_read(priv, QCA8K_REG_VTU_FUNC0);
-> +	if (reg < 0)
-> +		return reg;
-
-reg is unsigned... unreachable.
-
->  	reg |= QCA8K_VTU_FUNC0_VALID | QCA8K_VTU_FUNC0_IVL_EN;
->  	reg &= ~(QCA8K_VTU_FUNC0_EG_MODE_MASK << QCA8K_VTU_FUNC0_EG_MODE_S(port));
->  	if (untagged)
-> @@ -506,6 +524,8 @@ qca8k_vlan_del(struct qca8k_priv *priv, u8 port, u16 vid)
->  		goto out;
->  
->  	reg = qca8k_read(priv, QCA8K_REG_VTU_FUNC0);
-> +	if (reg < 0)
-> +		return reg;
-
-reg is unsigned... unreachable.
-
->  	reg &= ~(3 << QCA8K_VTU_FUNC0_EG_MODE_S(port));
->  	reg |= QCA8K_VTU_FUNC0_EG_MODE_NOT <<
->  			QCA8K_VTU_FUNC0_EG_MODE_S(port);
-> @@ -621,8 +641,11 @@ qca8k_mdio_read(struct qca8k_priv *priv, int port, u32 regnum)
->  			    QCA8K_MDIO_MASTER_BUSY))
->  		return -ETIMEDOUT;
->  
-> -	val = (qca8k_read(priv, QCA8K_MDIO_MASTER_CTRL) &
-> -		QCA8K_MDIO_MASTER_DATA_MASK);
-> +	val = qca8k_read(priv, QCA8K_MDIO_MASTER_CTRL);
-> +	if (val < 0)
-> +		return val;
-
-val is unsigned... unreachable.
-
-> +
-> +	val &= QCA8K_MDIO_MASTER_DATA_MASK;
->  
->  	return val;
->  }
-> @@ -978,6 +1001,8 @@ qca8k_phylink_mac_link_state(struct dsa_switch *ds, int port,
->  	u32 reg;
->  
->  	reg = qca8k_read(priv, QCA8K_REG_PORT_STATUS(port));
-> +	if (reg < 0)
-> +		return reg;
-
-reg is unsigned... unreachable.
-
->  
->  	state->link = !!(reg & QCA8K_PORT_STATUS_LINK_UP);
->  	state->an_complete = state->link;
-> @@ -1078,18 +1103,26 @@ qca8k_get_ethtool_stats(struct dsa_switch *ds, int port,
->  {
->  	struct qca8k_priv *priv = (struct qca8k_priv *)ds->priv;
->  	const struct qca8k_mib_desc *mib;
-> -	u32 reg, i;
-> +	u32 reg, i, val;
->  	u64 hi;
->  
->  	for (i = 0; i < ARRAY_SIZE(ar8327_mib); i++) {
->  		mib = &ar8327_mib[i];
->  		reg = QCA8K_PORT_MIB_COUNTER(port) + mib->offset;
->  
-> -		data[i] = qca8k_read(priv, reg);
-> +		val = qca8k_read(priv, reg);
-> +		if (val < 0)
-> +			continue;
-
-val is unsigned... unreachable....
-
-> +
->  		if (mib->size == 2) {
->  			hi = qca8k_read(priv, reg + 4);
-> -			data[i] |= hi << 32;
-> +			if (hi < 0)
-> +				continue;
-
-hi is a u64, so this condition is always false.
-
->  		}
-> +
-> +		data[i] = val;
-> +		if (mib->size == 2)
-> +			data[i] |= hi << 32;
->  	}
->  }
->  
-> @@ -1107,18 +1140,25 @@ qca8k_set_mac_eee(struct dsa_switch *ds, int port, struct ethtool_eee *eee)
->  {
->  	struct qca8k_priv *priv = (struct qca8k_priv *)ds->priv;
->  	u32 lpi_en = QCA8K_REG_EEE_CTRL_LPI_EN(port);
-> +	int ret = 0;
-
-No need to zero-initialise this.
-
->  	u32 reg;
->  
->  	mutex_lock(&priv->reg_mutex);
->  	reg = qca8k_read(priv, QCA8K_REG_EEE_CTRL);
-> +	if (reg < 0) {
-> +		ret = reg;
-> +		goto exit;
-> +	}
-> +
->  	if (eee->eee_enabled)
->  		reg |= lpi_en;
->  	else
->  		reg &= ~lpi_en;
->  	qca8k_write(priv, QCA8K_REG_EEE_CTRL, reg);
-> -	mutex_unlock(&priv->reg_mutex);
->  
-> -	return 0;
-> +exit:
-> +	mutex_unlock(&priv->reg_mutex);
-> +	return ret;
->  }
->  
->  static int
-> @@ -1443,6 +1483,9 @@ qca8k_sw_probe(struct mdio_device *mdiodev)
->  
->  	/* read the switches ID register */
->  	id = qca8k_read(priv, QCA8K_REG_MASK_CTRL);
-> +	if (id < 0)
-> +		return id;
-
-id is unsigned ...
-
+diff --git a/drivers/staging/rtl8192u/r8192U_core.c b/drivers/staging/rtl8192u/r8192U_core.c
+index 932b942ca1f3..db26edeccea6 100644
+--- a/drivers/staging/rtl8192u/r8192U_core.c
++++ b/drivers/staging/rtl8192u/r8192U_core.c
+@@ -2303,8 +2303,6 @@ static int rtl8192_read_eeprom_info(struct net_device *dev)
+ 	/* set channelplan from eeprom */
+ 	priv->ChannelPlan = priv->eeprom_ChannelPlan;
+ 	if (bLoad_From_EEPOM) {
+-		int i;
+-
+ 		for (i = 0; i < 6; i += 2) {
+ 			ret = eprom_read(dev, (u16)((EEPROM_NODE_ADDRESS_BYTE_0 + i) >> 1));
+ 			if (ret < 0)
+@@ -2368,8 +2366,6 @@ static int rtl8192_read_eeprom_info(struct net_device *dev)
+ 			priv->EEPROM_Def_Ver = 1;
+ 		RT_TRACE(COMP_EPROM, "EEPROM_DEF_VER:%d\n", priv->EEPROM_Def_Ver);
+ 		if (priv->EEPROM_Def_Ver == 0) { /* old eeprom definition */
+-			int i;
+-
+ 			if (bLoad_From_EEPOM) {
+ 				ret = eprom_read(dev, (EEPROM_TX_PW_INDEX_CCK >> 1));
+ 				if (ret < 0)
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.17.1
+
