@@ -2,65 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD2FF3804DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 10:08:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 254353804E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 10:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233407AbhENIJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 04:09:16 -0400
-Received: from m12-18.163.com ([220.181.12.18]:42508 "EHLO m12-18.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229654AbhENIJO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 04:09:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=zYCG5
-        CpxuiTgMWEA6okG6eEiJi2EYg+gmO5+2lhKN0k=; b=fj/tOitB876jZaNX0NeO4
-        I//mD66/7EikFIYwSAc9FVkMB6uqFxlxiqcDIrZA98VdR5Z0Sc9hJrTsuteVOZkg
-        GAc0zHKYyRQeunFbswJKpvLQWRlb/YRbnJuaMMk74B9RhCLEGOWygPBdsu/pGXbq
-        8Z8Qj6ff0bxuEDd94zk5p0=
-Received: from COOL-20201222LC.ccdomain.com (unknown [218.94.48.178])
-        by smtp14 (Coremail) with SMTP id EsCowACHhcW+L55glSp1jQ--.18625S2;
-        Fri, 14 May 2021 16:07:29 +0800 (CST)
-From:   dingsenjie@163.com
-To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
-Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        dingsenjie <dingsenjie@yulong.com>
-Subject: [PATCH v2] mtd: devices: Remove superfluous "break"
-Date:   Fri, 14 May 2021 16:06:43 +0800
-Message-Id: <20210514080643.21760-1-dingsenjie@163.com>
-X-Mailer: git-send-email 2.21.0.windows.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EsCowACHhcW+L55glSp1jQ--.18625S2
-X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxU78nYUUUUU
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 5glqw25hqmxvi6rwjhhfrp/xtbBRQGSyFPALw2s9AAAs3
+        id S233430AbhENIMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 04:12:00 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:42600 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229654AbhENIL6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 04:11:58 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Axfch8MJ5gSVQWAA--.937S2;
+        Fri, 14 May 2021 16:10:37 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Marc Koderer <marc@koderer.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Jisheng Zhang <jszhang@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH v2] samples/kprobes: Fix typo in handler_post()
+Date:   Fri, 14 May 2021 16:10:10 +0800
+Message-Id: <1620979810-12779-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Axfch8MJ5gSVQWAA--.937S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrKryDZF1fWFy5Ww13ArWfGrg_yoWfZFX_A3
+        srtr92grW8Jr98uF1YkrsYqFsIqw1fWr4xG392qr9FvFnxJ3y7C3yv9r4DKa1fZ398GFyU
+        Jr42q34IvF47WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbV8YjsxI4VWxJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwV
+        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Gr0_Cr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY
+        04v7MxkIecxEwVAFwVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
+        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
+        wI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
+        v20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
+        DU0xZFpf9x07jwtxhUUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dingsenjie <dingsenjie@yulong.com>
+It should use post_handler instead of pre_handler in handler_post().
 
-Remove superfluous "break", as there is a "return" before it.
-
-Signed-off-by: Ding Senjie <dingsenjie@yulong.com>
+Fixes: e16c5dd5157e ("samples/kprobes: Add s390 case in kprobe example module")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- drivers/mtd/devices/ms02-nv.c | 1 -
- 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/mtd/devices/ms02-nv.c b/drivers/mtd/devices/ms02-nv.c
-index fb4a6aa..08f76ff 100644
---- a/drivers/mtd/devices/ms02-nv.c
-+++ b/drivers/mtd/devices/ms02-nv.c
-@@ -286,7 +286,6 @@ static int __init ms02nv_init(void)
- 		break;
- 	default:
- 		return -ENODEV;
--		break;
- 	}
- 
- 	for (i = 0; i < ARRAY_SIZE(ms02nv_addrs); i++)
+v2: rebase on the latest mainline kernel
+
+ samples/kprobes/kprobe_example.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/samples/kprobes/kprobe_example.c b/samples/kprobes/kprobe_example.c
+index c495664..602db3f 100644
+--- a/samples/kprobes/kprobe_example.c
++++ b/samples/kprobes/kprobe_example.c
+@@ -89,7 +89,7 @@ static void __kprobes handler_post(struct kprobe *p, struct pt_regs *regs,
+ 		p->symbol_name, p->addr, regs->status);
+ #endif
+ #ifdef CONFIG_S390
+-	pr_info("<%s> pre_handler: p->addr, 0x%p, flags = 0x%lx\n",
++	pr_info("<%s> post_handler: p->addr, 0x%p, flags = 0x%lx\n",
+ 		p->symbol_name, p->addr, regs->flags);
+ #endif
+ }
 -- 
-1.9.1
-
+2.1.0
 
