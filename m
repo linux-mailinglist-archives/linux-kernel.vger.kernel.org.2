@@ -2,95 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F8383807CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 12:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E60F3807D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 12:59:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231992AbhENK56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 06:57:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32774 "EHLO
+        id S232178AbhENLBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 07:01:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229973AbhENK5y (ORCPT
+        with ESMTP id S230506AbhENLA7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 06:57:54 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C454C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 03:56:42 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id j75so28057544oih.10
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 03:56:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ydhimE0ShUzHe5UlupIsgatmNxglV8e9FXvQTc9zlwI=;
-        b=A1kyzqpGDjlbsvSYO4qFEgdZfzizIa7TOArkgaJ9dmcbJFbpOhq8LbFMdxVOfuXTrH
-         AGD/ogrQ96G/xMSy1T0/vHzdIaLb9BJkMk19EdJaB/7ZMtfKnuaDsFLFMqbo+SLULqJd
-         9WRsPVAVjb7elDv9eFCVFoGmtRVrifKCuNB8zzTIxelDeeNoPdjrPL1Fycz8N+SfhOce
-         yzrzIeL4Lx9fscJpWygEi67OxbKLPe7+9zg1/jJKmTRBUPNeVfIjJNTDi0rIztM1zFCM
-         3ldukGspD2l3fgVWZfhcSiIOTq/AdWDKkcdCAENeCDrp72DNp20Nyfcp1DNXZWKvEHoV
-         L8pQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ydhimE0ShUzHe5UlupIsgatmNxglV8e9FXvQTc9zlwI=;
-        b=OX9N1sGQDQQG2Oq4xYEuPWB3IP8tcVzui83CAdarEBU35p2SxwToWvwg9lMNF5ucoB
-         WMat7h3K38zwzcjcC1xL+AslJ3nzRHhP/HCNlg1Vcuk+zyMDTr6bftM2rCT4Ounm+eKI
-         yKUWZmpfd/R0Gd5srhQZJrrnzV0g1Tj0o3pUTivFwn5AG9/OXQNNJa7cl/CxnelXVhYh
-         qmESciO4U3fa0RhwyALlOj7e31ckjp7poQtz7kF2JzwNe2fABXmZ3N++iNDtUCEVDlhU
-         77Pik7nA3xqPvzif917Gl9m2JAe2decdXgjyr9HGMZTWjh9XUop0Pmmz+ZQFEy2O83bD
-         Uq2g==
-X-Gm-Message-State: AOAM530wz8LqInSfsMdsN6SyBF45RXoP3Sp5cWy40v6VF0vq7SdJYg0u
-        rujXeWk/l0nxWKa7hu1RyRPTGgADmLab8lRu4CgYjg==
-X-Google-Smtp-Source: ABdhPJxYrgbpkEBXwUwLeoNOTFSevaanrWIytPfAWm7hboSHAWsk8jD59cOnRsC/L0RyJZ7SSauCSktF7CIJQHmTyvI=
-X-Received: by 2002:aca:408a:: with SMTP id n132mr34058523oia.70.1620989801557;
- Fri, 14 May 2021 03:56:41 -0700 (PDT)
+        Fri, 14 May 2021 07:00:59 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB513C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 03:59:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=rp0MFY3tjhifvpdQ3ak+U9cvay2sYh6AQ1zrO+iYeuA=; b=UZsUULYKG7CXxhG3WkNhkA1pA5
+        ccx270IsOy+j8VbWr7M06WPzOA+si5JQtlE11yRcHBHSCcgLpJDDIzxZnPz487SNZr6DPdMz8MvK1
+        rsUhwu9DdRB+QBmaGqfC5zAoImI2uWVwPShZu6qhsYx0d91DzLW+Dyke5TEAHh/ts7oRVcbmkiucH
+        WL9Ie5FgbkZJTf2mIkCtD9DtRNKXU34hIo7ynF8fDf9McQ2ehyf7r7TqBOVvPMZ5wyz7xzm4srLqB
+        rQC8oeGgZssWyqnADPdrjSFuQaE4bl4lRGUzKaX3/sWA3bIAeHfaLOLk5id2mytx5cRI9LDCgOtim
+        P8EOhUkg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lhVUq-00AIXS-Vg; Fri, 14 May 2021 10:57:04 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9C0EA300223;
+        Fri, 14 May 2021 12:56:43 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8383720829F97; Fri, 14 May 2021 12:56:43 +0200 (CEST)
+Date:   Fri, 14 May 2021 12:56:43 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Liam Howlett <liam.howlett@oracle.com>
+Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Song Liu <songliubraving@fb.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        David Rientjes <rientjes@google.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Rik van Riel <riel@surriel.com>,
+        Michel Lespinasse <walken.cr@gmail.com>
+Subject: Re: [PATCH 26/94] Maple Tree: Add new data structure
+Message-ID: <YJ5Xa/4ZFEgfdsOY@hirez.programming.kicks-ass.net>
+References: <20210428153542.2814175-1-Liam.Howlett@Oracle.com>
+ <20210428153542.2814175-27-Liam.Howlett@Oracle.com>
 MIME-Version: 1.0
-References: <20210514092139.3225509-1-svens@linux.ibm.com>
-In-Reply-To: <20210514092139.3225509-1-svens@linux.ibm.com>
-From:   Marco Elver <elver@google.com>
-Date:   Fri, 14 May 2021 12:56:30 +0200
-Message-ID: <CANpmjNMViC4thxCESfmj8j1ZWvNsz2oPSraPta3BAUQjFBoDtw@mail.gmail.com>
-Subject: Re: [RFC] minor kfence patches
-To:     Sven Schnelle <svens@linux.ibm.com>,
-        Alexander Potapenko <glider@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210428153542.2814175-27-Liam.Howlett@Oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 May 2021 at 11:21, Sven Schnelle <svens@linux.ibm.com> wrote:
->
-> i'm currently looking into adding support for KFENCE to the s390
-> architecture. So far everything is straightforward, and i get the
-> kfence testsuite to pass, which is good! :)
 
-Nice to see KFENCE being added to more architectures.
+Cc'ing a moderated list is sodding annoying, dropped it.
 
-> One minor thing i encountered is that for a translation exception,
-> s390 only reports the page address, but not the complete address. I
-> worked around that by adding a function to kfence which allows to mask
-> out certain bits during unit testing. I wonder whether that should be a
-> weak function that can be implemented by architectures if required, some
-> kconfig option, or some other way?
+On Wed, Apr 28, 2021 at 03:36:02PM +0000, Liam Howlett wrote:
 
-I've commented on the other patches.
+> +struct maple_range_64 {
+> +	struct maple_pnode *parent;
+> +	unsigned long pivot[MAPLE_RANGE64_SLOTS - 1];
+> +	void __rcu *slot[MAPLE_RANGE64_SLOTS];
+> +};
+> +
+> +struct maple_arange_64 {
+> +	struct maple_pnode *parent;
+> +	unsigned long pivot[MAPLE_ARANGE64_SLOTS - 1];
+> +	void __rcu *slot[MAPLE_ARANGE64_SLOTS];
+> +	unsigned long gap[MAPLE_ARANGE64_SLOTS];
+> +	unsigned char meta;
+> +};
+> +
+> +struct maple_alloc {
+> +	unsigned long total;
+> +	unsigned char node_count;
+> +	unsigned int request_count;
+> +	struct maple_alloc *slot[MAPLE_ALLOC_SLOTS];
+> +};
+> +
+> +struct maple_topiary {
+> +	struct maple_pnode *parent;
+> +	struct maple_enode *next; /* Overlaps the pivot */
+> +};
+> +
+> +enum maple_type {
+> +	maple_dense,
+> +	maple_leaf_64,
+> +	maple_range_64,
+> +	maple_arange_64,
+> +};
 
+> +struct maple_node {
+> +	union {
+> +		struct {
+> +			struct maple_pnode *parent;
+> +			void __rcu *slot[MAPLE_NODE_SLOTS];
+> +		};
+> +		struct {
+> +			void *pad;
+> +			struct rcu_head rcu;
+> +			unsigned int ma_flags;
+> +			enum maple_type type;
+> +		};
+> +		struct maple_range_64 mr64;
+> +		struct maple_arange_64 ma64;
+> +		struct maple_alloc alloc;
+> +	};
+> +};
 
-Thanks,
--- Marco
+This is somewhat inconsistent; would it make sense to have struct
+maple_dense and struct maple_leaf_64, and maybe even struct maple_free,
+such that one can write:
 
-> The other thing is that s390 (and some other architectures) has different
-> address spaces for kernel and user space, so the decision whether an
-> address belongs to user or kernel space cannot be made by just looking
-> at the address. I added a small if (user_mode(regs)) check to
-> kfence_handle_page_fault(). But this could of also be done in the
-> architecture specific code.
->
-> What do you think?
->
-> Thanks,
-> Sven
->
->
+struct maple_node {
+	union {
+		/* maple_type: */
+		struct maple_dense	md;
+		struct maple_leaf_64	ml64;
+		struct maple_range_64	mr64;
+		struct maple_arange_64	ma64;
+
+		/* internal, life-time: */
+		struct maple_alloc	alloc;
+		struct maple_free	free;
+	};
+};
+
+Or something along those lines.
