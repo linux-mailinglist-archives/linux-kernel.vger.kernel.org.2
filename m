@@ -2,67 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0EC8380C4C
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 16:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E20DB380C4E
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 16:52:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234528AbhENOxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 10:53:47 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:40444 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232925AbhENOxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 10:53:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=AmV+EvcDeYdDnQmn67vbG6wCy+Lo347GLmfcoYF4nYU=; b=pgAhzW7y6e8e6S6CTD+RLxhtpw
-        CIbMBW9p+nLCtjEejKjaI78U+3rS4xdSD+r6syqVKDDi5oul/aTaiVlDDHAk21Q+qcBBtRzBbitBD
-        P33FQlRqgtMUki3Iqy1ps306xLiCE8BIMZsDHKA1FrrSh/78ephvIVnMkktqYUNAGEQk=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lhZAw-004CPx-UN; Fri, 14 May 2021 16:52:26 +0200
-Date:   Fri, 14 May 2021 16:52:26 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Peter Geis <pgwipeout@gmail.com>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>
-Subject: Re: [PATCH v3] net: phy: add driver for Motorcomm yt8511 phy
-Message-ID: <YJ6OqpRTo+rlfb51@lunn.ch>
-References: <20210514115826.3025223-1-pgwipeout@gmail.com>
- <YJ56G23e930pg4Iv@lunn.ch>
- <CAMdYzYrSB0G7jfG9fo85X0DxVG_r-qaWUyVAa5paAW0ugLvoxw@mail.gmail.com>
+        id S234589AbhENOx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 10:53:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234561AbhENOxz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 10:53:55 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B56A5C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 07:52:43 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id ez19so1173575qvb.3
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 07:52:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=zGZ82elK77/5kH34uv0rbc1Xa2C0OC28pMsSXnsj//w=;
+        b=Ok05uO2u0+cLu0ko1F+90xVTqaJl2/nU431zQ+9kXHtTsRj33AtPMiUAedrckSs6T2
+         mipFIXZpQasDOqRbSdWXKS2IwnPtcyKGlLAcDDwWmOG0GOy0qAKpUqjX4MgwbMiyPgN8
+         rYkUFcmgHkHje7qV5U3iYBA/GYkTatcAFsxS1OdtjgCp3qS2NZzmquKHo0pNUfhw5IXD
+         eddOJZSi3SdjDSva3qATlAJAp1XGP3IHf1JZ4Amu+sjBx6XLAVC2OR4fmyZlhIZl+R7l
+         8HAxg0G5JjzxNZiZrq3jqHV1jQOODgQP9HpDjTjNB9COGBCPcpNx9MgiKy7be2Gsle80
+         woEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=zGZ82elK77/5kH34uv0rbc1Xa2C0OC28pMsSXnsj//w=;
+        b=SxfuqqgGSpNI8H812Q10euM1fmI59+ypuDmZSrBTnVEbSVYb6FVbAMbaKfy9Rj9URX
+         Roq4GJ5e3A6054Oq/mroKv1E68yhbmS/BztBR6dNmdoXgUoBq39Hk/iyA4prcWGXl2on
+         xzyNewgbY+4FF7EeKE4ddyjd7ralR+kyCuiheEudpZ2ye/4t19qmdLGsCsGlewxjKA++
+         affFdiU7RoExl0U+vYr29rxzJJFVV+5aC4cAMbnXjpIhc27Wn0lmBERnmZWtpsQnDex+
+         0aYH8DLS2tYcjHkZjmLfei+eAsH92HZvl3ixer5NlD63+ShagYjMCq/X0Q8RJB1BhEEi
+         9qqg==
+X-Gm-Message-State: AOAM530W1ZA18ykOlq3g6D8mn/fP9ihilVJlNKC9dIYu4KMgCkbUcTyC
+        nr9j+WznJK4iRPQlMFgod7nvdrmwA6o9TlqYh9DlAQ==
+X-Google-Smtp-Source: ABdhPJzf99KR3hYW03as+Lr+ImfaQfpn3vZSvfZa5mnjBQTolGngYur6tk/B9ZkbpscxMeGoEUVK85ljRv/Odtfb20s=
+X-Received: by 2002:a05:6214:126f:: with SMTP id r15mr12778024qvv.35.1621003962738;
+ Fri, 14 May 2021 07:52:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMdYzYrSB0G7jfG9fo85X0DxVG_r-qaWUyVAa5paAW0ugLvoxw@mail.gmail.com>
+From:   Joel Fernandes <joelaf@google.com>
+Date:   Fri, 14 May 2021 10:52:31 -0400
+Message-ID: <CAJWu+orW9PA7m_s5LHhQv-bEO0xFq7n+9-fznd79boKkmQUR6g@mail.gmail.com>
+Subject: Silencing false lockdep warning related to seq lock
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Suren Baghdasaryan <surenb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > I also wonder about bits 15:12 of PHY EXT ODH: Delay and driver
-> > strength CFG register.
-> 
-> The default value *works*, and from an emi perspective we want the
-> lowest strength single that is reliable.
+Hi Boqun,
+You might have worked on such issues so I thought you're a good person to ask.
 
-I was not meaning signal strength, but Txc_delay_sel_fe,
+After apply Laurent's SPF patchset [1] , we're facing a large number
+of (seemingly false positive) lockdep reports which are related to
+circular dependencies with seq locks.
 
-  selecte tx_clk_rgmii delay in chip which is used to latch txd_rgmii
-  in 100BT/10BTe mode. 150ps step. Default value 15 means about 2ns
-  clock delay compared to txd_rgmii in typical cornor.
+ lock(A); write_seqcount(B)
+  vs.
+write_seqcount(B); lock(A)
 
-[Typos courtesy of the datasheet, not me!]
+This cannot deadlock obviously. My current strategy which I hate is to
+make it a raw seqcount write which bypasses lockdep. That's horrible
+for obvious reasons. Do you have any tricks/patches up your sleeve to
+silence these?
 
-This sounds like more RGMII delays. It seems like PHY EXT 0CH is about
-1G mode, and PHY EXT 0DH is about 10/100 mode. I think you probably
-need to set this bits as well. Have you tested against a link peer at
-10 Half? 100 Full?
+I suppose we still want to catch lockdep issues of the form (which
+peterz chatted to me about):
 
-   Andrew
+ lock(A); write_seqcount(B)
+  vs.
+read_seqcount(B); lock(A)
+
+which seems like it can deadlock.
+
+I would rather make lockdep useful to catch these and not miss out on
+them. Let me know what you think?
+
+Cheers,
+-Joel
+
+[1] https://lkml.org/lkml/2019/4/16/615
