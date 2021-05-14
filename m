@@ -2,107 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E9B3812E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 23:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83A253812DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 23:32:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232816AbhENVeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 17:34:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232548AbhENVeW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 17:34:22 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98E47C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 14:33:10 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id z9so320583lfu.8
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 14:33:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DgAKwIM9zch8xYFNPJtzcIGRCfmQye33dMFzHuDOjA8=;
-        b=Ma9YTpFKv2FKqspm+/+nOYKxqwaYNdETxuDqxtZyA7ZnVB17mpdfo0ZQZ1QAMyP7bQ
-         2NoTwneXD9c+6ebVHoiqc6oePXLumrECPiQv+8vOzySGekm4yv4qyr/1A5OQgNBWIdOc
-         GC91s86KWPnv8OcKzcAtpmA6LtDhi2dV4QHzddOOZPk3XWb4BwhtopFJddjuMGi0t41q
-         Jt0ib/JJrlJ/eTK/VFDyP2XjLu/w++ESDctvgTGDtx+T4x5lrWiNYYxvwr1aWxUfB5gb
-         DYjv0/UJb4ygI1UCeFfyaQGMxfketFlRyTTSsDTQ0S3dPSWKpNzYhoYbxy3ooFhgS+3n
-         2mNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DgAKwIM9zch8xYFNPJtzcIGRCfmQye33dMFzHuDOjA8=;
-        b=cL0diZN3jkWu1SF1Gq+YEi6zTFLwWhkaYOLCCy784FmfYoK0+kyyF/l1jvdLnnHEms
-         w7tEbHILSC8iRrkmTeKM1+UO0SCmfp7//zQK0BHPxHKKqevBLDadVCwjtcopujKTEvPS
-         0MvrV9utJnzwW2p003khBEFu+YacQDzelzKrNxHUcCAXtEmInMRpWNOj2HssgM/cNezp
-         s1kCeZLlIaclz2R+DdX38tC1uIo/EOtskLkB2Q6shNVsOAe+YwjwTd0BGa/2RPo4Agez
-         5AfakYoMDboVsNR2RkWPQzzheNgBGOWfO0a5I32+sMJbLN4qeQuJq6SiUIoOBLqvIIE8
-         NsHA==
-X-Gm-Message-State: AOAM531I2G208w4R6B8ychfkon+lLe5YT01mzpuZQPHfHuOLvh17JLM+
-        xnhKRuxa2fBgKJHZE8TEgl0VsGY+y8ZZeBI1JjNQJQ==
-X-Google-Smtp-Source: ABdhPJwaWVyRTYrod/pJttPl6eOfPN7YN4oV2Ff7Rx7cDDSMWwaxFsTSlvdmGRhuFsgKwiPdwp1Wmw5xH9pEHIajUKQ=
-X-Received: by 2002:a05:6512:2243:: with SMTP id i3mr33685984lfu.46.1621027988910;
- Fri, 14 May 2021 14:33:08 -0700 (PDT)
+        id S232746AbhENVeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 17:34:06 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:10895 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230309AbhENVeF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 17:34:05 -0400
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4FhhZr1Vpfz4w;
+        Fri, 14 May 2021 23:32:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1621027972; bh=Djm/NR5a0wmp9qybZtVtvTmKM8xCKGXtXFxIgYAHFw4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Zn7nMib/DFbb0KOqI5CWVItFDkR/tWNGfUnulNLRCBMoXZwPJobyqrP0mW9jEYL8y
+         K6zLsH+lT2WETFc7a2lKt+Z62a1olLjVywMmMTST0aatFTsrxFaV0JCLBeqJZKYIux
+         cMRNg2HNiE85v0UgeizA/vUEkce8UfW04xLjUJfVOSQ6bwMIbU/o50HJHWnNrQCE+c
+         GJkKNZtVR8+3hBuQFciPeiYDLLvIDqsJ6Zb3r6//KawpephHQZ7C0/6iZNSne7PKRs
+         vUl42YDpP7vlHTR8CqmSCfOFQ8sqXxZvsbSrVaEbs2lFM3BOOVkoNmjCnSefYVxx/p
+         NRFTudhvqK2uw==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.2 at mail
+Date:   Fri, 14 May 2021 23:32:51 +0200
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Nikola =?iso-8859-2?Q?Milosavljevi=E6?= <mnidza@outlook.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v1 0/2] Restore voltages before rebooting of NVIDIA Tegra
+ SoCs
+Message-ID: <20210514213251.GB1969@qmqm.qmqm.pl>
+References: <20210510220526.11113-1-digetx@gmail.com>
 MIME-Version: 1.0
-References: <1620871189-4763-1-git-send-email-wanpengli@tencent.com>
-In-Reply-To: <1620871189-4763-1-git-send-email-wanpengli@tencent.com>
-From:   David Matlack <dmatlack@google.com>
-Date:   Fri, 14 May 2021 14:32:42 -0700
-Message-ID: <CALzav=e98KRgG+z5oezPmENKDt+NqtEA57ijYh3kMBZyduQUZg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] KVM: X86: Bail out of direct yield in case of
- under-comitted scenarios
-To:     Wanpeng Li <kernellwp@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, kvm list <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210510220526.11113-1-digetx@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 7:01 PM Wanpeng Li <kernellwp@gmail.com> wrote:
->
-> From: Wanpeng Li <wanpengli@tencent.com>
->
-> In case of under-comitted scenarios, vCPU can get scheduling easily,
-> kvm_vcpu_yield_to adds extra overhead, we can observe a lot of race
-> between vcpu->ready is true and yield fails due to p->state is
-> TASK_RUNNING. Let's bail out in such scenarios by checking the length
-> of current cpu runqueue, it can be treated as a hint of under-committed
-> instead of guarantee of accuracy.
->
-> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-> ---
-> v1 -> v2:
->  * move the check after attempted counting
->  * update patch description
->
->  arch/x86/kvm/x86.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 9b6bca6..dfb7c32 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -8360,6 +8360,9 @@ static void kvm_sched_yield(struct kvm_vcpu *vcpu, unsigned long dest_id)
->
->         vcpu->stat.directed_yield_attempted++;
->
-> +       if (single_task_running())
-> +               goto no_yield;
+On Tue, May 11, 2021 at 01:05:24AM +0300, Dmitry Osipenko wrote:
+> Hi,
+> 
+> Nikola Milosavljeviæ reported that rebooting wasn't working properly on
+> Asus Transformer TF101, which is Tegra20-based tablet device.  We found
+> that TF101 and some other devices have bootloader which doesn't re-initialize
+> voltages properly on a reboot.  The problem is resolved by ensuring that
+> SoC voltages are at a levels that are suitable for the rebooting of the
+> SoC before reboot happens. This series adds reboot handler to the Tegra
+> regulator couplers, it bumps voltages on the reboot event.
 
-Since this is a heuristic, do you have any experimental or real world
-results that show the benefit?
+Which tree does this series apply to?
 
-> +
->         rcu_read_lock();
->         map = rcu_dereference(vcpu->kvm->arch.apic_map);
->
-> --
-> 2.7.4
->
+Best Regards
+Micha³ Miros³aw
