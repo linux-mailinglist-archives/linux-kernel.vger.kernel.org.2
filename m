@@ -2,43 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1BD83812D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 23:31:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AADE3812DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 23:32:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232535AbhENVch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 17:32:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55178 "EHLO mail.kernel.org"
+        id S232715AbhENVdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 17:33:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55656 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229504AbhENVcf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 17:32:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D9306140A;
-        Fri, 14 May 2021 21:31:21 +0000 (UTC)
+        id S232542AbhENVdV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 17:33:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 905B66143F;
+        Fri, 14 May 2021 21:32:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621027884;
-        bh=r4ZITb5VahQ1bp4eOnHrhuqUyrRIdgRO+1xUikzpyiU=;
+        s=k20201202; t=1621027929;
+        bh=4L4mcKVn3lkbqXEEkhEsQV92HBC1CPOXzYICTb92p2Y=;
         h=From:To:Cc:Subject:Date:From;
-        b=YxucMdfrO3LsjOLFgbwf4gd1fZXfgu1IvyP2icIRwYCV4bedtaWMzi1WGRNs0Eowl
-         tXuYLbhMVhEqACnTNhbLJBvJzz1S1cnhww1BzNrVek3qqJ9X7QsjegPzRvrgOmZqpY
-         oPBoQQcwqIinJ4IBNcFEgcMigj7WzH7dbEyc1kgzL/owH6UttN0NYnfLnYd9oiqrIX
-         Cgb5M/SOrlWGpzdDrC4AJaCUtAMk8BDOLRtOpnXef19SaUjzjnSoIVE8kHr0dIsD23
-         7yBmUtwPDb/CzoliYRLu9Jx7O64M1056cFB//tOzWcpL3bkMJjHuIRm0Lju5wZL0sr
-         0+Q1xtHzt8zhA==
+        b=JpuFugNGtCnfLnbuSbD6CYvS9tqG7bcN2jo/Rzbn/NVrHpOOWL7eV0QAY28Wxe03K
+         12BtzI6hEX+yVdfs7SDSFprIQ4WsWbty/nHjnLJP5jrSWHWeIux++zfG4EC1yV+XO1
+         q+xp/qqE1d/sp622ccn1qu/941nWsAIaPjp8itRWGUOkr9WAuah0cIRllwQTbQCnZp
+         ozBSoCKp+ZVx6e+ASRN7jsYuZL1I5N18jsrQ4RdzRvfnpJ27qo0639AKPl76HuOT3q
+         ZiA1LF4H3iOkY3dPOCd7TmEXgnMfiyvnXk9a7pBFkUEJxRU34qT05AfFNeDm556Bph
+         kD+ZQlgrBsncQ==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
 Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH] drm/msm/dsi: fix 32-bit clang warning
-Date:   Fri, 14 May 2021 23:30:17 +0200
-Message-Id: <20210514213032.575161-1-arnd@kernel.org>
+        Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Viorel Suman <viorel.suman@nxp.com>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: fsl: fix SND_SOC_IMX_RPMSG dependency
+Date:   Fri, 14 May 2021 23:31:14 +0200
+Message-Id: <20210514213118.630427-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -48,42 +46,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-clang is a little overzealous with warning about a constant conversion
-in an untaken branch of a ternary expression:
+Kconfig produces a warning with SND_SOC_FSL_RPMSG=y and SND_IMX_SOC=m:
 
-drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c:975:48: error: implicit conversion from 'unsigned long long' to 'unsigned long' changes value from 5000000000 to 705032704 [-Werror,-Wconstant-conversion]
-        .max_pll_rate = (5000000000ULL < ULONG_MAX) ? 5000000000UL : ULONG_MAX,
-                                                      ^~~~~~~~~~~~
+WARNING: unmet direct dependencies detected for SND_SOC_IMX_RPMSG
+  Depends on [m]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_IMX_SOC [=m] && RPMSG [=y]
+  Selected by [y]:
+  - SND_SOC_FSL_RPMSG [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && COMMON_CLK [=y] && RPMSG [=y] && SND_IMX_SOC [=m]!=n
 
-Rewrite this to use a preprocessor conditional instead to avoid the
-warning.
+Add a dependency to prevent this configuration.
 
-Fixes: 076437c9e360 ("drm/msm/dsi: move min/max PLL rate to phy config")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
-As found with another patch, using __builtin_choose_expr() would
-likely also work here, but doesn't seem any more readable.
----
- drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ sound/soc/fsl/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
-index e76ce40a12ab..accd6b4eb7c2 100644
---- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
-+++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
-@@ -972,7 +972,11 @@ const struct msm_dsi_phy_cfg dsi_phy_7nm_cfgs = {
- 		.restore_pll_state = dsi_7nm_pll_restore_state,
- 	},
- 	.min_pll_rate = 600000000UL,
--	.max_pll_rate = (5000000000ULL < ULONG_MAX) ? 5000000000ULL : ULONG_MAX,
-+#ifdef CONFIG_64BIT
-+	.max_pll_rate = 5000000000UL,
-+#else
-+	.max_pll_rate = ULONG_MAX,
-+#endif
- 	.io_start = { 0xae94400, 0xae96400 },
- 	.num_dsi_phy = 2,
- 	.quirks = DSI_PHY_7NM_QUIRK_V4_1,
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index 0917d65d6921..556c284f49dd 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -119,6 +119,7 @@ config SND_SOC_FSL_RPMSG
+ 	tristate "NXP Audio Base On RPMSG support"
+ 	depends on COMMON_CLK
+ 	depends on RPMSG
++	depends on SND_IMX_SOC || SND_IMX_SOC = n
+ 	select SND_SOC_IMX_RPMSG if SND_IMX_SOC != n
+ 	help
+ 	  Say Y if you want to add rpmsg audio support for the Freescale CPUs.
 -- 
 2.29.2
 
