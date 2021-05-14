@@ -2,149 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EC293804EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 10:12:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF1383804F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 10:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233449AbhENINu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 04:13:50 -0400
-Received: from mail-eopbgr130083.outbound.protection.outlook.com ([40.107.13.83]:65206
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229654AbhENINt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 04:13:49 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SGRwiaBiv2y822u9EvK4OhColaO7QpdGAmxrqWelIoIpir5aTLm0FJoWKXFQXPQhCYZ6IkmbF2XbYf0Z27tujHz0H5y1+7fmacITwLLOyC6d7lWOT163par3msN0kSZlD2ZKqk5DPqE71Xt7MigL4VkZi2so2Sr7QvVlkV/3XNNYbeE/k40HueWl9EWIaoaFo7JwFmKOYW+ZEBo6Y4u8pXQuGhVUnDiGtTFAhlkOz3dds+JV4CjAo7mPiz5AvzY6Y+YF5f21up/Q+VE5GV7x7EtPMx3iSHvAWZUVmu86sJVvqVfbxBfNlmlVHVH27WICNTgO6NOudtHaKDEG4oRmqA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uEsVRAuyfMkSIdHNhS7IFji82TjmQ+OMQcxSGtfcRHk=;
- b=It4+4HxvvMlz3sCexCJX8hcak7PajB9sdNxqrZQhVEHW4hHaub2hnwvCvBmRINaPJo+bHl+R2mtv9KilNMKigGwlb9X4vKEE/iSpOBbHTHqknZcvB315qvL3x/v3CZX7921FvApHrkGMStpjnhm4XkJ2GnE7P+MM8/rtIKFviIN6mf3/xRvcAiSX37wf7yQGb9OMqbQ1ocLTf175czS0QbS7Sy5AnQa0uHdPmHes82ADKlccpf3ERXBmCReY1oDN1EAoPRrmIZCv6DMQIc+z6oyQ4UCXGIF1E1YLR3qCQVi12PQt7rTRqkO9+ss6KAnUrGSFqvTDd7MlH8BCzWXcmg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fi.rohmeurope.com; dmarc=pass action=none
- header.from=fi.rohmeurope.com; dkim=pass header.d=fi.rohmeurope.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=rohmsemiconductoreurope.onmicrosoft.com;
- s=selector1-rohmsemiconductoreurope-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uEsVRAuyfMkSIdHNhS7IFji82TjmQ+OMQcxSGtfcRHk=;
- b=tJd2IT1hIyr9M5rquApCk1aosAFbR70Dvnf16EnaQQcs3ifdcthVlKE9+D8DZDjm2a/BWrCN4gJlfsVsWP69ppFNESSqbbvNmoigqTl6FuM4iTwdugeAChbjq4c5GYsppSuqXh9EvIC75nws8M59MiS0FaqKc1o5Sigm1itaxm4=
-Received: from HE1PR03MB3162.eurprd03.prod.outlook.com (2603:10a6:7:55::20) by
- HE1PR03MB2892.eurprd03.prod.outlook.com (2603:10a6:7:60::25) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4108.25; Fri, 14 May 2021 08:12:35 +0000
-Received: from HE1PR03MB3162.eurprd03.prod.outlook.com
- ([fe80::89f0:ff95:a73a:cf4b]) by HE1PR03MB3162.eurprd03.prod.outlook.com
- ([fe80::89f0:ff95:a73a:cf4b%7]) with mapi id 15.20.4129.026; Fri, 14 May 2021
- 08:12:34 +0000
-From:   "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-To:     "krzysztof.kozlowski@canonical.com" 
-        <krzysztof.kozlowski@canonical.com>
-CC:     "hdegoede@redhat.com" <hdegoede@redhat.com>,
-        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
-        "cw00.choi@samsung.com" <cw00.choi@samsung.com>,
-        "myungjoo.ham@samsung.com" <myungjoo.ham@samsung.com>,
-        "b.zolnierkie@samsung.com" <b.zolnierkie@samsung.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/4] extcon: extcon-max8997: Fix IRQ freeing at error path
-Thread-Topic: [PATCH 4/4] extcon: extcon-max8997: Fix IRQ freeing at error
- path
-Thread-Index: AQHXRXRNk4IBjrSCh0GVY2/NQAmyoKrcxK6AgAG1azeABCzGgA==
-Date:   Fri, 14 May 2021 08:12:34 +0000
-Message-ID: <b4a88b987117120e055f230bc83c029e1655dd1c.camel@fi.rohmeurope.com>
-References: <cover.1620633360.git.matti.vaittinen@fi.rohmeurope.com>
-         <9047a741b4c4d97e721ed8b48cc4b434a46acba3.1620633360.git.matti.vaittinen@fi.rohmeurope.com>
-         <edf3ff4d-8bd7-17cf-0d7c-96b4f704dddd@canonical.com>
-         <978a829103c768a01ed8a1b37ea607ea5fb0ddb0.camel@fi.rohmeurope.com>
-         <f5b5c30f-9a84-459e-d3c8-5a5760912cb1@canonical.com>
-In-Reply-To: <f5b5c30f-9a84-459e-d3c8-5a5760912cb1@canonical.com>
-Reply-To: "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-Accept-Language: fi-FI, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-authentication-results: canonical.com; dkim=none (message not signed)
- header.d=none;canonical.com; dmarc=none action=none
- header.from=fi.rohmeurope.com;
-x-originating-ip: [213.255.186.46]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: fa70d399-0eb0-4434-71e2-08d916b007b5
-x-ms-traffictypediagnostic: HE1PR03MB2892:
-x-microsoft-antispam-prvs: <HE1PR03MB289268042B1B84EDE7579E9AAD509@HE1PR03MB2892.eurprd03.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ehd7QZfncuzu1eVotgFP2jRPtVytSifT6ks3Bzp09XxUXnMCdDS6a4krpqQygsvt+thCWXWZyXYObhBC1L+FcQDIopwt+71eiE1JTckK7mFFTbc+s6Ul3gtKMB2DHcRVSP4Hz9oolvJLkCleK+w3Pj00V9BiI5xDS4O3nACmfCl2tO312bZyK5Rnd+voY3dOtxzrjETTd8LRMTJj/kKGVahI93DyXQPMJzo0KFWZYstbpo/FkR46vkxlBuDn5RcvXKK2eXcFnBGeF9Z15skh5qHvWGrmtEGDMZXPNDz/p6A23TJLqbvyaxU0Qy/BGgTVJDQ6IoSzC62VJxY1ma4Wf+sy83ybvf5FdmxTKAxxszc6FE6Qjow+9upTMRuL2Nh/0T3hPw+pLa/+tixsG0/sGWeUyHmRSVhKHDKNP+NCzfA9CZGZgT4fFpoPE6lFQ+iF6XKCvVjwMo6DqHhi9TPgILFan6JOndUIPZsDHfFru8Blr1kZpgVJbzDPr3jTHxlvGplIXPa+CB595MvhBidLszEVjWIRt/F/Cv+7Xb31WfLGOj4ertc5oClKQqJ7Sv7K0UxkRyKsPxqMowVk8wsU8M9ctuTQi1JaLq5ONFxwa4U=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR03MB3162.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(136003)(39850400004)(396003)(346002)(5660300002)(86362001)(26005)(3450700001)(38100700002)(4326008)(186003)(8676002)(6506007)(53546011)(6916009)(64756008)(2616005)(83380400001)(66556008)(66946007)(6486002)(66446008)(66476007)(76116006)(54906003)(478600001)(71200400001)(122000001)(316002)(8936002)(2906002)(6512007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?Z1lzOWJjYWtVdEtOblVsemdGNEZhMVcvTUw2Q0NaNjcyUFU3eS9ReTBOL1I2?=
- =?utf-8?B?QjE3Q3RKbTZoVGtJOWpPM3IwaGlUOVFqekRtR0UyMFlWYmVsTDVaanQ0SHBo?=
- =?utf-8?B?NldtcVlQTzZMYUVZbGFoTEo5aFd4QXB1OElUQVdzT3hHMjVyRjdBb0tmZkpt?=
- =?utf-8?B?Y1BKQjVTN2YrMEhDanZXT2ZCM3hEK3ZJUkgrZ3lOQ0d2VEc0TVV1bFlTWUpa?=
- =?utf-8?B?dFk5dWZGcTIrV0d2QzZ6UDRjN29CZllwU0J1eDFYYzhESHVZelJWT1dJa3Zq?=
- =?utf-8?B?L0pYYlVaSUJidjUzMUtwVzdaeGlHQ1hjaHpxMVZhV3hIK1pQWkpEc2d4UWxk?=
- =?utf-8?B?aGo3bWZOTWM1aWRyNnhLYnE0KzhhVFJuT3VRcUdhNkZiNHlUWGV3ZGl2M1Ny?=
- =?utf-8?B?Tlg2RjdRRGlVdWtpaHNpYzU0d0tJR2ZWc3lLZ0ZQM3c4N0cvYjNaSi9CQzVU?=
- =?utf-8?B?OFYxWDNCRkxjd0prS000KzJqcVlHMFQwUG42S2FKY2lzN2Jhd1MrNklBMGNV?=
- =?utf-8?B?anY2Z3Y4V0RIUnF1WlQrK1MwNGZ5ODZNaWYxNnBDeC8zTUlINElFRlFZMFJF?=
- =?utf-8?B?UGxnLytHNU93VlJDYkd2a1hIYW1ZV2Z4a2l1RERvTUYyNTJRb2twbjYyVVJ5?=
- =?utf-8?B?UlZFUTlUNHBYZTk2VEZOS2F0eFN1cXRkbG5tTmJ6Mlg5REJoUE9iMVdQMVls?=
- =?utf-8?B?MzlDYXdQd3JYT2J0WXh4RTRoOStJemp2OUkwaUhCblo3S2E0UnhMdXZ5SzhU?=
- =?utf-8?B?aHBOclNsSTh5azB3OVZZM2JCZDl2MDFVM1o0RDJ6djgvSHdtaTFxaktkZ3da?=
- =?utf-8?B?RTNBeGI5VjdHWlUyUEpCMHN3R1MxZy9xRy9CZmVHaitFYzZUSE5rcVJwb2Fa?=
- =?utf-8?B?SVRySzU2clFEMGh3SzQ5VHBtbXg2QjlLZXIrSkp4eFVrcERIeDlFRGFOWDBt?=
- =?utf-8?B?V1Z0T2h6ZmUvempvOVJaeDVuUjVpa21kazl3L2RMODdhTTRtY0pOQU05M0g1?=
- =?utf-8?B?cFZFSmtmK0JQSWRNRENQQzAyWjN3ak1zejh2SG0xcW5TQ0JIZU1BTDhsTmdr?=
- =?utf-8?B?VnI5MXZqNFowYXBZcVB1dnZuN2pLV1NMYkltSHA5Q1hJdHVMbkpDOUt6Z1pZ?=
- =?utf-8?B?RVlYamhpV0V2ZWZJaG9yWmNJUUFtZzZRSFJVcnovamNaM2ZlNW1KMGF3czhh?=
- =?utf-8?B?cHNmc2kxWGF5Z3pxSjEzVEREY2srcFZ5YVIvR2Y4SWk5ajU2dkhYM1Q4T2F2?=
- =?utf-8?B?K01pbTJDa0hrVGpQc0kvREdMc1lpbTF3Wi8zT0JKOWRwMFp1OFVXbmR5L2Ux?=
- =?utf-8?B?Tnc1Z1BWMW1zYWM5NXZtWXU4bjkyUDVMcGp6LzNSUWFXM2RuclVCd0xVMHF2?=
- =?utf-8?B?eHhjbmdoYkV1d1NNaCsxV1QvdWVROUpBV1BWd3JpMnpNVDRjVTdaTTkvK09y?=
- =?utf-8?B?bkJrei95SFFGcjNseHF3bmVMSEhYYldQOWJIa3lBQjFhWWRNZDRJdDlKSmVp?=
- =?utf-8?B?bFhXNkdkVDdzWEQ0THl5TzRXYkxNREczV3RFUmpUU01SVUo5aDVKY3BTbW8w?=
- =?utf-8?B?TnRPL1YzZEZZS3lCdVhyWmtIeDVjb1JwYzB1ekZ3bzZhK2h3cDJYNTgzWlNK?=
- =?utf-8?B?QVpNdHM5azJxTmV1dWo5d1UwVWNaNlJPQnlaQktjNC95Nkp4M3htdXBTNTMv?=
- =?utf-8?B?c1NBQWxncFEzUGFNQXNRNWJRNndmSGlpZXRaQm9aUVZxWEdJNUtWMThtb2I4?=
- =?utf-8?B?YytDWmttNVpqdTMvSjhFeTlUV0xJNlQ3NFhyaTc2TDJEd3ZkL0VpMUQ0WDI1?=
- =?utf-8?B?SFlrUHYyRHVxdW5vT3hJZz09?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <4471927DACC3BD45ACB3B1F1ACC97534@eurprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S233455AbhENISc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 04:18:32 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:3758 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229654AbhENIS1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 04:18:27 -0400
+Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FhLrt2vd4zqTrp;
+        Fri, 14 May 2021 16:13:50 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 14 May 2021 16:17:14 +0800
+Received: from localhost (10.52.120.239) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Fri, 14 May
+ 2021 09:17:07 +0100
+Date:   Fri, 14 May 2021 09:15:20 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+CC:     Jonathan Cameron <jic23@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Pengutronix Kernel Team" <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>,
+        "Robin van der Gracht" <robin@protonic.nl>,
+        <linux-iio@vger.kernel.org>,
+        "Lars-Peter Clausen" <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        "Dmitry Torokhov" <dmitry.torokhov@gmail.com>
+Subject: Re: [PATCH v6 0/3] mainline ti tsc2046 adc driver
+Message-ID: <20210514091520.00004930@Huawei.com>
+In-Reply-To: <20210514075731.ipxq2o4cdxd3piu3@pengutronix.de>
+References: <20210428073208.19570-1-o.rempel@pengutronix.de>
+        <20210503122818.59f50e45@jic23-huawei>
+        <20210514075731.ipxq2o4cdxd3piu3@pengutronix.de>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-X-OriginatorOrg: fi.rohmeurope.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HE1PR03MB3162.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fa70d399-0eb0-4434-71e2-08d916b007b5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 May 2021 08:12:34.7405
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 94f2c475-a538-4112-b5dd-63f17273d67a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: rc1FVsrcpH5x3wt0FGLkE6Cm71QMVv6mMb58aZfdPs++k9vyXgk8ULBB+CZScFo6HS8KWVO+O3pr4YkonPFVS2p3zGL3c4Wq4NpjMwkRJilYMWtw4qGgszzRhwboH+oH
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR03MB2892
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.120.239]
+X-ClientProxiedBy: lhreml706-chm.china.huawei.com (10.201.108.55) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiBUdWUsIDIwMjEtMDUtMTEgYXQgMTI6MjcgLTA0MDAsIEtyenlzenRvZiBLb3psb3dza2kg
-d3JvdGU6DQo+IE9uIDEwLzA1LzIwMjEgMjM6MzIsIE1hdHRpIFZhaXR0aW5lbiB3cm90ZToNCj4g
-PiBIaSBLcnp5c3p0b2YsDQo+ID4gDQo+ID4gT24gTW9uLCAyMDIxLTA1LTEwIGF0IDEwOjIxIC0w
-NDAwLCBLcnp5c3p0b2YgS296bG93c2tpIHdyb3RlOg0KPiA+ID4gT24gMTAvMDUvMjAyMSAwNDox
-MiwgTWF0dGkgVmFpdHRpbmVuIHdyb3RlOg0KPiA+ID4gPiBJZiByZWFkaW5nIE1BWDg5OTdfTVVJ
-Q19SRUdfU1RBVFVTMSBmYWlscyBhdCBwcm9iZSB0aGUgZHJpdmVyDQo+ID4gPiA+IGV4aXRzDQo+
-ID4gPiA+IHdpdGhvdXQgZnJlZWluZyB0aGUgcmVxdWVzdGVkIElSUXMuDQo+ID4gPiANCj4gPiA+
-IFRoZSBkcml2ZXIgZnJlZXMgSVJRIG9uIHByb2JlIGZhaWx1cmUsIHNvIG1heWJlIHlvdSBtZWFu
-dCBtaXNzaW5nDQo+ID4gPiBJUlENCj4gPiA+IG1hcHBpbmcgZGlzcG9zZT8NCj4gPiANCj4gPiBO
-by4gVGhlIGNvbW1pdCAzZTM0YzgxOTg5NjAgKCJleHRjb246IG1heDg5OTc6IEF2b2lkIGZvcmNp
-bmcgVUFSVA0KPiA+IHBhdGgNCj4gPiBvbiBkcml2ZSBwcm9iZSIpIGludHJvZHVjZWQgYSByZXR1
-cm4gdy9vIElSUSBmcmVlaW5nIGlmIHJlYWRpbmcgdGhlDQo+ID4gTUFYODk5N19NVUlDX1JFR19T
-VEFUVVMxIGZhaWxzIGF0IHRoZSBlbmQgb2YgdGhlIHByb2JlLiBUaGlzIGlzIG5vdA0KPiA+IHZp
-c2libGUgaW4gdGhlIHBhdGNoIHRob3VnaCAtIGFzIHRoZSByZXR1cm4gaXMgT2sgYWZ0ZXIgdGhl
-IElSUXMNCj4gPiBhbmQNCj4gPiB3b3JrLXF1ZXVlIGNhbmNlbGxhdGlvbiBhcmUgbWFuYWdlZCBi
-eSBkZXZtLg0KPiANCj4gSSBzZWUgaXQgbm93LCByaWdodC4gVGhlIGZpeCBpcyBiaWcgYW5kIGNo
-YW5nZXMgdG9vIG11Y2ggdG8gYmUNCj4gYmFja3BvcnRhYmxlLiBJIHdvdWxkIHByZWZlciB0byBz
-aW1wbHkgZml4IHRoZSBwcm9ibGVtIHdpdGggImdvdG8NCj4gZXJyX2lycSIgYW5kIGNvbnZlcnQg
-dG8gZGV2bSBpbiBuZXh0IHBhdGNoLg0KDQpBZ3JlZS4gQmFja3BvcnRpbmcgZGV2bSBXUXMgdG8g
-c3RhYmxlIGp1c3QgdG8gZml4IHRoaXMgc2VlbXMgbGlrZSBhbg0Kb3ZlcmtpbGwuIEknbGwgcmVz
-cGluIHRoZSBzZXJpZXMuDQoNCkJlc3QgUmVnYXJkcw0KLS1NYXR0aQ0K
+On Fri, 14 May 2021 09:57:31 +0200
+Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+
+> Hi Jonathan,
+> 
+> On Mon, May 03, 2021 at 12:28:18PM +0100, Jonathan Cameron wrote:
+> > On Wed, 28 Apr 2021 09:32:05 +0200
+> > Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+> > 
+> > Hi Oleksij,
+> > 
+> > Series applied with the tweaks as per review to patch 3.  Please
+> > check I didn't mess those up though.
+> > 
+> > Applied to the togreg branch of iio.git and pushed out as testing for
+> > the autobuilders to poke at it.  
+> 
+> It works. Thx!
+> 
+> Now i need to make configurable iio buffer layout
+> 
+> for the drivers/input/touchscreen/resistive-adc-touch.c
+> 
+> Do you have ideas what is the proper way to make it?
+
+So IIRC the issue here was making the ordering of the channels
+more flexible?  
+
+We should be able to do that using the names in DT.
+
+Right now the touch screen driver just grabs them all an assumes
+a particular order, but if you look at the binding it requires naming
+
+https://elixir.bootlin.com/linux/latest/source/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.txt
+
+That naming should associate 'which channel' is which when
+we then do the get_all() in the driver.  If it matches the existing
+layout, nothing to do, but if we have something more complex then
+we can do data shuffling etc in the touchscreen driver to compensate
+for that.
+
+A useful starting point is probably to do a yaml conversion of
+that binding doc.  Then follow that up by making the doc more flexible
+so that it copes with what you want to do. 
+
+That should give us a good basis on which to then implement the
+handling in driver (which is often easier than defining the binding!)
+
+Jonathan
+
+> 
+> Regards,
+> Oleksij
+> 
+> > 
+> > Jonathan
+> >   
+> > > changes v6:
+> > > - get blessing from Dmitry Torokhov
+> > > - rebase against latest iio/testing
+> > > - use simple name for iio_dev->name
+> > > - use Jonathan's version for oversampling-ratio description 
+> > > 
+> > > changes v5:
+> > > - remove type for the settling-time-us property
+> > > 
+> > > changes v4:
+> > > - spell fixes
+> > > - add more comments
+> > > - make code more readable
+> > > - move scan_buf to the priv
+> > > - use FIELD_GET to extract ADC data
+> > > - make some multi line code as one line
+> > > - do not use atomic API for trig_more_count
+> > > - fix build warning on 64bit system
+> > > - add NULL check for the devm_kasprintf()
+> > > - use return devm_iio_device_register(), without additional error
+> > >   printing.
+> > > 
+> > > changes v3:
+> > > - different spell fixes
+> > > - add some notes about driver structure
+> > > - rename the trigger to point on the touchscreen nature of it
+> > > - rename DT binding to oversampling-ratio
+> > > - make sure we have some defaults in case no DT property is set
+> > > 
+> > > changes v2:
+> > > - rework and extend DT binding properties
+> > > - remove touchscreen related code from the IIO ADC driver
+> > > - make trigger be active longer then IRQ is requesting. This is needed
+> > >   to get "inactive" samples
+> > > - make oversampling and settle time configurable
+> > > 
+> > > TI TSC2046 is a touchscreen controller based on 8 channel ADC. Since most of
+> > > this ADC based touchscreen controller share same set of challenges, it
+> > > is better keep then as simple IIO ADC devices attached to a generic
+> > > resistive-adc-touch driver.
+> > > 
+> > > This driver can replace drivers/input/touchscreen/ads7846.c and has
+> > > following advantages over it:
+> > > - less code to maintain
+> > > - shared code paths (resistive-adc-touch, iio-hwmon, etc)
+> > > - can be used as plain IIO ADC to investigate signaling issues or test
+> > >   real capacity of the plates and attached low-pass filters
+> > >   (or use the touchscreen as a microphone if you like ;) )
+> > > 
+> > > Oleksij Rempel (3):
+> > >   dt-bindings:iio:adc: add generic settling-time-us and
+> > >     oversampling-ratio channel properties
+> > >   dt-bindings:iio:adc: add documentation for TI TSC2046 controller
+> > >   iio: adc: add ADC driver for the TI TSC2046 controller
+> > > 
+> > >  .../devicetree/bindings/iio/adc/adc.yaml      |  12 +
+> > >  .../bindings/iio/adc/ti,tsc2046.yaml          | 115 +++
+> > >  MAINTAINERS                                   |   8 +
+> > >  drivers/iio/adc/Kconfig                       |  12 +
+> > >  drivers/iio/adc/Makefile                      |   1 +
+> > >  drivers/iio/adc/ti-tsc2046.c                  | 720 ++++++++++++++++++
+> > >  6 files changed, 868 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,tsc2046.yaml
+> > >  create mode 100644 drivers/iio/adc/ti-tsc2046.c
+> > >   
+> > 
+> >   
+> 
+
