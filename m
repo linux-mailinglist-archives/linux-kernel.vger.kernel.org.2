@@ -2,62 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29FBD380D7E
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 17:41:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31E7B380D81
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 17:41:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234972AbhENPmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 11:42:42 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51466 "EHLO mx2.suse.de"
+        id S234990AbhENPmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 11:42:51 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:40526 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232426AbhENPmk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 11:42:40 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 67574B05C;
-        Fri, 14 May 2021 15:41:28 +0000 (UTC)
-Subject: Re: [PATCH v10 11/33] mm: Handle per-folio private data
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        akpm@linux-foundation.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Jeff Layton <jlayton@kernel.org>
-References: <20210511214735.1836149-1-willy@infradead.org>
- <20210511214735.1836149-12-willy@infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <9a748624-5f07-acf2-667a-39fc271f830d@suse.cz>
-Date:   Fri, 14 May 2021 17:41:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S232426AbhENPmu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 11:42:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=JGPg2rGN1c6V/ZgAIaVM+slcrBMKD0rGiiBx+eLZO3E=; b=GVdjFcI8OK/Bo9hHneBzVr4s8W
+        V+xQ9NkGYW0TWXNNZ0pqk4c9dbcSYJ6BI9eOBM3H9/zcF+u2Q007kZYjvogndKCw0jtgZ31r14M+A
+        HnotK1H/rKZ+jnYF6mQm8ThH/wZ2J8fKi0bzJIaWgPqHQa/IDcD3Ojevhg5CA50WRfq8=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lhZwT-004Cnj-AV; Fri, 14 May 2021 17:41:33 +0200
+Date:   Fri, 14 May 2021 17:41:33 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Peter Geis <pgwipeout@gmail.com>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>
+Subject: Re: [PATCH v3] net: phy: add driver for Motorcomm yt8511 phy
+Message-ID: <YJ6aLTo3fJ6kRvzK@lunn.ch>
+References: <20210514115826.3025223-1-pgwipeout@gmail.com>
+ <YJ56G23e930pg4Iv@lunn.ch>
+ <CAMdYzYrSB0G7jfG9fo85X0DxVG_r-qaWUyVAa5paAW0ugLvoxw@mail.gmail.com>
+ <YJ6OqpRTo+rlfb51@lunn.ch>
+ <CAMdYzYrdNqDZdkCj5Jf9+MmGtZgy263cYmwWkB3rZY02dPefYw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210511214735.1836149-12-willy@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMdYzYrdNqDZdkCj5Jf9+MmGtZgy263cYmwWkB3rZY02dPefYw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/11/21 11:47 PM, Matthew Wilcox (Oracle) wrote:
-> Add folio_get_private() which mirrors page_private() -- ie folio private
-> data is the same as page private data.  The only difference is that these
-> return a void * instead of an unsigned long, which matches the majority
-> of users.
+> Good Catch!
 > 
-> Turn attach_page_private() into folio_attach_private() and reimplement
-> attach_page_private() as a wrapper.  No filesystem which uses page private
-> data currently supports compound pages, so we're free to define the rules.
-> attach_page_private() may only be called on a head page; if you want
-> to add private data to a tail page, you can call set_page_private()
-> directly (and shouldn't increment the page refcount!  That should be
-> done when adding private data to the head page / folio).
-> 
-> This saves 597 bytes of text with the distro-derived config that I'm
-> testing due to removing the calls to compound_head() in get_page()
-> & put_page().
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Acked-by: Jeff Layton <jlayton@kernel.org>
+> Guess I'll have to set that too, anything else you'd recommend looking into?
 
+I think for a first submission, you have the basics. I'm just pushing
+RGMII delays because we have had backwards compatibility problems in
+that area when added later. Experience suggests adding features in
+other areas is much less of a problem. So as you suggested, you can
+add cable test, downshift control, interrupts etc later.
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+    Andrew
