@@ -2,123 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45BB5380F56
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 19:55:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC0F1380F4A
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 19:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235285AbhENR4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 13:56:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232283AbhENR4j (ORCPT
+        id S235255AbhENRxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 13:53:24 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:33546 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235247AbhENRxX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 13:56:39 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FD54C061574;
-        Fri, 14 May 2021 10:55:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=HdZ+Rvb3VddDC+nVIUj42YinsKumWXhl2FsoYoSKcTw=; b=MlhCqueTaVBVJquCeH+yCh0mNn
-        DWQa9KPy6TjpHwTVqGPctwkRkkm7WYcbTKbR3BnJnNQwRZm2C8UaQgPY522CQoRXLO6O+1pTV+mas
-        dKpzpvYnQL+t4hdwCIYtN6cLPasFRXYO+UuH58XydP4dQ8L0yW79ol4kJsBmHQ5348JfDO9SSxpf8
-        0yeMNi8e254eAojsjvy+g1z52WWvIL3venwPje2pWY0s8kSNGvArS4VnB2jpLOoriOick18LHRkQP
-        UuJzP9Q71riB+cDvdaQvzFEEcm1nOhmlVb9+DqMlCv6ANXJ+6XPSvnsRU9Jl0ohR2Zz9FmYy6R9+O
-        LsYUevOQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lhbyp-00AakW-KA; Fri, 14 May 2021 17:52:22 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EB3D6300223;
-        Fri, 14 May 2021 19:52:04 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CE4732BA998D5; Fri, 14 May 2021 19:52:04 +0200 (CEST)
-Date:   Fri, 14 May 2021 19:52:04 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-        lizefan.x@bytedance.com, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>, mgorman@suse.de,
-        Minchan Kim <minchan@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, bristot@redhat.com,
-        "Paul E . McKenney" <paulmck@kernel.org>, rdunlap@infradead.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>, macro@orcam.me.uk,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        mike.kravetz@oracle.com, linux-doc@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        cgroups mailinglist <cgroups@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Subject: Re: [PATCH 1/1] cgroup: make per-cgroup pressure stall tracking
- configurable
-Message-ID: <YJ64xHoogrowXTok@hirez.programming.kicks-ass.net>
-References: <20210513175349.959661-1-surenb@google.com>
- <YJ5iAvqAmIhzJRot@hirez.programming.kicks-ass.net>
- <CAJuCfpHy+MknCepfjx9XYUA1j42Auauv7MFQbt+zOU-tA4gasA@mail.gmail.com>
+        Fri, 14 May 2021 13:53:23 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14EHq8em122052;
+        Fri, 14 May 2021 12:52:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1621014728;
+        bh=WJxEmaqQh0134GlcK2ZN95rUJMUmqIC4G5xF14/r048=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=enQj06yBfFNkxbOz6gWjRSkMpsLyBvjsegblvN3DvTbUcHYV+qc+LCmQ5kBqH/3Q5
+         HNYEFHL4DNMwzoZDApn2jVMl+C1XwHp/pq4JKem1oxwtpyT++TqZlpssldvdJeKt1t
+         WJwJ3zhbAD0Zh7xTAEpmfQkw2bflBBO50BwbvRNA=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14EHq8ek072682
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 14 May 2021 12:52:08 -0500
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 14
+ May 2021 12:52:08 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 14 May 2021 12:52:08 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14EHq8Wx089936;
+        Fri, 14 May 2021 12:52:08 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Tero Kristo <kristo@kernel.org>, Nishanth Menon <nm@ti.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/4] arm64: dts: ti: k3-*: Fixup nodes to exposed to be non-compliant with yaml
+Date:   Fri, 14 May 2021 12:52:07 -0500
+Message-ID: <162101471740.23039.13267585824105304513.b4-ty@ti.com>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20210510145033.7426-1-nm@ti.com>
+References: <20210510145033.7426-1-nm@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJuCfpHy+MknCepfjx9XYUA1j42Auauv7MFQbt+zOU-tA4gasA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 08:54:47AM -0700, Suren Baghdasaryan wrote:
+On Mon, 10 May 2021 09:50:29 -0500, Nishanth Menon wrote:
+> Series of minor fixups for v5.13-rc1 for compliance exposed by yaml
+> conversion in the series:
+> https://lore.kernel.org/linux-arm-kernel/20210503190824.GA2192378@robh.at.kernel.org/#t
+> 
+> Minimal testing performed on k3 platforms.
+> 
+> If possible, will be good to get in 5.13 window.
+> 
+> [...]
 
-> Correct, for this function CONFIG_CGROUPS=n and
-> cgroup_disable=pressure are treated the same. True, from the code it's
-> not very obvious. Do you have some refactoring in mind that would make
-> it more explicit?
+Hi Nishanth Menon,
 
-Does this make sense?
+I have applied the following to branch ti-k3-dts-next on [1].
+Thank you!
 
---- a/kernel/sched/psi.c
-+++ b/kernel/sched/psi.c
-@@ -744,24 +744,26 @@ static void psi_group_change(struct psi_
- 
- static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
- {
-+	if (cgroup_psi_enabled()) {
- #ifdef CONFIG_CGROUPS
--	struct cgroup *cgroup = NULL;
-+		struct cgroup *cgroup = NULL;
- 
--	if (!*iter)
--		cgroup = task->cgroups->dfl_cgrp;
--	else if (*iter == &psi_system)
--		return NULL;
--	else
--		cgroup = cgroup_parent(*iter);
-+		if (!*iter)
-+			cgroup = task->cgroups->dfl_cgrp;
-+		else if (*iter == &psi_system)
-+			return NULL;
-+		else
-+			cgroup = cgroup_parent(*iter);
- 
--	if (cgroup && cgroup_parent(cgroup)) {
--		*iter = cgroup;
--		return cgroup_psi(cgroup);
--	}
--#else
--	if (*iter)
--		return NULL;
-+		if (cgroup && cgroup_parent(cgroup)) {
-+			*iter = cgroup;
-+			return cgroup_psi(cgroup);
-+		}
- #endif
-+	} else {
-+		if (*iter)
-+			return NULL;
-+	}
- 	*iter = &psi_system;
- 	return &psi_system;
- }
+[1/4] arm64: dts: ti: k3-*: Rename the TI-SCI clocks node name
+      commit: a0812885fa7a1074c8003484b8176ffe28d5df68
+[2/4] arm64: dts: ti: k3-am65-wakeup: Add debug region to TI-SCI node
+      commit: 830454bbd628330c3779c3de637b709dae790da0
+[3/4] arm64: dts: ti: k3-am65-wakeup: Drop un-necessary properties from dmsc node
+      commit: 421c06b8761abd7d953148f5b955b4149df9846e
+[4/4] arm64: dts: ti: k3-*: Rename the TI-SCI node
+      commit: 9d3c9378f96a95f15881ee3373d2c2f773273fc2
+
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+[1] git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+
