@@ -2,83 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3152380AE6
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 15:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97E9D380AE2
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 15:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232658AbhENOBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 10:01:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59328 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232103AbhENOBD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 10:01:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 793C3613E9;
-        Fri, 14 May 2021 13:59:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621000792;
-        bh=Ow2qpjN+bkVwWRQxi7G/HA/bPZRg73EV0cI+Qppnl1g=;
-        h=From:To:Cc:Subject:Date:From;
-        b=uVSWX0VdAgwE8oNHi7N4hUyTxIxHIEBmiX409MwQtsBRhSynnvCSa7SS9yc663Pin
-         gvRpy2Pl1l9/1FETAhVWQqHuBsn4ksqPz4qAy73tc769g2FOmmSiVgFVRLCsDGImXM
-         xMAvl1qUfYv1TdIzRX5z/+XBvwzUfjDLBeq/g1NbYbpsiO6g26Yo7te61I4O2IuD/n
-         UYvjTaWGm+Empwkz2bGBBQ4twSebbk7ESa+71Ks0CmU60YhcS/PBLPj98m4Ww/BuHt
-         QXNBbRM1GZh9TcFQ9NCanHVp3iJKrl398meP1DkEMJ2V8zh+0CREOGdJ+cnBi9Uq9S
-         QPwP1q3MMxgVQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Julian Sax <jsbc@gmx.de>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Hans de Goede <hdegoede@redhat.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Xiaofei Tan <tanxiaofei@huawei.com>,
-        Coiby Xu <coiby.xu@gmail.com>, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: [PATCH] HID: i2c-hid: fix format string mismatch
-Date:   Fri, 14 May 2021 15:58:50 +0200
-Message-Id: <20210514135901.2924982-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S232511AbhENOAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 10:00:47 -0400
+Received: from esa4.hc3370-68.iphmx.com ([216.71.155.144]:29972 "EHLO
+        esa4.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232103AbhENOAo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 10:00:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1621000773;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=gycOdl/jthuUyUiNugMfHecYSNvmxfvy3ZT9tM+u8Xw=;
+  b=WxBwSuJ9aGK0iSLqjK4FERsFBzsASS3JYVood+lZH3iZxOc0XpDJiH3Q
+   qjT/WfZDy6SRO9jD2rnXopbZfCZTcxebhlVKYilXqOeRk3ZLeyb9mBOAg
+   l5AmrwnbKom/tBrOBxglleBfISFnpUa5oouv5UqRDdUY7sVJ+M6wUJ74C
+   M=;
+Authentication-Results: esa4.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
+IronPort-SDR: eY2JiRoUwa9lzXY5YBjKrStOxzobDQJVuzWKqTErueQELJyWFBLlKcnjp56j8sCUPYse/cIuc9
+ n1G0N0ltY6ToAIb8p/zqrN7z6AVuWJ4RsIL66k1xL82o2jpLs/uLfm2ing4RH1Y0HqL2tj7W4k
+ oVi2JHjw0r4wCdkPrDrF+Boq/fK0WUCFy7+bjnIbzNqUh4vmO0Mq6zYzEbjzvom4FDrW7rtJSA
+ DiLXCwANwqNSP3Aw3/f7GAwu/MEVG2fGjqAj7w2jl5qbRQNJrgyZqWxResx8Wy0r7oXfhhnIl2
+ y3s=
+X-SBRS: 5.1
+X-MesageID: 45354932
+X-Ironport-Server: esa4.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.158.21
+X-Policy: $RELAYED
+IronPort-HdrOrdr: A9a23:0ziehqvBIfqgVXFojOCDNYg67skCU4Eji2hC6mlwRA09TyXGra
+ 2TdaUgvyMc1gx7ZJh5o6HmBEDyewK7yXcV2/hZAV7MZniChILFFu9fBOjZsnXd8k/Fh4pgPM
+ 5bGsATZ+EYZmIbsS+O2njbLz9W+qjlzEnHv4bj5kYoaTsvR7Br7g9/BAreOFZxXhN+HpY8FI
+ CR/I5uuyegUW5/VLX/OlA1G8z44/HbnpPvZhALQzQ97hOVtCil7L7hHwLd9gsCUhdCy7Yr9m
+ jel2XCl+GemsD+7iWZ+37Y7pxQltek4MBEHta0kcQQKi/hkEKBeJlhYbufpzo4ydvfr2oCoZ
+ 3pmVMNLs5z43TeciWeuh32wTD63DIv8XP5jXSzqxLY0JfEbQN/L/AEqZNScxPf5UZllsp7yr
+ hzxG6ct4BaF1f7tgGV3amQazha0m6P5VYym+8aiHJSFaEEbqVKlJcS+ENOHI1FITnz75o/Fv
+ JyMdrV6/lXe26LdnyxhBgo/PWcGlAIWjuWSEkLvcKYlxJMmmpi9lAVwMwEkm1F/JUhS4Nc7+
+ CBKK5hk7tJSdIbfL8VPpZcfeKHTkj2BT7cOmObJlrqUIsdPWjWkoX65LUu6PvvfJAT1pM9lI
+ 7GTEhTuQcJChrTIPzL+KcO3gHGQW27Uzio4NpZ/YJBobH5RKDmK2mEU1Ahk8yppv8bAsHdRv
+ arMJ9aGPP4NwLVaNx09jy7f6MXBWgVUcUTtNp+cUmJuNjzMYHvtvbWarLLP7zmHSw/Vm66CW
+ tGXz7uP8JJ60CtVBbD8UfsckKoXna60YN7EaDc8eRW4pMKLJd0qQQQiU60/IWXMjVEqLUxZ1
+ ZiO7vpnaOwuHmu8Q/znjhUEysYKnwQzKTrUntMqwNPGVjza6w/t9KWfn0X9GebJzdkJvmmWj
+ J3lhBSw+aaPpaQzSctB5aMKWSBlUYeo3qMUtM1hrCD38H4YZk1Z6xWFZCZVD+7WyCdqzwa5l
+ urWzV0B3M30QmeyZlNuaZkS903seMMwztDb/Qk6043/n/s3P3HDkFrJwJG+/Tn3zrGAQAkzW
+ GZupVv+4aoiHKhL3Ayj/8/N0AJYGOLAKheBADAf4lMnKv3ETsAOVtiqAbq+S3bQFCagnn6R1
+ aRUxF8csu7dWa1ekoooZoC1WkEAFl1U3gAFkySgLcNZVgu4EwDrNNjTpDDrFe5ex8FmL5ANi
+ 3ZCAFiUz+G6erHriKopA==
+X-IronPort-AV: E=Sophos;i="5.82,300,1613451600"; 
+   d="scan'208";a="45354932"
+From:   Andrew Cooper <andrew.cooper3@citrix.com>
+To:     LKML <linux-kernel@vger.kernel.org>
+CC:     Andrew Cooper <andrew.cooper3@citrix.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Arnaldo Carvalho de Melo" <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Alexander Shishkin" <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Pu Wen <puwen@hygon.cn>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Yazen Ghannam <Yazen.Ghannam@amd.com>,
+        "Joerg Roedel" <jroedel@suse.de>
+Subject: [PATCH] perf/x86/rapl: Use CPUID bit on AMD and Hygon parts
+Date:   Fri, 14 May 2021 14:59:20 +0100
+Message-ID: <20210514135920.16093-1-andrew.cooper3@citrix.com>
+X-Mailer: git-send-email 2.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+AMD and Hygon CPUs have a CPUID bit for RAPL.  Drop the fam17h suffix as
+it is stale already.
 
-clang doesn't like printing a 32-bit integer using %hX format string:
+Make use of this instead of a model check to work more nicely in virtual
+environments where RAPL typically isn't available.
 
-drivers/hid/i2c-hid/i2c-hid-core.c:994:18: error: format specifies type 'unsigned short' but the argument has type '__u32' (aka 'unsigned int') [-Werror,-Wformat]
-                 client->name, hid->vendor, hid->product);
-                               ^~~~~~~~~~~
-drivers/hid/i2c-hid/i2c-hid-core.c:994:31: error: format specifies type 'unsigned short' but the argument has type '__u32' (aka 'unsigned int') [-Werror,-Wformat]
-                 client->name, hid->vendor, hid->product);
-                                            ^~~~~~~~~~~~
-
-Use an explicit cast to truncate it to the low 16 bits instead.
-
-Fixes: 9ee3e06610fd ("HID: i2c-hid: override HID descriptors for certain devices")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Andrew Cooper <andrew.cooper3@citrix.com>
 ---
- drivers/hid/i2c-hid/i2c-hid-core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+CC: Peter Zijlstra <peterz@infradead.org>
+CC: Ingo Molnar <mingo@redhat.com>
+CC: Arnaldo Carvalho de Melo <acme@kernel.org>
+CC: Mark Rutland <mark.rutland@arm.com>
+CC: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+CC: Jiri Olsa <jolsa@redhat.com>
+CC: Namhyung Kim <namhyung@kernel.org>
+CC: Thomas Gleixner <tglx@linutronix.de>
+CC: Borislav Petkov <bp@alien8.de>
+CC: x86@kernel.org
+CC: "H. Peter Anvin" <hpa@zytor.com>
+CC: Pu Wen <puwen@hygon.cn>
+CC: Tom Lendacky <thomas.lendacky@amd.com>
+CC: Yazen Ghannam <Yazen.Ghannam@amd.com>
+CC: Joerg Roedel <jroedel@suse.de>
+CC: linux-kernel@vger.kernel.org
+---
+ arch/x86/events/rapl.c             | 6 ++----
+ arch/x86/include/asm/cpufeatures.h | 2 +-
+ arch/x86/kernel/cpu/amd.c          | 4 ++++
+ arch/x86/kernel/cpu/hygon.c        | 4 ++++
+ arch/x86/kernel/cpu/powerflags.c   | 2 ++
+ 5 files changed, 13 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
-index 9993133989a5..f9d28ad17d9c 100644
---- a/drivers/hid/i2c-hid/i2c-hid-core.c
-+++ b/drivers/hid/i2c-hid/i2c-hid-core.c
-@@ -990,8 +990,8 @@ int i2c_hid_core_probe(struct i2c_client *client, struct i2chid_ops *ops,
- 	hid->vendor = le16_to_cpu(ihid->hdesc.wVendorID);
- 	hid->product = le16_to_cpu(ihid->hdesc.wProductID);
+diff --git a/arch/x86/events/rapl.c b/arch/x86/events/rapl.c
+index f42a70496a24..f337006c2c08 100644
+--- a/arch/x86/events/rapl.c
++++ b/arch/x86/events/rapl.c
+@@ -764,13 +764,14 @@ static struct rapl_model model_spr = {
+ 	.rapl_msrs      = intel_rapl_spr_msrs,
+ };
  
--	snprintf(hid->name, sizeof(hid->name), "%s %04hX:%04hX",
--		 client->name, hid->vendor, hid->product);
-+	snprintf(hid->name, sizeof(hid->name), "%s %04X:%04X",
-+		 client->name, (u16)hid->vendor, (u16)hid->product);
- 	strlcpy(hid->phys, dev_name(&client->dev), sizeof(hid->phys));
+-static struct rapl_model model_amd_fam17h = {
++static struct rapl_model model_amd_hygon = {
+ 	.events		= BIT(PERF_RAPL_PKG),
+ 	.msr_power_unit = MSR_AMD_RAPL_POWER_UNIT,
+ 	.rapl_msrs      = amd_rapl_msrs,
+ };
  
- 	ihid->quirks = i2c_hid_lookup_quirk(hid->vendor, hid->product);
+ static const struct x86_cpu_id rapl_model_match[] __initconst = {
++	X86_MATCH_FEATURE(X86_FEATURE_RAPL,		&model_amd_hygon),
+ 	X86_MATCH_INTEL_FAM6_MODEL(SANDYBRIDGE,		&model_snb),
+ 	X86_MATCH_INTEL_FAM6_MODEL(SANDYBRIDGE_X,	&model_snbep),
+ 	X86_MATCH_INTEL_FAM6_MODEL(IVYBRIDGE,		&model_snb),
+@@ -801,9 +802,6 @@ static const struct x86_cpu_id rapl_model_match[] __initconst = {
+ 	X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE_L,		&model_skl),
+ 	X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE,		&model_skl),
+ 	X86_MATCH_INTEL_FAM6_MODEL(SAPPHIRERAPIDS_X,	&model_spr),
+-	X86_MATCH_VENDOR_FAM(AMD,	0x17,		&model_amd_fam17h),
+-	X86_MATCH_VENDOR_FAM(HYGON,	0x18,		&model_amd_fam17h),
+-	X86_MATCH_VENDOR_FAM(AMD,	0x19,		&model_amd_fam17h),
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(x86cpu, rapl_model_match);
+diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+index a0431935850f..d80dcb6a66d5 100644
+--- a/arch/x86/include/asm/cpufeatures.h
++++ b/arch/x86/include/asm/cpufeatures.h
+@@ -108,7 +108,7 @@
+ #define X86_FEATURE_EXTD_APICID		( 3*32+26) /* Extended APICID (8 bits) */
+ #define X86_FEATURE_AMD_DCM		( 3*32+27) /* AMD multi-node processor */
+ #define X86_FEATURE_APERFMPERF		( 3*32+28) /* P-State hardware coordination feedback capability (APERF/MPERF MSRs) */
+-/* free					( 3*32+29) */
++#define X86_FEATURE_RAPL		( 3*32+29) /* AMD/Hygon RAPL interface */
+ #define X86_FEATURE_NONSTOP_TSC_S3	( 3*32+30) /* TSC doesn't stop in S3 state */
+ #define X86_FEATURE_TSC_KNOWN_FREQ	( 3*32+31) /* TSC has known frequency */
+ 
+diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+index 2d11384dc9ab..da57b96fafbe 100644
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -646,6 +646,10 @@ static void early_init_amd(struct cpuinfo_x86 *c)
+ 	if (c->x86_power & BIT(12))
+ 		set_cpu_cap(c, X86_FEATURE_ACC_POWER);
+ 
++	/* Bit 14 indicates the Runtime Average Power Limit interface. */
++	if (c->x86_power & BIT(14))
++		set_cpu_cap(c, X86_FEATURE_RAPL);
++
+ #ifdef CONFIG_X86_64
+ 	set_cpu_cap(c, X86_FEATURE_SYSCALL32);
+ #else
+diff --git a/arch/x86/kernel/cpu/hygon.c b/arch/x86/kernel/cpu/hygon.c
+index 0bd6c74e3ba1..6d50136f7ab9 100644
+--- a/arch/x86/kernel/cpu/hygon.c
++++ b/arch/x86/kernel/cpu/hygon.c
+@@ -260,6 +260,10 @@ static void early_init_hygon(struct cpuinfo_x86 *c)
+ 	if (c->x86_power & BIT(12))
+ 		set_cpu_cap(c, X86_FEATURE_ACC_POWER);
+ 
++	/* Bit 14 indicates the Runtime Average Power Limit interface. */
++	if (c->x86_power & BIT(14))
++		set_cpu_cap(c, X86_FEATURE_RAPL);
++
+ #ifdef CONFIG_X86_64
+ 	set_cpu_cap(c, X86_FEATURE_SYSCALL32);
+ #endif
+diff --git a/arch/x86/kernel/cpu/powerflags.c b/arch/x86/kernel/cpu/powerflags.c
+index fd6ec2aa0303..e2055f51342e 100644
+--- a/arch/x86/kernel/cpu/powerflags.c
++++ b/arch/x86/kernel/cpu/powerflags.c
+@@ -21,4 +21,6 @@ const char *const x86_power_flags[32] = {
+ 	"eff_freq_ro", /* Readonly aperf/mperf */
+ 	"proc_feedback", /* processor feedback interface */
+ 	"acc_power", /* accumulated power mechanism */
++	"conn_standby", /* Connected Standby */
++	"rapl", /* Runtime Average Power Limit */
+ };
 -- 
-2.29.2
+2.11.0
 
