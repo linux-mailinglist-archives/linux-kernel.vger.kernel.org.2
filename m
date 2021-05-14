@@ -2,157 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70CCC380EE7
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 19:26:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5968380EED
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 19:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231129AbhENR1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 13:27:43 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50030 "EHLO mx2.suse.de"
+        id S231687AbhENR3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 13:29:51 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:40712 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230230AbhENR1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 13:27:42 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id ADD97B05D;
-        Fri, 14 May 2021 17:26:29 +0000 (UTC)
-Subject: Re: [PATCH] drm/ingenic: Fix pixclock rate for 24-bit serial panels
-To:     Paul Cercueil <paul@crapouillou.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     linux-mips@vger.kernel.org, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org, od@zcrc.me,
-        dri-devel@lists.freedesktop.org, Sam Ravnborg <sam@ravnborg.org>
-References: <20210323144008.166248-1-paul@crapouillou.net>
- <6DP1TQ.W6B9JRRW1OY5@crapouillou.net>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <a42b2e5d-49e7-a15b-5f5f-9eb858e8fdf6@suse.de>
-Date:   Fri, 14 May 2021 19:26:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S229516AbhENR3u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 13:29:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=5WPyLTz7c2kYwCsqXZ8QlYk8yM5FgOmktldw0a24vWg=; b=0Ri8TzPlk83DSzNm8XS4qxv1lk
+        ZEsmasQHGA094g0Qa8r1q6ERrhXyIZyDwk15gV6CR2BkU3kHXBrmo2DslV1Q70Sd5hf0D74i/WhqO
+        PcrJtA9aYk6YMWM3OklzP63uTL7Up0SeRBDh4osNFsqXpIHqNdWlYnvNm7WMjjvISRYE=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lhbbw-004DKu-LU; Fri, 14 May 2021 19:28:28 +0200
+Date:   Fri, 14 May 2021 19:28:28 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Dario Binacchi <dariobin@libero.it>
+Cc:     linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] can: c_can: add ethtool support
+Message-ID: <YJ6zPGwRUQ23Fu3g@lunn.ch>
+References: <20210514165549.14365-2-dariobin@libero.it>
 MIME-Version: 1.0
-In-Reply-To: <6DP1TQ.W6B9JRRW1OY5@crapouillou.net>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="G7VCp2Z0I1tFZjwjRdIoitLmgxDDw7plp"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210514165549.14365-2-dariobin@libero.it>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---G7VCp2Z0I1tFZjwjRdIoitLmgxDDw7plp
-Content-Type: multipart/mixed; boundary="OhnXwSyToQ4awsPKWuJhB0YdMEH22aaoz";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Paul Cercueil <paul@crapouillou.net>, David Airlie <airlied@linux.ie>,
- Daniel Vetter <daniel@ffwll.ch>
-Cc: linux-mips@vger.kernel.org, stable@vger.kernel.org,
- linux-kernel@vger.kernel.org, od@zcrc.me, dri-devel@lists.freedesktop.org,
- Sam Ravnborg <sam@ravnborg.org>
-Message-ID: <a42b2e5d-49e7-a15b-5f5f-9eb858e8fdf6@suse.de>
-Subject: Re: [PATCH] drm/ingenic: Fix pixclock rate for 24-bit serial panels
-References: <20210323144008.166248-1-paul@crapouillou.net>
- <6DP1TQ.W6B9JRRW1OY5@crapouillou.net>
-In-Reply-To: <6DP1TQ.W6B9JRRW1OY5@crapouillou.net>
+On Fri, May 14, 2021 at 06:55:47PM +0200, Dario Binacchi wrote:
+> With commit 132f2d45fb23 ("can: c_can: add support to 64 message objects")
+> the number of message objects used for reception / transmission depends
+> on FIFO size.
+> The ethtools API support allows you to retrieve this info. Driver info
+> has been added too.
+> 
+> Signed-off-by: Dario Binacchi <dariobin@libero.it>
 
---OhnXwSyToQ4awsPKWuJhB0YdMEH22aaoz
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-
-
-Am 13.05.21 um 14:29 schrieb Paul Cercueil:
-> Hi,
->=20
-> Almost two months later,
->=20
->=20
-> Le mar., mars 23 2021 at 14:40:08 +0000, Paul Cercueil=20
-> <paul@crapouillou.net> a =C3=A9crit :
->> When using a 24-bit panel on a 8-bit serial bus, the pixel clock
->> requested by the panel has to be multiplied by 3, since the subpixels
->> are shifted sequentially.
->>
->> The code (in ingenic_drm_encoder_atomic_check) already computed
->> crtc_state->adjusted_mode->crtc_clock accordingly, but clk_set_rate()
->> used crtc_state->adjusted_mode->clock instead.
->>
->> Fixes: 28ab7d35b6e0 ("drm/ingenic: Properly compute timings when using=20
-
->> a 3x8-bit panel")
->> Cc: stable@vger.kernel.org # v5.10
->> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->=20
-> Can I get an ACK for my patch?
-
-Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
-
->=20
-> Thanks!
-> -Paul
->=20
->> ---
->> =C2=A0drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 2 +-
->> =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c=20
->> b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->> index d60e1eefc9d1..cba68bf52ec5 100644
->> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->> @@ -342,7 +342,7 @@ static void ingenic_drm_crtc_atomic_flush(struct=20
->> drm_crtc *crtc,
->> =C2=A0=C2=A0=C2=A0=C2=A0 if (priv->update_clk_rate) {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mutex_lock(&priv->clk=
-_mutex);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 clk_set_rate(priv->pi=
-x_clk,
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 crtc_state->adjusted_mode.clock * 1000);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 crtc_state->adjusted_mode.crtc_clock * 1000);=
-
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 priv->update_clk_rate=20
-=3D false;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mutex_unlock(&priv->c=
-lk_mutex);
->> =C2=A0=C2=A0=C2=A0=C2=A0 }
->> --=20
->> 2.30.2
->>
->=20
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---OhnXwSyToQ4awsPKWuJhB0YdMEH22aaoz--
-
---G7VCp2Z0I1tFZjwjRdIoitLmgxDDw7plp
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmCessQFAwAAAAAACgkQlh/E3EQov+Di
-Gw/+PpBVTvAcF4ltDId9QyywkeJ/xdvRf41hqgazerZAWctCXWwOVIIAYn5lHcazl/dL4olLKNsO
-F3eD7Si7RWmXe4+b2NqaweIesaDafGK4vdcS4mHS4JVHMkd1DhCxdwpy3uBbW5ZNXOv5TJldB3Jt
-Ikm2sm6psm3h5D2li+j6ew6qcVxK+3Cp8uVvHp6RH4cEcOIwbWZp/B4H1P5tMDzq7lpvjGYUQH3H
-MEwy8RYfX+igmRI9rdVXV/hEfBNOq1gLBmZQgGQR1EnRgL/rRTJ2AFci1NddETnMwuiOdpY6A0DS
-XK+Iy+XtUozzkJ8TO2rjwo/NyQYB3tvpnJJ6kkxHpWaowztqqIjrOL5snrw+jhqu7+EwJikbrPm3
-AXBEgwFz2/+Dk28We1onnRn6MIEC+0iy08yE+E67iCb0JXw+CiLadtqSVtzw9qNebMFn8vEjz2if
-6vv6bCWk2ae4LKh5LENpWI07WvzOWnzuDn0jUFa6P1yyx2AMgKd9tot0/p6MxX3oD/LY/b9aIXSG
-LzGFncU3gh/e2h+vUwzkb1coE2cgF+j5HIj0ot0qNJIAyoqUCN3GYBvcKr3nSUZwAv9J3aRmCtmY
-uPetTQRJH4psx/+oI09jkt4/Wn/kxlLUoB7a/JJvyMWEC+9FkKhQntLEdJasGd6tVP1OySrrCQGv
-+zo=
-=JL3k
------END PGP SIGNATURE-----
-
---G7VCp2Z0I1tFZjwjRdIoitLmgxDDw7plp--
+    Andrew
