@@ -2,74 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF95B380769
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 12:36:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA83380773
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 12:37:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233569AbhENKhY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 14 May 2021 06:37:24 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:60241 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231645AbhENKhL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 06:37:11 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-137-fwXplDQpOp69AZgAtM4owA-1; Fri, 14 May 2021 11:35:55 +0100
-X-MC-Unique: fwXplDQpOp69AZgAtM4owA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Fri, 14 May 2021 11:35:53 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Fri, 14 May 2021 11:35:53 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Arnd Bergmann' <arnd@kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
-CC:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 13/13] asm-generic: simplify asm/unaligned.h
-Thread-Topic: [PATCH v2 13/13] asm-generic: simplify asm/unaligned.h
-Thread-Index: AQHXSKitCXoL3prwmEWP1GjWUsVA9qrix5rQ
-Date:   Fri, 14 May 2021 10:35:52 +0000
-Message-ID: <4e815e094eea410e88747a74c81953b1@AcuMS.aculab.com>
-References: <20210514100106.3404011-1-arnd@kernel.org>
- <20210514100106.3404011-14-arnd@kernel.org>
-In-Reply-To: <20210514100106.3404011-14-arnd@kernel.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S231367AbhENKi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 06:38:59 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48972 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231249AbhENKiD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 06:38:03 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0CE1BAF59;
+        Fri, 14 May 2021 10:36:51 +0000 (UTC)
+Subject: Re: [PATCH v10 03/33] mm/vmstat: Add functions to account folio
+ statistics
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        akpm@linux-foundation.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Jeff Layton <jlayton@kernel.org>
+References: <20210511214735.1836149-1-willy@infradead.org>
+ <20210511214735.1836149-4-willy@infradead.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <e0bb6713-67b6-e9cb-70c3-66b27aef72ed@suse.cz>
+Date:   Fri, 14 May 2021 12:36:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+In-Reply-To: <20210511214735.1836149-4-willy@infradead.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann
-> Sent: 14 May 2021 11:01
+On 5/11/21 11:47 PM, Matthew Wilcox (Oracle) wrote:
+> Allow page counters to be more readily modified by callers which have
+> a folio.  Name these wrappers with 'stat' instead of 'state' as requested
+> by Linus here:
+> https://lore.kernel.org/linux-mm/CAHk-=wj847SudR-kt+46fT3+xFFgiwpgThvm7DJWGdi4cVrbnQ@mail.gmail.com/
 > 
-> The get_unaligned()/put_unaligned() implementations are much more complex
-> than necessary, now that all architectures use the same code.
-...
-> This new version does allow aggregate types into get_unaligned(), which
-> was not the original goal but might come in handy.
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Acked-by: Jeff Layton <jlayton@kernel.org>
 
-Adding '* 1' to the value would stop that and shouldn't add any code.
-Although you might want to cast back to the original type to
-avoid 'short' being converted to 'int'.
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+> ---
+>  include/linux/vmstat.h | 107 +++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 107 insertions(+)
+> 
+> diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
+> index 3299cd69e4ca..d287d7c31b8f 100644
+> --- a/include/linux/vmstat.h
+> +++ b/include/linux/vmstat.h
+> @@ -402,6 +402,78 @@ static inline void drain_zonestat(struct zone *zone,
+>  			struct per_cpu_pageset *pset) { }
+>  #endif		/* CONFIG_SMP */
+>  
+> +static inline void __zone_stat_mod_folio(struct folio *folio,
+> +		enum zone_stat_item item, long nr)
+> +{
+> +	__mod_zone_page_state(folio_zone(folio), item, nr);
+> +}
+> +
+> +static inline void __zone_stat_add_folio(struct folio *folio,
+> +		enum zone_stat_item item)
+> +{
+> +	__mod_zone_page_state(folio_zone(folio), item, folio_nr_pages(folio));
+> +}
+> +
+> +static inline void __zone_stat_sub_folio(struct folio *folio,
+> +		enum zone_stat_item item)
+> +{
+> +	__mod_zone_page_state(folio_zone(folio), item, -folio_nr_pages(folio));
+> +}
+> +
+> +static inline void zone_stat_mod_folio(struct folio *folio,
+> +		enum zone_stat_item item, long nr)
+> +{
+> +	mod_zone_page_state(folio_zone(folio), item, nr);
+> +}
+> +
+> +static inline void zone_stat_add_folio(struct folio *folio,
+> +		enum zone_stat_item item)
+> +{
+> +	mod_zone_page_state(folio_zone(folio), item, folio_nr_pages(folio));
+> +}
+> +
+> +static inline void zone_stat_sub_folio(struct folio *folio,
+> +		enum zone_stat_item item)
+> +{
+> +	mod_zone_page_state(folio_zone(folio), item, -folio_nr_pages(folio));
+> +}
+> +
+> +static inline void __node_stat_mod_folio(struct folio *folio,
+> +		enum node_stat_item item, long nr)
+> +{
+> +	__mod_node_page_state(folio_pgdat(folio), item, nr);
+> +}
+> +
+> +static inline void __node_stat_add_folio(struct folio *folio,
+> +		enum node_stat_item item)
+> +{
+> +	__mod_node_page_state(folio_pgdat(folio), item, folio_nr_pages(folio));
+> +}
+> +
+> +static inline void __node_stat_sub_folio(struct folio *folio,
+> +		enum node_stat_item item)
+> +{
+> +	__mod_node_page_state(folio_pgdat(folio), item, -folio_nr_pages(folio));
+> +}
+> +
+> +static inline void node_stat_mod_folio(struct folio *folio,
+> +		enum node_stat_item item, long nr)
+> +{
+> +	mod_node_page_state(folio_pgdat(folio), item, nr);
+> +}
+> +
+> +static inline void node_stat_add_folio(struct folio *folio,
+> +		enum node_stat_item item)
+> +{
+> +	mod_node_page_state(folio_pgdat(folio), item, folio_nr_pages(folio));
+> +}
+> +
+> +static inline void node_stat_sub_folio(struct folio *folio,
+> +		enum node_stat_item item)
+> +{
+> +	mod_node_page_state(folio_pgdat(folio), item, -folio_nr_pages(folio));
+> +}
+> +
+>  static inline void __mod_zone_freepage_state(struct zone *zone, int nr_pages,
+>  					     int migratetype)
+>  {
+> @@ -530,6 +602,24 @@ static inline void __dec_lruvec_page_state(struct page *page,
+>  	__mod_lruvec_page_state(page, idx, -1);
+>  }
+>  
+> +static inline void __lruvec_stat_mod_folio(struct folio *folio,
+> +					   enum node_stat_item idx, int val)
+> +{
+> +	__mod_lruvec_page_state(&folio->page, idx, val);
+> +}
+> +
+> +static inline void __lruvec_stat_add_folio(struct folio *folio,
+> +					   enum node_stat_item idx)
+> +{
+> +	__lruvec_stat_mod_folio(folio, idx, folio_nr_pages(folio));
+> +}
+> +
+> +static inline void __lruvec_stat_sub_folio(struct folio *folio,
+> +					   enum node_stat_item idx)
+> +{
+> +	__lruvec_stat_mod_folio(folio, idx, -folio_nr_pages(folio));
+> +}
+> +
+>  static inline void inc_lruvec_page_state(struct page *page,
+>  					 enum node_stat_item idx)
+>  {
+> @@ -542,4 +632,21 @@ static inline void dec_lruvec_page_state(struct page *page,
+>  	mod_lruvec_page_state(page, idx, -1);
+>  }
+>  
+> +static inline void lruvec_stat_mod_folio(struct folio *folio,
+> +					 enum node_stat_item idx, int val)
+> +{
+> +	mod_lruvec_page_state(&folio->page, idx, val);
+> +}
+> +
+> +static inline void lruvec_stat_add_folio(struct folio *folio,
+> +					 enum node_stat_item idx)
+> +{
+> +	lruvec_stat_mod_folio(folio, idx, folio_nr_pages(folio));
+> +}
+> +
+> +static inline void lruvec_stat_sub_folio(struct folio *folio,
+> +					 enum node_stat_item idx)
+> +{
+> +	lruvec_stat_mod_folio(folio, idx, -folio_nr_pages(folio));
+> +}
+>  #endif /* _LINUX_VMSTAT_H */
+> 
 
