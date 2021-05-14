@@ -2,75 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 030EE380E9E
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 19:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCC99380EA0
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 19:09:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235082AbhENRJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 13:09:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40298 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233223AbhENRJd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 13:09:33 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3EAA1B166;
-        Fri, 14 May 2021 17:08:21 +0000 (UTC)
-Subject: Re: [PATCH v10 14/33] mm/filemap: Add folio_offset and
- folio_file_offset
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        akpm@linux-foundation.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Jeff Layton <jlayton@kernel.org>
-References: <20210511214735.1836149-1-willy@infradead.org>
- <20210511214735.1836149-15-willy@infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <5810b6ba-4b27-ed90-3edb-959da2cf534b@suse.cz>
-Date:   Fri, 14 May 2021 19:08:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S235086AbhENRKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 13:10:33 -0400
+Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:34050 "EHLO
+        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230063AbhENRKc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 13:10:32 -0400
+Received: from pps.filterd (m0150242.ppops.net [127.0.0.1])
+        by mx0a-002e3701.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14EH4TKU008951;
+        Fri, 14 May 2021 17:09:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pps0720; bh=x3X5ykPsGBJC4Fs0o3ag96IXaZivVWj0tI7KuCm3wFY=;
+ b=gPeV2VL/qvyKep5W8s8cp6fHdB9X4tW+CdZGSxXtN/I783sb/JvtZLmHp51wkbfV1FNP
+ vLZ1zao8mrKMbP/XdLV2Jssb16ArWeWlzQxKGuj8MPkeghuODnliVNd/2qyX4PC/spBF
+ FVpsefHzvfN8riX5z7duRJmvTunSUmexxMDYza93l706fpmxLbXMZjtva3BPQdyB1rrr
+ 9JDkhNAgVgxKGjqUag8WY00KbYk79m75Kp2rn4vyTy9vv17zVKa6nkOpR2Eo/B5qGq5V
+ UjX+7L3erqg2qWWLWCfhcVz7F4GIVrC2FBfGD0gLZJ2L2yyv9C/+gWnF9c0pG6yK+1Es /g== 
+Received: from g2t2354.austin.hpe.com (g2t2354.austin.hpe.com [15.233.44.27])
+        by mx0a-002e3701.pphosted.com with ESMTP id 38hnn03huv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 May 2021 17:09:16 +0000
+Received: from g2t2360.austin.hpecorp.net (g2t2360.austin.hpecorp.net [16.196.225.135])
+        by g2t2354.austin.hpe.com (Postfix) with ESMTP id 51FA781;
+        Fri, 14 May 2021 17:09:15 +0000 (UTC)
+Received: from anatevka.americas.hpqcorp.net (anatevka.americas.hpqcorp.net [10.33.237.3])
+        by g2t2360.austin.hpecorp.net (Postfix) with ESMTP id 89C7839;
+        Fri, 14 May 2021 17:09:14 +0000 (UTC)
+Date:   Fri, 14 May 2021 11:09:14 -0600
+From:   Jerry Hoemann <jerry.hoemann@hpe.com>
+To:     Randy Wright <rwright@hpe.com>
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gustavoars@kernel.org, geert+renesas@glider.be, u74147@gmail.com,
+        tobiasdiedrich@gmail.com, jirislaby@kernel.org,
+        gregkh@linuxfoundation.org, toshi.kani@hpe.com
+Subject: Re: [PATCH] Add support for new HPE serial device
+Message-ID: <YJ6uuqggRTJ4DVCW@anatevka.americas.hpqcorp.net>
+Reply-To: Jerry.Hoemann@hpe.com
+References: <1621009614-28836-1-git-send-email-rwright@hpe.com>
 MIME-Version: 1.0
-In-Reply-To: <20210511214735.1836149-15-willy@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1621009614-28836-1-git-send-email-rwright@hpe.com>
+X-Proofpoint-ORIG-GUID: nL494R9fbgKLZGYVhwLKDdGo24OlZxji
+X-Proofpoint-GUID: nL494R9fbgKLZGYVhwLKDdGo24OlZxji
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-14_07:2021-05-12,2021-05-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
+ mlxscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0
+ mlxlogscore=999 priorityscore=1501 spamscore=0 suspectscore=0
+ clxscore=1011 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105140136
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/11/21 11:47 PM, Matthew Wilcox (Oracle) wrote:
-> These are just wrappers around their page counterpart.
+On Fri, May 14, 2021 at 10:26:54AM -0600, Randy Wright wrote:
+> Add support for new HPE serial device.  It is MSI enabled,
+> but otherwise similar to legacy HP server serial devices.
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Acked-by: Jeff Layton <jlayton@kernel.org>
+> Signed-off-by: Randy Wright <rwright@hpe.com>
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+
+Tested-by: Jerry Hoemann <jerry.hoemann@hpe.com>
+
 
 > ---
->  include/linux/pagemap.h | 10 ++++++++++
->  1 file changed, 10 insertions(+)
+>  drivers/tty/serial/8250/8250_pci.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
 > 
-> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-> index 3b82252d12fc..448a2dfb5ff1 100644
-> --- a/include/linux/pagemap.h
-> +++ b/include/linux/pagemap.h
-> @@ -558,6 +558,16 @@ static inline loff_t page_file_offset(struct page *page)
->  	return ((loff_t)page_index(page)) << PAGE_SHIFT;
->  }
+> diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
+> index 689d822..04fe424 100644
+> --- a/drivers/tty/serial/8250/8250_pci.c
+> +++ b/drivers/tty/serial/8250/8250_pci.c
+> @@ -56,6 +56,8 @@ struct serial_private {
+>  	int			line[];
+>  };
 >  
-> +static inline loff_t folio_offset(struct folio *folio)
-> +{
-> +	return page_offset(&folio->page);
-> +}
+> +#define PCI_DEVICE_ID_HPE_PCI_SERIAL	0x37e
 > +
-> +static inline loff_t folio_file_offset(struct folio *folio)
-> +{
-> +	return page_file_offset(&folio->page);
-> +}
-> +
->  extern pgoff_t linear_hugepage_index(struct vm_area_struct *vma,
->  				     unsigned long address);
+>  static const struct pci_device_id pci_use_msi[] = {
+>  	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_NETMOS, PCI_DEVICE_ID_NETMOS_9900,
+>  			 0xA000, 0x1000) },
+> @@ -63,6 +65,8 @@ struct serial_private {
+>  			 0xA000, 0x1000) },
+>  	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_NETMOS, PCI_DEVICE_ID_NETMOS_9922,
+>  			 0xA000, 0x1000) },
+> +	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_HP_3PAR, PCI_DEVICE_ID_HPE_PCI_SERIAL,
+> +			 PCI_ANY_ID, PCI_ANY_ID) },
+>  	{ }
+>  };
 >  
-> 
+> @@ -1998,6 +2002,16 @@ static void pci_wch_ch38x_exit(struct pci_dev *dev)
+>  		.setup		= pci_hp_diva_setup,
+>  	},
+>  	/*
+> +	 * HPE PCI serial device
+> +	 */
+> +	{
+> +		.vendor         = PCI_VENDOR_ID_HP_3PAR,
+> +		.device         = PCI_DEVICE_ID_HPE_PCI_SERIAL,
+> +		.subvendor      = PCI_ANY_ID,
+> +		.subdevice      = PCI_ANY_ID,
+> +		.setup		= pci_hp_diva_setup,
+> +	},
+> +	/*
+>  	 * Intel
+>  	 */
+>  	{
+> @@ -4973,6 +4987,10 @@ static SIMPLE_DEV_PM_OPS(pciserial_pm_ops, pciserial_suspend_one,
+>  	{	PCI_VENDOR_ID_HP, PCI_DEVICE_ID_HP_DIVA_AUX,
+>  		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
+>  		pbn_b2_1_115200 },
+> +	/* HPE PCI serial device */
+> +	{	PCI_VENDOR_ID_HP_3PAR, PCI_DEVICE_ID_HPE_PCI_SERIAL,
+> +		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
+> +		pbn_b1_1_115200 },
+>  
+>  	{	PCI_VENDOR_ID_DCI, PCI_DEVICE_ID_DCI_PCCOM2,
+>  		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
+> -- 
+> 1.8.3.1
 
+-- 
+
+-----------------------------------------------------------------------------
+Jerry Hoemann                  Software Engineer   Hewlett Packard Enterprise
+-----------------------------------------------------------------------------
