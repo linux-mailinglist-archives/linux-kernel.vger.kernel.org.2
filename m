@@ -2,168 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3217D380265
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 05:17:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8FEE380267
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 05:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231504AbhENDSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 23:18:35 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:3753 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231362AbhENDSR (ORCPT
+        id S231362AbhENDTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 23:19:51 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:41147 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229984AbhENDTu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 23:18:17 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FhDBX3W1lzqTpS;
-        Fri, 14 May 2021 11:13:40 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 14 May 2021 11:17:01 +0800
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <olteanv@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andriin@fb.com>, <edumazet@google.com>, <weiwan@google.com>,
-        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
-        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
-        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
-        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
-        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
-        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
-        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
-        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
-        <alobakin@pm.me>
-Subject: [PATCH net v8 3/3] net: sched: fix tx action reschedule issue with stopped queue
-Date:   Fri, 14 May 2021 11:17:01 +0800
-Message-ID: <1620962221-40131-4-git-send-email-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1620962221-40131-1-git-send-email-linyunsheng@huawei.com>
-References: <1620962221-40131-1-git-send-email-linyunsheng@huawei.com>
+        Thu, 13 May 2021 23:19:50 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 8E09A58129C;
+        Thu, 13 May 2021 23:18:39 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Thu, 13 May 2021 23:18:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.luto.us;
+         h=subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=b
+        e7rDCROltBLN4RZPe+I3AnBxPdRYbt9l4ad1PTcfz0=; b=H5jqFKBqMEpTu2kD7
+        lwS3SJfSH/EoqZFaEni6P7KDSaRT9nFAX46qMQe202aUAjOT5ZLPW52RNe5O93oO
+        YN5BKaG3MWabci6F05t0Rw/AR8Q/nRRruEgFeMih+KbpxdTO7zfxDtLOwicXaLf+
+        gsk7Ci1uAtajtEwM+CMJKoKGz3JhHHVJ9rfyb9orUAXN705IM4xu9rGKwQBEYHPH
+        ne+RLyRAk8aUM7MOq3+GYcnIbKBTHhvOFYyNQPcNdNmmqoGXuq1JLyyegzRzmZj1
+        Hgx8OYg5VomZ24pgwr2V0ghGS1R6iKL0zlrE7fqhPw9J+w5wGD6VglxRkL5aH5aY
+        x6s2w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; bh=be7rDCROltBLN4RZPe+I3AnBxPdRYbt9l4ad1PTcf
+        z0=; b=UJ1J1ysSShDrJiYbpvSSEKvZdSPdQcbz7J0IPVZYaBCD7rOHlYRctp5Xa
+        n1kVPgButVLCgBn1eqBMiP7E8CGmQ3ZoDcAVq516Xim6My4bAvc80OD55bZj9NV6
+        MNtKxfs2Yb3mZjF8z63p2zKbMSAmZ+1wvswuHRqB/+v9mupwxr2IlLRWHkVOsEek
+        1b0bYSaJnSfiDk9ies7GWOuwTSSfdFan8jEkrwsihtTLdQshoq6owfOLdIaoWgcR
+        2VI6i+kDwVSeFWg3rKyRVYkxzo6FtpPazv68+C7lqxj/0dnShTafpuhG+zkRudp0
+        1ONUHE7roawKe+6qmvvdGdzCM53MA==
+X-ME-Sender: <xms:DuydYNapxp5uVqBV-J9XpA4xlRzwNWHQPk_jHza84FMqJvwbWItwWg>
+    <xme:DuydYEawaoRAdHjhjYSg8PpNJqB4lzt6yDwSuVHwUlzH-I21bpgSCj_tHCcWHIvcc
+    s3KuVRLZpxWDEVA4H8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdehhedgieejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepuffvfhfhkffffgggjggtgfesthejredttdefjeenucfhrhhomheptehnugih
+    ucfnuhhtohhmihhrshhkihcuoegrnhguhieslhhinhhugidrlhhuthhordhusheqnecugg
+    ftrfgrthhtvghrnhepuedvtdegueejueduhffgleekvddutedvheduudetgefhhfffuefg
+    udekgeejfeeknecukfhppeeijedrudektddrudeihedrudegieenucevlhhushhtvghruf
+    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhguhieslhhinhhugidrlhhu
+    thhordhush
+X-ME-Proxy: <xmx:DuydYP9JtGeNvGUKjdkvd5GjteSw-jr3h-YYc00bikQPUOuOr9msEA>
+    <xmx:DuydYLoHNsCMXRoIat7xAYyFdzI8dfQw8U867Sszp4lU2ZrUlNEFpw>
+    <xmx:DuydYIoqrgkdMA7vpn3qDOdkwiRW3kMxct5O4Y3jd6IXcFGRFExbCQ>
+    <xmx:D-ydYDUpWd2Uk2V2PkQleushU8zRdSXDbVcPzanTdeK3LCi-xUtmKKiTmBk>
+Received: from [192.168.0.55] (c-67-180-165-146.hsd1.ca.comcast.net [67.180.165.146])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Thu, 13 May 2021 23:18:38 -0400 (EDT)
+Subject: Re: [RFC v2 PATCH 7/7] x86/entry: use int for syscall number; handle
+ all invalid syscall nrs
+To:     "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <871racf928.ffs@nanos.tec.linutronix.de>
+ <60495dd3-ea68-4db3-47ad-b7b45796bf76@zytor.com>
+ <87o8dfer7k.ffs@nanos.tec.linutronix.de>
+ <b0ca952a-fd82-7833-ac82-ea8ecad48b53@zytor.com>
+ <87mtsz619u.ffs@nanos.tec.linutronix.de>
+ <b6f47bd3-3e4c-7200-befe-5e14fecf3da7@zytor.com>
+From:   Andy Lutomirski <andy@linux.luto.us>
+Message-ID: <57bf2ff9-11ff-0907-975e-15177df72144@linux.luto.us>
+Date:   Thu, 13 May 2021 20:18:37 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+In-Reply-To: <b6f47bd3-3e4c-7200-befe-5e14fecf3da7@zytor.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The netdev qeueue might be stopped when byte queue limit has
-reached or tx hw ring is full, net_tx_action() may still be
-rescheduled if STATE_MISSED is set, which consumes unnecessary
-cpu without dequeuing and transmiting any skb because the
-netdev queue is stopped, see qdisc_run_end().
+On 5/13/21 5:38 PM, H. Peter Anvin wrote:
+> On 5/12/21 3:22 PM, Thomas Gleixner wrote:
+>>>
+>>> As far as this being a user ABI change, this is actually a revert to the
+>>> original x86-64 ABI; see my message to Ingo.
+>>
+>> I'm not against that change, but it has to be well justified and the
+>> reasoning wants to be in the changelog. You know the drill :)
+>>
+> 
+> FYI:
+> 
+> So in the process of breaking up and better document this patch, I have
+> looked at the syscall_numbering_64 (and have rewritten it to be more
+> complete.)
+> 
+> I found that running it under strace fails, as strace (possibly ptrace,
+> possibly the strace binary) causes %rax = 2^32 to be clobbered to zero
+> already...
+> 
+> More motivation, I guess.
+> 
 
-This patch fixes it by checking the netdev queue state before
-calling qdisc_run() and clearing STATE_MISSED if netdev queue is
-stopped during qdisc_run(), the net_tx_action() is rescheduled
-again when netdev qeueue is restarted, see netif_tx_wake_queue().
+Indeed.
 
-As there is time window between netif_xmit_frozen_or_stopped()
-checking and STATE_MISSED clearing, between which STATE_MISSED
-may set by net_tx_action() scheduled by netif_tx_wake_queue(),
-so set the STATE_MISSED again if netdev queue is restarted.
-
-Fixes: 6b3ba9146fe6 ("net: sched: allow qdiscs to handle locking")
-Reported-by: Michal Kubecek <mkubecek@suse.cz>
-Acked-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
----
-V8: Change qdisc_maybe_stop_tx() to qdisc_maybe_clear_missed()
-    as suggested by Jakub.
-V7: Fix the netif_tx_wake_queue() data race noted by Jakub.
-V6: Drop NET_XMIT_DROP checking for it is not really relevant
-    to this patch, and it may cause performance performance
-    regression with multi pktgen threads on dummy netdev with
-    pfifo_fast qdisc case.
----
- net/core/dev.c          |  3 ++-
- net/sched/sch_generic.c | 27 ++++++++++++++++++++++++++-
- 2 files changed, 28 insertions(+), 2 deletions(-)
-
-diff --git a/net/core/dev.c b/net/core/dev.c
-index d596cd7..ef8cf76 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -3853,7 +3853,8 @@ static inline int __dev_xmit_skb(struct sk_buff *skb, struct Qdisc *q,
- 
- 	if (q->flags & TCQ_F_NOLOCK) {
- 		rc = q->enqueue(skb, q, &to_free) & NET_XMIT_MASK;
--		qdisc_run(q);
-+		if (likely(!netif_xmit_frozen_or_stopped(txq)))
-+			qdisc_run(q);
- 
- 		if (unlikely(to_free))
- 			kfree_skb_list(to_free);
-diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
-index d86c4cc..fc8b56b 100644
---- a/net/sched/sch_generic.c
-+++ b/net/sched/sch_generic.c
-@@ -35,6 +35,25 @@
- const struct Qdisc_ops *default_qdisc_ops = &pfifo_fast_ops;
- EXPORT_SYMBOL(default_qdisc_ops);
- 
-+static void qdisc_maybe_clear_missed(struct Qdisc *q,
-+				     const struct netdev_queue *txq)
-+{
-+	clear_bit(__QDISC_STATE_MISSED, &q->state);
-+
-+	/* Make sure the below netif_xmit_frozen_or_stopped()
-+	 * checking happens after clearing STATE_MISSED.
-+	 */
-+	smp_mb__after_atomic();
-+
-+	/* Checking netif_xmit_frozen_or_stopped() again to
-+	 * make sure STATE_MISSED is set if the STATE_MISSED
-+	 * set by netif_tx_wake_queue()'s rescheduling of
-+	 * net_tx_action() is cleared by the above clear_bit().
-+	 */
-+	if (!netif_xmit_frozen_or_stopped(txq))
-+		set_bit(__QDISC_STATE_MISSED, &q->state);
-+}
-+
- /* Main transmission queue. */
- 
- /* Modifications to data participating in scheduling must be protected with
-@@ -74,6 +93,7 @@ static inline struct sk_buff *__skb_dequeue_bad_txq(struct Qdisc *q)
- 			}
- 		} else {
- 			skb = SKB_XOFF_MAGIC;
-+			qdisc_maybe_clear_missed(q, txq);
- 		}
- 	}
- 
-@@ -242,6 +262,7 @@ static struct sk_buff *dequeue_skb(struct Qdisc *q, bool *validate,
- 			}
- 		} else {
- 			skb = NULL;
-+			qdisc_maybe_clear_missed(q, txq);
- 		}
- 		if (lock)
- 			spin_unlock(lock);
-@@ -251,8 +272,10 @@ static struct sk_buff *dequeue_skb(struct Qdisc *q, bool *validate,
- 	*validate = true;
- 
- 	if ((q->flags & TCQ_F_ONETXQUEUE) &&
--	    netif_xmit_frozen_or_stopped(txq))
-+	    netif_xmit_frozen_or_stopped(txq)) {
-+		qdisc_maybe_clear_missed(q, txq);
- 		return skb;
-+	}
- 
- 	skb = qdisc_dequeue_skb_bad_txq(q);
- 	if (unlikely(skb)) {
-@@ -311,6 +334,8 @@ bool sch_direct_xmit(struct sk_buff *skb, struct Qdisc *q,
- 		HARD_TX_LOCK(dev, txq, smp_processor_id());
- 		if (!netif_xmit_frozen_or_stopped(txq))
- 			skb = dev_hard_start_xmit(skb, dev, txq, &ret);
-+		else
-+			qdisc_maybe_clear_missed(q, txq);
- 
- 		HARD_TX_UNLOCK(dev, txq);
- 	} else {
--- 
-2.7.4
+I would love to go back in time and switch to long, but there are plenty
+of things that use int now.  I suppose we could try to make it long for
+real, but seccomp has u32 baked into its ABI.
 
