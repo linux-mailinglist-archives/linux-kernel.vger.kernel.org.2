@@ -2,64 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 267793803FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 09:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E36373803F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 09:05:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232954AbhENHHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 03:07:33 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:2919 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230371AbhENHHb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 03:07:31 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FhKHs16hRzBvNb;
-        Fri, 14 May 2021 15:03:37 +0800 (CST)
-Received: from localhost (10.174.179.215) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Fri, 14 May 2021
- 15:06:09 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <perex@perex.cz>, <tiwai@suse.com>, <gregkh@linuxfoundation.org>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] ALSA: gus: Replace unsafe strcpy() with strscpy()
-Date:   Fri, 14 May 2021 15:05:07 +0800
-Message-ID: <20210514070507.16600-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S232313AbhENHHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 03:07:00 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:53954 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230371AbhENHG6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 03:06:58 -0400
+Received: from zn.tnic (p200300ec2f0b2c00f343c5c4aba7bf62.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:2c00:f343:c5c4:aba7:bf62])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 53A011EC04DA;
+        Fri, 14 May 2021 09:05:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1620975946;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=ksvjS+87xkTe7D27QtQxqyp950apFsTl5xWaEGXi3kc=;
+        b=qhnrjx2G/KZbOulEdl4/k8AjV0q1t3cStG639U1CPcyXvIcykEZabxBIxbDnMwIBRzYxQJ
+        S0LV/8jrTZmKnQfyHo3SAUtpT20f9XKZPDzwX0XwRbkyTXwt48kwrthR+Cfo4mhUgAICel
+        abDNIIwC6BEOp0iaJUzHpLZ0G4FBWmw=
+Date:   Fri, 14 May 2021 09:05:47 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Joshi, Mukul" <Mukul.Joshi@amd.com>
+Cc:     "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "Kasiviswanathan, Harish" <Harish.Kasiviswanathan@amd.com>,
+        x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] drm/amdgpu: Register bad page handler for Aldebaran
+Message-ID: <YJ4hS/SJYmCC9Rpd@zn.tnic>
+References: <20210512013058.6827-1-mukul.joshi@amd.com>
+ <YJuhs1WsqtJ7ta1L@zn.tnic>
+ <DM4PR12MB5263797EB7B2D37C21427A88EE529@DM4PR12MB5263.namprd12.prod.outlook.com>
+ <YJxDIhGnZ5XdukiS@zn.tnic>
+ <DM4PR12MB52631035F875B77974FA8D21EE519@DM4PR12MB5263.namprd12.prod.outlook.com>
+ <YJz3CMBFFIDBzVwX@zn.tnic>
+ <DM4PR12MB5263A719B11C6DF8EF9F3A4BEE519@DM4PR12MB5263.namprd12.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.215]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <DM4PR12MB5263A719B11C6DF8EF9F3A4BEE519@DM4PR12MB5263.namprd12.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix smatch warning:
-sound/isa/gus/gus_main.c:396 snd_gus_check_version() error:
- strcpy() 'card->longname' too large for 'card->shortname' (80 vs 32)
+On Thu, May 13, 2021 at 11:10:34PM +0000, Joshi, Mukul wrote:
+> That's probably not the best example to look at.
 
-Even if this is not a real bug since the longest length of card->longname
-now is 31, replace strcpy() with strscpy() in order to avoid possible
-future mistake.
+Oh, it is the *perfect* example but...
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- sound/isa/gus/gus_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> smca_get_long_name() is used in drivers/edac/mce_amd.c and this file
+> doesn't get compiled when CONFIG_X86_MCE_AMD is not defined.
+>
+> And amdgpu driver has no dependency on CONFIG_X86_MCE_AMD.
 
-diff --git a/sound/isa/gus/gus_main.c b/sound/isa/gus/gus_main.c
-index b7518122a10d..7524ce5785de 100644
---- a/sound/isa/gus/gus_main.c
-+++ b/sound/isa/gus/gus_main.c
-@@ -384,7 +384,7 @@ static int snd_gus_check_version(struct snd_gus_card * gus)
- 			}
- 		}
- 	}
--	strcpy(card->shortname, card->longname);
-+	strscpy(card->shortname, card->longname, sizeof(card->shortname));
- 	gus->uart_enable = 1;	/* standard GUSes doesn't have midi uart trouble */
- 	snd_gus_init_control(gus);
- 	return 0;
+... maybe this will make you see it the right way: how much of the
+amdgpu RAS functionality you're adding, is going to even function
+without CONFIG_X86_MCE_AMD?
+
 -- 
-2.17.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
