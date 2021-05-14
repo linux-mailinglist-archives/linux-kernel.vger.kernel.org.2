@@ -2,170 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34F46380526
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 10:25:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F59A38052B
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 10:27:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233528AbhENI06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 04:26:58 -0400
-Received: from mga11.intel.com ([192.55.52.93]:42279 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230459AbhENI05 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 04:26:57 -0400
-IronPort-SDR: SUy9smRe4vVeWNJ1TlG+GsgYoWBRBlqrZQ0V65FPRwZfFBFo33+VvoKuUiLfvs99yNkA/NVHd3
- oFFtTohEDeMw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9983"; a="197052394"
-X-IronPort-AV: E=Sophos;i="5.82,299,1613462400"; 
-   d="scan'208";a="197052394"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 May 2021 01:25:46 -0700
-IronPort-SDR: BuypO+HpOVZSCiQzdscVOG6/zC0fKoeruGxQGmUA4rRpHKn+sJAuUkhOA7UIYs9o8UutQpXa6T
- KNUo164GEaJw==
-X-IronPort-AV: E=Sophos;i="5.82,299,1613462400"; 
-   d="scan'208";a="626813096"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.82]) ([10.238.4.82])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 May 2021 01:25:44 -0700
-Subject: Re: [PATCH v3 2/2] perf header: Support HYBRID_CPU_PMU_CAPS feature
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-References: <20210511053003.27015-1-yao.jin@linux.intel.com>
- <20210511053003.27015-3-yao.jin@linux.intel.com> <YJ4x0usa1ljPT5DV@krava>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <4381cb3b-a0de-e8e9-baf9-c6e202c5abef@linux.intel.com>
-Date:   Fri, 14 May 2021 16:25:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S233556AbhENI2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 04:28:08 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:43457 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230459AbhENI2G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 04:28:06 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 556B9580E50;
+        Fri, 14 May 2021 04:26:55 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Fri, 14 May 2021 04:26:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=daR/M5MALqqc200eLyQkU6f/JMT
+        STdMzWTRNACNiQw4=; b=k4GcSF5jp6KuVfMXBuyqOgjNsDg8Ca9pvOJZQM/qJT0
+        Da6sqGhNt27t1UsZWpgLPURjiT3gDNTMwAxeSa7orl715t2qYJHdlde0L/znl+9m
+        GwdsyUBcxbnJavIhbtuW44HsF43RFFh99BTLYNTM4pzAFf6XgSl81O0Mv5UnJcBH
+        A2Or/96PbExkUd8MgusNZUdtNJdEizEpjsIcGfSLdx5bcNRYLiz2qUVBHF3Mn8EL
+        P6sg+Rl8EctdfENO+I+jDz9HKD+8cgedRWDA8BuwY8MI0xCIgW+EY77/ov+z1a3u
+        fwpcvnWniLW0FMgIz/Lqr4lgJPH2x6a6JR2aPkfamEw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=daR/M5
+        MALqqc200eLyQkU6f/JMTSTdMzWTRNACNiQw4=; b=bo/Ua6DozGeIGmITh9k9Id
+        5Q1unfPHaWNc/hsY36psAXHgRUCp3HfLey3x+jM9gSQ1qKFxfpYBk8kP1nnp4+mF
+        fDL6BsboNbc4u/F2opK9yNGDUEeDorFIFO3tiHL25PnGobFB47Trl/U1AB3mCWAr
+        kr3rdwdoS3KXNI2+T9UUgZg/JihJffXzXSLeVE1zkePsm50YTLTWh9yoLRoipD4X
+        UqItxgT+Wp46cxMJHmqbmvcJioXVua7RGXCe6SWq3ImMh0iZ/2vTl5MHHyd0rCKW
+        bpZTDbNZKnRBDuHhzCZYRedAkhW84MSKyHPMwfBNjGDeQbp5YHTTSJ9qBRqpBbKQ
+        ==
+X-ME-Sender: <xms:TjSeYJtd9meb5NaHEKAtelePkAKapXwGgyR9D1Ng6Eo3yGbuPpyTvw>
+    <xme:TjSeYCc52ZjBZtKVSj281lFXyYO6pgy_vuMj3ielpigRaLKq4_6t8j4c05BUHkWvO
+    G156ayD1hrOkw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdehhedgudefudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuhe
+    ejgfffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeek
+    fedrkeeirdejgedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
+X-ME-Proxy: <xmx:TjSeYMy3Krfgm5GPO85Gn2BG4pNgXLIirSR7V4-DZwfFOzUVx3W5iQ>
+    <xmx:TjSeYAP2RPsjOP13qy4fbp23D8yXVIUqdlO1mdmYS7ye0GAEdMoPuA>
+    <xmx:TjSeYJ81a5JyFL_lVHp0CbL2Cqy-19dVo3MLc9LhuktNVs_a7pfLdw>
+    <xmx:TzSeYOjjGabp7Z_KJLtpHYFXTZe8M8YLifp_Rig0OcnNrmDG3WaRow>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Fri, 14 May 2021 04:26:54 -0400 (EDT)
+Date:   Fri, 14 May 2021 10:26:51 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Hayes Wang <hayeswang@realtek.com>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        syzbot <syzbot+95afd23673f5dd295c57@syzkaller.appspotmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
+        nic_swsd <nic_swsd@realtek.com>
+Subject: Re: [syzbot] WARNING in rtl8152_probe
+Message-ID: <YJ40S1eHnbg1dsYv@kroah.com>
+References: <0000000000009df1b605c21ecca8@google.com>
+ <7de0296584334229917504da50a0ac38@realtek.com>
+ <20210513142552.GA967812@rowland.harvard.edu>
+ <bde8fc1229ec41e99ec77f112cc5ee01@realtek.com>
+ <YJ4dU3yCwd2wMq5f@kroah.com>
+ <bddf302301f5420db0fa049c895c9b14@realtek.com>
 MIME-Version: 1.0
-In-Reply-To: <YJ4x0usa1ljPT5DV@krava>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bddf302301f5420db0fa049c895c9b14@realtek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+On Fri, May 14, 2021 at 07:50:19AM +0000, Hayes Wang wrote:
+> Greg KH <greg@kroah.com>
+> > Sent: Friday, May 14, 2021 2:49 PM
+> [...]
+> > Because people can create "bad" devices and plug them into a system
+> > which causes the driver to load and then potentially crash the system or
+> > do other bad things.
+> > 
+> > USB drivers now need to be able to handle "malicious" devices, it's been
+> > that way for many years now.
+> 
+> My question is that even I check whole the USB descriptor, the malicious
+> devices could duplicate it easily to pass my checks. That is, I could add a
+> lot of checks, but it still doesn't prevent malicious devices. Is this meaningful?
 
-On 5/14/2021 4:16 PM, Jiri Olsa wrote:
-> On Tue, May 11, 2021 at 01:30:03PM +0800, Jin Yao wrote:
-> 
-> SNIP
-> 
->> diff --git a/tools/perf/Documentation/perf.data-file-format.txt b/tools/perf/Documentation/perf.data-file-format.txt
->> index fbee9e580ee4..e6ff8c898ada 100644
->> --- a/tools/perf/Documentation/perf.data-file-format.txt
->> +++ b/tools/perf/Documentation/perf.data-file-format.txt
->> @@ -419,6 +419,22 @@ Example:
->>     cpu_core cpu list : 0-15
->>     cpu_atom cpu list : 16-23
->>   
->> +	HEADER_HYBRID_CPU_PMU_CAPS = 31,
->> +
->> +	A list of hybrid CPU PMU capabilities.
->> +
->> +struct {
->> +	u32 nr_pmu;
->> +	struct {
->> +		u32 nr_cpu_pmu_caps;
->> +		{
->> +			char	name[];
->> +			char	value[];
->> +		} [nr_cpu_pmu_caps];
->> +		char pmu_name[];
->> +	} [nr_pmu];
->> +};
-> 
-> when I saw it's similar to the previous one I thought we could have
-> one big hybrid feature.. but that would be probably more complex and
-> we might not be able to reuse the code as much as you did
-> 
+Checking the whole USB decriptor is fine, yes, they can duplicate that.
+So that means you need to validate _ALL_ data coming from the device
+that it is in an acceptable range of values that the driver can
+correctly handle.
 
-Yes. Actually I had the same idea before but as you said the code would be more complex.
+thanks,
 
-> 
->>   free_value:
->> @@ -3142,6 +3208,64 @@ static int process_cpu_pmu_caps(struct feat_fd *ff,
->>   	return -1;
->>   }
->>   
->> +static int process_cpu_pmu_caps(struct feat_fd *ff,
->> +				void *data __maybe_unused)
->> +{
->> +	int ret;
->> +
->> +	ret = process_per_cpu_pmu_caps(ff, &ff->ph->env.nr_cpu_pmu_caps,
->> +				       &ff->ph->env.cpu_pmu_caps,
->> +				       &ff->ph->env.max_branches);
->> +	return ret;
-> 
-> why the 'ret' var? could be just:
-> 
->     return process_per_cpu_pmu_caps(...
-> 
-
-OK, I will fix it in v4.
-
->> +}
->> +
->> +static int process_hybrid_cpu_pmu_caps(struct feat_fd *ff,
->> +				       void *data __maybe_unused)
->> +{
->> +	struct hybrid_cpc_node *nodes;
->> +	u32 nr_pmu, i;
->> +	int ret;
->> +
->> +	if (do_read_u32(ff, &nr_pmu))
->> +		return -1;
->> +
->> +	if (!nr_pmu) {
->> +		pr_debug("hybrid cpu pmu capabilities not available\n");
->> +		return 0;
->> +	}
->> +
->> +	nodes = zalloc(sizeof(*nodes) * nr_pmu);
->> +	if (!nodes)
->> +		return -ENOMEM;
->> +
->> +	for (i = 0; i < nr_pmu; i++) {
->> +		struct hybrid_cpc_node *n = &nodes[i];
->> +
->> +		ret = process_per_cpu_pmu_caps(ff, &n->nr_cpu_pmu_caps,
->> +					       &n->cpu_pmu_caps,
->> +					       &n->max_branches);
->> +		if (ret)
->> +			goto err;
->> +
->> +		n->pmu_name = do_read_string(ff);
->> +		if (!n->pmu_name)
-> 
-> should you set 'ret = -1' in here?
-> 
-
-Yes, I should add 'ret = -1' before 'n->pmu_name = do_read_string(ff);'.
-
-> other than this both patches look good to me
-> 
-
-Thanks, I will prepare v4 soon.
-
-Thanks
-Jin Yao
-
-> thanks,
-> jirka
-> 
->> +			goto err;
->> +	}
->> +
->> +	ff->ph->env.nr_hybrid_cpc_nodes = nr_pmu;
->> +	ff->ph->env.hybrid_cpc_nodes = nodes;
->> +	return 0;
->> +
->> +err:
->> +	for (i = 0; i < nr_pmu; i++) {
->> +		free(nodes[i].cpu_pmu_caps);
-> 
-> SNIP
-> 
+greg k-h
