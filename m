@@ -2,99 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 819A53808BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 13:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 133B33808BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 13:43:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232369AbhENLng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 07:43:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231481AbhENLnf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 07:43:35 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D6D7C061574;
-        Fri, 14 May 2021 04:42:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=MdMngczTJp2eNddFPzOfewyFvaPceCIk8FSUZMqbx7M=; b=WN+214LIDtc7IWUZgPQNZg3gUP
-        RY4WgyT2H0dzxNMPtxc4w8KBdHZfYXR47ILnkCX/saycrkY9wM5X9dkOc9L72VwTJ9COZ8DV9XzXq
-        39ZMwGyAxW1fwscIu/6IoNIIbDO6T6BArFj/+rY7i3w4hWF5wnAfz/7hym5GbV2zEIzJcBq45ZXvv
-        8KFnZkcldbr+cJ7P3sfNJ71Qm/Gr7QfLIVRqeRcFkuKrb6J0G2T8dWp6/NSmgavSHY3H6KYzLKXTe
-        PaeBZdBQr6ZgdkiCy+qfgRc4Wwjg7ZZI/GR+XJTApBu0DnqosdTpnTLVjSM9vhoHiwhxccaCdzSjS
-        Kck9YCrw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lhWCa-007wf5-44; Fri, 14 May 2021 11:41:56 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7EAC2300233;
-        Fri, 14 May 2021 13:41:54 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 64AFC2BB7C83F; Fri, 14 May 2021 13:41:54 +0200 (CEST)
-Date:   Fri, 14 May 2021 13:41:54 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     tj@kernel.org, hannes@cmpxchg.org, lizefan.x@bytedance.com,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        minchan@kernel.org, corbet@lwn.net, bristot@redhat.com,
-        paulmck@kernel.org, rdunlap@infradead.org,
-        akpm@linux-foundation.org, tglx@linutronix.de, macro@orcam.me.uk,
-        viresh.kumar@linaro.org, mike.kravetz@oracle.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, kernel-team@android.com
-Subject: Re: [PATCH 1/1] cgroup: make per-cgroup pressure stall tracking
- configurable
-Message-ID: <YJ5iAvqAmIhzJRot@hirez.programming.kicks-ass.net>
-References: <20210513175349.959661-1-surenb@google.com>
+        id S232266AbhENLoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 07:44:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59446 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231433AbhENLof (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 07:44:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19E6B61457;
+        Fri, 14 May 2021 11:43:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620992604;
+        bh=gIAAi7Doig6rhs/h2Olonq+YDcMN+whb09ZfjqXO6Cw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=z+k3QNWQExai9fOKQaRZxECkKCK6tMUELvHKYCRFw4aESU7Tixrndvzt0Ah5fZfaE
+         tN/WVMn76uhSE/xQY3gu1oGFO/LmVHa4yk8n5vYPlp1cMvbhOwYf8OLIU4M2w19skk
+         +zTtT5VAqmR/TiQPStTzrdZ/nX4flTvQv1yXRJgQ=
+Date:   Fri, 14 May 2021 13:43:21 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     fbarrat@linux.ibm.com, ajd@linux.ibm.com, arnd@arndb.de,
+        mpe@ellerman.id.au, imunsie@au1.ibm.com, mikey@neuling.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] cxl: Fix an error message
+Message-ID: <YJ5iWao53ELg4yTC@kroah.com>
+References: <fa2b2c9c72335ab4c3d5e6a33415e7f020b1d51b.1620243401.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210513175349.959661-1-surenb@google.com>
+In-Reply-To: <fa2b2c9c72335ab4c3d5e6a33415e7f020b1d51b.1620243401.git.christophe.jaillet@wanadoo.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 10:53:49AM -0700, Suren Baghdasaryan wrote:
+On Wed, May 05, 2021 at 09:38:49PM +0200, Christophe JAILLET wrote:
+> 'rc' is known to be 0 here.
+> Initialize 'rc' with the expected error code before using it.
+> 
+> While at it, avoid the affectation of 'rc' in a 'if' to make things more
+> obvious and linux style.
+> 
+> Fixes: f204e0b8ce ("cxl: Driver code for powernv PCIe based cards for userspace access")
 
-> +bool cgroup_psi_enabled(void)
-> +{
-> +	return (cgroup_feature_disable_mask & (1 << OPT_FEATURE_PRESSURE)) == 0;
-> +}
+You need a full 12 digits for the SHA1, otherwise our scripts complain
+about it :(
 
-> diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-> index cc25a3cff41f..c73efd7d4fba 100644
-> --- a/kernel/sched/psi.c
-> +++ b/kernel/sched/psi.c
-> @@ -747,9 +747,12 @@ static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
->  #ifdef CONFIG_CGROUPS
->  	struct cgroup *cgroup = NULL;
->  
-> -	if (!*iter)
-> +	if (!*iter) {
-> +		/* Skip to psi_system if per-cgroup accounting is disabled */
-> +		if (!cgroup_psi_enabled())
-> +			goto update_sys;
->  		cgroup = task->cgroups->dfl_cgrp;
-> -	else if (*iter == &psi_system)
-> +	} else if (*iter == &psi_system)
->  		return NULL;
->  	else
->  		cgroup = cgroup_parent(*iter);
-> @@ -758,6 +761,7 @@ static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
->  		*iter = cgroup;
->  		return cgroup_psi(cgroup);
->  	}
-> +update_sys:
->  #else
->  	if (*iter)
->  		return NULL;
+I'll fix it up here, but please fix your tools.
 
-I'm confused; shouldn't that do the same as that #else branch? Also, can
-you pretty please make cgroup_psi_enabled() a static_key ?
+thanks,
+
+greg k-h
