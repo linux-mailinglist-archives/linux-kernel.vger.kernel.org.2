@@ -2,99 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75113380197
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 03:54:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2153C38019E
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 03:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232227AbhENBzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 21:55:06 -0400
-Received: from mail-ej1-f51.google.com ([209.85.218.51]:35595 "EHLO
-        mail-ej1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231154AbhENBzF (ORCPT
+        id S232255AbhENB51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 21:57:27 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:57523 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232197AbhENB5Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 21:55:05 -0400
-Received: by mail-ej1-f51.google.com with SMTP id m12so42540277eja.2;
-        Thu, 13 May 2021 18:53:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vf/w0gIA31yDofWDFARiKyZ1Z+Y8XK+6F1QRv5/kfU4=;
-        b=WmLNMnnE3vOtWOsu/xxqAn62x+VJI8bbm3FhP01TxgjzD/1vG5e4zDX3GGyo389zOt
-         hz4ADJgSSXpFtFAmePOa8L8d1iF4Kiz2H8X3+305rumCXo65pBCebEwA3tnIyZolRBYU
-         fGAMPtp8LesvD6YgMU6BZOgtYbjOJVFl2/DWG+CKgbhGvJFhBa38gUGafpW0S5KTQWGP
-         +a4t8VgC9ltafuu0iU/MBCL/PJrH742QlYkO8AghlIMXZnMKOfgDH1K1YjtjR/j6uIPB
-         SZQJcRsQPokRUorTXX9bKgONph0GK8sOZa3rlDk6El4FT8/2kghfwgufXILVJrSsWEGv
-         XEFg==
-X-Gm-Message-State: AOAM5314rPfvvu+m0ZAZnUQ2KSEqZrwftegHQzYgSUAjoJkBNb1/DeEw
-        CrY7fQjlyAq6tsVuK045L/+bM8gnS9Rr1z3l
-X-Google-Smtp-Source: ABdhPJwmNc70bqvNpE9Th6f/yEkJ1KOeim08uzo3Hnotd+SFjmYkETjPqnU1qh91bd+VYsVqs20Dbw==
-X-Received: by 2002:a17:907:161e:: with SMTP id hb30mr45346717ejc.360.1620957233559;
-        Thu, 13 May 2021 18:53:53 -0700 (PDT)
-Received: from msft-t490s.teknoraver.net (net-5-94-253-60.cust.vodafonedsl.it. [5.94.253.60])
-        by smtp.gmail.com with ESMTPSA id w6sm3322574edc.25.2021.05.13.18.53.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 18:53:53 -0700 (PDT)
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-To:     netdev@vger.kernel.org, bridge@lists.linux-foundation.org,
-        =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>
-Cc:     Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next] net: bridge: fix build when IPv6 is disabled
-Date:   Fri, 14 May 2021 03:53:48 +0200
-Message-Id: <20210514015348.15448-1-mcroce@linux.microsoft.com>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        Thu, 13 May 2021 21:57:24 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id B07A1580E97;
+        Thu, 13 May 2021 21:56:13 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Thu, 13 May 2021 21:56:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm2; bh=yu5svNfn1bqCNsbfoBd3B8VenMeM5wJ
+        vXsoRZy33RJA=; b=sRiS9No7laMnkVWC+PL33B3RejcHw8dL1u+8PUJScroHf9E
+        k4Zc3xUR2/uFRcyg9N4igSn5oTjwFqRFsODDNVb/6wmCdBGC+gJXcttsUairUKee
+        Vu6ut2MCxjMcdEStGsHIUsXh2C0A/RT1KXXyJ4UCj2ACdYtloDorAyEC9S23L5cm
+        51WAfxEqU1oVM8SJo+uYPge+L4Emv8R8mRgtdYgkHXjx+Quu2c2odiUo9tT9zEz7
+        IYmx9hnWgTxbIuyo3fkUa0BGoc2H6tn+DV8jedlDoqqdWmJfgFEYNJUpyH09RiqF
+        MdfOoTvh03DqychHNsVm4yvSv+dTWmqiTS/CXyA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=yu5svN
+        fn1bqCNsbfoBd3B8VenMeM5wJvXsoRZy33RJA=; b=RBOXLkE9mJ0hLWvdDFSgel
+        R0zOLc438Kpj8pRr5xuCIl0RtMLExMP7uBvf1ogUi1RTl4pR5OOMD/QBwaFcpa4x
+        xHWXcSv01ZWniDgNkdGoI9z+P2UkP4j+GeNzRN/5Mc/Hqm0PJdY2H+DWP2VxkX6h
+        4ctlcciTV1/73nUfBBLQc0TSaMB1zBkb+9L8GBJGlrZTUy575pPt3Ff0bQaGJyXD
+        k8/xiq62Jvp+8i1e7jEB//9foQPYEZ+30mPHoHOex3gEB33PuICBndPnJZ5bnW/P
+        kz9I4oW+gYQbgUKrc4S5NLhzKc5eBnlmoELlTqv5ceEzoiDl6OnS8oXgJ0MVi//Q
+        ==
+X-ME-Sender: <xms:vNidYD6BrVjO_32DFMfMIivyLKxZAbcI1HuG3QlC3WP6Dks279E_Xg>
+    <xme:vNidYI7XG9Wt7Cq6TMhfTqTlY33ohwDCtz9zBpYn6L3tzk0rLfhgBoOag_aH1ACkk
+    PufarDMWYKDQjahUw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdehhedghedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhepuddttdekueeggedvtddtueekiedutdfguedutdefieeuteefieelteet
+    vddthfeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:vNidYKezzJIYiAZoVPdgRscAUA0MC0PWtN6oMRmU5m5a4M1Z0Hk1WA>
+    <xmx:vNidYEL0Zx-HTb5zDmJ7oPF_7up0mZCNaW-ewcEXGnhvDFFwNQ-heg>
+    <xmx:vNidYHIQ0mnaQjVVJBvmBFrSfLELjySORBi9dmw3iuVQgvRDqEWD2A>
+    <xmx:vdidYJwKEEuhRERg2Et6jkBZsQx1cRKEtvEL5yWhXGhBiRHLgfJK3g>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 7EBCAA00079; Thu, 13 May 2021 21:56:12 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-448-gae190416c7-fm-20210505.004-gae190416
+Mime-Version: 1.0
+Message-Id: <24e8c5e8-d1eb-4e42-b8de-c60c5cceaf85@www.fastmail.com>
+In-Reply-To: <20210513193204.816681-6-davidgow@google.com>
+References: <20210513193204.816681-1-davidgow@google.com>
+ <20210513193204.816681-6-davidgow@google.com>
+Date:   Fri, 14 May 2021 11:25:51 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "David Gow" <davidgow@google.com>,
+        "Brendan Higgins" <brendanhiggins@google.com>,
+        "Daniel Latypov" <dlatypov@google.com>,
+        "Shuah Khan" <skhan@linuxfoundation.org>,
+        "Adrian Hunter" <adrian.hunter@intel.com>,
+        "Ulf Hansson" <ulf.hansson@linaro.org>,
+        "Joel Stanley" <joel@jms.id.au>
+Cc:     kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: =?UTF-8?Q?Re:_[PATCH_v2_06/10]_mmc:_sdhci-of-aspeed:_Remove_some_unneces?=
+ =?UTF-8?Q?sary_casts_from_KUnit_tests?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matteo Croce <mcroce@microsoft.com>
 
-The br_ip6_multicast_add_router() prototype is defined only when
-CONFIG_IPV6 is enabled, but the function is always referenced, so there
-is this build error with CONFIG_IPV6 not defined:
 
-net/bridge/br_multicast.c: In function ‘__br_multicast_enable_port’:
-net/bridge/br_multicast.c:1743:3: error: implicit declaration of function ‘br_ip6_multicast_add_router’; did you mean ‘br_ip4_multicast_add_router’? [-Werror=implicit-function-declaration]
- 1743 |   br_ip6_multicast_add_router(br, port);
-      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-      |   br_ip4_multicast_add_router
-net/bridge/br_multicast.c: At top level:
-net/bridge/br_multicast.c:2804:13: warning: conflicting types for ‘br_ip6_multicast_add_router’
- 2804 | static void br_ip6_multicast_add_router(struct net_bridge *br,
-      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-net/bridge/br_multicast.c:2804:13: error: static declaration of ‘br_ip6_multicast_add_router’ follows non-static declaration
-net/bridge/br_multicast.c:1743:3: note: previous implicit declaration of ‘br_ip6_multicast_add_router’ was here
- 1743 |   br_ip6_multicast_add_router(br, port);
-      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+On Fri, 14 May 2021, at 05:02, David Gow wrote:
+> With KUnit's EXPECT macros no longer typechecking arguments as strictly,
+> get rid of a number of now unnecessary casts.
+> 
+> Signed-off-by: David Gow <davidgow@google.com>
+> ---
+> This should be a no-op functionality wise, and while it depends on the
+> first couple of patches in this series, it's otherwise independent from
+> the others. I think this makes the test more readable, but if you
+> particularly dislike it, I'm happy to drop it.
 
-Fix this build error by moving the definition out of the #ifdef.
+No, happy to have that cleaned up.
 
-Fixes: a3c02e769efe ("net: bridge: mcast: split multicast router state for IPv4 and IPv6")
-Signed-off-by: Matteo Croce <mcroce@microsoft.com>
----
- net/bridge/br_multicast.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks David.
 
-diff --git a/net/bridge/br_multicast.c b/net/bridge/br_multicast.c
-index 0703725527b3..53c3a9d80d9c 100644
---- a/net/bridge/br_multicast.c
-+++ b/net/bridge/br_multicast.c
-@@ -62,9 +62,9 @@ static void br_multicast_port_group_rexmit(struct timer_list *t);
- 
- static void
- br_multicast_rport_del_notify(struct net_bridge_port *p, bool deleted);
--#if IS_ENABLED(CONFIG_IPV6)
- static void br_ip6_multicast_add_router(struct net_bridge *br,
- 					struct net_bridge_port *port);
-+#if IS_ENABLED(CONFIG_IPV6)
- static void br_ip6_multicast_leave_group(struct net_bridge *br,
- 					 struct net_bridge_port *port,
- 					 const struct in6_addr *group,
--- 
-2.31.1
-
+Acked-by: Andrew Jeffery <andrew@aj.id.au>
