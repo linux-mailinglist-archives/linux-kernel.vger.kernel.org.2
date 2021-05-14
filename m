@@ -2,125 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFAF03809B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 14:37:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 497FF3809BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 14:38:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233686AbhENMia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 08:38:30 -0400
-Received: from foss.arm.com ([217.140.110.172]:48980 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232712AbhENMi2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 08:38:28 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 20B38175D;
-        Fri, 14 May 2021 05:37:17 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.0.219])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 85EBF3F73B;
-        Fri, 14 May 2021 05:37:14 -0700 (PDT)
-Date:   Fri, 14 May 2021 13:37:11 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     will@kernel.org, catalin.marinas@arm.com,
-        lorenzo.pieralisi@arm.com, sudeep.holla@arm.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-efi@vger.kernel.org,
-        arnd@arndb.de, wei.liu@kernel.org, ardb@kernel.org,
-        daniel.lezcano@linaro.org, kys@microsoft.com
-Subject: Re: [PATCH v10 3/7] arm64: hyperv: Add Hyper-V
- clocksource/clockevent support
-Message-ID: <20210514123711.GB30645@C02TD0UTHF1T.local>
-References: <1620841067-46606-1-git-send-email-mikelley@microsoft.com>
- <1620841067-46606-4-git-send-email-mikelley@microsoft.com>
+        id S233700AbhENMjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 08:39:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232712AbhENMjJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 08:39:09 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7524AC061574;
+        Fri, 14 May 2021 05:37:57 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id f1so12305899edt.4;
+        Fri, 14 May 2021 05:37:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=uBdbEWH3X+scS8Nyxw8OcymFh2SsY7MeUYXlJf//Dp0=;
+        b=Od2tQPgs4qSBP/eWAWJlI7Ai5VjBJDpA41aVaSjLUswo0cIf+L2Dd5kudvhOiExbL0
+         +CXyHAxgNWB2yocfxk0f/b5ak7G0KUFPELYg4NvgNb6gFU7f8gow9FThcCPkvrR6QC8K
+         Tj6UMLOkMOyJCmNrnvJ8d0nXtRKrvD11EjtKMrHUGkRVONTBqyrXu4PvEEElvnblMJPl
+         dHIPyfYOtkq6YcgFpvFXxlDO2CpdGAU6VLql4OusNlP0OqOb/IOEjt6/TZ4NJI5Unhvd
+         cg44h1MTRvs2vDjh8ZszvhI6jXJon+WbabtAYOKBslDXn0I788ebcZG8SY/xWOLz5377
+         sdzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=uBdbEWH3X+scS8Nyxw8OcymFh2SsY7MeUYXlJf//Dp0=;
+        b=QM0b/FgDj1qniycmSbRLkS7ilKdAQezyvnVWbt8zz5Ebq8O5Vtc01Yar/XqAF7fuy2
+         oufcO3Ymub/Ai+NMeikRamtMOPb/I6RCPlQJqITw/5yHcO8/Fsc3YlW7Hw/UzFtMljfr
+         dSHlmq8wcVgrqXljatSX+5PMjY0fP3fAqge4ZqWcqFR+t73haEAp5aG7f2yZ9pXVx2ww
+         b8HnnJACzrysAKE2s7PYryP862s0T7lS5s+RLZb+Q9gBFy+Q6Ogl2HnZFvPDUSR5Z+e8
+         RzQ8DWGPXujwfUl+meJ+YQ18s17MJJXJ15eC9HKac62QXfn2upE2vApI4cJqFKmiFhn5
+         CUQw==
+X-Gm-Message-State: AOAM531tzBk3XOz+Y380bRQFB6o4e4aBEORU5R4o9YXLKB1FKO1GTlYP
+        iASVGB28Qd2Th8o/jW195nhPXgJDzJnfvlJb1GNrHBoh
+X-Google-Smtp-Source: ABdhPJzpxuD4tLe10fcTMybwJ6rrpYYvUqLzYThc0ntPNhS/xZMY57k86pYbhN+KkZ+hieVE0i36BSLjJERvyNkjNGU=
+X-Received: by 2002:aa7:dbcd:: with SMTP id v13mr55366019edt.59.1620995876217;
+ Fri, 14 May 2021 05:37:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1620841067-46606-4-git-send-email-mikelley@microsoft.com>
+References: <CAOuPNLjgpkBh9dnfNTdDcfk5HiL=HjjiB9o_=fjrm+0vP7Re2Q@mail.gmail.com>
+ <CAOuPNLh_0Q9w96GKT-ogC0BBcEHgo=Hv3+c=JBcas2VgqDiyaw@mail.gmail.com>
+In-Reply-To: <CAOuPNLh_0Q9w96GKT-ogC0BBcEHgo=Hv3+c=JBcas2VgqDiyaw@mail.gmail.com>
+From:   Pintu Agarwal <pintu.ping@gmail.com>
+Date:   Fri, 14 May 2021 18:07:34 +0530
+Message-ID: <CAOuPNLjmJ0YufFktJzjkyvdxwFTOpxVj5AW5gANAGSG=_yT=mQ@mail.gmail.com>
+Subject: [RESEND]: Kernel 4.14: SQUASHFS error: unable to read xattr id index table
+To:     phillip@squashfs.org.uk, open list <linux-kernel@vger.kernel.org>,
+        sean@geanix.com, linux-mtd@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
+Hi,
 
-On Wed, May 12, 2021 at 10:37:43AM -0700, Michael Kelley wrote:
-> Add architecture specific definitions and functions needed
-> by the architecture independent Hyper-V clocksource driver.
-> Update the Hyper-V clocksource driver to be initialized
-> on ARM64.
+This is regarding the squashfs mount failure that I am getting on my
+device during boot time.
+I just wanted to know if someone else has come across this issue, or
+this issue is already fixed, or this is altogether a different issue?
 
-Previously we've said that for a clocksource we must use the architected
-counter, since that's necessary for things like the VDSO to work
-correctly and efficiently.
+Here are more details:
+Kernel: 4.14.170 ; Qualcomm chipset (arm32 bit)
+Platform: busybox
+Storage: NAND 512MB
+Filesystem: ubifs + squashfs
+ubi0 : with 5 volumes (rootfs, usrfs, others)
+Kernel command line: ro rootwait console=3DttyMSM0,115200,n8
+rootfstype=3Dsquashfs root=3D/dev/mtdblock34 ubi.mtd=3D30,0,30 ....
 
-Given that, I'm a bit confused that we're registering a per-cpu
-clocksource that is in part based on the architected counter. Likewise,
-I don't entirely follow why it's necessary to PV the clock_event_device.
+Background:
+We are using ubifs filesystem with squashfs for rootfs (as ready only).
+First we tried to flash "usrfs" (data) volume (ubi0_1) and it worked
+fine (with device booting successfully).
 
-Are the architected counter and timer reliable without this PV
-infrastructure? Why do we need to PV either of those?
+Next we are trying to flash "rootfs" volume (ubi0_0) now. The volume
+flashing is successful but after that when we reboot the system we are
+getting below errors.
+
+Logs:
+[....]
+[    4.589340] vreg_conn_pa: dis=E2=96=92[    4.602779] squashfs: SQUASHFS
+error: unable to read xattr id index table
+[...]
+[    4.964083] No filesystem could mount root, tried:
+[    4.964087]  squashfs
+[    4.966255]
+[    4.973443] Kernel panic - not syncing: VFS: Unable to mount root
+fs on unknown-block(31,34)
+
+-----------
+[    4.246861] ubi0: attaching mtd30
+[    4.453241] ubi0: scanning is finished
+[    4.460655] ubi0: attached mtd30 (name "system", size 216 MiB)
+[    4.460704] ubi0: PEB size: 262144 bytes (256 KiB), LEB size: 253952 byt=
+es
+[    4.465562] ubi0: min./max. I/O unit sizes: 4096/4096, sub-page size 409=
+6
+[    4.472483] ubi0: VID header offset: 4096 (aligned 4096), data offset: 8=
+192
+[    4.479295] ubi0: good PEBs: 864, bad PEBs: 0, corrupted PEBs: 0
+[    4.486067] ubi0: user volume: 5, internal volumes: 1, max. volumes
+count: 128
+[    4.492311] ubi0: max/mean erase counter: 4/0, WL threshold: 4096,
+image sequence number: 1
+[    4.499333] ubi0: available PEBs: 0, total reserved PEBs: 864, PEBs
+reserved for bad PEB handling: 60
+
+So, we just wanted to know if this issue is related to squashfs or if
+there is some issue with our volume flashing.
+Note: We are using fastboot mechanism to support UBI volume flashing.
+
+Observation:
+Recently I have seen some squashfs changes related to similar issues
+(xattr) so I wanted to understand if these changes are relevant to our
+issue or not ?
+
+Age           Commit message(Expand)                                 Author
+2021-03-30    squashfs: fix xattr id and id lookup sanity checks
+Phillip Lougher
+2021-03-30    squashfs: fix inode lookup sanity checks
+Sean Nyekjaer
+2021-02-23    squashfs: add more sanity checks in xattr id lookup
+Phillip Lougher
+2021-02-23    squashfs: add more sanity checks in inode lookup
+Phillip Lougher
+2021-02-23    squashfs: add more sanity checks in id lookup
+Phillip Lougher
+
+Please let us know your opinion about this issue...
+It will help us to decide whether the issue is related to squashfs  or not.
+
 
 Thanks,
-Mark.
-
-> 
-> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
-> Reviewed-by: Sunil Muthuswamy <sunilmut@microsoft.com>
-> ---
->  arch/arm64/include/asm/mshyperv.h  | 12 ++++++++++++
->  drivers/clocksource/hyperv_timer.c | 14 ++++++++++++++
->  2 files changed, 26 insertions(+)
-> 
-> diff --git a/arch/arm64/include/asm/mshyperv.h b/arch/arm64/include/asm/mshyperv.h
-> index c448704..b17299c 100644
-> --- a/arch/arm64/include/asm/mshyperv.h
-> +++ b/arch/arm64/include/asm/mshyperv.h
-> @@ -21,6 +21,7 @@
->  #include <linux/types.h>
->  #include <linux/arm-smccc.h>
->  #include <asm/hyperv-tlfs.h>
-> +#include <clocksource/arm_arch_timer.h>
->  
->  /*
->   * Declare calls to get and set Hyper-V VP register values on ARM64, which
-> @@ -41,6 +42,17 @@ static inline u64 hv_get_register(unsigned int reg)
->  	return hv_get_vpreg(reg);
->  }
->  
-> +/* Define the interrupt ID used by STIMER0 Direct Mode interrupts. This
-> + * value can't come from ACPI tables because it is needed before the
-> + * Linux ACPI subsystem is initialized.
-> + */
-> +#define HYPERV_STIMER0_VECTOR	31
-> +
-> +static inline u64 hv_get_raw_timer(void)
-> +{
-> +	return arch_timer_read_counter();
-> +}
-> +
->  /* SMCCC hypercall parameters */
->  #define HV_SMCCC_FUNC_NUMBER	1
->  #define HV_FUNC_ID	ARM_SMCCC_CALL_VAL(			\
-> diff --git a/drivers/clocksource/hyperv_timer.c b/drivers/clocksource/hyperv_timer.c
-> index 977fd05..270ad9c 100644
-> --- a/drivers/clocksource/hyperv_timer.c
-> +++ b/drivers/clocksource/hyperv_timer.c
-> @@ -569,3 +569,17 @@ void __init hv_init_clocksource(void)
->  	hv_setup_sched_clock(read_hv_sched_clock_msr);
->  }
->  EXPORT_SYMBOL_GPL(hv_init_clocksource);
-> +
-> +/* Initialize everything on ARM64 */
-> +static int __init hyperv_timer_init(struct acpi_table_header *table)
-> +{
-> +	if (!hv_is_hyperv_initialized())
-> +		return -EINVAL;
-> +
-> +	hv_init_clocksource();
-> +	if (hv_stimer_alloc(true))
-> +		return -EINVAL;
-> +
-> +	return 0;
-> +}
-> +TIMER_ACPI_DECLARE(hyperv, ACPI_SIG_GTDT, hyperv_timer_init);
-> -- 
-> 1.8.3.1
-> 
+Pintu
