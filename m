@@ -2,221 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 921B7380114
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 02:15:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E7B7380117
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 02:15:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231414AbhENAQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 20:16:11 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:40418 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230316AbhENAQK (ORCPT
+        id S231452AbhENAQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 20:16:27 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:44502 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230316AbhENAQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 20:16:10 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14E0B2PH041967;
-        Fri, 14 May 2021 00:14:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=xThT6y4G4/WsuiSZSeiGoaqNWcRleJjoo+igRQ3E/tw=;
- b=Y3ICbJzUDis8HsyWWH95/UW62kUHXKQOA2TQ4G1GmfsZVXDe4RKb0si0BNyrbtnSDSJA
- lpOSxb83rWCairpGrnE+vC2gcQt/b73J+pQ+i32L3/qmXff4MkPFqV4ALQ/iIi47UGIP
- Ur7vXjmHalYRt+bZ2cUsS87gAu4S2SV9ksbhF045Wis+ikgbjSoD5Vvl8DayNCXLCNFW
- RwweZToCFSPZImR7tqcFxaN/SMvn9l1PjaxAFMP+i7FPv/I6vMCz4tgYQKg5jIY9epkY
- 1yXbm4JrbdBX8gFKS0HowxD8J+arjpop6a0wfz+yewbSO+g9k1zOl9gpljg7waAeYIRi 3Q== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 38gpndb3bb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 14 May 2021 00:14:54 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14E09wh6085901;
-        Fri, 14 May 2021 00:14:53 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
-        by aserp3030.oracle.com with ESMTP id 38gpppm9qs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 14 May 2021 00:14:53 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eZmJJtKT/XIUY1TQkq/PK4GDn8MfwcT4fg8Iuj0c8epnklG70WAHxnu+ivtRbfzM8kCP2aH4g7wXSg8ICZnqxcRo6a+PZzX193w9qDbEvTtlXoy5fHfOVdrVNKVVU0o7absodD980eShWyB05kpRPet/ZBhim2fJZO7MXKu4sl84PcW4r+yPNDwmg84yykvGCYXdaA0fZQDvEc0gPVBXE30jMPsnkAjb/kUSVt0uyPhz9ntUAUuEqQivr66L2UnGxQ4UKU2TnMcKRJsFNKKwKzeQDbJoGbBfUQMjfYpVCVWMMi0d69hf+113hQWM1zNGmf9hUXyYxz6gSrqijqoY/A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xThT6y4G4/WsuiSZSeiGoaqNWcRleJjoo+igRQ3E/tw=;
- b=Hcgsj/9Vus9Yy43qkxjRJaYVj+uLvCaw5JCLmqBcL0kivH1Bk3wu3R0CG8WI9fFMo1GOjN8M/GFaIfnxVzn9dBnmmOt0OlhJqkw0Wb9Plh4xjUP9L8DED93vTLNns6yx+cJeEv9Jy03RAOpdBTF8tfPuadSAicV1AEQoqktreqq3xUY1UYQQ72OlCxXQpJiWdtxRlQkGqvjR9d3zuDZ7FE/BuGLPrHJsnXH938Jv4ZX16L5ZVchhuw3bQInhu8ul2XV/LVXfY1nbZWInvFjn9KWRsSh60xMzC/GhdC8KIcbGyjSMglyBkOSP4cus2SeDS5b6xss6ggVydJ3ZcmJorg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xThT6y4G4/WsuiSZSeiGoaqNWcRleJjoo+igRQ3E/tw=;
- b=Ot04VowUkrMEnGqgxL0MyEr7LN3UWDG+ftJqhTuYbje14RA3K91Vw+l//JFT0dePi07Q1jWob53egiFZpedPnxDVR1oSJD6btSFSstNFV7OMq+DZm+JUt1hG38sLNPrsWGvKOSxnE0SmMCaNCADToQ1RVoIUS2Yv2HOpyiW2gZs=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
- by BYAPR10MB2597.namprd10.prod.outlook.com (2603:10b6:a02:ae::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.26; Fri, 14 May
- 2021 00:14:51 +0000
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::4407:2ff6:c0a:5d90]) by BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::4407:2ff6:c0a:5d90%8]) with mapi id 15.20.4129.026; Fri, 14 May 2021
- 00:14:51 +0000
-Subject: Re: [PATCH] mm, hugetlb: fix resv_huge_pages underflow on UFFDIO_COPY
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     Axel Rasmussen <axelrasmussen@google.com>,
-        Peter Xu <peterx@redhat.com>, Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210513234309.366727-1-almasrymina@google.com>
- <CAHS8izNkBvS9gkSjy8FbWBOPDynwr8PXXXbMHt_2=5sZJsa6-Q@mail.gmail.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <09dc0712-48e8-8ba2-f170-4c2febcfff83@oracle.com>
-Date:   Thu, 13 May 2021 17:14:48 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
-In-Reply-To: <CAHS8izNkBvS9gkSjy8FbWBOPDynwr8PXXXbMHt_2=5sZJsa6-Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [50.38.35.18]
-X-ClientProxiedBy: MW4PR03CA0188.namprd03.prod.outlook.com
- (2603:10b6:303:b8::13) To BY5PR10MB4196.namprd10.prod.outlook.com
- (2603:10b6:a03:20d::23)
+        Thu, 13 May 2021 20:16:25 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14E048e1085003;
+        Thu, 13 May 2021 20:15:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=ew18GcdY68bDpJ4ATrq5M2XMc1dSczG2ts8kLhtM0gA=;
+ b=k0Wvx7u6VlzEbaB2wCiiPG+WcY6hWETcf2Krcp4MiWtM+Z+8fkvwlsi9om3CFrnpbs0K
+ 5BVPIX8zp0JEL6JC5hmoMBAISnsGpz994fWTR6IBnDbIYNE2QnXxSDIG/FGBcJ+xmese
+ b8k43bA+KjkMhN3lfpXaZcidO0K6mnZ01qVo9DNFpEaYlydqIkYLZjKLwmudMjUferQb
+ di0lQQFb7Q7PWWunCwta2DFFAePUzsjP5aSCAXQKbAP3tuGUQ0xJBQvqFvMsWCp8nGgn
+ bVpw6PyjKkgS6/S32Qi9EmpU5/vzAL2rmkEaKquffhebAeNe3fagvSgdGI3+6fL9wIBO WQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38hcr1t2ww-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 May 2021 20:15:09 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14E04kSd090141;
+        Thu, 13 May 2021 20:15:08 -0400
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38hcr1t2w6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 May 2021 20:15:08 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14E0D63K021612;
+        Fri, 14 May 2021 00:15:06 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma01fra.de.ibm.com with ESMTP id 38hc6u80pb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 May 2021 00:15:06 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14E0F3jA23527844
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 14 May 2021 00:15:03 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7855042045;
+        Fri, 14 May 2021 00:15:03 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A19344203F;
+        Fri, 14 May 2021 00:15:02 +0000 (GMT)
+Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.9.250])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Fri, 14 May 2021 00:15:02 +0000 (GMT)
+Date:   Fri, 14 May 2021 02:15:00 +0200
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        stable@vger.kernel.org, Tony Krowiak <akrowiak@stny.rr.com>
+Subject: Re: [PATCH v2] s390/vfio-ap: fix memory leak in mdev remove
+ callback
+Message-ID: <20210514021500.60ad2a22.pasic@linux.ibm.com>
+In-Reply-To: <243086e2-08a0-71ed-eb7e-618a62b007e4@linux.ibm.com>
+References: <20210510214837.359717-1-akrowiak@linux.ibm.com>
+        <20210512203536.4209c29c.pasic@linux.ibm.com>
+        <4c156ab8-da49-4867-f29c-9712c2628d44@linux.ibm.com>
+        <20210513194541.58d1628a.pasic@linux.ibm.com>
+        <243086e2-08a0-71ed-eb7e-618a62b007e4@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.2.112] (50.38.35.18) by MW4PR03CA0188.namprd03.prod.outlook.com (2603:10b6:303:b8::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Fri, 14 May 2021 00:14:50 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1ad3f6f7-6c76-4fd1-b671-08d9166d4abc
-X-MS-TrafficTypeDiagnostic: BYAPR10MB2597:
-X-Microsoft-Antispam-PRVS: <BYAPR10MB259766F50A6113393890E1C7E2509@BYAPR10MB2597.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zdnsu97cwpcj82JhYzpRlPz4NL0EG1vLL1oj+EjgvQwHEAg5GQN7s2xAF8xb+Tiwhfbxpoe3hOGmTzIQ13tzob5g/ZH2IVxtkXLbovHXf3k1m9JAIlIzS+TMj6vT39MvSGCSGaA/c9BWlWOn0mMLIDxT+z9yHjHuNTX7SmtC7IJjtvIdbZ0A43Kt1Qm6QMNSA9zD1B9ApA9QuNoKlOwaCf2WTd+KsWYC4ODFF/JCrKz0XtOTtlJHP1UBTZG4Qz8Yy5FHtqYDCYLveN5i3b/rxZ/EPfa7FBfN/bIkEiLYbr/P2KHvFJNbD6Z7+JXFfIrY6R/eP1+3SeA0+ZBirrexpdOO7oqtJnBp2Da4RGOQRNEBc9COpckzHcbm5P0IDeLiVsL86RlVlAiH2Vn7TvixezFlv429C5tyq1beOV2KXb9bDSmSHJJNdNgiF4AcPiRxhfl7LE+IwHMY88MB7MlteywuxxDUxnqm+smkyUBcvqR4YrasPFHrxRl4iuwBngN8YuqMIvSU9yuJoUJQq4AXa63Z+vLG16CQLGKydShZNVEiCQ4LFu2Onxpcyk0EKG+9XZyVFXxWXv40YDDg762PWXgvvdv2FSz/76rNrR6V41LBZREd89xWtkStuCndABk9ytE19YwTXJdORavhI/C5TTArlsgpbVr6kmh76bZe4atVD+/57OqSH7yENIP77U5OuIWDqcGYVIH2EtDt8VZY2QRmQDZpu515qVEAblzf5OClrV0YX+nlVbkYnsHnfBUh
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(376002)(136003)(366004)(39860400002)(36756003)(2616005)(2906002)(478600001)(53546011)(8936002)(52116002)(31686004)(186003)(44832011)(956004)(16526019)(26005)(66946007)(86362001)(6916009)(31696002)(38350700002)(66476007)(66556008)(8676002)(316002)(16576012)(83380400001)(38100700002)(4326008)(54906003)(5660300002)(6486002)(14583001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?a1h5bWgvSmMvajZnd2FQOUxsb0hFZ0dDTXlEbkQ0L1RXMDhzVzdndmo4S3lB?=
- =?utf-8?B?Z2k2WEp2eHZPK2pWVkZwcll1ZmEvWFJQaDU4Q0xnWEFJU0VFVTJpS2ZjVXZu?=
- =?utf-8?B?OEN6cFJxbm8vTzZvU2ZBaThBNENYYmxaT1Q1SG1SdmVBY2thek1WZklZbGhX?=
- =?utf-8?B?TkdqWjdtZUc3dE05NTVJdzRWNHRGaUppa3IwYTRoNmRrdnhNKzJuRUpDQkZB?=
- =?utf-8?B?dVFRdUlobytKeVRXZFdVWGRnMXRHMURiR0tLM1FjSDA0OHJUbjhkY2JOWGxp?=
- =?utf-8?B?am1uc2NNTHRNcy9Xa2ZMUGFjK1NjcWJ6dGpsb2RUKzFBaVpmS3YvVFpDTTlv?=
- =?utf-8?B?dUN1NEQxSUo2QTJYd0ZWVlhGNEZMWnU0amZRQlFaOGxVSmhQM0dlbFM3VXRw?=
- =?utf-8?B?WXBjNlJNOG9TMnFRTE54MU9mZ2pFbzFWV1ViZlMwak1vSk5uYWdPa1NUalIx?=
- =?utf-8?B?Z0NNM3hoMXFBMUVUK1h2SzlOTm9lQytwMVdmZU9JRks3a3RhTEdNcDkyWXpN?=
- =?utf-8?B?Znhha2FoNE1rZWpaQW82bnhHUUlINlhuOXkwbFUyQStkOWkxZW5MNTBMQ085?=
- =?utf-8?B?UmdGNmY1aFBGUGcvOVNVajFoZWFRd1grUnJsd3pqYlNibVY2YmxOZGd4Nkhi?=
- =?utf-8?B?cHBXZ0FTdkhuVURUN3hoY2hYYmttMlMwUCtRYW1uTWIzbm5Bb2ttb21BWkNC?=
- =?utf-8?B?MG5CaGZGRndFUDY5MnNyM01MNDJsOGtpL2hDaTNYUk43SGh0eHdaSGdvWnoy?=
- =?utf-8?B?dkM0Um92RGlXc3RlZzRlbndRRURNMUpMNnpqalpNVm9NUG5FVk13RFFjYkY4?=
- =?utf-8?B?ZWVGMkl2amt0VUowYnFoeWVWaVROSTRqYkhlcStzbGszWmZDTVRIWmxaOFpX?=
- =?utf-8?B?cElTQnFlVlJZdXE5bFZYbjBUTDA4bjh6MUNlY2ZDeUxpOHNNb3JtUCs4akQ5?=
- =?utf-8?B?c0RCczZrWklUd1hzV2lXRTNBVzJCZSsvWEx4ZlJQKy9xQUZaL3ZCUmtMRFcv?=
- =?utf-8?B?VkhrVG5DSVNJY1NZSFJpY00wTDRqbFA1bXhGV1BBZ1ltbzBTdHNWNUdkbUxh?=
- =?utf-8?B?Z0N5YllvdmRpaE0zUnh3d2pQaGdzR05WM2p1ckpEeHpHVXNubXlSbFhQd21L?=
- =?utf-8?B?V3hsTC83U2ZxZy85TUZjOGJHRzVaVTFLbjhxaXJPdUFhcGhsem1hYVFuMDRL?=
- =?utf-8?B?T09yWEwwcEZsYXVyR01NTHNOVXFPbVNsQXl2N2lDOVpVcUE2UU9nY294Z1lN?=
- =?utf-8?B?bWxhdS9peW1yUENFTXlwNkM1ek0rVzZuNkRYWnVVZVY0TEc2UzJPT2VoZGlu?=
- =?utf-8?B?ZmZoRStlaVRNQ2RjUUo0Z3dUVXNuM1U1M3VGcVR6VFF4WTJnV2Q5aGNjYTUr?=
- =?utf-8?B?aXlheXM3R3krWmZPdHNGNjlGT3hac0xpREdTWGZlUTdiOGNUZnY0cUhVODRE?=
- =?utf-8?B?T1JlTlZDeTV5eFJvdU84Ym1ucnArYzFGZUJ4VmFzL1kxYjBDL2J4MUN0OHFt?=
- =?utf-8?B?TkFPdC90SkszVnFES3lKQm83QVd2WWpkTWhPYkpnWkVicVNtOG9EaCtEakZk?=
- =?utf-8?B?NVVsSm5tZTJjOXM2aFc4WmxHTzlCN3V0RzZ1V05UbFlmRHN1NVpRNncweW1i?=
- =?utf-8?B?dWdudWFSV1NPYTYvZzJwaWVrTkQvaFE1TWc3bGYzRGVTTW5YZVRPVlJGWGhU?=
- =?utf-8?B?TkdGb0xINUFiSmpNcEJsRmIwaXl4Yml4dEhhbXRFWjhkb0MzK2RBMWY4QVBo?=
- =?utf-8?Q?8hrZA8agg2EWEBGDbCwuBbuvnWuxCDzdr+gOocg?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1ad3f6f7-6c76-4fd1-b671-08d9166d4abc
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 May 2021 00:14:51.3302
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: x7Be0asU5d1Id1ImxKv1A/oPf+KEAy9QyanWGcCRJGsmmAduQP3Tg/NGKqXdlrxe937hcgXSlAPwtPke2jQ75g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB2597
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9983 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0
- phishscore=0 suspectscore=0 malwarescore=0 bulkscore=0 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105130172
-X-Proofpoint-ORIG-GUID: ZsnNocHzQxPzgfj63gqS35UqJBehT0I4
-X-Proofpoint-GUID: ZsnNocHzQxPzgfj63gqS35UqJBehT0I4
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9983 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 phishscore=0
- priorityscore=1501 suspectscore=0 spamscore=0 lowpriorityscore=0
- adultscore=0 clxscore=1015 mlxscore=0 bulkscore=0 mlxlogscore=999
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105130172
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: lHd0HWLEuKiiq5JpHBsW7ApSTXv4v9S-
+X-Proofpoint-ORIG-GUID: 0_b2CFNW0cRRNoj0GTZtBAC3O_XqitVD
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-13_16:2021-05-12,2021-05-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ spamscore=0 impostorscore=0 lowpriorityscore=0 clxscore=1015
+ malwarescore=0 bulkscore=0 mlxlogscore=999 mlxscore=0 adultscore=0
+ phishscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104190000 definitions=main-2105130171
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/13/21 4:49 PM, Mina Almasry wrote:
-> On Thu, May 13, 2021 at 4:43 PM Mina Almasry <almasrymina@google.com> wrote:
->>
->> When hugetlb_mcopy_atomic_pte() is called with:
->> - mode==MCOPY_ATOMIC_NORMAL and,
->> - we already have a page in the page cache corresponding to the
->> associated address,
->>
->> We will allocate a huge page from the reserves, and then fail to insert it
->> into the cache and return -EEXIST. In this case, we need to return -EEXIST
->> without allocating a new page as the page already exists in the cache.
->> Allocating the extra page causes the resv_huge_pages to underflow temporarily
->> until the extra page is freed.
->>
->> To fix this we check if a page exists in the cache, and allocate it and
->> insert it in the cache immediately while holding the lock. After that we
->> copy the contents into the page.
->>
->> As a side effect of this, pages may exist in the cache for which the
->> copy failed and for these pages PageUptodate(page) == false. Modify code
->> that query the cache to handle this correctly.
->>
+On Thu, 13 May 2021 15:23:27 -0400
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+
+> On 5/13/21 1:45 PM, Halil Pasic wrote:
+> > On Thu, 13 May 2021 10:35:05 -0400
+> > Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+> >  
+> >> On 5/12/21 2:35 PM, Halil Pasic wrote:  
+> >>> On Mon, 10 May 2021 17:48:37 -0400
+> >>> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+> >>>     
+> >>>> The mdev remove callback for the vfio_ap device driver bails out with
+> >>>> -EBUSY if the mdev is in use by a KVM guest. The intended purpose was
+> >>>> to prevent the mdev from being removed while in use; however, returning a
+> >>>> non-zero rc does not prevent removal. This could result in a memory leak
+> >>>> of the resources allocated when the mdev was created. In addition, the
+> >>>> KVM guest will still have access to the AP devices assigned to the mdev
+> >>>> even though the mdev no longer exists.
+> >>>>
+> >>>> To prevent this scenario, cleanup will be done - including unplugging the
+> >>>> AP adapters, domains and control domains - regardless of whether the mdev
+> >>>> is in use by a KVM guest or not.
+> >>>>
+> >>>> Fixes: 258287c994de ("s390: vfio-ap: implement mediated device open callback")
+> >>>> Cc: stable@vger.kernel.org
+> >>>> Signed-off-by: Tony Krowiak <akrowiak@stny.rr.com>
+> >>>> ---
+> >>>>    drivers/s390/crypto/vfio_ap_ops.c | 13 ++-----------
+> >>>>    1 file changed, 2 insertions(+), 11 deletions(-)
+> >>>>
+> >>>> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
+> >>>> index b2c7e10dfdcd..f90c9103dac2 100644
+> >>>> --- a/drivers/s390/crypto/vfio_ap_ops.c
+> >>>> +++ b/drivers/s390/crypto/vfio_ap_ops.c
+> >>>> @@ -26,6 +26,7 @@
+> >>>>
+> >>>>    static int vfio_ap_mdev_reset_queues(struct mdev_device *mdev);
+> >>>>    static struct vfio_ap_queue *vfio_ap_find_queue(int apqn);
+> >>>> +static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev);
+> >>>>
+> >>>>    static int match_apqn(struct device *dev, const void *data)
+> >>>>    {
+> >>>> @@ -366,17 +367,7 @@ static int vfio_ap_mdev_remove(struct mdev_device *mdev)
+> >>>>    	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
+> >>>>
+> >>>>    	mutex_lock(&matrix_dev->lock);
+> >>>> -
+> >>>> -	/*
+> >>>> -	 * If the KVM pointer is in flux or the guest is running, disallow
+> >>>> -	 * un-assignment of control domain.
+> >>>> -	 */
+> >>>> -	if (matrix_mdev->kvm_busy || matrix_mdev->kvm) {
+> >>>> -		mutex_unlock(&matrix_dev->lock);
+> >>>> -		return -EBUSY;
+> >>>> -	}
+> >>>> -
+> >>>> -	vfio_ap_mdev_reset_queues(mdev);
+> >>>> +	vfio_ap_mdev_unset_kvm(matrix_mdev);
+> >>>>    	list_del(&matrix_mdev->node);
+> >>>>    	kfree(matrix_mdev);  
+> >>> Are we at risk of handle_pqap() in arch/s390/kvm/priv.c using an
+> >>> already freed pqap_hook (which is a member of the matrix_mdev pointee
+> >>> that is freed just above my comment).
+> >>>
+> >>> I'm aware of the fact that vfio_ap_mdev_unset_kvm() does a
+> >>> matrix_mdev->kvm->arch.crypto.pqap_hook = NULL but that is
+> >>> AFRICT not done under any lock relevant for handle_pqap(). I guess
+> >>> the idea is, I guess, the check cited below
+> >>>
+> >>> static int handle_pqap(struct kvm_vcpu *vcpu)
+> >>> [..]
+> >>>           /*
+> >>>            * Verify that the hook callback is registered, lock the owner
+> >>>            * and call the hook.
+> >>>            */
+> >>>           if (vcpu->kvm->arch.crypto.pqap_hook) {
+> >>>                   if (!try_module_get(vcpu->kvm->arch.crypto.pqap_hook->owner))
+> >>>                           return -EOPNOTSUPP;
+> >>>                   ret = vcpu->kvm->arch.crypto.pqap_hook->hook(vcpu);
+> >>>                   module_put(vcpu->kvm->arch.crypto.pqap_hook->owner);
+> >>>                   if (!ret && vcpu->run->s.regs.gprs[1] & 0x00ff0000)
+> >>>                           kvm_s390_set_psw_cc(vcpu, 3);
+> >>>                   return ret;
+> >>>           }
+> >>>
+> >>> is going to catch it, but I'm not sure it is guaranteed to catch it.
+> >>> Opinions?  
+> >> The hook itself - handle_pqap() function in vfio_ap_ops.c - also checks
+> >> to see if the reference to the hook is set and terminates with an error
+> >> if it
+> >> is not. If the hook is invoked subsequent to the remove callback above,
+> >> all should be fine since the check is also done under the matrix_dev->lock.
+> >>  
+> > I don't quite understand your logic. Let us assume matrix_mdev was freed,
+> > but vcpu->kvm->arch.crypto.pqap_hook still points to what used to be
+> > (*matrix_mdev).pqap_hook. In that case the function pointer
+> > vcpu->kvm->arch.crypto.pqap_hook->hook is used after it was freed, and
+> > may not point to the handle_pqap() function in vfio_ap_ops.c, thus the
+> > check you are referring to ain't necessarily relevant. Than is
+> > if you mean the check in the  handle_pqap() function in vfio_ap_ops.c; if
+> > you mean the check in handle_pqap() in arch/s390/kvm/priv.c, that one is
+> > not done under the matrix_dev->lock. Or do I have a hole somewhere in my
+> > reasoning?  
 > 
-> To be honest, I'm not sure I've done this bit correctly. Please take a
-> look and let me know what you think. It may be too overly complicated
-> to have !PageUptodate() pages in the cache and ask the rest of the
-> code to handle that edge case correctly, but I'm not sure how else to
-> fix this issue.
+> What I am saying is the vcpu->kvm->arch.crypto.pqap_hook
+> will either be NULL or point to the handle_pqap() function in the
+> vfio_ap driver.
+
+Please read the code again. In my reading of the code
+vcpu->kvm->arch.crypto.pqap_hook is never supposed to point to >(or does
+point to) the handle_pqap() function defined in vfio_ap_ops.c. It points
+to the pqap_hook member of struct ap_matrix_mdev (the type of the member
+is struct kvm_s390_module_hook, which in turn has a function pointer
+member called hook, which is supposed to hold the address of
+handle_pqap() function defined in vfio_ap_ops.c, and thus point to
+it).
+
+Because of this, I don't think the rest of your argument is valid.
+Furthermore I believe we first need to get to common ground on this
+one before proceeding any further. If you happen to preserve your
+opinion after checking again, I think we should try to discuss this
+offline, as one of us is likely looking at the wrong code.
+
+Regards,
+Halil
+
+> In the latter case, the handler in the driver will get
+> called and try to acquire the matrix_dev->lock. The function that
+> sets the vcpu->kvm->arch.crypto.pqap_hook to NULL also takes that
+> lock. If the pointer is still active, then the handler will do its thing.
+> If not, then the handler will return without enabling or disabling
+> IRQs. That should not be a problem since the unset_kvm function
+> resets the queues which will disable the IRQs.
+> 
+> I don't see how
+> the vcpu->kvm->arch.crypto.pqap_hook can point to anything
+> other than the handler or be NULL unless KVM is gone. Based on
+> my observations of the behavior, unless there is some
+> other way for the remove callback to be invoked other than in
+> response to a request from userspace via the sysfs remove
+> attribute, it will not get called until the file descriptor is
+> closed in which case the release callback will also unset_kvm.
+> I think you are worrying about something that will likely never
+> happen.
+> 
+> >
+> > Regards,
+> > Halil
+> >  
 > 
 
-I think you just moved the underflow from hugetlb_mcopy_atomic_pte to
-hugetlb_no_page.  Why?
-
-Consider the case where there is only one reserve left and someone does
-the MCOPY_ATOMIC_NORMAL for the address.  We will allocate the page and
-consume the reserve (reserve count == 0) and insert the page into the
-cache.  Now, if the copy_huge_page_from_user fails we must drop the
-locks/fault mutex to do the copy.  While locks are dropped, someone
-faults on the address and ends up in hugetlb_no_page.  The page is in
-the cache but not up to date, so we go down the allocate new page path
-and will decrement the reserve count again to cause underflow.
-
-How about this approach?
-- Keep the check for hugetlbfs_pagecache_present in hugetlb_mcopy_atomic_pte
-  that you added.  That will catch the race where the page was added to
-  the cache before entering the routine.
-- With the above check in place, we only need to worry about the case
-  where copy_huge_page_from_user fails and we must drop locks.  In this
-  case we:
-  - Free the page previously allocated.
-  - Allocate a 'temporary' huge page without consuming reserves.  I'm
-    thinking of something similar to page migration.
-  - Drop the locks and let the copy_huge_page_from_user be done to the
-    temporary page.
-  - When reentering hugetlb_mcopy_atomic_pte after dropping locks (the
-    *pagep case) we need to once again check
-    hugetlbfs_pagecache_present.
-  - We then try to allocate the huge page which will consume the
-    reserve.  If successful, copy contents of temporary page to newly
-    allocated page.  Free temporary page.
-
-There may be issues with this, and I have not given it deep thought.  It
-does abuse the temporary huge page concept, but perhaps no more than
-page migration.  Things do slow down if the extra page allocation and
-copy is required, but that would only be the case if copy_huge_page_from_user
-needs to be done without locks.  Not sure, but hoping that is rare.
--- 
-Mike Kravetz
