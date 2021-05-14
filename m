@@ -2,62 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01D993812AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 23:12:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFECE3812B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 23:15:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231524AbhENVOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 17:14:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49228 "EHLO mail.kernel.org"
+        id S231591AbhENVQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 17:16:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230202AbhENVOE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 17:14:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 3B2886135F;
-        Fri, 14 May 2021 21:12:52 +0000 (UTC)
+        id S229504AbhENVQf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 17:16:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 21877613DE
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 21:15:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621026772;
-        bh=wvPflSxuR64CsBOTzwnuFaWm2Yuxepi+5EvBf7rsNLo=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=q8EbJmJH3deJFfoX1nKTfOhGBZWRu65OJjUvN3f2t06WcCWX76Pu/rjhWlzLU5Rbu
-         mdQbsUFVDMFsDqH9t2wYRw+dHasfa67Qbyj4xES0Bi4EsWcIhnkCqi6RgTH6Ber1kJ
-         KXFjxl2Z7Ik8Rsyg0dIBbp3HteGKcAU2SGhU+wWK6ot+zLRtqOkuXlTgmeNI0x5HoX
-         bsEEwoJuLJ6W0NaViAXEfgiqWYbxuq+zKmEsRydcKy9ooO28vEHHahYbqeDmmvZl09
-         C151ME3PwiArIEl2SrHFXMYADB0Qk4EjSL4yoU3E/aO3XEYtPJR0ne7YSSPpU1HlaE
-         7VqJ9EajFjfYA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2907560A0A;
-        Fri, 14 May 2021 21:12:52 +0000 (UTC)
-Subject: Re: [GIT PULL] tracing: Handle %.*s in trace_check_vprintf()
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210514163702.7ae950d6@gandalf.local.home>
-References: <20210514163702.7ae950d6@gandalf.local.home>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210514163702.7ae950d6@gandalf.local.home>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.13-rc1
-X-PR-Tracked-Commit-Id: eb01f5353bdaa59600b29d864819056a0e3de24d
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 25a1298726e97b9d25379986f5d54d9e62ad6e93
-Message-Id: <162102677210.10467.14877913545885822211.pr-tracker-bot@kernel.org>
-Date:   Fri, 14 May 2021 21:12:52 +0000
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        s=k20201202; t=1621026924;
+        bh=6NUH5BPgrJlnf2o44v4VmSKl7CL9Z5+001eR+AxepkI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=exTX+yplfNo3jtt109pCTfgvfT/Vk6257m7XoLq8LgIQcizSbn7ZUUeoA+F3JnxRz
+         e9GjxkyRIHToOOL/pTAQwBjkzmH/NCgbph0d+X8Z0MHpKPnDUfn6XxHTlEr+zDtNGQ
+         DN9j28pCa3LqxGIs3d/cyXcOIKu/TysCYyRRpqOxdQhALqMmrNAihClbJnTHVhpz/B
+         62hsHvIsZxhhABu7RmgWZwYydOOYOgt+f/F5VWMxjAzNGB21Xbl7Tt1emF3PHOddoT
+         V3Dj4xLSY0uTEz9tjYxkSoys0zfP5qUYk4WhLu7TtozKzT5tz7LGD1ZCkaboa+SXPE
+         Jt/aYqje+9uUw==
+Received: by mail-wr1-f47.google.com with SMTP id z17so492509wrq.7
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 14:15:24 -0700 (PDT)
+X-Gm-Message-State: AOAM530gErTV8lKOY7ujqGmW2Ub6aZefDJ0CPt8LBOnwbO8uGgUmLEP/
+        iW1qZ9+evaO5ij03/XqFVqP468PE9M1H4hrBABQ=
+X-Google-Smtp-Source: ABdhPJyMmsUWv7wugOdVS7iE7e99XXMJsDTEzihineKEAR1zkiEnYA288KSuAxVA7VtzVoHdGeZh+8lmpzwxsKuCHrM=
+X-Received: by 2002:a5d:6dc4:: with SMTP id d4mr62499904wrz.105.1621026922815;
+ Fri, 14 May 2021 14:15:22 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210514140429.3334181-1-arnd@kernel.org> <20210514101610.4392adbc@gandalf.local.home>
+ <CAKwvOdmJfm+PKxjR-N=YfFcjrXi4N4xUiRCLbSNMNJ+5g_wX+g@mail.gmail.com>
+In-Reply-To: <CAKwvOdmJfm+PKxjR-N=YfFcjrXi4N4xUiRCLbSNMNJ+5g_wX+g@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 14 May 2021 23:14:20 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1KkFb-pk5XkEa+MnFBPfzMTdUCKMWH+ANQLdfHbp2FWg@mail.gmail.com>
+Message-ID: <CAK8P3a1KkFb-pk5XkEa+MnFBPfzMTdUCKMWH+ANQLdfHbp2FWg@mail.gmail.com>
+Subject: Re: [PATCH] tracing: events_hist: avoid using excessive stack space
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@godmis.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Qiujun Huang <hqjagain@gmail.com>, Tom Rix <trix@redhat.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Chuck Lever III <chuck.lever@oracle.com>
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 14 May 2021 16:37:01 -0400:
+On Fri, May 14, 2021 at 10:19 PM 'Nick Desaulniers' via Clang Built
+Linux <clang-built-linux@googlegroups.com> wrote:
+>
+> On Fri, May 14, 2021 at 7:16 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > On Fri, 14 May 2021 16:04:25 +0200
+> > Arnd Bergmann <arnd@kernel.org> wrote:
+> >
+> > > From: Arnd Bergmann <arnd@arndb.de>
+> > >
+> > > In some configurations, clang produces a warning about an overly large
+> > > amount of stack space used in hist_trigger_print_key():
+> > >
+> > > kernel/trace/trace_events_hist.c:4594:13: error: stack frame size of 1248 bytes in function 'hist_trigger_print_key' [-Werror,-Wframe-larger-than=]
+> > > static void hist_trigger_print_key(struct seq_file *m,
+> > >
+> > > Moving the 'str' variable into a more local scope in the two places
+> > > where it gets used actually reduces the the used stack space here
+> > > and gets it below the warning limit, because the compiler can now
+> > > assume that it is safe to use the same stack slot that it has for
+> > > the stack of any inline function.
+> >
+> > Thanks Arnd for the nice explanation of the rationale for this change.
+> >
+> > But I still find it too subtle to my liking that we need to move the
+> > declaration like this (and duplicate it twice) for internal behavior of the
+> > compiler (where it can't figure out itself by the use cases if it can
+> > optimize the stack).
+>
+> Under which configurations this warning was observed wasn't specified,
+> but I'd bet it's one of the sanitizers splitting this in two in order
+> to tell which branch may have overflowed the buffer.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.13-rc1
+Right, I did not manage to find the exact conditions that trigger it.
+I did *not* see it with KASAN enabled and I saw it with UBSAN both
+on or off.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/25a1298726e97b9d25379986f5d54d9e62ad6e93
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+       Arnd
