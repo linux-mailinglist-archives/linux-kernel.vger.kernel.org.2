@@ -2,182 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF354380CDE
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 17:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2286380CE1
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 17:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233550AbhENP2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 11:28:25 -0400
-Received: from foss.arm.com ([217.140.110.172]:51434 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231419AbhENP2X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 11:28:23 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E6FEA1713;
-        Fri, 14 May 2021 08:27:11 -0700 (PDT)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6D6293F718;
-        Fri, 14 May 2021 08:27:09 -0700 (PDT)
-Subject: Re: [PATCH v13 0/4] drm/panfrost: Add support for mt8183 GPU
-To:     Neil Armstrong <narmstrong@baylibre.com>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc:     Nicolas Boichat <drinkcat@chromium.org>,
-        Rob Herring <robh@kernel.org>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>, fshao@chromium.org,
-        David Airlie <airlied@linux.ie>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>, hsinyi@chromium.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        hoegsberg@chromium.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-References: <20210421052855.1279713-1-drinkcat@chromium.org>
- <c91746ce-88b6-5612-74a5-74600c7761e8@baylibre.com>
- <CAAEAJfD3i+L4w1NuE5pUkMuH=R3CfBztDn-ZLcYR=onkcZ4Gxg@mail.gmail.com>
- <373d0803-8658-9413-2f51-1e9804c39126@baylibre.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <ce401ca2-e285-4fcf-0583-c1dae94dba6a@arm.com>
-Date:   Fri, 14 May 2021 16:27:08 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S234662AbhENP2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 11:28:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231419AbhENP2n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 11:28:43 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B7CFC061574;
+        Fri, 14 May 2021 08:27:30 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id t15so7457010edr.11;
+        Fri, 14 May 2021 08:27:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i3brosy5XXCkmKkwn4l+AKR0pDfb4h3+yvaYa21wYq8=;
+        b=mvupAA+p79dUWGrk5E9BhZLhvX9JvYDYdfPKI0wDBotNmCLqg3UFxsUrKQkKJqiY8S
+         XhsJVW4vb1kD1hglJRcJzKssA5UudA7JhrLNQ70yXUK4P4dNVfNhXsyKC0nashJtSiwZ
+         orl4sFrJASzL4RelDgUo65UasmHetoYz+MTm7rZzbxDsooDJ25IlZrMV4oru0CiIu91y
+         5XSaX9kx2z5I0tlTHvbX+dikC1jfIQFiTiLHQSZ1UPlIAfmPlZBSGc/IxYepE/4l+o2L
+         AMV6zGQOuc4Rr9IeLJ61y/xUYZV3gHWJZg7j1Q9Po+Gj1YWHfdXEj8coPnAq9LwhRmbF
+         /LgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i3brosy5XXCkmKkwn4l+AKR0pDfb4h3+yvaYa21wYq8=;
+        b=dJgC9Q7QtNLjy7e4cs6j9cyBX5CP5pgAsX5N5qlcA3yX+1npO96WyqtLGM/6+6aXCq
+         oVoBKV0jMKioStzsf/CFUrBRxGEJbXwzq5xuKFF19isweaNwGlq4o17k0W6hccW8kI+a
+         pT53eVQXTOaul2YMv2UGTaC0nhBAgayYQQiyrU3tMUyAisJKTwFcCd+6wprVSfUmLDXd
+         SKTAUBTWR+tj6eqLPeLO/PRlvzuSQrzmRG4tlhJnl7j/Zox08vY/ZSAaO72EW2VNuE3S
+         8DtTlD25DmKj2HijfWSU3hBNuEikJzycybpSy+vqdS/DQg7F2dOVFYFyiWEQt1soPNq5
+         jFeg==
+X-Gm-Message-State: AOAM530n4sJkaETlkk/d4qDbzl9KSi2mOj+0Gn646wzgpcnzWo8ivlgR
+        gaRKk7cO3+AhFjmyT6ANe59ydMPayh04sBm/IwE=
+X-Google-Smtp-Source: ABdhPJzxzvECOpWhrEYSAUed+9/+7dKEurVBbGT3SafR8RZsxzrkQZPj+cNf2hwM9Z2zBQsI6YC4+h9k5GCJ+ejBCoQ=
+X-Received: by 2002:a05:6402:310a:: with SMTP id dc10mr56815244edb.38.1621006049041;
+ Fri, 14 May 2021 08:27:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <373d0803-8658-9413-2f51-1e9804c39126@baylibre.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20210406013344.124255-1-aford173@gmail.com> <20210511024604.GE3425@dragon>
+ <CAHCN7xLFpL=9BF9M5gUA6sMhc2ZZMNz+GP0OLmLfpJAWdD7W-w@mail.gmail.com>
+ <VE1PR04MB6688CD4AA4826EEEBBA2651689539@VE1PR04MB6688.eurprd04.prod.outlook.com>
+ <CAHCN7xJ5Hq6bRpEgE8Pi9VbQ_Kejy-sgKQsJ93pQEG3U_Wsu=Q@mail.gmail.com> <VE1PR04MB668860A19062925162C40F3C89509@VE1PR04MB6688.eurprd04.prod.outlook.com>
+In-Reply-To: <VE1PR04MB668860A19062925162C40F3C89509@VE1PR04MB6688.eurprd04.prod.outlook.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Fri, 14 May 2021 10:27:17 -0500
+Message-ID: <CAHCN7xJ0xPJJaxMrzpZSGKjgh46bSEGgtsECd9ZqnpHKSCH9EA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] arm64: dts: imx8mn: Add spba1 bus
+To:     Robin Gong <yibin.gong@nxp.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/05/2021 15:48, Neil Armstrong wrote:
-> On 13/05/2021 16:55, Ezequiel Garcia wrote:
->> Hi Neil,
->>
->> On Mon, 26 Apr 2021 at 06:59, Neil Armstrong <narmstrong@baylibre.com> wrote:
->>>
->>> Hi,
->>>
->>> On 21/04/2021 07:28, Nicolas Boichat wrote:
->>>> Hi!
->>>>
->>>> This is just a rebase of the v11, untested (but it seems like
->>>> Neil Armstrong recently tested it), with small changes in
->>>> binding and dts. v11 cover follows:
->>>>
->>>> Follow-up on the v5 [1], things have gotten significantly
->>>> better in the last year, thanks to the efforts on Bifrost
->>>> support by the Collabora team (and probably others I'm not
->>>> aware of).
->>>>
->>>> I've been testing this series on a MT8183/kukui device, with a
->>>> chromeos-5.10 kernel [2], and got basic Chromium OS UI up with
->>>> mesa 20.3.2 (lots of artifacts though).
->>>>
->>>> devfreq is currently not supported, as we'll need:
->>>>  - Clock core support for switching the GPU core clock (see 2/4).
->>>>  - Platform-specific handling of the 2-regulator (see 3/4).
->>>>
->>>> Since the latter is easy to detect, patch 3/4 just disables
->>>> devfreq if the more than one regulator is specified in the
->>>> compatible matching table.
->>>>
->>>> [1] https://patchwork.kernel.org/project/linux-mediatek/cover/20200306041345.259332-1-drinkcat@chromium.org/
->>>> [2] https://crrev.com/c/2608070
->>>>
->>>> Changes in v13:
->>>>  - devfreq: Fix conflict resolution mistake when rebasing, didn't
->>>>    even compile. Oops.
->>>>
->>>> Changes in v12:
->>>>  - binding: Fix min/maxItems logic (Rob Herring)
->>>>  - Add gpu node to mt8183-pumpkin.dts as well (Neil Armstrong).
->>>>
->>>> Changes in v11:
->>>>  - binding: power-domain-names not power-domainS-names
->>>>  - mt8183*.dts: remove incorrect supply-names
->>>>
->>>> Changes in v10:
->>>>  - Fix the binding to make sure sram-supply property can be provided.
->>>>
->>>> Changes in v9:
->>>>  - Explain why devfreq needs to be disabled for GPUs with >1
->>>>    regulators.
->>>>
->>>> Changes in v8:
->>>>  - Use DRM_DEV_INFO instead of ERROR
->>>>
->>>> Changes in v7:
->>>>  - Fix GPU ID in commit message
->>>>  - Fix GPU ID in commit message
->>>>
->>>> Changes in v6:
->>>>  - Rebased, actually tested with recent mesa driver.
->>>>  - Add gpu regulators to kukui dtsi as well.
->>>>  - Power domains are now attached to spm, not scpsys
->>>>  - Drop R-B.
->>>>  - devfreq: New change
->>>>  - Context conflicts, reflow the code.
->>>>  - Use ARRAY_SIZE for power domains too.
->>>>
->>>> Changes in v5:
->>>>  - Rename "2d" power domain to "core2"
->>>>  - Rename "2d" power domain to "core2" (keep R-B again).
->>>>  - Change power domain name from 2d to core2.
->>>>
->>>> Changes in v4:
->>>>  - Add power-domain-names description
->>>>    (kept Alyssa's reviewed-by as the change is minor)
->>>>  - Add power-domain-names to describe the 3 domains.
->>>>    (kept Alyssa's reviewed-by as the change is minor)
->>>>  - Add power domain names.
->>>>
->>>> Changes in v3:
->>>>  - Match mt8183-mali instead of bifrost, as we require special
->>>>    handling for the 2 regulators and 3 power domains.
->>>>
->>>> Changes in v2:
->>>>  - Use sram instead of mali_sram as SRAM supply name.
->>>>  - Rename mali@ to gpu@.
->>>>
->>>> Nicolas Boichat (4):
->>>>   dt-bindings: gpu: mali-bifrost: Add Mediatek MT8183
->>>>   arm64: dts: mt8183: Add node for the Mali GPU
->>>>   drm/panfrost: devfreq: Disable devfreq when num_supplies > 1
->>>>   drm/panfrost: Add mt8183-mali compatible string
->>>>
->>>>  .../bindings/gpu/arm,mali-bifrost.yaml        |  30 ++++-
->>>>  arch/arm64/boot/dts/mediatek/mt8183-evb.dts   |   5 +
->>>>  .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi |   5 +
->>>>  .../boot/dts/mediatek/mt8183-pumpkin.dts      |   5 +
->>>>  arch/arm64/boot/dts/mediatek/mt8183.dtsi      | 105 ++++++++++++++++++
->>>>  drivers/gpu/drm/panfrost/panfrost_devfreq.c   |   9 ++
->>>>  drivers/gpu/drm/panfrost/panfrost_drv.c       |  10 ++
->>>>  7 files changed, 168 insertions(+), 1 deletion(-)
->>>>
->>>
->>> Seems this version is ready to be applied if we get a review on the DT ?
->>>
->>> Mathias ? could you have a look ?
->>>
->>
->> Given Rob has Acked the DT bindings, I think it's OK to apply patches
->> 1, 3 and 4 via drm-misc, letting Mediatek people sort out the DT changes.
->>
->> My two unsolicited cents :-)
+On Fri, May 14, 2021 at 9:57 AM Robin Gong <yibin.gong@nxp.com> wrote:
+>
+> On 5/11/21 22:49 Adam Ford <aford173@gmail.com> wrote:
+>
+> > > Compare PIO with DMA on UART, but not w/o this  'spba bus node ' patch?
+> > >
+> > > > In fact, if the DMA firmware isn't loaded, I often get transfer errors.
+> > > UART use SDMA ROM firmware instead of RAM firmware, so it should work
+> > > even without sdma RAM firmware loaded.  Still curious what really
+> > > happen in your board without this patch.
+> >
+> > What I am seeing is that at times, the HCI UART loading before the DMA
+> > firmware is loaded.
+> >
+> > [   10.582037] Bluetooth: HCI UART driver ver 2.3
+> > [   10.586867] Bluetooth: HCI UART protocol H4 registered
+> > [   10.593566] imx-sdma 30bd0000.dma-controller: sdma firmware not
+> > ready!
+> Seems you apply my patch set ' add ecspi ERR009165 for i.mx6/7 soc family'
+> https://www.spinics.net/lists/linux-spi/msg26728.html
 
-You make a convincing point - and if everyone is happy for the DT
-changes to be handled separately I don't see a reason for the other
-patches to be held up.
+I did this on the 5.13-rc1 which appears to have this series applied.
 
-> Yeah sure, is there a panfrost maintainer in the room ? I can apply them if you ack me.
+> where 'sdma firmware not ready' added?
+>
+> > [   10.594548] Bluetooth: HCI UART protocol Broadcom registered
+> > [   10.600108] imx-uart 30860000.serial: We cannot prepare for the RX slave
+> > dma!
+> Why not use ROM script for UART as mailine linux-next did (even the above patch set)?
 
-I seem to be applying most Panfrost changes these days, so I'll save you
-the effort and push 1,3,4 to drm-misc-next.
 
-Thanks,
 
-Steve
+> If so, I don't think you could such issue on your board. What script(peripheral types) you
+> set in uart dts such as below is 4-- MCU domain UART-> IMX_DMATYPE_UART->app_2_mcu:
+>
+> dmas = <&sdma1 22 4 0>, <&sdma1 23 4 0>;
+
+I didn't change the DMA references from the default, and I didn't
+check to verify whether they are right or not.
+
+>
+> >
+> > When I get the above message, the bluetooth chip I have throws timeouts and
+> > does not function.
+> >
+> > [   10.615090] imx-sdma 302c0000.dma-controller: loaded firmware 4.5
+> >
+> > Once the firmware is loaded, I can unload the HCI Uart driver and re-load
+> > Bluetooth works again.
+> >
+> > Based on that, I've been having my system delay the loading of the Bluetooth
+> > modules until after the firmware is loaded, but this tells me there is a
+> > relationship between the DMA and UART.
+> If you use ram script, of course you should use it after firmware loaded. Actually
+> Spba bus in dts is only used for per_2_per script judging if the peripheral address
+> could be accessed directly by SDMA over SPBA, if yes, set SDMA_WATERMARK_LEVEL_SP
+> to let per_2_per script access peripheral over SPBA, otherwise, access peripheral by
+> AIPS instead like ARM side did. Please check with below commit for more.
+> Besides, per_2_per script is used for audio data sample rate convert between ASRC and
+> various audio input. So audio peripherals include ASRC should be in register scope of
+> 'spba-bus' . But with your patch, there are two 'spba-bus' device node in dts, so the first
+> Spba-bus should contain audio peripheral, otherwise, 'of_find_compatible_node
+> (NULL, NULL, "fsl,spba-bus")' may find the wrong one so that SDMA_WATERMARK_LEVEL_SP
+> Never be set.
+
+I don't pretend to understand the details of the dma driver, but I
+attempted to make the patch match the address range of both spba
+busses from the technical reference manual,so there should be an spba
+bus for the audio peripherals and an spba bus for the serial
+peripherals like UART and SPI.  I only named them spba1 and spba2
+based on the memory ranges defined in the ref manual. Table 2-5 shows
+SBPA1 is 3080_0000 and table 2-3 shows SPBA2 starts at 3000_0000 which
+is what I believe I did in this patch.
+
+>
+> BTW, do you mean the above firmware load issue you met is gone if this patch applied?
+> If yes, that really surprised me...
+
+I wasn't trying to imply that adding the spba-bus fixes my Bluetooth
+issue.  I was just stating there is some relationship between the DMA
+and the UART and if the UART throws a DMA error, the Bluetooth will
+fail too.  What I have been doing to ensure the order of operations is
+to make the imx_sdma and the Bluetooth system as modules.  I tell my
+sysfs to load the imx_sdma module first, then load the Bluetooth
+modules.  When done in that order, I never see the DMA errors. With
+UART baud rates at 3Mbps+, I wanted to make sure the DMA was
+operational to help potentially reduce the A53 workload.
+
+adam
+>
+> commit 8391ecf465ec5c8ccef547267df6d40beb8999a4
+> Author: Shengjiu Wang <shengjiu.wang@freescale.com>
+> Date:   Fri Jul 10 17:08:16 2015 +0800
+>
+>     dmaengine: imx-sdma: Add device to device support
+>
+>
+>
+>
+>
