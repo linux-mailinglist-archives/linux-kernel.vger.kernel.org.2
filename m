@@ -2,99 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FE7D380B18
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 16:07:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2AF1380B26
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 16:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234168AbhENOIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 10:08:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231741AbhENOIH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 10:08:07 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CE77C061574;
-        Fri, 14 May 2021 07:06:55 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id w7so9184426ilg.13;
-        Fri, 14 May 2021 07:06:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=R4gCuqdbZR815nXx2XVEAAsDO0qJ8mZy8Tzf13PeXRw=;
-        b=IETsefp/ddaBv67PB9DwzcBjShhaX873XycpoRKkMCKFRHECqeDTtDzXPsmph0KL/0
-         0EW7sCQ5V7cAmGYnLtPzplJ+8EhLBdwC2joA93USf76Bxa/HyWuVhzRtjCXUyx7wvWcj
-         B2weCbs7gGz0br63woBP633R7m2JHQ2VUnq9+nrdA96L7KVmuT1U9iuzxI/1mfEc+ri+
-         WgPxdLhDpQwuubRZ6I1SUEdnlbt394yfkm3EF3KwjEB9A0CW8JKyUIhVjlsQMZkQtWQb
-         QBliIPfHpcgfUkeFkcO43fbqNllnV6uBY3BFGpj+DcDdaUlDpQMWV2PCTRqNruPwZRH1
-         sFyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=R4gCuqdbZR815nXx2XVEAAsDO0qJ8mZy8Tzf13PeXRw=;
-        b=iJNOSg8e2MysewddYd3RwgzwzSNTtVUcSiIiBSqSa5CxCv8wREva4uyAzhu+1VxxpZ
-         VOxzDsmCKGiR9GhLUSen+74hu357VBxJDNJfvGkGL53jIZR5+ttxZb0YlECN8PLERYXM
-         4t/j8zsLAw9/n+4wtghu1M1V0jdTWSqDWWxT8QyQrL50PEwdE2vTom9qcFqaVURSKChD
-         a/yrq552hfzKAXkTm5tLeZeEzZ982mk+RQiZJpVtyVzcrsh6WCqdDJpoopp9u33+BSzH
-         dxZZEfpdtgdcqf92I2HvfzlVqtb2zGR881LEwJymLBeDGHiq73xg3e3KdchTuj6kqyTv
-         7/ag==
-X-Gm-Message-State: AOAM533PQmvLdyDr/8m6zIpvvf5urjL4rtFyuZIrijjEA/CCY9b32V2W
-        vygedoDXjEOIcghvOrpGU8Y=
-X-Google-Smtp-Source: ABdhPJylsAg5N0IK+T5+EJrrTV3WwEBwg+lAI3XbJ38wuYsMOY+RKBJs4s+/eBw/u02YpGo+A49tZA==
-X-Received: by 2002:a05:6e02:f42:: with SMTP id y2mr29468885ilj.216.1621001215109;
-        Fri, 14 May 2021 07:06:55 -0700 (PDT)
-Received: from [192.168.99.80] (142-79-211-230.starry-inc.net. [142.79.211.230])
-        by smtp.gmail.com with ESMTPSA id t7sm3068586ilq.34.2021.05.14.07.06.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 May 2021 07:06:54 -0700 (PDT)
-Subject: Re: [PATCH v2 0/4] Support xen-driven USB3 debug capability
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        xen-devel@lists.xenproject.org, Lee Jones <lee.jones@linaro.org>,
-        Jann Horn <jannh@google.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Sumit Garg <sumit.garg@linaro.org>
-References: <cover.1620950220.git.connojdavis@gmail.com>
- <YJ4cqntf7YdZCOPk@kroah.com>
-From:   Connor Davis <connojdavis@gmail.com>
-Message-ID: <e2d96a91-3f0f-d2b3-9a1a-16caaf82c24a@gmail.com>
-Date:   Fri, 14 May 2021 08:07:07 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S234211AbhENOKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 10:10:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32858 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234173AbhENOK2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 10:10:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A4F8613E9;
+        Fri, 14 May 2021 14:07:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621001262;
+        bh=Oj6EqcJGVRl7HQLLBeUi7iUE3kzn01uiwQ60mMnabr0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ZlvUVT7SuAyt9VcldCYSCodBCYYmchAiHGOH88ZC3CB0+UFIZv0AJ9zb9qd+KBO1I
+         YAQo4Q+T2/o3NFR+yQvf6S3LOWBhlcp7VceLZeVfKnKWr3yHrhkSd4WI1bRDXufktZ
+         MEFGb3k2J5zNmNjroisDYeT+WnzSet4yfgDwWup90y4YAqjtrBVq41cf3iy6yE6Y31
+         88cnCbKWEByqPikwUdEN5pr2QWM1JArNT2yweWdf02Z+2EWKuPDifFuTFRZD9lT7UV
+         kr1eKHE71qNPiSEZ7rWbiWGc5b/ppbA+cdYrHIpaHzUPCifaW1I9eaxHB3gTywS7C0
+         MOVNhra/j6G/Q==
+Received: by mail-ed1-f42.google.com with SMTP id s6so34790410edu.10;
+        Fri, 14 May 2021 07:07:42 -0700 (PDT)
+X-Gm-Message-State: AOAM530NLTC0EGGcX7+/1O52HMTEHIQe/VF+WR3Oq83KPNSMPIRzpUDN
+        suvLWLE8skIbZiRqVrC5EBmlBkrxzfwxK/3SZw==
+X-Google-Smtp-Source: ABdhPJxS5DE6zdpF8zsbOt/jb2GTOdzIFwXPWkfoHTlXpR26d8eKqzJ4NSveJ/zw/8+SAiTELXptXb98kelnX61fB1A=
+X-Received: by 2002:a05:6402:234b:: with SMTP id r11mr56322652eda.137.1621001260779;
+ Fri, 14 May 2021 07:07:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YJ4cqntf7YdZCOPk@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <1617620770-26202-1-git-send-email-mkrishn@codeaurora.org>
+ <1617620770-26202-2-git-send-email-mkrishn@codeaurora.org>
+ <20210408150300.GA1476562@robh.at.kernel.org> <827048554933585f4cc42c94aa911e55@codeaurora.org>
+In-Reply-To: <827048554933585f4cc42c94aa911e55@codeaurora.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 14 May 2021 09:07:28 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJCFNToWYUxGnWaA=EaRv5rPfWDsF_DDt6a-w=RzBTKHQ@mail.gmail.com>
+Message-ID: <CAL_JsqJCFNToWYUxGnWaA=EaRv5rPfWDsF_DDt6a-w=RzBTKHQ@mail.gmail.com>
+Subject: Re: [PATCH v15 2/4] dt-bindings: msm: dsi: add yaml schemas for DSI bindings
+To:     Krishna Manikandan <mkrishn@codeaurora.org>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Tanmay Shah <tanmay@codeaurora.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vinod Koul <vinod.koul@linaro.org>,
+        Doug Anderson <dianders@chromium.org>, khsieh@codeaurora.org,
+        Sean Paul <sean@poorly.run>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 5/14/21 12:46 AM, Greg Kroah-Hartman wrote:
-> On Thu, May 13, 2021 at 06:56:47PM -0600, Connor Davis wrote:
->> Hi all,
->>
->> This goal of this series is to allow the USB3 debug capability (DbC) to be
->> safely used by xen while linux runs as dom0.
-> Patch 2/4 does not seem to be showing up anywhere, did it get lost?
-
-Yep, just added you, sorry about that
-
-
-Thanks,
-
-Connor
-
-> thanks,
+On Wed, May 5, 2021 at 11:11 PM <mkrishn@codeaurora.org> wrote:
 >
-> greg k-h
+> On 2021-04-08 20:33, Rob Herring wrote:
+> > On Mon, Apr 05, 2021 at 04:36:08PM +0530, Krishna Manikandan wrote:
+> >> Add YAML schema for the device tree bindings for DSI
+
+> >> +              data-lanes:
+> >> +                $ref: "/schemas/media/video-interfaces.yaml#"
+> >
+> > Not how this reference works. Look at other examples.
+> >
+> >> +                description: |
+> >> +                  This describes how the physical DSI data lanes are
+> >> mapped
+> >> +                  to the logical lanes on the given platform. The
+> >> value contained in
+> >> +                  index n describes what physical lane is mapped to
+> >> the logical lane n
+> >> +                  (DATAn, where n lies between 0 and 3). The clock
+> >> lane position is fixed
+> >> +                  and can't be changed. Hence, they aren't a part of
+> >> the DT bindings.
+> >> +
+> >> +                items:
+> >> +                  - const: 0
+> >> +                  - const: 1
+> >> +                  - const: 2
+> >> +                  - const: 3
+> >
+> > If this is the only possible value, why does it need to be in DT?
+> Hi Rob,
+> These are the possible values:
+> -    <0 1 2 3>
+> -    <1 2 3 0>
+> -    <2 3 0 1>
+> -    <3 0 1 2>
+> -    <0 3 2 1>
+> -    <1 0 3 2>
+> -    <2 1 0 3>
+> -    <3 2 1 0>
+>
+> Shall I follow the below mentioned approach for defining these values ?
+> oneOf:
+>    - items:
+>      - const: 0
+>      - const: 1
+>      - const: 2
+>      - const: 3
+>    - items:
+>      - const: 1
+>      - const: 2
+>      - const: 3
+>      - const: 0
+>    - items:
+>      - const: 2
+>      - const: 3
+>      - const: 0
+>      - const: 1
+>    - items:
+>      - const: 3
+>      - const: 0
+>      - const: 1
+>      - const: 2
+>    - items:
+>      - const: 0
+>      - const: 3
+>      - const: 2
+>      - const: 1
+>    - items:
+>      - const: 1
+>      - const: 0
+>      - const: 3
+>      - const: 2
+>    - items:
+>      - const: 2
+>      - const: 1
+>      - const: 0
+>      - const: 3
+>    - items:
+>      - const: 3
+>      - const: 2
+>      - const: 1
+>      - const: 0
+
+That's too verbose.
+
+maxItems: 4
+minItems: 4 (or is less supported?)
+items:
+  enum: [ 0, 1, 2, 3 ]
