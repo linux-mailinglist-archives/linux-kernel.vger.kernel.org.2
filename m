@@ -2,98 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C23380F63
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 20:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75474380F7E
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 20:15:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232577AbhENSGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 14:06:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231394AbhENSGG (ORCPT
+        id S233327AbhENSQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 14:16:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38050 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231454AbhENSQx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 14:06:06 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33D40C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 11:04:55 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id h16so334564pfk.0
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 11:04:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NidPUCUgpxhlJmFSoQiTlrvVc3ediNgl08rsd7mdBZo=;
-        b=FHYmYSkjd7B0MovdrbAK5NoFWijOX6nZQv7QppAJiV97r2Bz9HHAwnn4HKRZkGUZ7i
-         yu6185Kdyf/n0Ko4cIMfH2FPvKRutAFZx+9y3J56qPjsAbnEzaV3e84Jtx02zH7bdqco
-         e1jvzpIToJr0n9jALa6feCsajd37bOT1HTsRLqPsnGmgBWDldy7hdEthLYFJi+KfGe0m
-         Zhs/9s90ihOVdN1x5Rv8pCYeZkgf6ho6ojaVV2KhGNBvDr2Lo+9G4e+znNn71dfJJ5bd
-         71bCoWhtqn6R6hDXnXqNpIy2lhImzdNZVyGXHbYpnvD1uxOd1Qv33Bk3CCzMTSiTZTm1
-         Yn0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NidPUCUgpxhlJmFSoQiTlrvVc3ediNgl08rsd7mdBZo=;
-        b=bsvsXy22cSyHenqaYl52bV/1t+oMrwoNdG8AImrj7fkpNTsXqaHTJmqymKVOkZGc8E
-         fjXy4YoISAVBaUFOGPvs5VjvCVqWQV5J/YT3d58niZnq1UsXmEnJcOHERR//9Uq39ecj
-         Z6i8/FtI123H1MdfGULda5N2BA/IBbXViAG7g6GJt69m3opLeQg5e0PS+uO7GuFrSwxp
-         5Ug1tz25lgFEElQ0BGX+7jklgOMOTYDFfT5SdE8SwEGdEhU+eMcySLZ1NIOFi997w8Wd
-         G83vMXWugWyTXwyjdN9wM584nNnl5TDxHiSujCknGU0Re511i60hVIOPoD4uAx3mr0uV
-         qdLQ==
-X-Gm-Message-State: AOAM533uHqtP94IcQcE5Edl7wOToCY4jMJH9jfET+aXW+iRN34ntNUei
-        KkzIsytNcGO7y15umQxi0No=
-X-Google-Smtp-Source: ABdhPJwmB0kmfhZehu/YE85BQFDOZz9b2Ah6NEuJUNp/9i/wKInodznINo/8UvK1H3FC3rCdhVHIYA==
-X-Received: by 2002:aa7:800a:0:b029:250:c8c5:64b3 with SMTP id j10-20020aa7800a0000b0290250c8c564b3mr46593179pfi.23.1621015494534;
-        Fri, 14 May 2021 11:04:54 -0700 (PDT)
-Received: from fedora ([2405:201:6008:61b4:4e16:5348:d963:c66d])
-        by smtp.gmail.com with ESMTPSA id y13sm4473014pff.163.2021.05.14.11.04.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 11:04:53 -0700 (PDT)
-Date:   Fri, 14 May 2021 23:34:48 +0530
-From:   Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, pure.logic@nexus-software.ie,
-        johan@kernel.org, elder@kernel.org, greybus-dev@lists.linaro.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: greybus: fix gb_loopback_stats_attrs definition
-Message-ID: <YJ67wCBVnI21YbUc@fedora>
-References: <20210514133039.304760-1-chouhan.shreyansh630@gmail.com>
- <YJ582f3O9K9YD3QA@kroah.com>
- <YJ5/tqFfcjxOLsF0@fedora>
- <YJ6DrLiMsdkG5loA@kroah.com>
- <YJ6H/WsojYcN/bLO@fedora>
- <YJ6Jf+Z1ReVgDt64@kroah.com>
- <YJ6TUAowTI75h/sl@fedora>
- <YJ6XpUMliWQOS8MB@kroah.com>
- <bccbec1a0ffbf6c31b5e6a78cedd78cd64f2b8fe.camel@perches.com>
+        Fri, 14 May 2021 14:16:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621016141;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BRIpi+u5w7+IcMV4egi4y2reGA+g2xOvrb+SvyeAtf8=;
+        b=QJ9UHdNN2g7bEoXLNvtNvJbKpk3qujliVb2g7Xgh8O9aIuGra1d8g3e2j+AWv5VC+1gRmD
+        lW+BRHe+ErXXYDPj7QCVsZTIeUPZAFBowDJETJ6dWqiLRcYfgG99sYZNRcco4+tjOhLT3y
+        va94YYVI2HDBegeuDY83j/R7DjXkIVw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-183-ru5N9jJENUOkHfs770PuDw-1; Fri, 14 May 2021 14:15:36 -0400
+X-MC-Unique: ru5N9jJENUOkHfs770PuDw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EB671107ACC7;
+        Fri, 14 May 2021 18:15:33 +0000 (UTC)
+Received: from Whitewolf.redhat.com (ovpn-118-140.rdu2.redhat.com [10.10.118.140])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 252731971B;
+        Fri, 14 May 2021 18:15:26 +0000 (UTC)
+From:   Lyude Paul <lyude@redhat.com>
+To:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org
+Cc:     Rajeev Nandan <rajeevny@codeaurora.org>, greg.depoire@gmail.com,
+        Jani Nikula <jani.nikula@intel.com>,
+        Dave Airlie <airlied@gmail.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>, Imre Deak <imre.deak@intel.com>,
+        Uma Shankar <uma.shankar@intel.com>,
+        Ramalingam C <ramalingam.c@intel.com>,
+        Anshuman Gupta <anshuman.gupta@intel.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Gwan-gyeong Mun <gwan-gyeong.mun@intel.com>,
+        Lucas De Marchi <lucas.demarchi@intel.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v6 1/9] drm/i915/dpcd_bl: Remove redundant AUX backlight frequency calculations
+Date:   Fri, 14 May 2021 14:14:55 -0400
+Message-Id: <20210514181504.565252-2-lyude@redhat.com>
+In-Reply-To: <20210514181504.565252-1-lyude@redhat.com>
+References: <20210514181504.565252-1-lyude@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bccbec1a0ffbf6c31b5e6a78cedd78cd64f2b8fe.camel@perches.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 08:56:10AM -0700, Joe Perches wrote:
-> On Fri, 2021-05-14 at 17:30 +0200, Greg KH wrote:
-> > On Fri, May 14, 2021 at 08:42:16PM +0530, Shreyansh Chouhan wrote:
-> []
-> > > I didn't look at how/where was the macro called and missed a very
-> > > obvious error. Now that I have looked at it, the only way I can think of
-> > > fixing this is changing the macro to a (inline?) function. Will
-> > > that be a desirable change?
-> > 
-> > No, it can't be a function, the code is fine as-is, checkpatch is just a
-> > perl script and does not always know what needs to be done.
-> 
-> true.
-> 
-> perhaps better though to rename these declaring macros to start with declare_
-> 
-> Something like this:
-> 
+Noticed this while moving all of the VESA backlight code in i915 over to
+DRM helpers: it would appear that we calculate the frequency value we want
+to write to DP_EDP_BACKLIGHT_FREQ_SET twice even though this value never
+actually changes during runtime. So, let's simplify things by just caching
+this value in intel_panel.backlight, and re-writing it as-needed.
 
-Can I mention you in the 'Suggested-by' tag for the commit? (Since you
-suggested the idea for this patch.)
+Changes since v1:
+* Wrap panel->backlight.edp.vesa.pwm_freq_pre_divider in
+  DP_EDP_BACKLIGHT_FREQ_AUX_SET_CAP check - Jani
 
-Regards,
-Shreyansh Chouhan
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+Cc: Jani Nikula <jani.nikula@intel.com>
+Cc: Dave Airlie <airlied@gmail.com>
+Cc: greg.depoire@gmail.com
+---
+ .../drm/i915/display/intel_display_types.h    |  1 +
+ .../drm/i915/display/intel_dp_aux_backlight.c | 65 ++++++-------------
+ 2 files changed, 20 insertions(+), 46 deletions(-)
+
+diff --git a/drivers/gpu/drm/i915/display/intel_display_types.h b/drivers/gpu/drm/i915/display/intel_display_types.h
+index 9c0adfc60c6f..7054a37363fb 100644
+--- a/drivers/gpu/drm/i915/display/intel_display_types.h
++++ b/drivers/gpu/drm/i915/display/intel_display_types.h
+@@ -311,6 +311,7 @@ struct intel_panel {
+ 		union {
+ 			struct {
+ 				u8 pwmgen_bit_count;
++				u8 pwm_freq_pre_divider;
+ 			} vesa;
+ 			struct {
+ 				bool sdr_uses_aux;
+diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+index 8e9ac9ba1d38..68bfe50ada59 100644
+--- a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
++++ b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
+@@ -373,50 +373,6 @@ intel_dp_aux_vesa_set_backlight(const struct drm_connector_state *conn_state,
+ 	}
+ }
+ 
+-/*
+- * Set PWM Frequency divider to match desired frequency in vbt.
+- * The PWM Frequency is calculated as 27Mhz / (F x P).
+- * - Where F = PWM Frequency Pre-Divider value programmed by field 7:0 of the
+- *             EDP_BACKLIGHT_FREQ_SET register (DPCD Address 00728h)
+- * - Where P = 2^Pn, where Pn is the value programmed by field 4:0 of the
+- *             EDP_PWMGEN_BIT_COUNT register (DPCD Address 00724h)
+- */
+-static bool intel_dp_aux_vesa_set_pwm_freq(struct intel_connector *connector)
+-{
+-	struct drm_i915_private *dev_priv = to_i915(connector->base.dev);
+-	struct intel_dp *intel_dp = intel_attached_dp(connector);
+-	const u8 pn = connector->panel.backlight.edp.vesa.pwmgen_bit_count;
+-	int freq, fxp, f, fxp_actual, fxp_min, fxp_max;
+-
+-	freq = dev_priv->vbt.backlight.pwm_freq_hz;
+-	if (!freq) {
+-		drm_dbg_kms(&dev_priv->drm,
+-			    "Use panel default backlight frequency\n");
+-		return false;
+-	}
+-
+-	fxp = DIV_ROUND_CLOSEST(KHz(DP_EDP_BACKLIGHT_FREQ_BASE_KHZ), freq);
+-	f = clamp(DIV_ROUND_CLOSEST(fxp, 1 << pn), 1, 255);
+-	fxp_actual = f << pn;
+-
+-	/* Ensure frequency is within 25% of desired value */
+-	fxp_min = DIV_ROUND_CLOSEST(fxp * 3, 4);
+-	fxp_max = DIV_ROUND_CLOSEST(fxp * 5, 4);
+-
+-	if (fxp_min > fxp_actual || fxp_actual > fxp_max) {
+-		drm_dbg_kms(&dev_priv->drm, "Actual frequency out of range\n");
+-		return false;
+-	}
+-
+-	if (drm_dp_dpcd_writeb(&intel_dp->aux,
+-			       DP_EDP_BACKLIGHT_FREQ_SET, (u8) f) < 0) {
+-		drm_dbg_kms(&dev_priv->drm,
+-			    "Failed to write aux backlight freq\n");
+-		return false;
+-	}
+-	return true;
+-}
+-
+ static void
+ intel_dp_aux_vesa_enable_backlight(const struct intel_crtc_state *crtc_state,
+ 				   const struct drm_connector_state *conn_state, u32 level)
+@@ -459,9 +415,13 @@ intel_dp_aux_vesa_enable_backlight(const struct intel_crtc_state *crtc_state,
+ 		break;
+ 	}
+ 
+-	if (intel_dp->edp_dpcd[2] & DP_EDP_BACKLIGHT_FREQ_AUX_SET_CAP)
+-		if (intel_dp_aux_vesa_set_pwm_freq(connector))
++	if (panel->backlight.edp.vesa.pwm_freq_pre_divider) {
++		if (drm_dp_dpcd_writeb(&intel_dp->aux, DP_EDP_BACKLIGHT_FREQ_SET,
++				       panel->backlight.edp.vesa.pwm_freq_pre_divider) == 1)
+ 			new_dpcd_buf |= DP_EDP_BACKLIGHT_FREQ_AUX_SET_ENABLE;
++		else
++			drm_dbg_kms(&i915->drm, "Failed to write aux backlight frequency\n");
++	}
+ 
+ 	if (new_dpcd_buf != dpcd_buf) {
+ 		if (drm_dp_dpcd_writeb(&intel_dp->aux,
+@@ -482,6 +442,14 @@ static void intel_dp_aux_vesa_disable_backlight(const struct drm_connector_state
+ 				  false);
+ }
+ 
++/*
++ * Compute PWM frequency divider value based off the frequency provided to us by the vbt.
++ * The PWM Frequency is calculated as 27Mhz / (F x P).
++ * - Where F = PWM Frequency Pre-Divider value programmed by field 7:0 of the
++ *             EDP_BACKLIGHT_FREQ_SET register (DPCD Address 00728h)
++ * - Where P = 2^Pn, where Pn is the value programmed by field 4:0 of the
++ *             EDP_PWMGEN_BIT_COUNT register (DPCD Address 00724h)
++ */
+ static u32 intel_dp_aux_vesa_calc_max_backlight(struct intel_connector *connector)
+ {
+ 	struct drm_i915_private *i915 = to_i915(connector->base.dev);
+@@ -533,8 +501,10 @@ static u32 intel_dp_aux_vesa_calc_max_backlight(struct intel_connector *connecto
+ 	pn_min &= DP_EDP_PWMGEN_BIT_COUNT_MASK;
+ 	pn_max &= DP_EDP_PWMGEN_BIT_COUNT_MASK;
+ 
++	/* Ensure frequency is within 25% of desired value */
+ 	fxp_min = DIV_ROUND_CLOSEST(fxp * 3, 4);
+ 	fxp_max = DIV_ROUND_CLOSEST(fxp * 5, 4);
++
+ 	if (fxp_min < (1 << pn_min) || (255 << pn_max) < fxp_max) {
+ 		drm_dbg_kms(&i915->drm,
+ 			    "VBT defined backlight frequency out of range\n");
+@@ -555,7 +525,10 @@ static u32 intel_dp_aux_vesa_calc_max_backlight(struct intel_connector *connecto
+ 			    "Failed to write aux pwmgen bit count\n");
+ 		return max_backlight;
+ 	}
++
+ 	panel->backlight.edp.vesa.pwmgen_bit_count = pn;
++	if (intel_dp->edp_dpcd[2] & DP_EDP_BACKLIGHT_FREQ_AUX_SET_CAP)
++		panel->backlight.edp.vesa.pwm_freq_pre_divider = f;
+ 
+ 	max_backlight = (1 << pn) - 1;
+ 
+-- 
+2.31.1
+
