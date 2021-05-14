@@ -2,95 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3436380A3E
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 15:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A204E380A3F
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 15:15:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232324AbhENNOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 09:14:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232295AbhENNOx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 09:14:53 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53E44C061574;
-        Fri, 14 May 2021 06:13:42 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id i22so56693lfl.10;
-        Fri, 14 May 2021 06:13:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=i2YVeoDkMZvOvbeeQWtb2yx5+1XeddYfBmoh/c43NIM=;
-        b=E51atqUQhUeGIEH376LMu/E0anBqmi7sBhTYhXBgj5e2+3Tqy6VM/ZLrmeLogGFJho
-         z0paUrTmKHy6sR/FmZ7Ef0SBhjFZY0eXgi0AU4NFxzli/Qk74kwP1BTyepmopS2iMX1g
-         F6xHeMXTAm/6Wg7QSLHsnW1pEmYCxMleMD9xFjb4VaYxaecCKrpGL6BARF3EL6Hpm4e8
-         OSB/C4ElPf4A4tuWQrBzOV1qcWZq5vtd/TWozWVJGelkTdMffHeMHK7INPvkurWnzAyG
-         dDUzeHNyxjewyQHirK719f5s7YKH2UMl/HHiB2FVL5Zq0Q/JgkbDINTyOdesDdMVl5i4
-         mk+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=i2YVeoDkMZvOvbeeQWtb2yx5+1XeddYfBmoh/c43NIM=;
-        b=XZh2jFAy8T0x8gg04cdQ2i462fO1go5M7l0icZpzC5jEbRXij1RpWVKYVsQnWy32B1
-         NCKEns7X9Un7puDdCUp2Kccsoz52UUdiL2wE5na7w0BVupZMz6JFV57FsvtJnnPidlcu
-         4RTkh9WvWIySGFzc/eW0I/mQEJZvniJx5eu5ZRe1FRQtLxdLk9ZjVCzsutLax1OxhrmB
-         cXXNekR3Fs7UK5MDmOnMOrVGUqKRW2Ou1LPnXq6wZNULqp2fg6rRHEs424IxewhBLsy0
-         LauAU7MUM855I4QWFHmZaObY93S6pnTDhgPdJ5bGWmmpX4mAHy6O9EzxyJOMbJIlnder
-         i4wg==
-X-Gm-Message-State: AOAM532k6bd4GtU79x7rNmu3mtTMTI1UW9vFfd6ktPHL9bad+ahNhUf4
-        v+fiBweiYAQKMLjYFFraH8TOMdiLICE=
-X-Google-Smtp-Source: ABdhPJwdd9oCmjpI+7GNkkfiOImBIIM3ZKAuOC/jodf+KwLmVX2WGnUHexCYeqthbBJQjX0sUxjcrg==
-X-Received: by 2002:a19:dc0c:: with SMTP id t12mr32894282lfg.279.1620998020615;
-        Fri, 14 May 2021 06:13:40 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
-        by smtp.googlemail.com with ESMTPSA id q5sm711164lfu.109.2021.05.14.06.13.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 May 2021 06:13:40 -0700 (PDT)
-Subject: Re: [PATCH v1 1/2] power: supply: sbs-battery: Silence warning about
- unknown chemistry
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Antoni Aloy Torrens <aaloytorrens@gmail.com>,
-        =?UTF-8?Q?Nikola_Milosavljevi=c4=87?= <mnidza@outlook.com>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210510220827.11595-1-digetx@gmail.com>
- <20210513151103.hihvxg7kvych4nwr@earth.universe>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <76b598cc-570e-96ac-8456-0ce481aedaeb@gmail.com>
-Date:   Fri, 14 May 2021 16:13:39 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210513151103.hihvxg7kvych4nwr@earth.universe>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S232495AbhENNQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 09:16:08 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:38859 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232217AbhENNQH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 09:16:07 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4FhTXG3rqlz9scF;
+        Fri, 14 May 2021 15:14:54 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Oyp1Hn-2RozU; Fri, 14 May 2021 15:14:54 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4FhTXG2gThz9sc8;
+        Fri, 14 May 2021 15:14:54 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E13CC8B7FA;
+        Fri, 14 May 2021 15:14:53 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 6k6HjmO-OR8H; Fri, 14 May 2021 15:14:53 +0200 (CEST)
+Received: from po15610vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9454C8B7F8;
+        Fri, 14 May 2021 15:14:53 +0200 (CEST)
+Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 6DF49641C0; Fri, 14 May 2021 13:14:53 +0000 (UTC)
+Message-Id: <8ab21fd93d6e0047aa71e6509e5e312f14b2991b.1620998075.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc: Don't handle ALTIVEC/SPE in ASM in _switch(). Do it
+ in C.
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Fri, 14 May 2021 13:14:53 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-13.05.2021 18:11, Sebastian Reichel пишет:
-> Hi,
-> 
-> On Tue, May 11, 2021 at 01:08:26AM +0300, Dmitry Osipenko wrote:
->> Older variants of controller don't support reporting type of the battery.
->> Make warning message about unknown chemistry to be printed only once in
->> order to stop flooding kernel log with the message on each request of the
->> property. This patch fixes the noisy messages on Asus Transformer TF101.
->>
->> Tested-by: Antoni Aloy Torrens <aaloytorrens@gmail.com> # TF101
->> Tested-by: Nikola Milosavljević <mnidza@outlook.com> # TF101
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
-> 
-> I believe the problem should be fixed as side-effect of the
-> following patch:
-> 
-> https://lore.kernel.org/linux-pm/20210513020308.4011440-1-ikjn@chromium.org/
-> 
-> With my suggested change the message is printed once for each
-> battery plug, so probably only once per boot for most users.
+_switch() saves and restores ALTIVEC and SPE status.
+For altivec this is redundant with what __switch_to() does with
+save_sprs() and restore_sprs() and giveup_all() before
+calling _switch().
 
-Looks like that patch indeed should work too, thank you.
+Add support for SPI in save_sprs() and restore_sprs() and
+remove things from _switch().
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/kernel/asm-offsets.c |  2 --
+ arch/powerpc/kernel/entry_32.S    | 35 -------------------------------
+ arch/powerpc/kernel/process.c     |  9 ++++++++
+ 3 files changed, 9 insertions(+), 37 deletions(-)
+
+diff --git a/arch/powerpc/kernel/asm-offsets.c b/arch/powerpc/kernel/asm-offsets.c
+index 28af4efb4587..5573da9a20d1 100644
+--- a/arch/powerpc/kernel/asm-offsets.c
++++ b/arch/powerpc/kernel/asm-offsets.c
+@@ -119,7 +119,6 @@ int main(void)
+ #ifdef CONFIG_ALTIVEC
+ 	OFFSET(THREAD_VRSTATE, thread_struct, vr_state.vr);
+ 	OFFSET(THREAD_VRSAVEAREA, thread_struct, vr_save_area);
+-	OFFSET(THREAD_VRSAVE, thread_struct, vrsave);
+ 	OFFSET(THREAD_USED_VR, thread_struct, used_vr);
+ 	OFFSET(VRSTATE_VSCR, thread_vr_state, vscr);
+ 	OFFSET(THREAD_LOAD_VEC, thread_struct, load_vec);
+@@ -150,7 +149,6 @@ int main(void)
+ #ifdef CONFIG_SPE
+ 	OFFSET(THREAD_EVR0, thread_struct, evr[0]);
+ 	OFFSET(THREAD_ACC, thread_struct, acc);
+-	OFFSET(THREAD_SPEFSCR, thread_struct, spefscr);
+ 	OFFSET(THREAD_USED_SPE, thread_struct, used_spe);
+ #endif /* CONFIG_SPE */
+ #endif /* CONFIG_PPC64 */
+diff --git a/arch/powerpc/kernel/entry_32.S b/arch/powerpc/kernel/entry_32.S
+index 9160285cb2f4..6c09ebb853ec 100644
+--- a/arch/powerpc/kernel/entry_32.S
++++ b/arch/powerpc/kernel/entry_32.S
+@@ -176,28 +176,6 @@ _GLOBAL(_switch)
+ 	/* r3-r12 are caller saved -- Cort */
+ 	SAVE_NVGPRS(r1)
+ 	stw	r0,_NIP(r1)	/* Return to switch caller */
+-	mfmsr	r11
+-	li	r0,MSR_FP	/* Disable floating-point */
+-#ifdef CONFIG_ALTIVEC
+-BEGIN_FTR_SECTION
+-	oris	r0,r0,MSR_VEC@h	/* Disable altivec */
+-	mfspr	r12,SPRN_VRSAVE	/* save vrsave register value */
+-	stw	r12,THREAD+THREAD_VRSAVE(r2)
+-END_FTR_SECTION_IFSET(CPU_FTR_ALTIVEC)
+-#endif /* CONFIG_ALTIVEC */
+-#ifdef CONFIG_SPE
+-BEGIN_FTR_SECTION
+-	oris	r0,r0,MSR_SPE@h	 /* Disable SPE */
+-	mfspr	r12,SPRN_SPEFSCR /* save spefscr register value */
+-	stw	r12,THREAD+THREAD_SPEFSCR(r2)
+-END_FTR_SECTION_IFSET(CPU_FTR_SPE)
+-#endif /* CONFIG_SPE */
+-	and.	r0,r0,r11	/* FP or altivec or SPE enabled? */
+-	beq+	1f
+-	andc	r11,r11,r0
+-	mtmsr	r11
+-	isync
+-1:	stw	r11,_MSR(r1)
+ 	mfcr	r10
+ 	stw	r10,_CCR(r1)
+ 	stw	r1,KSP(r3)	/* Set old stack pointer */
+@@ -218,19 +196,6 @@ END_FTR_SECTION_IFSET(CPU_FTR_SPE)
+ 	mr	r3,r2
+ 	addi	r2,r4,-THREAD	/* Update current */
+ 
+-#ifdef CONFIG_ALTIVEC
+-BEGIN_FTR_SECTION
+-	lwz	r0,THREAD+THREAD_VRSAVE(r2)
+-	mtspr	SPRN_VRSAVE,r0		/* if G4, restore VRSAVE reg */
+-END_FTR_SECTION_IFSET(CPU_FTR_ALTIVEC)
+-#endif /* CONFIG_ALTIVEC */
+-#ifdef CONFIG_SPE
+-BEGIN_FTR_SECTION
+-	lwz	r0,THREAD+THREAD_SPEFSCR(r2)
+-	mtspr	SPRN_SPEFSCR,r0		/* restore SPEFSCR reg */
+-END_FTR_SECTION_IFSET(CPU_FTR_SPE)
+-#endif /* CONFIG_SPE */
+-
+ 	lwz	r0,_CCR(r1)
+ 	mtcrf	0xFF,r0
+ 	/* r3-r12 are destroyed -- Cort */
+diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
+index 89e34aa273e2..2bd30acc843c 100644
+--- a/arch/powerpc/kernel/process.c
++++ b/arch/powerpc/kernel/process.c
+@@ -1129,6 +1129,10 @@ static inline void save_sprs(struct thread_struct *t)
+ 	if (cpu_has_feature(CPU_FTR_ALTIVEC))
+ 		t->vrsave = mfspr(SPRN_VRSAVE);
+ #endif
++#ifdef CONFIG_SPE
++	if (cpu_has_feature(CPU_FTR_SPE))
++		t->spefscr = mfspr(SPRN_SPEFSCR);
++#endif
+ #ifdef CONFIG_PPC_BOOK3S_64
+ 	if (cpu_has_feature(CPU_FTR_DSCR))
+ 		t->dscr = mfspr(SPRN_DSCR);
+@@ -1159,6 +1163,11 @@ static inline void restore_sprs(struct thread_struct *old_thread,
+ 	    old_thread->vrsave != new_thread->vrsave)
+ 		mtspr(SPRN_VRSAVE, new_thread->vrsave);
+ #endif
++#ifdef CONFIG_SPE
++	if (cpu_has_feature(CPU_FTR_SPE) &&
++	    old_thread->spefscr != new_thread->spefscr)
++		mtspr(SPRN_SPEFSCR, new_thread->spefscr);
++#endif
+ #ifdef CONFIG_PPC_BOOK3S_64
+ 	if (cpu_has_feature(CPU_FTR_DSCR)) {
+ 		u64 dscr = get_paca()->dscr_default;
+-- 
+2.25.0
+
