@@ -2,93 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E6A73813F0
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 00:52:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1857D3813F1
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 00:53:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234131AbhENWxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 18:53:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230371AbhENWxl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 18:53:41 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED107C06174A;
-        Fri, 14 May 2021 15:52:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=xgSsfKWkA74e0iXAMwBxkWJB/DtTeegQWgf7EKPF2SU=; b=Sy+SUM4cfMuNPa9aN/X8S7cGM
-        MPQs+haIZnGFUHksu//RCxpMISA9lmq7A6dtz4c9cvKubmw6YAYBS0VHhklpf8KQspJDeVtOcFn5+
-        xSzSjSTEGdwOoH6iMNnUoZVf9HImUXCd9y612TTQGVfYJDhZRWupnOyt39pNiegoSUUN5TqffaKix
-        S6GsZygOAb6ZQhpLnMAcV3zmvofxdYiNp5nn/LQQgPtNoFcx0ptKR4H1emIZT5iJs12XTmKd27bJ1
-        fw67LdkX8VdUMk6iQDGS9MPAVSwGt27muDBfStLdxcBC9mE0YqqXKJOxMulelisERs/n/85QSUMNk
-        E7wH92Dtg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43986)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lhgfR-0000Wu-Qf; Fri, 14 May 2021 23:52:25 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lhgfR-0004NM-Db; Fri, 14 May 2021 23:52:25 +0100
-Date:   Fri, 14 May 2021 23:52:25 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v6 02/25] net: dsa: qca8k: use iopoll macro for
- qca8k_busy_wait
-Message-ID: <20210514225225.GI12395@shell.armlinux.org.uk>
-References: <20210514210015.18142-1-ansuelsmth@gmail.com>
- <20210514210015.18142-3-ansuelsmth@gmail.com>
+        id S234141AbhENWyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 18:54:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33456 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230371AbhENWyN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 18:54:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D9C86140A;
+        Fri, 14 May 2021 22:53:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621032781;
+        bh=YrRUzwUUrm9b+bJX+DwHQoDonOGLf0mKSa8j8FGg7hc=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=WuDBXv9qQA7ik47vsUWDo6OVFk52ZEbzTnCsKT7RgbhwlzjHMzSCAH4k46r0wu4RQ
+         kaTtf8GAdkETlwZvE867WlH/3Xr9xMYefyqy0aURQe9Y39gTKG3tWPNJxfsge5Phw4
+         l3fiTIYjgJAUDb0JE8kB7b4/y/yzRy+x5jqIemItjuAlsnDF+fw2xvcr3CiDzZ9z3l
+         CgIyU4fD+8Q2zJmelOy4ba2vygF5TyepWsGEqGw0vDeFASFLtYm+G+NOu7wPutixCt
+         i9I6BoKSBkIsX0WLftFozcjLNyMb68bu1TYrPgVIbTUJdbhkzqUhUsvKiIIroZRzUo
+         m67o0GEHV6YqQ==
+Subject: Re: [PATCH 1/6] x86/traps: add X86_NR_HW_TRAPS to <asm/trapnr.h>
+To:     "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     Steve Wahl <steve.wahl@hpe.com>, Mike Travis <mike.travis@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210511005531.1065536-1-hpa@zytor.com>
+ <20210511005531.1065536-2-hpa@zytor.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Message-ID: <af998fee-7886-977a-a36b-8b21fe1edcca@kernel.org>
+Date:   Fri, 14 May 2021 15:53:00 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210514210015.18142-3-ansuelsmth@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20210511005531.1065536-2-hpa@zytor.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 10:59:52PM +0200, Ansuel Smith wrote:
-> Use iopoll macro instead of while loop.
+On 5/10/21 5:55 PM, H. Peter Anvin wrote:
+> From: "H. Peter Anvin (Intel)" <hpa@zytor.com>
 > 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> The x86 architecture supports up to 32 trap vectors. Add that constant
+> to <asm/trapnr.h>.
+> 
+> Signed-off-by: H. Peter Anvin (Intel) <hpa@zytor.com>
+> ---
+>  arch/x86/include/asm/trapnr.h | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/x86/include/asm/trapnr.h b/arch/x86/include/asm/trapnr.h
+> index f5d2325aa0b7..f0baf92da20b 100644
+> --- a/arch/x86/include/asm/trapnr.h
+> +++ b/arch/x86/include/asm/trapnr.h
+> @@ -27,6 +27,7 @@
+>  #define X86_TRAP_VE		20	/* Virtualization Exception */
+>  #define X86_TRAP_CP		21	/* Control Protection Exception */
+>  #define X86_TRAP_VC		29	/* VMM Communication Exception */
+> +#define X86_NR_HW_TRAPS		32	/* Max hardware trap number */
+>  #define X86_TRAP_IRET		32	/* IRET Exception */
+>  
+>  #endif
+> 
 
-This doesn't look quite right to me.
-
->  static int
->  qca8k_busy_wait(struct qca8k_priv *priv, u32 reg, u32 mask)
->  {
-> -	unsigned long timeout;
-> -
-> -	timeout = jiffies + msecs_to_jiffies(20);
-> +	u32 val;
-
-val is unsigned here.
-
-> +	/* Check if qca8k_read has failed for a different reason
-> +	 * before returning -ETIMEDOUT
-> +	 */
-> +	if (ret < 0 && val < 0)
-
-but here you are checking it for a negative number - this will always be
-false, making the conditional code unreachable. Either the test is wrong,
-or the type of val is wrong. Please resolve.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Acked-by: Andy Lutomirski <luto@kernel.org>
