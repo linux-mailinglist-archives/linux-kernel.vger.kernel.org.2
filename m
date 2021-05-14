@@ -2,190 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92223380601
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 11:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7E4B38060C
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 11:19:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231866AbhENJTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 05:19:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230000AbhENJTJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 05:19:09 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8A93C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 02:17:57 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id lz27so2396390ejb.11
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 02:17:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=KpUWkUumoCfSvMpSBUUJEGaD2Gr/qdkOSMbFvxzdrIs=;
-        b=wOVTnfZj32G+M9YPoPGwNSJl3x2VMEEDdWxCWvw3KCnTNmhxbmAr2LphAYMvK9rotD
-         0iqItIiOPagYPG2tNmBId2QaztuDBpgz+SyfPCCKBPUKwDH+uSN8Xhf3dmU/orKKupfP
-         lHDei2hgUfFvCLXDvmB6XJQv6OvXTT6QMv1nPeYaVAOpRQA97jrLd448+nGbh/EOW8Ki
-         fidWFFcC7TzGuU73oCdA8/xEoF9kecR8Bkkwj9bEWzyyH+F+ywO31BlqLSUvTqvSSBgp
-         edFAYgN6oKtQB0xW4wuna7uGatVbp0Ai9v7v90MM0nWYCwAeNkkH2zPRWWDrlenHUNjT
-         RUbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=KpUWkUumoCfSvMpSBUUJEGaD2Gr/qdkOSMbFvxzdrIs=;
-        b=AAH92WkP8Bs0HyOOH2UFkykczvtcfRQ2z3dNzi+rbj16KM8PP7yHDY1mmDWXdFricj
-         r6iBed422D+yMoMKOisLGBTFFAicIXkThca2qHee6y4eT1tqVLH5uYYseOoTVEMPJ0rR
-         lVmPn2zA3H+SVsLT3UXfSkbI7CIIvg/AJ3Mia33ypNKG/hYBHEp3ckoiTtfwE4eqf1J+
-         MkCZZt1nhZDdBPcPKwvOH3lt6BtJBmBJGMM4cJa2F9AajWyUbDv9y1OqADJhJz6d/40w
-         WR5foJXqKZnKBmhJAORXboXswhTGpngLVKkQghuHZtSxO2GfKbWsBekRhjX+yVOhoJ+T
-         oBTw==
-X-Gm-Message-State: AOAM531DbcBWlK3dri5tJIB44c7pJzDlRBSkUBeRrDw8VjFoXx5DFiBR
-        p69ZRN7oCyoKg+TWhLgG+1+cCw==
-X-Google-Smtp-Source: ABdhPJy7u0vp54IwPd698tdL4ob3exH4UZJnsi9nd6zWe+32A7rELSgshx9as+boeH8h/FE7Srq6yw==
-X-Received: by 2002:a17:906:9bf3:: with SMTP id de51mr1246754ejc.394.1620983876468;
-        Fri, 14 May 2021 02:17:56 -0700 (PDT)
-Received: from apalos.home ([94.69.77.156])
-        by smtp.gmail.com with ESMTPSA id rs8sm3298538ejb.17.2021.05.14.02.17.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 02:17:56 -0700 (PDT)
-Date:   Fri, 14 May 2021 12:17:50 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
-        linux-mm@kvack.org, Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
+        id S231993AbhENJVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 05:21:05 -0400
+Received: from foss.arm.com ([217.140.110.172]:45432 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230000AbhENJVD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 05:21:03 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F09BA1480;
+        Fri, 14 May 2021 02:19:51 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C13FB3F719;
+        Fri, 14 May 2021 02:19:48 -0700 (PDT)
+Date:   Fri, 14 May 2021 10:19:43 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <maz@kernel.org>,
         Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-Subject: Re: [PATCH net-next v5 3/5] page_pool: Allow drivers to hint on SKB
- recycling
-Message-ID: <YJ5APhzabmAKIKCE@apalos.home>
-References: <20210513165846.23722-1-mcroce@linux.microsoft.com>
- <20210513165846.23722-4-mcroce@linux.microsoft.com>
- <798d6dad-7950-91b2-46a5-3535f44df4e2@huawei.com>
- <YJ4ocslvURa/H+6f@apalos.home>
- <212498cf-376b-2dac-e1cd-12c7cc7910c6@huawei.com>
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Rob Herring <robh@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jon Derrick <jonathan.derrick@intel.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-hyperv@vger.kernel.org
+Subject: Re: [RFC v2 1/7] PCI: Introduce pci_host_bridge::domain_nr
+Message-ID: <20210514091943.GA13309@lpieralisi>
+References: <20210503144635.2297386-1-boqun.feng@gmail.com>
+ <20210503144635.2297386-2-boqun.feng@gmail.com>
+ <YJDYrn7Nt+xyHbyr@kernel.org>
+ <20210506105245.GA26351@lpieralisi>
+ <YJk4vdJnOxHvlFLT@boqun-archlinux>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <212498cf-376b-2dac-e1cd-12c7cc7910c6@huawei.com>
+In-Reply-To: <YJk4vdJnOxHvlFLT@boqun-archlinux>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 04:31:50PM +0800, Yunsheng Lin wrote:
-> On 2021/5/14 15:36, Ilias Apalodimas wrote:
-> > [...]
-> >>> +		return false;
-> >>> +
-> >>> +	pp = (struct page_pool *)page->pp;
-> >>> +
-> >>> +	/* Driver set this to memory recycling info. Reset it on recycle.
-> >>> +	 * This will *not* work for NIC using a split-page memory model.
-> >>> +	 * The page will be returned to the pool here regardless of the
-> >>> +	 * 'flipped' fragment being in use or not.
-> >>> +	 */
-> >>> +	page->pp = NULL;
-> >>
-> >> Why not only clear the page->pp when the page can not be recycled
-> >> by the page pool? so that we do not need to set and clear it every
-> >> time the page is recycled。
-> >>
+On Mon, May 10, 2021 at 09:44:29PM +0800, Boqun Feng wrote:
+> [Copy Rob]
+> 
+> On Thu, May 06, 2021 at 11:52:45AM +0100, Lorenzo Pieralisi wrote:
+> > On Tue, May 04, 2021 at 08:16:30AM +0300, Mike Rapoport wrote:
+> > > On Mon, May 03, 2021 at 10:46:29PM +0800, Boqun Feng wrote:
+> > > > Currently we retrieve the PCI domain number of the host bridge from the
+> > > > bus sysdata (or pci_config_window if PCI_DOMAINS_GENERIC=y). Actually
+> > > > we have the information at PCI host bridge probing time, and it makes
+> > > > sense that we store it into pci_host_bridge. One benefit of doing so is
+> > > > the requirement for supporting PCI on Hyper-V for ARM64, because the
+> > > > host bridge of Hyper-V doesnt' have pci_config_window, whereas ARM64 is
+> > > > a PCI_DOMAINS_GENERIC=y arch, so we cannot retrieve the PCI domain
+> > > > number from pci_config_window on ARM64 Hyper-V guest.
+> > > > 
+> > > > As the preparation for ARM64 Hyper-V PCI support, we introduce the
+> > > > domain_nr in pci_host_bridge, and set it properly at probing time, then
+> > > > for PCI_DOMAINS_GENERIC=y archs, bus domain numbers are set by the
+> > > > bridge domain_nr.
+> > > > 
+> > > > Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> > > > ---
+> > > >  arch/arm/kernel/bios32.c              |  2 ++
+> > > >  arch/arm/mach-dove/pcie.c             |  2 ++
+> > > >  arch/arm/mach-mv78xx0/pcie.c          |  2 ++
+> > > >  arch/arm/mach-orion5x/pci.c           |  2 ++
+> > > >  arch/arm64/kernel/pci.c               |  3 +--
+> > > >  arch/mips/pci/pci-legacy.c            |  2 ++
+> > > >  arch/mips/pci/pci-xtalk-bridge.c      |  2 ++
+> > > >  drivers/pci/controller/pci-ftpci100.c |  2 ++
+> > > >  drivers/pci/controller/pci-mvebu.c    |  2 ++
+> > > >  drivers/pci/pci.c                     |  4 ++--
+> > > >  drivers/pci/probe.c                   |  7 ++++++-
+> > > >  include/linux/pci.h                   | 11 ++++++++---
+> > > >  12 files changed, 33 insertions(+), 8 deletions(-)
+> > > > 
+> > > > diff --git a/arch/arm/kernel/bios32.c b/arch/arm/kernel/bios32.c
+> > > > index e7ef2b5bea9c..4942cd681e41 100644
+> > > > --- a/arch/arm/kernel/bios32.c
+> > > > +++ b/arch/arm/kernel/bios32.c
+> > > > @@ -471,6 +471,8 @@ static void pcibios_init_hw(struct device *parent, struct hw_pci *hw,
+> > > >  				bridge->sysdata = sys;
+> > > >  				bridge->busnr = sys->busnr;
+> > > >  				bridge->ops = hw->ops;
+> > > > +				if (IS_ENABLED(CONFIG_PCI_DOMAINS_GENERIC))
+> > > > +					bridge->domain_nr = pci_bus_find_domain_nr(sys, parent);
+> > > >  
+> > > >  				ret = pci_scan_root_bus_bridge(bridge);
+> > > >  			}
+> > > > diff --git a/arch/arm/mach-dove/pcie.c b/arch/arm/mach-dove/pcie.c
+> > > > index ee91ac6b5ebf..92eb8484b49b 100644
+> > > > --- a/arch/arm/mach-dove/pcie.c
+> > > > +++ b/arch/arm/mach-dove/pcie.c
+> > > > @@ -167,6 +167,8 @@ dove_pcie_scan_bus(int nr, struct pci_host_bridge *bridge)
+> > > >  	bridge->sysdata = sys;
+> > > >  	bridge->busnr = sys->busnr;
+> > > >  	bridge->ops = &pcie_ops;
+> > > > +	if (IS_ENABLED(CONFIG_PCI_DOMAINS_GENERIC))
+> > > > +		bridge->domain_nr = pci_bus_find_domain_nr(sys, NULL);
+> > > 
+> > > The check for CONFIG_PCI_DOMAINS_GENERIC is excessive because there is a
+> > > stub for pci_bus_find_domain_nr().
+> > > 
+> > > I'm not an expert in PCI, but maybe the repeated assignment of
+> > > bridge->domain_nr can live in the generic code, say, in
+> > > pci_scan_root_bus_bridge(). E.g. it will set the domain_nr when it is zero.
+> > > 
+> > > >  
 > > 
-> > If the page cannot be recycled, page->pp will not probably be set to begin
-> > with. Since we don't embed the feature in page_pool and we require the
-> > driver to explicitly enable it, as part of the 'skb flow', I'd rather keep 
-> > it as is.  When we set/clear the page->pp, the page is probably already in 
-> > cache, so I doubt this will have any measurable impact.
-> 
-> The point is that we already have the skb->pp_recycle to let driver to
-> explicitly enable recycling, as part of the 'skb flow, if the page pool keep
-> the page->pp while it owns the page, then the driver may only need to call
-> one skb_mark_for_recycle() for a skb, instead of call skb_mark_for_recycle()
-> for each page frag of a skb.
-> 
-
-The driver is meant to call skb_mark_for_recycle for the skb and
-page_pool_store_mem_info() for the fragments (in order to store page->pp).
-Nothing bad will happen if you call skb_mark_for_recycle on a frag though,
-but in any case you need to store the page_pool pointer of each frag to
-struct page.
-
-> Maybe we can add a parameter in "struct page_pool_params" to let driver
-> to decide if the page pool ptr is stored in page->pp while the page pool
-> owns the page?
-
-Then you'd have to check the page pool config before saving the meta-data,
-and you would have to make the skb path aware of that as well (I assume you
-mean replace pp_recycle with this?).
-If not and you just want to add an extra flag on page_pool_params and be able 
-to enable recycling depending on that flag, we just add a patch afterwards.
-I am not sure we need an extra if for each packet though.
-
-> 
-> Another thing accured to me is that if the driver use page from the
-> page pool to form a skb, and it does not call skb_mark_for_recycle(),
-> then there will be resource leaking, right? if yes, it seems the
-> skb_mark_for_recycle() call does not seems to add any value?
-> 
-
-Not really, the driver has 2 choices:
-- call page_pool_release_page() once it receives the payload. That will
-  clean up dma mappings (if page pool is responsible for them) and free the
-  buffer
-- call skb_mark_for_recycle(). Which will end up recycling the buffer.
-
-If you call none of those, you'd leak a page, but that's a driver bug.
-patches [4/5, 5/5] do that for two marvell drivers.
-I really want to make drivers opt-in in the feature instead of always
-enabling it.
-
-Thanks
-/Ilias
-> 
+> > Yes, this churn should be avoided. We need a sentinel value to detect
+> > whether the domain_nr is invalid (0 is a valid domain) so generic code
+> > (ie pci_scan_root_bus_bridge() and friends) has to call generic
+> > functions to get it (pci_bus_find_domain_nr()).
 > > 
-> >>> +	page_pool_put_full_page(pp, virt_to_head_page(data), false);
-> >>> +
-> >>>  	C(end);
+> 
+> Agreed. Thank you all for the inputs.
+> 
+> According to [1], "PCI Conventional" has at most 256 PCI bus segments
+> and "PCI Express" has at most 65536 "PCI Segments Groups", so any value
+> outside [0, 65536] can be used as a sentinel. I'm planning to use -1
+> like:
+> 
+> 	#define PCI_DOMAIN_NR_NOT_SET (-1)
+> 
+> 	(in pci_alloc_host_bridge())
+> 	bridge->domain_nr = PCI_DOMAIN_NR_NOT_SET;
+> 
+> 	(in pci_register_host_bridge())
+> 	if (bridge->domain_nr == PCI_DOMAIN_NR_NOT_SET)
+> 		bridge->domain_nr = pci_bus_find_domain_nr(...);
+
+It should be fine. I'd move the check
+
+if (bridge->domain_nr == PCI_DOMAIN_NR_NOT_SET)
+
+in pci_bus_find_domain_nr()
+
+to make the logic contained in there but that's a nit.
+
+Lorenzo
+
+> Thoughts?
+> 
+> Regards,
+> Boqun
+> 
+> [1]: https://wiki.osdev.org/PCI_Express
+> 
+> > We can implement it as a flag or function pointer in the struct
+> > pci_host_bridge, if the flag or function pointer is not set the
+> > generic pci_bus_find_domain_nr() should be called.
 > > 
-> > [...]
-> 
-> 
+> > Lorenzo
