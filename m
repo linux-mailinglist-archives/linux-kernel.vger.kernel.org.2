@@ -2,59 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5968380EED
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 19:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FDBF380EEF
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 19:29:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231687AbhENR3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 13:29:51 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:40712 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229516AbhENR3u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 13:29:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=5WPyLTz7c2kYwCsqXZ8QlYk8yM5FgOmktldw0a24vWg=; b=0Ri8TzPlk83DSzNm8XS4qxv1lk
-        ZEsmasQHGA094g0Qa8r1q6ERrhXyIZyDwk15gV6CR2BkU3kHXBrmo2DslV1Q70Sd5hf0D74i/WhqO
-        PcrJtA9aYk6YMWM3OklzP63uTL7Up0SeRBDh4osNFsqXpIHqNdWlYnvNm7WMjjvISRYE=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lhbbw-004DKu-LU; Fri, 14 May 2021 19:28:28 +0200
-Date:   Fri, 14 May 2021 19:28:28 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Dario Binacchi <dariobin@libero.it>
-Cc:     linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] can: c_can: add ethtool support
-Message-ID: <YJ6zPGwRUQ23Fu3g@lunn.ch>
-References: <20210514165549.14365-2-dariobin@libero.it>
+        id S231710AbhENRaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 13:30:17 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:55143 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229516AbhENRaM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 13:30:12 -0400
+Received: from tazenda.hos.anvin.org ([IPv6:2601:646:8602:8be0:7285:c2ff:fefb:fd4])
+        (authenticated bits=0)
+        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14EHSaXc3149327
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Fri, 14 May 2021 10:28:36 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14EHSaXc3149327
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2021042801; t=1621013318;
+        bh=jSzPdXXc18oxGyRbNuujyb/chXDixgHnSADRJ1xFGAw=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=ZgJnsaf9WvSYOIHTsfdIIHP1/Yhs8t/6zK6uHxzk//1cTlkiwLo8CUGJkRx+roSNj
+         KspkzNOpGlHIKX4POtuFDtmRY/EsUe6IGSI8D25gizCAtst3Z6bmTW/1QcAyeiozB1
+         /1WEI7OaP7Q/8/lFI163/CzIm+Lgwx1fpUO4dbRQycuSdZOO19PHjpMLVLG/sTpm09
+         62DgYkR8TbVugGuO7gwMfSSqJmZoaXP++4iMAUAnrsPVbt2apA6PnVqUpB9uw2Sy8A
+         xPVnO8J4VKsw//i9+VRclX+OlLAjDk8IhDtLRXug/ZwviZ5d8SBZvocEUJ5FPGe7GQ
+         4gOnSv3hPZoGQ==
+Subject: Re: [PATCH] x86/i8259: Work around buggy legacy PIC
+To:     David Laight <David.Laight@ACULAB.COM>,
+        "'Thomas Gleixner'" <tglx@linutronix.de>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
+Cc:     Sachi King <nakato@nakato.io>, "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+References: <20210512210459.1983026-1-luzmaximilian@gmail.com>
+ <9b70d8113c084848b8d9293c4428d71b@AcuMS.aculab.com>
+ <e7dbd4d1-f23f-42f0-e912-032ba32f9ec8@gmail.com>
+ <87r1i94eg6.ffs@nanos.tec.linutronix.de>
+ <f0f52e319c06462ea0b5fbba827df9e0@AcuMS.aculab.com>
+From:   "H. Peter Anvin" <hpa@zytor.com>
+Message-ID: <b29b5c28-c36d-9c03-fc1a-055d8a089bcd@zytor.com>
+Date:   Fri, 14 May 2021 10:28:30 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210514165549.14365-2-dariobin@libero.it>
+In-Reply-To: <f0f52e319c06462ea0b5fbba827df9e0@AcuMS.aculab.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 06:55:47PM +0200, Dario Binacchi wrote:
-> With commit 132f2d45fb23 ("can: c_can: add support to 64 message objects")
-> the number of message objects used for reception / transmission depends
-> on FIFO size.
-> The ethtools API support allows you to retrieve this info. Driver info
-> has been added too.
+On 5/14/21 9:12 AM, David Laight wrote:
 > 
-> Signed-off-by: Dario Binacchi <dariobin@libero.it>
+> A more interesting probe would be:
+> - Write some value to register 1 - the mask.
+> - Write 9 to register zero (selects interrupt in service register).
+> - Read register 0 - should be zero since we aren't in as ISR.
+> - Read register 1 - should get the mask back.
+> You can also write 8 to register 0, reads then return the pending interrupts.
+> Their might be pending interrupts - so that value can't be checked.
+> 
+> But if reads start returning the last written value you might only
+> have capacitors on the data bus.
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+What data bus? These things haven't been on a physical parallel bus for 
+ages.
 
-    Andrew
+> The required initialisation registers are pretty fixed for the PC hardware.
+> But finding the values requires a bit of work.
+> 
+> 	David
+
+And you always risk activating new bugs.
+
+Since this appears to be a specific platform advertising the wrong 
+answer in firmware, this is better handled as a quirk.
+
+	-hpa
+
