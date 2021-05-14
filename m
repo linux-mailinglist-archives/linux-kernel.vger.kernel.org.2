@@ -2,111 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63AD7380A82
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 15:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFE81380A81
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 15:42:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234001AbhENNnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 09:43:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41872 "EHLO
+        id S233995AbhENNnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 09:43:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229888AbhENNnq (ORCPT
+        with ESMTP id S229888AbhENNn1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 09:43:46 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A94EC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 06:42:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=WeqnDueLL3Y7hUYBnonhmaWEvwFWa7jko0cCO3KQkUI=; b=LtjvynKQHt3b+rUBpH5xd2fmAy
-        B3S2sTGMSlz5ZFgm1kHxSU3VRX4cEhXKagcJpqZ+qWobpAeD+QkfULdzsdN80oLKnwOPk5OuQShUr
-        6jSTOEBk0hwY1FyJfVnVxMUnh7u3MBAkKiFlJRmjqFA0B/KbU2CEFbsQ4+rOn6tkaAntCjBlQX2IX
-        cStWdyzwyjBeGMiXP3nqu1iloA2mUReXvQXF3QsZAeZ7uxG/lHCcgZ+IlHDOTsZTnKOq3oycj8ahn
-        1CFs/XlApHhXvigg5NogZQLOslr8nga1MlN03JHZowYWEQBe7BXqoUbPutqChwKL+XCLf7IuKfxcJ
-        B82pLEOg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lhY4s-008ABK-QI; Fri, 14 May 2021 13:42:06 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0DF3830022A;
-        Fri, 14 May 2021 15:42:05 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id EA5C82BE0F873; Fri, 14 May 2021 15:42:04 +0200 (CEST)
-Date:   Fri, 14 May 2021 15:42:04 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Liam Howlett <liam.howlett@oracle.com>
-Cc:     "maple-tree@lists.infradead.org" <maple-tree@lists.infradead.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Song Liu <songliubraving@fb.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        David Rientjes <rientjes@google.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Rik van Riel <riel@surriel.com>,
-        Michel Lespinasse <walken.cr@gmail.com>
-Subject: Re: [PATCH 26/94] Maple Tree: Add new data structure
-Message-ID: <YJ5+LN7FlNjAXQi0@hirez.programming.kicks-ass.net>
-References: <20210428153542.2814175-1-Liam.Howlett@Oracle.com>
- <20210428153542.2814175-27-Liam.Howlett@Oracle.com>
+        Fri, 14 May 2021 09:43:27 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 038D2C061574;
+        Fri, 14 May 2021 06:42:15 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id q6so15453527qvb.2;
+        Fri, 14 May 2021 06:42:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=FB0NSmh4fqQIsNAlL8pm2Yaj9257aMVxgrbCCbLsJno=;
+        b=bSYGolIp2eZPKT2PgcNtJAqtAQOBuTXS6U5vqCjFx1TvzXLoqHVMaeMiurrchYeelo
+         rYGqo5DS5IKEiAzb7jfVjjstWOUg7NhvxEMQh22g5VmbGdaJE68pZypRae3ZT6dR4bPX
+         JDrV3b8wIOPjYJJyDD4pf2+RA9gcqbD43tbLdrMAJesJ5E15fblOoGIxwaSWPWVU4GJ/
+         ZNcBD17zoVnsUNwUZvii5YtaVkt564vVvMUTGuye0KhxD16RJk2VH9RhfvzvtBSpmmcV
+         GWxZ0Z7fBFBhILdZ/D4CWj/eIbJq7dOGKkqsFS9gfd1HNAXFisgsXqHirifpUtYdw42E
+         lQ7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FB0NSmh4fqQIsNAlL8pm2Yaj9257aMVxgrbCCbLsJno=;
+        b=R8aoQstGEdi/GdLq4eJx+BJildfPoc3NR7nuibyloPIW/YKCchAa9eXChBOICWjiEw
+         ZvyJc4ko/gv4eTsDgnq/gPXiQ8JdJl4BY04p8POWEoqE+MbDP04hYHFrhGcqYQoqKNJK
+         udLgho8U/o+5jNIEaxtSgXn5P9xtIuDG54U7s5caOTogz8S4qm9nawzE9F8KTZMWsK7I
+         unWwGlRbTdZzIXESGs82VmMpPJ4KqlAIgyRTdRIspoV7SGwcam4GPpJi1GgCC03Qmi6f
+         HAXV4ywhT5jbF31RuilYnJhxDuYj/jX9NfrMm5b1V71vL8uPcizIVVOTxQGBRYFJnPjP
+         TG7Q==
+X-Gm-Message-State: AOAM5338ZeDY7RVrxAr5/rnfILRGh/AioNjkbbd3H757EA8xVQBX/fXU
+        k/hgGy5M7NWk45Yv35pbji4uCBhusDs=
+X-Google-Smtp-Source: ABdhPJwSrQJEe/sqwlwIsziF0BnLoqwRecfwVX678Q3kxauWeyd7MC/VyT6Z218hFBcA+fON3YeJJA==
+X-Received: by 2002:a05:6214:1705:: with SMTP id db5mr5828915qvb.13.1620999734934;
+        Fri, 14 May 2021 06:42:14 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id c185sm4825808qkg.96.2021.05.14.06.42.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 May 2021 06:42:14 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v2] watchdog: imx2_wdt: avoid to ping before resume back
+To:     Robin Gong <yibin.gong@nxp.com>, wim@linux-watchdog.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com
+Cc:     linux-imx@nxp.com, kernel@pengutronix.de,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <1621012875-22667-1-git-send-email-yibin.gong@nxp.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <efc34ded-720d-ef57-8906-37e8ab36c3cf@roeck-us.net>
+Date:   Fri, 14 May 2021 06:42:12 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210428153542.2814175-27-Liam.Howlett@Oracle.com>
+In-Reply-To: <1621012875-22667-1-git-send-email-yibin.gong@nxp.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 03:36:02PM +0000, Liam Howlett wrote:
-> +/*
-> + * mte_set_parent() - Set the parent node and encode the slot.
-> + * @enode: The encoded maple node.
-> + * @parent: The encoded maple node that is the parent of @enode.
-> + * @slot: The slot that @enode resides in @parent.
-> + *
-> + * Type is encoded in the enode->parent
-> + * bit 0: 1 = root, 0 otherwise
-> + * bit 1: Reserved.
-> + * bit 2: 0 = range 32, 1 = [a]range 64
-> + *
-> + * Slot number is encoded in the enode->parent
-> + * range_32, slot number is encoded in bits 3-6
-> + * [a]range_64, slot number is encoded in bits 3-6
-> + */
-> +static inline void mte_set_parent(struct maple_enode *enode,
-> +				 const struct maple_enode *parent,
-> +				 unsigned char slot)
-> +{
-> +	unsigned long bitmask = 0x78;
-> +	unsigned long val = (unsigned long) parent;
-> +	unsigned long type = 0;
+On 5/14/21 10:21 AM, Robin Gong wrote:
+> Since watchdog_ping_work is not freezable so that it maybe scheduled before
+> imx2_wdt_resume where watchdog clock enabled, hence, kernel will hang in
+> imx2_wdt_ping without clock, and then watchdog reset happen. Add clk_is_on
+> to prevent the above case by ignoring ping until watchdog driver resume
+> back indeed.
+> 
+> Signed-off-by: Robin Gong <yibin.gong@nxp.com>
+
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+
+> ---
+>   drivers/watchdog/imx2_wdt.c | 10 ++++++++++
+>   1 file changed, 10 insertions(+)
+> 
+> diff --git a/drivers/watchdog/imx2_wdt.c b/drivers/watchdog/imx2_wdt.c
+> index b84f80f..cc86018 100644
+> --- a/drivers/watchdog/imx2_wdt.c
+> +++ b/drivers/watchdog/imx2_wdt.c
+> @@ -65,6 +65,7 @@ struct imx2_wdt_device {
+>   	struct regmap *regmap;
+>   	struct watchdog_device wdog;
+>   	bool ext_reset;
+> +	bool clk_is_on;
+>   };
+>   
+>   static bool nowayout = WATCHDOG_NOWAYOUT;
+> @@ -160,6 +161,9 @@ static int imx2_wdt_ping(struct watchdog_device *wdog)
+>   {
+>   	struct imx2_wdt_device *wdev = watchdog_get_drvdata(wdog);
+>   
+> +	if (!wdev->clk_is_on)
+> +		return 0;
 > +
-> +	switch (mte_node_type(parent)) {
-> +	case maple_range_64:
-> +	case maple_arange_64:
-> +		type = 6;
-
-6 = 4 + 2, which has bit1 set, but the above sayeth bit1 is reserved.
-
-It is also mighty confusing to have two different type fields, is there
-no way we can merge the types into a single (shared) space?
-
-> +		break;
-> +	default:
-> +		break;
-> +	}
+>   	regmap_write(wdev->regmap, IMX2_WDT_WSR, IMX2_WDT_SEQ1);
+>   	regmap_write(wdev->regmap, IMX2_WDT_WSR, IMX2_WDT_SEQ2);
+>   	return 0;
+> @@ -301,6 +305,8 @@ static int __init imx2_wdt_probe(struct platform_device *pdev)
+>   	if (ret)
+>   		return ret;
+>   
+> +	wdev->clk_is_on = true;
 > +
-> +	val &= ~bitmask; // Remove any old slot number.
-> +	val |= (slot << MAPLE_PARENT_SHIFT); // Set the slot.
-> +	val |= type;
-> +	mte_to_node(enode)->parent = ma_parent_ptr(val);
-> +}
+>   	regmap_read(wdev->regmap, IMX2_WDT_WRSR, &val);
+>   	wdog->bootstatus = val & IMX2_WDT_WRSR_TOUT ? WDIOF_CARDRESET : 0;
+>   
+> @@ -361,6 +367,8 @@ static int __maybe_unused imx2_wdt_suspend(struct device *dev)
+>   
+>   	clk_disable_unprepare(wdev->clk);
+>   
+> +	wdev->clk_is_on = false;
+> +
+>   	return 0;
+>   }
+>   
+> @@ -375,6 +383,8 @@ static int __maybe_unused imx2_wdt_resume(struct device *dev)
+>   	if (ret)
+>   		return ret;
+>   
+> +	wdev->clk_is_on = true;
+> +
+>   	if (watchdog_active(wdog) && !imx2_wdt_is_running(wdev)) {
+>   		/*
+>   		 * If the watchdog is still active and resumes
+> 
+
