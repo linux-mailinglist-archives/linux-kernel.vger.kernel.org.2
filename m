@@ -2,83 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FDBF380EEF
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 19:29:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D4D7380EF1
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 19:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231710AbhENRaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 13:30:17 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:55143 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229516AbhENRaM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 13:30:12 -0400
-Received: from tazenda.hos.anvin.org ([IPv6:2601:646:8602:8be0:7285:c2ff:fefb:fd4])
-        (authenticated bits=0)
-        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14EHSaXc3149327
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Fri, 14 May 2021 10:28:36 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14EHSaXc3149327
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2021042801; t=1621013318;
-        bh=jSzPdXXc18oxGyRbNuujyb/chXDixgHnSADRJ1xFGAw=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=ZgJnsaf9WvSYOIHTsfdIIHP1/Yhs8t/6zK6uHxzk//1cTlkiwLo8CUGJkRx+roSNj
-         KspkzNOpGlHIKX4POtuFDtmRY/EsUe6IGSI8D25gizCAtst3Z6bmTW/1QcAyeiozB1
-         /1WEI7OaP7Q/8/lFI163/CzIm+Lgwx1fpUO4dbRQycuSdZOO19PHjpMLVLG/sTpm09
-         62DgYkR8TbVugGuO7gwMfSSqJmZoaXP++4iMAUAnrsPVbt2apA6PnVqUpB9uw2Sy8A
-         xPVnO8J4VKsw//i9+VRclX+OlLAjDk8IhDtLRXug/ZwviZ5d8SBZvocEUJ5FPGe7GQ
-         4gOnSv3hPZoGQ==
-Subject: Re: [PATCH] x86/i8259: Work around buggy legacy PIC
-To:     David Laight <David.Laight@ACULAB.COM>,
-        "'Thomas Gleixner'" <tglx@linutronix.de>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
-Cc:     Sachi King <nakato@nakato.io>, "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-References: <20210512210459.1983026-1-luzmaximilian@gmail.com>
- <9b70d8113c084848b8d9293c4428d71b@AcuMS.aculab.com>
- <e7dbd4d1-f23f-42f0-e912-032ba32f9ec8@gmail.com>
- <87r1i94eg6.ffs@nanos.tec.linutronix.de>
- <f0f52e319c06462ea0b5fbba827df9e0@AcuMS.aculab.com>
-From:   "H. Peter Anvin" <hpa@zytor.com>
-Message-ID: <b29b5c28-c36d-9c03-fc1a-055d8a089bcd@zytor.com>
-Date:   Fri, 14 May 2021 10:28:30 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S232040AbhENRaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 13:30:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54142 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231804AbhENRaV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 13:30:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C75E61183;
+        Fri, 14 May 2021 17:29:09 +0000 (UTC)
+Date:   Fri, 14 May 2021 18:29:06 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] arm64 fixes/updates for 5.13-rc2
+Message-ID: <20210514172904.GA29470@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <f0f52e319c06462ea0b5fbba827df9e0@AcuMS.aculab.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/14/21 9:12 AM, David Laight wrote:
-> 
-> A more interesting probe would be:
-> - Write some value to register 1 - the mask.
-> - Write 9 to register zero (selects interrupt in service register).
-> - Read register 0 - should be zero since we aren't in as ISR.
-> - Read register 1 - should get the mask back.
-> You can also write 8 to register 0, reads then return the pending interrupts.
-> Their might be pending interrupts - so that value can't be checked.
-> 
-> But if reads start returning the last written value you might only
-> have capacitors on the data bus.
+Hi Linus,
 
-What data bus? These things haven't been on a physical parallel bus for 
-ages.
+Please pull the arm64 updates below. Thanks.
 
-> The required initialisation registers are pretty fixed for the PC hardware.
-> But finding the values requires a bit of work.
-> 
-> 	David
+The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
 
-And you always risk activating new bugs.
+  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
 
-Since this appears to be a specific platform advertising the wrong 
-answer in firmware, this is better handled as a quirk.
+are available in the Git repository at:
 
-	-hpa
+  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
 
+for you to fetch changes up to 588a513d34257fdde95a9f0df0202e31998e85c6:
+
+  arm64: Fix race condition on PG_dcache_clean in __sync_icache_dcache() (2021-05-14 17:11:16 +0100)
+
+----------------------------------------------------------------
+arm64 fixes and cpucaps.h automatic generation:
+
+- Generate cpucaps.h at build time rather than carrying lots of
+  #defines. Merged at -rc1 to avoid some conflicts during the merging
+  window.
+
+- Initialise RGSR_EL1.SEED in __cpu_setup() as it may be left as 0 out
+  of reset and the IRG instruction would not function as expected if
+  only the architected pseudorandom number generator is implemented.
+
+- Fix potential race condition in __sync_icache_dcache() where the
+  PG_dcache_clean page flag is set before the actual cache maintenance.
+
+- Fix header include in BTI kselftests.
+
+----------------------------------------------------------------
+Catalin Marinas (1):
+      arm64: Fix race condition on PG_dcache_clean in __sync_icache_dcache()
+
+Mark Brown (3):
+      arm64: Generate cpucaps.h
+      kselftest/arm64: Add missing stddef.h include to BTI tests
+      arm64: tools: Add __ASM_CPUCAPS_H to the endif in cpucaps.h
+
+Peter Collingbourne (1):
+      arm64: mte: initialize RGSR_EL1.SEED in __cpu_setup
+
+ arch/arm64/Makefile                      |  3 ++
+ arch/arm64/include/asm/Kbuild            |  2 +
+ arch/arm64/include/asm/cpucaps.h         | 74 --------------------------------
+ arch/arm64/mm/flush.c                    |  4 +-
+ arch/arm64/mm/proc.S                     | 12 ++++++
+ arch/arm64/tools/Makefile                | 22 ++++++++++
+ arch/arm64/tools/cpucaps                 | 65 ++++++++++++++++++++++++++++
+ arch/arm64/tools/gen-cpucaps.awk         | 40 +++++++++++++++++
+ tools/testing/selftests/arm64/bti/test.c |  1 +
+ 9 files changed, 148 insertions(+), 75 deletions(-)
+ delete mode 100644 arch/arm64/include/asm/cpucaps.h
+ create mode 100644 arch/arm64/tools/Makefile
+ create mode 100644 arch/arm64/tools/cpucaps
+ create mode 100755 arch/arm64/tools/gen-cpucaps.awk
+
+-- 
+Catalin
