@@ -2,265 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 140AC380911
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 13:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D2BD380913
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 13:58:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232871AbhENL7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 07:59:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46812 "EHLO
+        id S233019AbhENMAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 08:00:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231394AbhENL7q (ORCPT
+        with ESMTP id S232532AbhENMAF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 07:59:46 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62A09C061574;
-        Fri, 14 May 2021 04:58:34 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id c20so17404309qkm.3;
-        Fri, 14 May 2021 04:58:34 -0700 (PDT)
+        Fri, 14 May 2021 08:00:05 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 558BDC061574;
+        Fri, 14 May 2021 04:58:53 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id o26-20020a1c4d1a0000b0290146e1feccdaso2303710wmh.0;
+        Fri, 14 May 2021 04:58:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=A3gL2doE8fl4iTpq6l37jEk7PgXSqloCEeFI/slSopk=;
-        b=Ib1w3P9Gd5qIw4fgynuBCUWCbb3VUzNhyV69TVs4Veu/LWsZ7a/Yanj7zCN2/lYypm
-         3hadF9/v9zJeCu2X09ltSfJcIu4AIZSj7e5Iqra99jtRJ3+qdD71vaXncaJAmVtaRNRa
-         xp1EtSU4Y9fIKuXS9yOfaf129j4a5SxcHQldkA0ONM1471nPwNmMTSMr+TbJ9+3H4lHv
-         3hMxy6hiW5LnWfNVW+k2BUtQ4gJczDn/oD1LEZZqmToTn/SBHWFtVNqS3OMWFPXrC5lG
-         m9HmEDV0SLQItDj+tlI0B/aKWMcHCJ3WCVwy+qyEBwmQfoDvLxL2O6Rik3M1XYMx2csK
-         cGIg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=aCQ7Xti4PZasTG5XmR78Be2WTvCnA6stEZ6OIez+DO8=;
+        b=hvgDeFxdax+NDVnn7GjHSsv5ovdVpKDKzRxyHuLZFge8HXhtM1zYd/uoGMKcVMBsBG
+         xL6LF7a7H9ZF5Bbpf9665XCE5UShHwZPvKj6v8furjKeTyTsmZtsUmmsqWpUqSw8lhm/
+         rDwTN6U+eiKNOG1T6nhV91Ab7FUTn70tTw1KKIeT4rNAfKC60J2LnWwaMF0eiFvKszUP
+         7qvXsVG0Gi8jh7H2deqaDxTBfxXoYXyJTmSmA6irYCp1Se+vo3rDr4lG3AuS4LZ6HOJQ
+         CONjS9+HLdj/pPPnVQi5rr5t+FFFAwDw3tIP1r3jSXP5T4+LLvarDLvXEdmN1VetC/MC
+         GH7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=A3gL2doE8fl4iTpq6l37jEk7PgXSqloCEeFI/slSopk=;
-        b=OdnAssosUZ6rhl+1Us/NdFRVnYe/0ViZsokPjUagtVfhX/cIz74lmRO4bEbnKt06x2
-         XPbVmrheprHuGQBtbSZPMQke0RVnXo/WHZf1eLPmLt5WWUyuFOpi7FPIZ6WWYt4Nfjqf
-         Qk6iAnbZuI1Gvih1hCeyd9uT3UJrWgtkT7zvO+VDHH65rOGKr+pvjIeaOoPKQZ8doiWL
-         EFkv6s8BAAVt9sVs5rdOmrcVwIOaqFsWuzW+ywWEkeP9kxXh+WESgHSXdfWJGqGtdtOP
-         HNN+i8vAr3EUu3G3geTNjivcB1lFjpbXtju//bbSleF2xgpLgZMLk8BydX2mIeqP9WFY
-         2dzw==
-X-Gm-Message-State: AOAM532J7euanMMy/GZ6WL/eS0w6jEdpVbsTL/QuAZnwAcAL5xvpDkFF
-        6nOnEdNudbv7NuKv6Xw1bTM=
-X-Google-Smtp-Source: ABdhPJyk/bLwL/zXmBd2f/rPaGG33YZpJWcJUbN+gcbEaqv6R07QwQKfjM0UXMQ2geEpuUzGxMcUYQ==
-X-Received: by 2002:a37:58c5:: with SMTP id m188mr42633972qkb.327.1620993513532;
-        Fri, 14 May 2021 04:58:33 -0700 (PDT)
-Received: from master-laptop.sparksnet ([2601:153:980:85b1:7d30:cc80:9389:fb35])
-        by smtp.gmail.com with ESMTPSA id m16sm4499780qkm.100.2021.05.14.04.58.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 04:58:33 -0700 (PDT)
-From:   Peter Geis <pgwipeout@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        Peter Geis <pgwipeout@gmail.com>
-Subject: [PATCH v3] net: phy: add driver for Motorcomm yt8511 phy
-Date:   Fri, 14 May 2021 07:58:26 -0400
-Message-Id: <20210514115826.3025223-1-pgwipeout@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        bh=aCQ7Xti4PZasTG5XmR78Be2WTvCnA6stEZ6OIez+DO8=;
+        b=gYIyNG2wC5zovKM7OXG/4mVUyIPVzgM+jbFEsQDH+YIUUGOmk2u1/RQyQLT1RtMCdQ
+         m6WIP1qKBIAnZCSOLdKziNrMwNQxbT87XBbPEluhdazDXfGGpASFwjJU0hy2jpCzpboU
+         zvg0OA0LJDE3cIB9z7zatTjCkgvjkQEmMeiNKA8SlSpTYGPp8/0A8sP91z0XyhHZsNnX
+         vp3cKFhT7NOhjDa9VWGesW5DYAVWeTtpsbf6X3Ul8ShJca0HrRJz4I1dAv9o2gUcHv4t
+         rh6gzs1HKF+7SKdYKMPJL5mMKu3D73eZ1o4ucKgwk3++OeL5yWtbk3feTAvKVx7bKqZu
+         CCjg==
+X-Gm-Message-State: AOAM533gp8Wg4+MfYFNgBhljc7PkwyL/Na1B4ia3sW/SAx7XMGB2bZuJ
+        EAe8KtY91pJel5B80F2NXqDqAE8v38c=
+X-Google-Smtp-Source: ABdhPJxJcWpIatDjv4qP3+6HFs5PtIFhum46hfqDCzSYDKPmcqaM//DX+T/yKDmuALnbO1uiotvbGQ==
+X-Received: by 2002:a1c:7c03:: with SMTP id x3mr9282653wmc.168.1620993531485;
+        Fri, 14 May 2021 04:58:51 -0700 (PDT)
+Received: from [192.168.2.202] (pd9e5a369.dip0.t-ipconnect.de. [217.229.163.105])
+        by smtp.gmail.com with ESMTPSA id o21sm6292260wrf.91.2021.05.14.04.58.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 May 2021 04:58:51 -0700 (PDT)
+Subject: Re: [PATCH] x86/i8259: Work around buggy legacy PIC
+To:     Sachi King <nakato@nakato.io>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        David Laight <David.Laight@aculab.com>
+Cc:     "H. Peter Anvin" <hpa@zytor.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+References: <20210512210459.1983026-1-luzmaximilian@gmail.com>
+ <e7dbd4d1-f23f-42f0-e912-032ba32f9ec8@gmail.com>
+ <e43d9a823c9e44bab0cdbf32a000c373@AcuMS.aculab.com> <3034083.sOBWI1P7ec@yuki>
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+Message-ID: <5c08541a-2615-f075-a189-0462f1005007@gmail.com>
+Date:   Fri, 14 May 2021 13:58:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <3034083.sOBWI1P7ec@yuki>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a driver for the Motorcomm yt8511 phy that will be used in the
-production Pine64 rk3566-quartz64 development board.
-It supports gigabit transfer speeds, rgmii, and 125mhz clk output.
+On 5/14/21 9:41 PM, Sachi King wrote:
+> On Thursday, May 13, 2021 8:36:27 PM AEST David Laight wrote:
+>>> -----Original Message-----
+>>> From: Maximilian Luz <luzmaximilian@gmail.com>
+>>> Sent: 13 May 2021 11:12
+>>> To: David Laight <David.Laight@ACULAB.COM>; Thomas Gleixner
+>>> <tglx@linutronix.de>; Ingo Molnar <mingo@redhat.com>; Borislav Petkov
+>>> <bp@alien8.de>
+>>> Cc: H. Peter Anvin <hpa@zytor.com>; Sachi King <nakato@nakato.io>;
+>>> x86@kernel.org; linux-kernel@vger.kernel.org; stable@vger.kernel.org
+>>> Subject: Re: [PATCH] x86/i8259: Work around buggy legacy PIC
+>>>
+>>> On 5/13/21 10:10 AM, David Laight wrote:
+>>>
+>>>> From: Maximilian Luz
+>>>>
+>>>>> Sent: 12 May 2021 22:05
+>>>>>
+>>>>>
+>>>>>
+>>>>> The legacy PIC on the AMD variant of the Microsoft Surface Laptop 4
+>>>>> has
+>>>>> some problems on boot. For some reason it consistently does not
+>>>>> respond
+>>>>> on the first try, requiring a couple more tries before it finally
+>>>>> responds.
+>>>>
+>>>>
+>>>>
+>>>> That seems very strange, something else must be going on that causes the
+>>>> grief.
+>>>> The 8259 will be built into to the one of the cpu support
+>>>> chips.
+>>>> I can't imagine that requires anything special.
+>>>
+>>>
+>>> Right, it's definitely strange. Both Sachi (I imagine) and I don't know
+>>> much about these devices, so we're open for suggestions.
+>>
+>>
+>> I found a copy of the datasheet (I don't seem to have the black book):
+>>
+>> https://pdos.csail.mit.edu/6.828/2010/readings/hardware/8259A.pdf
+>>
+>> The PC hardware has two 8259 in cascade mode.
+>> (Cascaded using an interrupt that wasn't really using in the original
+>> 8088 PC which only had one 8259.)
+>>
+>> I wonder if the bios has actually initialised is properly.
+>> Some initialisation writes have to be done to set everything up.
+> 
+> I suspect by the displayed behaviour you are correct and that it has
+> not.  I'm struggling to figure out who to talk to to see that is
+> something that can be fixed in the firmware.
 
-Signed-off-by: Peter Geis <pgwipeout@gmail.com>
----
-Changes v3:
-- Add rgmii mode selection support
+I'd assume that _some_ sort of interrupt setup is done by the BIOS/UEFI.
+The UEFI on those devices is fairly well-featured, with touch support
+via SPI and all. Furthermore, keyboard (also supported in the device's
+UEFI) is handled via a custom UART protocol. Unless they rely on polling
+for all of that, I believe they'd have to set up some interrupts.
 
-Changes v2:
-- Change to __phy_modify
-- Handle return errors
-- Remove unnecessary &
+Although, as you mention later on, that could also be handled via the
+IOAPIC and the PIC is actually not supposed to be used. Maybe some
+legacy component that never got tested and just broke with some new
+hardware/firmware revision without anyone noticing? And since Linux
+still seems to rely on that, we might be the first to notice.
 
- MAINTAINERS                 |   6 ++
- drivers/net/phy/Kconfig     |   6 ++
- drivers/net/phy/Makefile    |   1 +
- drivers/net/phy/motorcomm.c | 121 ++++++++++++++++++++++++++++++++++++
- 4 files changed, 134 insertions(+)
- create mode 100644 drivers/net/phy/motorcomm.c
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 601b5ae0368a..2a2e406238fc 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12388,6 +12388,12 @@ F:	Documentation/userspace-api/media/drivers/meye*
- F:	drivers/media/pci/meye/
- F:	include/uapi/linux/meye.h
- 
-+MOTORCOMM PHY DRIVER
-+M:	Peter Geis <pgwipeout@gmail.com>
-+L:	netdev@vger.kernel.org
-+S:	Maintained
-+F:	drivers/net/phy/motorcomm.c
-+
- MOXA SMARTIO/INDUSTIO/INTELLIO SERIAL CARD
- S:	Orphan
- F:	Documentation/driver-api/serial/moxa-smartio.rst
-diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
-index 288bf405ebdb..16db9f8037b5 100644
---- a/drivers/net/phy/Kconfig
-+++ b/drivers/net/phy/Kconfig
-@@ -229,6 +229,12 @@ config MICROSEMI_PHY
- 	help
- 	  Currently supports VSC8514, VSC8530, VSC8531, VSC8540 and VSC8541 PHYs
- 
-+config MOTORCOMM_PHY
-+	tristate "Motorcomm PHYs"
-+	help
-+	  Enables support for Motorcomm network PHYs.
-+	  Currently supports the YT8511 gigabit PHY.
-+
- config NATIONAL_PHY
- 	tristate "National Semiconductor PHYs"
- 	help
-diff --git a/drivers/net/phy/Makefile b/drivers/net/phy/Makefile
-index bcda7ed2455d..37ffbc6e3c87 100644
---- a/drivers/net/phy/Makefile
-+++ b/drivers/net/phy/Makefile
-@@ -70,6 +70,7 @@ obj-$(CONFIG_MICREL_PHY)	+= micrel.o
- obj-$(CONFIG_MICROCHIP_PHY)	+= microchip.o
- obj-$(CONFIG_MICROCHIP_T1_PHY)	+= microchip_t1.o
- obj-$(CONFIG_MICROSEMI_PHY)	+= mscc/
-+obj-$(CONFIG_MOTORCOMM_PHY)	+= motorcomm.o
- obj-$(CONFIG_NATIONAL_PHY)	+= national.o
- obj-$(CONFIG_NXP_C45_TJA11XX_PHY)	+= nxp-c45-tja11xx.o
- obj-$(CONFIG_NXP_TJA11XX_PHY)	+= nxp-tja11xx.o
-diff --git a/drivers/net/phy/motorcomm.c b/drivers/net/phy/motorcomm.c
-new file mode 100644
-index 000000000000..b85f10efa28e
---- /dev/null
-+++ b/drivers/net/phy/motorcomm.c
-@@ -0,0 +1,121 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Driver for Motorcomm PHYs
-+ *
-+ * Author: Peter Geis <pgwipeout@gmail.com>
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/phy.h>
-+
-+#define PHY_ID_YT8511		0x0000010a
-+
-+#define YT8511_PAGE_SELECT	0x1e
-+#define YT8511_PAGE		0x1f
-+#define YT8511_EXT_CLK_GATE	0x0c
-+#define YT8511_EXT_SLEEP_CTRL	0x27
-+
-+/* 2b00 25m from pll
-+ * 2b01 25m from xtl *default*
-+ * 2b10 62.m from pll
-+ * 2b11 125m from pll
-+ */
-+#define YT8511_CLK_125M		(BIT(2) | BIT(1))
-+
-+/* RX Delay enabled = 1.8ns 1000T, 8ns 10/100T */
-+#define YT8511_DELAY_RX		BIT(0)
-+
-+/* TX Delay is bits 7:4, default 0x5
-+ * Delay = 150ps * N - 250ps, Default = 500ps
-+ */
-+#define YT8511_DELAY_TX		(0x5 << 4)
-+
-+static int yt8511_read_page(struct phy_device *phydev)
-+{
-+	return __phy_read(phydev, YT8511_PAGE_SELECT);
-+};
-+
-+static int yt8511_write_page(struct phy_device *phydev, int page)
-+{
-+	return __phy_write(phydev, YT8511_PAGE_SELECT, page);
-+};
-+
-+static int yt8511_config_init(struct phy_device *phydev)
-+{
-+	int ret, oldpage, val;
-+
-+	/* set clock mode to 125mhz */
-+	oldpage = phy_select_page(phydev, YT8511_EXT_CLK_GATE);
-+	if (oldpage < 0)
-+		goto err_restore_page;
-+
-+	ret = __phy_modify(phydev, YT8511_PAGE, 0, YT8511_CLK_125M);
-+	if (ret < 0)
-+		goto err_restore_page;
-+
-+	/* set rgmii delay mode */
-+	val = __phy_read(phydev, YT8511_PAGE);
-+
-+	switch (phydev->interface) {
-+	case PHY_INTERFACE_MODE_RGMII:
-+		val &= ~(YT8511_DELAY_RX | YT8511_DELAY_TX);
-+		break;
-+	case PHY_INTERFACE_MODE_RGMII_ID:
-+		val |= YT8511_DELAY_RX | YT8511_DELAY_TX;
-+		break;
-+	case PHY_INTERFACE_MODE_RGMII_RXID:
-+		val &= ~(YT8511_DELAY_TX);
-+		val |= YT8511_DELAY_RX;
-+		break;
-+	case PHY_INTERFACE_MODE_RGMII_TXID:
-+		val &= ~(YT8511_DELAY_RX);
-+		val |= YT8511_DELAY_TX;
-+		break;
-+	default: /* leave everything alone in other modes */
-+		break;
-+	}
-+
-+	ret = __phy_write(phydev, YT8511_PAGE, val);
-+	if (ret < 0)
-+		goto err_restore_page;
-+
-+	/* disable auto sleep */
-+	ret = __phy_write(phydev, YT8511_PAGE_SELECT, YT8511_EXT_SLEEP_CTRL);
-+	if (ret < 0)
-+		goto err_restore_page;
-+	ret = __phy_modify(phydev, YT8511_PAGE, BIT(15), 0);
-+	if (ret < 0)
-+		goto err_restore_page;
-+
-+err_restore_page:
-+	return phy_restore_page(phydev, oldpage, ret);
-+}
-+
-+static struct phy_driver motorcomm_phy_drvs[] = {
-+	{
-+		PHY_ID_MATCH_EXACT(PHY_ID_YT8511),
-+		.name		= "YT8511 Gigabit Ethernet",
-+		.config_init	= yt8511_config_init,
-+		.get_features	= genphy_read_abilities,
-+		.config_aneg	= genphy_config_aneg,
-+		.read_status	= genphy_read_status,
-+		.suspend	= genphy_suspend,
-+		.resume		= genphy_resume,
-+		.read_page	= yt8511_read_page,
-+		.write_page	= yt8511_write_page,
-+	},
-+};
-+
-+module_phy_driver(motorcomm_phy_drvs);
-+
-+MODULE_DESCRIPTION("Motorcomm PHY driver");
-+MODULE_AUTHOR("Peter Geis");
-+MODULE_LICENSE("GPL");
-+
-+static const struct mdio_device_id __maybe_unused motorcomm_tbl[] = {
-+	{ PHY_ID_MATCH_EXACT(PHY_ID_YT8511) },
-+	{ /* sentinal */ }
-+};
-+
-+MODULE_DEVICE_TABLE(mdio, motorcomm_tbl);
--- 
-2.25.1
-
+Regards,
+Max
