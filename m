@@ -2,128 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E69793805A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 10:56:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8E4B3805AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 10:56:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233764AbhENI5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 04:57:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50075 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231982AbhENI5K (ORCPT
+        id S233784AbhENI6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 04:58:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229544AbhENI6F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 04:57:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620982559;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7SRl+mtOr1MBJ1v0HNyfzl2qKEhHpIhbfEOzZEj6rYg=;
-        b=dfZ3DXlVTT9DauDaghK90TtXvFNUgZJcx+79/Ixa1DwaQekhbPLlRoFob9VaqhZyHOAfjD
-        9+eQ0p2UQVj00EjB+Lc625GMkBd2lgibgLwg6urMfzp39aZW4b3H7wq0hLnrePumvlmkbD
-        EyN0/ZhZEIeLF284qNeF9YZAE1tlVfc=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-147-rsIgKN8WPmaO86Ou5I4EzA-1; Fri, 14 May 2021 04:55:57 -0400
-X-MC-Unique: rsIgKN8WPmaO86Ou5I4EzA-1
-Received: by mail-wm1-f71.google.com with SMTP id u203-20020a1cddd40000b029016dbb86d796so872680wmg.0
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 01:55:57 -0700 (PDT)
+        Fri, 14 May 2021 04:58:05 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8462FC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 01:56:53 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id l7so33943140edb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 01:56:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=deviqon.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xfLV1nYUVE1ZnJSakkYj6xvjl6r5j5i0hj4qr/7M2gA=;
+        b=GubL38k3QmfEjpfnVILU1RGDevNxkNmMmsZwDSPavE62Kvk+fNH1QynWxnjBfTDvkr
+         70Gbk3NLAMwUWePH88slhpqmE248hN++kRC61Bw8cS1r7y5Qdk2/mKLMfvoWTXzkjlsG
+         x2OgsKvwqvODq48M0EydCP6onvJydW0xZxfUTfDpleMXbVkO/qXWC7y0Ql2tuYQ17QfT
+         R0pg+I4dWf/7ES/WAGcGXF6yhhgmLxK6gKNOeucW5q3B6b+Ehx9zTAq0A5IsWpoxZH9R
+         AqnKIp3mYQq4dZxYECu0PNzd1XDzFsuGvjyWY/3i8jw1PLUbjbMqDzKjkPsWyszFK0Ph
+         J43Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7SRl+mtOr1MBJ1v0HNyfzl2qKEhHpIhbfEOzZEj6rYg=;
-        b=lb2Q3attpfj2ew+dJA80/CePeW+S3bgbQpYhjN82lUbp7lbp1G751h3hjD7Was9lhb
-         i3mMQEr3XbUE9xSI+NjoSATDs+NkoTgvK9GhNH35paVtP/58KSXyG2tbdHPxZnr3+sUk
-         mLBmODhSBEhbcvenrSiVovpnhNI/OJjAa7yAbO/ckdOLGr8LNt5RJ22LBjMSe7CO3u0z
-         P30E4pJkDHARPQh7mPGOy9h9Y2VlVE//RhwevKqr6ZFN6r3N7evJPFeowunJ+270zBO5
-         rHPAdrGefQ29ibwwJJySNpL8A/lFy7KGI/hfchmQwc+C6ojZkRcUhDieg0+8YD1Zr6UO
-         txtg==
-X-Gm-Message-State: AOAM530HHscreTL80cQysR4L3LqDVVROjNpL8lWzlV59EAfQ4aqjFils
-        s8GuRlMYMP+u8OednMyTFEN1+eDQubfl6i/nDGWrdzqaBirRr/B2QzMDt9uSDN29+wBMRhbA3uw
-        pKbVlPlEIRXKe3eml6iLMDuBY
-X-Received: by 2002:a5d:490d:: with SMTP id x13mr7358549wrq.49.1620982556186;
-        Fri, 14 May 2021 01:55:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwxKBj4lQTNdPmXIPyr2HKo7tkkQszMUgyBGoGSGvvQj0Rs2TyHrXbICVB6fiCDDztyHQqsow==
-X-Received: by 2002:a5d:490d:: with SMTP id x13mr7358525wrq.49.1620982555978;
-        Fri, 14 May 2021 01:55:55 -0700 (PDT)
-Received: from localhost.localdomain ([151.29.91.215])
-        by smtp.gmail.com with ESMTPSA id o13sm4800369wmh.34.2021.05.14.01.55.54
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xfLV1nYUVE1ZnJSakkYj6xvjl6r5j5i0hj4qr/7M2gA=;
+        b=Gl7mBT60HocTXK/35PT0yatG82ABCZo6HoKsrSHH4WHGd/OpfzvJVqTtS3uCfrqMk8
+         lNcflUH0/UDhhmDtfHC5aMsh2kwzlVeoQuK8igmtd4V5W8JnP7CBg46w5hVx+YLX5T4P
+         LvAAfrlgASLBzY7tBPtJC6CIYWvUwj/QF6JoNZBjMzFuwhECSthlK47iMxSNI1AKbk4d
+         ndDUGj3oZTfRsUxOt2h1MDn2er7s7VxEHfhthynBTT00GWeKEdPUzwZLRKv5X8op6EhY
+         V1er66yKlhZnPAG9LvFl6/E8JI8SriJ2HLqvNSWw9S6BzpoNr95OYVhE+39UAIH61d4d
+         edTA==
+X-Gm-Message-State: AOAM532IUo19xuJZOG31DjN62BNDkXNQJxHr5EAsGDPGkSbBfJZp9ZaT
+        27+lfoTsOcEn2RtWiSPXx1InEg==
+X-Google-Smtp-Source: ABdhPJzftkaGj2fWO2un3BLJdYuKBtXvDZJSBsWQLiNy9hI8XPgpgg2ibYxTQ78dtqUZTrFV1BzxFA==
+X-Received: by 2002:a05:6402:438d:: with SMTP id o13mr35433389edc.324.1620982612284;
+        Fri, 14 May 2021 01:56:52 -0700 (PDT)
+Received: from neptune.. ([5.2.193.191])
+        by smtp.gmail.com with ESMTPSA id a24sm4102908edr.74.2021.05.14.01.56.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 01:55:55 -0700 (PDT)
-Date:   Fri, 14 May 2021 10:55:53 +0200
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Phil Auld <pauld@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Kate Carcia <kcarcia@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Clark Willaims <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>, linux-doc@vger.kernel.org
-Subject: Re: [RFC PATCH V2 9/9] tracing: Add timerlat tracer
-Message-ID: <YJ47Gc6ej9jeAsoK@localhost.localdomain>
-References: <cover.1619210818.git.bristot@redhat.com>
- <1f3b97ca52e6a4eec58f18bf190218bdbfe30f20.1619210818.git.bristot@redhat.com>
+        Fri, 14 May 2021 01:56:51 -0700 (PDT)
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+To:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        michael.hennerich@analog.com,
+        Alexandru Ardelean <aardelean@deviqon.com>
+Subject: [PATCH] gpio: gpio-adp5520: cleanup probe error path + remove platform_set_drvdata()
+Date:   Fri, 14 May 2021 11:56:27 +0300
+Message-Id: <20210514085627.11230-1-aardelean@deviqon.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1f3b97ca52e6a4eec58f18bf190218bdbfe30f20.1619210818.git.bristot@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+The platform_set_drvdata() call is only useful if we need to retrieve back
+the private information.
+Since the driver doesn't do that, it's not useful to have it.
 
-Just a couple of things I noticed while playing with this nice additon.
+This also means that the 'err' label can be removed and all goto statements
+replaced with direct returns (with error codes).
 
-On 23/04/21 23:05, Daniel Bristot de Oliveira wrote:
+Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+---
+ drivers/gpio/gpio-adp5520.c | 18 ++++--------------
+ 1 file changed, 4 insertions(+), 14 deletions(-)
 
-...
-
-> +/**
-> + * tlat_var_reset - Reset the values of the given timerlat_variables
-> + */
-> +static inline void tlat_var_reset(void)
-> +{
-> +	struct timerlat_variables *tlat_var;
-> +	int cpu;
->  	/*
->  	 * So far, all the values are initialized as 0, so
->  	 * zeroing the structure is perfect.
->  	 */
-> -	memset(osn_var, 0, sizeof(struct osnoise_variables));
-> +	for_each_cpu(cpu, cpu_online_mask) {
-> +		memset(tlat_var, 0, sizeof(struct timerlat_variables));
-> +		tlat_var = per_cpu_ptr(&per_cpu_timerlat_var, cpu);
-
-Think these two above want to be the other way around?
-
-> +	}
->  }
-
-...
-
-> +#ifdef CONFIG_TIMERLAT_TRACER
-> +static void timerlat_tracer_start(struct trace_array *tr)
-> +{
-> +	int retval;
-> +
-> +	if (osnoise_busy)
-> +		return;
-> +
-> +	retval = __osnoise_tracer_start(tr);
-> +	if (retval)
-> +		goto out_err;
-> +
-> +	osnoise_data.timerlat_tracer = 1;
-
-It seems this needs to be set before calling __osnoise_tracer_start()?
-
-Thanks!
-
-Juri
+diff --git a/drivers/gpio/gpio-adp5520.c b/drivers/gpio/gpio-adp5520.c
+index 0386ede53f3a..c55e821c63b6 100644
+--- a/drivers/gpio/gpio-adp5520.c
++++ b/drivers/gpio/gpio-adp5520.c
+@@ -113,10 +113,8 @@ static int adp5520_gpio_probe(struct platform_device *pdev)
+ 		if (pdata->gpio_en_mask & (1 << i))
+ 			dev->lut[gpios++] = 1 << i;
+ 
+-	if (gpios < 1) {
+-		ret = -EINVAL;
+-		goto err;
+-	}
++	if (gpios < 1)
++		return -EINVAL;
+ 
+ 	gc = &dev->gpio_chip;
+ 	gc->direction_input  = adp5520_gpio_direction_input;
+@@ -148,18 +146,10 @@ static int adp5520_gpio_probe(struct platform_device *pdev)
+ 
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "failed to write\n");
+-		goto err;
++		return ret;
+ 	}
+ 
+-	ret = devm_gpiochip_add_data(&pdev->dev, &dev->gpio_chip, dev);
+-	if (ret)
+-		goto err;
+-
+-	platform_set_drvdata(pdev, dev);
+-	return 0;
+-
+-err:
+-	return ret;
++	return devm_gpiochip_add_data(&pdev->dev, &dev->gpio_chip, dev);
+ }
+ 
+ static struct platform_driver adp5520_gpio_driver = {
+-- 
+2.31.1
 
