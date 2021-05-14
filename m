@@ -2,98 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FC2D380A3C
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 15:13:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3436380A3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 15:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232277AbhENNOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 09:14:49 -0400
-Received: from mga14.intel.com ([192.55.52.115]:48750 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232217AbhENNOs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 09:14:48 -0400
-IronPort-SDR: NQSmRFaHJxAXGGHu9X1BhVkN8n3ZwIU/WwUz6HVRtf7gtR0+i5nYYo83Vqnr/S+YUGIWa+NF9f
- NDfO21nCImFA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9983"; a="199865020"
-X-IronPort-AV: E=Sophos;i="5.82,299,1613462400"; 
-   d="scan'208";a="199865020"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 May 2021 06:13:32 -0700
-IronPort-SDR: 74l511Rb9o5gDukdPDL6bOeNbq6KgQcj3lP8iDQqaTWrXmxK5XUlenpjvEJBgSBvCJ8LpyEenR
- NV3AelhCj7QA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,299,1613462400"; 
-   d="scan'208";a="538806639"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 14 May 2021 06:13:28 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 14 May 2021 16:13:28 +0300
-Date:   Fri, 14 May 2021 16:13:28 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Hanjun Guo <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Eric Auger <eric.auger@redhat.com>,
-        Will Deacon <will@kernel.org>, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ACPI/IORT: Handle device properties with software node
- API
-Message-ID: <YJ53eBRGXtabyT5K@kuha.fi.intel.com>
-References: <20210511125528.18525-1-heikki.krogerus@linux.intel.com>
- <20210514103912.GA16131@lpieralisi>
+        id S232324AbhENNOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 09:14:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232295AbhENNOx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 09:14:53 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53E44C061574;
+        Fri, 14 May 2021 06:13:42 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id i22so56693lfl.10;
+        Fri, 14 May 2021 06:13:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=i2YVeoDkMZvOvbeeQWtb2yx5+1XeddYfBmoh/c43NIM=;
+        b=E51atqUQhUeGIEH376LMu/E0anBqmi7sBhTYhXBgj5e2+3Tqy6VM/ZLrmeLogGFJho
+         z0paUrTmKHy6sR/FmZ7Ef0SBhjFZY0eXgi0AU4NFxzli/Qk74kwP1BTyepmopS2iMX1g
+         F6xHeMXTAm/6Wg7QSLHsnW1pEmYCxMleMD9xFjb4VaYxaecCKrpGL6BARF3EL6Hpm4e8
+         OSB/C4ElPf4A4tuWQrBzOV1qcWZq5vtd/TWozWVJGelkTdMffHeMHK7INPvkurWnzAyG
+         dDUzeHNyxjewyQHirK719f5s7YKH2UMl/HHiB2FVL5Zq0Q/JgkbDINTyOdesDdMVl5i4
+         mk+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=i2YVeoDkMZvOvbeeQWtb2yx5+1XeddYfBmoh/c43NIM=;
+        b=XZh2jFAy8T0x8gg04cdQ2i462fO1go5M7l0icZpzC5jEbRXij1RpWVKYVsQnWy32B1
+         NCKEns7X9Un7puDdCUp2Kccsoz52UUdiL2wE5na7w0BVupZMz6JFV57FsvtJnnPidlcu
+         4RTkh9WvWIySGFzc/eW0I/mQEJZvniJx5eu5ZRe1FRQtLxdLk9ZjVCzsutLax1OxhrmB
+         cXXNekR3Fs7UK5MDmOnMOrVGUqKRW2Ou1LPnXq6wZNULqp2fg6rRHEs424IxewhBLsy0
+         LauAU7MUM855I4QWFHmZaObY93S6pnTDhgPdJ5bGWmmpX4mAHy6O9EzxyJOMbJIlnder
+         i4wg==
+X-Gm-Message-State: AOAM532k6bd4GtU79x7rNmu3mtTMTI1UW9vFfd6ktPHL9bad+ahNhUf4
+        v+fiBweiYAQKMLjYFFraH8TOMdiLICE=
+X-Google-Smtp-Source: ABdhPJwdd9oCmjpI+7GNkkfiOImBIIM3ZKAuOC/jodf+KwLmVX2WGnUHexCYeqthbBJQjX0sUxjcrg==
+X-Received: by 2002:a19:dc0c:: with SMTP id t12mr32894282lfg.279.1620998020615;
+        Fri, 14 May 2021 06:13:40 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
+        by smtp.googlemail.com with ESMTPSA id q5sm711164lfu.109.2021.05.14.06.13.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 May 2021 06:13:40 -0700 (PDT)
+Subject: Re: [PATCH v1 1/2] power: supply: sbs-battery: Silence warning about
+ unknown chemistry
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Antoni Aloy Torrens <aaloytorrens@gmail.com>,
+        =?UTF-8?Q?Nikola_Milosavljevi=c4=87?= <mnidza@outlook.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210510220827.11595-1-digetx@gmail.com>
+ <20210513151103.hihvxg7kvych4nwr@earth.universe>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <76b598cc-570e-96ac-8456-0ce481aedaeb@gmail.com>
+Date:   Fri, 14 May 2021 16:13:39 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210514103912.GA16131@lpieralisi>
+In-Reply-To: <20210513151103.hihvxg7kvych4nwr@earth.universe>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 11:39:12AM +0100, Lorenzo Pieralisi wrote:
-> On Tue, May 11, 2021 at 03:55:28PM +0300, Heikki Krogerus wrote:
-> > The older device property API is going to be removed.
-> > Replacing the device_add_properties() call with software
-> > node API equivalent device_create_managed_software_node().
-> > 
-> > Fixes: 434b73e61cc6 ("iommu/arm-smmu-v3: Use device properties for pasid-num-bits")
+13.05.2021 18:11, Sebastian Reichel пишет:
+> Hi,
 > 
-> Is this really fixing anything ? I am not sure I understand what you
-> would like to achieve with this tag.
-
-Right now it's not possible to simply remove the old API because some
-of the maintainers want to take care of the conversion themselves, but
-at the same time I also do not want to see any new releases of the
-kernel that introduce more users for it. That's why it's a fix.
-
-
-> > Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> > ---
-> >  drivers/acpi/arm64/iort.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> On Tue, May 11, 2021 at 01:08:26AM +0300, Dmitry Osipenko wrote:
+>> Older variants of controller don't support reporting type of the battery.
+>> Make warning message about unknown chemistry to be printed only once in
+>> order to stop flooding kernel log with the message on each request of the
+>> property. This patch fixes the noisy messages on Asus Transformer TF101.
+>>
+>> Tested-by: Antoni Aloy Torrens <aaloytorrens@gmail.com> # TF101
+>> Tested-by: Nikola Milosavljević <mnidza@outlook.com> # TF101
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
 > 
-> With the above comment clarified:
+> I believe the problem should be fixed as side-effect of the
+> following patch:
 > 
-> Acked-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> https://lore.kernel.org/linux-pm/20210513020308.4011440-1-ikjn@chromium.org/
 > 
-> > diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
-> > index 3912a1f6058e5..e34937e11186a 100644
-> > --- a/drivers/acpi/arm64/iort.c
-> > +++ b/drivers/acpi/arm64/iort.c
-> > @@ -976,7 +976,7 @@ static void iort_named_component_init(struct device *dev,
-> >  				      FIELD_GET(ACPI_IORT_NC_PASID_BITS,
-> >  						nc->node_flags));
-> >  
-> > -	if (device_add_properties(dev, props))
-> > +	if (device_create_managed_software_node(dev, props, NULL))
-> >  		dev_warn(dev, "Could not add device properties\n");
-> >  }
-> >  
-> > -- 
-> > 2.30.2
-> > 
+> With my suggested change the message is printed once for each
+> battery plug, so probably only once per boot for most users.
 
-thanks,
-
--- 
-heikki
+Looks like that patch indeed should work too, thank you.
