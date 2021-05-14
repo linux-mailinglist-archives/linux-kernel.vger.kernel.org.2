@@ -2,116 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAF33380BD0
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 16:30:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7CF3380BD4
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 16:31:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234418AbhENObi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 10:31:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41364 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230141AbhENObh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 10:31:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 52DDE6144A;
-        Fri, 14 May 2021 14:30:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621002626;
-        bh=cVKN89jy54XBxo7mbdNUEkDVIEVc5l44VDPutDRAdro=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EKiwz62p8TsvPeBC8c+eTJ0ZEj7i/hJVD14Fb/UFzGe9bvtb/CA9P4TenTtNTAxwh
-         oggBfBiJbxoWsCJUsVBPBVvNzPznEIojyCztm5s174/G5mIGY3hJXndfXBP3LDyQ8E
-         dELuuLmhCOIes//fKW3qd6NZsvaTp4+x0g0Uu664=
-Date:   Fri, 14 May 2021 16:30:23 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
-Cc:     pure.logic@nexus-software.ie, johan@kernel.org, elder@kernel.org,
-        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+        id S234428AbhENOcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 10:32:23 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:48752 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230141AbhENOcW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 10:32:22 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14EEOpIn080853;
+        Fri, 14 May 2021 14:31:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=SHT0PNis77lwJziP68IpS6MihhAlEZSQsq7f8r7VjeI=;
+ b=Q037oNWTDoerh9iGbDLb93xKlDTPSX8nxmwJGlAC2MO4JdsN7PAxgvebwT0A4Sd7//Us
+ BiA5nUj/yE0jnVnDk3mJzz83bIDKeLiwPKJy4zF/wFzADbNZqW3GbmO9SMtA2AEwCwRc
+ V/ctl2+COLT9WUdvpzXqflWQx6sgv1WhLPkclA3f1MYcKXm5sugU5QDo3S9ZCcNu/gN3
+ IuCYWdf1jHGJmQx97kvnwJrjhTnVjYtatZbIkQM9t6G8cXn22xz/oPBqH4SUiG0y2k/t
+ p2duRpMiAoP62rATB8AoZsizqfnqiJm47uVgStv+BE25HHl2AweZ5OlR5/CpAIJuV7D9 kA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 38gpnumg1k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 14 May 2021 14:31:04 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14EEOtBG167927;
+        Fri, 14 May 2021 14:31:03 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 38gpped2fy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 14 May 2021 14:31:03 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14EES4Wn008604;
+        Fri, 14 May 2021 14:31:03 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 38gpped2er-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 14 May 2021 14:31:03 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 14EEV1FT004327;
+        Fri, 14 May 2021 14:31:01 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 14 May 2021 07:31:00 -0700
+Date:   Fri, 14 May 2021 17:30:53 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        Roland Scheidegger <sroland@vmware.com>,
+        Zack Rusin <zackr@vmware.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, kernel-janitors@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: greybus: fix gb_loopback_stats_attrs definition
-Message-ID: <YJ6Jf+Z1ReVgDt64@kroah.com>
-References: <20210514133039.304760-1-chouhan.shreyansh630@gmail.com>
- <YJ582f3O9K9YD3QA@kroah.com>
- <YJ5/tqFfcjxOLsF0@fedora>
- <YJ6DrLiMsdkG5loA@kroah.com>
- <YJ6H/WsojYcN/bLO@fedora>
+Subject: Re: [PATCH][next] drm/vmwgfx: Fix memory leak of object fifo on
+ error return
+Message-ID: <20210514143053.GB1955@kadam>
+References: <20210512195609.298326-1-colin.king@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YJ6H/WsojYcN/bLO@fedora>
+In-Reply-To: <20210512195609.298326-1-colin.king@canonical.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-ORIG-GUID: KkvVC5LyMeuY8x-z0ORunh1kRJP3BOoA
+X-Proofpoint-GUID: KkvVC5LyMeuY8x-z0ORunh1kRJP3BOoA
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9984 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 impostorscore=0
+ adultscore=0 spamscore=0 clxscore=1011 mlxlogscore=999 bulkscore=0
+ mlxscore=0 priorityscore=1501 malwarescore=0 lowpriorityscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105140117
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 07:53:57PM +0530, Shreyansh Chouhan wrote:
-> On Fri, May 14, 2021 at 04:05:32PM +0200, Greg KH wrote:
-> > On Fri, May 14, 2021 at 07:18:38PM +0530, Shreyansh Chouhan wrote:
-> > > On Fri, May 14, 2021 at 03:36:25PM +0200, Greg KH wrote:
-> > > > On Fri, May 14, 2021 at 07:00:39PM +0530, Shreyansh Chouhan wrote:
-> > > > > The gb_loopback_stats_attrs macro, (defined in loopback.c,) is a
-> > > > > multiline macro whose statements were not enclosed in a do while
-> > > > > loop.
-> > > > > 
-> > > > > This patch adds a do while loop around the statements of the said
-> > > > > macro.
-> > > > > 
-> > > > > Signed-off-by: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
-> > > > > ---
-> > > > >  drivers/staging/greybus/loopback.c | 10 ++++++----
-> > > > >  1 file changed, 6 insertions(+), 4 deletions(-)
-> > > > > 
-> > > > > diff --git a/drivers/staging/greybus/loopback.c b/drivers/staging/greybus/loopback.c
-> > > > > index 2471448ba42a..c88ef3e894fa 100644
-> > > > > --- a/drivers/staging/greybus/loopback.c
-> > > > > +++ b/drivers/staging/greybus/loopback.c
-> > > > > @@ -162,10 +162,12 @@ static ssize_t name##_avg_show(struct device *dev,		\
-> > > > >  }									\
-> > > > >  static DEVICE_ATTR_RO(name##_avg)
-> > > > >  
-> > > > > -#define gb_loopback_stats_attrs(field)				\
-> > > > > -	gb_loopback_ro_stats_attr(field, min, u);		\
-> > > > > -	gb_loopback_ro_stats_attr(field, max, u);		\
-> > > > > -	gb_loopback_ro_avg_attr(field)
-> > > > > +#define gb_loopback_stats_attrs(field)					\
-> > > > > +	do {								\
-> > > > > +		gb_loopback_ro_stats_attr(field, min, u);		\
-> > > > > +		gb_loopback_ro_stats_attr(field, max, u);		\
-> > > > > +		gb_loopback_ro_avg_attr(field);				\
-> > > > > +	} while (0)
-> > > > >  
-> > > > >  #define gb_loopback_attr(field, type)					\
-> > > > >  static ssize_t field##_show(struct device *dev,				\
-> > > > > -- 
-> > > > > 2.31.1
-> > > > > 
-> > > > > 
-> > > > 
-> > > > Did you test build this change?
-> > > 
-> > > I built the module using make -C . M=drivers/staging/greybus to test
-> > > build it. I didn't get any errors.
-> > 
-> > Really?  Can you provide the full build output for this file with your
-> > change?  I don't think you really built this file for the obvious
-> > reasons...
+On Wed, May 12, 2021 at 08:56:09PM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> I ran make -C . M=drivers/staging/greybus
+> In the case where fifo->static_buffer fails to be allocated the
+> error return path neglects to kfree the fifo object. Fix this by
+> adding in the missing kfree.
 > 
-> I got a three line output saying:
-> make: Entering directory '/work/linux'
->   MODPOST drivers/staging/greybus//Module.symvers
-> make: Leaving directory '/work/linux'
+> Addresses-Coverity: ("Resource leak")
+> Fixes: 2cd80dbd3551 ("drm/vmwgfx: Add basic support for SVGA3")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/gpu/drm/vmwgfx/vmwgfx_cmd.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> I just tried rebuilding the kernel with CONFIG_GREYBUS=m, and now I can
-> see what you are talking about. Why weren't these errors reported when I
-> ran the previous make command? Does that too check for the config
-> variables even when I specifically asked it to build a module?
+> diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_cmd.c b/drivers/gpu/drm/vmwgfx/vmwgfx_cmd.c
+> index 027d7d504e78..e5fa210f589e 100644
+> --- a/drivers/gpu/drm/vmwgfx/vmwgfx_cmd.c
+> +++ b/drivers/gpu/drm/vmwgfx/vmwgfx_cmd.c
+> @@ -107,8 +107,10 @@ struct vmw_fifo_state *vmw_fifo_create(struct vmw_private *dev_priv)
+>  	fifo = kzalloc(sizeof(*fifo), GFP_KERNEL);
 
-You were just asking it to build a subdirectory, not a specific
-individual file, and when you do that it looks at the configuration
-settings.
+This needs an:
 
-It's always good to ensure that you actually build the files you modify
-before sending patches out.
+	if (!fifo)
+		return -ENOMEM;
 
-thanks,
+>  	fifo->static_buffer_size = VMWGFX_FIFO_STATIC_SIZE;
+>  	fifo->static_buffer = vmalloc(fifo->static_buffer_size);
+> -	if (unlikely(fifo->static_buffer == NULL))
+> +	if (unlikely(fifo->static_buffer == NULL)) {
+> +		kfree(fifo);
+>  		return ERR_PTR(-ENOMEM);
+> +	}
 
-greg k-h
+regards,
+dan carpenter
+
