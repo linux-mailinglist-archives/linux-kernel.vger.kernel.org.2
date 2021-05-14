@@ -2,77 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AEFA3809B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 14:36:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 016663809AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 14:35:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233650AbhENMhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 08:37:46 -0400
-Received: from m12-18.163.com ([220.181.12.18]:42094 "EHLO m12-18.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232712AbhENMhn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 08:37:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=MoSSP
-        kXKo4o6qIFWqVEQl4V2Nc01N2F0xON63x+w1u8=; b=PFUngJNoSIPqXYGmCc1q9
-        oDhWFnEU0ucPX/X0nldZFP8E1163/e1mGIG2dtlWEYI+9AXRUOD19FYF3w8YH6FS
-        AA1dRzfw+o42zxEQspsOaOF+3pNc1eAmLFT27gaqNR7XrHOfyNpOKhBtzdPK0ASr
-        HAkkx+u1k1+5rVQMCKEhZE=
-Received: from COOL-20201222LC.ccdomain.com (unknown [218.94.48.178])
-        by smtp14 (Coremail) with SMTP id EsCowACXkcHBbp5gGuSZjQ--.23353S2;
-        Fri, 14 May 2021 20:36:18 +0800 (CST)
-From:   dingsenjie@163.com
-To:     mchehab@kernel.org, matthias.bgg@gmail.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ding Senjie <dingsenjie@yulong.com>
-Subject: [PATCH] media: mtk-vpu: Use devm_platform_ioremap_resource_byname
-Date:   Fri, 14 May 2021 20:35:21 +0800
-Message-Id: <20210514123521.39296-1-dingsenjie@163.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        id S233666AbhENMgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 08:36:46 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:36476 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233360AbhENMgl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 08:36:41 -0400
+Date:   Fri, 14 May 2021 12:35:28 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1620995729;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=y2TRdEOo2opgyxg4Ofb2+3cG+kZ9FdY0Z3rbJ6w55A4=;
+        b=ZoUEhU1/c3YEn78s5J0bW5BKGm/Ue0e8eKmXR9CQh0iEOtnQHP9xj8ONJ+N08ZqlG75ZMD
+        eIKD+mtPR2mzSpsc+49lYQh5tQg6CZZdYdDZF7AHXmAQdDPF28dKc8SKzET/dLnZB9rE7A
+        zY6MdWhvB3aFORZKdibRK/zguXheJh2yxuHaSkxOD4w5RyNLTknnYzd0Uoge5IL0bSL7q6
+        CZvzC9UK/mVJEiRXqEuyIEigQeXiwCLsATt0Kh/WfywuEkjzgvACKgj9RJBe/k0CQ3/vx8
+        cKM6Rm25otTu/pW5bNf7GrOasd6ebFWkrLSpUksyTqDk2dcV7+X2Aev9g0iW5w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1620995729;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=y2TRdEOo2opgyxg4Ofb2+3cG+kZ9FdY0Z3rbJ6w55A4=;
+        b=iMRf3Tj4S9ew341/UiLj+deQMYM5Bx7nGSDfbBbF2o+MxWr1GZE41WBiA1/yaVLGZ96e4U
+        4Z1aAhg03INzGiBg==
+From:   "tip-bot2 for Andi Kleen" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cpu] x86/cpu: Fix core name for Sapphire Rapids
+Cc:     Andi Kleen <ak@linux.intel.com>, Borislav Petkov <bp@suse.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210513163904.3083274-1-ak@linux.intel.com>
+References: <20210513163904.3083274-1-ak@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EsCowACXkcHBbp5gGuSZjQ--.23353S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Wry3ZF13tw4fWryDGF4rZrb_yoW8GrWDpr
-        yvkay7CryrGF4jqas8t3WUZFZ8AF4avayUC393Zw1fZ398XFWDZr18Ja48Zryak397Ja43
-        tF45CrW3AFZ5ZFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jbsqXUUUUU=
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 5glqw25hqmxvi6rwjhhfrp/1tbiTgKSyFUDJdSwjAAAsN
+Message-ID: <162099572850.29796.9809922742922576170.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ding Senjie <dingsenjie@yulong.com>
+The following commit has been merged into the x86/cpu branch of tip:
 
-Use the devm_platform_ioremap_resource_byname() helper instead of
-calling platform_get_resource_byname() and devm_ioremap_resource()
-separately.
+Commit-ID:     28188cc461f6cf8b7d28de4f6df52014cc1d5e39
+Gitweb:        https://git.kernel.org/tip/28188cc461f6cf8b7d28de4f6df52014cc1d5e39
+Author:        Andi Kleen <ak@linux.intel.com>
+AuthorDate:    Thu, 13 May 2021 09:39:04 -07:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Fri, 14 May 2021 14:31:14 +02:00
 
-Signed-off-by: Ding Senjie <dingsenjie@yulong.com>
+x86/cpu: Fix core name for Sapphire Rapids
+
+Sapphire Rapids uses Golden Cove, not Willow Cove.
+
+Fixes: 53375a5a218e ("x86/cpu: Resort and comment Intel models")
+Signed-off-by: Andi Kleen <ak@linux.intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20210513163904.3083274-1-ak@linux.intel.com
 ---
- drivers/media/platform/mtk-vpu/mtk_vpu.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ arch/x86/include/asm/intel-family.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/mtk-vpu/mtk_vpu.c b/drivers/media/platform/mtk-vpu/mtk_vpu.c
-index 043894f..bfb9932 100644
---- a/drivers/media/platform/mtk-vpu/mtk_vpu.c
-+++ b/drivers/media/platform/mtk-vpu/mtk_vpu.c
-@@ -821,13 +821,11 @@ static int mtk_vpu_probe(struct platform_device *pdev)
- 		return -ENOMEM;
+diff --git a/arch/x86/include/asm/intel-family.h b/arch/x86/include/asm/intel-family.h
+index 955b06d..2715843 100644
+--- a/arch/x86/include/asm/intel-family.h
++++ b/arch/x86/include/asm/intel-family.h
+@@ -102,7 +102,8 @@
  
- 	vpu->dev = &pdev->dev;
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "tcm");
--	vpu->reg.tcm = devm_ioremap_resource(dev, res);
-+	vpu->reg.tcm = devm_platform_ioremap_resource_byname(pdev, "tcm");
- 	if (IS_ERR((__force void *)vpu->reg.tcm))
- 		return PTR_ERR((__force void *)vpu->reg.tcm);
+ #define INTEL_FAM6_TIGERLAKE_L		0x8C	/* Willow Cove */
+ #define INTEL_FAM6_TIGERLAKE		0x8D	/* Willow Cove */
+-#define INTEL_FAM6_SAPPHIRERAPIDS_X	0x8F	/* Willow Cove */
++
++#define INTEL_FAM6_SAPPHIRERAPIDS_X	0x8F	/* Golden Cove */
  
--	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "cfg_reg");
--	vpu->reg.cfg = devm_ioremap_resource(dev, res);
-+	vpu->reg.cfg = devm_platform_ioremap_resource_byname(pdev, "cfg_reg");
- 	if (IS_ERR((__force void *)vpu->reg.cfg))
- 		return PTR_ERR((__force void *)vpu->reg.cfg);
- 
--- 
-1.9.1
-
-
+ #define INTEL_FAM6_ALDERLAKE		0x97	/* Golden Cove / Gracemont */
+ #define INTEL_FAM6_ALDERLAKE_L		0x9A	/* Golden Cove / Gracemont */
