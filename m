@@ -2,110 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1182038114C
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 21:57:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3964F381158
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 22:04:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233268AbhENT6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 15:58:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233223AbhENT6g (ORCPT
+        id S231133AbhENUF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 16:05:26 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39018 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229516AbhENUFZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 15:58:36 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF9C1C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 12:57:22 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id w13so723568ilv.11
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 12:57:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=URzNzA8vwTk8ltn99LExmH9Gj1Z1XVZ/xKYnVSUJ+eY=;
-        b=hgsntZOgovnbfwcq8LAgBDSF+PVAqFk+Ju2ltBGfH5ND1+JSIbu0c6EjXVMN59icok
-         a4GCJC//h3rxW0E16RUMRSych/V7Hu2B7MkTLvRXbrL4THeEaXfqDIrBlwoCDifkBbsh
-         xtlHJpvMQa2e4TOhH9Ziu2M44ze6iXEhgqMVc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=URzNzA8vwTk8ltn99LExmH9Gj1Z1XVZ/xKYnVSUJ+eY=;
-        b=Hy2nEMyBVsKARVXWotdASfygkEvhbYd6sw6ZFuFlkWoH3c6cm0Yrzf0IFJo80lQK3Q
-         zdFWeygvzpcEPSI2vHGHPYToOEm8mEK4nwUZAF8Ly4NI5nvKryzn2vwEv10zd5qUGZmi
-         sXe1pg8EeQpHo2qgwT3VwrpT3EaBMejA8nmGRnHptdkTZFAd6Fvdyyb1nJM7cQYGnBLa
-         YkJaIwOUTDBXDqSoZqicCFkFysPEeplYrtml6Mnk+ts1UVKlgXIgfKS3+bLatAXrYyfb
-         cp8hJz1POe/Z0ycWKxGRWN5hu7J05SSc2fmTr79L7Jy5fV1pkp7JtVnPxQ4sRDYKeqWf
-         7i3A==
-X-Gm-Message-State: AOAM533EStdRh0AeZzDFlkbnunn6MYHHtP/btJF1cShja9HrrmO/yfYx
-        3EAuq2SCN05eu6zrVQ0ncxJpqw==
-X-Google-Smtp-Source: ABdhPJyp/b+5at/LzYZqPekDe6AZ5C8y/A3NmSXVzEe0D96R5hR+Z4HeaCWpaT0rQwiE1EIoqRNcRQ==
-X-Received: by 2002:a05:6e02:4c4:: with SMTP id f4mr42333117ils.272.1621022242170;
-        Fri, 14 May 2021 12:57:22 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id s23sm2749891iol.49.2021.05.14.12.57.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 May 2021 12:57:21 -0700 (PDT)
-Subject: Re: [PATCH v2 07/10] thunderbolt: test: Remove sone casts which are
- no longer required
-To:     David Gow <davidgow@google.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Brendan Higgins <brendanhiggins@google.com>
-Cc:     Daniel Latypov <dlatypov@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-usb@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
-References: <20210513193204.816681-1-davidgow@google.com>
- <20210513193204.816681-7-davidgow@google.com>
- <20210514060618.GA3511397@lahna.fi.intel.com>
- <CABVgOS=Zt8-dHPKTjjQ_C+jZ8ySZejjXyQYSN-hRF95cqCLYmw@mail.gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <f9bc6cbc-2196-3418-4c8d-f47981cc8816@linuxfoundation.org>
-Date:   Fri, 14 May 2021 13:57:20 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 14 May 2021 16:05:25 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1621022652;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=E9YNoc2u4aHJVAwRc8IfbePnnshaE6hk3km7pg3eMWE=;
+        b=pSoyUe5BgY9RPZs4kiNns56WDgqEeJKV43FsAYITJ0CFP27R8C5r+YwXsPjRed42XP0xWT
+        13agdBDWMo/274PxHWpJOkhWFN8qVXaFRlpBzIpvhKId8vb/wX3h6ll5niVzL6rdpUJJlm
+        1rH7UC83Dythl5B9j85Ah6FF+Gp4rZw1x1yCkEpxCmUbI+r8PyB6sHPeTNkbcYLxdng+Q6
+        U4x4B0dzVEHU7ttzztNkqa/mvQ6YXILf2sYBbbiazXiyyJcdvgs9h6ndsuDmQVXpLLHGU4
+        p27LSbVZUxW7X8K8nnpRmvbbH92cex7XN2scBjN8nLi750ih7HtIHRsAIwVeTw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1621022652;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=E9YNoc2u4aHJVAwRc8IfbePnnshaE6hk3km7pg3eMWE=;
+        b=V3zHiKzMoWd1KNGnMRPJRdgO4tIZV26Y7W+thUxrvHwdUwTNI1l73bKhyvY807licquTcl
+        bq0U2uSNwuzqTBDw==
+To:     Yiyuan guo <yguoaz@gmail.com>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: A possible divide by zero bug in alloc_nodes_vectors
+In-Reply-To: <CAM7=BFpye1oOmF_ddVxDLGZebQRgpRORxN3J4sWcSgkq_nnYyg@mail.gmail.com>
+References: <CAM7=BFpye1oOmF_ddVxDLGZebQRgpRORxN3J4sWcSgkq_nnYyg@mail.gmail.com>
+Date:   Fri, 14 May 2021 22:04:12 +0200
+Message-ID: <87zgwx2ibn.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <CABVgOS=Zt8-dHPKTjjQ_C+jZ8ySZejjXyQYSN-hRF95cqCLYmw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/14/21 1:27 AM, David Gow wrote:
-> On Fri, May 14, 2021 at 2:08 PM Mika Westerberg
-> <mika.westerberg@linux.intel.com> wrote:
->>
->> Hi,
->>
->> On Thu, May 13, 2021 at 12:32:01PM -0700, David Gow wrote:
->>> With some of the stricter type checking in KUnit's EXPECT macros
->>> removed, several casts in the thunderbolt KUnit tests are no longer
->>> required.
->>>
->>> Remove the unnecessary casts, making the conditions clearer.
->>>
->>> Signed-off-by: David Gow <davidgow@google.com>
->>
->> Looks good.
->>
->> Does this go through KUnit tree or you want me to take it? In case of
->> the former feel free to add:
->>
->> Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
->>
-> 
-> Thanks. I think it's probably easier for this to go in via the KUnit
-> tree, unless Brendan or Shuah have any objections.
-> 
+On Fri, May 14 2021 at 19:31, Yiyuan guo wrote:
 
-It is fine either way unless there are dependencies on the KUnit
-tree. I can take this in through KUnit once Brendan looks at it.
+> In kernel/irq/affinity.c, the function alloc_nodes_vectors has the
+> following code:
+>
+> static void alloc_nodes_vectors(unsigned int numvecs,
+>                 cpumask_var_t *node_to_cpumask,
+>                 const struct cpumask *cpu_mask,
+>                 const nodemask_t nodemsk,
+>                 struct cpumask *nmsk,
+>                 struct node_vectors *node_vectors) {
+>     unsigned n, remaining_ncpus = 0;
+>     ...
+>     for_each_node_mask(n, nodemsk) {
+>         ...
+>         ncpus = cpumask_weight(nmsk);
+>
+>         if (!ncpus)
+>             continue;
+>         remaining_ncpus += ncpus;
+>         ...
+>     }
+>
+>     numvecs = min_t(unsigned, remaining_ncpus, numvecs);
+>     ...
+>     for (n = 0; n < nr_node_ids; n++) {
+>         ...
+>         WARN_ON_ONCE(numvecs == 0);
+>         ...
+>         nvectors = max_t(unsigned, 1,
+>                        numvecs * ncpus / remaining_ncpus);
+>     }
+> }
+>
+> The variable remaining_ncpus may remain 0 if cpumask_weight(nmsk)
+> keeps returning 0 in the for loop. However, remaining_ncpus is used as
+> a divisor, leading to a potential divide by zero problem.
 
-thanks,
--- Shuah
+How so? It's guaranteed that there is at least ONE node which is not
+empty. So remaining_ncpus cannot be 0.
+
+Thanks,
+
+        tglx
+
+
 
