@@ -2,180 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1646A3807C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 12:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38F233807C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 12:55:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231604AbhENKzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 06:55:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230289AbhENKzg (ORCPT
+        id S231673AbhENK4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 06:56:20 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:11912 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229973AbhENK4S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 06:55:36 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0CFAC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 03:54:24 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id v22so23217800oic.2
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 03:54:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=19+6o3O/hPf0SMu1IJyh2NJXMIWlR4MKseltzsIotXU=;
-        b=EgU769fqyzATqlSnLY5ku6xf+VKKYLbQqzvSARt0lQYra3enTK1/+cqYL+MW1l5K47
-         7mUf1oMPWFF8nklSPkdv5saGpEDBteZ9c7Ah42KuBcuLPI4ylPynRc8wroOvh++yBXud
-         xDJzRWoIvtNwcaYRi3BVuaDI+p1R0nXY2bIvx9cxQTtZHNDdFFwEYYVL3jMnBfGP10vP
-         mftJRkeTn/E70GZBhY+QAhvPwLigGOAc8t1DU6+Jb6BxFaYL3Hf6XkkovvJpg+dPFW5w
-         V3vupXVJMYxCshNK1XSh4gsa7f6/MPlE0QHxFLbjzcVCmSi9AiT6lnVyAq6doDFEFahL
-         6MdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=19+6o3O/hPf0SMu1IJyh2NJXMIWlR4MKseltzsIotXU=;
-        b=n4/3CCcAHLT4E3ZdfEUcbYX6bLiN97bWR7gaz2q8P18u6NJCrKybt/AbzZurMkTvWC
-         IxFNLNxBMMde3q4ngHzL1cJ4DDXqfgqDi/xbgMVQzc1FhLkNrnVBN9SLi6wFmvWu8qSH
-         vtRRQlu7zqbm6X4Nje8jdARN1gDEX6yNngjPlLlenB2ESZzzzt+FBmx4sWlnLoUiVQ5L
-         U/lqWwposVkJ2aVNqYu7iHABosfqVeU7KHVviTmlmf9Z85eF6bg2SUig+pXDN9Qn1G7l
-         n6HzYrg6LF/uqaQsRwjC+XXQ7KXP913W8dK+prodYnQlYPTIdr9G84vR7SicRK630ReB
-         6tug==
-X-Gm-Message-State: AOAM530cXqJ3rdkbkXosoNaOkdWRiplifECtwRf6B3LK0qIw9vCgFm2h
-        Kc3RywmT37irasetar5ntjoaPxXSBsHAwxt/rr5tyWvc4Fc=
-X-Google-Smtp-Source: ABdhPJzEld2VXr88ppdtAYgcr8j3hYxHUIsTctRtLkil/6RBGyBVEdFTHSaFdqfBGNxtIwZuxkT2x1h1RqIqIrnbqi0=
-X-Received: by 2002:aca:408a:: with SMTP id n132mr34053651oia.70.1620989663822;
- Fri, 14 May 2021 03:54:23 -0700 (PDT)
+        Fri, 14 May 2021 06:56:18 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14EAWlrr095697
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 06:55:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : references : date : in-reply-to : message-id : mime-version :
+ content-type; s=pp1; bh=+RSdmym1kc5gt+TnCYRTbJB1jLoZmHK3rRgcrKx2/7g=;
+ b=bnib+I4z3qbkjaV32ulYGLMCF4qKj5H6J/zeY9f3DfUxKJ88+OAvlY6R3ll5R64dYiPc
+ PQHHspftOYUYvBXNlFi/c303g27s3PHQspx7ONat9Tb15YcWAFOT+oyFFdwFAyE+1gY0
+ I7WZINEh1fFlenQhVqAk4xMSRML4SgsH6qFeEbbYBTZXbEUNEqGZa1leGsjP5EQ5gJuY
+ rnUSOp+BrRFPvpPJGIfQpjQzGXwaefolB9aaywe+vwa2e6mKuw7naoDHuxHR52YJxZbN
+ 0YCpFlnTVxe4EuSAZ65SCWIRClFho2LPBKeH4rPN6q8jhD28di9gFGFGqkBHBM3eLN+s bA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38hq0jh6ar-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 06:55:06 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14EAXHF1097282
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 06:55:06 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38hq0jh6a8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 May 2021 06:55:06 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14EAt4kt011276;
+        Fri, 14 May 2021 10:55:04 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 38hc6pg81j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 May 2021 10:55:04 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14EAsZgf13828542
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 14 May 2021 10:54:35 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 27F9511C050;
+        Fri, 14 May 2021 10:55:02 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 03E8511C04A;
+        Fri, 14 May 2021 10:55:02 +0000 (GMT)
+Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Fri, 14 May 2021 10:55:01 +0000 (GMT)
+From:   Sven Schnelle <svens@linux.ibm.com>
+To:     Marco Elver <elver@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] kfence: only handle kernel mode faults
+References: <20210514092139.3225509-1-svens@linux.ibm.com>
+        <20210514092139.3225509-3-svens@linux.ibm.com>
+        <CANpmjNOLSuqeTr8YOnvz-V=eudBwraNvm+9V+YxEBUCm=EFwxw@mail.gmail.com>
+Date:   Fri, 14 May 2021 12:55:01 +0200
+In-Reply-To: <CANpmjNOLSuqeTr8YOnvz-V=eudBwraNvm+9V+YxEBUCm=EFwxw@mail.gmail.com>
+        (Marco Elver's message of "Fri, 14 May 2021 12:52:38 +0200")
+Message-ID: <yt9dk0o1inzu.fsf@linux.ibm.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
 MIME-Version: 1.0
-References: <20210514092139.3225509-1-svens@linux.ibm.com> <20210514092139.3225509-2-svens@linux.ibm.com>
-In-Reply-To: <20210514092139.3225509-2-svens@linux.ibm.com>
-From:   Marco Elver <elver@google.com>
-Date:   Fri, 14 May 2021 12:54:11 +0200
-Message-ID: <CANpmjNNB=KTDBb65qtNwrPbwnbD2ThAFchA1HSCg9HKETkQvCg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] kfence: add function to mask address bits
-To:     Sven Schnelle <svens@linux.ibm.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Alexander Potapenko <glider@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: LWWZ9zHpMnXYcG1caCzx19ZK3q7g4A7L
+X-Proofpoint-ORIG-GUID: YsZF-kRGQLoSqbutal39t4So0nl5zcJO
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-14_04:2021-05-12,2021-05-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ priorityscore=1501 impostorscore=0 suspectscore=0 spamscore=0
+ malwarescore=0 clxscore=1015 bulkscore=0 mlxscore=0 mlxlogscore=839
+ phishscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105140080
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for trying to get KFENCE on s390.
+Marco Elver <elver@google.com> writes:
 
-On Fri, 14 May 2021 at 11:22, Sven Schnelle <svens@linux.ibm.com> wrote:
+> On Fri, 14 May 2021 at 11:22, Sven Schnelle <svens@linux.ibm.com> wrote:
+>>
+>> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+>> ---
+>>  mm/kfence/core.c | 3 +++
+>>  1 file changed, 3 insertions(+)
+>>
+>> diff --git a/mm/kfence/core.c b/mm/kfence/core.c
+>> index bc15e3cb71d5..161df492750c 100644
+>> --- a/mm/kfence/core.c
+>> +++ b/mm/kfence/core.c
+>> @@ -813,6 +813,9 @@ bool kfence_handle_page_fault(unsigned long addr, bool is_write, struct pt_regs
+>>         enum kfence_error_type error_type;
+>>         unsigned long flags;
+>>
+>> +       if (user_mode(regs))
+>> +               return false;
+>> +
 >
-> s390 only reports the page address during a translation fault.
-> To make the kfence unit tests pass, add a function that might
-> be implemented by architectures to mask out address bits.
+> I don't think it's required on all architectures, correct? If so, I
+> think this should be part of the arch-specific code, i.e. just do "if
+> (user_mode(regs) && kfence_handle_page_fault(...))" or similar.
+> Because otherwise we'll wonder in future why we ever needed this, and
+> e.g. determine it's useless and remove it again. ;-) Either that, or a
+> comment. But I'd prefer to just keep it in the arch-specific code if
+> required, because it seems to be the exception rather than the norm.
 
-The point of the test is to test the expected behaviour. And s390
-certainly isn't behaving as we'd expect, because we really ought to
-see the precise address to facilitate debugging. Granted, by default
-KFENCE prints hashed pointers, but with no_hash_pointers we still want
-to see the precise address.
+Ok, that's fine, i add it to our code then.
 
-Is there any way to make s390 give us precise addresses?
-
-Of course if you say this deviation is reasonable, see my suggestions below.
-
-> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
-> ---
->  include/linux/kfence.h  | 1 +
->  mm/kfence/core.c        | 5 +++++
->  mm/kfence/kfence_test.c | 6 +++++-
->  3 files changed, 11 insertions(+), 1 deletion(-)
->
-> diff --git a/include/linux/kfence.h b/include/linux/kfence.h
-> index a70d1ea03532..2e15f4c4ee95 100644
-> --- a/include/linux/kfence.h
-> +++ b/include/linux/kfence.h
-> @@ -199,6 +199,7 @@ static __always_inline __must_check bool kfence_free(void *addr)
->   * present, so that the kernel can proceed.
->   */
->  bool __must_check kfence_handle_page_fault(unsigned long addr, bool is_write, struct pt_regs *regs);
-> +unsigned long kfence_arch_mask_addr(unsigned long addr);
-
-I think this should not be part of the public interface, as commented below.
-
->  #else /* CONFIG_KFENCE */
->
-> diff --git a/mm/kfence/core.c b/mm/kfence/core.c
-> index e18fbbd5d9b4..bc15e3cb71d5 100644
-> --- a/mm/kfence/core.c
-> +++ b/mm/kfence/core.c
-> @@ -50,6 +50,11 @@ static unsigned long kfence_sample_interval __read_mostly = CONFIG_KFENCE_SAMPLE
->  #endif
->  #define MODULE_PARAM_PREFIX "kfence."
->
-> +unsigned long __weak kfence_arch_mask_addr(unsigned long addr)
-> +{
-> +       return addr;
-> +}
-
-I don't think this belongs here, because it's test-specific,
-furthermore if possible we'd like to put all arch-specific code into
-<asm/kfence.h> (whether or not your arch will have 'static inline'
-functions only, like x86 and arm64, or not is up to you).
-
-Because I don't see this function being terribly complex, also let's
-just make it a macro.
-
-Then in kfence_test.c, we can have:
-
-#ifndef kfence_test_mask_address
-#define kfence_test_mask_address(addr) (addr)
-#endif
-
-and then have it include <asm/kfence.h>. And in your <asm/kfence.h>
-you can simply say:
-
-#define kfence_test_mask_address(addr) (.........)
-
-It also avoids having to export kfence_test_mask_address, because
-kfence_test can be built as a module.
-
->  static int param_set_sample_interval(const char *val, const struct kernel_param *kp)
->  {
->         unsigned long num;
-> diff --git a/mm/kfence/kfence_test.c b/mm/kfence/kfence_test.c
-> index 4acf4251ee04..9ec572991014 100644
-> --- a/mm/kfence/kfence_test.c
-> +++ b/mm/kfence/kfence_test.c
-> @@ -82,6 +82,7 @@ static const char *get_access_type(const struct expect_report *r)
->  /* Check observed report matches information in @r. */
->  static bool report_matches(const struct expect_report *r)
->  {
-> +       unsigned long addr = (unsigned long)r->addr;
->         bool ret = false;
->         unsigned long flags;
->         typeof(observed.lines) expect;
-> @@ -131,22 +132,25 @@ static bool report_matches(const struct expect_report *r)
->         switch (r->type) {
->         case KFENCE_ERROR_OOB:
->                 cur += scnprintf(cur, end - cur, "Out-of-bounds %s at", get_access_type(r));
-> +               addr = kfence_arch_mask_addr(addr);
->                 break;
->         case KFENCE_ERROR_UAF:
->                 cur += scnprintf(cur, end - cur, "Use-after-free %s at", get_access_type(r));
-> +               addr = kfence_arch_mask_addr(addr);
->                 break;
->         case KFENCE_ERROR_CORRUPTION:
->                 cur += scnprintf(cur, end - cur, "Corrupted memory at");
->                 break;
->         case KFENCE_ERROR_INVALID:
->                 cur += scnprintf(cur, end - cur, "Invalid %s at", get_access_type(r));
-> +               addr = kfence_arch_mask_addr(addr);
->                 break;
->         case KFENCE_ERROR_INVALID_FREE:
->                 cur += scnprintf(cur, end - cur, "Invalid free of");
->                 break;
->         }
->
-> -       cur += scnprintf(cur, end - cur, " 0x%p", (void *)r->addr);
-> +       cur += scnprintf(cur, end - cur, " 0x%p", (void *)addr);
-
-The rest here looks reasonable if you think there's no way to get s390
-to give us precise addresses.
-
-Thanks,
--- Marco
+Thanks
+Sven
