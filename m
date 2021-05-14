@@ -2,94 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFEEF38015F
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 03:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6D73380162
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 03:01:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231981AbhENBBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 21:01:49 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:2481 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231265AbhENBBp (ORCPT
+        id S232067AbhENBCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 21:02:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231265AbhENBCn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 21:01:45 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Fh99p6GrhzBv4k;
-        Fri, 14 May 2021 08:57:50 +0800 (CST)
-Received: from [10.174.178.208] (10.174.178.208) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 14 May 2021 09:00:27 +0800
-Subject: Re: [PATCH 5.10 000/530] 5.10.37-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20210512144819.664462530@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <f7b7e81c-faea-264c-f1c5-9d7bc882c1ba@huawei.com>
-Date:   Fri, 14 May 2021 09:00:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Thu, 13 May 2021 21:02:43 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E594C061574;
+        Thu, 13 May 2021 18:01:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=AewoeCdKzupjrAmmf0ZaCNC8yUlU7sjr3AelIO0F/XM=; b=aeMzHZzq2PEe+UoOqIrdKwzBHp
+        SpD13pChgGsdAlUV5up3rlgtz61ceBqKB4YVlPxrnpfIlr7qixm35r1pzxJdKP5QLSEv8lpn96D0y
+        XzkuZ5dWtc2OwZ5MLmRA63ZiRfVsiuzDjvNofa4ETRslxO8M2Jiy0ABimf/OQBBIBKNe6+XoAKHKm
+        jnu6IBehlAN86e5u5i1YiDGMdh6HbEFpXvmqZfg0uWWZ0RgIYELAbrImjCvmT3Mj3MNXddpgvVD4Q
+        wk2S0O02ZQlAvoJJaMqZAfsaJd5UMN1xmGhYemsBXOmYPilm+wJEFjNiGZw6xjlSivEfoga3pOTMt
+        bF+rEfzQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lhMBp-009wQq-20; Fri, 14 May 2021 01:00:50 +0000
+Date:   Fri, 14 May 2021 02:00:29 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>
+Subject: Re: [PATCH net-next v5 1/5] mm: add a signature in struct page
+Message-ID: <YJ3Lrdx1oIm/MDV8@casper.infradead.org>
+References: <20210513165846.23722-1-mcroce@linux.microsoft.com>
+ <20210513165846.23722-2-mcroce@linux.microsoft.com>
 MIME-Version: 1.0
-In-Reply-To: <20210512144819.664462530@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210513165846.23722-2-mcroce@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, May 13, 2021 at 06:58:42PM +0200, Matteo Croce wrote:
+>  		struct {	/* page_pool used by netstack */
+> +			/**
+> +			 * @pp_magic: magic value to avoid recycling non
+> +			 * page_pool allocated pages.
+> +			 * It aliases with page->lru.next
 
+I'm not really keen on documenting what aliases with what.
+pp_magic also aliases with compound_head, 'next' (for slab),
+and dev_pagemap.  This is an O(n^2) documentation problem ...
 
-On 2021/5/12 22:41, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.37 release.
-> There are 530 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 14 May 2021 14:47:09 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.37-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+I feel like I want to document the pfmemalloc bit in mm_types.h,
+but I don't have a concrete suggestion yet.
 
-Tested on arm64 and x86 for 5.10.37-rc1,
+> +++ b/include/net/page_pool.h
+> @@ -63,6 +63,8 @@
+>   */
+>  #define PP_ALLOC_CACHE_SIZE	128
+>  #define PP_ALLOC_CACHE_REFILL	64
+> +#define PP_SIGNATURE		(POISON_POINTER_DELTA + 0x40)
 
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-5.10.y
-Version: 5.10.37-rc1
-Commit: 77806d1ee43e1bea3aa5095445eb7a69f02ec8d3
-Compiler: gcc version 7.3.0 (GCC)
+I wonder if this wouldn't be better in linux/poison.h?
 
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8476
-passed: 8476
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8476
-passed: 8476
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
