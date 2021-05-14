@@ -2,153 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26676380836
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 13:14:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 405FB38083F
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 13:15:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231594AbhENLPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 07:15:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29287 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230230AbhENLPH (ORCPT
+        id S232163AbhENLQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 07:16:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229470AbhENLQw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 07:15:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620990835;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GcyY5SRYU8znOLGxlQ+VXLYAFrni6/EsXvguEf/Rk+o=;
-        b=ZYbH02KiPau9filrDGpj6XsfzlDwLyIGYeYJM8COAgaHTclrQ9FEyJpwlmLNJoNWglmxAt
-        0yOZnlf0JG5gVrxMoKeui42MmKT+lUQmTMjiP0pEfJID9mZVyZVxQgFoHjd1//xsEzT/XL
-        jdS3v7CiyqWFnz3Swkv28u0eLT++aGA=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-215-zi8xNLyhM8iKoirQYT8YEg-1; Fri, 14 May 2021 07:13:53 -0400
-X-MC-Unique: zi8xNLyhM8iKoirQYT8YEg-1
-Received: by mail-wr1-f69.google.com with SMTP id a5-20020a5d6ca50000b029011035a261adso2539513wra.17
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 04:13:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GcyY5SRYU8znOLGxlQ+VXLYAFrni6/EsXvguEf/Rk+o=;
-        b=T7idg6ywv3bOLT6RJOPtFQyOnuDJU3yGEC4xj3ArnH1S5NlDRD75YVmVKSb3dBRqai
-         WYTSB43FLvAZtQ+/0X+C5LN9RRNQvsSYO0o4eNlaBQfHsdRGIysocDHlo/bhcIhVH1He
-         7RK8ZsZcj2DhoIqV5R9SevpwSQBU5YCHXX1c0ymlS9Wiz5mweDvPkWDySO8tav4RPe5z
-         Zbbezuc7323jS9ty23Fv7QfR7ehrRLF5dISJ+ao0gZVeORgXlMEojSGBNMxyPyo5Jzzw
-         KljraViV1gSfoCicayS0sUglYCSqlFAVIMfG2TdQ7EVhQgfAigmv4rl2wbqj7BgV4B99
-         yENw==
-X-Gm-Message-State: AOAM5305nKp4VWFMUvNzNiEOUzyuKGV4QgfErABYpQGd2Behi0mBh3Fu
-        HBFJ/Dtq8mBmHGw5fHjDXWmUEwmYx/oUiUaqmc/l+9dvmd9qGXuJA9oZCHwxS1fiQMFi6+gLDyF
-        LMXokut6zO1A5tM22hkjiz4QN
-X-Received: by 2002:a7b:c042:: with SMTP id u2mr9792480wmc.127.1620990832246;
-        Fri, 14 May 2021 04:13:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxZNhppxBIXT6J4oHOEj05xdp5fT5MtIiU2dY4jUT95nukcwuVNGKlHAjd1LlANrcZHhqooTQ==
-X-Received: by 2002:a7b:c042:: with SMTP id u2mr9792463wmc.127.1620990832028;
-        Fri, 14 May 2021 04:13:52 -0700 (PDT)
-Received: from redhat.com ([2a10:800c:1fa6:0:3809:fe0c:bb87:250e])
-        by smtp.gmail.com with ESMTPSA id f7sm5007823wmq.30.2021.05.14.04.13.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 04:13:51 -0700 (PDT)
-Date:   Fri, 14 May 2021 07:13:48 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, xieyongji@bytedance.com,
-        stefanha@redhat.com, file@sect.tu-berlin.de, ashish.kalra@amd.com,
-        konrad.wilk@oracle.com, kvm@vger.kernel.org
-Subject: Re: [RFC PATCH V2 0/7] Do not read from descripto ring
-Message-ID: <20210514063516-mutt-send-email-mst@kernel.org>
-References: <20210423080942.2997-1-jasowang@redhat.com>
- <0e9d70b7-6c8a-4ff5-1fa9-3c4f04885bb8@redhat.com>
- <20210506041057-mutt-send-email-mst@kernel.org>
- <20210506123829.GA403858@infradead.org>
+        Fri, 14 May 2021 07:16:52 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C644C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 04:15:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=tYLc3GsyfFBaMQ+RDwOHUMKnirmCetzH9ttjQf1YUdo=; b=YR412PtVNoEzxYeawP4MP1QM5A
+        Q/+1RKjNTTOW8llHIEif9QCXY9IgFDK1frnn7UwkBCUTt86KkqT7jixb5PMqIzTQdylwQ5diNkhGt
+        nEb65FhT0RXGQGfWqINuIZBYGLChTU8k3PuKVowzqIaA5iM5dMXAD+EMaddxf25VukWFcsssQWdRk
+        e8x18e8O/NgYs5vuv90qtOjcCur8ejsIMBb7zw1fHC/DRT5rwVUYiXxFsDm9B4eH4+fLBBpI0vr29
+        DDoQ+z78md+NubYpJzzRQsHf0XGHqsZaSdgp6kfGOklsTDWXw7c20CHEgkVMCMQaXnEo3Y67XBbeC
+        WnX29fUQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lhVlQ-00AJHJ-LC; Fri, 14 May 2021 11:13:58 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0251F30022A;
+        Fri, 14 May 2021 13:13:51 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D5D6020298BDE; Fri, 14 May 2021 13:13:51 +0200 (CEST)
+Date:   Fri, 14 May 2021 13:13:51 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Liam Howlett <liam.howlett@oracle.com>
+Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Song Liu <songliubraving@fb.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        David Rientjes <rientjes@google.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Rik van Riel <riel@surriel.com>,
+        Michel Lespinasse <walken.cr@gmail.com>
+Subject: Re: [PATCH 26/94] Maple Tree: Add new data structure
+Message-ID: <YJ5bbw70JLfNi8Q7@hirez.programming.kicks-ass.net>
+References: <20210428153542.2814175-1-Liam.Howlett@Oracle.com>
+ <20210428153542.2814175-27-Liam.Howlett@Oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210506123829.GA403858@infradead.org>
+In-Reply-To: <20210428153542.2814175-27-Liam.Howlett@Oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 01:38:29PM +0100, Christoph Hellwig wrote:
-> On Thu, May 06, 2021 at 04:12:17AM -0400, Michael S. Tsirkin wrote:
-> > Let's try for just a bit, won't make this window anyway:
-> > 
-> > I have an old idea. Add a way to find out that unmap is a nop
-> > (or more exactly does not use the address/length).
-> > Then in that case even with DMA API we do not need
-> > the extra data. Hmm?
-> 
-> So we actually do have a check for that from the early days of the DMA
-> API, but it only works at compile time: CONFIG_NEED_DMA_MAP_STATE.
-> 
-> But given how rare configs without an iommu or swiotlb are these days
-> it has stopped to be very useful.  Unfortunately a runtime-version is
-> not entirely trivial, but maybe if we allow for false positives we
-> could do something like this
-> 
-> bool dma_direct_need_state(struct device *dev)
-> {
-> 	/* some areas could not be covered by any map at all */
-> 	if (dev->dma_range_map)
-> 		return false;
-> 	if (force_dma_unencrypted(dev))
-> 		return false;
-> 	if (dma_direct_need_sync(dev))
-> 		return false;
-> 	return *dev->dma_mask == DMA_BIT_MASK(64);
-> }
-> 
-> bool dma_need_state(struct device *dev)
-> {
-> 	const struct dma_map_ops *ops = get_dma_ops(dev);
-> 
-> 	if (dma_map_direct(dev, ops))
-> 		return dma_direct_need_state(dev);
-> 	return ops->unmap_page ||
-> 		ops->sync_single_for_cpu || ops->sync_single_for_device;
-> }
+On Wed, Apr 28, 2021 at 03:36:02PM +0000, Liam Howlett wrote:
 
-Yea that sounds like a good idea. We will need to document that.
+> +/*
+> + * Special values for ma_state.node.
+> + * MAS_START means we have not searched the tree.
+> + * MAS_ROOT means we have searched the tree and the entry we found lives in
+> + * the root of the tree (ie it has index 0, length 1 and is the only entry in
+> + * the tree).
+> + * MAS_NONE means we have searched the tree and there is no node in the
+> + * tree for this entry.  For example, we searched for index 1 in an empty
+> + * tree.  Or we have a tree which points to a full leaf node and we
+> + * searched for an entry which is larger than can be contained in that
+> + * leaf node.
+> + * MA_ERROR represents an errno.  After dropping the lock and attempting
+> + * to resolve the error, the walk would have to be restarted from the
+> + * top of the tree as the tree may have been modified.
+> + */
+> +#define MAS_START	((struct maple_enode *)1UL)
+> +#define MAS_ROOT	((struct maple_enode *)5UL)
+> +#define MAS_NONE	((struct maple_enode *)9UL)
+> +#define MA_ERROR(err) \
+> +		((struct maple_enode *)(((unsigned long)err << 2) | 2UL))
+> +
 
+> +static inline enum maple_type mte_node_type(const struct maple_enode *entry)
+> +{
+> +	return ((unsigned long)entry >> 3) & 15;
+> +}
 
-Something like:
+> +static inline struct maple_node *mte_to_node(const struct maple_enode *entry)
+> +{
+> +	return (struct maple_node *)((unsigned long)entry & ~127);
+> +}
 
-/*
- * dma_need_state - report whether unmap calls use the address and length
- * @dev: device to guery
- *
- * This is a runtime version of CONFIG_NEED_DMA_MAP_STATE.
- *
- * Return the value indicating whether dma_unmap_* and dma_sync_* calls for the device
- * use the DMA state parameters passed to them.
- * The DMA state parameters are: scatter/gather list/table, address and
- * length.
- *
- * If dma_need_state returns false then DMA state parameters are
- * ignored by all dma_unmap_* and dma_sync_* calls, so it is safe to pass 0 for
- * address and length, and DMA_UNMAP_SG_TABLE_INVALID and
- * DMA_UNMAP_SG_LIST_INVALID for s/g table and length respectively.
- * If dma_need_state returns true then DMA state might
- * be used and so the actual values are required.
- */
+> +static inline struct maple_topiary *mte_to_mat(const struct maple_enode *entry)
+> +{
+> +	return (struct maple_topiary *)((unsigned long)entry & ~127);
+> +}
 
-And we will need DMA_UNMAP_SG_TABLE_INVALID and
-DMA_UNMAP_SG_LIST_INVALID as pointers to an empty global table and list
-for calls such as dma_unmap_sgtable that dereference pointers before checking
-they are used.
+Can we please write masks as hex, also do they want a pretty name?
 
 
-Does this look good?
+This has more magic mask values, proper names might be good:
 
-The table/length variants are for consistency, virtio specifically does
-not use s/g at the moment, but it seems nicer than leaving
-users wonder what to do about these.
+> +static inline void mte_set_parent(struct maple_enode *enode,
+> +				 const struct maple_enode *parent,
+> +				 unsigned char slot)
+> +{
+> +	unsigned long bitmask = 0x78;
+> +	unsigned long val = (unsigned long) parent;
+> +	unsigned long type = 0;
+> +
+> +	switch (mte_node_type(parent)) {
+> +	case maple_range_64:
+> +	case maple_arange_64:
+> +		type = 6;
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +
+> +	val &= ~bitmask; // Remove any old slot number.
+> +	val |= (slot << MAPLE_PARENT_SHIFT); // Set the slot.
+> +	val |= type;
+> +	mte_to_node(enode)->parent = ma_parent_ptr(val);
+> +}
 
-Thoughts? Jason want to try implementing?
+> +static inline unsigned int mte_parent_slot(const struct maple_enode *enode)
+> +{
+> +	unsigned long bitmask = 0x7C;
+> +	unsigned long val = (unsigned long) mte_to_node(enode)->parent;
+> +
+> +	if (val & 1)
+> +		return 0; // Root.
+> +
+> +	return (val & bitmask) >> MAPLE_PARENT_SHIFT;
 
--- 
-MST
+7c is 1111100, but then you're shifting out the one bit that makes the
+difference from the above magic 0x78. What gives?
+
+> +}
 
