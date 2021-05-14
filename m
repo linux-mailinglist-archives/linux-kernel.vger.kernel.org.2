@@ -2,91 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 509123803A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 08:29:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77DBD3803A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 08:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232316AbhENGah convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 14 May 2021 02:30:37 -0400
-Received: from mout.kundenserver.de ([212.227.17.10]:59921 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230059AbhENGab (ORCPT
+        id S232432AbhENGby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 02:31:54 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:2917 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232349AbhENGbx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 02:30:31 -0400
-Received: from mail-wm1-f44.google.com ([209.85.128.44]) by
- mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1M8hIl-1ldIaN3qYT-004jez for <linux-kernel@vger.kernel.org>; Fri, 14 May
- 2021 08:29:18 +0200
-Received: by mail-wm1-f44.google.com with SMTP id u133so4213150wmg.1
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 23:29:18 -0700 (PDT)
-X-Gm-Message-State: AOAM532okK5QDELTiVNkAu46YKi/tlaDi7UVSveLk4e3N0SBgmoU794W
-        OYQpMuysVmRiwLXkjqj7YgmVK8gDTBB0P7N7FMo=
-X-Google-Smtp-Source: ABdhPJwq4wIOtbl6ITYtHXFzwsvaLAUFhNxQXa2z85PD2Ju5EY/QK9nLdrLeFihJr5gteE2Y+aO85tobdvaA5BUHJ0Y=
-X-Received: by 2002:a1c:c90f:: with SMTP id f15mr7651880wmb.142.1620973758665;
- Thu, 13 May 2021 23:29:18 -0700 (PDT)
+        Fri, 14 May 2021 02:31:53 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FhJVk5hCczBvLb;
+        Fri, 14 May 2021 14:27:58 +0800 (CST)
+Received: from localhost.localdomain (10.175.102.38) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 14 May 2021 14:30:30 +0800
+From:   Wei Yongjun <weiyongjun1@huawei.com>
+To:     <weiyongjun1@huawei.com>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH -next] percpu: make symbol 'pcpu_free_slot' static
+Date:   Fri, 14 May 2021 06:39:52 +0000
+Message-ID: <20210514063952.3240527-1-weiyongjun1@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210514062150.3533786-1-yukuai3@huawei.com>
-In-Reply-To: <20210514062150.3533786-1-yukuai3@huawei.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 14 May 2021 08:28:17 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a01oF7QZzjbd703QwiK+6ZPx1w-fSBcLjeMm4KQ0X0amw@mail.gmail.com>
-Message-ID: <CAK8P3a01oF7QZzjbd703QwiK+6ZPx1w-fSBcLjeMm4KQ0X0amw@mail.gmail.com>
-Subject: Re: [PATCH] char: pcmcia: remove set but not used variable 'tmp'
-To:     Yu Kuai <yukuai3@huawei.com>
-Cc:     Harald Welte <laforge@gnumonks.org>,
-        gregkh <gregkh@linuxfoundation.org>, akpm@osdl.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "zhangyi (F)" <yi.zhang@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Provags-ID: V03:K1:Qxz1l8NPpOz/1U3m2I1GyRaEWDhl+txVs5kE/C/5/v6NqBxqPBQ
- rDymgmL4Cc/WgdDayRJDfn7woSWad2w5ilOq0HurmYsgWOQ6ljMl8Dd5CT74efOpESdIJHX
- xJJXRZyecoI+LX1dKDjGwd5BZKeML6NSn6urO9qLS+rX3YBLCJxFwQigw9ImlDLA4+D+rwX
- ytIEk/SpsqXK3rnUjbqCQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:w5qaT08HwJA=:VpO3dqe1BF0uuYGHeu+mxn
- HFbn+3hAPihp1yk5LMwJGAl8PXWtDl5kLaCIFz0fk8sYperzW6jRRdGg6XjMJfbXC/wrc4s24
- oZ5nMRMILc5xPeXuKWCFNQS2Rs7TeEHnRU1CbSL8cWMsnfIRVhcWW+qW9MPpkL5uPZtve/UJz
- Xik2K+vfwjU6OI0QkQyQC9CUPCObgjcujIMgEDIQdhggOL1yp3wUdTEzNW5dLtEZgI7lma1Yy
- uGRgqcDg0u3n2vedLQiS/K6XJ7pkxo37CEjr/lj9hMywdAmX10qjIUgBntnI6YWj/gUS2D/aT
- /aPjLUaFXY0LKK4E2jS/Yvciix2OvgXIycq0YA3PsAU88j+1YOBrDeIcOW9zIc3JlmXU0iiRC
- GNIDAm/DMbxxyYqWtpqFpLGtaXD+cVwo6zmCgD0QVlpc0nmQ44fmJJ8dIHewIEtYVpfQz1BAs
- 46Gf4D7hi9hs2pfdj/uhwxHt2raAg3mecjxnClvvsbrR/VFXTgLth0a0RyIxJkAhgP36PYRQ3
- ULaW11boteV7B0YbEo9pe4=
+Content-Type:   text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+X-Originating-IP: [10.175.102.38]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 8:21 AM Yu Kuai <yukuai3@huawei.com> wrote:
->
-> Fixes gcc '-Wunused-but-set-variable' warning:
->
-> drivers/char/pcmcia/cm4000_cs.c:1053:16: warning: variable ‘tmp’
-> set but not used [-Wunused-but-set-variable]
->
-> It is never used and so can be removed.
->
-> Fixes: c1986ee9bea3 ("[PATCH] New Omnikey Cardman 4000 driver")
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+The sparse tool complains as follows:
 
-Looks good to me. This was likely written that way at a time when some
-architecture implemented inb() as a macro, and ignoring its value
-would cause a different warning.
+mm/percpu.c:138:5: warning:
+ symbol 'pcpu_free_slot' was not declared. Should it be static?
 
-Since you are already touching this file, can you have a look at this
-warning as well:
+This symbol is not used outside of percpu.c, so marks it static.
 
-   drivers/char/pcmcia/cm4000_cs.c: In function 'set_protocol':
->> drivers/char/pcmcia/cm4000_cs.c:569:16: warning: iteration 4 invokes undefined behavior [-Waggressive-loop-optimizations]
-     569 |   pts_reply[i] = inb(REG_BUF_DATA(iobase));
-         |   ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/char/pcmcia/cm4000_cs.c:567:2: note: within this loop
-     567 |  for (i = 0; i < num_bytes_read; i++) {
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+---
+ mm/percpu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This looks like a preexisting problem that was uncovered by a patch
-that is now in linux-next to change the inb() definition once more,
-I got a report from the kernel build bot about it after I merged the
-patch into the asm-generic tree. It needs a range check on
-num_bytes_read, or a Kconfig check to ensure it is not built on
-architectures without working inb()/outb() operations.
+diff --git a/mm/percpu.c b/mm/percpu.c
+index a257c3efdf18..73c249f3b6a3 100644
+--- a/mm/percpu.c
++++ b/mm/percpu.c
+@@ -135,7 +135,7 @@ static int pcpu_unit_size __ro_after_init;
+ static int pcpu_nr_units __ro_after_init;
+ static int pcpu_atom_size __ro_after_init;
+ int pcpu_nr_slots __ro_after_init;
+-int pcpu_free_slot __ro_after_init;
++static int pcpu_free_slot __ro_after_init;
+ int pcpu_sidelined_slot __ro_after_init;
+ int pcpu_to_depopulate_slot __ro_after_init;
+ static size_t pcpu_chunk_struct_size __ro_after_init;
 
-        Arnd
