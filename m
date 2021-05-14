@@ -2,89 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33BAB3803FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 09:07:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B00E380400
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 09:07:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232847AbhENHI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 03:08:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:44156 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232410AbhENHI0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 03:08:26 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 570E6169E;
-        Fri, 14 May 2021 00:07:15 -0700 (PDT)
-Received: from slackpad.fritz.box (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EEE1F3F718;
-        Fri, 14 May 2021 00:07:13 -0700 (PDT)
-Date:   Fri, 14 May 2021 08:07:08 +0100
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Tobias Schramm <t.schramm@manjaro.org>
-Cc:     Jernej =?UTF-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        id S232912AbhENHIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 03:08:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232410AbhENHIl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 03:08:41 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2879EC061574;
+        Fri, 14 May 2021 00:07:30 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id t3so1116298edc.7;
+        Fri, 14 May 2021 00:07:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kAz87Mlx4WSb3cL27SNEkL0I2UewaZV6o5vYLNdlON4=;
+        b=UuXtFRUP0O+sV7ASRFo0cUu1obDqwq9kWCVBEGqWbIE1/oq3zJkToBPnlcQR3LxSNh
+         iw1Q8hDqukIyY8MIeNUvcGHc0vH0kOOYqlnBlYq5qdkK0IN55ZaMWtsjbcvQaKf5xtIc
+         PbIrB7LuKBzklzoyB8+wkMkUiCcDxGXFePOj9BLPY/hcU/tOjiNg20FHu55zXq2WEeBV
+         ehEeHFT1FbPxFaLrasK0zLM9eaBWGeeNNPnWr2yOI20x6de2n8w7PYwuEq9fg8ZqBVfL
+         CjuVNDZJ9b9rukAyI8bdd9jY1Q3VwBH+ECBtals1Mj7QuqpxX7ejGBYQLs42m10+cjXw
+         1XuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=kAz87Mlx4WSb3cL27SNEkL0I2UewaZV6o5vYLNdlON4=;
+        b=YNeUeZVbfaX2vbUzquA3ZN0z6kDuSbgglZek4cgE496lsP7yGzGgod+tg/N/jjFAmH
+         SK1kapUDlUYhdidvuQXwjubvlzQKL3ZFVukEWAM7lkSus3m1Xfe2/zQUQBxVonROpZUn
+         TAeGr5lAYcG/uZ9h1mhnFfRqoQKKsYbYO+qkvNBeeh+YU2L3mfoJUSg/KAElcx3A+Y9C
+         UUIqU2oiwaq0qW+St6XaCImBMrq/V9xIlKWo52n6q+LtUUAvwa8Cij4sqb9VjqrlcBN3
+         wxx3LkI8597pJPh4q9ZkX25B6SCX3D4zRMEaMSiWvEgz7qyL/+jhKddR5qahcp0FhGs4
+         /b8g==
+X-Gm-Message-State: AOAM532Um71ZGrDVv7RdCfePdkNlUe51/wrH9T5+IQDmnV6TWPy9+I/b
+        6M84tiEPyCWeTwD11RDpNZU=
+X-Google-Smtp-Source: ABdhPJzkToVSfe5UqgCC/8i7ain6D8alwEi8DJsz9F+jFa7GnmwdmmP0iB7MB/ckXKhbeysd+y/aSQ==
+X-Received: by 2002:aa7:d6c6:: with SMTP id x6mr53451578edr.193.1620976048967;
+        Fri, 14 May 2021 00:07:28 -0700 (PDT)
+Received: from gmail.com (0526E777.dsl.pool.telekom.hu. [5.38.231.119])
+        by smtp.gmail.com with ESMTPSA id k9sm4067820edv.69.2021.05.14.00.07.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 May 2021 00:07:28 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Fri, 14 May 2021 09:07:26 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/7] ARM: dts: sun8i: v3s: add DMA controller to v3s
- dts
-Message-ID: <20210514080708.2c108851@slackpad.fritz.box>
-In-Reply-To: <20210513233024.2076725-2-t.schramm@manjaro.org>
-References: <20210513233024.2076725-1-t.schramm@manjaro.org>
-        <20210513233024.2076725-2-t.schramm@manjaro.org>
-Organization: Arm Ltd.
-X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-slackware-linux-gnu)
+Subject: Re: [PATCH] x86/acpi: Switch to pr_xxx log functions
+Message-ID: <YJ4hrrUkKRkKsUtf@gmail.com>
+References: <8436da08-4812-d383-8f2a-1c07181ebfb8@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8436da08-4812-d383-8f2a-1c07181ebfb8@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 May 2021 01:30:18 +0200
-Tobias Schramm <t.schramm@manjaro.org> wrote:
 
-> The Allwinner V3s and V3 feature a DMA controller.
-> This commit adds it to the V3s dtsi.
+* Heiner Kallweit <hkallweit1@gmail.com> wrote:
+
+> Switching to pr_debug et al has two benefits:
+> - We don't have to add PREFIX to each log statement
+> - Debug output is suppressed except DEBUG is defined or dynamic
+>   debugging is enabled for the respective code piece.
 > 
-> Signed-off-by: Tobias Schramm <t.schramm@manjaro.org>
-
-Address, interrupt and clocks/reset match the manual.
-
-Reviewed-by: Andre Przywara <andre.przywara@arm.com>
-
-Cheers,
-Andre
-
+> In addition ensure that longer messages aren't split to multiple lines
+> in source code, checkpatch complains otherwise.
+> 
+> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
 > ---
->  arch/arm/boot/dts/sun8i-v3s.dtsi | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/sun8i-v3s.dtsi b/arch/arm/boot/dts/sun8i-v3s.dtsi
-> index eb4cb63fef13..f0296ab46137 100644
-> --- a/arch/arm/boot/dts/sun8i-v3s.dtsi
-> +++ b/arch/arm/boot/dts/sun8i-v3s.dtsi
-> @@ -1,5 +1,6 @@
->  /*
->   * Copyright (C) 2016 Icenowy Zheng <icenowy@aosc.xyz>
-> + * Copyright (C) 2021 Tobias Schramm <t.schramm@manjaro.org>
->   *
->   * This file is dual-licensed: you can use it either under the terms
->   * of the GPL or the X11 license, at your option. Note that this dual
-> @@ -172,6 +173,15 @@ nmi_intc: interrupt-controller@1c000d0 {
->  			interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
->  		};
->  
-> +		dma: dma-controller@1c02000 {
-> +			compatible = "allwinner,sun8i-v3s-dma";
-> +			reg = <0x01c02000 0x1000>;
-> +			interrupts = <GIC_SPI 50 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&ccu CLK_BUS_DMA>;
-> +			resets = <&ccu RST_BUS_DMA>;
-> +			#dma-cells = <1>;
-> +		};
-> +
->  		tcon0: lcd-controller@1c0c000 {
->  			compatible = "allwinner,sun8i-v3s-tcon";
->  			reg = <0x01c0c000 0x1000>;
+>  arch/x86/kernel/acpi/boot.c | 118 ++++++++++++++----------------------
+>  1 file changed, 47 insertions(+), 71 deletions(-)
 
+Reviewed-by: Ingo Molnar <mingo@kernel.org>
+
+Thanks,
+
+	Ingo
