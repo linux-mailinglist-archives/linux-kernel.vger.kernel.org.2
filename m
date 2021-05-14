@@ -2,135 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB953802C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 06:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A15D3802C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 06:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232173AbhENEV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 00:21:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232114AbhENEV4 (ORCPT
+        id S232199AbhENEX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 00:23:28 -0400
+Received: from smtprelay0235.hostedemail.com ([216.40.44.235]:52356 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232177AbhENEX0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 00:21:56 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA28C061574;
-        Thu, 13 May 2021 21:20:40 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2so41357772lft.4;
-        Thu, 13 May 2021 21:20:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=/HACQmlceYlYcP2ZTBmulx+QhiBT9GSoKT1qEpJT5BM=;
-        b=iWkPUUa3uetg3wikEAiftynvERcZmFEgZ4nja3IEXjeaaN3tN3d5KsIb7iwX3YFGxf
-         bggkU4A8Twh2hqsotNA/sO6UEyTvHnGEemasmlpjU5jD+sNd21hz1wE6y3pwKScOWw4p
-         W0ISs2Vb33m0gUOeuOCGS31B80A5Zipx3vwsNyw9EaZaJxaiChjJuxd9j8Iw2pub8e5a
-         zlCLs1y5IDN0UAW8a/IbYFq1/ca38Q7wrEIXUg7eKnKPUvGjVUy6oiDWS49IN/mczcCM
-         kAeDieNlTOPm/xmcEyTmtdSv/UEzO2gADpwXPdnPU9fakSw8Mg0lnFEwVPGO1ifwft3A
-         EdjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=/HACQmlceYlYcP2ZTBmulx+QhiBT9GSoKT1qEpJT5BM=;
-        b=fWtUEEIX3PSfnfYAY7XJbYoq98+MlwbQ/k9t7++mH72Q+S+xPYLvjcZqRxDaX8kt/g
-         R++7hEMNoXmmax6ADtIemC7/z2bTHMOq42CgDMtcw/APrvF7D40hdJ+0MfRpGDEumGSq
-         2YtEk97m0GuCXMWSgjAdVpYYWL0Oap1n5NHRGjiFP5XydY7r3T4Yw7e9jQJ0W5QTaEjw
-         i12j0Z/i56qMgahSfYZswPQFSWp7puVlzIOfTbYQbvYwgb2YSS5bVkmR4RRCx6ven0hV
-         FaRYy6c9g61Z32w9A/VJUX3TlGO/CZ/dP5GLTER8LONtwer/U+d4YhiLi2Wfc9H8q+OF
-         rNFg==
-X-Gm-Message-State: AOAM533tnHAUeNwUEXNX3Iqm4VoBCj1GzWEtfFzlODwlmSuzjYDt0Z6G
-        PqBqL9hPAsQNBTJGuHDc3J4V82NWnFoIi4ihptzjySEl3xU=
-X-Google-Smtp-Source: ABdhPJzyDKMVwl8UoI7/n1bpjFLa8FtRrPk7thWt0fa/ZsOoikaU11D4E76oqn3c0WE6KQ2lDMZ7BvBkAojlDoNN3VU=
-X-Received: by 2002:ac2:5b1a:: with SMTP id v26mr31252723lfn.534.1620966039076;
- Thu, 13 May 2021 21:20:39 -0700 (PDT)
+        Fri, 14 May 2021 00:23:26 -0400
+Received: from omf05.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 10349837F24A;
+        Fri, 14 May 2021 04:22:13 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf05.hostedemail.com (Postfix) with ESMTPA id 6D592B2796;
+        Fri, 14 May 2021 04:22:10 +0000 (UTC)
+Message-ID: <d1ae6de53236629d2d02bed1af280e1cbf4c4e8c.camel@perches.com>
+Subject: Re: [PATCH 2/7] rtl8xxxu: add handle for mac80211 get_txpower
+From:   Joe Perches <joe@perches.com>
+To:     Reto Schneider <code@reto-schneider.ch>, Jes.Sorensen@gmail.com,
+        linux-wireless@vger.kernel.org, pkshih@realtek.com
+Cc:     yhchuang@realtek.com, Larry.Finger@lwfinger.net,
+        tehuang@realtek.com, reto.schneider@husqvarnagroup.com,
+        ccchiu77@gmail.com, kvalo@codeaurora.org, davem@davemloft.net,
+        kuba@kernel.org, Chris Chiu <chiu@endlessos.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Date:   Thu, 13 May 2021 21:22:09 -0700
+In-Reply-To: <20210514020442.946-3-code@reto-schneider.ch>
+References: <a31d9500-73a3-f890-bebd-d0a4014f87da@reto-schneider.ch>
+         <20210514020442.946-1-code@reto-schneider.ch>
+         <20210514020442.946-3-code@reto-schneider.ch>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-References: <20210512095823.99162-1-yunbo.xufeng@linux.alibaba.com>
- <20210512095823.99162-2-yunbo.xufeng@linux.alibaba.com> <20210512225504.3kt6ij4xqzbtyej5@ast-mbp.dhcp.thefacebook.com>
- <9ae7e503-8f49-a7a4-3e18-0288c7989484@linux.alibaba.com>
-In-Reply-To: <9ae7e503-8f49-a7a4-3e18-0288c7989484@linux.alibaba.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 13 May 2021 21:20:27 -0700
-Message-ID: <CAADnVQK1s4US2LPe4+XsQBEjH8iG8Jdh58n6X1yXAafDAw+M4Q@mail.gmail.com>
-Subject: Re: [RFC] [PATCH bpf-next 1/1] bpf: Add a BPF helper for getting the
- cgroup path of current task
-To:     xufeng zhang <yunbo.xufeng@linux.alibaba.com>
-Cc:     KP Singh <kpsingh@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Yonghong Song <yhs@fb.com>, Song Liu <songliubraving@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Joe Stringer <joe@cilium.io>,
-        Quentin Monnet <quentin@isovalent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=1.56
+X-Stat-Signature: dk8dqn4byhkc677ruoy5f8jfh8rn1dfe
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: 6D592B2796
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18ODrWJ8BvWBzNaBhnO6Y0bbB7RSrNHloA=
+X-HE-Tag: 1620966130-521492
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 1:57 AM xufeng zhang
-<yunbo.xufeng@linux.alibaba.com> wrote:
->
-> =E5=9C=A8 2021/5/13 =E4=B8=8A=E5=8D=886:55, Alexei Starovoitov =E5=86=99=
-=E9=81=93:
->
-> > On Wed, May 12, 2021 at 05:58:23PM +0800, Xufeng Zhang wrote:
-> >> To implement security rules for application containers by utilizing
-> >> bpf LSM, the container to which the current running task belongs need
-> >> to be known in bpf context. Think about this scenario: kubernetes
-> >> schedules a pod into one host, before the application container can ru=
-n,
-> >> the security rules for this application need to be loaded into bpf
-> >> maps firstly, so that LSM bpf programs can make decisions based on
-> >> this rule maps.
-> >>
-> >> However, there is no effective bpf helper to achieve this goal,
-> >> especially for cgroup v1. In the above case, the only available inform=
-ation
-> >> from user side is container-id, and the cgroup path for this container
-> >> is certain based on container-id, so in order to make a bridge between
-> >> user side and bpf programs, bpf programs also need to know the current
-> >> cgroup path of running task.
-> > ...
-> >> +#ifdef CONFIG_CGROUPS
-> >> +BPF_CALL_2(bpf_get_current_cpuset_cgroup_path, char *, buf, u32, buf_=
-len)
-> >> +{
-> >> +    struct cgroup_subsys_state *css;
-> >> +    int retval;
-> >> +
-> >> +    css =3D task_get_css(current, cpuset_cgrp_id);
-> >> +    retval =3D cgroup_path_ns(css->cgroup, buf, buf_len, &init_cgroup=
-_ns);
-> >> +    css_put(css);
-> >> +    if (retval >=3D buf_len)
-> >> +            retval =3D -ENAMETOOLONG;
-> > Manipulating string path to check the hierarchy will be difficult to do
-> > inside bpf prog. It seems to me this helper will be useful only for
-> > simplest cgroup setups where there is no additional cgroup nesting
-> > within containers.
-> > Have you looked at *ancestor_cgroup_id and *cgroup_id helpers?
-> > They're a bit more flexible when dealing with hierarchy and
-> > can be used to achieve the same correlation between kernel and user cgr=
-oup ids.
->
->
-> Thanks for your timely reply, Alexei!
->
-> Yes, this helper is not so common, it does not works for nesting cgroup
-> within containers.
->
-> About your suggestion, the *cgroup_id helpers only works for cgroup v2,
-> however, we're still using cgroup v1 in product=EF=BC=8Cand even for cgro=
-up v2,
-> I'm not sure if there is any way for user space to get this cgroup id
-> timely(after container created, but before container start to run)=E3=80=
-=82
->
-> So if there is any effective way works for cgroup v1?
+On Fri, 2021-05-14 at 04:04 +0200, Reto Schneider wrote:
+> From: Chris Chiu <chiu@endlessos.org>
+> 
+> add .get_txpower handle for mac80211 operations for `iw` and `wext`
+> tools to get the underlying tx power (max limit).
+[]
+> diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
+[]
 
-https://github.com/systemd/systemd/blob/main/NEWS#L379
+> +int
+> +rtl8xxxu_gen1_get_tx_power(struct rtl8xxxu_priv *priv)
+> +{
+> +	u8 txpwr_level;
+> +	int txpwr_dbm;
+> +
+> +	txpwr_level = priv->cur_cck_txpwridx;
+> +	txpwr_dbm = rtl8xxxu_gen1_txpwridx_to_dbm(priv, WIRELESS_MODE_B,
+> +						  txpwr_level);
+> +	txpwr_level = priv->cur_ofdm24g_txpwridx +
+> +		      priv->ofdm_tx_power_index_diff[1].a;
+> +
+> +	if (rtl8xxxu_gen1_txpwridx_to_dbm(priv, WIRELESS_MODE_G, txpwr_level)
+> +	    > txpwr_dbm)
+> +		txpwr_dbm = rtl8xxxu_gen1_txpwridx_to_dbm(priv, WIRELESS_MODE_G,
+> +							  txpwr_level);
+
+probably better to use a temporaries instead of multiple calls.
+
+	foo = rtl8xxxu_gen1_txpwridx_to_dbm(priv, WIRELESS_MODE_G, txpwr_level);
+	if (foo > txpwr_dbm)
+		txpwr_dbm = foo;
+
+> +	txpwr_level = priv->cur_ofdm24g_txpwridx;
+> +	if (rtl8xxxu_gen1_txpwridx_to_dbm(priv, WIRELESS_MODE_N_24G,
+> +					  txpwr_level) > txpwr_dbm)
+> +		txpwr_dbm = rtl8xxxu_gen1_txpwridx_to_dbm(priv,
+> +							  WIRELESS_MODE_N_24G,
+> +							  txpwr_level);
+> +
+> +	return txpwr_dbm;
+
+	foo = rtl8xxxu_gen1_txpwridx_to_dbm(priv, WIRELESS_MODE_N_24G, txpwr_level);
+
+	return min(txpwr_dbm, foo);
+
+
