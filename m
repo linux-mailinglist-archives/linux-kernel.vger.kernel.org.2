@@ -2,82 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18CBF381411
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 01:06:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B26B381414
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 01:07:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234262AbhENXHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 19:07:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55216 "EHLO
+        id S234277AbhENXIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 19:08:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230371AbhENXHi (ORCPT
+        with ESMTP id S230371AbhENXIP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 19:07:38 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 182E8C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 16:06:25 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id v6so323213ljj.5
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 16:06:25 -0700 (PDT)
+        Fri, 14 May 2021 19:08:15 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D80DBC06174A;
+        Fri, 14 May 2021 16:07:03 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id di13so342060edb.2;
+        Fri, 14 May 2021 16:07:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Owdkm20O79PlykIyit66QYvMD3Y28QrpwNYI4FamRhg=;
-        b=YNmOydQi9rcAD8YxKva1QHfQhxtA8KCFr3emQ6It1PF/3EpSfAxhtQNxG5+IgDCKnq
-         lEgrdDox696tElk4oTEQ785XzFGkuZIrnEYbIdWsSFGw2CfbZW2tfa6k6/kgIDd5dTdy
-         4U74cjzRA99jtTCMlHqe+AXvlkVm8vfuXXiv5Y4zUArKtnYAobp5MP/y3nXIbIkRxXuE
-         yItew7LU9UwT9att2SmGw+Ze//F/4w+3eNv9ISw8szGhTUpSA8l5eaxKmALI5YjtcGOm
-         kE58UX08P96mZgz6vMXQjTEmFiVLCuey/XbxkJz4Ri/IAnMSfxFwZD4obHnUj5YXOMYm
-         fqXQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FByqF0c3I3+KZiJjq4VOafu2X3oZBAK8FocGFJktVR8=;
+        b=SkAjQXrU7Zu2LFjEC0wfEcraxocPb4VZBSDiphrIBgwXWfM2l/p89/gMoAqwtKEIk1
+         qygiXIr+5IT11PWPviABMFRklx6aCOIEuLOeDz0yTV0S/irvrkt35RuLSDuRL7+JcNw5
+         v0MspceUkm8VgBQCHFfWSoYg9V9i1Oz7djSjGLTxwkQOKiQpo02uLqOBt8javeLANlV1
+         5CNnEg9zPxhpfI2en2wf2YTcFR1AO26kW4M8I2rexXnfl7iWsbuLcSYUH8w7ZpwNub2g
+         Qbaxr5IPBNJLWfYKauG6gHy9YwL3gIwTexSaSQYnE3nLbFN0cH+hRWvkFTmFCkMiUY11
+         CAig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Owdkm20O79PlykIyit66QYvMD3Y28QrpwNYI4FamRhg=;
-        b=iGv+D4ci1kQQicEDorEq0R0OwGli1JzTkszGTTdkd/LxHI4t4QtOUd/V/tgJcieZOD
-         dJVB2nJ22seqny2bAoVNoLvH1ro0WB8BhM2wcw1FOGVqq2Cg8aFMNyYc7re+R1waXXHR
-         KeJ9JeB8wwdzdQg5T20/DchBML61PGOuW2Mi9fAI6OkLZ46KZ7/gs0Hbz2/rYHnCdQp8
-         IKRs36ZLN/OkzIP0NAEjFe02mF+AINUIRLSNwf+nDLo3buDxJ+ILUamElkqMygXtyG8K
-         uhQm5JbPzwFsJnMLFGbaiWOkYWBKEay0quk0VN6pvZSDmaX4C6vrnXAnYrCeFQnjkNG9
-         B9hQ==
-X-Gm-Message-State: AOAM530GBwr0eCja700Ap3ZtiXP1R5QxHkDO0aZ2U9BwmYlhkijN+Hhb
-        aFJoyu7OqT4qiz3/RfZmEi7H4+0WpcahYAGLFxE4tg==
-X-Google-Smtp-Source: ABdhPJw1LckCubjtA+4YC+4+xrdHdl6i4QmJ3KwgSsYPI/Kvl9K54AOy0cEIEYHOBAQCILITBdBe7CW7HNGUvdQwbDU=
-X-Received: by 2002:a2e:a365:: with SMTP id i5mr40075227ljn.344.1621033583251;
- Fri, 14 May 2021 16:06:23 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FByqF0c3I3+KZiJjq4VOafu2X3oZBAK8FocGFJktVR8=;
+        b=aW7MTw/Z3TLhBXrhQUPaoqxVxVYNVZ1bgIQ8NNAZwtIM1Nb5RxXG0k15PxSjhJmyl3
+         kojzy/hwVJTXd6v618chXbGY1vk10sHRvMVttW5yxuKXP1UEcIYLsSO9BOBJ8YeXDseX
+         3X+sIIgukFKJFQmsSUJwa4PdOL4QTlkGvPj0b43xAkLmRqcltR6iQ63ydSIaHS8PPZv9
+         hknuOfcX2DTJ5EieT+DLP97O4H0kVpW8tZA/628YvDBR0G9sUTmnPrKZPYKLj9hrvo9y
+         yIcKcnoR96OzDxXdK5TW8JyHiCSojGPHMLzbWUmw+8b9wMC+59C/PchFFb1ZtQXFuYiz
+         ehfQ==
+X-Gm-Message-State: AOAM53103FePBQ/ynuf4xeZP28jYUclpVLGQ3vjtjX0dhs5Dd2+M+EUB
+        CAO+P7kHb5pN0xugxKS+LJ1fUhMgUFpJCw==
+X-Google-Smtp-Source: ABdhPJzuMGMrdrVFxx08bwzxWACY6Q+PtzanMlNhNCGyBVaDexUbzJrhfb7lMjHaSy1Ga8QT1Kr2lA==
+X-Received: by 2002:a05:6402:4383:: with SMTP id o3mr58546981edc.333.1621033622467;
+        Fri, 14 May 2021 16:07:02 -0700 (PDT)
+Received: from Ansuel-xps.localdomain (93-35-189-2.ip56.fastwebnet.it. [93.35.189.2])
+        by smtp.gmail.com with ESMTPSA id j8sm5397593edq.67.2021.05.14.16.07.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 May 2021 16:07:02 -0700 (PDT)
+Date:   Sat, 15 May 2021 01:07:02 +0200
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v6 02/25] net: dsa: qca8k: use iopoll macro for
+ qca8k_busy_wait
+Message-ID: <YJ8Clibm/95FOz4D@Ansuel-xps.localdomain>
+References: <20210514210015.18142-1-ansuelsmth@gmail.com>
+ <20210514210015.18142-3-ansuelsmth@gmail.com>
+ <20210514225225.GI12395@shell.armlinux.org.uk>
 MIME-Version: 1.0
-References: <f8811b3768c4306af7fb2732b6b3755489832c55.1621020158.git.thomas.lendacky@amd.com>
-In-Reply-To: <f8811b3768c4306af7fb2732b6b3755489832c55.1621020158.git.thomas.lendacky@amd.com>
-From:   Peter Gonda <pgonda@google.com>
-Date:   Fri, 14 May 2021 17:06:11 -0600
-Message-ID: <CAMkAt6qJqTvM0PX+ja3rLP3toY-Rr4pSUbiFKL1GwzYZPG6f8g@mail.gmail.com>
-Subject: Re: [PATCH] KVM: SVM: Do not terminate SEV-ES guests on GHCB
- validation failure
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     kvm list <kvm@vger.kernel.org>, linux-kernel@vger.kernel.org,
-        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210514225225.GI12395@shell.armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 1:22 PM Tom Lendacky <thomas.lendacky@amd.com> wrote:
+On Fri, May 14, 2021 at 11:52:25PM +0100, Russell King (Oracle) wrote:
+> On Fri, May 14, 2021 at 10:59:52PM +0200, Ansuel Smith wrote:
+> > Use iopoll macro instead of while loop.
+> > 
+> > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> > Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> 
+> This doesn't look quite right to me.
+> 
+> >  static int
+> >  qca8k_busy_wait(struct qca8k_priv *priv, u32 reg, u32 mask)
+> >  {
+> > -	unsigned long timeout;
+> > -
+> > -	timeout = jiffies + msecs_to_jiffies(20);
+> > +	u32 val;
+> 
+> val is unsigned here.
+> 
+> > +	/* Check if qca8k_read has failed for a different reason
+> > +	 * before returning -ETIMEDOUT
+> > +	 */
+> > +	if (ret < 0 && val < 0)
+> 
+> but here you are checking it for a negative number - this will always be
+> false, making the conditional code unreachable. Either the test is wrong,
+> or the type of val is wrong. Please resolve.
 >
-> Currently, an SEV-ES guest is terminated if the validation of the VMGEXIT
-> exit code and parameters fail. Since the VMGEXIT instruction can be issued
-> from userspace, even though userspace (likely) can't update the GHCB,
-> don't allow userspace to be able to kill the guest.
->
-> Return a #GP request through the GHCB when validation fails, rather than
-> terminating the guest.
 
-Is this a gap in the spec? I don't see anything that details what
-should happen if the correct fields for NAE are not set in the first
-couple paragraphs of section 4 'GHCB Protocol'.
+I know this is wrong and I will fix.
+Anyway I tested this and I checked if with u32 a negative value was
+actually provided and to my surprise the value was correctly returned.
+Any idea why?
+
+> -- 
+> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
