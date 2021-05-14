@@ -2,107 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D5C5380801
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 13:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7F07380804
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 13:03:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232431AbhENLEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 07:04:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232283AbhENLEl (ORCPT
+        id S231332AbhENLE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 07:04:56 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:27200 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230525AbhENLEx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 07:04:41 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 653F9C06174A;
-        Fri, 14 May 2021 04:03:30 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id b13-20020a17090a8c8db029015cd97baea9so1182724pjo.0;
-        Fri, 14 May 2021 04:03:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EkzpwjVe0wwLmPgMR98lKn55b9EeNwElH9tA7Rxi05Y=;
-        b=u70A+1kTvyXiODs3/WPwB9FXkQMx0hYRgkC/yJEiwXTclojKioNs2FFBhXTWC0pf/v
-         1rpdhyD48hRsmSqRiXuFD5Z52t2Qj0SHp2QyjfhEjgjRylMbweT9zVnLmcVpN6WnxPo8
-         jIL4bECIQ0btOmDTtj31F6sGT7HkhP+SfkVMCuUXN56euH9+dOmmFZNgCP9sRbilCiur
-         DKrwnSdqgtWu+6CNvKEjw7qu8wesVAmaNHU+eg0CQueFMUif+Mi5e2/kmm8nHxHEZO7h
-         WirDxwjkKZ7Jfu1CrgQ0Q3N8r4sRJwQ9UV3srcDrduSzwcZmjVewLeZtKnIeQc5F8uae
-         WjjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EkzpwjVe0wwLmPgMR98lKn55b9EeNwElH9tA7Rxi05Y=;
-        b=c+XjdV9H8NWkRrnmdlu8phahjQEO0swZnQ/NEY6Va8QJFjRYgojAo5Kc/S/qQrSXv/
-         0zFOKaPFUTGAu3pfjcMJM6vskUm0Y9LDNLsbl+1nXHdvaefIQgAJlxuGa2p1Ea45x+mB
-         aGh7ot0x1CIp12tJ9oQmyP6GxNZUWz5reiiMeNiqyYLfqAgOiI4Ebh430eG3DcRmEXmo
-         BQO3o7baPluA98Qa1qaBeWnf8naeOTG7jjPR1Qn5g2HLvlONUnqhbobR+pQrXVPkxuPg
-         2PmOE1wSi53PcLWRxKfXiutUXIR1rVdYDb1AjufusIhaRmY8hxW9VAUFKR3OrmlMeJgc
-         uY/w==
-X-Gm-Message-State: AOAM5303gPmjGs5LmPAllV7UrcxsBLlO7IbfYhUpXnAMncMozd2nsqIV
-        4wS6nwGCic8ZrL5uPkqiG10=
-X-Google-Smtp-Source: ABdhPJwN6s37m9kUw9Nby6kqqcqfoU5UH6stQNMFu6bHmr9GU2GtlitsMiwYzis0WSf2Oo/wz09OKQ==
-X-Received: by 2002:a17:902:7888:b029:ee:cea7:6ff0 with SMTP id q8-20020a1709027888b02900eecea76ff0mr45757205pll.16.1620990209883;
-        Fri, 14 May 2021 04:03:29 -0700 (PDT)
-Received: from localhost.localdomain ([45.135.186.114])
-        by smtp.gmail.com with ESMTPSA id ls6sm8686763pjb.57.2021.05.14.04.03.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 04:03:29 -0700 (PDT)
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dongliang Mu <mudongliangabcd@gmail.com>,
-        syzbot+636c58f40a86b4a879e7@syzkaller.appspotmail.com
-Subject: [PATCH] misc/uss720: fix memory leak in uss720_probe
-Date:   Fri, 14 May 2021 19:03:17 +0800
-Message-Id: <20210514110317.2041580-1-mudongliangabcd@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 14 May 2021 07:04:53 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14EB2oTQ066963;
+        Fri, 14 May 2021 07:03:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : references : date : in-reply-to : message-id : mime-version :
+ content-type; s=pp1; bh=trM4RvVKWsggwPkZQfHTLqfcekUi7iRQiTHlwo0qPQQ=;
+ b=qMfSAkl3vLYMlRiZPKQ4TUkwSFD6PPIurI5XqiR7sOUOsLnTeqZEoflwo8Mg/4d3VF6w
+ VYqBSMRtkyZ5UbDIzlZ3ramFDtPWeUkfLJLaHyYHvPFgs1Z9J+/8iihODrvckBi0TUBB
+ khz6Z7giGV3lFEwdx2bcTId92A9ZFl4u7n0D/zHNL+wqnahD+GdzC0YFEGMtsPvMNhMH
+ m9U8I5KAViqU3zpmd4ckI9/xeF6ExVC4+6LCuMpGBRTMFs2fNgKtCuLOJK2y6bA8lxuk
+ WBZtSfEMH6BLtiRGFYpCQkZN0pSy5e9tKhydzAkQez4Ep7D/lDlkAqh4KAC/SkG8yU+A OA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38hj2xyv26-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 May 2021 07:03:41 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14EB38E0069351;
+        Fri, 14 May 2021 07:03:40 -0400
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38hj2xyv1d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 May 2021 07:03:40 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14EB3cG3013243;
+        Fri, 14 May 2021 11:03:38 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma01fra.de.ibm.com with ESMTP id 38hc6u84fd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 May 2021 11:03:38 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14EB3aoo27394458
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 14 May 2021 11:03:36 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F360CA4054;
+        Fri, 14 May 2021 11:03:35 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C29EDA405C;
+        Fri, 14 May 2021 11:03:35 +0000 (GMT)
+Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Fri, 14 May 2021 11:03:35 +0000 (GMT)
+From:   Sven Schnelle <svens@linux.ibm.com>
+To:     Marco Elver <elver@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Alexander Potapenko <glider@google.com>
+Subject: Re: [PATCH 1/2] kfence: add function to mask address bits
+References: <20210514092139.3225509-1-svens@linux.ibm.com>
+        <20210514092139.3225509-2-svens@linux.ibm.com>
+        <CANpmjNNB=KTDBb65qtNwrPbwnbD2ThAFchA1HSCg9HKETkQvCg@mail.gmail.com>
+Date:   Fri, 14 May 2021 13:03:35 +0200
+In-Reply-To: <CANpmjNNB=KTDBb65qtNwrPbwnbD2ThAFchA1HSCg9HKETkQvCg@mail.gmail.com>
+        (Marco Elver's message of "Fri, 14 May 2021 12:54:11 +0200")
+Message-ID: <yt9dfsypinlk.fsf@linux.ibm.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: WLxwDTnW79MZMK5F4j3qlMRIvVaEa87j
+X-Proofpoint-GUID: rik4xugDhTQ30p5phi8M9e28La1f_tPy
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-14_04:2021-05-12,2021-05-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 suspectscore=0
+ bulkscore=0 adultscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ mlxlogscore=999 malwarescore=0 lowpriorityscore=0 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105140085
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-uss720_probe forgets to decrease the refcount of usbdev in uss720_probe.
-Fix this by decreasing the refcount of usbdev by usb_put_dev.
+Marco Elver <elver@google.com> writes:
 
-BUG: memory leak
-unreferenced object 0xffff888101113800 (size 2048):
-  comm "kworker/0:1", pid 7, jiffies 4294956777 (age 28.870s)
-  hex dump (first 32 bytes):
-    ff ff ff ff 31 00 00 00 00 00 00 00 00 00 00 00  ....1...........
-    00 00 00 00 00 00 00 00 00 00 00 00 03 00 00 00  ................
-  backtrace:
-    [<ffffffff82b8e822>] kmalloc include/linux/slab.h:554 [inline]
-    [<ffffffff82b8e822>] kzalloc include/linux/slab.h:684 [inline]
-    [<ffffffff82b8e822>] usb_alloc_dev+0x32/0x450 drivers/usb/core/usb.c:582
-    [<ffffffff82b98441>] hub_port_connect drivers/usb/core/hub.c:5129 [inline]
-    [<ffffffff82b98441>] hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
-    [<ffffffff82b98441>] port_event drivers/usb/core/hub.c:5509 [inline]
-    [<ffffffff82b98441>] hub_event+0x1171/0x20c0 drivers/usb/core/hub.c:5591
-    [<ffffffff81259229>] process_one_work+0x2c9/0x600 kernel/workqueue.c:2275
-    [<ffffffff81259b19>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2421
-    [<ffffffff81261228>] kthread+0x178/0x1b0 kernel/kthread.c:292
-    [<ffffffff8100227f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-Reported-by: syzbot+636c58f40a86b4a879e7@syzkaller.appspotmail.com
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
----
- drivers/usb/misc/uss720.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/usb/misc/uss720.c b/drivers/usb/misc/uss720.c
-index b5d661644263..748139d26263 100644
---- a/drivers/usb/misc/uss720.c
-+++ b/drivers/usb/misc/uss720.c
-@@ -736,6 +736,7 @@ static int uss720_probe(struct usb_interface *intf,
- 	parport_announce_port(pp);
+>> diff --git a/mm/kfence/core.c b/mm/kfence/core.c
+>> index e18fbbd5d9b4..bc15e3cb71d5 100644
+>> --- a/mm/kfence/core.c
+>> +++ b/mm/kfence/core.c
+>> @@ -50,6 +50,11 @@ static unsigned long kfence_sample_interval __read_mostly = CONFIG_KFENCE_SAMPLE
+>>  #endif
+>>  #define MODULE_PARAM_PREFIX "kfence."
+>>
+>> +unsigned long __weak kfence_arch_mask_addr(unsigned long addr)
+>> +{
+>> +       return addr;
+>> +}
+>
+> I don't think this belongs here, because it's test-specific,
+> furthermore if possible we'd like to put all arch-specific code into
+> <asm/kfence.h> (whether or not your arch will have 'static inline'
+> functions only, like x86 and arm64, or not is up to you).
+>
+> Because I don't see this function being terribly complex, also let's
+> just make it a macro.
+>
+> Then in kfence_test.c, we can have:
+>
+> #ifndef kfence_test_mask_address
+> #define kfence_test_mask_address(addr) (addr)
+> #endif
+>
+> and then have it include <asm/kfence.h>. And in your <asm/kfence.h>
+> you can simply say:
+>
+> #define kfence_test_mask_address(addr) (.........)
+>
+> It also avoids having to export kfence_test_mask_address, because
+> kfence_test can be built as a module.
  
- 	usb_set_intfdata(intf, pp);
-+	usb_put_dev(usbdev);
- 	return 0;
- 
- probe_abort:
--- 
-2.25.1
+Ok, i'll change my patch accordingly. Thanks!
 
+Sven
