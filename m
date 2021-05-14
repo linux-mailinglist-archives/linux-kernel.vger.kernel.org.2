@@ -2,92 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CAE33803CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 08:52:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD7833803D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 08:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232779AbhENGxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 02:53:12 -0400
-Received: from mail-ed1-f47.google.com ([209.85.208.47]:34777 "EHLO
-        mail-ed1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbhENGxL (ORCPT
+        id S232796AbhENG43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 02:56:29 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:2666 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232787AbhENG4X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 02:53:11 -0400
-Received: by mail-ed1-f47.google.com with SMTP id l7so33599870edb.1;
-        Thu, 13 May 2021 23:51:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dgfi7m6CEgAhvc7ZaK8fhbVwaLHprqVFXn+MIcMEgcQ=;
-        b=Mg3fJejXwvvw7mQgXCoNYmBskB37t1uVotk75nLANryflaUiuEwqc9USsAa3gFnvvA
-         AwmQj0iFrNzxcMgogF4sXucAIRc37DdOveCiAY5DxE1ei/a6XgQI8hlkstzAcLBXvN33
-         0pn2hLXwRGJftBDW/rgX1F8xNs+6wnjpTBKkxOR73rbpsJDL8yWKxN7Ji3wcMqxZTPaA
-         UfLCHrvXgKNsZvMNamHOxANXyZF26HPsy2BvAMjrx7qIlEjTxdrfpWxlDYXKt6SzlLG2
-         LOZ9xeuXJL7RenF0yMNgmja1frltyJtSoX0JU/RgZeukWPrtiZftZYnuivUlr6G4P+B4
-         yuXw==
-X-Gm-Message-State: AOAM533v6FjGfBLQHR4JgdNdDnD/Dwuc+of+y/NAsuylzSCOTTdYN9jX
-        SSfmZWn/dcNruzsXH4prKjV2jzbFTok=
-X-Google-Smtp-Source: ABdhPJwSsm48aU7FhrFdOBU9siS5Yfin6+5GcJFRxNBFT5HVzGOup9BJHgei8DrIf+j2AME++JK9Kw==
-X-Received: by 2002:a05:6402:84b:: with SMTP id b11mr54391190edz.289.1620975118989;
-        Thu, 13 May 2021 23:51:58 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
-        by smtp.gmail.com with ESMTPSA id q18sm3915894edd.3.2021.05.13.23.51.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 May 2021 23:51:58 -0700 (PDT)
-Subject: Re: [PATCH] serial: kgdb_nmi: remove redundant initialization of
- variable c
-To:     Colin King <colin.king@canonical.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210513230224.138859-1-colin.king@canonical.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <ea469561-4103-4fd9-2c53-30d3e797e16d@kernel.org>
-Date:   Fri, 14 May 2021 08:51:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Fri, 14 May 2021 02:56:23 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FhK3Z18DyzmVmF;
+        Fri, 14 May 2021 14:52:58 +0800 (CST)
+Received: from localhost (10.174.179.215) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.498.0; Fri, 14 May 2021
+ 14:55:04 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
+        <jic23@kernel.org>, <yuehaibing@huawei.com>, <gregkh@suse.de>
+CC:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] iio: adc: ad7793: Add missing error code in ad7793_setup()
+Date:   Fri, 14 May 2021 14:54:31 +0800
+Message-ID: <20210514065431.4328-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-In-Reply-To: <20210513230224.138859-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.215]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14. 05. 21, 1:02, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The variable c is being initialized with a value that is never
-> read, it is being updated later on. The assignment is redundant and
-> can be removed.
-> 
-> Addresses-Coverity: ("Unused value")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Set error code while device ID query failed.
 
-Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
+Fixes: 88bc30548aae ("IIO: ADC: New driver for AD7792/AD7793 3 Channel SPI ADC")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ drivers/iio/adc/ad7793.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> ---
->   drivers/tty/serial/kgdb_nmi.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/tty/serial/kgdb_nmi.c b/drivers/tty/serial/kgdb_nmi.c
-> index db059b66438e..7e07ee915f3f 100644
-> --- a/drivers/tty/serial/kgdb_nmi.c
-> +++ b/drivers/tty/serial/kgdb_nmi.c
-> @@ -115,7 +115,7 @@ static void kgdb_tty_recv(int ch)
->   static int kgdb_nmi_poll_one_knock(void)
->   {
->   	static int n;
-> -	int c = -1;
-> +	int c;
->   	const char *magic = kgdb_nmi_magic;
->   	size_t m = strlen(magic);
->   	bool printch = false;
-> 
-
-
+diff --git a/drivers/iio/adc/ad7793.c b/drivers/iio/adc/ad7793.c
+index 5e980a06258e..b4f9ac3838e1 100644
+--- a/drivers/iio/adc/ad7793.c
++++ b/drivers/iio/adc/ad7793.c
+@@ -279,6 +279,7 @@ static int ad7793_setup(struct iio_dev *indio_dev,
+ 	id &= AD7793_ID_MASK;
+ 
+ 	if (id != st->chip_info->id) {
++		ret = -EINVAL;
+ 		dev_err(&st->sd.spi->dev, "device ID query failed\n");
+ 		goto out;
+ 	}
 -- 
-js
-suse labs
+2.17.1
+
