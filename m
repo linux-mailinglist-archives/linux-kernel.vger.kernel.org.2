@@ -2,76 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AADE3812DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 23:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 209553812DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 23:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232715AbhENVdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 17:33:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55656 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232542AbhENVdV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 17:33:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 905B66143F;
-        Fri, 14 May 2021 21:32:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621027929;
-        bh=4L4mcKVn3lkbqXEEkhEsQV92HBC1CPOXzYICTb92p2Y=;
-        h=From:To:Cc:Subject:Date:From;
-        b=JpuFugNGtCnfLnbuSbD6CYvS9tqG7bcN2jo/Rzbn/NVrHpOOWL7eV0QAY28Wxe03K
-         12BtzI6hEX+yVdfs7SDSFprIQ4WsWbty/nHjnLJP5jrSWHWeIux++zfG4EC1yV+XO1
-         q+xp/qqE1d/sp622ccn1qu/941nWsAIaPjp8itRWGUOkr9WAuah0cIRllwQTbQCnZp
-         ozBSoCKp+ZVx6e+ASRN7jsYuZL1I5N18jsrQ4RdzRvfnpJ27qo0639AKPl76HuOT3q
-         ZiA1LF4H3iOkY3dPOCd7TmEXgnMfiyvnXk9a7pBFkUEJxRU34qT05AfFNeDm556Bph
-         kD+ZQlgrBsncQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Viorel Suman <viorel.suman@nxp.com>,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: fsl: fix SND_SOC_IMX_RPMSG dependency
-Date:   Fri, 14 May 2021 23:31:14 +0200
-Message-Id: <20210514213118.630427-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S232565AbhENVck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 17:32:40 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39560 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232548AbhENVci (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 17:32:38 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1621027885;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=c2iBZbwZGJR0/+vpVrDDLpOeD8ubQkI/5otbnREwFSc=;
+        b=AHg+FxV4YMUxfj86qbO4FGmf4eBQtCenD5rJBjyWUWJKnAd/Z8YjpmOojgQ/hzQhsPtPCD
+        pendwZAm7UpZOFdBnYOrkedfj3qEW+cl9ef1/F2frHGbPLpqxJw5z9yihYyWAD3yHUSAeC
+        CkQz4rSZgnzRKXNcNiNmBnDldqh/GSfjYSj5Lw2DLROAWkz9+fRnu08PqzuTVGmv17ZmPp
+        bQnYiEXcF0/bXADiYODHXaUD87SSo17vN3fd3qL9bghg7KY5lfZTqt1IeI8drxOEuEovRA
+        c0yUokmpTA/YnTBr1riRoAtg/q1g9QeYitrN2VreCVb3C3/Ka0g/RwGDNtJLww==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1621027885;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=c2iBZbwZGJR0/+vpVrDDLpOeD8ubQkI/5otbnREwFSc=;
+        b=EharRv4SmBkNxFxo2Z+dGLQQAzyKweNoqZ5ju/ktcSRtovsc1lM1UhqoFpUQUuVgfSidmW
+        7ORIGoFXNiD4tlCA==
+To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Jacob Pan <jacob.jun.pan@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
+        iommu@lists.linux-foundation.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Ricardo Neri <ricardo.neri@intel.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Andi Kleen <andi.kleen@intel.com>,
+        David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [RFC PATCH v5 5/7] iommu/vt-d: Fixup delivery mode of the HPET hardlockup interrupt
+In-Reply-To: <20210504191049.22661-6-ricardo.neri-calderon@linux.intel.com>
+References: <20210504191049.22661-1-ricardo.neri-calderon@linux.intel.com> <20210504191049.22661-6-ricardo.neri-calderon@linux.intel.com>
+Date:   Fri, 14 May 2021 23:31:24 +0200
+Message-ID: <87a6ox2eab.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Tue, May 04 2021 at 12:10, Ricardo Neri wrote:
 
-Kconfig produces a warning with SND_SOC_FSL_RPMSG=y and SND_IMX_SOC=m:
+Resending as the original one did not make it on the list because of
+fatfingers. Sorry for the noise.
 
-WARNING: unmet direct dependencies detected for SND_SOC_IMX_RPMSG
-  Depends on [m]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_IMX_SOC [=m] && RPMSG [=y]
-  Selected by [y]:
-  - SND_SOC_FSL_RPMSG [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && COMMON_CLK [=y] && RPMSG [=y] && SND_IMX_SOC [=m]!=n
+> In x86 there is not an IRQF_NMI flag that can be used to indicate the
 
-Add a dependency to prevent this configuration.
+There exists no IRQF_NMI flag at all. No architecture provides that.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- sound/soc/fsl/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+> delivery mode when requesting an interrupt (via request_irq()). Thus,
+> there is no way for the interrupt remapping driver to know and set
+> the delivery mode.
 
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 0917d65d6921..556c284f49dd 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -119,6 +119,7 @@ config SND_SOC_FSL_RPMSG
- 	tristate "NXP Audio Base On RPMSG support"
- 	depends on COMMON_CLK
- 	depends on RPMSG
-+	depends on SND_IMX_SOC || SND_IMX_SOC = n
- 	select SND_SOC_IMX_RPMSG if SND_IMX_SOC != n
- 	help
- 	  Say Y if you want to add rpmsg audio support for the Freescale CPUs.
--- 
-2.29.2
+There is no support for this today. So what?
 
+> Hence, when allocating an interrupt, check if such interrupt belongs to
+> the HPET hardlockup detector and fixup the delivery mode accordingly.
+
+What?
+
+> +		/*
+> +		 * If we find the HPET hardlockup detector irq, fixup the
+> +		 * delivery mode.
+> +		 */
+> +		if (is_hpet_irq_hardlockup_detector(info))
+> +			irq_cfg->delivery_mode = APIC_DELIVERY_MODE_NMI;
+
+Again. We are not sticking some random device checks into that
+code. It's wrong and I explained it to you before.
+
+  https://lore.kernel.org/lkml/alpine.DEB.2.21.1906161042080.1760@nanos.tec.linutronix.de/
+
+But I'm happy to repeat it again:
+
+  "No. This is horrible hackery violating all the layering which we carefully
+   put into place to avoid exactly this kind of sprinkling conditionals into
+   all code pathes.
+
+   With some thought the existing irqdomain hierarchy can be used to achieve
+   the same thing without tons of extra functions and conditionals."
+
+So the outcome of thought and using the irqdomain hierarchy is:
+
+   Replacing an hpet specific conditional in one place with an hpet
+   specific conditional in a different place.
+
+Impressive.
+
+hpet_assign_irq(...., bool nmi)
+  init_info(info)
+    ...
+    if (nmi)
+        info.flags |= X86_IRQ_ALLOC_AS_NMI;
+
+   irq_domain_alloc_irqs(domain, 1, NUMA_NO_NODE, &info)
+     intel_irq_remapping_alloc(..., info)
+       irq_domain_alloc_irq_parents(..., info)
+         x86_vector_alloc_irqs(..., info)
+         {   
+           if (info->flags & X86_IRQ_ALLOC_AS_NMI && nr_irqs != 1)
+      	    return -EINVAL;
+
+           for (i = 0; i < nr_irqs; i++) {
+             ....
+             if (info->flags & X86_IRQ_ALLOC_AS_NMI) {
+      	   irq_cfg_setup_nmi(apicd);
+      	   continue;
+             }
+             ...
+         }
+
+irq_cfg_setup_nmi() sets irq_cfg->delivery_mode and whatever is required
+and everything else just works. Of course this needs a few other minor
+tweaks but none of those introduces random hpet quirks all over the
+place. Not convoluted enough, right?
+
+But that solves none of other problems. Let me summarize again which
+options or non-options we have:
+
+    1) Selective IPIs from NMI context cannot work
+
+       As explained in the other thread.
+
+    2) Shorthand IPI allbutself from NMI
+
+       This should work, but that obviously does not take the watchdog
+       cpumask into account.
+
+       Also this only works when IPI shorthand mode is enabled. See
+       apic_smt_update() for details.
+
+    3) Sending the IPIs from irq_work
+
+       This would solve the problem, but if the CPU which is the NMI
+       target is really stuck in an interrupt disabled region then the
+       IPIs won't be sent.
+
+       OTOH, if that's the case then the CPU which was processing the
+       NMI will continue to be stuck until the next NMI hits which
+       will detect that the CPU is stuck which is a good enough
+       reason to send a shorthand IPI to all CPUs ignoring the
+       watchdog cpumask.
+
+       Same limitation vs. shorthand mode as #2
+
+    4) Changing affinity of the HPET NMI from NMI
+
+       As we established two years ago that cannot work with interrupt
+       remapping
+
+    5) Changing affinity of the HPET NMI from irq_work
+
+       Same issues as #3
+
+Anything else than #2 is just causing more problems than it solves, but
+surely the NOHZ_FULL/isolation people might have opinions on this.
+
+OTOH, as this is opt-in, anything which wants a watchdog mask which is
+not the full online set, has to accept that HPET has these restrictions.
+
+And that's exactly what I suggested two years ago:
+
+ https://lore.kernel.org/lkml/alpine.DEB.2.21.1906172343120.1963@nanos.tec.linutronix.de/
+
+  "It definitely would be worthwhile to experiment with that. if we
+   could use shorthands (also for regular IPIs) that would be a great
+   improvement in general and would nicely solve that NMI issue. Beware
+   of the dragons though."
+
+As a consequence of this conversation I implemented shorthand IPIs...
+
+But I haven't seen any mentioning that this has been tried, why the
+approach was not chosen or any discussion about that matter.
+
+Not that I'm surprised.
+
+Thanks,
+
+        tglx
