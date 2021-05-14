@@ -2,186 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA726380862
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 13:22:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B62438085C
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 13:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231687AbhENLXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 07:23:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230239AbhENLXW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 07:23:22 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5587AC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 04:22:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=oObc2ElFqvGeUqGFyXfuB3LXrl7Py+nxdu8iVeG7i3k=; b=bW/lwAuvZLN7NXaCbawN9Ge/xk
-        Ju3a7laLSS3ZtOgtwUzf2lW/9iEVPcpPZ0XPxuzUIFWqj7lLAj7DoUuF2gDRxHE4+8ycNFE+tywXk
-        As2TxkgDXCd4s0Rx0lYoREbh8nQHtMwW2GklsX2xlBC7wnnuGi9gdYiGduNx7UMsqAuea8/9s5nNX
-        UQczZ0andXRoh/iqv6WEQZM9uFYimkJ8+kKrXyLecq4nzAJu19LJl/jqB/B6rvrZ5FFFIKHxO8QMm
-        vmRTr6uspexWa6HtezkIat9h2lyGeGFOdjjep6VfkcndMGk5rPLoz3VPrKky68ttSdFsb+M4bxBMp
-        CYA3y5Rg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lhVrf-00AJZe-3K; Fri, 14 May 2021 11:20:33 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7BFF430001C;
-        Fri, 14 May 2021 13:20:18 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5F13E20298BDE; Fri, 14 May 2021 13:20:18 +0200 (CEST)
-Date:   Fri, 14 May 2021 13:20:18 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Liam Howlett <liam.howlett@oracle.com>
-Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Song Liu <songliubraving@fb.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        David Rientjes <rientjes@google.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Rik van Riel <riel@surriel.com>,
-        Michel Lespinasse <walken.cr@gmail.com>
-Subject: Re: [PATCH 26/94] Maple Tree: Add new data structure
-Message-ID: <YJ5c8vcvLyWRhs2d@hirez.programming.kicks-ass.net>
-References: <20210428153542.2814175-1-Liam.Howlett@Oracle.com>
- <20210428153542.2814175-27-Liam.Howlett@Oracle.com>
+        id S230423AbhENLV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 07:21:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55814 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229554AbhENLV5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 07:21:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E1AB661469
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 11:20:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620991245;
+        bh=d1QDAQZ60obWUxgQJmiEA+FKlikVqoTz4eCnAtLMGx8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RXWMpTEthVDf7TGL2KFsH80ibKBqS3kz8Z6qJZZUpP74QytGTgJ9nUN9CbTefIMeD
+         QuAiWjvUsOYDq3yX4NOZXalN2a/ImEwO0vUE24RQvDUywCRYL8vZXozs6pyPpFwnqm
+         TVZoV0pnxvEkE24YKaLz27gdpVBkb0Aj52hZ6dP/+gdcHETwurNmeq1CQIqcqfpWbZ
+         jDBFLgVFkQ4P4lIdKRSl5d/2knY1Mb7MvbfCGBTa0bgnM0X7zd6Ab7DO6S1dV0FySt
+         g2gdUbjs61xI4x/IMGXw8I3r/xJT6vjGc+44RJkriurANq7XqGyfb1/6doQGvEadXb
+         4GH1ghIah6Rhg==
+Received: by mail-lj1-f170.google.com with SMTP id s25so12763503ljo.11
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 04:20:45 -0700 (PDT)
+X-Gm-Message-State: AOAM5309aPSYnDCUFIw9RD6ho9BrA4iu/LT7wIWsyKWF2kdk1G1Aqn3v
+        7h9dxKTp+lSGgnSXi8GVfEoR6vU06B4Dr3kZ4M9Ilg==
+X-Google-Smtp-Source: ABdhPJywbIYJiOtwQcK9q0jpN9m/0wYFMB5SNRaut5ZEvlsGQDditQu2Uw4BAYelJKJGGVykhgGgnILgiBVJbxw3PAs=
+X-Received: by 2002:a05:651c:285:: with SMTP id b5mr23795422ljo.348.1620991244001;
+ Fri, 14 May 2021 04:20:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210428153542.2814175-27-Liam.Howlett@Oracle.com>
+References: <20210512095823.99162-1-yunbo.xufeng@linux.alibaba.com>
+ <20210512095823.99162-2-yunbo.xufeng@linux.alibaba.com> <20210512225504.3kt6ij4xqzbtyej5@ast-mbp.dhcp.thefacebook.com>
+ <1b6dfe61-29ed-5d4d-fa1f-1bd46a4f5860@linux.alibaba.com>
+In-Reply-To: <1b6dfe61-29ed-5d4d-fa1f-1bd46a4f5860@linux.alibaba.com>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Fri, 14 May 2021 13:20:32 +0200
+X-Gmail-Original-Message-ID: <CACYkzJ5vq_PtoeMx5x+-j6eiBfa16C-Cq9Pv6PzuTXjat7MySQ@mail.gmail.com>
+Message-ID: <CACYkzJ5vq_PtoeMx5x+-j6eiBfa16C-Cq9Pv6PzuTXjat7MySQ@mail.gmail.com>
+Subject: Re: [RFC] [PATCH bpf-next 1/1] bpf: Add a BPF helper for getting the
+ cgroup path of current task
+To:     xufeng zhang <yunbo.xufeng@linux.alibaba.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Yonghong Song <yhs@fb.com>, Song Liu <songliubraving@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>, joe@cilium.io,
+        quentin@isovalent.com,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, May 14, 2021 at 6:06 AM xufeng zhang
+<yunbo.xufeng@linux.alibaba.com> wrote:
+>
+>
+> =E5=9C=A8 2021/5/13 =E4=B8=8A=E5=8D=886:55, Alexei Starovoitov =E5=86=99=
+=E9=81=93:
+> > On Wed, May 12, 2021 at 05:58:23PM +0800, Xufeng Zhang wrote:
+> >> To implement security rules for application containers by utilizing
+> >> bpf LSM, the container to which the current running task belongs need
+> >> to be known in bpf context. Think about this scenario: kubernetes
+> >> schedules a pod into one host, before the application container can ru=
+n,
+> >> the security rules for this application need to be loaded into bpf
+> >> maps firstly, so that LSM bpf programs can make decisions based on
+> >> this rule maps.
+> >>
+> >> However, there is no effective bpf helper to achieve this goal,
+> >> especially for cgroup v1. In the above case, the only available inform=
+ation
+> >> from user side is container-id, and the cgroup path for this container
+> >> is certain based on container-id, so in order to make a bridge between
+> >> user side and bpf programs, bpf programs also need to know the current
+> >> cgroup path of running task.
+> > ...
+> >> +#ifdef CONFIG_CGROUPS
+> >> +BPF_CALL_2(bpf_get_current_cpuset_cgroup_path, char *, buf, u32, buf_=
+len)
+> >> +{
+> >> +    struct cgroup_subsys_state *css;
+> >> +    int retval;
+> >> +
+> >> +    css =3D task_get_css(current, cpuset_cgrp_id);
+> >> +    retval =3D cgroup_path_ns(css->cgroup, buf, buf_len, &init_cgroup=
+_ns);
+> >> +    css_put(css);
+> >> +    if (retval >=3D buf_len)
+> >> +            retval =3D -ENAMETOOLONG;
+> > Manipulating string path to check the hierarchy will be difficult to do
+> > inside bpf prog. It seems to me this helper will be useful only for
+> > simplest cgroup setups where there is no additional cgroup nesting
+> > within containers.
+> > Have you looked at *ancestor_cgroup_id and *cgroup_id helpers?
+> > They're a bit more flexible when dealing with hierarchy and
+> > can be used to achieve the same correlation between kernel and user cgr=
+oup ids.
+>
+>
+> KP,
+>
+> do you have any suggestion?
 
-On Wed, Apr 28, 2021 at 03:36:02PM +0000, Liam Howlett wrote:
-> +/* ma_free_rcu() - Use rcu callback to free a maple node
-> + * @node: The node to free
-> + *
-> + * The maple tree uses the parent pointer to indicate this node is no longer in
-> + * use and will be freed.
-> + */
+I haven't really tried this yet, but have you considered using task local
+storage to identify the container?
 
-If this was supposed to be a kernel doc, then it would need to start
-with /**, if it was not then it's an inconsistent comment style; by far
-the majority of comments in this file have the regular:
+- Add a task local storage with container ID somewhere in the container
+  manager
+- Propagate this ID to all the tasks within a container using task security
+  blob management hooks (like task_alloc and task_free) etc.
 
- /*
-  * multiline-
-  *   comment
-  */
-
-style.
-
-Like
-
-> +/*
-> + * We also reserve values with the bottom two bits set to '10' which are
-> + * below 4096
-> + */
-
-> +/*
-> + * mte_to_mat() - Convert a maple encoded node to a maple topiary node.
-> + * @entry: The maple encoded node
-> + *
-> + * Return: a maple topiary pointer
-> + */
-
-And:
-
-> +/*
-> + * mas_mn() - Get the maple state node.
-> + * @mas: The maple state
-> + *
-> + * Return: the maple node (not encoded - bare pointer).
-> + */
-
-But then you also have:
-
-> +	// Removing the pivot overflow optimizes the loop below.
-> +	// Check the first implied pivot.
-
-> +	// Check end implied pivot which can only be a gap on the right most
-> +	// node.
-
-And:
-
-> +		/* If the split is less than the max slot && the right side will
-> +		 * still be sufficient, then increment the split on NULL.
-> +		 */
-
-> +		/* Avoid having a range less than the slot count unless it
-> +		 * causes one node to be deficient.
-> +		 * NOTE: mt_min_slots is 1 based, b_end and split are zero.
-> +		 */
-
-
-Single line comments are also an inconsistent mess:
-
-> +	/* Avoid ending a node on a NULL entry */
-
-> +	// Possible underflow of piv will wrap back to 0 before use.
-
-> +	// Copy start data up to insert.
-
-Even in a single function, you can't be consistent:
-
-> +static inline void mast_topiary(struct maple_subtree_state *mast)
-> +{
-> +	unsigned char l_off, r_off, offset;
-> +	unsigned long l_index,  range_min, range_max;
-> +	struct maple_enode *child;
-> +	void __rcu **slots;
-> +	enum maple_type mt;
-> +
-> +	// The left node is consumed, so add to the free list.
-> +	l_index = mast->orig_l->index;
-> +	mast->orig_l->index = mast->orig_l->last;
-> +	mt = mte_node_type(mast->orig_l->node);
-> +	mas_node_walk(mast->orig_l, mt, &range_min, &range_max);
-> +	mast->orig_l->index = l_index;
-> +	l_off = mast->orig_l->offset;
-> +	r_off = mast->orig_r->offset;
-> +	if (mast->orig_l->node == mast->orig_r->node) {
-> +		slots = ma_slots(mte_to_node(mast->orig_l->node), mt);
-> +		for (offset = l_off + 1; offset < r_off; offset++)
-> +			mat_add(mast->destroy, mas_slot_locked(mast->orig_l,
-> +							slots, offset));
-> +
-> +		return;
-> +	}
-> +	/* mast->orig_r is different and consumed. */
-> +	if (mte_is_leaf(mast->orig_r->node))
-> +		return;
-> +
-> +	/* Now destroy l_off + 1 -> end and 0 -> r_off - 1 */
-> +	offset = l_off + 1;
-> +	slots = ma_slots(mte_to_node(mast->orig_l->node), mt);
-> +	while (offset < mt_slots[mt]) {
-> +		child = mas_slot_locked(mast->orig_l, slots, offset++);
-> +		if (!child)
-> +			break;
-> +
-> +		mat_add(mast->destroy, child);
-> +	}
-> +
-> +	slots = ma_slots(mte_to_node(mast->orig_r->node),
-> +			     mte_node_type(mast->orig_r->node));
-> +	for (offset = 0; offset < r_off; offset++)
-> +		mat_add(mast->destroy,
-> +				mas_slot_locked(mast->orig_l, slots, offset));
-> +}
-
-This mixing of C and C++ style comments is a mess.
+>
+> what I am thinking is the internal kernel object(cgroup id or ns.inum)
+> is not so user friendly, we can get the container-context from them for
+> tracing scenario, but not for LSM blocking cases, I'm not sure how
+> Google internally resolve similar issue.
+>
+>
+> Thanks!
+>
+> Xufeng
+>
