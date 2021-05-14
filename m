@@ -2,135 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCC99380EA0
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 19:09:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43568380EA2
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 19:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235086AbhENRKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 13:10:33 -0400
-Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:34050 "EHLO
-        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230063AbhENRKc (ORCPT
+        id S235093AbhENRKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 13:10:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230063AbhENRKy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 13:10:32 -0400
-Received: from pps.filterd (m0150242.ppops.net [127.0.0.1])
-        by mx0a-002e3701.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14EH4TKU008951;
-        Fri, 14 May 2021 17:09:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pps0720; bh=x3X5ykPsGBJC4Fs0o3ag96IXaZivVWj0tI7KuCm3wFY=;
- b=gPeV2VL/qvyKep5W8s8cp6fHdB9X4tW+CdZGSxXtN/I783sb/JvtZLmHp51wkbfV1FNP
- vLZ1zao8mrKMbP/XdLV2Jssb16ArWeWlzQxKGuj8MPkeghuODnliVNd/2qyX4PC/spBF
- FVpsefHzvfN8riX5z7duRJmvTunSUmexxMDYza93l706fpmxLbXMZjtva3BPQdyB1rrr
- 9JDkhNAgVgxKGjqUag8WY00KbYk79m75Kp2rn4vyTy9vv17zVKa6nkOpR2Eo/B5qGq5V
- UjX+7L3erqg2qWWLWCfhcVz7F4GIVrC2FBfGD0gLZJ2L2yyv9C/+gWnF9c0pG6yK+1Es /g== 
-Received: from g2t2354.austin.hpe.com (g2t2354.austin.hpe.com [15.233.44.27])
-        by mx0a-002e3701.pphosted.com with ESMTP id 38hnn03huv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 May 2021 17:09:16 +0000
-Received: from g2t2360.austin.hpecorp.net (g2t2360.austin.hpecorp.net [16.196.225.135])
-        by g2t2354.austin.hpe.com (Postfix) with ESMTP id 51FA781;
-        Fri, 14 May 2021 17:09:15 +0000 (UTC)
-Received: from anatevka.americas.hpqcorp.net (anatevka.americas.hpqcorp.net [10.33.237.3])
-        by g2t2360.austin.hpecorp.net (Postfix) with ESMTP id 89C7839;
-        Fri, 14 May 2021 17:09:14 +0000 (UTC)
-Date:   Fri, 14 May 2021 11:09:14 -0600
-From:   Jerry Hoemann <jerry.hoemann@hpe.com>
-To:     Randy Wright <rwright@hpe.com>
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gustavoars@kernel.org, geert+renesas@glider.be, u74147@gmail.com,
-        tobiasdiedrich@gmail.com, jirislaby@kernel.org,
-        gregkh@linuxfoundation.org, toshi.kani@hpe.com
-Subject: Re: [PATCH] Add support for new HPE serial device
-Message-ID: <YJ6uuqggRTJ4DVCW@anatevka.americas.hpqcorp.net>
-Reply-To: Jerry.Hoemann@hpe.com
-References: <1621009614-28836-1-git-send-email-rwright@hpe.com>
+        Fri, 14 May 2021 13:10:54 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2562C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 10:09:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=O2WwZG5UT0TfHcCm0KHfCmgki4wkc4NSDE9GZOtTDBw=; b=TF233q9qLO0O68foj6C8iQwRL
+        pUyQ1GTm2Et4Zh4ATAmKIqFs8jp3NVXUsWYBojTUb2hwhceKKM0FXl91o+68ZC4A/h+umOZZwbDVy
+        HsJCpUAhscY2gYpqmpMipKsfNzjnC2LmJo4mM+pxPp+KEzNRBHcLSrUiNCOP9Y1/H+CObRRCqA+oG
+        7cKHeQ8KXbZs8yZaN+xRdARUTtBiBSqvCy6aU27Tqh8UaNtil1RcMnjXBiUpfNwf0ZHOIiQH5vT1L
+        4lyCvCTivpisjnxaFOiCHqaDpwrI8+6thMsRIbpIvbLzV2EMzSTXOGhTKJ1xMDiFfDFgqzrphh4In
+        j6SNJyRCw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43974)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lhbJb-0008UZ-JT; Fri, 14 May 2021 18:09:31 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lhbJa-0004AI-Ad; Fri, 14 May 2021 18:09:30 +0100
+Date:   Fri, 14 May 2021 18:09:30 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Jessica Yu <jeyu@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH v2] module: check for exit sections in layout_sections()
+ instead of module_init_section()
+Message-ID: <20210514170930.GE12395@shell.armlinux.org.uk>
+References: <20210514160904.21989-1-jeyu@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1621009614-28836-1-git-send-email-rwright@hpe.com>
-X-Proofpoint-ORIG-GUID: nL494R9fbgKLZGYVhwLKDdGo24OlZxji
-X-Proofpoint-GUID: nL494R9fbgKLZGYVhwLKDdGo24OlZxji
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-14_07:2021-05-12,2021-05-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
- mlxscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0
- mlxlogscore=999 priorityscore=1501 spamscore=0 suspectscore=0
- clxscore=1011 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105140136
+In-Reply-To: <20210514160904.21989-1-jeyu@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 10:26:54AM -0600, Randy Wright wrote:
-> Add support for new HPE serial device.  It is MSI enabled,
-> but otherwise similar to legacy HP server serial devices.
+On Fri, May 14, 2021 at 06:09:04PM +0200, Jessica Yu wrote:
+> Previously, when CONFIG_MODULE_UNLOAD=n, the module loader just does not
+> attempt to load exit sections since it never expects that any code in those
+> sections will ever execute. However, dynamic code patching (alternatives,
+> jump_label and static_call) can have sites in __exit code, even if __exit is
+> never executed. Therefore __exit must be present at runtime, at least for as
+> long as __init code is.
 > 
-> Signed-off-by: Randy Wright <rwright@hpe.com>
-
-
-Tested-by: Jerry Hoemann <jerry.hoemann@hpe.com>
-
-
-> ---
->  drivers/tty/serial/8250/8250_pci.c | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
+> Commit 33121347fb1c ("module: treat exit sections the same as init
+> sections when !CONFIG_MODULE_UNLOAD") solves the requirements of
+> jump_labels and static_calls by putting the exit sections in the init
+> region of the module so that they are at least present at init, and
+> discarded afterwards. It does this by including a check for exit
+> sections in module_init_section(), so that it also returns true for exit
+> sections, and the module loader will automatically sort them in the init
+> region of the module.
 > 
-> diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
-> index 689d822..04fe424 100644
-> --- a/drivers/tty/serial/8250/8250_pci.c
-> +++ b/drivers/tty/serial/8250/8250_pci.c
-> @@ -56,6 +56,8 @@ struct serial_private {
->  	int			line[];
->  };
->  
-> +#define PCI_DEVICE_ID_HPE_PCI_SERIAL	0x37e
-> +
->  static const struct pci_device_id pci_use_msi[] = {
->  	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_NETMOS, PCI_DEVICE_ID_NETMOS_9900,
->  			 0xA000, 0x1000) },
-> @@ -63,6 +65,8 @@ struct serial_private {
->  			 0xA000, 0x1000) },
->  	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_NETMOS, PCI_DEVICE_ID_NETMOS_9922,
->  			 0xA000, 0x1000) },
-> +	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_HP_3PAR, PCI_DEVICE_ID_HPE_PCI_SERIAL,
-> +			 PCI_ANY_ID, PCI_ANY_ID) },
->  	{ }
->  };
->  
-> @@ -1998,6 +2002,16 @@ static void pci_wch_ch38x_exit(struct pci_dev *dev)
->  		.setup		= pci_hp_diva_setup,
->  	},
->  	/*
-> +	 * HPE PCI serial device
-> +	 */
-> +	{
-> +		.vendor         = PCI_VENDOR_ID_HP_3PAR,
-> +		.device         = PCI_DEVICE_ID_HPE_PCI_SERIAL,
-> +		.subvendor      = PCI_ANY_ID,
-> +		.subdevice      = PCI_ANY_ID,
-> +		.setup		= pci_hp_diva_setup,
-> +	},
-> +	/*
->  	 * Intel
->  	 */
->  	{
-> @@ -4973,6 +4987,10 @@ static SIMPLE_DEV_PM_OPS(pciserial_pm_ops, pciserial_suspend_one,
->  	{	PCI_VENDOR_ID_HP, PCI_DEVICE_ID_HP_DIVA_AUX,
->  		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
->  		pbn_b2_1_115200 },
-> +	/* HPE PCI serial device */
-> +	{	PCI_VENDOR_ID_HP_3PAR, PCI_DEVICE_ID_HPE_PCI_SERIAL,
-> +		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> +		pbn_b1_1_115200 },
->  
->  	{	PCI_VENDOR_ID_DCI, PCI_DEVICE_ID_DCI_PCCOM2,
->  		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
-> -- 
-> 1.8.3.1
+> However, the solution there was not completely arch-independent. ARM is
+> a special case where it supplies its own module_{init, exit}_section()
+> functions. Instead of pushing the exit section checks into
+> module_init_section(), just implement the exit section check in
+> layout_sections(), so that we don't have to touch arch-dependent code.
+> 
+> Fixes: 33121347fb1c ("module: treat exit sections the same as init sections when !CONFIG_MODULE_UNLOAD")
+> Signed-off-by: Jessica Yu <jeyu@kernel.org>
+
+Looks good!
+
+Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+
+Thanks!
 
 -- 
-
------------------------------------------------------------------------------
-Jerry Hoemann                  Software Engineer   Hewlett Packard Enterprise
------------------------------------------------------------------------------
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
