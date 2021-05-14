@@ -2,100 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAF1B3803C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 08:51:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04F1D3803CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 08:51:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232717AbhENGwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 02:52:09 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:43015 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230444AbhENGwI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 02:52:08 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1620975058; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=d51erDtkha1RR6bdcED15Fv71pub36quAgP8GlBGWEc=; b=BzNKgoMwYouCC+lbEX6uyFkBILCdCoxAXqlu240kHs4xPnBX7hRPu3ZNphCrDd84DJDKvW6v
- 18WtfVhFH4Rew2vqxFuE2ZRzIe2fUWAdp8VM9YSNt441qEHhMvLNOzYazo2JOmoU7KdHNGkE
- 4g6MOlGAPULnJV9MzHjfQ+oC6pU=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 609e1dd0c7220f8fd36165c7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 14 May 2021 06:50:56
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CE409C43144; Fri, 14 May 2021 06:50:55 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.1.100] (unknown [157.48.128.130])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 399BFC433F1;
-        Fri, 14 May 2021 06:50:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 399BFC433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
-Subject: Re: [PATCH] ASoC: qcom: lpass-cpu: Fix pop noise during audio capture
- begin
-To:     Mark Brown <broonie@kernel.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
-        perex@perex.cz, tiwai@suse.com, srinivas.kandagatla@linaro.org,
-        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, swboyd@chromium.org,
-        judyhsiao@chromium.org
-References: <20210513114539.4813-1-srivasam@codeaurora.org>
- <20210513133132.GC5813@sirena.org.uk>
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Organization: Qualcomm India Private Limited.
-Message-ID: <a6649fad-c2ca-1808-4227-8bcb373f66bd@codeaurora.org>
-Date:   Fri, 14 May 2021 12:20:46 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+        id S232762AbhENGwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 02:52:50 -0400
+Received: from mail-ed1-f51.google.com ([209.85.208.51]:36696 "EHLO
+        mail-ed1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232658AbhENGws (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 02:52:48 -0400
+Received: by mail-ed1-f51.google.com with SMTP id df21so6307951edb.3;
+        Thu, 13 May 2021 23:51:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1gymq95orR5zgtyh8ZSQwnKyiuFehw+cpEXmsD2CDf0=;
+        b=t0xDpaM3hgrBCsyaGCbYjw+h0FAHJrQxUNA88xXyxu+5rB2kyeg7sxVDIi4NiBithH
+         3ijxA4yIO4inE48xinlj93tSemvRw9159ek6kgaxZtKnydapr0B8LDvVUsXuZgk1TXtT
+         teMtQ77rA5gjYspm5/ustHxm0MiFYwMLgHFHqyxPzvf/7Cr4aUuot6j42a1dJXwikr6W
+         IEAjwgBDIP4nRyK4IpToRucI5LK0lsK4E0xafkEhPPNkumgovUKLToPaZL+EmymgHzMp
+         cI06IlMCmCyv9Tjwc0FJa3Pi4mvtJ2NHezwdkqMxhCDidPc2EpUzOBK3LHyRmubS4qyE
+         nHPg==
+X-Gm-Message-State: AOAM530YbfaGhYcJJ52VFphIgcc7P5f1GVGUubMlnW3M8gnHXcgCOrxP
+        TBp/mzhK2Rhv8Jpgoa+jh0Swaju9DnA=
+X-Google-Smtp-Source: ABdhPJyXdXGiv6DhZlc+bTWc7aWFBeNON8OPqZ/xYuVote/cTk5V2YYOcY9zrJu9GcLmFBF3eNPthw==
+X-Received: by 2002:a05:6402:5244:: with SMTP id t4mr37013244edd.228.1620975091508;
+        Thu, 13 May 2021 23:51:31 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id o3sm3948253edr.84.2021.05.13.23.51.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 May 2021 23:51:30 -0700 (PDT)
+Subject: Re: [PATCH] tty: pty: remove redundant initialization of variable fd
+To:     Colin King <colin.king@canonical.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210513221833.137672-1-colin.king@canonical.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <2f6c2e1e-770b-aade-cdcc-aa4010c36d5e@kernel.org>
+Date:   Fri, 14 May 2021 08:51:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <20210513133132.GC5813@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210513221833.137672-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Brown,
+On 14. 05. 21, 0:18, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The variable fd is being initialized with a value that is never
+> read, it is being updated later on. The assignment is redundant and
+> can be removed.
+> 
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Thanks for your review comments!!!
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
 
-On 5/13/2021 7:01 PM, Mark Brown wrote:
-> On Thu, May 13, 2021 at 05:15:39PM +0530, Srinivasa Rao Mandadapu wrote:
->
->> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
->> +		ret = regmap_fields_write(i2sctl->spken, id,
->> +						 LPAIF_I2SCTL_SPKEN_ENABLE);
->> +	} else  {
->> +		ret = regmap_fields_write(i2sctl->micen, id,
->> +						 LPAIF_I2SCTL_MICEN_ENABLE);
->> +	}
-> This commit doesn't remove the matching update in triger() so we'd have
-> two redundant updates.  I guess it's unlikely to be harmful but it looks
-> wrong/confusing.
+> ---
+>   drivers/tty/pty.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/tty/pty.c b/drivers/tty/pty.c
+> index 9b5d4ae5d8f2..2251330e7e00 100644
+> --- a/drivers/tty/pty.c
+> +++ b/drivers/tty/pty.c
+> @@ -626,7 +626,7 @@ static struct cdev ptmx_cdev;
+>    */
+>   int ptm_open_peer(struct file *master, struct tty_struct *tty, int flags)
+>   {
+> -	int fd = -1;
+> +	int fd;
+>   	struct file *filp;
+>   	int retval = -EINVAL;
+>   	struct path path;
+> 
 
-Yes, It's not harmful, as clk_prepare_enable is enabling clock only once 
-but maintaining count.
-
-As Some times in Suspend/resume Sequence not hitting startup/shutdown, 
-but Trigger, so for maintaining
-
-consistency not removed in trigger.
 
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+js
+suse labs
