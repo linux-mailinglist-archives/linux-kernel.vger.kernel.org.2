@@ -2,114 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21EB93811CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 22:26:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F32703811D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 22:29:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230157AbhENU1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 16:27:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47840 "EHLO
+        id S231320AbhENUa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 16:30:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230394AbhENU1J (ORCPT
+        with ESMTP id S230295AbhENUa4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 16:27:09 -0400
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3833BC061574;
-        Fri, 14 May 2021 13:25:57 -0700 (PDT)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id F21B192009C; Fri, 14 May 2021 22:25:53 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id EAA2B92009B;
-        Fri, 14 May 2021 22:25:53 +0200 (CEST)
-Date:   Fri, 14 May 2021 22:25:53 +0200 (CEST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Colin King <colin.king@canonical.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jani Nikula <jani.nikula@intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        "Antonino A. Daplas" <adaplas@gmail.com>
-Subject: Re: [PATCH] video: fbdev: vga16fb: fix OOB write in
- vga16fb_imageblit()
-In-Reply-To: <CAHk-=wguwhFpjhyMtDaH2hhjoV62gDgByC=aPyTrW9CkM5hqvA@mail.gmail.com>
-Message-ID: <alpine.DEB.2.21.2105142150460.3032@angie.orcam.me.uk>
-References: <0000000000006bbd0c05c14f1b09@google.com> <6e21483c-06f6-404b-4018-e00ee85c456c@i-love.sakura.ne.jp> <87d928e4-b2b9-ad30-f3f0-1dfb8e4e03ed@i-love.sakura.ne.jp> <05acdda8-dc1c-5119-4326-96eed24bea0c@i-love.sakura.ne.jp>
- <CAHk-=wguwhFpjhyMtDaH2hhjoV62gDgByC=aPyTrW9CkM5hqvA@mail.gmail.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Fri, 14 May 2021 16:30:56 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8E57C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 13:29:44 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id l7so4076edb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 13:29:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5yLL40jnp/JyochnQZGNB1kpm63b4ANhjiGt5dp8TwM=;
+        b=EgFraUSBIbTQFFJbEIeB6T/26SFYGJlZBeS4e/DmQRBg6Jw2BQ37gymJBPeVX1ynng
+         gLsbaKnm39XSGjgjcsOBrClWV9P2towyHWblzwNVlQ5dSUJxsf/jrcHUhk9MXKI9aUnP
+         JOOFtbsCLXmzDvH70ekrNT7i7O87hx19FvLtC/dcHBQ4UON2Po//U6OZQha99KSVmVys
+         Bs4ECRfRkRaYYKC/8sjpwUGc6BxWndaakM2RlpCKAkf12+Kms37etfKiOLo1r5Rv08Rn
+         DeKNSXZj3Px380vwYPhSzVfDA0eI75tyQygSFJHLeyGRqV0WVM8ygu1y5XhhD22agMYF
+         J05w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5yLL40jnp/JyochnQZGNB1kpm63b4ANhjiGt5dp8TwM=;
+        b=cF4PoraYTKE34MtdePyhmviGgnrvOvKD+xOP/XhGoKE+wmOSLUCa5XsJS2hWbqj0JU
+         +wssvdp5Uqd26Tn5h3wI+AQoAIUNsxTFDSYAaRapN7jrir+oc5mUXdgDqJEI0h1W49zK
+         I7LaL+KyV8+O25hKekda61nYrZPj4+4im1VI71zSUpTbcTY3HevTk65/ecG2T8EZ6sFP
+         Q9S/vygHSGxitIdSuUuDN3uezOh4AVXFfNNlx66OMpAQhxpJuiAw8ySeBJL2TcsM5SxZ
+         hMBVMYw1Yd8nIYtTbAMpRlpLtwfMQZRvQ5TXE+GGwwvPiwGc0jY6bySJm6qgqbXhWcV0
+         CUkA==
+X-Gm-Message-State: AOAM533khAK0vDIvQ6sM69NsDyBHgZtGNW05bB1LlAt98mBCzAoat1sH
+        9vN6xy9qNJRdsHZpMmyPzSlKh9uz/69kZRtsd5Ks36CBaX3B1g==
+X-Google-Smtp-Source: ABdhPJwjzR90EU3j4VM/TAeOVfah6Sp56DGhezKrSqeaGKYeBzA45aUC74juyu0klKi5Wj1G+W3dP6rGWk4obKEa6RE=
+X-Received: by 2002:a05:6402:128f:: with SMTP id w15mr12334574edv.354.1621024183325;
+ Fri, 14 May 2021 13:29:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <162096970332.1865304.10280028741091576940.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <162096973052.1865304.12885652112595883151.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <20210514101700.00004fbc@Huawei.com>
+In-Reply-To: <20210514101700.00004fbc@Huawei.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Fri, 14 May 2021 13:29:32 -0700
+Message-ID: <CAPcyv4jodAKZjAPQf6Q87o3JQ2sSJLmCTS1PdQ_oKyCRuVJqEg@mail.gmail.com>
+Subject: Re: [PATCH v4 5/8] cxl/acpi: Introduce ACPI0017 driver and cxl_root
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     linux-cxl@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 May 2021, Linus Torvalds wrote:
+On Fri, May 14, 2021 at 2:19 AM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
+>
+> On Thu, 13 May 2021 22:22:10 -0700
+> Dan Williams <dan.j.williams@intel.com> wrote:
+>
+> > While CXL builds upon the PCI software model for dynamic enumeration and
+> > control, a static platform component is required to bootstrap the CXL
+> > memory layout. In addition to identifying the host bridges ACPI is
+> > responsible for enumerating the CXL memory space that can be addressed
+> > by decoders. This is similar to the requirement for ACPI to publish
+> > resources reported by _CRS for PCI host bridges.
+> >
+> > Introduce the cxl_root object as an abstract "port" into the CXL.mem
+> > address space described by HDM decoders identified by the ACPI
+> > CEDT.CHBS.
+> >
+> > For now just establish the initial boilerplate and sysfs attributes, to
+> > be followed by enumeration of the ports within the host bridge.
+> >
+> > Note the allocation of CXL core device objects is split into separate
+> > alloc and add steps in order to separate the alloc error path (kfree())
+> > from the device add error path (put_device()).
+> >
+> > Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+>
+> A few really minor editorial things in the docs that need tidying up.
 
-> > Currently it is impossible to control upper limit of rows/columns values
-> > based on amount of memory reserved for the graphical screen, for
-> > resize_screen() calls vc->vc_sw->con_resize() only if vc->vc_mode is not
-> > already KD_GRAPHICS
-> 
-> Honestly, the saner approach would seem to be to simply error out if
-> vc_mode is KD_GRAPHICS.
-> 
-> Doing VT_RESIZE while in KD_GRAPHICS mode seems _very_ questionable,
-> and is clearly currently very buggy.
+Sure, I'm going to see if b4 can follow a v5 reply to just this one
+patch, or otherwise hack it to support that flow so I don't need to
+resend the full series.
 
- I haven't looked into it any further beyond tracking down (again, using 
-the LMO tree) the originating change as the other fix took precedence.  It 
-came with:
+> With that done
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+>
+> I'll make the bold assumption that this is going to get applied
+> before the DOE series and base that on top of this one.
 
-commit 094e0a9cdbdf1e11a28dd756a6cbd750b6303d10
-Author: Ralf Baechle <ralf@linux-mips.org>
-Date:   Sun Jun 1 12:07:37 2003 +0000
+Yes, the plan is to make the 'next' branch of:
 
-    Merge with Linux 2.5.51
+git://git.kernel.org/pub/scm/linux/kernel/git/cxl/cxl.git
 
-along with framebuffer console support:
+...the stable non-rebasing development branch for contributions. bf gntcbttttt
 
-+inline int resize_screen(int currcons, int width, int height)
-+{
-+	/* Resizes the resolution of the display adapater */
-+	int err = 0;
-+
-+	if (vcmode != KD_GRAPHICS && sw->con_resize)
-+		err = sw->con_resize(vc_cons[currcons].d, width, height);
-+	return err;
-+}
-+
+>
+> Thanks,
+>
+> Jonathan
+>
+> > ---
+> >  Documentation/ABI/testing/sysfs-bus-cxl |   78 +++++++
+> >  drivers/cxl/Kconfig                     |   14 +
+> >  drivers/cxl/Makefile                    |    2
+> >  drivers/cxl/acpi.c                      |   39 +++
+> >  drivers/cxl/core.c                      |  360 +++++++++++++++++++++++++++++++
+> >  drivers/cxl/cxl.h                       |   65 ++++++
+> >  6 files changed, 558 insertions(+)
+> >  create mode 100644 drivers/cxl/acpi.c
+> >
+> > diff --git a/Documentation/ABI/testing/sysfs-bus-cxl b/Documentation/ABI/testing/sysfs-bus-cxl
+> > index 2fe7490ad6a8..d21469e2bf8b 100644
+> > --- a/Documentation/ABI/testing/sysfs-bus-cxl
+> > +++ b/Documentation/ABI/testing/sysfs-bus-cxl
+> > @@ -24,3 +24,81 @@ Description:
+> >               (RO) "Persistent Only Capacity" as bytes. Represents the
+> >               identically named field in the Identify Memory Device Output
+> >               Payload in the CXL-2.0 specification.
+> > +
+> > +What:           /sys/bus/cxl/devices/address_spaceX/start
+> > +Date:           May, 2021
+> > +KernelVersion:  v5.14
+> > +Contact:        linux-cxl@vger.kernel.org
+> > +Description:
+>
+> I'm not that fussy about this, but others may comment on wrapping lines around 70 chars
+> whereas can at least go to 80 for docs.
 
-A handler for fbcon was added shortly afterwards with:
+Sure I can reflow.
 
-commit bab384bdbe279efd7acc2146ef13b0b0395b2a42
-Author: Ralf Baechle <ralf@linux-mips.org>
-Date:   Tue Jun 3 17:04:10 2003 +0000
+>
+> > +             (RO) System-physical base address for an address range
+> > +             that supports CXL.mem targets. A CXL address space can
+> > +             be optionally populated with endpoints that decode that
+> > +             range, similar to how devices behind a PCI bridge can
+> > +             decode a portion of the bridge's secondary bus address
+> > +             space.
+> > +
+> > +What:           /sys/bus/cxl/devices/address_spaceX/end
+> > +Date:           May, 2021
+> > +KernelVersion:  v5.14
+> > +Contact:        linux-cxl@vger.kernel.org
+> > +Description:
+> > +             (RO) System-physical end address for an address range
+> > +             that supports CXL.mem targets. A CXL address space can
+> > +             be optionally populated with endpoints that decode that
+> > +             range, similar to how devices behind a PCI bridge can
+> > +             decode a portion of the bridge's secondary bus address
+> > +             space.
+> > +
+> > +What:                /sys/bus/cxl/devices/address_spaceX/supports_ram
+>
+> Inconsistent tabs vs spaces.
 
-    Merge with Linux 2.5.59.
-
-however vgacon didn't have a handler for it until commit 28254d439b8c 
-("[PATCH] vga text console and stty cols/rows") two years later only.
-
- Overall I think it does make sense to resize the text console at any 
-time, even if the visible console (VT) chosen is in the graphics mode, as 
-my understanding (and experience at least with vgacon) is that resizing 
-the console applies globally across all the VTs.  So the intent of the 
-original change appears valid to me, and the choice not to reprogram the 
-visible console and only store the settings for a future use if it's in 
-the graphics mode correct.
-
- Which means any bug triggered here needs to be fixed elsewhere rather 
-than by making the request fail.
-
- NB for fbcon the usual ioctl to resize the console is FBIOPUT_VSCREENINFO 
-rather than VT_RESIZEX; fbset(8) uses it, and I actually experimented with 
-it and a TGA-like (SFB+) framebuffer when at my lab last time, as Linux is 
-kind enough to know how to fiddle with its clockchip.  It works just fine.
-
-  Maciej
+ok.
