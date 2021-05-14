@@ -2,91 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0192C380E50
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 18:38:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 498F8380E5A
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 18:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233186AbhENQjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 12:39:43 -0400
-Received: from smtp-35.italiaonline.it ([213.209.10.35]:52672 "EHLO libero.it"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230431AbhENQjl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 12:39:41 -0400
-Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
- ([95.244.94.151])
-        by smtp-35.iol.local with ESMTPA
-        id hapRlnFGlpK9whapVlGQyv; Fri, 14 May 2021 18:38:28 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1621010308; bh=8nQDG6vC1szipD11G21qDci50418cKRMFqznBJX7giw=;
-        h=From;
-        b=ykxeE09f2pnfajedVkeEknAh+2ERHKba9xIcIYS09mHLPCrYNstMnRz/AXrKg98iZ
-         6/6y3djlwQ17+0A5xbtNznFYdx/oUQX991f1IPH2suI7aU88khKIBOPmXTIMWRKJLm
-         9uqjyIGHLwo+eVwFR6bWQ0fZUn9PtYjj4y3Hm1a/yORjb1xN9e3N+hP8oTgjOzAQ0Y
-         qHswCPwpGQPQ2QLeFaRL0dr5QJ0l5vAnxmKc5WmU7JpTIyUigZZ1+bUdEXRGMK50eU
-         4ExODJgYZ9ghVsxS49GB34IK95gSbXxMpqP4xPmIAchRKJ/b/6sikU4ZCL5XQVk9tA
-         UUe7bmiFhHMlw==
-X-CNFS-Analysis: v=2.4 cv=A9ipg4aG c=1 sm=1 tr=0 ts=609ea784 cx=a_exe
- a=ugxisoNCKEotYwafST++Mw==:117 a=ugxisoNCKEotYwafST++Mw==:17
- a=KfjgPZeWCF2tvFJtEhQA:9
-From:   Dario Binacchi <dariobin@libero.it>
-To:     linux-kernel@vger.kernel.org
-Cc:     Dario Binacchi <dariobin@libero.it>,
-        Haojian Zhuang <haojian.zhuang@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Tony Lindgren <tony@atomide.com>,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-omap@vger.kernel.org
-Subject: [PATCH] pinctrl: single: config: enable the pin's input
-Date:   Fri, 14 May 2021 18:38:18 +0200
-Message-Id: <20210514163818.12178-1-dariobin@libero.it>
-X-Mailer: git-send-email 2.17.1
-X-CMAE-Envelope: MS4xfJOb6TVjy4+GHqUGueOCUInhWSrMa1UIYRCaQkM6RJIgqh0evmhrQiliElV71tOev98m2PJgBz7IJ2r+fPWZ3yLh2Q0eUZP1Rbeu3MRw1ZyOuO1XfXGi
- LFEt4kryXhnVWVxrq8Ykh52Xd2zIoTGrhNpgcr/TYbVP58SbV7weAefcv5O/e3ZJVQg2wF4wfkdL1JxvwlJYQLJAtrFC0cXeqfZ+YhW0CsOB7Xv+NVb6w3RV
- fGm5LgDCd/sP13goFzGVSLcV8ZPoQF3EfRr33LDEeanALIuJNEHwfUc5ftC+3we0uWFfEPZSWwGnDTK5FiF7nRp7R/amNyC+uw+r11w1+ZUMnr22LHluzIvl
- wAKXzUfwxEUlP2Gl1Nv9kXvjR1XgQGhu9iga8syZni7VJfcPfZzqnZfU1fJk02zLIBuTBT23x9x3eI+Z1Fe+G0dcZwu6ZZN8cQzr9Ab4CefbUJE6o3jxCsmm
- 3zM8Dyd9R4eexHMJJnMT9MJKJ0KG5jEXatCtrg==
+        id S234792AbhENQop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 12:44:45 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:40626 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230431AbhENQol (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 12:44:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=a3EKWIis+zR6gQ4DUZ9TNegMci0bPDZjHjVHulVe+gI=; b=mhb66vKQJ/NVPgv4tnTioqdNr7
+        4sQyoTbl26QQtylNUgnVhcbpDT0hQovK5963TuaszgCPDCi9LtXMyor2zoG+x0pZmEVfL+kScAX+w
+        1QGU3HdB4Zv7O+LZ87G6dA1SaiiGdC+w9HZL+VXcVYMcd8AvrmwuqukUX8m158MhEXUQ=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lhauK-004D9H-Ld; Fri, 14 May 2021 18:43:24 +0200
+Date:   Fri, 14 May 2021 18:43:24 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH net-next v5 07/25] net: dsa: qca8k: handle error with
+ qca8k_rmw operation
+Message-ID: <YJ6orOpINGHT6kZD@lunn.ch>
+References: <20210511020500.17269-1-ansuelsmth@gmail.com>
+ <20210511020500.17269-8-ansuelsmth@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210511020500.17269-8-ansuelsmth@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It enables / disables the input buffer. As explained in the description
-of 'enum pin_config_param' this does not affect the pin's ability to
-drive output.
+> -static u32
+> -qca8k_rmw(struct qca8k_priv *priv, u32 reg, u32 mask, u32 val)
+> +static int
+> +qca8k_rmw(struct qca8k_priv *priv, u32 reg, u32 mask, u32 write_val)
+>  {
+>  	struct mii_bus *bus = priv->bus;
+>  	u16 r1, r2, page;
+> -	u32 ret;
+> +	u32 val;
+> +	int ret;
+>  
+>  	qca8k_split_addr(reg, &r1, &r2, &page);
+>  
+> @@ -205,10 +206,15 @@ qca8k_rmw(struct qca8k_priv *priv, u32 reg, u32 mask, u32 val)
+>  	if (ret < 0)
+>  		goto exit;
+>  
+> -	ret = qca8k_mii_read32(bus, 0x10 | r2, r1);
+> -	ret &= ~mask;
+> -	ret |= val;
+> -	qca8k_mii_write32(bus, 0x10 | r2, r1, ret);
+> +	val = qca8k_mii_read32(bus, 0x10 | r2, r1);
+> +	if (val < 0) {
+> +		ret = val;
+> +		goto exit;
+> +	}
+> +
+> +	val &= ~mask;
+> +	val |= write_val;
+> +	qca8k_mii_write32(bus, 0x10 | r2, r1, val);
 
-Signed-off-by: Dario Binacchi <dariobin@libero.it>
----
+Does qca8k_mii_write32() not return an code?
 
- drivers/pinctrl/pinctrl-single.c | 3 +++
- 1 file changed, 3 insertions(+)
+Seems like yet another function you could modify. But i suggest you
+wait, get this patchset merged first.
 
-diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
-index 2c9c9835f375..4e7cdb9ee855 100644
---- a/drivers/pinctrl/pinctrl-single.c
-+++ b/drivers/pinctrl/pinctrl-single.c
-@@ -534,6 +534,7 @@ static int pcs_pinconf_get(struct pinctrl_dev *pctldev,
- 		case PIN_CONFIG_DRIVE_STRENGTH:
- 		case PIN_CONFIG_SLEW_RATE:
- 		case PIN_CONFIG_MODE_LOW_POWER:
-+		case PIN_CONFIG_INPUT_ENABLE:
- 		default:
- 			*config = data;
- 			break;
-@@ -572,6 +573,7 @@ static int pcs_pinconf_set(struct pinctrl_dev *pctldev,
- 			case PIN_CONFIG_DRIVE_STRENGTH:
- 			case PIN_CONFIG_SLEW_RATE:
- 			case PIN_CONFIG_MODE_LOW_POWER:
-+			case PIN_CONFIG_INPUT_ENABLE:
- 				shift = ffs(func->conf[i].mask) - 1;
- 				data &= ~func->conf[i].mask;
- 				data |= (arg << shift) & func->conf[i].mask;
-@@ -918,6 +920,7 @@ static int pcs_parse_pinconf(struct pcs_device *pcs, struct device_node *np,
- 	static const struct pcs_conf_type prop2[] = {
- 		{ "pinctrl-single,drive-strength", PIN_CONFIG_DRIVE_STRENGTH, },
- 		{ "pinctrl-single,slew-rate", PIN_CONFIG_SLEW_RATE, },
-+		{ "pinctrl-single,input-enable", PIN_CONFIG_INPUT_ENABLE, },
- 		{ "pinctrl-single,input-schmitt", PIN_CONFIG_INPUT_SCHMITT, },
- 		{ "pinctrl-single,low-power-mode", PIN_CONFIG_MODE_LOW_POWER, },
- 	};
--- 
-2.17.1
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
+    Andrew
