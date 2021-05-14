@@ -2,162 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA6A4380383
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 08:04:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E73C380384
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 08:04:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231725AbhENGFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 02:05:46 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:58848 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230121AbhENGFp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 02:05:45 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14E5suTS012672;
-        Fri, 14 May 2021 06:04:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=5zsoaccx4ky+r+wBHL03V8CRmxxW8jJUfpknnAxp3mE=;
- b=pEpAXV/pVc7tiko5aWDTBEltv0X2or5z4sppqG4wYi1zHX2E/qh+CpbK1QXXCWmzGuBU
- mbxWTRnCwOln/66agkT+3d+2SU5iW6fQSmKuXsdyEdipTaLHLxTWnLXlS2txkR2TxAdO
- vVn7+h6XOBjzm/3uDw0SyljfvUWMHYT1GX4XMc2Ttil9yzyEzguPxVOlETzOsJ1kkrJS
- rmRirD+7EqjanhzaQpdAdQFngnEuxatX9wmGq4YiaKjXlxRq+4RslMOD2F0ndfKf6gOo
- yN3cwXwRZCWrsUt5V2XG+JorWs7r2Y57ozTySRKstQWLh4qUO/y3MFdnIuYK2Catyprb Ew== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 38gpnukdw0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 14 May 2021 06:04:29 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14E5tooV027226;
-        Fri, 14 May 2021 06:04:29 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 38gpq2sbgc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 14 May 2021 06:04:29 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14E61Hxc040074;
-        Fri, 14 May 2021 06:04:28 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 38gpq2sbg5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 14 May 2021 06:04:28 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 14E64MOQ009761;
-        Fri, 14 May 2021 06:04:23 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 13 May 2021 23:04:22 -0700
-Date:   Fri, 14 May 2021 09:04:15 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     kbuild@lists.01.org, Neil Armstrong <narmstrong@baylibre.com>
-Cc:     lkp@intel.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>
-Subject: drivers/phy/amlogic/phy-meson-axg-mipi-dphy.c:393
- phy_meson_axg_mipi_dphy_probe() warn: 'priv->clk' not released on lines:
- 386.
-Message-ID: <202105140611.0pGD90Qg-lkp@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-ORIG-GUID: _SC9nsA3qTaUKHngX8pKMQfb8qoQIKR4
-X-Proofpoint-GUID: _SC9nsA3qTaUKHngX8pKMQfb8qoQIKR4
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9983 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 impostorscore=0
- adultscore=0 spamscore=0 clxscore=1015 mlxlogscore=999 bulkscore=0
- mlxscore=0 priorityscore=1501 malwarescore=0 lowpriorityscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105140042
+        id S231932AbhENGFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 02:05:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35906 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230121AbhENGFr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 02:05:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25E9D61442;
+        Fri, 14 May 2021 06:04:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620972276;
+        bh=7thu+ANECwgoapk9y0rfkNoObCgHdSaeFn1wY2GgHFI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=OBJbVCryd33z13cNpyWRwNInMMyoRKj2bV2jrZzMXTAvLt/nnwAR6Z31v+sXp+M6L
+         7ChtYZgbFbVn11XEWeUR75Tem8WuDh615FHBcSCX6Uvq66xVM+3wTG6YHQJnhtP3lV
+         4rEjhKeOIy/cVYA4beD6+n6bcxz9Grrk9FUGA3xoc0mtBMBXjhBjA/YOxRqtCcmkaa
+         ftk5eY7tusNcY28Jz9h5TCoBVxAYuJpHpPVqMvV2YUU/8mORKDzYwh8fXQjYThT08D
+         /AyU94aO9ItUwtYZBBnR/9Ya/iO00ATJUl6tT+wxb/vI2fiyO+et5tAI6OC/FT8/37
+         o3MLW5UfNVXlg==
+Date:   Fri, 14 May 2021 15:04:31 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
+Subject: Re: [PATCH tip/core/rcu 3/4] rcu-tasks: Make ksoftirqd provide RCU
+ Tasks quiescent states
+Message-Id: <20210514150431.d89b0ad0a5ce1ac3971a66e5@kernel.org>
+In-Reply-To: <20210513191539.GF975577@paulmck-ThinkPad-P17-Gen-1>
+References: <20210512182747.3445812-4-paulmck@kernel.org>
+        <20210513155417.93ab2299139ba35025ec8ef7@kernel.org>
+        <20210513142110.GY975577@paulmck-ThinkPad-P17-Gen-1>
+        <20210514024912.a38f755add13a0f1dc73395a@kernel.org>
+        <20210513191539.GF975577@paulmck-ThinkPad-P17-Gen-1>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   315d99318179b9cd5077ccc9f7f26a164c9fa998
-commit: 76aefb221146dbe0de124f566329c76d5dcf118a phy: amlogic: Add AXG MIPI D-PHY driver
-config: powerpc-randconfig-m031-20210513 (attached as .config)
-compiler: powerpc-linux-gcc (GCC) 9.3.0
+Hi Paul,
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+On Thu, 13 May 2021 12:15:39 -0700
+"Paul E. McKenney" <paulmck@kernel.org> wrote:
 
-smatch warnings:
-drivers/phy/amlogic/phy-meson-axg-mipi-dphy.c:393 phy_meson_axg_mipi_dphy_probe() warn: 'priv->clk' not released on lines: 386.
+> On Fri, May 14, 2021 at 02:49:12AM +0900, Masami Hiramatsu wrote:
+> > On Thu, 13 May 2021 07:21:10 -0700
+> > "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> > 
+> > > On Thu, May 13, 2021 at 03:54:17PM +0900, Masami Hiramatsu wrote:
+> > > > Hi Paul,
+> > > > 
+> > > > On Wed, 12 May 2021 11:27:46 -0700
+> > > > "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> > > > 
+> > > > > Heavy networking load can cause a CPU to execute continuously and
+> > > > > indefinitely within ksoftirqd, in which case there will be no voluntary
+> > > > > task switches and thus no RCU-tasks quiescent states.  This commit
+> > > > > therefore causes the exiting rcu_softirq_qs() to provide an RCU-tasks
+> > > > > quiescent state.
+> > > > > 
+> > > > > This of course means that __do_softirq() and its callers cannot be
+> > > > > invoked from within a tracing trampoline.
+> > > > 
+> > > > I would like to confirm that you mean "tracing trampoline" here is
+> > > > the code on the trampoline buffer, not the handler code which is
+> > > > invoked from the trampoline buffer but it is protected by preempt_disable(),
+> > > > am I understand correctly?
+> > > 
+> > > Maybe?  ;-)
+> > > 
+> > > If the handler code is invoked from the trampoline buffer, but
+> > > returns somewhere else, then it is OK for the handler code to invoke
+> > > __do_softirq() or its callers.
+> > > 
+> > > In addition, if the handler code is invoked from the trampoline buffer is
+> > > guaranteed never to be running in the context of the ksoftirqd kthread,
+> > > then it is also OK for the handler code to invoke __do_softirq() or
+> > > its callers.
+> > > 
+> > > Otherwise, if the handler code might return back into the trampoline
+> > > buffer and if that code might be running in the context of the ksoftirqd
+> > > kthread, invoking __do_softirq() or one of its callers could result in
+> > > the trampoline buffer no longer being there when it was returned to.
+> > 
+> > Hmm, the optprobe may be involved in this case. It always return to
+> > the trampoline and handler does not disable irqs (only disable preempt).
+> > BTW, what will call the __do_softirq()? Is hardirq safe?
+> 
+> As long as your code does not explicitly call __do_softirq() or one of
+> its callers, you should be OK.
+> 
+> Let's suppose that your code takes a hardirq from ksoftirqd context.
+> In that case, the return-from-irq path will notice the ksoftirqd
+> context and refrain from calling __do_softirqd().  Life is good.
+> (See the invoke_softirq() function for more detail.)
+> 
+> On the other hand, if your code takes a hardirq from some non-ksoftirqd
+> context, and if this hardirq decides to handle softirqs on exit
+> from the hardirq, the "__this_cpu_read(ksoftirqd) == current" within
+> __do_softirq() will fail, so that rcu_softirq_qs() will not be called.
+> Life is still good.
 
-vim +393 drivers/phy/amlogic/phy-meson-axg-mipi-dphy.c
+Ah, OK. This is good.
 
-76aefb221146db Neil Armstrong 2020-11-16  333  static int phy_meson_axg_mipi_dphy_probe(struct platform_device *pdev)
-76aefb221146db Neil Armstrong 2020-11-16  334  {
-76aefb221146db Neil Armstrong 2020-11-16  335  	struct device *dev = &pdev->dev;
-76aefb221146db Neil Armstrong 2020-11-16  336  	struct phy_provider *phy_provider;
-76aefb221146db Neil Armstrong 2020-11-16  337  	struct resource *res;
-76aefb221146db Neil Armstrong 2020-11-16  338  	struct phy_meson_axg_mipi_dphy_priv *priv;
-76aefb221146db Neil Armstrong 2020-11-16  339  	struct phy *phy;
-76aefb221146db Neil Armstrong 2020-11-16  340  	void __iomem *base;
-76aefb221146db Neil Armstrong 2020-11-16  341  	int ret;
-76aefb221146db Neil Armstrong 2020-11-16  342  
-76aefb221146db Neil Armstrong 2020-11-16  343  	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-76aefb221146db Neil Armstrong 2020-11-16  344  	if (!priv)
-76aefb221146db Neil Armstrong 2020-11-16  345  		return -ENOMEM;
-76aefb221146db Neil Armstrong 2020-11-16  346  
-76aefb221146db Neil Armstrong 2020-11-16  347  	priv->dev = dev;
-76aefb221146db Neil Armstrong 2020-11-16  348  	platform_set_drvdata(pdev, priv);
-76aefb221146db Neil Armstrong 2020-11-16  349  
-76aefb221146db Neil Armstrong 2020-11-16  350  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-76aefb221146db Neil Armstrong 2020-11-16  351  	base = devm_ioremap_resource(dev, res);
-76aefb221146db Neil Armstrong 2020-11-16  352  	if (IS_ERR(base))
-76aefb221146db Neil Armstrong 2020-11-16  353  		return PTR_ERR(base);
-76aefb221146db Neil Armstrong 2020-11-16  354  
-76aefb221146db Neil Armstrong 2020-11-16  355  	priv->regmap = devm_regmap_init_mmio(dev, base,
-76aefb221146db Neil Armstrong 2020-11-16  356  					&phy_meson_axg_mipi_dphy_regmap_conf);
-76aefb221146db Neil Armstrong 2020-11-16  357  	if (IS_ERR(priv->regmap))
-76aefb221146db Neil Armstrong 2020-11-16  358  		return PTR_ERR(priv->regmap);
-76aefb221146db Neil Armstrong 2020-11-16  359  
-76aefb221146db Neil Armstrong 2020-11-16  360  	priv->clk = devm_clk_get(dev, "pclk");
-76aefb221146db Neil Armstrong 2020-11-16  361  	if (IS_ERR(priv->clk))
-76aefb221146db Neil Armstrong 2020-11-16  362  		return PTR_ERR(priv->clk);
-76aefb221146db Neil Armstrong 2020-11-16  363  
-76aefb221146db Neil Armstrong 2020-11-16  364  	priv->reset = devm_reset_control_get(dev, "phy");
-76aefb221146db Neil Armstrong 2020-11-16  365  	if (IS_ERR(priv->reset))
-76aefb221146db Neil Armstrong 2020-11-16  366  		return PTR_ERR(priv->reset);
-76aefb221146db Neil Armstrong 2020-11-16  367  
-76aefb221146db Neil Armstrong 2020-11-16  368  	priv->analog = devm_phy_get(dev, "analog");
-76aefb221146db Neil Armstrong 2020-11-16  369  	if (IS_ERR(priv->analog))
-76aefb221146db Neil Armstrong 2020-11-16  370  		return PTR_ERR(priv->analog);
-76aefb221146db Neil Armstrong 2020-11-16  371  
-76aefb221146db Neil Armstrong 2020-11-16  372  	ret = clk_prepare_enable(priv->clk);
-76aefb221146db Neil Armstrong 2020-11-16  373  	if (ret)
-76aefb221146db Neil Armstrong 2020-11-16  374  		return ret;
-76aefb221146db Neil Armstrong 2020-11-16  375  
-76aefb221146db Neil Armstrong 2020-11-16  376  	ret = reset_control_deassert(priv->reset);
-76aefb221146db Neil Armstrong 2020-11-16  377  	if (ret)
-76aefb221146db Neil Armstrong 2020-11-16  378  		return ret;
-76aefb221146db Neil Armstrong 2020-11-16  379  
-76aefb221146db Neil Armstrong 2020-11-16  380  	phy = devm_phy_create(dev, NULL, &phy_meson_axg_mipi_dphy_ops);
-76aefb221146db Neil Armstrong 2020-11-16  381  	if (IS_ERR(phy)) {
-76aefb221146db Neil Armstrong 2020-11-16  382  		ret = PTR_ERR(phy);
-76aefb221146db Neil Armstrong 2020-11-16  383  		if (ret != -EPROBE_DEFER)
-76aefb221146db Neil Armstrong 2020-11-16  384  			dev_err(dev, "failed to create PHY\n");
-76aefb221146db Neil Armstrong 2020-11-16  385  
-76aefb221146db Neil Armstrong 2020-11-16  386  		return ret;
+> 
+> Either way, as long as your handler does not explicitly invoke
+> __do_softirq(), life is good.
 
-Should we disable unprepare the clk?  I don't know, btw.  It seems like
-a lot of people don't bother with that.
+There should be no such code, I hope. 
 
-76aefb221146db Neil Armstrong 2020-11-16  387  	}
-76aefb221146db Neil Armstrong 2020-11-16  388  
-76aefb221146db Neil Armstrong 2020-11-16  389  	phy_set_drvdata(phy, priv);
-76aefb221146db Neil Armstrong 2020-11-16  390  
-76aefb221146db Neil Armstrong 2020-11-16  391  	phy_provider = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
+> 
+> The bad case is when you instrument a function that is invoked in the
+> context of a ksoftirqd kthread, and the corresponding handler (or
+> some function that the handler explicitly calls) directly invokes
+> __do_softirq() or one of its caller.
+> 
+> Is that more helpful?
 
-Same if devm_of_phy_provider_register() fails I guess.
+OK, I got it. So it would be better to be commented later.
+But anyway I can't imagine that there is any reason to call
+__do_softirq() inside kprobe handler :)
 
-76aefb221146db Neil Armstrong 2020-11-16  392  
-76aefb221146db Neil Armstrong 2020-11-16 @393  	return PTR_ERR_OR_ZERO(phy_provider);
-76aefb221146db Neil Armstrong 2020-11-16  394  }
+Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Thank you,
 
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
