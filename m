@@ -2,89 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F546380145
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 02:42:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF5D938014C
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 02:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231812AbhENAnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 20:43:55 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:2480 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231159AbhENAny (ORCPT
+        id S231848AbhENA6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 20:58:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230305AbhENA6h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 20:43:54 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Fh8nC3ZDxzBtT2;
-        Fri, 14 May 2021 08:39:59 +0800 (CST)
-Received: from [10.174.179.71] (10.174.179.71) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 14 May 2021 08:42:37 +0800
-Subject: Re: [PATCH] ACPI/IORT: Handle device properties with software node
- API
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-CC:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Eric Auger <eric.auger@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210511125528.18525-1-heikki.krogerus@linux.intel.com>
- <CAJZ5v0iQA91927-OXWVRu2_yNgTS-7b8ew4uvo+qk8q86vzOsg@mail.gmail.com>
-From:   Hanjun Guo <guohanjun@huawei.com>
-Message-ID: <9026d9a3-9f17-6686-d64e-009326ec6e90@huawei.com>
-Date:   Fri, 14 May 2021 08:42:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Thu, 13 May 2021 20:58:37 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 650A9C061574;
+        Thu, 13 May 2021 17:57:26 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id i7so19221085ioa.12;
+        Thu, 13 May 2021 17:57:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=o3wEUqD5QhLS2UhtL5j7UqBMamQk3HhwXmumgBPx1P8=;
+        b=hcN6w+BypiE5zN1KXHBF4f9O0oom+Q2j0Uo1g9Gd/LiXSvBT4gUXeolwGYSAMv61Su
+         GmZhr+7jNEd20bCPrT+SsrfZ53U+zbwlqr9z2QTnpm8oEEZ7Nm9Qdk/PvNgh9C7+rJLt
+         DKcHhb1MgYUN08Ued/nwzuZ/lX7vaizEBXJOhGRm7vNn5/CBzEcJTOTBbnG3UF6pQOaR
+         EVBLUd1K9yVT/2JunLG+yac246uWjJwWcrg4XgHvPrZmIYHHSwifnwzhD4cXcJyaswir
+         zgg/SC0mFliMPn4HB7kfRUC/QydemZzgfZpwza4MT6selUltS0uKSrMJLq61uj0CJSti
+         +Lkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=o3wEUqD5QhLS2UhtL5j7UqBMamQk3HhwXmumgBPx1P8=;
+        b=ui9p1meNDYfPLQKwwxWFJRQ/g2Krwi77XjtAzzWj7Zc+vCjZfg32qPetOxZmSuC23J
+         pQclTWoR9GzUYSXX8IHoclnH6a7veu1w5rBMQYU9k1Ia4A+fZxC4WnAzIPFdeS2CAPpz
+         JeYcGqIbnk9lJ2phFvi08gdI6tjXnGa9p3X/ZDiMuAM6gCXG14SdJRz53V0gPdeBS8j7
+         S8pk4z+T4gpWDSp0AldfHv+PofspX1T+z82ViT9zdYJpTxLtFGcyI5vvlN7kF98ZoeHb
+         AA2ZHVQPaVsXg/6mwi1cnRkhm2qQ1emNifC0vhadisg2caCOed7Hfn/sxjqUdh+FFMbP
+         DBww==
+X-Gm-Message-State: AOAM5334sjTn+pP8qAMuru+SUWEHF3jNhw6NbhCHqR5hUwcw2LSINVPi
+        QLElaJoOcci8sgE3kycUWstDTbqNw6MQcQ==
+X-Google-Smtp-Source: ABdhPJyB4KylG8BajfWzW2sICVndWhPHbf+Sta1dYqbL8ii+leuCVgYktVAW4oFkpqaC0W9obhMlLA==
+X-Received: by 2002:a5d:89c5:: with SMTP id a5mr33586495iot.172.1620953845046;
+        Thu, 13 May 2021 17:57:25 -0700 (PDT)
+Received: from localhost.localdomain (142-79-211-230.starry-inc.net. [142.79.211.230])
+        by smtp.gmail.com with ESMTPSA id g25sm1981538ion.32.2021.05.13.17.57.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 May 2021 17:57:24 -0700 (PDT)
+From:   Connor Davis <connojdavis@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Connor Davis <connojdavis@gmail.com>, linux-usb@vger.kernel.org,
+        xen-devel@lists.xenproject.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>, Jann Horn <jannh@google.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sumit Garg <sumit.garg@linaro.org>
+Subject: [PATCH v2 0/4] Support xen-driven USB3 debug capability
+Date:   Thu, 13 May 2021 18:56:47 -0600
+Message-Id: <cover.1620950220.git.connojdavis@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0iQA91927-OXWVRu2_yNgTS-7b8ew4uvo+qk8q86vzOsg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.71]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/5/11 21:51, Rafael J. Wysocki wrote:
-> On Tue, May 11, 2021 at 2:55 PM Heikki Krogerus
-> <heikki.krogerus@linux.intel.com>  wrote:
->> The older device property API is going to be removed.
->> Replacing the device_add_properties() call with software
->> node API equivalent device_create_managed_software_node().
->>
->> Fixes: 434b73e61cc6 ("iommu/arm-smmu-v3: Use device properties for pasid-num-bits")
->> Signed-off-by: Heikki Krogerus<heikki.krogerus@linux.intel.com>
->> ---
->>   drivers/acpi/arm64/iort.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
->> index 3912a1f6058e5..e34937e11186a 100644
->> --- a/drivers/acpi/arm64/iort.c
->> +++ b/drivers/acpi/arm64/iort.c
->> @@ -976,7 +976,7 @@ static void iort_named_component_init(struct device *dev,
->>                                        FIELD_GET(ACPI_IORT_NC_PASID_BITS,
->>                                                  nc->node_flags));
->>
->> -       if (device_add_properties(dev, props))
->> +       if (device_create_managed_software_node(dev, props, NULL))
->>                  dev_warn(dev, "Could not add device properties\n");
->>   }
->>
->> --
-> Thanks!
-> 
-> I can take this through the ACPI tree if there are no objections.
+Hi all,
 
-Since this is related to device property API refactor, I'm
-fine with it.
+This goal of this series is to allow the USB3 debug capability (DbC) to be
+safely used by xen while linux runs as dom0.
 
-Lorenzo, what's your position?
+The first patch prevents the early DbC driver from using an
+already-running DbC.
 
-Thanks
-Hanjun
+The second exports xen_dbgp_reset_prep and xen_dbgp_external_startup
+functions when CONFIG_XEN_DOM0 is enabled so they may be used by the
+xHCI driver.
+
+The third ensures that xen_dbgp_reset_prep/xen_dbgp_external_startup
+return consistent values in failure cases. This inconsistency illustrated
+another issue: dbgp_reset_prep returned the value of xen_dbgp_reset_prep
+if it was nonzero, but callers of dbgp_reset_prep interpret nonzero
+as "keep using the debug port" and would eventually (needlessly) call
+dbgp_external_startup. Patch three _should_ fix this issue, but
+I don't have any EHCI hardware available to test unfortunately.
+
+The last uses the xen_dbgp_* functions to notify xen of unsafe periods
+(e.g. reset and D3hot transition).
+
+Thanks,
+Connor
+
+--
+Changes since v1:
+ - Added patch for dbgp return value fixes
+ - Return -EPERM when !xen_initial_domain() in xen_dbgp_op
+ - Moved #ifdef-ary out of xhci.c into xhci-dbgcap.h
+
+--
+Connor Davis (4):
+  usb: early: Avoid using DbC if already enabled
+  xen: Export dbgp functions when CONFIG_XEN_DOM0 is enabled
+  usb: dbgp: Fix return values for reset prep and startup
+  usb: xhci: Notify xen when DbC is unsafe to use
+
+ drivers/usb/early/ehci-dbgp.c  |  9 ++++---
+ drivers/usb/early/xhci-dbc.c   | 10 ++++++++
+ drivers/usb/host/xhci-dbgcap.h | 19 ++++++++++++++
+ drivers/usb/host/xhci.c        | 47 ++++++++++++++++++++++++++++++++++
+ drivers/usb/host/xhci.h        |  1 +
+ drivers/xen/dbgp.c             |  4 +--
+ include/linux/usb/ehci-dbgp.h  | 14 ++++++----
+ 7 files changed, 94 insertions(+), 10 deletions(-)
+
+
+base-commit: 88b06399c9c766c283e070b022b5ceafa4f63f19
+-- 
+2.31.1
+
