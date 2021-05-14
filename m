@@ -2,97 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2F74380A39
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 15:13:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FC2D380A3C
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 15:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232046AbhENNOg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 14 May 2021 09:14:36 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:58425 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229469AbhENNOf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 09:14:35 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-76-GxO-xKM-MNOH8CDoNhHeWQ-1; Fri, 14 May 2021 14:13:21 +0100
-X-MC-Unique: GxO-xKM-MNOH8CDoNhHeWQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Fri, 14 May 2021 14:13:19 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Fri, 14 May 2021 14:13:19 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Thomas Gleixner' <tglx@linutronix.de>,
-        'Maximilian Luz' <luzmaximilian@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
-CC:     "H. Peter Anvin" <hpa@zytor.com>, Sachi King <nakato@nakato.io>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH] x86/i8259: Work around buggy legacy PIC
-Thread-Topic: [PATCH] x86/i8259: Work around buggy legacy PIC
-Thread-Index: AQHXR3+B5Hf0DG1T80+Lb/Y+9zG7TarhDftggAATCoCAABWukIABrCMAgAATcQA=
-Date:   Fri, 14 May 2021 13:13:19 +0000
-Message-ID: <bbf5d417ee0d4edbbed31f19ef40fad0@AcuMS.aculab.com>
-References: <20210512210459.1983026-1-luzmaximilian@gmail.com>
- <9b70d8113c084848b8d9293c4428d71b@AcuMS.aculab.com>
- <e7dbd4d1-f23f-42f0-e912-032ba32f9ec8@gmail.com>
- <e43d9a823c9e44bab0cdbf32a000c373@AcuMS.aculab.com>
- <87tun54gg3.ffs@nanos.tec.linutronix.de>
-In-Reply-To: <87tun54gg3.ffs@nanos.tec.linutronix.de>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S232277AbhENNOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 09:14:49 -0400
+Received: from mga14.intel.com ([192.55.52.115]:48750 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232217AbhENNOs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 09:14:48 -0400
+IronPort-SDR: NQSmRFaHJxAXGGHu9X1BhVkN8n3ZwIU/WwUz6HVRtf7gtR0+i5nYYo83Vqnr/S+YUGIWa+NF9f
+ NDfO21nCImFA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9983"; a="199865020"
+X-IronPort-AV: E=Sophos;i="5.82,299,1613462400"; 
+   d="scan'208";a="199865020"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 May 2021 06:13:32 -0700
+IronPort-SDR: 74l511Rb9o5gDukdPDL6bOeNbq6KgQcj3lP8iDQqaTWrXmxK5XUlenpjvEJBgSBvCJ8LpyEenR
+ NV3AelhCj7QA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,299,1613462400"; 
+   d="scan'208";a="538806639"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 14 May 2021 06:13:28 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 14 May 2021 16:13:28 +0300
+Date:   Fri, 14 May 2021 16:13:28 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Hanjun Guo <guohanjun@huawei.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Eric Auger <eric.auger@redhat.com>,
+        Will Deacon <will@kernel.org>, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ACPI/IORT: Handle device properties with software node
+ API
+Message-ID: <YJ53eBRGXtabyT5K@kuha.fi.intel.com>
+References: <20210511125528.18525-1-heikki.krogerus@linux.intel.com>
+ <20210514103912.GA16131@lpieralisi>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210514103912.GA16131@lpieralisi>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner
-> Sent: 14 May 2021 14:02
+On Fri, May 14, 2021 at 11:39:12AM +0100, Lorenzo Pieralisi wrote:
+> On Tue, May 11, 2021 at 03:55:28PM +0300, Heikki Krogerus wrote:
+> > The older device property API is going to be removed.
+> > Replacing the device_add_properties() call with software
+> > node API equivalent device_create_managed_software_node().
+> > 
+> > Fixes: 434b73e61cc6 ("iommu/arm-smmu-v3: Use device properties for pasid-num-bits")
 > 
-> David,
+> Is this really fixing anything ? I am not sure I understand what you
+> would like to achieve with this tag.
+
+Right now it's not possible to simply remove the old API because some
+of the maintainers want to take care of the conversion themselves, but
+at the same time I also do not want to see any new releases of the
+kernel that introduce more users for it. That's why it's a fix.
+
+
+> > Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> > ---
+> >  drivers/acpi/arm64/iort.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> On Thu, May 13 2021 at 10:36, David Laight wrote:
+> With the above comment clarified:
 > 
-> >> -----Original Message-----
-> >> From: Maximilian Luz <luzmaximilian@gmail.com>
+> Acked-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
 > 
-> can you please fix your mail client and spare us the useless header
-> duplication in the reply?
+> > diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
+> > index 3912a1f6058e5..e34937e11186a 100644
+> > --- a/drivers/acpi/arm64/iort.c
+> > +++ b/drivers/acpi/arm64/iort.c
+> > @@ -976,7 +976,7 @@ static void iort_named_component_init(struct device *dev,
+> >  				      FIELD_GET(ACPI_IORT_NC_PASID_BITS,
+> >  						nc->node_flags));
+> >  
+> > -	if (device_add_properties(dev, props))
+> > +	if (device_create_managed_software_node(dev, props, NULL))
+> >  		dev_warn(dev, "Could not add device properties\n");
+> >  }
+> >  
+> > -- 
+> > 2.30.2
+> > 
 
-I have to delete them by hand - must have forgotten, I can't fix outlook :-)
+thanks,
 
-> > It is also worth noting that the probe code is spectacularly crap.
-> > It writes 0xff and then checks that 0xff is read back.
-> > Almost anything (including a failed PCIe read to the ISA bridge)
-> > will return 0xff and make the test pass.
-> 
->         unsigned char probe_val = ~(1 << PIC_CASCADE_IR);
-> 
-> 	outb(probe_val, PIC_MASTER_IMR);
-> 	new_val = inb(PIC_MASTER_IMR);
-> 
-> How is that writing 0xFF?
-
-Sorry I misread the code and diagnostic output.
-
-In any case writing a value and expecting the same value back
-isn't exactly a high-quality probe.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+-- 
+heikki
