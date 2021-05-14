@@ -2,88 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49683380270
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 05:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08D5B380272
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 05:25:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231609AbhENDYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 23:24:49 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:55575 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230202AbhENDYs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 23:24:48 -0400
-Received: from [IPv6:2607:fb90:8499:54e2:5b10:3bfe:8ae:a691] ([IPv6:2607:fb90:8499:54e2:5b10:3bfe:8ae:a691])
-        (authenticated bits=0)
-        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14E3NK3j3045135
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Thu, 13 May 2021 20:23:21 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14E3NK3j3045135
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2021042801; t=1620962602;
-        bh=8ynf+5yIPfkNq8YcZl5TieOBXA43cui1r+6yFVD+gO8=;
-        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
-        b=AeOEYqb9+kkf8bTzwy4w2F5d6iM2z4NizowWTSxFPH07fj5KS3w+puziaveDKXwXD
-         /Yz7jw5ja6MlpYtIgzQquDuW2WkaQr95c16af+CtA4w6wxLL8J3Djojb9av36HbG2j
-         UmIc1uCPHD0vWD7W0xZGDVrzP63TgD5fAx4SVdcV+OuzY6MCjD8qieBMafirxhfHG9
-         JxN+MSwL9kvQfpgcgv6MVs/dEWX//g6ibKzJL7DGCWaGooanNNanSE7qgAKCS1p4dH
-         y4slwDbLP0I2X995QyLYaZiF2sRVS1G6WhrsRO9QyJcnlyv9D8PKWCbTSy6M1Xdh+x
-         hjhTgNIoAOtBw==
-Date:   Thu, 13 May 2021 20:23:17 -0700
-User-Agent: K-9 Mail for Android
-In-Reply-To: <57bf2ff9-11ff-0907-975e-15177df72144@linux.luto.us>
-References: <871racf928.ffs@nanos.tec.linutronix.de> <60495dd3-ea68-4db3-47ad-b7b45796bf76@zytor.com> <87o8dfer7k.ffs@nanos.tec.linutronix.de> <b0ca952a-fd82-7833-ac82-ea8ecad48b53@zytor.com> <87mtsz619u.ffs@nanos.tec.linutronix.de> <b6f47bd3-3e4c-7200-befe-5e14fecf3da7@zytor.com> <57bf2ff9-11ff-0907-975e-15177df72144@linux.luto.us>
+        id S231615AbhEND0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 23:26:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230202AbhEND0R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 23:26:17 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75F6AC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 20:25:06 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id x5so28702859wrv.13
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 20:25:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qA/LAFFI+jVcP+Kd0M4qGoF8L0ZjvsmsYJZogOYbiAQ=;
+        b=OnjxILPnJeDvRHc9iPEEubFRbiphS8lU5ZgLeRSWr2HzrlP1DuFvVPXhIZfEaZD3gf
+         5JA73EIhyl1v6HW8kqMIKaP6pkA7VlsoyV2CZmFIyWQWYiKIxKCFOO3ZKEXwB36LeEaQ
+         riU5cxJaoeJ4t7799NBgL/dTh0MWFAVv+t/Q9yiUEtLXTqwwb/Zni9QPUMIqx98cSq9L
+         SyVojf4YpB8dBjYSqGZ5HVyYgnjPjkFkAFzNpF3wrPaK85t6QZhJHXDSyfZGrDk1g0za
+         9BMqc+dD4M4u4W2xRxiP/eV3iVh2POo1G1J56faFWeqwAYxVAFDx+fWiiy8rZqjnXCS+
+         6Z5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qA/LAFFI+jVcP+Kd0M4qGoF8L0ZjvsmsYJZogOYbiAQ=;
+        b=mA0xEZzYGRqjuFid3xVvmgO7k/x/Pc0/ugjHD07q/rlw53UTqjoZTpAf337P2AuACw
+         FnWnHxqenNrTxMvgBy1OdCwtisc7DykvzJ7BUGQjZhe4v4pMBc4CStZ7Yt7gALvh+kJ4
+         0aKetq3sz5lvLXWUL1qUBFLRlnv4TfKmmZ8kD1DBkGThr3AXhhEmFSkLxfmhJp+d9UJU
+         kGXMsZpFW2/9tzO0vRg3YHMcp1DBADW1S717ETaq0xa12faGsgZLbjnF6Ze/1OQBbP4x
+         FZN9WCtkplbWST4smax1QIaYgOkz1Ur8nXIBg0vk+DUszl6vTKUIqMJk9FozFH1PJ97A
+         9PSQ==
+X-Gm-Message-State: AOAM531PjmRKTf4xn/nMKionCVvcI9MG+TDL4QHsZ815FVG/KdJWhGCS
+        MVJnYzWb6KedbglPTHWu9Pt0rG29dAbVtaQfup/xxg==
+X-Google-Smtp-Source: ABdhPJysEt9Tqu0H8JHhPzilEzabOOJJAWxjXOF//mN/UtdUlgdJyJW3QAPMpr1mk0VY8Ri9ETrEsbEKKeJISz8db9w=
+X-Received: by 2002:a5d:40c4:: with SMTP id b4mr56971603wrq.307.1620962705236;
+ Thu, 13 May 2021 20:25:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [RFC v2 PATCH 7/7] x86/entry: use int for syscall number; handle all invalid syscall nrs
-To:     Andy Lutomirski <andy@linux.luto.us>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>
-CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-From:   "H. Peter Anvin" <hpa@zytor.com>
-Message-ID: <486B4C98-FFD1-40B9-B7AF-5323DE07A0FE@zytor.com>
+References: <20210504054612.3585017-1-hsinyi@chromium.org> <20210504054612.3585017-2-hsinyi@chromium.org>
+ <20210506203124.GA753747@robh.at.kernel.org> <a573e490-44bd-d6a1-d0c0-075b6541f720@gmail.com>
+In-Reply-To: <a573e490-44bd-d6a1-d0c0-075b6541f720@gmail.com>
+From:   Jassi Brar <jaswinder.singh@linaro.org>
+Date:   Thu, 13 May 2021 22:24:54 -0500
+Message-ID: <CAJe_Zhcz3yPcyxHMtAYTY+wKAzWxt2LJsj-AU7QFneW8MTv1HQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] dt-bindings: mediatek: Add optional mediatek,
+ gce-events property
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Rob Herring <robh@kernel.org>, Hsin-Yi Wang <hsinyi@chromium.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        linux-mediatek@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yeah=2E Also, x32 long is 32 bits=2E=2E=2E
-
-On May 13, 2021 8:18:37 PM PDT, Andy Lutomirski <andy@linux=2Eluto=2Eus> w=
-rote:
->On 5/13/21 5:38 PM, H=2E Peter Anvin wrote:
->> On 5/12/21 3:22 PM, Thomas Gleixner wrote:
->>>>
->>>> As far as this being a user ABI change, this is actually a revert
->to the
->>>> original x86-64 ABI; see my message to Ingo=2E
->>>
->>> I'm not against that change, but it has to be well justified and the
->>> reasoning wants to be in the changelog=2E You know the drill :)
->>>
->>=20
->> FYI:
->>=20
->> So in the process of breaking up and better document this patch, I
->have
->> looked at the syscall_numbering_64 (and have rewritten it to be more
->> complete=2E)
->>=20
->> I found that running it under strace fails, as strace (possibly
->ptrace,
->> possibly the strace binary) causes %rax =3D 2^32 to be clobbered to
->zero
->> already=2E=2E=2E
->>=20
->> More motivation, I guess=2E
->>=20
+On Wed, 12 May 2021 at 10:55, Matthias Brugger <matthias.bgg@gmail.com> wrote:
 >
->Indeed=2E
+> Hi Jassi,
 >
->I would love to go back in time and switch to long, but there are
->plenty
->of things that use int now=2E  I suppose we could try to make it long for
->real, but seccomp has u32 baked into its ABI=2E
+> On 06/05/2021 22:31, Rob Herring wrote:
+> > On Tue, 04 May 2021 13:46:12 +0800, Hsin-Yi Wang wrote:
+> >> This property is used by gce clients.
+> >>
+> >> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> >> ---
+> >> v2->v3: move definition to Documentation/devicetree/bindings/mailbox/mtk-gce.txt
+> >> ---
+> >>  .../devicetree/bindings/mailbox/mtk-gce.txt       | 15 +++++++++++++++
+> >>  1 file changed, 15 insertions(+)
+> >>
+> >
+> > Acked-by: Rob Herring <robh@kernel.org>
+> >
+>
+> Will you take this through your branch, or do you prefer me taking it through mine?
+>
+I see I was not CC'ed on the patch. So I can't.
 
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
+-j
