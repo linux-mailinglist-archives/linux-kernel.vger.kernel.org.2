@@ -2,150 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC90C380FAB
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 20:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D635380FAF
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 20:22:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233329AbhENSVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 14:21:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47782 "EHLO
+        id S233408AbhENSX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 14:23:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233202AbhENSVk (ORCPT
+        with ESMTP id S232976AbhENSX6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 14:21:40 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C291C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 11:20:22 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id h202so174115ybg.11
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 11:20:22 -0700 (PDT)
+        Fri, 14 May 2021 14:23:58 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C69C6C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 11:22:46 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id c13so335304pfv.4
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 11:22:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rdMfTFq+p2AV3NKNFb0bpljlABY/TwfShHFjcvSUVzg=;
-        b=dHn86QCPxrUvY85Zj+PW33DwYOe9blB+d2udQfcFv8w9pPd+Hzej+ND5IUhQwtZuqg
-         cMOrKJNDRwpk99Y+8FeEjjSMSL/EhHGLx/MWDfeZaAujF6T5zDYK30+l5dYWMx0LMUeW
-         VekZb/Uvk1L03y3M3UqYt8gQvm9EAPPTROEYYdTJUhI2xu/nIGNoIXVWLZoVDalfo6Lw
-         FA0Qy3IDOHz26sNAAybAR+8mS+Vy410ooDwBfwA3oMLWOecQON4aLYvVnbL0TtnKVFJG
-         A+KKNTFk/y+ajft7d7pt8Vs2Qu067QdkpiGBZJPFwdGgEkwqxLigeiGvNX928QxdR489
-         1+LQ==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:in-reply-to:references:from:mime-version:content-id
+         :date:message-id;
+        bh=4Aj3Hn/Ab05PL29sTHkKVf9z76S19KL7h4dk2AQuwq8=;
+        b=jAL5X6A8XQBSGFtmDTzuws24As6O0mocq82MKaf6rbuWJKOiU2QVhSiOdbUysBOXeQ
+         YBS2nlE9udGS2YLJ/dImfKJh8y9Wu0TH+vx/cQOp+c91ySTtx4UaGB29BbM1ZoKiFb0Z
+         iIkYBAhRludCW6E6cN8Zibj6qCm8o1wkLSWQQp1RaBCdo5JVJKhoMAUGyk9rI6Hr2DrD
+         yQBE3LRijDJADZWx8SlZ1Lzf8EuB9P0yxwOamj2LiIPgUz0DWXt51+0MhJeaqEG7Oxta
+         hkPoYtazZWY47/JRfyikrXVqH9g2IAjChte67fn67woJMRsukYqgANonlbQuSLYa1QMd
+         Zw5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rdMfTFq+p2AV3NKNFb0bpljlABY/TwfShHFjcvSUVzg=;
-        b=nDpN4hlEPmXsaZQAMPKZWBW+EWi3uqVViYEP3yjFhK5AHxwahnK9EZUmtvFmM8TODz
-         SSYVgSv0qNIns64L0zIsGByecP04BfidD5MSbRHq7hCLN3OQhiIp+lIlxKkCy+W4mwtX
-         JWkUb2mpIB45ubsleQTq8NEjp3bbi5bPtu3JcQwh9cgpYSySopZjadi6Az3Gc9/lcSUZ
-         z2vhij25jJogQWIYdoylnPN0Qd8tZ7RRmguYMrQGAZApwiR18/G1eXph3saqBAZ0U1v/
-         dL//ql08W1qPrWok3XoSU9UFR1DESe5gVGS7xsKbczDl3GSXn67RD8MMaOxWWlp1eU5S
-         2M6Q==
-X-Gm-Message-State: AOAM532+njOJRaOnEO2pdD5ndarLUKQ+auHACw9cDhRxzHc1tADbYzNI
-        ny+4NlT0eOfkTroAyzrVFiB3VbRcs79Hn2Fo2APg5A==
-X-Google-Smtp-Source: ABdhPJwPvGsv0HV3Wu67Frygjs5O+Rf2SflsOq+JYzjjmiIgcxKRdpVWnbyhvcDJgqolZZOW3W3wyrY93l3p36P1clw=
-X-Received: by 2002:a5b:7c5:: with SMTP id t5mr63587418ybq.190.1621016421569;
- Fri, 14 May 2021 11:20:21 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:in-reply-to:references:from
+         :mime-version:content-id:date:message-id;
+        bh=4Aj3Hn/Ab05PL29sTHkKVf9z76S19KL7h4dk2AQuwq8=;
+        b=dtfLG84CYVQ5VP42svBrE/dYhs+uclSy3GI5G+ICoq8UKIeI5ouW/9QDhqzhQuUcAk
+         jgOtCa6Ye+vtr2FNDpI25tB3JvHBacGMXBsZPjTk7dl26Tc19dhSZy8f7mLQXIA+C0IP
+         GP2wUtKX+gjBAH4jZKTACMwTQnG7QLxjpJ54ymbxdUOrl3gM4OK0eNaKcnwKpTKvTLoA
+         MIdIf8MdoJofm0k2O1aoVTLHcdHFNP2OFmTfg4wgXiho4ZDMNmAO4mO+VVsBMjEL7hQE
+         hIQ1aSDXfHgQVrqGAhKemG5X0pbI/9OUA53gBQ7lSx0bPIUVscn+ywUZRkdhgoowZdww
+         dNYg==
+X-Gm-Message-State: AOAM533Kaxgv48LPNJigSsjFRovL8Kr0B22zU33cXFeq7EIxSvZ3ByeJ
+        HGnZDICPt4bfgm2JFHiGIdsW4Y96h3Y=
+X-Google-Smtp-Source: ABdhPJwtF3QDVFdaE2eNna/7mOJ7c4pj7bLQKwosCJX3DnTvR245E3w91uVG9tTXZSgxPfCPOCMgqQ==
+X-Received: by 2002:a63:ff48:: with SMTP id s8mr2290861pgk.132.1621016566357;
+        Fri, 14 May 2021 11:22:46 -0700 (PDT)
+Received: from jrobl (h219-110-108-104.catv02.itscom.jp. [219.110.108.104])
+        by smtp.gmail.com with ESMTPSA id x9sm4610878pfd.66.2021.05.14.11.22.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 May 2021 11:22:46 -0700 (PDT)
+Received: from localhost ([127.0.0.1] helo=jrobl) by jrobl id 1lhcSS-0005BY-Q8 ; Sat, 15 May 2021 03:22:44 +0900
+Subject: PATCH: Re: LOCKDEP customizable numbers upper limit
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org
+In-Reply-To: <f323397b-dbe7-b655-4624-d243c2f68d81@i-love.sakura.ne.jp>
+References: <30795.1620913191@jrobl> <f323397b-dbe7-b655-4624-d243c2f68d81@i-love.sakura.ne.jp>
+From:   hooanon05g@gmail.com
 MIME-Version: 1.0
-References: <20210513175349.959661-1-surenb@google.com> <YJ5iAvqAmIhzJRot@hirez.programming.kicks-ass.net>
- <CAJuCfpHy+MknCepfjx9XYUA1j42Auauv7MFQbt+zOU-tA4gasA@mail.gmail.com> <YJ64xHoogrowXTok@hirez.programming.kicks-ass.net>
-In-Reply-To: <YJ64xHoogrowXTok@hirez.programming.kicks-ass.net>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Fri, 14 May 2021 11:20:10 -0700
-Message-ID: <CAJuCfpGkj9HxbkXnYN58JXJp1j6kVkvQhqscnEfjyB5unKg1NQ@mail.gmail.com>
-Subject: Re: [PATCH 1/1] cgroup: make per-cgroup pressure stall tracking configurable
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-        lizefan.x@bytedance.com, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>, mgorman@suse.de,
-        Minchan Kim <minchan@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, bristot@redhat.com,
-        "Paul E . McKenney" <paulmck@kernel.org>, rdunlap@infradead.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>, macro@orcam.me.uk,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        mike.kravetz@oracle.com, linux-doc@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        cgroups mailinglist <cgroups@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <19934.1621016564.1@jrobl>
+Date:   Sat, 15 May 2021 03:22:44 +0900
+Message-ID: <19935.1621016564@jrobl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 10:52 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Fri, May 14, 2021 at 08:54:47AM -0700, Suren Baghdasaryan wrote:
->
-> > Correct, for this function CONFIG_CGROUPS=n and
-> > cgroup_disable=pressure are treated the same. True, from the code it's
-> > not very obvious. Do you have some refactoring in mind that would make
-> > it more explicit?
->
-> Does this make sense?
->
-> --- a/kernel/sched/psi.c
-> +++ b/kernel/sched/psi.c
-> @@ -744,24 +744,26 @@ static void psi_group_change(struct psi_
->
->  static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
->  {
-> +       if (cgroup_psi_enabled()) {
->  #ifdef CONFIG_CGROUPS
-> -       struct cgroup *cgroup = NULL;
-> +               struct cgroup *cgroup = NULL;
->
-> -       if (!*iter)
-> -               cgroup = task->cgroups->dfl_cgrp;
-> -       else if (*iter == &psi_system)
-> -               return NULL;
-> -       else
-> -               cgroup = cgroup_parent(*iter);
-> +               if (!*iter)
-> +                       cgroup = task->cgroups->dfl_cgrp;
-> +               else if (*iter == &psi_system)
-> +                       return NULL;
-> +               else
-> +                       cgroup = cgroup_parent(*iter);
->
-> -       if (cgroup && cgroup_parent(cgroup)) {
-> -               *iter = cgroup;
-> -               return cgroup_psi(cgroup);
-> -       }
-> -#else
-> -       if (*iter)
-> -               return NULL;
-> +               if (cgroup && cgroup_parent(cgroup)) {
-> +                       *iter = cgroup;
-> +                       return cgroup_psi(cgroup);
-> +               }
->  #endif
-> +       } else {
-> +               if (*iter)
-> +                       return NULL;
-> +       }
->         *iter = &psi_system;
->         return &psi_system;
->  }
+Tetsuo Handa:
+> Please submit a patch that avoids only BUILD_BUG_ON().
 
-Hmm. Looks like the case when cgroup_psi_enabled()==true and
-CONFIG_CGROUPS=n would miss the "if (*iter) return NULL;" condition.
-Effectively with CONFIG_CGROUPS=n this becomes:
+Here it is.
 
-       if (cgroup_psi_enabled()) {           <== assume this is true
-#ifdef CONFIG_CGROUPS                <== compiled out
-#endif
-       } else {
-               if (*iter)                                  <== this
-statement will never execute
-                       return NULL;
-       }
-       *iter = &psi_system;
-        return &psi_system;
+J. R. Okajima
 
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
->
+----------------------------------------
+commit 43e103e1a5975c61334811d16e207e6d0ac57b77
+Author: J. R. Okajima <hooanon05g@gmail.com>
+Date:   Sat May 15 03:17:10 2021 +0900
+
+    LOCKDEP: upper limit LOCKDEP_CHAINS_BITS
+    
+    CONFIG_LOCKDEP_CHAINS_BITS value decides the size of chain_hlocks[] in
+    kernel/locking/lockdep.c, and it is checked by add_chain_cache() with
+            BUILD_BUG_ON((1UL << 24) <= ARRAY_SIZE(chain_hlocks));
+    This patch is just to silence BUILD_BUG_ON().
+    
+    See-also: https://marc.info/?l=linux-kernel&m=162091320503900&w=2
+    Cc: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+    Cc: Peter Zijlstra <peterz@infradead.org>
+    Signed-off-by: J. R. Okajima <hooanon05g@gmail.com>
+
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 678c13967580e..999ed5aa6bcee 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1390,7 +1390,7 @@ config LOCKDEP_BITS
+ config LOCKDEP_CHAINS_BITS
+ 	int "Bitsize for MAX_LOCKDEP_CHAINS"
+ 	depends on LOCKDEP && !LOCKDEP_SMALL
+-	range 10 30
++	range 10 21
+ 	default 16
+ 	help
+ 	  Try increasing this value if you hit "BUG: MAX_LOCKDEP_CHAINS too low!" message.
