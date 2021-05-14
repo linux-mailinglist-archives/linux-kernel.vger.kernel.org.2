@@ -2,73 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 297513803D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 08:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DF6F3803E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 09:00:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232839AbhENHAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 03:00:06 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2597 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231424AbhENHAF (ORCPT
+        id S232779AbhENHBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 03:01:40 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:60823 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230349AbhENHBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 03:00:05 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FhK7J14pszkWMp;
-        Fri, 14 May 2021 14:56:12 +0800 (CST)
-Received: from ubuntu1804.huawei.com (10.67.174.98) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 14 May 2021 14:58:44 +0800
-From:   Pu Lehui <pulehui@huawei.com>
-To:     <akpm@linux-foundation.org>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <pulehui@huawei.com>
-Subject: [PATCH -next] mm/huge_memory.c: remove unused variable 'count'
-Date:   Fri, 14 May 2021 14:59:12 +0800
-Message-ID: <20210514065912.71734-1-pulehui@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Fri, 14 May 2021 03:01:32 -0400
+X-UUID: 5176a6e832494564bff7475722abdff4-20210514
+X-UUID: 5176a6e832494564bff7475722abdff4-20210514
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <jianjun.wang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 2013543313; Fri, 14 May 2021 14:59:52 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 14 May 2021 14:59:50 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 14 May 2021 14:59:49 +0800
+From:   Jianjun Wang <jianjun.wang@mediatek.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Ryder Lee <ryder.lee@mediatek.com>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Jianjun Wang <jianjun.wang@mediatek.com>,
+        <youlin.pei@mediatek.com>, <chuanjia.liu@mediatek.com>,
+        <qizhong.cheng@mediatek.com>, <sin_jieyang@mediatek.com>,
+        <drinkcat@chromium.org>, <Rex-BC.Chen@mediatek.com>,
+        Krzysztof Wilczyski <kw@linux.com>, <Ryan-JH.Yu@mediatek.com>
+Subject: [PATCH 0/2] PCI: mediatek-gen3: Add support for disable dvfsrc
+Date:   Fri, 14 May 2021 14:59:25 +0800
+Message-ID: <20210514065927.20774-1-jianjun.wang@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.174.98]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mm/huge_memory.c:2663:6: warning:
- variable ‘count’ set but not used [-Wunused-but-set-variable]
-  2663 |  int count, mapcount, extra_pins, ret;
-       |      ^~~~~
+These series patches add support for disable dvfsrc voltage request.
 
-This variable is not used in function , this commit
-remove it to fix the warning.
+Jianjun Wang (2):
+  dt-bindings: PCI: mediatek-gen3: Add property to disable dvfsrc
+    voltage request
+  PCI: mediatek-gen3: Add support for disable dvfsrc voltage request
 
-Signed-off-by: Pu Lehui <pulehui@huawei.com>
----
- mm/huge_memory.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ .../bindings/pci/mediatek-pcie-gen3.yaml      |  8 +++++
+ drivers/pci/controller/pcie-mediatek-gen3.c   | 32 +++++++++++++++++++
+ 2 files changed, 40 insertions(+)
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 52ca04b905cf..a23a127302e9 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2660,7 +2660,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
- 	struct deferred_split *ds_queue = get_deferred_split_queue(head);
- 	struct anon_vma *anon_vma = NULL;
- 	struct address_space *mapping = NULL;
--	int count, mapcount, extra_pins, ret;
-+	int mapcount, extra_pins, ret;
- 	pgoff_t end;
- 
- 	VM_BUG_ON_PAGE(is_huge_zero_page(head), head);
-@@ -2737,7 +2737,6 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
- 
- 	/* Prevent deferred_split_scan() touching ->_refcount */
- 	spin_lock(&ds_queue->split_queue_lock);
--	count = page_count(head);
- 	mapcount = total_mapcount(head);
- 	if (!mapcount && page_ref_freeze(head, 1 + extra_pins)) {
- 		if (!list_empty(page_deferred_list(head))) {
 -- 
-2.17.1
+2.25.1
 
