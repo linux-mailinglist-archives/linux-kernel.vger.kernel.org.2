@@ -2,74 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B75B3809B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 14:36:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFAF03809B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 14:37:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233677AbhENMiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 08:38:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42650 "EHLO mail.kernel.org"
+        id S233686AbhENMia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 08:38:30 -0400
+Received: from foss.arm.com ([217.140.110.172]:48980 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232712AbhENMh5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 08:37:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BC57613AA;
-        Fri, 14 May 2021 12:36:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620995805;
-        bh=hyertDNlfhFKOOJ8yfd61vbbV9AbUCAAb5FsoMme4cI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=h2M1F9MymaSYeIARmPHvk2g0g8q7tMtkxUdfSv6jfC+y0zgaQ/OXAronVhQMNEOmX
-         9ejSVLY9N+uQHYW1n4XEnDMn74o7BcXY93Pr6XGRnFLvJaL3+kt+5lGKNgrEwmaNKo
-         f5B4NS+MEdEpc79PtOV29fw+ZmYJ1byQPS6REs4Q=
-Date:   Fri, 14 May 2021 14:36:42 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+636c58f40a86b4a879e7@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2] misc/uss720: fix memory leak in uss720_probe
-Message-ID: <YJ5u2oEjJyF+e0JU@kroah.com>
-References: <20210514123425.6345-1-mudongliangabcd@gmail.com>
+        id S232712AbhENMi2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 08:38:28 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 20B38175D;
+        Fri, 14 May 2021 05:37:17 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.0.219])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 85EBF3F73B;
+        Fri, 14 May 2021 05:37:14 -0700 (PDT)
+Date:   Fri, 14 May 2021 13:37:11 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     will@kernel.org, catalin.marinas@arm.com,
+        lorenzo.pieralisi@arm.com, sudeep.holla@arm.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-efi@vger.kernel.org,
+        arnd@arndb.de, wei.liu@kernel.org, ardb@kernel.org,
+        daniel.lezcano@linaro.org, kys@microsoft.com
+Subject: Re: [PATCH v10 3/7] arm64: hyperv: Add Hyper-V
+ clocksource/clockevent support
+Message-ID: <20210514123711.GB30645@C02TD0UTHF1T.local>
+References: <1620841067-46606-1-git-send-email-mikelley@microsoft.com>
+ <1620841067-46606-4-git-send-email-mikelley@microsoft.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210514123425.6345-1-mudongliangabcd@gmail.com>
+In-Reply-To: <1620841067-46606-4-git-send-email-mikelley@microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 08:34:25PM +0800, Dongliang Mu wrote:
-> uss720_probe forgets to decrease the refcount of usbdev in uss720_probe.
-> Fix this by decreasing the refcount of usbdev by usb_put_dev.
+Hi Michael,
+
+On Wed, May 12, 2021 at 10:37:43AM -0700, Michael Kelley wrote:
+> Add architecture specific definitions and functions needed
+> by the architecture independent Hyper-V clocksource driver.
+> Update the Hyper-V clocksource driver to be initialized
+> on ARM64.
+
+Previously we've said that for a clocksource we must use the architected
+counter, since that's necessary for things like the VDSO to work
+correctly and efficiently.
+
+Given that, I'm a bit confused that we're registering a per-cpu
+clocksource that is in part based on the architected counter. Likewise,
+I don't entirely follow why it's necessary to PV the clock_event_device.
+
+Are the architected counter and timer reliable without this PV
+infrastructure? Why do we need to PV either of those?
+
+Thanks,
+Mark.
+
 > 
-> BUG: memory leak
-> unreferenced object 0xffff888101113800 (size 2048):
->   comm "kworker/0:1", pid 7, jiffies 4294956777 (age 28.870s)
->   hex dump (first 32 bytes):
->     ff ff ff ff 31 00 00 00 00 00 00 00 00 00 00 00  ....1...........
->     00 00 00 00 00 00 00 00 00 00 00 00 03 00 00 00  ................
->   backtrace:
->     [<ffffffff82b8e822>] kmalloc include/linux/slab.h:554 [inline]
->     [<ffffffff82b8e822>] kzalloc include/linux/slab.h:684 [inline]
->     [<ffffffff82b8e822>] usb_alloc_dev+0x32/0x450 drivers/usb/core/usb.c:582
->     [<ffffffff82b98441>] hub_port_connect drivers/usb/core/hub.c:5129 [inline]
->     [<ffffffff82b98441>] hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
->     [<ffffffff82b98441>] port_event drivers/usb/core/hub.c:5509 [inline]
->     [<ffffffff82b98441>] hub_event+0x1171/0x20c0 drivers/usb/core/hub.c:5591
->     [<ffffffff81259229>] process_one_work+0x2c9/0x600 kernel/workqueue.c:2275
->     [<ffffffff81259b19>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2421
->     [<ffffffff81261228>] kthread+0x178/0x1b0 kernel/kthread.c:292
->     [<ffffffff8100227f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-> 
-> Reported-by: syzbot+636c58f40a86b4a879e7@syzkaller.appspotmail.com
-> Fixes: 0f36163d3abe ("usb: fix uss720 schedule with interrupts off")
-> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
+> Reviewed-by: Sunil Muthuswamy <sunilmut@microsoft.com>
 > ---
->  drivers/usb/misc/uss720.c | 1 +
->  1 file changed, 1 insertion(+)
-
-What changed from v1?  That always goes below the --- line.
-
-Please fix and send a v3.
-
-thanks,
-
-greg k-h
+>  arch/arm64/include/asm/mshyperv.h  | 12 ++++++++++++
+>  drivers/clocksource/hyperv_timer.c | 14 ++++++++++++++
+>  2 files changed, 26 insertions(+)
+> 
+> diff --git a/arch/arm64/include/asm/mshyperv.h b/arch/arm64/include/asm/mshyperv.h
+> index c448704..b17299c 100644
+> --- a/arch/arm64/include/asm/mshyperv.h
+> +++ b/arch/arm64/include/asm/mshyperv.h
+> @@ -21,6 +21,7 @@
+>  #include <linux/types.h>
+>  #include <linux/arm-smccc.h>
+>  #include <asm/hyperv-tlfs.h>
+> +#include <clocksource/arm_arch_timer.h>
+>  
+>  /*
+>   * Declare calls to get and set Hyper-V VP register values on ARM64, which
+> @@ -41,6 +42,17 @@ static inline u64 hv_get_register(unsigned int reg)
+>  	return hv_get_vpreg(reg);
+>  }
+>  
+> +/* Define the interrupt ID used by STIMER0 Direct Mode interrupts. This
+> + * value can't come from ACPI tables because it is needed before the
+> + * Linux ACPI subsystem is initialized.
+> + */
+> +#define HYPERV_STIMER0_VECTOR	31
+> +
+> +static inline u64 hv_get_raw_timer(void)
+> +{
+> +	return arch_timer_read_counter();
+> +}
+> +
+>  /* SMCCC hypercall parameters */
+>  #define HV_SMCCC_FUNC_NUMBER	1
+>  #define HV_FUNC_ID	ARM_SMCCC_CALL_VAL(			\
+> diff --git a/drivers/clocksource/hyperv_timer.c b/drivers/clocksource/hyperv_timer.c
+> index 977fd05..270ad9c 100644
+> --- a/drivers/clocksource/hyperv_timer.c
+> +++ b/drivers/clocksource/hyperv_timer.c
+> @@ -569,3 +569,17 @@ void __init hv_init_clocksource(void)
+>  	hv_setup_sched_clock(read_hv_sched_clock_msr);
+>  }
+>  EXPORT_SYMBOL_GPL(hv_init_clocksource);
+> +
+> +/* Initialize everything on ARM64 */
+> +static int __init hyperv_timer_init(struct acpi_table_header *table)
+> +{
+> +	if (!hv_is_hyperv_initialized())
+> +		return -EINVAL;
+> +
+> +	hv_init_clocksource();
+> +	if (hv_stimer_alloc(true))
+> +		return -EINVAL;
+> +
+> +	return 0;
+> +}
+> +TIMER_ACPI_DECLARE(hyperv, ACPI_SIG_GTDT, hyperv_timer_init);
+> -- 
+> 1.8.3.1
+> 
