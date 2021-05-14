@@ -2,125 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89673380184
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 03:43:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49514380186
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 03:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232050AbhENBfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 21:35:51 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:54226 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231768AbhENBfu (ORCPT
+        id S232119AbhENBfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 21:35:54 -0400
+Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:50859 "EHLO
+        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232048AbhENBfw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 21:35:50 -0400
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 5934620B8025;
-        Thu, 13 May 2021 18:34:39 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5934620B8025
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1620956079;
-        bh=F6CQz2+nsZGJ/pzdpTT9AQzTkNqlEEh7RPiPcleWx28=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=faO6iLDAO28ixLe7L/yD0bTgdHVbHQHH50nT/E3+H29jlY0+SVN74BpEWL4SVttz+
-         wuvfaSxvKIiZcbfU+jVF8zBSuexAOEpHzli9Ff3FWUP6k0OiPAYdxjursVIaAYLIAs
-         Ni9UufA/1lWZPwE49CKBP3hzHElj5Pw7+EuFbpLg=
-Received: by mail-pj1-f48.google.com with SMTP id v11-20020a17090a6b0bb029015cba7c6bdeso552619pjj.0;
-        Thu, 13 May 2021 18:34:39 -0700 (PDT)
-X-Gm-Message-State: AOAM532otodcctuWU3lw48HRbKRSAiBIj8MZngqydIMqtH3qHU6hLtsQ
-        hGGbciP+sujzLQCILdLXc+a+Pwl9Ssw7AugyK+I=
-X-Google-Smtp-Source: ABdhPJwv/YtlK8W/E0i23QQxf4xSLtEBhJx0WbxP9KKGOfWRVCcDM1mjk/0uCIMlC94A0zbVcQof5us1WWyA5xLHK40=
-X-Received: by 2002:a17:90a:174e:: with SMTP id 14mr11885116pjm.187.1620956078745;
- Thu, 13 May 2021 18:34:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210513165846.23722-1-mcroce@linux.microsoft.com>
- <20210513165846.23722-2-mcroce@linux.microsoft.com> <YJ3Lrdx1oIm/MDV8@casper.infradead.org>
-In-Reply-To: <YJ3Lrdx1oIm/MDV8@casper.infradead.org>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Fri, 14 May 2021 03:34:02 +0200
-X-Gmail-Original-Message-ID: <CAFnufp3pCrywDFXZqDSw+-2K7p9yHfYY9C5WveaXMWDJ_oViAA@mail.gmail.com>
-Message-ID: <CAFnufp3pCrywDFXZqDSw+-2K7p9yHfYY9C5WveaXMWDJ_oViAA@mail.gmail.com>
-Subject: Re: [PATCH net-next v5 1/5] mm: add a signature in struct page
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
+        Thu, 13 May 2021 21:35:52 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.west.internal (Postfix) with ESMTP id 4E85B1A46;
+        Thu, 13 May 2021 21:34:40 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Thu, 13 May 2021 21:34:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
+        message-id:subject:from:to:cc:date:in-reply-to:references
+        :content-type:mime-version:content-transfer-encoding; s=fm3; bh=
+        iJ6t80zLP0jWqMOoc66bwpFFYMy/M+FeT/hsKOcsIP0=; b=UlhAn9ULIpiewiOn
+        sw3r6mCXvWpepQq8FJGftxzra62MxZHTI9MqOwKL6lMVd6CErYsERaxC5NgsiEjS
+        wfeGf04MZyFN2lt/8OXwMTkbVo8F4/RpiKkVcKFq2wvbI1XzYb2c0v1Rgd46YxHr
+        d0PRCBrLnHk2s76pTKqVmp2n40vhghfICXhtr1mmRVjTge48LjUtLM8fM6TPW9OX
+        kUIzt4PDeHUUCclJbmiJ0kplStE6fltv2pbjtg4UaXaLRLggfmtvxFyNGbUuyQ0X
+        Q9CDogd79/e62kL5qWF2QRrgZkERE+85l7IVO/17D9qMew+gFMY8s8qefUkX+tGv
+        0cCiNw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; bh=iJ6t80zLP0jWqMOoc66bwpFFYMy/M+FeT/hsKOcsI
+        P0=; b=lEd8jsbu0hoqgJ0evGdolBB3dcF8AuJUU+t3HTAoetF5BOKOi1p+drA2d
+        f6Kcas2nalOW0xmTe8qeozZTQoy9H8NWiVZr+P4fLgpkt8UTLW8Y1lYEv7Zztrdz
+        cFq9kOBDbvVOzMxohynr3AEzgxS89kBsvVWdXhVw/0/bT9DV5vTT+hRydWjDFSCk
+        y5CvrLHlgNbRwAiVmQoUEC8zWMe3wA/PxGuo/80/KfN9Zcm1dGwbmdjmrvnyI7Mi
+        6J+OfZkS28Nov6Ows2AZIxXZ7wdkZNmycKEN5f2HyzMloLFti4tiB5nG+j5M6X6c
+        nF5MBvAueWDFm7gXwwDb8ZOEJAxAw==
+X-ME-Sender: <xms:r9OdYPUvnNh-0_azgDvOodinXYLI-PZvWjFGPxy3Z9NxsSJTQoZlRA>
+    <xme:r9OdYHmlaIGt0SlQr74Tx9hnoDWw0E5PztKeE6a61KdWD-5sBL6B5tMjJXBJgO7L7
+    Q2_5fufMbE4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdehhedggeekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkffuhffvffgjfhgtfggggfesthekredttderjeenucfhrhhomhepkfgrnhcu
+    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
+    elgedtleeltdffteejudetfefgieehheekffehuefhkeegkeeuleehffehieegjeenucff
+    ohhmrghinhepghhithhhuhgsrdgtohhmpdhkvghrnhgvlhdrohhrghenucfkphepuddtie
+    drieelrddvfedurdeggeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgr
+    ihhlfhhrohhmpehrrghvvghnsehthhgvmhgrfidrnhgvth
+X-ME-Proxy: <xmx:r9OdYLaCJY9bryAsSZZ6m1JdsKXyHluPQDpzRnsV11j8H-pUQUGaiw>
+    <xmx:r9OdYKWXEz-uYl0LoAKASuCMfUjMHmq7mcolf4UwfcYAVXccpLsoSg>
+    <xmx:r9OdYJmT9ZPhmc2qjn1QsZoPZOg2hqdcCQk0CD7b_t0HCCQsPwjCnA>
+    <xmx:r9OdYL6EslUBsfRWJ2vzHjJukID7DFwDVnuaoQMqC3oUxb6cQbDla7dTeWI>
+Received: from mickey.long.domain.name.themaw.net (106-69-231-44.dyn.iinet.net.au [106.69.231.44])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Thu, 13 May 2021 21:34:34 -0400 (EDT)
+Message-ID: <bc9650145291b6e568a8f75d02663b9e4f2bcfd7.camel@themaw.net>
+Subject: Re: [PATCH v4 0/5] kernfs: proposed locking and concurrency
+ improvement
+From:   Ian Kent <raven@themaw.net>
+To:     Fox Chen <foxhlchen@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
+        Eric Sandeen <sandeen@sandeen.net>,
+        Brice Goglin <brice.goglin@gmail.com>,
+        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Fri, 14 May 2021 09:34:31 +0800
+In-Reply-To: <CAC2o3DKvq12CrsgWTNmQmu3iDJ+9tytMdCJepdBjUKN1iUJ0RQ@mail.gmail.com>
+References: <162077975380.14498.11347675368470436331.stgit@web.messagingengine.com>
+         <YJtz6mmgPIwEQNgD@kroah.com>
+         <CAC2o3D+28g67vbNOaVxuF0OfE0RjFGHVwAcA_3t1AAS_b_EnPg@mail.gmail.com>
+         <CAC2o3DJm0ugq60c8mBafjd81nPmhpBKBT5cCKWvc4rYT0dDgGg@mail.gmail.com>
+         <CAC2o3DJdwr0aqT6LwhuRj8kyXt6NAPex2nG5ToadUTJ3Jqr_4w@mail.gmail.com>
+         <4eae44395ad321d05f47571b58fe3fe2413b6b36.camel@themaw.net>
+         <CAC2o3DKvq12CrsgWTNmQmu3iDJ+9tytMdCJepdBjUKN1iUJ0RQ@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 3:01 AM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Thu, May 13, 2021 at 06:58:42PM +0200, Matteo Croce wrote:
-> >               struct {        /* page_pool used by netstack */
-> > +                     /**
-> > +                      * @pp_magic: magic value to avoid recycling non
-> > +                      * page_pool allocated pages.
-> > +                      * It aliases with page->lru.next
->
-> I'm not really keen on documenting what aliases with what.
-> pp_magic also aliases with compound_head, 'next' (for slab),
-> and dev_pagemap.  This is an O(n^2) documentation problem ...
->
+On Thu, 2021-05-13 at 23:37 +0800, Fox Chen wrote:
+> Hi Ian
+> 
+> On Thu, May 13, 2021 at 10:10 PM Ian Kent <raven@themaw.net> wrote:
+> > 
+> > On Wed, 2021-05-12 at 16:54 +0800, Fox Chen wrote:
+> > > On Wed, May 12, 2021 at 4:47 PM Fox Chen <foxhlchen@gmail.com>
+> > > wrote:
+> > > > 
+> > > > Hi,
+> > > > 
+> > > > I ran it on my benchmark (
+> > > > https://github.com/foxhlchen/sysfs_benchmark).
+> > > > 
+> > > > machine: aws c5 (Intel Xeon with 96 logical cores)
+> > > > kernel: v5.12
+> > > > benchmark: create 96 threads and bind them to each core then
+> > > > run
+> > > > open+read+close on a sysfs file simultaneously for 1000 times.
+> > > > result:
+> > > > Without the patchset, an open+read+close operation takes 550-
+> > > > 570
+> > > > us,
+> > > > perf shows significant time(>40%) spending on mutex_lock.
+> > > > After applying it, it takes 410-440 us for that operation and
+> > > > perf
+> > > > shows only ~4% time on mutex_lock.
+> > > > 
+> > > > It's weird, I don't see a huge performance boost compared to
+> > > > v2,
+> > > > even
+> > > 
+> > > I meant I don't see a huge performance boost here and it's way
+> > > worse
+> > > than v2.
+> > > IIRC, for v2 fastest one only takes 40us
+> > 
+> > Thanks Fox,
+> > 
+> > I'll have a look at those reports but this is puzzling.
+> > 
+> > Perhaps the added overhead of the check if an update is
+> > needed is taking more than expected and more than just
+> > taking the lock and being done with it. Then there's
+> > the v2 series ... I'll see if I can dig out your reports
+> > on those too.
+> 
+> Apologies, I was mistaken, it's compared to V3, not V2.  The previous
+> benchmark report is here.
+> https://lore.kernel.org/linux-fsdevel/CAC2o3DKNc=sL2n8291Dpiyb0bRHaX=nd33ogvO_LkJqpBj-YmA@mail.gmail.com/
 
-Eric asked to document what page->signature aliases, so I did it in
-the commit message and in a comment.
-I can drop the code comment and leave it just the commit message.
+Are all these tests using a single file name in the open/read/close
+loop?
 
-> I feel like I want to document the pfmemalloc bit in mm_types.h,
-> but I don't have a concrete suggestion yet.
->
-> > +++ b/include/net/page_pool.h
-> > @@ -63,6 +63,8 @@
-> >   */
-> >  #define PP_ALLOC_CACHE_SIZE  128
-> >  #define PP_ALLOC_CACHE_REFILL        64
-> > +#define PP_SIGNATURE         (POISON_POINTER_DELTA + 0x40)
->
-> I wonder if this wouldn't be better in linux/poison.h?
->
+That being the case the per-object inode lock will behave like a
+mutex and once contention occurs any speed benefits of a spinlock
+over a mutex (or rwsem) will disappear.
 
-I was thinking the same, I'll do it in the v6.
+In this case changing from a write lock to a read lock in those
+functions and adding the inode mutex will do nothing but add the
+overhead of taking the read lock. And similarly adding the update
+check function also just adds overhead and, as we see, once
+contention starts it has a cumulative effect that's often not
+linear.
 
-Regards,
--- 
-per aspera ad upstream
+The whole idea of a read lock/per-object spin lock was to reduce
+the possibility of contention for paths other than the same path
+while not impacting same path accesses too much for an overall
+gain. Based on this I'm thinking the update check function is
+probably not worth keeping, it just adds unnecessary churn and
+has a negative impact for same file contention access patterns.
+
+I think that using multiple paths, at least one per test process
+(so if you are running 16 processes use at least 16 different
+files, the same in each process), and selecting one at random
+for each loop of the open would better simulate real world
+access patterns.
+
+
+Ian
+
