@@ -2,71 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 349193813B3
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 00:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 669FD3813B7
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 00:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234030AbhENWVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 18:21:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48618 "EHLO mail.kernel.org"
+        id S234149AbhENWVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 18:21:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233896AbhENWV0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233904AbhENWV0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 14 May 2021 18:21:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id EBBB061454;
-        Fri, 14 May 2021 22:20:13 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id 15BD861461;
+        Fri, 14 May 2021 22:20:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1621030814;
-        bh=Qcsk/dc4brdj7gVSyJ28vUg80joR0/w6nyn4Tj1XkXg=;
+        bh=98SaeUo9DJHFI/d6+3XYGO+gO5esd8wR+uHvJcTObks=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=L9tyE3ItAkguu8tI45GrWFKbHSE7Ci7tLDz3UAMcXX6TTGoUJvSGRQP77LBZBMGRK
-         OZzb8eIGvUuqy/X/MvrLZn7YDZY5bApVnBcRutktArrIzosS45rAzZn1cBF/3Awx/y
-         DJv68F8ee4QAtuME1iLKUSEi1AbUBz401kFwZ4Qp2Idh6X8Xgt+0T2RBJyqqj194vL
-         TE6huvsmm7eHu1gKrMUVkb+n1BquuDla3vU9erU7WtNX8BlhBJGx6IXk5BGUIBHFyi
-         aWD1DGM7vVpLTEc1x3cN19AA+PaFghTHC/0vBGhzy8HKzD7kBdZCt8PUmGqqDLhM8z
-         /R0RQ43Hzv5Cw==
+        b=uFJbiyv7A7li/v65XVszFLoJ9WML3sqqrq74P8khopq2sleVa1CpBAeCY2ApN7SHq
+         B5vjoL/YP5MG44oHqHHBRnN8USb/O2rb8E8kllLZGGkgbvN5fKhmpFiNYsQUdd0rcV
+         WuGYUMS8HHG25eGGRigagQX4obN4NqKVrEMzDhMhcuBxc7PWvouKJeATAI3ZY9o7pA
+         ODPwBZZoPKNxAkGbn6RBa29/19vgkor+M5lky+Yfm8yfJFQ5+p8O3f/K5UAjpfK9aM
+         i/1CPYtRY8MO1ZMxoBBaB10XYINoaU4Z+C/znhosTE3pJSfngApr1/uNKM6g9xVZDn
+         Bkyvl5g5J+aiA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E62936095D;
-        Fri, 14 May 2021 22:20:13 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0C23560A56;
+        Fri, 14 May 2021 22:20:14 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/4] net: hns: clean up some code style issues
+Subject: Re: [PATCH net-next] alx: fix missing unlock on error in
+ alx_set_pauseparam()
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162103081393.6483.118787856225039543.git-patchwork-notify@kernel.org>
-Date:   Fri, 14 May 2021 22:20:13 +0000
-References: <1620977502-27236-1-git-send-email-huangguangbin2@huawei.com>
-In-Reply-To: <1620977502-27236-1-git-send-email-huangguangbin2@huawei.com>
-To:     Guangbin Huang <huangguangbin2@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, salil.mehta@huawei.com,
-        lipeng321@huawei.com, tanhuazhong@huawei.com
+Message-Id: <162103081404.6483.10580485988083694355.git-patchwork-notify@kernel.org>
+Date:   Fri, 14 May 2021 22:20:14 +0000
+References: <20210514082405.91011-1-pulehui@huawei.com>
+In-Reply-To: <20210514082405.91011-1-pulehui@huawei.com>
+To:     Pu Lehui <pulehui@huawei.com>
+Cc:     chris.snook@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        johannes@sipsolutions.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Fri, 14 May 2021 15:31:38 +0800 you wrote:
-> This patchset clean up some code style issues.
+On Fri, 14 May 2021 16:24:05 +0800 you wrote:
+> Add the missing unlock before return from function alx_set_pauseparam()
+> in the error handling case.
 > 
-> Peng Li (4):
->   net: hns: fix the comments style issue
->   net: hns: fix some code style issue about space
->   net: hns: space required before the open brace '{'
->   net: hns: remove redundant return int void function
-> 
-> [...]
+> Fixes: 4a5fe57e7751 ("alx: use fine-grained locking instead of RTNL")
+> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+> ---
+>  drivers/net/ethernet/atheros/alx/ethtool.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 
 Here is the summary with links:
-  - [net-next,1/4] net: hns: fix the comments style issue
-    https://git.kernel.org/netdev/net-next/c/699e803e9a4d
-  - [net-next,2/4] net: hns: fix some code style issue about space
-    https://git.kernel.org/netdev/net-next/c/510fe8e70b0b
-  - [net-next,3/4] net: hns: space required before the open brace '{'
-    https://git.kernel.org/netdev/net-next/c/5caab55a2979
-  - [net-next,4/4] net: hns: remove redundant return int void function
-    https://git.kernel.org/netdev/net-next/c/cb0672697601
+  - [net-next] alx: fix missing unlock on error in alx_set_pauseparam()
+    https://git.kernel.org/netdev/net-next/c/2d1c5f29d27a
 
 You are awesome, thank you!
 --
