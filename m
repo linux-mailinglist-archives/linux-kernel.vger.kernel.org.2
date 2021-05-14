@@ -2,275 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D221D38062D
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 11:25:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50110380630
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 11:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232409AbhENJ1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 05:27:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46021 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231142AbhENJ1A (ORCPT
+        id S232428AbhENJ1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 05:27:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230457AbhENJ1f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 05:27:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620984349;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fx334L5vVgVDfx7L2kVeRZ1gFR/dFDyujA5YMe7z6io=;
-        b=S5lFNU5TQKD03U47KGRUq0qxXj401VvzZwf8ycDk75sZ8elD6zmYfr8ormTPVmnMFlB//f
-        k7DIspm8Yj8j769M+pu58fgnypnwOYb1A7IAdw2hBPD/n1GZwGdpwstsH11YZVHvVvpX7A
-        tkxkRTd+2YudBVAMGoeBZyeF6WdzMDE=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-246-YUI--F8FNWa8GFb8V3vq0g-1; Fri, 14 May 2021 05:25:47 -0400
-X-MC-Unique: YUI--F8FNWa8GFb8V3vq0g-1
-Received: by mail-ed1-f71.google.com with SMTP id z12-20020aa7d40c0000b0290388179cc8bfso15995007edq.21
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 02:25:47 -0700 (PDT)
+        Fri, 14 May 2021 05:27:35 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74E02C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 02:26:21 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id l1so7754168ejb.6
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 02:26:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=deviqon.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8kvfKU0MH9B5rERCE52BMVMjjCGgmv3OuoYege9feY8=;
+        b=f4S3QDx6d52PFt8v5/hynLGSs+8KQWjrroeQslpzBhhRwqh8+0nxRRQ0/X6yoNXow2
+         8k6HVERMpeNb8oeOF4M/IlMJWtQZloK9AKVj8fMeBErFmbM1O2xwOXS0tdpRRxKvlJTG
+         Rtu4QIOpq882n+IAShHZbFzSeJryhHpXAjSUML6XbQhX2V5REcXg1B7/Qc6Xg5QDcmqx
+         plJxJHvi1nn+LOpLvxOayNQtKdvgYHyEDWpTtOzZgpH1QRzoLEKdr5iZkBo2Vh0OEzH6
+         BVrQHwDtHQXQVYwdnlIk6q6+h8jYcJuiU6ZuY3UoJ/fmNAZVcR67uTb4W/GiKxODS72L
+         b0ZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=Fx334L5vVgVDfx7L2kVeRZ1gFR/dFDyujA5YMe7z6io=;
-        b=le9azDJkKzeg7J2uFxsv5ciJsO+EWFy6qHw75ZlVDMOdpaCb3iDzNfK6aUDVofeltU
-         5WdCmewPnsBC77iLLyYSusjCBzEndSJUQYYPk3QhRobDu1tADuAmAqZp0jHNUb1OCEhV
-         1WCXSRUDh7oI15BsYGXZJspNV/886ff9slfF3AlfgUEtW0nMBHF5aAxlwyVCZXWC65LN
-         nnYRAJwGZRh+EFI10rHBCZI1xItyEfUxkz9oStYxfNGxwXymkiN4yLAzcUhMOERvOTSq
-         WpnRQPXh+VS/UHvhlctFFByQTRFC9znAox2+PdRnQoZvU3sLHy3famreyfnlbAPx2XxR
-         2sIA==
-X-Gm-Message-State: AOAM532SLpcMPGTPbRjuCAJMKeG7vf1S4DzNhlVko7zoAxjKqCjN0f/P
-        GEOtkCQjQBEFM77ECTcsTv4El79r6SGFgoSaWhBbH8lXazVj2dfqwqPklCYD3k6mJcp+0X2nXfP
-        sx9qf0vV4mszjHZSPgVg8a5AX
-X-Received: by 2002:a50:cd57:: with SMTP id d23mr54117142edj.5.1620984346390;
-        Fri, 14 May 2021 02:25:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwffpojWIdDjWYW/MMXX/wRjb+C923CYpz5CDGlKRq9NSx2v+gQE16nA0IMA6MthtTXx38cuQ==
-X-Received: by 2002:a50:cd57:: with SMTP id d23mr54117114edj.5.1620984346105;
-        Fri, 14 May 2021 02:25:46 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6501.dip0.t-ipconnect.de. [91.12.101.1])
-        by smtp.gmail.com with ESMTPSA id gt12sm3267244ejb.60.2021.05.14.02.25.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 May 2021 02:25:45 -0700 (PDT)
-To:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Hagen Paul Pfeifer <hagen@jauu.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        Yury Norov <yury.norov@gmail.com>, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-References: <20210513184734.29317-1-rppt@kernel.org>
- <20210513184734.29317-6-rppt@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v19 5/8] mm: introduce memfd_secret system call to create
- "secret" memory areas
-Message-ID: <b625c5d7-bfcc-9e95-1f79-fc8b61498049@redhat.com>
-Date:   Fri, 14 May 2021 11:25:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8kvfKU0MH9B5rERCE52BMVMjjCGgmv3OuoYege9feY8=;
+        b=Vi6SNIeJUY/398nIFW3Z/XuLvjXp5HDY/cvhpa9FiA0pfMzoTIQ1nH5wSDvEATz3vh
+         rVLpzCcr75SKHAoayZpXg1c2qk5a0C7D0s1Th77gybQABDkTPmnzh4F7kf0hAq8lQGEH
+         fcfuC3FSeR0Yrn1aduwuOEBEaQxsRXZZxR3N9ft6K0Qj/z8qMRigpWb1N5KOJgAkjQZ2
+         CpBpi2M5RV+C5NoT/L/WN3IxltH0ubk9IVyZUuWVWmoa++kpohGGLa48BQbNeAOC+b0B
+         cTZLlF1lNu8bVAhxOjwvmuCg52FH3sK0EuanVHgYoObDovz82zOCvmO7pg/IcYXf/JHB
+         dHBA==
+X-Gm-Message-State: AOAM533kGCM1U/2aUevxVfkwDco2CCFAXgIHUsSosTSdBuMXNonFs49p
+        8FZfwKDiWJ/9kMozZsvUFKWJ2Q==
+X-Google-Smtp-Source: ABdhPJy+qDlaCmjh44cFYx8u66c8j/gTN/cZRPhLNnK2S99ZuQog/tlYMHkoiWncbhL4TdNoZsQwGA==
+X-Received: by 2002:a17:906:2dcd:: with SMTP id h13mr2240629eji.41.1620984379050;
+        Fri, 14 May 2021 02:26:19 -0700 (PDT)
+Received: from neptune.. ([5.2.193.191])
+        by smtp.gmail.com with ESMTPSA id u8sm3974685edo.71.2021.05.14.02.26.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 May 2021 02:26:18 -0700 (PDT)
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+To:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        marek.vasut+renesas@gmail.com,
+        Alexandru Ardelean <aardelean@deviqon.com>
+Subject: [PATCH] gpio: gpio-bd9571mwv: remove platform_set_drvdata() + cleanup probe
+Date:   Fri, 14 May 2021 12:26:14 +0300
+Message-Id: <20210514092614.21047-1-aardelean@deviqon.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210513184734.29317-6-rppt@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->   #ifdef CONFIG_IA64
->   # include <linux/efi.h>
-> @@ -64,6 +65,9 @@ static inline int valid_mmap_phys_addr_range(unsigned long pfn, size_t size)
->   #ifdef CONFIG_STRICT_DEVMEM
->   static inline int page_is_allowed(unsigned long pfn)
->   {
-> +	if (pfn_valid(pfn) && page_is_secretmem(pfn_to_page(pfn)))
-> +		return 0;
-> +
+The platform_set_drvdata() call is only useful if we need to retrieve back
+the private information.
+Since the driver doesn't do that, it's not useful to have it.
 
-1. The memmap might be garbage. You should use pfn_to_online_page() instead.
+If this is removed, we can also just do a direct return on
+devm_gpiochip_add_data(). We don't need to print that this call failed as
+there are other ways to log/see this during probe.
 
-page = pfn_to_online_page(pfn);
-if (page && page_is_secretmem(page))
-	return 0;
+Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+---
+ drivers/gpio/gpio-bd9571mwv.c | 11 +----------
+ 1 file changed, 1 insertion(+), 10 deletions(-)
 
-2. What about !CONFIG_STRICT_DEVMEM?
-
-3. Someone could map physical memory before a secretmem page gets 
-allocated and read the content after it got allocated and gets used. If 
-someone would gain root privileges and would wait for the target 
-application to (re)start, that could be problematic.
-
-
-I do wonder if enforcing CONFIG_STRICT_DEVMEM would be cleaner. 
-devmem_is_allowed() should disallow access to any system ram, and 
-thereby, any possible secretmem pages, avoiding this check completely.
-
-
-[...]
-
->   
-> diff --git a/mm/secretmem.c b/mm/secretmem.c
-> new file mode 100644
-> index 000000000000..1ae50089adf1
-> --- /dev/null
-> +++ b/mm/secretmem.c
-> @@ -0,0 +1,239 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright IBM Corporation, 2021
-> + *
-> + * Author: Mike Rapoport <rppt@linux.ibm.com>
-> + */
-> +
-> +#include <linux/mm.h>
-> +#include <linux/fs.h>
-> +#include <linux/swap.h>
-> +#include <linux/mount.h>
-> +#include <linux/memfd.h>
-> +#include <linux/bitops.h>
-> +#include <linux/printk.h>
-> +#include <linux/pagemap.h>
-> +#include <linux/syscalls.h>
-> +#include <linux/pseudo_fs.h>
-> +#include <linux/secretmem.h>
-> +#include <linux/set_memory.h>
-> +#include <linux/sched/signal.h>
-> +
-> +#include <uapi/linux/magic.h>
-> +
-> +#include <asm/tlbflush.h>
-> +
-> +#include "internal.h"
-> +
-> +#undef pr_fmt
-> +#define pr_fmt(fmt) "secretmem: " fmt
-> +
-> +/*
-> + * Define mode and flag masks to allow validation of the system call
-> + * parameters.
-> + */
-> +#define SECRETMEM_MODE_MASK	(0x0)
-> +#define SECRETMEM_FLAGS_MASK	SECRETMEM_MODE_MASK
-> +
-> +static bool secretmem_enable __ro_after_init;
-> +module_param_named(enable, secretmem_enable, bool, 0400);
-> +MODULE_PARM_DESC(secretmem_enable,
-> +		 "Enable secretmem and memfd_secret(2) system call");
-> +
-> +static vm_fault_t secretmem_fault(struct vm_fault *vmf)
-> +{
-> +	struct address_space *mapping = vmf->vma->vm_file->f_mapping;
-> +	struct inode *inode = file_inode(vmf->vma->vm_file);
-> +	pgoff_t offset = vmf->pgoff;
-> +	gfp_t gfp = vmf->gfp_mask;
-> +	unsigned long addr;
-> +	struct page *page;
-> +	int err;
-> +
-> +	if (((loff_t)vmf->pgoff << PAGE_SHIFT) >= i_size_read(inode))
-> +		return vmf_error(-EINVAL);
-> +
-> +retry:
-> +	page = find_lock_page(mapping, offset);
-> +	if (!page) {
-> +		page = alloc_page(gfp | __GFP_ZERO);
-
-We'll end up here with gfp == GFP_HIGHUSER (via the mapping below), correct?
-
-> +		if (!page)
-> +			return VM_FAULT_OOM;
-> +
-> +		err = set_direct_map_invalid_noflush(page, 1);
-> +		if (err) {
-> +			put_page(page);
-> +			return vmf_error(err);
-
-Would we want to translate that to a proper VM_FAULT_..., which would 
-most probably be VM_FAULT_OOM when we fail to allocate a pagetable?
-
-> +		}
-> +
-> +		__SetPageUptodate(page);
-> +		err = add_to_page_cache_lru(page, mapping, offset, gfp);
-> +		if (unlikely(err)) {
-> +			put_page(page);
-> +			/*
-> +			 * If a split of large page was required, it
-> +			 * already happened when we marked the page invalid
-> +			 * which guarantees that this call won't fail
-> +			 */
-> +			set_direct_map_default_noflush(page, 1);
-> +			if (err == -EEXIST)
-> +				goto retry;
-> +
-> +			return vmf_error(err);
-> +		}
-> +
-> +		addr = (unsigned long)page_address(page);
-> +		flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
-
-Hmm, to me it feels like something like that belongs into the 
-set_direct_map_invalid_*() calls? Otherwise it's just very easy to mess 
-up ...
-
-
-I'm certainly not a filesystem guy. Nothing else jumped at me.
-
-
-To me, the overall approach makes sense and I consider it an improved 
-mlock() mechanism for storing secrets, although I'd love to have some 
-more information in the log regarding access via root, namely that there 
-are still fancy ways to read secretmem memory once root via
-
-1. warm reboot attacks especially in VMs (e.g., modifying the cmdline)
-2. kexec-style reboot attacks (e.g., modifying the cmdline)
-3. kdump attacks
-4. kdb most probably
-5. "letting the process read the memory for us" via Kees if that still
-    applies
-6. ... most probably something else
-
-Just to make people aware that there are still some things to be sorted 
-out when we fully want to protect against privilege escalations.
-
-(maybe this information is buried in the cover letter already, where it 
-usually gets lost)
-
+diff --git a/drivers/gpio/gpio-bd9571mwv.c b/drivers/gpio/gpio-bd9571mwv.c
+index df6102b57734..9a4d55f703bb 100644
+--- a/drivers/gpio/gpio-bd9571mwv.c
++++ b/drivers/gpio/gpio-bd9571mwv.c
+@@ -97,25 +97,16 @@ static const struct gpio_chip template_chip = {
+ static int bd9571mwv_gpio_probe(struct platform_device *pdev)
+ {
+ 	struct bd9571mwv_gpio *gpio;
+-	int ret;
+ 
+ 	gpio = devm_kzalloc(&pdev->dev, sizeof(*gpio), GFP_KERNEL);
+ 	if (!gpio)
+ 		return -ENOMEM;
+ 
+-	platform_set_drvdata(pdev, gpio);
+-
+ 	gpio->regmap = dev_get_regmap(pdev->dev.parent, NULL);
+ 	gpio->chip = template_chip;
+ 	gpio->chip.parent = pdev->dev.parent;
+ 
+-	ret = devm_gpiochip_add_data(&pdev->dev, &gpio->chip, gpio);
+-	if (ret < 0) {
+-		dev_err(&pdev->dev, "Could not register gpiochip, %d\n", ret);
+-		return ret;
+-	}
+-
+-	return 0;
++	return devm_gpiochip_add_data(&pdev->dev, &gpio->chip, gpio);
+ }
+ 
+ static const struct platform_device_id bd9571mwv_gpio_id_table[] = {
 -- 
-Thanks,
-
-David / dhildenb
+2.31.1
 
