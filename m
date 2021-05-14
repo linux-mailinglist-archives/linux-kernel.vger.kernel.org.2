@@ -2,160 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3B9B3807BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 12:51:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F2383807BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 12:52:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231474AbhENKw1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 14 May 2021 06:52:27 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:48978 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230289AbhENKwW (ORCPT
+        id S231512AbhENKyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 06:54:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230289AbhENKyD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 06:52:22 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-286-JaXSeoXeOtaNMmDXEJjY6Q-1; Fri, 14 May 2021 11:51:08 +0100
-X-MC-Unique: JaXSeoXeOtaNMmDXEJjY6Q-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Fri, 14 May 2021 11:51:06 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Fri, 14 May 2021 11:51:06 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Sachi King' <nakato@nakato.io>,
-        'Maximilian Luz' <luzmaximilian@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
-CC:     "H. Peter Anvin" <hpa@zytor.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH] x86/i8259: Work around buggy legacy PIC
-Thread-Topic: [PATCH] x86/i8259: Work around buggy legacy PIC
-Thread-Index: AQHXR3+B5Hf0DG1T80+Lb/Y+9zG7TarhDftggAATCoCAABWukIACG7SA//96KTA=
-Date:   Fri, 14 May 2021 10:51:06 +0000
-Message-ID: <f2c7f43df1e74a449bc3573addf91468@AcuMS.aculab.com>
-References: <20210512210459.1983026-1-luzmaximilian@gmail.com>
- <e7dbd4d1-f23f-42f0-e912-032ba32f9ec8@gmail.com>
- <e43d9a823c9e44bab0cdbf32a000c373@AcuMS.aculab.com> <3034083.sOBWI1P7ec@yuki>
-In-Reply-To: <3034083.sOBWI1P7ec@yuki>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 14 May 2021 06:54:03 -0400
+Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE39C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 03:52:51 -0700 (PDT)
+Received: by mail-oo1-xc2e.google.com with SMTP id l25-20020a4a35190000b029020a54735152so2304929ooa.4
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 03:52:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+4dp/rPp75R6Y/qX3FQ9ODyLo78JIjJBmV86qMPI9hw=;
+        b=AUbULHk7/tf5AyYUjIWSbeu4IkSmx2+SJrx3UzBhDdE4vxVom0BfOz2sXyiVfCHpl+
+         2dGW8KetJ71nAdiR2oPG3NOOYswiMQlWUvFWoqUTlRFPcjWUS+ZVd16/qcy9R/ImHZ6U
+         J0qWvzfwMp2jgEAzA8IzVb3OoZnKyY64p4WVdO60Nje4Mc8ITaF/Z3g5bS8S0qE+zNv0
+         QPAUcW5robvG09zHGuVBcA+lI7FP0iAHwlfUJ7ujr1t4Iyg2z7kQUitUu3WNhBwEkR9u
+         1DB8C5mpG7fcD1dobzmgEzjAIjVVBwnGwP3dkdIlNpBro+KHDX4bdCRJxdkeQJbRerpE
+         /cQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+4dp/rPp75R6Y/qX3FQ9ODyLo78JIjJBmV86qMPI9hw=;
+        b=AeaMpYm7qGHweiGnNNKrCM6xBuCtE3g5lvTwJPxaf1AQILnCUwJFE6I6yYq8HF+ilx
+         wGdW0VN84S3ePeeisxV4Lg70GqCyD99QHspTXLJcaPn0O/0uSb6tgymEnHAXJkfXIaru
+         74kIwqHpTeSf1GzGoG/tHdhFgdigQFjTNZWzcZTXz/YBbzgzBjj+gACsi3M9M2mtbxHr
+         +a5SWI61ZRqCfpA+XO6cgnZdDh2xaAzteyuZKDDL1RVlmi95L+V2cb6x9ah0yvSMbja3
+         rEWG5VxznPZyV2CDFQIv695fQvj/2S8rgmKLUniwFwPB+VmeQXE7b1ydJ5B7IHs+jp7O
+         UWng==
+X-Gm-Message-State: AOAM533JcNDXf0gJWY2WFv+vHq0oqXDGXvFDZQOa/DxL6N2f037h22a3
+        eD1jQqDW2czWNAW5MOx11TPuMkg87kQD4Vo/2UdIroBdCig=
+X-Google-Smtp-Source: ABdhPJxDi679KzU4E+PyfsWscJkwOA/eKxqrRiaIovZfTJv54HYC9jvjZs0KevGpOdhKqLv5Nq6ec+Wsj0lL8G1sHi4=
+X-Received: by 2002:a4a:b3c4:: with SMTP id q4mr25041775ooo.14.1620989570367;
+ Fri, 14 May 2021 03:52:50 -0700 (PDT)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20210514092139.3225509-1-svens@linux.ibm.com> <20210514092139.3225509-3-svens@linux.ibm.com>
+In-Reply-To: <20210514092139.3225509-3-svens@linux.ibm.com>
+From:   Marco Elver <elver@google.com>
+Date:   Fri, 14 May 2021 12:52:38 +0200
+Message-ID: <CANpmjNOLSuqeTr8YOnvz-V=eudBwraNvm+9V+YxEBUCm=EFwxw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] kfence: only handle kernel mode faults
+To:     Sven Schnelle <svens@linux.ibm.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sachi King
-> Sent: 14 May 2021 20:41
-> 
-> On Thursday, May 13, 2021 8:36:27 PM AEST David Laight wrote:
-> > > -----Original Message-----
-> > > From: Maximilian Luz <luzmaximilian@gmail.com>
-> > > Sent: 13 May 2021 11:12
-> > > To: David Laight <David.Laight@ACULAB.COM>; Thomas Gleixner
-> > > <tglx@linutronix.de>; Ingo Molnar <mingo@redhat.com>; Borislav Petkov
-> > > <bp@alien8.de>
-> > > Cc: H. Peter Anvin <hpa@zytor.com>; Sachi King <nakato@nakato.io>;
-> > > x86@kernel.org; linux-kernel@vger.kernel.org; stable@vger.kernel.org
-> > > Subject: Re: [PATCH] x86/i8259: Work around buggy legacy PIC
-> > >
-> > > On 5/13/21 10:10 AM, David Laight wrote:
-> > >
-> > > > From: Maximilian Luz
-> > > >
-> > > >> Sent: 12 May 2021 22:05
-> > > >>
-> > > >>
-> > > >>
-> > > >> The legacy PIC on the AMD variant of the Microsoft Surface Laptop 4
-> > > >> has
-> > > >> some problems on boot. For some reason it consistently does not
-> > > >> respond
-> > > >> on the first try, requiring a couple more tries before it finally
-> > > >> responds.
-> > > >
-> > > >
-> > > >
-> > > > That seems very strange, something else must be going on that causes the
-> > > > grief.
-> > > > The 8259 will be built into to the one of the cpu support
-> > > > chips.
-> > > > I can't imagine that requires anything special.
-> > >
-> > >
-> > > Right, it's definitely strange. Both Sachi (I imagine) and I don't know
-> > > much about these devices, so we're open for suggestions.
-> >
-> >
-> > I found a copy of the datasheet (I don't seem to have the black book):
-> >
-> > https://pdos.csail.mit.edu/6.828/2010/readings/hardware/8259A.pdf
-> >
-> > The PC hardware has two 8259 in cascade mode.
-> > (Cascaded using an interrupt that wasn't really using in the original
-> > 8088 PC which only had one 8259.)
-> >
-> > I wonder if the bios has actually initialised is properly.
-> > Some initialisation writes have to be done to set everything up.
-> 
-> I suspect by the displayed behaviour you are correct and that it has
-> not.  I'm struggling to figure out who to talk to to see that is
-> something that can be fixed in the firmware.
-> 
-> > It is also worth noting that the probe code is spectacularly crap.
-> > It writes 0xff and then checks that 0xff is read back.
-> > Almost anything (including a failed PCIe read to the ISA bridge)
-> > will return 0xff and make the test pass.
-> 
-> I was under the impression that it wrote 0xfb, and 0xff would be
-> considered a failure.
+On Fri, 14 May 2021 at 11:22, Sven Schnelle <svens@linux.ibm.com> wrote:
+>
+> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+> ---
+>  mm/kfence/core.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/mm/kfence/core.c b/mm/kfence/core.c
+> index bc15e3cb71d5..161df492750c 100644
+> --- a/mm/kfence/core.c
+> +++ b/mm/kfence/core.c
+> @@ -813,6 +813,9 @@ bool kfence_handle_page_fault(unsigned long addr, bool is_write, struct pt_regs
+>         enum kfence_error_type error_type;
+>         unsigned long flags;
+>
+> +       if (user_mode(regs))
+> +               return false;
+> +
 
-I probably misread it.
-For anything like a probe you really need to write one value
-and read back something different - that is hopefully reasonably unique.
-OTOH just the write can trash the wrong hardware - many old PC
-hardware probes were very dubious.
+I don't think it's required on all architectures, correct? If so, I
+think this should be part of the arch-specific code, i.e. just do "if
+(user_mode(regs) && kfence_handle_page_fault(...))" or similar.
+Because otherwise we'll wonder in future why we ever needed this, and
+e.g. determine it's useless and remove it again. ;-) Either that, or a
+comment. But I'd prefer to just keep it in the arch-specific code if
+required, because it seems to be the exception rather than the norm.
 
-Although unlikely here (since the logic is all inside chip)
-on a real IO bus with tristate drivers a write followed by
-a read to an unknown address could easily return the written
-value due to capacitance of the data bus.
-
-> > It's about 35 years since I last wrote the code to initialise an 8259.
-> > The memory cells are foggy.
-> 
-> I'm not sure the i8259 is needed on the device, as the interrupts
-> appear to function on the device if I bypass the nr_legacy_irqs() check
-> while the legacy_pic is set to the null_legacy_pic.
-> 
-> The null_legacy_pic however specifies having 0 irqs, and the io_apic
-> does not allow us to set the pin attributes unless the pin we are
-> attempting to set is less than nr_legacy_irqs.
-> 
-> The IOAPIC seems to take responsibility for the 0-15 interrupts on this
-> specific hardware, should we maybe be ignoring the i8259 and looking
-> into allowing interrupts 0-15 to be setup even when the legacy_pic is
-> not available?
-
-That woke up some memory cells.
-IIRC on an SMP kernel the IOAPIC is always used in preference to the 8259.
-So maybe the initialisation code is just plain wrong!
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+Thanks,
+-- Marco
