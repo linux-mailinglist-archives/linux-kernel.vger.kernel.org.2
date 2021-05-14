@@ -2,59 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31E7B380D81
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 17:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE866380D97
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 17:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234990AbhENPmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 11:42:51 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:40526 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232426AbhENPmu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 11:42:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=JGPg2rGN1c6V/ZgAIaVM+slcrBMKD0rGiiBx+eLZO3E=; b=GVdjFcI8OK/Bo9hHneBzVr4s8W
-        V+xQ9NkGYW0TWXNNZ0pqk4c9dbcSYJ6BI9eOBM3H9/zcF+u2Q007kZYjvogndKCw0jtgZ31r14M+A
-        HnotK1H/rKZ+jnYF6mQm8ThH/wZ2J8fKi0bzJIaWgPqHQa/IDcD3Ojevhg5CA50WRfq8=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lhZwT-004Cnj-AV; Fri, 14 May 2021 17:41:33 +0200
-Date:   Fri, 14 May 2021 17:41:33 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Peter Geis <pgwipeout@gmail.com>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>
-Subject: Re: [PATCH v3] net: phy: add driver for Motorcomm yt8511 phy
-Message-ID: <YJ6aLTo3fJ6kRvzK@lunn.ch>
-References: <20210514115826.3025223-1-pgwipeout@gmail.com>
- <YJ56G23e930pg4Iv@lunn.ch>
- <CAMdYzYrSB0G7jfG9fo85X0DxVG_r-qaWUyVAa5paAW0ugLvoxw@mail.gmail.com>
- <YJ6OqpRTo+rlfb51@lunn.ch>
- <CAMdYzYrdNqDZdkCj5Jf9+MmGtZgy263cYmwWkB3rZY02dPefYw@mail.gmail.com>
+        id S233915AbhENPxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 11:53:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230326AbhENPxC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 11:53:02 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02467C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 08:51:51 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id lg14so3397560ejb.9
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 08:51:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorfullife-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=5xc58wXzFhmzYNMz3NL2UHsy1H39sUGpBVj4z2qmuk0=;
+        b=NpM1Y/3YSGQNBeOJC868yxwTLLcB+N6wOGDO+o09ehnKaajaPPcxDjAcVQ8V6FFO8U
+         SUgPjDDje6e36vqe5vJ0FV56odwnRhlbUjnKAK1q2OL4AAnAdLj8fXmAMKk5iKjT4xKX
+         NEaRUZhF2l7+Rmxm8aRfQp9T6ZBEQf0TtSdSGY29AVwmX4SLaQXRkZv2Q2UFQX53EeK1
+         4f+bK96wHocjnqUF87HOMqA/rYN/bZte5sfAKlFhRi17AOKj1xPxinUZGRsAvwL5lpN6
+         97E5mOovTUW3/No8g1z4F+E9SnG3jnZOE1i7afNrQQVKI34HGbo417C/s8viAw0tWRXf
+         X5/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=5xc58wXzFhmzYNMz3NL2UHsy1H39sUGpBVj4z2qmuk0=;
+        b=HNuYDk1ER370a/7K74GefMtDgo7uVMjD5mpw2+GDt69GUHE48SVaSI74d38F/u4uKM
+         5n499R3dXcGIB9/6YOAM2csZ7iw4Z2rnl7cJ6X3rfsypJcmdrd2v6Tn7RAFLpVOsZAO+
+         B9ULrhLgsqBlVuW7pOV4wb90FgG2HlBmNvBu54cJFKPuvWgbOKU8nVb2c2dbQj5nkl1y
+         gJ06pSjr415lULVbAqzc+twp4KhxuTktvCnRopON+23i4jBVAeU3XxuUcLjsooru78XU
+         HIMfir36qdfbO04PkEP0xhZIwi6r+W9aKJqZJ6Pvxovpf1C0M4zCJ+ZJ2keK49/huboj
+         UFFw==
+X-Gm-Message-State: AOAM531NUPDYLYaTStbSB6cT2NX5jH92+JlUJqqa+oE57x5Ip5NfUkjF
+        OdPwsjzU+Fc3Qt8ER/NPARDxJ0NOrMi1Ji2M
+X-Google-Smtp-Source: ABdhPJzvGKx34vRfvn09GhewBVYxTXKJkYwGZ7aTF9DMXGkqxv+Z77paeT2VX2HxBWMFWMnerK2HPA==
+X-Received: by 2002:a17:906:7fd9:: with SMTP id r25mr4358868ejs.417.1621007509531;
+        Fri, 14 May 2021 08:51:49 -0700 (PDT)
+Received: from localhost.localdomain (p200300d9970469005bb43495a574ac97.dip0.t-ipconnect.de. [2003:d9:9704:6900:5bb4:3495:a574:ac97])
+        by smtp.googlemail.com with ESMTPSA id p13sm3712040ejr.87.2021.05.14.08.51.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 May 2021 08:51:48 -0700 (PDT)
+Subject: Re: [RFC PATCH] ipc/mqueue: avoid sleep after wakeup
+To:     Hillf Danton <hdanton@sina.com>, Davidlohr Bueso <dbueso@suse.de>
+Cc:     Matthias von Faber <matthias.vonfaber@aox-tech.de>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210514030130.3253-1-hdanton@sina.com>
+From:   Manfred Spraul <manfred@colorfullife.com>
+Message-ID: <7f00542c-748f-e4ff-7596-d18525664811@colorfullife.com>
+Date:   Fri, 14 May 2021 17:51:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMdYzYrdNqDZdkCj5Jf9+MmGtZgy263cYmwWkB3rZY02dPefYw@mail.gmail.com>
+In-Reply-To: <20210514030130.3253-1-hdanton@sina.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Good Catch!
-> 
-> Guess I'll have to set that too, anything else you'd recommend looking into?
+Hi Hillf,
 
-I think for a first submission, you have the basics. I'm just pushing
-RGMII delays because we have had backwards compatibility problems in
-that area when added later. Experience suggests adding features in
-other areas is much less of a problem. So as you suggested, you can
-add cable test, downshift control, interrupts etc later.
+On 5/14/21 5:01 AM, Hillf Danton wrote:
+> The pipeline waker could start doing its job once waiter releases lock and
+> get the work done before waiter takes a nap, so check wait condition before
+> sleep to avoid waiting the wakeup that will never come, though that does not
+> hurt much thanks to timer timeouts like a second.
 
-    Andrew
+First: The timeout could be infinity, thus the code must not rely on a 
+timeout wakeup.
+
+A wrong wait is would be a bug.
+
+
+>
+> Check signal for the same reason.
+>
+> Signed-off-by: Hillf Danton <hdanton@sina.com>
+> ---
+>
+> --- y/ipc/mqueue.c
+> +++ x/ipc/mqueue.c
+> @@ -710,15 +710,24 @@ static int wq_sleep(struct mqueue_inode_
+>   		__set_current_state(TASK_INTERRUPTIBLE);
+>   
+>   		spin_unlock(&info->lock);
+> -		time = schedule_hrtimeout_range_clock(timeout, 0,
+> -			HRTIMER_MODE_ABS, CLOCK_REALTIME);
+>   
+
+I do not see a bug:
+
+We do the __set_current_state() while holding the spinlock. If there is 
+a wakeup, then the wakeup will change current->state to TASK_RUNNING.
+
+schedule() will not remove us from the run queue when current->state is 
+TASK_RUNNING. The same applies if there are pending signals: schedule() 
+checks for pending signals and sets current->state to TASK_RUNNING.
+
+Since the __set_current_state() is done while we hold info->lock, and 
+since the wakeup cannot happen before we have dropped the lock [because 
+the task that wakes us up needs the same lock], I do not see how a 
+wakeup could be lost.
+
+Thus: Which issue do you see?
+
+--
+
+     Manfred
+
