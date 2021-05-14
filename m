@@ -2,116 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87AD1380B2E
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 16:10:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 169A3380B34
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 16:10:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234238AbhENOL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 10:11:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232302AbhENOLY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 10:11:24 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74C66C061574;
-        Fri, 14 May 2021 07:10:12 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id n32-20020a9d1ea30000b02902a53d6ad4bdso26544208otn.3;
-        Fri, 14 May 2021 07:10:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IYkHGxl+vXpHG5+jn/GdOJhUfxjNFIaEZMKys7siCUM=;
-        b=G+/CaNr62gesmlOkjUKxZszrYb5aX7ttcgQmqbDMWqj8lIKin0VQE5TB9rKnzmJ6Yj
-         /O6bi1FaTrYa/9HhoydS12Sxgmlc/MG1EChHv1fx6mnhlBtsINzQpW5ZDzAitYW6GMaO
-         xRdHhAJa/q1nx6AXokPBj8TNU22PdIaZ9hA/efZZA4Jtkbq/EM/qyuR1VqWFZlwT6r4q
-         XwxsSgkho+uD6ISqnKdXsSSR8MG/LYwUYdMrsQ9SpuB/WHV/TZeBICcGBI/MGPtmSKnc
-         Q3E3+50VlexPhKCUoZp9UI25ohIGQShsJtj20IZf2UhWud2GC721Qe66j8tSDYS5P+4L
-         nMUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IYkHGxl+vXpHG5+jn/GdOJhUfxjNFIaEZMKys7siCUM=;
-        b=A2JKBUiMCqzslypUFd7kOCFquw0YqpTBetGXL0LgSYzAfkH6b072m2DzjVzUJUr+W3
-         Yp5ATrjyWXX5jjnsyYSEjAjtOFTleZec/7pSN51PoKKuRinIjzwDIHytkJePcsXkWVxo
-         7T+tJwVC09UQ9Yo0DV5+YQFe/+qM6EmSnwjCeEmmmDKXmreCqU9ei15IXeLJtjsDXOuX
-         FcocWTTmeP1PdVCyK/Rnwz20sUG1cyjPBMbfF05MWTcwFj9P0kbQv/TZw/8CMmiI2k4Q
-         qxT6q1wuOLvbxpTMxsJBzpKKUtKxJCZ185DsA1kGSDjE6oN+1/nlKO8Nyg08JKJqZe+Y
-         xbSA==
-X-Gm-Message-State: AOAM531tNXETmw3b8CmOCNvYTNQLJyu1TRbYiX02seM1CN+syGN3Dk7O
-        WCh3c3KQ++SVjjSo0n1c2hc=
-X-Google-Smtp-Source: ABdhPJzbHDACCTEeXmNSXYWCgTqL1ui7BKhaIj2qt2rxnHA1wPVSst/qWx3Y2f2/mAuF3Qkn08c7iQ==
-X-Received: by 2002:a9d:f66:: with SMTP id 93mr39917381ott.229.1621001411846;
-        Fri, 14 May 2021 07:10:11 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.22])
-        by smtp.googlemail.com with ESMTPSA id f2sm1194979otp.77.2021.05.14.07.10.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 May 2021 07:10:11 -0700 (PDT)
-Subject: Re: [PATCH iproute2-next v3] lib/fs: fix issue when
- {name,open}_to_handle_at() is not implemented
-To:     Petr Vorel <petr.vorel@gmail.com>,
-        Heiko Thiery <heiko.thiery@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stephen@networkplumber.org, Dmitry Yakunin <zeil@yandex-team.ru>
-References: <20210508064925.8045-1-heiko.thiery@gmail.com>
- <6ba0adf4-5177-c50a-e921-bee898e3fdb9@gmail.com>
- <CAEyMn7a4Z3U-fUvFLcWmPW3hf-x6LfcTi8BZrcDfhhFF0_9=ow@mail.gmail.com>
- <YJ5rJbdEc2OWemu+@pevik>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <82c9159f-0644-40af-fb4c-cc8507456719@gmail.com>
-Date:   Fri, 14 May 2021 08:10:09 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.1
+        id S234254AbhENOLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 10:11:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33940 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231373AbhENOLo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 10:11:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EC583613E9;
+        Fri, 14 May 2021 14:10:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621001433;
+        bh=GvOgMOa5ZuePNrd238Dh7TPxvxow4q6donvCFAtghLQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KXerAm9PrBDPzWTktpYwR4+YFKSIxBt4j3EvqLh2IX1ykHK6khxQKY40CFM+RfdAe
+         r1lmypdoUs9Un+2Yz1kxaYhV1+cxiqq1ilYhdBsqOuzSv1RXm1TrgZ/6ZBe9LTn1S8
+         +h/oQwpoJRLhlS6Gei0wVLnAcSJ994NnUwHeAqIA=
+Date:   Fri, 14 May 2021 16:10:30 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Marco Elver <elver@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] kcsan: fix debugfs initcall return type
+Message-ID: <YJ6E1scEoTATEJav@kroah.com>
+References: <20210514140015.2944744-1-arnd@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <YJ5rJbdEc2OWemu+@pevik>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210514140015.2944744-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/14/21 6:20 AM, Petr Vorel wrote:
+On Fri, May 14, 2021 at 04:00:08PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
->>> This causes compile failures if anyone is reusing a tree. It would be
->>> good to require config.mk to be updated if configure is newer.
->> Do you mean the config.mk should have a dependency to configure in the
->> Makefile? Wouldn't that be better as a separate patch?
-> I guess it should be a separate patch. I'm surprised it wasn't needed before.
+> clang points out that an initcall funciton should return an 'int':
 > 
-
-
-yes, it should be a separate patch, but it needs to precede this one.
-
-This worked for me last weekend; I'll send it when I get a chance.
-
-diff --git a/Makefile b/Makefile
-index 19bd163e2e04..5bc11477ab7a 100644
---- a/Makefile
-+++ b/Makefile
-@@ -60,7 +60,7 @@ SUBDIRS=lib ip tc bridge misc netem genl tipc devlink
-rdma dcb man vdpa
- LIBNETLINK=../lib/libutil.a ../lib/libnetlink.a
- LDLIBS += $(LIBNETLINK)
-
--all: config.mk
-+all: config
-        @set -e; \
-        for i in $(SUBDIRS); \
-        do echo; echo $$i; $(MAKE) -C $$i; done
-@@ -80,8 +80,10 @@ all: config.mk
-        @echo "Make Arguments:"
-        @echo " V=[0|1]             - set build verbosity level"
-
--config.mk:
--       sh configure $(KERNEL_INCLUDE)
-+config:
-+       @if [ ! -f config.mk -o configure -nt config.mk ]; then \
-+               sh configure $(KERNEL_INCLUDE); \
-+       fi
-
- install: all
-        install -m 0755 -d $(DESTDIR)$(SBINDIR)
-
+> kernel/kcsan/debugfs.c:274:15: error: returning 'void' from a function with incompatible result type 'int'
+> late_initcall(kcsan_debugfs_init);
+> ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
+> include/linux/init.h:292:46: note: expanded from macro 'late_initcall'
+>  #define late_initcall(fn)               __define_initcall(fn, 7)
+> 
+> Fixes: e36299efe7d7 ("kcsan, debugfs: Move debugfs file creation out of early init")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  kernel/kcsan/debugfs.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/kcsan/debugfs.c b/kernel/kcsan/debugfs.c
+> index c1dd02f3be8b..e65de172ccf7 100644
+> --- a/kernel/kcsan/debugfs.c
+> +++ b/kernel/kcsan/debugfs.c
+> @@ -266,9 +266,10 @@ static const struct file_operations debugfs_ops =
+>  	.release = single_release
+>  };
+>  
+> -static void __init kcsan_debugfs_init(void)
+> +static int __init kcsan_debugfs_init(void)
+>  {
+>  	debugfs_create_file("kcsan", 0644, NULL, NULL, &debugfs_ops);
+> +	return 0;
+>  }
+>  
+>  late_initcall(kcsan_debugfs_init);
+> -- 
+> 2.29.2
+> 
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
