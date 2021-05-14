@@ -2,96 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 099AC380F37
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 19:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C1E8380F3A
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 19:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235227AbhENRtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 13:49:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48674 "EHLO mail.kernel.org"
+        id S235235AbhENRuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 13:50:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229445AbhENRtf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 13:49:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AAC55613EC;
-        Fri, 14 May 2021 17:48:23 +0000 (UTC)
+        id S229445AbhENRuU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 13:50:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AB4A61408;
+        Fri, 14 May 2021 17:49:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621014504;
-        bh=a2Lf/s9pS2AbNJ05MvIWyGXG/TI/DKSvCkpHiv0i2Oo=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=GR4deiUKmR3hcwLhTbJZMLVSJw5ACynGwuXnVCEI/+gZ/Hpo0k5+g5m8WNIhfGX1S
-         TjRcCC9I2qx8F6rvIy9hgHuMQgsmtGVjTobx9zBM8E4GTxe4JsfFMYC8GGJN61GzEv
-         KiCk5INxFn8KUHihlZaq1dQYvsURZ6XA/Xe4PLdiJYrenBI79VKl7meePcvHxjnOxP
-         fHM2UKv17p2lRlCElTRGm/WqhwttWF0YgJ5K6h7Ugx9XOBqM2Wk+TpRIJmRLlvZ2S8
-         71/vdgJuAyGI2bBSMloBvzYkafUl2wLKe2PGymvvRAbEsqZD3lPgJO4IiuOmzH5Bu3
-         I9yqqvOyCb9Dw==
-Subject: Re: [PATCH] mm/shuffle: fix section mismatch warning
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        David Hildenbrand <david@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Dan Williams <dan.j.williams@intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-References: <20210514135952.2928094-1-arnd@kernel.org>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <1904893e-1e7f-b1a4-454c-6999f8ac670a@kernel.org>
-Date:   Fri, 14 May 2021 10:48:22 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        s=k20201202; t=1621014548;
+        bh=o26Wkx/ez879lFq8JcHpfo4f6e+NGRwcrc+ND37TxOU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=o1/RB9Hsksg/QlBKZ/PgN3r7rgJhWoVbliP0ZZ907zazWAigd+eLtKMNIx5tgZ9KJ
+         XHJf4v0sUj8QKXmpoEJvfAFzng+hKWJYo+yyNXgnwhOpugfRRdAMC0carMxOZVvcpE
+         muvTK2wu12t6jGkT46aQngv3cnBP8035qeoUsAW5/sQkXUdXhl0rMgeZZWD4kktYO+
+         VHp2YdNe0yNj9QC/QWEeupbwGSx6D1y+5B9I2rLsmojgBN+OEIKH+Mkxfk+RVf7n0x
+         Fe2Xp7GdFP5HDqW/TADNpGFhmZ6My0Z6YDuXJxIS+WZ3LWMfBLWmPzwwCfolP753Qx
+         g27ziYm7aDj6Q==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 310E85C02A5; Fri, 14 May 2021 10:49:08 -0700 (PDT)
+Date:   Fri, 14 May 2021 10:49:08 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        0day robot <lkp@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        ying.huang@intel.com, zhengjun.xing@intel.com, kernel-team@fb.com,
+        neeraju@codeaurora.org
+Subject: Re: [clocksource]  388450c708:  netperf.Throughput_tps -65.1%
+ regression
+Message-ID: <20210514174908.GI975577@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210501003247.2448287-4-paulmck@kernel.org>
+ <20210513155515.GB23902@xsang-OptiPlex-9020>
+ <20210513170707.GA975577@paulmck-ThinkPad-P17-Gen-1>
+ <20210514074314.GB5384@shbuild999.sh.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210514135952.2928094-1-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210514074314.GB5384@shbuild999.sh.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/14/2021 6:59 AM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Fri, May 14, 2021 at 03:43:14PM +0800, Feng Tang wrote:
+> Hi Paul,
 > 
-> clang sometimes decides not to inline shuffle_zone(), but it calls
-> a __meminit function. Without the extra __meminit annotation we get
-> this warning:
+> On Thu, May 13, 2021 at 10:07:07AM -0700, Paul E. McKenney wrote:
+> > On Thu, May 13, 2021 at 11:55:15PM +0800, kernel test robot wrote:
+> > > 
+> > > 
+> > > Greeting,
+> > > 
+> > > FYI, we noticed a -65.1% regression of netperf.Throughput_tps due to commit:
+> > > 
+> > > 
+> > > commit: 388450c7081ded73432e2b7148c1bb9a0b039963 ("[PATCH v12 clocksource 4/5] clocksource: Reduce clocksource-skew threshold for TSC")
+> > > url: https://github.com/0day-ci/linux/commits/Paul-E-McKenney/Do-not-mark-clocks-unstable-due-to-delays-for-v5-13/20210501-083404
+> > > base: https://git.kernel.org/cgit/linux/kernel/git/tip/tip.git 2d036dfa5f10df9782f5278fc591d79d283c1fad
+> > > 
+> > > in testcase: netperf
+> > > on test machine: 96 threads 2 sockets Ice Lake with 256G memory
+> > > with following parameters:
+> > > 
+> > > 	ip: ipv4
+> > > 	runtime: 300s
+> > > 	nr_threads: 25%
+> > > 	cluster: cs-localhost
+> > > 	test: UDP_RR
+> > > 	cpufreq_governor: performance
+> > > 	ucode: 0xb000280
+> > > 
+> > > test-description: Netperf is a benchmark that can be use to measure various aspect of networking performance.
+> > > test-url: http://www.netperf.org/netperf/
+> > > 
+> > > 
+> > > 
+> > > If you fix the issue, kindly add following tag
+> > > Reported-by: kernel test robot <oliver.sang@intel.com>
+> > > 
+> > > 
+> > > also as Feng Tang checked, this is a "unstable clocksource" case.
+> > > attached dmesg FYI.
+> > 
+> > Agreed, given the clock-skew event and the resulting switch to HPET,
+> > performance regressions are expected behavior.
+> > 
+> > That dmesg output does demonstrate the value of Feng Tang's patch!
+> > 
+> > I don't see how to obtain the values of ->mult and ->shift that would
+> > allow me to compute the delta.  So if you don't tell me otherwise, I
+> > will assume that the skew itself was expected on this hardware, perhaps
+> > somehow due to the tpm_tis_status warning immediately preceding the
+> > clock-skew event.  If my assumption is incorrect, please let me know.
 > 
-> WARNING: modpost: vmlinux.o(.text+0x2a86d4): Section mismatch in reference from the function shuffle_zone() to the function .meminit.text:__shuffle_zone()
-> The function shuffle_zone() references
-> the function __meminit __shuffle_zone().
-> This is often because shuffle_zone lacks a __meminit
-> annotation or the annotation of __shuffle_zone is wrong.
+> I run the case with the debug patch applied, the info is:
 > 
-> shuffle_free_memory() did not show the same problem in my tests, but
-> it could happen in theory as well, so mark both as __meminit.
+> [   13.796429] clocksource: timekeeping watchdog on CPU19: Marking clocksource 'tsc' as unstable because the skew is too large:
+> [   13.797413] clocksource:                       'hpet' wd_nesc: 505192062 wd_now: 10657158 wd_last: fac6f97 mask: ffffffff
+> [   13.797413] clocksource:                       'tsc' cs_nsec: 504008008 cs_now: 3445570292aa5 cs_last: 344551f0cad6f mask: ffffffffffffffff
+> [   13.797413] clocksource:                       'tsc' is current clocksource.
+> [   13.797413] tsc: Marking TSC unstable due to clocksource watchdog
+> [   13.844513] clocksource: Checking clocksource tsc synchronization from CPU 50 to CPUs 0-1,12,22,32-33,60,65.
+> [   13.855080] clocksource: Switched to clocksource hpet
 > 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> So the delta is 1184 us (505192062 - 504008008), and I agree with
+> you that it should be related with the tpm_tis_status warning stuff.
+> 
+> But this re-trigger my old concerns, that if the margins calculated
+> for tsc, hpet are too small?
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+If the error really did disturb either tsc or hpet, then we really
+do not have a false positive, and nothing should change (aside from
+perhaps documenting that TPM issues can disturb the clocks, or better
+yet treating that perturbation as a separate bug that should be fixed).
+But if this is yet another way to get a confused measurement, then it
+would be better to work out a way to reject the confusion and keep the
+tighter margins.  I cannot think right off of a way that this could
+cause measurement confusion, but you never know.
 
-> ---
->   mm/shuffle.h | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/shuffle.h b/mm/shuffle.h
-> index 71b784f0b7c3..cec62984f7d3 100644
-> --- a/mm/shuffle.h
-> +++ b/mm/shuffle.h
-> @@ -10,7 +10,7 @@
->   DECLARE_STATIC_KEY_FALSE(page_alloc_shuffle_key);
->   extern void __shuffle_free_memory(pg_data_t *pgdat);
->   extern bool shuffle_pick_tail(void);
-> -static inline void shuffle_free_memory(pg_data_t *pgdat)
-> +static inline void __meminit shuffle_free_memory(pg_data_t *pgdat)
->   {
->   	if (!static_branch_unlikely(&page_alloc_shuffle_key))
->   		return;
-> @@ -18,7 +18,7 @@ static inline void shuffle_free_memory(pg_data_t *pgdat)
->   }
->   
->   extern void __shuffle_zone(struct zone *z);
-> -static inline void shuffle_zone(struct zone *z)
-> +static inline void __meminit shuffle_zone(struct zone *z)
->   {
->   	if (!static_branch_unlikely(&page_alloc_shuffle_key))
->   		return;
-> 
+So any thoughts on exactly how the tpm_tis_status warning might have
+resulted in the skew?
 
+> With current math algorithm, the 'uncertainty_margin' is
+> calculated against the frequency, and those tsc/hpet/acpi_pm
+> timer is multiple of MHz or GHz, which gives them to have margin of
+> 100 us. It works with normal systems. But in the wild world, there
+> could be some sparkles due to some immature HW components, their
+> firmwares or drivers etc, just like this case. 
+
+Isn't diagnosing issues from immature hardware, firmware, and drivers
+actually a benefit?  It would after all be quite unfortunate if some issue
+that was visible only due to clock skew were to escape into production.
+
+							Thanx, Paul
