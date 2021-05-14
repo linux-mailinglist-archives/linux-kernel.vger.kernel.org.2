@@ -2,150 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ADFA38053D
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 10:28:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 089D438053E
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 10:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233618AbhENI3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 04:29:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22995 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233437AbhENI3d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 04:29:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620980902;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5w0DUc6v8+Ohu3/Un9/gp8Wn9KzAdxtOI/JJ1rmwYuM=;
-        b=MHWi8GD/J3rduRLKttZBW3JY0KkuPatrQQYcDZFRbDItAePYepy44RJZIRbdHPgMd6x83A
-        72RUsCFXXFPPtvclIm0Y+7+tLuuyNcSaWOOnRNKp6EMGbvoGiT7jaqBWnYuK7KA2JIHhVY
-        RrXbJDN5izvfRIbTh6mMblSZpOWP5VI=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-517-TWF5BPoNN3OXSHGn_2XIWw-1; Fri, 14 May 2021 04:28:20 -0400
-X-MC-Unique: TWF5BPoNN3OXSHGn_2XIWw-1
-Received: by mail-ed1-f70.google.com with SMTP id s20-20020a0564025214b029038752a2d8f3so15981987edd.2
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 01:28:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=5w0DUc6v8+Ohu3/Un9/gp8Wn9KzAdxtOI/JJ1rmwYuM=;
-        b=gUoJaSnyuaBZst2yFvCu15DcUwbQV+qfuog5+EDyqYcM5UVaIXh8BPvVZkpiLtO0I1
-         bcOYNROMU9ceSnmAU513q4PQqrORJk5QWbjlhmCmnM5bEEsyweS4Mrt2DWb9BxaRO8sX
-         OEBoboH1yyFAwdv7CoVE9T/DQT/0vQd/ZENORWrhrOlGdwn4nVnY3izr1LUR0Chbptmo
-         RXOgpyqmp8QMT8zXhz3a4IYspYLvakk9d4DDb57wh9h2QKexAZ7wRCpyv963PZF303lq
-         r18wF5viZeUPZVrlx3vGT6KFLw08fNECppjx/eVMHchONRBjIAuLwM5Qb+j18qMJrfAj
-         Sing==
-X-Gm-Message-State: AOAM530bw8UCodmx/AsC/f1twOBsZ+V9jSnI/kIlprYvcd+RemeqYEme
-        MBYFpkcH3I9+x8b4rKCmjWOR7JeMmeLsOy79XWT62J3tlUuHK7Oq8OVl8WAaIVijWkwE9/usVyg
-        jSBTe9/dXFEUpNmug1acDT0SC
-X-Received: by 2002:aa7:c510:: with SMTP id o16mr54629553edq.310.1620980898808;
-        Fri, 14 May 2021 01:28:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxAa7CtEGRAWr1lF7BGwkWkyoH00MJ3yOs2g5NJWUfLIy+27BD8PFUUKz633oLeJlXdgmtb9Q==
-X-Received: by 2002:aa7:c510:: with SMTP id o16mr54629525edq.310.1620980898588;
-        Fri, 14 May 2021 01:28:18 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6501.dip0.t-ipconnect.de. [91.12.101.1])
-        by smtp.gmail.com with ESMTPSA id s4sm4090012edq.96.2021.05.14.01.28.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 May 2021 01:28:18 -0700 (PDT)
-Subject: Re: [PATCH v19 2/8] riscv/Kconfig: make direct map manipulation
- options depend on MMU
-To:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Hagen Paul Pfeifer <hagen@jauu.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        Yury Norov <yury.norov@gmail.com>, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, kernel test robot <lkp@intel.com>
-References: <20210513184734.29317-1-rppt@kernel.org>
- <20210513184734.29317-3-rppt@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <adb9f79a-8b9a-0302-e83c-03ad17d3743b@redhat.com>
-Date:   Fri, 14 May 2021 10:28:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210513184734.29317-3-rppt@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S233612AbhENIaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 04:30:04 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:60627 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230460AbhENIaC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 04:30:02 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4FhMBB1gFdz9sbR;
+        Fri, 14 May 2021 10:28:50 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id aqo0VNtJiH8k; Fri, 14 May 2021 10:28:50 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4FhMBB0Pdhz9sbQ;
+        Fri, 14 May 2021 10:28:50 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id DCBC78B7F7;
+        Fri, 14 May 2021 10:28:49 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 0ExbbOvENrJc; Fri, 14 May 2021 10:28:49 +0200 (CEST)
+Received: from po15610vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8F5038B7F6;
+        Fri, 14 May 2021 10:28:49 +0200 (CEST)
+Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 3CCC764BE0; Fri, 14 May 2021 08:28:49 +0000 (UTC)
+Message-Id: <cd0634769e5fea397411a0f833db52749852c6f8.1620980916.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH 1/2] powerpc/interrupt: Refactor interrupt_exit_user_prepare()
+ and syscall_exit_prepare()
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Fri, 14 May 2021 08:28:49 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.05.21 20:47, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> ARCH_HAS_SET_DIRECT_MAP and ARCH_HAS_SET_MEMORY configuration options have
-> no meaning when CONFIG_MMU is disabled and there is no point to enable
-> them for the nommu case.
-> 
-> Add an explicit dependency on MMU for these options.
-> 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> Reported-by: kernel test robot <lkp@intel.com>
-> ---
->   arch/riscv/Kconfig | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index a8ad8eb76120..c426e7d20907 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -26,8 +26,8 @@ config RISCV
->   	select ARCH_HAS_KCOV
->   	select ARCH_HAS_MMIOWB
->   	select ARCH_HAS_PTE_SPECIAL
-> -	select ARCH_HAS_SET_DIRECT_MAP
-> -	select ARCH_HAS_SET_MEMORY
-> +	select ARCH_HAS_SET_DIRECT_MAP if MMU
-> +	select ARCH_HAS_SET_MEMORY if MMU
->   	select ARCH_HAS_STRICT_KERNEL_RWX if MMU && !XIP_KERNEL
->   	select ARCH_HAS_STRICT_MODULE_RWX if MMU && !XIP_KERNEL
->   	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
-> 
+Last part of interrupt_exit_user_prepare() and syscall_exit_prepare()
+are identical.
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+Create a __interrupt_exit_user_prepare() function that is called by
+both.
 
+Note that it replaces a local_irq_save(flags) by local_irq_disable().
+This is similar because the flags are never used. On ppc 8xx it is
+more efficient because it doesn't require reading MSR.
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+It requires the following commits that are in powerpc/fixes-test:
+5d510ed78bcf powerpc/syscall: Calling kuap_save_and_lock() is wrong
+a78339698ab1 powerpc/interrupts: Fix kuep_unlock() call
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/kernel/interrupt.c | 147 ++++++++++----------------------
+ 1 file changed, 44 insertions(+), 103 deletions(-)
+
+diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
+index e0938ba298f2..d896fc6ed0be 100644
+--- a/arch/powerpc/kernel/interrupt.c
++++ b/arch/powerpc/kernel/interrupt.c
+@@ -231,56 +231,15 @@ static notrace void booke_load_dbcr0(void)
+ #endif
+ }
+ 
+-/*
+- * This should be called after a syscall returns, with r3 the return value
+- * from the syscall. If this function returns non-zero, the system call
+- * exit assembly should additionally load all GPR registers and CTR and XER
+- * from the interrupt frame.
+- *
+- * The function graph tracer can not trace the return side of this function,
+- * because RI=0 and soft mask state is "unreconciled", so it is marked notrace.
+- */
+-notrace unsigned long syscall_exit_prepare(unsigned long r3,
+-					   struct pt_regs *regs,
+-					   long scv)
++static notrace unsigned long __interrupt_exit_user_prepare(struct pt_regs *regs, unsigned long ret,
++							   bool is_not_scv)
+ {
+ 	unsigned long ti_flags;
+-	unsigned long ret = 0;
+-	bool is_not_scv = !IS_ENABLED(CONFIG_PPC_BOOK3S_64) || !scv;
+ 
+ 	CT_WARN_ON(ct_state() == CONTEXT_USER);
+ 
+ 	kuap_assert_locked();
+ 
+-	regs->result = r3;
+-
+-	/* Check whether the syscall is issued inside a restartable sequence */
+-	rseq_syscall(regs);
+-
+-	ti_flags = current_thread_info()->flags;
+-
+-	if (unlikely(r3 >= (unsigned long)-MAX_ERRNO) && is_not_scv) {
+-		if (likely(!(ti_flags & (_TIF_NOERROR | _TIF_RESTOREALL)))) {
+-			r3 = -r3;
+-			regs->ccr |= 0x10000000; /* Set SO bit in CR */
+-		}
+-	}
+-
+-	if (unlikely(ti_flags & _TIF_PERSYSCALL_MASK)) {
+-		if (ti_flags & _TIF_RESTOREALL)
+-			ret = _TIF_RESTOREALL;
+-		else
+-			regs->gpr[3] = r3;
+-		clear_bits(_TIF_PERSYSCALL_MASK, &current_thread_info()->flags);
+-	} else {
+-		regs->gpr[3] = r3;
+-	}
+-
+-	if (unlikely(ti_flags & _TIF_SYSCALL_DOTRACE)) {
+-		do_syscall_trace_leave(regs);
+-		ret |= _TIF_RESTOREALL;
+-	}
+-
+ 	local_irq_disable();
+ 
+ again:
+@@ -303,7 +262,7 @@ notrace unsigned long syscall_exit_prepare(unsigned long r3,
+ 		ti_flags = READ_ONCE(current_thread_info()->flags);
+ 	}
+ 
+-	if (IS_ENABLED(CONFIG_PPC_BOOK3S) && IS_ENABLED(CONFIG_PPC_FPU)) {
++	if (IS_ENABLED(CONFIG_PPC_BOOK3S_64) && IS_ENABLED(CONFIG_PPC_FPU)) {
+ 		if (IS_ENABLED(CONFIG_PPC_TRANSACTIONAL_MEM) &&
+ 				unlikely((ti_flags & _TIF_RESTORE_TM))) {
+ 			restore_tm_state(regs);
+@@ -352,81 +311,63 @@ notrace unsigned long syscall_exit_prepare(unsigned long r3,
+ 	return ret;
+ }
+ 
+-notrace unsigned long interrupt_exit_user_prepare(struct pt_regs *regs, unsigned long msr)
++/*
++ * This should be called after a syscall returns, with r3 the return value
++ * from the syscall. If this function returns non-zero, the system call
++ * exit assembly should additionally load all GPR registers and CTR and XER
++ * from the interrupt frame.
++ *
++ * The function graph tracer can not trace the return side of this function,
++ * because RI=0 and soft mask state is "unreconciled", so it is marked notrace.
++ */
++notrace unsigned long syscall_exit_prepare(unsigned long r3,
++					   struct pt_regs *regs,
++					   long scv)
+ {
+ 	unsigned long ti_flags;
+-	unsigned long flags;
+ 	unsigned long ret = 0;
++	bool is_not_scv = !IS_ENABLED(CONFIG_PPC_BOOK3S_64) || !scv;
+ 
+-	if (!IS_ENABLED(CONFIG_BOOKE) && !IS_ENABLED(CONFIG_40x))
+-		BUG_ON(!(regs->msr & MSR_RI));
+-	BUG_ON(!(regs->msr & MSR_PR));
+-	BUG_ON(arch_irq_disabled_regs(regs));
+-	CT_WARN_ON(ct_state() == CONTEXT_USER);
++	regs->result = r3;
+ 
+-	/*
+-	 * We don't need to restore AMR on the way back to userspace for KUAP.
+-	 * AMR can only have been unlocked if we interrupted the kernel.
+-	 */
+-	kuap_assert_locked();
++	/* Check whether the syscall is issued inside a restartable sequence */
++	rseq_syscall(regs);
+ 
+-	local_irq_save(flags);
++	ti_flags = current_thread_info()->flags;
+ 
+-again:
+-	ti_flags = READ_ONCE(current_thread_info()->flags);
+-	while (unlikely(ti_flags & (_TIF_USER_WORK_MASK & ~_TIF_RESTORE_TM))) {
+-		local_irq_enable(); /* returning to user: may enable */
+-		if (ti_flags & _TIF_NEED_RESCHED) {
+-			schedule();
+-		} else {
+-			if (ti_flags & _TIF_SIGPENDING)
+-				ret |= _TIF_RESTOREALL;
+-			do_notify_resume(regs, ti_flags);
++	if (unlikely(r3 >= (unsigned long)-MAX_ERRNO) && is_not_scv) {
++		if (likely(!(ti_flags & (_TIF_NOERROR | _TIF_RESTOREALL)))) {
++			r3 = -r3;
++			regs->ccr |= 0x10000000; /* Set SO bit in CR */
+ 		}
+-		local_irq_disable();
+-		ti_flags = READ_ONCE(current_thread_info()->flags);
+ 	}
+ 
+-	if (IS_ENABLED(CONFIG_PPC_BOOK3S_64) && IS_ENABLED(CONFIG_PPC_FPU)) {
+-		if (IS_ENABLED(CONFIG_PPC_TRANSACTIONAL_MEM) &&
+-				unlikely((ti_flags & _TIF_RESTORE_TM))) {
+-			restore_tm_state(regs);
+-		} else {
+-			unsigned long mathflags = MSR_FP;
+-
+-			if (cpu_has_feature(CPU_FTR_VSX))
+-				mathflags |= MSR_VEC | MSR_VSX;
+-			else if (cpu_has_feature(CPU_FTR_ALTIVEC))
+-				mathflags |= MSR_VEC;
+-
+-			/* See above restore_math comment */
+-			if ((regs->msr & mathflags) != mathflags)
+-				restore_math(regs);
+-		}
++	if (unlikely(ti_flags & _TIF_PERSYSCALL_MASK)) {
++		if (ti_flags & _TIF_RESTOREALL)
++			ret = _TIF_RESTOREALL;
++		else
++			regs->gpr[3] = r3;
++		clear_bits(_TIF_PERSYSCALL_MASK, &current_thread_info()->flags);
++	} else {
++		regs->gpr[3] = r3;
+ 	}
+ 
+-	user_enter_irqoff();
+-
+-	if (unlikely(!__prep_irq_for_enabled_exit(true))) {
+-		user_exit_irqoff();
+-		local_irq_enable();
+-		local_irq_disable();
+-		goto again;
++	if (unlikely(ti_flags & _TIF_SYSCALL_DOTRACE)) {
++		do_syscall_trace_leave(regs);
++		ret |= _TIF_RESTOREALL;
+ 	}
+ 
+-	booke_load_dbcr0();
+-
+-#ifdef CONFIG_PPC_TRANSACTIONAL_MEM
+-	local_paca->tm_scratch = regs->msr;
+-#endif
+-
+-	account_cpu_user_exit();
++	return __interrupt_exit_user_prepare(regs, ret, is_not_scv);
++}
+ 
+-	/* Restore user access locks last */
+-	kuap_user_restore(regs);
+-	kuep_unlock();
++notrace unsigned long interrupt_exit_user_prepare(struct pt_regs *regs, unsigned long msr)
++{
++	if (!IS_ENABLED(CONFIG_BOOKE) && !IS_ENABLED(CONFIG_40x))
++		BUG_ON(!(regs->msr & MSR_RI));
++	BUG_ON(!(regs->msr & MSR_PR));
++	BUG_ON(arch_irq_disabled_regs(regs));
+ 
+-	return ret;
++	return __interrupt_exit_user_prepare(regs, 0, true);
+ }
+ 
+ void preempt_schedule_irq(void);
 -- 
-Thanks,
-
-David / dhildenb
+2.25.0
 
