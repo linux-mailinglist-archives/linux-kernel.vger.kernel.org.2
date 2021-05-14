@@ -2,73 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96199381389
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 00:10:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2B1A38139F
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 00:12:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233732AbhENWL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 18:11:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42310 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229459AbhENWLW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 18:11:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id D551A61461;
-        Fri, 14 May 2021 22:10:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621030210;
-        bh=0644Hxl3cYYHB0tCAJJLMMRQ/pCawIJWC/df87nRxNI=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=JSlwIinz1pXfaCkNRsAXc/y7savHkzu+cXu5JjkqECbHgnNG+MwgNyygEniF8YQEl
-         6MjondPkOCnnuk34XqubkRloe3fBTfG6+XSIRVYz3Wz+MRuc9sOAAbwtZQ75RucWYK
-         HUmrt6xhfvyqz2O+081mAU9hN2kKkWpjVK4+c9zySsIHg5geoUn/e7Uxlqi7vWhnPM
-         4r1r+gynkOii7w1EbBcGMSzfyLn//bmGnYphtpTPhR6AcIMvMAonYAA8vOvKeBHuXx
-         g8LpB+iqDh7vRNfTpH7L2L49EXT6YLuOWiYovyAEY+E8P87XvtmJJ0TJWzblZXYCPc
-         1aYL6TZD2rH1Q==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D00EC60A02;
-        Fri, 14 May 2021 22:10:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231783AbhENWNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 18:13:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230024AbhENWNr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 18:13:47 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAAFEC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 15:12:35 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id d24so297437ios.2
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 15:12:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=telus.net; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dZMndnk0T1uTjKIdZ8gA20TvCc8i9uHipdNCN8I7bSE=;
+        b=VUmg4Ex+eKEwF5VKUcH/ujoG6JcjCuJ0zGB5+OIXqcHbLmCt0eCgACXtirFrtF8W41
+         qbKpF/7sXH0hzK6mjMTeISJ6NNh57jahyLXdAUpM8MLM2I4W44QYA5kWXJcC39l4tL3X
+         v1Bk3CLdvdFCcjWgVVN+hvnmSj2qBfdAz/hxZF01gXF5JMrVKx10WuWWACY05i6YiGT9
+         vFA61sAQeWOOSn+18nhmNiKQF2eLf0F2x7WvrdSpvuls4rT0CymJdC8+ST/+aRCv7Uwx
+         xVr5kafehUxaVZpIT09Mf61JV5VuPG4hDNKQO2+QuW+Tqrx7lU8wga6s/jGB4GdekPde
+         10Gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dZMndnk0T1uTjKIdZ8gA20TvCc8i9uHipdNCN8I7bSE=;
+        b=bhJKFHUW26YIsvpJP4s+Z1LrF3eWBM23mcSc6m4otKyF7sQQKcelzLWKXghZO+IjFr
+         mFaVc2cueQ3VC5JPZ0LuftbPQCV58VtIW1ld1fuqNKYvOttu5VUTlQBh6AajCbKRe/Y6
+         8XDwSLld5HoBaQP5Ll9gaXz1AoodNbp+xohidQdZ1J5MOmSyScjlenOxO2JBCR5hWgc5
+         bvihDfNfu5PKScG8iwJ13VDVFEkGLU6OQ2HmOF/24sVSR82X4GqBN1PxCNXWWaqvnJL9
+         P78M34khjslr8AVSgTUt4FO0sm8sj7dfEquYSuJMbSUm9XYylq2fdvRZKEQu5IL6keUF
+         0T9Q==
+X-Gm-Message-State: AOAM531Z9WzkOY2pFIfWZxRQN6AAdduSB6kVwtdnk6xyB1n8nBdxpGZb
+        1tzyVR/yjoTBM+2EqfIQ70uq2g3x96TLefd/wn9r3A==
+X-Google-Smtp-Source: ABdhPJxG4E9bc+8tnH9GPoUVS4PvC6gplyn4zWhN22jL6nWcJLIGUclw2CUF55y9tIEhlYc8yzN0dE55zeN0hmGvCqQ=
+X-Received: by 2002:a05:6602:204f:: with SMTP id z15mr15400564iod.99.1621030355132;
+ Fri, 14 May 2021 15:12:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: thunderx: Drop unnecessary NULL check after container_of
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162103021084.1424.4996581481002361141.git-patchwork-notify@kernel.org>
-Date:   Fri, 14 May 2021 22:10:10 +0000
-References: <20210513230418.919219-1-linux@roeck-us.net>
-In-Reply-To: <20210513230418.919219-1-linux@roeck-us.net>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     sgoutham@marvell.com, davem@davemloft.net, kuba@kernel.org,
-        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <fb6c8a4e284a9b6c043f4ac382387b19bd100976.camel@linux.intel.com>
+ <20210513132051.31465-1-ggherdovich@suse.cz> <CAAYoRsUcyFsFWDE=r+aMgDBa6hcgXgtE2jJ_NHas5e4TdgiBTg@mail.gmail.com>
+ <067ee60e47a0350d01f0c3f216c1032818044b36.camel@suse.cz>
+In-Reply-To: <067ee60e47a0350d01f0c3f216c1032818044b36.camel@suse.cz>
+From:   Doug Smythies <dsmythies@telus.net>
+Date:   Fri, 14 May 2021 15:12:25 -0700
+Message-ID: <CAAYoRsX0xJf1mm1a_YUCzDy86r8q4QE98iVtS1AMLaUx+KTgQQ@mail.gmail.com>
+Subject: Re: [PATCH v2] cpufreq: intel_pstate: Add Icelake servers support in
+ no-HWP mode
+To:     Giovanni Gherdovich <ggherdovich@suse.cz>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dsmythies <dsmythies@telus.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Fri, May 14, 2021 at 1:33 PM Giovanni Gherdovich <ggherdovich@suse.cz> wrote:
+> On Fri, 2021-05-14 at 08:31 -0700, Doug Smythies wrote:
+>
+> > Can I on-board to this patch or do you want me to submit another?
+> > I want to add COMETLAKE (tested), as below:
+> >
+> > ... Doug
+>
+> Hello Doug!
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+Hi Giovanni,
+Thank you for your reply.
+>
+> Wait, why you don't want to use HWP? It's such a fantastic technology!
+>
+> :) I'm just teasing you.
+>
+> More seriously:
+>
+> when COMETLAKE is not in that list, can you confirm that if you go into the
+> BIOS config at boot, and disable HWP from there, then intel_pstate does *not* load?
 
-On Thu, 13 May 2021 16:04:18 -0700 you wrote:
-> The result of container_of() operations is never NULL unless the embedded
-> element is the first element of the structure. This is not the case here.
-> The NULL check is therefore unnecessary and misleading. Remove it.
-> 
-> This change was made automatically with the following Coccinelle script.
-> 
-> @@
-> type t;
-> identifier v;
-> statement s;
-> @@
-> 
-> [...]
+Yes, already tested before my original reply.
 
-Here is the summary with links:
-  - net: thunderx: Drop unnecessary NULL check after container_of
-    https://git.kernel.org/netdev/net-next/c/fc25f9f631ac
+> Does it say "intel_pstate: CPU model not supported" in the dmesg log?
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+That I did not check, but if I boot now with an unmodified kernel
+5.13-rc1 (i.e. without this patch):
 
+[    0.369323] intel_pstate: CPU model not supported
 
+> The control may be somewhere around "power mangement" in the BIOS config, and
+> may be called "Enable/disable Intel Speed Shift".
+
+Yes.
+
+> I'm asking because I've just checked on two Dell laptops, one Skylake and the
+> other Kabylake, and the menu is there in the BIOS config to disable HWP,
+> but if I disable it... nothing happens. "lscpu" shows all the hwp flags as usual:
+
+Motherboard here is ASUS PRIME Z490-A.
+CPU: Intel(R) Core(TM) i5-10600K CPU @ 4.10GHz
+
+>     # lscpu | grep Flags | tr ' ' '\n' | grep hwp
+>     hwp
+>     hwp_notify
+>     hwp_act_window
+>     hwp_epp
+
+Here, for some reason I have to do it this way (sudo) or your command
+doesn't work properly. Results herein confirmed by looking at the
+"Flags" output manually without filtering:
+
+intel_speed_shift = Disabled in BIOS:
+
+doug@s19:~$ sudo lscpu | tr ' ' '\n' | grep hwp
+doug@s19:~$
+
+intel_speed_shift = Auto in BIOS
+
+$ sudo lscpu | tr ' ' '\n' | grep hwp
+hwp
+hwp_notify
+hwp_act_window
+hwp_epp
+
+> and turbostat gives me:
+>
+>     # turbostat -Summary -i 1 : 2>&1 | grep MSR_PM_ENABLE
+>     cpu0: MSR_PM_ENABLE: 0x00000001 (HWP)
+
+Here:
+
+intel_speed_shift = Disabled in BIOS:
+
+root@s19:/home/doug#
+/home/doug/temp-k-git/linux/tools/power/x86/turbostat/turbostat
+-Summary -i 1 : 2>&1 | grep MSR_PM_ENABLE
+root@s19:/home/doug#
+
+intel_speed_shift = Auto in BIOS (the default setting)
+
+root@s19:/home/doug#
+/home/doug/temp-k-git/linux/tools/power/x86/turbostat/turbostat
+-Summary -i 1 : 2>&1 | grep MSR_PM_ENABLE
+cpu0: MSR_PM_ENABLE: 0x00000001 (HWP)
+
+or with "intel_pstate=no_hwp"
+
+root@s19:/home/doug#
+/home/doug/temp-k-git/linux/tools/power/x86/turbostat/turbostat
+-Summary -i 1 : 2>&1 | grep MSR_PM_ENABLE
+cpu0: MSR_PM_ENABLE: 0x00000000 (No-HWP)
+
+> Which is to say, on the Intel client machines I have, the firmware doesn't
+> seem to be able to hide HWP from the OS. Buggy BIOS? Maybe, the fact of the
+> matter is, I wouldn't need to add, say, KABYLAKE to that list, based on my
+> experience.
+
+My experience (hardware) differs from yours with respect to this.
+
+> The other side of the issue is that, from my understanding, the
+> preferred/supported way to disable HWP is to boot with intel_pstate=no_hwp,
+> and that list is a sort of "known exceptions" that people really can't live
+> without (it's mostly server CPUs, and mostly because of unfortunate firmware
+> defaults). Otherwise you'd see the entire intel-family.h file in there.
+
+I'm not sure how to respond here. Yes, I'd expect to see a big list
+here, and in the recently added TCC Offset thermal stuff and in the
+recently added turbostat patches to deal with a TCC offset. I do not
+understand doing things partially only. But that is a bigger/broader
+subject than herein.
+
+That said, yes, "intel_pstate=no_hwp" is what I normally do. And my
+BIOS normally has "Intel Speed Shift = AUTO", which is the default.
+
+... deleted the rest ...
+
+... Doug
