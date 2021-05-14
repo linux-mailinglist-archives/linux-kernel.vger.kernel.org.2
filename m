@@ -2,114 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8FEE380267
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 05:18:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 836BD380269
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 05:19:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231362AbhENDTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 23:19:51 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:41147 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229984AbhENDTu (ORCPT
+        id S229724AbhENDU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 23:20:29 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:45981 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229984AbhENDU0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 23:19:50 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 8E09A58129C;
-        Thu, 13 May 2021 23:18:39 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Thu, 13 May 2021 23:18:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.luto.us;
-         h=subject:to:cc:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=b
-        e7rDCROltBLN4RZPe+I3AnBxPdRYbt9l4ad1PTcfz0=; b=H5jqFKBqMEpTu2kD7
-        lwS3SJfSH/EoqZFaEni6P7KDSaRT9nFAX46qMQe202aUAjOT5ZLPW52RNe5O93oO
-        YN5BKaG3MWabci6F05t0Rw/AR8Q/nRRruEgFeMih+KbpxdTO7zfxDtLOwicXaLf+
-        gsk7Ci1uAtajtEwM+CMJKoKGz3JhHHVJ9rfyb9orUAXN705IM4xu9rGKwQBEYHPH
-        ne+RLyRAk8aUM7MOq3+GYcnIbKBTHhvOFYyNQPcNdNmmqoGXuq1JLyyegzRzmZj1
-        Hgx8OYg5VomZ24pgwr2V0ghGS1R6iKL0zlrE7fqhPw9J+w5wGD6VglxRkL5aH5aY
-        x6s2w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=be7rDCROltBLN4RZPe+I3AnBxPdRYbt9l4ad1PTcf
-        z0=; b=UJ1J1ysSShDrJiYbpvSSEKvZdSPdQcbz7J0IPVZYaBCD7rOHlYRctp5Xa
-        n1kVPgButVLCgBn1eqBMiP7E8CGmQ3ZoDcAVq516Xim6My4bAvc80OD55bZj9NV6
-        MNtKxfs2Yb3mZjF8z63p2zKbMSAmZ+1wvswuHRqB/+v9mupwxr2IlLRWHkVOsEek
-        1b0bYSaJnSfiDk9ies7GWOuwTSSfdFan8jEkrwsihtTLdQshoq6owfOLdIaoWgcR
-        2VI6i+kDwVSeFWg3rKyRVYkxzo6FtpPazv68+C7lqxj/0dnShTafpuhG+zkRudp0
-        1ONUHE7roawKe+6qmvvdGdzCM53MA==
-X-ME-Sender: <xms:DuydYNapxp5uVqBV-J9XpA4xlRzwNWHQPk_jHza84FMqJvwbWItwWg>
-    <xme:DuydYEawaoRAdHjhjYSg8PpNJqB4lzt6yDwSuVHwUlzH-I21bpgSCj_tHCcWHIvcc
-    s3KuVRLZpxWDEVA4H8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdehhedgieejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepuffvfhfhkffffgggjggtgfesthejredttdefjeenucfhrhhomheptehnugih
-    ucfnuhhtohhmihhrshhkihcuoegrnhguhieslhhinhhugidrlhhuthhordhusheqnecugg
-    ftrfgrthhtvghrnhepuedvtdegueejueduhffgleekvddutedvheduudetgefhhfffuefg
-    udekgeejfeeknecukfhppeeijedrudektddrudeihedrudegieenucevlhhushhtvghruf
-    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhguhieslhhinhhugidrlhhu
-    thhordhush
-X-ME-Proxy: <xmx:DuydYP9JtGeNvGUKjdkvd5GjteSw-jr3h-YYc00bikQPUOuOr9msEA>
-    <xmx:DuydYLoHNsCMXRoIat7xAYyFdzI8dfQw8U867Sszp4lU2ZrUlNEFpw>
-    <xmx:DuydYIoqrgkdMA7vpn3qDOdkwiRW3kMxct5O4Y3jd6IXcFGRFExbCQ>
-    <xmx:D-ydYDUpWd2Uk2V2PkQleushU8zRdSXDbVcPzanTdeK3LCi-xUtmKKiTmBk>
-Received: from [192.168.0.55] (c-67-180-165-146.hsd1.ca.comcast.net [67.180.165.146])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Thu, 13 May 2021 23:18:38 -0400 (EDT)
-Subject: Re: [RFC v2 PATCH 7/7] x86/entry: use int for syscall number; handle
- all invalid syscall nrs
-To:     "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <871racf928.ffs@nanos.tec.linutronix.de>
- <60495dd3-ea68-4db3-47ad-b7b45796bf76@zytor.com>
- <87o8dfer7k.ffs@nanos.tec.linutronix.de>
- <b0ca952a-fd82-7833-ac82-ea8ecad48b53@zytor.com>
- <87mtsz619u.ffs@nanos.tec.linutronix.de>
- <b6f47bd3-3e4c-7200-befe-5e14fecf3da7@zytor.com>
-From:   Andy Lutomirski <andy@linux.luto.us>
-Message-ID: <57bf2ff9-11ff-0907-975e-15177df72144@linux.luto.us>
-Date:   Thu, 13 May 2021 20:18:37 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Thu, 13 May 2021 23:20:26 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 14E3J3Ia8012652, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 14E3J3Ia8012652
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 14 May 2021 11:19:03 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 14 May 2021 11:19:02 +0800
+Received: from localhost.localdomain (172.21.132.99) by
+ RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 14 May 2021 11:19:01 +0800
+From:   <hildawu@realtek.com>
+To:     <marcel@holtmann.org>
+CC:     <johan.hedberg@gmail.com>, <luiz.dentz@gmail.com>,
+        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <max.chou@realtek.com>, <alex_lu@realsil.com.cn>,
+        <kidman@realtek.com>
+Subject: [PATCH v2] Bluetooth: btusb: Add support USB ALT 3 for WBS
+Date:   Fri, 14 May 2021 11:19:01 +0800
+Message-ID: <20210514031901.2276-1-hildawu@realtek.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <b6f47bd3-3e4c-7200-befe-5e14fecf3da7@zytor.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [172.21.132.99]
+X-ClientProxiedBy: RTEXMBS02.realtek.com.tw (172.21.6.95) To
+ RTEXMBS04.realtek.com.tw (172.21.6.97)
+X-KSE-ServerInfo: RTEXMBS04.realtek.com.tw, 9
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzUvMTMgpFWkyCAwODoyODowMA==?=
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/14/2021 02:55:29
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 10
+X-KSE-AntiSpam-Info: Lua profiles 163650 [May 14 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: hildawu@realtek.com
+X-KSE-AntiSpam-Info: LuaCore: 445 445 d5f7ae5578b0f01c45f955a2a751ac25953290c9
+X-KSE-AntiSpam-Info: {Prob_from_in_msgid}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;realtek.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: {Track_Chinese_Simplified, headers_charset}
+X-KSE-AntiSpam-Info: Rate: 10
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 05/14/2021 02:58:00
+X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/14/2021 03:07:34
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 10
+X-KSE-AntiSpam-Info: Lua profiles 163650 [May 14 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: hildawu@realtek.com
+X-KSE-AntiSpam-Info: LuaCore: 445 445 d5f7ae5578b0f01c45f955a2a751ac25953290c9
+X-KSE-AntiSpam-Info: {Prob_from_in_msgid}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: realtek.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: Rate: 10
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 05/14/2021 03:09:00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/13/21 5:38 PM, H. Peter Anvin wrote:
-> On 5/12/21 3:22 PM, Thomas Gleixner wrote:
->>>
->>> As far as this being a user ABI change, this is actually a revert to the
->>> original x86-64 ABI; see my message to Ingo.
->>
->> I'm not against that change, but it has to be well justified and the
->> reasoning wants to be in the changelog. You know the drill :)
->>
-> 
-> FYI:
-> 
-> So in the process of breaking up and better document this patch, I have
-> looked at the syscall_numbering_64 (and have rewritten it to be more
-> complete.)
-> 
-> I found that running it under strace fails, as strace (possibly ptrace,
-> possibly the strace binary) causes %rax = 2^32 to be clobbered to zero
-> already...
-> 
-> More motivation, I guess.
-> 
+From: Hilda Wu <hildawu@realtek.com>
 
-Indeed.
+Because mSBC frames do not need to be aligned to the SCO packet
+boundary. Using USB ALT 3 let HCI payload >= 60 bytes, let mSBC
+data satisfy 60 Bytes avoid payload unaligned situation and fixed
+some headset no voise issue.
 
-I would love to go back in time and switch to long, but there are plenty
-of things that use int now.  I suppose we could try to make it long for
-real, but seccomp has u32 baked into its ABI.
+USB Alt 3 supported also need HFP support transparent MTU in 72 Bytes.
+
+Signed-off-by: Hilda Wu <hildawu@realtek.com>
+---
+Changes in v2:
+- Updated signed off name.
+- Adjusted coding style.
+---
+---
+ drivers/bluetooth/btusb.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 6f253378e893..1e98f985740b 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -1752,6 +1752,13 @@ static void btusb_work(struct work_struct *work)
+ 			 * which work with WBS at all.
+ 			 */
+ 			new_alts = btusb_find_altsetting(data, 6) ? 6 : 1;
++			/* Because mSBC frames do not need to be aligned to the
++			 * SCO packet boundary. If support the Alt 3, use the
++			 * Alt 3 for HCI payload >= 60 Bytes let air packet
++			 * data satisfy 60 bytes.
++			 */
++			if (new_alts == 1 && btusb_find_altsetting(data, 3))
++				new_alts = 3;
+ 		}
+ 
+ 		if (btusb_switch_alt_setting(hdev, new_alts) < 0)
+-- 
+2.17.1
 
