@@ -2,271 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D533380E11
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 18:19:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E23380E27
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 18:27:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233541AbhENQVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 12:21:04 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:61685 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233385AbhENQVC (ORCPT
+        id S233418AbhENQ2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 12:28:32 -0400
+Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:53102 "EHLO
+        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230009AbhENQ21 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 12:21:02 -0400
-Received: from fsav107.sakura.ne.jp (fsav107.sakura.ne.jp [27.133.134.234])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 14EGJn6k024946;
-        Sat, 15 May 2021 01:19:49 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav107.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav107.sakura.ne.jp);
- Sat, 15 May 2021 01:19:49 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav107.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 14EGJmMu024941
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Sat, 15 May 2021 01:19:48 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: [PATCH] video: fbdev: vga16fb: fix OOB write in vga16fb_imageblit()
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-To:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Daniel Vetter <daniel@ffwll.ch>
-References: <0000000000006bbd0c05c14f1b09@google.com>
- <6e21483c-06f6-404b-4018-e00ee85c456c@i-love.sakura.ne.jp>
- <87d928e4-b2b9-ad30-f3f0-1dfb8e4e03ed@i-love.sakura.ne.jp>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>,
-        b.zolnierkie@samsung.com, colin.king@canonical.com,
-        gregkh@linuxfoundation.org, jani.nikula@intel.com,
-        jirislaby@kernel.org, syzkaller-bugs@googlegroups.com,
-        "Antonino A. Daplas" <adaplas@gmail.com>
-Message-ID: <05acdda8-dc1c-5119-4326-96eed24bea0c@i-love.sakura.ne.jp>
-Date:   Sat, 15 May 2021 01:19:48 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-MIME-Version: 1.0
-In-Reply-To: <87d928e4-b2b9-ad30-f3f0-1dfb8e4e03ed@i-love.sakura.ne.jp>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Fri, 14 May 2021 12:28:27 -0400
+Received: from pps.filterd (m0134425.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14EGRBFO001307;
+        Fri, 14 May 2021 16:27:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
+ : date : message-id; s=pps0720;
+ bh=yXBNYAIpIYASkOA9YTRnQGvVXe64ZG47sgYOhjZOxOQ=;
+ b=ACe3mqiY3onhofVQLrqYl5iACGURkgumBJZz29OBt0CovIGu5bCpxg4D/Ti0aV4LCzkN
+ KFr3DBM6uFPcd4cyACgcn5T52FtmN/vQe34ZqRyHsELasTzYLFTErs1KAWynmR8Q1iV9
+ dmbhGfSoEWx7TTGUDvDwAotWLIig8PVFCYslwqCSRnWdnEXjfwefKTBJmyBLFoieq6yu
+ BwgaWvPi9n+sCp6XK0VRwpS76kXc4ZUTNGENUZOG2KTm5zuhCYQascPveRmCWFwIbFAb
+ 02XLFPhUcDBAG5qYAOl2Bhpl8AHF8FLyKCx2cANi+lx7aQYFx65/N0YDH1Tb246dqSHM QA== 
+Received: from g4t3426.houston.hpe.com (g4t3426.houston.hpe.com [15.241.140.75])
+        by mx0b-002e3701.pphosted.com with ESMTP id 38hnmh3eau-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 May 2021 16:27:10 +0000
+Received: from g4t3433.houston.hpecorp.net (g4t3433.houston.hpecorp.net [16.208.49.245])
+        by g4t3426.houston.hpe.com (Postfix) with ESMTP id 6A89359;
+        Fri, 14 May 2021 16:27:09 +0000 (UTC)
+Received: from jahtest01.ftc.rdlabs.hpecorp.net (jahtest01.ftc.rdlabs.hpecorp.net [16.78.32.72])
+        by g4t3433.houston.hpecorp.net (Postfix) with ESMTP id 8572A47;
+        Fri, 14 May 2021 16:27:08 +0000 (UTC)
+From:   Randy Wright <rwright@hpe.com>
+To:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     gustavoars@kernel.org, geert+renesas@glider.be, u74147@gmail.com,
+        tobiasdiedrich@gmail.com, jirislaby@kernel.org,
+        gregkh@linuxfoundation.org, jerry.hoemann@hpe.com,
+        toshi.kani@hpe.com, rwright@hpe.com
+Subject: [PATCH] Add support for new HPE serial device
+Date:   Fri, 14 May 2021 10:26:54 -0600
+Message-Id: <1621009614-28836-1-git-send-email-rwright@hpe.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Proofpoint-GUID: 0GTiLpo3WSnmfoVomxMaoBf2-7nT8bl3
+X-Proofpoint-ORIG-GUID: 0GTiLpo3WSnmfoVomxMaoBf2-7nT8bl3
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-14_07:2021-05-12,2021-05-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 mlxscore=0 mlxlogscore=999 adultscore=0 bulkscore=0
+ malwarescore=0 impostorscore=0 clxscore=1011 spamscore=0 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105140130
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot is reporting that a local user with the framebuffer console can
-crash the kernel [1], for ioctl(VT_RESIZE) allows a TTY to set arbitrary
-rows/columns values regardless of amount of memory reserved for
-the graphical screen.
+Add support for new HPE serial device.  It is MSI enabled,
+but otherwise similar to legacy HP server serial devices.
 
-----------
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <sys/ioctl.h>
-#include <linux/kd.h>
-#include <linux/vt.h>
-
-int main(int argc, char *argv[])
-{
-        const int fd = open("/dev/char/4:1", O_RDWR);
-        struct vt_sizes vt = { 0x4100, 2 };
-
-        ioctl(fd, KDSETMODE, KD_GRAPHICS);
-        ioctl(fd, VT_RESIZE, &vt);
-        ioctl(fd, KDSETMODE, KD_TEXT);
-        return 0;
-}
-----------
-
-Currently it is impossible to control upper limit of rows/columns values
-based on amount of memory reserved for the graphical screen, for
-resize_screen() calls vc->vc_sw->con_resize() only if vc->vc_mode is not
-already KD_GRAPHICS. I don't know the reason, and this condition predates
-the git history. Even if it turns out to be safe to always call this
-callback, we will need to involve another callback via "struct fb_ops" for
-checking the upper limits from fbcon_resize(). As a result, we will need
-to modify
-
- drivers/tty/vt/vt.c
- drivers/video/fbdev/core/fbcon.c
- drivers/video/fbdev/vga16fb.c
- include/linux/fb.h
-
-files only for checking rows/columns values passed to ioctl(VT_RESIZE)
-request.
-
-Therefore, instead of introducing such a complicated callback chain, avoid
-this problem by simply checking whether the address to read or write is in
-[VGA_FB_PHYS, VGA_FB_PHYS + VGA_FB_PHYS_LEN) range.
-
-[1] https://syzkaller.appspot.com/bug?extid=1f29e126cf461c4de3b3
-
-Reported-by: syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Tested-by: syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>
+Signed-off-by: Randy Wright <rwright@hpe.com>
 ---
- drivers/video/fbdev/vga16fb.c | 54 +++++++++++++++++++++++------------
- 1 file changed, 36 insertions(+), 18 deletions(-)
+ drivers/tty/serial/8250/8250_pci.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/drivers/video/fbdev/vga16fb.c b/drivers/video/fbdev/vga16fb.c
-index e2757ff1c23d..13732a3b1d69 100644
---- a/drivers/video/fbdev/vga16fb.c
-+++ b/drivers/video/fbdev/vga16fb.c
-@@ -98,6 +98,18 @@ static const struct fb_fix_screeninfo vga16fb_fix = {
- 	.accel		= FB_ACCEL_NONE
+diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
+index 689d822..04fe424 100644
+--- a/drivers/tty/serial/8250/8250_pci.c
++++ b/drivers/tty/serial/8250/8250_pci.c
+@@ -56,6 +56,8 @@ struct serial_private {
+ 	int			line[];
  };
  
-+/*
-+ * Verify that the address to read or write is in [VGA_FB_PHYS, VGA_FB_PHYS + VGA_FB_PHYS_LEN)
-+ * range, for ioctl(VT_RESIZE) allows a TTY to set arbitrary rows/columns values which will crash
-+ * the kernel due to out of bounds access when trying to redraw the screen.
-+ */
-+static inline bool is_valid_iomem(const struct fb_info *info, const char __iomem *where)
-+{
-+	return info->screen_base <= where && where < info->screen_base + VGA_FB_PHYS_LEN;
-+}
++#define PCI_DEVICE_ID_HPE_PCI_SERIAL	0x37e
 +
-+#define IS_SAFE(where) is_valid_iomem(info, (where))
-+
- /* The VGA's weird architecture often requires that we read a byte and
-    write a byte to the same location.  It doesn't matter *what* byte
-    we write, however.  This is because all the action goes on behind
-@@ -851,7 +863,7 @@ static void vga_8planes_fillrect(struct fb_info *info, const struct fb_fillrect
-                         int x;
+ static const struct pci_device_id pci_use_msi[] = {
+ 	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_NETMOS, PCI_DEVICE_ID_NETMOS_9900,
+ 			 0xA000, 0x1000) },
+@@ -63,6 +65,8 @@ struct serial_private {
+ 			 0xA000, 0x1000) },
+ 	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_NETMOS, PCI_DEVICE_ID_NETMOS_9922,
+ 			 0xA000, 0x1000) },
++	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_HP_3PAR, PCI_DEVICE_ID_HPE_PCI_SERIAL,
++			 PCI_ANY_ID, PCI_ANY_ID) },
+ 	{ }
+ };
  
-                         /* we can do memset... */
--                        for (x = width; x > 0; --x) {
-+			for (x = width; x > 0 && IS_SAFE(where); --x) {
-                                 writeb(rect->color, where);
-                                 where++;
-                         }
-@@ -864,7 +876,7 @@ static void vga_8planes_fillrect(struct fb_info *info, const struct fb_fillrect
-                 oldop = setop(0x18);
-                 oldsr = setsr(0xf);
-                 setmask(0x0F);
--                for (y = 0; y < rect->height; y++) {
-+		for (y = 0; y < rect->height && IS_SAFE(where) && IS_SAFE(where + 1); y++) {
-                         rmw(where);
-                         rmw(where+1);
-                         where += info->fix.line_length;
-@@ -919,7 +931,7 @@ static void vga16fb_fillrect(struct fb_info *info, const struct fb_fillrect *rec
- 				setmask(0xff);
+@@ -1998,6 +2002,16 @@ static void pci_wch_ch38x_exit(struct pci_dev *dev)
+ 		.setup		= pci_hp_diva_setup,
+ 	},
+ 	/*
++	 * HPE PCI serial device
++	 */
++	{
++		.vendor         = PCI_VENDOR_ID_HP_3PAR,
++		.device         = PCI_DEVICE_ID_HPE_PCI_SERIAL,
++		.subvendor      = PCI_ANY_ID,
++		.subdevice      = PCI_ANY_ID,
++		.setup		= pci_hp_diva_setup,
++	},
++	/*
+ 	 * Intel
+ 	 */
+ 	{
+@@ -4973,6 +4987,10 @@ static SIMPLE_DEV_PM_OPS(pciserial_pm_ops, pciserial_suspend_one,
+ 	{	PCI_VENDOR_ID_HP, PCI_DEVICE_ID_HP_DIVA_AUX,
+ 		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
+ 		pbn_b2_1_115200 },
++	/* HPE PCI serial device */
++	{	PCI_VENDOR_ID_HP_3PAR, PCI_DEVICE_ID_HPE_PCI_SERIAL,
++		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
++		pbn_b1_1_115200 },
  
- 				while (height--) {
--					for (x = 0; x < width; x++) {
-+					for (x = 0; x < width && IS_SAFE(dst); x++) {
- 						writeb(0, dst);
- 						dst++;
- 					}
-@@ -935,7 +947,7 @@ static void vga16fb_fillrect(struct fb_info *info, const struct fb_fillrect *rec
- 
- 				setmask(0xff);
- 				while (height--) {
--					for (x = 0; x < width; x++) {
-+					for (x = 0; x < width && IS_SAFE(dst); x++) {
- 						rmw(dst);
- 						dst++;
- 					}
-@@ -975,7 +987,7 @@ static void vga_8planes_copyarea(struct fb_info *info, const struct fb_copyarea
-                 dest = info->screen_base + dx + area->dy * info->fix.line_length;
-                 src = info->screen_base + sx + area->sy * info->fix.line_length;
-                 while (height--) {
--                        for (x = 0; x < width; x++) {
-+			for (x = 0; x < width && IS_SAFE(src) && IS_SAFE(dest); x++) {
-                                 readb(src);
-                                 writeb(0, dest);
-                                 src++;
-@@ -991,7 +1003,7 @@ static void vga_8planes_copyarea(struct fb_info *info, const struct fb_copyarea
-                 src = info->screen_base + sx + width +
- 			(area->sy + height - 1) * info->fix.line_length;
-                 while (height--) {
--                        for (x = 0; x < width; x++) {
-+			for (x = 0; x < width && IS_SAFE(src - 1) && IS_SAFE(dest - 1); x++) {
-                                 --src;
-                                 --dest;
-                                 readb(src);
-@@ -1065,7 +1077,7 @@ static void vga16fb_copyarea(struct fb_info *info, const struct fb_copyarea *are
- 				dst = info->screen_base + (dx/8) + dy * info->fix.line_length;
- 				src = info->screen_base + (sx/8) + sy * info->fix.line_length;
- 				while (height--) {
--					for (x = 0; x < width; x++) {
-+					for (x = 0; x < width && IS_SAFE(src) && IS_SAFE(dst); x++) {
- 						readb(src);
- 						writeb(0, dst);
- 						dst++;
-@@ -1080,7 +1092,7 @@ static void vga16fb_copyarea(struct fb_info *info, const struct fb_copyarea *are
- 				src = info->screen_base + (sx/8) + width + 
- 					(sy + height  - 1) * info->fix.line_length;
- 				while (height--) {
--					for (x = 0; x < width; x++) {
-+					for (x = 0; x < width && IS_SAFE(src - 1) && IS_SAFE(dst - 1); x++) {
- 						dst--;
- 						src--;
- 						readb(src);
-@@ -1130,13 +1142,15 @@ static void vga_8planes_imageblit(struct fb_info *info, const struct fb_image *i
-         where = info->screen_base + dx + image->dy * info->fix.line_length;
- 
-         setmask(0xff);
--        writeb(image->bg_color, where);
--        readb(where);
-+	if (IS_SAFE(where)) {
-+		writeb(image->bg_color, where);
-+		readb(where);
-+	}
-         selectmask();
-         setmask(image->fg_color ^ image->bg_color);
-         setmode(0x42);
-         setop(0x18);
--        for (y = 0; y < image->height; y++, where += info->fix.line_length)
-+	for (y = 0; y < image->height && IS_SAFE(where); y++, where += info->fix.line_length)
-                 writew(transl_h[cdat[y]&0xF] | transl_l[cdat[y] >> 4], where);
-         setmask(oldmask);
-         setsr(oldsr);
-@@ -1165,14 +1179,16 @@ static void vga_imageblit_expand(struct fb_info *info, const struct fb_image *im
- 				selectmask();
- 				
- 				setmask(0xff);
--				writeb(image->bg_color, where);
--				rmb();
--				readb(where); /* fill latches */
-+				if (IS_SAFE(where)) {
-+					writeb(image->bg_color, where);
-+					rmb();
-+					readb(where); /* fill latches */
-+				}
- 				setmode(3);
- 				wmb();
- 				for (y = 0; y < image->height; y++) {
- 					dst = where;
--					for (x = image->width/8; x--;) 
-+					for (x = image->width/8; x-- && IS_SAFE(dst);)
- 						writeb(*cdat++, dst++);
- 					where += info->fix.line_length;
- 				}
-@@ -1187,7 +1203,7 @@ static void vga_imageblit_expand(struct fb_info *info, const struct fb_image *im
- 				setmask(0xff);
- 				for (y = 0; y < image->height; y++) {
- 					dst = where;
--					for (x=image->width/8; x--;){
-+					for (x = image->width/8 && IS_SAFE(dst); x--;) {
- 						rmw(dst);
- 						setcolor(image->fg_color);
- 						selectmask();
-@@ -1237,8 +1253,10 @@ static void vga_imageblit_color(struct fb_info *info, const struct fb_image *ima
- 					setcolor(*cdat);
- 					selectmask();
- 					setmask(1 << (7 - (x % 8)));
--					fb_readb(dst);
--					fb_writeb(0, dst);
-+					if (IS_SAFE(dst)) {
-+						fb_readb(dst);
-+						fb_writeb(0, dst);
-+					}
- 
- 					cdat++;
- 				}
+ 	{	PCI_VENDOR_ID_DCI, PCI_DEVICE_ID_DCI_PCCOM2,
+ 		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
 -- 
-2.18.4
-
+1.8.3.1
 
