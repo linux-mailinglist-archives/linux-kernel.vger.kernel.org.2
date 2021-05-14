@@ -2,205 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94FC938052E
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 10:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5885C380532
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 10:28:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233555AbhENI2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 04:28:44 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:49464 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230362AbhENI2n (ORCPT
+        id S233587AbhENI3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 04:29:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48747 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230362AbhENI3H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 04:28:43 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 73A9E1F430CC
-Subject: Re: [PATCH v1 2/4] mtk-mdp: use pm_runtime in MDP component driver
-To:     Eizan Miyamoto <eizan@chromium.org>, linux-kernel@vger.kernel.org
-Cc:     chunkuang.hu@kernel.org, yong.wu@mediatek.com,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Houlong Wei <houlong.wei@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Minghsiu Tsai <minghsiu.tsai@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-References: <20210423055842.2490679-1-eizan@chromium.org>
- <20210423155824.v1.2.I909f5375d930f5d0cc877128e30e2a67078b674c@changeid>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <47dcbf45-be84-79ec-896b-a2aa1caba236@collabora.com>
-Date:   Fri, 14 May 2021 10:27:28 +0200
+        Fri, 14 May 2021 04:29:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620980876;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1mI4ocY2raC+FaNmp1QLwbvQ7SwKQVD3QJeG7UD1jEM=;
+        b=SoJsFqQTNvxWOrB82XHKxHgyrVNqEOdvmRLKtCDUgsH8urgdQY9+Yp58aCeZ3Ff3QPW7jg
+        BuRBlw3qKf5mk9rFupuMjlmiDlEoUkexGirBRHq1TBNb3O+BKxCzJHOJHLRAnfpFZV0gdH
+        I7ZxjfGVyTWMuvsSfFoo09+Bj78EKko=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-489-T1sFTEOvPWOrrLnECH3T0w-1; Fri, 14 May 2021 04:27:55 -0400
+X-MC-Unique: T1sFTEOvPWOrrLnECH3T0w-1
+Received: by mail-ed1-f72.google.com with SMTP id g17-20020aa7dd910000b029038843570b67so16004186edv.9
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 01:27:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=1mI4ocY2raC+FaNmp1QLwbvQ7SwKQVD3QJeG7UD1jEM=;
+        b=SYYxlJdotqQgBu4IR2PADSZmaoJTAVCr1ooO5HA6RGifBao58WRnlPEhRlCXsdFBSr
+         0V+gEMbbear+yUmvgDQMIoG9b9lqAEXEahWPeYUzlbVZXfcf77tHPw4qZsbiT3qh7ysH
+         wA/pxmgzEqEAW+fj6At4atxIQZx1UvNB4bgOH5rVKsWP/GGFgc4xDQkrc7P645nz4hFj
+         37iEIPXIYhhlwoaPZql62Ng6K1P3P3ZdguHfjDmS66ZjRcOwjUtQiFB+/SzOoiFmXT7Y
+         LtKghvD+bKCXrv1yt9zZ7m5N3sFGx1VOdWy4BBR2HkP6vwhbHnQmpEHCkzFSKvM4AW+9
+         tVGQ==
+X-Gm-Message-State: AOAM530XkO+nOkPkxDPexcY+V18dA3rA9ErMA20PRDrBiB4XY8hLxufW
+        gt7DN4+X6Dcpku+aqhyoQnYHf2eL+omoRNF97ICjezMk7HzobtCog2IShtfRltntWHI8BWubwgC
+        C+lOGbv6Iz2NwT7ZV0AfcsvZm
+X-Received: by 2002:a17:907:2136:: with SMTP id qo22mr5726974ejb.246.1620980874022;
+        Fri, 14 May 2021 01:27:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzYM3IfGE3NxrG0ZrIWpmGkbHrM02LfrvrKJb1wjjik/A6PZcbISFg2IAai8LzSK6j7yfSBCQ==
+X-Received: by 2002:a17:907:2136:: with SMTP id qo22mr5726935ejb.246.1620980873769;
+        Fri, 14 May 2021 01:27:53 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6501.dip0.t-ipconnect.de. [91.12.101.1])
+        by smtp.gmail.com with ESMTPSA id z26sm3292663ejl.38.2021.05.14.01.27.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 May 2021 01:27:53 -0700 (PDT)
+Subject: Re: [PATCH v19 1/8] mmap: make mlock_future_check() global
+To:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Hagen Paul Pfeifer <hagen@jauu.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        Yury Norov <yury.norov@gmail.com>, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+References: <20210513184734.29317-1-rppt@kernel.org>
+ <20210513184734.29317-2-rppt@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <8bb6ca25-5d30-70e6-c590-5930832ec9b2@redhat.com>
+Date:   Fri, 14 May 2021 10:27:51 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210423155824.v1.2.I909f5375d930f5d0cc877128e30e2a67078b674c@changeid>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210513184734.29317-2-rppt@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eizan,
-
-Thank you for your patch.
-
-On 23/4/21 7:58, Eizan Miyamoto wrote:
-> Without this change, the MDP components are not fully integrated into
-> the runtime power management subsystem, and the MDP driver does not
-> work.
+On 13.05.21 20:47, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
 > 
-> For each of the component device drivers to be able to call
-> pm_runtime_get/put_sync() a pointer to the component's device struct
-> had to be added to struct mtk_mdp_comp, set by mtk_mdp_comp_init().
+> It will be used by the upcoming secret memory implementation.
 > 
-> Note that the dev argument to mtk_mdp_comp_clock_on/off() has been
-> removed. Those functions used to be called from the "master" mdp driver
-> in mtk_mdp_core.c, but the component's device pointer no longer
-> corresponds to the mdp master device pointer, which is not the right
-> device to pass to pm_runtime_put/get_sync() which we had to add to get
-> the driver to work properly.
-> 
-> Signed-off-by: Eizan Miyamoto <eizan@chromium.org>
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> Cc: Andy Lutomirski <luto@kernel.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Christopher Lameter <cl@linux.com>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Elena Reshetova <elena.reshetova@intel.com>
+> Cc: Hagen Paul Pfeifer <hagen@jauu.net>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: James Bottomley <jejb@linux.ibm.com>
+> Cc: "Kirill A. Shutemov" <kirill@shutemov.name>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Michael Kerrisk <mtk.manpages@gmail.com>
+> Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> Cc: Palmer Dabbelt <palmerdabbelt@google.com>
+> Cc: Paul Walmsley <paul.walmsley@sifive.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Rick Edgecombe <rick.p.edgecombe@intel.com>
+> Cc: Roman Gushchin <guro@fb.com>
+> Cc: Shakeel Butt <shakeelb@google.com>
+> Cc: Shuah Khan <shuah@kernel.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Tycho Andersen <tycho@tycho.ws>
+> Cc: Will Deacon <will@kernel.org>
 > ---
+>   mm/internal.h | 3 +++
+>   mm/mmap.c     | 5 ++---
+>   2 files changed, 5 insertions(+), 3 deletions(-)
 > 
->  drivers/media/platform/mtk-mdp/mtk_mdp_comp.c | 19 ++++++++++++++++---
->  drivers/media/platform/mtk-mdp/mtk_mdp_comp.h |  6 ++++--
->  drivers/media/platform/mtk-mdp/mtk_mdp_core.c |  6 ++----
->  3 files changed, 22 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c b/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
-> index 3fbbcf05440a..84f9c529d74a 100644
-> --- a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
-> +++ b/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
-> @@ -13,6 +13,8 @@
->  #include <linux/of.h>
->  #include <linux/of_irq.h>
->  #include <linux/of_platform.h>
-> +#include <soc/mediatek/smi.h>
-> +#include <linux/pm_runtime.h>
->  
->  #include "mtk_mdp_comp.h"
->  #include "mtk_mdp_core.h"
-> @@ -51,22 +53,28 @@ static const struct of_device_id mtk_mdp_comp_driver_dt_match[] = {
->  };
->  MODULE_DEVICE_TABLE(of, mtk_mdp_comp_driver_dt_match);
->  
-> -void mtk_mdp_comp_clock_on(struct device *dev, struct mtk_mdp_comp *comp)
-> +void mtk_mdp_comp_clock_on(struct mtk_mdp_comp *comp)
->  {
->  	int i, err;
->  
-> +	err = pm_runtime_get_sync(comp->dev);
-> +	if (err < 0)
-> +		dev_err(comp->dev,
-> +			"failed to runtime get, err %d.\n",
-> +			err);
+> diff --git a/mm/internal.h b/mm/internal.h
+> index 54bd0dc2c23c..46eb82eaa195 100644
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -373,6 +373,9 @@ static inline void munlock_vma_pages_all(struct vm_area_struct *vma)
+>   extern void mlock_vma_page(struct page *page);
+>   extern unsigned int munlock_vma_page(struct page *page);
+>   
+> +extern int mlock_future_check(struct mm_struct *mm, unsigned long flags,
+> +			      unsigned long len);
 > +
-
-Personally, in the subsystem I take care I don't allow printing errors that are
-ignored. Shouldn't you propagate the error?
-
->  	for (i = 0; i < ARRAY_SIZE(comp->clk); i++) {
->  		if (IS_ERR(comp->clk[i]))
->  			continue;
->  		err = clk_prepare_enable(comp->clk[i]);
->  		if (err)
-> -			dev_err(dev,
-> +			dev_err(comp->dev,
->  				"failed to enable clock, err %d. i:%d\n",
->  				err, i);
->  	}
->  }
->  
-> -void mtk_mdp_comp_clock_off(struct device *dev, struct mtk_mdp_comp *comp)
-> +void mtk_mdp_comp_clock_off(struct mtk_mdp_comp *comp)
->  {
->  	int i;
->  
-> @@ -75,6 +83,8 @@ void mtk_mdp_comp_clock_off(struct device *dev, struct mtk_mdp_comp *comp)
->  			continue;
->  		clk_disable_unprepare(comp->clk[i]);
->  	}
-> +
-> +	pm_runtime_put_sync(comp->dev);
->  }
->  
->  static int mtk_mdp_comp_bind(struct device *dev, struct device *master,
-> @@ -84,6 +94,7 @@ static int mtk_mdp_comp_bind(struct device *dev, struct device *master,
->  	struct mtk_mdp_dev *mdp = data;
->  
->  	mtk_mdp_register_component(mdp, comp);
-> +	pm_runtime_enable(dev);
->  
->  	return 0;
->  }
-> @@ -94,6 +105,7 @@ static void mtk_mdp_comp_unbind(struct device *dev, struct device *master,
->  	struct mtk_mdp_dev *mdp = data;
->  	struct mtk_mdp_comp *comp = dev_get_drvdata(dev);
->  
-> +	pm_runtime_disable(dev);
->  	mtk_mdp_unregister_component(mdp, comp);
->  }
->  
-> @@ -111,6 +123,7 @@ int mtk_mdp_comp_init(struct mtk_mdp_comp *comp, struct device *dev)
->  		 (enum mtk_mdp_comp_type)of_device_get_match_data(dev);
->  
->  	INIT_LIST_HEAD(&comp->node);
-> +	comp->dev = dev;
->  
->  	for (i = 0; i < ARRAY_SIZE(comp->clk); i++) {
->  		comp->clk[i] = of_clk_get(node, i);
-> diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.h b/drivers/media/platform/mtk-mdp/mtk_mdp_comp.h
-> index 956d20c01e34..355e226d74fe 100644
-> --- a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.h
-> +++ b/drivers/media/platform/mtk-mdp/mtk_mdp_comp.h
-> @@ -11,16 +11,18 @@
->   * struct mtk_mdp_comp - the MDP's function component data
->   * @node:	list node to track sibing MDP components
->   * @clk:	clocks required for component
-> + * @dev:	component's device
->   */
->  struct mtk_mdp_comp {
->  	struct list_head	node;
->  	struct clk		*clk[2];
-> +	struct device		*dev;
->  };
->  
->  int mtk_mdp_comp_init(struct mtk_mdp_comp *comp, struct device *dev);
->  
-> -void mtk_mdp_comp_clock_on(struct device *dev, struct mtk_mdp_comp *comp);
-> -void mtk_mdp_comp_clock_off(struct device *dev, struct mtk_mdp_comp *comp);
-> +void mtk_mdp_comp_clock_on(struct mtk_mdp_comp *comp);
-> +void mtk_mdp_comp_clock_off(struct mtk_mdp_comp *comp);
->  
->  extern struct platform_driver mtk_mdp_component_driver;
->  
-> diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_core.c b/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
-> index d79bf7f0031a..c55bcfe4cbb7 100644
-> --- a/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
-> +++ b/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
-> @@ -51,20 +51,18 @@ MODULE_DEVICE_TABLE(of, mtk_mdp_of_ids);
->  
->  static void mtk_mdp_clock_on(struct mtk_mdp_dev *mdp)
->  {
-> -	struct device *dev = &mdp->pdev->dev;
->  	struct mtk_mdp_comp *comp_node;
->  
->  	list_for_each_entry(comp_node, &mdp->comp_list, node)
-> -		mtk_mdp_comp_clock_on(dev, comp_node);
-> +		mtk_mdp_comp_clock_on(comp_node);
->  }
->  
->  static void mtk_mdp_clock_off(struct mtk_mdp_dev *mdp)
->  {
-> -	struct device *dev = &mdp->pdev->dev;
->  	struct mtk_mdp_comp *comp_node;
->  
->  	list_for_each_entry(comp_node, &mdp->comp_list, node)
-> -		mtk_mdp_comp_clock_off(dev, comp_node);
-> +		mtk_mdp_comp_clock_off(comp_node);
->  }
->  
->  static void mtk_mdp_wdt_worker(struct work_struct *work)
+>   /*
+>    * Clear the page's PageMlocked().  This can be useful in a situation where
+>    * we want to unconditionally remove a page from the pagecache -- e.g.,
+> diff --git a/mm/mmap.c b/mm/mmap.c
+> index 0584e540246e..81f5595a8490 100644
+> --- a/mm/mmap.c
+> +++ b/mm/mmap.c
+> @@ -1352,9 +1352,8 @@ static inline unsigned long round_hint_to_min(unsigned long hint)
+>   	return hint;
+>   }
+>   
+> -static inline int mlock_future_check(struct mm_struct *mm,
+> -				     unsigned long flags,
+> -				     unsigned long len)
+> +int mlock_future_check(struct mm_struct *mm, unsigned long flags,
+> +		       unsigned long len)
+>   {
+>   	unsigned long locked, lock_limit;
+>   
 > 
+
+Reviewed-by: David Hildenbrand <david@redhat.com>
+
+-- 
+Thanks,
+
+David / dhildenb
+
