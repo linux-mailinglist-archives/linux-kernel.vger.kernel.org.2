@@ -2,55 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B31F38089E
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 13:36:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DF733808A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 13:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232571AbhENLhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 07:37:54 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:37334 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231897AbhENLhx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 07:37:53 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.89 #2 (Debian))
-        id 1lhW7O-00033U-1s; Fri, 14 May 2021 19:36:34 +0800
-Received: from herbert by gondobar with local (Exim 4.89)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1lhW7N-0002ZW-KO; Fri, 14 May 2021 19:36:33 +0800
-Date:   Fri, 14 May 2021 19:36:33 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
+        id S232649AbhENLiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 07:38:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232582AbhENLiH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 07:38:07 -0400
+Received: from mail.manjaro.org (mail.manjaro.org [IPv6:2a01:4f8:150:448b::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7672AC061574;
+        Fri, 14 May 2021 04:36:56 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.manjaro.org (Postfix) with ESMTP id E778422259F;
+        Fri, 14 May 2021 13:36:54 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at manjaro.org
+Received: from mail.manjaro.org ([127.0.0.1])
+        by localhost (manjaro.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id huFPOxgVzXK9; Fri, 14 May 2021 13:36:52 +0200 (CEST)
+From:   Tobias Schramm <t.schramm@manjaro.org>
+To:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        Heiko Stuebner <heiko@sntech.de>
 Cc:     "David S . Miller" <davem@davemloft.net>,
-        Andreas Westin <andreas.westin@stericsson.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-crypto <linux-crypto@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] crypto: ux500 - Fix error return code in
- hash_hw_final()
-Message-ID: <20210514113633.faxp737uxm2w5x7f@gondor.apana.org.au>
-References: <20210508070049.2674-1-thunder.leizhen@huawei.com>
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        David Wu <david.wu@rock-chips.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Tobias Schramm <t.schramm@manjaro.org>
+Subject: [PATCH 0/3] Add support for RK3308 gmac
+Date:   Fri, 14 May 2021 13:38:10 +0200
+Message-Id: <20210514113813.2093534-1-t.schramm@manjaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210508070049.2674-1-thunder.leizhen@huawei.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 08, 2021 at 03:00:49PM +0800, Zhen Lei wrote:
-> Fix to return a negative error code from the error handling
-> case instead of 0, as done elsewhere in this function.
-> 
-> Fixes: 8a63b1994c50 ("crypto: ux500 - Add driver for HASH hardware")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  drivers/crypto/ux500/hash/hash_core.c | 1 +
->  1 file changed, 1 insertion(+)
+The Rockchip RK3308 SoC features an internal gmac. Only the signals
+required for RMII are exposed so it is limited to 10/100 Mbit/s operation.
+This patchset adds support for it.
+I've tested the patchset on a Rock Pi S, works fine.
 
-Patch applied.  Thanks.
+Cheers,
+Tobias
+
+Tobias Schramm (3):
+  dt-bindings: net: rockchip-dwmac: add rk3308 gmac compatible
+  net: stmmac: dwmac-rk: add support for rk3308 gmac
+  arm64: dts: rockchip: add gmac to rk3308 dts
+
+ .../bindings/net/rockchip-dwmac.yaml          |  2 +
+ arch/arm64/boot/dts/rockchip/rk3308.dtsi      | 22 +++++++++
+ .../net/ethernet/stmicro/stmmac/dwmac-rk.c    | 49 +++++++++++++++++++
+ 3 files changed, 73 insertions(+)
+
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.31.1
+
