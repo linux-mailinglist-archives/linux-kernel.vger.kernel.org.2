@@ -2,113 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E1A1380BDE
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 16:33:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11800380BE1
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 16:33:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234442AbhENOeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 10:34:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53390 "EHLO
+        id S234472AbhENOeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 10:34:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230141AbhENOeO (ORCPT
+        with ESMTP id S234431AbhENOeQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 10:34:14 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13DEAC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 07:33:03 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id n2so30308795wrm.0
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 07:33:03 -0700 (PDT)
+        Fri, 14 May 2021 10:34:16 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BEF5C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 07:33:04 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id a4so30257996wrr.2
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 07:33:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=w/VpTW4d5I0K39oGLweJUltX/Tb/UyuPS5ZReMp5vnM=;
-        b=HIM48Rl3L4OrJgDurTmmQ2fPlCmtUz+P0PYpv5ZODTD2JLodczQq98PDcqfnygYikW
-         p1PRH4TaDnP7tQWSc+0RX2QSw0rPmRABR9OBL6GARLzPzRCU91k1pYkmCbEX5iRKxnBW
-         eIFse9OKYQeqoct5TxC/LK4I11fjcd9RMu12R74C1LE43T50Ec/Ma1TpMap36Vb6AMfy
-         5O20Z95JEcTpyyt8af5EHY3wHiGGLTc4/2u8Wqg1aE4e3WihQdkSuhq/LT7zUNlflqPT
-         EkkxSghc9odhOZB4QN6Qwqn6RzwEWcDWR9ytlqddihClrltKfs9dVhSqnPDkFOlMKnCO
-         SwHQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=dAsKBCUtWvT2TBc5FQFA2vVLxfmKKkbA3qujbzupPfM=;
+        b=fRRNd//FGa7QVc0likppjcQv7KM9iO7gKQUNmRCd1gAxsArkyy9+bYMptXd+ck79pD
+         OSIA8Ve5qcCL29brdwIVHuNhfZQZJsew//87TJCzgze9e3UqghsGUxHQO/mimWtYUpZr
+         5kM7M1FFL3mHUrs8z3v7L+l4myMyn132fE0T+QNBbGMa1FpAF+2Uv1fLEfQ4J5qN7SFP
+         aCTebmRBsYCWoOnUbnLrFV5IyDYEYeztqu9vgkRjW2o3FiJLtipgX3/fYQkPw8xkYOrc
+         NviPYk5Nru3FvuYiFRzks2iCMXaUGV8rUsIIkVt4JU85HGTKToblvbyIuyDROmNQsQYS
+         2omA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=w/VpTW4d5I0K39oGLweJUltX/Tb/UyuPS5ZReMp5vnM=;
-        b=ZanrGzSxm5Gwyy9PhUHbVUkOX/NyLSVl6MIEA1jnmm9DU2JGHZ0OxTiCI0GHdNZ49z
-         TLXIEBtxdGcL6N5oKu5So0krAaZezx5MQpiD/KhtDNlCNbEnp5V9ZvF5UVN65lhC2l49
-         gL3lejLLNA2C4aOaMbaT10H0765oidCmiupGLyfmHO8JN3Rr0lOOg5IQHA40eUd0IdeF
-         H/5TvRgxs9YUcRiTa7BhwARqiL+xuRi5NmR9qVH+vegn09JaxSluJPLjqQ0jsPFPmScX
-         amX8FBb+mHkmkzEae8BAliv75UkTqwlSLo0KEeGJOp7FYeS1aQSGzLaKKTMaUktXxW1H
-         RB4g==
-X-Gm-Message-State: AOAM533OmLJkJJ5XiLAb1gV7O14do/dpUNaHN83pCoUssASJ6yuTYLzO
-        dpGNQyejVzBBIyM9dZ0HkpJDEg==
-X-Google-Smtp-Source: ABdhPJxBp1hHz7JTDl+SuVo0/37Hv4oTe06YTktDzDjvDBQnHPCvNajnUl3nn6VsedqIrcsfSszD2w==
-X-Received: by 2002:adf:cd0e:: with SMTP id w14mr59255997wrm.46.1621002781730;
-        Fri, 14 May 2021 07:33:01 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=dAsKBCUtWvT2TBc5FQFA2vVLxfmKKkbA3qujbzupPfM=;
+        b=KcSQZn+6fgSxZyl1HT4Ctt6JKpmfI50bn2y+qXwPGBB/bmAqlwF9gOTKSBYoSq549D
+         3F5yaTQ+DWppInWmhYos/DiAFDgjLzjsL+XA4Ls8/8i/yEHWSL6QrqSi3yyAQ2wNNTuX
+         X6gDoid97o8MHICnHLrlU+AJ4O2QyPNjdHGgZ1gL20fSypYFgattCxd5LfQ5s9F+yEea
+         pNQH7/O/uTBVpxdIbz5GLf0FRuXXzMSgNTLKFIuFriHoY4L3ZkTDfqnslYrxIlE0gzQr
+         6jFkKv35OpKPNthW2PpshccoVEOE4C2tHqUp2RxNemvT3sAOQC4Kttw7zcL8Y7IVnb5A
+         P+kg==
+X-Gm-Message-State: AOAM531rtE2nVqbN8dZhVsiZMS0URmZBwdLp61BCAljJBGZsiC42xz5I
+        dcp+XvlJwYJev47EJflgLQQBhg==
+X-Google-Smtp-Source: ABdhPJx8h5teAgdXD//u9XMzxdRx2sWdw/oSiwMevGN6xDDCQ6y7X2IT9xVohMJgiOXA0XzSoLGSkA==
+X-Received: by 2002:a5d:58fc:: with SMTP id f28mr13300656wrd.339.1621002782937;
+        Fri, 14 May 2021 07:33:02 -0700 (PDT)
 Received: from localhost.localdomain ([37.173.48.34])
-        by smtp.gmail.com with ESMTPSA id v21sm11552036wml.5.2021.05.14.07.33.00
+        by smtp.gmail.com with ESMTPSA id v21sm11552036wml.5.2021.05.14.07.33.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 07:33:01 -0700 (PDT)
+        Fri, 14 May 2021 07:33:02 -0700 (PDT)
 From:   Neil Armstrong <narmstrong@baylibre.com>
 To:     khilman@baylibre.com, jbrunet@baylibre.com,
         martin.blumenstingl@googlemail.com
 Cc:     linux-amlogic@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Neil Armstrong <narmstrong@baylibre.com>
-Subject: [PATCH v3 0/3] arm64: meson-sm1: add support for Banana PI BPI-M5
-Date:   Fri, 14 May 2021 16:32:52 +0200
-Message-Id: <20210514143255.3352774-1-narmstrong@baylibre.com>
+Subject: [PATCH v3 1/3] arm64: dts: meson-sm1: add toacodec node
+Date:   Fri, 14 May 2021 16:32:53 +0200
+Message-Id: <20210514143255.3352774-2-narmstrong@baylibre.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210514143255.3352774-1-narmstrong@baylibre.com>
+References: <20210514143255.3352774-1-narmstrong@baylibre.com>
 MIME-Version: 1.0
+X-Patch-Hashes: v=1; h=sha256; i=PiBOxGF9B8KW9XPjSZyFe2Ca0fRRv2NCjlxlTSICTK0=; m=JPhUMX0KwAIy028CLaqNkk0VSurj2OC9d9a2+coI+IM=; p=vYSSa/Es1AGkZ2S88vUhAsnn0Rd+dA2FIygyN1JQJ8o=; g=6d32934740ad81bbded692d5df351bde49b9be52
+X-Patch-Sig: m=pgp; i=narmstrong@baylibre.com; s=0xA4CFF8AE; b=iQIzBAABCgAdFiEEPVPGJshWBf4d9CyLd9zb2sjISdEFAmCeigcACgkQd9zb2sjISdF+/g/+Lhb xiMDtRbHkd1MEA2ZyyZpdWfunqAzGrDS2UfXjRqC5eir7L8l2x6F07v0OPz2w46ekg7Ca7xB9fQ3S UVQllt/kIVmKoOtoSvzMMzkmgePKnN2alMsRQv7VKafsRAXTfBtRIUnL/D6lyCaFfHpO5ko30cAd5 Lrppjn4jgEMBInCS1DisKgVPDGRme186EGVmZrQpDTz76pILuqN9r0fqJU1nULS45YNPCLSuozfH4 UV3E3xeVMnQu8Uolg8r/JjcY3PDjjA/TpIUNORzX97pMtnDoYxsD+b6+i4IEiFY7i30EponsyU787 flVB93qG6EqB6cB5yFIyb/L6soTRd9N1UVLCBAOofA3PXRcfmFq+7EfNRoaeUfAh8aMkqo3QJK+tM 8JLm6HJy2dPnt/7MA1OxyvAPWIR09GcD6G+lqL4Auy37wwe9Ht2DxSfLFJSw+Sxl/pp0Bv+XsKB3C QojXhhgJNv4JxPTckDDaiNc3/655S/jgi7as8rW04BlRaHQ7EYqUUf9JyBra4l0kmzDQQOsGC/tp5 D48RoCyMQjsJfGAwUBkl3QyFA5F2XbXxg7TwNEfBwAS1QVVJPRmuc85qZV38DMATBsHMdxi55xzpA S0iEvNpy+cmxbAA3g2XbRK5VJQZL3shBNtXMwMdvZwSiS398v34c3WPenNWoXWcg=
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Banana Pi BPI-M5 is a credit card format SBC with the following features:
-- Amlogic S905X3 quad core Cortex-A55
-- Mali-G31 GPU
-- 4GB LPDDR4
-- 16GB eMMC flash
-- 4 USB 3.0
-- 1 GbE ethernet
-- HDMI output
-- 2x LEDS
-- SDCard
-- 2.5mm Jack with Stereo Audio + CVBS
-- Infrared Received
-- ADC Button
-- GPIO Button
-- 40 pins header + 3pins debug header
+Add toacodec node for Amlogic SM1 SoCs.
 
-This also adds the missing toacodec node to enable internal audio codec.
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+---
+ arch/arm64/boot/dts/amlogic/meson-sm1.dtsi | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-Changes since v2 at [2]:
-- small nit fix in DT comment
-
-Changes since v1 at [1]:
-- fixed bad compatible for sm1 toacodec node
-- removed tab in bindings (but kept martin's review tag)
-- renamed adc key node
-- renamed flash_1v8 regulator to match schematics
-- fixed vddcpu regulator voltages
-- fixed ethmac rgmii-txid and checked it still worked
-- added missing GPIO lines names (thanks martin !)
-
-[1] https://lore.kernel.org/r/20210429170404.3616111-1-narmstrong@baylibre.com
-[2] https://lore.kernel.org/r/20210505073248.3816183-1-narmstrong@baylibre.com
-
-Neil Armstrong (3):
-  arm64: dts: meson-sm1: add toacodec node
-  dt-bindings: arm: amlogic: add Banana PI M5 bindings
-  arm64: dts: meson-sm1: add Banana PI BPI-M5 board dts
-
- .../devicetree/bindings/arm/amlogic.yaml      |   1 +
- arch/arm64/boot/dts/amlogic/Makefile          |   1 +
- .../dts/amlogic/meson-sm1-bananapi-m5.dts     | 646 ++++++++++++++++++
- arch/arm64/boot/dts/amlogic/meson-sm1.dtsi    |  10 +
- 4 files changed, 658 insertions(+)
- create mode 100644 arch/arm64/boot/dts/amlogic/meson-sm1-bananapi-m5.dts
-
+diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi b/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi
+index c309517abae3..3d8b1f4f2001 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi
+@@ -401,6 +401,16 @@ tdmout_c: audio-controller@580 {
+ 			status = "disabled";
+ 		};
+ 
++		toacodec: audio-controller@740 {
++			compatible = "amlogic,sm1-toacodec",
++				     "amlogic,g12a-toacodec";
++			reg = <0x0 0x740 0x0 0x4>;
++			#sound-dai-cells = <1>;
++			sound-name-prefix = "TOACODEC";
++			resets = <&clkc_audio AUD_RESET_TOACODEC>;
++			status = "disabled";
++		};
++
+ 		tohdmitx: audio-controller@744 {
+ 			compatible = "amlogic,sm1-tohdmitx",
+ 				     "amlogic,g12a-tohdmitx";
 -- 
 2.25.1
 
