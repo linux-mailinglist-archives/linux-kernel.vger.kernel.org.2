@@ -2,187 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 267D638019B
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 03:56:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F2293801A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 03:58:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232243AbhENB5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 21:57:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232197AbhENB5T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 21:57:19 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35960C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 18:56:09 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id u76so606206pfc.11
-        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 18:56:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=N2iyxhvY8HuVpNdOOBZq1NpZlD91R7+QI6hopy2Mk2Q=;
-        b=19J/++URiFUjrk+oenyeI9BhvaveKztadya3XD5BC77hYM5hbpMflirOKNIy2sii/b
-         F/Vkb/wM8+iMN6wp+Cpqs9GegHfoZE9b8o26505w1GIRSRKXOcpinLlMqG566glFgVlQ
-         Zp1R8TDxqgl0XivBH79Ta7HmmziBn4LDKyA6ZlIEW7+wmHA6b3DKfj0/QTYETEzBPO14
-         mipcigIaXUwjRF6bR9qNJ2XSxvOocPdlhzqguslf/uL19yekWW45GgiX+/BvdZiiCN2c
-         5i/HVIX6rNcdwpuVjA4KGRiP/v59y4dsgJaHf+3LBqxSAMoR+Dr9u/h1qaI051dmqZQ4
-         gcxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=N2iyxhvY8HuVpNdOOBZq1NpZlD91R7+QI6hopy2Mk2Q=;
-        b=ClaK/H0CzH7qoMHxP9GBEoOgOxgDyLaxVV0uosET2mMsSUvNadzjdyhbaCz1FLYP/H
-         mx8CR5dRyuBKNwlzNXA7FWb245kcTXtxb5bcJRCbO8j8UpxOVhcrw1UALMvgfAV9Bvqf
-         ajs3jdaBDqk9r31GyCwfYtB3kptWo38g0AsDBGNySOdQAaPKkLlYLj2DEdBFQ6GGhjzi
-         U5+tmy6culHKitDAJrEo4wpEK7BdBPLV7aTtoAKrNbI3dXJnGIvbwbMBWFC3wCp6bV4q
-         jsz4+i4ouSmYMSJnwovGnwkSZw+i3PBueVWIwEoAC4n/yymcUeCWC3O3wKwQHQLzXPrP
-         PlFw==
-X-Gm-Message-State: AOAM530PiiTlhkkhtf3JJu+uax0d0XuwuK+n5QAWBvoPnL5ecqr494zz
-        AXtYJTvENiddgT71YnfA0WEeIg==
-X-Google-Smtp-Source: ABdhPJygIn6W7AEsgikd3SeUywjO8Xv+3iaYAxvfacJmtcfsOeDyomYAg06OosKWdL4GB8DevmhKzw==
-X-Received: by 2002:a63:b94b:: with SMTP id v11mr43699851pgo.76.1620957368493;
-        Thu, 13 May 2021 18:56:08 -0700 (PDT)
-Received: from localhost (ppp121-45-194-51.cbr-trn-nor-bras38.tpg.internode.on.net. [121.45.194.51])
-        by smtp.gmail.com with UTF8SMTPSA id w127sm2937460pfw.4.2021.05.13.18.56.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 May 2021 18:56:07 -0700 (PDT)
-Message-ID: <af1e3d74-a373-09ae-ba61-8db2a906d71a@ozlabs.ru>
-Date:   Fri, 14 May 2021 11:56:01 +1000
+        id S232161AbhENB7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 21:59:49 -0400
+Received: from mga18.intel.com ([134.134.136.126]:51130 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230096AbhENB7r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 May 2021 21:59:47 -0400
+IronPort-SDR: e2Yve/ImpJcT490UpnjJjOEJ9LhRAQRCgqDvq6ZSaECZzOsog/2xisLKVIJ124MPKwSob3DGf9
+ WnAlKY4NIGZg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9983"; a="187508836"
+X-IronPort-AV: E=Sophos;i="5.82,298,1613462400"; 
+   d="scan'208";a="187508836"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 18:58:36 -0700
+IronPort-SDR: +amoTEPJ69s2snxXyepxyCLQnvPHdTfZvsiiAzENGm61CmMEfiE/iA+ao/iY6V2jQSL9c9udYg
+ ntF1SY2zFM6A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,298,1613462400"; 
+   d="scan'208";a="538631277"
+Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
+  by fmsmga001.fm.intel.com with ESMTP; 13 May 2021 18:58:35 -0700
+Date:   Thu, 13 May 2021 18:57:48 -0700
+From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        "woodhouse, Jacob Pan" <jacob.jun.pan@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
+        iommu@lists.linux-foundation.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Ricardo Neri <ricardo.neri@intel.com>,
+        Andi Kleen <andi.kleen@intel.com>,
+        David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [RFC PATCH v5 5/7] iommu/vt-d: Fixup delivery mode of the HPET
+ hardlockup interrupt
+Message-ID: <20210514015748.GA8236@ranerica-svr.sc.intel.com>
+References: <20210504191049.22661-1-ricardo.neri-calderon@linux.intel.com>
+ <20210504191049.22661-6-ricardo.neri-calderon@linux.intel.com>
+ <87lf8uhzk9.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:88.0) Gecko/20100101
- Thunderbird/88.0
-Subject: Re: [PATCH kernel v3] powerpc/makefile: Do not redefine $(CPP) for
- preprocessor
-Content-Language: en-US
-To:     Nathan Chancellor <nathan@kernel.org>,
-        linuxppc-dev@lists.ozlabs.org
-Cc:     linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Segher Boessenkool <segher@kernel.crashing.org>
-References: <20210513115904.519912-1-aik@ozlabs.ru>
- <dedc7262-2956-37b2-ebfd-ae8eb9b56716@kernel.org>
-From:   Alexey Kardashevskiy <aik@ozlabs.ru>
-In-Reply-To: <dedc7262-2956-37b2-ebfd-ae8eb9b56716@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87lf8uhzk9.ffs@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, May 05, 2021 at 01:03:18AM +0200, Thomas Gleixner wrote:
+> On Tue, May 04 2021 at 12:10, Ricardo Neri wrote:
 
+Thank you very much for your feedback, Thomas. I am sorry it took me a
+while to reply to your email. I needed to digest and research your
+comments.
 
-On 14/05/2021 04:59, Nathan Chancellor wrote:
-> On 5/13/2021 4:59 AM, Alexey Kardashevskiy wrote:
->> The $(CPP) (do only preprocessing) macro is already defined in Makefile.
->> However POWERPC redefines it and adds $(KBUILD_CFLAGS) which results
->> in flags duplication. Which is not a big deal by itself except for
->> the flags which depend on other flags and the compiler checks them
->> as it parses the command line.
->>
->> Specifically, scripts/Makefile.build:304 generates ksyms for .S files.
->> If clang+llvm+sanitizer are enabled, this results in
->>
->> -emit-llvm-bc -fno-lto -flto -fvisibility=hidden \
->>   -fsanitize=cfi-mfcall -fno-lto  ...
->>
->> in the clang command line and triggers error:
->>
->> clang-13: error: invalid argument '-fsanitize=cfi-mfcall' only allowed 
->> with '-flto'
->>
->> This removes unnecessary CPP redefinition. Which works fine as in most
->> place KBUILD_CFLAGS is passed to $CPP except
->> arch/powerpc/kernel/vdso64/vdso(32|64).lds. To fix vdso, this does:
->> 1. add -m(big|little)-endian to $CPP
->> 2. add target to $KBUILD_CPPFLAGS as otherwise clang ignores 
->> -m(big|little)-endian if
->> the building platform does not support big endian (such as x86).
->>
->> Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
->> ---
->> Changes:
->> v3:
->> * moved vdso cleanup in a separate patch
->> * only add target to KBUILD_CPPFLAGS for CLANG
->>
->> v2:
->> * fix KBUILD_CPPFLAGS
->> * add CLANG_FLAGS to CPPFLAGS
->> ---
->>   Makefile              | 1 +
->>   arch/powerpc/Makefile | 3 ++-
->>   2 files changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/Makefile b/Makefile
->> index 15b6476d0f89..5b545bef7653 100644
->> --- a/Makefile
->> +++ b/Makefile
->> @@ -576,6 +576,7 @@ CC_VERSION_TEXT = $(subst $(pound),,$(shell $(CC) 
->> --version 2>/dev/null | head -
->>   ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
->>   ifneq ($(CROSS_COMPILE),)
->>   CLANG_FLAGS    += --target=$(notdir $(CROSS_COMPILE:%-=%))
->> +KBUILD_CPPFLAGS    += --target=$(notdir $(CROSS_COMPILE:%-=%))
+> > In x86 there is not an IRQF_NMI flag that can be used to indicate the
 > 
-> You can avoid the duplication here by just doing:
+> There exists no IRQF_NMI flag at all. No architecture provides that.
+
+Thank you for the clarification. I think I meant to say that there is a
+request_nmi() function but AFAIK it is only used in the ARM PMU and
+would not work on x86.
+
 > 
-> KBUILD_CPPFLAGS    += $(CLANG_FLAGS)
-
-This has potential of duplicating even more flags which is exactly what 
-I am trying to avoid here.
-
-
-> I am still not super happy about the flag duplication but I am not sure 
-> I can think of a better solution. If KBUILD_CPPFLAGS are always included 
-> when building .o files,
-
-
-My understanding is that KBUILD_CPPFLAGS should not be added for .o. Who 
-does know or decide for sure about what CPPFLAGS are for? :)
-
-
-> maybe we should just add $(CLANG_FLAGS) to 
-> KBUILD_CPPFLAGS instead of KBUILD_CFLAGS?
+> > delivery mode when requesting an interrupt (via request_irq()). Thus,
+> > there is no way for the interrupt remapping driver to know and set
+> > the delivery mode.
 > 
->>   endif
->>   ifeq ($(LLVM_IAS),1)
->>   CLANG_FLAGS    += -integrated-as
->> diff --git a/arch/powerpc/Makefile b/arch/powerpc/Makefile
->> index 3212d076ac6a..306bfd2797ad 100644
->> --- a/arch/powerpc/Makefile
->> +++ b/arch/powerpc/Makefile
->> @@ -76,6 +76,7 @@ endif
->>   ifdef CONFIG_CPU_LITTLE_ENDIAN
->>   KBUILD_CFLAGS    += -mlittle-endian
->> +KBUILD_CPPFLAGS    += -mlittle-endian
->>   KBUILD_LDFLAGS    += -EL
->>   LDEMULATION    := lppc
->>   GNUTARGET    := powerpcle
->> @@ -83,6 +84,7 @@ MULTIPLEWORD    := -mno-multiple
->>   KBUILD_CFLAGS_MODULE += $(call cc-option,-mno-save-toc-indirect)
->>   else
->>   KBUILD_CFLAGS += $(call cc-option,-mbig-endian)
->> +KBUILD_CPPFLAGS += $(call cc-option,-mbig-endian)
->>   KBUILD_LDFLAGS    += -EB
->>   LDEMULATION    := ppc
->>   GNUTARGET    := powerpc
->> @@ -208,7 +210,6 @@ KBUILD_CPPFLAGS    += -I $(srctree)/arch/$(ARCH) 
->> $(asinstr)
->>   KBUILD_AFLAGS    += $(AFLAGS-y)
->>   KBUILD_CFLAGS    += $(call cc-option,-msoft-float)
->>   KBUILD_CFLAGS    += -pipe $(CFLAGS-y)
->> -CPP        = $(CC) -E $(KBUILD_CFLAGS)
->>   CHECKFLAGS    += -m$(BITS) -D__powerpc__ -D__powerpc$(BITS)__
->>   ifdef CONFIG_CPU_BIG_ENDIAN
->>
-> 
+> There is no support for this today. So what?
 
--- 
-Alexey
+Using request_irq() plus a HPET quirk looked to me a reasonable
+way to use the irqdomain hierarchy to allocate an interrupt with NMI as
+the delivery mode.
+
+> 
+> > Hence, when allocating an interrupt, check if such interrupt belongs to
+> > the HPET hardlockup detector and fixup the delivery mode accordingly.
+> 
+> What?
+> 
+> > +		/*
+> > +		 * If we find the HPET hardlockup detector irq, fixup the
+> > +		 * delivery mode.
+> > +		 */
+> > +		if (is_hpet_irq_hardlockup_detector(info))
+> > +			irq_cfg->delivery_mode = APIC_DELIVERY_MODE_NMI;
+> 
+> Again. We are not sticking some random device checks into that
+> code. It's wrong and I explained it to you before.
+> 
+>   https://lore.kernel.org/lkml/alpine.DEB.2.21.1906161042080.1760@nanos.tec.linutronix.de/
+> 
+> But I'm happy to repeat it again:
+> 
+>   "No. This is horrible hackery violating all the layering which we carefully
+>    put into place to avoid exactly this kind of sprinkling conditionals into
+>    all code pathes.
+> 
+>    With some thought the existing irqdomain hierarchy can be used to achieve
+>    the same thing without tons of extra functions and conditionals."
+> 
+> So the outcome of thought and using the irqdomain hierarchy is:
+> 
+>    Replacing an hpet specific conditional in one place with an hpet
+>    specific conditional in a different place.
+> 
+> Impressive.
+
+I am sorry Thomas, I did try to make the quirk less hacky but I did not
+think of the solution you provide below.
+
+> 
+> hpet_assign_irq(...., bool nmi)
+>   init_info(info)
+>     ...
+>     if (nmi)
+>         info.flags |= X86_IRQ_ALLOC_AS_NMI;
+>   
+>    irq_domain_alloc_irqs(domain, 1, NUMA_NO_NODE, &info)
+>      intel_irq_remapping_alloc(..., info)
+>        irq_domain_alloc_irq_parents(..., info)
+>          x86_vector_alloc_irqs(..., info)
+>          {   
+>            if (info->flags & X86_IRQ_ALLOC_AS_NMI && nr_irqs != 1)
+>                   return -EINVAL;
+> 
+>            for (i = 0; i < nr_irqs; i++) {
+>              ....
+>              if (info->flags & X86_IRQ_ALLOC_AS_NMI) {
+>                  irq_cfg_setup_nmi(apicd);
+>                  continue;
+>              }
+>              ...
+>          }
+> 
+> irq_cfg_setup_nmi() sets irq_cfg->delivery_mode and whatever is required
+> and everything else just works. Of course this needs a few other minor
+> tweaks but none of those introduces random hpet quirks all over the
+> place. Not convoluted enough, right?
+
+Thanks for the detailed demonstration! It does seem cleaner than what I
+implemented.
+
+> 
+> But that solves none of other problems. Let me summarize again which
+> options or non-options we have:
+> 
+>     1) Selective IPIs from NMI context cannot work
+> 
+>        As explained in the other thread.
+> 
+>     2) Shorthand IPI allbutself from NMI
+>     
+>        This should work, but that obviously does not take the watchdog
+>        cpumask into account.
+> 
+>        Also this only works when IPI shorthand mode is enabled. See
+>        apic_smt_update() for details.
+> 
+>     3) Sending the IPIs from irq_work
+> 
+>        This would solve the problem, but if the CPU which is the NMI
+>        target is really stuck in an interrupt disabled region then the
+>        IPIs won't be sent.
+> 
+>        OTOH, if that's the case then the CPU which was processing the
+>        NMI will continue to be stuck until the next NMI hits which
+>        will detect that the CPU is stuck which is a good enough
+>        reason to send a shorthand IPI to all CPUs ignoring the
+>        watchdog cpumask.
+> 
+>        Same limitation vs. shorthand mode as #2
+> 
+>     4) Changing affinity of the HPET NMI from NMI
+> 
+>        As we established two years ago that cannot work with interrupt
+>        remapping
+> 
+>     5) Changing affinity of the HPET NMI from irq_work
+> 
+>        Same issues as #3
+> 
+> Anything else than #2 is just causing more problems than it solves, but
+> surely the NOHZ_FULL/isolation people might have opinions on this.
+> 
+> OTOH, as this is opt-in, anything which wants a watchdog mask which is
+> not the full online set, has to accept that HPET has these restrictions.
+> 
+> And that's exactly what I suggested two years ago:
+> 
+>  https://lore.kernel.org/lkml/alpine.DEB.2.21.1906172343120.1963@nanos.tec.linutronix.de/
+> 
+>   "It definitely would be worthwhile to experiment with that. if we
+>    could use shorthands (also for regular IPIs) that would be a great
+>    improvement in general and would nicely solve that NMI issue. Beware
+>    of the dragons though."
+> 
+> As a consequence of this conversation I implemented shorthand IPIs...
+> 
+> But I haven't seen any mentioning that this has been tried, why the
+> approach was not chosen or any discussion about that matter.
+
+Indeed, I focused on 5) and I overlooked your comment on using your
+new support for shortand IPIs.
+
+I'll go back and see to implement option #2, or perhaps the alternative
+solution you proposed on a separate thread.
+
+Thanks and BR,
+Ricardo
