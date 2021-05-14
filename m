@@ -2,58 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E59293803BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 08:46:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA49D3803C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 08:49:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232606AbhENGrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 02:47:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42136 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231741AbhENGrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 02:47:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EFC061447;
-        Fri, 14 May 2021 06:46:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620974766;
-        bh=LNWmhn0/F3I4Twb0AdNvtSFD/SzwC6jAdWvk+gwCZBQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uzzpqMGgIXuJr7hx6CQqXRdBPKKVsMTrvIIkpwFFbwVDTtYHqNCe/yPEPrVV8UEAL
-         3hNZMO4oMAtJ2oG/vj2XYjiACDAP4egVyT0+ig0Nx2RKPsY1vw1irU7hw1fQYufOyV
-         4Jy1cf/CC5HV8+waMQMi7t8pk6sO5xt1+SSx5aNM=
-Date:   Fri, 14 May 2021 08:46:02 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Connor Davis <connojdavis@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        xen-devel@lists.xenproject.org, Lee Jones <lee.jones@linaro.org>,
-        Jann Horn <jannh@google.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Sumit Garg <sumit.garg@linaro.org>
-Subject: Re: [PATCH v2 0/4] Support xen-driven USB3 debug capability
-Message-ID: <YJ4cqntf7YdZCOPk@kroah.com>
-References: <cover.1620950220.git.connojdavis@gmail.com>
+        id S232715AbhENGub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 02:50:31 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:2596 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231741AbhENGu1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 02:50:27 -0400
+Received: from dggems701-chm.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FhJw90lR6zkWMk;
+        Fri, 14 May 2021 14:46:33 +0800 (CST)
+Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
+ dggems701-chm.china.huawei.com (10.3.19.178) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Fri, 14 May 2021 14:49:14 +0800
+Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
+ (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 14
+ May 2021 14:49:14 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <myungjoo.ham@samsung.com>, <kyungmin.park@samsung.com>,
+        <cw00.choi@samsung.com>, <b.zolnierkie@samsung.com>,
+        <lukasz.luba@arm.com>
+CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] PM / devfreq: Add missing error code in devfreq_add_device()
+Date:   Fri, 14 May 2021 14:48:43 +0800
+Message-ID: <20210514064843.11908-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1620950220.git.connojdavis@gmail.com>
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggema769-chm.china.huawei.com (10.1.198.211)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 06:56:47PM -0600, Connor Davis wrote:
-> Hi all,
-> 
-> This goal of this series is to allow the USB3 debug capability (DbC) to be
-> safely used by xen while linux runs as dom0.
+Set err code in the error path before jumping to the end of the function.
 
-Patch 2/4 does not seem to be showing up anywhere, did it get lost?
+Fixes: 4dc3bab8687f ("PM / devfreq: Add support delayed timer for polling mode")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ drivers/devfreq/devfreq.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-thanks,
+diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
+index fe08c46642f7..28f3e0ba6cdd 100644
+--- a/drivers/devfreq/devfreq.c
++++ b/drivers/devfreq/devfreq.c
+@@ -823,6 +823,7 @@ struct devfreq *devfreq_add_device(struct device *dev,
+ 	if (devfreq->profile->timer < 0
+ 		|| devfreq->profile->timer >= DEVFREQ_TIMER_NUM) {
+ 		mutex_unlock(&devfreq->lock);
++		err = -EINVAL;
+ 		goto err_dev;
+ 	}
+ 
+-- 
+2.17.1
 
-greg k-h
