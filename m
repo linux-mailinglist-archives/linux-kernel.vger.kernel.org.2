@@ -2,51 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04F1D3803CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 08:51:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CAE33803CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 08:52:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232762AbhENGwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 02:52:50 -0400
-Received: from mail-ed1-f51.google.com ([209.85.208.51]:36696 "EHLO
-        mail-ed1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232658AbhENGws (ORCPT
+        id S232779AbhENGxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 02:53:12 -0400
+Received: from mail-ed1-f47.google.com ([209.85.208.47]:34777 "EHLO
+        mail-ed1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229445AbhENGxL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 02:52:48 -0400
-Received: by mail-ed1-f51.google.com with SMTP id df21so6307951edb.3;
-        Thu, 13 May 2021 23:51:37 -0700 (PDT)
+        Fri, 14 May 2021 02:53:11 -0400
+Received: by mail-ed1-f47.google.com with SMTP id l7so33599870edb.1;
+        Thu, 13 May 2021 23:51:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=1gymq95orR5zgtyh8ZSQwnKyiuFehw+cpEXmsD2CDf0=;
-        b=t0xDpaM3hgrBCsyaGCbYjw+h0FAHJrQxUNA88xXyxu+5rB2kyeg7sxVDIi4NiBithH
-         3ijxA4yIO4inE48xinlj93tSemvRw9159ek6kgaxZtKnydapr0B8LDvVUsXuZgk1TXtT
-         teMtQ77rA5gjYspm5/ustHxm0MiFYwMLgHFHqyxPzvf/7Cr4aUuot6j42a1dJXwikr6W
-         IEAjwgBDIP4nRyK4IpToRucI5LK0lsK4E0xafkEhPPNkumgovUKLToPaZL+EmymgHzMp
-         cI06IlMCmCyv9Tjwc0FJa3Pi4mvtJ2NHezwdkqMxhCDidPc2EpUzOBK3LHyRmubS4qyE
-         nHPg==
-X-Gm-Message-State: AOAM530YbfaGhYcJJ52VFphIgcc7P5f1GVGUubMlnW3M8gnHXcgCOrxP
-        TBp/mzhK2Rhv8Jpgoa+jh0Swaju9DnA=
-X-Google-Smtp-Source: ABdhPJyXdXGiv6DhZlc+bTWc7aWFBeNON8OPqZ/xYuVote/cTk5V2YYOcY9zrJu9GcLmFBF3eNPthw==
-X-Received: by 2002:a05:6402:5244:: with SMTP id t4mr37013244edd.228.1620975091508;
-        Thu, 13 May 2021 23:51:31 -0700 (PDT)
+        bh=dgfi7m6CEgAhvc7ZaK8fhbVwaLHprqVFXn+MIcMEgcQ=;
+        b=Mg3fJejXwvvw7mQgXCoNYmBskB37t1uVotk75nLANryflaUiuEwqc9USsAa3gFnvvA
+         AwmQj0iFrNzxcMgogF4sXucAIRc37DdOveCiAY5DxE1ei/a6XgQI8hlkstzAcLBXvN33
+         0pn2hLXwRGJftBDW/rgX1F8xNs+6wnjpTBKkxOR73rbpsJDL8yWKxN7Ji3wcMqxZTPaA
+         UfLCHrvXgKNsZvMNamHOxANXyZF26HPsy2BvAMjrx7qIlEjTxdrfpWxlDYXKt6SzlLG2
+         LOZ9xeuXJL7RenF0yMNgmja1frltyJtSoX0JU/RgZeukWPrtiZftZYnuivUlr6G4P+B4
+         yuXw==
+X-Gm-Message-State: AOAM533v6FjGfBLQHR4JgdNdDnD/Dwuc+of+y/NAsuylzSCOTTdYN9jX
+        SSfmZWn/dcNruzsXH4prKjV2jzbFTok=
+X-Google-Smtp-Source: ABdhPJwSsm48aU7FhrFdOBU9siS5Yfin6+5GcJFRxNBFT5HVzGOup9BJHgei8DrIf+j2AME++JK9Kw==
+X-Received: by 2002:a05:6402:84b:: with SMTP id b11mr54391190edz.289.1620975118989;
+        Thu, 13 May 2021 23:51:58 -0700 (PDT)
 Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
-        by smtp.gmail.com with ESMTPSA id o3sm3948253edr.84.2021.05.13.23.51.30
+        by smtp.gmail.com with ESMTPSA id q18sm3915894edd.3.2021.05.13.23.51.58
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 May 2021 23:51:30 -0700 (PDT)
-Subject: Re: [PATCH] tty: pty: remove redundant initialization of variable fd
+        Thu, 13 May 2021 23:51:58 -0700 (PDT)
+Subject: Re: [PATCH] serial: kgdb_nmi: remove redundant initialization of
+ variable c
 To:     Colin King <colin.king@canonical.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial@vger.kernel.org
 Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210513221833.137672-1-colin.king@canonical.com>
+References: <20210513230224.138859-1-colin.king@canonical.com>
 From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <2f6c2e1e-770b-aade-cdcc-aa4010c36d5e@kernel.org>
-Date:   Fri, 14 May 2021 08:51:30 +0200
+Message-ID: <ea469561-4103-4fd9-2c53-30d3e797e16d@kernel.org>
+Date:   Fri, 14 May 2021 08:51:57 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <20210513221833.137672-1-colin.king@canonical.com>
+In-Reply-To: <20210513230224.138859-1-colin.king@canonical.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -54,10 +56,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14. 05. 21, 0:18, Colin King wrote:
+On 14. 05. 21, 1:02, Colin King wrote:
 > From: Colin Ian King <colin.king@canonical.com>
 > 
-> The variable fd is being initialized with a value that is never
+> The variable c is being initialized with a value that is never
 > read, it is being updated later on. The assignment is redundant and
 > can be removed.
 > 
@@ -67,22 +69,22 @@ On 14. 05. 21, 0:18, Colin King wrote:
 Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
 
 > ---
->   drivers/tty/pty.c | 2 +-
+>   drivers/tty/serial/kgdb_nmi.c | 2 +-
 >   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/tty/pty.c b/drivers/tty/pty.c
-> index 9b5d4ae5d8f2..2251330e7e00 100644
-> --- a/drivers/tty/pty.c
-> +++ b/drivers/tty/pty.c
-> @@ -626,7 +626,7 @@ static struct cdev ptmx_cdev;
->    */
->   int ptm_open_peer(struct file *master, struct tty_struct *tty, int flags)
+> diff --git a/drivers/tty/serial/kgdb_nmi.c b/drivers/tty/serial/kgdb_nmi.c
+> index db059b66438e..7e07ee915f3f 100644
+> --- a/drivers/tty/serial/kgdb_nmi.c
+> +++ b/drivers/tty/serial/kgdb_nmi.c
+> @@ -115,7 +115,7 @@ static void kgdb_tty_recv(int ch)
+>   static int kgdb_nmi_poll_one_knock(void)
 >   {
-> -	int fd = -1;
-> +	int fd;
->   	struct file *filp;
->   	int retval = -EINVAL;
->   	struct path path;
+>   	static int n;
+> -	int c = -1;
+> +	int c;
+>   	const char *magic = kgdb_nmi_magic;
+>   	size_t m = strlen(magic);
+>   	bool printch = false;
 > 
 
 
