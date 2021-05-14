@@ -2,95 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DFD03802A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 06:06:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67BAD3802AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 06:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232049AbhENEHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 00:07:47 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:34890 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231171AbhENEHo (ORCPT
+        id S232080AbhENEKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 00:10:19 -0400
+Received: from smtprelay0062.hostedemail.com ([216.40.44.62]:34088 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231171AbhENEKR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 00:07:44 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=yunbo.xufeng@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0UYof4N3_1620965189;
-Received: from IT-C02XP11YJHD2.local(mailfrom:yunbo.xufeng@linux.alibaba.com fp:SMTPD_---0UYof4N3_1620965189)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 14 May 2021 12:06:30 +0800
-Subject: Re: [RFC] [PATCH bpf-next 1/1] bpf: Add a BPF helper for getting the
- cgroup path of current task
-To:     kpsingh@kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, revest@chromium.org,
-        jackmanb@chromium.org, yhs@fb.com, songliubraving@fb.com,
-        kafai@fb.com, john.fastabend@gmail.com, joe@cilium.io,
-        quentin@isovalent.com,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-References: <20210512095823.99162-1-yunbo.xufeng@linux.alibaba.com>
- <20210512095823.99162-2-yunbo.xufeng@linux.alibaba.com>
- <20210512225504.3kt6ij4xqzbtyej5@ast-mbp.dhcp.thefacebook.com>
-From:   xufeng zhang <yunbo.xufeng@linux.alibaba.com>
-Message-ID: <1b6dfe61-29ed-5d4d-fa1f-1bd46a4f5860@linux.alibaba.com>
-Date:   Fri, 14 May 2021 12:06:29 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.1
+        Fri, 14 May 2021 00:10:17 -0400
+Received: from omf18.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 92C0B182CED2A;
+        Fri, 14 May 2021 04:09:05 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf18.hostedemail.com (Postfix) with ESMTPA id 9E6862EBFA8;
+        Fri, 14 May 2021 04:09:02 +0000 (UTC)
+Message-ID: <fad21a091625a2d1c7975ffc620cab9efa4ce09e.camel@perches.com>
+Subject: Re: [PATCH 1/7] rtl8xxxu: add code to handle
+ BSS_CHANGED_TXPOWER/IEEE80211_CONF_CHANGE_POWER
+From:   Joe Perches <joe@perches.com>
+To:     Reto Schneider <code@reto-schneider.ch>, Jes.Sorensen@gmail.com,
+        linux-wireless@vger.kernel.org, pkshih@realtek.com
+Cc:     yhchuang@realtek.com, Larry.Finger@lwfinger.net,
+        tehuang@realtek.com, reto.schneider@husqvarnagroup.com,
+        ccchiu77@gmail.com, kvalo@codeaurora.org, davem@davemloft.net,
+        kuba@kernel.org, Chris Chiu <chiu@endlessos.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Date:   Thu, 13 May 2021 21:09:01 -0700
+In-Reply-To: <20210514020442.946-2-code@reto-schneider.ch>
+References: <a31d9500-73a3-f890-bebd-d0a4014f87da@reto-schneider.ch>
+         <20210514020442.946-1-code@reto-schneider.ch>
+         <20210514020442.946-2-code@reto-schneider.ch>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-In-Reply-To: <20210512225504.3kt6ij4xqzbtyej5@ast-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=1.68
+X-Stat-Signature: 4x1z97i8kc1jk53bqo1ak56hd43pd335
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: 9E6862EBFA8
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18YBu717zxvCrTp2AtDrS5EFL2OT+Rlmug=
+X-HE-Tag: 1620965342-995075
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 2021-05-14 at 04:04 +0200, Reto Schneider wrote:
+> From: Chris Chiu <chiu@endlessos.org>
+> 
+> The 'iw set txpower' is not handled by the driver. Use the existing
+> set_tx_power function to apply the tx power change
 
-ÔÚ 2021/5/13 ÉÏÎç6:55, Alexei Starovoitov Ð´µÀ:
-> On Wed, May 12, 2021 at 05:58:23PM +0800, Xufeng Zhang wrote:
->> To implement security rules for application containers by utilizing
->> bpf LSM, the container to which the current running task belongs need
->> to be known in bpf context. Think about this scenario: kubernetes
->> schedules a pod into one host, before the application container can run,
->> the security rules for this application need to be loaded into bpf
->> maps firstly, so that LSM bpf programs can make decisions based on
->> this rule maps.
->>
->> However, there is no effective bpf helper to achieve this goal,
->> especially for cgroup v1. In the above case, the only available information
->> from user side is container-id, and the cgroup path for this container
->> is certain based on container-id, so in order to make a bridge between
->> user side and bpf programs, bpf programs also need to know the current
->> cgroup path of running task.
-> ...
->> +#ifdef CONFIG_CGROUPS
->> +BPF_CALL_2(bpf_get_current_cpuset_cgroup_path, char *, buf, u32, buf_len)
->> +{
->> +	struct cgroup_subsys_state *css;
->> +	int retval;
->> +
->> +	css = task_get_css(current, cpuset_cgrp_id);
->> +	retval = cgroup_path_ns(css->cgroup, buf, buf_len, &init_cgroup_ns);
->> +	css_put(css);
->> +	if (retval >= buf_len)
->> +		retval = -ENAMETOOLONG;
-> Manipulating string path to check the hierarchy will be difficult to do
-> inside bpf prog. It seems to me this helper will be useful only for
-> simplest cgroup setups where there is no additional cgroup nesting
-> within containers.
-> Have you looked at *ancestor_cgroup_id and *cgroup_id helpers?
-> They're a bit more flexible when dealing with hierarchy and
-> can be used to achieve the same correlation between kernel and user cgroup ids.
+trivial notes:
 
+> diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
+[]
+> @@ -1382,6 +1382,38 @@ void rtl8xxxu_gen2_config_channel(struct ieee80211_hw *hw)
+>  	}
+>  }
+>  
+> 
+> +#define MAX_TXPWR_IDX_NMODE_92S		63
+> +
+> +u8
+> +rtl8xxxu_gen1_dbm_to_txpwridx(struct rtl8xxxu_priv *priv, u16 mode, int dbm)
+> +{
+> +	u8 txpwridx;
+> +	long offset;
 
-KP,
+why should offset be long when dbm is int?
 
-do you have any suggestion?
+> +
+> +	switch (mode) {
+> +	case WIRELESS_MODE_B:
+> +		offset = -7;
+> +		break;
+> +	case WIRELESS_MODE_G:
+> +	case WIRELESS_MODE_N_24G:
+> +		offset = -8;
+> +		break;
+> +	default:
+> +		offset = -8;
+> +		break;
+> +	}
+> +
+> +	if ((dbm - offset) > 0)
+> +		txpwridx = (u8)((dbm - offset) * 2);
 
-what I am thinking is the internal kernel object(cgroup id or ns.inum) 
-is not so user friendly, we can get the container-context from them for 
-tracing scenario, but not for LSM blocking cases, I'm not sure how 
-Google internally resolve similar issue.
+overflow of u8 when dbm >= 136?
 
 
-Thanks!
+> +	else
+> +		txpwridx = 0;
+> +
+> +	if (txpwridx > MAX_TXPWR_IDX_NMODE_92S)
+> +		txpwridx = MAX_TXPWR_IDX_NMODE_92S;
+> +
+> +	return txpwridx;
+> +}
+> +
+>  void
+>  rtl8xxxu_gen1_set_tx_power(struct rtl8xxxu_priv *priv, int channel, bool ht40)
+>  {
+> @@ -4508,6 +4540,55 @@ rtl8xxxu_wireless_mode(struct ieee80211_hw *hw, struct ieee80211_sta *sta)
+>  	return network_type;
+>  }
+>  
+> 
+> +static void rtl8xxxu_update_txpower(struct rtl8xxxu_priv *priv, int power)
+> +{
+> +	bool ht40 = false;
 
-Xufeng
+unnecessary initializations.
+
+> +	struct ieee80211_hw *hw = priv->hw;
+> +	int channel = hw->conf.chandef.chan->hw_value;
+> +	u8 cck_txpwridx, ofdm_txpwridx;
+> +	int i, group;
+> +
+> +	if (!priv->fops->dbm_to_txpwridx)
+> +		return;
+> +
+> +	switch (hw->conf.chandef.width) {
+> +	case NL80211_CHAN_WIDTH_20_NOHT:
+> +	case NL80211_CHAN_WIDTH_20:
+> +		ht40 = false;
+> +		break;
+> +	case NL80211_CHAN_WIDTH_40:
+> +		ht40 = true;
+> +		break;
+> +	default:
+> +		return;
+> +	}
+
 
