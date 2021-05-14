@@ -2,122 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43A593803D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 08:55:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CE1C3803DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 08:59:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232833AbhENG4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 02:56:55 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:34704 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232802AbhENG4y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 02:56:54 -0400
-Date:   Fri, 14 May 2021 06:55:41 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620975342;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=QBKGT4MxKiFHjpSVQ3RwqKQEq3MKk/Q+Vgf6AUlogtg=;
-        b=kBwwVo9p/SBCQjXZ5VEGNlQrlH7+kIXbWEnoyVByyn/imFMs+ZB0Ubt18JaqB2iclLtzHi
-        o+zeTE4Ewo4inc2IV3HcoDs55N4YyBBVNwf+TiMpVOFiByMnQleHx9s1aghsoJ1qQB3tz/
-        jMHx729f/mdgRTsI1JRQDaRmk7RJ3cYQ+zu7igtJRNsQm9eJRhJ0dsXWNEIOteAYFaUSPb
-        W1gNZq1GsRMS2Z/UM542Hwxe5PovQ6kTiffT9Obq5XIdk4bIBdsRfbpV1TVsTKxiXSzQX7
-        5VriCTGpTILRpQxg9yN6GDwTru7HFna6IxYqMNo7fILMVOg0epBlJDd3r5oDVQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620975342;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=QBKGT4MxKiFHjpSVQ3RwqKQEq3MKk/Q+Vgf6AUlogtg=;
-        b=njNvGawT75Ar1fRb11IOyDFXrNR+dFLhYUaaoijFUlpaEBuxyT0M8YFzTFuK5pVV4mVEQl
-        uc4YHhfGzNEFaTBQ==
-From:   "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/asm] x86/asm: Make <asm/asm.h> valid on cross-builds as well
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
+        id S232847AbhENHAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 03:00:22 -0400
+Received: from mga04.intel.com ([192.55.52.120]:51916 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231424AbhENHAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 03:00:21 -0400
+IronPort-SDR: V1Y21r3wywh1ohRqmTF3WN5zlOAJIPS+WPfhe2qTYO2t6JulxcA7SLg0dEXgpyoZyzHI1xHNFK
+ PytYUXzbk5Vw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9983"; a="198169600"
+X-IronPort-AV: E=Sophos;i="5.82,299,1613462400"; 
+   d="scan'208";a="198169600"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 23:59:10 -0700
+IronPort-SDR: 7fY1nLNw4CkaH2dojTZ9Wjam5jwViXXRrEDKA4LaXr7kGuF+JzGfRNb2OFFfvyU44jJ/XZCROU
+ ihGwIaxEuYyQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,299,1613462400"; 
+   d="scan'208";a="471865788"
+Received: from lkp-server01.sh.intel.com (HELO ddd90b05c979) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 13 May 2021 23:59:09 -0700
+Received: from kbuild by ddd90b05c979 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lhRmu-0000cG-RN; Fri, 14 May 2021 06:59:08 +0000
+Date:   Fri, 14 May 2021 14:58:40 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:rcu/next] BUILD SUCCESS
+ 471bbaea5179420ad277788ee73a091c78519ff0
+Message-ID: <609e1fa0.9N3zsWkqCnInUYos%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Message-ID: <162097534183.29796.426541546552051038.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/asm branch of tip:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
+branch HEAD: 471bbaea5179420ad277788ee73a091c78519ff0  torture: Make torture.sh accept --do-all and --donone
 
-Commit-ID:     41f45fb045bcc20e71eb705b361356e715682162
-Gitweb:        https://git.kernel.org/tip/41f45fb045bcc20e71eb705b361356e715682162
-Author:        Ingo Molnar <mingo@kernel.org>
-AuthorDate:    Thu, 13 May 2021 13:41:41 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Fri, 14 May 2021 08:50:28 +02:00
+elapsed time: 725m
 
-x86/asm: Make <asm/asm.h> valid on cross-builds as well
+configs tested: 142
+configs skipped: 3
 
-Stephen Rothwell reported that the objtool cross-build breaks on
-non-x86 hosts:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-  > tools/arch/x86/include/asm/asm.h:185:24: error: invalid register name for 'current_stack_pointer'
-  >   185 | register unsigned long current_stack_pointer asm(_ASM_SP);
-  >       |                        ^~~~~~~~~~~~~~~~~~~~~
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+mips                         tb0219_defconfig
+ia64                          tiger_defconfig
+powerpc                      acadia_defconfig
+powerpc                 mpc836x_mds_defconfig
+sh                                  defconfig
+arc                              allyesconfig
+powerpc                 mpc8313_rdb_defconfig
+m68k                        mvme16x_defconfig
+m68k                       m5249evb_defconfig
+arc                          axs103_defconfig
+mips                        workpad_defconfig
+powerpc                 linkstation_defconfig
+mips                malta_qemu_32r6_defconfig
+um                             i386_defconfig
+arm                         lpc32xx_defconfig
+mips                  maltasmvp_eva_defconfig
+riscv                    nommu_virt_defconfig
+powerpc                     taishan_defconfig
+riscv             nommu_k210_sdcard_defconfig
+arc                              alldefconfig
+m68k                                defconfig
+sh                        edosk7760_defconfig
+mips                       capcella_defconfig
+arm                   milbeaut_m10v_defconfig
+arm                        multi_v5_defconfig
+powerpc                     tqm8540_defconfig
+mips                          ath79_defconfig
+arm                       mainstone_defconfig
+powerpc                      mgcoge_defconfig
+arm                          exynos_defconfig
+powerpc                     ppa8548_defconfig
+sh                     magicpanelr2_defconfig
+riscv                    nommu_k210_defconfig
+powerpc                   lite5200b_defconfig
+sh                   sh7770_generic_defconfig
+powerpc                    gamecube_defconfig
+arm                          simpad_defconfig
+powerpc                      ppc44x_defconfig
+powerpc                         ps3_defconfig
+m68k                        m5307c3_defconfig
+m68k                       m5275evb_defconfig
+arm                          iop32x_defconfig
+powerpc                 mpc8315_rdb_defconfig
+xtensa                           allyesconfig
+sh                           se7712_defconfig
+m68k                       bvme6000_defconfig
+mips                      maltaaprp_defconfig
+xtensa                  nommu_kc705_defconfig
+sh                         ap325rxa_defconfig
+arm                          gemini_defconfig
+mips                     cu1000-neo_defconfig
+mips                      maltasmvp_defconfig
+arm                       imx_v4_v5_defconfig
+powerpc                     tqm5200_defconfig
+h8300                               defconfig
+sh                        sh7785lcr_defconfig
+arm                          moxart_defconfig
+sh                          urquell_defconfig
+sh                        sh7763rdp_defconfig
+mips                        jmr3927_defconfig
+mips                       rbtx49xx_defconfig
+sh                            migor_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a003-20210513
+i386                 randconfig-a001-20210513
+i386                 randconfig-a005-20210513
+i386                 randconfig-a004-20210513
+i386                 randconfig-a002-20210513
+i386                 randconfig-a006-20210513
+i386                 randconfig-a003-20210514
+i386                 randconfig-a001-20210514
+i386                 randconfig-a004-20210514
+i386                 randconfig-a005-20210514
+i386                 randconfig-a002-20210514
+i386                 randconfig-a006-20210514
+x86_64               randconfig-a012-20210513
+x86_64               randconfig-a015-20210513
+x86_64               randconfig-a011-20210513
+x86_64               randconfig-a013-20210513
+x86_64               randconfig-a016-20210513
+x86_64               randconfig-a014-20210513
+i386                 randconfig-a016-20210513
+i386                 randconfig-a014-20210513
+i386                 randconfig-a011-20210513
+i386                 randconfig-a015-20210513
+i386                 randconfig-a012-20210513
+i386                 randconfig-a013-20210513
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-The PowerPC host obviously doesn't know much about x86 register names.
+clang tested configs:
+x86_64               randconfig-a003-20210513
+x86_64               randconfig-a004-20210513
+x86_64               randconfig-a001-20210513
+x86_64               randconfig-a005-20210513
+x86_64               randconfig-a002-20210513
+x86_64               randconfig-a006-20210513
 
-Protect the kernel-specific bits of <asm/asm.h>, so that it can be
-included by tooling and cross-built.
-
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Reviewed-by: H. Peter Anvin <hpa@zytor.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
 ---
- arch/x86/include/asm/asm.h       | 4 ++++
- tools/arch/x86/include/asm/asm.h | 4 ++++
- 2 files changed, 8 insertions(+)
-
-diff --git a/arch/x86/include/asm/asm.h b/arch/x86/include/asm/asm.h
-index 507a37a..3ad3da9 100644
---- a/arch/x86/include/asm/asm.h
-+++ b/arch/x86/include/asm/asm.h
-@@ -120,6 +120,8 @@
- # define CC_OUT(c) [_cc_ ## c] "=qm"
- #endif
- 
-+#ifdef __KERNEL__
-+
- /* Exception table entry */
- #ifdef __ASSEMBLY__
- # define _ASM_EXTABLE_HANDLE(from, to, handler)			\
-@@ -186,4 +188,6 @@ register unsigned long current_stack_pointer asm(_ASM_SP);
- #define ASM_CALL_CONSTRAINT "+r" (current_stack_pointer)
- #endif /* __ASSEMBLY__ */
- 
-+#endif /* __KERNEL__ */
-+
- #endif /* _ASM_X86_ASM_H */
-diff --git a/tools/arch/x86/include/asm/asm.h b/tools/arch/x86/include/asm/asm.h
-index 507a37a..3ad3da9 100644
---- a/tools/arch/x86/include/asm/asm.h
-+++ b/tools/arch/x86/include/asm/asm.h
-@@ -120,6 +120,8 @@
- # define CC_OUT(c) [_cc_ ## c] "=qm"
- #endif
- 
-+#ifdef __KERNEL__
-+
- /* Exception table entry */
- #ifdef __ASSEMBLY__
- # define _ASM_EXTABLE_HANDLE(from, to, handler)			\
-@@ -186,4 +188,6 @@ register unsigned long current_stack_pointer asm(_ASM_SP);
- #define ASM_CALL_CONSTRAINT "+r" (current_stack_pointer)
- #endif /* __ASSEMBLY__ */
- 
-+#endif /* __KERNEL__ */
-+
- #endif /* _ASM_X86_ASM_H */
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
