@@ -2,100 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11800380BE1
+	by mail.lfdr.de (Postfix) with ESMTP id A3B03380BE3
 	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 16:33:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234472AbhENOeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 10:34:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53392 "EHLO
+        id S234466AbhENOeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 10:34:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234431AbhENOeQ (ORCPT
+        with ESMTP id S234434AbhENOeR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 10:34:16 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BEF5C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 07:33:04 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id a4so30257996wrr.2
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 07:33:04 -0700 (PDT)
+        Fri, 14 May 2021 10:34:17 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D273FC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 07:33:05 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id r12so4637908wrp.1
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 07:33:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=dAsKBCUtWvT2TBc5FQFA2vVLxfmKKkbA3qujbzupPfM=;
-        b=fRRNd//FGa7QVc0likppjcQv7KM9iO7gKQUNmRCd1gAxsArkyy9+bYMptXd+ck79pD
-         OSIA8Ve5qcCL29brdwIVHuNhfZQZJsew//87TJCzgze9e3UqghsGUxHQO/mimWtYUpZr
-         5kM7M1FFL3mHUrs8z3v7L+l4myMyn132fE0T+QNBbGMa1FpAF+2Uv1fLEfQ4J5qN7SFP
-         aCTebmRBsYCWoOnUbnLrFV5IyDYEYeztqu9vgkRjW2o3FiJLtipgX3/fYQkPw8xkYOrc
-         NviPYk5Nru3FvuYiFRzks2iCMXaUGV8rUsIIkVt4JU85HGTKToblvbyIuyDROmNQsQYS
-         2omA==
+        bh=PjPVZHKFcw/0Kjl3neOnoz2ErhwMmf8NtZZOxTpdu8s=;
+        b=N8n7j1UMrkltISPqNfNmaFCoGnD9mDpbzYFFiz5DukTU/MJT58wTxlhpFn/yRIWYni
+         bPp/d/LpIoY0IyKync8lVLytAsFXRXOxTkRL/xyN1JVTdYS3+lOQUkY99TeXMkBgNs1T
+         /oHMknBIPnCNFlJcTvwmGLr9aX4AOq4wj+YQjQO8ABcAH5/SZ2xfFD0T8kwOGj4XUYpQ
+         +BrA4Ju1g9aH2nRpjw7lRXhMmBMToRw5umI3wUdNpdwNJm/4Ysotkxxb5q3kng+VDeOS
+         GjI/7H+m8BBrKysHtKJ3xZtCACLo9QtvDs0V5W5mb/XJh/gpkFqxVh1OLV/qlqVgWPSs
+         k9Fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=dAsKBCUtWvT2TBc5FQFA2vVLxfmKKkbA3qujbzupPfM=;
-        b=KcSQZn+6fgSxZyl1HT4Ctt6JKpmfI50bn2y+qXwPGBB/bmAqlwF9gOTKSBYoSq549D
-         3F5yaTQ+DWppInWmhYos/DiAFDgjLzjsL+XA4Ls8/8i/yEHWSL6QrqSi3yyAQ2wNNTuX
-         X6gDoid97o8MHICnHLrlU+AJ4O2QyPNjdHGgZ1gL20fSypYFgattCxd5LfQ5s9F+yEea
-         pNQH7/O/uTBVpxdIbz5GLf0FRuXXzMSgNTLKFIuFriHoY4L3ZkTDfqnslYrxIlE0gzQr
-         6jFkKv35OpKPNthW2PpshccoVEOE4C2tHqUp2RxNemvT3sAOQC4Kttw7zcL8Y7IVnb5A
-         P+kg==
-X-Gm-Message-State: AOAM531rtE2nVqbN8dZhVsiZMS0URmZBwdLp61BCAljJBGZsiC42xz5I
-        dcp+XvlJwYJev47EJflgLQQBhg==
-X-Google-Smtp-Source: ABdhPJx8h5teAgdXD//u9XMzxdRx2sWdw/oSiwMevGN6xDDCQ6y7X2IT9xVohMJgiOXA0XzSoLGSkA==
-X-Received: by 2002:a5d:58fc:: with SMTP id f28mr13300656wrd.339.1621002782937;
-        Fri, 14 May 2021 07:33:02 -0700 (PDT)
+        bh=PjPVZHKFcw/0Kjl3neOnoz2ErhwMmf8NtZZOxTpdu8s=;
+        b=tPsxm0h/qkpOr21RX5xAUGAjvxCbNcYEEuak9BT74QSgWOdfLf8L79d1EoxJ81iOpB
+         FGl+PJWY0TllKsdCB8Q8D1l0PZdlJYf5p8rKbHO1mCn1HxF70AtpimHbOgl2x2wmumBK
+         R2WWXt0HzvamODox6MeAxPEWdumtm0zPeUIV3o3VifBBXK6XNXkjSrVF9AMFY250Tgyv
+         e7xcdyeKfmV6aVgvFqmi3Eyc7HdI5UClBqBHUvUkFwWGn8GwOe78GKP1gij7PmWxKAjs
+         9qYNd24IKPoNlITcMXAf/mso2aFJ6NEf8y/chv3JLiIrrWelbTJuMvE9iSC8+nLnUDed
+         AduQ==
+X-Gm-Message-State: AOAM532EPyUv8sdskcYPHteHFYJBIkIDudZcHigEAQ4Zr6/WMw9b8l4C
+        4lpAHtBJl3UUhmw37x+lMfwKuw==
+X-Google-Smtp-Source: ABdhPJy6/TGdhjA/Zzgm3KU8lGiHXBECPm8RKOoEQKk1k3ayM673dArxL41P+kY3aOPDuAv6Kczftg==
+X-Received: by 2002:adf:bbc2:: with SMTP id z2mr7181697wrg.127.1621002784504;
+        Fri, 14 May 2021 07:33:04 -0700 (PDT)
 Received: from localhost.localdomain ([37.173.48.34])
-        by smtp.gmail.com with ESMTPSA id v21sm11552036wml.5.2021.05.14.07.33.01
+        by smtp.gmail.com with ESMTPSA id v21sm11552036wml.5.2021.05.14.07.33.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 07:33:02 -0700 (PDT)
+        Fri, 14 May 2021 07:33:03 -0700 (PDT)
 From:   Neil Armstrong <narmstrong@baylibre.com>
 To:     khilman@baylibre.com, jbrunet@baylibre.com,
-        martin.blumenstingl@googlemail.com
+        martin.blumenstingl@googlemail.com, devicetree@vger.kernel.org
 Cc:     linux-amlogic@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Neil Armstrong <narmstrong@baylibre.com>
-Subject: [PATCH v3 1/3] arm64: dts: meson-sm1: add toacodec node
-Date:   Fri, 14 May 2021 16:32:53 +0200
-Message-Id: <20210514143255.3352774-2-narmstrong@baylibre.com>
+Subject: [PATCH v3 2/3] dt-bindings: arm: amlogic: add Banana PI M5 bindings
+Date:   Fri, 14 May 2021 16:32:54 +0200
+Message-Id: <20210514143255.3352774-3-narmstrong@baylibre.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210514143255.3352774-1-narmstrong@baylibre.com>
 References: <20210514143255.3352774-1-narmstrong@baylibre.com>
 MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; i=PiBOxGF9B8KW9XPjSZyFe2Ca0fRRv2NCjlxlTSICTK0=; m=JPhUMX0KwAIy028CLaqNkk0VSurj2OC9d9a2+coI+IM=; p=vYSSa/Es1AGkZ2S88vUhAsnn0Rd+dA2FIygyN1JQJ8o=; g=6d32934740ad81bbded692d5df351bde49b9be52
-X-Patch-Sig: m=pgp; i=narmstrong@baylibre.com; s=0xA4CFF8AE; b=iQIzBAABCgAdFiEEPVPGJshWBf4d9CyLd9zb2sjISdEFAmCeigcACgkQd9zb2sjISdF+/g/+Lhb xiMDtRbHkd1MEA2ZyyZpdWfunqAzGrDS2UfXjRqC5eir7L8l2x6F07v0OPz2w46ekg7Ca7xB9fQ3S UVQllt/kIVmKoOtoSvzMMzkmgePKnN2alMsRQv7VKafsRAXTfBtRIUnL/D6lyCaFfHpO5ko30cAd5 Lrppjn4jgEMBInCS1DisKgVPDGRme186EGVmZrQpDTz76pILuqN9r0fqJU1nULS45YNPCLSuozfH4 UV3E3xeVMnQu8Uolg8r/JjcY3PDjjA/TpIUNORzX97pMtnDoYxsD+b6+i4IEiFY7i30EponsyU787 flVB93qG6EqB6cB5yFIyb/L6soTRd9N1UVLCBAOofA3PXRcfmFq+7EfNRoaeUfAh8aMkqo3QJK+tM 8JLm6HJy2dPnt/7MA1OxyvAPWIR09GcD6G+lqL4Auy37wwe9Ht2DxSfLFJSw+Sxl/pp0Bv+XsKB3C QojXhhgJNv4JxPTckDDaiNc3/655S/jgi7as8rW04BlRaHQ7EYqUUf9JyBra4l0kmzDQQOsGC/tp5 D48RoCyMQjsJfGAwUBkl3QyFA5F2XbXxg7TwNEfBwAS1QVVJPRmuc85qZV38DMATBsHMdxi55xzpA S0iEvNpy+cmxbAA3g2XbRK5VJQZL3shBNtXMwMdvZwSiS398v34c3WPenNWoXWcg=
+X-Patch-Hashes: v=1; h=sha256; i=M0SEFpzXwIE8UCHsgzNMhizzXWIk2IptqJJD3NCqC5E=; m=Tq6MXbuxaNZm9Pbg31ijl2mYxV06fIqGdbAJOoh1/EM=; p=HRqFdlzLeSnVMnr05Eko/xZxgVVTv1235RJRzqjszD0=; g=1687e36ad2573496cc1e8703824d0d5297a2226f
+X-Patch-Sig: m=pgp; i=narmstrong@baylibre.com; s=0xA4CFF8AE; b=iQIzBAABCgAdFiEEPVPGJshWBf4d9CyLd9zb2sjISdEFAmCeigoACgkQd9zb2sjISdEOUhAAs7c hJRyOSKM4JJtqwrB77sPnGSeeNHqtGPUngeJYzFgcKIAcea6G5HUS0g8x2GkIrXey0CCe+XyGyR23 oBXF+I/qwT5L1hOlAc2A4UaHGvZfDbmiKklVVuriO3cR3llo4hbPTjOvO+DMxWOnmoDAIDH/O8HCM AuBrfnIyGe5B/Gnxgm6ApoRYciH2A7PMyBrAFFYikfUUTfCbviBgyzrxGckv3WqyEVhMkz9J4X8Ac CEVGIQRiE94L5SutDbxtRbshckRS4mZL/VakaglyXllkiMy+602e1ByltpI+AlTIuBIral58ZWv9U Hz6HniPoJRt30o+NIZmL9dRA6YBZJE2sgJoSgZ3r8BbNGDjYNhT/zgUOUzUZfY/25owYLimTtGmB7 TijFDcZW/wiuM6lHZ1xfmXhfZ8xkOeswSAZb0MG2Cbn0IegAng3opKoFlVMkgQyBXXr7ZDLDUzQMz DCIZZ9TWAWr23Jo1XRVccsg/tSy6+Nr6JUMkfNb6PryooDHlJm7FoXeM2U7w1w5TZ4K518Kn/63Dc ZDO0aml9vmqpfw/nP0zC8LG0wS1hsVqaFLoPamWNMUHE5IGhacE/03lNDya7EpwvXvT3ggs2Ju7+h ytHQGpWcefWgvTc4hYlpWex07xj3ad4JWK5bvfR2g/OW/ZHMDACzdl7/lavT561A=
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add toacodec node for Amlogic SM1 SoCs.
+Add bindings for the Banana PI M5 board.
 
 Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 ---
- arch/arm64/boot/dts/amlogic/meson-sm1.dtsi | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ Documentation/devicetree/bindings/arm/amlogic.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi b/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi
-index c309517abae3..3d8b1f4f2001 100644
---- a/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi
-@@ -401,6 +401,16 @@ tdmout_c: audio-controller@580 {
- 			status = "disabled";
- 		};
- 
-+		toacodec: audio-controller@740 {
-+			compatible = "amlogic,sm1-toacodec",
-+				     "amlogic,g12a-toacodec";
-+			reg = <0x0 0x740 0x0 0x4>;
-+			#sound-dai-cells = <1>;
-+			sound-name-prefix = "TOACODEC";
-+			resets = <&clkc_audio AUD_RESET_TOACODEC>;
-+			status = "disabled";
-+		};
-+
- 		tohdmitx: audio-controller@744 {
- 			compatible = "amlogic,sm1-tohdmitx",
- 				     "amlogic,g12a-tohdmitx";
+diff --git a/Documentation/devicetree/bindings/arm/amlogic.yaml b/Documentation/devicetree/bindings/arm/amlogic.yaml
+index 5f6769bf45bd..d81a20f66415 100644
+--- a/Documentation/devicetree/bindings/arm/amlogic.yaml
++++ b/Documentation/devicetree/bindings/arm/amlogic.yaml
+@@ -164,6 +164,7 @@ properties:
+       - description: Boards with the Amlogic Meson SM1 S905X3/D3/Y3 SoC
+         items:
+           - enum:
++              - bananapi,bpi-m5
+               - hardkernel,odroid-c4
+               - hardkernel,odroid-hc4
+               - khadas,vim3l
 -- 
 2.25.1
 
