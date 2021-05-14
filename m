@@ -2,90 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 107493813B9
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 00:20:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EF643813B1
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 00:20:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234068AbhENWVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 18:21:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233967AbhENWVa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 18:21:30 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 656C3C061763;
-        Fri, 14 May 2021 15:20:15 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id d11so595434wrw.8;
-        Fri, 14 May 2021 15:20:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FPweNk3pkGOY9NgkFWy9y6Zupg8Fw4qtXEQGtAlTE1Q=;
-        b=AmX3bDP8TPwtfGgVkQ+kjcFXRoiQdsPHcPem0YmIJLzYhZzIJedNMmkN0gthqYy0zY
-         Rr2sGpJSLQEZhiKmAwFty+cDXXiyVxGW660lR8CIDCz6ujgZHqWFfESKoBWaF0EFIux9
-         SqLWMMt6fBMzfMUTZg6XR7Xb6Yqiskzu37sQZu2nGFva+UpXVOhpqPwSM3A4UDC58q9A
-         zBz4QijSr6iUWLaXgW+gYG/TlST1rPdXWQE/TkZz9k63IjXRqxDSJmxgUJ3HtcrpR8Ti
-         OT+1OzZ1S55IJjW+JPF0LbJBsotmXAVyHaVVFqKUPoWTwnM9HFUwvJ2QDFwTN2RlL2rY
-         5+jA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FPweNk3pkGOY9NgkFWy9y6Zupg8Fw4qtXEQGtAlTE1Q=;
-        b=BtJlSpjc0NcxQRIzK7qQifntQADzN9fKkXvRCkUW94MRmVfZjeRADqJZxFbBZAVEvZ
-         gLX9fOmwv3KRvtgVL6tNeoIRe64F6zXINS7kOx9tZ62xiHOT9O6cHTN+rVmVHw7x8597
-         2lLmVaCPLKHO1hnziEoI0mb1TpLjwgApwJW2k/Rm5rJA91iPUY9jr7kc76c46UR1PZwV
-         mEDHyna1tx9LXHl5br0KRsvEoFr8X+nHrlnr2E2kAlaT5j00E9JWquHN+l+w2H9Fc1fd
-         Jrz4q4vOdNdCeYsuetTMVpTVwbPjrLFSMomBhxZxzLzUC/EnKWsBlMIpghZN8ir/mQ9u
-         K81A==
-X-Gm-Message-State: AOAM530TynZhZIdbGr0O0asViIbo2ehjUHQlUgop166lgbEKmuxm7Q21
-        JkjOVmwtOzLLRVssQ06Pb2I=
-X-Google-Smtp-Source: ABdhPJysT80uVA7Vwyo70mLwKSB5qo6CoBIv9nGzo/Y1x5eXRBE6GO4fV9usALLPj6nS5G2RRukg9A==
-X-Received: by 2002:a5d:6e04:: with SMTP id h4mr60031763wrz.256.1621030814214;
-        Fri, 14 May 2021 15:20:14 -0700 (PDT)
-Received: from xws.localdomain (pd9e5a369.dip0.t-ipconnect.de. [217.229.163.105])
-        by smtp.gmail.com with ESMTPSA id y14sm7668170wrr.82.2021.05.14.15.20.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 15:20:13 -0700 (PDT)
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] platform/surface: aggregator: Add platform-drivers-x86 list to MAINTAINERS entry
-Date:   Sat, 15 May 2021 00:19:54 +0200
-Message-Id: <20210514221954.5976-1-luzmaximilian@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        id S233952AbhENWV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 18:21:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48450 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230096AbhENWVW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 18:21:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 5480461440;
+        Fri, 14 May 2021 22:20:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621030810;
+        bh=bN6ZhnJyMojIp9seq7zVzzHT/C7j3keiCK+LEFp2cOQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=YAZEd86fnNFL+tBmNptR7uPbSwB6PZ1AlkBwQsfsdYg48WQ2cw43sdbPugnCH2umN
+         KoTCz1f3EdDesA3By+NnuU2P6owvhqGZDhUhFx+Tim1BUBKYHKROWKFxvFVC0x5IxB
+         I0bf5oyn+ruzdKT1YY0ErUvOZPqndfOVR1UjxyMXrFabWuF0GFwMtAs7meZhyA2Vwu
+         JjHxtLnzHJoTtNNMmr39a4BilVNHXz2SuhBNG6U8rkTeFy7MxvjwgiJhsgL3wH4zbO
+         fEaSBj2jRxLK1QkbQQg+t7qdAUsIhxCSFVXG1qOQd90efQqfo/d3GTRb8jAWZjC46F
+         6bEcwmE4EuZZg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 43AD060972;
+        Fri, 14 May 2021 22:20:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v8 0/3] fix packet stuck problem for lockless qdisc
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162103081027.6483.17994151706527065595.git-patchwork-notify@kernel.org>
+Date:   Fri, 14 May 2021 22:20:10 +0000
+References: <1620962221-40131-1-git-send-email-linyunsheng@huawei.com>
+In-Reply-To: <1620962221-40131-1-git-send-email-linyunsheng@huawei.com>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, olteanv@gmail.com,
+        ast@kernel.org, daniel@iogearbox.net, andriin@fb.com,
+        edumazet@google.com, weiwan@google.com, cong.wang@bytedance.com,
+        ap420073@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxarm@openeuler.org,
+        mkl@pengutronix.de, linux-can@vger.kernel.org, jhs@mojatatu.com,
+        xiyou.wangcong@gmail.com, jiri@resnulli.us, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org,
+        jonas.bonn@netrounds.com, pabeni@redhat.com, mzhivich@akamai.com,
+        johunt@akamai.com, albcamus@gmail.com, kehuan.feng@gmail.com,
+        a.fatoum@pengutronix.de, atenart@kernel.org,
+        alexander.duyck@gmail.com, hdanton@sina.com, jgross@suse.com,
+        JKosina@suse.com, mkubecek@suse.cz, bjorn@kernel.org,
+        alobakin@pm.me
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Surface System Aggregator Module driver entry is currently missing a
-mailing list. Surface platform drivers are discussed on the
-platform-driver-x86 list and all other Surface platform drivers have a
-reference to that list in their entries. So let's add one here as well.
+Hello:
 
-Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+This series was applied to netdev/net.git (refs/heads/master):
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index bd7aff0c120f..57467b6046f1 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12180,6 +12180,7 @@ F:	drivers/platform/surface/surfacepro3_button.c
- 
- MICROSOFT SURFACE SYSTEM AGGREGATOR SUBSYSTEM
- M:	Maximilian Luz <luzmaximilian@gmail.com>
-+L:	platform-driver-x86@vger.kernel.org
- S:	Maintained
- W:	https://github.com/linux-surface/surface-aggregator-module
- C:	irc://chat.freenode.net/##linux-surface
--- 
-2.31.1
+On Fri, 14 May 2021 11:16:58 +0800 you wrote:
+> This patchset fixes the packet stuck problem mentioned in [1].
+> 
+> Patch 1: Add STATE_MISSED flag to fix packet stuck problem.
+> Patch 2: Fix a tx_action rescheduling problem after STATE_MISSED
+>          flag is added in patch 1.
+> Patch 3: Fix the significantly higher CPU consumption problem when
+>          multiple threads are competing on a saturated outgoing
+>          device.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net,v8,1/3] net: sched: fix packet stuck problem for lockless qdisc
+    https://git.kernel.org/netdev/net/c/a90c57f2cedd
+  - [net,v8,2/3] net: sched: fix tx action rescheduling issue during deactivation
+    https://git.kernel.org/netdev/net/c/102b55ee92f9
+  - [net,v8,3/3] net: sched: fix tx action reschedule issue with stopped queue
+    https://git.kernel.org/netdev/net/c/dcad9ee9e066
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
