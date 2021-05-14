@@ -2,186 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11368380677
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 11:45:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA1A338067B
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 11:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232048AbhENJrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 05:47:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44950 "EHLO
+        id S232221AbhENJtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 05:49:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231719AbhENJrF (ORCPT
+        with ESMTP id S230444AbhENJtW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 05:47:05 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57FC7C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 02:45:54 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id i13so4084397edb.9
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 02:45:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=6Qmp+RccQaxdzALO6v4g1kv976Ka2lpKYW4G5pC6mxc=;
-        b=H0ZgaAtV/qgmajkYofHy4Jl64BMzxDXTCZOWbrS87/XJHvtmz0x2MTAjX+tj+6V/Sx
-         NGhiHe41B0FafmHCx++/otmptF7/7y7EKBkUh+uvMZDV/FadmJC4WUPCkAGq95b+bWeT
-         7Q59T8ogJHKodDvTUcjQIailDdXiU119nPj+rNcPmOp4nzd37H+G3h7YaIu6R72X1eMy
-         2LdwYtLFvaz7kZsKfkkhjugFOA3zZZT9PljBelvV845WQoah3XcMI6XuS1hbL3rn+Eh5
-         qaVyrbDCCH2+vkIHmdT2sjdA0TjG7aldL3MlThQT5wLFEL3xdkOoDjziBEgwQinbC+2t
-         1Gfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=6Qmp+RccQaxdzALO6v4g1kv976Ka2lpKYW4G5pC6mxc=;
-        b=Z3/RtDgqpV2hUipAQMVQPN1tahiURieJXCYOXTsO27GWEdLnbKIUakwwk2fWaTripO
-         0dqEvyQJYbWtxggPDyKCJ4smnUo8s85I1MGrBrk7Zf6vZHF/wqFWvWACM9sGNGTD6UvF
-         2+7unCfcGWjY+KQKjNOVISjHULbMmAswCIpxO97ojp81fpa85e0kzQ2kg/olDNkG4YhS
-         FgDQGlIiJ0MbisRBSeZdY8+aMZpORRYfIkdRrv5AyMFpNSBLCcL/hwF4d3LpPGxuSgB7
-         /PhoHSw0lZRdeAPocH6OpH2bZB8z849Izf6UCr+2buuEi6znhjKmiv81nYHLBkzygvcv
-         MsCQ==
-X-Gm-Message-State: AOAM533WzK6jOUBaC/DC5246u61RJwHt4DNoG9zWbgGB8F+AgvE0Ibxp
-        MRXBmNCS+u5bUmuEDRwW0xgkclxpVSDWGPGyFInGOw==
-X-Google-Smtp-Source: ABdhPJzwcrp92fEomlUb7zJDWtc5z87XJjNPMQBZbwTmf59+peMYaugHOGpPSSowEUO/VFFAHvq3dU2j0CrWG6Vb4CY=
-X-Received: by 2002:aa7:c349:: with SMTP id j9mr54146167edr.230.1620985552748;
- Fri, 14 May 2021 02:45:52 -0700 (PDT)
+        Fri, 14 May 2021 05:49:22 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57723C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 02:48:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=DT6QaNJpkkcD2IyqqcKUlsxcPI0O3ZT4y/+lE15xu+A=; b=BjQvTKpXuKfuy5wXhHWv6vlQSd
+        mMfa5gbJB50BC+AJjKMPThBi4KnnYTG3YP+tWq1dtd33Jy/8z2X34LedQ0cSqvfslbxn9AewjXEjJ
+        iyBOPCUoEq2CM0hxs7OkCwlFGRDV7fJGLPR/jejqaYqsQ8KKEMCLsxYDtZNhXqNqnNrAxEjjLlmlO
+        XhtybRmX8Pha7hdnrQ1F6dxmjBadf02MeMR/nqE5b0+PXfUwnsMBIbTVM3MSeWkNQmC1ZApLgi4Ng
+        tM5JDvdYmHPa12i/FLiLHonfsNfO+VeihCEi3wASEn2QUkTsAEp6tisRp3gffakIdV2avIYdCMh2H
+        ZtsIYxew==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lhUQ9-007gK9-0h; Fri, 14 May 2021 09:47:49 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C12FA30022A;
+        Fri, 14 May 2021 11:47:45 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7BBAD20829FB9; Fri, 14 May 2021 11:47:45 +0200 (CEST)
+Date:   Fri, 14 May 2021 11:47:45 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Cc:     Ingo Molnar <mingo@kernel.org>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Len Brown <len.brown@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Ricardo Neri <ricardo.neri@intel.com>,
+        Quentin Perret <qperret@google.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org, Aubrey Li <aubrey.li@intel.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: [PATCH v3 5/6] sched/fair: Consider SMT in ASYM_PACKING load
+ balance
+Message-ID: <YJ5HQR943rSFsLxw@hirez.programming.kicks-ass.net>
+References: <20210513154909.6385-1-ricardo.neri-calderon@linux.intel.com>
+ <20210513154909.6385-6-ricardo.neri-calderon@linux.intel.com>
 MIME-Version: 1.0
-References: <20210513044710.MCXhM_NwC%akpm@linux-foundation.org>
- <151ddd7f-1d3e-a6f7-daab-e32f785426e1@infradead.org> <54055e72-34b8-d43d-2ad3-87e8c8fa547b@csgroup.eu>
- <20210513134754.ab3f1a864b0156ef99248401@linux-foundation.org> <a3ac0b42-f779-ffaf-c6d7-0d4b40dc25f2@infradead.org>
-In-Reply-To: <a3ac0b42-f779-ffaf-c6d7-0d4b40dc25f2@infradead.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 14 May 2021 15:15:41 +0530
-Message-ID: <CA+G9fYv79t0+2W4Rt3wDkBShc4eY3M3utC5BHqUgGDwMYExYMw@mail.gmail.com>
-Subject: Re: mmotm 2021-05-12-21-46 uploaded (arch/x86/mm/pgtable.c)
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Mark Brown <broonie@kernel.org>, linux-fsdevel@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        mhocko@suse.cz, mm-commits@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        lkft-triage@lists.linaro.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210513154909.6385-6-ricardo.neri-calderon@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 May 2021 at 02:38, Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> On 5/13/21 1:47 PM, Andrew Morton wrote:
-> > On Thu, 13 May 2021 19:09:23 +0200 Christophe Leroy <christophe.leroy@c=
-sgroup.eu> wrote:
-> >
-> >>
-> >>
-> >>> on i386:
-> >>>
-> >>> ../arch/x86/mm/pgtable.c:703:5: error: redefinition of =E2=80=98pud_s=
-et_huge=E2=80=99
-> >>>   int pud_set_huge(pud_t *pud, phys_addr_t addr, pgprot_t prot)
-> >>>       ^~~~~~~~~~~~
-> >>> In file included from ../include/linux/mm.h:33:0,
-> >>>                   from ../arch/x86/mm/pgtable.c:2:
-> >>> ../include/linux/pgtable.h:1387:19: note: previous definition of =E2=
-=80=98pud_set_huge=E2=80=99 was here
-> >>>   static inline int pud_set_huge(pud_t *pud, phys_addr_t addr, pgprot=
-_t prot)
-> >>>                     ^~~~~~~~~~~~
-> >>> ../arch/x86/mm/pgtable.c:758:5: error: redefinition of =E2=80=98pud_c=
-lear_huge=E2=80=99
-> >>>   int pud_clear_huge(pud_t *pud)
-> >>>       ^~~~~~~~~~~~~~
-> >>> In file included from ../include/linux/mm.h:33:0,
-> >>>                   from ../arch/x86/mm/pgtable.c:2:
-> >>> ../include/linux/pgtable.h:1391:19: note: previous definition of =E2=
-=80=98pud_clear_huge=E2=80=99 was here
-> >>>   static inline int pud_clear_huge(pud_t *pud)
+On Thu, May 13, 2021 at 08:49:08AM -0700, Ricardo Neri wrote:
+>  include/linux/sched/topology.h |   1 +
+>  kernel/sched/fair.c            | 101 +++++++++++++++++++++++++++++++++
+>  2 files changed, 102 insertions(+)
+> 
+> diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+> index 8f0f778b7c91..43bdb8b1e1df 100644
+> --- a/include/linux/sched/topology.h
+> +++ b/include/linux/sched/topology.h
+> @@ -57,6 +57,7 @@ static inline int cpu_numa_flags(void)
+>  #endif
+>  
+>  extern int arch_asym_cpu_priority(int cpu);
+> +extern bool arch_asym_check_smt_siblings(void);
+>  
+>  struct sched_domain_attr {
+>  	int relax_domain_level;
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index c8b66a5d593e..3d6cc027e6e6 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -106,6 +106,15 @@ int __weak arch_asym_cpu_priority(int cpu)
+>  	return -cpu;
+>  }
+>  
+> +/*
+> + * For asym packing, first check the state of SMT siblings before deciding to
+> + * pull tasks.
+> + */
+> +bool __weak arch_asym_check_smt_siblings(void)
+> +{
+> +	return false;
+> +}
+> +
+>  /*
+>   * The margin used when comparing utilization with CPU capacity.
+>   *
 
-These errors are noticed on linux next 20210514 tag on arm64.
-Regressions found on arm64 for the following configs.
+> @@ -8458,6 +8550,9 @@ sched_asym(struct lb_env *env, struct sd_lb_stats *sds,  struct sg_lb_stats *sgs
+>  	if (group == sds->local)
+>  		return false;
+>  
+> +	if (arch_asym_check_smt_siblings())
+> +		return asym_can_pull_tasks(env->dst_cpu, sds, sgs, group);
+> +
+>  	return sched_asym_prefer(env->dst_cpu, group->asym_prefer_cpu);
+>  }
 
-  - build/gcc-9-defconfig-904271f2
-  - build/gcc-9-tinyconfig
-  - build/gcc-8-allnoconfig
-  - build/gcc-10-allnoconfig
-  - build/clang-11-allnoconfig
-  - build/clang-10-allnoconfig
-  - build/clang-12-tinyconfig
-  - build/gcc-10-tinyconfig
-  - build/clang-10-tinyconfig
-  - build/clang-11-tinyconfig
-  - build/clang-12-allnoconfig
-  - build/gcc-8-tinyconfig
-  - build/gcc-9-allnoconfig
+So I'm thinking that this is a property of having ASYM_PACKING at a core
+level, rather than some arch special. Wouldn't something like this be
+more appropriate?
 
-make --silent --keep-going --jobs=3D8
-O=3D/home/tuxbuild/.cache/tuxmake/builds/current ARCH=3Darm64
-CROSS_COMPILE=3Daarch64-linux-gnu- 'CC=3Dsccache aarch64-linux-gnu-gcc'
-'HOSTCC=3Dsccache gcc'
-/builds/linux/arch/arm64/mm/mmu.c:1341:5: error: redefinition of 'pud_set_h=
-uge'
- 1341 | int pud_set_huge(pud_t *pudp, phys_addr_t phys, pgprot_t prot)
-      |     ^~~~~~~~~~~~
-In file included from /builds/linux/include/linux/mm.h:33,
-                 from /builds/linux/include/linux/pid_namespace.h:7,
-                 from /builds/linux/include/linux/ptrace.h:10,
-                 from /builds/linux/include/linux/elfcore.h:11,
-                 from /builds/linux/include/linux/crash_core.h:6,
-                 from /builds/linux/include/linux/kexec.h:18,
-                 from /builds/linux/arch/arm64/mm/mmu.c:15:
-/builds/linux/include/linux/pgtable.h:1387:19: note: previous
-definition of 'pud_set_huge' was here
- 1387 | static inline int pud_set_huge(pud_t *pud, phys_addr_t addr,
-pgprot_t prot)
-      |                   ^~~~~~~~~~~~
-/builds/linux/arch/arm64/mm/mmu.c:1369:5: error: redefinition of
-'pud_clear_huge'
- 1369 | int pud_clear_huge(pud_t *pudp)
-      |     ^~~~~~~~~~~~~~
-In file included from /builds/linux/include/linux/mm.h:33,
-                 from /builds/linux/include/linux/pid_namespace.h:7,
-                 from /builds/linux/include/linux/ptrace.h:10,
-                 from /builds/linux/include/linux/elfcore.h:11,
-                 from /builds/linux/include/linux/crash_core.h:6,
-                 from /builds/linux/include/linux/kexec.h:18,
-                 from /builds/linux/arch/arm64/mm/mmu.c:15:
-/builds/linux/include/linux/pgtable.h:1391:19: note: previous
-definition of 'pud_clear_huge' was here
- 1391 | static inline int pud_clear_huge(pud_t *pud)
-      |                   ^~~~~~~~~~~~~~
-make[3]: *** [/builds/linux/scripts/Makefile.build:273:
-arch/arm64/mm/mmu.o] Error 1
-
-
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-
-
-Steps to reproduce:
----------------------------
-
-#!/bin/sh
-
-# TuxMake is a command line tool and Python library that provides
-# portable and repeatable Linux kernel builds across a variety of
-# architectures, toolchains, kernel configurations, and make targets.
-#
-# TuxMake supports the concept of runtimes.
-# See https://docs.tuxmake.org/runtimes/, for that to work it requires
-# that you install podman or docker on your system.
-#
-# To install tuxmake on your system globally:
-# sudo pip3 install -U tuxmake
-#
-# See https://docs.tuxmake.org/ for complete documentation.
-
-tuxmake --runtime podman --target-arch arm64 --toolchain gcc-9
---kconfig tinyconfig
-
-
---
-Linaro LKFT
-https://lkft.linaro.org
+---
+--- a/include/linux/sched/topology.h
++++ b/include/linux/sched/topology.h
+@@ -57,7 +57,6 @@ static inline int cpu_numa_flags(void)
+ #endif
+ 
+ extern int arch_asym_cpu_priority(int cpu);
+-extern bool arch_asym_check_smt_siblings(void);
+ 
+ struct sched_domain_attr {
+ 	int relax_domain_level;
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -107,15 +107,6 @@ int __weak arch_asym_cpu_priority(int cp
+ }
+ 
+ /*
+- * For asym packing, first check the state of SMT siblings before deciding to
+- * pull tasks.
+- */
+-bool __weak arch_asym_check_smt_siblings(void)
+-{
+-	return false;
+-}
+-
+-/*
+  * The margin used when comparing utilization with CPU capacity.
+  *
+  * (default: ~20%)
+@@ -8550,7 +8541,8 @@ sched_asym(struct lb_env *env, struct sd
+ 	if (group == sds->local)
+ 		return false;
+ 
+-	if (arch_asym_check_smt_siblings())
++	if ((sds->local->flags & SD_SHARE_CPUCAPACITY) ||
++	    (group->flags & SD_SHARE_CPUCAPACITY))
+ 		return asym_can_pull_tasks(env->dst_cpu, sds, sgs, group);
+ 
+ 	return sched_asym_prefer(env->dst_cpu, group->asym_prefer_cpu);
