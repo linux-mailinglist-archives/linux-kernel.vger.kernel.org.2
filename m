@@ -2,64 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83A253812DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 23:32:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22F313812E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 23:34:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232746AbhENVeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 17:34:06 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:10895 "EHLO rere.qmqm.pl"
+        id S232919AbhENVfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 17:35:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56462 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230309AbhENVeF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 17:34:05 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4FhhZr1Vpfz4w;
-        Fri, 14 May 2021 23:32:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1621027972; bh=Djm/NR5a0wmp9qybZtVtvTmKM8xCKGXtXFxIgYAHFw4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Zn7nMib/DFbb0KOqI5CWVItFDkR/tWNGfUnulNLRCBMoXZwPJobyqrP0mW9jEYL8y
-         K6zLsH+lT2WETFc7a2lKt+Z62a1olLjVywMmMTST0aatFTsrxFaV0JCLBeqJZKYIux
-         cMRNg2HNiE85v0UgeizA/vUEkce8UfW04xLjUJfVOSQ6bwMIbU/o50HJHWnNrQCE+c
-         GJkKNZtVR8+3hBuQFciPeiYDLLvIDqsJ6Zb3r6//KawpephHQZ7C0/6iZNSne7PKRs
-         vUl42YDpP7vlHTR8CqmSCfOFQ8sqXxZvsbSrVaEbs2lFM3BOOVkoNmjCnSefYVxx/p
-         NRFTudhvqK2uw==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.103.2 at mail
-Date:   Fri, 14 May 2021 23:32:51 +0200
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Nikola =?iso-8859-2?Q?Milosavljevi=E6?= <mnidza@outlook.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v1 0/2] Restore voltages before rebooting of NVIDIA Tegra
- SoCs
-Message-ID: <20210514213251.GB1969@qmqm.qmqm.pl>
-References: <20210510220526.11113-1-digetx@gmail.com>
+        id S230475AbhENVfS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 17:35:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D10E6143F;
+        Fri, 14 May 2021 21:34:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621028046;
+        bh=hJes5fVwFMyBeanoe97q1M/H0pXkUh5gZ9KDWMORWxE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=cU1uvUz4dnLZFAGf0hBvsDMANh2A6Nn29EdaIlH2ApxigmLn5llJ2MOYkOge9CLiM
+         DktbmKF0dGNg+xjxBwE/9nP4x3sxxyLiC2UoS6JsyewiIlBeIAQEDIDTf6RHkWbBrn
+         gxiY3BwLVI7/kd8MdCaFARy4NR29rIYihzGAG3DXSUL/DXqhSdGvvOdbEKyvVL3zKh
+         jq1Jh5+G5gRKCeYwqRHj562jd6FOOyEBq9GUgsD8h3n+S6Nwl3nUQp+boAdzMOwwZq
+         WFqjZmp+YEqZs0gmwyzPn+34UkaOLtDznl44dXJprpQ/g5+r4B7io7jbWpAzSFMkJh
+         fSd9/V+anuz3g==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] fbdev: matrox: use modern module_init()
+Date:   Fri, 14 May 2021 23:33:05 +0200
+Message-Id: <20210514213316.635070-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210510220526.11113-1-digetx@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 01:05:24AM +0300, Dmitry Osipenko wrote:
-> Hi,
-> 
-> Nikola Milosavljeviæ reported that rebooting wasn't working properly on
-> Asus Transformer TF101, which is Tegra20-based tablet device.  We found
-> that TF101 and some other devices have bootloader which doesn't re-initialize
-> voltages properly on a reboot.  The problem is resolved by ensuring that
-> SoC voltages are at a levels that are suitable for the rebooting of the
-> SoC before reboot happens. This series adds reboot handler to the Tegra
-> regulator couplers, it bumps voltages on the reboot event.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Which tree does this series apply to?
+This is one of the last drivers with a global init_module() function
+instead of the modern module_init() annotation. Convert it over.
 
-Best Regards
-Micha³ Miros³aw
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/video/fbdev/matrox/matroxfb_base.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/video/fbdev/matrox/matroxfb_base.c b/drivers/video/fbdev/matrox/matroxfb_base.c
+index 4325bf7f388c..5c82611e93d9 100644
+--- a/drivers/video/fbdev/matrox/matroxfb_base.c
++++ b/drivers/video/fbdev/matrox/matroxfb_base.c
+@@ -2486,8 +2486,6 @@ static int __init matroxfb_init(void)
+ 	return err;
+ }
+ 
+-module_init(matroxfb_init);
+-
+ #else
+ 
+ /* *************************** init module code **************************** */
+@@ -2572,7 +2570,7 @@ module_param_named(cmode, default_cmode, int, 0);
+ MODULE_PARM_DESC(cmode, "Specify the video depth that should be used (8bit default)");
+ #endif
+ 
+-int __init init_module(void){
++static int __init matroxfb_init(void){
+ 
+ 	DBG(__func__)
+ 
+@@ -2603,6 +2601,7 @@ int __init init_module(void){
+ }
+ #endif	/* MODULE */
+ 
++module_init(matroxfb_init);
+ module_exit(matrox_done);
+ EXPORT_SYMBOL(matroxfb_register_driver);
+ EXPORT_SYMBOL(matroxfb_unregister_driver);
+-- 
+2.29.2
+
