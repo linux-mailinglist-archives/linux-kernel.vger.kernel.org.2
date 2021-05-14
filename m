@@ -2,159 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23A693804F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 10:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8175C3804F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 10:17:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230362AbhENIRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 04:17:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33362 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229654AbhENIRh (ORCPT
+        id S230518AbhENISa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 04:18:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230517AbhENIS1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 04:17:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620980185;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=stz2FlrrbVRueZmGLigfweSMJBvWFuUwkpvytAfGa/w=;
-        b=B27ZhwMt3KUBKfUMRzaLlGX7MdTyK1LhjAAeWSjn9wY2AddlYUFPwrrBvm3FMFkobvIVlk
-        SN3v2unLxkKT5g91iPRWkTMt4pM26nT31ltOmObbvhJGz8/t+T2iw/rwZeAzjjeAUOmKJf
-        8+wm/tiyu9VuadmxVqznZc7WHc3uRRM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-567-6Wqg9IEhMcO1ul08qEOOog-1; Fri, 14 May 2021 04:16:23 -0400
-X-MC-Unique: 6Wqg9IEhMcO1ul08qEOOog-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0455A1883527;
-        Fri, 14 May 2021 08:16:22 +0000 (UTC)
-Received: from krava (unknown [10.40.193.71])
-        by smtp.corp.redhat.com (Postfix) with SMTP id B88E867895;
-        Fri, 14 May 2021 08:16:19 +0000 (UTC)
-Date:   Fri, 14 May 2021 10:16:18 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Jin Yao <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH v3 2/2] perf header: Support HYBRID_CPU_PMU_CAPS feature
-Message-ID: <YJ4x0usa1ljPT5DV@krava>
-References: <20210511053003.27015-1-yao.jin@linux.intel.com>
- <20210511053003.27015-3-yao.jin@linux.intel.com>
+        Fri, 14 May 2021 04:18:27 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE70CC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 01:17:15 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id v12so648865plo.10
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 01:17:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=htcmP4VkwLJV0HN1WdMvSIATq97x+ixtyC8RRLqEVEc=;
+        b=JlQha2QTWOUFmvwdxiSh+FxyY2Wums4Skxb7OV3cy0JL2PAXxyv8p0vm6mp7p1Wa9O
+         u2MrYFJVdNeFp/HITh9lrMxAoOzLNpQ8f9gqYQtvcnBlvd26ofcVuy8V7eGSta42pTMD
+         pSoXi29wKCiXa7oimv3sefx93fYpEQQozSDSI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=htcmP4VkwLJV0HN1WdMvSIATq97x+ixtyC8RRLqEVEc=;
+        b=EGOSIwaU9M46CE/USEowHg0qPfCJ9BTkgyxwvouzBYL032fbBtK2CZmo7E1LovuCIY
+         ZB/xIU3Z6mgEROz9Iw+vrplC9R1H57v2cIxeHg31dFjMmEmcCGQ7CUt+0jyvgZFWH4if
+         +c953G2LqDr12BuunNtu1/5LPCnDofhUhjbpODPzb1q0WD3C56N6YJ8xZdrORCycFWG4
+         /fPltZV2bcdNMj2NxZwiNa4QxIbM3W+SdNs/ek6kpGbJtfxeiG2NAxh7SiZZK8nVxdVp
+         VjnAUNhnVkOmmuR2XOUnMfyGMpcJ2q/sic1IZ2SarcGtqIMuMYCHo2WdbSV/lYCgecd9
+         7o9g==
+X-Gm-Message-State: AOAM53313C+0EuAcwgu8B+YjCipC8qPvaWm6zl2r/25+kKVJnJCsq9Tj
+        JDuMAcy147dA3FtJgYIGwJxHow==
+X-Google-Smtp-Source: ABdhPJxK7WEf8QsglKFF8u5TgYGjyTlTjx6T4pSKDaUtsacJngUtUq91ViElfsEJz2K1g8hnab3FuQ==
+X-Received: by 2002:a17:902:fe98:b029:ef:7d5b:c93a with SMTP id x24-20020a170902fe98b02900ef7d5bc93amr13396084plm.26.1620980235208;
+        Fri, 14 May 2021 01:17:15 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:b4a8:8601:829d:26d5])
+        by smtp.gmail.com with ESMTPSA id 80sm3833121pgc.23.2021.05.14.01.17.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 May 2021 01:17:14 -0700 (PDT)
+Date:   Fri, 14 May 2021 17:17:10 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Leon Romanovsky <leon@kernel.org>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: ALSA: intel8x0: div by zero in snd_intel8x0_update()
+Message-ID: <YJ4yBmIV6RJCo42U@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210511053003.27015-3-yao.jin@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 01:30:03PM +0800, Jin Yao wrote:
+Hi,
 
-SNIP
+I'm running (sometimes) into the following problem during resume
 
-> diff --git a/tools/perf/Documentation/perf.data-file-format.txt b/tools/perf/Documentation/perf.data-file-format.txt
-> index fbee9e580ee4..e6ff8c898ada 100644
-> --- a/tools/perf/Documentation/perf.data-file-format.txt
-> +++ b/tools/perf/Documentation/perf.data-file-format.txt
-> @@ -419,6 +419,22 @@ Example:
->    cpu_core cpu list : 0-15
->    cpu_atom cpu list : 16-23
->  
-> +	HEADER_HYBRID_CPU_PMU_CAPS = 31,
-> +
-> +	A list of hybrid CPU PMU capabilities.
-> +
-> +struct {
-> +	u32 nr_pmu;
-> +	struct {
-> +		u32 nr_cpu_pmu_caps;
-> +		{
-> +			char	name[];
-> +			char	value[];
-> +		} [nr_cpu_pmu_caps];
-> +		char pmu_name[];
-> +	} [nr_pmu];
-> +};
+ divide error: 0000 [#1] PREEMPT SMP NOPTI
+ RIP: 0010:snd_intel8x0_interrupt+0x121/0x279
+ Code: 42 8b 44 35 34 41 0f af c5 42 03 44 35 38 42 89 44 35 38 48 8b 0c 24 80 b9 60 03 00 00 00 78 0f 49 8d 0c 2e 48 83 c1 38 31 d2 <f7> 71 f4 89 11 42 8b 7c 35 48 44 01 ef 83 e7 1f 42 89 7c 35 48 48
+ RSP: 0000:ffff9a0a80108eb0 EFLAGS: 00010046
+ RAX: 0000000000000000 RBX: 0000000000000019 RCX: ffff90d8c5efc198
+ RDX: 0000000000000000 RSI: ffff9a0a80549016 RDI: ffff9a0a80549024
+ RBP: ffff90d8c5efc060 R08: 000000000000197a R09: 00000f604ed00191
+ R10: 00000000000001e0 R11: ffffffff9468e1d8 R12: 0000000000000020
+ R13: 0000000000000040 R14: 0000000000000100 R15: 0000000000000002
+ FS:  00007a75c397aff8(0000) GS:ffff90d912d80000(0000) knlGS:0000000000000000                                                               
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 00007a77945d1000 CR3: 000000015bf46002 CR4: 0000000000360ea0
+ Call Trace:
+  <IRQ>
+  __handle_irq_event_percpu+0xa0/0x1c0
+  handle_irq_event_percpu+0x2d/0x70
+  handle_irq_event+0x2c/0x48
+  handle_fasteoi_irq+0xa1/0x161
+  do_IRQ+0x51/0xd6
+  common_interrupt+0xf/0xf
+  </IRQ>
+ RIP: 0033:0x7a7856462c59
+ Code: 89 ca 48 2b 57 20 48 83 c2 10 31 c0 48 3b 57 28 48 0f 46 c1 c3 cc cc cc cc cc cc cc cc cc cc cc cc 64 48 8b 0c 25 00 00 00 00 <b8> f8 02 00 00 48 03 41 08 c3 cc cc cc cc cc cc cc cc cc cc cc cc
+ RSP: 002b:00007a75c39794e8 EFLAGS: 00000246 ORIG_RAX: ffffffffffffffde
+ RAX: 02fa413b24209c6c RBX: 0000017f19e1cf9e RCX: 00007a75c397aff8
+ RDX: 00007a7855792472 RSI: 00007a7855790aa0 RDI: 0000000000000005
+ RBP: 0000000000000005 R08: 0000000000000012 R09: 000000000000000d
+ R10: 00000000009f86d2 R11: 000000000000197a R12: 0000017f19e40e7d
+ R13: 000005ee937ae557 R14: 00007a7855790aa0 R15: 00007a7855792472
+ Modules linked in:
+ ---[ end trace 2ef6d63d0e3d757c ]---
+ RIP: 0010:snd_intel8x0_interrupt+0x121/0x279
+ Code: 42 8b 44 35 34 41 0f af c5 42 03 44 35 38 42 89 44 35 38 48 8b 0c 24 80 b9 60 03 00 00 00 78 0f 49 8d 0c 2e 48 83 c1 38 31 d2 <f7> 71 f4 89 11 42 8b 7c 35 48 44 01 ef 83 e7 1f 42 89 7c 35 48 48
+ RSP: 0000:ffff9a0a80108eb0 EFLAGS: 00010046
+ RAX: 0000000000000000 RBX: 0000000000000019 RCX: ffff90d8c5efc198
+ RDX: 0000000000000000 RSI: ffff9a0a80549016 RDI: ffff9a0a80549024
+ RBP: ffff90d8c5efc060 R08: 000000000000197a R09: 00000f604ed00191
+ R10: 00000000000001e0 R11: ffffffff9468e1d8 R12: 0000000000000020
+ R13: 0000000000000040 R14: 0000000000000100 R15: 0000000000000002
+ FS:  00007a75c397aff8(0000) GS:ffff90d912d80000(0000) knlGS:0000000000000000                                                               
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 00007a77945d1000 CR3: 000000015bf46002 CR4: 0000000000360ea0
 
-when I saw it's similar to the previous one I thought we could have
-one big hybrid feature.. but that would be probably more complex and
-we might not be able to reuse the code as much as you did
+This corresponds to
 
+	ichdev->position %= ichdev->size;
 
->  free_value:
-> @@ -3142,6 +3208,64 @@ static int process_cpu_pmu_caps(struct feat_fd *ff,
->  	return -1;
->  }
->  
-> +static int process_cpu_pmu_caps(struct feat_fd *ff,
-> +				void *data __maybe_unused)
-> +{
-> +	int ret;
-> +
-> +	ret = process_per_cpu_pmu_caps(ff, &ff->ph->env.nr_cpu_pmu_caps,
-> +				       &ff->ph->env.cpu_pmu_caps,
-> +				       &ff->ph->env.max_branches);
-> +	return ret;
+in snd_intel8x0_update().
 
-why the 'ret' var? could be just:
+A print out of that ichdev looks as follows
 
-   return process_per_cpu_pmu_caps(...
-
-> +}
-> +
-> +static int process_hybrid_cpu_pmu_caps(struct feat_fd *ff,
-> +				       void *data __maybe_unused)
-> +{
-> +	struct hybrid_cpc_node *nodes;
-> +	u32 nr_pmu, i;
-> +	int ret;
-> +
-> +	if (do_read_u32(ff, &nr_pmu))
-> +		return -1;
-> +
-> +	if (!nr_pmu) {
-> +		pr_debug("hybrid cpu pmu capabilities not available\n");
-> +		return 0;
-> +	}
-> +
-> +	nodes = zalloc(sizeof(*nodes) * nr_pmu);
-> +	if (!nodes)
-> +		return -ENOMEM;
-> +
-> +	for (i = 0; i < nr_pmu; i++) {
-> +		struct hybrid_cpc_node *n = &nodes[i];
-> +
-> +		ret = process_per_cpu_pmu_caps(ff, &n->nr_cpu_pmu_caps,
-> +					       &n->cpu_pmu_caps,
-> +					       &n->max_branches);
-> +		if (ret)
-> +			goto err;
-> +
-> +		n->pmu_name = do_read_string(ff);
-> +		if (!n->pmu_name)
-
-should you set 'ret = -1' in here?
-
-other than this both patches look good to me
-
-thanks,
-jirka
-
-> +			goto err;
-> +	}
-> +
-> +	ff->ph->env.nr_hybrid_cpc_nodes = nr_pmu;
-> +	ff->ph->env.hybrid_cpc_nodes = nodes;
-> +	return 0;
-> +
-> +err:
-> +	for (i = 0; i < nr_pmu; i++) {
-> +		free(nodes[i].cpu_pmu_caps);
-
-SNIP
-
+snd_intel8x0 0000:00:18.0: lvi_frag = 0, frags = 0, size = 0, period_size = 0x0, period_size1 = 0x0
