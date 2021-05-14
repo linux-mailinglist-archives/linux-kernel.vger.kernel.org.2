@@ -2,147 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 189BB380787
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 12:40:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 845AF380791
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 12:41:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231849AbhENKlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 06:41:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46688 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229964AbhENKlg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 06:41:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB8B561457;
-        Fri, 14 May 2021 10:40:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620988825;
-        bh=g0jXJvsgVOWS5QTDTdhTru5zSKl3V7XCKEVjfVb4Sfk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TcUnTh2iM7D/niM8ustdCUOjGkzByM5CYBxaDdQn6zdE53yvG0lpso5oawwjpZmIO
-         gLFK4U2Tyloc2kOkMmIvXsLAIPy7J4ApDhNjxHLaKligEYP8o7hgouIAG13Ov9T1+a
-         S1wyzpr9+Nek19O0i+RuNI0wEffvBKKbjX87ifq1KCFq7v/TLV2NVbdkY/kNY2OzM0
-         KrnSAaetrgdE3qiqJ6savhV26qasUa4akhF3PE0liE0CL7RDyaZWK/3wc5h7mShDLd
-         f2WKTftF7xP25tz9wwG73A7LBciVuN1NX0P+fu9nTbymMR9XxpNUEGSveS+7rv8MAF
-         EadB1XliUvk3g==
-Date:   Fri, 14 May 2021 16:10:21 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>, sbillaka@codeaurora.org,
-        Rob Clark <robdclark@gmail.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] phy: qcom: Introduce new eDP PHY driver
-Message-ID: <YJ5TlcwcxV4E+jyh@vkoul-mobl.Dlink>
-References: <20210511041930.592483-1-bjorn.andersson@linaro.org>
- <20210511041930.592483-2-bjorn.andersson@linaro.org>
+        id S231896AbhENKmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 06:42:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231133AbhENKmh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 06:42:37 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 444EBC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 03:41:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=yRCuqqPIMRguH3qnULRLBKTTnDt1qnlVIzNoYoxTQQw=; b=SjYjoZzsDHTolqv6Sc4mVujvFn
+        AwVD75tfy6NJuw3BMqfCGZj4RaMA8NeoQbuC8/YvPpaC2f+AM2aeQ2ESYtaWQcl8M7RH9o/Hs80xx
+        OUBimEyA4rjeeDY62FrJlI6j6O4Gx5YgwnZtr6nGFys7PJVsaq5A2PGhTv0z4XtGmw2MqSt0e24jC
+        x6FjUnFnMSDUfeCOdN8LexvQqTwBIJpg+WJtsUfoSD3wFHeACuH4y4W/+TKY4Qleb7+8q+cDicGS4
+        D7U3x6CFZ76ENRosPS9JJSDSuNLuJY5FrYnS83MxstMrPlh6XDZCi1HVazducDLx9IGbC2KMpYxkN
+        jGw+xK9Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lhVFR-007na5-8B; Fri, 14 May 2021 10:40:49 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F197030001C;
+        Fri, 14 May 2021 12:40:45 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D5BC020829F97; Fri, 14 May 2021 12:40:45 +0200 (CEST)
+Date:   Fri, 14 May 2021 12:40:45 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Liam Howlett <liam.howlett@oracle.com>
+Cc:     "maple-tree@lists.infradead.org" <maple-tree@lists.infradead.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Song Liu <songliubraving@fb.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        David Rientjes <rientjes@google.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Rik van Riel <riel@surriel.com>,
+        Michel Lespinasse <walken.cr@gmail.com>
+Subject: Re: [PATCH 26/94] Maple Tree: Add new data structure
+Message-ID: <YJ5TrReBMXwCqJFE@hirez.programming.kicks-ass.net>
+References: <20210428153542.2814175-1-Liam.Howlett@Oracle.com>
+ <20210428153542.2814175-27-Liam.Howlett@Oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210511041930.592483-2-bjorn.andersson@linaro.org>
+In-Reply-To: <20210428153542.2814175-27-Liam.Howlett@Oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10-05-21, 23:19, Bjorn Andersson wrote:
+On Wed, Apr 28, 2021 at 03:36:02PM +0000, Liam Howlett wrote:
 
-> +static int qcom_edp_phy_power_on(struct phy *phy)
-> +{
-> +	struct qcom_edp *edp = phy_get_drvdata(phy);
-> +	int timeout;
-> +	int ret;
-> +	u32 val;
-> +
-> +	writel(DP_PHY_PD_CTL_PWRDN | DP_PHY_PD_CTL_AUX_PWRDN |
-> +	       DP_PHY_PD_CTL_LANE_0_1_PWRDN | DP_PHY_PD_CTL_LANE_2_3_PWRDN |
-> +	       DP_PHY_PD_CTL_PLL_PWRDN | DP_PHY_PD_CTL_DP_CLAMP_EN,
-> +	       edp->edp + DP_PHY_PD_CTL);
-> +	writel(0xfc, edp->edp + DP_PHY_MODE);
-> +
-> +	timeout = readl_poll_timeout(edp->pll + QSERDES_COM_CMN_STATUS,
-> +				     val, val & BIT(7), 5, 200);
-> +	if (timeout)
-> +		return timeout;
-> +
-> +	writel(0x01, edp->tx0 + TXn_LDO_CONFIG);
-> +	writel(0x01, edp->tx1 + TXn_LDO_CONFIG);
-> +	writel(0x00, edp->tx0 + TXn_LANE_MODE_1);
-> +	writel(0x00, edp->tx1 + TXn_LANE_MODE_1);
-> +
-> +	ret = qcom_edp_configure_ssc(edp);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = qcom_edp_configure_pll(edp);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* TX Lane configuration */
-> +	writel(0x05, edp->edp + DP_PHY_TX0_TX1_LANE_CTL);
-> +	writel(0x05, edp->edp + DP_PHY_TX2_TX3_LANE_CTL);
-> +
-> +	/* TX-0 register configuration */
-> +	writel(0x03, edp->tx0 + TXn_TRANSCEIVER_BIAS_EN);
-> +	writel(0x0f, edp->tx0 + TXn_CLKBUF_ENABLE);
-> +	writel(0x03, edp->tx0 + TXn_RESET_TSYNC_EN);
-> +	writel(0x01, edp->tx0 + TXn_TRAN_DRVR_EMP_EN);
-> +	writel(0x04, edp->tx0 + TXn_TX_BAND);
-> +
-> +	/* TX-1 register configuration */
-> +	writel(0x03, edp->tx1 + TXn_TRANSCEIVER_BIAS_EN);
-> +	writel(0x0f, edp->tx1 + TXn_CLKBUF_ENABLE);
-> +	writel(0x03, edp->tx1 + TXn_RESET_TSYNC_EN);
-> +	writel(0x01, edp->tx1 + TXn_TRAN_DRVR_EMP_EN);
-> +	writel(0x04, edp->tx1 + TXn_TX_BAND);
-> +
-> +	ret = qcom_edp_set_vco_div(edp);
-> +	if (ret)
-> +		return ret;
-> +
-> +	writel(0x01, edp->edp + DP_PHY_CFG);
-> +        writel(0x05, edp->edp + DP_PHY_CFG);
-> +        writel(0x01, edp->edp + DP_PHY_CFG);
-> +        writel(0x09, edp->edp + DP_PHY_CFG);
-> +
-> +        writel(0x20, edp->pll + QSERDES_COM_RESETSM_CNTRL);	
-> +
-> +	timeout = readl_poll_timeout(edp->pll + QSERDES_COM_C_READY_STATUS,
-> +				     val, val & BIT(0), 500, 10000);
-> +	if (timeout)
-> +		return timeout;
-> +
-> +	writel(0x19, edp->edp + DP_PHY_CFG);
-> +	writel(0x1f, edp->tx0 + TXn_HIGHZ_DRVR_EN);
-> +	writel(0x04, edp->tx0 + TXn_HIGHZ_DRVR_EN);
-> +	writel(0x00, edp->tx0 + TXn_TX_POL_INV);
-> +	writel(0x1f, edp->tx1 + TXn_HIGHZ_DRVR_EN);
-> +	writel(0x04, edp->tx1 + TXn_HIGHZ_DRVR_EN);
-> +	writel(0x00, edp->tx1 + TXn_TX_POL_INV);
-> +	writel(0x10, edp->tx0 + TXn_TX_DRV_LVL_OFFSET);
-> +	writel(0x10, edp->tx1 + TXn_TX_DRV_LVL_OFFSET);
-> +	writel(0x11, edp->tx0 + TXn_RES_CODE_LANE_OFFSET_TX0);
-> +	writel(0x11, edp->tx0 + TXn_RES_CODE_LANE_OFFSET_TX1);
-> +	writel(0x11, edp->tx1 + TXn_RES_CODE_LANE_OFFSET_TX0);
-> +	writel(0x11, edp->tx1 + TXn_RES_CODE_LANE_OFFSET_TX1);
-> +
-> +	writel(0x10, edp->tx0 + TXn_TX_EMP_POST1_LVL);
-> +	writel(0x10, edp->tx1 + TXn_TX_EMP_POST1_LVL);
-> +	writel(0x1f, edp->tx0 + TXn_TX_DRV_LVL);
-> +	writel(0x1f, edp->tx1 + TXn_TX_DRV_LVL);
-> +
-> +	writel(0x4, edp->tx0 + TXn_HIGHZ_DRVR_EN);
-> +	writel(0x3, edp->tx0 + TXn_TRANSCEIVER_BIAS_EN);
-> +	writel(0x4, edp->tx1 + TXn_HIGHZ_DRVR_EN);
-> +	writel(0x0, edp->tx1 + TXn_TRANSCEIVER_BIAS_EN);
-> +	writel(0x3, edp->edp + DP_PHY_CFG_1);
-> +
-> +	writel(0x18, edp->edp + DP_PHY_CFG);
+> +/* Flags:
+> + * MAPLE_ALLOC_RANGE	Use allocation ranges (tracks gaps) in this tree
+> + * MAPLE_USE_RCU	Operate in read/copy/update mode for multi-readers.
+> + * MAPLE_HEIGHT_OFFSET	The position of the tree height in the flags
+> + * MAPLE_HEIGHT_MASK	The mask for the maple tree height value.
+> + */
 
-Can't help but think that this should be made modular. We would come up
-with next set which would have different set of sequence/values so
-having a qmp style table here would be better..
+Regular comment style would be:
 
--- 
-~Vinod
+/*
+ * Flags:
+ ...
+ */
+
+> +#define MAPLE_ALLOC_RANGE	1	// Bit 0
+> +#define MAPLE_USE_RCU		2	// Bit 1
+> +#define	MAPLE_HEIGHT_OFFSET	2	// Bit 2
+> +#define	MAPLE_HEIGHT_MASK	60	// Bits 2-5
+
+Can we pretty please keep masks in hex, like:
+
+#define MAPLE_HEIGHT_MASK	0x3c
+
+Because then it's instantly obvious is it bits 2-5.
+
