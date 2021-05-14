@@ -2,113 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F01C3381433
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 01:22:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B0B0381436
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 01:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234328AbhENXXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 19:23:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58650 "EHLO
+        id S234346AbhENXYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 19:24:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230371AbhENXXR (ORCPT
+        with ESMTP id S230371AbhENXYS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 19:23:17 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24872C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 16:22:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=+TdUnFUEl/7atT/yjSySZz/MPOKeDtq/8iBLDO4cruE=; b=rPsuzp17QDSKT7GGOUJWUvVdrb
-        1UBOlDg6AeVFPUVjIkgWuZS46PJKqBfrGNtwlmQY/G3ypKlV7WX71Ns5EtYsIOBaawP7gyexpKCz6
-        +D+uuX9GWOXxgd1t8VO8N9/rX2QBjB4RBm1EQ4qQaY0aYxgJgh/UuQiaX2vvAbGdaWCIlvqfLLJ1D
-        IzW/+Ngsg8BFA9vXhWK5FoF401WpkwRuFdo9VQpr16Ipo0oISGFs04QJHWXp6sxIUOyJhvQ7y2C2y
-        ZDsNPK3949zVBz1InXtHiDZuI7eos0IBXtGJkn6VddUe8QvXoUfmQqxn04hQrE5C/teEhT68XmaT3
-        052dAuiQ==;
-Received: from [2601:1c0:6280:3f0::7376]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lhh86-00CJgq-Hc; Fri, 14 May 2021 23:22:02 +0000
-Subject: Re: arch/csky/mm/tcm.c:14:2: error: #error "You should define
- DTCM_RAM_BASE"
-To:     kernel test robot <lkp@intel.com>,
-        Guo Ren <guoren@linux.alibaba.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-References: <202105150718.cdDLUzFD-lkp@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <a386406d-40fd-d382-b272-e524f046ca71@infradead.org>
-Date:   Fri, 14 May 2021 16:22:01 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Fri, 14 May 2021 19:24:18 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DA4CC06174A;
+        Fri, 14 May 2021 16:23:05 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1621034583;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2Wgd0uDiawQHMq/rfYIAZvV7XurhvJxsUGzVJSrAmKM=;
+        b=451Zh7QKT6IHMS9tuDNL+AWAvSiS2mweRUD+nUiXb4MQh9tNM/GzmmgXGh70fQ9eaYQHEK
+        P1zECbb2Es7KZgaQTVBkv+y/UioU4m1ExDnL8x5DLVxGguIcZxP3XRTSFB1n0oqKubw8Fs
+        SVQzHZ4yKu7GZEaUH8vA4TiQqCHo3lfi9To3q1fo+iUmIodhfegVdWV6powFMoZOVn1gJe
+        nHdshpL1lq7i+B1KJLHFBtmI4Aqz/x1C2dbmw7FA3CTJtcKouKReBWUdtLnxhNrghAqIqC
+        cuxmxSX1loEiZkUocdctFdYqEF7QeRxbHkNLmbI32uwzU1/4d76Ut2BmH0rfUA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1621034583;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2Wgd0uDiawQHMq/rfYIAZvV7XurhvJxsUGzVJSrAmKM=;
+        b=4g6Nu1ylmmp70kyjRCWMaCP5Rm9fXlyLC232tZkcJCn1iFS8lhExuRbI3Z1oSIH2g1KayB
+        gHuK992m+9CBHLBw==
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+        Michal Svec <msvec@suse.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hayes Wang <hayeswang@realtek.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Borislav Petkov <bp@alien8.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>
+Subject: Re: [PATCH RFC] r8152: Ensure that napi_schedule() is handled
+In-Reply-To: <20210514144130.7287af8e@kicinski-fedora-PC1C0HJN>
+References: <877dk162mo.ffs@nanos.tec.linutronix.de> <20210514123838.10d78c35@kicinski-fedora-PC1C0HJN> <87sg2p2hbl.ffs@nanos.tec.linutronix.de> <20210514134655.73d972cb@kicinski-fedora-PC1C0HJN> <87fsyp2f8s.ffs@nanos.tec.linutronix.de> <20210514144130.7287af8e@kicinski-fedora-PC1C0HJN>
+Date:   Sat, 15 May 2021 01:23:02 +0200
+Message-ID: <871ra83nop.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <202105150718.cdDLUzFD-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/14/21 4:08 PM, kernel test robot wrote:
-> Hi Guo,
-> 
-> First bad commit (maybe != root cause):
-> 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   25a1298726e97b9d25379986f5d54d9e62ad6e93
-> commit: 18c07d23da5a48525b2955aa269b8bb108c19300 csky: Fixup calltrace panic
-> date:   1 year ago
-> config: csky-randconfig-r036-20210515 (attached as .config)
-> compiler: csky-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=18c07d23da5a48525b2955aa269b8bb108c19300
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout 18c07d23da5a48525b2955aa269b8bb108c19300
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross W=1 ARCH=csky 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->>> arch/csky/mm/tcm.c:14:2: error: #error "You should define DTCM_RAM_BASE"
->       14 | #error "You should define DTCM_RAM_BASE"
->          |  ^~~~~
->    arch/csky/mm/tcm.c:109:7: warning: no previous prototype for 'tcm_alloc' [-Wmissing-prototypes]
->      109 | void *tcm_alloc(size_t len)
->          |       ^~~~~~~~~
->    arch/csky/mm/tcm.c:124:6: warning: no previous prototype for 'tcm_free' [-Wmissing-prototypes]
->      124 | void tcm_free(void *addr, size_t len)
->          |      ^~~~~~~~
-> 
-> 
-> vim +14 arch/csky/mm/tcm.c
-> 
-> f525bb2c9e7cf1 Guo Ren 2019-11-27  11  
-> f525bb2c9e7cf1 Guo Ren 2019-11-27  12  #ifdef CONFIG_HAVE_DTCM
-> f525bb2c9e7cf1 Guo Ren 2019-11-27  13  #if (CONFIG_DTCM_RAM_BASE == 0xffffffff)
-> f525bb2c9e7cf1 Guo Ren 2019-11-27 @14  #error "You should define DTCM_RAM_BASE"
-> f525bb2c9e7cf1 Guo Ren 2019-11-27  15  #endif
-> f525bb2c9e7cf1 Guo Ren 2019-11-27  16  
+On Fri, May 14 2021 at 14:41, Jakub Kicinski wrote:
+> On Fri, 14 May 2021 23:10:43 +0200 Thomas Gleixner wrote:
+>> On Fri, May 14 2021 at 13:46, Jakub Kicinski wrote:
+>> > On Fri, 14 May 2021 22:25:50 +0200 Thomas Gleixner wrote:  
+>> >> Except that some instruction cycle beancounters might complain about
+>> >> the extra conditional for the sane cases.
+>> >> 
+>> >> But yes, I'm fine with that as well. That's why this patch is marked RFC :)  
+>> >
+>> > When we're in the right context (irq/bh disabled etc.) the cost is just
+>> > read of preempt_count() and jump, right? And presumably preempt_count()
+>> > is in the cache already, because those sections aren't very long. Let me
+>> > make this change locally and see if it is in any way perceivable.  
+>> 
+>> Right. Just wanted to mention it :)
+>> 
+>> > Obviously if anyone sees a way to solve the problem without much
+>> > ifdefinery and force_irqthreads checks that'd be great - I don't.  
+>> 
+>> This is not related to force_irqthreads at all. This very driver invokes
+>> it from plain thread context.
+>
+> I see, but a driver calling __napi_schedule_irqoff() from its IRQ
+> handler _would_ be an issue, right? Or do irq threads trigger softirq
+> processing on exit?
 
+Yes, they do. See irq_forced_thread_fn(). It has a local_bh_disable() /
+local_bh_ enable() pair around the invocation to ensure that.
 
-I.e., the person or bot that is running the kernel configurator should
-set/define the Kconfig symbol CONFIG_DTCM_RAM_BASE.
+>> > I'd rather avoid pushing this kind of stuff out to the drivers.  
+>> 
+>> You could have napi_schedule_intask() or something like that which would
+>> do the local_bh_disable()/enable() dance around the invocation of
+>> napi_schedule(). That would also document it clearly in the drivers. A
+>> quick grep shows a bunch of instances which could be replaced:
+>> 
+>> drivers/net/ethernet/broadcom/bnx2x/bnx2x_main.c-5704-		local_bh_disable();
+>> drivers/net/ethernet/mellanox/mlx4/en_netdev.c-1830-		local_bh_disable();
+>> drivers/net/usb/r8152.c-1552-	local_bh_disable();
+>> drivers/net/virtio_net.c-1355-	local_bh_disable();
+>> drivers/net/wireless/intel/iwlwifi/pcie/rx.c-1650-	local_bh_disable();
+>> drivers/net/wireless/intel/iwlwifi/pcie/rx.c-2015-		local_bh_disable();
+>> drivers/net/wireless/intel/iwlwifi/pcie/rx.c-2225-		local_bh_disable();
+>> drivers/net/wireless/intel/iwlwifi/pcie/rx.c-2235-		local_bh_disable();
+>> drivers/s390/net/qeth_core_main.c-3515-	local_bh_disable();
+>
+> Very well aware, I've just sent a patch for mlx5 last week :)
+>
+> My initial reaction was the same as yours - we should add lockdep
+> check, and napi_schedule_intask(). But then I started wondering
+> if it's all for nothing on rt or with force_irqthreads, and therefore
+> we should just eat the extra check.
 
-Please do so in your scripts.
-Thanks.
+We can make that work but sure I'm not going to argue when you decide to
+just go for raise_softirq_irqsoff().
 
-> :::::: The code at line 14 was first introduced by commit
-> :::::: f525bb2c9e7cf1e3c43ab57704c9e1c836d30b34 csky: Tightly-Coupled Memory or Sram support
-> 
-> :::::: TO: Guo Ren <guoren@linux.alibaba.com>
-> :::::: CC: Guo Ren <guoren@linux.alibaba.com>
+I just hacked that check up which is actually useful beyond NAPI. It's
+straight forward except for that flush_smp_call_function_from_idle()
+oddball, which immeditately triggered that assert because block mq uses
+__raise_softirq_irqsoff() in a smp function call...
 
+See below. Peter might have opinions though :)
 
+Thanks,
 
--- 
-~Randy
+        tglx
+---
+ include/linux/lockdep.h |   21 +++++++++++++++++++++
+ include/linux/sched.h   |    1 +
+ kernel/smp.c            |    2 ++
+ kernel/softirq.c        |   18 ++++++++++++++----
+ 4 files changed, 38 insertions(+), 4 deletions(-)
+
+--- a/include/linux/lockdep.h
++++ b/include/linux/lockdep.h
+@@ -636,6 +636,23 @@ do {									\
+ 		     (!in_softirq() || in_irq() || in_nmi()));		\
+ } while (0)
+ 
++#define lockdep_set_softirq_raise_safe()				\
++do {									\
++	current->softirq_raise_safe = 1;				\
++} while (0)
++
++#define lockdep_clear_softirq_raise_safe()				\
++do {									\
++	current->softirq_raise_safe = 0;				\
++} while (0)
++
++#define lockdep_assert_softirq_raise_ok()				\
++do {									\
++	WARN_ON_ONCE(__lockdep_enabled &&				\
++		     !current->softirq_raise_safe &&			\
++		     !(softirq_count() | hardirq_count()));		\
++} while (0)
++
+ #else
+ # define might_lock(lock) do { } while (0)
+ # define might_lock_read(lock) do { } while (0)
+@@ -648,6 +665,10 @@ do {									\
+ # define lockdep_assert_preemption_enabled() do { } while (0)
+ # define lockdep_assert_preemption_disabled() do { } while (0)
+ # define lockdep_assert_in_softirq() do { } while (0)
++
++# define lockdep_set_softirq_raise_safe()	do { } while (0)
++# define lockdep_clear_softirq_raise_safe()	do { } while (0)
++# define lockdep_assert_softirq_raise_ok()	do { } while (0)
+ #endif
+ 
+ #ifdef CONFIG_PROVE_RAW_LOCK_NESTING
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1058,6 +1058,7 @@ struct task_struct {
+ 	u64				curr_chain_key;
+ 	int				lockdep_depth;
+ 	unsigned int			lockdep_recursion;
++	unsigned int			softirq_raise_safe;
+ 	struct held_lock		held_locks[MAX_LOCK_DEPTH];
+ #endif
+ 
+--- a/kernel/smp.c
++++ b/kernel/smp.c
+@@ -691,7 +691,9 @@ void flush_smp_call_function_from_idle(v
+ 	cfd_seq_store(this_cpu_ptr(&cfd_seq_local)->idle, CFD_SEQ_NOCPU,
+ 		      smp_processor_id(), CFD_SEQ_IDLE);
+ 	local_irq_save(flags);
++	lockdep_set_softirq_raise_safe();
+ 	flush_smp_call_function_queue(true);
++	lockdep_clear_softirq_raise_safe();
+ 	if (local_softirq_pending())
+ 		do_softirq();
+ 
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -664,12 +664,19 @@ void irq_exit(void)
+ 	lockdep_hardirq_exit();
+ }
+ 
++static inline void ____raise_softirq_irqoff(unsigned int nr)
++{
++	lockdep_assert_irqs_disabled();
++	trace_softirq_raise(nr);
++	or_softirq_pending(1UL << nr);
++}
++
+ /*
+  * This function must run with irqs disabled!
+  */
+ inline void raise_softirq_irqoff(unsigned int nr)
+ {
+-	__raise_softirq_irqoff(nr);
++	____raise_softirq_irqoff(nr);
+ 
+ 	/*
+ 	 * If we're in an interrupt or softirq, we're done
+@@ -693,11 +700,14 @@ void raise_softirq(unsigned int nr)
+ 	local_irq_restore(flags);
+ }
+ 
++/*
++ * Must be invoked with interrupts disabled and either from softirq serving
++ * context or with local bottom halfs disabled.
++ */
+ void __raise_softirq_irqoff(unsigned int nr)
+ {
+-	lockdep_assert_irqs_disabled();
+-	trace_softirq_raise(nr);
+-	or_softirq_pending(1UL << nr);
++	lockdep_assert_softirq_raise_ok();
++	____raise_softirq_irqoff(nr);
+ }
+ 
+ void open_softirq(int nr, void (*action)(struct softirq_action *))
 
