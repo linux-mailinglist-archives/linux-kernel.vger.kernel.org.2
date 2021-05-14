@@ -2,127 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 831F6380E31
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 18:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 347AF380E39
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 18:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232144AbhENQap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 12:30:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230009AbhENQan (ORCPT
+        id S234577AbhENQbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 12:31:49 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:33070 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230009AbhENQbs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 12:30:43 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADE86C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 09:29:29 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id r11so11299141edt.13
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 09:29:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=EjCa/Y8fPjm4VNptwpoJ6doa9lNqw0SSL7+evAimqKA=;
-        b=uq1b0TRBSGV5y3N9/LBzSnoEsVO9A4VNXUPGgt2SF2QyjAzBGMVXPf+EZgdA3r4r84
-         30BwxNO+4v8pi6gCotag91xtXPTy+Rng3OTGiuadS8F1nZkKXDEGMZ1aPsoBrFUmuv6x
-         kcIUjyF6k2z8zaNiQmtKhnwFcA8tsXYs1gDLZlnXDysMxSHFkJe+1jw8MVkzug7c7Vf+
-         qSC1cgDMqP/PpkaVnfh3qG/aK3wYMkYtSBWS+RBf/bRQOSWyKfbtDjmF9c7xa64gkkUu
-         cKCJlcveSvHvwX+VNzJYcuFC0T3i8nao1kxsa1I0hCZvKAARxnwNvrV5ueylWnp6AaV1
-         kuGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=EjCa/Y8fPjm4VNptwpoJ6doa9lNqw0SSL7+evAimqKA=;
-        b=fZ/Rskb4WRdyz8T+V+ufOmAOiMpx2I2vNXiajwFvtPIThxOAtivLtvIU4y3Pn4qT5Q
-         GU+tjdP8y8mueJzfg689vV2q1GeVd5etwz7iPQIpaXzpvXniadBEqVDgKcbknBHRys1y
-         25g+2yqyMOxodpsyzEnsXTAqztSPhz2HKn8RcbQtZ7hOFvEVAqJ4ivwhwLvmwXrOU7aC
-         ThfBOrf4ikp9RDtwlXLzLtGWpei0fYuwM6Q525Oq57MvLINAHfFcLDUV+x01RkaxdqmJ
-         bRLlnc490IEX63JzT/r/CF85ahgmMig4013llIs63fALjT4rwdWk/qaOw7p8k+wmHRc6
-         uYmw==
-X-Gm-Message-State: AOAM532O4XAnmx34V1mpqwXO3nhx4nDvWgHCz5YP2kr/xRnyAiKxxb0K
-        Uh11Xi5Cp4A4H8D4eXHSH84opxm0iefsTg==
-X-Google-Smtp-Source: ABdhPJzJQzM7qSR6YpKntCTFQHiOYUxGKL8R0Pl2TzZ99ffjN6gbUsMr1X0dNhgI7+WBTCHsk4wKMQ==
-X-Received: by 2002:a05:6402:176f:: with SMTP id da15mr12000926edb.380.1621009768472;
-        Fri, 14 May 2021 09:29:28 -0700 (PDT)
-Received: from agape.jhs ([5.171.72.183])
-        by smtp.gmail.com with ESMTPSA id p25sm3859345eja.35.2021.05.14.09.29.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 09:29:28 -0700 (PDT)
-Date:   Fri, 14 May 2021 18:29:25 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: staging: rtl8723bs: questions on TODO list
-Message-ID: <20210514162925.GA1568@agape.jhs>
-References: <20210514083856.GA13800@agape.jhs>
- <YJ44mtOUVZwhxW4m@kroah.com>
+        Fri, 14 May 2021 12:31:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
+        Message-ID:From:References:Cc:To:content-disposition;
+        bh=xV6ltS4lNS3Jm/f8TEnktWg1U1xW+UrFzR8b6RAQyww=; b=s//zBlCpwgQ1lLSn3XKJEQOaWd
+        rI8rRBGrF3aoC3g+QuDXDug4GzbnkaS6nBtWhDM3pUOjQYKZYx/6iqfRigkJyI290iga8e7o+co0E
+        QbXpFJsOWAQw7fOVJWNVDxDk/PaOaE0YGfRnol4IiEjPWjENwy9CRw8DjR6tZ+WmbEC0OTj1tjMV/
+        /DRMXbA8j4LTuFwWSHMlTxZaa7XowzY/YiYS5R+3nywlL9wmmsoR+uFEzvV5+oIlKCVP0Tyx8aJlM
+        CWWYGc4JPwElN6+U10s+whCtXjoZyIVemlp2K/nOQSPMyhE1NnQR98UkoaVAkuMTzmLnP7RlAicuB
+        8O/5DBLg==;
+Received: from guinness.priv.deltatee.com ([172.16.1.162])
+        by ale.deltatee.com with esmtp (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1lhahm-0006Ih-Qz; Fri, 14 May 2021 10:30:27 -0600
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
+        Stephen Bates <sbates@raithlin.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>
+References: <20210513223203.5542-1-logang@deltatee.com>
+ <20210514140007.GE4715@lst.de>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <91ce86db-e2f9-85ac-12db-91df72ac4648@deltatee.com>
+Date:   Fri, 14 May 2021 10:30:25 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YJ44mtOUVZwhxW4m@kroah.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210514140007.GE4715@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 172.16.1.162
+X-SA-Exim-Rcpt-To: robin.murphy@arm.com, ira.weiny@intel.com, helgaas@kernel.org, jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, jhubbard@nvidia.com, christian.koenig@amd.com, jgg@ziepe.ca, dan.j.williams@intel.com, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, hch@lst.de
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
+        version=3.4.2
+Subject: Re: [PATCH v2 00/22] Add new DMA mapping operation for P2PDMA
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 10:45:14AM +0200, Greg KH wrote:
-> On Fri, May 14, 2021 at 10:38:57AM +0200, Fabio Aiuto wrote:
-> > Hello all,
-> > 
-> > I'd like to have some clarifications about rtl8723bs driver.
-> > In order to make this driver ready for moving out of staging
-> > I would like to know:
-> > 
-> > - find and remove remaining code valid only for 5 GHz. Most of the obvious
-> >   ones have been removed, but things like channel > 14 still exist.
-> > 
-> > is it possible to remove all 5g code, even the one related to power
-> > regulation when on band 5g? As far as I know about this card is that
-> > it doesn't support 5g, so may I just delete all 5g code or there are some
-> > constraints I'd take care of?
-> > 
-> > - find and remove any code for other chips that is left over
-> > 
-> > Ok this seems clear, are there some suggestion to do it safely?
-> > 
-> > - convert any remaining unusual variable types
-> > 
-> > Ok (but feel free to suggest anything)
-> > 
-> > - find codes that can use %pM and %Nph formatting
-> > 
-> > Ok (but feel free to suggest anything)
-> > 
-> > - checkpatch.pl fixes - most of the remaining ones are lines too long. Many
-> >   of them will require refactoring
-> > 
-> > Ok
-> > 
-> > - merge Realtek's bugfixes and new features into the driver
-> > 
-> > Please, can you explain what one could do that?
-> > 
-> > - switch to use LIB80211
-> > - switch to use MAC80211
-> > 
-> > I think I need a few details for these last points as well.
-> > 
-> > Do you think that one will need real hardware to complete
-> > these tasks? I don't have rtl8723bs card at the moment, so
-> > I think I will focus on those TODO activities which
-> > don't need it.
-> 
-> I recommend getting one of these devices to do the more complex tasks as
-> described above.  Otherwise it's going to be hard to verify that your
-> changes are valid.
-> 
-> thanks,
-> 
-> greg k-h
 
-got it,
 
-thank you,
+On 2021-05-14 8:00 a.m., Christoph Hellwig wrote:
+> On Thu, May 13, 2021 at 04:31:41PM -0600, Logan Gunthorpe wrote:
+>>  17 files changed, 570 insertions(+), 290 deletions(-)
+> 
+> I'm a little worried about all this extra code for no new functionality
+> at all.
 
-fabio
+Yes, this series is really just prep work for allowing new
+functionality. And a bunch of cleanup has been tacked onto it. It should
+make adding P2PDMA in userspace a lot easier and I expect other P2PDMA
+use cases will be better enabled by it.
+
+A lot of people don't like the pci_p2pdma_map_sg() special case and
+can't use it in their use case because it only accepts homogenous SGLs.
+This series gets rid of the special case and allows it to be used more
+generally.
+
+Logan
