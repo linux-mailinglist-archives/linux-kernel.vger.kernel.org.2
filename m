@@ -2,109 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29CCB380FD4
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 20:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9EA380FD1
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 20:34:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231834AbhENSgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 14:36:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38350 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229952AbhENSgN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 14:36:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 03C296144C
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 18:35:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621017302;
-        bh=CuuEkwV+N8t2BonQ3agVLWbtPd5DOE4Jjt+nL4AYZS0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=UByPVfl+Q3LhIDTkxB9HsxmJ3A8tATi2yXk+rB8M/p5BwdQ3tolUtjrsKc/iNlHg+
-         /t5wgdnTsEvoioeVmjpAfFMmwvIfVJweiI6oVL27T4YNDwyc2GIwjaG6IE4ceKGybP
-         aGV1ZDe9xrYvwRhrYIxrHLpgTWSFTvNhLOudLUQpibCaBcZr6AGQtHuaIGGXK4uzS2
-         tz15YjKqJYyIMQIakkQIN22igZjOOMk5El6Jfhx6AFsvBBTKKKt9BTqFb+2q6ZOyTs
-         x2+V53fuIQWaE/6rj7CJdJpnzIic96lnowI2LwKRNeb5nfbHwsM3cmMJnSFyqYzTfe
-         828+uPTLuuNEQ==
-Received: by mail-wr1-f45.google.com with SMTP id h4so148704wrt.12
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 11:35:01 -0700 (PDT)
-X-Gm-Message-State: AOAM5329KpeRMC/5NTfD5dhvRf6PzmaOxXIsvuzLwReMw6mm2eC18loE
-        KfgmxVrVXUPE8Beaxh4g21urQ9DgEczCNAbGwZg=
-X-Google-Smtp-Source: ABdhPJxgbKjN9tZU+5zwe6LBkqv6M7JLWeSOjqJnE189j0ZtTOrSkgSSj0cNHvs9kwrItnzEJ4r0U8CrPKwn2AJJH58=
-X-Received: by 2002:a5d:6dc4:: with SMTP id d4mr61902203wrz.105.1621017300619;
- Fri, 14 May 2021 11:35:00 -0700 (PDT)
+        id S231659AbhENSfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 14:35:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229952AbhENSfx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 14:35:53 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B49E8C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 11:34:41 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id v191so342807pfc.8
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 11:34:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lELtbwQEctdIwPQb3wCQp5OuKO4/lkfT92gv1xyToGE=;
+        b=gSrEImsqcT8WUGbSMZ53B7UmwxHd+LIibGRNufbT852dWJIzp0i8btI4zX7WXhaYtG
+         XvOIwJcw8HHEeQkgQHQ5YeVjBnSpqI8AgJNG4QNiIkHMitswBlzQoq4kHxTrUiXytj0Z
+         RsCHapE64niz5srWtsa12N8xR/tqm/VLRfqtU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lELtbwQEctdIwPQb3wCQp5OuKO4/lkfT92gv1xyToGE=;
+        b=ie4bARibNE2qp/b5Kra2sbMStfQ2nnkA2uzdXNandoxyeHZJWPFcHu9BKEvbXlzkt4
+         +f9rxQNvmwVQI0OdovQDCClhAAinbWMMyKUnrnxJeyhPU//XerJhjbKYqip1wVnne7Qt
+         37fWtFyJEtowDRXfzUn0Ddpi45cxPZKOU/hdILxOeFNcL7IztNoVvVva/V4+ErDikPVY
+         3tmvUJ8V+kGCs/N0Mcy6+lGfqS/604tKgdRiHeGkwdLw//0tV5f7rdJkAtc4H1RN7r3c
+         YndN0r+6zJ3XnPMHFf7mHHju2CMM6eEhmshFPX982GrBg1BUUR3QPTqnjuh7TEt/6prG
+         RD9Q==
+X-Gm-Message-State: AOAM532qcj4VxABOuiNndPrIP6adeugvOPjXzN6LAjHv+32naUBIEM8d
+        DsiD8KixZ3b1dftrFDiGXnhZgw==
+X-Google-Smtp-Source: ABdhPJwwG0FPWg4ZVysBvGRUFzN69CmNe/Rog4IBIjy9UL84MRc8Br5Uk3bUyMH30eFS+wfxZ/h4fQ==
+X-Received: by 2002:a62:585:0:b029:2a2:3976:60a9 with SMTP id 127-20020a6205850000b02902a2397660a9mr42984565pff.47.1621017281302;
+        Fri, 14 May 2021 11:34:41 -0700 (PDT)
+Received: from sujitka-glaptop.hsd1.ca.comcast.net ([2601:646:8e00:b2f0:6d29:e373:344b:8862])
+        by smtp.gmail.com with ESMTPSA id ga1sm5375127pjb.5.2021.05.14.11.34.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 May 2021 11:34:40 -0700 (PDT)
+From:   Sujit Kautkar <sujitka@chromium.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Sujit Kautkar <sujitka@chromium.org>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: qcom: sc7180: Move rmtfs memory region
+Date:   Fri, 14 May 2021 11:34:34 -0700
+Message-Id: <20210514113430.1.Ic2d032cd80424af229bb95e2c67dd4de1a70cb0c@changeid>
+X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
 MIME-Version: 1.0
-References: <20210514140429.3334181-1-arnd@kernel.org> <20210514101610.4392adbc@gandalf.local.home>
-In-Reply-To: <20210514101610.4392adbc@gandalf.local.home>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 14 May 2021 20:33:58 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1bZ6DBFRy+HCax-=jj2rTa+hCkK8VOSRvX56CLAz23Ew@mail.gmail.com>
-Message-ID: <CAK8P3a1bZ6DBFRy+HCax-=jj2rTa+hCkK8VOSRvX56CLAz23Ew@mail.gmail.com>
-Subject: Re: [PATCH] tracing: events_hist: avoid using excessive stack space
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Steven Rostedt (VMware)" <rostedt@godmis.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Qiujun Huang <hqjagain@gmail.com>, Tom Rix <trix@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 4:16 PM Steven Rostedt <rostedt@goodmis.org> wrote:
-> On Fri, 14 May 2021 16:04:25 +0200 Arnd Bergmann <arnd@kernel.org> wrote:
->
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > In some configurations, clang produces a warning about an overly large
-> > amount of stack space used in hist_trigger_print_key():
-> >
-> > kernel/trace/trace_events_hist.c:4594:13: error: stack frame size of 1248 bytes in function 'hist_trigger_print_key' [-Werror,-Wframe-larger-than=]
-> > static void hist_trigger_print_key(struct seq_file *m,
-> >
-> > Moving the 'str' variable into a more local scope in the two places
-> > where it gets used actually reduces the the used stack space here
-> > and gets it below the warning limit, because the compiler can now
-> > assume that it is safe to use the same stack slot that it has for
-> > the stack of any inline function.
->
-> Thanks Arnd for the nice explanation of the rationale for this change.
->
-> But I still find it too subtle to my liking that we need to move the
-> declaration like this (and duplicate it twice) for internal behavior of the
-> compiler (where it can't figure out itself by the use cases if it can
-> optimize the stack).
+Move rmtfs memory region so that it does not overlap with system
+RAM (kernel data) when KAsan is enabled. This puts rmtfs right
+after mba_mem which is not supposed to increase beyond 0x94600000
 
-It's not really internal behavior of the compiler that causes the smaller
-scope to help here, I'm sure gcc has to do the same thing regarding
-the placement of this variable on the stack. Clang does have some related
-cases that it doesn't do as well as gcc, but I don't think this is one of them.
+Signed-off-by: Sujit Kautkar <sujitka@chromium.org>
+---
 
-The difference between the compilers or configurations is the way that
-inlining decisions are made, so if a compiler inlines another function into this
-one that also uses a lot of stack space, that will trigger the warning, while
-a compiler that does not inline that would not warn but also not use any
-less stack space in the code path that uses the nested function.
+ arch/arm64/boot/dts/qcom/sc7180-idp.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-> > index c1abd63f1d6c..e3fe84f017a8 100644
-> > --- a/kernel/trace/trace_events_hist.c
-> > +++ b/kernel/trace/trace_events_hist.c
-> > @@ -4597,7 +4597,6 @@ static void hist_trigger_print_key(struct seq_file *m,
-> >                                  struct tracing_map_elt *elt)
-> >  {
-> >       struct hist_field *key_field;
-> > -     char str[KSYM_SYMBOL_LEN];
->
-> Instead, I think we should just make str static, as this should only be
-> called under the event_mutex. To be sure, we can also add:
->
->         /* To protect the static str variable */
->         lockdep_assert_held(&event_mutex);
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-idp.dts b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+index e77a7926034a7..afe0f9c258164 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-idp.dts
++++ b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+@@ -45,7 +45,7 @@ chosen {
+ 
+ /* Increase the size from 2MB to 8MB */
+ &rmtfs_mem {
+-	reg = <0x0 0x84400000 0x0 0x800000>;
++	reg = <0x0 0x94600000 0x0 0x800000>;
+ };
+ 
+ / {
+-- 
+2.31.1.751.gd2f1c929bd-goog
 
-Ok, I changed my local version to this, will send v2 once it passes
-some more randconfig builds.
-
-         Arnd
