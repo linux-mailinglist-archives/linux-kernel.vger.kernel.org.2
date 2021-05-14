@@ -2,50 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0123138075C
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 12:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D73D338075E
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 12:35:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233597AbhENKgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 06:36:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44300 "EHLO mail.kernel.org"
+        id S233657AbhENKgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 06:36:45 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47324 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233569AbhENKgR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 06:36:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BF2F613B5;
-        Fri, 14 May 2021 10:35:04 +0000 (UTC)
-Date:   Fri, 14 May 2021 11:35:02 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>,
-        Will Deacon <will@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 3/3] arm64, topology: enable use of
- init_cpu_capacity_cppc()
-Message-ID: <20210514103502.GB855@arm.com>
-References: <20210514095339.12979-1-ionela.voinescu@arm.com>
- <20210514095339.12979-4-ionela.voinescu@arm.com>
+        id S233603AbhENKgU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 06:36:20 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B4765AF4E;
+        Fri, 14 May 2021 10:35:07 +0000 (UTC)
+Subject: Re: [PATCH v10 02/33] mm: Add folio_pgdat and folio_zone
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        akpm@linux-foundation.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Zi Yan <ziy@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jeff Layton <jlayton@kernel.org>
+References: <20210511214735.1836149-1-willy@infradead.org>
+ <20210511214735.1836149-3-willy@infradead.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <42582e63-ad03-8ae7-89d3-bbf2725acccd@suse.cz>
+Date:   Fri, 14 May 2021 12:35:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210514095339.12979-4-ionela.voinescu@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210511214735.1836149-3-willy@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 10:53:39AM +0100, Ionela Voinescu wrote:
-> Now that the arch topology driver provides a method of setting CPU
-> capacity values based on information on highest performance from CPPC,
-> use this functionality on arm64 platforms.
+On 5/11/21 11:47 PM, Matthew Wilcox (Oracle) wrote:
+> These are just convenience wrappers for callers with folios; pgdat and
+> zone can be reached from tail pages as well as head pages.
 > 
-> Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Zi Yan <ziy@nvidia.com>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Acked-by: Jeff Layton <jlayton@kernel.org>
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+
+> ---
+>  include/linux/mm.h | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index b29c86824e6b..a55c2c0628b6 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -1560,6 +1560,16 @@ static inline pg_data_t *page_pgdat(const struct page *page)
+>  	return NODE_DATA(page_to_nid(page));
+>  }
+>  
+> +static inline struct zone *folio_zone(const struct folio *folio)
+> +{
+> +	return page_zone(&folio->page);
+> +}
+> +
+> +static inline pg_data_t *folio_pgdat(const struct folio *folio)
+> +{
+> +	return page_pgdat(&folio->page);
+> +}
+> +
+>  #ifdef SECTION_IN_PAGE_FLAGS
+>  static inline void set_page_section(struct page *page, unsigned long section)
+>  {
+> 
+
