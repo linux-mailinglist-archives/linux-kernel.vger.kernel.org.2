@@ -2,91 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 016663809AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 14:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B75B3809B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 14:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233666AbhENMgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 08:36:46 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:36476 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233360AbhENMgl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 08:36:41 -0400
-Date:   Fri, 14 May 2021 12:35:28 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620995729;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=y2TRdEOo2opgyxg4Ofb2+3cG+kZ9FdY0Z3rbJ6w55A4=;
-        b=ZoUEhU1/c3YEn78s5J0bW5BKGm/Ue0e8eKmXR9CQh0iEOtnQHP9xj8ONJ+N08ZqlG75ZMD
-        eIKD+mtPR2mzSpsc+49lYQh5tQg6CZZdYdDZF7AHXmAQdDPF28dKc8SKzET/dLnZB9rE7A
-        zY6MdWhvB3aFORZKdibRK/zguXheJh2yxuHaSkxOD4w5RyNLTknnYzd0Uoge5IL0bSL7q6
-        CZvzC9UK/mVJEiRXqEuyIEigQeXiwCLsATt0Kh/WfywuEkjzgvACKgj9RJBe/k0CQ3/vx8
-        cKM6Rm25otTu/pW5bNf7GrOasd6ebFWkrLSpUksyTqDk2dcV7+X2Aev9g0iW5w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620995729;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=y2TRdEOo2opgyxg4Ofb2+3cG+kZ9FdY0Z3rbJ6w55A4=;
-        b=iMRf3Tj4S9ew341/UiLj+deQMYM5Bx7nGSDfbBbF2o+MxWr1GZE41WBiA1/yaVLGZ96e4U
-        4Z1aAhg03INzGiBg==
-From:   "tip-bot2 for Andi Kleen" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cpu] x86/cpu: Fix core name for Sapphire Rapids
-Cc:     Andi Kleen <ak@linux.intel.com>, Borislav Petkov <bp@suse.de>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210513163904.3083274-1-ak@linux.intel.com>
-References: <20210513163904.3083274-1-ak@linux.intel.com>
+        id S233677AbhENMiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 08:38:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42650 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232712AbhENMh5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 08:37:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BC57613AA;
+        Fri, 14 May 2021 12:36:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620995805;
+        bh=hyertDNlfhFKOOJ8yfd61vbbV9AbUCAAb5FsoMme4cI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=h2M1F9MymaSYeIARmPHvk2g0g8q7tMtkxUdfSv6jfC+y0zgaQ/OXAronVhQMNEOmX
+         9ejSVLY9N+uQHYW1n4XEnDMn74o7BcXY93Pr6XGRnFLvJaL3+kt+5lGKNgrEwmaNKo
+         f5B4NS+MEdEpc79PtOV29fw+ZmYJ1byQPS6REs4Q=
+Date:   Fri, 14 May 2021 14:36:42 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+636c58f40a86b4a879e7@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2] misc/uss720: fix memory leak in uss720_probe
+Message-ID: <YJ5u2oEjJyF+e0JU@kroah.com>
+References: <20210514123425.6345-1-mudongliangabcd@gmail.com>
 MIME-Version: 1.0
-Message-ID: <162099572850.29796.9809922742922576170.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210514123425.6345-1-mudongliangabcd@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cpu branch of tip:
+On Fri, May 14, 2021 at 08:34:25PM +0800, Dongliang Mu wrote:
+> uss720_probe forgets to decrease the refcount of usbdev in uss720_probe.
+> Fix this by decreasing the refcount of usbdev by usb_put_dev.
+> 
+> BUG: memory leak
+> unreferenced object 0xffff888101113800 (size 2048):
+>   comm "kworker/0:1", pid 7, jiffies 4294956777 (age 28.870s)
+>   hex dump (first 32 bytes):
+>     ff ff ff ff 31 00 00 00 00 00 00 00 00 00 00 00  ....1...........
+>     00 00 00 00 00 00 00 00 00 00 00 00 03 00 00 00  ................
+>   backtrace:
+>     [<ffffffff82b8e822>] kmalloc include/linux/slab.h:554 [inline]
+>     [<ffffffff82b8e822>] kzalloc include/linux/slab.h:684 [inline]
+>     [<ffffffff82b8e822>] usb_alloc_dev+0x32/0x450 drivers/usb/core/usb.c:582
+>     [<ffffffff82b98441>] hub_port_connect drivers/usb/core/hub.c:5129 [inline]
+>     [<ffffffff82b98441>] hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
+>     [<ffffffff82b98441>] port_event drivers/usb/core/hub.c:5509 [inline]
+>     [<ffffffff82b98441>] hub_event+0x1171/0x20c0 drivers/usb/core/hub.c:5591
+>     [<ffffffff81259229>] process_one_work+0x2c9/0x600 kernel/workqueue.c:2275
+>     [<ffffffff81259b19>] worker_thread+0x59/0x5d0 kernel/workqueue.c:2421
+>     [<ffffffff81261228>] kthread+0x178/0x1b0 kernel/kthread.c:292
+>     [<ffffffff8100227f>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+> 
+> Reported-by: syzbot+636c58f40a86b4a879e7@syzkaller.appspotmail.com
+> Fixes: 0f36163d3abe ("usb: fix uss720 schedule with interrupts off")
+> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> ---
+>  drivers/usb/misc/uss720.c | 1 +
+>  1 file changed, 1 insertion(+)
 
-Commit-ID:     28188cc461f6cf8b7d28de4f6df52014cc1d5e39
-Gitweb:        https://git.kernel.org/tip/28188cc461f6cf8b7d28de4f6df52014cc1d5e39
-Author:        Andi Kleen <ak@linux.intel.com>
-AuthorDate:    Thu, 13 May 2021 09:39:04 -07:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Fri, 14 May 2021 14:31:14 +02:00
+What changed from v1?  That always goes below the --- line.
 
-x86/cpu: Fix core name for Sapphire Rapids
+Please fix and send a v3.
 
-Sapphire Rapids uses Golden Cove, not Willow Cove.
+thanks,
 
-Fixes: 53375a5a218e ("x86/cpu: Resort and comment Intel models")
-Signed-off-by: Andi Kleen <ak@linux.intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210513163904.3083274-1-ak@linux.intel.com
----
- arch/x86/include/asm/intel-family.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/include/asm/intel-family.h b/arch/x86/include/asm/intel-family.h
-index 955b06d..2715843 100644
---- a/arch/x86/include/asm/intel-family.h
-+++ b/arch/x86/include/asm/intel-family.h
-@@ -102,7 +102,8 @@
- 
- #define INTEL_FAM6_TIGERLAKE_L		0x8C	/* Willow Cove */
- #define INTEL_FAM6_TIGERLAKE		0x8D	/* Willow Cove */
--#define INTEL_FAM6_SAPPHIRERAPIDS_X	0x8F	/* Willow Cove */
-+
-+#define INTEL_FAM6_SAPPHIRERAPIDS_X	0x8F	/* Golden Cove */
- 
- #define INTEL_FAM6_ALDERLAKE		0x97	/* Golden Cove / Gracemont */
- #define INTEL_FAM6_ALDERLAKE_L		0x9A	/* Golden Cove / Gracemont */
+greg k-h
