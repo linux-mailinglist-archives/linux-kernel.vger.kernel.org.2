@@ -2,308 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1DCB380EF5
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 19:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 284F5380F21
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 19:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232182AbhENRbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 13:31:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50908 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231474AbhENRbD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 13:31:03 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C465CAF31;
-        Fri, 14 May 2021 17:29:50 +0000 (UTC)
-Subject: Re: [PATCH v10 15/33] mm/util: Add folio_mapping and
- folio_file_mapping
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        akpm@linux-foundation.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Jeff Layton <jlayton@kernel.org>
-References: <20210511214735.1836149-1-willy@infradead.org>
- <20210511214735.1836149-16-willy@infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <8e8f88b9-796c-8372-f16f-ad4716e7b454@suse.cz>
-Date:   Fri, 14 May 2021 19:29:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S235200AbhENRlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 13:41:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230487AbhENRlV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 13:41:21 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66AD2C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 10:40:08 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id c20so10350351ejm.3
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 10:40:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3bmbAftPboaY7hu+DnMgt2b6hH50EmPqKJHrC7bAGn8=;
+        b=OCUpNcjguSpqlmqGqLclnsNCOhgzU3pBtJ+0aWvCc2SR59QNIHWTyn2iHNnFIXoHb/
+         IlrJnYgxa3QKa7TD5DPjuhh0hv9dsnnG2SJC44eepw5A/YU6NsZQR/5smJrlWciM7Uz7
+         oY/UTgSqeb9/fYqELWpyA+6END7cpdJzA1bkA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3bmbAftPboaY7hu+DnMgt2b6hH50EmPqKJHrC7bAGn8=;
+        b=frv4yUgmF4I7hvDpWMs2LCYAugX3xqMVL7uLTszkJotVsXMWXPNes98IHl3NGKXndW
+         9v5uTI54VkoHYhn7sh8eLCjpIUWpOWq7OpW9M/lv4qfzs2lWrQow+Ak6vXbIUR7khrqE
+         UIuk9K4B4BeCSi2og9ZPCjxo6SdqtOk56ywuNoblmpjNbnRgTcxm9o0hZJnvhFVyluvD
+         U6tqKt04MLTSat0MFxgbZSLBIQvcOc3vxvCUlVR+QCDfxEQlt2JowuNFU0OC1V/50ZAJ
+         O5UYgF1Zx2YeeQfsTy6UqOQPo+0ZM74ZaImvou678q2qdQUmEw1magY9oV5lWfKtRLVI
+         UWFw==
+X-Gm-Message-State: AOAM533xQexQoPu27UUSHFgLTi4aCsc6ABZ/RkK3fuy5PqEGPHxaPQxb
+        1EboHuX35Ph9xNOql+bZ23u701/tt7XuZfmgr+k=
+X-Google-Smtp-Source: ABdhPJwT4eFxCE7Tmm5l2OFuojJqlBcXHr33l9NSmnXPXy7vAjiJzAd41Fv7mhYmZ493M1YxhsHWaQ==
+X-Received: by 2002:a17:906:3452:: with SMTP id d18mr4273915ejb.24.1621014006972;
+        Fri, 14 May 2021 10:40:06 -0700 (PDT)
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com. [209.85.208.43])
+        by smtp.gmail.com with ESMTPSA id a22sm5097662edu.14.2021.05.14.10.40.06
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 May 2021 10:40:06 -0700 (PDT)
+Received: by mail-ed1-f43.google.com with SMTP id f1so13342809edt.4
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 10:40:06 -0700 (PDT)
+X-Received: by 2002:a2e:9251:: with SMTP id v17mr38807472ljg.507.1621013573543;
+ Fri, 14 May 2021 10:32:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210511214735.1836149-16-willy@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210514100106.3404011-1-arnd@kernel.org>
+In-Reply-To: <20210514100106.3404011-1-arnd@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 14 May 2021 10:32:37 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whGObOKruA_bU3aPGZfoDqZM1_9wBkwREp0H0FgR-90uQ@mail.gmail.com>
+Message-ID: <CAHk-=whGObOKruA_bU3aPGZfoDqZM1_9wBkwREp0H0FgR-90uQ@mail.gmail.com>
+Subject: Re: [PATCH v2 00/13] Unify asm/unaligned.h around struct helper
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     linux-arch <linux-arch@vger.kernel.org>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        James Morris <jmorris@namei.org>, Jens Axboe <axboe@kernel.dk>,
+        John Johansen <john.johansen@canonical.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Rich Felker <dalias@libc.org>,
+        "Richard Russon (FlatCap)" <ldm@flatcap.org>,
+        Russell King <linux@armlinux.org.uk>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
+        Stafford Horne <shorne@gmail.com>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        openrisc@lists.librecores.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        linux-sparc <sparclinux@vger.kernel.org>,
+        linux-ntfs-dev@lists.sourceforge.net,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/11/21 11:47 PM, Matthew Wilcox (Oracle) wrote:
-> These are the folio equivalent of page_mapping() and page_file_mapping().
-> Add an out-of-line page_mapping() wrapper around folio_mapping()
-> in order to prevent the page_folio() call from bloating every caller
-> of page_mapping().  Adjust page_file_mapping() and page_mapping_file()
-> to use folios internally.  Rename __page_file_mapping() to
-> swapcache_mapping() and change it to take a folio.
-> 
-> This ends up saving 186 bytes of text overall.  folio_mapping() is
-> 45 bytes shorter than page_mapping() was, but the new page_mapping()
-> wrapper is 30 bytes.  The major reduction is a few bytes less in dozens
-> of nfs functions (which call page_file_mapping()).  Most of these appear
-> to be a slight change in gcc's register allocation decisions, which allow:
-> 
->    48 8b 56 08         mov    0x8(%rsi),%rdx
->    48 8d 42 ff         lea    -0x1(%rdx),%rax
->    83 e2 01            and    $0x1,%edx
->    48 0f 44 c6         cmove  %rsi,%rax
-> 
-> to become:
-> 
->    48 8b 46 08         mov    0x8(%rsi),%rax
->    48 8d 78 ff         lea    -0x1(%rax),%rdi
->    a8 01               test   $0x1,%al
->    48 0f 44 fe         cmove  %rsi,%rdi
-> 
-> for a reduction of a single byte.  Once the NFS client is converted to
-> use folios, this entire sequence will disappear.
-> 
-> Also add folio_mapping() documentation.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Acked-by: Jeff Layton <jlayton@kernel.org>
+On Fri, May 14, 2021 at 3:02 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> I've included this version in the asm-generic tree for 5.14 already,
+> addressing the few issues that were pointed out in the RFC. If there
+> are any remaining problems, I hope those can be addressed as follow-up
+> patches.
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+This continues to look great to me, and now has the even simpler
+remaining implementation.
 
-> ---
->  Documentation/core-api/mm-api.rst |  2 ++
->  include/linux/mm.h                | 14 -------------
->  include/linux/pagemap.h           | 35 +++++++++++++++++++++++++++++--
->  include/linux/swap.h              |  6 ++++++
->  mm/Makefile                       |  2 +-
->  mm/folio-compat.c                 | 13 ++++++++++++
->  mm/swapfile.c                     |  8 +++----
->  mm/util.c                         | 30 +++++++++++++++-----------
->  8 files changed, 77 insertions(+), 33 deletions(-)
->  create mode 100644 mm/folio-compat.c
-> 
-> diff --git a/Documentation/core-api/mm-api.rst b/Documentation/core-api/mm-api.rst
-> index 5c459ee2acce..dcce6605947a 100644
-> --- a/Documentation/core-api/mm-api.rst
-> +++ b/Documentation/core-api/mm-api.rst
-> @@ -100,3 +100,5 @@ More Memory Management Functions
->     :internal:
->  .. kernel-doc:: include/linux/page_ref.h
->  .. kernel-doc:: include/linux/mmzone.h
-> +.. kernel-doc:: mm/util.c
-> +   :functions: folio_mapping
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index feb4645ef4f2..dca39daf3495 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -1749,19 +1749,6 @@ void page_address_init(void);
->  
->  extern void *page_rmapping(struct page *page);
->  extern struct anon_vma *page_anon_vma(struct page *page);
-> -extern struct address_space *page_mapping(struct page *page);
-> -
-> -extern struct address_space *__page_file_mapping(struct page *);
-> -
-> -static inline
-> -struct address_space *page_file_mapping(struct page *page)
-> -{
-> -	if (unlikely(PageSwapCache(page)))
-> -		return __page_file_mapping(page);
-> -
-> -	return page->mapping;
-> -}
-> -
->  extern pgoff_t __page_file_index(struct page *page);
->  
->  /*
-> @@ -1776,7 +1763,6 @@ static inline pgoff_t page_index(struct page *page)
->  }
->  
->  bool page_mapped(struct page *page);
-> -struct address_space *page_mapping(struct page *page);
->  
->  /*
->   * Return true only if the page has been allocated with
-> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-> index 448a2dfb5ff1..1f37d7656955 100644
-> --- a/include/linux/pagemap.h
-> +++ b/include/linux/pagemap.h
-> @@ -162,14 +162,45 @@ static inline void filemap_nr_thps_dec(struct address_space *mapping)
->  
->  void release_pages(struct page **pages, int nr);
->  
-> +struct address_space *page_mapping(struct page *);
-> +struct address_space *folio_mapping(struct folio *);
-> +struct address_space *swapcache_mapping(struct folio *);
-> +
-> +/**
-> + * folio_file_mapping - Find the mapping this folio belongs to.
-> + * @folio: The folio.
-> + *
-> + * For folios which are in the page cache, return the mapping that this
-> + * page belongs to.  Folios in the swap cache return the mapping of the
-> + * swap file or swap device where the data is stored.  This is different
-> + * from the mapping returned by folio_mapping().  The only reason to
-> + * use it is if, like NFS, you return 0 from ->activate_swapfile.
-> + *
-> + * Do not call this for folios which aren't in the page cache or swap cache.
-> + */
-> +static inline struct address_space *folio_file_mapping(struct folio *folio)
-> +{
-> +	if (unlikely(folio_swapcache(folio)))
-> +		return swapcache_mapping(folio);
-> +
-> +	return folio->mapping;
-> +}
-> +
-> +static inline struct address_space *page_file_mapping(struct page *page)
-> +{
-> +	return folio_file_mapping(page_folio(page));
-> +}
-> +
->  /*
->   * For file cache pages, return the address_space, otherwise return NULL
->   */
->  static inline struct address_space *page_mapping_file(struct page *page)
->  {
-> -	if (unlikely(PageSwapCache(page)))
-> +	struct folio *folio = page_folio(page);
-> +
-> +	if (unlikely(folio_swapcache(folio)))
->  		return NULL;
-> -	return page_mapping(page);
-> +	return folio_mapping(folio);
->  }
->  
->  static inline bool page_cache_add_speculative(struct page *page, int count)
-> diff --git a/include/linux/swap.h b/include/linux/swap.h
-> index 144727041e78..20766342845b 100644
-> --- a/include/linux/swap.h
-> +++ b/include/linux/swap.h
-> @@ -314,6 +314,12 @@ struct vma_swap_readahead {
->  #endif
->  };
->  
-> +static inline swp_entry_t folio_swap_entry(struct folio *folio)
-> +{
-> +	swp_entry_t entry = { .val = page_private(&folio->page) };
-> +	return entry;
-> +}
-> +
->  /* linux/mm/workingset.c */
->  void workingset_age_nonresident(struct lruvec *lruvec, unsigned long nr_pages);
->  void *workingset_eviction(struct page *page, struct mem_cgroup *target_memcg);
-> diff --git a/mm/Makefile b/mm/Makefile
-> index a9ad6122d468..434c2a46b6c5 100644
-> --- a/mm/Makefile
-> +++ b/mm/Makefile
-> @@ -46,7 +46,7 @@ mmu-$(CONFIG_MMU)	+= process_vm_access.o
->  endif
->  
->  obj-y			:= filemap.o mempool.o oom_kill.o fadvise.o \
-> -			   maccess.o page-writeback.o \
-> +			   maccess.o page-writeback.o folio-compat.o \
->  			   readahead.o swap.o truncate.o vmscan.o shmem.o \
->  			   util.o mmzone.o vmstat.o backing-dev.o \
->  			   mm_init.o percpu.o slab_common.o \
-> diff --git a/mm/folio-compat.c b/mm/folio-compat.c
-> new file mode 100644
-> index 000000000000..5e107aa30a62
-> --- /dev/null
-> +++ b/mm/folio-compat.c
-> @@ -0,0 +1,13 @@
-> +/*
-> + * Compatibility functions which bloat the callers too much to make inline.
-> + * All of the callers of these functions should be converted to use folios
-> + * eventually.
-> + */
-> +
-> +#include <linux/pagemap.h>
-> +
-> +struct address_space *page_mapping(struct page *page)
-> +{
-> +	return folio_mapping(page_folio(page));
-> +}
-> +EXPORT_SYMBOL(page_mapping);
-> diff --git a/mm/swapfile.c b/mm/swapfile.c
-> index 149e77454e3c..d0ee24239a83 100644
-> --- a/mm/swapfile.c
-> +++ b/mm/swapfile.c
-> @@ -3533,13 +3533,13 @@ struct swap_info_struct *page_swap_info(struct page *page)
->  }
->  
->  /*
-> - * out-of-line __page_file_ methods to avoid include hell.
-> + * out-of-line methods to avoid include hell.
->   */
-> -struct address_space *__page_file_mapping(struct page *page)
-> +struct address_space *swapcache_mapping(struct folio *folio)
->  {
-> -	return page_swap_info(page)->swap_file->f_mapping;
-> +	return page_swap_info(&folio->page)->swap_file->f_mapping;
->  }
-> -EXPORT_SYMBOL_GPL(__page_file_mapping);
-> +EXPORT_SYMBOL_GPL(swapcache_mapping);
->  
->  pgoff_t __page_file_index(struct page *page)
->  {
-> diff --git a/mm/util.c b/mm/util.c
-> index 0b6dd9d81da7..245f5c7bedae 100644
-> --- a/mm/util.c
-> +++ b/mm/util.c
-> @@ -686,30 +686,36 @@ struct anon_vma *page_anon_vma(struct page *page)
->  	return __page_rmapping(page);
->  }
->  
-> -struct address_space *page_mapping(struct page *page)
-> +/**
-> + * folio_mapping - Find the mapping where this folio is stored.
-> + * @folio: The folio.
-> + *
-> + * For folios which are in the page cache, return the mapping that this
-> + * page belongs to.  Folios in the swap cache return the swap mapping
-> + * this page is stored in (which is different from the mapping for the
-> + * swap file or swap device where the data is stored).
-> + *
-> + * You can call this for folios which aren't in the swap cache or page
-> + * cache and it will return NULL.
-> + */
-> +struct address_space *folio_mapping(struct folio *folio)
->  {
->  	struct address_space *mapping;
->  
-> -	page = compound_head(page);
-> -
->  	/* This happens if someone calls flush_dcache_page on slab page */
-> -	if (unlikely(PageSlab(page)))
-> +	if (unlikely(folio_slab(folio)))
->  		return NULL;
->  
-> -	if (unlikely(PageSwapCache(page))) {
-> -		swp_entry_t entry;
-> -
-> -		entry.val = page_private(page);
-> -		return swap_address_space(entry);
-> -	}
-> +	if (unlikely(folio_swapcache(folio)))
-> +		return swap_address_space(folio_swap_entry(folio));
->  
-> -	mapping = page->mapping;
-> +	mapping = folio->mapping;
->  	if ((unsigned long)mapping & PAGE_MAPPING_ANON)
->  		return NULL;
->  
->  	return (void *)((unsigned long)mapping & ~PAGE_MAPPING_FLAGS);
->  }
-> -EXPORT_SYMBOL(page_mapping);
-> +EXPORT_SYMBOL(folio_mapping);
->  
->  /* Slow path of page_mapcount() for compound pages */
->  int __page_mapcount(struct page *page)
-> 
+I'd be tempted to just pull it in for 5.13, but I guess we don't
+actually have any _outstanding_ bug in this area (the bug was in our
+zlib code, required -O3 to trigger, has been fixed now, and the biggy
+case didn't even use "get_unaligned()").
 
+So I guess your 5.14 timing is the right thing to do.
+
+        Linus
