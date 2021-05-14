@@ -2,191 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5645E38089A
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 13:36:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B31F38089E
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 13:36:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232505AbhENLhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 07:37:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47128 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232386AbhENLhb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 07:37:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620992179;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mIcQUlsHB9GjnPE2QvhbTigpY+9TcUPrmrRb1c8BGPY=;
-        b=BhKsNEpaDK/ku6xyrloGUDQklDGReeydD0UKcJ23Sh+TpfpyKGA/4GGrXwHS7Jv8oaCE3U
-        f5Yev2vA2oW+wu0cXtQUBHXv4Lty7XUwhZWJnPxiX1OlAYMkL6gMQtRd5Ex/lLIjn0dwZV
-        ReXMEC9lwUPe4jiVuR9znD3gizPIsaA=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-548-_q_vTCkQO9uR24lInW7-Dg-1; Fri, 14 May 2021 07:36:17 -0400
-X-MC-Unique: _q_vTCkQO9uR24lInW7-Dg-1
-Received: by mail-wr1-f69.google.com with SMTP id j33-20020adf91240000b029010e4009d2ffso10144952wrj.0
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 04:36:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mIcQUlsHB9GjnPE2QvhbTigpY+9TcUPrmrRb1c8BGPY=;
-        b=bj1II5hlglUlPCbQfU+vr2OS8wcqvphSJ+RS3RcYsI8DAidh9EFZ4Rg6i1LYxZPboG
-         gDB6Mj/vZLqWSghGxmNGTtjTr9tthiR4is/JtonUFGSBmM+Akev1g9mZ4d6CML4AZO1b
-         2hpbCQWSW94OGpHaZ28L48/17gD2InUR+RUSM2n6s1NiDU0sayiilmrm6KH3VIlXOJHD
-         5W53frLgDVG3FHvk+D7WhkFi/RqJkIkFlkKnaqeOFicPFF0LQmF5lgb+3TLpB5f1M8iA
-         SEQWC18R3zpN7l6YxieLclZg7OcyU55AGTrSK2klrHXSJtNZLmNusdGiMGl6IZLOittm
-         mwZQ==
-X-Gm-Message-State: AOAM530CDPu9TzRwAcOH3llC3I9X6XF7Rlc94H2MCWwP3A7rUs5RXHl8
-        arwUe9YSGR501OBUEDIJ7+HKbqufdB1G50txjP4kv+gK3FC7hCmzyQg+JSxkdZq/v4ejOdMUQ21
-        7qUeylHZrACeoWS8SAI2G5/g6
-X-Received: by 2002:adf:e991:: with SMTP id h17mr13348564wrm.265.1620992176519;
-        Fri, 14 May 2021 04:36:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwkheG6+9wAfmTav7j8nkCGClt/d84UwVpHJTyKDfom/4CboPHupI3U474RxUhnHPIO1Tj/hw==
-X-Received: by 2002:adf:e991:: with SMTP id h17mr13348540wrm.265.1620992176305;
-        Fri, 14 May 2021 04:36:16 -0700 (PDT)
-Received: from redhat.com ([2a10:800c:1fa6:0:3809:fe0c:bb87:250e])
-        by smtp.gmail.com with ESMTPSA id t7sm4707wrs.87.2021.05.14.04.36.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 04:36:15 -0700 (PDT)
-Date:   Fri, 14 May 2021 07:36:12 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Yongji Xie <xieyongji@bytedance.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        file@sect.tu-berlin.de, ashish.kalra@amd.com,
-        konrad.wilk@oracle.com, kvm <kvm@vger.kernel.org>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: Re: [RFC PATCH V2 0/7] Do not read from descripto ring
-Message-ID: <20210514073452-mutt-send-email-mst@kernel.org>
-References: <20210423080942.2997-1-jasowang@redhat.com>
- <YJ1TgoFSwOkQrC+1@stefanha-x1.localdomain>
- <CACGkMEv0uWd+X87cYoG-GGjTXBvRztp2CY3RKyq9jFbSYK1n0Q@mail.gmail.com>
- <YJ5cKe0egklXDpng@stefanha-x1.localdomain>
- <CACycT3u+hQbDJtf5gxS1NVVpiTffMz1skuhTExy5d_oRjYKoxg@mail.gmail.com>
+        id S232571AbhENLhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 07:37:54 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:37334 "EHLO deadmen.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231897AbhENLhx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 07:37:53 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtp (Exim 4.89 #2 (Debian))
+        id 1lhW7O-00033U-1s; Fri, 14 May 2021 19:36:34 +0800
+Received: from herbert by gondobar with local (Exim 4.89)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1lhW7N-0002ZW-KO; Fri, 14 May 2021 19:36:33 +0800
+Date:   Fri, 14 May 2021 19:36:33 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Andreas Westin <andreas.westin@stericsson.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-crypto <linux-crypto@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] crypto: ux500 - Fix error return code in
+ hash_hw_final()
+Message-ID: <20210514113633.faxp737uxm2w5x7f@gondor.apana.org.au>
+References: <20210508070049.2674-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACycT3u+hQbDJtf5gxS1NVVpiTffMz1skuhTExy5d_oRjYKoxg@mail.gmail.com>
+In-Reply-To: <20210508070049.2674-1-thunder.leizhen@huawei.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 07:27:22PM +0800, Yongji Xie wrote:
-> On Fri, May 14, 2021 at 7:17 PM Stefan Hajnoczi <stefanha@redhat.com> wrote:
-> >
-> > On Fri, May 14, 2021 at 03:29:20PM +0800, Jason Wang wrote:
-> > > On Fri, May 14, 2021 at 12:27 AM Stefan Hajnoczi <stefanha@redhat.com> wrote:
-> > > >
-> > > > On Fri, Apr 23, 2021 at 04:09:35PM +0800, Jason Wang wrote:
-> > > > > Sometimes, the driver doesn't trust the device. This is usually
-> > > > > happens for the encrtpyed VM or VDUSE[1].
-> > > >
-> > > > Thanks for doing this.
-> > > >
-> > > > Can you describe the overall memory safety model that virtio drivers
-> > > > must follow?
-> > >
-> > > My understanding is that, basically the driver should not trust the
-> > > device (since the driver doesn't know what kind of device that it
-> > > tries to drive)
-> > >
-> > > 1) For any read only metadata (required at the spec level) which is
-> > > mapped as coherent, driver should not depend on the metadata that is
-> > > stored in a place that could be wrote by the device. This is what this
-> > > series tries to achieve.
-> > > 2) For other metadata that is produced by the device, need to make
-> > > sure there's no malicious device triggered behavior, this is somehow
-> > > similar to what vhost did. No DOS, loop, kernel bug and other stuffs.
-> > > 3) swiotb is a must to enforce memory access isolation. (VDUSE or encrypted VM)
-> > >
-> > > > For example:
-> > > >
-> > > > - Driver-to-device buffers must be on dedicated pages to avoid
-> > > >   information leaks.
-> > >
-> > > It looks to me if swiotlb is used, we don't need this since the
-> > > bouncing is not done at byte not page.
-> > >
-> > > But if swiotlb is not used, we need to enforce this.
-> > >
-> > > >
-> > > > - Driver-to-device buffers must be on dedicated pages to avoid memory
-> > > >   corruption.
-> > >
-> > > Similar to the above.
-> > >
-> > > >
-> > > > When I say "pages" I guess it's the IOMMU page size that matters?
-> > > >
-> > >
-> > > And the IOTLB page size.
-> > >
-> > > > What is the memory access granularity of VDUSE?
-> > >
-> > > It has an swiotlb, but the access and bouncing is done per byte.
-> > >
-> > > >
-> > > > I'm asking these questions because there is driver code that exposes
-> > > > kernel memory to the device and I'm not sure it's safe. For example:
-> > > >
-> > > >   static int virtblk_add_req(struct virtqueue *vq, struct virtblk_req *vbr,
-> > > >                   struct scatterlist *data_sg, bool have_data)
-> > > >   {
-> > > >           struct scatterlist hdr, status, *sgs[3];
-> > > >           unsigned int num_out = 0, num_in = 0;
-> > > >
-> > > >           sg_init_one(&hdr, &vbr->out_hdr, sizeof(vbr->out_hdr));
-> > > >                             ^^^^^^^^^^^^^
-> > > >           sgs[num_out++] = &hdr;
-> > > >
-> > > >           if (have_data) {
-> > > >                   if (vbr->out_hdr.type & cpu_to_virtio32(vq->vdev, VIRTIO_BLK_T_OUT))
-> > > >                           sgs[num_out++] = data_sg;
-> > > >                   else
-> > > >                           sgs[num_out + num_in++] = data_sg;
-> > > >           }
-> > > >
-> > > >           sg_init_one(&status, &vbr->status, sizeof(vbr->status));
-> > > >                                ^^^^^^^^^^^^
-> > > >           sgs[num_out + num_in++] = &status;
-> > > >
-> > > >           return virtqueue_add_sgs(vq, sgs, num_out, num_in, vbr, GFP_ATOMIC);
-> > > >   }
-> > > >
-> > > > I guess the drivers don't need to be modified as long as swiotlb is used
-> > > > to bounce the buffers through "insecure" memory so that the memory
-> > > > surrounding the buffers is not exposed?
-> > >
-> > > Yes, swiotlb won't bounce the whole page. So I think it's safe.
-> >
-> > Thanks Jason and Yongji Xie for clarifying. Seems like swiotlb or a
-> > similar mechanism can handle byte-granularity isolation so the drivers
-> > not need to worry about information leaks or memory corruption outside
-> > the mapped byte range.
-> >
-> > We still need to audit virtio guest drivers to ensure they don't trust
-> > data that can be modified by the device. I will look at virtio-blk and
-> > virtio-fs next week.
-> >
+On Sat, May 08, 2021 at 03:00:49PM +0800, Zhen Lei wrote:
+> Fix to return a negative error code from the error handling
+> case instead of 0, as done elsewhere in this function.
 > 
-> Oh, that's great. Thank you!
-> 
-> I also did some audit work these days and will send a new version for
-> reviewing next Monday.
-> 
-> Thanks,
-> Yongji
+> Fixes: 8a63b1994c50 ("crypto: ux500 - Add driver for HASH hardware")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>  drivers/crypto/ux500/hash/hash_core.c | 1 +
+>  1 file changed, 1 insertion(+)
 
-Doing it in a way that won't hurt performance for simple
-configs that trust the device is a challenge though.
-Pls take a look at the discussion with Christoph for some ideas
-on how to do this.
-
-
+Patch applied.  Thanks.
 -- 
-MST
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
