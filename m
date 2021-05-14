@@ -2,121 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32CAA3802B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 06:18:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB953802C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 06:20:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232113AbhENET1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 00:19:27 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:42963 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230516AbhENETZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 00:19:25 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1620965895; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=uqj54DykBKkGvq8sPKZliQtP//zOrXCAaysz9V6pI8E=;
- b=bi9jTbETIh4LhYJ8k8KiyVYca2xwXR8HfkcPhNK1p1vNFIndqmvCiQ/qCZYAJMWQrhdgRE2L
- mV9IhnZ3qMvnSKAqnClsamru82vY9qr1HWXUHX4298s8mepCmsTUkj5W1f75NILUiQkGdLLK
- uXdX2SPLU8Ears7pC5YiqRzx5eQ=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 609df9f3ff1bb9beece912e6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 14 May 2021 04:17:55
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4F412C4338A; Fri, 14 May 2021 04:17:54 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DFF43C433F1;
-        Fri, 14 May 2021 04:17:52 +0000 (UTC)
+        id S232173AbhENEV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 00:21:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232114AbhENEV4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 00:21:56 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA28C061574;
+        Thu, 13 May 2021 21:20:40 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2so41357772lft.4;
+        Thu, 13 May 2021 21:20:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=/HACQmlceYlYcP2ZTBmulx+QhiBT9GSoKT1qEpJT5BM=;
+        b=iWkPUUa3uetg3wikEAiftynvERcZmFEgZ4nja3IEXjeaaN3tN3d5KsIb7iwX3YFGxf
+         bggkU4A8Twh2hqsotNA/sO6UEyTvHnGEemasmlpjU5jD+sNd21hz1wE6y3pwKScOWw4p
+         W0ISs2Vb33m0gUOeuOCGS31B80A5Zipx3vwsNyw9EaZaJxaiChjJuxd9j8Iw2pub8e5a
+         zlCLs1y5IDN0UAW8a/IbYFq1/ca38Q7wrEIXUg7eKnKPUvGjVUy6oiDWS49IN/mczcCM
+         kAeDieNlTOPm/xmcEyTmtdSv/UEzO2gADpwXPdnPU9fakSw8Mg0lnFEwVPGO1ifwft3A
+         EdjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=/HACQmlceYlYcP2ZTBmulx+QhiBT9GSoKT1qEpJT5BM=;
+        b=fWtUEEIX3PSfnfYAY7XJbYoq98+MlwbQ/k9t7++mH72Q+S+xPYLvjcZqRxDaX8kt/g
+         R++7hEMNoXmmax6ADtIemC7/z2bTHMOq42CgDMtcw/APrvF7D40hdJ+0MfRpGDEumGSq
+         2YtEk97m0GuCXMWSgjAdVpYYWL0Oap1n5NHRGjiFP5XydY7r3T4Yw7e9jQJ0W5QTaEjw
+         i12j0Z/i56qMgahSfYZswPQFSWp7puVlzIOfTbYQbvYwgb2YSS5bVkmR4RRCx6ven0hV
+         FaRYy6c9g61Z32w9A/VJUX3TlGO/CZ/dP5GLTER8LONtwer/U+d4YhiLi2Wfc9H8q+OF
+         rNFg==
+X-Gm-Message-State: AOAM533tnHAUeNwUEXNX3Iqm4VoBCj1GzWEtfFzlODwlmSuzjYDt0Z6G
+        PqBqL9hPAsQNBTJGuHDc3J4V82NWnFoIi4ihptzjySEl3xU=
+X-Google-Smtp-Source: ABdhPJzyDKMVwl8UoI7/n1bpjFLa8FtRrPk7thWt0fa/ZsOoikaU11D4E76oqn3c0WE6KQ2lDMZ7BvBkAojlDoNN3VU=
+X-Received: by 2002:ac2:5b1a:: with SMTP id v26mr31252723lfn.534.1620966039076;
+ Thu, 13 May 2021 21:20:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 14 May 2021 12:17:52 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 6/6] scsi: ufs: Update the fast abort path in
- ufshcd_abort() for PM requests
-In-Reply-To: <a124700a-e507-e593-d6f5-2da452f3ae7e@acm.org>
-References: <1620885319-15151-1-git-send-email-cang@codeaurora.org>
- <1620885319-15151-8-git-send-email-cang@codeaurora.org>
- <a124700a-e507-e593-d6f5-2da452f3ae7e@acm.org>
-Message-ID: <4fba6bc358b293de345258c48fc61f79@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210512095823.99162-1-yunbo.xufeng@linux.alibaba.com>
+ <20210512095823.99162-2-yunbo.xufeng@linux.alibaba.com> <20210512225504.3kt6ij4xqzbtyej5@ast-mbp.dhcp.thefacebook.com>
+ <9ae7e503-8f49-a7a4-3e18-0288c7989484@linux.alibaba.com>
+In-Reply-To: <9ae7e503-8f49-a7a4-3e18-0288c7989484@linux.alibaba.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 13 May 2021 21:20:27 -0700
+Message-ID: <CAADnVQK1s4US2LPe4+XsQBEjH8iG8Jdh58n6X1yXAafDAw+M4Q@mail.gmail.com>
+Subject: Re: [RFC] [PATCH bpf-next 1/1] bpf: Add a BPF helper for getting the
+ cgroup path of current task
+To:     xufeng zhang <yunbo.xufeng@linux.alibaba.com>
+Cc:     KP Singh <kpsingh@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Yonghong Song <yhs@fb.com>, Song Liu <songliubraving@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Joe Stringer <joe@cilium.io>,
+        Quentin Monnet <quentin@isovalent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-14 12:05, Bart Van Assche wrote:
-> On 5/12/21 10:55 PM, Can Guo wrote:
->> If PM requests fail during runtime suspend/resume, RPM framework saves 
->> the
->> error to dev->power.runtime_error. Before the runtime_error gets 
->> cleared,
->> runtime PM on this specific device won't work again, leaving the 
->> device
->> in either suspended or active state permanently.
->> 
->> When task abort happens to a PM request sent during runtime 
->> suspend/resume,
->> even if it can be successfully aborted, RPM framework anyways saves 
->> the
->> (TIMEOUT) error. But we want more and we can do better - let error 
->> handling
->> recover and clear the runtime_error. So, let PM requests take the fast
->> abort path in ufshcd_abort().
-> 
-> The only RQF_PM requests I know of are START STOP UNIT and SYNCHRONIZE
-> CACHE. Are there devices for which these commands can time out or do
-> these commands perhaps only time out as the result of error injection?
+On Thu, May 13, 2021 at 1:57 AM xufeng zhang
+<yunbo.xufeng@linux.alibaba.com> wrote:
+>
+> =E5=9C=A8 2021/5/13 =E4=B8=8A=E5=8D=886:55, Alexei Starovoitov =E5=86=99=
+=E9=81=93:
+>
+> > On Wed, May 12, 2021 at 05:58:23PM +0800, Xufeng Zhang wrote:
+> >> To implement security rules for application containers by utilizing
+> >> bpf LSM, the container to which the current running task belongs need
+> >> to be known in bpf context. Think about this scenario: kubernetes
+> >> schedules a pod into one host, before the application container can ru=
+n,
+> >> the security rules for this application need to be loaded into bpf
+> >> maps firstly, so that LSM bpf programs can make decisions based on
+> >> this rule maps.
+> >>
+> >> However, there is no effective bpf helper to achieve this goal,
+> >> especially for cgroup v1. In the above case, the only available inform=
+ation
+> >> from user side is container-id, and the cgroup path for this container
+> >> is certain based on container-id, so in order to make a bridge between
+> >> user side and bpf programs, bpf programs also need to know the current
+> >> cgroup path of running task.
+> > ...
+> >> +#ifdef CONFIG_CGROUPS
+> >> +BPF_CALL_2(bpf_get_current_cpuset_cgroup_path, char *, buf, u32, buf_=
+len)
+> >> +{
+> >> +    struct cgroup_subsys_state *css;
+> >> +    int retval;
+> >> +
+> >> +    css =3D task_get_css(current, cpuset_cgrp_id);
+> >> +    retval =3D cgroup_path_ns(css->cgroup, buf, buf_len, &init_cgroup=
+_ns);
+> >> +    css_put(css);
+> >> +    if (retval >=3D buf_len)
+> >> +            retval =3D -ENAMETOOLONG;
+> > Manipulating string path to check the hierarchy will be difficult to do
+> > inside bpf prog. It seems to me this helper will be useful only for
+> > simplest cgroup setups where there is no additional cgroup nesting
+> > within containers.
+> > Have you looked at *ancestor_cgroup_id and *cgroup_id helpers?
+> > They're a bit more flexible when dealing with hierarchy and
+> > can be used to achieve the same correlation between kernel and user cgr=
+oup ids.
+>
+>
+> Thanks for your timely reply, Alexei!
+>
+> Yes, this helper is not so common, it does not works for nesting cgroup
+> within containers.
+>
+> About your suggestion, the *cgroup_id helpers only works for cgroup v2,
+> however, we're still using cgroup v1 in product=EF=BC=8Cand even for cgro=
+up v2,
+> I'm not sure if there is any way for user space to get this cgroup id
+> timely(after container created, but before container start to run)=E3=80=
+=82
+>
+> So if there is any effective way works for cgroup v1?
 
-There are also REQUEST SENSE requests sent with RQF_PM flag set from
-pm ops. And they do time out (device does not respond in 60s) in real
-cases, at least I have seen quite a lot of related issues reported
-from customers these years.
-
-> 
->> -	if (lrbp->lun == UFS_UPIU_UFS_DEVICE_WLUN) {
->> +	if (lrbp->lun == UFS_UPIU_UFS_DEVICE_WLUN ||
->> +	    (cmd->request->rq_flags & RQF_PM)) {
-> 
-> Which are the RQF_PM commands that are not sent to a WLUN? Are these
-> START STOP UNIT and SYNCHRONIZE CACHE only?
-> 
-
-There are also REQUEST SENSE cmds sent to the RPMB W-LU, in 
-ufshcd_add_wlus(),
-ufshcd_err_handler() and ufshcd_rpmb_resume() and/or ufshcd_wl_resume().
-
-And SYNCHRONIZE CACHE cmd is only sent to general LUs, but not W-LUs.
-
-Thanks,
-Can Guo.
-
-> Thanks,
-> 
-> Bart.
+https://github.com/systemd/systemd/blob/main/NEWS#L379
