@@ -2,215 +2,318 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BC3A380EA7
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 19:12:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10ABB380EAC
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 19:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234643AbhENRN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 13:13:26 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:43772 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230063AbhENRNZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 13:13:25 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1621012333; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=4a2fycPA5wDhtt5CnwTzn96+WKZ81gWbNzcy4Msq974=;
- b=oZr94sjdy6bR3LdkDjsabJ1aUAsYVJcAfhLGRPKdPAQWnGlIyXyydjctzFjH7jp0g4m6JCFn
- uRJG5/Uq/11tcsVksnmILK/Vnpxkus4Ot1VFDvYoOKcqXJ/Dd2mYODdM/0pR1JiHlzVo0euZ
- eyUZjPegnzVWPptFoY2RfvZwkNM=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 609eaf64c229adfeffffed4b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 14 May 2021 17:12:04
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9FAA9C4360C; Fri, 14 May 2021 17:12:04 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8C341C433D3;
-        Fri, 14 May 2021 17:12:03 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+        id S234871AbhENROz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 13:14:55 -0400
+Received: from mail-eopbgr40066.outbound.protection.outlook.com ([40.107.4.66]:48006
+        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230063AbhENROx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 13:14:53 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mJW6cTMEsKYIXLBn2UTSHmN6GW5jrMljt5zjPobDl68EJ1NGS+GBmBLmQM+U2ZbmTEFd9vSul6UL6BM5M+2TusNyJ23gutDDrQ9ucxRkdvZWHQQWaUZRyJRQZjUptsBLJc8LZg8pFzNpyNCDzJuJqi6ShUOzkV3mArvK9+rgHH602eEa2SAp5rnidWARjjWDjrSM5OFW2ZExhrUrlm9vt7H3ebJnISIwI0BKnQbtAf0T6gtXUiEJBmmGWp6s2zpekY2Px1ew5O2jSL5AJqune2uTefTr5PdpyFS7bPGcn7Mq8Uug2DMUpoiWR1RGttvLRB/F/7hGcjA0NMQWgH8J1Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h3IvTvH8H+OFelMjo4NVbx0ZNGknOPim1cFa+AsYsMI=;
+ b=W8gDimsYfsa+cSmNMGcebJsgEgjG0BXM1ZBtIoesY/ARNAeSCjzdrCLJzmsx81yCoMdZpWzWtd338q2Fi1FDhchU86QAd2dCA/9ts6+q2scFkFO9kk9qXmr6MFHKx+eMVi18f6JjHXIiSHz8W9XYIluEfTrdJn1wJOhuCiBOGOLX0Yab7UnY5nYfN3kv6MUG1kN2mZkHVy73ZEAlT1tpm4WnYNzpvxS7h9MGJutlQLTPiSQzBDQah7mk9eyld3snwbgZ9111G4tHeJkoTuGkib8fn2kLOQ3NbI1psSZwtEnvxxj+W+X5u03iWo+xlYbJ6E1zSqcOOJW1l6iGBiw9RA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=seco.com; dmarc=pass action=none header.from=seco.com;
+ dkim=pass header.d=seco.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=secospa.onmicrosoft.com; s=selector2-secospa-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h3IvTvH8H+OFelMjo4NVbx0ZNGknOPim1cFa+AsYsMI=;
+ b=KOOv215vvF8oD762B4X77K+H1Xn3yQjF1gtcLplMPag1oUnETeBtAuJhCNS6Fd4v50f8I9i/vQOq+arYj3AgZ1wM/0nPQC1B2PaLOOrRfyK2fr8T643dzNkUVpmGTzEIVCpBwDzUHXMTeDhmVvv+013SwI9JDqovBMyHQ0V3FHI=
+Authentication-Results: lists.infradead.org; dkim=none (message not signed)
+ header.d=none;lists.infradead.org; dmarc=none action=none
+ header.from=seco.com;
+Received: from DB7PR03MB4523.eurprd03.prod.outlook.com (2603:10a6:10:19::27)
+ by DBBPR03MB7129.eurprd03.prod.outlook.com (2603:10a6:10:206::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.28; Fri, 14 May
+ 2021 17:13:39 +0000
+Received: from DB7PR03MB4523.eurprd03.prod.outlook.com
+ ([fe80::40d5:3554:c709:6b1b]) by DB7PR03MB4523.eurprd03.prod.outlook.com
+ ([fe80::40d5:3554:c709:6b1b%5]) with mapi id 15.20.4129.026; Fri, 14 May 2021
+ 17:13:39 +0000
+Subject: Re: [PATCH v3 1/2] dt-bindings: pwm: Add Xilinx AXI Timer
+To:     Michal Simek <michal.simek@xilinx.com>,
+        Rob Herring <robh@kernel.org>
+Cc:     Linux PWM List <linux-pwm@vger.kernel.org>,
+        devicetree@vger.kernel.org, Alvaro Gamez <alvaro.gamez@hazent.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+References: <20210511191239.774570-1-sean.anderson@seco.com>
+ <20210513021631.GA878860@robh.at.kernel.org>
+ <f9165937-c578-d225-9f5e-d964367c4711@seco.com>
+ <70176596-2250-8ae1-912a-9f9c30694e7d@seco.com>
+ <CAL_JsqJY1W=t-gYYt+iTPgF7e9yJqzYFYGSJNrA4BNhAY+va8Q@mail.gmail.com>
+ <9cf3a580-e4d3-07fc-956f-dc5c84802d93@xilinx.com>
+From:   Sean Anderson <sean.anderson@seco.com>
+Message-ID: <87b31b06-9b81-5743-e3a8-50c255c0a83c@seco.com>
+Date:   Fri, 14 May 2021 13:13:35 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <9cf3a580-e4d3-07fc-956f-dc5c84802d93@xilinx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Fri, 14 May 2021 10:12:03 -0700
-From:   khsieh@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robdclark@gmail.com,
-        sean@poorly.run, vkoul@kernel.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] drm/msm/dp: handle irq_hpd with sink_count = 0
- correctly
-In-Reply-To: <CAE-0n53V661ir2hTpPYA2CAq3HLgXQYL+O-nnJy8vHYKPzynzw@mail.gmail.com>
-References: <1620862199-19514-1-git-send-email-khsieh@codeaurora.org>
- <CAE-0n53V661ir2hTpPYA2CAq3HLgXQYL+O-nnJy8vHYKPzynzw@mail.gmail.com>
-Message-ID: <07028c64a5683626300ee271bed3a621@codeaurora.org>
-X-Sender: khsieh@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-Originating-IP: [50.195.82.171]
+X-ClientProxiedBy: BL0PR02CA0127.namprd02.prod.outlook.com
+ (2603:10b6:208:35::32) To DB7PR03MB4523.eurprd03.prod.outlook.com
+ (2603:10a6:10:19::27)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [172.27.1.65] (50.195.82.171) by BL0PR02CA0127.namprd02.prod.outlook.com (2603:10b6:208:35::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Fri, 14 May 2021 17:13:38 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3d33ed74-d3a8-4b1b-369b-08d916fb9e04
+X-MS-TrafficTypeDiagnostic: DBBPR03MB7129:
+X-Microsoft-Antispam-PRVS: <DBBPR03MB7129F9B09C7A4C088850EE2396509@DBBPR03MB7129.eurprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ZEf+lyIPUEpvShU88JfdOBFFZMzERSCEdP/Dd/7zAGz2nXXOq3CbDMUc9rCIy0RSkZw7WkrLLO12qUETENXYLGGCfs+rPqxtIHOzoA62Tdy54udn51sWd+R61ptH+jiyxYKm/fpwtJEFWnvjYYrdwWL9xm4XNDcedKdO3eSkL8BY8mF4qp1mYWFXy39qwGBNS2WNOWZUo21g2wSt/hzm0erY1yEJgpc7i0rcEPgcYeLTqH8YnzkWe+1eRkEEGJdbXrFnJIFmYa1NDuEu0yECpZJDopHodf19V8kB7jp0rv0OwGJxyilNHL8ybPkEYgIjaYEMZu+x08f96+/+WwWHkd+6l9FB8BA/yEVbBsa9aBw0H1AZqLLae9o34hB5qSDXUl1KvF3aH5nJGG6iDqaVc7TpiI2XunBKh6yWP+ziC6negn/ngPmBXr5vzKbrVqtTBWrQiJzommAiIInqxAUG5DnKmZjNiqBJ6gS0UwnYQ1z83Vofp6WEKNK8YUPQYUbdhL22bsEPx2XVUp1ax6dEIhRz4hQYNPjnp4CGYmB/7h89u6GRqcpf601HmPuV8KJ9GQ534WFgTu1jjV+WgR/3qO/yKUHlZE5p4zHabTYMaU/QAsTDZ7wiu2UlaVRkb4h/q78KJHfZUISbb0+afjuK+q5oamBGChEafHHbPTGuhx3J1jdBpVYpwz2nxnaTLG0uHp+Tg09l9MSdlL6mWBTRim7XgykkznFk6H0rn3DPaNg=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR03MB4523.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(31696002)(498600001)(2616005)(38100700002)(53546011)(110136005)(16526019)(31686004)(83380400001)(44832011)(6666004)(956004)(54906003)(8936002)(36756003)(16576012)(5660300002)(6486002)(4326008)(186003)(52116002)(8676002)(26005)(86362001)(66476007)(66946007)(66556008)(2906002)(38350700002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?YmZQWnQ3dU96OUcrMHp5bU5kdWZqNjhwVVh0c2JtTEdyekJleW10eFI4UFI4?=
+ =?utf-8?B?aUV6MjA0TVJOcG5rQ3NQNHZ0LzRJL3NyWFcrZDBhblN2V0NoYUs3TU9EaHV3?=
+ =?utf-8?B?aXhMb2VaNkdNdnU4VmoyYkVXVGsyWVlmRVBPRjQxMWxvQm5NYWFzSUhkNVdu?=
+ =?utf-8?B?eFR1bldpNUd6TUxVRGczWkw0T0N2MERWSkZIVUxpMkg5eXB5QnZOcEt1a2g2?=
+ =?utf-8?B?V09MZGpCSkh3aGZKYVNYRWxGZU9zdVA0c2FRMG9HK1BvQlRhbHhYeWxTZEg0?=
+ =?utf-8?B?RTkvM1NhM1lZVGU0WWxOSkhNT25PZTdOVEFtbU9rWVE1MEZSY3Ird25mSzBW?=
+ =?utf-8?B?MkVXZkZERWxkQUs2cEtYVzNCbXlKYUxmdnJNTUk0VEZVdGQ1OWZFTVFDNnUy?=
+ =?utf-8?B?S3BnS2VRaG8rajhOL1MveFVvb28yQlQ2TW4vcHU2dXh4L2Vlc3BEbEsxQk82?=
+ =?utf-8?B?Wk9OcStUWW5pb2ZFYkpDWjBIOTNERGEremJKSW9PdzRITDJ1VUF3N2g3ZlUz?=
+ =?utf-8?B?OExrcEJBRUFWVGR5L21udkN3Mkszd0g3SDJNQUdaMkFYbHNlWkd0WnZxTXFR?=
+ =?utf-8?B?M2tDTVZBUEVNcnBFZ0hKSll6SmwzS2dUYU5hemZOckxZTy83Ymhxb1dkZlVO?=
+ =?utf-8?B?QnBtdXBoNUJTY1loeDQxSmJCbE9SN3oyaDVxRVFSWlJtTlJmWGZ5OXRDalov?=
+ =?utf-8?B?Z1BUMFNkc3I1ZTN5MmtWZ0d5STAveGtMUDhhT0lsOWk2WUwrL1d2NjJvZ2ww?=
+ =?utf-8?B?bTNOQ2swM0lURzR3bjZweTRIMXlxRyswOStycFAzOGxpM25BSmFVeUtkczFZ?=
+ =?utf-8?B?WnBjMng4ZkU4L2FZVllNSk1GWFFzSGdabFFENkIzY2lvdFJQTVMzUWRsUzdu?=
+ =?utf-8?B?TUhMZFdVNXVaNXpCc3c0akRBZmdnUENJTXdUZ01sSlFwSlVUc2RpMXJZZFJP?=
+ =?utf-8?B?Zzd1Q1dsUkMwZmFtYjFNcTZobVVKSEFxdWtET01YdG03Ly85UTNlcnVoMk9r?=
+ =?utf-8?B?Zm9ZNDUzVlVaSUMwUFFLVFp5dWNSSDRjNGkwQVlvby9lMVgvUm9uVWhzK3FU?=
+ =?utf-8?B?Z1BBNW9CM2dod1I4bjFodVNQQ21xbko2dFA2cVZMdE1lT2t5amNvc2VJbTBS?=
+ =?utf-8?B?aW9WN0gwbDJlN2ZlVFJoMlNFUFVIMkRwcEVWYWppVm0wSEZkYTM2a2dYRW9Q?=
+ =?utf-8?B?UFBEMWVXOUhLWnd6SzN3azg5dGNUSzVnVFlEbW9DRTIvMUMxdGFRK3dnNldR?=
+ =?utf-8?B?V2Z6SGV5VUttaTMwbDVLMGZiSzNreTdTdE1zdVEvYk1JbFFSenNjT3ErNUl3?=
+ =?utf-8?B?RUh3V3FUaE9kbEZFUnR2TzB4MUhFeUk3aDBmMzZodmwwTUdvZVVndjl0Ujgv?=
+ =?utf-8?B?dnVqdVpxbDZRcG9GRDJSSjk1TzlXMDNaUFZGL3JHd2w3dnN0azdGZnk0eDZz?=
+ =?utf-8?B?Vi9TOXljcjUrTUNKV1FrMFVJMkZWbkYzY05CZ1NxbVJ1QTNQR2RuU2Z3SmZ5?=
+ =?utf-8?B?WlB0VXpqSGQ0UmxoNnZzYzFvUUhNRC9jWW1tdU1HOWtXQ01NczF5Y010OEFv?=
+ =?utf-8?B?SW1PNFRVbG5QdWlrTDRkZEdXdGhmSG5RNnlLUk85QmN1bTNlNXVSbVhIbEFq?=
+ =?utf-8?B?ZzFsaVVaejBHTkdRWWQwUGpXa29oQmJKL2JqUEhTZzV1c3pKWFJ6S25XdjRB?=
+ =?utf-8?B?bjFoNVBvOFJSRjVDdTdzaXM3OU9KNnAwLzcwK1hHeEw4eW1mZ0RSVGQxWllM?=
+ =?utf-8?Q?n1tWyvFzdlESiC86Hb/QKcEOpdOs8TGDWpDEuTd?=
+X-OriginatorOrg: seco.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3d33ed74-d3a8-4b1b-369b-08d916fb9e04
+X-MS-Exchange-CrossTenant-AuthSource: DB7PR03MB4523.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 May 2021 17:13:39.4173
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: bebe97c3-6438-442e-ade3-ff17aa50e733
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9ep7TcwOY1sHjxnl3zVjsNpyBtNkKi32SVfxfX+6BUN+WrRhth8ufHQNm3N/rayuJjebXTn1yOF7T84qoeJ7rQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR03MB7129
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-14 00:03, Stephen Boyd wrote:
-> Quoting Kuogee Hsieh (2021-05-12 16:29:59)
->> irq_hpd interrupt should be handled after dongle plugged in and
->> before dongle unplugged. Hence irq_hpd interrupt is enabled at
->> the end of the plugin handle and disabled at the beginning of
->> unplugged handle. Current irq_hpd with sink_count = 0 is wrongly
->> handled same as the dongle unplugged which tears down the mainlink
->> and disables the phy. This patch fixes this problem by only tearing
->> down the mainlink but keeping phy enabled at irq_hpd with
->> sink_count = 0 handle so that next irq_hpe with sink_count =1 can be
-> 
-> s/irq_hpe/irq/hpd/
-> 
->> handled by setup mainlink only.
->> 
->> Changes in v2:
->> -- add ctrl->phy_Power_count
->> 
->> Changes in v3:
->> -- del ctrl->phy_Power_count
->> -- add phy_power_off to dp_ctrl_off_link_stream()
->> 
->> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
->> ---
->>  drivers/gpu/drm/msm/dp/dp_catalog.c |  5 ++--
->>  drivers/gpu/drm/msm/dp/dp_ctrl.c    | 54 
->> +++++++++++++++++++++++++++++++++++++
->>  drivers/gpu/drm/msm/dp/dp_ctrl.h    |  2 ++
->>  drivers/gpu/drm/msm/dp/dp_display.c | 46 
->> ++++++++++++++++++++++++-------
->>  4 files changed, 94 insertions(+), 13 deletions(-)
->> 
->> diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.c 
->> b/drivers/gpu/drm/msm/dp/dp_catalog.c
->> index b1a9b1b..f4f53f2 100644
->> --- a/drivers/gpu/drm/msm/dp/dp_catalog.c
->> +++ b/drivers/gpu/drm/msm/dp/dp_catalog.c
->> @@ -582,10 +582,9 @@ void dp_catalog_ctrl_hpd_config(struct dp_catalog 
->> *dp_catalog)
->> 
->>         u32 reftimer = dp_read_aux(catalog, REG_DP_DP_HPD_REFTIMER);
->> 
->> -       /* enable HPD interrupts */
->> +       /* enable HPD plug and unplug interrupts */
->>         dp_catalog_hpd_config_intr(dp_catalog,
->> -               DP_DP_HPD_PLUG_INT_MASK | DP_DP_IRQ_HPD_INT_MASK
->> -               | DP_DP_HPD_UNPLUG_INT_MASK | 
->> DP_DP_HPD_REPLUG_INT_MASK, true);
->> +               DP_DP_HPD_PLUG_INT_MASK | DP_DP_HPD_UNPLUG_INT_MASK, 
->> true);
->> 
->>         /* Configure REFTIMER and enable it */
->>         reftimer |= DP_DP_HPD_REFTIMER_ENABLE;
->> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c 
->> b/drivers/gpu/drm/msm/dp/dp_ctrl.c
->> index 8d59eb9..41c122c 100644
->> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
->> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
->> @@ -1811,6 +1811,60 @@ int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl)
->>         return ret;
->>  }
->> 
->> +int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl)
->> +{
->> +       struct dp_ctrl_private *ctrl;
->> +       struct dp_io *dp_io;
->> +       struct phy *phy;
->> +       int ret = 0;
-> 
-> Please don't assign ret and then reassign it without testing it first.
-> 
->> +
->> +       if (!dp_ctrl)
-> 
-> Does this ever happen?
-> 
->> +               return -EINVAL;
->> +
->> +       ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
->> +       dp_io = &ctrl->parser->io;
->> +       phy = dp_io->phy;
->> +
->> +       dp_catalog_ctrl_mainlink_ctrl(ctrl->catalog, false);
->> +
->> +       ret = dp_power_clk_enable(ctrl->power, DP_STREAM_PM, false);
->> +       if (ret)
->> +               DRM_ERROR("Failed to disable pixel clocks. ret=%d\n", 
->> ret);
-> 
-> Why do we continue instead of returning with a failure?
-> 
->> +
->> +       ret = dp_power_clk_enable(ctrl->power, DP_CTRL_PM, false);
->> +       if (ret)
->> +               DRM_ERROR("Failed to disable link clocks. ret=%d\n", 
->> ret);
-> 
-> Same, why do we continue?
-> 
->> +
->> +       phy_power_off(phy);
->> +       phy_exit(phy);
->> +
->> +       /* aux channel down, reinit phy */
-> 
-> So we need to call exit/init to reinitialize the phy? I wonder if there
-> could be some phy_reinit() function that combines those.
-there is no phy_reinit() function existing currently.
-we can add phy_reinit() to combine phy_exit/phy_init as long as ther is 
-no changed to phy->init_count.
 
 
+On 5/14/21 4:50 AM, Michal Simek wrote:
+ >
+ >
+ > On 5/13/21 10:43 PM, Rob Herring wrote:
+ >> On Thu, May 13, 2021 at 10:28 AM Sean Anderson <sean.anderson@seco.com> wrote:
+ >>>
+ >>>
+ >>>
+ >>> On 5/13/21 10:33 AM, Sean Anderson wrote:
+ >>>   >
+ >>>   >
+ >>>   > On 5/12/21 10:16 PM, Rob Herring wrote:
+ >>>   >  > On Tue, May 11, 2021 at 03:12:37PM -0400, Sean Anderson wrote:
+ >>>   >  >> This adds a binding for the Xilinx LogiCORE IP AXI Timer. This device is
+ >>>   >  >> a "soft" block, so it has many parameters which would not be
+ >>>   >  >> configurable in most hardware. This binding is usually automatically
+ >>>   >  >> generated by Xilinx's tools, so the names and values of some properties
+ >>>   >  >> must be kept as they are. Replacement properties have been provided for
+ >>>   >  >> new device trees.
+ >>>   >  >
+ >>>   >  > Because you have some tool generating properties is not a reason we have
+ >>>   >  > to accept them upstream.
+ >>>   >
+ >>>   > These properties are already in arch/microblaze/boot/dts/system.dts and
+ >>>   > in the devicetree supplied to Linux by qemu. Removing these properties
+ >>>   > will break existing setups, which I would like to avoid.
+ >>
+ >> Already in use in upstream dts files is different than just
+ >> 'automatically generated' by vendor tools.
+ >>
+ >>>   >
+ >>>   >  > 'deprecated' is for what *we* have deprecated.
+ >>>   >
+ >>>   > Ok. I will remove that then.
+ >>>   >
+ >>>   >  >
+ >>>   >  > In this case, I don't really see the point in defining new properties
+ >>>   >  > just to have bool.
+ >>>   >
+ >>>   > I don't either, but it was requested, by Michal...
+ >>>
+ >>> Err, your comment on the original bindings was
+ >>>
+ >>>   > Can't all these be boolean?
+ >>
+ >> With no other context, yes that's what I would ask. Now you've given
+ >> me some context, between using the existing ones and 2 sets of
+ >> properties to maintain, I choose the former.
+ >>
+ >>> And Michal commented
+ >>>
+ >>>   > I think in this case you should described what it is used by current
+ >>>   > driver in Microblaze and these options are required. The rest are by
+ >>>   > design optional.
+ >>>   > If you want to change them to different value then current binding
+ >>>   > should be deprecated and have any transition time with code alignment.
+ >>>
+ >>> So that is what I tried to accomplish with this revision. I also tried
+ >>> allowing something like
+ >>>
+ >>>          xlnx,one-timer-only = <0>; /* two timers */
+ >>>          xlnx,one-timer-only = <1>; /* one timer  */
+ >>>          xlnx,one-timer-only; /* one timer */
+ >>>          /* property absent means two timers */
+ >>>
+ >>> but I was unable to figure out how to express this with json-schema. I
+ >>> don't think it's the best design either...
+ >>
+ >> json-schema would certainly let you, but generally we don't want
+ >> properties to have more than 1 type.
+ >
+ > One thing is what it is in system.dts file which was committed in 2009
+ > and there are just small alignments there. But none is really using it.
+ > Maybe I should just delete it.
+ > And this version was generated by Xilinx ancient tools at that time. All
+ > parameters there are fully describing HW and they are not changing. Only
+ > new one can be added.
+ >
+ >  From the current microblaze code you can see which properties are really
+ > used.
+ >
+ > reg
+ > interrupts
+ > xlnx,one-timer-only
+ > clocks
+ > clock-frequency
 
+There is also an implicit dependency on xlnx,count-width. Several times
+the existing driver assumes the counter width is 32, but this should
+instead be discovered from the devicetree.
 
-> 
->> +       phy_init(phy);
->> +
->> +       DRM_DEBUG_DP("DP off link/stream done\n");
->> +       return ret;
-> 
-> Except here we return with a failure.
-> 
->> +}
->> +
->> +void dp_ctrl_off_phy(struct dp_ctrl *dp_ctrl)
->> +{
->> +       struct dp_ctrl_private *ctrl;
->> +       struct dp_io *dp_io;
->> +       struct phy *phy;
->> +
->> +       if (!dp_ctrl)
-> 
-> Does this ever happen?
-> 
->> +               return;
->> +
->> +       ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
->> +       dp_io = &ctrl->parser->io;
->> +       phy = dp_io->phy;
->> +
->> +       dp_catalog_ctrl_reset(ctrl->catalog);
->> +
->> +       phy_exit(phy);
->> +
->> +       DRM_DEBUG_DP("DP off phy done\n");
->> +}
->> +
->>  int dp_ctrl_off(struct dp_ctrl *dp_ctrl)
->>  {
->>         struct dp_ctrl_private *ctrl;
+ > It means from my point of view these should be listed in the binding.
+ > clock-frequency is optional by code when clock is defined.
+ >
+ > All other properties listed in system.dts are from my perspective
+ > optional and that's how it should be.
+
+Here is the situation as I understand it
+
+* This device has existed for around 15 years (since 2006)
+* Because it is a soft device, there are several configurable parameters
+* Although all of these parameters must be known for a complete
+   implementation of this device, some are unnecessary if onlu reduced
+   functionality is needed.
+* A de facto devicetree binding for this device has existed for at least
+   12 years (since 2009), but likely for as long as the device itself has
+   existed. This binding has not changed substantially during this time.
+* This binding is present in devicetrees from the Linux kernel, from
+   qemu, in other existing systems, and in devicetrees generated by
+   Xilinx's toolset.
+* Because the existing driver for this device does not implement all
+   functionality for this device, not all properties in the devicetree
+   binding are used. In fact, there is (as noted above) one property
+   which should be in use but is not because the current driver
+   (implicitly) does not support some hardware configurations.
+* To support additional functionality, it is necessary to
+   use hardware parameters which were not previously necessary.
+
+Based on the above, we can classify the properties of this binding into
+several categories.
+
+* Those which are currently read by the driver.
+   * compatible
+   * reg
+   * clocks
+   * clock-frequency
+   * interrupts
+   * xlnx,one-timer-only
+
+* Those which reflect hardware parameters which are currently explicitly
+   or implicitly relied upon by the driver.
+   * reg
+   * clocks
+   * clock-frequency
+   * interrupts
+   * xlnx,counter-width
+   * xlnx,one-timer-only
+
+* Those which are currently present in device trees.
+   * compatible
+   * reg
+   * interrupts
+   * clocks
+   * clock-frequency
+   * xlnx,count-width
+   * xlnx,one-timer-only
+   * xlnx,trig0-assert
+   * xlnx,trig1-assert
+   * xlnx,gen0-assert
+   * xlnx,gen1-assert
+
+When choosing what properties to use, we must consider what the impact
+of our changes will be on not just the kernel but also on existing users
+of this binding:
+
+* To use properties currently present in device trees, we just need to
+   modify the kernel driver.
+* To add additional properties (such as e.g. '#pwm-cells'), we must
+   modify the kernel driver. In addition, users who would like to use
+   these new properties must add them to their device trees. This may be
+   done in a mechanical way using e.g. overlays.
+* To deprecate existing properties and introduce new properties to
+   expose the same underlying hardware parameters, we must modify the
+   kernel driver. However, this has a large impact on existing users.
+   They must modify their tools to generate this information in a
+   different format. When this information is generated by upstream tools
+   this may require updating a core part of their build system. For many
+   projects, this may happen very infrequently because of the risk that
+   such an upgrade will break things. Even if you suggest that Xilinx can
+   easily modify its tools to generate any sort of output, the time for
+   this upgrade to be deployed/adopted may be significantly longer.
+
+Note that while all three types of changes are similar from a kernel
+point of view, the impact on existing users is much large in the latter
+case. For this reason, I think that wherever possible we should use
+properties which are already present in existing device trees.
+
+ > I think DT binding patch should reflect this state as patch itself.
+ > And then PWM should be added on the top as separate patch.
+
+I have no preference here.
+
+--Sean
+
+ >
+ > Note: In past we were using only parameters and name we got from tools
+ > but over years we were fine to use for example bool properties and we
+ > just aligned Xilinx device tree generator to match it. That's why not a
+ > problem to deprecate any property and move to new one. Xilinx DTG is
+ > already prepared for it and it is easy to remap it.
+ >
+ > Thanks,
+ > Michal
