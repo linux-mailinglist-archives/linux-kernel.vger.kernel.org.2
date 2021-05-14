@@ -2,107 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27C7D380B85
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 16:17:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A652A380BA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 16:18:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234312AbhENOS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 10:18:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36178 "EHLO mail.kernel.org"
+        id S234311AbhENOTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 10:19:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234505AbhENORY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 10:17:24 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9F3AF61404;
-        Fri, 14 May 2021 14:16:11 +0000 (UTC)
-Date:   Fri, 14 May 2021 10:16:10 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Steven Rostedt (VMware)" <rostedt@godmis.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Qiujun Huang <hqjagain@gmail.com>, Tom Rix <trix@redhat.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] tracing: events_hist: avoid using excessive stack space
-Message-ID: <20210514101610.4392adbc@gandalf.local.home>
-In-Reply-To: <20210514140429.3334181-1-arnd@kernel.org>
-References: <20210514140429.3334181-1-arnd@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230097AbhENOTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 10:19:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C73C61408;
+        Fri, 14 May 2021 14:18:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621001918;
+        bh=c7dfcDSUedN/VQoQv/XM8fRZG2HhOOW57vq4i3XI37w=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=OQ+w8jq41p/pK8QPzt383K43rnWDvG9IebEZzoZj7WKu0EgpEM3a4OB9pZnDV5/lC
+         MxVWpkmQpp2inFtKTGn6bM1fAR+gA+04aBXFsHrR34k+VM9wQUFTEenWCHNxw8mV5S
+         Rr3kzMIGVT+KJ8CgQJfj5jt0KJvZQg0gfBfD7ImGjDrz6TXEWqjpD0nn1NC8t6bBSV
+         Y2m7PBzQCXheFvsYF9jZqx3chr66nJXcElBiHfvACPcxjY0VNJoiSeft4M6sPjRp9i
+         /15Ta8qfh6z3LjSIBpnNeZl0hFKEsFjvWWGKfF/qxDT0jcgdTLCyifuXI2D1S1QhIL
+         whK9i7cORQs2g==
+Date:   Fri, 14 May 2021 16:18:25 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Edward Cree <ecree.xilinx@gmail.com>
+Cc:     David Woodhouse <dwmw2@infradead.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Mali DP Maintainers <malidp@foss.arm.com>,
+        alsa-devel@alsa-project.org, coresight@lists.linaro.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        intel-wired-lan@lists.osuosl.org, keyrings@vger.kernel.org,
+        kvm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-hwmon@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-sgx@vger.kernel.org, linux-usb@vger.kernel.org,
+        mjpeg-users@lists.sourceforge.net, netdev@vger.kernel.org,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH v2 00/40] Use ASCII subset instead of UTF-8 alternate
+ symbols
+Message-ID: <20210514161825.4e4c0d3e@coco.lan>
+In-Reply-To: <8b8bc929-2f07-049d-f24c-cb1f1d85bbaa@gmail.com>
+References: <cover.1620823573.git.mchehab+huawei@kernel.org>
+        <d2fed242fbe200706b8d23a53512f0311d900297.camel@infradead.org>
+        <20210514102118.1b71bec3@coco.lan>
+        <61c286b7afd6c4acf71418feee4eecca2e6c80c8.camel@infradead.org>
+        <8b8bc929-2f07-049d-f24c-cb1f1d85bbaa@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 May 2021 16:04:25 +0200
-Arnd Bergmann <arnd@kernel.org> wrote:
+Em Fri, 14 May 2021 12:08:36 +0100
+Edward Cree <ecree.xilinx@gmail.com> escreveu:
 
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> In some configurations, clang produces a warning about an overly large
-> amount of stack space used in hist_trigger_print_key():
-> 
-> kernel/trace/trace_events_hist.c:4594:13: error: stack frame size of 1248 bytes in function 'hist_trigger_print_key' [-Werror,-Wframe-larger-than=]
-> static void hist_trigger_print_key(struct seq_file *m,
-> 
-> Moving the 'str' variable into a more local scope in the two places
-> where it gets used actually reduces the the used stack space here
-> and gets it below the warning limit, because the compiler can now
-> assume that it is safe to use the same stack slot that it has for
-> the stack of any inline function.
+> For anyone who doesn't know about it: X has this wonderful thing called
+>  the Compose key[1].  For instance, type =E2=8E=84--- to get =E2=80=94, o=
+r =E2=8E=84<" for =E2=80=9C.
+> Much more mnemonic than Unicode codepoints; and you can extend it with
+>  user-defined sequences in your ~/.XCompose file.
 
-Thanks Arnd for the nice explanation of the rationale for this change.
+Good tip. I haven't use composite for years, as US-intl with dead keys is
+enough for 99.999% of my needs.=20
 
-But I still find it too subtle to my liking that we need to move the
-declaration like this (and duplicate it twice) for internal behavior of the
-compiler (where it can't figure out itself by the use cases if it can
-optimize the stack).
+Btw, at least on Fedora with Mate, Composite is disabled by default. It has
+to be enabled first using the same tool that allows changing the Keyboard
+layout[1].
 
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  kernel/trace/trace_events_hist.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-> index c1abd63f1d6c..e3fe84f017a8 100644
-> --- a/kernel/trace/trace_events_hist.c
-> +++ b/kernel/trace/trace_events_hist.c
-> @@ -4597,7 +4597,6 @@ static void hist_trigger_print_key(struct seq_file *m,
->  				   struct tracing_map_elt *elt)
->  {
->  	struct hist_field *key_field;
-> -	char str[KSYM_SYMBOL_LEN];
+Yet, typing an EN DASH for example, would be "<composite>--.", with is 4
+keystrokes instead of just two ('--'). It means twice the effort ;-)
 
-Instead, I think we should just make str static, as this should only be
-called under the event_mutex. To be sure, we can also add:
+[1] KDE, GNome, Mate, ... have different ways to enable it and to=20
+    select what key would be considered <composite>:
 
-	/* To protect the static str variable */
-	lockdep_assert_held(&event_mutex);
+	https://dry.sailingissues.com/us-international-keyboard-layout.html
+	https://help.ubuntu.com/community/ComposeKey
 
--- Steve
-
->  	bool multiline = false;
->  	const char *field_name;
->  	unsigned int i;
-> @@ -4617,11 +4616,13 @@ static void hist_trigger_print_key(struct seq_file *m,
->  			uval = *(u64 *)(key + key_field->offset);
->  			seq_printf(m, "%s: %llx", field_name, uval);
->  		} else if (key_field->flags & HIST_FIELD_FL_SYM) {
-> +			char str[KSYM_SYMBOL_LEN];
->  			uval = *(u64 *)(key + key_field->offset);
->  			sprint_symbol_no_offset(str, uval);
->  			seq_printf(m, "%s: [%llx] %-45s", field_name,
->  				   uval, str);
->  		} else if (key_field->flags & HIST_FIELD_FL_SYM_OFFSET) {
-> +			char str[KSYM_SYMBOL_LEN];
->  			uval = *(u64 *)(key + key_field->offset);
->  			sprint_symbol(str, uval);
->  			seq_printf(m, "%s: [%llx] %-55s", field_name,
-
+Thanks,
+Mauro
