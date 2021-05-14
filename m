@@ -2,49 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ACA4380799
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 12:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0008E3807A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 12:46:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231474AbhENKpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 06:45:32 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52850 "EHLO mx2.suse.de"
+        id S232017AbhENKrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 06:47:33 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:37054 "EHLO deadmen.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229445AbhENKpa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 06:45:30 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D4339ABF6;
-        Fri, 14 May 2021 10:44:18 +0000 (UTC)
-Subject: Re: [PATCH v10 04/33] mm/debug: Add VM_BUG_ON_FOLIO and
- VM_WARN_ON_ONCE_FOLIO
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        akpm@linux-foundation.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Zi Yan <ziy@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Jeff Layton <jlayton@kernel.org>
-References: <20210511214735.1836149-1-willy@infradead.org>
- <20210511214735.1836149-5-willy@infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <d87e6208-c0b2-cad3-7536-fc1be87edd5d@suse.cz>
-Date:   Fri, 14 May 2021 12:44:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S231600AbhENKrc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 06:47:32 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtp (Exim 4.89 #2 (Debian))
+        id 1lhVKb-0002FW-O5; Fri, 14 May 2021 18:46:09 +0800
+Received: from herbert by gondobar with local (Exim 4.89)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1lhVK3-0006WD-Hm; Fri, 14 May 2021 18:45:35 +0800
+Date:   Fri, 14 May 2021 18:45:35 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Varad Gautam <varad.gautam@suse.com>
+Cc:     linux-crypto@vger.kernel.org, dhowells@redhat.com,
+        davem@davemloft.net, vt@altlinux.org,
+        tianjia.zhang@linux.alibaba.com, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jarkko@kernel.org
+Subject: Re: [PATCH v3 13/18] crypto: rsa-psspad: Get signature parameters
+ from a given signature
+Message-ID: <20210514104535.q4zjtshxroruvoz3@gondor.apana.org.au>
+References: <20210420114124.9684-1-varad.gautam@suse.com>
+ <20210420114124.9684-14-varad.gautam@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <20210511214735.1836149-5-willy@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210420114124.9684-14-varad.gautam@suse.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/11/21 11:47 PM, Matthew Wilcox (Oracle) wrote:
-> These are the folio equivalents of VM_BUG_ON_PAGE and VM_WARN_ON_ONCE_PAGE.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Zi Yan <ziy@nvidia.com>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Acked-by: Jeff Layton <jlayton@kernel.org>
+On Tue, Apr 20, 2021 at 01:41:18PM +0200, Varad Gautam wrote:
+>
+> +static int psspad_set_sig_params(struct crypto_akcipher *tfm,
+> +				 const void *sig,
+> +				 unsigned int siglen)
+> +{
+> +	struct akcipher_instance *inst = akcipher_alg_instance(tfm);
+> +	struct rsapad_inst_ctx *ictx = akcipher_instance_ctx(inst);
+> +	const struct public_key_signature *s = sig;
+> +
+> +	if (!sig)
+> +		return -EINVAL;
+> +
+> +	ictx->salt_len = s->salt_length;
+> +	ictx->mgf_hash_algo = s->mgf_hash_algo;
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Is there any reason why this couldn't be embedded into the key
+instead?
+
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
