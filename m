@@ -2,118 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7747F380C2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 16:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 730A3380C21
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 16:45:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234581AbhENOqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 10:46:55 -0400
-Received: from uho.ysoft.cz ([81.19.3.130]:49105 "EHLO uho.ysoft.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232759AbhENOqv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 10:46:51 -0400
-Received: from vokac-latitude.ysoft.local (unknown [10.0.28.99])
-        by uho.ysoft.cz (Postfix) with ESMTP id 0FF8AA2C5C;
-        Fri, 14 May 2021 16:45:38 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ysoft.com;
-        s=20160406-ysoft-com; t=1621003538;
-        bh=6WPvib1+u/MMJIgAB5EE+Z8wqS5Q6D/ao0Rp9ErE8YA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eSy1gTqN3ciGBYEgRG6f1yTI2yMrEx8pCZBaWsgMuzE7ZeBIWS7bYLboNd2vBD2Pt
-         L1tZdFrFZ7me83LZA2b+6Z8JOaZlrl7YKuLaQE1ODuIwISBLwgOUQetz/yBCRD9WmQ
-         +c/nwRhJucJ8c4gxomv31ieBI4ga5pkOHZ2W0j9Q=
-From:   =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>
-To:     Pavel Machek <pavel@ucw.cz>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>
-Cc:     Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
-        =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>,
-        stable@vger.kernel.org
-Subject: [RFC 2/2] ARM: dts: imx6dl-yapp4: Fix lp5562 driver probe
-Date:   Fri, 14 May 2021 16:44:37 +0200
-Message-Id: <1621003477-11250-3-git-send-email-michal.vokac@ysoft.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1621003477-11250-1-git-send-email-michal.vokac@ysoft.com>
-References: <1621003477-11250-1-git-send-email-michal.vokac@ysoft.com>
+        id S234537AbhENOq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 10:46:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231473AbhENOqZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 10:46:25 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75654C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 07:45:14 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id w22so14763006oiw.9
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 07:45:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=a4ec9HrK4exLNdFoaRuR+1/fBbQJf79OPKrfXFd1y+Q=;
+        b=cCh4rJ+jLCwHOySclWi/hxbsrBN/knU3k6iyeSOpNa029f/gEvfeTen3wcRnSN++DO
+         BznnqYVww+aBxCmkZFaUBSIwZ433Kv8pezR8RVI33o8oF64gNctoWSWyCUcDDCosYHGc
+         6u1F+9H7rHB5FOhqzYYjiguylGWQEH3G3FU5kUJjGasOcbZvMUiv2aHm6VKBNFv9bccD
+         WzC5F0Tkje1HmDIQ6YI+U26AKlElAvuGOTuwjJum2ovaXeyariBT/KqdGVsIAy7nT5/D
+         QdJQF5kq2BjURpQ5Df4YM9es8RYQt8WNXHsG+iWDhkkVJXzXIXqA2+Z7fiWLOmY5LsBL
+         qDnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a4ec9HrK4exLNdFoaRuR+1/fBbQJf79OPKrfXFd1y+Q=;
+        b=RdwvKnC0Ump7ft8Xb7H/+7eFiGqka6ISRACPwz6ydqNKacBLLEH0u07FR6hf0x+9ft
+         d7RY78nGQmSFtxARE/wxgSJ5lfbPSv7Av9PSHqvui8BQGtw4j2EzFjPlsuhhHxANgRCo
+         mrF+s4B4Z8Y0oTjvxSkB5t2sMpzM70tnbwXws1B2K8HtgVX/1mwILybdjEbYxSGEPyg8
+         5pLJYbFWZFlyLcBIZyrKumhd8cXwYW0QiD/8PnbJ6I0JGyaWT9xpsYWKcsa8ztd0SNvh
+         OvWFC3aTab19LHTgIOPDnMr4VMy21V2JXCi3r8LEhF7G7z6mEj+E1NCpuQBA/fnmyTBY
+         Fu/Q==
+X-Gm-Message-State: AOAM532qoHKxd+WUXXfzxHk4X4ZOCYdxjTDZ53NiXiUGsuK0ppyN6Slo
+        3njSDg9jGAImT7CPqfDmB7wK1wHkxoD7NZaxUO0ZozAqGwOcSQ==
+X-Google-Smtp-Source: ABdhPJzji7JCPpwfpxmtJyrdybwjjTdBZYaTphELI3UT0rST6tJp66i9W7DoAeu660DBbHpDHx8qOpXaPmsOZK+U9/A=
+X-Received: by 2002:aca:408a:: with SMTP id n132mr34789902oia.70.1621003513688;
+ Fri, 14 May 2021 07:45:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210514140015.2944744-1-arnd@kernel.org> <YJ6E1scEoTATEJav@kroah.com>
+In-Reply-To: <YJ6E1scEoTATEJav@kroah.com>
+From:   Marco Elver <elver@google.com>
+Date:   Fri, 14 May 2021 16:45:01 +0200
+Message-ID: <CANpmjNMgiVwNovVDASz1jrUFXOCaUY9SvC7hzbv2ix_CaaSvJA@mail.gmail.com>
+Subject: Re: [PATCH] kcsan: fix debugfs initcall return type
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the LED multicolor framework support was added in commit
-92a81562e695 ("leds: lp55xx: Add multicolor framework support to lp55xx")
-LEDs on this platform stopped working.
+On Fri, 14 May 2021 at 16:10, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+> On Fri, May 14, 2021 at 04:00:08PM +0200, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > clang points out that an initcall funciton should return an 'int':
+> >
+> > kernel/kcsan/debugfs.c:274:15: error: returning 'void' from a function with incompatible result type 'int'
+> > late_initcall(kcsan_debugfs_init);
+> > ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
+> > include/linux/init.h:292:46: note: expanded from macro 'late_initcall'
+> >  #define late_initcall(fn)               __define_initcall(fn, 7)
+> >
+> > Fixes: e36299efe7d7 ("kcsan, debugfs: Move debugfs file creation out of early init")
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+[...]
+> >
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Author of the framework attempted to accommodate this DT to the
-framework in commit b86d3d21cd4c ("ARM: dts: imx6dl-yapp4: Add reg property
-to the lp5562 channel node") but that is not sufficient. A color property
-is now required even if the multicolor framework is not used, otherwise
-the driver probe fails:
+Reviewed-by: Marco Elver <elver@google.com>
 
-  lp5562: probe of 1-0030 failed with error -22
+Thanks for catching this -- it boggles my mind why gcc nor clang
+wouldn't warn about this by default...
+Is this a new clang?
 
-Add the color property to fix this and remove the actually unused white
-channel.
+Paul, please also add a "Cc: stable <stable@vger.kernel.org>" because
+e36299efe7d7 is, too.
 
-Fixes: b86d3d21cd4c ("ARM: dts: imx6dl-yapp4: Add reg property to the lp5562 channel node")
-Cc: <stable@vger.kernel.org>
-Cc: Pavel Machek <pavel@ucw.cz>
-Cc: Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Cc: linux-leds@vger.kernel.org
-Signed-off-by: Michal Vokáč <michal.vokac@ysoft.com>
----
- arch/arm/boot/dts/imx6dl-yapp4-common.dtsi | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
-
-diff --git a/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi b/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi
-index 7d2c72562c73..3107bf7fbce5 100644
---- a/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi
-+++ b/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi
-@@ -5,6 +5,7 @@
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/interrupt-controller/irq.h>
- #include <dt-bindings/input/input.h>
-+#include <dt-bindings/leds/common.h>
- #include <dt-bindings/pwm/pwm.h>
- 
- / {
-@@ -271,6 +272,7 @@
- 			led-cur = /bits/ 8 <0x20>;
- 			max-cur = /bits/ 8 <0x60>;
- 			reg = <0>;
-+			color = <LED_COLOR_ID_RED>;
- 		};
- 
- 		chan@1 {
-@@ -278,6 +280,7 @@
- 			led-cur = /bits/ 8 <0x20>;
- 			max-cur = /bits/ 8 <0x60>;
- 			reg = <1>;
-+			color = <LED_COLOR_ID_GREEN>;
- 		};
- 
- 		chan@2 {
-@@ -285,13 +288,7 @@
- 			led-cur = /bits/ 8 <0x20>;
- 			max-cur = /bits/ 8 <0x60>;
- 			reg = <2>;
--		};
--
--		chan@3 {
--			chan-name = "W";
--			led-cur = /bits/ 8 <0x0>;
--			max-cur = /bits/ 8 <0x0>;
--			reg = <3>;
-+			color = <LED_COLOR_ID_BLUE>;
- 		};
- 	};
- 
--- 
-2.7.4
-
+Thanks,
+-- Marco
