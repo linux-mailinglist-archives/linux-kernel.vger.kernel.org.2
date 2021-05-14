@@ -2,95 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C574538134F
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 23:43:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ACD5381351
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 23:44:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233129AbhENVpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 17:45:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60894 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230247AbhENVo7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 17:44:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CCDDD613BE;
-        Fri, 14 May 2021 21:43:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621028627;
-        bh=nFTNUf+AC7R9gxTMKt09zZHN/guSnHnnI1FujB9AH4U=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=L5RmQoLBbE2UEZsWCu0+0kvKidJh63T2v+p4gRnylG1h77+uBj98JrmJ5TkypzhVy
-         ym3enc5S4inHywFlfxoakfpUsohLOWdp5vgubY44DNDQv8Gz72ZA5BkciujmfCn2PM
-         bSs1QuUo9kS/jXsXeT5VUGJxIzoe7mPoo9sF+0i+RCBfD67A9rVgqDIf5aQcpcZw6s
-         UtbcpNHZC6EBsGCSlCL333Bh60VpglUptmCKnwQxHQZPghAboe+V5Tmy+67WUYSm/V
-         cAzEQD6W3u6P7fR4yXU45kodJY2vQBRm1/6VHFWqq5wnVLyhiCqoaAXHFPU3u3cEGu
-         ZZlDxSAG2TCUQ==
-Subject: Re: [PATCH] drm/msm/dsi: fix 32-bit clang warning
-To:     Arnd Bergmann <arnd@kernel.org>, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-References: <20210514213032.575161-1-arnd@kernel.org>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <58a35b85-eb0e-bc02-29be-0cae46bd75b8@kernel.org>
-Date:   Fri, 14 May 2021 14:43:45 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S233267AbhENVps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 17:45:48 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:42734 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230247AbhENVpq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 17:45:46 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14ELXvO3030567;
+        Fri, 14 May 2021 17:44:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=2TjVzacE10ZLv/wIdwoaT8zoV5nLGXPmwgF92Z7UQ4E=;
+ b=aJ6K8YKTiYz5JENG65tU5OYxN+EB8WlSII9k2pPSJG7lSQR1rpAWCu6Pd6uGT8zQMVF9
+ Ptu0zC0SnVzAfbbivV6iGbXmFC9DaOi4UukjncpDoDn+Z/9/Pz763NwHKgQySadpSy11
+ Lx5DJ/MoBBOJfDiRsBwYY0lFn6U2zOFRRRjyqmewnqK0YmSkMFkIy6dF9aOaFVxllxVa
+ hlAveH9qfWR96UFl3mmGI4F6IjW5irE6FnRjMmynfd5dXpFd6KthjAgkLq8DdPhdlPDx
+ OwnY2n7VS8316hO5f4HS//TTz//EjgfMzxpG/MjKCC338CzIzljg+C7255I0ak4Uar+f kw== 
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38hxynb8a4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 May 2021 17:44:24 -0400
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14ELiNaP001405;
+        Fri, 14 May 2021 21:44:23 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma03wdc.us.ibm.com with ESMTP id 38hc75y0mm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 May 2021 21:44:23 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14ELiNma26607876
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 14 May 2021 21:44:23 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 34A87AE05F;
+        Fri, 14 May 2021 21:44:23 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 00C42AE05C;
+        Fri, 14 May 2021 21:44:22 +0000 (GMT)
+Received: from localhost (unknown [9.211.51.49])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Fri, 14 May 2021 21:44:22 +0000 (GMT)
+From:   Nathan Lynch <nathanl@linux.ibm.com>
+To:     linuxppc-dev@lists.ozlabs.org
+Cc:     mpe@ellerman.id.au, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org
+Subject: [PATCH] powerpc/udbg_hvc: retry putc on -EAGAIN
+Date:   Fri, 14 May 2021 16:44:22 -0500
+Message-Id: <20210514214422.3019105-1-nathanl@linux.ibm.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210514213032.575161-1-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 4hEbkGUgVweJqzQJp6yWv37D0NrPnima
+X-Proofpoint-ORIG-GUID: 4hEbkGUgVweJqzQJp6yWv37D0NrPnima
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-14_10:2021-05-12,2021-05-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ lowpriorityscore=0 clxscore=1011 suspectscore=0 bulkscore=0 spamscore=0
+ priorityscore=1501 mlxscore=0 phishscore=0 malwarescore=0 impostorscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105140169
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/14/2021 2:30 PM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> clang is a little overzealous with warning about a constant conversion
-> in an untaken branch of a ternary expression:
-> 
-> drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c:975:48: error: implicit conversion from 'unsigned long long' to 'unsigned long' changes value from 5000000000 to 705032704 [-Werror,-Wconstant-conversion]
->          .max_pll_rate = (5000000000ULL < ULONG_MAX) ? 5000000000UL : ULONG_MAX,
->                                                        ^~~~~~~~~~~~
-> 
-> Rewrite this to use a preprocessor conditional instead to avoid the
-> warning.
-> 
-> Fixes: 076437c9e360 ("drm/msm/dsi: move min/max PLL rate to phy config")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+hvterm_raw_put_chars() calls hvc_put_chars(), which may return -EAGAIN
+when the underlying hcall returns a "busy" status, but udbg_hvc_putc()
+doesn't handle this. When using xmon on a PowerVM guest, this can
+result in incomplete or garbled output when printing relatively large
+amounts of data quickly, such as when dumping the kernel log buffer.
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Call again on -EAGAIN.
 
-> ---
-> As found with another patch, using __builtin_choose_expr() would
-> likely also work here, but doesn't seem any more readable.
-> ---
->   drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c | 6 +++++-
->   1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
-> index e76ce40a12ab..accd6b4eb7c2 100644
-> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
-> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
-> @@ -972,7 +972,11 @@ const struct msm_dsi_phy_cfg dsi_phy_7nm_cfgs = {
->   		.restore_pll_state = dsi_7nm_pll_restore_state,
->   	},
->   	.min_pll_rate = 600000000UL,
-> -	.max_pll_rate = (5000000000ULL < ULONG_MAX) ? 5000000000ULL : ULONG_MAX,
-> +#ifdef CONFIG_64BIT
-> +	.max_pll_rate = 5000000000UL,
-> +#else
-> +	.max_pll_rate = ULONG_MAX,
-> +#endif
->   	.io_start = { 0xae94400, 0xae96400 },
->   	.num_dsi_phy = 2,
->   	.quirks = DSI_PHY_7NM_QUIRK_V4_1,
-> 
+Signed-off-by: Nathan Lynch <nathanl@linux.ibm.com>
+---
+ drivers/tty/hvc/hvc_vio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/tty/hvc/hvc_vio.c b/drivers/tty/hvc/hvc_vio.c
+index 798f27f40cc2..76d2a7038095 100644
+--- a/drivers/tty/hvc/hvc_vio.c
++++ b/drivers/tty/hvc/hvc_vio.c
+@@ -249,7 +249,7 @@ static void udbg_hvc_putc(char c)
+ 			count = hvterm_hvsi_put_chars(0, &c, 1);
+ 			break;
+ 		}
+-	} while(count == 0);
++	} while(count == 0 || count == -EAGAIN);
+ }
+ 
+ static int udbg_hvc_getc_poll(void)
+-- 
+2.30.2
 
