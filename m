@@ -2,85 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA3D8380A0F
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 15:01:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60161380A15
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 15:03:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233758AbhENNDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 09:03:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhENNDC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 09:03:02 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8277C061574;
-        Fri, 14 May 2021 06:01:50 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620997309;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6WK8Uhovat2rNpVT4rMlmAU7lk0bJSnslVIjRn8b7u4=;
-        b=IcmpKQXJaMnRT46k0vQ3txAs2wcCeq3uORnWnm8KCb8hmh+8ed7TYEQ3xm0ANbrmY3+3NZ
-        wWM1kfI+jFzKEAzQEjT7yzeejmIFgQ2BTuAFr8Ch71Td8kpqypN9hl7wqvwf/EiuMNTSkh
-        bYxwTYaBMSWV5kGfWznx7gxS1+d8PrJFipF0Gem9UcOyNJIc/IK0DGi9nNwg18oI9Deyst
-        MWoGJwu4yS/rJ9ZwoFY8dc1nG/aIn09jzKLocCr0wwvWGvRRZC9/BRcdDH9eSCYmoLS5YP
-        db+M8l/SaoWBhwO1EUke/eJd7Mw0K9oDnG1O7LQQVwb1gnSGROS2+GGgtNPcHQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620997309;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6WK8Uhovat2rNpVT4rMlmAU7lk0bJSnslVIjRn8b7u4=;
-        b=YR6RH5dGO0YiPGI2tnLHb/sARh6P5vXUc1t0rrYQwhd+/fJhbrYrO0OmF+5xochIST9/7Y
-        kA0SAZWUtHp+gFDQ==
-To:     David Laight <David.Laight@ACULAB.COM>,
-        'Maximilian Luz' <luzmaximilian@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
-Cc:     "H. Peter Anvin" <hpa@zytor.com>, Sachi King <nakato@nakato.io>,
-        "x86\@kernel.org" <x86@kernel.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable\@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH] x86/i8259: Work around buggy legacy PIC
-In-Reply-To: <e43d9a823c9e44bab0cdbf32a000c373@AcuMS.aculab.com>
-References: <20210512210459.1983026-1-luzmaximilian@gmail.com> <9b70d8113c084848b8d9293c4428d71b@AcuMS.aculab.com> <e7dbd4d1-f23f-42f0-e912-032ba32f9ec8@gmail.com> <e43d9a823c9e44bab0cdbf32a000c373@AcuMS.aculab.com>
-Date:   Fri, 14 May 2021 15:01:48 +0200
-Message-ID: <87tun54gg3.ffs@nanos.tec.linutronix.de>
+        id S233843AbhENNFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 09:05:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49480 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231518AbhENNE6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 09:04:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F07B461457;
+        Fri, 14 May 2021 13:03:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620997427;
+        bh=KjRucVq9b2NKDaj10nQp3ecBtpjWikZo5h6VILTp9TQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ovF/DZ6vdNyVMSH9t0zjMiEagYR721FRrBVU2xZxXX/OUhYjI4DoeKwouVrElnjNo
+         H2LSDPkvaHREyrn1HyHd22hBkz3doo6H4OkJrDEXpJxqK/vktxIuA+Y7acAYuukBaa
+         8O0eESoVXTaqfbi08ympBP0C9YMyag7kUEqEptmhtLOP4nWQVjNY971q4Zvmp63YMt
+         FApG43bQoRmB4kFdndQzCDNsl0JV6NwuAMLOJTgNrK92jp4knsyOUt4/jlG789UKl4
+         nQaqjm0JUA5D0nUp8/StBDRTX5A//K7DIJJsrFgQEHzMgV0l+g4iKzmuREdaMda1QZ
+         5UKkdWqvLttRg==
+Received: by mail-wr1-f51.google.com with SMTP id n2so30044378wrm.0;
+        Fri, 14 May 2021 06:03:46 -0700 (PDT)
+X-Gm-Message-State: AOAM530KCJZ25nhLNBkcuOGsrukBadGFOwRVs7o/kskMcnBcQNwdUi+J
+        h0h3Qwac+7v5/Xe/g6Jn0wrMUz57wfFV2BMBHOI=
+X-Google-Smtp-Source: ABdhPJzlvCIkpR1F+kgydYHRKzdkFDddvZpYrU9rVtIDsh8sEqa4UTJsy0hLf91X5lxvVhxcxulzbSr4KB+n1tMKazY=
+X-Received: by 2002:a5d:6dc4:: with SMTP id d4mr60213997wrz.105.1620997425625;
+ Fri, 14 May 2021 06:03:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210514100106.3404011-1-arnd@kernel.org> <20210514100106.3404011-6-arnd@kernel.org>
+ <20210514114813.GJ10366@gate.crashing.org>
+In-Reply-To: <20210514114813.GJ10366@gate.crashing.org>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 14 May 2021 15:02:43 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a04OZzSwV0039GiA0x=Kmp_mUvNz_CEyVFo8NJHTv2smg@mail.gmail.com>
+Message-ID: <CAK8P3a04OZzSwV0039GiA0x=Kmp_mUvNz_CEyVFo8NJHTv2smg@mail.gmail.com>
+Subject: Re: [PATCH v2 05/13] powerpc: use linux/unaligned/le_struct.h on LE power7
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     linux-arch <linux-arch@vger.kernel.org>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David,
+On Fri, May 14, 2021 at 1:48 PM Segher Boessenkool
+<segher@kernel.crashing.org> wrote:
+> On Fri, May 14, 2021 at 12:00:53PM +0200, Arnd Bergmann wrote:
+> > Little-endian POWER7 kernels disable
+> > CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS because that is not supported on
+> > the hardware, but the kernel still uses direct load/store for explicti
+> > get_unaligned()/put_unaligned().
+> >
+> > I assume this is a mistake that leads to power7 having to trap and fix
+> > up all these unaligned accesses at a noticeable performance cost.
+> >
+> > The fix is completely trivial, just remove the file and use the
+> > generic version that gets it right.
+>
+> LE p7 isn't supported (it requires special firmware), and no one uses it
+> anymore, also not for development.  It was used for powerpc64le-linux
+> development before p8 was widely available.
 
-On Thu, May 13 2021 at 10:36, David Laight wrote:
+Ok, thanks for the clarification.
 
->> -----Original Message-----
->> From: Maximilian Luz <luzmaximilian@gmail.com>
->> Sent: 13 May 2021 11:12
->> To: David Laight <David.Laight@ACULAB.COM>; Thomas Gleixner <tglx@linutronix.de>; Ingo Molnar
->> <mingo@redhat.com>; Borislav Petkov <bp@alien8.de>
->> Cc: H. Peter Anvin <hpa@zytor.com>; Sachi King <nakato@nakato.io>; x86@kernel.org; linux-
->> kernel@vger.kernel.org; stable@vger.kernel.org
->> Subject: Re: [PATCH] x86/i8259: Work around buggy legacy PIC
+Should we just remove the Kconfig option for it then as further cleanup?
+Is there any other code such as alignment trap handling that could be
+removed if LE POWER7 gets dropped?
 
-can you please fix your mail client and spare us the useless header
-duplication in the reply?
-
-> It is also worth noting that the probe code is spectacularly crap.
-> It writes 0xff and then checks that 0xff is read back.
-> Almost anything (including a failed PCIe read to the ISA bridge)
-> will return 0xff and make the test pass.
-
-        unsigned char probe_val = ~(1 << PIC_CASCADE_IR);
-
-	outb(probe_val, PIC_MASTER_IMR);
-	new_val = inb(PIC_MASTER_IMR);
-
-How is that writing 0xFF?
-
-Thanks,
-
-        tglx
+      Arnd
