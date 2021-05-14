@@ -2,159 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 111F23803B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 08:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEC263803BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 08:42:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232517AbhENGf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 02:35:26 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:37459 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230329AbhENGfY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 02:35:24 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4FhJdv1Shwz9sZK;
-        Fri, 14 May 2021 08:34:11 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id T1_jWZQjZv-c; Fri, 14 May 2021 08:34:11 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4FhJdv0Rs5z9sZJ;
-        Fri, 14 May 2021 08:34:11 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id E2D018B7F7;
-        Fri, 14 May 2021 08:34:10 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id mVreRObY4o1i; Fri, 14 May 2021 08:34:10 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id D62098B7F6;
-        Fri, 14 May 2021 08:34:07 +0200 (CEST)
-Subject: Re: [PATCH bpf-next 1/2] bpf: Remove bpf_jit_enable=2 debugging mode
-To:     Quentin Monnet <quentin@isovalent.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Ian Rogers <irogers@google.com>, Song Liu <songliubraving@fb.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org,
-        Shubham Bansal <illusionist.neo@gmail.com>,
-        Mahesh Bandewar <maheshb@google.com>,
-        Will Deacon <will@kernel.org>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Ilya Leoshkevich <iii@linux.ibm.com>, paulburton@kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        X86 ML <x86@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tobias Klauser <tklauser@distanz.ch>,
-        linux-mips@vger.kernel.org, grantseltzer@gmail.com,
-        Xi Wang <xi.wang@gmail.com>, Albert Ou <aou@eecs.berkeley.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        ppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        KP Singh <kpsingh@kernel.org>, iecedge@gmail.com,
-        Simon Horman <horms@verge.net.au>,
-        Borislav Petkov <bp@alien8.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Yonghong Song <yhs@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dmitry Vyukov <dvyukov@google.com>, tsbogend@alpha.franken.de,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Network Development <netdev@vger.kernel.org>,
-        David Ahern <dsahern@kernel.org>,
-        Wang YanQing <udknight@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>, bpf <bpf@vger.kernel.org>,
-        Jianlin Lv <Jianlin.Lv@arm.com>,
-        "David S. Miller" <davem@davemloft.net>
-References: <20210415093250.3391257-1-Jianlin.Lv@arm.com>
- <9c4a78d2-f73c-832a-e6e2-4b4daa729e07@iogearbox.net>
- <d3949501-8f7d-57c4-b3fe-bcc3b24c09d8@isovalent.com>
- <CAADnVQJ2oHbYfgY9jqM_JMxUsoZxaNrxKSVFYfgCXuHVpDehpQ@mail.gmail.com>
- <0dea05ba-9467-0d84-4515-b8766f60318e@csgroup.eu>
- <CAADnVQ+oQT6C7Qv7P5TV-x7im54omKoCYYKtYhcnhb1Uv3LPMQ@mail.gmail.com>
- <be132117-f267-5817-136d-e1aeb8409c2a@csgroup.eu>
- <58296f87-ad00-a0f5-954b-2150aa84efc4@isovalent.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <52171382-1eca-58e2-b3d1-b2cc6b431e27@csgroup.eu>
-Date:   Fri, 14 May 2021 08:34:07 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S232602AbhENGn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 02:43:29 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:34480 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232476AbhENGn1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 02:43:27 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14E6YOoF099508;
+        Fri, 14 May 2021 06:41:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=W3bzDXFQz9uNtboSy9MOqtcKgs9HaV7u3/tDYCiwO4Q=;
+ b=ltvYtpetURH5LgOwEsy9JdP2pjV4s5Nrr77NNoUB5VI/AynxbsXMoOUtJPYbSFLk7oVy
+ SxUQxUXRUkIlKveoeepymWTL1fj8H5gGJUvdokjyeXUlj5K1Ip54+roqHMv0n6JXHMbx
+ R6LbLlk7HO+sjguQBoqKJlXieyrRcn9uZ1ONNIyUk3UQr/NbVD9fCRNtW2fyIyoB5tPe
+ Wx8QzetlrbaGLKrfXKLjNxx98SydPSVpSPf60gwFMmGg1DRJhJ5BVmtzyZlkqAo4oRow
+ Bmvjpi2AwKSV3YhAoHfUgbec2cDmZstUvMyJGvFQuf60zRx+xoGlBbClVWQgVA7nBvib zQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 38gpndbgjm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 14 May 2021 06:41:57 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14E6Yral169895;
+        Fri, 14 May 2021 06:41:57 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 38gppdf8qn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 14 May 2021 06:41:57 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14E6fuHb006885;
+        Fri, 14 May 2021 06:41:56 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 38gppdf8pt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 14 May 2021 06:41:56 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 14E6frAd005036;
+        Fri, 14 May 2021 06:41:54 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 13 May 2021 23:41:53 -0700
+Date:   Fri, 14 May 2021 09:41:38 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Hayes Wang <hayeswang@realtek.com>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        syzbot <syzbot+95afd23673f5dd295c57@syzkaller.appspotmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
+        nic_swsd <nic_swsd@realtek.com>
+Subject: Re: [syzbot] WARNING in rtl8152_probe
+Message-ID: <20210514064138.GA1955@kadam>
+References: <0000000000009df1b605c21ecca8@google.com>
+ <7de0296584334229917504da50a0ac38@realtek.com>
+ <20210513142552.GA967812@rowland.harvard.edu>
+ <bde8fc1229ec41e99ec77f112cc5ee01@realtek.com>
 MIME-Version: 1.0
-In-Reply-To: <58296f87-ad00-a0f5-954b-2150aa84efc4@isovalent.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bde8fc1229ec41e99ec77f112cc5ee01@realtek.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-ORIG-GUID: 4eeQtsi33mKVbNsYlebxot3PEDmnux1c
+X-Proofpoint-GUID: 4eeQtsi33mKVbNsYlebxot3PEDmnux1c
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9983 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 phishscore=0
+ priorityscore=1501 suspectscore=0 spamscore=0 lowpriorityscore=0
+ adultscore=0 clxscore=1011 mlxscore=0 bulkscore=0 mlxlogscore=999
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105140048
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 23/04/2021 à 12:26, Quentin Monnet a écrit :
-> 2021-04-23 09:19 UTC+0200 ~ Christophe Leroy <christophe.leroy@csgroup.eu>
-> 
+On Fri, May 14, 2021 at 02:58:00AM +0000, Hayes Wang wrote:
+> Alan Stern <stern@rowland.harvard.edu>
+> > Sent: Thursday, May 13, 2021 10:26 PM
 > [...]
+> > Syzbot doesn't test real devices.  It tests emulations, and the emulated
+> > devices usually behave very strangely and in very peculiar and
+> > unexpected ways, so as to trigger bugs in the kernel.  That's why the
+> > USB devices you see in syzbot logs usually have bizarre descriptors.
 > 
->> I finally managed to cross compile bpftool with libbpf, libopcodes,
->> readline, ncurses, libcap, libz and all needed stuff. Was not easy but I
->> made it.
-> 
-> Libcap is optional and bpftool does not use readline or ncurses. May I
-> ask how you tried to build it?
-> 
->>
->> Now, how do I use it ?
->>
->> Let say I want to dump the jitted code generated from a call to
->> 'tcpdump'. How do I do that with 'bpftool prog dump jited' ?
->>
->> I thought by calling this line I would then get programs dumped in a way
->> or another just like when setting 'bpf_jit_enable=2', but calling that
->> line just provides me some bpftool help text.
-> 
-> Well the purpose of this text is to help you find the way to call
-> bpftool to do what you want :). For dumping your programs' instructions,
-> you need to tell bpftool what program to dump: Bpftool isn't waiting
-> until you load a program to dump it, instead you need to load your
-> program first and then tell bpftool to retrieve the instructions from
-> the kernel. To reference your program you could use a pinned path, or
-> first list the programs on your system with "bpftool prog show":
-> 
-> 
->      # bpftool prog show
->      138: tracing  name foo  tag e54c922dfa54f65f  gpl
->              loaded_at 2021-02-25T01:32:30+0000  uid 0
->              xlated 256B  jited 154B  memlock 4096B  map_ids 64
->              btf_id 235
+> Do you mean I have to debug for a device which doesn't exist?
+> I don't understand why I must consider a fake device
+> which provide unexpected USB descriptor deliberately?
 
-Got the following error:
+Imagine you are at a conference and two people sit down next to you, one
+on either side.  The one accidentally spills coffee on your lap.  The
+other plugs in a USB device to your laptop.  Now you are infected with
+spyware.
 
-root@vgoip:~# ./bpftool prog show
-libbpf: elf: endianness mismatch in pid_iter_bpf.
-libbpf: failed to initialize skeleton BPF object 'pid_iter_bpf': -4003
-Error: failed to open PID iterator skeleton
+https://elie.net/blog/security/what-are-malicious-usb-keys-and-how-to-create-a-realistic-one/
 
+regards,
+dan carpenter
 
-Christophe
