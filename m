@@ -2,47 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 835BF380F1F
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 19:39:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6447380F23
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 19:40:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235194AbhENRkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 13:40:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55328 "EHLO mx2.suse.de"
+        id S235218AbhENRlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 13:41:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230487AbhENRkp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 13:40:45 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 47E45AD06;
-        Fri, 14 May 2021 17:39:33 +0000 (UTC)
-Subject: Re: [PATCH v10 16/33] mm: Add folio_mapcount
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        akpm@linux-foundation.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Jeff Layton <jlayton@kernel.org>
-References: <20210511214735.1836149-1-willy@infradead.org>
- <20210511214735.1836149-17-willy@infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <09b33240-46f4-eec9-522c-33152c675b37@suse.cz>
-Date:   Fri, 14 May 2021 19:39:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S235203AbhENRlW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 13:41:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id ACFB6613EC;
+        Fri, 14 May 2021 17:40:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621014010;
+        bh=CHAnB1pfuBs2+dJhQpiQfNIilrMPD/OFF3k1pVrjHjo=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=ZaVrdJTkD9/gljSUysvvloVzeGDTG2bwmKVWUWKmA/Dl2OXHjf6imQsW6K/gA1rVG
+         TwsA9WnI3a8E1ypvK7jEucHb78uspAC8YNF5mafxzDk24yE5U0JygYS5H4re/7t5FT
+         zLWs0FsucUr3ZgyGFFQp9qPTKeeT8LVgjMY+xZHV/1qSuEGPdHf3WGuW4dPGxqo6Fu
+         pBbhAun51M9XG7WLd+piGoNQGYh3b11MLy1chJG82Mh2iSrj2G1is0lnLOFsEG12et
+         KCP/UQ8MrZUCw1PWgrnswvyeFmlPg5qmb54dTcpgRvklEACk4Z/t1MoHPju8ZkIgvi
+         KLMDWJ66noNUQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A15E360A2C;
+        Fri, 14 May 2021 17:40:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210511214735.1836149-17-willy@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] net: bridge: fix build when IPv6 is disabled
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162101401065.20897.4000953716606078069.git-patchwork-notify@kernel.org>
+Date:   Fri, 14 May 2021 17:40:10 +0000
+References: <20210514015348.15448-1-mcroce@linux.microsoft.com>
+In-Reply-To: <20210514015348.15448-1-mcroce@linux.microsoft.com>
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     netdev@vger.kernel.org, bridge@lists.linux-foundation.org,
+        linus.luessing@c0d3.blue, roopa@nvidia.com, nikolay@nvidia.com,
+        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/11/21 11:47 PM, Matthew Wilcox (Oracle) wrote:
-> This is the folio equivalent of page_mapcount().
+Hello:
+
+This patch was applied to netdev/net-next.git (refs/heads/master):
+
+On Fri, 14 May 2021 03:53:48 +0200 you wrote:
+> From: Matteo Croce <mcroce@microsoft.com>
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Acked-by: Jeff Layton <jlayton@kernel.org>
+> The br_ip6_multicast_add_router() prototype is defined only when
+> CONFIG_IPV6 is enabled, but the function is always referenced, so there
+> is this build error with CONFIG_IPV6 not defined:
+> 
+> net/bridge/br_multicast.c: In function ‘__br_multicast_enable_port’:
+> net/bridge/br_multicast.c:1743:3: error: implicit declaration of function ‘br_ip6_multicast_add_router’; did you mean ‘br_ip4_multicast_add_router’? [-Werror=implicit-function-declaration]
+>  1743 |   br_ip6_multicast_add_router(br, port);
+>       |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+>       |   br_ip4_multicast_add_router
+> net/bridge/br_multicast.c: At top level:
+> net/bridge/br_multicast.c:2804:13: warning: conflicting types for ‘br_ip6_multicast_add_router’
+>  2804 | static void br_ip6_multicast_add_router(struct net_bridge *br,
+>       |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+> net/bridge/br_multicast.c:2804:13: error: static declaration of ‘br_ip6_multicast_add_router’ follows non-static declaration
+> net/bridge/br_multicast.c:1743:3: note: previous implicit declaration of ‘br_ip6_multicast_add_router’ was here
+>  1743 |   br_ip6_multicast_add_router(br, port);
+>       |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next] net: bridge: fix build when IPv6 is disabled
+    https://git.kernel.org/netdev/net-next/c/30515832e987
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
