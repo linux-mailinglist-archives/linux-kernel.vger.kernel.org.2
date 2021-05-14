@@ -2,111 +2,352 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 727C338028D
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 05:41:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77D2F380290
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 05:41:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231934AbhENDmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 23:42:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48976 "EHLO
+        id S231970AbhENDmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 23:42:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229724AbhENDmH (ORCPT
+        with ESMTP id S231944AbhENDmS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 23:42:07 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79E7CC061574;
-        Thu, 13 May 2021 20:40:56 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FhDnw3Tnjz9sWW;
-        Fri, 14 May 2021 13:40:51 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1620963653;
-        bh=gp51mvqAA5f2n4jR3+M5N004LGH+fvS9evIFXb/BgSg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=bColG3m0vC2CR2s/d22TjR8AmWF5RFlLN61hs0YcgiQMEUtL2mqTm0Zs8qHNZjzSr
-         9CONVKo+99x/M170cNjcolK9T5BZQFJwO4Mdzu0u6pLA7kNAX+dXQnljxP9CDV9jk5
-         pvuHM2KsImsEfh4UHbRp+//TAlnRaNsA/yNTFZvvTRoSwRPZir72xMdJ+1Pxc3ZJ+l
-         to9ceH6apXUILwF3qz8cmyMswqWwgursbsjjktFhqWsG7/E0f8ETYA+uTSPBygemR7
-         k7KmQNy7CT5PlE2L7r767DBvFBvgLHZ7zBFEVSMEdU8eddKn1cUPy0cVDKn1hvZi5u
-         pzwcwZQXj4mAg==
-Date:   Fri, 14 May 2021 13:40:50 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Linus =?UTF-8?B?TMO8c3Npbmc=?= <linus.luessing@c0d3.blue>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the net-next tree
-Message-ID: <20210514134050.0df7aef9@canb.auug.org.au>
+        Thu, 13 May 2021 23:42:18 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88FDAC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 20:41:07 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id h16so10974156pfk.0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 20:41:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=a/zMUy57MWnxHZLesj+6X4PZo6CPB1vuMRE2rbZo+5A=;
+        b=XRV57b2AsHu0dZ8yE2Cidzy75LqwPAWKoYG6ZELCjo2dRYviTpKt5JbSwz/jhA0RxL
+         4DWmUWW0aYUgae3zarSLwMkNQisvZGI3tRo5PcnS63y1eKRsjm97jw/PypVPTlh7hS+N
+         pyRVAxIzgVG8yJy6/TigwN/+JHfYY19bvHOusaNOyb0hmyF8+f6T0O8TzUkMydjI4EcL
+         ijScsUcKaeoKdIidRCRPZ5CR8xccMaUd2x2YDUn2md17wQR/odG+WEwSt4yMUoHb+JOq
+         PZpBsqpswweVfkRKsspjj86EEmfnTTijBs19SDqC/Bf/YcX6vGK/Kza9kJCuuaeZlpvm
+         eknQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=a/zMUy57MWnxHZLesj+6X4PZo6CPB1vuMRE2rbZo+5A=;
+        b=o7o3AP159xw15nxbhNv+tbfM7Z2iMSfrpwcRFGSnlQ9GpSZE+ZnjNJqmGuvIsGHxwq
+         xzk1nmO1gHGMLQ1lJzTMq3TCDpJ1HTtpPBXNlYLZm1eB5ONC3cDABprLk/Nb86AxR5nM
+         5Gl8lwVyGoDredCdtcatstFXubkh0tesSRj5WoD7OhIYZG1FJu/3KvfCSgpbzyG+RODn
+         MgIe9uvhhCL6sAb0fQ9vXPM34nqo7hfBs7pcrPS7aWOt5I+zaaNCWZbCFgcvcmxDkz5D
+         KCOrf7GnmBPobR8Og0rd03gAS8ykNsMikh33uw9pBgp6n8wn94Uxqddn1V/nEU/437s8
+         N2dg==
+X-Gm-Message-State: AOAM533SiXNbL6mU7MAkjL/4DCVV1qXOtQeRS9Xgj7ElrTsP6rbBPt/c
+        X4cbym4zapHT2/tScBbwqmHehw==
+X-Google-Smtp-Source: ABdhPJxAOMNZVGx8c+mU1b0ZbU88IzZx3Qogfbi6w8heI97iq6ocj6IYcw1Qs9fUFGCjOO6nws3Deg==
+X-Received: by 2002:a62:1c0c:0:b029:2b7:6dd2:adb3 with SMTP id c12-20020a621c0c0000b02902b76dd2adb3mr28081537pfc.44.1620963667012;
+        Thu, 13 May 2021 20:41:07 -0700 (PDT)
+Received: from localhost (ppp121-45-194-51.cbr-trn-nor-bras38.tpg.internode.on.net. [121.45.194.51])
+        by smtp.gmail.com with UTF8SMTPSA id dw18sm8506655pjb.36.2021.05.13.20.41.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 May 2021 20:41:06 -0700 (PDT)
+Message-ID: <193e9c74-fcd6-e232-327d-f803a017af76@ozlabs.ru>
+Date:   Fri, 14 May 2021 13:41:00 +1000
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/B9mPQdekWggz17+.E33jm96";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:88.0) Gecko/20100101
+ Thunderbird/88.0
+Subject: Re: [PATCH kernel v3] powerpc/makefile: Do not redefine $(CPP) for
+ preprocessor
+Content-Language: en-US
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Segher Boessenkool <segher@kernel.crashing.org>
+References: <20210513115904.519912-1-aik@ozlabs.ru>
+ <dedc7262-2956-37b2-ebfd-ae8eb9b56716@kernel.org>
+ <CAK7LNASFhRE=1EBj9AoTMMEd2YJdu7bCxARAGJfZ7aXcBrMAUw@mail.gmail.com>
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+In-Reply-To: <CAK7LNASFhRE=1EBj9AoTMMEd2YJdu7bCxARAGJfZ7aXcBrMAUw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/B9mPQdekWggz17+.E33jm96
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-After merging the net-next tree, today's linux-next build (powerpc
-pseries_le_defconfig) failed like this:
+On 14/05/2021 12:42, Masahiro Yamada wrote:
+> On Fri, May 14, 2021 at 3:59 AM Nathan Chancellor <nathan@kernel.org> wrote:
+>>
+>> On 5/13/2021 4:59 AM, Alexey Kardashevskiy wrote:
+>>> The $(CPP) (do only preprocessing) macro is already defined in Makefile.
+>>> However POWERPC redefines it and adds $(KBUILD_CFLAGS) which results
+>>> in flags duplication. Which is not a big deal by itself except for
+>>> the flags which depend on other flags and the compiler checks them
+>>> as it parses the command line.
+>>>
+>>> Specifically, scripts/Makefile.build:304 generates ksyms for .S files.
+>>> If clang+llvm+sanitizer are enabled, this results in
+>>>
+>>> -emit-llvm-bc -fno-lto -flto -fvisibility=hidden \
+>>>    -fsanitize=cfi-mfcall -fno-lto  ...
+>>>
+>>> in the clang command line and triggers error:
+> 
+> I do not know how to reproduce this for powerpc.
+> Currently, only x86 and arm64 select
+> ARCH_SUPPORTS_LTO_CLANG.
+> 
+> Is this a fix for a potential issue?
 
-net/bridge/br_multicast.c: In function '__br_multicast_enable_port':
-net/bridge/br_multicast.c:1743:3: error: implicit declaration of function '=
-br_ip6_multicast_add_router'; did you mean 'br_ip4_multicast_add_router'? [=
--Werror=3Dimplicit-function-declaration]
- 1743 |   br_ip6_multicast_add_router(br, port);
-      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-      |   br_ip4_multicast_add_router
-net/bridge/br_multicast.c: At top level:
-net/bridge/br_multicast.c:2804:13: warning: conflicting types for 'br_ip6_m=
-ulticast_add_router'
- 2804 | static void br_ip6_multicast_add_router(struct net_bridge *br,
-      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-net/bridge/br_multicast.c:2804:13: error: static declaration of 'br_ip6_mul=
-ticast_add_router' follows non-static declaration
-net/bridge/br_multicast.c:1743:3: note: previous implicit declaration of 'b=
-r_ip6_multicast_add_router' was here
- 1743 |   br_ip6_multicast_add_router(br, port);
-      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+Yeah, it is work in progress to enable LTO_CLANG for PPC64:
 
-Caused by commit
+https://github.com/aik/linux/commits/lto
 
-  a3c02e769efe ("net: bridge: mcast: split multicast router state for IPv4 =
-and IPv6")
 
-# CONFIG_IPV6 is not set
 
-I have reverted that commit for today (along with commit
 
-  3b85f9ba3480 ("net: bridge: mcast: export multicast router presence adjac=
-ent to a port")
+> 
+> 
+>>> clang-13: error: invalid argument '-fsanitize=cfi-mfcall' only allowed with '-flto'
+>>>
+>>> This removes unnecessary CPP redefinition. Which works fine as in most
+>>> place KBUILD_CFLAGS is passed to $CPP except
+>>> arch/powerpc/kernel/vdso64/vdso(32|64).lds. To fix vdso, this does:
+>>> 1. add -m(big|little)-endian to $CPP
+>>> 2. add target to $KBUILD_CPPFLAGS as otherwise clang ignores -m(big|little)-endian if
+>>> the building platform does not support big endian (such as x86).
+>>>
+>>> Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+>>> ---
+>>> Changes:
+>>> v3:
+>>> * moved vdso cleanup in a separate patch
+>>> * only add target to KBUILD_CPPFLAGS for CLANG
+>>>
+>>> v2:
+>>> * fix KBUILD_CPPFLAGS
+>>> * add CLANG_FLAGS to CPPFLAGS
+>>> ---
+>>>    Makefile              | 1 +
+>>>    arch/powerpc/Makefile | 3 ++-
+>>>    2 files changed, 3 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/Makefile b/Makefile
+>>> index 15b6476d0f89..5b545bef7653 100644
+>>> --- a/Makefile
+>>> +++ b/Makefile
+>>> @@ -576,6 +576,7 @@ CC_VERSION_TEXT = $(subst $(pound),,$(shell $(CC) --version 2>/dev/null | head -
+>>>    ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
+>>>    ifneq ($(CROSS_COMPILE),)
+>>>    CLANG_FLAGS += --target=$(notdir $(CROSS_COMPILE:%-=%))
+>>> +KBUILD_CPPFLAGS      += --target=$(notdir $(CROSS_COMPILE:%-=%))
+>>
+>> You can avoid the duplication here by just doing:
+>>
+>> KBUILD_CPPFLAGS += $(CLANG_FLAGS)
+>>
+>> I am still not super happy about the flag duplication but I am not sure
+>> I can think of a better solution. If KBUILD_CPPFLAGS are always included
+>> when building .o files, maybe we should just add $(CLANG_FLAGS) to
+>> KBUILD_CPPFLAGS instead of KBUILD_CFLAGS?
+> 
+> Hmm, I think including --target=* in CPP flags is sensible,
+> but not all CLANG_FLAGS are CPP flags.
+> At least, -(no)-integrated-as is not a CPP flag.
+> 
+> We could introduce a separate CLANG_CPP_FLAGS, but
+> it would require more code changes...
+> 
+> So, I do not have a strong opinion either way.
+> 
+> 
+> 
+> BTW, another approach might be to modify the linker script.
+> 
+> 
+> In my best guess, the reason why powerpc adding the endian flag to CPP
+> is this line in arch/powerpc/kernel/vdso64/vdso64.lds.S
+> 
+> #ifdef __LITTLE_ENDIAN__
+> OUTPUT_FORMAT("elf64-powerpcle", "elf64-powerpcle", "elf64-powerpcle")
+> #else
+> OUTPUT_FORMAT("elf64-powerpc", "elf64-powerpc", "elf64-powerpc")
+> #endif
+> 
+> 
+> You can use the CONFIG option to check the endian-ness.
+> 
+> #ifdef CONFIG_CPU_BIG_ENDIAN
+> OUTPUT_FORMAT("elf64-powerpc", "elf64-powerpc", "elf64-powerpc")
+> #else
+> OUTPUT_FORMAT("elf64-powerpcle", "elf64-powerpcle", "elf64-powerpcle")
+> #endif
+> 
+> 
+> All the big endian arches define CONFIG_CPU_BIG_ENDIAN.
+> (but not all little endian arches define CONFIG_CPU_LITTLE_ENDIAN)
 
-in case it depends on a3c02e769efe).
 
---=20
-Cheers,
-Stephen Rothwell
+This should work with .lds. But missing --target=* might still hit us 
+somewhere else later, these include 3 header files each and there might 
+be endianness dependent stuff.
 
---Sig_/B9mPQdekWggz17+.E33jm96
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
 
------BEGIN PGP SIGNATURE-----
+> 
+> 
+> So,
+> #ifdef CONFIG_CPU_BIG_ENDIAN
+>     < big endian code >
+> #else
+>    < little endian code >
+> #endif
+> 
+> works for all architectures.
+> 
+> 
+> Only the exception is you cannot replace the one in uapi headers.
+>    arch/powerpc/include/uapi/asm/byteorder.h: #ifdef __LITTLE_ENDIAN__
+> since it is exported to userspace, where CONFIG options are not available.
+> 
+> 
+> 
+> BTW, various flags are historically used.
+> 
+>   -  CONFIG_CPU_BIG_ENDIAN   /  CONFIG_CPU_LITTLE_ENDIAN
+>   -  __BIG_ENDIAN   / __LITTLE_ENDIAN
+>   -  __LITTLE_ENDIAN__     (powerpc only)
+> 
+> 
+> 
+> __LITTLE_ENDIAN__  is defined by powerpc gcc and clang.
+> 
+> My experiments...
+> 
+> 
+> [1] powerpc-linux-gnu-gcc    -> __BIG_ENDIAN__ is defined
+> 
+> masahiro@grover:~$ echo | powerpc-linux-gnu-gcc -E  -dM -x c - | grep ENDIAN
+> #define __ORDER_LITTLE_ENDIAN__ 1234
+> #define __BIG_ENDIAN__ 1
+> #define __FLOAT_WORD_ORDER__ __ORDER_BIG_ENDIAN__
+> #define __ORDER_PDP_ENDIAN__ 3412
+> #define _BIG_ENDIAN 1
+> #define __BYTE_ORDER__ __ORDER_BIG_ENDIAN__
+> #define __VEC_ELEMENT_REG_ORDER__ __ORDER_BIG_ENDIAN__
+> #define __ORDER_BIG_ENDIAN__ 4321
+> 
+> 
+> [2] powerpc-linux-gnu-gcc + -mlittle-endian    -> __LITTLE_ENDIAN__ is defined
+> 
+> masahiro@grover:~$ echo | powerpc-linux-gnu-gcc  -E  -dM   -x c -
+> -mlittle-endian  | grep ENDIAN
+> #define __ORDER_LITTLE_ENDIAN__ 1234
+> #define _LITTLE_ENDIAN 1
+> #define __FLOAT_WORD_ORDER__ __ORDER_LITTLE_ENDIAN__
+> #define __ORDER_PDP_ENDIAN__ 3412
+> #define __LITTLE_ENDIAN__ 1
+> #define __BYTE_ORDER__ __ORDER_LITTLE_ENDIAN__
+> #define __VEC_ELEMENT_REG_ORDER__ __ORDER_LITTLE_ENDIAN__
+> #define __ORDER_BIG_ENDIAN__ 4321
+> 
+> 
+> [3] other arch gcc    -> neither of them is defined
+> 
+> masahiro@grover:~$ echo | gcc -E  -dM   -x c -  | grep ENDIAN
+> #define __ORDER_LITTLE_ENDIAN__ 1234
+> #define __FLOAT_WORD_ORDER__ __ORDER_LITTLE_ENDIAN__
+> #define __ORDER_PDP_ENDIAN__ 3412
+> #define __ORDER_BIG_ENDIAN__ 4321
+> #define __BYTE_ORDER__ __ORDER_LITTLE_ENDIAN__
+> 
+> masahiro@grover:~$ echo | arm-linux-gnueabihf-gcc   -E  -dM   -x c -
+> -mlittle-endian  | grep ENDIAN
+> #define __ORDER_LITTLE_ENDIAN__ 1234
+> #define __FLOAT_WORD_ORDER__ __ORDER_LITTLE_ENDIAN__
+> #define __ORDER_PDP_ENDIAN__ 3412
+> #define __BYTE_ORDER__ __ORDER_LITTLE_ENDIAN__
+> #define __ORDER_BIG_ENDIAN__ 4321
+> 
+> masahiro@grover:~$ echo | arm-linux-gnueabihf-gcc   -E  -dM   -x c -
+> -mbig-endian  | grep ENDIAN
+> #define __ORDER_LITTLE_ENDIAN__ 1234
+> #define __FLOAT_WORD_ORDER__ __ORDER_BIG_ENDIAN__
+> #define __ORDER_PDP_ENDIAN__ 3412
+> #define __ARM_BIG_ENDIAN 1
+> #define __BYTE_ORDER__ __ORDER_BIG_ENDIAN__
+> #define __ORDER_BIG_ENDIAN__ 4321
+> 
+> 
+> [4] Clang  --target=powerpc-linux-gnu      -> __BIG_ENDIAN__ is defined
+> 
+> masahiro@grover:~$ echo |  ~/tools/clang-latest/bin/clang -E
+> --target=powerpc-linux-gnu -dM -x c -    | grep ENDIAN
+> #define _BIG_ENDIAN 1
+> #define __BIG_ENDIAN__ 1
+> #define __BYTE_ORDER__ __ORDER_BIG_ENDIAN__
+> #define __ORDER_BIG_ENDIAN__ 4321
+> #define __ORDER_LITTLE_ENDIAN__ 1234
+> #define __ORDER_PDP_ENDIAN__ 3412
+> 
+> 
+> 
+> [5] very recent Clang understands --target=powerpcle-linux-gnu     -->
+> __LITTLE_ENDIAN__ is defined
+> 
+> masahiro@grover:~$ echo |  ~/tools/clang-latest/bin/clang -E
+> --target=powerpcle-linux-gnu -dM -x c -   | grep ENDIAN
+> #define _LITTLE_ENDIAN 1
+> #define __BYTE_ORDER__ __ORDER_LITTLE_ENDIAN__
+> #define __LITTLE_ENDIAN__ 1
+> #define __ORDER_BIG_ENDIAN__ 4321
+> #define __ORDER_LITTLE_ENDIAN__ 1234
+> #define __ORDER_PDP_ENDIAN__ 3412
+> 
+> 
+> [6] very recent Clang, --target=powerpc-linux-gnu  + -mlittle-endian
+>   --> __LITTLE_ENDIAN__ is defined
+> 
+> masahiro@grover:~$ echo |  ~/tools/clang-latest/bin/clang -E
+> --target=powerpc-linux-gnu -dM -x c -  -mlittle-endian  | grep ENDIAN
+> #define _LITTLE_ENDIAN 1
+> #define __BYTE_ORDER__ __ORDER_LITTLE_ENDIAN__
+> #define __LITTLE_ENDIAN__ 1
+> #define __ORDER_BIG_ENDIAN__ 4321
+> #define __ORDER_LITTLE_ENDIAN__ 1234
+> #define __ORDER_PDP_ENDIAN__ 3412
+> 
+> 
+> 
+> 
+> [7] Clang, target with little endian only ,   -mbig-endian is ignored
+> masahiro@grover:~$ echo |  clang -E   -dM -x c -    | grep ENDIAN
+> #define __BYTE_ORDER__ __ORDER_LITTLE_ENDIAN__
+> #define __LITTLE_ENDIAN__ 1
+> #define __ORDER_BIG_ENDIAN__ 4321
+> #define __ORDER_LITTLE_ENDIAN__ 1234
+> #define __ORDER_PDP_ENDIAN__ 3412
+> masahiro@grover:~$ echo |  clang -E   -dM -x c -  -mbig-endian  | grep ENDIAN
+> #define __BYTE_ORDER__ __ORDER_LITTLE_ENDIAN__
+> #define __LITTLE_ENDIAN__ 1
+> #define __ORDER_BIG_ENDIAN__ 4321
+> #define __ORDER_LITTLE_ENDIAN__ 1234
+> #define __ORDER_PDP_ENDIAN__ 3412
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCd8UIACgkQAVBC80lX
-0GzcVgf/V4auLEA8X9JxJ01pGbqjadWGeoOgtVXmSgESM7a96XIjYN5FzgV/gu3f
-6l/XpIDgwCMF4B4wfPU4ewm1Sh0+rfYYFdZ3W2rA8n4vBQ5LC9vE+WFOL9vXHb2G
-qIG6CRXN7srH8hxdzhDjT4hFdqzX1efFph/UMmU2THSzuUx2H+hImsQkL7Lgmb6H
-ZOnXgXP1p2lfab9NRF4kXklMcZRtCbVhboCeNbmLjhNY42d9v+duAXuYwGwQDbo/
-DUEA2t1cjvR5pmrDGW2cD9f+pxf79t/iCyuzBCm+WJvPu+LBRhK1ebdc8VoqnqjK
-u4kBx+kWE4SyqQCVUKieZ/SSeS+gxA==
-=6U2F
------END PGP SIGNATURE-----
 
---Sig_/B9mPQdekWggz17+.E33jm96--
+
+Nice research :) Thanks,
+
+> 
+> 
+> --
+> Best Regards
+> Masahiro Yamada
+> 
+
+-- 
+Alexey
