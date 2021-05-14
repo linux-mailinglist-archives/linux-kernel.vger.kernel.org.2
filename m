@@ -2,101 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AB8D380681
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 11:51:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A145380687
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 11:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232314AbhENJwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 05:52:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52726 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232280AbhENJwL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 05:52:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620985860;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0v2WTfoTYYFvI5g3TxNROF/jrQek1EySSdju9KXEFoA=;
-        b=iw9xusYCB5yyg4TAn2jG2zAn1VDhoJaRYL10AP9nHLv/YO4YZiUa6CfCK3A7zb3WTGUdlP
-        qyu+I/kzyrkqxzJtgPjYF2364RhGq3QcrVWldVrdQxOF9BUS7a8BZG8QwSIflazFe2/4Y1
-        x/f/AUiEZkgfp5XMlCP8wd4nYA3i+mg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-495-i_GH1KlpNd-xW5uWh3gvOQ-1; Fri, 14 May 2021 05:50:57 -0400
-X-MC-Unique: i_GH1KlpNd-xW5uWh3gvOQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AC9C38042A9;
-        Fri, 14 May 2021 09:50:54 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B2C986788A;
-        Fri, 14 May 2021 09:50:41 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 14E9of0U023228;
-        Fri, 14 May 2021 05:50:41 -0400
-Received: from localhost (mpatocka@localhost)
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 14E9oebu023224;
-        Fri, 14 May 2021 05:50:40 -0400
-X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
-Date:   Fri, 14 May 2021 05:50:40 -0400 (EDT)
-From:   Mikulas Patocka <mpatocka@redhat.com>
-X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
-To:     Milan Broz <gmazyland@gmail.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Changheun Lee <nanich.lee@samsung.com>
-cc:     alex_y_xu@yahoo.ca, axboe@kernel.dk, bgoncalv@redhat.com,
-        dm-crypt@saout.de, hch@lst.de, jaegeuk@kernel.org,
-        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        ming.lei@redhat.com, yi.zhang@redhat.com, dm-devel@redhat.com
-Subject: Re: regression: data corruption with ext4 on LUKS on nvme with
- torvalds master
-In-Reply-To: <alpine.LRH.2.02.2105131510330.21927@file01.intranet.prod.int.rdu2.redhat.com>
-Message-ID: <alpine.LRH.2.02.2105140544010.22439@file01.intranet.prod.int.rdu2.redhat.com>
-References: <a01ab479-69e8-9395-7d24-9de1eec28aff@acm.org> <0e7b0b6e-e78c-f22d-af8d-d7bdcb597bea@gmail.com> <alpine.LRH.2.02.2105131510330.21927@file01.intranet.prod.int.rdu2.redhat.com>
-User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
+        id S232354AbhENJza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 05:55:30 -0400
+Received: from foss.arm.com ([217.140.110.172]:46100 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229477AbhENJz1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 05:55:27 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F0CD5169E;
+        Fri, 14 May 2021 02:54:15 -0700 (PDT)
+Received: from e108754-lin.cambridge.arm.com (unknown [10.1.195.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 832AF3F719;
+        Fri, 14 May 2021 02:54:14 -0700 (PDT)
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Sudeep Holla <sudeep.holla@arm.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 0/3] arch_topology, ACPI: populate cpu capacity from CPPC
+Date:   Fri, 14 May 2021 10:53:36 +0100
+Message-Id: <20210514095339.12979-1-ionela.voinescu@arm.com>
+X-Mailer: git-send-email 2.29.2.dirty
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi all,
+
+These are a few trivial patches to populate cpu capacity information
+using performance information from ACPI's CPPC.
+
+I've tied this functionality to the existing function
+init_freq_invariance_cppc() called in acpi_cppc_processor_probe().
+This function is renamed to a more generic arch_init_invariance_cppc().
+
+The patches have been build tested on x86 and more thoroughly tested on
+Juno R2 (arm64), which uses the new functionality, with the following
+results:
 
 
-On 5/13/21 7:15 AM, Theodore Ts'o wrote:
-> On Thu, May 13, 2021 at 06:42:22PM +0900, Changheun Lee wrote:
->>
->> Problem might be casued by exhausting of memory. And memory exhausting
->> would be caused by setting of small bio_max_size. Actually it was not
->> reproduced in my VM environment at first. But, I reproduced same problem
->> when bio_max_size is set with 8KB forced. Too many bio allocation would
->> be occurred by setting of 8KB bio_max_size.
-> 
-> Hmm... I'm not sure how to align your diagnosis with the symptoms in
-> the bug report.  If we were limited by memory, that should slow down
-> the I/O, but we should still be making forward progress, no?  And a
-> forced reboot should not result in data corruption, unless maybe there
+root@ubuntu:~# dmesg | grep cpu_capacity
+[    2.157494] init_cpu_capacity_cppc: CPU0 cpu_capacity=38300 (raw).
+[    2.163699] init_cpu_capacity_cppc: CPU1 cpu_capacity=38300 (raw).
+[    2.169899] init_cpu_capacity_cppc: CPU2 cpu_capacity=38300 (raw).
+[    2.176098] init_cpu_capacity_cppc: CPU3 cpu_capacity=38300 (raw).
+[    2.182296] init_cpu_capacity_cppc: CPU4 cpu_capacity=102400 (raw).
+[    2.188581] init_cpu_capacity_cppc: CPU5 cpu_capacity=102400 (raw).
+[    2.194867] cpu_capacity: capacity_scale=102400
+[    2.199409] cpu_capacity: CPU0 cpu_capacity=383
+[    2.203952] cpu_capacity: CPU1 cpu_capacity=383
+[    2.208495] cpu_capacity: CPU2 cpu_capacity=383
+[    2.213037] cpu_capacity: CPU3 cpu_capacity=383
+[    2.217580] cpu_capacity: CPU4 cpu_capacity=1024
+[    2.222209] cpu_capacity: CPU5 cpu_capacity=1024
+[    2.226886] init_cpu_capacity_cppc: cpu_capacity initialization done
 
-If you use data=writeback, data writes and journal writes are not 
-synchronized. So, it may be possible that a journal write made it through, 
-a data write didn't - the end result would be a file containing random 
-contents that was on the disk.
+root@ubuntu:~# tail -n +1 /sys/devices/system/cpu/cpu*/cpu_capacity
+==> /sys/devices/system/cpu/cpu0/cpu_capacity <==
+383
+==> /sys/devices/system/cpu/cpu1/cpu_capacity <==
+383
+==> /sys/devices/system/cpu/cpu2/cpu_capacity <==
+383
+==> /sys/devices/system/cpu/cpu3/cpu_capacity <==
+383
+==> /sys/devices/system/cpu/cpu4/cpu_capacity <==
+1024
+==> /sys/devices/system/cpu/cpu5/cpu_capacity <==
+1024
 
-Changheun - do you use data=writeback? Did the corruption happen only in 
-newly created files? Or did it corrupt existing files?
+All works as expected even if ACPI processor support is built as a
+module.
 
-> was a missing check for a failed memory allocation, causing data to be
-> written to the wrong location, a missing error check leading to the
-> block or file system layer not noticing that a write had failed
-> (although again, memory exhaustion should not lead to failed writes;
-> it might slow us down, sure, but if writes are being failed, something
-> is Badly Going Wrong --- things like writes to the swap device or
-> writes by the page cleaner must succeed, or else Things Would Go Bad
-> In A Hurry).
+Patches are based on v5.13-rc1.
 
-Mikulas
+Let me know what you think!
+
+Thanks,
+Ionela.
+
+Ionela Voinescu (3):
+  x86, ACPI: rename init_freq_invariance_cppc to
+    arch_init_invariance_cppc
+  arch_topology: obtain cpu capacity using information from CPPC
+  arm64, topology: enable use of init_cpu_capacity_cppc()
+
+ arch/arm64/include/asm/topology.h |  4 ++++
+ arch/x86/include/asm/topology.h   |  2 +-
+ drivers/acpi/cppc_acpi.c          |  6 ++---
+ drivers/base/arch_topology.c      | 39 +++++++++++++++++++++++++++++++
+ include/linux/arch_topology.h     |  4 ++++
+ 5 files changed, 51 insertions(+), 4 deletions(-)
+
+-- 
+2.29.2.dirty
 
