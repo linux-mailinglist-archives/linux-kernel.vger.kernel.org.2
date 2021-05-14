@@ -2,99 +2,328 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 192DC381026
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 20:56:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC9A438102F
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 21:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232386AbhENS6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 14:58:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44252 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231256AbhENS6C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 14:58:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F045C6144B;
-        Fri, 14 May 2021 18:56:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621018610;
-        bh=pipED4GhgVWqiRoaEE0cFFAtXnXSrN04hJirWHLSggo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=bLrB56YiWkUUkQtzel5P165cdYrUsaeMJHIbwnzdxeIlimLQQoJ+9lbaibfAXxaOm
-         uJXQbPbFaD1rh2AxSxqw13Fkqa116WCE2oKd2fQwJeNYtNMs5Gx60ZN7Gt5mawL1tE
-         GRkCUIRR7THIqnG38yMIJKPX7TuaXNdWu5XwUBz3rJ4chBBm5ymglkGXUYxYRy3/HK
-         Q7KFsPI/vpQ1P20LwHdaEwSJqfe6tCnBLjtD7Hjj+2sZctfanuwtI7yEKExeUVZmIZ
-         dhuZuXlu90oXGb+Jwj3tja54f7MkeFkFeVusHMkf2lNNw2LVWRrSULSprRpATb5Ep7
-         YUq+qaRQfebJg==
-Date:   Fri, 14 May 2021 11:56:49 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     netdev@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>, sassmann@redhat.com,
-        "David S. Miller" <davem@davemloft.net>, stable-rt@vger.kernel.org
-Subject: Re: [PATCH net-next] net: Treat __napi_schedule_irqoff() as
- __napi_schedule() on PREEMPT_RT
-Message-ID: <20210514115649.6c84fdc3@kicinski-fedora-PC1C0HJN>
-In-Reply-To: <87k0o360zx.ffs@nanos.tec.linutronix.de>
-References: <YJofplWBz8dT7xiw@localhost.localdomain>
-        <20210512214324.hiaiw3e2tzmsygcz@linutronix.de>
-        <87k0o360zx.ffs@nanos.tec.linutronix.de>
+        id S232874AbhENTBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 15:01:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231256AbhENTBd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 15:01:33 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62500C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 12:00:21 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id 6so11324pgk.5
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 12:00:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Mf7rkQg4v10s4Zo1+kidnAGMG8KrQBs6mbDlxs4XCDE=;
+        b=iFQbPjFOutm2MBufL9DX44RvxPq26rbHzg/YKQrfl92GR2nw3W9BLsQAiY7l9RyEYl
+         aP3S87bixsdzNN22R+KohMw6Yg756BC/7GNWW73Wg0xenL5aVlvAhFHFt3/haulV8vJP
+         Xlt+sQCCS/Ykc6aZ+BxA4jtAjKkY9O644yNoE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Mf7rkQg4v10s4Zo1+kidnAGMG8KrQBs6mbDlxs4XCDE=;
+        b=osTLc3OnpLDwmq8SuMIQM794G7obNYkq9dIOrlmA8UAZLG7024EvOgISbKLSjorAvd
+         GzRfj2UDg98zR+OsDNfzM6aVgW/sowN+rvKFLw47UMCYbRglDM9c9LNK3cxhNchwE5Yp
+         kOy7Xblmmlp7zq/sOtgDrak+jM67wtt7XwUCnqVrCfWNX4xLmHj75PIMB3KS37tK2T2r
+         k0X3ogIFyQLjvDTDhYHfHOlzsetOdWMS7B/JCBIZza0QlPa1j/8bgUusvtHifGuKrJtS
+         dWSFq+lXPqJ1lt92HjUV5H74mubE1/z1S6jEdViQTzdr0ZOELw78CCFKhQTtJMEMosHv
+         9iDA==
+X-Gm-Message-State: AOAM533hTJFLtoO4xfUMDc5jqbrn+8tTHmAje5vDCCGynYtlhydYnlLW
+        VMPYhtVF46HVjFJWC7On/mp+mw==
+X-Google-Smtp-Source: ABdhPJyR/YWWjnzvR0qdPdYqINapCmqW53Fjxx4Amu9VJnIcwKiSw4J3/KrWOzIX4AhUQuNA4Q0Org==
+X-Received: by 2002:a62:60c2:0:b029:2cb:70a7:a8ce with SMTP id u185-20020a6260c20000b02902cb70a7a8cemr18703272pfb.77.1621018820798;
+        Fri, 14 May 2021 12:00:20 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id gm21sm6333686pjb.31.2021.05.14.12.00.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 May 2021 12:00:20 -0700 (PDT)
+Date:   Fri, 14 May 2021 12:00:19 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     casey.schaufler@intel.com, jmorris@namei.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        linux-audit@redhat.com, john.johansen@canonical.com,
+        penguin-kernel@i-love.sakura.ne.jp, paul@paul-moore.com,
+        sds@tycho.nsa.gov, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v26 04/25] IMA: avoid label collisions with stacked LSMs
+Message-ID: <202105141157.DF737E145@keescook>
+References: <20210513200807.15910-1-casey@schaufler-ca.com>
+ <20210513200807.15910-5-casey@schaufler-ca.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210513200807.15910-5-casey@schaufler-ca.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 May 2021 00:28:02 +0200 Thomas Gleixner wrote:
-> On Wed, May 12 2021 at 23:43, Sebastian Andrzej Siewior wrote:
-> > __napi_schedule_irqoff() is an optimized version of __napi_schedule()
-> > which can be used where it is known that interrupts are disabled,
-> > e.g. in interrupt-handlers, spin_lock_irq() sections or hrtimer
-> > callbacks.
-> >
-> > On PREEMPT_RT enabled kernels this assumptions is not true. Force-
-> > threaded interrupt handlers and spinlocks are not disabling interrupts
-> > and the NAPI hrtimer callback is forced into softirq context which runs
-> > with interrupts enabled as well.
-> >
-> > Chasing all usage sites of __napi_schedule_irqoff() is a whack-a-mole
-> > game so make __napi_schedule_irqoff() invoke __napi_schedule() for
-> > PREEMPT_RT kernels.
-> >
-> > The callers of ____napi_schedule() in the networking core have been
-> > audited and are correct on PREEMPT_RT kernels as well.
-> >
-> > Reported-by: Juri Lelli <juri.lelli@redhat.com>
-> > Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>  
+On Thu, May 13, 2021 at 01:07:46PM -0700, Casey Schaufler wrote:
+> Integrity measurement may filter on security module information
+> and needs to be clear in the case of multiple active security
+> modules which applies. Provide a boot option ima_rules_lsm= to
+> allow the user to specify an active securty module to apply
+> filters to. If not specified, use the first registered module
+> that supports the audit_rule_match() LSM hook. Allow the user
+> to specify in the IMA policy an lsm= option to specify the
+> security module to use for a particular rule.
 > 
-> Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+> To: Mimi Zohar <zohar@linux.ibm.com>
+> To: linux-integrity@vger.kernel.org
+> ---
+>  Documentation/ABI/testing/ima_policy |  8 ++-
+>  security/integrity/ima/ima_policy.c  | 77 ++++++++++++++++++++--------
+>  2 files changed, 62 insertions(+), 23 deletions(-)
 > 
-> > ---
-> > Alternatively __napi_schedule_irqoff() could be #ifdef'ed out on RT and
-> > an inline provided which invokes __napi_schedule().
-> >
-> > This was not chosen as it creates #ifdeffery all over the place and with
-> > the proposed solution the code reflects the documentation consistently
-> > and in one obvious place.  
+> diff --git a/Documentation/ABI/testing/ima_policy b/Documentation/ABI/testing/ima_policy
+> index 070779e8d836..84dd19bc4344 100644
+> --- a/Documentation/ABI/testing/ima_policy
+> +++ b/Documentation/ABI/testing/ima_policy
+> @@ -25,7 +25,7 @@ Description:
+>  			base:	[[func=] [mask=] [fsmagic=] [fsuuid=] [uid=]
+>  				[euid=] [fowner=] [fsname=]]
+>  			lsm:	[[subj_user=] [subj_role=] [subj_type=]
+> -				 [obj_user=] [obj_role=] [obj_type=]]
+> +				 [obj_user=] [obj_role=] [obj_type=] [lsm=]]
+>  			option:	[[appraise_type=]] [template=] [permit_directio]
+>  				[appraise_flag=] [keyrings=]
+>  		  base:
+> @@ -117,6 +117,12 @@ Description:
+>  
+>  			measure subj_user=_ func=FILE_CHECK mask=MAY_READ
+>  
+> +		It is possible to explicitly specify which security
+> +		module a rule applies to using lsm=.  If the security
+> +		modules specified is not active on the system the rule
+> +		will be rejected.  If lsm= is not specified the first
+> +		security module registered on the system will be assumed.
+> +
+>  		Example of measure rules using alternate PCRs::
+>  
+>  			measure func=KEXEC_KERNEL_CHECK pcr=4
+> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+> index 5c40677e881c..d804b9a0dd95 100644
+> --- a/security/integrity/ima/ima_policy.c
+> +++ b/security/integrity/ima/ima_policy.c
+> @@ -79,8 +79,9 @@ struct ima_rule_entry {
+>  	bool (*uid_op)(kuid_t, kuid_t);    /* Handlers for operators       */
+>  	bool (*fowner_op)(kuid_t, kuid_t); /* uid_eq(), uid_gt(), uid_lt() */
+>  	int pcr;
+> +	int which_lsm; /* which of the rules to use */
+>  	struct {
+> -		void *rules[LSMBLOB_ENTRIES]; /* LSM file metadata specific */
+> +		void *rule;	/* LSM file metadata specific */
+>  		char *args_p;	/* audit value */
+>  		int type;	/* audit type */
+>  	} lsm[MAX_LSM_RULES];
+> @@ -92,17 +93,15 @@ struct ima_rule_entry {
+>  
+>  /**
+>   * ima_lsm_isset - Is a rule set for any of the active security modules
+> - * @rules: The set of IMA rules to check
+> + * @entry: the rule entry to examine
+> + * @lsm_rule: the specific rule type in question
+>   *
+> - * If a rule is set for any LSM return true, otherwise return false.
+> + * If a rule is set return true, otherwise return false.
+>   */
+> -static inline bool ima_lsm_isset(void *rules[])
+> +static inline bool ima_lsm_isset(struct ima_rule_entry *entry, int lsm_rule)
+>  {
+> -	int i;
+> -
+> -	for (i = 0; i < LSMBLOB_ENTRIES; i++)
+> -		if (rules[i])
+> -			return true;
+> +	if (entry->lsm[lsm_rule].rule)
+> +		return true;
+
+I'd be happier if this retained the MAX_LSM_RULES bounds-check.
+
+>  	return false;
+>  }
+>  
+> @@ -282,6 +281,20 @@ static int __init default_appraise_policy_setup(char *str)
+>  }
+>  __setup("ima_appraise_tcb", default_appraise_policy_setup);
+>  
+> +static int ima_rules_lsm __ro_after_init;
+> +
+> +static int __init ima_rules_lsm_init(char *str)
+> +{
+> +	ima_rules_lsm = lsm_name_to_slot(str);
+> +	if (ima_rules_lsm < 0) {
+> +		ima_rules_lsm = 0;
+> +		pr_err("rule lsm \"%s\" not registered", str);
+> +	}
+> +
+> +	return 1;
+> +}
+> +__setup("ima_rules_lsm=", ima_rules_lsm_init);
+> +
+>  static struct ima_rule_opt_list *ima_alloc_rule_opt_list(const substring_t *src)
+>  {
+>  	struct ima_rule_opt_list *opt_list;
+> @@ -351,11 +364,10 @@ static void ima_free_rule_opt_list(struct ima_rule_opt_list *opt_list)
+>  static void ima_lsm_free_rule(struct ima_rule_entry *entry)
+>  {
+>  	int i;
+> -	int r;
+>  
+>  	for (i = 0; i < MAX_LSM_RULES; i++) {
+> -		for (r = 0; r < LSMBLOB_ENTRIES; r++)
+> -			ima_filter_rule_free(entry->lsm[i].rules[r]);
+> +		if (entry->lsm[i].rule)
+> +			ima_filter_rule_free(entry->lsm[i].rule);
+>  		kfree(entry->lsm[i].args_p);
+>  	}
+>  }
+> @@ -406,8 +418,8 @@ static struct ima_rule_entry *ima_lsm_copy_rule(struct ima_rule_entry *entry)
+>  
+>  		ima_filter_rule_init(nentry->lsm[i].type, Audit_equal,
+>  				     nentry->lsm[i].args_p,
+> -				     &nentry->lsm[i].rules[0]);
+> -		if (!ima_lsm_isset(nentry->lsm[i].rules))
+> +				     &nentry->lsm[i].rule);
+> +		if (!ima_lsm_isset(nentry, i))
+>  			pr_warn("rule for LSM \'%s\' is undefined\n",
+>  				nentry->lsm[i].args_p);
+>  	}
+> @@ -596,7 +608,7 @@ static bool ima_match_rules(struct ima_rule_entry *rule,
+>  		int rc = 0;
+>  		u32 osid;
+>  
+> -		if (!ima_lsm_isset(rule->lsm[i].rules)) {
+> +		if (!ima_lsm_isset(rule, i)) {
+>  			if (!rule->lsm[i].args_p)
+>  				continue;
+>  			else
+> @@ -609,14 +621,14 @@ static bool ima_match_rules(struct ima_rule_entry *rule,
+>  			security_inode_getsecid(inode, &osid);
+>  			rc = ima_filter_rule_match(osid, rule->lsm[i].type,
+>  						   Audit_equal,
+> -						   rule->lsm[i].rules);
+> +						   rule->lsm[i].rule);
+>  			break;
+>  		case LSM_SUBJ_USER:
+>  		case LSM_SUBJ_ROLE:
+>  		case LSM_SUBJ_TYPE:
+>  			rc = ima_filter_rule_match(secid, rule->lsm[i].type,
+>  						   Audit_equal,
+> -						   rule->lsm[i].rules);
+> +						   rule->lsm[i].rule);
+>  			break;
+>  		default:
+>  			break;
+> @@ -966,7 +978,7 @@ enum {
+>  	Opt_uid_lt, Opt_euid_lt, Opt_fowner_lt,
+>  	Opt_appraise_type, Opt_appraise_flag,
+>  	Opt_permit_directio, Opt_pcr, Opt_template, Opt_keyrings,
+> -	Opt_label, Opt_err
+> +	Opt_lsm, Opt_label, Opt_err
+>  };
+>  
+>  static const match_table_t policy_tokens = {
+> @@ -1004,6 +1016,7 @@ static const match_table_t policy_tokens = {
+>  	{Opt_template, "template=%s"},
+>  	{Opt_keyrings, "keyrings=%s"},
+>  	{Opt_label, "label=%s"},
+> +	{Opt_lsm, "lsm=%s"},
+>  	{Opt_err, NULL}
+>  };
+>  
+> @@ -1012,7 +1025,7 @@ static int ima_lsm_rule_init(struct ima_rule_entry *entry,
+>  {
+>  	int result;
+>  
+> -	if (ima_lsm_isset(entry->lsm[lsm_rule].rules))
+> +	if (ima_lsm_isset(entry, lsm_rule))
+>  		return -EINVAL;
+>  
+>  	entry->lsm[lsm_rule].args_p = match_strdup(args);
+> @@ -1022,8 +1035,8 @@ static int ima_lsm_rule_init(struct ima_rule_entry *entry,
+>  	entry->lsm[lsm_rule].type = audit_type;
+>  	result = ima_filter_rule_init(entry->lsm[lsm_rule].type, Audit_equal,
+>  				      entry->lsm[lsm_rule].args_p,
+> -				      &entry->lsm[lsm_rule].rules[0]);
+> -	if (!ima_lsm_isset(entry->lsm[lsm_rule].rules)) {
+> +				      &entry->lsm[lsm_rule].rule);
+> +	if (!ima_lsm_isset(entry, lsm_rule)) {
+>  		pr_warn("rule for LSM \'%s\' is undefined\n",
+>  			entry->lsm[lsm_rule].args_p);
+>  
+> @@ -1561,6 +1574,19 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
+>  						 &(template_desc->num_fields));
+>  			entry->template = template_desc;
+>  			break;
+> +		case Opt_lsm:
+> +			result = lsm_name_to_slot(args[0].from);
+> +			if (result == LSMBLOB_INVALID) {
+> +				int i;
+> +
+> +				for (i = 0; i < MAX_LSM_RULES; i++)
+> +					entry->lsm[i].args_p = NULL;
+> +				result = -EINVAL;
+> +				break;
+> +			}
+> +			entry->which_lsm = result;
+> +			result = 0;
+> +			break;
+>  		case Opt_err:
+>  			ima_log_string(ab, "UNKNOWN", p);
+>  			result = -EINVAL;
+> @@ -1597,6 +1623,7 @@ ssize_t ima_parse_add_rule(char *rule)
+>  	struct ima_rule_entry *entry;
+>  	ssize_t result, len;
+>  	int audit_info = 0;
+> +	int i;
+>  
+>  	p = strsep(&rule, "\n");
+>  	len = strlen(p) + 1;
+> @@ -1614,6 +1641,9 @@ ssize_t ima_parse_add_rule(char *rule)
+>  
+>  	INIT_LIST_HEAD(&entry->list);
+>  
+> +	for (i = 0; i < MAX_LSM_RULES; i++)
+> +		entry->which_lsm = ima_rules_lsm;
+> +
+>  	result = ima_parse_rule(p, entry);
+>  	if (result) {
+>  		ima_free_rule(entry);
+> @@ -1830,7 +1860,7 @@ int ima_policy_show(struct seq_file *m, void *v)
+>  	}
+>  
+>  	for (i = 0; i < MAX_LSM_RULES; i++) {
+> -		if (ima_lsm_isset(entry->lsm[i].rules)) {
+> +		if (ima_lsm_isset(entry, i)) {
+>  			switch (i) {
+>  			case LSM_OBJ_USER:
+>  				seq_printf(m, pt(Opt_obj_user),
+> @@ -1872,6 +1902,9 @@ int ima_policy_show(struct seq_file *m, void *v)
+>  		seq_puts(m, "appraise_flag=check_blacklist ");
+>  	if (entry->flags & IMA_PERMIT_DIRECTIO)
+>  		seq_puts(m, "permit_directio ");
+> +	if (entry->which_lsm >= 0)
+> +		seq_printf(m, pt(Opt_lsm),
+> +			   lsm_slot_to_name(entry->which_lsm));
+>  	rcu_read_unlock();
+>  	seq_puts(m, "\n");
+>  	return 0;
+> -- 
+> 2.29.2
 > 
-> Blame me for that decision.
-> 
-> No matter which variant we end up with, this needs to go into all stable
-> RT kernels ASAP.
 
-Mumble mumble. I thought we concluded that drivers used on RT can be
-fixed, we've already done it for a couple drivers (by which I mean two).
-If all the IRQ handler is doing is scheduling NAPI (which it is for
-modern NICs) - IRQF_NO_THREAD seems like the right option.
+Otherwise, this looks correct. With bounds checking:
 
-Is there any driver you care about that we can convert to using
-IRQF_NO_THREAD so we can have new drivers to "do the right thing"
-while the old ones depend on this workaround for now?
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-
-Another thing while I have your attention - ____napi_schedule() does
-__raise_softirq_irqoff() which AFAIU does not wake the ksoftirq thread.
-On non-RT we get occasional NOHZ warnings when drivers schedule napi
-from process context, but on RT this is even more of a problem, right?
-ksoftirqd won't run until something else actually wakes it up?
+-- 
+Kees Cook
