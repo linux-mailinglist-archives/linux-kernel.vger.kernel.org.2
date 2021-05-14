@@ -2,156 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C006380DA0
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 17:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C6F3380DA4
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 17:55:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234827AbhENPzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 11:55:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43506 "EHLO
+        id S234912AbhENP4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 11:56:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233914AbhENPzJ (ORCPT
+        with ESMTP id S233914AbhENP4L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 11:55:09 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B8E2C061574;
-        Fri, 14 May 2021 08:53:56 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id di13so35230301edb.2;
-        Fri, 14 May 2021 08:53:56 -0700 (PDT)
+        Fri, 14 May 2021 11:56:11 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF764C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 08:54:58 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id r8so39424550ybb.9
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 08:54:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nJjqUh+eedhnbrR//6OaBv5/ZsdN4XZOU4mhcsRuoyg=;
-        b=f5pKrku0e6EM6tOZFoRr8i5ryGCMprW/ArJmi1G1tF1P3P7TB/vGZt6eUZBeYX1OGP
-         4onTfNm+56vE+G3yKyyomtIVL/0TNH+IF3DEnOwqDIJ0EUpf+yDjVYVMnXLC0j8N9vlB
-         0LablOmpCVmnbJPG82EWGdqqbeH62hmqq9UT7wSqc5XZut/4D2/BTlqC4eYe0rLabD2v
-         OFQOhntIB1I9aLkzF8xewSXdLpLPngab91x9DAK63/E85M4PiX9uswAdiBkxJTD159me
-         eg2D15l8+0Xts9zanmFZyE/89732PpRS0TuLEsgtcyKUJAca/Yq+j0vuZGPanW1zZSNI
-         9gOA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=y052LogTUvmTYDDB+WfKoZ5F+9wGSH/Xp6XYfMNjiT0=;
+        b=rmOj1JlGNHpx+uPiVKXp2GXMWFkLj/A2WtlyaZyD5pZFxwhlsqd9zu0CmNdx2nQKz3
+         hyKBSMJEwq4rkRa1IKAxZNhcGDAR+T6fks73i5T1b7VEfpOp/gDb2G/+5nFgGIONK+KE
+         5WTx5ufZ/30+cWeOlNLTJcwxWCkVh7nMAyWjrV77SCuEV9Vv+/qhYpaSzCD2TSPjXpbE
+         pthBuekUFWiKhmAdMmrAYeNIhk//NcnHznalrkjl4A1UoLj5Q/zs2/74f2tVtHRtlnn6
+         LkS6QSRN4TUGoxGxletRTqpWwfMbv6aWju2Cxk02zuImCHGjcle6K1d3PDeirZ5+JyYO
+         DsaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nJjqUh+eedhnbrR//6OaBv5/ZsdN4XZOU4mhcsRuoyg=;
-        b=iBxSHTFSUkdblwtojqoFYQHFQyg29m6VLtqRfilNWXdi11BjuqAqEYhAcBSRT/4WZe
-         K2Z5oqYRzDeOEcW5DT9sYYVZDf+/msQtRijZ3GAcxPcJaMOsJqqIu+tqDKhOEFWS/q54
-         zsA0MOOpNLYLOJYgAsROZsmecTHHPGWv7TVXTvUZWzRfzzc6aypxNcdpv4RTzB2ehVkk
-         /yawg4bkKkvLWxApl5CMp9B5m0Jqd2LF9UHJQqlkBb0aUUjNJJPJ+yrHGIdcJaC0UVwn
-         I/qebaDkvS+YbR7YBtQ3Xn+jE61FQh92hPesU4iLPLCdVdhqFTyVXma+K2IHYIIMgLXY
-         yQ+g==
-X-Gm-Message-State: AOAM533mMctgnnb+S3nr/kskna/Rgmc1stPyZuDpir9g+HMnfE4Po0gg
-        QBYOXu3fgw6b4NF2NN+IwiTGZiqkCFU=
-X-Google-Smtp-Source: ABdhPJxiEhDApEu75kJdXXESrqi6t2oBygLR+znc2KM99z8D4A006a1c0919pGQoeo6o0GXD+663Ew==
-X-Received: by 2002:a05:6402:2753:: with SMTP id z19mr56769103edd.158.1621007635210;
-        Fri, 14 May 2021 08:53:55 -0700 (PDT)
-Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id ks10sm3911610ejb.41.2021.05.14.08.53.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 May 2021 08:53:54 -0700 (PDT)
-Subject: Re: [PATCH v2 4/5] dt-bindings: soc: rockchip: grf: add compatible
- for RK3308 USB grf
-To:     Tobias Schramm <t.schramm@manjaro.org>, linux-usb@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210514150044.2099298-1-t.schramm@manjaro.org>
- <20210514150044.2099298-5-t.schramm@manjaro.org>
-From:   Johan Jonker <jbx6244@gmail.com>
-Message-ID: <e995a144-1cbb-06c6-074f-2623bf31b003@gmail.com>
-Date:   Fri, 14 May 2021 17:53:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux i686; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=y052LogTUvmTYDDB+WfKoZ5F+9wGSH/Xp6XYfMNjiT0=;
+        b=ehTWels+5fa+RziFPhxPhKaTuGrWFg0BTHF5Ev4A9usK3PHSyaY5eWmkInxhLWuTXi
+         ujr+HFeKqtMdN/Q0faZDLb1cb8qmiTvS3AAv8SK4Xn8jA6gR4HXY/k9DiofwQQ0Csmcp
+         +MAiqjivA40ZUI6U4AdR8e6iOkThlzdmt0Z38bRVmw4M/beMDblpEbD+McdrTsZExpCE
+         lthPSl0NE2XOpIjNgyrf/RNlqLhpzLyKdDa2o6G07Ff7SVEOK9yUSQrXRcuEV9Ra2394
+         4LVbL/syuY8uHvRZGg5heLiwqb5EP0tF9lK1ijtEDC62u9tk7fcw1HspJlGfP/aNWrtl
+         u9kg==
+X-Gm-Message-State: AOAM5303oleIkMoYqrblFOr4uLCw7WkodVUsgVUsSFE72k+dATsLmij8
+        qBXADXWlYPg3YDk6rh8DspfVyIG75TelGYGEY4Dl1g==
+X-Google-Smtp-Source: ABdhPJyu519H1CbTJd0D9J/Ujh2yRd7lt7a0n437lQGd0MJ3hccYmkjEelSz6fIq59LX12MQeRNDwQiSuC0eJZFEAvs=
+X-Received: by 2002:a5b:7c5:: with SMTP id t5mr62727703ybq.190.1621007697955;
+ Fri, 14 May 2021 08:54:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210514150044.2099298-5-t.schramm@manjaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210513175349.959661-1-surenb@google.com> <YJ5iAvqAmIhzJRot@hirez.programming.kicks-ass.net>
+In-Reply-To: <YJ5iAvqAmIhzJRot@hirez.programming.kicks-ass.net>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Fri, 14 May 2021 08:54:47 -0700
+Message-ID: <CAJuCfpHy+MknCepfjx9XYUA1j42Auauv7MFQbt+zOU-tA4gasA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] cgroup: make per-cgroup pressure stall tracking configurable
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+        lizefan.x@bytedance.com, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>, mgorman@suse.de,
+        Minchan Kim <minchan@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, bristot@redhat.com,
+        "Paul E . McKenney" <paulmck@kernel.org>, rdunlap@infradead.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>, macro@orcam.me.uk,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        mike.kravetz@oracle.com, linux-doc@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        cgroups mailinglist <cgroups@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tobias,
+On Fri, May 14, 2021 at 4:42 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Thu, May 13, 2021 at 10:53:49AM -0700, Suren Baghdasaryan wrote:
+>
+> > +bool cgroup_psi_enabled(void)
+> > +{
+> > +     return (cgroup_feature_disable_mask & (1 << OPT_FEATURE_PRESSURE)) == 0;
+> > +}
+>
+> > diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+> > index cc25a3cff41f..c73efd7d4fba 100644
+> > --- a/kernel/sched/psi.c
+> > +++ b/kernel/sched/psi.c
+> > @@ -747,9 +747,12 @@ static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
+> >  #ifdef CONFIG_CGROUPS
+> >       struct cgroup *cgroup = NULL;
+> >
+> > -     if (!*iter)
+> > +     if (!*iter) {
+> > +             /* Skip to psi_system if per-cgroup accounting is disabled */
+> > +             if (!cgroup_psi_enabled())
+> > +                     goto update_sys;
+> >               cgroup = task->cgroups->dfl_cgrp;
+> > -     else if (*iter == &psi_system)
+> > +     } else if (*iter == &psi_system)
+> >               return NULL;
+> >       else
+> >               cgroup = cgroup_parent(*iter);
+> > @@ -758,6 +761,7 @@ static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
+> >               *iter = cgroup;
+> >               return cgroup_psi(cgroup);
+> >       }
+> > +update_sys:
+> >  #else
+> >       if (*iter)
+> >               return NULL;
+>
+> I'm confused; shouldn't that do the same as that #else branch?
 
-The grf serie is currently still under review. So things can change.
-Must add a change log below a "---" in the commit message for rob+dt.
-Maybe add a patch that fixes the reg size of "rockchip,rk3308-grf" as well?
+Correct, for this function CONFIG_CGROUPS=n and
+cgroup_disable=pressure are treated the same. True, from the code it's
+not very obvious. Do you have some refactoring in mind that would make
+it more explicit?
 
-Johan
+>Also, can you pretty please make cgroup_psi_enabled() a static_key ?
 
-On 5/14/21 5:00 PM, Tobias Schramm wrote:
-> The RK3308 has a USB GRF.
-> This patch adds a compatible string for it.
-> 
-> Signed-off-by: Tobias Schramm <t.schramm@manjaro.org>
-> ---
->  Documentation/devicetree/bindings/soc/rockchip/grf.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/soc/rockchip/grf.yaml b/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
-> index 84bdaf88d5a6..df77bd2e6752 100644
-> --- a/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
-> +++ b/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
-> @@ -30,6 +30,7 @@ properties:
->                - rockchip,rk3288-grf
->                - rockchip,rk3308-core-grf
->                - rockchip,rk3308-detect-grf
+Certainly, will post an update on Monday.
+Thanks for the feedback, Peter!
 
-> +              - rockchip,rk3308-usb2phy-grf
->                - rockchip,rk3308-grf
-
-Sort alphabetically.
-
->                - rockchip,rk3328-grf
->                - rockchip,rk3328-usb2phy-grf
-> 
-
-Also allow usb2-phy as sub nodes name.
-
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - rockchip,px30-usb2phy-grf
-+              - rockchip,rk3228-grf
-
-               - rockchip,rk3308-usb2phy-grf
-
-+              - rockchip,rk3328-usb2phy-grf
-+              - rockchip,rk3399-grf
-+              - rockchip,rv1108-grf
-+
-+    then:
-+      required:
-+        - "#address-cells"
-+        - "#size-cells"
-+
-+      patternProperties:
-+        "usb2-phy@[0-9a-f]+$":
-+          type: object
-+
-+          $ref: "/schemas/phy/phy-rockchip-inno-usb2.yaml#"
-+
-+          unevaluatedProperties: false
-
-===
-Heiko's sort rules:
-
-compatible
-reg
-interrupts
-[alphabetical]
-status [if needed]
-
-===
-
-Sort #phy-cells below interrupt-names.
-
-
-+				#phy-cells = <0>;
-+				interrupts = <GIC_SPI 74 IRQ_TYPE_LEVEL_HIGH>;
-+				interrupt-names = "linestate";
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+>
