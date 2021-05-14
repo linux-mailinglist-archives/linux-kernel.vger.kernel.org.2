@@ -2,101 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ACD5381351
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 23:44:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9622E381377
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 23:58:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233267AbhENVps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 17:45:48 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:42734 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230247AbhENVpq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 17:45:46 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14ELXvO3030567;
-        Fri, 14 May 2021 17:44:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=2TjVzacE10ZLv/wIdwoaT8zoV5nLGXPmwgF92Z7UQ4E=;
- b=aJ6K8YKTiYz5JENG65tU5OYxN+EB8WlSII9k2pPSJG7lSQR1rpAWCu6Pd6uGT8zQMVF9
- Ptu0zC0SnVzAfbbivV6iGbXmFC9DaOi4UukjncpDoDn+Z/9/Pz763NwHKgQySadpSy11
- Lx5DJ/MoBBOJfDiRsBwYY0lFn6U2zOFRRRjyqmewnqK0YmSkMFkIy6dF9aOaFVxllxVa
- hlAveH9qfWR96UFl3mmGI4F6IjW5irE6FnRjMmynfd5dXpFd6KthjAgkLq8DdPhdlPDx
- OwnY2n7VS8316hO5f4HS//TTz//EjgfMzxpG/MjKCC338CzIzljg+C7255I0ak4Uar+f kw== 
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38hxynb8a4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 May 2021 17:44:24 -0400
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14ELiNaP001405;
-        Fri, 14 May 2021 21:44:23 GMT
-Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
-        by ppma03wdc.us.ibm.com with ESMTP id 38hc75y0mm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 May 2021 21:44:23 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14ELiNma26607876
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 14 May 2021 21:44:23 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 34A87AE05F;
-        Fri, 14 May 2021 21:44:23 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 00C42AE05C;
-        Fri, 14 May 2021 21:44:22 +0000 (GMT)
-Received: from localhost (unknown [9.211.51.49])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Fri, 14 May 2021 21:44:22 +0000 (GMT)
-From:   Nathan Lynch <nathanl@linux.ibm.com>
-To:     linuxppc-dev@lists.ozlabs.org
-Cc:     mpe@ellerman.id.au, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org
-Subject: [PATCH] powerpc/udbg_hvc: retry putc on -EAGAIN
-Date:   Fri, 14 May 2021 16:44:22 -0500
-Message-Id: <20210514214422.3019105-1-nathanl@linux.ibm.com>
-X-Mailer: git-send-email 2.30.2
+        id S233535AbhENWAF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 14 May 2021 18:00:05 -0400
+Received: from p3plsmtp05-03-02.prod.phx3.secureserver.net ([97.74.135.48]:42052
+        "EHLO p3plwbeout05-03.prod.phx3.secureserver.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229942AbhENWAE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 18:00:04 -0400
+X-Greylist: delayed 467 seconds by postgrey-1.27 at vger.kernel.org; Fri, 14 May 2021 18:00:04 EDT
+Received: from outbound-gw.openxchange.ahost.me ([94.136.40.163])
+        by :WBEOUT: with ESMTP
+        id hfi1lAcRMQWnThfi3lNRgd; Fri, 14 May 2021 14:51:03 -0700
+X-CMAE-Analysis: v=2.4 cv=Vurmv86n c=1 sm=1 tr=0 ts=609ef0c7
+ a=ExpeE9u7wY9QIRtJzA+xFA==:117 a=ExpeE9u7wY9QIRtJzA+xFA==:17
+ a=ggZhUymU-5wA:10 a=IkcTkHD0fZMA:10 a=5FLXtPjwQuUA:10 a=S_-2Y0Uh84wA:10
+ a=pGLkceISAAAA:8 a=HhkP5SpAjtIQq_n__E0A:9 a=QEXdDO2ut3YA:10
+X-SECURESERVER-ACCT: phillip@squashfs.org.uk
+X-SID:  hfi1lAcRMQWnT
+Received: from localhost ([127.0.0.1] helo=outbound-gw.openxchange.ahost.me)
+        by outbound-gw.openxchange.ahost.me with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+        (Exim 4.94)
+        (envelope-from <phillip@squashfs.org.uk>)
+        id 1lhfhV-0000mN-9y; Fri, 14 May 2021 22:50:29 +0100
+Date:   Fri, 14 May 2021 22:50:29 +0100 (BST)
+From:   Phillip Lougher <phillip@squashfs.org.uk>
+To:     Pintu Agarwal <pintu.ping@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>, sean@geanix.com,
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org
+Message-ID: <1762403920.6716767.1621029029246@webmail.123-reg.co.uk>
+In-Reply-To: <CAOuPNLjmJ0YufFktJzjkyvdxwFTOpxVj5AW5gANAGSG=_yT=mQ@mail.gmail.com>
+References: <CAOuPNLjgpkBh9dnfNTdDcfk5HiL=HjjiB9o_=fjrm+0vP7Re2Q@mail.gmail.com>
+ <CAOuPNLh_0Q9w96GKT-ogC0BBcEHgo=Hv3+c=JBcas2VgqDiyaw@mail.gmail.com>
+ <CAOuPNLjmJ0YufFktJzjkyvdxwFTOpxVj5AW5gANAGSG=_yT=mQ@mail.gmail.com>
+Subject: Re: [RESEND]: Kernel 4.14: SQUASHFS error: unable to read xattr id
+ index table
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 4hEbkGUgVweJqzQJp6yWv37D0NrPnima
-X-Proofpoint-ORIG-GUID: 4hEbkGUgVweJqzQJp6yWv37D0NrPnima
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-14_10:2021-05-12,2021-05-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- lowpriorityscore=0 clxscore=1011 suspectscore=0 bulkscore=0 spamscore=0
- priorityscore=1501 mlxscore=0 phishscore=0 malwarescore=0 impostorscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105140169
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v7.10.3-Rev22
+X-Originating-IP: 82.69.79.175
+X-Originating-Client: com.openexchange.ox.gui.dhtml
+X-Authenticated-As: phillip@squashfs.org.uk
+X-122-reg-Authenticated: phillip@squashfs.org.uk
+X-CMAE-Envelope: MS4xfDniopKcDnq7/kPy6ImW88oea0CzZzcc0Dm/vXQdL5U4Hm6zaAvKl5tEtv8NAfMNKmIxr8gFiucy3VnQqnpRN/2aBec0nAzJtbNc/NfursA6lYbjxTNc
+ mxCqsDWAp1TinGIsnCgrtyh2mVaWUQ5zx/7CX8FzTbCPT6400uVvdqwXXC30rFkIgn7dTeB+fc6kv0eHH6LOCWzJCL/2O9yytOUyZpcF0eAmG86NpPErck+W
+ EsvWw44WUfaySnEGsqC+N7XPRhjupb+Bz0tHys9k401Bvoidcb226gDh80QJnwHWQ+b6PmtPgohxBDvsbTCTa6S9e7myM5CVztzhtIo/IFmp2QFMCeC/SMTO
+ G0raZDNjjzEZNLwhG+oO3GhLRQyBhw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hvterm_raw_put_chars() calls hvc_put_chars(), which may return -EAGAIN
-when the underlying hcall returns a "busy" status, but udbg_hvc_putc()
-doesn't handle this. When using xmon on a PowerVM guest, this can
-result in incomplete or garbled output when printing relatively large
-amounts of data quickly, such as when dumping the kernel log buffer.
 
-Call again on -EAGAIN.
+> On 14/05/2021 13:37 Pintu Agarwal <pintu.ping@gmail.com> wrote:
+> 
+>  
+> Hi,
+> 
+> This is regarding the squashfs mount failure that I am getting on my
+> device during boot time.
+> I just wanted to know if someone else has come across this issue, or
+> this issue is already fixed, or this is altogether a different issue?
+> 
+> Here are more details:
+> Kernel: 4.14.170 ; Qualcomm chipset (arm32 bit)
+> Platform: busybox
+> Storage: NAND 512MB
+> Filesystem: ubifs + squashfs
+> ubi0 : with 5 volumes (rootfs, usrfs, others)
+> Kernel command line: ro rootwait console=ttyMSM0,115200,n8
+> rootfstype=squashfs root=/dev/mtdblock34 ubi.mtd=30,0,30 ....
+> 
+> Background:
+> We are using ubifs filesystem with squashfs for rootfs (as ready only).
+> First we tried to flash "usrfs" (data) volume (ubi0_1) and it worked
+> fine (with device booting successfully).
+> 
+> Next we are trying to flash "rootfs" volume (ubi0_0) now. The volume
+> flashing is successful but after that when we reboot the system we are
+> getting below errors.
+> 
+> Logs:
+> [....]
+> [    4.589340] vreg_conn_pa: dis▒[    4.602779] squashfs: SQUASHFS
+> error: unable to read xattr id index table
+> [...]
+> [    4.964083] No filesystem could mount root, tried:
+> [    4.964087]  squashfs
+> [    4.966255]
+> [    4.973443] Kernel panic - not syncing: VFS: Unable to mount root
+> fs on unknown-block(31,34)
+> 
+> -----------
+> [    4.246861] ubi0: attaching mtd30
+> [    4.453241] ubi0: scanning is finished
+> [    4.460655] ubi0: attached mtd30 (name "system", size 216 MiB)
+> [    4.460704] ubi0: PEB size: 262144 bytes (256 KiB), LEB size: 253952 bytes
+> [    4.465562] ubi0: min./max. I/O unit sizes: 4096/4096, sub-page size 4096
+> [    4.472483] ubi0: VID header offset: 4096 (aligned 4096), data offset: 8192
+> [    4.479295] ubi0: good PEBs: 864, bad PEBs: 0, corrupted PEBs: 0
+> [    4.486067] ubi0: user volume: 5, internal volumes: 1, max. volumes
+> count: 128
+> [    4.492311] ubi0: max/mean erase counter: 4/0, WL threshold: 4096,
+> image sequence number: 1
+> [    4.499333] ubi0: available PEBs: 0, total reserved PEBs: 864, PEBs
+> reserved for bad PEB handling: 60
+> 
+> So, we just wanted to know if this issue is related to squashfs or if
+> there is some issue with our volume flashing.
+> Note: We are using fastboot mechanism to support UBI volume flashing.
+> 
+> Observation:
+> Recently I have seen some squashfs changes related to similar issues
+> (xattr) so I wanted to understand if these changes are relevant to our
+> issue or not ?
+> 
+> Age           Commit message(Expand)                                 Author
+> 2021-03-30    squashfs: fix xattr id and id lookup sanity checks
+> Phillip Lougher
+> 2021-03-30    squashfs: fix inode lookup sanity checks
+> Sean Nyekjaer
+> 2021-02-23    squashfs: add more sanity checks in xattr id lookup
+> Phillip Lougher
+> 2021-02-23    squashfs: add more sanity checks in inode lookup
+> Phillip Lougher
+> 2021-02-23    squashfs: add more sanity checks in id lookup
+> Phillip Lougher
+> 
+> Please let us know your opinion about this issue...
+> It will help us to decide whether the issue is related to squashfs  or not.
+> 
+> 
+> Thanks,
+> Pintu
 
-Signed-off-by: Nathan Lynch <nathanl@linux.ibm.com>
----
- drivers/tty/hvc/hvc_vio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Your kernel (4.14.170) was released on 5 Feb 2020, and so it won't
+contain any of the above commits. The xattr -id code in 4.14.170,
+was last updated in May 2011, and so it is much more likely the
+problem is elsewhere.
 
-diff --git a/drivers/tty/hvc/hvc_vio.c b/drivers/tty/hvc/hvc_vio.c
-index 798f27f40cc2..76d2a7038095 100644
---- a/drivers/tty/hvc/hvc_vio.c
-+++ b/drivers/tty/hvc/hvc_vio.c
-@@ -249,7 +249,7 @@ static void udbg_hvc_putc(char c)
- 			count = hvterm_hvsi_put_chars(0, &c, 1);
- 			break;
- 		}
--	} while(count == 0);
-+	} while(count == 0 || count == -EAGAIN);
- }
- 
- static int udbg_hvc_getc_poll(void)
--- 
-2.30.2
+The xattr id index table is written to the end of the Squashfs filesystem,
+and it is the first table read on mounting.
 
+As such this is the error you will receive if the Squashfs filesystem
+has been truncated in some way. This is by far the most likely reason
+for the error.
+
+So you need to check if the Squashfs filesystem image is truncated or
+corrupted in some way. This could obviously have happened before
+writing to the flash, during writing or afterwards. It could also be
+being truncated at read time. The cause could be faulty hardware or
+software at any point in the I/O path, at any point in the processs.
+
+So, you need to double check everything at each of the above stages.
+
+1. Check the Squashfs filesystem for correctness before writing it to
+the flash. You can run Unsquashfs on the image and see if it reports
+any errors.
+
+2. You need to check the filesystem for integrity after writing it to
+the flash. Compute a checksum, and compare it with the original
+checksum.
+
+In that way you can pinpoint the cause of the truncation/corruption.
+But, this is unlikely to be a Squashfs issue, and more likely
+truncation/corruption caused by something else.
+
+Phillip
