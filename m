@@ -2,91 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDAA43813A8
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 00:18:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 107493813B9
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 00:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233722AbhENWTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 18:19:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44556 "EHLO
+        id S234068AbhENWVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 18:21:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229940AbhENWTQ (ORCPT
+        with ESMTP id S233967AbhENWVa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 18:19:16 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D378C06174A;
-        Fri, 14 May 2021 15:18:03 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id h4so530356lfv.0;
-        Fri, 14 May 2021 15:18:03 -0700 (PDT)
+        Fri, 14 May 2021 18:21:30 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 656C3C061763;
+        Fri, 14 May 2021 15:20:15 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id d11so595434wrw.8;
+        Fri, 14 May 2021 15:20:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sSuwnMJwt5TkKzd21q3ncqH2PcAU+59JiCcaK8Su3ls=;
-        b=jdjutopzVNNN7D++SEKeSXxMHEWc3CSDfc5/qC9F00pLkzjPx67A8PBghXQruxJVnI
-         lMIzQig/xUAPi520/jVmaj/zX/2Y7etTp0dnKZvP1vXVIBnv6ioG2EQ3/FDgwD1Y9cYi
-         F270hOlCRFN2LtBBLTEbBD44j2EZyRwP7lEgheBYSMVdrxIUhitEGFAqSbzbAr06mvmE
-         /ZAYKsSyzOAvL2kyjBBBYxwInJeK0+G1WB6UXEj2YX1nPbspDeXMw/aQKTNUO6jcrej9
-         m2g0il3U3pVWqpFpoPdqHzFcQha3H81XOYGujmqAJKf9EfldgfNP7y4x50Vk1+KEz1LF
-         oyJg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FPweNk3pkGOY9NgkFWy9y6Zupg8Fw4qtXEQGtAlTE1Q=;
+        b=AmX3bDP8TPwtfGgVkQ+kjcFXRoiQdsPHcPem0YmIJLzYhZzIJedNMmkN0gthqYy0zY
+         Rr2sGpJSLQEZhiKmAwFty+cDXXiyVxGW660lR8CIDCz6ujgZHqWFfESKoBWaF0EFIux9
+         SqLWMMt6fBMzfMUTZg6XR7Xb6Yqiskzu37sQZu2nGFva+UpXVOhpqPwSM3A4UDC58q9A
+         zBz4QijSr6iUWLaXgW+gYG/TlST1rPdXWQE/TkZz9k63IjXRqxDSJmxgUJ3HtcrpR8Ti
+         OT+1OzZ1S55IJjW+JPF0LbJBsotmXAVyHaVVFqKUPoWTwnM9HFUwvJ2QDFwTN2RlL2rY
+         5+jA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=sSuwnMJwt5TkKzd21q3ncqH2PcAU+59JiCcaK8Su3ls=;
-        b=P2oajS2AVfRv9d/pmPNhK31sBdzu1aS7oSPR4MSgQWpinuptJ07CcYj654uozIBuzt
-         +9oC68h4ikTDbAv2mAe21CxqtLw8ZkiR96Ihfwmozx2DUg2HQwltg8Fjq3QhkB4rZ1oN
-         i2kGmItHOlhvTGwIFFsTKbEbmJswBiqeiALcuKz8L0vQb7hBnhqYQ5IubunHYwB6wjd1
-         hR95Bn7r8Ky5LJ4tXHn2KBRPS6qskoUT+IrdHn8sXlHcVFX9yxx2BkC6B35l+lelF5tq
-         CyuS7IbCUkpZYFLuYW4BEs0yTV1C/D5cS97+atFLM3rGGfEtR3/Ewc1X2k7b5pZ8RLa+
-         valw==
-X-Gm-Message-State: AOAM532CP0OyCuNAo89ePuCsySkv7uq1CBe+iq+nRuxstdilImpgmAX/
-        go1Y9dyobW/HGACEv5fOsK5fa7N7OeU=
-X-Google-Smtp-Source: ABdhPJx6s2KmvRqKK5Sx3043r+5lEkFhJIASs1bCmOy60xh+0wm2AG0ray6aCJKmL3gk/EBkzAjh8w==
-X-Received: by 2002:ac2:4e0a:: with SMTP id e10mr32370473lfr.33.1621030681817;
-        Fri, 14 May 2021 15:18:01 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
-        by smtp.googlemail.com with ESMTPSA id b18sm686268lfp.20.2021.05.14.15.18.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 May 2021 15:18:01 -0700 (PDT)
-Subject: Re: [PATCH v1 0/2] Restore voltages before rebooting of NVIDIA Tegra
- SoCs
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        =?UTF-8?Q?Nikola_Milosavljevi=c4=87?= <mnidza@outlook.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-References: <20210510220526.11113-1-digetx@gmail.com>
- <20210514213251.GB1969@qmqm.qmqm.pl>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <5047e49e-fa86-1e9d-a114-cbaf31f5b86b@gmail.com>
-Date:   Sat, 15 May 2021 01:18:00 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        bh=FPweNk3pkGOY9NgkFWy9y6Zupg8Fw4qtXEQGtAlTE1Q=;
+        b=BtJlSpjc0NcxQRIzK7qQifntQADzN9fKkXvRCkUW94MRmVfZjeRADqJZxFbBZAVEvZ
+         gLX9fOmwv3KRvtgVL6tNeoIRe64F6zXINS7kOx9tZ62xiHOT9O6cHTN+rVmVHw7x8597
+         2lLmVaCPLKHO1hnziEoI0mb1TpLjwgApwJW2k/Rm5rJA91iPUY9jr7kc76c46UR1PZwV
+         mEDHyna1tx9LXHl5br0KRsvEoFr8X+nHrlnr2E2kAlaT5j00E9JWquHN+l+w2H9Fc1fd
+         Jrz4q4vOdNdCeYsuetTMVpTVwbPjrLFSMomBhxZxzLzUC/EnKWsBlMIpghZN8ir/mQ9u
+         K81A==
+X-Gm-Message-State: AOAM530TynZhZIdbGr0O0asViIbo2ehjUHQlUgop166lgbEKmuxm7Q21
+        JkjOVmwtOzLLRVssQ06Pb2I=
+X-Google-Smtp-Source: ABdhPJysT80uVA7Vwyo70mLwKSB5qo6CoBIv9nGzo/Y1x5eXRBE6GO4fV9usALLPj6nS5G2RRukg9A==
+X-Received: by 2002:a5d:6e04:: with SMTP id h4mr60031763wrz.256.1621030814214;
+        Fri, 14 May 2021 15:20:14 -0700 (PDT)
+Received: from xws.localdomain (pd9e5a369.dip0.t-ipconnect.de. [217.229.163.105])
+        by smtp.gmail.com with ESMTPSA id y14sm7668170wrr.82.2021.05.14.15.20.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 May 2021 15:20:13 -0700 (PDT)
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] platform/surface: aggregator: Add platform-drivers-x86 list to MAINTAINERS entry
+Date:   Sat, 15 May 2021 00:19:54 +0200
+Message-Id: <20210514221954.5976-1-luzmaximilian@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210514213251.GB1969@qmqm.qmqm.pl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-15.05.2021 00:32, Michał Mirosław пишет:
-> On Tue, May 11, 2021 at 01:05:24AM +0300, Dmitry Osipenko wrote:
->> Hi,
->>
->> Nikola Milosavljević reported that rebooting wasn't working properly on
->> Asus Transformer TF101, which is Tegra20-based tablet device.  We found
->> that TF101 and some other devices have bootloader which doesn't re-initialize
->> voltages properly on a reboot.  The problem is resolved by ensuring that
->> SoC voltages are at a levels that are suitable for the rebooting of the
->> SoC before reboot happens. This series adds reboot handler to the Tegra
->> regulator couplers, it bumps voltages on the reboot event.
-> 
-> Which tree does this series apply to?
+The Surface System Aggregator Module driver entry is currently missing a
+mailing list. Surface platform drivers are discussed on the
+platform-driver-x86 list and all other Surface platform drivers have a
+reference to that list in their entries. So let's add one here as well.
 
-It was made on top of linux-next, but it should apply to 5.13 as well.
-What conflict do you get?
+Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+---
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index bd7aff0c120f..57467b6046f1 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -12180,6 +12180,7 @@ F:	drivers/platform/surface/surfacepro3_button.c
+ 
+ MICROSOFT SURFACE SYSTEM AGGREGATOR SUBSYSTEM
+ M:	Maximilian Luz <luzmaximilian@gmail.com>
++L:	platform-driver-x86@vger.kernel.org
+ S:	Maintained
+ W:	https://github.com/linux-surface/surface-aggregator-module
+ C:	irc://chat.freenode.net/##linux-surface
+-- 
+2.31.1
+
