@@ -2,118 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AE20380F7A
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 20:15:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7826C380FA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 20:18:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233159AbhENSQg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 14 May 2021 14:16:36 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:58237 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231454AbhENSQf (ORCPT
+        id S232977AbhENSUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 14:20:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232747AbhENSUA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 14:16:35 -0400
-Received: from smtpclient.apple (p4fefc9d6.dip0.t-ipconnect.de [79.239.201.214])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 13DD0CEC82;
-        Fri, 14 May 2021 20:23:14 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.80.0.2.43\))
-Subject: Re: [PATCH v2] Bluetooth: Shutdown controller after workqueues are
- flushed or cancelled
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210514071452.25220-1-kai.heng.feng@canonical.com>
-Date:   Fri, 14 May 2021 20:15:20 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "open list:BLUETOOTH SUBSYSTEM" <linux-bluetooth@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <576B26FD-81F8-4632-82F6-57C4A7C096C4@holtmann.org>
-References: <20210514071452.25220-1-kai.heng.feng@canonical.com>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-X-Mailer: Apple Mail (2.3654.80.0.2.43)
+        Fri, 14 May 2021 14:20:00 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52BB9C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 11:18:48 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1621016325;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OrPAQ0MvuanIbFhGukWyMzAMiIH4hXac42mqWV38eMo=;
+        b=nylC2wppY4c9I9q63k0HvmTuZ+Aim8HkAEENDFbp7flwuJkXr9yYTIsaTSmi5TTT6VCyMc
+        DZLimLXSjbxKhYCtmwcPaF0d5Yky6vac5NU/N1Y5gS6JlNpv+2+bCqw5pvPQlwRNAo+X6r
+        aDZOMw8uBM+uYpyWFdV73xCxsgG+HXAMrrmGe/+FGfkt9ZstbViynxAD8N9GgFDv5par7R
+        Rn4kSa/cEY/fgr5jyMVukQd1b0drV/ZE/5gFVfxLHn73Rl1lVXzh10zvVwHaKwVUQw2kWD
+        xFq4raLbTUs/Wot/cbVXkVcMhEg40cTlNzAiN8XgIh8i85C+3hqMVLJ8hUMc/w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1621016325;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OrPAQ0MvuanIbFhGukWyMzAMiIH4hXac42mqWV38eMo=;
+        b=EQwlFl1vLZ++1K7rQcAPtrUBtjlNbY+xkecRv2HW49YinRNF2J5LwR1aUtAAkWM3baR/ln
+        RVxHfFYGlq+LiTBA==
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>, mingo@redhat.com,
+        Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org,
+        x86@kernel.org, Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH 1/4] sched: make nr_running() return 32-bit
+In-Reply-To: <YJz4TmZ7fmKFchRe@gmail.com>
+References: <20210422200228.1423391-1-adobriyan@gmail.com> <87fsyr5wtj.ffs@nanos.tec.linutronix.de> <YJz4TmZ7fmKFchRe@gmail.com>
+Date:   Fri, 14 May 2021 20:18:44 +0200
+Message-ID: <87eee941rv.ffs@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kai-Heng,
+On Thu, May 13 2021 at 11:58, Ingo Molnar wrote:
+> * Thomas Gleixner <tglx@linutronix.de> wrote:
+> As to the numbers:
+> -	/* size: 1704, cachelines: 27, members: 13 */
+> -	/* sum members: 1696, holes: 1, sum holes: 4 */
+> +	/* size: 1696, cachelines: 27, members: 13 */
+> +	/* sum members: 1688, holes: 1, sum holes: 4 */
+>  	/* padding: 4 */
+> -	/* last cacheline: 40 bytes */
+> +	/* last cacheline: 32 bytes */
+>
+> 'struct rt_rq' got shrunk from 1704 bytes to 1696 bytes, an 8 byte 
+> reduction.
 
-> Rfkill block and unblock Intel USB Bluetooth [8087:0026] may make it
-> stops working:
-> [  509.691509] Bluetooth: hci0: HCI reset during shutdown failed
-> [  514.897584] Bluetooth: hci0: MSFT filter_enable is already on
-> [  530.044751] usb 3-10: reset full-speed USB device number 5 using xhci_hcd
-> [  545.660350] usb 3-10: device descriptor read/64, error -110
-> [  561.283530] usb 3-10: device descriptor read/64, error -110
-> [  561.519682] usb 3-10: reset full-speed USB device number 5 using xhci_hcd
-> [  566.686650] Bluetooth: hci0: unexpected event for opcode 0x0500
-> [  568.752452] Bluetooth: hci0: urb 0000000096cd309b failed to resubmit (113)
-> [  578.797955] Bluetooth: hci0: Failed to read MSFT supported features (-110)
-> [  586.286565] Bluetooth: hci0: urb 00000000c522f633 failed to resubmit (113)
-> [  596.215302] Bluetooth: hci0: Failed to read MSFT supported features (-110)
-> 
-> Or kernel panics because other workqueues already freed skb:
-> [ 2048.663763] BUG: kernel NULL pointer dereference, address: 0000000000000000
-> [ 2048.663775] #PF: supervisor read access in kernel mode
-> [ 2048.663779] #PF: error_code(0x0000) - not-present page
-> [ 2048.663782] PGD 0 P4D 0
-> [ 2048.663787] Oops: 0000 [#1] SMP NOPTI
-> [ 2048.663793] CPU: 3 PID: 4491 Comm: rfkill Tainted: G        W         5.13.0-rc1-next-20210510+ #20
-> [ 2048.663799] Hardware name: HP HP EliteBook 850 G8 Notebook PC/8846, BIOS T76 Ver. 01.01.04 12/02/2020
-> [ 2048.663801] RIP: 0010:__skb_ext_put+0x6/0x50
-> [ 2048.663814] Code: 8b 1b 48 85 db 75 db 5b 41 5c 5d c3 be 01 00 00 00 e8 de 13 c0 ff eb e7 be 02 00 00 00 e8 d2 13 c0 ff eb db 0f 1f 44 00 00 55 <8b> 07 48 89 e5 83 f8 01 74 14 b8 ff ff ff ff f0 0f c1
-> 07 83 f8 01
-> [ 2048.663819] RSP: 0018:ffffc1d105b6fd80 EFLAGS: 00010286
-> [ 2048.663824] RAX: 0000000000000000 RBX: ffff9d9ac5649000 RCX: 0000000000000000
-> [ 2048.663827] RDX: ffffffffc0d1daf6 RSI: 0000000000000206 RDI: 0000000000000000
-> [ 2048.663830] RBP: ffffc1d105b6fd98 R08: 0000000000000001 R09: ffff9d9ace8ceac0
-> [ 2048.663834] R10: ffff9d9ace8ceac0 R11: 0000000000000001 R12: ffff9d9ac5649000
-> [ 2048.663838] R13: 0000000000000000 R14: 00007ffe0354d650 R15: 0000000000000000
-> [ 2048.663843] FS:  00007fe02ab19740(0000) GS:ffff9d9e5f8c0000(0000) knlGS:0000000000000000
-> [ 2048.663849] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 2048.663853] CR2: 0000000000000000 CR3: 0000000111a52004 CR4: 0000000000770ee0
-> [ 2048.663856] PKRU: 55555554
-> [ 2048.663859] Call Trace:
-> [ 2048.663865]  ? skb_release_head_state+0x5e/0x80
-> [ 2048.663873]  kfree_skb+0x2f/0xb0
-> [ 2048.663881]  btusb_shutdown_intel_new+0x36/0x60 [btusb]
-> [ 2048.663905]  hci_dev_do_close+0x48c/0x5e0 [bluetooth]
-> [ 2048.663954]  ? __cond_resched+0x1a/0x50
-> [ 2048.663962]  hci_rfkill_set_block+0x56/0xa0 [bluetooth]
-> [ 2048.664007]  rfkill_set_block+0x98/0x170
-> [ 2048.664016]  rfkill_fop_write+0x136/0x1e0
-> [ 2048.664022]  vfs_write+0xc7/0x260
-> [ 2048.664030]  ksys_write+0xb1/0xe0
-> [ 2048.664035]  ? exit_to_user_mode_prepare+0x37/0x1c0
-> [ 2048.664042]  __x64_sys_write+0x1a/0x20
-> [ 2048.664048]  do_syscall_64+0x40/0xb0
-> [ 2048.664055]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [ 2048.664060] RIP: 0033:0x7fe02ac23c27
-> [ 2048.664066] Code: 0d 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
-> [ 2048.664070] RSP: 002b:00007ffe0354d638 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-> [ 2048.664075] RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007fe02ac23c27
-> [ 2048.664078] RDX: 0000000000000008 RSI: 00007ffe0354d650 RDI: 0000000000000003
-> [ 2048.664081] RBP: 0000000000000000 R08: 0000559b05998440 R09: 0000559b05998440
-> [ 2048.664084] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
-> [ 2048.664086] R13: 0000000000000000 R14: ffffffff00000000 R15: 00000000ffffffff
-> 
-> So move the shutdown callback to a place where workqueues are either
-> flushed or cancelled to resolve the issue.
-> 
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> ---
-> v2:
-> - Rebased on bluetooth-next.
-> 
-> net/bluetooth/hci_core.c | 16 ++++++++--------
-> 1 file changed, 8 insertions(+), 8 deletions(-)
+Amazing and it still occupies 27 cache lines
 
-patch has been applied to bluetooth-next tree.
+>   ffffffffxxxxxxxx:      e8 49 8e fb ff          call   ffffffffxxxxxxxx <nr_iowait_cpu>
+> - ffffffffxxxxxxxx:      48 85 c0                test   %rax,%rax
+>
+>   ffffffffxxxxxxxx:      e8 64 8e fb ff          call   ffffffffxxxxxxxx <nr_iowait_cpu>
+> + ffffffffxxxxxxxx:      85 c0                   test   %eax,%eax
+>
+> Note how the 'test %rax,%rax' lost the 0x48 64-bit REX prefix and the 
+> generated code got one byte shorter from "48 85 c0" to "85 c0".
 
-Regards
+Which will surely be noticable big time. None of this truly matters
+because once the data is in L1 the REX prefix is just noise.
 
-Marcel
+> ( Note, my asm generation scripts filter out some of the noise to make it 
+>   easier to diff generated asm, hence the ffffffffxxxxxxxx placeholder. )
+>
+> The nr_iowait() function itself got shorter by two bytes as well, due to:
+>
+> The size of nr_iowait() shrunk from 78 bytes to 76 bytes.
+
+That's important because nr_iowait() is truly a hotpath function...
+
+> The nr_running() function itself got shorter by 2 bytes, due to shorter 
+> instruction sequences.
+
+along with nr_running() which both feed /proc/stat. The latter feeds
+/proc/loadavg as well.
+
+Point well taken.
+
+But looking at the /proc/stat usage there is obviously way bigger fish
+to fry.
+
+   seq_printf(...., nr_running(), nr_iowait());
+
+which is outright stupid because both functions iterate over CPUs
+instead of doing it once, which definitely would be well measurable on
+large machines.
+
+But looking at nr_running() and nr_iowait():
+
+    nr_running() walks all CPUs in cpu_online_mask
+
+    nr_iowait() walks all CPUs in cpu_possible_mask
+
+The latter is because rq::nr_iowait is not transferred to an online CPU
+when a CPU goes offline. Oh well.
+
+That aside:
+
+I'm not against the change per se, but I'm disagreeing with patches
+which come with zero information, are clearly focussed on one
+architecture and obviously nobody bothered to check whether there is an
+impact on others.
+
+Thanks,
+
+        tglx
+
+
 
