@@ -2,102 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E671B380AD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 15:57:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3114380ADF
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 15:58:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232185AbhENN6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 09:58:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45266 "EHLO
+        id S232532AbhENN74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 09:59:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229889AbhENN6w (ORCPT
+        with ESMTP id S232455AbhENN7y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 09:58:52 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC53C061574;
-        Fri, 14 May 2021 06:57:39 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id l14so30133430wrx.5;
-        Fri, 14 May 2021 06:57:39 -0700 (PDT)
+        Fri, 14 May 2021 09:59:54 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AC74C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 06:58:43 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id j12so25881569ils.4
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 06:58:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:subject:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=64AidklKtzy410V0pglTKLFGmNORBfPabub/NAvEf3A=;
-        b=G+RU4vLKaG6EbQVY/jjpW7a8xhWwXD/GpnLOmIHQSWLkjCdWajwk/0NrDHNLShqikY
-         AujRmsjGYIBuPG2MlrUQylydrKUPeLE8szDCbRcFSROfXzV3oX2Eq/B5sRhoovXqTW5H
-         8/0dSZHHWoZplUuBxHJL7PU1u8tsvQG1RWBrdG6KWQwexwm6Nyo0PM/Y1PZ52+UsoaAy
-         6dZxffvKqfsCENW94G7Uj6VnBQavtEGlbXVLu6Ws7OEBn8R1cEzEbB8p3Cc+4vvHnxWX
-         YfnogaCbX0Zr+StyhbO6ZBMS8W0+k1P34UZDe6WiGU0bkDlWtVIPisWdescAPdPbVcoa
-         6x3w==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bfYFyDNOaHNznWD3QdjOTFC8+ozDhd6BMb68HdfprOU=;
+        b=c01F5hKE8Z6Bx4tcWxeDqSwTHAQXEuTzA80kuP5Y/4gWobUYbKnf5x5a93aCLtQt+7
+         /T4/ZcijHUQ5pkR6PldpwKw+JI6Wt4AAZTEsno0EtwfWn+Dl5vO/fCwWQvoiYrmKDXm1
+         8JHA5ipjZoX8GXyEiaK011JEGH291V6SxSpiqWFZOc8TQLsacNXWfjBVTK86yx+znbq/
+         iuYuY2/1bkI2uResvm8SG90jQPrWRWDeyKphHoX/dFo69ehgrmgAXPLd0W7LLHECpkDo
+         w58oYYU5YoSVmTEL5KEmHEhzQseJVKY5XZkkNSZq9VIvqb9F9DvJbrBjY/d86yxRvplT
+         0XhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:subject:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=64AidklKtzy410V0pglTKLFGmNORBfPabub/NAvEf3A=;
-        b=sVIlY9RTmLCiBmm+WjTgA8ECD68gpeaPh1JnCj0to/mCUBgeX6nRga7JpfYuvlzsuH
-         ujTvFuxZEP/y+KaO5CuARnKWPnnBqGPQjaMeYj77W6+WTAOKiT5Pm2Pe5WZpnKZBqTqe
-         J7quu6KjYpZ++luHrlVWq6P3pyOk2hri922aSdPELkuAA/kJm8u1qk96VJaGgiD5S6ta
-         QkCOBTepsN0yCT340TsYx8QLiZQJ2cIxj6A5KJ+JtgqaGUrvgIkfgPKPlYlxqaO3cl9z
-         Ru3ZGqRUCtRKeGnXzrlwlQuaXmFAT7VMn41JeK/C+VMPgiMY+SezxdrcAkoPshjVx2R+
-         LrOQ==
-X-Gm-Message-State: AOAM532td946FvW78H7JyuGiRoJcyEbLpgoJEH2sJiwB50y8xyR/Cxb1
-        bTcbdzsfDz/e+yXkgmyjAAE=
-X-Google-Smtp-Source: ABdhPJwn0XDk5r5vhrYkRPn+YTPwixBWC0Cs+pK2BB609anwLLg/9fZhfovjHaV97qDpG5LHuqfFuw==
-X-Received: by 2002:a5d:6d81:: with SMTP id l1mr58577922wrs.17.1621000658680;
-        Fri, 14 May 2021 06:57:38 -0700 (PDT)
-Received: from [192.168.2.202] (pd9e5a369.dip0.t-ipconnect.de. [217.229.163.105])
-        by smtp.gmail.com with ESMTPSA id v17sm6509828wrd.89.2021.05.14.06.57.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 May 2021 06:57:38 -0700 (PDT)
-To:     dave@bewaar.me
-Cc:     amitkarwar@gmail.com, davem@davemloft.net, ganapathi017@gmail.com,
-        huxinming820@gmail.com, johannes.berg@intel.com, kuba@kernel.org,
-        kvalo@codeaurora.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        sharvari.harisangam@nxp.com
-References: <ab4d00ce52f32bd8e45ad0448a44737e@bewaar.me>
-Subject: Re: [BUG] recursive lock in mwifiex_uninit_sw
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <bf0c987a-8830-0f44-cf82-bd378e87e000@gmail.com>
-Date:   Fri, 14 May 2021 15:57:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bfYFyDNOaHNznWD3QdjOTFC8+ozDhd6BMb68HdfprOU=;
+        b=n0hPNit9Hx5S63rqASnOPfRE+MDGBVBmuB4INxqDb5LEbMbdk+j/ljQpvhC+2l0I1e
+         Ss1Rq7gQ0UNYFOAl8KHkTOdqfiO7G4a2xqa5uq9oSIePc27nhp7jUJaRAzSFWhkJwHwT
+         e4DwncvJoRBSKvNpRpPhFZGqfwwWcs7sz1ru8BTkitAMPyPC0XSOf7pimMbacfN/FACB
+         PfycZ0kitAXn8Ef8eW35wLguErAC9lFIVkpDZSmgR7uS0a37T26sHiG8tD+TOcue91VD
+         M0y2BCZmY2jIQkOtjDgDEHszuGV2CB+deg6ZLO/nPKb2Ie+bkAyOGtUSLfAjzP1G7FGG
+         ACDg==
+X-Gm-Message-State: AOAM532+PbVsuGRWF3bh1qjjAn8YKWU/9RGLDhij+Eennq0wZcAWGQD+
+        3UNHBfUNU9T+C169qxFPg2yzhChTrs9RDoBwm070
+X-Google-Smtp-Source: ABdhPJxalKKFR43HiA8yCE0dJ8wr0xiO9hBKUHab9MyXauJN2iIVjG1vmjJpu9op6ncTeNps+BNJ6gnsJ8KcevdkWRw=
+X-Received: by 2002:a92:c884:: with SMTP id w4mr40269472ilo.186.1621000722714;
+ Fri, 14 May 2021 06:58:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <ab4d00ce52f32bd8e45ad0448a44737e@bewaar.me>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210423080942.2997-1-jasowang@redhat.com> <YJ1TgoFSwOkQrC+1@stefanha-x1.localdomain>
+ <CACGkMEv0uWd+X87cYoG-GGjTXBvRztp2CY3RKyq9jFbSYK1n0Q@mail.gmail.com>
+ <YJ5cKe0egklXDpng@stefanha-x1.localdomain> <CACycT3u+hQbDJtf5gxS1NVVpiTffMz1skuhTExy5d_oRjYKoxg@mail.gmail.com>
+ <20210514073452-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20210514073452-mutt-send-email-mst@kernel.org>
+From:   Yongji Xie <xieyongji@bytedance.com>
+Date:   Fri, 14 May 2021 21:58:32 +0800
+Message-ID: <CACycT3ttN=t3LQGSVUbt9mbsgUsKOrZuRRziMkZJSiQkBP77iw@mail.gmail.com>
+Subject: Re: Re: Re: [RFC PATCH V2 0/7] Do not read from descripto ring
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        file@sect.tu-berlin.de, ashish.kalra@amd.com,
+        konrad.wilk@oracle.com, kvm <kvm@vger.kernel.org>,
+        Christoph Hellwig <hch@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/14/21 14:45 AM, dave@bewaar.me wrote:
-> A firmware crash of the Marvell 88W8897, which are spurious on Microsoft
-> Surface devices, will unload/reset the device. However this can also 
-> fail
-> in more recent kernels, which can cause more problems since the driver
-> does not unload. This causes programs trying to reach the network or
-> networking devices to hang which in turn causes a reboot/poweroff to 
-> hang.
-> 
-> This can happen on the following fedora rawhide kernels:
-> - 5.12.0-0.rc8.20210423git7af08140979a.193.fc35.x86_64 [1]
-> - 5.13.0-0.rc1.20210512git88b06399c9c7.15.fc35.x86_64 [2]
-> 
-> The latter seems to be more consistent in triggering this behaviour
-> (and crashing the firmware). If someone can give me some pointers
-> I would gladly help and debug this.
+On Fri, May 14, 2021 at 7:36 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> On Fri, May 14, 2021 at 07:27:22PM +0800, Yongji Xie wrote:
+> > On Fri, May 14, 2021 at 7:17 PM Stefan Hajnoczi <stefanha@redhat.com> wrote:
+> > >
+> > > On Fri, May 14, 2021 at 03:29:20PM +0800, Jason Wang wrote:
+> > > > On Fri, May 14, 2021 at 12:27 AM Stefan Hajnoczi <stefanha@redhat.com> wrote:
+> > > > >
+> > > > > On Fri, Apr 23, 2021 at 04:09:35PM +0800, Jason Wang wrote:
+> > > > > > Sometimes, the driver doesn't trust the device. This is usually
+> > > > > > happens for the encrtpyed VM or VDUSE[1].
+> > > > >
+> > > > > Thanks for doing this.
+> > > > >
+> > > > > Can you describe the overall memory safety model that virtio drivers
+> > > > > must follow?
+> > > >
+> > > > My understanding is that, basically the driver should not trust the
+> > > > device (since the driver doesn't know what kind of device that it
+> > > > tries to drive)
+> > > >
+> > > > 1) For any read only metadata (required at the spec level) which is
+> > > > mapped as coherent, driver should not depend on the metadata that is
+> > > > stored in a place that could be wrote by the device. This is what this
+> > > > series tries to achieve.
+> > > > 2) For other metadata that is produced by the device, need to make
+> > > > sure there's no malicious device triggered behavior, this is somehow
+> > > > similar to what vhost did. No DOS, loop, kernel bug and other stuffs.
+> > > > 3) swiotb is a must to enforce memory access isolation. (VDUSE or encrypted VM)
+> > > >
+> > > > > For example:
+> > > > >
+> > > > > - Driver-to-device buffers must be on dedicated pages to avoid
+> > > > >   information leaks.
+> > > >
+> > > > It looks to me if swiotlb is used, we don't need this since the
+> > > > bouncing is not done at byte not page.
+> > > >
+> > > > But if swiotlb is not used, we need to enforce this.
+> > > >
+> > > > >
+> > > > > - Driver-to-device buffers must be on dedicated pages to avoid memory
+> > > > >   corruption.
+> > > >
+> > > > Similar to the above.
+> > > >
+> > > > >
+> > > > > When I say "pages" I guess it's the IOMMU page size that matters?
+> > > > >
+> > > >
+> > > > And the IOTLB page size.
+> > > >
+> > > > > What is the memory access granularity of VDUSE?
+> > > >
+> > > > It has an swiotlb, but the access and bouncing is done per byte.
+> > > >
+> > > > >
+> > > > > I'm asking these questions because there is driver code that exposes
+> > > > > kernel memory to the device and I'm not sure it's safe. For example:
+> > > > >
+> > > > >   static int virtblk_add_req(struct virtqueue *vq, struct virtblk_req *vbr,
+> > > > >                   struct scatterlist *data_sg, bool have_data)
+> > > > >   {
+> > > > >           struct scatterlist hdr, status, *sgs[3];
+> > > > >           unsigned int num_out = 0, num_in = 0;
+> > > > >
+> > > > >           sg_init_one(&hdr, &vbr->out_hdr, sizeof(vbr->out_hdr));
+> > > > >                             ^^^^^^^^^^^^^
+> > > > >           sgs[num_out++] = &hdr;
+> > > > >
+> > > > >           if (have_data) {
+> > > > >                   if (vbr->out_hdr.type & cpu_to_virtio32(vq->vdev, VIRTIO_BLK_T_OUT))
+> > > > >                           sgs[num_out++] = data_sg;
+> > > > >                   else
+> > > > >                           sgs[num_out + num_in++] = data_sg;
+> > > > >           }
+> > > > >
+> > > > >           sg_init_one(&status, &vbr->status, sizeof(vbr->status));
+> > > > >                                ^^^^^^^^^^^^
+> > > > >           sgs[num_out + num_in++] = &status;
+> > > > >
+> > > > >           return virtqueue_add_sgs(vq, sgs, num_out, num_in, vbr, GFP_ATOMIC);
+> > > > >   }
+> > > > >
+> > > > > I guess the drivers don't need to be modified as long as swiotlb is used
+> > > > > to bounce the buffers through "insecure" memory so that the memory
+> > > > > surrounding the buffers is not exposed?
+> > > >
+> > > > Yes, swiotlb won't bounce the whole page. So I think it's safe.
+> > >
+> > > Thanks Jason and Yongji Xie for clarifying. Seems like swiotlb or a
+> > > similar mechanism can handle byte-granularity isolation so the drivers
+> > > not need to worry about information leaks or memory corruption outside
+> > > the mapped byte range.
+> > >
+> > > We still need to audit virtio guest drivers to ensure they don't trust
+> > > data that can be modified by the device. I will look at virtio-blk and
+> > > virtio-fs next week.
+> > >
+> >
+> > Oh, that's great. Thank you!
+> >
+> > I also did some audit work these days and will send a new version for
+> > reviewing next Monday.
+> >
+> > Thanks,
+> > Yongji
+>
+> Doing it in a way that won't hurt performance for simple
+> configs that trust the device is a challenge though.
+> Pls take a look at the discussion with Christoph for some ideas
+> on how to do this.
+>
 
-I believe the same issue (with slightly different symptoms) is also
-reported in
+I see. Thanks for the reminder.
 
-   https://lore.kernel.org/linux-wireless/98392296-40ee-6300-369c-32e16cff3725@gmail.com/
-
-See also
-
-   https://lore.kernel.org/linux-wireless/522833b9-08c1-f470-a328-0e7419e86617@gmail.com/
-
-for more details.
-
-Regards,
-Max
+Thanks,
+Yongji
