@@ -2,121 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D0EF38110C
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 21:44:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF5E238110E
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 21:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232425AbhENTpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 15:45:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55118 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229932AbhENTpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 15:45:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A93E61446;
-        Fri, 14 May 2021 19:44:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621021447;
-        bh=uT1EHBXnGzLPDuBUJURqmgOWwmzRXhUsEKFWNkyMxCc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=rAFY9cq9YeVPkK35tZoimnWS/MriXxe1xMbXNHM3SQY2efmwzXPogruviaS/L506C
-         nChybrSmoPFk4eBmnRymn4PezBmmeovtjBZkzcprf8HJAPLV3M/mjWlZ+H+Ldt2Ha1
-         YpGvt1PwWwBqgeMFdS5H9TArPpQn2ngn2fb+OQyPp69ammYf6oORO4Q2E2k2G3wTRY
-         pQYT7Hhme0SVGuyqfkRMLAUcXh512EBoFS5TT5lqjduJClgdDLKtjdOvjChGzXZTP1
-         heGtN/kA5aTmtpVxIx7+3dhQd2kLv5QsB51DLT4czlcr5ioVKSOhjcJLZtAhOn+Q3m
-         r8UY2IgeYCIJw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 333C55C02A5; Fri, 14 May 2021 12:44:07 -0700 (PDT)
-Date:   Fri, 14 May 2021 12:44:07 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Manfred Spraul <manfred@colorfullife.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Andrew Morton <akpm@linux-foundation.org>, 1vier1@web.de
-Subject: Re: [PATCH] ipc/sem.c: use READ_ONCE()/WRITE_ONCE() for
- use_global_lock
-Message-ID: <20210514194407.GN975577@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210514175319.12195-1-manfred@colorfullife.com>
+        id S229654AbhENTpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 15:45:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231694AbhENTpi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 15:45:38 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D040DC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 12:44:26 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id p8so29034603iol.11
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 12:44:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=aurora.tech; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QXt0iRNRIjrwcN/IHW6iywWeJL1wqoa8+ctkut1Q5ok=;
+        b=bBF2KNHWRYGB7AeSwi8VFRgpk5x3fVJErgGLD6hYZ0eD0wFUf7YFEuhXfLKcr7fYJk
+         h366LmYFGLegMx/RBPOkugoQiTBwK/I5P9R5RlsiwNqYXdbIsYk6EXAgQkv0fT//Y08E
+         TgD6JFky7lKLGq6tBv49rnHyjrOFwHsf3G95iiVeL5i7bedBWyIVWm1IJvFCh/ttNep5
+         rxev77bTHdsBArGOa7189aSHRTo5TwbY6wGlPpGmV1UyHluxza5sc2hUfrCndRaJWTDm
+         8NKdIVxHQbc61KXYDrJAbGijcNZA5KOymIAjEzHPjSno/ZxqXbPKSkGx4bNL2YZ3C+w8
+         ULLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QXt0iRNRIjrwcN/IHW6iywWeJL1wqoa8+ctkut1Q5ok=;
+        b=DZwD52ODA0ecmNJcgDQDnb0pFXK1f1EVCeLLBuXp/ZRZZ//ckBS8tMjA56dobNnKUx
+         xkqB8mDt/4Se9+Yic89nbHcCQPnhfMurN3Tm7UHTr19JSoXHdVAhEjQjiOt14SnnEqqM
+         2abj9t3G6XSPo6yMCGII7Im/gWD3GhubL+zSGc028HW0ZsC+wqt3WiVI3qPZeCs5Z0A4
+         LBqgO4ITNU+RvXgX6d5xcpcgIzQstcir/iRbCVPFB+HTOqmwECDMwfqR0aRnKhNFmPye
+         wP2dGdNBrPXAwyhj0NfB+swDAOjJnCmM3Eypz6NtADPMiHBOKS16Wqen8ZESZuw16h2F
+         gq4A==
+X-Gm-Message-State: AOAM532ivnPeZVmJxdcGkPNKyfspzfzGC96ji+I4y0T+UG51FUKzsjV2
+        f+8iqBC0Q/pmKAp8NxAqunieel44FDDAwE65oZYDXw==
+X-Google-Smtp-Source: ABdhPJzWRaA7wpZGenPItwv+QdHzzPPZA3ye1kLp+NXJsJtv/uZgxyMs6frSC4GkcuGgwB4s2vsdBoZ8KaC/79WLaRw=
+X-Received: by 2002:a02:b717:: with SMTP id g23mr46125633jam.109.1621021466186;
+ Fri, 14 May 2021 12:44:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210514175319.12195-1-manfred@colorfullife.com>
+References: <YJofplWBz8dT7xiw@localhost.localdomain> <20210512214324.hiaiw3e2tzmsygcz@linutronix.de>
+ <87k0o360zx.ffs@nanos.tec.linutronix.de> <20210514115649.6c84fdc3@kicinski-fedora-PC1C0HJN>
+In-Reply-To: <20210514115649.6c84fdc3@kicinski-fedora-PC1C0HJN>
+From:   Alison Chaiken <achaiken@aurora.tech>
+Date:   Fri, 14 May 2021 12:44:15 -0700
+Message-ID: <CAFzL-7vTcr75ho0kKs+0PxD3UFRE9=KtNQKJGTx7u-LzGK_oxA@mail.gmail.com>
+Subject: Re: [PATCH net-next] net: Treat __napi_schedule_irqoff() as
+ __napi_schedule() on PREEMPT_RT
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        netdev@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>, sassmann@redhat.com,
+        "David S. Miller" <davem@davemloft.net>, stable-rt@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 07:53:19PM +0200, Manfred Spraul wrote:
-> The patch solves two weaknesses in ipc/sem.c:
-> 
-> 1) The initial read of use_global_lock in sem_lock() is an
-> intentional race. KCSAN detects these accesses and prints
-> a warning.
-> 
-> 2) The code assumes that plain C read/writes are not
-> mangled by the CPU or the compiler.
-> 
-> To solve both issues, use READ_ONCE()/WRITE_ONCE().
-> Plain C reads are used in code that owns sma->sem_perm.lock.
-> 
-> Signed-off-by: Manfred Spraul <manfred@colorfullife.com>
+On Fri, May 14, 2021 at 11:56 AM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Thu, 13 May 2021 00:28:02 +0200 Thomas Gleixner wrote:
+> > On Wed, May 12 2021 at 23:43, Sebastian Andrzej Siewior wrote:
+> > > __napi_schedule_irqoff() is an optimized version of __napi_schedule()
+> > > which can be used where it is known that interrupts are disabled,
+> > > e.g. in interrupt-handlers, spin_lock_irq() sections or hrtimer
+> > > callbacks.
+> > >
+> > > On PREEMPT_RT enabled kernels this assumptions is not true. Force-
+> > > threaded interrupt handlers and spinlocks are not disabling interrupts
+> > > and the NAPI hrtimer callback is forced into softirq context which runs
+> > > with interrupts enabled as well.
+> > >
+> > > Chasing all usage sites of __napi_schedule_irqoff() is a whack-a-mole
+> > > game so make __napi_schedule_irqoff() invoke __napi_schedule() for
+> > > PREEMPT_RT kernels.
+> > >
+> > > The callers of ____napi_schedule() in the networking core have been
+> > > audited and are correct on PREEMPT_RT kernels as well.
+> > >
+> > > Reported-by: Juri Lelli <juri.lelli@redhat.com>
+> > > Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> >
+> > Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+> >
+> > > ---
+> > > Alternatively __napi_schedule_irqoff() could be #ifdef'ed out on RT and
+> > > an inline provided which invokes __napi_schedule().
+> > >
+> > > This was not chosen as it creates #ifdeffery all over the place and with
+> > > the proposed solution the code reflects the documentation consistently
+> > > and in one obvious place.
+> >
+> > Blame me for that decision.
+> >
+> > No matter which variant we end up with, this needs to go into all stable
+> > RT kernels ASAP.
+>
+> Mumble mumble. I thought we concluded that drivers used on RT can be
+> fixed, we've already done it for a couple drivers (by which I mean two).
+> If all the IRQ handler is doing is scheduling NAPI (which it is for
+> modern NICs) - IRQF_NO_THREAD seems like the right option.
+>
+> Is there any driver you care about that we can convert to using
+> IRQF_NO_THREAD so we can have new drivers to "do the right thing"
+> while the old ones depend on this workaround for now?
+>
+>
+> Another thing while I have your attention - ____napi_schedule() does
+> __raise_softirq_irqoff() which AFAIU does not wake the ksoftirq thread.
+> On non-RT we get occasional NOHZ warnings when drivers schedule napi
+> from process context, but on RT this is even more of a problem, right?
+> ksoftirqd won't run until something else actually wakes it up?
 
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+By "NOHZ warnings," do you mean "NOHZ: local_softirq_pending"?    We see
+that message about once a week with 4.19.   Presumably any failure of
+____napi_schedule() to wake ksoftirqd could only cause problems for the
+NET_RX softirq, so if the pending softirq is different, the cause lies
+elsewhere.
 
-One follow-up question: If I am reading the code correctly, there is
-a call to complexmode_enter() from sysvipc_sem_proc_show() that does
-not hold the global lock.  Does this mean that the first check of
-->use_global_lock in complexmode_enter() should be marked?
-
-							Thanx, Paul
-
-> ---
->  ipc/sem.c | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
-> 
-> diff --git a/ipc/sem.c b/ipc/sem.c
-> index bf534c74293e..a0ad3a3edde2 100644
-> --- a/ipc/sem.c
-> +++ b/ipc/sem.c
-> @@ -217,6 +217,8 @@ static int sysvipc_sem_proc_show(struct seq_file *s, void *it);
->   * this smp_load_acquire(), this is guaranteed because the smp_load_acquire()
->   * is inside a spin_lock() and after a write from 0 to non-zero a
->   * spin_lock()+spin_unlock() is done.
-> + * To prevent the compiler/cpu temporarily writing 0 to use_global_lock,
-> + * READ_ONCE()/WRITE_ONCE() is used.
->   *
->   * 2) queue.status: (SEM_BARRIER_2)
->   * Initialization is done while holding sem_lock(), so no further barrier is
-> @@ -342,10 +344,10 @@ static void complexmode_enter(struct sem_array *sma)
->  		 * Nothing to do, just reset the
->  		 * counter until we return to simple mode.
->  		 */
-> -		sma->use_global_lock = USE_GLOBAL_LOCK_HYSTERESIS;
-> +		WRITE_ONCE(sma->use_global_lock, USE_GLOBAL_LOCK_HYSTERESIS);
->  		return;
->  	}
-> -	sma->use_global_lock = USE_GLOBAL_LOCK_HYSTERESIS;
-> +	WRITE_ONCE(sma->use_global_lock, USE_GLOBAL_LOCK_HYSTERESIS);
->  
->  	for (i = 0; i < sma->sem_nsems; i++) {
->  		sem = &sma->sems[i];
-> @@ -371,7 +373,8 @@ static void complexmode_tryleave(struct sem_array *sma)
->  		/* See SEM_BARRIER_1 for purpose/pairing */
->  		smp_store_release(&sma->use_global_lock, 0);
->  	} else {
-> -		sma->use_global_lock--;
-> +		WRITE_ONCE(sma->use_global_lock,
-> +				sma->use_global_lock-1);
->  	}
->  }
->  
-> @@ -412,7 +415,7 @@ static inline int sem_lock(struct sem_array *sma, struct sembuf *sops,
->  	 * Initial check for use_global_lock. Just an optimization,
->  	 * no locking, no memory barrier.
->  	 */
-> -	if (!sma->use_global_lock) {
-> +	if (!READ_ONCE(sma->use_global_lock)) {
->  		/*
->  		 * It appears that no complex operation is around.
->  		 * Acquire the per-semaphore lock.
-> -- 
-> 2.31.1
-> 
+-- Alison Chaiken
+   Aurora Innovation
