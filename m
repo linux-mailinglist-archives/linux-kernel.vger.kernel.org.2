@@ -2,182 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF1383804F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 10:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23A693804F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 10:16:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233455AbhENISc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 04:18:32 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:3758 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229654AbhENIS1 (ORCPT
+        id S230362AbhENIRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 04:17:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33362 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229654AbhENIRh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 04:18:27 -0400
-Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FhLrt2vd4zqTrp;
-        Fri, 14 May 2021 16:13:50 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 14 May 2021 16:17:14 +0800
-Received: from localhost (10.52.120.239) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Fri, 14 May
- 2021 09:17:07 +0100
-Date:   Fri, 14 May 2021 09:15:20 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-CC:     Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        "Pengutronix Kernel Team" <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        "Robin van der Gracht" <robin@protonic.nl>,
-        <linux-iio@vger.kernel.org>,
-        "Lars-Peter Clausen" <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        "Dmitry Torokhov" <dmitry.torokhov@gmail.com>
-Subject: Re: [PATCH v6 0/3] mainline ti tsc2046 adc driver
-Message-ID: <20210514091520.00004930@Huawei.com>
-In-Reply-To: <20210514075731.ipxq2o4cdxd3piu3@pengutronix.de>
-References: <20210428073208.19570-1-o.rempel@pengutronix.de>
-        <20210503122818.59f50e45@jic23-huawei>
-        <20210514075731.ipxq2o4cdxd3piu3@pengutronix.de>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Fri, 14 May 2021 04:17:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620980185;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=stz2FlrrbVRueZmGLigfweSMJBvWFuUwkpvytAfGa/w=;
+        b=B27ZhwMt3KUBKfUMRzaLlGX7MdTyK1LhjAAeWSjn9wY2AddlYUFPwrrBvm3FMFkobvIVlk
+        SN3v2unLxkKT5g91iPRWkTMt4pM26nT31ltOmObbvhJGz8/t+T2iw/rwZeAzjjeAUOmKJf
+        8+wm/tiyu9VuadmxVqznZc7WHc3uRRM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-567-6Wqg9IEhMcO1ul08qEOOog-1; Fri, 14 May 2021 04:16:23 -0400
+X-MC-Unique: 6Wqg9IEhMcO1ul08qEOOog-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0455A1883527;
+        Fri, 14 May 2021 08:16:22 +0000 (UTC)
+Received: from krava (unknown [10.40.193.71])
+        by smtp.corp.redhat.com (Postfix) with SMTP id B88E867895;
+        Fri, 14 May 2021 08:16:19 +0000 (UTC)
+Date:   Fri, 14 May 2021 10:16:18 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Jin Yao <yao.jin@linux.intel.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH v3 2/2] perf header: Support HYBRID_CPU_PMU_CAPS feature
+Message-ID: <YJ4x0usa1ljPT5DV@krava>
+References: <20210511053003.27015-1-yao.jin@linux.intel.com>
+ <20210511053003.27015-3-yao.jin@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.120.239]
-X-ClientProxiedBy: lhreml706-chm.china.huawei.com (10.201.108.55) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210511053003.27015-3-yao.jin@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 May 2021 09:57:31 +0200
-Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+On Tue, May 11, 2021 at 01:30:03PM +0800, Jin Yao wrote:
 
-> Hi Jonathan,
-> 
-> On Mon, May 03, 2021 at 12:28:18PM +0100, Jonathan Cameron wrote:
-> > On Wed, 28 Apr 2021 09:32:05 +0200
-> > Oleksij Rempel <o.rempel@pengutronix.de> wrote:
-> > 
-> > Hi Oleksij,
-> > 
-> > Series applied with the tweaks as per review to patch 3.  Please
-> > check I didn't mess those up though.
-> > 
-> > Applied to the togreg branch of iio.git and pushed out as testing for
-> > the autobuilders to poke at it.  
-> 
-> It works. Thx!
-> 
-> Now i need to make configurable iio buffer layout
-> 
-> for the drivers/input/touchscreen/resistive-adc-touch.c
-> 
-> Do you have ideas what is the proper way to make it?
+SNIP
 
-So IIRC the issue here was making the ordering of the channels
-more flexible?  
+> diff --git a/tools/perf/Documentation/perf.data-file-format.txt b/tools/perf/Documentation/perf.data-file-format.txt
+> index fbee9e580ee4..e6ff8c898ada 100644
+> --- a/tools/perf/Documentation/perf.data-file-format.txt
+> +++ b/tools/perf/Documentation/perf.data-file-format.txt
+> @@ -419,6 +419,22 @@ Example:
+>    cpu_core cpu list : 0-15
+>    cpu_atom cpu list : 16-23
+>  
+> +	HEADER_HYBRID_CPU_PMU_CAPS = 31,
+> +
+> +	A list of hybrid CPU PMU capabilities.
+> +
+> +struct {
+> +	u32 nr_pmu;
+> +	struct {
+> +		u32 nr_cpu_pmu_caps;
+> +		{
+> +			char	name[];
+> +			char	value[];
+> +		} [nr_cpu_pmu_caps];
+> +		char pmu_name[];
+> +	} [nr_pmu];
+> +};
 
-We should be able to do that using the names in DT.
+when I saw it's similar to the previous one I thought we could have
+one big hybrid feature.. but that would be probably more complex and
+we might not be able to reuse the code as much as you did
 
-Right now the touch screen driver just grabs them all an assumes
-a particular order, but if you look at the binding it requires naming
 
-https://elixir.bootlin.com/linux/latest/source/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.txt
+>  free_value:
+> @@ -3142,6 +3208,64 @@ static int process_cpu_pmu_caps(struct feat_fd *ff,
+>  	return -1;
+>  }
+>  
+> +static int process_cpu_pmu_caps(struct feat_fd *ff,
+> +				void *data __maybe_unused)
+> +{
+> +	int ret;
+> +
+> +	ret = process_per_cpu_pmu_caps(ff, &ff->ph->env.nr_cpu_pmu_caps,
+> +				       &ff->ph->env.cpu_pmu_caps,
+> +				       &ff->ph->env.max_branches);
+> +	return ret;
 
-That naming should associate 'which channel' is which when
-we then do the get_all() in the driver.  If it matches the existing
-layout, nothing to do, but if we have something more complex then
-we can do data shuffling etc in the touchscreen driver to compensate
-for that.
+why the 'ret' var? could be just:
 
-A useful starting point is probably to do a yaml conversion of
-that binding doc.  Then follow that up by making the doc more flexible
-so that it copes with what you want to do. 
+   return process_per_cpu_pmu_caps(...
 
-That should give us a good basis on which to then implement the
-handling in driver (which is often easier than defining the binding!)
+> +}
+> +
+> +static int process_hybrid_cpu_pmu_caps(struct feat_fd *ff,
+> +				       void *data __maybe_unused)
+> +{
+> +	struct hybrid_cpc_node *nodes;
+> +	u32 nr_pmu, i;
+> +	int ret;
+> +
+> +	if (do_read_u32(ff, &nr_pmu))
+> +		return -1;
+> +
+> +	if (!nr_pmu) {
+> +		pr_debug("hybrid cpu pmu capabilities not available\n");
+> +		return 0;
+> +	}
+> +
+> +	nodes = zalloc(sizeof(*nodes) * nr_pmu);
+> +	if (!nodes)
+> +		return -ENOMEM;
+> +
+> +	for (i = 0; i < nr_pmu; i++) {
+> +		struct hybrid_cpc_node *n = &nodes[i];
+> +
+> +		ret = process_per_cpu_pmu_caps(ff, &n->nr_cpu_pmu_caps,
+> +					       &n->cpu_pmu_caps,
+> +					       &n->max_branches);
+> +		if (ret)
+> +			goto err;
+> +
+> +		n->pmu_name = do_read_string(ff);
+> +		if (!n->pmu_name)
 
-Jonathan
+should you set 'ret = -1' in here?
 
-> 
-> Regards,
-> Oleksij
-> 
-> > 
-> > Jonathan
-> >   
-> > > changes v6:
-> > > - get blessing from Dmitry Torokhov
-> > > - rebase against latest iio/testing
-> > > - use simple name for iio_dev->name
-> > > - use Jonathan's version for oversampling-ratio description 
-> > > 
-> > > changes v5:
-> > > - remove type for the settling-time-us property
-> > > 
-> > > changes v4:
-> > > - spell fixes
-> > > - add more comments
-> > > - make code more readable
-> > > - move scan_buf to the priv
-> > > - use FIELD_GET to extract ADC data
-> > > - make some multi line code as one line
-> > > - do not use atomic API for trig_more_count
-> > > - fix build warning on 64bit system
-> > > - add NULL check for the devm_kasprintf()
-> > > - use return devm_iio_device_register(), without additional error
-> > >   printing.
-> > > 
-> > > changes v3:
-> > > - different spell fixes
-> > > - add some notes about driver structure
-> > > - rename the trigger to point on the touchscreen nature of it
-> > > - rename DT binding to oversampling-ratio
-> > > - make sure we have some defaults in case no DT property is set
-> > > 
-> > > changes v2:
-> > > - rework and extend DT binding properties
-> > > - remove touchscreen related code from the IIO ADC driver
-> > > - make trigger be active longer then IRQ is requesting. This is needed
-> > >   to get "inactive" samples
-> > > - make oversampling and settle time configurable
-> > > 
-> > > TI TSC2046 is a touchscreen controller based on 8 channel ADC. Since most of
-> > > this ADC based touchscreen controller share same set of challenges, it
-> > > is better keep then as simple IIO ADC devices attached to a generic
-> > > resistive-adc-touch driver.
-> > > 
-> > > This driver can replace drivers/input/touchscreen/ads7846.c and has
-> > > following advantages over it:
-> > > - less code to maintain
-> > > - shared code paths (resistive-adc-touch, iio-hwmon, etc)
-> > > - can be used as plain IIO ADC to investigate signaling issues or test
-> > >   real capacity of the plates and attached low-pass filters
-> > >   (or use the touchscreen as a microphone if you like ;) )
-> > > 
-> > > Oleksij Rempel (3):
-> > >   dt-bindings:iio:adc: add generic settling-time-us and
-> > >     oversampling-ratio channel properties
-> > >   dt-bindings:iio:adc: add documentation for TI TSC2046 controller
-> > >   iio: adc: add ADC driver for the TI TSC2046 controller
-> > > 
-> > >  .../devicetree/bindings/iio/adc/adc.yaml      |  12 +
-> > >  .../bindings/iio/adc/ti,tsc2046.yaml          | 115 +++
-> > >  MAINTAINERS                                   |   8 +
-> > >  drivers/iio/adc/Kconfig                       |  12 +
-> > >  drivers/iio/adc/Makefile                      |   1 +
-> > >  drivers/iio/adc/ti-tsc2046.c                  | 720 ++++++++++++++++++
-> > >  6 files changed, 868 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,tsc2046.yaml
-> > >  create mode 100644 drivers/iio/adc/ti-tsc2046.c
-> > >   
-> > 
-> >   
-> 
+other than this both patches look good to me
+
+thanks,
+jirka
+
+> +			goto err;
+> +	}
+> +
+> +	ff->ph->env.nr_hybrid_cpc_nodes = nr_pmu;
+> +	ff->ph->env.hybrid_cpc_nodes = nodes;
+> +	return 0;
+> +
+> +err:
+> +	for (i = 0; i < nr_pmu; i++) {
+> +		free(nodes[i].cpu_pmu_caps);
+
+SNIP
 
