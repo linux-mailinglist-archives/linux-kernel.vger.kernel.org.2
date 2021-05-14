@@ -2,84 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C317380DF5
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 18:16:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99EDB380DFB
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 18:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232718AbhENQRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 12:17:52 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:60786 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229958AbhENQRr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 12:17:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
-        Message-ID:From:References:Cc:To:content-disposition;
-        bh=/+y5cB9Q7a4Pvo8GJ697lhiF+rrko29gkIH4dIcvU3o=; b=MmSRGhUuqxFDvX3OK+OEV4eVpd
-        N/zgGKMQXAVlSEVeXQz+yWzkMeG0pfSpIiblq7NLJ0wupnrLMumK0rDjtFfd/FF0Q+C6GEtJn1SLL
-        tmGX51BeuLVhgkyvD8B4j7MvaJBIzhzYyfu47Qf9jlfwBgAi4eGOADrfqJPFfdcwm4fLKHriYZkwB
-        XWJGNXjx3vL7UZ0Gg4+cLIwWfdX2ukuUFEwI/isOFo7IfVxMrRMdibQR0bWuhrA1ObTZLbU/6JGtF
-        NEtN+nFTqspeVtbQ/8atAXDLh7mQFhxOndy17QOrVYpfrcaQ2HCESVb57wBSg9r+wW/N8KqvIGTQ5
-        +nUXCXXQ==;
-Received: from guinness.priv.deltatee.com ([172.16.1.162])
-        by ale.deltatee.com with esmtp (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1lhaUE-00067v-2Z; Fri, 14 May 2021 10:16:26 -0600
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mm@kvack.org, iommu@lists.linux-foundation.org,
-        Stephen Bates <sbates@raithlin.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Don Dutile <ddutile@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jakowski Andrzej <andrzej.jakowski@intel.com>,
-        Minturn Dave B <dave.b.minturn@intel.com>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Xiong Jianxin <jianxin.xiong@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>
-References: <20210513223203.5542-1-logang@deltatee.com>
- <20210513223203.5542-15-logang@deltatee.com> <20210514135331.GC4715@lst.de>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <9515a7c5-40a0-5411-a3b9-4216b25d63dc@deltatee.com>
-Date:   Fri, 14 May 2021 10:16:25 -0600
+        id S233188AbhENQSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 12:18:12 -0400
+Received: from foss.arm.com ([217.140.110.172]:52036 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229958AbhENQSK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 12:18:10 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7AC651713;
+        Fri, 14 May 2021 09:16:58 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4AB033F73B;
+        Fri, 14 May 2021 09:16:56 -0700 (PDT)
+Subject: Re: [PATCH 2/3] arch_topology: obtain cpu capacity using information
+ from CPPC
+To:     Ionela Voinescu <ionela.voinescu@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20210514095339.12979-1-ionela.voinescu@arm.com>
+ <20210514095339.12979-3-ionela.voinescu@arm.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <3c3f6d32-3560-2c54-beae-36f53d2572e7@arm.com>
+Date:   Fri, 14 May 2021 18:16:50 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210514135331.GC4715@lst.de>
+In-Reply-To: <20210514095339.12979-3-ionela.voinescu@arm.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 172.16.1.162
-X-SA-Exim-Rcpt-To: robin.murphy@arm.com, ira.weiny@intel.com, helgaas@kernel.org, jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, jhubbard@nvidia.com, christian.koenig@amd.com, jgg@ziepe.ca, dan.j.williams@intel.com, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, hch@lst.de
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
-        version=3.4.2
-Subject: Re: [PATCH v2 14/22] PCI/P2PDMA: Introduce helpers for dma_map_sg
- implementations
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 14/05/2021 11:53, Ionela Voinescu wrote:
+
+[...]
+
+> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+> index c1179edc0f3b..f710d64f125b 100644
+> --- a/drivers/base/arch_topology.c
+> +++ b/drivers/base/arch_topology.c
+> @@ -291,6 +291,45 @@ bool __init topology_parse_cpu_capacity(struct device_node *cpu_node, int cpu)
+>  	return !ret;
+>  }
+>  
+> +#ifdef CONFIG_ACPI_CPPC_LIB
+> +#include <acpi/cppc_acpi.h>
+
+init_cpu_capacity_cppc() shares a lot of functionality with the existing
+DT/CPUfreq-based approach (topology_parse_cpu_capacity(),
+register_cpufreq_notifier(), init_cpu_capacity_callback()). It looks
+like that the different ways of invocation (two steps per cpu vs. one
+step for all cpus) makes it hard to restructure the code to create more
+common bits.
+
+> +void init_cpu_capacity_cppc(void)
+> +{
+> +	struct cppc_perf_caps perf_caps;
+> +	int cpu;
+> +
+> +	if (likely(acpi_disabled || !acpi_cpc_valid()))
+
+likely(acpi_disabled) ?
+
+> +		return;
+> +
+> +	raw_capacity = kcalloc(num_possible_cpus(), sizeof(*raw_capacity),
+> +			       GFP_KERNEL);
+> +	if (!raw_capacity)
+> +		return;
+> +
+> +	for_each_possible_cpu(cpu) {
+> +		if (!cppc_get_perf_caps(cpu, &perf_caps)) {
+> +			raw_capacity[cpu] = perf_caps.highest_perf;
+> +			pr_debug("%s: CPU%d cpu_capacity=%u (raw).\n",
+> +				 __func__, cpu, raw_capacity[cpu]);
+
+There is quite a variety in the layout of the pr_xxx() log messages in
+this file. Originally the 'cpu_capacity:' was used to indicate that this
+log is from drivers/base/arch_topology.c. Now the GCC __func__
+identifier is used. Maybe this can be aligned better? Especially since
+the functionality used in the existing DT-driven and now in the new
+CPPC-driven functionality is quite similar. Debugging is so much easier
+with consistent log strings.
 
 
-On 2021-05-14 7:53 a.m., Christoph Hellwig wrote:
-> I think helpers for the dma mapping implementation should probably
-> go into dma-map-ops.h so that the header for the public API doesn't get
-> polluted with them.
+> +		} else {
+> +			pr_err("%s: CPU%d missing highest performance.\n",
+> +				 __func__, cpu);
+> +			pr_err("%s: fallback to 1024 for all CPUs\n",
+> +				 __func__);
+> +			goto exit;
+> +		}
+> +	}
+> +
+> +	topology_normalize_cpu_scale();
+> +	schedule_work(&update_topology_flags_work);
+> +	pr_debug("%s: cpu_capacity initialization done\n", __func__);
+> +
+> +exit:
+> +	free_raw_capacity();
+> +}
+> +#endif
 
-Ok. Will do for v3.
+In case a system has CONFIG_ACPI_CPPC_LIB what does this mean for the
+DT-based approach via `register_cpufreq_notifier()`?
 
-Logan
+Looks like we rely on:
+
+376 static int __init register_cpufreq_notifier(void)
+...
+385         if (!acpi_disabled || ...)
+386                 return -EINVAL;
+
+to disable the CPUfreq part of the DT/CPUfreq-based approach on an ACPI
+system.
+
+[...]
