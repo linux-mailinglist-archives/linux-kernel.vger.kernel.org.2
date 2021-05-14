@@ -2,129 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0B3A380DC7
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 18:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B51F380DCF
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 18:12:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232718AbhENQKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 12:10:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57406 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229932AbhENQKh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 12:10:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BAB6E61444;
-        Fri, 14 May 2021 16:09:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621008565;
-        bh=2bfduflE/KgkS+6/0pU/9rUqC6IBuf2o/UzpyigyMdw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=EiurnMNUirvVCv4vV1pBbfMfU9YeMxguV1beHrtRrsPa2AdI2ccywWQZ/x+ABoJEU
-         YDyjW4DyVzxRDkeG69kGsfmKLfAmhXukOITAn9esFLot+O50/qQIheFR3gRvmXpN/v
-         GNehv0yB8vE1ElhMQ4i4PcR9+zQSlFgBwifl+Rek9CsBBmCI5fdknXTIu797bFGC5C
-         8c1VdzQhzA+zs2igZ28BRpa31y0j2RRSdMbP6YqkLiLA3BKJvJp5yoZGzZ8UYPvLzn
-         zWkZXMS7A1vZIGvPkxEag4/71eACBkA9hKbI/Nk0+0pFjBB1Q32Q0Hop5y39IX7MB4
-         Ojo18U7ORysqw==
-From:   Jessica Yu <jeyu@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Jessica Yu <jeyu@kernel.org>
-Subject: [PATCH v2] module: check for exit sections in layout_sections() instead of module_init_section()
-Date:   Fri, 14 May 2021 18:09:04 +0200
-Message-Id: <20210514160904.21989-1-jeyu@kernel.org>
-X-Mailer: git-send-email 2.31.1
+        id S232947AbhENQNU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 14 May 2021 12:13:20 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:26080 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229932AbhENQNS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 12:13:18 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-42-RnSQRdgJN7GtQvKTp4FKEQ-1; Fri, 14 May 2021 17:12:04 +0100
+X-MC-Unique: RnSQRdgJN7GtQvKTp4FKEQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Fri, 14 May 2021 17:12:01 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Fri, 14 May 2021 17:12:01 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Thomas Gleixner' <tglx@linutronix.de>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
+CC:     "H. Peter Anvin" <hpa@zytor.com>, Sachi King <nakato@nakato.io>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH] x86/i8259: Work around buggy legacy PIC
+Thread-Topic: [PATCH] x86/i8259: Work around buggy legacy PIC
+Thread-Index: AQHXR3+B5Hf0DG1T80+Lb/Y+9zG7TarhDftggAHxr5WAACbXIA==
+Date:   Fri, 14 May 2021 16:12:01 +0000
+Message-ID: <f0f52e319c06462ea0b5fbba827df9e0@AcuMS.aculab.com>
+References: <20210512210459.1983026-1-luzmaximilian@gmail.com>
+ <9b70d8113c084848b8d9293c4428d71b@AcuMS.aculab.com>
+ <e7dbd4d1-f23f-42f0-e912-032ba32f9ec8@gmail.com>
+ <87r1i94eg6.ffs@nanos.tec.linutronix.de>
+In-Reply-To: <87r1i94eg6.ffs@nanos.tec.linutronix.de>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previously, when CONFIG_MODULE_UNLOAD=n, the module loader just does not
-attempt to load exit sections since it never expects that any code in those
-sections will ever execute. However, dynamic code patching (alternatives,
-jump_label and static_call) can have sites in __exit code, even if __exit is
-never executed. Therefore __exit must be present at runtime, at least for as
-long as __init code is.
+From: Thomas Gleixner
+> Sent: 14 May 2021 14:45
+> 
+> Max,
+> 
+> On Thu, May 13 2021 at 12:11, Maximilian Luz wrote:
+> > And lastly, if that's any help at all: The PIC device is described in
+> > ACPI in [3]. The Surface Laptop 3 also has an AMD CPU (although a prior
+> > generation) and has the PIC described in the exact same way (can also be
+> > found in that repository), but doesn't exhibit that behavior (and
+> > doesn't show the "Using NULL legacy PIC" line). I expect there's not
+> > much you can change to that definition so that's probably irrelevant
+> > here.
+> >
+> > Again, I don't really know anything about these devices, so my guess
+> > would be bad hardware revision or bad firmware revision. All I know is
+> > that retrying seems to "fix" it.
+> 
+> That might be a a power optimization thing.
+> 
+> Except for older systems the PIC is not really required for IOAPiC to
+> work. But there is some historical code which makes assumptions. We can
+> change that, but that needs some careful thoughts.
 
-Commit 33121347fb1c ("module: treat exit sections the same as init
-sections when !CONFIG_MODULE_UNLOAD") solves the requirements of
-jump_labels and static_calls by putting the exit sections in the init
-region of the module so that they are at least present at init, and
-discarded afterwards. It does this by including a check for exit
-sections in module_init_section(), so that it also returns true for exit
-sections, and the module loader will automatically sort them in the init
-region of the module.
+A more interesting probe would be:
+- Write some value to register 1 - the mask.
+- Write 9 to register zero (selects interrupt in service register).
+- Read register 0 - should be zero since we aren't in as ISR.
+- Read register 1 - should get the mask back.
+You can also write 8 to register 0, reads then return the pending interrupts.
+Their might be pending interrupts - so that value can't be checked.
 
-However, the solution there was not completely arch-independent. ARM is
-a special case where it supplies its own module_{init, exit}_section()
-functions. Instead of pushing the exit section checks into
-module_init_section(), just implement the exit section check in
-layout_sections(), so that we don't have to touch arch-dependent code.
+But if reads start returning the last written value you might only
+have capacitors on the data bus.
 
-Fixes: 33121347fb1c ("module: treat exit sections the same as init sections when !CONFIG_MODULE_UNLOAD")
-Signed-off-by: Jessica Yu <jeyu@kernel.org>
----
+The required initialisation registers are pretty fixed for the PC hardware.
+But finding the values requires a bit of work.
 
-v2:
-    - Use a helper function to make reading the conditionals in
-      layout_sections easier (Russell King)
+	David
 
-I named the helper 'module_init_layout_section' since we're trying to sort
-sections into either the module core region or init region, which I think
-is slightly more descriptive.
-
- kernel/module.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
-
-diff --git a/kernel/module.c b/kernel/module.c
-index faf9114a9981..1d0e59f95a9a 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -2400,6 +2400,15 @@ static long get_offset(struct module *mod, unsigned int *size,
- 	return ret;
- }
- 
-+static bool module_init_layout_section(const char *sname)
-+{
-+#ifndef CONFIG_MODULE_UNLOAD
-+	if (module_exit_section(sname))
-+		return true;
-+#endif
-+	return module_init_section(sname);
-+}
-+
- /*
-  * Lay out the SHF_ALLOC sections in a way not dissimilar to how ld
-  * might -- code, read-only data, read-write data, small data.  Tally
-@@ -2434,7 +2443,7 @@ static void layout_sections(struct module *mod, struct load_info *info)
- 			if ((s->sh_flags & masks[m][0]) != masks[m][0]
- 			    || (s->sh_flags & masks[m][1])
- 			    || s->sh_entsize != ~0UL
--			    || module_init_section(sname))
-+			    || module_init_layout_section(sname))
- 				continue;
- 			s->sh_entsize = get_offset(mod, &mod->core_layout.size, s, i);
- 			pr_debug("\t%s\n", sname);
-@@ -2467,7 +2476,7 @@ static void layout_sections(struct module *mod, struct load_info *info)
- 			if ((s->sh_flags & masks[m][0]) != masks[m][0]
- 			    || (s->sh_flags & masks[m][1])
- 			    || s->sh_entsize != ~0UL
--			    || !module_init_section(sname))
-+			    || !module_init_layout_section(sname))
- 				continue;
- 			s->sh_entsize = (get_offset(mod, &mod->init_layout.size, s, i)
- 					 | INIT_OFFSET_MASK);
-@@ -2806,11 +2815,7 @@ void * __weak module_alloc(unsigned long size)
- 
- bool __weak module_init_section(const char *name)
- {
--#ifndef CONFIG_MODULE_UNLOAD
--	return strstarts(name, ".init") || module_exit_section(name);
--#else
- 	return strstarts(name, ".init");
--#endif
- }
- 
- bool __weak module_exit_section(const char *name)
--- 
-2.31.1
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
