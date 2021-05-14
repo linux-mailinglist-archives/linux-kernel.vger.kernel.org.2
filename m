@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A028A38036C
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 07:40:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C32D38036E
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 07:40:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231479AbhENFlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 01:41:05 -0400
-Received: from mga03.intel.com ([134.134.136.65]:31332 "EHLO mga03.intel.com"
+        id S231614AbhENFlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 01:41:09 -0400
+Received: from mga02.intel.com ([134.134.136.20]:36938 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231156AbhENFk7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231191AbhENFk7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 14 May 2021 01:40:59 -0400
-IronPort-SDR: vODi3UDFZn7Tr843rzTM+VvRcX90xGEsLwR2N57bdVbkOr6o8x44iva7pzFfGbGgyunMrCpHn/
- TZLoPo5GIHUw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9983"; a="200170950"
+IronPort-SDR: VK8UkeKg0VdVC05RFNoBlmEMPxAVbJsbi/E8C0GyuEOLHZOlF5F7NDgQSL5HeZVhUlgPJLYedX
+ VUhrcbl1MZLA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9983"; a="187237851"
 X-IronPort-AV: E=Sophos;i="5.82,299,1613462400"; 
-   d="scan'208";a="200170950"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 22:39:48 -0700
-IronPort-SDR: 0/05Nk6ygXAIkFSfPyTEn8xcmev+V6/AZQNgjd/wqMqWy+7YwthjQth78d2yvwV9gcw4uzq4Vn
- fTh7rb+k4xAw==
+   d="scan'208";a="187237851"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 22:39:48 -0700
+IronPort-SDR: UabH0AabmEOtBY0MClFqdBI0/CxWpE+mFbfaEcpVB+upYO0KCnSj7je+7R2eqfZnw3S8Kt9OEj
+ XbVBhu4VC5JQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,299,1613462400"; 
-   d="scan'208";a="624237420"
+   d="scan'208";a="471858267"
 Received: from lkp-server01.sh.intel.com (HELO ddd90b05c979) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 13 May 2021 22:39:46 -0700
+  by orsmga001.jf.intel.com with ESMTP; 13 May 2021 22:39:46 -0700
 Received: from kbuild by ddd90b05c979 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1lhQY6-0000ai-5h; Fri, 14 May 2021 05:39:46 +0000
-Date:   Fri, 14 May 2021 13:39:36 +0800
+        id 1lhQY6-0000ao-8C; Fri, 14 May 2021 05:39:46 +0000
+Date:   Fri, 14 May 2021 13:39:39 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2021.05.10c] BUILD SUCCESS
- 4a54d145b2b0bab18df2fbb51f75e16672d3b2b3
-Message-ID: <609e0d18.JArfiZO2oJzWNIun%lkp@intel.com>
+Subject: [rcu:dev.2021.05.12a] BUILD SUCCESS
+ 16bc4ed68ffdae82bcf2d7d795609bc1e1293a75
+Message-ID: <609e0d1b.qGW8kUaOWsKQNd52%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,12 +43,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.05.10c
-branch HEAD: 4a54d145b2b0bab18df2fbb51f75e16672d3b2b3  fixup! refscale: Add measurement of clock readout
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.05.12a
+branch HEAD: 16bc4ed68ffdae82bcf2d7d795609bc1e1293a75  EXP mm, slub: move slub_debug static key enabling outside slab_mutex
 
 elapsed time: 725m
 
-configs tested: 154
+configs tested: 151
 configs skipped: 3
 
 The following configs have been built successfully.
@@ -120,11 +120,6 @@ arm                       imx_v4_v5_defconfig
 powerpc                     tqm5200_defconfig
 h8300                               defconfig
 sh                        sh7785lcr_defconfig
-arc                          axs101_defconfig
-m68k                          hp300_defconfig
-powerpc                         wii_defconfig
-alpha                            allyesconfig
-riscv                          rv32_defconfig
 arm                          moxart_defconfig
 sh                          urquell_defconfig
 sh                        sh7763rdp_defconfig
@@ -148,6 +143,7 @@ nds32                               defconfig
 nios2                            allyesconfig
 csky                                defconfig
 alpha                               defconfig
+alpha                            allyesconfig
 h8300                            allyesconfig
 arc                                 defconfig
 sh                               allmodconfig
@@ -192,6 +188,7 @@ i386                 randconfig-a013-20210513
 riscv                            allyesconfig
 riscv                             allnoconfig
 riscv                               defconfig
+riscv                          rv32_defconfig
 riscv                            allmodconfig
 um                               allmodconfig
 um                                allnoconfig
