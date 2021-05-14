@@ -2,110 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 549F5380E0F
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 18:19:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D533380E11
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 18:19:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232659AbhENQU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 12:20:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229654AbhENQU4 (ORCPT
+        id S233541AbhENQVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 12:21:04 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:61685 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233385AbhENQVC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 12:20:56 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBCC6C061574;
-        Fri, 14 May 2021 09:19:44 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id lg14so3518456ejb.9;
-        Fri, 14 May 2021 09:19:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2fijQ7TKMIt7SfOlxpBNp924p9/bMB3BjK7YiFJWydk=;
-        b=K5AGusU4Cph9q2+XN73VdvwMe/zmv80CTSzNFULZtkYS7qXl7u+Np3wYLzOEYj+V5N
-         iT66kBWC7KI+TN3FGCOw/vuXGdAMaknKH24CfgmVj8G+WhEVq7pPhlhDocTnbZFPncVM
-         FM4QA7Kvj2CQ9sleFQMP5g3a2G8YmIAzTayMYMPmUiX7NuCTiQJu/p81xU85jPjYM/JZ
-         aP5A5hIAg8vO8flu8d4+k38+LryRjtrFvl4oYuAWZyE7SQDesyVEyBOxvbo28NipQUKo
-         P6gMiw+SQFZN2TGKk2EygP2hGs4QL2DS76nCBGQDRYSPXVimneWgrmcwPyZkpcRve+zs
-         sXmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=2fijQ7TKMIt7SfOlxpBNp924p9/bMB3BjK7YiFJWydk=;
-        b=O97rMLOxWdP7IDIfq8NTM+u/cPs45pjjTVD+fhZ++VYqPWj2QsRDQflvdbfSCm2YQy
-         Y5BltsdrRUdb5tnm6aM7ZTVgL/ntZplqSdzJLD9DF496LphzNGCTOz5Fx0hLgyfA7ZNS
-         YIjntas3L3niCyOoymlcG/1g4awK8lQujWgEmDRQwIXet+SBa83/UJ0RUlhOhCs3DkU5
-         iwXppcDOk6y8r5kz/Afu7jHmfAv3s9LI5O8wjGA94ItWyv8L67sBpW3aHihkssXbPicp
-         1ra0G/eM4ZlgY2rq3zjy8pvjO6wGf3GuvHPr1Oo2aVtgodWZwkcvQ9FoYhiU0D3R1lWz
-         C42Q==
-X-Gm-Message-State: AOAM533UKyZ/AQOVJC+A6YJpGAQz2rW3ucKtBXOSphBy7n1KYpKLxuoW
-        kZ+rK6d7MEmVt8tpQ8fqKUVM1gUwE4A=
-X-Google-Smtp-Source: ABdhPJz2e+/vBRn0gbJcNGsHvN7pZSCa5AJlxDcLOUG9cRasI/v3FYYeQ90PRON3ZH+4J4P8VWhVzQ==
-X-Received: by 2002:a17:906:a1c7:: with SMTP id bx7mr11571928ejb.401.1621009183679;
-        Fri, 14 May 2021 09:19:43 -0700 (PDT)
-Received: from gmail.com (0526E777.dsl.pool.telekom.hu. [5.38.231.119])
-        by smtp.gmail.com with ESMTPSA id g17sm6081759edv.47.2021.05.14.09.19.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 09:19:43 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Fri, 14 May 2021 18:19:41 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     'Thomas Gleixner' <tglx@linutronix.de>,
-        'Maximilian Luz' <luzmaximilian@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Sachi King <nakato@nakato.io>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH] x86/i8259: Work around buggy legacy PIC
-Message-ID: <YJ6jHYM5oXyYHIX9@gmail.com>
-References: <20210512210459.1983026-1-luzmaximilian@gmail.com>
- <9b70d8113c084848b8d9293c4428d71b@AcuMS.aculab.com>
- <e7dbd4d1-f23f-42f0-e912-032ba32f9ec8@gmail.com>
- <e43d9a823c9e44bab0cdbf32a000c373@AcuMS.aculab.com>
- <87tun54gg3.ffs@nanos.tec.linutronix.de>
- <bbf5d417ee0d4edbbed31f19ef40fad0@AcuMS.aculab.com>
+        Fri, 14 May 2021 12:21:02 -0400
+Received: from fsav107.sakura.ne.jp (fsav107.sakura.ne.jp [27.133.134.234])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 14EGJn6k024946;
+        Sat, 15 May 2021 01:19:49 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav107.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav107.sakura.ne.jp);
+ Sat, 15 May 2021 01:19:49 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav107.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 14EGJmMu024941
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Sat, 15 May 2021 01:19:48 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: [PATCH] video: fbdev: vga16fb: fix OOB write in vga16fb_imageblit()
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+To:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Daniel Vetter <daniel@ffwll.ch>
+References: <0000000000006bbd0c05c14f1b09@google.com>
+ <6e21483c-06f6-404b-4018-e00ee85c456c@i-love.sakura.ne.jp>
+ <87d928e4-b2b9-ad30-f3f0-1dfb8e4e03ed@i-love.sakura.ne.jp>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>,
+        b.zolnierkie@samsung.com, colin.king@canonical.com,
+        gregkh@linuxfoundation.org, jani.nikula@intel.com,
+        jirislaby@kernel.org, syzkaller-bugs@googlegroups.com,
+        "Antonino A. Daplas" <adaplas@gmail.com>
+Message-ID: <05acdda8-dc1c-5119-4326-96eed24bea0c@i-love.sakura.ne.jp>
+Date:   Sat, 15 May 2021 01:19:48 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bbf5d417ee0d4edbbed31f19ef40fad0@AcuMS.aculab.com>
+In-Reply-To: <87d928e4-b2b9-ad30-f3f0-1dfb8e4e03ed@i-love.sakura.ne.jp>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+syzbot is reporting that a local user with the framebuffer console can
+crash the kernel [1], for ioctl(VT_RESIZE) allows a TTY to set arbitrary
+rows/columns values regardless of amount of memory reserved for
+the graphical screen.
 
-* David Laight <David.Laight@ACULAB.COM> wrote:
+----------
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <sys/ioctl.h>
+#include <linux/kd.h>
+#include <linux/vt.h>
 
-> > > It is also worth noting that the probe code is spectacularly crap.
-> > > It writes 0xff and then checks that 0xff is read back.
-> > > Almost anything (including a failed PCIe read to the ISA bridge)
-> > > will return 0xff and make the test pass.
-> > 
-> >         unsigned char probe_val = ~(1 << PIC_CASCADE_IR);
-> > 
-> > 	outb(probe_val, PIC_MASTER_IMR);
-> > 	new_val = inb(PIC_MASTER_IMR);
-> > 
-> > How is that writing 0xFF?
-> 
-> Sorry I misread the code and diagnostic output.
-> 
-> In any case writing a value and expecting the same value back
-> isn't exactly a high-quality probe.
+int main(int argc, char *argv[])
+{
+        const int fd = open("/dev/char/4:1", O_RDWR);
+        struct vt_sizes vt = { 0x4100, 2 };
 
-It's not, and it's not intended to be: 0x21 is a well-known port nobody was 
-crazy enough to override yet, so that probe basically filters out the 
-"there is nothing at that port, at all" case, which would normally return 
-0xff, or in a few weird cases 0x00 perhaps.
+        ioctl(fd, KDSETMODE, KD_GRAPHICS);
+        ioctl(fd, VT_RESIZE, &vt);
+        ioctl(fd, KDSETMODE, KD_TEXT);
+        return 0;
+}
+----------
 
-Writing something inbetween those values and getting the same value back 
-tells us that something functional occupies that well-known IO-port, 
-pretending to be a i8259 PIC.
+Currently it is impossible to control upper limit of rows/columns values
+based on amount of memory reserved for the graphical screen, for
+resize_screen() calls vc->vc_sw->con_resize() only if vc->vc_mode is not
+already KD_GRAPHICS. I don't know the reason, and this condition predates
+the git history. Even if it turns out to be safe to always call this
+callback, we will need to involve another callback via "struct fb_ops" for
+checking the upper limits from fbcon_resize(). As a result, we will need
+to modify
 
-Which is what we wanted to know, given the context.
+ drivers/tty/vt/vt.c
+ drivers/video/fbdev/core/fbcon.c
+ drivers/video/fbdev/vga16fb.c
+ include/linux/fb.h
 
-Thanks,
+files only for checking rows/columns values passed to ioctl(VT_RESIZE)
+request.
 
-	Ingo
+Therefore, instead of introducing such a complicated callback chain, avoid
+this problem by simply checking whether the address to read or write is in
+[VGA_FB_PHYS, VGA_FB_PHYS + VGA_FB_PHYS_LEN) range.
+
+[1] https://syzkaller.appspot.com/bug?extid=1f29e126cf461c4de3b3
+
+Reported-by: syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Tested-by: syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>
+---
+ drivers/video/fbdev/vga16fb.c | 54 +++++++++++++++++++++++------------
+ 1 file changed, 36 insertions(+), 18 deletions(-)
+
+diff --git a/drivers/video/fbdev/vga16fb.c b/drivers/video/fbdev/vga16fb.c
+index e2757ff1c23d..13732a3b1d69 100644
+--- a/drivers/video/fbdev/vga16fb.c
++++ b/drivers/video/fbdev/vga16fb.c
+@@ -98,6 +98,18 @@ static const struct fb_fix_screeninfo vga16fb_fix = {
+ 	.accel		= FB_ACCEL_NONE
+ };
+ 
++/*
++ * Verify that the address to read or write is in [VGA_FB_PHYS, VGA_FB_PHYS + VGA_FB_PHYS_LEN)
++ * range, for ioctl(VT_RESIZE) allows a TTY to set arbitrary rows/columns values which will crash
++ * the kernel due to out of bounds access when trying to redraw the screen.
++ */
++static inline bool is_valid_iomem(const struct fb_info *info, const char __iomem *where)
++{
++	return info->screen_base <= where && where < info->screen_base + VGA_FB_PHYS_LEN;
++}
++
++#define IS_SAFE(where) is_valid_iomem(info, (where))
++
+ /* The VGA's weird architecture often requires that we read a byte and
+    write a byte to the same location.  It doesn't matter *what* byte
+    we write, however.  This is because all the action goes on behind
+@@ -851,7 +863,7 @@ static void vga_8planes_fillrect(struct fb_info *info, const struct fb_fillrect
+                         int x;
+ 
+                         /* we can do memset... */
+-                        for (x = width; x > 0; --x) {
++			for (x = width; x > 0 && IS_SAFE(where); --x) {
+                                 writeb(rect->color, where);
+                                 where++;
+                         }
+@@ -864,7 +876,7 @@ static void vga_8planes_fillrect(struct fb_info *info, const struct fb_fillrect
+                 oldop = setop(0x18);
+                 oldsr = setsr(0xf);
+                 setmask(0x0F);
+-                for (y = 0; y < rect->height; y++) {
++		for (y = 0; y < rect->height && IS_SAFE(where) && IS_SAFE(where + 1); y++) {
+                         rmw(where);
+                         rmw(where+1);
+                         where += info->fix.line_length;
+@@ -919,7 +931,7 @@ static void vga16fb_fillrect(struct fb_info *info, const struct fb_fillrect *rec
+ 				setmask(0xff);
+ 
+ 				while (height--) {
+-					for (x = 0; x < width; x++) {
++					for (x = 0; x < width && IS_SAFE(dst); x++) {
+ 						writeb(0, dst);
+ 						dst++;
+ 					}
+@@ -935,7 +947,7 @@ static void vga16fb_fillrect(struct fb_info *info, const struct fb_fillrect *rec
+ 
+ 				setmask(0xff);
+ 				while (height--) {
+-					for (x = 0; x < width; x++) {
++					for (x = 0; x < width && IS_SAFE(dst); x++) {
+ 						rmw(dst);
+ 						dst++;
+ 					}
+@@ -975,7 +987,7 @@ static void vga_8planes_copyarea(struct fb_info *info, const struct fb_copyarea
+                 dest = info->screen_base + dx + area->dy * info->fix.line_length;
+                 src = info->screen_base + sx + area->sy * info->fix.line_length;
+                 while (height--) {
+-                        for (x = 0; x < width; x++) {
++			for (x = 0; x < width && IS_SAFE(src) && IS_SAFE(dest); x++) {
+                                 readb(src);
+                                 writeb(0, dest);
+                                 src++;
+@@ -991,7 +1003,7 @@ static void vga_8planes_copyarea(struct fb_info *info, const struct fb_copyarea
+                 src = info->screen_base + sx + width +
+ 			(area->sy + height - 1) * info->fix.line_length;
+                 while (height--) {
+-                        for (x = 0; x < width; x++) {
++			for (x = 0; x < width && IS_SAFE(src - 1) && IS_SAFE(dest - 1); x++) {
+                                 --src;
+                                 --dest;
+                                 readb(src);
+@@ -1065,7 +1077,7 @@ static void vga16fb_copyarea(struct fb_info *info, const struct fb_copyarea *are
+ 				dst = info->screen_base + (dx/8) + dy * info->fix.line_length;
+ 				src = info->screen_base + (sx/8) + sy * info->fix.line_length;
+ 				while (height--) {
+-					for (x = 0; x < width; x++) {
++					for (x = 0; x < width && IS_SAFE(src) && IS_SAFE(dst); x++) {
+ 						readb(src);
+ 						writeb(0, dst);
+ 						dst++;
+@@ -1080,7 +1092,7 @@ static void vga16fb_copyarea(struct fb_info *info, const struct fb_copyarea *are
+ 				src = info->screen_base + (sx/8) + width + 
+ 					(sy + height  - 1) * info->fix.line_length;
+ 				while (height--) {
+-					for (x = 0; x < width; x++) {
++					for (x = 0; x < width && IS_SAFE(src - 1) && IS_SAFE(dst - 1); x++) {
+ 						dst--;
+ 						src--;
+ 						readb(src);
+@@ -1130,13 +1142,15 @@ static void vga_8planes_imageblit(struct fb_info *info, const struct fb_image *i
+         where = info->screen_base + dx + image->dy * info->fix.line_length;
+ 
+         setmask(0xff);
+-        writeb(image->bg_color, where);
+-        readb(where);
++	if (IS_SAFE(where)) {
++		writeb(image->bg_color, where);
++		readb(where);
++	}
+         selectmask();
+         setmask(image->fg_color ^ image->bg_color);
+         setmode(0x42);
+         setop(0x18);
+-        for (y = 0; y < image->height; y++, where += info->fix.line_length)
++	for (y = 0; y < image->height && IS_SAFE(where); y++, where += info->fix.line_length)
+                 writew(transl_h[cdat[y]&0xF] | transl_l[cdat[y] >> 4], where);
+         setmask(oldmask);
+         setsr(oldsr);
+@@ -1165,14 +1179,16 @@ static void vga_imageblit_expand(struct fb_info *info, const struct fb_image *im
+ 				selectmask();
+ 				
+ 				setmask(0xff);
+-				writeb(image->bg_color, where);
+-				rmb();
+-				readb(where); /* fill latches */
++				if (IS_SAFE(where)) {
++					writeb(image->bg_color, where);
++					rmb();
++					readb(where); /* fill latches */
++				}
+ 				setmode(3);
+ 				wmb();
+ 				for (y = 0; y < image->height; y++) {
+ 					dst = where;
+-					for (x = image->width/8; x--;) 
++					for (x = image->width/8; x-- && IS_SAFE(dst);)
+ 						writeb(*cdat++, dst++);
+ 					where += info->fix.line_length;
+ 				}
+@@ -1187,7 +1203,7 @@ static void vga_imageblit_expand(struct fb_info *info, const struct fb_image *im
+ 				setmask(0xff);
+ 				for (y = 0; y < image->height; y++) {
+ 					dst = where;
+-					for (x=image->width/8; x--;){
++					for (x = image->width/8 && IS_SAFE(dst); x--;) {
+ 						rmw(dst);
+ 						setcolor(image->fg_color);
+ 						selectmask();
+@@ -1237,8 +1253,10 @@ static void vga_imageblit_color(struct fb_info *info, const struct fb_image *ima
+ 					setcolor(*cdat);
+ 					selectmask();
+ 					setmask(1 << (7 - (x % 8)));
+-					fb_readb(dst);
+-					fb_writeb(0, dst);
++					if (IS_SAFE(dst)) {
++						fb_readb(dst);
++						fb_writeb(0, dst);
++					}
+ 
+ 					cdat++;
+ 				}
+-- 
+2.18.4
+
+
