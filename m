@@ -2,230 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F411380853
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 13:17:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA726380862
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 13:22:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231433AbhENLS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 07:18:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37506 "EHLO
+        id S231687AbhENLXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 07:23:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230023AbhENLS6 (ORCPT
+        with ESMTP id S230239AbhENLXW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 07:18:58 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCEBCC061574;
-        Fri, 14 May 2021 04:17:47 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id p6so191866plr.11;
-        Fri, 14 May 2021 04:17:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=XKcCS4s5C12mzZ7iKmgwJ8qzqkKrmAHk/I8vMw9Oki8=;
-        b=k3T/8EFst3K4z5Zh/46JoQICHEZhYiu0pWLAACYbwF9AKbuToN0Dn/UasUHNCBWD60
-         lQy6DI+X7jdpwUkskpbqe0asWiCFAg9ASo5JMGmbbbJkmGs8j2HezkHsBiBhKYQqcgLu
-         lDLeBX/Lx3f+5IN9vP2N4ovaHw88d0pOLJ6Ct0qxHsWwfD89Z00VH4Y0jJprDeANK8CR
-         sLI7zhdX9XHhSWiXEYhNapt0UqWWViw8HWPk0K8LRA0qJGMkKOo76wV798S7lCiWd1sx
-         xd16EJLwmGPaMdvI9WqTdSFGZMx/HSRrUZpSDRX2H37r/OSNDCU5OoTUocN4Cs7JJL54
-         fLEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=XKcCS4s5C12mzZ7iKmgwJ8qzqkKrmAHk/I8vMw9Oki8=;
-        b=PPg7L7ZNEJTsuiDuY6oBslu+Lp1W9qKPvKDTFiQAwBgZB+GTo7sD8PkgMxJfQbcgcz
-         E8+KPLGx7NVade/OaZNZ/i3nNoxrjGuwXBgc+QWSWgjyliB7CxccmCrO0YmL4bQ7KH2b
-         crFkQ/zVtVUUaj0LwzcErRHrImJ0tRXGhu7WGegyWDnMOzf5ZObLZMFSgnbqDUIjYCNu
-         OQ3EWGWJeFdlw7QykrJCxq5rdkkPZlJTJQM6jKgTpc3dhgb43dWHvzUgpKgv1EQVr82h
-         qqtYHc1ZlU4pWjBRnGAW+M5Dryn2M48caT1gedi53bKKCxrNmCV9RgzNP1hSFAv9QT34
-         rhGg==
-X-Gm-Message-State: AOAM530Wi7T0bApAyFEktNLEmCoq4onP8XWZrc00ADdywarZ6FVimeAo
-        6FmZGy/dbDWICUQKXXtZNA==
-X-Google-Smtp-Source: ABdhPJyfNa7UIpTwCsxVuNUu6EZ52+eoWD0szowLt63C27eX4DFdqXsngFEhw1ivjIMLMeXkhNxmQQ==
-X-Received: by 2002:a17:90b:1c10:: with SMTP id oc16mr18631648pjb.86.1620991067303;
-        Fri, 14 May 2021 04:17:47 -0700 (PDT)
-Received: from vultr.guest ([107.191.53.97])
-        by smtp.gmail.com with ESMTPSA id c6sm8973194pjs.11.2021.05.14.04.17.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 14 May 2021 04:17:46 -0700 (PDT)
-From:   Zheyu Ma <zheyuma97@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     cernekee@gmail.com, jirislaby@kernel.org,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zheyuma97@gmail.com
-Subject: [PATCH] serial: rp2: disable interrupt in rp2_probe():
-Date:   Fri, 14 May 2021 11:17:07 +0000
-Message-Id: <1620991027-25856-1-git-send-email-zheyuma97@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        Fri, 14 May 2021 07:23:22 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5587AC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 04:22:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=oObc2ElFqvGeUqGFyXfuB3LXrl7Py+nxdu8iVeG7i3k=; b=bW/lwAuvZLN7NXaCbawN9Ge/xk
+        Ju3a7laLSS3ZtOgtwUzf2lW/9iEVPcpPZ0XPxuzUIFWqj7lLAj7DoUuF2gDRxHE4+8ycNFE+tywXk
+        As2TxkgDXCd4s0Rx0lYoREbh8nQHtMwW2GklsX2xlBC7wnnuGi9gdYiGduNx7UMsqAuea8/9s5nNX
+        UQczZ0andXRoh/iqv6WEQZM9uFYimkJ8+kKrXyLecq4nzAJu19LJl/jqB/B6rvrZ5FFFIKHxO8QMm
+        vmRTr6uspexWa6HtezkIat9h2lyGeGFOdjjep6VfkcndMGk5rPLoz3VPrKky68ttSdFsb+M4bxBMp
+        CYA3y5Rg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lhVrf-00AJZe-3K; Fri, 14 May 2021 11:20:33 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7BFF430001C;
+        Fri, 14 May 2021 13:20:18 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5F13E20298BDE; Fri, 14 May 2021 13:20:18 +0200 (CEST)
+Date:   Fri, 14 May 2021 13:20:18 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Liam Howlett <liam.howlett@oracle.com>
+Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Song Liu <songliubraving@fb.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        David Rientjes <rientjes@google.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Rik van Riel <riel@surriel.com>,
+        Michel Lespinasse <walken.cr@gmail.com>
+Subject: Re: [PATCH 26/94] Maple Tree: Add new data structure
+Message-ID: <YJ5c8vcvLyWRhs2d@hirez.programming.kicks-ass.net>
+References: <20210428153542.2814175-1-Liam.Howlett@Oracle.com>
+ <20210428153542.2814175-27-Liam.Howlett@Oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210428153542.2814175-27-Liam.Howlett@Oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In 'rp2_probe', the driver registers 'rp2_uart_interrupt' then calls
-'rp2_fw_cb' through 'request_firmware_nowait'. In 'rp2_fw_cb', if the
-firmware don't exists, function just return without initializing ports
-of 'rp2_card'. But now the interrupt handler function has been registered,
-and when an interrupt comes('rp2' may shares an interrupt line with other
-devices), 'rp2_uart_interrupt' may access those ports then causing NULL
-pointer dereference or other bugs.
 
-Fix this by disabling interrupt after registering 'rp2_uart_interrupt',
-and enable it in 'rp2_uart_startup'.
+On Wed, Apr 28, 2021 at 03:36:02PM +0000, Liam Howlett wrote:
+> +/* ma_free_rcu() - Use rcu callback to free a maple node
+> + * @node: The node to free
+> + *
+> + * The maple tree uses the parent pointer to indicate this node is no longer in
+> + * use and will be freed.
+> + */
 
-The KASAN's report reveals it:
+If this was supposed to be a kernel doc, then it would need to start
+with /**, if it was not then it's an inconsistent comment style; by far
+the majority of comments in this file have the regular:
 
-NFO: trying to register non-static key.
-the code is fine but needs lockdep annotation.
-turning off the locking correctness validator.
-CPU: 2 PID: 0 Comm: swapper/2 Not tainted 4.19.177-gdba4159c14ef-dirty #45
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-
-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0xec/0x156 lib/dump_stack.c:118
- assign_lock_key kernel/locking/lockdep.c:727 [inline]
- register_lock_class+0x14e5/0x1ba0 kernel/locking/lockdep.c:753
- __lock_acquire+0x187/0x3750 kernel/locking/lockdep.c:3303
- lock_acquire+0x124/0x340 kernel/locking/lockdep.c:3907
- __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
- _raw_spin_lock+0x32/0x50 kernel/locking/spinlock.c:144
- spin_lock include/linux/spinlock.h:329 [inline]
- rp2_ch_interrupt drivers/tty/serial/rp2.c:466 [inline]
- rp2_asic_interrupt.isra.9+0x15d/0x990 drivers/tty/serial/rp2.c:493
- rp2_uart_interrupt+0x49/0xe0 drivers/tty/serial/rp2.c:504
- __handle_irq_event_percpu+0xfb/0x770 kernel/irq/handle.c:149
- handle_irq_event_percpu+0x79/0x150 kernel/irq/handle.c:189
- handle_irq_event+0xac/0x140 kernel/irq/handle.c:206
- handle_fasteoi_irq+0x232/0x5c0 kernel/irq/chip.c:725
- generic_handle_irq_desc include/linux/irqdesc.h:155 [inline]
- handle_irq+0x230/0x3a0 arch/x86/kernel/irq_64.c:87
- do_IRQ+0xa7/0x1e0 arch/x86/kernel/irq.c:247
- common_interrupt+0xf/0xf arch/x86/entry/entry_64.S:670
- </IRQ>
-RIP: 0010:native_safe_halt+0x28/0x30 arch/x86/include/asm/irqflags.h:61
-Code: 00 00 55 be 04 00 00 00 48 c7 c7 00 c2 2f 8c 48 89 e5 e8 fb 31 e7 f8
-8b 05 75 af 8d 03 85 c0 7e 07 0f 00 2d 8a 61 65 00 fb f4 <5d> c3 90 90 90
-90 90 90 0f 1f 44 00 00 55 48 89 e5 41 57 41 56 41
-RSP: 0018:ffff88806b71fcc8 EFLAGS: 00000246 ORIG_RAX: ffffffffffffffde
-RAX: 0000000000000000 RBX: ffffffff8bde7e48 RCX: ffffffff88a21285
-RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffffffff8c2fc200
-RBP: ffff88806b71fcc8 R08: fffffbfff185f840 R09: fffffbfff185f840
-R10: 0000000000000001 R11: fffffbfff185f840 R12: 0000000000000002
-R13: ffffffff8bea18a0 R14: 0000000000000000 R15: 0000000000000000
- arch_safe_halt arch/x86/include/asm/paravirt.h:94 [inline]
- default_idle+0x6f/0x360 arch/x86/kernel/process.c:557
- arch_cpu_idle+0xf/0x20 arch/x86/kernel/process.c:548
- default_idle_call+0x3b/0x60 kernel/sched/idle.c:93
- cpuidle_idle_call kernel/sched/idle.c:153 [inline]
- do_idle+0x2ab/0x3c0 kernel/sched/idle.c:263
- cpu_startup_entry+0xcb/0xe0 kernel/sched/idle.c:369
- start_secondary+0x3b8/0x4e0 arch/x86/kernel/smpboot.c:271
- secondary_startup_64+0xa4/0xb0 arch/x86/kernel/head_64.S:243
-BUG: unable to handle kernel NULL pointer dereference at 0000000000000010
-PGD 8000000056d27067 P4D 8000000056d27067 PUD 56d28067 PMD 0
-Oops: 0000 [#1] PREEMPT SMP KASAN PTI
-CPU: 2 PID: 0 Comm: swapper/2 Not tainted 4.19.177-gdba4159c14ef-dirty #45
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-
-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-RIP: 0010:readl arch/x86/include/asm/io.h:59 [inline]
-RIP: 0010:rp2_ch_interrupt drivers/tty/serial/rp2.c:472 [inline]
-RIP: 0010:rp2_asic_interrupt.isra.9+0x181/0x990 drivers/tty/serial/rp2.c:
-493
-Code: df e8 43 5d c2 05 48 8d 83 e8 01 00 00 48 89 85 60 ff ff ff 48 c1 e8
-03 42 80 3c 30 00 0f 85 aa 07 00 00 48 8b 83 e8 01 00 00 <8b> 40 10 89 c1
-89 85 68 ff ff ff 48 8b 83 e8 01 00 00 89 48 10 83
-RSP: 0018:ffff88806c287cd0 EFLAGS: 00010046
-RAX: 0000000000000000 RBX: ffff88806ade6820 RCX: ffffffff814300b1
-RDX: 1ffff1100d5bcd06 RSI: 0000000000000004 RDI: ffff88806ade6820
-RBP: ffff88806c287db8 R08: ffffed100d5bcd05 R09: ffffed100d5bcd05
-R10: 0000000000000001 R11: ffffed100d5bcd04 R12: ffffc90001e00000
-R13: ffff888069654e10 R14: dffffc0000000000 R15: ffff888069654df0
-FS:  0000000000000000(0000) GS:ffff88806c280000(0000) knlGS:
-0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000010 CR3: 000000006892c000 CR4: 00000000000006e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <IRQ>
- rp2_uart_interrupt+0x49/0xe0 drivers/tty/serial/rp2.c:504
- __handle_irq_event_percpu+0xfb/0x770 kernel/irq/handle.c:149
- handle_irq_event_percpu+0x79/0x150 kernel/irq/handle.c:189
- handle_irq_event+0xac/0x140 kernel/irq/handle.c:206
- handle_fasteoi_irq+0x232/0x5c0 kernel/irq/chip.c:725
- generic_handle_irq_desc include/linux/irqdesc.h:155 [inline]
- handle_irq+0x230/0x3a0 arch/x86/kernel/irq_64.c:87
- do_IRQ+0xa7/0x1e0 arch/x86/kernel/irq.c:247
- common_interrupt+0xf/0xf arch/x86/entry/entry_64.S:670
- </IRQ>
-RIP: 0010:native_safe_halt+0x28/0x30 arch/x86/include/asm/irqflags.h:61
-Code: 00 00 55 be 04 00 00 00 48 c7 c7 00 c2 2f 8c 48 89 e5 e8 fb 31 e7
-f8 8b 05 75 af 8d 03 85 c0 7e 07 0f 00 2d 8a 61 65 00 fb f4 <5d> c3 90
-90 90 90 90 90 0f 1f 44 00 00 55 48 89 e5 41 57 41 56 41
-RSP: 0018:ffff88806b71fcc8 EFLAGS: 00000246 ORIG_RAX: ffffffffffffffde
-RAX: 0000000000000000 RBX: ffffffff8bde7e48 RCX: ffffffff88a21285
-RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffffffff8c2fc200
-RBP: ffff88806b71fcc8 R08: fffffbfff185f840 R09: fffffbfff185f840
-R10: 0000000000000001 R11: fffffbfff185f840 R12: 0000000000000002
-R13: ffffffff8bea18a0 R14: 0000000000000000 R15: 0000000000000000
- arch_safe_halt arch/x86/include/asm/paravirt.h:94 [inline]
- default_idle+0x6f/0x360 arch/x86/kernel/process.c:557
- arch_cpu_idle+0xf/0x20 arch/x86/kernel/process.c:548
- default_idle_call+0x3b/0x60 kernel/sched/idle.c:93
- cpuidle_idle_call kernel/sched/idle.c:153 [inline]
- do_idle+0x2ab/0x3c0 kernel/sched/idle.c:263
- cpu_startup_entry+0xcb/0xe0 kernel/sched/idle.c:369
- start_secondary+0x3b8/0x4e0 arch/x86/kernel/smpboot.c:271
- secondary_startup_64+0xa4/0xb0 arch/x86/kernel/head_64.S:243
-Modules linked in:
-Dumping ftrace buffer:
-   (ftrace buffer empty)
-CR2: 0000000000000010
----[ end trace 11804dbb55cb1a64 ]---
-RIP: 0010:readl arch/x86/include/asm/io.h:59 [inline]
-RIP: 0010:rp2_ch_interrupt drivers/tty/serial/rp2.c:472 [inline]
-RIP: 0010:rp2_asic_interrupt.isra.9+0x181/0x990 drivers/tty/serial/rp2.c:
-493
-Code: df e8 43 5d c2 05 48 8d 83 e8 01 00 00 48 89 85 60 ff ff ff 48 c1
-e8 03 42 80 3c 30 00 0f 85 aa 07 00 00 48 8b 83 e8 01 00 00 <8b> 40 10 89
-c1 89 85 68 ff ff ff 48 8b 83 e8 01 00 00 89 48 10 83
-RSP: 0018:ffff88806c287cd0 EFLAGS: 00010046
-RAX: 0000000000000000 RBX: ffff88806ade6820 RCX: ffffffff814300b1
-RDX: 1ffff1100d5bcd06 RSI: 0000000000000004 RDI: ffff88806ade6820
-RBP: ffff88806c287db8 R08: ffffed100d5bcd05 R09: ffffed100d5bcd05
-R10: 0000000000000001 R11: ffffed100d5bcd04 R12: ffffc90001e00000
-R13: ffff888069654e10 R14: dffffc0000000000 R15: ffff888069654df0
-FS:  0000000000000000(0000) GS:ffff88806c280000(0000) knlGS:
-0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000010 CR3: 000000006892c000 CR4: 00000000000006e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+ /*
+  * multiline-
+  *   comment
+  */
 
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
----
- drivers/tty/serial/rp2.c | 2 ++
- 1 file changed, 2 insertions(+)
+style.
 
-diff --git a/drivers/tty/serial/rp2.c b/drivers/tty/serial/rp2.c
-index d60abffab70e..88b95d19266a 100644
---- a/drivers/tty/serial/rp2.c
-+++ b/drivers/tty/serial/rp2.c
-@@ -526,6 +526,7 @@ static int rp2_uart_startup(struct uart_port *port)
- 		RP2_TXRX_CTL_RX_TRIG_1);
- 	rp2_rmw(up, RP2_CHAN_STAT, 0, 0);
- 	rp2_mask_ch_irq(up, up->idx, 1);
-+	enable_irq(port->irq);
- 
- 	return 0;
- }
-@@ -782,6 +783,7 @@ static int rp2_probe(struct pci_dev *pdev,
- 			      IRQF_SHARED, DRV_NAME, card);
- 	if (rc)
- 		return rc;
-+	disable_irq(pdev->irq);
- 
- 	/*
- 	 * Only catastrophic errors (e.g. ENOMEM) are reported here.
--- 
-2.17.1
+Like
 
+> +/*
+> + * We also reserve values with the bottom two bits set to '10' which are
+> + * below 4096
+> + */
+
+> +/*
+> + * mte_to_mat() - Convert a maple encoded node to a maple topiary node.
+> + * @entry: The maple encoded node
+> + *
+> + * Return: a maple topiary pointer
+> + */
+
+And:
+
+> +/*
+> + * mas_mn() - Get the maple state node.
+> + * @mas: The maple state
+> + *
+> + * Return: the maple node (not encoded - bare pointer).
+> + */
+
+But then you also have:
+
+> +	// Removing the pivot overflow optimizes the loop below.
+> +	// Check the first implied pivot.
+
+> +	// Check end implied pivot which can only be a gap on the right most
+> +	// node.
+
+And:
+
+> +		/* If the split is less than the max slot && the right side will
+> +		 * still be sufficient, then increment the split on NULL.
+> +		 */
+
+> +		/* Avoid having a range less than the slot count unless it
+> +		 * causes one node to be deficient.
+> +		 * NOTE: mt_min_slots is 1 based, b_end and split are zero.
+> +		 */
+
+
+Single line comments are also an inconsistent mess:
+
+> +	/* Avoid ending a node on a NULL entry */
+
+> +	// Possible underflow of piv will wrap back to 0 before use.
+
+> +	// Copy start data up to insert.
+
+Even in a single function, you can't be consistent:
+
+> +static inline void mast_topiary(struct maple_subtree_state *mast)
+> +{
+> +	unsigned char l_off, r_off, offset;
+> +	unsigned long l_index,  range_min, range_max;
+> +	struct maple_enode *child;
+> +	void __rcu **slots;
+> +	enum maple_type mt;
+> +
+> +	// The left node is consumed, so add to the free list.
+> +	l_index = mast->orig_l->index;
+> +	mast->orig_l->index = mast->orig_l->last;
+> +	mt = mte_node_type(mast->orig_l->node);
+> +	mas_node_walk(mast->orig_l, mt, &range_min, &range_max);
+> +	mast->orig_l->index = l_index;
+> +	l_off = mast->orig_l->offset;
+> +	r_off = mast->orig_r->offset;
+> +	if (mast->orig_l->node == mast->orig_r->node) {
+> +		slots = ma_slots(mte_to_node(mast->orig_l->node), mt);
+> +		for (offset = l_off + 1; offset < r_off; offset++)
+> +			mat_add(mast->destroy, mas_slot_locked(mast->orig_l,
+> +							slots, offset));
+> +
+> +		return;
+> +	}
+> +	/* mast->orig_r is different and consumed. */
+> +	if (mte_is_leaf(mast->orig_r->node))
+> +		return;
+> +
+> +	/* Now destroy l_off + 1 -> end and 0 -> r_off - 1 */
+> +	offset = l_off + 1;
+> +	slots = ma_slots(mte_to_node(mast->orig_l->node), mt);
+> +	while (offset < mt_slots[mt]) {
+> +		child = mas_slot_locked(mast->orig_l, slots, offset++);
+> +		if (!child)
+> +			break;
+> +
+> +		mat_add(mast->destroy, child);
+> +	}
+> +
+> +	slots = ma_slots(mte_to_node(mast->orig_r->node),
+> +			     mte_node_type(mast->orig_r->node));
+> +	for (offset = 0; offset < r_off; offset++)
+> +		mat_add(mast->destroy,
+> +				mas_slot_locked(mast->orig_l, slots, offset));
+> +}
+
+This mixing of C and C++ style comments is a mess.
