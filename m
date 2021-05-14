@@ -2,184 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CC9C381375
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 23:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A1B38137E
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 00:07:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233451AbhENV7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 17:59:06 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:48344 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229942AbhENV7D (ORCPT
+        id S233367AbhENWIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 18:08:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232880AbhENWIp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 17:59:03 -0400
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14ELj9hQ006463;
-        Fri, 14 May 2021 21:57:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=9p+wt908FYRwirrreTzLog2jUn+T2Cl5O9Nd0M8adFE=;
- b=BFOb27e8jIFYcleYB25gKf9gY6g1VAUYAl+tICK2+0EPXdy+jrvDQvBx8VdmL7yglejH
- H9cIZg/WHq3S87/+4rU1t3R6Kv/jDfj4S3pMOwuXUO96vtf7uVcfiV6P//Glx4aq7rOe
- 1wi0X3YgzutI1/X9pm/SqlmfamnclGgcl4IScSnsBwHscPc47uZ3h7koMq4WoJrsNxkQ
- LCfNdYa3L6lOvJtQkmA+6e0QjrH1p0it+Nx2O5ye4U253DBIMCKGs8qcO+zOyPiCPOF3
- hVmknm7qxTGht9+EzcYyPAxuXZ+NePqfUu8CpQBGnHLOVF3gFjHL+ViqJiEd26RLnqeY oQ== 
-Received: from oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 38gppfruwn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 14 May 2021 21:57:36 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14ELvZgt158475;
-        Fri, 14 May 2021 21:57:35 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2173.outbound.protection.outlook.com [104.47.59.173])
-        by aserp3030.oracle.com with ESMTP id 38gppqfact-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 14 May 2021 21:57:35 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BUXJMnEsf2oRblfHtUZXRae+tvSst86ovlrbzpbEJuC9jHgqFRZF9dxX8/cqANm9eO3sN9PS4a/2oU3i+bbs4cDbr4MELl/XMiCA4phzBdKU49Q0JogpmSAEZYVaS51OrUVohSMPFfL3cukPmwpVes8E6lwrRFULHy+0Ifn1zyCgIGqE99xuIT4GpcwtSUw8x6uHN+CA4Ei/m25WkKU+XA9H0zhc3+OAPSHOJDvr/tW/f9t45j2LsNQwxwK89tp3FYHhO5iHW4Xvz9VMsGVTu77zeN3UmjN6s0cwCdXyAn5klYMXyy2R6sFGwynyd1h2oXCGISME1k35aX5TeFMdcQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9p+wt908FYRwirrreTzLog2jUn+T2Cl5O9Nd0M8adFE=;
- b=ku5jb2l4Pf0agEhEf/8z5MtUuiWp90bq3AUIC8LBZx+AGw5QIZunomN+HTnu39egojtXpBFj4BwMU3E/O+Eno4BW3sr6HbhdOW4bd9uDmc9ZKpyR0WGOfUGEfagl7rUBjTyOMuJnfqdG3MBsvHc+6l56txvu852K6WWPyzodCQrJY+EW3LyksmVi4YTnGUx6CxRu7KF21fz275q5oyK8X/kwtmZKi2EQs6TUxSWeHiGausFWolj/BtP1jsXgqEhWUEfhSSkGgoPz1Mdup/JkcgfZ1F5a6gbRVWitP8lPfr5E6x7Y4RAAPtlle0iTyVgeh4MXyCJ0l3/2FFe3+mR1sw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Fri, 14 May 2021 18:08:45 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0475CC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 15:07:32 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id t7so725024qtn.3
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 15:07:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9p+wt908FYRwirrreTzLog2jUn+T2Cl5O9Nd0M8adFE=;
- b=zNE9XpETKOJS2yfS/fQM/k09HAX/XPzP3xB1mbhfnFdKAAT+mbKL3jCC0VCrAY2OhF71GCIFiva/9nO/pynf6jDZG6YEg58wp4dnwk/eSLD0uFWjzV5J0iuPSAS3F506Gmop446JbAb8LIexd+mBt5IKxgAOmzjejzBIaoM9I0Q=
-Received: from MWHPR10MB1582.namprd10.prod.outlook.com (2603:10b6:300:22::8)
- by MWHPR10MB1838.namprd10.prod.outlook.com (2603:10b6:300:10a::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.26; Fri, 14 May
- 2021 21:57:33 +0000
-Received: from MWHPR10MB1582.namprd10.prod.outlook.com
- ([fe80::353a:1802:6e91:1811]) by MWHPR10MB1582.namprd10.prod.outlook.com
- ([fe80::353a:1802:6e91:1811%8]) with mapi id 15.20.4129.026; Fri, 14 May 2021
- 21:57:33 +0000
-From:   Liam Howlett <liam.howlett@oracle.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-CC:     "maple-tree@lists.infradead.org" <maple-tree@lists.infradead.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Song Liu <songliubraving@fb.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        David Rientjes <rientjes@google.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Rik van Riel <riel@surriel.com>,
-        Michel Lespinasse <walken.cr@gmail.com>
-Subject: Re: [PATCH 26/94] Maple Tree: Add new data structure
-Thread-Topic: [PATCH 26/94] Maple Tree: Add new data structure
-Thread-Index: AQHXPEQyRs1g/Qku7UiibZzqyyuzcarjNBmAgAAAuwCAAGrYAA==
-Date:   Fri, 14 May 2021 21:57:33 +0000
-Message-ID: <20210514215716.k7lxgcnwuyk2isn4@revolver>
-References: <20210428153542.2814175-1-Liam.Howlett@Oracle.com>
- <20210428153542.2814175-27-Liam.Howlett@Oracle.com>
- <YJ6X/wrP/El8KLdh@hirez.programming.kicks-ass.net>
- <YJ6YnJv99AEdu0it@hirez.programming.kicks-ass.net>
-In-Reply-To: <YJ6YnJv99AEdu0it@hirez.programming.kicks-ass.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=oracle.com;
-x-originating-ip: [23.233.25.87]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 382de6f4-03f7-48ad-50c9-08d917234735
-x-ms-traffictypediagnostic: MWHPR10MB1838:
-x-microsoft-antispam-prvs: <MWHPR10MB183853D0827DA473BC6A8D1AFD509@MWHPR10MB1838.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Ot6L+Nd1mmCr0pA1DQLE4UN9E3KkDNpkxlZhU1biCY+HMP0foq15J0QAk/h+avA3M8Mw8f7elqFmNsQ+3EGpjwNmAxg0ubkRNUrHvuJcRqAJBbvGCImXBkTCZaN786TE3I3gqkyMK4ZQHw3YxpGvkp2OLGfc2E55z4nCKMHlE7Ig504pWGQzHXHGeXffgvVf1fj2ZM59GWLd9htiEmq4dsQw79QImENLCpiAhTHrPyR4TcN3gAGWJNGj1R6I34W6npVd4DCpyqoYZ5wYSn98DNTCWrz1OsTZ7H9eXq94yGpKX5jP/SjHXcWKZvtaSrZIji/3QMISuKx2qbmgGzRJi5AE/bAhp4HJfq9bN0SIw4DqQw/z3MsE/K0sRnwVvnHy5QEUAzLfSKtyQPTx8b3V2283BXOZEp66yVI0WkTNvkZTFi5X2AvTj1XXBDuRtay3LFaGPJrvbOg8FE4r7x2pd0nAK36czbdSrr39mITPq5+XYE2RC2dRyYSkcEKhXEtkre9z4FH5aFagxIxnkbL2o12OIuwObBDgFzmAK5XoR+NzZBu8M1TlREtMV3nnbbuAqLMnHmVEkOdiOGENiXgSw2zOFmUZydKmKOM4Ggw8Hk0=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR10MB1582.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(136003)(366004)(376002)(346002)(396003)(39860400002)(9686003)(91956017)(76116006)(186003)(6512007)(66476007)(66946007)(2906002)(71200400001)(6916009)(66556008)(64756008)(66446008)(1076003)(5660300002)(86362001)(44832011)(54906003)(26005)(122000001)(8936002)(33716001)(38100700002)(4326008)(6506007)(4744005)(316002)(478600001)(6486002)(7416002)(8676002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?yHXX7pIThjIhBGCh87Gnn2d93KBIY4+8UxobY7qiFEu16y9A8Fe9EEGdjaxp?=
- =?us-ascii?Q?BDnjCy0QAJjkSpfikmaIud10d911ih2fMUwGGzc+SQ5ljper1rghC/6Mao3a?=
- =?us-ascii?Q?1vgqoQ49HfNnhJ7SJ5l8w1KWpRMEzMINphGMS7V8pVD3MdSwmpFgOEqTIrMM?=
- =?us-ascii?Q?KRHihpmOHKDqBPBUteg8ck1d8t6QtcmzH9yEDoaiHs1O/YXOUMp4jOI5c389?=
- =?us-ascii?Q?RuMTinua21qKh8G8La2RIoobWkBBckNPPTn6bz+JdC2994PbGIYwBV1m+Ci+?=
- =?us-ascii?Q?OJ7/PTVAqbY1vhOtudrqZTZIgawId7rbfgFbclUu2FAwEeLMonFIeqiZfl0l?=
- =?us-ascii?Q?lAVc1Af8JuNGQoTXv7soTsYZwfcrzksZ0keIs6jjVHXk09je2lR6e2PVzxZg?=
- =?us-ascii?Q?9yBIPxI/E5+7bEOmmNWwb9a0lJJymyKBUcy/w2uPeoh0LI8br3W7M/NNJVSf?=
- =?us-ascii?Q?203gH9heFHpsnonqVIOMg2tVGPZDBupZaH/vKcpwqe+VbJYzC5KDXzJ3iLh8?=
- =?us-ascii?Q?f43gzMRUhB1rUaQDvGnTmY3ZzBmzUN8ts7YI6I/r2zSX1EHObDIILuqyvOHz?=
- =?us-ascii?Q?cW7n6aVgKE3Y9UFoxCl3K3xRSA8BGutvV2JGdr0aziaXHbx0FiqQ8oDkjdRa?=
- =?us-ascii?Q?XlLW8W9xsmmbPal+VKJDVHHfF/ETdv7XxQryB2HGGArNdtyb9HYEuZCHgNlB?=
- =?us-ascii?Q?ifuz1rzLCDPyKohavl75BzOZTqQB/sihWvZdJJPdsF7e49IROerMcq+9Nb5O?=
- =?us-ascii?Q?thy/95lxSDUwhKNlaX9zddTyTz2Dqc+I+gv9vQJr9llouWkQxb0yzwJeSCN9?=
- =?us-ascii?Q?w0jPw4Y2zzKBMlPsysiYguqHn3TN+iqg1seRQaUIKUMLJkM4vKqfYEmaFWeB?=
- =?us-ascii?Q?A1cuSv2kx0h/yMHzM65gmM8L9yVXloQ8Ep6T1bGUsOBoqET3XA431DaSLfkL?=
- =?us-ascii?Q?I9tZCsBcKwSC62HjdphOtMIViHXapW4tzMatqK1gIBIrwyQefBJz57+gEQQm?=
- =?us-ascii?Q?9qCF2slTEfxHzKRfcjz9E8+sj9pm0AXWK9JuWXMNZmj6JIqwKesdc7SMquzU?=
- =?us-ascii?Q?pmgb/FOyFSCelZ89ZskPvBQP8DSFXYat3aovyd+0Uksx5pFyikKQNeXtOI+w?=
- =?us-ascii?Q?4TjP194pAPmuUq9SLHv3jWprx2gcMeDptk/N7zAlUuSV7it89A3sFn9NOE89?=
- =?us-ascii?Q?/LEHF6S0Khyvi8DTXnr7JA61IA3x7gQnWs5JZvmroFhKg6BPza8LHBjxPFAB?=
- =?us-ascii?Q?F6iYntakW6UR7U+Qzia1+W0KGy9r81OLccHwO14Cj9hEDG8nzv9OuD2Ve8Cy?=
- =?us-ascii?Q?DAqOLZlkvr/Dx78yj3zB4X39?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <434C2B51F511AA42A45C59B0040789C2@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IbrQjxkb0K3z7ZkPDbwumBPr7QnDKgJDV9MYg72KtXI=;
+        b=dx1Df5/yzY+AeZz/rdkuLnqLf65GYwH3dHIFCdSBqpHR3fWG5VtvM11+v8Pz0I424K
+         /CTN93UfyjlVQMv7eSajh07I4QztMYX0OMg0CHIOA2eA2JA68b/3utBkLzotkWwEGMYo
+         pnph5wO/Gl8XUyBVgaIP6DIgLVnP/tHjlk/sY1uNq1c5iAz2ltn/TpK+gz9uARdDWfNz
+         KE0Nouw9d71fwOyDTx1rde2xAF4byNR1HtLY4UzwVp7KueySru6gKGgLUrpUX49QoMAW
+         qLKZzxO74ljfE8ocXZcXcgy7UgDj2/GzwxBgMcm3+7UlIM8aqyxYD+tC5H2LRLvBx7cp
+         eZKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IbrQjxkb0K3z7ZkPDbwumBPr7QnDKgJDV9MYg72KtXI=;
+        b=gqBnF9t8vNUubhaB9A3OEC0KjnHDcHXOGv+5myXCdbrIdMkV0I3Qrf/eBjhEESKDXE
+         RcvTtr7WRde6fNM/8VWgWVMhT46Q6ywCQDk4BgrsK1exOEEY9H1PbgGTPxRKmELYBuCI
+         NDQOUZ9g3ttxMa+iZgIZMveoqDZEFHpa8CKSs2YnlwOfxSw6asOmj3vSsKa49rNe8/55
+         l37Wqg6u6PwqSA09VYc248tVidlpniEe2aiwltakibxc0xe4O6MC5hg5JjchJtWLH6QB
+         0qocByzcT8Y4P+oGDcOnycYqwnxSe1MN4jUZDe3dqVAZe2JszgIP/lTvX6eDeEIeVoya
+         oScw==
+X-Gm-Message-State: AOAM530g4CZRvfiHHOa+hTezdOwey7x4LOVumbcCsRfy1UBFt76U5UoT
+        abb/kOWiUlQc8fWZmHq8LUf6UI8yjgbQa4401QC1aQ==
+X-Google-Smtp-Source: ABdhPJxaEbRftY4lIHCyF5Rw8nvdMm5/lCdHTk5LXSje8/I/5yu/Xzt4icnH9N8EPP/ne043QHlIxNTO/PeJv6d+lKQ=
+X-Received: by 2002:ac8:5810:: with SMTP id g16mr44371397qtg.135.1621030052188;
+ Fri, 14 May 2021 15:07:32 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR10MB1582.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 382de6f4-03f7-48ad-50c9-08d917234735
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 May 2021 21:57:33.3947
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ixDYQj/1Nxc1XDR34V6oAvhvY3WEdB+kqWwBvPeQsk+ZU0PzSLXgCc1uBOSItP/0BLmUyOvgwRfa9DmZkzoxHA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1838
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9984 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0
- phishscore=0 suspectscore=0 malwarescore=0 bulkscore=0 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105140170
-X-Proofpoint-GUID: WxcRwN3bSK_Mxz23YA5iCgU_FFvoJHmc
-X-Proofpoint-ORIG-GUID: WxcRwN3bSK_Mxz23YA5iCgU_FFvoJHmc
+References: <20210514213032.575161-1-arnd@kernel.org>
+In-Reply-To: <20210514213032.575161-1-arnd@kernel.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Sat, 15 May 2021 01:07:21 +0300
+Message-ID: <CAA8EJpoo=VS1Nk-3CpyraDFzF+0xe3SWxkVt7M=8aBNhbdh_hQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm/dsi: fix 32-bit clang warning
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Peter Zijlstra <peterz@infradead.org> [210514 11:37]:
-> On Fri, May 14, 2021 at 05:32:15PM +0200, Peter Zijlstra wrote:
-> > On Wed, Apr 28, 2021 at 03:36:02PM +0000, Liam Howlett wrote:
-> > > +static inline unsigned long mte_pivot(const struct maple_enode *mn,
-> > > +				 unsigned char piv)
-> > > +{
-> > > +	struct maple_node *node =3D mte_to_node(mn);
-> > > +
-> > > +	switch (mte_node_type(mn)) {
-> > > +	case maple_arange_64:
-> > > +		return node->ma64.pivot[piv];
-> > > +	case maple_range_64:
-> > > +	case maple_leaf_64:
-> > > +		return node->mr64.pivot[piv];
-> > > +	case maple_dense:
-> > > +	default:
-> > > +		return 0;
-> > > +	}
-> > > +}
->=20
-> Why is @piv 'unsigned char' ? Does that actually generate better code on
-> any architecture?
+On Sat, 15 May 2021 at 00:31, Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> clang is a little overzealous with warning about a constant conversion
+> in an untaken branch of a ternary expression:
+>
+> drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c:975:48: error: implicit conversion from 'unsigned long long' to 'unsigned long' changes value from 5000000000 to 705032704 [-Werror,-Wconstant-conversion]
+>         .max_pll_rate = (5000000000ULL < ULONG_MAX) ? 5000000000UL : ULONG_MAX,
+>                                                       ^~~~~~~~~~~~
+>
+> Rewrite this to use a preprocessor conditional instead to avoid the
+> warning.
+>
+> Fixes: 076437c9e360 ("drm/msm/dsi: move min/max PLL rate to phy config")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-unsigned char is to match ma_state struct offset which is kept small
-for cache efficiency.
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
->=20
-> At the same time; there's no bounds check.
->=20
+> ---
+> As found with another patch, using __builtin_choose_expr() would
+> likely also work here, but doesn't seem any more readable.
+> ---
+>  drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
+> index e76ce40a12ab..accd6b4eb7c2 100644
+> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
+> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
+> @@ -972,7 +972,11 @@ const struct msm_dsi_phy_cfg dsi_phy_7nm_cfgs = {
+>                 .restore_pll_state = dsi_7nm_pll_restore_state,
+>         },
+>         .min_pll_rate = 600000000UL,
+> -       .max_pll_rate = (5000000000ULL < ULONG_MAX) ? 5000000000ULL : ULONG_MAX,
+> +#ifdef CONFIG_64BIT
+> +       .max_pll_rate = 5000000000UL,
+> +#else
+> +       .max_pll_rate = ULONG_MAX,
+> +#endif
+>         .io_start = { 0xae94400, 0xae96400 },
+>         .num_dsi_phy = 2,
+>         .quirks = DSI_PHY_7NM_QUIRK_V4_1,
+> --
+> 2.29.2
+>
 
-I will add an assert.  Thanks.
+
+-- 
+With best wishes
+Dmitry
