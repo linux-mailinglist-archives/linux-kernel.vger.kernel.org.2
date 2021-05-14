@@ -2,205 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AE173809E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 14:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E51CC3809F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 14:57:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233735AbhENMw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 08:52:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231265AbhENMw1 (ORCPT
+        id S230306AbhENM6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 08:58:20 -0400
+Received: from mail-m17670.qiye.163.com ([59.111.176.70]:17792 "EHLO
+        mail-m17670.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230096AbhENM6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 08:52:27 -0400
-X-Greylist: delayed 8675 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 14 May 2021 05:51:16 PDT
-Received: from mail.manjaro.org (mail.manjaro.org [IPv6:2a01:4f8:150:448b::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18225C061574;
-        Fri, 14 May 2021 05:51:16 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.manjaro.org (Postfix) with ESMTP id 83FE022253A;
-        Fri, 14 May 2021 14:51:14 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at manjaro.org
-Received: from mail.manjaro.org ([127.0.0.1])
-        by localhost (manjaro.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id dat1wKKJdGXb; Fri, 14 May 2021 14:51:10 +0200 (CEST)
-To:     Johan Jonker <jbx6244@gmail.com>,
-        Tobias Schramm <t.schramm@manjaro.org>,
-        linux-usb@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-phy@lists.infradead.org, devicetree@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210514102734.2091238-1-t.schramm@manjaro.org>
- <20210514102734.2091238-5-t.schramm@manjaro.org>
- <01388394-603e-6a43-2044-ae1e93eb0ff3@gmail.com>
-From:   Tobias Schramm <t.schramm@manjaro.org>
-Subject: Re: [PATCH 4/4] arm64: dts: rockchip: add USB support to RK3308 dts
-Message-ID: <e0545fee-70db-ce38-1bd4-6520dc585bad@manjaro.org>
-Date:   Fri, 14 May 2021 14:52:47 +0200
-MIME-Version: 1.0
-In-Reply-To: <01388394-603e-6a43-2044-ae1e93eb0ff3@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US-large
-Content-Transfer-Encoding: 8bit
+        Fri, 14 May 2021 08:58:19 -0400
+Received: from ubuntu.localdomain (unknown [36.152.145.182])
+        by mail-m17670.qiye.163.com (Hmail) with ESMTPA id 5FEFE3C015F;
+        Fri, 14 May 2021 20:57:02 +0800 (CST)
+From:   zhouchuangao <zhouchuangao@vivo.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        zhouchuangao <zhouchuangao@vivo.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org
+Subject: [PATCH] kernel/hung_task: Report top CPU consumers
+Date:   Fri, 14 May 2021 05:56:49 -0700
+Message-Id: <1620997011-106951-1-git-send-email-zhouchuangao@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQkMYSFZJSENJSUIeGU9MQxhVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Kxw6HBw4Kj8NIzdIIzdLLk8*
+        EhNPChBVSlVKTUlLQkJMS0lISUpDVTMWGhIXVQETFA4YEw4aFRwaFDsNEg0UVRgUFkVZV1kSC1lB
+        WUhNVUpOSVVKT05VSkNJWVdZCAFZQUNIQ0M3Bg++
+X-HM-Tid: 0a796af3a476da5akuws5fefe3c015f
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- > Hi Johan,
+1. If the task did not get scheduled for more than 2 minutes,
+report top 3(By default) CPU consumers.
 
-Am 14.05.21 um 14:09 schrieb Johan Jonker:
-> Hi Tobias,
-> 
-> Just sent a patch for grf.yaml and rockchip-usb-phy.yaml conversion myself.
-> 
-Ah wonderful, thanks! I was not quite happy with touching the old .txt 
-documentation anyway. I'll adjust my next version to depend on your 
-patches then.
-> Added { .compatible = "rockchip,rk3308-usb2phy", .data =
-> &rk3308_phy_cfgs }, to phy-rockchip-inno-usb2.c
-> 
-> Added is "rockchip,rk3308-usb-phy" to rockchip-usb-phy.txt
-> 
-> compatible = "rockchip,rk3308-usb2phy"; is used in this patch.
-> 
-> Maybe try phy-rockchip-inno-usb2.yaml?
-> 
-Right. Somehow ended up in the wrong file there. Will fix it in the next 
-version.
-> "rockchip,rk3308-usb2phy-grf", "syscon", "simple-mfd" document missing.
-> 
-> Could someone recheck the reg memory size?
-> Is this still correct then?
-> 
-> ===
-> compatible = "rockchip,rk3308-grf", "syscon", "simple-mfd";
-> reg = <0x0 0xff000000 0x0 0x10000>;
-> 
-> Do we still need "0x0 0x10000" here?
-The technical reference manual specifies it as 64k in size. However, 
-since the dts has separate nodes for the other grfs it should probably 
-be "0x0 0x8000" at max. Technical reference manual indicates there is 
-nothing beyond 0x0803 in the main grf.
-> ===
-> compatible = "rockchip,rk3308-usb2phy-grf", "syscon", "simple-mfd";
-> reg = <0x0 0xff008000 0x0 0x4000>;
-> ===
-> compatible = "rockchip,rk3308-detect-grf", "syscon", "simple-mfd";
-> reg = <0x0 0xff00b000 0x0 0x1000>;
-> ===
-> compatible = "rockchip,rk3308-core-grf", "syscon", "simple-mfd";
-> reg = <0x0 0xff00c000 0x0 0x1000>;
-> ===
-> 
-> Johan
-> 
-> On 5/14/21 12:27 PM, Tobias Schramm wrote:
->> The Rockchip RK3308 features an integrated USB 2.0 phy, an USB OTG
->> controller and OHCI/EHCI interfaces.
->> This patch adds all of those to the RK3308 dtsi and thereby enables USB
->> support on the RK3308.
->>
->> Signed-off-by: Tobias Schramm <t.schramm@manjaro.org>
->> ---
->>   arch/arm64/boot/dts/rockchip/rk3308.dtsi | 75 ++++++++++++++++++++++++
->>   1 file changed, 75 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/rockchip/rk3308.dtsi b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
->> index 0c5fa9801e6f..80fd802d6c15 100644
->> --- a/arch/arm64/boot/dts/rockchip/rk3308.dtsi
->> +++ b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
->> @@ -177,6 +177,43 @@ reboot-mode {
->>   		};
->>   	};
->>   
->> +	usb2phy_grf: syscon@ff008000 {
->> +		compatible = "rockchip,rk3308-usb2phy-grf", "syscon",
->> +			     "simple-mfd";
->> +		reg = <0x0 0xff008000 0x0 0x4000>;
->> +		#address-cells = <1>;
->> +		#size-cells = <1>;
->> +
->> +		u2phy: usb2-phy@100 {
-> 
->> +			compatible = "rockchip,rk3308-usb2phy";
->> +			reg = <0x100 0x10>;
->> +			clocks = <&cru SCLK_USBPHY_REF>;
->> +			clock-names = "phyclk";
->> +			clock-output-names = "usb480m_phy";
->> +			#clock-cells = <0>;
->> +			assigned-clocks = <&cru USB480M>;
->> +			assigned-clock-parents = <&u2phy>;
->> +			status = "disabled";
->> +
-> 
-> Looks like
-> 
->> +			u2phy_otg: otg-port {
->> +				#phy-cells = <0>;
->> +				interrupts = <GIC_SPI 67 IRQ_TYPE_LEVEL_HIGH>,
->> +					     <GIC_SPI 68 IRQ_TYPE_LEVEL_HIGH>,
->> +					     <GIC_SPI 69 IRQ_TYPE_LEVEL_HIGH>;
->> +				interrupt-names = "otg-bvalid", "otg-id",
->> +						  "linestate";
->> +				status = "disabled";
->> +			};
->> +
->> +			u2phy_host: host-port {
->> +				#phy-cells = <0>;
->> +				interrupts = <GIC_SPI 74 IRQ_TYPE_LEVEL_HIGH>;
->> +				interrupt-names = "linestate";
->> +				status = "disabled";
->> +			};
->> +		};
->> +	};
->> +
->>   	detect_grf: syscon@ff00b000 {
->>   		compatible = "rockchip,rk3308-detect-grf", "syscon", "simple-mfd";
->>   		reg = <0x0 0xff00b000 0x0 0x1000>;
->> @@ -579,6 +616,44 @@ spdif_tx: spdif-tx@ff3a0000 {
->>   		status = "disabled";
->>   	};
->>   
->> +	usb20_otg: usb@ff400000 {
->> +		compatible = "rockchip,rk3308-usb", "rockchip,rk3066-usb",
->> +			     "snps,dwc2";
->> +		reg = <0x0 0xff400000 0x0 0x40000>;
->> +		interrupts = <GIC_SPI 66 IRQ_TYPE_LEVEL_HIGH>;
->> +		clocks = <&cru HCLK_OTG>;
->> +		clock-names = "otg";
->> +		dr_mode = "otg";
->> +		g-np-tx-fifo-size = <16>;
->> +		g-rx-fifo-size = <280>;
->> +		g-tx-fifo-size = <256 128 128 64 32 16>;
->> +		phys = <&u2phy_otg>;
->> +		phy-names = "usb2-phy";
->> +		status = "disabled";
->> +	};
->> +
->> +	usb_host_ehci: usb@ff440000 {
->> +		compatible = "generic-ehci";
->> +		reg = <0x0 0xff440000 0x0 0x10000>;
->> +		interrupts = <GIC_SPI 71 IRQ_TYPE_LEVEL_HIGH>;
->> +		clocks = <&cru HCLK_HOST>, <&cru HCLK_HOST_ARB>, <&u2phy>;
->> +		clock-names = "usbhost", "arbiter", "utmi";
->> +		phys = <&u2phy_host>;
->> +		phy-names = "usb";
->> +		status = "disabled";
->> +	};
->> +
->> +	usb_host_ohci: usb@ff450000 {
->> +		compatible = "generic-ohci";
->> +		reg = <0x0 0xff450000 0x0 0x10000>;
->> +		interrupts = <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>;
->> +		clocks = <&cru HCLK_HOST>, <&cru HCLK_HOST_ARB>, <&u2phy>;
->> +		clock-names = "usbhost", "arbiter", "utmi";
->> +		phys = <&u2phy_host>;
->> +		phy-names = "usb";
->> +		status = "disabled";
->> +	};
->> +
->>   	sdmmc: mmc@ff480000 {
->>   		compatible = "rockchip,rk3308-dw-mshc", "rockchip,rk3288-dw-mshc";
->>   		reg = <0x0 0xff480000 0x0 0x4000>;
->>
+2. By default, the CPU utilization of each process in one minute
+is calculated.
+
+3. Add a new member last_cpu_time to task_struct to record the CPU
+usage of the process at the beginning of the computation.
+
+Signed-off-by: zhouchuangao <zhouchuangao@vivo.com>
+---
+ include/linux/sched.h |   1 +
+ kernel/hung_task.c    | 161 +++++++++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 160 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 8d5264b..103f98f 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -973,6 +973,7 @@ struct task_struct {
+ 	unsigned long			last_switch_count;
+ 	unsigned long			last_switch_time;
+ 	unsigned long			killed_time;
++	u64				last_cpu_time;
+ #endif
+ 	/* Filesystem information: */
+ 	struct fs_struct		*fs;
+diff --git a/kernel/hung_task.c b/kernel/hung_task.c
+index bb2e3e1..fb5f944 100644
+--- a/kernel/hung_task.c
++++ b/kernel/hung_task.c
+@@ -10,6 +10,7 @@
+ #include <linux/cpu.h>
+ #include <linux/nmi.h>
+ #include <linux/init.h>
++#include <linux/tick.h>
+ #include <linux/delay.h>
+ #include <linux/freezer.h>
+ #include <linux/kthread.h>
+@@ -21,7 +22,7 @@
+ #include <linux/sched/signal.h>
+ #include <linux/sched/debug.h>
+ #include <linux/sched/sysctl.h>
+-
++#include <linux/sched/cputime.h>
+ #include <trace/events/sched.h>
+ 
+ /*
+@@ -55,6 +56,16 @@ static bool hung_task_show_lock;
+ static bool hung_task_call_panic;
+ static bool hung_task_show_all_bt;
+ 
++static u64	last_cpu_usage;
++static u64	interval_cpu_usage;
++
++#define NUM_CONSUMERS   3
++struct cpu_consumer {
++	char	comm[TASK_COMM_LEN];
++	pid_t	pid;
++	u64	cpu_used;
++};
++
+ static struct task_struct *watchdog_task;
+ 
+ #ifdef CONFIG_SMP
+@@ -72,6 +83,145 @@ unsigned int __read_mostly sysctl_hung_task_all_cpu_backtrace;
+ unsigned int __read_mostly sysctl_hung_task_panic =
+ 				CONFIG_BOOTPARAM_HUNG_TASK_PANIC_VALUE;
+ 
++#ifdef arch_idle_time
++static u64 get_idle_time(struct kernel_cpustat *kcs, int cpu)
++{
++	u64 idle;
++
++	idle = kcs->cpustat[CPUTIME_IDLE];
++	if (cpu_online(cpu) && !nr_iowait_cpu(cpu))
++		idle += arch_idle_time(cpu);
++	return idle;
++}
++
++static u64 get_iowait_time(struct kernel_cpustat *kcs, int cpu)
++{
++	u64 iowait;
++
++	iowait = kcs->cpustat[CPUTIME_IOWAIT];
++	if (cpu_online(cpu) && nr_iowait_cpu(cpu))
++		iowait += arch_idle_time(cpu);
++	return iowait;
++}
++#else
++static u64 get_idle_time(struct kernel_cpustat *kcs, int cpu)
++{
++	u64 idle, idle_usecs = -1ULL;
++
++	if (cpu_online(cpu))
++		idle_usecs = get_cpu_idle_time_us(cpu, NULL);
++
++	if (idle_usecs == -1ULL)
++		/* !NO_HZ or cpu offline so we can rely on cpustat.idle */
++		idle = kcs->cpustat[CPUTIME_IDLE];
++	else
++		idle = idle_usecs * NSEC_PER_USEC;
++
++	return idle;
++}
++
++static u64 get_iowait_time(struct kernel_cpustat *kcs, int cpu)
++{
++	u64 iowait, iowait_usecs = -1ULL;
++
++	if (cpu_online(cpu))
++		iowait_usecs = get_cpu_iowait_time_us(cpu, NULL);
++
++	if (iowait_usecs == -1ULL)
++		/* !NO_HZ or cpu offline so we can rely on cpustat.iowait */
++		iowait = kcs->cpustat[CPUTIME_IOWAIT];
++	else
++		iowait = iowait_usecs * NSEC_PER_USEC;
++
++	return iowait;
++}
++#endif
++
++static void show_top_cpu_consumers(bool compute)
++{
++	int i, j;
++	struct task_struct *g, *t;
++	struct signal_struct *sig;
++	u64 cutime, cstime, utime, stime;
++	u64 task_cpu_time, interval_time;
++	struct cpu_consumer tcc[NUM_CONSUMERS];
++
++	memset(tcc, 0, sizeof(struct cpu_consumer) * NUM_CONSUMERS);
++
++	for_each_process_thread(g, t) {
++		sig = t->signal;
++		cutime = sig->cutime;
++		cstime = sig->cstime;
++		task_cputime_adjusted(t, &utime, &stime);
++		task_cpu_time = cutime + cstime + utime + stime;
++
++		if (compute) {
++			interval_time = task_cpu_time - t->last_cpu_time;
++			for (i = 0; i < NUM_CONSUMERS; i++) {
++				if (interval_time > tcc[i].cpu_used) {
++					for (j = NUM_CONSUMERS - 1; j > i; j--) {
++						strcpy(tcc[j].comm, tcc[j-1].comm);
++						tcc[j].pid = tcc[j-1].pid;
++						tcc[j].cpu_used = tcc[j-1].cpu_used;
++					}
++					strcpy(tcc[i].comm, t->comm);
++					tcc[i].pid = t->pid;
++					tcc[i].cpu_used = interval_time;
++					break;
++				}
++			}
++		} else
++			t->last_cpu_time = task_cpu_time;
++	}
++
++	if (compute) {
++		pr_info("hung task report top %d CPU consumers:\n", NUM_CONSUMERS);
++		pr_info("TOP    COMM    PID    [TASK_CPU_TIME/ALL_CPU_TIME]\n");
++		for (i = 0; i < NUM_CONSUMERS; i++)
++			pr_info("Top%d   %s    %d    [%lld/%lld]\n", i,
++				tcc[i].comm,
++				tcc[i].pid,
++				nsec_to_clock_t(tcc[i].cpu_used),
++				nsec_to_clock_t(interval_cpu_usage));
++	}
++}
++
++static void all_cpu_usage(bool compute)
++{
++	int i;
++	u64 user, nice, system, idle, iowait, irq, softirq, steal;
++	u64 guest, guest_nice;
++	u64 current_cpu_usage = 0;
++
++	user = nice = system = idle = iowait = irq = 0;
++	softirq = steal = guest = guest_nice = 0;
++
++	for_each_possible_cpu(i) {
++		struct kernel_cpustat kcpustat;
++		u64 *cpustat = kcpustat.cpustat;
++
++		kcpustat_cpu_fetch(&kcpustat, i);
++
++		user += cpustat[CPUTIME_USER];
++		nice += cpustat[CPUTIME_NICE];
++		system += cpustat[CPUTIME_SYSTEM];
++		idle += get_idle_time(&kcpustat, i);
++		iowait += get_iowait_time(&kcpustat, i);
++		irq += cpustat[CPUTIME_IRQ];
++		softirq += cpustat[CPUTIME_SOFTIRQ];
++		steal += cpustat[CPUTIME_STEAL];
++		guest += cpustat[CPUTIME_GUEST];
++		guest_nice += kcpustat_cpu(i).cpustat[CPUTIME_GUEST_NICE];
++	}
++	current_cpu_usage = user + nice + system + idle + iowait +
++				irq + softirq + steal + guest + guest_nice;
++
++	if (compute)
++		interval_cpu_usage = current_cpu_usage - last_cpu_usage;
++	else
++		last_cpu_usage = current_cpu_usage;
++}
++
+ static int
+ hung_task_panic(struct notifier_block *this, unsigned long event, void *ptr)
+ {
+@@ -253,8 +403,15 @@ static void check_hung_uninterruptible_tasks(unsigned long timeout)
+ 		trigger_all_cpu_backtrace();
+ 	}
+ 
+-	if (hung_task_call_panic)
++	if (hung_task_call_panic) {
++		all_cpu_usage(false);
++		show_top_cpu_consumers(false);
++		msleep(1000);
++		all_cpu_usage(true);
++		show_top_cpu_consumers(true);
++
+ 		panic("hung_task: blocked tasks");
++	}
+ }
+ 
+ static long hung_timeout_jiffies(unsigned long last_checked,
+-- 
+2.7.4
+
