@@ -2,106 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B4E33803C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 08:48:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAF1B3803C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 08:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232686AbhENGuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 02:50:07 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:56717 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231741AbhENGuF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 02:50:05 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 6DF7E581119;
-        Fri, 14 May 2021 02:48:54 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Fri, 14 May 2021 02:48:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=nq4wATHZa1IcXgPqo1r1s13/RAx
-        BQUj7qBKm49N4hi4=; b=vVrhisulHii45TWUytq4TpjfNCSq+FeM1fXbrcnTGC6
-        rMpO4+A1vq2jz0ye5q9tKC+r1u5S8hJW0ZzUMV9Xq8oDNAd6GxCBFShUBBUCEYkr
-        LabevX5XTVNFZbSymm1b8s1IIshAsV76q7YLj7HXjx7ZTXRXmYo4ZB8XHpueJonZ
-        R9jE3hpdUThYjPN8kkHBFF60ZKELNZN+M+YfxpHYD3CU3fyXD3026lpIDDGF6kHY
-        bx2flLsyDFTmxlDs9zbMWaJF59HB0zfwUkjMWfmAiK9f1HrIbLewmtTfBUZuapkM
-        dUF88HmFAom0HxwHVRRUNZ4JdZTURNYVmtbkSw7ZgDQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=nq4wAT
-        HZa1IcXgPqo1r1s13/RAxBQUj7qBKm49N4hi4=; b=unuQ2lBKXTbSB/MqJU3X39
-        U6liNAMd66PtA0UprxVm9aIIpQBP03Azq1vyqFcxayl9TkcsBQMyTL345q2fgdWw
-        KfCptKWtNB94tJKrrqMqgE8Trhfm1nHNFuGbMv69rHUTGtIWukIUNy87UGTOa4Ob
-        YE4j69xZHof5Iylim1ZJ1wE6CYBYVdK+wpUjSAv5Egvc2nVHtk9Jz1jraPdYYd8/
-        HGZ7jKNOgzLZ1Qp+gWLy0kynj/0RsWN7GP5mkTM+wQ/3pU8jRZ8zUNbsm9RTx/js
-        1F8x40rATqYfxomemgpIypxJc+uIIsVSBsxGh6h7mLEf61EapimzI8uV8oLGMlPg
-        ==
-X-ME-Sender: <xms:VR2eYPo-9iIoly19HBufDAesMQqGBNaqiiITdBl4xVDy5fB1XBpyIQ>
-    <xme:VR2eYJqI20GvDBiwFpfIv6KLuH6bBvEIoTJnA0Ub3HqiBBxTQt2KRp8caKChiOCX7
-    pV1JFQZEk5k9A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdehhedguddutdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
-    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuhe
-    ejgfffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeek
-    fedrkeeirdejgedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
-    hilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:VR2eYMPdi7gcnakWvpNREvXNbFncghaV017Z8uxTuKTHDZ9rJ2XUHw>
-    <xmx:VR2eYC4Kcgt8SNo2dik1X6clwR9Tr7BbADg0PbPvSVPhALPYIXLw4A>
-    <xmx:VR2eYO5tX9c3S9wI3qgeNbzBH8Byhzr1bHK-pN-IL2cXikQuz7ENFA>
-    <xmx:Vh2eYDPrk0_kjqqYaYx8-jzVxpZUQ8B-fYN_3X2Hka4PRJSgFfG_-A>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Fri, 14 May 2021 02:48:53 -0400 (EDT)
-Date:   Fri, 14 May 2021 08:48:51 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Hayes Wang <hayeswang@realtek.com>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        syzbot <syzbot+95afd23673f5dd295c57@syzkaller.appspotmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
-        nic_swsd <nic_swsd@realtek.com>
-Subject: Re: [syzbot] WARNING in rtl8152_probe
-Message-ID: <YJ4dU3yCwd2wMq5f@kroah.com>
-References: <0000000000009df1b605c21ecca8@google.com>
- <7de0296584334229917504da50a0ac38@realtek.com>
- <20210513142552.GA967812@rowland.harvard.edu>
- <bde8fc1229ec41e99ec77f112cc5ee01@realtek.com>
+        id S232717AbhENGwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 02:52:09 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:43015 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230444AbhENGwI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 02:52:08 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620975058; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=d51erDtkha1RR6bdcED15Fv71pub36quAgP8GlBGWEc=; b=BzNKgoMwYouCC+lbEX6uyFkBILCdCoxAXqlu240kHs4xPnBX7hRPu3ZNphCrDd84DJDKvW6v
+ 18WtfVhFH4Rew2vqxFuE2ZRzIe2fUWAdp8VM9YSNt441qEHhMvLNOzYazo2JOmoU7KdHNGkE
+ 4g6MOlGAPULnJV9MzHjfQ+oC6pU=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 609e1dd0c7220f8fd36165c7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 14 May 2021 06:50:56
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CE409C43144; Fri, 14 May 2021 06:50:55 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.1.100] (unknown [157.48.128.130])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 399BFC433F1;
+        Fri, 14 May 2021 06:50:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 399BFC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
+Subject: Re: [PATCH] ASoC: qcom: lpass-cpu: Fix pop noise during audio capture
+ begin
+To:     Mark Brown <broonie@kernel.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
+        perex@perex.cz, tiwai@suse.com, srinivas.kandagatla@linaro.org,
+        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, swboyd@chromium.org,
+        judyhsiao@chromium.org
+References: <20210513114539.4813-1-srivasam@codeaurora.org>
+ <20210513133132.GC5813@sirena.org.uk>
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Organization: Qualcomm India Private Limited.
+Message-ID: <a6649fad-c2ca-1808-4227-8bcb373f66bd@codeaurora.org>
+Date:   Fri, 14 May 2021 12:20:46 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bde8fc1229ec41e99ec77f112cc5ee01@realtek.com>
+In-Reply-To: <20210513133132.GC5813@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 02:58:00AM +0000, Hayes Wang wrote:
-> Alan Stern <stern@rowland.harvard.edu>
-> > Sent: Thursday, May 13, 2021 10:26 PM
-> [...]
-> > Syzbot doesn't test real devices.  It tests emulations, and the emulated
-> > devices usually behave very strangely and in very peculiar and
-> > unexpected ways, so as to trigger bugs in the kernel.  That's why the
-> > USB devices you see in syzbot logs usually have bizarre descriptors.
-> 
-> Do you mean I have to debug for a device which doesn't exist?
-> I don't understand why I must consider a fake device
-> which provide unexpected USB descriptor deliberately?
+Hi Brown,
 
-Because people can create "bad" devices and plug them into a system
-which causes the driver to load and then potentially crash the system or
-do other bad things.
+Thanks for your review comments!!!
 
-USB drivers now need to be able to handle "malicious" devices, it's been
-that way for many years now.
+On 5/13/2021 7:01 PM, Mark Brown wrote:
+> On Thu, May 13, 2021 at 05:15:39PM +0530, Srinivasa Rao Mandadapu wrote:
+>
+>> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+>> +		ret = regmap_fields_write(i2sctl->spken, id,
+>> +						 LPAIF_I2SCTL_SPKEN_ENABLE);
+>> +	} else  {
+>> +		ret = regmap_fields_write(i2sctl->micen, id,
+>> +						 LPAIF_I2SCTL_MICEN_ENABLE);
+>> +	}
+> This commit doesn't remove the matching update in triger() so we'd have
+> two redundant updates.  I guess it's unlikely to be harmful but it looks
+> wrong/confusing.
 
-thanks,
+Yes, It's not harmful, as clk_prepare_enable is enabling clock only once 
+but maintaining count.
 
-greg k-h
+As Some times in Suspend/resume Sequence not hitting startup/shutdown, 
+but Trigger, so for maintaining
+
+consistency not removed in trigger.
+
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
