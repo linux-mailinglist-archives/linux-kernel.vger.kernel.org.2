@@ -2,81 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08EA63806EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 12:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 393BD3806F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 12:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233064AbhENKKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 06:10:16 -0400
-Received: from m12-17.163.com ([220.181.12.17]:41817 "EHLO m12-17.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229516AbhENKKO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 06:10:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=0TI7G
-        cZmBng9jgXTxLtSA1LfuJloaVczfNyICETxh3Y=; b=FFy4XNAdU6mrbcj1GCUeD
-        s29fRH2deZ9LfisRtF9TP7jwlRri+Iz2t8yPjx5jDzrQuXbNXQQFTyxnr18PQUuK
-        OttDgOOmn0DWL19jabAvaZtlwTSrHhpcVoP1g3Johww1/KQkBjPstVddh1mDmIl8
-        b7ufHghxcdf+RVXH+HZ4AA=
-Received: from COOL-20201210PM.ccdomain.com (unknown [218.94.48.178])
-        by smtp13 (Coremail) with SMTP id EcCowABXfoIITJ5gaY921A--.10274S2;
-        Fri, 14 May 2021 18:08:12 +0800 (CST)
-From:   zuoqilin1@163.com
-To:     socketcan@hartkopp.net, mkl@pengutronix.de, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, zuoqilin <zuoqilin@yulong.com>
-Subject: [PATCH] net: Remove unnecessary variables
-Date:   Fri, 14 May 2021 18:08:06 +0800
-Message-Id: <20210514100806.792-1-zuoqilin1@163.com>
-X-Mailer: git-send-email 2.28.0.windows.1
+        id S233109AbhENKM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 06:12:26 -0400
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:39517 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229491AbhENKMX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 06:12:23 -0400
+Received: by mail-ot1-f41.google.com with SMTP id d25-20020a0568300459b02902f886f7dd43so12603464otc.6;
+        Fri, 14 May 2021 03:11:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1frAcle0xk2gR8t85H1l0WPIrvdb4SY2cADbzHYmfYQ=;
+        b=LcRipsIafuJiQNxqJvHph4AuwegRi8S1rQaeJRacdoHF1k271EQAhQVfy14mRBQwZd
+         WMJQSwUa3OctM5zwDSQNyP1bzZXmjxSrCe+MeVw3vmddQFgSwtgYbaDFMgiqso3NZ+sE
+         DiWH/W713EQvQKr0nvGUnrZ9UkXuuqhIulQXqSwgDi3y2QAUldG7EaBlFfTIZYQ9TIf3
+         Fn/yIsOA8612VcYT0zE8pjEhpMIMBCFLRCPTsTXidAj9ubgEjTM+f2YyMHTgg30XyRuW
+         WU4gCfacd2wJ00UEyURilFfrIdTE6HOd9FC5I7WogbYUAMiCT+pNUXj+wye6G4nk3H9n
+         +e6A==
+X-Gm-Message-State: AOAM532lPFztg/F4k7VEmbHl1sk7aFnQbftkjXCoKxL5D0EeknJ6Xqhd
+        5G9j2opaRUH81XJF8Jy7HiIW3Gt19F76bVQjAuU=
+X-Google-Smtp-Source: ABdhPJxHg72RaLNhjFK46jarjDSTDULVNMqGfdmCOB6JuYruvk92QpxBrLk+Pjm02QV0cL7XdV593dXo1/yNndOp91M=
+X-Received: by 2002:a9d:3bcb:: with SMTP id k69mr40631462otc.206.1620987072237;
+ Fri, 14 May 2021 03:11:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EcCowABXfoIITJ5gaY921A--.10274S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7XF4Dur13CF47GF1UuF43Awb_yoWfXrXEkF
-        n29FZ7WF90vw4kuw13W3y3Zr4UZFnYqF4kuFWDWFWUAw13A34rJFn7CrnrKFyrWw4Yvr1a
-        g3s8C347C34j9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8VbytUUUUU==
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 52xr1xpolqiqqrwthudrp/xtbBRQySiVPALxBVgQAAsq
+References: <8436da08-4812-d383-8f2a-1c07181ebfb8@gmail.com> <YJ4hrrUkKRkKsUtf@gmail.com>
+In-Reply-To: <YJ4hrrUkKRkKsUtf@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 14 May 2021 12:11:00 +0200
+Message-ID: <CAJZ5v0h0Z3pfwpL2SsJ53=SfqE2d+7PrG+nt0PXjYrqeAkc27g@mail.gmail.com>
+Subject: Re: [PATCH] x86/acpi: Switch to pr_xxx log functions
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zuoqilin <zuoqilin@yulong.com>
+On Fri, May 14, 2021 at 9:07 AM Ingo Molnar <mingo@kernel.org> wrote:
+>
+>
+> * Heiner Kallweit <hkallweit1@gmail.com> wrote:
+>
+> > Switching to pr_debug et al has two benefits:
+> > - We don't have to add PREFIX to each log statement
+> > - Debug output is suppressed except DEBUG is defined or dynamic
+> >   debugging is enabled for the respective code piece.
+> >
+> > In addition ensure that longer messages aren't split to multiple lines
+> > in source code, checkpatch complains otherwise.
+> >
+> > Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+> > ---
+> >  arch/x86/kernel/acpi/boot.c | 118 ++++++++++++++----------------------
+> >  1 file changed, 47 insertions(+), 71 deletions(-)
+>
+> Reviewed-by: Ingo Molnar <mingo@kernel.org>
 
-There is no need to define the variable "rate" to receive,
-just return directly.
-
-Signed-off-by: zuoqilin <zuoqilin@yulong.com>
----
- net/can/proc.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
-
-diff --git a/net/can/proc.c b/net/can/proc.c
-index d1fe49e..b3099f0 100644
---- a/net/can/proc.c
-+++ b/net/can/proc.c
-@@ -99,8 +99,6 @@ static void can_init_stats(struct net *net)
- static unsigned long calc_rate(unsigned long oldjif, unsigned long newjif,
- 			       unsigned long count)
- {
--	unsigned long rate;
--
- 	if (oldjif == newjif)
- 		return 0;
- 
-@@ -111,9 +109,7 @@ static unsigned long calc_rate(unsigned long oldjif, unsigned long newjif,
- 		return 99999999;
- 	}
- 
--	rate = (count * HZ) / (newjif - oldjif);
--
--	return rate;
-+	return (count * HZ) / (newjif - oldjif);
- }
- 
- void can_stat_update(struct timer_list *t)
--- 
-1.9.1
-
-
+So I'm going to take this through the ACPI tree if that's OK.
