@@ -2,104 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 588B738143F
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 01:29:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D9F7381440
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 01:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234372AbhENXaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 19:30:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60170 "EHLO
+        id S234386AbhENXaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 19:30:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230316AbhENXaQ (ORCPT
+        with ESMTP id S230316AbhENXae (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 19:30:16 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99A17C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 16:29:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=y7a4SPe0zvQusCzCY460lWb6jydd+fit/blMzKvdMtY=; b=fFD3j5tDAADVDM6U8lQRsZnwZd
-        BEV6+WXlHvbB+KgdcKbxcXXUEO+QQ6Hdw4e22m/fb/6PxVfuEV4oRWQurWlj9psrjboLQXV8Cj2h+
-        MKsALrov2k94d1MWPotknby8nlqbqAjm9oqgETBXZyeqkA3QOMd/TkvfarIBiEKkJjfIIMBgIRgsw
-        JWeIt2j2odZZT1M0FBm0oGmO+NJNltSipJ0EbedGyX0qWm+lddg7fZqgyiIa/7gBVSjvemO6fbaYk
-        E7aZOQfulnhpIL04VlW7uCjLVb/xt+4LQcZTk4+xOleHPHgjfmIxuFizMWE1GJGc1mniepFOYgJ0c
-        hks38/MA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lhhEW-00Ap2Q-JW; Fri, 14 May 2021 23:28:44 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 412743001E1;
-        Sat, 15 May 2021 01:28:39 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 297C7200C6D64; Sat, 15 May 2021 01:28:39 +0200 (CEST)
-Date:   Sat, 15 May 2021 01:28:39 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        Alex Belits <abelits@marvell.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        John Stultz <john.stultz@linaro.org>
-Subject: Re: [patch 7/8] hrtimer: Avoid unnecessary SMP function calls in
- clock_was_set()
-Message-ID: <YJ8Hp0gTGwugxxFM@hirez.programming.kicks-ass.net>
-References: <20210427082537.611978720@linutronix.de>
- <20210427083724.732437214@linutronix.de>
- <YJ0+6vfkC+LTPkkw@hirez.programming.kicks-ass.net>
- <87bl9d407i.ffs@nanos.tec.linutronix.de>
+        Fri, 14 May 2021 19:30:34 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF016C06174A;
+        Fri, 14 May 2021 16:29:21 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id 10so844081pfl.1;
+        Fri, 14 May 2021 16:29:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pxGT21SiUzu95yASNfR5Rqs+gSBjXrD9o1zl1GmblgM=;
+        b=qZao8ueNBb2tmnKNMnDqY8rqiOKOFE73tcX42qFyHSWmPi5rigkL8g3qCStYSqmM+3
+         +kuGbddn0txGFXBLYg8gxLiMcnPK2/0BLd/k8i9CBk0Fy5H+EFU/ujfhji23W8m3xcqe
+         cC+BXvN5Z4cnpWTdU2kidbL2qnjeZm5p92wzHalhT5CykOUEVezKEEsag4EBgvBQ7Yt4
+         qm/DCoGB9Ds+hbyJqZ4UEAeeXN1R6DWAMxtJ+9yoeEcATqi5cpF9BMyeIu2Re4TNFeGQ
+         N5VZfkiRWGlDnuZopqRxjE4l+ZsXdP71F4x7FNUgKpRDDw3PANKemDNWVe1++tdUiBE2
+         /IwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pxGT21SiUzu95yASNfR5Rqs+gSBjXrD9o1zl1GmblgM=;
+        b=CHQUDsLWRoJGP/Eo8HJML2OfnXT9lOTOu47Bcgxn2aiLYOVBBIeIXiomfixiERtytV
+         GW4ykvJbe2kNilkQo7zv03oL7U0hYTG2rCQv7HceUPwIYgFgiuIyxa9NwtMQbj9MGPEL
+         ZOzZ6o0fJcPMdmVzNq5fbjeXHDxXFX6rotvcxaul40Ognm86kT8DeXExcOU3Z07eHcLU
+         WfJ0HVWp1hSaT4bhcOIuzNsP4ZKxsnxpH2HQv5Az1t6gh5UzZSa3VFgsS2Lhmnk6V3LH
+         lLk5dVaytRuBTwfa8OrwyP+/q7qOzU32+ozMVZPfESwaoM4xYt7N6asmpITsVS7q6pFl
+         jGfA==
+X-Gm-Message-State: AOAM532ch27gDXLEdfymoivk+pSemUg16au89TWFCzm0lpaHQWOLdG+c
+        LPRu39k8d1sdwI0ygX16Ax0=
+X-Google-Smtp-Source: ABdhPJxIi9rZ2YxYfKFWCeC23+x0pQy8/tEynUCWdm6ba7M7aNucGdndo04+EihgiQKnTDaoQa+6Zg==
+X-Received: by 2002:aa7:989d:0:b029:2d7:c76f:dd8 with SMTP id r29-20020aa7989d0000b02902d7c76f0dd8mr1526861pfl.15.1621034961384;
+        Fri, 14 May 2021 16:29:21 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.84])
+        by smtp.gmail.com with ESMTPSA id s28sm4690581pfw.115.2021.05.14.16.29.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 May 2021 16:29:20 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, gregkh@linuxfoundation.org,
+        bongsu.jeon@samsung.com, andrew@lunn.ch, wanghai38@huawei.com,
+        zhengyongjun3@huawei.com, alexs@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dongliang Mu <mudongliangabcd@gmail.com>,
+        syzbot+19bcfc64a8df1318d1c3@syzkaller.appspotmail.com
+Subject: [PATCH v2] NFC: nci: fix memory leak in nci_allocate_device
+Date:   Sat, 15 May 2021 07:29:06 +0800
+Message-Id: <20210514232906.982825-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87bl9d407i.ffs@nanos.tec.linutronix.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 08:52:33PM +0200, Thomas Gleixner wrote:
-> On Thu, May 13 2021 at 16:59, Peter Zijlstra wrote:
-> > On Tue, Apr 27, 2021 at 10:25:44AM +0200, Thomas Gleixner wrote:
-> >> -	/* Retrigger the CPU local events everywhere */
-> >> -	on_each_cpu(retrigger_next_event, NULL, 1);
-> >> +	if (!zalloc_cpumask_var(&mask, GFP_KERNEL)) {
-> >> +		on_each_cpu(retrigger_next_event, NULL, 1);
-> >
-> > This will violate NOHZ_FULL;
-> 
-> Only if that allocation fails.
+nfcmrvl_disconnect fails to free the hci_dev field in struct nci_dev.
+Fix this by freeing hci_dev in nci_free_device.
 
-Right, which should be near to never I suppose.
+BUG: memory leak
+unreferenced object 0xffff888111ea6800 (size 1024):
+  comm "kworker/1:0", pid 19, jiffies 4294942308 (age 13.580s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 60 fd 0c 81 88 ff ff  .........`......
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<000000004bc25d43>] kmalloc include/linux/slab.h:552 [inline]
+    [<000000004bc25d43>] kzalloc include/linux/slab.h:682 [inline]
+    [<000000004bc25d43>] nci_hci_allocate+0x21/0xd0 net/nfc/nci/hci.c:784
+    [<00000000c59cff92>] nci_allocate_device net/nfc/nci/core.c:1170 [inline]
+    [<00000000c59cff92>] nci_allocate_device+0x10b/0x160 net/nfc/nci/core.c:1132
+    [<00000000006e0a8e>] nfcmrvl_nci_register_dev+0x10a/0x1c0 drivers/nfc/nfcmrvl/main.c:153
+    [<000000004da1b57e>] nfcmrvl_probe+0x223/0x290 drivers/nfc/nfcmrvl/usb.c:345
+    [<00000000d506aed9>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+    [<00000000bc632c92>] really_probe+0x159/0x4a0 drivers/base/dd.c:554
+    [<00000000f5009125>] driver_probe_device+0x84/0x100 drivers/base/dd.c:740
+    [<000000000ce658ca>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:846
+    [<000000007067d05f>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
+    [<00000000f8e13372>] __device_attach+0x122/0x250 drivers/base/dd.c:914
+    [<000000009cf68860>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
+    [<00000000359c965a>] device_add+0x5be/0xc30 drivers/base/core.c:3109
+    [<00000000086e4bd3>] usb_set_configuration+0x9d9/0xb90 drivers/usb/core/message.c:2164
+    [<00000000ca036872>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
+    [<00000000d40d36f6>] usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
+    [<00000000bc632c92>] really_probe+0x159/0x4a0 drivers/base/dd.c:554
 
-> Aside of that any CPU which has an affected timer will get notified even
-> on NOHZ_FULL.
+Reported-by: syzbot+19bcfc64a8df1318d1c3@syzkaller.appspotmail.com
+Fixes: 11f54f228643 ("NFC: nci: Add HCI over NCI protocol support")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+---
+v1->v2: change nci_hci_allocate to nci_hci_deallocate
+        add the Fixes tag
+ include/net/nfc/nci_core.h | 1 +
+ net/nfc/nci/core.c         | 1 +
+ net/nfc/nci/hci.c          | 5 +++++
+ 3 files changed, 7 insertions(+)
 
-Right; but if it's properly NOHZ_FULL -- the kind that wanted a signal
-on any entry into the kernel -- when it won't have timers and this IPI
-will trigger the signal and kill the program.
+diff --git a/include/net/nfc/nci_core.h b/include/net/nfc/nci_core.h
+index bd76e8e082c0..aa2e0f169015 100644
+--- a/include/net/nfc/nci_core.h
++++ b/include/net/nfc/nci_core.h
+@@ -298,6 +298,7 @@ int nci_nfcc_loopback(struct nci_dev *ndev, void *data, size_t data_len,
+ 		      struct sk_buff **resp);
+ 
+ struct nci_hci_dev *nci_hci_allocate(struct nci_dev *ndev);
++void nci_hci_deallocate(struct nci_dev *ndev);
+ int nci_hci_send_event(struct nci_dev *ndev, u8 gate, u8 event,
+ 		       const u8 *param, size_t param_len);
+ int nci_hci_send_cmd(struct nci_dev *ndev, u8 gate,
+diff --git a/net/nfc/nci/core.c b/net/nfc/nci/core.c
+index 9a585332ea84..da7fe9db1b00 100644
+--- a/net/nfc/nci/core.c
++++ b/net/nfc/nci/core.c
+@@ -1191,6 +1191,7 @@ EXPORT_SYMBOL(nci_allocate_device);
+ void nci_free_device(struct nci_dev *ndev)
+ {
+ 	nfc_free_device(ndev->nfc_dev);
++	nci_hci_deallocate(ndev);
+ 	kfree(ndev);
+ }
+ EXPORT_SYMBOL(nci_free_device);
+diff --git a/net/nfc/nci/hci.c b/net/nfc/nci/hci.c
+index 6b275a387a92..96865142104f 100644
+--- a/net/nfc/nci/hci.c
++++ b/net/nfc/nci/hci.c
+@@ -792,3 +792,8 @@ struct nci_hci_dev *nci_hci_allocate(struct nci_dev *ndev)
+ 
+ 	return hdev;
+ }
++
++void nci_hci_deallocate(struct nci_dev *ndev)
++{
++	kfree(ndev->hci_dev);
++}
+-- 
+2.25.1
 
-But yeah, you're right, that's not very likely.
-
-
-> >> +	preempt_disable();
-> >> +	smp_call_function_many(mask, retrigger_next_event, NULL, 1);
-> >
-> > The sane option is:
-> >
-> > 	smp_call_function_many_cond(cpu_online_mask, retrigger_next_event,
-> > 				    NULL, SCF_WAIT, update_needs_ipi);
-> >
-> > Which does all of the above, but better.
-> 
-> With the difference that the for_each_cpu() loop runs with preemption
-> disabled, while with this approach preemption is only disabled accross
-> the function call.
-
-Yeah, I'd forgotten that... I might put looking at that on the todo list
-somewhere :/
