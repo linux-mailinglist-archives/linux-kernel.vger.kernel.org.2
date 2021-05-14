@@ -2,77 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F105B380782
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 12:39:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBA7D380784
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 12:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229504AbhENKkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 06:40:31 -0400
-Received: from foss.arm.com ([217.140.110.172]:46978 "EHLO foss.arm.com"
+        id S231880AbhENKlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 06:41:20 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50432 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229964AbhENKka (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 06:40:30 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BD8BF1713;
-        Fri, 14 May 2021 03:39:18 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4EFCD3F719;
-        Fri, 14 May 2021 03:39:17 -0700 (PDT)
-Date:   Fri, 14 May 2021 11:39:12 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Hanjun Guo <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Eric Auger <eric.auger@redhat.com>,
-        Will Deacon <will@kernel.org>, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ACPI/IORT: Handle device properties with software node
- API
-Message-ID: <20210514103912.GA16131@lpieralisi>
-References: <20210511125528.18525-1-heikki.krogerus@linux.intel.com>
+        id S229964AbhENKlR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 06:41:17 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8B69FAF11;
+        Fri, 14 May 2021 10:40:05 +0000 (UTC)
+Subject: Re: [PATCH v10 01/33] mm: Introduce struct folio
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        akpm@linux-foundation.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
+References: <20210511214735.1836149-1-willy@infradead.org>
+ <20210511214735.1836149-2-willy@infradead.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <ad8cd2e7-4111-f523-bc9c-5702b9071a5f@suse.cz>
+Date:   Fri, 14 May 2021 12:40:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210511125528.18525-1-heikki.krogerus@linux.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210511214735.1836149-2-willy@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 03:55:28PM +0300, Heikki Krogerus wrote:
-> The older device property API is going to be removed.
-> Replacing the device_add_properties() call with software
-> node API equivalent device_create_managed_software_node().
+On 5/11/21 11:47 PM, Matthew Wilcox (Oracle) wrote:
+> +/**
+> + * folio_page - Return a page from a folio.
+> + * @folio: The folio.
+> + * @n: The page number to return.
+> + *
+> + * @n is relative to the start of the folio.  It should be between
+> + * 0 and folio_nr_pages(@folio) - 1, but this is not checked for.
+> + */
+> +#define folio_page(folio, n)	nth_page(&(folio)->page, n)
+
+BTW, would it make sense to have also a folio_page(folio) wrapper? Or is
+"&folio->page" used in later patches sufficiently elegant and stable enough for
+the future?
+
+>  static __always_inline int PageTail(struct page *page)
+>  {
+>  	return READ_ONCE(page->compound_head) & 1;
 > 
-> Fixes: 434b73e61cc6 ("iommu/arm-smmu-v3: Use device properties for pasid-num-bits")
 
-Is this really fixing anything ? I am not sure I understand what you
-would like to achieve with this tag.
-
-> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> ---
->  drivers/acpi/arm64/iort.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-
-With the above comment clarified:
-
-Acked-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-
-> diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
-> index 3912a1f6058e5..e34937e11186a 100644
-> --- a/drivers/acpi/arm64/iort.c
-> +++ b/drivers/acpi/arm64/iort.c
-> @@ -976,7 +976,7 @@ static void iort_named_component_init(struct device *dev,
->  				      FIELD_GET(ACPI_IORT_NC_PASID_BITS,
->  						nc->node_flags));
->  
-> -	if (device_add_properties(dev, props))
-> +	if (device_create_managed_software_node(dev, props, NULL))
->  		dev_warn(dev, "Could not add device properties\n");
->  }
->  
-> -- 
-> 2.30.2
-> 
