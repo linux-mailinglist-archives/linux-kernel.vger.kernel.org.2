@@ -2,96 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B11C380418
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 09:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89C5E38041C
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 09:23:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232542AbhENHXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 03:23:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231331AbhENHXp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 03:23:45 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57AFEC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 00:22:33 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id d15-20020a05620a136fb02902e9e93c69c8so21228455qkl.23
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 00:22:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=wrcmbdNNJFx//dV10zYXdyJfZ8i9iBUOXuvlPxh7U7s=;
-        b=apLDegMhJMs8ZJ0Xs14xG/DWMAf8uNy5/PaHXqPiLM8OqurGbgN1sVeEbolRgi0/aG
-         0DawaeTh5ck+2X8Ylv+PY4v2330VfUWf6BPUkmj2ptIaD+Ol1DzXkgAW7Fp90P9ECPNE
-         QAwsSYUmQjcMEcrqy3kP82OqM/N4PHuCoI4KWFl1Irp7k6mhVIG+rRY8sZprgvWtvqjx
-         SRb70zB0XcVV8rwvWlkGWp1GsqCRjRi+LlSO+JNJhzk2qK43zl0DceiKNzB/HlXY26R3
-         anbSM1z8wI5Vji63tRUEQQVkC3ETZR6Az+zIoChZ1tqRsDkv8GSMxNcypJMYtf6sWv2o
-         zXww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=wrcmbdNNJFx//dV10zYXdyJfZ8i9iBUOXuvlPxh7U7s=;
-        b=aRCHXa3mMVobmqN910sIpGQJfmAkrnzE4ffrW+vSew+J0Z6ksCOp3X5B4FkX726h67
-         jXGJszM4FMTWqFYSvfoNxbD8wXrAX6oZp4sc8ikUT8x2B9ITrqqtlmdmgYqnNGeb30Z4
-         ss5tRpap2H4JS+pPp7bAilX9IRpfO6pdYhJkz1aoSwWj5t+ZU6yHT6VcHWnXH8Bwp/Sb
-         OkH8V3bcuTZn+YtuivVZrfOuBfAkuUnkxZoaT4+Vl95PLEdx5mYsqSvYKit6lvL1fhFu
-         V/XuWvL5SOtippGsUJmErK/IrtvJOsC13txZvT9ybPyYpDzXsYfAgmUV0jtM3c4BV7Dr
-         H/hw==
-X-Gm-Message-State: AOAM531nygCzHLsY4DeLJY0c3bbPYjdq1Iv0yjZQ52n5NHtOznlHBedF
-        RepjrBOQq2pRkSI/QEpncTeyJs4gahU=
-X-Google-Smtp-Source: ABdhPJyrgq1xOyo6KhCUAYnPbyS44d0I9RWp+8tMVgCjHXLWI6cTgW68efaiiawnOHF4PRt7HvD3ZEBPBDY=
-X-Received: from glider.muc.corp.google.com ([2a00:79e0:15:13:e033:4e8b:8f1:9bb4])
- (user=glider job=sendgmr) by 2002:ad4:4810:: with SMTP id g16mr17927192qvy.21.1620976952308;
- Fri, 14 May 2021 00:22:32 -0700 (PDT)
-Date:   Fri, 14 May 2021 09:22:28 +0200
-Message-Id: <20210514072228.534418-1-glider@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
-Subject: [PATCH] kasan: slab: always reset the tag in get_freepointer_safe()
-From:   Alexander Potapenko <glider@google.com>
-To:     akpm@linux-foundation.org
-Cc:     Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Elliot Berman <eberman@codeaurora.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S232997AbhENHYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 03:24:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55166 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231331AbhENHYJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 03:24:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D30BD61446;
+        Fri, 14 May 2021 07:22:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620976978;
+        bh=4uovLNiP8wL68lGCib+smMClDIwTXY6Ukg4CRe7CnP8=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=ITGEB8B6AJcfppHTwVi+HPsQkxeB17rkdQoYrTT9ZjSVXqEyKjB2AvCgXmRnjc7O0
+         LHbeyUuAvcR/CfaggQApqS0PRmum5ZcTANOS5f0MkIBZ3pJ4avCeijhkZXFJyOUTwU
+         Vs0zIPTEQQr6Bloh5d41hxeLW7YdqRtEbPBZTvDEh6ynmcstqG+U7bynTkSgaF7Ltf
+         PjCLJd704QPYyvATxteP/lEhiTIeVewXAgjoTnsPkyRkdooUnAWDnBVOWNveMzvcaM
+         ytI24IzTTaBN6BLVx/q+Gaw+i458xryZQ3Y6+aCQKzCAsA6zEvScT8PDT4+O18smwu
+         +rA2qbxm8is4g==
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-usb@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: Re: [PATCH] usb: gadget: tegra-xudc: Constify static structs
+In-Reply-To: <20210513200908.448351-1-rikard.falkeborn@gmail.com>
+References: <20210513200908.448351-1-rikard.falkeborn@gmail.com>
+Date:   Fri, 14 May 2021 10:22:50 +0300
+Message-ID: <87o8dd7p9x.fsf@kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With CONFIG_DEBUG_PAGEALLOC enabled, the kernel should also untag the
-object pointer, as done in get_freepointer().
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Failing to do so reportedly leads to SLUB freelist corruptions that
-manifest as boot-time crashes.
+Rikard Falkeborn <rikard.falkeborn@gmail.com> writes:
 
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Marco Elver <elver@google.com>
-Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-Cc: Andrey Konovalov <andreyknvl@gmail.com>
-Cc: Elliot Berman <eberman@codeaurora.org>
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Alexander Potapenko <glider@google.com>
----
- mm/slub.c | 1 +
- 1 file changed, 1 insertion(+)
+> Constify a couple of ops-structs that are never modified, to let the
+> compiler put them in read-only memory.
+>
+> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 
-diff --git a/mm/slub.c b/mm/slub.c
-index feda53ae62ba..9a4f59e5b0c2 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -301,6 +301,7 @@ static inline void *get_freepointer_safe(struct kmem_cache *s, void *object)
- 	if (!debug_pagealloc_enabled_static())
- 		return get_freepointer(s, object);
- 
-+	object = kasan_reset_tag(object);
- 	freepointer_addr = (unsigned long)object + s->offset;
- 	copy_from_kernel_nofault(&p, (void **)freepointer_addr, sizeof(p));
- 	return freelist_ptr(s, p, freepointer_addr);
--- 
-2.31.1.751.gd2f1c929bd-goog
+Acked-by: Felipe Balbi <balbi@kernel.org>
 
+=2D-=20
+balbi
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQFFBAEBCAAvFiEE9DumQ60WEZ09LIErzlfNM9wDzUgFAmCeJUoRHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzlfNM9wDzUhY1wf+ISKWTzlCSJcnNPfbpwl4UlNbvUhEz6a/
+E+E4KH/UViPlYw5RX12wXNr0FlLtiZqTo39DnOTWXvMV/gcSqBxrJxc3Vwhovti4
+MBktFvJesYOrnp8CQA4awBASoyF1ZzcOyFMlejNqh40TrUtZBiHDyL1g7hfMzDHC
+F0k8hUDoGWLCgkabUXFIcEI+1qTuM9yA7PpuWHq+YOo8tLgQi6oRGJUPL6dLXvJA
+U7H8QMB8piqnx31BYaphkLLxTta1lxSThzor+rKcgfIjYs8qKA6tJZq+L7g+qWaq
+HBHavJO1E9xI+DJes5tpkhsMPNCzQVwhHe33dAB10/tJH1PlLrDEKQ==
+=HS5v
+-----END PGP SIGNATURE-----
+--=-=-=--
