@@ -2,90 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 246C838056E
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 10:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F241380596
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 10:53:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233687AbhENIq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 04:46:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53026 "EHLO mail.kernel.org"
+        id S233687AbhENIys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 04:54:48 -0400
+Received: from gate.crashing.org ([63.228.1.57]:60419 "EHLO gate.crashing.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231839AbhENIq2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 04:46:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BEBCB61287;
-        Fri, 14 May 2021 08:45:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620981917;
-        bh=GChweA7UlqSx0jPjazErNbjNcvyuSkWf5X3Y2ZUsotQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MvWUOmakKlJzxnJ7mfH2vpBVjO6aFNbomZjVJq6ELYPB1SxnzTuFle+rVHEyPHaLI
-         5ig3SNgFW+X1B9PwUthmctkEuiSAjGa/+DBK72w5n2FlDuQKlI9Wxy5qgrh14YhCZt
-         cSMtUfOJX7xcbOwY1k+FqAk2PqtU8WNLzsTnGlR4=
-Date:   Fri, 14 May 2021 10:45:14 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: staging: rtl8723bs: questions on TODO list
-Message-ID: <YJ44mtOUVZwhxW4m@kroah.com>
-References: <20210514083856.GA13800@agape.jhs>
-MIME-Version: 1.0
+        id S231145AbhENIyl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 04:54:41 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 14E8kuAV007787;
+        Fri, 14 May 2021 03:46:56 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 14E8koYF007785;
+        Fri, 14 May 2021 03:46:50 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Fri, 14 May 2021 03:46:49 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [PATCH kernel v3] powerpc/makefile: Do not redefine $(CPP) for preprocessor
+Message-ID: <20210514084649.GI10366@gate.crashing.org>
+References: <20210513115904.519912-1-aik@ozlabs.ru> <dedc7262-2956-37b2-ebfd-ae8eb9b56716@kernel.org> <CAK7LNASFhRE=1EBj9AoTMMEd2YJdu7bCxARAGJfZ7aXcBrMAUw@mail.gmail.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210514083856.GA13800@agape.jhs>
+In-Reply-To: <CAK7LNASFhRE=1EBj9AoTMMEd2YJdu7bCxARAGJfZ7aXcBrMAUw@mail.gmail.com>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 10:38:57AM +0200, Fabio Aiuto wrote:
-> Hello all,
-> 
-> I'd like to have some clarifications about rtl8723bs driver.
-> In order to make this driver ready for moving out of staging
-> I would like to know:
-> 
-> - find and remove remaining code valid only for 5 GHz. Most of the obvious
->   ones have been removed, but things like channel > 14 still exist.
-> 
-> is it possible to remove all 5g code, even the one related to power
-> regulation when on band 5g? As far as I know about this card is that
-> it doesn't support 5g, so may I just delete all 5g code or there are some
-> constraints I'd take care of?
-> 
-> - find and remove any code for other chips that is left over
-> 
-> Ok this seems clear, are there some suggestion to do it safely?
-> 
-> - convert any remaining unusual variable types
-> 
-> Ok (but feel free to suggest anything)
-> 
-> - find codes that can use %pM and %Nph formatting
-> 
-> Ok (but feel free to suggest anything)
-> 
-> - checkpatch.pl fixes - most of the remaining ones are lines too long. Many
->   of them will require refactoring
-> 
-> Ok
-> 
-> - merge Realtek's bugfixes and new features into the driver
-> 
-> Please, can you explain what one could do that?
-> 
-> - switch to use LIB80211
-> - switch to use MAC80211
-> 
-> I think I need a few details for these last points as well.
-> 
-> Do you think that one will need real hardware to complete
-> these tasks? I don't have rtl8723bs card at the moment, so
-> I think I will focus on those TODO activities which
-> don't need it.
+Hi!
 
-I recommend getting one of these devices to do the more complex tasks as
-described above.  Otherwise it's going to be hard to verify that your
-changes are valid.
+On Fri, May 14, 2021 at 11:42:32AM +0900, Masahiro Yamada wrote:
+> In my best guess, the reason why powerpc adding the endian flag to CPP
+> is this line in arch/powerpc/kernel/vdso64/vdso64.lds.S
+> 
+> #ifdef __LITTLE_ENDIAN__
+> OUTPUT_FORMAT("elf64-powerpcle", "elf64-powerpcle", "elf64-powerpcle")
+> #else
+> OUTPUT_FORMAT("elf64-powerpc", "elf64-powerpc", "elf64-powerpc")
+> #endif
 
-thanks,
+Which is equivalent to
 
-greg k-h
+#ifdef __LITTLE_ENDIAN__
+OUTPUT_FORMAT("elf64-powerpcle")
+#else
+OUTPUT_FORMAT("elf64-powerpc")
+#endif
+
+so please change that at the same time if you touch this :-)
+
+> __LITTLE_ENDIAN__  is defined by powerpc gcc and clang.
+
+This predefined macro is required by the newer ABIs, but all older
+compilers have it as well.  _LITTLE_ENDIAN is not supported on all
+platforms (but it is if your compiler targets Linux, which you cannot
+necessarily rely on).  These macros are PowerPC-specific.
+
+For GCC, for all targets, you can say
+  #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+You do not need any of the other *ORDER__ macros in most cases.
+See "info cpp" for the sordid details.
+
+> [2] powerpc-linux-gnu-gcc + -mlittle-endian    -> __LITTLE_ENDIAN__ is defined
+
+You can just write -mbig and -mlittle btw.  Those aren't available on
+all targets, but neither are the long-winded -m{big,little}-endian
+option names.  Pet peeve, I know :-)
+
+HtH,
+
+
+Segher
