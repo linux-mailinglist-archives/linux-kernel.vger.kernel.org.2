@@ -2,107 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B6C4380A9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 15:45:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BA20380A9D
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 15:45:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230111AbhENNq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 09:46:26 -0400
-Received: from mail.meine-oma.de ([88.99.114.13]:44166 "EHLO mail.meine-oma.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230363AbhENNqV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 09:46:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=meine-oma.de; s=x; h=Content-Transfer-Encoding:Content-Type:Message-ID:
-        References:In-Reply-To:Subject:Cc:To:From:Date:MIME-Version:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=XGx/7rOKdm+joqcF3hvgoi0MjdueZKKpV0droN3qfrc=; b=bY8q2dllZqbldesadPpgsKWIfH
-        xbtGRBjP6CzAQue5ebzXfhX2rpJ5KoKQrFyTKdRkq3/Yubcrdll1hDgcg7IaPAJxc4KyS0ZvtV8VS
-        AyY3CnDdR/w2fQjksT6lyLDdqjd8nQ8y6znLuHNhbw+/vZhfcUOokGnPHjTe1slgQLno=;
-Received: from localhost ([127.0.0.1] helo=mail.meine-oma.de)
-        by mail.meine-oma.de with esmtp (Exim 4.94.2)
-        (envelope-from <himbeere@meine-oma.de>)
-        id 1lhY7X-0003ky-5M; Fri, 14 May 2021 15:44:51 +0200
+        id S231314AbhENNqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 09:46:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230363AbhENNqL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 09:46:11 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09CF6C061574;
+        Fri, 14 May 2021 06:45:00 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1620999897;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Jjy0U9TVSgQ/UDMCkhIERPIDzus1fWQqGP32JHzOO1I=;
+        b=UtuaPgWzO9zfB6iMIFwhPWSqmMP5wvuBvHYlkcATekBDoPJhOYyPA6DnQNHpYy3/2CwUCv
+        XQVhWwlwYeLmJ3QSE6ifWg2N+8Ma9QmzTsYXLsdXjtf0SefxKd4++Nzuul1hTnZp6HwzDX
+        LLKl18SMYDjhGdFPhz4a4CJ5A/sp+wPAuUvIGYTGgk7nTdkQVnO+LNd7rXqzGCBkHhlmGR
+        SzKnN3xpu2oM6pi/HhDG37ABJzvDYs6ux7bz30XOq4tkFel08QPdX+VOU8ENcyKipMSIQj
+        +aDaMg5qe25R/phsxd4fAsIjAmUN3s9zf0rMr8E/jnHEYR52Xof8TdrWHiDdeA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1620999897;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Jjy0U9TVSgQ/UDMCkhIERPIDzus1fWQqGP32JHzOO1I=;
+        b=rs/WfdhwubkjY+Ynk5qqlultcDtj9/9JGaGu2UoAIC7NiYbmVKUd3R59P5tMLig6m9mZDf
+        eBSyIwyuWUCPfTBw==
+To:     Maximilian Luz <luzmaximilian@gmail.com>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
+Cc:     "H. Peter Anvin" <hpa@zytor.com>, Sachi King <nakato@nakato.io>,
+        "x86\@kernel.org" <x86@kernel.org>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable\@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH] x86/i8259: Work around buggy legacy PIC
+In-Reply-To: <e7dbd4d1-f23f-42f0-e912-032ba32f9ec8@gmail.com>
+References: <20210512210459.1983026-1-luzmaximilian@gmail.com> <9b70d8113c084848b8d9293c4428d71b@AcuMS.aculab.com> <e7dbd4d1-f23f-42f0-e912-032ba32f9ec8@gmail.com>
+Date:   Fri, 14 May 2021 15:44:57 +0200
+Message-ID: <87r1i94eg6.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Date:   Fri, 14 May 2021 15:44:51 +0200
-From:   Thomas Stein <himbeere@meine-oma.de>
-To:     Oleksandr Natalenko <oleksandr@natalenko.name>
-Cc:     linux-kernel@vger.kernel.org,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        =?UTF-8?Q?Ville_Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Imre Deak <imre.deak@intel.com>,
-        Manasi Navare <manasi.d.navare@intel.com>,
-        Lyude Paul <lyude@redhat.com>,
-        Ankit Nautiyal <ankit.k.nautiyal@intel.com>,
-        Lucas De Marchi <lucas.demarchi@intel.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: Re: thinkpad x1 carbon display flickering after update to 5.12. good
- on 5.11.x (i915)
-In-Reply-To: <20210514123431.fqvaa437zlw7rq7j@spock.localdomain>
-References: <1a6cf0a3dc8a2c6364265ad7249b76b1@meine-oma.de>
- <20210514123431.fqvaa437zlw7rq7j@spock.localdomain>
-Message-ID: <e41eba8500f731c979340fd810da203f@meine-oma.de>
-X-Sender: himbeere@meine-oma.de
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Max,
 
-Yes, it does indeed! No flicker anymore. Thanks and cheers!
+On Thu, May 13 2021 at 12:11, Maximilian Luz wrote:
+> And lastly, if that's any help at all: The PIC device is described in
+> ACPI in [3]. The Surface Laptop 3 also has an AMD CPU (although a prior
+> generation) and has the PIC described in the exact same way (can also be
+> found in that repository), but doesn't exhibit that behavior (and
+> doesn't show the "Using NULL legacy PIC" line). I expect there's not
+> much you can change to that definition so that's probably irrelevant
+> here.
+>
+> Again, I don't really know anything about these devices, so my guess
+> would be bad hardware revision or bad firmware revision. All I know is
+> that retrying seems to "fix" it.
 
-On 2021-05-14 14:34, Oleksandr Natalenko wrote:
-> Hello.
-> 
-> On Fri, May 14, 2021 at 10:24:26AM +0200, Thomas Stein wrote:
->> After upgrading to linux 5.12 the display on my X1 Carbon Gen 2 starts 
->> to
->> flicker. Well actually it seems to turn off and on again and again. 
->> Here a
->> link to a video a person posted who has the same issue as me 
->> obviousely. 
->> https://linuxove.com/thinkpad-x1-carbon-gen-3-display-flickering-on-linux-kernel-5-12/
->> 
->> This happens without having Xorg running too. So it can't be related 
->> to
->> Xorg. The kernel boots and after a few seconds, the kernel messages 
->> scoll
->> through, the flickering starts. Nothing special in dmesg.
->> 
->> dmesg:
->> 
->> himbeere@rather ~ $ dmesg | grep i915
->> [    0.713595] i915 0000:00:02.0: vgaarb: deactivate vga console
->> [    0.720280] i915 0000:00:02.0: vgaarb: changed VGA decodes:
->> olddecodes=io+mem,decodes=io+mem:owns=io+mem
->> [    0.741494] i915 0000:00:02.0: [drm] Panel advertises DPCD 
->> backlight
->> support, but VBT disagrees. If your backlight controls don't work try
->> booting with i915.enable_dpcd_backlight=1. If your machine needs this,
->> please file a _new_ bug report on drm/i915, see
->> https://gitlab.freedesktop.org/drm/intel/-/wikis/How-to-file-i915-bugs 
->> for
->> details.
->> [    1.864837] [drm] Initialized i915 1.6.0 20201103 for 0000:00:02.0 
->> on
->> minor 0
->> [    1.875907] fbcon: i915drmfb (fb0) is primary device
->> [    3.158255] i915 0000:00:02.0: [drm] fb0: i915drmfb frame buffer 
->> device
->> himbeere@rather ~ $
->> 
->> Downgrading to 5.11 solves the issue for me. Any ideas?
-> 
-> Does [1] fix your issue?
-> 
-> [1] 
-> https://cgit.freedesktop.org/drm-tip/patch/?id=acca7762eb71bc05a8f28d29320d193150051f79
+That might be a a power optimization thing.
+
+Except for older systems the PIC is not really required for IOAPiC to
+work. But there is some historical code which makes assumptions. We can
+change that, but that needs some careful thoughts.
+
+Thanks,
+
+        tglx
