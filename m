@@ -2,165 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A204E380A3F
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 15:15:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83F46380A42
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 15:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232495AbhENNQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 09:16:08 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:38859 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232217AbhENNQH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 09:16:07 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4FhTXG3rqlz9scF;
-        Fri, 14 May 2021 15:14:54 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Oyp1Hn-2RozU; Fri, 14 May 2021 15:14:54 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4FhTXG2gThz9sc8;
-        Fri, 14 May 2021 15:14:54 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id E13CC8B7FA;
-        Fri, 14 May 2021 15:14:53 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 6k6HjmO-OR8H; Fri, 14 May 2021 15:14:53 +0200 (CEST)
-Received: from po15610vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9454C8B7F8;
-        Fri, 14 May 2021 15:14:53 +0200 (CEST)
-Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 6DF49641C0; Fri, 14 May 2021 13:14:53 +0000 (UTC)
-Message-Id: <8ab21fd93d6e0047aa71e6509e5e312f14b2991b.1620998075.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] powerpc: Don't handle ALTIVEC/SPE in ASM in _switch(). Do it
- in C.
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Fri, 14 May 2021 13:14:53 +0000 (UTC)
+        id S232643AbhENNRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 09:17:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231203AbhENNRq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 09:17:46 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9802C061574;
+        Fri, 14 May 2021 06:16:33 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id a2so22025698lfc.9;
+        Fri, 14 May 2021 06:16:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=4TXN1aP2OtPYFWNRZZgEicguo9V9B76iGcfEYyYScQk=;
+        b=vScf2eNYTfRrw0u2cylCVtUG8GoW+pklgsevEe1IVg4Ac5Wtf9/2wbbgWphSfzznBo
+         oiFDiH4VW6cbnt4CmVk+ygZAskCfGrvwVTa9YQpMYDif61fo1fecNDei5GP7H4mTBT3r
+         gNbYA2DAiZ/JMfwz19jSxDEexKZY4VMXXv67jRBwTcgZTuQRRJ/HvBNUsP507QRqWI/0
+         cGy/HdiMerUqCEY7rV9dbVZxXv7Be0GLPGk0wDl3CpUGqCQLOuRXZS1sqsFwFxrJ9g4b
+         YFxwJfv0Lf85ylHkWCYA/FaXvvdB/wvEoJ1EZ7dYSSMDjeb7Q61CJZCYVHeWoPZo+zZo
+         Us2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4TXN1aP2OtPYFWNRZZgEicguo9V9B76iGcfEYyYScQk=;
+        b=JIL/602nuN1vZrJG9pwU2IU8jHtQ1saGii1OU9xYVpWYfJe/4nE3buGTdhRbewpaX9
+         sm57nMMxK4KG8L97FNiaA93Sep/x/yLJX8nixOFcaGWiZsjSYxEoVrOktTUFKfxbI8ri
+         ze1RUhc8/XOD0tTg7v3g6LQ6Qb+d9GLk2+ADUnWOq5w2bZyT8dTMWk98V9eYnPsiSC0Y
+         8i6aabkHu48Sb37++k1jwUmGVJTqLnlMgo7AjqflykL9xbQcj3l4zuKbF0GzNg2JnyrC
+         YIRAlamj7fovbuufX/4pxehihud7F0Bh8777NCbDD2fWBjtVN4ITYzgTaumb3iYYo25Y
+         386A==
+X-Gm-Message-State: AOAM530iAhMYXUrh+r+djiRncZjCGyNU7hBF5av1BizK2J1J/tz9H2mq
+        W9IDhALpVI39PcMC96XJxPcnASgx7iY=
+X-Google-Smtp-Source: ABdhPJx6/NsKPPbhS5G3Qsi20vEoqvEUN3Qei6rmWYoxj6g9tTS4jF8tNCzPblvUeRhMFN1kHXZqKw==
+X-Received: by 2002:a19:6d1b:: with SMTP id i27mr380374lfc.596.1620998192232;
+        Fri, 14 May 2021 06:16:32 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
+        by smtp.googlemail.com with ESMTPSA id f4sm1100897ljn.38.2021.05.14.06.16.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 May 2021 06:16:31 -0700 (PDT)
+Subject: Re: [PATCH v1 2/2] power: supply: sbs-battery: Fall back to Li-ion
+ battery type for bq20z75
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Antoni Aloy Torrens <aaloytorrens@gmail.com>,
+        =?UTF-8?Q?Nikola_Milosavljevi=c4=87?= <mnidza@outlook.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210510220827.11595-1-digetx@gmail.com>
+ <20210510220827.11595-2-digetx@gmail.com>
+ <20210513153136.76rr3ngjhuqy7b7q@earth.universe>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <aebfc4c1-1b4e-c34f-62d9-e8c53e825834@gmail.com>
+Date:   Fri, 14 May 2021 16:16:31 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <20210513153136.76rr3ngjhuqy7b7q@earth.universe>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-_switch() saves and restores ALTIVEC and SPE status.
-For altivec this is redundant with what __switch_to() does with
-save_sprs() and restore_sprs() and giveup_all() before
-calling _switch().
+13.05.2021 18:31, Sebastian Reichel пишет:
+> Hi,
+> 
+> On Tue, May 11, 2021 at 01:08:27AM +0300, Dmitry Osipenko wrote:
+>> The older bq20z75 controller doesn't support reporting the battery type
+>> and the type is Li-ion in this case.
+>>
+>> Tested-by: Antoni Aloy Torrens <aaloytorrens@gmail.com> # TF101
+>> Tested-by: Nikola Milosavljević <mnidza@outlook.com> # TF101
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+> 
+> If it does not support reporting the battery type you should get an
+> error from sbs_get_battery_string_property. Obviously a string has
+> been returned, or you would not end up that far in the code. What
+> string do you see?
 
-Add support for SPI in save_sprs() and restore_sprs() and
-remove things from _switch().
+There is no visible error. Where the error condition should be set?
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/asm-offsets.c |  2 --
- arch/powerpc/kernel/entry_32.S    | 35 -------------------------------
- arch/powerpc/kernel/process.c     |  9 ++++++++
- 3 files changed, 9 insertions(+), 37 deletions(-)
+The returned string is:
 
-diff --git a/arch/powerpc/kernel/asm-offsets.c b/arch/powerpc/kernel/asm-offsets.c
-index 28af4efb4587..5573da9a20d1 100644
---- a/arch/powerpc/kernel/asm-offsets.c
-+++ b/arch/powerpc/kernel/asm-offsets.c
-@@ -119,7 +119,6 @@ int main(void)
- #ifdef CONFIG_ALTIVEC
- 	OFFSET(THREAD_VRSTATE, thread_struct, vr_state.vr);
- 	OFFSET(THREAD_VRSAVEAREA, thread_struct, vr_save_area);
--	OFFSET(THREAD_VRSAVE, thread_struct, vrsave);
- 	OFFSET(THREAD_USED_VR, thread_struct, used_vr);
- 	OFFSET(VRSTATE_VSCR, thread_vr_state, vscr);
- 	OFFSET(THREAD_LOAD_VEC, thread_struct, load_vec);
-@@ -150,7 +149,6 @@ int main(void)
- #ifdef CONFIG_SPE
- 	OFFSET(THREAD_EVR0, thread_struct, evr[0]);
- 	OFFSET(THREAD_ACC, thread_struct, acc);
--	OFFSET(THREAD_SPEFSCR, thread_struct, spefscr);
- 	OFFSET(THREAD_USED_SPE, thread_struct, used_spe);
- #endif /* CONFIG_SPE */
- #endif /* CONFIG_PPC64 */
-diff --git a/arch/powerpc/kernel/entry_32.S b/arch/powerpc/kernel/entry_32.S
-index 9160285cb2f4..6c09ebb853ec 100644
---- a/arch/powerpc/kernel/entry_32.S
-+++ b/arch/powerpc/kernel/entry_32.S
-@@ -176,28 +176,6 @@ _GLOBAL(_switch)
- 	/* r3-r12 are caller saved -- Cort */
- 	SAVE_NVGPRS(r1)
- 	stw	r0,_NIP(r1)	/* Return to switch caller */
--	mfmsr	r11
--	li	r0,MSR_FP	/* Disable floating-point */
--#ifdef CONFIG_ALTIVEC
--BEGIN_FTR_SECTION
--	oris	r0,r0,MSR_VEC@h	/* Disable altivec */
--	mfspr	r12,SPRN_VRSAVE	/* save vrsave register value */
--	stw	r12,THREAD+THREAD_VRSAVE(r2)
--END_FTR_SECTION_IFSET(CPU_FTR_ALTIVEC)
--#endif /* CONFIG_ALTIVEC */
--#ifdef CONFIG_SPE
--BEGIN_FTR_SECTION
--	oris	r0,r0,MSR_SPE@h	 /* Disable SPE */
--	mfspr	r12,SPRN_SPEFSCR /* save spefscr register value */
--	stw	r12,THREAD+THREAD_SPEFSCR(r2)
--END_FTR_SECTION_IFSET(CPU_FTR_SPE)
--#endif /* CONFIG_SPE */
--	and.	r0,r0,r11	/* FP or altivec or SPE enabled? */
--	beq+	1f
--	andc	r11,r11,r0
--	mtmsr	r11
--	isync
--1:	stw	r11,_MSR(r1)
- 	mfcr	r10
- 	stw	r10,_CCR(r1)
- 	stw	r1,KSP(r3)	/* Set old stack pointer */
-@@ -218,19 +196,6 @@ END_FTR_SECTION_IFSET(CPU_FTR_SPE)
- 	mr	r3,r2
- 	addi	r2,r4,-THREAD	/* Update current */
- 
--#ifdef CONFIG_ALTIVEC
--BEGIN_FTR_SECTION
--	lwz	r0,THREAD+THREAD_VRSAVE(r2)
--	mtspr	SPRN_VRSAVE,r0		/* if G4, restore VRSAVE reg */
--END_FTR_SECTION_IFSET(CPU_FTR_ALTIVEC)
--#endif /* CONFIG_ALTIVEC */
--#ifdef CONFIG_SPE
--BEGIN_FTR_SECTION
--	lwz	r0,THREAD+THREAD_SPEFSCR(r2)
--	mtspr	SPRN_SPEFSCR,r0		/* restore SPEFSCR reg */
--END_FTR_SECTION_IFSET(CPU_FTR_SPE)
--#endif /* CONFIG_SPE */
--
- 	lwz	r0,_CCR(r1)
- 	mtcrf	0xFF,r0
- 	/* r3-r12 are destroyed -- Cort */
-diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
-index 89e34aa273e2..2bd30acc843c 100644
---- a/arch/powerpc/kernel/process.c
-+++ b/arch/powerpc/kernel/process.c
-@@ -1129,6 +1129,10 @@ static inline void save_sprs(struct thread_struct *t)
- 	if (cpu_has_feature(CPU_FTR_ALTIVEC))
- 		t->vrsave = mfspr(SPRN_VRSAVE);
- #endif
-+#ifdef CONFIG_SPE
-+	if (cpu_has_feature(CPU_FTR_SPE))
-+		t->spefscr = mfspr(SPRN_SPEFSCR);
-+#endif
- #ifdef CONFIG_PPC_BOOK3S_64
- 	if (cpu_has_feature(CPU_FTR_DSCR))
- 		t->dscr = mfspr(SPRN_DSCR);
-@@ -1159,6 +1163,11 @@ static inline void restore_sprs(struct thread_struct *old_thread,
- 	    old_thread->vrsave != new_thread->vrsave)
- 		mtspr(SPRN_VRSAVE, new_thread->vrsave);
- #endif
-+#ifdef CONFIG_SPE
-+	if (cpu_has_feature(CPU_FTR_SPE) &&
-+	    old_thread->spefscr != new_thread->spefscr)
-+		mtspr(SPRN_SPEFSCR, new_thread->spefscr);
-+#endif
- #ifdef CONFIG_PPC_BOOK3S_64
- 	if (cpu_has_feature(CPU_FTR_DSCR)) {
- 		u64 dscr = get_paca()->dscr_default;
--- 
-2.25.0
+sbs-battery 5-000b: Unknown chemistry: OAI0
 
+> Considering BQ20Z65 and BQ20Z75 also support Li-Po I don't think
+> it's a good idea to fall back to Li-Ion. Kernel should never lie
+> about this, since I know some people use userspace based charging
+> setup and the charge limits are different for Li-Ion and Li-Po. When
+> reaching this place we do not know 100%, that it is a Li-ion, so
+> returning UNKNOWN is the safe option.
+> 
+> If you know, that your device (TF101) only supports Li-Ion
+> batteries, we can add a device specific override. But is this worth
+> the added maintenance burden? What is your plan for using this
+> information?
+
+There is no plan of using that information. Previously battery type was
+reported properly by userspace, then it regressed. There are other older
+device-trees in upstream which should have seen the same regression,
+apparently nobody noticed or cared about it. Yours variant of solution
+will take more effort, in this case it should be better to leave the
+regression as-is for now.
