@@ -2,69 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E77FD380618
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 11:22:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5795380628
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 11:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232179AbhENJXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 05:23:14 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:3688 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232163AbhENJXM (ORCPT
+        id S232402AbhENJZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 05:25:44 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:59733 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232362AbhENJZl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 05:23:12 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FhNJP6t6dz1BLWN;
-        Fri, 14 May 2021 17:19:17 +0800 (CST)
-Received: from huawei.com (10.175.103.91) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Fri, 14 May 2021
- 17:21:58 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>
-CC:     <ckennelly@google.com>, <akpm@linux-foundation.org>
-Subject: [PATCH -next] tools/testing/selftests/exec: fix link error
-Date:   Fri, 14 May 2021 17:24:22 +0800
-Message-ID: <20210514092422.2367367-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-CFilter-Loop: Reflected
+        Fri, 14 May 2021 05:25:41 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UYqHdQ4_1620984266;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UYqHdQ4_1620984266)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 14 May 2021 17:24:28 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     clm@fb.com
+Cc:     josef@toxicpanda.com, dsterba@suse.com, nathan@kernel.org,
+        ndesaulniers@google.com, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] btrfs: Remove redundant initialization of 'to_add'
+Date:   Fri, 14 May 2021 17:24:25 +0800
+Message-Id: <1620984265-53916-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the link error by adding '-static':
+Variable 'to_add' is being initialized however this value is never 
+read as 'to_add' is assigned a new value in if statement. Remove the 
+redundant assignment. At the same time, move its declaration into the 
+if statement, because the variable is not used elsewhere.
 
-gcc -Wall  -Wl,-z,max-page-size=0x1000 -pie load_address.c -o /home/yang/linux/tools/testing/selftests/exec/load_address_4096
-/usr/bin/ld: /tmp/ccopEGun.o: relocation R_AARCH64_ADR_PREL_PG_HI21 against symbol `stderr@@GLIBC_2.17' which may bind externally can not be used when making a shared object; recompile with -fPIC
-/usr/bin/ld: /tmp/ccopEGun.o(.text+0x158): unresolvable R_AARCH64_ADR_PREL_PG_HI21 relocation against symbol `stderr@@GLIBC_2.17'
-/usr/bin/ld: final link failed: bad value
-collect2: error: ld returned 1 exit status
-make: *** [Makefile:25: tools/testing/selftests/exec/load_address_4096] Error 1
+Clean up clang warning:
 
-Fixes: 206e22f01941 ("tools/testing/selftests: add self-test for verifying load alignment")
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+fs/btrfs/extent-tree.c:2773:8: warning: Value stored to 'to_add' during
+its initialization is never read [clang-analyzer-deadcode.DeadStores]
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 ---
- tools/testing/selftests/exec/Makefile | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/btrfs/extent-tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/exec/Makefile b/tools/testing/selftests/exec/Makefile
-index cf69b2fcce59..dd61118df66e 100644
---- a/tools/testing/selftests/exec/Makefile
-+++ b/tools/testing/selftests/exec/Makefile
-@@ -28,8 +28,8 @@ $(OUTPUT)/execveat.denatured: $(OUTPUT)/execveat
- 	cp $< $@
- 	chmod -x $@
- $(OUTPUT)/load_address_4096: load_address.c
--	$(CC) $(CFLAGS) $(LDFLAGS) -Wl,-z,max-page-size=0x1000 -pie $< -o $@
-+	$(CC) $(CFLAGS) $(LDFLAGS) -Wl,-z,max-page-size=0x1000 -pie -static $< -o $@
- $(OUTPUT)/load_address_2097152: load_address.c
--	$(CC) $(CFLAGS) $(LDFLAGS) -Wl,-z,max-page-size=0x200000 -pie $< -o $@
-+	$(CC) $(CFLAGS) $(LDFLAGS) -Wl,-z,max-page-size=0x200000 -pie -static $< -o $@
- $(OUTPUT)/load_address_16777216: load_address.c
--	$(CC) $(CFLAGS) $(LDFLAGS) -Wl,-z,max-page-size=0x1000000 -pie $< -o $@
-+	$(CC) $(CFLAGS) $(LDFLAGS) -Wl,-z,max-page-size=0x1000000 -pie -static $< -o $@
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index f1d15b6..e7b2289 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -2774,10 +2774,10 @@ static int unpin_extent_range(struct btrfs_fs_info *fs_info,
+ 		spin_unlock(&cache->lock);
+ 		if (!readonly && return_free_space &&
+ 		    global_rsv->space_info == space_info) {
+-			u64 to_add = len;
+ 
+ 			spin_lock(&global_rsv->lock);
+ 			if (!global_rsv->full) {
++				u64 to_add;
+ 				to_add = min(len, global_rsv->size -
+ 					     global_rsv->reserved);
+ 				global_rsv->reserved += to_add;
 -- 
-2.25.1
+1.8.3.1
 
