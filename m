@@ -2,128 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C6F3380DA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 17:55:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9848380DA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 17:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234912AbhENP4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 11:56:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233914AbhENP4L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 11:56:11 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF764C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 08:54:58 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id r8so39424550ybb.9
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 08:54:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=y052LogTUvmTYDDB+WfKoZ5F+9wGSH/Xp6XYfMNjiT0=;
-        b=rmOj1JlGNHpx+uPiVKXp2GXMWFkLj/A2WtlyaZyD5pZFxwhlsqd9zu0CmNdx2nQKz3
-         hyKBSMJEwq4rkRa1IKAxZNhcGDAR+T6fks73i5T1b7VEfpOp/gDb2G/+5nFgGIONK+KE
-         5WTx5ufZ/30+cWeOlNLTJcwxWCkVh7nMAyWjrV77SCuEV9Vv+/qhYpaSzCD2TSPjXpbE
-         pthBuekUFWiKhmAdMmrAYeNIhk//NcnHznalrkjl4A1UoLj5Q/zs2/74f2tVtHRtlnn6
-         LkS6QSRN4TUGoxGxletRTqpWwfMbv6aWju2Cxk02zuImCHGjcle6K1d3PDeirZ5+JyYO
-         DsaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y052LogTUvmTYDDB+WfKoZ5F+9wGSH/Xp6XYfMNjiT0=;
-        b=ehTWels+5fa+RziFPhxPhKaTuGrWFg0BTHF5Ev4A9usK3PHSyaY5eWmkInxhLWuTXi
-         ujr+HFeKqtMdN/Q0faZDLb1cb8qmiTvS3AAv8SK4Xn8jA6gR4HXY/k9DiofwQQ0Csmcp
-         +MAiqjivA40ZUI6U4AdR8e6iOkThlzdmt0Z38bRVmw4M/beMDblpEbD+McdrTsZExpCE
-         lthPSl0NE2XOpIjNgyrf/RNlqLhpzLyKdDa2o6G07Ff7SVEOK9yUSQrXRcuEV9Ra2394
-         4LVbL/syuY8uHvRZGg5heLiwqb5EP0tF9lK1ijtEDC62u9tk7fcw1HspJlGfP/aNWrtl
-         u9kg==
-X-Gm-Message-State: AOAM5303oleIkMoYqrblFOr4uLCw7WkodVUsgVUsSFE72k+dATsLmij8
-        qBXADXWlYPg3YDk6rh8DspfVyIG75TelGYGEY4Dl1g==
-X-Google-Smtp-Source: ABdhPJyu519H1CbTJd0D9J/Ujh2yRd7lt7a0n437lQGd0MJ3hccYmkjEelSz6fIq59LX12MQeRNDwQiSuC0eJZFEAvs=
-X-Received: by 2002:a5b:7c5:: with SMTP id t5mr62727703ybq.190.1621007697955;
- Fri, 14 May 2021 08:54:57 -0700 (PDT)
+        id S234987AbhENP5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 11:57:01 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58768 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231503AbhENP47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 11:56:59 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 66346B05C;
+        Fri, 14 May 2021 15:55:47 +0000 (UTC)
+Subject: Re: [PATCH v10 12/33] mm/filemap: Add folio_index, folio_file_page
+ and folio_contains
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        akpm@linux-foundation.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Jeff Layton <jlayton@kernel.org>
+References: <20210511214735.1836149-1-willy@infradead.org>
+ <20210511214735.1836149-13-willy@infradead.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <77357d4f-5f56-6c12-7602-697773c2f125@suse.cz>
+Date:   Fri, 14 May 2021 17:55:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20210513175349.959661-1-surenb@google.com> <YJ5iAvqAmIhzJRot@hirez.programming.kicks-ass.net>
-In-Reply-To: <YJ5iAvqAmIhzJRot@hirez.programming.kicks-ass.net>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Fri, 14 May 2021 08:54:47 -0700
-Message-ID: <CAJuCfpHy+MknCepfjx9XYUA1j42Auauv7MFQbt+zOU-tA4gasA@mail.gmail.com>
-Subject: Re: [PATCH 1/1] cgroup: make per-cgroup pressure stall tracking configurable
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-        lizefan.x@bytedance.com, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>, mgorman@suse.de,
-        Minchan Kim <minchan@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, bristot@redhat.com,
-        "Paul E . McKenney" <paulmck@kernel.org>, rdunlap@infradead.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>, macro@orcam.me.uk,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        mike.kravetz@oracle.com, linux-doc@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        cgroups mailinglist <cgroups@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210511214735.1836149-13-willy@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 4:42 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Thu, May 13, 2021 at 10:53:49AM -0700, Suren Baghdasaryan wrote:
->
-> > +bool cgroup_psi_enabled(void)
-> > +{
-> > +     return (cgroup_feature_disable_mask & (1 << OPT_FEATURE_PRESSURE)) == 0;
-> > +}
->
-> > diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-> > index cc25a3cff41f..c73efd7d4fba 100644
-> > --- a/kernel/sched/psi.c
-> > +++ b/kernel/sched/psi.c
-> > @@ -747,9 +747,12 @@ static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
-> >  #ifdef CONFIG_CGROUPS
-> >       struct cgroup *cgroup = NULL;
-> >
-> > -     if (!*iter)
-> > +     if (!*iter) {
-> > +             /* Skip to psi_system if per-cgroup accounting is disabled */
-> > +             if (!cgroup_psi_enabled())
-> > +                     goto update_sys;
-> >               cgroup = task->cgroups->dfl_cgrp;
-> > -     else if (*iter == &psi_system)
-> > +     } else if (*iter == &psi_system)
-> >               return NULL;
-> >       else
-> >               cgroup = cgroup_parent(*iter);
-> > @@ -758,6 +761,7 @@ static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
-> >               *iter = cgroup;
-> >               return cgroup_psi(cgroup);
-> >       }
-> > +update_sys:
-> >  #else
-> >       if (*iter)
-> >               return NULL;
->
-> I'm confused; shouldn't that do the same as that #else branch?
+On 5/11/21 11:47 PM, Matthew Wilcox (Oracle) wrote:
+> folio_index() is the equivalent of page_index() for folios.
+> folio_file_page() is the equivalent of find_subpage().
 
-Correct, for this function CONFIG_CGROUPS=n and
-cgroup_disable=pressure are treated the same. True, from the code it's
-not very obvious. Do you have some refactoring in mind that would make
-it more explicit?
+find_subpage() special cases hugetlbfs, folio_file_page() doesn't.
 
->Also, can you pretty please make cgroup_psi_enabled() a static_key ?
+> folio_contains() is the equivalent of thp_contains().
 
-Certainly, will post an update on Monday.
-Thanks for the feedback, Peter!
+Yet here, both thp_contains() and folio_contains() does.
 
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
->
+This patch doesn't add users so maybe it becomes obvious later, but perhaps
+worth explaining in the changelog or comment?
+
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Acked-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>  include/linux/pagemap.h | 53 +++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 53 insertions(+)
+> 
+> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+> index bc5fa3d7204e..8eaeffccfd38 100644
+> --- a/include/linux/pagemap.h
+> +++ b/include/linux/pagemap.h
+> @@ -386,6 +386,59 @@ static inline bool thp_contains(struct page *head, pgoff_t index)
+>  	return page_index(head) == (index & ~(thp_nr_pages(head) - 1UL));
+>  }
+>  
+> +#define swapcache_index(folio)	__page_file_index(&(folio)->page)
+> +
+> +/**
+> + * folio_index - File index of a folio.
+> + * @folio: The folio.
+> + *
+> + * For a folio which is either in the page cache or the swap cache,
+> + * return its index within the address_space it belongs to.  If you know
+> + * the page is definitely in the page cache, you can look at the folio's
+> + * index directly.
+> + *
+> + * Return: The index (offset in units of pages) of a folio in its file.
+> + */
+> +static inline pgoff_t folio_index(struct folio *folio)
+> +{
+> +        if (unlikely(folio_swapcache(folio)))
+> +                return swapcache_index(folio);
+> +        return folio->index;
+> +}
+> +
+> +/**
+> + * folio_file_page - The page for a particular index.
+> + * @folio: The folio which contains this index.
+> + * @index: The index we want to look up.
+> + *
+> + * Sometimes after looking up a folio in the page cache, we need to
+> + * obtain the specific page for an index (eg a page fault).
+> + *
+> + * Return: The page containing the file data for this index.
+> + */
+> +static inline struct page *folio_file_page(struct folio *folio, pgoff_t index)
+> +{
+> +	return folio_page(folio, index & (folio_nr_pages(folio) - 1));
+> +}
+> +
+> +/**
+> + * folio_contains - Does this folio contain this index?
+> + * @folio: The folio.
+> + * @index: The page index within the file.
+> + *
+> + * Context: The caller should have the page locked in order to prevent
+> + * (eg) shmem from moving the page between the page cache and swap cache
+> + * and changing its index in the middle of the operation.
+> + * Return: true or false.
+> + */
+> +static inline bool folio_contains(struct folio *folio, pgoff_t index)
+> +{
+> +	/* HugeTLBfs indexes the page cache in units of hpage_size */
+> +	if (folio_hugetlb(folio))
+> +		return folio->index == index;
+> +	return index - folio_index(folio) < folio_nr_pages(folio);
+> +}
+> +
+>  /*
+>   * Given the page we found in the page cache, return the page corresponding
+>   * to this index in the file
+> 
+
