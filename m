@@ -2,83 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AA08380F29
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 19:42:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D253380F33
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 19:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232435AbhENRnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 13:43:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230213AbhENRno (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 13:43:44 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93ADAC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 10:42:32 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id i22so1175174lfl.10
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 10:42:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Z2BEVo2gdHA+YW84az98d4ViUxW08aEVoJlhBhP4mlQ=;
-        b=ZmQiX2I9H1fZGUevqtQOOCJrEct1Nk5Lsk0QNLPmgB0qYmECyy1vwXWs/SJ4QQ1mvl
-         9MozrFx+5stjBtCmEl91KHahpHkbkXMUkih+tdMrftMjO0ydkUu/vUYOjTMep8R+KE6m
-         19GI97rUr53bJd2vYavJ2+viPG2eU2bACdn54=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Z2BEVo2gdHA+YW84az98d4ViUxW08aEVoJlhBhP4mlQ=;
-        b=r7TZBlHkzuLIFmVeXhhwap3D0rqh3mbQ/1MZUI2zEZEBzKWe0ihCXxmZ6oG6pV3cCB
-         0QCZ+Lv2NzYOkW8amYiCh/433vwjZbcnY9hs2usCuJmTNIe7coF7eolVcE54oyxvpI7f
-         yQuECA0juGJxveprenSPKvVybVNuc6hWPJoM4/k05Kwc5dtHNd9tK0nA6c3xfqwpHYmP
-         /XvQ9alt/rl58audNEs4dIE9WifGsLs936R3FuxTy9XHMLUnoBRnupJPJCMZVI7CSKPi
-         UvebY/V7GIXMEoxySQJVloWw9Pwgs6yzjmodpvMcgdJeK45Ws12bPDflWEMgNxK9WFZN
-         ghpw==
-X-Gm-Message-State: AOAM5309JQ3r2lcOVe4gHpYm682TKZsrWsbSbmxH6Y7ITHM8LFXM9Z/W
-        8+xOF9B1F4uAScFBv5FEeKcl14loDyBaej2hutw=
-X-Google-Smtp-Source: ABdhPJwzPLF4v7LX8lJ8XDlUj6uaU315oa/l/6Guaqc6QGRL6GBqsC3zTOiAasnijcmjFSu/mxI3dA==
-X-Received: by 2002:a19:ad41:: with SMTP id s1mr33020016lfd.306.1621014150971;
-        Fri, 14 May 2021 10:42:30 -0700 (PDT)
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
-        by smtp.gmail.com with ESMTPSA id a35sm1283311ljq.124.2021.05.14.10.42.30
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 May 2021 10:42:30 -0700 (PDT)
-Received: by mail-lf1-f50.google.com with SMTP id x19so44187893lfa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 10:42:30 -0700 (PDT)
-X-Received: by 2002:ac2:4a9d:: with SMTP id l29mr299593lfp.201.1621014150212;
- Fri, 14 May 2021 10:42:30 -0700 (PDT)
+        id S235222AbhENRqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 13:46:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46754 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230213AbhENRqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 13:46:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B734613D6;
+        Fri, 14 May 2021 17:45:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621014303;
+        bh=OdG7QFpYNaI0q2QXmh6Rq7lI2lHh8xRpNEIu72tie+A=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=Y+L4WCeH9e3iYuEe03OmsdcZMWofID21dvsomCcqmfpXWSPJwTHGL60AqXFNk4IHX
+         ZY0IrTm2pF5Gjt+fwNEhq2n9VKGeHvOuL1TJlRDmPMxAdkTam36WN4QBwbnXWsK+oD
+         /BKSIQQ2IjZcW4eomdRLN/xivhCss3pffzQ5/X7jjiKHwJ3Uhs5GEC5ouLz0rzBfSk
+         JgkQJbAfhBbxvC8IvMtGS8vTNWIgaa0yrrkepvuE7M9eTwxyl6KN3q8YEYtpCsFvL8
+         HjQtj7JzC6bkV2365zLC9AVjMI+wKXTxtLL089qhPT1q7d/nqlWhvgsMSMCKzEJavw
+         g7qYVKm+p/+Yw==
+Subject: Re: [PATCH] iio: si1133: fix format string warnings
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        =?UTF-8?Q?Maxime_Roussin-B=c3=a9langer?= 
+        <maxime.roussinbelanger@gmail.com>,
+        Jean-Francois Dagenais <jeff.dagenais@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+References: <20210514135927.2926482-1-arnd@kernel.org>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <7afc367b-8103-9d48-1bfe-d505d86553b9@kernel.org>
+Date:   Fri, 14 May 2021 10:45:02 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <CAPM=9tyXjogjugi55XdAQd-ucMCk=ohDXS+vqdiaMk_aCL6aHQ@mail.gmail.com>
-In-Reply-To: <CAPM=9tyXjogjugi55XdAQd-ucMCk=ohDXS+vqdiaMk_aCL6aHQ@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 14 May 2021 10:42:14 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wge8rgL-VUHZpWFg_cTFkp1D_AZJTRzV86jod4NSJsppw@mail.gmail.com>
-Message-ID: <CAHk-=wge8rgL-VUHZpWFg_cTFkp1D_AZJTRzV86jod4NSJsppw@mail.gmail.com>
-Subject: Re: [git pull] drm fixes for 5.13-rc2
-To:     Dave Airlie <airlied@gmail.com>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210514135927.2926482-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 7:34 PM Dave Airlie <airlied@gmail.com> wrote:
->
-> Just realised I got the tag header wrong, these are the rc2 fixes.
+On 5/14/2021 6:59 AM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> clang complains about multiple instances of printing an integer
+> using the %hhx format string:
+> 
+> drivers/iio/light/si1133.c:982:4: error: format specifies type 'unsigned char' but the argument has type 'unsigned int' [-Werror,-Wformat]
+>                   part_id, rev_id, mfr_id);
+>                   ^~~~~~~
+> 
+> Print them as a normal integer instead, leaving the "#02"
+> length modifier.
+> 
+> Fixes: e01e7eaf37d8 ("iio: light: introduce si1133")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Heh. The tag message also says:
+Indeed, use of %hx and %hhx have been discouraged since commit 
+cbacb5ab0aa0 ("docs: printk-formats: Stop encouraging use of unnecessary 
+%h[xudi] and %hh[xudi]").
 
-> vc4:
-> - drop an used function
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 
-which just makes me think you may have started drinking early ;)
+> ---
+>   drivers/iio/light/si1133.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/iio/light/si1133.c b/drivers/iio/light/si1133.c
+> index c280b4195003..fd302480262b 100644
+> --- a/drivers/iio/light/si1133.c
+> +++ b/drivers/iio/light/si1133.c
+> @@ -978,11 +978,11 @@ static int si1133_validate_ids(struct iio_dev *iio_dev)
+>   		return err;
+>   
+>   	dev_info(&iio_dev->dev,
+> -		 "Device ID part %#02hhx rev %#02hhx mfr %#02hhx\n",
+> +		 "Device ID part %#02x rev %#02x mfr %#02x\n",
+>   		 part_id, rev_id, mfr_id);
+>   	if (part_id != SI1133_PART_ID) {
+>   		dev_err(&iio_dev->dev,
+> -			"Part ID mismatch got %#02hhx, expected %#02x\n",
+> +			"Part ID mismatch got %#02x, expected %#02x\n",
+>   			part_id, SI1133_PART_ID);
+>   		return -ENODEV;
+>   	}
+> 
 
-I fixed it up. Sk=C3=A5l!
-
-                 Linus
