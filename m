@@ -2,102 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D635380FAF
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 20:22:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 994A2380FB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 20:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233408AbhENSX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 14:23:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48326 "EHLO
+        id S233416AbhENSZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 14:25:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232976AbhENSX6 (ORCPT
+        with ESMTP id S231935AbhENSZB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 14:23:58 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C69C6C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 11:22:46 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id c13so335304pfv.4
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 11:22:46 -0700 (PDT)
+        Fri, 14 May 2021 14:25:01 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B21ECC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 11:23:48 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id x19so44345211lfa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 11:23:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:in-reply-to:references:from:mime-version:content-id
-         :date:message-id;
-        bh=4Aj3Hn/Ab05PL29sTHkKVf9z76S19KL7h4dk2AQuwq8=;
-        b=jAL5X6A8XQBSGFtmDTzuws24As6O0mocq82MKaf6rbuWJKOiU2QVhSiOdbUysBOXeQ
-         YBS2nlE9udGS2YLJ/dImfKJh8y9Wu0TH+vx/cQOp+c91ySTtx4UaGB29BbM1ZoKiFb0Z
-         iIkYBAhRludCW6E6cN8Zibj6qCm8o1wkLSWQQp1RaBCdo5JVJKhoMAUGyk9rI6Hr2DrD
-         yQBE3LRijDJADZWx8SlZ1Lzf8EuB9P0yxwOamj2LiIPgUz0DWXt51+0MhJeaqEG7Oxta
-         hkPoYtazZWY47/JRfyikrXVqH9g2IAjChte67fn67woJMRsukYqgANonlbQuSLYa1QMd
-         Zw5g==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HbsFzf/6uE8/vghKo6cKrHWCyJcOabDGOcn6Hrn7dcI=;
+        b=DCYZozQrMzknue6/EWuFmrYFlWMetVMt8Dmq65ypZNXDxu9hQw677RZsR4yZkbfMQ4
+         Y6pwoY9/eto3ToMEMFwHALm0FAO4vO38F5ORdjb5yDrn1Zh541QjFzH+HhSGLWO0Oa12
+         i7jcZ6xtUujNIIebz2U6mVmVFv84z0I3tn664=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:in-reply-to:references:from
-         :mime-version:content-id:date:message-id;
-        bh=4Aj3Hn/Ab05PL29sTHkKVf9z76S19KL7h4dk2AQuwq8=;
-        b=dtfLG84CYVQ5VP42svBrE/dYhs+uclSy3GI5G+ICoq8UKIeI5ouW/9QDhqzhQuUcAk
-         jgOtCa6Ye+vtr2FNDpI25tB3JvHBacGMXBsZPjTk7dl26Tc19dhSZy8f7mLQXIA+C0IP
-         GP2wUtKX+gjBAH4jZKTACMwTQnG7QLxjpJ54ymbxdUOrl3gM4OK0eNaKcnwKpTKvTLoA
-         MIdIf8MdoJofm0k2O1aoVTLHcdHFNP2OFmTfg4wgXiho4ZDMNmAO4mO+VVsBMjEL7hQE
-         hIQ1aSDXfHgQVrqGAhKemG5X0pbI/9OUA53gBQ7lSx0bPIUVscn+ywUZRkdhgoowZdww
-         dNYg==
-X-Gm-Message-State: AOAM533Kaxgv48LPNJigSsjFRovL8Kr0B22zU33cXFeq7EIxSvZ3ByeJ
-        HGnZDICPt4bfgm2JFHiGIdsW4Y96h3Y=
-X-Google-Smtp-Source: ABdhPJwtF3QDVFdaE2eNna/7mOJ7c4pj7bLQKwosCJX3DnTvR245E3w91uVG9tTXZSgxPfCPOCMgqQ==
-X-Received: by 2002:a63:ff48:: with SMTP id s8mr2290861pgk.132.1621016566357;
-        Fri, 14 May 2021 11:22:46 -0700 (PDT)
-Received: from jrobl (h219-110-108-104.catv02.itscom.jp. [219.110.108.104])
-        by smtp.gmail.com with ESMTPSA id x9sm4610878pfd.66.2021.05.14.11.22.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 11:22:46 -0700 (PDT)
-Received: from localhost ([127.0.0.1] helo=jrobl) by jrobl id 1lhcSS-0005BY-Q8 ; Sat, 15 May 2021 03:22:44 +0900
-Subject: PATCH: Re: LOCKDEP customizable numbers upper limit
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org
-In-Reply-To: <f323397b-dbe7-b655-4624-d243c2f68d81@i-love.sakura.ne.jp>
-References: <30795.1620913191@jrobl> <f323397b-dbe7-b655-4624-d243c2f68d81@i-love.sakura.ne.jp>
-From:   hooanon05g@gmail.com
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HbsFzf/6uE8/vghKo6cKrHWCyJcOabDGOcn6Hrn7dcI=;
+        b=tTSgp1ItRJRr/H2rce3aTErRAuc2BwXz+3L4C6osY/cFhzSLrQIIuWnHb8CR/cYet4
+         Nx1CsLgYOTCPlbpGxvjOlKWcxU232jgjfsf2r/7ykDPD5yTruInOD4lo92goiNQ6S13e
+         RVzMtrYP3Q8746JYTSZs7jm0Ycem8EPtd5v6bnbuoRjgRpDKu69C5nhqkz01wP3ETVXM
+         2qm2PLNs3MzEFs9z3haWi07P0L5rXTrh6hTovX9IJaDIeDdHpV43z8+GrOEb8R/OS/PV
+         7cxE72BYIduV4u55nw4DUJqvJ2clE6GuTpT7zFTtT+V+mUiCy60dyYZHr6Lm/CnxRG6u
+         ogBw==
+X-Gm-Message-State: AOAM530/0t/VYPddt0RBNz5GQCF8IIQgvBzYycOrl7nZT7VYrwTrZedL
+        5fVLAC2AZjWYxyRGwUDaeJbGlN28hAHSOtSkaPw=
+X-Google-Smtp-Source: ABdhPJx3OktAZdWq5eS5kjlzCygokzt/YpYdADNOA7F2cxmI8jjPY2YoCXlFLwdh8832cpl6MOaLgQ==
+X-Received: by 2002:a05:6512:3d2:: with SMTP id w18mr32948574lfp.573.1621016626843;
+        Fri, 14 May 2021 11:23:46 -0700 (PDT)
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
+        by smtp.gmail.com with ESMTPSA id b20sm867384lfp.308.2021.05.14.11.23.45
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 May 2021 11:23:45 -0700 (PDT)
+Received: by mail-lf1-f50.google.com with SMTP id z13so44319626lft.1
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 11:23:45 -0700 (PDT)
+X-Received: by 2002:a05:6512:374b:: with SMTP id a11mr32461268lfs.377.1621016624959;
+ Fri, 14 May 2021 11:23:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <19934.1621016564.1@jrobl>
-Date:   Sat, 15 May 2021 03:22:44 +0900
-Message-ID: <19935.1621016564@jrobl>
+References: <0000000000006bbd0c05c14f1b09@google.com> <6e21483c-06f6-404b-4018-e00ee85c456c@i-love.sakura.ne.jp>
+ <87d928e4-b2b9-ad30-f3f0-1dfb8e4e03ed@i-love.sakura.ne.jp>
+ <05acdda8-dc1c-5119-4326-96eed24bea0c@i-love.sakura.ne.jp>
+ <CAHk-=wguwhFpjhyMtDaH2hhjoV62gDgByC=aPyTrW9CkM5hqvA@mail.gmail.com> <CAHk-=whN=zrJ8BOLaGsJDH8d3sXLEoXA2DVsCq40OAUc1npOOw@mail.gmail.com>
+In-Reply-To: <CAHk-=whN=zrJ8BOLaGsJDH8d3sXLEoXA2DVsCq40OAUc1npOOw@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 14 May 2021 11:23:29 -0700
+X-Gmail-Original-Message-ID: <CAHk-=winm7rEueQ2moqMZWWNNywu_9eVUrT7g0a30C8fhJojTQ@mail.gmail.com>
+Message-ID: <CAHk-=winm7rEueQ2moqMZWWNNywu_9eVUrT7g0a30C8fhJojTQ@mail.gmail.com>
+Subject: Re: [PATCH] video: fbdev: vga16fb: fix OOB write in vga16fb_imageblit()
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Colin King <colin.king@canonical.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        "Antonino A. Daplas" <adaplas@gmail.com>
+Content-Type: multipart/mixed; boundary="0000000000001b409405c24e5891"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tetsuo Handa:
-> Please submit a patch that avoids only BUILD_BUG_ON().
+--0000000000001b409405c24e5891
+Content-Type: text/plain; charset="UTF-8"
 
-Here it is.
+On Fri, May 14, 2021 at 10:37 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> IOW, something like this would seem fairly simple and straightforward:
 
-J. R. Okajima
+Proper patch in case syzbot can test this..
 
-----------------------------------------
-commit 43e103e1a5975c61334811d16e207e6d0ac57b77
-Author: J. R. Okajima <hooanon05g@gmail.com>
-Date:   Sat May 15 03:17:10 2021 +0900
+                  Linus
 
-    LOCKDEP: upper limit LOCKDEP_CHAINS_BITS
-    
-    CONFIG_LOCKDEP_CHAINS_BITS value decides the size of chain_hlocks[] in
-    kernel/locking/lockdep.c, and it is checked by add_chain_cache() with
-            BUILD_BUG_ON((1UL << 24) <= ARRAY_SIZE(chain_hlocks));
-    This patch is just to silence BUILD_BUG_ON().
-    
-    See-also: https://marc.info/?l=linux-kernel&m=162091320503900&w=2
-    Cc: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-    Cc: Peter Zijlstra <peterz@infradead.org>
-    Signed-off-by: J. R. Okajima <hooanon05g@gmail.com>
+--0000000000001b409405c24e5891
+Content-Type: text/x-patch; charset="US-ASCII"; 
+	name="0001-vt-don-t-allow-text-mode-resizing-when-in-KD_GRAPHIC.patch"
+Content-Disposition: attachment; 
+	filename="0001-vt-don-t-allow-text-mode-resizing-when-in-KD_GRAPHIC.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_koon84w90>
+X-Attachment-Id: f_koon84w90
 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 678c13967580e..999ed5aa6bcee 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -1390,7 +1390,7 @@ config LOCKDEP_BITS
- config LOCKDEP_CHAINS_BITS
- 	int "Bitsize for MAX_LOCKDEP_CHAINS"
- 	depends on LOCKDEP && !LOCKDEP_SMALL
--	range 10 30
-+	range 10 21
- 	default 16
- 	help
- 	  Try increasing this value if you hit "BUG: MAX_LOCKDEP_CHAINS too low!" message.
+RnJvbSBiMzNjYTE5NWNlY2VhNDc4NzY4ZGUzNTNiM2FlOTc2YzA3YTY1NjE1IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBMaW51cyBUb3J2YWxkcyA8dG9ydmFsZHNAbGludXgtZm91bmRh
+dGlvbi5vcmc+CkRhdGU6IEZyaSwgMTQgTWF5IDIwMjEgMTE6MDY6MTIgLTA3MDAKU3ViamVjdDog
+W1BBVENIXSB2dDogZG9uJ3QgYWxsb3cgdGV4dC1tb2RlIHJlc2l6aW5nIHdoZW4gaW4gS0RfR1JB
+UEhJQ1MgbW9kZQoKVGhlIFZUIGxheWVyIGl0c2VsZiBqdXN0IGtlZXBzIHRyYWNrIG9mIHRoZSB1
+bmRlcmx5aW5nIHRleHQgY29udGVudHMKanVzdCBmaW5lLCBidXQgaWYgdGhlIHVuZGVybHlpbmcg
+aGFyZHdhcmUgZHJpdmVyIGhhcyBhIGNvbl9yZXNpemUoKQpmdW5jdGlvbiwgd2UgY2FuJ3QganVz
+dCBpZ25vcmUgaXQgd2hlbiBpbiBLRF9HUkFQSElDUyBtb2RlLgoKU28ganVzdCByZWZ1c2UgdG8g
+ZG8gYSB0ZXh0IG1vZGUgcmVzaXplIGlmIHdlJ3JlIG5vdCBpbiB0ZXh0IG1vZGUuCgpSZXBvcnRl
+ZC1ieTogVGV0c3VvIEhhbmRhIDxwZW5ndWluLWtlcm5lbEBpLWxvdmUuc2FrdXJhLm5lLmpwPgpS
+ZXBvcnRlZC1ieTogc3l6Ym90IDxzeXpib3QrMWYyOWUxMjZjZjQ2MWM0ZGUzYjNAc3l6a2FsbGVy
+LmFwcHNwb3RtYWlsLmNvbT4KU2lnbmVkLW9mZi1ieTogTGludXMgVG9ydmFsZHMgPHRvcnZhbGRz
+QGxpbnV4LWZvdW5kYXRpb24ub3JnPgotLS0KIGRyaXZlcnMvdHR5L3Z0L3Z0LmMgfCA3ICsrKysr
+Ky0KIDEgZmlsZSBjaGFuZ2VkLCA2IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKCmRpZmYg
+LS1naXQgYS9kcml2ZXJzL3R0eS92dC92dC5jIGIvZHJpdmVycy90dHkvdnQvdnQuYwppbmRleCAw
+MTY0NWU4N2IzZDUuLmYyNGU2MjdiNzQwMiAxMDA2NDQKLS0tIGEvZHJpdmVycy90dHkvdnQvdnQu
+YworKysgYi9kcml2ZXJzL3R0eS92dC92dC5jCkBAIC0xMTcxLDggKzExNzEsMTMgQEAgc3RhdGlj
+IGlubGluZSBpbnQgcmVzaXplX3NjcmVlbihzdHJ1Y3QgdmNfZGF0YSAqdmMsIGludCB3aWR0aCwg
+aW50IGhlaWdodCwKIAkvKiBSZXNpemVzIHRoZSByZXNvbHV0aW9uIG9mIHRoZSBkaXNwbGF5IGFk
+YXBhdGVyICovCiAJaW50IGVyciA9IDA7CiAKLQlpZiAodmMtPnZjX21vZGUgIT0gS0RfR1JBUEhJ
+Q1MgJiYgdmMtPnZjX3N3LT5jb25fcmVzaXplKQorCWlmICh2Yy0+dmNfc3ctPmNvbl9yZXNpemUp
+IHsKKwkJLy8gSWYgd2UgaGF2ZSBhIHJlc2l6ZSBmdW5jdGlvbiBidXQgYXJlIGluIEtEX0dSQVBI
+SUNTIG1vZGUsCisJCS8vIHdlIGNhbid0IGFjdHVhbGx5IGRvIGEgcmVzaXplIGFuZCBuZWVkIHRv
+IGVycm9yIG91dC4KKwkJaWYgKHZjLT52Y19tb2RlID09IEtEX0dSQVBISUNTKQorCQkJcmV0dXJu
+IC1FSU5WQUw7CiAJCWVyciA9IHZjLT52Y19zdy0+Y29uX3Jlc2l6ZSh2Yywgd2lkdGgsIGhlaWdo
+dCwgdXNlcik7CisJfQogCiAJcmV0dXJuIGVycjsKIH0KLS0gCjIuMzEuMS4zNjUuZ2EyYTA1YTM5
+YzUKCg==
+--0000000000001b409405c24e5891--
