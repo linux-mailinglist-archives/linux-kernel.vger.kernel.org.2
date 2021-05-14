@@ -2,88 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35471380A53
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 15:20:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7787380A5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 15:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233925AbhENNVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 09:21:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52500 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230075AbhENNVV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 09:21:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4C8061451;
-        Fri, 14 May 2021 13:20:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620998410;
-        bh=vmjZo5FsCOZVRQUnwKI9G8xEtugt5u8YaX+YGYflkls=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=jNMsbpAlj8goNw+JaeL09CUCLqsHDlRhYHacbNpKYUh891WEyRj31HUQlhGIYaQNO
-         sj+IV9dHjH7YMQ3289I8i9FlqopA6muGZvoF1Y2riXJkH5TCZmjEIqkbY5hfU8Jzxn
-         ba0mDgS3bffwhZcJnuvJIx1UkYUovTI2b/84Lmy4cRjoQkUPrRP/Mzdnql1QmE34IV
-         YgVAfjme+pO/GTnFG/EI4jadvWsccEC67SMAxGCwtUJRzob85B/WIbnNZfISGswQ/q
-         YD/oK8LGpiDGIocG9Sx9yPBpZQeAXj50/2/aHWmgA/2Es0wffjT15z8sAgCXTiTMyQ
-         ybFjhzphVmLQw==
-Date:   Fri, 14 May 2021 22:20:04 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Jonathan Corbet <corbet@lwn.net>, Marc Koderer <marc@koderer.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] samples/kprobes: Fix typo in handler_post()
-Message-Id: <20210514222004.54f4c2b12099b569a872a2ee@kernel.org>
-In-Reply-To: <1620979810-12779-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1620979810-12779-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S233946AbhENNZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 09:25:01 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:52266 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230075AbhENNY6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 09:24:58 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 39A851F432DE
+Subject: Re: [RESEND PATCH v7 2/2] arm64: dts: mt8183: add cbas node under
+ cros_ec
+To:     Ikjoon Jang <ikjn@chromium.org>, devicetree@vger.kernel.org,
+        Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Guenter Roeck <groeck@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        linux-input@vger.kernel.org, Hsin-Yi Wang <hsinyi@chromium.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>
+References: <20210514122051.266169-1-ikjn@chromium.org>
+ <20210514122051.266169-3-ikjn@chromium.org>
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Message-ID: <2a216922-c93b-0e1b-0dee-add6cdc9a3c9@collabora.com>
+Date:   Fri, 14 May 2021 15:23:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210514122051.266169-3-ikjn@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 May 2021 16:10:10 +0800
-Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
+Hi Ikjoon,
 
-> It should use post_handler instead of pre_handler in handler_post().
+Thank you for the patch.
 
-Looks good to me.
-
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-
-Thanks!
-
+On 14/5/21 14:20, Ikjoon Jang wrote:
+> Add a 'cbas' device node for supporting tablet mode switch in
+> kukui devices.
 > 
-> Fixes: e16c5dd5157e ("samples/kprobes: Add s390 case in kprobe example module")
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> Kukui platforms with detacheable base have an additional input
+> device under cros-ec, which reports SW_TABLET_MODE regarding
+> its base state (e.g. base flipped or detached).
+> 
+> Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+> 
+
+Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+
 > ---
 > 
-> v2: rebase on the latest mainline kernel
+> Changes in v7:
+> - remove a label in cbas node
+> - fix an erratum in commit message (table --> tablet)
+> - dt-binding patchess merged altogether with mt8183 dts
 > 
->  samples/kprobes/kprobe_example.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> diff --git a/samples/kprobes/kprobe_example.c b/samples/kprobes/kprobe_example.c
-> index c495664..602db3f 100644
-> --- a/samples/kprobes/kprobe_example.c
-> +++ b/samples/kprobes/kprobe_example.c
-> @@ -89,7 +89,7 @@ static void __kprobes handler_post(struct kprobe *p, struct pt_regs *regs,
->  		p->symbol_name, p->addr, regs->status);
->  #endif
->  #ifdef CONFIG_S390
-> -	pr_info("<%s> pre_handler: p->addr, 0x%p, flags = 0x%lx\n",
-> +	pr_info("<%s> post_handler: p->addr, 0x%p, flags = 0x%lx\n",
->  		p->symbol_name, p->addr, regs->flags);
->  #endif
->  }
-> -- 
-> 2.1.0
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> index ff56bcfa3370..1512605a438e 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> @@ -816,6 +816,10 @@ usbc_extcon: extcon0 {
+>  			compatible = "google,extcon-usbc-cros-ec";
+>  			google,usb-port-id = <0>;
+>  		};
+> +
+> +		cbas {
+> +			compatible = "google,cros-cbas";
+> +		};
+>  	};
+>  };
+>  
 > 
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
