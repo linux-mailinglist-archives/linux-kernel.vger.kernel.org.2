@@ -2,304 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AD42380218
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 04:43:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B171380226
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 04:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbhENCon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 May 2021 22:44:43 -0400
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:49115 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhENCom (ORCPT
+        id S229970AbhENCvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 22:51:09 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:62545 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229471AbhENCvG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 22:44:42 -0400
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 14E2hA87030905;
-        Fri, 14 May 2021 11:43:10 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 14E2hA87030905
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1620960190;
-        bh=DVvuxt/F2VXaZ9qg0AYDMtDw08pty3tYij5WhoLhi5g=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=gx32ilFSrPZOgzKEh5xfrqGmgbxdNAIPFWkBvj1cuFTQS0hKYB4pL3oi435qEe/1I
-         UhGKdRVSVyb3mXfThkMhVFzSk569aA4Bm/XoXz7FtG6xkqWaED61hCWeqD55Ua9pWF
-         AQpuOnvEZxN+CGg8mYx12xD9mn7wcY/ChHectxviA+7hO/b9NvtFcxMuLjqbr7Aov2
-         jvnPLRpw+eqKFKO2DCDfscdpcwN6Z0K5jiHi/VaXdqTExzSp+oWmVgNUhbGqLETOqQ
-         GHib2SkqhGVt7dfmBPX4V+WfJ/sB7FQRBZKC3XQmSNMmyRKZsaMVoDhjapwUDMD5Pf
-         +h3nd8CyVq+ng==
-X-Nifty-SrcIP: [209.85.215.169]
-Received: by mail-pg1-f169.google.com with SMTP id q15so18884875pgg.12;
-        Thu, 13 May 2021 19:43:10 -0700 (PDT)
-X-Gm-Message-State: AOAM532YGLdqAk99euIWOSvuEdHXS37cFxuDApqUmwuNorGbSGdZuqMc
-        klVvYUTlBm0lTKDE/XmgVehU4jvo+pkajuMFtXA=
-X-Google-Smtp-Source: ABdhPJy2EFGXTFKIbKsAyZs1aA07L2XBS7/FxM/3wJurmOPRxbPOvFj6xQvW0zDnkWlWzt7Zj51wS6cEB9fpZZfYJ5Y=
-X-Received: by 2002:a63:a547:: with SMTP id r7mr44000108pgu.7.1620960189536;
- Thu, 13 May 2021 19:43:09 -0700 (PDT)
+        Thu, 13 May 2021 22:51:06 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 14E2aHCD043662;
+        Fri, 14 May 2021 10:36:17 +0800 (GMT-8)
+        (envelope-from billy_tsai@aspeedtech.com)
+Received: from BillyTsai-pc.aspeed.com (192.168.2.149) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 14 May
+ 2021 10:48:33 +0800
+From:   Billy Tsai <billy_tsai@aspeedtech.com>
+To:     <lee.jones@linaro.org>, <robh+dt@kernel.org>, <joel@jms.id.au>,
+        <andrew@aj.id.au>, <thierry.reding@gmail.com>,
+        <u.kleine-koenig@pengutronix.de>, <p.zabel@pengutronix.de>,
+        <billy_tsai@aspeedtech.com>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pwm@vger.kernel.org>
+CC:     <BMC-SW@aspeedtech.com>
+Subject: [v5 0/2] Support pwm driver for aspeed ast26xx
+Date:   Fri, 14 May 2021 10:48:43 +0800
+Message-ID: <20210514024845.10531-1-billy_tsai@aspeedtech.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210513115904.519912-1-aik@ozlabs.ru> <dedc7262-2956-37b2-ebfd-ae8eb9b56716@kernel.org>
-In-Reply-To: <dedc7262-2956-37b2-ebfd-ae8eb9b56716@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 14 May 2021 11:42:32 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASFhRE=1EBj9AoTMMEd2YJdu7bCxARAGJfZ7aXcBrMAUw@mail.gmail.com>
-Message-ID: <CAK7LNASFhRE=1EBj9AoTMMEd2YJdu7bCxARAGJfZ7aXcBrMAUw@mail.gmail.com>
-Subject: Re: [PATCH kernel v3] powerpc/makefile: Do not redefine $(CPP) for preprocessor
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Alexey Kardashevskiy <aik@ozlabs.ru>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Segher Boessenkool <segher@kernel.crashing.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [192.168.2.149]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 14E2aHCD043662
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 3:59 AM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> On 5/13/2021 4:59 AM, Alexey Kardashevskiy wrote:
-> > The $(CPP) (do only preprocessing) macro is already defined in Makefile.
-> > However POWERPC redefines it and adds $(KBUILD_CFLAGS) which results
-> > in flags duplication. Which is not a big deal by itself except for
-> > the flags which depend on other flags and the compiler checks them
-> > as it parses the command line.
-> >
-> > Specifically, scripts/Makefile.build:304 generates ksyms for .S files.
-> > If clang+llvm+sanitizer are enabled, this results in
-> >
-> > -emit-llvm-bc -fno-lto -flto -fvisibility=hidden \
-> >   -fsanitize=cfi-mfcall -fno-lto  ...
-> >
-> > in the clang command line and triggers error:
+The legacy driver of aspeed pwm is binding with tach controller and it
+doesn't follow the pwm framworks usage. In addition, the pwm register
+usage of the 6th generation of ast26xx has drastic change. So these
+patch serials add the new aspeed pwm driver to fix up the problem above.
 
-I do not know how to reproduce this for powerpc.
-Currently, only x86 and arm64 select
-ARCH_SUPPORTS_LTO_CLANG.
+Change since v4:
+- dt_binding:
+  - pwm/tach yaml: Replace child-node with additionalProperties
+  - pwm-tach yaml: Replace child-node with patternProperties
+- pwm-aspeed-g6.c suggested by Uwe Kleine-König
+  - The bit definitions contained the name of the register.
+  - Remove single caller function and fold it to the caller.
+  - Avoid to divide by the result of a division.
+  - Remove unnecessary condition in .apply().
+  - Use goto for error handling
 
-Is this a fix for a potential issue?
+Changes since v3:
+- Add the dt_binding for aspeed,ast2600-tach.
+- Describe the pwm/tach as child-node of pwm-tach mfd.
+- Complete the properties of pwm node.
 
+Changes since v2:
+- Remove the tach node, #address-cells and #size-cells from pwm-tach.yaml
+- Add clocks and reset properties to pwm-tach.yaml
+- Kconfig/Makfile sorted alphabetically
+- pwm-aspeed-g6.c suggested by Uwe Kleine-König
+  - Add more hardware descriptions at top of the driver.
+  - Remove unused api request and free
+  - Move the initialize settings of all pwm channel to probe.
+  - Change the method of getting the approximate period.
+  - Read the hardware register values to fill the state for .get_state()
 
-> > clang-13: error: invalid argument '-fsanitize=cfi-mfcall' only allowed with '-flto'
-> >
-> > This removes unnecessary CPP redefinition. Which works fine as in most
-> > place KBUILD_CFLAGS is passed to $CPP except
-> > arch/powerpc/kernel/vdso64/vdso(32|64).lds. To fix vdso, this does:
-> > 1. add -m(big|little)-endian to $CPP
-> > 2. add target to $KBUILD_CPPFLAGS as otherwise clang ignores -m(big|little)-endian if
-> > the building platform does not support big endian (such as x86).
-> >
-> > Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-> > ---
-> > Changes:
-> > v3:
-> > * moved vdso cleanup in a separate patch
-> > * only add target to KBUILD_CPPFLAGS for CLANG
-> >
-> > v2:
-> > * fix KBUILD_CPPFLAGS
-> > * add CLANG_FLAGS to CPPFLAGS
-> > ---
-> >   Makefile              | 1 +
-> >   arch/powerpc/Makefile | 3 ++-
-> >   2 files changed, 3 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/Makefile b/Makefile
-> > index 15b6476d0f89..5b545bef7653 100644
-> > --- a/Makefile
-> > +++ b/Makefile
-> > @@ -576,6 +576,7 @@ CC_VERSION_TEXT = $(subst $(pound),,$(shell $(CC) --version 2>/dev/null | head -
-> >   ifneq ($(findstring clang,$(CC_VERSION_TEXT)),)
-> >   ifneq ($(CROSS_COMPILE),)
-> >   CLANG_FLAGS += --target=$(notdir $(CROSS_COMPILE:%-=%))
-> > +KBUILD_CPPFLAGS      += --target=$(notdir $(CROSS_COMPILE:%-=%))
->
-> You can avoid the duplication here by just doing:
->
-> KBUILD_CPPFLAGS += $(CLANG_FLAGS)
->
-> I am still not super happy about the flag duplication but I am not sure
-> I can think of a better solution. If KBUILD_CPPFLAGS are always included
-> when building .o files, maybe we should just add $(CLANG_FLAGS) to
-> KBUILD_CPPFLAGS instead of KBUILD_CFLAGS?
+Changes since v1:
+- Fix the dt_binding_check fail suggested by Rob Herring
+- Add depends to PWM_ASPEED_G6 configure suggested by Uwe Kleine-Konig
+- pwm-aspeed-g6.c suggested by Uwe Kleine-König
+  - Fix license header
+  - Use bitfiled.h macro to define register fields
+  - Implement .remove device function
+  - Implement .get_state pwm api
 
-Hmm, I think including --target=* in CPP flags is sensible,
-but not all CLANG_FLAGS are CPP flags.
-At least, -(no)-integrated-as is not a CPP flag.
+Billy Tsai (2):
+  dt-bindings: Add bindings for aspeed pwm-tach.
+  pwm: Add Aspeed ast2600 PWM support
 
-We could introduce a separate CLANG_CPP_FLAGS, but
-it would require more code changes...
+ .../bindings/hwmon/aspeed,ast2600-tach.yaml   |  66 ++++
+ .../bindings/mfd/aspeed,ast2600-pwm-tach.yaml |  84 +++++
+ .../bindings/pwm/aspeed,ast2600-pwm.yaml      |  62 +++
+ drivers/pwm/Kconfig                           |   8 +
+ drivers/pwm/Makefile                          |   1 +
+ drivers/pwm/pwm-aspeed-g6.c                   | 355 ++++++++++++++++++
+ 6 files changed, 576 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/aspeed,ast2600-tach.yaml
+ create mode 100644 Documentation/devicetree/bindings/mfd/aspeed,ast2600-pwm-tach.yaml
+ create mode 100644 Documentation/devicetree/bindings/pwm/aspeed,ast2600-pwm.yaml
+ create mode 100644 drivers/pwm/pwm-aspeed-g6.c
 
-So, I do not have a strong opinion either way.
+-- 
+2.25.1
 
-
-
-BTW, another approach might be to modify the linker script.
-
-
-In my best guess, the reason why powerpc adding the endian flag to CPP
-is this line in arch/powerpc/kernel/vdso64/vdso64.lds.S
-
-#ifdef __LITTLE_ENDIAN__
-OUTPUT_FORMAT("elf64-powerpcle", "elf64-powerpcle", "elf64-powerpcle")
-#else
-OUTPUT_FORMAT("elf64-powerpc", "elf64-powerpc", "elf64-powerpc")
-#endif
-
-
-You can use the CONFIG option to check the endian-ness.
-
-#ifdef CONFIG_CPU_BIG_ENDIAN
-OUTPUT_FORMAT("elf64-powerpc", "elf64-powerpc", "elf64-powerpc")
-#else
-OUTPUT_FORMAT("elf64-powerpcle", "elf64-powerpcle", "elf64-powerpcle")
-#endif
-
-
-All the big endian arches define CONFIG_CPU_BIG_ENDIAN.
-(but not all little endian arches define CONFIG_CPU_LITTLE_ENDIAN)
-
-
-So,
-#ifdef CONFIG_CPU_BIG_ENDIAN
-   < big endian code >
-#else
-  < little endian code >
-#endif
-
-works for all architectures.
-
-
-Only the exception is you cannot replace the one in uapi headers.
-  arch/powerpc/include/uapi/asm/byteorder.h: #ifdef __LITTLE_ENDIAN__
-since it is exported to userspace, where CONFIG options are not available.
-
-
-
-BTW, various flags are historically used.
-
- -  CONFIG_CPU_BIG_ENDIAN   /  CONFIG_CPU_LITTLE_ENDIAN
- -  __BIG_ENDIAN   / __LITTLE_ENDIAN
- -  __LITTLE_ENDIAN__     (powerpc only)
-
-
-
-__LITTLE_ENDIAN__  is defined by powerpc gcc and clang.
-
-My experiments...
-
-
-[1] powerpc-linux-gnu-gcc    -> __BIG_ENDIAN__ is defined
-
-masahiro@grover:~$ echo | powerpc-linux-gnu-gcc -E  -dM -x c - | grep ENDIAN
-#define __ORDER_LITTLE_ENDIAN__ 1234
-#define __BIG_ENDIAN__ 1
-#define __FLOAT_WORD_ORDER__ __ORDER_BIG_ENDIAN__
-#define __ORDER_PDP_ENDIAN__ 3412
-#define _BIG_ENDIAN 1
-#define __BYTE_ORDER__ __ORDER_BIG_ENDIAN__
-#define __VEC_ELEMENT_REG_ORDER__ __ORDER_BIG_ENDIAN__
-#define __ORDER_BIG_ENDIAN__ 4321
-
-
-[2] powerpc-linux-gnu-gcc + -mlittle-endian    -> __LITTLE_ENDIAN__ is defined
-
-masahiro@grover:~$ echo | powerpc-linux-gnu-gcc  -E  -dM   -x c -
--mlittle-endian  | grep ENDIAN
-#define __ORDER_LITTLE_ENDIAN__ 1234
-#define _LITTLE_ENDIAN 1
-#define __FLOAT_WORD_ORDER__ __ORDER_LITTLE_ENDIAN__
-#define __ORDER_PDP_ENDIAN__ 3412
-#define __LITTLE_ENDIAN__ 1
-#define __BYTE_ORDER__ __ORDER_LITTLE_ENDIAN__
-#define __VEC_ELEMENT_REG_ORDER__ __ORDER_LITTLE_ENDIAN__
-#define __ORDER_BIG_ENDIAN__ 4321
-
-
-[3] other arch gcc    -> neither of them is defined
-
-masahiro@grover:~$ echo | gcc -E  -dM   -x c -  | grep ENDIAN
-#define __ORDER_LITTLE_ENDIAN__ 1234
-#define __FLOAT_WORD_ORDER__ __ORDER_LITTLE_ENDIAN__
-#define __ORDER_PDP_ENDIAN__ 3412
-#define __ORDER_BIG_ENDIAN__ 4321
-#define __BYTE_ORDER__ __ORDER_LITTLE_ENDIAN__
-
-masahiro@grover:~$ echo | arm-linux-gnueabihf-gcc   -E  -dM   -x c -
--mlittle-endian  | grep ENDIAN
-#define __ORDER_LITTLE_ENDIAN__ 1234
-#define __FLOAT_WORD_ORDER__ __ORDER_LITTLE_ENDIAN__
-#define __ORDER_PDP_ENDIAN__ 3412
-#define __BYTE_ORDER__ __ORDER_LITTLE_ENDIAN__
-#define __ORDER_BIG_ENDIAN__ 4321
-
-masahiro@grover:~$ echo | arm-linux-gnueabihf-gcc   -E  -dM   -x c -
--mbig-endian  | grep ENDIAN
-#define __ORDER_LITTLE_ENDIAN__ 1234
-#define __FLOAT_WORD_ORDER__ __ORDER_BIG_ENDIAN__
-#define __ORDER_PDP_ENDIAN__ 3412
-#define __ARM_BIG_ENDIAN 1
-#define __BYTE_ORDER__ __ORDER_BIG_ENDIAN__
-#define __ORDER_BIG_ENDIAN__ 4321
-
-
-[4] Clang  --target=powerpc-linux-gnu      -> __BIG_ENDIAN__ is defined
-
-masahiro@grover:~$ echo |  ~/tools/clang-latest/bin/clang -E
---target=powerpc-linux-gnu -dM -x c -    | grep ENDIAN
-#define _BIG_ENDIAN 1
-#define __BIG_ENDIAN__ 1
-#define __BYTE_ORDER__ __ORDER_BIG_ENDIAN__
-#define __ORDER_BIG_ENDIAN__ 4321
-#define __ORDER_LITTLE_ENDIAN__ 1234
-#define __ORDER_PDP_ENDIAN__ 3412
-
-
-
-[5] very recent Clang understands --target=powerpcle-linux-gnu     -->
-__LITTLE_ENDIAN__ is defined
-
-masahiro@grover:~$ echo |  ~/tools/clang-latest/bin/clang -E
---target=powerpcle-linux-gnu -dM -x c -   | grep ENDIAN
-#define _LITTLE_ENDIAN 1
-#define __BYTE_ORDER__ __ORDER_LITTLE_ENDIAN__
-#define __LITTLE_ENDIAN__ 1
-#define __ORDER_BIG_ENDIAN__ 4321
-#define __ORDER_LITTLE_ENDIAN__ 1234
-#define __ORDER_PDP_ENDIAN__ 3412
-
-
-[6] very recent Clang, --target=powerpc-linux-gnu  + -mlittle-endian
- --> __LITTLE_ENDIAN__ is defined
-
-masahiro@grover:~$ echo |  ~/tools/clang-latest/bin/clang -E
---target=powerpc-linux-gnu -dM -x c -  -mlittle-endian  | grep ENDIAN
-#define _LITTLE_ENDIAN 1
-#define __BYTE_ORDER__ __ORDER_LITTLE_ENDIAN__
-#define __LITTLE_ENDIAN__ 1
-#define __ORDER_BIG_ENDIAN__ 4321
-#define __ORDER_LITTLE_ENDIAN__ 1234
-#define __ORDER_PDP_ENDIAN__ 3412
-
-
-
-
-[7] Clang, target with little endian only ,   -mbig-endian is ignored
-masahiro@grover:~$ echo |  clang -E   -dM -x c -    | grep ENDIAN
-#define __BYTE_ORDER__ __ORDER_LITTLE_ENDIAN__
-#define __LITTLE_ENDIAN__ 1
-#define __ORDER_BIG_ENDIAN__ 4321
-#define __ORDER_LITTLE_ENDIAN__ 1234
-#define __ORDER_PDP_ENDIAN__ 3412
-masahiro@grover:~$ echo |  clang -E   -dM -x c -  -mbig-endian  | grep ENDIAN
-#define __BYTE_ORDER__ __ORDER_LITTLE_ENDIAN__
-#define __LITTLE_ENDIAN__ 1
-#define __ORDER_BIG_ENDIAN__ 4321
-#define __ORDER_LITTLE_ENDIAN__ 1234
-#define __ORDER_PDP_ENDIAN__ 3412
-
-
---
-Best Regards
-Masahiro Yamada
