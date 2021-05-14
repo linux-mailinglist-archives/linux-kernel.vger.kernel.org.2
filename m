@@ -2,148 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C1E8380F3A
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 19:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC5F7380F47
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 19:51:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235235AbhENRuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 13:50:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48932 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229445AbhENRuU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 13:50:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AB4A61408;
-        Fri, 14 May 2021 17:49:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621014548;
-        bh=o26Wkx/ez879lFq8JcHpfo4f6e+NGRwcrc+ND37TxOU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=o1/RB9Hsksg/QlBKZ/PgN3r7rgJhWoVbliP0ZZ907zazWAigd+eLtKMNIx5tgZ9KJ
-         XHJf4v0sUj8QKXmpoEJvfAFzng+hKWJYo+yyNXgnwhOpugfRRdAMC0carMxOZVvcpE
-         muvTK2wu12t6jGkT46aQngv3cnBP8035qeoUsAW5/sQkXUdXhl0rMgeZZWD4kktYO+
-         VHp2YdNe0yNj9QC/QWEeupbwGSx6D1y+5B9I2rLsmojgBN+OEIKH+Mkxfk+RVf7n0x
-         Fe2Xp7GdFP5HDqW/TADNpGFhmZ6My0Z6YDuXJxIS+WZ3LWMfBLWmPzwwCfolP753Qx
-         g27ziYm7aDj6Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 310E85C02A5; Fri, 14 May 2021 10:49:08 -0700 (PDT)
-Date:   Fri, 14 May 2021 10:49:08 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        0day robot <lkp@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        ying.huang@intel.com, zhengjun.xing@intel.com, kernel-team@fb.com,
-        neeraju@codeaurora.org
-Subject: Re: [clocksource]  388450c708:  netperf.Throughput_tps -65.1%
- regression
-Message-ID: <20210514174908.GI975577@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210501003247.2448287-4-paulmck@kernel.org>
- <20210513155515.GB23902@xsang-OptiPlex-9020>
- <20210513170707.GA975577@paulmck-ThinkPad-P17-Gen-1>
- <20210514074314.GB5384@shbuild999.sh.intel.com>
+        id S235244AbhENRxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 13:53:05 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:60100 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229681AbhENRxE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 13:53:04 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14EHpoNo038903;
+        Fri, 14 May 2021 12:51:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1621014710;
+        bh=n7DLuL4pxk0A6LMaK34RCZxhdysfsbCLmks5vPOt5eE=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=gtdiUqI/qfzQB2JKRhWDas9W8vr+BUDOyslQPyGDLxktLbdxl4IGnLkAU4ezQpHsL
+         j6FMOJ5vcBV+lUv7/o1LAw0lgK2MPMVgnWfvW4LzUkADt3Fztp7n3HJqM4vZGE/gq1
+         RmqaTIqjkUBdSm/E6iDGCxhOCi6PCYa3FWoG2+Kc=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14EHpob7026706
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 14 May 2021 12:51:50 -0500
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 14
+ May 2021 12:51:49 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 14 May 2021 12:51:49 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14EHpnNJ020164;
+        Fri, 14 May 2021 12:51:49 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Tero Kristo <kristo@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+CC:     Nishanth Menon <nm@ti.com>,
+        =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@gmail.com>,
+        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v2] arm64: dts: ti: j7200-main: Mark Main NAVSS as dma-coherent
+Date:   Fri, 14 May 2021 12:51:48 -0500
+Message-ID: <162101469409.22902.3718929680839642431.b4-ty@ti.com>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20210510180601.19458-1-vigneshr@ti.com>
+References: <20210510180601.19458-1-vigneshr@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210514074314.GB5384@shbuild999.sh.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 03:43:14PM +0800, Feng Tang wrote:
-> Hi Paul,
+On Mon, 10 May 2021 23:36:01 +0530, Vignesh Raghavendra wrote:
+> Traffic through main NAVSS interconnect is coherent wrt ARM caches on
+> J7200 SoC.  Add missing dma-coherent property to main_navss node.
 > 
-> On Thu, May 13, 2021 at 10:07:07AM -0700, Paul E. McKenney wrote:
-> > On Thu, May 13, 2021 at 11:55:15PM +0800, kernel test robot wrote:
-> > > 
-> > > 
-> > > Greeting,
-> > > 
-> > > FYI, we noticed a -65.1% regression of netperf.Throughput_tps due to commit:
-> > > 
-> > > 
-> > > commit: 388450c7081ded73432e2b7148c1bb9a0b039963 ("[PATCH v12 clocksource 4/5] clocksource: Reduce clocksource-skew threshold for TSC")
-> > > url: https://github.com/0day-ci/linux/commits/Paul-E-McKenney/Do-not-mark-clocks-unstable-due-to-delays-for-v5-13/20210501-083404
-> > > base: https://git.kernel.org/cgit/linux/kernel/git/tip/tip.git 2d036dfa5f10df9782f5278fc591d79d283c1fad
-> > > 
-> > > in testcase: netperf
-> > > on test machine: 96 threads 2 sockets Ice Lake with 256G memory
-> > > with following parameters:
-> > > 
-> > > 	ip: ipv4
-> > > 	runtime: 300s
-> > > 	nr_threads: 25%
-> > > 	cluster: cs-localhost
-> > > 	test: UDP_RR
-> > > 	cpufreq_governor: performance
-> > > 	ucode: 0xb000280
-> > > 
-> > > test-description: Netperf is a benchmark that can be use to measure various aspect of networking performance.
-> > > test-url: http://www.netperf.org/netperf/
-> > > 
-> > > 
-> > > 
-> > > If you fix the issue, kindly add following tag
-> > > Reported-by: kernel test robot <oliver.sang@intel.com>
-> > > 
-> > > 
-> > > also as Feng Tang checked, this is a "unstable clocksource" case.
-> > > attached dmesg FYI.
-> > 
-> > Agreed, given the clock-skew event and the resulting switch to HPET,
-> > performance regressions are expected behavior.
-> > 
-> > That dmesg output does demonstrate the value of Feng Tang's patch!
-> > 
-> > I don't see how to obtain the values of ->mult and ->shift that would
-> > allow me to compute the delta.  So if you don't tell me otherwise, I
-> > will assume that the skew itself was expected on this hardware, perhaps
-> > somehow due to the tpm_tis_status warning immediately preceding the
-> > clock-skew event.  If my assumption is incorrect, please let me know.
-> 
-> I run the case with the debug patch applied, the info is:
-> 
-> [   13.796429] clocksource: timekeeping watchdog on CPU19: Marking clocksource 'tsc' as unstable because the skew is too large:
-> [   13.797413] clocksource:                       'hpet' wd_nesc: 505192062 wd_now: 10657158 wd_last: fac6f97 mask: ffffffff
-> [   13.797413] clocksource:                       'tsc' cs_nsec: 504008008 cs_now: 3445570292aa5 cs_last: 344551f0cad6f mask: ffffffffffffffff
-> [   13.797413] clocksource:                       'tsc' is current clocksource.
-> [   13.797413] tsc: Marking TSC unstable due to clocksource watchdog
-> [   13.844513] clocksource: Checking clocksource tsc synchronization from CPU 50 to CPUs 0-1,12,22,32-33,60,65.
-> [   13.855080] clocksource: Switched to clocksource hpet
-> 
-> So the delta is 1184 us (505192062 - 504008008), and I agree with
-> you that it should be related with the tpm_tis_status warning stuff.
-> 
-> But this re-trigger my old concerns, that if the margins calculated
-> for tsc, hpet are too small?
+> Also add dma-ranges to be consistent with mcu_navss node
+> and with AM65/J721e main_navss and mcu_navss nodes.
 
-If the error really did disturb either tsc or hpet, then we really
-do not have a false positive, and nothing should change (aside from
-perhaps documenting that TPM issues can disturb the clocks, or better
-yet treating that perturbation as a separate bug that should be fixed).
-But if this is yet another way to get a confused measurement, then it
-would be better to work out a way to reject the confusion and keep the
-tighter margins.  I cannot think right off of a way that this could
-cause measurement confusion, but you never know.
+Hi Vignesh Raghavendra,
 
-So any thoughts on exactly how the tpm_tis_status warning might have
-resulted in the skew?
+I have applied the following to branch ti-k3-dts-next on [1].
+Thank you!
 
-> With current math algorithm, the 'uncertainty_margin' is
-> calculated against the frequency, and those tsc/hpet/acpi_pm
-> timer is multiple of MHz or GHz, which gives them to have margin of
-> 100 us. It works with normal systems. But in the wild world, there
-> could be some sparkles due to some immature HW components, their
-> firmwares or drivers etc, just like this case. 
+[1/1] arm64: dts: ti: j7200-main: Mark Main NAVSS as dma-coherent
+      commit: 52ae30f55a2a40cff549fac95de82f25403bd387
 
-Isn't diagnosing issues from immature hardware, firmware, and drivers
-actually a benefit?  It would after all be quite unfortunate if some issue
-that was visible only due to clock skew were to escape into production.
 
-							Thanx, Paul
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+[1] git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+
