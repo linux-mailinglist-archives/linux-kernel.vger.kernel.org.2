@@ -2,106 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A57353804B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 09:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE5DE3804B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 09:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233325AbhENHzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 03:55:35 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:2979 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233293AbhENHzc (ORCPT
+        id S233313AbhENHzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 03:55:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233331AbhENHzj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 03:55:32 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FhLMq2v9wzmWHl;
-        Fri, 14 May 2021 15:52:07 +0800 (CST)
-Received: from [10.174.179.215] (10.174.179.215) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 14 May 2021 15:54:18 +0800
-Subject: Re: [PATCH] IB/srpt: Fix passing zero to 'PTR_ERR'
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Bart Van Assche <bvanassche@acm.org>
-CC:     <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
-        <target-devel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20201112145443.17832-1-yuehaibing@huawei.com>
- <20201112172008.GA944848@nvidia.com>
- <c73d9be0-0bd8-634a-e3d1-c81fe4c30482@acm.org>
- <20201112183023.GB917484@nvidia.com>
-From:   YueHaibing <yuehaibing@huawei.com>
-Message-ID: <9afea945-8991-4c27-10d0-e02c732705fc@huawei.com>
-Date:   Fri, 14 May 2021 15:54:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Fri, 14 May 2021 03:55:39 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D76C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 00:54:27 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id m9so29187044wrx.3
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 00:54:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=FbGTVWfDS8cQxtpKVogvmAa19HBXse2riK6QNgECFH0=;
+        b=Q6qpTyejKg9P5pbjlb9OBXFbZrpYh9c5b7ybGw1+n1x0RHPwkGzKUMGbxTFVNHD4pk
+         e6JbmRKDlMDXGJUmPVsVjqeWXruW91aeugzhTpl4H6R2xf9KEO7UH+Nb3eMknW2WQHJe
+         tpWNIEPTotB19XzCmximUJ9NyAUP/j3ksCSrviJXoOS8mMEWsHuEvSQFbhX7UxXnAu4E
+         7yhHWwEQYTb3qJkQEqToVB74upMfr2Yw+m7IPBAy1N6n+RRgS1UyBVLlTqwER+hrEFTX
+         2Bi12Vafq6wwNQo4lFG2ked7x1TID+I24bv1UC27Ew0ai260oud7WsqmmdFPT2QAyZfK
+         WEEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FbGTVWfDS8cQxtpKVogvmAa19HBXse2riK6QNgECFH0=;
+        b=W8G7ryl/r+Di532OYbGxumsb/dk47kIgugJduj3bAfnwOncRfOa7YAyn0wTgUupnQG
+         bkKZqHx3DTN0GgdZ4ncN9DAfySG9RDi4g6/m9QT8zB1vWsz5ZD3MSHkES3pkLJPgi2tr
+         KpExWxsPy7zCmkyPgKh/CwAti2a/nQOYrC+EmCaQk2fVFFASnPgboDhC5xwdM9YzrzBC
+         inYeAo+yJuVa1kbuqfV7Aw53ZJDu88w+czjnMv/BtCc12XJdwOv1oRLA8XAcIaVks3Tp
+         1LM07i9SnkYv9ixVhnLeKoaVzQA6h8pc1Q2QxKxTS4n/ZasFp2QzJ3XOYWE6T4gckrDK
+         47hg==
+X-Gm-Message-State: AOAM532QIg9770/xGTyRYD3xN5+GrQHqpOQM0hlB2GegxWDD5gO6Omix
+        JOKa8LgSjS0YYWpYvC3LQAw=
+X-Google-Smtp-Source: ABdhPJz1Y01d/RaSBoTNvcjRbbII61UcK2e1OHyQzttzkylztFb1W9bZhck1gfshbYO+IUiACQjQ+g==
+X-Received: by 2002:a5d:4151:: with SMTP id c17mr6875305wrq.262.1620978865974;
+        Fri, 14 May 2021 00:54:25 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.126.134])
+        by smtp.gmail.com with ESMTPSA id e10sm5895391wrw.20.2021.05.14.00.54.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 May 2021 00:54:25 -0700 (PDT)
+Subject: Re: [PATCH] arm64: defconfig: Allow Mediatek boards to boot from the
+ mmc
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Collabora Kernel ML <kernel@collabora.com>,
+        linux-mediatek@lists.infradead.org, drinkcat@chromium.org,
+        hsinyi@chromium.org, Anson Huang <Anson.Huang@nxp.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        =?UTF-8?Q?Guido_G=c3=bcnther?= <agx@sigxcpu.org>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Max Krummenacher <max.oss.09@gmail.com>,
+        Michael Walle <michael@walle.cc>, Nishanth Menon <nm@ti.com>,
+        Shawn Guo <shawnguo@kernel.org>, Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+References: <20210423075250.2616275-1-enric.balletbo@collabora.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <8f5ba7d9-cae0-dde6-6d20-f6e37cbe6338@gmail.com>
+Date:   Fri, 14 May 2021 09:54:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201112183023.GB917484@nvidia.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210423075250.2616275-1-enric.balletbo@collabora.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.215]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/13 2:30, Jason Gunthorpe wrote:
-> On Thu, Nov 12, 2020 at 10:25:48AM -0800, Bart Van Assche wrote:
->> On 11/12/20 9:20 AM, Jason Gunthorpe wrote:
->>> I think it should be like this, Bart?
->>>
->>> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.c b/drivers/infiniband/ulp/srpt/ib_srpt.c
->>> index 6017d525084a0c..80f9673956ced2 100644
->>> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.c
->>> @@ -2311,7 +2311,7 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
->>>   	mutex_lock(&sport->port_guid_id.mutex);
->>>   	list_for_each_entry(stpg, &sport->port_guid_id.tpg_list, entry) {
->>> -		if (!IS_ERR_OR_NULL(ch->sess))
->>> +		if (ch->sess)
->>>   			break;
->>>   		ch->sess = target_setup_session(&stpg->tpg, tag_num,
->>>   						tag_size, TARGET_PROT_NORMAL,
->>> @@ -2321,12 +2321,12 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
->>>   	mutex_lock(&sport->port_gid_id.mutex);
->>>   	list_for_each_entry(stpg, &sport->port_gid_id.tpg_list, entry) {
->>> -		if (!IS_ERR_OR_NULL(ch->sess))
->>> +		if (ch->sess)
->>>   			break;
->>>   		ch->sess = target_setup_session(&stpg->tpg, tag_num,
->>>   					tag_size, TARGET_PROT_NORMAL, i_port_id,
->>>   					ch, NULL);
->>> -		if (!IS_ERR_OR_NULL(ch->sess))
->>> +		if (ch->sess)
->>>   			break;
->>>   		/* Retry without leading "0x" */
->>>   		ch->sess = target_setup_session(&stpg->tpg, tag_num,
->>> @@ -2335,7 +2335,9 @@ static int srpt_cm_req_recv(struct srpt_device *const sdev,
->>>   	}
->>>   	mutex_unlock(&sport->port_gid_id.mutex);
->>> -	if (IS_ERR_OR_NULL(ch->sess)) {
->>> +	if (!ch->sess)
->>> +		ch->sess = ERR_PTR(-ENOENT);
->>> +	if (IS_ERR(ch->sess)) {
->>>   		WARN_ON_ONCE(ch->sess == NULL);
->>>   		ret = PTR_ERR(ch->sess);
->>>   		ch->sess = NULL;
->>>
->>
->> Hi Jason,
->>
->> The ib_srpt driver accepts three different formats for the initiator ACL. Up
->> to two of the three target_setup_session() calls will fail if the fifth
->> argument of target_setup_session() does not use the format of the initiator
->> ID in configfs. If the first or the second target_setup_session() call fails
->> it is essential that later target_setup_session() calls happen. Hence the
->> IS_ERR_OR_NULL(ch->sess) checks in the above loops.
-> 
-> IS_ERR_OR_NULL is an abomination, it should not be used.
-> 
-> I see I didn't quite get it right, but that is still closer to sane,
-> probably target_setup_session() should return NULL not err_ptr
 
-Any fix plan?
 
+On 23/04/2021 09:52, Enric Balletbo i Serra wrote:
+> Enable the MMC_MTK option necessary to boot Mediatek boards from the
+> mmc. Booting from the mmc is the common method used for a bunch of
+> boards, specially Chromebooks, to boot from. Hence this driver is
+> built-in.
 > 
-> Jason
-> .
+> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+
+
+Applied to v5.13-next/defconfig
+
+
+
+Thanks!
+
+> ---
+> 
+>  arch/arm64/configs/defconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+> index 7b4be3807b6d..acb718160345 100644
+> --- a/arch/arm64/configs/defconfig
+> +++ b/arch/arm64/configs/defconfig
+> @@ -851,6 +851,7 @@ CONFIG_MMC_DW_K3=y
+>  CONFIG_MMC_DW_ROCKCHIP=y
+>  CONFIG_MMC_SUNXI=y
+>  CONFIG_MMC_BCM2835=y
+> +CONFIG_MMC_MTK=y
+>  CONFIG_MMC_SDHCI_XENON=y
+>  CONFIG_MMC_SDHCI_AM654=y
+>  CONFIG_MMC_OWL=y
 > 
