@@ -2,318 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10ABB380EAC
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 19:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8D96380EB5
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 19:19:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234871AbhENROz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 13:14:55 -0400
-Received: from mail-eopbgr40066.outbound.protection.outlook.com ([40.107.4.66]:48006
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230063AbhENROx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 13:14:53 -0400
+        id S235035AbhENRU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 13:20:57 -0400
+Received: from mga11.intel.com ([192.55.52.93]:33326 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234792AbhENRU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 13:20:56 -0400
+IronPort-SDR: LwYnGsfH5r8MHMsJorF5DTV6eA9mSjH7a7RAgxJPy4WleTJmhL7w13cb39wZfPqIaDi62N2Kvs
+ 8iHVpiAWGJoQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9984"; a="197124099"
+X-IronPort-AV: E=Sophos;i="5.82,300,1613462400"; 
+   d="scan'208";a="197124099"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 May 2021 10:19:40 -0700
+IronPort-SDR: NYZ/ZBR/M0sAt8ivx97pC7M6FKT4juXxZRKMSUCEE3kS0v4jCEqywJk93Tmvt4ULuBpzpSShKA
+ VgKadPuAfdKQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,300,1613462400"; 
+   d="scan'208";a="627224247"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmsmga005.fm.intel.com with ESMTP; 14 May 2021 10:19:39 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Fri, 14 May 2021 10:19:39 -0700
+Received: from orsmsx608.amr.corp.intel.com (10.22.229.21) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 14 May 2021 10:19:39 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx608.amr.corp.intel.com (10.22.229.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4
+ via Frontend Transport; Fri, 14 May 2021 10:19:39 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.171)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2106.2; Fri, 14 May 2021 10:19:38 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mJW6cTMEsKYIXLBn2UTSHmN6GW5jrMljt5zjPobDl68EJ1NGS+GBmBLmQM+U2ZbmTEFd9vSul6UL6BM5M+2TusNyJ23gutDDrQ9ucxRkdvZWHQQWaUZRyJRQZjUptsBLJc8LZg8pFzNpyNCDzJuJqi6ShUOzkV3mArvK9+rgHH602eEa2SAp5rnidWARjjWDjrSM5OFW2ZExhrUrlm9vt7H3ebJnISIwI0BKnQbtAf0T6gtXUiEJBmmGWp6s2zpekY2Px1ew5O2jSL5AJqune2uTefTr5PdpyFS7bPGcn7Mq8Uug2DMUpoiWR1RGttvLRB/F/7hGcjA0NMQWgH8J1Q==
+ b=lCjrOTpLvla3bZK8fu2FxWDSL1imWKvM5VNUW7HF1nol0QdfxtPKZtTAuDunrCld+hmf/HFIpktW2F9xICOFSm2mrSh3wYwehHeMH73kLcOy60zPaVNG7T0PJ1AsoHguaY82iH3ncV3R4l+2Yuu4+OAntlf3+odiZZzuTdPkkj0/jexAziL7wQzBE6KqsF6nAXXUlrBLiDDZhQW+121YOD4Hty/s+0PDroqGSqZ3vmYDZP290QXogNmsMiTMZuqmNrmfpN7LRZ6agWT8LMN/GsA1F0tghVizQsIDjWZS3yk3qjSkSUDPGQ84BBrSjybeH7xWuN/vKTdpCN6+FNVQRg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=h3IvTvH8H+OFelMjo4NVbx0ZNGknOPim1cFa+AsYsMI=;
- b=W8gDimsYfsa+cSmNMGcebJsgEgjG0BXM1ZBtIoesY/ARNAeSCjzdrCLJzmsx81yCoMdZpWzWtd338q2Fi1FDhchU86QAd2dCA/9ts6+q2scFkFO9kk9qXmr6MFHKx+eMVi18f6JjHXIiSHz8W9XYIluEfTrdJn1wJOhuCiBOGOLX0Yab7UnY5nYfN3kv6MUG1kN2mZkHVy73ZEAlT1tpm4WnYNzpvxS7h9MGJutlQLTPiSQzBDQah7mk9eyld3snwbgZ9111G4tHeJkoTuGkib8fn2kLOQ3NbI1psSZwtEnvxxj+W+X5u03iWo+xlYbJ6E1zSqcOOJW1l6iGBiw9RA==
+ bh=uS6uZoS4tiLlSRX7bnh0UtOWziaG7Iq1pI9nDo7WnDc=;
+ b=aBClPlQ4y6bP1y3MQn4gPejiJZCfQ9y8TVQZZwGz951m33bkvgY7YhHBv6WkAnp9x1Gepf1OH83bjVqf+3F7zRL1Yocp5C5KeIIArn7TcM3oXCW1s7Ig3f53OwsUylNzkNZcimuTJ/s0TWWgT28WCaDcEUCqQ7PV/TJfwGMWNm1P5wt+k3GbFThPnsJEzJjx/I9N+A7hmB2V/h9rq/mE6UuI82HeQldIsieSdvhkx8BK/Hcmo2Rzji8eFy/IBwcvUML3hZleb/U+axxNCmkeg0xsxZwUGNFFUzc1S69zPFNLh5Hf9qCbSJDJ3E2i9ENHNuH/RojWhlv9iYWnOU8Psg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=seco.com; dmarc=pass action=none header.from=seco.com;
- dkim=pass header.d=seco.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=secospa.onmicrosoft.com; s=selector2-secospa-onmicrosoft-com;
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=h3IvTvH8H+OFelMjo4NVbx0ZNGknOPim1cFa+AsYsMI=;
- b=KOOv215vvF8oD762B4X77K+H1Xn3yQjF1gtcLplMPag1oUnETeBtAuJhCNS6Fd4v50f8I9i/vQOq+arYj3AgZ1wM/0nPQC1B2PaLOOrRfyK2fr8T643dzNkUVpmGTzEIVCpBwDzUHXMTeDhmVvv+013SwI9JDqovBMyHQ0V3FHI=
-Authentication-Results: lists.infradead.org; dkim=none (message not signed)
- header.d=none;lists.infradead.org; dmarc=none action=none
- header.from=seco.com;
-Received: from DB7PR03MB4523.eurprd03.prod.outlook.com (2603:10a6:10:19::27)
- by DBBPR03MB7129.eurprd03.prod.outlook.com (2603:10a6:10:206::24) with
+ bh=uS6uZoS4tiLlSRX7bnh0UtOWziaG7Iq1pI9nDo7WnDc=;
+ b=PQC315irny8oKIItAYDcA74oyRrSIKiCVi6Wv8t7mG13Dk6iG2yCHCrC/Bqt9DSYb32uSHDH00O77kGeQlU5TXDqgmc3LUKUJrMnubRu6A9OWv4D83QPpNXq3j2m5J1MUxDWUyfXs8NuQKM5HLR7mT8/wNKxvTZZQlLPECX4YD0=
+Received: from MWHPR11MB1599.namprd11.prod.outlook.com (2603:10b6:301:e::16)
+ by CO1PR11MB5042.namprd11.prod.outlook.com (2603:10b6:303:99::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.28; Fri, 14 May
- 2021 17:13:39 +0000
-Received: from DB7PR03MB4523.eurprd03.prod.outlook.com
- ([fe80::40d5:3554:c709:6b1b]) by DB7PR03MB4523.eurprd03.prod.outlook.com
- ([fe80::40d5:3554:c709:6b1b%5]) with mapi id 15.20.4129.026; Fri, 14 May 2021
- 17:13:39 +0000
-Subject: Re: [PATCH v3 1/2] dt-bindings: pwm: Add Xilinx AXI Timer
-To:     Michal Simek <michal.simek@xilinx.com>,
-        Rob Herring <robh@kernel.org>
-Cc:     Linux PWM List <linux-pwm@vger.kernel.org>,
-        devicetree@vger.kernel.org, Alvaro Gamez <alvaro.gamez@hazent.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-References: <20210511191239.774570-1-sean.anderson@seco.com>
- <20210513021631.GA878860@robh.at.kernel.org>
- <f9165937-c578-d225-9f5e-d964367c4711@seco.com>
- <70176596-2250-8ae1-912a-9f9c30694e7d@seco.com>
- <CAL_JsqJY1W=t-gYYt+iTPgF7e9yJqzYFYGSJNrA4BNhAY+va8Q@mail.gmail.com>
- <9cf3a580-e4d3-07fc-956f-dc5c84802d93@xilinx.com>
-From:   Sean Anderson <sean.anderson@seco.com>
-Message-ID: <87b31b06-9b81-5743-e3a8-50c255c0a83c@seco.com>
-Date:   Fri, 14 May 2021 13:13:35 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <9cf3a580-e4d3-07fc-956f-dc5c84802d93@xilinx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Fri, 14 May
+ 2021 17:19:37 +0000
+Received: from MWHPR11MB1599.namprd11.prod.outlook.com
+ ([fe80::48df:6af5:afe:ea7e]) by MWHPR11MB1599.namprd11.prod.outlook.com
+ ([fe80::48df:6af5:afe:ea7e%7]) with mapi id 15.20.4108.036; Fri, 14 May 2021
+ 17:19:37 +0000
+From:   "Kaneda, Erik" <erik.kaneda@intel.com>
+To:     Wei Ming Chen <jj251510319013@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "devel@acpica.org" <devel@acpica.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>
+Subject: RE: [PATCH] ACPICA: Use ACPI_FALLTHROUGH
+Thread-Topic: [PATCH] ACPICA: Use ACPI_FALLTHROUGH
+Thread-Index: AQHXRzXLfMTR2xfx+EGhKhkGGYYxqKrjO9lA
+Date:   Fri, 14 May 2021 17:19:37 +0000
+Message-ID: <MWHPR11MB1599C04B3AAA3A1A14A0D7FCF0509@MWHPR11MB1599.namprd11.prod.outlook.com>
+References: <20210512135018.20253-1-jj251510319013@gmail.com>
+In-Reply-To: <20210512135018.20253-1-jj251510319013@gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [50.195.82.171]
-X-ClientProxiedBy: BL0PR02CA0127.namprd02.prod.outlook.com
- (2603:10b6:208:35::32) To DB7PR03MB4523.eurprd03.prod.outlook.com
- (2603:10a6:10:19::27)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [47.7.17.63]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 3c40f848-558e-439e-892e-08d916fc7365
+x-ms-traffictypediagnostic: CO1PR11MB5042:
+x-microsoft-antispam-prvs: <CO1PR11MB50420B4A357E853F5327988EF0509@CO1PR11MB5042.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:425;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 5kSsJ8bwxvIo3PYX2bI/uqanh9GOiU8F+AuEN7UT1eLxBPgX6qXxrz4w3gqjkV+2H+32AXFYBELwqgWSetknQKH3Us8/ObnqwRlUAL7GF6oDo/gx5ly+fWv4aWO60r38Av+RmWFF1HOwRLfqs+Y/xcgORvu/0bL0rCvV2VD4/T8Fn5mwG7jc1037cOFM195L/TjQLRwv8KAIYh57flCSXNMuBH0S4++puVq6aNhc2baz4bAn5A99N2YbiuJr+n1T7M+f/XvnIWk1X4CDPLz2B7TDojGb/GG66Spm2ap041ZN8vtmxSSlr4aJrBow7KOwFC9Qv/Ld2NuOYd4kPwHXMCKe5qHNu2n+D6NtAqQuJKAQWiVyZFwgyEns25N1x2b3KEsL8AlMvNSqstdo9ZaVfGx2h/zQf5jqZ/PkgQTPiv5GXjJimE+T97oFyaCp0SF3S5R+5/kOOH6dOoE8EgyasAX7elVZ3gh9VtG73sjH0i6kwscnnSWguhXu12uz7BDrnnPUW64XoTJ1VpF+Thls9sp51ayXoLN137sH65dbpWj3DaFm2TTr9k1JWSiA7yBdr53sJlTKuV04y8T3YoUE/4rDLn7TZYUfyxWxjEEPUlXNAhMy5sJpH/ftiNPuTP1kHA04PXGDflrDxAHhoV9lkKglb/aZnvRqd41qpZv05k4AVH57czI+qHAdtXNovs7BQkOmbQ4YfBwZXTqC/x0Up8u1wDxz/sTb+n4jf95/nSc=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1599.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39860400002)(136003)(396003)(366004)(376002)(4326008)(6506007)(66446008)(66476007)(66556008)(83380400001)(76116006)(53546011)(7696005)(64756008)(52536014)(2906002)(71200400001)(966005)(5660300002)(8676002)(478600001)(26005)(8936002)(66946007)(33656002)(316002)(38100700002)(122000001)(9686003)(55016002)(86362001)(110136005)(54906003)(186003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?2N9aBMx9oCkOBve9u8XHEhkYAj4EAu51f84OBbeNrfvSTlLtuve1gohCTrwi?=
+ =?us-ascii?Q?eNNuF6727KuZcXx5GMgg1MY13ZD8GJZktU5cKboMYz28ep3HQYe5PxvkvheU?=
+ =?us-ascii?Q?eXwlnHVyU6LchFMnEIGVCQzJPHvkfbK9E2q2eKU0lZkQeZImKZHuLw8lLmf/?=
+ =?us-ascii?Q?I07Q98ICj++yGr9L43O2CTnGAbmT6cb7FLBy+aG0EXt3bcXBBBF2ec8W8ifD?=
+ =?us-ascii?Q?6/o3OCYIRVFQ+eDFnXXwkvyi5u4HyltCkRABQXK3bFk+NVT0RyGlEtKqGXTg?=
+ =?us-ascii?Q?4aTJI773FJ5wrtugSKsEvs7tTkTlXv9fzGWzyJxxpDOr4BRqOqVPRG9ggOaL?=
+ =?us-ascii?Q?5PjF2g6R9RCAmH1k6544rIiAIsC53J9OeQdYQtuw5HrVj9na/8/HUKnwfWcI?=
+ =?us-ascii?Q?RRWbvTNJYjToPYUi1iRK1A7TorsmQM8F4ctkm2hIo8UcRsQGibUiQWma6A1Q?=
+ =?us-ascii?Q?DN6rOniH5Kv3C+zuOv1HLXeTyOCuy5cj+6qi/Y1GAduESu4Sy7OtynuJs9+b?=
+ =?us-ascii?Q?Ifp2RighCHfe+ojNXPOc9lNWcXkOWrpUtdaErTVccf3mmFw3SQnnFCdge9fe?=
+ =?us-ascii?Q?6IcTylegbV8vEqZLt6c62CBXIxmVZUq9IaHr6rL4/egRHEfFUZ8mXC5traUP?=
+ =?us-ascii?Q?YlqRsK3BRfLZLAcMC77iz+sgyvaGgjMRRY4yMVPhL0VwqXBIzvQIYv1X9zLo?=
+ =?us-ascii?Q?pBK806HpkJ9NFx8vOO8E0M5HkVVoXhZmAJxzkybLN2+Ii9HXatWaKvOdPSzx?=
+ =?us-ascii?Q?fJUo1BF6dBdNS+k6kEYl6s4DrmTrbTo1LXFIWx7CXReVR/nqH8gO9LMuhy68?=
+ =?us-ascii?Q?+dBv1EBUgOgJjkCKnqH6JD3DzpFrz+QbWSxC0GUpAGP4lmnkWfhyI5zUDxza?=
+ =?us-ascii?Q?9SJDcEKJD6/78DaYSwAC79h28OTAuIGQTdb3XUxeBUNuJXJtKqsxhJaTNFJO?=
+ =?us-ascii?Q?2WUFVUnqi/wG54KSFxOhm1p5t+/21sPE4BtPt+5IjmQ3N0ZswXvtlKKvh5uL?=
+ =?us-ascii?Q?su88/par2BtGWZBgT1Pcrb8xqFNOmso9/r6AenKPgGU4GVJrSWTRwtbDC9U3?=
+ =?us-ascii?Q?2fT3s2LIl7shtXpFKXPu8pijMu50OTVahxYjeGu1qIJxcDZYCGsG5cTNSTU/?=
+ =?us-ascii?Q?4M2wJXY/I5qo5hmthpKmPbOlzXwi+zXrIxhmcPfYZKfD3JlaLMDhaPUlLa6b?=
+ =?us-ascii?Q?oWecj0xJ1pCYGuuf4yvBxHp8FTJHPRMZ7zBevLP2f+NnXoTSMBHj4R+OqcQB?=
+ =?us-ascii?Q?G8EwwxybUXuHT9M8HQHbJLKI87VU+BMWdq1efbcwEtbhMrRBtI+iGj1NttHE?=
+ =?us-ascii?Q?LWE=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [172.27.1.65] (50.195.82.171) by BL0PR02CA0127.namprd02.prod.outlook.com (2603:10b6:208:35::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Fri, 14 May 2021 17:13:38 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3d33ed74-d3a8-4b1b-369b-08d916fb9e04
-X-MS-TrafficTypeDiagnostic: DBBPR03MB7129:
-X-Microsoft-Antispam-PRVS: <DBBPR03MB7129F9B09C7A4C088850EE2396509@DBBPR03MB7129.eurprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ZEf+lyIPUEpvShU88JfdOBFFZMzERSCEdP/Dd/7zAGz2nXXOq3CbDMUc9rCIy0RSkZw7WkrLLO12qUETENXYLGGCfs+rPqxtIHOzoA62Tdy54udn51sWd+R61ptH+jiyxYKm/fpwtJEFWnvjYYrdwWL9xm4XNDcedKdO3eSkL8BY8mF4qp1mYWFXy39qwGBNS2WNOWZUo21g2wSt/hzm0erY1yEJgpc7i0rcEPgcYeLTqH8YnzkWe+1eRkEEGJdbXrFnJIFmYa1NDuEu0yECpZJDopHodf19V8kB7jp0rv0OwGJxyilNHL8ybPkEYgIjaYEMZu+x08f96+/+WwWHkd+6l9FB8BA/yEVbBsa9aBw0H1AZqLLae9o34hB5qSDXUl1KvF3aH5nJGG6iDqaVc7TpiI2XunBKh6yWP+ziC6negn/ngPmBXr5vzKbrVqtTBWrQiJzommAiIInqxAUG5DnKmZjNiqBJ6gS0UwnYQ1z83Vofp6WEKNK8YUPQYUbdhL22bsEPx2XVUp1ax6dEIhRz4hQYNPjnp4CGYmB/7h89u6GRqcpf601HmPuV8KJ9GQ534WFgTu1jjV+WgR/3qO/yKUHlZE5p4zHabTYMaU/QAsTDZ7wiu2UlaVRkb4h/q78KJHfZUISbb0+afjuK+q5oamBGChEafHHbPTGuhx3J1jdBpVYpwz2nxnaTLG0uHp+Tg09l9MSdlL6mWBTRim7XgykkznFk6H0rn3DPaNg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR03MB4523.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(31696002)(498600001)(2616005)(38100700002)(53546011)(110136005)(16526019)(31686004)(83380400001)(44832011)(6666004)(956004)(54906003)(8936002)(36756003)(16576012)(5660300002)(6486002)(4326008)(186003)(52116002)(8676002)(26005)(86362001)(66476007)(66946007)(66556008)(2906002)(38350700002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?YmZQWnQ3dU96OUcrMHp5bU5kdWZqNjhwVVh0c2JtTEdyekJleW10eFI4UFI4?=
- =?utf-8?B?aUV6MjA0TVJOcG5rQ3NQNHZ0LzRJL3NyWFcrZDBhblN2V0NoYUs3TU9EaHV3?=
- =?utf-8?B?aXhMb2VaNkdNdnU4VmoyYkVXVGsyWVlmRVBPRjQxMWxvQm5NYWFzSUhkNVdu?=
- =?utf-8?B?eFR1bldpNUd6TUxVRGczWkw0T0N2MERWSkZIVUxpMkg5eXB5QnZOcEt1a2g2?=
- =?utf-8?B?V09MZGpCSkh3aGZKYVNYRWxGZU9zdVA0c2FRMG9HK1BvQlRhbHhYeWxTZEg0?=
- =?utf-8?B?RTkvM1NhM1lZVGU0WWxOSkhNT25PZTdOVEFtbU9rWVE1MEZSY3Ird25mSzBW?=
- =?utf-8?B?MkVXZkZERWxkQUs2cEtYVzNCbXlKYUxmdnJNTUk0VEZVdGQ1OWZFTVFDNnUy?=
- =?utf-8?B?S3BnS2VRaG8rajhOL1MveFVvb28yQlQ2TW4vcHU2dXh4L2Vlc3BEbEsxQk82?=
- =?utf-8?B?Wk9OcStUWW5pb2ZFYkpDWjBIOTNERGEremJKSW9PdzRITDJ1VUF3N2g3ZlUz?=
- =?utf-8?B?OExrcEJBRUFWVGR5L21udkN3Mkszd0g3SDJNQUdaMkFYbHNlWkd0WnZxTXFR?=
- =?utf-8?B?M2tDTVZBUEVNcnBFZ0hKSll6SmwzS2dUYU5hemZOckxZTy83Ymhxb1dkZlVO?=
- =?utf-8?B?QnBtdXBoNUJTY1loeDQxSmJCbE9SN3oyaDVxRVFSWlJtTlJmWGZ5OXRDalov?=
- =?utf-8?B?Z1BUMFNkc3I1ZTN5MmtWZ0d5STAveGtMUDhhT0lsOWk2WUwrL1d2NjJvZ2ww?=
- =?utf-8?B?bTNOQ2swM0lURzR3bjZweTRIMXlxRyswOStycFAzOGxpM25BSmFVeUtkczFZ?=
- =?utf-8?B?WnBjMng4ZkU4L2FZVllNSk1GWFFzSGdabFFENkIzY2lvdFJQTVMzUWRsUzdu?=
- =?utf-8?B?TUhMZFdVNXVaNXpCc3c0akRBZmdnUENJTXdUZ01sSlFwSlVUc2RpMXJZZFJP?=
- =?utf-8?B?Zzd1Q1dsUkMwZmFtYjFNcTZobVVKSEFxdWtET01YdG03Ly85UTNlcnVoMk9r?=
- =?utf-8?B?Zm9ZNDUzVlVaSUMwUFFLVFp5dWNSSDRjNGkwQVlvby9lMVgvUm9uVWhzK3FU?=
- =?utf-8?B?Z1BBNW9CM2dod1I4bjFodVNQQ21xbko2dFA2cVZMdE1lT2t5amNvc2VJbTBS?=
- =?utf-8?B?aW9WN0gwbDJlN2ZlVFJoMlNFUFVIMkRwcEVWYWppVm0wSEZkYTM2a2dYRW9Q?=
- =?utf-8?B?UFBEMWVXOUhLWnd6SzN3azg5dGNUSzVnVFlEbW9DRTIvMUMxdGFRK3dnNldR?=
- =?utf-8?B?V2Z6SGV5VUttaTMwbDVLMGZiSzNreTdTdE1zdVEvYk1JbFFSenNjT3ErNUl3?=
- =?utf-8?B?RUh3V3FUaE9kbEZFUnR2TzB4MUhFeUk3aDBmMzZodmwwTUdvZVVndjl0Ujgv?=
- =?utf-8?B?dnVqdVpxbDZRcG9GRDJSSjk1TzlXMDNaUFZGL3JHd2w3dnN0azdGZnk0eDZz?=
- =?utf-8?B?Vi9TOXljcjUrTUNKV1FrMFVJMkZWbkYzY05CZ1NxbVJ1QTNQR2RuU2Z3SmZ5?=
- =?utf-8?B?WlB0VXpqSGQ0UmxoNnZzYzFvUUhNRC9jWW1tdU1HOWtXQ01NczF5Y010OEFv?=
- =?utf-8?B?SW1PNFRVbG5QdWlrTDRkZEdXdGhmSG5RNnlLUk85QmN1bTNlNXVSbVhIbEFq?=
- =?utf-8?B?ZzFsaVVaejBHTkdRWWQwUGpXa29oQmJKL2JqUEhTZzV1c3pKWFJ6S25XdjRB?=
- =?utf-8?B?bjFoNVBvOFJSRjVDdTdzaXM3OU9KNnAwLzcwK1hHeEw4eW1mZ0RSVGQxWllM?=
- =?utf-8?Q?n1tWyvFzdlESiC86Hb/QKcEOpdOs8TGDWpDEuTd?=
-X-OriginatorOrg: seco.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3d33ed74-d3a8-4b1b-369b-08d916fb9e04
-X-MS-Exchange-CrossTenant-AuthSource: DB7PR03MB4523.eurprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 May 2021 17:13:39.4173
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB1599.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3c40f848-558e-439e-892e-08d916fc7365
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 May 2021 17:19:37.1720
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: bebe97c3-6438-442e-ade3-ff17aa50e733
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9ep7TcwOY1sHjxnl3zVjsNpyBtNkKi32SVfxfX+6BUN+WrRhth8ufHQNm3N/rayuJjebXTn1yOF7T84qoeJ7rQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR03MB7129
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: X6Awfge9r4ud0B/50X+2D39D1uxItCqvDMT+LqX/xkW7K9TY66XIYPImNPfSkqx41Pxgx2cY3IDEV7VBQ/33gw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB5042
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 5/14/21 4:50 AM, Michal Simek wrote:
- >
- >
- > On 5/13/21 10:43 PM, Rob Herring wrote:
- >> On Thu, May 13, 2021 at 10:28 AM Sean Anderson <sean.anderson@seco.com> wrote:
- >>>
- >>>
- >>>
- >>> On 5/13/21 10:33 AM, Sean Anderson wrote:
- >>>   >
- >>>   >
- >>>   > On 5/12/21 10:16 PM, Rob Herring wrote:
- >>>   >  > On Tue, May 11, 2021 at 03:12:37PM -0400, Sean Anderson wrote:
- >>>   >  >> This adds a binding for the Xilinx LogiCORE IP AXI Timer. This device is
- >>>   >  >> a "soft" block, so it has many parameters which would not be
- >>>   >  >> configurable in most hardware. This binding is usually automatically
- >>>   >  >> generated by Xilinx's tools, so the names and values of some properties
- >>>   >  >> must be kept as they are. Replacement properties have been provided for
- >>>   >  >> new device trees.
- >>>   >  >
- >>>   >  > Because you have some tool generating properties is not a reason we have
- >>>   >  > to accept them upstream.
- >>>   >
- >>>   > These properties are already in arch/microblaze/boot/dts/system.dts and
- >>>   > in the devicetree supplied to Linux by qemu. Removing these properties
- >>>   > will break existing setups, which I would like to avoid.
- >>
- >> Already in use in upstream dts files is different than just
- >> 'automatically generated' by vendor tools.
- >>
- >>>   >
- >>>   >  > 'deprecated' is for what *we* have deprecated.
- >>>   >
- >>>   > Ok. I will remove that then.
- >>>   >
- >>>   >  >
- >>>   >  > In this case, I don't really see the point in defining new properties
- >>>   >  > just to have bool.
- >>>   >
- >>>   > I don't either, but it was requested, by Michal...
- >>>
- >>> Err, your comment on the original bindings was
- >>>
- >>>   > Can't all these be boolean?
- >>
- >> With no other context, yes that's what I would ask. Now you've given
- >> me some context, between using the existing ones and 2 sets of
- >> properties to maintain, I choose the former.
- >>
- >>> And Michal commented
- >>>
- >>>   > I think in this case you should described what it is used by current
- >>>   > driver in Microblaze and these options are required. The rest are by
- >>>   > design optional.
- >>>   > If you want to change them to different value then current binding
- >>>   > should be deprecated and have any transition time with code alignment.
- >>>
- >>> So that is what I tried to accomplish with this revision. I also tried
- >>> allowing something like
- >>>
- >>>          xlnx,one-timer-only = <0>; /* two timers */
- >>>          xlnx,one-timer-only = <1>; /* one timer  */
- >>>          xlnx,one-timer-only; /* one timer */
- >>>          /* property absent means two timers */
- >>>
- >>> but I was unable to figure out how to express this with json-schema. I
- >>> don't think it's the best design either...
- >>
- >> json-schema would certainly let you, but generally we don't want
- >> properties to have more than 1 type.
- >
- > One thing is what it is in system.dts file which was committed in 2009
- > and there are just small alignments there. But none is really using it.
- > Maybe I should just delete it.
- > And this version was generated by Xilinx ancient tools at that time. All
- > parameters there are fully describing HW and they are not changing. Only
- > new one can be added.
- >
- >  From the current microblaze code you can see which properties are really
- > used.
- >
- > reg
- > interrupts
- > xlnx,one-timer-only
- > clocks
- > clock-frequency
+> -----Original Message-----
+> From: Wei Ming Chen <jj251510319013@gmail.com>
+> Sent: Wednesday, May 12, 2021 6:50 AM
+> To: linux-kernel@vger.kernel.org
+> Cc: Kaneda, Erik <erik.kaneda@intel.com>; devel@acpica.org; linux-
+> acpi@vger.kernel.org; Wei Ming Chen <jj251510319013@gmail.com>
+> Subject: [PATCH] ACPICA: Use ACPI_FALLTHROUGH
+>=20
+> Replace /* FALLTHROUGH */ comment with ACPI_FALLTHROUGH
+>=20
+> Signed-off-by: Wei Ming Chen <jj251510319013@gmail.com>
+> ---
+>  drivers/acpi/acpica/utprint.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/acpi/acpica/utprint.c b/drivers/acpi/acpica/utprint.=
+c
+> index e37d612e8db5..05426596d1f4 100644
+> --- a/drivers/acpi/acpica/utprint.c
+> +++ b/drivers/acpi/acpica/utprint.c
+> @@ -475,7 +475,7 @@ int vsnprintf(char *string, acpi_size size, const cha=
+r
+> *format, va_list args)
+>  		case 'X':
+>=20
+>  			type |=3D ACPI_FORMAT_UPPER;
+> -			/* FALLTHROUGH */
+> +			ACPI_FALLTHROUGH;
+>=20
+>  		case 'x':
+>=20
+> --
+> 2.25.1
 
-There is also an implicit dependency on xlnx,count-width. Several times
-the existing driver assumes the counter width is 32, but this should
-instead be discovered from the devicetree.
+I made a pull request here: https://github.com/acpica/acpica/pull/688
+I'll circulate it to Linux upstream after we do a release (about once per m=
+onth).
 
- > It means from my point of view these should be listed in the binding.
- > clock-frequency is optional by code when clock is defined.
- >
- > All other properties listed in system.dts are from my perspective
- > optional and that's how it should be.
+Thanks,
+Erik=20
 
-Here is the situation as I understand it
-
-* This device has existed for around 15 years (since 2006)
-* Because it is a soft device, there are several configurable parameters
-* Although all of these parameters must be known for a complete
-   implementation of this device, some are unnecessary if onlu reduced
-   functionality is needed.
-* A de facto devicetree binding for this device has existed for at least
-   12 years (since 2009), but likely for as long as the device itself has
-   existed. This binding has not changed substantially during this time.
-* This binding is present in devicetrees from the Linux kernel, from
-   qemu, in other existing systems, and in devicetrees generated by
-   Xilinx's toolset.
-* Because the existing driver for this device does not implement all
-   functionality for this device, not all properties in the devicetree
-   binding are used. In fact, there is (as noted above) one property
-   which should be in use but is not because the current driver
-   (implicitly) does not support some hardware configurations.
-* To support additional functionality, it is necessary to
-   use hardware parameters which were not previously necessary.
-
-Based on the above, we can classify the properties of this binding into
-several categories.
-
-* Those which are currently read by the driver.
-   * compatible
-   * reg
-   * clocks
-   * clock-frequency
-   * interrupts
-   * xlnx,one-timer-only
-
-* Those which reflect hardware parameters which are currently explicitly
-   or implicitly relied upon by the driver.
-   * reg
-   * clocks
-   * clock-frequency
-   * interrupts
-   * xlnx,counter-width
-   * xlnx,one-timer-only
-
-* Those which are currently present in device trees.
-   * compatible
-   * reg
-   * interrupts
-   * clocks
-   * clock-frequency
-   * xlnx,count-width
-   * xlnx,one-timer-only
-   * xlnx,trig0-assert
-   * xlnx,trig1-assert
-   * xlnx,gen0-assert
-   * xlnx,gen1-assert
-
-When choosing what properties to use, we must consider what the impact
-of our changes will be on not just the kernel but also on existing users
-of this binding:
-
-* To use properties currently present in device trees, we just need to
-   modify the kernel driver.
-* To add additional properties (such as e.g. '#pwm-cells'), we must
-   modify the kernel driver. In addition, users who would like to use
-   these new properties must add them to their device trees. This may be
-   done in a mechanical way using e.g. overlays.
-* To deprecate existing properties and introduce new properties to
-   expose the same underlying hardware parameters, we must modify the
-   kernel driver. However, this has a large impact on existing users.
-   They must modify their tools to generate this information in a
-   different format. When this information is generated by upstream tools
-   this may require updating a core part of their build system. For many
-   projects, this may happen very infrequently because of the risk that
-   such an upgrade will break things. Even if you suggest that Xilinx can
-   easily modify its tools to generate any sort of output, the time for
-   this upgrade to be deployed/adopted may be significantly longer.
-
-Note that while all three types of changes are similar from a kernel
-point of view, the impact on existing users is much large in the latter
-case. For this reason, I think that wherever possible we should use
-properties which are already present in existing device trees.
-
- > I think DT binding patch should reflect this state as patch itself.
- > And then PWM should be added on the top as separate patch.
-
-I have no preference here.
-
---Sean
-
- >
- > Note: In past we were using only parameters and name we got from tools
- > but over years we were fine to use for example bool properties and we
- > just aligned Xilinx device tree generator to match it. That's why not a
- > problem to deprecate any property and move to new one. Xilinx DTG is
- > already prepared for it and it is easy to remap it.
- >
- > Thanks,
- > Michal
