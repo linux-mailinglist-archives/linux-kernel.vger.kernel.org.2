@@ -2,147 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6987380C6F
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 16:59:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A8B9380C7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 17:01:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234487AbhENPBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 11:01:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59428 "EHLO
+        id S231311AbhENPCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 11:02:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234617AbhENPAv (ORCPT
+        with ESMTP id S229959AbhENPCK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 11:00:51 -0400
-Received: from mail.manjaro.org (mail.manjaro.org [IPv6:2a01:4f8:150:448b::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67951C061760;
-        Fri, 14 May 2021 07:59:38 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.manjaro.org (Postfix) with ESMTP id E9ECB222579;
-        Fri, 14 May 2021 16:59:36 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at manjaro.org
-Received: from mail.manjaro.org ([127.0.0.1])
-        by localhost (manjaro.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id LKbtEON92Hkg; Fri, 14 May 2021 16:59:34 +0200 (CEST)
-From:   Tobias Schramm <t.schramm@manjaro.org>
-To:     linux-usb@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-phy@lists.infradead.org, devicetree@vger.kernel.org
-Cc:     Johan Jonker <jbx6244@gmail.com>, Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Tobias Schramm <t.schramm@manjaro.org>
-Subject: [PATCH v2 5/5] arm64: dts: rockchip: add USB support to RK3308 dts
-Date:   Fri, 14 May 2021 17:00:44 +0200
-Message-Id: <20210514150044.2099298-6-t.schramm@manjaro.org>
-In-Reply-To: <20210514150044.2099298-1-t.schramm@manjaro.org>
-References: <20210514150044.2099298-1-t.schramm@manjaro.org>
+        Fri, 14 May 2021 11:02:10 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96866C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 08:00:58 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id p8so28272713iol.11
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 08:00:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=vFbowzzPmTj3jyLGuQbNYzZiGpBZhRFAidVoo1PXCOE=;
+        b=nSnM4FdnqKKZdRnCZ5mAj/2SIZby4F1z7eH5tCDrlx6dPi5pcoxOk6W1CsSyFERCNm
+         fm2HWWqzIesnxZiIGrqaxzzjXEs1/wxJ9ZEH6+mXKBYt6y9lddtgQfB0jXRKQ3iXIL/R
+         3mLlWLZfdLqQJbySkI5E7/Z7aJo8QxfY9M4MUCgYy1ESSmFqxzmzgcUCGrSeWkOmBx5N
+         2SMMtuCy5hmvDXFMF6OwUbC3NScGKGU+GWYYftWR5x/rSU0p4hlXOlwS3slnN5umkeiC
+         B6NUqgDXl/gA3iztIXIvlurZJyzwbcanoFLKtS+ZOv+WlpqZD3sgQmLQMCBBWW/e3oeB
+         Agqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vFbowzzPmTj3jyLGuQbNYzZiGpBZhRFAidVoo1PXCOE=;
+        b=rzjlZ7Mvuf/iVpQUP1vVt1vJJtzY3YD9yvpH2c3lPCXPCr1IGLfOP90IHSmJvtA0yL
+         kb2dCLxo+yx2Dwyst+4tzsEp55ly8sTfSZEHcfC2cQ8nWZqkSK26rtsYkSApSlKoDhmJ
+         Jp1STo3T6WdmqI2uQh9eu1kiNWsI+6Bext6+FU1tXXJ3e6dFBTkQk2u5Hi2agqgn/+eA
+         BBBMt2F205QLBVFsxPiC/cC/PJ68+UgsKjgftK5ttQpe60w7i2WJLS31tW9mca/2dT+r
+         rdDxgyHKB38hRjGqeL7Dmts5jem5R1+avJP3x7Q3qzgDpvoU2CwJhoqp5AuI8O1olwBN
+         y7yw==
+X-Gm-Message-State: AOAM531rmNAR3pDbqC8h99P36pkVjtqtiPShZ5svoLzemdp9xWeZ40zx
+        yeX1f2OUE7sDz1lwxISVKdyRvA==
+X-Google-Smtp-Source: ABdhPJyVcxAGjFolEtTidhP1667r0C4uVQOhyfuQG7f35Pu3QxM+iofTvJpr034kTL57GEgNZk/B3w==
+X-Received: by 2002:a02:380d:: with SMTP id b13mr42709885jaa.77.1621004458045;
+        Fri, 14 May 2021 08:00:58 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id n16sm3117493ilq.44.2021.05.14.08.00.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 May 2021 08:00:57 -0700 (PDT)
+Subject: Re: [PATCH][next] rsxx: Use struct_size() in vmalloc()
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Joshua Morris <josh.h.morris@us.ibm.com>,
+        Philip Kelleher <pjk1939@linux.ibm.com>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+References: <20210513203730.GA212128@embeddedor>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <fb567b7b-5ea4-fe8b-52cc-f148ff6a61b7@kernel.dk>
+Date:   Fri, 14 May 2021 09:00:56 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210513203730.GA212128@embeddedor>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Rockchip RK3308 features an integrated USB 2.0 phy, an USB OTG
-controller and OHCI/EHCI interfaces.
-This patch adds all of those to the RK3308 dtsi and thereby enables USB
-support on the RK3308.
+On 5/13/21 2:37 PM, Gustavo A. R. Silva wrote:
+> Make use of the struct_size() helper instead of an open-coded version,
+> in order to avoid any potential type mistakes or integer overflows
+> that, in the worst scenario, could lead to heap overflows.
+> 
+> This code was detected with the help of Coccinelle and, audited and
+> fixed manually.
 
-Signed-off-by: Tobias Schramm <t.schramm@manjaro.org>
----
- arch/arm64/boot/dts/rockchip/rk3308.dtsi | 73 ++++++++++++++++++++++++
- 1 file changed, 73 insertions(+)
+Applied, thanks.
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3308.dtsi b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-index 0c5fa9801e6f..4f55477d70f1 100644
---- a/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-@@ -177,6 +177,43 @@ reboot-mode {
- 		};
- 	};
- 
-+	usb2phy_grf: syscon@ff008000 {
-+		compatible = "rockchip,rk3308-usb2phy-grf", "syscon",
-+			     "simple-mfd";
-+		reg = <0x0 0xff008000 0x0 0x4000>;
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+
-+		u2phy: usb2-phy@100 {
-+			compatible = "rockchip,rk3308-usb2phy";
-+			reg = <0x100 0x10>;
-+			clocks = <&cru SCLK_USBPHY_REF>;
-+			clock-names = "phyclk";
-+			clock-output-names = "usb480m_phy";
-+			#clock-cells = <0>;
-+			assigned-clocks = <&cru USB480M>;
-+			assigned-clock-parents = <&u2phy>;
-+			status = "disabled";
-+
-+			u2phy_otg: otg-port {
-+				#phy-cells = <0>;
-+				interrupts = <GIC_SPI 67 IRQ_TYPE_LEVEL_HIGH>,
-+					     <GIC_SPI 68 IRQ_TYPE_LEVEL_HIGH>,
-+					     <GIC_SPI 69 IRQ_TYPE_LEVEL_HIGH>;
-+				interrupt-names = "otg-bvalid", "otg-id",
-+						  "linestate";
-+				status = "disabled";
-+			};
-+
-+			u2phy_host: host-port {
-+				#phy-cells = <0>;
-+				interrupts = <GIC_SPI 74 IRQ_TYPE_LEVEL_HIGH>;
-+				interrupt-names = "linestate";
-+				status = "disabled";
-+			};
-+		};
-+	};
-+
- 	detect_grf: syscon@ff00b000 {
- 		compatible = "rockchip,rk3308-detect-grf", "syscon", "simple-mfd";
- 		reg = <0x0 0xff00b000 0x0 0x1000>;
-@@ -579,6 +616,42 @@ spdif_tx: spdif-tx@ff3a0000 {
- 		status = "disabled";
- 	};
- 
-+	usb20_otg: usb@ff400000 {
-+		compatible = "rockchip,rk3308-usb", "rockchip,rk3066-usb",
-+			     "snps,dwc2";
-+		reg = <0x0 0xff400000 0x0 0x40000>;
-+		interrupts = <GIC_SPI 66 IRQ_TYPE_LEVEL_HIGH>;
-+		clocks = <&cru HCLK_OTG>;
-+		clock-names = "otg";
-+		dr_mode = "otg";
-+		g-np-tx-fifo-size = <16>;
-+		g-rx-fifo-size = <280>;
-+		g-tx-fifo-size = <256 128 128 64 32 16>;
-+		phys = <&u2phy_otg>;
-+		phy-names = "usb2-phy";
-+		status = "disabled";
-+	};
-+
-+	usb_host_ehci: usb@ff440000 {
-+		compatible = "generic-ehci";
-+		reg = <0x0 0xff440000 0x0 0x10000>;
-+		interrupts = <GIC_SPI 71 IRQ_TYPE_LEVEL_HIGH>;
-+		clocks = <&cru HCLK_HOST>, <&cru HCLK_HOST_ARB>, <&u2phy>;
-+		phys = <&u2phy_host>;
-+		phy-names = "usb";
-+		status = "disabled";
-+	};
-+
-+	usb_host_ohci: usb@ff450000 {
-+		compatible = "generic-ohci";
-+		reg = <0x0 0xff450000 0x0 0x10000>;
-+		interrupts = <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>;
-+		clocks = <&cru HCLK_HOST>, <&cru HCLK_HOST_ARB>, <&u2phy>;
-+		phys = <&u2phy_host>;
-+		phy-names = "usb";
-+		status = "disabled";
-+	};
-+
- 	sdmmc: mmc@ff480000 {
- 		compatible = "rockchip,rk3308-dw-mshc", "rockchip,rk3288-dw-mshc";
- 		reg = <0x0 0xff480000 0x0 0x4000>;
 -- 
-2.31.1
+Jens Axboe
 
