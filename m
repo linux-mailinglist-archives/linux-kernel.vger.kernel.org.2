@@ -2,250 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 965D1380FFA
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 20:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 350A2380FFD
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 20:47:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230332AbhENSqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 14:46:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41278 "EHLO mail.kernel.org"
+        id S230411AbhENSsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 14:48:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229819AbhENSqG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 14:46:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EEFF61177;
-        Fri, 14 May 2021 18:44:55 +0000 (UTC)
+        id S229819AbhENSsX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 14:48:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A05B613C8;
+        Fri, 14 May 2021 18:47:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621017895;
-        bh=7T8DxFAwbrGNtQP7f/I8R6XgsGQ6c7P/JvusIls4O18=;
+        s=k20201202; t=1621018032;
+        bh=6HLIINaJ0OBRWcTEZb8CSOJvTP7O/kaByD1yuELXiVQ=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=L9B0QIsHfTigsT4fX+yDT3k3WJhrBax21PUKiYMguHymf+3MyXgGfxbSo0+Fbf7/1
-         MB9aBi52IUriw3a0O3ijUfW2yDcwMuZ693svFlzt49fBiL90TO7VtyVwFv5xtZveeh
-         zOPKHoWHrU6OWWzs+5I3zfRXZne3MjDH6KsNcQrHqacrd0/i2oYDakWzFfcdQ6j1Ir
-         8E6nbfMRveNq4b/YQ7z4RKynbZ23haZPpgRht4HHZuYg+bYuXPr9rbZumpH8hrsUEu
-         B/QuJdqE1mzP0+WwppEmoFzrFWaVagHfYKf3QdGk0YRZnFEdT3l6/RSpiPu0q8KvtD
-         niOH9LFWLemnQ==
+        b=DpoTAYYODeBYZdnpNL85+Mnny43WBW4l8IOJoA7w9E4SdeMIplX9EbmJkZjanD226
+         Z1XskjaLsGb0qbmrIbQoriK3Byr47rbRcot+LJoJZTsSNOYt18oA9TdGYwjpF+7YPV
+         6sCwVPzhQ94knlsyYGrZSyMCGRjWZ2IWkRN4oF1y4IfgD+JYWMd/7r+4TlkSj+Zkym
+         UZmLx8S8r0A1MwhU8ho/t7ZA4lQw0dhwYcauhA5uSdZRWKKSfhJLpZcQ+d2qPqANHj
+         9nSj4HcqdLhoV0kbW5latz4BJYFLs3Sia/InDkpKcvejQoS+HSRUzo8YnxyKbDWlT+
+         He2iP7YaxO3BA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 0DB735C02A5; Fri, 14 May 2021 11:44:55 -0700 (PDT)
-Date:   Fri, 14 May 2021 11:44:55 -0700
+        id C88BF5C02A5; Fri, 14 May 2021 11:47:11 -0700 (PDT)
+Date:   Fri, 14 May 2021 11:47:11 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Manfred Spraul <manfred@colorfullife.com>
-Cc:     kasan-dev <kasan-dev@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Manfred Spraul <manfred@colorfullife.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
         Davidlohr Bueso <dbueso@suse.de>, 1vier1@web.de
 Subject: Re: ipc/sem, ipc/msg, ipc/mqueue.c kcsan questions
-Message-ID: <20210514184455.GJ975577@paulmck-ThinkPad-P17-Gen-1>
+Message-ID: <20210514184711.GK975577@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
 References: <a9b36c77-dc42-4ab2-9740-f27b191dd403@colorfullife.com>
  <20210512201743.GW975577@paulmck-ThinkPad-P17-Gen-1>
  <343390da-2307-442e-8073-d1e779c85eeb@colorfullife.com>
  <20210513190201.GE975577@paulmck-ThinkPad-P17-Gen-1>
- <9c9739ec-1273-5137-7b6d-00a27a22ffca@colorfullife.com>
+ <20210514082918.971-1-hdanton@sina.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9c9739ec-1273-5137-7b6d-00a27a22ffca@colorfullife.com>
+In-Reply-To: <20210514082918.971-1-hdanton@sina.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 07:41:02AM +0200, Manfred Spraul wrote:
-> On 5/13/21 9:02 PM, Paul E. McKenney wrote:
-> > On Thu, May 13, 2021 at 08:10:51AM +0200, Manfred Spraul wrote:
-> > > Hi Paul,
-> > > 
-> > > On 5/12/21 10:17 PM, Paul E. McKenney wrote:
-> > > [...]
-> > > > 	int foo;
-> > > > 	DEFINE_RWLOCK(foo_rwlock);
-> > > > 
-> > > > 	void update_foo(int newval)
-> > > > 	{
-> > > > 		write_lock(&foo_rwlock);
-> > > > 		foo = newval;
-> > > > 		do_something(newval);
-> > > > 		write_unlock(&foo_rwlock);
-> > > > 	}
-> > > > 
-> > > > 	int read_foo(void)
-> > > > 	{
-> > > > 		int ret;
-> > > > 
-> > > > 		read_lock(&foo_rwlock);
-> > > > 		do_something_else();
-> > > > 		ret = foo;
-> > > > 		read_unlock(&foo_rwlock);
-> > > > 		return ret;
-> > > > 	}
-> > > > 
-> > > > 	int read_foo_diagnostic(void)
-> > > > 	{
-> > > > 		return data_race(foo);
-> > > > 	}
-> > > The text didn't help, the example has helped:
-> > > 
-> > > It was not clear to me if I have to use data_race() both on the read and the
-> > > write side, or only on one side.
-> > > 
-> > > Based on this example: plain C may be paired with data_race(), there is no
-> > > need to mark both sides.
-> > Actually, you just demonstrated that this example is quite misleading.
-> > That data_race() works only because the read is for diagnostic
-> > purposes.  I am queuing a commit with your Reported-by that makes
-> > read_foo_diagnostic() just do a pr_info(), like this:
+On Fri, May 14, 2021 at 04:29:18PM +0800, Hillf Danton wrote:
+> On Thu, 13 May 2021 15:01:27 Paul E. McKenney wrote:
+> >On Thu, May 13, 2021 at 12:02:01PM -0700, Paul E. McKenney wrote:
+> >> On Thu, May 13, 2021 at 08:10:51AM +0200, Manfred Spraul wrote:
+> >> > Hi Paul,
+> >> > 
+> >> > On 5/12/21 10:17 PM, Paul E. McKenney wrote:
+> >> > > On Wed, May 12, 2021 at 09:58:18PM +0200, Manfred Spraul wrote:
+> >> > > > [...]
+> >> > > > sma->use_global_lock is evaluated in sem_lock() twice:
+> >> > > > 
+> >> > > > >  ?????? /*
+> >> > > > >  ???????? * Initial check for use_global_lock. Just an optimization,
+> >> > > > >  ???????? * no locking, no memory barrier.
+> >> > > > >  ???????? */
+> >> > > > >  ??????? if (!sma->use_global_lock) {
+> >> > > > Both sides of the if-clause handle possible data races.
+> >> > > > 
+> >> > > > Is
+> >> > > > 
+> >> > > >  ??? if (!data_race(sma->use_global_lock)) {
+> >> > > > 
+> >> > > > the correct thing to suppress the warning?
+> >> > > Most likely READ_ONCE() rather than data_race(), but please see
+> >> > > the end of this message.
+> >> > 
+> >> > Based on the document, I would say data_race() is sufficient:
+> >> > 
+> >> > I have replaced the code with "if (jiffies %2)", and it runs fine.
+> >> 
+> >> OK, but please note that "jiffies" is marked volatile, which prevents the
+> >> compiler from fusing loads.  You just happen to be OK in this particular
+> >> case, as described below.  Use of the "jiffies_64" non-volatile synonym
+> >> for "jiffies" is better for this sort of checking.  But even so, just
+> >> because a particular version of a particular compiler refrains from
+> >> fusing loads in a particular situation does not mean that all future
+> >> versions of all future compilers will behave so nicely.
+> >> 
+> >> Again, you are OK in this particular situation, as described below.
+> >> 
+> >> > Thus I don't see which evil things a compiler could do, ... .
+> >> 
+> >> Fair enough, and your example is covered by the section "Reads Feeding
+> >> Into Error-Tolerant Heuristics".  The worst that the compiler can do is
+> >> to force an unnecessary acquisition of the global lock.
+> >> 
+> >> This cannot cause incorrect execution, but could results in poor
+> >> scalability.  This could be a problem is load fusing were possible, that
+> >> is, if successes calls to this function were inlined and the compiler
+> >> just reused the value initially loaded.
+> >> 
+> >> The reason that load fusing cannot happen in this case is that the
+> >> load is immediately followed by a lock acquisition, which implies a
+> >> barrier(), which prevents the compiler from fusing loads on opposite
+> >> sides of that barrier().
+> >> 
+> >> > [...]
+> >> > 
+> >> > Does tools/memory-model/Documentation/access-marking.txt, shown below,
+> >> > > help?
+> >> > > 
+> >> > [...]
+> >> > > 	int foo;
+> >> > > 	DEFINE_RWLOCK(foo_rwlock);
+> >> > > 
+> >> > > 	void update_foo(int newval)
+> >> > > 	{
+> >> > > 		write_lock(&foo_rwlock);
+> >> > > 		foo = newval;
+> >> > > 		do_something(newval);
+> >> > > 		write_unlock(&foo_rwlock);
+> >> > > 	}
+> >> > > 
+> >> > > 	int read_foo(void)
+> >> > > 	{
+> >> > > 		int ret;
+> >> > > 
+> >> > > 		read_lock(&foo_rwlock);
+> >> > > 		do_something_else();
+> >> > > 		ret = foo;
+> >> > > 		read_unlock(&foo_rwlock);
+> >> > > 		return ret;
+> >> > > 	}
+> >> > > 
+> >> > > 	int read_foo_diagnostic(void)
+> >> > > 	{
+> >> > > 		return data_race(foo);
+> >> > > 	}
+> >> > 
+> >> > The text didn't help, the example has helped:
+> >> > 
+> >> > It was not clear to me if I have to use data_race() both on the read and the
+> >> > write side, or only on one side.
+> >> > 
+> >> > Based on this example: plain C may be paired with data_race(), there is no
+> >> > need to mark both sides.
+> >> 
+> >> Actually, you just demonstrated that this example is quite misleading.
+> >> That data_race() works only because the read is for diagnostic
+> >> purposes.  I am queuing a commit with your Reported-by that makes
+> >> read_foo_diagnostic() just do a pr_info(), like this:
+> >> 
+> >> 	void read_foo_diagnostic(void)
+> >> 	{
+> >> 		pr_info("Current value of foo: %d\n", data_race(foo));
+> >> 	}
+> >> 
+> >> So thank you for that!
+> >
+> >And please see below for an example better illustrating your use case.
+> >Anything messed up or missing?
+> >
+> >							Thanx, Paul
+> >
+> >------------------------------------------------------------------------
+> >
+> >commit b4287410ee93109501defc4695ccc29144e8f3a3
+> >Author: Paul E. McKenney <paulmck@kernel.org>
+> >Date:   Thu May 13 14:54:58 2021 -0700
+> >
+> >    tools/memory-model: Add example for heuristic lockless reads
+> >    
+> >    This commit adds example code for heuristic lockless reads, based loosely
+> >    on the sem_lock() and sem_unlock() functions.
+> >    
+> >    Reported-by: Manfred Spraul <manfred@colorfullife.com>
+> >    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> >
+> >diff --git a/tools/memory-model/Documentation/access-marking.txt b/tools/memory-model/Documentation/access-marking.txt
+> >index 58bff2619876..e4a20ebf565d 100644
+> >--- a/tools/memory-model/Documentation/access-marking.txt
+> >+++ b/tools/memory-model/Documentation/access-marking.txt
+> >@@ -319,6 +319,98 @@ of the ASSERT_EXCLUSIVE_WRITER() is to allow KCSAN to check for a buggy
+> > concurrent lockless write.
 > > 
-> > 	void read_foo_diagnostic(void)
-> > 	{
-> > 		pr_info("Current value of foo: %d\n", data_race(foo));
-> > 	}
 > > 
-> > So thank you for that!
+> >+Lock-Protected Writes With Heuristic Lockless Reads
+> >+---------------------------------------------------
+> >+
+> >+For another example, suppose that the code can normally make use of
+> >+a per-data-structure lock, but there are times when a global lock is
+> >+required.  These times are indicated via a global flag.  The code might
+> >+look as follows, and is based loosely on sem_lock() and sem_unlock():
+> >+
+> >+	bool global_flag;
+> >+	DEFINE_SPINLOCK(global_lock);
+> >+	struct foo {
+> >+		spinlock_t f_lock;
+> >+		int f_data;
+> >+	};
+> >+
+> >+	/* All foo structures are in the following array. */
+> >+	int nfoo;
+> >+	struct foo *foo_array;
+> >+
+> >+	void do_something_locked(struct foo *fp)
+> >+	{
+> >+		/* IMPORTANT: Heuristic plus spin_lock()! */
+> >+		if (!data_race(global_flag)) {
+> >+			spin_lock(&fp->f_lock);
+> >+			if (!smp_load_acquire(&global_flag)) {
+> >+				do_something(fp);
+> >+				spin_unlock(&fp->f_lock);
+> >+				return;
+> >+			}
+> >+			spin_unlock(&fp->f_lock);
+> >+		}
+> >+		spin_lock(&global_flag);
+> >+		/* Lock held, thus global flag cannot change. */
+> >+		if (!global_flag) {
+> >+			spin_lock(&fp->f_lock);
+> >+			spin_unlock(&global_flag);
+> >+		}
+> >+		do_something(fp);
+> >+		if (global_flag)
 > 
-> I would not like this change at all.
-> Assume you chase a rare bug, and notice an odd pr_info() output.
-> It will take you really long until you figure out that a data_race() mislead
-> you.
-> Thus for a pr_info(), I would consider READ_ONCE() as the correct thing.
+> The global flag may change without global lock held - we will likely have the
+> wrong lock released if we can see the change.
 
-It depends, but I agree with a general preference for READ_ONCE() over
-data_race().
-
-However, for some types of concurrency designs, using a READ_ONCE()
-can make it more difficult to enlist KCSAN's help.  For example, if this
-variable is read or written only while holding a particular lock, so that
-read_foo_diagnostic() is the only lockless read, then using READ_ONCE()
-adds a concurrent read.  In RCU, the updates would now need WRITE_ONCE(),
-which would cause KCSAN to fail to detect a buggy lockless WRITE_ONCE().
-If data_race() is used, then adding a buggy lockless WRITE_ONCE() will
-cause KCSAN to complain.
-
-Of course, you would be quite correct to say that this must be balanced
-against the possibility of a messed-up pr_info() due to compiler mischief.
-Tradeoffs, tradeoffs!  ;-)
-
-I should document this tradeoff, shouldn't I?
-
-> What about something like the attached change?
-> 
-> --
-> 
->     Manfred
-> 
-> 
-
-> diff --git a/tools/memory-model/Documentation/access-marking.txt b/tools/memory-model/Documentation/access-marking.txt
-> index 1ab189f51f55..588326b60834 100644
-> --- a/tools/memory-model/Documentation/access-marking.txt
-> +++ b/tools/memory-model/Documentation/access-marking.txt
-> @@ -68,6 +68,11 @@ READ_ONCE() and WRITE_ONCE():
->  
->  4.	Writes setting values that feed into error-tolerant heuristics.
->  
-> +In theory, plain C-language loads can also be used for these use cases.
-> +However, in practice this will have the disadvantage of causing KCSAN
-> +to generate false positives because KCSAN will have no way of knowing
-> +that the resulting data race was intentional.
-> +
->  
->  Data-Racy Reads for Approximate Diagnostics
->  
-> @@ -86,11 +91,6 @@ that fail to exclude the updates.  In this case, it is important to use
->  data_race() for the diagnostic reads because otherwise KCSAN would give
->  false-positive warnings about these diagnostic reads.
->  
-> -In theory, plain C-language loads can also be used for this use case.
-> -However, in practice this will have the disadvantage of causing KCSAN
-> -to generate false positives because KCSAN will have no way of knowing
-> -that the resulting data race was intentional.
-> -
->  
->  Data-Racy Reads That Are Checked Against Marked Reload
->  
-> @@ -110,11 +110,6 @@ that provides the compiler much less scope for mischievous optimizations.
->  Capturing the return value from cmpxchg() also saves a memory reference
->  in many cases.
->  
-> -In theory, plain C-language loads can also be used for this use case.
-> -However, in practice this will have the disadvantage of causing KCSAN
-> -to generate false positives because KCSAN will have no way of knowing
-> -that the resulting data race was intentional.
-
-Normally, I would be completely in favor of your suggestion to give
-this advice only once.  But in this case, there are likely to be people
-reading just the part of the document that they think applies to their
-situation.  So it is necessary to replicate the reminder into all the
-sections.
-
-That said, I do applaud your approach of reading the whole thing.  That
-of course gets you a much more complete understanding of the situation,
-and gets me more feedback.  ;-)
-
->  Reads Feeding Into Error-Tolerant Heuristics
->  
-> @@ -125,11 +120,9 @@ that data_race() loads are subject to load fusing, which can result in
->  consistent errors, which in turn are quite capable of breaking heuristics.
->  Therefore use of data_race() should be limited to cases where some other
->  code (such as a barrier() call) will force the occasional reload.
-> -
-> -In theory, plain C-language loads can also be used for this use case.
-> -However, in practice this will have the disadvantage of causing KCSAN
-> -to generate false positives because KCSAN will have no way of knowing
-> -that the resulting data race was intentional.
-> +The heuristics must be able to handle any error. If the heuristics are
-> +only able to handle old and new values, then WRITE_ONCE()/READ_ONCE()
-> +must be used.
-
-Excellent addition!  I have applied the commit shown below with your
-Signed-off-by.  Please let me know if you would like me to take some other
-course of action.  And also please let me know if I messed something up.
-
->  Writes Setting Values Feeding Into Error-Tolerant Heuristics
-> @@ -142,11 +135,8 @@ due to compiler-mangled reads, it can also tolerate the occasional
->  compiler-mangled write, at least assuming that the proper value is in
->  place once the write completes.
->  
-> -Plain C-language stores can also be used for this use case.  However,
-> -in kernels built with CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC=n, this
-> -will have the disadvantage of causing KCSAN to generate false positives
-> -because KCSAN will have no way of knowing that the resulting data race
-> -was intentional.
-> +Note that KCSAN will only detect mangled writes in kernels built with
-> +CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC=n.
-
-And the same point on needing to say this more than once.
+Right you are!  I am adding a local variable to address this, thank you!
 
 							Thanx, Paul
 
-------------------------------------------------------------------------
-
-commit 48db6caa1d32c39e7405df3940f9f7ba07ed0527
-Author: Manfred Spraul <manfred@colorfullife.com>
-Date:   Fri May 14 11:40:06 2021 -0700
-
-    tools/memory-model: Heuristics using data_race() must handle all values
-    
-    Data loaded for use by some sorts of heuristics can tolerate the
-    occasional erroneous value.  In this case the loads may use data_race()
-    to give the compiler full freedom to optimize while also informing KCSAN
-    of the intent.  However, for this to work, the heuristic needs to be
-    able to tolerate any erroneous value that could possibly arise.  This
-    commit therefore adds a paragraph spelling this out.
-    
-    Signed-off-by: Manfred Spraul <manfred@colorfullife.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/tools/memory-model/Documentation/access-marking.txt b/tools/memory-model/Documentation/access-marking.txt
-index e4a20ebf565d..22ecadec4894 100644
---- a/tools/memory-model/Documentation/access-marking.txt
-+++ b/tools/memory-model/Documentation/access-marking.txt
-@@ -126,6 +126,11 @@ consistent errors, which in turn are quite capable of breaking heuristics.
- Therefore use of data_race() should be limited to cases where some other
- code (such as a barrier() call) will force the occasional reload.
- 
-+Note that this use case requires that the heuristic be able to handle
-+any possible error.  In contrast, if the heuristics might be fatally
-+confused by one or more of the possible erroneous values, use READ_ONCE()
-+instead of data_race().
-+
- In theory, plain C-language loads can also be used for this use case.
- However, in practice this will have the disadvantage of causing KCSAN
- to generate false positives because KCSAN will have no way of knowing
+> >+			spin_unlock(&global_flag);
+> >+		else
+> >+			spin_lock(&fp->f_lock);
+> >+	}
+> >+
+> >+	void begin_global(void)
+> >+	{
+> >+		int i;
+> >+
+> >+		spin_lock(&global_flag);
+> >+		WRITE_ONCE(global_flag, true);
+> >+		for (i = 0; i < nfoo; i++) {
+> >+			/* Wait for pre-existing local locks. */
+> >+			spin_lock(&fp->f_lock);
+> >+			spin_unlock(&fp->f_lock);
+> >+		}
+> >+		spin_unlock(&global_flag);
+> >+	}
+> >+
+> >+	void end_global(void)
+> >+	{
+> >+		spin_lock(&global_flag);
+> >+		smp_store_release(&global_flag, false);
+> >+		/* Pre-existing global lock acquisitions will recheck. */
+> >+		spin_unlock(&global_flag);
+> >+	}
+> >+
+> >+All code paths leading from the do_something_locked() function's first
+> >+read from global_flag acquire a lock, so endless load fusing cannot
+> >+happen.
+> >+
+> >+If the value read from global_flag is true, then global_flag is rechecked
+> >+while holding global_lock, which prevents global_flag from changing.
+> >+If this recheck finds that global_flag is now false, the acquisition
+> >+of ->f_lock prior to the release of global_lock will result in any subsequent
+> >+begin_global() invocation waiting to acquire ->f_lock.
+> >+
+> >+On the other hand, if the value read from global_flag is false, then
+> >+global_flag, then rechecking under ->f_lock combined with synchronization
+> >+with begin_global() guarantees than any erroneous read will cause the
+> >+do_something_locked() function's first do_something() invocation to happen
+> >+before begin_global() returns.  The combination of the smp_load_acquire()
+> >+in do_something_locked() and the smp_store_release() in end_global()
+> >+guarantees that either the do_something_locked() function's first
+> >+do_something() invocation happens after the call to end_global() or that
+> >+do_something_locked() acquires global_lock() and rechecks under the lock.
+> >+
+> >+For this to work, only those foo structures in foo_array[] may be
+> >+passed to do_something_locked().  The reason for this is that the
+> >+synchronization with begin_global() relies on momentarily locking each
+> >+and every foo structure.
+> >+
+> >+
+> > Lockless Reads and Writes
+> > -------------------------
+> > 
+> >
