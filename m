@@ -2,115 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3723438128E
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 23:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E86773812A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 23:11:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232573AbhENVGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 17:06:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55598 "EHLO
+        id S231489AbhENVMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 17:12:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231273AbhENVGG (ORCPT
+        with ESMTP id S231349AbhENVMR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 17:06:06 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFB10C061361;
-        Fri, 14 May 2021 14:03:58 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id lg14so549912ejb.9;
-        Fri, 14 May 2021 14:03:58 -0700 (PDT)
+        Fri, 14 May 2021 17:12:17 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EA4CC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 14:11:04 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id p12so90109ljg.1
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 14:11:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=DuIZvkVyxl0vo+4ykBws9GPNTneGdS9CaBr3gH+w73E=;
-        b=sc7EZNWCUByl4ePiwgGpHBKYBaDZi/cH44mbVm+BUFNkpbt3qtbaFKN0jidLehegWI
-         P6/2efXFcwibqEV8dqYV+f5QV2XUCkt7jE0TXbdRAV/w74n2QT0eXp3jN9yQWpxgMHQ8
-         gtuDb51v0Oe00EobGXWSa00+DlO5iuDarousBf3ApE6RoQSVuYFKdKHznPDPyhXTwkqq
-         9IsWSOFPNUguoAEpYRkz6CgPzqBa3vYKKupRMPOymI3VygHhEVmd8yg3CcSc91Iusb1Q
-         GmFygDmDUmcFAWVpNQMCxsz+xd2QS5DM8DDunw8vgafONKuCEz22OwwHkW3AbDkzAvCt
-         9o2A==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qmD8bOtABF5XD+YzylZZ0F+UXv+l/cf1tAlHtz2MQKI=;
+        b=E7NGDr8baMYrNmyWjoI5iqN4uwMNaqda9XZ6KgibagBhs7q01o3AiUnWU21oLy+K+p
+         05yfVvaCeBxwJ+GRX7lNtGVBy1um0kIwp/pOYG3jAYfNG7rU+EMqRTrceEygaNGT81+E
+         I6Kf4BqE1SyN58yvSQudkP2u9VbbGuJjaYF7U=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DuIZvkVyxl0vo+4ykBws9GPNTneGdS9CaBr3gH+w73E=;
-        b=QXGyylnl1oVmgp3fmPmHwUXMJ77i9mUbKuQUK0Y/zcvhVZ27HtvUXYrknhhb6IxMrD
-         4ZBa6Cga+2Mu1hrCfJgNaAJ8r5zqdkmGZrezY+AiHyhD5RWNHmjqwY/ndh4kfSu3U2BU
-         7drnnNmq2bs+ebgoX+VeOMrFi2VdsDZEhoMD5w2cTNiAuWVX9xuBIsBFpDziH6xToJED
-         +KRP/Gme2AW92XKDV1nxlZgGxwpsuplGHaVj1B7umJlrbNii4KomX9rKmxl8wcwZiexc
-         4P0UOlsY9j4xuVJZAG4NeDjj/VzreqMK+iTgrWdRTg5hqnyuFpkhkapmzMgWKL8P7/lZ
-         cNhQ==
-X-Gm-Message-State: AOAM533cVSjzhzTTkzZp5VQtFNxLbF421XI6ksEYhSshRur7j4WEj1H8
-        fTGvzqJA9MEd9AwnvecRf1o=
-X-Google-Smtp-Source: ABdhPJyB48CHxHQu+e51fgG6b4y+BQUivEKolcF9s+7qXmdtr4n2v6BWhFdQ2N9jK4vuUKq3Eue6bQ==
-X-Received: by 2002:a17:907:161f:: with SMTP id hb31mr50946633ejc.514.1621026237411;
-        Fri, 14 May 2021 14:03:57 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (93-35-189-2.ip56.fastwebnet.it. [93.35.189.2])
-        by smtp.googlemail.com with ESMTPSA id f7sm5428330edd.5.2021.05.14.14.03.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 14:03:57 -0700 (PDT)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Subject: [net-next 3/3] net: mdio: ipq8064: enlarge sleep after read/write operation
-Date:   Fri, 14 May 2021 23:03:51 +0200
-Message-Id: <20210514210351.22240-3-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210514210351.22240-1-ansuelsmth@gmail.com>
-References: <20210514210351.22240-1-ansuelsmth@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qmD8bOtABF5XD+YzylZZ0F+UXv+l/cf1tAlHtz2MQKI=;
+        b=fw9aB24KP/OnVDhRQDfIf450SGTSCmQBkCM+JRZMePoFmOlVbCYESHZNa83Um2OrKm
+         ViCwdplZpaJ7KUx1NgXmtw8/MSiWy51hi4ducRmTSPctwOrlEBU+iPw8TdMX5eXkt2Ud
+         PHwfzERN0p+jWKVD4RuozPQ9OHaDlXBdR5qvKfxHRolTbi97n8aID8rUzcottH3ww/bd
+         FUQI5aG52gfPw7y7R4BjC8PFow5+qbatZzV7wWATUQCHG2yD12+9lIOL7U2xYaZMrV2f
+         8MLkXWkC8S/Lffq64y/REmHTIhJKMxXYg/8ZqDaJyltxOdLLkCuquqJfBGItcUOpYXQK
+         fYNQ==
+X-Gm-Message-State: AOAM533GSQ1B0X3Pl4EVORZrWcUCA832KIa3oKKqkAA65CWn48ymw/ea
+        aKrCSg7eiI88AtSofYD7SfnqXRZ225U1PTaA3DY=
+X-Google-Smtp-Source: ABdhPJxEDsEJPYNlQ+lxJCqE/9EhMSer+hBpb8/BVdBgqefhwwTVK33gxRV1wF4g+IatvfsYm/2Jmg==
+X-Received: by 2002:a05:651c:210e:: with SMTP id a14mr23912565ljq.156.1621026662509;
+        Fri, 14 May 2021 14:11:02 -0700 (PDT)
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
+        by smtp.gmail.com with ESMTPSA id q27sm1444271ljm.127.2021.05.14.14.11.00
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 May 2021 14:11:01 -0700 (PDT)
+Received: by mail-lj1-f169.google.com with SMTP id c15so57950ljr.7
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 14:11:00 -0700 (PDT)
+X-Received: by 2002:a2e:22c4:: with SMTP id i187mr38530598lji.465.1621026660520;
+ Fri, 14 May 2021 14:11:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <0000000000006bbd0c05c14f1b09@google.com> <6e21483c-06f6-404b-4018-e00ee85c456c@i-love.sakura.ne.jp>
+ <87d928e4-b2b9-ad30-f3f0-1dfb8e4e03ed@i-love.sakura.ne.jp>
+ <05acdda8-dc1c-5119-4326-96eed24bea0c@i-love.sakura.ne.jp>
+ <CAHk-=wguwhFpjhyMtDaH2hhjoV62gDgByC=aPyTrW9CkM5hqvA@mail.gmail.com>
+ <alpine.DEB.2.21.2105142150460.3032@angie.orcam.me.uk> <CAHk-=wioOHwKNj8AmvXWV-oL60ae0jKswAHy9e6wCYYeA5EQXg@mail.gmail.com>
+In-Reply-To: <CAHk-=wioOHwKNj8AmvXWV-oL60ae0jKswAHy9e6wCYYeA5EQXg@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 14 May 2021 14:10:44 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjkVAjfWrmmJnJe1_MriK9gezWCew_MU=MbQNzHbGopsQ@mail.gmail.com>
+Message-ID: <CAHk-=wjkVAjfWrmmJnJe1_MriK9gezWCew_MU=MbQNzHbGopsQ@mail.gmail.com>
+Subject: Re: [PATCH] video: fbdev: vga16fb: fix OOB write in vga16fb_imageblit()
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Colin King <colin.king@canonical.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        "Antonino A. Daplas" <adaplas@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the use of the qca8k dsa driver, some problem arised related to
-port status detection. With a load on a specific port (for example a
-simple speed test), the driver starts to behave in a strange way and
-garbage data is produced. To address this, enlarge the sleep delay and
-address a bug for the reg offset 31 that require additional delay for
-this specific reg.
+On Fri, May 14, 2021 at 1:32 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> Another alternative would be to just delay the resize to when vcmode
+> is put back to text mode again. That sounds somewhat reasonable to me,
+> but it's a pretty big thing.
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
----
- drivers/net/mdio/mdio-ipq8064.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+Actually thinking more about that option, it sounds horrible. It would
+mean that we'd continue to use the old geometry for the actual VC
+buffers for a random time, and then change it to the new geometry at
+some arbitrary point.
 
-diff --git a/drivers/net/mdio/mdio-ipq8064.c b/drivers/net/mdio/mdio-ipq8064.c
-index 14b3c310af73..bd1aea2d5a26 100644
---- a/drivers/net/mdio/mdio-ipq8064.c
-+++ b/drivers/net/mdio/mdio-ipq8064.c
-@@ -65,7 +65,7 @@ ipq8064_mdio_read(struct mii_bus *bus, int phy_addr, int reg_offset)
- 		   ((reg_offset << MII_REG_SHIFT) & MII_REG_MASK);
- 
- 	regmap_write(priv->base, MII_ADDR_REG_ADDR, miiaddr);
--	usleep_range(8, 10);
-+	usleep_range(10, 13);
- 
- 	err = ipq8064_mdio_wait_busy(priv);
- 	if (err)
-@@ -91,7 +91,14 @@ ipq8064_mdio_write(struct mii_bus *bus, int phy_addr, int reg_offset, u16 data)
- 		   ((reg_offset << MII_REG_SHIFT) & MII_REG_MASK);
- 
- 	regmap_write(priv->base, MII_ADDR_REG_ADDR, miiaddr);
--	usleep_range(8, 10);
-+
-+	/* For the specific reg 31 extra time is needed or the next
-+	 * read will produce garbage data.
-+	 */
-+	if (reg_offset == 31)
-+		usleep_range(30, 43);
-+	else
-+		usleep_range(10, 13);
- 
- 	return ipq8064_mdio_wait_busy(priv);
- }
--- 
-2.30.2
+So I think the only reasonable approach (apart from just my "don't do
+that then") might be to just always call ->con_resize().
 
+There are only actually three cases of "->con_resize()", so it might
+not be too bad.
+
+Looking at it, both sisusbcon_resize() and vgacon_resize() seem to be
+trivially fine in KD_GRAPHICS mode.
+
+vgacon already seems to have that "!vga_is_gfx" test, and does
+vgacon_doresize() at vgacon_switch(). It might need to add a
+vgacon_doresize() to the vgacon_blank() case 0 code so that it
+actually does the right thing when going back to KD_TEXT mode.
+
+And fbcon_resize() looks like it might be mostly ok with it too.
+Again, there is a con_is_visible() test, and I suspect that might need
+to be changed to
+
+        if (con_is_visible(vc) && vc->vc_mode == KD_TEXT)
+
+instead,  but it doesn't look _too_ bad.
+
+So I think just removing the "vc->vc_mode != KD_GRAPHICS" test from
+resize_screen() might be the way to go. That way, the low-level data
+structures actually are in sync with the resize, and the "out of
+bounds" bug should never happen.
+
+Would you mind testing that?
+
+               Linus
