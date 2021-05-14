@@ -2,93 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0173380652
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 11:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01561380658
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 11:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233922AbhENJfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 05:35:53 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:45722 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230440AbhENJfw (ORCPT
+        id S231875AbhENJiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 05:38:09 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:36570 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229477AbhENJiI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 05:35:52 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 35E321C0B81; Fri, 14 May 2021 11:34:40 +0200 (CEST)
-Date:   Fri, 14 May 2021 11:34:39 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Colin Ian King <colin.king@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 424/530] cxgb4: Fix unintentional sign extension
- issues
-Message-ID: <20210514093439.GA12797@amd>
-References: <20210512144819.664462530@linuxfoundation.org>
- <20210512144833.706658184@linuxfoundation.org>
+        Fri, 14 May 2021 05:38:08 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lhUFc-00073Z-67; Fri, 14 May 2021 09:36:56 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] scripts/spelling.txt: add more spellings to spelling.txt
+Date:   Fri, 14 May 2021 10:36:55 +0100
+Message-Id: <20210514093655.8829-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="SLDf9lqlvOQaIe6s"
-Content-Disposition: inline
-In-Reply-To: <20210512144833.706658184@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Colin Ian King <colin.king@canonical.com>
 
---SLDf9lqlvOQaIe6s
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Here are some of the more common spelling mistakes and typos that I've
+found while fixing up spelling mistakes in the kernel in the past few
+months.
 
-Hi!
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ scripts/spelling.txt | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-> From: Colin Ian King <colin.king@canonical.com>
+diff --git a/scripts/spelling.txt b/scripts/spelling.txt
+index 7b6a01291598..17fdc620d548 100644
+--- a/scripts/spelling.txt
++++ b/scripts/spelling.txt
+@@ -22,6 +22,7 @@ absolut||absolute
+ absoulte||absolute
+ acccess||access
+ acceess||access
++accelaration||acceleration
+ acceleratoin||acceleration
+ accelleration||acceleration
+ accesing||accessing
+@@ -264,6 +265,7 @@ calucate||calculate
+ calulate||calculate
+ cancelation||cancellation
+ cancle||cancel
++canot||cannot
+ capabilites||capabilities
+ capabilties||capabilities
+ capabilty||capability
+@@ -494,7 +496,10 @@ digial||digital
+ dimention||dimension
+ dimesions||dimensions
+ diconnected||disconnected
++disabed||disabled
++disble||disable
+ disgest||digest
++disired||desired
+ dispalying||displaying
+ diplay||display
+ directon||direction
+@@ -710,6 +715,7 @@ havind||having
+ heirarchically||hierarchically
+ heirarchy||hierarchy
+ helpfull||helpful
++hearbeat||heartbeat
+ heterogenous||heterogeneous
+ hexdecimal||hexadecimal
+ hybernate||hibernate
+@@ -989,6 +995,7 @@ notications||notifications
+ notifcations||notifications
+ notifed||notified
+ notity||notify
++nubmer||number
+ numebr||number
+ numner||number
+ obtaion||obtain
+@@ -1014,8 +1021,10 @@ ommiting||omitting
+ ommitted||omitted
+ onself||oneself
+ ony||only
++openning||opening
+ operatione||operation
+ opertaions||operations
++opportunies||opportunities
+ optionnal||optional
+ optmizations||optimizations
+ orientatied||orientated
+@@ -1111,6 +1120,7 @@ prefitler||prefilter
+ preform||perform
+ premption||preemption
+ prepaired||prepared
++prepate||prepare
+ preperation||preparation
+ preprare||prepare
+ pressre||pressure
+@@ -1123,6 +1133,7 @@ privilaged||privileged
+ privilage||privilege
+ priviledge||privilege
+ priviledges||privileges
++privleges||privileges
+ probaly||probably
+ procceed||proceed
+ proccesors||processors
+@@ -1167,6 +1178,7 @@ promixity||proximity
+ psudo||pseudo
+ psuedo||pseudo
+ psychadelic||psychedelic
++purgable||purgeable
+ pwoer||power
+ queing||queuing
+ quering||querying
+@@ -1180,6 +1192,7 @@ receieve||receive
+ recepient||recipient
+ recevied||received
+ receving||receiving
++recievd||received
+ recieved||received
+ recieve||receive
+ reciever||receiver
+@@ -1228,6 +1241,7 @@ reponse||response
+ representaion||representation
+ reqeust||request
+ reqister||register
++requed||requeued
+ requestied||requested
+ requiere||require
+ requirment||requirement
+@@ -1332,6 +1346,7 @@ singal||signal
+ singed||signed
+ sleeped||slept
+ sliped||slipped
++softwade||software
+ softwares||software
+ soley||solely
+ souce||source
+@@ -1510,6 +1525,7 @@ unintialized||uninitialized
+ unitialized||uninitialized
+ unkmown||unknown
+ unknonw||unknown
++unknouwn||unknown
+ unknow||unknown
+ unkown||unknown
+ unamed||unnamed
+-- 
+2.30.2
 
-> The shifting of the u8 integers f->fs.nat_lip[] by 24 bits to
-> the left will be promoted to a 32 bit signed int and then
-> sign-extended to a u64. In the event that the top bit of the u8
-> is set then all then all the upper 32 bits of the u64 end up as
-> also being set because of the sign-extension. Fix this by
-> casting the u8 values to a u64 before the 24 bit left shift.
-
-Should we really use -stable series for beta-testing patches going to
--rc1? Because that's what Sasha is effectively doing.
-
-> Addresses-Coverity: ("Unintended sign extension")
-> Fixes: 12b276fbf6e0 ("cxgb4: add support to create hash filters")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> Signed-off-by: David S. Miller <davem@davemloft.net>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-
->  			set_tcb_field(adap, f, tid, TCB_RX_FRAG3_LEN_RAW_W,
->  				      WORD_MASK, f->fs.nat_lip[3] |
->  				      f->fs.nat_lip[2] << 8 |
->  				      f->fs.nat_lip[1] << 16 |
-> -				      f->fs.nat_lip[0] << 24, 1);
-> +				      (u64)f->fs.nat_lip[0] << 25, 1);
->  		}
->  	}
-
-
-This one is wrong.
-
-Best regards,
-									Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---SLDf9lqlvOQaIe6s
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmCeRC8ACgkQMOfwapXb+vLxUwCghjQthRJh+KTYoRApzGRY5U+0
-6HkAnRcrRBcACVCxgEGLgIilqrrOxuwe
-=vJ6O
------END PGP SIGNATURE-----
-
---SLDf9lqlvOQaIe6s--
