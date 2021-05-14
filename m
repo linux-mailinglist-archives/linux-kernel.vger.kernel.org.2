@@ -2,163 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C6D380206
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 04:32:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C7F0380208
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 04:32:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231358AbhENCd2 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 May 2021 22:33:28 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:39019 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhENCd0 (ORCPT
+        id S231447AbhENCdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 May 2021 22:33:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229459AbhENCdl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 May 2021 22:33:26 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 14E2W78g8028223, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 14E2W78g8028223
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 14 May 2021 10:32:07 +0800
-Received: from RTEXMBS02.realtek.com.tw (172.21.6.95) by
- RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 14 May 2021 10:32:06 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS02.realtek.com.tw (172.21.6.95) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 14 May 2021 10:31:45 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::1d8:ba7d:61ca:bd74]) by
- RTEXMBS04.realtek.com.tw ([fe80::1d8:ba7d:61ca:bd74%5]) with mapi id
- 15.01.2106.013; Fri, 14 May 2021 10:31:45 +0800
-From:   Hilda Wu <hildawu@realtek.com>
-To:     Marcel Holtmann <marcel@holtmann.org>
-CC:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Bluetooth Kernel Mailing List 
-        <linux-bluetooth@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Max Chou <max.chou@realtek.com>,
-        "alex_lu@realsil.com.cn" <alex_lu@realsil.com.cn>,
-        KidmanLee <kidman@realtek.com>
-Subject: RE: [PATCH] Bluetooth: btusb: Add support USB ALT 3 for WBS
-Thread-Topic: [PATCH] Bluetooth: btusb: Add support USB ALT 3 for WBS
-Thread-Index: AQHXR+FETZsNaKRViEWtURNUsICg4arg/wKAgAFAQAA=
-Date:   Fri, 14 May 2021 02:31:45 +0000
-Message-ID: <08bd26e7da6549898da05b5ec3bb8b44@realtek.com>
-References: <20210513101806.5666-1-hildawu@realtek.com>
- <846A7897-6645-4FA0-8B3A-C0AB01965365@holtmann.org>
-In-Reply-To: <846A7897-6645-4FA0-8B3A-C0AB01965365@holtmann.org>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.132.158]
-x-kse-serverinfo: RTEXMBS02.realtek.com.tw, 9
-x-kse-antivirus-interceptor-info: scan successful
-x-kse-antivirus-info: =?us-ascii?Q?Clean,_bases:_2021/5/13_=3F=3F_08:28:00?=
-x-kse-attachment-filter-triggered-rules: Clean
-x-kse-attachment-filter-triggered-filters: Clean
-x-kse-bulkmessagesfiltering-scan-result: protection disabled
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Thu, 13 May 2021 22:33:41 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E65C2C061574;
+        Thu, 13 May 2021 19:32:30 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FhCGt22r5z9sWk;
+        Fri, 14 May 2021 12:32:22 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1620959548;
+        bh=wEsq/gNmbpD/b6nmfvJT2+euaI0BOepkB7VQ3rFAxjY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=aNmGsa8gdZrNqPlk9M3VhRD684BHuXsX6XJlh/+RUHhSc+VmhhgW9rjPp80Rigwps
+         OLITBsFtQI0t9YbO6tjPSq6hWNAjesMtXzNmfdc5khHafU2MqJmjTdbF5a7YLeXW5V
+         uiE1VyeINlrAYZ9DUahSUDviYW/ct2WUxTEHbP5QRXeTaWl4SI+BayGkRvnTiotYpb
+         Yl8lBw4Na80cSql1KxqOULyyE5qcGekCJW93lnzrluOA8MsN269YEbnFN+l7dgaC0z
+         p5dgZHk4wgT8C/OJ400o9jHOMRZK3AIzeEXJuRiTwA7dQ8FQB6AfeORhqUOY+ExLNU
+         hLHKp7HZeHNzQ==
+Date:   Fri, 14 May 2021 12:32:21 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Scott Wood <oss@buserror.net>, Christoph Hellwig <hch@lst.de>,
+        Stefan Richter <stefanr@s5r6.in-berlin.de>,
+        1394 <linux1394-devel@lists.sourceforge.net>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas =?UTF-8?B?RsOkcmJlcg==?= <afaerber@suse.de>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: linux-next: removed trees
+Message-ID: <20210514123221.7c21393f@canb.auug.org.au>
 MIME-Version: 1.0
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/14/2021 02:19:13
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 163648 [May 13 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: hildawu@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 445 445 d5f7ae5578b0f01c45f955a2a751ac25953290c9
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 05/14/2021 02:21:00
-X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/14/2021 02:19:13
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 163648 [May 13 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: hildawu@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 445 445 d5f7ae5578b0f01c45f955a2a751ac25953290c9
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;realtek.com:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 05/14/2021 02:21:00
+Content-Type: multipart/signed; boundary="Sig_//ZBZsTOrBVa24j=4YJf1Ka2";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marcel,
+--Sig_//ZBZsTOrBVa24j=4YJf1Ka2
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thank you!
-I will propose a patch v2.
+Hi all,
 
-Regards,
-Hilda
+The following tree have been removed form linux-next because they have
+not been updated in more than a year.  If you want a tree reinstated,
+just let me know.
 
------Original Message-----
-From: Marcel Holtmann <marcel@holtmann.org> 
-Sent: Thursday, May 13, 2021 11:13 PM
-To: Hilda Wu <hildawu@realtek.com>
-Cc: Johan Hedberg <johan.hedberg@gmail.com>; Luiz Augusto von Dentz <luiz.dentz@gmail.com>; Bluetooth Kernel Mailing List <linux-bluetooth@vger.kernel.org>; open list <linux-kernel@vger.kernel.org>; Max Chou <max.chou@realtek.com>; alex_lu@realsil.com.cn; KidmanLee <kidman@realtek.com>
-Subject: Re: [PATCH] Bluetooth: btusb: Add support USB ALT 3 for WBS
+fbdev
+fsl
+generic-ioremap
+ieee1394
+  this contains the single commit
+	67f8e65e4fc1 firewire: net: remove set but not used variable 'guid'
+random
+realtek
+thermal-rzhang
+thermal-soc
+y2038
+zx2c4
 
-Hi Hilda,
+--=20
+Cheers,
+Stephen Rothwell
 
-> Because mSBC frames do not need to be aligned to the SCO packet 
-> boundary. Using USB ALT 3 let HCI payload >= 60 bytes, let mSBC data 
-> satisfy 60 Bytes avoid payload unaligned situation and fixed some 
-> headset no voise issue.
-> 
-> USB Alt 3 supported also need HFP support transparent MTU in 72 Bytes.
-> 
-> Signed-off-by: hildawu <hildawu@realtek.com>
+--Sig_//ZBZsTOrBVa24j=4YJf1Ka2
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-please use real name here.
+-----BEGIN PGP SIGNATURE-----
 
-> ---
-> drivers/bluetooth/btusb.c | 7 +++++++
-> 1 file changed, 7 insertions(+)
-> 
-> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c 
-> index 6f253378e893..872034e7a232 100644
-> --- a/drivers/bluetooth/btusb.c
-> +++ b/drivers/bluetooth/btusb.c
-> @@ -1752,6 +1752,13 @@ static void btusb_work(struct work_struct *work)
-> 			 * which work with WBS at all.
-> 			 */
-> 			new_alts = btusb_find_altsetting(data, 6) ? 6 : 1;
-> +			/* Because mSBC frames do not need to be aligned to the
-> +			 * SCO packet boundary. If support the Alt 3, use the
-> +			 * Alt 3 for HCI payload >= 60 Bytes let air packet
-> +			 * data satisfy 60 bytes.
-> +			 */
-> +			if ((new_alts == 1) && (btusb_find_altsetting(data, 3)))
-> +				new_alts = 3;
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCd4TUACgkQAVBC80lX
+0GwJsQf/TLLwsZGHoWiRtnRa6CuE4kbsToeqV8skczSRsZ5OJVlirrKahGw8liUX
+YXrr1mdCFlfTwBIcVB+EXfQy+AKOToJzX6u987Sdrm0OylVW65eWIEiEkWDCnrk5
+f2z1HyNQwfwGrXz5Eamq5+B78Kmxgmx5OyNfjf6JaWCGGJU7MdP8AhCt01FK4yGK
+GoLhVbZkswLcI26FE0It1RoKpbm/iao9iXc24hwgw0UMh8GlMJPwQ6OT6tblSBTT
+828gUu/h4EgbSabMBPLZRoIiSd2pDy0Nzn9QVMyDT68jsaWxSV1jSjoviOj2vOe1
+zZ3JQZdWo6uVXVSleJzWWykGR3qaYg==
+=xOi6
+-----END PGP SIGNATURE-----
 
-	if (new_alts == 1 && btusb_find_altsetting(..))
-		..
-
-Regards
-
-Marcel
-
-------Please consider the environment before printing this e-mail.
+--Sig_//ZBZsTOrBVa24j=4YJf1Ka2--
