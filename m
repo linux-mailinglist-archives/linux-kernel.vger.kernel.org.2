@@ -2,104 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B07DC38066E
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 11:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11368380677
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 11:45:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231479AbhENJpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 05:45:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36745 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230130AbhENJpF (ORCPT
+        id S232048AbhENJrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 05:47:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231719AbhENJrF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 05:45:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620985433;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=05Af3bVZXrGJRy2+GfagSd6JI7OZwal3JL9/7JcdoT8=;
-        b=ZkdaEcxcldo0XiLP+unIZ62NBCaLEv6wBqZ1GjXYiHrW67WGpKIiTXqxajOOcw1Y7H6+oI
-        tLzPq58Lzpnnwcbs8gJW636TYgHaOKr+rgvWBsTk4EckMMEm13fe8buvsxfOZfqQqM9IFs
-        e7k/PpR5ZxxS8rdKRuUE43ofWL+dyYs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-218-WqmhRHU7PHCcJPYyjHCMaA-1; Fri, 14 May 2021 05:43:52 -0400
-X-MC-Unique: WqmhRHU7PHCcJPYyjHCMaA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 203D61007480;
-        Fri, 14 May 2021 09:43:50 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A507F1971B;
-        Fri, 14 May 2021 09:43:39 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 14E9hd7S022799;
-        Fri, 14 May 2021 05:43:39 -0400
-Received: from localhost (mpatocka@localhost)
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 14E9haED022795;
-        Fri, 14 May 2021 05:43:36 -0400
-X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
-Date:   Fri, 14 May 2021 05:43:36 -0400 (EDT)
-From:   Mikulas Patocka <mpatocka@redhat.com>
-X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
-To:     Bart Van Assche <bvanassche@acm.org>
-cc:     Milan Broz <gmazyland@gmail.com>, "Theodore Ts'o" <tytso@mit.edu>,
-        Changheun Lee <nanich.lee@samsung.com>, alex_y_xu@yahoo.ca,
-        axboe@kernel.dk, bgoncalv@redhat.com, dm-crypt@saout.de,
-        hch@lst.de, jaegeuk@kernel.org, linux-block@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org, ming.lei@redhat.com,
-        yi.zhang@redhat.com, dm-devel@redhat.com
-Subject: Re: regression: data corruption with ext4 on LUKS on nvme with
- torvalds master
-In-Reply-To: <fdee795d-7a4b-9506-b9ca-359b9bcbec34@acm.org>
-Message-ID: <alpine.LRH.2.02.2105140514560.20018@file01.intranet.prod.int.rdu2.redhat.com>
-References: <a01ab479-69e8-9395-7d24-9de1eec28aff@acm.org> <0e7b0b6e-e78c-f22d-af8d-d7bdcb597bea@gmail.com> <alpine.LRH.2.02.2105131510330.21927@file01.intranet.prod.int.rdu2.redhat.com> <fdee795d-7a4b-9506-b9ca-359b9bcbec34@acm.org>
-User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
+        Fri, 14 May 2021 05:47:05 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57FC7C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 02:45:54 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id i13so4084397edb.9
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 02:45:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=6Qmp+RccQaxdzALO6v4g1kv976Ka2lpKYW4G5pC6mxc=;
+        b=H0ZgaAtV/qgmajkYofHy4Jl64BMzxDXTCZOWbrS87/XJHvtmz0x2MTAjX+tj+6V/Sx
+         NGhiHe41B0FafmHCx++/otmptF7/7y7EKBkUh+uvMZDV/FadmJC4WUPCkAGq95b+bWeT
+         7Q59T8ogJHKodDvTUcjQIailDdXiU119nPj+rNcPmOp4nzd37H+G3h7YaIu6R72X1eMy
+         2LdwYtLFvaz7kZsKfkkhjugFOA3zZZT9PljBelvV845WQoah3XcMI6XuS1hbL3rn+Eh5
+         qaVyrbDCCH2+vkIHmdT2sjdA0TjG7aldL3MlThQT5wLFEL3xdkOoDjziBEgwQinbC+2t
+         1Gfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6Qmp+RccQaxdzALO6v4g1kv976Ka2lpKYW4G5pC6mxc=;
+        b=Z3/RtDgqpV2hUipAQMVQPN1tahiURieJXCYOXTsO27GWEdLnbKIUakwwk2fWaTripO
+         0dqEvyQJYbWtxggPDyKCJ4smnUo8s85I1MGrBrk7Zf6vZHF/wqFWvWACM9sGNGTD6UvF
+         2+7unCfcGWjY+KQKjNOVISjHULbMmAswCIpxO97ojp81fpa85e0kzQ2kg/olDNkG4YhS
+         FgDQGlIiJ0MbisRBSeZdY8+aMZpORRYfIkdRrv5AyMFpNSBLCcL/hwF4d3LpPGxuSgB7
+         /PhoHSw0lZRdeAPocH6OpH2bZB8z849Izf6UCr+2buuEi6znhjKmiv81nYHLBkzygvcv
+         MsCQ==
+X-Gm-Message-State: AOAM533WzK6jOUBaC/DC5246u61RJwHt4DNoG9zWbgGB8F+AgvE0Ibxp
+        MRXBmNCS+u5bUmuEDRwW0xgkclxpVSDWGPGyFInGOw==
+X-Google-Smtp-Source: ABdhPJzwcrp92fEomlUb7zJDWtc5z87XJjNPMQBZbwTmf59+peMYaugHOGpPSSowEUO/VFFAHvq3dU2j0CrWG6Vb4CY=
+X-Received: by 2002:aa7:c349:: with SMTP id j9mr54146167edr.230.1620985552748;
+ Fri, 14 May 2021 02:45:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20210513044710.MCXhM_NwC%akpm@linux-foundation.org>
+ <151ddd7f-1d3e-a6f7-daab-e32f785426e1@infradead.org> <54055e72-34b8-d43d-2ad3-87e8c8fa547b@csgroup.eu>
+ <20210513134754.ab3f1a864b0156ef99248401@linux-foundation.org> <a3ac0b42-f779-ffaf-c6d7-0d4b40dc25f2@infradead.org>
+In-Reply-To: <a3ac0b42-f779-ffaf-c6d7-0d4b40dc25f2@infradead.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 14 May 2021 15:15:41 +0530
+Message-ID: <CA+G9fYv79t0+2W4Rt3wDkBShc4eY3M3utC5BHqUgGDwMYExYMw@mail.gmail.com>
+Subject: Re: mmotm 2021-05-12-21-46 uploaded (arch/x86/mm/pgtable.c)
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Mark Brown <broonie@kernel.org>, linux-fsdevel@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        mhocko@suse.cz, mm-commits@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        lkft-triage@lists.linaro.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 14 May 2021 at 02:38, Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> On 5/13/21 1:47 PM, Andrew Morton wrote:
+> > On Thu, 13 May 2021 19:09:23 +0200 Christophe Leroy <christophe.leroy@c=
+sgroup.eu> wrote:
+> >
+> >>
+> >>
+> >>> on i386:
+> >>>
+> >>> ../arch/x86/mm/pgtable.c:703:5: error: redefinition of =E2=80=98pud_s=
+et_huge=E2=80=99
+> >>>   int pud_set_huge(pud_t *pud, phys_addr_t addr, pgprot_t prot)
+> >>>       ^~~~~~~~~~~~
+> >>> In file included from ../include/linux/mm.h:33:0,
+> >>>                   from ../arch/x86/mm/pgtable.c:2:
+> >>> ../include/linux/pgtable.h:1387:19: note: previous definition of =E2=
+=80=98pud_set_huge=E2=80=99 was here
+> >>>   static inline int pud_set_huge(pud_t *pud, phys_addr_t addr, pgprot=
+_t prot)
+> >>>                     ^~~~~~~~~~~~
+> >>> ../arch/x86/mm/pgtable.c:758:5: error: redefinition of =E2=80=98pud_c=
+lear_huge=E2=80=99
+> >>>   int pud_clear_huge(pud_t *pud)
+> >>>       ^~~~~~~~~~~~~~
+> >>> In file included from ../include/linux/mm.h:33:0,
+> >>>                   from ../arch/x86/mm/pgtable.c:2:
+> >>> ../include/linux/pgtable.h:1391:19: note: previous definition of =E2=
+=80=98pud_clear_huge=E2=80=99 was here
+> >>>   static inline int pud_clear_huge(pud_t *pud)
+
+These errors are noticed on linux next 20210514 tag on arm64.
+Regressions found on arm64 for the following configs.
+
+  - build/gcc-9-defconfig-904271f2
+  - build/gcc-9-tinyconfig
+  - build/gcc-8-allnoconfig
+  - build/gcc-10-allnoconfig
+  - build/clang-11-allnoconfig
+  - build/clang-10-allnoconfig
+  - build/clang-12-tinyconfig
+  - build/gcc-10-tinyconfig
+  - build/clang-10-tinyconfig
+  - build/clang-11-tinyconfig
+  - build/clang-12-allnoconfig
+  - build/gcc-8-tinyconfig
+  - build/gcc-9-allnoconfig
+
+make --silent --keep-going --jobs=3D8
+O=3D/home/tuxbuild/.cache/tuxmake/builds/current ARCH=3Darm64
+CROSS_COMPILE=3Daarch64-linux-gnu- 'CC=3Dsccache aarch64-linux-gnu-gcc'
+'HOSTCC=3Dsccache gcc'
+/builds/linux/arch/arm64/mm/mmu.c:1341:5: error: redefinition of 'pud_set_h=
+uge'
+ 1341 | int pud_set_huge(pud_t *pudp, phys_addr_t phys, pgprot_t prot)
+      |     ^~~~~~~~~~~~
+In file included from /builds/linux/include/linux/mm.h:33,
+                 from /builds/linux/include/linux/pid_namespace.h:7,
+                 from /builds/linux/include/linux/ptrace.h:10,
+                 from /builds/linux/include/linux/elfcore.h:11,
+                 from /builds/linux/include/linux/crash_core.h:6,
+                 from /builds/linux/include/linux/kexec.h:18,
+                 from /builds/linux/arch/arm64/mm/mmu.c:15:
+/builds/linux/include/linux/pgtable.h:1387:19: note: previous
+definition of 'pud_set_huge' was here
+ 1387 | static inline int pud_set_huge(pud_t *pud, phys_addr_t addr,
+pgprot_t prot)
+      |                   ^~~~~~~~~~~~
+/builds/linux/arch/arm64/mm/mmu.c:1369:5: error: redefinition of
+'pud_clear_huge'
+ 1369 | int pud_clear_huge(pud_t *pudp)
+      |     ^~~~~~~~~~~~~~
+In file included from /builds/linux/include/linux/mm.h:33,
+                 from /builds/linux/include/linux/pid_namespace.h:7,
+                 from /builds/linux/include/linux/ptrace.h:10,
+                 from /builds/linux/include/linux/elfcore.h:11,
+                 from /builds/linux/include/linux/crash_core.h:6,
+                 from /builds/linux/include/linux/kexec.h:18,
+                 from /builds/linux/arch/arm64/mm/mmu.c:15:
+/builds/linux/include/linux/pgtable.h:1391:19: note: previous
+definition of 'pud_clear_huge' was here
+ 1391 | static inline int pud_clear_huge(pud_t *pud)
+      |                   ^~~~~~~~~~~~~~
+make[3]: *** [/builds/linux/scripts/Makefile.build:273:
+arch/arm64/mm/mmu.o] Error 1
 
 
-On Thu, 13 May 2021, Bart Van Assche wrote:
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
 
-> On 5/13/21 12:22 PM, Mikulas Patocka wrote:
-> > We already had problems with too large bios in dm-crypt and we fixed it by 
-> > adding this piece of code:
-> > 
-> >         /*
-> >          * Check if bio is too large, split as needed.
-> >          */
-> >         if (unlikely(bio->bi_iter.bi_size > (BIO_MAX_VECS << PAGE_SHIFT)) &&
-> >             (bio_data_dir(bio) == WRITE || cc->on_disk_tag_size))
-> >                 dm_accept_partial_bio(bio, ((BIO_MAX_VECS << PAGE_SHIFT) >> SECTOR_SHIFT));
-> > 
-> > It will ask the device mapper to split the bio if it is too large. So, 
-> > crypt_alloc_buffer can't receive a bio that is larger than BIO_MAX_VECS << 
-> > PAGE_SHIFT.
-> 
-> Hi Mikulas,
-> 
-> Are you perhaps referring to commit 4e870e948fba ("dm crypt: fix error
-> with too large bios")? Did that commit go upstream before multi-page
-> bvec support?
 
-Yes. It's from 2016.
+Steps to reproduce:
+---------------------------
 
-> Can larger bios be supported in case of two or more
-> contiguous pages now that multi-page bvec support is upstream?
+#!/bin/sh
 
-No - we need to allocate a buffer for the written data. The buffer size is 
-limited to PAGE_SIZE * BIO_MAX_VECS.
+# TuxMake is a command line tool and Python library that provides
+# portable and repeatable Linux kernel builds across a variety of
+# architectures, toolchains, kernel configurations, and make targets.
+#
+# TuxMake supports the concept of runtimes.
+# See https://docs.tuxmake.org/runtimes/, for that to work it requires
+# that you install podman or docker on your system.
+#
+# To install tuxmake on your system globally:
+# sudo pip3 install -U tuxmake
+#
+# See https://docs.tuxmake.org/ for complete documentation.
 
-> Thanks,
-> 
-> Bart.
+tuxmake --runtime podman --target-arch arm64 --toolchain gcc-9
+--kconfig tinyconfig
 
-Mikulas
 
+--
+Linaro LKFT
+https://lkft.linaro.org
