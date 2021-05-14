@@ -2,97 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 730A3380C21
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 16:45:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4ADB380C52
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 16:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234537AbhENOq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 10:46:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231473AbhENOqZ (ORCPT
+        id S234561AbhENOy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 10:54:58 -0400
+Received: from outbound-smtp57.blacknight.com ([46.22.136.241]:44163 "EHLO
+        outbound-smtp57.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232760AbhENOy4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 10:46:25 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75654C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 07:45:14 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id w22so14763006oiw.9
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 07:45:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=a4ec9HrK4exLNdFoaRuR+1/fBbQJf79OPKrfXFd1y+Q=;
-        b=cCh4rJ+jLCwHOySclWi/hxbsrBN/knU3k6iyeSOpNa029f/gEvfeTen3wcRnSN++DO
-         BznnqYVww+aBxCmkZFaUBSIwZ433Kv8pezR8RVI33o8oF64gNctoWSWyCUcDDCosYHGc
-         6u1F+9H7rHB5FOhqzYYjiguylGWQEH3G3FU5kUJjGasOcbZvMUiv2aHm6VKBNFv9bccD
-         WzC5F0Tkje1HmDIQ6YI+U26AKlElAvuGOTuwjJum2ovaXeyariBT/KqdGVsIAy7nT5/D
-         QdJQF5kq2BjURpQ5Df4YM9es8RYQt8WNXHsG+iWDhkkVJXzXIXqA2+Z7fiWLOmY5LsBL
-         qDnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=a4ec9HrK4exLNdFoaRuR+1/fBbQJf79OPKrfXFd1y+Q=;
-        b=RdwvKnC0Ump7ft8Xb7H/+7eFiGqka6ISRACPwz6ydqNKacBLLEH0u07FR6hf0x+9ft
-         d7RY78nGQmSFtxARE/wxgSJ5lfbPSv7Av9PSHqvui8BQGtw4j2EzFjPlsuhhHxANgRCo
-         mrF+s4B4Z8Y0oTjvxSkB5t2sMpzM70tnbwXws1B2K8HtgVX/1mwILybdjEbYxSGEPyg8
-         5pLJYbFWZFlyLcBIZyrKumhd8cXwYW0QiD/8PnbJ6I0JGyaWT9xpsYWKcsa8ztd0SNvh
-         OvWFC3aTab19LHTgIOPDnMr4VMy21V2JXCi3r8LEhF7G7z6mEj+E1NCpuQBA/fnmyTBY
-         Fu/Q==
-X-Gm-Message-State: AOAM532qoHKxd+WUXXfzxHk4X4ZOCYdxjTDZ53NiXiUGsuK0ppyN6Slo
-        3njSDg9jGAImT7CPqfDmB7wK1wHkxoD7NZaxUO0ZozAqGwOcSQ==
-X-Google-Smtp-Source: ABdhPJzji7JCPpwfpxmtJyrdybwjjTdBZYaTphELI3UT0rST6tJp66i9W7DoAeu660DBbHpDHx8qOpXaPmsOZK+U9/A=
-X-Received: by 2002:aca:408a:: with SMTP id n132mr34789902oia.70.1621003513688;
- Fri, 14 May 2021 07:45:13 -0700 (PDT)
+        Fri, 14 May 2021 10:54:56 -0400
+Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
+        by outbound-smtp57.blacknight.com (Postfix) with ESMTPS id 9E555FA916
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 15:53:44 +0100 (IST)
+Received: (qmail 14594 invoked from network); 14 May 2021 14:53:44 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.23.168])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 14 May 2021 14:53:44 -0000
+Date:   Fri, 14 May 2021 15:46:22 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] mm/page_alloc: Split per cpu page lists and zone stats -fix
+Message-ID: <20210514144622.GA3735@techsingularity.net>
 MIME-Version: 1.0
-References: <20210514140015.2944744-1-arnd@kernel.org> <YJ6E1scEoTATEJav@kroah.com>
-In-Reply-To: <YJ6E1scEoTATEJav@kroah.com>
-From:   Marco Elver <elver@google.com>
-Date:   Fri, 14 May 2021 16:45:01 +0200
-Message-ID: <CANpmjNMgiVwNovVDASz1jrUFXOCaUY9SvC7hzbv2ix_CaaSvJA@mail.gmail.com>
-Subject: Re: [PATCH] kcsan: fix debugfs initcall return type
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 May 2021 at 16:10, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
-> On Fri, May 14, 2021 at 04:00:08PM +0200, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > clang points out that an initcall funciton should return an 'int':
-> >
-> > kernel/kcsan/debugfs.c:274:15: error: returning 'void' from a function with incompatible result type 'int'
-> > late_initcall(kcsan_debugfs_init);
-> > ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
-> > include/linux/init.h:292:46: note: expanded from macro 'late_initcall'
-> >  #define late_initcall(fn)               __define_initcall(fn, 7)
-> >
-> > Fixes: e36299efe7d7 ("kcsan, debugfs: Move debugfs file creation out of early init")
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-[...]
-> >
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+mm/ is not W=1 clean for allnoconfig but the patch "mm/page_alloc: Split
+per cpu page lists and zone stats" makes it worse with the following
+warning
 
-Reviewed-by: Marco Elver <elver@google.com>
+  mm/vmstat.c: In function ‘zoneinfo_show_print’:
+  mm/vmstat.c:1698:28: warning: variable ‘pzstats’ set but not used [-Wunused-but-set-variable]
+     struct per_cpu_zonestat *pzstats;
+                              ^~~~~~~
 
-Thanks for catching this -- it boggles my mind why gcc nor clang
-wouldn't warn about this by default...
-Is this a new clang?
+This is a fix to the mmotm patch
+mm-page_alloc-split-per-cpu-page-lists-and-zone-stats.patch.
 
-Paul, please also add a "Cc: stable <stable@vger.kernel.org>" because
-e36299efe7d7 is, too.
+Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+---
+ mm/vmstat.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks,
--- Marco
+diff --git a/mm/vmstat.c b/mm/vmstat.c
+index e3bcd317ea55..a2c3f58253be 100644
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -1695,10 +1695,9 @@ static void zoneinfo_show_print(struct seq_file *m, pg_data_t *pgdat,
+ 	seq_printf(m, "\n  pagesets");
+ 	for_each_online_cpu(i) {
+ 		struct per_cpu_pages *pcp;
+-		struct per_cpu_zonestat *pzstats;
++		struct per_cpu_zonestat __maybe_unused *pzstats;
+ 
+ 		pcp = per_cpu_ptr(zone->per_cpu_pageset, i);
+-		pzstats = per_cpu_ptr(zone->per_cpu_zonestats, i);
+ 		seq_printf(m,
+ 			   "\n    cpu: %i"
+ 			   "\n              count: %i"
+@@ -1709,6 +1708,7 @@ static void zoneinfo_show_print(struct seq_file *m, pg_data_t *pgdat,
+ 			   pcp->high,
+ 			   pcp->batch);
+ #ifdef CONFIG_SMP
++		pzstats = per_cpu_ptr(zone->per_cpu_zonestats, i);
+ 		seq_printf(m, "\n  vm stats threshold: %d",
+ 				pzstats->stat_threshold);
+ #endif
