@@ -2,119 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35161380369
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 07:38:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E82A638036D
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 07:40:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231139AbhENFkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 01:40:02 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:34576 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229819AbhENFkA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 01:40:00 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14E5Yv5f024442;
-        Fri, 14 May 2021 05:38:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=U4WmGOoHEOZyxtBGaQ7iAVlEntFbwFTELaSYsOVR8BE=;
- b=wBj1Nl6WhOV5v6S+rPLaiMnOdVhnGkKPSua1IOkScHpieXxp2mTtX8+GJGbX7B0TIAq4
- U2Ye0a3G3oQiazD8sr3ZE75G0wfJydKTSDbOd09rmSxxATB/fWTkVhK8JsGMCGR4+P+p
- O5f+cI1PVGPcBxaXsmGnlcwFeyUiFLlCQx/QfSSspRskVGELdTZFLhoYPxPquF9Y6ZN3
- oJp+8ba969aNgQQkX6AXrcCAbYOj8/rFsg+YkhNWk7fkIvtehO4E8kLArCNrEVfKKyEb
- hxuSFJdtBqe9GSAdIxCtYIoyUXcTBpJsch1E5P/kPcj2ezEQXSqvDWnkIbBB6cw1eF8p 1g== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 38gpnekd61-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 14 May 2021 05:38:27 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14E5Tnbo188411;
-        Fri, 14 May 2021 05:38:26 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 38gpq2rpw9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 14 May 2021 05:38:26 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14E5cPGD002297;
-        Fri, 14 May 2021 05:38:25 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 38gpq2rpvq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 14 May 2021 05:38:25 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 14E5cI2p027480;
-        Fri, 14 May 2021 05:38:18 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 13 May 2021 22:38:16 -0700
-Date:   Fri, 14 May 2021 08:37:54 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
-        Srinivas Neeli <srinivas.neeli@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] gpio: xilinx: Fix potential integer overflow on
- shift of a u32 int
-Message-ID: <20210514053754.GZ1955@kadam>
-References: <20210513085227.54392-1-colin.king@canonical.com>
+        id S231495AbhENFlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 01:41:07 -0400
+Received: from mga06.intel.com ([134.134.136.31]:47216 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231175AbhENFk7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 01:40:59 -0400
+IronPort-SDR: uo0u3Nt9swCW0CqyaUsskban74S/iRIdZGeM+kA472UvQybMTJNntonEd1uC9PPdO4ESqFOh1u
+ jz20+FGiOoMA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9983"; a="261357702"
+X-IronPort-AV: E=Sophos;i="5.82,299,1613462400"; 
+   d="scan'208";a="261357702"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2021 22:39:48 -0700
+IronPort-SDR: qDgdd/4gPcldh0ODWZnGBzZJ1S5SEw1jqQ3EzL0r0m43xYYCU9gHOVQfGVb8FrsQGc6DOlpB9w
+ VH0+wpMgg9Rw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,299,1613462400"; 
+   d="scan'208";a="392563072"
+Received: from lkp-server01.sh.intel.com (HELO ddd90b05c979) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 13 May 2021 22:39:46 -0700
+Received: from kbuild by ddd90b05c979 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lhQY6-0000ar-96; Fri, 14 May 2021 05:39:46 +0000
+Date:   Fri, 14 May 2021 13:39:35 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:dev.2021.05.10a] BUILD SUCCESS
+ d71bf2911cf3ab8079e29b37c866992a1ff981ff
+Message-ID: <609e0d17.e1b/MIqlqQQxXOS3%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210513085227.54392-1-colin.king@canonical.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: aq9JcMCzhOS1vHkJe9ZQMHGnxm2a3Aca
-X-Proofpoint-ORIG-GUID: aq9JcMCzhOS1vHkJe9ZQMHGnxm2a3Aca
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9983 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 phishscore=0
- suspectscore=0 bulkscore=0 lowpriorityscore=0 adultscore=0 malwarescore=0
- priorityscore=1501 clxscore=1011 mlxscore=0 spamscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105140038
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 09:52:27AM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The left shift of the u32 integer v is evaluated using 32 bit
-> arithmetic and then assigned to a u64 integer. There are cases
-> where v will currently overflow on the shift. Avoid this by
-> casting it to unsigned long (same type as map[]) before shifting
-> it.
-> 
-> Addresses-Coverity: ("Unintentional integer overflow")
-> Fixes: 02b3f84d9080 ("gpio: xilinx: Switch to use bitmap APIs")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/gpio/gpio-xilinx.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpio/gpio-xilinx.c b/drivers/gpio/gpio-xilinx.c
-> index 109b32104867..164a3a5a9393 100644
-> --- a/drivers/gpio/gpio-xilinx.c
-> +++ b/drivers/gpio/gpio-xilinx.c
-> @@ -99,7 +99,7 @@ static inline void xgpio_set_value32(unsigned long *map, int bit, u32 v)
->  	const unsigned long offset = (bit % BITS_PER_LONG) & BIT(5);
->  
->  	map[index] &= ~(0xFFFFFFFFul << offset);
-> -	map[index] |= v << offset;
-> +	map[index] |= (unsigned long)v << offset;
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.05.10a
+branch HEAD: d71bf2911cf3ab8079e29b37c866992a1ff981ff  torture: Add clocksource-watchdog testing to torture.sh
 
-Doing a shift by BIT(5) is super weird.  It looks like a double shift
-bug and should probably trigger a static checker warning.  It's like
-when people do BIT(BIT(5)).
+elapsed time: 725m
 
-It would be more readable to write it as:
+configs tested: 111
+configs skipped: 2
 
-	int shift = (bit % BITS_PER_LONG) ? 32 : 0;
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-regards,
-dan carpenter
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+mips                         tb0219_defconfig
+ia64                          tiger_defconfig
+powerpc                      acadia_defconfig
+powerpc                 mpc836x_mds_defconfig
+mips                        workpad_defconfig
+powerpc                 linkstation_defconfig
+mips                malta_qemu_32r6_defconfig
+um                             i386_defconfig
+arm                         lpc32xx_defconfig
+mips                  maltasmvp_eva_defconfig
+riscv                    nommu_virt_defconfig
+powerpc                     taishan_defconfig
+riscv             nommu_k210_sdcard_defconfig
+arc                              alldefconfig
+m68k                                defconfig
+riscv                    nommu_k210_defconfig
+powerpc                   lite5200b_defconfig
+sh                   sh7770_generic_defconfig
+powerpc                    gamecube_defconfig
+arm                          simpad_defconfig
+powerpc                      ppc44x_defconfig
+powerpc                         ps3_defconfig
+m68k                        m5307c3_defconfig
+m68k                       m5275evb_defconfig
+arm                          iop32x_defconfig
+powerpc                 mpc8315_rdb_defconfig
+xtensa                           allyesconfig
+sh                           se7712_defconfig
+m68k                       bvme6000_defconfig
+mips                      maltaaprp_defconfig
+xtensa                  nommu_kc705_defconfig
+arc                                 defconfig
+m68k                       m5249evb_defconfig
+m68k                           sun3_defconfig
+powerpc                     mpc512x_defconfig
+openrisc                 simple_smp_defconfig
+mips                           ip22_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a003-20210513
+i386                 randconfig-a001-20210513
+i386                 randconfig-a005-20210513
+i386                 randconfig-a004-20210513
+i386                 randconfig-a002-20210513
+i386                 randconfig-a006-20210513
+x86_64               randconfig-a012-20210513
+x86_64               randconfig-a015-20210513
+x86_64               randconfig-a011-20210513
+x86_64               randconfig-a013-20210513
+x86_64               randconfig-a016-20210513
+x86_64               randconfig-a014-20210513
+i386                 randconfig-a016-20210513
+i386                 randconfig-a014-20210513
+i386                 randconfig-a011-20210513
+i386                 randconfig-a015-20210513
+i386                 randconfig-a012-20210513
+i386                 randconfig-a013-20210513
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
+clang tested configs:
+x86_64               randconfig-a003-20210513
+x86_64               randconfig-a004-20210513
+x86_64               randconfig-a001-20210513
+x86_64               randconfig-a005-20210513
+x86_64               randconfig-a002-20210513
+x86_64               randconfig-a006-20210513
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
