@@ -2,77 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D034B38032A
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 06:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3734938032F
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 07:17:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232364AbhENE4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 00:56:52 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:34266 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231377AbhENE4u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 00:56:50 -0400
-Date:   Fri, 14 May 2021 06:55:37 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620968139;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UDYBAnUNVds5/OtpkhwNFKlve4qytkO6+gA4HAqZDTs=;
-        b=EO4taY8WAUQepkIPrbKdufIr8KJwcrhs39A5L57J0vWwteB+JghYgyCYOtc2giQXdvF9O5
-        dyUREJ2GzCaT/YDVRLJE0ymYeq6WwBBafaf2fuoDZAw/rjVFB+tbKQlhNfddXH2d+q6pgX
-        /78oq9NkGJXgLNiKSp3dl2m4ccM+JJrl3AhftCNeVHUw81aAysqmtMiIRcQLkeI9e8FU/g
-        nh8LVZ8srYI08HfDbtczbax0YXhE3+i4kks9DnaR158l3W0YFuofDKmWVvk3m/XaM3nZwx
-        IY6quqxqRHxd+1lFdKM5EJskWk5IX69hdpkj/jgycM2pl0hlOBk5LPMP5A2/5A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620968139;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UDYBAnUNVds5/OtpkhwNFKlve4qytkO6+gA4HAqZDTs=;
-        b=Tym0xYGDi0Fe4s9N/qSGAYWA91XxDnFqsm4dbXDd3rxZKFQgXrqrjZoOiN6uKo7xIzIj7s
-        tXkni8Ls23/ykQCQ==
-From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
-To:     Davidlohr Bueso <dave@stgolabs.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>, bigeasy@linutronix.de,
-        tglx@linutronix.de, shung-hsi.yu@suse.com,
-        linux-kernel@vger.kernel.org, Davidlohr Bueso <dbueso@suse.de>
-Subject: Re: [PATCH v2] seqlock,lockdep: Only check for preemption_disabled
- in non-rt
-Message-ID: <YJ4CydK5NiSkpkSO@lx-t490>
-References: <20210507233951.78950-1-dave@stgolabs.net>
- <20210507234713.86097-1-dave@stgolabs.net>
- <YJuVhR9C6pUmZBOs@hirez.programming.kicks-ass.net>
- <20210513195357.xq57b2t26hhhmdn4@offworld>
+        id S231744AbhENFNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 01:13:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57610 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229997AbhENFNK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 01:13:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C1F16141E
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 05:11:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620969119;
+        bh=89LPmC6xl6/RVBJjKjZBJhT2GrBhxlOpYu9HuggbB6o=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Dfe7d0hhYGed4ACRU3n+0ldK+xNDd20mjVys7UWSGxwdv5+TnophL718h1argZnz+
+         keyzL9d36IqUiv2fOzaU0/mn8ON2sABImEnRrxghu6B+ReovLXK+oMo/a6cR3BLfuk
+         qgFMQDhC0dYuZAdm+4wnwsIWkkCSdS+PH319/QdfXmWQ5OP5pbnkZ9tgRR63jJMv8B
+         f/kkjmxyJS4g1+Dzkv5wyxENsARXtxfKLvloBfzKxTXzPYoY9UL0V03LinTTwTgILf
+         x3YOl2rPRa8iQ22CjhIoAS1o032DCQbiPD5/hfJLMZVgD0pZozAR+8924Bjf89uLSI
+         z2PbwIAfr/BqQ==
+Received: by mail-ed1-f41.google.com with SMTP id r11so9302096edt.13
+        for <linux-kernel@vger.kernel.org>; Thu, 13 May 2021 22:11:59 -0700 (PDT)
+X-Gm-Message-State: AOAM532nQfXw5DSIiecqsOlQ0Az3Rlg3gt5gEagPjoS2lQK8XTKBWmuQ
+        Bn9BXnspYGDT2IijAMrkVpI5v8ckRCHWfHAqErdIYw==
+X-Google-Smtp-Source: ABdhPJw+ccNrVUgG+d2zJVrnNC3qHf4+8zwUMT2QGD5YHjjIvDUYjg7dBuYBxBqJl8cxUVDm2YAHg5K6SuNf/yEDcXE=
+X-Received: by 2002:aa7:d390:: with SMTP id x16mr52685761edq.172.1620969107558;
+ Thu, 13 May 2021 22:11:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210513195357.xq57b2t26hhhmdn4@offworld>
+References: <20210507164456.1033-1-jon@nutanix.com>
+In-Reply-To: <20210507164456.1033-1-jon@nutanix.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Thu, 13 May 2021 22:11:36 -0700
+X-Gmail-Original-Message-ID: <CALCETrW0_vwpbVVpc+85MvoGqg3qJA+FV=9tmUiZz6an7dQrGg@mail.gmail.com>
+Message-ID: <CALCETrW0_vwpbVVpc+85MvoGqg3qJA+FV=9tmUiZz6an7dQrGg@mail.gmail.com>
+Subject: Re: [PATCH] KVM: x86: add hint to skip hidden rdpkru under kvm_load_host_xsave_state
+To:     Jon Kohler <jon@nutanix.com>
+Cc:     Babu Moger <babu.moger@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Uros Bizjak <ubizjak@gmail.com>,
+        Petteri Aimonen <jpa@git.mail.kapsi.fi>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Benjamin Thiel <b.thiel@posteo.de>,
+        Fan Yang <Fan_Yang@sjtu.edu.cn>,
+        Juergen Gross <jgross@suse.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021, Davidlohr Bueso wrote:
+On Fri, May 7, 2021 at 9:45 AM Jon Kohler <jon@nutanix.com> wrote:
 >
-> And therefore converting it to an associated spinlock would avoid the
-> preemption check, which is exactly what Ahmed has already done:
+> kvm_load_host_xsave_state handles xsave on vm exit, part of which is
+> managing memory protection key state. The latest arch.pkru is updated
+> with a rdpkru, and if that doesn't match the base host_pkru (which
+> about 70% of the time), we issue a __write_pkru.
+
+This thread caused me to read the code, and I don't get how it's even
+remotely correct.
+
+First, kvm_load_guest_fpu() has this delight:
+
+    /*
+     * Guests with protected state can't have it set by the hypervisor,
+     * so skip trying to set it.
+     */
+    if (vcpu->arch.guest_fpu)
+        /* PKRU is separately restored in kvm_x86_ops.run. */
+        __copy_kernel_to_fpregs(&vcpu->arch.guest_fpu->state,
+                    ~XFEATURE_MASK_PKRU);
+
+That's nice, but it fails to restore XINUSE[PKRU].  As far as I know,
+that bit is live, and the only way to restore it to 0 is with
+XRSTOR(S).
+
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index cebdaa1e3cf5..cd95adbd140c 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -912,10 +912,10 @@ void kvm_load_guest_xsave_state(struct kvm_vcpu *vcpu)
+>         }
 >
-> bc8e0adff34 (net: xfrm: Use sequence counter with associated spinlock)
-> e88add19f68 (net: xfrm: Localize sequence counter per network namespace)
+>         if (static_cpu_has(X86_FEATURE_PKU) &&
+> -           (kvm_read_cr4_bits(vcpu, X86_CR4_PKE) ||
+> -            (vcpu->arch.xcr0 & XFEATURE_MASK_PKRU)) &&
+> -           vcpu->arch.pkru != vcpu->arch.host_pkru)
+> -               __write_pkru(vcpu->arch.pkru);
+> +           vcpu->arch.pkru != vcpu->arch.host_pkru &&
+> +           ((vcpu->arch.xcr0 & XFEATURE_MASK_PKRU) ||
+> +            kvm_read_cr4_bits(vcpu, X86_CR4_PKE)))
+> +               __write_pkru(vcpu->arch.pkru, false);
+
+Please tell me I'm missing something (e.g. KVM very cleverly managing
+the PKRU register using intercepts) that makes this reliably load the
+guest value.  An innocent or malicious guest could easily make that
+condition evaluate to false, thus allowing the host PKRU value to be
+live in guest mode.  (Or is something fancy going on here?)
+
+I don't even want to think about what happens if a perf NMI hits and
+accesses host user memory while the guest PKRU is live (on VMX -- I
+think this can't happen on SVM).
+
+>  }
+>  EXPORT_SYMBOL_GPL(kvm_load_guest_xsave_state);
 >
-> Sorry for the noise.
+> @@ -925,11 +925,11 @@ void kvm_load_host_xsave_state(struct kvm_vcpu *vcpu)
+>                 return;
 >
+>         if (static_cpu_has(X86_FEATURE_PKU) &&
+> -           (kvm_read_cr4_bits(vcpu, X86_CR4_PKE) ||
+> -            (vcpu->arch.xcr0 & XFEATURE_MASK_PKRU))) {
+> +           ((vcpu->arch.xcr0 & XFEATURE_MASK_PKRU) ||
+> +            kvm_read_cr4_bits(vcpu, X86_CR4_PKE))) {
+>                 vcpu->arch.pkru = rdpkru();
+>                 if (vcpu->arch.pkru != vcpu->arch.host_pkru)
+> -                       __write_pkru(vcpu->arch.host_pkru);
+> +                       __write_pkru(vcpu->arch.host_pkru, true);
+>         }
 
-Exactly, so it seems everything is good on your side :)
+Suppose the guest writes to PKRU and then, without exiting, sets PKE =
+0 and XCR0[PKRU] = 0.  (Or are the intercepts such that this can't
+happen except on SEV where maybe SEV magic makes the problem go away?)
 
-(The pending patch queue I mentioned is much larger and gets rid of the
- main packet scheduling sequence counter Qdisc::running, but I'm
- brushing it up, then sending it for an internal review round, first.
- There are already some workarounds in the RT tree for that one until
- the correct fix is merged mainline.)
-
-Kind regards,
-
---
-Ahmed S. Darwish
-Linutronix GmbH
+I admit I'm fairly mystified as to why KVM doesn't handle PKRU like
+the rest of guest XSTATE.
