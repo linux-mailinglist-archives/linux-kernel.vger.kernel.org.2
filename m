@@ -2,86 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 764753810B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 21:25:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B37703810DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 May 2021 21:29:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233088AbhENT0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 15:26:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34138 "EHLO
+        id S232882AbhENTat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 15:30:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233935AbhENTZw (ORCPT
+        with ESMTP id S231869AbhENTao (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 15:25:52 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C34DFC06138B
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 12:24:40 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id gv8-20020a17090b11c8b029015d47d8ecbbso347866pjb.3
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 12:24:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7zYWopn37Ev0Ztgo7qbckFoeWWV5RAzUDbw0Dfbjdlw=;
-        b=CMZSonsnXKB5rfp654jW6UBkcZJpQvr4Hl3h/Sqp9c5xOeKlo+X+kqqWm3C/Otq38b
-         Gby1KIQVxuvRvD6LivosEWOYnU+tAsjc0470WhZAINAdTPN3hksm4E8lMmzXHsMnhdIr
-         dMg9q2OAFM5nEax3IUS56gN67MKdcrw2ETr6U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7zYWopn37Ev0Ztgo7qbckFoeWWV5RAzUDbw0Dfbjdlw=;
-        b=G+/WCNnuLHuWqwCQFyqwsQzKmlx7IgacCag6ShbbSj3PVhX+6nIfUB2PqqGUXeopxC
-         2Gh0fv3TjGgXPurklR4VFSj1p6LnGERn4AoClqcRaOxMwFMEoSNPAnUypTApRx4Bz/5h
-         rLJ3+EL8R9hYkUMtfRXZJDcUnTLAVxD3Mv6FEmcTgqD33HPF2y7k3Rm86xEl0fuLmq87
-         9836V+ZPzkbRJoUSmKkIidTI/tV0mwl+T0VK2TV/RUJDN7lZf5TNBayup+GNz5FVJ3RT
-         0edaMmtg6i9BofQ3RlCsrKaODYhUenkTCHJOtk+GpT6RKUbTokPsI8jXCVukXalzjv0n
-         4x6g==
-X-Gm-Message-State: AOAM531Au7C7SbfJEDnrprvKQEJqhHKzcZRqr9LmibQyi2aVsg2HtdKn
-        RkIYr+050RcBhplKVYUO5bL1Bw==
-X-Google-Smtp-Source: ABdhPJxHMA/6v53f/nn/W7fZz/vDZdmjMu55VCA8wxeCxUw6+Ip7YnJ5TAlxokdAusW4aKY8IvIw/Q==
-X-Received: by 2002:a17:90a:1c02:: with SMTP id s2mr20301156pjs.172.1621020280425;
-        Fri, 14 May 2021 12:24:40 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id n11sm4983512pff.96.2021.05.14.12.24.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 12:24:39 -0700 (PDT)
-Date:   Fri, 14 May 2021 12:24:38 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     casey.schaufler@intel.com, jmorris@namei.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        linux-audit@redhat.com, john.johansen@canonical.com,
-        penguin-kernel@i-love.sakura.ne.jp, paul@paul-moore.com,
-        sds@tycho.nsa.gov, linux-kernel@vger.kernel.org,
-        Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org
-Subject: Re: [PATCH v26 17/25] LSM: Use lsmcontext in security_inode_getsecctx
-Message-ID: <202105141224.942DE93@keescook>
-References: <20210513200807.15910-1-casey@schaufler-ca.com>
- <20210513200807.15910-18-casey@schaufler-ca.com>
+        Fri, 14 May 2021 15:30:44 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D71BFC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 12:29:30 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1621020567;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BUCRh6+JO6hwPoznRg0DikeObEjzSgPqiFp6VBNC0BA=;
+        b=upcs4dh8Cfn0LxB0CTZjFaafR09fumaQIKcDs80pPzNcvy9sRYs+QeqSJjYbaIP1VclrR5
+        ao17N6mth3Saiua0gww57C/243IWyhYoH4/NYRI5vWIc86WFwSemNuQjSbZmuRWI47g5a2
+        DSLyAWHQwdl7C+vNAVRGABr4Nuf/W82ZqlxroJqxI/afArziPy++nUtR+8sulJRrkjEHUp
+        0vI8xGBE0RmLGDxjx0f3xd4xinATbA2ktpweKOSqrjsDi5hO4XEiMOumk8OxGnZqsJ8JI9
+        piDaNku04g7njiGaDAkjX0H8sI5Zh5Rit/nem/UXW1MPeiq7X/QJQnSRKIsZxA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1621020567;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BUCRh6+JO6hwPoznRg0DikeObEjzSgPqiFp6VBNC0BA=;
+        b=hrOKMEb1Sx2wT7jVWxmi4G8D8GWa3B/SNyLUYI++NCjn36kmbiAwWI2E1jYa3B0646MvkE
+        KtgYa6Iv/F/itEDQ==
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Lorenzo Colitti <lorenzo@google.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Maciej =?utf-8?Q?=C5=BBenczykowski?= <zenczykowski@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        lkml <linux-kernel@vger.kernel.org>,
+        mikael.beckius@windriver.com,
+        Maciej =?utf-8?Q?=C5=BBenczykowski?= <maze@google.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH] hrtimer: Avoid double reprogramming in __hrtimer_start_range_ns()
+In-Reply-To: <YIaxL5zcpjbfR1gp@hirez.programming.kicks-ass.net>
+References: <CAHo-OowM2jRNuvyDf-T8rzr6ZgUztXqY7m_JhuFvQ+uB8N3ZrQ@mail.gmail.com> <YHXRWoVIYLL4rYG9@kroah.com> <CAKD1Yr1DnDTELUX2DQtPDtAoDMqCz6dV+TZbBuC1CFm32O8MrA@mail.gmail.com> <87r1jbv6jc.ffs@nanos.tec.linutronix.de> <CAKD1Yr1o=zN5K9PaB3wag5xOS2oY6AzEsV6dmL7pnTysK_GOhA@mail.gmail.com> <87eef5qbrx.ffs@nanos.tec.linutronix.de> <87v989topu.ffs@nanos.tec.linutronix.de> <YIaKnuZDfffmmAdM@hirez.programming.kicks-ass.net> <YIaxL5zcpjbfR1gp@hirez.programming.kicks-ass.net>
+Date:   Fri, 14 May 2021 21:29:27 +0200
+Message-ID: <875yzl3yi0.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210513200807.15910-18-casey@schaufler-ca.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 01:07:59PM -0700, Casey Schaufler wrote:
-> Change the security_inode_getsecctx() interface to fill
-> a lsmcontext structure instead of data and length pointers.
-> This provides the information about which LSM created the
-> context so that security_release_secctx() can use the
-> correct hook.
-> 
-> Acked-by: Stephen Smalley <sds@tycho.nsa.gov>
-> Acked-by: Paul Moore <paul@paul-moore.com>
-> Acked-by: Chuck Lever <chuck.lever@oracle.com>
-> Reviewed-by: John Johansen <john.johansen@canonical.com>
-> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+On Mon, Apr 26 2021 at 14:25, Peter Zijlstra wrote:
+> On Mon, Apr 26, 2021 at 11:40:46AM +0200, Peter Zijlstra wrote:
+>> There is an unfortunate amount of duplication between
+>> hrtimer_force_reprogram() and hrtimer_reprogram(). The obvious cleanups
+>> don't work however :/ Still, does that in_hrtirq optimization make sense
+>> to have in force_reprogram ?
 
-Seem good to me.
+No. It need's to be in hrtimer_programm().
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
--- 
-Kees Cook
