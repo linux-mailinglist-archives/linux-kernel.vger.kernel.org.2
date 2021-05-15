@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B4438161C
+	by mail.lfdr.de (Postfix) with ESMTP id C1C8938161D
 	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 07:26:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234326AbhEOF1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 01:27:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53002 "EHLO
+        id S234352AbhEOF1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 01:27:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234090AbhEOF1g (ORCPT
+        with ESMTP id S234131AbhEOF1i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 01:27:36 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73B53C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 22:26:23 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id x2-20020a0cda020000b02901edb4c412fdso1019407qvj.11
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 22:26:23 -0700 (PDT)
+        Sat, 15 May 2021 01:27:38 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FB7CC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 22:26:25 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id d89-20020a25a3620000b02904dc8d0450c6so1936395ybi.2
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 22:26:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=ZXfzyV1SAC8WulEy27PZeafZr1Rn8+SYm/SVQ8IYhss=;
-        b=AZrkRH5ABB4TrDVgX5vEVQExMTnuqhFncS+qDgwPHfMvjgVaNrnhj2mx1agIXgBQJ8
-         5ohP/e9R8PnKqIszhExOALNlqZFAjCdvPeqtfChAl5+n/enMDzJkxa2QO523VmJiuLiB
-         OV52619uBflMz2njmKq4uBAAcT798NqmkhZRvF0zfpCwBLOYusOkMwFH53yGoCatHJow
-         5njYeX/IX+qVr0ReOquvn8SR3N+0SX18IbPPC4c/Qao4JVrjalNB1bTtiSoLww+GwI39
-         wi/nbw+AfGqZSqHbIzn1u7dEQViGjEOSfNkUNApsd2DE25sWMQRdmWrRXGuRqXyZ84Gk
-         QTfQ==
+        bh=9DF04rOCeHkRBnGvVrvy5486e1pnEBJx9358rosv750=;
+        b=U1qTy4ublZpoVBevSo9WkGfX5ri6UbgL8LYDs4apASEjNn77OhCF3EM2Or3A8t5pJh
+         Y3/m3AdHvbXxt1rhLzU2wP68PZ5yH/K+3dbqArMZwixNQ2ARlSnKy1GEG1A3wM+e9ke3
+         qKo4N6szR+2xuGsVRC2zs5pDiGYIf8OvosdHrAswPD4+YEWhNU6eJUGtoUscq4nxsSbd
+         SsTZjFUVQ6vp4jP2pxWWbpMAhGl3r6b9f/6c7Y6A0f4Bk713qff03eSe9R64QAgPfPWJ
+         zqsLMlk1qCZAUZ2KnnRF8Aw5B/SS17zpSMjbNj5R4mSWuhIAVaQFQy8D2q3+EfnQSR29
+         qbdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=ZXfzyV1SAC8WulEy27PZeafZr1Rn8+SYm/SVQ8IYhss=;
-        b=DEvg3fv0bvujC13Rd0dLb4ksn2UiIEX63OCL2UwB1kyzo7Nahpjl71XCQriU2M+tk5
-         c4rggBXX6uBv2LMawU4b/j231Xpr8gR8wrCl2KjoTM+gJ2h38wVGmibHliNLuyy7mYHH
-         4GtEF16EnXlvulB3tpPkQM+BiCGGs9QQtxmoX4Kzpz4kIJX1P07AyW6LhyPo83XjMNcV
-         L2lyhJA8QOWSnekNsgOwYEqbYzOkJmU5BrV8CtxsFtGlAmits9UPfB59zTYp0aZgZa8g
-         1Y7qKWaQK1C3Av8qZ7h9RI+vWCvwj7KnOM8CnKaytMS8Z/OZgqAC/t3GkLp5VxQ658Fe
-         x+Kg==
-X-Gm-Message-State: AOAM530uwtj2+37XelQIpctkucNducRBwbH6mfMLXCxBIPNxIiAjK3Xe
-        r/jVfZgCvH20YzymegRQUlBy5CQvMJE=
-X-Google-Smtp-Source: ABdhPJz7doI6UsuQXaaJ0j5Oyde6ecjCblhaRZC0Z9pHySG1LNMP9E1cE/7fJHC1JYxDZId9S30KElmDarE=
+        bh=9DF04rOCeHkRBnGvVrvy5486e1pnEBJx9358rosv750=;
+        b=J1CR2fvodyfKo+GAYpUUJW0+yk92bBsPw/TWlzcSYddfF4gZKANvS/je/R0o7LylQz
+         EYPp3cbsJigCYZr36hjqogka6QMWDU4hVGPw7MSRZ5lxOXYJFXiWxcEIrgBXMVIGsZgp
+         5zypO85cHzj1PJVts/c6AolnN22cGztRcZX3pr5sOGxdKQJVYODnYlfoj+YG9Zh4XhwV
+         xj3Iz35AeA32NWjWUi5bl+f1w3ToW+50PNSxaWGCjSEL683hgAZVKXJ8xwwfMCkJ1Jek
+         cB1m/RcyO6rOH71fxH4SmAiu/cTE9v1CUeD3433J03B0bpMpUL65AOOx/qFV3Pdyh3OQ
+         lVww==
+X-Gm-Message-State: AOAM5312cDU3Yv8n3Qre6CPLPvL4Ci4vukRzL48mPwBFqxHXJVfEm7uH
+        SU0QHCpfd2MenNN2WjslQIQKxh8HUYo=
+X-Google-Smtp-Source: ABdhPJz6iwDbt1K67xL/c2DC1KuisaHDuoZlC2HrbvEtdEY001TLs8SorvVYZV1H0BIU2eEo1t9Gpa3+BHo=
 X-Received: from badhri.mtv.corp.google.com ([2620:15c:211:201:6bd1:251e:e226:7071])
- (user=badhri job=sendgmr) by 2002:ad4:4523:: with SMTP id l3mr38600356qvu.45.1621056382423;
- Fri, 14 May 2021 22:26:22 -0700 (PDT)
-Date:   Fri, 14 May 2021 22:26:12 -0700
+ (user=badhri job=sendgmr) by 2002:a25:414f:: with SMTP id o76mr66454577yba.383.1621056384861;
+ Fri, 14 May 2021 22:26:24 -0700 (PDT)
+Date:   Fri, 14 May 2021 22:26:13 -0700
 In-Reply-To: <20210515052613.3261340-1-badhri@google.com>
-Message-Id: <20210515052613.3261340-3-badhri@google.com>
+Message-Id: <20210515052613.3261340-4-badhri@google.com>
 Mime-Version: 1.0
 References: <20210515052613.3261340-1-badhri@google.com>
 X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
-Subject: [PATCH v1 3/4] usb: typec: tcpm: Move TCPC to APPLY_RC state during PR_SWAP
+Subject: [PATCH v1 4/4] usb: typec: tcpci: Implement callback for apply_rc
 From:   Badhri Jagan Sridharan <badhri@google.com>
 To:     Guenter Roeck <linux@roeck-us.net>,
         Heikki Krogerus <heikki.krogerus@linux.intel.com>,
@@ -64,91 +64,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When vbus auto discharge is enabled, TCPCI based TCPC transitions
-into Attached.SNK/Attached.SRC state. During PR_SWAP, TCPCI based
-TCPC would disconnect when partner changes power roles. TCPC has
-to be moved APPLY RC state during PR_SWAP. This is done by
-ROLE_CONTROL.CC1 != ROLE_CONTROL.CC2 and
-POWER_CONTROL.AutodischargeDisconnect is 0. Once the swap sequence
-is done, AutoDischargeDisconnect is re-enabled.
+APPLY RC is defined as ROLE_CONTROL.CC1 != ROLE_CONTROL.CC2 and
+POWER_CONTROL.AutodischargeDisconnect is 0. When ROLE_CONTROL.CC1 ==
+ROLE_CONTROL.CC2, set the other CC to OPEN.
 
 Fixes: f321a02caebd ("usb: typec: tcpm: Implement enabling Auto Discharge disconnect support")
 Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
 ---
- drivers/usb/typec/tcpm/tcpm.c | 16 ++++++++++++++++
- include/linux/usb/tcpm.h      |  4 ++++
- 2 files changed, 20 insertions(+)
+ drivers/usb/typec/tcpm/tcpci.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-index b475d9b9d38d..5bac4978efb3 100644
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -786,6 +786,19 @@ static int tcpm_enable_auto_vbus_discharge(struct tcpm_port *port, bool enable)
- 	return ret;
+diff --git a/drivers/usb/typec/tcpm/tcpci.c b/drivers/usb/typec/tcpm/tcpci.c
+index 25b480752266..34b5095cc84f 100644
+--- a/drivers/usb/typec/tcpm/tcpci.c
++++ b/drivers/usb/typec/tcpm/tcpci.c
+@@ -115,6 +115,32 @@ static int tcpci_set_cc(struct tcpc_dev *tcpc, enum typec_cc_status cc)
+ 	return 0;
  }
  
-+static void tcpm_apply_rc(struct tcpm_port *port)
++int tcpci_apply_rc(struct tcpc_dev *tcpc, enum typec_cc_status cc, enum typec_cc_polarity polarity)
 +{
++	struct tcpci *tcpci = tcpc_to_tcpci(tcpc);
++	unsigned int reg;
++	int ret;
++
++	ret = regmap_read(tcpci->regmap, TCPC_ROLE_CTRL, &reg);
++	if (ret < 0)
++		return ret;
++
 +	/*
-+	 * TCPCI: Move to APPLY_RC state to prevent disconnect during PR_SWAP
-+	 * when Vbus auto discharge on disconnect is enabled.
++	 * APPLY_RC state is when ROLE_CONTROL.CC1 != ROLE_CONTROL.CC2 and vbus autodischarge on
++	 * disconnect is disabled. Bail out when ROLE_CONTROL.CC1 != ROLE_CONTROL.CC2.
 +	 */
-+	if (port->tcpc->enable_auto_vbus_discharge) {
-+		tcpm_log(port, "Apply_RC");
-+		port->tcpc->apply_rc(port->tcpc, port->cc_req, port->polarity);
-+		tcpm_enable_auto_vbus_discharge(port, false);
-+	}
++	if (((reg & (TCPC_ROLE_CTRL_CC2_MASK << TCPC_ROLE_CTRL_CC2_SHIFT)) >>
++	     TCPC_ROLE_CTRL_CC2_SHIFT) !=
++	    ((reg & (TCPC_ROLE_CTRL_CC1_MASK << TCPC_ROLE_CTRL_CC1_SHIFT)) >>
++	     TCPC_ROLE_CTRL_CC1_SHIFT))
++		return 0;
++
++	return regmap_update_bits(tcpci->regmap, TCPC_ROLE_CTRL, polarity == TYPEC_POLARITY_CC1 ?
++				  TCPC_ROLE_CTRL_CC2_MASK << TCPC_ROLE_CTRL_CC2_SHIFT :
++				  TCPC_ROLE_CTRL_CC1_MASK << TCPC_ROLE_CTRL_CC1_SHIFT,
++				  TCPC_ROLE_CTRL_CC_OPEN);
 +}
 +
- /*
-  * Determine RP value to set based on maximum current supported
-  * by a port if configured as source.
-@@ -4428,6 +4441,7 @@ static void run_state_machine(struct tcpm_port *port)
- 		tcpm_set_state(port, ready_state(port), 0);
- 		break;
- 	case PR_SWAP_START:
-+		tcpm_apply_rc(port);
- 		if (port->pwr_role == TYPEC_SOURCE)
- 			tcpm_set_state(port, PR_SWAP_SRC_SNK_TRANSITION_OFF,
- 				       PD_T_SRC_TRANSITION);
-@@ -4467,6 +4481,7 @@ static void run_state_machine(struct tcpm_port *port)
- 		tcpm_set_state(port, ERROR_RECOVERY, PD_T_PS_SOURCE_ON_PRS);
- 		break;
- 	case PR_SWAP_SRC_SNK_SINK_ON:
-+		tcpm_enable_auto_vbus_discharge(port, true);
- 		/* Set the vbus disconnect threshold for implicit contract */
- 		tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_USB, false, VSAFE5V);
- 		tcpm_set_state(port, SNK_STARTUP, 0);
-@@ -4483,6 +4498,7 @@ static void run_state_machine(struct tcpm_port *port)
- 			       PD_T_PS_SOURCE_OFF);
- 		break;
- 	case PR_SWAP_SNK_SRC_SOURCE_ON:
-+		tcpm_enable_auto_vbus_discharge(port, true);
- 		tcpm_set_cc(port, tcpm_rp_cc(port));
- 		tcpm_set_vbus(port, true);
- 		/*
-diff --git a/include/linux/usb/tcpm.h b/include/linux/usb/tcpm.h
-index 42fcfbe10590..bffc8d3e14ad 100644
---- a/include/linux/usb/tcpm.h
-+++ b/include/linux/usb/tcpm.h
-@@ -66,6 +66,8 @@ enum tcpm_transmit_type {
-  *		For example, some tcpcs may include BC1.2 charger detection
-  *		and use that in this case.
-  * @set_cc:	Called to set value of CC pins
-+ * @apply_rc:	Optional; Needed to move TCPCI based chipset to APPLY_RC state
-+ *		as stated by the TCPCI specification.
-  * @get_cc:	Called to read current CC pin values
-  * @set_polarity:
-  *		Called to set polarity
-@@ -120,6 +122,8 @@ struct tcpc_dev {
- 	int (*get_vbus)(struct tcpc_dev *dev);
- 	int (*get_current_limit)(struct tcpc_dev *dev);
- 	int (*set_cc)(struct tcpc_dev *dev, enum typec_cc_status cc);
-+	int (*apply_rc)(struct tcpc_dev *dev, enum typec_cc_status cc,
-+			enum typec_cc_polarity polarity);
- 	int (*get_cc)(struct tcpc_dev *dev, enum typec_cc_status *cc1,
- 		      enum typec_cc_status *cc2);
- 	int (*set_polarity)(struct tcpc_dev *dev,
+ static int tcpci_start_toggling(struct tcpc_dev *tcpc,
+ 				enum typec_port_type port_type,
+ 				enum typec_cc_status cc)
+@@ -728,6 +754,7 @@ struct tcpci *tcpci_register_port(struct device *dev, struct tcpci_data *data)
+ 	tcpci->tcpc.get_vbus = tcpci_get_vbus;
+ 	tcpci->tcpc.set_vbus = tcpci_set_vbus;
+ 	tcpci->tcpc.set_cc = tcpci_set_cc;
++	tcpci->tcpc.apply_rc = tcpci_apply_rc;
+ 	tcpci->tcpc.get_cc = tcpci_get_cc;
+ 	tcpci->tcpc.set_polarity = tcpci_set_polarity;
+ 	tcpci->tcpc.set_vconn = tcpci_set_vconn;
 -- 
 2.31.1.751.gd2f1c929bd-goog
 
