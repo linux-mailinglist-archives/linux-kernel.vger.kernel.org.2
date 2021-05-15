@@ -2,75 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5739B3818AE
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 14:13:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 684813818B2
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 14:17:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231549AbhEOMOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 08:14:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48996 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230157AbhEOMOV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 08:14:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B89F613CD;
-        Sat, 15 May 2021 12:13:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621080788;
-        bh=U/JFt12QT7Iu0Rh/16tmtuAXXMhHHtt0jXL8aPw3sWI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eRBSMcIFy4RoiVCAZYbCY+eq2rhR8lp2tth/AZXWJOwatlwE922GRMdyz6Q/RlCsK
-         KHd+xirP7nCIRXbz+T6eaAxEKse1U45oR1JI1EZ8/sLk5CZFC3rmRIZxubOncES5Km
-         mThntS6Qw5g/P2b7cuCGwrIfHDj0ddTRoTCrUU1s=
-Date:   Sat, 15 May 2021 14:13:06 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Zhihao Cheng <chengzhihao1@huawei.com>
-Cc:     mathias.nyman@intel.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        yukuai3@huawei.com
-Subject: Re: [PATCH v2] usb: xhci: Check the return value from
- sg_pcopy_from_buffer
-Message-ID: <YJ+60n/xPCqH4BcI@kroah.com>
-References: <20210515115715.314138-1-chengzhihao1@huawei.com>
+        id S231791AbhEOMSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 08:18:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230144AbhEOMSj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 May 2021 08:18:39 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A793CC061573;
+        Sat, 15 May 2021 05:17:25 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id 1so1613288qtb.0;
+        Sat, 15 May 2021 05:17:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DPoGlMS/oCbgWHNPbUx7scOgPtN4DdBoyWnSloUqTQw=;
+        b=Vo8sGSPnG2sneOjS72HFiXr0WgvO+KnNFs8J1kFYeCimMYwaIg9sP4LSLRBogdeEBJ
+         /2bfN7emebEMroR3MGjZl+5okEEnASuaMmWbo25dYwprM3BfddVBEPbP0B0LHaoutj/i
+         xsp6Ap8A1mwB+5FXzav5/5IAcRsq4WosFmZ79DJyrcjayO2a5Eg2BC8CHxD4rcR/Qxpm
+         m9cDPDxYjKxN2wBT0rAiIPOnYmYMPAOqqeMfbq1WLqY5wBIoWKMaN8711LcOqo8CZ+Ju
+         0y+yrQwrRwB+C+j7BNJd4EZnVsHhbypMPdzNkBea2944IddEhue3BgeohHzMBFbXmA4v
+         k12g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DPoGlMS/oCbgWHNPbUx7scOgPtN4DdBoyWnSloUqTQw=;
+        b=JJQB/F93DS3vHsaLH4nPOPfCkVP5lGpPHFxeM5EIwsAI/Kdu/pUe+zqkpAoO2voB4O
+         0igEA8PJBCdgoOdFQwE32qOJBBr141PvPr1hwSHhEFn2h95GS24pl46sFa1y7tr97APR
+         amLVA1oZNVfqJT8AStfpR11Bb4E2S02fKWASAWyU73KZivA+RO5wbyd16D3UoLXb845+
+         HyxDWg9O3Rs/rftAvxgS3Nxyxz35jmAsy6jvK1K8huoS5UA+iuCJ4vvUnZKTq12C0DKH
+         VCqxSdHccFkWTe88vPRlDQ28MqMDQ4qeOQgxyRYRLmv5I49RXAxa9o+fthnvxpWe8wrG
+         rhTQ==
+X-Gm-Message-State: AOAM531IzYAIomW/sGTY00KhdJLoOEstoNpoHC5yrvZa+lBT3aIqd1L/
+        3xE+mERJlbb5fm/7PmeEoTU=
+X-Google-Smtp-Source: ABdhPJwCy7Hg0PI8WYcO8+4B7gcsS26JbgGagbutHc/rU9q5/hKRp9x0eGrzmlAbISIBe3ODazf2rg==
+X-Received: by 2002:ac8:5d16:: with SMTP id f22mr24989947qtx.84.1621081044752;
+        Sat, 15 May 2021 05:17:24 -0700 (PDT)
+Received: from errol.ini.cmu.edu (pool-108-39-255-32.pitbpa.fios.verizon.net. [108.39.255.32])
+        by smtp.gmail.com with ESMTPSA id d16sm6570349qtw.23.2021.05.15.05.17.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 15 May 2021 05:17:24 -0700 (PDT)
+Date:   Sat, 15 May 2021 08:17:17 -0400
+From:   "Gabriel L. Somlo" <gsomlo@gmail.com>
+To:     Stafford Horne <shorne@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Florent Kermarrec <florent@enjoy-digital.fr>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Karol Gugala <kgugala@antmicro.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-doc@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: Re: [PATCH] serial/liteuart; Add support for earlycon
+Message-ID: <YJ+7zTmMOxlCbaRf@errol.ini.cmu.edu>
+References: <20210515084519.167343-1-shorne@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210515115715.314138-1-chengzhihao1@huawei.com>
+In-Reply-To: <20210515084519.167343-1-shorne@gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 15, 2021 at 07:57:15PM +0800, Zhihao Cheng wrote:
-> Fix the following gcc warning:
+On Sat, May 15, 2021 at 05:45:18PM +0900, Stafford Horne wrote:
+> Most litex boards using RISC-V soft cores us the sbi earlycon, however
+> this is not available for non RISC-V litex SoC.  This patch enables
+> earlycon for liteuart which is available on all Litex SoC's making
+> support for earycon debugging more widely available.
 > 
-> drivers/usb/host/xhci.c:1349:15: warning: variable ‘len’ set but not
-> used [-Wunused-but-set-variable ]
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+> Signed-off-by: Stafford Horne <shorne@gmail.com>
+> Cc: Florent Kermarrec <florent@enjoy-digital.fr>
+> Cc: Mateusz Holenko <mholenko@antmicro.com>
+> Cc: Joel Stanley <joel@jms.id.au>
+> Cc: Gabriel L. Somlo <gsomlo@gmail.com>
 > ---
->  drivers/usb/host/xhci.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+>  .../admin-guide/kernel-parameters.txt         |  5 +++
+>  drivers/tty/serial/Kconfig                    |  1 +
+>  drivers/tty/serial/liteuart.c                 | 31 +++++++++++++++++++
+>  3 files changed, 37 insertions(+)
 > 
-> diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-> index ca9385d22f68..08290698b939 100644
-> --- a/drivers/usb/host/xhci.c
-> +++ b/drivers/usb/host/xhci.c
-> @@ -1361,11 +1361,15 @@ static void xhci_unmap_temp_buf(struct usb_hcd *hcd, struct urb *urb)
->  				 urb->transfer_buffer_length,
->  				 dir);
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 04545725f187..2d4a43af8de2 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -1084,6 +1084,11 @@
+>  			the driver will use only 32-bit accessors to read/write
+>  			the device registers.
 >  
-> -	if (usb_urb_dir_in(urb))
-> +	if (usb_urb_dir_in(urb)) {
->  		len = sg_pcopy_from_buffer(urb->sg, urb->num_sgs,
->  					   urb->transfer_buffer,
->  					   buf_len,
->  					   0);
-> +		if (len != buf_len)
-> +			xhci_warn(hcd_to_xhci(hcd), "WARN Wrong transfer buffer read length: %u != %u\n",
-> +				  len, buf_len);
+> +		liteuart,<addr>
+> +			Start an early console on a litex serial port at the
+> +			specified address. The serial port must already be
+> +			setup and configured. Options are not yet supported.
+> +
+>  		meson,<addr>
+>  			Start an early, polled-mode console on a meson serial
+>  			port at the specified address. The serial port must
+> diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
+> index 0c4cd4a348f4..9ceffe6ab6fd 100644
+> --- a/drivers/tty/serial/Kconfig
+> +++ b/drivers/tty/serial/Kconfig
+> @@ -1531,6 +1531,7 @@ config SERIAL_LITEUART
+>  	depends on OF || COMPILE_TEST
+>  	depends on LITEX
+>  	select SERIAL_CORE
+> +	select SERIAL_EARLYCON
+>  	help
+>  	  This driver is for the FPGA-based LiteUART serial controller from LiteX
+>  	  SoC builder.
+> diff --git a/drivers/tty/serial/liteuart.c b/drivers/tty/serial/liteuart.c
+> index 64842f3539e1..38c472487e68 100644
+> --- a/drivers/tty/serial/liteuart.c
+> +++ b/drivers/tty/serial/liteuart.c
+> @@ -372,6 +372,37 @@ static int __init liteuart_console_init(void)
+>  console_initcall(liteuart_console_init);
+>  #endif /* CONFIG_SERIAL_LITEUART_CONSOLE */
+>  
+> +#ifdef CONFIG_SERIAL_EARLYCON
+> +static void early_liteuart_putc(struct uart_port *port, int c)
+> +{
+> +	while (litex_read8(port->membase + OFF_TXFULL))
+> +		cpu_relax();
+> +
+> +	litex_write8(port->membase + OFF_RXTX, c);
+> +}
+> +
+> +static void early_liteuart_write(struct console *console, const char *s,
+> +				    unsigned int count)
+> +{
+> +	struct earlycon_device *device = console->data;
+> +	struct uart_port *port = &device->port;
+> +
+> +	uart_console_write(port, s, count, early_liteuart_putc);
+> +}
+> +
+> +static int __init early_liteuart_setup(struct earlycon_device *device,
+> +				       const char *options)
+> +{
+> +	if (!device->port.membase)
+> +		return -ENODEV;
+> +
+> +	device->con->write = early_liteuart_write;
+> +	return 0;
+> +}
+> +
+> +OF_EARLYCON_DECLARE(liteuart, "litex,liteuart", early_liteuart_setup);
+> +#endif /* CONFIG_SERIAL_EARLYCON */
+> +
+>  static int __init liteuart_init(void)
+>  {
+>  	int res;
+> -- 
+> 2.31.1
+ 
+FWIW:
+Reviewed-and-tested-by: Gabriel Somlo <gsomlo@gmail.com>
 
-So you complain to the user and then don't do anything else?  that feels
-very wrong, who is going to address the user complaints that this change
-will cause?
-
-greg k-h
+Thanks,
+--Gabriel
