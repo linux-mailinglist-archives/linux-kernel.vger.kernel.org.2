@@ -2,116 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4832381B2C
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 23:19:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3199381B2F
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 23:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235093AbhEOVTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 17:19:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25808 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229938AbhEOVTu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 17:19:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621113516;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zBUSTjaOt7lKl1TV4Dqo1lACa/ZYYOqm/0r3o0CUJzM=;
-        b=X8qbm5nTj7ZuidzVXfVfFClRF/rYRMVVm0Z429io3a40ANtblXa2n9w6b3vdqwkc/EHr7y
-        58IQ2o5swL5vO4YK2Ckvfy4yIlozyuVJIPnenWPvGLNV170pNekzgJ9vKk18fyl2Jeq72I
-        jMZP7t2OWm8GFPpdy+pxogGCnXSVQWM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-531-VfUQzT0dNkq5S1jpH395Bw-1; Sat, 15 May 2021 17:18:32 -0400
-X-MC-Unique: VfUQzT0dNkq5S1jpH395Bw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A3E725F9F1;
-        Sat, 15 May 2021 21:18:30 +0000 (UTC)
-Received: from krava (unknown [10.40.192.22])
-        by smtp.corp.redhat.com (Postfix) with SMTP id B13C519C79;
-        Sat, 15 May 2021 21:18:27 +0000 (UTC)
-Date:   Sat, 15 May 2021 23:18:26 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Jin Yao <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH v4 0/2] perf header: Support HYBRID_TOPOLOGY and
- HYBRID_CPU_PMU_CAPS
-Message-ID: <YKA6oqfP0niinZkD@krava>
-References: <20210514122948.9472-1-yao.jin@linux.intel.com>
+        id S235108AbhEOV0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 17:26:01 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45974 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229938AbhEOVZ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 May 2021 17:25:58 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 66417AC36;
+        Sat, 15 May 2021 21:24:44 +0000 (UTC)
+Subject: Re: [PATCH v3] mm, slub: change run-time assertion in kmalloc_index()
+ to compile-time
+To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>, akpm@linux-foundation.org,
+        iamjoonsoo.kim@lge.com, rientjes@google.com, penberg@kernel.org,
+        cl@linux.com
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        nathan@kernel.org, naresh.kamboju@linaro.org,
+        clang-built-linux@googlegroups.com, linux-next@vger.kernel.org,
+        ndesaulniers@google.com, lkft-triage@lists.linaro.org,
+        sfr@canb.auug.org.au, arnd@arndb.de, Marco Elver <elver@google.com>
+References: <20210511173448.GA54466@hyeyoo> <20210515210950.GA52841@hyeyoo>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <41c65455-a35b-3ad3-54f9-49ca7105bfa9@suse.cz>
+Date:   Sat, 15 May 2021 23:24:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210514122948.9472-1-yao.jin@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <20210515210950.GA52841@hyeyoo>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 08:29:46PM +0800, Jin Yao wrote:
-> AlderLake uses a hybrid architecture utilizing Golden Cove cores
-> (core cpu) and Gracemont cores (atom cpu). It would be useful to let user
-> know the hybrid topology, the HYBRID_TOPOLOGY feature in header indicates
-> which cpus are core cpus, and which cpus are atom cpus.
-> 
-> On hybrid platform, it may have several cpu pmus, such as, "cpu_core" and
-> "cpu_atom". The HYBRID_CPU_PMU_CAPS feature in perf header is created to
-> support multiple cpu pmus.
-> 
-> v4:
-> ---
-> - Only minor update in '[PATCH v4 2/2] perf header: Support HYBRID_CPU_PMU_CAPS feature'.
->   1. Directly return process_per_cpu_pmu_caps() in process_cpu_pmu_caps.
->      Remove the variable 'ret'.
->   2. Set 'ret = -1' if (!n->pmu_name) in process_hybrid_cpu_pmu_caps().
+On 5/15/21 11:09 PM, Hyeonggon Yoo wrote:
+> Hello Vlastimil, recently kbuild-all test bot reported compile error on
+> clang 10.0.1, with defconfig.
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+Hm yes, catching some compiler bug was something that was noted to be
+possible to happen.
 
-thanks,
-jirka
+> Nathan Chancellor wrote:
+>> I think this happens because arch_prepare_optimized_kprobe() calls kzalloc()
+>> with a size of MAX_OPTINSN_SIZE, which is
+>>
+>> #define MAX_OPTINSN_SIZE                                \
+>>       (((unsigned long)optprobe_template_end -        \
+>>          (unsigned long)optprobe_template_entry) +     \
+>>         MAX_OPTIMIZED_LENGTH + JMP32_INSN_SIZE)
+> 
+>> and the optprobe_template_{end,entry} are not evaluated as constants.
+>>
+>> I am not sure what the solution is. There seem to be a growing list of issues
+>> with LLVM 10 that were fixed in LLVM 11, which might necessitate requiring
+>> LLVM 11 and newer to build the kernel, given this affects a defconfig.
+>> Cheers,
+>> Nathan
+> 
+> 
+> I think it's because kmalloc compiles successfully when size is constant,
+> and kmalloc_index isn't. so I think compiler seems to be confused.
+> 
+> currently if size is non-constant, kmalloc calls dummy function __kmalloc,
+> which always returns NULL.
 
-> 
-> v3:
-> ---
-> - For "[PATCH v3 1/2] perf header: Support HYBRID_TOPOLOGY feature",
->   update HEADER_HYBRID_TOPOLOGY format in perf.data-file-format.txt.
-> 
-> - For "[PATCH v3 2/2] perf header: Support HYBRID_CPU_PMU_CAPS feature",
->   Don't extend the original CPU_PMU_CAPS to support hybrid cpu pmus.
->   Instead, create a new feature 'HYBRID_CPU_PMU_CAPS' in header.
-> 
-> v2:
-> ---
-> - In "perf header: Support HYBRID_TOPOLOGY feature", don't use the n->map
->   to print the cpu list, just use n->cpus.
-> 
-> - Separate hybrid CPU_PMU_CAPS support into two patches:
->   perf header: Write hybrid CPU_PMU_CAPS
->   perf header: Process hybrid CPU_PMU_CAPS
-> 
-> - Add some words to perf.data-file-format.txt for HYBRID_TOPOLOGY and
->   hybrid CPU_PMU_CAPS.
-> 
-> Jin Yao (2):
->   perf header: Support HYBRID_TOPOLOGY feature
->   perf header: Support HYBRID_CPU_PMU_CAPS feature
-> 
->  .../Documentation/perf.data-file-format.txt   |  33 +++
->  tools/perf/util/cputopo.c                     |  80 ++++++
->  tools/perf/util/cputopo.h                     |  13 +
->  tools/perf/util/env.c                         |  12 +
->  tools/perf/util/env.h                         |  16 ++
->  tools/perf/util/header.c                      | 249 ++++++++++++++++--
->  tools/perf/util/header.h                      |   2 +
->  tools/perf/util/pmu-hybrid.h                  |  11 +
->  8 files changed, 397 insertions(+), 19 deletions(-)
-> 
-> -- 
-> 2.17.1
+That's a misunderstanding. __kmalloc() is not a dummy function, you
+probably found only the header declaration.
+
+> so what about changing kmalloc to do compile-time assertion too, and track
+> all callers that are calling kmalloc with non-constant argument.
+
+kmalloc() is expected to be called with both constant and non-constant
+size. __builtin_constant_p() is used to determine which implementation
+to use. One based on kmalloc_index(), other on __kmalloc().
+
+It appears clang 10.0.1 is mistakenly evaluating __builtin_constant_p()
+as true. Probably something to do with LTO, because MAX_OPTINSN_SIZE
+seems it could be a "link-time constant".
+
+Maybe we could extend Marco Elver's followup patch that uses
+BUILD_BUG_ON vs BUG() depending on size_is_constant parameter. It could
+use BUG() also if the compiler is LLVM < 11 or something. What would be
+the proper code for this condition?
+
+> How do you think? If you think it is the solution, I'll do that work.
 > 
 
