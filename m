@@ -2,65 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A55F1381993
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 17:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C2E3381997
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 17:37:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232784AbhEOPfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 11:35:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232479AbhEOPe6 (ORCPT
+        id S232810AbhEOPiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 11:38:12 -0400
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:37731 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232773AbhEOPiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 11:34:58 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 695B3C061573
-        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 08:33:43 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id df21so1873344edb.3
-        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 08:33:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=aQBg6T7d9Y0+Xn06ivGBtdjETmzJrfo4DD7Uy3V5ikU=;
-        b=DRbNvSfKgW7wWtguAL+RxF7O56fKmVFhWoka97yCLnnKqAFTdsPnQQpp0SkDq0lHSt
-         legr+bRzSV8Uab51GrQrScomILgWMDQ4VUOoBSxngt4JR2QUKJIdJJvzFz9cenQvdCCX
-         OYsFtNsrAB29fXqkJ6oFND6+seB06/wLir3rXG5VX58upevML/D/uRuxz31Qv1ugSEVw
-         NOhedLuA2m1Q2fom5jp5FYJNGzEzvmmzsH0kOpct+Xt0gSELZ8urO7N1WG9pHzrFfUSw
-         v/HFfosdmc6MnYRsWzGyBY9S/gu3yg53BpNE88/C/s7Ibu84aMZLLbnKGcek1Zwu2zCz
-         IG8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=aQBg6T7d9Y0+Xn06ivGBtdjETmzJrfo4DD7Uy3V5ikU=;
-        b=sMNFhZYrPE2ejSwIa0uGtQZmHe7K5eGVde5t8H5ytLJacfRuzqAAypsbbK+y2NKpwM
-         ef5ATj8JYJWuiDf6F6k58v+UJ3zRVxGgUzdkAtoc6nD7OgmqhkMUCAXyWgKJ9XlQYO+s
-         gs+LfAKP2mw3SlsBNZR3GPRhH7t2064Z+KYUBIjETfri4BFs9bjg4eiOmMC0dZk1fO7c
-         GuiPydJ61PlaiY1CEMBxudk3Fek9XhOmwAIrLCro5CNl/TKOpnNHAch82I80xeoSETsh
-         wyssD4pkyKQLKzwyX2oIhMgJ3D3LpG7PJgLb3z/3qK5mpLrcfXh2Pil2g5TfA+LYc5eW
-         X5gA==
-X-Gm-Message-State: AOAM530Lcz4/MoG+PIFi0Uu9EgfB+/fKn7Kg8MhkavS/6Kcnkn+fqSVF
-        Nyome5hUU+zlZNZMD8Po6vFVn2t6WY914veYwPceOpuRfZNUKg==
-X-Google-Smtp-Source: ABdhPJyG8U4pWNq3N7MOMr/g7XDUGtoXONhaMNiF4i2L9BOLCdLQGGXSQ1KNs01Mc13/nvZvO2PwVzXy3avS5gD3C/M=
-X-Received: by 2002:a50:f388:: with SMTP id g8mr4040008edm.236.1621092821757;
- Sat, 15 May 2021 08:33:41 -0700 (PDT)
+        Sat, 15 May 2021 11:38:10 -0400
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1lhwLX-0015oL-08; Sat, 15 May 2021 17:36:55 +0200
+Received: from pd9f74b7b.dip0.t-ipconnect.de ([217.247.75.123] helo=[192.168.178.23])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1lhwLW-001yNF-PF; Sat, 15 May 2021 17:36:54 +0200
+Subject: Re: [PATCH v2 03/13] sh: remove unaligned access for sh4a
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     linux-arch <linux-arch@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210514100106.3404011-1-arnd@kernel.org>
+ <20210514100106.3404011-4-arnd@kernel.org>
+ <3d70eb2a-2969-197e-63e8-f3e0a6a8ddd8@physik.fu-berlin.de>
+ <CAK8P3a1oO_moABCtNqLkM9ccVh9c=andfz+qiSucTCXcqJkYVA@mail.gmail.com>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Message-ID: <71b5d15d-7bd2-aa08-cc0a-3caccf9c66c8@physik.fu-berlin.de>
+Date:   Sat, 15 May 2021 17:36:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-From:   yong w <yongw.pur@gmail.com>
-Date:   Sat, 15 May 2021 23:33:29 +0800
-Message-ID: <CAOH5QeCyxtnZ8UYci2XM9hTnDb7KDy+L2RWaG3u_KMEaNzV8Bg@mail.gmail.com>
-Subject: How to calculate available memory when zram is used?
-To:     linux-kernel@vger.kernel.org, minchan@kernel.org,
-        ngupta@vflare.org, sergey.senozhatsky.work@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAK8P3a1oO_moABCtNqLkM9ccVh9c=andfz+qiSucTCXcqJkYVA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 217.247.75.123
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-How to calculate available memory when zram is used?
-Available+Swap free memeory is obviously bigger than I actually can
-use, because zram can compress memory by compression algorithm and
-zram compressed data will occupy memeory too.
-Is there any way to calculate available memory accurately?
+Hi Arnd!
 
-I think of a way is to count the compression rate of zram in the
-kernel. The available memory  is calculated as follows:
-available + swapfree - swapfree * compress ratio
-Is it reasonable?
+On 5/14/21 2:22 PM, Arnd Bergmann wrote:
+>> My Renesas SH4-Boards actually run an sh4a-Kernel, not an sh4-Kernel:
+>>
+>> root@tirpitz:~> uname -a
+>> Linux tirpitz 5.11.0-rc4-00012-g10c03c5bf422 #161 PREEMPT Mon Jan 18 21:10:17 CET 2021 sh4a GNU/Linux
+>> root@tirpitz:~>
+>>
+>> So, if this change reduces performance on sh4a, I would rather not merge it.
+> 
+> It only makes a difference in very specific scenarios in which unaligned
+> accesses are done in a fast path, e.g. when forwarding network packet
+> at a high rate on a big-endian kernel (little-endian kernels wouldn't run into
+> this on IP headers). If you have a use case for this machine on which the
+> you can show a performance regression, I can add a patch on top to put
+> the optimized sh4a get_unaligned_le32() back. Dropping this patch
+> altogether would make the series much more complex because most of
+> the associated code gets removed in the end.
+
+Hmm, okay. But why does code which sits below arch/sh have to be removed anyway?
+
+I don't fully understand why it poses any maintenance burden/
+
+> As I mentioned, supporting "movua" in the compiler likely has a much
+> larger impact on performance, as it would also help in user space, and
+> it should improve the networking case on little-endian kernels by replacing
+> the four separate byte loads/shift pairs with a movua plus a byteswap.
+
+The problem is that - at least in Debian - we use the sh4 baseline while the kernel
+supports both sh4 and sh4a, so we can't use any of these instructions in userland at
+the moment.
+
+Adrian
+
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
