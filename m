@@ -2,141 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83226381A90
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 20:36:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF12B381A93
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 20:41:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234479AbhEOSh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 14:37:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47082 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231558AbhEOShX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 14:37:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BB1461264;
-        Sat, 15 May 2021 18:36:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621103770;
-        bh=c9kZz0fi7NPjOe1PJEFex+oAQGmlyG/CkSwJPzx/Lak=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=so8H/j09SHBBT1xMXwIZFRJeW8GzwTT8aG1+Zx3lFmoaKMzD2x35Z9fV6qPpcKvWw
-         9J9ZTH4NTsb/Kqp9ufQeue0zxkgIyV5K5tZjYATwmGNX06PdkOU/bWX53hCqo8of/0
-         BvCpCqAPc3ZTLGp/w/RLsVgneIMXJuKnpng9D/9991Z7n70zwWctFtdse7mEq94ISQ
-         os0n6/3WbobLGUmzXNMxZ8JfEi9KzmsWdcqF560auhH58kgJ53WL7+MHfi+MxLcXmh
-         CPAXiTWz7yyvlTnNZaGWU6k22FYMQvtocgUX62UoKHgZABiSuIhbNA1Altv8A6ehdU
-         4tvSawMCiMcXg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B9EE45C0555; Sat, 15 May 2021 11:36:09 -0700 (PDT)
-Date:   Sat, 15 May 2021 11:36:09 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     yanfei.xu@windriver.com
-Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: wrong stall log when only one task blocked within
- RCU read-side
-Message-ID: <20210515183609.GA4441@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210515164511.3547618-1-yanfei.xu@windriver.com>
+        id S234486AbhEOSmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 14:42:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231558AbhEOSmb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 May 2021 14:42:31 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3318C061573;
+        Sat, 15 May 2021 11:41:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=PQIE0/xjrN58EzSnLe1MpUaylEOcI28tzfG0NuGPhW8=; b=iO1uT6YnO8uxKVm2wxcF3WYNul
+        uAaUbrslLEizhWDYdNR7LwUKsWLUO1Olv2CA+TObcrNqt4iIla6tkG5IwWCislQvoD0j53i0LqHjv
+        b8ptjKptfRCNaNtJOv6jWO8cRgKwtZPjdFyYYU8cKCGBYV7PVvGdBEmeBjy/N5ml/SMr6VYet2Pgy
+        AQs4fDkfpyeujLcrGrraUrgmq761V9f7WoZ/c0qqfE4O0eD3fjsA84K3chvMqK65NjBwa8kodst5s
+        EOTAOuADapooaxtDRjovusrGjphJlDcg6yWw5uCtYM1owlvry28MLRGjY5moDTg50I75+ujsgXlm7
+        Hes8sztg==;
+Received: from [2601:1c0:6280:3f0::7376]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lhzDt-00CeFt-ND; Sat, 15 May 2021 18:41:13 +0000
+Subject: Re: [PATCH v2 12/13] asm-generic: uaccess: 1-byte access is always
+ aligned
+To:     Arnd Bergmann <arnd@kernel.org>, linux-arch@vger.kernel.org
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+References: <20210514100106.3404011-1-arnd@kernel.org>
+ <20210514100106.3404011-13-arnd@kernel.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <9f763da3-25c6-24e7-91e9-f3016a85f9f7@infradead.org>
+Date:   Sat, 15 May 2021 11:41:13 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210515164511.3547618-1-yanfei.xu@windriver.com>
+In-Reply-To: <20210514100106.3404011-13-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 16, 2021 at 12:45:11AM +0800, yanfei.xu@windriver.com wrote:
-> From: Yanfei Xu <yanfei.xu@windriver.com>
+On 5/14/21 3:01 AM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> The for loop in rcu_print_task_stall() always omits the first blocked
-> task in RCU read-ride critical section. It will cause status of the
-> blocked task can't be printed and lead a wrong ndetected variable.
-> With the above, the wired stall log comes, All QSes seen, but qsmask
-> still is not zero:
+> With the cleaned up version of asm-generic/unaligned.h,
+> there is a warning about the get_user/put_user helpers using
+> unaligned access for single-byte variables:
 > 
-> rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-> rcu:    Tasks blocked on level-1 rcu_node (CPUs 12-23):
->         (detected by 15, t=6504 jiffies, g=164777, q=9011209)
-> rcu: All QSes seen, last rcu_preempt kthread activity 1
-> (4295252379-4295252378), jiffies_till_next_fqs=1, root ->qsmask 0x2
-> BUG: sleeping function called from invalid context at
-> include/linux/uaccess.h:156
-> in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 70613, name:
-> msgstress04
-> INFO: lockdep is turned off.
-> Preemption disabled at:
-> [<ffff8000104031a4>] create_object.isra.0+0x204/0x4b0
-> CPU: 15 PID: 70613 Comm: msgstress04 Kdump: loaded Not tainted
-> 5.12.2-yoctodev-standard #1
-> Hardware name: Marvell OcteonTX CN96XX board (DT)
-> Call trace:
->  dump_backtrace+0x0/0x2cc
->  show_stack+0x24/0x30
->  dump_stack+0x110/0x188
->  ___might_sleep+0x214/0x2d0
->  __might_sleep+0x7c/0xe0
+> include/asm-generic/uaccess.h: In function ‘__get_user_fn’:
+> include/asm-generic/unaligned.h:13:15: warning: ‘packed’ attribute ignored for field of type ‘u8’ {aka ‘unsigned char’} [-Wattributes]
+>   const struct { type x __packed; } *__pptr = (typeof(__pptr))(ptr); \
 > 
-> Fixes: c583bcb8f5ed ("rcu: Don't invoke try_invoke_on_locked_down_task() with irqs disabled")
-> Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
+> Change these to use a direct pointer dereference to avoid the
+> warnings.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  include/asm-generic/uaccess.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/asm-generic/uaccess.h b/include/asm-generic/uaccess.h
+> index 4973328f3c6e..7e903e450659 100644
+> --- a/include/asm-generic/uaccess.h
+> +++ b/include/asm-generic/uaccess.h
+> @@ -19,7 +19,7 @@ __get_user_fn(size_t size, const void __user *from, void *to)
+>  
+>  	switch (size) {
+>  	case 1:
+> -		*(u8 *)to = get_unaligned((u8 __force *)from);
+> +		*(u8 *)to = *((u8 __force *)from);
+>  		return 0;
+>  	case 2:
+>  		*(u16 *)to = get_unaligned((u16 __force *)from);
+> @@ -45,7 +45,7 @@ __put_user_fn(size_t size, void __user *to, void *from)
+>  
+>  	switch (size) {
+>  	case 1:
+> -		put_unaligned(*(u8 *)from, (u8 __force *)to);
+> +		*(*(u8 *)from, (u8 __force *)to);
 
-Apologies for that bug, and thank you for the fix!  Queued for testing
-and review.  I wordsmithed as usual, so could you please check to make
-sure that I did not mess anything up?
+Should that be           from = 
+?
 
-							Thanx, Paul
+>  		return 0;
+>  	case 2:
+>  		put_unaligned(*(u16 *)from, (u16 __force *)to);
+> 
 
-------------------------------------------------------------------------
 
-commit 9855fdb508e2fa136551294861682d83b71daded
-Author: Yanfei Xu <yanfei.xu@windriver.com>
-Date:   Sun May 16 00:45:11 2021 +0800
-
-    rcu: Fix to include first blocked task in stall warning
-    
-    The for loop in rcu_print_task_stall() always omits ts[0], which points
-    to the first task blocking the stalled grace period.  This in turn fails
-    to count this first task, which means that ndetected will be equal to
-    zero when all CPUs have passed through their quiescent states and only
-    one task is blocking the stalled grace period.  This zero value for
-    ndetected will in turn result in an incorrect "All QSes seen" message:
-    
-    rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-    rcu:    Tasks blocked on level-1 rcu_node (CPUs 12-23):
-            (detected by 15, t=6504 jiffies, g=164777, q=9011209)
-    rcu: All QSes seen, last rcu_preempt kthread activity 1 (4295252379-4295252378), jiffies_till_next_fqs=1, root ->qsmask 0x2
-    BUG: sleeping function called from invalid context at include/linux/uaccess.h:156
-    in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 70613, name: msgstress04
-    INFO: lockdep is turned off.
-    Preemption disabled at:
-    [<ffff8000104031a4>] create_object.isra.0+0x204/0x4b0
-    CPU: 15 PID: 70613 Comm: msgstress04 Kdump: loaded Not tainted
-    5.12.2-yoctodev-standard #1
-    Hardware name: Marvell OcteonTX CN96XX board (DT)
-    Call trace:
-     dump_backtrace+0x0/0x2cc
-     show_stack+0x24/0x30
-     dump_stack+0x110/0x188
-     ___might_sleep+0x214/0x2d0
-     __might_sleep+0x7c/0xe0
-    
-    This commit therefore fixes the loop to include ts[0].
-    
-    Fixes: c583bcb8f5ed ("rcu: Don't invoke try_invoke_on_locked_down_task() with irqs disabled")
-    Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index f4152aa18f48..a10ea1f1f81f 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -280,8 +280,8 @@ static int rcu_print_task_stall(struct rcu_node *rnp, unsigned long flags)
- 			break;
- 	}
- 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
--	for (i--; i; i--) {
--		t = ts[i];
-+	while (i) {
-+		t = ts[--i];
- 		if (!try_invoke_on_locked_down_task(t, check_slow_task, &rscr))
- 			pr_cont(" P%d", t->pid);
- 		else
+-- 
+~Randy
