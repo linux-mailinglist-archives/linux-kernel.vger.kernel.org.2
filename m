@@ -2,78 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 393503816F6
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 10:41:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F722381702
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 10:49:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233852AbhEOIm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 04:42:28 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:2989 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232517AbhEOIm1 (ORCPT
+        id S234491AbhEOIui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 04:50:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229819AbhEOIue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 04:42:27 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FhzMQ2trSzklvg;
-        Sat, 15 May 2021 16:38:58 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.498.0; Sat, 15 May 2021
- 16:41:01 +0800
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-To:     <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <chengzhihao1@huawei.com>, <yi.zhang@huawei.com>,
-        <yukuai3@huawei.com>
-Subject: [PATCH] usb: xhci: Remove useless variable
-Date:   Sat, 15 May 2021 16:46:47 +0800
-Message-ID: <20210515084647.179580-1-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.25.4
+        Sat, 15 May 2021 04:50:34 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11B8EC06174A;
+        Sat, 15 May 2021 01:49:19 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id h16so1463604pfk.0;
+        Sat, 15 May 2021 01:49:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=d7JME7PsV+guxE+FlqoT+L1SZsDBd+kLRGnzG/zfbdY=;
+        b=bjXZOZZkEqNhyjGLeIwwqgzRbB4ycr2YCBPKeLNvqlMYYeo7299W1bj9Kur7Pwvz8d
+         4KRrfmjlzd/i3pyiLoypa/XHuzKeiwaoJwIgq3u3XB8fhVA9xKhTI8QZtXfEEH6uIScN
+         fm3j6Ov/m6mseeOyQ2bnoF9C31+3RGAn6/mUz0I9Cl+ORYkkmnubFStqjiMR5lHR8Z6x
+         a7/unbpq7m3N7RBxoABxAgYFQ1hjlqGEylP5eDWTSUZ5qrn9a4u2Yx+xE6se54cvFpso
+         97NYkQY9G+sbzfBTCcXea5bwdmYE205d1XDu0eyDzsMldl7RgXtar7/aKkRvPOf4gF0q
+         wljQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=d7JME7PsV+guxE+FlqoT+L1SZsDBd+kLRGnzG/zfbdY=;
+        b=qDIDgsr/bNdGxTTbn9eMGur6vrXeKeKPA2Pf0Jw35EPKMt9ljtRqSrd4wxTnTQg8Ph
+         2lNU4mqB05iqR+ucOnIpXD6lF7uYBh8M27xB9N/u+jngOWgboipx70TmQze5uPLvY8vM
+         8xYAAILjehrAItLczVMRFg5CUGCtZuKvx2TzRdDpYIX3s1DJWefOF0sZ6MrrBYSrqMeX
+         xH5EKbRH8p/rarOiZFyavg/dqNdzFJX5T0g5MaT2X3Hiow5W6QB/y14L2FZx/NfrxEKp
+         d7bS/wkrIH0nianqKBGtZBBWzCYCdvz+uoP44iqZTjbYqBMPh2BgDVvUg/G9aYxkCAj5
+         6KpQ==
+X-Gm-Message-State: AOAM5339IPtQLFojsxIwMYoSk5WSrkWja8luQPBPav1WZODLOEcG8Kmh
+        kB1Ncvd2kBng09GN8v3Nc8p1tRCXWcWWAg==
+X-Google-Smtp-Source: ABdhPJwVtLEKFoOtRsiYR3H70dhU7NmUU9oqNAsaJtFyjkkRA/krJfBVqlnTqiKH4xK4R5fVjY/WFA==
+X-Received: by 2002:a05:6a00:230b:b029:2ca:4c19:ea87 with SMTP id h11-20020a056a00230bb02902ca4c19ea87mr22209110pfh.43.1621068558201;
+        Sat, 15 May 2021 01:49:18 -0700 (PDT)
+Received: from localhost (g1.222-224-229.ppp.wakwak.ne.jp. [222.224.229.1])
+        by smtp.gmail.com with ESMTPSA id g4sm5923708pgu.46.2021.05.15.01.49.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 15 May 2021 01:49:17 -0700 (PDT)
+Date:   Sat, 15 May 2021 17:49:15 +0900
+From:   Stafford Horne <shorne@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Florent Kermarrec <florent@enjoy-digital.fr>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        Joel Stanley <joel@jms.id.au>,
+        "Gabriel L . Somlo" <gsomlo@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Karol Gugala <kgugala@antmicro.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-doc@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: Re: [PATCH] serial/liteuart; Add support for earlycon
+Message-ID: <YJ+LCygukQsQNIuj@antec>
+References: <20210515084519.167343-1-shorne@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.127.227]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210515084519.167343-1-shorne@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following gcc warning:
+I pulled the trigger a bit early, the subject needs a bit better/consistent
+formatting.  It should be:
 
-drivers/usb/host/xhci.c:1349:15: warning: variable ‘len’ set but not
-used [-Wunused-but-set-variable ]
+  serial: liteuart: Add support for earlycon
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- drivers/usb/host/xhci.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-index ca9385d22f68..b38a14ef2e15 100644
---- a/drivers/usb/host/xhci.c
-+++ b/drivers/usb/host/xhci.c
-@@ -1346,7 +1346,6 @@ static bool xhci_urb_temp_buffer_required(struct usb_hcd *hcd,
- 
- static void xhci_unmap_temp_buf(struct usb_hcd *hcd, struct urb *urb)
- {
--	unsigned int len;
- 	unsigned int buf_len;
- 	enum dma_data_direction dir;
- 
-@@ -1362,10 +1361,10 @@ static void xhci_unmap_temp_buf(struct usb_hcd *hcd, struct urb *urb)
- 				 dir);
- 
- 	if (usb_urb_dir_in(urb))
--		len = sg_pcopy_from_buffer(urb->sg, urb->num_sgs,
--					   urb->transfer_buffer,
--					   buf_len,
--					   0);
-+		sg_pcopy_from_buffer(urb->sg, urb->num_sgs,
-+				     urb->transfer_buffer,
-+				     buf_len,
-+				     0);
- 
- 	urb->transfer_flags &= ~URB_DMA_MAP_SINGLE;
- 	kfree(urb->transfer_buffer);
--- 
-2.25.4
-
+On Sat, May 15, 2021 at 05:45:18PM +0900, Stafford Horne wrote:
+> Most litex boards using RISC-V soft cores us the sbi earlycon, however
+> this is not available for non RISC-V litex SoC.  This patch enables
+> earlycon for liteuart which is available on all Litex SoC's making
+> support for earycon debugging more widely available.
+> 
+> Signed-off-by: Stafford Horne <shorne@gmail.com>
+> Cc: Florent Kermarrec <florent@enjoy-digital.fr>
+> Cc: Mateusz Holenko <mholenko@antmicro.com>
+> Cc: Joel Stanley <joel@jms.id.au>
+> Cc: Gabriel L. Somlo <gsomlo@gmail.com>
+> ---
+>  .../admin-guide/kernel-parameters.txt         |  5 +++
+>  drivers/tty/serial/Kconfig                    |  1 +
+>  drivers/tty/serial/liteuart.c                 | 31 +++++++++++++++++++
+>  3 files changed, 37 insertions(+)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 04545725f187..2d4a43af8de2 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -1084,6 +1084,11 @@
+>  			the driver will use only 32-bit accessors to read/write
+>  			the device registers.
+>  
+> +		liteuart,<addr>
+> +			Start an early console on a litex serial port at the
+> +			specified address. The serial port must already be
+> +			setup and configured. Options are not yet supported.
+> +
+>  		meson,<addr>
+>  			Start an early, polled-mode console on a meson serial
+>  			port at the specified address. The serial port must
+> diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
+> index 0c4cd4a348f4..9ceffe6ab6fd 100644
+> --- a/drivers/tty/serial/Kconfig
+> +++ b/drivers/tty/serial/Kconfig
+> @@ -1531,6 +1531,7 @@ config SERIAL_LITEUART
+>  	depends on OF || COMPILE_TEST
+>  	depends on LITEX
+>  	select SERIAL_CORE
+> +	select SERIAL_EARLYCON
+>  	help
+>  	  This driver is for the FPGA-based LiteUART serial controller from LiteX
+>  	  SoC builder.
+> diff --git a/drivers/tty/serial/liteuart.c b/drivers/tty/serial/liteuart.c
+> index 64842f3539e1..38c472487e68 100644
+> --- a/drivers/tty/serial/liteuart.c
+> +++ b/drivers/tty/serial/liteuart.c
+> @@ -372,6 +372,37 @@ static int __init liteuart_console_init(void)
+>  console_initcall(liteuart_console_init);
+>  #endif /* CONFIG_SERIAL_LITEUART_CONSOLE */
+>  
+> +#ifdef CONFIG_SERIAL_EARLYCON
+> +static void early_liteuart_putc(struct uart_port *port, int c)
+> +{
+> +	while (litex_read8(port->membase + OFF_TXFULL))
+> +		cpu_relax();
+> +
+> +	litex_write8(port->membase + OFF_RXTX, c);
+> +}
+> +
+> +static void early_liteuart_write(struct console *console, const char *s,
+> +				    unsigned int count)
+> +{
+> +	struct earlycon_device *device = console->data;
+> +	struct uart_port *port = &device->port;
+> +
+> +	uart_console_write(port, s, count, early_liteuart_putc);
+> +}
+> +
+> +static int __init early_liteuart_setup(struct earlycon_device *device,
+> +				       const char *options)
+> +{
+> +	if (!device->port.membase)
+> +		return -ENODEV;
+> +
+> +	device->con->write = early_liteuart_write;
+> +	return 0;
+> +}
+> +
+> +OF_EARLYCON_DECLARE(liteuart, "litex,liteuart", early_liteuart_setup);
+> +#endif /* CONFIG_SERIAL_EARLYCON */
+> +
+>  static int __init liteuart_init(void)
+>  {
+>  	int res;
+> -- 
+> 2.31.1
+> 
