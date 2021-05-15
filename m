@@ -2,78 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EDDA3819B4
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 17:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 191FC3819B5
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 17:52:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233005AbhEOPxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 11:53:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47944 "EHLO
+        id S233039AbhEOPxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 11:53:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230204AbhEOPxJ (ORCPT
+        with ESMTP id S232976AbhEOPxK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 11:53:09 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74DD8C06174A;
-        Sat, 15 May 2021 08:51:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=IaWx73PoXKzw/QNbHeKdp9HvTY0/GoR4xc8LobmdnCc=; b=GhRi4lJHdfK6UCyrz8P5P7Vg7x
-        L4emzVRzmleOj5EksAxcn5Hqd2HjLrNz0BDRjQxzk6q48DfVORoETkcy7yM7271JvxfO2hcbGp/eq
-        yhh704cJ1DLbmxd46u+TLpvjbpaoARCiD1WgG5SL1H/PHsRARoF2jn5GBnLwusIHU4kyAeqF/P6UY
-        xYR08XU7P6u9C5+5b5EWX5nyR834e8aQkTi+/3Jy3GDo/msiDNVZsOE2kMM8UOu+Je2wNVw8c9UOB
-        nBKj1xRBxifK8X1G6Rd/vEp+XP3o70S+QAnadbht+cXtnQY6rmoSSy0CyO7L8PJ0+sBPR/41Vo+Sx
-        LttRK2bg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lhwZm-00BLCZ-R7; Sat, 15 May 2021 15:51:41 +0000
-Date:   Sat, 15 May 2021 16:51:38 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        Jeff Layton <jlayton@kernel.org>
-Subject: Re: [PATCH v10 12/33] mm/filemap: Add folio_index, folio_file_page
- and folio_contains
-Message-ID: <YJ/uCv8iwWYYXqVQ@casper.infradead.org>
-References: <20210511214735.1836149-1-willy@infradead.org>
- <20210511214735.1836149-13-willy@infradead.org>
- <77357d4f-5f56-6c12-7602-697773c2f125@suse.cz>
+        Sat, 15 May 2021 11:53:10 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F33EC061573;
+        Sat, 15 May 2021 08:51:53 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id t193so1475334pgb.4;
+        Sat, 15 May 2021 08:51:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jOvmf3JoFVpwNUWMjp8l9LOhDQkcr+mi2wWeST9IjuE=;
+        b=cWPyJUPDEwRGoEw9tdG9cwKCLgDC3xFwJEpuKRTCQrmPQ+KHBiaWc/Hbl2lEsblUbC
+         XmhyzGHyqxa8/yIDk83H4LEvl0DWh8NdeHK+g+OmPuwH9hF3UaKbYhHA9znr6352kANY
+         zZCSD1ojOTN8AqPev9L7qTLpDxlky4sQHn5ytfFoF6BYKXkIuivqEg1MO3yIGCNiLWat
+         cBEC+03tFNHf0M6pmWZQzyYJgCXgArnZp3xqdSkYGODMmeGnrgG7owaaA+rEI9aBR/iT
+         NJahrUU/mnEzKsG1pgJ+LvgLq8bOhZ12MtIxfocE6E95Hq8Tp7Fh4HRIds82ia22oVrp
+         ixGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jOvmf3JoFVpwNUWMjp8l9LOhDQkcr+mi2wWeST9IjuE=;
+        b=XQ8M0vqhTXx9fzfhtv6T/kknPXyWu/+5aBQ/E95XaHgBvCF3BRTOAV5FXoVSWdRr81
+         Pixn9GoXEXFmzAR+l/wOmfDIjDHvwaLAEdDt7jOEYNmu4FzahQc3a9aZjTGllqjr+WmI
+         HCuceeY0O0ss6pHmjgca53a/PNyd1yfsC3PWL2pnd3sZZv+NpUx1hITyQ5LRn/nXoRj2
+         ImzR2hizKQu7012J0a5e4MlkSVO8yJKRRjt1M3ZZXp05+8gyollVktIhAGrNyUaa4ezI
+         LE6cZhMPEXWu+qOiEc/1WraW5Jh+GtBI+1BK0QfGbSwRi4A4xN75He++xR1ZM7attIyu
+         sEdA==
+X-Gm-Message-State: AOAM532zfghVmRFDMcdTn1mqgtdZiK3sXUlB/uwRxOtJ+gvVyUznvje+
+        SuH6zemqzKPMuIj0IFfenw3rbLeHbeuM/3mz
+X-Google-Smtp-Source: ABdhPJwfc5wRiIuvoxr5IL0MNy+qlgfJz9+NH5pElZQfCbs0JtnWcRw+mmcr17sGIM94zTVPWX/tpw==
+X-Received: by 2002:a65:618c:: with SMTP id c12mr52544258pgv.296.1621093912693;
+        Sat, 15 May 2021 08:51:52 -0700 (PDT)
+Received: from localhost.localdomain (host-219-71-67-82.dynamic.kbtelecom.net. [219.71.67.82])
+        by smtp.gmail.com with ESMTPSA id q24sm6646648pgk.32.2021.05.15.08.51.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 15 May 2021 08:51:52 -0700 (PDT)
+From:   Wei Ming Chen <jj251510319013@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-doc@vger.kernel.org, federico.vaga@vaga.pv.it,
+        corbet@lwn.net, alexs@kernel.org,
+        Wei Ming Chen <jj251510319013@gmail.com>
+Subject: [PATCH] docs: Use fallthrough pseudo-keyword
+Date:   Sat, 15 May 2021 23:51:42 +0800
+Message-Id: <20210515155142.2490-1-jj251510319013@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <77357d4f-5f56-6c12-7602-697773c2f125@suse.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 05:55:46PM +0200, Vlastimil Babka wrote:
-> On 5/11/21 11:47 PM, Matthew Wilcox (Oracle) wrote:
-> > folio_index() is the equivalent of page_index() for folios.
-> > folio_file_page() is the equivalent of find_subpage().
-> 
-> find_subpage() special cases hugetlbfs, folio_file_page() doesn't.
-> 
-> > folio_contains() is the equivalent of thp_contains().
-> 
-> Yet here, both thp_contains() and folio_contains() does.
-> 
-> This patch doesn't add users so maybe it becomes obvious later, but perhaps
-> worth explaining in the changelog or comment?
+Replace /* fall through */ comment with fallthrough, make
+it align with original process/coding-style.rst
 
-No, you're right, this is a bug.
+Signed-off-by: Wei Ming Chen <jj251510319013@gmail.com>
+---
+ Documentation/translations/it_IT/process/coding-style.rst | 2 +-
+ Documentation/translations/zh_CN/process/coding-style.rst | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-I originally had it in my mind that hugetlbfs wouldn't need to do this
-any more because it can just use the folio interfaces and never try to
-find the subpage.
+diff --git a/Documentation/translations/it_IT/process/coding-style.rst b/Documentation/translations/it_IT/process/coding-style.rst
+index 95f2e7c985e2..ecc74ba50d3e 100644
+--- a/Documentation/translations/it_IT/process/coding-style.rst
++++ b/Documentation/translations/it_IT/process/coding-style.rst
+@@ -62,7 +62,7 @@ i ``case``.  Un esempio.:
+ 	case 'K':
+ 	case 'k':
+ 		mem <<= 10;
+-		/* fall through */
++		fallthrough;
+ 	default:
+ 		break;
+ 	}
+diff --git a/Documentation/translations/zh_CN/process/coding-style.rst b/Documentation/translations/zh_CN/process/coding-style.rst
+index 406d43a02c02..b8c484a84d10 100644
+--- a/Documentation/translations/zh_CN/process/coding-style.rst
++++ b/Documentation/translations/zh_CN/process/coding-style.rst
+@@ -61,7 +61,7 @@ Linux 内核代码风格
+ 	case 'K':
+ 	case 'k':
+ 		mem <<= 10;
+-		/* fall through */
++		fallthrough;
+ 	default:
+ 		break;
+ 	}
+-- 
+2.25.1
 
-But I don't understand all the cases well enough to be sure that
-they're all gone, and they certainly don't all go as part of this
-patch series.  So I think I need to reintroduce the check-for-hugetlb
-to folio_file_page() and we can look at removing it later once we're
-sure that nobody is using the interfaces that return pages from the page
-cache any more.  Or we convert hugetlbfs to use the page cache the same
-way as every other filesystem ;-)
-
-Thanks for spotting that.
