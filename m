@@ -2,94 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBFB4381685
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 09:16:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 159AA381691
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 09:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232866AbhEOHRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 03:17:21 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:2926 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229724AbhEOHRT (ORCPT
+        id S232870AbhEOH3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 03:29:08 -0400
+Received: from smtprelay0168.hostedemail.com ([216.40.44.168]:46554 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231217AbhEOH3F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 03:17:19 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FhxSd2p97zBtms;
-        Sat, 15 May 2021 15:13:21 +0800 (CST)
-Received: from [10.174.179.129] (10.174.179.129) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 15 May 2021 15:15:57 +0800
-Subject: Re: [PATCH] char: pcmcia: remove set but not used variable 'tmp'
-To:     Arnd Bergmann <arnd@arndb.de>
-CC:     Harald Welte <laforge@gnumonks.org>,
-        gregkh <gregkh@linuxfoundation.org>, <akpm@osdl.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "zhangyi (F)" <yi.zhang@huawei.com>
-References: <20210514062150.3533786-1-yukuai3@huawei.com>
- <CAK8P3a01oF7QZzjbd703QwiK+6ZPx1w-fSBcLjeMm4KQ0X0amw@mail.gmail.com>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <7dc2aaca-20d1-46fc-e5a0-312f3fbc7ea4@huawei.com>
-Date:   Sat, 15 May 2021 15:15:56 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Sat, 15 May 2021 03:29:05 -0400
+Received: from omf06.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 6060118026A05;
+        Sat, 15 May 2021 07:27:51 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf06.hostedemail.com (Postfix) with ESMTPA id B36F22448B4;
+        Sat, 15 May 2021 07:27:46 +0000 (UTC)
+Message-ID: <acff710e1cde66db686273d430a0798c4ea4f41e.camel@perches.com>
+Subject: Re: [PATCH] Raise the minimum GCC version to 5.2
+From:   Joe Perches <joe@perches.com>
+To:     Pavel Machek <pavel@ucw.cz>, Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kbuild@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Will Deacon <will@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
+Date:   Sat, 15 May 2021 00:27:45 -0700
+In-Reply-To: <20210515071410.GA27201@amd>
+References: <20210501151538.145449-1-masahiroy@kernel.org>
+         <20210515071410.GA27201@amd>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a01oF7QZzjbd703QwiK+6ZPx1w-fSBcLjeMm4KQ0X0amw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.129]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.60
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: B36F22448B4
+X-Stat-Signature: sk6bp1su8mgpmhdudeekd6zmd57nm8uk
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18VobztuKx5cPb+cCAmoDLIOZAXmsA6C+8=
+X-HE-Tag: 1621063666-295586
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/05/14 14:28, Arnd Bergmann wrote:
-> On Fri, May 14, 2021 at 8:21 AM Yu Kuai <yukuai3@huawei.com> wrote:
->>
->> Fixes gcc '-Wunused-but-set-variable' warning:
->>
->> drivers/char/pcmcia/cm4000_cs.c:1053:16: warning: variable ‘tmp’
->> set but not used [-Wunused-but-set-variable]
->>
->> It is never used and so can be removed.
->>
->> Fixes: c1986ee9bea3 ("[PATCH] New Omnikey Cardman 4000 driver")
->> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+On Sat, 2021-05-15 at 09:14 +0200, Pavel Machek wrote:
+> On Sun 2021-05-02 00:15:38, Masahiro Yamada wrote:
+> > The current minimum GCC version is 4.9 except ARCH=arm64 requiring
+> > GCC 5.1.
 > 
-> Looks good to me. This was likely written that way at a time when some
-> architecture implemented inb() as a macro, and ignoring its value
-> would cause a different warning.
-> 
-> Since you are already touching this file, can you have a look at this
-> warning as well:
-> 
->     drivers/char/pcmcia/cm4000_cs.c: In function 'set_protocol':
->>> drivers/char/pcmcia/cm4000_cs.c:569:16: warning: iteration 4 invokes undefined behavior [-Waggressive-loop-optimizations]
->       569 |   pts_reply[i] = inb(REG_BUF_DATA(iobase));
->           |   ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
->     drivers/char/pcmcia/cm4000_cs.c:567:2: note: within this loop
->       567 |  for (i = 0; i < num_bytes_read; i++) {
-> 
-> This looks like a preexisting problem that was uncovered by a patch
-> that is now in linux-next to change the inb() definition once more,
-> I got a report from the kernel build bot about it after I merged the
-> patch into the asm-generic tree. It needs a range check on
-> num_bytes_read, or a Kconfig check to ensure it is not built on
-> architectures without working inb()/outb() operations.
-> 
->          Arnd
-> .
-> 
-Hi,
+> Please don't. I'm still on 4.9 on machine I can't easily update,
 
-I'm not familar with the logical here, however, if io_read_num_rec_bytes
-may get 'num_bytes_read' greater than 4, this loop will cause index out
-of boundary. It make sense to me to add a range check. Futhermore, since
-'num_bytes_read' is ensure to >= 4，I think we can change the loop to:
+Why is that?  Later compiler versions are available.
+http://cdn.kernel.org/pub/tools/crosstool/
 
-for (i = 0; i < 4; ++i) {
-	xoutb(i, REG_BUF_ADDR(iobase));
-	pts_reply[i] = inb(REG_BUF_DATA(iobase));
-}
+Is there some other reason your machine can not have the compiler
+version updated?
 
-Thanks
-Yu Kuai
 
