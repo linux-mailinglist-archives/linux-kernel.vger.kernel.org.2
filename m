@@ -2,80 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE3D9381AF3
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 22:14:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1598381AF8
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 22:17:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234844AbhEOUPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 16:15:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231280AbhEOUPq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 16:15:46 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DC25C061573;
-        Sat, 15 May 2021 13:14:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9XOLX3lclxqmOizJHcYJXn5gUXcoNsJjjPeZ7bAkGuo=; b=Oj4pfQCxOYIZIubFOGoWq6QKrD
-        TXlHtKiOnJrrhh/3J91qwZ1heaYZ3Hh3Vjdd2biF9hsgZlCTrm8UDfxTUY75yPdahRhGixtnZVd57
-        bpUHb8y+8jPqTUeFIAjziupW2Btwa+r37TZkPiGwU9LgcdW/grnik4JI9/T+loxEH7P4J2A8YHunB
-        B23UcDF1qZyQDBieq+/PhzTk8uO0X93IXiqF8deZvZkFO67Rw/Yk1p5G8CYHoz6fiFI0SRIYupArf
-        3trdgjNQz0SMbk+2hZxUTgZiFjMnVy8wSKHMPSorSdJWkbXfwUbs9ityUlaaGeDBZcDvMKn9PeVMF
-        vhETKKZA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1li0ft-00BUME-LY; Sat, 15 May 2021 20:14:17 +0000
-Date:   Sat, 15 May 2021 21:14:13 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     William Kucharski <william.kucharski@oracle.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jeff Layton <jlayton@kernel.org>
-Subject: Re: [PATCH v10 01/33] mm: Introduce struct folio
-Message-ID: <YKArlVbtkJo3l1Rz@casper.infradead.org>
-References: <20210511214735.1836149-1-willy@infradead.org>
- <20210511214735.1836149-2-willy@infradead.org>
- <0FF7A37F-80A8-4B49-909D-6234ADA8A25C@oracle.com>
+        id S234870AbhEOUTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 16:19:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38882 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234840AbhEOUSv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 May 2021 16:18:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E63696121E;
+        Sat, 15 May 2021 20:17:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621109857;
+        bh=Z9NQzsSFCaSLn3jMjEHhBdcoFhlXWyGQ4ZxdOXx3NYA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=traaZJipL6kqLOa/FfhL7XkYEVzXJ6VK11z51O0PmjgxeOXOHzJig1nqPACsvqn73
+         /Prt6FS/O4Vf4P/igam5GkrfH1hWpG4bOJPXcf7O0vB7zKbcx4YxuecdlNGJOLFZar
+         JBVC7ml8MRpHpL5e0rWB5Ek2FvUlqXujauJAM0uGpYPVu0R/dz/aFLBC2qUvjMKO1U
+         veZKr21xLUb95Q3LTpDa4IeGaEjsb2HteTWWnrn58wPw59An/b2OL+zFiOs0vQnybx
+         B5OcYcjaAgKEANlvlbfTYNmlvnx9CK3G4RbmmAZWGE0X5f0iCg/DpomxBmfdgZEz4G
+         oMg4r1ctGWdUA==
+Received: by mail-wr1-f43.google.com with SMTP id z17so2415856wrq.7;
+        Sat, 15 May 2021 13:17:37 -0700 (PDT)
+X-Gm-Message-State: AOAM533ZpMGkRxZ0leBOl9xWfEIlJUtLpfPkffT9+RMzGxC/YLp+fYKR
+        2bFHeB7ZCmyqc9Og4jPwxQKLgPvP5BlKt5iNpfU=
+X-Google-Smtp-Source: ABdhPJxm+4q3De3RBJDfQGvWSlPiUE6c2DBBt55wdtCluO9aXAU9V+hkjWv4pM6qjaKQ5DGkyvnlFE5bXR41SbZuXEc=
+X-Received: by 2002:a5d:5404:: with SMTP id g4mr1680204wrv.286.1621109856628;
+ Sat, 15 May 2021 13:17:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0FF7A37F-80A8-4B49-909D-6234ADA8A25C@oracle.com>
+References: <20210514100106.3404011-1-arnd@kernel.org> <20210514100106.3404011-13-arnd@kernel.org>
+ <9f763da3-25c6-24e7-91e9-f3016a85f9f7@infradead.org>
+In-Reply-To: <9f763da3-25c6-24e7-91e9-f3016a85f9f7@infradead.org>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Sat, 15 May 2021 22:16:32 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0Sp9JV-1pgqH0uf7tXxpL2O-VB+Unse8VaenO5drR15Q@mail.gmail.com>
+Message-ID: <CAK8P3a0Sp9JV-1pgqH0uf7tXxpL2O-VB+Unse8VaenO5drR15Q@mail.gmail.com>
+Subject: Re: [PATCH v2 12/13] asm-generic: uaccess: 1-byte access is always aligned
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-arch <linux-arch@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 15, 2021 at 10:55:19AM +0000, William Kucharski wrote:
-> > +/**
-> > + * folio_page - Return a page from a folio.
-> > + * @folio: The folio.
-> > + * @n: The page number to return.
-> > + *
-> > + * @n is relative to the start of the folio.  It should be between
-> > + * 0 and folio_nr_pages(@folio) - 1, but this is not checked for.
-> 
-> Please add a statement noting WHY @n isn't checked since you state it
-> should be. Something like "...but this is not checked for because this is
-> a hot path."
+On Sat, May 15, 2021 at 8:41 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+> On 5/14/21 3:01 AM, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> > diff --git a/include/asm-generic/uaccess.h b/include/asm-generic/uaccess.h
+> > index 4973328f3c6e..7e903e450659 100644
+> > --- a/include/asm-generic/uaccess.h
+> > +++ b/include/asm-generic/uaccess.h
+> > @@ -19,7 +19,7 @@ __get_user_fn(size_t size, const void __user *from, void *to)
+> >
+> >       switch (size) {
+> >       case 1:
+> > -             *(u8 *)to = get_unaligned((u8 __force *)from);
+> > +             *(u8 *)to = *((u8 __force *)from);
+> >               return 0;
+> >       case 2:
+> >               *(u16 *)to = get_unaligned((u16 __force *)from);
+> > @@ -45,7 +45,7 @@ __put_user_fn(size_t size, void __user *to, void *from)
+> >
+> >       switch (size) {
+> >       case 1:
+> > -             put_unaligned(*(u8 *)from, (u8 __force *)to);
+> > +             *(*(u8 *)from, (u8 __force *)to);
+>
+> Should that be           from =
+> ?
 
-Hmm ... how about this:
+Thanks a lot for catching the typo!
 
-/**
- * folio_page - Return a page from a folio.
- * @folio: The folio.
- * @n: The page number to return.
- *
- * @n is relative to the start of the folio.  This function does not
- * check that the page number lies within @folio; the caller is presumed
- * to have a reference to the page.
- */
-#define folio_page(folio, n)    nth_page(&(folio)->page, n)
+Changed now to
 
-It occurred to me that it is actually useful (under some circumstances)
-for referring to a page outside the base folio.  For example when
-dealing with bios that have merged consecutive pages together into a
-single bvec (ok, bios don't use folios, but it would be reasonable if
-they did in future).
+        *(u8 __force *)to = *(u8 *)from;
+
+For some reason neither my own build testing nor the kernel
+build bot caught it so far.
+
+        Arnd
