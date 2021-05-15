@@ -2,120 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFB06381A12
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 19:03:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 519D6381A15
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 19:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234034AbhEOREX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 13:04:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35414 "EHLO
+        id S233410AbhEORM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 13:12:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230040AbhEOREV (ORCPT
+        with ESMTP id S229501AbhEORMz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 13:04:21 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77DA9C061573;
-        Sat, 15 May 2021 10:03:06 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id pi6-20020a17090b1e46b029015cec51d7cdso1373161pjb.5;
-        Sat, 15 May 2021 10:03:06 -0700 (PDT)
+        Sat, 15 May 2021 13:12:55 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E95C061573;
+        Sat, 15 May 2021 10:11:41 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id n2so2224991wrm.0;
+        Sat, 15 May 2021 10:11:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MB1APffVjgoMzeVzbuCucMk9nO1HoRAk+17E/1Zqv+k=;
-        b=o7nRQ8KOar6oGITS6dJ/MD8bcTZ+P6OZ4abGyTl19YqXRrTW3KOE9ajUsMSHkJ1F1+
-         lUPhdE66SimOPivAYZs3TSUnRyJERSUNEZYiuGGRDiC2g8R3YJLae5QBhfLW7aReFt+/
-         E878XSOkqGsSk4Z5oVabndwWzPXI7kSMUbtY2G3werVAVH8rjdGO3VJQLASe9keUz9T1
-         aNrEMYaSQjmD/7sz2H6xoClC22/xz3HD8dxJlyFsqiRatZRFj1PcuILTjp4QqE2U0BjV
-         CthS5A4bMnIMj+gCMmI7eDXFNRhJkI4QLkV9lqmStW1ppWGd+NFzApbA68JEHwdHh+of
-         FW2Q==
+        h=from:to:cc:subject:date:message-id;
+        bh=Yv/SMg0fIXZjNNbdbCRKD2NaAjmoQnkcxhQGmRWvOuQ=;
+        b=oKAz9AQ5LnN95wyCVKVkQNiGMTiUA24FwSc6bv8h5CAK7q0GG+B9zgDUyC0Fv8NBYJ
+         znJ9bRFBNsFgaJEH+f4/WX253OQ5syY639XlUD7isfstVZLYXIoakhqHY33VyIQ5sO3A
+         iCsP3Os21zWukI1fgXDrN2irzqSdWnH4a/5za5PLeio4DLUolXx4FExNKQd7P1xG8GSR
+         H3aDktcCxIzgX3Wj/1c20sXy/j+RQETypQxLNQhIY9l8F3U/REVE3ETV5dI23u7Q/LaB
+         xWjx2ToMgGU+z59JAk3nqVmTa0weCkr8fzMuMxwQHCWC6IGhws+Kl3RDVVI5+TzNmp/o
+         6eNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MB1APffVjgoMzeVzbuCucMk9nO1HoRAk+17E/1Zqv+k=;
-        b=IWCusiBKy2S8duwS1mcr3HLRFDudzEpyUi5UDN/7bqDslxfCq3hPLfAc0YxswUG7Je
-         kHUDFz4rzrnJH1gssT5H8bdHMc1CT1QXBracafD/600rVmCbRSoFN3K/xupJ9DD08moP
-         VM41JGlZtiEdasH+zE9I4UcKOEV5H2vAMAE/pg/wDVyD2tywjb3O9+3rAEXTLGPleOBS
-         9x6bZziwtkxaSQ7CAuigZAwaQJldvwLSd5TummorKqO6lMuPlbckD9E8HxvfU9+czVrI
-         jmprXgegrpxm6oir+T1v8npImVd+rYTPh0trRSQEBtUXT5Bl5nHkmUvsmwLWpm+v5Z/P
-         /aPQ==
-X-Gm-Message-State: AOAM5316kyg8+jpalAnK9qxoFL4kLOkBT5I3msfjAJRfwpK2tA8k+Fv/
-        a9gM8JsdqCLDgi9u/sm+nz/814og6C2eRw==
-X-Google-Smtp-Source: ABdhPJypE3HzfNrUfI1RDGq1wyGJL2OKfWPJwbw/atcrW3+Uq1lVNuFPMWkmsPHKKYR8s+cJoSHeRw==
-X-Received: by 2002:a17:90a:542:: with SMTP id h2mr6132492pjf.82.1621098185624;
-        Sat, 15 May 2021 10:03:05 -0700 (PDT)
-Received: from [192.168.1.67] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
-        by smtp.gmail.com with ESMTPSA id n9sm6896023pgt.35.2021.05.15.10.03.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 15 May 2021 10:03:04 -0700 (PDT)
-Subject: Re: [RFC PATCH net-next v4 01/28] net: mdio: ipq8064: clean
- whitespaces in define
-To:     Jonathan McDowell <noodles@earth.li>,
-        Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210508002920.19945-1-ansuelsmth@gmail.com>
- <YJbSOYBxskVdqGm5@lunn.ch> <YJbTBuKobu1fBGoM@Ansuel-xps.localdomain>
- <20210515170046.GA18069@earth.li>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <747555da-cc9b-299f-39dd-9b3368bd467d@gmail.com>
-Date:   Sat, 15 May 2021 10:03:03 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.1
-MIME-Version: 1.0
-In-Reply-To: <20210515170046.GA18069@earth.li>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Yv/SMg0fIXZjNNbdbCRKD2NaAjmoQnkcxhQGmRWvOuQ=;
+        b=JHHLtr8X5V6f4JO4aGc41CYBhisynTx0Vabdx7G2wNXJ9EIZtyGFRlaSNDHIBi2+L9
+         P84QxykQxlyw5mPUnRtaMsym6IveNLJkCY1O58/2OG3xOvwmXJp5J09KRBAmkQj6+egt
+         6V+BWsexMnomByqt8EDGTpOkgbfMM1dImqEbbzrDcF0gP2zUlaITotIMVOwy/YfpNND7
+         dDeQPDhJIk4TP99bi9pmZTfZUQtl/vP9Qx8VRDNY0szCec1RxlxdtSJXbO8hdLn4VUNl
+         eORErlITRUYZw1FQob0nFaRX9QLa/5vlY7EIYRqXAW0RFs0VteN0Thu75OoLa1uV6liZ
+         khFw==
+X-Gm-Message-State: AOAM532TKl8k1KbIbZx57m7Dp+KolnAoRmEtqSpQOO8OTscQI0Rgcji6
+        Trj7ajrGZk7EQNIfhyV1aGY=
+X-Google-Smtp-Source: ABdhPJwa35QKDuZ51e4NQBbEhiDPZ9VOP++SwdFSri2/tJtCV4TBrl6Gn/GaUz5yI092//YDKA5WLg==
+X-Received: by 2002:a05:6000:2cf:: with SMTP id o15mr30314865wry.243.1621098700332;
+        Sat, 15 May 2021 10:11:40 -0700 (PDT)
+Received: from localhost.localdomain ([197.240.82.148])
+        by smtp.gmail.com with ESMTPSA id f3sm9740308wrp.7.2021.05.15.10.11.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 15 May 2021 10:11:39 -0700 (PDT)
+From:   Khaled ROMDHANI <khaledromdhani216@gmail.com>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com
+Cc:     Khaled ROMDHANI <khaledromdhani216@gmail.com>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH-next] sched: Fix Dereference after null check
+Date:   Sat, 15 May 2021 18:11:17 +0100
+Message-Id: <20210515171117.23240-1-khaledromdhani216@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The group_cfs_rq derefrence the 'se' variable that could
+be passed as NULL pointer. Fix this by adding a check
+against the sched entity 'se' before the derefrence.
 
+Addresses-Coverity: ("Dereference after null check")
+Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
+---
+ kernel/sched/fair.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-On 5/15/2021 10:00 AM, Jonathan McDowell wrote:
-> On Sat, May 08, 2021 at 08:05:58PM +0200, Ansuel Smith wrote:
->> On Sat, May 08, 2021 at 08:02:33PM +0200, Andrew Lunn wrote:
->>> On Sat, May 08, 2021 at 02:28:51AM +0200, Ansuel Smith wrote:
->>>> Fix mixed whitespace and tab for define spacing.
->>>
->>> Please add a patch [0/28] which describes the big picture of what
->>> these changes are doing.
->>>
->>> Also, this series is getting big. You might want to split it into two,
->>> One containing the cleanup, and the second adding support for the new
->>> switch.
->>>
->>> 	Andrew
->>
->> There is a 0/28. With all the changes. Could be that I messed the cc?
->> I agree think it's better to split this for the mdio part, the cleanup
->> and the changes needed for the internal phy.
-> 
-> FWIW I didn't see the 0/28 mail either.I tried these out on my RB3011
-> today. I currently use the GPIO MDIO driver because I saw issues with
-> the IPQ8064 driver in the past, and sticking with the GPIO driver I see
-> both QCA8337 devices and traffic flows as expected, so no obvious
-> regressions from your changes.
-
-The cover letter somehow appeared as the final patch in the submission
-instead of having all patches in-reply-to it as one would expect.
-
-Russell had some additional feedback that came in during or after the
-patches being applied so it would be nice to address that.
-
-> 
-> I also tried switching to the IPQ8064 MDIO driver for my first device
-> (which is on the MDIO0 bus), but it's still not happy:
-> 
-> qca8k 37000000.mdio-mii:10: Switch id detected 0 but expected 13
-
-If you do repeated reads of the revision register to you eventually get
-13 as intended?
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 161b92aa1c79..9be6cdba351d 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -7080,7 +7080,8 @@ static struct task_struct *pick_task_fair(struct rq *rq)
+ 		}
+ 
+ 		se = pick_next_entity(cfs_rq, curr);
+-		cfs_rq = group_cfs_rq(se);
++		if (se)
++			cfs_rq = group_cfs_rq(se);
+ 	} while (cfs_rq);
+ 
+ 	return task_of(se);
 -- 
-Florian
+2.17.1
+
