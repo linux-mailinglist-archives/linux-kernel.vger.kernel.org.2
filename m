@@ -2,125 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10B0438151E
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 04:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4219381527
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 04:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234954AbhEOCP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 22:15:56 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:58433 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234940AbhEOCPy (ORCPT
+        id S235467AbhEOC0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 22:26:41 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:2986 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232297AbhEOC0k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 22:15:54 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id D2ED9580A31;
-        Fri, 14 May 2021 22:14:41 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Fri, 14 May 2021 22:14:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm2; bh=jGoXzPaLrTSMzrEWtvvGyydli2
-        uRBq2EBIG4vZ4n6Zg=; b=KErnfvg+jCMxthXD2KiR7t2nvj0CgfNLo2U+9Td3QC
-        CXeLFGDKffF9iOKwbJ7blXYJUUPLqmDDBg1vxTXzHC8WVM80iAQZ/uEEwTVNF9PS
-        dW+X/UyNJUUJDa2SeZ7tR7X4LTD3qWC+m99xuHOndDWqHxtEM5fAOgzUUjFX0OjB
-        TW2qdRrmVMEQq4Gk+xHq58xpPFlmswHGEDd5Bc4/8QCE4JLxrnsHVhN8IzqmFET6
-        HYvE7khtaLKuVXedTeeFuZm+4Modtv6AUjtKv4yUoiCLeIDkEYTxiMaHlj5nbVja
-        3boDLntBJGgwNibk5/acK27FVdjoa7rAbm080+MDHJzw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=jGoXzPaLrTSMzrEWt
-        vvGyydli2uRBq2EBIG4vZ4n6Zg=; b=ArAENFk73SO14+CczIfwVKHG4tH1MgnWI
-        6z0VGUX6GQjaUImiEx2zqg2qAqOWdueL+chYrrNEWULGHJUWubQkvSNLx6YAESPL
-        hyMiFAec8FK8uvt3xOqYfEH1xSdAmNwNd7rGVdlzQyWLRWBYYDn1VElyDE8+uiPw
-        FrCpVcjDp3N6rxbMJ4O2LSFSvCGw2OFdLPLtdffju/tKxIlLasUyTtBcQQjlZ2uZ
-        p4N/4l2skAdm/qAwKre+7HWAwHtDiLKT3Jg64mJidm7hwp564C387kJ8YrJjd9hs
-        smHf2eseDE/uRNZHDx/xW6uMcslsaesquc+j2LdGFxgaSGfmruEoQ==
-X-ME-Sender: <xms:kC6fYGBIXvzwJQgEajPsxINAUYuXeT5NkvJNACQl-FUa1YnuvFdxPg>
-    <xme:kC6fYAgtoWlSBDr3C19Pyc8EERQq692SRH_Zxx5PKcKkc1XwYVL3fNgeE-M7Ow33z
-    GAdAVRiB_2wLwFcgw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdehkedguddvjecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghl
-    ucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrf
-    grthhtvghrnhepieffueefheeggffhveevgfdugeeujefgudekteegueelvefgfedujeek
-    tdeiheelnecuffhomhgrihhnpehgihhthhhusgdrtghomhdpkhgvrhhnvghlrdhorhhgne
-    cukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiiigvpedtnecu
-    rfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhg
-X-ME-Proxy: <xmx:kC6fYJm01TL3T-ovZJPGX0HR1eB8McVZDGjA1lQ-ynP621ztcQus-A>
-    <xmx:kC6fYEzHLhUYHBavgc2gCT1DzPEdCIGyclTBkalwWI3Jgi9x4Aznug>
-    <xmx:kC6fYLTnTOpOg-XmSe2PjG79KlfIOYOrxD9eUaiYoALItt4nR0uIbw>
-    <xmx:kS6fYGH1rgCeXbwZSEz-ti4cwT6GRbu36nwo50sR17mi1ZDci8hQVA>
-Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Fri, 14 May 2021 22:14:40 -0400 (EDT)
-From:   Samuel Holland <samuel@sholland.org>
-To:     Mark Rutland <mark.rutland@arm.com>, Marc Zyngier <maz@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ondrej Jirman <megous@megous.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@lists.linux.dev, Samuel Holland <samuel@sholland.org>,
-        stable@vger.kernel.org, Roman Stratiienko <r.stratiienko@gmail.com>
-Subject: [PATCH] clocksource/arm_arch_timer: Improve Allwinner A64 timer workaround
-Date:   Fri, 14 May 2021 21:14:39 -0500
-Message-Id: <20210515021439.55316-1-samuel@sholland.org>
-X-Mailer: git-send-email 2.26.3
+        Fri, 14 May 2021 22:26:40 -0400
+Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Fhq1s0Z3Vzlbrx;
+        Sat, 15 May 2021 10:23:13 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sat, 15 May 2021 10:25:26 +0800
+Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Sat, 15 May
+ 2021 10:25:25 +0800
+Subject: Re: [PATCH net v8 1/3] net: sched: fix packet stuck problem for
+ lockless qdisc
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Cong Wang <xiyou.wangcong@gmail.com>
+CC:     David Miller <davem@davemloft.net>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "Wei Wang" <weiwan@google.com>,
+        "Cong Wang ." <cong.wang@bytedance.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        <linux-can@vger.kernel.org>, Jamal Hadi Salim <jhs@mojatatu.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Jonas Bonn <jonas.bonn@netrounds.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Michael Zhivich <mzhivich@akamai.com>,
+        Josh Hunt <johunt@akamai.com>, Jike Song <albcamus@gmail.com>,
+        Kehuan Feng <kehuan.feng@gmail.com>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        "Hillf Danton" <hdanton@sina.com>, <jgross@suse.com>,
+        <JKosina@suse.com>, "Michal Kubecek" <mkubecek@suse.cz>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Alexander Lobakin <alobakin@pm.me>
+References: <1620959218-17250-1-git-send-email-linyunsheng@huawei.com>
+ <1620959218-17250-2-git-send-email-linyunsheng@huawei.com>
+ <CAM_iQpXWgYQxf8Ba-D4JQJMPUaR9MBfQFTLFCHWJMVq9PcUWRg@mail.gmail.com>
+ <20210514163923.53f39888@kicinski-fedora-PC1C0HJN>
+ <CAM_iQpXZNASp7+kA=OoCVbXuReAtOzHnqMn8kFUVfi9_qWe_kw@mail.gmail.com>
+ <20210514171759.5572c8f0@kicinski-fedora-PC1C0HJN>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <def859b3-b6ea-7338-38eb-3f18ec3d60c2@huawei.com>
+Date:   Sat, 15 May 2021 10:25:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210514171759.5572c8f0@kicinski-fedora-PC1C0HJN>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme718-chm.china.huawei.com (10.1.199.114) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bad counter reads are experienced sometimes when bit 10 or greater rolls
-over. Originally, testing showed that at least 10 lower bits would be
-set to the same value during these bad reads. However, some users still
-reported time skips.
+On 2021/5/15 8:17, Jakub Kicinski wrote:
+> On Fri, 14 May 2021 16:57:29 -0700 Cong Wang wrote:
+>> On Fri, May 14, 2021 at 4:39 PM Jakub Kicinski <kuba@kernel.org> wrote:
+>>>
+>>> On Fri, 14 May 2021 16:36:16 -0700 Cong Wang wrote:  
+>>  [...]  
+>>>>
+>>>> We have test_and_clear_bit() which is atomic, test_bit()+clear_bit()
+>>>> is not.  
+>>>
+>>> It doesn't have to be atomic, right? I asked to split the test because
+>>> test_and_clear is a locked op on x86, test by itself is not.  
+>>
+>> It depends on whether you expect the code under the true condition
+>> to run once or multiple times, something like:
+>>
+>> if (test_bit()) {
+>>   clear_bit();
+>>   // this code may run multiple times
+>> }
+>>
+>> With the atomic test_and_clear_bit(), it only runs once:
+>>
+>> if (test_and_clear_bit()) {
+>>   // this code runs once
+>> }
 
-Wider testing revealed that on some chips, occasionally only the lowest
-9 bits would read as the anomalous value. During these reads (which
-still happen only when bit 10), bit 9 would read as the correct value.
+I am not sure if the above really matter when the test and clear
+does not need to be atomic.
 
-Reduce the mask by one bit to cover these cases as well.
+In order for the above to happens, the MISSED has to set between
+test and clear, right?
 
-Cc: stable@vger.kernel.org
-Fixes: c950ca8c35ee ("clocksource/drivers/arch_timer: Workaround for Allwinner A64 timer instability")
-Reported-by: Roman Stratiienko <r.stratiienko@gmail.com>
-Signed-off-by: Samuel Holland <samuel@sholland.org>
----
+>>
+>> This is why __netif_schedule() uses test_and_set_bit() instead of
+>> test_bit()+set_bit().
 
-The tool used for testing is here:
- https://github.com/smaeul/timer-tools
+I think test_and_set_bit() is needed in __netif_schedule() mainly
+because STATE_SCHED is also used to indicate if the qdisc is in
+sd->output_queue, so it has to be atomic.
 
-For examples of the 9-bit pattern, see the data here:
- https://github.com/8bitgc/timer-tools/tree/master/output
-
-I was able to reproduce the same pattern (although _extremely_ rarely)
-on 1 of the 8 A64 boards I currently have access to.
-
-This explanation is consistent with the earlier report here:
- https://lore.kernel.org/lkml/20200929111347.1967438-1-r.stratiienko@gmail.com/
-
-In that report, the time went backward 20542 ns == 493 cycles @ 24 MHz,
-which matches the expected 2^9 == 512 cycles minus system call overhead.
-
- drivers/clocksource/arm_arch_timer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
-index d0177824c518..f4881764bf8f 100644
---- a/drivers/clocksource/arm_arch_timer.c
-+++ b/drivers/clocksource/arm_arch_timer.c
-@@ -352,7 +352,7 @@ static u64 notrace arm64_858921_read_cntvct_el0(void)
- 	do {								\
- 		_val = read_sysreg(reg);				\
- 		_retries--;						\
--	} while (((_val + 1) & GENMASK(9, 0)) <= 1 && _retries);	\
-+	} while (((_val + 1) & GENMASK(8, 0)) <= 1 && _retries);	\
- 									\
- 	WARN_ON_ONCE(!_retries);					\
- 	_val;								\
--- 
-2.26.3
+> 
+> Thanks, makes sense, so hopefully the MISSED-was-set case is not common
+> and we can depend on __netif_schedule() to DTRT, avoiding the atomic op
+> in the common case.
+> 
+> .
+> 
 
