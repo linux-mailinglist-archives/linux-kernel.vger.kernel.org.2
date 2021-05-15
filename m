@@ -2,77 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A142F381B1B
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 22:51:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09330381B1F
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 22:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235032AbhEOUwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 16:52:45 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:50161 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234987AbhEOUwj (ORCPT
+        id S235014AbhEOU4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 16:56:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229938AbhEOU4p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 16:52:39 -0400
-Received: from cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net ([80.193.200.194] helo=[192.168.0.210])
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1li1Fr-0001mr-TT; Sat, 15 May 2021 20:51:23 +0000
-Subject: Re: [PATCH-next] x86/kernel: Fix unchecked return value
-To:     Borislav Petkov <bp@alien8.de>,
-        Khaled ROMDHANI <khaledromdhani216@gmail.com>
-Cc:     peterz@infradead.org, jpoimboe@redhat.com, jbaron@akamai.com,
-        rostedt@goodmis.org, ardb@kernel.org, tglx@linutronix.de,
-        mingo@redhat.com, x86@kernel.org, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <20210515202212.24836-1-khaledromdhani216@gmail.com>
- <YKAw3Yl8c6nU1zng@zn.tnic>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <6f149c2e-eeb0-6b50-2b54-a56ae4646ea5@canonical.com>
-Date:   Sat, 15 May 2021 21:51:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Sat, 15 May 2021 16:56:45 -0400
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB48DC061573
+        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 13:55:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=DceUy+2NUnlC8ur/URFEkVm8PqULS5zh5pj+vzZYRL4=; b=UU1A8Js74rkX+Cal28SjjTTrfj
+        IuzAb92N5bRe39OKkLcPvjeiEjAPCV3JmDbQHBiud8IZ1c3I2BtbH8P/cs6AS+IK7rrCxyoe5K/GK
+        B8mxA2JvQcVj5IeiJkUQLrjIhpqblQoFLj7Pd9sSvUz0yInnFMs1ljVfQdq0xWMU2LRI=;
+Received: from p200300ccff3902001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff39:200:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1li1Jj-0005cR-Pt; Sat, 15 May 2021 22:55:24 +0200
+Received: from andi by aktux with local (Exim 4.92)
+        (envelope-from <andreas@kemnade.info>)
+        id 1li1Jj-0001Xi-FO; Sat, 15 May 2021 22:55:23 +0200
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     lee.jones@linaro.org, andreas@kemnade.info,
+        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org
+Subject: [PATCH RESEND] mfd: rn5t618: fix IRQ trigger by changing it to level mode
+Date:   Sat, 15 May 2021 22:55:18 +0200
+Message-Id: <20210515205519.5884-1-andreas@kemnade.info>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <YKAw3Yl8c6nU1zng@zn.tnic>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/05/2021 21:36, Borislav Petkov wrote:
-> On Sat, May 15, 2021 at 09:22:12PM +0100, Khaled ROMDHANI wrote:
->> From the coverity scan analysis, the return value from
->> insn_decode_kernel is not checked. It is a macro constructed
->> from the insn_decode function which may fail and return
->> negative integer. Fix this by explicitly checking the
->> return value.
->>
->> Addresses-Coverity: ("Unchecked return value")
->> Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
->> ---
->>  arch/x86/kernel/jump_label.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/x86/kernel/jump_label.c b/arch/x86/kernel/jump_label.c
->> index a762dc1c615e..bf0ea003b6e7 100644
->> --- a/arch/x86/kernel/jump_label.c
->> +++ b/arch/x86/kernel/jump_label.c
->> @@ -23,7 +23,7 @@ int arch_jump_entry_size(struct jump_entry *entry)
->>  {
->>  	struct insn insn = {};
->>  
->> -	insn_decode_kernel(&insn, (void *)jump_entry_code(entry));
->> +	WARN_ON(insn_decode_kernel(&insn, (void *)jump_entry_code(entry)));
-> 
-> I don't think coverity is smart enough to notice...
-> 
->>  	BUG_ON(insn.length != 2 && insn.length != 5);
-> 	^^^^^^^^^^^^^
-> 
-> ... this line.
-> 
-> 
-Indeed. One needs to be careful with false positives with Coverity.
+During more massive generation of interrupts, the IRQ got stuck,
+and the subdevices did not see any new interrupts. That happens
+especially at wonky USB supply in combination with ADC reads.
+To fix that trigger the IRQ at level low instead of falling edge.
 
-Colin
+Fixes: 0c81604516af ("mfd: rn5t618: Add IRQ support")
+Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+---
+ drivers/mfd/rn5t618.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mfd/rn5t618.c b/drivers/mfd/rn5t618.c
+index ecddd7b6500e..a852eef1f4d2 100644
+--- a/drivers/mfd/rn5t618.c
++++ b/drivers/mfd/rn5t618.c
+@@ -109,7 +109,7 @@ static int rn5t618_irq_init(struct rn5t618 *rn5t618)
+ 
+ 	ret = devm_regmap_add_irq_chip(rn5t618->dev, rn5t618->regmap,
+ 				       rn5t618->irq,
+-				       IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
++				       IRQF_TRIGGER_LOW | IRQF_ONESHOT,
+ 				       0, irq_chip, &rn5t618->irq_data);
+ 	if (ret)
+ 		dev_err(rn5t618->dev, "Failed to register IRQ chip\n");
+-- 
+2.29.2
+
