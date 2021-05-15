@@ -2,121 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E6C1381A2B
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 19:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 380E9381A2E
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 19:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234131AbhEORcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 13:32:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41416 "EHLO
+        id S234160AbhEORgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 13:36:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231482AbhEORb5 (ORCPT
+        with ESMTP id S231482AbhEORgr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 13:31:57 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75FE9C061573;
-        Sat, 15 May 2021 10:30:42 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id r11so2030696edt.13;
-        Sat, 15 May 2021 10:30:42 -0700 (PDT)
+        Sat, 15 May 2021 13:36:47 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE68DC06174A
+        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 10:35:33 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id j12so2496999ils.4
+        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 10:35:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kA0tpI1mUYHchALrWUvn/XBSkrDGvf6V2LCHoFETY8Y=;
-        b=XaSeG+mMfX5GQIV0lhmV3971is6O22REZgGwub379qBAzA/hz6ecEvBgz/a1YrRp1R
-         pnhXggJj/tXcawnNW4FaCdGry+uM0RlzCsv3MRaQgjbDIwTiesUxfQY5PTaUUwJXfhT7
-         NgrjzoTDb/lZgq39H9cm8D+O1ayXsIjF8QrcmqgLvQgK2whEuSZpKsNQNnEqsNcYkzkO
-         JcKBQu7b8M2rizqn+9tPTlgd7v3yMSJVuctU2BxrSN6JjyN9DrCGhUBgeXDM0BGw4Tj3
-         RIEFy3nbJhZAQktQ66ZR2nRVOepaDl/U7iszLzUoXsyrqzLs6kYTuWzGzQ1dUUr4iqJW
-         kM8Q==
+        d=fatalsyntax-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:content-transfer-encoding:cc:subject:from:to:date
+         :message-id:in-reply-to;
+        bh=ECsAuXqf15dWO568NVSzYv1EWPK7FJKl+lqtYqv4WjM=;
+        b=GhrWtqA8WDo7J3ALnnGSbuE/f12hP55xaLn6+j7nn3Cg7IRHFEqAYOsTrqlIOL3B+A
+         BW4WGTmXPEVTBMcFU/8bqMkk2k1K8d36JYEXQLhG3dMGP24RhvVxjNmjpCGW8Iix59qK
+         sXHJM/9vDWIp72wcVfzgiEy6KypVswQI8jmrsQxbIytWWLGsUGhRMiqg14eWYaL1tLKf
+         VttMt9bT8uCw4W9ekKVHwAlHyqCCST6FuNHoHno4eUoMhOsL+DboOk77UQs/uaRWOUfQ
+         rFiIgzrgTTMynVSlAF9f/ECILVazpAIYu9ITUCxODQhUmeUDgXKUNRj4gDkNyjfeFyfI
+         u9Tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kA0tpI1mUYHchALrWUvn/XBSkrDGvf6V2LCHoFETY8Y=;
-        b=PYN7HtY3ZpuJJ0N2P/ETKgEhE1c8leaLfTANKrHzRODG1AdE5nd/x/zpZKuBKIW+Mi
-         7fDkrS+haj3FKMulOBHWdi1LnIuu+JrxaIWzfo/D4wOp9krLGwoQXjbWCKoCg5Ki+Gji
-         /ic6chcFB+/P7T9Agxqovnxy0rKmTU02FPi4HmJip2L6F6CGTstvTq1bz0rqiHkAkU0G
-         /M6Cetrg5X4ClqCpNkMSY4HXSJHeHQNlXWOYRcUn0AJL/45fIEYXZSCHRiXRWGnlGGJx
-         xBC8NgqNdqlB42s6kXyqKU6pKU3Lolmu4x+DuQuQP+JMgZxjcBygrCoSZDSsW9iWZMyg
-         Sksg==
-X-Gm-Message-State: AOAM530ueOn08yn32eNv4Nc9LhE0pDTzytgjnQNAxfL4jxXKzICxoMix
-        cA9NHTfeBeoodjJwKKJ65uzRp5B5VR8aKg==
-X-Google-Smtp-Source: ABdhPJxsvUE2fg9X8SPNeJaZQhmhAJEEurM4eNLZdMlYgQPmuZLmbqfofzet2aD5Gc410/iWptplWg==
-X-Received: by 2002:aa7:d84e:: with SMTP id f14mr62161873eds.220.1621099840998;
-        Sat, 15 May 2021 10:30:40 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (93-35-189-2.ip56.fastwebnet.it. [93.35.189.2])
-        by smtp.gmail.com with ESMTPSA id i19sm5480993ejd.114.2021.05.15.10.30.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 May 2021 10:30:40 -0700 (PDT)
-Date:   Sat, 15 May 2021 19:30:26 +0200
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Jonathan McDowell <noodles@earth.li>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH net-next v4 01/28] net: mdio: ipq8064: clean
- whitespaces in define
-Message-ID: <YKAFMg+rJsspgE84@Ansuel-xps.localdomain>
-References: <20210508002920.19945-1-ansuelsmth@gmail.com>
- <YJbSOYBxskVdqGm5@lunn.ch>
- <YJbTBuKobu1fBGoM@Ansuel-xps.localdomain>
- <20210515170046.GA18069@earth.li>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210515170046.GA18069@earth.li>
+        h=x-gm-message-state:mime-version:content-transfer-encoding:cc
+         :subject:from:to:date:message-id:in-reply-to;
+        bh=ECsAuXqf15dWO568NVSzYv1EWPK7FJKl+lqtYqv4WjM=;
+        b=g/n8vzyMCb91Z92RmFV2uTxbWD984EI8NbsjZiqOJXGOtH5rMu4wYO03pRvgpPXF9S
+         9nF3L8c5AFz0N5t4D5LMaHsqjOt1m4W0QoX5hh5GWYRPAOOEVrTG6AwA0i2FOUWE5zUk
+         yHUgUkim7BZON0LElD/GsdtGixovid5bNeHsdAwJJLTF1AfSIpSpw34yIYlJRyvJ7CdC
+         R+uTsFqvpY/7Mf9M2XccbhKeRQ2VMYo00UQYzVRNAdrYAQuwzXWV0X+Z2lnIbhmWjuIK
+         K8QBbaRMQYu3hp0k/vyKewMrBmDugbnwa+nktm7nwPjRizpGjX73uxHpOPEfrHKkz0qX
+         0Sdg==
+X-Gm-Message-State: AOAM532eWKm48Bs9a0usWRmGWh6frWPsAipdEfyZydN9Jr8qHY4pptOX
+        YwefFcZiTEeHmDGsXyBnI4MCRg==
+X-Google-Smtp-Source: ABdhPJy/rRDwwTjfwk0ae19NzmdLr9zilL3sOKeRp8K5fwv74zFSxDNvdqMJmKJktvMAonHm7jH03Q==
+X-Received: by 2002:a05:6e02:168f:: with SMTP id f15mr48359921ila.264.1621100133041;
+        Sat, 15 May 2021 10:35:33 -0700 (PDT)
+Received: from localhost (2603-6000-ca08-f320-6401-a7ff-fe72-256d.res6.spectrum.com. [2603:6000:ca08:f320:6401:a7ff:fe72:256d])
+        by smtp.gmail.com with ESMTPSA id x13sm4977602ilv.88.2021.05.15.10.35.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 15 May 2021 10:35:32 -0700 (PDT)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Cc:     <bhelgaas@google.com>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Alex Williamson" <alex.williamson@redhat.com>
+Subject: Re: [PATCH] pci: add NVMe FLR quirk to the SM951 SSD
+From:   "Robert Straw" <drbawb@fatalsyntax.com>
+To:     "Bjorn Helgaas" <helgaas@kernel.org>
+Date:   Sat, 15 May 2021 12:20:05 -0500
+Message-Id: <CBDZPI1DXKMS.88UVUXVIGC5V@nagato>
+In-Reply-To: <20210430205105.GA683965@bjorn-Precision-5520>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 15, 2021 at 06:00:46PM +0100, Jonathan McDowell wrote:
-> On Sat, May 08, 2021 at 08:05:58PM +0200, Ansuel Smith wrote:
-> > On Sat, May 08, 2021 at 08:02:33PM +0200, Andrew Lunn wrote:
-> > > On Sat, May 08, 2021 at 02:28:51AM +0200, Ansuel Smith wrote:
-> > > > Fix mixed whitespace and tab for define spacing.
-> > > 
-> > > Please add a patch [0/28] which describes the big picture of what
-> > > these changes are doing.
-> > > 
-> > > Also, this series is getting big. You might want to split it into two,
-> > > One containing the cleanup, and the second adding support for the new
-> > > switch.
-> > > 
-> > > 	Andrew
-> > 
-> > There is a 0/28. With all the changes. Could be that I messed the cc?
-> > I agree think it's better to split this for the mdio part, the cleanup
-> > and the changes needed for the internal phy.
-> 
-> FWIW I didn't see the 0/28 mail either. I tried these out on my RB3011
-> today. I currently use the GPIO MDIO driver because I saw issues with
-> the IPQ8064 driver in the past, and sticking with the GPIO driver I see
-> both QCA8337 devices and traffic flows as expected, so no obvious
-> regressions from your changes.
-> 
-> I also tried switching to the IPQ8064 MDIO driver for my first device
-> (which is on the MDIO0 bus), but it's still not happy:
-> 
-> qca8k 37000000.mdio-mii:10: Switch id detected 0 but expected 13
-> 
-> J.
-> 
-> -- 
-> One of the nice things about standards is that there are so many of
-> them.
+On Fri Apr 30, 2021 at 3:51 PM CDT, Bjorn Helgaas wrote:
 
-Can you try the v6 version of this series? Anyway the fact that 0 is
-produced instead of a wrong value let me think that there is some
-problem with the mdio read. (on other device there was a problem of
-wrong id read but nerver 0). Could be that the bootloader on your board
-set the mdio MASTER disabled. I experienced this kind of problem when
-switching from the dsa driver and the legacy swconfig driver. On remove
-of the dsa driver, the swconfig didn't work as the bit was never cleared
-by the dsa driver and resulted in your case. (id 0 read from the mdio)
+> Please make your subject line match ffb0863426eb ("PCI: Disable
+> Samsung SM961/PM961 NVMe before FLR")
 
-Do you want to try a quick patch so we can check if this is the case?
-(about the cover letter... sorry will check why i'm pushing this wrong)
+I had done this in a V2 of this patch, but after some additional
+research I'm thinking the behavior of this quirk might be in-line=20
+w/ the NVMe specification more generally, I'll elaborate more below.
+
+> I don't see anything in the PCIe spec about software being required to
+> do something special before initiating an FLR, so I assume this is a
+> hardware defect in the Samsung 950 PRO? Has Samsung published an
+> erratum or at least acknowledged it?
+>
+> There's always the possibility that we are doing something wrong in
+> Linux *after* the FLR, e.g., not waiting long enough, not
+> reinitializing something correctly, etc.
+
+I did some dumping of registers both with and without this patch, and
+determined the following to be true in my use-case:
+
+1. My guest VM leaves the device in a state where SHN (shutdown
+notification) is set to 0b01 (normal shutdown)
+
+2. The guest also leaves CC.EN (controller enable) set to 0b1
+
+3. vfio-pci attempts to issue an FLR while the device is in this state.
+
+
+On page 40, sec 3.1.6 of the NVMe 1.1 spec, the documentation on SHST=20
+states the following:
+
+> To start executing commands on the controller after a shutdown=20
+> operation (CSTS.SHST set to 10b), a reset (CC.EN cleared to =E2=80=980=E2=
+=80=99)=20
+> is required. If host software submits commands to the controller=20
+> without issuing a reset, the behavior is undefined.
+
+In the case of the SM951/SM961 it appears the undefined behavior is that
+they stop responding to attempts to change their configuration if you do
+an FLR while the device is in this state. The reason this patch
+resolved the issue I was seeing is because the toggle of the CC.EN flag=20
+puts the drive in a known-good state after the guest's shutdown=20
+notification.
+
+Knowing this I would suspect we'd actually want to treat most NVMe
+drives in this manner *if the kernel sees the SHN/SHST has been set
+prior.* Perhaps other NVMe devices are more tolerant of not doing this?
+
+~ robert straw
