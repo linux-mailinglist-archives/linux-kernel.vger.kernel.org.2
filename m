@@ -2,87 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 253DD38151B
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 04:07:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E272338151F
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 04:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234890AbhEOCIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 22:08:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37118 "EHLO mail.kernel.org"
+        id S234999AbhEOCQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 22:16:24 -0400
+Received: from mga04.intel.com ([192.55.52.120]:41198 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234838AbhEOCIt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 22:08:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E4976143D;
-        Sat, 15 May 2021 02:07:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621044457;
-        bh=xzx313oiI5ZBAazqsSbEjejycJJakg+FeekP29dmYGI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=gRwqUPJRNXBv/PKCYjChc5LRSCzwIFRW0aT7QjfYX6i3Ao1KOZUF8ZG5wzhtxn47V
-         Aaxn0OE4lT6UBqiisPWouobqC6aeq7TgZAKj7ukF7hf2vZh6mgsUF7RkPitRyYZeo9
-         UBkcRmZeGJRWNI7iYha3kkGzNKIPFS4HYTYtR5AcJxpC5ku+E+MfWM2h+jXs+0I7ix
-         nj7H7ywItRaiOYcMNEtbJi8aNF6iu+56c53Ue7plPqhCsp70XyYqMDhEvkR9WD6Qgs
-         Ce83iRpn4KmyI3Uwn5Rb6rD/lXQxJoTllO9j5Iyf5MM+WcB3WBLoWPNI8bcHwvzjIS
-         7MAKQEfbvDwJw==
-Date:   Sat, 15 May 2021 10:07:31 +0800
-From:   Gao Xiang <xiang@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-erofs@lists.ozlabs.org,
-        Chao Yu <yuchao0@huawei.com>,
-        Li Guifu <bluce.liguifu@huawei.com>,
-        Miao Xie <miaoxie@huawei.com>, Fang Wei <fangwei1@huawei.com>
-Subject: [GIT PULL] erofs fixes for 5.13-rc2
-Message-ID: <20210515020731.GA2382@hsiangkao-HP-ZHAN-66-Pro-G1>
+        id S234987AbhEOCQQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 22:16:16 -0400
+IronPort-SDR: 3MdbSJqxT0M94P2VbtMwhe+TmixezuvodBGFJ0Ms8AhCcUm9IiIDVAnE1PxRgVBPozJME1YL+Q
+ KrcSNqQMcGyg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9984"; a="198304109"
+X-IronPort-AV: E=Sophos;i="5.82,300,1613462400"; 
+   d="scan'208";a="198304109"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 May 2021 19:15:03 -0700
+IronPort-SDR: mwJQ0TI4ox0fUAVP+JNKP9ZbnLOGGtLua7hxrrEDIVF1TsO0YeEtxqnK7DHuoRoAWXV3PThUJ/
+ hUQjQOjL188g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,300,1613462400"; 
+   d="scan'208";a="393809908"
+Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
+  by orsmga006.jf.intel.com with ESMTP; 14 May 2021 19:15:02 -0700
+Date:   Fri, 14 May 2021 19:14:15 -0700
+From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@kernel.org>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Len Brown <len.brown@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Ricardo Neri <ricardo.neri@intel.com>,
+        Quentin Perret <qperret@google.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org, Aubrey Li <aubrey.li@intel.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: [PATCH v3 5/6] sched/fair: Consider SMT in ASYM_PACKING load
+ balance
+Message-ID: <20210515021415.GB14212@ranerica-svr.sc.intel.com>
+References: <20210513154909.6385-1-ricardo.neri-calderon@linux.intel.com>
+ <20210513154909.6385-6-ricardo.neri-calderon@linux.intel.com>
+ <YJ5HQR943rSFsLxw@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YJ5HQR943rSFsLxw@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Fri, May 14, 2021 at 11:47:45AM +0200, Peter Zijlstra wrote:
+> On Thu, May 13, 2021 at 08:49:08AM -0700, Ricardo Neri wrote:
+> >  include/linux/sched/topology.h |   1 +
+> >  kernel/sched/fair.c            | 101 +++++++++++++++++++++++++++++++++
+> >  2 files changed, 102 insertions(+)
+> > 
+> > diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+> > index 8f0f778b7c91..43bdb8b1e1df 100644
+> > --- a/include/linux/sched/topology.h
+> > +++ b/include/linux/sched/topology.h
+> > @@ -57,6 +57,7 @@ static inline int cpu_numa_flags(void)
+> >  #endif
+> >  
+> >  extern int arch_asym_cpu_priority(int cpu);
+> > +extern bool arch_asym_check_smt_siblings(void);
+> >  
+> >  struct sched_domain_attr {
+> >  	int relax_domain_level;
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index c8b66a5d593e..3d6cc027e6e6 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -106,6 +106,15 @@ int __weak arch_asym_cpu_priority(int cpu)
+> >  	return -cpu;
+> >  }
+> >  
+> > +/*
+> > + * For asym packing, first check the state of SMT siblings before deciding to
+> > + * pull tasks.
+> > + */
+> > +bool __weak arch_asym_check_smt_siblings(void)
+> > +{
+> > +	return false;
+> > +}
+> > +
+> >  /*
+> >   * The margin used when comparing utilization with CPU capacity.
+> >   *
+> 
+> > @@ -8458,6 +8550,9 @@ sched_asym(struct lb_env *env, struct sd_lb_stats *sds,  struct sg_lb_stats *sgs
+> >  	if (group == sds->local)
+> >  		return false;
+> >  
+> > +	if (arch_asym_check_smt_siblings())
+> > +		return asym_can_pull_tasks(env->dst_cpu, sds, sgs, group);
+> > +
+> >  	return sched_asym_prefer(env->dst_cpu, group->asym_prefer_cpu);
+> >  }
+> 
+> So I'm thinking that this is a property of having ASYM_PACKING at a core
+> level, rather than some arch special. Wouldn't something like this be
+> more appropriate?
+> 
+> ---
+> --- a/include/linux/sched/topology.h
+> +++ b/include/linux/sched/topology.h
+> @@ -57,7 +57,6 @@ static inline int cpu_numa_flags(void)
+>  #endif
+>  
+>  extern int arch_asym_cpu_priority(int cpu);
+> -extern bool arch_asym_check_smt_siblings(void);
+>  
+>  struct sched_domain_attr {
+>  	int relax_domain_level;
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -107,15 +107,6 @@ int __weak arch_asym_cpu_priority(int cp
+>  }
+>  
+>  /*
+> - * For asym packing, first check the state of SMT siblings before deciding to
+> - * pull tasks.
+> - */
+> -bool __weak arch_asym_check_smt_siblings(void)
+> -{
+> -	return false;
+> -}
+> -
+> -/*
+>   * The margin used when comparing utilization with CPU capacity.
+>   *
+>   * (default: ~20%)
+> @@ -8550,7 +8541,8 @@ sched_asym(struct lb_env *env, struct sd
+>  	if (group == sds->local)
+>  		return false;
+>  
+> -	if (arch_asym_check_smt_siblings())
+> +	if ((sds->local->flags & SD_SHARE_CPUCAPACITY) ||
+> +	    (group->flags & SD_SHARE_CPUCAPACITY))
+>  		return asym_can_pull_tasks(env->dst_cpu, sds, sgs, group);
 
-Could you consider this pull request for 5.13-rc2?
+Thanks Peter for the quick review! This makes sense to me. The only
+reason we proposed arch_asym_check_smt_siblings() is because we were
+about breaking powerpc (I need to study how they set priorities for SMT,
+if applicable). If you think this is not an issue I can post a
+v4 with this update.
 
-This mainly fixes 1 lcluster-sized pclusters for the big pcluster
-feature, which can be forcely generated by mkfs as a specific on-disk
-case for per-(sub)file compression strategies but missed to handle in
-runtime properly. Also, documentation updates are included to fix
-the broken illustration due to the ReST conversion by accident and
-complete the big pcluster introduction.
-
-All commits have been tested and have been in linux-next. This merges
-cleanly with master.
-
-Thanks,
-Gao Xiang
-
-The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
-
-  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs.git tags/erofs-for-5.13-rc2-fixes
-
-for you to fetch changes up to 0852b6ca941ef3ff75076e85738877bd3271e1cd:
-
-  erofs: fix 1 lcluster-sized pcluster for big pcluster (2021-05-13 15:58:46 +0800)
-
-----------------------------------------------------------------
-Changes since last update:
- - update documentation to fix the broken illustration due to ReST
-   conversion by accident at that time and complete the big pcluster
-   introduction;
-
- - fix 1 lcluster-sized pclusters for the big pcluster feature.
-
-----------------------------------------------------------------
-Gao Xiang (3):
-      erofs: fix broken illustration in documentation
-      erofs: update documentation about data compression
-      erofs: fix 1 lcluster-sized pcluster for big pcluster
-
- Documentation/filesystems/erofs.rst | 175 +++++++++++++++++++++---------------
- fs/erofs/zmap.c                     |  21 ++++-
- 2 files changed, 121 insertions(+), 75 deletions(-)
+Thanks and BR,
+Ricardo
