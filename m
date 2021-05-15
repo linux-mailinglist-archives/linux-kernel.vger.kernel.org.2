@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ABA438198E
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 17:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24EFE381990
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 17:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232573AbhEOPa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 11:30:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32958 "EHLO mail.kernel.org"
+        id S232658AbhEOPbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 11:31:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33114 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232483AbhEOPax (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 11:30:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD4B3613CD;
-        Sat, 15 May 2021 15:29:39 +0000 (UTC)
+        id S232483AbhEOPbf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 May 2021 11:31:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 136E1611C9;
+        Sat, 15 May 2021 15:30:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621092579;
-        bh=BcG8mCe9C/Ts+MPHGTEIAQ8DSW/EoqxmARLmaOLsK5Q=;
+        s=k20201202; t=1621092622;
+        bh=GvpOdLUN0BGGVqLx+hc71U4t5c+VkOe8e4mFWqfjXQ8=;
         h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=FtfrvzJuPJiQjaidajh1nzrxEQaELUYoCvIZchLuBnLjpxNYBs++9hhrEpg9w7Zbz
-         Uqvkcmh6MtcrWMKlQUC3DxWdwvjmz2YtFe5RAiv6JAZvg9LUYPb9D6XbjFcir00Akg
-         UJW/J10lEFE350NSOZkuh38BVT8byEmZ4nBaYovp6H59RTq9JQSIb922yK4FEpuUiy
-         c1Pf+bXkQH/y/h8UXBkauOqT8Qm3I25vu+5Gf+fWGAoYJ6nxenw5ZiK6YQ5QAUB38D
-         AOUcEa9o/GJd+sTavlxDxNLh2rkrNfV0djxoZW7BjbRBc+e/c1ey461VkDQ0X0uJzJ
-         5u74Y1ZCRBbsQ==
-Subject: Re: [PATCH v2 5/9] x86/desc: add native_[ig]dt_invalidate() to
- <asm/desc.h>
+        b=ZQxYSeTYPcDcDgDbt7aoO9YAZtoRFRxwwL5RnbAwsSYdvG83qx0XtFKiFvsxB9pXi
+         utt2eD4j8xvKeNhtxF6CE17aBwwLrtRaY3KGjOmkJpzcqVlASBSDGfPNjhGwu1lsag
+         yy2EWc3hhODxf797rScxP+9IkifgA+u9LC0VplxgUImQyvKp/KbCfWr9+KCOIbg1Qv
+         0j+tFIeLesu6Oiw25XC+ziv8t35QnUL+pizzCSYiWehiRgnIUm+Hk/Fl8pUV9Y8Ctf
+         RLXoBEBGjeAMGvLAYF6acv3XA5zkwDZRUDr4lYcVN0Lp/jkSm4yn180OXPP3vScs+8
+         7l7yV4cC6HjdA==
+Subject: Re: [PATCH v2 6/9] x86/kexec: set_[gi]dt() ->
+ native_[gi]dt_invalidate() in machine_kexec_*.c
 To:     "H. Peter Anvin" <hpa@zytor.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
 Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 References: <20210515014400.2999028-1-hpa@zytor.com>
- <20210515014400.2999028-6-hpa@zytor.com>
+ <20210515014400.2999028-7-hpa@zytor.com>
 From:   Andy Lutomirski <luto@kernel.org>
-Message-ID: <b844acb0-bfe6-0987-5a24-a7800b70d5ed@kernel.org>
-Date:   Sat, 15 May 2021 08:29:39 -0700
+Message-ID: <e30d9d16-de3f-0c72-6404-e94399e08697@kernel.org>
+Date:   Sat, 15 May 2021 08:30:21 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <20210515014400.2999028-6-hpa@zytor.com>
+In-Reply-To: <20210515014400.2999028-7-hpa@zytor.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -48,40 +48,17 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On 5/14/21 6:43 PM, H. Peter Anvin wrote:
 > From: "H. Peter Anvin (Intel)" <hpa@zytor.com>
 > 
-> In some places, we want the native forms of descriptor table
-> invalidation. Rather than open-coding them, add explicitly native
-> functions to invalidate the GDT and IDT.
+> These files contain private set_gdt() functions which are only used to
+> invalid the gdt; machine_kexec_64.c also contains a set_idt()
+> function to invalidate the idt.
+> 
+> phys_to_virt(0) *really* doesn't make any sense for creating an
+> invalid GDT. A NULL pointer (virtual 0) makes a lot more sense;
+> although neither will allow any actual memory reference, a NULL
+> pointer stands out more.
+> 
+> Replace these calls with native_[gi]dt_invalidate().
 > 
 > Signed-off-by: H. Peter Anvin (Intel) <hpa@zytor.com>
-> ---
->  arch/x86/include/asm/desc.h | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
-> 
-> diff --git a/arch/x86/include/asm/desc.h b/arch/x86/include/asm/desc.h
-> index b8429ae50b71..aa366b2bbc41 100644
-> --- a/arch/x86/include/asm/desc.h
-> +++ b/arch/x86/include/asm/desc.h
-> @@ -224,6 +224,21 @@ static inline void store_idt(struct desc_ptr *dtr)
->  	asm volatile("sidt %0":"=m" (*dtr));
->  }
->  
-> +static const struct desc_ptr __invalid_gdt_idt_ptr __maybe_unused = {
-> +	.address = 0,
-> +	.size = 0
-> +};
 
-I'm not convinced that putting this in a header is really a great idea.
-How about:
-
-> +
-> +static inline void native_gdt_invalidate(void)
-> +{
-        const struct desc_ptr ... = ...;
-
-> +	native_load_gdt(&__invalid_gdt_idt_ptr);
-> +}
-
-That should generate two PUSH instructions and may well result in a
-smaller binary :)
-
---Andy
+Acked-by: Andy Lutomirski <luto@kernel.org>
