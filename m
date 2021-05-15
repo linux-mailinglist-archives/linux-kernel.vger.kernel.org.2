@@ -2,179 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C23833816A3
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 09:50:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F04563816A5
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 09:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233591AbhEOHwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 03:52:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55922 "EHLO
+        id S233647AbhEOHx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 03:53:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230001AbhEOHwA (ORCPT
+        with ESMTP id S232502AbhEOHx4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 03:52:00 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5E7BC06174A
-        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 00:50:46 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id k10so1852429ejj.8
-        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 00:50:46 -0700 (PDT)
+        Sat, 15 May 2021 03:53:56 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88541C06174A
+        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 00:52:43 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id c20so1900795ejm.3
+        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 00:52:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=9sqvBsgHTmtDigZLFVgNZgTgUIqzxoevzD/YnZLFz94=;
-        b=E2RJpw/SgDWJi8eLafqhx/nwtQJizlS/risVSP5Nb3lmLwZtjDgNMKUfy9V+W8RHPD
-         pvW7YcdsdGrgM3yrni6RweTH4THasnGamA2gEaCZ6RF8H6+sDrfBT7xieYz985S2KMlF
-         I9GorgM8Pj/YsCCMVefFERkxG5FFYfp62BWoMTw4lVfcuOI/rFCngNT0z+sS3u8/F1QN
-         0aeNT/ucuCXhYQN2qmuDb7SQ2RQ31mM0lV4g8OMxt/nJ4A19lB40dolnBfdCt5zRdRDq
-         gVMS1uoB94rQ/iuyv/vAMg/pJkTZQAW5Nj1SI118NVIhdG4YObN0XMZxxRnTTErf4UAj
-         6/4Q==
+        d=deviqon.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CZk+7UgQ/ev3klOu/zQXroC2fr8BBS83ryBvlIT0lSQ=;
+        b=btBYIMJsb2Qc8kUu+BwOzOm0bnembBDeEEMcNwO3rZ8qJl6mPDVKh4e8qHfgiGnzPC
+         xnowC/5vzGnTfe1wXi6lseO+Yu9NvNbWjX9LHvPuES1VCgvKtSxw8VAXdJ7CFV7N1Xt2
+         Hnb1hOyg2aH9hcm+rIu7BwuaY72D64La3wxF5oLBoleJpgThljTSSHuUrKCwLmuPCdFI
+         G6Ix17XOn9G5HduDq1E2r8si1105Zf+Y1hvg16SH/nOQqy21QPDZFVIr4alhANs1gmn6
+         QLizj0Y4hiHZCBnVxpeesjJ44EorJ0W/8s0xxX+VBtGRfn6kHW2ZSJ2syIy+1RXNGSEx
+         b0xA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=9sqvBsgHTmtDigZLFVgNZgTgUIqzxoevzD/YnZLFz94=;
-        b=DWSqkNWj1ENl0eo5LOejjgJQXYDl0matrXhM0rw3psC/EEYUsct2MCKPjHZjE+dqWy
-         3pSqFkfbsT5eQu3V88E7eaC823nJQvsQD+RPI7mhiz7CG8Ejx0vrhVpHYIoDFq9RZaXK
-         TP3dT6nqiexQQFjmOaaynFskKrWKFul00oLfsm+sevWLBc99GK7htv+F7xz954uCd/vL
-         fSIyWoB5YsVUKzI0cUcr5ZjTSX7IAw55pAfThec4mJkLysKsCoJBPn/ME1zaW1KOjAPx
-         NPOX9fzj4TLzUPMEHfVTj2DLl+hRb6fEyMiAKH8B7OmItzYpfK/cF7Zn1PSUU43cm8aE
-         6huQ==
-X-Gm-Message-State: AOAM531fC+feP9jXvoek+nbNMk4PFPaJDHqZQ8TwbFOK5lSX/GkoStkc
-        OcIpJKjGyC0nAlz9gTwr7oA=
-X-Google-Smtp-Source: ABdhPJwfVuq5ngz9buqpN0hUGa8yxs7/wDsqGq/FH8oZ0KrKZ3CHJ0hFzPpo4SDopPHjn1bKAtUpSQ==
-X-Received: by 2002:a17:907:2855:: with SMTP id el21mr3472195ejc.153.1621065045420;
-        Sat, 15 May 2021 00:50:45 -0700 (PDT)
-Received: from gmail.com (178-164-188-54.pool.digikabel.hu. [178.164.188.54])
-        by smtp.gmail.com with ESMTPSA id bn5sm4889570ejb.97.2021.05.15.00.50.42
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CZk+7UgQ/ev3klOu/zQXroC2fr8BBS83ryBvlIT0lSQ=;
+        b=CElemCySJ7UWILJkkk9weUGtoLuW95/YWemx2Dp6jPAa8RQPpbkxkVO8IOrp3HgPVH
+         VyXUfd1SIpGTyDNgxycLyJ+k3KEDsDAagZgJupH6wdYdbfAYYt+mniArl9hGffvdgQej
+         ziQC9GDc61l6UvqyVMC7NLBTb5cGHVGlPRSj3OulNn8dYjc8f/Tac8bIEUZgrEENkXGc
+         WyvLj+/ZW4GjK0p96ITbZxBNg8ETNjxAiSB4GZ4+DGMG57fYZHbx9lo7eGE4WYZzC8jH
+         VD1geJPmxQIEe4exzKbhEHnRRjemRLltMmNT+RgoRau3gs6zgRwu77Z8GH8/N6C957Ut
+         dNrg==
+X-Gm-Message-State: AOAM5303mZKrFU+UI97ISbvoolI51nWJjmvwJKzigi5pFB9atrb+/302
+        Z0OC707eOCA2C8J0e/3fmRPLBA==
+X-Google-Smtp-Source: ABdhPJydKnPJ1GBx+K3tFJkfHdqem6TY2f81reDMs79XknWZXNikrNvVcrJowXyeYpPTPdiq5+cIlg==
+X-Received: by 2002:a17:907:1629:: with SMTP id hb41mr53659347ejc.316.1621065162220;
+        Sat, 15 May 2021 00:52:42 -0700 (PDT)
+Received: from neptune.. ([188.27.131.122])
+        by smtp.gmail.com with ESMTPSA id d25sm4868426ejd.59.2021.05.15.00.52.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 May 2021 00:50:43 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Sat, 15 May 2021 09:50:41 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, juri@gmail.com,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [GIT PULL] scheduler fixes
-Message-ID: <20210515075041.GA201049@gmail.com>
+        Sat, 15 May 2021 00:52:41 -0700 (PDT)
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+To:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        Alexandru Ardelean <aardelean@deviqon.com>
+Subject: [PATCH] gpio: gpio-tps6586x: remove platform_set_drvdata() + cleanup probe
+Date:   Sat, 15 May 2021 10:52:33 +0300
+Message-Id: <20210515075233.7594-1-aardelean@deviqon.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+The platform_set_drvdata() call is only useful if we need to retrieve back
+the private information.
+Since the driver doesn't do that, it's not useful to have it.
 
-Please pull the latest sched/urgent git tree from:
+If this is removed, we can also just do a direct return on
+devm_gpiochip_add_data(). We don't need to print that this call failed as
+there are other ways to log/see this during probe.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched-urgent-2021-05-15
+Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+---
+ drivers/gpio/gpio-tps6586x.c | 12 +-----------
+ 1 file changed, 1 insertion(+), 11 deletions(-)
 
-   # HEAD: 3743d55b289c203d8f77b7cd47c24926b9d186ae x86, sched: Fix the AMD CPPC maximum performance value on certain AMD Ryzen generations
-
-Fix an idle CPU selection bug, and an AMD Ryzen maximum frequency enumeration bug.
-
- Thanks,
-
-	Ingo
-
------------------->
-Gautham R. Shenoy (1):
-      sched/fair: Fix clearing of has_idle_cores flag in select_idle_cpu()
-
-Huang Rui (1):
-      x86, sched: Fix the AMD CPPC maximum performance value on certain AMD Ryzen generations
-
-
- arch/x86/include/asm/processor.h |  2 ++
- arch/x86/kernel/cpu/amd.c        | 16 ++++++++++++++++
- arch/x86/kernel/smpboot.c        |  2 +-
- drivers/cpufreq/acpi-cpufreq.c   |  6 +++++-
- kernel/sched/fair.c              |  2 +-
- 5 files changed, 25 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-index 154321d29050..556b2b17c3e2 100644
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -787,8 +787,10 @@ DECLARE_PER_CPU(u64, msr_misc_features_shadow);
+diff --git a/drivers/gpio/gpio-tps6586x.c b/drivers/gpio/gpio-tps6586x.c
+index 9b6cc74f47c8..20c4f96f42f0 100644
+--- a/drivers/gpio/gpio-tps6586x.c
++++ b/drivers/gpio/gpio-tps6586x.c
+@@ -76,7 +76,6 @@ static int tps6586x_gpio_probe(struct platform_device *pdev)
+ {
+ 	struct tps6586x_platform_data *pdata;
+ 	struct tps6586x_gpio *tps6586x_gpio;
+-	int ret;
  
- #ifdef CONFIG_CPU_SUP_AMD
- extern u32 amd_get_nodes_per_socket(void);
-+extern u32 amd_get_highest_perf(void);
- #else
- static inline u32 amd_get_nodes_per_socket(void)	{ return 0; }
-+static inline u32 amd_get_highest_perf(void)		{ return 0; }
- #endif
+ 	pdata = dev_get_platdata(pdev->dev.parent);
+ 	tps6586x_gpio = devm_kzalloc(&pdev->dev,
+@@ -106,16 +105,7 @@ static int tps6586x_gpio_probe(struct platform_device *pdev)
+ 	else
+ 		tps6586x_gpio->gpio_chip.base = -1;
  
- static inline uint32_t hypervisor_cpuid_base(const char *sig, uint32_t leaves)
-diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
-index 2d11384dc9ab..6d7b3b3ea80b 100644
---- a/arch/x86/kernel/cpu/amd.c
-+++ b/arch/x86/kernel/cpu/amd.c
-@@ -1165,3 +1165,19 @@ void set_dr_addr_mask(unsigned long mask, int dr)
- 		break;
- 	}
+-	ret = devm_gpiochip_add_data(&pdev->dev, &tps6586x_gpio->gpio_chip,
+-				     tps6586x_gpio);
+-	if (ret < 0) {
+-		dev_err(&pdev->dev, "Could not register gpiochip, %d\n", ret);
+-		return ret;
+-	}
+-
+-	platform_set_drvdata(pdev, tps6586x_gpio);
+-
+-	return ret;
++	return devm_gpiochip_add_data(&pdev->dev, &tps6586x_gpio->gpio_chip, tps6586x_gpio);
  }
-+
-+u32 amd_get_highest_perf(void)
-+{
-+	struct cpuinfo_x86 *c = &boot_cpu_data;
-+
-+	if (c->x86 == 0x17 && ((c->x86_model >= 0x30 && c->x86_model < 0x40) ||
-+			       (c->x86_model >= 0x70 && c->x86_model < 0x80)))
-+		return 166;
-+
-+	if (c->x86 == 0x19 && ((c->x86_model >= 0x20 && c->x86_model < 0x30) ||
-+			       (c->x86_model >= 0x40 && c->x86_model < 0x70)))
-+		return 166;
-+
-+	return 255;
-+}
-+EXPORT_SYMBOL_GPL(amd_get_highest_perf);
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index 0ad5214f598a..7770245cc7fa 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -2043,7 +2043,7 @@ static bool amd_set_max_freq_ratio(void)
- 		return false;
- 	}
  
--	highest_perf = perf_caps.highest_perf;
-+	highest_perf = amd_get_highest_perf();
- 	nominal_perf = perf_caps.nominal_perf;
- 
- 	if (!highest_perf || !nominal_perf) {
-diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufreq.c
-index d1bbc16fba4b..7e7450453714 100644
---- a/drivers/cpufreq/acpi-cpufreq.c
-+++ b/drivers/cpufreq/acpi-cpufreq.c
-@@ -646,7 +646,11 @@ static u64 get_max_boost_ratio(unsigned int cpu)
- 		return 0;
- 	}
- 
--	highest_perf = perf_caps.highest_perf;
-+	if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD)
-+		highest_perf = amd_get_highest_perf();
-+	else
-+		highest_perf = perf_caps.highest_perf;
-+
- 	nominal_perf = perf_caps.nominal_perf;
- 
- 	if (!highest_perf || !nominal_perf) {
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 20aa234ffe04..3248e24a90b0 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6217,7 +6217,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
- 	}
- 
- 	if (has_idle_core)
--		set_idle_cores(this, false);
-+		set_idle_cores(target, false);
- 
- 	if (sched_feat(SIS_PROP) && !has_idle_core) {
- 		time = cpu_clock(this) - time;
+ static struct platform_driver tps6586x_gpio_driver = {
+-- 
+2.31.1
+
