@@ -2,148 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02167381B4A
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 00:03:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09B3C381B55
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 00:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235180AbhEOWEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 18:04:13 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:48652 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235126AbhEOWEL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 18:04:11 -0400
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14FM2oMP031410;
-        Sat, 15 May 2021 22:02:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2020-01-29;
- bh=V2ha0E1EtpzxBkKdlkS+PGs8qU4CWB7I2XGb/33mkEI=;
- b=co1Joi35LTWcIGX+y+83tQ6tbCBKK12sVzUt7hz7SAPaX0NucPPthCRm34SuHamQPWbH
- STH82ujTc+kWJpAh0NsWgGnHOlEk8s0woT1d5INCcT5MrBfraqKRlLfqoItOEZyqYBmy
- sTnMmkuBr0Jx1Kz5mH6rfmDgyDvsQIGeBdBioGItDhxE95IWGXIfXhQEoSF0mkYPdYJK
- mNRo8vzZCDtEiHx61nx0o5WZdcAbgleVpPMd8r03AqiAX35UG+57gzZCTdjOPdqjYcJi
- vlNtynjOAOoxyf4pwW6dB+BEZt/TpLtIMFSQEGQaUudVG/sTra1Iwue1MXo3PBeLEEH1 SQ== 
-Received: from oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 38j6698707-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 15 May 2021 22:02:50 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14FM2mMm029093;
-        Sat, 15 May 2021 22:02:48 GMT
-Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1anam02lp2043.outbound.protection.outlook.com [104.47.57.43])
-        by userp3020.oracle.com with ESMTP id 38j5mjqg0n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 15 May 2021 22:02:48 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mZvEbkvqWODZpx1sOPRtnv24QWl2CtKgpMjhiGaAxhNOKTNYshBxn40z17fgc/jd930GyqIK5NFXJgq7Ln1QQkRsLLeuioRVQLSciFPUF9uVEHoUCV1NDmLqUqcl6x5jHqaQ397iDNelQfZT2OHoIbrLKShjVoaNIMFY0viPsn1yH6cIS+/XLiSTa7goi2IZcdCKyhq/fEPBdT1lJzUUKIhuU2qZ5d7NSvhtgZs6YnFKi5pkPyt6fFMxT8TzrCn42EDLnVlNS7/9Hhnqh3YRjf5P2XGs6PNIGq3bxvxR1CXZJYu2qakYivgZ6DB3jfIzpvRFbMT+fenDLpgK6vT6TQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=V2ha0E1EtpzxBkKdlkS+PGs8qU4CWB7I2XGb/33mkEI=;
- b=G71vunwJCtYE/L5aCncCMkp3+SD9zRNCaMZ9WArSWcqWguw+skj4QpKTYu+yMdMs8eYGICeJ8tge89y5oZ8hI28vXYdBmu/GNzsbahORF/UYwxvK9nKPjt5XleKraPAKPkZU4XAhXF2PzHVWDxLjlTW2oVqGrY8gECDbxLuVESeGtSsI/T7FS0VCL7tayCmV44i3ivYu+B1cnF0HRqUWrhjjWz8NarOnj0qbP+aFyClKYVf4wy3vvHdQm3ALWzpY09WGUI06tVm01pC9KuZ4uzALEuE7DOq5TejUg2h6ycp9pkexyQh/069qnK/r3z/BXW23m1YjhevR4c8soV6s6Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=V2ha0E1EtpzxBkKdlkS+PGs8qU4CWB7I2XGb/33mkEI=;
- b=I3s93SacN4xIcJVgU8p0EvYcMyFDcbiu42v97FAoebfWRyfG7L7BWENP/vrLIYsW9cGWSjIWR0Fykv6U06g1A5EvMFNQEyk54UiLMmlQNQCiKuuQ4IYWM+xMNW2o39mBueLcz60dm1iJ7nJF1cwZoOVqcXF29s+kjZp/XNCKb1g=
-Authentication-Results: sholland.org; dkim=none (message not signed)
- header.d=none;sholland.org; dmarc=none action=none header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB4616.namprd10.prod.outlook.com (2603:10b6:510:34::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.28; Sat, 15 May
- 2021 22:02:47 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::4c61:9532:4af0:8796]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::4c61:9532:4af0:8796%7]) with mapi id 15.20.4129.031; Sat, 15 May 2021
- 22:02:47 +0000
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Adam Radford <aradford@gmail.com>, linux-scsi@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>, Joe Perches <joe@perches.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 0/3] 3w-9xxx: Endianness fixes
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1fsyn8xkx.fsf@ca-mkp.ca.oracle.com>
-References: <20210427235915.39211-1-samuel@sholland.org>
-Date:   Sat, 15 May 2021 18:02:43 -0400
-In-Reply-To: <20210427235915.39211-1-samuel@sholland.org> (Samuel Holland's
-        message of "Tue, 27 Apr 2021 18:59:12 -0500")
-Content-Type: text/plain
-X-Originating-IP: [138.3.200.58]
-X-ClientProxiedBy: SN4PR0501CA0023.namprd05.prod.outlook.com
- (2603:10b6:803:40::36) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        id S235194AbhEOWPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 18:15:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46684 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229989AbhEOWPl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 May 2021 18:15:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1E5260C3F;
+        Sat, 15 May 2021 22:14:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621116868;
+        bh=+oo6MXkH4s3EnhdaaD6r8S7Ts2xF18eX//Y1vcCqOfM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=PFwwy1bO7qp2WdUqg2r5OCWQtI/oT3+TuEWsAngkiu0BwPZhqqCxWkzhVnBlXwN4/
+         qRU5OnPQ28C5tyXcQu44SjUQscZT2q1gsZ+iqEf+2/dnhgER/6v/+f1jykSWaAzTEW
+         c4brNb0fObVKhhfk9IaRG8WpOG+0Xyih3KjRXGrcT0O074bwFg5DQgEvMd6jxf+F6q
+         xY2LSPij6H6jMlLUhjZt691ZdJ7ufAv0xQqZ/T3JPFgQ3o2kE6BWzEvQ+DAAhG0RWA
+         ThF+7onqNO4zQ1b9R8X/bPuie0tQy5rjYO19Np37QzAkTOZhpQ3T8m5dFr9OZo5Eoq
+         C8FqANNUl4Rfg==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     netdev@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Doug Berger <opendmb@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Sam Creasey <sammy@sammy.net>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com
+Subject: [RFC 00/13] [net-next] drivers/net/Space.c cleanup
+Date:   Sun, 16 May 2021 00:13:07 +0200
+Message-Id: <20210515221320.1255291-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SN4PR0501CA0023.namprd05.prod.outlook.com (2603:10b6:803:40::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.11 via Frontend Transport; Sat, 15 May 2021 22:02:46 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0e8434f4-0287-4fae-c2b6-08d917ed2c8e
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4616:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB461668B7F9D04D77650BBCBE8E2F9@PH0PR10MB4616.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: liSJvhOLI3i0l/5iB8KpMEW6ZLDUYF221ZvMxakQBZNR/7VLWX6/Eg3q/k6jWXg6pMgxK4rwcCN4mT7XzO4aPrta2NJ1BiCiasmhSJqBp8Uwz91QvrLwa6amsjf18fHbihzRbgehitY3qFogtbzN60vzxYP1ijNsFuj402tSgwB09xZNa2DLQBjeyVDMC9gxcwWhsi8MYYcRAxsryl7XGXix5eqV+gCO4haEX9nQ0KFoWTmSWHfSRUFmGgcxTa/WGqbyjm08+ePcIvCT461ZqHs65/0qcK6xWVs+dWgtwophCdoDjOH6u9ncgug6xYHjpy87mwDTYDMoy9SFiNNmnDwNteN8UDGaOsxr5g/8ZjzPXgi+FETBpXJUVyXta2sJ87hNnNbArv0jMXm/Ffb6dOd6euWkdV52/sS3QXq/Fd8knGUrRfnC16BtLoE7h6yfB4S0gjD18dVn6IZXNJAW+whwH+qTtlizetOffTJhyh0VBarVtsTULQNSWaOfdtZCiaH1a16DnDusPJE9vOyFStQMDHvPzwckB61lnic5MCCtZjzBCYlh7dutdw4yhEfDwTBURfhS3fI0ap5UJDZloidsTCocZSfEW1hILMT1Y94d18J+ErseFWfTM1L3I6IpT/skfG0vS17AQnWxmkOXtRXsEfcVCGvw4bWxz/fupFU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(396003)(346002)(366004)(376002)(8936002)(26005)(54906003)(16526019)(38100700002)(316002)(478600001)(55016002)(6916009)(5660300002)(86362001)(66946007)(2906002)(66556008)(66476007)(558084003)(186003)(36916002)(52116002)(7696005)(6666004)(4326008)(38350700002)(8676002)(956004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?N8cc8Ryo74kIc+blvsYmSHuI+v3Hhhn5tm0owGSeAMwVAtEQ/WyC0EbZibw4?=
- =?us-ascii?Q?BwzCAjQTZ39Ifso9MbyyQio2gyFZyuCy+4ZdnPyPxwlbZKjCtjETCcaRB96f?=
- =?us-ascii?Q?MTZeQKDGyNM/wEp8wshcdpUYaKEkvCNOOG2YMS88o8wX1PWwplTSZPRUbqNP?=
- =?us-ascii?Q?hzg1xwRpvqncYcIwenPdOsj9trEzGFW0E/XCIGAsYbesRVjIAH5O03/u01Qm?=
- =?us-ascii?Q?HoFEGAMYvv3PULULdUHEq6u9gkJI7+wUnfnkfoVecvAkBRByuL5qING8/2N3?=
- =?us-ascii?Q?QPtc5ZUDJWnqkRN8rPza7npcsdoMiuzTQkUO/u6BftbUYF1hu9hOb7irt2Q1?=
- =?us-ascii?Q?likQTwUWuBvni73GC2mDrTNdk/Q2LrqwddtdhSpcJcZcFxpdEZPez6belCZo?=
- =?us-ascii?Q?QrL1ZWxHRLsSlibn+G5v22gkOFciwAN2fgt1EqfsqzeJJ6+loJ45etyWWA3x?=
- =?us-ascii?Q?S/PquJGbwEIM/aIJQbk8i5vx0l3LSR1K+s0Aa9BjS8tLMGfn7UrKC1OKoT7r?=
- =?us-ascii?Q?uLDsN/cpk7TmXNcwiADKraeKeoTukIMGkLKUN9jbUTSKEEAKA5FKkyjIrICX?=
- =?us-ascii?Q?zRo5QzXDRkk12gb2wR2AuoE+iq+icAYqlQ1Y+mNzqEmbnvRHVe9TV7/Ow1bN?=
- =?us-ascii?Q?XoytXn96gL45alGzc+63/KZ8If1Jx+d79TWHlUmw9w08BHZv0gViaZ/hQpVT?=
- =?us-ascii?Q?o1T0GerWEh1Z7lCLIyOwhCiRko6UqDuba5Axb0Iepe0gmJA+4sTPWFfvixEd?=
- =?us-ascii?Q?Q1wmuuM0KvIADwiAeVLgKQBpSCi978c1FAs+GKIkYCsoVtTisYJZOWqo3foN?=
- =?us-ascii?Q?HmaFGvb+eH5O8Nn+9PB3dlAM2QHDtQ2J6851aF2WAle8Z5pSFZIG8qkak5oZ?=
- =?us-ascii?Q?9fz3vdd50/6IXqSffoKAf+r57lShb3w4IoWIzqCcYEjbU7jn2n53HCaeeNfn?=
- =?us-ascii?Q?HgZfMs95AQB8izYGvJ0yqR3ymLIfC9tJQxZPz5SHw3I7G1YJGdnSh0I8+nbh?=
- =?us-ascii?Q?IohInNzPJlstXL+IGJJGI+He8ZWAfFy5ZW/lj8QHgab8lX7Lz6MKt1nrorw8?=
- =?us-ascii?Q?IzdobmvPlabMrszvx+ZKIIitwv0+NOMeo5mkwkO78xFCXdoqUMMM57VvF6vE?=
- =?us-ascii?Q?/Lu2ZfSvTfCqNU/020QLSyJjeu2wL8PBdJQyvaYx1d0xjZFd1SnYWdtgdEwT?=
- =?us-ascii?Q?2YMF1tBpazZfpSa7C/vBVIGyhSBVTSV2rQjjPnm/w5qFmxwnGJ2f6UF9YNDX?=
- =?us-ascii?Q?/33ZA6zK2P+0S8G0RdthorjuwiE7aqE7lv5u1xYF4oGiyc9UCcqeLcxa8MQy?=
- =?us-ascii?Q?JP4XlWl65PtgBDnQqKWQ1YJC?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0e8434f4-0287-4fae-c2b6-08d917ed2c8e
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 May 2021 22:02:47.3161
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BejIhpQ72H9ZNfZxRFYix4pWcJzWnmxjowoSriyzXqmwJUIOSOvFgkEUYQDgCP+pX96IL/EbcEJnVmhVP9qjEU0aKW6IUWkZuXNYM0T1HeA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4616
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9985 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=906
- malwarescore=0 phishscore=0 suspectscore=0 bulkscore=0 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105150168
-X-Proofpoint-ORIG-GUID: NXM_NO-3zMuHeihaGh_AGWUUVJd0U_7U
-X-Proofpoint-GUID: NXM_NO-3zMuHeihaGh_AGWUUVJd0U_7U
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Arnd Bergmann <arnd@arndb.de>
 
-Samuel,
+I discovered that there are still a couple of drivers that rely on
+beiong statically initialized from drivers/net/Space.c the way
+we did in the last century. As it turns out, there are a couple
+of simplifications that can be made here, as well as some minor
+bugfixes.
 
-> This series fixes the 3w-9xxx driver in a big-endian configuration.
+There are four classes of drivers that use this:
 
-Applied to 5.14/scsi-staging, thanks!
+- most 10mbit ISA bus ethernet drivers (and one 100mbit one)
+- both ISA localtalk drivers
+- several m68k ethernet drivers
+- one obsolete WAN driver
+
+I found that the drivers using in arch/m68k/ don't actually benefit
+from being probed this way as they do not rely on the netdev= command
+line arguments, they have simply never been changed to work like a
+modern driver.
+
+I had previously sent a patch to remove the sbni/granch driver, and
+there were no objections to this patch but forgot to resend it after
+some discussion about another patch in the same series.
+
+For the ISA drivers, there is usually no way to probe multiple devices
+at boot time other than the netdev= arguments, so all that logic is left
+in place for the moment, but centralized in a single file that only gets
+included in the kernel build if one or more of the drivers are built-in.
+
+I'm also changing the old-style init_module() functions in these drivers
+to static functions with a module_init() annotation, to more closely
+resemble modern drivers. There are only a few users of the init_module()
+interface remaining, and removing that would likely allow some cleanups
+in the module loader code.
+
+There are a couple of possible follow-ups:
+
+* Most of ISA drivers could be trivially converted to use the module_init()
+  entry point, which would slightly change the command line syntax and
+  still support a single device of that type, but not more than one. We
+  could decide that this is fine, as few users remain that have any of
+  these devices, let alone more than one.
+
+* Alternatively, the fact that the ISA drivers have never been cleaned
+  up can be seen as an indication that there isn't really much remaining
+  interest in them. We could move them to drivers/staging along with the
+  consolidated contents of drivers/net/Space.c and see if anyone still
+  uses them and eventually remove the ones that nobody has.
+  I can see that Paul Gortmaker removed a number of less common ISA
+  ethernet drivers in 2013, but at the time left these because they
+  were possibly still relevant.
+
+* If we end up moving the cops localtalk driver to staging, support
+  for localtalk devices (though probably not appletalk over ethernet)
+  can arguably meet the same fate.
+
+If someone wants to work on those follow-ups or thinks they are a
+good idea, let me know, otherwise I'd leave it at this cleanup.
+
+       Arnd
+
+Arnd Bergmann (13):
+  [net-next] bcmgenet: remove call to netdev_boot_setup_check
+  [net-next] natsemi: sonic: stop calling netdev_boot_setup_check
+  [net-next] appletalk: ltpc: remove static probing
+  [net-next] 3c509: stop calling netdev_boot_setup_check
+  [net-next] cs89x0: rework driver configuration
+  [net-next] m68k: remove legacy probing
+  [net-next] move netdev_boot_setup into Space.c
+  [net-next] make legacy ISA probe optional
+  [net-next] wan: remove stale Kconfig entries
+  [net-next] wan: remove sbni/granch driver
+  [net-next] wan: hostess_sv11: use module_init/module_exit helpers
+  [net-next] ethernet: isa: convert to module_init/module_exit
+  [net-next] 8390: xsurf100: avoid including lib8390.c
+
+ .../admin-guide/kernel-parameters.txt         |    2 -
+ drivers/net/Kconfig                           |    7 +
+ drivers/net/Makefile                          |    3 +-
+ drivers/net/Space.c                           |  178 +-
+ drivers/net/appletalk/Kconfig                 |    4 +-
+ drivers/net/appletalk/ltpc.c                  |    7 +-
+ drivers/net/ethernet/3com/3c509.c             |    3 -
+ drivers/net/ethernet/3com/3c515.c             |    3 +-
+ drivers/net/ethernet/3com/Kconfig             |    1 +
+ drivers/net/ethernet/8390/Kconfig             |    3 +
+ drivers/net/ethernet/8390/Makefile            |    2 +-
+ drivers/net/ethernet/8390/apne.c              |   11 +-
+ drivers/net/ethernet/8390/ne.c                |    5 +-
+ drivers/net/ethernet/8390/smc-ultra.c         |    9 +-
+ drivers/net/ethernet/8390/wd.c                |    7 +-
+ drivers/net/ethernet/8390/xsurf100.c          |    7 +-
+ drivers/net/ethernet/amd/Kconfig              |    2 +
+ drivers/net/ethernet/amd/atarilance.c         |   11 +-
+ drivers/net/ethernet/amd/lance.c              |    6 +-
+ drivers/net/ethernet/amd/mvme147.c            |   16 +-
+ drivers/net/ethernet/amd/ni65.c               |    6 +-
+ drivers/net/ethernet/amd/sun3lance.c          |   19 +-
+ .../net/ethernet/broadcom/genet/bcmgenet.c    |    2 -
+ drivers/net/ethernet/cirrus/Kconfig           |   27 +-
+ drivers/net/ethernet/cirrus/cs89x0.c          |   31 +-
+ drivers/net/ethernet/i825xx/82596.c           |   24 +-
+ drivers/net/ethernet/i825xx/sun3_82586.c      |   17 +-
+ drivers/net/ethernet/natsemi/jazzsonic.c      |    2 -
+ drivers/net/ethernet/natsemi/xtsonic.c        |    1 -
+ drivers/net/ethernet/smsc/Kconfig             |    1 +
+ drivers/net/ethernet/smsc/smc9194.c           |    6 +-
+ drivers/net/wan/Kconfig                       |   51 -
+ drivers/net/wan/Makefile                      |    1 -
+ drivers/net/wan/hostess_sv11.c                |    6 +-
+ drivers/net/wan/sbni.c                        | 1638 -----------------
+ drivers/net/wan/sbni.h                        |  147 --
+ include/linux/netdevice.h                     |   13 -
+ include/net/Space.h                           |   10 -
+ net/core/dev.c                                |  125 --
+ net/ethernet/eth.c                            |    2 -
+ 40 files changed, 259 insertions(+), 2157 deletions(-)
+ delete mode 100644 drivers/net/wan/sbni.c
+ delete mode 100644 drivers/net/wan/sbni.h
 
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+2.29.2
+
+Cc: Paul Gortmaker <paul.gortmaker@windriver.com>
+Cc: "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Doug Berger <opendmb@gmail.com>
+Cc: Florian Fainelli <f.fainelli@gmail.com>
+Cc: Sam Creasey <sammy@sammy.net>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Finn Thain <fthain@telegraphics.com.au>
+Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: Andrew Lunn <andrew@lunn.ch>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Andrii Nakryiko <andriin@fb.com>
+Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc: netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: bcm-kernel-feedback-list@broadcom.com
