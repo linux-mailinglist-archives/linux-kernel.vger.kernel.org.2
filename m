@@ -2,130 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E532A381B30
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 23:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3F2B381B32
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 23:38:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235119AbhEOV1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 17:27:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229938AbhEOV07 (ORCPT
+        id S235127AbhEOViG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 17:38:06 -0400
+Received: from gateway30.websitewelcome.com ([192.185.168.15]:30641 "EHLO
+        gateway30.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235092AbhEOViD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 17:26:59 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66DF2C061573
-        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 14:25:45 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id q5so2517931wrs.4
-        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 14:25:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=cZgEA8wOuqe/FNFw+8yZb56BnmuD/jPua+RvSgM8YNU=;
-        b=BgyJ42sXr2TXru4AL2U45bOvmYummbyZa5u0P3DyuBlYQWcmwNviKwTkPkbpUUE+hz
-         86qhSaNjfxkb3aPO5nVnU98Uz/LYx0qit08s0QYmSqawZBNLa5rigP1Mb0XvaenBuOr+
-         HLtlehsVnku+qXPCUWkknPSh/lmn9JeiiVUaiLhAhEH2MsuAbPksYnC7wOZYDzuEEFDM
-         BkN+mUfItPBAigRZCi9d094wsxOHB5cevVOetpphC2I3L1eQak4tZur/ae3Rrn7EEHBC
-         BM7qsFhcIOrKZzwktLmfiDJ4JiSw7uSP3VY4tlx65roa7nSh8h/cUxVIZ89N2M4FT7kd
-         cngQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=cZgEA8wOuqe/FNFw+8yZb56BnmuD/jPua+RvSgM8YNU=;
-        b=Nlm3WIFYiWk1ir4jxjTskDKSdti3mWnC+eD8dV66WZgNggIk/iJAj2IdDCDhYUJWrQ
-         xi7aoPuDpcziv+woxbMUI2wxtuLF7tge6Lno9lP5AKfxELgsQWhQBlfnckBNa9Vxo7Ce
-         Xrh3rdQIKt2S0AHHfhPAT89udZe7mg5nGEHuaP6HKP9CY1v2O8D3wSQZff7HoeI0lgPF
-         eZFrLEmzNvm7zYgbQHFEFpRbM2jJ2FR6QVVAImrpYGEhOvvfZAVt2V2jV+/ASipWPa/f
-         MTGtcpmAk0bf+TLaCazGXO4+k9M42+iW3LYMKWX9lLU+AVgsPv31syV+63Dp3YViIVif
-         zt4A==
-X-Gm-Message-State: AOAM530MG4s3gX7gWf0pkKB05pOdAuMeoL0kv2VR64E3VfOzM8bX5/PT
-        T3UrE28i9Hk+F14//TFlv75tCJ4q0ZE7FnS8u+tCD2hZF9BXJw==
-X-Google-Smtp-Source: ABdhPJyhx9yH5ZeXuXhSBZaiPoCN/tfqE3T/Bl53p3yGbXIiz4TZAhXJLYmKs8iy5v3Kz/rRjyFw0v9UZ9Z60Rhjiyg=
-X-Received: by 2002:a5d:534f:: with SMTP id t15mr29932131wrv.206.1621113942931;
- Sat, 15 May 2021 14:25:42 -0700 (PDT)
+        Sat, 15 May 2021 17:38:03 -0400
+X-Greylist: delayed 1469 seconds by postgrey-1.27 at vger.kernel.org; Sat, 15 May 2021 17:38:02 EDT
+Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
+        by gateway30.websitewelcome.com (Postfix) with ESMTP id 2A9ED4E73
+        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 15:50:39 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id i1F9l8RmQMGeEi1F9lC0n0; Sat, 15 May 2021 15:50:39 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=sDv7533fJ1Jh0SB9Oldb7u8J3ATKjHKiiLr7bcd/BjU=; b=aNK6UN5jnEUebgHmWXzHpHApMK
+        LATBBxaW6BNJof+vibX4Esr+yDsu/EQJTK8XqhOALEoIwNE4FUhHt+RwuvhhzhSsW+fsoUnbb+I3X
+        nKdnM4ces1ohCsIIR8RILuqhDxTrmccUNY5zttUdslURgdFZNAawokwQAa6dKEfKzaHJbj/+Dp6Kq
+        X+ImYvl2WGpQxyMUVBp6go2ZZn8cUt+wXgATik6JmB946foKmOzqIqyCPyZKMUGudk4Cnfysm6ZaU
+        uye3Yg3LNePTromt9hKbn0uq4+MSi8wCLm72qPAQs7bWAojEuI43ZOrV61/VkvZks1RGWSTLsEMA4
+        QhNWP2TQ==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:47424 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1li1F4-0005hh-WA; Sat, 15 May 2021 15:50:35 -0500
+Subject: Re: [PATCH][next] ceph: Replace zero-length array with flexible array
+ member
+To:     Ilya Dryomov <idryomov@gmail.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ceph Development <ceph-devel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-hardening@vger.kernel.org
+References: <20210514215209.GA33310@embeddedor>
+ <CAOi1vP8NARpXVsK2AVOZ4_m58gXMKVQSi_okZVcrLsew1nLizg@mail.gmail.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <e1b6364c-e73e-fdc8-1fc0-9f35b181c288@embeddedor.com>
+Date:   Sat, 15 May 2021 15:50:44 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-From:   Ivan Zuboff <anotherdiskmag@gmail.com>
-Date:   Sun, 16 May 2021 00:25:32 +0300
-Message-ID: <CAL-cVehkm=KPdQ=1rN6hyeMDiMXa--aG3gij==Nf8mNv=XZ0sQ@mail.gmail.com>
-Subject: lockf returns false-positive EDEADLK in multiprocess multithreaded environment
-To:     linux-kernel@vger.kernel.org
-Content-Type: multipart/mixed; boundary="000000000000b5a0d505c2650026"
+In-Reply-To: <CAOi1vP8NARpXVsK2AVOZ4_m58gXMKVQSi_okZVcrLsew1nLizg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1li1F4-0005hh-WA
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:47424
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 8
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000b5a0d505c2650026
-Content-Type: text/plain; charset="UTF-8"
 
-As a developer, I found a counter-intuitive behavior in lockf function
-provided by glibc and Linux kernel that is likely a bug.
 
-In glibc, lockf function is implemented on top of fcntl system call:
-https://github.com/lattera/glibc/blob/master/io/lockf.c
-man page says that lockf can sometimes detect deadlock:
-http://manpages.ubuntu.com/manpages/xenial/man3/lockf.3.html
-Same with fcntl(F_SETLKW), on top of which lockf is implemented:
-http://manpages.ubuntu.com/manpages/hirsute/en/man3/fcntl.3posix.html
+On 5/15/21 05:42, Ilya Dryomov wrote:
+> 
+> Hi Gustavo,
+> 
+> I went ahead and removed reply_buf.  We never receive authorizer
+> replies in auth_none mode, so patching it to be a flexible array
+> is rather pointless.
 
-Deadlock detection algorithm in the Linux kernel
-(https://github.com/torvalds/linux/blob/master/fs/locks.c) seems buggy
-because it can easily give false positives. Suppose we have two
-processes A and B, process A has threads 1 and 2, process B has
-threads 3 and 4. When this processes execute concurrently, following
-sequence of actions is possible:
-1. processA thread1 gets lockI
-2. processB thread2 gets lockII
-3. processA thread3 tries to get lockII, starts to wait
-4. processB thread4 tries to get lockI, kernel detects deadlock,
-EDEADLK is returned from lockf function
+Sounds great. :)
 
-Steps to reproduce this scenario (see attached file):
-1. gcc -o edeadlk ./edeadlk.c -lpthread
-2. Launch "./edeadlk a b" in the first terminal window.
-3. Launch "./edeadlk a b" in the second terminal window.
-
-What I expected to happen: two instances of the program are steadily working.
-
-What happened instead:
-Assertion failed: (lockf(fd, 1, 1)) != -1 file: ./edeadlk.c, line:25,
-errno:35 . Error:: Resource deadlock avoided
-Aborted (core dumped)
-
-Surely, this behavior is kind of "right". lockf file locks belongs to
-process, so on the process level it seems that deadlock is just about
-to happen: process A holds lockI and waits for lockII, process B holds
-lockII and is going to wait for lockI. However, the algorithm in the
-kernel doesn't take threads into account. In fact, a deadlock is not
-gonna happen here if the thread scheduler will give control to some
-thread holding a lock.
-
-I think there's a problem with the deadlock detection algorithm
-because it's overly pessimistic, which in turn creates problems --
-lockf errors in applications.
-
---000000000000b5a0d505c2650026
-Content-Type: text/x-csrc; charset="US-ASCII"; name="edeadlk.c"
-Content-Disposition: attachment; filename="edeadlk.c"
-Content-Transfer-Encoding: base64
-Content-ID: <f_koq9a8tt0>
-X-Attachment-Id: f_koq9a8tt0
-
-I2luY2x1ZGU8dW5pc3RkLmg+CiNpbmNsdWRlPHN0ZGlvLmg+CiNpbmNsdWRlPHN0ZGxpYi5oPgoj
-aW5jbHVkZTxmY250bC5oPgojaW5jbHVkZTxlcnJuby5oPgojaW5jbHVkZTxwdGhyZWFkLmg+CiNp
-bmNsdWRlPHN0ZGRlZi5oPgojaW5jbHVkZTxzdGRpbnQuaD4KCiNkZWZpbmUgRElFKHgpXAp7XAoJ
-ZnByaW50ZihzdGRlcnIsICJBc3NlcnRpb24gZmFpbGVkOiAiICN4ICIgZmlsZTogJXMsIGxpbmU6
-JWQsIGVycm5vOiVkICIsIF9fRklMRV9fLCBfX0xJTkVfXywgZXJybm8pOyBcCglwZXJyb3IoIi4g
-RXJyb3I6Iik7XAoJZmZsdXNoKHN0ZG91dCk7XAoJYWJvcnQoKTtcCn0KI2RlZmluZSBBU1MoeCkg
-aWYgKCEoeCkpIERJRSh4KQojZGVmaW5lIEFTUzEoeCkgQVNTKCh4KSAhPSAtMSkKI2RlZmluZSBB
-U1MwKHgpIEFTUygoeCkgPT0gMCkKCnZvaWQgKiBkZWFkbG9ja2VyKHZvaWQgKmFyZykKewogICAg
-aW50IGZkID0gKGludCkocHRyZGlmZl90KWFyZzsKICAgIGZvciAoOzspIHsKICAgICAgICBBU1Mx
-KCBsb2NrZihmZCwgRl9MT0NLLCAxKSApOwogICAgICAgIEFTUzEoIGxvY2tmKGZkLCBGX1VMT0NL
-LCAxKSApOwogICAgfQogICAgcmV0dXJuIE5VTEw7Cn0KCmludCBtYWluKGludCBhcmdjLCBjaGFy
-ICogYXJndltdKQp7CiAgICBpbnQgZmQxLCBmZDI7CiAgICBBU1MoIGFyZ2MgPj0gMyApOwogICAg
-QVNTMSggZmQxID0gY3JlYXQoYXJndlsxXSwgMDY2MCkgKTsKICAgIEFTUzEoIGZkMiA9IGNyZWF0
-KGFyZ3ZbMl0sIDA2NjApICk7CiAgICB2b2lkICogdGhydjsKICAgIHB0aHJlYWRfdCB0aHIxLCB0
-aHIyOwogICAgQVNTMCggcHRocmVhZF9jcmVhdGUoJnRocjEsIE5VTEwsIGRlYWRsb2NrZXIsICh2
-b2lkICopKHB0cmRpZmZfdClmZDIpICk7CiAgICBBU1MwKCBwdGhyZWFkX2NyZWF0ZSgmdGhyMiwg
-TlVMTCwgZGVhZGxvY2tlciwgKHZvaWQgKikocHRyZGlmZl90KWZkMSkgKTsKICAgIEFTUzAoIHB0
-aHJlYWRfam9pbih0aHIxLCAmdGhydikgKTsKICAgIEFTUzAoIHB0aHJlYWRfam9pbih0aHIyLCAm
-dGhydikgKTsKICAgIHJldHVybiAwOwp9Cg==
---000000000000b5a0d505c2650026--
+Thanks, Ilya.
+--
+Gustavo
