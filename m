@@ -2,101 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A3C381788
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 12:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E873738178E
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 12:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234785AbhEOKQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 06:16:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231222AbhEOKQn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 06:16:43 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 306DBC061573;
-        Sat, 15 May 2021 03:15:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=2PBgeHsoXGCvDlD0GS/BwaBaSsTzpzloPrgyfXRhmjk=; b=SptpJ/1TaW3YU510lhVFsI7S8
-        HAwGT9i7IKhTTk5MGMIfLDcOzbdlf+9WO+/0kk9XY41f8n+ts423ikvlVkuknzGUTFVWi3FjoU5p6
-        Frm8lLK8goe3xwxqU9ZRwaxkxrYAWlk6lgTLzumnPlT0hSth0LoqicadKCEUyfFq9pGRkcfTlM5NS
-        JwWmw6DvQAyysirWaW7tFnIJEdvb2QaWmgo+CxTXTXs5mkyXaM9mG4cQDVkH40odW6flHTGlFEGnw
-        bBntz1s8TWeVCn8iRdQcWxnai2OrQoY95HavEFFbZiaymv5onHZMWW/a1iuL4gRb7FDMRaQe9RVeM
-        VLwTor4kw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44008)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lhrKO-00018c-8n; Sat, 15 May 2021 11:15:24 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lhrKM-0004uU-SE; Sat, 15 May 2021 11:15:22 +0100
-Date:   Sat, 15 May 2021 11:15:22 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH net] net: mdiobus: get rid of a BUG_ON()
-Message-ID: <20210515101522.GM12395@shell.armlinux.org.uk>
-References: <YJ+b52c5bGLdewFz@mwanda>
+        id S234825AbhEOKUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 06:20:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47466 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231222AbhEOKUN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 May 2021 06:20:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FED6613ED;
+        Sat, 15 May 2021 10:18:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621073940;
+        bh=IpDqq3tGZovUUgcolTosWSkNN0zOGEGLOzuZ4zntl2M=;
+        h=From:To:Cc:Subject:Date:From;
+        b=mPn1OjVomxs7Tu/J0zC+FtbvaOsr6yQtXpoEj9sOi4LdXTcbto5qJ96l5zGrlpywO
+         S9h/yllV/A7xG4K2EqluCEN+iU8aMWSWgvByBTJiljpi+sS3kiNXEDaRAWkE1e7SKM
+         sxKRPsWhTYLl3eTQWbxjjYc5gYDjylTk+ySJih9CK9j6ccvN98Y6VtRlIgLO5VL8+8
+         1QeSFO1LDLs8iguwhOAyXJFeodhvDZp8PXLkMitx7yPyKl0bGUmVhJjLazb7iS4leT
+         cYyRbNnN88rAws6za+S3f2nl8YyuPZ0+1JIwQRAsVrcvD6dvU/aeGd/unrmM2Ofwwi
+         8sCIbzxalbdtQ==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     linux-arch@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@lst.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Brian Cain <bcain@codeaurora.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Sid Manning <sidneym@codeaurora.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+        uclinux-h8-devel@lists.sourceforge.jp,
+        linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-riscv@lists.infradead.org, linux-um@lists.infradead.org
+Subject: [PATCH 0/6] [v2] asm-generic: strncpy_from_user/strnlen_user cleanup
+Date:   Sat, 15 May 2021 12:17:57 +0200
+Message-Id: <20210515101803.924427-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YJ+b52c5bGLdewFz@mwanda>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 15, 2021 at 01:01:11PM +0300, Dan Carpenter wrote:
-> We spotted a bug recently during a review where a driver was
-> unregistering a bus that wasn't registered, which would trigger this
-> BUG_ON().  Let's handle that situation more gracefully, and just print
-> a warning and return.
-> 
-> Reported-by: Russell King <linux@armlinux.org.uk>
+From: Arnd Bergmann <arnd@arndb.de>
 
-This probably ought to be updated to:
+As I've queued up some patches for asm-generic, I remembered an
+older series that I created but never submitted.
 
-Reported-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+These two functions appear to be unnecessarily different between
+architectures, and the asm-generic version is a bit questionable,
+even for NOMMU architectures.
 
-now please.
+Clean this up to just use the generic library version for anything
+that uses the generic version today. I've expanded on the patch
+descriptions a little, as suggested by Christoph Hellwig, but I
+suspect a more detailed review would uncover additional problems
+with the custom versions that are getting removed.
 
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+       Arnd
 
-Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Arnd Bergmann (6):
+  [v2] asm-generic/uaccess.h: remove __strncpy_from_user/__strnlen_user
+  [v2] h8300: remove stale strncpy_from_user
+  [v2] hexagon: use generic strncpy/strnlen from_user
+  [v2] arc: use generic strncpy/strnlen from_user
+  [v2] asm-generic: uaccess: remove inline
+    strncpy_from_user/strnlen_user
+  [v2] asm-generic: remove extra strn{cpy_from,len}_user declarations
 
-> ---
->  drivers/net/phy/mdio_bus.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
-> index dadf75ff3ab9..6045ad3def12 100644
-> --- a/drivers/net/phy/mdio_bus.c
-> +++ b/drivers/net/phy/mdio_bus.c
-> @@ -607,7 +607,8 @@ void mdiobus_unregister(struct mii_bus *bus)
->  	struct mdio_device *mdiodev;
->  	int i;
->  
-> -	BUG_ON(bus->state != MDIOBUS_REGISTERED);
-> +	if (WARN_ON_ONCE(bus->state != MDIOBUS_REGISTERED))
-> +		return;
->  	bus->state = MDIOBUS_UNREGISTERED;
->  
->  	for (i = 0; i < PHY_MAX_ADDR; i++) {
-> -- 
-> 2.30.2
-> 
-> 
+ arch/arc/Kconfig                    |   2 +
+ arch/arc/include/asm/uaccess.h      |  72 ----------------
+ arch/arc/mm/extable.c               |  12 ---
+ arch/h8300/Kconfig                  |   2 +
+ arch/h8300/kernel/h8300_ksyms.c     |   2 -
+ arch/h8300/lib/Makefile             |   2 +-
+ arch/h8300/lib/strncpy.S            |  35 --------
+ arch/hexagon/Kconfig                |   2 +
+ arch/hexagon/include/asm/uaccess.h  |  31 -------
+ arch/hexagon/kernel/hexagon_ksyms.c |   1 -
+ arch/hexagon/mm/Makefile            |   2 +-
+ arch/hexagon/mm/strnlen_user.S      | 126 ----------------------------
+ arch/m68k/Kconfig                   |   4 +-
+ arch/riscv/Kconfig                  |   4 +-
+ arch/um/include/asm/uaccess.h       |   5 +-
+ arch/um/kernel/skas/uaccess.c       |   5 +-
+ include/asm-generic/uaccess.h       |  52 ++----------
+ 17 files changed, 25 insertions(+), 334 deletions(-)
+ delete mode 100644 arch/h8300/lib/strncpy.S
+ delete mode 100644 arch/hexagon/mm/strnlen_user.S
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.29.2
+
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Vineet Gupta <vgupta@synopsys.com>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: Brian Cain <bcain@codeaurora.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Albert Ou <aou@eecs.berkeley.edu>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Sid Manning <sidneym@codeaurora.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: linux-snps-arc@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Cc: uclinux-h8-devel@lists.sourceforge.jp
+Cc: linux-hexagon@vger.kernel.org
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-riscv@lists.infradead.org
+Cc: linux-um@lists.infradead.org
+Cc: linux-arch@vger.kernel.org
+
