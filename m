@@ -2,84 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0235038163A
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 07:58:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 789F5381644
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 08:23:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234406AbhEOF7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 01:59:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234371AbhEOF7z (ORCPT
+        id S230225AbhEOGYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 02:24:31 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:10644 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229780AbhEOGYZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 01:59:55 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC30CC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 22:58:41 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id v191so1240895pfc.8
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 22:58:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=quQuju5BxZq7ggpYY/T9Kt5b+6CSVPIxgVITVpTO9KE=;
-        b=dmczgfn23HkMnD/1xckytRmAxOEBCMjhQol0JKvon7mdsbADKsibwKa5LdREdNxIMz
-         UfXbyix4s5gKro/VyECzHGwpKfyG61q4jlmwunoSaRm7BoieCKo4hXGntOI1/KAKntKb
-         iK5FV4YscaerZZG7FOqsNs9A74r0/OMwG3QLOWC8OE2k3H5gD2p+ObQi353s+I3bm0UR
-         5A6QxPH53jcTi6+c92wsOdEahmKFEfKxt1qHRBXZkG5lv9/JRfFdv42bk0/vJB5pZx5s
-         5xOgDJtZ0iiyO9nNnKowPc6xjSUTPxw/OBqMUz1jKmh9BHJwZ5xGX/yTS8vqJkXyDqed
-         6vLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=quQuju5BxZq7ggpYY/T9Kt5b+6CSVPIxgVITVpTO9KE=;
-        b=JMfcSU3wiryrALZddGsK/KpeiCI2byBCFjv/0iUavzGmF0dr2cfjFbVGMlZ1Bzkhjj
-         OoMfCtJHHc7cOcHnLmWvjDdRa7JT4OzDw2kw1XRUu7hN/EV7DstgGJtfI8NC2wmD2Z9Y
-         L1btmtbc5Q/fhB/oXA8tVRO00pW5zOCDtNEs/brAqY6xPRihQAm7bX00REV/m6pceckX
-         HwOO+KgWLx6YzQK+BuLGf21M759Y3kLDQRXhwN/6S8vfyRTKrYKsez1laU433aHikWJ8
-         Z4BvvZLPsUd3hIT2jEcjsmim7tl/smUooUXD8B3DTNkQ+q6M6R/oxjGoIYlBcDSwSTEE
-         X1hQ==
-X-Gm-Message-State: AOAM531mAdFzOM9lupuZFidwvWU8diUpyAGZbeAFTWILwGhHK3itKzRn
-        Hm9Uf1ZY/JpYzAUHKFesT6Q=
-X-Google-Smtp-Source: ABdhPJx8Caznyp43VzJam8uwjnUsmT5GcJV648F6RKyUhtq6e6ZR5fRzb9XJhVzQTYjyBE2FcxJ0Vw==
-X-Received: by 2002:aa7:8692:0:b029:28e:7bfd:655c with SMTP id d18-20020aa786920000b029028e7bfd655cmr49841220pfo.81.1621058321063;
-        Fri, 14 May 2021 22:58:41 -0700 (PDT)
-Received: from fedora ([2405:201:6008:61b4:4e16:5348:d963:c66d])
-        by smtp.gmail.com with ESMTPSA id a10sm1082534pjs.39.2021.05.14.22.58.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 22:58:40 -0700 (PDT)
-Date:   Sat, 15 May 2021 11:28:17 +0530
-From:   Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     pure.logic@nexus-software.ie, johan@kernel.org, elder@kernel.org,
-        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+        Sat, 15 May 2021 02:24:25 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1621059793; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=J4/UV+VBlg6J8gPLAtNX47KgtZ3wzwsbV6BDKY/gyAA=; b=DkHDegbXFmtROvyJVBiuxQmUlFlfIYGDVKIORa3e+vwpwwizo/W4NTi6txlln+jkH3OPm2OJ
+ NowHKA8ybIVZ0BoHsfvG3AFJiS2Fc2iEcIbkgkg6pWS3X7IkbaCuZN+rZb8g01nZZHDmqwhP
+ JF8B3nG8dxfkXP1jLrcxt7TiMco=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 609f68cb7b5af81b5c17b37d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 15 May 2021 06:23:07
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CAB54C4338A; Sat, 15 May 2021 06:23:06 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A4786C433D3;
+        Sat, 15 May 2021 06:23:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A4786C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     linux-arch@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Devidas Puranik <devidas@marvell.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: greybus: add declare_ to declaring macros
-Message-ID: <YJ9i+T5IfaDwdaBX@fedora>
-References: <20210515034116.660895-1-chouhan.shreyansh630@gmail.com>
- <YJ9dDwKMKkifeICJ@kroah.com>
+Subject: Re: [PATCH v2 10/13] mwifiex: re-fix for unaligned accesses
+References: <20210514100106.3404011-1-arnd@kernel.org>
+        <20210514100106.3404011-11-arnd@kernel.org>
+Date:   Sat, 15 May 2021 09:22:58 +0300
+In-Reply-To: <20210514100106.3404011-11-arnd@kernel.org> (Arnd Bergmann's
+        message of "Fri, 14 May 2021 12:00:58 +0200")
+Message-ID: <87lf8gikhp.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YJ9dDwKMKkifeICJ@kroah.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 15, 2021 at 07:33:03AM +0200, Greg KH wrote:
-> On Sat, May 15, 2021 at 09:11:16AM +0530, Shreyansh Chouhan wrote:
-> > Prefixed the names of all the macros that were used for declaring things
-> > with 'declare_'. This should help with clarifying about what these
-> > macros do.
-> 
-> Thanks, but I think I will leave the code as-is.  It's a good "test" for
-> people who try to modify the code without actually building it :)
-> 
+Arnd Bergmann <arnd@kernel.org> writes:
 
-Oh. Okay, I will try fixing something that might actually be a coding
-style issue this time then. :)
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> A patch from 2017 changed some accesses to DMA memory to use
+> get_unaligned_le32() and similar interfaces, to avoid problems
+> with doing unaligned accesson uncached memory.
+>
+> However, the change in the mwifiex_pcie_alloc_sleep_cookie_buf()
+> function ended up changing the size of the access instead,
+> as it operates on a pointer to u8.
+>
+> Change this function back to actually access the entire 32 bits.
+> Note that the pointer is aligned by definition because it came
+> from dma_alloc_coherent().
+>
+> Fixes: 92c70a958b0b ("mwifiex: fix for unaligned reads")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-> greg k-h
+Via which tree should this go? I assume it will go via some other tree
+so:
 
-Regards,
-Shreyansh Chouhan.
+Acked-by: Kalle Valo <kvalo@codeaurora.org>
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
