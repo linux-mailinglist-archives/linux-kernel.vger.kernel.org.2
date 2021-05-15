@@ -2,115 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE2FD381920
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 15:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5E5F381924
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 15:44:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231163AbhEONkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 09:40:24 -0400
-Received: from coleridge.oriole.systems ([89.238.76.34]:60266 "EHLO
-        coleridge.oriole.systems" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229571AbhEONkT (ORCPT
+        id S231222AbhEONqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 09:46:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229571AbhEONp7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 09:40:19 -0400
-X-Greylist: delayed 593 seconds by postgrey-1.27 at vger.kernel.org; Sat, 15 May 2021 09:40:18 EDT
-Date:   Sat, 15 May 2021 15:28:55 +0200
-From:   Wolfgang =?utf-8?Q?M=C3=BCller?= <wolf@oriole.systems>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Ashok Raj <ashok.raj@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 392/530] iommu/vt-d: Preset Access/Dirty bits for
- IOVA over FL
-Message-ID: <20210515132855.4bn7ve2ozvdhpnj4@nabokov.fritz.box>
-References: <20210512144819.664462530@linuxfoundation.org>
- <20210512144832.660153884@linuxfoundation.org>
+        Sat, 15 May 2021 09:45:59 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0639BC061573;
+        Sat, 15 May 2021 06:44:45 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id j19so1666808qtp.7;
+        Sat, 15 May 2021 06:44:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=miwRhWs+vrTjJmofc/5TY6Whmg9JKONSfLWUAA4JwUc=;
+        b=cQk8s4RSnbP9NhPstGVPf0dDmfm89cUtZnN1+vOuD/GJimLQL5/c9pEIaSFwf+adhv
+         w8lK2eIWaZV4Yydru9UMxAH5Hun4iI7ITCOSJNqT2NmFqXaEtJDZ+8VXWSXMxB9MLpnP
+         wgC17bnAbNIUQUwN5cXgIUrY3nRA4jQQw+x+Tvcqsyv0UbrPqwg+K5avAIe48BCswsd7
+         7cDBdxvlkqjGkRLV64hbV+53tkmCBOC9nNMhduVzwB2kMxtr76cLfTCnLcaOnLykz7d7
+         0VOG0KW9lwOZrxJ/Ju2/AdrE1FkaHf69+F+Mqwr4PR03l4ZD/fmjz3TxHjgbEUAnKX7d
+         RhdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=miwRhWs+vrTjJmofc/5TY6Whmg9JKONSfLWUAA4JwUc=;
+        b=RKsUBQvoTdYLbrEX4Ptf0skB61UZk5SXl11E9skLQCfTBaPh2m4yCuJOzjvZi0vlm0
+         gPO/V2OguJSHN2RFiKpCAyJhgmhwdyqhmxHfOdZulJ/jNrDF7rknMPfDZIhKI+DEeZOZ
+         BG3kT4ur2C0+P/8PCeNC9l0v3AEZbToZqcrzYve6m2NMtOGB/3lnvbDmXEktBbyV/Z9j
+         01+4gYac2As1QcWvYfbQ95AQCqWz0WvNtZmsEaC8ggwT9TtnJRhSMiI1WM6IgchE0v0T
+         fKRugGCT0BdDcJHDmeGZKauU0V2smENS/nj4rdRmS3MopDnL6xjI7Xv0g2mypHRM6zk5
+         36yQ==
+X-Gm-Message-State: AOAM5308dKajWUrcs07uoytegOXl0mrovsvYbjbD9OMYncBQ3tYrwv3o
+        mJyyJDfYLaUW0gWiOCSJq3B8/U2aAvA=
+X-Google-Smtp-Source: ABdhPJz6hR7n2wJuiyFOvLUdiQexbUP90d3eVuEpkF6kKEQEOKWDMtUaEVxX9fkMIRYZ+d6Y41j7IA==
+X-Received: by 2002:a05:622a:b:: with SMTP id x11mr48519824qtw.272.1621086285160;
+        Sat, 15 May 2021 06:44:45 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id g5sm2244799qtv.56.2021.05.15.06.44.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 15 May 2021 06:44:44 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: hwmon: (pcf8591) Unused attribute group pcf8591_attr_group_opt
+To:     Evgeny Novikov <novikov@ispras.ru>,
+        Jean Delvare <jdelvare@suse.com>
+Cc:     "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ldv-project@linuxtesting.org" <ldv-project@linuxtesting.org>
+References: <141521621084257@mail.yandex.ru>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <2d6122d1-e9fa-1e23-1e81-50c6ade08d2f@roeck-us.net>
+Date:   Sat, 15 May 2021 06:44:42 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210512144832.660153884@linuxfoundation.org>
+In-Reply-To: <141521621084257@mail.yandex.ru>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+On 5/15/21 6:20 AM, Evgeny Novikov wrote:
+> Driver drivers/hwmon/pcf8591.ko declares and removes attribute group
+> pcf8591_attr_group_opt, but it does not create it ever. Is it better to remove
+> it completely or to do something else?
 
-First of all, apologies if this is the wrong place to post a problem
-report. I figured since I was going to reference a particular commit
-anyway I might as well reply to the patch series that (seemed to have)
-introduced the problem.
+Do nothing. Look closely at the file instead to see how the attributes
+are created, and realize that the group is only used to simplify
+attribute removal.
 
-> From: Lu Baolu <baolu.lu@linux.intel.com>
-> 
-> [ Upstream commit a8ce9ebbecdfda3322bbcece6b3b25888217f8e3 ]
-> 
-> The Access/Dirty bits in the first level page table entry will be set
-> whenever a page table entry was used for address translation or write
-> permission was successfully translated. This is always true when using
-> the first-level page table for kernel IOVA. Instead of wasting hardware
-> cycles to update the certain bits, it's better to set them up at the
-> beginning.
+Yes, the code is a bit odd and unusual, but it is WAI.
 
-This commit seems to trigger a kernel panic very early in boot for me in
-5.10.37 (36 is fine):
-
-
-Call Trace:
- domain_mapping+0x16/0x90
- __iommu_map+0xcd/0x120
- iommu_create_device_direct_mappins.isra.0+0x175/0x210
- bus_iommu_probe+0x15a/0x290
- bus_set_iommu+0x7e/0xd0
- intel_iommu_init+0xf84/0x112b
- ? e820__memblock_setup+0x76/0x76
- pci_iommu_init+0x11/0x3a
- do_one_initcall+0x5a/0x190
- kernel_init_freeable+0x140/0x185
- ? rest_init+0xa4/0xa4
- kernel_init+0x5/0xfc
- ret_from_fork+0x22/0x30
-Modules linked in:
-CR2: 0000000000000000
----[ end trace 0904a2a0169baf8a ]--
-RIP: 0010:__domain_mapping+0xa1/0x3a0
-Code: 02 4d 63 ff 0f 85 1b 02 00 00 4c 89 d3 48 c1 e3 0c 4c 09 fb 4d 85 c0 0f 84
- 2e 01 00 00 45 31 e4 31 ed 45 31 c9 4d 85 e4 75 58 <49> 8b 5d 00 41 8b 45 08 41
- 8b 4d 0c 48 83 e3 fc 48 2b 1d 28 8f b8
-RSP: 0000:ffffafc54002bc00 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 00000000dd7e4003 RCX: 000000000000002d
-RDX: 0000000000000000 RSI: 00000000000dd7e4 RDI: ffff8b260108ac00
-RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
-R10: 00000000000dd7e4 R11: ffff8b260108ac00 R12: 0000000000000000
-R13: 0000000000000000 R14: 00000000000dd7e4 R15: 0000000000000003
-FS:  0000000000000000(0000) GS:ffff8b290ec80000(0000) knlGS: 000000000000000
-CS: 0010 DS: 0000 ES: 0000 CR0: 00000000080050033
-CR2: 000000000000000 CR3: 0000000009700c001 CR4: 00000000001706e0
-Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000009
-
-
-I managed to build the kernel with debug info, and could trace the
-problem to drivers/iommu/intel/iommu.c:
-
-(gdb) l *__domain_mapping+0xa1
-0xffffffff8146b171 is in __domain_mapping (drivers/iommu/intel/iommu.c:2381).
-
-I then had a look at the commits for v5.10.36..v5.10.37 that touched
-that file, and on a complete hunch reverted this one (there were only 4,
-and this one looked the most suspect to my eyes). I could successfully
-boot into the system again after that.
-
-I'm unsure what other information about my system to include, please
-advise. Something to note is that I am compiling the 5.10 series with
-GCC 11 for which I'm manually pulling in the following commits:
-
-1e860048c53ee77ee9870dcce94847a28544b753
-67a5a68013056cbcf0a647e36cb6f4622fb6a470
-
-I have not yet tried building 5.10.37 with GCC 10 because I already
-cleaned the old compiler from my system. I don't think the compiler is
-to blame here, however.
-
-Thanks a lot,
-
--- 
-Wolfgang
+Guenter
