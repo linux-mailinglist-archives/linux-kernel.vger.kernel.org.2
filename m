@@ -2,262 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EBBA381A02
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 18:54:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F10D381A03
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 18:54:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231148AbhEOQzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 12:55:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32958 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233885AbhEOQy6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 12:54:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E68C561369;
-        Sat, 15 May 2021 16:53:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621097621;
-        bh=gmEC+WFvzJ0OnoOXHpOAmo0LdJffyTQ+aW+Hp1/1+U8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NI+bAoh2wKEuKTofe2heeutP4fBjLmv4QZx84wIMc2fxD9iCAQbE4CAqw+UvsTaIk
-         go60h+JGmzjpWx/4z1/6ELTdDYXPGDFLlHlodp+ILTH+800q6+Zoy9nyENI2RzEOwO
-         8DIqYn4/B0+MQ8qBiPIKZY1sFBM7gdn7o53nWa+xGBnOw+iF+vMPRaCXe8mpiaiqL1
-         3BBhf6A0z9eR4NXQhpn1KofrQcw7/cAtQxIW99LNnYOxCd3XAtgUY1lwz9CtoeqQ7J
-         16gNtr+ZgbinK1/oyNsouzWi5JMZEZ2xn1hIgngacxpd3fL5k3QDbO2dfq17S/bBB/
-         feY9P8nXCe5zQ==
-Received: by pali.im (Postfix)
-        id 789E4A3B; Sat, 15 May 2021 18:53:38 +0200 (CEST)
-Date:   Sat, 15 May 2021 18:53:38 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Dave Olsthoorn <dave@bewaar.me>,
-        Sharvari Harisangam <sharvari.harisangam@nxp.com>
-Cc:     Brian Norris <briannorris@chromium.org>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>
-Subject: Re: mwifiex firmware crash
-Message-ID: <20210515165338.7lqe6nqtkevpc5lh@pali>
-References: <20210515024227.2159311-1-briannorris@chromium.org>
- <713286ddc100bd63a9dbefdece39c935@bewaar.me>
- <20210515154042.mscvvyfapuvwdgzy@pali>
- <ec4aa44faf41f2820c2f82317373033e@bewaar.me>
+        id S233896AbhEOQzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 12:55:55 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:41260 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233922AbhEOQzQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 May 2021 12:55:16 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14FGrlx5051155;
+        Sat, 15 May 2021 16:53:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=BzEJkUz8vG/mHTw7E0yHaNbggc7adO/nGKhOzK7ERgE=;
+ b=yp9PAU1S0CGu6qDLzgCYErG8SQ88fOPYWN77z8XoddMZX0xrJyr3rWwMKXSm2Goa9v7w
+ efqLqFNae3cmhJ56ejRDxJ2bOtgVmN8gQXJi6gIwzL66IkvZPOp9A7fVYrOgdqteMV/K
+ u26+XG5ng7PA5wDWZqbNQlNX5r4H7dSEKkzEqCYuFfXB3Np7fbR/K9TIdWN6d8WCu7IS
+ rFY4LIUHzG/Ubh+O4hE6jLLE1EH9zbyRUxjBdKujBb1t8iDgrRtX2BdPQOIOT6uzm9Dt
+ yOsFQGjTUIlfbGMGOjvkyl0RgAF8MpoYM8pnWscAWmhPw/+g6+Eo2HaDYwDp1tRe9cse bg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 38j6xn8jb1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 15 May 2021 16:53:54 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14FGo5nU140678;
+        Sat, 15 May 2021 16:53:54 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3030.oracle.com with ESMTP id 38j4b9x823-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 15 May 2021 16:53:54 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14FGrrhg144595;
+        Sat, 15 May 2021 16:53:53 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 38j4b9x81x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 15 May 2021 16:53:53 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 14FGrqIC032041;
+        Sat, 15 May 2021 16:53:52 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sat, 15 May 2021 16:53:51 +0000
+Date:   Sat, 15 May 2021 19:53:43 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Ido Schimmel <idosch@nvidia.com>
+Cc:     kbuild@lists.01.org, lkp@intel.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@nvidia.com>
+Subject: Re: drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c:3598
+ mlxsw_sp_nexthop_group_refresh() warn: missing error code 'err'
+Message-ID: <20210515165343.GI1922@kadam>
+References: <202105141823.Td2h3Mbi-lkp@intel.com>
+ <YJ/tWBNKXrobK9RU@shredder>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ec4aa44faf41f2820c2f82317373033e@bewaar.me>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <YJ/tWBNKXrobK9RU@shredder>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-GUID: QHHuP3c0z4QbnZp8pRg6Hmj7rBq2OkZL
+X-Proofpoint-ORIG-GUID: QHHuP3c0z4QbnZp8pRg6Hmj7rBq2OkZL
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9985 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxscore=0
+ mlxlogscore=999 adultscore=0 malwarescore=0 priorityscore=1501
+ phishscore=0 suspectscore=0 lowpriorityscore=0 bulkscore=0 clxscore=1015
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105150126
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
-
-On Saturday 15 May 2021 18:32:30 Dave Olsthoorn wrote:
-> Hi,
-> 
-> On 2021-05-15 17:40, Pali Rohár wrote:
-> > On Saturday 15 May 2021 17:10:31 Dave Olsthoorn wrote:
-> > > The firmware still seems to crash quicker than previously, but
-> > > that's a
-> > > unrelated problem.
+On Sat, May 15, 2021 at 06:48:40PM +0300, Ido Schimmel wrote:
+> On Fri, May 14, 2021 at 05:35:00PM +0300, Dan Carpenter wrote:
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
+> > head:   315d99318179b9cd5077ccc9f7f26a164c9fa998
+> > commit: e3ddfb45bacdc623eedea7f7bf9e7879257471d6 mlxsw: spectrum_router: Allow returning errors from mlxsw_sp_nexthop_group_refresh()
+> > config: x86_64-randconfig-m031-20210514 (attached as .config)
+> > compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
 > > 
-> > Hello! Do you have some more details (or links) about mentioned firmware
-> > crash?
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > 
+> > smatch warnings:
+> > drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c:3598 mlxsw_sp_nexthop_group_refresh() warn: missing error code 'err'
+> > 
+> > vim +/err +3598 drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
+> > 
+> > e3ddfb45bacdc6 Ido Schimmel       2020-11-17  3555  static int
+> > a7ff87acd995e3 Jiri Pirko         2016-07-05  3556  mlxsw_sp_nexthop_group_refresh(struct mlxsw_sp *mlxsw_sp,
+> > a7ff87acd995e3 Jiri Pirko         2016-07-05  3557  			       struct mlxsw_sp_nexthop_group *nh_grp)
+> > a7ff87acd995e3 Jiri Pirko         2016-07-05  3558  {
+> > 7f7a417e6a11d7 Ido Schimmel       2020-11-13  3559  	struct mlxsw_sp_nexthop_group_info *nhgi = nh_grp->nhgi;
+> > eb789980d0aa6c Ido Schimmel       2017-10-22  3560  	u16 ecmp_size, old_ecmp_size;
+> > a7ff87acd995e3 Jiri Pirko         2016-07-05  3561  	struct mlxsw_sp_nexthop *nh;
+> > a7ff87acd995e3 Jiri Pirko         2016-07-05  3562  	bool offload_change = false;
+> > a7ff87acd995e3 Jiri Pirko         2016-07-05  3563  	u32 adj_index;
+> > a7ff87acd995e3 Jiri Pirko         2016-07-05  3564  	bool old_adj_index_valid;
+> > e3ddfb45bacdc6 Ido Schimmel       2020-11-17  3565  	int i, err2, err = 0;
+> > a7ff87acd995e3 Jiri Pirko         2016-07-05  3566  	u32 old_adj_index;
+> > a7ff87acd995e3 Jiri Pirko         2016-07-05  3567  
+> > 7f7a417e6a11d7 Ido Schimmel       2020-11-13  3568  	if (!nhgi->gateway) {
+> > b3e8d1ebad2d04 Ido Schimmel       2017-02-08  3569  		mlxsw_sp_nexthop_fib_entries_update(mlxsw_sp, nh_grp);
+> > e3ddfb45bacdc6 Ido Schimmel       2020-11-17  3570  		return 0;
+> > b3e8d1ebad2d04 Ido Schimmel       2017-02-08  3571  	}
+> > b3e8d1ebad2d04 Ido Schimmel       2017-02-08  3572  
+> > 7f7a417e6a11d7 Ido Schimmel       2020-11-13  3573  	for (i = 0; i < nhgi->count; i++) {
+> > 7f7a417e6a11d7 Ido Schimmel       2020-11-13  3574  		nh = &nhgi->nexthops[i];
+> > a7ff87acd995e3 Jiri Pirko         2016-07-05  3575  
+> > 56b8a9ed276bc1 Petr Machata       2017-07-31  3576  		if (nh->should_offload != nh->offloaded) {
+> > a7ff87acd995e3 Jiri Pirko         2016-07-05  3577  			offload_change = true;
+> > a7ff87acd995e3 Jiri Pirko         2016-07-05  3578  			if (nh->should_offload)
+> > a7ff87acd995e3 Jiri Pirko         2016-07-05  3579  				nh->update = 1;
+> > a7ff87acd995e3 Jiri Pirko         2016-07-05  3580  		}
+> > a7ff87acd995e3 Jiri Pirko         2016-07-05  3581  	}
+> > a7ff87acd995e3 Jiri Pirko         2016-07-05  3582  	if (!offload_change) {
+> > a7ff87acd995e3 Jiri Pirko         2016-07-05  3583  		/* Nothing was added or removed, so no need to reallocate. Just
+> > a7ff87acd995e3 Jiri Pirko         2016-07-05  3584  		 * update MAC on existing adjacency indexes.
+> > a7ff87acd995e3 Jiri Pirko         2016-07-05  3585  		 */
+> > 7f7a417e6a11d7 Ido Schimmel       2020-11-13  3586  		err = mlxsw_sp_nexthop_group_update(mlxsw_sp, nhgi, false);
+> > a7ff87acd995e3 Jiri Pirko         2016-07-05  3587  		if (err) {
+> > a7ff87acd995e3 Jiri Pirko         2016-07-05  3588  			dev_warn(mlxsw_sp->bus_info->dev, "Failed to update neigh MAC in adjacency table.\n");
+> > a7ff87acd995e3 Jiri Pirko         2016-07-05  3589  			goto set_trap;
+> > a7ff87acd995e3 Jiri Pirko         2016-07-05  3590  		}
+> > e3ddfb45bacdc6 Ido Schimmel       2020-11-17  3591  		return 0;
+> > a7ff87acd995e3 Jiri Pirko         2016-07-05  3592  	}
+> > 7f7a417e6a11d7 Ido Schimmel       2020-11-13  3593  	mlxsw_sp_nexthop_group_normalize(nhgi);
+> > 7f7a417e6a11d7 Ido Schimmel       2020-11-13  3594  	if (!nhgi->sum_norm_weight)
+> > a7ff87acd995e3 Jiri Pirko         2016-07-05  3595  		/* No neigh of this group is connected so we just set
+> > a7ff87acd995e3 Jiri Pirko         2016-07-05  3596  		 * the trap and let everthing flow through kernel.
+> > a7ff87acd995e3 Jiri Pirko         2016-07-05  3597  		 */
+> > a7ff87acd995e3 Jiri Pirko         2016-07-05 @3598  		goto set_trap;
+> > 
+> > The comments sort of imply that this is a success path so no error
+> > code necessary.  It's sort of hard to be positive though...
 > 
-> Sure, firmware crashes have always been a problem on the Surface devices.
-
-What wifi chip you have on these devices? Because very similar firmware
-crashes I see on 88W8997 chip (also with mwifiex) when wifi card is
-configured in SDIO mode (not PCIe).
-
-I know that there are new version of firmwares for these 88W8xxx chips,
-but they are available only under NXP NDA and only for NXP customers.
-So it looks like that end users with NXP wifi chips are out of luck.
-
-> They seem to be related, at least for some of the crashes, to power
-> management. For this reason I disabled powersaving in NetworkManager which
-> used to make it at least stable enough for me, in 5.13 this trick does not
-> seem to work.
+> Thanks for the report, Dan. This is indeed a success path. How do you
+> suggest to handle it in order to avoid the warning on future smatch
+> invocations? I regularly run smatch before submitting patches and I
+> would like to keep it error/warning free.
 > 
-> The dmesg log attached shows a firmware crash happening, the card does not
-> work even after a reset or remove & rescan on the pci(e) bus.
 
-Similar issue, card start working again only after whole system restart.
+You could move setting the error to within 4 lines of the goto:
 
-So this is something which can be resolved only in NXP.
+		err = 0;
+		goto set_trap;
 
-Sharvari, could you look at this issue? It looks like there are many
-mwifiex driver or 88W8xxx firmware issues which are common both PCIe and
-SDIO modes.
+This check basically assumes that if you have a cleanup block after
+a return 0; then it should return a negative error code.  It finds
+quite a few bugs and I'm generally happy with it.  But like this is
+open source and all so I'm also always open to different ideas if you
+have a way to improve the check.
 
-Also could you please look at way how NXP 88W8xxx firmware files could
-be updated in linux-firmware repository?
+regards,
+dan carpenter
 
-> There are patches [1] which have not been submitted yet and where developed
-> as part of the linux-surface effort [2]. From my experience these patches
-> resolve most if not all of the firmware crashes.
-
-Is somebody going to cleanup these patches and send them for inclusion
-into mainline kernel? I see that most of them are PCIe related, but due
-to seeing same issues also on SDIO bus, I guess adding similar hooks
-also for SDIO could make also SDIO more stable...
-
-> Regards,
-> Dave Olsthoorn
-> 
-> [1]: https://github.com/linux-surface/linux-surface/blob/master/patches/5.12/0002-mwifiex.patch
-> [2]: https://github.com/linux-surface
-> 
-> dmesg.log:
-> [ 127.367628]   mwifiex_pcie 0000:01:00.0: info: successfully disconnected
-> from xx:xx:xx:xx:xx:xx: reason code 3
-> [ 127.371059]   mwifiex_pcie 0000:01:00.0: PREP_CMD: FW in reset state
-> [ 127.371083]   mwifiex_pcie 0000:01:00.0: deleting the crypto keys
-> [ 127.371086]   mwifiex_pcie 0000:01:00.0: PREP_CMD: FW in reset state
-> [ 127.371088]   mwifiex_pcie 0000:01:00.0: deleting the crypto keys
-> [ 127.371091]   mwifiex_pcie 0000:01:00.0: PREP_CMD: FW in reset state
-> [ 127.371093]   mwifiex_pcie 0000:01:00.0: deleting the crypto keys
-> [ 127.371096]   mwifiex_pcie 0000:01:00.0: PREP_CMD: FW in reset state
-> [ 127.371099]   mwifiex_pcie 0000:01:00.0: deleting the crypto keys
-> [ 127.371101]   mwifiex_pcie 0000:01:00.0: PREP_CMD: FW in reset state
-> [ 127.371103]   mwifiex_pcie 0000:01:00.0: deleting the crypto keys
-> [ 127.374001]   mwifiex_pcie 0000:01:00.0: PREP_CMD: FW in reset state
-> [ 127.374028]   mwifiex_pcie 0000:01:00.0: PREP_CMD: FW in reset state
-> [ 127.374103]   mwifiex_pcie 0000:01:00.0: PREP_CMD: FW in reset state
-> [ 127.374113]   mwifiex_pcie 0000:01:00.0: PREP_CMD: FW in reset state
-> [ 127.375041]   mwifiex_pcie 0000:01:00.0: PREP_CMD: FW in reset state
-> [ 127.375311]   mwifiex_pcie 0000:01:00.0: PREP_CMD: FW in reset state
-> [ 127.375445]   mwifiex_pcie 0000:01:00.0: PREP_CMD: FW in reset state
-> [ 127.375903]   mwifiex_pcie 0000:01:00.0: PREP_CMD: FW in reset state
-> [ 127.379980]   mwifiex_pcie 0000:01:00.0: info: shutdown mwifiex...
-> [ 127.448638]   mwifiex_pcie 0000:01:00.0: PREP_CMD: card is removed
-> [ 127.457009]   mwifiex_pcie 0000:01:00.0: PREP_CMD: card is removed
-> [ 127.494749]   mwifiex_pcie 0000:01:00.0: performing cancel_work_sync()...
-> [ 127.494756]   mwifiex_pcie 0000:01:00.0: cancel_work_sync() done
-> [ 155.308155]   mwifiex_pcie: PCI memory map Virt0: 00000000ff7d3684 PCI
-> memory map Virt2: 000000004aa1ebbb
-> [ 155.357139]   mwifiex_pcie 0000:01:00.0: WLAN FW already running! Skip FW
-> dnld
-> [ 155.357146]   mwifiex_pcie 0000:01:00.0: WLAN FW is active
-> [ 155.510296]   mwifiex_pcie 0000:01:00.0: info: MWIFIEX VERSION: mwifiex
-> 1.0 (15.68.19.p21)
-> [ 155.510319]   mwifiex_pcie 0000:01:00.0: driver_version = mwifiex 1.0
-> (15.68.19.p21)
-> [ 155.560724]   mwifiex_pcie 0000:01:00.0 wlp1s0: renamed from mlan0
-> [ 161.848939]   mwifiex_pcie 0000:01:00.0: info: trying to associate to
-> bssid xx:xx:xx:xx:xx:xx
-> [ 162.027982]   mwifiex_pcie 0000:01:00.0: info: associated to bssid
-> xx:xx:xx:xx:xx:xx successfully
-> [ 162.063062]   IPv6: ADDRCONF(NETDEV_CHANGE): wlp1s0: link becomes ready
-> [ 173.452786]   mwifiex_pcie 0000:01:00.0: mwifiex_cmd_timeout_func: Timeout
-> cmd id = 0x10, act = 0x1
-> [ 173.452867]   mwifiex_pcie 0000:01:00.0: num_data_h2c_failure = 0
-> [ 173.452873]   mwifiex_pcie 0000:01:00.0: num_cmd_h2c_failure = 0
-> [ 173.452877]   mwifiex_pcie 0000:01:00.0: is_cmd_timedout = 1
-> [ 173.452881]   mwifiex_pcie 0000:01:00.0: num_tx_timeout = 0
-> [ 173.452885]   mwifiex_pcie 0000:01:00.0: last_cmd_index = 1
-> [ 173.452889]   mwifiex_pcie 0000:01:00.0: last_cmd_id: 16 00 10 00 28 00 a4
-> 00 7f 00
-> [ 173.452894]   mwifiex_pcie 0000:01:00.0: last_cmd_act: 00 00 01 00 13 00
-> 00 00 00 00
-> [ 173.452898]   mwifiex_pcie 0000:01:00.0: last_cmd_resp_index = 0
-> [ 173.452905]   mwifiex_pcie 0000:01:00.0: last_cmd_resp_id: 16 80 10 80 28
-> 80 a4 80 7f 80
-> [ 173.452911]   mwifiex_pcie 0000:01:00.0: last_event_index = 3
-> [ 173.452918]   mwifiex_pcie 0000:01:00.0: last_event: 6a 00 17 00 2b 00 33
-> 00 58 00
-> [ 173.452925]   mwifiex_pcie 0000:01:00.0: data_sent=1 cmd_sent=1
-> [ 173.452930]   mwifiex_pcie 0000:01:00.0: ps_mode=0 ps_state=0
-> [ 173.455878]   mwifiex_pcie 0000:01:00.0: ===mwifiex driverinfo dump
-> start===
-> [ 173.455914]   mwifiex_pcie 0000:01:00.0: info: MWIFIEX VERSION: mwifiex
-> 1.0 (15.68.19.p21)
-> [ 173.455925]   mwifiex_pcie 0000:01:00.0: PCIE register dump start
-> [ 173.456014]   mwifiex_pcie 0000:01:00.0: pcie scratch register:
-> [ 173.456026]   mwifiex_pcie 0000:01:00.0: reg:0xcf0, value=0xfedcba00
-> reg:0xcf8, value=0x9141cc
-> reg:0xcfc, value=0x28c8c00
-> [ 173.456030]   mwifiex_pcie 0000:01:00.0: PCIE register dump end
-> [ 173.456173]   mwifiex_pcie 0000:01:00.0: ===mwifiex driverinfo dump end===
-> [ 173.456177]   mwifiex_pcie 0000:01:00.0: == mwifiex firmware dump start ==
-> [ 177.548244]   mwifiex_pcie 0000:01:00.0: cmd_wait_q terminated: -110
-> [ 177.548341]   mwifiex_pcie 0000:01:00.0: failed to get signal information
-> [ 177.548708]   mwifiex_pcie 0000:01:00.0: PREP_CMD: FW is in bad state
-> [ 177.548712]   mwifiex_pcie 0000:01:00.0: failed to get signal information
-> [ 182.816381]   mwifiex_pcie 0000:01:00.0: PREP_CMD: FW is in bad state
-> [ 182.816389]   mwifiex_pcie 0000:01:00.0: PREP_CMD: FW is in bad state
-> [ 183.100502]   mwifiex_pcie 0000:01:00.0: PREP_CMD: FW is in bad state
-> [ 183.100524]   mwifiex_pcie 0000:01:00.0: PREP_CMD: FW is in bad state
-> [ 183.463055]   mwifiex_pcie 0000:01:00.0: PREP_CMD: FW is in bad state
-> [ 183.463059]   mwifiex_pcie 0000:01:00.0: failed to get signal information
-> [ 189.465526]   mwifiex_pcie 0000:01:00.0: PREP_CMD: FW is in bad state
-> [ 189.465538]   mwifiex_pcie 0000:01:00.0: failed to get signal information
-> [ 195.464760]   mwifiex_pcie 0000:01:00.0: PREP_CMD: FW is in bad state
-> [ 195.464770]   mwifiex_pcie 0000:01:00.0: failed to get signal information
-> [ 201.467820]   mwifiex_pcie 0000:01:00.0: PREP_CMD: FW is in bad state
-> [ 201.467826]   mwifiex_pcie 0000:01:00.0: failed to get signal information
-> [ 207.463143]   mwifiex_pcie 0000:01:00.0: PREP_CMD: FW is in bad state
-> [ 207.463154]   mwifiex_pcie 0000:01:00.0: failed to get signal information
-> [ 213.462237]   mwifiex_pcie 0000:01:00.0: PREP_CMD: FW is in bad state
-> [ 213.462244]   mwifiex_pcie 0000:01:00.0: failed to get signal information
-> [ 219.464173]   mwifiex_pcie 0000:01:00.0: PREP_CMD: FW is in bad state
-> [ 219.464180]   mwifiex_pcie 0000:01:00.0: failed to get signal information
-> [ 223.116948]   mwifiex_pcie 0000:01:00.0: PREP_CMD: FW is in bad state
-> [ 225.468213]   mwifiex_pcie 0000:01:00.0: PREP_CMD: FW is in bad state
-> [ 225.468219]   mwifiex_pcie 0000:01:00.0: failed to get signal information
-> [ 229.349824]   mwifiex_pcie 0000:01:00.0: Firmware dump Finished!
-> [ 229.349835]   mwifiex_pcie 0000:01:00.0: == mwifiex firmware dump end ==
-> [ 229.350968]   mwifiex_pcie 0000:01:00.0: == mwifiex dump information to
-> /sys/class/devcoredump start
-> [ 229.354949]   mwifiex_pcie 0000:01:00.0: == mwifiex dump information to
-> /sys/class/devcoredump end
-> [ 229.354981]   mwifiex_pcie 0000:01:00.0: PREP_CMD: FW is in bad state
-> [ 229.356825]   mwifiex_pcie 0000:01:00.0: PREP_CMD: FW is in bad state
-> [ 229.357175]   mwifiex_pcie 0000:01:00.0: PREP_CMD: card is removed
-> [ 229.357184]   mwifiex_pcie 0000:01:00.0: deleting the crypto keys
-> [ 229.357190]   mwifiex_pcie 0000:01:00.0: PREP_CMD: card is removed
-> [ 229.357195]   mwifiex_pcie 0000:01:00.0: deleting the crypto keys
-> [ 229.357200]   mwifiex_pcie 0000:01:00.0: PREP_CMD: card is removed
-> [ 229.357205]   mwifiex_pcie 0000:01:00.0: deleting the crypto keys
-> [ 229.357210]   mwifiex_pcie 0000:01:00.0: PREP_CMD: card is removed
-> [ 229.357215]   mwifiex_pcie 0000:01:00.0: deleting the crypto keys
-> [ 229.357219]   mwifiex_pcie 0000:01:00.0: PREP_CMD: card is removed
-> [ 229.357224]   mwifiex_pcie 0000:01:00.0: deleting the crypto keys
-> [ 229.357228]   mwifiex_pcie 0000:01:00.0: PREP_CMD: card is removed
-> [ 229.357233]   mwifiex_pcie 0000:01:00.0: deleting the crypto keys
-> [ 229.359375]   mwifiex_pcie 0000:01:00.0: info: shutdown mwifiex...
-> [ 229.362422]   mwifiex_pcie 0000:01:00.0: rx_pending=0, tx_pending=1,
-> cmd_pending=0
-> [ 229.493680]   mwifiex_pcie 0000:01:00.0: PREP_CMD: card is removed
-> [ 229.493700]   mwifiex_pcie 0000:01:00.0: PREP_CMD: card is removed
-> [ 229.509094]   mwifiex_pcie 0000:01:00.0: PREP_CMD: card is removed
-> [ 230.653787]   mwifiex_pcie 0000:01:00.0: WLAN FW already running! Skip FW
-> dnld
-> [ 230.653794]   mwifiex_pcie 0000:01:00.0: WLAN FW is active
-> [ 241.037922]   mwifiex_pcie 0000:01:00.0: mwifiex_cmd_timeout_func: Timeout
-> cmd id = 0xfa, act = 0x4000
-> [ 241.038005]   mwifiex_pcie 0000:01:00.0: num_data_h2c_failure = 0
-> [ 241.038031]   mwifiex_pcie 0000:01:00.0: num_cmd_h2c_failure = 0
-> [ 241.038048]   mwifiex_pcie 0000:01:00.0: is_cmd_timedout = 1
-> [ 241.038067]   mwifiex_pcie 0000:01:00.0: num_tx_timeout = 0
-> [ 241.038086]   mwifiex_pcie 0000:01:00.0: last_cmd_index = 2
-> [ 241.038104]   mwifiex_pcie 0000:01:00.0: last_cmd_id: 16 00 10 00 fa 00 a4
-> 00 7f 00
-> [ 241.038126]   mwifiex_pcie 0000:01:00.0: last_cmd_act: 00 00 01 00 00 40
-> 00 00 00 00
-> [ 241.038147]   mwifiex_pcie 0000:01:00.0: last_cmd_resp_index = 0
-> [ 241.038168]   mwifiex_pcie 0000:01:00.0: last_cmd_resp_id: 16 80 10 80 28
-> 80 a4 80 7f 80
-> [ 241.038187]   mwifiex_pcie 0000:01:00.0: last_event_index = 3
-> [ 241.038207]   mwifiex_pcie 0000:01:00.0: last_event: 6a 00 17 00 2b 00 33
-> 00 58 00
-> [ 241.038226]   mwifiex_pcie 0000:01:00.0: data_sent=0 cmd_sent=1
-> [ 241.038246]   mwifiex_pcie 0000:01:00.0: ps_mode=0 ps_state=0
-> [ 241.040764]   mwifiex_pcie 0000:01:00.0: info: _mwifiex_fw_dpc: unregister
-> device
-> [ 241.057936]   mwifiex_pcie 0000:01:00.0: skipped cancel_work_sync()
-> because we're in card reset failure path
-> [ 241.060488]   mwifiex: Failed to bring up adapter: -5
-> [ 241.060504]   mwifiex_pcie 0000:01:00.0: reinit failed: -5
