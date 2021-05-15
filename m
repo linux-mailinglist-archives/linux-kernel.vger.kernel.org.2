@@ -2,74 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09330381B1F
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 22:55:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D85AE381B22
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 23:03:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235014AbhEOU4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 16:56:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57738 "EHLO
+        id S235046AbhEOVEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 17:04:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229938AbhEOU4p (ORCPT
+        with ESMTP id S229938AbhEOVEJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 16:56:45 -0400
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB48DC061573
-        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 13:55:30 -0700 (PDT)
+        Sat, 15 May 2021 17:04:09 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DAEEC061573;
+        Sat, 15 May 2021 14:02:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=DceUy+2NUnlC8ur/URFEkVm8PqULS5zh5pj+vzZYRL4=; b=UU1A8Js74rkX+Cal28SjjTTrfj
-        IuzAb92N5bRe39OKkLcPvjeiEjAPCV3JmDbQHBiud8IZ1c3I2BtbH8P/cs6AS+IK7rrCxyoe5K/GK
-        B8mxA2JvQcVj5IeiJkUQLrjIhpqblQoFLj7Pd9sSvUz0yInnFMs1ljVfQdq0xWMU2LRI=;
-Received: from p200300ccff3902001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff39:200:1a3d:a2ff:febf:d33a] helo=aktux)
-        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <andreas@kemnade.info>)
-        id 1li1Jj-0005cR-Pt; Sat, 15 May 2021 22:55:24 +0200
-Received: from andi by aktux with local (Exim 4.92)
-        (envelope-from <andreas@kemnade.info>)
-        id 1li1Jj-0001Xi-FO; Sat, 15 May 2021 22:55:23 +0200
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     lee.jones@linaro.org, andreas@kemnade.info,
-        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org
-Subject: [PATCH RESEND] mfd: rn5t618: fix IRQ trigger by changing it to level mode
-Date:   Sat, 15 May 2021 22:55:18 +0200
-Message-Id: <20210515205519.5884-1-andreas@kemnade.info>
-X-Mailer: git-send-email 2.29.2
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=hyyxptrN6opDfMyDe82jUzcLX0UK5gBJjKQrYKblEk0=; b=EQfXeu58xeH/wF2c62hm+Hpm+D
+        llBIBgZ4UtGnuztEh0gmSWjIv1tcLsdI5waiS+I6gSU6yAaUzD1XUM3FuaBj/C9Sl8u9yeaqcYgP6
+        J0dS3fJPx+9H9r+6n63o8YiSNP/CwbTYB4U2fzBgYYICn3+WZLDl/e35s+shaUWpEQTTkR1AE8she
+        Hp5FLL88GPsErt9Ut85nULimIJCc6raoa0KrbLYzOjMABU4wDVWZ2kammutEnvTiqke6EL3TF249o
+        EDz6njNYUOtIMxraQ1hVDi6uYV8KfBX4JkJihG6if7PhAtZbxmyTV4V7J5/dWVQjdiV1TQnF3pE2+
+        85x6T6Lw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1li1Qn-00Azjf-5i; Sat, 15 May 2021 21:02:41 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 63E5E98659E; Sat, 15 May 2021 23:02:38 +0200 (CEST)
+Date:   Sat, 15 May 2021 23:02:38 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Khaled ROMDHANI <khaledromdhani216@gmail.com>
+Cc:     mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH-next] sched: Fix Null pointer derefrence
+Message-ID: <20210515210238.GG5618@worktop.programming.kicks-ass.net>
+References: <20210515164645.22849-1-khaledromdhani216@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: -1.0 (-)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210515164645.22849-1-khaledromdhani216@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During more massive generation of interrupts, the IRQ got stuck,
-and the subdevices did not see any new interrupts. That happens
-especially at wonky USB supply in combination with ADC reads.
-To fix that trigger the IRQ at level low instead of falling edge.
+On Sat, May 15, 2021 at 05:46:45PM +0100, Khaled ROMDHANI wrote:
+> The 'curr' variable could be NULL and derefrenced by
+> pick_next_entity. Fix this by adding a check that prevent
+> the invocation of pick_next_entity with a NULL passed argument.
 
-Fixes: 0c81604516af ("mfd: rn5t618: Add IRQ support")
-Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
----
- drivers/mfd/rn5t618.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mfd/rn5t618.c b/drivers/mfd/rn5t618.c
-index ecddd7b6500e..a852eef1f4d2 100644
---- a/drivers/mfd/rn5t618.c
-+++ b/drivers/mfd/rn5t618.c
-@@ -109,7 +109,7 @@ static int rn5t618_irq_init(struct rn5t618 *rn5t618)
- 
- 	ret = devm_regmap_add_irq_chip(rn5t618->dev, rn5t618->regmap,
- 				       rn5t618->irq,
--				       IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
-+				       IRQF_TRIGGER_LOW | IRQF_ONESHOT,
- 				       0, irq_chip, &rn5t618->irq_data);
- 	if (ret)
- 		dev_err(rn5t618->dev, "Failed to register IRQ chip\n");
--- 
-2.29.2
+And why exactly is that a problem?
 
