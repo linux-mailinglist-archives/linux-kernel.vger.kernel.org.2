@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A16E3819F9
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 18:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F7CC3819FA
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 18:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233843AbhEOQyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 12:54:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33074 "EHLO
+        id S233821AbhEOQyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 12:54:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbhEOQyA (ORCPT
+        with ESMTP id S233837AbhEOQyQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 12:54:00 -0400
+        Sat, 15 May 2021 12:54:16 -0400
 Received: from the.earth.li (the.earth.li [IPv6:2a00:1098:86:4d:c0ff:ee:15:900d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BEAAC061573
-        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 09:52:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9577DC061573
+        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 09:53:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=earth.li;
          s=the; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:Subject
         :To:From:Date:Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=OqAzIeRtl0TRmJW6BUjkv/lXV0Jf0M+Q+Tf9iZwefcY=; b=vIyh/K8ZHg623Wy2xK1Se+uteN
-        k2AYEHYD7ACMD3qjALbszeLHmoc/Di3OOKFd6c2uITZUu5jHpKx3zgTDf9eaWcRvsgb9Ck0Q+B5GH
-        Eap+scR2G1fBf4v7+C5iGLk+5P28cJbPwS7Bo3kH2+pJw18xiFrZpSmAHH5FUe+kUYfCLa4WlZltA
-        14ZAlZL/7zZtxiJTXPwUAtJ6nSH9BwxKpDB8RKKMKLoHDQOJhFynLmQqJWEV5bERodZC5Xs0rJ9fb
-        78mWCt4yDP8qzM4XDwdDmyjLpNmSXNfJ+hsZ49pUkyli0Bc6DO7d+T2LjwbK9e0Wt4wGmUEBqpr9m
-        zi2MjYgQ==;
+        bh=aIcp+5S94migwpwk7hlOWBhO79REWkh9/DXzBOlUrZM=; b=BXzmjYNLEjSDQ9prIuYpJOyeG1
+        48iJDUoLrlHRrhLi54HPV0E+tBiiSINNi4KMlmrHKLn6m2mp5MXkvdeUlh/oQ4JXbUfWX/0QmCCnI
+        ohLBTAzYwmv5iSR4fU8hez9kG3jepa82DVF3221Y1btUfVLDs0KCEecrRCAxp9dnYzngxYcbEYi+8
+        9LamJD2Hzx4YpUHgrQcMb3MiOieOMSFzg9UOD3CfVxwfwdZr/WHLN3U7KH8KbCHgtEyQ7tHgcQjO5
+        dKAQ6hf5KNuK0YnZ8yy2Hs82hN+Q45jxYZoaVR+LrOaKYjbuV7qQQ+0ZllW0sd0FfgB0OIMrLFyzT
+        77DUmZmA==;
 Received: from [2001:4d48:ad59:1409:4::2] (helo=youmian.o362.us)
         by the.earth.li with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <noodles@earth.li>)
-        id 1lhxWt-0004SU-JA; Sat, 15 May 2021 17:52:43 +0100
-Date:   Sat, 15 May 2021 17:52:38 +0100
+        id 1lhxX9-0004TW-31; Sat, 15 May 2021 17:52:59 +0100
+Date:   Sat, 15 May 2021 17:52:55 +0100
 From:   Jonathan McDowell <noodles@earth.li>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
@@ -40,8 +40,8 @@ To:     Andy Gross <agross@kernel.org>,
         Ansuel Smith <ansuelsmth@gmail.com>,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 2/5] ARM: dts: qcom: Add tsens details to ipq806x
-Message-ID: <cbcac8439d3fcaaf17df041cab12d904c8058189.1621097174.git.noodles@earth.li>
+Subject: [PATCH 3/5] ARM: dts: qcom: Add USB port definitions to ipq806x
+Message-ID: <eeb3a0ecb669ce0d7bb1fc3f842831cfc7d5f181.1621097174.git.noodles@earth.li>
 References: <cover.1621097174.git.noodles@earth.li>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -54,276 +54,108 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Signed-off-by: Jonathan McDowell <noodles@earth.li>
 ---
- arch/arm/boot/dts/qcom-ipq8064.dtsi | 243 +++++++++++++++++++++++++++-
- 1 file changed, 242 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/qcom-ipq8064.dtsi | 88 +++++++++++++++++++++++++++++
+ 1 file changed, 88 insertions(+)
 
 diff --git a/arch/arm/boot/dts/qcom-ipq8064.dtsi b/arch/arm/boot/dts/qcom-ipq8064.dtsi
-index aaab3820ab0b..582d8a59e59b 100644
+index 582d8a59e59b..afa11acfb378 100644
 --- a/arch/arm/boot/dts/qcom-ipq8064.dtsi
 +++ b/arch/arm/boot/dts/qcom-ipq8064.dtsi
-@@ -46,6 +46,228 @@
- 		};
- 	};
- 
-+	thermal-zones {
-+		tsens_tz_sensor0 {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+			thermal-sensors = <&tsens 0>;
-+
-+			trips {
-+				cpu-critical {
-+					temperature = <105000>;
-+					hysteresis = <2000>;
-+					type = "critical";
-+				};
-+
-+				cpu-hot {
-+					temperature = <95000>;
-+					hysteresis = <2000>;
-+					type = "hot";
-+				};
-+			};
-+		};
-+
-+		tsens_tz_sensor1 {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+			thermal-sensors = <&tsens 1>;
-+
-+			trips {
-+				cpu-critical {
-+					temperature = <105000>;
-+					hysteresis = <2000>;
-+					type = "critical";
-+				};
-+
-+				cpu-hot {
-+					temperature = <95000>;
-+					hysteresis = <2000>;
-+					type = "hot";
-+				};
-+			};
-+		};
-+
-+		tsens_tz_sensor2 {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+			thermal-sensors = <&tsens 2>;
-+
-+			trips {
-+				cpu-critical {
-+					temperature = <105000>;
-+					hysteresis = <2000>;
-+					type = "critical";
-+				};
-+
-+				cpu-hot {
-+					temperature = <95000>;
-+					hysteresis = <2000>;
-+					type = "hot";
-+				};
-+			};
-+		};
-+
-+		tsens_tz_sensor3 {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+			thermal-sensors = <&tsens 3>;
-+
-+			trips {
-+				cpu-critical {
-+					temperature = <105000>;
-+					hysteresis = <2000>;
-+					type = "critical";
-+				};
-+
-+				cpu-hot {
-+					temperature = <95000>;
-+					hysteresis = <2000>;
-+					type = "hot";
-+				};
-+			};
-+		};
-+
-+		tsens_tz_sensor4 {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+			thermal-sensors = <&tsens 4>;
-+
-+			trips {
-+				cpu-critical {
-+					temperature = <105000>;
-+					hysteresis = <2000>;
-+					type = "critical";
-+				};
-+
-+				cpu-hot {
-+					temperature = <95000>;
-+					hysteresis = <2000>;
-+					type = "hot";
-+				};
-+			};
-+		};
-+
-+		tsens_tz_sensor5 {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+			thermal-sensors = <&tsens 5>;
-+
-+			trips {
-+				cpu-critical {
-+					temperature = <105000>;
-+					hysteresis = <2000>;
-+					type = "critical";
-+				};
-+
-+				cpu-hot {
-+					temperature = <95000>;
-+					hysteresis = <2000>;
-+					type = "hot";
-+				};
-+			};
-+		};
-+
-+		tsens_tz_sensor6 {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+			thermal-sensors = <&tsens 6>;
-+
-+			trips {
-+				cpu-critical {
-+					temperature = <105000>;
-+					hysteresis = <2000>;
-+					type = "critical";
-+				};
-+
-+				cpu-hot {
-+					temperature = <95000>;
-+					hysteresis = <2000>;
-+					type = "hot";
-+				};
-+			};
-+		};
-+
-+		tsens_tz_sensor7 {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+			thermal-sensors = <&tsens 7>;
-+
-+			trips {
-+				cpu-critical {
-+					temperature = <105000>;
-+					hysteresis = <2000>;
-+					type = "critical";
-+				};
-+
-+				cpu-hot {
-+					temperature = <95000>;
-+					hysteresis = <2000>;
-+					type = "hot";
-+				};
-+			};
-+		};
-+
-+		tsens_tz_sensor8 {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+			thermal-sensors = <&tsens 8>;
-+
-+			trips {
-+				cpu-critical {
-+					temperature = <105000>;
-+					hysteresis = <2000>;
-+					type = "critical";
-+				};
-+
-+				cpu-hot {
-+					temperature = <95000>;
-+					hysteresis = <2000>;
-+					type = "hot";
-+				};
-+			};
-+		};
-+
-+		tsens_tz_sensor9 {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+			thermal-sensors = <&tsens 9>;
-+
-+			trips {
-+				cpu-critical {
-+					temperature = <105000>;
-+					hysteresis = <2000>;
-+					type = "critical";
-+				};
-+
-+				cpu-hot {
-+					temperature = <95000>;
-+					hysteresis = <2000>;
-+					type = "hot";
-+				};
-+			};
-+		};
-+
-+		tsens_tz_sensor10 {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+			thermal-sensors = <&tsens 10>;
-+
-+			trips {
-+				cpu-critical {
-+					temperature = <105000>;
-+					hysteresis = <2000>;
-+					type = "critical";
-+				};
-+
-+				cpu-hot {
-+					temperature = <95000>;
-+					hysteresis = <2000>;
-+					type = "hot";
-+				};
-+			};
-+		};
-+	};
-+
- 	memory {
- 		device_type = "memory";
- 		reg = <0x0 0x0>;
-@@ -503,13 +725,32 @@
- 			reg = <0x00700000 0x1000>;
- 			#address-cells = <1>;
- 			#size-cells = <1>;
-+			tsens_calib: calib@400 {
-+				reg = <0x400 0xb>;
-+			};
-+			tsens_calib_backup: calib_backup@410 {
-+				reg = <0x410 0xb>;
-+			};
+@@ -1026,6 +1026,94 @@
+ 			status = "disabled";
  		};
  
- 		gcc: clock-controller@900000 {
--			compatible = "qcom,gcc-ipq8064";
-+			compatible = "qcom,gcc-ipq8064", "syscon";
- 			reg = <0x00900000 0x4000>;
- 			#clock-cells = <1>;
- 			#reset-cells = <1>;
-+			#power-domain-cells = <1>;
++		hs_phy_0: hs_phy_0 {
++			compatible = "qcom,ipq806x-usb-phy-hs";
++			reg = <0x100f8800 0x30>;
++			clocks = <&gcc USB30_0_UTMI_CLK>;
++			clock-names = "ref";
++			#phy-cells = <0>;
 +
-+			tsens: thermal-sensor@900000 {
-+				compatible = "qcom,ipq8064-tsens";
++			status = "disabled";
++		};
 +
-+				nvmem-cells = <&tsens_calib>, <&tsens_calib_backup>;
-+				nvmem-cell-names = "calib", "calib_backup";
-+				interrupts = <GIC_SPI 178 IRQ_TYPE_LEVEL_HIGH>;
-+				interrupt-names = "uplow";
++		ss_phy_0: ss_phy_0 {
++			compatible = "qcom,ipq806x-usb-phy-ss";
++			reg = <0x100f8830 0x30>;
++			clocks = <&gcc USB30_0_MASTER_CLK>;
++			clock-names = "ref";
++			#phy-cells = <0>;
 +
-+				#qcom,sensors = <11>;
-+				#thermal-sensor-cells = <1>;
++			status = "disabled";
++		};
++
++		usb3_0: usb3@100f8800 {
++			compatible = "qcom,dwc3", "syscon";
++			#address-cells = <1>;
++			#size-cells = <1>;
++			reg = <0x100f8800 0x8000>;
++			clocks = <&gcc USB30_0_MASTER_CLK>;
++			clock-names = "core";
++
++			ranges;
++
++			resets = <&gcc USB30_0_MASTER_RESET>;
++			reset-names = "master";
++
++			status = "disabled";
++
++			dwc3_0: dwc3@10000000 {
++				compatible = "snps,dwc3";
++				reg = <0x10000000 0xcd00>;
++				interrupts = <GIC_SPI 205 IRQ_TYPE_LEVEL_HIGH>;
++				phys = <&hs_phy_0>, <&ss_phy_0>;
++				phy-names = "usb2-phy", "usb3-phy";
++				dr_mode = "host";
++				snps,dis_u3_susphy_quirk;
 +			};
- 		};
- 
- 		tcsr: syscon@1a400000 {
++		};
++
++		hs_phy_1: hs_phy_1 {
++			compatible = "qcom,ipq806x-usb-phy-hs";
++			reg = <0x110f8800 0x30>;
++			clocks = <&gcc USB30_1_UTMI_CLK>;
++			clock-names = "ref";
++			#phy-cells = <0>;
++		};
++
++		ss_phy_1: ss_phy_1 {
++			compatible = "qcom,ipq806x-usb-phy-ss";
++			reg = <0x110f8830 0x30>;
++			clocks = <&gcc USB30_1_MASTER_CLK>;
++			clock-names = "ref";
++			#phy-cells = <0>;
++		};
++
++		usb3_1: usb3@110f8800 {
++			compatible = "qcom,dwc3", "syscon";
++			#address-cells = <1>;
++			#size-cells = <1>;
++			reg = <0x110f8800 0x8000>;
++			clocks = <&gcc USB30_1_MASTER_CLK>;
++			clock-names = "core";
++
++			ranges;
++
++			resets = <&gcc USB30_1_MASTER_RESET>;
++			reset-names = "master";
++
++			status = "disabled";
++
++			dwc3_1: dwc3@11000000 {
++				compatible = "snps,dwc3";
++				reg = <0x11000000 0xcd00>;
++				interrupts = <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>;
++				phys = <&hs_phy_1>, <&ss_phy_1>;
++				phy-names = "usb2-phy", "usb3-phy";
++				dr_mode = "host";
++				snps,dis_u3_susphy_quirk;
++			};
++		};
++
+ 		vsdcc_fixed: vsdcc-regulator {
+ 			compatible = "regulator-fixed";
+ 			regulator-name = "SDCC Power";
 -- 
 2.20.1
 
