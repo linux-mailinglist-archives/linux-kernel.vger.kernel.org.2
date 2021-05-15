@@ -2,184 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28942381531
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 04:39:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31E3B381534
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 04:41:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233927AbhEOCki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 22:40:38 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:53158 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231388AbhEOCkf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 22:40:35 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxbchLNJ9gBq0WAA--.1351S2;
-        Sat, 15 May 2021 10:39:07 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Jonathan Corbet <corbet@lwn.net>, Marc Koderer <marc@koderer.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Mathieu Desnoyers <mathieu.desnoyers@polymtl.ca>,
-        Randy Dunlap <randy.dunlap@oracle.com>,
-        Ananth N Mavinakayanahalli <ananth@in.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joe Perches <joe@perches.com>
-Cc:     linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH v3] samples/kprobes: Fix typo in handler_{post,fault}()
-Date:   Sat, 15 May 2021 10:39:06 +0800
-Message-Id: <1621046346-7855-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9AxbchLNJ9gBq0WAA--.1351S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxAr1kJF43uF48AF4xuF18AFb_yoW7Jw1xpa
-        4Yy3WUJF48tw4agay2vF4vgryqkr1akaykZrZ7CryYyFyIgw45ZF1ru3W0vrWrWryFqr4j
-        qryFyFy7C3WUZrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr
-        1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
-        7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r
-        1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02
-        628vn2kIc2xKxwCY02Avz4vE14v_Gr1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7
-        v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF
-        1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIx
-        AIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyU
-        JwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
-        nIWIevJa73UjIFyTuYvjfUO_MaUUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S234061AbhEOCmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 22:42:50 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:50710 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230330AbhEOCms (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 22:42:48 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14F2ZQXV106458;
+        Sat, 15 May 2021 02:41:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=G6JuVrpMTjVs0YwgUSjdITj4OqHutiFA2novKTbRmfQ=;
+ b=bF9V/43Q2or4lIt9FzbRLnrlmx5Gnv6/IKdQCOwMBWQ3ra78xHk0+wciDFJU/frLNe0P
+ rLwNC+Zs3lzpr2c2Fl8+TZLHgAlbWzyKrb5JbvxQU4ZOmK5FiQDnOqlWfalTDN+Qu5y3
+ Us01VHGcGTH9Hc98KKv77/InJ/i6EsepDMAzNxHHpiPsj10/GWSk9uDgT0ysN0xO2eA8
+ pkTV4jCI2qdGR9YBrzpbnk+b3RJlEpMEOvZJ9itRnbR3i5MTB5MvWVtKwubnMHJC5Mdk
+ aiQ3rdUvzzYOsAwIv0nKN7aGoOFrmoqe5DfbDpOkTPRjhO5Vtmt5NbRM3q9cLsb9H+9r Ug== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 38j3tb82gw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 15 May 2021 02:41:26 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14F2e0Db184741;
+        Sat, 15 May 2021 02:41:26 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2172.outbound.protection.outlook.com [104.47.58.172])
+        by aserp3030.oracle.com with ESMTP id 38j4b9h9sy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 15 May 2021 02:41:26 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LDByJH0w/dZiJEkZqerqfI3BBastF6G+220TQUu64iGFh+uKc/CDvMEVCTIfyDGPPs3Qp+QBQaT6zDHEyxnnWCxVQ/tMtJc/++viUW1RIqfLyeYqlZQD0wNLcEwT17yaZ7sRIYelGe/HJrNXwmEwxRSdtJ1KbhJSNhztP+iC9fWs9eLP2rpsRZ9d7xhdxFRS2BfQYhIV0ZV8BsE77CcbTRjqjF2KJ1ghqh2qpEaAy5Qs2gfbn6FgL/d4MJHrboCVeJZ1I1dBxCfHk/VRXz2Zx5gFYgLpXq/AbY+dwZnr2HK8/FtR3nl8srCdbZVd7bU73i7BG/vGuObG3ZhPMwYiZw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G6JuVrpMTjVs0YwgUSjdITj4OqHutiFA2novKTbRmfQ=;
+ b=Z94fkXHllV80FVL7fULFkDEKkz86Z67m/KkwPPCAtcoiX1N4HsXOuTT1zkGNmleIQG8ha5NyFCa8U0ZPlrH9RztfvGCnror9YNWJxoEtM7ZyXWmTbhAaAgHmxOO6gUi5KqsyWD0WJ7Blj9vgfKOrGZNur3ARAOACF6YqPfN+fnHi/4xIP9Npf8GpRXzhV1BDXlkQ6PAxXKILxajvHjc6fB2n5hJmtQTbW7SdZfCRw4gR11GO5M0G3/MEKQiImJdK4f4tad/li6ofy9J3DqQt2ebQFFQ/soU3NYxXLhl5VbQC1MnZT2GqP5mvYocJSa4/xUtC9y+ZohcDee7NWWgH2A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G6JuVrpMTjVs0YwgUSjdITj4OqHutiFA2novKTbRmfQ=;
+ b=PR4kbowbNchC0zZfeaAGRwucbSf79MAKCiWRo1RQdrUzxVgMFVt+yoVcr7490NVP8ZRrE654ttMuyIv7JrvKDtunmesFmjqrRXFjS+Wj0eragdDfQ+BNsK0xq4Cl6nMG1WL5uXk0W7ALh08qZJTULScngHWQqUmx+MbFkf1JT2o=
+Authentication-Results: wanadoo.fr; dkim=none (message not signed)
+ header.d=none;wanadoo.fr; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB5419.namprd10.prod.outlook.com (2603:10b6:510:d6::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.27; Sat, 15 May
+ 2021 02:41:24 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::4c61:9532:4af0:8796]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::4c61:9532:4af0:8796%7]) with mapi id 15.20.4129.028; Sat, 15 May 2021
+ 02:41:24 +0000
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     kartilak@cisco.com, sebaddel@cisco.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, JBottomley@Odin.com, hare@suse.de,
+        nmusini@cisco.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] scsi: snic: Fix an error message
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1im3kbtx1.fsf@ca-mkp.ca.oracle.com>
+References: <3b9d5d767e09d03a07bede293a6ba32e3735cd1a.1620326191.git.christophe.jaillet@wanadoo.fr>
+Date:   Fri, 14 May 2021 22:41:20 -0400
+In-Reply-To: <3b9d5d767e09d03a07bede293a6ba32e3735cd1a.1620326191.git.christophe.jaillet@wanadoo.fr>
+        (Christophe JAILLET's message of "Thu, 6 May 2021 20:38:20 +0200")
+Content-Type: text/plain
+X-Originating-IP: [138.3.200.58]
+X-ClientProxiedBy: SN6PR05CA0007.namprd05.prod.outlook.com
+ (2603:10b6:805:de::20) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SN6PR05CA0007.namprd05.prod.outlook.com (2603:10b6:805:de::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.11 via Frontend Transport; Sat, 15 May 2021 02:41:24 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4e9e5242-d65e-4ecf-25f3-08d9174aee69
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5419:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB54198F34D1077A0C416789A58E2F9@PH0PR10MB5419.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CIacC1XwMgVZTKrFAlmTY/n1aqn1Sw5NXOIKW0dKppa84ke10eFB6DjuezxYXTE5jaDnJMo0zV793+EBxhaiy3g+i7MbBg7LCXKNfBmF85jCVca3GbtVx4hYvpeqTbwytmyYzJ8ytF70aqiqwN7SD1+qXDaDia9HjNWuxrpPDPp3nqBSOneKY7aoqt39Bm7MJTx6oYv7Dtz//56lYt3jtMI7zC4MFAIRl345t+mOjnRKYvgmM0b01gLsg2dYvLtQBsshQUGaxByFm2fJ4QwlTPfw6VxnCxgj+VlBKdEKet741bthUf2J3AZNFrbj18RoDF5hN53giJu4u3Yhe42iKqAdOOPr0pFBlLIQN5SmBffv6LVcJjuqRy7CGzafDd++SM7Z3J5E8P9C0FRd/kfaj/+ORGHS0+Ib9cbdovyxjSTi+F0zouhMoTXMN2CWvmuwPonDd3YgVpKIR4Rerb4P5WIibci0KPTREA8EL/YA6+s5fnNHLqCU+LL/ciNvcjHDdIYq0e1kQYKtAQmFVu8Nen+8ER/ctcDXjDNYFP9LfwwVEU8ssjbTM4x9eN2llfoIho2fYg66MHwS0PIYYHuwAfVPUn3FgZgMIqNvGGbhFJRCGsd1pWxkDMVUXij0117ljOu22WyJEJS7xqyZGFTGPA06pU9URfDtYr8Bl/xC7Kw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(366004)(39860400002)(396003)(376002)(16526019)(83380400001)(186003)(6666004)(66556008)(66946007)(66476007)(55016002)(956004)(2906002)(558084003)(316002)(15650500001)(5660300002)(7696005)(8936002)(6916009)(26005)(478600001)(4326008)(7416002)(52116002)(36916002)(86362001)(38350700002)(38100700002)(8676002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?3le9rgT07ipe5GvVcepe6pUEbxOKTixC1pAkTihj8DC+OgnFvVER3uZkTxMf?=
+ =?us-ascii?Q?BMmD5thNh69T1L0ugGytWqld5gSa33y8tL11p3rCg69IMhsSoi4yJZqi/I2L?=
+ =?us-ascii?Q?PmCSvLiDzRJ516g1dDdlahsGJ6msOwpxo330KHuI5k60p1e1XtoYxqnqfe+L?=
+ =?us-ascii?Q?HXGjPED0QbneSdxEu7KwHXFoan8T/5joDNo1POnUOPY3LD8Chv7UV6uVtfgr?=
+ =?us-ascii?Q?yoMwBWoO8x4xcoHhi/iqb01SvoriRMHNR+2BpFzSu1ONjdG96SvH+BCAgvIX?=
+ =?us-ascii?Q?Ib5vV1QESzpfTwU5g3+q0tfIPfYP2yJ+wNs0I0GTt+tC96Y+sFyEwCV/G8zG?=
+ =?us-ascii?Q?zGhA1n6rUnjaJFGebGYNBl1wALS6Y7zOPsPcbB4VvNcDX0ypUCY9KqIjcEBe?=
+ =?us-ascii?Q?+9G5frymXl87FJmqjIIZfznwGF49LPYGQmfRPjxcQQHtv1TH5naPui2KXgnf?=
+ =?us-ascii?Q?hYMNCLh6uMlY/UYzTdfyQIbt8O2dKmMs0T2ihMnGRWQhNzpK79HZDTMtBFdM?=
+ =?us-ascii?Q?g/1OP8aSiTIT4v/FTk6pMi5SPp34iO1Zh/psIhjtCGz+KJLuIq/Fjl1eVI6T?=
+ =?us-ascii?Q?TqmZWGXgEuXo8Eg17/seS5Mfvj5bn8xK/f1e6uzVOnV8+bGesnoZNxlfhNHy?=
+ =?us-ascii?Q?JzLxgvIUDVomuKjfbXCoeQn3pfrUOCMIZ2/rncg7Lrqrx/MoeZjzENX9noFB?=
+ =?us-ascii?Q?kpl4kzBgDwMjwVRV2q1aW8UXbqsjEcoKdYMjljqn4B7dKICFEfOlFalPoFGO?=
+ =?us-ascii?Q?KdZKtFCDS8QxCQZ65dmfVasUzA0BRiGQyR7ufTHB/hzP2BMQCxDGZ0N6hDdk?=
+ =?us-ascii?Q?br+kMRM484iMRLGyjB8lQQgLJTkQk0vjNb7jJxvLsiDE+dCBbJpssPqFh4o2?=
+ =?us-ascii?Q?+p5g/modPyul2b6lPjUwyq9vnzRt0RD2d5leHsDsQhQaOobspQbOMmNhc2is?=
+ =?us-ascii?Q?rOKK1zEPuI1CSgc37cx/2+jRIdNS/X2xB1bjCOSjfeJ1RNLCKujrVLHbpFxN?=
+ =?us-ascii?Q?+Y1UQM6tqUqP59FhxhmJBY4kJ5Y4rNoVfMssjh6vBM92IuD7uh0p7m//uxbp?=
+ =?us-ascii?Q?62cpFgBigM0q5U+6GpKM8WFuaG9z4+oPcb9THTDmY9sjhx7/bDKtF0gVsfS9?=
+ =?us-ascii?Q?yCfErSuuugewnDeS8ghIIRRB+48u7P/448lNedxID9k0tLJ1cOfTM9IJGXAl?=
+ =?us-ascii?Q?Z7GI0elFCFQLB/qmNdfIHPAnwJdw90B3SxtoYtO07qCv7H4MTh8SS8UHMKTn?=
+ =?us-ascii?Q?ydhmqHnU4L1Bm/5O5pC3coWU0FsJYQQiynR7czFbaObhYgjl0jNggw8G3N8n?=
+ =?us-ascii?Q?Z+OfRAYnTW4KlLZW+07+XSEQ?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4e9e5242-d65e-4ecf-25f3-08d9174aee69
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 May 2021 02:41:24.5777
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CpFVErvJZnyVNYXLm5mtwmNW19vnrk/D22H4iJb7NafVasHP3085tm3OFkzKQInPaaHLd2KzBf+lYHnDKLsuTJU9eVa65PkYOgbRoWX0W5I=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5419
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9984 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 spamscore=0
+ phishscore=0 bulkscore=0 suspectscore=0 mlxlogscore=982 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105150017
+X-Proofpoint-ORIG-GUID: PdoilRFx5b5sSQT9b5d3An0eyWW76Z8j
+X-Proofpoint-GUID: PdoilRFx5b5sSQT9b5d3An0eyWW76Z8j
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9984 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 malwarescore=0
+ spamscore=0 priorityscore=1501 suspectscore=0 mlxlogscore=999 mlxscore=0
+ impostorscore=0 adultscore=0 clxscore=1011 phishscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105150016
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It should use post_handler instead of pre_handler in handler_post().
 
-As Joe Perches suggested, it would be better to use pr_fmt and remove
-all the embedded pre/post strings. This would change the style of the
-output through.
+Christophe,
 
-Also fix a defective format in handler_fault() ending with an 'n' that
-should be '\n'.
+> 'ret' is known to be 0 here.
+> No error code is available, so just remove it from the error message.
 
-Fixes: e16c5dd5157e ("samples/kprobes: Add s390 case in kprobe example module")
-Fixes: 804defea1c02 ("Kprobes: move kprobe examples to samples/")
-Acked-by: Marc Koderer <marc@koderer.com>
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-Suggested-by: Joe Perches <joe@perches.com>
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
+Applied to 5.14/scsi-staging, thanks!
 
-v3: use pr_fmt and fix typo in handler_fault() suggested by Joe Perches
-
-v2: rebase on the latest mainline kernel
-
- samples/kprobes/kprobe_example.c | 33 +++++++++++++++++----------------
- 1 file changed, 17 insertions(+), 16 deletions(-)
-
-diff --git a/samples/kprobes/kprobe_example.c b/samples/kprobes/kprobe_example.c
-index c495664..5f1eb8b 100644
---- a/samples/kprobes/kprobe_example.c
-+++ b/samples/kprobes/kprobe_example.c
-@@ -10,6 +10,8 @@
-  * whenever kernel_clone() is invoked to create a new process.
-  */
- 
-+#define pr_fmt(fmt) "%s: " fmt, __func__
-+
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/kprobes.h>
-@@ -27,32 +29,31 @@ static struct kprobe kp = {
- static int __kprobes handler_pre(struct kprobe *p, struct pt_regs *regs)
- {
- #ifdef CONFIG_X86
--	pr_info("<%s> pre_handler: p->addr = 0x%p, ip = %lx, flags = 0x%lx\n",
-+	pr_info("<%s> p->addr = 0x%p, ip = %lx, flags = 0x%lx\n",
- 		p->symbol_name, p->addr, regs->ip, regs->flags);
- #endif
- #ifdef CONFIG_PPC
--	pr_info("<%s> pre_handler: p->addr = 0x%p, nip = 0x%lx, msr = 0x%lx\n",
-+	pr_info("<%s> p->addr = 0x%p, nip = 0x%lx, msr = 0x%lx\n",
- 		p->symbol_name, p->addr, regs->nip, regs->msr);
- #endif
- #ifdef CONFIG_MIPS
--	pr_info("<%s> pre_handler: p->addr = 0x%p, epc = 0x%lx, status = 0x%lx\n",
-+	pr_info("<%s> p->addr = 0x%p, epc = 0x%lx, status = 0x%lx\n",
- 		p->symbol_name, p->addr, regs->cp0_epc, regs->cp0_status);
- #endif
- #ifdef CONFIG_ARM64
--	pr_info("<%s> pre_handler: p->addr = 0x%p, pc = 0x%lx,"
--			" pstate = 0x%lx\n",
-+	pr_info("<%s> p->addr = 0x%p, pc = 0x%lx, pstate = 0x%lx\n",
- 		p->symbol_name, p->addr, (long)regs->pc, (long)regs->pstate);
- #endif
- #ifdef CONFIG_ARM
--	pr_info("<%s> pre_handler: p->addr = 0x%p, pc = 0x%lx, cpsr = 0x%lx\n",
-+	pr_info("<%s> p->addr = 0x%p, pc = 0x%lx, cpsr = 0x%lx\n",
- 		p->symbol_name, p->addr, (long)regs->ARM_pc, (long)regs->ARM_cpsr);
- #endif
- #ifdef CONFIG_RISCV
--	pr_info("<%s> pre_handler: p->addr = 0x%p, pc = 0x%lx, status = 0x%lx\n",
-+	pr_info("<%s> p->addr = 0x%p, pc = 0x%lx, status = 0x%lx\n",
- 		p->symbol_name, p->addr, regs->epc, regs->status);
- #endif
- #ifdef CONFIG_S390
--	pr_info("<%s> pre_handler: p->addr, 0x%p, ip = 0x%lx, flags = 0x%lx\n",
-+	pr_info("<%s> p->addr, 0x%p, ip = 0x%lx, flags = 0x%lx\n",
- 		p->symbol_name, p->addr, regs->psw.addr, regs->flags);
- #endif
- 
-@@ -65,31 +66,31 @@ static void __kprobes handler_post(struct kprobe *p, struct pt_regs *regs,
- 				unsigned long flags)
- {
- #ifdef CONFIG_X86
--	pr_info("<%s> post_handler: p->addr = 0x%p, flags = 0x%lx\n",
-+	pr_info("<%s> p->addr = 0x%p, flags = 0x%lx\n",
- 		p->symbol_name, p->addr, regs->flags);
- #endif
- #ifdef CONFIG_PPC
--	pr_info("<%s> post_handler: p->addr = 0x%p, msr = 0x%lx\n",
-+	pr_info("<%s> p->addr = 0x%p, msr = 0x%lx\n",
- 		p->symbol_name, p->addr, regs->msr);
- #endif
- #ifdef CONFIG_MIPS
--	pr_info("<%s> post_handler: p->addr = 0x%p, status = 0x%lx\n",
-+	pr_info("<%s> p->addr = 0x%p, status = 0x%lx\n",
- 		p->symbol_name, p->addr, regs->cp0_status);
- #endif
- #ifdef CONFIG_ARM64
--	pr_info("<%s> post_handler: p->addr = 0x%p, pstate = 0x%lx\n",
-+	pr_info("<%s> p->addr = 0x%p, pstate = 0x%lx\n",
- 		p->symbol_name, p->addr, (long)regs->pstate);
- #endif
- #ifdef CONFIG_ARM
--	pr_info("<%s> post_handler: p->addr = 0x%p, cpsr = 0x%lx\n",
-+	pr_info("<%s> p->addr = 0x%p, cpsr = 0x%lx\n",
- 		p->symbol_name, p->addr, (long)regs->ARM_cpsr);
- #endif
- #ifdef CONFIG_RISCV
--	pr_info("<%s> post_handler: p->addr = 0x%p, status = 0x%lx\n",
-+	pr_info("<%s> p->addr = 0x%p, status = 0x%lx\n",
- 		p->symbol_name, p->addr, regs->status);
- #endif
- #ifdef CONFIG_S390
--	pr_info("<%s> pre_handler: p->addr, 0x%p, flags = 0x%lx\n",
-+	pr_info("<%s> p->addr, 0x%p, flags = 0x%lx\n",
- 		p->symbol_name, p->addr, regs->flags);
- #endif
- }
-@@ -101,7 +102,7 @@ static void __kprobes handler_post(struct kprobe *p, struct pt_regs *regs,
-  */
- static int handler_fault(struct kprobe *p, struct pt_regs *regs, int trapnr)
- {
--	pr_info("fault_handler: p->addr = 0x%p, trap #%dn", p->addr, trapnr);
-+	pr_info("p->addr = 0x%p, trap #%d\n", p->addr, trapnr);
- 	/* Return 0 because we don't handle the fault. */
- 	return 0;
- }
 -- 
-2.1.0
-
+Martin K. Petersen	Oracle Linux Engineering
