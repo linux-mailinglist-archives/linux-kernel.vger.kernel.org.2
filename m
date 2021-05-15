@@ -2,154 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEBCE381633
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 07:41:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0235038163A
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 07:58:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234383AbhEOFnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 01:43:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56380 "EHLO
+        id S234406AbhEOF7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 01:59:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234371AbhEOFnH (ORCPT
+        with ESMTP id S234371AbhEOF7z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 01:43:07 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE17C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 22:41:54 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id i13so861364edb.9
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 22:41:54 -0700 (PDT)
+        Sat, 15 May 2021 01:59:55 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC30CC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 22:58:41 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id v191so1240895pfc.8
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 22:58:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorfullife-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=6rckXWl7BjyQXPzwD/P/SDYdcR87Ra4zqULmgEiLxDE=;
-        b=yzjubYj2B80QIHiYErXQMKDY5pu2PDCuYFCE1s/chllwlraOitSCTQTlb27yyQhWCv
-         5xQdDSdrWAzVran6LnCfG4ltxBAX/cgqaBNZKWt7HXJsUuzuwGpzPV3Tj2vhnl+sJqyQ
-         aEVBAinlAcNbt2uuW7s3/iZOcOlLM1I1uF7TX/GjsWxHOuLW3ydkJkUTOaRZwnHUg6SA
-         NwUZeB68MmZ/sAFNiBoXVPMr1PZR9uEQ5udxsv8YvK6Ou0bCA+CCTQYcR5xy7P7xijAf
-         nNHf80pg3LkC89rwyRkPx8OxvzXcK4f9CK5roGETF0Y2F5vE9ZSJ4cSaoh440zIVqL5u
-         UeaA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=quQuju5BxZq7ggpYY/T9Kt5b+6CSVPIxgVITVpTO9KE=;
+        b=dmczgfn23HkMnD/1xckytRmAxOEBCMjhQol0JKvon7mdsbADKsibwKa5LdREdNxIMz
+         UfXbyix4s5gKro/VyECzHGwpKfyG61q4jlmwunoSaRm7BoieCKo4hXGntOI1/KAKntKb
+         iK5FV4YscaerZZG7FOqsNs9A74r0/OMwG3QLOWC8OE2k3H5gD2p+ObQi353s+I3bm0UR
+         5A6QxPH53jcTi6+c92wsOdEahmKFEfKxt1qHRBXZkG5lv9/JRfFdv42bk0/vJB5pZx5s
+         5xOgDJtZ0iiyO9nNnKowPc6xjSUTPxw/OBqMUz1jKmh9BHJwZ5xGX/yTS8vqJkXyDqed
+         6vLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=6rckXWl7BjyQXPzwD/P/SDYdcR87Ra4zqULmgEiLxDE=;
-        b=V6oqvPShP0ORSO0UMccBfKt5DQDlbw22W0bFyAjsEa1+AxdxHbwnQRr3Nb2mVOy3Pw
-         xBuc7o8jCDti/zZVo7EF7JQ0NIM+n25uNJxeoG48H8/mfaIo+hsjqp4cmhqoxe07G0S4
-         JH7YVZokkt//FBoXSMoq4VGwsZi43llF6Pu2+AbucKT+e3m4nk5phfaU25Qra0zetLpO
-         Zgr39F1HO4TzPK42OVza/cnhpcJXO71CzfUs9pEVixAueCT/x4CIL7CXKUXXRr/hy6/r
-         x6ce7jAzRa+88UBJZhRkyZxAOaqBKDtDpV8u5yu2v7ZSOpBBc/OjvAUJHWFZsDEmJwMM
-         nAbQ==
-X-Gm-Message-State: AOAM531PPCOmbiFdW+GPcfNym9O+BYzNCGn+Ht9TTTVOyBgUlXkTnYSd
-        vsUO2DUwcAcMH/zA3da7KVxUDpuSn0wPkSbouCU=
-X-Google-Smtp-Source: ABdhPJyLlDLhoIR7YeR5xc75cK4I79H6TOAJ6KPw/6Lr4fy1ui+8H2g3HBLX715Fce0I2+mD0JRfIQ==
-X-Received: by 2002:a05:6402:4383:: with SMTP id o3mr59608029edc.333.1621057312778;
-        Fri, 14 May 2021 22:41:52 -0700 (PDT)
-Received: from localhost.localdomain (p200300d99736a100737e0d2844aab884.dip0.t-ipconnect.de. [2003:d9:9736:a100:737e:d28:44aa:b884])
-        by smtp.googlemail.com with ESMTPSA id r18sm4730527ejd.106.2021.05.14.22.41.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 May 2021 22:41:52 -0700 (PDT)
-Subject: Re: [RFC PATCH] ipc/mqueue: avoid sleep after wakeup
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Davidlohr Bueso <dbueso@suse.de>,
-        Matthias von Faber <matthias.vonfaber@aox-tech.de>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210514030130.3253-1-hdanton@sina.com>
- <20210515040613.12820-1-hdanton@sina.com>
-From:   Manfred Spraul <manfred@colorfullife.com>
-Message-ID: <5d73d162-e860-785f-a775-1100b0aa57dd@colorfullife.com>
-Date:   Sat, 15 May 2021 07:41:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=quQuju5BxZq7ggpYY/T9Kt5b+6CSVPIxgVITVpTO9KE=;
+        b=JMfcSU3wiryrALZddGsK/KpeiCI2byBCFjv/0iUavzGmF0dr2cfjFbVGMlZ1Bzkhjj
+         OoMfCtJHHc7cOcHnLmWvjDdRa7JT4OzDw2kw1XRUu7hN/EV7DstgGJtfI8NC2wmD2Z9Y
+         L1btmtbc5Q/fhB/oXA8tVRO00pW5zOCDtNEs/brAqY6xPRihQAm7bX00REV/m6pceckX
+         HwOO+KgWLx6YzQK+BuLGf21M759Y3kLDQRXhwN/6S8vfyRTKrYKsez1laU433aHikWJ8
+         Z4BvvZLPsUd3hIT2jEcjsmim7tl/smUooUXD8B3DTNkQ+q6M6R/oxjGoIYlBcDSwSTEE
+         X1hQ==
+X-Gm-Message-State: AOAM531mAdFzOM9lupuZFidwvWU8diUpyAGZbeAFTWILwGhHK3itKzRn
+        Hm9Uf1ZY/JpYzAUHKFesT6Q=
+X-Google-Smtp-Source: ABdhPJx8Caznyp43VzJam8uwjnUsmT5GcJV648F6RKyUhtq6e6ZR5fRzb9XJhVzQTYjyBE2FcxJ0Vw==
+X-Received: by 2002:aa7:8692:0:b029:28e:7bfd:655c with SMTP id d18-20020aa786920000b029028e7bfd655cmr49841220pfo.81.1621058321063;
+        Fri, 14 May 2021 22:58:41 -0700 (PDT)
+Received: from fedora ([2405:201:6008:61b4:4e16:5348:d963:c66d])
+        by smtp.gmail.com with ESMTPSA id a10sm1082534pjs.39.2021.05.14.22.58.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 May 2021 22:58:40 -0700 (PDT)
+Date:   Sat, 15 May 2021 11:28:17 +0530
+From:   Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     pure.logic@nexus-software.ie, johan@kernel.org, elder@kernel.org,
+        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: greybus: add declare_ to declaring macros
+Message-ID: <YJ9i+T5IfaDwdaBX@fedora>
+References: <20210515034116.660895-1-chouhan.shreyansh630@gmail.com>
+ <YJ9dDwKMKkifeICJ@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20210515040613.12820-1-hdanton@sina.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJ9dDwKMKkifeICJ@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/15/21 6:06 AM, Hillf Danton wrote:
-> On Fri, 14 May 2021 17:51:47 +0200  Manfred Spraul wrote:
->> On 5/14/21 5:01 AM, Hillf Danton wrote:
->>> The pipeline waker could start doing its job once waiter releases lock and
->>> get the work done before waiter takes a nap, so check wait condition before
->>> sleep to avoid waiting the wakeup that will never come, though that does not
->>> hurt much thanks to timer timeouts like a second.
->> First: The timeout could be infinity, thus the code must not rely on a
->> timeout wakeup.
->>
->> A wrong wait is would be a bug.
->>
->>
->>> Check signal for the same reason.
->>>
->>> Signed-off-by: Hillf Danton <hdanton@sina.com>
->>> ---
->>>
->>> --- y/ipc/mqueue.c
->>> +++ x/ipc/mqueue.c
->>> @@ -710,15 +710,24 @@ static int wq_sleep(struct mqueue_inode_
->>>    		__set_current_state(TASK_INTERRUPTIBLE);
->>>    
->>>    		spin_unlock(&info->lock);
->>> -		time = schedule_hrtimeout_range_clock(timeout, 0,
->>> -			HRTIMER_MODE_ABS, CLOCK_REALTIME);
->>>    
->> I do not see a bug:
->>
->> We do the __set_current_state() while holding the spinlock. If there is
->> a wakeup, then the wakeup will change current->state to TASK_RUNNING.
-> Correct.
->> schedule() will not remove us from the run queue when current->state is
->> TASK_RUNNING. The same applies if there are pending signals: schedule()
->> checks for pending signals and sets current->state to TASK_RUNNING.
->>
->> Since the __set_current_state() is done while we hold info->lock, and
->> since the wakeup cannot happen before we have dropped the lock [because
->> the task that wakes us up needs the same lock], I do not see how a
->> wakeup could be lost.
->>
->> Thus: Which issue do you see?
-> 	waiter		waker
-> 	----		----
-> 	unlock
-> 			lock
-> 	irq		set STATE_READY
-> 	softirq		unlock
-> 			wakeup
-> 	sleep a tick
-> 	  schedule();
->
-> No need to schedule given READY.
+On Sat, May 15, 2021 at 07:33:03AM +0200, Greg KH wrote:
+> On Sat, May 15, 2021 at 09:11:16AM +0530, Shreyansh Chouhan wrote:
+> > Prefixed the names of all the macros that were used for declaring things
+> > with 'declare_'. This should help with clarifying about what these
+> > macros do.
+> 
+> Thanks, but I think I will leave the code as-is.  It's a good "test" for
+> people who try to modify the code without actually building it :)
+> 
 
-This is not possible to avoid:
+Oh. Okay, I will try fixing something that might actually be a coding
+style issue this time then. :)
 
-	waiter		waker
-	----		----
-	unlock
-	schedule();
-	  calls __schedule()
-	   <before rq_lock()>
+> greg k-h
 
-  	                lock
-			set STATE_READY
-			unlock
-			wakeup
-			--> set waiter->state = TASK_RUNNING
-
-Now the run queue will be evaluated even though there is strictly speaking no need to do that.
-Changes in ipc/sem.c can't solve that: From what I see, the majority of the critical window is in kernel/sched/*.c and not in ipc/sem.c
-I do not consider it as useful to add complexity just to reduce the size of a extremely rare event.
-
-Especially: No harm is done. User space can be preempted at any time, so the kernel is always allowed to check the run queue.
-
---
-	Manfred
-
+Regards,
+Shreyansh Chouhan.
