@@ -2,202 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53FD7381A60
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 20:01:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BB40381A62
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 20:01:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233444AbhEOSCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 14:02:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230156AbhEOSCG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 14:02:06 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83B65C061573
-        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 11:00:50 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lhyam-0004jX-AE; Sat, 15 May 2021 20:00:48 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lhyal-0005bT-G8; Sat, 15 May 2021 20:00:47 +0200
-Date:   Sat, 15 May 2021 20:00:47 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Thorsten Scherer <t.scherer@eckelmann.de>
-Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: Re: [PATCH] siox: Simplify error handling via dev_err_probe()
-Message-ID: <20210515180047.mmwhm4wajf6dr4kt@pengutronix.de>
-References: <20210515082017.1127580-1-t.scherer@eckelmann.de>
+        id S234119AbhEOSCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 14:02:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43820 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230156AbhEOSCh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 May 2021 14:02:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 66BEE61355;
+        Sat, 15 May 2021 18:01:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621101683;
+        bh=yyDvkWDmS1l2BU9gEExbDmJ9Mh+fBWnlVK+32mSOm68=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=ea7vQ7JstNbmjkITWdAQBrdHhqrUk14dva+VNdKfT8aG0L408nv8GFMxw/B6jQPNG
+         MZ1I1R/6uZ23m4HUXyjf3549B/sjvZMsIp9bP3gyE4kiFREvC6wG2jPXdT1zDLliUL
+         nzlBUgmLWbAEyM/q2F30aM6sRayX+q3yQPKtW54upsjTAFAjI67WeoujXPKcI3UEOB
+         MyOHfWM8l7/JwJhwV0A/vZTi4XsgEXNO5j8/xQ430dr5Sv/1QXc8fk4WYFzKyDrFLR
+         uXDxh4xOCpfyQgq8tnQnvEsfnH5zzvu8+cNswWksRjOfBhiQ5XHiwbogPPfp1cTOUs
+         XaU4D79uPWsfw==
+Subject: Re: [RFC PATCH v2 00/11] x86: Support Intel Key Locker
+To:     "Chang S. Bae" <chang.seok.bae@intel.com>, tglx@linutronix.de,
+        mingo@kernel.org, bp@suse.de, x86@kernel.org,
+        herbert@gondor.apana.org.au
+Cc:     dan.j.williams@intel.com, dave.hansen@intel.com,
+        ravi.v.shankar@intel.com, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210514201508.27967-1-chang.seok.bae@intel.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Message-ID: <9f556d3b-49d3-5b0b-0d92-126294ea082d@kernel.org>
+Date:   Sat, 15 May 2021 11:01:22 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="frejqyo4ppldb22c"
-Content-Disposition: inline
-In-Reply-To: <20210515082017.1127580-1-t.scherer@eckelmann.de>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210514201508.27967-1-chang.seok.bae@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 5/14/21 1:14 PM, Chang S. Bae wrote:
+> Key Locker [1][2] is a new security feature available in new Intel CPUs to
+> protect data encryption keys for the Advanced Encryption Standard
+> algorithm. The protection limits the amount of time an AES key is exposed
+> in memory by sealing a key and referencing it with new AES instructions.
+> 
+> The new AES instruction set is a successor of Intel's AES-NI (AES New
+> Instruction). Users may switch to the Key Locker version from crypto
+> libraries.  This series includes a new AES implementation for the Crypto
+> API, which was validated through the crypto unit tests. The performance in
+> the test cases was measured and found comparable to the AES-NI version.
+> 
+> Key Locker introduces a (CPU-)internal key to encode AES keys. The kernel
+> needs to load it and ensure it unchanged as long as CPUs are operational.
 
---frejqyo4ppldb22c
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I have high-level questions:
 
-Hello Thorsten,
+What is the expected use case?  My personal hypothesis, based on various
+public Intel slides, is that the actual intended use case was internal
+to the ME, and that KL was ported to end-user CPUs more or less
+verbatim.  I certainly understand how KL is valuable in a context where
+a verified boot process installs some KL keys that are not subsequently
+accessible outside the KL ISA, but Linux does not really work like this.
+ I'm wondering what people will use it for.
 
-your mail is whitespace damaged and cannot be applied directly. As you
-used git-send-email this is probably a case for Eckelmann IT ...
+On a related note, does Intel plan to extend KL with ways to securely
+load keys?  (E.g. the ability to, in effect, LOADIWKEY from inside an
+enclave?  Key wrapping/unwrapping operations?)  In other words, is
+should we look at KL the way we look at MKTME, i.e. the foundation of
+something neat but not necessarily very useful as is, or should we
+expect that KL is in its more or less final form?
 
-On Sat, May 15, 2021 at 10:20:17AM +0200, Thorsten Scherer wrote:
-> a787e5400a1c ("driver core: add device probe log helper") introduced a
-> helper for a common error checking pattern.  Use it.
 
-Please test your patch using scripts/checkpatch and fix the issued
-errors (or argument why you chose not to follow its recommendations).
+What is the expected interaction between a KL-using VM guest and the
+host VMM?  Will there be performance impacts (to context switching, for
+example) if a guest enables KL, even if the guest does not subsequently
+do anything with it?  Should Linux actually enable KL if it detects that
+it's a VM guest?  Should Linux have use a specific keying method as a guest?
 
-> Signed-off-by: Thorsten Scherer <t.scherer@eckelmann.de>
-> ---
->  drivers/siox/siox-bus-gpio.c | 19 ++++++++++---------
->  1 file changed, 10 insertions(+), 9 deletions(-)
->=20
-> diff --git a/drivers/siox/siox-bus-gpio.c b/drivers/siox/siox-bus-gpio.c
-> index 46b4cda36bac..aeefeb725524 100644
-> --- a/drivers/siox/siox-bus-gpio.c
-> +++ b/drivers/siox/siox-bus-gpio.c
-> @@ -102,29 +102,29 @@ static int siox_gpio_probe(struct platform_device *=
-pdev)
->=20
->         ddata->din =3D devm_gpiod_get(dev, "din", GPIOD_IN);
->         if (IS_ERR(ddata->din)) {
-> -               ret =3D PTR_ERR(ddata->din);
-> -               dev_err(dev, "Failed to get %s GPIO: %d\n", "din", ret);
-> +               ret =3D dev_err_probe(dev, PTR_ERR(ddata->din),
-> +                                   "Failed to get din GPIO\n");
-
-Huh, I'm surprised. I did
-
-diff --git a/drivers/siox/siox-bus-gpio.c b/drivers/siox/siox-bus-gpio.c
-index aeefeb725524..b97fde71a6a0 100644
---- a/drivers/siox/siox-bus-gpio.c
-+++ b/drivers/siox/siox-bus-gpio.c
-@@ -103,28 +103,28 @@ static int siox_gpio_probe(struct platform_device *pd=
-ev)
- 	ddata->din =3D devm_gpiod_get(dev, "din", GPIOD_IN);
- 	if (IS_ERR(ddata->din)) {
- 		ret =3D dev_err_probe(dev, PTR_ERR(ddata->din),
--				    "Failed to get din GPIO\n");
-+				    "Failed to get %s GPIO\n", "din");
- 		goto err;
- 	}
-=20
- 	ddata->dout =3D devm_gpiod_get(dev, "dout", GPIOD_OUT_LOW);
- 	if (IS_ERR(ddata->dout)) {
- 		ret =3D dev_err_probe(dev, PTR_ERR(ddata->dout),
--				    "Failed to get dout GPIO\n");
-+				    "Failed to get %s GPIO\n", "dout");
- 		goto err;
- 	}
-=20
- 	ddata->dclk =3D devm_gpiod_get(dev, "dclk", GPIOD_OUT_LOW);
- 	if (IS_ERR(ddata->dclk)) {
- 		ret =3D dev_err_probe(dev, PTR_ERR(ddata->dclk),
--				    "Failed to get dclk GPIO\n");
-+				    "Failed to get %s GPIO\n", "dclk");
- 		goto err;
- 	}
-=20
- 	ddata->dld =3D devm_gpiod_get(dev, "dld", GPIOD_OUT_LOW);
- 	if (IS_ERR(ddata->dld)) {
- 		ret =3D dev_err_probe(dev, PTR_ERR(ddata->dld),
--				    "Failed to get dld GPIO\n");
-+				    "Failed to get %s GPIO\n", "dld");
- 		goto err;
- 	}
-=20
-on top of your patch and the binary size increased (using ARCH=3Darm and
-gcc 7.3.1). So no objection from me to get rid of this idiom.
-
->                 goto err;
->         }
->=20
->         ddata->dout =3D devm_gpiod_get(dev, "dout", GPIOD_OUT_LOW);
->         if (IS_ERR(ddata->dout)) {
-> -               ret =3D PTR_ERR(ddata->dout);
-> -               dev_err(dev, "Failed to get %s GPIO: %d\n", "dout", ret);
-> +               ret =3D dev_err_probe(dev, PTR_ERR(ddata->dout),
-> +                                   "Failed to get dout GPIO\n");
->                 goto err;
->         }
->=20
->         ddata->dclk =3D devm_gpiod_get(dev, "dclk", GPIOD_OUT_LOW);
->         if (IS_ERR(ddata->dclk)) {
-> -               ret =3D PTR_ERR(ddata->dclk);
-> -               dev_err(dev, "Failed to get %s GPIO: %d\n", "dclk", ret);
-> +               ret =3D dev_err_probe(dev, PTR_ERR(ddata->dclk),
-> +                                   "Failed to get dclk GPIO\n");
->                 goto err;
->         }
->=20
->         ddata->dld =3D devm_gpiod_get(dev, "dld", GPIOD_OUT_LOW);
->         if (IS_ERR(ddata->dld)) {
-> -               ret =3D PTR_ERR(ddata->dld);
-> -               dev_err(dev, "Failed to get %s GPIO: %d\n", "dld", ret);
-> +               ret =3D dev_err_probe(dev, PTR_ERR(ddata->dld),
-> +                                   "Failed to get dld GPIO\n");
->                 goto err;
->         }
->=20
-> @@ -134,7 +134,8 @@ static int siox_gpio_probe(struct platform_device *pd=
-ev)
->=20
->         ret =3D siox_master_register(smaster);
->         if (ret) {
-> -               dev_err(dev, "Failed to register siox master: %d\n", ret);
-> +               dev_err_probe(dev, ret,
-> +                             "Failed to register siox master\n");
->  err:
->                 siox_master_put(smaster);
->         }
-> --
-> 2.29.2
->=20
-> Eckelmann AG
-> Vorstand: Dipl.-Ing. Peter Frankenbach (Sprecher) Dipl.-Wi.-Ing. Philipp =
-Eckelmann
-> Dr.-Ing. Marco M?nchhof
-
-Another issue for your IT department: Tell them please to not append
-latin1 encoded footers to mails that don't declare an encoding (and so
-are implicitly ASCII only). I didn't check but I assume this will earn
-you a few spam assassin points ...
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---frejqyo4ppldb22c
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmCgDEwACgkQwfwUeK3K
-7AlWdAf/b06M3MXROhaoEVThzCnKvpjz5L9rvD3oBp6i/HF8JaL4J8UAjw/ueqQV
-EOsZZbUNeA5cC/aVoEiWeIvI4PHzHPL+1q0TdLkXUhkJhDdzffqSR39llWHaBim9
-Z43+zTcbXk12HfJGU1rVhfvgP/iYYOB4M2s2Bfc9v1KhbFBF/ptSRnelnGfimdvJ
-LYPirdyvlopj4XUBRCXJ0YEBbBXqMQ3uEksHOJZmSwOXC108Z8OkiZ1fVHPwM84w
-pFikjmQVV5mI67NtA1nTuWmsJn7KJabgi+rRRcIZfXxU6dzb90RhFlAjC0OgsXOm
-p3KOn2nu/BryAc0Oh4fAYcX5OYTBJw==
-=8mYs
------END PGP SIGNATURE-----
-
---frejqyo4ppldb22c--
+--Andy
