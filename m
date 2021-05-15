@@ -2,352 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35E38381AED
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 22:08:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0403381AF0
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 22:11:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234793AbhEOUJw convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 15 May 2021 16:09:52 -0400
-Received: from aposti.net ([89.234.176.197]:42434 "EHLO aposti.net"
+        id S234829AbhEOUMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 16:12:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231280AbhEOUJq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 16:09:46 -0400
-Date:   Sat, 15 May 2021 21:08:14 +0100
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v4 3/3] drm/ingenic: Add option to alloc cached GEM
- buffers
-To:     Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Christoph Hellwig <hch@infradead.org>, list@opendingux.net,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Message-Id: <QXZ5TQ.6UOSSUCWI08C2@crapouillou.net>
-In-Reply-To: <4aae6b75-4f7e-2b6e-d8e7-b2599fdfd49d@suse.de>
-References: <20210515145359.64802-1-paul@crapouillou.net>
-        <20210515145359.64802-4-paul@crapouillou.net>
-        <4aae6b75-4f7e-2b6e-d8e7-b2599fdfd49d@suse.de>
+        id S231280AbhEOUMm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 May 2021 16:12:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D9026121E;
+        Sat, 15 May 2021 20:11:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621109489;
+        bh=KGVNwawW8npQ64DMYLeLHsXJrejNvMH6jfAnNO6Flaw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=i0OdoOqqwigdqqTYDpx3l3apcdLe23+2p7LaZMybDEqnZZ2ifXQplJDsw9pcGHsZC
+         SX2a9lhCIInl1FPm9TkC1mRi3rg+JxtSj5pwtIFHsF3AKNtODVDY1TZBLOC1+IDaNi
+         xOtPtLeN68lACsd8QQnvGzcsRVUmNP/Bc3z+fCFgUuzAiwK/UYGq/CR6qDLyZvNzfb
+         PApSv6aH9oQMXVAcRmPq47qmXgM6h3Am/6EhjwNRvUQUGF7TlwDdZdiZx+NQy561NZ
+         Chd2DlBi7PG/IdF4i9IICs+YvJtrD6WVtdk6Z/a/8Az1MArP0VSpM5PYX5hvyqQ9qj
+         rseuYpaHMJc8w==
+Received: by mail-wr1-f54.google.com with SMTP id d11so2402320wrw.8;
+        Sat, 15 May 2021 13:11:28 -0700 (PDT)
+X-Gm-Message-State: AOAM5337Yg2e/oN01jP3cD1pUzAHzSoM9OXpETFHJp6zqb8Caze88DyO
+        NWC+W8jy7frMlClRbweMq320Fv6merGHcY1s6YA=
+X-Google-Smtp-Source: ABdhPJw5vZVwtL/1Xv3i7ea7c+0zq/xvTP2jhE+MqK4pi6SXbi+KkgW3fdP2vafzotWziyKlMhPI0G0Y3n3s+bzWj5g=
+X-Received: by 2002:adf:fe04:: with SMTP id n4mr9290331wrr.361.1621109487649;
+ Sat, 15 May 2021 13:11:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+References: <20210514100106.3404011-1-arnd@kernel.org> <20210514100106.3404011-4-arnd@kernel.org>
+ <3d70eb2a-2969-197e-63e8-f3e0a6a8ddd8@physik.fu-berlin.de>
+ <CAK8P3a1oO_moABCtNqLkM9ccVh9c=andfz+qiSucTCXcqJkYVA@mail.gmail.com> <71b5d15d-7bd2-aa08-cc0a-3caccf9c66c8@physik.fu-berlin.de>
+In-Reply-To: <71b5d15d-7bd2-aa08-cc0a-3caccf9c66c8@physik.fu-berlin.de>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Sat, 15 May 2021 22:10:23 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1VOgW+oT9cGGYyLEt4jr+zrZyA6fz66AdSZuSgoq5xaQ@mail.gmail.com>
+Message-ID: <CAK8P3a1VOgW+oT9cGGYyLEt4jr+zrZyA6fz66AdSZuSgoq5xaQ@mail.gmail.com>
+Subject: Re: [PATCH v2 03/13] sh: remove unaligned access for sh4a
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     linux-arch <linux-arch@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+On Sat, May 15, 2021 at 5:36 PM John Paul Adrian Glaubitz
+<glaubitz@physik.fu-berlin.de> wrote:
+> On 5/14/21 2:22 PM, Arnd Bergmann wrote:
+> >> My Renesas SH4-Boards actually run an sh4a-Kernel, not an sh4-Kernel:
+> >>
+> >> root@tirpitz:~> uname -a
+> >> Linux tirpitz 5.11.0-rc4-00012-g10c03c5bf422 #161 PREEMPT Mon Jan 18 21:10:17 CET 2021 sh4a GNU/Linux
+> >> root@tirpitz:~>
+> >>
+> >> So, if this change reduces performance on sh4a, I would rather not merge it.
+> >
+> > It only makes a difference in very specific scenarios in which unaligned
+> > accesses are done in a fast path, e.g. when forwarding network packet
+> > at a high rate on a big-endian kernel (little-endian kernels wouldn't run into
+> > this on IP headers). If you have a use case for this machine on which the
+> > you can show a performance regression, I can add a patch on top to put
+> > the optimized sh4a get_unaligned_le32() back. Dropping this patch
+> > altogether would make the series much more complex because most of
+> > the associated code gets removed in the end.
+>
+> Hmm, okay. But why does code which sits below arch/sh have to be removed anyway?
+>
+> I don't fully understand why it poses any maintenance burden/
 
+What  I'm removing is the part that lets architectures override the
+generic version.
 
-Le sam., mai 15 2021 at 21:42:40 +0200, Thomas Zimmermann 
-<tzimmermann@suse.de> a écrit :
-> Hi
-> 
-> Am 15.05.21 um 16:53 schrieb Paul Cercueil:
->> Alloc GEM buffers backed by noncoherent memory on SoCs where it is
->> actually faster than write-combine.
->> 
->> This dramatically speeds up software rendering on these SoCs, even 
->> for
->> tasks where write-combine memory should in theory be faster (e.g. 
->> simple
->> blits).
->> 
->> v3: The option is now selected per-SoC instead of being a module
->>      parameter.
->> 
->> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->> ---
->>   drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 56 
->> ++++++++++++++++++++++-
->>   drivers/gpu/drm/ingenic/ingenic-ipu.c     | 18 ++++++--
->>   2 files changed, 68 insertions(+), 6 deletions(-)
->> 
->> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c 
->> b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->> index 09225b770bb8..5f64e8583eec 100644
->> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->> @@ -9,6 +9,7 @@
->>   #include <linux/component.h>
->>   #include <linux/clk.h>
->>   #include <linux/dma-mapping.h>
->> +#include <linux/io.h>
->>   #include <linux/module.h>
->>   #include <linux/mutex.h>
->>   #include <linux/of_device.h>
->> @@ -23,6 +24,7 @@
->>   #include <drm/drm_color_mgmt.h>
->>   #include <drm/drm_crtc.h>
->>   #include <drm/drm_crtc_helper.h>
->> +#include <drm/drm_damage_helper.h>
->>   #include <drm/drm_drv.h>
->>   #include <drm/drm_encoder.h>
->>   #include <drm/drm_gem_cma_helper.h>
->> @@ -57,6 +59,7 @@ struct ingenic_dma_hwdescs {
->>   struct jz_soc_info {
->>   	bool needs_dev_clk;
->>   	bool has_osd;
->> +	bool map_noncoherent;
->>   	unsigned int max_width, max_height;
->>   	const u32 *formats_f0, *formats_f1;
->>   	unsigned int num_formats_f0, num_formats_f1;
->> @@ -410,6 +413,8 @@ static int ingenic_drm_plane_atomic_check(struct 
->> drm_plane *plane,
->>   	     old_plane_state->fb->format->format != 
->> new_plane_state->fb->format->format))
->>   		crtc_state->mode_changed = true;
->>   +	drm_atomic_helper_check_plane_damage(state, new_plane_state);
->> +
->>   	return 0;
->>   }
->>   @@ -544,8 +549,8 @@ static void 
->> ingenic_drm_plane_atomic_update(struct drm_plane *plane,
->>   					    struct drm_atomic_state *state)
->>   {
->>   	struct ingenic_drm *priv = drm_device_get_priv(plane->dev);
->> -	struct drm_plane_state *newstate = 
->> drm_atomic_get_new_plane_state(state,
->> -									  plane);
->> +	struct drm_plane_state *newstate = 
->> drm_atomic_get_new_plane_state(state, plane);
->> +	struct drm_plane_state *oldstate = 
->> drm_atomic_get_old_plane_state(state, plane);
->>   	struct drm_crtc_state *crtc_state;
->>   	struct ingenic_dma_hwdesc *hwdesc;
->>   	unsigned int width, height, cpp, offset;
->> @@ -553,6 +558,8 @@ static void 
->> ingenic_drm_plane_atomic_update(struct drm_plane *plane,
->>   	u32 fourcc;
->>     	if (newstate && newstate->fb) {
->> +		drm_gem_cma_sync_data(&priv->drm, oldstate, newstate);
->> +
->>   		crtc_state = newstate->crtc->state;
->>     		addr = drm_fb_cma_get_gem_addr(newstate->fb, newstate, 0);
->> @@ -742,6 +749,43 @@ static void ingenic_drm_disable_vblank(struct 
->> drm_crtc *crtc)
->>   	regmap_update_bits(priv->map, JZ_REG_LCD_CTRL, 
->> JZ_LCD_CTRL_EOF_IRQ, 0);
->>   }
->>   +static int ingenic_drm_atomic_helper_dirtyfb(struct 
->> drm_framebuffer *fb,
->> +					     struct drm_file *file_priv,
->> +					     unsigned int flags,
->> +					     unsigned int color,
->> +					     struct drm_clip_rect *clips,
->> +					     unsigned int num_clips)
->> +{
->> +	struct ingenic_drm *priv = drm_device_get_priv(fb->dev);
->> +
->> +	if (!priv->soc_info->map_noncoherent)
->> +		return 0;
-> 
-> I'm not sure you can get away without calling 
-> drm_atomic_helper_dirtyfb(). The function does some things with the 
-> plane's damage-clips property. If you don't call it here, the plane 
-> might pile up unhandled clipping areas. It's better to call it and 
-> rely on the test in drm_gem_cma_sync_data(). See below on how to 
-> optimize this.
+> > As I mentioned, supporting "movua" in the compiler likely has a much
+> > larger impact on performance, as it would also help in user space, and
+> > it should improve the networking case on little-endian kernels by replacing
+> > the four separate byte loads/shift pairs with a movua plus a byteswap.
+>
+> The problem is that - at least in Debian - we use the sh4 baseline while the kernel
+> supports both sh4 and sh4a, so we can't use any of these instructions in userland at
+> the moment.
 
-I guess that would work if I don't enable fb damage clips if 
-!map_noncoherent, but I'm missing that.
+I tried building an sh7785lcr_defconfig with and without the patch,
+and found that
+the only affected files are:
 
->> +
->> +	return drm_atomic_helper_dirtyfb(fb, file_priv, flags,
->> +					 color, clips, num_clips);
->> +}
->> +
->> +static const struct drm_framebuffer_funcs ingenic_drm_gem_fb_funcs 
->> = {
->> +	.destroy	= drm_gem_fb_destroy,
->> +	.create_handle	= drm_gem_fb_create_handle,
->> +	.dirty          = ingenic_drm_atomic_helper_dirtyfb,
->> +};
-> 
-> You don't seem to be using this anywhere. You have to implement a 
-> custom fb_create for drm_mode_config_funcs. [1]
+- in-kernel nfs client
+- crc32c/sha1/sha256 hash functions
+- device probing for libata, scsi-core, scsi-disk, hid, r8168
+  (should not matter after boot)
+- msdos partition parsing
 
-You are totally right, my v2 had a ingenic_drm_gem_fb_create() and it 
-got dropped somehow.
+Any nfs client performance difference is probably not even measurable even
+at gigabit ethernet speed.
+I see that the hash functions are notably different, but I don't know if the
+output from the new generic code is actually better or worse than the
+original. If you do think this is important, please try the version from
 
-> BUT: I think the overall approach should be to only use this on SoCs 
-> with non-coherency setting. Use drm_gem_fb_create() on systems 
-> without non-coherency and use drm_gem_fb_create_with_dirty() on 
-> systems with non-coherency (i.e., have two instances of 
-> drm_mode_config_funcs). Only call drm_plane_enable_fb_damage_clips() 
-> on systems with non-coherency.
+https://git.kernel.org/pub/scm/linux/kernel/git/arnd/asm-generic.git
+unaligned-sh4a
 
-Yes, that was the idea - enable this according to 
-(priv->soc_info->map_noncoherent) which is set only on the SoCs where 
-it makes sense.
+against the version without the last change in that series. If you can find
+a relevant test case that exercises it, you may want to add a custom
+implementation of the hash functions as well.
 
->> +
->> +static struct drm_gem_object *
->> +ingenic_drm_gem_create_object(struct drm_device *drm, size_t size)
->> +{
->> +	struct ingenic_drm *priv = drm_device_get_priv(drm);
->> +	struct drm_gem_cma_object *obj;
->> +
->> +	obj = kzalloc(sizeof(*obj), GFP_KERNEL);
->> +	if (!obj)
->> +		return ERR_PTR(-ENOMEM);
->> +
->> +	obj->map_noncoherent = priv->soc_info->map_noncoherent;
->> +
->> +	return &obj->base;
->> +}
->> +
->>   DEFINE_DRM_GEM_CMA_FOPS(ingenic_drm_fops);
->>     static const struct drm_driver ingenic_drm_driver_data = {
->> @@ -754,6 +798,7 @@ static const struct drm_driver 
->> ingenic_drm_driver_data = {
->>   	.patchlevel		= 0,
->>     	.fops			= &ingenic_drm_fops,
->> +	.gem_create_object	= ingenic_drm_gem_create_object,
->>   	DRM_GEM_CMA_DRIVER_OPS,
->>     	.irq_handler		= ingenic_drm_irq_handler,
->> @@ -961,6 +1006,8 @@ static int ingenic_drm_bind(struct device *dev, 
->> bool has_components)
->>   		return ret;
->>   	}
->>   +	drm_plane_enable_fb_damage_clips(&priv->f1);
->> +
->>   	drm_crtc_helper_add(&priv->crtc, &ingenic_drm_crtc_helper_funcs);
->>     	ret = drm_crtc_init_with_planes(drm, &priv->crtc, primary,
->> @@ -989,6 +1036,8 @@ static int ingenic_drm_bind(struct device *dev, 
->> bool has_components)
->>   			return ret;
->>   		}
->>   +		drm_plane_enable_fb_damage_clips(&priv->f0);
->> +
->>   		if (IS_ENABLED(CONFIG_DRM_INGENIC_IPU) && has_components) {
->>   			ret = component_bind_all(dev, drm);
->>   			if (ret) {
->> @@ -1245,6 +1294,7 @@ static const u32 jz4770_formats_f0[] = {
->>   static const struct jz_soc_info jz4740_soc_info = {
->>   	.needs_dev_clk = true,
->>   	.has_osd = false,
->> +	.map_noncoherent = false,
->>   	.max_width = 800,
->>   	.max_height = 600,
->>   	.formats_f1 = jz4740_formats,
->> @@ -1255,6 +1305,7 @@ static const struct jz_soc_info 
->> jz4740_soc_info = {
->>   static const struct jz_soc_info jz4725b_soc_info = {
->>   	.needs_dev_clk = false,
->>   	.has_osd = true,
->> +	.map_noncoherent = false,
->>   	.max_width = 800,
->>   	.max_height = 600,
->>   	.formats_f1 = jz4725b_formats_f1,
->> @@ -1266,6 +1317,7 @@ static const struct jz_soc_info 
->> jz4725b_soc_info = {
->>   static const struct jz_soc_info jz4770_soc_info = {
->>   	.needs_dev_clk = false,
->>   	.has_osd = true,
->> +	.map_noncoherent = true,
->>   	.max_width = 1280,
->>   	.max_height = 720,
->>   	.formats_f1 = jz4770_formats_f1,
->> diff --git a/drivers/gpu/drm/ingenic/ingenic-ipu.c 
->> b/drivers/gpu/drm/ingenic/ingenic-ipu.c
->> index 3b1091e7c0cd..a4d1b500c3ad 100644
->> --- a/drivers/gpu/drm/ingenic/ingenic-ipu.c
->> +++ b/drivers/gpu/drm/ingenic/ingenic-ipu.c
->> @@ -20,10 +20,13 @@
->>     #include <drm/drm_atomic.h>
->>   #include <drm/drm_atomic_helper.h>
->> +#include <drm/drm_damage_helper.h>
->>   #include <drm/drm_drv.h>
->>   #include <drm/drm_fb_cma_helper.h>
->>   #include <drm/drm_fourcc.h>
->>   #include <drm/drm_gem_atomic_helper.h>
->> +#include <drm/drm_gem_cma_helper.h>
->> +#include <drm/drm_gem_framebuffer_helper.h>
->>   #include <drm/drm_plane.h>
->>   #include <drm/drm_plane_helper.h>
->>   #include <drm/drm_property.h>
->> @@ -285,8 +288,8 @@ static void 
->> ingenic_ipu_plane_atomic_update(struct drm_plane *plane,
->>   					    struct drm_atomic_state *state)
->>   {
->>   	struct ingenic_ipu *ipu = plane_to_ingenic_ipu(plane);
->> -	struct drm_plane_state *newstate = 
->> drm_atomic_get_new_plane_state(state,
->> -									  plane);
->> +	struct drm_plane_state *newstate = 
->> drm_atomic_get_new_plane_state(state, plane);
->> +	struct drm_plane_state *oldstate = 
->> drm_atomic_get_new_plane_state(state, plane);
-> 
-> get_old_state ?
-> 
->>   	const struct drm_format_info *finfo;
->>   	u32 ctrl, stride = 0, coef_index = 0, format = 0;
->>   	bool needs_modeset, upscaling_w, upscaling_h;
->> @@ -317,6 +320,8 @@ static void 
->> ingenic_ipu_plane_atomic_update(struct drm_plane *plane,
->>   				JZ_IPU_CTRL_CHIP_EN | JZ_IPU_CTRL_LCDC_SEL);
->>   	}
->>   +	drm_gem_cma_sync_data(ipu->drm, oldstate, newstate);
->> +
-> 
-> If you want to optimize, maybe put this line behind
-> 
->   if (priv->soc_info->map_noncoherent)
-> 
->>   	/* New addresses will be committed in vblank handler... */
->>   	ipu->addr_y = drm_fb_cma_get_gem_addr(newstate->fb, newstate, 0);
->>   	if (finfo->num_planes > 1)
->> @@ -541,7 +546,7 @@ static int ingenic_ipu_plane_atomic_check(struct 
->> drm_plane *plane,
->>     	if (!new_plane_state->crtc ||
->>   	    !crtc_state->mode.hdisplay || !crtc_state->mode.vdisplay)
->> -		return 0;
->> +		goto out_check_damage;
->>     	/* Plane must be fully visible */
->>   	if (new_plane_state->crtc_x < 0 || new_plane_state->crtc_y < 0 ||
->> @@ -558,7 +563,7 @@ static int ingenic_ipu_plane_atomic_check(struct 
->> drm_plane *plane,
->>   		return -EINVAL;
->>     	if (!osd_changed(new_plane_state, old_plane_state))
->> -		return 0;
->> +		goto out_check_damage;
->>     	crtc_state->mode_changed = true;
->>   @@ -592,6 +597,9 @@ static int 
->> ingenic_ipu_plane_atomic_check(struct drm_plane *plane,
->>   	ipu->denom_w = denom_w;
->>   	ipu->denom_h = denom_h;
->>   +out_check_damage:
->> +	drm_atomic_helper_check_plane_damage(state, new_plane_state);
->> +
-> 
-> If you implement my suggestion above, this line could also be behind
-> 
->   if (priv->soc_info->map_noncoherent)
-
-Noted, thanks.
-
-Cheers,
--Paul
-
-> Best regards
-> 
-> Thomas
-> 
-> 
-> 
-> [1] 
-> https://elixir.bootlin.com/linux/v5.13-rc1/source/drivers/gpu/drm/ingenic/ingenic-drm-drv.c#L808
-> 
-> 
-> 
-> --
-> Thomas Zimmermann
-> Graphics Driver Developer
-> SUSE Software Solutions Germany GmbH
-> Maxfeldstr. 5, 90409 Nürnberg, Germany
-> (HRB 36809, AG Nürnberg)
-> Geschäftsführer: Felix Imendörffer
-> 
-
-
+       Arnd
