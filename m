@@ -2,192 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0AED3816F0
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 10:34:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 369883816F2
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 10:37:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232577AbhEOIfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 04:35:53 -0400
-Received: from mga11.intel.com ([192.55.52.93]:27356 "EHLO mga11.intel.com"
+        id S234461AbhEOIi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 04:38:28 -0400
+Received: from mout.gmx.net ([212.227.17.21]:50595 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229701AbhEOIfv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 04:35:51 -0400
-IronPort-SDR: ok7mwr6sMscvJDgUpQMwf3ykZXNbzywB7IwgRs/P1S8wETaokE8vXgP+nItCs/R4+VSPdD6ixE
- tvf36vYqxHvw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9984"; a="197185565"
-X-IronPort-AV: E=Sophos;i="5.82,301,1613462400"; 
-   d="scan'208";a="197185565"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2021 01:34:39 -0700
-IronPort-SDR: t+LLQEexQAjztAYwrp9UkklU1jBDjgXHJnAa8Cw7x/pl2iHeoqqUpR9Mpv8tiAzaBMuOcQzLiW
- jpZnKSoNzT0A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,301,1613462400"; 
-   d="scan'208";a="471204358"
-Received: from lkp-server01.sh.intel.com (HELO ddd90b05c979) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 15 May 2021 01:34:37 -0700
-Received: from kbuild by ddd90b05c979 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lhpkr-000155-A4; Sat, 15 May 2021 08:34:37 +0000
-Date:   Sat, 15 May 2021 16:33:58 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2021.05.13a] BUILD SUCCESS
- fe1f4e1b099797d06bd8c66681eed4024c3cad67
-Message-ID: <609f8776.V1ZaNyW1JeVhS09N%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S229445AbhEOIiV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 May 2021 04:38:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1621067782;
+        bh=63KxS4mqnuOPyJ6F4sl+aqr2F0EgHsdc7QMN4zX55+I=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=PlSh/BN/ZtoETMjeCjp65B6XG85XDxgtFEIk3R2XIsTtIO2BkeI0BoSZ1w/4rRAau
+         kCAgkM8Urx7DHlQ5TvB5vMv3In7OQ+hawa5XrdRb4FWaYxVfiDW0HYOgFCpNZMVwuv
+         e9B0ZkNGS6bUGSag435cRupSrzNmlXNg/g1yuMB8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.221.150.221]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N3siG-1lZ08z3ZUe-00zpLp; Sat, 15
+ May 2021 10:36:21 +0200
+Message-ID: <752d89013a703a2a4bd32b4be196e84a9065b060.camel@gmx.de>
+Subject: Re: [PATCH v2 3/3] sched/fair: break out of newidle balancing if an
+ RT task appears
+From:   Mike Galbraith <efault@gmx.de>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Scott Wood <swood@redhat.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>
+Date:   Sat, 15 May 2021 10:36:19 +0200
+In-Reply-To: <284735cfa1b23484cb0aaeb896067cbf888ac6af.camel@gmx.de>
+References: <20210428232821.2506201-1-swood@redhat.com>
+         <20210428232821.2506201-4-swood@redhat.com>
+         <YJUecEMZNDfD1Z4K@hirez.programming.kicks-ass.net>
+         <284735cfa1b23484cb0aaeb896067cbf888ac6af.camel@gmx.de>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:n/WeMyrUVHimaca42rioNVkS6DTf6uaK+5xkEwJRspkEC/Z9vGt
+ RWK7BjqJZW4K3IAfsxtj4H/BtqKS0eM7PYHYsYknE+Z2TgwHVqhcPAmIue25GbRjBK8vgNW
+ rLF4ss3ofvSD1SVfrkltOQz0tCAIn7XM1YiMtDcLSCohboFOrFbzd/9K6RBaLkIZMUmxGGu
+ vtCHYAchzDb89SQoLKBow==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:+LoyvyClCZE=:wykXHgLFUyOl2MkUv4naq5
+ vKr9SKFIdmKZIUdr2s5FbpdT3A7ZeefPN+nCrPldk8q7NwCSHBpwW0LT/VdhRGba3GR8WYxY+
+ 6Q4sgJVBYd3Dzcm2NhMhp/7W3S/l94fz1IVJGJfZUIlKzI6TBekyCSikCube5lLsaIVbohqhh
+ bw5R0g7bLYwrYyUilJq1LX3Ux3/nqpI23+X2lBcLu72m4luYkng6+5EBHwQ0LE74y1+Kl15lI
+ +0uIJbxN9ZSPH4a8A8NNxzYc9mSALvfmgucPJM09uMtf5v8fWTMS80jaDaZGbT7VOGg/p9P/1
+ 0ADiji5tn8VghskC9q513VMm8UCFMnUq6OPb1Q9LmWIPdZr1lzonn3jdorj1bFmvLIBF0Cn0F
+ V9ssT/+KGNOM/FUTb1Qh0I5ZNpiPBkMjSpEfcMsqT5dBcEbAaJV7o2fydnZmaszko0UKtI7aM
+ duFHWIEj5Zc6StcjQkdeu/HuRvW/afgr0fwWuhJoBf5TMfmhX22VqaLSxYbHN1bTouahLjA8c
+ 54I1f163eY1H+6xgB/+bC4C9Ur27btJRoIBFY+h7csnQ9PjampRcF8EHwbyBGujLegeZok899
+ m30SOzN2OHwL5iZWyIyPLCKXko+nT3zLGJQqYYx1ja0A3hzr0QDTCkkffWtvAvF0q3osSlAAg
+ NH/bkbOkIYmKFanlSncUA7l5sYSFbq4oaI5bHb0DCByitMQInNzc5v/xFUqJDPXXup45nS75u
+ NgCYUX69RMiewrjN4QkSNmgXqc/XKH9lL6IeWxZZm1tSSV5Xt6Gjtv/WuCmvvhN1oQgorLbLc
+ 9KseCJSxtsNLP1mNMOFLtwjZalCXgXdf8u82mF6EMMn4Mix8MhoDrqRWz/r/yWH8tY9sYBhdL
+ oMstucWcWUWL6cNG2Mqye1kNq4L8UTMgwDRquSip52xvhyc4UU7BB2CdOr7yQEguw+/JlDitN
+ LtCTEmD4QDaKH2+sPK0TDepNtn98CGDcg32Ka+xJMka9FEEx8pqi+yt0Bs8eAgDcPduzekwYX
+ 9vDJGyqFZBFZQkUOJTdDSm6ibvHYrIVh+biPYzdVZFMyBDifTpz3IWrU3//WTp8pcuIpgWGZh
+ dPBt3S4lp8wdlQqtfWsqSFfD8l60FJxvGGx/pVAO6/f2DXLOt6vnpLDBwfUwM8ognHGaHTJPg
+ njYKfd9phRbHWCO63fBbTnu38/oZ2ZdeEpk9KGfdUzLnCe9DevD6eWfpLHPBKLB4ivREU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.05.13a
-branch HEAD: fe1f4e1b099797d06bd8c66681eed4024c3cad67  kcsan: Fix debugfs initcall return type
+P.S. The largest I spotted before boredom won:
 
-elapsed time: 721m
+     kworker/3:1-22161   [003] d...2.. 11559.111261: load_balance: NEWIDLE rq:4 lock acquired
+     kworker/0:0-21137   [000] d...1.. 11559.111262: load_balance: NEWIDLE rq:4 locked - aborting
+     kworker/7:1-20870   [007] d...1.. 11559.111262: load_balance: NEWIDLE rq:4 locked - aborting
+           <...>-22133   [002] d...1.. 11559.111263: load_balance: NEWIDLE rq:4 locked - aborting
+     kworker/6:1-22213   [006] d...1.. 11559.111263: load_balance: NEWIDLE rq:4 locked - aborting
 
-configs tested: 130
-configs skipped: 2
+5/8 of a 128 rq box meeting like that is.. hopefully impossible :)
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+	-Mike
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                 mpc832x_rdb_defconfig
-powerpc                       ppc64_defconfig
-arm                   milbeaut_m10v_defconfig
-mips                          rb532_defconfig
-arm                          ixp4xx_defconfig
-um                                  defconfig
-openrisc                  or1klitex_defconfig
-powerpc                    amigaone_defconfig
-sh                          sdk7786_defconfig
-powerpc                 mpc832x_mds_defconfig
-sh                           se7206_defconfig
-m68k                        mvme16x_defconfig
-mips                      pistachio_defconfig
-arm                        oxnas_v6_defconfig
-arm                      jornada720_defconfig
-nios2                         3c120_defconfig
-openrisc                         alldefconfig
-ia64                                defconfig
-mips                          rm200_defconfig
-powerpc                       eiger_defconfig
-powerpc                     mpc5200_defconfig
-parisc                generic-64bit_defconfig
-arm                         lpc32xx_defconfig
-arm                            mps2_defconfig
-arm                       mainstone_defconfig
-openrisc                            defconfig
-arm                        mvebu_v5_defconfig
-arc                           tb10x_defconfig
-sparc64                          alldefconfig
-openrisc                    or1ksim_defconfig
-xtensa                generic_kc705_defconfig
-arm                        mvebu_v7_defconfig
-arm                        cerfcube_defconfig
-arm                           tegra_defconfig
-parisc                           allyesconfig
-sh                         ecovec24_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-s390                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a003-20210514
-i386                 randconfig-a001-20210514
-i386                 randconfig-a004-20210514
-i386                 randconfig-a005-20210514
-i386                 randconfig-a002-20210514
-i386                 randconfig-a006-20210514
-i386                 randconfig-a003-20210515
-i386                 randconfig-a001-20210515
-i386                 randconfig-a004-20210515
-i386                 randconfig-a005-20210515
-i386                 randconfig-a002-20210515
-i386                 randconfig-a006-20210515
-x86_64               randconfig-a012-20210515
-x86_64               randconfig-a015-20210515
-x86_64               randconfig-a011-20210515
-x86_64               randconfig-a013-20210515
-x86_64               randconfig-a016-20210515
-x86_64               randconfig-a014-20210515
-i386                 randconfig-a016-20210515
-i386                 randconfig-a014-20210515
-i386                 randconfig-a011-20210515
-i386                 randconfig-a012-20210515
-i386                 randconfig-a015-20210515
-i386                 randconfig-a013-20210515
-x86_64               randconfig-a004-20210514
-x86_64               randconfig-a003-20210514
-x86_64               randconfig-a001-20210514
-x86_64               randconfig-a005-20210514
-x86_64               randconfig-a002-20210514
-x86_64               randconfig-a006-20210514
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a004-20210515
-x86_64               randconfig-a003-20210515
-x86_64               randconfig-a001-20210515
-x86_64               randconfig-a005-20210515
-x86_64               randconfig-a002-20210515
-x86_64               randconfig-a006-20210515
-x86_64               randconfig-a015-20210514
-x86_64               randconfig-a012-20210514
-x86_64               randconfig-a011-20210514
-x86_64               randconfig-a013-20210514
-x86_64               randconfig-a016-20210514
-x86_64               randconfig-a014-20210514
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
