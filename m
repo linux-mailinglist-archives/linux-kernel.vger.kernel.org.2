@@ -2,88 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 348D83819F4
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 18:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1FB43819F7
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 18:52:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233600AbhEOQs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 12:48:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60194 "EHLO
+        id S233719AbhEOQxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 12:53:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbhEOQs5 (ORCPT
+        with ESMTP id S229441AbhEOQx1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 12:48:57 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A68DC061573;
-        Sat, 15 May 2021 09:47:43 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id s8so2116620wrw.10;
-        Sat, 15 May 2021 09:47:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=pE29kkTNVgaqIoZ2qWVYXC1cONHAz+tF4/QgcXzl/dc=;
-        b=V3UCUnhGCXj3vVY/uPBwCbSa1dYDyw0W5O/V4tjSLOvku38JRvJdqgNL/9/D7qYmW1
-         SSYZHN9QoD01yA5Qhh+2j79rapkFjHkRn/KEUppTLgPPvzRiZgf1YXcFtECYXIZU+2X3
-         vEjbky8yEs+g/8/OGqvTcnoaKmXEkLlakuI09dWT6JKymK0rqFDwPXz2O4IiW1KDMjaR
-         auAXFe/nofwIIl9QIB7AMojn9xx3X9n5BH4bS6yxb31JSmOFfNUVYvF3tBbU94JSbKuh
-         X/yb1s+hqkBywQMeHFe8/cSsJhxnK7mm9Kh7Hc7K0XburYLfXTsjd3jhhkmILvBAsf/T
-         CC9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=pE29kkTNVgaqIoZ2qWVYXC1cONHAz+tF4/QgcXzl/dc=;
-        b=YB7O43kEcCXXMp1nk1spzAp6u359upOs34WtBiZh67ef6oEIPIcFpW9OYoOpqq5qmv
-         rZkDLoj8xBIqM6OGVNXoJb3BH5bFakq+bgBD8D33PBa0o6dN/OMTDxhJgcOXh7zAd4Ee
-         OZBBIFHl/93z/9np4WVuqW/I3/P/7IrZKGgDFCfKlgIe0/0wvevoiDlP3yFtLv3MNnU2
-         VSZmqZBw5BFGrvUmt0iu90DC7do3wslNm/34pkOosqLWkc3p9CtZeU0Fty9vDHpoVVrM
-         EwNdD9KnJ75AT7LtxGVSSSWnuBwYnsnHVWqCHaHvKadJcHRKHvJdWjDxygGPscl/7TS8
-         0EYg==
-X-Gm-Message-State: AOAM533Q1HhOy4KX1+ATQNvSKmSmob55K+uZY7D7rm5UUdaX8FWE0l5i
-        sHRm9+cVWb/N5q6+bqx9XRo=
-X-Google-Smtp-Source: ABdhPJwAvxD1gItpO2Xvv1BIlPDwjtd3lT03gz4NShUrWqGaZSUYp2ZFYZvzYq8aAlVBi+e7aJYJVQ==
-X-Received: by 2002:a5d:534d:: with SMTP id t13mr65166806wrv.153.1621097261791;
-        Sat, 15 May 2021 09:47:41 -0700 (PDT)
-Received: from localhost.localdomain ([197.240.82.148])
-        by smtp.gmail.com with ESMTPSA id k11sm10136810wrm.62.2021.05.15.09.47.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 May 2021 09:47:41 -0700 (PDT)
-From:   Khaled ROMDHANI <khaledromdhani216@gmail.com>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com
-Cc:     Khaled ROMDHANI <khaledromdhani216@gmail.com>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH-next] sched: Fix Null pointer derefrence
-Date:   Sat, 15 May 2021 17:46:45 +0100
-Message-Id: <20210515164645.22849-1-khaledromdhani216@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Sat, 15 May 2021 12:53:27 -0400
+Received: from the.earth.li (the.earth.li [IPv6:2a00:1098:86:4d:c0ff:ee:15:900d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62F5FC061573
+        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 09:52:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=earth.li;
+         s=the; h=Content-Type:MIME-Version:Message-ID:Subject:To:From:Date:Sender:
+        Reply-To:Cc:Content-Transfer-Encoding:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=+mKLe/4OElUdDV+bpqfDIHZ1Ca/pDNLytCsMnCklxVo=; b=DmbWxEOhAqspmr2oAzA9S/h/ai
+        +4yLxy3Cx+Z1qV74JI37/99rMlofMJyXFxp6u8kn3eemsuqSaNpNmPfmbMqodxdGbrZXS08BD0bjl
+        HIt6JLFsrzoQGumBfAvYUfNQBxhDXatABzohbJ9NDdRvFHcQKlQB6kacJ38yqWCTXdciDf5rY7n5s
+        cFR3tPFtgp8og3Skoe323Oa9vUsFu1zaFf7HAvI7r56kICgnEZTiDg9EFVGoYip75SXB/btcWj01E
+        EfIucQmGfAE078d0/UyixQMzMswWvrNXboMldF6w5tgKAZv60oX5qWg+sgrHj5ACia6jyZvU/F6kH
+        eSLXJL4g==;
+Received: from [2001:4d48:ad59:1409:4::2] (helo=youmian.o362.us)
+        by the.earth.li with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <noodles@earth.li>)
+        id 1lhxWM-0004QT-0M; Sat, 15 May 2021 17:52:10 +0100
+Date:   Sat, 15 May 2021 17:52:02 +0100
+From:   Jonathan McDowell <noodles@earth.li>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Ansuel Smith <ansuelsmth@gmail.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/5] ARM: dts: qcom: Enable various devices for IPQ806x /
+ RB3011
+Message-ID: <cover.1621097174.git.noodles@earth.li>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 'curr' variable could be NULL and derefrenced by
-pick_next_entity. Fix this by adding a check that prevent
-the invocation of pick_next_entity with a NULL passed argument.
+This series adds various devices (NAND, USB, tsens, L2CC, RPM) which
+have either recently gained mainline drivers, or just failed to be
+previously added, to the DTS for the IPQ806x platform. It then enables
+them for the MikroTik RB3011 platform, where they have all been tested.
 
-Addresses-Coverity: ("Explicit null dereferenced")
-Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
----
- kernel/sched/fair.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I've done the additions to the main IPQ806x DTS as separate commits for
+each logical set, and then a single wholesale set of changes for the
+RB3011 to turn everything on. Happy to squash to 1/2 commits or split
+out further if desired.
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 161b92aa1c79..490948df94fe 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -7075,7 +7075,7 @@ static struct task_struct *pick_task_fair(struct rq *rq)
- 			else
- 				curr = NULL;
- 
--			if (unlikely(check_cfs_rq_runtime(cfs_rq)))
-+			if (unlikely(check_cfs_rq_runtime(cfs_rq) || !curr))
- 				goto again;
- 		}
- 
+Jonathan McDowell (5):
+  ARM: dts: qcom: Add ADM DMA + NAND definitions to ipq806x
+  ARM: dts: qcom: Add tsens details to ipq806x
+  ARM: dts: qcom: Add USB port definitions to ipq806x
+  ARM: dts: qcom: add L2CC and RPM for IPQ8064
+  ARM: dts: qcom: Enable NAND + USB for RB3011
+
+ arch/arm/boot/dts/qcom-ipq8064-rb3011.dts |  58 +++
+ arch/arm/boot/dts/qcom-ipq8064.dtsi       | 427 +++++++++++++++++++++-
+ 2 files changed, 484 insertions(+), 1 deletion(-)
+
 -- 
-2.17.1
+2.20.1
 
