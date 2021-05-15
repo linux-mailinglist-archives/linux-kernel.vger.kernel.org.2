@@ -2,60 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0296381BC1
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 01:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E0CE381BC4
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 01:52:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231377AbhEOXvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 19:51:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34318 "EHLO mail.kernel.org"
+        id S231659AbhEOXxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 19:53:37 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:42222 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229659AbhEOXvO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 19:51:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 257D76113E;
-        Sat, 15 May 2021 23:50:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621122601;
-        bh=4Jzaoiv/lK4bxd1aXbkugLZkcv3eCvI1H+Hf+520C68=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=mfE7h2fyVlBcigPJsyxuOMZMKVF19iZgekU/M/HBzeUmBNnbGVdUCIxHPPyVVZnu8
-         cWqp7Dh92s78zk9MRrnH+18nc4V9pwM/L4JCoBk6PLG8C8pdpnklvE+/Z4w6C21cod
-         2JswqRLIK+Km+ZQstN7h6WrjL7JWEkxOTmwutUS0+YnXUKUvGlqRPnzcxEpNKczEwA
-         YqDkMJRd+hDhL6wPgdHlLpaFJyfXlpg0rPAaO/VdHngnMppA9ipW9PjPPfTnc4A/cJ
-         UAFulxZpf82Zqa+dMXUwK7MAfpReKhqzs6M3uumjVG/05AMxg3stMf9BNcj6+hsA26
-         HD8ZYKFZJl1WA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 102296095D;
-        Sat, 15 May 2021 23:50:01 +0000 (UTC)
-Subject: Re: [GIT PULL] Please pull powerpc/linux.git powerpc-5.13-3 tag
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <871ra7lge5.fsf@mpe.ellerman.id.au>
-References: <871ra7lge5.fsf@mpe.ellerman.id.au>
-X-PR-Tracked-List-Id: Linux on PowerPC Developers Mail List <linuxppc-dev.lists.ozlabs.org>
-X-PR-Tracked-Message-Id: <871ra7lge5.fsf@mpe.ellerman.id.au>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.13-3
-X-PR-Tracked-Commit-Id: c6ac667b07996929835b512de0e9a988977e6abc
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 63d1cb53e26a9a4168b84a8981b225c0a9cfa235
-Message-Id: <162112260100.14324.6897731706758836782.pr-tracker-bot@kernel.org>
-Date:   Sat, 15 May 2021 23:50:01 +0000
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        npiggin@gmail.com
+        id S230102AbhEOXx2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 May 2021 19:53:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=RP7yGAEHZlhCRQ2Dd9FV88IXokX2WkuH4I1RMy1fDuA=; b=wmE93zq4qsXp62qUP9gyku4vin
+        jJZ5XJx3eBfJfB1dYbWETZylRioIp9dgyqQsatqaSCftXhIU4+HTdr5eDsZIio8viOBLMjJW05pga
+        sL60/Bdj4Qad7tSdU6eqXm+8M6pzA8wYotI/wVs0c1O2IT7szUa5hsEBbwvqoj+BZhgo=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1li44j-004NOO-Q4; Sun, 16 May 2021 01:52:05 +0200
+Date:   Sun, 16 May 2021 01:52:05 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Jonathan McDowell <noodles@earth.li>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH net-next v4 01/28] net: mdio: ipq8064: clean
+ whitespaces in define
+Message-ID: <YKBepW5Hu3FEG/JJ@lunn.ch>
+References: <20210508002920.19945-1-ansuelsmth@gmail.com>
+ <YJbSOYBxskVdqGm5@lunn.ch>
+ <YJbTBuKobu1fBGoM@Ansuel-xps.localdomain>
+ <20210515170046.GA18069@earth.li>
+ <YKAFMg+rJsspgE84@Ansuel-xps.localdomain>
+ <20210515180856.GI11733@earth.li>
+ <YKAQ+BggTCzc7aZW@Ansuel-xps.localdomain>
+ <20210515194047.GJ11733@earth.li>
+ <YKAlUEt/9MU8CwsQ@Ansuel-xps.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YKAlUEt/9MU8CwsQ@Ansuel-xps.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 16 May 2021 09:35:30 +1000:
+> > They're on 2 separate sets of GPIOs if that makes a difference - switch0
+> > is in gpio0/1 and switch1 is on gpio10/11. Is the internal MDIO logic
+> > shared between these? Also even if that's the case it seems odd that
+> > enabling the MDIO for just switch0 doesn't work?
+> > 
+> 
+> The dedicated internal mdio on ipq8064 is unique and present on the
+> gmac0 address so yes it's shared between them. And this seems to be the
+> problem... As you notice the fact that different gpio are used for the
+> different switch fix the problem. So think that to use the dedicated
+> mdio bus with both switch we need to introduce some type of
+> syncronization or something like that.
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.13-3
+Please could you describe the hardware in a bit more details. Or point
+me at a datasheet. It sounds like you have an MDIO mux? Linux has this
+concept, so you might need to implement a mux driver.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/63d1cb53e26a9a4168b84a8981b225c0a9cfa235
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+	 Andrew
