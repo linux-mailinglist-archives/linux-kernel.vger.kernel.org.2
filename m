@@ -2,99 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20538381759
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 11:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68701381763
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 11:56:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234669AbhEOJwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 05:52:18 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:52666 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230050AbhEOJwQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 05:52:16 -0400
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14F9ooUX015223;
-        Sat, 15 May 2021 09:50:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=2wenIP4PRtmI//nVjFMumKuzna/LNMbkOwCNVqgYZ+A=;
- b=MsbW5sl/d5BBtOV/VxuOpO5yA1dcHGP2iH5VRFTeAqNAo5sz2kjhWqt5NEkYPP/QWgmV
- +AEty+G4mnMuSZ/W45W8WxIgYFeYi0jLsrPLNEZSG5RSBvE/Iuil/kQR51yFMHpXI8If
- ViSZbdT6eRpMBIGBDjo/Hygr5dMk7DhpleTF3LONHxe2ubqyMM4oeQR6r9vaw7DSlvfX
- y2o/Ae/iRrCLa+ySAi5kb1oju0ZgdVFsAU4mkoZ+08nD3zRU6sLkXp4ZRZxVKj8lXBQ/
- ltRRD8qSZhS/EcmK5MBDybVOVlD8MiGieo3I+7FaLK6O20G+RcYI7I5BT7Bv0zbIEfyY rQ== 
-Received: from oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 38j4qc034y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 15 May 2021 09:50:50 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14F9onOt104264;
-        Sat, 15 May 2021 09:50:49 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 38j641ffhu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 15 May 2021 09:50:49 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14F9nGeE099425;
-        Sat, 15 May 2021 09:50:49 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 38j641ffhe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 15 May 2021 09:50:49 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 14F9oVI4017322;
-        Sat, 15 May 2021 09:50:31 GMT
-Received: from mwanda (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sat, 15 May 2021 02:50:30 -0700
-Date:   Sat, 15 May 2021 12:50:23 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Phong LE <ple@baylibre.com>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH 1/2] drm: bridge: it66121: fix an error code in
- it66121_probe()
-Message-ID: <YJ+ZX3BdKPAN0pUZ@mwanda>
+        id S234718AbhEOJ5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 05:57:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47368 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230050AbhEOJ52 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 May 2021 05:57:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E9A85613EC;
+        Sat, 15 May 2021 09:56:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621072575;
+        bh=xTDtBJ9V9VYwOUf/uC9UTFd+NHYG7n2WkwAKLnOotog=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ZfV7S2lgmdAvPgP/14Cz0gdHfnetBWdk+Q+d8pV0P00a1HmCgumdcMwm0PNT+Pqjw
+         e/MA68F5K9M9Qphu5vpeMC6AffSf74ZmrYjMh2DZMw/qgkXpSi0gdGanccgi7MiBWX
+         dQsLBQU1zqe75bZWo2v2x6VW3SFEXUPoJp8HBwG60r2B1UzIuucQ+j9sbcAOlKfX3T
+         AeJotkFM/hq26/v31msWgWjR7qBNa0cYdrndqqdPuS1oerK+SHRbB/aLV/+SbPJp7t
+         25Qlc1z5N91oBQvdAaoxmTPLyaSt/mDe39Dtn5h//hEXZwh+HQX52Peq/j/HaxA5U7
+         AR6vH0QbEmzjA==
+Received: by mail-wr1-f42.google.com with SMTP id s8so1493859wrw.10;
+        Sat, 15 May 2021 02:56:14 -0700 (PDT)
+X-Gm-Message-State: AOAM531yQGyUQGklJAckjuqE0alVkgUhTSMxIxyoMSpNApw0byZi3vSL
+        qT+7aj6Cir9HNXxNyPbabyKkTzP+FwbT4XKKIcY=
+X-Google-Smtp-Source: ABdhPJyU1TeHsTyhdSvAyF4C1QTcXoaRrpe2s4yt2wtnu6GWm1DoLujaxn1SkUeZ3N6LZcimtNJwCO6vX/IPuQocx+g=
+X-Received: by 2002:adf:fe04:: with SMTP id n4mr6852056wrr.361.1621072573589;
+ Sat, 15 May 2021 02:56:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-GUID: ZVeIseb27CAkdyVJGUdYBdF7rUYQVh-_
-X-Proofpoint-ORIG-GUID: ZVeIseb27CAkdyVJGUdYBdF7rUYQVh-_
+References: <20210514220942.879805-1-arnd@kernel.org> <20210515064015.GA26545@lst.de>
+In-Reply-To: <20210515064015.GA26545@lst.de>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Sat, 15 May 2021 11:55:10 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2ukLgV3K3sW8gkkz6cvKh+wmP_C0av2hnYcftfXMPTWA@mail.gmail.com>
+Message-ID: <CAK8P3a2ukLgV3K3sW8gkkz6cvKh+wmP_C0av2hnYcftfXMPTWA@mail.gmail.com>
+Subject: Re: [PATCH 0/5] asm-generic: strncpy_from_user/strnlen_user cleanup
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     linux-arch <linux-arch@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Brian Cain <bcain@codeaurora.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Sid Manning <sidneym@codeaurora.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        "open list:SYNOPSYS ARC ARCHITECTURE" 
+        <linux-snps-arc@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "moderated list:H8/300 ARCHITECTURE" 
+        <uclinux-h8-devel@lists.sourceforge.jp>,
+        "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-um <linux-um@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This code is passing the wrong variable to PTR_ERR() so it doesn't
-return the correct error code.
+On Sat, May 15, 2021 at 8:40 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> I generall like this consolidation, but for the patches that remote
+> the arch / asm-generic versions, can you please elaborate a little
+> more why the lib version is preferable?  The current commit logs are
+> not very informative.
 
-Fixes: 988156dc2fc9 ("drm: bridge: add it66121 driver")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/gpu/drm/bridge/ite-it66121.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Indeed. I do remember writing the patches last year thinking "this should
+really get fixed", but apparently I failed to describe the actual problem at
+the time. I have gone through it again and annotated what I found now,
+but I have a feeling that there were additional problems with the old
+code that I still did not capture.
 
-diff --git a/drivers/gpu/drm/bridge/ite-it66121.c b/drivers/gpu/drm/bridge/ite-it66121.c
-index d8a60691fd32..6980c9801d0d 100644
---- a/drivers/gpu/drm/bridge/ite-it66121.c
-+++ b/drivers/gpu/drm/bridge/ite-it66121.c
-@@ -943,7 +943,7 @@ static int it66121_probe(struct i2c_client *client,
- 	ctx->regmap = devm_regmap_init_i2c(client, &it66121_regmap_config);
- 	if (IS_ERR(ctx->regmap)) {
- 		ite66121_power_off(ctx);
--		return PTR_ERR(ctx);
-+		return PTR_ERR(ctx->regmap);
- 	}
- 
- 	regmap_read(ctx->regmap, IT66121_VENDOR_ID0_REG, &vendor_ids[0]);
--- 
-2.30.2
+Sending v2 now: same code, more text.
 
+       Arnd
