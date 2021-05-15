@@ -2,71 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C113815B1
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 06:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A6543815B5
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 06:19:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234287AbhEOEQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 00:16:47 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:38808 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229441AbhEOEQr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 00:16:47 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxncjkSp9gC7YWAA--.29652S2;
-        Sat, 15 May 2021 12:15:32 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] checkpatch: Print some info if no filenames are given
-Date:   Sat, 15 May 2021 12:15:31 +0800
-Message-Id: <1621052131-16309-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9AxncjkSp9gC7YWAA--.29652S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7Xw4Dtw4xXF1ftFWDJFy7ZFb_yoW3KrbEkF
-        Zxtr95WF9rJw4rA3Wxtr45WF1jv34DZw4rW3WrAryDu34rC398uFW7JrZ7JF18A3yIkF90
-        k39xXFWkCrnxZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb2kYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8XwCF04k2
-        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
-        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41l
-        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
-        AIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
-        z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8W7K3UUUUU==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S234288AbhEOEUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 00:20:15 -0400
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:4508 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229441AbhEOET7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 May 2021 00:19:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1621052327; x=1652588327;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=mzpXCfQcHSPEy32cQY3BR9AivtqvnparTIG4WZ7VIYA=;
+  b=IoqLctWaYsfCPBwn5PO41OQ2yzEA0G+t2CUPH7ICGXCLQ8M2YbSP5xva
+   zHEPVnxA5Dk50sniAb72PchABwl8dNT1Jw9wBNUStJsmaE4yVMZ5gRrdZ
+   bhTkX+SnZvtDplHv4KURHXrwH9dVxrHxNajRDpLKNoKJHJy8LUyJmpJ7j
+   o=;
+X-IronPort-AV: E=Sophos;i="5.82,300,1613433600"; 
+   d="scan'208";a="112350359"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2a-538b0bfb.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-6002.iad6.amazon.com with ESMTP; 15 May 2021 04:18:46 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2a-538b0bfb.us-west-2.amazon.com (Postfix) with ESMTPS id D7FC3A07D6;
+        Sat, 15 May 2021 04:18:42 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Sat, 15 May 2021 04:18:42 +0000
+Received: from 88665a182662.ant.amazon.com (10.43.162.216) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Sat, 15 May 2021 04:18:37 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     <kafai@fb.com>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <benh@amazon.com>,
+        <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <kuni1840@gmail.com>, <kuniyu@amazon.co.jp>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+Subject: Re: [PATCH v5 bpf-next 07/11] tcp: Migrate TCP_NEW_SYN_RECV requests at receiving the final ACK.
+Date:   Sat, 15 May 2021 13:18:34 +0900
+Message-ID: <20210515041834.81591-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210515011305.eeblnqnov4xlcjfy@kafai-mbp>
+References: <20210515011305.eeblnqnov4xlcjfy@kafai-mbp>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.162.216]
+X-ClientProxiedBy: EX13D21UWB004.ant.amazon.com (10.43.161.221) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After commit 45107ff6d526 ("checkpatch: if no filenames then read stdin"),
-if no filenames are given, it will read patch from stdin rather than exit
-directly, it is better to print some info about what to do next, otherwise
-it is a bit confusing whether the script hangs.
+From:   Martin KaFai Lau <kafai@fb.com>
+Date:   Fri, 14 May 2021 18:13:05 -0700
+> On Mon, May 10, 2021 at 12:44:29PM +0900, Kuniyuki Iwashima wrote:
+> > diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
+> > index e690d1cff36e..fe666dc5c621 100644
+> > --- a/net/ipv4/inet_connection_sock.c
+> > +++ b/net/ipv4/inet_connection_sock.c
+> > @@ -1075,10 +1075,38 @@ struct sock *inet_csk_complete_hashdance(struct sock *sk, struct sock *child,
+> >  	if (own_req) {
+> >  		inet_csk_reqsk_queue_drop(sk, req);
+> >  		reqsk_queue_removed(&inet_csk(sk)->icsk_accept_queue, req);
+> In the migration case 'sk != req->rsk_listener', is sk the right
+> one to pass in the above two functions?
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- scripts/checkpatch.pl | 2 ++
- 1 file changed, 2 insertions(+)
+Good catch, 'sk' should be 'req->rsk_listener' here.
+Thank you!
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 23697a6..d84d4fb 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -361,6 +361,8 @@ if ($^V && $^V lt $minimum_perl_version) {
- 
- #if no filenames are given, push '-' to read patch from stdin
- if ($#ARGV < 0) {
-+	print "$P: missing patchfile or -f file\n";
-+	print "Use --help if necessary or read patch from stdin\n";
- 	push(@ARGV, '-');
- }
- 
--- 
-2.1.0
 
+> 
+> > -		if (inet_csk_reqsk_queue_add(sk, req, child))
+> > +
+> > +		if (sk != req->rsk_listener) {
+> > +			/* another listening sk has been selected,
+> > +			 * migrate the req to it.
+> > +			 */
+> > +			struct request_sock *nreq;
+> > +
+> > +			/* hold a refcnt for the nreq->rsk_listener
+> > +			 * which is assigned in reqsk_clone()
+> > +			 */
+> > +			sock_hold(sk);
+> > +			nreq = reqsk_clone(req, sk);
+> > +			if (!nreq) {
+> > +				inet_child_forget(sk, req, child);
+> > +				goto child_put;
+> > +			}
+> > +
+> > +			refcount_set(&nreq->rsk_refcnt, 1);
+> > +			if (inet_csk_reqsk_queue_add(sk, nreq, child)) {
+> > +				reqsk_migrate_reset(req);
+> > +				reqsk_put(req);
+> > +				return child;
+> > +			}
+> > +
+> > +			reqsk_migrate_reset(nreq);
+> > +			__reqsk_free(nreq);
+> > +		} else if (inet_csk_reqsk_queue_add(sk, req, child)) {
+> >  			return child;
+> > +		}
+> >  	}
+> >  	/* Too bad, another child took ownership of the request, undo. */
+> > +child_put:
+> >  	bh_unlock_sock(child);
+> >  	sock_put(child);
+> >  	return NULL;
