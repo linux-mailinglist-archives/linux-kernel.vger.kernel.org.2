@@ -2,120 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D906381A39
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 19:43:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD1F1381A42
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 19:45:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234192AbhEORoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 13:44:20 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:38097 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231480AbhEORoR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 13:44:17 -0400
-Received: from [IPv6:2601:646:8602:8be1:e512:4e99:5d16:dcc6] ([IPv6:2601:646:8602:8be1:e512:4e99:5d16:dcc6])
-        (authenticated bits=0)
-        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14FHguJP3346914
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Sat, 15 May 2021 10:42:57 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14FHguJP3346914
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2021042801; t=1621100577;
-        bh=kQeE0mPFtMR+tUx1iyiu2ztICkIlSmLWVGj8+6Dr6L8=;
-        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
-        b=Ij8hpOujP0gyrRmfAOM62H8T4YOGdwsI7b7gwlbP9IfnoV4TiXq2b3ypKaTHAwIfj
-         EsRgeSUqGXz+ahs1WcU4WC+PQe0elw7J5fMaY7m8JPLUVaaQaYqt6/11Jv5PrpMTvy
-         eQ/27OvfQEPTGDn+M4clqJOI6SCT/8OLwGi6FWtP0PDKyPoQrX/mVL3XT/iUp8hAMM
-         2k5Xaj/yf/ZvAKZoUBlH3b8Vb13PbEo9y0Gb5N2zm5rqZ792h/NnhT/yCIfBQxjW/5
-         oyR9rY6FYA/tSPaVYZdNxxQdSPMeMC9Zod4SPZNS7gNKh/92uDKQxCjQu3gBJNUzUp
-         7+ztMq1xBvO9w==
-Date:   Sat, 15 May 2021 10:42:48 -0700
-User-Agent: K-9 Mail for Android
-In-Reply-To: <f2e4c3c3-08c3-eae1-803a-aa85d7e75ca0@kernel.org>
-References: <20210515011015.2707542-1-hpa@zytor.com> <20210515011015.2707542-5-hpa@zytor.com> <f2e4c3c3-08c3-eae1-803a-aa85d7e75ca0@kernel.org>
+        id S234232AbhEORqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 13:46:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231480AbhEORqd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 May 2021 13:46:33 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A15CC06174A
+        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 10:45:19 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id c15so2230624ljr.7
+        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 10:45:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=Uew60+G+SsxW8j8MijONIawIC+5YuiNS9/uDWrf3cP4=;
+        b=q7uMGfIu5kGZ+6hGNujZ64ZmMGy4RAikXSf8gFyIKdRbA71krFjYMlArGdyx2gq9Vq
+         d9WOncS48vT9ws4TVxrvOPftv0vDMA0vs1BNZuOx0H1ORjEG171ueeUTtuYABCXCtDV8
+         VU02/2EfHzaGqprgipQVXAGhRyhW15jGjR19GiwNRD813aX3pyJgYqC6LekkD/on9E3k
+         VTNYeguiwopR8UazK/toaPKYuSp0akJesQd0poBUiPBsST6mjHa7hywxSBqTb7DyWN1n
+         J7fS/NOQsKnZ4+tBOHtHEefonMt015EkuoJrRFfV35eFvsEiMVk5/759MpZUEX/dRu79
+         JrNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Uew60+G+SsxW8j8MijONIawIC+5YuiNS9/uDWrf3cP4=;
+        b=i/Kg6UEXEZUnkYvjs0WpkEgEY+iOOq+CynHLj3ODV3BZ6bK9C6Yw9CZuNdy4iOnpTv
+         YEqmRZg/hqbFKP+w06eavg5ZwDaQH4DPUx7mHnWrPss9FXDzdcz5fJjVPDovWIymUBzS
+         sb4+Fb0sHA05ZiE3Ba0Re1r6J3W1BlYl+68WKVEvDl6+r5e1gspNxbvkBWMos41N0uJT
+         yNhJ8B4mcTKpSq6JDSCeC+NcTAnON7wlpX+jIFYplgpflZn+t5KF8pHjwEAUnT4c9TuQ
+         adG5M/zlw5/wQafUDkv2O35n+CwGx2bOUtpSCJqmeilZ0iE0+ZzBK6LgyaQ8BGW2/aIu
+         2oIA==
+X-Gm-Message-State: AOAM530FzunKYLfANmqX4tKnROdXbc6uIdmBENBeAf06kyJxDCDhMFlM
+        4zFza2z/ymBWY+/J8Nz1wyNkcPVLQwgJzg==
+X-Google-Smtp-Source: ABdhPJzZpYVpC+2X095uKXRc/Oo5tcpmRjH0WCm9hYwhP9EBhCF2KrssdyelK4eKiW3/vctO7ffvdA==
+X-Received: by 2002:a2e:b807:: with SMTP id u7mr42869439ljo.67.1621100717420;
+        Sat, 15 May 2021 10:45:17 -0700 (PDT)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id h4sm1430170lfv.264.2021.05.15.10.45.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 15 May 2021 10:45:16 -0700 (PDT)
+Subject: Re: [PATCH v2 1/1] drm/msm/dpu: Fix error return code in
+ dpu_mdss_init()
+To:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210510031606.3112-1-thunder.leizhen@huawei.com>
+ <20210510031606.3112-2-thunder.leizhen@huawei.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <c19cb5e0-2ca3-0453-3c8f-e01f30748031@linaro.org>
+Date:   Sat, 15 May 2021 20:45:16 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v3 4/4] x86/syscall: use int everywhere for system call numbers
-To:     Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>
-CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-From:   "H. Peter Anvin" <hpa@zytor.com>
-Message-ID: <C1CB9B19-185F-469E-A59C-ECAA95AAC279@zytor.com>
+In-Reply-To: <20210510031606.3112-2-thunder.leizhen@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Answer: I don't think it is a good idea to have the system can table offset=
- =2E=2E=2E it seems like an unnecessary debugging headache=2E
+On 10/05/2021 06:16, Zhen Lei wrote:
+> The error code returned by platform_get_irq() is stored in 'irq', it's
+> forgotten to be copied to 'ret' before being returned. As a result, the
+> value 0 of 'ret' is returned incorrectly.
+> 
+> After the above fix is completed, initializing the local variable 'ret'
+> to 0 is no longer needed, remove it.
+> 
+> In addition, when dpu_mdss_init() is successfully returned, the value of
+> 'ret' is always 0. Therefore, replace "return ret" with "return 0" to make
+> the code clearer.
+> 
+> Fixes: 070e64dc1bbc ("drm/msm/dpu: Convert to a chained irq chip")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 
-On May 15, 2021 8:37:12 AM PDT, Andy Lutomirski <luto@kernel=2Eorg> wrote:
->On 5/14/21 6:10 PM, H=2E Peter Anvin wrote:
->> From: "H=2E Peter Anvin (Intel)" <hpa@zytor=2Ecom>
->>=20
->> System call numbers are defined as int, so use int everywhere for
->> system call numbers=2E This patch is strictly a cleanup; it should not
->> change anything user visible; all ABI changes have been done in the
->> preceeding patches=2E
->>=20
->> Signed-off-by: H=2E Peter Anvin (Intel) <hpa@zytor=2Ecom>
->> ---
->>  arch/x86/entry/common=2Ec        | 93
->++++++++++++++++++++++++----------
->>  arch/x86/include/asm/syscall=2Eh |  2 +-
->>  2 files changed, 66 insertions(+), 29 deletions(-)
->>=20
->> diff --git a/arch/x86/entry/common=2Ec b/arch/x86/entry/common=2Ec
->> index f51bc17262db=2E=2E714804f0970c 100644
->> --- a/arch/x86/entry/common=2Ec
->> +++ b/arch/x86/entry/common=2Ec
->> @@ -36,49 +36,87 @@
->>  #include <asm/irq_stack=2Eh>
->> =20
->>  #ifdef CONFIG_X86_64
->> -__visible noinstr void do_syscall_64(struct pt_regs *regs, unsigned
->long nr)
->> +
->> +static __always_inline bool do_syscall_x64(struct pt_regs *regs, int
->nr)
->> +{
->> +	/*
->> +	 * Convert negative numbers to very high and thus out of range
->> +	 * numbers for comparisons=2E Use unsigned long to slightly
->> +	 * improve the array_index_nospec() generated code=2E
->> +	 */
->> +	unsigned long unr =3D nr;
->> +
->> +	if (likely(unr < NR_syscalls)) {
->> +		unr =3D array_index_nospec(unr, NR_syscalls);
->> +		regs->ax =3D sys_call_table[unr](regs);
->> +		return true;
->> +	}
->> +	return false;
->> +}
->
->How much do you like micro-optimization?  You could be silly^Wclever
->and
->add a new syscall handler:
->
->long skip_syscall(struct pt_regs *regs)
->{
->	return regs->ax;
->}
->
->and prepend this to the syscall tables -- it would be a sort-of-real
->syscall -1=2E  Then the call sequence becomes:
->
->int adjusted_nr =3D nr + 1 (or nr - x32bit + 1);
->
->if (likely(nr < NR_adjusted_syscalls)) {
->   unr =3D array_index_nospec=2E=2E=2E;
->   regs->ax =3D sys_call_table[unr](regs);  /* might be a no-op! */
->} else {
->    regs->ax =3D -ENOSYS;
->}
->
->which removes a branch from the fast path=2E
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
+> ---
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c | 8 +++++---
+>   1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
+> index 06b56fec04e047a..6b0a7bc87eb75b8 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
+> @@ -225,7 +225,7 @@ int dpu_mdss_init(struct drm_device *dev)
+>   	struct msm_drm_private *priv = dev->dev_private;
+>   	struct dpu_mdss *dpu_mdss;
+>   	struct dss_module_power *mp;
+> -	int ret = 0;
+> +	int ret;
+>   	int irq;
+>   
+>   	dpu_mdss = devm_kzalloc(dev->dev, sizeof(*dpu_mdss), GFP_KERNEL);
+> @@ -253,8 +253,10 @@ int dpu_mdss_init(struct drm_device *dev)
+>   		goto irq_domain_error;
+>   
+>   	irq = platform_get_irq(pdev, 0);
+> -	if (irq < 0)
+> +	if (irq < 0) {
+> +		ret = irq;
+>   		goto irq_error;
+> +	}
+>   
+>   	irq_set_chained_handler_and_data(irq, dpu_mdss_irq,
+>   					 dpu_mdss);
+> @@ -263,7 +265,7 @@ int dpu_mdss_init(struct drm_device *dev)
+>   
+>   	pm_runtime_enable(dev->dev);
+>   
+> -	return ret;
+> +	return 0;
+>   
+>   irq_error:
+>   	_dpu_mdss_irq_domain_fini(dpu_mdss);
+> 
+
+
+-- 
+With best wishes
+Dmitry
