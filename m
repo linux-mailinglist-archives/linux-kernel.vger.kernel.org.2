@@ -2,142 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF983814C5
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 02:56:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB33F3814CA
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 02:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234640AbhEOA5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 20:57:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57804 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230004AbhEOA5C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 20:57:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6411B6135C;
-        Sat, 15 May 2021 00:55:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621040150;
-        bh=EI4xLhzrOMh6Itqyez82lmxWaI98QNTA+23VqjpcLmw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=vE1zjluaPWy4WN3cRyhehvyD8XsxOBotjrMu9hOuU5YWM9bJD61B5pqQoA01wHlwY
-         v5tgj9ejYg7wakXvPSRvWx5pIE3CM+Pg0ZsNuy95K087j33YjXsPAn8qz6CsnBkX2i
-         HPyT8vxTi+OP8lLnCSJufqVmXLa/Zxfj7wPdwqDrtzA+dXTmGkqbw5R9nYXWrB4xra
-         vkId8Ss3o2CT/p5H9fbEyE/Rm2wIcZWjWn6NkxiZ90yIpXZOBDvN9vXnKQyRmQ4M2T
-         pB6uBuAqLkR9jsjeJ+YtR2YY8kInl0VfYFqJkGzOnXkIY+oCvxsHFsn2fOwVXxwck8
-         SJ2lSolYGTXyg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 231B25C02A5; Fri, 14 May 2021 17:55:50 -0700 (PDT)
-Date:   Fri, 14 May 2021 17:55:50 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Marco Elver <elver@google.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH] kcsan: fix debugfs initcall return type
-Message-ID: <20210515005550.GQ975577@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210514140015.2944744-1-arnd@kernel.org>
- <0ad11966-b286-395e-e9ca-e278de6ef872@kernel.org>
- <20210514193657.GM975577@paulmck-ThinkPad-P17-Gen-1>
- <534d9b03-6fb2-627a-399d-36e7127e19ff@kernel.org>
- <20210514201808.GO975577@paulmck-ThinkPad-P17-Gen-1>
- <CAK8P3a3O=DPgsXZpBxz+cPEHAzGaW+64GBDM4BMzAZQ+5w6Dow@mail.gmail.com>
- <YJ8BS9fs5qrtQIzg@elver.google.com>
+        id S234664AbhEOA6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 20:58:31 -0400
+Received: from sonic309-28.consmr.mail.ne1.yahoo.com ([66.163.184.154]:41865
+        "EHLO sonic309-28.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234634AbhEOA63 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 20:58:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1621040235; bh=OPLVYA6PTN9lQ2PFoMQqxiAJ97QKtgsHa94krTc9ksU=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject:Reply-To; b=DubuQ+fv/RFAAPQylfA0PvckacLMPtYg19ueNlsCzAWEb+PrsY9bkM0DAJtqW+KX8o1huPjbwQcgh4+QMYLXhItTcb/jGg25lvk2ekt82e9VyLw9hLR5kfytULuQPa0pEEloJYIYHUG2X9v1BicPaJ/cNbhPEcuFD9jZS/BTh84oJOfaVwitzrF53rkC3j2siUtkiJ10hgifZs+7NTsJhECobHPZaj32Jbi6SGOkH8zSxZfKVVUVIIPV8/XvXSEXyah+eGBp6H8E+4p62jYQOD+a/y3ZEHwvenKk+ws0Jbk3iBOMJ78Jd7Y7UA5QmUsvYwCNA2sRRfdMVLz5T4nmEg==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1621040235; bh=e0NqqRzAQzSzTEIadnIqVpfv70OT85Dv4nxEGMsJs8Y=; h=X-Sonic-MF:Subject:To:From:Date:From:Subject; b=T89+lWT/6suHY0cJxMvBejkDydxm+aVcdhfTiqcJX7EXr1mQQR/ZHx/1c8lLi1ADR1YmrjPFzVD+1/2VghqQCuH9iepAWGQTcjSbgFqq3bJfnkxp/LngeyITWO2KyLzTYMkMc5VgFAVWMPQpurFYuUfFDmgj5qM3R2wDpekuBdtvP/QoLZcKQ3irSP+hI50MvMV377zt7P6zs7ntAsXNcWz/HGjDoPeuAEZeelOMfkX1j7xWt3/HEGoWGi2CTlNzNW+/5MaUxily9HV5pb33b8xhmH8i+KvnzN4nCc+LkMVQG1o9TeV9Wrw/ZeZSZ2cAJiRVuv+joJl5RQJWpTLMIw==
+X-YMail-OSG: Th9g6XwVM1nnGsiFhnM3K57fZCpswIuTd5UKh0Me.hsWYXlPqIdTlckH1AzpjSa
+ Oxgg5R1l0GjHU0VkRDck59C.P.a.v7VDIyr.djD8ZdRX0A8yXLSnbGBrY8jsx0KhHE3f8oTT4KZq
+ iGIyDEFJ85xfLP1btt._fujjDZilaU9DV9WLAkLW9gQ_NA5KQAHpLPffgtHIP2ej_zBXn5BRGPJ3
+ qoCKcNz0DzNuVWJJ65E8RUvHGaxg5nKbE2j8pYPcuiVD1gmZCF_GYpbuMPlZckgyvuXZvqmhA5.R
+ tR_seR.QsCB6NeIC14g7FU.Q5CSrJ7xTT5Qjsxc93EQ2In_80.XXVHdgGeWZ1HOGbaJjvixGB1tJ
+ 4jLxP1Hqj.pLkqQGPNxH2KMNL3rzlrWORs3XwbNGz.zryWaaMxyc2ELNlNVRCa1LbINTqskKRqWO
+ Dv7tBX_CZ2K.xIDxmTQqd.e_UO8bya5Z6djnp8YT2SOqlKC6hEC8o4ps4CN3W86PcyzdGMsXwog.
+ 6Borb4_LU7ysCemG2evG6_mW4t.gv04JnkrNnjECA7mfYeaJ8t_gMyb8M925UbxqUSO5gwSvxgFi
+ QEIq38EI5JgazRzW9sEhnExkmohR1Sy3y_iMXMfo2omFJK.pHGPqQgpWXWKIUTypA93sdh189ht_
+ A5_JexvHwYJrD2GL5MM9ePkVmOht_56MSI._qvE4AEzwtYq_7KSgoF662SEAV8lBck2Vk5QAk8ME
+ 1Ht5Rg7RSKmNoxXHp2bGQKNOC.9W4_xcGiFnjvDMhzlIT4LaUZmtJspQvgE6p9VLe5xG3OEIxKkA
+ 9xqca6vRVIvdhxaNLfFjCwNU903Yyn8iBaNLFgpNnkIMzcc0Iilt6LosF3SBfSJPYG93McEw7ZZL
+ BNA5Fw5G5smuLfMXq8BU1ocDJDs9weoQOeiwJCxOOj5daSFTN82vs48k4D3Ks1OggOrO8VMmhDTe
+ S779WNuKOmlyjzaYYNhfnvOEkVo_vXxhZfnGtMKtjQs51O7qD4cyaRMvwFqcmXsXPN8oZnKitI5g
+ wirwSKKsFx3rjk7rMKvcb7Il5stmlheNiooACH6Ptu.WsqufISdnEMDkB9IgRDtoRwpZEsBclpdR
+ 5_ri4GN07iaugSV35ZChrLZ7GSrNdYw5pIvMpiOgjMjqxTXDXYUo2RU9saIoS1MYeGhkM3Can1pL
+ OXzmBgWYrVYOVNAwr5sADx6ZXcuSrQeuuYN5kWeVYWd_g3vFt3D7TcPESFHbmIJHG8PYaKq43mbb
+ PBXcsZlc861h6ihrYRNBGgv81nmmrpCcVXnxg3VR05cA5Nz2BIi.ddko7NM6BSSjJ_1RJGm5IuuW
+ PtDaA9MZqn.R.WHI6G15LMGEXdk_8xOohnrfQNPKZSzfoZ5IU7yLeBnKYMVV2FCfnWMbjltOHm_i
+ EAottlvAWDNK0WpIUyEHvVa2Tfm7fRuqLQAUlT9bCk7b52gdqnmwdLN_mAfRYBLyPErSA6vT2x7G
+ t1dseEfn4IRtlacmlFlJpWkG.jKz8qYvkxyTUdE3_I4QEY53Bg.2u9Hu6pJ9gNQ92_JyxMQm6swf
+ Y5wZq3EO75bM_5x1fohIbSUY4wRdoEEe9F_o6ZbWB0gkYiK_H.9AAUKrSLhzfHO50R.DBvvKURrN
+ Tu.TyV2bQHlDw3nTje2pVz4QTn_tvDDL3.3porfKTVLA0DSUUagapmDyCpPQYC_uEBat1U5G3zKz
+ FOSlfrKtVmMiPq5czyCwQVQMEiBgu2A98SqjTVUEOS5lQ91g6l75prRSzxiYCiysa5RmuMeMeurm
+ 1Oy1sEspGtaUfQeqTd30A_My5DxkU1pMBJX8bgRwpJlnfO4DH_Efd_eOAQeaXfOuBQZ2I.bR4xkI
+ mCZWZHfyP9gz6h1RqgzBMi_w9aX5GhuVoWMrCgEpDiGjsN58CeA472MgGrfJrxl0Cj2J2FO5u2m2
+ lIvGDQr.r44LzH2C45Ax0fWJDYfYKC3wpoU5F1djVUhkZUguKP2M9WWYNuj1qOwwbZmKb9gAgKpQ
+ gb4BrgwQbzZ3AfHPvaCzPVFpzsaiSej4wi0BNzePeMds_.ItbQ.s6e3S0dtN5IUbwE0h3IBXGG8n
+ gpB8KKhoN5wpAbnEgRbkWCnvFwX4vfSs3SEQofZ9XRL88CEjZvdhs0WSKZSnV6o9GF2ONzNI8rRo
+ bIV_Urw1PA1.azwHyTLju2CHi1BaBPvh2rLudAefZgRH1ma6ieWTP6y7sJPFPOxFlTZN45u5sNJ7
+ 7.52qmCsxUwGMCCtA6DvlHWHUnbxpVzeZs5voqdmr4P8kzkqG9JRQkxHy0pqv1Om0Qygne5ZtbSB
+ 8MkWoDAMKgKg9xgXRJOPsJAihVRmCEaYFVYxPjVzV3QVGzZ2Fpy8jNwrXPdAON9d5wVjgqQ7L2xe
+ UQySe0ExWYdrjIwcDiuviwbB1aMHVmzR4ln6e1sc1jKD16OzcEHh3YuD4Jmhe0aqxag5zPco1pNB
+ hjl8somiN5w9BtBSVSvMXjpBxtihqsrROlS4xkPoEHfyQt0hFyA8reVSjP74Lvp26o_fdBPFg6Ys
+ ZXsy4a_j0vLl8jz1IFqh9HnATOEsMea.lVnjXjODiSCAVznUYceshrLyhqZrpXIool7UJrKjwTyc
+ j3yZx8Ra0NXutlTlPz0roAOTgpU5.Q298qSuyteY6.Gc4rLlmJiTw8g8DclFe127W8cQUkWdKT6W
+ SN79syNbAsB0gJZRgYJZYtsySnP6chFmw9qGmGGspzp62x4mhrI76Vokoajs5hYN2h8l12Q1MrXw
+ 0dkibwlhPMP.acep9TUw488_qzk01ecNU3O0r_bQhBEQTE3m.zWkPapEJXd9mcrCUCigsly7hJHm
+ 4y.oZASv3bLR8Wps3g6OupBnA7ltrA..UeSWiL6RcbeWivYTl68tq1epM2rWhOvuDCyL1NQPQxBy
+ B6MkPgkFkMI0jB8Yzs8lIzhFwOOcsC0h4UNaJze0DYi5PyJUNFRU4KSYsF09ztp0mED3mWgeCTpH
+ 109bnUdvP6wWAqD5BgiOotdnaYj8s1_C11c1gSoFsBaoqG3vIoOFMOdC4fRxQBRJel7sQWe8.5.D
+ xd5adgP_bcDAhsf46kydJk3dLnUxMwH0WUDCqrHlM.SJxYRdHHSYoJpnbHEzWZSCnvx9yZyj87Bf
+ hKYmcosXTDFb4USfN7BMfVSz24eaahwsoVTMtDlxk5R3ssEGc8S4jegZ9Ko14HL4Mt8USh6JAnp9
+ xr1BeM9BMhdOl98HDAJArYq2lVIq04nj7KVom5Cn3Q4xyHoLAeTQBtZjZ581C7s58TBhUx7SFbGc
+ E4F4Lj0rIl58.mVY7x2G383pldqzVaLR6uVqXccGOfH1RW2bnTVO9FmANo....pizyPvZhLFBCgR
+ yM61aTChKrLpnb3lPXoBjzeF9V41rfuYzDk6yaKSc1Ki2fXL2ZZigQ3lk91m3kR9xr6V_wPcJOTQ
+ 96DN5mun.SD9o3nEbYw6JXxGpg0hkmkxwhDBG2BV7HtjWL8bD0sH7IQGpKCB9glMG1v5DlphqbqM
+ _CuAr_m3X1UmD5_h3YIEKTYKCz2TUuvZI5QONuMv_WTJeahutPx34q84QVuuXpwQ-
+X-Sonic-MF: <casey@schaufler-ca.com>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic309.consmr.mail.ne1.yahoo.com with HTTP; Sat, 15 May 2021 00:57:15 +0000
+Received: by kubenode532.mail-prod1.omega.bf1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 10c01b97f9e192adb0693999166f13aa;
+          Sat, 15 May 2021 00:57:11 +0000 (UTC)
+Subject: Re: [PATCH] lockdown,selinux: fix bogus SELinux lockdown permission
+ checks
+To:     Ondrej Mosnacek <omosnace@redhat.com>
+Cc:     Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        James Morris <jmorris@namei.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        SElinux list <selinux@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, network dev <netdev@vger.kernel.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20210507114048.138933-1-omosnace@redhat.com>
+ <a8d138a6-1d34-1457-9266-4abeddb6fdba@schaufler-ca.com>
+ <CAFqZXNtr1YjzRg7fTm+j=0oZF+7C5xEu5J0mCZynP-dgEzvyUg@mail.gmail.com>
+ <24a61ff1-e415-adf8-17e8-d212364d4b97@schaufler-ca.com>
+ <CAFqZXNvB-EyPz1Qz3cCRTr1u1+D+xT-dp7cUxFocYM1AOYSuxw@mail.gmail.com>
+ <e8d60664-c7ad-61de-bece-8ab3316f77bc@schaufler-ca.com>
+ <CAFqZXNu_DW1FgnVvtA+CnBMtdRDrzYo5B3_=SzKV7-o1CaV0RA@mail.gmail.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+Message-ID: <94486043-322f-74bd-dc33-83e43b531068@schaufler-ca.com>
+Date:   Fri, 14 May 2021 17:57:08 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YJ8BS9fs5qrtQIzg@elver.google.com>
+In-Reply-To: <CAFqZXNu_DW1FgnVvtA+CnBMtdRDrzYo5B3_=SzKV7-o1CaV0RA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Mailer: WebService/1.1.18291 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/16)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 15, 2021 at 01:01:31AM +0200, Marco Elver wrote:
-> On Fri, May 14, 2021 at 11:16PM +0200, Arnd Bergmann wrote:
-> > On Fri, May 14, 2021 at 10:18 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > On Fri, May 14, 2021 at 01:11:05PM -0700, Nathan Chancellor wrote:
-> > 
-> > > > You can see my response to Marco here:
-> > > >
-> > > > https://lore.kernel.org/r/ad7fa126-f371-5a24-1d80-27fe8f655b05@kernel.org/
-> > > >
-> > > > Maybe some improved wording might look like
-> > > >
-> > > > clang with CONFIG_LTO_CLANG points out that an initcall function should
-> > > > return an 'int' due to the changes made to the initcall macros in commit
-> > > > 3578ad11f3fb ("init: lto: fix PREL32 relocations"):
-> > >
-> > > OK, so the naive reading was correct, thank you!
-> > >
-> > > > ...
-> > > >
-> > > > Arnd, do you have any objections?
-> > >
-> > > In the meantime, here is what I have.  Please let me know of any needed
-> > > updates.
-> > >
-> > 
-> > Looks good to me, thanks for the improvements!
-> 
-> FWIW, this prompted me to see if I can convince the compiler to complain
-> in all configs. The below is what I came up with and will send once the
-> fix here has landed. Need to check a few other config+arch combinations
-> (allyesconfig with gcc on x86_64 is good).
+On 5/14/2021 8:12 AM, Ondrej Mosnacek wrote:
+> On Wed, May 12, 2021 at 7:12 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
+>> On 5/12/2021 9:44 AM, Ondrej Mosnacek wrote:
+>>> On Wed, May 12, 2021 at 6:18 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
+>>>> On 5/12/2021 6:21 AM, Ondrej Mosnacek wrote:
+>>>>> On Sat, May 8, 2021 at 12:17 AM Casey Schaufler <casey@schaufler-ca.com> wrote:
+>>>>>> On 5/7/2021 4:40 AM, Ondrej Mosnacek wrote:
+>>>>>>> Commit 59438b46471a ("security,lockdown,selinux: implement SELinux
+>>>>>>> lockdown") added an implementation of the locked_down LSM hook to
+>>>>>>> SELinux, with the aim to restrict which domains are allowed to perform
+>>>>>>> operations that would breach lockdown.
+>>>>>>>
+>>>>>>> However, in several places the security_locked_down() hook is called in
+>>>>>>> situations where the current task isn't doing any action that would
+>>>>>>> directly breach lockdown, leading to SELinux checks that are basically
+>>>>>>> bogus.
+>>>>>>>
+>>>>>>> Since in most of these situations converting the callers such that
+>>>>>>> security_locked_down() is called in a context where the current task
+>>>>>>> would be meaningful for SELinux is impossible or very non-trivial (and
+>>>>>>> could lead to TOCTOU issues for the classic Lockdown LSM
+>>>>>>> implementation), fix this by adding a separate hook
+>>>>>>> security_locked_down_globally()
+>>>>>> This is a poor solution to the stated problem. Rather than adding
+>>>>>> a new hook you should add the task as a parameter to the existing hook
+>>>>>> and let the security modules do as they will based on its value.
+>>>>>> If the caller does not have an appropriate task it should pass NULL.
+>>>>>> The lockdown LSM can ignore the task value and SELinux can make its
+>>>>>> own decision based on the task value passed.
+>>>>> The problem with that approach is that all callers would then need to
+>>>>> be updated and I intended to keep the patch small as I'd like it to go
+>>>>> to stable kernels as well.
+>>>>>
+>>>>> But it does seem to be a better long-term solution - would it work for
+>>>>> you (and whichever maintainer would be taking the patch(es)) if I just
+>>>>> added another patch that refactors it to use the task parameter?
+>>>> I can't figure out what you're suggesting. Are you saying that you
+>>>> want to add a new hook *and* add the task parameter?
+>>> No, just to keep this patch as-is (and let it go to stable in this
+>>> form) and post another (non-stable) patch on top of it that undoes the
+>>> new hook and re-implements the fix using your suggestion. (Yeah, it'll
+>>> look weird, but I'm not sure how better to handle such situation - I'm
+>>> open to doing it whatever different way the maintainers prefer.)
+>> James gets to make the call on this one. If it was my call I would
+>> tell you to make the task parameter change and accept the backport
+>> pain. I think that as a security developer community we spend way too
+>> much time and effort trying to avoid being noticed in source trees.
+> Hm... actually, what about this attached patch? It switches to a
+> single hook with a cred argument (I figured cred makes more sense than
+> task_struct, since the rest of task_struct should be irrelevant for
+> the LSM, anyway...) right from the start and keeps the original
+> security_locked_down() function only as a simple wrapper around the
+> main hook.
+>
+> At that point I think converting the other callers to call
+> security_cred_locked_down() directly isn't really worth it, since the
+> resulting calls would just be more verbose without much benefit. So
+> I'm tempted to just leave the security_locked_down() helper as is, so
+> that the more common pattern can be still achieved with a simpler
+> call.
+>
+> What do you think?
 
-Cool!
+It's still a bit kludgy, but a big improvement over the previous version.
+I wouldn't object to this approach.
 
-If I have not sent the pull request for Arnd's fix by Wednesday, please
-remind me.
-
-							Thanx, Paul
-
-> Thanks,
-> -- Marco
-> 
-> ------ >8 ------
-> 
-> >From 96c1c4e9902e96485268909d5ea8f91b9595e187 Mon Sep 17 00:00:00 2001
-> From: Marco Elver <elver@google.com>
-> Date: Fri, 14 May 2021 21:08:50 +0200
-> Subject: [PATCH] init: verify that function is initcall_t at compile-time
-> 
-> In the spirit of making it hard to misuse an interface, add a
-> compile-time assertion in the CONFIG_HAVE_ARCH_PREL32_RELOCATIONS case
-> to verify the initcall function matches initcall_t, because the inline
-> asm bypasses any type-checking the compiler would otherwise do. This
-> will help developers catch incorrect API use in all configurations.
-> 
-> A recent example of this is:
-> https://lkml.kernel.org/r/20210514140015.2944744-1-arnd@kernel.org
-> 
-> Signed-off-by: Marco Elver <elver@google.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Joe Perches <joe@perches.com>
-> Cc: Masahiro Yamada <masahiroy@kernel.org>
-> Cc: Miguel Ojeda <ojeda@kernel.org>
-> Cc: Nathan Chancellor <nathan@kernel.org>
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> ---
->  include/linux/init.h | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/init.h b/include/linux/init.h
-> index 045ad1650ed1..d82b4b2e1d25 100644
-> --- a/include/linux/init.h
-> +++ b/include/linux/init.h
-> @@ -242,7 +242,8 @@ extern bool initcall_debug;
->  	asm(".section	\"" __sec "\", \"a\"		\n"	\
->  	    __stringify(__name) ":			\n"	\
->  	    ".long	" __stringify(__stub) " - .	\n"	\
-> -	    ".previous					\n");
-> +	    ".previous					\n");	\
-> +	static_assert(__same_type(initcall_t, &fn));
->  #else
->  #define ____define_initcall(fn, __unused, __name, __sec)	\
->  	static initcall_t __name __used 			\
-> -- 
-> 2.31.1.751.gd2f1c929bd-goog
-> 
+>
+> --
+> Ondrej Mosnacek
+> Software Engineer, Linux Security - SELinux kernel
+> Red Hat, Inc.
