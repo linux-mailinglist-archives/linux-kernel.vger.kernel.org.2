@@ -2,115 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 380E9381A2E
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 19:35:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C84F381A37
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 19:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234160AbhEORgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 13:36:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231482AbhEORgr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 13:36:47 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE68DC06174A
-        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 10:35:33 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id j12so2496999ils.4
-        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 10:35:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fatalsyntax-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:content-transfer-encoding:cc:subject:from:to:date
-         :message-id:in-reply-to;
-        bh=ECsAuXqf15dWO568NVSzYv1EWPK7FJKl+lqtYqv4WjM=;
-        b=GhrWtqA8WDo7J3ALnnGSbuE/f12hP55xaLn6+j7nn3Cg7IRHFEqAYOsTrqlIOL3B+A
-         BW4WGTmXPEVTBMcFU/8bqMkk2k1K8d36JYEXQLhG3dMGP24RhvVxjNmjpCGW8Iix59qK
-         sXHJM/9vDWIp72wcVfzgiEy6KypVswQI8jmrsQxbIytWWLGsUGhRMiqg14eWYaL1tLKf
-         VttMt9bT8uCw4W9ekKVHwAlHyqCCST6FuNHoHno4eUoMhOsL+DboOk77UQs/uaRWOUfQ
-         rFiIgzrgTTMynVSlAF9f/ECILVazpAIYu9ITUCxODQhUmeUDgXKUNRj4gDkNyjfeFyfI
-         u9Tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding:cc
-         :subject:from:to:date:message-id:in-reply-to;
-        bh=ECsAuXqf15dWO568NVSzYv1EWPK7FJKl+lqtYqv4WjM=;
-        b=g/n8vzyMCb91Z92RmFV2uTxbWD984EI8NbsjZiqOJXGOtH5rMu4wYO03pRvgpPXF9S
-         9nF3L8c5AFz0N5t4D5LMaHsqjOt1m4W0QoX5hh5GWYRPAOOEVrTG6AwA0i2FOUWE5zUk
-         yHUgUkim7BZON0LElD/GsdtGixovid5bNeHsdAwJJLTF1AfSIpSpw34yIYlJRyvJ7CdC
-         R+uTsFqvpY/7Mf9M2XccbhKeRQ2VMYo00UQYzVRNAdrYAQuwzXWV0X+Z2lnIbhmWjuIK
-         K8QBbaRMQYu3hp0k/vyKewMrBmDugbnwa+nktm7nwPjRizpGjX73uxHpOPEfrHKkz0qX
-         0Sdg==
-X-Gm-Message-State: AOAM532eWKm48Bs9a0usWRmGWh6frWPsAipdEfyZydN9Jr8qHY4pptOX
-        YwefFcZiTEeHmDGsXyBnI4MCRg==
-X-Google-Smtp-Source: ABdhPJy/rRDwwTjfwk0ae19NzmdLr9zilL3sOKeRp8K5fwv74zFSxDNvdqMJmKJktvMAonHm7jH03Q==
-X-Received: by 2002:a05:6e02:168f:: with SMTP id f15mr48359921ila.264.1621100133041;
-        Sat, 15 May 2021 10:35:33 -0700 (PDT)
-Received: from localhost (2603-6000-ca08-f320-6401-a7ff-fe72-256d.res6.spectrum.com. [2603:6000:ca08:f320:6401:a7ff:fe72:256d])
-        by smtp.gmail.com with ESMTPSA id x13sm4977602ilv.88.2021.05.15.10.35.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 15 May 2021 10:35:32 -0700 (PDT)
-Mime-Version: 1.0
+        id S234176AbhEORnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 13:43:21 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:46115 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231480AbhEORnT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 May 2021 13:43:19 -0400
+Received: from [IPv6:2601:646:8602:8be1:e512:4e99:5d16:dcc6] ([IPv6:2601:646:8602:8be1:e512:4e99:5d16:dcc6])
+        (authenticated bits=0)
+        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14FHfiMW3346715
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Sat, 15 May 2021 10:41:47 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14FHfiMW3346715
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2021042801; t=1621100508;
+        bh=8cvx0q4zTYhur34Mm+XECOO17HPdjb9LdKLsE8tlPCQ=;
+        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
+        b=Tg1c4JQYgOUo27k0YvMmVCNUlk5S2Z1wJPY4JRru7n1Jy9gWmMkktOsSBoU6JRNWf
+         A5BvsgeJKf8/4i+aooB5286gEAH9xVcvkHui1Bq+AWda0E5TIN4hAoDFjX5Ckf3GdA
+         ElzRbgPjXvRmEZidAhpn4f9Gwz5S71Tf3FCAb+aznPtyZqxPROQTwqw4GE9aC892NT
+         RCQfRO+/cAqEcApYnuk/dMwAIcYNN0ublSAIuJKiO//rPPc6P+MPyFpo80gE/MAmBA
+         1Rv90j+52dxTjS3znLAnx0+h1mfvhOoMNsHppVEhkifVXRcO3dFqVyBmVcuRDp/VYn
+         DAQXNnyzDgepw==
+Date:   Sat, 15 May 2021 10:41:34 -0700
+User-Agent: K-9 Mail for Android
+In-Reply-To: <f2e4c3c3-08c3-eae1-803a-aa85d7e75ca0@kernel.org>
+References: <20210515011015.2707542-1-hpa@zytor.com> <20210515011015.2707542-5-hpa@zytor.com> <f2e4c3c3-08c3-eae1-803a-aa85d7e75ca0@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Cc:     <bhelgaas@google.com>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        "Alex Williamson" <alex.williamson@redhat.com>
-Subject: Re: [PATCH] pci: add NVMe FLR quirk to the SM951 SSD
-From:   "Robert Straw" <drbawb@fatalsyntax.com>
-To:     "Bjorn Helgaas" <helgaas@kernel.org>
-Date:   Sat, 15 May 2021 12:20:05 -0500
-Message-Id: <CBDZPI1DXKMS.88UVUXVIGC5V@nagato>
-In-Reply-To: <20210430205105.GA683965@bjorn-Precision-5520>
+Subject: Re: [PATCH v3 4/4] x86/syscall: use int everywhere for system call numbers
+To:     Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>
+CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+From:   "H. Peter Anvin" <hpa@zytor.com>
+Message-ID: <CF6CE3D3-7DA4-45E8-A593-172DFD6A8EEA@zytor.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri Apr 30, 2021 at 3:51 PM CDT, Bjorn Helgaas wrote:
+Heh=2E You have reinvented the original implementation=2E
 
-> Please make your subject line match ffb0863426eb ("PCI: Disable
-> Samsung SM961/PM961 NVMe before FLR")
-
-I had done this in a V2 of this patch, but after some additional
-research I'm thinking the behavior of this quirk might be in-line=20
-w/ the NVMe specification more generally, I'll elaborate more below.
-
-> I don't see anything in the PCIe spec about software being required to
-> do something special before initiating an FLR, so I assume this is a
-> hardware defect in the Samsung 950 PRO? Has Samsung published an
-> erratum or at least acknowledged it?
+On May 15, 2021 8:37:12 AM PDT, Andy Lutomirski <luto@kernel=2Eorg> wrote:
+>On 5/14/21 6:10 PM, H=2E Peter Anvin wrote:
+>> From: "H=2E Peter Anvin (Intel)" <hpa@zytor=2Ecom>
+>>=20
+>> System call numbers are defined as int, so use int everywhere for
+>> system call numbers=2E This patch is strictly a cleanup; it should not
+>> change anything user visible; all ABI changes have been done in the
+>> preceeding patches=2E
+>>=20
+>> Signed-off-by: H=2E Peter Anvin (Intel) <hpa@zytor=2Ecom>
+>> ---
+>>  arch/x86/entry/common=2Ec        | 93
+>++++++++++++++++++++++++----------
+>>  arch/x86/include/asm/syscall=2Eh |  2 +-
+>>  2 files changed, 66 insertions(+), 29 deletions(-)
+>>=20
+>> diff --git a/arch/x86/entry/common=2Ec b/arch/x86/entry/common=2Ec
+>> index f51bc17262db=2E=2E714804f0970c 100644
+>> --- a/arch/x86/entry/common=2Ec
+>> +++ b/arch/x86/entry/common=2Ec
+>> @@ -36,49 +36,87 @@
+>>  #include <asm/irq_stack=2Eh>
+>> =20
+>>  #ifdef CONFIG_X86_64
+>> -__visible noinstr void do_syscall_64(struct pt_regs *regs, unsigned
+>long nr)
+>> +
+>> +static __always_inline bool do_syscall_x64(struct pt_regs *regs, int
+>nr)
+>> +{
+>> +	/*
+>> +	 * Convert negative numbers to very high and thus out of range
+>> +	 * numbers for comparisons=2E Use unsigned long to slightly
+>> +	 * improve the array_index_nospec() generated code=2E
+>> +	 */
+>> +	unsigned long unr =3D nr;
+>> +
+>> +	if (likely(unr < NR_syscalls)) {
+>> +		unr =3D array_index_nospec(unr, NR_syscalls);
+>> +		regs->ax =3D sys_call_table[unr](regs);
+>> +		return true;
+>> +	}
+>> +	return false;
+>> +}
 >
-> There's always the possibility that we are doing something wrong in
-> Linux *after* the FLR, e.g., not waiting long enough, not
-> reinitializing something correctly, etc.
+>How much do you like micro-optimization?  You could be silly^Wclever
+>and
+>add a new syscall handler:
+>
+>long skip_syscall(struct pt_regs *regs)
+>{
+>	return regs->ax;
+>}
+>
+>and prepend this to the syscall tables -- it would be a sort-of-real
+>syscall -1=2E  Then the call sequence becomes:
+>
+>int adjusted_nr =3D nr + 1 (or nr - x32bit + 1);
+>
+>if (likely(nr < NR_adjusted_syscalls)) {
+>   unr =3D array_index_nospec=2E=2E=2E;
+>   regs->ax =3D sys_call_table[unr](regs);  /* might be a no-op! */
+>} else {
+>    regs->ax =3D -ENOSYS;
+>}
+>
+>which removes a branch from the fast path=2E
 
-I did some dumping of registers both with and without this patch, and
-determined the following to be true in my use-case:
-
-1. My guest VM leaves the device in a state where SHN (shutdown
-notification) is set to 0b01 (normal shutdown)
-
-2. The guest also leaves CC.EN (controller enable) set to 0b1
-
-3. vfio-pci attempts to issue an FLR while the device is in this state.
-
-
-On page 40, sec 3.1.6 of the NVMe 1.1 spec, the documentation on SHST=20
-states the following:
-
-> To start executing commands on the controller after a shutdown=20
-> operation (CSTS.SHST set to 10b), a reset (CC.EN cleared to =E2=80=980=E2=
-=80=99)=20
-> is required. If host software submits commands to the controller=20
-> without issuing a reset, the behavior is undefined.
-
-In the case of the SM951/SM961 it appears the undefined behavior is that
-they stop responding to attempts to change their configuration if you do
-an FLR while the device is in this state. The reason this patch
-resolved the issue I was seeing is because the toggle of the CC.EN flag=20
-puts the drive in a known-good state after the guest's shutdown=20
-notification.
-
-Knowing this I would suspect we'd actually want to treat most NVMe
-drives in this manner *if the kernel sees the SHN/SHST has been set
-prior.* Perhaps other NVMe devices are more tolerant of not doing this?
-
-~ robert straw
+--=20
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
