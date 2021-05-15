@@ -2,139 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B623381A9A
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 20:50:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADDC7381ABF
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 21:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234524AbhEOSvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 14:51:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58744 "EHLO
+        id S234655AbhEOTQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 15:16:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231558AbhEOSvm (ORCPT
+        with ESMTP id S233752AbhEOTQK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 14:51:42 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A950C061573;
-        Sat, 15 May 2021 11:50:26 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id y14so212146wrm.13;
-        Sat, 15 May 2021 11:50:25 -0700 (PDT)
+        Sat, 15 May 2021 15:16:10 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7724FC061573;
+        Sat, 15 May 2021 12:14:56 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id o6-20020a05600c4fc6b029015ec06d5269so1348491wmq.0;
+        Sat, 15 May 2021 12:14:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=UqGQdh+bPJvloimRNTGNhKmXUwcr12DEEsrVJsHUCe4=;
-        b=qUo1hhDci/ForXuvlI0uU9L5ThD3/njwhIWkIo4n6GAfTJAwMW+PSd68rwNnyRIQXL
-         LiBLQodkO44orCwAFIIZ/HQZt1oXlBPb7lGWIRbUYOCHQAdm/7BHHYCtEkVObwILlbuF
-         sFzdfk5rzDMXneczgVwbVbc3dHbZcmfEAmXgSn7scScaoSrzkA+GuDSZ3IrdTEdBXtFU
-         4SyCmWoEMhN+drxGWwzYWea+3Tb2cQ+yzYbazRUDa0IP0lUWDg0GN3wP7n6CGe6qUkF3
-         rJgeKb2sSmfOuNFExC1MOvxD2Q0uML/fbP7nFG3Jy7g04AgEgdC6Y3STKl1hKdpe23Jf
-         R0RA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=HJn8OLt3IO4fEY1K9QKVHH3DD9itvCeE3GbuXkd/JuU=;
+        b=DKUVZAnQBsWs8Wc+t00iL+3/rzly0Y6QL4rKT8imRwcSEDVglNOFs86pWZ/IGr+dDN
+         qEhqiQdJa1s24ZDm9/UvdS8uLXUBpkoV98AFR2E2I7NdGGgQfNyRXYT8YPDtcoNA6t+s
+         H8nRLCd+qbICn3fZYEW9XbiilOTctmmQnTgMhmsxElMeixZTgNTDITGBIn3vMbbbebFE
+         G+spQBlPlDcP14tPCBGkXUkjTrHVMTeQMriZKkz71/1yoWZQXv15tHqG5YekuEVOWQ9P
+         /c+P+hmkGBVBq/tnGn2J5QshLGy+EZNHsPlAfA5HIhEozqv8lBS8S/rQi8Ys8/rC8E74
+         5JRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=UqGQdh+bPJvloimRNTGNhKmXUwcr12DEEsrVJsHUCe4=;
-        b=SBHggv/jK5GVmKCzkS0NNLGzsVm9QxwT2RVU5KnOhUav2gWlZVotH00v8KROwrxdAB
-         hzmGvQX7YJ9WsjbQCj8YSg/x6xUgtpvzXSRdDvVBAiNGo4m5ppcU57rYdGQ6YiJKAXbu
-         GVgj/JUnRmI+Mtc1w6GHnKiQW8MFwZ6TLKMs/Aty33/rd49h1Kyj2iTlMP02YtJaexM5
-         qKiRT896gh3HGDOo5bH9UTJLuybcIqW+ogOhN+aa+tkzxFDm6FM1Aj87mryuctl3Yjsw
-         Q1EuBVsox78jTcKQ8NhmpvtVfflAVhF9vBCvfLw+JdGlt4rnuCXcMpYMybfqsx/k0nX2
-         raaw==
-X-Gm-Message-State: AOAM533Qbjv6BKEgQPbPY7LQh+2trNnIAKjqSRiSUrk7AcMJwRs4Sol8
-        R72PemMoFjlhnqKDBuzLN1k=
-X-Google-Smtp-Source: ABdhPJxIw0NrgcjvTaB5zp+hoXtzXyDQVZmMsSRlnUWacqwpAy+BjvY/FAa2p6YILc4d3h1uIdyAQw==
-X-Received: by 2002:adf:bc46:: with SMTP id a6mr27684256wrh.232.1621104623932;
-        Sat, 15 May 2021 11:50:23 -0700 (PDT)
-Received: from elementary-os.localdomain ([94.73.38.147])
-        by smtp.gmail.com with ESMTPSA id c65sm1999507wme.47.2021.05.15.11.50.22
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=HJn8OLt3IO4fEY1K9QKVHH3DD9itvCeE3GbuXkd/JuU=;
+        b=j/eDEs1GRiUblMnrfPA36CZhwCdJGj8K+OGM978HK9hermbM+e6GivTVEMFpCLLHv4
+         o0Dp5Sx6oLiKLCVwQthWKdzdTJxTExuSqqnd0s7jp7YYXAqpFWsdfOa4aM+gk9bJ5tn6
+         IdqAIW43iMksZUQ74Er4bwVB9gcOMQ+7LWPDSVIMhV1RZ3pKXRRdTkLqIKAD83ig9o6C
+         xafS+i6v200qK5Cot5SzWzlnKdYhTwPpT1SE+pmQgBrxMNHX3qT16f/X+QtPU0erS31p
+         qaEKfznX/Ijm9yZjwj50IUjopuGsE9ilxc0REaj6+Z8RR1vlBJJ7dAPY01EMjADlxilD
+         cTUA==
+X-Gm-Message-State: AOAM532HZx0jIYuOqy6bAFOPEk3xLsNRaz8V6bRaSZ3jFAy+cRiEAUAl
+        GClTRC6HsRywpPf/vgozMkiE+xOFMVbuuw==
+X-Google-Smtp-Source: ABdhPJy+Xc6eEjjEFreY9VQ/eiIV1iuOBVIfxT2/z7JQwxcvifYf/rDyMdxd3s4HgQTJdKHlFwScYw==
+X-Received: by 2002:a1c:1f90:: with SMTP id f138mr3349239wmf.123.1621106095093;
+        Sat, 15 May 2021 12:14:55 -0700 (PDT)
+Received: from localhost.localdomain ([170.253.36.171])
+        by smtp.googlemail.com with ESMTPSA id y20sm3274761wmi.0.2021.05.15.12.14.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 May 2021 11:50:23 -0700 (PDT)
-Date:   Sat, 15 May 2021 20:50:21 +0200
-From:   =?iso-8859-1?Q?Jos=E9_Exp=F3sito?= <jose.exposito89@gmail.com>
-To:     jose.exposito89@gmail.com
-Cc:     jikos@kernel.org, kbuild-all@lists.01.org,
-        benjamin.tissoires@redhat.com, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/5] HID: magicmouse: Magic Trackpad 2 USB battery
- capacity
-Message-ID: <20210515185021.GA177131@elementary-os.localdomain>
-References: <20210511182023.730524-3-jose.exposito89@gmail.com>
- <202105121712.MGWeLu1Q-lkp@intel.com>
+        Sat, 15 May 2021 12:14:54 -0700 (PDT)
+From:   Alejandro Colomar <alx.manpages@gmail.com>
+To:     mtk.manpages@gmail.com
+Cc:     Alejandro Colomar <alx.manpages@gmail.com>,
+        linux-man@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Zack Weinberg <zackw@panix.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        glibc <libc-alpha@sourceware.org>, GCC <gcc-patches@gcc.gnu.org>,
+        bpf <bpf@vger.kernel.org>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Joseph Myers <joseph@codesourcery.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: [PATCH v3] bpf.2: Use standard types and attributes
+Date:   Sat, 15 May 2021 21:01:18 +0200
+Message-Id: <20210515190116.188362-1-alx.manpages@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <6740a229-842e-b368-86eb-defc786b3658@gmail.com>
+References: <6740a229-842e-b368-86eb-defc786b3658@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <202105121712.MGWeLu1Q-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 05:39:31PM +0800, kernel test robot wrote:
-> Hi "José,
-> 
-> Thank you for the patch! Yet something to improve:
-> 
-> [auto build test ERROR on hid/for-next]
-> [also build test ERROR on v5.13-rc1 next-20210511]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Jos-Exp-sito/HID-magicmouse-register-power-supply/20210512-022327
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git for-next
-> config: s390-randconfig-r002-20210512 (attached as .config)
-> compiler: s390-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://github.com/0day-ci/linux/commit/701f395a5566b6d2fd3a78389983237668902998
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Jos-Exp-sito/HID-magicmouse-register-power-supply/20210512-022327
->         git checkout 701f395a5566b6d2fd3a78389983237668902998
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross W=1 ARCH=s390 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->    s390-linux-ld: drivers/pcmcia/cistpl.o: in function `set_cis_map':
->    cistpl.c:(.text+0x3a2): undefined reference to `ioremap'
->    s390-linux-ld: cistpl.c:(.text+0x3dc): undefined reference to `iounmap'
->    s390-linux-ld: cistpl.c:(.text+0x404): undefined reference to `iounmap'
->    s390-linux-ld: cistpl.c:(.text+0x416): undefined reference to `ioremap'
->    s390-linux-ld: drivers/pcmcia/cistpl.o: in function `release_cis_mem':
->    cistpl.c:(.text+0xe16): undefined reference to `iounmap'
->    s390-linux-ld: drivers/hid/hid-magicmouse.o: in function `magicmouse_remove':
->    hid-magicmouse.c:(.text+0xd2c): undefined reference to `usb_kill_urb'
-> >> s390-linux-ld: hid-magicmouse.c:(.text+0xd48): undefined reference to `usb_free_coherent'
-> >> s390-linux-ld: hid-magicmouse.c:(.text+0xd54): undefined reference to `usb_free_urb'
->    s390-linux-ld: drivers/hid/hid-magicmouse.o: in function `magicmouse_battery_usb_urb_complete':
->    hid-magicmouse.c:(.text+0xe12): undefined reference to `usb_submit_urb'
->    s390-linux-ld: drivers/hid/hid-magicmouse.o: in function `magicmouse_probe':
->    hid-magicmouse.c:(.text+0x1194): undefined reference to `usb_alloc_urb'
-> >> s390-linux-ld: hid-magicmouse.c:(.text+0x121a): undefined reference to `usb_alloc_coherent'
->    s390-linux-ld: hid-magicmouse.c:(.text+0x1422): undefined reference to `usb_free_coherent'
->    s390-linux-ld: hid-magicmouse.c:(.text+0x142e): undefined reference to `usb_free_urb'
-> >> s390-linux-ld: hid-magicmouse.c:(.text+0x1462): undefined reference to `usb_submit_urb'
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Some manual pages are already using C99 syntax for integral
+types 'uint32_t', but some aren't.  There are some using kernel
+syntax '__u32'.  Fix those.
 
-Hi all,
+Both the kernel and the standard types are 100% binary compatible,
+and the source code differences between them are very small, and
+not important in a manual page:
 
-I'm a little bit confused about the build errors reported by Intel's test bot and I'd really appreciate human input.
-This is the first patch I submit, so apologies in advance if I missed a basic step.
+- Some of them are implemented with different underlying types
+  (e.g., s64 is always long long, while int64_t may be long long
+  or long, depending on the arch).  This causes the following
+  differences.
 
-I compiled and tested every patch before submission and they all compiled and worked on this tree:
-git://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git
+- length modifiers required by printf are different, resulting in
+  a warning ('-Wformat=').
 
-After receiving this email, I followed the instructions attached to build it and indeed it failed.
-However, I reverted my changes and the kernel still didn't compile.
+- pointer assignment causes a warning:
+  ('-Wincompatible-pointer-types'), but there aren't any pointers
+  in this page.
 
-Is this something I need to fix?
+But, AFAIK, all of those warnings can be safely ignored, due to
+the binary compatibility between the types.
 
-Thank you very much in advance,
-José Expósito
+...
+
+Some pages also document attributes, using GNU syntax
+'__attribute__((xxx))'.  Update those to use the shorter and more
+portable C11 keywords such as 'alignas()' when possible, and C2x
+syntax '[[gnu::xxx]]' elsewhere, which hasn't been standardized
+yet, but is already implemented in GCC, and available through
+either --std=c2x or any of the --std=gnu... options.
+
+The standard isn't very clear on how to use alignas() or
+[[]]-style attributes, and the GNU documentation isn't better, so
+the following link is a useful experiment about the different
+alignment syntaxes:
+__attribute__((aligned())), alignas(), and [[gnu::aligned()]]:
+<https://stackoverflow.com/q/67271825/6872717>
+
+Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
+Nacked-by: Alexei Starovoitov <ast@kernel.org>
+Nacked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Acked-by: Zack Weinberg <zackw@panix.com>
+Cc: LKML <linux-kernel@vger.kernel.org>
+Cc: glibc <libc-alpha@sourceware.org>
+Cc: GCC <gcc-patches@gcc.gnu.org>
+Cc: bpf <bpf@vger.kernel.org>
+Cc: David Laight <David.Laight@ACULAB.COM>
+Cc: Joseph Myers <joseph@codesourcery.com>
+Cc: Florian Weimer <fweimer@redhat.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+---
+ man2/bpf.2 | 49 ++++++++++++++++++++++++-------------------------
+ 1 file changed, 24 insertions(+), 25 deletions(-)
+
+diff --git a/man2/bpf.2 b/man2/bpf.2
+index 6e1ffa198..04b8fbcef 100644
+--- a/man2/bpf.2
++++ b/man2/bpf.2
+@@ -186,41 +186,40 @@ commands:
+ .PP
+ .in +4n
+ .EX
+-union bpf_attr {
++union [[gnu::aligned(8)]] bpf_attr {
+     struct {    /* Used by BPF_MAP_CREATE */
+-        __u32         map_type;
+-        __u32         key_size;    /* size of key in bytes */
+-        __u32         value_size;  /* size of value in bytes */
+-        __u32         max_entries; /* maximum number of entries
+-                                      in a map */
++        uint32_t    map_type;
++        uint32_t    key_size;    /* size of key in bytes */
++        uint32_t    value_size;  /* size of value in bytes */
++        uint32_t    max_entries; /* maximum number of entries
++                                    in a map */
+     };
+ 
+-    struct {    /* Used by BPF_MAP_*_ELEM and BPF_MAP_GET_NEXT_KEY
+-                   commands */
+-        __u32         map_fd;
+-        __aligned_u64 key;
++    struct {    /* Used by BPF_MAP_*_ELEM and BPF_MAP_GET_NEXT_KEY commands */
++        uint32_t            map_fd;
++        uint64_t alignas(8) key;
+         union {
+-            __aligned_u64 value;
+-            __aligned_u64 next_key;
++            uint64_t alignas(8) value;
++            uint64_t alignas(8) next_key;
+         };
+-        __u64         flags;
++        uint64_t            flags;
+     };
+ 
+     struct {    /* Used by BPF_PROG_LOAD */
+-        __u32         prog_type;
+-        __u32         insn_cnt;
+-        __aligned_u64 insns;      /* \(aqconst struct bpf_insn *\(aq */
+-        __aligned_u64 license;    /* \(aqconst char *\(aq */
+-        __u32         log_level;  /* verbosity level of verifier */
+-        __u32         log_size;   /* size of user buffer */
+-        __aligned_u64 log_buf;    /* user supplied \(aqchar *\(aq
+-                                     buffer */
+-        __u32         kern_version;
+-                                  /* checked when prog_type=kprobe
+-                                     (since Linux 4.1) */
++        uint32_t            prog_type;
++        uint32_t            insn_cnt;
++        uint64_t alignas(8) insns;     /* \(aqconst struct bpf_insn *\(aq */
++        uint64_t alignas(8) license;   /* \(aqconst char *\(aq */
++        uint32_t            log_level; /* verbosity level of verifier */
++        uint32_t            log_size;  /* size of user buffer */
++        uint64_t alignas(8) log_buf;   /* user supplied \(aqchar *\(aq
++                                          buffer */
++        uint32_t            kern_version;
++                                       /* checked when prog_type=kprobe
++                                          (since Linux 4.1) */
+ .\"                 commit 2541517c32be2531e0da59dfd7efc1ce844644f5
+     };
+-} __attribute__((aligned(8)));
++};
+ .EE
+ .in
+ .\"
+-- 
+2.31.1
+
