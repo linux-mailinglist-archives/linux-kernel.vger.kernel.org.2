@@ -2,72 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 545063819CE
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 18:22:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F1F3819D6
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 18:29:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233367AbhEOQWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 12:22:55 -0400
-Received: from angie.orcam.me.uk ([78.133.224.34]:33330 "EHLO
-        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231246AbhEOQWx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 12:22:53 -0400
-X-Greylist: delayed 591 seconds by postgrey-1.27 at vger.kernel.org; Sat, 15 May 2021 12:22:52 EDT
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id AA83692009C; Sat, 15 May 2021 18:21:37 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 9B60392009B;
-        Sat, 15 May 2021 18:21:37 +0200 (CEST)
-Date:   Sat, 15 May 2021 18:21:37 +0200 (CEST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Colin King <colin.king@canonical.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jani Nikula <jani.nikula@intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        "Antonino A. Daplas" <adaplas@gmail.com>
-Subject: Re: [PATCH v2] tty: vt: always invoke vc->vc_sw->con_resize
- callback
-In-Reply-To: <97f1d292-c3a8-f4d6-0651-b4f5571ecb72@i-love.sakura.ne.jp>
-Message-ID: <alpine.DEB.2.21.2105151815040.3032@angie.orcam.me.uk>
-References: <0000000000006bbd0c05c14f1b09@google.com> <6e21483c-06f6-404b-4018-e00ee85c456c@i-love.sakura.ne.jp> <87d928e4-b2b9-ad30-f3f0-1dfb8e4e03ed@i-love.sakura.ne.jp> <05acdda8-dc1c-5119-4326-96eed24bea0c@i-love.sakura.ne.jp>
- <CAHk-=wguwhFpjhyMtDaH2hhjoV62gDgByC=aPyTrW9CkM5hqvA@mail.gmail.com> <alpine.DEB.2.21.2105142150460.3032@angie.orcam.me.uk> <CAHk-=wioOHwKNj8AmvXWV-oL60ae0jKswAHy9e6wCYYeA5EQXg@mail.gmail.com> <CAHk-=wjkVAjfWrmmJnJe1_MriK9gezWCew_MU=MbQNzHbGopsQ@mail.gmail.com>
- <97f1d292-c3a8-f4d6-0651-b4f5571ecb72@i-love.sakura.ne.jp>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S233435AbhEOQaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 12:30:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52574 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231246AbhEOQaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 May 2021 12:30:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 5C891613C1;
+        Sat, 15 May 2021 16:28:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621096135;
+        bh=1aAjMb/PMKY8MpaIcSW7Q3Y+qQrQc14gOdA0O0yknbQ=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=BRNVqj10Io1ifiqgZKM2mU7KS6b7lBEo/GMkbcqH9XcC52xsIlwMGt9m7WXKBumJg
+         S16ufRzKaGaDfznPXCvwXMjHjkDteIVBi1YuYACqhilKVWYFNle5HjGi9Q7tGwycaf
+         rX3elxqasOXua4Zecbu1xU6oH0X4qn9IJFCg464s1dy0Kuo6btoSTTwSwQVAEjqo4z
+         n38oamFDnLNM3Iwc24GqCvHu2q4HErlPftQ+iT1+RnaHKFyDgGFtU5XQhqtTVHMBjc
+         UiVHWsiNj/8ipK22oFUhr1U8Dg0uZXZcrYS8uO/zciM0YVYwNGZDjhJeYRN30IZ4yk
+         /kj/Z3UDMZErw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4A1BE60727;
+        Sat, 15 May 2021 16:28:55 +0000 (UTC)
+Subject: Re: [GIT PULL] erofs fixes for 5.13-rc2
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210515020731.GA2382@hsiangkao-HP-ZHAN-66-Pro-G1>
+References: <20210515020731.GA2382@hsiangkao-HP-ZHAN-66-Pro-G1>
+X-PR-Tracked-List-Id: Development of Linux EROFS file system <linux-erofs.lists.ozlabs.org>
+X-PR-Tracked-Message-Id: <20210515020731.GA2382@hsiangkao-HP-ZHAN-66-Pro-G1>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs.git tags/erofs-for-5.13-rc2-fixes
+X-PR-Tracked-Commit-Id: 0852b6ca941ef3ff75076e85738877bd3271e1cd
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 41f035c0626521fb2fdd694803c3397dbaddc9f3
+Message-Id: <162109613523.13678.12019869520982105265.pr-tracker-bot@kernel.org>
+Date:   Sat, 15 May 2021 16:28:55 +0000
+To:     Gao Xiang <xiang@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
+        Miao Xie <miaoxie@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 15 May 2021, Tetsuo Handa wrote:
+The pull request you sent on Sat, 15 May 2021 10:07:31 +0800:
 
-> diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
-> index 3406067985b1..22bb3892f6bd 100644
-> --- a/drivers/video/fbdev/core/fbcon.c
-> +++ b/drivers/video/fbdev/core/fbcon.c
-> @@ -2019,7 +2019,7 @@ static int fbcon_resize(struct vc_data *vc, unsigned int width,
->  			return -EINVAL;
->  
->  		pr_debug("resize now %ix%i\n", var.xres, var.yres);
-> -		if (con_is_visible(vc)) {
-> +		if (con_is_visible(vc) && vc->vc_mode == KD_TEXT) {
->  			var.activate = FB_ACTIVATE_NOW |
->  				FB_ACTIVATE_FORCE;
->  			fb_set_var(info, &var);
+> git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs.git tags/erofs-for-5.13-rc2-fixes
 
- LGTM, although I'll yet try to verify it with hardware.  But it'll have 
-to wait another week or so as I'm currently away from my lab and this 
-requires physical presence.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/41f035c0626521fb2fdd694803c3397dbaddc9f3
 
-Reviewed-by: Maciej W. Rozycki <macro@orcam.me.uk>
+Thank you!
 
-  Maciej
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
