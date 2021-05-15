@@ -2,105 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D79CF38147C
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 02:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96054381486
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 02:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234498AbhEOATR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 20:19:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37742 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233856AbhEOATO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 20:19:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D7E5613C1;
-        Sat, 15 May 2021 00:18:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621037881;
-        bh=+s/88Y7HX4sY22PkY201rbIdAcvJgMX3KGUSkg05MC0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=FdwnoktUZh3aVFXG/ufBS/N36rRZCT3+atxRZZ2MSx6f5bl11+2gYw4oKli/yNxyK
-         6NgbZH/gabNzG5LyoRCsmificZUyVd95ASLKXi0ZBQs0zyq3tJ28YcPd0T6jhm4A+j
-         xkugOJv/qpEGGLLEb5rSCwSJuM+917cwl7RhVxji9Uhq9P0QEvRUcWku091cHUIzjy
-         iTdEA1hQ9mMdC8N91JyQ74RCL2l3U3UsFAv998VzrcJHm42brsRFlhbVxzLbQxgkWu
-         3xGjxkbH0q/g6xXctqjXg5hPItahPM2xSNbHCTjMnKuSg+XLAVSjpWLdeLh0+2pHGz
-         joic2sBURqD1w==
-Date:   Fri, 14 May 2021 17:17:59 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
-        David Miller <davem@davemloft.net>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Wei Wang <weiwan@google.com>,
-        "Cong Wang ." <cong.wang@bytedance.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linuxarm@openeuler.org,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-can@vger.kernel.org, Jamal Hadi Salim <jhs@mojatatu.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
-        bpf <bpf@vger.kernel.org>, Jonas Bonn <jonas.bonn@netrounds.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Michael Zhivich <mzhivich@akamai.com>,
-        Josh Hunt <johunt@akamai.com>, Jike Song <albcamus@gmail.com>,
-        Kehuan Feng <kehuan.feng@gmail.com>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>, atenart@kernel.org,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Hillf Danton <hdanton@sina.com>, jgross@suse.com,
-        JKosina@suse.com, Michal Kubecek <mkubecek@suse.cz>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH net v8 1/3] net: sched: fix packet stuck problem for
- lockless qdisc
-Message-ID: <20210514171759.5572c8f0@kicinski-fedora-PC1C0HJN>
-In-Reply-To: <CAM_iQpXZNASp7+kA=OoCVbXuReAtOzHnqMn8kFUVfi9_qWe_kw@mail.gmail.com>
-References: <1620959218-17250-1-git-send-email-linyunsheng@huawei.com>
-        <1620959218-17250-2-git-send-email-linyunsheng@huawei.com>
-        <CAM_iQpXWgYQxf8Ba-D4JQJMPUaR9MBfQFTLFCHWJMVq9PcUWRg@mail.gmail.com>
-        <20210514163923.53f39888@kicinski-fedora-PC1C0HJN>
-        <CAM_iQpXZNASp7+kA=OoCVbXuReAtOzHnqMn8kFUVfi9_qWe_kw@mail.gmail.com>
+        id S234503AbhEOA0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 20:26:10 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:40194 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229898AbhEOA0J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 20:26:09 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1621038296;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=u7J20CIY6n338R3EMfMgJGDDEv/DbiWFGwByEAM8L1M=;
+        b=g7jxwZOiV6cd9mZtmR35bEc69sWpnHtEqWUPSkDollmplIm8F7W9hSbLHO5KYl34B8L1yY
+        Y4VG5ie1jIOzRx/6Nc/pOk3UxsRrgmfAibAQpEwztALO4Yw6UOrfcGkkWRhVarO7qFiYZD
+        OSK1P+5fOzVme63RxouKm1zhN8hXC0c+krES7YeZp5Ex3fmLkVowcCKJHKtjPtVcQoDHvA
+        CxCgi5vy1OQLulH+oHM2uvtk2XkEEifaFG3q3zjZ+55lgQm00ClsPMM2YaYdypfgJZ6+uZ
+        gKXA8u8K4610ng6nKoRLi2iaGlPHE6at9sqMGD986ju1932+HaNf7hLhHK8ZmA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1621038296;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=u7J20CIY6n338R3EMfMgJGDDEv/DbiWFGwByEAM8L1M=;
+        b=sACx/pxL0BGJAcxcoHgCA0ia/bMLbN904sCl104LR/mNxMGqUaZR12dtr4foo3OCHRcQeW
+        2bObbo68y/j4JpDQ==
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Alex Belits <abelits@marvell.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        John Stultz <john.stultz@linaro.org>
+Subject: Re: [patch 7/8] hrtimer: Avoid unnecessary SMP function calls in clock_was_set()
+In-Reply-To: <YJ8Hp0gTGwugxxFM@hirez.programming.kicks-ass.net>
+References: <20210427082537.611978720@linutronix.de> <20210427083724.732437214@linutronix.de> <YJ0+6vfkC+LTPkkw@hirez.programming.kicks-ass.net> <87bl9d407i.ffs@nanos.tec.linutronix.de> <YJ8Hp0gTGwugxxFM@hirez.programming.kicks-ass.net>
+Date:   Sat, 15 May 2021 02:24:55 +0200
+Message-ID: <87v97k2694.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 May 2021 16:57:29 -0700 Cong Wang wrote:
-> On Fri, May 14, 2021 at 4:39 PM Jakub Kicinski <kuba@kernel.org> wrote:
-> >
-> > On Fri, 14 May 2021 16:36:16 -0700 Cong Wang wrote:  
->  [...]  
-> > >
-> > > We have test_and_clear_bit() which is atomic, test_bit()+clear_bit()
-> > > is not.  
-> >
-> > It doesn't have to be atomic, right? I asked to split the test because
-> > test_and_clear is a locked op on x86, test by itself is not.  
-> 
-> It depends on whether you expect the code under the true condition
-> to run once or multiple times, something like:
-> 
-> if (test_bit()) {
->   clear_bit();
->   // this code may run multiple times
-> }
-> 
-> With the atomic test_and_clear_bit(), it only runs once:
-> 
-> if (test_and_clear_bit()) {
->   // this code runs once
-> }
-> 
-> This is why __netif_schedule() uses test_and_set_bit() instead of
-> test_bit()+set_bit().
+On Sat, May 15 2021 at 01:28, Peter Zijlstra wrote:
 
-Thanks, makes sense, so hopefully the MISSED-was-set case is not common
-and we can depend on __netif_schedule() to DTRT, avoiding the atomic op
-in the common case.
+> On Fri, May 14, 2021 at 08:52:33PM +0200, Thomas Gleixner wrote:
+>> On Thu, May 13 2021 at 16:59, Peter Zijlstra wrote:
+>> > On Tue, Apr 27, 2021 at 10:25:44AM +0200, Thomas Gleixner wrote:
+>> >> -	/* Retrigger the CPU local events everywhere */
+>> >> -	on_each_cpu(retrigger_next_event, NULL, 1);
+>> >> +	if (!zalloc_cpumask_var(&mask, GFP_KERNEL)) {
+>> >> +		on_each_cpu(retrigger_next_event, NULL, 1);
+>> >
+>> > This will violate NOHZ_FULL;
+>> 
+>> Only if that allocation fails.
+>
+> Right, which should be near to never I suppose.
+>
+>> Aside of that any CPU which has an affected timer will get notified even
+>> on NOHZ_FULL.
+>
+> Right; but if it's properly NOHZ_FULL -- the kind that wanted a signal
+> on any entry into the kernel -- when it won't have timers and this IPI
+> will trigger the signal and kill the program.
+
+That's true today. clock_was_set() IPI's unconditionally. The whole
+point of this exercise is to avoid that if there are no armed timers on
+the affected clocks.
+
+>> >> +	preempt_disable();
+>> >> +	smp_call_function_many(mask, retrigger_next_event, NULL, 1);
+>> >
+>> > The sane option is:
+>> >
+>> > 	smp_call_function_many_cond(cpu_online_mask, retrigger_next_event,
+>> > 				    NULL, SCF_WAIT, update_needs_ipi);
+>> >
+>> > Which does all of the above, but better.
+>> 
+>> With the difference that the for_each_cpu() loop runs with preemption
+>> disabled, while with this approach preemption is only disabled accross
+>> the function call.
+>
+> Yeah, I'd forgotten that... I might put looking at that on the todo list
+> somewhere :/
+
+That's this append only thingy, right?
+
+Thanks,
+
+        tglx
