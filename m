@@ -2,167 +2,506 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52C96381984
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 17:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B96EF38198A
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 17:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232332AbhEOPL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 11:11:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38934 "EHLO
+        id S232416AbhEOPU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 11:20:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231646AbhEOPLv (ORCPT
+        with ESMTP id S232164AbhEOPUW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 11:11:51 -0400
-Received: from outbound3.mail.transip.nl (outbound3.mail.transip.nl [IPv6:2a01:7c8:7c9:ca11:136:144:136:12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 634FAC061573;
-        Sat, 15 May 2021 08:10:37 -0700 (PDT)
-Received: from submission6.mail.transip.nl (unknown [10.103.8.157])
-        by outbound3.mail.transip.nl (Postfix) with ESMTP id 4Fj83G679FzlkTd;
-        Sat, 15 May 2021 17:10:34 +0200 (CEST)
-Received: from transip.email (unknown [10.103.8.118])
-        by submission6.mail.transip.nl (Postfix) with ESMTPA id 4Fj83D09SZz12LLZ;
-        Sat, 15 May 2021 17:10:31 +0200 (CEST)
+        Sat, 15 May 2021 11:20:22 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3ABAC061573
+        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 08:19:07 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lhw3x-0007mt-Hz; Sat, 15 May 2021 17:18:45 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lhw3i-0005Ts-Iu; Sat, 15 May 2021 17:18:30 +0200
+Date:   Sat, 15 May 2021 17:18:27 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Billy Tsai <billy_tsai@aspeedtech.com>
+Cc:     lee.jones@linaro.org, robh+dt@kernel.org, joel@jms.id.au,
+        andrew@aj.id.au, thierry.reding@gmail.com, p.zabel@pengutronix.de,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org, BMC-SW@aspeedtech.com,
+        kernel@pengutronix.de
+Subject: Re: [v5 2/2] pwm: Add Aspeed ast2600 PWM support
+Message-ID: <20210515151827.amiqh6j6brv44jif@pengutronix.de>
+References: <20210514024845.10531-1-billy_tsai@aspeedtech.com>
+ <20210514024845.10531-3-billy_tsai@aspeedtech.com>
 MIME-Version: 1.0
-Date:   Sat, 15 May 2021 17:10:31 +0200
-From:   Dave Olsthoorn <dave@bewaar.me>
-To:     Brian Norris <briannorris@chromium.org>
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>, stable@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>
-Subject: Re: [PATCH 5.13] mwifiex: bring down link before deleting interface
-In-Reply-To: <20210515024227.2159311-1-briannorris@chromium.org>
-References: <20210515024227.2159311-1-briannorris@chromium.org>
-Message-ID: <713286ddc100bd63a9dbefdece39c935@bewaar.me>
-X-Sender: dave@bewaar.me
-User-Agent: Webmail
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: ClueGetter at submission6.mail.transip.nl
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- s=transip-a; d=bewaar.me; t=1621091434; h=from:subject:to:cc:
- references:in-reply-to:date:mime-version:content-type;
- bh=xi/Gjcr5n9G9VABIuXaOgf1ld1MiL0kidF6MW+Mvzrk=;
- b=dgLwY0HjBBuzKkJzH24lvQSrUgu5Ep2yGyXUP2S2AoexovjSj9sBq571BStgK2yX4etC7y
- nTUdyUK/sUnlOt9L4hbDl6qiaHNreDIpTATHq2GiCTCiiPviJVdfUuBMXLiHrlC0Ct//9z
- zVTm7UYJB990g6UCuCoSKbe5II0A92FAvl+0r9BWmY/sDSQt4wkTdgtIPKm5VV9nTPhjRs
- bQglze0kl0KkykkVrKpQQ8qXpHw1xlxGq3YveM95Y50XqUyXzDRr0DnWyWPgykk5tf01a7
- FVA9U8qqC+H9WCCAFeGOQq0aIJLogl4RhR0kTN0d1VrTG0zqvGSzSUujQ1AMpQ==
-X-Report-Abuse-To: abuse@transip.nl
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xttmurqnkmfrurv7"
+Content-Disposition: inline
+In-Reply-To: <20210514024845.10531-3-billy_tsai@aspeedtech.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-15 04:42, Brian Norris wrote:
-> We can deadlock when rmmod'ing the driver or going through firmware
-> reset, because the cfg80211_unregister_wdev() has to bring down the 
-> link
-> for us, ... which then grab the same wiphy lock.
-> 
-> nl80211_del_interface() already handles a very similar case, with a 
-> nice
-> description:
-> 
->         /*
->          * We hold RTNL, so this is safe, without RTNL opencount cannot
->          * reach 0, and thus the rdev cannot be deleted.
->          *
->          * We need to do it for the dev_close(), since that will call
->          * the netdev notifiers, and we need to acquire the mutex there
->          * but don't know if we get there from here or from some other
->          * place (e.g. "ip link set ... down").
->          */
->         mutex_unlock(&rdev->wiphy.mtx);
-> ...
-> 
-> Do similarly for mwifiex teardown, by ensuring we bring the link down
-> first.
-> 
-> Sample deadlock trace:
-> 
-> [  247.103516] INFO: task rmmod:2119 blocked for more than 123 seconds.
-> [  247.110630]       Not tainted 5.12.4 #5
-> [  247.115796] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-> disables this message.
-> [  247.124557] task:rmmod           state:D stack:    0 pid: 2119
-> ppid:  2114 flags:0x00400208
-> [  247.133905] Call trace:
-> [  247.136644]  __switch_to+0x130/0x170
-> [  247.140643]  __schedule+0x714/0xa0c
-> [  247.144548]  schedule_preempt_disabled+0x88/0xf4
-> [  247.149714]  __mutex_lock_common+0x43c/0x750
-> [  247.154496]  mutex_lock_nested+0x5c/0x68
-> [  247.158884]  cfg80211_netdev_notifier_call+0x280/0x4e0 [cfg80211]
-> [  247.165769]  raw_notifier_call_chain+0x4c/0x78
-> [  247.170742]  call_netdevice_notifiers_info+0x68/0xa4
-> [  247.176305]  __dev_close_many+0x7c/0x138
-> [  247.180693]  dev_close_many+0x7c/0x10c
-> [  247.184893]  unregister_netdevice_many+0xfc/0x654
-> [  247.190158]  unregister_netdevice_queue+0xb4/0xe0
-> [  247.195424]  _cfg80211_unregister_wdev+0xa4/0x204 [cfg80211]
-> [  247.201816]  cfg80211_unregister_wdev+0x20/0x2c [cfg80211]
-> [  247.208016]  mwifiex_del_virtual_intf+0xc8/0x188 [mwifiex]
-> [  247.214174]  mwifiex_uninit_sw+0x158/0x1b0 [mwifiex]
-> [  247.219747]  mwifiex_remove_card+0x38/0xa0 [mwifiex]
-> [  247.225316]  mwifiex_pcie_remove+0xd0/0xe0 [mwifiex_pcie]
-> [  247.231451]  pci_device_remove+0x50/0xe0
-> [  247.235849]  device_release_driver_internal+0x110/0x1b0
-> [  247.241701]  driver_detach+0x5c/0x9c
-> [  247.245704]  bus_remove_driver+0x84/0xb8
-> [  247.250095]  driver_unregister+0x3c/0x60
-> [  247.254486]  pci_unregister_driver+0x2c/0x90
-> [  247.259267]  cleanup_module+0x18/0xcdc [mwifiex_pcie]
-> 
-> Fixes: a05829a7222e ("cfg80211: avoid holding the RTNL when calling the 
-> driver")
-> Cc: stable@vger.kernel.org
-> Link:
-> https://lore.kernel.org/linux-wireless/98392296-40ee-6300-369c-32e16cff3725@gmail.com/
-> Link:
-> https://lore.kernel.org/linux-wireless/ab4d00ce52f32bd8e45ad0448a44737e@bewaar.me/
-> Reported-by: Maximilian Luz <luzmaximilian@gmail.com>
-> Reported-by: Dave Olsthoorn <dave@bewaar.me>
 
-Thanks!
+--xttmurqnkmfrurv7
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The firmware still seems to crash quicker than previously, but that's a 
-unrelated problem.
+Hello,
 
-Tested-by: Dave Olsthoorn <dave@bewaar.me>
-
-> Cc: Johannes Berg <johannes@sipsolutions.net>
-> Signed-off-by: Brian Norris <briannorris@chromium.org>
+On Fri, May 14, 2021 at 10:48:45AM +0800, Billy Tsai wrote:
+> This patch add the support of PWM controller which can be found at aspeed
+> ast2600 soc. The pwm supoorts up to 16 channels and it's part function
+> of multi-function device "pwm-tach controller".
+>=20
+> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
 > ---
->  drivers/net/wireless/marvell/mwifiex/main.c | 13 ++++++++++---
->  1 file changed, 10 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/net/wireless/marvell/mwifiex/main.c
-> b/drivers/net/wireless/marvell/mwifiex/main.c
-> index 529dfd8b7ae8..17399d4aa129 100644
-> --- a/drivers/net/wireless/marvell/mwifiex/main.c
-> +++ b/drivers/net/wireless/marvell/mwifiex/main.c
-> @@ -1445,11 +1445,18 @@ static void mwifiex_uninit_sw(struct
-> mwifiex_adapter *adapter)
->  		if (!priv)
->  			continue;
->  		rtnl_lock();
-> -		wiphy_lock(adapter->wiphy);
->  		if (priv->netdev &&
-> -		    priv->wdev.iftype != NL80211_IFTYPE_UNSPECIFIED)
-> +		    priv->wdev.iftype != NL80211_IFTYPE_UNSPECIFIED) {
-> +			/*
-> +			 * Close the netdev now, because if we do it later, the
-> +			 * netdev notifiers will need to acquire the wiphy lock
-> +			 * again --> deadlock.
-> +			 */
-> +			dev_close(priv->wdev.netdev);
-> +			wiphy_lock(adapter->wiphy);
->  			mwifiex_del_virtual_intf(adapter->wiphy, &priv->wdev);
-> -		wiphy_unlock(adapter->wiphy);
-> +			wiphy_unlock(adapter->wiphy);
-> +		}
->  		rtnl_unlock();
->  	}
+>  drivers/pwm/Kconfig         |   8 +
+>  drivers/pwm/Makefile        |   1 +
+>  drivers/pwm/pwm-aspeed-g6.c | 355 ++++++++++++++++++++++++++++++++++++
+>  3 files changed, 364 insertions(+)
+>  create mode 100644 drivers/pwm/pwm-aspeed-g6.c
+>=20
+> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
+> index 63be5362fd3a..b0964b9a3273 100644
+> --- a/drivers/pwm/Kconfig
+> +++ b/drivers/pwm/Kconfig
+> @@ -51,6 +51,14 @@ config PWM_AB8500
+>  	  To compile this driver as a module, choose M here: the module
+>  	  will be called pwm-ab8500.
+> =20
+> +config PWM_ASPEED_G6
+> +	tristate "ASPEEDG6 PWM support"
+> +	depends on ARCH_ASPEED || COMPILE_TEST
+> +	help
+> +	  Generic PWM framework driver for ASPEED G6 SoC.
+> +
+> +	  This driver provides support for ASPEED G6 PWM controllers.
+
+The first sentence has little information, just the second is good
+enough, maybe mention the module name as the other driver items do.
+
+> +
+>  config PWM_ATMEL
+>  	tristate "Atmel PWM support"
+>  	depends on OF
+> diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
+> index cbdcd55d69ee..29d22d806e68 100644
+> --- a/drivers/pwm/Makefile
+> +++ b/drivers/pwm/Makefile
+> @@ -2,6 +2,7 @@
+>  obj-$(CONFIG_PWM)		+=3D core.o
+>  obj-$(CONFIG_PWM_SYSFS)		+=3D sysfs.o
+>  obj-$(CONFIG_PWM_AB8500)	+=3D pwm-ab8500.o
+> +obj-$(CONFIG_PWM_ASPEED_G6)	+=3D pwm-aspeed-g6.o
+>  obj-$(CONFIG_PWM_ATMEL)		+=3D pwm-atmel.o
+>  obj-$(CONFIG_PWM_ATMEL_HLCDC_PWM)	+=3D pwm-atmel-hlcdc.o
+>  obj-$(CONFIG_PWM_ATMEL_TCB)	+=3D pwm-atmel-tcb.o
+> diff --git a/drivers/pwm/pwm-aspeed-g6.c b/drivers/pwm/pwm-aspeed-g6.c
+> new file mode 100644
+> index 000000000000..a3d0ad324a13
+> --- /dev/null
+> +++ b/drivers/pwm/pwm-aspeed-g6.c
+> @@ -0,0 +1,355 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (C) 2021 ASPEED Technology Inc.
+> + *
+> + * PWM controller driver for Aspeed ast26xx SoCs.
+> + * This drivers doesn't support earlier version of the IP.
+> + *
+> + * The formula of pwm frequency:
+> + * PWM frequency =3D CLK Source / ((DIV_L + 1) * BIT(DIV_H) * (PERIOD + =
+1))
+> + *
+> + * The software driver fixes the period to 255, which causes the high-fr=
+equency
+> + * precision of the PWM to be coarse, in exchange for the fineness of th=
+e duty cycle.
+> + *
+> + * Register usage:
+> + * PIN_ENABLE: When it is unset the pwm controller will always output lo=
+w to the extern.
+> + * Use to determine whether the PWM channel is enabled or disabled
+> + * CLK_ENABLE: When it is unset the pwm controller will reset the duty c=
+ounter to 0 and
+> + * output low to the PIN_ENABLE mux after that the driver can still chan=
+ge the pwm period
+> + * and duty and the value will apply when CLK_ENABLE be set again.
+> + * Use to determin whether duty_cycle bigger than 0.
+> + * PWM_ASPEED_CTRL_INVERSE: When it is toggled the output value will inv=
+erse immediately.
+> + * PWM_ASPEED_DUTY_CYCLE_FALLING_POINT/PWM_ASPEED_DUTY_CYCLE_RISING_POIN=
+T: When these two
+> + * values are equal it means the duty cycle =3D 100%.
+> + *
+> + * Limitations:
+> + * - When changing both duty cycle and period, we cannot prevent in
+> + *   software that the output might produce a period with mixed
+> + *   settings.
+> + *
+> + * Improvements:
+> + * - When changing the duty cycle or period, our pwm controller will not
+> + *   generate the glitch, the configure will change at next cycle of pwm.
+> + *   This improvement can disable/enable through PWM_ASPEED_CTRL_DUTY_SY=
+NC_DISABLE.
+> + */
+> +
+> +#include <linux/clk.h>
+> +#include <linux/errno.h>
+> +#include <linux/delay.h>
+> +#include <linux/io.h>
+> +#include <linux/kernel.h>
+> +#include <linux/mfd/syscon.h>
+> +#include <linux/module.h>
+> +#include <linux/of_platform.h>
+> +#include <linux/of_device.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/sysfs.h>
+> +#include <linux/reset.h>
+> +#include <linux/regmap.h>
+> +#include <linux/bitfield.h>
+> +#include <linux/slab.h>
+> +#include <linux/pwm.h>
+> +
+> +/* The channel number of Aspeed pwm controller */
+> +#define PWM_ASPEED_NR_PWMS 16
+> +
+> +/* PWM Control Register */
+> +#define PWM_ASPEED_CTRL_CH(ch) ((((ch)*0x10) + 0x00))
+
+The outer parenthesis pair can be dropped.
+
+> +#define PWM_ASPEED_CTRL_LOAD_SEL_RISING_AS_WDT BIT(19)
+> +#define PWM_ASPEED_CTRL_DUTY_LOAD_AS_WDT_ENABLE BIT(18)
+> +#define PWM_ASPEED_CTRL_DUTY_SYNC_DISABLE BIT(17)
+> +#define PWM_ASPEED_CTRL_CLK_ENABLE BIT(16)
+> +#define PWM_ASPEED_CTRL_LEVEL_OUTPUT BIT(15)
+> +#define PWM_ASPEED_CTRL_INVERSE BIT(14)
+> +#define PWM_ASPEED_CTRL_OPEN_DRAIN_ENABLE BIT(13)
+> +#define PWM_ASPEED_CTRL_PIN_ENABLE BIT(12)
+> +#define PWM_ASPEED_CTRL_CLK_DIV_H GENMASK(11, 8)
+> +#define PWM_ASPEED_CTRL_CLK_DIV_L GENMASK(7, 0)
+> +
+> +/* PWM Duty Cycle Register */
+> +#define PWM_ASPEED_DUTY_CYCLE_CH(ch) ((((ch)*0x10) + 0x04))
+> +#define PWM_ASPEED_DUTY_CYCLE_PERIOD GENMASK(31, 24)
+> +#define PWM_ASPEED_DUTY_CYCLE_POINT_AS_WDT GENMASK(23, 16)
+> +#define PWM_ASPEED_DUTY_CYCLE_FALLING_POINT GENMASK(15, 8)
+> +#define PWM_ASPEED_DUTY_CYCLE_RISING_POINT GENMASK(7, 0)
+> +
+> +/* PWM fixed value */
+> +#define PWM_ASPEED_FIXED_PERIOD 0xff
+> +
+> +struct aspeed_pwm_data {
+> +	struct pwm_chip chip;
+> +	struct clk *clk;
+> +	struct regmap *regmap;
+> +	struct reset_control *reset;
+> +};
+> +
+> +static inline struct aspeed_pwm_data *
+> +aspeed_pwm_chip_to_data(struct pwm_chip *c)
+> +{
+> +	return container_of(c, struct aspeed_pwm_data, chip);
+> +}
+> +
+> +static u64 aspeed_pwm_get_period(struct pwm_chip *chip, struct pwm_devic=
+e *pwm)
+> +{
+> +	struct aspeed_pwm_data *priv =3D aspeed_pwm_chip_to_data(chip);
+> +	unsigned long rate;
+> +	u32 index =3D pwm->hwpwm;
+> +	u32 div_h, div_l, val;
+> +	u64 period;
+> +
+> +	rate =3D clk_get_rate(priv->clk);
+> +	regmap_read(priv->regmap, PWM_ASPEED_CTRL_CH(index), &val);
+> +	div_h =3D FIELD_GET(PWM_ASPEED_CTRL_CLK_DIV_H, val);
+> +	div_l =3D FIELD_GET(PWM_ASPEED_CTRL_CLK_DIV_L, val);
+> +	period =3D DIV_ROUND_UP_ULL(NSEC_PER_SEC, rate);
+> +	period *=3D (BIT(div_h) * (div_l + 1) * (PWM_ASPEED_FIXED_PERIOD + 1));
+
+As this function is used in .get_state it makes sense to use the
+PWM_ASPEED_DUTY_CYCLE_PERIOD register value instead of
+PWM_ASPEED_FIXED_PERIOD in case the bootloader programmed doesn't
+implement the "always use 255" strategy.
+
+DIV_ROUND_UP_ULL doens't give any advantage here over plain DIV_ROUND_UP
+because both parameters fit into a plain unsigned long. However first
+doing the multiplication and only then the division increases precision.
+(Consider rate =3D 199000000, div_h =3D 2, div_l =3D 130 and
+PWM_ASPEED_DUTY_CYCLE_PERIOD =3D 255: The exact period is
+674090.4522613066 ns. With your ordering you calculate 804864.0 ns,
+while when dividing at the end you get 674091.)
+
+> +
+> +	return period;
+> +}
+> +
+> +static int aspeed_pwm_set_freq(struct pwm_chip *chip, struct pwm_device =
+*pwm,
+> +			       const struct pwm_state *state)
+
+It's a bit irritating that this is called ..._set_freq but it is about
+the period. Maybe better call it ..._set_period?
+
+> +{
+> +	struct device *dev =3D chip->dev;
+> +	struct aspeed_pwm_data *priv =3D aspeed_pwm_chip_to_data(chip);
+> +	unsigned long rate;
+> +	u64 div_h, div_l;
+> +	u32 index =3D pwm->hwpwm;
+> +
+> +	rate =3D clk_get_rate(priv->clk);
+> +	rate =3D DIV_ROUND_UP_ULL(rate, (PWM_ASPEED_FIXED_PERIOD + 1));
+
+You don't need parenthesis around the parameters of DIV_ROUND_UP_ULL. As
+you round up here, you don't necessarily calculate the smallest value
+for div_h, do you?
+
+> +	/* Get the smallest value for div_h  */
+> +	div_h =3D rate * state->period;
+
+Same issue as above, if you divide at the end of the calculation the
+precision is better.
+
+> +	div_h =3D DIV_ROUND_DOWN_ULL(div_h,
+> +				   (FIELD_MAX(PWM_ASPEED_CTRL_CLK_DIV_L) + 1));
+> +	div_h =3D DIV_ROUND_DOWN_ULL(div_h, NSEC_PER_SEC);
+
+As a division is an expensive operation you can better first multiply
+NSEC_PER_SEC and FIELD_MAX(PWM_ASPEED_CTRL_CLK_DIV_L) + 1 and divide by
+the result.
+
+> +
+> +	div_h =3D order_base_2(div_h);
+> +	if (div_h > 0xf)
+> +		div_h =3D 0xf;
+> +
+> +	div_l =3D rate * state->period;
+> +	div_l >>=3D div_h;
+> +	div_l =3D DIV_ROUND_DOWN_ULL(div_l, NSEC_PER_SEC);
+> +	if (div_l =3D=3D 0) {
+> +		dev_err(dev, "Period too small, cannot implement it");
+
+No error message please.
+
+> +		return -ERANGE;
+> +	}
+> +
+> +	div_l -=3D 1;
+> +
+> +	if (div_l > 255)
+> +		div_l =3D 255;
+> +
+> +	dev_dbg(dev, "clk source: %ld div_h %lld, div_l : %lld\n", rate, div_h,
+> +		div_l);
+> +
+> +	regmap_update_bits(
+> +		priv->regmap, PWM_ASPEED_CTRL_CH(index),
+> +		(PWM_ASPEED_CTRL_CLK_DIV_H | PWM_ASPEED_CTRL_CLK_DIV_L),
+> +		FIELD_PREP(PWM_ASPEED_CTRL_CLK_DIV_H, div_h) |
+> +			FIELD_PREP(PWM_ASPEED_CTRL_CLK_DIV_L, div_l));
+> +	return 0;
+> +}
+> +
+> +static void aspeed_set_pwm_duty(struct pwm_chip *chip, struct pwm_device=
+ *pwm,
+> +				const struct pwm_state *state)
+
+aspeed_pwm_set_duty please
+
+> +{
+> +	struct device *dev =3D chip->dev;
+> +	struct aspeed_pwm_data *priv =3D aspeed_pwm_chip_to_data(chip);
+> +	u32 duty_pt;
+> +	u32 index =3D pwm->hwpwm;
+> +	u64 cur_period;
+> +
+> +	cur_period =3D aspeed_pwm_get_period(chip, pwm);
+> +	duty_pt =3D DIV_ROUND_DOWN_ULL(
+> +		state->duty_cycle * (PWM_ASPEED_FIXED_PERIOD + 1), cur_period);
+> +	dev_dbg(dev, "cur_period =3D %lld, duty_cycle =3D %lld, duty_pt =3D %d\=
+n",
+> +		cur_period, state->duty_cycle, duty_pt);
+> +	if (duty_pt =3D=3D 0) {
+> +		regmap_update_bits(priv->regmap, PWM_ASPEED_CTRL_CH(index),
+> +				   PWM_ASPEED_CTRL_CLK_ENABLE, 0);
+> +	} else {
+> +		if (duty_pt >=3D (PWM_ASPEED_FIXED_PERIOD + 1))
+> +			duty_pt =3D 0;
+> +		regmap_update_bits(
+> +			priv->regmap, PWM_ASPEED_DUTY_CYCLE_CH(index),
+> +			PWM_ASPEED_DUTY_CYCLE_FALLING_POINT,
+> +			FIELD_PREP(PWM_ASPEED_DUTY_CYCLE_FALLING_POINT,
+> +				   duty_pt));
+> +		regmap_update_bits(priv->regmap, PWM_ASPEED_CTRL_CH(index),
+> +				   PWM_ASPEED_CTRL_CLK_ENABLE,
+> +				   PWM_ASPEED_CTRL_CLK_ENABLE);
+> +	}
+> +}
+> +
+> +static void aspeed_pwm_get_state(struct pwm_chip *chip, struct pwm_devic=
+e *pwm,
+> +				 struct pwm_state *state)
+> +{
+> +	struct device *dev =3D chip->dev;
+> +	struct aspeed_pwm_data *priv =3D aspeed_pwm_chip_to_data(chip);
+> +	u32 index =3D pwm->hwpwm;
+> +	bool polarity, ch_en, clk_en;
+> +	u32 duty_pt, val;
+> +
+> +	regmap_read(priv->regmap, PWM_ASPEED_CTRL_CH(index), &val);
+> +	polarity =3D FIELD_GET(PWM_ASPEED_CTRL_INVERSE, val);
+> +	ch_en =3D FIELD_GET(PWM_ASPEED_CTRL_PIN_ENABLE, val);
+> +	clk_en =3D FIELD_GET(PWM_ASPEED_CTRL_CLK_ENABLE, val);
+> +	regmap_read(priv->regmap, PWM_ASPEED_DUTY_CYCLE_CH(index), &val);
+> +	duty_pt =3D FIELD_GET(PWM_ASPEED_DUTY_CYCLE_FALLING_POINT, val);
+> +
+> +	state->period =3D aspeed_pwm_get_period(chip, pwm);
+> +	if (clk_en && duty_pt)
+> +		state->duty_cycle =3D DIV_ROUND_DOWN_ULL(
+> +			state->period * duty_pt, PWM_ASPEED_FIXED_PERIOD + 1);
+
+Round up please.
+
+> +	else
+> +		state->duty_cycle =3D clk_en ? state->period : 0;
+> +	state->polarity =3D polarity;
+> +	state->enabled =3D ch_en;
+> +	dev_dbg(dev, "get period: %lldns, duty_cycle: %lldns", state->period,
+> +		state->duty_cycle);
+> +}
+> +
+> +static int aspeed_pwm_apply(struct pwm_chip *chip, struct pwm_device *pw=
+m,
+> +			    const struct pwm_state *state)
+> +{
+> +	struct device *dev =3D chip->dev;
+> +	struct aspeed_pwm_data *priv =3D aspeed_pwm_chip_to_data(chip);
+> +	u32 index =3D pwm->hwpwm;
+> +	int ret;
+> +
+> +	dev_dbg(dev, "apply period: %lldns, duty_cycle: %lldns", state->period,
+> +		state->duty_cycle);
+> +
+> +	regmap_update_bits(priv->regmap, PWM_ASPEED_CTRL_CH(index),
+> +			   PWM_ASPEED_CTRL_PIN_ENABLE,
+> +			   state->enabled ? PWM_ASPEED_CTRL_PIN_ENABLE : 0);
+> +	/*
+> +	 * Fixed the period to the max value and rising point to 0
+> +	 * for high resolution and simplify frequency calculation.
+> +	 */
+> +	regmap_update_bits(priv->regmap, PWM_ASPEED_DUTY_CYCLE_CH(index),
+> +			   (PWM_ASPEED_DUTY_CYCLE_PERIOD |
+> +			    PWM_ASPEED_DUTY_CYCLE_RISING_POINT),
+> +			   FIELD_PREP(PWM_ASPEED_DUTY_CYCLE_PERIOD,
+> +				      PWM_ASPEED_FIXED_PERIOD));
+> +
+> +	ret =3D aspeed_pwm_set_freq(chip, pwm, state);
+> +	if (ret)
+> +		return ret;
+> +	aspeed_set_pwm_duty(chip, pwm, state);
+> +	regmap_update_bits(priv->regmap, PWM_ASPEED_CTRL_CH(index),
+> +			   PWM_ASPEED_CTRL_INVERSE,
+> +			   FIELD_PREP(PWM_ASPEED_CTRL_INVERSE,
+> +				      state->polarity));
+> +	return 0;
+> +}
+> +
+> +static const struct pwm_ops aspeed_pwm_ops =3D {
+> +	.apply =3D aspeed_pwm_apply,
+> +	.get_state =3D aspeed_pwm_get_state,
+> +	.owner =3D THIS_MODULE,
+> +};
+> +
+> +static int aspeed_pwm_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev =3D &pdev->dev;
+> +	int ret;
+> +	struct aspeed_pwm_data *priv;
+> +	struct device_node *np;
+> +	struct platform_device *parent_dev;
+> +
+> +	priv =3D devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	np =3D pdev->dev.parent->of_node;
+> +	if (!of_device_is_compatible(np, "aspeed,ast2600-pwm-tach")) {
+> +		dev_err(dev, "unsupported pwm device binding\n");
+> +		return -ENODEV;
+
+You can simplify this to
+
+	return dev_err_probe(dev, -ENODEV, "uns...");
+
+> +	}
+> +
+> +	priv->regmap =3D syscon_node_to_regmap(np);
+> +	if (IS_ERR(priv->regmap)) {
+> +		return dev_err_probe(dev, PTR_ERR(priv->regmap),
+> +				     "Couldn't get regmap\n");
+> +	}
+
+No { } please
+
+> +
+> +	parent_dev =3D of_find_device_by_node(np);
+> +	priv->clk =3D devm_clk_get(&parent_dev->dev, 0);
+> +	if (IS_ERR(priv->clk))
+> +		return dev_err_probe(dev, PTR_ERR(priv->clk),
+> +				     "get clock failed\n");
+> +
+> +	ret =3D clk_prepare_enable(priv->clk);
+> +	if (ret) {
+> +		dev_err(dev, "couldn't enable clock\n");
+> +		return ret;
+
+If you use dev_err_probe here this is more compact and the error message
+contains the error code.
+
+> +	}
+> +
+> +	priv->reset =3D of_reset_control_get_shared(np, NULL);
+> +	if (IS_ERR(priv->reset))
+> +		return dev_err_probe(dev, PTR_ERR(priv->reset),
+> +				     "get reset failed\n");
+> +
+> +	ret =3D reset_control_deassert(priv->reset);
+> +	if (ret) {
+> +		dev_err(dev, "cannot deassert reset control: %pe\n",
+> +			ERR_PTR(ret));
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--xttmurqnkmfrurv7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmCf5kAACgkQwfwUeK3K
+7AlNDwf/YiCimYu6s5wc2+7fLSwe4CUo5nXLSap0z8oyjqanAFTk/5UT2eNoh6C4
+wUqaesjxq/MYS+RDyEskI2J/e6wzYjEwMD0V0z1OIca2gJM2GWMlrtFdB9o+YPHP
+xE7Ove1nD20qXtbFdQ5oF6hJ4u3B/G8sShvQOWBqy7pzQWps9RaSsoEt6FI2kEyE
+QEy8K3pMKnPgiUqk6ta1jObRp2EL/ddf56ES/qUwtN5RLm7qshsI2ndTcfsrgs+b
+tpamdBFEuku+RTCeMBGln3NawNJr9qemGLx8RkEZ2YZlSXo5q1fySeMDNZsZyRjI
+NZs/XJtYR6rtrxJItYfbu2kUlaITZg==
+=K4Mw
+-----END PGP SIGNATURE-----
+
+--xttmurqnkmfrurv7--
