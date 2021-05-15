@@ -2,206 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F19FF381695
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 09:30:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9027E381697
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 09:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233129AbhEOHby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 03:31:54 -0400
-Received: from mout.gmx.net ([212.227.15.18]:51049 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229906AbhEOHbn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 03:31:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1621063779;
-        bh=NAlu5S4642xOfats9/zNVj4rMRpbVRpx/O6EEm7IkzI=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=NI0GxpCxWoH4IwN7F8Bk9FJqo+Hr7Ra5X7SP4etC+EUESDoZxjlAjsPnPjONw1MWC
-         x1hFM5sLcduSOi8GAW764H390mic7zGzye9LbKp6Bvaz00FrcAYWCly/1T8vLbGPBs
-         IhejJq9gWXDdJG5HhldH4SjBcMzU2xHWyjr1vAyU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.150.221]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MrhQ6-1lC0gx0nrQ-00ngSQ; Sat, 15
- May 2021 09:29:39 +0200
-Message-ID: <284735cfa1b23484cb0aaeb896067cbf888ac6af.camel@gmx.de>
-Subject: Re: [PATCH v2 3/3] sched/fair: break out of newidle balancing if an
- RT task appears
-From:   Mike Galbraith <efault@gmx.de>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Scott Wood <swood@redhat.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>
-Date:   Sat, 15 May 2021 09:29:37 +0200
-In-Reply-To: <YJUecEMZNDfD1Z4K@hirez.programming.kicks-ass.net>
-References: <20210428232821.2506201-1-swood@redhat.com>
-         <20210428232821.2506201-4-swood@redhat.com>
-         <YJUecEMZNDfD1Z4K@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.34.4 
+        id S233195AbhEOHgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 03:36:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230508AbhEOHgN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 May 2021 03:36:13 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E7CCC06174A
+        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 00:35:00 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id i13so1028893edb.9
+        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 00:35:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=geXezWqksF0Uu4Gfw0bG+etU54O5YchybuMDVSDksHI=;
+        b=kwQ/SVjmnqRJ3+EoQRvgUyjg+vjn/YSB99zKLdNaqZ/qD4hIPvedd89Q2WPsz3fevh
+         dHPRgffNKbT7tNRAsUSE0vleInzZX8SfuKzTtBhmbO0gi0JNup6m8jMD4CYdLf0OnJKj
+         bsL2lD/WZVcITtOzM2Trgr9OQqm0/i/b/yrJF6chBInidCzh5JJUXZpy9jytPTcA+Afu
+         z2k7WOa3TEZrkrIb+cWnNdSLyg61pXNjkMeJ1nGU7/4MfQtps+wemlTzUHwWBVSrI3Nw
+         tscYvrteV9VGm5oiIrC0aLhjxjZRlPwhSfRsUDlNuJWe2fN62yxwR+MrguiqjZAkerzj
+         AEcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=geXezWqksF0Uu4Gfw0bG+etU54O5YchybuMDVSDksHI=;
+        b=Wa/dfcGGbs8gPhukaT86/7PbDZ7q60g6oOk/2ce6QKNBfVRfcuiIzD6xMBS1wkpFis
+         K5CXOXOQGW/WrszSCZlLwFaWHz0FaskKOw9OgtrA8+A4BgYzNrhDx7udPCpcoXeJbcMk
+         JVOxsFTMGfhQOGlK2rx58olDPl+q28m/yt0zPeoBEjBBinzellKQTmaDl79k4qAMsIQk
+         LZyhpHDEYuykFWT6U7nAHUQ0XRt5Pa1G4zOAisTRaqnWo6/77Joz/2aoswEKlnMgbiMS
+         rNbOb6AOwUzsbVW2mSNP6dA8ZFuRK2S8IFv1Y5nXcLvn2EvABwcVrS3gHRsycZn9n8+6
+         vtYg==
+X-Gm-Message-State: AOAM530nxvgBeqZVoRHbXyP6rdPCVAFoaE4ZBIVSZrqddkeaQchdurV3
+        nGqnwwgPwLU9dZX9o99w+/A=
+X-Google-Smtp-Source: ABdhPJyUNoTSLHgY2ceugNpIEu4LrHVuiP3FweB1+1DVow+SjZ46+GstglM7/5Cvn9XEksrksH1iLg==
+X-Received: by 2002:a05:6402:944:: with SMTP id h4mr10219520edz.319.1621064098998;
+        Sat, 15 May 2021 00:34:58 -0700 (PDT)
+Received: from gmail.com (178-164-188-54.pool.digikabel.hu. [178.164.188.54])
+        by smtp.gmail.com with ESMTPSA id i8sm6239983edu.64.2021.05.15.00.34.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 15 May 2021 00:34:55 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Sat, 15 May 2021 09:34:53 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [GIT PULL] Stack randomization fix
+Message-ID: <20210515073453.GA78379@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ka/KlqfxQKXEIn3Cg+EwBh9ky+iZeMquyjje/Ugxn3xj2VckLrq
- 6lsLYiYlKI3FJmCqTcUkoSTRMETbuFXjGxgLtg+RXfrwThG+hWB68YeTrod8IWsJjZDQvBN
- +hJ+0sC7qeSf4wIzYLMe6UsLnanciuTq/me3w/tjGFIjLuOVB/T4us/A9cnzYKDFuX1tWy4
- N/LPvG0o2f7FOcd6baOQQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:8TXQKAv7jpQ=:Wmw+FJlQUmDB5HKsC4cnyz
- hDDA8Owknf7mWs7+sg43oAR3BvRDw8ivjcfucuJkBL68vfkq0Y9+TqecLydIflZx2g2eol+nN
- j3KEA2tyqQ5T7FVGnfeeJwGDSxpuMtjL0jK0k72XZvumqVbdiJJniiDhS7O/zQcUxzKD219kg
- M21gtR39u7Gr3JBbznawG0YkzhUACZbCaDH1zibvkUEEQ2+ZLD1BwiMMdMeWngJDBKF1mZi9q
- S/zyV9rczdPmsem/OuE1P0brDpvIgv8ayUEFgxXUUy9p8vBOvUDP2Ts+KpCSyBl1u7Wxc9okl
- QO1u+zeAPu5Xv5NWg04HciduCWdHU1ePsAGhR1y3qQ0EAdLaBP7m+du+PVnP9zgDL0eGbDpm9
- Lnlr2DSieqjMleKLyhxdHwG7oVRKMKMTtqko2IFG81gxiCcZr3S/5r1PyLi300Ta9BofTcFUX
- VOQ//cuX0JF3nIzWYW2evuIBXsaS7ujxkGKeqhAwhN04qXU7xXlQpcazkbj2WJ0gpCghfK27+
- 3nItVEOb2ji2+9CBSmpKiFVtktV0IM7uuLIWuB+YeTDf41v4e3uVMriQnv50XjtV2blQAIeLt
- GVBQ0umTX/XcHx6CWmdZ+mf8v8xcxuyIkJiOXpmj5weJlU3HUH5jf2VbLxkzI4rHF6aamR9am
- 9Pl/tsJKpd6Zq0Dncg6ealdLjHU0w0alGHCx8ahK1iFGUlvFsIfvTcMsIoHozOye8Tgw8Da3Z
- +FzoLHSx/lqciSKIMbDjxsjv9IkTU9Z8qmXzf+JXQaaWOzN8L2rdtboUN3ePruI1f1S7aQvda
- xEl/0eubj7atIqTvBNEI8U54JID2qTIEpDslINS3YyqnIbhrhPaIh9cnVghjcWbqJgXat39mX
- kDS0/zusRwHIPDDJ/9yMi/KhLK1/spylXIALGbc3dF5I0z++J5forNOOPZ4YQoGCLLXivWvXo
- 2INuk1TxUDaZDrfQJoU8ClIGH2Ruve2ztOsH77JJVa7FAv4hIsR0u4W5YZlt0kBDsgkt92FUG
- ktiaurtoKfeLOJRw06EaaGLdpd1/x/svTutkHdb/9b882+OZeVC6BljDpt7wROobmoTYe29zj
- fagJsOfhbXmhsHBULPbIgLThsueOuIQBdDphW3qquQQOkjsk0JG0IUJ/QI8TkJrklNgn/+/4v
- fs2/icQvHUavyirbxFerK/KX7VvdCXl3TpemttjNH8Amlp52ZNkYIpLsSmmygxZ1Y6VPw=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-05-07 at 13:03 +0200, Peter Zijlstra wrote:
->
-> newidle_balance() already has 'stop, you're spending too much time'
-> controls; you've failed to explain how those are falling short and why
-> they cannot be improved.
+Linus,
 
-Greetings,
+Please pull the latest core/urgent git tree from:
 
-I bet a nickle he's meeting contention on a more painful scale than the
-2212.429350 sample from my little i4790 desktop box, as master.today+rt
-does.. nothing remotely RT like, just plays youtube as I instead watch
-trace output.
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git core-urgent-2021-05-15
 
-homer:..debug/tracing # tail -20 trace
- MediaPl~back #1-17837   [003] d...2..  2212.292335: load_balance: NEWIDLE=
- rq:2 lock acquired
-  Gecko_IOThread-4001    [000] d...2..  2212.315030: load_balance: NEWIDLE=
- rq:3 lock acquired
-         firefox-3980    [007] d...1..  2212.315030: load_balance: NEWIDLE=
- rq:3 locked - aborting
-           Timer-4089    [007] d...2..  2212.317260: load_balance: NEWIDLE=
- rq:0 lock acquired
-           Timer-4089    [007] d...2..  2212.317319: load_balance: NEWIDLE=
- rq:0 lock acquired
-     ksoftirqd/6-51      [006] d...2..  2212.317358: load_balance: NEWIDLE=
- rq:0 lock acquired
-           Timer-4089    [007] d...2..  2212.317474: load_balance: NEWIDLE=
- rq:0 lock acquired
- MediaPl~back #2-17839   [002] d...1..  2212.345438: load_balance: NEWIDLE=
- rq:3 locked - aborting
- Chrome_~dThread-16830   [006] d...2..  2212.345438: load_balance: NEWIDLE=
- rq:3 lock acquired
- AudioIP~ent RPC-17665   [003] d...2..  2212.404999: load_balance: NEWIDLE=
- rq:5 lock acquired
- ImageBridgeChld-16855   [001] d...2..  2212.429350: load_balance: NEWIDLE=
- rq:6 lock acquired
- MediaPl~back #1-17837   [000] d...1..  2212.429351: load_balance: NEWIDLE=
- rq:6 locked - aborting
- Chrome_~dThread-16830   [002] d...1..  2212.429356: load_balance: NEWIDLE=
- rq:6 locked - aborting
-               X-2157    [003] d...2..  2212.461351: load_balance: NEWIDLE=
- rq:6 lock acquired
-           <...>-4043    [006] d...2..  2212.480451: load_balance: NEWIDLE=
- rq:2 lock acquired
-     ksoftirqd/0-12      [000] d...2..  2212.505545: load_balance: NEWIDLE=
- rq:3 lock acquired
-     ksoftirqd/0-12      [000] d...2..  2212.505550: load_balance: NEWIDLE=
- rq:3 lock acquired
-     threaded-ml-4399    [001] d...2..  2212.517943: load_balance: NEWIDLE=
- rq:7 lock acquired
-      pulseaudio-1917    [002] d...2..  2212.575245: load_balance: NEWIDLE=
- rq:6 lock acquired
- IPDL Background-4028    [004] d...2..  2212.581085: load_balance: NEWIDLE=
- rq:5 lock acquired
-homer:..debug/tracing #
+   # HEAD: 2515dd6ce8e545b0b2eece84920048ef9ed846c4 stack: Replace "o" output with "r" input constraint
 
-homer:..debug/tracing # cat trace | grep lock | wc -l
-218165
-homer:..debug/tracing # cat trace | grep abort | wc -l
-40081
+Fix an assembly constraint that affected LLVM up to version 12.
 
-I still carry the below in my local RT trees, to which I added those
-trace_printk()s.  It was born some years ago on a 64 core box.
+ Thanks,
 
-=2D--
- kernel/sched/fair.c     |   11 +++++++++++
- kernel/sched/features.h |    4 ++++
- kernel/sched/sched.h    |   10 ++++++++++
- 3 files changed, 25 insertions(+)
+	Ingo
 
-=2D-- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -7200,6 +7200,12 @@ done: __maybe_unused;
- 	if (!rf)
- 		return NULL;
+------------------>
+Nick Desaulniers (1):
+      stack: Replace "o" output with "r" input constraint
 
-+#ifdef CONFIG_PREEMPT_RT
-+	/* RT tasks have better things to do than load balancing. */
-+	if (prev && prev->sched_class !=3D &fair_sched_class)
-+		return NULL;
-+#endif
-+
- 	new_tasks =3D newidle_balance(rq, rf);
 
- 	/*
-@@ -9669,7 +9675,12 @@ static int load_balance(int this_cpu, st
- 		env.loop_max  =3D min(sysctl_sched_nr_migrate, busiest->nr_running);
+ include/linux/randomize_kstack.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- more_balance:
-+#ifdef CONFIG_PREEMPT_RT
-+		if (!rq_lock_trylock_irqsave(busiest, &rf))
-+			goto out;
-+#else
- 		rq_lock_irqsave(busiest, &rf);
-+#endif
- 		update_rq_clock(busiest);
-
- 		/*
-=2D-- a/kernel/sched/features.h
-+++ b/kernel/sched/features.h
-@@ -86,7 +86,11 @@ SCHED_FEAT(RT_PUSH_IPI, true)
- #endif
-
- SCHED_FEAT(RT_RUNTIME_SHARE, false)
-+#ifndef CONFIG_PREEMPT_RT
- SCHED_FEAT(LB_MIN, false)
-+#else
-+SCHED_FEAT(LB_MIN, true)
-+#endif
- SCHED_FEAT(ATTACH_AGE_LOAD, true)
-
- SCHED_FEAT(WA_IDLE, true)
-=2D-- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1322,6 +1322,16 @@ rq_lock_irqsave(struct rq *rq, struct rq
- 	rq_pin_lock(rq, rf);
- }
-
-+static inline int
-+rq_lock_trylock_irqsave(struct rq *rq, struct rq_flags *rf)
-+	__acquires(rq->lock)
-+{
-+	if (!raw_spin_trylock_irqsave(&rq->lock, rf->flags))
-+		return 0;
-+	rq_pin_lock(rq, rf);
-+	return 1;
-+}
-+
- static inline void
- rq_lock_irq(struct rq *rq, struct rq_flags *rf)
- 	__acquires(rq->lock)
-
+diff --git a/include/linux/randomize_kstack.h b/include/linux/randomize_kstack.h
+index fd80fab663a9..bebc911161b6 100644
+--- a/include/linux/randomize_kstack.h
++++ b/include/linux/randomize_kstack.h
+@@ -38,7 +38,7 @@ void *__builtin_alloca(size_t size);
+ 		u32 offset = raw_cpu_read(kstack_offset);		\
+ 		u8 *ptr = __builtin_alloca(KSTACK_OFFSET_MAX(offset));	\
+ 		/* Keep allocation even after "ptr" loses scope. */	\
+-		asm volatile("" : "=o"(*ptr) :: "memory");		\
++		asm volatile("" :: "r"(ptr) : "memory");		\
+ 	}								\
+ } while (0)
+ 
