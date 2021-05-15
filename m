@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F7CC3819FA
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 18:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B34663819FD
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 18:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233821AbhEOQyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 12:54:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33142 "EHLO
+        id S231528AbhEOQyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 12:54:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233837AbhEOQyQ (ORCPT
+        with ESMTP id S233837AbhEOQyc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 12:54:16 -0400
+        Sat, 15 May 2021 12:54:32 -0400
+X-Greylist: delayed 63 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 15 May 2021 09:53:18 PDT
 Received: from the.earth.li (the.earth.li [IPv6:2a00:1098:86:4d:c0ff:ee:15:900d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9577DC061573
-        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 09:53:01 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55149C06174A;
+        Sat, 15 May 2021 09:53:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=earth.li;
          s=the; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:Subject
         :To:From:Date:Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=aIcp+5S94migwpwk7hlOWBhO79REWkh9/DXzBOlUrZM=; b=BXzmjYNLEjSDQ9prIuYpJOyeG1
-        48iJDUoLrlHRrhLi54HPV0E+tBiiSINNi4KMlmrHKLn6m2mp5MXkvdeUlh/oQ4JXbUfWX/0QmCCnI
-        ohLBTAzYwmv5iSR4fU8hez9kG3jepa82DVF3221Y1btUfVLDs0KCEecrRCAxp9dnYzngxYcbEYi+8
-        9LamJD2Hzx4YpUHgrQcMb3MiOieOMSFzg9UOD3CfVxwfwdZr/WHLN3U7KH8KbCHgtEyQ7tHgcQjO5
-        dKAQ6hf5KNuK0YnZ8yy2Hs82hN+Q45jxYZoaVR+LrOaKYjbuV7qQQ+0ZllW0sd0FfgB0OIMrLFyzT
-        77DUmZmA==;
+        bh=8SHldVPRB3IgRIGvdvG9IQiPYuel04QK7Wt6vmIztp4=; b=bcvBSu5hwtNHXT67Bx9UlR5Eyk
+        WPw8JXxiFyV+G8jxixsFDOSyZzb3QZZdCb2BQg0dZkpzBCu4X8cBXOoVyLIyr2R8JEAmHqdN1QUbO
+        49KGaSzYydpcXNG1uIU9CjpR9gKVpGoIhcEh/IEqbkwjyPTO9XGui85GK/vgf0C34eixgmnYzB0oB
+        gTB72Bjb5FDXjL+lWbugRZiSWQ8pd/JjuIOOLjL0RJbkFiRLJsoxcwo2Ukcims8DxNA+8YUbo+AmY
+        ang4uE4hmzPax+h2JPDN5XqrlS0h4KX4OKEdx+W7IhwTJNl5DGZstNwdxbfm88eco9/zgZWYK9x1o
+        HOK+5RNg==;
 Received: from [2001:4d48:ad59:1409:4::2] (helo=youmian.o362.us)
         by the.earth.li with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <noodles@earth.li>)
-        id 1lhxX9-0004TW-31; Sat, 15 May 2021 17:52:59 +0100
-Date:   Sat, 15 May 2021 17:52:55 +0100
+        id 1lhxXO-0004UW-Km; Sat, 15 May 2021 17:53:14 +0100
+Date:   Sat, 15 May 2021 17:53:10 +0100
 From:   Jonathan McDowell <noodles@earth.li>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
@@ -40,8 +41,8 @@ To:     Andy Gross <agross@kernel.org>,
         Ansuel Smith <ansuelsmth@gmail.com>,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 3/5] ARM: dts: qcom: Add USB port definitions to ipq806x
-Message-ID: <eeb3a0ecb669ce0d7bb1fc3f842831cfc7d5f181.1621097174.git.noodles@earth.li>
+Subject: [PATCH 4/5] ARM: dts: qcom: add L2CC and RPM for IPQ8064
+Message-ID: <bc31c86e21e56536cd537b2b31f03d0f6532e295.1621097174.git.noodles@earth.li>
 References: <cover.1621097174.git.noodles@earth.li>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -52,110 +53,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This adds the L2CC IPC resource and RPM devices to the IPQ8064 device
+tree.
+
+Tested on a Mikrotik RB3011.
+
 Signed-off-by: Jonathan McDowell <noodles@earth.li>
 ---
- arch/arm/boot/dts/qcom-ipq8064.dtsi | 88 +++++++++++++++++++++++++++++
- 1 file changed, 88 insertions(+)
+ arch/arm/boot/dts/qcom-ipq8064.dtsi | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
 diff --git a/arch/arm/boot/dts/qcom-ipq8064.dtsi b/arch/arm/boot/dts/qcom-ipq8064.dtsi
-index 582d8a59e59b..afa11acfb378 100644
+index afa11acfb378..e4e3dc59c650 100644
 --- a/arch/arm/boot/dts/qcom-ipq8064.dtsi
 +++ b/arch/arm/boot/dts/qcom-ipq8064.dtsi
-@@ -1026,6 +1026,94 @@
- 			status = "disabled";
+@@ -2,6 +2,8 @@
+ /dts-v1/;
+ 
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
++#include <dt-bindings/mfd/qcom-rpm.h>
++#include <dt-bindings/clock/qcom,rpmcc.h>
+ #include <dt-bindings/clock/qcom,gcc-ipq806x.h>
+ #include <dt-bindings/clock/qcom,lcc-ipq806x.h>
+ #include <dt-bindings/gpio/gpio.h>
+@@ -753,11 +755,38 @@
+ 			};
  		};
  
-+		hs_phy_0: hs_phy_0 {
-+			compatible = "qcom,ipq806x-usb-phy-hs";
-+			reg = <0x100f8800 0x30>;
-+			clocks = <&gcc USB30_0_UTMI_CLK>;
-+			clock-names = "ref";
-+			#phy-cells = <0>;
++		rpm: rpm@108000 {
++			compatible = "qcom,rpm-ipq8064";
++			reg = <0x108000 0x1000>;
++			qcom,ipc = <&l2cc 0x8 2>;
 +
-+			status = "disabled";
-+		};
++			interrupts = <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>,
++					<GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>,
++					<GIC_SPI 22 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "ack", "err", "wakeup";
 +
-+		ss_phy_0: ss_phy_0 {
-+			compatible = "qcom,ipq806x-usb-phy-ss";
-+			reg = <0x100f8830 0x30>;
-+			clocks = <&gcc USB30_0_MASTER_CLK>;
-+			clock-names = "ref";
-+			#phy-cells = <0>;
++			clocks = <&gcc RPM_MSG_RAM_H_CLK>;
++			clock-names = "ram";
 +
-+			status = "disabled";
-+		};
-+
-+		usb3_0: usb3@100f8800 {
-+			compatible = "qcom,dwc3", "syscon";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			reg = <0x100f8800 0x8000>;
-+			clocks = <&gcc USB30_0_MASTER_CLK>;
-+			clock-names = "core";
-+
-+			ranges;
-+
-+			resets = <&gcc USB30_0_MASTER_RESET>;
-+			reset-names = "master";
-+
-+			status = "disabled";
-+
-+			dwc3_0: dwc3@10000000 {
-+				compatible = "snps,dwc3";
-+				reg = <0x10000000 0xcd00>;
-+				interrupts = <GIC_SPI 205 IRQ_TYPE_LEVEL_HIGH>;
-+				phys = <&hs_phy_0>, <&ss_phy_0>;
-+				phy-names = "usb2-phy", "usb3-phy";
-+				dr_mode = "host";
-+				snps,dis_u3_susphy_quirk;
++			rpmcc: clock-controller {
++				compatible = "qcom,rpmcc-ipq806x", "qcom,rpmcc";
++				#clock-cells = <1>;
 +			};
 +		};
 +
-+		hs_phy_1: hs_phy_1 {
-+			compatible = "qcom,ipq806x-usb-phy-hs";
-+			reg = <0x110f8800 0x30>;
-+			clocks = <&gcc USB30_1_UTMI_CLK>;
-+			clock-names = "ref";
-+			#phy-cells = <0>;
+ 		tcsr: syscon@1a400000 {
+ 			compatible = "qcom,tcsr-ipq8064", "syscon";
+ 			reg = <0x1a400000 0x100>;
+ 		};
+ 
++		l2cc: clock-controller@2011000 {
++			compatible = "qcom,kpss-gcc", "syscon";
++			reg = <0x2011000 0x1000>;
++			clocks = <&gcc PLL8_VOTE>, <&gcc PXO_SRC>;
++			clock-names = "pll8_vote", "pxo";
++			clock-output-names = "acpu_l2_aux";
 +		};
 +
-+		ss_phy_1: ss_phy_1 {
-+			compatible = "qcom,ipq806x-usb-phy-ss";
-+			reg = <0x110f8830 0x30>;
-+			clocks = <&gcc USB30_1_MASTER_CLK>;
-+			clock-names = "ref";
-+			#phy-cells = <0>;
-+		};
-+
-+		usb3_1: usb3@110f8800 {
-+			compatible = "qcom,dwc3", "syscon";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			reg = <0x110f8800 0x8000>;
-+			clocks = <&gcc USB30_1_MASTER_CLK>;
-+			clock-names = "core";
-+
-+			ranges;
-+
-+			resets = <&gcc USB30_1_MASTER_RESET>;
-+			reset-names = "master";
-+
-+			status = "disabled";
-+
-+			dwc3_1: dwc3@11000000 {
-+				compatible = "snps,dwc3";
-+				reg = <0x11000000 0xcd00>;
-+				interrupts = <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>;
-+				phys = <&hs_phy_1>, <&ss_phy_1>;
-+				phy-names = "usb2-phy", "usb3-phy";
-+				dr_mode = "host";
-+				snps,dis_u3_susphy_quirk;
-+			};
-+		};
-+
- 		vsdcc_fixed: vsdcc-regulator {
- 			compatible = "regulator-fixed";
- 			regulator-name = "SDCC Power";
+ 		lcc: clock-controller@28000000 {
+ 			compatible = "qcom,lcc-ipq8064";
+ 			reg = <0x28000000 0x1000>;
 -- 
 2.20.1
 
