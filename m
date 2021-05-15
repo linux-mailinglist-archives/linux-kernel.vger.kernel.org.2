@@ -2,82 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59EB938199D
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 17:43:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD1323819A2
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 17:47:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232921AbhEOPox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 11:44:53 -0400
-Received: from mail-wr1-f45.google.com ([209.85.221.45]:34515 "EHLO
-        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232397AbhEOPov (ORCPT
+        id S232971AbhEOPsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 11:48:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232397AbhEOPsA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 11:44:51 -0400
-Received: by mail-wr1-f45.google.com with SMTP id r12so2057272wrp.1;
-        Sat, 15 May 2021 08:43:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aLi+q4+fITY/9vJzQNwPaaIzGyuxiBdUvBE5MpOoWqA=;
-        b=kaCtcRJISOVi5irJyVUQ/DY48QcdMP/zJlJov8oG36lvsowTd8ByHvcrFE5b2dLUH+
-         FeyrGgrsvrV/wiU7dKe6I4iJYfdjTCZIpIK0vHx/XYghNjOnK53zAqbvgVnvnjjWiV1s
-         oMhlqQiCnsLuzZzEwA5x1BlDF+LJfFrb0zmm0FldQkDOUmdHwk4kAKjcbXAE41w+irQY
-         ZGh2F4ukdlAb9RcxQnzFlyA7bu0jO5bBIjrlnXhguGh01FX/wI610iFpgrZWYEKD5w/F
-         dSb5s5gS3kHkTH6XR7IAFXRh+W/uQo63B7otSYTTRdh9ZsmTZBge3s3zgu10WRyJjrS3
-         Cjpg==
-X-Gm-Message-State: AOAM533UcG8ttl0ia234tI6TQ5r59JkOMdd/2E3XgcsFonqPCgCxzkaU
-        vPrJDZam6oeso145IUVOkQM=
-X-Google-Smtp-Source: ABdhPJxWLARebnf0UuBVKBoovk0lZhZcIw7lSCtN63JpxQfYyi3h9ZufjT6v//lLFu93+ZFZ6V40qw==
-X-Received: by 2002:a5d:59a4:: with SMTP id p4mr9857559wrr.248.1621093417758;
-        Sat, 15 May 2021 08:43:37 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id r11sm3644090wrp.46.2021.05.15.08.43.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 May 2021 08:43:37 -0700 (PDT)
-Date:   Sat, 15 May 2021 15:43:35 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     vkuznets <vkuznets@redhat.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Mohammed Gamal <mgamal@redhat.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] clocksource/drivers/hyper-v: Re-enable
- VDSO_CLOCKMODE_HVCLOCK on X86
-Message-ID: <20210515154335.lr4hrbcmt25u7m45@liuwe-devbox-debian-v2>
-References: <20210513073246.1715070-1-vkuznets@redhat.com>
- <MWHPR21MB15932C5EC2FA75D50B268951D7519@MWHPR21MB1593.namprd21.prod.outlook.com>
+        Sat, 15 May 2021 11:48:00 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 131CAC061573
+        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 08:46:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=P+RTKeX6Kja8G+tGDZBGGO6+rqjm+B03PRJo0wF1NjQ=; b=mosDPOOd0ECGyenTYSD6NCeRQj
+        31rokdyjqJlNZLCYqOwuhL5qGH5tmJlNuLAb5565ruJM54Zp8LwQsm2ba6YKoXMuuOtyEqE8HZ5Lk
+        1NGwuTCie4dgsKAI44J5+dFAYDDLXR0o5ihBjL155q2mE0NoW41dtqBnD+3tvS0GBhz1UW+i1x3QX
+        CkO/JzqrZ4FX0PVcUdELs2Zbp0pHDCSmMMRS1cMUt8OTeDSNblsQErcbWdzYfsvkx1aV2Lm9zRxtn
+        RH6vhZWmLz4cOhCn3eTsT5hxI/pP1CGi9zTeYUDXAPVk2O8wsOmszMFN5wVejFyg+60fqR+UJGMWI
+        iKibU9Ow==;
+Received: from [2601:1c0:6280:3f0::7376]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lhwUs-00CbB8-MV; Sat, 15 May 2021 15:46:34 +0000
+Subject: Re: [PATCH v3] drm/bridge/sii8620: fix dependency on extcon
+To:     Robert Foss <robert.foss@linaro.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, cw00.choi@samsung.com,
+        m.purski@samsung.com, dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        kernel test robot <lkp@intel.com>
+References: <20210419090124.153560-1-robert.foss@linaro.org>
+ <1627725d-1c7e-109f-f995-e761bb022ccc@infradead.org>
+ <d295f001-575d-f14c-b0c1-1444dd29a03e@infradead.org>
+ <75b35f2f-72bb-522a-afd8-6c26cd553588@infradead.org>
+ <CAG3jFyv5gBSG-xkQFDkQMhpqWa4-_e7GTb4pr4dJjZcNLW4ZQw@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <e8b14660-6f3f-f4d8-bee2-1aa818782663@infradead.org>
+Date:   Sat, 15 May 2021 08:46:31 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MWHPR21MB15932C5EC2FA75D50B268951D7519@MWHPR21MB1593.namprd21.prod.outlook.com>
+In-Reply-To: <CAG3jFyv5gBSG-xkQFDkQMhpqWa4-_e7GTb4pr4dJjZcNLW4ZQw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 01:29:12PM +0000, Michael Kelley wrote:
-> From: Vitaly Kuznetsov <vkuznets@redhat.com> Sent: Thursday, May 13, 2021 12:33 AM
-> > 
-> > Mohammed reports (https://bugzilla.kernel.org/show_bug.cgi?id=213029)
-> > the commit e4ab4658f1cf ("clocksource/drivers/hyper-v: Handle vDSO
-> > differences inline") broke vDSO on x86. The problem appears to be that
-> > VDSO_CLOCKMODE_HVCLOCK is an enum value in 'enum vdso_clock_mode' and
-> > '#ifdef VDSO_CLOCKMODE_HVCLOCK' branch evaluates to false (it is not
-> > a define). Use a dedicated HAVE_VDSO_CLOCKMODE_HVCLOCK define instead.
-> > 
-> > Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-> > Reported-by: Mohammed Gamal <mgamal@redhat.com>
-> > Fixes: e4ab4658f1cf ("clocksource/drivers/hyper-v: Handle vDSO differences inline")
-> > Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-[...]
+On 5/15/21 5:09 AM, Robert Foss wrote:
+> Hey Randy,
 > 
-> Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+> I missed sending out a notification, but this patch was merged into
+> drm-misc-next.
 > 
+> https://cgit.freedesktop.org/drm/drm-misc/commit/?id=08319adbdde15ef7cee1970336f63461254baa2a
 
-Applied to hyperv-fixes. Thanks.
+OK, thanks, Robert.
+
+I was mainly asking because the 0day bot sent out a build failure
+that this patch fixes, but it was dated 2021-MAY-05, so I guess I can
+just ignore it, since it is so old. :)
+
+
+> On Sat, 15 May 2021 at 07:35, Randy Dunlap <rdunlap@infradead.org> wrote:
+>>
+>> On 4/19/21 10:54 AM, Randy Dunlap wrote:
+>>> On 4/19/21 10:10 AM, Randy Dunlap wrote:
+>>>> On 4/19/21 2:01 AM, Robert Foss wrote:
+>>>>> The DRM_SIL_SII8620 kconfig has a weak `imply` dependency
+>>>>> on EXTCON, which causes issues when sii8620 is built
+>>>>> as a builtin and EXTCON is built as a module.
+>>>>>
+>>>>> The symptoms are 'undefined reference' errors caused
+>>>>> by the symbols in EXTCON not being available
+>>>>> to the sii8620 driver.
+>>>>>
+>>>>> Fixes: 688838442147 ("drm/bridge/sii8620: use micro-USB cable detection logic to detect MHL")
+>>>>> Signed-off-by: Robert Foss <robert.foss@linaro.org>
+>>>>> Reported-by: kernel test robot <lkp@intel.com>
+>>>>> ---
+>>>>>
+>>>>> LKP reported issue:
+>>>>> https://lore.kernel.org/lkml/202104040604.SSTe2Cxf-lkp@intel.com/
+>>>>>
+>>>>>
+>>>>> Changes since v1:
+>>>>>  - Fix typo on comment
+>>>>>
+>>>>> Changes since v2:
+>>>>>  - Randy: Changed from `depends` to `select`
+>>>>
+>>>> I don't know why my name is on that. I didn't
+>>>> suggest any change -- I just reported that v2
+>>>> had a problem.
+>>>>
+>>>>
+>>>>>
+>>>>>
+>>>>>  drivers/gpu/drm/bridge/Kconfig | 2 +-
+>>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
+>>>>> index 22a467abd3e9..70402da5cc70 100644
+>>>>> --- a/drivers/gpu/drm/bridge/Kconfig
+>>>>> +++ b/drivers/gpu/drm/bridge/Kconfig
+>>>>> @@ -169,7 +169,7 @@ config DRM_SIL_SII8620
+>>>>>     tristate "Silicon Image SII8620 HDMI/MHL bridge"
+>>>>>     depends on OF
+>>>>>     select DRM_KMS_HELPER
+>>>>> -   imply EXTCON
+>>>>> +   select EXTCON
+>>>>>     depends on RC_CORE || !RC_CORE
+>>>>>     help
+>>>>>       Silicon Image SII8620 HDMI/MHL bridge chip driver.
+>>>>
+>>>>
+>>>> Thanks. Works For Me.
+>>>>
+>>>> Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+>>>
+>>> Actually I can upgrade that to:
+>>>
+>>> Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+>>
+>> Hi,
+>> Is anyone merging this patch?
+>>
+>> thanks.
+>> --
+
+
+-- 
+~Randy
+
