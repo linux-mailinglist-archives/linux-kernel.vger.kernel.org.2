@@ -2,81 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEF02381BBA
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 01:19:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD400381BBE
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 01:36:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231286AbhEOXUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 19:20:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56254 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229967AbhEOXUk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 19:20:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BEA761289;
-        Sat, 15 May 2021 23:19:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621120766;
-        bh=1KA+yRG7lNb2frG45ynfDXbIDn18ohy7oZkqwoBxdL0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=lp4IcVtSFGOnzvPd+SzPr2z7lt/owAJpamTC0AsPiqXUGPa80gr6lSGr90LGUpRmJ
-         4b0B22jMUt38QeV9WIujHI5ofU1HGk5DbXmIcSdOyC8cDLO61CG0UnJp3USl/8AOVH
-         gH8lhLKeoakmB885Xio3iD5rha4xRddoNdQjxspon+1CbArRlsqA5Ap3SmUp+cpk3t
-         3IQuAwo4lIijuEJCi9bWWCBsj8FGLWy5tVHZs+IxUbLFWsWsKGenPJx3B/c5SCfLMM
-         5FzjMJa9u5U79iH1NtfJWw82lVRbKWgLFOAsfdUYTewVAWhVJZi+Bljq442imIBAPh
-         //bWH0cQeapcA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 344105C064E; Sat, 15 May 2021 16:19:26 -0700 (PDT)
-Date:   Sat, 15 May 2021 16:19:26 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, ming.lei@redhat.com, riel@fb.com,
-        jweiner@fb.com, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, iamjoonsoo.kim@lge.com, glittao@gmail.com
-Subject: Re: [BUG] Shudown-time lockdep splat in next-20210514
-Message-ID: <20210515231926.GB4441@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210515204622.GA2672367@paulmck-ThinkPad-P17-Gen-1>
- <a9e5c5c4-08db-47bf-cb0a-2a90bd747c77@suse.cz>
+        id S231217AbhEOXgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 19:36:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229659AbhEOXgw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 May 2021 19:36:52 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEC7FC061573
+        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 16:35:37 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FjMFy6pSJz9sW5;
+        Sun, 16 May 2021 09:35:34 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1621121735;
+        bh=cB4uQsyeluAvOPHPhJHcqQT2zJO+FjnOdWi3nB1+Kqs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=oIgBD3BiESfDwLI70prK2WkcPMJXlbHTQHVtr6lO0ypwwz1eTh1Xs8Xy98UXsFLAm
+         v9/VaWJXVof8K1iFA9lHOIeDYnOhn3u7o2qdumpu3JaEP7SQq9yaa78si4c6wjArsK
+         /9tmwMTNeuhiELupk4d8/zZO8SHU1SVaP+PZXA1LxktZa98EA9PgVhlD3MeGT3t2do
+         ZK5rHbRRbaS/SD4YOjCN08zQyA28go74czb0JHw/eCIME8tA35DEbp5YPrjewFI0ta
+         41Lwb9GIjMWSPlX5NuKFDFp4KaVvRvyPU26PUH/U2asWRvpQHtuhbMgTirms3l0XtY
+         9IwZFQqOD8rew==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     christophe.leroy@csgroup.eu, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, npiggin@gmail.com
+Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.13-3 tag
+Date:   Sun, 16 May 2021 09:35:30 +1000
+Message-ID: <871ra7lge5.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a9e5c5c4-08db-47bf-cb0a-2a90bd747c77@suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 15, 2021 at 11:09:13PM +0200, Vlastimil Babka wrote:
-> On 5/15/21 10:46 PM, Paul E. McKenney wrote:
-> > Hello!
-> > 
-> > I am seeing the following lockdep splat in next-20210514.  It happens
-> > at shutdown time in all rcutorture scenarios that enable lockdep.  It
-> > happens consistently on 2-hour runs, and I am trying it on shorter runs.
-> > If it reproduces nicely, I will try bisection.
-> > 
-> > In the meantime, does this ring a bell for anyone?
-> 
-> Hm, I think it will be
-> ad36bafb3bcdf mm/slub: use stackdepot to save stack trace in objects
-> 
-> can you try this please?
-> 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 6b896b8c36f0..04824dae2e32 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -623,7 +623,7 @@ static void set_track(struct kmem_cache *s, void *object,
->  
->  	if (addr) {
->  #ifdef CONFIG_STACKDEPOT
-> -		p->handle = save_stack_depot_trace(GFP_KERNEL);
-> +		p->handle = save_stack_depot_trace(GFP_NOWAIT);
->  #endif
->  		p->addr = addr;
->  		p->cpu = smp_processor_id();
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
 
-Works like a charm!
+Hi Linus,
 
-Tested-by: Paul E. McKenney <paulmck@kernel.org>
+Please pull some more powerpc fixes for 5.13:
 
-							Thanx, Paul
+The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
+
+  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
+
+are available in the git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/po=
+werpc-5.13-3
+
+for you to fetch changes up to c6ac667b07996929835b512de0e9a988977e6abc:
+
+  powerpc/64e/interrupt: Fix nvgprs being clobbered (2021-05-14 17:28:54 +1=
+000)
+
+- ------------------------------------------------------------------
+powerpc fixes for 5.13 #3
+
+ - Fix a regression in the conversion of the 64-bit BookE interrupt entry t=
+o C.
+
+ - Fix KVM hosts running with the hash MMU since the recent KVM gfn changes.
+
+ - Fix a deadlock in our paravirt spinlocks when hcall tracing is enabled.
+
+ - Several fixes for oopses in our runtime code patching for security mitig=
+ations.
+
+ - A couple of minor fixes for the recent conversion of 32-bit interrupt en=
+try/exit to C.
+
+ - Fix __get_user() causing spurious crashes in sigreturn due to a bad inli=
+ne asm
+   constraint, spotted with GCC 11.
+
+ - A fix for the way we track IRQ masking state vs NMI interrupts when usin=
+g the new scv
+   system call entry path.
+
+ - A couple more minor fixes.
+
+Thanks to: C=C3=A9dric Le Goater, Christian Zigotzky, Christophe Leroy, Nav=
+een N. Rao, Nicholas
+Piggin Paul Menzel, Sean Christopherson.
+
+- ------------------------------------------------------------------
+Christophe Leroy (5):
+      powerpc/interrupts: Fix kuep_unlock() call
+      powerpc/syscall: Calling kuap_save_and_lock() is wrong
+      powerpc/uaccess: Fix __get_user() with CONFIG_CC_HAS_ASM_GOTO_OUTPUT
+      powerpc/signal: Fix possible build failure with unsafe_copy_fpr_{to/f=
+rom}_user
+      powerpc/legacy_serial: Fix UBSAN: array-index-out-of-bounds
+
+Michael Ellerman (5):
+      KVM: PPC: Book3S HV: Fix kvm_unmap_gfn_range_hv() for Hash MMU
+      powerpc/64s: Fix crashes when toggling stf barrier
+      powerpc/64s: Fix crashes when toggling entry flush barrier
+      powerpc/64s: Fix entry flush patching w/strict RWX & hash
+      powerpc/64s: Fix stf mitigation patching w/strict RWX & hash
+
+Nicholas Piggin (6):
+      powerpc/pseries: Fix hcall tracing recursion in pv queued spinlocks
+      powerpc/pseries: Don't trace hcall tracing wrapper
+      powerpc/pseries: use notrace hcall variant for H_CEDE idle
+      powerpc/pseries: warn if recursing into the hcall tracing code
+      powerpc/64s: Make NMI record implicitly soft-masked code as irqs disa=
+bled
+      powerpc/64e/interrupt: Fix nvgprs being clobbered
+
+
+ arch/powerpc/include/asm/hvcall.h         |   3 +
+ arch/powerpc/include/asm/interrupt.h      |   9 +-
+ arch/powerpc/include/asm/paravirt.h       |  22 +++-
+ arch/powerpc/include/asm/plpar_wrappers.h |   6 +-
+ arch/powerpc/include/asm/uaccess.h        |   2 +-
+ arch/powerpc/kernel/exceptions-64e.S      |  38 ++++---
+ arch/powerpc/kernel/interrupt.c           |   4 +-
+ arch/powerpc/kernel/legacy_serial.c       |   7 +-
+ arch/powerpc/kernel/signal.h              |   4 +-
+ arch/powerpc/kvm/book3s_64_mmu_hv.c       |   2 +-
+ arch/powerpc/lib/feature-fixups.c         | 114 +++++++++++++++-----
+ arch/powerpc/platforms/pseries/hvCall.S   |  10 ++
+ arch/powerpc/platforms/pseries/lpar.c     |  29 +++--
+ 13 files changed, 175 insertions(+), 75 deletions(-)
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmCgWe8ACgkQUevqPMjh
+pYDZqg//RzF68ywTKG51T3JmOjVfvkptpEWZOQ52LCwpMQYvMQc+CSnBjEFoNyuS
+bIA0xlg0/1xBXNMtPVgNVk7WgDa/yvahVlX3rIuWt4Uhqv6u6Z1fw7aYaGIDH3b2
+akRvSvVWYyv87LlMEtxDOHncH1u8Q6E3YW4JM6eaQwjD2XqqeiTYKXUaZATTmepc
+GruEdNK5239LkmxMnyFvxCDDyHb8YyCZORHp/l4U+l005/dkM7ZyzHSA1LMekVSB
+LrW5q/KjdQW3EC2WDLijSCcshWujOf2MGvaZkmB/TvPtqxsOf3tLZAeEfaObbUrX
+6mqe93CtUk1CRNECkqCxF/sO5wq2SJmKx1XTfVR2CvDDg1ZmisesiRHtYk6Dl2Bw
+84+5IKwthgTauib3YKyoqXUpfIL8j8qg3M/9WVI6LG+ujPoSD0whPHdqTymqFfwA
+ONDT4cSDvBMAtw63cVnWEDgqdrAwTFAr0i+7loWkKeKJv9mxxfGX7MgiglQobDys
+xGAOjLnetsD4+JWJMqqrm0ilAKDb+m4stvU7bo/gpWcs6kvxDt2JCOEbJCoqujzQ
+B0Tl9H6cyoxhfEnZ7AKzQrGdFg+zUNQ0w5AWslriE5OZcq6vKlgYyVQFeX7t+6vb
+Me/YIEBbhPefVZdDD4KZp49PDw+5DgqVJgvMpsrqaRoorZEHni0=3D
+=3DVnK3
+-----END PGP SIGNATURE-----
