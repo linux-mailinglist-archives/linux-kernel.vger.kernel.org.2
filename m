@@ -2,152 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D9A9381B25
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 23:07:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBEEB381B27
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 23:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235064AbhEOVIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 17:08:43 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:33025 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229938AbhEOVIl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 17:08:41 -0400
-Received: from [IPv6:2601:646:8602:8be1:e512:4e99:5d16:dcc6] ([IPv6:2601:646:8602:8be1:e512:4e99:5d16:dcc6])
-        (authenticated bits=0)
-        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14FL7ANU3374296
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Sat, 15 May 2021 14:07:12 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14FL7ANU3374296
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2021042801; t=1621112832;
-        bh=ECT3h7vQpngfn25c/QoKWtsYhzETuPXg6kMhVwqDoE0=;
-        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
-        b=crxNoHPwLXC/E/Tx9ql6mZSrnh+eZC8qeB1jM/DoPxaFfZSlQNtydPnIdVCgOEOqM
-         h9q+p+pLFJgFssFmIeSbgIyl5DckJ2ZeMIZre+pnC9wH7krpTTd0aVlqvQpbOSCCA7
-         Ech/YmYujBzf0iWn6wSXZE92KxIbb4mhCrtAg76EYXebQHoUdKBVG6IwgvAf2N3Ec4
-         FuAlI1iFpRC0UyqXp9vPCcp+mSmQPsjUmsmdxQJrQybJNF4t7hIih+IcAnz99eH4Sq
-         M3zBTVByBoy/Tq+/Orfx1W/KeWYCq+E6Ylp6KSEQD9/zkQZ7UAg0FhRHDKHhhoujvZ
-         GmmOHWoksdgpg==
-Date:   Sat, 15 May 2021 14:07:01 -0700
-User-Agent: K-9 Mail for Android
-In-Reply-To: <2ebf1bac-93c1-4b7f-add4-4ede3c149b52@www.fastmail.com>
-References: <20210515011015.2707542-1-hpa@zytor.com> <20210515011015.2707542-5-hpa@zytor.com> <f2e4c3c3-08c3-eae1-803a-aa85d7e75ca0@kernel.org> <C1CB9B19-185F-469E-A59C-ECAA95AAC279@zytor.com> <2ebf1bac-93c1-4b7f-add4-4ede3c149b52@www.fastmail.com>
+        id S235076AbhEOVKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 17:10:51 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40842 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229938AbhEOVKq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 May 2021 17:10:46 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C2433AD09;
+        Sat, 15 May 2021 21:09:31 +0000 (UTC)
+Subject: Re: [BUG] Shudown-time lockdep splat in next-20210514
+To:     paulmck@kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     akpm@linux-foundation.org, ming.lei@redhat.com, riel@fb.com,
+        jweiner@fb.com, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com, glittao@gmail.com
+References: <20210515204622.GA2672367@paulmck-ThinkPad-P17-Gen-1>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <a9e5c5c4-08db-47bf-cb0a-2a90bd747c77@suse.cz>
+Date:   Sat, 15 May 2021 23:09:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v3 4/4] x86/syscall: use int everywhere for system call numbers
-To:     Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>
-CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-From:   "H. Peter Anvin" <hpa@zytor.com>
-Message-ID: <BC75A7E8-8870-4E71-9F81-0309CF4853FB@zytor.com>
+In-Reply-To: <20210515204622.GA2672367@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pretty soon you'll have the whole entry code rewritten back into assembly =
-=F0=9F=98=86
+On 5/15/21 10:46 PM, Paul E. McKenney wrote:
+> Hello!
+> 
+> I am seeing the following lockdep splat in next-20210514.  It happens
+> at shutdown time in all rcutorture scenarios that enable lockdep.  It
+> happens consistently on 2-hour runs, and I am trying it on shorter runs.
+> If it reproduces nicely, I will try bisection.
+> 
+> In the meantime, does this ring a bell for anyone?
 
-On May 15, 2021 11:48:22 AM PDT, Andy Lutomirski <luto@kernel=2Eorg> wrote=
-:
->
->
->On Sat, May 15, 2021, at 10:42 AM, H=2E Peter Anvin wrote:
->> Answer: I don't think it is a good idea to have the system can table
->offset =2E=2E=2E it seems like an unnecessary debugging headache=2E
->
->Emit it in asm:
->
->table_minus_one:
-> =2Equad not_a_syscall
->table:
-> (real table here)
->
->/me runs=2E
->
->
->
->>=20
->> On May 15, 2021 8:37:12 AM PDT, Andy Lutomirski <luto@kernel=2Eorg
-><mailto:luto%40kernel=2Eorg>> wrote:
->> >On 5/14/21 6:10 PM, H=2E Peter Anvin wrote:
->> >> From: "H=2E Peter Anvin (Intel)" <hpa@zytor=2Ecom
-><mailto:hpa%40zytor=2Ecom>>
->> >>=20
->> >> System call numbers are defined as int, so use int everywhere for
->> >> system call numbers=2E This patch is strictly a cleanup; it should
->not
->> >> change anything user visible; all ABI changes have been done in
->the
->> >> preceeding patches=2E
->> >>=20
->> >> Signed-off-by: H=2E Peter Anvin (Intel) <hpa@zytor=2Ecom
-><mailto:hpa%40zytor=2Ecom>>
->> >> ---
->> >>  arch/x86/entry/common=2Ec        | 93
->> >++++++++++++++++++++++++----------
->> >>  arch/x86/include/asm/syscall=2Eh |  2 +-
->> >>  2 files changed, 66 insertions(+), 29 deletions(-)
->> >>=20
->> >> diff --git a/arch/x86/entry/common=2Ec b/arch/x86/entry/common=2Ec
->> >> index f51bc17262db=2E=2E714804f0970c 100644
->> >> --- a/arch/x86/entry/common=2Ec
->> >> +++ b/arch/x86/entry/common=2Ec
->> >> @@ -36,49 +36,87 @@
->> >>  #include <asm/irq_stack=2Eh>
->> >> =20
->> >>  #ifdef CONFIG_X86_64
->> >> -__visible noinstr void do_syscall_64(struct pt_regs *regs,
->unsigned
->> >long nr)
->> >> +
->> >> +static __always_inline bool do_syscall_x64(struct pt_regs *regs,
->int
->> >nr)
->> >> +{
->> >> + /*
->> >> + * Convert negative numbers to very high and thus out of range
->> >> + * numbers for comparisons=2E Use unsigned long to slightly
->> >> + * improve the array_index_nospec() generated code=2E
->> >> + */
->> >> + unsigned long unr =3D nr;
->> >> +
->> >> + if (likely(unr < NR_syscalls)) {
->> >> + unr =3D array_index_nospec(unr, NR_syscalls);
->> >> + regs->ax =3D sys_call_table[unr](regs);
->> >> + return true;
->> >> + }
->> >> + return false;
->> >> +}
->> >
->> >How much do you like micro-optimization?  You could be silly^Wclever
->> >and
->> >add a new syscall handler:
->> >
->> >long skip_syscall(struct pt_regs *regs)
->> >{
->> > return regs->ax;
->> >}
->> >
->> >and prepend this to the syscall tables -- it would be a sort-of-real
->> >syscall -1=2E  Then the call sequence becomes:
->> >
->> >int adjusted_nr =3D nr + 1 (or nr - x32bit + 1);
->> >
->> >if (likely(nr < NR_adjusted_syscalls)) {
->> >   unr =3D array_index_nospec=2E=2E=2E;
->> >   regs->ax =3D sys_call_table[unr](regs);  /* might be a no-op! */
->> >} else {
->> >    regs->ax =3D -ENOSYS;
->> >}
->> >
->> >which removes a branch from the fast path=2E
->>=20
->> --=20
->> Sent from my Android device with K-9 Mail=2E Please excuse my brevity=
-=2E
->>=20
+Hm, I think it will be
+ad36bafb3bcdf mm/slub: use stackdepot to save stack trace in objects
 
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
+can you try this please?
+
+diff --git a/mm/slub.c b/mm/slub.c
+index 6b896b8c36f0..04824dae2e32 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -623,7 +623,7 @@ static void set_track(struct kmem_cache *s, void *object,
+ 
+ 	if (addr) {
+ #ifdef CONFIG_STACKDEPOT
+-		p->handle = save_stack_depot_trace(GFP_KERNEL);
++		p->handle = save_stack_depot_trace(GFP_NOWAIT);
+ #endif
+ 		p->addr = addr;
+ 		p->cpu = smp_processor_id();
+ 
+> 							Thanx, Paul
+> 
+> 
+> =====================================================
+> WARNING: HARDIRQ-safe -> HARDIRQ-unsafe lock order detected
+> 5.13.0-rc1-next-20210514 #1587 Not tainted
+> -----------------------------------------------------
+> torture_shutdow/112 [HC0[0]:SC0[0]:HE0:SE1] is trying to acquire:
+> ffffffffaad7ac20 (fs_reclaim){+.+.}-{0:0}, at: fs_reclaim_acquire+0x7f/0xd0
+> 
+> and this task is already holding:
+> ffffa37a02ab4098 (&n->list_lock){-.-.}-{2:2}, at: free_debug_processing+0x3a/0x230
+> which would create a new lock dependency:
+>  (&n->list_lock){-.-.}-{2:2} -> (fs_reclaim){+.+.}-{0:0}
+> 
+> but this new dependency connects a HARDIRQ-irq-safe lock:
+>  (&n->list_lock){-.-.}-{2:2}
+> 
+> ... which became HARDIRQ-irq-safe at:
+>   lock_acquire+0xb5/0x3a0
+>   _raw_spin_lock+0x27/0x40
+>   deactivate_slab.isra.90+0x3c2/0x5d0
+>   flush_cpu_slab+0x31/0x50
+>   flush_smp_call_function_queue+0x132/0x1d0
+>   __sysvec_call_function_single+0x3e/0x190
+>   sysvec_call_function_single+0x61/0x80
+>   asm_sysvec_call_function_single+0x12/0x20
+>   default_idle+0xb/0x10
+>   default_idle_call+0x66/0x1e0
+>   do_idle+0x204/0x2a0
+>   cpu_startup_entry+0x14/0x20
+>   secondary_startup_64_no_verify+0xc2/0xcb
+> 
+> to a HARDIRQ-irq-unsafe lock:
+>  (fs_reclaim){+.+.}-{0:0}
+> 
+> ... which became HARDIRQ-irq-unsafe at:
+> ...
+>   lock_acquire+0xb5/0x3a0
+>   fs_reclaim_acquire+0x9f/0xd0
+>   kmem_cache_alloc_node_trace+0x2f/0x230
+>   alloc_worker+0x18/0x50
+>   init_rescuer.part.33+0xf/0x90
+>   workqueue_init+0x1fb/0x2db
+>   kernel_init_freeable+0x10c/0x26f
+>   kernel_init+0x5/0xfe
+>   ret_from_fork+0x22/0x30
+> 
+> other info that might help us debug this:
+> 
+>  Possible interrupt unsafe locking scenario:
+> 
+>        CPU0                    CPU1
+>        ----                    ----
+>   lock(fs_reclaim);
+>                                local_irq_disable();
+>                                lock(&n->list_lock);
+>                                lock(fs_reclaim);
+>   <Interrupt>
+>     lock(&n->list_lock);
+> 
+>  *** DEADLOCK ***
+> 
+> 1 lock held by torture_shutdow/112:
+>  #0: ffffa37a02ab4098 (&n->list_lock){-.-.}-{2:2}, at: free_debug_processing+0x3a/0x230
+> 
+> the dependencies between HARDIRQ-irq-safe lock and the holding lock:
+> -> (&n->list_lock){-.-.}-{2:2} {
+>    IN-HARDIRQ-W at:
+>                     lock_acquire+0xb5/0x3a0
+>                     _raw_spin_lock+0x27/0x40
+>                     deactivate_slab.isra.90+0x3c2/0x5d0
+>                     flush_cpu_slab+0x31/0x50
+>                     flush_smp_call_function_queue+0x132/0x1d0
+>                     __sysvec_call_function_single+0x3e/0x190
+>                     sysvec_call_function_single+0x61/0x80
+>                     asm_sysvec_call_function_single+0x12/0x20
+>                     default_idle+0xb/0x10
+>                     default_idle_call+0x66/0x1e0
+>                     do_idle+0x204/0x2a0
+>                     cpu_startup_entry+0x14/0x20
+>                     secondary_startup_64_no_verify+0xc2/0xcb
+>    IN-SOFTIRQ-W at:
+>                     lock_acquire+0xb5/0x3a0
+>                     _raw_spin_lock_irqsave+0x30/0x50
+>                     __slab_free+0xc8/0x4a0
+>                     kmem_cache_free+0x2a8/0x310
+>                     rcu_do_batch+0x18e/0x4d0
+>                     rcu_core+0x2c7/0x470
+>                     __do_softirq+0xca/0x409
+>                     irq_exit_rcu+0xa9/0xb0
+>                     sysvec_apic_timer_interrupt+0x66/0x80
+>                     asm_sysvec_apic_timer_interrupt+0x12/0x20
+>                     default_idle+0xb/0x10
+>                     default_idle_call+0x66/0x1e0
+>                     do_idle+0x204/0x2a0
+>                     cpu_startup_entry+0x14/0x20
+>                     start_kernel+0x6ab/0x6d2
+>                     secondary_startup_64_no_verify+0xc2/0xcb
+>    INITIAL USE at:
+>                    lock_acquire+0xb5/0x3a0
+>                    _raw_spin_lock+0x27/0x40
+>                    get_partial_node.isra.92.part.93+0x47/0x300
+>                    ___slab_alloc+0x2a1/0x6e0
+>                    kmem_cache_alloc_node+0x1bc/0x230
+>                    __kmem_cache_create+0x1b3/0x430
+>                    create_boot_cache+0x70/0x93
+>                    kmem_cache_init+0xd9/0x15f
+>                    start_kernel+0x3e6/0x6d2
+>                    secondary_startup_64_no_verify+0xc2/0xcb
+>  }
+>  ... key      at: [<ffffffffabfa6370>] __key.50785+0x0/0x10
+>  ... acquired at:
+>    lock_acquire+0xb5/0x3a0
+>    fs_reclaim_acquire+0x9f/0xd0
+>    __alloc_pages+0xed/0x330
+>    stack_depot_save+0x3a1/0x470
+>    save_stack_depot_trace.constprop.100+0x3b/0x60
+>    set_track+0x27/0x80
+>    free_debug_processing+0x169/0x230
+>    __slab_free+0x262/0x4a0
+>    kmem_cache_free+0x2a8/0x310
+>    rcu_torture_cleanup.cold.34+0x186/0x41d
+>    torture_shutdown+0x101/0x1f0
+>    kthread+0x122/0x140
+>    ret_from_fork+0x22/0x30
+> 
+> 
+> the dependencies between the lock to be acquired
+>  and HARDIRQ-irq-unsafe lock:
+> -> (fs_reclaim){+.+.}-{0:0} {
+>    HARDIRQ-ON-W at:
+>                     lock_acquire+0xb5/0x3a0
+>                     fs_reclaim_acquire+0x9f/0xd0
+>                     kmem_cache_alloc_node_trace+0x2f/0x230
+>                     alloc_worker+0x18/0x50
+>                     init_rescuer.part.33+0xf/0x90
+>                     workqueue_init+0x1fb/0x2db
+>                     kernel_init_freeable+0x10c/0x26f
+>                     kernel_init+0x5/0xfe
+>                     ret_from_fork+0x22/0x30
+>    SOFTIRQ-ON-W at:
+>                     lock_acquire+0xb5/0x3a0
+>                     fs_reclaim_acquire+0x9f/0xd0
+>                     kmem_cache_alloc_node_trace+0x2f/0x230
+>                     alloc_worker+0x18/0x50
+>                     init_rescuer.part.33+0xf/0x90
+>                     workqueue_init+0x1fb/0x2db
+>                     kernel_init_freeable+0x10c/0x26f
+>                     kernel_init+0x5/0xfe
+>                     ret_from_fork+0x22/0x30
+>    INITIAL USE at:
+>                    lock_acquire+0xb5/0x3a0
+>                    fs_reclaim_acquire+0x9f/0xd0
+>                    kmem_cache_alloc_node_trace+0x2f/0x230
+>                    alloc_worker+0x18/0x50
+>                    init_rescuer.part.33+0xf/0x90
+>                    workqueue_init+0x1fb/0x2db
+>                    kernel_init_freeable+0x10c/0x26f
+>                    kernel_init+0x5/0xfe
+>                    ret_from_fork+0x22/0x30
+>  }
+>  ... key      at: [<ffffffffaad7ac20>] __fs_reclaim_map+0x0/0x28
+>  ... acquired at:
+>    lock_acquire+0xb5/0x3a0
+>    fs_reclaim_acquire+0x9f/0xd0
+>    __alloc_pages+0xed/0x330
+>    stack_depot_save+0x3a1/0x470
+>    save_stack_depot_trace.constprop.100+0x3b/0x60
+>    set_track+0x27/0x80
+>    free_debug_processing+0x169/0x230
+>    __slab_free+0x262/0x4a0
+>    kmem_cache_free+0x2a8/0x310
+>    rcu_torture_cleanup.cold.34+0x186/0x41d
+>    torture_shutdown+0x101/0x1f0
+>    kthread+0x122/0x140
+>    ret_from_fork+0x22/0x30
+> 
+> 
+> stack backtrace:
+> CPU: 0 PID: 112 Comm: torture_shutdow Not tainted 5.13.0-rc1-next-20210514 #1587
+> Hardware name: Red Hat KVM/RHEL-AV, BIOS 1.13.0-2.module_el8.4.0+547+a85d02ba 04/01/2014
+> Call Trace:
+>  dump_stack_lvl+0x6a/0x88
+>  check_irq_usage.cold.80+0x2cd/0x2d2
+>  ? trace_event_raw_event_lock+0xf0/0xf0
+>  ? check_path.constprop.61+0x24/0x40
+>  ? check_noncircular+0x7e/0x110
+>  ? __lock_acquire+0x13a0/0x23c0
+>  __lock_acquire+0x13a0/0x23c0
+>  lock_acquire+0xb5/0x3a0
+>  ? fs_reclaim_acquire+0x7f/0xd0
+>  ? __lock_acquire+0xa8e/0x23c0
+>  ? get_stack_info_noinstr+0x12/0xe0
+>  ? unwind_next_frame+0x4a3/0x6a0
+>  fs_reclaim_acquire+0x9f/0xd0
+>  ? fs_reclaim_acquire+0x7f/0xd0
+>  __alloc_pages+0xed/0x330
+>  stack_depot_save+0x3a1/0x470
+>  ? rcu_torture_cleanup.cold.34+0x186/0x41d
+>  save_stack_depot_trace.constprop.100+0x3b/0x60
+>  ? kmem_cache_free+0x2a8/0x310
+>  ? rcu_torture_cleanup.cold.34+0x186/0x41d
+>  ? torture_shutdown+0x101/0x1f0
+>  ? kthread+0x122/0x140
+>  ? ret_from_fork+0x22/0x30
+>  set_track+0x27/0x80
+>  free_debug_processing+0x169/0x230
+>  ? rcu_torture_cleanup.cold.34+0x186/0x41d
+>  ? rcu_torture_cleanup.cold.34+0x186/0x41d
+>  __slab_free+0x262/0x4a0
+>  ? vprintk_emit+0x89/0x270
+>  ? torture_onoff+0x260/0x260
+>  ? rcu_torture_cleanup.cold.34+0x186/0x41d
+>  kmem_cache_free+0x2a8/0x310
+>  ? torture_onoff+0x260/0x260
+>  rcu_torture_cleanup.cold.34+0x186/0x41d
+>  ? wait_woken+0x80/0x80
+>  ? torture_onoff+0x260/0x260
+>  torture_shutdown+0x101/0x1f0
+>  kthread+0x122/0x140
+>  ? kthread_park+0x80/0x80
+>  ret_from_fork+0x22/0x30
+> 
+
