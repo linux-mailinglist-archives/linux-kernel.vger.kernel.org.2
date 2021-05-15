@@ -2,221 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 513673814F2
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 03:36:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB3B3814F8
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 03:44:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234788AbhEOBhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 21:37:40 -0400
-Received: from mga09.intel.com ([134.134.136.24]:62774 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232532AbhEOBhj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 21:37:39 -0400
-IronPort-SDR: 0QxwWv9J7cwi8m5uE9IzAeW1QkDeCBKvOWPXeP+yUALT8T5aaO8hI/g3VPhDolN6K5jQCI6TXf
- D+ZGloNlMWiQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9984"; a="200306176"
-X-IronPort-AV: E=Sophos;i="5.82,300,1613462400"; 
-   d="scan'208";a="200306176"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 May 2021 18:36:27 -0700
-IronPort-SDR: 7OKlwbjZ1GCQtGwnNEhRjnLA4iXXTic1AYXefCSMCYxgZ8Wv0FsvAZAf0t/cIyZ6+oIdW2Eg0q
- CnQn6Dgtl02A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,300,1613462400"; 
-   d="scan'208";a="539199083"
-Received: from lkp-server01.sh.intel.com (HELO ddd90b05c979) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 14 May 2021 18:36:25 -0700
-Received: from kbuild by ddd90b05c979 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lhjE8-0000yA-Vn; Sat, 15 May 2021 01:36:24 +0000
-Date:   Sat, 15 May 2021 09:35:53 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:timers/urgent] BUILD SUCCESS
- 3486d2c9be652a31033363bdd50391b0c8a8fe21
-Message-ID: <609f2579.YTTYe2WyPUQaot7V%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S234833AbhEOBpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 21:45:39 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:52505 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234795AbhEOBpd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 21:45:33 -0400
+Received: from tazenda.hos.anvin.org ([IPv6:2601:646:8602:8be0:7285:c2ff:fefb:fd4])
+        (authenticated bits=0)
+        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14F1i7ag3212185
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+        Fri, 14 May 2021 18:44:14 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14F1i7ag3212185
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2021042801; t=1621043054;
+        bh=6yaq3RCn88akOzl/EH0vyEltmipjUFrKc6rSVfYk4tc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=gxVlWOOSuYgvzkD/cvFUs4suAqbPtObe8PDXwpoGkeIaTSMCXeeM7dgMENAR4vy/r
+         i8b8MrbX+mcS40WQJDptkPHsh6FDP6LVoV1YGZwf+Imcb8V2WMUyaIlToJLPUXnc7M
+         PRObUTJuEryDabsqIekoJxsNKpM36YHMgbB7qhE0JS1uk8IhzqhS9scNBCzGAlrkCc
+         2TlM96ua70G++AcCdmI8rHziLy2BUMDpioAkHD3g8tG6iJzaHJxSDG1Xpk7GpB/sw5
+         7EXhV9sqElLmOpVhTpylf64zCOlH4h97IT4WYrPJeEUZYoOWYlqjJqJ1GkUI5xKl0Y
+         f0WOEVl/niosA==
+From:   "H. Peter Anvin" <hpa@zytor.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 0/8] x86/irq: trap and interrupt cleanups
+Date:   Fri, 14 May 2021 18:43:52 -0700
+Message-Id: <20210515014400.2999028-1-hpa@zytor.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers/urgent
-branch HEAD: 3486d2c9be652a31033363bdd50391b0c8a8fe21  clocksource/drivers/hyper-v: Re-enable VDSO_CLOCKMODE_HVCLOCK on X86
+From: "H. Peter Anvin (Intel)" <hpa@zytor.com>
 
-elapsed time: 725m
+A collection of trap/interrupt-related patches, almost all
+cleanups. It does remove a modest amount of code (39 lines.) The only
+patches that should have any possible effect at all are:
 
-configs tested: 159
-configs skipped: 2
+7/8 - x86/irq: WARN_ONCE() if irq_move_cleanup is called on a pending interrupt
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+	This condition is believed to be impossible after many
+	improvements to the IRQ vector allocation code since this
+	function was written. Per discussion with tglx, add a
+	WARN_ONCE() if this happens as a first step towards excising
+	this hack.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                         tb0219_defconfig
-ia64                          tiger_defconfig
-powerpc                      acadia_defconfig
-powerpc                 mpc836x_mds_defconfig
-sh                                  defconfig
-arc                              allyesconfig
-powerpc                 mpc8313_rdb_defconfig
-m68k                        mvme16x_defconfig
-m68k                       m5249evb_defconfig
-arc                          axs103_defconfig
-mips                           mtx1_defconfig
-arm                           stm32_defconfig
-mips                           ip32_defconfig
-arm                           sunxi_defconfig
-mips                        bcm63xx_defconfig
-powerpc                 mpc836x_rdk_defconfig
-sh                          rsk7264_defconfig
-arm                         lpc32xx_defconfig
-powerpc                 mpc834x_mds_defconfig
-sh                         ecovec24_defconfig
-xtensa                  cadence_csp_defconfig
-powerpc                 mpc832x_rdb_defconfig
-powerpc                       ppc64_defconfig
-arm                   milbeaut_m10v_defconfig
-mips                          rb532_defconfig
-arm                          ixp4xx_defconfig
-um                                  defconfig
-openrisc                         alldefconfig
-m68k                       m5208evb_defconfig
-m68k                        m5407c3_defconfig
-powerpc                      arches_defconfig
-arm                           omap1_defconfig
-arm                         mv78xx0_defconfig
-nios2                         3c120_defconfig
-nios2                            alldefconfig
-powerpc                        fsp2_defconfig
-arm                        mvebu_v7_defconfig
-h8300                               defconfig
-openrisc                  or1klitex_defconfig
-powerpc                    amigaone_defconfig
-sh                          sdk7786_defconfig
-powerpc                 mpc832x_mds_defconfig
-sh                           se7206_defconfig
-mips                      pistachio_defconfig
-arm                        oxnas_v6_defconfig
-arm                      jornada720_defconfig
-ia64                                defconfig
-mips                          rm200_defconfig
-powerpc                       eiger_defconfig
-powerpc                     mpc5200_defconfig
-parisc                generic-64bit_defconfig
-arm                            mps2_defconfig
-powerpc                      chrp32_defconfig
-arm                      pxa255-idp_defconfig
-sh                        edosk7705_defconfig
-powerpc                     sequoia_defconfig
-powerpc                      makalu_defconfig
-powerpc                        icon_defconfig
-powerpc                   currituck_defconfig
-riscv                               defconfig
-arm                       mainstone_defconfig
-openrisc                            defconfig
-arm                        mvebu_v5_defconfig
-arc                           tb10x_defconfig
-sparc64                          alldefconfig
-openrisc                    or1ksim_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-nios2                               defconfig
-nds32                             allnoconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20210514
-x86_64               randconfig-a003-20210514
-x86_64               randconfig-a001-20210514
-x86_64               randconfig-a005-20210514
-x86_64               randconfig-a002-20210514
-x86_64               randconfig-a006-20210514
-i386                 randconfig-a003-20210514
-i386                 randconfig-a001-20210514
-i386                 randconfig-a004-20210514
-i386                 randconfig-a005-20210514
-i386                 randconfig-a002-20210514
-i386                 randconfig-a006-20210514
-x86_64               randconfig-a012-20210515
-x86_64               randconfig-a015-20210515
-x86_64               randconfig-a011-20210515
-x86_64               randconfig-a013-20210515
-x86_64               randconfig-a016-20210515
-x86_64               randconfig-a014-20210515
-i386                 randconfig-a016-20210515
-i386                 randconfig-a014-20210515
-i386                 randconfig-a011-20210515
-i386                 randconfig-a012-20210515
-i386                 randconfig-a015-20210515
-i386                 randconfig-a013-20210515
-i386                 randconfig-a016-20210514
-i386                 randconfig-a014-20210514
-i386                 randconfig-a011-20210514
-i386                 randconfig-a012-20210514
-i386                 randconfig-a015-20210514
-i386                 randconfig-a013-20210514
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+8/8 - x86/irq: merge and functonalize common code in DECLARE/DEFINE_IDTENTRY_*
 
-clang tested configs:
-x86_64               randconfig-a004-20210515
-x86_64               randconfig-a003-20210515
-x86_64               randconfig-a001-20210515
-x86_64               randconfig-a005-20210515
-x86_64               randconfig-a002-20210515
-x86_64               randconfig-a006-20210515
-x86_64               randconfig-a015-20210514
-x86_64               randconfig-a012-20210514
-x86_64               randconfig-a011-20210514
-x86_64               randconfig-a013-20210514
-x86_64               randconfig-a016-20210514
-x86_64               randconfig-a014-20210514
+	This patch reverses kvm_set_cpu_l1tf_flush_l1d() and
+	__irq_enter_raw() in DEFINE_IDTENTRY_SYSVEC_SIMPLE() in order
+	to be able to unify the code with DEFINE_IDTENTRY_SYSVEC().
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+	This replaces a lot of macros with inline functions, which
+	required some amount of adjusting types in various places,
+	they should have no effect.
+	
+	The reason for unification is mainly to avoid the possibility
+	of inadvertent divergence rather than the rather modest amount
+	of code, but it does remove 25 lines of code.
+
+--- 
+ 1/8 x86/irq: merge and functionalize common code in DECLARE/DEFINE_IDTENTRY_*
+ 2/8 x86/irq: WARN_ONCE() if irq_move_cleanup is called on a pending interrupt
+ 3/8 x86/kexec: set_[gi]dt() -> native_[gi]dt_invalidate() in machine_kexec_*.c
+ 4/8 x86/desc: add native_[ig]dt_invalidate() to <asm/desc.h>
+ 5/8 x86/idt: remove address argument to idt_invalidate()
+ 6/8 x86/irq: remove unused vectors from <asm/irq_vectors.h>
+ 7/8 x86/irqvector: add NR_EXTERNAL_VECTORS and NR_SYSTEM_VECTORS
+ 8/8 x86/traps: add X86_NR_HW_TRAPS to <asm/trapnr.h>
+
+ arch/x86/entry/common.c                  |   5 +-
+ arch/x86/include/asm/desc.h              |  17 ++-
+ arch/x86/include/asm/idtentry.h          | 174 +++++++++++++++----------------
+ arch/x86/include/asm/irq_stack.h         |  73 +++++--------
+ arch/x86/include/asm/irq_vectors.h       |   7 +-
+ arch/x86/include/asm/trapnr.h            |   1 +
+ arch/x86/kernel/apic/apic.c              |   2 +-
+ arch/x86/kernel/apic/vector.c            |   5 +
+ arch/x86/kernel/idt.c                    |   5 +-
+ arch/x86/kernel/irq.c                    |   1 +
+ arch/x86/kernel/machine_kexec_32.c       |  15 +--
+ arch/x86/kernel/machine_kexec_64.c       |  33 +-----
+ arch/x86/kernel/reboot.c                 |   2 +-
+ arch/x86/kernel/sev-es.c                 |   6 +-
+ arch/x86/kernel/traps.c                  |   2 +-
+ tools/arch/x86/include/asm/irq_vectors.h |   7 +-
+ 16 files changed, 158 insertions(+), 197 deletions(-)
