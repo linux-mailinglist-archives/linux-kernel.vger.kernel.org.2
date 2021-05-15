@@ -2,120 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68A3038162C
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 07:35:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEBCE381633
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 07:41:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234366AbhEOFgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 01:36:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54902 "EHLO
+        id S234383AbhEOFnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 01:43:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232792AbhEOFgO (ORCPT
+        with ESMTP id S234371AbhEOFnH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 01:36:14 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82C46C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 22:35:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=7Ru1fewOZoxv7rNfLocXp+aXHVSyGJy/85o672PXY7Q=; b=v6Ig97OVffr2x2DZ6kbnmGC83R
-        c3vgQ+qgmL5V31F3Habt1nLANo9Nij0HI5DmEBFFhczSkZw8y9O5VwUcymbhUaCaJsIcU9MGj5XBd
-        xJdnLQuF3fWNDI9C8/mm+yBzOqN4xFmA5Ocw/Sq6Y3bo2/Ux8tcMmUmkC8U527kldJvmHpMdPz96d
-        nct2Tu6EufhqqEvSUJzOuQU+v01XalOaZE1XFqr0we7sdMVuhjP1LzGR/qE+rdu8N5XDGXR/4ronH
-        ELDSOypK6H0OI7G3g6fcHNqdoRKNt/fjIANaJqUlcqfDhyWTDIxmN33teIMbSdHpX89BZ9M1nDhjc
-        2DDtFEmA==;
-Received: from [2601:1c0:6280:3f0::7376]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lhmwu-00COk6-H8; Sat, 15 May 2021 05:34:52 +0000
-Subject: Re: [PATCH v3] drm/bridge/sii8620: fix dependency on extcon
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     Robert Foss <robert.foss@linaro.org>, a.hajda@samsung.com,
-        narmstrong@baylibre.com, Laurent.pinchart@ideasonboard.com,
-        jonas@kwiboo.se, jernej.skrabec@siol.net, airlied@linux.ie,
-        daniel@ffwll.ch, cw00.choi@samsung.com, m.purski@samsung.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     kernel test robot <lkp@intel.com>
-References: <20210419090124.153560-1-robert.foss@linaro.org>
- <1627725d-1c7e-109f-f995-e761bb022ccc@infradead.org>
- <d295f001-575d-f14c-b0c1-1444dd29a03e@infradead.org>
-Message-ID: <75b35f2f-72bb-522a-afd8-6c26cd553588@infradead.org>
-Date:   Fri, 14 May 2021 22:34:51 -0700
+        Sat, 15 May 2021 01:43:07 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE17C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 22:41:54 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id i13so861364edb.9
+        for <linux-kernel@vger.kernel.org>; Fri, 14 May 2021 22:41:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorfullife-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=6rckXWl7BjyQXPzwD/P/SDYdcR87Ra4zqULmgEiLxDE=;
+        b=yzjubYj2B80QIHiYErXQMKDY5pu2PDCuYFCE1s/chllwlraOitSCTQTlb27yyQhWCv
+         5xQdDSdrWAzVran6LnCfG4ltxBAX/cgqaBNZKWt7HXJsUuzuwGpzPV3Tj2vhnl+sJqyQ
+         aEVBAinlAcNbt2uuW7s3/iZOcOlLM1I1uF7TX/GjsWxHOuLW3ydkJkUTOaRZwnHUg6SA
+         NwUZeB68MmZ/sAFNiBoXVPMr1PZR9uEQ5udxsv8YvK6Ou0bCA+CCTQYcR5xy7P7xijAf
+         nNHf80pg3LkC89rwyRkPx8OxvzXcK4f9CK5roGETF0Y2F5vE9ZSJ4cSaoh440zIVqL5u
+         UeaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=6rckXWl7BjyQXPzwD/P/SDYdcR87Ra4zqULmgEiLxDE=;
+        b=V6oqvPShP0ORSO0UMccBfKt5DQDlbw22W0bFyAjsEa1+AxdxHbwnQRr3Nb2mVOy3Pw
+         xBuc7o8jCDti/zZVo7EF7JQ0NIM+n25uNJxeoG48H8/mfaIo+hsjqp4cmhqoxe07G0S4
+         JH7YVZokkt//FBoXSMoq4VGwsZi43llF6Pu2+AbucKT+e3m4nk5phfaU25Qra0zetLpO
+         Zgr39F1HO4TzPK42OVza/cnhpcJXO71CzfUs9pEVixAueCT/x4CIL7CXKUXXRr/hy6/r
+         x6ce7jAzRa+88UBJZhRkyZxAOaqBKDtDpV8u5yu2v7ZSOpBBc/OjvAUJHWFZsDEmJwMM
+         nAbQ==
+X-Gm-Message-State: AOAM531PPCOmbiFdW+GPcfNym9O+BYzNCGn+Ht9TTTVOyBgUlXkTnYSd
+        vsUO2DUwcAcMH/zA3da7KVxUDpuSn0wPkSbouCU=
+X-Google-Smtp-Source: ABdhPJyLlDLhoIR7YeR5xc75cK4I79H6TOAJ6KPw/6Lr4fy1ui+8H2g3HBLX715Fce0I2+mD0JRfIQ==
+X-Received: by 2002:a05:6402:4383:: with SMTP id o3mr59608029edc.333.1621057312778;
+        Fri, 14 May 2021 22:41:52 -0700 (PDT)
+Received: from localhost.localdomain (p200300d99736a100737e0d2844aab884.dip0.t-ipconnect.de. [2003:d9:9736:a100:737e:d28:44aa:b884])
+        by smtp.googlemail.com with ESMTPSA id r18sm4730527ejd.106.2021.05.14.22.41.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 May 2021 22:41:52 -0700 (PDT)
+Subject: Re: [RFC PATCH] ipc/mqueue: avoid sleep after wakeup
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Davidlohr Bueso <dbueso@suse.de>,
+        Matthias von Faber <matthias.vonfaber@aox-tech.de>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210514030130.3253-1-hdanton@sina.com>
+ <20210515040613.12820-1-hdanton@sina.com>
+From:   Manfred Spraul <manfred@colorfullife.com>
+Message-ID: <5d73d162-e860-785f-a775-1100b0aa57dd@colorfullife.com>
+Date:   Sat, 15 May 2021 07:41:51 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <d295f001-575d-f14c-b0c1-1444dd29a03e@infradead.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210515040613.12820-1-hdanton@sina.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/19/21 10:54 AM, Randy Dunlap wrote:
-> On 4/19/21 10:10 AM, Randy Dunlap wrote:
->> On 4/19/21 2:01 AM, Robert Foss wrote:
->>> The DRM_SIL_SII8620 kconfig has a weak `imply` dependency
->>> on EXTCON, which causes issues when sii8620 is built
->>> as a builtin and EXTCON is built as a module.
+On 5/15/21 6:06 AM, Hillf Danton wrote:
+> On Fri, 14 May 2021 17:51:47 +0200  Manfred Spraul wrote:
+>> On 5/14/21 5:01 AM, Hillf Danton wrote:
+>>> The pipeline waker could start doing its job once waiter releases lock and
+>>> get the work done before waiter takes a nap, so check wait condition before
+>>> sleep to avoid waiting the wakeup that will never come, though that does not
+>>> hurt much thanks to timer timeouts like a second.
+>> First: The timeout could be infinity, thus the code must not rely on a
+>> timeout wakeup.
+>>
+>> A wrong wait is would be a bug.
+>>
+>>
+>>> Check signal for the same reason.
 >>>
->>> The symptoms are 'undefined reference' errors caused
->>> by the symbols in EXTCON not being available
->>> to the sii8620 driver.
->>>
->>> Fixes: 688838442147 ("drm/bridge/sii8620: use micro-USB cable detection logic to detect MHL")
->>> Signed-off-by: Robert Foss <robert.foss@linaro.org>
->>> Reported-by: kernel test robot <lkp@intel.com>
+>>> Signed-off-by: Hillf Danton <hdanton@sina.com>
 >>> ---
 >>>
->>> LKP reported issue:
->>> https://lore.kernel.org/lkml/202104040604.SSTe2Cxf-lkp@intel.com/
->>>
->>>
->>> Changes since v1:
->>>  - Fix typo on comment
->>>
->>> Changes since v2:
->>>  - Randy: Changed from `depends` to `select` 
+>>> --- y/ipc/mqueue.c
+>>> +++ x/ipc/mqueue.c
+>>> @@ -710,15 +710,24 @@ static int wq_sleep(struct mqueue_inode_
+>>>    		__set_current_state(TASK_INTERRUPTIBLE);
+>>>    
+>>>    		spin_unlock(&info->lock);
+>>> -		time = schedule_hrtimeout_range_clock(timeout, 0,
+>>> -			HRTIMER_MODE_ABS, CLOCK_REALTIME);
+>>>    
+>> I do not see a bug:
 >>
->> I don't know why my name is on that. I didn't
->> suggest any change -- I just reported that v2
->> had a problem.
+>> We do the __set_current_state() while holding the spinlock. If there is
+>> a wakeup, then the wakeup will change current->state to TASK_RUNNING.
+> Correct.
+>> schedule() will not remove us from the run queue when current->state is
+>> TASK_RUNNING. The same applies if there are pending signals: schedule()
+>> checks for pending signals and sets current->state to TASK_RUNNING.
 >>
+>> Since the __set_current_state() is done while we hold info->lock, and
+>> since the wakeup cannot happen before we have dropped the lock [because
+>> the task that wakes us up needs the same lock], I do not see how a
+>> wakeup could be lost.
 >>
->>>
->>>
->>>  drivers/gpu/drm/bridge/Kconfig | 2 +-
->>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
->>> index 22a467abd3e9..70402da5cc70 100644
->>> --- a/drivers/gpu/drm/bridge/Kconfig
->>> +++ b/drivers/gpu/drm/bridge/Kconfig
->>> @@ -169,7 +169,7 @@ config DRM_SIL_SII8620
->>>  	tristate "Silicon Image SII8620 HDMI/MHL bridge"
->>>  	depends on OF
->>>  	select DRM_KMS_HELPER
->>> -	imply EXTCON
->>> +	select EXTCON
->>>  	depends on RC_CORE || !RC_CORE
->>>  	help
->>>  	  Silicon Image SII8620 HDMI/MHL bridge chip driver.
->>
->>
->> Thanks. Works For Me.
->>
->> Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-> 
-> Actually I can upgrade that to:
-> 
-> Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+>> Thus: Which issue do you see?
+> 	waiter		waker
+> 	----		----
+> 	unlock
+> 			lock
+> 	irq		set STATE_READY
+> 	softirq		unlock
+> 			wakeup
+> 	sleep a tick
+> 	  schedule();
+>
+> No need to schedule given READY.
 
-Hi,
-Is anyone merging this patch?
+This is not possible to avoid:
 
-thanks.
--- 
-~Randy
+	waiter		waker
+	----		----
+	unlock
+	schedule();
+	  calls __schedule()
+	   <before rq_lock()>
+
+  	                lock
+			set STATE_READY
+			unlock
+			wakeup
+			--> set waiter->state = TASK_RUNNING
+
+Now the run queue will be evaluated even though there is strictly speaking no need to do that.
+Changes in ipc/sem.c can't solve that: From what I see, the majority of the critical window is in kernel/sched/*.c and not in ipc/sem.c
+I do not consider it as useful to add complexity just to reduce the size of a extremely rare event.
+
+Especially: No harm is done. User space can be preempted at any time, so the kernel is always allowed to check the run queue.
+
+--
+	Manfred
 
