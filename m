@@ -2,90 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C31138176C
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 11:59:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6E80381771
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 12:01:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233362AbhEOKAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 06:00:50 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:48941 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229524AbhEOKAt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 06:00:49 -0400
-Received: from tazenda.hos.anvin.org ([IPv6:2601:646:8602:8be0:7285:c2ff:fefb:fd4])
-        (authenticated bits=0)
-        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14F9xGu43273647
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
-        Sat, 15 May 2021 02:59:24 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14F9xGu43273647
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2021042801; t=1621072764;
-        bh=mYIyPbWt416077Ac95zHgIkOiIsfWRZri0qtmd+e6g8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kmOL0K2aTK4gBI8e+1/YkGjKEhGrJS+ZtZDeUd1iiAYFA4MsmymXfiQ0YwB4ocqb7
-         ostzm1myMnTGENQwgykJt0Bqjw+8RUTU6CHpHwhtW3ZZ/C7jvKeC+9gSAsdT8ZkCuX
-         j2dfCHv+0HjnjlEtFpwMxQPFur9Dm+imUX3Y+dyJPGE48S26iGkanPKF+mAl36yUrB
-         ySSjKb9yGFX5OBWkVz+7lgBbRBwC7aLwYynyJUa4fMB4tK8f5wzvdov9oWKQL0BkyU
-         B/eimkU34YGXtsuFJIHqc1zNVIBA+zhBzY+Ej4gPs2s1MmT4jUv9GErcN/cbV9G6Q4
-         NTBPVQECJxM2g==
-From:   "H. Peter Anvin" <hpa@zytor.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2.1 7/8] x86/irq: WARN_ONCE() if irq_move_cleanup is called on a pending interrupt
-Date:   Sat, 15 May 2021 02:59:07 -0700
-Message-Id: <20210515095907.3020486-1-hpa@zytor.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210515014400.2999028-8-hpa@zytor.com>
-References: <20210515014400.2999028-8-hpa@zytor.com>
+        id S234757AbhEOKDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 06:03:03 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:10492 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232249AbhEOKCz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 May 2021 06:02:55 -0400
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14FA01rw005851;
+        Sat, 15 May 2021 10:01:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=U6eX34B2yzQy4+bs8Od93/S88vC8KKD9qpdYt49o18E=;
+ b=W0q+KwKlG/aJtPoqPaDYkhxmx22haTjKgabtl7/C938qFPYWW5tav0C5mHSJaXXUQqm+
+ jdzr2XlqxLU55Fw8pb+fmxvQvzuU0lR65yZy1l9XSrRSmgRkKX0VReJtrBJNxRnyIoe6
+ yRaDTs3fwTTcvH1hVfL1L1UXEdnI0tlwfVTYbbozXaIYvqr4Z9aQEMOxmyiYr0tkca45
+ XzH/GxUKyPdkqDYxGiJBuZuaEM1wQsER+kF17ct5OOTn6Hg+E0xkyFiUwwNdDSrNamQW
+ 7t6bkc29uSZr2Cg2+3+DRzW0vRm6TwDTKL4QfC/D1YxXA9t8J3HhkeTqsJTVMaO6sHeh 3w== 
+Received: from oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 38j5ws02p2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 15 May 2021 10:01:28 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14FA1RGf067003;
+        Sat, 15 May 2021 10:01:27 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3030.oracle.com with ESMTP id 38j4b9qxsd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 15 May 2021 10:01:27 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14FA1RG2066983;
+        Sat, 15 May 2021 10:01:27 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 38j4b9qxrv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 15 May 2021 10:01:27 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 14FA1IsA025334;
+        Sat, 15 May 2021 10:01:18 GMT
+Received: from mwanda (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sat, 15 May 2021 10:01:17 +0000
+Date:   Sat, 15 May 2021 13:01:11 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH net] net: mdiobus: get rid of a BUG_ON()
+Message-ID: <YJ+b52c5bGLdewFz@mwanda>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-ORIG-GUID: En8Arx2MQrFBlJ5ORYFahP4nTljQ4rI1
+X-Proofpoint-GUID: En8Arx2MQrFBlJ5ORYFahP4nTljQ4rI1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "H. Peter Anvin (Intel)" <hpa@zytor.com>
+We spotted a bug recently during a review where a driver was
+unregistering a bus that wasn't registered, which would trigger this
+BUG_ON().  Let's handle that situation more gracefully, and just print
+a warning and return.
 
-The current IRQ vector allocation code should be "clean" and never
-issue a IRQ_MOVE_CLEANUP_VECTOR IPI for an interrupt that could still
-be pending. This should make it possible to move it to the "normal"
-system IRQ vector range. This should probably be a three-step process:
-
-1. Introduce this WARN_ONCE() on this event ever occurring.
-2. Remove the self-IPI hack.
-3. Move the IRQ_MOVE_CLEANUP_VECTOR to the sysvec range.
-
-This implements step 1.
-
-[ Previous versions of this patch had steps 2 and 3 reversed. ]
-
-Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: H. Peter Anvin (Intel) <hpa@zytor.com>
+Reported-by: Russell King <linux@armlinux.org.uk>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 ---
- arch/x86/kernel/apic/vector.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/net/phy/mdio_bus.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/apic/vector.c b/arch/x86/kernel/apic/vector.c
-index 6dbdc7c22bb7..7ba2982a3585 100644
---- a/arch/x86/kernel/apic/vector.c
-+++ b/arch/x86/kernel/apic/vector.c
-@@ -939,9 +939,14 @@ DEFINE_IDTENTRY_SYSVEC(sysvec_irq_move_cleanup)
- 		 * to this CPU. IRQ_MOVE_CLEANUP_VECTOR is the lowest
- 		 * priority external vector, so on return from this
- 		 * interrupt the device interrupt will happen first.
-+		 *
-+		 * *** This should never happen with the current IRQ
-+		 * cleanup code, so WARN_ONCE() for now, and
-+		 * eventually get rid of this hack.
- 		 */
- 		irr = apic_read(APIC_IRR + (vector / 32 * 0x10));
- 		if (irr & (1U << (vector % 32))) {
-+			WARN_ONCE(1, "irq_move_cleanup called on still pending interrupt\n");
- 			apic->send_IPI_self(IRQ_MOVE_CLEANUP_VECTOR);
- 			continue;
- 		}
+diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
+index dadf75ff3ab9..6045ad3def12 100644
+--- a/drivers/net/phy/mdio_bus.c
++++ b/drivers/net/phy/mdio_bus.c
+@@ -607,7 +607,8 @@ void mdiobus_unregister(struct mii_bus *bus)
+ 	struct mdio_device *mdiodev;
+ 	int i;
+ 
+-	BUG_ON(bus->state != MDIOBUS_REGISTERED);
++	if (WARN_ON_ONCE(bus->state != MDIOBUS_REGISTERED))
++		return;
+ 	bus->state = MDIOBUS_UNREGISTERED;
+ 
+ 	for (i = 0; i < PHY_MAX_ADDR; i++) {
 -- 
-2.31.1
+2.30.2
 
