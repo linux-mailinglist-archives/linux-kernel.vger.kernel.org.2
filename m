@@ -2,101 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 789F5381644
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 08:23:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2201C381649
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 08:25:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230225AbhEOGYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 02:24:31 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:10644 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229780AbhEOGYZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 02:24:25 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1621059793; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=J4/UV+VBlg6J8gPLAtNX47KgtZ3wzwsbV6BDKY/gyAA=; b=DkHDegbXFmtROvyJVBiuxQmUlFlfIYGDVKIORa3e+vwpwwizo/W4NTi6txlln+jkH3OPm2OJ
- NowHKA8ybIVZ0BoHsfvG3AFJiS2Fc2iEcIbkgkg6pWS3X7IkbaCuZN+rZb8g01nZZHDmqwhP
- JF8B3nG8dxfkXP1jLrcxt7TiMco=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 609f68cb7b5af81b5c17b37d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 15 May 2021 06:23:07
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CAB54C4338A; Sat, 15 May 2021 06:23:06 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A4786C433D3;
-        Sat, 15 May 2021 06:23:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A4786C433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     linux-arch@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Devidas Puranik <devidas@marvell.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 10/13] mwifiex: re-fix for unaligned accesses
-References: <20210514100106.3404011-1-arnd@kernel.org>
-        <20210514100106.3404011-11-arnd@kernel.org>
-Date:   Sat, 15 May 2021 09:22:58 +0300
-In-Reply-To: <20210514100106.3404011-11-arnd@kernel.org> (Arnd Bergmann's
-        message of "Fri, 14 May 2021 12:00:58 +0200")
-Message-ID: <87lf8gikhp.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S230514AbhEOG0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 02:26:37 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:42231 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229980AbhEOG0e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 May 2021 02:26:34 -0400
+Received: from [IPv6:2601:646:8602:8be1:e512:4e99:5d16:dcc6] ([IPv6:2601:646:8602:8be1:e512:4e99:5d16:dcc6])
+        (authenticated bits=0)
+        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14F6P2uK3245252
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Fri, 14 May 2021 23:25:06 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14F6P2uK3245252
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2021042801; t=1621059906;
+        bh=K2JDn0iVIHW+Qwi8Co3+G0Lt201NrH/X9imNdm2N4FY=;
+        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
+        b=mphwezTPdEDxoESNYe9uWi/iKoIcOfKQRzSrM/gyp+UBmAcQTOCYhauxv5wWaAGEd
+         OwDDlzmPKJiTKhXVJ06y4RZgqcEebdDUw8KqDH2DL3MMv/XPP+FyVJ/t5jNe6DQjJ+
+         k3VBDpqQmVMfumGfVYy+zfBEwgeJf/K1MSbzpoQq8HKwBFCEWmUywUpUS39+TC4HPG
+         15Tlvt6IZINmKCp7Q8iqqar3f9rPNTdjV4BFbKfyv/scDzMCJlZaJznVRL9G/6oZFd
+         xMNAewZocnaGe55sfBAcalCBIF6T1QB13kxGETDY7cCamteWSoSkxq5B78yr4hJ/7W
+         7K6WB8kmwrSWw==
+Date:   Fri, 14 May 2021 23:24:53 -0700
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20210515014400.2999028-8-hpa@zytor.com>
+References: <20210515014400.2999028-1-hpa@zytor.com> <20210515014400.2999028-8-hpa@zytor.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v2 7/9] x86/irq: WARN_ONCE() if irq_move_cleanup is called on a pending interrupt
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>
+CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+From:   "H. Peter Anvin" <hpa@zytor.com>
+Message-ID: <09189009-FB0A-4DFA-917E-F447EB21798D@zytor.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd Bergmann <arnd@kernel.org> writes:
+Ugh=2E=2E=2E I could swear I had fixed the patch description=2E
 
-> From: Arnd Bergmann <arnd@arndb.de>
+On May 14, 2021 6:43:59 PM PDT, "H=2E Peter Anvin" <hpa@zytor=2Ecom> wrote=
+:
+>From: "H=2E Peter Anvin (Intel)" <hpa@zytor=2Ecom>
 >
-> A patch from 2017 changed some accesses to DMA memory to use
-> get_unaligned_le32() and similar interfaces, to avoid problems
-> with doing unaligned accesson uncached memory.
+>The current IRQ vector allocation code should be "clean" and never
+>issue a IRQ_MOVE_CLEANUP_VECTOR IPI for an interrupt that could still
+>be pending=2E This should make it possible to move it to the "normal"
+>system IRQ vector range=2E This should probably be a three-step process:
 >
-> However, the change in the mwifiex_pcie_alloc_sleep_cookie_buf()
-> function ended up changing the size of the access instead,
-> as it operates on a pointer to u8.
+>1=2E Introduce this WARN_ONCE() on this event ever occurring=2E
+>2=2E Move the IRQ_MOVE_CLEANUP_VECTOR to the sysvec range=2E
+>3=2E Remove the self-IPI hack=2E
 >
-> Change this function back to actually access the entire 32 bits.
-> Note that the pointer is aligned by definition because it came
-> from dma_alloc_coherent().
+>This implements step 1=2E
 >
-> Fixes: 92c70a958b0b ("mwifiex: fix for unaligned reads")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>Suggested-by: Thomas Gleixner <tglx@linutronix=2Ede>
+>Signed-off-by: H=2E Peter Anvin (Intel) <hpa@zytor=2Ecom>
+>---
+> arch/x86/kernel/apic/vector=2Ec | 5 +++++
+> 1 file changed, 5 insertions(+)
+>
+>diff --git a/arch/x86/kernel/apic/vector=2Ec
+>b/arch/x86/kernel/apic/vector=2Ec
+>index 6dbdc7c22bb7=2E=2E7ba2982a3585 100644
+>--- a/arch/x86/kernel/apic/vector=2Ec
+>+++ b/arch/x86/kernel/apic/vector=2Ec
+>@@ -939,9 +939,14 @@ DEFINE_IDTENTRY_SYSVEC(sysvec_irq_move_cleanup)
+> 		 * to this CPU=2E IRQ_MOVE_CLEANUP_VECTOR is the lowest
+> 		 * priority external vector, so on return from this
+> 		 * interrupt the device interrupt will happen first=2E
+>+		 *
+>+		 * *** This should never happen with the current IRQ
+>+		 * cleanup code, so WARN_ONCE() for now, and
+>+		 * eventually get rid of this hack=2E
+> 		 */
+> 		irr =3D apic_read(APIC_IRR + (vector / 32 * 0x10));
+> 		if (irr & (1U << (vector % 32))) {
+>+			WARN_ONCE(1, "irq_move_cleanup called on still pending
+>interrupt\n");
+> 			apic->send_IPI_self(IRQ_MOVE_CLEANUP_VECTOR);
+> 			continue;
+> 		}
 
-Via which tree should this go? I assume it will go via some other tree
-so:
-
-Acked-by: Kalle Valo <kvalo@codeaurora.org>
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+--=20
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
