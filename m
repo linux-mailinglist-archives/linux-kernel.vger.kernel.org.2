@@ -2,97 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE01C3819EC
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 18:42:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0203C3819F1
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 18:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231434AbhEOQnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 12:43:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58980 "EHLO
+        id S232792AbhEOQqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 12:46:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230330AbhEOQn1 (ORCPT
+        with ESMTP id S230216AbhEOQqP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 12:43:27 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 472C9C061573
-        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 09:42:12 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id w4so2104963ljw.9
-        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 09:42:12 -0700 (PDT)
+        Sat, 15 May 2021 12:46:15 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CD32C061573;
+        Sat, 15 May 2021 09:45:00 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id l129so1956711qke.8;
+        Sat, 15 May 2021 09:45:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iKkVD1Qtnhdv59KfIngIIRAgpMVGtUMoAaJE9aWcwDg=;
-        b=ZTy8QEEoSvjvmpGGdABqj29z7ZcuL0IRQ9UBKh89fhMz+j8cPVNUeZBKE8yaOCqkMJ
-         kXzjCIiBF/NlemQsWsYyOaATN469b44wJYerSUSZFnkQiC4aQLy7om0FmX9cUarP4FxA
-         D1eo9OLAbDq5eCqiokMYbyAbQahObMHCCCKQo=
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Di0tqQRWLN116HzASz5hiSUHMEBmVNCl6fxRwEe3CFk=;
+        b=f+jMnZN0cLBSqvApg/1qJq/cF1cVYc3CpgJKG8GQBoLex92Jp2NG9PuGnfZnIkifdp
+         EHbAvdtIakodfGPxpErihof3l0WHWeGkVcvoxt9oUEofkDzNDJIIAhvGwBR0zZEIhRoY
+         9Dr/qC8+m395QhSuoilv4Ljyb0VdVCQwff4Ifa58Iv7N2xFs5ceoHs4tfB0669zWBV5p
+         bD6/ADBx1QvRYMTRQ17utQzZHxgzEtBcOboz1A6JhjdjkoQW47OE5vmH+OgxMzvsTMFo
+         ZiNk15+bVeIXtjXTx1qboJNN0Qw8F6mZMMA6GibYC7LNIqgmlPbUHX6qf3hK7gvBRv3c
+         /OzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iKkVD1Qtnhdv59KfIngIIRAgpMVGtUMoAaJE9aWcwDg=;
-        b=LtQh+3GIAWVwV1kLn8mP/Evg+rxDTBI9D1vCtUj1pNUH6AYPhp0+eo2qHuZoKzJpr0
-         r/T4rfQgnrVfiNMRP+tcR+wSeXR8A6j6u5BCQyxz/y9hNsXeb2atVlZUt8mHPaMf3Jaq
-         h4iPuv7qOxuZUMofLu+O2V43cKGTwRNB1nh+COGtwnG/0Fj44cCl1Yoc6HRMUIoq3L8z
-         eKmedfdVoYmeTShoCAnTAMDv6gCtiBwYDN82KO+1zihK4bYaWXyNuWVTyTz1rsM4cING
-         EeqEwwHOTS7e3zGRjsLOkWF03JBMF4Qf8MXjr5qf9rcLUyDTdkQ/VXtsz5yefD218frp
-         hK+w==
-X-Gm-Message-State: AOAM532PGmZiH6DU7plzcIepTW2+7JXHMo3CtLqjHqqA32SIfXWpt4A3
-        uy6b157EPD+ji1cdyfwUaSImThKqF/lSKos0u7A=
-X-Google-Smtp-Source: ABdhPJxLf9vNgqw6BDjSlHPdzQmjXvGzZOfi0tc09Fu/jdr/NghtcQDx1rhrrZL9wFNtJ9wJAIGxRA==
-X-Received: by 2002:a2e:a7cb:: with SMTP id x11mr7425462ljp.143.1621096930400;
-        Sat, 15 May 2021 09:42:10 -0700 (PDT)
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
-        by smtp.gmail.com with ESMTPSA id h19sm1419125lfc.56.2021.05.15.09.42.09
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 15 May 2021 09:42:09 -0700 (PDT)
-Received: by mail-lf1-f41.google.com with SMTP id q7so1365838lfr.6
-        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 09:42:09 -0700 (PDT)
-X-Received: by 2002:a05:6512:374b:: with SMTP id a11mr35147289lfs.377.1621096929091;
- Sat, 15 May 2021 09:42:09 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=Di0tqQRWLN116HzASz5hiSUHMEBmVNCl6fxRwEe3CFk=;
+        b=rD89NbRQdM+HCN1xIRLG0ulOHshtTFsYZ44opWc824R2wYtDcyFzMxl4PY/vF1jtap
+         7QMS8OK3YEVJmU1B793d0t8MTGJK4DgzUg1TSi6e+96A5ly4bxgK02FMF7lwioGDW3mP
+         PndvEvI+Q8lhir7Xj9YK7WE6oW2xhk9vPGx1JfSyTZsTeoWvqZjehDUubafpuB4YgKeP
+         0yvD0x0NbT3KuEypABV9i5wsIQCZ1oGR5qCf67qCxhv6kdNa2nZlx3dH6Fr3QQYjOII2
+         foz5uil6pePcYM+lGzflp7YVm+DyARVKcLxOgdKC2mk6N9o051+MdiQn7pYraso0C+TU
+         Iavg==
+X-Gm-Message-State: AOAM530e5afzmF7fYidLzlanFT7sz70ItMCgUayitmA4N5hnT93Jcp8t
+        vgwLlr+PHvxf8an11w8fxKI=
+X-Google-Smtp-Source: ABdhPJyLgyUXFdIj5scFIJV7gr8fsGegR4P4H4zNwmp6ri6zWh1k8GWiIoA1ywsmrJR5DvJlrLQZbw==
+X-Received: by 2002:a37:a2c5:: with SMTP id l188mr49124178qke.413.1621097099495;
+        Sat, 15 May 2021 09:44:59 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id j25sm6847094qka.116.2021.05.15.09.44.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 15 May 2021 09:44:58 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sat, 15 May 2021 09:44:57 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Linus =?iso-8859-1?Q?L=FCssing?= <linus.luessing@c0d3.blue>
+Cc:     netdev@vger.kernel.org, Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        bridge@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [net-next v4 05/11] net: bridge: mcast: prepare is-router
+ function for mcast router split
+Message-ID: <20210515164457.GA1387203@roeck-us.net>
+References: <20210513132053.23445-1-linus.luessing@c0d3.blue>
+ <20210513132053.23445-6-linus.luessing@c0d3.blue>
 MIME-Version: 1.0
-References: <0000000000006bbd0c05c14f1b09@google.com> <6e21483c-06f6-404b-4018-e00ee85c456c@i-love.sakura.ne.jp>
- <87d928e4-b2b9-ad30-f3f0-1dfb8e4e03ed@i-love.sakura.ne.jp>
- <05acdda8-dc1c-5119-4326-96eed24bea0c@i-love.sakura.ne.jp>
- <CAHk-=wguwhFpjhyMtDaH2hhjoV62gDgByC=aPyTrW9CkM5hqvA@mail.gmail.com>
- <alpine.DEB.2.21.2105142150460.3032@angie.orcam.me.uk> <CAHk-=wioOHwKNj8AmvXWV-oL60ae0jKswAHy9e6wCYYeA5EQXg@mail.gmail.com>
- <CAHk-=wjkVAjfWrmmJnJe1_MriK9gezWCew_MU=MbQNzHbGopsQ@mail.gmail.com>
- <97f1d292-c3a8-f4d6-0651-b4f5571ecb72@i-love.sakura.ne.jp>
- <alpine.DEB.2.21.2105151815040.3032@angie.orcam.me.uk> <alpine.DEB.2.21.2105151828380.3032@angie.orcam.me.uk>
-In-Reply-To: <alpine.DEB.2.21.2105151828380.3032@angie.orcam.me.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 15 May 2021 09:41:53 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgz-iC97f0cnawKZc_S4-0ZEOdOx43J7pVX6b=AqYUhfg@mail.gmail.com>
-Message-ID: <CAHk-=wgz-iC97f0cnawKZc_S4-0ZEOdOx43J7pVX6b=AqYUhfg@mail.gmail.com>
-Subject: Re: [PATCH v2] tty: vt: always invoke vc->vc_sw->con_resize callback
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Colin King <colin.king@canonical.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jani Nikula <jani.nikula@intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        "Antonino A. Daplas" <adaplas@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210513132053.23445-6-linus.luessing@c0d3.blue>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 15, 2021 at 9:33 AM Maciej W. Rozycki <macro@orcam.me.uk> wrote:
->
->  NB I suggest that you request your change to be backported, i.e. post v3
-> with:
->
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> Cc: stable@vger.kernel.org # v2.6.12+
+On Thu, May 13, 2021 at 03:20:47PM +0200, Linus Lüssing wrote:
+> In preparation for the upcoming split of multicast router state into
+> their IPv4 and IPv6 variants make br_multicast_is_router() protocol
+> family aware.
+> 
+> Note that for now br_ip6_multicast_is_router() uses the currently still
+> common ip4_mc_router_timer for now. It will be renamed to
+> ip6_mc_router_timer later when the split is performed.
+> 
+> While at it also renames the "1" and "2" constants in
+> br_multicast_is_router() to the MDB_RTR_TYPE_TEMP_QUERY and
+> MDB_RTR_TYPE_PERM enums.
+> 
+> Signed-off-by: Linus Lüssing <linus.luessing@c0d3.blue>
 
-I've applied it to my tree, but let's wait to see that it doesn't
-cause any issues before notifying the stable people.
+Just in case this hasn't been reported yet. In next-20210514:
 
-               Linus
+$ git grep br_multicast_is_router
+net/bridge/br_input.c:                      br_multicast_is_router(br, skb)) {
+net/bridge/br_multicast.c:      is_router = br_multicast_is_router(br, NULL);
+net/bridge/br_private.h:br_multicast_is_router(struct net_bridge *br, struct sk_buff *skb)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+net/bridge/br_private.h:static inline bool br_multicast_is_router(struct net_bridge *br)
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Guenter
