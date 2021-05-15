@@ -2,76 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6108381716
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 11:06:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 147C038171D
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 11:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234553AbhEOJHY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 15 May 2021 05:07:24 -0400
-Received: from mout.kundenserver.de ([217.72.192.75]:52103 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229819AbhEOJHX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 05:07:23 -0400
-Received: from mail-wr1-f44.google.com ([209.85.221.44]) by
- mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1M6UVr-1layUq3von-006tUV for <linux-kernel@vger.kernel.org>; Sat, 15 May
- 2021 11:06:09 +0200
-Received: by mail-wr1-f44.google.com with SMTP id x5so1405515wrv.13
-        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 02:06:09 -0700 (PDT)
-X-Gm-Message-State: AOAM533ZfvSzkQmff0+v3h2SMhSdZ30QgpTY3uBUQw+7qeN1Kygwp9T/
-        cCW1ECw6GXkVf92OKTkZUAUHQldsFeNtHAflAcE=
-X-Google-Smtp-Source: ABdhPJxa9ga0gRy5e6nzNdn42FfeS/06D9LKUViTeagdJ1e1i+BEI55jfoywfqUYIjrsLyOPxqavndmJMysqb9ykebg=
-X-Received: by 2002:a05:6000:1b0b:: with SMTP id f11mr26260943wrz.165.1621069569668;
- Sat, 15 May 2021 02:06:09 -0700 (PDT)
+        id S234563AbhEOJPr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 15 May 2021 05:15:47 -0400
+Received: from aposti.net ([89.234.176.197]:43786 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231558AbhEOJPp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 May 2021 05:15:45 -0400
+Date:   Sat, 15 May 2021 10:14:17 +0100
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v3 1/3] drm: Add support for GEM buffers backed by
+ non-coherent memory
+To:     Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-mips@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>, od@opendingux.net
+Message-Id: <TN55TQ.WL68QNFRU9LG2@crapouillou.net>
+In-Reply-To: <738660d9-495b-a9b5-b371-a2e4364ee9b8@suse.de>
+References: <20210514201138.162230-1-paul@crapouillou.net>
+        <20210514201138.162230-2-paul@crapouillou.net>
+        <738660d9-495b-a9b5-b371-a2e4364ee9b8@suse.de>
 MIME-Version: 1.0
-References: <20210514062150.3533786-1-yukuai3@huawei.com> <CAK8P3a01oF7QZzjbd703QwiK+6ZPx1w-fSBcLjeMm4KQ0X0amw@mail.gmail.com>
- <7dc2aaca-20d1-46fc-e5a0-312f3fbc7ea4@huawei.com>
-In-Reply-To: <7dc2aaca-20d1-46fc-e5a0-312f3fbc7ea4@huawei.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Sat, 15 May 2021 11:05:06 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2Qx4F50E3YAr0FQswD_Fg7T6wkmyaAtCOCnN6UcfqPGA@mail.gmail.com>
-Message-ID: <CAK8P3a2Qx4F50E3YAr0FQswD_Fg7T6wkmyaAtCOCnN6UcfqPGA@mail.gmail.com>
-Subject: Re: [PATCH] char: pcmcia: remove set but not used variable 'tmp'
-To:     "yukuai (C)" <yukuai3@huawei.com>
-Cc:     Harald Welte <laforge@gnumonks.org>,
-        gregkh <gregkh@linuxfoundation.org>, akpm@osdl.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "zhangyi (F)" <yi.zhang@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
 Content-Transfer-Encoding: 8BIT
-X-Provags-ID: V03:K1:QXrKMStL1P6KdDJo0jx1pv/nIdiYh7vrrlMBdWdM0qO7wV3ysTB
- /mJhwjQmo1fdhWsqeMj61KdaQZE1bDhvaXRfs0e86uv2oa8Va+lpJWIm4zfmPxEANDYZmWL
- 1udfLBck1CKT7prhDpeaaUkt/ZIukdrhtHHsfqf0OgXODV1vYqvRKsnexw+m/GhHh/gDndW
- Bir6cRsn+dJWA96NyV8RQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:4cgsz6+4T38=:HjbcCi9GyoLVZQxEm0ucNV
- h167aYibQfYHyVu1M9O9iOJ50GXad9sxJnIvgVLiqCJTWqXSMIgCmPG9ubO0aXnAunrQ47un8
- 9lyRiibm/gXlaAnlHswl7MQztetm1ir+rHm6fnPfNDPT73fvBKH2UTnb534mYTozlKBJTG+jL
- InAnbmUOMFK7yf+9S0wm12sYgyl3FDjUl6xqUMrHABb9NPy4girNgG974mGLBzFqEUq5nnuPd
- e3tnLtCzy9l90pHKmNUJz7+EspKxhwGas+1Te2ETfsZYsfB8HCqfUYqqr4o1ZVazONQ8s42t/
- l2WsWgm98CjWN87jqTaz6OHXYoRxqLaXRq7ixlORrXsO17Hd7rP8XPhvi8DdgVRuDSHrrH8Lv
- IVkE0D/hxmhxx7NDRbhtnqhFuSfZKORl9k19ZMsQCfW56OOcdMC/C6KkPLs3kHDHizG1pCaKw
- Ha2M6JrKrwuvWyBgSlSMhREJVAN6QftSiO8R1RnqjlqCRz65Q5t0PhiFtaFgTdoFW/1KYallJ
- AHC05Moltgb/vybs6pqBqE=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 15, 2021 at 9:15 AM yukuai (C) <yukuai3@huawei.com> wrote:
-> On 2021/05/14 14:28, Arnd Bergmann wrote:
->
-> I'm not familar with the logical here, however, if io_read_num_rec_bytes
-> may get 'num_bytes_read' greater than 4, this loop will cause index out
-> of boundary. It make sense to me to add a range check. Futhermore, since
-> 'num_bytes_read' is ensure to >= 4ï¼ŒI think we can change the loop to:
->
-> for (i = 0; i < 4; ++i) {
->         xoutb(i, REG_BUF_ADDR(iobase));
->         pts_reply[i] = inb(REG_BUF_DATA(iobase));
-> }
+Hi Thomas,
 
-Obviously it still has to use the num_bytes_read value to determine
-how many bytes were actually received, but there should be an
-added cap to tell the compiler that this is never more than 4.
+Le sam., mai 15 2021 at 11:03:34 +0200, Thomas Zimmermann 
+<tzimmermann@suse.de> a écrit :
+> Hi
+> 
+> Am 14.05.21 um 22:11 schrieb Paul Cercueil:
+>> Having GEM buffers backed by non-coherent memory is interesting in 
+>> the
+>> particular case where it is faster to render to a non-coherent buffer
+>> then sync the data cache, than to render to a write-combine buffer, 
+>> and
+>> (by extension) much faster than using a shadow buffer. This is true 
+>> for
+>> instance on some Ingenic SoCs, where even simple blits (e.g. memcpy)
+>> are about three times faster using this method.
+>> 
+>> Add a 'map_noncoherent' flag to the drm_gem_cma_object structure, 
+>> which
+>> can be set by the drivers when they create the dumb buffer.
+>> 
+>> Since this really only applies to software rendering, disable this 
+>> flag
+>> as soon as the CMA objects are exported via PRIME.
+>> 
+>> v3: New patch. Now uses a simple 'map_noncoherent' flag to control 
+>> how
+>>      the objects are mapped, and use the new dma_mmap_pages function.
+>> 
+>> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>> ---
+>>   drivers/gpu/drm/drm_gem_cma_helper.c | 41 
+>> +++++++++++++++++++++++++---
+>>   include/drm/drm_gem_cma_helper.h     |  7 ++++-
+>>   2 files changed, 43 insertions(+), 5 deletions(-)
+>> 
+>> diff --git a/drivers/gpu/drm/drm_gem_cma_helper.c 
+>> b/drivers/gpu/drm/drm_gem_cma_helper.c
+>> index 7942cf05cd93..81a31bcf7d68 100644
+>> --- a/drivers/gpu/drm/drm_gem_cma_helper.c
+>> +++ b/drivers/gpu/drm/drm_gem_cma_helper.c
+>> @@ -115,8 +115,15 @@ struct drm_gem_cma_object 
+>> *drm_gem_cma_create(struct drm_device *drm,
+>>   	if (IS_ERR(cma_obj))
+>>   		return cma_obj;
+>>   -	cma_obj->vaddr = dma_alloc_wc(drm->dev, size, &cma_obj->paddr,
+>> -				      GFP_KERNEL | __GFP_NOWARN);
+>> +	if (cma_obj->map_noncoherent) {
+>> +		cma_obj->vaddr = dma_alloc_noncoherent(drm->dev, size,
+>> +						       &cma_obj->paddr,
+>> +						       DMA_TO_DEVICE,
+>> +						       GFP_KERNEL | __GFP_NOWARN);
+>> +	} else {
+>> +		cma_obj->vaddr = dma_alloc_wc(drm->dev, size, &cma_obj->paddr,
+>> +					      GFP_KERNEL | __GFP_NOWARN);
+>> +	}
+>>   	if (!cma_obj->vaddr) {
+>>   		drm_dbg(drm, "failed to allocate buffer with size %zu\n",
+>>   			 size);
+>> @@ -499,8 +506,13 @@ int drm_gem_cma_mmap(struct drm_gem_object 
+>> *obj, struct vm_area_struct *vma)
+>>     	cma_obj = to_drm_gem_cma_obj(obj);
+>>   -	ret = dma_mmap_wc(cma_obj->base.dev->dev, vma, cma_obj->vaddr,
+>> -			  cma_obj->paddr, vma->vm_end - vma->vm_start);
+>> +	vma->vm_page_prot = vm_get_page_prot(vma->vm_flags);
+>> +	if (!cma_obj->map_noncoherent)
+>> +		vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
+>> +
+>> +	ret = dma_mmap_pages(cma_obj->base.dev->dev,
+>> +			     vma, vma->vm_end - vma->vm_start,
+>> +			     virt_to_page(cma_obj->vaddr));
+>>   	if (ret)
+>>   		drm_gem_vm_close(vma);
+>>   @@ -556,3 +568,24 @@ 
+>> drm_gem_cma_prime_import_sg_table_vmap(struct drm_device *dev,
+>>   	return obj;
+>>   }
+>>   EXPORT_SYMBOL(drm_gem_cma_prime_import_sg_table_vmap);
+>> +
+>> +/**
+>> + * drm_gem_cma_prime_mmap - PRIME mmap function for CMA GEM drivers
+>> + * @obj: GEM object
+>> + * @vma: Virtual address range
+>> + *
+>> + * Carbon copy of drm_gem_prime_mmap, but the 'map_noncoherent' 
+>> flag is
+>> + * disabled to ensure that the exported buffers have the expected 
+>> cache
+>> + * coherency.
+>> + */
+>> +int drm_gem_cma_prime_mmap(struct drm_gem_object *obj,
+>> +			   struct vm_area_struct *vma)
+>> +{
+>> +	struct drm_gem_cma_object *cma_obj = to_drm_gem_cma_obj(obj);
+>> +
+>> +	/* Use standard cache settings for PRIME-exported GEM buffers */
+>> +	cma_obj->map_noncoherent = false;
+>> +
+>> +	return drm_gem_prime_mmap(obj, vma);
+>> +}
+>> +EXPORT_SYMBOL(drm_gem_cma_prime_mmap);
+>> diff --git a/include/drm/drm_gem_cma_helper.h 
+>> b/include/drm/drm_gem_cma_helper.h
+>> index 0a9711caa3e8..b597e00fd5f6 100644
+>> --- a/include/drm/drm_gem_cma_helper.h
+>> +++ b/include/drm/drm_gem_cma_helper.h
+>> @@ -16,6 +16,7 @@ struct drm_mode_create_dumb;
+>>    *       more than one entry but they are guaranteed to have 
+>> contiguous
+>>    *       DMA addresses.
+>>    * @vaddr: kernel virtual address of the backing memory
+>> + * @map_noncoherent: if true, the GEM object is backed by 
+>> non-coherent memory
+>>    */
+>>   struct drm_gem_cma_object {
+>>   	struct drm_gem_object base;
+>> @@ -24,6 +25,8 @@ struct drm_gem_cma_object {
+>>     	/* For objects with DMA memory allocated by GEM CMA */
+>>   	void *vaddr;
+>> +
+>> +	bool map_noncoherent;
+>>   };
+>>     #define to_drm_gem_cma_obj(gem_obj) \
+>> @@ -119,7 +122,7 @@ int drm_gem_cma_mmap(struct drm_gem_object *obj, 
+>> struct vm_area_struct *vma);
+>>   	.prime_handle_to_fd	= drm_gem_prime_handle_to_fd, \
+>>   	.prime_fd_to_handle	= drm_gem_prime_fd_to_handle, \
+>>   	.gem_prime_import_sg_table = drm_gem_cma_prime_import_sg_table, \
+>> -	.gem_prime_mmap		= drm_gem_prime_mmap
+>> +	.gem_prime_mmap		= drm_gem_cma_prime_mmap
+> 
+> gem_prime_mmap is deprecated and on the way out. Only mmap in 
+> drm_gem_object_funcs should be used. I have patches for other drivers 
+> that convert everything to drm_gem_prime_mmap. Afterwards the pointer 
+> can be removed.
+> 
+> Rather than writing a custom prime mmap function, update 
+> drm_gem_cma_prime_import_sg_table() so that it disables non-coherent 
+> mappings for imported buffers. For an example, see how SHMEM's 
+> internal create function uses the 'private' parameter. [1]
 
-       Arnd
+Alright, I can do that.
+
+Cheers,
+-Paul
+
+> Best regards
+> Thomas
+> 
+> [1] 
+> https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/drm_gem_shmem_helper.c#L39
+> 
+>>     /**
+>>    * DRM_GEM_CMA_DRIVER_OPS - CMA GEM driver operations
+>> @@ -181,5 +184,7 @@ struct drm_gem_object *
+>>   drm_gem_cma_prime_import_sg_table_vmap(struct drm_device *drm,
+>>   				       struct dma_buf_attachment *attach,
+>>   				       struct sg_table *sgt);
+>> +int drm_gem_cma_prime_mmap(struct drm_gem_object *obj,
+>> +			   struct vm_area_struct *vma);
+>>     #endif /* __DRM_GEM_CMA_HELPER_H__ */
+>> 
+> 
+> --
+> Thomas Zimmermann
+> Graphics Driver Developer
+> SUSE Software Solutions Germany GmbH
+> Maxfeldstr. 5, 90409 Nürnberg, Germany
+> (HRB 36809, AG Nürnberg)
+> Geschäftsführer: Felix Imendörffer
+> 
+
+
