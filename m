@@ -2,277 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92E2838197C
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 16:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52C96381984
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 17:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232473AbhEOO40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 10:56:26 -0400
-Received: from aposti.net ([89.234.176.197]:58420 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232263AbhEOOz4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 10:55:56 -0400
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Christoph Hellwig <hch@infradead.org>, list@opendingux.net,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH v4 3/3] drm/ingenic: Add option to alloc cached GEM buffers
-Date:   Sat, 15 May 2021 15:53:59 +0100
-Message-Id: <20210515145359.64802-4-paul@crapouillou.net>
-In-Reply-To: <20210515145359.64802-1-paul@crapouillou.net>
-References: <20210515145359.64802-1-paul@crapouillou.net>
+        id S232332AbhEOPL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 11:11:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231646AbhEOPLv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 May 2021 11:11:51 -0400
+Received: from outbound3.mail.transip.nl (outbound3.mail.transip.nl [IPv6:2a01:7c8:7c9:ca11:136:144:136:12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 634FAC061573;
+        Sat, 15 May 2021 08:10:37 -0700 (PDT)
+Received: from submission6.mail.transip.nl (unknown [10.103.8.157])
+        by outbound3.mail.transip.nl (Postfix) with ESMTP id 4Fj83G679FzlkTd;
+        Sat, 15 May 2021 17:10:34 +0200 (CEST)
+Received: from transip.email (unknown [10.103.8.118])
+        by submission6.mail.transip.nl (Postfix) with ESMTPA id 4Fj83D09SZz12LLZ;
+        Sat, 15 May 2021 17:10:31 +0200 (CEST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Date:   Sat, 15 May 2021 17:10:31 +0200
+From:   Dave Olsthoorn <dave@bewaar.me>
+To:     Brian Norris <briannorris@chromium.org>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ganapathi Bhat <ganapathi017@gmail.com>,
+        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Xinming Hu <huxinming820@gmail.com>, stable@vger.kernel.org,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>
+Subject: Re: [PATCH 5.13] mwifiex: bring down link before deleting interface
+In-Reply-To: <20210515024227.2159311-1-briannorris@chromium.org>
+References: <20210515024227.2159311-1-briannorris@chromium.org>
+Message-ID: <713286ddc100bd63a9dbefdece39c935@bewaar.me>
+X-Sender: dave@bewaar.me
+User-Agent: Webmail
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: ClueGetter at submission6.mail.transip.nl
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ s=transip-a; d=bewaar.me; t=1621091434; h=from:subject:to:cc:
+ references:in-reply-to:date:mime-version:content-type;
+ bh=xi/Gjcr5n9G9VABIuXaOgf1ld1MiL0kidF6MW+Mvzrk=;
+ b=dgLwY0HjBBuzKkJzH24lvQSrUgu5Ep2yGyXUP2S2AoexovjSj9sBq571BStgK2yX4etC7y
+ nTUdyUK/sUnlOt9L4hbDl6qiaHNreDIpTATHq2GiCTCiiPviJVdfUuBMXLiHrlC0Ct//9z
+ zVTm7UYJB990g6UCuCoSKbe5II0A92FAvl+0r9BWmY/sDSQt4wkTdgtIPKm5VV9nTPhjRs
+ bQglze0kl0KkykkVrKpQQ8qXpHw1xlxGq3YveM95Y50XqUyXzDRr0DnWyWPgykk5tf01a7
+ FVA9U8qqC+H9WCCAFeGOQq0aIJLogl4RhR0kTN0d1VrTG0zqvGSzSUujQ1AMpQ==
+X-Report-Abuse-To: abuse@transip.nl
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alloc GEM buffers backed by noncoherent memory on SoCs where it is
-actually faster than write-combine.
+On 2021-05-15 04:42, Brian Norris wrote:
+> We can deadlock when rmmod'ing the driver or going through firmware
+> reset, because the cfg80211_unregister_wdev() has to bring down the 
+> link
+> for us, ... which then grab the same wiphy lock.
+> 
+> nl80211_del_interface() already handles a very similar case, with a 
+> nice
+> description:
+> 
+>         /*
+>          * We hold RTNL, so this is safe, without RTNL opencount cannot
+>          * reach 0, and thus the rdev cannot be deleted.
+>          *
+>          * We need to do it for the dev_close(), since that will call
+>          * the netdev notifiers, and we need to acquire the mutex there
+>          * but don't know if we get there from here or from some other
+>          * place (e.g. "ip link set ... down").
+>          */
+>         mutex_unlock(&rdev->wiphy.mtx);
+> ...
+> 
+> Do similarly for mwifiex teardown, by ensuring we bring the link down
+> first.
+> 
+> Sample deadlock trace:
+> 
+> [  247.103516] INFO: task rmmod:2119 blocked for more than 123 seconds.
+> [  247.110630]       Not tainted 5.12.4 #5
+> [  247.115796] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
+> disables this message.
+> [  247.124557] task:rmmod           state:D stack:    0 pid: 2119
+> ppid:  2114 flags:0x00400208
+> [  247.133905] Call trace:
+> [  247.136644]  __switch_to+0x130/0x170
+> [  247.140643]  __schedule+0x714/0xa0c
+> [  247.144548]  schedule_preempt_disabled+0x88/0xf4
+> [  247.149714]  __mutex_lock_common+0x43c/0x750
+> [  247.154496]  mutex_lock_nested+0x5c/0x68
+> [  247.158884]  cfg80211_netdev_notifier_call+0x280/0x4e0 [cfg80211]
+> [  247.165769]  raw_notifier_call_chain+0x4c/0x78
+> [  247.170742]  call_netdevice_notifiers_info+0x68/0xa4
+> [  247.176305]  __dev_close_many+0x7c/0x138
+> [  247.180693]  dev_close_many+0x7c/0x10c
+> [  247.184893]  unregister_netdevice_many+0xfc/0x654
+> [  247.190158]  unregister_netdevice_queue+0xb4/0xe0
+> [  247.195424]  _cfg80211_unregister_wdev+0xa4/0x204 [cfg80211]
+> [  247.201816]  cfg80211_unregister_wdev+0x20/0x2c [cfg80211]
+> [  247.208016]  mwifiex_del_virtual_intf+0xc8/0x188 [mwifiex]
+> [  247.214174]  mwifiex_uninit_sw+0x158/0x1b0 [mwifiex]
+> [  247.219747]  mwifiex_remove_card+0x38/0xa0 [mwifiex]
+> [  247.225316]  mwifiex_pcie_remove+0xd0/0xe0 [mwifiex_pcie]
+> [  247.231451]  pci_device_remove+0x50/0xe0
+> [  247.235849]  device_release_driver_internal+0x110/0x1b0
+> [  247.241701]  driver_detach+0x5c/0x9c
+> [  247.245704]  bus_remove_driver+0x84/0xb8
+> [  247.250095]  driver_unregister+0x3c/0x60
+> [  247.254486]  pci_unregister_driver+0x2c/0x90
+> [  247.259267]  cleanup_module+0x18/0xcdc [mwifiex_pcie]
+> 
+> Fixes: a05829a7222e ("cfg80211: avoid holding the RTNL when calling the 
+> driver")
+> Cc: stable@vger.kernel.org
+> Link:
+> https://lore.kernel.org/linux-wireless/98392296-40ee-6300-369c-32e16cff3725@gmail.com/
+> Link:
+> https://lore.kernel.org/linux-wireless/ab4d00ce52f32bd8e45ad0448a44737e@bewaar.me/
+> Reported-by: Maximilian Luz <luzmaximilian@gmail.com>
+> Reported-by: Dave Olsthoorn <dave@bewaar.me>
 
-This dramatically speeds up software rendering on these SoCs, even for
-tasks where write-combine memory should in theory be faster (e.g. simple
-blits).
+Thanks!
 
-v3: The option is now selected per-SoC instead of being a module
-    parameter.
+The firmware still seems to crash quicker than previously, but that's a 
+unrelated problem.
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
- drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 56 ++++++++++++++++++++++-
- drivers/gpu/drm/ingenic/ingenic-ipu.c     | 18 ++++++--
- 2 files changed, 68 insertions(+), 6 deletions(-)
+Tested-by: Dave Olsthoorn <dave@bewaar.me>
 
-diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-index 09225b770bb8..5f64e8583eec 100644
---- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-+++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-@@ -9,6 +9,7 @@
- #include <linux/component.h>
- #include <linux/clk.h>
- #include <linux/dma-mapping.h>
-+#include <linux/io.h>
- #include <linux/module.h>
- #include <linux/mutex.h>
- #include <linux/of_device.h>
-@@ -23,6 +24,7 @@
- #include <drm/drm_color_mgmt.h>
- #include <drm/drm_crtc.h>
- #include <drm/drm_crtc_helper.h>
-+#include <drm/drm_damage_helper.h>
- #include <drm/drm_drv.h>
- #include <drm/drm_encoder.h>
- #include <drm/drm_gem_cma_helper.h>
-@@ -57,6 +59,7 @@ struct ingenic_dma_hwdescs {
- struct jz_soc_info {
- 	bool needs_dev_clk;
- 	bool has_osd;
-+	bool map_noncoherent;
- 	unsigned int max_width, max_height;
- 	const u32 *formats_f0, *formats_f1;
- 	unsigned int num_formats_f0, num_formats_f1;
-@@ -410,6 +413,8 @@ static int ingenic_drm_plane_atomic_check(struct drm_plane *plane,
- 	     old_plane_state->fb->format->format != new_plane_state->fb->format->format))
- 		crtc_state->mode_changed = true;
- 
-+	drm_atomic_helper_check_plane_damage(state, new_plane_state);
-+
- 	return 0;
- }
- 
-@@ -544,8 +549,8 @@ static void ingenic_drm_plane_atomic_update(struct drm_plane *plane,
- 					    struct drm_atomic_state *state)
- {
- 	struct ingenic_drm *priv = drm_device_get_priv(plane->dev);
--	struct drm_plane_state *newstate = drm_atomic_get_new_plane_state(state,
--									  plane);
-+	struct drm_plane_state *newstate = drm_atomic_get_new_plane_state(state, plane);
-+	struct drm_plane_state *oldstate = drm_atomic_get_old_plane_state(state, plane);
- 	struct drm_crtc_state *crtc_state;
- 	struct ingenic_dma_hwdesc *hwdesc;
- 	unsigned int width, height, cpp, offset;
-@@ -553,6 +558,8 @@ static void ingenic_drm_plane_atomic_update(struct drm_plane *plane,
- 	u32 fourcc;
- 
- 	if (newstate && newstate->fb) {
-+		drm_gem_cma_sync_data(&priv->drm, oldstate, newstate);
-+
- 		crtc_state = newstate->crtc->state;
- 
- 		addr = drm_fb_cma_get_gem_addr(newstate->fb, newstate, 0);
-@@ -742,6 +749,43 @@ static void ingenic_drm_disable_vblank(struct drm_crtc *crtc)
- 	regmap_update_bits(priv->map, JZ_REG_LCD_CTRL, JZ_LCD_CTRL_EOF_IRQ, 0);
- }
- 
-+static int ingenic_drm_atomic_helper_dirtyfb(struct drm_framebuffer *fb,
-+					     struct drm_file *file_priv,
-+					     unsigned int flags,
-+					     unsigned int color,
-+					     struct drm_clip_rect *clips,
-+					     unsigned int num_clips)
-+{
-+	struct ingenic_drm *priv = drm_device_get_priv(fb->dev);
-+
-+	if (!priv->soc_info->map_noncoherent)
-+		return 0;
-+
-+	return drm_atomic_helper_dirtyfb(fb, file_priv, flags,
-+					 color, clips, num_clips);
-+}
-+
-+static const struct drm_framebuffer_funcs ingenic_drm_gem_fb_funcs = {
-+	.destroy	= drm_gem_fb_destroy,
-+	.create_handle	= drm_gem_fb_create_handle,
-+	.dirty          = ingenic_drm_atomic_helper_dirtyfb,
-+};
-+
-+static struct drm_gem_object *
-+ingenic_drm_gem_create_object(struct drm_device *drm, size_t size)
-+{
-+	struct ingenic_drm *priv = drm_device_get_priv(drm);
-+	struct drm_gem_cma_object *obj;
-+
-+	obj = kzalloc(sizeof(*obj), GFP_KERNEL);
-+	if (!obj)
-+		return ERR_PTR(-ENOMEM);
-+
-+	obj->map_noncoherent = priv->soc_info->map_noncoherent;
-+
-+	return &obj->base;
-+}
-+
- DEFINE_DRM_GEM_CMA_FOPS(ingenic_drm_fops);
- 
- static const struct drm_driver ingenic_drm_driver_data = {
-@@ -754,6 +798,7 @@ static const struct drm_driver ingenic_drm_driver_data = {
- 	.patchlevel		= 0,
- 
- 	.fops			= &ingenic_drm_fops,
-+	.gem_create_object	= ingenic_drm_gem_create_object,
- 	DRM_GEM_CMA_DRIVER_OPS,
- 
- 	.irq_handler		= ingenic_drm_irq_handler,
-@@ -961,6 +1006,8 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
- 		return ret;
- 	}
- 
-+	drm_plane_enable_fb_damage_clips(&priv->f1);
-+
- 	drm_crtc_helper_add(&priv->crtc, &ingenic_drm_crtc_helper_funcs);
- 
- 	ret = drm_crtc_init_with_planes(drm, &priv->crtc, primary,
-@@ -989,6 +1036,8 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
- 			return ret;
- 		}
- 
-+		drm_plane_enable_fb_damage_clips(&priv->f0);
-+
- 		if (IS_ENABLED(CONFIG_DRM_INGENIC_IPU) && has_components) {
- 			ret = component_bind_all(dev, drm);
- 			if (ret) {
-@@ -1245,6 +1294,7 @@ static const u32 jz4770_formats_f0[] = {
- static const struct jz_soc_info jz4740_soc_info = {
- 	.needs_dev_clk = true,
- 	.has_osd = false,
-+	.map_noncoherent = false,
- 	.max_width = 800,
- 	.max_height = 600,
- 	.formats_f1 = jz4740_formats,
-@@ -1255,6 +1305,7 @@ static const struct jz_soc_info jz4740_soc_info = {
- static const struct jz_soc_info jz4725b_soc_info = {
- 	.needs_dev_clk = false,
- 	.has_osd = true,
-+	.map_noncoherent = false,
- 	.max_width = 800,
- 	.max_height = 600,
- 	.formats_f1 = jz4725b_formats_f1,
-@@ -1266,6 +1317,7 @@ static const struct jz_soc_info jz4725b_soc_info = {
- static const struct jz_soc_info jz4770_soc_info = {
- 	.needs_dev_clk = false,
- 	.has_osd = true,
-+	.map_noncoherent = true,
- 	.max_width = 1280,
- 	.max_height = 720,
- 	.formats_f1 = jz4770_formats_f1,
-diff --git a/drivers/gpu/drm/ingenic/ingenic-ipu.c b/drivers/gpu/drm/ingenic/ingenic-ipu.c
-index 3b1091e7c0cd..a4d1b500c3ad 100644
---- a/drivers/gpu/drm/ingenic/ingenic-ipu.c
-+++ b/drivers/gpu/drm/ingenic/ingenic-ipu.c
-@@ -20,10 +20,13 @@
- 
- #include <drm/drm_atomic.h>
- #include <drm/drm_atomic_helper.h>
-+#include <drm/drm_damage_helper.h>
- #include <drm/drm_drv.h>
- #include <drm/drm_fb_cma_helper.h>
- #include <drm/drm_fourcc.h>
- #include <drm/drm_gem_atomic_helper.h>
-+#include <drm/drm_gem_cma_helper.h>
-+#include <drm/drm_gem_framebuffer_helper.h>
- #include <drm/drm_plane.h>
- #include <drm/drm_plane_helper.h>
- #include <drm/drm_property.h>
-@@ -285,8 +288,8 @@ static void ingenic_ipu_plane_atomic_update(struct drm_plane *plane,
- 					    struct drm_atomic_state *state)
- {
- 	struct ingenic_ipu *ipu = plane_to_ingenic_ipu(plane);
--	struct drm_plane_state *newstate = drm_atomic_get_new_plane_state(state,
--									  plane);
-+	struct drm_plane_state *newstate = drm_atomic_get_new_plane_state(state, plane);
-+	struct drm_plane_state *oldstate = drm_atomic_get_new_plane_state(state, plane);
- 	const struct drm_format_info *finfo;
- 	u32 ctrl, stride = 0, coef_index = 0, format = 0;
- 	bool needs_modeset, upscaling_w, upscaling_h;
-@@ -317,6 +320,8 @@ static void ingenic_ipu_plane_atomic_update(struct drm_plane *plane,
- 				JZ_IPU_CTRL_CHIP_EN | JZ_IPU_CTRL_LCDC_SEL);
- 	}
- 
-+	drm_gem_cma_sync_data(ipu->drm, oldstate, newstate);
-+
- 	/* New addresses will be committed in vblank handler... */
- 	ipu->addr_y = drm_fb_cma_get_gem_addr(newstate->fb, newstate, 0);
- 	if (finfo->num_planes > 1)
-@@ -541,7 +546,7 @@ static int ingenic_ipu_plane_atomic_check(struct drm_plane *plane,
- 
- 	if (!new_plane_state->crtc ||
- 	    !crtc_state->mode.hdisplay || !crtc_state->mode.vdisplay)
--		return 0;
-+		goto out_check_damage;
- 
- 	/* Plane must be fully visible */
- 	if (new_plane_state->crtc_x < 0 || new_plane_state->crtc_y < 0 ||
-@@ -558,7 +563,7 @@ static int ingenic_ipu_plane_atomic_check(struct drm_plane *plane,
- 		return -EINVAL;
- 
- 	if (!osd_changed(new_plane_state, old_plane_state))
--		return 0;
-+		goto out_check_damage;
- 
- 	crtc_state->mode_changed = true;
- 
-@@ -592,6 +597,9 @@ static int ingenic_ipu_plane_atomic_check(struct drm_plane *plane,
- 	ipu->denom_w = denom_w;
- 	ipu->denom_h = denom_h;
- 
-+out_check_damage:
-+	drm_atomic_helper_check_plane_damage(state, new_plane_state);
-+
- 	return 0;
- }
- 
-@@ -773,6 +781,8 @@ static int ingenic_ipu_bind(struct device *dev, struct device *master, void *d)
- 		return err;
- 	}
- 
-+	drm_plane_enable_fb_damage_clips(plane);
-+
- 	/*
- 	 * Sharpness settings range is [0,32]
- 	 * 0       : nearest-neighbor
--- 
-2.30.2
-
+> Cc: Johannes Berg <johannes@sipsolutions.net>
+> Signed-off-by: Brian Norris <briannorris@chromium.org>
+> ---
+>  drivers/net/wireless/marvell/mwifiex/main.c | 13 ++++++++++---
+>  1 file changed, 10 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/marvell/mwifiex/main.c
+> b/drivers/net/wireless/marvell/mwifiex/main.c
+> index 529dfd8b7ae8..17399d4aa129 100644
+> --- a/drivers/net/wireless/marvell/mwifiex/main.c
+> +++ b/drivers/net/wireless/marvell/mwifiex/main.c
+> @@ -1445,11 +1445,18 @@ static void mwifiex_uninit_sw(struct
+> mwifiex_adapter *adapter)
+>  		if (!priv)
+>  			continue;
+>  		rtnl_lock();
+> -		wiphy_lock(adapter->wiphy);
+>  		if (priv->netdev &&
+> -		    priv->wdev.iftype != NL80211_IFTYPE_UNSPECIFIED)
+> +		    priv->wdev.iftype != NL80211_IFTYPE_UNSPECIFIED) {
+> +			/*
+> +			 * Close the netdev now, because if we do it later, the
+> +			 * netdev notifiers will need to acquire the wiphy lock
+> +			 * again --> deadlock.
+> +			 */
+> +			dev_close(priv->wdev.netdev);
+> +			wiphy_lock(adapter->wiphy);
+>  			mwifiex_del_virtual_intf(adapter->wiphy, &priv->wdev);
+> -		wiphy_unlock(adapter->wiphy);
+> +			wiphy_unlock(adapter->wiphy);
+> +		}
+>  		rtnl_unlock();
+>  	}
