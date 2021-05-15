@@ -2,213 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2573E3814CE
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 02:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6015F3814D0
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 02:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234665AbhEOA7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 20:59:39 -0400
-Received: from mga06.intel.com ([134.134.136.31]:45469 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230087AbhEOA7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 20:59:38 -0400
-IronPort-SDR: wxb/6v+CJiFsUkp90puVWskeOcw42SEbFe5GmFa9+WgZfYNqwGjPGyY0UFBdi+XAVoSel6Azdb
- 1eRUUQrw59tw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9984"; a="261491811"
-X-IronPort-AV: E=Sophos;i="5.82,300,1613462400"; 
-   d="scan'208";a="261491811"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 May 2021 17:58:26 -0700
-IronPort-SDR: 2KSJ13jqU/SkRGhGALno8IShOZ8mOXzdR8lPcPmISFbI8XK902xk1rs2o/m89HBw4lzViumAsr
- LkiXDf8NjDLw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,300,1613462400"; 
-   d="scan'208";a="431917918"
-Received: from lkp-server01.sh.intel.com (HELO ddd90b05c979) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 14 May 2021 17:58:25 -0700
-Received: from kbuild by ddd90b05c979 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lhidM-0000xO-Hi; Sat, 15 May 2021 00:58:24 +0000
-Date:   Sat, 15 May 2021 08:57:43 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/cpu] BUILD SUCCESS
- 28188cc461f6cf8b7d28de4f6df52014cc1d5e39
-Message-ID: <609f1c87.8x4MVG4JhvBlIfhz%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S234460AbhEOBA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 21:00:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230087AbhEOBA6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 21:00:58 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9727C06174A;
+        Fri, 14 May 2021 17:59:46 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id y32so523502pga.11;
+        Fri, 14 May 2021 17:59:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iLidNNz+WtR1nek5df3fCPxu8o8cBt8SPQCZTnExBng=;
+        b=jwtP5Pq1MW/1L/XG9M7KJaHCBfLFqo7+7aqcSxkukvYPx6cmzHZyDG6tuzfn9qr8dL
+         xSIHYITF6PUyVoZmMXtrz90yvdunAv+PyVleUXhoxGQGA6HejPqWmUsDtsecoB55xu7a
+         mnfI+ZGa4F0NeCnvGuIr3Vra2elO/RIOtHwnvu4zSL8ln4p7gc6p1wsNZRkdhT9mgGPG
+         6CL5uP6XK8dG9iiZpoKw8a5zfuWDTzX85JlPeB82lfZ3ezoE9pKbORQirlJM/yyujGoQ
+         UlAEmYCV2Ba2M5mbYUzviydMGfJZj+7rciSfMsQHG4PgJozFZ9mvyn0pmBDlh01B1k2h
+         k2hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iLidNNz+WtR1nek5df3fCPxu8o8cBt8SPQCZTnExBng=;
+        b=OUxRy/T22HhQVAspBsSfWfqrkTqK9+vsehyKszspOzBeHVbeF+KsAe4Y8oklUeSh+0
+         09SzTJyWlOrhkXaN/rn2C3FrFRlf99sbHH6Rw5GLTzsdPrbG8+X7uxhz5Et9s6boXX6U
+         485z9mgefgUqjdRtZn5RoKeLt4bStEHw8FkAvY9XrwzQoxssojVsiB5oqmqTdTvLDjoe
+         KDyUk1hG+QrW2c5toGxe+AXpeoCYmmQztbUMyw75irBApa1fHi8HztVgmJS6fxKzBiPX
+         z91i0CFYRA5VR7KlzJvnUcJI3fjIDtkvUtwVulMsDInPincw4IWOkTSwXb9A4p66zvRX
+         kZYg==
+X-Gm-Message-State: AOAM532vsQ8Zaqv2W78i64B9q4pQ+qg0q7+JTQ6Apg7m6xdhpXFldVY6
+        f5FZjpGvHhQJ563KcutB4mA=
+X-Google-Smtp-Source: ABdhPJx/OfD+1usR2aT0BWRW12kq2Jswbv5m0EV5BzOX1nOxHKVmF6COldRGuPZf3QE2Qt3aBcVQBA==
+X-Received: by 2002:a63:5d13:: with SMTP id r19mr13295013pgb.379.1621040386394;
+        Fri, 14 May 2021 17:59:46 -0700 (PDT)
+Received: from localhost ([103.248.31.157])
+        by smtp.gmail.com with ESMTPSA id z3sm4696589pfe.78.2021.05.14.17.59.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 May 2021 17:59:46 -0700 (PDT)
+Date:   Sat, 15 May 2021 06:29:42 +0530
+From:   Amey Narkhede <ameynarkhede03@gmail.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     alex.williamson@redhat.com, raphael.norwitz@nutanix.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+Subject: Re: [PATCH v2 0/5] Expose and manage PCI device reset
+Message-ID: <20210515005942.nfcbdyn6fssuhld7@archlinux>
+References: <20210409192324.30080-1-ameynarkhede03@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210409192324.30080-1-ameynarkhede03@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cpu
-branch HEAD: 28188cc461f6cf8b7d28de4f6df52014cc1d5e39  x86/cpu: Fix core name for Sapphire Rapids
+On 21/04/10 12:53AM, Amey Narkhede wrote:
+> PCI and PCIe devices may support a number of possible reset mechanisms
+> for example Function Level Reset (FLR) provided via Advanced Feature or
+> PCIe capabilities, Power Management reset, bus reset, or device specific reset.
+> Currently the PCI subsystem creates a policy prioritizing these reset methods
+> which provides neither visibility nor control to userspace.
+>
+> Expose the reset methods available per device to userspace, via sysfs
+> and allow an administrative user or device owner to have ability to
+> manage per device reset method priorities or exclusions.
+> This feature aims to allow greater control of a device for use cases
+> as device assignment, where specific device or platform issues may
+> interact poorly with a given reset method, and for which device specific
+> quirks have not been developed.
+>
+> Changes in v2:
+> 	- Use byte array instead of bitmap to keep track of
+> 	  ordering of reset methods
+> 	- Fix incorrect use of reset_fn field in octeon driver
+> 	- Allow writing comma separated list of names of supported reset
+> 	  methods to reset_method sysfs attribute
+> 	- Writing empty string instead of "none" to reset_method attribute
+> 	  disables ability of reset the device
+>
+> Sending Raphael's patch again as this series depends on it.
+>
+> Amey Narkhede (4):
+>   PCI: Add pcie_reset_flr to follow calling convention of other reset
+>     methods
+>   PCI: Add new array for keeping track of ordering of reset methods
+>   PCI: Remove reset_fn field from pci_dev
+>   PCI/sysfs: Allow userspace to query and set device reset mechanism
+>
+> Raphael Norwitz (1):
+>   PCI: merge slot and bus reset implementations
+>
+>  Documentation/ABI/testing/sysfs-bus-pci       |  16 ++
+>  drivers/crypto/cavium/nitrox/nitrox_main.c    |   4 +-
+>  .../ethernet/cavium/liquidio/lio_vf_main.c    |   2 +-
+>  drivers/pci/pci-sysfs.c                       |  93 ++++++++-
+>  drivers/pci/pci.c                             | 176 ++++++++++--------
+>  drivers/pci/pci.h                             |  10 +-
+>  drivers/pci/pcie/aer.c                        |  12 +-
+>  drivers/pci/probe.c                           |   4 +-
+>  drivers/pci/quirks.c                          |  11 +-
+>  include/linux/pci.h                           |  11 +-
+>  10 files changed, 236 insertions(+), 103 deletions(-)
+>
+> --
+> 2.31.1
 
-elapsed time: 725m
+Hi Bjorn,
+I guess as the merge window is closed this patch
+won't get merged in 5.13. I was wondering if you
+have any suggestions on this patch series so that I can
+make changes meanwhile.
 
-configs tested: 151
-configs skipped: 13
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                 mpc836x_rdk_defconfig
-sh                          rsk7264_defconfig
-arm                         lpc32xx_defconfig
-powerpc                 mpc834x_mds_defconfig
-sh                         ecovec24_defconfig
-xtensa                  cadence_csp_defconfig
-mips                          rm200_defconfig
-arm                      pxa255-idp_defconfig
-arm                        mini2440_defconfig
-powerpc                       eiger_defconfig
-powerpc                    socrates_defconfig
-parisc                generic-64bit_defconfig
-mips                          rb532_defconfig
-mips                        nlm_xlr_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sh                           se7721_defconfig
-powerpc                         ps3_defconfig
-m68k                        m5307c3_defconfig
-m68k                       m5275evb_defconfig
-arm                          iop32x_defconfig
-powerpc                 mpc8315_rdb_defconfig
-openrisc                  or1klitex_defconfig
-powerpc                    amigaone_defconfig
-sh                          sdk7786_defconfig
-powerpc                 mpc832x_mds_defconfig
-powerpc                     mpc5200_defconfig
-arm                          ixp4xx_defconfig
-arm                            mps2_defconfig
-ia64                          tiger_defconfig
-powerpc                   currituck_defconfig
-riscv                               defconfig
-arm                       imx_v4_v5_defconfig
-powerpc                     tqm5200_defconfig
-sh                   sh7770_generic_defconfig
-h8300                               defconfig
-sh                        sh7785lcr_defconfig
-arc                                 defconfig
-m68k                       m5249evb_defconfig
-m68k                           sun3_defconfig
-powerpc                     mpc512x_defconfig
-openrisc                 simple_smp_defconfig
-mips                           ip22_defconfig
-arc                          axs101_defconfig
-m68k                          hp300_defconfig
-powerpc                         wii_defconfig
-riscv                          rv32_defconfig
-xtensa                  nommu_kc705_defconfig
-h8300                       h8s-sim_defconfig
-riscv                            alldefconfig
-powerpc                     ksi8560_defconfig
-arm                          simpad_defconfig
-arm                       mainstone_defconfig
-openrisc                            defconfig
-arm                        mvebu_v5_defconfig
-arc                           tb10x_defconfig
-sparc64                          alldefconfig
-openrisc                    or1ksim_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20210514
-x86_64               randconfig-a003-20210514
-x86_64               randconfig-a001-20210514
-x86_64               randconfig-a005-20210514
-x86_64               randconfig-a002-20210514
-x86_64               randconfig-a006-20210514
-i386                 randconfig-a003-20210514
-i386                 randconfig-a001-20210514
-i386                 randconfig-a004-20210514
-i386                 randconfig-a005-20210514
-i386                 randconfig-a002-20210514
-i386                 randconfig-a006-20210514
-x86_64               randconfig-a012-20210515
-x86_64               randconfig-a015-20210515
-x86_64               randconfig-a011-20210515
-x86_64               randconfig-a013-20210515
-x86_64               randconfig-a016-20210515
-x86_64               randconfig-a014-20210515
-i386                 randconfig-a016-20210515
-i386                 randconfig-a014-20210515
-i386                 randconfig-a011-20210515
-i386                 randconfig-a012-20210515
-i386                 randconfig-a015-20210515
-i386                 randconfig-a013-20210515
-i386                 randconfig-a016-20210514
-i386                 randconfig-a014-20210514
-i386                 randconfig-a011-20210514
-i386                 randconfig-a012-20210514
-i386                 randconfig-a015-20210514
-i386                 randconfig-a013-20210514
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                            allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a004-20210515
-x86_64               randconfig-a003-20210515
-x86_64               randconfig-a001-20210515
-x86_64               randconfig-a005-20210515
-x86_64               randconfig-a002-20210515
-x86_64               randconfig-a006-20210515
-x86_64               randconfig-a015-20210514
-x86_64               randconfig-a012-20210514
-x86_64               randconfig-a011-20210514
-x86_64               randconfig-a013-20210514
-x86_64               randconfig-a016-20210514
-x86_64               randconfig-a014-20210514
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Thanks,
+Amey
