@@ -2,62 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FF7A3819D9
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 18:29:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7E6D3819DC
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 18:31:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233581AbhEOQac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 12:30:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52692 "EHLO mail.kernel.org"
+        id S233661AbhEOQcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 12:32:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233446AbhEOQaP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 12:30:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 51AB8613C3;
-        Sat, 15 May 2021 16:29:02 +0000 (UTC)
+        id S232463AbhEOQch (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 May 2021 12:32:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A6511613C1
+        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 16:31:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621096142;
-        bh=0kWbhIzou/K1V6tvaJurAgMxCJs9oEXS3QfpYfLpJVk=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=hWsXGG8XGNf6QabVrcBto6KbHKRlZoRObXWkTBiRjFfgFEgVuKx/WgXyf6DOvS3u4
-         TFaeTSctkbFqn3jLVpXXt65AupLpHppYMeQTDoz7dNz/D+W92YThvLnviIldb0myVo
-         bhIzdps8o16CoiQKB0VwBWoVMPI1HHboZAx4T17IhKLZCP/TQtrvjzJCvDXQnOS/zz
-         kk8b0ktLmCcnrz+dEGkq+SmeSx0PTrAwxeoRfka+aGQRBMs4GvN52ZAAZZgwUnIVu9
-         fgIXqCvgvvylAYIodGkjQTTibbQLGWN0EQFHleFAvapK2FBnSWp7ZMCLCZKjZNtCrM
-         /xzMS4VOqVBOw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4C47A60727;
-        Sat, 15 May 2021 16:29:02 +0000 (UTC)
-Subject: Re: [git pull] drm fixes for 5.13-rc2 (part two)
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAPM=9tyEzE01K43mAfz3Wv+M0Q7n+3rHriNboSWcjEERy1Hxig@mail.gmail.com>
-References: <CAPM=9tyEzE01K43mAfz3Wv+M0Q7n+3rHriNboSWcjEERy1Hxig@mail.gmail.com>
-X-PR-Tracked-List-Id: Direct Rendering Infrastructure - Development
- <dri-devel.lists.freedesktop.org>
-X-PR-Tracked-Message-Id: <CAPM=9tyEzE01K43mAfz3Wv+M0Q7n+3rHriNboSWcjEERy1Hxig@mail.gmail.com>
-X-PR-Tracked-Remote: git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-05-15
-X-PR-Tracked-Commit-Id: 5dce58de4be8a4c9f2af3beed3ee9813933a0583
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 33f85ca44eec7f1ad4be3f3b8d575845b789f1b3
-Message-Id: <162109614230.13678.16024789612812255461.pr-tracker-bot@kernel.org>
-Date:   Sat, 15 May 2021 16:29:02 +0000
-To:     Dave Airlie <airlied@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
+        s=k20201202; t=1621096284;
+        bh=KsNEDXfoNVSr78CdrTJBEBpat46fcweBsyHivFq2GPE=;
+        h=From:To:Subject:Date:From;
+        b=pR3rLV2gBG6AnPAdaYeDnhX1SZs/USuGnWJC5+P3BxVDx1dV0tGM+kZK0ghc9soAq
+         eNneiFWzgcFzIXYIkfp0RLPRdboaEGn48F/5Kigi+tTNadcDxBwRWIlwk9pY/zYSgV
+         3i3zyX8oJ1h5dLzHfp9+7FKwPmc50qGKfsMb6HLGbk/zeuA5MvzmYDgZ2ekqwdIJUm
+         sZ9Joc9e3MgV6o7uQAUC9rjeTtQZzPjR3AQmKuZHYFhAlV3ooml0+lOqld3BvQWRZp
+         tflI1h1CUy+OIEcJRcJLKyEF8u1hnTfski8wuzEMUyMJZc15YmnKrnvTC8tDt64Ypg
+         TVK+KsuFTm6EQ==
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Subject: [PATCH 1/5] habanalabs: notify before f/w loading
+Date:   Sat, 15 May 2021 19:31:12 +0300
+Message-Id: <20210515163116.14181-1-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 15 May 2021 07:02:44 +1000:
+An information print notifying on starting to load the f/w was removed
+by mistake when moving to the new dynamic f/w loading mechanism.
 
-> git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-05-15
+Restore that print as the F/W loading usually takes between 10 to 20
+seconds and this print helps the user know the status of the driver
+load.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/33f85ca44eec7f1ad4be3f3b8d575845b789f1b3
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+---
+ drivers/misc/habanalabs/common/firmware_if.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Thank you!
-
+diff --git a/drivers/misc/habanalabs/common/firmware_if.c b/drivers/misc/habanalabs/common/firmware_if.c
+index 3969351b5513..8922d4a43919 100644
+--- a/drivers/misc/habanalabs/common/firmware_if.c
++++ b/drivers/misc/habanalabs/common/firmware_if.c
+@@ -1951,6 +1951,9 @@ static int hl_fw_dynamic_init_cpu(struct hl_device *hdev,
+ 	struct cpu_dyn_regs *dyn_regs;
+ 	int rc;
+ 
++	dev_info(hdev->dev,
++		"Loading firmware to device, may take some time...\n");
++
+ 	dyn_regs = &fw_loader->dynamic_loader.comm_desc.cpu_dyn_regs;
+ 
+ 	rc = hl_fw_dynamic_send_protocol_cmd(hdev, fw_loader, COMMS_RST_STATE,
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.25.1
+
