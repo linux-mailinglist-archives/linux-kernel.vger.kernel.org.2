@@ -2,78 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 647DA381AAC
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 21:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF179381AC6
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 21:32:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234637AbhEOTKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 15:10:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234609AbhEOTKM (ORCPT
+        id S233764AbhEOTd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 15:33:27 -0400
+Received: from mail-wm1-f46.google.com ([209.85.128.46]:41730 "EHLO
+        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231334AbhEOTd0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 15:10:12 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C3DDC061573;
-        Sat, 15 May 2021 12:08:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=pOAXp/hARmNfIeDbR6g75usgQPdXixVcFAZ7QXoop+M=; b=dqkaPuuLQteMf+jPfC0ZXbRxG5
-        IQyj7LffrKjDHTFYQaAqR9fzqQBXCTjECVH9MqsOSqIIbGvtNy3A3oHDgyOQT/jK5/oVyOn42K//R
-        4NxbuJDmHT0TtCal31ulNTUz9ndzZytg85bQb+n53VlxsrrHgH2xhG36khk+BhZ1775g3juBNRavT
-        ns9eGWacFIGsbKz9MYxLO8g6uoB+oTNNmIqM0k1ezzJGUuq5MNUKrZmqYXSDOCJq12vBGmYP0vwcY
-        JzdGn2DwxhMl7U3/OrCYqb3o/+iuW1WzAsJrdymiNmJ+Lm5Lk3tQD67jAAoDEbEhBy9kaMbHuGhvP
-        JM+TBeaQ==;
-Received: from [2601:1c0:6280:3f0::7376] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lhzej-00Cegg-CS; Sat, 15 May 2021 19:08:57 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Eric Auger <eric.auger@redhat.com>
-Subject: [PATCH] vfio/pci: zap_vma_ptes() needs MMU
-Date:   Sat, 15 May 2021 12:08:56 -0700
-Message-Id: <20210515190856.2130-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Sat, 15 May 2021 15:33:26 -0400
+Received: by mail-wm1-f46.google.com with SMTP id o6-20020a05600c4fc6b029015ec06d5269so1361282wmq.0;
+        Sat, 15 May 2021 12:32:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=S3oOMBHELsi4j/8LwXv2KTVQIqoFC8N6A2IW2H3UcJE=;
+        b=WNJ+5TYQIDhL4USLVMQp9CgVSCQWrlaXy257miBXvggKPoFZaAdZR30sRnUZu7lUh1
+         nbbMO8L/VWEFwGMJmQzTR9h+H0Z2PJGj8a7gKtb/v+ue993jJIPmIgiwg+D4NrLBf/hA
+         iVebj/31mb8/1UQDzy4aZmtMbM0QfTfUeLqfetq/Acc95r1LFgD7fpsEabfvIBEhYrgj
+         rxfDEUM0eoqwQcgMZ2fGvVuZGFs9ShP59slNN4sp4E2D3d7gX9XGmXV9ZYVfNPctySEQ
+         seE+lFhPz3E5sGcLzViJv17ryvq0guZq2rnE5HnK/Bb4m66sjEKqVGx1+zQWmuS63EcJ
+         aXiQ==
+X-Gm-Message-State: AOAM530TyjkEnpSLPhmbrYZrhu3ZUAqxi7BIGAqgMYoPH8UczJZvCOAU
+        RYHo1tt+Xj1FIoxFLNmS2yA/aZhfszU=
+X-Google-Smtp-Source: ABdhPJxqqSTaOxYsuajbqL7dr3Y9SNfk2S/IJPsG42wJNO3j2XdZDSZVaVe8A3xiVQj4pxeNN1/4Nw==
+X-Received: by 2002:a05:600c:293:: with SMTP id 19mr56272007wmk.144.1621107130762;
+        Sat, 15 May 2021 12:32:10 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id l7sm5298841wmq.22.2021.05.15.12.32.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 15 May 2021 12:32:10 -0700 (PDT)
+Date:   Sat, 15 May 2021 19:32:08 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        vkuznets <vkuznets@redhat.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Mohammed Gamal <mgamal@redhat.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] clocksource/drivers/hyper-v: Re-enable
+ VDSO_CLOCKMODE_HVCLOCK on X86
+Message-ID: <20210515193208.dy57jmbhfdmzt2mz@liuwe-devbox-debian-v2>
+References: <20210513073246.1715070-1-vkuznets@redhat.com>
+ <MWHPR21MB15932C5EC2FA75D50B268951D7519@MWHPR21MB1593.namprd21.prod.outlook.com>
+ <20210515154335.lr4hrbcmt25u7m45@liuwe-devbox-debian-v2>
+ <87h7j324w2.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87h7j324w2.ffs@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-zap_vma_ptes() is only available when CONFIG_MMU is set/enabled.
-Without CONFIG_MMU, vfio_pci.o has build errors, so make
-VFIO_PCI depend on MMU.
+On Sat, May 15, 2021 at 09:06:37PM +0200, Thomas Gleixner wrote:
+> On Sat, May 15 2021 at 15:43, Wei Liu wrote:
+> 
+> > On Thu, May 13, 2021 at 01:29:12PM +0000, Michael Kelley wrote:
+> >> From: Vitaly Kuznetsov <vkuznets@redhat.com> Sent: Thursday, May 13, 2021 12:33 AM
+> >> > 
+> >> > Mohammed reports (https://bugzilla.kernel.org/show_bug.cgi?id=213029)
+> >> > the commit e4ab4658f1cf ("clocksource/drivers/hyper-v: Handle vDSO
+> >> > differences inline") broke vDSO on x86. The problem appears to be that
+> >> > VDSO_CLOCKMODE_HVCLOCK is an enum value in 'enum vdso_clock_mode' and
+> >> > '#ifdef VDSO_CLOCKMODE_HVCLOCK' branch evaluates to false (it is not
+> >> > a define). Use a dedicated HAVE_VDSO_CLOCKMODE_HVCLOCK define instead.
+> >> > 
+> >> > Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+> >> > Reported-by: Mohammed Gamal <mgamal@redhat.com>
+> >> > Fixes: e4ab4658f1cf ("clocksource/drivers/hyper-v: Handle vDSO differences inline")
+> >> > Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> > [...]
+> >> 
+> >> Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+> >> 
+> > Applied to hyperv-fixes. Thanks.
+> 
+> It's already in the tip tree...
 
-riscv64-linux-ld: drivers/vfio/pci/vfio_pci.o: in function `vfio_pci_mmap_open':
-vfio_pci.c:(.text+0x1ec): undefined reference to `zap_vma_ptes'
-riscv64-linux-ld: drivers/vfio/pci/vfio_pci.o: in function `.L0 ':
-vfio_pci.c:(.text+0x165c): undefined reference to `zap_vma_ptes'
-
-Fixes: 89e1f7d4c66d ("vfio: Add PCI device driver")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Alex Williamson <alex.williamson@redhat.com>
-Cc: Cornelia Huck <cohuck@redhat.com>
-Cc: kvm@vger.kernel.org
-Cc: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Eric Auger <eric.auger@redhat.com>
----
- drivers/vfio/pci/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
-
---- linux-next-20210514.orig/drivers/vfio/pci/Kconfig
-+++ linux-next-20210514/drivers/vfio/pci/Kconfig
-@@ -2,6 +2,7 @@
- config VFIO_PCI
- 	tristate "VFIO support for PCI devices"
- 	depends on VFIO && PCI && EVENTFD
-+	depends on MMU
- 	select VFIO_VIRQFD
- 	select IRQ_BYPASS_MANAGER
- 	help
+Okay. I will drop it. Thanks.
