@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 276F43814DB
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 03:11:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D25463814DA
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 03:11:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234727AbhEOBMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 May 2021 21:12:09 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:40077 "EHLO
+        id S234706AbhEOBMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 May 2021 21:12:08 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:46137 "EHLO
         mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234697AbhEOBMG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 May 2021 21:12:06 -0400
+        id S232427AbhEOBME (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 May 2021 21:12:04 -0400
 Received: from tazenda.hos.anvin.org ([IPv6:2601:646:8602:8be0:7285:c2ff:fefb:fd4])
         (authenticated bits=0)
-        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14F1ANff3208415
+        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14F1ANfg3208415
         (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
-        Fri, 14 May 2021 18:10:33 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14F1ANff3208415
+        Fri, 14 May 2021 18:10:34 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14F1ANfg3208415
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
         s=2021042801; t=1621041034;
-        bh=+/BRs7QOlua+BhbTObqB07ZN+N8X3zJZ3jbXsJKUwwc=;
+        bh=Kb1O6t+m0dDz3AsUEA9nKOSClLRJdHVsJ9NbA5w0UCQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Mr4mLP0hpVosMXG6Tyf/RVlg9sVnrnXACyrh46CIKz0WbFc9Sxqq8KX9sKAQuGTe4
-         ULFQKqaQA42F5rsx4iwz/kHPcXry9pXXGWUlurR7gHvFLj+esM0pe9itdI+2h2/Eqg
-         +Ufejjht4mlOLAB+4Cwucx6Wx7XcZpGYAaFsfUxEwOGd0+GQwUTMo8SAFkvMXFEvVI
-         yXwHSPIl9kJL90VvgkUnDb3Ss0e8UV4UU7f+QC/JjAwmO64VGSiYl58wEzWbz82TAv
-         YLTFMxlFpYHPl/YeJTNXnOrezpdc2iO1ilVAZyXZB2gieReV8wQ+wMcrdS+zXmzUvN
-         q8VkEyBfFy6Jw==
+        b=ZxKjvgJ3vmqWaUjlnhT/0TCZTa5jGoTAiz9d5iDC31aEt9pBZhAeboDdcRqO5Ih68
+         EZzksHEnw5eEbYTYaKkC1io0xlBv5FJ0Rqhba8iXvUWP7ZX6rMSJs50fswMjdL5Wg8
+         TBsAJZw4XxijUDTxhNdDna9wQ0V1F1ZaAUuqu/BsNX6nC7SAOarFgs2AkElCe7LGVE
+         X0hCB8ftnd285+OvHiuQ6gD0VYHKcrgVyf8phUcFviDNhawFGPoCfyIefo+Fn3zvex
+         n4CSdqnSPYZrLlGqcXy+PUezYfmvlc/m1WMN5/u16KbK1Xrr3uiiiBpoOyneoGhW5J
+         VvHp5IGh7hCaQ==
 From:   "H. Peter Anvin" <hpa@zytor.com>
 To:     Ingo Molnar <mingo@redhat.com>,
         Thomas Gleixner <tglx@linutronix.de>,
@@ -34,9 +34,9 @@ To:     Ingo Molnar <mingo@redhat.com>,
         Borislav Petkov <bp@alien8.de>,
         "H. Peter Anvin" <hpa@zytor.com>
 Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 2/4] x86/syscall: update and extend selftest syscall_numbering_64
-Date:   Fri, 14 May 2021 18:10:13 -0700
-Message-Id: <20210515011015.2707542-3-hpa@zytor.com>
+Subject: [PATCH v3 3/4] x86/syscall: treat out of range and gap system calls the same
+Date:   Fri, 14 May 2021 18:10:14 -0700
+Message-Id: <20210515011015.2707542-4-hpa@zytor.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210515011015.2707542-1-hpa@zytor.com>
 References: <20210515011015.2707542-1-hpa@zytor.com>
@@ -48,335 +48,55 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "H. Peter Anvin (Intel)" <hpa@zytor.com>
 
-Update the syscall_numbering_64 selftest to reflect that a system call
-is to be extended from 32 bits. Add a mix of tests for valid and
-invalid system calls in 64-bit and x32 space.
+The current 64-bit system call entry code treats out-of-range system
+calls differently than system calls that map to a hole in the system
+call table. This is visible to the user if system calls are
+intercepted via ptrace or seccomp and the return value (regs->ax) is
+modified: in the former case, the return value is preserved, and in
+the latter case, sys_ni_syscall() is called and the return value is
+forced to -ENOSYS.
 
-Use an explicit system call instruction, because we cannot know if the
-glibc syscall() wrapper intercepts instructions, extends the system
-call number independently, or anything similar.
+For example, before this patch, 335 for x86-64 would force the exit
+code to be set to -ENOSYS even if poked by ptrace, but 548 would not,
+creating an observable difference between an out of range system call
+and a system call number that falls outside the range of the tables.
 
-Use long long instead of long to make it possible to compile this test
-on x32 as well as 64 bits.
+The API spec in <asm-generic/syscalls.h> is very clear that only
+(int)-1 is the non-system-call sentinel value, so make the system call
+behavior consistent by calling sys_ni_syscall() for all invalid system
+call numbers except for -1.
+
+Although currently sys_ni_syscall() simply returns -ENOSYS, calling it
+explicitly is friendly for tracing and future possible extensions, and
+as this is an error path there is no reason to optimize it.
 
 Signed-off-by: H. Peter Anvin (Intel) <hpa@zytor.com>
 ---
- .../testing/selftests/x86/syscall_numbering.c | 274 ++++++++++++++----
- 1 file changed, 222 insertions(+), 52 deletions(-)
+ arch/x86/entry/common.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/tools/testing/selftests/x86/syscall_numbering.c b/tools/testing/selftests/x86/syscall_numbering.c
-index d6b09cb1aa2c..b578cd3c6b3c 100644
---- a/tools/testing/selftests/x86/syscall_numbering.c
-+++ b/tools/testing/selftests/x86/syscall_numbering.c
-@@ -1,6 +1,8 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- /*
-- * syscall_arg_fault.c - tests faults 32-bit fast syscall stack args
-+ * syscall_numbering.c - test calling the x86-64 kernel with various
-+ * valid and invalid system call numbers.
-+ *
-  * Copyright (c) 2018 Andrew Lutomirski
-  */
- 
-@@ -11,79 +13,247 @@
- #include <stdbool.h>
- #include <errno.h>
- #include <unistd.h>
--#include <syscall.h>
-+#include <string.h>
-+#include <fcntl.h>
-+#include <limits.h>
- 
--static int nerrs;
-+/* Common system call numbers */
-+#define SYS_READ	  0
-+#define SYS_WRITE	  1
-+#define SYS_GETPID	 39
-+/* x64-only system call numbers */
-+#define X64_IOCTL	 16
-+#define X64_READV	 19
-+#define X64_WRITEV	 20
-+/* x32-only system call numbers (without X32_BIT) */
-+#define X32_IOCTL	514
-+#define X32_READV	515
-+#define X32_WRITEV	516
- 
--#define X32_BIT 0x40000000UL
-+#define X32_BIT 0x40000000
- 
--static void check_enosys(unsigned long nr, bool *ok)
-+static unsigned int nerr = 0;	/* Cumulative error count */
-+static int nullfd = -1;		/* File descriptor for /dev/null */
-+
-+/*
-+ * Directly invokes the given syscall with nullfd as the first argument
-+ * and the rest zero. Avoids involving glibc wrappers in case they ever
-+ * end up intercepting some system calls for some reason, or modify
-+ * the system call number itself.
-+ */
-+static inline long long probe_syscall(int msb, int lsb)
- {
--	/* If this fails, a segfault is reasonably likely. */
--	fflush(stdout);
--
--	long ret = syscall(nr, 0, 0, 0, 0, 0, 0);
--	if (ret == 0) {
--		printf("[FAIL]\tsyscall %lu succeeded, but it should have failed\n", nr);
--		*ok = false;
--	} else if (errno != ENOSYS) {
--		printf("[FAIL]\tsyscall %lu had error code %d, but it should have reported ENOSYS\n", nr, errno);
--		*ok = false;
--	}
-+	register long long arg1 asm("rdi") = nullfd;
-+	register long long arg2 asm("rsi") = 0;
-+	register long long arg3 asm("rdx") = 0;
-+	register long long arg4 asm("r10") = 0;
-+	register long long arg5 asm("r8")  = 0;
-+	register long long arg6 asm("r9")  = 0;
-+	long long nr = ((long long)msb << 32) | (unsigned int)lsb;
-+	long long ret;
-+
-+	asm volatile("syscall"
-+		     : "=a" (ret)
-+		     : "a" (nr), "r" (arg1), "r" (arg2), "r" (arg3),
-+		       "r" (arg4), "r" (arg5), "r" (arg6)
-+		     : "rcx", "r11", "memory", "cc");
-+
-+	return ret;
+diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
+index 00da0f5420de..f51bc17262db 100644
+--- a/arch/x86/entry/common.c
++++ b/arch/x86/entry/common.c
+@@ -52,6 +52,8 @@ __visible noinstr void do_syscall_64(struct pt_regs *regs, unsigned long nr)
+ 					X32_NR_syscalls);
+ 		regs->ax = x32_sys_call_table[nr](regs);
+ #endif
++	} else if (unlikely((int)nr != -1)) {
++		regs->ax = __x64_sys_ni_syscall(regs);
+ 	}
+ 	instrumentation_end();
+ 	syscall_exit_to_user_mode(regs);
+@@ -76,6 +78,8 @@ static __always_inline void do_syscall_32_irqs_on(struct pt_regs *regs,
+ 	if (likely(nr < IA32_NR_syscalls)) {
+ 		nr = array_index_nospec(nr, IA32_NR_syscalls);
+ 		regs->ax = ia32_sys_call_table[nr](regs);
++	} else if (unlikely((int)nr != -1)) {
++		regs->ax = __ia32_sys_ni_syscall(regs);
+ 	}
  }
  
--static void test_x32_without_x32_bit(void)
-+static const char *syscall_str(int msb, int start, int end)
- {
--	bool ok = true;
-+	static char buf[64];
-+	const char * const type = (start & X32_BIT) ? "x32" : "x64";
-+	int lsb = start;
- 
- 	/*
--	 * Syscalls 512-547 are "x32" syscalls.  They are intended to be
--	 * called with the x32 (0x40000000) bit set.  Calling them without
--	 * the x32 bit set is nonsense and should not work.
-+	 * Improve readability by stripping the x32 bit, but round
-+	 * toward zero so we don't display -1 as -1073741825.
- 	 */
--	printf("[RUN]\tChecking syscalls 512-547\n");
--	for (int i = 512; i <= 547; i++)
--		check_enosys(i, &ok);
-+	if (lsb < 0)
-+		lsb |= X32_BIT;
-+	else
-+		lsb &= ~X32_BIT;
-+
-+	if (start == end)
-+		snprintf(buf, sizeof buf, "%s syscall %d:%d",
-+			 type, msb, lsb);
-+	else
-+		snprintf(buf, sizeof buf, "%s syscalls %d:%d..%d",
-+			 type, msb, lsb, lsb + (end-start));
-+
-+	return buf;
-+}
-+
-+static unsigned int _check_for(int msb, int start, int end, long long expect,
-+			       const char *expect_str)
-+{
-+	unsigned int err = 0;
-+
-+	for (int nr = start; nr <= end; nr++) {
-+		long long ret = probe_syscall(msb, nr);
-+
-+		if (ret != expect) {
-+			printf("[FAIL]\t      %s returned %lld, but it should have returned %s\n",
-+			       syscall_str(msb, nr, nr),
-+			       ret, expect_str);
-+			err++;
-+		}
-+	}
- 
-+	if (err) {
-+		nerr += err;
-+		if (start != end)
-+			printf("[FAIL]\t      %s had %u failure%s\n",
-+			       syscall_str(msb, start, end),
-+			       err, (err == 1) ? "s" : "");
-+	} else {
-+		printf("[OK]\t      %s returned %s as expected\n",
-+		       syscall_str(msb, start, end), expect_str);
-+	}
-+
-+	return err;
-+}
-+
-+#define check_for(msb,start,end,expect) \
-+	_check_for(msb,start,end,expect,#expect)
-+
-+static bool check_zero(int msb, int nr)
-+{
-+	return check_for(msb, nr, nr, 0);
-+}
-+
-+static bool check_enosys(int msb, int nr)
-+{
-+	return check_for(msb, nr, nr, -ENOSYS);
-+}
-+
-+/*
-+ * Anyone diagnosing a failure will want to know whether the kernel
-+ * supports x32. Tell them. This can also be used to conditionalize
-+ * tests based on existence or nonexistence of x32.
-+ */
-+static bool test_x32(void)
-+{
-+	long long ret;
-+	long long mypid = getpid();
-+
-+	printf("[RUN]\tChecking for x32 by calling x32 getpid()\n");
-+	ret = probe_syscall(0, SYS_GETPID | X32_BIT);
-+
-+	if (ret == mypid) {
-+		printf("[INFO]\t   x32 is supported\n");
-+		return true;
-+	} else if (ret == -ENOSYS) {
-+		printf("[INFO]\t   x32 is not supported\n");
-+		return false;
-+	} else {
-+		printf("[FAIL]\t   x32 getpid() returned %lld, but it should have returned either %lld or -ENOSYS\n", ret, mypid);
-+		nerr++;
-+		return true;	/* Proceed as if... */
-+	}
-+}
-+
-+static void test_syscalls_common(int msb)
-+{
-+	printf("[RUN]\t   Checking some common syscalls as 64 bit\n");
-+	check_zero(msb, SYS_READ);
-+	check_zero(msb, SYS_WRITE);
-+
-+	printf("[RUN]\t   Checking some 64-bit only syscalls as 64 bit\n");
-+	check_zero(msb, X64_READV);
-+	check_zero(msb, X64_WRITEV);
-+
-+	printf("[RUN]\t   Checking out of range system calls\n");
-+	check_for(msb, -64, -1, -ENOSYS);
-+	check_for(msb, X32_BIT-64, X32_BIT-1, -ENOSYS);
-+	check_for(msb, -64-X32_BIT, -1-X32_BIT, -ENOSYS);
-+	check_for(msb, INT_MAX-64, INT_MAX-1, -ENOSYS);
-+}
-+
-+static void test_syscalls_with_x32(int msb)
-+{
- 	/*
--	 * Check that a handful of 64-bit-only syscalls are rejected if the x32
--	 * bit is set.
-+	 * Syscalls 512-547 are "x32" syscalls.  They are
-+	 * intended to be called with the x32 (0x40000000) bit
-+	 * set.  Calling them without the x32 bit set is
-+	 * nonsense and should not work.
- 	 */
--	printf("[RUN]\tChecking some 64-bit syscalls in x32 range\n");
--	check_enosys(16 | X32_BIT, &ok);	/* ioctl */
--	check_enosys(19 | X32_BIT, &ok);	/* readv */
--	check_enosys(20 | X32_BIT, &ok);	/* writev */
-+	printf("[RUN]\t   Checking x32 syscalls as 64 bit\n");
-+	check_for(msb, 512 | X32_BIT, 547 | X32_BIT, -ENOSYS);
-+
-+	printf("[RUN]\t   Checking some common syscalls as x32\n");
-+	check_zero(msb, SYS_READ   | X32_BIT);
-+	check_zero(msb, SYS_WRITE  | X32_BIT);
-+
-+	printf("[RUN]\t   Checking some x32 syscalls as x32\n");
-+	check_zero(msb, X32_READV  | X32_BIT);
-+	check_zero(msb, X32_WRITEV | X32_BIT);
-+
-+	printf("[RUN]\t   Checking some 64-bit syscalls as x32\n");
-+	check_enosys(msb, X64_IOCTL  | X32_BIT);
-+	check_enosys(msb, X64_READV  | X32_BIT);
-+	check_enosys(msb, X64_WRITEV | X32_BIT);
-+}
-+
-+static void test_syscalls_without_x32(int msb)
-+{
-+	printf("[RUN]\t  Checking for absence of x32 system calls\n");
-+	check_for(msb, 0 | X32_BIT, 999 | X32_BIT, -ENOSYS);
-+}
-+
-+static void test_syscall_numbering(void)
-+{
-+	static const int msbs[] = {
-+		0, 1, -1, X32_BIT-1, X32_BIT, X32_BIT-1, -X32_BIT, INT_MAX,
-+		INT_MIN, INT_MIN+1
-+	};
-+	bool with_x32 = test_x32();
- 
- 	/*
--	 * Check some syscalls with high bits set.
-+	 * The MSB is supposed to be ignored, so we loop over a few
-+	 * to test that out.
- 	 */
--	printf("[RUN]\tChecking numbers above 2^32-1\n");
--	check_enosys((1UL << 32), &ok);
--	check_enosys(X32_BIT | (1UL << 32), &ok);
-+	for (size_t i = 0; i < sizeof(msbs)/sizeof(msbs[0]); i++) {
-+		int msb = msbs[i];
-+		printf("[RUN]\tChecking system calls with msb = %d (0x%x)\n",
-+		       msb, msb);
- 
--	if (!ok)
--		nerrs++;
--	else
--		printf("[OK]\tThey all returned -ENOSYS\n");
-+		test_syscalls_common(msb);
-+		if (with_x32)
-+			test_syscalls_with_x32(msb);
-+		else
-+			test_syscalls_without_x32(msb);
-+	}
- }
- 
--int main()
-+int main(void)
- {
- 	/*
--	 * Anyone diagnosing a failure will want to know whether the kernel
--	 * supports x32.  Tell them.
-+	 * It is quite likely to get a segfault on a failure, so make
-+	 * sure the message gets out by setting stdout to nonbuffered.
- 	 */
--	printf("\tChecking for x32...");
--	fflush(stdout);
--	if (syscall(39 | X32_BIT, 0, 0, 0, 0, 0, 0) >= 0) {
--		printf(" supported\n");
--	} else if (errno == ENOSYS) {
--		printf(" not supported\n");
--	} else {
--		printf(" confused\n");
--	}
-+	setvbuf(stdout, NULL, _IONBF, 0);
- 
--	test_x32_without_x32_bit();
-+	/*
-+	 * Harmless file descriptor to work on...
-+	 */
-+	nullfd = open("/dev/null", O_RDWR);
-+	if (nullfd < 0) {
-+		printf("[FAIL]\tUnable to open /dev/null: %s\n",
-+		       strerror(errno));
-+		printf("[SKIP]\tCannot execute test\n");
-+		return 71;	/* EX_OSERR */
-+	}
- 
--	return nerrs ? 1 : 0;
-+	test_syscall_numbering();
-+	if (!nerr) {
-+		printf("[OK]\tAll system calls succeeded or failed as expected\n");
-+		return 0;
-+	} else {
-+		printf("[FAIL]\tA total of %u system call%s had incorrect behavior\n",
-+		       nerr, nerr != 1 ? "s" : "");
-+		return 1;
-+	}
- }
 -- 
 2.31.1
 
