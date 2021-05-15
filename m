@@ -2,77 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AFEB3819C2
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 18:09:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 811353819C5
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 18:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233291AbhEOQK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 12:10:58 -0400
-Received: from mail-wm1-f42.google.com ([209.85.128.42]:40865 "EHLO
-        mail-wm1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233130AbhEOQKs (ORCPT
+        id S233298AbhEOQNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 12:13:08 -0400
+Received: from angie.orcam.me.uk ([78.133.224.34]:33298 "EHLO
+        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233130AbhEOQNC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 12:10:48 -0400
-Received: by mail-wm1-f42.google.com with SMTP id f6-20020a1c1f060000b0290175ca89f698so395798wmf.5;
-        Sat, 15 May 2021 09:09:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=aSGQJagwvk6PPII7IdB5b+OW9KihpKvzZJPLLXU8/AA=;
-        b=RKxP7Vtmn5cP1LVtEG6rsY1e3iRtfu8muTUKW1IUr+ebE+S3w6gX6nhFZkukQ0/wjq
-         VMRfXN0oiSrxD8L7653ghBkN8ZlF+TOdQX745k2nX7D7ZkzQYY12MiyJIrwQWx+LmP5Q
-         92GFbk2luNmN79jpq08W7SUNGQSR6+UL+MdpXtQWB1k5nSw9FeIBjwp3WkNmjNjQU8tJ
-         anyF1rTzQuE30CPg27wp8B5AEJGhtmLURCC+9VJYNhS/nH9OEddB+CN0FjFd5sQxKiVP
-         7iayf/n40gHK1bcKrD06kNHbKX4AAEsYhUsHx2m4flZvynqrRbSMQtbA2cj3gR9lhx4K
-         Jh6w==
-X-Gm-Message-State: AOAM532LlhfsYtxGaQv/SyhpkAFzwUdcRRWhngQ2ha3w5Ig3Ioh3wDd1
-        TyTJwBUIRsG/fKkqrJMUkr4=
-X-Google-Smtp-Source: ABdhPJyrztD03NAPUEXoCPIjoFrPVVZIm7WBpX37/50MGqp10Odx39R1l3bx0sr234Mhp47bElqxhA==
-X-Received: by 2002:a1c:7205:: with SMTP id n5mr15138368wmc.131.1621094974315;
-        Sat, 15 May 2021 09:09:34 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id n6sm736281wmq.34.2021.05.15.09.09.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 May 2021 09:09:33 -0700 (PDT)
-Date:   Sat, 15 May 2021 16:09:32 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Wei Liu <wei.liu@kernel.org>, kys@microsoft.com,
-        haiyangz@microsoft.com, sthemmin@microsoft.com,
-        decui@microsoft.com, gregkh@linuxfoundation.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH 1/2] uio_hv_generic: Fix a memory leak in error handling
- paths
-Message-ID: <20210515160932.v4inlp5xlzokmmel@liuwe-devbox-debian-v2>
-References: <4fdaff557deef6f0475d02ba7922ddbaa1ab08a6.1620544055.git.christophe.jaillet@wanadoo.fr>
- <20210511095227.ggrl3z6otjanwffz@liuwe-devbox-debian-v2>
- <f0dca7cf-c737-0f06-34aa-e4759826a974@wanadoo.fr>
+        Sat, 15 May 2021 12:13:02 -0400
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 7E0E592009C; Sat, 15 May 2021 18:11:46 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 6F6E792009B;
+        Sat, 15 May 2021 18:11:46 +0200 (CEST)
+Date:   Sat, 15 May 2021 18:11:46 +0200 (CEST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Colin King <colin.king@canonical.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        "Antonino A. Daplas" <adaplas@gmail.com>
+Subject: Re: [PATCH] video: fbdev: vga16fb: fix OOB write in
+ vga16fb_imageblit()
+In-Reply-To: <CAHk-=wioOHwKNj8AmvXWV-oL60ae0jKswAHy9e6wCYYeA5EQXg@mail.gmail.com>
+Message-ID: <alpine.DEB.2.21.2105151733090.3032@angie.orcam.me.uk>
+References: <0000000000006bbd0c05c14f1b09@google.com> <6e21483c-06f6-404b-4018-e00ee85c456c@i-love.sakura.ne.jp> <87d928e4-b2b9-ad30-f3f0-1dfb8e4e03ed@i-love.sakura.ne.jp> <05acdda8-dc1c-5119-4326-96eed24bea0c@i-love.sakura.ne.jp>
+ <CAHk-=wguwhFpjhyMtDaH2hhjoV62gDgByC=aPyTrW9CkM5hqvA@mail.gmail.com> <alpine.DEB.2.21.2105142150460.3032@angie.orcam.me.uk> <CAHk-=wioOHwKNj8AmvXWV-oL60ae0jKswAHy9e6wCYYeA5EQXg@mail.gmail.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f0dca7cf-c737-0f06-34aa-e4759826a974@wanadoo.fr>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 08:18:23PM +0200, Christophe JAILLET wrote:
-> Le 11/05/2021 à 11:52, Wei Liu a écrit :
-> > > Before commit cdfa835c6e5e, the 'vfree' were done unconditionally
-> > > in 'hv_uio_cleanup()'.
-> > > So, another way for fixing the potential leak is to modify
-> > > 'hv_uio_cleanup()' and revert to the previous behavior.
-> > > 
-> > 
-> > I think this is cleaner.
+On Fri, 14 May 2021, Linus Torvalds wrote:
+
+> >  Overall I think it does make sense to resize the text console at any
+> > time, even if the visible console (VT) chosen is in the graphics mode,
 > 
-> Agreed
+> It might make sense, but only if we call the function to update the
+> low-level data.
+> 
+> Not calling it, and then starting to randomly use the (wrong)
+> geometry, and just limiting it so that it's all within the buffer -
+> THAT does not make sense.
+> 
+> So I think your patch is fundamentally wrong. It basically says "let's
+> use random stale incorrect data, but just make sure that the end
+> result is still within the allocated buffer".
 
-Stephen, ping?
+ I guess you mean Tetsuo-san's patch, right?  I haven't sent any in this 
+discussion.
 
-If I don't hear back from you, I think Christophe should move ahead with
-modifying hv_uio_cleanup.
+> My patch is at least conceptually sane.
+> 
+> An alternative would be to just remove the "vcmode != KD_GRAPHICS"
+> check entirely, and always call con_resize() to update the low-level
+> data, but honestly, that seems very likelty to break something very
+> fundamentally, since it's not how any of fbcon has ever been tested,
 
-Wei.
+ Umm, there isn't much to change as far as console data structures are 
+concerned with a resize: obviously the width and the height, which affect 
+the size of the character/attribute buffer, and maybe some cursor data 
+such as the size and screen coordinates.
+
+ For vgacon we have:
+
+	if (con_is_visible(c) && !vga_is_gfx) /* who knows */
+		vgacon_doresize(c, width, height);
+
+in `vgacon_resize' already, following all the sanity checks, so the CRTC 
+isn't poked at if `vga_is_gfx', exactly as we want.
+
+ I can see fbcon does not have equivalent code and instead has relied on 
+the KD_GRAPHICS check made by the caller.  Which I think has been a bug 
+since fbcon's inception.  Instead I think `fbcon_resize' ought to make all 
+the sanity checks I can see it does and only then check for KD_GRAPHICS 
+and if so, then exit without poking at hardware.  Then upon exit from the 
+gfx mode the `fb_set_var' call made from `fbcon_blank' will DTRT.
+
+ I can try verifying the latter hypothesis, though my framebuffer setups 
+(with DECstation hardware) have always been somewhat incomplete.  I do 
+believe I have a MIPS fbdev X server binary somewhere to fiddle with, 
+which should work with that TGA/SFB+ video adapter I mentioned before.
+
+> Another alternative would be to just delay the resize to when vcmode
+> is put back to text mode again. That sounds somewhat reasonable to me,
+> but it's a pretty big thing.
+
+ Methinks it works exactly like that already.  On exit from the graphics 
+mode (a VT switch or gfx program termination) hardware is reprogrammed 
+according to the console geometry previously set.  We just must not break 
+it.
+
+  Maciej
