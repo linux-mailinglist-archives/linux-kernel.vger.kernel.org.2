@@ -2,60 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7A9E381B24
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 23:05:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D9A9381B25
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 23:07:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235056AbhEOVGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 17:06:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229938AbhEOVGK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 17:06:10 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3944C061573;
-        Sat, 15 May 2021 14:04:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=RJWqyMKE1PxEzZ0wQRXQI9bbKJMETBb0mIpGg8RhjH8=; b=WL7jvMlbkEOGS+ud1cSYdSsj51
-        dcGDvBs6x08LSEc35XBKUpkF70LUSNc+hhemtk2S4+c/tAmfggUjHeHHRPKMihpbtwZHXXWMH7Vu4
-        1pA/R4PKWYRZDdwjyyFnsshOyT7UgrsIh5iWyznZPdtGkAF1Pc1oNjogb3DylTIhFyU9phh9d3pGf
-        ehmC609SriC51RX55TShs5fP1dxzA/Qczob6GsJPBx8tNGP/k72m4q5u+GNNSS43YWRBSz2ZtLGxl
-        cYE/dM/R3RYiTQ0bPwz8sOR+zs3Xd5h7j/HOlfigVJeR8HuoYCbsxoQqiNNm2bdlewu0oslRaFlFI
-        +DX5qvHA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1li1SD-00BW6D-4a; Sat, 15 May 2021 21:04:11 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5AD4C98659E; Sat, 15 May 2021 23:04:06 +0200 (CEST)
-Date:   Sat, 15 May 2021 23:04:06 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Khaled ROMDHANI <khaledromdhani216@gmail.com>
-Cc:     mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH-next] sched: Fix Dereference after null check
-Message-ID: <20210515210406.GH5618@worktop.programming.kicks-ass.net>
-References: <20210515171117.23240-1-khaledromdhani216@gmail.com>
+        id S235064AbhEOVIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 17:08:43 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:33025 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229938AbhEOVIl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 15 May 2021 17:08:41 -0400
+Received: from [IPv6:2601:646:8602:8be1:e512:4e99:5d16:dcc6] ([IPv6:2601:646:8602:8be1:e512:4e99:5d16:dcc6])
+        (authenticated bits=0)
+        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14FL7ANU3374296
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Sat, 15 May 2021 14:07:12 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14FL7ANU3374296
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2021042801; t=1621112832;
+        bh=ECT3h7vQpngfn25c/QoKWtsYhzETuPXg6kMhVwqDoE0=;
+        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
+        b=crxNoHPwLXC/E/Tx9ql6mZSrnh+eZC8qeB1jM/DoPxaFfZSlQNtydPnIdVCgOEOqM
+         h9q+p+pLFJgFssFmIeSbgIyl5DckJ2ZeMIZre+pnC9wH7krpTTd0aVlqvQpbOSCCA7
+         Ech/YmYujBzf0iWn6wSXZE92KxIbb4mhCrtAg76EYXebQHoUdKBVG6IwgvAf2N3Ec4
+         FuAlI1iFpRC0UyqXp9vPCcp+mSmQPsjUmsmdxQJrQybJNF4t7hIih+IcAnz99eH4Sq
+         M3zBTVByBoy/Tq+/Orfx1W/KeWYCq+E6Ylp6KSEQD9/zkQZ7UAg0FhRHDKHhhoujvZ
+         GmmOHWoksdgpg==
+Date:   Sat, 15 May 2021 14:07:01 -0700
+User-Agent: K-9 Mail for Android
+In-Reply-To: <2ebf1bac-93c1-4b7f-add4-4ede3c149b52@www.fastmail.com>
+References: <20210515011015.2707542-1-hpa@zytor.com> <20210515011015.2707542-5-hpa@zytor.com> <f2e4c3c3-08c3-eae1-803a-aa85d7e75ca0@kernel.org> <C1CB9B19-185F-469E-A59C-ECAA95AAC279@zytor.com> <2ebf1bac-93c1-4b7f-add4-4ede3c149b52@www.fastmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210515171117.23240-1-khaledromdhani216@gmail.com>
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v3 4/4] x86/syscall: use int everywhere for system call numbers
+To:     Andy Lutomirski <luto@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>
+CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+From:   "H. Peter Anvin" <hpa@zytor.com>
+Message-ID: <BC75A7E8-8870-4E71-9F81-0309CF4853FB@zytor.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 15, 2021 at 06:11:17PM +0100, Khaled ROMDHANI wrote:
-> The group_cfs_rq derefrence the 'se' variable that could
-> be passed as NULL pointer. Fix this by adding a check
-> against the sched entity 'se' before the derefrence.
-> 
-> Addresses-Coverity: ("Dereference after null check")
-> Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
+Pretty soon you'll have the whole entry code rewritten back into assembly =
+=F0=9F=98=86
 
-Please, burn that piece of garbage known as Coverity and go do something
-useful.
+On May 15, 2021 11:48:22 AM PDT, Andy Lutomirski <luto@kernel=2Eorg> wrote=
+:
+>
+>
+>On Sat, May 15, 2021, at 10:42 AM, H=2E Peter Anvin wrote:
+>> Answer: I don't think it is a good idea to have the system can table
+>offset =2E=2E=2E it seems like an unnecessary debugging headache=2E
+>
+>Emit it in asm:
+>
+>table_minus_one:
+> =2Equad not_a_syscall
+>table:
+> (real table here)
+>
+>/me runs=2E
+>
+>
+>
+>>=20
+>> On May 15, 2021 8:37:12 AM PDT, Andy Lutomirski <luto@kernel=2Eorg
+><mailto:luto%40kernel=2Eorg>> wrote:
+>> >On 5/14/21 6:10 PM, H=2E Peter Anvin wrote:
+>> >> From: "H=2E Peter Anvin (Intel)" <hpa@zytor=2Ecom
+><mailto:hpa%40zytor=2Ecom>>
+>> >>=20
+>> >> System call numbers are defined as int, so use int everywhere for
+>> >> system call numbers=2E This patch is strictly a cleanup; it should
+>not
+>> >> change anything user visible; all ABI changes have been done in
+>the
+>> >> preceeding patches=2E
+>> >>=20
+>> >> Signed-off-by: H=2E Peter Anvin (Intel) <hpa@zytor=2Ecom
+><mailto:hpa%40zytor=2Ecom>>
+>> >> ---
+>> >>  arch/x86/entry/common=2Ec        | 93
+>> >++++++++++++++++++++++++----------
+>> >>  arch/x86/include/asm/syscall=2Eh |  2 +-
+>> >>  2 files changed, 66 insertions(+), 29 deletions(-)
+>> >>=20
+>> >> diff --git a/arch/x86/entry/common=2Ec b/arch/x86/entry/common=2Ec
+>> >> index f51bc17262db=2E=2E714804f0970c 100644
+>> >> --- a/arch/x86/entry/common=2Ec
+>> >> +++ b/arch/x86/entry/common=2Ec
+>> >> @@ -36,49 +36,87 @@
+>> >>  #include <asm/irq_stack=2Eh>
+>> >> =20
+>> >>  #ifdef CONFIG_X86_64
+>> >> -__visible noinstr void do_syscall_64(struct pt_regs *regs,
+>unsigned
+>> >long nr)
+>> >> +
+>> >> +static __always_inline bool do_syscall_x64(struct pt_regs *regs,
+>int
+>> >nr)
+>> >> +{
+>> >> + /*
+>> >> + * Convert negative numbers to very high and thus out of range
+>> >> + * numbers for comparisons=2E Use unsigned long to slightly
+>> >> + * improve the array_index_nospec() generated code=2E
+>> >> + */
+>> >> + unsigned long unr =3D nr;
+>> >> +
+>> >> + if (likely(unr < NR_syscalls)) {
+>> >> + unr =3D array_index_nospec(unr, NR_syscalls);
+>> >> + regs->ax =3D sys_call_table[unr](regs);
+>> >> + return true;
+>> >> + }
+>> >> + return false;
+>> >> +}
+>> >
+>> >How much do you like micro-optimization?  You could be silly^Wclever
+>> >and
+>> >add a new syscall handler:
+>> >
+>> >long skip_syscall(struct pt_regs *regs)
+>> >{
+>> > return regs->ax;
+>> >}
+>> >
+>> >and prepend this to the syscall tables -- it would be a sort-of-real
+>> >syscall -1=2E  Then the call sequence becomes:
+>> >
+>> >int adjusted_nr =3D nr + 1 (or nr - x32bit + 1);
+>> >
+>> >if (likely(nr < NR_adjusted_syscalls)) {
+>> >   unr =3D array_index_nospec=2E=2E=2E;
+>> >   regs->ax =3D sys_call_table[unr](regs);  /* might be a no-op! */
+>> >} else {
+>> >    regs->ax =3D -ENOSYS;
+>> >}
+>> >
+>> >which removes a branch from the fast path=2E
+>>=20
+>> --=20
+>> Sent from my Android device with K-9 Mail=2E Please excuse my brevity=
+=2E
+>>=20
+
+--=20
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
