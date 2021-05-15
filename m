@@ -2,184 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E8038177E
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 12:12:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84A3C381788
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 12:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234752AbhEOKM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 06:12:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58338 "EHLO
+        id S234785AbhEOKQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 06:16:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231432AbhEOKMy (ORCPT
+        with ESMTP id S231222AbhEOKQn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 06:12:54 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2417C061573
-        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 03:11:41 -0700 (PDT)
+        Sat, 15 May 2021 06:16:43 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 306DBC061573;
+        Sat, 15 May 2021 03:15:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=OPPa3e2vwrecZzMeY7Go3HEpgtyMNIZBsXe34ZLKSH0=; b=oj2SGYjcWFH8vFvCG7OmXpIJGq
-        Nb9ELaqofRFamJBWYqc4aRx14MvQNELTmOEHVmnS3WMxPQmOik9NWnzmBR2ZwRlgFGSOfudSYRTzC
-        TuVXAfv5PW72/Liay/2zr0AqMVV2ZyjeuxB6DNRMg7ZruF1/ZWWJs6fKXceja7Pg5ajSL+bun5Eq3
-        45dZjcUUa3+iDu11XBQHHfpQ1/n3KzJSp/Wgyl3CF+JBo5IS/7R2pGJR8jZxn63ZlvmVm0u/nSYE6
-        z7M3iwO9yJDEWuil1aaz88fUL4xmPGQ6Iriuxkw7qUiDAHAdeHL0xjc/AlAOHzV4gI3A1woZtVXcg
-        8q+7si7Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lhrGV-00B8sz-4e; Sat, 15 May 2021 10:11:25 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4DBAE986476; Sat, 15 May 2021 12:11:22 +0200 (CEST)
-Date:   Sat, 15 May 2021 12:11:22 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     qiang.zhang@windriver.com
-Cc:     mingo@redhat.com, will@kernel.org, longman@redhat.com,
-        boqun.feng@gmail.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] locking/mutex: clear MUTEX_FLAGS if wait_list is empty
- due to signal
-Message-ID: <20210515101122.GB21560@worktop.programming.kicks-ass.net>
-References: <20210515023010.102985-1-qiang.zhang@windriver.com>
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=2PBgeHsoXGCvDlD0GS/BwaBaSsTzpzloPrgyfXRhmjk=; b=SptpJ/1TaW3YU510lhVFsI7S8
+        HAwGT9i7IKhTTk5MGMIfLDcOzbdlf+9WO+/0kk9XY41f8n+ts423ikvlVkuknzGUTFVWi3FjoU5p6
+        Frm8lLK8goe3xwxqU9ZRwaxkxrYAWlk6lgTLzumnPlT0hSth0LoqicadKCEUyfFq9pGRkcfTlM5NS
+        JwWmw6DvQAyysirWaW7tFnIJEdvb2QaWmgo+CxTXTXs5mkyXaM9mG4cQDVkH40odW6flHTGlFEGnw
+        bBntz1s8TWeVCn8iRdQcWxnai2OrQoY95HavEFFbZiaymv5onHZMWW/a1iuL4gRb7FDMRaQe9RVeM
+        VLwTor4kw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44008)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lhrKO-00018c-8n; Sat, 15 May 2021 11:15:24 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lhrKM-0004uU-SE; Sat, 15 May 2021 11:15:22 +0100
+Date:   Sat, 15 May 2021 11:15:22 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH net] net: mdiobus: get rid of a BUG_ON()
+Message-ID: <20210515101522.GM12395@shell.armlinux.org.uk>
+References: <YJ+b52c5bGLdewFz@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210515023010.102985-1-qiang.zhang@windriver.com>
+In-Reply-To: <YJ+b52c5bGLdewFz@mwanda>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 15, 2021 at 10:30:10AM +0800, qiang.zhang@windriver.com wrote:
-> From: Zqiang <qiang.zhang@windriver.com>
+On Sat, May 15, 2021 at 01:01:11PM +0300, Dan Carpenter wrote:
+> We spotted a bug recently during a review where a driver was
+> unregistering a bus that wasn't registered, which would trigger this
+> BUG_ON().  Let's handle that situation more gracefully, and just print
+> a warning and return.
 > 
-> Clear MUTEX_FLAGS when call mutex_lock_interruptible()
-> interrupted by a signal and the lock->wait_list is empty.
+> Reported-by: Russell King <linux@armlinux.org.uk>
 
-That's what the patches does; and I can read the C code perfectly fine,
-thank you. What the C code doesn't tell me is why, nor how you came to
-write this patch, was there an actual problem that is solved? Were you
-bored and just reading the code?
+This probably ought to be updated to:
 
-That is, your Changelog tells me absolutely nothing.
+Reported-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
-> Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+now please.
+
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+
+Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+
 > ---
->  kernel/locking/mutex.c | 2 ++
->  1 file changed, 2 insertions(+)
+>  drivers/net/phy/mdio_bus.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
-> index cb6b112ce155..4ac354ca092b 100644
-> --- a/kernel/locking/mutex.c
-> +++ b/kernel/locking/mutex.c
-> @@ -1081,6 +1081,8 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
->  err:
->  	__set_current_state(TASK_RUNNING);
->  	mutex_remove_waiter(lock, &waiter, current);
-> +	if (likely(list_empty(&lock->wait_list)))
-> +		__mutex_clear_flag(lock, MUTEX_FLAGS);
+> diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
+> index dadf75ff3ab9..6045ad3def12 100644
+> --- a/drivers/net/phy/mdio_bus.c
+> +++ b/drivers/net/phy/mdio_bus.c
+> @@ -607,7 +607,8 @@ void mdiobus_unregister(struct mii_bus *bus)
+>  	struct mdio_device *mdiodev;
+>  	int i;
+>  
+> -	BUG_ON(bus->state != MDIOBUS_REGISTERED);
+> +	if (WARN_ON_ONCE(bus->state != MDIOBUS_REGISTERED))
+> +		return;
+>  	bus->state = MDIOBUS_UNREGISTERED;
+>  
+>  	for (i = 0; i < PHY_MAX_ADDR; i++) {
+> -- 
+> 2.30.2
+> 
+> 
 
-Would not the nicer patch be something like this?
-
----
- kernel/locking/mutex-debug.c |  6 +++---
- kernel/locking/mutex-debug.h |  4 ++--
- kernel/locking/mutex.c       | 17 ++++++++++++-----
- kernel/locking/mutex.h       |  4 +---
- 4 files changed, 18 insertions(+), 13 deletions(-)
-
-diff --git a/kernel/locking/mutex-debug.c b/kernel/locking/mutex-debug.c
-index a7276aaf2abc..447013815200 100644
---- a/kernel/locking/mutex-debug.c
-+++ b/kernel/locking/mutex-debug.c
-@@ -57,15 +57,15 @@ void debug_mutex_add_waiter(struct mutex *lock, struct mutex_waiter *waiter,
- 	task->blocked_on = waiter;
- }
- 
--void mutex_remove_waiter(struct mutex *lock, struct mutex_waiter *waiter,
--			 struct task_struct *task)
-+void debug_mutex_remove_waiter(struct mutex *lock, struct mutex_waiter *waiter,
-+			       struct task_struct *task)
- {
- 	DEBUG_LOCKS_WARN_ON(list_empty(&waiter->list));
- 	DEBUG_LOCKS_WARN_ON(waiter->task != task);
- 	DEBUG_LOCKS_WARN_ON(task->blocked_on != waiter);
- 	task->blocked_on = NULL;
- 
--	list_del_init(&waiter->list);
-+	INIT_LIST_HEAD(&waiter->list);
- 	waiter->task = NULL;
- }
- 
-diff --git a/kernel/locking/mutex-debug.h b/kernel/locking/mutex-debug.h
-index 1edd3f45a4ec..e50afe4cc871 100644
---- a/kernel/locking/mutex-debug.h
-+++ b/kernel/locking/mutex-debug.h
-@@ -22,8 +22,8 @@ extern void debug_mutex_free_waiter(struct mutex_waiter *waiter);
- extern void debug_mutex_add_waiter(struct mutex *lock,
- 				   struct mutex_waiter *waiter,
- 				   struct task_struct *task);
--extern void mutex_remove_waiter(struct mutex *lock, struct mutex_waiter *waiter,
--				struct task_struct *task);
-+extern void debug_mutex_remove_waiter(struct mutex *lock, struct mutex_waiter *waiter,
-+				      struct task_struct *task);
- extern void debug_mutex_unlock(struct mutex *lock);
- extern void debug_mutex_init(struct mutex *lock, const char *name,
- 			     struct lock_class_key *key);
-diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
-index cb6b112ce155..5598920b49b0 100644
---- a/kernel/locking/mutex.c
-+++ b/kernel/locking/mutex.c
-@@ -205,6 +205,16 @@ __mutex_add_waiter(struct mutex *lock, struct mutex_waiter *waiter,
- 		__mutex_set_flag(lock, MUTEX_FLAG_WAITERS);
- }
- 
-+static void
-+__mutex_remove_waiter(struct mutex *lock, struct mutex_waiter *waiter)
-+{
-+	__list_del(waiter->list.prev, waiter->list.next);
-+	debug_mutex_remove_waiter(lock, &waiter, current);
-+	if (likely(list_empty(&lock->wait_list)))
-+		__mutex_clear_flag(lock, MUTEX_FLAGS);
-+
-+}
-+
- /*
-  * Give up ownership to a specific task, when @task = NULL, this is equivalent
-  * to a regular unlock. Sets PICKUP on a handoff, clears HANDOFF, preserves
-@@ -1061,10 +1071,7 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
- 			__ww_mutex_check_waiters(lock, ww_ctx);
- 	}
- 
--	mutex_remove_waiter(lock, &waiter, current);
--	if (likely(list_empty(&lock->wait_list)))
--		__mutex_clear_flag(lock, MUTEX_FLAGS);
--
-+	__mutex_remove_waiter(lock, &waiter);
- 	debug_mutex_free_waiter(&waiter);
- 
- skip_wait:
-@@ -1080,7 +1087,7 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
- 
- err:
- 	__set_current_state(TASK_RUNNING);
--	mutex_remove_waiter(lock, &waiter, current);
-+	__mutex_remove_waiter(lock, &waiter);
- err_early_kill:
- 	spin_unlock(&lock->wait_lock);
- 	debug_mutex_free_waiter(&waiter);
-diff --git a/kernel/locking/mutex.h b/kernel/locking/mutex.h
-index 1c2287d3fa71..1d4ddb415c22 100644
---- a/kernel/locking/mutex.h
-+++ b/kernel/locking/mutex.h
-@@ -10,12 +10,10 @@
-  * !CONFIG_DEBUG_MUTEXES case. Most of them are NOPs:
-  */
- 
--#define mutex_remove_waiter(lock, waiter, task) \
--		__list_del((waiter)->list.prev, (waiter)->list.next)
--
- #define debug_mutex_wake_waiter(lock, waiter)		do { } while (0)
- #define debug_mutex_free_waiter(waiter)			do { } while (0)
- #define debug_mutex_add_waiter(lock, waiter, ti)	do { } while (0)
-+#define debug_mutex_remove_waiter(lock, waiter, ti)	do { } while (0)
- #define debug_mutex_unlock(lock)			do { } while (0)
- #define debug_mutex_init(lock, name, key)		do { } while (0)
- 
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
