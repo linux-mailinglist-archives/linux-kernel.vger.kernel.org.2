@@ -2,95 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE09381A0F
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 19:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFB06381A12
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 May 2021 19:03:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234010AbhEORCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 13:02:46 -0400
-Received: from smtprelay0230.hostedemail.com ([216.40.44.230]:36506 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230040AbhEORCn (ORCPT
+        id S234034AbhEOREX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 13:04:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230040AbhEOREV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 13:02:43 -0400
-Received: from omf14.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id C31D81822494D;
-        Sat, 15 May 2021 17:01:29 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf14.hostedemail.com (Postfix) with ESMTPA id 61850268E38;
-        Sat, 15 May 2021 17:01:28 +0000 (UTC)
-Message-ID: <e5f8613b96fe43bd8ab2ac304a2c9fb57a87a2ca.camel@perches.com>
-Subject: [trivial PATCH] drm/amd/display: Fix typo of format termination
- newline
-From:   Joe Perches <joe@perches.com>
-To:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Sat, 15 May 2021 10:01:26 -0700
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Sat, 15 May 2021 13:04:21 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77DA9C061573;
+        Sat, 15 May 2021 10:03:06 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id pi6-20020a17090b1e46b029015cec51d7cdso1373161pjb.5;
+        Sat, 15 May 2021 10:03:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=MB1APffVjgoMzeVzbuCucMk9nO1HoRAk+17E/1Zqv+k=;
+        b=o7nRQ8KOar6oGITS6dJ/MD8bcTZ+P6OZ4abGyTl19YqXRrTW3KOE9ajUsMSHkJ1F1+
+         lUPhdE66SimOPivAYZs3TSUnRyJERSUNEZYiuGGRDiC2g8R3YJLae5QBhfLW7aReFt+/
+         E878XSOkqGsSk4Z5oVabndwWzPXI7kSMUbtY2G3werVAVH8rjdGO3VJQLASe9keUz9T1
+         aNrEMYaSQjmD/7sz2H6xoClC22/xz3HD8dxJlyFsqiRatZRFj1PcuILTjp4QqE2U0BjV
+         CthS5A4bMnIMj+gCMmI7eDXFNRhJkI4QLkV9lqmStW1ppWGd+NFzApbA68JEHwdHh+of
+         FW2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=MB1APffVjgoMzeVzbuCucMk9nO1HoRAk+17E/1Zqv+k=;
+        b=IWCusiBKy2S8duwS1mcr3HLRFDudzEpyUi5UDN/7bqDslxfCq3hPLfAc0YxswUG7Je
+         kHUDFz4rzrnJH1gssT5H8bdHMc1CT1QXBracafD/600rVmCbRSoFN3K/xupJ9DD08moP
+         VM41JGlZtiEdasH+zE9I4UcKOEV5H2vAMAE/pg/wDVyD2tywjb3O9+3rAEXTLGPleOBS
+         9x6bZziwtkxaSQ7CAuigZAwaQJldvwLSd5TummorKqO6lMuPlbckD9E8HxvfU9+czVrI
+         jmprXgegrpxm6oir+T1v8npImVd+rYTPh0trRSQEBtUXT5Bl5nHkmUvsmwLWpm+v5Z/P
+         /aPQ==
+X-Gm-Message-State: AOAM5316kyg8+jpalAnK9qxoFL4kLOkBT5I3msfjAJRfwpK2tA8k+Fv/
+        a9gM8JsdqCLDgi9u/sm+nz/814og6C2eRw==
+X-Google-Smtp-Source: ABdhPJypE3HzfNrUfI1RDGq1wyGJL2OKfWPJwbw/atcrW3+Uq1lVNuFPMWkmsPHKKYR8s+cJoSHeRw==
+X-Received: by 2002:a17:90a:542:: with SMTP id h2mr6132492pjf.82.1621098185624;
+        Sat, 15 May 2021 10:03:05 -0700 (PDT)
+Received: from [192.168.1.67] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
+        by smtp.gmail.com with ESMTPSA id n9sm6896023pgt.35.2021.05.15.10.03.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 15 May 2021 10:03:04 -0700 (PDT)
+Subject: Re: [RFC PATCH net-next v4 01/28] net: mdio: ipq8064: clean
+ whitespaces in define
+To:     Jonathan McDowell <noodles@earth.li>,
+        Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210508002920.19945-1-ansuelsmth@gmail.com>
+ <YJbSOYBxskVdqGm5@lunn.ch> <YJbTBuKobu1fBGoM@Ansuel-xps.localdomain>
+ <20210515170046.GA18069@earth.li>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <747555da-cc9b-299f-39dd-9b3368bd467d@gmail.com>
+Date:   Sat, 15 May 2021 10:03:03 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.1
 MIME-Version: 1.0
+In-Reply-To: <20210515170046.GA18069@earth.li>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 61850268E38
-X-Spam-Status: No, score=-0.90
-X-Stat-Signature: 1n1bipcbf8r5mj9twb3dsoacrqhrzwam
-X-Rspamd-Server: rspamout03
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/vUQKcwaGcFvtEcpO9mg1PoKuCIHLWcwk=
-X-HE-Tag: 1621098088-693195
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-/n should be \n
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- drivers/gpu/drm/amd/display/dc/dcn30/dcn30_resource.c   | 2 +-
- drivers/gpu/drm/amd/display/dc/dcn301/dcn301_resource.c | 2 +-
- drivers/gpu/drm/amd/display/dc/dcn302/dcn302_resource.c | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_resource.c b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_resource.c
-index 45f96221a094..b38fee783277 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_resource.c
-@@ -1724,7 +1724,7 @@ static bool init_soc_bounding_box(struct dc *dc,
- 	DC_LOGGER_INIT(dc->ctx->logger);
- 
- 	if (!is_soc_bounding_box_valid(dc)) {
--		DC_LOG_ERROR("%s: not valid soc bounding box/n", __func__);
-+		DC_LOG_ERROR("%s: not valid soc bounding box\n", __func__);
- 		return false;
- 	}
- 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn301/dcn301_resource.c b/drivers/gpu/drm/amd/display/dc/dcn301/dcn301_resource.c
-index 5b54b7fc5105..3bf66c994dd5 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn301/dcn301_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn301/dcn301_resource.c
-@@ -1497,7 +1497,7 @@ static bool init_soc_bounding_box(struct dc *dc,
- 	DC_LOGGER_INIT(dc->ctx->logger);
- 
- 	if (!is_soc_bounding_box_valid(dc)) {
--		DC_LOG_ERROR("%s: not valid soc bounding box/n", __func__);
-+		DC_LOG_ERROR("%s: not valid soc bounding box\n", __func__);
- 		return false;
- 	}
- 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn302/dcn302_resource.c b/drivers/gpu/drm/amd/display/dc/dcn302/dcn302_resource.c
-index fc2dea243d1b..84c61128423e 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn302/dcn302_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn302/dcn302_resource.c
-@@ -1093,7 +1093,7 @@ static bool init_soc_bounding_box(struct dc *dc,  struct resource_pool *pool)
- 	DC_LOGGER_INIT(dc->ctx->logger);
- 
- 	if (!is_soc_bounding_box_valid(dc)) {
--		DC_LOG_ERROR("%s: not valid soc bounding box/n", __func__);
-+		DC_LOG_ERROR("%s: not valid soc bounding box\n", __func__);
- 		return false;
- 	}
- 
+On 5/15/2021 10:00 AM, Jonathan McDowell wrote:
+> On Sat, May 08, 2021 at 08:05:58PM +0200, Ansuel Smith wrote:
+>> On Sat, May 08, 2021 at 08:02:33PM +0200, Andrew Lunn wrote:
+>>> On Sat, May 08, 2021 at 02:28:51AM +0200, Ansuel Smith wrote:
+>>>> Fix mixed whitespace and tab for define spacing.
+>>>
+>>> Please add a patch [0/28] which describes the big picture of what
+>>> these changes are doing.
+>>>
+>>> Also, this series is getting big. You might want to split it into two,
+>>> One containing the cleanup, and the second adding support for the new
+>>> switch.
+>>>
+>>> 	Andrew
+>>
+>> There is a 0/28. With all the changes. Could be that I messed the cc?
+>> I agree think it's better to split this for the mdio part, the cleanup
+>> and the changes needed for the internal phy.
+> 
+> FWIW I didn't see the 0/28 mail either.I tried these out on my RB3011
+> today. I currently use the GPIO MDIO driver because I saw issues with
+> the IPQ8064 driver in the past, and sticking with the GPIO driver I see
+> both QCA8337 devices and traffic flows as expected, so no obvious
+> regressions from your changes.
 
+The cover letter somehow appeared as the final patch in the submission
+instead of having all patches in-reply-to it as one would expect.
+
+Russell had some additional feedback that came in during or after the
+patches being applied so it would be nice to address that.
+
+> 
+> I also tried switching to the IPQ8064 MDIO driver for my first device
+> (which is on the MDIO0 bus), but it's still not happy:
+> 
+> qca8k 37000000.mdio-mii:10: Switch id detected 0 but expected 13
+
+If you do repeated reads of the revision register to you eventually get
+13 as intended?
+-- 
+Florian
