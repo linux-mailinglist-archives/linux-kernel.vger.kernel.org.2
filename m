@@ -2,64 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BC1E381EA5
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 14:16:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1730381EAF
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 14:22:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232560AbhEPMRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 08:17:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230185AbhEPMRN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 08:17:13 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFD2AC061573;
-        Sun, 16 May 2021 05:15:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=dHP6r2DtDtGoZZly7AA5EZIa9h/com+KPWget/NtC9c=; b=nK6c1qsjUtKQ6MPUYDQu4o/VEG
-        Z3TnfGwyhlqFQTOsSq13h80W8pfDiFGf1SkYDxw7j4SuPqRcPzUeSnZWni1s+QxbmqjTy+lZIwcLo
-        JlIyaGVS7Qyz/BG8+Z003fVMfaqtT1Txg/uraPK27sKJeL3J/7BV3IGTr706xObaxqjGhF7zwdCib
-        SLVn75KZsEzRhwKTXWTAkzRngNi7yYHlkhmuKSgjMcG3GvXCQ1C9GxcXW3ubje96C6tmS0PjrySkN
-        s9l6TxIZu7kZdJMICpCyBmlFqP5x0PCRuKeZMFxxIgbgfv2vh3GPZT3camgGgzxPGmIfIPdg0vOMF
-        63a1ydRw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1liFg2-00C04c-47; Sun, 16 May 2021 12:15:24 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C158F30021B;
-        Sun, 16 May 2021 14:15:18 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 68FD6312D6791; Sun, 16 May 2021 14:15:18 +0200 (CEST)
-Date:   Sun, 16 May 2021 14:15:18 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Haowen Hu <src.res.211@gmail.com>
-Cc:     mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, tglx@linutronix.de, bp@alien8.de,
-        x86@kernel.org, hpa@zytor.com, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf/x86: Improve code format
-Message-ID: <YKEM1qrJ5nhdWXHj@hirez.programming.kicks-ass.net>
-References: <523745bf-c399-dc2e-ac57-1d580254802a@gmail.com>
+        id S232778AbhEPMXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 08:23:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49102 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230185AbhEPMXv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 May 2021 08:23:51 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DBD9C601FC;
+        Sun, 16 May 2021 12:22:36 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1liFn0-001eaK-OP; Sun, 16 May 2021 13:22:34 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Hector Martin <marcan@marcan.st>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        linux-kernel@vger.kernel.org, kernel-team@android.com
+Subject: [GIT PULL] irqchip fixes for 5.13, take #1
+Date:   Sun, 16 May 2021 13:22:17 +0100
+Message-Id: <20210516122217.13234-1-maz@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <523745bf-c399-dc2e-ac57-1d580254802a@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: tglx@linutronix.de, geert+renesas@glider.be, linux@roeck-us.net, marcan@marcan.st, thunder.leizhen@huawei.com, linux-kernel@vger.kernel.org, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 16, 2021 at 04:08:54PM +0800, Haowen Hu wrote:
-> Reformatted several lines of code, in order to satisfy the kernel code
-> format.
-> 
-> Signed-off-by: Haowen Hu <src.res.211@gmail.com>
+Hi Thomas,
 
-Your patch is whitespace damaged, also please take your efforts
-elsewhere, I don't much care for random nothing changes like this.
+Here's a very small set of irqchip fixes for 5.13, two being
+regressions introduced in the last merge window. One fixes an irqdesc
+allocation issue on a PXA machine, the other limits the selection of
+the Apple AIC controller to configuration that select support for the
+Apple M1 system. Finally, a few useless error messages are removed.
+
+Please pull,
+
+	M.
+
+The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
+
+  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git tags/irqchip-fixes-5.13-1
+
+for you to fetch changes up to fbb80d5ad400a12ec67214a0e7e9f9497dc9e615:
+
+  irqchip: Remove redundant error printing (2021-05-16 13:07:18 +0100)
+
+----------------------------------------------------------------
+irqchip fixes for 5.13, take #1
+
+- Fix PXA Mainstone CPLD irq allocation in legacy mode
+- Restrict the Apple AIC controller to the Apple platform
+- Remove a few supperfluous messages on devm_ioremap_resource() failure
+
+----------------------------------------------------------------
+Geert Uytterhoeven (1):
+      irqchip/apple-aic: APPLE_AIC should depend on ARCH_APPLE
+
+Marc Zyngier (1):
+      ARM: PXA: Fix cplds irqdesc allocation when using legacy mode
+
+Zhen Lei (1):
+      irqchip: Remove redundant error printing
+
+ arch/arm/mach-pxa/pxa_cplds_irqs.c | 7 ++++++-
+ drivers/irqchip/Kconfig            | 2 +-
+ drivers/irqchip/irq-mvebu-icu.c    | 4 +---
+ drivers/irqchip/irq-mvebu-sei.c    | 4 +---
+ drivers/irqchip/irq-stm32-exti.c   | 4 +---
+ 5 files changed, 10 insertions(+), 11 deletions(-)
