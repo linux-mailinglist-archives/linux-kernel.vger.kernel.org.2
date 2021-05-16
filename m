@@ -2,144 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C92C438214B
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 23:46:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE9B138216C
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 00:21:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234427AbhEPVrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 17:47:08 -0400
-Received: from vps-vb.mhejs.net ([37.28.154.113]:54500 "EHLO vps-vb.mhejs.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234389AbhEPVq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 17:46:56 -0400
-Received: from MUA
-        by vps-vb.mhejs.net with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <mail@maciej.szmigiero.name>)
-        id 1liOZe-000824-SO; Sun, 16 May 2021 23:45:22 +0200
-From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Igor Mammedov <imammedo@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 8/8] KVM: Optimize overlapping memslots check
-Date:   Sun, 16 May 2021 23:44:34 +0200
-Message-Id: <61d53c8121b5b906bbed363e493ac75aebbda693.1621191552.git.maciej.szmigiero@oracle.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1621191549.git.maciej.szmigiero@oracle.com>
-References: <cover.1621191549.git.maciej.szmigiero@oracle.com>
+        id S230410AbhEPWWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 18:22:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230001AbhEPWWo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 May 2021 18:22:44 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BE23C061573;
+        Sun, 16 May 2021 15:21:27 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id v8so983288lft.8;
+        Sun, 16 May 2021 15:21:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6hDyKCEJ5F5HU0VO9fIusrmFjq59XWmLLJOKxXWrnM8=;
+        b=bV0wxqPoUMCi0MlsefrMnSLYja03+X6cDVysP8KuDNKFEkDt8CgVDyUfCmBPfXm2Vj
+         8eqjF5N4YZTtYBRLtv1yx9VwD79rj1ydsDvB/VjYNchPRUvKFZ3//APmy/1AsXI6ZFDa
+         iwfh3HZ0ckUkPzGY/jEl8DFFiIqMkMFVH+tawYj9d57IaMkfyf5KoLpbOlyPA3pPUcWO
+         +zhbfhv7OMkYXmJuj1Fljs5NO0eSGUB9JoREe4Vd1k2UoIOWTW+lsR8JeFezRXbvMO8l
+         wLoZZNR3iUKs4YuXRBT/TN/CZhvosAXfdt3NZGPlOITZM/480NBS/py63bF7G56NbYmW
+         qHyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6hDyKCEJ5F5HU0VO9fIusrmFjq59XWmLLJOKxXWrnM8=;
+        b=YA20m5fZu90LTpR3/ohB/gPSyvIl4FGwSPtsnU+YJh58nWcWBk5lfXeyZvI+Qrkb7F
+         RQAKAexJaBwSVykn9rPHKbGyH+PbFMz04a25Qg0h9I0KZyAnAp94lQsoZ8H88BKef6rA
+         2071SMXS4rwtaZwgir3dcMiazYSyslFE6Ekt+jAWUXv8mmWKHQLTqfDWbaJcfxxydtyw
+         e/ytDZA4okVZg3xW8O5vrOrlEi7IuyVoetBm8O9Ng2crwcVABR06Az0zssQf1s+yjOA6
+         4S6egnlTUB5lV4r6uqTi036hoZglxhVnAvuWdlRB0lx/s0NfaOv80KG9GKEyOsiH/ZcO
+         9Bag==
+X-Gm-Message-State: AOAM530Px6XdyImQp3dntGySCtUmbhJ0+gPu5tiHuzqsWrSeSoZ5/ZTz
+        Tp+2RdvGINIK8+94kpmXbnc=
+X-Google-Smtp-Source: ABdhPJwNJsCfpbtLf5Q2NyWoJ3UhV0NktWobCbPFY0DV1o4FzjKVgJMkiU2Zcd4TKwurCDtp9l+wXw==
+X-Received: by 2002:a05:6512:204:: with SMTP id a4mr17082060lfo.238.1621203686089;
+        Sun, 16 May 2021 15:21:26 -0700 (PDT)
+Received: from localhost.localdomain (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
+        by smtp.gmail.com with ESMTPSA id q27sm2680275ljm.127.2021.05.16.15.21.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 May 2021 15:21:25 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        =?UTF-8?q?Nikola=20Milosavljevi=C4=87?= <mnidza@outlook.com>
+Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Subject: [PATCH v2 0/2] Restore voltages before rebooting of NVIDIA Tegra SoCs
+Date:   Mon, 17 May 2021 01:21:00 +0300
+Message-Id: <20210516222103.28595-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
+Hi,
 
-Do a quick lookup for possibly overlapping gfns when creating or moving
-a memslot instead of performing a linear scan of the whole memslot set.
+Nikola Milosavljević reported that rebooting wasn't working properly on
+Asus Transformer TF101, which is Tegra20-based tablet device.  We found
+that TF101 and some other devices have bootloader which doesn't re-initialize
+voltages properly on a reboot.  The problem is resolved by ensuring that
+SoC voltages are at a levels that are suitable for the rebooting of the
+SoC before reboot happens. This series adds reboot handler to the Tegra
+regulator couplers, it bumps voltages on the reboot event.
 
-Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
----
- virt/kvm/kvm_main.c | 65 ++++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 56 insertions(+), 9 deletions(-)
+Changelog:
 
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 189504b27ca6..11814730cbcb 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -1474,6 +1474,59 @@ static int kvm_delete_memslot(struct kvm *kvm,
- 	return kvm_set_memslot(kvm, mem, old, &new, as_id, KVM_MR_DELETE);
- }
- 
-+static bool kvm_check_memslot_overlap(struct kvm_memslots *slots,
-+				      struct kvm_memory_slot *nslot)
-+{
-+	int idxactive = kvm_memslots_idx(slots);
-+	struct rb_node *node;
-+
-+	/*
-+	 * Find the slot with the lowest gfn that can possibly intersect with
-+	 * the new slot, so we'll ideally have slot start <= nslot start
-+	 */
-+	node = kvm_memslots_gfn_upper_bound(slots, nslot->base_gfn);
-+	if (node) {
-+		struct rb_node *pnode;
-+
-+		/*
-+		 * A NULL previous node means that the very first slot
-+		 * already has a higher start gfn.
-+		 * In this case slot start > nslot start.
-+		 */
-+		pnode = rb_prev(node);
-+		if (pnode)
-+			node = pnode;
-+	} else {
-+		/* a NULL node below means no existing slots */
-+		node = rb_last(&slots->gfn_tree);
-+	}
-+
-+	for ( ; node; node = rb_next(node)) {
-+		struct kvm_memory_slot *cslot;
-+
-+		cslot = container_of(node, struct kvm_memory_slot,
-+				     gfn_node[idxactive]);
-+
-+		/*
-+		 * if this slot starts beyond or at the end of the new slot
-+		 * so does every next one
-+		 */
-+		if (cslot->base_gfn >= nslot->base_gfn + nslot->npages)
-+			break;
-+
-+		if (cslot->id == nslot->id)
-+			continue;
-+
-+		if (cslot->base_gfn >= nslot->base_gfn)
-+			return true;
-+
-+		if (cslot->base_gfn + cslot->npages > nslot->base_gfn)
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
- /*
-  * Allocate some memory and give it an address in the guest physical address
-  * space.
-@@ -1559,16 +1612,10 @@ int __kvm_set_memory_region(struct kvm *kvm,
- 	}
- 
- 	if ((change == KVM_MR_CREATE) || (change == KVM_MR_MOVE)) {
--		int ctr;
--
- 		/* Check for overlaps */
--		kvm_for_each_memslot(tmp, ctr, __kvm_memslots(kvm, as_id)) {
--			if (tmp->id == id)
--				continue;
--			if (!((new.base_gfn + new.npages <= tmp->base_gfn) ||
--			      (new.base_gfn >= tmp->base_gfn + tmp->npages)))
--				return -EEXIST;
--		}
-+		if (kvm_check_memslot_overlap(__kvm_memslots(kvm, as_id),
-+					      &new))
-+			return -EEXIST;
- 	}
- 
- 	/* Allocate/free page dirty bitmap as needed */
+v2: - Added ack from Mark Brown.
+
+    - Rebased patches properly, thanks to Michał Mirosław for noticing
+      this problem.
+
+Dmitry Osipenko (2):
+  regulator: core: Add regulator_sync_voltage_rdev()
+  soc/tegra: regulators: Bump voltages on system reboot
+
+ drivers/regulator/core.c               | 23 ++++++++
+ drivers/soc/tegra/regulators-tegra20.c | 75 ++++++++++++++++++++++++-
+ drivers/soc/tegra/regulators-tegra30.c | 78 +++++++++++++++++++++++++-
+ include/linux/regulator/driver.h       |  1 +
+ 4 files changed, 175 insertions(+), 2 deletions(-)
+
+-- 
+2.30.2
+
