@@ -2,112 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6C463821D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 00:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A21F3821DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 01:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231614AbhEPXAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 19:00:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42764 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230210AbhEPXAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 19:00:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2513B6113C;
-        Sun, 16 May 2021 22:58:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621205934;
-        bh=fs924xrDF8amvmwj2roEalsH1PWBkImLcf788hcVKF8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=hbKFJ03hDs5fZa75fAlEEuvLCoddZ/YbFFpQjwPhGN2Z4+ipdDpC1Ps4BNhAdHBet
-         ROH0sGF8BBqyoj2DNHSo8bnYMiiIQ+Du4CLYKhFtxfFmWJhzsTmYbD/KIwvmLRcae+
-         R5Z/nAy6ddYrp+W29KSsE19eLJR24F1vR37fBlaYtnBpW5ZEUijtBFJOPe+21rHKzR
-         9aeEaDeIEideewXzQtHf440je++LTdOPSqV6vpkFquJFbW5Kw6R71rpTrxYom50pUS
-         33XxG4OeE0VRfx026x8PeMtcQYFZpEZeVAqGgz9vRxHOw8F4zAIWjGlKA+5/r5tKgl
-         nJr9vlIja+WlQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id E2DDB5C03A8; Sun, 16 May 2021 15:58:53 -0700 (PDT)
-Date:   Sun, 16 May 2021 15:58:53 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     yanfei.xu@windriver.com
-Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] rcu: fix a deadlock caused by not release
- rcu_node->lock
-Message-ID: <20210516225853.GD4441@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210516095010.3657134-1-yanfei.xu@windriver.com>
+        id S231767AbhEPXFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 19:05:37 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:45132 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230210AbhEPXFf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 May 2021 19:05:35 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id D03971F40F2E
+Message-ID: <f46b9c889914360348f218b45f10a06bd1bd8595.camel@collabora.com>
+Subject: Re: [PATCH v10 6/9] media: uapi: Add a control for HANTRO driver
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        p.zabel@pengutronix.de, mchehab@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        lee.jones@linaro.org, gregkh@linuxfoundation.org,
+        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, emil.l.velikov@gmail.com
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        kernel@collabora.com, cphealy@gmail.com
+Date:   Sun, 16 May 2021 20:04:05 -0300
+In-Reply-To: <815a4bd6-599b-cfb8-9ddc-efa4b7092c23@xs4all.nl>
+References: <20210420121046.181889-1-benjamin.gaignard@collabora.com>
+         <20210420121046.181889-7-benjamin.gaignard@collabora.com>
+         <a7c9fe23-2900-ac90-7131-21380fbfc793@xs4all.nl>
+         <1cf94540-7f4d-0179-dd1e-0b82ee30f6d2@collabora.com>
+         <815a4bd6-599b-cfb8-9ddc-efa4b7092c23@xs4all.nl>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210516095010.3657134-1-yanfei.xu@windriver.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 16, 2021 at 05:50:10PM +0800, yanfei.xu@windriver.com wrote:
-> From: Yanfei Xu <yanfei.xu@windriver.com>
+Hi Hans,
+
+On Thu, 2021-05-06 at 14:50 +0200, Hans Verkuil wrote:
+> On 05/05/2021 17:20, Benjamin Gaignard wrote:
+> > 
+> > Le 05/05/2021 à 16:55, Hans Verkuil a écrit :
+> > > On 20/04/2021 14:10, Benjamin Gaignard wrote:
+> > > > The HEVC HANTRO driver needs to know the number of bits to skip at
+> > > > the beginning of the slice header.
+> > > > That is a hardware specific requirement so create a dedicated control
+> > > > for this purpose.
+> > > > 
+> > > > Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> > > > ---
+> > > >   .../userspace-api/media/drivers/hantro.rst    | 19 +++++++++++++++++++
+> > > >   .../userspace-api/media/drivers/index.rst     |  1 +
+> > > >   include/media/hevc-ctrls.h                    | 13 +++++++++++++
+> > > >   3 files changed, 33 insertions(+)
+> > > >   create mode 100644 Documentation/userspace-api/media/drivers/hantro.rst
+> > > > 
+> > > > diff --git a/Documentation/userspace-api/media/drivers/hantro.rst b/Documentation/userspace-api/media/drivers/hantro.rst
+> > > > new file mode 100644
+> > > > index 000000000000..cd9754b4e005
+> > > > --- /dev/null
+> > > > +++ b/Documentation/userspace-api/media/drivers/hantro.rst
+> > > > @@ -0,0 +1,19 @@
+> > > > +.. SPDX-License-Identifier: GPL-2.0
+> > > > +
+> > > > +Hantro video decoder driver
+> > > > +===========================
+> > > > +
+> > > > +The Hantro video decoder driver implements the following driver-specific controls:
+> > > > +
+> > > > +``V4L2_CID_HANTRO_HEVC_SLICE_HEADER_SKIP (integer)``
+> > > > +    Specifies to Hantro HEVC video decoder driver the number of data (in bits) to
+> > > > +    skip in the slice segment header.
+> > > > +    If non-IDR, the bits to be skipped go from syntax element "pic_output_flag"
+> > > > +    to before syntax element "slice_temporal_mvp_enabled_flag".
+> > > > +    If IDR, the skipped bits are just "pic_output_flag"
+> > > > +    (separate_colour_plane_flag is not supported).
+> > > I'm not very keen on this. Without this information the video data cannot be
+> > > decoded, or will it just be suboptimal?
+> > 
+> > Without that information the video can't be decoded.
+> > 
+> > > 
+> > > The problem is that a generic decoder would have to know that the HW is a hantro,
+> > > and then call this control. If they don't (and are testing on non-hantro HW), then
+> > > it won't work, thus defeating the purpose of the HW independent decoder API.
+> > > 
+> > > Since hantro is widely used, and if there is no other way to do this beside explitely
+> > > setting this control, then perhaps this should be part of the standard HEVC API.
+> > > Non-hantro drivers that do not need this can just skip it.
+> > 
+> > Even if I put this parameter in decode_params structure that would means that a generic
+> > userland decoder will have to know how the compute this value for hantro HW since it
+> > isn't something that could be done on kernel side.
 > 
-> rcu_node->lock isn't released in rcu_print_task_stall() if the rcu_node
-> don't contain tasks which blocking the GP. However this rcu_node->lock
-> will be used again in rcu_dump_cpu_stacks() soon while the ndetected is
-> non-zero. As a result the cpu will hung by this deadlock.
+> But since hantro is very common, any userland decoder will need to calculate this anyway.
+> So perhaps it is better to have this as part of the decode_params?
 > 
-> Fixes: c583bcb8f5ed ("rcu: Don't invoke try_invoke_on_locked_down_task() with irqs disabled")
-> Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
+> I'd like to know what others think about this.
+> 
 
-Also a good catch, thank you!  Queued for further review and testing,
-wordsmithed as shown below.  The rcutorture scripts have been known to
-work on ARM in the past, and might still do so.  (I test on x86.)
+As you know, I'm not a fan of carrying these "unstable" APIs around.
+I know it's better than nothing, but I feel they create the illusion
+of the interface being supported in mainline. Since it's unstable,
+it's difficult for applications to adopt them.
 
-As always, please check to make sure that I didn't mess something up.
+As Nicolas mentioned, this means neither FFmpeg nor GStreamer will adopt
+these APIs, which worries me, as that means we lose two major user bases.
 
-							Thanx, Paul
+My personal take from this, is that we need to find ways to stabilize
+our stateless codec APIs in less time and perhaps with less effort.
 
-------------------------------------------------------------------------
+IMO, a less stiff interface could help us here, and that's why I think
+having hardware-specific controls can be useful. Hardware designers
+can be so creative :)
 
-commit e0a9b77f245ae4fe1537120fd5319bf9e091618e
-Author: Yanfei Xu <yanfei.xu@windriver.com>
-Date:   Sun May 16 17:50:10 2021 +0800
+I'm not against introducing this specific parameter in
+v4l2_ctrl_hevc_codec_params, arguing that Hantro is widely used,
+but I'd like us to be open to hardware-specific controls as a way
+to extend the APIs seamlessly.
 
-    rcu: Fix stall-warning deadlock due to non-release of rcu_node ->lock
-    
-    If rcu_print_task_stall() is invoked on an rcu_node structure that does
-    not contain any tasks blocking the current grace period, it takes an
-    early exit that fails to release that rcu_node structure's lock.  This
-    results in a self-deadlock, which is detected by lockdep.
-    
-    To reproduce this bug:
-    
-    tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 3 --trust-make --configs "TREE03" --kconfig "CONFIG_PROVE_LOCKING=y" --bootargs "rcutorture.stall_cpu=30 rcutorture.stall_cpu_block=1 rcutorture.fwd_progress=0 rcutorture.test_boost=0"
-    
-    This will also result in other complaints, including RCU's scheduler
-    hook complaining about blocking rather than preemption and an rcutorture
-    writer stall.
-    
-    Only a partial RCU CPU stall warning message will be printed because of
-    the self-deadlock.
-    
-    This commit therefore releases the lock on the rcu_print_task_stall()
-    function's early exit path.
-    
-    Fixes: c583bcb8f5ed ("rcu: Don't invoke try_invoke_on_locked_down_task() with irqs disabled")
-    Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Applications won't have to _know_ what hardware they are running on,
+they can just use VIDIOC_QUERYCTRL to find out which controls are needed.
 
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index a10ea1f1f81f..d574e3bbd929 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -267,8 +267,10 @@ static int rcu_print_task_stall(struct rcu_node *rnp, unsigned long flags)
- 	struct task_struct *ts[8];
- 
- 	lockdep_assert_irqs_disabled();
--	if (!rcu_preempt_blocked_readers_cgp(rnp))
-+	if (!rcu_preempt_blocked_readers_cgp(rnp)) {
-+		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 		return 0;
-+	}
- 	pr_err("\tTasks blocked on level-%d rcu_node (CPUs %d-%d):",
- 	       rnp->level, rnp->grplo, rnp->grphi);
- 	t = list_entry(rnp->gp_tasks->prev,
+Thanks,
+Ezequiel
+
