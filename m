@@ -2,153 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB999381F5A
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 16:55:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A853C381F5F
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 16:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234359AbhEPO4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 10:56:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57166 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233315AbhEPO4t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 10:56:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8920B61182;
-        Sun, 16 May 2021 14:55:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621176934;
-        bh=qI0i1HxzkW5rG/FDq6Kg5Due7t7LczXesnCNZ1yMF50=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TS+uU98k/gwzKX6WMAabIn4mSqRdkmuXdSu+LJtdtgd4451OwI5Mg464KkHcSCqB9
-         1oqZIWDYNkNJtaEL3dCs0TRwqqEj0z2H6W6B5mtD/6uRu3qwRLycv4to5/3vZeLybX
-         SMQhWOePs2VErXi1Esqli/GGmdrv7foGD2rk3p1F61e9vJVXVzweLkMJs9sxcNYzh+
-         JRAmsBgq4dcxhE5K1vDWT8qiJqiXkLi5RUV1k3oV47Zgm+TvoPEHZf0ACN74DfuykY
-         S5YXPFGTUb6osT1sfdYZsfHhUWMyhXku030zWZRwLaDGg8ErR2KgpFhOkE3stn5x1+
-         ZLkRy/tZWHbYw==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Devin Moore <devinmoore@google.com>
-Subject: [PATCH 1/4] bootconfig: Change array value to use child node
-Date:   Sun, 16 May 2021 23:55:31 +0900
-Message-Id: <162117693103.9011.18172892676114426345.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <162117692155.9011.16682190750100804269.stgit@devnote2>
-References: <162117692155.9011.16682190750100804269.stgit@devnote2>
-User-Agent: StGit/0.19
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        id S234439AbhEPO5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 10:57:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234382AbhEPO46 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 May 2021 10:56:58 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08DEDC061573;
+        Sun, 16 May 2021 07:55:43 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id 197so3453242qkl.12;
+        Sun, 16 May 2021 07:55:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:content-transfer-encoding:date:message-id:cc:subject
+         :from:to:references:in-reply-to;
+        bh=eHswci81bzxhd6oQF655OE4yXzxna+rlMF6/uXVPvIU=;
+        b=eq05b9vKUtajtauFWC7moRZEv0qkx0aIaDm20UqPYnC7OwWSFY7E37zIEuVJQ9LW8L
+         D9+JHTwWKde7UHj6ZbW0Hkz/u1az8qnXSHz6vxsadPZMfkqOjEqzDzxWytLryd0NZcMC
+         whFCIry9iQouwaggHFNN0GEz1OdlY1jxuO5290NcGZ1JVLFkAbeUmDcFbqzU7zkp85pY
+         7SkDL/umCmwjkQ6UCc5Z7r2o0y+FHP2NclGxUam6AMZxx/DP8pXBZRLltg+Dgh/WoKOc
+         w5dBHPNwBIOO2g5wLS4lhspO15MpHBJzEa1TC2fGzQh6L8E5hCPMMTUFU+wMLykqoSq0
+         FEzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding:date
+         :message-id:cc:subject:from:to:references:in-reply-to;
+        bh=eHswci81bzxhd6oQF655OE4yXzxna+rlMF6/uXVPvIU=;
+        b=FA5ojN4EdTWYhSAcqoytKGwfEac3wlpypTSRTsOCJYxQMjPJFULM6RIbu3QD4KdMc+
+         Lro0iRfVMaReuR2P171pMAAxxWaQqoiRVs17tvs+2HPB9zbw6b99g05NdDlJ34wevWcK
+         bVUInMTqqm5pJIA3KrraaFstX2w2iJo34nUodk4Jv5NYYwKTCEt/c3bZ871iDdzht9NM
+         lsEZnL6ChSfVOOq4puATrf/YRt5K/RVAIzEIC4H6r0JyGiRYqBD4wXGB89zlsZ4nNrrp
+         7J9byFchi1KPbSpFxHdtkBwJnmrEvyLMqJQX5EsR5bsgeJUMdU4W9h+RHYClZSSzcunm
+         f36g==
+X-Gm-Message-State: AOAM532FeZWdBH7dZ483cNxpYEaqhDFBYUa2IMq9VOpHc4JhV6dxgrZ8
+        b/D+iglORroGLf1Oc9nCDYKaktLAR/svgQ==
+X-Google-Smtp-Source: ABdhPJyIv77anuRJzOKw9Uz80BRHilgiuRYDoHd7qqfr+vTelJmEVeXTr6xtFSq5t3uVNN+YJKne4A==
+X-Received: by 2002:a37:e10b:: with SMTP id c11mr52200367qkm.152.1621176942294;
+        Sun, 16 May 2021 07:55:42 -0700 (PDT)
+Received: from localhost (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
+        by smtp.gmail.com with ESMTPSA id j1sm8325416qkk.78.2021.05.16.07.55.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 16 May 2021 07:55:41 -0700 (PDT)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Sun, 16 May 2021 10:55:40 -0400
+Message-Id: <CBER9H2H2I30.25AABLQDA7CD3@shaak>
+Cc:     <linux-hwmon@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <robh+dt@kernel.org>
+Subject: Re: [RFC PATCH v1 0/2] hwmon: (iio_hwmon) optionally force iio
+ channel type
+From:   "Liam Beguin" <liambeguin@gmail.com>
+To:     "Guenter Roeck" <linux@roeck-us.net>, <jdelvare@suse.com>,
+        <jic23@kernel.org>, <lars@metafoo.de>, <pmeerw@pmeerw.net>
+References: <20210516044315.116290-1-liambeguin@gmail.com>
+ <29235b1d-78f3-6d8f-567f-78ca6f350340@roeck-us.net>
+In-Reply-To: <29235b1d-78f3-6d8f-567f-78ca6f350340@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change array value to use child node of the xbc_node tree
-instead of next node.
+Hi Guenter,
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- tools/bootconfig/main.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Sun May 16, 2021 at 4:56 AM EDT, Guenter Roeck wrote:
+> On 5/15/21 9:43 PM, Liam Beguin wrote:
+> > Add a devicetree binding to optionally force a different IIO channel
+> > type.
+> >=20
+> > This is useful in cases where ADC channels are connected to a circuit
+> > that represent another unit such as a temperature or a current.
+> >=20
+> > `channel-types` was chosen instead of `io-channel-types` as this is not
+> > part of the iio consumer bindings.
+> >=20
+> > In the current form, this patch does what it's intended to do:
+> > change the unit displayed by `sensors`, but feels like the wrong way to
+> > address the problem.
+> >=20
+> > Would it be possible to force the type of different IIO channels for
+> > this kind of use case with a devicetree binding from the IIO subsystem?
+> >=20
+>
+> That doesn't make sense to me. If an ADC is used to report temperatures,
+> it would be a thermistor, and the ntc_thermistor driver should be used.
+> Not sure what to do with currents, but overriding "voltage" with
+> "current"
+> seems wrong.
 
-diff --git a/include/linux/bootconfig.h b/include/linux/bootconfig.h
-index 2696eb0fc149..3178a31fdabc 100644
---- a/include/linux/bootconfig.h
-+++ b/include/linux/bootconfig.h
-@@ -71,7 +71,7 @@ static inline __init bool xbc_node_is_key(struct xbc_node *node)
-  */
- static inline __init bool xbc_node_is_array(struct xbc_node *node)
- {
--	return xbc_node_is_value(node) && node->next != 0;
-+	return xbc_node_is_value(node) && node->child != 0;
- }
- 
- /**
-@@ -140,7 +140,7 @@ static inline struct xbc_node * __init xbc_find_node(const char *key)
-  */
- #define xbc_array_for_each_value(anode, value)				\
- 	for (value = xbc_node_get_data(anode); anode != NULL ;		\
--	     anode = xbc_node_get_next(anode),				\
-+	     anode = xbc_node_get_child(anode),				\
- 	     value = anode ? xbc_node_get_data(anode) : NULL)
- 
- /**
-@@ -171,7 +171,7 @@ static inline struct xbc_node * __init xbc_find_node(const char *key)
-  */
- #define xbc_node_for_each_array_value(node, key, anode, value)		\
- 	for (value = xbc_node_find_value(node, key, &anode); value != NULL; \
--	     anode = xbc_node_get_next(anode),				\
-+	     anode = xbc_node_get_child(anode),				\
- 	     value = anode ? xbc_node_get_data(anode) : NULL)
- 
- /**
-diff --git a/lib/bootconfig.c b/lib/bootconfig.c
-index 9f8c70a98fcf..44dcdcbd746a 100644
---- a/lib/bootconfig.c
-+++ b/lib/bootconfig.c
-@@ -367,6 +367,14 @@ static inline __init struct xbc_node *xbc_last_sibling(struct xbc_node *node)
- 	return node;
- }
- 
-+static inline __init struct xbc_node *xbc_last_child(struct xbc_node *node)
-+{
-+	while (node->child)
-+		node = xbc_node_get_child(node);
+Thanks for pointing out the ntc_thermistor.
+It makes sense that the ADC channel would become a thermistor.
+I'll have a look and see if it fits my use case.
+
+Liam
+
+>
+> Guenter
+>
+> > It would be convenient to do it within the IIO subsystem to have the
+> > right unit there too.
+> >=20
+> > Thanks for your time,
+> > Liam
+> >=20
+> > Liam Beguin (2):
+> >    hwmon: (iio_hwmon) optionally force iio channel type
+> >    dt-bindings: hwmon: add iio-hwmon bindings
+> >=20
+> >   .../devicetree/bindings/hwmon/iio-hwmon.yaml  | 41 ++++++++++++++++++=
 +
-+	return node;
-+}
-+
- static struct xbc_node * __init xbc_add_sibling(char *data, u32 flag)
- {
- 	struct xbc_node *sib, *node = xbc_add_node(data, flag);
-@@ -517,17 +525,20 @@ static int __init xbc_parse_array(char **__v)
- 	char *next;
- 	int c = 0;
- 
-+	if (last_parent->child)
-+		last_parent = xbc_node_get_child(last_parent);
-+
- 	do {
- 		c = __xbc_parse_value(__v, &next);
- 		if (c < 0)
- 			return c;
- 
--		node = xbc_add_sibling(*__v, XBC_VALUE);
-+		node = xbc_add_child(*__v, XBC_VALUE);
- 		if (!node)
- 			return -ENOMEM;
- 		*__v = next;
- 	} while (c == ',');
--	node->next = 0;
-+	node->child = 0;
- 
- 	return c;
- }
-@@ -615,8 +626,12 @@ static int __init xbc_parse_kv(char **k, char *v, int op)
- 
- 	if (op == ':' && child) {
- 		xbc_init_node(child, v, XBC_VALUE);
--	} else if (!xbc_add_sibling(v, XBC_VALUE))
--		return -ENOMEM;
-+	} else {
-+		if (op == '+' && child)
-+			last_parent = xbc_last_child(child);
-+		if (!xbc_add_sibling(v, XBC_VALUE))
-+			return -ENOMEM;
-+	}
- 
- 	if (c == ',') {	/* Array */
- 		c = xbc_parse_array(&next);
-diff --git a/tools/bootconfig/main.c b/tools/bootconfig/main.c
-index 7362bef1a368..aaa4fec1c431 100644
---- a/tools/bootconfig/main.c
-+++ b/tools/bootconfig/main.c
-@@ -27,7 +27,7 @@ static int xbc_show_value(struct xbc_node *node, bool semicolon)
- 			q = '\'';
- 		else
- 			q = '"';
--		printf("%c%s%c%s", q, val, q, node->next ? ", " : eol);
-+		printf("%c%s%c%s", q, val, q, node->child ? ", " : eol);
- 		i++;
- 	}
- 	return i;
+> >   drivers/hwmon/iio_hwmon.c                     |  2 +
+> >   2 files changed, 43 insertions(+)
+> >   create mode 100644 Documentation/devicetree/bindings/hwmon/iio-hwmon.=
+yaml
+> >=20
+> >=20
+> > base-commit: 9f4ad9e425a1d3b6a34617b8ea226d56a119a717
+> >=20
 
