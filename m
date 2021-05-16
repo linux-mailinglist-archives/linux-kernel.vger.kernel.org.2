@@ -2,148 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40874382018
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 18:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6443B38201D
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 19:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231151AbhEPQ7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 12:59:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36406 "EHLO
+        id S231402AbhEPRDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 13:03:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhEPQ7T (ORCPT
+        with ESMTP id S229459AbhEPRDM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 12:59:19 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38FCAC061573;
-        Sun, 16 May 2021 09:58:03 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id r11so4100519edt.13;
-        Sun, 16 May 2021 09:58:03 -0700 (PDT)
+        Sun, 16 May 2021 13:03:12 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66AE1C061573;
+        Sun, 16 May 2021 10:01:56 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id z12so4281436ejw.0;
+        Sun, 16 May 2021 10:01:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=THGNQdN+G1zV46mDYPmEAZYdYXCX5MmcuOTwcSwtuvo=;
-        b=vAwr7XqIbClut1z4sdTFuPnfDRT1ReLHcBMUUYKcxipLRLfV/kXk3zPTCVrzm+fdyg
-         GfOTvKxO/JsS73b3r+5civRLoH6xcwav0JK7i76bRxbzMNt2ejSSZLjyoM88eW2v8RKF
-         yhrGqWpt7E9XKqed3CTJQqdwVjgWnp0hq2Vn+2p3uGEtIB27UTpX8Zj8fTEECzHkLztC
-         HFSvs76VCxvdJeD/Drx4dAp19lieKG65qSWKvz74tOuKBFPCDS0ZdQxEZPQpVCQtiIIq
-         oFHVlNlXKk/W9dAbPBo0p119Z0MPSQn/hhbSlu1L7n68Wp+VE4jL6NhFewnV47SNgEKE
-         TPxQ==
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AtiJHfdmT2LSVR4rbNIaNF36Xfs944KqtBektfTje5M=;
+        b=DAGiCJN/B0AuQYxR2YMS1YdLG7E04XbNnAThdGjmBoPVyWeVm0Vt63bTbv2eoScYRQ
+         SvAEYLrzwnmzOR5wp1CC3RKN4hyBnHKWJQKmPAax8xiYeQN0kxz2jQJP+F4Eg3PnYmne
+         1tPqS44UJ6bIQx53XCLEzkUDSA0PKYzdiJ1Bm8Ux9G1YFwdM/2HDZfALKNqSjTCpM2/w
+         /Rh5WhkPS0VtYInMu//A4ZE4YYK/MTrUiFkFfqoKnAk9XrjylD1xFHqznvRukMuPJ097
+         ZgkrbbJ358Ttx/9WXCUX4sI2HnbgR0YAj0ln5t6NUysuwZ90LddsWhtadieg1uDXWzMv
+         XHaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=THGNQdN+G1zV46mDYPmEAZYdYXCX5MmcuOTwcSwtuvo=;
-        b=mZWdNW0Pp6gBX+/aJ77Wd3I+Cm+U2BgHvQdjgPZFQnUrdetriP/wAzSxttpBWNUERe
-         A9nytcrZLUiKHQrhUjENyacKCdifchq7gttlUFlTCMsorUB2jeoG05D6gGF86Hh8yqCq
-         QSpW69/g4f4+gxcJP8Yl9/XwX4Q69rdka7xcpbWlspM5rCdKM2Mo7NDUIS1xbLkyyJ4w
-         Y2dmLCAbReGzjmd5MHAC5XZBBy1tYIx4y5P7CfTK5W1+EiKUsa1ozwx6lXrlFzqEC5oC
-         fRZa4S1TUuqCeb1FCQyfUnDbWprfB2jAe2E8BP4r921khXBkFyTi0WFQcqQpOtgHMg76
-         FIuA==
-X-Gm-Message-State: AOAM5323hcSbwhLL2KsxaXKVbW9MRgZ+thd9YfnoThIl2xYbdMqI8sSM
-        SGW27S+whdnHriZIFcjehao=
-X-Google-Smtp-Source: ABdhPJwaShKoLi6L7M46jeK47mTX8GC6V1iNP2M+rmarPzrHU77J5vNHFEl+wU8YJI3T79mFG1OrGQ==
-X-Received: by 2002:aa7:c548:: with SMTP id s8mr5163282edr.114.1621184281922;
-        Sun, 16 May 2021 09:58:01 -0700 (PDT)
-Received: from eldamar (80-218-24-251.dclient.hispeed.ch. [80.218.24.251])
-        by smtp.gmail.com with ESMTPSA id l11sm9027237edw.42.2021.05.16.09.58.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 May 2021 09:58:01 -0700 (PDT)
-Sender: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com>
-Date:   Sun, 16 May 2021 18:58:00 +0200
-From:   Salvatore Bonaccorso <carnil@debian.org>
-To:     Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@siol.net>
-Cc:     Maxime Ripard <maxime@cerno.tech>,
-        "B.R. Oake" <broake@mailfence.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
-        Rob Herring <robh+dt@kernel.org>,
-        Chen-Yu Tsai <wens@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Vagrant Cascadian <vagrant@reproducible-builds.org>
-Subject: Re: [PATCH] ARM: dts: sun8i: h3: orangepi-plus: Fix Ethernet PHY mode
-Message-ID: <YKFPGC2qBMipQPbd@eldamar.lan>
-References: <1243888060.510560.1612783497400@ichabod.co-bxl>
- <20210210150118.ly252i37eykayrcb@gilmour>
- <1719200956.433094.1613199092092@ichabod.co-bxl>
- <6612268.HtAl026vyE@jernej-laptop>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AtiJHfdmT2LSVR4rbNIaNF36Xfs944KqtBektfTje5M=;
+        b=rrJxHhVmnvwPsE9bFaNTi/KrxzBoPJmlOu2MQS6pU4umeWuXMrTSdKE+pwLgMhO9s4
+         LBqa8MFVADkyrmp7VALoSNHIk7MBpwYNGyDHnYy8HKEiWOAEEenjVCNsNc/3o6zsJiHW
+         gE6IUKDg1T7DsFeSGXda10xL3C3AENAJcPANf3lh1iyNSk3hvyxzjPe346srvu216lnz
+         FXC2fyZXpxXjYrdH5FrgOzhllgyAigba4gbGYitiRqbyDN/4zASFbwpdM0ROdi13Go0T
+         esV1ogqTUSYRann4fwIUgmzEMkN4MxlimP2pqyauT3grOjOYY0s99HQCALwjBvbsiwbR
+         HZkQ==
+X-Gm-Message-State: AOAM532Buv/UX7vrydWqZkAWLUlkY7o9/Cj95UKbb85FFvA9EMD7U6CP
+        n/UI+gU/fViWIVBpwhIfJq4HqadiTK/RF3oG2Q4=
+X-Google-Smtp-Source: ABdhPJxElTHfIzHywbG8S+ZiNXqSjJEqGZe2D3CIdGakxelu3WUAQhIbf0zHelLeFVb7YO60doX8+J/CEmulNZITgNg=
+X-Received: by 2002:a17:906:57c3:: with SMTP id u3mr59329306ejr.162.1621184515178;
+ Sun, 16 May 2021 10:01:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6612268.HtAl026vyE@jernej-laptop>
+References: <20210513220317.137090-1-colin.king@canonical.com>
+In-Reply-To: <20210513220317.137090-1-colin.king@canonical.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Sun, 16 May 2021 19:01:44 +0200
+Message-ID: <CAFBinCDde0+QzDOYF2EAkjmbdd80Emu3YuFV3jOCMaZuT+FNmQ@mail.gmail.com>
+Subject: Re: [PATCH] media: meson: vdec: remove redundant initialization of
+ variable reg_cur
+To:     Colin King <colin.king@canonical.com>
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        linux-amlogic@lists.infradead.org, linux-staging@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Sat, Feb 13, 2021 at 09:51:17AM +0100, Jernej Škrabec wrote:
-> Hi!
-> 
-> Let me first explain that it was oversight on my side not noticing initials in 
-> your SoB tag. But since the issue was raised by Maxime, I didn't follow up.
-> 
-> Dne sobota, 13. februar 2021 ob 07:51:32 CET je B.R. Oake napisal(a):
-> > On Wed Feb 10 at 16:01:18 CET 2021, Maxime Ripard wrote:
-> > > Unfortunately we can't take this patch as is, this needs to be your real
-> > > name, see:
-> > > https://www.kernel.org/doc/html/latest/process/submitting-patches.html#de
-> > > veloper-s-certificate-of-origin-1-1
-> > Dear Maxime,
-> > 
-> > Thank you very much for considering my contribution and for all your
-> > work on supporting sunxi-based hardware; I appreciate it.
-> > 
-> > Thank you for referring me to the Developer's Certificate of Origin, but
-> > I had already read it before submitting (I had to do so in order to know
-> > what I was saying by "Signed-off-by:") and I do certify what it says.
-> > 
-> > Looking through recent entries in the commit log of the mainline kernel,
-> > I see several patches from authors such as:
-> > 
-> >   H.J. Lu <hjl.tools@gmail.com>
-> >   B K Karthik <karthik.bk2000@live.com>
-> >   JC Kuo <jckuo@nvidia.com>
-> >   EJ Hsu <ejh@nvidia.com>
-> >   LH Lin <lh.lin@mediatek.com>
-> >   KP Singh <kpsingh@kernel.org>
-> >   Karthik B S <karthik.b.s@intel.com>
-> >   Shreyas NC <shreyas.nc@intel.com>
-> >   Vandana BN <bnvandana@gmail.com>
-> > 
-> > so I believe names of this form are in fact acceptable, even if the
-> > style might seem a little old-fashioned to some.
-> 
-> Speaking generally, not only for this case, prior art arguments rarely hold, 
-> because:
-> - it might be oversight,
-> - it might be a bad practice, which should not be followed in new 
-> contributions,
-> - different maintainers have different point of view on same thing,
-> - maintainer wants to adapt new practice or steer subsystem in new direction
-> 
-> > 
-> > I would like to add that I have met many people with names such as C.J.,
-> > A A, TC, MG, etc. That is what everybody calls them and it would be
-> > natural for them to sign themselves that way. Some of them might want to
-> > contribute to Linux some day, and I think it would be a great shame and
-> > a loss to all of us if they were discouraged from doing so by reading
-> > our conversation in the archives and concluding that any contribution
-> > from them, however small, would be summarily refused simply because of
-> > their name. Please could you ensure that does not happen?
-> 
-> The link you posted says following:
-> "using your real name (sorry, no pseudonyms or anonymous contributions.)"
-> 
-> I believe that real name means no initials, no matter what people are 
-> accustomed to. From my point of view, CJ is pseudonym derived from real name.
-> 
-> This is not the first time that fix of SoB tag was requested, you can find such 
-> requests in ML archives.
-
-Any chance this could be resolved? In downstream (here Debian) we
-would be interested to have the patch applied due to
-https://bugs.debian.org/988574 reported by Vagrant Cascadian.
-
-Regards,
-Salvatore
+On Fri, May 14, 2021 at 12:03 AM Colin King <colin.king@canonical.com> wrote:
+>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> The variable reg_cur is being initialized with a value that is never
+> read, it is being updated later on. The assignment is redundant and
+> can be removed.
+>
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Acked-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
