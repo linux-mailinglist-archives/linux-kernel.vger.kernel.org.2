@@ -2,202 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1613A381D71
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 10:52:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45314381D74
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 10:54:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234273AbhEPIxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 04:53:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43454 "EHLO
+        id S234316AbhEPIzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 04:55:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230248AbhEPIxg (ORCPT
+        with ESMTP id S234255AbhEPIzK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 04:53:36 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10ACBC061573
-        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 01:52:21 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id 27so1316836pgy.3
-        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 01:52:21 -0700 (PDT)
+        Sun, 16 May 2021 04:55:10 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66166C061573;
+        Sun, 16 May 2021 01:53:56 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id h202so4564964ybg.11;
+        Sun, 16 May 2021 01:53:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=my1Uzq63smYlq0aZ5BNjTy0z1PVgGz1T+UWNunjYlIE=;
-        b=ywZY4TFxPyyEYUw8Wf3TDHpGejYR3Q1+B0teMp/m5zIX+Sugy5E/MSAgvfewp0mxyp
-         bXlQeI2bVz+Qv240bm0vRAnAVIKRDbTU3MEfNiGBuUPjw/FJZUs/IsQ5f+wWiYHXK8j0
-         1B/nvGP56clQHGt/kRlGikLNfL7W85RStvquI3z3HoPS5GKrI7OyibHp02FT/s5XF9GX
-         /nlAXWRt2G3d/ior7+YG6C/sMtcsJKF0ZeqmTh0SI9xhZbt9pybgX/Y1y59bB7G/fgTa
-         TYTa1OFzH1RKeq2Cy/kUmpMS/6r+Skp+NuROf7W6liDFDnhElODVR6qRrwgPL0k0cPPQ
-         6Sow==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ftA4ti5/6sdNr5V36MO+h2jetmzHwEt9RUH/PLBAxY8=;
+        b=T3INqGrrLTawY2PwrwMmaYPaml4dU/Rdtv9onK4veMKqZfCLrH+MtgtiqV8SJxuEBW
+         4O4oBeb1ZgGuHDlxzGOWtEgiRHvRgc2llDO1j3lLaLWCai9S/I9vl0t3Hfk9bTOB/TxN
+         I6kULP9fgm7OqkutPGzBXkzcU9lvYXzL2M+hclSTDedWbiGTjPxS1kRhivxc9VJ9fIBG
+         01z4coeHSbAKu1CXhJWvo8NoGOIHx7nqtqc1a2gG2Ih7b3jbIr3GOro8jnXqLZdV0EzW
+         PdBXCS+R/BeCtHGCuPuNvljEGCztPi38NQEC73QTNRjqpEfjVwncnCmTcrezUAOv0cWq
+         5W2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=my1Uzq63smYlq0aZ5BNjTy0z1PVgGz1T+UWNunjYlIE=;
-        b=h4x4kdoDsSPdqh7Ht63l4m0tA4EiIT5krQUZdGyESh/DTlyiMkNbT5QzFS9506qqoF
-         eG6J+UWY56CAACG8P5aHQNdaD4MQx/jDHwRd1G20z6eMHHR21NY3flYz6epRN3YuEWCx
-         OSStwDmF17rpSxySlJvp2tLmYuLL3Q/31rQJ+tkhRzf2TZguPSvWneHMmzQq/MB9W6OP
-         qrGlLo8hGSjDohe896af1wpZsJnFyDIy/6Nce3tD44DlE9KDTLvlb0hUcZkV3eKFylOW
-         P74PW/Jp0HQ1n4k2tuxJADXfM/CJWCxMBIcfOItg+iOVve/GF8ts9aJqeEZYs4Yyo2wx
-         C2IQ==
-X-Gm-Message-State: AOAM5320d26LP5Hjt9FDbvKYGfGrauU/xowtIGBbKtq4vnFsw0rTkSNR
-        ehV4TXJRvrWPlqTWQNtJKsnpnpcDTZNDCCBDx/8=
-X-Google-Smtp-Source: ABdhPJyA+L+EygDbRxFYR7HmPlyf5t3xdo5Q7O0XJeOn23ry6h/2jqknueCzh/krFIRlQRo1HxIWGA==
-X-Received: by 2002:a63:4706:: with SMTP id u6mr55272506pga.152.1621155140537;
-        Sun, 16 May 2021 01:52:20 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([204.124.180.30])
-        by smtp.gmail.com with ESMTPSA id c71sm1007536pfc.148.2021.05.16.01.52.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 May 2021 01:52:19 -0700 (PDT)
-Date:   Sun, 16 May 2021 16:52:12 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     coresight@lists.linaro.org, al.grant@arm.com,
-        branislav.rankov@arm.com, denik@chromium.org,
-        suzuki.poulose@arm.com, anshuman.khandual@arm.com,
-        Mike Leach <mike.leach@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] perf cs-etm: Prevent and warn on underflows
- during timestamp calculation.
-Message-ID: <20210516085212.GA942578@leoy-ThinkPad-X240s>
-References: <20210513143520.22694-1-james.clark@arm.com>
- <20210513143520.22694-4-james.clark@arm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ftA4ti5/6sdNr5V36MO+h2jetmzHwEt9RUH/PLBAxY8=;
+        b=tL9uyLLm4n0wtjL5hEmfZofSvPbvfl+XY/pqwfB2sXsDJTZbJM+FqvgVQXy+EuIe+x
+         6ARt/doorRPZKX9vco/J6amSu7QXAlU5ghLytCpnJf/ux5jR6I4YdttD9T1frzmMX54Z
+         lJyqBxhDCMVe2S+5Pzc3nwBXmy/6O8hzbTt9CwBb4uTUDHfU+SsbP8zeELq6UIk5GV2w
+         eZF/cS9AyVd66koMlj40uHvGOA4L0KE3OlcUH1Y2gfbSQz9Zr0wr4YkHl6UNAYLx0OkE
+         2TmZ5spda0ZaZG+60IVIh8+u+xF0nNo2oDf2AS8iqVTG+91Mws2TtLUQMSegotDjlalu
+         3BLA==
+X-Gm-Message-State: AOAM531WlCy4fqCC33ItLCEVlOe1m/3RSeMNt/gWwib0hm45mkJg+M4G
+        62aU+/HSAHuNllqSJJrhGuQqLOnlvMUoI9jBsQY=
+X-Google-Smtp-Source: ABdhPJwdE7SKwM/V6kVaWp2lglaUuvcCjKHhym7fG+KaZH0aaxYr/3ygl8L8rstWVwMUF3i7TUyi5a4r8R345gEfr3U=
+X-Received: by 2002:a25:7909:: with SMTP id u9mr72457023ybc.22.1621155235692;
+ Sun, 16 May 2021 01:53:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210513143520.22694-4-james.clark@arm.com>
+References: <1620984265-53916-1-git-send-email-yang.lee@linux.alibaba.com>
+In-Reply-To: <1620984265-53916-1-git-send-email-yang.lee@linux.alibaba.com>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Sun, 16 May 2021 10:53:57 +0200
+Message-ID: <CAKXUXMyjh1mnLpyu_xa4vWAv9Bn_EN3YdhQ_r1aD58YvFTRORA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: Remove redundant initialization of 'to_add'
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     clm@fb.com, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-btrfs@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 05:35:20PM +0300, James Clark wrote:
-> When a zero timestamp is encountered, warn once. This is to make
-> hardware or configuration issues visible. Also suggest that the issue
-> can be worked around with the --itrace=Z option.
-> 
-> When an underflow with a non-zero timestamp occurrs, warn every time.
-
-s/occurrs/occurs
-
-> This is an unexpected scenario, and with increasing timestamps, it's
-> unlikely that it would occur more than once, therefore it should be
-> ok to warn every time.
-> 
-> Only try to calculate the timestamp by subtracting the instruction
-> count if neither of the above cases are true. This makes attempting
-> to decode files with zero timestamps in non-timeless mode
-> more consistent. Currently it can half work if the timestamp wraps
-> around and becomes non-zero, although the behavior is undefined and
-> unpredictable.
-> 
-> Signed-off-by: James Clark <james.clark@arm.com>
-
-All three patches look good to me:
-
-Reviewed-by: Leo Yan <leo.yan@linaro.org>
-
+On Fri, May 14, 2021 at 11:24 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
+>
+> Variable 'to_add' is being initialized however this value is never
+> read as 'to_add' is assigned a new value in if statement. Remove the
+> redundant assignment. At the same time, move its declaration into the
+> if statement, because the variable is not used elsewhere.
+>
+> Clean up clang warning:
+>
+> fs/btrfs/extent-tree.c:2773:8: warning: Value stored to 'to_add' during
+> its initialization is never read [clang-analyzer-deadcode.DeadStores]
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 > ---
->  .../perf/util/cs-etm-decoder/cs-etm-decoder.c | 45 ++++++++++++++-----
->  1 file changed, 34 insertions(+), 11 deletions(-)
-> 
-> diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-> index b01d363b9301..3e1a05bc82cc 100644
-> --- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-> +++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-> @@ -6,6 +6,7 @@
->   * Author: Mathieu Poirier <mathieu.poirier@linaro.org>
->   */
->  
-> +#include <asm/bug.h>
->  #include <linux/coresight-pmu.h>
->  #include <linux/err.h>
->  #include <linux/list.h>
-> @@ -17,6 +18,7 @@
->  
->  #include "cs-etm.h"
->  #include "cs-etm-decoder.h"
-> +#include "debug.h"
->  #include "intlist.h"
->  
->  /* use raw logging */
-> @@ -294,7 +296,8 @@ cs_etm_decoder__do_soft_timestamp(struct cs_etm_queue *etmq,
->  static ocsd_datapath_resp_t
->  cs_etm_decoder__do_hard_timestamp(struct cs_etm_queue *etmq,
->  				  const ocsd_generic_trace_elem *elem,
-> -				  const uint8_t trace_chan_id)
-> +				  const uint8_t trace_chan_id,
-> +				  const ocsd_trc_index_t indx)
->  {
->  	struct cs_etm_packet_queue *packet_queue;
->  
-> @@ -313,14 +316,33 @@ cs_etm_decoder__do_hard_timestamp(struct cs_etm_queue *etmq,
->  		return OCSD_RESP_CONT;
->  	}
->  
-> -	/*
-> -	 * This is the first timestamp we've seen since the beginning of traces
-> -	 * or a discontinuity.  Since timestamps packets are generated *after*
-> -	 * range packets have been generated, we need to estimate the time at
-> -	 * which instructions started by subtracting the number of instructions
-> -	 * executed to the timestamp.
-> -	 */
-> -	packet_queue->cs_timestamp = elem->timestamp - packet_queue->instr_count;
-> +
-> +	if (!elem->timestamp) {
-> +		/*
-> +		 * Zero timestamps can be seen due to misconfiguration or hardware bugs.
-> +		 * Warn once, and don't try to subtract instr_count as it would result in an
-> +		 * underflow.
-> +		 */
-> +		packet_queue->cs_timestamp = 0;
-> +		WARN_ONCE(true, "Zero Coresight timestamp found at Idx:%" OCSD_TRC_IDX_STR
-> +				". Decoding may be improved with --itrace=Z...\n", indx);
-> +	} else if (packet_queue->instr_count > elem->timestamp) {
-> +		/*
-> +		 * Sanity check that the elem->timestamp - packet_queue->instr_count would not
-> +		 * result in an underflow. Warn and clamp at 0 if it would.
-> +		 */
-> +		packet_queue->cs_timestamp = 0;
-> +		pr_err("Timestamp calculation underflow at Idx:%" OCSD_TRC_IDX_STR "\n", indx);
-> +	} else {
-> +		/*
-> +		 * This is the first timestamp we've seen since the beginning of traces
-> +		 * or a discontinuity.  Since timestamps packets are generated *after*
-> +		 * range packets have been generated, we need to estimate the time at
-> +		 * which instructions started by subtracting the number of instructions
-> +		 * executed to the timestamp.
-> +		 */
-> +		packet_queue->cs_timestamp = elem->timestamp - packet_queue->instr_count;
-> +	}
->  	packet_queue->next_cs_timestamp = elem->timestamp;
->  	packet_queue->instr_count = 0;
->  
-> @@ -542,7 +564,7 @@ cs_etm_decoder__set_tid(struct cs_etm_queue *etmq,
->  
->  static ocsd_datapath_resp_t cs_etm_decoder__gen_trace_elem_printer(
->  				const void *context,
-> -				const ocsd_trc_index_t indx __maybe_unused,
-> +				const ocsd_trc_index_t indx,
->  				const u8 trace_chan_id __maybe_unused,
->  				const ocsd_generic_trace_elem *elem)
->  {
-> @@ -579,7 +601,8 @@ static ocsd_datapath_resp_t cs_etm_decoder__gen_trace_elem_printer(
->  		break;
->  	case OCSD_GEN_TRC_ELEM_TIMESTAMP:
->  		resp = cs_etm_decoder__do_hard_timestamp(etmq, elem,
-> -							 trace_chan_id);
-> +							 trace_chan_id,
-> +							 indx);
->  		break;
->  	case OCSD_GEN_TRC_ELEM_PE_CONTEXT:
->  		resp = cs_etm_decoder__set_tid(etmq, packet_queue,
-> -- 
-> 2.28.0
-> 
+>  fs/btrfs/extent-tree.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index f1d15b6..e7b2289 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -2774,10 +2774,10 @@ static int unpin_extent_range(struct btrfs_fs_info *fs_info,
+>                 spin_unlock(&cache->lock);
+>                 if (!readonly && return_free_space &&
+>                     global_rsv->space_info == space_info) {
+> -                       u64 to_add = len;
+>
+>                         spin_lock(&global_rsv->lock);
+>                         if (!global_rsv->full) {
+> +                               u64 to_add;
+>                                 to_add = min(len, global_rsv->size -
+>                                              global_rsv->reserved);
+
+Yang Li, you could just combine these two lines above, right?
+
+So:
+u64 to_add = min(len, ...);
+
+By the way, great contribution on addressing all those dead stores
+identified by clang analyzer... I wish I would also have more time on
+addressing some of those remaining...
+
+Lukas
