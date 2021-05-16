@@ -2,181 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 581CE381DC0
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 11:50:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7278A381DC1
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 11:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235047AbhEPJvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 05:51:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230443AbhEPJvS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 05:51:18 -0400
-Received: from the.earth.li (the.earth.li [IPv6:2a00:1098:86:4d:c0ff:ee:15:900d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C619BC061573;
-        Sun, 16 May 2021 02:50:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=earth.li;
-         s=the; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:Subject
-        :Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=Cz9qn7+jdUb8tbmliAGpSloeH8WkxiSELtKnjIcyduQ=; b=FFwDTVAbtAOtI+HtY00AxXtT54
-        ScqsWkpPUku76SBIOengRfcPjtgj0WxW1J1MxPNjxOAE3tvc3ohmj6s379/3LbfvkD1wx2xXe8x7q
-        ebnCh18PH2zXAAwPqAkm0wE3d8BPH9sDa2n5k+MgjeSu61+D8zOduLFYtzIeShXgSNUrpX/vzxz+I
-        OHVTltHAp1z1BoPtOWqx4Bcc9Bw1DQpYGbqyPasMvx3JmhqCSq97l+C521/k/rsGMqSI4Wt0PO/Jt
-        ASsyPsDd6nyh5O9OqWyL4dfPgCrNCj2Tl7K18pHZ23kkIBnu0er0OxSiTO3nC95vnxsRX3pfPFHPx
-        PjXN5x7w==;
-Received: from noodles by the.earth.li with local (Exim 4.92)
-        (envelope-from <noodles@earth.li>)
-        id 1liDPL-000255-GT; Sun, 16 May 2021 10:49:59 +0100
-Date:   Sun, 16 May 2021 10:49:59 +0100
-From:   Jonathan McDowell <noodles@earth.li>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH net-next v4 01/28] net: mdio: ipq8064: clean
- whitespaces in define
-Message-ID: <20210516094959.GM11733@earth.li>
-References: <20210508002920.19945-1-ansuelsmth@gmail.com>
- <YJbSOYBxskVdqGm5@lunn.ch>
- <YJbTBuKobu1fBGoM@Ansuel-xps.localdomain>
- <20210515170046.GA18069@earth.li>
- <YKAFMg+rJsspgE84@Ansuel-xps.localdomain>
+        id S235089AbhEPJvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 05:51:45 -0400
+Received: from mail-bn7nam10on2072.outbound.protection.outlook.com ([40.107.92.72]:26848
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230233AbhEPJvn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 May 2021 05:51:43 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OvQO986aLi/W9bnvIQUi+TfaSCkalqiPukEkbEYtHr9LuDkczztEEdukPg/ZUVadRbWKGo0XKR8jnYeYCg5R2shDm+G3NsNRiBtMzzSSE0EDjMALBL/iAx0TF8IgizKZy1KCDBWwLO6CGeaNNKr9bPL7OjU232bODG3yzLQXS41Iennz+8bQADVZLFkvVqXdcTVNL6PN87C1KcEbtaAGBxBy7WEVwIZ6omVFjEtFJFWhfd+PEuz6VN8nDwffZm5HX7WwQ3PsstQYPjENC4c6l7D7WutsjwGgCmRDV+vXpuRGOyFT30EF77zgjvF1XTU84/zvGyzW2wXqCFKxrkaWJA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cI1cD4R5TvOLlh6FG6A2yG7lGhov+b0Xi6RIKPFjqNU=;
+ b=bbE7lRqiPY8Q84TbVNnUqzOG0QmKbj9mK+L5EimycwNZ3XElw+O80S/7O2UXOlpZOZjF4T6cHUqGgituLMyggij6EE0s36DB9ouDuxNbK/pwWNeexJuYLdeduhGgDDZwDI8tGwP2qmGQ+rOeoRrQwASN8YlOrM+vDRBLEIjNKBz4ud3gwlfauOnL1KQpbjuMBiwlCNFo+Ckv0M/VU1rSqGnqIJLGKbU5vbcl2GvcscKknGTa/4pui9P2aJdogcKZOBTOOT5nVBDJcwx7jT5uOXvOi3JHxTX7EWnPKfcCPB952iufdR39LglckhnM9q6GSV6fWS66KqS6MYgJFuGBCg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cI1cD4R5TvOLlh6FG6A2yG7lGhov+b0Xi6RIKPFjqNU=;
+ b=e4ShCSi3X1WYn9eXSRMy0tNtxP8ui6IFTpAtLDercjbj+SRr5GIeUw8NwCxyT1E6r4DtQ9uUdziDcYRUhMFJM3U5fPFRgbQPSC62E6xH8PXoY4nnnU7uwez/Vxz3vrc8IPj3UaYhSih4Wm7nmO3efpqXB4F44Efnrkb3uxJImcE=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=windriver.com;
+Received: from BY5PR11MB4241.namprd11.prod.outlook.com (2603:10b6:a03:1ca::13)
+ by BYAPR11MB3671.namprd11.prod.outlook.com (2603:10b6:a03:b3::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Sun, 16 May
+ 2021 09:50:24 +0000
+Received: from BY5PR11MB4241.namprd11.prod.outlook.com
+ ([fe80::551b:e310:2ae4:3011]) by BY5PR11MB4241.namprd11.prod.outlook.com
+ ([fe80::551b:e310:2ae4:3011%6]) with mapi id 15.20.4129.029; Sun, 16 May 2021
+ 09:50:24 +0000
+From:   yanfei.xu@windriver.com
+To:     paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] rcu: fix a deadlock caused by not release rcu_node->lock
+Date:   Sun, 16 May 2021 17:50:10 +0800
+Message-Id: <20210516095010.3657134-1-yanfei.xu@windriver.com>
+X-Mailer: git-send-email 2.27.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: HK2PR02CA0186.apcprd02.prod.outlook.com
+ (2603:1096:201:21::22) To BY5PR11MB4241.namprd11.prod.outlook.com
+ (2603:10b6:a03:1ca::13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKAFMg+rJsspgE84@Ansuel-xps.localdomain>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pek-lpggp1.wrs.com (60.247.85.82) by HK2PR02CA0186.apcprd02.prod.outlook.com (2603:1096:201:21::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.35 via Frontend Transport; Sun, 16 May 2021 09:50:22 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2ea4b137-de71-460a-4879-08d9185006ea
+X-MS-TrafficTypeDiagnostic: BYAPR11MB3671:
+X-Microsoft-Antispam-PRVS: <BYAPR11MB3671AA59006D6B7CEC39FBD7E42E9@BYAPR11MB3671.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4KY+BRZ1HPtOonaNHhrq58A+bMA22QCOQ4LQiwqdpqDtEQh4zEx2OY2lwadzR5iWIsyz0YMZnC7uR9Ao6Nnxk0jiqot3CQTlbQ6wXVWukos12ATEaOIFbHHXdZGClQw5wNNgGqb+J1hm4Q38XH7HRHgqE5r1pmb3DxoFONuzIl66I03e/2YG7eqw1tbT9xHunoX5dH+GRrdYOB+uHqVUHCAE/655h/YnzBgzawVUbJgCAW5d1LebWptm3qU1a31ZFMmie1PUxzVAKCDJfsC4dfp18hhe1pyDGxldFLQF7oZvW6pfc4qlN8+sN6b6NVHMhW5bdDK32OoG3yiobqHaZ0YEKF/82dYpRQ0Xuu0cjittbFHZ9tXb11b1lAGlO6Utqbzp5BbI3pHIGpNX6+WC+ny7RDPxCpF92plK7nzgD+bhZG/Vo3gZSMJWA9Nf/FyeWwMr+kQNuFbql8E8QZRnlQTNxM9V5/HGTusxIr+auFML0JcNQQf8wwzxz/+DEqb2YlwO2R0xB1ePAXpv9TPTVa+68AIe2mKrdhTqectYGovcDQcLbbgk4nP5d0vxH3tLkpN6EeR8dKpbTNga5m7wNoh/T3BcRjfXZNpfbeH85ca2KAcYDb8SNhrc43dlmwu6L2SVtNLbxZi7jEscXF6ZY/O7iBTR1DsK8rMjEVNzQtk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4241.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(366004)(39830400003)(396003)(83380400001)(6506007)(9686003)(6512007)(8936002)(66556008)(66476007)(66946007)(956004)(2616005)(4326008)(52116002)(36756003)(316002)(26005)(6486002)(2906002)(6666004)(38100700002)(38350700002)(8676002)(5660300002)(186003)(16526019)(1076003)(86362001)(478600001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?jxsxHJHjyR3mn4/bTcaAJHvcGF9NY9WtVwRhOkFUKyfyNQGqIB3I6VfvZxqx?=
+ =?us-ascii?Q?9WNVmTCX3nvqjYmeEZI/5s1buNCK7xVGtMgU/vA6RH6unZQwj6BKWrQ31GAu?=
+ =?us-ascii?Q?UuZEvGWxLBMtc2Mu5ln7kQE4GB17mxnP2Hvc9WQtnS8of3LYaIaxoGlXVYmS?=
+ =?us-ascii?Q?TVx1mQzMrOm46n0cGSwcQbwTb0cU8uT8xPr2FWiXocXROkFrd1wB5SC/6HQP?=
+ =?us-ascii?Q?tdwl/t30scoD8asmQQ5sKWmKZpiFfkHm8jAdmbP5QQuTayPDEMOErgnXyKOF?=
+ =?us-ascii?Q?Ks/tyh1qqshjhEvxxW8vi9eWg3TwLdqth4ihUJmAR4V8WTnh4WWWYfsTG01h?=
+ =?us-ascii?Q?zVFctO4aQsM4bJzXbnxGZilctXDEoSG2PZh3Qk+aJHMUAGmShUsPvlxds/Ds?=
+ =?us-ascii?Q?bT08y7KHWLQ/mw08yc+tvAnaYBFkanL7Fuibl7/RuAk3+1Ga8julDdnUwA61?=
+ =?us-ascii?Q?7Tl787bY0v4f+/bajZUVPd+MVoeqbnsevw9jGwlf+f2SETyIt1gUWp4hSDI0?=
+ =?us-ascii?Q?PKyNHqDgLKlLVxfwY+hyZYzxH4wR1xsAOOfPuJboNM6ybNGT2Cr+vuL8ySx+?=
+ =?us-ascii?Q?lhJ8TDBUp3w30x/IDgkJTLFRwtt0F2N0bcQapRJBNwg9xa/64dvbFjb5fMPn?=
+ =?us-ascii?Q?wCsjpu1QvnkVZXCQO/D4g8/CDVrH9XKVRcvPNG7aOLlgfVU4su3L7fcykBzK?=
+ =?us-ascii?Q?bX+JONMs/XlHiRqIUio6EkXIl+FCeLiXtSAzsDY79FiuZR01Ti09Lwbh0jPV?=
+ =?us-ascii?Q?cQhpW5qhV2E9h3t0WfqOEGXvnspuVQHoZWjGrqVRI7N1NenawJc2GQMWnKna?=
+ =?us-ascii?Q?AlOn1olx/GZDGKH0sNCTkJCgLSAd6SVSmejOn+PxTS25QeMExWDDFuH43j2V?=
+ =?us-ascii?Q?SSqnjayz37TGdZUEfGkBI4PMWmSNV47aL95YQEqpMhrdJKlwtqmEFgaEQYOU?=
+ =?us-ascii?Q?uiLzY9iY0gMxl5rRxYztMirdklbru6RwBZ+oQ+EyaqQWZCzriMXcVHdigTxZ?=
+ =?us-ascii?Q?t5UDvTlRb71tLRiUTAsotmq7NpJLD4rNs6X3/ajhnT/6tPcJFWdY6zSJW28T?=
+ =?us-ascii?Q?G5taMj8S3U82nhEdD9xhvUU3CvopUFeanZCPn2rcTqXeXhfZ42/bvcZ+uj6M?=
+ =?us-ascii?Q?Vyb2uQQNNM+Ga2WploDD8vPNsga4W7NYWXZwWsAAhfV2fyAkiG41V6B3dBUU?=
+ =?us-ascii?Q?r01GDu9lWWgzkA52ztbiSmd1jaNuPZ+ZPZBKU7TUgTTcsHhC6s3vK3u6K4I+?=
+ =?us-ascii?Q?GNkyirsLX2DFf4dQ1J6IOFhBLbUGBadQ7wdwlqTY4Sw1VjV2/JUlnuwFjfLn?=
+ =?us-ascii?Q?0jqcW0cAiRspBXzQ/L3kNxVz?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2ea4b137-de71-460a-4879-08d9185006ea
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4241.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 May 2021 09:50:24.5041
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: GzxIOp85DAwk3w9n1DCXtx4ndIOHfqtZ3Dj1ig2E+q+e4+5uwO8KiQvVGhskKYabdcN2JEAF1Ht6NZW8Afz9UA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3671
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 15, 2021 at 07:30:26PM +0200, Ansuel Smith wrote:
-> On Sat, May 15, 2021 at 06:00:46PM +0100, Jonathan McDowell wrote:
-> > On Sat, May 08, 2021 at 08:05:58PM +0200, Ansuel Smith wrote:
-> > > On Sat, May 08, 2021 at 08:02:33PM +0200, Andrew Lunn wrote:
-> > > > On Sat, May 08, 2021 at 02:28:51AM +0200, Ansuel Smith wrote:
-> > > > > Fix mixed whitespace and tab for define spacing.
-> > > > 
-> > > > Please add a patch [0/28] which describes the big picture of what
-> > > > these changes are doing.
-> > > > 
-> > > > Also, this series is getting big. You might want to split it into two,
-> > > > One containing the cleanup, and the second adding support for the new
-> > > > switch.
-> > > > 
-> > > > 	Andrew
-> > > 
-> > > There is a 0/28. With all the changes. Could be that I messed the cc?
-> > > I agree think it's better to split this for the mdio part, the cleanup
-> > > and the changes needed for the internal phy.
-> > 
-> > FWIW I didn't see the 0/28 mail either. I tried these out on my RB3011
-> > today. I currently use the GPIO MDIO driver because I saw issues with
-> > the IPQ8064 driver in the past, and sticking with the GPIO driver I see
-> > both QCA8337 devices and traffic flows as expected, so no obvious
-> > regressions from your changes.
-> > 
-> > I also tried switching to the IPQ8064 MDIO driver for my first device
-> > (which is on the MDIO0 bus), but it's still not happy:
-> > 
-> > qca8k 37000000.mdio-mii:10: Switch id detected 0 but expected 13
-> > 
-> Can you try the v6 version of this series?
+From: Yanfei Xu <yanfei.xu@windriver.com>
 
-FWIW I tried v6 without altering my DT at all (so still using the GPIO
-MDIO driver, and not switching to use the alternate PHY support) and got
-an oops due to a NULL pointer dereference, apparently in the mdio_bus
-locking code. I'm back porting to 5.10.37 (because I track LTS on the
-device) so I might be missing something, but the v4 version I tried
-previously worked ok.
+rcu_node->lock isn't released in rcu_print_task_stall() if the rcu_node
+don't contain tasks which blocking the GP. However this rcu_node->lock
+will be used again in rcu_dump_cpu_stacks() soon while the ndetected is
+non-zero. As a result the cpu will hung by this deadlock.
 
-8<--- cut here ---
-Unable to handle kernel NULL pointer dereference at virtual address 00000558
-pgd = (ptrval)
-[00000558] *pgd=00000000
-Internal error: Oops: 5 [#1] SMP ARM
-Modules linked in:
-CPU: 0 PID: 20 Comm: kworker/0:1 Not tainted 5.10.37-00045-g7d01aa2545cb #2
-Hardware name: Generic DT based system
-Workqueue: events deferred_probe_work_func
-PC is at mutex_lock+0x20/0x50
-LR is at _cond_resched+0x28/0x4c
-pc : [<c0a36b24>]    lr : [<c0a34530>]    psr: 60000013
-sp : c1569c38  ip : 00000001  fp : c17bd1dc
-r10: c17bd1c0  r9 : 00000000  r8 : 00000000
-r7 : 00000002  r6 : 00000558  r5 : 00000000  r4 : 00000558
-r3 : c1560000  r2 : c0e54389  r1 : 00000000  r0 : 00000000
-Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
-Control: 10c5787d  Table: 4220406a  DAC: 00000051
-Process kworker/0:1 (pid: 20, stack limit = 0x(ptrval))
-Stack: (0xc1569c38 to 0xc156a000)
-9c20:                                                       c8020000 c07ee9b8
-9c40: c17cc000 c17cc000 00000001 c07eea54 c17cc000 c07e25b8 c1569d14 c06d0f14
-9c60: 00000000 30353630 ffff0a00 c17cc558 c17cc000 00000001 00000002 00000000
-9c80: 00000000 c17bd1c0 c17bd1dc c07e2810 c0f04cc8 c17cc000 00000001 c0f04cc8
-9ca0: 00000000 c07df518 ffffff08 ffff0a00 c0f0517c 00000000 00000000 ffffffff
-9cc0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
-9ce0: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
-9d00: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
-9d20: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff 58cdc110
-9d40: c17cc578 c0f04cc8 c17cc000 c17cc000 00000001 c17cc578 00000000 c17bd1c0
-9d60: c17bd1dc c07e20a0 00000000 c17bd1c0 c17bd1dc 58cdc110 00000001 c17cc000
-9d80: 00000001 c17cc008 c17cc578 00000000 c17bd1c0 c07e29a4 c17bc040 00000000
-9da0: c17bc040 c17d2800 c17bd0cc 00000001 c17bd1c0 c0a11814 00000000 00000dc0
-9dc0: c0b81b20 c0f04cc8 c17bd1dc c0ceca94 c0d6e2b4 c17bd1c0 00000005 c17d2640
-9de0: 00000040 c177c400 00000000 c0fe8b08 c17bc000 00000040 c177c400 00000000
-9e00: 00000000 58cdc110 c0b59f78 c0fc4e44 c177c400 c102f58c 00000000 c0fe8b08
-9e20: c0fc4e44 00000001 00000000 c07e2d04 c177c400 c102f584 c102f58c c0755e50
-9e40: 60000013 58cdc110 c0d2b58c c177c400 c0fc4e44 c1569ecc c0fe8b08 00000001
-9e60: c0d2b58c c0fe8b08 ffffe000 c0756400 c177c400 00000001 00000001 00000000
-9e80: c0f04cc8 c1569ecc c0756664 00000001 c0d2b58c c0fe8b08 ffffe000 c0754028
-9ea0: c0d2b58c c15aac6c c17808b8 58cdc110 c177c400 c177c400 c0f04cc8 c177c444
-9ec0: c0fba314 c0755ca8 00000002 c177c400 00000001 58cdc110 c177c400 c177c400
-9ee0: c0fc21f4 c0fba314 c0fe8b08 c0754dac c177c400 c0fba300 c0fba300 c075530c
-9f00: c0fba340 c1403f00 df6917c0 df694900 00000000 c0fdf300 00000000 c033c034
-9f20: c1560000 df6917c0 00000008 c1403f00 c1403f14 df6917c0 00000008 c0f03d00
-9f40: df6917d8 df6917c0 ffffe000 c033c3cc c1560000 c0fdeb1e c0cdfe28 c033c388
-9f60: c1403f00 c14e6040 c1549280 00000000 c1568000 c033c388 c1403f00 c14bdea4
-9f80: c14e6064 c034282c 00000001 c1549280 c03426dc 00000000 00000000 00000000
-9fa0: 00000000 00000000 00000000 c0300148 00000000 00000000 00000000 00000000
-9fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-9fe0: 00000000 00000000 00000000 00000000 00000013 00000000 00000000 00000000
-[<c0a36b24>] (mutex_lock) from [<c07ee9b8>] (qca8k_mdio_read+0x30/0xac)
-[<c07ee9b8>] (qca8k_mdio_read) from [<c07eea54>] (qca8k_phy_read+0x20/0x30)
-[<c07eea54>] (qca8k_phy_read) from [<c07e25b8>] (__mdiobus_read+0x3c/0x1ac)
-[<c07e25b8>] (__mdiobus_read) from [<c07e2810>] (mdiobus_read+0x30/0x44)
-[<c07e2810>] (mdiobus_read) from [<c07df518>] (get_phy_device+0x13c/0x25c)
-[<c07df518>] (get_phy_device) from [<c07e20a0>] (mdiobus_scan+0xb0/0x190)
-[<c07e20a0>] (mdiobus_scan) from [<c07e29a4>] (__mdiobus_register+0x17c/0x2fc)
-[<c07e29a4>] (__mdiobus_register) from [<c0a11814>] (dsa_register_switch+0xbb8/0xc6c)
-[<c0a11814>] (dsa_register_switch) from [<c07e2d04>] (mdio_probe+0x2c/0x50)
-[<c07e2d04>] (mdio_probe) from [<c0755e50>] (really_probe+0x108/0x4f4)
-[<c0755e50>] (really_probe) from [<c0756400>] (driver_probe_device+0x78/0x1e4)
-[<c0756400>] (driver_probe_device) from [<c0754028>] (bus_for_each_drv+0x80/0xc4)
-[<c0754028>] (bus_for_each_drv) from [<c0755ca8>] (__device_attach+0xe0/0x178)
-[<c0755ca8>] (__device_attach) from [<c0754dac>] (bus_probe_device+0x84/0x8c)
-[<c0754dac>] (bus_probe_device) from [<c075530c>] (deferred_probe_work_func+0x9c/0xdc)
-[<c075530c>] (deferred_probe_work_func) from [<c033c034>] (process_one_work+0x22c/0x580)
-[<c033c034>] (process_one_work) from [<c033c3cc>] (worker_thread+0x44/0x5c8)
-[<c033c3cc>] (worker_thread) from [<c034282c>] (kthread+0x150/0x154)
-[<c034282c>] (kthread) from [<c0300148>] (ret_from_fork+0x14/0x2c)
-Exception stack(0xc1569fb0 to 0xc1569ff8)
-9fa0:                                     00000000 00000000 00000000 00000000
-9fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-9fe0: 00000000 00000000 00000000 00000000 00000013 00000000
-Code: e3c33d7f e3c3303f e593300c f594f000 (e1941f9f)
----[ end trace cc9433437c472cd4 ]---
+Fixes: c583bcb8f5ed ("rcu: Don't invoke try_invoke_on_locked_down_task() with irqs disabled")
+Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
+---
+v1->v2:
+    1.change the lock function to unlock function.
+    2.add fixes tag.
 
-J.
+ kernel/rcu/tree_stall.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index b72311d24a9f..b09a7140ef77 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -267,8 +267,10 @@ static int rcu_print_task_stall(struct rcu_node *rnp, unsigned long flags)
+ 	struct task_struct *ts[8];
+ 
+ 	lockdep_assert_irqs_disabled();
+-	if (!rcu_preempt_blocked_readers_cgp(rnp))
++	if (!rcu_preempt_blocked_readers_cgp(rnp)) {
++		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ 		return 0;
++	}
+ 	pr_err("\tTasks blocked on level-%d rcu_node (CPUs %d-%d):",
+ 	       rnp->level, rnp->grplo, rnp->grphi);
+ 	t = list_entry(rnp->gp_tasks->prev,
 -- 
-101 things you can't have too much of : 42 - Pepsi.
-This .sig brought to you by the letter P and the number  1
-Product of the Republic of HuggieTag
+2.27.0
+
