@@ -2,141 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02B53381E72
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 13:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8CD7381E77
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 13:23:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231448AbhEPLPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 07:15:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56138 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230001AbhEPLPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 07:15:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E649161164;
-        Sun, 16 May 2021 11:13:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621163640;
-        bh=bxIW72OBGlUVbKXIO28RbGD+VrGPRvwYLITR6ZFMjjU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=kvkSsjUwYa1V714tMzdnqN6zgVoaNNC3jZaMjlQG4uoFAbITDWPw75pi5xgdRVG5p
-         EKGaPZN4o3OFFkM4VeLebdU562quM996k1R5RbJldOVSmVLDORld5n18OrZh5G+xeo
-         yquBoE7haM25TjstGcjy4b8Lj5JYW6jv6TAMENd4C3Vs/k2Do4V1xFhB+PrLVpwd+z
-         sqpTahBXZs2VAOK/x9j6YKkGaMk8TrwOPZ2sucI3BsFmSaA2OXU7x/0f6FMy3triBY
-         cwv8At9hogUYBCk/UuJAzkat5N6P3UXWGBNJeruA5WhLWZ3Wq+hXLK3FDFfbLJEpxT
-         FvNvTNbVrW1Lw==
-Date:   Sun, 16 May 2021 13:13:55 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Thorsten Leemhuis <linux@leemhuis.info>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 02/16] docs: admin-guide: reporting-issues.rst:
- replace some characters
-Message-ID: <20210516131355.30c73b7d@coco.lan>
-In-Reply-To: <a138a130-6208-be63-b6ea-b08f3d66012a@leemhuis.info>
-References: <cover.1621159997.git.mchehab+huawei@kernel.org>
-        <5625907ed95964321c39a8688b70c54bac6d8e95.1621159997.git.mchehab+huawei@kernel.org>
-        <a138a130-6208-be63-b6ea-b08f3d66012a@leemhuis.info>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S231881AbhEPLYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 07:24:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230185AbhEPLYl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 May 2021 07:24:41 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D180C061573
+        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 04:23:27 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id k15so2727093pgb.10
+        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 04:23:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lJG0zQvDeXMVv53Ck1aIxdEZ/keO24SJzKO0xIhMZeE=;
+        b=DXnVL0pkjr1uBBJuNdlGYAMQdS05d4l6kYyV8u5Hx0ooeevWDgkeiKeQt3pSAGIvdt
+         UIO2PQF4t4LhFGgyH/tW+sHN5I1iJv1VKtbw5wSOz8WjF1nDAzW0mkGCE6iBZBB2U11O
+         YklXXQMHpnh+vcEhmmG8fLKpV6gy4EA9xxFHc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lJG0zQvDeXMVv53Ck1aIxdEZ/keO24SJzKO0xIhMZeE=;
+        b=VpdUqi/VyDkdYLyW7vYX5L8Q623Vh8yGKeAitmVbudnuRnW64jR0XT1pEAySWxVnqw
+         saRco2dYlUR5dNeg8v2M6yRVCR1Ee8qW+yy8JSvqx8IkGJUB/e/SL+/btWzDkMUAmXLY
+         KTYruIcoY/4mowZqfdo8e+uhFiQ+Hf+GiX3pcmt5ukEQ77nE9ma8WHoQWGXC7Z/o6q2I
+         OdKS2UcWK4SysL2TI9GzPQ1piCIDXPbx1qFkWMSS7PIq0rabBI3Gm9i9WKnxBjv/ZnQq
+         eB/kuNhqlELmeAzmlDgGlbYLaQ97f4Y+9ckLMTLboe1Mmuz6DElJMjPrYwv/BG0+ElJf
+         zw6w==
+X-Gm-Message-State: AOAM530TEt8vD7S+VKcVszglqBU62AyMLXC0oONiPjuaEqqslB5tCtI7
+        p+C6M4ccvjwnYoLE0mJRI20d1g==
+X-Google-Smtp-Source: ABdhPJwxNb8d5ZlbARnU54AQKtx2pJJ/iterhcqiCFNnfTaHDGAeBoL/sepmaDiofgcZLc5RmD6tAA==
+X-Received: by 2002:a62:4c3:0:b029:27c:892f:8e22 with SMTP id 186-20020a6204c30000b029027c892f8e22mr54576846pfe.6.1621164207073;
+        Sun, 16 May 2021 04:23:27 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:4596:acad:c782:2f52])
+        by smtp.gmail.com with ESMTPSA id x20sm8137652pjp.12.2021.05.16.04.23.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 May 2021 04:23:26 -0700 (PDT)
+Date:   Sun, 16 May 2021 20:23:21 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Leon Romanovsky <leon@kernel.org>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: ALSA: intel8x0: div by zero in snd_intel8x0_update()
+Message-ID: <YKEAqdIAZ5K5FS+1@google.com>
+References: <YJ4yBmIV6RJCo42U@google.com>
+ <s5hk0o18tio.wl-tiwai@suse.de>
+ <YJ5cHdv6MVmAKD3b@google.com>
+ <YKDYQfDf7GiMfGCN@google.com>
+ <YKDYbaprE3K2QpCe@google.com>
+ <s5hbl9b6mah.wl-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <s5hbl9b6mah.wl-tiwai@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sun, 16 May 2021 12:28:06 +0200
-Thorsten Leemhuis <linux@leemhuis.info> escreveu:
+On (21/05/16 11:49), Takashi Iwai wrote:
+> Subject: [PATCH] ALSA: intel8x0: Don't update period unless prepared
+> 
+> The interrupt handler of intel8x0 calls snd_intel8x0_update() whenever
+> the hardware sets the corresponding status bit for each stream.  This
+> works fine for most cases as long as the hardware behaves properly.
+> But when the hardware gives a wrong bit set, this leads to a NULL
+> dereference Oops, and reportedly, this seems what happened on a VM.
 
-> Lo! On one hand I think it would be good to fix the tools to make them
-> understand non-breakable spaces in places where the author chose to use
-> them,
+VM, yes. I didn't see NULL derefs, my VMs crash because of div by
+zero in `% size`.
 
-Fixing it is not trivial ;-)
+> For fixing the crash, this patch adds a internal flag indicating that
+> the stream is ready to be updated, and check it (as well as the flag
+> being in suspended) to ignore such spurious update.
 
-See, while DocBook, LaTeX and other similar tools allow the author
-to specify exactly how the output will be produced, Markup languages=20
-are not meant to give full control to the author, but, instead, to make
-their work easier by letting the toolset to take decisions about line
-breaks, font type and size, etc.
+I reproduced the "spurious IRQ" case, and the patch handled it correctly
+(VM did not crash).
 
-In the specific case of Sphinx, the main tool parses the ReST files,
-and an output module is responsible to generate the actual output.
+> Cc: <stable@vger.kernel.org>
+> Reported-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
 
-So, there's one module for LaTeX, another one for HTML and a
-third party one for PDF (we currently don't use the last one).
+I'll keep running test, but seems that it works as intended
 
-It is the output module that will actually decide to do line
-breaks and to honor the document margins and to add non-breakable
-spaces when needed.
-
-When the output is a web page, it shouldn't be a problem to use
-unbreakable spaces, provided that the output module is smart enough
-to detect it, adding an horizontal scroll bar if needed to avoid
-long lines to be simply truncated if the window is smaller than
-the lines.
-
-For e-pub, LaTeX and PDF, though, unbreakable spaces should be
-replaced by normal ones if the string is too long, or the lines
-will simply be truncated, with text loses.
-
-So, while it could be possible to use such characters, extra
-care should be taken, as all output formats need to be tested.
-
-Also, as Kernel patches and toolset improvements could change,
-for instance, the used font, or a change somewhere could lead
-into a different column width, such the tests need to be
-repeated from time to time and with different Sphinx versions.
-
-So, this ends by being a maintenance nightmare. Better to live
-without those ;-)
-
-> but whatever, their use in that sentence is definitely not
-> important, so feel free to add:
->=20
-> Acked-by: Thorsten Leemhuis <linux@leemhuis.info>
->=20
-> Thanks for working on this. Ciao, Thorsten
-
-Thanks!
-Mauro
->=20
-> On 16.05.21 12:18, Mauro Carvalho Chehab wrote:
-> > The conversion tools used during DocBook/LaTeX/html/Markdown->ReST
-> > conversion and some cut-and-pasted text contain some characters that
-> > aren't easily reachable on standard keyboards and/or could cause
-> > troubles when parsed by the documentation build system.
-> >=20
-> > Replace the occurences of the following characters:
-> >=20
-> > 	- U+00a0 ('=C2=A0'): NO-BREAK SPACE
-> > 	  as it can cause lines being truncated on PDF output
-> >=20
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > ---
-> >  Documentation/admin-guide/reporting-issues.rst | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >=20
-> > diff --git a/Documentation/admin-guide/reporting-issues.rst b/Documenta=
-tion/admin-guide/reporting-issues.rst
-> > index 18d8e25ba9df..d7ac13f789cc 100644
-> > --- a/Documentation/admin-guide/reporting-issues.rst
-> > +++ b/Documentation/admin-guide/reporting-issues.rst
-> > @@ -1248,7 +1248,7 @@ paragraph makes the severeness obvious.
-> > =20
-> >  In case you performed a successful bisection, use the title of the cha=
-nge that
-> >  introduced the regression as the second part of your subject. Make the=
- report
-> > -also mention the commit=C2=A0id of the culprit. In case of an unsucces=
-sful bisection,
-> > +also mention the commit id of the culprit. In case of an unsuccessful =
-bisection,
-> >  make your report mention the latest tested version that's working fine=
- (say 5.7)
-> >  and the oldest where the issue occurs (say 5.8-rc1).
-> > =20
-> >  =20
-
-
-
-Thanks,
-Mauro
+Tested-by: Sergey Senozhatsky <senozhatsky@chromium.org>
