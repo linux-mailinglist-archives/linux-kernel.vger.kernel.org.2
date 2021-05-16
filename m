@@ -2,145 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E4F9381DA4
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 11:28:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 484A3381DA6
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 11:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234531AbhEPJ3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 05:29:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54488 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231187AbhEPJ3a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 05:29:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6166E61104;
-        Sun, 16 May 2021 09:28:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621157296;
-        bh=fFd2d0XlbgMYyrzCgiskzC9VaHK5qDI8g3rJ7OxTXXw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=MbKIOqJpJOFM58gaPee85wsnzEMyVwDOUOB4XWhlvdhA9bABdq97BmVg+9gecI+Kc
-         BbBq5KmyJdrTkGfIzMfzXy9Ig89bzf6XE80SRTCs0N+dcZQAEeZaZ5qOWlCHSF+Rkb
-         YKskHYFn5rl5t9Zk5mPSAf6hirGc3Qr6bp8ShNY+tiNpG1AFzOpeQrdW/yW2PEhNXs
-         Rjgo4gFxZcEg8YaVtoMqPo8prQHWlxLh1RRm5QTIc6oVww7S6ropE5z7RZ8wl1Csf5
-         H5WithiPk6LIwGHbbNtnJcV+DqMPh1UWH5reEXUN+rgGYhQOkbxshxSKW7Rbm+k6yS
-         O7bYpbH+LGGrg==
-Received: by mail-wr1-f43.google.com with SMTP id r12so3318099wrp.1;
-        Sun, 16 May 2021 02:28:16 -0700 (PDT)
-X-Gm-Message-State: AOAM533Q/W8Vdy2z6MAipAtF4FxEWIYfIa60mbZTtVspcFCjhx9zdqPb
-        IUE3iGvTYvjorF8Xa3+5py5B9z0oj+KH45kEi6Y=
-X-Google-Smtp-Source: ABdhPJzqTuvFO+QTf5+WsSOlZsU5ksZomCt+AxH8tQFExcL2xlflMUftwOBDNVAtEwbfp821gF2dTircpUfQRqj/g6Q=
-X-Received: by 2002:a5d:6dc4:: with SMTP id d4mr70402713wrz.105.1621157295043;
- Sun, 16 May 2021 02:28:15 -0700 (PDT)
+        id S234558AbhEPJaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 05:30:09 -0400
+Received: from mail-dm6nam11on2057.outbound.protection.outlook.com ([40.107.223.57]:17889
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231187AbhEPJaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 May 2021 05:30:08 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MEFhml28d2AF5h9nZonRyplFGMiErZoGsr1kWUtBfKX5kv73IxfHUn1I36BXl2JC0MsxqbMGM/TKCBWSQ/+F9wc2uI7ZtD9cTbIYKljesG/yvMhDsCe0vblBPi3x+a9s/quHTKnVeJ+MuMbhcyaawYTLgT4YFi2tsQ6rupRVPEz1L6ISW85dwRsQ9fbZCcu04BUlneTI0BNcR0sznd4Q3/E2tcuWDBvqQ2zhpvov4GkcwhTJ8bsmRCy6A2l3H2mzhrzEVTyVVzcodRf2bDh5AwPdrnO3Za0IxHw4/m7b1v/gODM8bArS9eR0RQW2BL8gTuZbiZZKz5ODnK3o6LIyZw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kfAJ2m0H3Ek9uZJkUS6CdAzTkhHjYpgoS0JVTgLJPvk=;
+ b=XoBcCcaQs5JVDsFiH4fn2si6Wsek2p9tlXRAmeoGtrcRs6Pj6ek3gw6Ut8Up4OPhzelvy/56MtlyOjEbakogwt30lr8O4RsYJZOXhehEWj87GR6nMqo3aqovSFWCCxIVB1ANUqM+/fkL7DXFWI2fiH/fzVzmoffERCsyHbVFmUaFptD5Bq3uWeOl4rlG3RWXRjC3pOHKvIh4Ah++bmkz0fWkSpgfoZjmnrm8boq5/XigU8WvBqwlz2YWEF8qP9gt7r+cqjV0c7s+usYZuCn4g4NHOBjiflKIe/ronQ+tUjf3uO9k/GunT776/yZwWeXksp+aZ7vuAk5yhLP6Cexb9Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kfAJ2m0H3Ek9uZJkUS6CdAzTkhHjYpgoS0JVTgLJPvk=;
+ b=b9ayRVkk6qeAH17TiT7rq3jkaJMbrcYtCYnOFKQXn6r3Z5lo9sxjcQ2HU54MmlH+geEy+HQNg8e2km8gCYySlZc0HMlYTHys1TL0mVmgge6zDIv5yKwRDe/8QaKGobRUoE7rYEEc/x82eDOib6m51nXcWE58gleahDZRtKFyCHA=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=windriver.com;
+Received: from BY5PR11MB4241.namprd11.prod.outlook.com (2603:10b6:a03:1ca::13)
+ by BYAPR11MB3221.namprd11.prod.outlook.com (2603:10b6:a03:1c::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.28; Sun, 16 May
+ 2021 09:28:51 +0000
+Received: from BY5PR11MB4241.namprd11.prod.outlook.com
+ ([fe80::551b:e310:2ae4:3011]) by BY5PR11MB4241.namprd11.prod.outlook.com
+ ([fe80::551b:e310:2ae4:3011%6]) with mapi id 15.20.4129.029; Sun, 16 May 2021
+ 09:28:50 +0000
+From:   yanfei.xu@windriver.com
+To:     paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rcu: fix a deadlock caused by not release rcu_node->lock
+Date:   Sun, 16 May 2021 17:28:37 +0800
+Message-Id: <20210516092837.3655526-1-yanfei.xu@windriver.com>
+X-Mailer: git-send-email 2.27.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: HK2PR04CA0054.apcprd04.prod.outlook.com
+ (2603:1096:202:14::22) To BY5PR11MB4241.namprd11.prod.outlook.com
+ (2603:10b6:a03:1ca::13)
 MIME-Version: 1.0
-References: <20210515221320.1255291-1-arnd@kernel.org> <alpine.DEB.2.21.2105160145080.3032@angie.orcam.me.uk>
-In-Reply-To: <alpine.DEB.2.21.2105160145080.3032@angie.orcam.me.uk>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Sun, 16 May 2021 11:27:09 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1ytpYNNGkoJJGXf669TxOuzC9_Txn7c593YCCL=ATJ0Q@mail.gmail.com>
-Message-ID: <CAK8P3a1ytpYNNGkoJJGXf669TxOuzC9_Txn7c593YCCL=ATJ0Q@mail.gmail.com>
-Subject: Re: [RFC 00/13] [net-next] drivers/net/Space.c cleanup
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc:     Networking <netdev@vger.kernel.org>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Doug Berger <opendmb@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Sam Creasey <sammy@sammy.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pek-lpggp1.wrs.com (60.247.85.82) by HK2PR04CA0054.apcprd04.prod.outlook.com (2603:1096:202:14::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Sun, 16 May 2021 09:28:48 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2db402e7-b072-411e-3f57-08d9184d03ae
+X-MS-TrafficTypeDiagnostic: BYAPR11MB3221:
+X-Microsoft-Antispam-PRVS: <BYAPR11MB322125D60ED73EEC96357274E42E9@BYAPR11MB3221.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: BC7UZl2e7eofG3jIMXmqwCqo7HTw1KtmnnYZ981G/ZznYzIgQgy+XZAXPFr+inhLF0nqQwt/xwtkOVjAmKPLMraGJ1vrigoOoJHGO5idEIo8lAqwKLz6LwNsXeh/PmKjDpTKy17eGDgGvLr7Kk1ApFDacwIqGMP0vPz/PuZoCnbnUryhSbs9gSbLutTYmAz9A0ANrDAWlv/pFZD2WFqD7wWaod7LSoKOk21EtM7g6bUPmzgogbhiHNiwOXFa+t+umTc2Vjl5kzQCnbye1I73qvUHlzCAvrIiAzNoiMKkQJmpTg9z4TVdT3UkUd0RUEZ0+HvULiw5vgvAgh3dE5ISLcftBLkbjs1hSyqepsY4J9d5vmidvcP0Ha9TrRhzEqQaWjLZ+8J+auAKTqixfGu55ZPJYw22j5XlESY3KoWNV2avt6eYnoXPYo65OuxZqavO/xRxLX7BIUF8a1pZA9YDdtfm5kSlCvX3rzBGPB9CIYdGPM61AFnCKq7KvcOjhZwiVk24RskBBiiBsO3WG6yJQXZqZEmPF0WpKOuPlV0Gg0k0iuLm50TXkizGyu8XDKMsprCA9yjxb37Z2bnOiqLaOcZucjJQLXn+2p08JbucQYzdL4m0RPPWQqoHDT3FDlRr7wAe/5RRhU6qLodQgfilbQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4241.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(136003)(346002)(39830400003)(396003)(1076003)(8936002)(316002)(83380400001)(186003)(8676002)(5660300002)(6486002)(4326008)(16526019)(2616005)(6666004)(66476007)(66556008)(2906002)(36756003)(478600001)(86362001)(956004)(6506007)(38100700002)(38350700002)(66946007)(26005)(52116002)(6512007)(9686003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?2AorSu5hxSsAf4MoAdamzQMCvr8RvyuSt8YFW8vbBZmu/aDvJGreprgU8Lr/?=
+ =?us-ascii?Q?oq/MrdBTFpYdK/fqtCCRgquJ5LbMt8k/CWm51NC+wbfwPellAL4CG+R2HjMQ?=
+ =?us-ascii?Q?WG86uRiPZio0ZWChqyd81LJuIwQPCVGAdYin4VUH4fBUbCEVLoDknVOYIK+c?=
+ =?us-ascii?Q?PW1kJNxTFh9AFGc1Za/DhFMwRhLjQ41aIwiyKt6PdCqTnuWeG+M0GVVFzdJF?=
+ =?us-ascii?Q?onqUvs6473XXYAjMI5h4EqhI+z9A1usCSiTvIZa1i6/XDfGv5edEwQPbySsi?=
+ =?us-ascii?Q?YPZ3RwJyXqpKMbG8d+M1Ee17nIy5z4y1A5f4sWTuNLUwPuvHUNm9eVmC4CUN?=
+ =?us-ascii?Q?z/wayOVRSnIg5dYLPOCL9GCbGim7a1LNwRp3VGJSl/lsgoIE8hzW/4LSF3O3?=
+ =?us-ascii?Q?D/pNQ7/4kKZI0d3w2+JY4LQjmEt26TkLCbgFLFAMA5OLk34t9T80iHJbaeW3?=
+ =?us-ascii?Q?5NE4jWLgSCEiztDdvoyn9l7eTQNmGtbCXv5bkVSZZPw5TglzNImYQ3V9g0/z?=
+ =?us-ascii?Q?qTfwB11EWU+2JFPbKRjF1HnM+ZGrU9RyeSwwCEFYFb80+/gzcL0E2sXb7AED?=
+ =?us-ascii?Q?MOLVGEXwQKY0/7AAWIp2eJPR8rIoPfMbWs7tiX2fIep9TV2KU4XpfF5YqS5m?=
+ =?us-ascii?Q?QtxZySApQwS8PqFG9FN6Fu+IvUHW61YR909KygRD0oG3Ujo4lX9q1IrqEIXD?=
+ =?us-ascii?Q?H9GSTeK8NG9ZvB3d0DfFl3XFzgvLANjCaC6cVJ4JEcGVjyAYS8xMsG1nf1cd?=
+ =?us-ascii?Q?mpwgWzvWhhVqvGYv4qX59YYogonq+s0N9X6Ds1tC3OGhEDaTIPHHNB283ASM?=
+ =?us-ascii?Q?xpiwi36vszIJ6Nom1WYrPB3hv6aZ7iZ+iFmgHx5FWFgsczo3Jucm3yc1D19z?=
+ =?us-ascii?Q?LYEBcKc6QBKxZ483jQ5zvei96f6Ci1gGbBaLlbzyaUvfQOEMgBL1xqN1vLUM?=
+ =?us-ascii?Q?/ZinA8/esqCfBUcO1FZbqQdOkCuJUVXSgerUD0icPRhH7Gn5eeqJugDvpAj0?=
+ =?us-ascii?Q?Zzk+CYv5RxdCVGwvOCZ5banVouWpayTIbKMth46BLSn2m9kBA+sz2M1mxPmD?=
+ =?us-ascii?Q?OhNNsFH+w4ITfG7FSppAlmTAWLg4FcsOX7pNFZ0UPKtN0VEzFWIK50X8sxvp?=
+ =?us-ascii?Q?+C9Dus+g8E8ZJbzAT+xxU7GinUXbZL07A9NIXMhP+SrWJMI+dEZQMhgZBGJS?=
+ =?us-ascii?Q?7gUjsvoMaAmYAgZYqjMIw60tnglwNg5dWezfhcqa0aJ2rOyGrPry0Rs4Wff/?=
+ =?us-ascii?Q?ISZ3TSoforqEJw2HUsEfNrassqzNcXBHoNPDH52ZLWgV0ViCt/2w5Ei9zCR9?=
+ =?us-ascii?Q?aoa3gxC4zoPko5+MzNd0qkl5?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2db402e7-b072-411e-3f57-08d9184d03ae
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4241.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 May 2021 09:28:50.6483
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: GAlN4lomoh18kO7EYLxPHwkNZ0TO4y0+p3uucZ67LCzR2M7uOB9OK86ejjfTmun0jwmXr2rLrv7or5Xav8Rxfw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3221
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 16, 2021 at 2:06 AM Maciej W. Rozycki <macro@orcam.me.uk> wrote:
->
-> On Sun, 16 May 2021, Arnd Bergmann wrote:
->
-> > For the ISA drivers, there is usually no way to probe multiple devices
-> > at boot time other than the netdev= arguments, so all that logic is left
-> > in place for the moment, but centralized in a single file that only gets
-> > included in the kernel build if one or more of the drivers are built-in.
->
->  As I recall at least some ISA drivers did probe multiple interfaces in
-> their monolithic configuration; I used a configuration with as many as
-> five ne2k clones for a bridge machine for a fairly large network (~300
-> machines) and as I recall it required no command-line parameters (but then
-> it was some 25 years ago, so I may well not remember correctly anymore).
-> It may have been with ISA PnP though (damn!).
->
->  For modular drivers it was deemed too dangerous, for obvious reasons, and
-> explicit parameters were the only way.
+From: Yanfei Xu <yanfei.xu@windriver.com>
 
-I did use two ne2k compatible pre-PnP cards in a router, by loading two
-copies of the same driver module, and I'm fairly sure that would still work,
-but it's obviously not how it was meant to be used. ;-)
+rcu_node->lock isn't released in rcu_print_task_stall() if the rcu_node
+don't contain tasks which blocking the GP. However this rcu_node->lock
+will be used again in rcu_dump_cpu_stacks() soon while the ndetected is
+non-zero. As a result the cpu will hung by this deadlock.
 
-To clarify: the code drivers/net/Space.c logic can probe these drivers
-both with and without explicit configuration. Using the netdev= arguments
-will result in reliable assignment of device names and prevent drivers
-from poking ports that may be used by other devices, but drivers can
-also implement their own device detection, in case of
-drivers/net/ethernet/8390/ne.c, it can find devices at up to six addresses:
-static unsigned int netcard_portlist[] __initdata = {
-    0x300, 0x280, 0x320, 0x340, 0x360, 0x380, 0
-};
+Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
+---
+ kernel/rcu/tree_stall.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-> > * Most of ISA drivers could be trivially converted to use the module_init()
-> >   entry point, which would slightly change the command line syntax and
-> >   still support a single device of that type, but not more than one. We
-> >   could decide that this is fine, as few users remain that have any of
-> >   these devices, let alone more than one.
-> >
-> > * Alternatively, the fact that the ISA drivers have never been cleaned
-> >   up can be seen as an indication that there isn't really much remaining
-> >   interest in them. We could move them to drivers/staging along with the
-> >   consolidated contents of drivers/net/Space.c and see if anyone still
-> >   uses them and eventually remove the ones that nobody has.
->
->  I have a 3c509b interface in active use (although in the EISA mode, so no
-> need for weird probing, but it can be reconfigured),
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index b72311d24a9f..4e97c9977d1c 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -267,8 +267,10 @@ static int rcu_print_task_stall(struct rcu_node *rnp, unsigned long flags)
+ 	struct task_struct *ts[8];
+ 
+ 	lockdep_assert_irqs_disabled();
+-	if (!rcu_preempt_blocked_readers_cgp(rnp))
++	if (!rcu_preempt_blocked_readers_cgp(rnp)) {
++		raw_spin_lock_irqsave_rcu_node(rnp, flags);
+ 		return 0;
++	}
+ 	pr_err("\tTasks blocked on level-%d rcu_node (CPUs %d-%d):",
+ 	       rnp->level, rnp->grplo, rnp->grphi);
+ 	t = list_entry(rnp->gp_tasks->prev,
+-- 
+2.27.0
 
-The 3c509 driver already doesn't use the drivers/net/Space.c probing,
-Marc Zyngier addressed this when he added EISA support in 2003.
-It also supports multiple non-PnP cards with module parameters
-as well as pre-standard jumperless autoconfiguration. My only change
-to this driver was to remove a few lines of dead code that I guess Marc
-missed at the time.
-
-I probably should have listed the drivers that still use Space.c after
-my series. Here is the list I'm talking about:
-
-3com:
-    3c515/corkscrew: supports PnP mode, ignores command line and
-        module parameters but scans for devices on all ports
-8390:
-   wd80x3: supports module parameters up to four cards, no PnP
-   smc-ultra: supports up to four devices with module parameters, plus PnP
-   ne2k/iosa: supports up to four devices with module parameters, plus PnP
-amd
-   lance: supports up to eight devices with module parameters, no PnP
-   ni65: supports only one device as loadable module, no PnP
-smsc
-   smc9194: supports only one device as loadable module, no PnP
-cirrus
-   cs89x0 (supports only one device as loadable module, plus custom
-        PnP-like probing in built-in mode)
-
-> and I have an ne2k clone in storage, so I could do some run-time
-> verification if there is no one else available.  I'll see if I can do some driver
-> polishing for these devices, but given the number of other tasks on my
-> table this is somewhat low priority for me.
-
-I don't think it's necessary to validate the changes I did to the
-ne2k driver specifically, though it might be nice to see that I didn't
-break the overall logic in Space.c.
-
-        Arnd
