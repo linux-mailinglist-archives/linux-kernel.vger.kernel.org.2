@@ -2,75 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09026381D65
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 10:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D802A381D67
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 10:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234148AbhEPI3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 04:29:04 -0400
-Received: from smtp01.smtpout.orange.fr ([80.12.242.123]:28926 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230248AbhEPI3C (ORCPT
+        id S234164AbhEPIcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 04:32:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230248AbhEPIcR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 04:29:02 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d54 with ME
-        id 5LTk2500821Fzsu03LTk3J; Sun, 16 May 2021 10:27:46 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 16 May 2021 10:27:46 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     alexander.shishkin@linux.intel.com, gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] intel_th: Fix a resource leak in an error handling path
-Date:   Sun, 16 May 2021 10:27:43 +0200
-Message-Id: <6e89bfd3c66de62bc3b9da720a2c864a7c167c49.1621153607.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Sun, 16 May 2021 04:32:17 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57E0CC061573
+        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 01:31:03 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id l70so2602942pga.1
+        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 01:31:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kpe9vtoQX82iVpEE/u5ousHl/Rp3lITdfSymEOwo3JM=;
+        b=iXKRG4CT+6rGBrHjnLZ8o7QPoZkvq3uqDfOfP3kWL13zRY9wSJ7uW0AIcAydYLN8sM
+         gvrxHC9RuOy1OU23LGAQy+CTfugV/dIxehHZOzE5RaRf+NF44/9ja0sMkrIsQV9Ctuk3
+         9c/EARrz3ayNbGDksBWs7UXpw4hXPQ6WqkzKU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kpe9vtoQX82iVpEE/u5ousHl/Rp3lITdfSymEOwo3JM=;
+        b=dadXoJFIyTYe/jTRk5KWpkRZcNBWzJSOgWVwQKYN/d7L1iXzGjRkHrtJPq152SlSgi
+         m7HK9J3nMuPJIkG7c0SvCICPYwBGdhvAlurKzXjpV5Nk2ulMSfWKvn0KdZ/Uc1jHsZUo
+         OWs4/L2e/EzlZQ/wYoiTX+l5a66l+TmnlxbMXVKTwhpaYlddkY32/9/x2WTAqaDpeIk6
+         Wo+9g4oZdPfb6ebu18eqoOfqNgOoTk4zWRUr8UnmggwmqdO0EbvLusDCxAdjQT02AoPM
+         OlABJd2/fVX+DjejCLNspDZaZJhh83LwXNWcm/27sFhNbmZkrXP752Nc6M4NBDdgYR0j
+         YIvQ==
+X-Gm-Message-State: AOAM531tgsMLBMmgMuEAdHrcPA0cp167xoDnLfa1q2KcimQGlMA1vp6i
+        jz0pf27slSYcU0lRxymmGGEPQYH0MT5ZjA==
+X-Google-Smtp-Source: ABdhPJwLDDhgviSBNY7z/RfSjXkpjVVCR629Bd8qWCqCppmwG9HN35CkI6iLOCJ66JIlYATFLFGuNg==
+X-Received: by 2002:a63:5456:: with SMTP id e22mr48817378pgm.15.1621153862982;
+        Sun, 16 May 2021 01:31:02 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:4596:acad:c782:2f52])
+        by smtp.gmail.com with ESMTPSA id x27sm7717276pfo.216.2021.05.16.01.31.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 May 2021 01:31:02 -0700 (PDT)
+Date:   Sun, 16 May 2021 17:30:57 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Leon Romanovsky <leon@kernel.org>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+Subject: Re: ALSA: intel8x0: div by zero in snd_intel8x0_update()
+Message-ID: <YKDYQfDf7GiMfGCN@google.com>
+References: <YJ4yBmIV6RJCo42U@google.com>
+ <s5hk0o18tio.wl-tiwai@suse.de>
+ <YJ5cHdv6MVmAKD3b@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJ5cHdv6MVmAKD3b@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If an error occurs after calling 'pci_alloc_irq_vectors()',
-'pci_free_irq_vectors()' must be called as already done in the remove
-function.
+On (21/05/14 20:16), Sergey Senozhatsky wrote:
+> > --- a/sound/pci/intel8x0.c
+> > +++ b/sound/pci/intel8x0.c
+> > @@ -691,6 +691,9 @@ static inline void snd_intel8x0_update(struct intel8x0 *chip, struct ichdev *ich
+> >  	int status, civ, i, step;
+> >  	int ack = 0;
+> >  
+> > +	if (!ichdev->substream || ichdev->suspended)
+> > +		return;
+> > +
+> >  	spin_lock_irqsave(&chip->reg_lock, flags);
+> >  	status = igetbyte(chip, port + ichdev->roff_sr);
+> >  	civ = igetbyte(chip, port + ICH_REG_OFF_CIV);
 
-Fixes: 7b7036d47c35 ("intel_th: pci: Use MSI interrupt signalling")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/hwtracing/intel_th/pci.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/hwtracing/intel_th/pci.c b/drivers/hwtracing/intel_th/pci.c
-index 7da4f298ed01..fcd0aca75007 100644
---- a/drivers/hwtracing/intel_th/pci.c
-+++ b/drivers/hwtracing/intel_th/pci.c
-@@ -100,8 +100,10 @@ static int intel_th_pci_probe(struct pci_dev *pdev,
- 		}
- 
- 	th = intel_th_alloc(&pdev->dev, drvdata, resource, r);
--	if (IS_ERR(th))
--		return PTR_ERR(th);
-+	if (IS_ERR(th)) {
-+		err = PTR_ERR(th);
-+		goto err_free_irq;
-+	}
- 
- 	th->activate   = intel_th_pci_activate;
- 	th->deactivate = intel_th_pci_deactivate;
-@@ -109,6 +111,10 @@ static int intel_th_pci_probe(struct pci_dev *pdev,
- 	pci_set_master(pdev);
- 
- 	return 0;
-+
-+err_free_irq:
-+	pci_free_irq_vectors(pdev);
-+	return err;
- }
- 
- static void intel_th_pci_remove(struct pci_dev *pdev)
--- 
-2.30.2
-
+This does the problem for me.
