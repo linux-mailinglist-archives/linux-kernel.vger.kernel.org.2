@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A849381FAB
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 18:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66860381FB4
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 18:13:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231842AbhEPQOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 12:14:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54506 "EHLO
+        id S232596AbhEPQOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 12:14:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbhEPQOa (ORCPT
+        with ESMTP id S231693AbhEPQOb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 12:14:30 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF4B2C061573;
-        Sun, 16 May 2021 09:13:14 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id a2so5205932lfc.9;
-        Sun, 16 May 2021 09:13:14 -0700 (PDT)
+        Sun, 16 May 2021 12:14:31 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D184C06174A;
+        Sun, 16 May 2021 09:13:15 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 131so4315209ljj.3;
+        Sun, 16 May 2021 09:13:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pWep6XUk/Htmx+rnveDkd22peEfK9wvjv1AZWbCkH+M=;
-        b=kCK7YH686pYuZum++8eix84r6KtRQ98Z0FBVDbN726azCmqsaaSnlzoUSTneoLrWvs
-         YQajR8rtLX+Vb9RdHmxA6KWVNKR2e13+L1C0c7NkFS0wFlrnYa/CooXTM+WytZTLfwvR
-         OsHJfd8dEhcerJ7IQ5y/z+yJ0YaFQr3bSFmX6r57i0UEZ3G8UPJ4jDer7Rnd0SbIqqAw
-         Ayo0if8PDb5pn2GrlnSxDi684p92i8JBKmGt+Vd9Bu6qUrBR/NSk0WjCZ4btM4n5FbE/
-         l7r2KotdzAkvjENjlkTQq5vpq92kzU+wg3MXdCUs5vjiB+FGSLtznpeJTC6ia6XCw5UP
-         VcwA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=HXT+IvjVluiKH3yhs5geuypz9CaKXis2aNZdKmGa0hs=;
+        b=VpNSp5sTj82VHq1x8rPglSLKU+du/lRZSmzxHj1V/HxCgEfJfmYnmf+qGDTLahPPao
+         wVHxHwKTL4n1q9W8Q7+M7nDncVo8Ct8ON9r4uxTvXbCl4/booVH0HY5iXTjaX5t9pwz6
+         3zGpf+Q1I4tWj0K1zqFNkpxu9/JMSpBHlSxQ8qnYiAXzah8TKap3qWmnX5Dq0w4sxiIB
+         HL4d/vGgBR37Q3Zj/SLOE+qwP4qwdnIDs+mzeuOUvAHL2EHZ/i3ahCwt/NU9y3ORw5HI
+         4ti+v9Wt4kUo7G1d7t8M0ug697uiu1mUKSJE4G0R8vrcW9IoIAQ0NoxTsa9qawF2l6V1
+         mxSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pWep6XUk/Htmx+rnveDkd22peEfK9wvjv1AZWbCkH+M=;
-        b=juh9P5ghr11CNctWlIbqi7SrKyrYGmJiX/ir/ZDMrsAQLhE5IG24hhnkxXeNXjnVJF
-         UPjx490jod5olreuzw83b2xzP8J5beaExtGk6KhjR5ebx7Eil+Mt+Skr0MB0nIulxWrG
-         viBtIepOZnnauoWSmYmpWhOp+xQCrwIYJQNG7UzzDrxUG4bu9Af30L1PhDM8mM6JJPEI
-         7iv4V26/OZXHMchRLWrDTKkRWEBtqOLU4dyUzc78Uv0zBqwwGfR/YSzw4yKo5VK/zXqy
-         21IQRBsZ8KQTwhylHZBmzX7/YzXpNQ50JpAKEuQNvNlKu1FGktaWWtpImxeawbke/eW4
-         IyWQ==
-X-Gm-Message-State: AOAM533MZSTlerY5You0HPVS8kL9yr4ESa158OcL1IJXCObKHMHfCx1p
-        QBL1HAe+ETcBuFHU6zmTS9rGVuI4qz8=
-X-Google-Smtp-Source: ABdhPJz1G5vvYZiKX51lLpNn7oKqqYtcLScTYwJptzC39703VKV+MlHaxiMfZ/v1CzdI1kmaMenBMA==
-X-Received: by 2002:a05:6512:1031:: with SMTP id r17mr38621304lfr.583.1621181593394;
-        Sun, 16 May 2021 09:13:13 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=HXT+IvjVluiKH3yhs5geuypz9CaKXis2aNZdKmGa0hs=;
+        b=eGr1Ug0zskx0RUSyfyBD8EqAiXm/8EU4VVHIhXpdAPUk0PRPBAoOBdhd6Qo2n9anbJ
+         6zhFdqGgQvdt+V2Of2s7gD5N3mHH03trOMqvGKThBUze4A4yfkgvLK+xXhVXLwFMlj5E
+         7mNqji+6paMcsSxbEpZjVG6J9Ct76IZ6jwYcofDdxugqViyc+aOY8POXcNB5GtJw9Me7
+         IFRvksOQguN4eHRgAD2yGRhbLlrk5mW3CAncH7pwz36Zr78WfwUJkE5Hv4jhEEI8ymbN
+         7amHWUzjGimjRsjcEsjggHvyw+ymaTmQfw+zqIfASpusMSEnUu+GmQdqTRQNXASAo20u
+         np6g==
+X-Gm-Message-State: AOAM533ey14EKMGQsGhd+fR5UOeF8jdz7vhJqVFA362um7dhA9wq449/
+        mKL8ZYpQV7s5H/NaZVAcxoA=
+X-Google-Smtp-Source: ABdhPJx6RNdiMDuuZKehBL8orzIbs0zFWck1PdaZ1aZE52bMvJm60TTEhiH7Lyjhp4LVu1TOOCgjbA==
+X-Received: by 2002:a05:651c:21b:: with SMTP id y27mr43091505ljn.72.1621181594232;
+        Sun, 16 May 2021 09:13:14 -0700 (PDT)
 Received: from localhost.localdomain (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
-        by smtp.gmail.com with ESMTPSA id d27sm1712547lfq.290.2021.05.16.09.13.12
+        by smtp.gmail.com with ESMTPSA id d27sm1712547lfq.290.2021.05.16.09.13.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Sun, 16 May 2021 09:13:13 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
@@ -57,48 +57,62 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Mikko Perttunen <mperttunen@nvidia.com>
 Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
         linux-clk@vger.kernel.org
-Subject: [PATCH v2 0/4] Enable compile-testing of Tegra memory drivers
-Date:   Sun, 16 May 2021 19:12:10 +0300
-Message-Id: <20210516161214.4693-1-digetx@gmail.com>
+Subject: [PATCH v2 1/4] soc/tegra: fuse: Add missing stubs
+Date:   Sun, 16 May 2021 19:12:11 +0300
+Message-Id: <20210516161214.4693-2-digetx@gmail.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210516161214.4693-1-digetx@gmail.com>
+References: <20210516161214.4693-1-digetx@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series enables compile-testing for all of NVIDIA Tegra memory
-drivers.
+Add missing stubs that will allow Tegra memory driver to be compile-tested
+by kernel build bots.
 
-Changelog:
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ include/soc/tegra/fuse.h | 20 +++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
 
-v2: - Added patch which should fix compilation warning of tegra124-emc driver
-      on 64bit platforms that was reported by kernel build robot. Thanks
-      to Nathan Chancellor for the suggested fix.
-
-        memory: tegra124: Fix compilation warnings on 64bit platforms
-
-    - Added missing stubs to the tegra-clk header in another new patch. This
-      was also reported by kernel build robot for v1.
-
-        clk: tegra: Add stubs needed for compile-testing
-
-    - The memory/tegra/Kconfig now uses `if TEGRA_MC`, which was suggested
-      by Krzysztof Kozlowski to v1. This makes Tegra Kconfig to look consistent
-      with the Exynos Kconfig.
-
-Dmitry Osipenko (4):
-  soc/tegra: fuse: Add missing stubs
-  clk: tegra: Add stubs needed for compile-testing
-  memory: tegra124-emc: Fix compilation warnings on 64bit platforms
-  memory: tegra: Enable compile testing for all drivers
-
- drivers/memory/tegra/Kconfig        | 16 ++++++++++------
- drivers/memory/tegra/tegra124-emc.c |  4 ++--
- include/linux/clk/tegra.h           | 28 ++++++++++++++++++++++++----
- include/soc/tegra/fuse.h            | 20 +++++++++++++++++---
- 4 files changed, 53 insertions(+), 15 deletions(-)
-
+diff --git a/include/soc/tegra/fuse.h b/include/soc/tegra/fuse.h
+index 78cbc787a4dc..990701f788bc 100644
+--- a/include/soc/tegra/fuse.h
++++ b/include/soc/tegra/fuse.h
+@@ -52,14 +52,28 @@ struct tegra_sku_info {
+ 	enum tegra_revision revision;
+ };
+ 
++#ifdef CONFIG_ARCH_TEGRA
++extern struct tegra_sku_info tegra_sku_info;
+ u32 tegra_read_straps(void);
+ u32 tegra_read_ram_code(void);
+ int tegra_fuse_readl(unsigned long offset, u32 *value);
+-
+-#ifdef CONFIG_ARCH_TEGRA
+-extern struct tegra_sku_info tegra_sku_info;
+ #else
+ static struct tegra_sku_info tegra_sku_info __maybe_unused;
++
++static inline u32 tegra_read_straps(void)
++{
++	return 0;
++}
++
++static inline u32 tegra_read_ram_code(void)
++{
++	return 0;
++}
++
++static inline int tegra_fuse_readl(unsigned long offset, u32 *value)
++{
++	return -ENODEV;
++}
+ #endif
+ 
+ struct device *tegra_soc_device_register(void);
 -- 
 2.30.2
 
