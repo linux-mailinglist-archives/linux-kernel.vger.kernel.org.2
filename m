@@ -2,278 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EEF2381E11
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 12:30:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1BD2381E13
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 12:30:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229953AbhEPKbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 06:31:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbhEPKbh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 06:31:37 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11646C061573
-        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 03:30:21 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id c20so4891781ejm.3
-        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 03:30:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Fjr9rOU6dVRvidJxKR3mVqsQOmmdyFjnEldzmOUV3qw=;
-        b=P2jrTxEYJmgbrZQs6607+heDUAJ7pzqrLXLzdF/1qlbOtY7iyCrMGTM9109rZYh9Lg
-         58MBukCWgMcxv6n2vngmKu62Qngs9/6Fj2rShlQdYdEfIayZD5odXOIZQN+0nZN3r9ov
-         M/GvkNGQ3yeYRwIQrw99Rh/98+45yW6+9n1K3TvAFt234kPBJrEpXSDZ+tbKD6xmEYlr
-         tHIo0YRcGHfsXokpfJvmA1kjgzKp6DVcdnkmHwjAwt2FqjTAaFhBTkzO+/SFP+S9p2G4
-         XeqQFIj+YSUmi+7dkxSKyPQU6e8cvSfNE1PvKIrNWn83bdrTTybNwAk5gRiWcjmJPW6X
-         KWFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Fjr9rOU6dVRvidJxKR3mVqsQOmmdyFjnEldzmOUV3qw=;
-        b=f1V1KybiO7pfDtmD7N6LtDdn0GoC8Uw3poUOsMWn5x+u4dGP5Jvhh+DU/5U2u4X5oN
-         tZCVC/gQbm/TghbceZk82ifiLVjf5ch8kXtQu8dL0S8V47Re5vUJGlhBEhR0MiT6dpb4
-         xLRaYVS22TmwseO8oRV3tzCI56HbSmtQVV+X9E9mlI7HvS3OnlHa1k3/VLv0VT2YwY2j
-         yALfP4b7QMWQX/vNaCKUKp6ADkSIRg8MnbHx+NtVTFvsJJ3/K6/F6X9OphjkHBeGTepU
-         Xb+Maoy3dQUVMp6xJkLJgnTBUDbdUgsipI+3h6GQ5EUD9DHmG27fo7WgJrO/DvPHa9//
-         yVLg==
-X-Gm-Message-State: AOAM530odBdm1F5L0JV46O0FTIZP9pOfukBA7uEu/axKrCLEUe1ShNEu
-        Yll2CnbCH78ipdl0X7DTFrJZfb4pWseCnw==
-X-Google-Smtp-Source: ABdhPJwBxRrEBgGwdhcwGbSIS3pkz8TKVwQAol/6vRyJnqKz5wQVP2Yh4whoh9gg1+VQsWlIntN+5A==
-X-Received: by 2002:a17:906:5211:: with SMTP id g17mr29028330ejm.281.1621161019842;
-        Sun, 16 May 2021 03:30:19 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8108:96c0:3b88::59f8])
-        by smtp.gmail.com with ESMTPSA id d15sm8737531edu.86.2021.05.16.03.30.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 May 2021 03:30:19 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH] staging: rtl8188eu: rename struct field bLedOn
-Date:   Sun, 16 May 2021 12:30:09 +0200
-Message-Id: <20210516103009.7184-1-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        id S229962AbhEPKbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 06:31:52 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51288 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229437AbhEPKbt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 May 2021 06:31:49 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 743F5B19E;
+        Sun, 16 May 2021 10:30:34 +0000 (UTC)
+Subject: Re: [PATCH v2] drm/rockchip: remove existing generic drivers to take
+ over the device
+To:     Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Peter Robinson <pbrobinson@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
+        Sandy Huang <hjc@rock-chips.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+References: <20210516074833.451643-1-javierm@redhat.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <ef974dd8-5619-35b7-74de-4e270033a3c3@suse.de>
+Date:   Sun, 16 May 2021 12:30:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210516074833.451643-1-javierm@redhat.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="CgsAfYMijZeSUxsTEVcfK6QxtTFVXoV5Y"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename field bLedOn of struct LED_871x to avoid camel case.
-bLedOn -> led_on
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--CgsAfYMijZeSUxsTEVcfK6QxtTFVXoV5Y
+Content-Type: multipart/mixed; boundary="eFIA3Z1QtOvjCQCEJlVTMcjzxEoaPtTlo";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Javier Martinez Canillas <javierm@redhat.com>,
+ linux-kernel@vger.kernel.org
+Cc: Peter Robinson <pbrobinson@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ David Airlie <airlied@linux.ie>, =?UTF-8?Q?Heiko_St=c3=bcbner?=
+ <heiko@sntech.de>, Sandy Huang <hjc@rock-chips.com>,
+ dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
+ linux-rockchip@lists.infradead.org
+Message-ID: <ef974dd8-5619-35b7-74de-4e270033a3c3@suse.de>
+Subject: Re: [PATCH v2] drm/rockchip: remove existing generic drivers to take
+ over the device
+References: <20210516074833.451643-1-javierm@redhat.com>
+In-Reply-To: <20210516074833.451643-1-javierm@redhat.com>
 
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
----
- drivers/staging/rtl8188eu/core/rtw_led.c      | 36 +++++++++----------
- drivers/staging/rtl8188eu/hal/rtl8188eu_led.c |  4 +--
- drivers/staging/rtl8188eu/include/rtw_led.h   |  2 +-
- 3 files changed, 21 insertions(+), 21 deletions(-)
+--eFIA3Z1QtOvjCQCEJlVTMcjzxEoaPtTlo
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/staging/rtl8188eu/core/rtw_led.c b/drivers/staging/rtl8188eu/core/rtw_led.c
-index 32dccae186ca..7bf05bbfbe69 100644
---- a/drivers/staging/rtl8188eu/core/rtw_led.c
-+++ b/drivers/staging/rtl8188eu/core/rtw_led.c
-@@ -43,7 +43,7 @@ void BlinkWorkItemCallback(struct work_struct *work)
- void ResetLedStatus(struct LED_871x *pLed)
- {
- 	pLed->CurrLedState = RTW_LED_OFF; /*  Current LED state. */
--	pLed->bLedOn = false; /*  true if LED is ON, false if LED is OFF. */
-+	pLed->led_on = false; /*  true if LED is ON, false if LED is OFF. */
- 
- 	pLed->bLedBlinkInProgress = false; /*  true if it is blinking, false o.w.. */
- 	pLed->bLedWPSBlinkInProgress = false;
-@@ -110,7 +110,7 @@ static void SwLedBlink1(struct LED_871x *pLed)
- 
- 	switch (pLed->CurrLedState) {
- 	case LED_BLINK_SLOWLY:
--		if (pLed->bLedOn)
-+		if (pLed->led_on)
- 			pLed->BlinkingLedState = RTW_LED_OFF;
- 		else
- 			pLed->BlinkingLedState = RTW_LED_ON;
-@@ -118,7 +118,7 @@ static void SwLedBlink1(struct LED_871x *pLed)
- 			  msecs_to_jiffies(LED_BLINK_NO_LINK_INTERVAL_ALPHA));
- 		break;
- 	case LED_BLINK_NORMAL:
--		if (pLed->bLedOn)
-+		if (pLed->led_on)
- 			pLed->BlinkingLedState = RTW_LED_OFF;
- 		else
- 			pLed->BlinkingLedState = RTW_LED_ON;
-@@ -131,7 +131,7 @@ static void SwLedBlink1(struct LED_871x *pLed)
- 			if (check_fwstate(pmlmepriv, _FW_LINKED)) {
- 				pLed->bLedLinkBlinkInProgress = true;
- 				pLed->CurrLedState = LED_BLINK_NORMAL;
--				if (pLed->bLedOn)
-+				if (pLed->led_on)
- 					pLed->BlinkingLedState = RTW_LED_OFF;
- 				else
- 					pLed->BlinkingLedState = RTW_LED_ON;
-@@ -141,7 +141,7 @@ static void SwLedBlink1(struct LED_871x *pLed)
- 			} else if (!check_fwstate(pmlmepriv, _FW_LINKED)) {
- 				pLed->bLedNoLinkBlinkInProgress = true;
- 				pLed->CurrLedState = LED_BLINK_SLOWLY;
--				if (pLed->bLedOn)
-+				if (pLed->led_on)
- 					pLed->BlinkingLedState = RTW_LED_OFF;
- 				else
- 					pLed->BlinkingLedState = RTW_LED_ON;
-@@ -151,7 +151,7 @@ static void SwLedBlink1(struct LED_871x *pLed)
- 			}
- 			pLed->bLedScanBlinkInProgress = false;
- 		} else {
--			if (pLed->bLedOn)
-+			if (pLed->led_on)
- 				pLed->BlinkingLedState = RTW_LED_OFF;
- 			else
- 				pLed->BlinkingLedState = RTW_LED_ON;
-@@ -165,7 +165,7 @@ static void SwLedBlink1(struct LED_871x *pLed)
- 			if (check_fwstate(pmlmepriv, _FW_LINKED)) {
- 				pLed->bLedLinkBlinkInProgress = true;
- 				pLed->CurrLedState = LED_BLINK_NORMAL;
--				if (pLed->bLedOn)
-+				if (pLed->led_on)
- 					pLed->BlinkingLedState = RTW_LED_OFF;
- 				else
- 					pLed->BlinkingLedState = RTW_LED_ON;
-@@ -175,7 +175,7 @@ static void SwLedBlink1(struct LED_871x *pLed)
- 			} else if (!check_fwstate(pmlmepriv, _FW_LINKED)) {
- 				pLed->bLedNoLinkBlinkInProgress = true;
- 				pLed->CurrLedState = LED_BLINK_SLOWLY;
--				if (pLed->bLedOn)
-+				if (pLed->led_on)
- 					pLed->BlinkingLedState = RTW_LED_OFF;
- 				else
- 					pLed->BlinkingLedState = RTW_LED_ON;
-@@ -185,7 +185,7 @@ static void SwLedBlink1(struct LED_871x *pLed)
- 			}
- 			pLed->bLedBlinkInProgress = false;
- 		} else {
--			if (pLed->bLedOn)
-+			if (pLed->led_on)
- 				pLed->BlinkingLedState = RTW_LED_OFF;
- 			else
- 				pLed->BlinkingLedState = RTW_LED_ON;
-@@ -194,7 +194,7 @@ static void SwLedBlink1(struct LED_871x *pLed)
- 		}
- 		break;
- 	case LED_BLINK_WPS:
--		if (pLed->bLedOn)
-+		if (pLed->led_on)
- 			pLed->BlinkingLedState = RTW_LED_OFF;
- 		else
- 			pLed->BlinkingLedState = RTW_LED_ON;
-@@ -205,7 +205,7 @@ static void SwLedBlink1(struct LED_871x *pLed)
- 		if (pLed->BlinkingLedState != RTW_LED_ON) {
- 			pLed->bLedLinkBlinkInProgress = true;
- 			pLed->CurrLedState = LED_BLINK_NORMAL;
--			if (pLed->bLedOn)
-+			if (pLed->led_on)
- 				pLed->BlinkingLedState = RTW_LED_OFF;
- 			else
- 				pLed->BlinkingLedState = RTW_LED_ON;
-@@ -251,7 +251,7 @@ static void SwLedControlMode1(struct adapter *padapter, enum LED_CTL_MODE LedAct
- 		}
- 		pLed->bLedNoLinkBlinkInProgress = true;
- 		pLed->CurrLedState = LED_BLINK_SLOWLY;
--		if (pLed->bLedOn)
-+		if (pLed->led_on)
- 			pLed->BlinkingLedState = RTW_LED_OFF;
- 		else
- 			pLed->BlinkingLedState = RTW_LED_ON;
-@@ -274,7 +274,7 @@ static void SwLedControlMode1(struct adapter *padapter, enum LED_CTL_MODE LedAct
- 		}
- 		pLed->bLedLinkBlinkInProgress = true;
- 		pLed->CurrLedState = LED_BLINK_NORMAL;
--		if (pLed->bLedOn)
-+		if (pLed->led_on)
- 			pLed->BlinkingLedState = RTW_LED_OFF;
- 		else
- 			pLed->BlinkingLedState = RTW_LED_ON;
-@@ -304,7 +304,7 @@ static void SwLedControlMode1(struct adapter *padapter, enum LED_CTL_MODE LedAct
- 		pLed->bLedScanBlinkInProgress = true;
- 		pLed->CurrLedState = LED_BLINK_SCAN;
- 		pLed->BlinkTimes = 24;
--		if (pLed->bLedOn)
-+		if (pLed->led_on)
- 			pLed->BlinkingLedState = RTW_LED_OFF;
- 		else
- 			pLed->BlinkingLedState = RTW_LED_ON;
-@@ -329,7 +329,7 @@ static void SwLedControlMode1(struct adapter *padapter, enum LED_CTL_MODE LedAct
- 		pLed->bLedBlinkInProgress = true;
- 		pLed->CurrLedState = LED_BLINK_TXRX;
- 		pLed->BlinkTimes = 2;
--		if (pLed->bLedOn)
-+		if (pLed->led_on)
- 			pLed->BlinkingLedState = RTW_LED_OFF;
- 		else
- 			pLed->BlinkingLedState = RTW_LED_ON;
-@@ -358,7 +358,7 @@ static void SwLedControlMode1(struct adapter *padapter, enum LED_CTL_MODE LedAct
- 		}
- 		pLed->bLedWPSBlinkInProgress = true;
- 		pLed->CurrLedState = LED_BLINK_WPS;
--		if (pLed->bLedOn)
-+		if (pLed->led_on)
- 			pLed->BlinkingLedState = RTW_LED_OFF;
- 		else
- 			pLed->BlinkingLedState = RTW_LED_ON;
-@@ -387,7 +387,7 @@ static void SwLedControlMode1(struct adapter *padapter, enum LED_CTL_MODE LedAct
- 		else
- 			pLed->bLedWPSBlinkInProgress = true;
- 		pLed->CurrLedState = LED_BLINK_WPS_STOP;
--		if (pLed->bLedOn) {
-+		if (pLed->led_on) {
- 			pLed->BlinkingLedState = RTW_LED_OFF;
- 			mod_timer(&pLed->BlinkTimer, jiffies +
- 				  msecs_to_jiffies(LED_BLINK_WPS_SUCCESS_INTERVAL_ALPHA));
-@@ -404,7 +404,7 @@ static void SwLedControlMode1(struct adapter *padapter, enum LED_CTL_MODE LedAct
- 		}
- 		pLed->bLedNoLinkBlinkInProgress = true;
- 		pLed->CurrLedState = LED_BLINK_SLOWLY;
--		if (pLed->bLedOn)
-+		if (pLed->led_on)
- 			pLed->BlinkingLedState = RTW_LED_OFF;
- 		else
- 			pLed->BlinkingLedState = RTW_LED_ON;
-diff --git a/drivers/staging/rtl8188eu/hal/rtl8188eu_led.c b/drivers/staging/rtl8188eu/hal/rtl8188eu_led.c
-index 35806b27fdee..25ce6db3beae 100644
---- a/drivers/staging/rtl8188eu/hal/rtl8188eu_led.c
-+++ b/drivers/staging/rtl8188eu/hal/rtl8188eu_led.c
-@@ -18,7 +18,7 @@ void sw_led_on(struct adapter *padapter, struct LED_871x *pLed)
- 		return;
- 	led_cfg = usb_read8(padapter, REG_LEDCFG2);
- 	usb_write8(padapter, REG_LEDCFG2, (led_cfg & 0xf0) | BIT(5) | BIT(6));
--	pLed->bLedOn = true;
-+	pLed->led_on = true;
- }
- 
- void sw_led_off(struct adapter *padapter, struct LED_871x *pLed)
-@@ -37,7 +37,7 @@ void sw_led_off(struct adapter *padapter, struct LED_871x *pLed)
- 	led_cfg &= 0xFE;
- 	usb_write8(padapter, REG_MAC_PINMUX_CFG, led_cfg);
- exit:
--	pLed->bLedOn = false;
-+	pLed->led_on = false;
- }
- 
- void rtw_hal_sw_led_init(struct adapter *padapter)
-diff --git a/drivers/staging/rtl8188eu/include/rtw_led.h b/drivers/staging/rtl8188eu/include/rtw_led.h
-index ee62ed76a465..5f65c3e1e46f 100644
---- a/drivers/staging/rtl8188eu/include/rtw_led.h
-+++ b/drivers/staging/rtl8188eu/include/rtw_led.h
-@@ -52,7 +52,7 @@ struct LED_871x {
- 						   * either RTW_LED_ON or RTW_LED_OFF are.
- 						   */
- 
--	u8 bLedOn; /*  true if LED is ON, false if LED is OFF. */
-+	u8 led_on; /*  true if LED is ON, false if LED is OFF. */
- 
- 	u8 bLedBlinkInProgress; /*  true if it is blinking, false o.w.. */
- 
--- 
-2.31.1
 
+
+Am 16.05.21 um 09:48 schrieb Javier Martinez Canillas:
+> There are drivers that register framebuffer devices very early in the b=
+oot
+> process and make use of the existing framebuffer as setup by the firmwa=
+re.
+>=20
+> If one of those drivers has registered a fbdev, then the fallback fbdev=20
+of
+> the DRM driver won't be bound to the framebuffer console. To avoid that=
+,
+> remove any existing generic driver and take over the graphics device.
+>=20
+> By doing that, the fb mapped to the console is switched correctly from =
+the
+> early fbdev to the one registered by the rockchip DRM driver:
+>=20
+>      [   40.752420] fb0: switching to rockchip-drm-fb from EFI VGA
+>=20
+> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+
+Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+
+Ping me if no one else merges the patch.
+
+Best regards
+Thomas
+
+> ---
+>=20
+> Changes in v2:
+> - Move drm_aperture_remove_framebuffers() call to .bind callback (tzimm=
+ermann).
+> - Adapt subject line, commit message, etc accordingly.
+>=20
+>   drivers/gpu/drm/rockchip/rockchip_drm_drv.c | 10 ++++++++++
+>   1 file changed, 10 insertions(+)
+>=20
+> diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_drv.c b/drivers/gpu/=
+drm/rockchip/rockchip_drm_drv.c
+> index 212bd87c0c4..b730b8d5d94 100644
+> --- a/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
+> +++ b/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
+> @@ -16,6 +16,7 @@
+>   #include <linux/console.h>
+>   #include <linux/iommu.h>
+>  =20
+> +#include <drm/drm_aperture.h>
+>   #include <drm/drm_drv.h>
+>   #include <drm/drm_fb_helper.h>
+>   #include <drm/drm_gem_cma_helper.h>
+> @@ -114,6 +115,15 @@ static int rockchip_drm_bind(struct device *dev)
+>   	struct rockchip_drm_private *private;
+>   	int ret;
+>  =20
+> +	/* Remove existing drivers that may own the framebuffer memory. */
+> +	ret =3D drm_aperture_remove_framebuffers(false, "rockchip-drm-fb");
+> +	if (ret) {
+> +		DRM_DEV_ERROR(dev,
+> +			      "Failed to remove existing framebuffers - %d.\n",
+> +			      ret);
+> +		return ret;
+> +	}
+> +
+>   	drm_dev =3D drm_dev_alloc(&rockchip_drm_driver, dev);
+>   	if (IS_ERR(drm_dev))
+>   		return PTR_ERR(drm_dev);
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--eFIA3Z1QtOvjCQCEJlVTMcjzxEoaPtTlo--
+
+--CgsAfYMijZeSUxsTEVcfK6QxtTFVXoV5Y
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmCg9EgFAwAAAAAACgkQlh/E3EQov+Cp
+Qg/9HN4te27mlOT2TDrylnxgpX3owAC7vklx3in4qv98txGEXqyu/9Cm2i/4gZhcmlKHVstRt6a9
+2frl4GDI3pnwJKQDhq9z81Ylc2hpH+Cb1TePDsl/wyLKRbG5bJtJ1kspkcFSk9azjtS97Iv8WW/8
+ZDpTsyyTCtKU4vNIKIkHriDZQ8Yc3nSZV3eCcueYxzvRoGw/Q776Rn3UQryabzUTQLf+L6qYRS4n
+BaFo2sx1xndVn9cuo+fX0lOG+jHj0wuMLWQ+VInLYxpoNF1GaYf22DE00h8OTozckcbDfVyaYjou
+LJnsBbqWy4MvjFXQ6FomefoiATUbkOw1hVIs6k4IRWYX860v93XBTzVl75gMlBpmPzfnd1O5WlzC
+4WOfcnLYG/0I64P8cG+vFEmcmOt4XNJUrrft82hYMR7Dx/38aQcP39n0YnkE5FEarkKaadicnSx/
+0hC9o6iQCe8uc3KxBNONHuqRIoToQAGd7L9YB+3TV54pzKc1hOP0ciRBu76G+A70bRn2CPzAoMop
+JVSjOmci6VMxz5JBhLG9zl81jrBvzRO0dPjZBy+zhIQNmVGIxQUFROfeBv0U6LZsURFuD9s6JfZz
+bjLc+P92rB7Tu/YGQlwuyCt7+00TCMbMoJBEd03F9IaNUi4JYWaXt6f7+MuxKfUR5DAY3iICHgTz
+Nq4=
+=1U/I
+-----END PGP SIGNATURE-----
+
+--CgsAfYMijZeSUxsTEVcfK6QxtTFVXoV5Y--
