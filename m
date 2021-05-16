@@ -2,80 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B92E0381E5B
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 12:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54674381E61
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 12:59:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231539AbhEPK53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 06:57:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49456 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229586AbhEPK5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 06:57:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EBE4561155;
-        Sun, 16 May 2021 10:56:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621162569;
-        bh=wC3jQS1/zOk1SUF4jEt3dAvnBTJLZq7qkh/znkIllKw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uhCK5snKjXI4YP+UQhl3Y7tO99RPBw72YaIYE1QEuDN5nOnhekdxvRBZ2JRiOouwg
-         9NPxiB/WLPjkm+XJNFITTqRZ7TAczYoLZUbxgCEBwK/muAaMxLHgqFqs6Qhrp1rOTD
-         us/KRL8HEzLn1/cTp8JPt+uhWwLy8N6zTS64UXSlX48gCi6dgmSaoOaaKa+D9WEc2W
-         O0o9R3wF1XeOGI6PQwW/kotbTOWQeC6o3r/O/lozCLLj0tOcLFPnBVk7Bb/VEcptBi
-         GSoRq906SK1RsmL08LEu5WjZkE5+yAIPJ4LF3mAZru6r/+0AwPwXlzXx3oUGTHHNm5
-         4ASqYjcyKjB7Q==
-Date:   Sun, 16 May 2021 13:56:05 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Cc:     "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH rdma-next] RDMA/rdmavt: Decouple QP and SGE lists
- allocations
-Message-ID: <YKD6ReulqPQNGScG@unreal>
-References: <c34a864803f9bbd33d3f856a6ba2dd595ab708a7.1620729033.git.leonro@nvidia.com>
- <f72bb31b-ea93-f3c9-607f-a696eac27344@cornelisnetworks.com>
- <YJp589JwbqGvljew@unreal>
- <BYAPR01MB3816C9521A96A8BA773CF613F2529@BYAPR01MB3816.prod.exchangelabs.com>
- <YJvPDbV0VpFShidZ@unreal>
- <7e7c411b-572b-6080-e991-deb324e3d0e2@cornelisnetworks.com>
+        id S230443AbhEPLAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 07:00:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229586AbhEPLAw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 May 2021 07:00:52 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EECEC061573
+        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 03:59:37 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id x188so3049901pfd.7
+        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 03:59:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4GxSFPpWStKHjj7EXT1jNvKcDZSOJF70aqfxoCB02kY=;
+        b=Cpy1ZhzNx1aXXw3LdrNWLhQV74sEFSo4yuPbZKep5yiUfJ7jFrzsL2A7fwWfhE6lWS
+         /KSnKu0QTHLxD3kyOFX9a2EalkBpWDdhslf7K6x7qt3tcIXgOqFK4uChKM+J4xhZrLnS
+         bYcuqmCK/DTMUUwmoOFvd80zHMnPJlCBJp5jw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4GxSFPpWStKHjj7EXT1jNvKcDZSOJF70aqfxoCB02kY=;
+        b=A4pft2LTIzEEa4SpBYrjJ+wcoP6uBEkqteJ9KcVfmIcO0E8WGB1tR4PIg5nHZNKFHN
+         4XE1Rgk7i8TyJcDEV0KlWJziwMeJXgN9o0yaFGqstRXWKlwt4A0ZZGcm+2R6GvYCr8FQ
+         anKl1SgOiTCUzdiMk6aIyZDV4f2DIa28iP7TSRp4Inv0eygXRR9pzeQaf79tQ8CiANlW
+         5Yk7k4iJNeg31QZ7Q9VEXhYF4z8ka8ofUQOars8G9LyRXX82u+bWmj2UnYc2NKjvfosd
+         IYoKUo4zxVYfrZny79ey202QOV6X3cgs8AhTodQJte14bfcb+B/bsdnc6T46FFnX466c
+         AZ3A==
+X-Gm-Message-State: AOAM531OqUL3y1YsbAFK9TRkeGWxP1YUXST2Y+W42Jl56NynqzxwQqC8
+        Lk9g7mm5TWRgPvFJOX3ko5c0LA==
+X-Google-Smtp-Source: ABdhPJzQJp5Q3my2xZ7H1eLd22WRM8iYd4u+a0Zh7oLI6yZH3geaz4ojkhR6TlZ63R3BXwn99le9yA==
+X-Received: by 2002:aa7:88c9:0:b029:2ab:aea7:e761 with SMTP id k9-20020aa788c90000b02902abaea7e761mr45338082pff.71.1621162776789;
+        Sun, 16 May 2021 03:59:36 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:4596:acad:c782:2f52])
+        by smtp.gmail.com with ESMTPSA id z5sm5077648pfa.172.2021.05.16.03.59.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 May 2021 03:59:36 -0700 (PDT)
+Date:   Sun, 16 May 2021 19:59:31 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Leon Romanovsky <leon@kernel.org>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: ALSA: intel8x0: div by zero in snd_intel8x0_update()
+Message-ID: <YKD7E/VEwE7Dmx3s@google.com>
+References: <YJ4yBmIV6RJCo42U@google.com>
+ <s5hk0o18tio.wl-tiwai@suse.de>
+ <YJ5cHdv6MVmAKD3b@google.com>
+ <YKDYQfDf7GiMfGCN@google.com>
+ <YKDYbaprE3K2QpCe@google.com>
+ <s5hbl9b6mah.wl-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7e7c411b-572b-6080-e991-deb324e3d0e2@cornelisnetworks.com>
+In-Reply-To: <s5hbl9b6mah.wl-tiwai@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 03:03:43PM -0400, Dennis Dalessandro wrote:
-> On 5/12/21 8:50 AM, Leon Romanovsky wrote:
-> > On Wed, May 12, 2021 at 12:25:15PM +0000, Marciniszyn, Mike wrote:
-> > > > > Thanks Leon, we'll get this put through our testing.
-> > > > 
-> > > > Thanks a lot.
-> > > > 
-> > > > > 
-> > > 
-> > > The patch as is passed all our functional testing.
-> > 
-> > Thanks Mike,
-> > 
-> > Can I ask you to perform a performance comparison between this patch and
-> > the following?
+On (21/05/16 11:49), Takashi Iwai wrote:
+> Subject: [PATCH] ALSA: intel8x0: Don't update period unless prepared
 > 
-> We have years of performance data with the code the way it is. Please
-> maintain the original functionality of the code when moving things into the
-> core unless there is a compelling reason to change. That is not the case
-> here.
+> The interrupt handler of intel8x0 calls snd_intel8x0_update() whenever
+> the hardware sets the corresponding status bit for each stream.  This
+> works fine for most cases as long as the hardware behaves properly.
+> But when the hardware gives a wrong bit set, this leads to a NULL
+> dereference Oops, and reportedly, this seems what happened on a VM.
+> 
+> For fixing the crash, this patch adds a internal flag indicating that
+> the stream is ready to be updated, and check it (as well as the flag
+> being in suspended) to ignore such spurious update.
+> 
+> Cc: <stable@vger.kernel.org>
+> Reported-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
 
-Sorry for not being responsive.
-
-In addition to already said in parallel thread, this change keeps the
-functionality except static node. I'm curious to finally see the difference
-between these two allocations and it is very unlilkely we will see any.
-
-For example, this QP can be associated with application that runs on
-different node than rdi->dparms.node. Will we see performance degradation?
-
-Thanks
+I kicked the tests. Will let you know.
