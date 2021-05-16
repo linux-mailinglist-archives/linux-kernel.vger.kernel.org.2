@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6918381DFE
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 12:19:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07FD3381DDB
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 12:18:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235252AbhEPKUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 06:20:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37632 "EHLO mail.kernel.org"
+        id S231504AbhEPKTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 06:19:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230460AbhEPKTw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 06:19:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A1DE611B0;
+        id S229437AbhEPKTv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 May 2021 06:19:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F4606117A;
         Sun, 16 May 2021 10:18:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1621160317;
-        bh=vAsWsVaNiWeXZMG2ChkHaeM/crfIX9zFJo3VbTPS//Q=;
+        bh=k6NTNp63lzWLLXxRP68+OTKIkex+SaEUw6CMpvbd8gk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LIuU7emlEXMnoqjnou+bjfWHr71DvZqbduFKpVc0sf7jx0ObYsx2JFkAFTHOTsBzK
-         x4ElE9qZx8OF5RHSwUlvKYYr28ZBSy0TcDhkuQ3UEq29/1z7lcBwuP6SC2QL4Hxv0g
-         G2TYAZbywyJlTdu7Xb+FuT0upJA8mwkZf1d+JER2XLg+eJHeSwDOSIbV/HPVCFBunM
-         4JIHWGHo0Z9k+M1GCvBmac4U9VGEPfGpNhp526N3h9fwvwOKso3aZDK49exX+Ebo2w
-         zbWN3oIorw24kI+dspBBp0fDqbX+Nry/JZ4LeiizTo1D6SsBKcP2Zpff9bA+Gfs4Ui
-         Q4LdI1J8x3J4A==
+        b=UWsAXi/FqUV3SVOfGzk/ct7+0k/vItc1TquE8dMSb0MAjWTnhkbAQntuuHgaqEcPc
+         S0au+FDVyjnHEefE31wtMU3h3RAnKkEfDP9tvbGXZJj0w9LJ0KUV01TZGsybNmYnYH
+         WCOacSH3hphyRC9NOnO6TSab+9PW+aydBTSJx0ltCx0OIlb41j3IytcsYiSd6udL0+
+         EwcuTGwNaofdHNBFVzyqa3K7/8kPgGonkuvi0/pPwP/CKCTLInRlM6n+WGNwRYPV+Z
+         aMTziKxnQd9cGRzo5q7+JgzFqUlKhGwgL1n6EfIysQPBMKQ21nlttQGsOWioQIVR+x
+         ho21nbOikw1lA==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1liDr1-003o8S-CA; Sun, 16 May 2021 12:18:35 +0200
+        id 1liDr1-003o8W-DI; Sun, 16 May 2021 12:18:35 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        mjpeg-users@lists.sourceforge.net
-Subject: [PATCH v3 05/16] docs: driver-api: media: drivers: zoran.rst: replace some characters
-Date:   Sun, 16 May 2021 12:18:22 +0200
-Message-Id: <fb2e971bc2fa4ed1e6f0d5aae6260191ff64c883.1621159997.git.mchehab+huawei@kernel.org>
+        Alan Stern <stern@rowland.harvard.edu>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: [PATCH v3 06/16] docs: usb: replace some characters
+Date:   Sun, 16 May 2021 12:18:23 +0200
+Message-Id: <aeec057e6e9e00e5c8f9813749ee1fabb27366ac.1621159997.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1621159997.git.mchehab+huawei@kernel.org>
 References: <cover.1621159997.git.mchehab+huawei@kernel.org>
@@ -55,27 +54,35 @@ troubles when parsed by the documentation build system.
 
 Replace the occurences of the following characters:
 
-	- U+00ad ('­'): SOFT HYPHEN
-	  as ASCII HYPHEN is preferred over SOFT HYPHEN
+	- U+feff ('﻿'): BOM
+	  as it is not needed on UTF-8
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/driver-api/media/drivers/zoran.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/usb/ehci.rst           | 2 +-
+ Documentation/usb/gadget_printer.rst | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/driver-api/media/drivers/zoran.rst b/Documentation/driver-api/media/drivers/zoran.rst
-index 83cbae9cedef..b205e10c3154 100644
---- a/Documentation/driver-api/media/drivers/zoran.rst
-+++ b/Documentation/driver-api/media/drivers/zoran.rst
-@@ -319,7 +319,7 @@ Conexant bt866 TV encoder
- ~~~~~~~~~~~~~~~~~~~~~~~~~
+diff --git a/Documentation/usb/ehci.rst b/Documentation/usb/ehci.rst
+index 31f650e7c1b4..76190501907a 100644
+--- a/Documentation/usb/ehci.rst
++++ b/Documentation/usb/ehci.rst
+@@ -1,4 +1,4 @@
+-﻿===========
++===========
+ EHCI driver
+ ===========
  
- - is used in AVS6EYES, and
--- can generate: NTSC/PAL, PAL­M, PAL­N
-+- can generate: NTSC/PAL, PAL-M, PAL-N
+diff --git a/Documentation/usb/gadget_printer.rst b/Documentation/usb/gadget_printer.rst
+index 5e5516c69075..e611a6d91093 100644
+--- a/Documentation/usb/gadget_printer.rst
++++ b/Documentation/usb/gadget_printer.rst
+@@ -1,4 +1,4 @@
+-﻿===============================
++===============================
+ Linux USB Printer Gadget Driver
+ ===============================
  
- The adv717x, should be able to produce PAL N. But you find nothing PAL N
- specific in the registers. Seem that you have to reuse a other standard
 -- 
 2.31.1
 
