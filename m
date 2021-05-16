@@ -2,152 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC63D381DAA
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 11:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46088381DAD
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 11:35:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234892AbhEPJe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 05:34:26 -0400
-Received: from mail-dm6nam11on2050.outbound.protection.outlook.com ([40.107.223.50]:62271
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234797AbhEPJeX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 05:34:23 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Y1JDjbeaSgoLN32N1CDaY0FTWVQ1dxs3ZAhgtJfWuyUwIUoxWQFOHL4G2geZ1lhEFisyGhNQVOQsOEhCiscKKGZ+b5FqMYAbK8eko3O175GCU8nsFA0I3/0+jps+ud9WOVqrL11LO+yoDzZg9O6YXf/w2J+CVEmxwsEGBnuKUVH9avzB/wuSFBCWcc20tO1iU2wDRZU3hgMWiSuDkrDJqTJv1sjhKT6sP64VpWnsiObG6olu6oWMmSjwDtc+ZtQOzulQ8N3vKVorfcsZ5TCfCJfojNwJoYbbtgIqGXoiKrq2x3FlapV0hlPBhXGOCAxwXoWdUrQehAghArZEnbhe5A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3TYeVOqnRQ4tKHE248djMJQqJN/KulRhNg5UFXKulyU=;
- b=Fl8GafW3heipmUlAQsm9GqpcDC5iz6djjFde6Vo25D6S/ruChmAqVpYK/kvFmSY8Ohl7uTij21QGvYkTVpNgXFnkALRG+IZlF/aqIYXrrM5BQOKPsGCKUy1mpvRiCdaWte8Hu32er3nZ7ZlyTvJjg24lf7jDN4+xujogPSsqkEJqZWXh1zYYTVi4IDmjRg/z0XYJ2mqzoFneZKi6lu3sl4TyfEG6rMwkzYFgfaVcfcOIP9nDnoBqHVpX1dVrUvHyskMsrzVpddpy8iTlJ+nanTvzSJyxfs3gkQO7dbHXbCWDah+xumFNP/zn1HJ1WWMzXlViVunTEVZx7EKHXMFhpA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3TYeVOqnRQ4tKHE248djMJQqJN/KulRhNg5UFXKulyU=;
- b=PsjerJlzh4UtvVk8u3f0Wgm0fp08rfN0PmZS8lOqTia8KoEmEwpY9bF8QL6byAiMY8ecpFaDWrUsQK8+F8NxziP+TIVbO4/66JUf1yzBxfbNP9UG46KZT3kLnu8UC3zfuKbY+Vfkqz6Xf2XhnvyFekbAcZ7Jh3yZduGFGIZK9zg=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=windriver.com;
-Received: from BY5PR11MB4241.namprd11.prod.outlook.com (2603:10b6:a03:1ca::13)
- by BYAPR11MB3221.namprd11.prod.outlook.com (2603:10b6:a03:1c::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.28; Sun, 16 May
- 2021 09:33:08 +0000
-Received: from BY5PR11MB4241.namprd11.prod.outlook.com
- ([fe80::551b:e310:2ae4:3011]) by BY5PR11MB4241.namprd11.prod.outlook.com
- ([fe80::551b:e310:2ae4:3011%6]) with mapi id 15.20.4129.029; Sun, 16 May 2021
- 09:33:08 +0000
-Subject: Re: [PATCH] rcu: fix a deadlock caused by not release rcu_node->lock
-From:   "Xu, Yanfei" <yanfei.xu@windriver.com>
-To:     paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210516092837.3655526-1-yanfei.xu@windriver.com>
-Message-ID: <e60dd306-c12c-df3c-41da-d64cec47eaee@windriver.com>
-Date:   Sun, 16 May 2021 17:32:57 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20210516092837.3655526-1-yanfei.xu@windriver.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: BY3PR03CA0020.namprd03.prod.outlook.com
- (2603:10b6:a03:39a::25) To BY5PR11MB4241.namprd11.prod.outlook.com
- (2603:10b6:a03:1ca::13)
+        id S234995AbhEPJgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 05:36:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57392 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234937AbhEPJgd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 May 2021 05:36:33 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 162C761028;
+        Sun, 16 May 2021 09:35:15 +0000 (UTC)
+Date:   Sun, 16 May 2021 10:36:28 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Maxime =?UTF-8?B?Um91c3Npbi1Cw6lsYW5nZXI=?= 
+        <maxime.roussinbelanger@gmail.com>,
+        Jean-Francois Dagenais <jeff.dagenais@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] iio: si1133: fix format string warnings
+Message-ID: <20210516103628.2cf899a0@jic23-huawei>
+In-Reply-To: <7afc367b-8103-9d48-1bfe-d505d86553b9@kernel.org>
+References: <20210514135927.2926482-1-arnd@kernel.org>
+        <7afc367b-8103-9d48-1bfe-d505d86553b9@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [128.224.162.160] (60.247.85.82) by BY3PR03CA0020.namprd03.prod.outlook.com (2603:10b6:a03:39a::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Sun, 16 May 2021 09:33:03 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8897c106-9f1e-4a68-dee9-08d9184d9d3a
-X-MS-TrafficTypeDiagnostic: BYAPR11MB3221:
-X-Microsoft-Antispam-PRVS: <BYAPR11MB3221C10846FA6760CF9FB1EFE42E9@BYAPR11MB3221.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: o9/ZqmzpjlnD+xsbDUDyew/BidkilaGXaE1S4Y1mi91oagq7gNI2gNss/dXUS1OowZuk6In7lGzRcm3jXQgzPfbyDd8ncpv2dAQQ1qL5+5znE68J3JH8k6w5jE3oDYshF/55fNGHNoQj8vKeiwp7Dh4y5MJkHzhF5E4I/rlP0p9OMiQKi/U4xZjl2yJRjgATqXlb7kecLUWS/HxHB/AbkqaIVrjxwUPTWnPvqI5X1tJTJ3BPsa19OJlJaiXKPKTqeGSZqBnIS6+3B1sH3DqgU6fsdwAocXbDolB3zktBn1E795hnh+PzaGAx0mjB8l3+SQgKP0hmt000DVThxeX7vr+LRxG9nQC+RfqcSVaa8loLfi4pYUMevWQq51NpHv/vDbri4MLSYnZz0Q8LE2kxPqYd5adUB0xiFojNO6mYDa2HE3sK+yFjhv0Fmp3d7QGwMw2CXauBuN33ugsIqsrLfZ6Ys87nipjTuQ4hWrs3SjHR9S12MWlcpBMUvWqUnfb9mi3JA/L8iSqVfG4yzStrXYGlaHvhrTo/TK8qw0s8UuXTdkqOQEOYjSw4dRlloAHfGTveKDP4zh1u5ocoPTs5j/EfQn0aKdeyfuy/3tKANERdPKWG5plAuz9fmXWGmiwu4lc/QYFN1zpR+Lmw6e6PyiZGjuHqd+lq5xLUIDkBWZFGw2g09rpkJFvclEzPYgFu3nlpqR4ir1hMy8/Zva8uhjKUnxn3T+y7ArJCo7koj/nqmvuxOnkuKWOcXu21WlgW
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4241.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(136003)(346002)(39830400003)(396003)(16576012)(8936002)(6706004)(316002)(83380400001)(186003)(8676002)(5660300002)(6486002)(4326008)(16526019)(2616005)(6666004)(66476007)(66556008)(53546011)(2906002)(36756003)(478600001)(86362001)(956004)(38100700002)(38350700002)(66946007)(26005)(31686004)(52116002)(31696002)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?UnVBK0RNMjZtOTgwd0NEVld6RTBia2dqV29wS05PeVFxTGhpU3RzRFVhN2Ey?=
- =?utf-8?B?TUpHajNjay81ZmxEOGo1cG4vMElWL0p3Y0dsMy91ZGwvRGYrclQyWFVFT0l1?=
- =?utf-8?B?K1BEUlZNRm5IcGJiSmlwTFA3alBSRjZ1L3BNSnVSeFlnYkRYZ1ZrRVA4cDlY?=
- =?utf-8?B?a2lYYjhRTXVhb0N4SEQzdnFtN21oRUhxVVM3RktXWFAyQzdRY2FvbmJBYVI2?=
- =?utf-8?B?Qk1tTnVHR2JoTmlBMkxHNUhoN3ZhQ1RUT2d3S2dNbFlyZDlKUE9EU2ZLTnIv?=
- =?utf-8?B?aUpDWUtXaVVvVGU5RWVMNnRGSFlLeUJSR0hnckJiZXFNc2l3RFhhbzdkRVNr?=
- =?utf-8?B?emQzSnlGaER3aGFaVjVadllIOWhRaXRHdU5TNjFmeTFpN0o0M09PNFRZa29l?=
- =?utf-8?B?R1Q1MnpQd09zZGVlYlZoU0dpT2xOaWtzWW9HSS8yb25Ebkt2MXNXQ1c4T01X?=
- =?utf-8?B?TXAvTmR4a3N2Y0FyKzRWemU4a0lGVnlZcFNKWFErYU91ZkVkRm1ocEpCNXRL?=
- =?utf-8?B?N3NOTVJRTUdCYzdYWFVtUDRhWVhxcllXaWxUTU5vbzVDY3NRQ0FCNFNwd1lK?=
- =?utf-8?B?aTlZaTMwM0VEZG5raXlKdjh5cDNnOHAwcEY3UGZBTVRGSWR5anFrZHpicXdY?=
- =?utf-8?B?K0M1UnhWQXB4WjRlUTRvdm0wWmN6Ym1QRWhIMjVhNU05a0RuMWM3TU5wY2VV?=
- =?utf-8?B?VGlPblRUeEwwaitZWC9HN2kvWVZqSUc2bTcyejdmd3FXdjhOdGUrdGFsKzR0?=
- =?utf-8?B?eEkzejREWG5kdndsc0htdkxXbnRobTQ1MzMyMkNyTkVicWlaNkluOVhqK25w?=
- =?utf-8?B?RVFZSkhEWG9LSjM5bVgxRFVSU1ByanprYTUvalhaK0JsR3AzMlhodktxRE9v?=
- =?utf-8?B?TmFHb3d3MHBIZy90V21URWNQR3VJbmsrMndxK2Z0VTBlQnlOK0k4K3BIVGg3?=
- =?utf-8?B?RVF5NTJLbFl0YVdKU3JrMmY0ZkRvQkMwZVREVnRQbzVuNkVZUS9XcGlOeEhn?=
- =?utf-8?B?aDlISDFHZ3RpL1FQZGRJWG1VY0p4dW1vNCtFeklGc095d05xcHZ2MDhwcE9R?=
- =?utf-8?B?bmNJeHFNdk9tNjZpRHlkdVd6QjMwYmtVWWJSOUNocVdjanB4aFVuSlp0VTVG?=
- =?utf-8?B?ak12cnRMUWRuNENFSVlxMjB5QjhaQUh0Q3FQZFNrcmxWaTNqWXBqOTFLdkls?=
- =?utf-8?B?MlQ5N0FhdGg2N09zU0YyM21tSGMzWHJMdmRuSGI4RmRpOEQ0M09WejJTVk5u?=
- =?utf-8?B?WWU1cXNEdDFydmdlWmc0MEJFYkpMUUVMbHVYRHlrVGRZbjgvYUJXck94UEVq?=
- =?utf-8?B?TzhVZVZ5LzZWaStSMmIyVHFqbGtGQUw3WXY3eWFzK1RMY0M1TWZRQkNZc3VU?=
- =?utf-8?B?UnozZG5COXpQdTJneEloREN4dWJsNGhEL3RMSTBCdDRza2pMZlltZGJyTlk3?=
- =?utf-8?B?V3ZRWUNjV3lOVXg0cXNzeFBDd3hQY09Rc1J2U1Y1aHNjODVkU24wdHJjMXNk?=
- =?utf-8?B?aTRZYmJzdGhYSzR3T2p4VWo5YmZQbDQxKzQzOHpHcUVYNTF4ZGJLc1M1U3M5?=
- =?utf-8?B?ZVBMM0xXeDJ4NDlCWHhBZUt5U2IrdzYxMC9rTDIrMTBQMDFnVkw1QkVTWGhS?=
- =?utf-8?B?dndxMkNNNjVTdGNRbzNFR014YXZnTS9RcHhRQktHaFdiRXhWZFQ1WVIwUDFv?=
- =?utf-8?B?V3kzOWhqWHEwL0lLYmtWRGZweHZSNzdhYkJYNHNmZmI2Zm83SUZHVXBQVmx1?=
- =?utf-8?Q?VUlSSowzRf0BBZ2Kg9a9OxXBNOTI+vYxXSYjoe+?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8897c106-9f1e-4a68-dee9-08d9184d9d3a
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4241.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 May 2021 09:33:08.0214
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sxP4ZHCBU2fMRh/tdzf9pSc5WWlTRjTOkE4oGKqXSL+Modpx+cgfYcMUEwP7prcuco6+qg+IYFVH4J03piFb7Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3221
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sorry, please ignore this patch...
+On Fri, 14 May 2021 10:45:02 -0700
+Nathan Chancellor <nathan@kernel.org> wrote:
 
-Regards,
-Yanfei
+> On 5/14/2021 6:59 AM, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> > 
+> > clang complains about multiple instances of printing an integer
+> > using the %hhx format string:
+> > 
+> > drivers/iio/light/si1133.c:982:4: error: format specifies type 'unsigned char' but the argument has type 'unsigned int' [-Werror,-Wformat]
+> >                   part_id, rev_id, mfr_id);
+> >                   ^~~~~~~
+> > 
+> > Print them as a normal integer instead, leaving the "#02"
+> > length modifier.
+> > 
+> > Fixes: e01e7eaf37d8 ("iio: light: introduce si1133")
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>  
+> 
+> Indeed, use of %hx and %hhx have been discouraged since commit 
+> cbacb5ab0aa0 ("docs: printk-formats: Stop encouraging use of unnecessary 
+> %h[xudi] and %hh[xudi]").
+> 
+> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 
-On 5/16/21 5:28 PM, yanfei.xu@windriver.com wrote:
-> From: Yanfei Xu <yanfei.xu@windriver.com>
+Applied to the togreg branch of iio.git and pushed out as testing
+for the autobuilders to poke at it.
+
+Thanks,
+
+Jonathan
 > 
-> rcu_node->lock isn't released in rcu_print_task_stall() if the rcu_node
-> don't contain tasks which blocking the GP. However this rcu_node->lock
-> will be used again in rcu_dump_cpu_stacks() soon while the ndetected is
-> non-zero. As a result the cpu will hung by this deadlock.
+> > ---
+> >   drivers/iio/light/si1133.c | 4 ++--
+> >   1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/iio/light/si1133.c b/drivers/iio/light/si1133.c
+> > index c280b4195003..fd302480262b 100644
+> > --- a/drivers/iio/light/si1133.c
+> > +++ b/drivers/iio/light/si1133.c
+> > @@ -978,11 +978,11 @@ static int si1133_validate_ids(struct iio_dev *iio_dev)
+> >   		return err;
+> >   
+> >   	dev_info(&iio_dev->dev,
+> > -		 "Device ID part %#02hhx rev %#02hhx mfr %#02hhx\n",
+> > +		 "Device ID part %#02x rev %#02x mfr %#02x\n",
+> >   		 part_id, rev_id, mfr_id);
+> >   	if (part_id != SI1133_PART_ID) {
+> >   		dev_err(&iio_dev->dev,
+> > -			"Part ID mismatch got %#02hhx, expected %#02x\n",
+> > +			"Part ID mismatch got %#02x, expected %#02x\n",
+> >   			part_id, SI1133_PART_ID);
+> >   		return -ENODEV;
+> >   	}
+> >   
 > 
-> Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
-> ---
->   kernel/rcu/tree_stall.h | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> index b72311d24a9f..4e97c9977d1c 100644
-> --- a/kernel/rcu/tree_stall.h
-> +++ b/kernel/rcu/tree_stall.h
-> @@ -267,8 +267,10 @@ static int rcu_print_task_stall(struct rcu_node *rnp, unsigned long flags)
->   	struct task_struct *ts[8];
->   
->   	lockdep_assert_irqs_disabled();
-> -	if (!rcu_preempt_blocked_readers_cgp(rnp))
-> +	if (!rcu_preempt_blocked_readers_cgp(rnp)) {
-> +		raw_spin_lock_irqsave_rcu_node(rnp, flags);
->   		return 0;
-> +	}
->   	pr_err("\tTasks blocked on level-%d rcu_node (CPUs %d-%d):",
->   	       rnp->level, rnp->grplo, rnp->grphi);
->   	t = list_entry(rnp->gp_tasks->prev,
-> 
+
