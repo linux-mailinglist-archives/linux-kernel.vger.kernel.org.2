@@ -2,117 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D38381D79
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 10:56:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42A1D381D7F
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 11:00:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234333AbhEPI5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 04:57:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234207AbhEPI5V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 04:57:21 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5521C061573;
-        Sun, 16 May 2021 01:56:05 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id o59so1758811qva.1;
-        Sun, 16 May 2021 01:56:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FyhBI/ZNBupoUTALEieNNind18REakMszINUdKUseIo=;
-        b=qKe0c6vJ3tRyA8T7jcTUVREICvcXhdyymcsnAsSHpYzR+/+BPh1sd+1hngd1QS8Wym
-         v6Kxn6Y+R5r8lQ608MzKnuMz3Sqt2kNvB8uYj0sCnnnm1hLxev7+q+mnsFtxEsIVsolj
-         A2SVWRmM5T5pn89QfhkmPl6rJbmj+nOz5mqV+c9pO5tPOLWyoC5KHacI82cNZI7IoR1n
-         iIuV8GBgyxwrYGQr2IxI5q6UdioPEeLKSL966r0q85tIAobRBcrei6inwTiIjCRTlK25
-         W6eXNdE1RdzsjyrNv1MT6v3bJmiSCabgSskVzZCqk3I19wWp52MRkbu929PjiNeVM5L9
-         g7RA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FyhBI/ZNBupoUTALEieNNind18REakMszINUdKUseIo=;
-        b=Bp74Mn9xN0Jo2oviVxy3DnnFX3j+yPnidA6zhMe7Gn0f9XXYDYKi9K6r3U7vTiTIc/
-         zvGkBc9M+FdMocEygnGsF5tu/Cg/1kmlJipPMuTH/ANrBa2y+F4azyisB/e0Vgg2Rfs2
-         O9iji0eo58IuujWWNQOHIPhV+vaq6BH9FIfgxn7XLSkV4h9TDoYVA4TW5irdQtI0X+E2
-         xRi8tgxhgtlWPffQr38gcGd7o9Aj9Y/smnaT2KWF7FbGe8+SN9BBqmAjPRbqbWFW9Z7S
-         RS2UJw3dFFVNhz3DZ/jmX5NJW0hWg2Isteid7HuWTSKnVI0dLof4M7dfYeiKwyNx0PAj
-         mCiQ==
-X-Gm-Message-State: AOAM532FqAGsirgWvgs9XwFbCkdx4okB/bipL4TKPzsVi3SgjtLV1mvI
-        zanFKgRN5//yvsyJE7z4DOk=
-X-Google-Smtp-Source: ABdhPJyZgSugBwvMT4OLtM7k/PlOtbKviXB4ykm4w6Epj/ihziwBq912sh+AEk6gM80O/7frps81Yw==
-X-Received: by 2002:a0c:8bd1:: with SMTP id a17mr54478447qvc.62.1621155364960;
-        Sun, 16 May 2021 01:56:04 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id v18sm8050212qkv.34.2021.05.16.01.56.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 16 May 2021 01:56:04 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [RFC PATCH v1 0/2] hwmon: (iio_hwmon) optionally force iio
- channel type
-To:     Liam Beguin <liambeguin@gmail.com>, jdelvare@suse.com,
-        jic23@kernel.org, lars@metafoo.de, pmeerw@pmeerw.net
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org
-References: <20210516044315.116290-1-liambeguin@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <29235b1d-78f3-6d8f-567f-78ca6f350340@roeck-us.net>
-Date:   Sun, 16 May 2021 01:56:01 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S234328AbhEPJBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 05:01:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49254 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229445AbhEPJBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 May 2021 05:01:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D9F8A6100C;
+        Sun, 16 May 2021 09:00:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621155604;
+        bh=KL+76SwYHYbW6KLhpURnfNwEzzg2zJzq1M0TeQLjPZ0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=EtHA/2/e1raREY2lVU7Jz3Xeg6jPDQPKzJk2AWouhXBblowmLJzIQrCvzUg+bCZOg
+         WeOGBLWVr1vFCQiRtdcDP46axt1JauwiJGwnDKx/vKS36tJSj0UL5m8323/VX/fRv9
+         A0M4mgMdq2FVMnUS/wfRP5oZmP84ynPe/dFz8avM=
+Date:   Sun, 16 May 2021 10:59:57 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: [GIT PULL] USB driver fixes for 5.13-rc2
+Message-ID: <YKDfDeaFp966UjS1@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20210516044315.116290-1-liambeguin@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/15/21 9:43 PM, Liam Beguin wrote:
-> Add a devicetree binding to optionally force a different IIO channel
-> type.
-> 
-> This is useful in cases where ADC channels are connected to a circuit
-> that represent another unit such as a temperature or a current.
-> 
-> `channel-types` was chosen instead of `io-channel-types` as this is not
-> part of the iio consumer bindings.
-> 
-> In the current form, this patch does what it's intended to do:
-> change the unit displayed by `sensors`, but feels like the wrong way to
-> address the problem.
-> 
-> Would it be possible to force the type of different IIO channels for
-> this kind of use case with a devicetree binding from the IIO subsystem?
-> 
+The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
 
-That doesn't make sense to me. If an ADC is used to report temperatures,
-it would be a thermistor, and the ntc_thermistor driver should be used.
-Not sure what to do with currents, but overriding "voltage" with "current"
-seems wrong.
+  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
 
-Guenter
+are available in the Git repository at:
 
-> It would be convenient to do it within the IIO subsystem to have the
-> right unit there too.
-> 
-> Thanks for your time,
-> Liam
-> 
-> Liam Beguin (2):
->    hwmon: (iio_hwmon) optionally force iio channel type
->    dt-bindings: hwmon: add iio-hwmon bindings
-> 
->   .../devicetree/bindings/hwmon/iio-hwmon.yaml  | 41 +++++++++++++++++++
->   drivers/hwmon/iio_hwmon.c                     |  2 +
->   2 files changed, 43 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/hwmon/iio-hwmon.yaml
-> 
-> 
-> base-commit: 9f4ad9e425a1d3b6a34617b8ea226d56a119a717
-> 
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.13-rc2
 
+for you to fetch changes up to 975f94c7d6c306b833628baa9aec3f79db1eb3a1:
+
+  usb: core: hub: fix race condition about TRSMRCY of resume (2021-05-13 16:00:24 +0200)
+
+----------------------------------------------------------------
+USB fixes for 5.13-rc2
+
+Here are some small USB fixes for 5.13-rc2.  They consist of a number of
+resolutions for reported issues:
+	- typec fixes for found problems
+	- xhci fixes and quirk additions
+	- dwc3 driver fixes
+	- minor fixes found by Coverity
+	- cdc-wdm fixes for reported problems
+
+All of these have been in linux-next for a few days with no reported
+issues.
+
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+----------------------------------------------------------------
+Abhijeet Rao (1):
+      xhci-pci: Allow host runtime PM as default for Intel Alder Lake xHCI
+
+Andy Shevchenko (1):
+      usb: typec: ucsi: Put fwnode in any case during ->probe()
+
+Badhri Jagan Sridharan (1):
+      usb: typec: tcpm: Fix SINK_DISCOVERY current limit for Rp-default
+
+Christophe JAILLET (3):
+      usb: fotg210-hcd: Fix an error message
+      usb: musb: Fix an error message
+      xhci: Do not use GFP_KERNEL in (potentially) atomic context
+
+Chunfeng Yun (1):
+      usb: core: hub: fix race condition about TRSMRCY of resume
+
+Fabio Estevam (1):
+      usb: Restore the reference to ch9.h
+
+Ferry Toth (1):
+      usb: dwc3: pci: Enable usb2-gadget-lpm-disable for Intel Merrifield
+
+Jack Pham (4):
+      usb: dwc3: gadget: Enable suspend events
+      usb: dwc3: gadget: Rename EOPF event macros to Suspend
+      usb: dwc3: gadget: Free gadget structure only after freeing endpoints
+      usb: typec: ucsi: Retrieve all the PDOs instead of just the first 4
+
+Kyle Tso (3):
+      usb: typec: tcpm: Fix wrong handling in GET_SINK_CAP
+      usb: typec: tcpm: Send DISCOVER_IDENTITY from dedicated work
+      usb: typec: tcpm: Fix wrong handling for Not_Supported in VDM AMS
+
+Li Jun (1):
+      usb: dwc3: imx8mp: detect dwc3 core node via compatible string
+
+Marcel Hamer (1):
+      usb: dwc3: omap: improve extcon initialization
+
+Mathias Nyman (1):
+      xhci: Fix giving back cancelled URBs even if halted endpoint can't reset
+
+Matthijs Kooijman (1):
+      usb: dwc2: Remove obsolete MODULE_ constants from platform.c
+
+Maximilian Luz (1):
+      usb: xhci: Increase timeout for HC halt
+
+Oliver Neukum (1):
+      cdc-wdm: untangle a circular dependency between callback and softint
+
+Phil Elwell (1):
+      usb: dwc2: Fix gadget DMA unmap direction
+
+Sandeep Singh (1):
+      xhci: Add reset resume quirk for AMD xhci controller.
+
+Thinh Nguyen (1):
+      usb: dwc3: core: Add missing GHWPARAMS9 doc
+
+Wei Ming Chen (1):
+      docs: usb: function: Modify path name
+
+Wesley Cheng (1):
+      usb: dwc3: gadget: Return success always for kick transfer in ep queue
+
+Zhen Lei (1):
+      usb: dwc3: imx8mp: fix error return code in dwc3_imx8mp_probe()
+
+ Documentation/driver-api/usb/usb.rst  |  15 +++--
+ Documentation/usb/gadget_configfs.rst |   2 +-
+ drivers/usb/class/cdc-wdm.c           |  30 +++++++---
+ drivers/usb/core/hub.c                |   6 +-
+ drivers/usb/dwc2/core.h               |   2 +
+ drivers/usb/dwc2/gadget.c             |   3 +-
+ drivers/usb/dwc2/platform.c           |   4 --
+ drivers/usb/dwc3/core.h               |   7 ++-
+ drivers/usb/dwc3/debug.h              |   8 +--
+ drivers/usb/dwc3/dwc3-imx8mp.c        |   3 +-
+ drivers/usb/dwc3/dwc3-omap.c          |   5 ++
+ drivers/usb/dwc3/dwc3-pci.c           |   1 +
+ drivers/usb/dwc3/gadget.c             |  13 ++++-
+ drivers/usb/host/fotg210-hcd.c        |   4 +-
+ drivers/usb/host/xhci-ext-caps.h      |   5 +-
+ drivers/usb/host/xhci-pci.c           |   8 ++-
+ drivers/usb/host/xhci-ring.c          |  16 ++++--
+ drivers/usb/host/xhci.c               |   6 +-
+ drivers/usb/musb/mediatek.c           |   2 +-
+ drivers/usb/typec/tcpm/tcpm.c         | 103 +++++++++++++++++++++++++++++-----
+ drivers/usb/typec/ucsi/ucsi.c         |  46 +++++++++++----
+ drivers/usb/typec/ucsi/ucsi.h         |   6 +-
+ 22 files changed, 220 insertions(+), 75 deletions(-)
