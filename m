@@ -2,90 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9001381FA6
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 18:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A849381FAB
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 18:13:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231156AbhEPQNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 12:13:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54288 "EHLO
+        id S231842AbhEPQOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 12:14:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229681AbhEPQNa (ORCPT
+        with ESMTP id S229632AbhEPQOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 12:13:30 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 451B8C061573;
-        Sun, 16 May 2021 09:12:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=d4OZD5riXl65efBOBwCRlO9nqI7E8GwVLu0CAdMjZhg=; b=c/vrhmw6yq8QTXzFKzSKuvcW82
-        WgFJrNvo4Hze5poZQKSFTJLhfVAnDeLH79tbMgkGjfGqvibY8K3C+SiPosz823nw80KH9Fqm/blhc
-        yr4ZaJ5X80WRxWD64H64zLt48ovonAYV65qKDTENWec/kKgDMpF1eY0dUrBtZn99TVTESC42GzeRk
-        zOe7KvGCJQYfLwhYzqpqaPZuKrKaaF8OYCSsx/28qvOauS4YlwOFMvsGUG8yBhFn3wQmSDiSo4Sov
-        ZHIG4G+xmqzMRHmSa3/K7hByFggKAlyegFmlz1TdYFA1RSmIkOqBLeK/YUQbioLnSetM43op5/Kfl
-        Uv0+K9Eg==;
-Received: from [2601:1c0:6280:3f0::7376]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1liJNC-00D1u3-BA; Sun, 16 May 2021 16:12:10 +0000
-Subject: Re: [PATCH 01/17] staging: add support for NUC WMI LEDs
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        gregkh@linuxfoundation.org
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Pavel Machek <pavel@ucw.cz>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        linux-leds@vger.kernel.org, linux-staging@lists.linux.dev
-References: <cover.1621161037.git.mchehab+huawei@kernel.org>
- <7cec257fcc6e5789e5620495674e442a727a766f.1621161037.git.mchehab+huawei@kernel.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <585a7a4d-29dd-669a-fc0e-d4fdab84b3f1@infradead.org>
-Date:   Sun, 16 May 2021 09:12:09 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Sun, 16 May 2021 12:14:30 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF4B2C061573;
+        Sun, 16 May 2021 09:13:14 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id a2so5205932lfc.9;
+        Sun, 16 May 2021 09:13:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pWep6XUk/Htmx+rnveDkd22peEfK9wvjv1AZWbCkH+M=;
+        b=kCK7YH686pYuZum++8eix84r6KtRQ98Z0FBVDbN726azCmqsaaSnlzoUSTneoLrWvs
+         YQajR8rtLX+Vb9RdHmxA6KWVNKR2e13+L1C0c7NkFS0wFlrnYa/CooXTM+WytZTLfwvR
+         OsHJfd8dEhcerJ7IQ5y/z+yJ0YaFQr3bSFmX6r57i0UEZ3G8UPJ4jDer7Rnd0SbIqqAw
+         Ayo0if8PDb5pn2GrlnSxDi684p92i8JBKmGt+Vd9Bu6qUrBR/NSk0WjCZ4btM4n5FbE/
+         l7r2KotdzAkvjENjlkTQq5vpq92kzU+wg3MXdCUs5vjiB+FGSLtznpeJTC6ia6XCw5UP
+         VcwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pWep6XUk/Htmx+rnveDkd22peEfK9wvjv1AZWbCkH+M=;
+        b=juh9P5ghr11CNctWlIbqi7SrKyrYGmJiX/ir/ZDMrsAQLhE5IG24hhnkxXeNXjnVJF
+         UPjx490jod5olreuzw83b2xzP8J5beaExtGk6KhjR5ebx7Eil+Mt+Skr0MB0nIulxWrG
+         viBtIepOZnnauoWSmYmpWhOp+xQCrwIYJQNG7UzzDrxUG4bu9Af30L1PhDM8mM6JJPEI
+         7iv4V26/OZXHMchRLWrDTKkRWEBtqOLU4dyUzc78Uv0zBqwwGfR/YSzw4yKo5VK/zXqy
+         21IQRBsZ8KQTwhylHZBmzX7/YzXpNQ50JpAKEuQNvNlKu1FGktaWWtpImxeawbke/eW4
+         IyWQ==
+X-Gm-Message-State: AOAM533MZSTlerY5You0HPVS8kL9yr4ESa158OcL1IJXCObKHMHfCx1p
+        QBL1HAe+ETcBuFHU6zmTS9rGVuI4qz8=
+X-Google-Smtp-Source: ABdhPJz1G5vvYZiKX51lLpNn7oKqqYtcLScTYwJptzC39703VKV+MlHaxiMfZ/v1CzdI1kmaMenBMA==
+X-Received: by 2002:a05:6512:1031:: with SMTP id r17mr38621304lfr.583.1621181593394;
+        Sun, 16 May 2021 09:13:13 -0700 (PDT)
+Received: from localhost.localdomain (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
+        by smtp.gmail.com with ESMTPSA id d27sm1712547lfq.290.2021.05.16.09.13.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 May 2021 09:13:13 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Mikko Perttunen <mperttunen@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Subject: [PATCH v2 0/4] Enable compile-testing of Tegra memory drivers
+Date:   Sun, 16 May 2021 19:12:10 +0300
+Message-Id: <20210516161214.4693-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <7cec257fcc6e5789e5620495674e442a727a766f.1621161037.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro,
+This series enables compile-testing for all of NVIDIA Tegra memory
+drivers.
 
-On 5/16/21 3:53 AM, Mauro Carvalho Chehab wrote:
-> diff --git a/drivers/staging/nuc-led/Kconfig b/drivers/staging/nuc-led/Kconfig
-> new file mode 100644
-> index 000000000000..0f870f45bf44
-> --- /dev/null
-> +++ b/drivers/staging/nuc-led/Kconfig
-> @@ -0,0 +1,11 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +config LEDS_NUC_WMI
-> +	tristate "Intel NUC WMI support for LEDs"
-> +	depends on LEDS_CLASS
-> +	depends on ACPI_WMI
-> +	help
-> +	  Enable this to support the Intel NUC WMI support for
+Changelog:
 
-Don't use "support" 2 times. Maybe:
+v2: - Added patch which should fix compilation warning of tegra124-emc driver
+      on 64bit platforms that was reported by kernel build robot. Thanks
+      to Nathan Chancellor for the suggested fix.
 
-	  Enable this to support the Intel NUC WMI interface for
-or
-	  Enable this to build the Intel NUC WMI support for
+        memory: tegra124: Fix compilation warnings on 64bit platforms
 
+    - Added missing stubs to the tegra-clk header in another new patch. This
+      was also reported by kernel build robot for v1.
 
-> +	  LEDs, starting from NUCi8 and upper devices.
+        clk: tegra: Add stubs needed for compile-testing
 
-Does "upper" mean "later"?  Or more advanced?  Not clear.
+    - The memory/tegra/Kconfig now uses `if TEGRA_MC`, which was suggested
+      by Krzysztof Kozlowski to v1. This makes Tegra Kconfig to look consistent
+      with the Exynos Kconfig.
 
+Dmitry Osipenko (4):
+  soc/tegra: fuse: Add missing stubs
+  clk: tegra: Add stubs needed for compile-testing
+  memory: tegra124-emc: Fix compilation warnings on 64bit platforms
+  memory: tegra: Enable compile testing for all drivers
 
-> +
-> +	  To compile this driver as a module, choose M here.
+ drivers/memory/tegra/Kconfig        | 16 ++++++++++------
+ drivers/memory/tegra/tegra124-emc.c |  4 ++--
+ include/linux/clk/tegra.h           | 28 ++++++++++++++++++++++++----
+ include/soc/tegra/fuse.h            | 20 +++++++++++++++++---
+ 4 files changed, 53 insertions(+), 15 deletions(-)
 
-thanks.
 -- 
-~Randy
+2.30.2
 
