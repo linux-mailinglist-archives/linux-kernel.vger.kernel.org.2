@@ -2,87 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C364382060
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 20:31:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4314E382070
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 20:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230363AbhEPScw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 14:32:52 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:45032 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbhEPScv (ORCPT
+        id S231715AbhEPSlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 14:41:01 -0400
+Received: from lb3-smtp-cloud7.xs4all.net ([194.109.24.31]:37107 "EHLO
+        lb3-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231358AbhEPSlA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 14:32:51 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id E65E81C0B76; Sun, 16 May 2021 20:31:35 +0200 (CEST)
-Date:   Sun, 16 May 2021 20:31:35 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Doug Zobel <dougdev334@gmail.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        Sun, 16 May 2021 14:41:00 -0400
+X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Sun, 16 May 2021 14:40:59 EDT
+Received: from copland.sibelius.xs4all.nl ([83.163.83.176])
+        by smtp-cloud7.xs4all.net with ESMTP
+        id iLZ1lyWmcMajpiLZ2l0Aat; Sun, 16 May 2021 20:32:35 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1621189955; bh=7cTrg+GU9k/ZVtBQMMRNn/CYTMHS8XO/LSG0ww7pHN8=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version:From:Subject;
+        b=BMcfyrvAKaHboqVTJhIC30XvVgmg4ZnM5j21EmDnLHoXWMWC9HBB3PchAsvlVNgso
+         0L/Glq+sEZUqjYHl3s6aKbyWhocpy/QPY+l4cWrT4Bnmo2nB7zTOSxJeEtq8G9ofJM
+         4j3D+H4MuQBmrf+RdMxn9gMBNk5t4juP012z3b9Fx3Qa2rvce3XLyZ4Ex7Fma2UlfM
+         g3rEXr/dyESIAk+XCOXEm6OvbQR3vgmIidhyGweZ704RBFNK/IhLzWgHNv1/KrNVN0
+         3in05HE0/gxW4zyz1VIzqMzT/YZDaO9AkRtfcX3x2vYkTztb2//4B7xEI30ioyYSFc
+         fqVtnxfIoGmzg==
+From:   Mark Kettenis <mark.kettenis@xs4all.nl>
+To:     devicetree@vger.kernel.org
+Cc:     Mark Kettenis <kettenis@openbsd.org>,
+        Hector Martin <marcan@marcan.st>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] dt: bindings: lp55xx: Add predefined LED pattern
-Message-ID: <20210516183135.GA26985@duo.ucw.cz>
-References: <20210511204834.2675271-1-dougdev334@gmail.com>
- <20210511204834.2675271-3-dougdev334@gmail.com>
- <20210513022036.GA890569@robh.at.kernel.org>
- <CABa6EMYdY9WBN0+edgcEFc0uiBmWUDert7nXCN+FWeRMG=0S6A@mail.gmail.com>
+Subject: [PATCH 0/2] Apple M1 pinctrl DT bindings
+Date:   Sun, 16 May 2021 20:32:16 +0200
+Message-Id: <20210516183221.93686-1-mark.kettenis@xs4all.nl>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="EeQfGwPcQSOJBaQU"
-Content-Disposition: inline
-In-Reply-To: <CABa6EMYdY9WBN0+edgcEFc0uiBmWUDert7nXCN+FWeRMG=0S6A@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfBL2etnaLpahmImfDmopdzD+YTDabxnN0nXcvofsVQT6otmhSDmPSOM15IwXJr6DHFqFpctr+Vb4/Q6/rCAf1TFHZbTdD+jm/T1a9aon0fT9BMCZZatX
+ Bol9M552q2Z7djmv203XcTSzEReGFuNkDpajb+qbtiRyp7jT/fCQjd2ww5Fjd/n7YX2URd0zSSNu20z3LDIdWfXHSq7tC0fdgwJ/jcSTs/GgKCwplIwRI+fM
+ 53nsog6MT0ZYDkDp3g1CbjSOoDQLyCOxNWyMv86oCSPLAopr3gJ/eEnfD8E5mjAX+HLgG68iZLVQMZFCOngBS3Ohvq+OsUou1jQKnnNwlm1I6Ihcp6yH5TF+
+ haee953CsbhntPfpj/G+4arlMXVAZDtVDZNq5l4hErdUjeuZIOjY3uW+nWlmnk1GNCxkgVreev4fyqKCbyvbAr+LP48IF05TCD1Yd8J3HpE3479ilSrpL7Nf
+ U8tdrbSucSxrYk8H
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Mark Kettenis <kettenis@openbsd.org>
 
---EeQfGwPcQSOJBaQU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This small series adds bindings for the pin and GPIO controller found
+on the Apple M1 SoC.
 
-Hi!
+At this point, the primary consumer for these bindings is U-Boot.
+With the help of these bindings U-Boot can bring up the PCIe root
+complex into a state where the OS use it without having to deal with
+the GPIO pins.  A Linux driver may be implemented later to support
+power management and/or other devices that need GPIO control.  Since
+the binding is based on standard pinmux node bindings this should be
+relatively easy.
 
-> > I don't know that this belongs in DT though. Won't a user want to create
-> > their own patterns? That means there should be a sysfs interface (which
-> > we either already have or has been attempted IIRC).
->=20
-> Yes, there is a sysfs interface for running patterns via the firmware
-> loading interface.  The firmware loading interface doesn't seem well
-> suited for constantly changing the pattern that the LED driver runs.
-> I found it to be slow and unreliable when quickly changing the LED
-> pattern.  The existing predef pattern functionality works much better.
-> Unfortunately the only way to define the patterns for it is via the
-> platform data structure.  Adding the predef patterns to the device
-> tree seemed like a good way to make use of the existing functionality
-> in the driver.
+Changelog:
 
-Take a look at the pattern trigger. That's the way to change patterns
-at runtime, no need for firmware loading.
+v2: - Fix typo in DT schema
 
-I may even have compiler from that interface to the bytecode lp55xx
-uses. Some assembly will be required. Doing so with the RGB LED will
-be even more fun.=20
 
-We'll want to deprecate the firmware loading interface at some point.
+Mark Kettenis (2):
+  dt-bindings: pinctrl: Add DT bindings for apple,pinctrl
+  arm64: apple: Add pinctrl nodes
 
-Forget the device tree, that will not help you.
+ .../bindings/pinctrl/apple,pinctrl.yaml       | 103 ++++++++++++++++++
+ MAINTAINERS                                   |   2 +
+ arch/arm64/boot/dts/apple/t8103.dtsi          |  83 ++++++++++++++
+ include/dt-bindings/pinctrl/apple.h           |  13 +++
+ 4 files changed, 201 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/apple,pinctrl.yaml
+ create mode 100644 include/dt-bindings/pinctrl/apple.h
 
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
+-- 
+2.31.1
 
---EeQfGwPcQSOJBaQU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYKFlBwAKCRAw5/Bqldv6
-8tFDAKC3YhzAdQ9LYeg4X9Jiyl0bNQ25JACfU6OnhTTZpWfegLboUmGSg30vnMc=
-=nF5x
------END PGP SIGNATURE-----
-
---EeQfGwPcQSOJBaQU--
