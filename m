@@ -2,92 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 606B2381F61
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 16:56:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D1E8381F63
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 16:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234490AbhEPO5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 10:57:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57492 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234462AbhEPO5Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 10:57:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA4C361186;
-        Sun, 16 May 2021 14:56:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621176961;
-        bh=eMDGY00Srcwc9Mv3Q7xd4VTBuRrB8CH6Jc58EjqrkKE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jWsQMguaWBHeFRkxBLzeVMYu1ghufxsbJDO6Y2DKyVZ+r6xYxxekjgqZemmFmF9vD
-         XBKEjXxghKyit6InN6q1tSW4ow/TM0jaXYOT9ZSStLvSXH+02V/1rK7dDtQyfyeQ9C
-         6w9RqS4M8pfqX57ahk2WqNU7QmRLiUF4e0ok7U27gGKEXfMupuOTN/LTTJzcVkGTc9
-         cCeKYX1EqqQYlQzcYJB5TD6ymeppH+hi5bnEmDquHUx+i+d/0rI+yJsSZf3+v59m6t
-         ycA27inD66dERBIo6A2UZTEAfvkwKOo2UzNUum+rdN9NDOzH/UGEuETMKQXOqOOTAZ
-         VEXMMLauJpVgg==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Devin Moore <devinmoore@google.com>
-Subject: [PATCH 4/4] docs: bootconfig: Update for mixing value and subkeys
-Date:   Sun, 16 May 2021 23:55:58 +0900
-Message-Id: <162117695806.9011.2777026750573406243.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <162117692155.9011.16682190750100804269.stgit@devnote2>
-References: <162117692155.9011.16682190750100804269.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S234519AbhEPO6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 10:58:54 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:40428 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229807AbhEPO6y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 May 2021 10:58:54 -0400
+Received: from mail-ed1-f72.google.com ([209.85.208.72])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <juerg.haefliger@canonical.com>)
+        id 1liID4-0006x8-Cw
+        for linux-kernel@vger.kernel.org; Sun, 16 May 2021 14:57:38 +0000
+Received: by mail-ed1-f72.google.com with SMTP id d4-20020aa7ce040000b029038d1d0524d0so1647382edv.3
+        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 07:57:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XTCfpt/56FbqDOoQ8sUsaMXNebh06g9CZvsUJW9+jNY=;
+        b=ZUZfNd/O66r+Bxl+sAjxicxVdPy0oYV8pDn3Mxcy5gVb6bZDinKEuZRO3wvSanrupQ
+         FfPdlqZ22UR12064M7Si7eMbVeoNxKLTbAJoFc3/Xj/gDBCO4ekC7m1KKxsYIQstEZEb
+         Iwtc5wdH51X+WsZDmt+4PqJ6WzVCocWh1lbXpCkylmRG+JPbIOPRRVQKhjedXxwdZ/8N
+         cxiXJDkQuV0svwaBcOXFQNg29h2ffEwZEqR/DN934277QvapL8Tg1aJQkZkhCXP11Pzh
+         D/XWIrCYqaPgNIrVnoxP4squKrTup8DyBL0O0X1rIn9nXbS+a9sFfkPSyDjAJvc7h+E9
+         NZcg==
+X-Gm-Message-State: AOAM533/LVaOce6qFE1xpwOPJcKoUj+LlfdPdgnfmJSnmBjqWUmLVkVn
+        Pga7moAS3X5Q+dNNWPK1crf0FYCwWc4WiHKMh/jNc4CiuXvgY8qefEh4zml3ND/EJMxTH8C95DC
+        gGESrCuC9QTGgXEk3+6A42YUmrzCn4d0Do6QsW2j7+g==
+X-Received: by 2002:aa7:c781:: with SMTP id n1mr30536212eds.108.1621177058174;
+        Sun, 16 May 2021 07:57:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzgjPgNxbUF7hm+COhC/ooKGZrl9JgiTHUHstCcL7r40Cj4zYM5f1bEMCKhdjiXTEnIoj121A==
+X-Received: by 2002:aa7:c781:: with SMTP id n1mr30536192eds.108.1621177057984;
+        Sun, 16 May 2021 07:57:37 -0700 (PDT)
+Received: from gollum.fritz.box ([194.191.244.86])
+        by smtp.gmail.com with ESMTPSA id q26sm7164708ejc.3.2021.05.16.07.57.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 May 2021 07:57:37 -0700 (PDT)
+From:   Juerg Haefliger <juerg.haefliger@canonical.com>
+X-Google-Original-From: Juerg Haefliger <juergh@canonical.com>
+To:     tj@kernel.org, axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Juerg Haefliger <juergh@canonical.com>
+Subject: [PATCH] init/Kconfig: Fix BLK_CGROUP help text indentation
+Date:   Sun, 16 May 2021 16:57:31 +0200
+Message-Id: <20210516145731.61253-1-juergh@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update document for the mixing value and subkeys on a key.
+The convention for help text indentation seems to be tab + 2 spaces.
+Do that for BLK_CGROUP which currently only uses a single tab.
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Juerg Haefliger <juergh@canonical.com>
 ---
- 0 files changed
+ init/Kconfig | 33 +++++++++++++++++----------------
+ 1 file changed, 17 insertions(+), 16 deletions(-)
 
-diff --git a/Documentation/admin-guide/bootconfig.rst b/Documentation/admin-guide/bootconfig.rst
-index 452b7dcd7f6b..37bdae273b18 100644
---- a/Documentation/admin-guide/bootconfig.rst
-+++ b/Documentation/admin-guide/bootconfig.rst
-@@ -89,13 +89,33 @@ you can use ``+=`` operator. For example::
- 
- In this case, the key ``foo`` has ``bar``, ``baz`` and ``qux``.
- 
--However, a sub-key and a value can not co-exist under a parent key.
--For example, following config is NOT allowed.::
-+Moreover, sub-keys and a value can co-exist under a parent key.
-+For example, following config is allowed.::
- 
-  foo = value1
-- foo.bar = value2 # !ERROR! subkey "bar" and value "value1" can NOT co-exist
-- foo.bar := value2 # !ERROR! even with the override operator, this is NOT allowed.
-+ foo.bar = value2
-+ foo := value3 # This will update foo's value.
- 
-+Note, since there is no syntax to add raw value in the structured
-+key, you have to define it outside of the brace. For example::
+diff --git a/init/Kconfig b/init/Kconfig
+index 9f1cde503739..5beaa0249071 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -926,22 +926,23 @@ config BLK_CGROUP
+ 	depends on BLOCK
+ 	default n
+ 	help
+-	Generic block IO controller cgroup interface. This is the common
+-	cgroup interface which should be used by various IO controlling
+-	policies.
+-
+-	Currently, CFQ IO scheduler uses it to recognize task groups and
+-	control disk bandwidth allocation (proportional time slice allocation)
+-	to such task groups. It is also used by bio throttling logic in
+-	block layer to implement upper limit in IO rates on a device.
+-
+-	This option only enables generic Block IO controller infrastructure.
+-	One needs to also enable actual IO controlling logic/policy. For
+-	enabling proportional weight division of disk bandwidth in CFQ, set
+-	CONFIG_BFQ_GROUP_IOSCHED=y; for enabling throttling policy, set
+-	CONFIG_BLK_DEV_THROTTLING=y.
+-
+-	See Documentation/admin-guide/cgroup-v1/blkio-controller.rst for more information.
++	  Generic block IO controller cgroup interface. This is the common
++	  cgroup interface which should be used by various IO controlling
++	  policies.
 +
-+ foo.bar = value1
-+ foo.bar {
-+         baz = value2
-+         qux = value3
-+ }
++	  Currently, CFQ IO scheduler uses it to recognize task groups and
++	  control disk bandwidth allocation (proportional time slice allocation)
++	  to such task groups. It is also used by bio throttling logic in
++	  block layer to implement upper limit in IO rates on a device.
 +
-+Also, the order of the value node under a key is fixed. If there
-+are a value and subkeys, the value is always the first child node
-+of the key. Thus if user specifies subkeys first, e.g.::
++	  This option only enables generic Block IO controller infrastructure.
++	  One needs to also enable actual IO controlling logic/policy. For
++	  enabling proportional weight division of disk bandwidth in CFQ, set
++	  CONFIG_BFQ_GROUP_IOSCHED=y; for enabling throttling policy, set
++	  CONFIG_BLK_DEV_THROTTLING=y.
 +
-+ foo.bar = value1
-+ foo = value2
-+
-+In the program (and /proc/bootconfig), it will be shown as below::
-+
-+ foo = value2
-+ foo.bar = value1
++	  See Documentation/admin-guide/cgroup-v1/blkio-controller.rst for more
++	  information.
  
- Comments
- --------
+ config CGROUP_WRITEBACK
+ 	bool
+-- 
+2.27.0
 
