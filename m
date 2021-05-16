@@ -2,142 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67CEC38212C
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 23:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2856382134
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 23:32:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234121AbhEPVUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 17:20:38 -0400
-Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:45389 "EHLO
-        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234076AbhEPVUe (ORCPT
+        id S234016AbhEPVdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 17:33:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230158AbhEPVde (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 17:20:34 -0400
-Received: from copland.sibelius.xs4all.nl ([83.163.83.176])
-        by smtp-cloud8.xs4all.net with ESMTP
-        id iOA9lJWwKWkKbiOAPlkPrx; Sun, 16 May 2021 23:19:17 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1621199957; bh=HOikwmeJWakjyZ7lU+im9UqH19VkGuK5u0ycvEvKpYg=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version:From:Subject;
-        b=YQDeZVcVf6d38kGbeZ0705ZtiQkW7XYyau0Y9RpL3drHc9fwEbfB1bDVARECJbvA8
-         Z9WHsTSGEUQ+cxLWfOzyE8r4qrMLSiZIy0+g4vbccART7rB11EZ3VNJDm/IM+A61SW
-         GP+Mad4JxMH98+PAMKCScfziBg7C/rayfZpPbyW1AULWKg6kYx8JTycpAX7dBkPU2A
-         hxfTXeO0J2kychGYdfky4xNvmwIsX3eHP3I4Ej0SoU0MTAi5oNap93vNqDVEKmYJld
-         Vz6hj4ULV6p6Riig6uALO+H+RhHTwpnPKLiM/7g38Jpez+LArbX8OgyE1MObJvGoYD
-         hpcjoQdYJzZbQ==
-From:   Mark Kettenis <mark.kettenis@xs4all.nl>
-To:     devicetree@vger.kernel.org
-Cc:     maz@kernel.org, arnd@arndb.de,
-        Mark Kettenis <kettenis@openbsd.org>,
-        Hector Martin <marcan@marcan.st>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] arm64: apple: Add PCIe node
-Date:   Sun, 16 May 2021 23:18:47 +0200
-Message-Id: <20210516211851.74921-3-mark.kettenis@xs4all.nl>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210516211851.74921-1-mark.kettenis@xs4all.nl>
-References: <20210516211851.74921-1-mark.kettenis@xs4all.nl>
+        Sun, 16 May 2021 17:33:34 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50AEAC061573;
+        Sun, 16 May 2021 14:32:18 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id a2so5842248lfc.9;
+        Sun, 16 May 2021 14:32:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qVxlDDMwfVQojHS8zLyG8W4OehHVhD+swLOmEmLIWIM=;
+        b=di6gvGCm6hP9aguUGgg03PKOpJHMsrWHZ85KkLBbE9ODuGM3gaRyIP2+aUgB2gvoCt
+         Ijos4JFZbFOdJQycV6dFV3W7VY1xyX0isBC/aehopd/HjM5IUDSw5DhKvRgHsjg+te2W
+         SgV9K+AaPS4oEX/18bOMzACtl0zA7fOuKNbKU91VDKBYZu/qBfqdauJoaiHbA4KUiDDv
+         Mr3E8wNvf71GkHFkUmmHqF6XrTBYfPwWZnpwt3QIW9uwt3WBdZQdS6UJ+naauUPfAnDp
+         /6mdG3QNRgwwRvI+R5QM5QYGg4qqB/jZ/5A1wGI3XPFNHia7SY+PO7LI5OTHRcT7fxfQ
+         McFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qVxlDDMwfVQojHS8zLyG8W4OehHVhD+swLOmEmLIWIM=;
+        b=Yuqx9tivQfmS23uDaRHSwgCBVf9TAYlEwKr7orz9A0TYpntjUsnwrfPN31Cvw2k0L/
+         1RCaK19RPyYsOQsWwuCFz9eFOoJDeGxv7zzhjQXM7OXSrgIrmrxJdSOWy6L74EGM7+z1
+         vPhTHlQnbOc4jhcLoThL1nqHjN0u9ZGABxyGtO9O93bZzTuff1Gdwr76djuLBpPv1D29
+         Sc3fvxpDfr1CCn7FX/KvSG8qOU+LkbA8XU/1VNavBQx2ITKMJaV+lVwzdqNL7Mzm3A8O
+         yZxmuNOZEkC3xi4yOik7Pdi3avVSSawjojePe7qY3RXFre2l8/tCW+uxo0FpwtURkj/q
+         bzWw==
+X-Gm-Message-State: AOAM531Yqf+y8AiUJVjD7hXHbqPB6BrNy3FZF7N8pFlS8W5avV0M+053
+        j6bf+ZpFO6m2pOqQLDjpQaLDyAuLUfM=
+X-Google-Smtp-Source: ABdhPJyjyzjbPM8KgyvkU+6XZJiE0VuqEVP8TQGPg8ppka3ZJ2R87MzQs6GvxA90HDVvQi8YLLUyww==
+X-Received: by 2002:ac2:51c3:: with SMTP id u3mr40226351lfm.196.1621200736455;
+        Sun, 16 May 2021 14:32:16 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
+        by smtp.googlemail.com with ESMTPSA id v20sm1752104lfd.92.2021.05.16.14.32.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 16 May 2021 14:32:16 -0700 (PDT)
+Subject: Re: [PATCH v1 0/2] Restore voltages before rebooting of NVIDIA Tegra
+ SoCs
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        =?UTF-8?Q?Nikola_Milosavljevi=c4=87?= <mnidza@outlook.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+References: <20210510220526.11113-1-digetx@gmail.com>
+ <20210514213251.GB1969@qmqm.qmqm.pl>
+ <5047e49e-fa86-1e9d-a114-cbaf31f5b86b@gmail.com>
+Message-ID: <e0d5fb63-ad3a-2e1d-52f0-9458598d6364@gmail.com>
+Date:   Mon, 17 May 2021 00:32:15 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <5047e49e-fa86-1e9d-a114-cbaf31f5b86b@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfFZK+xFYmI4iu+AvuNjdTrW1Fj61/71SG98CoULY7GKFiYRox6X/GCgTJdRU/rHlsuQvOAxBmauzAJjKYWoBowS1cXcCyTDlrNr4ipOS/AhaQO3jI47o
- DKx3dgubfDSJZ39muL/J5dhiUDbbfD15VEcp2VYyIkbOUqg9lhPzw/eSpDeCJHEw/J/NPSn9tZEjcAx9smwN9Jwq/71hoHgJcL9L8vLZWIUzwhEpoYQmJ6Zg
- SD3IFVLRLttF0UvFe8a3VHZwxzaD3azLQaBtIcTrKPbxTB0gz6HXW2FfQWe6xi4RlKiVSn6gvdit9Cd5ysyzAx7pUZBOY6kmqKyPMyTDeid/HngOG41m6iL/
- 43092UZGvKmh93K36abWvEVU5P6HOtQXs58d5hx/JhXwJYNeXRJWEN6g0LYrGU4592/LB9V2xiIMJDObeMoRUXkIjeQYL6xk/B2o3oixyEADP0XVvT/HgoAQ
- KQbSUMMYwkx2+l0kY4DA1uK7LHMahVlozumbRgZmJBNucP3VELyz8xnHtTI=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Kettenis <kettenis@openbsd.org>
+15.05.2021 01:18, Dmitry Osipenko пишет:
+> 15.05.2021 00:32, Michał Mirosław пишет:
+>> On Tue, May 11, 2021 at 01:05:24AM +0300, Dmitry Osipenko wrote:
+>>> Hi,
+>>>
+>>> Nikola Milosavljević reported that rebooting wasn't working properly on
+>>> Asus Transformer TF101, which is Tegra20-based tablet device.  We found
+>>> that TF101 and some other devices have bootloader which doesn't re-initialize
+>>> voltages properly on a reboot.  The problem is resolved by ensuring that
+>>> SoC voltages are at a levels that are suitable for the rebooting of the
+>>> SoC before reboot happens. This series adds reboot handler to the Tegra
+>>> regulator couplers, it bumps voltages on the reboot event.
+>>
+>> Which tree does this series apply to?
+> 
+> It was made on top of linux-next, but it should apply to 5.13 as well.
+> What conflict do you get?
+> 
 
-Add node corresponding to the apcie,t8103 node in the
-Apple device tree for the Mac mini (M1, 2020).
-
-Clock references and DART (IOMMU) references are left out at the
-moment and will be added once the appropriate bindings have been
-settled upon.
-
-Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
----
- arch/arm64/boot/dts/apple/t8103.dtsi | 64 ++++++++++++++++++++++++++++
- 1 file changed, 64 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/apple/t8103.dtsi b/arch/arm64/boot/dts/apple/t8103.dtsi
-index 503a76fc30e6..102947935d63 100644
---- a/arch/arm64/boot/dts/apple/t8103.dtsi
-+++ b/arch/arm64/boot/dts/apple/t8103.dtsi
-@@ -214,5 +214,69 @@ pinctrl_smc: pinctrl@23e820000 {
- 				     <AIC_IRQ 396 IRQ_TYPE_LEVEL_HIGH>,
- 				     <AIC_IRQ 397 IRQ_TYPE_LEVEL_HIGH>;
- 		};
-+
-+		pcie0: pcie@690000000 {
-+			compatible = "apple,t8103-pcie", "apple,pcie";
-+			device_type = "pci";
-+
-+			reg = <0x6 0x90000000 0x0 0x1000000>,
-+			      <0x6 0x80000000 0x0 0x4000>,
-+			      <0x6 0x8c000000 0x0 0x4000>,
-+			      <0x6 0x81000000 0x0 0x8000>,
-+			      <0x6 0x82000000 0x0 0x8000>,
-+			      <0x6 0x83000000 0x0 0x8000>;
-+			reg-names = "ecam", "rc", "phy", "port0", "port1", "port2";
-+
-+			interrupt-parent = <&aic>;
-+			interrupts = <AIC_IRQ 695 IRQ_TYPE_LEVEL_HIGH>,
-+				     <AIC_IRQ 698 IRQ_TYPE_LEVEL_HIGH>,
-+				     <AIC_IRQ 701 IRQ_TYPE_LEVEL_HIGH>;
-+
-+			msi-controller;
-+			msi-parent = <&pcie0>;
-+			msi-ranges = <704 32>;
-+
-+			bus-range = <0 7>;
-+			#address-cells = <3>;
-+			#size-cells = <2>;
-+			ranges = <0x43000000 0x6 0xa0000000 0x6 0xa0000000 0x0 0x20000000>,
-+				 <0x02000000 0x0 0xc0000000 0x6 0xc0000000 0x0 0x40000000>;
-+
-+			pinctrl-0 = <&pcie_pins>;
-+			pinctrl-names = "default";
-+
-+			pci@0,0 {
-+				device_type = "pci";
-+				reg = <0x0 0x0 0x0 0x0 0x0>;
-+				reset-gpios = <&pinctrl_ap 152 0>;
-+				max-link-speed = <2>;
-+
-+				#address-cells = <3>;
-+				#size-cells = <2>;
-+				ranges;
-+			};
-+
-+			pci@1,0 {
-+				device_type = "pci";
-+				reg = <0x800 0x0 0x0 0x0 0x0>;
-+				reset-gpios = <&pinctrl_ap 153 0>;
-+				max-link-speed = <2>;
-+
-+				#address-cells = <3>;
-+				#size-cells = <2>;
-+				ranges;
-+			};
-+
-+			pci@2,0 {
-+				device_type = "pci";
-+				reg = <0x1000 0x0 0x0 0x0 0x0>;
-+				reset-gpios = <&pinctrl_ap 33 0>;
-+				max-link-speed = <1>;
-+
-+				#address-cells = <3>;
-+				#size-cells = <2>;
-+				ranges;
-+			};
-+		};
- 	};
- };
--- 
-2.31.1
-
+I see where the problem is, there is no
+tegra_soc_core_domain_state_synced() in upstream yet. I haven't rebased
+patches properly, will be fixed in v2.
