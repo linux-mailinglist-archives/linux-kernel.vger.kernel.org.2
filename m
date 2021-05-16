@@ -2,117 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58605381BDA
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 02:47:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7387381C19
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 04:24:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbhEPAYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 May 2021 20:24:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46262 "EHLO
+        id S232318AbhEPCZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 May 2021 22:25:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231608AbhEPAYh (ORCPT
+        with ESMTP id S231476AbhEPCZe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 May 2021 20:24:37 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25111C061573;
-        Sat, 15 May 2021 17:23:23 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id r11so2639932edt.13;
-        Sat, 15 May 2021 17:23:23 -0700 (PDT)
+        Sat, 15 May 2021 22:25:34 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAE21C06174A
+        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 19:24:20 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d78so1763321pfd.10
+        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 19:24:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=e4L5XZ9wHdprc6B00u4nV3zACT6/N/2Up5tlE5GyavQ=;
-        b=qq1sKIHwJ0nEnqhrgjv+3+vqZyBsWIqoKwC0O19Qb6P7XFVIwcRPlsIjtoG2aK6DeH
-         96bjni90hjujNzI5+lVsvvMHBwjB1DarYQikqLyD8fGIlJexznIDz6SRahhVFooqKmvo
-         rFr/EK+B5XFcUo07ITBA8Gc98XfBIz/R30hc/rXeZYTssEXjXwy+sI1Svkp5+1oIv+sE
-         38XtufNPMesvEH7P07/D9Jcf3DvXjpjHo0YD0dbTWwjLgZr/or9hCKiJynsV+ivC9oRq
-         8u8xl2skZp6xC5iXmRkwn3zzuvqVHvaxLp/B0IFkYsTHKGWGN3yO5JKc4X0g9BaS4nsR
-         t8HQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ab6hgGPbUP9BgKDrCkHnIw3b4MlsQsU1cJD8XNIJouY=;
+        b=eV71jEtr1xda09Z1QUgqU65DhVDgpGsN1jiciV67OqH1eJOgladtTe6C0rbObGrlT5
+         wgkR6Z8yWln38upA7Uv86zozogy3yaEYSROHS8ZolL3K3KrZUpqj0+0NztWq2STMfznC
+         V68DhxIOC2bpZd1lXAySBYgzHTlyDJ5inU2M9hVDJpFQ5OUe1AR9M6cUyoGKFYPnQl+v
+         6ww58Jqst9eJyWPBB2yheIyVW/rFMXab1kU5XUUEjI0XDRuVUFrDNTPhlRMEVc4doEYH
+         lfWXWe91CP8kWaTy12XX7dVSUGooNqGfu5SF/zsmTraB6uOFBu2ELg6LFRUy5ahWTI03
+         kGcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=e4L5XZ9wHdprc6B00u4nV3zACT6/N/2Up5tlE5GyavQ=;
-        b=uhlfayTEQIMRulZKiRzy+GWNfWY7FPPEXgvvl89McP4EfvOH/m1FofDyIckC/2LqUE
-         xZkynSxSj/fwWEY5g6lrf7aEu/bDNVMedAwJQRjuzD7Ty/2ITl/pPjwa9Kinduplkg63
-         pnplttbytqPJZ58tGEE61YyEWJO02W4kXLC9+AJVLn5uVE7y8bM6Clq3KKb63WB2nO0k
-         k52M2Sshl8TQ9A7ofwMnL5P6l8HV1hUuJTHRrlF3TppoJyS/EZEO+p7J8+UQc9PapHr0
-         gRQwRjtWvVzyoZQoBte0DwtMY4BsfQpzcsQn7Ndzs/urfXS6CVuC6bL85feaCVnvT7Qi
-         /5OQ==
-X-Gm-Message-State: AOAM533enPYZCSGmqF2E1BT+RNHrx2ZuP3aa2vhPXtIZj6ozTEKjXsbI
-        DXxbPLY/93ZOUqiymEi+488=
-X-Google-Smtp-Source: ABdhPJzCq6V3iyjdASLJ44CJKfVroWLu9PvwDBrFYhnKqyeKPWz0CQDx+un1mnCFFQ48mLe60cxkhw==
-X-Received: by 2002:a05:6402:124b:: with SMTP id l11mr5465700edw.137.1621124600140;
-        Sat, 15 May 2021 17:23:20 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (93-35-189-2.ip56.fastwebnet.it. [93.35.189.2])
-        by smtp.gmail.com with ESMTPSA id y11sm7416554edd.91.2021.05.15.17.23.19
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ab6hgGPbUP9BgKDrCkHnIw3b4MlsQsU1cJD8XNIJouY=;
+        b=jZOByeVWjvN3XDT09cVIu8ZhPHq4Qb5s4090h0wIw3r0HdZSuE65LkoR76J64hX8ey
+         rXP478bGux/TsJ5Fcb1kpL46DE6P6S8Paqc45z1TTk6zScbFD/H65waCMY1OnUduXDm+
+         BcbFOBQDfV6lDmz+dcj9aSio2h4TDfctU7eYQxHh3jkIELA4g6k8ixrl1NgVsbvt95Y+
+         rwGCmTJvMoWde4IyDA5HFP4zuzCsDdRhMJQ+Vdh9tmn4LCwcphQKgqG4KHrsrLkPucGo
+         Oo5a3PrFh15hZV6K0o3efb2S2NbaPjkYLauvKwfkS3Vx9E97KLOlVJLcoHY5nAuCi/nO
+         wPYQ==
+X-Gm-Message-State: AOAM530HVmTVqbeOdvXXUEiePKYDkmWIloPbVaSduXGTqq9UUhQAqzsD
+        8JTPf2mKYpPKE9ylgIz2WLM=
+X-Google-Smtp-Source: ABdhPJw2W2FIbTBhxD8w3g2NCvF1gtZgV6//P7QwG9X+jpex5OAZ9hOPWmMGTMHmX/euw27nfqPigg==
+X-Received: by 2002:a65:414d:: with SMTP id x13mr14726882pgp.86.1621131860514;
+        Sat, 15 May 2021 19:24:20 -0700 (PDT)
+Received: from localhost ([40.83.126.228])
+        by smtp.gmail.com with ESMTPSA id g8sm2597664pju.6.2021.05.15.19.24.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 May 2021 17:23:19 -0700 (PDT)
-Date:   Sun, 16 May 2021 02:23:18 +0200
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Jonathan McDowell <noodles@earth.li>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH net-next v4 01/28] net: mdio: ipq8064: clean
- whitespaces in define
-Message-ID: <YKBl9kK3AvG1wWXZ@Ansuel-xps.localdomain>
-References: <20210508002920.19945-1-ansuelsmth@gmail.com>
- <YJbSOYBxskVdqGm5@lunn.ch>
- <YJbTBuKobu1fBGoM@Ansuel-xps.localdomain>
- <20210515170046.GA18069@earth.li>
- <YKAFMg+rJsspgE84@Ansuel-xps.localdomain>
- <20210515180856.GI11733@earth.li>
- <YKAQ+BggTCzc7aZW@Ansuel-xps.localdomain>
- <20210515194047.GJ11733@earth.li>
- <YKAlUEt/9MU8CwsQ@Ansuel-xps.localdomain>
- <YKBepW5Hu3FEG/JJ@lunn.ch>
+        Sat, 15 May 2021 19:24:20 -0700 (PDT)
+From:   Qiujun Huang <hqjagain@gmail.com>
+To:     rostedt@goodmis.org, mingo@redhat.com, linux-kernel@vger.kernel.org
+Cc:     Qiujun Huang <hqjagain@gmail.com>
+Subject: [PATCH] tracing: Fix synth_event_add_val() kernel-doc comment
+Date:   Sun, 16 May 2021 02:24:10 +0000
+Message-Id: <20210516022410.64271-1-hqjagain@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKBepW5Hu3FEG/JJ@lunn.ch>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 16, 2021 at 01:52:05AM +0200, Andrew Lunn wrote:
-> > > They're on 2 separate sets of GPIOs if that makes a difference - switch0
-> > > is in gpio0/1 and switch1 is on gpio10/11. Is the internal MDIO logic
-> > > shared between these? Also even if that's the case it seems odd that
-> > > enabling the MDIO for just switch0 doesn't work?
-> > > 
-> > 
-> > The dedicated internal mdio on ipq8064 is unique and present on the
-> > gmac0 address so yes it's shared between them. And this seems to be the
-> > problem... As you notice the fact that different gpio are used for the
-> > different switch fix the problem. So think that to use the dedicated
-> > mdio bus with both switch we need to introduce some type of
-> > syncronization or something like that.
-> 
-> Please could you describe the hardware in a bit more details. Or point
-> me at a datasheet. It sounds like you have an MDIO mux? Linux has this
-> concept, so you might need to implement a mux driver.
-> 
-> 	 Andrew
+It's named field here.
 
-Datasheet of ipq8064 are hard to find and pricey.
-Will try hoping I don't write something very wrong.
-Anyway on the SoC there are 4 gmac (most of the time 2 are used
-and represent the 2 cpu port) and one mdio bus present on the gmac0
-address. 
-Normally on these SoC they add a qca8337 switch and it's common to use
-2 gmac port as cpu port. The switch can be interfaced using UART or MDIO.
-Normally the uart interface is used, but it's slower than using the mdio
-dedicated interface. Only mdio or uart can be used as the switch use the
-same pins.
-So I think the problem here is that only one switch can use the mdio bus
-exposed by gmac0 and any other must use a gpio slow path.
-Anyway about the use of the MASTER path and all this mess, the 
-qca8k: extend slave-bus implementations series contains lots of info
-about this[1].
+Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+---
+ kernel/trace/trace_events_synth.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-[1] http://patchwork.ozlabs.org/project/netdev/patch/20190319195419.12746-3-chunkeey@gmail.com/
+diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
+index 2ac75eb6aa86..971bbd9ad329 100644
+--- a/kernel/trace/trace_events_synth.c
++++ b/kernel/trace/trace_events_synth.c
+@@ -1978,7 +1978,7 @@ EXPORT_SYMBOL_GPL(synth_event_add_next_val);
+ /**
+  * synth_event_add_val - Add a named field's value to an open synth trace
+  * @field_name: The name of the synthetic event field value to set
+- * @val: The value to set the next field to
++ * @val: The value to set the named field to
+  * @trace_state: A pointer to object tracking the piecewise trace state
+  *
+  * Set the value of the named field in an event that's been opened by
+-- 
+2.25.1
+
