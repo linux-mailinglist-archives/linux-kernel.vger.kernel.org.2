@@ -2,166 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D57A1381CFD
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 07:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5053381D02
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 07:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233030AbhEPFSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 01:18:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60560 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230103AbhEPFSe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 01:18:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 198C860FE8;
-        Sun, 16 May 2021 05:17:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621142239;
-        bh=K0m4rI5MpjlYlSpNgLWEiwDYKro7dUd8PwLi0yCNmGs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=b8j0z3qd5ekIjKkY0fFgIJIL7wMqehrSYhp93dUWp00ZpS1CaAUla8FVhWT4DSFP5
-         eyMFDTJC5A/umNbFXaNFTwOIe+yC2yH4EMiyaIBn9ERmQ0rvgP64BOHlwUw0jjQ4/m
-         mLWHGdxKecr3gj7kxsVfCqKgUeRb+rsfpMekHOlXOx0/mnqXRlPBZjLmKN9VrGJ43/
-         MjeObMVtzPMHiHcPaacs75uMiwCUZhd/LMWmdA69NVYXmzUhEkcr3yWn+DTamDjUrs
-         6H1Q4UyeeMT48scL9RPEDsMnuxZqPv3uUVdZ65AhQR6NGBiETNAqcB9nQhQ3Wub8Ys
-         i/Th9GMJrlSDQ==
-Date:   Sat, 15 May 2021 22:17:14 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Marco Elver <elver@google.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH] kcsan: fix debugfs initcall return type
-Message-ID: <YKCq2pfZI3TKSm0E@archlinux-ax161>
-References: <20210514140015.2944744-1-arnd@kernel.org>
- <0ad11966-b286-395e-e9ca-e278de6ef872@kernel.org>
- <20210514193657.GM975577@paulmck-ThinkPad-P17-Gen-1>
- <534d9b03-6fb2-627a-399d-36e7127e19ff@kernel.org>
- <20210514201808.GO975577@paulmck-ThinkPad-P17-Gen-1>
- <CAK8P3a3O=DPgsXZpBxz+cPEHAzGaW+64GBDM4BMzAZQ+5w6Dow@mail.gmail.com>
- <YJ8BS9fs5qrtQIzg@elver.google.com>
+        id S233110AbhEPF33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 01:29:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230103AbhEPF31 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 May 2021 01:29:27 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6920C061573;
+        Sat, 15 May 2021 22:28:12 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id pf4-20020a17090b1d84b029015ccffe0f2eso3852605pjb.0;
+        Sat, 15 May 2021 22:28:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NA/OuPh7y3nBq4fiIAatzLA6oIbKvh9mNka2mUm7JVk=;
+        b=KNR1ij96BfvwR8fCNNsjyMfVp2OFr9vXF3UdEu+aHR2RpnYf6pmOnItoxr4KLFPIip
+         0HXCqRmcwYmkzEuuxe94gHQ5mAP5RoJOG1pw5/FRpDG759CSnIiKrRt29IMz5ScsyT7T
+         8PJUZtzbfHap9TITnkNA+rIKdP4Ec8gGhxRMFfaQObQgdFDp582Jc3xjxlGvxjnsHiYh
+         5o9edi1MylBcrq4y4nRthkWcWzvkbQkqstB2GvrwkaZDmF6hn4fAbYjF9UnGj3mOJVNa
+         ywfx4oF0fE02mRm0RPsdCDsth7w2AK4OaJkxupPYMYroX0XMIVhz5G0wA64gjNHyWJbD
+         p6yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NA/OuPh7y3nBq4fiIAatzLA6oIbKvh9mNka2mUm7JVk=;
+        b=gRWRWm1MQKorVFFvvV8CbMzHpFol8jqgQr/Tg07bBGb4cGkyJEN+8hc+fR40klC4p9
+         5s9XXFsldD7rbqvmfBZOtBRhSKvgJ9iGIs55ja1gwqH5mmFPylVacBVypAOiKOdFMR1/
+         FeFg9TeDaenakRDi8mBOhBEsNsz3FjwattElUKr9F27VxMhnsPeie6nS5xKvMt8R96SS
+         npXVML9pE8cezn5egJoG6YN8oqvrCS7JJPfDCCYo/YDSg9kp6f6qaSl/4PQ5lkv7qxIV
+         TUABUSsHxfb14gRjXGD16nZTES74hmYOLE82wt1qmZIJn+HW1AoBj8q07q+GiJUeMRND
+         dNEA==
+X-Gm-Message-State: AOAM530rcW+KvXmvVYD/wY4oRVrm10jnsmzUZlEaGGIzUi3FB6AaCxE4
+        Wgc9ZFerBhli9HNkIqsdM+v+UTfrE6WCIaygSUMmlkkXNL8=
+X-Google-Smtp-Source: ABdhPJwiuCTb+tflDAxzXHYoPovTD5lDdbRxxGbYIWHZ5pQubjRNOPiWnkWF+AzW9n3G/C2DWO+ZMEkXT8emPq+PrLw=
+X-Received: by 2002:a17:902:b406:b029:ec:fbf2:4114 with SMTP id
+ x6-20020a170902b406b02900ecfbf24114mr54345810plr.32.1621142892027; Sat, 15
+ May 2021 22:28:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YJ8BS9fs5qrtQIzg@elver.google.com>
+References: <20210512144819.664462530@linuxfoundation.org> <20210512144820.931257479@linuxfoundation.org>
+ <20210515195221.GA4103@amd>
+In-Reply-To: <20210515195221.GA4103@amd>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Sun, 16 May 2021 08:28:00 +0300
+Message-ID: <CA+U=DsqgFx0GVgnkAQNFVgUjBWMAVaD2ryhKtuF7oVHFbyYh9g@mail.gmail.com>
+Subject: Re: [PATCH 5.10 036/530] iio:adc:ad7476: Fix remove handling
+To:     Pavel Machek <pavel@denx.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Michael Hennerich <michael.hennerich@analog.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marco,
+On Sat, May 15, 2021 at 10:52 PM Pavel Machek <pavel@denx.de> wrote:
+>
+> Hi!
+> >
+> > commit 6baee4bd63f5fdf1716f88e95c21a683e94fe30d upstream.
+> >
+> > This driver was in an odd half way state between devm based cleanup
+> > and manual cleanup (most of which was missing).
+> > I would guess something went wrong with a rebase or similar.
+> > Anyhow, this basically finishes the job as a precursor to improving
+> > the regulator handling.
+>
+> I don't think this is correct:
+>
+> > --- a/drivers/iio/adc/ad7476.c
+> > +++ b/drivers/iio/adc/ad7476.c
+> > @@ -316,25 +316,15 @@ static int ad7476_probe(struct spi_devic
+> >       spi_message_init(&st->msg);
+> >       spi_message_add_tail(&st->xfer, &st->msg);
+> >
+> > -     ret = iio_triggered_buffer_setup(indio_dev, NULL,
+> > -                     &ad7476_trigger_handler, NULL);
+> > +     ret = devm_iio_triggered_buffer_setup(&spi->dev, indio_dev, NULL,
+> > +                                           &ad7476_trigger_handler, NULL);
+> >       if (ret)
+> > -             goto error_disable_reg;
+> > +             return ret;
+> >
+> >       if (st->chip_info->reset)
+> >               st->chip_info->reset(st);
+> >
+> > -     ret = iio_device_register(indio_dev);
+> > -     if (ret)
+> > -             goto error_ring_unregister;
+> > -     return 0;
+> > -
+> > -error_ring_unregister:
+> > -     iio_triggered_buffer_cleanup(indio_dev);
+> > -error_disable_reg:
+> > -     regulator_disable(st->reg);
+> > -
+>
+> Regulator_disable is now removed, but we still use regulator_enable,
+> and we still need to keep it balanced.
 
-On Sat, May 15, 2021 at 01:01:31AM +0200, Marco Elver wrote:
-> FWIW, this prompted me to see if I can convince the compiler to complain
-> in all configs. The below is what I came up with and will send once the
-> fix here has landed. Need to check a few other config+arch combinations
-> (allyesconfig with gcc on x86_64 is good).
-> 
-> Thanks,
-> -- Marco
-> 
-> ------ >8 ------
-> 
-> >From 96c1c4e9902e96485268909d5ea8f91b9595e187 Mon Sep 17 00:00:00 2001
-> From: Marco Elver <elver@google.com>
-> Date: Fri, 14 May 2021 21:08:50 +0200
-> Subject: [PATCH] init: verify that function is initcall_t at compile-time
-> 
-> In the spirit of making it hard to misuse an interface, add a
-> compile-time assertion in the CONFIG_HAVE_ARCH_PREL32_RELOCATIONS case
-> to verify the initcall function matches initcall_t, because the inline
-> asm bypasses any type-checking the compiler would otherwise do. This
-> will help developers catch incorrect API use in all configurations.
-> 
-> A recent example of this is:
-> https://lkml.kernel.org/r/20210514140015.2944744-1-arnd@kernel.org
-> 
-> Signed-off-by: Marco Elver <elver@google.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Joe Perches <joe@perches.com>
-> Cc: Masahiro Yamada <masahiroy@kernel.org>
-> Cc: Miguel Ojeda <ojeda@kernel.org>
-> Cc: Nathan Chancellor <nathan@kernel.org>
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+Yes, but that's what this block does:
+    ret = devm_add_action_or_reset(&spi->dev, ad7476_reg_disable,
+                       st);
+    if (ret)
+        return ret;
 
-Hi Marco,
+It registers a device-managed action to disable the regulator on error
+or remove.
+That ad7476_reg_disable() hook was implemented on commit:
+4bb2b8f94ace3 ("iio: adc: ad7476: implement devm_add_action_or_reset")
 
-I verified that I see an error without Arnd's patch with all supported
-KCSAN compilers when I apply this patch.
+But for some reason it wasn't done correctly, as this part [in this
+patch] wasn't included in the 4bb2b8f94ace3  commit.
 
-clang-11: https://builds.tuxbuild.com/1sYcyUZoCS7hFS3qZMZsJgsA5bp/build.log
-clang-12: https://builds.tuxbuild.com/1sYcyRDtvvkaQQbGX435X8FUb6o/build.log
-clang-13: https://builds.tuxbuild.com/1sYcyPubVREo7Dl05zCKRRNh6RB/build.log
-
-gcc-11 had to be done locally as TuxSuite appears not to support gcc-11
-so no nifty link:
-
-In file included from /home/nathan/cbl/src/korg-linux/include/asm-generic/atomic-instrumented.h:20,
-                 from /home/nathan/cbl/src/korg-linux/include/linux/atomic.h:82,
-                 from /home/nathan/cbl/src/korg-linux/kernel/kcsan/debugfs.c:10:
-/home/nathan/cbl/src/korg-linux/include/linux/build_bug.h:78:41: error: static assertion failed: "__same_type(initcall_t, &kcsan_debugfs_init)"
-   78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
-      |                                         ^~~~~~~~~~~~~~
-/home/nathan/cbl/src/korg-linux/include/linux/build_bug.h:77:34: note: in expansion of macro '__static_assert'
-   77 | #define static_assert(expr, ...) __static_assert(expr, ##__VA_ARGS__, #expr)
-      |                                  ^~~~~~~~~~~~~~~
-/home/nathan/cbl/src/korg-linux/include/linux/init.h:246:9: note: in expansion of macro 'static_assert'
-  246 |         static_assert(__same_type(initcall_t, &fn));
-      |         ^~~~~~~~~~~~~
-/home/nathan/cbl/src/korg-linux/include/linux/init.h:254:9: note: in expansion of macro '____define_initcall'
-  254 |         ____define_initcall(fn,                                 \
-      |         ^~~~~~~~~~~~~~~~~~~
-/home/nathan/cbl/src/korg-linux/include/linux/init.h:260:9: note: in expansion of macro '__unique_initcall'
-  260 |         __unique_initcall(fn, id, __sec, __initcall_id(fn))
-      |         ^~~~~~~~~~~~~~~~~
-/home/nathan/cbl/src/korg-linux/include/linux/init.h:262:35: note: in expansion of macro '___define_initcall'
-  262 | #define __define_initcall(fn, id) ___define_initcall(fn, id, .initcall##id)
-      |                                   ^~~~~~~~~~~~~~~~~~
-/home/nathan/cbl/src/korg-linux/include/linux/init.h:293:41: note: in expansion of macro '__define_initcall'
-  293 | #define late_initcall(fn)               __define_initcall(fn, 7)
-      |                                         ^~~~~~~~~~~~~~~~~
-/home/nathan/cbl/src/korg-linux/kernel/kcsan/debugfs.c:274:1: note: in expansion of macro 'late_initcall'
-  274 | late_initcall(kcsan_debugfs_init);
-      | ^~~~~~~~~~~~~
-make[3]: *** [/home/nathan/cbl/src/korg-linux/scripts/Makefile.build:273: kernel/kcsan/debugfs.o] Error 1
-
-I did a series of builds against next-20210514 with gcc 8 through 10 and
-clang 11 through 13 targeting arm, arm64, i386, powerpc, s390, and
-x86_64 defconfig and allmodconfig with no errors with this patch on top
-of Arnd's. Repo and TuxSuite configuration below in case anyone cares :)
-
-https://git.kernel.org/pub/scm/linux/kernel/git/nathan/linux.git/log/?h=tuxsuite/initcall-static-assert
-https://gist.github.com/nathanchance/eb71e1c2287561a0de79ef28c3c521384
-
-When you formally send it, please feel free to add:
-
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Tested-by: Nathan Chancellor <nathan@kernel.org>
-
-Cheers,
-Nathan
-
-> ---
->  include/linux/init.h | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/init.h b/include/linux/init.h
-> index 045ad1650ed1..d82b4b2e1d25 100644
-> --- a/include/linux/init.h
-> +++ b/include/linux/init.h
-> @@ -242,7 +242,8 @@ extern bool initcall_debug;
->  	asm(".section	\"" __sec "\", \"a\"		\n"	\
->  	    __stringify(__name) ":			\n"	\
->  	    ".long	" __stringify(__stub) " - .	\n"	\
-> -	    ".previous					\n");
-> +	    ".previous					\n");	\
-> +	static_assert(__same_type(initcall_t, &fn));
->  #else
->  #define ____define_initcall(fn, __unused, __name, __sec)	\
->  	static initcall_t __name __used 			\
-> -- 
-> 2.31.1.751.gd2f1c929bd-goog
-> 
+>
+> > -     return ret;
+> > +     return devm_iio_device_register(&spi->dev, indio_dev);
+> >  }
+>
+> Best regards,
+>                                                                 Pavel
+>
+> --
+> DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+> HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
