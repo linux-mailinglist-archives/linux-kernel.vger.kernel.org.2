@@ -2,233 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6C87381FCE
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 18:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBC76381FDD
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 18:31:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231586AbhEPQ2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 12:28:50 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:39019 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229955AbhEPQ2q (ORCPT
+        id S232197AbhEPQcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 12:32:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229955AbhEPQcR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 12:28:46 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3Agri78ahbW10zCdS2gOtwlm6kHnBQXsgji2hC?=
- =?us-ascii?q?6mlwRA09TyX+rbHKoB17726XtN9/Yh4dcLy7VpVoIkmslqKdg7NxAV7KZmCP01?=
- =?us-ascii?q?dAR7sO0WKN+Vfd8lXFltK0A89bH5RDNA=3D=3D?=
-X-IronPort-AV: E=Sophos;i="5.82,304,1613430000"; 
-   d="scan'208";a="508346347"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 16 May 2021 18:27:30 +0200
-Date:   Sun, 16 May 2021 18:27:30 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-cc:     Julia Lawall <Julia.Lawall@inria.fr>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        kernel-janitors@vger.kernel.org,
-        Gilles Muller <Gilles.Muller@inria.fr>,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        Michal Marek <michal.lkml@markovi.net>, cocci@systeme.lip6.fr,
-        linux-kernel@vger.kernel.org,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Johan Hovold <johan@kernel.org>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Jonathan Cameron <jic23@kernel.org>
-Subject: Re: [PATCH v5] coccinelle: api: semantic patch to use
- pm_runtime_resume_and_get
-In-Reply-To: <20210505104434.7d7838f0@coco.lan>
-Message-ID: <alpine.DEB.2.22.394.2105161826100.94589@hadrien>
-References: <20210429174343.2509714-1-Julia.Lawall@inria.fr> <20210505104434.7d7838f0@coco.lan>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Sun, 16 May 2021 12:32:17 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B85DFC061573;
+        Sun, 16 May 2021 09:31:00 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id c15so4327335ljr.7;
+        Sun, 16 May 2021 09:31:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fxlBfjD9rrdff0l547dFdguKUyG+OHefR+tkmXlzxcQ=;
+        b=NDeXlZayRPolYdbkFXX5VpsJnlg2CG0s7eQ1fOfYv3FdOBRki2jfachJ4bo2VatHxL
+         cVtVkQwKjQB97s5c96i5RMoVwUltne2CIIdyMfqF5wt1lRCPBTRCTzM8WWtIr6PwC5df
+         kDr4oH1HrWG+c86taJMmIcmyg/IGTmLwbk7IVK7pSMuFX315JM3DUkWQVBYO2yPFGBAP
+         MY0C0nCT6oOUWD5VEejcpPqTmtz6RL4QD0XbHN/vYt+JqV7BirmtJhqwbCgblc7c+uCw
+         jbjlFZ1RnQSBU/4rOtAQUBlvbyC2HJmwsEw6mt2lNwg40C+nOONaBtXhUGfrrnIZCH35
+         R3EQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fxlBfjD9rrdff0l547dFdguKUyG+OHefR+tkmXlzxcQ=;
+        b=eeTnWTrXjKMPRgSBe149em+Lsekc7tGW4YnN3YGNI9rQfLKw2KWbl4KHivLj3buEVU
+         YmlwTddHyFQxvtoppFSv1DTk6lJvfXC0gdMtC0i/sObOUlI8uoWYJTQMfWRil266gr0D
+         GTWuQIp8PVXk6pB7SmQhXuNFsLZc6IDzvXeVCSTLrjuD9PnV+/uP23q2Zw8I24TYwapE
+         xL/68KjWXT5rOb6f/GgU+N7Yl5G5FpyxSyKug4TC07sJPxyEJqncWDzCVw/1n95OttOq
+         y75Di4V08a1HUxaLdT8AEWRzPw//3HYu0gsUmAZK95tnVai6C/MEjMT5eWn0xTTNA88C
+         6y6w==
+X-Gm-Message-State: AOAM531ZqAKVHVX6R0kLkmoXwTqqZYP0osuAam3ur6FzE00Yx+O14h5S
+        YY6yMe3fvcyzsYq6cZXndD8BbZkz0Ks=
+X-Google-Smtp-Source: ABdhPJwxt36n5XUZKj5CYtPbyxnu327kHvYfLX0xMh5vFiUNUlg9/CwBjOcsK7JplH/dggSx6i4a1Q==
+X-Received: by 2002:a2e:bc1e:: with SMTP id b30mr11912401ljf.6.1621182659290;
+        Sun, 16 May 2021 09:30:59 -0700 (PDT)
+Received: from localhost.localdomain (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
+        by smtp.gmail.com with ESMTPSA id m2sm1704548lfo.23.2021.05.16.09.30.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 May 2021 09:30:59 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
+Cc:     Rob Herring <robh+dt@kernel.org>, linux-tegra@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH v8 0/9] Couple improvements for Tegra clk driver
+Date:   Sun, 16 May 2021 19:30:32 +0300
+Message-Id: <20210516163041.12818-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series fixes couple minor standalone problems of the Tegra clk
+driver and adds new features.
 
+Changelog:
 
-On Wed, 5 May 2021, Mauro Carvalho Chehab wrote:
+v8: - Replaced division with a shift, which was suggested by Michał Mirosław
+      in a comment to "Handle thermal DIV2 CPU frequency throttling" v7 patch.
+      Cortex A9 CPUs don't have hardware divider and shifting is a minor
+      improvement here, nevertheless it's good to have it.
 
-> Hi Julia,
->
-> Em Thu, 29 Apr 2021 19:43:43 +0200
-> Julia Lawall <Julia.Lawall@inria.fr> escreveu:
->
-> > pm_runtime_get_sync keeps a reference count on failure, which can lead
-> > to leaks.  pm_runtime_resume_and_get drops the reference count in the
-> > failure case.  This rule very conservatively follows the definition of
-> > pm_runtime_resume_and_get to address the cases where the reference
-> > count is unlikely to be needed in the failure case.  Specifically, the
-> > change is only done when pm_runtime_get_sync is followed immediately
-> > by an if and when the branch of the if is immediately a call to
-> > pm_runtime_put_noidle (like in the definition of
-> > pm_runtime_resume_and_get) or something that is likely a print
-> > statement followed by a pm_runtime_put_noidle call.  The patch
-> > case appears somewhat more complicated, because it also deals with the
-> > cases where {}s need to be removed.
-> >
-> > pm_runtime_resume_and_get was introduced in
-> > commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to
-> > deal with usage counter")
-> >
-> > Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
-> > Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->
-> First of all, thanks for doing that! It sounds a lot better to have
-> a script doing the check than newbies trying to address it manually,
-> as there are several aspects to be considered on such replacement.
->
-> >
-> > ---
-> > v5: print a message with the new function name, as suggested by Markus Elfring
-> > v4: s/pm_runtime_resume_and_get/pm_runtime_put_noidle/ as noted by John Hovold
-> > v3: add the people who signed off on commit dd8088d5a896, expand the log message
-> > v2: better keyword
-> >
-> >  scripts/coccinelle/api/pm_runtime_resume_and_get.cocci |  153 +++++++++++++++++
-> >  1 file changed, 153 insertions(+)
-> >
-> > diff --git a/scripts/coccinelle/api/pm_runtime_resume_and_get.cocci b/scripts/coccinelle/api/pm_runtime_resume_and_get.cocci
-> > new file mode 100644
-> > index 000000000000..3387cb606f9b
-> > --- /dev/null
-> > +++ b/scripts/coccinelle/api/pm_runtime_resume_and_get.cocci
-> > @@ -0,0 +1,153 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +///
-> > +/// Use pm_runtime_resume_and_get.
-> > +/// pm_runtime_get_sync keeps a reference count on failure,
-> > +/// which can lead to leaks.  pm_runtime_resume_and_get
-> > +/// drops the reference count in the failure case.
-> > +/// This rule addresses the cases where the reference count
-> > +/// is unlikely to be needed in the failure case.
-> > +///
-> > +// Confidence: High
->
-> Long story short, I got a corner case where the script is doing
-> the wrong thing.
->
-> ---
->
-> A detailed explanation follows:
->
-> As you know, I'm doing some manual work to address issues related
-> to pm_runtime_get() on media.
->
-> There, I found a corner case: There is a functional difference
-> between:
->
-> 	ret = pm_runtime_get_sync(&client->dev);
->         if (ret < 0) {
->                 pm_runtime_put_noidle(&client->dev);
-> 		return ret;
-> 	}
->
-> and:
-> 	ret = pm_runtime_resume_and_get(&client->dev);
->         if (ret < 0)
-> 		return ret;
->
-> On success, pm_runtime_get_sync() can return either 0 or 1.
-> When 1 is returned, it means that the driver was already resumed.
->
-> pm_runtime_resume_and_get(), on the other hand, don't have the same
-> behavior. On success, it always return zero.
->
-> IMO, this is actually a good thing, as it helps to address a common
-> mistake:
->
-> 	ret = pm_runtime_get_sync(&client->dev);
-> 	/*
-> 	 * or, even worse:
-> 	 * ret = some_function_that_calls_pm_runtime_get_sync();
-> 	 */
->
->         if (ret) {
->                 pm_runtime_put_noidle(&client->dev);
-> 		return ret;
-> 	}
->
-> FYI, Dan pointed one media driver to me those days with the above
-> issue at the imx334 driver, which I'm fixing on my patch series.
->
-> -
->
-> Anyway, after revisiting my patches, I found several cases that were
-> doing things like:
->
-> 	int ret;
->
-> 	ret = pm_runtime_get_sync(dev);
-> 	pm_runtime_put_noidle(dev);		/* Or without it, on drivers with unbalanced get/put */
->
-> 	return ret > 0 ? 0 : ret;
->
-> Which can be replaced by just:
->
-> 	return pm_runtime_resume_and_get(&ctx->gsc_dev->pdev->dev);
->
-> Yet, I found a single corner case on media where a driver is actually
-> using the positive return: the ccs-core camera sensor driver.
->
-> There, the driver checks the past state of RPM. If the
-> device was indeed suspended, the driver restores the hardware
-> controls (on V4L2, a control is something like brightness,
-> contrast, etc) to the last used value set.
->
-> This is the right thing to be done there, as setting values
-> to such hardware can be a slow operation, as it is done via I2C.
->
-> So, this particular driver checks if the RPM returned 0 or 1,
-> in order to check the previous RPM state before get.
->
-> In this particular case, replacing:
-> 	pm_runtime_get_sync()
-> with
-> 	pm_runtime_resume_and_get()
->
-> Will make part of the code unreachable.
->
-> While it won't break this specific driver, It could have
-> cause troubles if the logic there were different.
->
-> In any case, I tested the coccinelle script, and it produces
-> this change:
->
->  static int ccs_pm_get_init(struct ccs_sensor *sensor)
->  {
->         struct i2c_client *client = v4l2_get_subdevdata(&sensor->src->sd);
->         int rval;
->
-> -       rval = pm_runtime_get_sync(&client->dev);
-> -       if (rval < 0) {
-> -               pm_runtime_put_noidle(&client->dev);
-> +       rval = pm_runtime_resume_and_get(&client->dev);
-> +       if (rval < 0)
->
->                 return rval;
-> -       } else if (!rval) {
-> +       else if (!rval) {
->                 rval = v4l2_ctrl_handler_setup(&sensor->pixel_array->
->                                                ctrl_handler);
->                 if (rval)
->                         return rval;
->
->                 return v4l2_ctrl_handler_setup(&sensor->src->ctrl_handler);
->         }
->
->         return 0;
->
-> which will make v4l2_ctrl_handler_setup() to always being called,
-> even if the device was already resumed.
+    - Added new patch "Don't deassert reset on enabling clocks", which I
+      accidentally forgot to include in v7. Previously sound driver
+      was a blocker for this patch, the sound is fixed now in v5.13. The
+      patch itself is needed for maintaining proper clk/reset sequences
+      by PMC and other drivers.
 
-Thanks for the feedback.  It looks like what you are saying that the
-script should ensure that the return value of pm_runtime_get_sync is not
-used for anything else.  That can be added to the script.
+v7: - Added r-b from Rob Herring to the schema patch which he gave to v6.
 
-julia
+    - Dropped the MAINTAINERS-update patch. Previously Peter said on IRC
+      that he doesn't have time on the tegra-clk driver anymore and approved
+      the patch, but then he refused to ack the v6 patch, saying that he
+      is not reading mailing lists. So I don't feel comfortable with that
+      patch. Peter could send it by himself if will be necessary.
+
+    - Added these new patches:
+
+        clk: tegra: cclk: Handle thermal DIV2 CPU frequency throttling
+        clk: tegra: Mark external clocks as not having reset control
+
+      I sent out the new Tegra30 thermal sensor driver and now CPU clock
+      could be throttled by the sensor hardware [1]. The first patch adds
+      support for reporting of the throttled frequency properly.
+
+      [1] https://patchwork.ozlabs.org/project/linux-tegra/list/?series=243126
+
+      During of debugging sound issues of Asus Transformer devices, I noticed
+      that the external clocks are missing the no-reset flag. The second
+      patch fixes it.
+
+v6: - Made a small improvement and corrected a typo in patch
+      "Fix refcounting of gate clocks" that were spotted by
+      Michał Mirosław.
+
+v5: - Corrected example in the schema binding to silence dt_binding_check
+      warning.
+
+    - The Tegra124 binding is factored out into standalone binding since
+      Tegra124 has properties that aren't used by other SoCs and I couldn't
+      figure out how to make them conditional in schema.
+
+v4: - Added new patch that converts DT bindings to schema.
+
+v3: - Added acks from Thierry Reding that he gave to v2.
+
+    - Added new patch "clk: tegra: Don't allow zero clock rate for PLLs".
+
+v2: - Added these new patches:
+
+      clk: tegra: Halve SCLK rate on Tegra20
+      MAINTAINERS: Hand Tegra clk driver to Jon and Thierry
+
+v1: - Collected clk patches into a single series.
+
+Dmitry Osipenko (9):
+  clk: tegra30: Use 300MHz for video decoder by default
+  clk: tegra: Fix refcounting of gate clocks
+  clk: tegra: Ensure that PLLU configuration is applied properly
+  clk: tegra: Halve SCLK rate on Tegra20
+  clk: tegra: Don't allow zero clock rate for PLLs
+  clk: tegra: cclk: Handle thermal DIV2 CPU frequency throttling
+  clk: tegra: Mark external clocks as not having reset control
+  clk: tegra: Don't deassert reset on enabling clocks
+  dt-bindings: clock: tegra: Convert to schema
+
+ .../bindings/clock/nvidia,tegra114-car.txt    |  63 ----------
+ .../bindings/clock/nvidia,tegra124-car.txt    | 107 ----------------
+ .../bindings/clock/nvidia,tegra124-car.yaml   | 115 ++++++++++++++++++
+ .../bindings/clock/nvidia,tegra20-car.txt     |  63 ----------
+ .../bindings/clock/nvidia,tegra20-car.yaml    |  69 +++++++++++
+ .../bindings/clock/nvidia,tegra210-car.txt    |  56 ---------
+ .../bindings/clock/nvidia,tegra30-car.txt     |  63 ----------
+ drivers/clk/tegra/clk-periph-gate.c           |  80 +++++++-----
+ drivers/clk/tegra/clk-periph.c                |  11 ++
+ drivers/clk/tegra/clk-pll.c                   |  12 +-
+ drivers/clk/tegra/clk-tegra-periph.c          |   6 +-
+ drivers/clk/tegra/clk-tegra-super-cclk.c      |  16 ++-
+ drivers/clk/tegra/clk-tegra20.c               |   6 +-
+ drivers/clk/tegra/clk-tegra30.c               |   6 +-
+ drivers/clk/tegra/clk.h                       |   4 -
+ 15 files changed, 272 insertions(+), 405 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra114-car.txt
+ delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra124-car.txt
+ create mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra124-car.yaml
+ delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra20-car.txt
+ create mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra20-car.yaml
+ delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra210-car.txt
+ delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra30-car.txt
+
+-- 
+2.30.2
+
