@@ -2,123 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9CD2381E4F
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 12:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B92E0381E5B
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 12:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231625AbhEPK4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 06:56:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47724 "EHLO mail.kernel.org"
+        id S231539AbhEPK53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 06:57:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230158AbhEPKzI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 06:55:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CAC761352;
-        Sun, 16 May 2021 10:53:53 +0000 (UTC)
+        id S229586AbhEPK5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 May 2021 06:57:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBE4561155;
+        Sun, 16 May 2021 10:56:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621162433;
-        bh=21CCoTvk0P2nJNZOW0CE5KdGJy4Om6wkSpbdQjM6tQE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Jh0QJfnixOHk8arKkDDHxCVbP5npvVzJVxnUcpLmtf2vx5NPm3v2DwoJuA0iu+k0N
-         Ly/4kjcqVUm+0rrnWc/GpHIEzjoOXPGQOLtAoFinU1rJo54Bs6UJ/mEe/bLcx6iUrH
-         QhVk9XC+JJ9UDFHEBn2cB8T/VxaWoEnI1xydgmfixhnm/lcwgOhElhbGRmLFPfeNU9
-         0g0Yvc6yIWtkfBo2XRFouGgINFsDC9DmiooFNQ6lMlumoy+3iL5cFSwwcBwC0qR9T3
-         A7wBnpZA6Ncm7AW8Ll4cRB8Bn2sATVlPdvUDGIiryp6MsTATZ7nJgE4DB0nkq55zgl
-         GpvHyWEnTChOg==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1liEP9-003s92-C4; Sun, 16 May 2021 12:53:51 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Pavel Machek" <pavel@ucw.cz>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        linux-leds@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: [PATCH 17/17] staging: nuc-led: update the TODOs
-Date:   Sun, 16 May 2021 12:53:45 +0200
-Message-Id: <f23fed6a89f66564f5af52f241016a4b9823ce04.1621161037.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1621161037.git.mchehab+huawei@kernel.org>
-References: <cover.1621161037.git.mchehab+huawei@kernel.org>
+        s=k20201202; t=1621162569;
+        bh=wC3jQS1/zOk1SUF4jEt3dAvnBTJLZq7qkh/znkIllKw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uhCK5snKjXI4YP+UQhl3Y7tO99RPBw72YaIYE1QEuDN5nOnhekdxvRBZ2JRiOouwg
+         9NPxiB/WLPjkm+XJNFITTqRZ7TAczYoLZUbxgCEBwK/muAaMxLHgqFqs6Qhrp1rOTD
+         us/KRL8HEzLn1/cTp8JPt+uhWwLy8N6zTS64UXSlX48gCi6dgmSaoOaaKa+D9WEc2W
+         O0o9R3wF1XeOGI6PQwW/kotbTOWQeC6o3r/O/lozCLLj0tOcLFPnBVk7Bb/VEcptBi
+         GSoRq906SK1RsmL08LEu5WjZkE5+yAIPJ4LF3mAZru6r/+0AwPwXlzXx3oUGTHHNm5
+         4ASqYjcyKjB7Q==
+Date:   Sun, 16 May 2021 13:56:05 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc:     "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH rdma-next] RDMA/rdmavt: Decouple QP and SGE lists
+ allocations
+Message-ID: <YKD6ReulqPQNGScG@unreal>
+References: <c34a864803f9bbd33d3f856a6ba2dd595ab708a7.1620729033.git.leonro@nvidia.com>
+ <f72bb31b-ea93-f3c9-607f-a696eac27344@cornelisnetworks.com>
+ <YJp589JwbqGvljew@unreal>
+ <BYAPR01MB3816C9521A96A8BA773CF613F2529@BYAPR01MB3816.prod.exchangelabs.com>
+ <YJvPDbV0VpFShidZ@unreal>
+ <7e7c411b-572b-6080-e991-deb324e3d0e2@cornelisnetworks.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7e7c411b-572b-6080-e991-deb324e3d0e2@cornelisnetworks.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that most functionality were merged at the driver,
-update its TODO list, and add a "TODO" comment for the two
-WMI API commands that are currently not implemented.
+On Thu, May 13, 2021 at 03:03:43PM -0400, Dennis Dalessandro wrote:
+> On 5/12/21 8:50 AM, Leon Romanovsky wrote:
+> > On Wed, May 12, 2021 at 12:25:15PM +0000, Marciniszyn, Mike wrote:
+> > > > > Thanks Leon, we'll get this put through our testing.
+> > > > 
+> > > > Thanks a lot.
+> > > > 
+> > > > > 
+> > > 
+> > > The patch as is passed all our functional testing.
+> > 
+> > Thanks Mike,
+> > 
+> > Can I ask you to perform a performance comparison between this patch and
+> > the following?
+> 
+> We have years of performance data with the code the way it is. Please
+> maintain the original functionality of the code when moving things into the
+> core unless there is a compelling reason to change. That is not the case
+> here.
 
-In summary:
+Sorry for not being responsive.
 
--  on Rev 0.64, command 0x07 (LED_NOTIFICATION) is meant to store
-   all config settings at EEPROM. That doesn't seem to be needed
-   on Skull Canyon, but tests with different hardware would be
-   nice in order to double-check it. Also, maybe Rev 1.00 would
-   make it mandatory;
--  Rev 1.00 added command 0x08 to switch the LED type
-   (LED_SWITCH_TYPE at the driver's nomenclature) between
-   single color LED and multi color LED). Not sure how this
-   should be properly implemented (if this is the case);
--  The tests for NUC6 version were using a Skull Canyon NUC.
-   It allowed to check that the driver's logic runs, but
-   it is not enough to see if everything is really working.
-   Tests on NUC6 or NUC7 are required;
--  On a suspend test, I noticed that some controls were reset
-   to the default at resume time. It is required to check
-   what's happening there and address it properly.
--  Need to validate the uAPI and document it before moving
-   this driver out of staging.
+In addition to already said in parallel thread, this change keeps the
+functionality except static node. I'm curious to finally see the difference
+between these two allocations and it is very unlilkely we will see any.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- drivers/staging/nuc-led/TODO      | 12 +++++++-----
- drivers/staging/nuc-led/nuc-wmi.c |  6 ++----
- 2 files changed, 9 insertions(+), 9 deletions(-)
+For example, this QP can be associated with application that runs on
+different node than rdi->dparms.node. Will we see performance degradation?
 
-diff --git a/drivers/staging/nuc-led/TODO b/drivers/staging/nuc-led/TODO
-index d5296d7186a7..df6f3f653eb0 100644
---- a/drivers/staging/nuc-led/TODO
-+++ b/drivers/staging/nuc-led/TODO
-@@ -1,6 +1,8 @@
--- Add support for 6th gen NUCs, like Skull Canyon
--- Improve LED core support to avoid it to try to manage the
--  LED brightness directly;
--- Test it with 8th gen NUCs;
--- Add more functionality to the driver;
-+- Test it with 6th gen and 10th NUCs;
-+- Add support for LED_NOTIFICATION;
-+- Add support for LED_SWITCH_TYPE;
-+- Some LED parameters are changing after returning
-+  from suspend. Need to check what's happening there
-+  (hardware bug?) and ensure that the parameters will
-+  be properly restored after resume.
- - Stabilize and document its sysfs interface.
-diff --git a/drivers/staging/nuc-led/nuc-wmi.c b/drivers/staging/nuc-led/nuc-wmi.c
-index 2d9c49d72703..e87e97d56364 100644
---- a/drivers/staging/nuc-led/nuc-wmi.c
-+++ b/drivers/staging/nuc-led/nuc-wmi.c
-@@ -42,16 +42,14 @@ enum led_cmds {
- 	LED_OLD_SET_LED                 = 0x02,
- 
- 	/* Rev 0.64 and 1.0 cmds */
--
- 	LED_QUERY			= 0x03,
- 	LED_NEW_GET_STATUS		= 0x04,
- 	LED_SET_INDICATOR		= 0x05,
- 	LED_SET_VALUE			= 0x06,
--	LED_NOTIFICATION		= 0x07,
--	LED_SWITCH_TYPE			= 0x08,
-+	LED_NOTIFICATION		= 0x07, // TODO: add support for it
- 
- 	/* Rev 1.0 cmds */
--
-+	LED_SWITCH_TYPE			= 0x08, // TODO: add support for it
- 	LED_VERSION_CONTROL             = 0x09,
- };
- 
--- 
-2.31.1
-
+Thanks
