@@ -2,97 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C08C6381EE8
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 14:55:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C87B381EFB
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 15:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233422AbhEPM5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 08:57:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39918 "EHLO
+        id S233550AbhEPNG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 09:06:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229888AbhEPM5F (ORCPT
+        with ESMTP id S229888AbhEPNG1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 08:57:05 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00E73C061573
-        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 05:55:51 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id l70so2842061pga.1
-        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 05:55:50 -0700 (PDT)
+        Sun, 16 May 2021 09:06:27 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C7310C061573
+        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 06:05:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZxcBGrT6Kyw/+duJ+BUSdpPCJHKScouIvkGJ8rV7HfI=;
-        b=U7x3BfjBpTAKts9FEMf8K29lMBLNInANLuYCvw9ZMoG5tfsIVytInnUkmLdqo5FO/q
-         GcQGQmK0d+FLzMEuXhCaOgJeqSddjApL8ZcIvygk7vjH9ypviy413lXoFiXf+jNPPwRB
-         XHP3IE9eUmqkK8mpdWq3T8DT0r+mwXPzXxvwc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZxcBGrT6Kyw/+duJ+BUSdpPCJHKScouIvkGJ8rV7HfI=;
-        b=GKTo+DB7Kt2zFz3tncDTuaqOp6iSVfYrTvdkJYCzDCJ/C1qkB6VNPxQijY30o6JVRq
-         JMuZcaMfR2nfK0ksHFlE7NrYzKabcXaqwliHdQiH9zbjOZ7cXhwS6JYQlOvb7PFpdcUp
-         Zi2KU/WFfvjbSlGL0SmMuJin5p11fyEwaZf77+FDOcF0FxL4EF0mG1HnwGX2yFx/R8jj
-         bMQ6ywBPBzaXVlHYv/VOuqIF9TvEgTl39DA/t0YSgjfCAQAJVhIOGBhEgAb8EmVSZA1a
-         9CD9LK/6qIh9np7RkxIt1v8RFifhrlZ6FlA7hR3t+1tw8+ZL02v4WJbnb+8SDrCfu4A+
-         JZmQ==
-X-Gm-Message-State: AOAM532xy6yYDM12vVt51x2eLzJRLsww5I9cDIGvy7w6DzV1aQOOm3Za
-        g2k9x7yrw9KmH7EYFSVB6K/x/Q==
-X-Google-Smtp-Source: ABdhPJwBSVlfoJv9AlafwzBVQ170xi4hh/0woJXOQkdsUBMyXrxu/TCRP/+JGLPdo9R5VbUN9J8B3A==
-X-Received: by 2002:a63:af57:: with SMTP id s23mr4519959pgo.393.1621169750516;
-        Sun, 16 May 2021 05:55:50 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:4596:acad:c782:2f52])
-        by smtp.gmail.com with ESMTPSA id 187sm7572024pff.139.2021.05.16.05.55.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 May 2021 05:55:49 -0700 (PDT)
-Date:   Sun, 16 May 2021 21:55:45 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Leon Romanovsky <leon@kernel.org>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: ALSA: intel8x0: div by zero in snd_intel8x0_update()
-Message-ID: <YKEWUYdGSXQFf02o@google.com>
-References: <YJ4yBmIV6RJCo42U@google.com>
- <s5hk0o18tio.wl-tiwai@suse.de>
- <YJ5cHdv6MVmAKD3b@google.com>
- <YKDYQfDf7GiMfGCN@google.com>
- <YKDYbaprE3K2QpCe@google.com>
- <s5hbl9b6mah.wl-tiwai@suse.de>
- <YKEAqdIAZ5K5FS+1@google.com>
- <s5h5yzi7uh0.wl-tiwai@suse.de>
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Subject:
+        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=9XSWgvtGgHdvv9Bbyxs7s1XV1bpHtBG/T4fhJlW4Qv8=; b=RuVSp13QeD5l6
+        CTo0p/2zptFllZH4Vpzp1xS8ZSomDQO/9f8nReNr5SQNl0puyCDQJoSaArGr21ui
+        rD/XbdRjoTUogL/YYZoS2iKF7FsAow1RnMEnCWduJZgmV2tFEfrbQKvTPJrjtkSq
+        8qYzOh1dXYwVnBapXxIcLUM4qu1IaI=
+Received: from xhacker (unknown [101.86.20.15])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBnbzd7GKFgmcroAA--.17615S2;
+        Sun, 16 May 2021 21:04:59 +0800 (CST)
+Date:   Sun, 16 May 2021 20:59:42 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] riscv: Add __init section marker to some functions again
+Message-ID: <20210516205942.4671f4e6@xhacker>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <s5h5yzi7uh0.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygBnbzd7GKFgmcroAA--.17615S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7GFyDJF4kJFWfJry5XFWkZwb_yoW8Jr4Dpr
+        W0kr4F9rWY9Fn7Ca42yrykuFy5J3ZYg3W3Kr1UCas5JFsxJ3yqv3Z5Za4UZr1qqFykuF9Y
+        kry5Cry2vw18A37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUy2b7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E
+        4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGV
+        WUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_
+        Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rV
+        WrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_
+        Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jY6wZUUUUU=
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/05/16 14:07), Takashi Iwai wrote:
-> > > For fixing the crash, this patch adds a internal flag indicating that
-> > > the stream is ready to be updated, and check it (as well as the flag
-> > > being in suspended) to ignore such spurious update.
-> > 
-> > I reproduced the "spurious IRQ" case, and the patch handled it correctly
-> > (VM did not crash).
-> > 
-> > > Cc: <stable@vger.kernel.org>
-> > > Reported-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> > > Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> > 
-> > I'll keep running test, but seems that it works as intended
-> > 
-> > Tested-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> 
-> OK, below is the revised patch I'm going to apply.
->
+From: Jisheng Zhang <jszhang@kernel.org>
 
-Sounds good.
+These functions are not needed after booting, so mark them as __init
+to move them to the __init section.
 
-> Thanks!
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+---
+ arch/riscv/kernel/cpufeature.c | 2 +-
+ arch/riscv/mm/context.c        | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Thank you.
+diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+index a2848dc36927..d959d207a40d 100644
+--- a/arch/riscv/kernel/cpufeature.c
++++ b/arch/riscv/kernel/cpufeature.c
+@@ -59,7 +59,7 @@ bool __riscv_isa_extension_available(const unsigned long *isa_bitmap, int bit)
+ }
+ EXPORT_SYMBOL_GPL(__riscv_isa_extension_available);
+ 
+-void riscv_fill_hwcap(void)
++void __init riscv_fill_hwcap(void)
+ {
+ 	struct device_node *node;
+ 	const char *isa;
+diff --git a/arch/riscv/mm/context.c b/arch/riscv/mm/context.c
+index 6d445f2888ec..63dc0b9bd8aa 100644
+--- a/arch/riscv/mm/context.c
++++ b/arch/riscv/mm/context.c
+@@ -213,7 +213,7 @@ static inline void set_mm(struct mm_struct *mm, unsigned int cpu)
+ 		set_mm_noasid(mm);
+ }
+ 
+-static int asids_init(void)
++static int __init asids_init(void)
+ {
+ 	unsigned long old;
+ 
+-- 
+2.31.0
+
+
