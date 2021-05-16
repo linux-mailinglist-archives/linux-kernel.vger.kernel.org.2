@@ -2,100 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46088381DAD
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 11:35:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F6E6381DAF
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 11:37:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234995AbhEPJgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 05:36:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57392 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234937AbhEPJgd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 05:36:33 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 162C761028;
-        Sun, 16 May 2021 09:35:15 +0000 (UTC)
-Date:   Sun, 16 May 2021 10:36:28 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Maxime =?UTF-8?B?Um91c3Npbi1Cw6lsYW5nZXI=?= 
-        <maxime.roussinbelanger@gmail.com>,
-        Jean-Francois Dagenais <jeff.dagenais@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] iio: si1133: fix format string warnings
-Message-ID: <20210516103628.2cf899a0@jic23-huawei>
-In-Reply-To: <7afc367b-8103-9d48-1bfe-d505d86553b9@kernel.org>
-References: <20210514135927.2926482-1-arnd@kernel.org>
-        <7afc367b-8103-9d48-1bfe-d505d86553b9@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S235034AbhEPJi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 05:38:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229455AbhEPJi2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 May 2021 05:38:28 -0400
+Received: from the.earth.li (the.earth.li [IPv6:2a00:1098:86:4d:c0ff:ee:15:900d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3ECFC061573;
+        Sun, 16 May 2021 02:37:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=earth.li;
+         s=the; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:Subject
+        :Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=rJh4Vdo5L1QIm502PoGYhFOjqJgCYsz59OFOfwGXTfM=; b=IHR5xqzX8OqoIC4Z7tfna9w4sW
+        FYzgqfxjXOi3Sj90pGKtPXq0zx0UgUa16GNH0Fqkf1xVnCgX+1PvNUmxxztG14RMiESc3PmPoxcnH
+        /Jxy6wTxLajsJuyxas/nAZO6LP+yQ6CLc37QvaC0T91A7V2ZllQp0lnbx9WijLuLDO+z8k06xab7G
+        2JupSs8BWRWc0tCOLsTgUZZKBfeTyHEsR3nk52YhMe1BmMxdYyHLeRjemxL1nuJ9ICff/olgm3oxC
+        O+YsM3HyjwiCjTi/J7zi8OVCld5ve4dElrUp1AyT6N16hwTWffMBmES3Qa59vIIG9yUDDfcnt0EHs
+        os1CYyoA==;
+Received: from noodles by the.earth.li with local (Exim 4.92)
+        (envelope-from <noodles@earth.li>)
+        id 1liDCt-0001UJ-5B; Sun, 16 May 2021 10:37:07 +0100
+Date:   Sun, 16 May 2021 10:37:07 +0100
+From:   Jonathan McDowell <noodles@earth.li>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH net-next v4 01/28] net: mdio: ipq8064: clean
+ whitespaces in define
+Message-ID: <20210516093707.GL11733@earth.li>
+References: <YJbSOYBxskVdqGm5@lunn.ch>
+ <YJbTBuKobu1fBGoM@Ansuel-xps.localdomain>
+ <20210515170046.GA18069@earth.li>
+ <YKAFMg+rJsspgE84@Ansuel-xps.localdomain>
+ <20210515180856.GI11733@earth.li>
+ <YKAQ+BggTCzc7aZW@Ansuel-xps.localdomain>
+ <20210515194047.GJ11733@earth.li>
+ <YKAlUEt/9MU8CwsQ@Ansuel-xps.localdomain>
+ <YKBepW5Hu3FEG/JJ@lunn.ch>
+ <YKBl9kK3AvG1wWXZ@Ansuel-xps.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YKBl9kK3AvG1wWXZ@Ansuel-xps.localdomain>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 May 2021 10:45:02 -0700
-Nathan Chancellor <nathan@kernel.org> wrote:
-
-> On 5/14/2021 6:59 AM, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
+On Sun, May 16, 2021 at 02:23:18AM +0200, Ansuel Smith wrote:
+> On Sun, May 16, 2021 at 01:52:05AM +0200, Andrew Lunn wrote:
+> > > > They're on 2 separate sets of GPIOs if that makes a difference - switch0
+> > > > is in gpio0/1 and switch1 is on gpio10/11. Is the internal MDIO logic
+> > > > shared between these? Also even if that's the case it seems odd that
+> > > > enabling the MDIO for just switch0 doesn't work?
+> > > > 
+> > > 
+> > > The dedicated internal mdio on ipq8064 is unique and present on the
+> > > gmac0 address so yes it's shared between them. And this seems to be the
+> > > problem... As you notice the fact that different gpio are used for the
+> > > different switch fix the problem. So think that to use the dedicated
+> > > mdio bus with both switch we need to introduce some type of
+> > > syncronization or something like that.
 > > 
-> > clang complains about multiple instances of printing an integer
-> > using the %hhx format string:
+> > Please could you describe the hardware in a bit more details. Or point
+> > me at a datasheet. It sounds like you have an MDIO mux? Linux has this
+> > concept, so you might need to implement a mux driver.
 > > 
-> > drivers/iio/light/si1133.c:982:4: error: format specifies type 'unsigned char' but the argument has type 'unsigned int' [-Werror,-Wformat]
-> >                   part_id, rev_id, mfr_id);
-> >                   ^~~~~~~
-> > 
-> > Print them as a normal integer instead, leaving the "#02"
-> > length modifier.
-> > 
-> > Fixes: e01e7eaf37d8 ("iio: light: introduce si1133")
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>  
+> > 	 Andrew
 > 
-> Indeed, use of %hx and %hhx have been discouraged since commit 
-> cbacb5ab0aa0 ("docs: printk-formats: Stop encouraging use of unnecessary 
-> %h[xudi] and %hh[xudi]").
-> 
-> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+> Datasheet of ipq8064 are hard to find and pricey.
+> Will try hoping I don't write something very wrong.
+> Anyway on the SoC there are 4 gmac (most of the time 2 are used
+> and represent the 2 cpu port) and one mdio bus present on the gmac0
+> address. 
 
-Applied to the togreg branch of iio.git and pushed out as testing
-for the autobuilders to poke at it.
+There's a suggestion of an additional mdio bus on the gmac1 address at:
 
-Thanks,
+https://github.com/adron-s/openwrt-rb3011/commit/dd63b3ef563fa77fd2fb7d6ca12ca9411cd18740
 
-Jonathan
-> 
-> > ---
-> >   drivers/iio/light/si1133.c | 4 ++--
-> >   1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/iio/light/si1133.c b/drivers/iio/light/si1133.c
-> > index c280b4195003..fd302480262b 100644
-> > --- a/drivers/iio/light/si1133.c
-> > +++ b/drivers/iio/light/si1133.c
-> > @@ -978,11 +978,11 @@ static int si1133_validate_ids(struct iio_dev *iio_dev)
-> >   		return err;
-> >   
-> >   	dev_info(&iio_dev->dev,
-> > -		 "Device ID part %#02hhx rev %#02hhx mfr %#02hhx\n",
-> > +		 "Device ID part %#02x rev %#02x mfr %#02x\n",
-> >   		 part_id, rev_id, mfr_id);
-> >   	if (part_id != SI1133_PART_ID) {
-> >   		dev_err(&iio_dev->dev,
-> > -			"Part ID mismatch got %#02hhx, expected %#02x\n",
-> > +			"Part ID mismatch got %#02x, expected %#02x\n",
-> >   			part_id, SI1133_PART_ID);
-> >   		return -ENODEV;
-> >   	}
-> >   
-> 
+is that not accurate?
 
+J.
+
+-- 
+   Funny how life imitates LSD.    |  .''`.  Debian GNU/Linux Developer
+                                   | : :' :  Happy to accept PGP signed
+                                   | `. `'   or encrypted mail - RSA
+                                   |   `-    key on the keyservers.
