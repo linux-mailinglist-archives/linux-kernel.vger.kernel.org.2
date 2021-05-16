@@ -2,79 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35AA5382124
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 23:17:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9C5382128
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 23:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233986AbhEPVSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 17:18:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233861AbhEPVSU (ORCPT
+        id S234018AbhEPVU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 17:20:26 -0400
+Received: from lb3-smtp-cloud8.xs4all.net ([194.109.24.29]:39225 "EHLO
+        lb3-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233861AbhEPVUX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 17:18:20 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D992C061573;
-        Sun, 16 May 2021 14:17:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=USLQCXEHuyoMhA31ke959A5oDOy2U//r8Sz1pr9eLZ4=; b=yK9x3vBiXA6iBpQdver0oQIScK
-        EGwxdOVr/jYmCqQ6ON9gH0qcpYMQk6rsGOP0pCffCuLnGJOADzDujZeEgeVIuEr6H4jH6zWpCK/l9
-        /rVIu6MFzXg5+js+3fE+KpgfWCqChVGB0LoU/j+zLS1E2C6N5P8C5lkoYE3LIPhi0XCDLmLc6g0Ij
-        7MD6bXQe35X00ZnjDNyIVL75aDagj1lO9CNLZjv5xp/8bt7xsvyW1ArhHkOa/t8jNG2qDU9G/bg6z
-        lPlB5ta62sPH3O7GvJt+3fR04rizc2ts0Fm03y/T3U92UrBQmuIQzAef11DJbWzW0edMMdwquPWmE
-        BoTPb7PQ==;
-Received: from [2601:1c0:6280:3f0::7376] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1liO8F-00DGME-R8; Sun, 16 May 2021 21:17:03 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-watchdog@vger.kernel.org,
-        Florian Fainelli <f.fainelli@gmail.com>
-Subject: [PATCH] watchdog: mtx-1: drop au1000.h header file
-Date:   Sun, 16 May 2021 14:17:03 -0700
-Message-Id: <20210516211703.25349-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Sun, 16 May 2021 17:20:23 -0400
+Received: from copland.sibelius.xs4all.nl ([83.163.83.176])
+        by smtp-cloud8.xs4all.net with ESMTP
+        id iOA9lJWwKWkKbiOAAlkPqJ; Sun, 16 May 2021 23:19:06 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1621199946; bh=1+zNzYaekEI6LowqbJIIfmttJzkR4J3dpjnqx+BQ46Q=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version:From:Subject;
+        b=JyGl58Bya86gQ8HQUMWIuf0DLYyMpPZ1D/Afd/i1j3lUDYUGqhj0lPLBBzv31V38a
+         kx+M7tWg/igm2RqJV7lRpLEIC5YT4Yi14UQZMlXiCaF0v8MOKcNQJw9j0ZfGAb+o6m
+         qMofk2wcpwrxSrRlcIrEoWr2UleS4sFo38VUKeEavRlUj6lbDLoVKHGoai6vZX1fvC
+         iNqf8sicsPSRWZosRjioqs3AcJoLooNYUudAYRcV3aV55yXiCj7SqFto/hU7GiDn98
+         3kavto4ZAZA0lQra5rCSMRga8KFqGe5OmaX+4j6Jlfo6x9ZmxnMPz5SV0AvLzr1uHF
+         qztadK2ysqEiQ==
+From:   Mark Kettenis <mark.kettenis@xs4all.nl>
+To:     devicetree@vger.kernel.org
+Cc:     maz@kernel.org, arnd@arndb.de,
+        Mark Kettenis <kettenis@openbsd.org>,
+        Hector Martin <marcan@marcan.st>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] Apple M1 PCIe DT bindings
+Date:   Sun, 16 May 2021 23:18:45 +0200
+Message-Id: <20210516211851.74921-1-mark.kettenis@xs4all.nl>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfJiHI2l9RTHm3qxrVyeOIGcmaqvKJeZGxTWKXxrtrQLTfs7o5p5UhmxDyW66fWImczopUkFQV4yzFaPibreJfR2PJ1G/aoDoL6xm9AqmRgTnW2LshxE5
+ GEmigu7bvzEuecyGcq+QjNHCONjtEg0sw3mkRsb6Z2Hn0KonnlAM98EasnBSBNnUmaFJFD0FFYp8bkSBComXhD0k+aS4fFHtVsJfs5ngHPJEawjTBYjZvryS
+ 8EFQcU5IGD5OCidvywtMrRrlGAkYBUJYSZbXgQ9JsmeOdsg+uOuPjeV2ziGbw12haOis/ZJPg0pHEph9DXOKxZwY2TFberLRgss5OahgadkVXhs/cNKQ6AWd
+ iNUeCwrHwPyPyIWmqNDGbymFmyvDH+8ThFVwqwWKwVYQjIrEsErchyAHcDwrIsMzZ2VuZI6fupI/aHW0AlPni2y6tRz63OQN4eUC3APZhWSq37t/bEMKd9Vf
+ w//BXkLHvqXAN4brbRS9ZUBscElABHHME+qBqA9471leJDlfndGlDRdXb0g=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mtx-1_wdt driver does not need the au1000.h header file.
-Instead, the header file causes build errors, so drop it.
+From: Mark Kettenis <kettenis@openbsd.org>
 
-This change fixes multiple build errors, all in au1000.h. E.g.:
+This small series adds bindings for the PCIe controller found on the
+Apple M1 SoC.
 
-In file included from ../drivers/watchdog/mtx-1_wdt.c:44:
-../arch/mips/include/asm/mach-au1x00/au1000.h: In function 'alchemy_rdsys':
-../arch/mips/include/asm/mach-au1x00/au1000.h:603:36: error: implicit declaration of function 'KSEG1ADDR'; did you mean 'CKSEG1ADDR'? [-Werror=implicit-function-declaration]
-  603 |  void __iomem *b = (void __iomem *)KSEG1ADDR(AU1000_SYS_PHYS_ADDR);
-../arch/mips/include/asm/mach-au1x00/au1000.h:603:20: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
-  603 |  void __iomem *b = (void __iomem *)KSEG1ADDR(AU1000_SYS_PHYS_ADDR);
+At this point, the primary consumer for these bindings is U-Boot.
+With these bindings U-Boot can bring up the links for the root ports
+of the PCIe root complex.  A simple OS driver can then provide
+standard ECAM access and manage MSI interrupts to provide access
+to the built-in Ethernet and XHCI controllers of the Mac mini.
 
-Fixes: 04bf3b4f5fc0 ("[WATCHDOG] MTX-1 Watchdog driver")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: linux-watchdog@vger.kernel.org
-Cc: Florian Fainelli <f.fainelli@gmail.com>
----
- drivers/watchdog/mtx-1_wdt.c |    2 --
- 1 file changed, 2 deletions(-)
+The Apple controller incorporates Synopsys Designware PCIe logic
+to implement its root port.  But unlike other hardware currently
+supported by U-Boot and the Linux kernel the Apple hardware
+integrates multiple root ports.  As such the existing bindings
+for the DWC PCIe interface can't be used.  There is a single ECAM
+space for all root space, but separate GPIOs to take the PCI devices
+on those ports out of reset.  Therefore the standard "reset-gpio" and
+"max-link-speed" properties appear on the child nodes representing
+the PCI devices that correspond to the individual root ports.
 
---- linux-next-20210514.orig/drivers/watchdog/mtx-1_wdt.c
-+++ linux-next-20210514/drivers/watchdog/mtx-1_wdt.c
-@@ -41,8 +41,6 @@
- #include <linux/uaccess.h>
- #include <linux/gpio/consumer.h>
- 
--#include <asm/mach-au1x00/au1000.h>
--
- #define MTX1_WDT_INTERVAL	(5 * HZ)
- 
- static int ticks = 100 * HZ;
+MSIs are handled by the PCIe controller and translated into "regular
+interrupts".  A range of 32 MSIs is provided.  These 32 MSIs can be
+distributed over the root ports as the OS sees fit by programming the
+PCIe controller port registers.
+
+These series depends on the pinctrl series I sent earlier (with a v2
+respin today).
+
+
+Mark Kettenis (2):
+  dt-bindings: pci: Add DT bindings for apple,pcie
+  arm64: apple: Add PCIe node
+
+ .../devicetree/bindings/pci/apple,pcie.yaml   | 150 ++++++++++++++++++
+ MAINTAINERS                                   |   1 +
+ arch/arm64/boot/dts/apple/t8103.dtsi          |  64 ++++++++
+ 3 files changed, 215 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pci/apple,pcie.yaml
+
+-- 
+2.31.1
+
