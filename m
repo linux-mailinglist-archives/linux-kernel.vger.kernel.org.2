@@ -2,91 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D6F5381D84
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 11:04:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41DF3381D88
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 11:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234387AbhEPJFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 05:05:46 -0400
-Received: from mail-ua1-f50.google.com ([209.85.222.50]:38882 "EHLO
-        mail-ua1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbhEPJFn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 05:05:43 -0400
-Received: by mail-ua1-f50.google.com with SMTP id k45so1141726uag.5;
-        Sun, 16 May 2021 02:04:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PtdmExuunL6I47GcuCl9lENSjo5yazFWO+xZYZLpNig=;
-        b=L/0IGamP5Ugf/Fcuob7CjzBixnjiGZe1aa1cPh6Zp3y05ZIZh23SS/vqIIhvmK+DCd
-         W7HhtmSExT83+f2qWsJ+WeA/PShrbIUqlYYQ2bzSPATaMX0/CdTjU+kcuCvsJ5mWgnsU
-         EBHfv5/uc6+SfixPQJbriV6QL2X9qVTFjXTytHEGZoKuYbSnY3nA+UpAg4Mdse39ad/S
-         nrYT/ALfXLT95awkIAIVZGUe7eufemG7AvyyK3KcLafPD+OitVm/JnhoWoDbEJNoNc9T
-         F9R8SAQjU1xZ5szdkCxOUYhLne56gEgeXw61CX2gDneokqFBT2+BOCkPQF9cAt9HBEkx
-         R79A==
-X-Gm-Message-State: AOAM530fPXWATlQo4RiawGS3g0YFnHxrvBQhWORTpiLu05yELPWqXSZR
-        ur3hYRaUtw4nu/uPVKGrTPRkaTy9E6t2/Kn+F1U=
-X-Google-Smtp-Source: ABdhPJxK3DYeQePlVbgeO7XqyfC5AFgcTM5ME/HtjYcIrDn+/XqI6pl1zvwgxXwih7+7VjttcAar2n0DEz3jwq/QyUE=
-X-Received: by 2002:ab0:7705:: with SMTP id z5mr8869408uaq.2.1621155867307;
- Sun, 16 May 2021 02:04:27 -0700 (PDT)
+        id S234414AbhEPJGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 05:06:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50124 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229445AbhEPJGg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 May 2021 05:06:36 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B7D3A610A6;
+        Sun, 16 May 2021 09:05:19 +0000 (UTC)
+Date:   Sun, 16 May 2021 10:06:31 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Liam Beguin <liambeguin@gmail.com>
+Cc:     jdelvare@suse.com, linux@roeck-us.net, lars@metafoo.de,
+        pmeerw@pmeerw.net, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        Peter Rosin <peda@axentia.se>
+Subject: Re: [RFC PATCH v1 0/2] hwmon: (iio_hwmon) optionally force iio
+ channel type
+Message-ID: <20210516100631.7310a7bb@jic23-huawei>
+In-Reply-To: <20210516044315.116290-1-liambeguin@gmail.com>
+References: <20210516044315.116290-1-liambeguin@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210515221320.1255291-1-arnd@kernel.org> <20210515221320.1255291-14-arnd@kernel.org>
- <d4e42d3-9920-8fe0-1a71-6c6de8585f4c@nippy.intranet>
-In-Reply-To: <d4e42d3-9920-8fe0-1a71-6c6de8585f4c@nippy.intranet>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Sun, 16 May 2021 11:04:15 +0200
-Message-ID: <CAMuHMdUJGxyL0kcj06Uxsxmf6bDj4UO_YKZPsZfxtTxCBXf=xg@mail.gmail.com>
-Subject: Re: [RFC 13/13] [net-next] 8390: xsurf100: avoid including lib8390.c
-To:     Finn Thain <fthain@telegraphics.com.au>
-Cc:     Arnd Bergmann <arnd@kernel.org>, netdev <netdev@vger.kernel.org>,
-        "Linux/m68k" <linux-m68k@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Doug Berger <opendmb@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Sam Creasey <sammy@sammy.net>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Michael Schmitz <schmitzmic@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 16, 2021 at 6:24 AM Finn Thain <fthain@telegraphics.com.au> wrote:
-> On Sun, 16 May 2021, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > This driver always warns about unused functions because it includes
-> > an file that it doesn't actually need:
->
-> I don't think you can omit #include "lib8390.c" here without changing
-> driver behaviour, because of the macros in effect.
->
-> I think this change would need some actual testing unless you can show
-> that the module binary does not change.
+On Sun, 16 May 2021 00:43:13 -0400
+Liam Beguin <liambeguin@gmail.com> wrote:
 
-Michael posted a similar but different patch a while ago, involving
-calling ax_NS8390_reinit():
-https://lore.kernel.org/linux-m68k/1528604559-972-3-git-send-email-schmitzmic@gmail.com/
+> Add a devicetree binding to optionally force a different IIO channel
+> type.
+> 
+> This is useful in cases where ADC channels are connected to a circuit
+> that represent another unit such as a temperature or a current.
+> 
+> `channel-types` was chosen instead of `io-channel-types` as this is not
+> part of the iio consumer bindings.
+> 
+> In the current form, this patch does what it's intended to do:
+> change the unit displayed by `sensors`, but feels like the wrong way to
+> address the problem.
+> 
+> Would it be possible to force the type of different IIO channels for
+> this kind of use case with a devicetree binding from the IIO subsystem?
+> 
+> It would be convenient to do it within the IIO subsystem to have the
+> right unit there too.
+> 
+> Thanks for your time,
+> Liam
 
-Gr{oetje,eeting}s,
+Hi Liam,
 
-                        Geert
++CC Peter for AFE part.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+It's an interesting approach, but I would suggest we think about this
+a different way.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Whenever a channel is being used to measure something 'different' from
+what it actually measures (e.g. a voltage ADC measuring a current) that
+reflects their being some analog component involved.
+If you look at drivers/iio/afe/iio-rescale.c you can see the approach
+we currently use to handle this.
+
+Effectively what you add to devicetree is a consumer of the ADC channel
+which in turn provides services to other devices. For this current case
+it would be either a current-sense-amplifier or a current-sense-shunt 
+depending on what the analog front end looks like.  We have to describe
+the characteristics of that front end which isn't something that can
+be done via a simple channel type.
+
+That afe consumer device can then provide services to another consumer
+(e.g. iio-hwmon) which work for your usecase.
+
+The main limitation of this approach currently is you end up with
+one device per channel.  That could be improved upon if you have a usecase
+where it matters.
+
+I don't think we currently have an equivalent for temperature sensing
+but it would be easy enough to do something similar.
+
+Jonathan
+
+
+> 
+> Liam Beguin (2):
+>   hwmon: (iio_hwmon) optionally force iio channel type
+>   dt-bindings: hwmon: add iio-hwmon bindings
+> 
+>  .../devicetree/bindings/hwmon/iio-hwmon.yaml  | 41 +++++++++++++++++++
+>  drivers/hwmon/iio_hwmon.c                     |  2 +
+>  2 files changed, 43 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/iio-hwmon.yaml
+> 
+> 
+> base-commit: 9f4ad9e425a1d3b6a34617b8ea226d56a119a717
+
