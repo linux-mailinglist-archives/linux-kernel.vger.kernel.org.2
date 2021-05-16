@@ -2,86 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04E85381D68
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 10:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0C95381D70
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 10:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234197AbhEPIdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 04:33:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38962 "EHLO
+        id S234211AbhEPIug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 04:50:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230248AbhEPIdC (ORCPT
+        with ESMTP id S230248AbhEPIuf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 04:33:02 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 170A2C061573
-        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 01:31:47 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id lj11-20020a17090b344bb029015bc3073608so2106920pjb.3
-        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 01:31:47 -0700 (PDT)
+        Sun, 16 May 2021 04:50:35 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75823C061573
+        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 01:49:20 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id c14so4595846ybr.5
+        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 01:49:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JvPi/up8/Q2jB6nmPheLInSV8cVD1xDyiACL39QHuIM=;
-        b=mi1CkwraEzqq7EM0mHtQ8oepYHvCEEXP8ciKdlDvLqraGMF4pWHpbIIs3J3iS2jTQY
-         lvaXlVy7Dtd13AVtl9UjTXZfdLGzcX1xj4U6U7yl0U/9DWOwau3qNICtxn/xhXAhK5fT
-         2CGr44oH7N9qjbcQmLI/tSHzFPaW975IJ553s=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XG3a5Hb3geeSt25VSdjtrGAMkkbu3DIMscuexQdcgtQ=;
+        b=lBHLzVqlqY8pk6P6j713JJbkNCGZ3ZI2D4KrA4oRkkKO0K5EaHwcH4TIwfo/hhiZ/f
+         wYFKN1nMX1RmtBfjYQVOPWEakjr/QgmSNuasl6tDM8cOiDC3FQv+F2BY6UL/B+4qsdAZ
+         qXtzjN+htV0fYs1G6Nu6V8gl2JKx0vB7Z0FibDOmMpWInRLUtSKzoHcRp3caO5qb9eD7
+         GE/ZneXx0J2x1Rx9IViEuz4rNrAFVJU4iriuwkf8YEkzbNXsFSyUepSH05jrBr7Ls92L
+         ieS8pKM0miz8c+1RhgnzJ9o1QnNMt1vUCNchnY41VCWTyQcwDKKM8uCS0vI1V5pMzc4U
+         Y9Aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JvPi/up8/Q2jB6nmPheLInSV8cVD1xDyiACL39QHuIM=;
-        b=Q++UZEWjobs080PxrhADcD9Dc90htuxi6x/BJVZnFFjtSSATdBIzq+QYaCTbQSuIJL
-         GJRBbnc2qdL3ILJq5nvzId1cKSNYVELsamY6d0OHXeG060nt4hlzd3j0uFo4it0BcJm/
-         T5F0ABnbzmdWENRwHNR6pzG2OXtueQ084RpAM0IQytaHfkZ4lx3QdmECNLoVS06jHMXJ
-         WDpEdFfhF3f1txByF1m0EMCBdoBo2Ymtu/rP+k4YbB3cw7l+vI6qDKtOu862B0ALnCmx
-         uZzO+hfitDsECXGhbLr+VNlwlf1HmPJJ4gINLjYeuBd4UC0lXr1az8azug1oTOpVfQl4
-         y9wQ==
-X-Gm-Message-State: AOAM532TcWIq13U+EM3MHgIr/wau0hp/wDKqae9UkceeK6ws6rSOBA2t
-        Aue7uCfNucQRaMvPmKWaLOWq5w==
-X-Google-Smtp-Source: ABdhPJw/afxurF3CFS9XitDbZWTdJj6qhpYvwmCjSbZfQdzJa9IROBfg2+2roWy11BdpOHVzJ6KBRA==
-X-Received: by 2002:a17:90a:690d:: with SMTP id r13mr20761076pjj.19.1621153906716;
-        Sun, 16 May 2021 01:31:46 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:4596:acad:c782:2f52])
-        by smtp.gmail.com with ESMTPSA id a16sm7328843pfc.37.2021.05.16.01.31.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 May 2021 01:31:46 -0700 (PDT)
-Date:   Sun, 16 May 2021 17:31:41 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Leon Romanovsky <leon@kernel.org>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: ALSA: intel8x0: div by zero in snd_intel8x0_update()
-Message-ID: <YKDYbaprE3K2QpCe@google.com>
-References: <YJ4yBmIV6RJCo42U@google.com>
- <s5hk0o18tio.wl-tiwai@suse.de>
- <YJ5cHdv6MVmAKD3b@google.com>
- <YKDYQfDf7GiMfGCN@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XG3a5Hb3geeSt25VSdjtrGAMkkbu3DIMscuexQdcgtQ=;
+        b=bkmeMsXsSKzyHcuAQ+KdpAr3CBqR8nd0WAduM5hzmLu+OVFc6lD8A0Xzzq3DdnDfAL
+         nkR1pnNfhF1ERfJUn4LWAJsPqEYmtsZ73ghOzqmjkwvprWKjXiTOXJL2nobltdPvsDtU
+         GhBbrxuVng9IfXzwA1n9sXgX6TY7t30Q/LcpagWEQmkgUZWpCZBzT1LfnzSZlWpw4tuS
+         5nEoa+E/Qu0QGc9UkViE/41CmKKafWiPPa3I/XlBwyFmAzli0O8ufet53kKjDoNdrjKy
+         kvj3T19XUes2AgxmBEie4PCwQBrdBZs8x+F+7ygLbTc+boE8UosJpP2smyzZo5w32D3y
+         QfFg==
+X-Gm-Message-State: AOAM533wmjVyCAmSvPcy3XKDR1Ph8byoADSUJJCznP9Z89dxwvo9aN5R
+        DoR3QNKvwUzV+fDgNOsjyWgrAown27q3APttnAerADoPMyE=
+X-Google-Smtp-Source: ABdhPJzp9vCbNo6gWtvIbU11IzCyfjJV7sA385Bpzyar/Zyxcej0AMPE4WwszdF12x8ww4dlnl9vJ2Li489iNmvHOp0=
+X-Received: by 2002:a25:5d08:: with SMTP id r8mr70521015ybb.464.1621154959554;
+ Sun, 16 May 2021 01:49:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKDYQfDf7GiMfGCN@google.com>
+References: <1621052131-16309-1-git-send-email-yangtiezhu@loongson.cn> <68e897fec0e6258b2a964908af650d8608189454.camel@perches.com>
+In-Reply-To: <68e897fec0e6258b2a964908af650d8608189454.camel@perches.com>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Sun, 16 May 2021 10:49:21 +0200
+Message-ID: <CAKXUXMw-XGs2s0tvx8JULddWhG8=i3wJk2=efpdZC5z2ah6kVg@mail.gmail.com>
+Subject: Re: [PATCH] checkpatch: Print some info if no filenames are given
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Andy Whitcroft <apw@canonical.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Joe Perches <joe@perches.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/05/16 17:30), Sergey Senozhatsky wrote:
-> On (21/05/14 20:16), Sergey Senozhatsky wrote:
-> > > --- a/sound/pci/intel8x0.c
-> > > +++ b/sound/pci/intel8x0.c
-> > > @@ -691,6 +691,9 @@ static inline void snd_intel8x0_update(struct intel8x0 *chip, struct ichdev *ich
-> > >  	int status, civ, i, step;
-> > >  	int ack = 0;
-> > >  
-> > > +	if (!ichdev->substream || ichdev->suspended)
-> > > +		return;
-> > > +
-> > >  	spin_lock_irqsave(&chip->reg_lock, flags);
-> > >  	status = igetbyte(chip, port + ichdev->roff_sr);
-> > >  	civ = igetbyte(chip, port + ICH_REG_OFF_CIV);
-> 
-> This does the problem for me.
+On Sat, May 15, 2021 at 6:26 AM Joe Perches <joe@perches.com> wrote:
+>
+> On Sat, 2021-05-15 at 12:15 +0800, Tiezhu Yang wrote:
+> > After commit 45107ff6d526 ("checkpatch: if no filenames then read stdin"),
+> > if no filenames are given, it will read patch from stdin rather than exit
+> > directly, it is better to print some info about what to do next, otherwise
+> > it is a bit confusing whether the script hangs.
+>
+> I think this is unnecessary.
+> It's like trying to make cat without command line arguments emit something.
+>
 
-       ^^^ does fix
+Tiezhu, if you think this behaviour of checkpatch needs a description
+and explanation that the informed users* of checkpatch would value,
+you may submit a patch to the kernel's checkpatch documentation,
+./Documentation/dev-tools/checkpatch.rst (or to see a rendered
+version, e.g., https://www.kernel.org/doc/html/latest/dev-tools/checkpatch.html).
+You might want to add a few example invocations of checkpatch and then
+explain with an example that checkpatch consumes stdin, if no patch
+file is given as argument.
+
+Looking forward to your patch to the documentation...
+
+*informed user = "somebody that actually reads the available kernel
+documentation on checkpatch"
+
+Lukas
