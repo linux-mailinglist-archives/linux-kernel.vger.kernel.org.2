@@ -2,52 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DA32382215
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 01:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52969382217
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 01:29:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234612AbhEPXWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 19:22:07 -0400
-Received: from mail-40135.protonmail.ch ([185.70.40.135]:20809 "EHLO
-        mail-40135.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233677AbhEPXWF (ORCPT
+        id S234622AbhEPXav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 19:30:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230241AbhEPXau (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 19:22:05 -0400
-Date:   Sun, 16 May 2021 23:20:40 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1621207248;
-        bh=o9NUnpWwWPmYQ+iKKyofsmuL+q/XvnMFtWtsza/uW30=;
-        h=Date:From:Cc:Reply-To:Subject:From;
-        b=bQpi9TG4ZMfr03jIujOUYkipkR4H2JvI/JsWnnbiLa2bmPy20REdDsKhlTjysb1ht
-         l6PpZKe113wjw+n/om0YriBP3U083wQH9u2PITchSDW57K4a7LNaL61Y4eYYA6yp+N
-         Wb4eZJlhKARyhfWWTREv2kQpkMU+mHl+uMNn5byw=
-From:   louisrossberg <louisrossberg@protonmail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Reply-To: louisrossberg <louisrossberg@protonmail.com>
-Subject: Listening on a TCP socket from a Kernel Module
-Message-ID: <5J_z4QNPMBAk4y0rGshI7mBykT1tivh3037CbQRYXTu_Ra6zuojEcI0RB04ghXQxgdtDbt3YFv6sA882mrFyTdzQePwHwvLoECnqFTnYNZI=@protonmail.com>
+        Sun, 16 May 2021 19:30:50 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59B66C061573;
+        Sun, 16 May 2021 16:29:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=lr4+FFD80CxEdd/zr2bpfohQbxAklrTTMigzrv1n1/k=; b=NKx+NQNVDVhEHil84pPnU0zQdR
+        X3y1roi+jyF5bl0qSH+9unO73LmaLjubNaQegYuOytVLF/nMMPiviN5sazg8ljgs6S7ngW5XUYlz1
+        yO54qccZKNuaMQcQU1B/T+RuZkE61Lpblc+99Fvp2jsjOG20hCdRdCKlQGOjf3bntakWEZeyMsua/
+        Og+dhpMjjToZZchTACbnawCLyjvZGxfdHHCoy55HF0HUwYhb0mD/0x5TKCq/v15Anz4utFVpAK4/j
+        5pVu8jVN/mTgrVXiIrglEHDIvMWRXdx0SXbvB4O1+/o3CKkEl8c9RB2GBzwxUfbh3Ph7dB4217dQV
+        eRY22AYQ==;
+Received: from [2601:1c0:6280:3f0::7376]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1liQCS-00DLkD-Li; Sun, 16 May 2021 23:29:32 +0000
+Subject: Re: [PATCH] watchdog: mtx-1: drop au1000.h header file
+To:     Guenter Roeck <linux@roeck-us.net>, linux-kernel@vger.kernel.org
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-watchdog@vger.kernel.org,
+        Florian Fainelli <f.fainelli@gmail.com>
+References: <20210516211703.25349-1-rdunlap@infradead.org>
+ <a1df3bdf-b883-008f-2989-27bbfe1c9b9e@roeck-us.net>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <d22c3fb9-51c7-6f1f-f9ce-e761ad25502c@infradead.org>
+Date:   Sun, 16 May 2021 16:29:29 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
+In-Reply-To: <a1df3bdf-b883-008f-2989-27bbfe1c9b9e@roeck-us.net>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=2.4 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        MALFORMED_FREEMAIL,MISSING_HEADERS shortcircuit=no autolearn=disabled
-        version=3.4.4
-X-Spam-Level: **
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
-To:     unlisted-recipients:; (no To-header on input)
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, can somebody point me in the right direction for what I would use to=
- listen on a TCP socket from the kernel? I am working on a kernel module an=
-d have spent the past day looking through include/net and include/linux for=
- something that would allow me to do so. I know TCP listening is typically =
-done in userspace, but it should be possible at the kernel level right? tcp=
-_diag looks promising, but it seems like that is mainly for monitoring sock=
-ets, and I'm not sure if I would be able to provide responses from it.
+On 5/16/21 4:08 PM, Guenter Roeck wrote:
+> On 5/16/21 2:17 PM, Randy Dunlap wrote:
+>> The mtx-1_wdt driver does not need the au1000.h header file.
+>> Instead, the header file causes build errors, so drop it.
+>>
+>> This change fixes multiple build errors, all in au1000.h. E.g.:
+>>
+>> In file included from ../drivers/watchdog/mtx-1_wdt.c:44:
+>> ../arch/mips/include/asm/mach-au1x00/au1000.h: In function 'alchemy_rdsys':
+>> ../arch/mips/include/asm/mach-au1x00/au1000.h:603:36: error: implicit declaration of function 'KSEG1ADDR'; did you mean 'CKSEG1ADDR'? [-Werror=implicit-function-declaration]
+>>    603 |  void __iomem *b = (void __iomem *)KSEG1ADDR(AU1000_SYS_PHYS_ADDR);
+>> ../arch/mips/include/asm/mach-au1x00/au1000.h:603:20: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+>>    603 |  void __iomem *b = (void __iomem *)KSEG1ADDR(AU1000_SYS_PHYS_ADDR);
+>>
+>> Fixes: 04bf3b4f5fc0 ("[WATCHDOG] MTX-1 Watchdog driver")
+> 
+> More like
+> 
+> Fixes: da2a68b3eb47 ("watchdog: Enable COMPILE_TEST where possible")
 
-Louis Rossberg,
-Warped Technologies
+Duh. Thanks.
 
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
+>> Cc: Guenter Roeck <linux@roeck-us.net>
+>> Cc: linux-watchdog@vger.kernel.org
+>> Cc: Florian Fainelli <f.fainelli@gmail.com>
+> 
+> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> 
+>> ---
+>>   drivers/watchdog/mtx-1_wdt.c |    2 --
+>>   1 file changed, 2 deletions(-)
+>>
+>> --- linux-next-20210514.orig/drivers/watchdog/mtx-1_wdt.c
+>> +++ linux-next-20210514/drivers/watchdog/mtx-1_wdt.c
+>> @@ -41,8 +41,6 @@
+>>   #include <linux/uaccess.h>
+>>   #include <linux/gpio/consumer.h>
+>>   -#include <asm/mach-au1x00/au1000.h>
+>> -
+>>   #define MTX1_WDT_INTERVAL    (5 * HZ)
+>>     static int ticks = 100 * HZ;
