@@ -2,100 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99449381D10
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 07:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5844D381D15
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 08:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233223AbhEPF6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 01:58:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33870 "EHLO
+        id S233274AbhEPGPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 02:15:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbhEPF6l (ORCPT
+        with ESMTP id S232714AbhEPGPr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 01:58:41 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 237B9C061573
-        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 22:57:27 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id pi6-20020a17090b1e46b029015cec51d7cdso2009862pjb.5
-        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 22:57:27 -0700 (PDT)
+        Sun, 16 May 2021 02:15:47 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A806C061573
+        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 23:14:33 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id t15so3039341edr.11
+        for <linux-kernel@vger.kernel.org>; Sat, 15 May 2021 23:14:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:date:message-id:mime-version:content-transfer-encoding:cc
-         :from:to;
-        bh=v4i4hH9wRWnBCGdUotO+3BYL0hM+Eo+i46g7TxYffPQ=;
-        b=x6zndFDfYyl47/4UADZGbyXKUOQXl1v9G0Ub45ldsCIC0x5g7q85S7gTRduMhvMqAD
-         bbAmtABVzZHWCSKLg72hj2h+hyFMFNIKVhMBJcaemnEF1GA5Q5cnnpZ5mya10oD4nFH+
-         Q9Apv9igQGFypGOhvqadqcD3IIyKff7Y40rO+8IRIsWiL8zJX2YB0LZsPHNNQxYY8VQi
-         sHLLBvrF4bx0qc1NdGIQiGys3ME4CcJKqpOUl8MTkjXUSUrFaEFy5cIP+GAadlJUm08d
-         h0gAq+uB5dWQqQ/mzAolIunFOQOmOtJGlmiaZRTr3ruLS/CiEb1eSQSU1/tjReHn/Bhl
-         HRYA==
+        d=deviqon.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hV6WC5eXV3av99h5LQGXtV8+/Xaf5pHoRp9Aw3md/WM=;
+        b=JHWFZpaYDyH2S+nfvWPrjJ7qqGLtUODW2nWSddvpDV0IER1StHfyf8OcwKfETSUiHh
+         CT7Rd082zmRHz9vzOVExuL2VsKE8YCXYK2CqdiPhWAqwQNZsz8hMGxLpknuwKcIsx1bm
+         SKgloSZxbfQRU40fB155fgFDfCJboC+EcSxUSe+0I0nxz0VDeuvLi5HTAjJCHCSeyT/z
+         Vt7dRgMuNIzAWOMX2lyz3TVefBorXinezt8JOv1zNvRaRVOrXrj+/qU2Z3DDEO5GaKaN
+         w4FemDuaSwOQpe8F195SyCX0KrHNGeYu7b0ol8o5+xiP7uLIGYnosBDS1g8OGIJ/n311
+         o0Xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:date:message-id:mime-version
-         :content-transfer-encoding:cc:from:to;
-        bh=v4i4hH9wRWnBCGdUotO+3BYL0hM+Eo+i46g7TxYffPQ=;
-        b=FHVjIBAn5zHZO7HJUPKWOw3uMitENM3DyaZbRI/upJKOG8ZXvPsgVp25JVxk9MAKbm
-         TOc5YjSjMRhCLI0Qw1myMJ8Hr2f5fIl/hcRIhO6I5hBSKw/cyFZXTorXR3QSeErODH6r
-         tVFKluXO0911HJwNU7yBquxtJLhHgf5ypnN+7CzBgfakCvuf/R8/MjPfQU9l+6uNrNxm
-         T0SRC2Hqf5kGuNb7SLk4GEKCLTFt0bCcb96YsHlk4mZn/FBHWLAv1R6+YmYlle4fJTB/
-         p3ZwvJimQzylQKvBC3bDu6+ra+6JFaYfG/mwcrCD3dnYcNzX4K8fdRUvCoHw/Xq6g/gd
-         VaBw==
-X-Gm-Message-State: AOAM530FD/CJRBdQocZAE/QqCz01XQ5oFe4zcJo3sTZzlLSHxZew64Rm
-        J6HNh2xo79BQwgnHG7s/8hx75Ve9nEoQjA==
-X-Google-Smtp-Source: ABdhPJwEBlgJ6tUfCuMtyiYFU4JMDkPX8lC8oTu76DkIZwfYl387dopXFPBiw0eioBooFJgmlHbzaw==
-X-Received: by 2002:a17:902:bd87:b029:ee:e0ae:cf0a with SMTP id q7-20020a170902bd87b02900eee0aecf0amr54243642pls.1.1621144646593;
-        Sat, 15 May 2021 22:57:26 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id t1sm214144pgq.47.2021.05.15.22.57.25
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hV6WC5eXV3av99h5LQGXtV8+/Xaf5pHoRp9Aw3md/WM=;
+        b=jlibh9vjbRuO09DsGdjwr9jGna34htO8iRKP+Iv/SNVFf3iAG7YmIlXTjR55IUZpnq
+         zDYBzyHJKsQv/mMIkGnGUwoKi/YYRa2/ICQa0zsBr+Cgpiurcdhy4OrZ9ajZVfpinnTZ
+         7AZ96+/xbSjPOCPHwzdc03tW4+dleWVotWUXqRBFkGej0oW266Tr4mMml7asHp3Klnbu
+         TfuQ1eVQoqcaBI/vZmSzSEVo3AqPoEpC6p7JVsloDND1uzUjIMFk+rru7F2ADFOBG7Pk
+         zkxA1zIQu9f2wjT0ZAM3BbvADbhb8ZM15PtfiMCZ0l5cO8zE/jYu9Z769Qic6387YE8r
+         mpZQ==
+X-Gm-Message-State: AOAM530S3bfMhZgK5I605odb3deHF02j+QyJmQJ/aUspx5vYS4u4A/wJ
+        t7xHfxpwuLBO8Fj/GQQIfpIv3w==
+X-Google-Smtp-Source: ABdhPJzXtg5orx3xmCK7tlYXqg8n78bQcYooN2LC0mIxod3nyft0KpCO6v6MLFU7Tp3VSuqt3KsVuQ==
+X-Received: by 2002:aa7:cc10:: with SMTP id q16mr44692153edt.53.1621145671931;
+        Sat, 15 May 2021 23:14:31 -0700 (PDT)
+Received: from neptune.. ([188.27.131.122])
+        by smtp.gmail.com with ESMTPSA id o8sm6396615ejm.18.2021.05.15.23.14.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 May 2021 22:57:25 -0700 (PDT)
-Subject: [PATCH] docs: core-api: cachetlb: Fix up invalidate_kernel_vmap_range()
-Date:   Sat, 15 May 2021 22:56:01 -0700
-Message-Id: <20210516055601.2819-1-palmer@dabbelt.com>
-X-Mailer: git-send-email 2.20.1
+        Sat, 15 May 2021 23:14:31 -0700 (PDT)
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+To:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        alexandre.torgue@foss.st.com, mcoquelin.stm32@gmail.com,
+        Alexandru Ardelean <aardelean@deviqon.com>
+Subject: [PATCH] gpio: gpio-stmpe: fully use convert probe to device-managed
+Date:   Sun, 16 May 2021 09:14:25 +0300
+Message-Id: <20210516061425.8757-1-aardelean@deviqon.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc:     akpm@linux-foundation.org, npiggin@gmail.com,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        peterz@infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@android.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     corbet@lwn.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Palmer Dabbelt <palmerdabbelt@google.com>
+The driver doesn't look like it can be built as a kmod, so leaks cannot
+happen via a rmmod mechanism.
+The remove hook was removed via commit 3b52bb960ec6 ("gpio: stmpe: make
+it explicitly non-modular").
 
-The first word of the function description ended up inside the function
-prototype, likely during an ReST conversion.  I've fixed that up, the diff
-looks big because I re-wrapped the whole paragraph.
+The IRQ is registered via devm_request_threaded_irq(), making the driver
+only partially device-managed.
 
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+In any case all resources should be made device-managed, mostly as a good
+practice. That way at least the unwinding on error is happening in reverse
+order (as the probe).
+
+This change also removes platform_set_drvdata() since the information is
+never retrieved to be used in the driver.
+
+Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
 ---
- Documentation/core-api/cachetlb.rst | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/core-api/cachetlb.rst b/Documentation/core-api/cachetlb.rst
-index fe4290e26729..548ae069ed9e 100644
---- a/Documentation/core-api/cachetlb.rst
-+++ b/Documentation/core-api/cachetlb.rst
-@@ -396,10 +396,10 @@ I/O and invalidating it after the I/O returns.
-        Note that this API does *not* also flush the offset map alias
-        of the area.
+I'm not sure if this should be marked with a Fixes tag.
+But if so, it should probably be for commit 3b52bb960ec6 (also mentioned in
+the comment above).
+
+ drivers/gpio/gpio-stmpe.c | 32 +++++++++++++-------------------
+ 1 file changed, 13 insertions(+), 19 deletions(-)
+
+diff --git a/drivers/gpio/gpio-stmpe.c b/drivers/gpio/gpio-stmpe.c
+index b94ef8181428..dd4d58b4ae49 100644
+--- a/drivers/gpio/gpio-stmpe.c
++++ b/drivers/gpio/gpio-stmpe.c
+@@ -449,6 +449,11 @@ static void stmpe_init_irq_valid_mask(struct gpio_chip *gc,
+ 	}
+ }
  
--  ``void invalidate_kernel_vmap_range(void *vaddr, int size) invalidates``
-+  ``void invalidate_kernel_vmap_range(void *vaddr, int size)``
++static void stmpe_gpio_disable(void *stmpe)
++{
++	stmpe_disable(stmpe, STMPE_BLOCK_GPIO);
++}
++
+ static int stmpe_gpio_probe(struct platform_device *pdev)
+ {
+ 	struct stmpe *stmpe = dev_get_drvdata(pdev->dev.parent);
+@@ -461,7 +466,7 @@ static int stmpe_gpio_probe(struct platform_device *pdev)
+ 		return -EINVAL;
+ 	}
  
--       the cache for a given virtual address range in the vmap area
--       which prevents the processor from making the cache stale by
--       speculatively reading data while the I/O was occurring to the
--       physical pages.  This is only necessary for data reads into the
--       vmap area.
-+       invalidates the cache for a given virtual address range in the
-+       vmap area which prevents the processor from making the cache
-+       stale by speculatively reading data while the I/O was occurring
-+       to the physical pages.  This is only necessary for data reads
-+       into the vmap area.
+-	stmpe_gpio = kzalloc(sizeof(*stmpe_gpio), GFP_KERNEL);
++	stmpe_gpio = devm_kzalloc(&pdev->dev, sizeof(*stmpe_gpio), GFP_KERNEL);
+ 	if (!stmpe_gpio)
+ 		return -ENOMEM;
+ 
+@@ -489,7 +494,11 @@ static int stmpe_gpio_probe(struct platform_device *pdev)
+ 
+ 	ret = stmpe_enable(stmpe, STMPE_BLOCK_GPIO);
+ 	if (ret)
+-		goto out_free;
++		return ret;
++
++	ret = devm_add_action_or_reset(&pdev->dev, stmpe_gpio_disable, stmpe);
++	if (ret)
++		return ret;
+ 
+ 	if (irq > 0) {
+ 		struct gpio_irq_chip *girq;
+@@ -499,7 +508,7 @@ static int stmpe_gpio_probe(struct platform_device *pdev)
+ 				"stmpe-gpio", stmpe_gpio);
+ 		if (ret) {
+ 			dev_err(&pdev->dev, "unable to get irq: %d\n", ret);
+-			goto out_disable;
++			return ret;
+ 		}
+ 
+ 		girq = &stmpe_gpio->chip.irq;
+@@ -514,22 +523,7 @@ static int stmpe_gpio_probe(struct platform_device *pdev)
+ 		girq->init_valid_mask = stmpe_init_irq_valid_mask;
+ 	}
+ 
+-	ret = gpiochip_add_data(&stmpe_gpio->chip, stmpe_gpio);
+-	if (ret) {
+-		dev_err(&pdev->dev, "unable to add gpiochip: %d\n", ret);
+-		goto out_disable;
+-	}
+-
+-	platform_set_drvdata(pdev, stmpe_gpio);
+-
+-	return 0;
+-
+-out_disable:
+-	stmpe_disable(stmpe, STMPE_BLOCK_GPIO);
+-	gpiochip_remove(&stmpe_gpio->chip);
+-out_free:
+-	kfree(stmpe_gpio);
+-	return ret;
++	return devm_gpiochip_add_data(&pdev->dev, &stmpe_gpio->chip, stmpe_gpio);
+ }
+ 
+ static struct platform_driver stmpe_gpio_driver = {
 -- 
-2.20.1
+2.31.1
 
