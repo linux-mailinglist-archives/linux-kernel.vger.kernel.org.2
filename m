@@ -2,90 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1730381EAF
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 14:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D498381EBC
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 14:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232778AbhEPMXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 08:23:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49102 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230185AbhEPMXv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 08:23:51 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DBD9C601FC;
-        Sun, 16 May 2021 12:22:36 +0000 (UTC)
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1liFn0-001eaK-OP; Sun, 16 May 2021 13:22:34 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Hector Martin <marcan@marcan.st>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        linux-kernel@vger.kernel.org, kernel-team@android.com
-Subject: [GIT PULL] irqchip fixes for 5.13, take #1
-Date:   Sun, 16 May 2021 13:22:17 +0100
-Message-Id: <20210516122217.13234-1-maz@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        id S232831AbhEPMbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 08:31:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230185AbhEPMbR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 May 2021 08:31:17 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88ECCC061573
+        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 05:30:02 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id h7so1733128plt.1
+        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 05:30:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WG3vPr7jTrZWJiot95jPYHU2QyOXWk1phufGNJD2xZI=;
+        b=V3RGkfHJyAKNttBRs2ZB9e2X2di/5AI8Fn9ZsnPjqhfBwRFgo2GYZKZY9uUCX3c95Z
+         6odMZIGiOvl5adcoBnz57aSGgNutvwkLdbe6y1vBj65SY4o06lad5cZhXyrcF49UGz/N
+         ugjrryLmomOpVA+tCMuxxAEMT2tZ0uxcZRMogCMPwkvlZOFsDbjltywQGJcXnLJMjeV7
+         t9Cva5qVoD/ui5GxLv4M0Zcib/BeBWLYten2D2bhtqHawqBjMewBIkivp6AGfnqzYwlb
+         uMFyF1nr+ZxVUb7ucwMgsxdlBIFwO8lQghEvF5VJCmZjUYMLE86nhpbH+WoRlNFA7qiP
+         8w7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WG3vPr7jTrZWJiot95jPYHU2QyOXWk1phufGNJD2xZI=;
+        b=JBh1ujql3z1CHXabiFP6s55LSb9/tH62sddyh/UyPr/5zPIWxHvYAKb5Oz/pdPqx5U
+         T1JISlYUI2v1WEJvwJqyVuIMeW1H7CeDIEFUDnHJdcp5YWP7JybXjnlYGkKkg6xrof3F
+         DKfFA7EyqqsbN1tK8GCqRjq1E54QAeU6pryjx0q7lzBQwYiJeTSG5BRE1x4/Mx2rSAdf
+         s6yHnNR6tzOmfDZ3/nFAkwaxeswqQy9tJgzcnGD5oEvpYbcS+RAfAB9xVgCXxKpZz7lM
+         4cQv5iMHhLOAHhopueKpLVeJ5MfDZGcUnVTZqH72jmm3Cm7W1lrCeqirUxbvOhnk2ty7
+         wuAA==
+X-Gm-Message-State: AOAM532MXc9CYj7frqCGCrC3K8c/JsTGZ5sNlL5FRdWtvXslcMy+l5Z7
+        GmW319+DnMiz/UGhllXCToUaqk53sJEp6WhRDgKiCA==
+X-Google-Smtp-Source: ABdhPJz9HzuN+RORcmcoIvkv93+pVKdpSAysrxX7o5ANQJDnTKBK7nhLOY0A+n2+atJI4ufmFMcKVg==
+X-Received: by 2002:a17:90a:94c5:: with SMTP id j5mr12062466pjw.121.1621168202092;
+        Sun, 16 May 2021 05:30:02 -0700 (PDT)
+Received: from localhost.localdomain ([111.223.96.126])
+        by smtp.gmail.com with ESMTPSA id k186sm8004318pgk.82.2021.05.16.05.29.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 May 2021 05:30:01 -0700 (PDT)
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+To:     gregkh@linuxfoundation.org, marcocesati@gmail.com,
+        dan.carpenter@oracle.com, fabioaiuto83@gmail.com,
+        fmdefrancesco@gmail.com, eantoranz@gmail.com, hdegoede@redhat.com,
+        Larry.Finger@lwfinger.net
+Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        skhan@linuxfoundation.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH 0/7] Staging: rtl8723bs: fix warnings in HalBtc8723b1Ant.c
+Date:   Sun, 16 May 2021 08:29:20 -0400
+Message-Id: <20210516122927.1132356-1-desmondcheongzx@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: tglx@linutronix.de, geert+renesas@glider.be, linux@roeck-us.net, marcan@marcan.st, thunder.leizhen@huawei.com, linux-kernel@vger.kernel.org, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+This patch set fixes 134 checkpatch.pl warnings in the file drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c
 
-Here's a very small set of irqchip fixes for 5.13, two being
-regressions introduced in the last merge window. One fixes an irqdesc
-allocation issue on a PXA machine, the other limits the selection of
-the Apple AIC controller to configuration that select support for the
-Apple M1 system. Finally, a few useless error messages are removed.
+Although checkpatch.pl reports a large number of checks, these are for issues that were present in the original code. In fact, in the process of fixing warnings, the total number of checks decreased from 548 to 546.
 
-Please pull,
+All patches are syntax fixes and no logic is changed. As there are a lot of different warnings, to make things easier to review, each patch addresses a different set of warnings in the following order:
 
-	M.
+- braces {} are not necessary for any arm of this statement
+- please, no space before tabs
+- suspect code indent for conditional statements
+- Statements should start on a tabstop (this type of warning is solved alongside the previous warning type in the same patch because the fix for one warning addresses the other)
+- Comparisons should place the constant on the right side of the test
+- Missing a blank line after declarations
+- Avoid unnecessary line continuations
+- Block comments use * on subsequent lines
 
-The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
+Desmond Cheong Zhi Xi (7):
+  Staging: rtl8723bs: remove unnecessary braces in HalBtc8723b1Ant.c
+  Staging: rtl8723bs: fix spaces in HalBtc8723b1Ant.c
+  Staging: rtl8723bs: fix indentation in HalBtc8723b1Ant.c
+  Staging: rtl8723bs: fix comparison formatting in HalBtc8723b1Ant.c
+  Staging: rtl8723bs: add missing blank line in HalBtc8723b1Ant.c
+  Staging: rtl8723bs: fix line continuations in HalBtc8723b1Ant.c
+  Staging: rtl8723bs: fix block comment in HalBtc8723b1Ant.c
 
-  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
+ .../staging/rtl8723bs/hal/HalBtc8723b1Ant.c   | 335 +++++++++---------
+ 1 file changed, 158 insertions(+), 177 deletions(-)
 
-are available in the Git repository at:
+-- 
+2.25.1
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git tags/irqchip-fixes-5.13-1
-
-for you to fetch changes up to fbb80d5ad400a12ec67214a0e7e9f9497dc9e615:
-
-  irqchip: Remove redundant error printing (2021-05-16 13:07:18 +0100)
-
-----------------------------------------------------------------
-irqchip fixes for 5.13, take #1
-
-- Fix PXA Mainstone CPLD irq allocation in legacy mode
-- Restrict the Apple AIC controller to the Apple platform
-- Remove a few supperfluous messages on devm_ioremap_resource() failure
-
-----------------------------------------------------------------
-Geert Uytterhoeven (1):
-      irqchip/apple-aic: APPLE_AIC should depend on ARCH_APPLE
-
-Marc Zyngier (1):
-      ARM: PXA: Fix cplds irqdesc allocation when using legacy mode
-
-Zhen Lei (1):
-      irqchip: Remove redundant error printing
-
- arch/arm/mach-pxa/pxa_cplds_irqs.c | 7 ++++++-
- drivers/irqchip/Kconfig            | 2 +-
- drivers/irqchip/irq-mvebu-icu.c    | 4 +---
- drivers/irqchip/irq-mvebu-sei.c    | 4 +---
- drivers/irqchip/irq-stm32-exti.c   | 4 +---
- 5 files changed, 10 insertions(+), 11 deletions(-)
