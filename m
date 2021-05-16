@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1BC1381DE2
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 12:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AF95381E00
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 12:19:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231751AbhEPKT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 06:19:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37506 "EHLO mail.kernel.org"
+        id S235273AbhEPKUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 06:20:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229586AbhEPKTv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 06:19:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B16E61183;
+        id S231336AbhEPKTx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 May 2021 06:19:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77FFB611F0;
         Sun, 16 May 2021 10:18:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1621160317;
-        bh=CTBuH+LNVhsBxUwNdF586jYH3Pgby8Vqy5VANBKVw/M=;
+        bh=fMr8KefFV1oiO0umnN9TstGa5i+97O0wPSkwr8OS2Nw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ib2VqkT+/CeQxHv3Cx90FooD0wSdPp4zfIF88Q0d9XrDRdFfwwC0NiwaUmItQOR2C
-         CFKev9aRfRsFUvWSWpBviL954i4S9NPkc630zw8ENpPO1OgEqiht6u2eKs9LWfqG0d
-         40PxpkHxzolSqBxNRY608+7unmucOFeLDuH7X81ai2AQm+cwdhxMfFUCrBkea0YJ5L
-         Q9rcZRZw4cS8qwycNMVZiVZzm02+huNBCcv4oBpLBxixG/xXwm2LJE9fI/mevLmqxc
-         6AZ7MojZBDRBT3A1u0ZqjlDOfIlMa2eAzMqt7c+Ys1uGXvCjwpMU4rhyZLmaEp+IBn
-         xH4hIY1gtShfw==
+        b=n+eVedEueBQRoj47Nyf1fm8giAGYWpSkCi9a8VC8tXjNOW7ZhyHgGd8EffPKQ1ctM
+         ZwRt60VRJRC3nRSaeHiTokmCWuTNDE7dhNxYfNtM1reZo3txdtj7LEDC795uKLCtXw
+         cf80dls1US29YeVv9hDlAombtz8siLh3minPzvsjluVgzh/PA+EpjlFXb2JmDTjoK0
+         0RqXy6P1AOPPt/ItnErz7O//BckaoUFbOv2UGNsNARrfMMALoKF2N8nsChIgW6IRUf
+         LJKQBMvBiqOj/cuwwlBVJkoRS0XfSz7Zfg6eAhNKIeeAAJ8DezZiEG1NrTiYJLjRs0
+         gUcCCKfgLSZCw==
 Received: by mail.kernel.org with local (Exim 4.94.2)
         (envelope-from <mchehab@kernel.org>)
-        id 1liDr1-003o8e-Fc; Sun, 16 May 2021 12:18:35 +0200
+        id 1liDr1-003o8i-Gm; Sun, 16 May 2021 12:18:35 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: [PATCH v3 08/16] docs: userspace-api: media: dvb: intro.rst: replace some characters
-Date:   Sun, 16 May 2021 12:18:25 +0200
-Message-Id: <e0b326e9fe056467fff9bbd32b4db7d1fe5261b1.1621159997.git.mchehab+huawei@kernel.org>
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 09/16] docs: vm: zswap.rst: replace some characters
+Date:   Sun, 16 May 2021 12:18:26 +0200
+Message-Id: <22eafb9660fc19b42eb2b57895fcf7ceae33e35b.1621159997.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1621159997.git.mchehab+huawei@kernel.org>
 References: <cover.1621159997.git.mchehab+huawei@kernel.org>
@@ -58,25 +58,31 @@ Replace the occurences of the following characters:
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/userspace-api/media/dvb/intro.rst | 4 ++--
+ Documentation/vm/zswap.rst | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/userspace-api/media/dvb/intro.rst b/Documentation/userspace-api/media/dvb/intro.rst
-index a935f3914e56..c39ad9fc94f1 100644
---- a/Documentation/userspace-api/media/dvb/intro.rst
-+++ b/Documentation/userspace-api/media/dvb/intro.rst
-@@ -148,9 +148,9 @@ individual devices are called:
+diff --git a/Documentation/vm/zswap.rst b/Documentation/vm/zswap.rst
+index d8d9fa4a1f0d..8edb8d578caf 100644
+--- a/Documentation/vm/zswap.rst
++++ b/Documentation/vm/zswap.rst
+@@ -10,7 +10,7 @@ Overview
+ Zswap is a lightweight compressed cache for swap pages. It takes pages that are
+ in the process of being swapped out and attempts to compress them into a
+ dynamically allocated RAM-based memory pool.  zswap basically trades CPU cycles
+-for potentially reduced swap I/O.  This trade-off can also result in a
++for potentially reduced swap I/O.  This trade-off can also result in a
+ significant performance improvement if reads from the compressed cache are
+ faster than reads from a swap device.
  
- -  ``/dev/dvb/adapterN/caM``,
- 
--where ``N`` enumerates the Digital TV cards in a system starting from 0, and
-+where ``N`` enumerates the Digital TV cards in a system starting from 0, and
- ``M`` enumerates the devices of each type within each adapter, starting
--from 0, too. We will omit the “``/dev/dvb/adapterN/``\ ” in the further
-+from 0, too. We will omit the “``/dev/dvb/adapterN/``\ ” in the further
- discussion of these devices.
- 
- More details about the data structures and function calls of all the
+@@ -26,7 +26,7 @@ faster than reads from a swap device.
+   performance impact of swapping.
+ * Overcommitted guests that share a common I/O resource can
+   dramatically reduce their swap I/O pressure, avoiding heavy handed I/O
+-  throttling by the hypervisor. This allows more work to get done with less
++  throttling by the hypervisor. This allows more work to get done with less
+   impact to the guest workload and guests sharing the I/O subsystem
+ * Users with SSDs as swap devices can extend the life of the device by
+   drastically reducing life-shortening writes.
 -- 
 2.31.1
 
