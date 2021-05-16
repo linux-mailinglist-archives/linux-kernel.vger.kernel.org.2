@@ -2,134 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5053381D02
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 07:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E56F9381D06
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 07:30:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233110AbhEPF33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 01:29:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230103AbhEPF31 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 01:29:27 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6920C061573;
-        Sat, 15 May 2021 22:28:12 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id pf4-20020a17090b1d84b029015ccffe0f2eso3852605pjb.0;
-        Sat, 15 May 2021 22:28:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NA/OuPh7y3nBq4fiIAatzLA6oIbKvh9mNka2mUm7JVk=;
-        b=KNR1ij96BfvwR8fCNNsjyMfVp2OFr9vXF3UdEu+aHR2RpnYf6pmOnItoxr4KLFPIip
-         0HXCqRmcwYmkzEuuxe94gHQ5mAP5RoJOG1pw5/FRpDG759CSnIiKrRt29IMz5ScsyT7T
-         8PJUZtzbfHap9TITnkNA+rIKdP4Ec8gGhxRMFfaQObQgdFDp582Jc3xjxlGvxjnsHiYh
-         5o9edi1MylBcrq4y4nRthkWcWzvkbQkqstB2GvrwkaZDmF6hn4fAbYjF9UnGj3mOJVNa
-         ywfx4oF0fE02mRm0RPsdCDsth7w2AK4OaJkxupPYMYroX0XMIVhz5G0wA64gjNHyWJbD
-         p6yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NA/OuPh7y3nBq4fiIAatzLA6oIbKvh9mNka2mUm7JVk=;
-        b=gRWRWm1MQKorVFFvvV8CbMzHpFol8jqgQr/Tg07bBGb4cGkyJEN+8hc+fR40klC4p9
-         5s9XXFsldD7rbqvmfBZOtBRhSKvgJ9iGIs55ja1gwqH5mmFPylVacBVypAOiKOdFMR1/
-         FeFg9TeDaenakRDi8mBOhBEsNsz3FjwattElUKr9F27VxMhnsPeie6nS5xKvMt8R96SS
-         npXVML9pE8cezn5egJoG6YN8oqvrCS7JJPfDCCYo/YDSg9kp6f6qaSl/4PQ5lkv7qxIV
-         TUABUSsHxfb14gRjXGD16nZTES74hmYOLE82wt1qmZIJn+HW1AoBj8q07q+GiJUeMRND
-         dNEA==
-X-Gm-Message-State: AOAM530rcW+KvXmvVYD/wY4oRVrm10jnsmzUZlEaGGIzUi3FB6AaCxE4
-        Wgc9ZFerBhli9HNkIqsdM+v+UTfrE6WCIaygSUMmlkkXNL8=
-X-Google-Smtp-Source: ABdhPJwiuCTb+tflDAxzXHYoPovTD5lDdbRxxGbYIWHZ5pQubjRNOPiWnkWF+AzW9n3G/C2DWO+ZMEkXT8emPq+PrLw=
-X-Received: by 2002:a17:902:b406:b029:ec:fbf2:4114 with SMTP id
- x6-20020a170902b406b02900ecfbf24114mr54345810plr.32.1621142892027; Sat, 15
- May 2021 22:28:12 -0700 (PDT)
+        id S233163AbhEPFbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 01:31:52 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34398 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230103AbhEPFbv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 May 2021 01:31:51 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 544ABAE4B;
+        Sun, 16 May 2021 05:30:36 +0000 (UTC)
+Subject: Re: [PATCH] drm/rockchip: remove early framebuffers before
+ registering the fbdev
+To:     Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org
+Cc:     David Airlie <airlied@linux.ie>, Sandy Huang <hjc@rock-chips.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org,
+        Peter Robinson <pbrobinson@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+References: <20210515221447.429779-1-javierm@redhat.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <fe3285b7-3bc3-8292-bdc2-b8e823c1772d@suse.de>
+Date:   Sun, 16 May 2021 07:30:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-References: <20210512144819.664462530@linuxfoundation.org> <20210512144820.931257479@linuxfoundation.org>
- <20210515195221.GA4103@amd>
-In-Reply-To: <20210515195221.GA4103@amd>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Sun, 16 May 2021 08:28:00 +0300
-Message-ID: <CA+U=DsqgFx0GVgnkAQNFVgUjBWMAVaD2ryhKtuF7oVHFbyYh9g@mail.gmail.com>
-Subject: Re: [PATCH 5.10 036/530] iio:adc:ad7476: Fix remove handling
-To:     Pavel Machek <pavel@denx.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Michael Hennerich <michael.hennerich@analog.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210515221447.429779-1-javierm@redhat.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="4wYW5pFUCvynnI7pjPzXACDDuKFD86ukM"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 15, 2021 at 10:52 PM Pavel Machek <pavel@denx.de> wrote:
->
-> Hi!
-> >
-> > commit 6baee4bd63f5fdf1716f88e95c21a683e94fe30d upstream.
-> >
-> > This driver was in an odd half way state between devm based cleanup
-> > and manual cleanup (most of which was missing).
-> > I would guess something went wrong with a rebase or similar.
-> > Anyhow, this basically finishes the job as a precursor to improving
-> > the regulator handling.
->
-> I don't think this is correct:
->
-> > --- a/drivers/iio/adc/ad7476.c
-> > +++ b/drivers/iio/adc/ad7476.c
-> > @@ -316,25 +316,15 @@ static int ad7476_probe(struct spi_devic
-> >       spi_message_init(&st->msg);
-> >       spi_message_add_tail(&st->xfer, &st->msg);
-> >
-> > -     ret = iio_triggered_buffer_setup(indio_dev, NULL,
-> > -                     &ad7476_trigger_handler, NULL);
-> > +     ret = devm_iio_triggered_buffer_setup(&spi->dev, indio_dev, NULL,
-> > +                                           &ad7476_trigger_handler, NULL);
-> >       if (ret)
-> > -             goto error_disable_reg;
-> > +             return ret;
-> >
-> >       if (st->chip_info->reset)
-> >               st->chip_info->reset(st);
-> >
-> > -     ret = iio_device_register(indio_dev);
-> > -     if (ret)
-> > -             goto error_ring_unregister;
-> > -     return 0;
-> > -
-> > -error_ring_unregister:
-> > -     iio_triggered_buffer_cleanup(indio_dev);
-> > -error_disable_reg:
-> > -     regulator_disable(st->reg);
-> > -
->
-> Regulator_disable is now removed, but we still use regulator_enable,
-> and we still need to keep it balanced.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--4wYW5pFUCvynnI7pjPzXACDDuKFD86ukM
+Content-Type: multipart/mixed; boundary="V1L3adRszmeBQmTFtJJuUaL5zxYtiK8Gm";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Javier Martinez Canillas <javierm@redhat.com>,
+ linux-kernel@vger.kernel.org
+Cc: David Airlie <airlied@linux.ie>, Sandy Huang <hjc@rock-chips.com>,
+ dri-devel@lists.freedesktop.org, linux-rockchip@lists.infradead.org,
+ Peter Robinson <pbrobinson@gmail.com>, linux-arm-kernel@lists.infradead.org
+Message-ID: <fe3285b7-3bc3-8292-bdc2-b8e823c1772d@suse.de>
+Subject: Re: [PATCH] drm/rockchip: remove early framebuffers before
+ registering the fbdev
+References: <20210515221447.429779-1-javierm@redhat.com>
+In-Reply-To: <20210515221447.429779-1-javierm@redhat.com>
 
-Yes, but that's what this block does:
-    ret = devm_add_action_or_reset(&spi->dev, ad7476_reg_disable,
-                       st);
-    if (ret)
-        return ret;
+--V1L3adRszmeBQmTFtJJuUaL5zxYtiK8Gm
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-It registers a device-managed action to disable the regulator on error
-or remove.
-That ad7476_reg_disable() hook was implemented on commit:
-4bb2b8f94ace3 ("iio: adc: ad7476: implement devm_add_action_or_reset")
+Hi
 
-But for some reason it wasn't done correctly, as this part [in this
-patch] wasn't included in the 4bb2b8f94ace3  commit.
+Am 16.05.21 um 00:14 schrieb Javier Martinez Canillas:
+> There are drivers that register framebuffer devices very early in the b=
+oot
+> process and make use of the existing framebuffer as setup by the firmwa=
+re.
+>=20
+> If one of those drivers has registered a fbdev, then the fbdev register=
+ed
+> by a DRM driver won't be bound to the framebuffer console. To avoid tha=
+t,
+> remove any early framebuffer before registering a DRM framebuffer devic=
+e.
+>=20
+> By doing that, the fb mapped to the console is switched correctly from =
+the
+> early fbdev to the one registered by the rockchip DRM driver:
+>=20
+>      [   40.752420] fb0: switching to rockchip-drm-fb from EFI VGA
+>=20
+> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+> ---
+>=20
+>   drivers/gpu/drm/rockchip/rockchip_drm_fbdev.c | 10 ++++++++++
+>   1 file changed, 10 insertions(+)
+>=20
+> diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_fbdev.c b/drivers/gp=
+u/drm/rockchip/rockchip_drm_fbdev.c
+> index 2fdc455c4ad..e3e5b63fdcc 100644
+> --- a/drivers/gpu/drm/rockchip/rockchip_drm_fbdev.c
+> +++ b/drivers/gpu/drm/rockchip/rockchip_drm_fbdev.c
+> @@ -4,6 +4,7 @@
+>    * Author:Mark Yao <mark.yao@rock-chips.com>
+>    */
+>  =20
+> +#include <drm/drm_aperture.h>
+>   #include <drm/drm.h>
+>   #include <drm/drm_fb_helper.h>
+>   #include <drm/drm_fourcc.h>
+> @@ -124,6 +125,15 @@ int rockchip_drm_fbdev_init(struct drm_device *dev=
+)
+>  =20
+>   	drm_fb_helper_prepare(dev, helper, &rockchip_drm_fb_helper_funcs);
+>  =20
+> +	/* Remove early framebuffers (e.g: simplefb or efifb) */
+> +	ret =3D drm_aperture_remove_framebuffers(false, "rockchip-drm-fb");
+> +	if (ret) {
+> +		DRM_DEV_ERROR(dev->dev,
+> +			      "Failed to remove early framebuffers - %d.\n",
+> +			      ret);
+> +		return ret;
+> +	}
+> +
 
->
-> > -     return ret;
-> > +     return devm_iio_device_register(&spi->dev, indio_dev);
-> >  }
->
-> Best regards,
->                                                                 Pavel
->
-> --
-> DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-> HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Such code used to be part of the fbdev helpers, but it's not really=20
+related to fbdev functonality. Rather it controls ownership of the I/O=20
+ranges.
+
+This code block should be done at the very beginning; before the driver=20
+tries to reserve the device's I/O ranges. Probably at [1]
+
+Best regards
+Thomas
+
+[1]=20
+https://elixir.bootlin.com/linux/v5.13-rc1/source/drivers/gpu/drm/rockchi=
+p/rockchip_drm_drv.c#L116
+
+
+>   	ret =3D drm_fb_helper_init(dev, helper);
+>   	if (ret < 0) {
+>   		DRM_DEV_ERROR(dev->dev,
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--V1L3adRszmeBQmTFtJJuUaL5zxYtiK8Gm--
+
+--4wYW5pFUCvynnI7pjPzXACDDuKFD86ukM
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmCgrfsFAwAAAAAACgkQlh/E3EQov+A7
+YQ/+PMhnLpkCMiK7e9qCZhznG2wyBSy+jIuI3+S473yvFhP0O9MrXz7JxNdlvVtSjQe4y2Zn3nr0
+xdkH5qWk+DBUgDqKBzmirF+9dY9lIZD0L/80D+fMLpbiLCN1vzAgKlihffh9kvRPiVL+c7Iga8Jb
+Sw89mj/tqKQk+8hXu85kceathNdseXNuCIZ9KW/0dLFmG3pegf9otuf6Lv617JHbxm0vLP3x79/7
+FX73cKsG6PV7dqpJU19WTbKzakpLuGvhsWHy620WbBr9tD6gsZjbxDBpBB0/dJ/5XjjlduJA2vFl
+hHPONYASxLO6FWBr1xhJyxhj3GgsZqRkCewJ6StbcFuxEiq5iNkHR1A6vgP90gOioGjh6arjKJUr
+Xyq31y+uKv+mGlNnlYR9o3jGdGfcihLB2MXyEqupUowdc9orbPC8oTyj/j12Zq2QBQHaskE0N06H
+F7DRty2aOESa8779e7iEOqZh/0kmQKyVynNqszsKpAeEFGvBTFI7T/uKrDZOfr7keZN/GA7AfuIT
+w6Op56eU1FYatlnK0uqMgXm113iHIXVFBpz2slahSMfyzd86G2PL9mRWOKngLLk/Zh5iEYpCMP2b
+isyBigCiGRZh9hMtE/4eJ3RWkPnN0Ji0wfvgrdtlVAYZXvW5BODsjNaA1aT3FXlk4uFn1y2m5BR+
+PQw=
+=Vwle
+-----END PGP SIGNATURE-----
+
+--4wYW5pFUCvynnI7pjPzXACDDuKFD86ukM--
