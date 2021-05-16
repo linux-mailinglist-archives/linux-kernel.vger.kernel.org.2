@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8006D381EBF
+	by mail.lfdr.de (Postfix) with ESMTP id CCB6E381EC0
 	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 14:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232951AbhEPMbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 08:31:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34398 "EHLO
+        id S233032AbhEPMcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 08:32:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232913AbhEPMbv (ORCPT
+        with ESMTP id S233034AbhEPMb7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 08:31:51 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71D07C061573
-        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 05:30:37 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id gc22-20020a17090b3116b02901558435aec1so2243386pjb.4
-        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 05:30:37 -0700 (PDT)
+        Sun, 16 May 2021 08:31:59 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3119C06174A
+        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 05:30:43 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id a11so1725679plh.3
+        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 05:30:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=I6WhL1PpTCyWACZgwSEwTO4odDW7Vfe+3XlFCiuIyHg=;
-        b=Itrqwyv9Q1NKvkvTocagH9e2hB520j0pJ1FyNmOBE0NzIZlB1W+of/x9pap6N07dOB
-         bsxMulGPIeDKDXw3VajxKof6zyNoaqyijoQrL+lOn3PHogn3WrgiZ2OG8Cd6rHdrR8WG
-         XLbVItMeN2ZPxOgqlekn4AfVJpbrOkZqWtcW/Ghn3NKTCQnbvMANHKnWuk77KLR2dWNO
-         K551e43oRgygXTIUGeEWmSXUdxRGT7IsOY/w1n+Ps+Tp17XgDtfjEND96Lbgaq07NQIQ
-         LIX4Kdkur0wQsBCA6kzQ2DoXKsZyk0XDf39FvK6VeiJde06bcqJIHFPuA6eqKDoolYEG
-         iVYg==
+        bh=uEpsBQ7rbIhP4Lk4USk29pB1/Jh9hlfSvj6sx/s54ew=;
+        b=CPh518p/r8+QMg9oy2zojCmiPG000e/X5GAIQdUmXiiAX8TKjTKiDsogH5MuYx2cSP
+         +PrErEO5kTBoYRvO6TGrOFqB2IChBhkIKR4XY6wr3VIR4P2K+EzF3dQfOeBm0ijZ2lX+
+         ZWHAU6fbSafvSd6UwtzzID1byTAP1kUGlUPyKsdMcw33seFgNKYnOfLdXo7i3wQFXWmw
+         uo8AoyUDwoXdabsGyLpMfBq6bHHWKlXbZee+yNfpQ+LZDm3Lctr95jEutIAehzq3p7DC
+         bP/YYiCXdPdn3zbS8ET5tTA0cgvn2K+lh0BFgpqepY4D60+KizWbw7etXQSMRTQKKL8r
+         tjhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=I6WhL1PpTCyWACZgwSEwTO4odDW7Vfe+3XlFCiuIyHg=;
-        b=F0muesgJ9Hl/JdQbXhCFdv8PrF1bXUIbB4eieo6eJT/II2GV9HsQ6RRpBdZJAcQ07z
-         +0NwqphMG1Dy0yNV0fnCynhgt7qpotAflE4DfmIND6g7/mXVPE9SRTQk1w0dnkL/4830
-         w1bRLcxlhia8fhhrTMNHTqEZpsujRxRQaUGY8rqq/iUvHDsXcuV4ZI409hCnOiJNzUtx
-         tCuRARzMHvYaEgnbAIXLwt0pk90/yWBpDXV6z75nWrD1zOMWvBzWlxK9QHJt13+fpPzj
-         xzzxxA5YnXv7RD7B7/EIc2Pcn0sjI8YJqQ2wAbjobTofgq/5rB+gt64K6zgqVwN6dBJq
-         Cacg==
-X-Gm-Message-State: AOAM533+scUe00vJr8UYRA77dzXHN1bLEr8tv90N9Pv1dDbs1IqXJbA/
-        ZxPm6Q+/DIj/E2FJ0kz9vcQ=
-X-Google-Smtp-Source: ABdhPJwfOir+XjFUxEPh6ep0IE4kU926wBpVZVC/DvuQ+YXcjnTrWiaVFLktDjSoNi73DalIhuQ9CA==
-X-Received: by 2002:a17:90a:d909:: with SMTP id c9mr12647509pjv.190.1621168237068;
-        Sun, 16 May 2021 05:30:37 -0700 (PDT)
+        bh=uEpsBQ7rbIhP4Lk4USk29pB1/Jh9hlfSvj6sx/s54ew=;
+        b=Kv83EwN8RhJFFl03Wgybn5cQwC59UNXe/kWoVU/S3Ck1IuYCOM0FY8mw4lP/ujwXNU
+         XRoiW1+e3qwrVvE9VQBu3yl2xbL+8wA6i1YuE34zaNWTFbABsybVHUjdr4BZmnQOPZA/
+         DOd0rNdQCtzfv0NO24tppYjSv7AIwqQcX80xxuzMaqjPDm5PCfBONfkzejWPz+7/bNHc
+         c9gWlCh8LLDGyicMkqjBsXq1MwVARLNkAVH4d0G8hBMEVzU6DFYoOY2KYsDL4yphj8bB
+         dAFWzoZ/uQRVFW51UQ3u7CuTLo3Tm0wfP/Ktib+sW6ofQ3ZTOku5dYd2hxy4aRhE9Q8v
+         91yQ==
+X-Gm-Message-State: AOAM532ez39q+OuHlD+l2xFuay8GjaFTJooNNDiqNcmPc7GcmUtcUUUF
+        BzPCgGMkmwabWcSjqsdUYIo=
+X-Google-Smtp-Source: ABdhPJxKi7aaoJ2oTE+wusMlkpoH9EasCm6Ge0iNmg9wM5wsjtnsjRUyHskEs5grSdg7Dqxer7lLGg==
+X-Received: by 2002:a17:902:6ac6:b029:ee:e9ac:59f9 with SMTP id i6-20020a1709026ac6b02900eee9ac59f9mr55255447plt.58.1621168243305;
+        Sun, 16 May 2021 05:30:43 -0700 (PDT)
 Received: from localhost.localdomain ([111.223.96.126])
-        by smtp.gmail.com with ESMTPSA id k186sm8004318pgk.82.2021.05.16.05.30.30
+        by smtp.gmail.com with ESMTPSA id k186sm8004318pgk.82.2021.05.16.05.30.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 May 2021 05:30:36 -0700 (PDT)
+        Sun, 16 May 2021 05:30:42 -0700 (PDT)
 From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
 To:     gregkh@linuxfoundation.org, marcocesati@gmail.com,
         dan.carpenter@oracle.com, fabioaiuto83@gmail.com,
@@ -57,9 +57,9 @@ Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
         skhan@linuxfoundation.org, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org,
         linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [PATCH 2/7] Staging: rtl8723bs: fix spaces in HalBtc8723b1Ant.c
-Date:   Sun, 16 May 2021 08:29:22 -0400
-Message-Id: <20210516122927.1132356-3-desmondcheongzx@gmail.com>
+Subject: [PATCH 3/7] Staging: rtl8723bs: fix indentation in HalBtc8723b1Ant.c
+Date:   Sun, 16 May 2021 08:29:23 -0400
+Message-Id: <20210516122927.1132356-4-desmondcheongzx@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210516122927.1132356-1-desmondcheongzx@gmail.com>
 References: <20210516122927.1132356-1-desmondcheongzx@gmail.com>
@@ -71,32 +71,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 This commit fixes the following checkpatch.pl errors:
 
-WARNING: please, no space before tabs
-+^I/* ^IRx Aggregation related setting */$
+WARNING: suspect code indent for conditional statements (32, 33)
++				if (nCCKLockCounter < 5)
++				 nCCKLockCounter++;
 
-WARNING: please, no space before tabs
-+^Iu8 ^IH2C_Parameter[1] = {0};$
+WARNING: suspect code indent for conditional statements (32, 33)
++				if (nCCKLockCounter > 0)
++				 nCCKLockCounter--;
 
-WARNING: please, no space before tabs
-+^Iu8 ^IH2C_Parameter[6] = {0};$
+WARNING: suspect code indent for conditional statements (24, 26)
++			if (nCCKLockCounter > 0)
++			  nCCKLockCounter--;
 
-WARNING: please, no space before tabs
-+^I/* u32 ^I^IfwVer = 0; */$
+WARNING: suspect code indent for conditional statements (16, 17)
++		if (nCCKLockCounter >= 5)
++		 pCoexSta->bCCKLock = true;
 
-WARNING: please, no space before tabs
-+/* ^ISoftware Coex Mechanism start */$
+WARNING: suspect code indent for conditional statements (16, 17)
++		else
++		 pCoexSta->bCCKLock = false;
 
-WARNING: please, no space before tabs
-+/* ^INon-Software Coex Mechanism start */$
+WARNING: suspect code indent for conditional statements (16, 17)
++		if (nCCKLockCounter == 0)
++		 pCoexSta->bCCKLock = false;
 
-WARNING: please, no space before tabs
-+^I/* ^IBIT0: "0" for no antenna inverse; "1" for antenna inverse */$
+WARNING: suspect code indent for conditional statements (16, 17)
++		else
++		 pCoexSta->bCCKLock = true;
 
-WARNING: please, no space before tabs
-+^I/* ^IBIT1: "0" for internal switch; "1" for external switch */$
+WARNING: suspect code indent for conditional statements (16, 25)
++		if (bScan || bLink || bRoam) {
++			 if (bScan)
 
-WARNING: please, no space before tabs
-+^I/* ^IBIT2: "0" for one antenna; "1" for two antenna */$
+WARNING: Statements should start on a tabstop
++			 if (bScan)
+
+WARNING: Statements should start on a tabstop
++			 else
 
 Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
 ---
@@ -104,74 +115,59 @@ Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
  1 file changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c b/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c
-index 85bf45cabecd..49f37aa16cc4 100644
+index 49f37aa16cc4..63d0eec572ec 100644
 --- a/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c
 +++ b/drivers/staging/rtl8723bs/hal/HalBtc8723b1Ant.c
-@@ -231,7 +231,7 @@ static void halbtc8723b1ant_LimitedRx(
- 	u8 rxAggSize = aggBufSize;
+@@ -361,15 +361,15 @@ static void halbtc8723b1ant_MonitorWiFiCtr(struct btc_coexist *pBtCoexist)
+ 				)
+ 			) {
+ 				if (nCCKLockCounter < 5)
+-				 nCCKLockCounter++;
++					nCCKLockCounter++;
+ 			} else {
+ 				if (nCCKLockCounter > 0)
+-				 nCCKLockCounter--;
++					nCCKLockCounter--;
+ 			}
  
- 	/*  */
--	/* 	Rx Aggregation related setting */
-+	/*	Rx Aggregation related setting */
- 	/*  */
- 	pBtCoexist->fBtcSet(
- 		pBtCoexist, BTC_SET_BL_TO_REJ_AP_AGG_PKT, &bRejectRxAgg
-@@ -250,7 +250,7 @@ static void halbtc8723b1ant_LimitedRx(
+ 		} else {
+ 			if (nCCKLockCounter > 0)
+-			  nCCKLockCounter--;
++				nCCKLockCounter--;
+ 		}
+ 	} else {
+ 		if (nCCKLockCounter > 0)
+@@ -379,14 +379,14 @@ static void halbtc8723b1ant_MonitorWiFiCtr(struct btc_coexist *pBtCoexist)
+ 	if (!pCoexSta->bPreCCKLock) {
  
- static void halbtc8723b1ant_QueryBtInfo(struct btc_coexist *pBtCoexist)
- {
--	u8 	H2C_Parameter[1] = {0};
-+	u8 H2C_Parameter[1] = {0};
+ 		if (nCCKLockCounter >= 5)
+-		 pCoexSta->bCCKLock = true;
++			pCoexSta->bCCKLock = true;
+ 		else
+-		 pCoexSta->bCCKLock = false;
++			pCoexSta->bCCKLock = false;
+ 	} else {
+ 		if (nCCKLockCounter == 0)
+-		 pCoexSta->bCCKLock = false;
++			pCoexSta->bCCKLock = false;
+ 		else
+-		 pCoexSta->bCCKLock = true;
++			pCoexSta->bCCKLock = true;
+ 	}
  
- 	pCoexSta->bC2hBtInfoReqSent = true;
+ 	pCoexSta->bPreCCKLock =  pCoexSta->bCCKLock;
+@@ -2084,9 +2084,9 @@ static void halbtc8723b1ant_RunCoexistMechanism(struct btc_coexist *pBtCoexist)
+ 		pBtCoexist->fBtcGet(pBtCoexist, BTC_GET_BL_WIFI_ROAM, &bRoam);
  
-@@ -606,7 +606,7 @@ static void halbtc8723b1ant_SetSwPenaltyTxRateAdaptive(
- 	struct btc_coexist *pBtCoexist, bool bLowPenaltyRa
- )
- {
--	u8 	H2C_Parameter[6] = {0};
-+	u8 H2C_Parameter[6] = {0};
- 
- 	H2C_Parameter[0] = 0x6;	/*  opCode, 0x6 = Retry_Penalty */
- 
-@@ -1038,7 +1038,7 @@ static void halbtc8723b1ant_PsTdma(
- 	u8 rssiAdjustVal = 0;
- 	u8 psTdmaByte4Val = 0x50, psTdmaByte0Val = 0x51, psTdmaByte3Val =  0x10;
- 	s8 nWiFiDurationAdjust = 0x0;
--	/* u32 		fwVer = 0; */
-+	/* u32 fwVer = 0; */
- 
- 	pCoexDm->bCurPsTdmaOn = bTurnOn;
- 	pCoexDm->curPsTdma = type;
-@@ -1575,13 +1575,13 @@ static void halbtc8723b1ant_PowerSaveState(
- 
- /*  */
- /*  */
--/* 	Software Coex Mechanism start */
-+/*	Software Coex Mechanism start */
- /*  */
- /*  */
- 
- /*  */
- /*  */
--/* 	Non-Software Coex Mechanism start */
-+/*	Non-Software Coex Mechanism start */
- /*  */
- /*  */
- static void halbtc8723b1ant_ActionWifiMultiPort(struct btc_coexist *pBtCoexist)
-@@ -2166,9 +2166,9 @@ void EXhalbtc8723b1ant_PowerOnSetting(struct btc_coexist *pBtCoexist)
- 	/*  */
- 	/*  S0 or S1 setting and Local register setting(By the setting fw can get ant number, S0/S1, ... info) */
- 	/*  Local setting bit define */
--	/* 	BIT0: "0" for no antenna inverse; "1" for antenna inverse */
--	/* 	BIT1: "0" for internal switch; "1" for external switch */
--	/* 	BIT2: "0" for one antenna; "1" for two antenna */
-+	/*	BIT0: "0" for no antenna inverse; "1" for antenna inverse */
-+	/*	BIT1: "0" for internal switch; "1" for external switch */
-+	/*	BIT2: "0" for one antenna; "1" for two antenna */
- 	/*  NOTE: here default all internal switch and 1-antenna ==> BIT1 = 0 and BIT2 = 0 */
- 	if (pBtCoexist->chipInterface == BTC_INTF_USB) {
- 		/*  fixed at S0 for USB interface */
+ 		if (bScan || bLink || bRoam) {
+-			 if (bScan)
++			if (bScan)
+ 				halbtc8723b1ant_ActionWifiNotConnectedScan(pBtCoexist);
+-			 else
++			else
+ 				halbtc8723b1ant_ActionWifiNotConnectedAssoAuth(pBtCoexist);
+ 		} else
+ 			halbtc8723b1ant_ActionWifiNotConnected(pBtCoexist);
 -- 
 2.25.1
 
