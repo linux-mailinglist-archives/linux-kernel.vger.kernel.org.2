@@ -2,86 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2942381E64
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 13:00:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02B53381E72
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 13:14:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231436AbhEPLBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 07:01:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbhEPLBP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 07:01:15 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B51C061573;
-        Sun, 16 May 2021 03:59:59 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id k10so4905964ejj.8;
-        Sun, 16 May 2021 03:59:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CGj9qzzaMLYMLxf4NzeJuVvuLLfG/hpvWhkYItySrDk=;
-        b=PpfoTTovf4OnLbZ2TnCchMOoeh87a/loX5wL9OSYYXTMjtAQheUPtpoKQOv6mV5Bng
-         Hr1Cn0QiOJ6x43OuqVtewReMlrAj7aNBayeVR7/BM0ebY10tjcBZQJ6xAHJu0vlcCbT/
-         xDkJLv6tIlzHU6utSShMKwOMv++fj3tYYXNERsMz1xK86+hM+HODk1JZaCr3KfVqgeTI
-         FNuNAPt7sh39WV9JuXpWH6RvIv0JXEwcsef2syxsZLMP9NZSWrdmxR5BhNOqj2Dp7RdT
-         lcAdxAFcVrLsZXawZgeQ0Xg/pZ49ED9+laM47/ZXe5jb5VI3BJrWKhCKTTURjoToOkja
-         GN/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CGj9qzzaMLYMLxf4NzeJuVvuLLfG/hpvWhkYItySrDk=;
-        b=R9KHe3DTj6v/XmDREHsQNrHoeKZlHNJVrw/XUXF3BL8tT1oomP8LzuGINhhk6NLtni
-         KYMhNIoBi2xhgHOxaMo5CKfqpZm7fRKxfmAQbQj3RSf4HDWj2HY5hh1S6As+6K/4hjpa
-         qp6vMJkuLEn3r+tgetFMBRJdeKfoXQAiA0P5068jyXc7pH18v/mu+jGM4hg16aVz7Q55
-         pGSAYeUxtXaYG0NcjVIi/skR4EAHITIs6pzbTHLRb28itTxj3pnu0JoCCO1jBZZ7IFLf
-         AWxckvqSzM2JPEHJWg7e+RJQoLze81y89IsoEezovZgqNaqqRwNkDhFydelXd4Mr1nMO
-         0o8g==
-X-Gm-Message-State: AOAM530wwKOu89W3trQsmwIFP+5KZbP/myS44xJXiaIfKP6E7RpuDU/R
-        UZwTu3YIt6kg0BFQj0EUJyc=
-X-Google-Smtp-Source: ABdhPJy8w5e1pPfjmSixdIgu8klBFatqxxXcUPKfiXYdOHwD2fVHQrcVHxB9ZuVcL1eUybqdSMRCNw==
-X-Received: by 2002:a17:906:1ed1:: with SMTP id m17mr57751038ejj.208.1621162798446;
-        Sun, 16 May 2021 03:59:58 -0700 (PDT)
-Received: from ubuntu.localdomain (bbcs-125-250.pub.wingo.ch. [144.2.125.250])
-        by smtp.gmail.com with ESMTPSA id t22sm8855625edw.29.2021.05.16.03.59.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 May 2021 03:59:57 -0700 (PDT)
-From:   Chun-Hung Tseng <henrybear327@gmail.com>
-To:     corbet@lwn.net
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chun-Hung Tseng <henrybear327@gmail.com>
-Subject: [PATCH v4] Documentation: scheduler: fixed 2 typos in sched-nice-design.rst
-Date:   Sun, 16 May 2021 18:59:55 +0800
-Message-Id: <20210516105955.120651-1-henrybear327@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S231448AbhEPLPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 07:15:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56138 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230001AbhEPLPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 May 2021 07:15:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E649161164;
+        Sun, 16 May 2021 11:13:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621163640;
+        bh=bxIW72OBGlUVbKXIO28RbGD+VrGPRvwYLITR6ZFMjjU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kvkSsjUwYa1V714tMzdnqN6zgVoaNNC3jZaMjlQG4uoFAbITDWPw75pi5xgdRVG5p
+         EKGaPZN4o3OFFkM4VeLebdU562quM996k1R5RbJldOVSmVLDORld5n18OrZh5G+xeo
+         yquBoE7haM25TjstGcjy4b8Lj5JYW6jv6TAMENd4C3Vs/k2Do4V1xFhB+PrLVpwd+z
+         sqpTahBXZs2VAOK/x9j6YKkGaMk8TrwOPZ2sucI3BsFmSaA2OXU7x/0f6FMy3triBY
+         cwv8At9hogUYBCk/UuJAzkat5N6P3UXWGBNJeruA5WhLWZ3Wq+hXLK3FDFfbLJEpxT
+         FvNvTNbVrW1Lw==
+Date:   Sun, 16 May 2021 13:13:55 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Thorsten Leemhuis <linux@leemhuis.info>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 02/16] docs: admin-guide: reporting-issues.rst:
+ replace some characters
+Message-ID: <20210516131355.30c73b7d@coco.lan>
+In-Reply-To: <a138a130-6208-be63-b6ea-b08f3d66012a@leemhuis.info>
+References: <cover.1621159997.git.mchehab+huawei@kernel.org>
+        <5625907ed95964321c39a8688b70c54bac6d8e95.1621159997.git.mchehab+huawei@kernel.org>
+        <a138a130-6208-be63-b6ea-b08f3d66012a@leemhuis.info>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixed 2 spelling errors in the documentation.
+Em Sun, 16 May 2021 12:28:06 +0200
+Thorsten Leemhuis <linux@leemhuis.info> escreveu:
 
-Signed-off-by: Chun-Hung Tseng <henrybear327@gmail.com>
----
- Documentation/scheduler/sched-nice-design.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Lo! On one hand I think it would be good to fix the tools to make them
+> understand non-breakable spaces in places where the author chose to use
+> them,
 
-diff --git a/Documentation/scheduler/sched-nice-design.rst b/Documentation/scheduler/sched-nice-design.rst
-index 0571f1b47e64..889bf2b737dc 100644
---- a/Documentation/scheduler/sched-nice-design.rst
-+++ b/Documentation/scheduler/sched-nice-design.rst
-@@ -60,7 +60,7 @@ within the constraints of HZ and jiffies and their nasty design level
- coupling to timeslices and granularity it was not really viable.
- 
- The second (less frequent but still periodically occurring) complaint
--about Linux's nice level support was its assymetry around the origo
-+about Linux's nice level support was its asymmetry around the origin
- (which you can see demonstrated in the picture above), or more
- accurately: the fact that nice level behavior depended on the _absolute_
- nice level as well, while the nice API itself is fundamentally
--- 
-2.25.1
+Fixing it is not trivial ;-)
 
+See, while DocBook, LaTeX and other similar tools allow the author
+to specify exactly how the output will be produced, Markup languages=20
+are not meant to give full control to the author, but, instead, to make
+their work easier by letting the toolset to take decisions about line
+breaks, font type and size, etc.
+
+In the specific case of Sphinx, the main tool parses the ReST files,
+and an output module is responsible to generate the actual output.
+
+So, there's one module for LaTeX, another one for HTML and a
+third party one for PDF (we currently don't use the last one).
+
+It is the output module that will actually decide to do line
+breaks and to honor the document margins and to add non-breakable
+spaces when needed.
+
+When the output is a web page, it shouldn't be a problem to use
+unbreakable spaces, provided that the output module is smart enough
+to detect it, adding an horizontal scroll bar if needed to avoid
+long lines to be simply truncated if the window is smaller than
+the lines.
+
+For e-pub, LaTeX and PDF, though, unbreakable spaces should be
+replaced by normal ones if the string is too long, or the lines
+will simply be truncated, with text loses.
+
+So, while it could be possible to use such characters, extra
+care should be taken, as all output formats need to be tested.
+
+Also, as Kernel patches and toolset improvements could change,
+for instance, the used font, or a change somewhere could lead
+into a different column width, such the tests need to be
+repeated from time to time and with different Sphinx versions.
+
+So, this ends by being a maintenance nightmare. Better to live
+without those ;-)
+
+> but whatever, their use in that sentence is definitely not
+> important, so feel free to add:
+>=20
+> Acked-by: Thorsten Leemhuis <linux@leemhuis.info>
+>=20
+> Thanks for working on this. Ciao, Thorsten
+
+Thanks!
+Mauro
+>=20
+> On 16.05.21 12:18, Mauro Carvalho Chehab wrote:
+> > The conversion tools used during DocBook/LaTeX/html/Markdown->ReST
+> > conversion and some cut-and-pasted text contain some characters that
+> > aren't easily reachable on standard keyboards and/or could cause
+> > troubles when parsed by the documentation build system.
+> >=20
+> > Replace the occurences of the following characters:
+> >=20
+> > 	- U+00a0 ('=C2=A0'): NO-BREAK SPACE
+> > 	  as it can cause lines being truncated on PDF output
+> >=20
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > ---
+> >  Documentation/admin-guide/reporting-issues.rst | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >=20
+> > diff --git a/Documentation/admin-guide/reporting-issues.rst b/Documenta=
+tion/admin-guide/reporting-issues.rst
+> > index 18d8e25ba9df..d7ac13f789cc 100644
+> > --- a/Documentation/admin-guide/reporting-issues.rst
+> > +++ b/Documentation/admin-guide/reporting-issues.rst
+> > @@ -1248,7 +1248,7 @@ paragraph makes the severeness obvious.
+> > =20
+> >  In case you performed a successful bisection, use the title of the cha=
+nge that
+> >  introduced the regression as the second part of your subject. Make the=
+ report
+> > -also mention the commit=C2=A0id of the culprit. In case of an unsucces=
+sful bisection,
+> > +also mention the commit id of the culprit. In case of an unsuccessful =
+bisection,
+> >  make your report mention the latest tested version that's working fine=
+ (say 5.7)
+> >  and the oldest where the issue occurs (say 5.8-rc1).
+> > =20
+> >  =20
+
+
+
+Thanks,
+Mauro
