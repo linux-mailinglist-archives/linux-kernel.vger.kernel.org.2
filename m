@@ -2,109 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DEEF381FC8
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 18:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 160FD381FCC
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 18:25:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231187AbhEPQZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 12:25:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230032AbhEPQZe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 12:25:34 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72607C061573;
-        Sun, 16 May 2021 09:24:18 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id t15so4068130edr.11;
-        Sun, 16 May 2021 09:24:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4iUzn3zHyIHxkXGKg+McsZZW45slq4tSdaSJBoUGIMg=;
-        b=YKfs1taDo1C0l4Eibti8xcHjG2eLfSXGaUCfjU5fyLR/EttCUGQ0ItkLTTQDYaXtKi
-         TkODHbQIVFn05l8RDH1zf7XSO7Y5nPZfsTKJ7asUSGSMsOoqkdtqj1VsPJzGTFDZAZTt
-         wVVeC+E4iXfPxRDl9E/4oaJ6hm8kjqMdcyfW9QWG5vxzoV16XEbzlfnoW33sQyu5NtmR
-         vgvHqulrMLVCq/pyJMC5v+iseW/JtMXdXSx6nLPoSae8pJxx77E06U6MxR2hkkWkwaxd
-         Y0TG4gTgP7+pnjXxPGlR81LIoXxlkPZZ+qpyOtFMpQV7dZ+qxh4HHjoNW8Mdp1vhGOHc
-         hDdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4iUzn3zHyIHxkXGKg+McsZZW45slq4tSdaSJBoUGIMg=;
-        b=KxCToqeUOvN1pyQ2Vu7o5ScpZmkXPzc9dx9PSB97P6tDzWZTEpzHDOJ9sL4bX7AUu3
-         6D5a9T5ZXO/6VpRXbcaJDlG54e4Dul777DqsxYRypGj8lS/nwFhQwk9XaLBMYw923AW4
-         5gEvoqJmmKgz08wP70mz3tpYN9lpjtcymj/pIPkHsrG2EdZ1KZEkul0zCvOcZOczWv7J
-         PilFMCWD3KH8A40kFL3ejxQ1giLDHeopK0RDDLzgpnQsaIxyh28Gimd9mTmWVVQ5Q/Gy
-         PlcSzhzer9/BrL0IAKWPfKn9g16sYyUrghFieD6kOqD3/Sv5s2FaQEy6QGLxPrs7iFw5
-         xkEg==
-X-Gm-Message-State: AOAM532SNpogEGktPrGJ4p9SBxjybe0yr/Td3cade6zxLOryMO566lLe
-        ns/xurCgm42uib++B2/D7qPHg+AaET0=
-X-Google-Smtp-Source: ABdhPJyDzM4C1zfNV5m13Tr8f6j8lGTy26CruzisUlyDOgDdEeb7KXTrRio33kjybIP3h9LMtGdPUQ==
-X-Received: by 2002:a05:6402:14c2:: with SMTP id f2mr16279825edx.69.1621182256978;
-        Sun, 16 May 2021 09:24:16 -0700 (PDT)
-Received: from [192.168.178.40] (ipbcc11466.dynamic.kabel-deutschland.de. [188.193.20.102])
-        by smtp.gmail.com with ESMTPSA id z4sm9173852edc.1.2021.05.16.09.24.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 16 May 2021 09:24:16 -0700 (PDT)
-Subject: Re: [PATCH] scsi: target: tcmu: fix boolreturn.cocci warnings
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org
-References: <202105160749.IImZN2gL-lkp@intel.com>
- <20210515230358.GA97544@60d1edce16e0>
-From:   Bodo Stroesser <bostroesser@gmail.com>
-Message-ID: <2dc20427-50d9-093f-40ae-b031426939a4@gmail.com>
-Date:   Sun, 16 May 2021 18:24:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231386AbhEPQ00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 12:26:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50380 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230032AbhEPQ0Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 May 2021 12:26:24 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5B79F61026;
+        Sun, 16 May 2021 16:25:06 +0000 (UTC)
+Date:   Sun, 16 May 2021 17:26:18 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Liam Beguin <liambeguin@gmail.com>, jdelvare@suse.com,
+        lars@metafoo.de, pmeerw@pmeerw.net, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        Peter Rosin <peda@axentia.se>
+Subject: Re: [RFC PATCH v1 0/2] hwmon: (iio_hwmon) optionally force iio
+ channel type
+Message-ID: <20210516172618.2d7ad168@jic23-huawei>
+In-Reply-To: <e56146c5-2bff-3a6d-b54e-fd40993f82aa@roeck-us.net>
+References: <20210516044315.116290-1-liambeguin@gmail.com>
+        <20210516100631.7310a7bb@jic23-huawei>
+        <CBEREZMZ2Z8U.13BH8G7RKPPL7@shaak>
+        <e56146c5-2bff-3a6d-b54e-fd40993f82aa@roeck-us.net>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210515230358.GA97544@60d1edce16e0>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.05.21 01:03, kernel test robot wrote:
-> From: kernel test robot <lkp@intel.com>
+On Sun, 16 May 2021 08:54:06 -0700
+Guenter Roeck <linux@roeck-us.net> wrote:
+
+> On 5/16/21 8:02 AM, Liam Beguin wrote:
+> > Hi Jonathan,
+> > 
+> > On Sun May 16, 2021 at 5:06 AM EDT, Jonathan Cameron wrote:  
+> >> On Sun, 16 May 2021 00:43:13 -0400
+> >> Liam Beguin <liambeguin@gmail.com> wrote:
+> >>  
+> >>> Add a devicetree binding to optionally force a different IIO channel
+> >>> type.
+> >>>
+> >>> This is useful in cases where ADC channels are connected to a circuit
+> >>> that represent another unit such as a temperature or a current.
+> >>>
+> >>> `channel-types` was chosen instead of `io-channel-types` as this is not
+> >>> part of the iio consumer bindings.
+> >>>
+> >>> In the current form, this patch does what it's intended to do:
+> >>> change the unit displayed by `sensors`, but feels like the wrong way to
+> >>> address the problem.
+> >>>
+> >>> Would it be possible to force the type of different IIO channels for
+> >>> this kind of use case with a devicetree binding from the IIO subsystem?
+> >>>
+> >>> It would be convenient to do it within the IIO subsystem to have the
+> >>> right unit there too.
+> >>>
+> >>> Thanks for your time,
+> >>> Liam  
+> >>
+> >> Hi Liam,
+> >>
+> >> +CC Peter for AFE part.
+> >>
+> >> It's an interesting approach, but I would suggest we think about this
+> >> a different way.
+> >>
+> >> Whenever a channel is being used to measure something 'different' from
+> >> what it actually measures (e.g. a voltage ADC measuring a current) that
+> >> reflects their being some analog component involved.
+> >> If you look at drivers/iio/afe/iio-rescale.c you can see the approach
+> >> we currently use to handle this.  
+> > 
+> > Many thanks for pointing out the AFE code. That look like what I was
+> > hoping to accomplish, but in a much better way.
+> >   
+> >>
+> >> Effectively what you add to devicetree is a consumer of the ADC channel
+> >> which in turn provides services to other devices. For this current case
+> >> it would be either a current-sense-amplifier or a current-sense-shunt
+> >> depending on what the analog front end looks like. We have to describe
+> >> the characteristics of that front end which isn't something that can
+> >> be done via a simple channel type.
+> >>  
+> > 
+> > Understood. My original intention was to use sensors.conf to do the
+> > conversions and take into accounts those parameters.
+> >   
+> >> That afe consumer device can then provide services to another consumer
+> >> (e.g. iio-hwmon) which work for your usecase.
+> >>
+> >> The main limitation of this approach currently is you end up with
+> >> one device per channel. That could be improved upon if you have a
+> >> usecase
+> >> where it matters.
+> >>
+> >> I don't think we currently have an equivalent for temperature sensing
+> >> but it would be easy enough to do something similar.  
+> > 
+> > Wonderful, thanks again for pointing out the AFE!
+> >   
 > 
-> drivers/target/target_core_user.c:1424:9-10: WARNING: return of 0/1 in function 'tcmu_handle_completions' with return type bool
+> Please don't reinvent the ntc_thermistor driver.
+Agreed, I'd forgotten it existed :(  Had a feeling we'd solved that problem before
+but couldn't remember the name of the driver.
+
+The afe driver already deals with current / voltage scaling and conversion
+for common analog circuits. Potential dividers, current shunts etc, but they
+are all the linear cases IIRC.
+
+ntc_thermistor deals with the much more complex job of dealing with a thermistor.
+
+Thanks,
+
+Jonathan
+
 > 
->   Return statements in functions returning bool should use
->   true/false instead of 1/0.
-> Generated by: scripts/coccinelle/misc/boolreturn.cocci
+> Thanks,
+> Guenter
 > 
-> Fixes: 9814b55cde05 ("scsi: target: tcmu: Return from tcmu_handle_completions() if cmd_id not found")
-> CC: Bodo Stroesser <bostroesser@gmail.com>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: kernel test robot <lkp@intel.com>
-> ---
-> 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   c12a29ed9094b4b9cde8965c12850460b9a79d7c
-> commit: 9814b55cde0588b6d9bc496cee43f87316cbc6f1 scsi: target: tcmu: Return from tcmu_handle_completions() if cmd_id not found
-> :::::: branch date: 6 hours ago
-> :::::: commit date: 2 weeks ago
-> 
->   target_core_user.c |    2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> --- a/drivers/target/target_core_user.c
-> +++ b/drivers/target/target_core_user.c
-> @@ -1421,7 +1421,7 @@ static bool tcmu_handle_completions(stru
->   
->   	if (test_bit(TCMU_DEV_BIT_BROKEN, &udev->flags)) {
->   		pr_err("ring broken, not handling completions\n");
-> -		return 0;
-> +		return false;
->   	}
->   
->   	mb = udev->mb_addr;
+> > Liam
+> >   
+> >>
+> >> Jonathan
+> >>
+> >>  
+> >>>
+> >>> Liam Beguin (2):
+> >>>    hwmon: (iio_hwmon) optionally force iio channel type
+> >>>    dt-bindings: hwmon: add iio-hwmon bindings
+> >>>
+> >>>   .../devicetree/bindings/hwmon/iio-hwmon.yaml  | 41 +++++++++++++++++++
+> >>>   drivers/hwmon/iio_hwmon.c                     |  2 +
+> >>>   2 files changed, 43 insertions(+)
+> >>>   create mode 100644 Documentation/devicetree/bindings/hwmon/iio-hwmon.yaml
+> >>>
+> >>>
+> >>> base-commit: 9f4ad9e425a1d3b6a34617b8ea226d56a119a717  
+> >   
 > 
 
-Acked-by: Bodo Stroesser <bostroesser@gmail.com>
