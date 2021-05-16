@@ -2,209 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC7B382092
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 21:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D0EC382093
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 21:11:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232194AbhEPTLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 15:11:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229661AbhEPTLS (ORCPT
+        id S232274AbhEPTMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 15:12:09 -0400
+Received: from relay9-d.mail.gandi.net ([217.70.183.199]:51739 "EHLO
+        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229661AbhEPTMI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 15:11:18 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A4D9C061573
-        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 12:10:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=UKMFsY8/zFvweWvQhqbUk5fU84dFty1APN7OalYnItE=; b=mVeNtOKPwMidQA7Z/GB1LLI842
-        Se6XVgXL+ys08gZu+mU0QTPmYh3GkWNIlCN+qQ2ki+CjoiG5YIjs3430p3wF4e71P5dg3VxnwEBK7
-        7xbHxvtCebpefUf0zw7nnGBEF58SNh7e/Pf6+6Tfh4AOg23bMS4SXxrSHEar0TLF65bMXRDFfgWze
-        yI+y6YAc8gPU0iEQk6YZizeVTbxPSFABK5s2qJ7Yz9JJ/wKoxo4jAuGt26TLr3wg53W2BACy8dIXc
-        EKeN2RK5oQ9bw874fllvJQZF9OBauar6WvXADF1EG7E/rNgYgnJuySEB1tSLETNJThCEWcS5UaQv2
-        x7grhlqQ==;
-Received: from [2601:1c0:6280:3f0::7376]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1liM9K-00D9ue-IF; Sun, 16 May 2021 19:10:02 +0000
-Subject: Re: arch/riscv/kernel/probes/kprobes.c:90:22: error: use of
- undeclared identifier 'PAGE_KERNEL_READ_EXEC'
-To:     kernel test robot <lkp@intel.com>,
-        Jisheng Zhang <jszhang@kernel.org>
-Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        linux-kernel@vger.kernel.org,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-References: <202105070646.RiY8StjM-lkp@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <22c9edf5-1112-40e4-bd61-ad8ddf2d4732@infradead.org>
-Date:   Sun, 16 May 2021 12:10:01 -0700
+        Sun, 16 May 2021 15:12:08 -0400
+Received: (Authenticated sender: alex@ghiti.fr)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 24D2EFF803;
+        Sun, 16 May 2021 19:10:48 +0000 (UTC)
+Subject: Re: [PATCH] riscv: mm: init: Consolidate vars, functions
+To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210516211556.43c00055@xhacker>
+ <20210516211922.2110232e@xhacker>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <66c8965d-494f-6c2f-0739-9bee13fc507c@ghiti.fr>
+Date:   Sun, 16 May 2021 21:10:48 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <202105070646.RiY8StjM-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <20210516211922.2110232e@xhacker>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/6/21 3:11 PM, kernel test robot wrote:
-> Hi Jisheng,
-> 
-> FYI, the error/warning still remains.
-> 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   38182162b50aa4e970e5997df0a0c4288147a153
-> commit: cdd1b2bd358ffda2638fe18ff47191e84e18525f riscv: kprobes: Implement alloc_insn_page()
-> date:   10 days ago
-> config: riscv-randconfig-r006-20210506 (attached as .config)
-> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project 8f5a2a5836cc8e4c1def2bdeb022e7b496623439)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install riscv cross compiling tool for clang build
->         # apt-get install binutils-riscv64-linux-gnu
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=cdd1b2bd358ffda2638fe18ff47191e84e18525f
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout cdd1b2bd358ffda2638fe18ff47191e84e18525f
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=riscv 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->    include/uapi/linux/byteorder/little_endian.h:36:51: note: expanded from macro '__le16_to_cpu'
->    #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
->                                                      ^
->    In file included from arch/riscv/kernel/probes/kprobes.c:3:
->    In file included from include/linux/kprobes.h:29:
->    In file included from include/linux/ftrace.h:10:
->    In file included from include/linux/trace_recursion.h:5:
->    In file included from include/linux/interrupt.h:11:
->    In file included from include/linux/hardirq.h:10:
->    In file included from ./arch/riscv/include/generated/asm/hardirq.h:1:
->    In file included from include/asm-generic/hardirq.h:17:
->    In file included from include/linux/irq.h:20:
->    In file included from include/linux/io.h:13:
->    In file included from arch/riscv/include/asm/io.h:149:
->    include/asm-generic/io.h:572:9: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            return inl(addr);
->                   ^~~~~~~~~
->    arch/riscv/include/asm/io.h:57:76: note: expanded from macro 'inl'
->    #define inl(c)          ({ u32 __v; __io_pbr(); __v = readl_cpu((void*)(PCI_IOBASE + (c))); __io_par(__v); __v; })
->                                                                            ~~~~~~~~~~ ^
->    arch/riscv/include/asm/mmio.h:89:76: note: expanded from macro 'readl_cpu'
->    #define readl_cpu(c)            ({ u32 __r = le32_to_cpu((__force __le32)__raw_readl(c)); __r; })
->                                                                                         ^
->    include/uapi/linux/byteorder/little_endian.h:34:51: note: expanded from macro '__le32_to_cpu'
->    #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
->                                                      ^
->    In file included from arch/riscv/kernel/probes/kprobes.c:3:
->    In file included from include/linux/kprobes.h:29:
->    In file included from include/linux/ftrace.h:10:
->    In file included from include/linux/trace_recursion.h:5:
->    In file included from include/linux/interrupt.h:11:
->    In file included from include/linux/hardirq.h:10:
->    In file included from ./arch/riscv/include/generated/asm/hardirq.h:1:
->    In file included from include/asm-generic/hardirq.h:17:
->    In file included from include/linux/irq.h:20:
->    In file included from include/linux/io.h:13:
->    In file included from arch/riscv/include/asm/io.h:149:
->    include/asm-generic/io.h:580:2: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            outb(value, addr);
->            ^~~~~~~~~~~~~~~~~
->    arch/riscv/include/asm/io.h:59:68: note: expanded from macro 'outb'
->    #define outb(v,c)       ({ __io_pbw(); writeb_cpu((v),(void*)(PCI_IOBASE + (c))); __io_paw(); })
->                                                                  ~~~~~~~~~~ ^
->    arch/riscv/include/asm/mmio.h:91:52: note: expanded from macro 'writeb_cpu'
->    #define writeb_cpu(v, c)        ((void)__raw_writeb((v), (c)))
->                                                              ^
->    In file included from arch/riscv/kernel/probes/kprobes.c:3:
->    In file included from include/linux/kprobes.h:29:
->    In file included from include/linux/ftrace.h:10:
->    In file included from include/linux/trace_recursion.h:5:
->    In file included from include/linux/interrupt.h:11:
->    In file included from include/linux/hardirq.h:10:
->    In file included from ./arch/riscv/include/generated/asm/hardirq.h:1:
->    In file included from include/asm-generic/hardirq.h:17:
->    In file included from include/linux/irq.h:20:
->    In file included from include/linux/io.h:13:
->    In file included from arch/riscv/include/asm/io.h:149:
->    include/asm-generic/io.h:588:2: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            outw(value, addr);
->            ^~~~~~~~~~~~~~~~~
->    arch/riscv/include/asm/io.h:60:68: note: expanded from macro 'outw'
->    #define outw(v,c)       ({ __io_pbw(); writew_cpu((v),(void*)(PCI_IOBASE + (c))); __io_paw(); })
->                                                                  ~~~~~~~~~~ ^
->    arch/riscv/include/asm/mmio.h:92:76: note: expanded from macro 'writew_cpu'
->    #define writew_cpu(v, c)        ((void)__raw_writew((__force u16)cpu_to_le16(v), (c)))
->                                                                                      ^
->    In file included from arch/riscv/kernel/probes/kprobes.c:3:
->    In file included from include/linux/kprobes.h:29:
->    In file included from include/linux/ftrace.h:10:
->    In file included from include/linux/trace_recursion.h:5:
->    In file included from include/linux/interrupt.h:11:
->    In file included from include/linux/hardirq.h:10:
->    In file included from ./arch/riscv/include/generated/asm/hardirq.h:1:
->    In file included from include/asm-generic/hardirq.h:17:
->    In file included from include/linux/irq.h:20:
->    In file included from include/linux/io.h:13:
->    In file included from arch/riscv/include/asm/io.h:149:
->    include/asm-generic/io.h:596:2: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            outl(value, addr);
->            ^~~~~~~~~~~~~~~~~
->    arch/riscv/include/asm/io.h:61:68: note: expanded from macro 'outl'
->    #define outl(v,c)       ({ __io_pbw(); writel_cpu((v),(void*)(PCI_IOBASE + (c))); __io_paw(); })
->                                                                  ~~~~~~~~~~ ^
->    arch/riscv/include/asm/mmio.h:93:76: note: expanded from macro 'writel_cpu'
->    #define writel_cpu(v, c)        ((void)__raw_writel((__force u32)cpu_to_le32(v), (c)))
->                                                                                      ^
->    In file included from arch/riscv/kernel/probes/kprobes.c:3:
->    In file included from include/linux/kprobes.h:29:
->    In file included from include/linux/ftrace.h:10:
->    In file included from include/linux/trace_recursion.h:5:
->    In file included from include/linux/interrupt.h:11:
->    In file included from include/linux/hardirq.h:10:
->    In file included from ./arch/riscv/include/generated/asm/hardirq.h:1:
->    In file included from include/asm-generic/hardirq.h:17:
->    In file included from include/linux/irq.h:20:
->    In file included from include/linux/io.h:13:
->    In file included from arch/riscv/include/asm/io.h:149:
->    include/asm-generic/io.h:1005:55: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->            return (port > MMIO_UPPER_LIMIT) ? NULL : PCI_IOBASE + port;
->                                                      ~~~~~~~~~~ ^
->>> arch/riscv/kernel/probes/kprobes.c:90:22: error: use of undeclared identifier 'PAGE_KERNEL_READ_EXEC'
->                                         GFP_KERNEL, PAGE_KERNEL_READ_EXEC,
->                                                     ^
->    7 warnings and 1 error generated.
-> 
-> 
-> vim +/PAGE_KERNEL_READ_EXEC +90 arch/riscv/kernel/probes/kprobes.c
-> 
->     86	
->     87	void *alloc_insn_page(void)
->     88	{
->     89		return  __vmalloc_node_range(PAGE_SIZE, 1, VMALLOC_START, VMALLOC_END,
->   > 90					     GFP_KERNEL, PAGE_KERNEL_READ_EXEC,
->     91					     VM_FLUSH_RESET_PERMS, NUMA_NO_NODE,
->     92					     __builtin_return_address(0));
->     93	}
->     94	
-> 
-> ---
+Hi Jisheng,
 
->>> arch/riscv/kernel/probes/kprobes.c:90:22: error: use of undeclared identifier 'PAGE_KERNEL_READ_EXEC'
->                                         GFP_KERNEL, PAGE_KERNEL_READ_EXEC,
+On 16/05/2021 15:19, Jisheng Zhang wrote:
+> On Sun, 16 May 2021 21:15:56 +0800 Jisheng Zhang  wrote:
+> 
+>> From: Jisheng Zhang <jszhang@kernel.org>
+>>
+>> Consolidate the following items in init.c
+>>
+>> Staticize global vars as much as possible;
+>> Add __initdata mark if the global var isn't needed after init
+>> Add __init mark if the func isn't needed after init
+>> Add __ro_after_init if the global var is read only after init
+> 
+> Hi Alexandre,
+> 
+> I think kernel_virt_addr can be removed, users can directly use
+> the KERNEL_LINK_ADDR MACRO. Maybe I miss the reason of intrducing
+> it in commit 2bfc6cd81bd17e43 ("riscv: Move kernel mapping outside of
+> linear mapping"), could you please comment?
+> 
+> Thanks in advance
 
-is due to
-# CONFIG_MMU is not set
+kernel_virt_addr will be used when I push my relocatable series since 
+then, the kernel virtual address will be different from 
+KERNEL_LINK_ADDR. I agree this was not needed in 2bfc6cd81bd17e43 
+("riscv: Move kernel mapping outside of linear mapping"), I'm a bit late 
+in pushing the relocatable series.
 
-
--- 
-~Randy
-
+> 
+>>
+>> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+>> ---
+>>   arch/riscv/include/asm/set_memory.h |  2 +-
+>>   arch/riscv/mm/init.c                | 36 +++++++++++++++--------------
+>>   2 files changed, 20 insertions(+), 18 deletions(-)
+>>
+>> diff --git a/arch/riscv/include/asm/set_memory.h b/arch/riscv/include/asm/set_memory.h
+>> index 086f757e8ba3..9d4d455726d4 100644
+>> --- a/arch/riscv/include/asm/set_memory.h
+>> +++ b/arch/riscv/include/asm/set_memory.h
+>> @@ -27,7 +27,7 @@ static inline int set_memory_rw_nx(unsigned long addr, int numpages) { return 0;
+>>   #endif
+>>   
+>>   #if defined(CONFIG_64BIT) && defined(CONFIG_STRICT_KERNEL_RWX)
+>> -void protect_kernel_linear_mapping_text_rodata(void);
+>> +void __init protect_kernel_linear_mapping_text_rodata(void);
+>>   #else
+>>   static inline void protect_kernel_linear_mapping_text_rodata(void) {}
+>>   #endif
+>> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+>> index 4c4c92ce0bb8..eac2d5c27b3e 100644
+>> --- a/arch/riscv/mm/init.c
+>> +++ b/arch/riscv/mm/init.c
+>> @@ -53,7 +53,7 @@ struct pt_alloc_ops {
+>>   #endif
+>>   };
+>>   
+>> -static phys_addr_t dma32_phys_limit __ro_after_init;
+>> +static phys_addr_t dma32_phys_limit __initdata;
+>>   
+>>   static void __init zone_sizes_init(void)
+>>   {
+>> @@ -184,7 +184,7 @@ extern char _sdata[], _edata[];
+>>   #endif /* CONFIG_XIP_KERNEL */
+>>   
+>>   #ifdef CONFIG_MMU
+>> -static struct pt_alloc_ops _pt_ops __ro_after_init;
+>> +static struct pt_alloc_ops _pt_ops __initdata;
+>>   
+>>   #ifdef CONFIG_XIP_KERNEL
+>>   #define pt_ops (*(struct pt_alloc_ops *)XIP_FIXUP(&_pt_ops))
+>> @@ -200,13 +200,13 @@ EXPORT_SYMBOL(va_pa_offset);
+>>   #endif
+>>   /* Offset between kernel mapping virtual address and kernel load address */
+>>   #ifdef CONFIG_64BIT
+>> -unsigned long va_kernel_pa_offset;
+>> +unsigned long va_kernel_pa_offset __ro_after_init;
+>>   EXPORT_SYMBOL(va_kernel_pa_offset);
+>>   #endif
+>>   #ifdef CONFIG_XIP_KERNEL
+>>   #define va_kernel_pa_offset    (*((unsigned long *)XIP_FIXUP(&va_kernel_pa_offset)))
+>>   #endif
+>> -unsigned long va_kernel_xip_pa_offset;
+>> +unsigned long va_kernel_xip_pa_offset __ro_after_init;
+>>   EXPORT_SYMBOL(va_kernel_xip_pa_offset);
+>>   #ifdef CONFIG_XIP_KERNEL
+>>   #define va_kernel_xip_pa_offset        (*((unsigned long *)XIP_FIXUP(&va_kernel_xip_pa_offset)))
+>> @@ -216,7 +216,7 @@ EXPORT_SYMBOL(pfn_base);
+>>   
+>>   pgd_t swapper_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+>>   pgd_t trampoline_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+>> -pte_t fixmap_pte[PTRS_PER_PTE] __page_aligned_bss;
+>> +static pte_t fixmap_pte[PTRS_PER_PTE] __page_aligned_bss;
+>>   
+>>   pgd_t early_pg_dir[PTRS_PER_PGD] __initdata __aligned(PAGE_SIZE);
+>>   
+>> @@ -253,7 +253,7 @@ static inline pte_t *__init get_pte_virt_fixmap(phys_addr_t pa)
+>>   	return (pte_t *)set_fixmap_offset(FIX_PTE, pa);
+>>   }
+>>   
+>> -static inline pte_t *get_pte_virt_late(phys_addr_t pa)
+>> +static inline pte_t *__init get_pte_virt_late(phys_addr_t pa)
+>>   {
+>>   	return (pte_t *) __va(pa);
+>>   }
+>> @@ -272,7 +272,7 @@ static inline phys_addr_t __init alloc_pte_fixmap(uintptr_t va)
+>>   	return memblock_phys_alloc(PAGE_SIZE, PAGE_SIZE);
+>>   }
+>>   
+>> -static phys_addr_t alloc_pte_late(uintptr_t va)
+>> +static phys_addr_t __init alloc_pte_late(uintptr_t va)
+>>   {
+>>   	unsigned long vaddr;
+>>   
+>> @@ -296,10 +296,10 @@ static void __init create_pte_mapping(pte_t *ptep,
+>>   
+>>   #ifndef __PAGETABLE_PMD_FOLDED
+>>   
+>> -pmd_t trampoline_pmd[PTRS_PER_PMD] __page_aligned_bss;
+>> -pmd_t fixmap_pmd[PTRS_PER_PMD] __page_aligned_bss;
+>> -pmd_t early_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
+>> -pmd_t early_dtb_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
+>> +static pmd_t trampoline_pmd[PTRS_PER_PMD] __page_aligned_bss;
+>> +static pmd_t fixmap_pmd[PTRS_PER_PMD] __page_aligned_bss;
+>> +static pmd_t early_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
+>> +static pmd_t early_dtb_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
+>>   
+>>   #ifdef CONFIG_XIP_KERNEL
+>>   #define trampoline_pmd ((pmd_t *)XIP_FIXUP(trampoline_pmd))
+>> @@ -319,7 +319,7 @@ static pmd_t *__init get_pmd_virt_fixmap(phys_addr_t pa)
+>>   	return (pmd_t *)set_fixmap_offset(FIX_PMD, pa);
+>>   }
+>>   
+>> -static pmd_t *get_pmd_virt_late(phys_addr_t pa)
+>> +static pmd_t *__init get_pmd_virt_late(phys_addr_t pa)
+>>   {
+>>   	return (pmd_t *) __va(pa);
+>>   }
+>> @@ -336,7 +336,7 @@ static phys_addr_t __init alloc_pmd_fixmap(uintptr_t va)
+>>   	return memblock_phys_alloc(PAGE_SIZE, PAGE_SIZE);
+>>   }
+>>   
+>> -static phys_addr_t alloc_pmd_late(uintptr_t va)
+>> +static phys_addr_t __init alloc_pmd_late(uintptr_t va)
+>>   {
+>>   	unsigned long vaddr;
+>>   
+>> @@ -454,14 +454,16 @@ asmlinkage void __init __copy_data(void)
+>>   #error "setup_vm() is called from head.S before relocate so it should not use absolute addressing."
+>>   #endif
+>>   
+>> -uintptr_t load_pa, load_sz;
+>> +static uintptr_t load_pa __initdata;
+>> +static uintptr_t load_sz __initdata;
+>>   #ifdef CONFIG_XIP_KERNEL
+>>   #define load_pa        (*((uintptr_t *)XIP_FIXUP(&load_pa)))
+>>   #define load_sz        (*((uintptr_t *)XIP_FIXUP(&load_sz)))
+>>   #endif
+>>   
+>>   #ifdef CONFIG_XIP_KERNEL
+>> -uintptr_t xiprom, xiprom_sz;
+>> +static uintptr_t xiprom __inidata;
+>> +static uintptr_t xiprom_sz __initdata;
+>>   #define xiprom_sz      (*((uintptr_t *)XIP_FIXUP(&xiprom_sz)))
+>>   #define xiprom         (*((uintptr_t *)XIP_FIXUP(&xiprom)))
+>>   
+>> @@ -646,7 +648,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+>>   }
+>>   
+>>   #if defined(CONFIG_64BIT) && defined(CONFIG_STRICT_KERNEL_RWX)
+>> -void protect_kernel_linear_mapping_text_rodata(void)
+>> +void __init protect_kernel_linear_mapping_text_rodata(void)
+>>   {
+>>   	unsigned long text_start = (unsigned long)lm_alias(_start);
+>>   	unsigned long init_text_start = (unsigned long)lm_alias(__init_text_begin);
+>> @@ -858,7 +860,7 @@ static void __init reserve_crashkernel(void)
+>>    * reserved once we call early_init_fdt_scan_reserved_mem()
+>>    * later on.
+>>    */
+>> -static int elfcore_hdr_setup(struct reserved_mem *rmem)
+>> +static int __init elfcore_hdr_setup(struct reserved_mem *rmem)
+>>   {
+>>   	elfcorehdr_addr = rmem->base;
+>>   	elfcorehdr_size = rmem->size;
+> 
+> 
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> 
