@@ -2,106 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 268EE3820FE
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 22:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A1ED382110
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 22:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233604AbhEPUfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 16:35:41 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:58196 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231145AbhEPUfk (ORCPT
+        id S233837AbhEPUzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 16:55:49 -0400
+Received: from mx10.guaratuba.pr.gov.br ([192.163.197.187]:43064 "EHLO
+        mx10.guaratuba.pr.gov.br" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229900AbhEPUzs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 16:35:40 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id C8A701C0B76; Sun, 16 May 2021 22:34:23 +0200 (CEST)
-Date:   Sun, 16 May 2021 22:34:23 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Quanyang Wang <quanyang.wang@windriver.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 264/530] spi: spi-zynqmp-gqspi: fix use-after-free
- in zynqmp_qspi_exec_op
-Message-ID: <20210516203423.GA11471@duo.ucw.cz>
-References: <20210512144819.664462530@linuxfoundation.org>
- <20210512144828.501430855@linuxfoundation.org>
+        Sun, 16 May 2021 16:55:48 -0400
+Received: from [127.0.0.1] (port=45716 helo=server01.guaratuba.pr.gov.br)
+        by server01.guaratuba.pr.gov.br with esmtpa (Exim 4.93)
+        (envelope-from <Info@alicewalton.org>)
+        id 1liNaM-0007TY-Pn; Sun, 16 May 2021 17:42:02 -0300
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="2oS5YaxWCcQjTEyO"
-Content-Disposition: inline
-In-Reply-To: <20210512144828.501430855@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Date:   Sun, 16 May 2021 17:42:02 -0300
+From:   "Info@alicewalton.com" <Info@alicewalton.org>
+To:     undisclosed-recipients:;
+Reply-To: alicewalton011@outlook.co.th
+Mail-Reply-To: alicewalton011@outlook.co.th
+Message-ID: <86011b8f09e0f84fa0ebc0f209806612@alicewalton.org>
+X-Sender: Info@alicewalton.org
+User-Agent: Roundcube Webmail/1.3.15
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - server01.guaratuba.pr.gov.br
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - alicewalton.org
+X-Get-Message-Sender-Via: server01.guaratuba.pr.gov.br: authenticated_id: cenereidas@guaratuba.pr.gov.br
+X-Authenticated-Sender: server01.guaratuba.pr.gov.br: cenereidas@guaratuba.pr.gov.br
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---2oS5YaxWCcQjTEyO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi!
-
-> When handling op->addr, it is using the buffer "tmpbuf" which has been
-> freed. This will trigger a use-after-free KASAN warning. Let's use
-> temporary variables to store op->addr.val and op->cmd.opcode to fix
-> this issue.
-
-I believe this is "cure worse than a disassease".
-
-> +++ b/drivers/spi/spi-zynqmp-gqspi.c
-> @@ -926,8 +926,9 @@ static int zynqmp_qspi_exec_op(struct spi_mem *mem,
->  	struct zynqmp_qspi *xqspi =3D spi_controller_get_devdata
->  				    (mem->spi->master);
->  	int err =3D 0, i;
-> -	u8 *tmpbuf;
->  	u32 genfifoentry =3D 0;
-> +	u16 opcode =3D op->cmd.opcode;
-> +	u64 opaddr;
-> =20
->  	dev_dbg(xqspi->dev, "cmd:%#x mode:%d.%d.%d.%d\n",
->  		op->cmd.opcode, op->cmd.buswidth, op->addr.buswidth,
-> @@ -940,14 +941,8 @@ static int zynqmp_qspi_exec_op(struct spi_mem *mem,
->  	genfifoentry |=3D xqspi->genfifobus;
-> =20
->  	if (op->cmd.opcode) {
-> -		tmpbuf =3D kzalloc(op->cmd.nbytes, GFP_KERNEL | GFP_DMA);
-> -		if (!tmpbuf) {
-> -			mutex_unlock(&xqspi->op_lock);
-> -			return -ENOMEM;
-> -		}
-> -		tmpbuf[0] =3D op->cmd.opcode;
->  		reinit_completion(&xqspi->data_completion);
-> -		xqspi->txbuf =3D tmpbuf;
-> +		xqspi->txbuf =3D &opcode;
->  		xqspi->rxbuf =3D NULL;
->  		xqspi->bytes_to_transfer =3D op->cmd.nbytes;
->  		xqspi->bytes_to_receive =3D 0;
-
-So this replaces "op->cmd.nbytes" bytes big DMA buffer with 2 bytes on
-stack.
-
-First, if op->cmd.nbytes is > 2, DMA will overrun that buffer. That
-can't be healthy.
-
-Second, you really should not run DMA from on-stack buffers.
-
-Best regards,
-								Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---2oS5YaxWCcQjTEyO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYKGBzwAKCRAw5/Bqldv6
-8oRmAJ0QR2fc6gdv0wUf2oW8V3UMti2jEACeMUf6pCWcXdxiO3mwhajM0k6zdV8=
-=yrfb
------END PGP SIGNATURE-----
-
---2oS5YaxWCcQjTEyO--
+-- 
+I'm Mrs Alice Walton, I have an important
+issue to discuss with you, for details.
+Revert to My Private email: alicewalton011@outlook.co.th
