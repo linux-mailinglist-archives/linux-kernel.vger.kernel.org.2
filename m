@@ -2,79 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6443B38201D
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 19:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9EB1382028
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 19:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231402AbhEPRDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 13:03:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhEPRDM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 13:03:12 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66AE1C061573;
-        Sun, 16 May 2021 10:01:56 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id z12so4281436ejw.0;
-        Sun, 16 May 2021 10:01:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AtiJHfdmT2LSVR4rbNIaNF36Xfs944KqtBektfTje5M=;
-        b=DAGiCJN/B0AuQYxR2YMS1YdLG7E04XbNnAThdGjmBoPVyWeVm0Vt63bTbv2eoScYRQ
-         SvAEYLrzwnmzOR5wp1CC3RKN4hyBnHKWJQKmPAax8xiYeQN0kxz2jQJP+F4Eg3PnYmne
-         1tPqS44UJ6bIQx53XCLEzkUDSA0PKYzdiJ1Bm8Ux9G1YFwdM/2HDZfALKNqSjTCpM2/w
-         /Rh5WhkPS0VtYInMu//A4ZE4YYK/MTrUiFkFfqoKnAk9XrjylD1xFHqznvRukMuPJ097
-         ZgkrbbJ358Ttx/9WXCUX4sI2HnbgR0YAj0ln5t6NUysuwZ90LddsWhtadieg1uDXWzMv
-         XHaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AtiJHfdmT2LSVR4rbNIaNF36Xfs944KqtBektfTje5M=;
-        b=rrJxHhVmnvwPsE9bFaNTi/KrxzBoPJmlOu2MQS6pU4umeWuXMrTSdKE+pwLgMhO9s4
-         LBqa8MFVADkyrmp7VALoSNHIk7MBpwYNGyDHnYy8HKEiWOAEEenjVCNsNc/3o6zsJiHW
-         gE6IUKDg1T7DsFeSGXda10xL3C3AENAJcPANf3lh1iyNSk3hvyxzjPe346srvu216lnz
-         FXC2fyZXpxXjYrdH5FrgOzhllgyAigba4gbGYitiRqbyDN/4zASFbwpdM0ROdi13Go0T
-         esV1ogqTUSYRann4fwIUgmzEMkN4MxlimP2pqyauT3grOjOYY0s99HQCALwjBvbsiwbR
-         HZkQ==
-X-Gm-Message-State: AOAM532Buv/UX7vrydWqZkAWLUlkY7o9/Cj95UKbb85FFvA9EMD7U6CP
-        n/UI+gU/fViWIVBpwhIfJq4HqadiTK/RF3oG2Q4=
-X-Google-Smtp-Source: ABdhPJxElTHfIzHywbG8S+ZiNXqSjJEqGZe2D3CIdGakxelu3WUAQhIbf0zHelLeFVb7YO60doX8+J/CEmulNZITgNg=
-X-Received: by 2002:a17:906:57c3:: with SMTP id u3mr59329306ejr.162.1621184515178;
- Sun, 16 May 2021 10:01:55 -0700 (PDT)
+        id S230393AbhEPRNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 13:13:50 -0400
+Received: from vps.xff.cz ([195.181.215.36]:51834 "EHLO vps.xff.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229459AbhEPRNt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 May 2021 13:13:49 -0400
+X-Greylist: delayed 415 seconds by postgrey-1.27 at vger.kernel.org; Sun, 16 May 2021 13:13:49 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
+        t=1621184739; bh=uHlcH0STNmNleBKETejswBkFPZ8BfNTar3rYv5h1z3A=;
+        h=Date:From:To:Subject:X-My-GPG-KeyId:From;
+        b=E5ZOlREtj/L0TAq2nbvJ3WPUJw/WU1L+A76jOUVUTxIxB4aDr+/oGO8ChSNb0fSHv
+         VNGI362hkCBbHZgiKnD8AY94Te4rmQZSjRcCmqxuDM3DJ8xJET8h28Oq5BIw58ZDyl
+         RJVOLtIp+10UJll90Atxz7Jc9CW06W68t1izi75w=
+Date:   Sun, 16 May 2021 19:05:39 +0200
+From:   =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
+To:     saravanak@google.com, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, mripard@kernel.org, wens@csie.org,
+        jernej.skrabec@gmail.com, gregkh@linuxfoundation.org,
+        rafael@kernel.org, linux-kernel@vger.kernel.org,
+        andre.przywara@arm.com
+Subject: fw_devlink=on and sunxi HDMI
+Message-ID: <20210516170539.2yxe43qwezonuo3r@core>
+Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>,
+        saravanak@google.com, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, mripard@kernel.org, wens@csie.org,
+        jernej.skrabec@gmail.com, gregkh@linuxfoundation.org,
+        rafael@kernel.org, linux-kernel@vger.kernel.org,
+        andre.przywara@arm.com
+X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
+ <https://xff.cz/key.txt>
 MIME-Version: 1.0
-References: <20210513220317.137090-1-colin.king@canonical.com>
-In-Reply-To: <20210513220317.137090-1-colin.king@canonical.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Sun, 16 May 2021 19:01:44 +0200
-Message-ID: <CAFBinCDde0+QzDOYF2EAkjmbdd80Emu3YuFV3jOCMaZuT+FNmQ@mail.gmail.com>
-Subject: Re: [PATCH] media: meson: vdec: remove redundant initialization of
- variable reg_cur
-To:     Colin King <colin.king@canonical.com>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        linux-amlogic@lists.infradead.org, linux-staging@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 12:03 AM Colin King <colin.king@canonical.com> wrote:
->
-> From: Colin Ian King <colin.king@canonical.com>
->
-> The variable reg_cur is being initialized with a value that is never
-> read, it is being updated later on. The assignment is redundant and
-> can be removed.
->
-> Addresses-Coverity: ("Unused value")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Acked-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Hello,
+
+Linux 5.13-rc1 again has fw_devlink=on enabled by default. I've found that this
+breaks probing display pipeline and HDMI output on sunxi boards, because of
+fwnode_link between hdmi and hdmi-phy nodes.
+
+HDMI device probe keeps being avoided with these repeated messages in dmesg:
+
+  platform 1ee0000.hdmi: probe deferral - supplier 1ef0000.hdmi-phy not ready
+
+Both nodes have their own compatible, but are implemented by a single
+struct device.
+
+This looks like a kind of situation that's expected to break fw_devlink
+expectations by my reading of the the e-mails about trying the fw_devlink=on
+during 5.12 cycle.
+
+Is this supposed to be solved by implementing the PHY node as it's own
+device or by breaking the fwnode_link between the hdmi phy and hdmi nodes?
+Seems like second solution would be quicker now that rc1 is out.
+
+Where would be a good place to break that fwnode_link in code?
+
+Or can the fw_devlink code be made aware of this situation, where two fwnodes
+are implemented by the same Linux device, somehow?
+
+Relevant references:
+
+https://elixir.bootlin.com/linux/v5.13-rc1/source/drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c#L600
+https://elixir.bootlin.com/linux/v5.13-rc1/source/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c#L212
+https://elixir.bootlin.com/linux/v5.13-rc1/source/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi#L1176
+
+kind regards,
+	o.
