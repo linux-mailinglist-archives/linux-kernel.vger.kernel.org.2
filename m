@@ -2,50 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBC4C38212D
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 23:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4328F38211D
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 23:13:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232297AbhEPVZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 17:25:48 -0400
-Received: from mx10.guaratuba.pr.gov.br ([192.163.197.187]:52415 "EHLO
-        mx10.guaratuba.pr.gov.br" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230252AbhEPVZq (ORCPT
+        id S233867AbhEPVOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 17:14:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233721AbhEPVOc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 17:25:46 -0400
-Received: from [127.0.0.1] (port=47848 helo=server01.guaratuba.pr.gov.br)
-        by server01.guaratuba.pr.gov.br with esmtpa (Exim 4.93)
-        (envelope-from <Info@alicewalton.org>)
-        id 1liO18-0000nq-Q7; Sun, 16 May 2021 18:09:42 -0300
+        Sun, 16 May 2021 17:14:32 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C813C061573;
+        Sun, 16 May 2021 14:13:17 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id h4so5901321lfv.0;
+        Sun, 16 May 2021 14:13:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zZZyb5PF8kxSD1UBWF/3E9fQhGx39CrBn2rzklbxfzo=;
+        b=GgwMZLycyaCQtpyTDNrdOGofmmZcWVYBwUkxyfgAjsDfiveXIpR2wgkT0Opul8og2f
+         P3GbvmJwdcI3sPlK6nskM59vsBXhJF6dFi4m3BLC6qLYWF874b1Hmdr0P+QvB0k8Zs3h
+         iAWSc8Z41XSrNIoyyCgsHtXo7Gr3ryx4C7Iv8Efh0MGk8kFgkk+mN8tR1zPyugImvYBg
+         zV9ugqhLL5c1W8+FtxWOU5vIEoBvxejW8hToXcgIMvPrLb+XNO/F0y4cqR3bccpzwHcz
+         +EW+rRXH7A4Ft6EIoLzEnDAfetYyuFgIzP+EqA2/kHAPsUMDGpOsXTmBnVaYCKvKOLA4
+         vRAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zZZyb5PF8kxSD1UBWF/3E9fQhGx39CrBn2rzklbxfzo=;
+        b=O7MmTyjMtqHV0rgLHtxCoCo5TUEvhcrUb4COtx7CINV0j1p5AzyXwvV2tzC5WqYnsD
+         vCmNCSL4pP4xDxiFVWbVM85Weyk47LPuzF3B7QdO6avHhxKjwqJcAIMhO8RoMLS1de3K
+         4GtFt/uG8mP6fYpiY5qu9SR/KTPOR1d3pOIjox6jHgakdiqlUw145Xyhis2kTeEI3vjy
+         1Xw8sVqoDpF/2907rXohtAqWGoMoSXiA/WY578m4ERaPEEF+U/LTFSFq2slEk//j3xyq
+         6norlP9p8jywSAySzc8XW90iZO8KvqDBUS7S3tw3N5cdspZS+JKNgRn73uF45VwDmWS/
+         0qKw==
+X-Gm-Message-State: AOAM533xumeV+JJ+lbSR1SwrEbOhs+VQRQsmsXwyUeY2R7YyTmcDmSoy
+        GlF/Dj7jVPzw/1EJowXR8e0=
+X-Google-Smtp-Source: ABdhPJx1b2bly86/IxZoniIV54kECi1TdvRl6hih/UyUvCdOk3i/b9Og+u5sLi4uLgNDLJ6yyslPhg==
+X-Received: by 2002:a19:711a:: with SMTP id m26mr40154033lfc.197.1621199595681;
+        Sun, 16 May 2021 14:13:15 -0700 (PDT)
+Received: from localhost.localdomain (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
+        by smtp.gmail.com with ESMTPSA id q27sm1768785lfd.266.2021.05.16.14.13.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 May 2021 14:13:15 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Paul Fertser <fercerpav@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1 0/2] Make Tegra memory drivers to use devm_tegra_core_dev_init_opp_table()
+Date:   Mon, 17 May 2021 00:13:00 +0300
+Message-Id: <20210516211302.32404-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Date:   Sun, 16 May 2021 18:09:42 -0300
-From:   "Info@alicewalton.com" <Info@alicewalton.org>
-To:     undisclosed-recipients:;
-Subject: I have an important issue to discuss
-Reply-To: alicewalton011@outlook.co.th
-Mail-Reply-To: alicewalton011@outlook.co.th
-Message-ID: <ab2ee62c31843e041312fc9bf4a28954@alicewalton.org>
-X-Sender: Info@alicewalton.org
-User-Agent: Roundcube Webmail/1.3.15
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - server01.guaratuba.pr.gov.br
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - alicewalton.org
-X-Get-Message-Sender-Via: server01.guaratuba.pr.gov.br: authenticated_id: cenereidas@guaratuba.pr.gov.br
-X-Authenticated-Sender: server01.guaratuba.pr.gov.br: cenereidas@guaratuba.pr.gov.br
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Tegra20/30 memory drivers could take advantage of the new helper which
+initializes OPP table right now [1]. Other memory drivers can't be
+switched to the new helper until core voltage scaling will be supported
+by the corresponding Tegra SoC generations, for now only Tegra20/30 SoCs
+support core voltage scaling in the upstream kernel.
 
+Please note that [1] hasn't been reviewed and merged yet.
+
+[1] https://lore.kernel.org/lkml/20210516205138.22501-1-digetx@gmail.com/T/#m247b51a938244c500d70c38cdb9d44adb5f389a7
+
+Dmitry Osipenko (2):
+  memory: tegra20-emc: Use devm_tegra_core_dev_init_opp_table()
+  memory: tegra30-emc: Use devm_tegra_core_dev_init_opp_table()
+
+ drivers/memory/tegra/tegra20-emc.c | 48 +++---------------------------
+ drivers/memory/tegra/tegra30-emc.c | 48 +++---------------------------
+ 2 files changed, 8 insertions(+), 88 deletions(-)
 
 -- 
-I'm Mrs Alice Walton, I have an important
-issue to discuss with you, for details.
-Revert to My Private email: alicewalton011@outlook.co.th
+2.30.2
+
