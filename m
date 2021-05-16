@@ -2,91 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20EA7381DB1
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 11:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 349FE381DBC
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 11:49:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235037AbhEPJls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 05:41:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58272 "EHLO mail.kernel.org"
+        id S230330AbhEPJum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 05:50:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40478 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229455AbhEPJlq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 05:41:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 21D7261183;
-        Sun, 16 May 2021 09:40:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621158032;
-        bh=HPHAfZvAU6XXPJgmrCVIHUbZpsx6IlX29XORpnfKmZQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=YsQKZIwJh5KvtGgZZPg96UE6XZMndaOHN1BQahTZPkKub0arKiKy8nUhS4EylwQmp
-         uF12aKbaukquUbBvW85QVTimNP0n3ZIdSbkDfEKkpWqBysPrJc+you91MBBvRdaJGI
-         4w9/87kk0BkK1M2TsfnCuBIROHhTXe32KuEqkz/5q9RC3yFQxle6ffFfzHGxsCEVTM
-         Z5vSgMQCzkSJdLPZOucsXuhhu6MlILCwjJIIGIHa6JDv81j/kJzs7iJYcXOssPElKz
-         SmtHD0DptDzst7SO51cUyhGQxfNILB830mZb+GJNdOCuIwEPqISBnYzY9NUEon4a5U
-         VWbZkYC7CJnxA==
-Received: by mail-ot1-f41.google.com with SMTP id u19-20020a0568302493b02902d61b0d29adso3097549ots.10;
-        Sun, 16 May 2021 02:40:32 -0700 (PDT)
-X-Gm-Message-State: AOAM530+QdxvXH2XboYsyU4ORuzNmzgCDBtBusflAuUauCOt4ANUJSxh
-        ChdmMa/dJSO6V0q2ItPoExu9yj02qU0HBIfWFFU=
-X-Google-Smtp-Source: ABdhPJxEqdUoPYIQolx6YQg/gEdLuTmzfjwCY3mv54XNgVpzvySgnm359ZNikGDhue2q1sOqh/OPJhwqvmsGMVVpSdU=
-X-Received: by 2002:a9d:222a:: with SMTP id o39mr44734707ota.246.1621158031417;
- Sun, 16 May 2021 02:40:31 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210515221320.1255291-1-arnd@kernel.org> <20210515221320.1255291-14-arnd@kernel.org>
- <d4e42d3-9920-8fe0-1a71-6c6de8585f4c@nippy.intranet> <CAMuHMdUJGxyL0kcj06Uxsxmf6bDj4UO_YKZPsZfxtTxCBXf=xg@mail.gmail.com>
-In-Reply-To: <CAMuHMdUJGxyL0kcj06Uxsxmf6bDj4UO_YKZPsZfxtTxCBXf=xg@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Sun, 16 May 2021 11:39:25 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0BzbGFnWLKsdsFkRJ+GyxO7xgxeuipQrCi-p_JEeZNPQ@mail.gmail.com>
-Message-ID: <CAK8P3a0BzbGFnWLKsdsFkRJ+GyxO7xgxeuipQrCi-p_JEeZNPQ@mail.gmail.com>
-Subject: Re: [RFC 13/13] [net-next] 8390: xsurf100: avoid including lib8390.c
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Finn Thain <fthain@telegraphics.com.au>,
-        netdev <netdev@vger.kernel.org>,
-        "Linux/m68k" <linux-m68k@vger.kernel.org>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Doug Berger <opendmb@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Sam Creasey <sammy@sammy.net>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Michael Schmitz <schmitzmic@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S229568AbhEPJul (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 May 2021 05:50:41 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2E5E4B04F;
+        Sun, 16 May 2021 09:49:26 +0000 (UTC)
+Date:   Sun, 16 May 2021 11:49:26 +0200
+Message-ID: <s5hbl9b6mah.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Leon Romanovsky <leon@kernel.org>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: ALSA: intel8x0: div by zero in snd_intel8x0_update()
+In-Reply-To: <YKDYbaprE3K2QpCe@google.com>
+References: <YJ4yBmIV6RJCo42U@google.com>
+        <s5hk0o18tio.wl-tiwai@suse.de>
+        <YJ5cHdv6MVmAKD3b@google.com>
+        <YKDYQfDf7GiMfGCN@google.com>
+        <YKDYbaprE3K2QpCe@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 16, 2021 at 11:04 AM Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
->
-> On Sun, May 16, 2021 at 6:24 AM Finn Thain <fthain@telegraphics.com.au> wrote:
-> > On Sun, 16 May 2021, Arnd Bergmann wrote:
-> > > From: Arnd Bergmann <arnd@arndb.de>
-> > >
-> > > This driver always warns about unused functions because it includes
-> > > an file that it doesn't actually need:
-> >
-> > I don't think you can omit #include "lib8390.c" here without changing
-> > driver behaviour, because of the macros in effect.
-> >
-> > I think this change would need some actual testing unless you can show
-> > that the module binary does not change.
->
-> Michael posted a similar but different patch a while ago, involving
-> calling ax_NS8390_reinit():
-> https://lore.kernel.org/linux-m68k/1528604559-972-3-git-send-email-schmitzmic@gmail.com/
+On Sun, 16 May 2021 10:31:41 +0200,
+Sergey Senozhatsky wrote:
+> 
+> On (21/05/16 17:30), Sergey Senozhatsky wrote:
+> > On (21/05/14 20:16), Sergey Senozhatsky wrote:
+> > > > --- a/sound/pci/intel8x0.c
+> > > > +++ b/sound/pci/intel8x0.c
+> > > > @@ -691,6 +691,9 @@ static inline void snd_intel8x0_update(struct intel8x0 *chip, struct ichdev *ich
+> > > >  	int status, civ, i, step;
+> > > >  	int ack = 0;
+> > > >  
+> > > > +	if (!ichdev->substream || ichdev->suspended)
+> > > > +		return;
+> > > > +
+> > > >  	spin_lock_irqsave(&chip->reg_lock, flags);
+> > > >  	status = igetbyte(chip, port + ichdev->roff_sr);
+> > > >  	civ = igetbyte(chip, port + ICH_REG_OFF_CIV);
+> > 
+> > This does the problem for me.
+> 
+>        ^^^ does fix
 
-Ah nice. As far as I can tell, the two versions are functionally equivalent
-based on my reading of the port accessors, but he probably tested his
-version, so I'll drop mine from this series. Nothing else depends on this
-one, I just included it since it was an obvious thing to fix.
+OK, thanks for confirmation.  So this looks like some spurious
+interrupt with the unexpected hardware bits.
 
-        Arnd
+However, the suggested check doesn't seem covering enough, and it
+might still hit if the suspend/resume happens before the device is
+opened but not set up (and such a spurious irq is triggered).
+
+Below is more comprehensive fix.  Let me know if this works, too.
+
+
+thanks,
+
+Takashi
+
+-- 8< --
+Subject: [PATCH] ALSA: intel8x0: Don't update period unless prepared
+
+The interrupt handler of intel8x0 calls snd_intel8x0_update() whenever
+the hardware sets the corresponding status bit for each stream.  This
+works fine for most cases as long as the hardware behaves properly.
+But when the hardware gives a wrong bit set, this leads to a NULL
+dereference Oops, and reportedly, this seems what happened on a VM.
+
+For fixing the crash, this patch adds a internal flag indicating that
+the stream is ready to be updated, and check it (as well as the flag
+being in suspended) to ignore such spurious update.
+
+Cc: <stable@vger.kernel.org>
+Reported-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/intel8x0.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/sound/pci/intel8x0.c b/sound/pci/intel8x0.c
+index 35903d1a1cbd..5b124c4ad572 100644
+--- a/sound/pci/intel8x0.c
++++ b/sound/pci/intel8x0.c
+@@ -331,6 +331,7 @@ struct ichdev {
+ 	unsigned int ali_slot;			/* ALI DMA slot */
+ 	struct ac97_pcm *pcm;
+ 	int pcm_open_flag;
++	unsigned int prepared:1;
+ 	unsigned int suspended: 1;
+ };
+ 
+@@ -691,6 +692,9 @@ static inline void snd_intel8x0_update(struct intel8x0 *chip, struct ichdev *ich
+ 	int status, civ, i, step;
+ 	int ack = 0;
+ 
++	if (!ichdev->prepared || ichdev->suspended)
++		return;
++
+ 	spin_lock_irqsave(&chip->reg_lock, flags);
+ 	status = igetbyte(chip, port + ichdev->roff_sr);
+ 	civ = igetbyte(chip, port + ICH_REG_OFF_CIV);
+@@ -881,6 +885,7 @@ static int snd_intel8x0_hw_params(struct snd_pcm_substream *substream,
+ 	if (ichdev->pcm_open_flag) {
+ 		snd_ac97_pcm_close(ichdev->pcm);
+ 		ichdev->pcm_open_flag = 0;
++		ichdev->prepared = 0;
+ 	}
+ 	err = snd_ac97_pcm_open(ichdev->pcm, params_rate(hw_params),
+ 				params_channels(hw_params),
+@@ -902,6 +907,7 @@ static int snd_intel8x0_hw_free(struct snd_pcm_substream *substream)
+ 	if (ichdev->pcm_open_flag) {
+ 		snd_ac97_pcm_close(ichdev->pcm);
+ 		ichdev->pcm_open_flag = 0;
++		ichdev->prepared = 0;
+ 	}
+ 	return 0;
+ }
+@@ -976,6 +982,7 @@ static int snd_intel8x0_pcm_prepare(struct snd_pcm_substream *substream)
+ 			ichdev->pos_shift = (runtime->sample_bits > 16) ? 2 : 1;
+ 	}
+ 	snd_intel8x0_setup_periods(chip, ichdev);
++	ichdev->prepared = 1;
+ 	return 0;
+ }
+ 
+-- 
+2.26.2
+
