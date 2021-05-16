@@ -2,163 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1F14381D26
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 08:34:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 213E9381D29
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 08:35:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233411AbhEPGfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 02:35:39 -0400
-Received: from mga07.intel.com ([134.134.136.100]:33917 "EHLO mga07.intel.com"
+        id S233489AbhEPGgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 02:36:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229840AbhEPGfi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 02:35:38 -0400
-IronPort-SDR: 24ybAbvn4kCchctMvNjCP5rL7xPFrINs/0kcliZpOhUF0XXDafIXp3EfEP+oFZVlOfE6NBaL1p
- hk4zlBknu2eQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9985"; a="264242680"
-X-IronPort-AV: E=Sophos;i="5.82,304,1613462400"; 
-   d="scan'208";a="264242680"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2021 23:34:23 -0700
-IronPort-SDR: Xx9kXw8OSUjklhGzl+hWWvSspPDG8n2az6MDBiWZgMktwgqNymJZTvKx6uwLpC7y/h2t/vKqZl
- P6JDXZ2+mXag==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,304,1613462400"; 
-   d="scan'208";a="629278718"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
-  by fmsmga005.fm.intel.com with ESMTP; 15 May 2021 23:34:19 -0700
-Date:   Sun, 16 May 2021 14:34:19 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        0day robot <lkp@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        ying.huang@intel.com, zhengjun.xing@intel.com, kernel-team@fb.com,
-        neeraju@codeaurora.org
-Subject: Re: [clocksource]  388450c708:  netperf.Throughput_tps -65.1%
- regression
-Message-ID: <20210516063419.GA22111@shbuild999.sh.intel.com>
-References: <20210501003247.2448287-4-paulmck@kernel.org>
- <20210513155515.GB23902@xsang-OptiPlex-9020>
- <20210513170707.GA975577@paulmck-ThinkPad-P17-Gen-1>
- <20210514074314.GB5384@shbuild999.sh.intel.com>
- <20210514174908.GI975577@paulmck-ThinkPad-P17-Gen-1>
+        id S229840AbhEPGgJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 May 2021 02:36:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B07816100A;
+        Sun, 16 May 2021 06:34:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621146895;
+        bh=tOJvyDBi93XagwPx1i9XtsXpSm6miDwPi3jE4SjKmmY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KhZ5MoWo5uLP7ivqT7mfz2z9+6AQblT/RCUsxVJQfjLb0HGY8QymxsszvURVe2Ixo
+         ibYuevSbFOgfIO1VYGOsjvtfna8ne2XHXqQZDsPcKV3ds1aX0Y8gAnGLn5frEWP6qT
+         6PUJOMGCGGkmyf07hkcHhvjJzyY6CGvG40Ip9fNvwg++DVnJ1DsZm4gaEE/iFMAvAB
+         kzvdzpj2QEMnD8K6H6nPpLNX0QVVIjDrpPk+jazympQB5sN2kbALWZdRuQDA1h/d7W
+         /d70KrpYnpf1SXm1eP8ss+bdUOjiHNj+/7e/gqEnsd44LlVIFKCgrUkc570JJFkYEN
+         pXJebVP+DLqhg==
+Date:   Sat, 15 May 2021 23:34:49 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Hyeonggon Yoo <42.hyeyoo@gmail.com>, akpm@linux-foundation.org,
+        iamjoonsoo.kim@lge.com, rientjes@google.com, penberg@kernel.org,
+        cl@linux.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        naresh.kamboju@linaro.org, clang-built-linux@googlegroups.com,
+        linux-next@vger.kernel.org, ndesaulniers@google.com,
+        lkft-triage@lists.linaro.org, sfr@canb.auug.org.au, arnd@arndb.de,
+        Marco Elver <elver@google.com>
+Subject: Re: [PATCH v3] mm, slub: change run-time assertion in
+ kmalloc_index() to compile-time
+Message-ID: <YKC9CeAfw3aBmHTU@archlinux-ax161>
+References: <20210511173448.GA54466@hyeyoo>
+ <20210515210950.GA52841@hyeyoo>
+ <41c65455-a35b-3ad3-54f9-49ca7105bfa9@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210514174908.GI975577@paulmck-ThinkPad-P17-Gen-1>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <41c65455-a35b-3ad3-54f9-49ca7105bfa9@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 10:49:08AM -0700, Paul E. McKenney wrote:
-> On Fri, May 14, 2021 at 03:43:14PM +0800, Feng Tang wrote:
-> > Hi Paul,
-> > 
-> > On Thu, May 13, 2021 at 10:07:07AM -0700, Paul E. McKenney wrote:
-> > > On Thu, May 13, 2021 at 11:55:15PM +0800, kernel test robot wrote:
-> > > > 
-> > > > 
-> > > > Greeting,
-> > > > 
-> > > > FYI, we noticed a -65.1% regression of netperf.Throughput_tps due to commit:
-> > > > 
-> > > > 
-> > > > commit: 388450c7081ded73432e2b7148c1bb9a0b039963 ("[PATCH v12 clocksource 4/5] clocksource: Reduce clocksource-skew threshold for TSC")
-> > > > url: https://github.com/0day-ci/linux/commits/Paul-E-McKenney/Do-not-mark-clocks-unstable-due-to-delays-for-v5-13/20210501-083404
-> > > > base: https://git.kernel.org/cgit/linux/kernel/git/tip/tip.git 2d036dfa5f10df9782f5278fc591d79d283c1fad
-> > > > 
-> > > > in testcase: netperf
-> > > > on test machine: 96 threads 2 sockets Ice Lake with 256G memory
-> > > > with following parameters:
-> > > > 
-> > > > 	ip: ipv4
-> > > > 	runtime: 300s
-> > > > 	nr_threads: 25%
-> > > > 	cluster: cs-localhost
-> > > > 	test: UDP_RR
-> > > > 	cpufreq_governor: performance
-> > > > 	ucode: 0xb000280
-> > > > 
-> > > > test-description: Netperf is a benchmark that can be use to measure various aspect of networking performance.
-> > > > test-url: http://www.netperf.org/netperf/
-> > > > 
-> > > > 
-> > > > 
-> > > > If you fix the issue, kindly add following tag
-> > > > Reported-by: kernel test robot <oliver.sang@intel.com>
-> > > > 
-> > > > 
-> > > > also as Feng Tang checked, this is a "unstable clocksource" case.
-> > > > attached dmesg FYI.
-> > > 
-> > > Agreed, given the clock-skew event and the resulting switch to HPET,
-> > > performance regressions are expected behavior.
-> > > 
-> > > That dmesg output does demonstrate the value of Feng Tang's patch!
-> > > 
-> > > I don't see how to obtain the values of ->mult and ->shift that would
-> > > allow me to compute the delta.  So if you don't tell me otherwise, I
-> > > will assume that the skew itself was expected on this hardware, perhaps
-> > > somehow due to the tpm_tis_status warning immediately preceding the
-> > > clock-skew event.  If my assumption is incorrect, please let me know.
-> > 
-> > I run the case with the debug patch applied, the info is:
-> > 
-> > [   13.796429] clocksource: timekeeping watchdog on CPU19: Marking clocksource 'tsc' as unstable because the skew is too large:
-> > [   13.797413] clocksource:                       'hpet' wd_nesc: 505192062 wd_now: 10657158 wd_last: fac6f97 mask: ffffffff
-> > [   13.797413] clocksource:                       'tsc' cs_nsec: 504008008 cs_now: 3445570292aa5 cs_last: 344551f0cad6f mask: ffffffffffffffff
-> > [   13.797413] clocksource:                       'tsc' is current clocksource.
-> > [   13.797413] tsc: Marking TSC unstable due to clocksource watchdog
-> > [   13.844513] clocksource: Checking clocksource tsc synchronization from CPU 50 to CPUs 0-1,12,22,32-33,60,65.
-> > [   13.855080] clocksource: Switched to clocksource hpet
-> > 
-> > So the delta is 1184 us (505192062 - 504008008), and I agree with
-> > you that it should be related with the tpm_tis_status warning stuff.
-> > 
-> > But this re-trigger my old concerns, that if the margins calculated
-> > for tsc, hpet are too small?
+On Sat, May 15, 2021 at 11:24:25PM +0200, Vlastimil Babka wrote:
+> On 5/15/21 11:09 PM, Hyeonggon Yoo wrote:
+> > Hello Vlastimil, recently kbuild-all test bot reported compile error on
+> > clang 10.0.1, with defconfig.
 > 
-> If the error really did disturb either tsc or hpet, then we really
-> do not have a false positive, and nothing should change (aside from
-> perhaps documenting that TPM issues can disturb the clocks, or better
-> yet treating that perturbation as a separate bug that should be fixed).
-> But if this is yet another way to get a confused measurement, then it
-> would be better to work out a way to reject the confusion and keep the
-> tighter margins.  I cannot think right off of a way that this could
-> cause measurement confusion, but you never know.
-
-I have no doubt in the correctness of the measuring method, but was
-just afraid some platforms which use to 'just work' will be caught :)
-
-> So any thoughts on exactly how the tpm_tis_status warning might have
-> resulted in the skew?
-
-The tpm error message has been reported before, and from google there
-were some similar errors, we'll do some further check.
-
-> > With current math algorithm, the 'uncertainty_margin' is
-> > calculated against the frequency, and those tsc/hpet/acpi_pm
-> > timer is multiple of MHz or GHz, which gives them to have margin of
-> > 100 us. It works with normal systems. But in the wild world, there
-> > could be some sparkles due to some immature HW components, their
-> > firmwares or drivers etc, just like this case. 
+> Hm yes, catching some compiler bug was something that was noted to be
+> possible to happen.
 > 
-> Isn't diagnosing issues from immature hardware, firmware, and drivers
-> actually a benefit?  It would after all be quite unfortunate if some issue
-> that was visible only due to clock skew were to escape into production.
+> > Nathan Chancellor wrote:
+> >> I think this happens because arch_prepare_optimized_kprobe() calls kzalloc()
+> >> with a size of MAX_OPTINSN_SIZE, which is
+> >>
+> >> #define MAX_OPTINSN_SIZE                                \
+> >>       (((unsigned long)optprobe_template_end -        \
+> >>          (unsigned long)optprobe_template_entry) +     \
+> >>         MAX_OPTIMIZED_LENGTH + JMP32_INSN_SIZE)
+> > 
+> >> and the optprobe_template_{end,entry} are not evaluated as constants.
+> >>
+> >> I am not sure what the solution is. There seem to be a growing list of issues
+> >> with LLVM 10 that were fixed in LLVM 11, which might necessitate requiring
+> >> LLVM 11 and newer to build the kernel, given this affects a defconfig.
+> >> Cheers,
+> >> Nathan
+> > 
+> > 
+> > I think it's because kmalloc compiles successfully when size is constant,
+> > and kmalloc_index isn't. so I think compiler seems to be confused.
+> > 
+> > currently if size is non-constant, kmalloc calls dummy function __kmalloc,
+> > which always returns NULL.
+> 
+> That's a misunderstanding. __kmalloc() is not a dummy function, you
+> probably found only the header declaration.
+> 
+> > so what about changing kmalloc to do compile-time assertion too, and track
+> > all callers that are calling kmalloc with non-constant argument.
+> 
+> kmalloc() is expected to be called with both constant and non-constant
+> size. __builtin_constant_p() is used to determine which implementation
+> to use. One based on kmalloc_index(), other on __kmalloc().
+> 
+> It appears clang 10.0.1 is mistakenly evaluating __builtin_constant_p()
+> as true. Probably something to do with LTO, because MAX_OPTINSN_SIZE
+> seems it could be a "link-time constant".
 
-Yes, it surely will expose some mal-functional cases which haven't
-been caught before.
+This happens with x86_64 defconfig so LTO is not involved.
 
-Thanks,
-Feng
+However, the explanation makes sense, given that the LLVM change I
+landed on changes the sparse conditional constant propagation pass,
+which I believe can influence how LLVM handles __builtin_constant_p().
 
+> Maybe we could extend Marco Elver's followup patch that uses
+> BUILD_BUG_ON vs BUG() depending on size_is_constant parameter. It could
+> use BUG() also if the compiler is LLVM < 11 or something. What would be
+> the proper code for this condition?
 
-> 							Thanx, Paul
+This should work I think:
+
+diff --git a/include/linux/slab.h b/include/linux/slab.h
+index 9d316aac0aba..1b653266f2aa 100644
+--- a/include/linux/slab.h
++++ b/include/linux/slab.h
+@@ -413,7 +413,7 @@ static __always_inline unsigned int __kmalloc_index(size_t size,
+ 	if (size <=  16 * 1024 * 1024) return 24;
+ 	if (size <=  32 * 1024 * 1024) return 25;
+ 
+-	if (size_is_constant)
++	if ((IS_ENABLED(CONFIG_CC_IS_GCC) || CONFIG_CLANG_VERSION > 110000) && size_is_constant)
+ 		BUILD_BUG_ON_MSG(1, "unexpected size in kmalloc_index()");
+ 	else
+ 		BUG();
