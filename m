@@ -2,109 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45314381D74
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 10:54:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D38381D79
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 May 2021 10:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234316AbhEPIzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 04:55:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43806 "EHLO
+        id S234333AbhEPI5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 04:57:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234255AbhEPIzK (ORCPT
+        with ESMTP id S234207AbhEPI5V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 04:55:10 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66166C061573;
-        Sun, 16 May 2021 01:53:56 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id h202so4564964ybg.11;
-        Sun, 16 May 2021 01:53:56 -0700 (PDT)
+        Sun, 16 May 2021 04:57:21 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5521C061573;
+        Sun, 16 May 2021 01:56:05 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id o59so1758811qva.1;
+        Sun, 16 May 2021 01:56:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ftA4ti5/6sdNr5V36MO+h2jetmzHwEt9RUH/PLBAxY8=;
-        b=T3INqGrrLTawY2PwrwMmaYPaml4dU/Rdtv9onK4veMKqZfCLrH+MtgtiqV8SJxuEBW
-         4O4oBeb1ZgGuHDlxzGOWtEgiRHvRgc2llDO1j3lLaLWCai9S/I9vl0t3Hfk9bTOB/TxN
-         I6kULP9fgm7OqkutPGzBXkzcU9lvYXzL2M+hclSTDedWbiGTjPxS1kRhivxc9VJ9fIBG
-         01z4coeHSbAKu1CXhJWvo8NoGOIHx7nqtqc1a2gG2Ih7b3jbIr3GOro8jnXqLZdV0EzW
-         PdBXCS+R/BeCtHGCuPuNvljEGCztPi38NQEC73QTNRjqpEfjVwncnCmTcrezUAOv0cWq
-         5W2A==
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=FyhBI/ZNBupoUTALEieNNind18REakMszINUdKUseIo=;
+        b=qKe0c6vJ3tRyA8T7jcTUVREICvcXhdyymcsnAsSHpYzR+/+BPh1sd+1hngd1QS8Wym
+         v6Kxn6Y+R5r8lQ608MzKnuMz3Sqt2kNvB8uYj0sCnnnm1hLxev7+q+mnsFtxEsIVsolj
+         A2SVWRmM5T5pn89QfhkmPl6rJbmj+nOz5mqV+c9pO5tPOLWyoC5KHacI82cNZI7IoR1n
+         iIuV8GBgyxwrYGQr2IxI5q6UdioPEeLKSL966r0q85tIAobRBcrei6inwTiIjCRTlK25
+         W6eXNdE1RdzsjyrNv1MT6v3bJmiSCabgSskVzZCqk3I19wWp52MRkbu929PjiNeVM5L9
+         g7RA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ftA4ti5/6sdNr5V36MO+h2jetmzHwEt9RUH/PLBAxY8=;
-        b=tL9uyLLm4n0wtjL5hEmfZofSvPbvfl+XY/pqwfB2sXsDJTZbJM+FqvgVQXy+EuIe+x
-         6ARt/doorRPZKX9vco/J6amSu7QXAlU5ghLytCpnJf/ux5jR6I4YdttD9T1frzmMX54Z
-         lJyqBxhDCMVe2S+5Pzc3nwBXmy/6O8hzbTt9CwBb4uTUDHfU+SsbP8zeELq6UIk5GV2w
-         eZF/cS9AyVd66koMlj40uHvGOA4L0KE3OlcUH1Y2gfbSQz9Zr0wr4YkHl6UNAYLx0OkE
-         2TmZ5spda0ZaZG+60IVIh8+u+xF0nNo2oDf2AS8iqVTG+91Mws2TtLUQMSegotDjlalu
-         3BLA==
-X-Gm-Message-State: AOAM531WlCy4fqCC33ItLCEVlOe1m/3RSeMNt/gWwib0hm45mkJg+M4G
-        62aU+/HSAHuNllqSJJrhGuQqLOnlvMUoI9jBsQY=
-X-Google-Smtp-Source: ABdhPJwdE7SKwM/V6kVaWp2lglaUuvcCjKHhym7fG+KaZH0aaxYr/3ygl8L8rstWVwMUF3i7TUyi5a4r8R345gEfr3U=
-X-Received: by 2002:a25:7909:: with SMTP id u9mr72457023ybc.22.1621155235692;
- Sun, 16 May 2021 01:53:55 -0700 (PDT)
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FyhBI/ZNBupoUTALEieNNind18REakMszINUdKUseIo=;
+        b=Bp74Mn9xN0Jo2oviVxy3DnnFX3j+yPnidA6zhMe7Gn0f9XXYDYKi9K6r3U7vTiTIc/
+         zvGkBc9M+FdMocEygnGsF5tu/Cg/1kmlJipPMuTH/ANrBa2y+F4azyisB/e0Vgg2Rfs2
+         O9iji0eo58IuujWWNQOHIPhV+vaq6BH9FIfgxn7XLSkV4h9TDoYVA4TW5irdQtI0X+E2
+         xRi8tgxhgtlWPffQr38gcGd7o9Aj9Y/smnaT2KWF7FbGe8+SN9BBqmAjPRbqbWFW9Z7S
+         RS2UJw3dFFVNhz3DZ/jmX5NJW0hWg2Isteid7HuWTSKnVI0dLof4M7dfYeiKwyNx0PAj
+         mCiQ==
+X-Gm-Message-State: AOAM532FqAGsirgWvgs9XwFbCkdx4okB/bipL4TKPzsVi3SgjtLV1mvI
+        zanFKgRN5//yvsyJE7z4DOk=
+X-Google-Smtp-Source: ABdhPJyZgSugBwvMT4OLtM7k/PlOtbKviXB4ykm4w6Epj/ihziwBq912sh+AEk6gM80O/7frps81Yw==
+X-Received: by 2002:a0c:8bd1:: with SMTP id a17mr54478447qvc.62.1621155364960;
+        Sun, 16 May 2021 01:56:04 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id v18sm8050212qkv.34.2021.05.16.01.56.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 16 May 2021 01:56:04 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [RFC PATCH v1 0/2] hwmon: (iio_hwmon) optionally force iio
+ channel type
+To:     Liam Beguin <liambeguin@gmail.com>, jdelvare@suse.com,
+        jic23@kernel.org, lars@metafoo.de, pmeerw@pmeerw.net
+Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org
+References: <20210516044315.116290-1-liambeguin@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <29235b1d-78f3-6d8f-567f-78ca6f350340@roeck-us.net>
+Date:   Sun, 16 May 2021 01:56:01 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <1620984265-53916-1-git-send-email-yang.lee@linux.alibaba.com>
-In-Reply-To: <1620984265-53916-1-git-send-email-yang.lee@linux.alibaba.com>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Sun, 16 May 2021 10:53:57 +0200
-Message-ID: <CAKXUXMyjh1mnLpyu_xa4vWAv9Bn_EN3YdhQ_r1aD58YvFTRORA@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: Remove redundant initialization of 'to_add'
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     clm@fb.com, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-btrfs@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210516044315.116290-1-liambeguin@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 11:24 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
->
-> Variable 'to_add' is being initialized however this value is never
-> read as 'to_add' is assigned a new value in if statement. Remove the
-> redundant assignment. At the same time, move its declaration into the
-> if statement, because the variable is not used elsewhere.
->
-> Clean up clang warning:
->
-> fs/btrfs/extent-tree.c:2773:8: warning: Value stored to 'to_add' during
-> its initialization is never read [clang-analyzer-deadcode.DeadStores]
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
->  fs/btrfs/extent-tree.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index f1d15b6..e7b2289 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -2774,10 +2774,10 @@ static int unpin_extent_range(struct btrfs_fs_info *fs_info,
->                 spin_unlock(&cache->lock);
->                 if (!readonly && return_free_space &&
->                     global_rsv->space_info == space_info) {
-> -                       u64 to_add = len;
->
->                         spin_lock(&global_rsv->lock);
->                         if (!global_rsv->full) {
-> +                               u64 to_add;
->                                 to_add = min(len, global_rsv->size -
->                                              global_rsv->reserved);
+On 5/15/21 9:43 PM, Liam Beguin wrote:
+> Add a devicetree binding to optionally force a different IIO channel
+> type.
+> 
+> This is useful in cases where ADC channels are connected to a circuit
+> that represent another unit such as a temperature or a current.
+> 
+> `channel-types` was chosen instead of `io-channel-types` as this is not
+> part of the iio consumer bindings.
+> 
+> In the current form, this patch does what it's intended to do:
+> change the unit displayed by `sensors`, but feels like the wrong way to
+> address the problem.
+> 
+> Would it be possible to force the type of different IIO channels for
+> this kind of use case with a devicetree binding from the IIO subsystem?
+> 
 
-Yang Li, you could just combine these two lines above, right?
+That doesn't make sense to me. If an ADC is used to report temperatures,
+it would be a thermistor, and the ntc_thermistor driver should be used.
+Not sure what to do with currents, but overriding "voltage" with "current"
+seems wrong.
 
-So:
-u64 to_add = min(len, ...);
+Guenter
 
-By the way, great contribution on addressing all those dead stores
-identified by clang analyzer... I wish I would also have more time on
-addressing some of those remaining...
+> It would be convenient to do it within the IIO subsystem to have the
+> right unit there too.
+> 
+> Thanks for your time,
+> Liam
+> 
+> Liam Beguin (2):
+>    hwmon: (iio_hwmon) optionally force iio channel type
+>    dt-bindings: hwmon: add iio-hwmon bindings
+> 
+>   .../devicetree/bindings/hwmon/iio-hwmon.yaml  | 41 +++++++++++++++++++
+>   drivers/hwmon/iio_hwmon.c                     |  2 +
+>   2 files changed, 43 insertions(+)
+>   create mode 100644 Documentation/devicetree/bindings/hwmon/iio-hwmon.yaml
+> 
+> 
+> base-commit: 9f4ad9e425a1d3b6a34617b8ea226d56a119a717
+> 
 
-Lukas
