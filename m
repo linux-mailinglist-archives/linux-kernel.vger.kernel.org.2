@@ -2,132 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49647386C14
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 23:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 174FB386C18
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 23:16:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237907AbhEQVO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 17:14:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55438 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235796AbhEQVOu (ORCPT
+        id S237917AbhEQVRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 17:17:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230486AbhEQVRX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 17:14:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621286013;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cMVyazJ1DXkMnUs3j/wPGjHkILobShDj4cNdkiPTOO8=;
-        b=KFWsQtZHOxaDYVZg7ozn9PfqPfwhgPu6C8LrQrdGdSQ43IjncUsgGxBFZK8TpXjf817WrA
-        n4tt3JKw+vritcNPfcULBeRijhW5UrSeUF3HzyaUaXJtl87zDJdV6t/KwfVxtc1GQ3TYnK
-        asd5i0cZWMlFaLFR/n5rNBGk0/FVC64=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-497-JykEBQboPRORNDdPHn3QwQ-1; Mon, 17 May 2021 17:13:31 -0400
-X-MC-Unique: JykEBQboPRORNDdPHn3QwQ-1
-Received: by mail-lj1-f197.google.com with SMTP id z14-20020a2e964e0000b02900e9ad576f5aso3629316ljh.20
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 14:13:31 -0700 (PDT)
+        Mon, 17 May 2021 17:17:23 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB1C3C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 14:16:06 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id 22so5460783pfv.11
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 14:16:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VS/d1ygvax/ecc40AMqCMRIidrRC6z+MW9ukoKSz1kY=;
+        b=cShCEvxr/sMuoFEP+hdg6OA2vj7ephjyPaPcbARJSZUPafU/opm6bend3SFFJGF5Cp
+         vVM05172lfJur21aBwDSgpcyganE4q1KDigXFxnPf3JP8u/kWrycWKtUXT9EbOQx1BiH
+         CRZvtWJ1CduUWVAKtPLflybQwnrNvPFg2F8Aifl09VLPzV5xLJ6qkVkMwcGmMFKZRWHa
+         b3EsQwpwT6LVMFAWvzg8cFfLfXT6gg34k7eRJUR8qSXuGILEs7LEpedn7/WRT+0NUfxi
+         B+WTPdHXjndOHx69gZh3dnp4N+1DZVQwmNoIE2v7Zy6HpvJ1iaxTf397i7fRbSamKYZ9
+         KAzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cMVyazJ1DXkMnUs3j/wPGjHkILobShDj4cNdkiPTOO8=;
-        b=NT1KPovRW/n8c/+E4k5uwXgcEsv5MHGwaCE1UsetAvLdLHxYHnZwt0BkQLiogVW+Os
-         8TJuXRtugU5+jgHqC6M0FiOkh4rk9NpKQcnkvD+stkMghPavjUpmv9eQcd5gLf5rVFtN
-         ac+7pTA+XqmVxXkaKjEi7ViM1n9Bkb67sZWh24sGlWgQUA8LKo5XJUe5x87GICWLCGFQ
-         5DFL700zGSOingjnifnEufsL96m1nfNO2kkVyGcEqeUmtGBkEpH+Jm3wH4Wrh8J2ttX6
-         3rI/mCAN0TYvpkGKQk3ulIwLr85MmgP1xcG/tPZSld0WSYMZ/dMlPxUonJyvWL8ehO5E
-         d1xw==
-X-Gm-Message-State: AOAM530U4qGTHji+lJpshPPQrx/eUcH+Ljk7fpQlGFC2ZLEJG5sPUpH4
-        8H25nKfOK6Z4/t5goqNEiMLIHIl0PHVuyv6YHryvr0aFttj/iW2adHKHROqqRr42Ic7SI3ZiP2t
-        xTO9VNY7NOun/YcoNvEuwud5C6N7GCPwrUvYgWiZZ
-X-Received: by 2002:a05:6512:3b0f:: with SMTP id f15mr1283918lfv.384.1621286010054;
-        Mon, 17 May 2021 14:13:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyqIbTFw79dJ0F4QTNj1vmQA/K7J9iPzeYKZygGXoFgqrcehoZoCiXVL8VcdElnx9bU093vnbhjyUBh7vmtE5k=
-X-Received: by 2002:a05:6512:3b0f:: with SMTP id f15mr1283890lfv.384.1621286009804;
- Mon, 17 May 2021 14:13:29 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VS/d1ygvax/ecc40AMqCMRIidrRC6z+MW9ukoKSz1kY=;
+        b=Th/OaDIhQprfoygpJk9mKkkRXGsQVW3fhU75gzYPJbAKHGirPF5rfFd3kl+oDNzWfS
+         l/9vVvLVbZN2iqV/SnepKiOyTCNq2JdVyEFvy0PjmuzL6MBuPX+/Wd+86NPvMSqbrsfu
+         ZKzBfdmsRl8/SX0IHxK+3BQJB/IsG3vtkURko05+Zvm76Vo39sjkng4DfG1LSp4kBUvt
+         lVIrpWBTFbuoeykfE5Q1wp9BNiz8rjpBvMpVFxallpppCz4Y7PnYpg/WcdGyZ922V6uk
+         nC3H6FHdbpaC3R/LtxXf2Hwmm8SWPo0yyttOEScS1e043HZqAPeV9QSAcf9fPwUst/kn
+         pzqw==
+X-Gm-Message-State: AOAM533EK5RQhflofLYgbLYU1IZxaNBYnHNLv6yN0bQByAJSJKVS4rjq
+        8NOdwHZFj5/oVgUuhsTVnkG13A==
+X-Google-Smtp-Source: ABdhPJwViqzdF1b5ZHIm0m6FKKG55Ddy/a6H3A1E+amWE89xToL2mXygjvgt37C8Pe6IcCUVgmJHxQ==
+X-Received: by 2002:a63:d312:: with SMTP id b18mr1460857pgg.89.1621286165987;
+        Mon, 17 May 2021 14:16:05 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id w127sm10520673pfw.4.2021.05.17.14.16.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 14:16:05 -0700 (PDT)
+Date:   Mon, 17 May 2021 21:16:01 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Xu, Like" <like.xu@intel.com>
+Cc:     Venkatesh Srinivas <venkateshs@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, weijiang.yang@intel.com,
+        Kan Liang <kan.liang@linux.intel.com>, ak@linux.intel.com,
+        wei.w.wang@intel.com, eranian@google.com, liuxiangdong5@huawei.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        Yao Yuan <yuan.yao@intel.com>,
+        Like Xu <like.xu@linux.intel.com>
+Subject: Re: [PATCH v6 04/16] KVM: x86/pmu: Set MSR_IA32_MISC_ENABLE_EMON bit
+ when vPMU is enabled
+Message-ID: <YKLdETM7NgjKEa6z@google.com>
+References: <20210511024214.280733-1-like.xu@linux.intel.com>
+ <20210511024214.280733-5-like.xu@linux.intel.com>
+ <CAA0tLErUFPnZ=SL82bLe8Ddf5rFu2Pdv5xE0aq4A91mzn9=ABA@mail.gmail.com>
+ <ead61a83-1534-a8a6-13ee-646898a6d1a9@intel.com>
+ <YJvx4tr2iXo4bQ/d@google.com>
+ <5ef2215b-1c43-fc8a-42ef-46c22e093f40@intel.com>
 MIME-Version: 1.0
-References: <20210501021832.743094-1-jesse.brandeburg@intel.com>
- <16d8ca67-30c6-bb4b-8946-79de8629156e@arm.com> <20210504092340.00006c61@intel.com>
- <CAFki+LmR-o+Fng21ggy48FUX7RhjjpjO87dn3Ld+L4BK2pSRZg@mail.gmail.com>
- <bf1d4892-0639-0bbf-443e-ba284a8ed457@arm.com> <CAFki+L=LDizBJmFUieMDg9J=U6mn6XxTPPkAaWiyppTouTzaqw@mail.gmail.com>
- <87y2cddtxb.ffs@nanos.tec.linutronix.de>
-In-Reply-To: <87y2cddtxb.ffs@nanos.tec.linutronix.de>
-From:   Nitesh Lal <nilal@redhat.com>
-Date:   Mon, 17 May 2021 17:13:18 -0400
-Message-ID: <CAFki+L=RaSZXASAaAxBf=RJqXWju+pkSj3ftMkmoqCLPfg0v=g@mail.gmail.com>
-Subject: Re: [PATCH tip:irq/core v1] genirq: remove auto-set of the mask when
- setting the hint
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        "frederic@kernel.org" <frederic@kernel.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, jbrandeb@kernel.org,
-        Alex Belits <abelits@marvell.com>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "stephen@networkplumber.org" <stephen@networkplumber.org>,
-        "rppt@linux.vnet.ibm.com" <rppt@linux.vnet.ibm.com>,
-        "jinyuqi@huawei.com" <jinyuqi@huawei.com>,
-        "zhangshaokun@hisilicon.com" <zhangshaokun@hisilicon.com>,
-        netdev@vger.kernel.org, chris.friesen@windriver.com,
-        Marc Zyngier <maz@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5ef2215b-1c43-fc8a-42ef-46c22e093f40@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 3:47 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> Nitesh,
->
-> On Mon, May 17 2021 at 14:21, Nitesh Lal wrote:
-> > On Mon, May 17, 2021 at 1:26 PM Robin Murphy <robin.murphy@arm.com> wrote:
-> >
-> > We can use irq_set_affinity() to set the hint mask as well, however, maybe
-> > there is a specific reason behind separating those two in the
-> > first place (maybe not?).
->
-> Yes, because kernel side settings might overwrite the hint.
->
-> > But even in this case, we have to either modify the PMU drivers' IRQs
-> > affinity from the userspace or we will have to make changes in the existing
-> > request_irq code path.
->
-> Adjusting them from user space does not work for various reasons,
-> especially CPU hotplug.
->
-> > I am not sure about the latter because we already have the required controls
-> > to adjust the device IRQ mask (by using default_smp_affinity or by modifying
-> > them manually).
->
-> default_smp_affinity does not help at all and there is nothing a module
-> can modify manually.
+On Thu, May 13, 2021, Xu, Like wrote:
+> On 2021/5/12 23:18, Sean Christopherson wrote:
+> > On Wed, May 12, 2021, Xu, Like wrote:
+> > > Hi Venkatesh Srinivas,
+> > > 
+> > > On 2021/5/12 9:58, Venkatesh Srinivas wrote:
+> > > > On 5/10/21, Like Xu <like.xu@linux.intel.com> wrote:
+> > > > > On Intel platforms, the software can use the IA32_MISC_ENABLE[7] bit to
+> > > > > detect whether the processor supports performance monitoring facility.
+> > > > > 
+> > > > > It depends on the PMU is enabled for the guest, and a software write
+> > > > > operation to this available bit will be ignored.
+> > > > Is the behavior that writes to IA32_MISC_ENABLE[7] are ignored (rather than #GP)
+> > > > documented someplace?
+> > > The bit[7] behavior of the real hardware on the native host is quite
+> > > suspicious.
+> > Ugh.  Can you file an SDM bug to get the wording and accessibility updated?  The
+> > current phrasing is a mess:
+> > 
+> >    Performance Monitoring Available (R)
+> >    1 = Performance monitoring enabled.
+> >    0 = Performance monitoring disabled.
+> > 
+> > The (R) is ambiguous because most other entries that are read-only use (RO), and
+> > the "enabled vs. disabled" implies the bit is writable and really does control
+> > the PMU.  But on my Haswell system, it's read-only.
+> 
+> On your Haswell system, does it cause #GP or just silent if you change this
+> bit ?
 
-Right, it will not help a module.
+Attempting to clear the bit generates a #GP.
 
->
-> I'll send out a patch series which cleans that up soon.
+> > Assuming the bit is supposed
+> > to be a read-only "PMU supported bit", the SDM should be:
+> > 
+> >    Performance Monitoring Available (RO)
+> >    1 = Performance monitoring supported.
+> >    0 = Performance monitoring not supported.
+> > 
+> > And please update the changelog to explain the "why" of whatever the behavior
+> > ends up being.  The "what" is obvious from the code.
+> 
+> Thanks for your "why" comment.
+> 
+> > 
+> > > To keep the semantics consistent and simple, we propose ignoring write
+> > > operation in the virtualized world, since whether or not to expose PMU is
+> > > configured by the hypervisor user space and not by the guest side.
+> > Making up our own architectural behavior because it's convient is not a good
+> > idea.
+> 
+> Sometime we do change it.
+> 
+> For example, the scope of some msrs may be "core level share"
+> but we likely keep it as a "thread level" variable in the KVM out of
+> convenience.
 
-Ack, thanks.
+Thread vs. core scope is not architectural behavior.  Maybe you could argue that
+it is for architectural MSRs, but even that is tenuous, e.g. SPEC_CTRL has this:
 
->
-> Thanks,
->
->         tglx
->
->
+  The MSR bits are defined as logical processor scope. On some core
+  implementations, the bits may impact sibling logical processors on the same core.
 
+Regardless, the flaws of an inaccurate virtual CPU topology are well known, and
+are a far cry from directly violating the SDM (assuming the SDM is fixed...).
 
---
-Nitesh
+> > > > > diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+> > > > > index 9efc1a6b8693..d9dbebe03cae 100644
+> > > > > --- a/arch/x86/kvm/vmx/pmu_intel.c
+> > > > > +++ b/arch/x86/kvm/vmx/pmu_intel.c
+> > > > > @@ -488,6 +488,7 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
+> > > > >    	if (!pmu->version)
+> > > > >    		return;
+> > > > > 
+> > > > > +	vcpu->arch.ia32_misc_enable_msr |= MSR_IA32_MISC_ENABLE_EMON;
+> > Hmm, normally I would say overwriting the guest's value is a bad idea, but if
+> > the bit really is a read-only "PMU supported" bit, then this is the correct
+> > behavior, albeit weird if userspace does a late CPUID update (though that's
+> > weird no matter what).
+> > 
+> > > > >    	perf_get_x86_pmu_capability(&x86_pmu);
+> > > > > 
+> > > > >    	pmu->nr_arch_gp_counters = min_t(int, eax.split.num_counters,
+> > > > > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > > > > index 5bd550eaf683..abe3ea69078c 100644
+> > > > > --- a/arch/x86/kvm/x86.c
+> > > > > +++ b/arch/x86/kvm/x86.c
+> > > > > @@ -3211,6 +3211,7 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct
+> > > > > msr_data *msr_info)
+> > > > >    		}
+> > > > >    		break;
+> > > > >    	case MSR_IA32_MISC_ENABLE:
+> > > > > +		data &= ~MSR_IA32_MISC_ENABLE_EMON;
+> > However, this is not.  If it's a read-only bit, then toggling the bit should
+> > cause a #GP.
+> 
+> The proposal here is trying to make it as an unchangeable bit and don't make
+> it #GP if guest changes it.
+> 
+> It may different from the host behavior but it doesn't cause potential issue
+> if some guest code changes it during the use of performance monitoring.
+> 
+> Does this make sense to you or do you want to keep it strictly the same as
+> the host side?
 
+Strictly the same as bare metal.  I don't see any reason to eat writes from the
+guest.
