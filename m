@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83D8638370C
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6E4D383878
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244012AbhEQPjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:39:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42054 "EHLO mail.kernel.org"
+        id S1344203AbhEQPxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:53:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238673AbhEQPXB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:23:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B5DA61CA3;
-        Mon, 17 May 2021 14:35:15 +0000 (UTC)
+        id S243734AbhEQPf6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:35:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F7E561CEA;
+        Mon, 17 May 2021 14:39:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262116;
-        bh=iHKtszs9IIlWoFV7+AuVDwDxIjB0taP5A/9EBFJd1V4=;
+        s=korg; t=1621262394;
+        bh=MwOCbBcfvlb0ciXm2Mc6pB0nprG2EIV1HA5/KJiix2U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VsPevmkleIfsgmA56NkZjQPVhQe2yoRIRJvbKU/q/gDAzihAEO6dLMdFqH2yLSRtH
-         bLVQvJTpJo43qpAstziB3OAjBM8/Yg6zB9yOui0haFkp3+mtCuThfwnOWVewTaDI93
-         bviaDUNG8akH0Z8SrOqncjJYkZrbyAvrgsx3Fv14=
+        b=AjoMjzz4Nghy2rjfcmyJoKPPR7sLgiTNMat3+JXXLQDv4K3azNSIQ21UdRAS4mUKE
+         Vbm193/scZlSZUZ4k/3Y+UGLFUPKz910xtSQcUX21qJ2JdqOs/6sAe1c7hen/vWEzH
+         3HGD2lRXBtxJCYw+Xuxw223s5o1pk+hCFC2xoe/s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        Govindarajulu Varadarajan <gvaradar@cisco.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 192/329] ethernet:enic: Fix a use after free bug in enic_hard_start_xmit
+Subject: [PATCH 5.10 178/289] can: mcp251xfd: mcp251xfd_probe(): add missing can_rx_offload_del() in error path
 Date:   Mon, 17 May 2021 16:01:43 +0200
-Message-Id: <20210517140308.624680293@linuxfoundation.org>
+Message-Id: <20210517140311.110782258@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
+References: <20210517140305.140529752@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,67 +39,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 
-[ Upstream commit 643001b47adc844ae33510c4bb93c236667008a3 ]
+[ Upstream commit 4376ea42db8bfcac2bc3a30bba93917244a8c2d4 ]
 
-In enic_hard_start_xmit, it calls enic_queue_wq_skb(). Inside
-enic_queue_wq_skb, if some error happens, the skb will be freed
-by dev_kfree_skb(skb). But the freed skb is still used in
-skb_tx_timestamp(skb).
+This patch adds the missing can_rx_offload_del(), that must be called
+if mcp251xfd_register() fails.
 
-My patch makes enic_queue_wq_skb() return error and goto spin_unlock()
-incase of error. The solution is provided by Govind.
-See https://lkml.org/lkml/2021/4/30/961.
-
-Fixes: fb7516d42478e ("enic: add sw timestamp support")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Acked-by: Govindarajulu Varadarajan <gvaradar@cisco.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 55e5b97f003e ("can: mcp25xxfd: add driver for Microchip MCP25xxFD SPI CAN")
+Link: https://lore.kernel.org/r/20210504091838.1109047-1-mkl@pengutronix.de
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/cisco/enic/enic_main.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/cisco/enic/enic_main.c b/drivers/net/ethernet/cisco/enic/enic_main.c
-index fb269d587b74..548d8095c0a7 100644
---- a/drivers/net/ethernet/cisco/enic/enic_main.c
-+++ b/drivers/net/ethernet/cisco/enic/enic_main.c
-@@ -768,7 +768,7 @@ static inline int enic_queue_wq_skb_encap(struct enic *enic, struct vnic_wq *wq,
- 	return err;
- }
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+index 096d818c167e..68ff931993c2 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+@@ -2870,10 +2870,12 @@ static int mcp251xfd_probe(struct spi_device *spi)
  
--static inline void enic_queue_wq_skb(struct enic *enic,
-+static inline int enic_queue_wq_skb(struct enic *enic,
- 	struct vnic_wq *wq, struct sk_buff *skb)
- {
- 	unsigned int mss = skb_shinfo(skb)->gso_size;
-@@ -814,6 +814,7 @@ static inline void enic_queue_wq_skb(struct enic *enic,
- 		wq->to_use = buf->next;
- 		dev_kfree_skb(skb);
- 	}
-+	return err;
- }
+ 	err = mcp251xfd_register(priv);
+ 	if (err)
+-		goto out_free_candev;
++		goto out_can_rx_offload_del;
  
- /* netif_tx_lock held, process context with BHs disabled, or BH */
-@@ -857,7 +858,8 @@ static netdev_tx_t enic_hard_start_xmit(struct sk_buff *skb,
- 		return NETDEV_TX_BUSY;
- 	}
+ 	return 0;
  
--	enic_queue_wq_skb(enic, wq, skb);
-+	if (enic_queue_wq_skb(enic, wq, skb))
-+		goto error;
++ out_can_rx_offload_del:
++	can_rx_offload_del(&priv->offload);
+  out_free_candev:
+ 	spi->max_speed_hz = priv->spi_max_speed_hz_orig;
  
- 	if (vnic_wq_desc_avail(wq) < MAX_SKB_FRAGS + ENIC_DESC_MAX_SPLITS)
- 		netif_tx_stop_queue(txq);
-@@ -865,6 +867,7 @@ static netdev_tx_t enic_hard_start_xmit(struct sk_buff *skb,
- 	if (!netdev_xmit_more() || netif_xmit_stopped(txq))
- 		vnic_wq_doorbell(wq);
- 
-+error:
- 	spin_unlock(&enic->wq_lock[txq_map]);
- 
- 	return NETDEV_TX_OK;
 -- 
 2.30.2
 
