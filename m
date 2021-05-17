@@ -2,139 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90D40382ADB
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:22:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42BE4382AD2
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236757AbhEQLXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 07:23:20 -0400
-Received: from mail-am6eur05on2047.outbound.protection.outlook.com ([40.107.22.47]:30560
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236739AbhEQLXO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 07:23:14 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SS1UT9jUWKq9re1CmR/MbqronzDJkniTCcjJZ30F+dh7G3DjdUwDVZkAKG8kpp/kYh2AbtZe8oBJuaOWPDrEA31Oc2xojsTamRIuqiAQLpvFjneWuNMEGXsFFavY3mSqeoGc5c6Mv66Ydg9P/wsTr9pSAWq9iNVkaXTTB4F5rkBNUoL0/Ps3MpV6vbrHTkbdWwtmN4tINbfvMdifVHU/sH1ENOy1gaDqlPNyMweJq/yXqDFO0YKtLYG4HlQZTFIZqBLh6OqPRlm37Efyro/1CVCZyXDZEUlxuTnc3sQzGd8etEHnl4dUvIXLjIx1o3Lob3i63dGEwS2pGXTM6BfRag==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qgKm3n2FMXJ0wWUVkRm96IhBO2Hn8MPzkr3GFvuD29g=;
- b=LkEZPAliqIfl9BIeWw6vvYjPZ/Kh0RPyWpkbJL/Fo9CtR637G9WWACTHpglA2J+ZGHgrwkYSjrotlrwN1VLyJidH+39ULzFO/Y754yocMmCuA0AODEr2yuzzLHhyz51oDf4GQ4qvei7Pg+X6/rkY1IW/FO5ZbYdWHZKHrUocfemC3YFkKwXoFSrpNn/saTzYJX3x1q+Z1RksEMs7mU8Ep7UUfE2v41F7CDEnwm8QS0XWCiHa7lJ6/1V1TPo5zuKn5NmRjOaLFCxlXUTE7I+4vSe5jXm4S2HGJSwo26TWWoDXTpmG/c6m7q5GdY9dYffobNn0/kCGCEQv0JGxHi9ptw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qgKm3n2FMXJ0wWUVkRm96IhBO2Hn8MPzkr3GFvuD29g=;
- b=HOTt+OOly6QPDSlPJyo5mpVUCu2W3WQS2UCPQm8UtxMflkGUt6Nu1TFpMDQJUpG6IhdEt+0RSEqPM+dR0uq6Jfo2cArDpHTLpPdqgRQfv3Bym/xAigD6XE2DJVlEPzvxh701EYWRoKtX4e98KmIz+05WUnfQa97dA+ySmmyAqWE=
-Authentication-Results: kvack.org; dkim=none (message not signed)
- header.d=none;kvack.org; dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4966.eurprd04.prod.outlook.com (2603:10a6:20b:2::14)
- by AM6PR04MB6519.eurprd04.prod.outlook.com (2603:10a6:20b:fb::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Mon, 17 May
- 2021 11:21:57 +0000
-Received: from AM6PR04MB4966.eurprd04.prod.outlook.com
- ([fe80::b10a:ad0:a6f5:db9b]) by AM6PR04MB4966.eurprd04.prod.outlook.com
- ([fe80::b10a:ad0:a6f5:db9b%2]) with mapi id 15.20.4129.031; Mon, 17 May 2021
- 11:21:56 +0000
-From:   Dong Aisheng <aisheng.dong@nxp.com>
-To:     linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, dongas86@gmail.com,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH 5/5] mm/page_alloc: improve memmap_pages and dma_reserve dbg msg
-Date:   Mon, 17 May 2021 19:20:44 +0800
-Message-Id: <20210517112044.233138-6-aisheng.dong@nxp.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210517112044.233138-1-aisheng.dong@nxp.com>
-References: <20210517112044.233138-1-aisheng.dong@nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: SG2PR01CA0132.apcprd01.prod.exchangelabs.com
- (2603:1096:4:40::36) To AM6PR04MB4966.eurprd04.prod.outlook.com
- (2603:10a6:20b:2::14)
+        id S236654AbhEQLXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 07:23:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236528AbhEQLW5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 07:22:57 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11946C061573;
+        Mon, 17 May 2021 04:21:41 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id k5-20020a05600c4785b0290174b7945d7eso2945815wmo.2;
+        Mon, 17 May 2021 04:21:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=bFTFQv745ERLPtvmkjRJFOSlUXURZ42YEvz7ciOZXyQ=;
+        b=aJu2rKRhT3BbOt5WqR9wlf9OdaLurI2snVvX/fshY/DEZRzu2RnxhRvVHoqUJ1cU0e
+         Tyu28TGZoaeqCesXy514h8gxZdScim5XgpiKa6eoE+B/EuMm3yhEQZN8APmePLSUNknP
+         POL3LxwbL8vRg1rLWQ9yRhfFytq/GNxS9KYHe4DYjyXlR3kMYZOXJJP4Q8AVkpLtVb0j
+         yHJUquYRQiRku8qvz2d7TXEWcsP/e3nt3ZgOLk8sB7Ldb6GdFrjH09J3k7i9Y2ZNWWev
+         kg/wtYFR/Pn0bh0nzqnY4CRD66DGwC/YWGv+94PO9PqRwknLxr+A4DOdq8pPCsn005fl
+         vZ5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bFTFQv745ERLPtvmkjRJFOSlUXURZ42YEvz7ciOZXyQ=;
+        b=cPiQy+ll/PQvvML6vXEQl/bdkLo0dh3SZGYQSy/IKthU3MFAzpMLDejHQtswxQ91rF
+         2c/ikkY5o2yYh0XybArS0DMJbKwQYmn7hD5Zsf5WPdzupnROdA+SJ17YkaqLtzGt4A6a
+         Ud84MqzrR5BQ4PE9DggV2DHMlC6ru6pGALmU709dzXmOcQPNTuDI2FCZRefIjjqiA1ga
+         It5KorzgAb5S/t1mqIOpZ7GDdC+HDAf1Ga3xiIoSd92ueNTzOOZq6vUE4sO9RTzSEo8V
+         x55cyXDincn8OowCAevWPAil48Uxtqe0nadC8IXKoIvXPawm3hXNqctI9qswE2cfjG4p
+         6ZKA==
+X-Gm-Message-State: AOAM530X1V6vH6LlteXw1Q2qEM3Wslpum2xnaCSuGr4/Z2CUWK0o6Hb6
+        MlpjJc5r7NMPaa9AWwXoCEU=
+X-Google-Smtp-Source: ABdhPJxJXeFNpoiUHNVPpWQSV2lFdh0m+8coAbbzYcc2is3lDVWj2ksoiOTTjJnz1JgzYLES3R4SHw==
+X-Received: by 2002:a7b:cb45:: with SMTP id v5mr65104488wmj.48.1621250499861;
+        Mon, 17 May 2021 04:21:39 -0700 (PDT)
+Received: from ?IPv6:2620:10d:c096:310::2810? ([2620:10d:c093:600::2:e1e0])
+        by smtp.gmail.com with ESMTPSA id n7sm16267130wri.14.2021.05.17.04.21.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 May 2021 04:21:39 -0700 (PDT)
+Subject: Re: [syzbot] BUG: unable to handle kernel paging request in corrupted
+ (3)
+To:     syzbot <syzbot+a84b8783366ecb1c65d0@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <0000000000006acb3105c28321f7@google.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Message-ID: <a6a87693-f994-6e56-78a2-6e39e1060484@gmail.com>
+Date:   Mon, 17 May 2021 12:21:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.66) by SG2PR01CA0132.apcprd01.prod.exchangelabs.com (2603:1096:4:40::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Mon, 17 May 2021 11:21:55 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d6d8e86e-126a-4f1d-20e6-08d91925fb10
-X-MS-TrafficTypeDiagnostic: AM6PR04MB6519:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM6PR04MB65195BE1870CDFE8300756F8802D9@AM6PR04MB6519.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:183;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vKG5u/JBoHqQWUofJwuFavrAWkKHQWU6nffP2HLVLxI1LCfo46Pw5tXSyr1WquEF2jzjkUp5nOj28eq6v5JGTYF4b+/qfmZEKkTTzOShTHZJi9H1PEfPeV024vvIZkfeJeQOSP5Swbl44aKxoWHvaADGK/sgJsrnR+n+2jLHTZL06m4JKyaNtxwc/K1DN0OzFRV9JXGEhxpWkVdn7ETrIfN8DwOLR9tVuc1NXhDhu5a17nKTcqiVqgQn/BEJHlnlcAvQOGgDyOKAT7iUe/pB1h4nwL7tW0+EypwW5cll9ikisHBmTl/ZlEgorLTE8Kyj2RwBAIbuUxeWIf+nI3ssENoVEvCjhi3Ml+V3aZ1fNUfWjY7n4iFQkcNentvqfkeEQbr2nfArMlV9EqCbIz1Vsypj4bUpQ2otOw2kS/t+HE2lmzn8TGLXRE4/kKmPt+pyEBfQe29Il5t0uocg7ae8jLkAibq8yDh7N8i/+SjhFOLi9Hkt0ysPprY/UNjgWFGzy9rpukGqakypBUxJmeXnVZwYPU05wEwpi9gXMQO/lQZe6CfrxUmLrmajGUr+PFOdqgYy93O63Qq8f6eQWZAcor/jNGLMlVxJLXVrqhsU0o75Rfaa1ApDZDkjNRoys9HgGppPiUyJGJNVbDuDUD2JoxpOiNE4KIrcTAS+1u1HOy6u+1KazcxZ9KzB5F2H6+u8
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4966.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(396003)(376002)(366004)(346002)(6916009)(5660300002)(6666004)(316002)(66556008)(186003)(16526019)(2906002)(956004)(36756003)(66476007)(26005)(66946007)(38100700002)(38350700002)(6506007)(83380400001)(86362001)(52116002)(4326008)(478600001)(54906003)(6512007)(1076003)(8936002)(2616005)(4744005)(8676002)(6486002)(69590400013);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?r63b0vMd8nxY3G3lA0Zc9gK2AX7YICqpEiSZd51swituFXLIbEdeSSAXk/cH?=
- =?us-ascii?Q?HtU2DHJqaY/ilppY0tBh2nL1hqXLIrnHVQfdTY6o8zS8IGd5+CfQqA8bGmJe?=
- =?us-ascii?Q?gAPv4FxRE5nav9K0lM9e1pSA7S0SfwSLaALe3iqmz4fIgYFocV8P9uTi3Mmt?=
- =?us-ascii?Q?fyBC2ylwXWOmCnY6QrS8NLiv1R8G94qaxYonVICzO0xSDGquL+QGMQC+mxpx?=
- =?us-ascii?Q?LL6j0ETmWVbp0OfAgS2sL1uKwhttIAoVgYIaOJSOag3dj++D3/F2qzCDTTHA?=
- =?us-ascii?Q?zTg1KQAoNucWER34ObURZbR7+2mhLY7CLJn3RkOK8PZPNTJHribZdqFN3MXc?=
- =?us-ascii?Q?XEdRLWyylvABpdUOGSZWQvkUVU0DyMhu2Tv8JK5/ZbXBfS5KP0bdhnNohXG6?=
- =?us-ascii?Q?05Fqtul52J8/Kb4k/6ukEGiVMfByU9nBlZXlVkEEi6/94FIHiepbvuOU2JpY?=
- =?us-ascii?Q?1o2Z3hsO+SyQTBgOWINQMGacdpmy1HtKCXRiDYWRdOm4TY/+CnZJsZtJxWft?=
- =?us-ascii?Q?a8T+TyWBd0fHh1X4NXCspoGxvCUl8DpiVsEVeEG1hfiYiqzHt/Zh4Kshgh1w?=
- =?us-ascii?Q?dlOKIAjl/YVFyU7q8qGY9jzbLvxB169LBfiuqRne8PYYc2JjDuzHY8iHcVJ0?=
- =?us-ascii?Q?dFUXhGfUiflGD1JLj/7fApGQHy1TLA9GB6jtM8h3r5zPJ6uOGwBDG1IsdOoZ?=
- =?us-ascii?Q?jMDNs26NkfW+VGWChQy3zff/j4lEKyDtzJBBSxXiH5K657q9nInUIHFol4ie?=
- =?us-ascii?Q?MMlbpeOKcXqaBV6yqydOcNymn+zQYzgwMPVdB9P/FlhK9iixe/RdQA9wEld7?=
- =?us-ascii?Q?zX7PNV1yAM/kdJP9mHdwYHHUv1vr22NfvBAw5sz6hxkSroVDyTZLjwp8NkpE?=
- =?us-ascii?Q?FK+WSwp/VX7hRsBdpQUhFyu+DBUNuuqcW+Zl0iof9m5cYmXV0es7c/xw6wXX?=
- =?us-ascii?Q?8Vr1ApHt0EgPn5rJzvuSXa+ZKeZbLdecJfJtrEPR/aFE5TwQwWbQgfN4uRHv?=
- =?us-ascii?Q?BkMntqO9BBWHR+gGDveAUY0l8y+2J0OBWGaLb0iCHFx2OsF1/XaDoJzTe/Yr?=
- =?us-ascii?Q?jjsYHYFAHQvL+AxeblyydZzUy16u1DkKqd0//CBjLuybld/ag1GjyLMNxnm2?=
- =?us-ascii?Q?9Mx8bu4f6lXuRQqMN1y932b9Paz4V5pKXn5heMTVz2CKTJtRgjhjM2PnfTMB?=
- =?us-ascii?Q?oErVY6BbcxLP1stnrc/1GK7XiiUgaVPgaxx0ew3cRdZRnXgKabIc3qBslWuL?=
- =?us-ascii?Q?B37jATLUoMhNhK+DLSnFBDPayr2BCgeffxxJIf+9fjzecLwDyDdtFvsZYQaP?=
- =?us-ascii?Q?QgNhFNnhvFmfJD1gAxtJltXd?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d6d8e86e-126a-4f1d-20e6-08d91925fb10
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4966.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 May 2021 11:21:56.9126
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: T0ynK7/8hxe3kei+jDedtAw1CJrFLfTIX99rc2ZGC9/J7kVs70Rsszotf+IxhBSZA0kpfM8GUbzuOEKEeYWHsw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB6519
+In-Reply-To: <0000000000006acb3105c28321f7@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make debug message more accurately.
+On 5/17/21 10:22 AM, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    88b06399 Merge tag 'for-5.13-rc1-part2-tag' of git://git.k..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=11aa7a65d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=807beec6b4d66bf1
+> dashboard link: https://syzkaller.appspot.com/bug?extid=a84b8783366ecb1c65d0
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16a031b3d00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12fc54fdd00000
+> 
+> The issue was bisected to:
 
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
----
- mm/page_alloc.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+#syz test: https://github.com/isilence/linux.git syz_test10
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 3100fcb08500..16f494352f58 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -7263,14 +7263,15 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
- 					pr_debug("  %s zone: %lu pages used for memmap\n",
- 						 zone_names[j], memmap_pages);
- 			} else
--				pr_warn("  %s zone: %lu pages exceeds freesize %lu\n",
-+				pr_warn("  %s zone: %lu memmap pages exceeds freesize %lu\n",
- 					zone_names[j], memmap_pages, freesize);
- 		}
- 
- 		/* Account for reserved pages */
- 		if (j == 0 && freesize > dma_reserve) {
- 			freesize -= dma_reserve;
--			pr_debug("  %s zone: %lu pages reserved\n", zone_names[0], dma_reserve);
-+			pr_debug("  %s zone: %lu pages reserved for dma\n",
-+				 zone_names[0], dma_reserve);
- 		}
- 
- 		if (!is_highmem_idx(j))
+> 
+> commit ea6a693d862d4f0edd748a1fa3fc6faf2c39afb2
+> Author: Jens Axboe <axboe@kernel.dk>
+> Date:   Thu Apr 15 15:47:13 2021 +0000
+> 
+>     io_uring: disable multishot poll for double poll add cases
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=104b5795d00000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=124b5795d00000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=144b5795d00000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+a84b8783366ecb1c65d0@syzkaller.appspotmail.com
+> Fixes: ea6a693d862d ("io_uring: disable multishot poll for double poll add cases")
+> 
+> BUG: unable to handle page fault for address: ffffffffc1defce0
+> #PF: supervisor instruction fetch in kernel mode
+> #PF: error_code(0x0010) - not-present page
+> PGD bc8f067 P4D bc8f067 PUD bc91067 PMD 0 
+> Oops: 0010 [#1] PREEMPT SMP KASAN
+> CPU: 1 PID: 8479 Comm: iou-wrk-8440 Not tainted 5.13.0-rc1-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:0xffffffffc1defce0
+> Code: Unable to access opcode bytes at RIP 0xffffffffc1defcb6.
+> RSP: 0018:ffffc9000161f8f8 EFLAGS: 00010246
+> RAX: ffffffffc1defce0 RBX: 0000000000000000 RCX: 0000000000000000
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff8880187eb8c0
+> RBP: ffff8880187eb8c0 R08: 0000000000000000 R09: 0000000000002000
+> R10: ffffffff81df1723 R11: 0000000000004000 R12: 0000000000000000
+> R13: ffff8880187eb918 R14: ffff8880187eb900 R15: ffffffffc1defce0
+> FS:  0000000001212300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: ffffffffc1defcb6 CR3: 00000000139d9000 CR4: 00000000001506e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+> Modules linked in:
+> CR2: ffffffffc1defce0
+> ---[ end trace a41da77ef833bc79 ]---
+> RIP: 0010:0xffffffffc1defce0
+> Code: Unable to access opcode bytes at RIP 0xffffffffc1defcb6.
+> RSP: 0018:ffffc9000161f8f8 EFLAGS: 00010246
+> RAX: ffffffffc1defce0 RBX: 0000000000000000 RCX: 0000000000000000
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff8880187eb8c0
+> RBP: ffff8880187eb8c0 R08: 0000000000000000 R09: 0000000000002000
+> R10: ffffffff81df1723 R11: 0000000000004000 R12: 0000000000000000
+> R13: ffff8880187eb918 R14: ffff8880187eb900 R15: ffffffffc1defce0
+> FS:  0000000001212300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: ffffffffc1defcb6 CR3: 00000000139d9000 CR4: 00000000001506e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> syzbot can test patches for this issue, for details see:
+> https://goo.gl/tpsmEJ#testing-patches
+> 
+
 -- 
-2.25.1
-
+Pavel Begunkov
