@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE0C638386B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A3F438378B
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:46:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238150AbhEQPwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:52:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40230 "EHLO mail.kernel.org"
+        id S1344578AbhEQPpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:45:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343679AbhEQPel (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:34:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 02E9761CED;
-        Mon, 17 May 2021 14:39:22 +0000 (UTC)
+        id S244095AbhEQP3I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:29:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4694861CBC;
+        Mon, 17 May 2021 14:37:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262363;
-        bh=kdX7mJYRpiW3a974hLhtcX8/+XKPNW8rnJbVxtLqfLs=;
+        s=korg; t=1621262249;
+        bh=hGFvCicMJSd+OXQXSjAVDr5lHiJ4sa10UlQ0LN+CYRk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DfH9Bpsyq1Oo2Pmp0OSSeDr78jljplt6wemLp2YdMdWUqL/j6zeOHxZ8F29JvYL1K
-         vfL3cDJakZ0J+26me3PHAqqqDQgyCJzXSPJ1tYU8VZRfWFSLH6Oq5suYc/WVsbC+yQ
-         hJbtV9D+uo+8DlVGZUyMTbCqyJ6QfGeVJjYe6TUA=
+        b=fLblzrjt/uvoO4nXHeWRlWltcJkx+kdFMu4U85ygofWQhKLgIXqdah1ZduSEruu7k
+         QyeoXMsqurjgOGknlEmcCgDMbTmHCt+TXaxEvQ+ZdVhehpP08jQsh66aYWNKyFNl7E
+         mNXgZ/z/KN2H2ftrQXYDeEoc49XqU2TmTgQS3Gc8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Wilson <chris@chris-wilson.co.uk>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        Jani Nikula <jani.nikula@intel.com>
-Subject: [PATCH 5.11 248/329] drm/i915: Avoid div-by-zero on gen2
-Date:   Mon, 17 May 2021 16:02:39 +0200
-Message-Id: <20210517140310.491917951@linuxfoundation.org>
+        stable@vger.kernel.org, Ben Segall <bsegall@google.com>,
+        Venkatesh Srinivas <venkateshs@chromium.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jim Mattson <jmattson@google.com>
+Subject: [PATCH 5.11 249/329] kvm: exit halt polling on need_resched() as well
+Date:   Mon, 17 May 2021 16:02:40 +0200
+Message-Id: <20210517140310.537115832@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
 References: <20210517140302.043055203@linuxfoundation.org>
@@ -41,44 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ville Syrjälä <ville.syrjala@linux.intel.com>
+From: Benjamin Segall <bsegall@google.com>
 
-commit 4819d16d91145966ce03818a95169df1fd56b299 upstream.
+commit 262de4102c7bb8e59f26a967a8ffe8cce85cc537 upstream.
 
-Gen2 tiles are 2KiB in size so i915_gem_object_get_tile_row_size()
-can in fact return <4KiB, which leads to div-by-zero here.
-Avoid that.
+single_task_running() is usually more general than need_resched()
+but CFS_BANDWIDTH throttling will use resched_task() when there
+is just one task to get the task to block. This was causing
+long-need_resched warnings and was likely allowing VMs to
+overrun their quota when halt polling.
 
-Not sure i915_gem_object_get_tile_row_size() is entirely
-sane anyway since it doesn't account for the different tile
-layouts on i8xx/i915...
-
-I'm not able to hit this before commit 6846895fde05 ("drm/i915:
-Replace PIN_NONFAULT with calls to PIN_NOEVICT") and it looks
-like I also need to run recent version of Mesa. With those in
-place xonotic trips on this quite easily on my 85x.
-
+Signed-off-by: Ben Segall <bsegall@google.com>
+Signed-off-by: Venkatesh Srinivas <venkateshs@chromium.org>
+Message-Id: <20210429162233.116849-1-venkateshs@chromium.org>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Cc: stable@vger.kernel.org
-Reviewed-by: Chris Wilson <chris@chris-wilson.co.uk>
-Signed-off-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210421153401.13847-2-ville.syrjala@linux.intel.com
-(cherry picked from commit ed52c62d386f764194e0184fdb905d5f24194cae)
-Signed-off-by: Jani Nikula <jani.nikula@intel.com>
+Reviewed-by: Jim Mattson <jmattson@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/i915/gem/i915_gem_mman.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ virt/kvm/kvm_main.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/i915/gem/i915_gem_mman.c
-+++ b/drivers/gpu/drm/i915/gem/i915_gem_mman.c
-@@ -189,7 +189,7 @@ compute_partial_view(const struct drm_i9
- 	struct i915_ggtt_view view;
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -2814,7 +2814,8 @@ void kvm_vcpu_block(struct kvm_vcpu *vcp
+ 				goto out;
+ 			}
+ 			poll_end = cur = ktime_get();
+-		} while (single_task_running() && ktime_before(cur, stop));
++		} while (single_task_running() && !need_resched() &&
++			 ktime_before(cur, stop));
+ 	}
  
- 	if (i915_gem_object_is_tiled(obj))
--		chunk = roundup(chunk, tile_row_pages(obj));
-+		chunk = roundup(chunk, tile_row_pages(obj) ?: 1);
- 
- 	view.type = I915_GGTT_VIEW_PARTIAL;
- 	view.partial.offset = rounddown(page_offset, chunk);
+ 	prepare_to_rcuwait(&vcpu->wait);
 
 
