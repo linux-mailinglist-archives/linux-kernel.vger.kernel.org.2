@@ -2,75 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B7E2386C54
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 23:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C7C6386C56
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 23:34:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245143AbhEQVfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 17:35:46 -0400
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:33352 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232924AbhEQVfp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 17:35:45 -0400
-Received: by mail-ot1-f53.google.com with SMTP id i23-20020a9d68d70000b02902dc19ed4c15so6890445oto.0;
-        Mon, 17 May 2021 14:34:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UQEU3oksI06Oxq3YmQYcH0MD6VzSoP8Bc+mwEWnCwZA=;
-        b=orc7bDOhiOCmqksEZ58axvHTedbqAUa5zDHAFttl3zw8k595Bsy/K71emzQYBEx5Gc
-         tyG7ESavB0OxyYzh+NA6nyEEefpQIRF3HcnDsLE/cx/ohWRXUYA1li9G3lHCmD/+Aavf
-         VwG+TBSuso+ZVkjvBZtCYP6mQvhfP6oma0JQxd7dNJ1lbg0uKfUgn4cnD+w1LVri1A/I
-         vE205YNGEPZx4ogi290vNqAMfcSyBk1B+uV6cnuM0ToORgrP7SE8Q2PihwblOjYPVjct
-         V7mQ2wdEvSWMg1n0vOCitUSUkTYEx24ShRjYT3ImD3aYkU4nBkH2RA+70/QNTz4uqdbV
-         zvyA==
-X-Gm-Message-State: AOAM531WzhDXNQxyw1gqJ1KtrN0vDgneUA9KuJU4RRCYPv5olmj0KMlP
-        J+tmG4YTfsoydHET+YYxOpM6p2voZA==
-X-Google-Smtp-Source: ABdhPJyCcqjVqwPcDIpGYU0DPwQ92ieohIf3eUPzzyO1HTU98nMPz1vwy8vD73yAznvEYWMAxqewCg==
-X-Received: by 2002:a9d:7f83:: with SMTP id t3mr1398443otp.32.1621287268548;
-        Mon, 17 May 2021 14:34:28 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id u14sm3009619oif.41.2021.05.17.14.34.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 14:34:28 -0700 (PDT)
-Received: (nullmailer pid 3240019 invoked by uid 1000);
-        Mon, 17 May 2021 21:34:27 -0000
-Date:   Mon, 17 May 2021 16:34:27 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chanwoo Choi <cw00.choi@samsung.com>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>
-Subject: Re: [PATCH v1 4/7] dt-bindings: devfreq: tegra30-actmon: Add
- cooling-cells
-Message-ID: <20210517213427.GA3239990@robh.at.kernel.org>
-References: <20210510211008.30300-1-digetx@gmail.com>
- <20210510211008.30300-5-digetx@gmail.com>
+        id S245164AbhEQVgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 17:36:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60460 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232924AbhEQVgB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 17:36:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7484D61263;
+        Mon, 17 May 2021 21:34:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621287284;
+        bh=bLqR0ycSJjK3kwjoIQdiqU24f66TkyRBFt3e5ONdI1k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mF+QXjowhpfX8kxSq7lsuRZHrvO0S4RLsR3yre1g2raXdSlYJ7DHAusukBnGuPcSI
+         wQdl7vnxYbmpoo42wi2VqtG/l/FbJ3Z9XOGHdZY4G/8ot/1WJsLsW8bI4n3VulC2VK
+         m7KtMLqbT7x8jKAp+isWgE10XiLeeTGZLVIuYm3YZt4KLjzUp8L3IV8rSy7ZL4Sz+R
+         CC/7pOPtckJrmWa3rOTJQQX7z8RTFp2KE4049uM+BjFGIiBgiVPEJkpmWngDDfabYN
+         k7JXKMcUbknnmv/PrNC+WZJW8JclujQZEs5fFIcOBG5/DkUEXii3k2EF7sdU0nahoH
+         WKBqHFc8AqHHA==
+Date:   Mon, 17 May 2021 14:34:43 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     "Chang S. Bae" <chang.seok.bae@intel.com>
+Cc:     tglx@linutronix.de, mingo@kernel.org, bp@suse.de, luto@kernel.org,
+        x86@kernel.org, herbert@gondor.apana.org.au,
+        dan.j.williams@intel.com, dave.hansen@intel.com,
+        ravi.v.shankar@intel.com, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2 10/11] crypto: x86/aes-kl - Support AES algorithm
+ using Key Locker instructions
+Message-ID: <YKLhc6HX9+JunQ/X@gmail.com>
+References: <20210514201508.27967-1-chang.seok.bae@intel.com>
+ <20210514201508.27967-11-chang.seok.bae@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210510211008.30300-5-digetx@gmail.com>
+In-Reply-To: <20210514201508.27967-11-chang.seok.bae@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 May 2021 00:10:05 +0300, Dmitry Osipenko wrote:
-> The ACTMON watches activity of memory clients. Decisions about a minimum
-> required frequency are made based on the info from ACTMON. We can use
-> ACTMON as a thermal cooling device by limiting the required frequency.
-> Document new cooling-cells property of NVIDIA Tegra ACTMON hardware unit.
+On Fri, May 14, 2021 at 01:15:07PM -0700, Chang S. Bae wrote:
 > 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  .../devicetree/bindings/devfreq/nvidia,tegra30-actmon.yaml   | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
+> Included are methods for ECB, CBC, CTR, and XTS modes. They are not
+> compatible with other implementations as referencing an encrypted form
+> only.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Your code uses the standard algorithm names like cbc(aes), which implies that it
+is compatible with the standard cbc(aes).  So which is it -- compatible or not
+compatible -- and if it isn't compatible, what is the expected use case?
+
+- Eric
