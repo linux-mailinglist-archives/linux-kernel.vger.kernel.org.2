@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2495C38363F
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:33:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 361B6383756
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:42:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343511AbhEQPav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:30:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54616 "EHLO mail.kernel.org"
+        id S243074AbhEQPlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:41:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243700AbhEQPQM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:16:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D9A6260720;
-        Mon, 17 May 2021 14:32:39 +0000 (UTC)
+        id S243751AbhEQP0e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:26:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 415A561C98;
+        Mon, 17 May 2021 14:36:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261960;
-        bh=6DL70WJF/GjCe/r7qzSX69zn8YOg5slAWfQuS0WdW0g=;
+        s=korg; t=1621262188;
+        bh=e6rbGkevxH80htg2S1pnTYsN/VIFVvqRPI21soQ99II=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QWDM1zOCGuOjapSoozX3dU2p9H2w9ZqdklBtMCS9x0q4iTrZ4AeAIhLGmVwxk9vrP
-         1HcoOt3JhgowEwBqfvj/WcuTikHSOz3suTxwTE1mKZaoLa/CaQq/4D2BwjIBja06iL
-         jF9RQ79cYmMd9ETQ0/elgGDVkgxEq8mBJU0gq9Vc=
+        b=K62xMHFf1YCR+CSL680fmgEnDB9WYrUTESimKWOPqwdZYMZoRH4dSBXdp4p6ddR8h
+         wQB3GjmT4gBlgESSZsJx7X7mcQmQa+yfJKluybQVT8fWFPzzqXUUcxxsaA/lHmlAzd
+         5Trb2z58tb6VC3PwJTF8NmViPAFLRVYl5H1P6gi4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Dawid Lukwinski <dawid.lukwinski@intel.com>,
-        Mateusz Palczewski <mateusz.palczewski@intel.com>,
-        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
-        Dave Switzer <david.switzer@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 094/141] i40e: Fix PHY type identifiers for 2.5G and 5G adapters
+        stable@vger.kernel.org, Jouni Roivas <jouni.roivas@tuxera.com>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Anatoly Trosinenko <anatoly.trosinenko@gmail.com>,
+        Viacheslav Dubeyko <slava@dubeyko.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.11 235/329] hfsplus: prevent corruption in shrinking truncate
 Date:   Mon, 17 May 2021 16:02:26 +0200
-Message-Id: <20210517140245.932248259@linuxfoundation.org>
+Message-Id: <20210517140310.065784644@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
-References: <20210517140242.729269392@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,96 +43,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mateusz Palczewski <mateusz.palczewski@intel.com>
+From: Jouni Roivas <jouni.roivas@tuxera.com>
 
-[ Upstream commit 15395ec4685bd45a43d1b54b8fd9846b87e2c621 ]
+commit c3187cf32216313fb316084efac4dab3a8459b1d upstream.
 
-Unlike other supported adapters, 2.5G and 5G use different
-PHY type identifiers for reading/writing PHY settings
-and for reading link status. This commit introduces
-separate PHY identifiers for these two operation types.
+I believe there are some issues introduced by commit 31651c607151
+("hfsplus: avoid deadlock on file truncation")
 
-Fixes: 2e45d3f4677a ("i40e: Add support for X710 B/P & SFP+ cards")
-Signed-off-by: Dawid Lukwinski <dawid.lukwinski@intel.com>
-Signed-off-by: Mateusz Palczewski <mateusz.palczewski@intel.com>
-Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
-Tested-by: Dave Switzer <david.switzer@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+HFS+ has extent records which always contains 8 extents.  In case the
+first extent record in catalog file gets full, new ones are allocated from
+extents overflow file.
+
+In case shrinking truncate happens to middle of an extent record which
+locates in extents overflow file, the logic in hfsplus_file_truncate() was
+changed so that call to hfs_brec_remove() is not guarded any more.
+
+Right action would be just freeing the extents that exceed the new size
+inside extent record by calling hfsplus_free_extents(), and then check if
+the whole extent record should be removed.  However since the guard
+(blk_cnt > start) is now after the call to hfs_brec_remove(), this has
+unfortunate effect that the last matching extent record is removed
+unconditionally.
+
+To reproduce this issue, create a file which has at least 10 extents, and
+then perform shrinking truncate into middle of the last extent record, so
+that the number of remaining extents is not under or divisible by 8.  This
+causes the last extent record (8 extents) to be removed totally instead of
+truncating into middle of it.  Thus this causes corruption, and lost data.
+
+Fix for this is simply checking if the new truncated end is below the
+start of this extent record, making it safe to remove the full extent
+record.  However call to hfs_brec_remove() can't be moved to it's previous
+place since we're dropping ->tree_lock and it can cause a race condition
+and the cached info being invalidated possibly corrupting the node data.
+
+Another issue is related to this one.  When entering into the block
+(blk_cnt > start) we are not holding the ->tree_lock.  We break out from
+the loop not holding the lock, but hfs_find_exit() does unlock it.  Not
+sure if it's possible for someone else to take the lock under our feet,
+but it can cause hard to debug errors and premature unlocking.  Even if
+there's no real risk of it, the locking should still always be kept in
+balance.  Thus taking the lock now just before the check.
+
+Link: https://lkml.kernel.org/r/20210429165139.3082828-1-jouni.roivas@tuxera.com
+Fixes: 31651c607151f ("hfsplus: avoid deadlock on file truncation")
+Signed-off-by: Jouni Roivas <jouni.roivas@tuxera.com>
+Reviewed-by: Anton Altaparmakov <anton@tuxera.com>
+Cc: Anatoly Trosinenko <anatoly.trosinenko@gmail.com>
+Cc: Viacheslav Dubeyko <slava@dubeyko.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e_adminq_cmd.h | 6 ++++--
- drivers/net/ethernet/intel/i40e/i40e_common.c     | 4 ++--
- drivers/net/ethernet/intel/i40e/i40e_ethtool.c    | 4 ++--
- drivers/net/ethernet/intel/i40e/i40e_type.h       | 7 ++-----
- 4 files changed, 10 insertions(+), 11 deletions(-)
+ fs/hfsplus/extents.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_adminq_cmd.h b/drivers/net/ethernet/intel/i40e/i40e_adminq_cmd.h
-index d7684ac2522e..57a8328e9b4f 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_adminq_cmd.h
-+++ b/drivers/net/ethernet/intel/i40e/i40e_adminq_cmd.h
-@@ -1893,8 +1893,10 @@ enum i40e_aq_phy_type {
- 	I40E_PHY_TYPE_25GBASE_LR		= 0x22,
- 	I40E_PHY_TYPE_25GBASE_AOC		= 0x23,
- 	I40E_PHY_TYPE_25GBASE_ACC		= 0x24,
--	I40E_PHY_TYPE_2_5GBASE_T		= 0x30,
--	I40E_PHY_TYPE_5GBASE_T			= 0x31,
-+	I40E_PHY_TYPE_2_5GBASE_T		= 0x26,
-+	I40E_PHY_TYPE_5GBASE_T			= 0x27,
-+	I40E_PHY_TYPE_2_5GBASE_T_LINK_STATUS	= 0x30,
-+	I40E_PHY_TYPE_5GBASE_T_LINK_STATUS	= 0x31,
- 	I40E_PHY_TYPE_MAX,
- 	I40E_PHY_TYPE_NOT_SUPPORTED_HIGH_TEMP	= 0xFD,
- 	I40E_PHY_TYPE_EMPTY			= 0xFE,
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_common.c b/drivers/net/ethernet/intel/i40e/i40e_common.c
-index 66f7deaf46ae..6475f78e85f6 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_common.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_common.c
-@@ -1156,8 +1156,8 @@ static enum i40e_media_type i40e_get_media_type(struct i40e_hw *hw)
- 		break;
- 	case I40E_PHY_TYPE_100BASE_TX:
- 	case I40E_PHY_TYPE_1000BASE_T:
--	case I40E_PHY_TYPE_2_5GBASE_T:
--	case I40E_PHY_TYPE_5GBASE_T:
-+	case I40E_PHY_TYPE_2_5GBASE_T_LINK_STATUS:
-+	case I40E_PHY_TYPE_5GBASE_T_LINK_STATUS:
- 	case I40E_PHY_TYPE_10GBASE_T:
- 		media = I40E_MEDIA_TYPE_BASET;
- 		break;
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-index 502b4abc0aab..e4d0b7747e84 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-@@ -839,8 +839,8 @@ static void i40e_get_settings_link_up(struct i40e_hw *hw,
- 							     10000baseT_Full);
- 		break;
- 	case I40E_PHY_TYPE_10GBASE_T:
--	case I40E_PHY_TYPE_5GBASE_T:
--	case I40E_PHY_TYPE_2_5GBASE_T:
-+	case I40E_PHY_TYPE_5GBASE_T_LINK_STATUS:
-+	case I40E_PHY_TYPE_2_5GBASE_T_LINK_STATUS:
- 	case I40E_PHY_TYPE_1000BASE_T:
- 	case I40E_PHY_TYPE_100BASE_TX:
- 		ethtool_link_ksettings_add_link_mode(ks, supported, Autoneg);
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_type.h b/drivers/net/ethernet/intel/i40e/i40e_type.h
-index b43ec94a0f29..666a251e8c72 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_type.h
-+++ b/drivers/net/ethernet/intel/i40e/i40e_type.h
-@@ -253,11 +253,8 @@ struct i40e_phy_info {
- #define I40E_CAP_PHY_TYPE_25GBASE_ACC BIT_ULL(I40E_PHY_TYPE_25GBASE_ACC + \
- 					     I40E_PHY_TYPE_OFFSET)
- /* Offset for 2.5G/5G PHY Types value to bit number conversion */
--#define I40E_PHY_TYPE_OFFSET2 (-10)
--#define I40E_CAP_PHY_TYPE_2_5GBASE_T BIT_ULL(I40E_PHY_TYPE_2_5GBASE_T + \
--					     I40E_PHY_TYPE_OFFSET2)
--#define I40E_CAP_PHY_TYPE_5GBASE_T BIT_ULL(I40E_PHY_TYPE_5GBASE_T + \
--					     I40E_PHY_TYPE_OFFSET2)
-+#define I40E_CAP_PHY_TYPE_2_5GBASE_T BIT_ULL(I40E_PHY_TYPE_2_5GBASE_T)
-+#define I40E_CAP_PHY_TYPE_5GBASE_T BIT_ULL(I40E_PHY_TYPE_5GBASE_T)
- #define I40E_HW_CAP_MAX_GPIO			30
- /* Capabilities of a PF or a VF or the whole device */
- struct i40e_hw_capabilities {
--- 
-2.30.2
-
+--- a/fs/hfsplus/extents.c
++++ b/fs/hfsplus/extents.c
+@@ -598,13 +598,15 @@ void hfsplus_file_truncate(struct inode
+ 		res = __hfsplus_ext_cache_extent(&fd, inode, alloc_cnt);
+ 		if (res)
+ 			break;
+-		hfs_brec_remove(&fd);
+ 
+-		mutex_unlock(&fd.tree->tree_lock);
+ 		start = hip->cached_start;
++		if (blk_cnt <= start)
++			hfs_brec_remove(&fd);
++		mutex_unlock(&fd.tree->tree_lock);
+ 		hfsplus_free_extents(sb, hip->cached_extents,
+ 				     alloc_cnt - start, alloc_cnt - blk_cnt);
+ 		hfsplus_dump_extent(hip->cached_extents);
++		mutex_lock(&fd.tree->tree_lock);
+ 		if (blk_cnt > start) {
+ 			hip->extent_state |= HFSPLUS_EXT_DIRTY;
+ 			break;
+@@ -612,7 +614,6 @@ void hfsplus_file_truncate(struct inode
+ 		alloc_cnt = start;
+ 		hip->cached_start = hip->cached_blocks = 0;
+ 		hip->extent_state &= ~(HFSPLUS_EXT_DIRTY | HFSPLUS_EXT_NEW);
+-		mutex_lock(&fd.tree->tree_lock);
+ 	}
+ 	hfs_find_exit(&fd);
+ 
 
 
