@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C92A383632
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A856B38385B
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:51:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245495AbhEQP3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:29:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37312 "EHLO mail.kernel.org"
+        id S1343643AbhEQPwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:52:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243726AbhEQPOi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:14:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F0AEA61C64;
-        Mon, 17 May 2021 14:32:15 +0000 (UTC)
+        id S1343784AbhEQPe4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:34:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 32EA961934;
+        Mon, 17 May 2021 14:39:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261936;
-        bh=wRIMUKf8f9czpJ2k7bhptKZpLNn6+LmfvKRAV48OawA=;
+        s=korg; t=1621262378;
+        bh=aSBztflyyzxcaizwAF1cFkI6TjbyQBLzU1TodsHwpJc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xdFiFeNUe7BHlAZaal9Ww/yoHxXVAnVgwwYFSjA2m+uhtNpcDEQ5f+v5G04J/fobJ
-         cOjjpy2RSNW4M97vzslhSpMmvg/TtJWGiTJgAZf3tHkDURsXb+ADv5p2bq3Lg1intn
-         FA3hy9XduMQAbk18TeC4aWt9dywUit/ewib2IWf4=
+        b=EbUVYvjsiQS3jqO1jLid3zZtWFspkRB3HHTU3W4Ahke11SIChWr4yLbICkZ1FI6rx
+         f+qecyuWbrPN4zAVrpZ78tzWCo67XcoH0aonGFXSqV5IJGboiaGSQGwkBSCsGl7/bq
+         gX+btELnUdEWDxzhUg1WHtTEzzAHFCW/4H6GO4+0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Md Haris Iqbal <haris.iqbal@ionos.com>,
-        Guoqing Jiang <guoqing.jiang@ionos.com>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Gioh Kim <gi-oh.kim@ionos.com>, Jens Axboe <axboe@kernel.dk>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 189/329] block/rnbd-clt: Check the return value of the function rtrs_clt_query
+        stable@vger.kernel.org, John Fastabend <john.fastabend@gmail.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>,
+        syzbot+b54a1ce86ba4a623b7f0@syzkaller.appspotmail.com
+Subject: [PATCH 5.10 175/289] smc: disallow TCP_ULP in smc_setsockopt()
 Date:   Mon, 17 May 2021 16:01:40 +0200
-Message-Id: <20210517140308.523370117@linuxfoundation.org>
+Message-Id: <20210517140311.006641567@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
+References: <20210517140305.140529752@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,56 +43,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
+From: Cong Wang <cong.wang@bytedance.com>
 
-[ Upstream commit 1056ad829ec43f9b705b507c2093b05e2088b0b7 ]
+[ Upstream commit 8621436671f3a4bba5db57482e1ee604708bf1eb ]
 
-In case none of the paths are in connected state, the function
-rtrs_clt_query returns an error. In such a case, error out since the
-values in the rtrs_attrs structure would be garbage.
+syzbot is able to setup kTLS on an SMC socket which coincidentally
+uses sk_user_data too. Later, kTLS treats it as psock so triggers a
+refcnt warning. The root cause is that smc_setsockopt() simply calls
+TCP setsockopt() which includes TCP_ULP. I do not think it makes
+sense to setup kTLS on top of SMC sockets, so we should just disallow
+this setup.
 
-Fixes: f7a7a5c228d45 ("block/rnbd: client: main functionality")
-Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
-Reviewed-by: Guoqing Jiang <guoqing.jiang@ionos.com>
-Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
-Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
-Link: https://lore.kernel.org/r/20210428061359.206794-4-gi-oh.kim@ionos.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+It is hard to find a commit to blame, but we can apply this patch
+since the beginning of TCP_ULP.
+
+Reported-and-tested-by: syzbot+b54a1ce86ba4a623b7f0@syzkaller.appspotmail.com
+Fixes: 734942cc4ea6 ("tcp: ULP infrastructure")
+Cc: John Fastabend <john.fastabend@gmail.com>
+Signed-off-by: Karsten Graul <kgraul@linux.ibm.com>
+Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/rnbd/rnbd-clt.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ net/smc/af_smc.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/block/rnbd/rnbd-clt.c b/drivers/block/rnbd/rnbd-clt.c
-index 45a470076652..5ab7319ff2ea 100644
---- a/drivers/block/rnbd/rnbd-clt.c
-+++ b/drivers/block/rnbd/rnbd-clt.c
-@@ -693,7 +693,11 @@ static void remap_devs(struct rnbd_clt_session *sess)
- 		return;
- 	}
+diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+index 5dd4faaf7d6e..030d7f30b13f 100644
+--- a/net/smc/af_smc.c
++++ b/net/smc/af_smc.c
+@@ -2147,6 +2147,9 @@ static int smc_setsockopt(struct socket *sock, int level, int optname,
+ 	struct smc_sock *smc;
+ 	int val, rc;
  
--	rtrs_clt_query(sess->rtrs, &attrs);
-+	err = rtrs_clt_query(sess->rtrs, &attrs);
-+	if (err) {
-+		pr_err("rtrs_clt_query(\"%s\"): %d\n", sess->sessname, err);
-+		return;
-+	}
- 	mutex_lock(&sess->lock);
- 	sess->max_io_size = attrs.max_io_size;
- 
-@@ -1234,7 +1238,11 @@ find_and_get_or_create_sess(const char *sessname,
- 		err = PTR_ERR(sess->rtrs);
- 		goto wake_up_and_put;
- 	}
--	rtrs_clt_query(sess->rtrs, &attrs);
++	if (level == SOL_TCP && optname == TCP_ULP)
++		return -EOPNOTSUPP;
 +
-+	err = rtrs_clt_query(sess->rtrs, &attrs);
-+	if (err)
-+		goto close_rtrs;
-+
- 	sess->max_io_size = attrs.max_io_size;
- 	sess->queue_depth = attrs.queue_depth;
+ 	smc = smc_sk(sk);
  
+ 	/* generic setsockopts reaching us here always apply to the
+@@ -2171,7 +2174,6 @@ static int smc_setsockopt(struct socket *sock, int level, int optname,
+ 	if (rc || smc->use_fallback)
+ 		goto out;
+ 	switch (optname) {
+-	case TCP_ULP:
+ 	case TCP_FASTOPEN:
+ 	case TCP_FASTOPEN_CONNECT:
+ 	case TCP_FASTOPEN_KEY:
 -- 
 2.30.2
 
