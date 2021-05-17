@@ -2,88 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4304D38398C
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2C7738399A
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:23:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346169AbhEQQVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:21:34 -0400
-Received: from foss.arm.com ([217.140.110.172]:57448 "EHLO foss.arm.com"
+        id S243860AbhEQQZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:25:04 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54668 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344264AbhEQQT7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 12:19:59 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DA309106F;
-        Mon, 17 May 2021 09:18:42 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3923F3F73D;
-        Mon, 17 May 2021 09:18:41 -0700 (PDT)
-Date:   Mon, 17 May 2021 17:18:36 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Jon Hunter <jonathanh@nvidia.com>
-Cc:     Vidya Sagar <vidyas@nvidia.com>, robh@kernel.org,
-        bhelgaas@google.com, thierry.reding@gmail.com,
-        jingoohan1@gmail.com, gustavo.pimentel@synopsys.com,
-        linux-pci@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kthota@nvidia.com,
-        mmaddireddy@nvidia.com, sagar.tv@gmail.com
-Subject: Re: [PATCH] PCI: tegra: Fix host initialization during resume
-Message-ID: <20210517161835.GA9796@lpieralisi>
-References: <20210504172157.29712-1-vidyas@nvidia.com>
- <fecc2899-06ef-f91f-4a39-bb4ee664c800@nvidia.com>
- <7dbc7daf-5512-c938-3aee-3c1994b50d07@nvidia.com>
+        id S1346267AbhEQQY2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 12:24:28 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5B527B038;
+        Mon, 17 May 2021 16:23:10 +0000 (UTC)
+From:   colyli@suse.de
+To:     linux-bcache@vger.kernel.org
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Coly Li <colyli@suse.de>,
+        Diego Ercolani <diego.ercolani@gmail.com>,
+        Jan Szubiak <jan.szubiak@linuxpolska.pl>,
+        Marco Rebhan <me@dblsaiko.net>,
+        Matthias Ferdinand <bcache@mfedv.net>,
+        Thorsten Knabe <linux@thorsten-knabe.de>,
+        Victor Westerhuis <victor@westerhu.is>,
+        Vojtech Pavlik <vojtech@suse.cz>, stable@vger.kernel.org,
+        Takashi Iwai <tiwai@suse.com>,
+        Kent Overstreet <kent.overstreet@gmail.com>
+Subject: [PATCH] bcache: avoid oversized read request in cache missing code path
+Date:   Tue, 18 May 2021 00:22:56 +0800
+Message-Id: <20210517162256.128236-1-colyli@suse.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7dbc7daf-5512-c938-3aee-3c1994b50d07@nvidia.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 03:11:00PM +0100, Jon Hunter wrote:
-> Hi Lorenzo, Bjorn,
-> 
-> On 06/05/2021 09:49, Jon Hunter wrote:
-> > 
-> > On 04/05/2021 18:21, Vidya Sagar wrote:
-> >> Commit 275e88b06a27 ("PCI: tegra: Fix host link initialization") broke
-> >> host initialization during resume as it misses out calling the API
-> >> dw_pcie_setup_rc() which is required for host and MSI initialization.
-> >>
-> >> Fixes: 275e88b06a27 ("PCI: tegra: Fix host link initialization")
-> >> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
-> >> ---
-> >>  drivers/pci/controller/dwc/pcie-tegra194.c | 2 ++
-> >>  1 file changed, 2 insertions(+)
-> >>
-> >> diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
-> >> index 6fa216e52d14..4c3c0738f2e6 100644
-> >> --- a/drivers/pci/controller/dwc/pcie-tegra194.c
-> >> +++ b/drivers/pci/controller/dwc/pcie-tegra194.c
-> >> @@ -2214,6 +2214,8 @@ static int tegra_pcie_dw_resume_noirq(struct device *dev)
-> >>  		goto fail_host_init;
-> >>  	}
-> >>  
-> >> +	dw_pcie_setup_rc(&pcie->pci.pp);
-> >> +
-> >>  	ret = tegra_pcie_dw_start_link(&pcie->pci);
-> >>  	if (ret < 0)
-> >>  		goto fail_host_init;
-> >>
-> > 
-> > 
-> > Thanks for fixing!
-> > 
-> > Tested-by: Jon Hunter <jonathanh@nvidia.com>
-> > 
-> > We should also mark this for stable so that this gets back-ported.
-> 
-> 
-> Can we queue this as a fix for v5.13 and tag for stable?
+From: Coly Li <colyli@suse.de>
 
-We usually send fixes for -rc* when the patches they are fixing
-were merged in the current cycle (ie merged for v5.13).
+In the cache missing code path of cached device, if a proper location
+from the internal B+ tree is matched for a cache miss range, function
+cached_dev_cache_miss() will be called in cache_lookup_fn() in the
+following code block,
+[code block 1]
+  526         unsigned int sectors = KEY_INODE(k) == s->iop.inode
+  527                 ? min_t(uint64_t, INT_MAX,
+  528                         KEY_START(k) - bio->bi_iter.bi_sector)
+  529                 : INT_MAX;
+  530         int ret = s->d->cache_miss(b, s, bio, sectors);
 
-This is not the case so I shall send it for v5.14.
+Here s->d->cache_miss() is the call backfunction pointer initialized as
+cached_dev_cache_miss(), the last parameter 'sectors' is an important
+hint to calculate the size of read request to backing device of the
+missing cache data.
 
-Lorenzo
+Current calculation in above code block may generate oversized value of
+'sectors', which consequently may trigger 2 different potential kernel
+panics by BUG() or BUG_ON() as listed below,
+
+1) BUG_ON() inside bch_btree_insert_key(),
+[code block 2]
+   886         BUG_ON(b->ops->is_extents && !KEY_SIZE(k));
+2) BUG() inside biovec_slab(),
+[code block 3]
+   51         default:
+   52                 BUG();
+   53                 return NULL;
+
+All the above panics are original from cached_dev_cache_miss() by the
+oversized parameter 'sectors'.
+
+Inside cached_dev_cache_miss(), parameter 'sectors' is used to calculate
+the size of data read from backing device for the cache missing. This
+size is stored in s->insert_bio_sectors by the following lines of code,
+[code block 4]
+  909    s->insert_bio_sectors = min(sectors, bio_sectors(bio) + reada);
+
+Then the actual key inserting to the internal B+ tree is generated and
+stored in s->iop.replace_key by the following lines of code,
+[code block 5]
+  911   s->iop.replace_key = KEY(s->iop.inode,
+  912                    bio->bi_iter.bi_sector + s->insert_bio_sectors,
+  913                    s->insert_bio_sectors);
+The oversized parameter 'sectors' may trigger panic 1) by BUG_ON() from
+the above code block.
+
+And the bio sending to backing device for the missing data is allocated
+with hint from s->insert_bio_sectors by the following lines of code,
+[code block 6]
+  926    cache_bio = bio_alloc_bioset(GFP_NOWAIT,
+  927                 DIV_ROUND_UP(s->insert_bio_sectors, PAGE_SECTORS),
+  928                 &dc->disk.bio_split);
+The oversized parameter 'sectors' may trigger panic 2) by BUG() from the
+agove code block.
+
+Now let me explain how the panics happen with the oversized 'sectors'.
+In code block 5, replace_key is generated by macro KEY(). From the
+definition of macro KEY(),
+[code block 7]
+  71 #define KEY(inode, offset, size)                                  \
+  72 ((struct bkey) {                                                  \
+  73      .high = (1ULL << 63) | ((__u64) (size) << 20) | (inode),     \
+  74      .low = (offset)                                              \
+  75 })
+
+Here 'size' is 16bits width embedded in 64bits member 'high' of struct
+bkey. But in code block 1, if "KEY_START(k) - bio->bi_iter.bi_sector" is
+very probably to be larger than (1<<16) - 1, which makes the bkey size
+calculation in code block 5 is overflowed. In one bug report the value
+of parameter 'sectors' is 131072 (= 1 << 17), the overflowed 'sectors'
+results the overflowed s->insert_bio_sectors in code block 4, then makes
+size field of s->iop.replace_key to be 0 in code block 5. Then the 0-
+sized s->iop.replace_key is inserted into the internal B+ tree as cache
+missing check key (a special key to detect and avoid a racing between
+normal write request and cache missing read request) as,
+[code block 8]
+  915   ret = bch_btree_insert_check_key(b, &s->op, &s->iop.replace_key);
+
+Then the 0-sized s->iop.replace_key as 3rd parameter triggers the bkey
+size check BUG_ON() in code block 2, and causes the kernel panic 1).
+
+Another kernel panic is from code block 6, is from the oversized value
+s->insert_bio_sectors resulted by the oversized 'sectors'. From a bug
+report the result of "DIV_ROUND_UP(s->insert_bio_sectors, PAGE_SECTORS)"
+from code block 6 can be 344, 282, 946, 342 and many other values which
+larther than BIO_MAX_VECS (a.k.a 256). When calling bio_alloc_bioset()
+with such larger-than-256 value as the 2nd parameter, this value will
+eventually be sent to biovec_slab() as parameter 'nr_vecs' in following
+code path,
+   bio_alloc_bioset() ==> bvec_alloc() ==> biovec_slab()
+
+Because parameter 'nr_vecs' is larger-than-256 value, the panic by BUG()
+in code block 3 is triggered inside biovec_slab().
+
+From the above analysis, it is obvious that in order to avoid the kernel
+panics in code block 2 and code block 3, the calculated 'sectors' in
+code block 1 should not generate overflowed value in code block 5 and
+code block 6.
+
+To avoid overflow in code block 5, the maximum 'sectors' value should be
+equal or less than (1 << KEY_SIZE_BITS) - 1. And to avoid overflow in
+code block 6, the maximum 'sectors' value should be euqal or less than
+BIO_MAX_VECS * PAGE_SECTORS. Considering the kernel page size can be
+variable, a reasonable maximum limitation of 'sectors' in code block 1
+should be smaller on from "(1 << KEY_SIZE_BITS) - 1" and "BIO_MAX_VECS *
+PAGE_SECTORS".
+
+In this patch, a local variable inside cache_lookup_fn() is added as,
+     max_cache_miss_size = min_t(uint32_t,
+		(1 << KEY_SIZE_BITS) - 1, BIO_MAX_VECS * PAGE_SECTORS);
+Then code block 1 uses max_cache_miss_size to limit the maximum value of
+'sectors' calculation as,
+  533        unsigned int sectors = KEY_INODE(k) == s->iop.inode
+  534                 ? min_t(uint64_t, max_cache_miss_size,
+  535                         KEY_START(k) - bio->bi_iter.bi_sector)
+  536                 : max_cache_miss_size;
+
+Now the calculated 'sectors' value sent into cached_dev_cache_miss()
+won't trigger neither of the above kernel panics.
+
+Current problmatic code can be partially found since Linux v5.13-rc1,
+therefore all maintained stable kernels should try to apply this fix.
+
+Reported-by: Diego Ercolani <diego.ercolani@gmail.com>
+Reported-by: Jan Szubiak <jan.szubiak@linuxpolska.pl>
+Reported-by: Marco Rebhan <me@dblsaiko.net>
+Reported-by: Matthias Ferdinand <bcache@mfedv.net>
+Reported-by: Thorsten Knabe <linux@thorsten-knabe.de>
+Reported-by: Victor Westerhuis <victor@westerhu.is>
+Reported-by: Vojtech Pavlik <vojtech@suse.cz>
+Signed-off-by: Coly Li <colyli@suse.de>
+Cc: stable@vger.kernel.org
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Kent Overstreet <kent.overstreet@gmail.com>
+---
+ drivers/md/bcache/request.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/md/bcache/request.c b/drivers/md/bcache/request.c
+index 29c231758293..90fa9ac47661 100644
+--- a/drivers/md/bcache/request.c
++++ b/drivers/md/bcache/request.c
+@@ -515,18 +515,25 @@ static int cache_lookup_fn(struct btree_op *op, struct btree *b, struct bkey *k)
+ 	struct search *s = container_of(op, struct search, op);
+ 	struct bio *n, *bio = &s->bio.bio;
+ 	struct bkey *bio_key;
+-	unsigned int ptr;
++	unsigned int ptr, max_cache_miss_size;
+ 
+ 	if (bkey_cmp(k, &KEY(s->iop.inode, bio->bi_iter.bi_sector, 0)) <= 0)
+ 		return MAP_CONTINUE;
+ 
++	/*
++	 * Make sure the cache missing size won't exceed the restrictions of
++	 * max bkey size and max bio's bi_max_vecs.
++	 */
++	max_cache_miss_size = min_t(uint32_t,
++		(1 << KEY_SIZE_BITS) - 1, BIO_MAX_VECS * PAGE_SECTORS);
++
+ 	if (KEY_INODE(k) != s->iop.inode ||
+ 	    KEY_START(k) > bio->bi_iter.bi_sector) {
+ 		unsigned int bio_sectors = bio_sectors(bio);
+ 		unsigned int sectors = KEY_INODE(k) == s->iop.inode
+-			? min_t(uint64_t, INT_MAX,
++			? min_t(uint64_t, max_cache_miss_size,
+ 				KEY_START(k) - bio->bi_iter.bi_sector)
+-			: INT_MAX;
++			: max_cache_miss_size;
+ 		int ret = s->d->cache_miss(b, s, bio, sectors);
+ 
+ 		if (ret != MAP_CONTINUE)
+@@ -547,7 +554,7 @@ static int cache_lookup_fn(struct btree_op *op, struct btree *b, struct bkey *k)
+ 	if (KEY_DIRTY(k))
+ 		s->read_dirty_data = true;
+ 
+-	n = bio_next_split(bio, min_t(uint64_t, INT_MAX,
++	n = bio_next_split(bio, min_t(uint64_t, max_cache_miss_size,
+ 				      KEY_OFFSET(k) - bio->bi_iter.bi_sector),
+ 			   GFP_NOIO, &s->d->bio_split);
+ 
+-- 
+2.26.2
+
