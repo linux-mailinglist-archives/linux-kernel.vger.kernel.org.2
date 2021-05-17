@@ -2,118 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C3ED382D1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 15:16:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6CBB382D23
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 15:17:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235682AbhEQNRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 09:17:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235470AbhEQNRn (ORCPT
+        id S235722AbhEQNSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 09:18:32 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:2999 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235470AbhEQNSb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 09:17:43 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8CADC061573;
-        Mon, 17 May 2021 06:16:27 -0700 (PDT)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94.2)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1lid6Y-00ALU5-VK; Mon, 17 May 2021 15:16:19 +0200
-Message-ID: <048c4fb6c91931e9fcd240df7a5586633893c31a.camel@sipsolutions.net>
-Subject: Re: [syzbot] divide error in mac80211_hwsim_bss_info_changed
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     syzbot <syzbot+26727b5e00947e02242c@syzkaller.appspotmail.com>,
-        davem@davemloft.net, kuba@kernel.org, kvalo@codeaurora.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Date:   Mon, 17 May 2021 15:16:17 +0200
-In-Reply-To: <000000000000fb328005c2844acc@google.com> (sfid-20210517_124535_257596_E84F0A94)
-References: <000000000000fb328005c2844acc@google.com>
-         (sfid-20210517_124535_257596_E84F0A94)
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Mon, 17 May 2021 09:18:31 -0400
+Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FkKMY25FrzQnvD;
+        Mon, 17 May 2021 21:13:45 +0800 (CST)
+Received: from dggpemm500009.china.huawei.com (7.185.36.225) by
+ dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 17 May 2021 21:17:13 +0800
+Received: from huawei.com (10.174.185.226) by dggpemm500009.china.huawei.com
+ (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 17 May
+ 2021 21:17:12 +0800
+From:   Wang Xingang <wangxingang5@huawei.com>
+To:     <will@kernel.org>, <joro@8bytes.org>, <robh+dt@kernel.org>,
+        <frowand.list@gmail.com>
+CC:     <helgaas@kernel.org>, <gregkh@linuxfoundation.org>,
+        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <xieyingtai@huawei.com>, <wangxingang5@huawei.com>
+Subject: [PATCH v2] iommu/of: Fix pci_request_acs() before enumerating PCI devices
+Date:   Mon, 17 May 2021 13:17:05 +0000
+Message-ID: <1621257425-37856-1-git-send-email-wangxingang5@huawei.com>
+X-Mailer: git-send-email 2.6.4.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-malware-bazaar: not-scanned
+Content-Type: text/plain
+X-Originating-IP: [10.174.185.226]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500009.china.huawei.com (7.185.36.225)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-05-17 at 03:45 -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    eebe426d Merge tag 'fixes-for-5.12-rc7' of git://git.kerne..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=15e73ceed00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=9c3d8981d2bdb103
-> dashboard link: https://syzkaller.appspot.com/bug?extid=26727b5e00947e02242c
-> compiler:       Debian clang version 11.0.1-2
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
+From: Xingang Wang <wangxingang5@huawei.com>
 
-That's not very surprising ...
+When booting with devicetree, the pci_request_acs() is called after the
+enumeration and initialization of PCI devices, thus the ACS is not
+enabled. This patch add check for IOMMU in of_core_init(), and call
+pci_request_acs() when iommu is detected, making sure that the ACS will
+be enabled.
 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+26727b5e00947e02242c@syzkaller.appspotmail.com
-> 
-> divide error: 0000 [#1] PREEMPT SMP KASAN
-> CPU: 1 PID: 13049 Comm: kworker/u4:16 Not tainted 5.12.0-rc7-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Workqueue: phy10 ieee80211_roc_work
-> RIP: 0010:mac80211_hwsim_bss_info_changed+0x514/0xf90 drivers/net/wireless/mac80211_hwsim.c:2024
+Fixes: 6bf6c24720d33 ("iommu/of: Request ACS from the PCI core when
+configuring IOMMU linkage")
+Signed-off-by: Xingang Wang <wangxingang5@huawei.com>
+---
+ drivers/iommu/of_iommu.c | 1 -
+ drivers/of/base.c        | 9 ++++++++-
+ 2 files changed, 8 insertions(+), 2 deletions(-)
 
-The issue here is that we have the following code in offchannel.c:
+Change log:
+v1->v2:
+ - remove pci_request_acs() in of_iommu_configure
+ - check and call pci_request_acs() in of_core_init()
 
-        mutex_lock(&local->iflist_mtx);
-        list_for_each_entry(sdata, &local->interfaces, list) {
-...
-                if (test_and_clear_bit(SDATA_STATE_OFFCHANNEL_BEACON_STOPPED,
-                                       &sdata->state)) {
-                        sdata->vif.bss_conf.enable_beacon = true;
-                        ieee80211_bss_info_change_notify(
-                                sdata, BSS_CHANGED_BEACON_ENABLED);
-                }
-
-
-However, we have the following code in ibss.c
-ieee80211_ibss_disconnect():
-
-        sdata->vif.bss_conf.ibss_joined = false;
-        sdata->vif.bss_conf.ibss_creator = false;
-        sdata->vif.bss_conf.enable_beacon = false;
-        sdata->vif.bss_conf.ssid_len = 0;
-
-        /* remove beacon */
-        presp = rcu_dereference_protected(ifibss->presp,
-                                          lockdep_is_held(&sdata->wdev.mtx));
-        RCU_INIT_POINTER(sdata->u.ibss.presp, NULL);
-        if (presp)
-                kfree_rcu(presp, rcu_head);
-
-        clear_bit(SDATA_STATE_OFFCHANNEL_BEACON_STOPPED, &sdata->state);
-        ieee80211_bss_info_change_notify(sdata, BSS_CHANGED_BEACON_ENABLED |
-                                                BSS_CHANGED_IBSS);
-
-
-There's no common locking here, so it's simply racy.
-
-Normally, all of the ieee80211_ibss_disconnect() happens together, but
-if ieee80211_offchannel_return() happens to hit here before
-SDATA_STATE_OFFCHANNEL_BEACON_STOPPED is cleared, we might inadvertently
-enable beaconing while the interface is actually stopping.
-
-I'm not really sure what happens next, but perhaps the interface is
-going down and the beacon_int is reset to 0, or such, leading to the
-problem at hand.
-
-
-Off the top of my head, I don't really have a good idea about how to fix
-this - we'd want to add some more consistent locking everywhere. I
-assume that with the rtnl-weaning having happened, that might simply
-consist in aligning mac80211 to the cfg80211 wiphy mutex everywhere.
-
-johannes
+diff --git a/drivers/iommu/of_iommu.c b/drivers/iommu/of_iommu.c
+index a9d2df001149..54a14da242cc 100644
+--- a/drivers/iommu/of_iommu.c
++++ b/drivers/iommu/of_iommu.c
+@@ -205,7 +205,6 @@ const struct iommu_ops *of_iommu_configure(struct device *dev,
+ 			.np = master_np,
+ 		};
+ 
+-		pci_request_acs();
+ 		err = pci_for_each_dma_alias(to_pci_dev(dev),
+ 					     of_pci_iommu_init, &info);
+ 	} else {
+diff --git a/drivers/of/base.c b/drivers/of/base.c
+index 48e941f99558..95cd8f0e5435 100644
+--- a/drivers/of/base.c
++++ b/drivers/of/base.c
+@@ -24,6 +24,7 @@
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+ #include <linux/of_graph.h>
++#include <linux/pci.h>
+ #include <linux/spinlock.h>
+ #include <linux/slab.h>
+ #include <linux/string.h>
+@@ -166,7 +167,7 @@ void __of_phandle_cache_inv_entry(phandle handle)
+ void __init of_core_init(void)
+ {
+ 	struct device_node *np;
+-
++	bool of_iommu_detect = false;
+ 
+ 	/* Create the kset, and register existing nodes */
+ 	mutex_lock(&of_mutex);
+@@ -180,6 +181,12 @@ void __init of_core_init(void)
+ 		__of_attach_node_sysfs(np);
+ 		if (np->phandle && !phandle_cache[of_phandle_cache_hash(np->phandle)])
+ 			phandle_cache[of_phandle_cache_hash(np->phandle)] = np;
++
++		/* Detect IOMMU and make sure ACS will be enabled */
++		if (!of_iommu_detect && of_get_property(np, "iommu-map", NULL)) {
++			of_iommu_detect = true;
++			pci_request_acs();
++		}
+ 	}
+ 	mutex_unlock(&of_mutex);
+ 
+-- 
+2.19.1
 
