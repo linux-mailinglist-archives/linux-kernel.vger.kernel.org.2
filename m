@@ -2,102 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E111E3827AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 021643827B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235814AbhEQJCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 05:02:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235711AbhEQJCl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 05:02:41 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 876AFC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:01:24 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id i5so4233165pgm.0
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:01:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9OkKHJwSRtsD1XoVSI9D7062oV0S6RC6cgh0CBzJGxQ=;
-        b=wurd6Th2hC0CtygbnWfpzXlmQIro6bMhdR7DCsDpr4cXF8QvJWfU2H7SuFcfuyl/on
-         xtOSzL9mRf6Qpm+/yH9LQawbpjRtEIfDuKPownnp0Bixi4DHYm0Cv4Ovg/7BeVIjwGte
-         Vgvdu50DNIgJdrMFWpziD3ZSowR3zWxzQazg7uoQJt6bE8+uPeOEhd7o2h/HBsYbh8lU
-         hlikFoTOsIDijq4sx06mXFj7NwWE6z4lsmpAtBJraB2mLA7f3Dcuke8KR7G53Vp1OhUK
-         kMKP77uZj4QYkMbZjh+ysYt/FSCyNPtmGQ0qYnuNvshMWQykCTz+CBHahzQff7YY7bCB
-         17QA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9OkKHJwSRtsD1XoVSI9D7062oV0S6RC6cgh0CBzJGxQ=;
-        b=VqBqKcaIBVKwFkLui9oUX9rzExuRO3oBFgSfA8zFF4hCz3go/Z42AC8rvE22OuKktt
-         Soty8rEJ1uXu+fIORjOqspIvA1wcmDTVqMgn86veC9wiC8PwHTWYzdUtMTUtubEiSiSx
-         5gI4tSBnpUq7eHsb0wi+Z64lbHWjx2L6iCzr2DvpOFWgkj194V4Xe3SzbwuoWJcyiGAp
-         FUAchOY3TNCZ/3opaKBsnx4hMAjJxwhtyQHD/bC/Frr6iYhJVYG7rwenqIGvkeZ0HeEV
-         cA/1Wp1cfZx2f8HkRXmoKx6gyKfzPIKZwcrr8yCu4JcOLCauLiAdaIqO/vznUBnRhMJK
-         kC6A==
-X-Gm-Message-State: AOAM530T8CD8oavE2VZox+BNVc2zAA61mONubuiSH0niN8xF6DM9oypn
-        vL2Pp+9mQLxbLl2H53SUamHhAPO/xI/np3KFVTwxrQ==
-X-Google-Smtp-Source: ABdhPJyp+18LHyzRAiO7+sc3FHiRgXNmFI/UTNc7tUNrDDRlUREycMbppyLtZcKvXSr6KiyqKSsBhvaEt7CAlg7Cf0M=
-X-Received: by 2002:a63:4e01:: with SMTP id c1mr46758645pgb.265.1621242084104;
- Mon, 17 May 2021 02:01:24 -0700 (PDT)
+        id S235727AbhEQJDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 05:03:41 -0400
+Received: from mga01.intel.com ([192.55.52.88]:35715 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230087AbhEQJDk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 05:03:40 -0400
+IronPort-SDR: iKMG091Zdj+qP5n5OcLy9lWS3gng87LX6rDyOUPpFYMq7yOobi31oZNmdDP5eBMrb7+K+YmcuD
+ VbtFjikgjtrQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9986"; a="221454012"
+X-IronPort-AV: E=Sophos;i="5.82,306,1613462400"; 
+   d="scan'208";a="221454012"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 02:02:23 -0700
+IronPort-SDR: tccyjVpD8nkjvIVGmGjgKxuz5Kgtr5A9tJeZ+PC8yPQti4ptgQhdAmGyJnUwzEd+r/K6TxRYha
+ +Gb9aJ6B0P6A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,306,1613462400"; 
+   d="scan'208";a="540323965"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 17 May 2021 02:02:08 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 17 May 2021 12:02:07 +0300
+Date:   Mon, 17 May 2021 12:02:07 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Jun Li <jun.li@nxp.com>, Hans de Goede <hdegoede@redhat.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: typec: mux: Fix matching with typec_altmode_desc
+Message-ID: <YKIxDz/vqXzS5EtO@kuha.fi.intel.com>
+References: <20210516034730.621461-1-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
-References: <20210514070306.606-1-linqiheng@huawei.com>
-In-Reply-To: <20210514070306.606-1-linqiheng@huawei.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Mon, 17 May 2021 11:01:13 +0200
-Message-ID: <CAG3jFytWqa9CwPto4Q1b5wZvHkviLgtY_pqYWyVCa5Trx0otwg@mail.gmail.com>
-Subject: Re: [PATCH -next] drm: bridge: fix wrong pointer passed to PTR_ERR()
-To:     Qiheng Lin <linqiheng@huawei.com>
-Cc:     Phong LE <ple@baylibre.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org, Hulk Robot <hulkci@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210516034730.621461-1-bjorn.andersson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Qiheng,
+On Sat, May 15, 2021 at 08:47:30PM -0700, Bjorn Andersson wrote:
+> In typec_mux_match() "nval" is assigned the number of elements in the
+> "svid" fwnode property, then the variable is used to store the success
+> of the read and finally attempts to loop between 0 and "success" - i.e.
+> not at all - and the code returns indicating that no match was found.
+> 
+> Fix this by using a separate variable to track the success of the read,
+> to allow the loop to get a change to find a match.
+> 
+> Fixes: 96a6d031ca99 ("usb: typec: mux: Find the muxes by also matching against the device node")
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-Thanks for submitting this bugfix.
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-The title of this patch should probably be:
-drm: bridge: it66121: fix wrong pointer passed to PTR_ERR()
-
-With this fixed, feel free to add my r-b.
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
-
-
-On Fri, 14 May 2021 at 09:03, Qiheng Lin <linqiheng@huawei.com> wrote:
->
-> PTR_ERR should access the value just tested by IS_ERR, otherwise
-> the wrong error code will be returned.
->
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Qiheng Lin <linqiheng@huawei.com>
 > ---
->  drivers/gpu/drm/bridge/ite-it66121.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/bridge/ite-it66121.c b/drivers/gpu/drm/bridge/ite-it66121.c
-> index d8a60691fd32..6980c9801d0d 100644
-> --- a/drivers/gpu/drm/bridge/ite-it66121.c
-> +++ b/drivers/gpu/drm/bridge/ite-it66121.c
-> @@ -943,7 +943,7 @@ static int it66121_probe(struct i2c_client *client,
->         ctx->regmap = devm_regmap_init_i2c(client, &it66121_regmap_config);
->         if (IS_ERR(ctx->regmap)) {
->                 ite66121_power_off(ctx);
-> -               return PTR_ERR(ctx);
-> +               return PTR_ERR(ctx->regmap);
->         }
->
->         regmap_read(ctx->regmap, IT66121_VENDOR_ID0_REG, &vendor_ids[0]);
->
+>  drivers/usb/typec/mux.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/mux.c b/drivers/usb/typec/mux.c
+> index 9da22ae3006c..8514bec7e1b8 100644
+> --- a/drivers/usb/typec/mux.c
+> +++ b/drivers/usb/typec/mux.c
+> @@ -191,6 +191,7 @@ static void *typec_mux_match(struct fwnode_handle *fwnode, const char *id,
+>  	bool match;
+>  	int nval;
+>  	u16 *val;
+> +	int ret;
+>  	int i;
+>  
+>  	/*
+> @@ -218,10 +219,10 @@ static void *typec_mux_match(struct fwnode_handle *fwnode, const char *id,
+>  	if (!val)
+>  		return ERR_PTR(-ENOMEM);
+>  
+> -	nval = fwnode_property_read_u16_array(fwnode, "svid", val, nval);
+> -	if (nval < 0) {
+> +	ret = fwnode_property_read_u16_array(fwnode, "svid", val, nval);
+> +	if (ret < 0) {
+>  		kfree(val);
+> -		return ERR_PTR(nval);
+> +		return ERR_PTR(ret);
+>  	}
+>  
+>  	for (i = 0; i < nval; i++) {
+> -- 
+> 2.29.2
+
+thanks,
+
+-- 
+heikki
