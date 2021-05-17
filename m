@@ -2,136 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B207382BF1
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 14:19:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8E4382BF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 14:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236958AbhEQMU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 08:20:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46540 "EHLO mail.kernel.org"
+        id S236967AbhEQMVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 08:21:11 -0400
+Received: from mga01.intel.com ([192.55.52.88]:59408 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234754AbhEQMU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 08:20:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EBF361241;
-        Mon, 17 May 2021 12:19:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621253980;
-        bh=+dtwhtQMQDTNx7oQDH89iXtYmlwmei6zujh7Rnhnlww=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=glbVOIuOGEeefXMAjIxA0s9l6qVnSHjwjIFaA5Hmv1TS8mJ4gdrDAirnESwKap/+A
-         AzgRttFn7Blas6mKyrhs/PMy0triHIIOh0lU83HeLhUXQYGGl+6QPqAAZLTho4UNgc
-         TsQgm5lzz7du2534Ozvis2KhRlvMtLNQ+E0z99shujZbH7AEUms3Mo2+IjU7JBvXMi
-         eGh+vRuPqb146yhtedL9QxT9LZw+M2VN2/VmpJfu4DxSCXEbfqroXf7S6fFkbPjdUl
-         /up/HF5NOin+jOs63/s3Fo7IZy5PlAbWmLq69A/Ado8GF23L/TpD3MLcXYvnI2PbiI
-         51pobsdjDX3hQ==
-Date:   Mon, 17 May 2021 14:19:35 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     gregkh@linuxfoundation.org, linuxarm@huawei.com,
-        mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        linux-leds@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: Re: [PATCH 17/17] staging: nuc-led: update the TODOs
-Message-ID: <20210517141935.4a7cb905@coco.lan>
-In-Reply-To: <20210517080527.GA18642@amd>
-References: <cover.1621161037.git.mchehab+huawei@kernel.org>
-        <f23fed6a89f66564f5af52f241016a4b9823ce04.1621161037.git.mchehab+huawei@kernel.org>
-        <20210516182149.GA3666@localhost>
-        <20210517083001.7688acd7@coco.lan>
-        <20210517080527.GA18642@amd>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S236959AbhEQMVK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 08:21:10 -0400
+IronPort-SDR: xUTosvTPsxTk8750q+NlvMbsxmZqgdHJxBp5ce/wSdYeiQyEWocwokpCrt9Wt0HqdBInFAureT
+ EGb9M0juHzXQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9986"; a="221485515"
+X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
+   d="scan'208";a="221485515"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 05:19:54 -0700
+IronPort-SDR: q/zFyVzLXvK1icaN8gE3gFsrnTn7S7TJdPU2qKKyVxduJ2z7MnPya7Api0DC4igUXOz0SxSJQP
+ PFYJ255XC/kg==
+X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
+   d="scan'208";a="540408297"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 05:19:52 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1licDt-00CjRQ-Md; Mon, 17 May 2021 15:19:49 +0300
+Date:   Mon, 17 May 2021 15:19:49 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     linux-kernel@vger.kernel.org, Rob Clark <robdclark@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        intel-gfx@lists.freedesktop.org
+Subject: Re: [PATCH v1 1/1] drm/i915: Include only needed headers in ascii85.h
+Message-ID: <YKJfZXn3P/ZdslRP@smile.fi.intel.com>
+References: <20210407122337.77493-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210407122337.77493-1-andriy.shevchenko@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 17 May 2021 10:05:27 +0200
-Pavel Machek <pavel@ucw.cz> escreveu:
+On Wed, Apr 07, 2021 at 03:23:37PM +0300, Andy Shevchenko wrote:
+> The ascii85.h is user of exactly two headers, i.e. math.h and types.h.
+> There is no need to carry on entire kernel.h.
 
-> No. Take a look at triggers; for example hdd monitor should look very
-> much like existing disk trigger.
+It seems DRM has strict rules about what's going thru DRM tree and this one,
+while being used only for DRM drivers and been originated as i915 code, in a
+stale position right now.
 
-Hmm... after looking at triggers, I'm not sure if this is the right
-interface, nor if we're talking about the same thing.
+Who can take it, please? (It's Rb by Jani)
 
-See, at least the way ledtrig-disk.c uses it, two drivers are triggering 
-the LED based on software events:
+I Cc'ed this to Andrew, if he is okay to expedite it, and to Rob, who is the
+committer of the original move patch.
 
-	drivers/ata/libata-core.c:      ledtrig_disk_activity(!!(qc->tf.flags & ATA_TFLAG_WRITE));
-	drivers/ide/ide-disk.c: ledtrig_disk_activity(rq_data_dir(rq) == WRITE);
+Personally to me DRM seems the best match, but... see above.
 
-This is not how the NUC LEDs are work. On NUC, the hardware itself 
-triggers the event and/or blinks the LED(*).
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  include/linux/ascii85.h | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/ascii85.h b/include/linux/ascii85.h
+> index 4cc40201273e..83ad775ad0aa 100644
+> --- a/include/linux/ascii85.h
+> +++ b/include/linux/ascii85.h
+> @@ -8,7 +8,8 @@
+>  #ifndef _ASCII85_H_
+>  #define _ASCII85_H_
+>  
+> -#include <linux/kernel.h>
+> +#include <linux/math.h>
+> +#include <linux/types.h>
+>  
+>  #define ASCII85_BUFSZ 6
+>  
+> -- 
+> 2.30.2
+> 
 
-(*) By default, blink is enabled only when the device is suspended
-    or it is hibernating.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-There's no need to do any software emulation.
 
-The API is meant to just program the hardware (and/or the firmware) 
-for it to do the behavior expected by the user.
-
-So, for instance, setting the indicator event that will trigger the
-LED is done by sending a WMI message for this GUID object:
-8C5DA44C-CDC3-46b3-8619-4E26D34390B7 (somewhat similar to using
-the way ACPI works, but WMI is a different firmware interface).
-
-The method at the WMI API which sets the LED indicator is this one:
-
-	0x05 message (Set an Indicator option for the LED type)
-
-Such method receives two parameters. The first one is the LED 
-number, which can be:
-
-	0 - Power button LED
-	1 - HDD LED
-	2 - Skull LED
-	3 - Eyes LED
-	4 - Front LED 1
-	5 - Front LED 1
-	6 - Front LED 1
-
-The second one tells which hardware event will trigger the LED:
-
-=====	==============	=======================================================
-Value	Indicator type	Meaning
-=====	==============	=======================================================
-0	Power State	Shows if the device is powered and what power level
-			it is (e. g. if the device is suspended or not, and
-			on which kind of suspended level).
-1	HDD Activity	Indicates if the LED is measuring the hard disk (or
-			SDD) activity.
-2	Ethernet	Indicates the activity Ethernet adapter(s)
-3	WiFi		Indicates if WiFi is enabled
-4	Software	Doesn't indicate any hardware level. Instead, the LED
-			status is controlled via software.
-5	Power Limit	Changes the LED color when the computer is throttling
-			its power limits.
-6	Disable		The LED was disabled (either by BIOS or via WMI).
-=====	==============	=======================================================
-
-There is an example at page 7 of the datasheet:
-
-	https://raw.githubusercontent.com/nomego/intel_nuc_led/master/specs/INTEL_WMI_LED_0.64.pdf
-
-Where it shows what happens if the WMI message is filled with:
-
-	<0x05>  <0x00>  <0x01>
-
-On such example, it changes the behavior of the button named "Power button" 
-to change it to monitor the disk activity, instead of monitoring if the
-device is powered on or not.
-
-Such setting is even persistent after rebooting, and the event is
-hardware/firmware triggered.
-
-So, IMO, it would only makes sense to use something else from the LED
-class if are there a way for the sysfs nodes to dynamically be shown/hidden
-when the indicator changes.
-
-At least on my eyes, that doesn't seem to be what triggers do.
-
-Thanks,
-Mauro
