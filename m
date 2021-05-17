@@ -2,114 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49568382B05
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:28:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E42EE382B09
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:28:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236805AbhEQL3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 07:29:37 -0400
-Received: from verein.lst.de ([213.95.11.211]:57156 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236803AbhEQL3f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 07:29:35 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id B31EB68AFE; Mon, 17 May 2021 13:28:15 +0200 (CEST)
-Date:   Mon, 17 May 2021 13:28:15 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     syzbot <syzbot+1c24e3484e48799b2333@syzkaller.appspotmail.com>
-Cc:     axboe@kernel.dk, hare@suse.de, hch@lst.de,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        martin.petersen@oracle.com, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] WARNING in blk_rq_append_bio
-Message-ID: <20210517112815.GA11490@lst.de>
-References: <0000000000006d129905c284e02d@google.com>
+        id S236821AbhEQL3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 07:29:39 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:36530 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236785AbhEQL3g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 07:29:36 -0400
+Received: by mail-io1-f69.google.com with SMTP id i15-20020a6bee0f0000b029043af67da217so1575255ioh.3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 04:28:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=2TVYOtOh5rAkZHffystqbITRpqyTyAnJ4o3aUYKjOdQ=;
+        b=LPgVxGSyrxNQA8V7sxkYySqgJh7RNdoxoNqNks7I8m0lCYxSkyocNX+8Vi4CwNqYzV
+         z7Zrd4QswMKAl8z7DJKlM0yUgF6C1hZYBnrh4UgvGvlAtCdfiW/u/Qx/7Zz//rA4VxXV
+         l55eK6o6TukXGcVQbc0Q07Y1oYRA7Ka1zQHQoLOR8+XeuZHWEK3jHQUuRD1Ggc4Jg7s0
+         uYtppEbxm3VbSbtFDBmHZB8LsuHtcNRk0mZ29wQs4S1pAvvV2LANF4XHehed7Jr92lFP
+         Udf9AmryDKL4InbaqkXRhrEh9c8EV4olhRDeutTRA23yhkJFOxiDaoRVGgde+iHmw4zR
+         I87g==
+X-Gm-Message-State: AOAM530obCUZIj0q1giwZ+dBMHf2DKMNT420RYsxtONy6n+vWWe9Hpps
+        uWBcQI/kAVKzIFv7B9CMr1U/9ibRGtYdh+l0tZgRE9+R2X9t
+X-Google-Smtp-Source: ABdhPJxiId3aOAjyaHPtj6eXF0lTg9kn0HepBRHkpmJVrHxVLQh8w3neRFDr3qdbuqMqhzP5o88YZxnIB+Esr7jYXS37SQa8re0R
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0000000000006d129905c284e02d@google.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Received: by 2002:a92:b746:: with SMTP id c6mr20299490ilm.240.1621250899790;
+ Mon, 17 May 2021 04:28:19 -0700 (PDT)
+Date:   Mon, 17 May 2021 04:28:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f94f5405c284e370@google.com>
+Subject: [syzbot] general protection fault in tls_sk_proto_close (3)
+From:   syzbot <syzbot+29c3c12f3214b85ad081@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, borisp@nvidia.com, bp@alien8.de,
+        daniel@iogearbox.net, davem@davemloft.net, hpa@zytor.com,
+        jmattson@google.com, john.fastabend@gmail.com, joro@8bytes.org,
+        kuba@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, masahiroy@kernel.org, mingo@redhat.com,
+        netdev@vger.kernel.org, pbonzini@redhat.com, peterz@infradead.org,
+        rafael.j.wysocki@intel.com, rostedt@goodmis.org, seanjc@google.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        vkuznets@redhat.com, wanpengli@tencent.com, will@kernel.org,
+        x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This was fixed just a little later with "block: remove an incorrect check from
-blk_rq_append_bio"
+Hello,
 
-On Mon, May 17, 2021 at 04:27:20AM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    5103a5be Add linux-next specific files for 20210407
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=17b28e36d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=c278e8a8a7f47f4c
-> dashboard link: https://syzkaller.appspot.com/bug?extid=1c24e3484e48799b2333
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1232b5c9d00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17971a36d00000
-> 
-> The issue was bisected to:
-> 
-> commit 393bb12e00580aaa23356504eed38d8f5571153a
-> Author: Christoph Hellwig <hch@lst.de>
-> Date:   Wed Mar 31 07:30:01 2021 +0000
-> 
->     block: stop calling blk_queue_bounce for passthrough requests
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=134e9381d00000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=10ce9381d00000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=174e9381d00000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+1c24e3484e48799b2333@syzkaller.appspotmail.com
-> Fixes: 393bb12e0058 ("block: stop calling blk_queue_bounce for passthrough requests")
-> 
-> ------------[ cut here ]------------
-> WARNING: CPU: 1 PID: 25 at block/blk-map.c:488 blk_rq_append_bio+0x565/0x680 block/blk-map.c:488
-> Modules linked in:
-> CPU: 0 PID: 25 Comm: kworker/u4:1 Not tainted 5.12.0-rc6-next-20210407-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Workqueue: events_unbound async_run_entry_fn
-> RIP: 0010:blk_rq_append_bio+0x565/0x680 block/blk-map.c:488
-> Code: 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 de 00 00 00 48 8b 44 24 10 48 89 98 a0 00 00 00 45 31 e4 e9 3f fe ff ff e8 6b 3e bc fd <0f> 0b 41 bc ea ff ff ff e9 2d fe ff ff c7 44 24 08 00 00 00 00 e9
-> RSP: 0018:ffffc90000dff6d0 EFLAGS: 00010293
-> RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
-> RDX: ffff888011cbb900 RSI: ffffffff83b7ea55 RDI: 0000000000000003
-> RBP: 0000000000000008 R08: 0000000000000000 R09: 0000000000000001
-> R10: ffffffff83b7e568 R11: 0000000000000000 R12: 0000000000000001
-> R13: 0000000000000008 R14: ffff88801c86e400 R15: ffff88801c86e400
-> FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007fb8501cc930 CR3: 0000000023c21000 CR4: 00000000001506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  blk_rq_map_kern+0x5db/0x750 block/blk-map.c:653
->  __scsi_execute+0x4c1/0x600 drivers/scsi/scsi_lib.c:224
->  scsi_execute_req include/scsi/scsi_device.h:462 [inline]
->  read_capacity_10+0x112/0x690 drivers/scsi/sd.c:2442
->  sd_read_capacity drivers/scsi/sd.c:2519 [inline]
->  sd_revalidate_disk.isra.0+0x206c/0x7c00 drivers/scsi/sd.c:3203
->  sd_probe+0x9e5/0x1140 drivers/scsi/sd.c:3459
->  really_probe+0x291/0xf60 drivers/base/dd.c:576
->  driver_probe_device+0x298/0x410 drivers/base/dd.c:763
->  __device_attach_driver+0x203/0x2c0 drivers/base/dd.c:870
->  bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
->  __device_attach_async_helper+0x1c9/0x290 drivers/base/dd.c:896
->  async_run_entry_fn+0x9d/0x550 kernel/async.c:127
->  process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
->  worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
->  kthread+0x3b1/0x4a0 kernel/kthread.c:292
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-> syzbot can test patches for this issue, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
----end quoted text---
+syzbot found the following issue on:
+
+HEAD commit:    f3f409a9 Merge branch 'ionic-ptp'
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=10fae07ed00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7eff0f22b8563a5f
+dashboard link: https://syzkaller.appspot.com/bug?extid=29c3c12f3214b85ad081
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=158fe316d00000
+
+The issue was bisected to:
+
+commit 997acaf6b4b59c6a9c259740312a69ea549cc684
+Author: Mark Rutland <mark.rutland@arm.com>
+Date:   Mon Jan 11 15:37:07 2021 +0000
+
+    lockdep: report broken irq restoration
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11a85786d00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=13a85786d00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=15a85786d00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+29c3c12f3214b85ad081@syzkaller.appspotmail.com
+Fixes: 997acaf6b4b5 ("lockdep: report broken irq restoration")
+
+general protection fault, probably for non-canonical address 0xdffffc0000000002: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000010-0x0000000000000017]
+CPU: 1 PID: 8662 Comm: syz-executor.0 Not tainted 5.12.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:tls_sk_proto_close+0xd8/0xaf0 net/tls/tls_main.c:304
+Code: 02 00 0f 85 16 09 00 00 48 8b 85 f0 02 00 00 4d 8d 6c 24 14 4c 89 ea 48 c1 ea 03 48 89 44 24 18 48 b8 00 00 00 00 00 fc ff df <0f> b6 04 02 4c 89 ea 83 e2 07 38 d0 7f 08 84 c0 0f 85 4f 07 00 00
+RSP: 0018:ffffc9000216fc78 EFLAGS: 00010203
+RAX: dffffc0000000000 RBX: dffffc0000000000 RCX: 0000000000000000
+RDX: 0000000000000002 RSI: ffffffff87a353b3 RDI: ffff8880216aa7b0
+RBP: ffff8880216aa4c0 R08: 0000000000000001 R09: 00000000fffffff0
+R10: ffffffff87a35641 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000014 R14: ffff88801c1e5108 R15: 0000000000000001
+FS:  0000000001f87400(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000780000 CR3: 0000000013807000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ tls_sk_proto_close+0x356/0xaf0 net/tls/tls_main.c:327
+ inet_release+0x12e/0x280 net/ipv4/af_inet.c:431
+ inet6_release+0x4c/0x70 net/ipv6/af_inet6.c:478
+ __sock_release+0xcd/0x280 net/socket.c:599
+ sock_close+0x18/0x20 net/socket.c:1258
+ __fput+0x288/0x920 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:140
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:174 [inline]
+ exit_to_user_mode_prepare+0x249/0x250 kernel/entry/common.c:208
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:301
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x41926b
+Code: 0f 05 48 3d 00 f0 ff ff 77 45 c3 0f 1f 40 00 48 83 ec 18 89 7c 24 0c e8 63 fc ff ff 8b 7c 24 0c 41 89 c0 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 35 44 89 c7 89 44 24 0c e8 a1 fc ff ff 8b 44
+RSP: 002b:00007ffd0160cbc0 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
+RAX: 0000000000000000 RBX: 0000000000000006 RCX: 000000000041926b
+RDX: 00000000005711e8 RSI: 0000000000000001 RDI: 0000000000000005
+RBP: 0000000000000001 R08: 0000000000000000 R09: 0000001b321200e0
+R10: ffffffffffffffff R11: 0000000000000293 R12: 00000000005711e8
+R13: 00007ffd0160cce0 R14: 000000000056bf60 R15: 0000000000012c65
+Modules linked in:
+---[ end trace 7e9ee67b64dc5682 ]---
+RIP: 0010:tls_sk_proto_close+0xd8/0xaf0 net/tls/tls_main.c:304
+Code: 02 00 0f 85 16 09 00 00 48 8b 85 f0 02 00 00 4d 8d 6c 24 14 4c 89 ea 48 c1 ea 03 48 89 44 24 18 48 b8 00 00 00 00 00 fc ff df <0f> b6 04 02 4c 89 ea 83 e2 07 38 d0 7f 08 84 c0 0f 85 4f 07 00 00
+RSP: 0018:ffffc9000216fc78 EFLAGS: 00010203
+RAX: dffffc0000000000 RBX: dffffc0000000000 RCX: 0000000000000000
+RDX: 0000000000000002 RSI: ffffffff87a353b3 RDI: ffff8880216aa7b0
+RBP: ffff8880216aa4c0 R08: 0000000000000001 R09: 00000000fffffff0
+R10: ffffffff87a35641 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000014 R14: ffff88801c1e5108 R15: 0000000000000001
+FS:  0000000001f87400(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fc1c76c3010 CR3: 0000000013807000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
