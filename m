@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99E053827F0
+	by mail.lfdr.de (Postfix) with ESMTP id 4ECA13827EF
 	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:15:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236126AbhEQJQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 05:16:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52732 "EHLO
+        id S236092AbhEQJP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 05:15:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235919AbhEQJLF (ORCPT
+        with ESMTP id S235926AbhEQJLI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 05:11:05 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12E16C061761
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:09:49 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id gb21-20020a17090b0615b029015d1a863a91so5190751pjb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:09:49 -0700 (PDT)
+        Mon, 17 May 2021 05:11:08 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FAA9C061763
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:09:52 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id m190so4221603pga.2
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:09:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=nl1RimdI/5nA8HoC7zyaJVa2ia5n9+cTuVMNw7l0PJA=;
-        b=C1JDXziCuEO3afecOyNnPdzGMnfrmjKTF1WzXyVNSV4ZCHSAYWb1TCVOEyd+GRFe5e
-         3o3AYpHHnQ7Ca4kwLy1vkEoADWxy5BqDRRT+M1L9tJB3loHGm75AOkrh+uWhy/+JXLUu
-         oza4mjY8qJdEz3db5cH7F4RF2x5RtHkVYx7YRs82xgUBPokAO2lfs9z0X58jQOptHkXi
-         a1+SFyK8+0mqY2/C1k2MhejaFPUlmu5p7ys26Zmbi5d4icjwT0HmlxBB6brHGUuh8zbR
-         W7ciI/y5VbciNDEah9YeGKRiTT4oYMC5UXAWVg5jCLwJ43N51goxzVkeSAuDWmjq6r3d
-         +Xwg==
+        bh=h+Aa0Uk9nuGsTzdkqGHjK7puGuRuX9seCaxiKLJa2BE=;
+        b=AcJrpzueKOT0u4amPtwtBwzuCp6VDlYyVRIEdJTAIWammU3W6pAAc4rRONhlsNG9Gv
+         1/V/Ak5U7yQ7rLnYBCq8yh5B25VWyDimUbrIW+rpDvEgMJrvzLPxDptLf/AFkeOz7q0g
+         D/zu5a3GrmWcyxl6pvrPIr8fYzu1PB/do/s0mxhZnQfMBbdSNVMRsSWGel3y4Ql7qlo5
+         A0YTct6Jg6cMzwzVf68QThM9pSxCiYmG/TtyotBP6dMrq8vvpCvITtwIhl1aL2e+uRlX
+         D0HtRW7YZXatSuCSDQr/ppOGN5XA2QcBKM3q8UvCJaKNqRGmAAgP7hOfl/V+3MZ8g062
+         IG8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=nl1RimdI/5nA8HoC7zyaJVa2ia5n9+cTuVMNw7l0PJA=;
-        b=VcoAFzztGORv+jACbCmPLT7A+QvxuPaZI6Pa1Jq3b4T29EMzgBitbXjqPlRq8npoLJ
-         L+LgYaOBTAJGHurmOb/R6Z5hQii0NMbLMEe7X5BbzV+xqsNuUIOYx2lxJJGY1QXMmBro
-         or9qt4v7P6hP07mnCuWLkayVlV0cbGNlni5kFa/blsu44/yNMXArk2vU1cscSwcJIpQH
-         9FzrLUOgqNf6hT67kMGYb3T8JoNI+rODuMY0nc4qvsUnngiDWljBC8fOWIorrYCRu1al
-         V095M+jFWqFt2ucC10ltarfcwJVFae1buezWskMDnvfYKh518DdlIms3Rwphm4F+Z7FW
-         wlbA==
-X-Gm-Message-State: AOAM530cRZ3qkmQe89HY77tEc8onCOuQhBL+am7qrJaJi8Hmb3ohfSUX
-        koZ/96oxehqsQCexvBx9n9Cx
-X-Google-Smtp-Source: ABdhPJxX40LBhRzbHmfqrLNQUOc2FXChqAUEU1PCqUe9biNF6dPvq8GIn0U5Nt6IpfelVBDfjzVmiA==
-X-Received: by 2002:a17:90a:6d43:: with SMTP id z61mr25631473pjj.147.1621242588600;
-        Mon, 17 May 2021 02:09:48 -0700 (PDT)
+        bh=h+Aa0Uk9nuGsTzdkqGHjK7puGuRuX9seCaxiKLJa2BE=;
+        b=HCvhwRezsqF+t5RCBg3zO1lg0MfCUSSRAkgTblgkVpowY7NvzTig0TQgpBqElSFubf
+         5lXrsUaUDGFBkhnRdautgmzmeBKJUwFuRPSBDajpCzwIXZAHuSLBipdw7EagVNBE9woc
+         eYu6CmJodfKcBX05zzLjI36ADbWDPg1dAz6UmVmG+opvX1TbNTZ4jQ7+4s9fB/O9C8Sd
+         Jo4iC2W/1p4z4wUAk8FWa5u3P5VAfAOa6CsDb2t92xfRK7Qma+su9sujdpznoYBjKPHW
+         s2U/FgJLIpkvKkX5j2Dl4LvrBjxoA9NO/tuEzaQDl+yEAa1szDdXZ5D2tN5Es2AuciGA
+         Yx/g==
+X-Gm-Message-State: AOAM530LlNg8Gl0fnOoyVPBkgVnitMWMCcbliQW4MHtUyVVchtx+h1AT
+        KBTVA8Nl6mKDlzmKj2XuqKMv
+X-Google-Smtp-Source: ABdhPJzLj/C5eD+IjImaTtRsjiwSPwk3SXj9BKf1WqEHfyKILvXQtZ3VKqyniZTOLr3hOa5/rzbI6Q==
+X-Received: by 2002:a63:9c7:: with SMTP id 190mr10210076pgj.149.1621242592174;
+        Mon, 17 May 2021 02:09:52 -0700 (PDT)
 Received: from localhost ([139.177.225.253])
-        by smtp.gmail.com with ESMTPSA id a9sm2765892pfl.57.2021.05.17.02.09.47
+        by smtp.gmail.com with ESMTPSA id 6sm9661465pjm.21.2021.05.17.02.09.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 02:09:48 -0700 (PDT)
+        Mon, 17 May 2021 02:09:51 -0700 (PDT)
 From:   Xie Yongji <xieyongji@bytedance.com>
 To:     mst@redhat.com, jasowang@redhat.com, stefanha@redhat.com
 Cc:     amit@kernel.org, arei.gonglei@huawei.com, airlied@linux.ie,
@@ -57,9 +57,9 @@ Cc:     amit@kernel.org, arei.gonglei@huawei.com, airlied@linux.ie,
         miklos@szeredi.hu, sgarzare@redhat.com,
         virtualization@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 13/17] virtio_input: Remove unused used length
-Date:   Mon, 17 May 2021 17:08:32 +0800
-Message-Id: <20210517090836.533-14-xieyongji@bytedance.com>
+Subject: [RFC PATCH 14/17] virtio_mem: Remove unused used length
+Date:   Mon, 17 May 2021 17:08:33 +0800
+Message-Id: <20210517090836.533-15-xieyongji@bytedance.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210517090836.533-1-xieyongji@bytedance.com>
 References: <20210517090836.533-1-xieyongji@bytedance.com>
@@ -74,37 +74,29 @@ pass NULL to virtqueue_get_buf() instead.
 
 Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
 ---
- drivers/virtio/virtio_input.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/virtio/virtio_mem.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/virtio/virtio_input.c b/drivers/virtio/virtio_input.c
-index ce51ae165943..f83f8e556fba 100644
---- a/drivers/virtio/virtio_input.c
-+++ b/drivers/virtio/virtio_input.c
-@@ -35,11 +35,10 @@ static void virtinput_recv_events(struct virtqueue *vq)
- 	struct virtio_input *vi = vq->vdev->priv;
- 	struct virtio_input_event *event;
- 	unsigned long flags;
+diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+index 10ec60d81e84..32a8e359a5c3 100644
+--- a/drivers/virtio/virtio_mem.c
++++ b/drivers/virtio/virtio_mem.c
+@@ -1256,7 +1256,6 @@ static uint64_t virtio_mem_send_request(struct virtio_mem *vm,
+ 					const struct virtio_mem_req *req)
+ {
+ 	struct scatterlist *sgs[2], sg_req, sg_resp;
 -	unsigned int len;
+ 	int rc;
  
- 	spin_lock_irqsave(&vi->lock, flags);
- 	if (vi->ready) {
--		while ((event = virtqueue_get_buf(vi->evt, &len)) != NULL) {
-+		while ((event = virtqueue_get_buf(vi->evt, NULL)) != NULL) {
- 			spin_unlock_irqrestore(&vi->lock, flags);
- 			input_event(vi->idev,
- 				    le16_to_cpu(event->type),
-@@ -108,10 +107,9 @@ static void virtinput_recv_status(struct virtqueue *vq)
- 	struct virtio_input *vi = vq->vdev->priv;
- 	struct virtio_input_event *stsbuf;
- 	unsigned long flags;
--	unsigned int len;
+ 	/* don't use the request residing on the stack (vaddr) */
+@@ -1277,7 +1276,7 @@ static uint64_t virtio_mem_send_request(struct virtio_mem *vm,
+ 	virtqueue_kick(vm->vq);
  
- 	spin_lock_irqsave(&vi->lock, flags);
--	while ((stsbuf = virtqueue_get_buf(vi->sts, &len)) != NULL)
-+	while ((stsbuf = virtqueue_get_buf(vi->sts, NULL)) != NULL)
- 		kfree(stsbuf);
- 	spin_unlock_irqrestore(&vi->lock, flags);
+ 	/* wait for a response */
+-	wait_event(vm->host_resp, virtqueue_get_buf(vm->vq, &len));
++	wait_event(vm->host_resp, virtqueue_get_buf(vm->vq, NULL));
+ 
+ 	return virtio16_to_cpu(vm->vdev, vm->resp.type);
  }
 -- 
 2.11.0
