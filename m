@@ -2,138 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A362386C28
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 23:20:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1CB0386C32
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 23:21:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239470AbhEQVVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 17:21:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55656 "EHLO mail.kernel.org"
+        id S245012AbhEQVWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 17:22:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238124AbhEQVVa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 17:21:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id ECC1C611EE;
-        Mon, 17 May 2021 21:20:13 +0000 (UTC)
+        id S238105AbhEQVWY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 17:22:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 83A236112D;
+        Mon, 17 May 2021 21:21:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621286414;
-        bh=+7M+VlqeZQxM9ksym7Mnl5N0vl4vKgIxFLWxNmzJDvs=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=JlQ+f8aIt01/E1YbyXJrcNSUAWUZwXxV8DRDeHoZyC+JVixM1ZKBnFatoXqBqvqkw
-         7pdIir+h/zm1uZWmqW7inhuXhin4BKsm4p9CRZ7VOEQMi3YtiJ90Dzs63+np98vJNn
-         1bELqszm75X+B0hf6T+GRhsShZulZ937PmbdF40KCxVcIt2clX4rO0vnmSdoXsAr1K
-         UDuC5YhJ0tjAf+Xfw5Cdn3aRvkJdiiHhk3bSyTXlZ5peZ2lzyA/W574vOe0U8gD2R8
-         4P47YCYwebtZHDcOVa8vKa/GMNYl1xdW0drQMCMAL+LJH88OFLLkkCBPfe3YRegy2x
-         TFlrONgQazf2w==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E7B0360963;
-        Mon, 17 May 2021 21:20:13 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1621286467;
+        bh=URmIpDDQIGn2A7CVqzs/dLemqPYxxhpSYwLsuOsJA7k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Nh3e2vFHItalLhFjDy7daRTZUUnvs1ou6llCIUsC+X0NQGPX5wWGkcldiB1ZwMX3/
+         TbKMwO0s73FZIivai/ljCfoOOqSCiUYl9CDXfz2P+sP9G222cak/oPNinTcT5cNxs7
+         +Tlc3c6hbV0c1qQRV1r0sWqcFlQVTLsda4L/BwiPZYEaeVMPEs7SaMbnEbgKRl3cYG
+         LvcyQLXrdXKXfqe+ju08vy15+BJMZNaaGqPAT+ffsHH8n/vSEX2lt45Sf+/mHUvABw
+         mt9m0gcQB4eAtE1DHtBeoWTiG/2tydALR35RoyhhYvNq1qlPs45ptYLn6x7Sk5FNAu
+         Yxcq8FXL4KsNA==
+Date:   Mon, 17 May 2021 14:21:06 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     =?utf-8?B?aGVyYmVydGhibGko5p2O5byY5Y2aKQ==?= 
+        <herberthbli@tencent.com>
+Cc:     Hongbo Li <herbert.tencent@gmail.com>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+        "dhowells@redhat.com" <dhowells@redhat.com>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "tianjia.zhang@linux.alibaba.com" <tianjia.zhang@linux.alibaba.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/7] crypto: add eddsa support for x509(Internet mail)
+Message-ID: <YKLeQjjFL88nABqP@gmail.com>
+References: <1620828254-25545-1-git-send-email-herbert.tencent@gmail.com>
+ <YJwodhUpsdBbknLo@gmail.com>
+ <dade7666956c41718ce00e681156533e@tencent.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 00/24] Rid W=1 warnings in net
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162128641394.11371.3320357643522584205.git-patchwork-notify@kernel.org>
-Date:   Mon, 17 May 2021 21:20:13 +0000
-References: <20210517044535.21473-1-shenyang39@huawei.com>
-In-Reply-To: <20210517044535.21473-1-shenyang39@huawei.com>
-To:     Yang Shen <shenyang39@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+In-Reply-To: <dade7666956c41718ce00e681156533e@tencent.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net-next.git (refs/heads/master):
-
-On Mon, 17 May 2021 12:45:11 +0800 you wrote:
-> This is 1 of 2 sets to fully clean drivers/net.
+On Thu, May 13, 2021 at 02:44:07PM +0000, herberthbli(李弘博) wrote:
+> 在 2021/5/13 3:12, Eric Biggers 写道:
 > 
-> Changes since v1:
->  - add some warnings missed in v1
->  - move the patches about drivers/net/wireless into another series
+> On Wed, May 12, 2021 at 10:04:07PM +0800, Hongbo Li wrote:
 > 
-> Yang Shen (24):
->   net: arc: Demote non-compliant kernel-doc headers
->   net: atheros: atl1c: Fix wrong function name in comments
->   net: atheros: atl1e: Fix wrong function name in comments
->   net: atheros: atl1x: Fix wrong function name in comments
->   net: broadcom: bnx2x: Fix wrong function name in comments
->   net: brocade: bna: Fix wrong function name in comments
->   net: cadence: Demote non-compliant kernel-doc headers
->   net: calxeda: Fix wrong function name in comments
->   net: chelsio: cxgb3: Fix wrong function name in comments
->   net: chelsio: cxgb4: Fix wrong function name in comments
->   net: chelsio: cxgb4vf: Fix wrong function name in comments
->   net: huawei: hinic: Fix wrong function name in comments
->   net: micrel: Fix wrong function name in comments
->   net: microchip: Demote non-compliant kernel-doc headers
->   net: neterion: Fix wrong function name in comments
->   net: neterion: vxge: Fix wrong function name in comments
->   net: netronome: nfp: Fix wrong function name in comments
->   net: calxeda: Fix wrong function name in comments
->   net: samsung: sxgbe: Fix wrong function name in comments
->   net: socionext: Demote non-compliant kernel-doc headers
->   net: ti: Fix wrong struct name in comments
->   net: via: Fix wrong function name in comments
->   net: phy: Demote non-compliant kernel-doc headers
->   net: hisilicon: hns: Fix wrong function name in comments
 > 
-> [...]
+> From: Hongbo Li <herberthbli@tencent.com><mailto:herberthbli@tencent.com>
+> 
+> This series of patches add support for x509 cert signed by eddsa,
+> which is described in RFC8032 [1], currently ed25519 only.
+> 
+> 
+> 
+> It would be helpful to explain how this is related to the kernel's existing
+> Curve25519 support.
+> 
+> - Eric
+> 
+> 
+> Curve25519 is an elliptic curve used for key agreement(ECDH). It is a Montgomery curve.
+> 
+> Edwards25519 is a twisted Edwards curve and birationally equivalent to Curve25519, the
+> birational maps are described in rfc7748 section 4.1.
+> https://datatracker.ietf.org/doc/html/rfc7748#section-4.1
+> 
+> 
+> Ed25519 is a Digital Signature Algorithm over Edwards25519.
+> 
 
-Here is the summary with links:
-  - [v2,01/24] net: arc: Demote non-compliant kernel-doc headers
-    https://git.kernel.org/netdev/net-next/c/1d7f7ecadc5a
-  - [v2,02/24] net: atheros: atl1c: Fix wrong function name in comments
-    https://git.kernel.org/netdev/net-next/c/8965c1c535b1
-  - [v2,03/24] net: atheros: atl1e: Fix wrong function name in comments
-    https://git.kernel.org/netdev/net-next/c/b43e1554a7cf
-  - [v2,04/24] net: atheros: atl1x: Fix wrong function name in comments
-    https://git.kernel.org/netdev/net-next/c/c706c75aaee2
-  - [v2,05/24] net: broadcom: bnx2x: Fix wrong function name in comments
-    https://git.kernel.org/netdev/net-next/c/76d85049173b
-  - [v2,06/24] net: brocade: bna: Fix wrong function name in comments
-    https://git.kernel.org/netdev/net-next/c/5a02bf4fefd5
-  - [v2,07/24] net: cadence: Demote non-compliant kernel-doc headers
-    https://git.kernel.org/netdev/net-next/c/c1167cee462d
-  - [v2,08/24] net: calxeda: Fix wrong function name in comments
-    https://git.kernel.org/netdev/net-next/c/2e45d961a6a8
-  - [v2,09/24] net: chelsio: cxgb3: Fix wrong function name in comments
-    https://git.kernel.org/netdev/net-next/c/aeed744a49ba
-  - [v2,10/24] net: chelsio: cxgb4: Fix wrong function name in comments
-    https://git.kernel.org/netdev/net-next/c/e0333b1bb174
-  - [v2,11/24] net: chelsio: cxgb4vf: Fix wrong function name in comments
-    https://git.kernel.org/netdev/net-next/c/1eb00ff517f4
-  - [v2,12/24] net: huawei: hinic: Fix wrong function name in comments
-    https://git.kernel.org/netdev/net-next/c/d6174870c0f1
-  - [v2,13/24] net: micrel: Fix wrong function name in comments
-    https://git.kernel.org/netdev/net-next/c/229fd41f6447
-  - [v2,14/24] net: microchip: Demote non-compliant kernel-doc headers
-    https://git.kernel.org/netdev/net-next/c/331a3219d3b6
-  - [v2,15/24] net: neterion: Fix wrong function name in comments
-    https://git.kernel.org/netdev/net-next/c/dc432f5acb86
-  - [v2,16/24] net: neterion: vxge: Fix wrong function name in comments
-    https://git.kernel.org/netdev/net-next/c/146c91e2bc9a
-  - [v2,17/24] net: netronome: nfp: Fix wrong function name in comments
-    https://git.kernel.org/netdev/net-next/c/a507b1644524
-  - [v2,18/24] net: calxeda: Fix wrong function name in comments
-    https://git.kernel.org/netdev/net-next/c/9f2e6fb63413
-  - [v2,19/24] net: samsung: sxgbe: Fix wrong function name in comments
-    https://git.kernel.org/netdev/net-next/c/61633d71a71c
-  - [v2,20/24] net: socionext: Demote non-compliant kernel-doc headers
-    https://git.kernel.org/netdev/net-next/c/40d9fca8b3fd
-  - [v2,21/24] net: ti: Fix wrong struct name in comments
-    https://git.kernel.org/netdev/net-next/c/85ead77dc3d5
-  - [v2,22/24] net: via: Fix wrong function name in comments
-    https://git.kernel.org/netdev/net-next/c/03055a25213b
-  - [v2,23/24] net: phy: Demote non-compliant kernel-doc headers
-    https://git.kernel.org/netdev/net-next/c/1f2d109e8363
-  - [v2,24/24] net: hisilicon: hns: Fix wrong function name in comments
-    https://git.kernel.org/netdev/net-next/c/5a9594cf1d14
+Sure, but what does that mean in terms of code.  Can you reuse any of the code,
+and if not why not?  I *think* the answer is no, but this is a common point of
+confusion, so it would be helpful to properly explain this...
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+- Eric
