@@ -2,110 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D2DD386DEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 01:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24C49386DF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 01:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344662AbhEQXzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 19:55:15 -0400
-Received: from gateway23.websitewelcome.com ([192.185.50.107]:21001 "EHLO
-        gateway23.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239375AbhEQXzN (ORCPT
+        id S1344682AbhEQX4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 19:56:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239438AbhEQX4l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 19:55:13 -0400
-Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
-        by gateway23.websitewelcome.com (Postfix) with ESMTP id 892B81532B
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 18:53:54 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id in3al2gujAEP6in3alexUM; Mon, 17 May 2021 18:53:54 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=KaZSgQ5AwwL1G4KSoPBBVOyY8ngU6DX5pQRS+K4Gsp8=; b=LXF5j1v8WL1XOaR/22XEPW0FO2
-        sfvoBZirqQhtHjUdNK+prxqKNQNulcOptOMZ14ko798RBwi60avG/wUFWjmFyoBLD8KdmUSvX5Mk+
-        atqBqFXTlae2cb3O9iUwvDrHzyExVIbeKdvnfwDO+TOvUYBsvleDoyK13yDw9Mjp7Pefe57COxB2D
-        oBe0C7bYTeyPaZFf3TXPhBoL/IRqtmwPMGT9E7WUpcMtXy4Q2CjhB3OzPoL/CgCahjpPhJK981rP7
-        rwN/yYrq6x940ofwtq1e4LFAg05fZevh7cJF6zAfVyEaFhcWUJ8aP7X3TDk4LnASfaIljeBNycQnD
-        8bhTS5UA==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:53332 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lin3Y-001qui-5i; Mon, 17 May 2021 18:53:52 -0500
-Subject: Re: [PATCH 057/141] watchdog: Fix fall-through warnings for Clang
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-References: <cover.1605896059.git.gustavoars@kernel.org>
- <713aa26be06d50dd3bb582a3cb71f04787ad5d5b.1605896059.git.gustavoars@kernel.org>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <66f87bbf-3693-3dda-7bf4-12becb16bf31@embeddedor.com>
-Date:   Mon, 17 May 2021 18:54:35 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 17 May 2021 19:56:41 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A22AC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 16:55:23 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id 6so5731751pgk.5
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 16:55:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Dt/9En1bGh9mqV5EDahzJAJYX6uZITBcCbOiK+du0JQ=;
+        b=REtaxFuOq2C7rrWmKN8QPNMb56kHx90r/ZLUD5LtniukPNpoviGx1VVxzCMPE8FXpu
+         cB/PqjB02JKjhWZTFMl/lF/b4tZK39vXd+kLpH+jprVFn9iLAhG0VhsifsZtcIjT8jbR
+         xwJtd+AnwnzUHHj8pSaxUFgPdF4U1P7Ep45y8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Dt/9En1bGh9mqV5EDahzJAJYX6uZITBcCbOiK+du0JQ=;
+        b=mENPWdubYvN87mVpsTErw0gbaGG7bqTZowd/VnkT/TjGk3yGjS5I1KsRm2WaE//sQz
+         LfJOZU0Gou7/r3IhU+1UAIcQmK+JlJ+S/1OiNSNGmoqLvYCBXQlLsZzSO1ppCZWoWdxg
+         2wNQt56fQJ0tVjbzxnZKLStd5gMQnxECoAr6R3i6M3B0Yjra/C0UCk+3b9+b6vLI3gdO
+         lX12NZNds/iZG30612J/dHYusukqa4whFh5xtcOlCZmGgoX+xKACB5nIzC8/nIrsk/6p
+         ag4VFWjY8FFsmj5+jK/+I0iiQHZnJOR5/9CkaNNoppB1GnMQA0vn+/YmUi8SV99AQSDl
+         DWMA==
+X-Gm-Message-State: AOAM532iMnGTN7B+/kWCufPU51otO01VVmPNxbBOnc/KeWVx21Smu09Y
+        OYz5KyUpacGs2mBk2Dg9Yik5Fw==
+X-Google-Smtp-Source: ABdhPJzjWUTAiFLfgQZeKKCkY0XQYoEwCLqRSutkBu75r4AjWSrcVDD7G8M3LXAo9+FSKhhLEaVj7g==
+X-Received: by 2002:a63:79c5:: with SMTP id u188mr2084699pgc.198.1621295722925;
+        Mon, 17 May 2021 16:55:22 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:1f25:dd29:abb6:257a])
+        by smtp.gmail.com with ESMTPSA id 11sm6015257pfh.182.2021.05.17.16.55.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 16:55:22 -0700 (PDT)
+Date:   Tue, 18 May 2021 08:55:17 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>,
+        Laurence Oberman <loberman@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.12 123/363] watchdog: cleanup handling of false
+ positives
+Message-ID: <YKMCZWhhNS9kIOoR@google.com>
+References: <20210517140302.508966430@linuxfoundation.org>
+ <20210517140306.783130885@linuxfoundation.org>
+ <YKJ+INpik2i9IhZN@alley>
 MIME-Version: 1.0
-In-Reply-To: <713aa26be06d50dd3bb582a3cb71f04787ad5d5b.1605896059.git.gustavoars@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lin3Y-001qui-5i
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:53332
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 18
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YKJ+INpik2i9IhZN@alley>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
-
-I'm taking this in my -next[1] branch for v5.14.
-
-Thanks
---
-Gustavo
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/log/?h=for-next/kspp
-
-On 11/20/20 12:32, Gustavo A. R. Silva wrote:
-> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
-> by explicitly adding a fallthrough pseudo-keyword instead of letting the
-> code fall through to the next case.
+On (21/05/17 16:30), Petr Mladek wrote:
+> On Mon 2021-05-17 15:59:49, Greg Kroah-Hartman wrote:
+> > From: Petr Mladek <pmladek@suse.com>
+> > 
+> > [ Upstream commit 9bf3bc949f8aeefeacea4b1198db833b722a8e27 ]
+> > 
+> > Commit d6ad3e286d2c ("softlockup: Add sched_clock_tick() to avoid kernel
+> > warning on kgdb resume") introduced touch_softlockup_watchdog_sync().
 > 
-> Link: https://github.com/KSPP/linux/issues/115
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  drivers/watchdog/machzwd.c | 1 +
->  1 file changed, 1 insertion(+)
+> [...]
 > 
-> diff --git a/drivers/watchdog/machzwd.c b/drivers/watchdog/machzwd.c
-> index 743377c5b173..73f2221f6222 100644
-> --- a/drivers/watchdog/machzwd.c
-> +++ b/drivers/watchdog/machzwd.c
-> @@ -174,6 +174,7 @@ static inline void zf_set_timer(unsigned short new, unsigned char n)
->  		fallthrough;
->  	case WD2:
->  		zf_writeb(COUNTER_2, new > 0xff ? 0xff : new);
-> +		fallthrough;
->  	default:
->  		return;
->  	}
+> > Make the code more straightforward:
+> > 
+> > 1. Always call kvm_check_and_clear_guest_paused() at the very
+> >    beginning to handle PVCLOCK_GUEST_STOPPED. It touches the watchdog
+> >    when the quest did sleep.
+> > 
+> > 2. Handle the situation when the watchdog has been touched
+> >    (SOFTLOCKUP_DELAY_REPORT is set).
+> > 
+> >    Call sched_clock_tick() when touch_*sync() variant was used. It makes
+> >    sure that the timestamp will be up to date even when it has been
+> >    touched in atomic context or quest did sleep.
+> > 
+> > As a result, kvm_check_and_clear_guest_paused() is called on a single
+> > location.  And the right timestamp is always set when returning from the
+> > timer callback.
+> > 
+> > Link: https://lkml.kernel.org/r/20210311122130.6788-7-pmladek@suse.com
 > 
+> Please, remove this patch from the stable backport. It might
+> cause false softlockup reports, see
+
+Oh, I didn't know about the stable backport. Thank you for taking care of it.
