@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8390B382925
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:00:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72CE0382927
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:00:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236492AbhEQKAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 06:00:25 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:34576 "EHLO
+        id S236506AbhEQKAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 06:00:32 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:34585 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236351AbhEQJ7w (ORCPT
+        with ESMTP id S236271AbhEQJ7z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 05:59:52 -0400
-Received: from mail-ed1-f70.google.com ([209.85.208.70])
+        Mon, 17 May 2021 05:59:55 -0400
+Received: from mail-ed1-f69.google.com ([209.85.208.69])
         by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
         (Exim 4.93)
         (envelope-from <juerg.haefliger@canonical.com>)
-        id 1lia1D-0002Rz-Ge
-        for linux-kernel@vger.kernel.org; Mon, 17 May 2021 09:58:35 +0000
-Received: by mail-ed1-f70.google.com with SMTP id u14-20020a05640207ceb029038d4bfbf3a6so37068edy.9
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:58:35 -0700 (PDT)
+        id 1lia1G-0002SZ-Rh
+        for linux-kernel@vger.kernel.org; Mon, 17 May 2021 09:58:38 +0000
+Received: by mail-ed1-f69.google.com with SMTP id i3-20020aa7dd030000b029038ce772ffe4so3631703edv.12
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:58:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=S1hixJXRBnAuYfS34qwOSOa+37qwmbzyMLfpr9/CNNY=;
-        b=EhIedHcdRUHN0i5kcuKlXYabZYVdDPRF1ikW2+UCB6qj/wr1CdPPdTyAta7fODVNpo
-         6rDyS/xDDGBweHYxT/3BX771sGGYP+5BXrqSoIN/oWzcGPyJjHNexqCvOxOJv3qB1CDV
-         ZJE00K7lnVQnVsxZkZoIseo6Xx1CAwoIkXLjt3W1GVbK1EV5YQEMmUQSgX/HqRGSmhni
-         /U9qMhDqS2DGEhcQQFBbSJu2bLuSPtohbW80Z/nea7LA69daa0Xsg6FTkeF9bWdmBFmj
-         DNvp4irXeRuzQ9iX9QiPDGpEVQiGFCA0t/CDKYoan1m2zvmV2xKCuSnExbv/4G3jQX9k
-         mGOA==
-X-Gm-Message-State: AOAM533+ZmKQUgGcPkI8gSNELN7mT5bevpx2hId5btOLmi5kNrFX3CNh
-        Dhht5XmYzSRdfjf6jz9Z600cV345yHElGWVKZxU8GWEvEAiftedA8pFGxAVAyFXf2zpJtJV209E
-        CYHikl1vUwRbFxAx68TMnVxT/2GtMmVKIQceEGZTCBA==
-X-Received: by 2002:a17:906:aac8:: with SMTP id kt8mr8323478ejb.402.1621245515281;
-        Mon, 17 May 2021 02:58:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxihu71PQJinwnPLesofvKtoWr/e4cHWmOZUdXpwvJfKhflr8ymd0rE726XY/CayNammMGrFw==
-X-Received: by 2002:a17:906:aac8:: with SMTP id kt8mr8323465ejb.402.1621245515117;
-        Mon, 17 May 2021 02:58:35 -0700 (PDT)
+        bh=SBjcovMcJ4H/KV7YFF8hsif22PyqV7UihiYg3q7oL80=;
+        b=Qj3efIepSuJ1ieNY0a0JQjTCxLe5MJXMVIxl0INgcSc6ehMjHNACPprsBg6QWwP6AK
+         Ff5ptUSzpe+MPHGHEmKm0teWz8HacArW0jWAlsTFaMLbYbUM0OWECeDjLbIjnRLe1xwV
+         UrFb3ACDG/M5uzo+GeDVHTqfdkA9DVTS6zkZHsmsINNFWswHD35a2+Ia8ntxsP3eE60o
+         v82gZ2tElW0rLUhiItthxbPMljqgYItF3vellJrFVEQlCsxe2tl1fzDosphJ+bJJBESt
+         DVapt8u2GeIGo0ZhMkIDJgE3yaSQ8F6OrJ6X4QTOpTF99iAIciMDOpf+/650WzCgt9so
+         NW4g==
+X-Gm-Message-State: AOAM530w3hasULeGEPCh7X+n5c9ieN33ZGZspyblZNfJ/CiYCluX5O6C
+        vybMbCOnHcPY5wvZyxHIetSfdnvOCCHh15dNgDUyEqGeqt8JvNE7Ezh7WQhrKY613jg6jrqjGgc
+        WTwaNnnigtiJp+TpNrnV8k3HoLJ8iMTwS4Zl5Q0f3YQ==
+X-Received: by 2002:a05:6402:19a7:: with SMTP id o7mr31417027edz.22.1621245517954;
+        Mon, 17 May 2021 02:58:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyjVbKinq9KaD/Ql0BY02wWm1LkfUNxBYm6cyHlXXoI2sY6X6qpn5L7XW1kPA7eTqkRs9uxQg==
+X-Received: by 2002:a05:6402:19a7:: with SMTP id o7mr31416982edz.22.1621245517486;
+        Mon, 17 May 2021 02:58:37 -0700 (PDT)
 Received: from gollum.fritz.box ([194.191.244.86])
-        by smtp.gmail.com with ESMTPSA id z7sm11245004edi.39.2021.05.17.02.58.34
+        by smtp.gmail.com with ESMTPSA id i8sm8803648ejj.68.2021.05.17.02.58.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 02:58:34 -0700 (PDT)
+        Mon, 17 May 2021 02:58:37 -0700 (PDT)
 From:   Juerg Haefliger <juerg.haefliger@canonical.com>
 X-Google-Original-From: Juerg Haefliger <juergh@canonical.com>
-To:     davem@davemloft.net, kuba@kernel.org, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org
+To:     jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, juergh@canonical.com
-Subject: [PATCH] drivers/net: Remove leading spaces in Kconfig
-Date:   Mon, 17 May 2021 11:58:33 +0200
-Message-Id: <20210517095833.81681-1-juergh@canonical.com>
+Subject: [PATCH] scsi: Remove leading spaces in Kconfig
+Date:   Mon, 17 May 2021 11:58:35 +0200
+Message-Id: <20210517095835.81733-1-juergh@canonical.com>
 X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -61,67 +61,26 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Remove leading spaces before tabs in Kconfig file(s) by running the
 following command:
 
-  $ find drivers/net -name 'Kconfig*' | xargs sed -r -i 's/^[ ]+\t/\t/'
+  $ find drivers/scsi -name 'Kconfig*' | xargs sed -r -i 's/^[ ]+\t/\t/'
 
 Signed-off-by: Juerg Haefliger <juergh@canonical.com>
 ---
- drivers/net/usb/Kconfig | 10 +++++-----
- drivers/net/wan/Kconfig |  4 ++--
- 2 files changed, 7 insertions(+), 7 deletions(-)
+ drivers/scsi/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/usb/Kconfig b/drivers/net/usb/Kconfig
-index fbbe78643631..179308782888 100644
---- a/drivers/net/usb/Kconfig
-+++ b/drivers/net/usb/Kconfig
-@@ -169,7 +169,7 @@ config USB_NET_AX8817X
- 	  This option adds support for ASIX AX88xxx based USB 2.0
- 	  10/100 Ethernet adapters.
+diff --git a/drivers/scsi/Kconfig b/drivers/scsi/Kconfig
+index 3d114be5b662..c5612896cdb9 100644
+--- a/drivers/scsi/Kconfig
++++ b/drivers/scsi/Kconfig
+@@ -311,7 +311,7 @@ source "drivers/scsi/cxlflash/Kconfig"
+ config SGIWD93_SCSI
+ 	tristate "SGI WD93C93 SCSI Driver"
+ 	depends on SGI_HAS_WD93 && SCSI
+-  	help
++	help
+ 	  If you have a Western Digital WD93 SCSI controller on
+ 	  an SGI MIPS system, say Y.  Otherwise, say N.
  
-- 	  This driver should work with at least the following devices:
-+	  This driver should work with at least the following devices:
- 	    * Aten UC210T
- 	    * ASIX AX88172
- 	    * Billionton Systems, USB2AR
-@@ -220,13 +220,13 @@ config USB_NET_CDCETHER
- 	  CDC Ethernet is an implementation option for DOCSIS cable modems
- 	  that support USB connectivity, used for non-Microsoft USB hosts.
- 	  The Linux-USB CDC Ethernet Gadget driver is an open implementation.
-- 	  This driver should work with at least the following devices:
-+	  This driver should work with at least the following devices:
- 
- 	    * Dell Wireless 5530 HSPA
-- 	    * Ericsson PipeRider (all variants)
-+	    * Ericsson PipeRider (all variants)
- 	    * Ericsson Mobile Broadband Module (all variants)
-- 	    * Motorola (DM100 and SB4100)
-- 	    * Broadcom Cable Modem (reference design)
-+	    * Motorola (DM100 and SB4100)
-+	    * Broadcom Cable Modem (reference design)
- 	    * Toshiba (PCX1100U and F3507g/F3607gw)
- 	    * ...
- 
-diff --git a/drivers/net/wan/Kconfig b/drivers/net/wan/Kconfig
-index 83c9481995dd..473df2505c8e 100644
---- a/drivers/net/wan/Kconfig
-+++ b/drivers/net/wan/Kconfig
-@@ -49,7 +49,7 @@ config COSA
- 	  network device.
- 
- 	  You will need user-space utilities COSA or SRP boards for downloading
-- 	  the firmware to the cards and to set them up. Look at the
-+	  the firmware to the cards and to set them up. Look at the
- 	  <http://www.fi.muni.cz/~kas/cosa/> for more information. You can also
- 	  read the comment at the top of the <file:drivers/net/wan/cosa.c> for
- 	  details about the cards and the driver itself.
-@@ -108,7 +108,7 @@ config HDLC
- 	  Generic HDLC driver currently supports raw HDLC, Cisco HDLC, Frame
- 	  Relay, synchronous Point-to-Point Protocol (PPP) and X.25.
- 
-- 	  To compile this driver as a module, choose M here: the
-+	  To compile this driver as a module, choose M here: the
- 	  module will be called hdlc.
- 
- 	  If unsure, say N.
 -- 
 2.27.0
 
