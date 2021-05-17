@@ -2,164 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74263382837
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:23:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37FCE382841
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:25:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235983AbhEQJYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 05:24:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55904 "EHLO
+        id S235979AbhEQJ00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 05:26:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235927AbhEQJYl (ORCPT
+        with ESMTP id S235923AbhEQJZc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 05:24:41 -0400
-Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A01B2C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:23:24 -0700 (PDT)
-Received: by mail-vs1-xe2c.google.com with SMTP id n1so1299757vsr.10
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:23:24 -0700 (PDT)
+        Mon, 17 May 2021 05:25:32 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8135C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:24:14 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id u4-20020a05600c00c4b02901774b80945cso1286118wmm.3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:24:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kzYVzmT+Y8ce2flyvbSSPdmquvI+WpoScVhmf9xFNfc=;
-        b=wZE8pBAqeARtQbwh+YWftfz+pAOAl52rdskfYBROlX2BYGzyiP8jIhVMX2ZLlI/5TN
-         2h55vokvcNd9L9wocrsTfFNSZ7mvGTPvyT6ydg0YrjKHLTUBuhbjdOqBt6BcYgzbTu4z
-         CJC7/JcgyYbA8qJyYy52Qlnrl5Ks8rBSWSII4TJUN/iauAg9QqBcUXZ3Uc46G84x0Wqi
-         7EJaqNos/h447r9ZfuhH/fMb87/SWTIRaTqJufYy20AjL2e6KGye9jf84Rmi4O/7MYAE
-         1JPV3hD1j6WJmF5EQD0WwU2Wke0Zt5Bbr1TPruhZr+U9SyoLJj18Xh+kzPIbsZqQnpMc
-         7cvg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RoIebCss24vMlDVC6yQ1C6afToK7d/dI1S2GbQ2aSEA=;
+        b=zB7jCsOxnFL/LDXgSuYO6D2FTj4cBSLSuAU27wIBOhnahIP2hOkz7trtV6WVxPJeca
+         EP4d9ktdjIouHp9QZrwEfbtEUBfoUCLVSERtAzPohlfQOVey1nsvp1RHh1BhPkS2yFce
+         Htatp3cWHBLsreKDSbbsMX6ZPdQo+xkXJaFun59UbDBmzLWph1WskJ+wyn4t+fLl3cT3
+         vKPFFvwf5VQD5v3vJ1iCNcI/3JSlzvYdnDWdqgaY7LrjMBLrALRwW7EHoe5CLH5eNaej
+         EFh8iDbEam6THt30dmyEy7YCt4kTs97TzsIBzQhAMcXAeZLU2E07yB2QUVArO7SnNaTF
+         R46g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kzYVzmT+Y8ce2flyvbSSPdmquvI+WpoScVhmf9xFNfc=;
-        b=hbgRS8ejZ25uesIIe7kt2YQjQeSMKkJwugPkvpR1SHDN5u/ww+f0u5hP8A8AZMemVA
-         ectOoMn8eYwK28kILJLm570EuDnA1f8EpnvReXhcA15N+YP0Nt77z+ZM0j2C95N5E7ll
-         C8NMzgX2n9DX+q+MaHqsh7y3THE1y+dRbqArS7Y5YvFpjf4IpZtAkOSblevSfLx2S2QC
-         jPr8KJi+C3dTg7qbAXHJLzBeY7mqYsrDbipYpBTg+/XkLME0ErCurk6bxVE2053tIsTh
-         6cL8d+iHcd+LkMfC8M4kZToJOglWz5ffNlIK0la47nspilSnXPMzkqpFeocNnTv1GzEE
-         Jwmw==
-X-Gm-Message-State: AOAM530glpCb78zR29PFmnWV+5X+zlxjKkm/pGU61sQ/LcCrlABrm0n2
-        ucJFi+5K4aR2NXrUN6oNLOzGz+32KSvRgnj/N2PSag==
-X-Google-Smtp-Source: ABdhPJyXKhN5EScVDwjR162oOK33ajPAKsDnGAYw4sYWr1DOTQym8W+LchIR8j6ixX6JvWzsFngChaUy9M79BpaoBus=
-X-Received: by 2002:a05:6102:7b4:: with SMTP id x20mr3923640vsg.48.1621243403858;
- Mon, 17 May 2021 02:23:23 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RoIebCss24vMlDVC6yQ1C6afToK7d/dI1S2GbQ2aSEA=;
+        b=ZOnSNS4sWcu8GflIURjWJGJGC9Ug+Mv9p7Skxie5HDRk/C+WapDDc2jSar+L37GqLE
+         fbd08aDJ7u7Znqe/ktNSDnxGY+QsQQeUN7NRUD27AUcmgau/Ct/F27fwe0Adpsu6vD/r
+         zxrmUx7zvJ2zISVEEpNuInn/ZP32oXUM/R3sevZMiw5bnxEazw7rtNFLvKSp/n7qEJMQ
+         b2SXUUehMEUPtkutOAf61uZeh1hrSz/n0TEBqMEckuvWgOz3bWNzqmjk/YKhp/qMVRrZ
+         rfN3TBRKWfoj211XWPzR3eQKjOego+4i1siZKRgZm1vvMOachWjdAjVm9vh/yaHVtguG
+         4ibQ==
+X-Gm-Message-State: AOAM531+s4E/svWjcEs1jwSNq2NTx6uOu7Qu2C8LbErDExc2OV2kLvR4
+        KpdJBovDXqBWRKrNe8eLMiGCQQ==
+X-Google-Smtp-Source: ABdhPJzje+M84O/1ehD0jh8/ySTOUiW1cfrHAJHU8AG2hcTKBQwooqzolhHORH3JodDIn+R46zTCXw==
+X-Received: by 2002:a05:600c:2909:: with SMTP id i9mr62634571wmd.116.1621243453678;
+        Mon, 17 May 2021 02:24:13 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id j14sm16456506wmj.19.2021.05.17.02.24.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 17 May 2021 02:24:13 -0700 (PDT)
+Subject: Re: [PATCH v2] nvmem: qfprom: minor nit fixes
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, rbokka@codeaurora.org
+References: <1619416452-6852-1-git-send-email-rnayak@codeaurora.org>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <3b78bf7d-6e41-2df5-caee-20bce46ba0bf@linaro.org>
+Date:   Mon, 17 May 2021 10:24:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20210513193204.816681-1-davidgow@google.com> <20210513193204.816681-6-davidgow@google.com>
-In-Reply-To: <20210513193204.816681-6-davidgow@google.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 17 May 2021 11:22:47 +0200
-Message-ID: <CAPDyKFoEeRUjHLZ3iSvPT4_0X107G3Xw+ujxJ9zsDk06dTxo7w@mail.gmail.com>
-Subject: Re: [PATCH v2 06/10] mmc: sdhci-of-aspeed: Remove some unnecessary
- casts from KUnit tests
-To:     David Gow <davidgow@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Daniel Latypov <dlatypov@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Joel Stanley <joel@jms.id.au>, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1619416452-6852-1-git-send-email-rnayak@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 May 2021 at 21:36, David Gow <davidgow@google.com> wrote:
->
-> With KUnit's EXPECT macros no longer typechecking arguments as strictly,
-> get rid of a number of now unnecessary casts.
->
-> Signed-off-by: David Gow <davidgow@google.com>
 
-I guess you will funnel this via another tree than the mmc?
 
-Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
+On 26/04/2021 06:54, Rajendra Nayak wrote:
+> Fix a missed newline, change an 'if' to 'else if' and update
+> a comment which is stale after the merge of '5a1bea2a: nvmem:
+> qfprom: Add support for fuseblowing on sc7280'
+> 
+> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
 
-Kind regards
-Uffe
+Applied thanks,
+
+--srini
 
 > ---
-> This should be a no-op functionality wise, and while it depends on the
-> first couple of patches in this series, it's otherwise independent from
-> the others. I think this makes the test more readable, but if you
-> particularly dislike it, I'm happy to drop it.
->
->  drivers/mmc/host/sdhci-of-aspeed-test.c | 34 ++++++++++++-------------
->  1 file changed, 17 insertions(+), 17 deletions(-)
->
-> diff --git a/drivers/mmc/host/sdhci-of-aspeed-test.c b/drivers/mmc/host/sdhci-of-aspeed-test.c
-> index bb67d159b7d8..1ed4f86291f2 100644
-> --- a/drivers/mmc/host/sdhci-of-aspeed-test.c
-> +++ b/drivers/mmc/host/sdhci-of-aspeed-test.c
-> @@ -26,23 +26,23 @@ static void aspeed_sdhci_phase_ddr52(struct kunit *test)
->         KUNIT_EXPECT_EQ(test, 15,
->                         aspeed_sdhci_phase_to_tap(NULL, rate, 25));
->
-> -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 0,
-> +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 0,
->                         aspeed_sdhci_phase_to_tap(NULL, rate, 180));
-> -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 0,
-> +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 0,
->                         aspeed_sdhci_phase_to_tap(NULL, rate, 181));
-> -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 1,
-> +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 1,
->                         aspeed_sdhci_phase_to_tap(NULL, rate, 182));
-> -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 1,
-> +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 1,
->                         aspeed_sdhci_phase_to_tap(NULL, rate, 183));
-> -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 2,
-> +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 2,
->                         aspeed_sdhci_phase_to_tap(NULL, rate, 184));
-> -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 3,
-> +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 3,
->                         aspeed_sdhci_phase_to_tap(NULL, rate, 185));
-> -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 14,
-> +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 14,
->                         aspeed_sdhci_phase_to_tap(NULL, rate, 203));
-> -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
-> +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
->                         aspeed_sdhci_phase_to_tap(NULL, rate, 204));
-> -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
-> +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
->                         aspeed_sdhci_phase_to_tap(NULL, rate, 205));
->  }
->
-> @@ -67,21 +67,21 @@ static void aspeed_sdhci_phase_hs200(struct kunit *test)
->         KUNIT_EXPECT_EQ(test, 15,
->                         aspeed_sdhci_phase_to_tap(NULL, rate, 96));
->
-> -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK,
-> +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK,
->                         aspeed_sdhci_phase_to_tap(NULL, rate, 180));
-> -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK,
-> +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK,
->                         aspeed_sdhci_phase_to_tap(NULL, rate, 185));
-> -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 1,
-> +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 1,
->                         aspeed_sdhci_phase_to_tap(NULL, rate, 186));
-> -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 1,
-> +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 1,
->                         aspeed_sdhci_phase_to_tap(NULL, rate, 187));
-> -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 14,
-> +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 14,
->                         aspeed_sdhci_phase_to_tap(NULL, rate, 269));
-> -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
-> +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
->                         aspeed_sdhci_phase_to_tap(NULL, rate, 270));
-> -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
-> +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
->                         aspeed_sdhci_phase_to_tap(NULL, rate, 271));
-> -       KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
-> +       KUNIT_EXPECT_EQ(test, ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
->                         aspeed_sdhci_phase_to_tap(NULL, rate, 276));
->  }
->
-> --
-> 2.31.1.751.gd2f1c929bd-goog
->
+> v2: Added the change to move the 'if' to 'else if'
+> Sending a follow-up patch for these nits since they came in after
+> the previous patch was already pulled in
+> https://lore.kernel.org/patchwork/patch/1401964/
+> 
+>   drivers/nvmem/qfprom.c | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/nvmem/qfprom.c b/drivers/nvmem/qfprom.c
+> index d6d3f24..1ba666b 100644
+> --- a/drivers/nvmem/qfprom.c
+> +++ b/drivers/nvmem/qfprom.c
+> @@ -122,6 +122,7 @@ static const struct qfprom_soc_compatible_data sc7280_qfprom = {
+>   	.keepout = sc7280_qfprom_keepout,
+>   	.nkeepout = ARRAY_SIZE(sc7280_qfprom_keepout)
+>   };
+> +
+>   /**
+>    * qfprom_disable_fuse_blowing() - Undo enabling of fuse blowing.
+>    * @priv: Our driver data.
+> @@ -195,7 +196,7 @@ static int qfprom_enable_fuse_blowing(const struct qfprom_priv *priv,
+>   	}
+>   
+>   	/*
+> -	 * Hardware requires 1.8V min for fuse blowing; this may be
+> +	 * Hardware requires a min voltage for fuse blowing; this may be
+>   	 * a rail shared do don't specify a max--regulator constraints
+>   	 * will handle.
+>   	 */
+> @@ -399,7 +400,7 @@ static int qfprom_probe(struct platform_device *pdev)
+>   
+>   		if (major_version == 7 && minor_version == 8)
+>   			priv->soc_data = &qfprom_7_8_data;
+> -		if (major_version == 7 && minor_version == 15)
+> +		else if (major_version == 7 && minor_version == 15)
+>   			priv->soc_data = &qfprom_7_15_data;
+>   
+>   		priv->vcc = devm_regulator_get(&pdev->dev, "vcc");
+> 
