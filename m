@@ -2,82 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE12C382E13
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 15:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31070382E18
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237544AbhEQN7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 09:59:50 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:58467 "EHLO pegase2.c-s.fr"
+        id S237564AbhEQOCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:02:19 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38878 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232924AbhEQN7s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 09:59:48 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4FkLMB5gl4z9sYQ;
-        Mon, 17 May 2021 15:58:30 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Kki3eKxYEEqF; Mon, 17 May 2021 15:58:30 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4FkLMB4h80z9sYK;
-        Mon, 17 May 2021 15:58:30 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7D71A8B7A1;
-        Mon, 17 May 2021 15:58:30 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id ZgcPxZlbLKOZ; Mon, 17 May 2021 15:58:30 +0200 (CEST)
-Received: from [172.25.230.103] (po15451.idsi0.si.c-s.fr [172.25.230.103])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2E5D78B79C;
-        Mon, 17 May 2021 15:58:30 +0200 (CEST)
-Subject: Re: [PATCH 1/2] powerpc/interrupt: Refactor
- interrupt_exit_user_prepare() and syscall_exit_prepare()
-To:     Nicholas Piggin <npiggin@gmail.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <cd0634769e5fea397411a0f833db52749852c6f8.1620980916.git.christophe.leroy@csgroup.eu>
- <1621237386.33q9uyrpc3.astroid@bobo.none>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <96329062-9e00-28a7-749e-b57a34beb56c@csgroup.eu>
-Date:   Mon, 17 May 2021 15:57:50 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+        id S232924AbhEQOCS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:02:18 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1621260061; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+NdK/avQ8FBevNdzVt7abclY7ENC4Xp3kwu3bH3BXGU=;
+        b=hYPsv114snNpTzRdG0F8FjOixxA+SuYB69/5PExQu2q6jetyOORhTmI33XUIRFQoSsuumH
+        wm8zR2YajUMDfNKrOTJZip22sEn+XReUuQtivi9aVHWVXxe3Q/Ne8zCb43HBKhQol9uRzg
+        SbZcgBXtsfJDlrDU97x5cATUj+CAjT4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 67309AC8F;
+        Mon, 17 May 2021 14:01:01 +0000 (UTC)
+Subject: Re: [PATCH 3/8] xen/blkfront: don't take local copy of a request from
+ the ring page
+To:     Juergen Gross <jgross@suse.com>
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
+        Jens Axboe <axboe@kernel.dk>, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
+References: <20210513100302.22027-1-jgross@suse.com>
+ <20210513100302.22027-4-jgross@suse.com>
+From:   Jan Beulich <jbeulich@suse.com>
+Message-ID: <4cbf7b7f-5f00-4aba-4d54-06aa73d1bc32@suse.com>
+Date:   Mon, 17 May 2021 16:01:00 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <1621237386.33q9uyrpc3.astroid@bobo.none>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210513100302.22027-4-jgross@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 17/05/2021 à 09:44, Nicholas Piggin a écrit :
-> Excerpts from Christophe Leroy's message of May 14, 2021 6:28 pm:
->> Last part of interrupt_exit_user_prepare() and syscall_exit_prepare()
->> are identical.
->>
->> Create a __interrupt_exit_user_prepare() function that is called by
->> both.
->>
->> Note that it replaces a local_irq_save(flags) by local_irq_disable().
->> This is similar because the flags are never used. On ppc 8xx it is
->> more efficient because it doesn't require reading MSR.
+On 13.05.2021 12:02, Juergen Gross wrote:
+> In order to avoid a malicious backend being able to influence the local
+> copy of a request build the request locally first and then copy it to
+> the ring page instead of doing it the other way round as today.
 > 
-> Can these cleanups go after my interrupt performance improvements?
-> I posted them for last series but were dropped due to crashes without
-> time to resubmit. I'm working on them again now.
-> 
+> Signed-off-by: Juergen Gross <jgross@suse.com>
 
-Euh ... ok why not, but at the time being interrupt_exit_user_prepare() and syscall_exit_prepare() 
-are very similar. Which makes sense because both of them are returning from kernel to user so they 
-are to do the same preparation.
+Reviewed-by: Jan Beulich <jbeulich@suse.com>
+with one remark/question:
 
-If you are doing the same changes to both of them, maybe it is worst including this refactor at the 
-begining of your series. Or are you making them diverge with that series ?
+> @@ -703,6 +704,7 @@ static int blkif_queue_rw_req(struct request *req, struct blkfront_ring_info *ri
+>  {
+>  	struct blkfront_info *info = rinfo->dev_info;
+>  	struct blkif_request *ring_req, *extra_ring_req = NULL;
+> +	struct blkif_request *final_ring_req, *final_extra_ring_req;
 
-Christophe
+Without setting final_extra_ring_req to NULL just like is done for
+extra_ring_req, ...
+
+> @@ -840,10 +845,10 @@ static int blkif_queue_rw_req(struct request *req, struct blkfront_ring_info *ri
+>  	if (setup.segments)
+>  		kunmap_atomic(setup.segments);
+>  
+> -	/* Keep a private copy so we can reissue requests when recovering. */
+> -	rinfo->shadow[id].req = *ring_req;
+> +	/* Copy request(s) to the ring page. */
+> +	*final_ring_req = *ring_req;
+>  	if (unlikely(require_extra_req))
+> -		rinfo->shadow[extra_id].req = *extra_ring_req;
+> +		*final_extra_ring_req = *extra_ring_req;
+
+... are you sure all supported compilers will recognize the
+conditional use and not warn about use of a possibly uninitialized
+variable?
+
+Jan
