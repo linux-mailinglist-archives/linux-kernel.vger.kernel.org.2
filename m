@@ -2,38 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B8AA383630
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:32:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D5AC383745
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:42:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245453AbhEQP3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:29:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37254 "EHLO mail.kernel.org"
+        id S1343633AbhEQPlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:41:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40870 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243715AbhEQPOg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:14:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5495361C61;
-        Mon, 17 May 2021 14:32:09 +0000 (UTC)
+        id S238961AbhEQP0W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:26:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC1D06192E;
+        Mon, 17 May 2021 14:36:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261929;
-        bh=QC5ha4TMX+jv+AkEVRdL8x+jfrSeuRBiUQl+af5vZ4c=;
+        s=korg; t=1621262184;
+        bh=sW30hGEOgzmyPBbhJjZzCybDxuhJUkoIUlbPobGMwLg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m5NIPQbCF4/kVoG9rtFDFMsYMhGcvoiwJEsHhynyguDRcHssWldRDDFPrverxllpI
-         EAgEMw9qaEv3h+SUrxTXlhKVlQu7+uDZC2zGEBTZsSujNi+sp5w9FlCXstYA7I7fP/
-         WDESngw7tjDYRG4BH1+ELIHo7KKHGWADbcCexsJk=
+        b=Ad4mEgRFaO53UPOiPWcyFoR8k+iekrXjt69JVYZpVw6nyX6M/6DPCK0Kt3G+DctfA
+         Md15iBe/kEA+XUESX8rD2zUNkwCUfA8xX7clgt+hpWTac+/FeDraaqByTpPnsMEIZ+
+         azjktan/OMsDIKdCgIxHFh9F42z7QGRxJlNiPjv4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jaroslaw Gawin <jaroslawx.gawin@intel.com>,
-        Mateusz Palczewski <mateusz.palczewski@intel.com>,
-        Dave Switzer <david.switzer@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 093/141] i40e: fix the restart auto-negotiation after FEC modified
+        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.11 234/329] powerpc/64s: Fix crashes when toggling entry flush barrier
 Date:   Mon, 17 May 2021 16:02:25 +0200
-Message-Id: <20210517140245.901126130@linuxfoundation.org>
+Message-Id: <20210517140310.034043680@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
-References: <20210517140242.729269392@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,41 +38,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jaroslaw Gawin <jaroslawx.gawin@intel.com>
+From: Michael Ellerman <mpe@ellerman.id.au>
 
-[ Upstream commit 61343e6da7810de81d6b826698946ae4f9070819 ]
+commit aec86b052df6541cc97c5fca44e5934cbea4963b upstream.
 
-When FEC mode was changed the link didn't know it because
-the link was not reset and new parameters were not negotiated.
-Set a flag 'I40E_AQ_PHY_ENABLE_ATOMIC_LINK' in 'abilities'
-to restart the link and make it run with the new settings.
+The entry flush mitigation can be enabled/disabled at runtime via a
+debugfs file (entry_flush), which causes the kernel to patch itself to
+enable/disable the relevant mitigations.
 
-Fixes: 1d96340196f1 ("i40e: Add support FEC configuration for Fortville 25G")
-Signed-off-by: Jaroslaw Gawin <jaroslawx.gawin@intel.com>
-Signed-off-by: Mateusz Palczewski <mateusz.palczewski@intel.com>
-Tested-by: Dave Switzer <david.switzer@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+However depending on which mitigation we're using, it may not be safe to
+do that patching while other CPUs are active. For example the following
+crash:
+
+  sleeper[15639]: segfault (11) at c000000000004c20 nip c000000000004c20 lr c000000000004c20
+
+Shows that we returned to userspace with a corrupted LR that points into
+the kernel, due to executing the partially patched call to the fallback
+entry flush (ie. we missed the LR restore).
+
+Fix it by doing the patching under stop machine. The CPUs that aren't
+doing the patching will be spinning in the core of the stop machine
+logic. That is currently sufficient for our purposes, because none of
+the patching we do is to that code or anywhere in the vicinity.
+
+Fixes: f79643787e0a ("powerpc/64s: flush L1D on kernel entry")
+Cc: stable@vger.kernel.org # v5.10+
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210506044959.1298123-2-mpe@ellerman.id.au
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e_ethtool.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/powerpc/lib/feature-fixups.c |   16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-index b519e5af5ed9..502b4abc0aab 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-@@ -1406,7 +1406,8 @@ static int i40e_set_fec_cfg(struct net_device *netdev, u8 fec_cfg)
+--- a/arch/powerpc/lib/feature-fixups.c
++++ b/arch/powerpc/lib/feature-fixups.c
+@@ -299,8 +299,9 @@ void do_uaccess_flush_fixups(enum l1d_fl
+ 						: "unknown");
+ }
  
- 		memset(&config, 0, sizeof(config));
- 		config.phy_type = abilities.phy_type;
--		config.abilities = abilities.abilities;
-+		config.abilities = abilities.abilities |
-+				   I40E_AQ_PHY_ENABLE_ATOMIC_LINK;
- 		config.phy_type_ext = abilities.phy_type_ext;
- 		config.link_speed = abilities.link_speed;
- 		config.eee_capability = abilities.eee_capability;
--- 
-2.30.2
-
+-void do_entry_flush_fixups(enum l1d_flush_type types)
++static int __do_entry_flush_fixups(void *data)
+ {
++	enum l1d_flush_type types = *(enum l1d_flush_type *)data;
+ 	unsigned int instrs[3], *dest;
+ 	long *start, *end;
+ 	int i;
+@@ -369,6 +370,19 @@ void do_entry_flush_fixups(enum l1d_flus
+ 							: "ori type" :
+ 		(types &  L1D_FLUSH_MTTRIG)     ? "mttrig type"
+ 						: "unknown");
++
++	return 0;
++}
++
++void do_entry_flush_fixups(enum l1d_flush_type types)
++{
++	/*
++	 * The call to the fallback flush can not be safely patched in/out while
++	 * other CPUs are executing it. So call __do_entry_flush_fixups() on one
++	 * CPU while all other CPUs spin in the stop machine core with interrupts
++	 * hard disabled.
++	 */
++	stop_machine(__do_entry_flush_fixups, &types, NULL);
+ }
+ 
+ void do_rfi_flush_fixups(enum l1d_flush_type types)
 
 
