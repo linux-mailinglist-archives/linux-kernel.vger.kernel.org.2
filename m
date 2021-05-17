@@ -2,56 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 364223830FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:35:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 798EC383359
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237936AbhEQOdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:33:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53274 "EHLO mail.kernel.org"
+        id S240822AbhEQO5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:57:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233019AbhEQO2L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:28:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 880186161C;
-        Mon, 17 May 2021 14:14:07 +0000 (UTC)
+        id S241525AbhEQOsO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:48:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B57761971;
+        Mon, 17 May 2021 14:22:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621260848;
-        bh=qVbtQ5vtqOA+Gk6dRVbQSw3FDlRRIO/UKCWvrZD4KUs=;
+        s=korg; t=1621261340;
+        bh=P4mUaftJcw+VUJf6lIbBEgF7aAOIJ2mMVIR9CEg+mgY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s1fNgHscW2BxJljel47c1bDlBh6rickHA87ykGKFjJzoiUoqXNgKOz264Mo+TNXAQ
-         nw3eQNwN5sGIshdKU48ydlQlwlmfGjzG1orWXeUaqr3WRpCHSiGHYjcucMXSGJD1CO
-         IUSboxg2h4Ya708AqJUXYkkjMqmjKj7yBoeZdjqo=
+        b=xarWrjNfbrt6Vzna9bMvk17MEgPfazxAI3yVXfEpb/tkhVBpfLdTMrdNCKDpH1u1j
+         5OUtn5wqZF33cmr8tUIPmkjJWxwgyM8099phyz4w4GSyIBOhlRbLNeBSdg1mH546jk
+         caCih2aRkZH6DcpBHCB5qg0SnOuREW0mjC0q7NuE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        James Morris <jmorris@namei.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sasha Levin <sashal@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.12 221/363] mm/gup: check every subpage of a compound page during isolation
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 035/141] flow_dissector: Fix out-of-bounds warning in __skb_flow_bpf_to_target()
 Date:   Mon, 17 May 2021 16:01:27 +0200
-Message-Id: <20210517140310.068783947@linuxfoundation.org>
+Message-Id: <20210517140243.949622494@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.508966430@linuxfoundation.org>
-References: <20210517140302.508966430@linuxfoundation.org>
+In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
+References: <20210517140242.729269392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -60,106 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Tatashin <pasha.tatashin@soleen.com>
+From: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-[ Upstream commit 83c02c23d0747a7bdcd71f99a538aacec94b146c ]
+[ Upstream commit 1e3d976dbb23b3fce544752b434bdc32ce64aabc ]
 
-When pages are isolated in check_and_migrate_movable_pages() we skip
-compound number of pages at a time.  However, as Jason noted, it is not
-necessary correct that pages[i] corresponds to the pages that we
-skipped.  This is because it is possible that the addresses in this
-range had split_huge_pmd()/split_huge_pud(), and these functions do not
-update the compound page metadata.
+Fix the following out-of-bounds warning:
 
-The problem can be reproduced if something like this occurs:
+net/core/flow_dissector.c:835:3: warning: 'memcpy' offset [33, 48] from the object at 'flow_keys' is out of the bounds of referenced subobject 'ipv6_src' with type '__u32[4]' {aka 'unsigned int[4]'} at offset 16 [-Warray-bounds]
 
-1. User faulted huge pages.
-2. split_huge_pmd() was called for some reason
-3. User has unmapped some sub-pages in the range
-4. User tries to longterm pin the addresses.
+The problem is that the original code is trying to copy data into a
+couple of struct members adjacent to each other in a single call to
+memcpy().  So, the compiler legitimately complains about it. As these
+are just a couple of members, fix this by copying each one of them in
+separate calls to memcpy().
 
-The resulting pages[i] might end-up having pages which are not compound
-size page aligned.
+This helps with the ongoing efforts to globally enable -Warray-bounds
+and get us closer to being able to tighten the FORTIFY_SOURCE routines
+on memcpy().
 
-Link: https://lkml.kernel.org/r/20210215161349.246722-3-pasha.tatashin@soleen.com
-Fixes: aa712399c1e8 ("mm/gup: speed up check_and_migrate_cma_pages() on huge page")
-Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-Reported-by: Jason Gunthorpe <jgg@nvidia.com>
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Ira Weiny <ira.weiny@intel.com>
-Cc: James Morris <jmorris@namei.org>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: John Hubbard <jhubbard@nvidia.com>
-Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Sasha Levin <sashal@kernel.org>
-Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Cc: Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Link: https://github.com/KSPP/linux/issues/109
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/gup.c | 19 +++++++------------
- 1 file changed, 7 insertions(+), 12 deletions(-)
+ net/core/flow_dissector.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/mm/gup.c b/mm/gup.c
-index ef7d2da9f03f..6530672131db 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -1552,26 +1552,23 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
- 					unsigned int gup_flags)
- {
- 	unsigned long i;
--	unsigned long step;
- 	bool drain_allow = true;
- 	bool migrate_allow = true;
- 	LIST_HEAD(cma_page_list);
- 	long ret = nr_pages;
-+	struct page *prev_head, *head;
- 	struct migration_target_control mtc = {
- 		.nid = NUMA_NO_NODE,
- 		.gfp_mask = GFP_USER | __GFP_MOVABLE | __GFP_NOWARN,
- 	};
- 
- check_again:
--	for (i = 0; i < nr_pages;) {
--
--		struct page *head = compound_head(pages[i]);
--
--		/*
--		 * gup may start from a tail page. Advance step by the left
--		 * part.
--		 */
--		step = compound_nr(head) - (pages[i] - head);
-+	prev_head = NULL;
-+	for (i = 0; i < nr_pages; i++) {
-+		head = compound_head(pages[i]);
-+		if (head == prev_head)
-+			continue;
-+		prev_head = head;
- 		/*
- 		 * If we get a page from the CMA zone, since we are going to
- 		 * be pinning these entries, we might as well move them out
-@@ -1595,8 +1592,6 @@ check_again:
- 				}
- 			}
- 		}
--
--		i += step;
+diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
+index da86c0e1b677..96957a7c732f 100644
+--- a/net/core/flow_dissector.c
++++ b/net/core/flow_dissector.c
+@@ -811,8 +811,10 @@ static void __skb_flow_bpf_to_target(const struct bpf_flow_keys *flow_keys,
+ 		key_addrs = skb_flow_dissector_target(flow_dissector,
+ 						      FLOW_DISSECTOR_KEY_IPV6_ADDRS,
+ 						      target_container);
+-		memcpy(&key_addrs->v6addrs, &flow_keys->ipv6_src,
+-		       sizeof(key_addrs->v6addrs));
++		memcpy(&key_addrs->v6addrs.src, &flow_keys->ipv6_src,
++		       sizeof(key_addrs->v6addrs.src));
++		memcpy(&key_addrs->v6addrs.dst, &flow_keys->ipv6_dst,
++		       sizeof(key_addrs->v6addrs.dst));
+ 		key_control->addr_type = FLOW_DISSECTOR_KEY_IPV6_ADDRS;
  	}
  
- 	if (!list_empty(&cma_page_list)) {
 -- 
 2.30.2
 
