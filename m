@@ -2,86 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D94D38396F
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:15:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73DFF3839B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:25:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345734AbhEQQQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:16:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53466 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345965AbhEQP5s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:57:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B33C60FEF;
-        Mon, 17 May 2021 15:56:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621266992;
-        bh=PrF7f5VN9tCcu2teuHhH/cs8NF3a28IG7J9WaRb1b/Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q3gU/V3jHg8vYGS99PHnm0+HGaF81Si2hwHeCcnxh6QhTMk6xYxAtGLikuw5OCYX6
-         vDbIFWI9wVj/Rvb2lHZ+tKxoNvRFTrNWuEhgzQ4HSRQtqs2V5ove9idT2ya1sl1Ebg
-         zFuDJRbF6j22zNCc+KKSMQC1y/nTQ7KFs0pGtKzo=
-Date:   Mon, 17 May 2021 16:51:53 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Ingo Molnar <mingo@kernel.org>,
-        Laurence Oberman <loberman@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.12 123/363] watchdog: cleanup handling of false
- positives
-Message-ID: <YKKDCRFOKHjPRrRz@kroah.com>
-References: <20210517140302.508966430@linuxfoundation.org>
- <20210517140306.783130885@linuxfoundation.org>
- <YKJ+INpik2i9IhZN@alley>
+        id S243163AbhEQQZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:25:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239908AbhEQQZD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 12:25:03 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 604EFC030CCE;
+        Mon, 17 May 2021 07:53:26 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id b12so372671ljp.1;
+        Mon, 17 May 2021 07:53:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=W+IBFI3907TKPQl0quSZrdhLR5RSLqOADK2+CwwUs5s=;
+        b=N4ZOP5ZtWqwqOTBI/nKUZqLD+AbBAwirkL901g1LQTxY0SQUZwO4SLyDFNrm486T4M
+         iZJEvBuv3c/hOPKeaCADo2LfawJ7S4aaOdOluNou4j0pocOQHC6LpXkJWam4U4umijD0
+         5HHD52ywpJblkld9EXThareKV7GnS2LiO/Pwq52JTKErcCnI2QiplksFs9EsWbtR1b8x
+         a6oRwJVSZ+KfPVtxpsssEQKfPgHGVP7f5NK029NlAagrHxAOn2x7yadEWYBvVvp16GLs
+         h/EMyr83b8Kx7yBqDwCq4XMAS8DqjE4cCJzfVny7/q2EIuN0gfES0x+Mpk85HXLc2DNw
+         7Npw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=W+IBFI3907TKPQl0quSZrdhLR5RSLqOADK2+CwwUs5s=;
+        b=FEU7CBU3YGf7Ckymr6sf8OjXqZKRlFQF4ja3IX96aznvlO5uvxV8nfOmolx82+cXDJ
+         YihjigbCX/7wTToCnzUiuyJoABrTyzHu8zcDlpLNytYDweq33RDLYLWyudim1RH8Wym7
+         JgUwzya1FgScpdtTbEyrw8iexgghAlUJCc3JXKTnPtoCtn33h6KtrxNiYzlxY+KP5XOc
+         +lezBMe1YHKRnN+NnA45CC36+wDk7wqyb5tQqDY7MAZPJwP7m0WZQoWwo5653dsHNd9i
+         ltnM8vQV419CCjDL9ZzORP+8nQIBSijVbrg3GhIXTpRQNFNyGa5oxvZUtBqKHq6iVy+e
+         3oeA==
+X-Gm-Message-State: AOAM531xzf7k9mbUiswlClcMqt6H66nKMOADi8j2RrGeE23Z2G0+zhsC
+        7npm5GBL36w39C0C5MxbNxSxraKcZW0=
+X-Google-Smtp-Source: ABdhPJx7nSuHx4yEG4qov7yWix+16QxW6P6Eu9y2WcAymTsYGc1WntuxuvDZFKKbYqGlbiininBTDA==
+X-Received: by 2002:a2e:8797:: with SMTP id n23mr29636210lji.248.1621263204824;
+        Mon, 17 May 2021 07:53:24 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
+        by smtp.googlemail.com with ESMTPSA id s1sm2004248lfd.270.2021.05.17.07.53.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 May 2021 07:53:24 -0700 (PDT)
+Subject: Re: [PATCH v2 3/4] memory: tegra124-emc: Fix compilation warnings on
+ 64bit platforms
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Mikko Perttunen <mperttunen@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-clk@vger.kernel.org
+References: <20210516161214.4693-1-digetx@gmail.com>
+ <20210516161214.4693-4-digetx@gmail.com>
+ <ae6dfddd-0e08-bb40-fd4f-36276be30cef@canonical.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <82c4f44e-df09-88c8-113d-c3aa8389945b@gmail.com>
+Date:   Mon, 17 May 2021 17:53:23 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKJ+INpik2i9IhZN@alley>
+In-Reply-To: <ae6dfddd-0e08-bb40-fd4f-36276be30cef@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 04:30:56PM +0200, Petr Mladek wrote:
-> On Mon 2021-05-17 15:59:49, Greg Kroah-Hartman wrote:
-> > From: Petr Mladek <pmladek@suse.com>
-> > 
-> > [ Upstream commit 9bf3bc949f8aeefeacea4b1198db833b722a8e27 ]
-> > 
-> > Commit d6ad3e286d2c ("softlockup: Add sched_clock_tick() to avoid kernel
-> > warning on kgdb resume") introduced touch_softlockup_watchdog_sync().
+17.05.2021 17:24, Krzysztof Kozlowski пишет:
+> On 16/05/2021 12:12, Dmitry Osipenko wrote:
+>> Fix compilation warning on 64bit platforms caused by implicit promotion
+>> of 32bit signed integer to a 64bit unsigned value which happens after
+>> enabling compile-testing of the driver.
+>>
+>> Suggested-by: Nathan Chancellor <nathan@kernel.org>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> The patch was not suggested by Nathan but it was:
+> Reported-by: kernel test robot <lkp@intel.com>
 > 
-> [...]
-> 
-> > Make the code more straightforward:
-> > 
-> > 1. Always call kvm_check_and_clear_guest_paused() at the very
-> >    beginning to handle PVCLOCK_GUEST_STOPPED. It touches the watchdog
-> >    when the quest did sleep.
-> > 
-> > 2. Handle the situation when the watchdog has been touched
-> >    (SOFTLOCKUP_DELAY_REPORT is set).
-> > 
-> >    Call sched_clock_tick() when touch_*sync() variant was used. It makes
-> >    sure that the timestamp will be up to date even when it has been
-> >    touched in atomic context or quest did sleep.
-> > 
-> > As a result, kvm_check_and_clear_guest_paused() is called on a single
-> > location.  And the right timestamp is always set when returning from the
-> > timer callback.
-> > 
-> > Link: https://lkml.kernel.org/r/20210311122130.6788-7-pmladek@suse.com
-> 
-> Please, remove this patch from the stable backport. It might
-> cause false softlockup reports, see
-> https://lore.kernel.org/r/20210517140612.222750-1-senozhatsky@chromium.org
+> Nathan however provided analysis and proper solution, so co-developed or
+> his SoB fits better. This is not that important as comment above -
+> including robot's credits.
 
-Now dropped, thanks.
-
-greg k-h
+I'll update the tags in v3, thank you.
