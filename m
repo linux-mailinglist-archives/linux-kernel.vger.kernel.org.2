@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C2DE3837F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:47:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96F26383666
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237772AbhEQPrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:47:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58256 "EHLO mail.kernel.org"
+        id S244184AbhEQPb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:31:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241265AbhEQPb5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:31:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E6EA61401;
-        Mon, 17 May 2021 14:38:26 +0000 (UTC)
+        id S243983AbhEQPQk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:16:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A05B761883;
+        Mon, 17 May 2021 14:33:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262306;
-        bh=nrLbR1qS2oetQEG6q1ppywEyY3I4leNoq2ksalzIrvs=;
+        s=korg; t=1621261983;
+        bh=77yX2fjo/bvWLAO67UttL9rXAKEteZijkreqD2MXFOk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W3Nhm1p5e832dRDuWJjpGoWMd8w+X/wPAcLaqZrnKH67ddDZuPIUj6tVlrWB4unxh
-         vbuv0gTPR9FXMsmPF5+sXip03rOnTxwwVcwivXzU0QvlL4Wqj7GOsy+nH9vUC/ZKPF
-         wqSGWu2Lg2z22ofbBikmrYAf69nISLT8ThpNKsk4=
+        b=JK4hZLfoLNazHT4F2P8vJqJGEEmMIBfvqQtJuZUl2vhnSv0Yd2O8JIrZWxLRcy2Xg
+         1b7dciyOz/4aNP4O6Sr59SWhafGwRA/SniC7wQ02QfNWXgbpXQ4Vhb//WfQV2RMr/l
+         rlhkdNwL2XGAarE4AEp1V8aVEAiItAOPckjIcOqY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 261/329] iio: light: gp2ap002: Fix rumtime PM imbalance on error
+        stable@vger.kernel.org, Sandeep Singh <sandeep.singh@amd.com>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: [PATCH 5.4 120/141] xhci: Add reset resume quirk for AMD xhci controller.
 Date:   Mon, 17 May 2021 16:02:52 +0200
-Message-Id: <20210517140310.940874820@linuxfoundation.org>
+Message-Id: <20210517140246.838753982@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
+References: <20210517140242.729269392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,51 +39,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Sandeep Singh <sandeep.singh@amd.com>
 
-[ Upstream commit 8edb79af88efc6e49e735f9baf61d9f0748b881f ]
+commit 3c128781d8da463761495aaf8898c9ecb4e71528 upstream.
 
-When devm_request_threaded_irq() fails, we should decrease the
-runtime PM counter to keep the counter balanced. But when
-iio_device_register() fails, we need not to decrease it because
-we have already decreased it before.
+One of AMD xhci controller require reset on resume.
+Occasionally AMD xhci controller does not respond to
+Stop endpoint command.
+Once the issue happens controller goes into bad state
+and in that case controller needs to be reset.
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Fixes: 97d642e23037 ("iio: light: Add a driver for Sharp GP2AP002x00F")
-Link: https://lore.kernel.org/r/20210407034927.16882-1-dinghao.liu@zju.edu.cn
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Sandeep Singh <sandeep.singh@amd.com>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20210512080816.866037-6-mathias.nyman@linux.intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/light/gp2ap002.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/usb/host/xhci-pci.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/iio/light/gp2ap002.c b/drivers/iio/light/gp2ap002.c
-index 7ba7aa59437c..040d8429a6e0 100644
---- a/drivers/iio/light/gp2ap002.c
-+++ b/drivers/iio/light/gp2ap002.c
-@@ -583,7 +583,7 @@ static int gp2ap002_probe(struct i2c_client *client,
- 					"gp2ap002", indio_dev);
- 	if (ret) {
- 		dev_err(dev, "unable to request IRQ\n");
--		goto out_disable_vio;
-+		goto out_put_pm;
- 	}
- 	gp2ap002->irq = client->irq;
+--- a/drivers/usb/host/xhci-pci.c
++++ b/drivers/usb/host/xhci-pci.c
+@@ -153,8 +153,10 @@ static void xhci_pci_quirks(struct devic
+ 	    (pdev->device == 0x15e0 || pdev->device == 0x15e1))
+ 		xhci->quirks |= XHCI_SNPS_BROKEN_SUSPEND;
  
-@@ -613,8 +613,9 @@ static int gp2ap002_probe(struct i2c_client *client,
+-	if (pdev->vendor == PCI_VENDOR_ID_AMD && pdev->device == 0x15e5)
++	if (pdev->vendor == PCI_VENDOR_ID_AMD && pdev->device == 0x15e5) {
+ 		xhci->quirks |= XHCI_DISABLE_SPARSE;
++		xhci->quirks |= XHCI_RESET_ON_RESUME;
++	}
  
- 	return 0;
- 
--out_disable_pm:
-+out_put_pm:
- 	pm_runtime_put_noidle(dev);
-+out_disable_pm:
- 	pm_runtime_disable(dev);
- out_disable_vio:
- 	regulator_disable(gp2ap002->vio);
--- 
-2.30.2
-
+ 	if (pdev->vendor == PCI_VENDOR_ID_AMD)
+ 		xhci->quirks |= XHCI_TRUST_TX_LENGTH;
 
 
