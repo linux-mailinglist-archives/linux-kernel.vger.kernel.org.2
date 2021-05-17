@@ -2,39 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFE1F383824
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D129383684
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:33:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344066AbhEQPtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:49:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55328 "EHLO mail.kernel.org"
+        id S239575AbhEQPdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:33:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54616 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245030AbhEQPcl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:32:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 815C861CCF;
-        Mon, 17 May 2021 14:38:41 +0000 (UTC)
+        id S243220AbhEQPSM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:18:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E06361C6B;
+        Mon, 17 May 2021 14:33:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262322;
-        bh=KdTy1TiYv9e7OYbkg9jdokQ+1XM365McWiNQqDYQK30=;
+        s=korg; t=1621262005;
+        bh=o2ClhNsihdFHp/MeCscPR0OLjzqGCZLrRloaQQd2m6g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1SApqSk4RzAFTUyaL09sJg8ylkvPOrFkLD+RAxyQH8N75g76O0E4f25h8MwX0VWOH
-         38RRfxSEJ713Z2olv0N7GUsn4++clACEGB/yr3bS1QrDjOahb6u77CwV4hXcv5g8T2
-         X2ucrAtOx4ktPIPwwMvWIH/BX5ErNY1NeFOf7XvU=
+        b=B2tDa0kYUhwifEPjA3/7LMOgIgzLTRruvH8KTskDWvEN4ZK+pQBNtD1n0kNKcQw6A
+         9V+fOHw8j8EEmdye3An0+s45j+Rh1Tepf0YTCIuvgAvPJn4cFY5b9GhXAJh/p24DfS
+         hxsSY9YrQyMD4Brw9wEqWgSJ/LBB/ksjvJU2QiBY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexandru Ardelean <aardelean@deviqon.com>,
-        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 264/329] iio: core: return ENODEV if ioctl is unknown
+        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>
+Subject: [PATCH 5.4 123/141] cdc-wdm: untangle a circular dependency between callback and softint
 Date:   Mon, 17 May 2021 16:02:55 +0200
-Message-Id: <20210517140311.043391406@linuxfoundation.org>
+Message-Id: <20210517140246.949605873@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
+References: <20210517140242.729269392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,57 +38,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandru Ardelean <aardelean@deviqon.com>
+From: Oliver Neukum <oneukum@suse.com>
 
-[ Upstream commit af0670b0bf1b116fd729b1b1011cf814bc34e12e ]
+commit 18abf874367456540846319574864e6ff32752e2 upstream.
 
-When the ioctl() mechanism was introduced in IIO core to centralize the
-registration of all ioctls in one place via commit 8dedcc3eee3ac ("iio:
-core: centralize ioctl() calls to the main chardev"), the return code was
-changed from ENODEV to EINVAL, when the ioctl code isn't known.
+We have a cycle of callbacks scheduling works which submit
+URBs with those callbacks. This needs to be blocked, stopped
+and unblocked to untangle the circle.
 
-This was done by accident.
-
-This change reverts back to the old behavior, where if the ioctl() code
-isn't known, ENODEV is returned (vs EINVAL).
-
-This was brought into perspective by this patch:
-  https://lore.kernel.org/linux-iio/20210428150815.136150-1-paul@crapouillou.net/
-
-Fixes: 8dedcc3eee3ac ("iio: core: centralize ioctl() calls to the main chardev")
-Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
-Reviewed-by: Nuno Sá <nuno.sa@analog.com>
-Tested-by: Paul Cercueil <paul@crapouillou.net>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Oliver Neukum <oneukum@suse.com>
+Link: https://lore.kernel.org/r/20210426092622.20433-1-oneukum@suse.com
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/industrialio-core.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/usb/class/cdc-wdm.c |   30 ++++++++++++++++++++++--------
+ 1 file changed, 22 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-index c2e4c267c36b..afba32b57814 100644
---- a/drivers/iio/industrialio-core.c
-+++ b/drivers/iio/industrialio-core.c
-@@ -1698,7 +1698,6 @@ static long iio_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- 	if (!indio_dev->info)
- 		goto out_unlock;
+--- a/drivers/usb/class/cdc-wdm.c
++++ b/drivers/usb/class/cdc-wdm.c
+@@ -321,12 +321,23 @@ exit:
  
--	ret = -EINVAL;
- 	list_for_each_entry(h, &iio_dev_opaque->ioctl_handlers, entry) {
- 		ret = h->ioctl(indio_dev, filp, cmd, arg);
- 		if (ret != IIO_IOCTL_UNHANDLED)
-@@ -1706,7 +1705,7 @@ static long iio_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ }
+ 
+-static void kill_urbs(struct wdm_device *desc)
++static void poison_urbs(struct wdm_device *desc)
+ {
+ 	/* the order here is essential */
+-	usb_kill_urb(desc->command);
+-	usb_kill_urb(desc->validity);
+-	usb_kill_urb(desc->response);
++	usb_poison_urb(desc->command);
++	usb_poison_urb(desc->validity);
++	usb_poison_urb(desc->response);
++}
++
++static void unpoison_urbs(struct wdm_device *desc)
++{
++	/*
++	 *  the order here is not essential
++	 *  it is symmetrical just to be nice
++	 */
++	usb_unpoison_urb(desc->response);
++	usb_unpoison_urb(desc->validity);
++	usb_unpoison_urb(desc->command);
+ }
+ 
+ static void free_urbs(struct wdm_device *desc)
+@@ -741,11 +752,12 @@ static int wdm_release(struct inode *ino
+ 	if (!desc->count) {
+ 		if (!test_bit(WDM_DISCONNECTING, &desc->flags)) {
+ 			dev_dbg(&desc->intf->dev, "wdm_release: cleanup\n");
+-			kill_urbs(desc);
++			poison_urbs(desc);
+ 			spin_lock_irq(&desc->iuspin);
+ 			desc->resp_count = 0;
+ 			spin_unlock_irq(&desc->iuspin);
+ 			desc->manage_power(desc->intf, 0);
++			unpoison_urbs(desc);
+ 		} else {
+ 			/* must avoid dev_printk here as desc->intf is invalid */
+ 			pr_debug(KBUILD_MODNAME " %s: device gone - cleaning up\n", __func__);
+@@ -1036,9 +1048,9 @@ static void wdm_disconnect(struct usb_in
+ 	wake_up_all(&desc->wait);
+ 	mutex_lock(&desc->rlock);
+ 	mutex_lock(&desc->wlock);
++	poison_urbs(desc);
+ 	cancel_work_sync(&desc->rxwork);
+ 	cancel_work_sync(&desc->service_outs_intr);
+-	kill_urbs(desc);
+ 	mutex_unlock(&desc->wlock);
+ 	mutex_unlock(&desc->rlock);
+ 
+@@ -1079,9 +1091,10 @@ static int wdm_suspend(struct usb_interf
+ 		set_bit(WDM_SUSPENDING, &desc->flags);
+ 		spin_unlock_irq(&desc->iuspin);
+ 		/* callback submits work - order is essential */
+-		kill_urbs(desc);
++		poison_urbs(desc);
+ 		cancel_work_sync(&desc->rxwork);
+ 		cancel_work_sync(&desc->service_outs_intr);
++		unpoison_urbs(desc);
  	}
+ 	if (!PMSG_IS_AUTO(message)) {
+ 		mutex_unlock(&desc->wlock);
+@@ -1139,7 +1152,7 @@ static int wdm_pre_reset(struct usb_inte
+ 	wake_up_all(&desc->wait);
+ 	mutex_lock(&desc->rlock);
+ 	mutex_lock(&desc->wlock);
+-	kill_urbs(desc);
++	poison_urbs(desc);
+ 	cancel_work_sync(&desc->rxwork);
+ 	cancel_work_sync(&desc->service_outs_intr);
+ 	return 0;
+@@ -1150,6 +1163,7 @@ static int wdm_post_reset(struct usb_int
+ 	struct wdm_device *desc = wdm_find_device(intf);
+ 	int rv;
  
- 	if (ret == IIO_IOCTL_UNHANDLED)
--		ret = -EINVAL;
-+		ret = -ENODEV;
- 
- out_unlock:
- 	mutex_unlock(&indio_dev->info_exist_lock);
--- 
-2.30.2
-
++	unpoison_urbs(desc);
+ 	clear_bit(WDM_OVERFLOW, &desc->flags);
+ 	clear_bit(WDM_RESETTING, &desc->flags);
+ 	rv = recover_from_urb_loss(desc);
 
 
