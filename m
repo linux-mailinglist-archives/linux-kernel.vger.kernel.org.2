@@ -2,110 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA2AF3828A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:43:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2F813828A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:44:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236128AbhEQJoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 05:44:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236048AbhEQJox (ORCPT
+        id S236117AbhEQJpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 05:45:54 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:52480 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236032AbhEQJpv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 05:44:53 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0352C061573;
-        Mon, 17 May 2021 02:43:36 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id v188so7724864ybe.1;
-        Mon, 17 May 2021 02:43:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KwvHFB6haj1euq9Su3Ad3P6zDg3T5rwMjoT/7A2qF9Q=;
-        b=j2oIbGcneuAjLHIOBGELY9i6ZL8owraNpkFL11JVjOPxsfeiXm8GELK8rLDoDOXXtl
-         nGfkdTL2Ox/e7Vjzibrzs0zg8cYKD/2xGDzxdClLl3Ix2y4WVEtZ53YO64B5GqsitKn4
-         wpWeA3LKDpPsvlzQscUv6LqPPfVwQR106HfCk3doEMSZz23h7ufI3W+Jr2yxn3PuAwkm
-         UfYcAvxVxBmn/0xxdSDMFrcYdxNE7x5SqLfDDoRUFCy1J06n53uBvfS1SyblKRDcy0ef
-         4BRbpIm0pn5Zt+Kg/cb1CcHIjSYybZhZDj04SIzOmqiv7mpiU0uX/HAQVIYA0tTKxUZj
-         XwqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KwvHFB6haj1euq9Su3Ad3P6zDg3T5rwMjoT/7A2qF9Q=;
-        b=f/sbnnfpLO3dWQgltPz6Ar63BLezfNO9vl2CfVa4khJURLHMgDEQm332OQj3sn7Opk
-         ssuM9oBBedE9WhNXFmFgWDoVMvuJLA6phVItrgL0bFepNScYKB//27JQgLlS1ugVRjr5
-         600XceUX7oPar0rJQWEnaxSBXdhPcHAq/64F2b79jGPckNooPGCuMEI/+FyAsW8GtrK3
-         j5odkIxAI8bYtGEzZk3t35FBroWd6vnQVIWGKVQ8x2lYJDtLzveoNV9w/B0iS1e/XwRQ
-         wllHO0SBG7U0EkaGTLqIEID51ZOTaNuqI1On0tKZrjlUxlxA91xmqxc+tF62u+bseIMV
-         LM/Q==
-X-Gm-Message-State: AOAM533RlheQLXtnmUnwlta2zzd1PS1mwtHgkUnTJs8oL+/3fta+w/GE
-        EyDtjfvrzQVUqT+1PnuZIVrhl5IIo3yCiO00KEc=
-X-Google-Smtp-Source: ABdhPJwdhBfReuRF8yxrUkfUKdOmXN1odV3COj5klkSVa8IFjyhv6BR219EtmiHpZB+NxwAccYRs9SmqWnZypbiRs+A=
-X-Received: by 2002:a25:b112:: with SMTP id g18mr13098442ybj.281.1621244616068;
- Mon, 17 May 2021 02:43:36 -0700 (PDT)
+        Mon, 17 May 2021 05:45:51 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14H9P4hp139981;
+        Mon, 17 May 2021 09:44:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=lebhyDJwQ+Nghj4G/C13xVeGWekb205WSx6Qsh1yg6Y=;
+ b=IXpEeMinWzibB5zmWE9mk+6z7u8KJMSas4aaYlYNR+tJ5m5Q7WdHnGw9cny7krIQsKoy
+ WFOWPm05Ndzm9ObBG6d1OEiYN7vPiZgSuFdCDkuKQ0qUHkZ7qEMqyaKcXGKCXQfDUMB9
+ i4EcLWQn9pl8U8K/Abb8/oZJaejKYd7bejwu8NOnNLjJwzMpat2WVI8COBZaSgscY4pO
+ eEWfwkd128NjzE4Nns3UDJQcEaGij2UC/Ng5joaX7ua0mwfu7or0UanY1nKCA3kgsXt2
+ eD1qmUQupyhAa+ONuIwQk5aM80KrX47fZnpLRyWScVgtsm+MWvdHQ5CjS0QzL4CgkHf6 QQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 38j6xnam2e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 17 May 2021 09:44:14 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14H9P490030271;
+        Mon, 17 May 2021 09:44:13 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 38j644x06g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 17 May 2021 09:44:13 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14H9iD0b180390;
+        Mon, 17 May 2021 09:44:13 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 38j644x05q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 17 May 2021 09:44:13 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 14H9iBlh020956;
+        Mon, 17 May 2021 09:44:11 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 17 May 2021 02:44:11 -0700
+Date:   Mon, 17 May 2021 12:44:03 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     gregkh@linuxfoundation.org, linuxarm@huawei.com,
+        mauro.chehab@huawei.com, Pavel Machek <pavel@ucw.cz>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        linux-leds@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH 07/17] staging: nuc-wmi: add basic support for NUC6 WMI
+Message-ID: <20210517094403.GE1955@kadam>
+References: <cover.1621161037.git.mchehab+huawei@kernel.org>
+ <ad868addca76f436d32cfbb3d8516d7d0dab83a2.1621161037.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-References: <1621243800-27702-1-git-send-email-yangtiezhu@loongson.cn>
-In-Reply-To: <1621243800-27702-1-git-send-email-yangtiezhu@loongson.cn>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Mon, 17 May 2021 11:43:39 +0200
-Message-ID: <CAKXUXMyVSf_HsjKhD2FeZzyz6pbA7JN=KkWrvdRswkba60OXww@mail.gmail.com>
-Subject: Re: [PATCH v3] Documentation: checkpatch: add description if no
- filenames are given
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Joe Perches <joe@perches.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ad868addca76f436d32cfbb3d8516d7d0dab83a2.1621161037.git.mchehab+huawei@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-GUID: LKOdp5zMpMDzdJUD16sOQH5LSXI3JLdT
+X-Proofpoint-ORIG-GUID: LKOdp5zMpMDzdJUD16sOQH5LSXI3JLdT
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9986 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxscore=0
+ mlxlogscore=999 adultscore=0 malwarescore=0 priorityscore=1501
+ phishscore=0 suspectscore=0 lowpriorityscore=0 bulkscore=0 clxscore=1015
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105170066
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 11:30 AM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
->
-> After commit 45107ff6d526 ("checkpatch: if no filenames then read stdin"),
-> if no filenames are given, it will read patch from stdin rather than exit
-> directly. This means the script waits for input indefinitely, which
-> confuses new checkpatch users at first.
->
-> Add some basic documentation on this behaviour of checkpatch to lower
-> the confusion.
->
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->
-> v3: Update the commit message, thank you Lukas.
->
-
-Thanks.
-
-Acked-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-
-Dwaipayan, can you acknowledge this as well?
-
-Jonathan, I assume you will pick this up in your doc tree once
-Dwaipayan ack is there, right?
-
-Lukas
-
->  Documentation/dev-tools/checkpatch.rst | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/Documentation/dev-tools/checkpatch.rst b/Documentation/dev-tools/checkpatch.rst
-> index 51fed1b..3eb9ead 100644
-> --- a/Documentation/dev-tools/checkpatch.rst
-> +++ b/Documentation/dev-tools/checkpatch.rst
-> @@ -22,6 +22,8 @@ Usage::
->
->    ./scripts/checkpatch.pl [OPTION]... [FILE]...
->
-> +When FILE is -, or absent, checkpatch reads from standard input.
+On Sun, May 16, 2021 at 12:53:35PM +0200, Mauro Carvalho Chehab wrote:
+> +static int nuc_wmi_query_leds_nuc6(struct device *dev)
+> +{
+> +	// FIXME: add a check for the specific models that are known to work
+> +	struct nuc_wmi *priv = dev_get_drvdata(dev);
+> +	u8 cmd, input[NUM_INPUT_ARGS] = { 0 };
+> +	u8 output[NUM_OUTPUT_ARGS];
+> +	struct nuc_nmi_led *led;
+> +	int ret;
 > +
->  Available options:
->
->   - -q,  --quiet
-> --
-> 2.1.0
->
+> +	cmd = LED_OLD_GET_STATUS;
+> +	input[0] = LED_OLD_GET_S0_POWER;
+> +	ret = nuc_nmi_cmd(dev, cmd, input, output);
+> +	if (ret) {
+> +		dev_warn(dev, "Get S0 Power: error %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	led = &priv->led[priv->num_leds];
+> +	led->id = POWER_LED;
+> +	led->color_type = LED_BLUE_AMBER;
+> +	led->avail_indicators = LED_IND_POWER_STATE;
+> +	led->indicator = fls(led->avail_indicators);
+> +	priv->num_leds++;
+> +
+> +	cmd = LED_OLD_GET_STATUS;
+> +	input[0] = LED_OLD_GET_S0_RING;
+> +	ret = nuc_nmi_cmd(dev, cmd, input, output);
+> +	if (ret) {
+> +		dev_warn(dev, "Get S0 Ring: error %d\n", ret);
+> +		return ret;
+> +	}
+> +	led = &priv->led[priv->num_leds];
+> +	led->id = RING_LED;
+> +	led->color_type = LED_BLUE_AMBER;
+> +	led->avail_indicators = LED_IND_SOFTWARE;
+> +	led->indicator = fls(led->avail_indicators);
+> +	priv->num_leds++;
+> +
+> +	return ret;
+
+return 0;
+
+> +}
+> +
+>  static int nuc_wmi_query_leds(struct device *dev, enum led_api_rev *api_rev)
+>  {
+>  	struct nuc_wmi *priv = dev_get_drvdata(dev);
+>  	u8 input[NUM_INPUT_ARGS] = { 0 };
+>  	u8 output[NUM_OUTPUT_ARGS];
+> -	int id, ret, ver = LED_API_UNKNOWN;
+> +	int id, ret, ver = LED_API_UNKNOWN, nuc_ver = 0;
+>  	u8 leds;
+> +	const char *dmi_name;
+> +
+> +	dmi_name = dmi_get_system_info(DMI_PRODUCT_NAME);
+> +	if (!dmi_name || !*dmi_name)
+> +		dmi_name = dmi_get_system_info(DMI_BOARD_NAME);
+> +
+> +	if (strncmp(dmi_name, "NUC", 3))
+> +		return -ENODEV;
+> +
+> +	dmi_name +=3;
+> +	while (*dmi_name) {
+> +		if (*dmi_name < '0' || *dmi_name > '9')
+> +			break;
+> +		nuc_ver = (*dmi_name - '0') + nuc_ver * 10;
+> +		dmi_name++;
+> +	}
+> +
+> +	if (nuc_ver < 6)
+> +		return -ENODEV;
+> +
+> +	if (nuc_ver < 8) {
+> +		*api_rev = LED_API_NUC6;
+> +		return nuc_wmi_query_leds_nuc6(dev);
+> +	}
+>  
+> -	/*
+> -	 * List all LED types support in the platform
+> -	 *
+> -	 * Should work with both NUC8iXXX and NUC10iXXX
+> -	 *
+> -	 * FIXME: Should add a fallback code for it to work with older NUCs,
+> -	 * as LED_QUERY returns an error on older devices like Skull Canyon.
+> -	 */
+>  	input[0] = LED_QUERY_LIST_ALL;
+>  	ret = nuc_nmi_cmd(dev, LED_QUERY, input, output);
+> -	if (ret == -ENOENT) {
+> -		ver = LED_API_NUC6;
+> -	} else if (ret) {
+> +	if (ret) {
+>  		dev_warn(dev, "error %d while listing all LEDs\n", ret);
+>  		return ret;
+>  	} else {
+>  		leds = output[0];
+>  	}
+
+Delete the else and pull the assignment in a tab.
+
+>  
+> -	if (ver != LED_API_NUC6) {
+> -		ret = nuc_nmi_cmd(dev, LED_VERSION_CONTROL, input, output);
+> -		ver = output[0] | output[1] << 16;
+> -		if (!ver)
+> -			ver = LED_API_REV_0_64;
+> -		else if (ver == 0x0126)
+> -			ver = LED_API_REV_1_0;
+> -	}
+> +	ret = nuc_nmi_cmd(dev, LED_VERSION_CONTROL, input, output);
+> +	ver = output[0] | output[1] << 16;
+> +	if (!ver)
+> +		*api_rev = LED_API_REV_0_64;
+> +	else if (ver == 0x0126)
+> +		*api_rev = LED_API_REV_1_0;
+>  
+
+regards,
+dan carpenter
