@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB21538363C
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4DC7383614
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245703AbhEQPah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:30:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52812 "EHLO mail.kernel.org"
+        id S244014AbhEQP2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:28:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242426AbhEQPPj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:15:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4551A61166;
-        Mon, 17 May 2021 14:32:33 +0000 (UTC)
+        id S243336AbhEQPNg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:13:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 31C716143B;
+        Mon, 17 May 2021 14:31:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261953;
-        bh=92FI9qX6GvN2UV4rq9RLx9wGNwoXzf1yu+G5cg2gVFs=;
+        s=korg; t=1621261903;
+        bh=zIWO+613aa93ZZ/vIAzAca28AJUUZ1Qux+x+xGm+ZvE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EJ+O9Q5bX4qIxn/TMYlnQWClzGy57H0SS5mGYKwZbGRQDzk0tvS0/Mtn0eRqwAcyH
-         ArW3pmowEYE/hy5+CfzAS7Gaytg4fjcHxc656mQ+ZrHv4iirsWGT3pEDEpN6eBSyLh
-         ESqPuN+zy0KivVqeRVK5/ZXyd1xbhUB2riJPR9lU=
+        b=S1ztyF/i5sCc37hTiiwBFVMNzybWQj92hRhLdzR3BUPAuf/3D00Z4jR31gfwtAXWY
+         aGB1wVRP7mU6PyVdCV/xsJOV4GHLCqyqUvoSBn6zh1V5D81UShqYJlz/OBQIO/r1c9
+         Pl2XX8/lUQdAtU30wJbXXGijbQqczo7qNjc80SMo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
+        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 069/289] ethtool: ioctl: Fix out-of-bounds warning in store_link_ksettings_for_user()
-Date:   Mon, 17 May 2021 15:59:54 +0200
-Message-Id: <20210517140307.523006251@linuxfoundation.org>
+Subject: [PATCH 5.10 083/289] net: ethernet: mtk_eth_soc: fix RX VLAN offload
+Date:   Mon, 17 May 2021 16:00:08 +0200
+Message-Id: <20210517140307.980372445@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
 References: <20210517140305.140529752@linuxfoundation.org>
@@ -41,47 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gustavo A. R. Silva <gustavoars@kernel.org>
+From: Felix Fietkau <nbd@nbd.name>
 
-[ Upstream commit c1d9e34e11281a8ba1a1c54e4db554232a461488 ]
+[ Upstream commit 3f57d8c40fea9b20543cab4da12f4680d2ef182c ]
 
-Fix the following out-of-bounds warning:
+The VLAN ID in the rx descriptor is only valid if the RX_DMA_VTAG bit is
+set. Fixes frames wrongly marked with VLAN tags.
 
-net/ethtool/ioctl.c:492:2: warning: 'memcpy' offset [49, 84] from the object at 'link_usettings' is out of the bounds of referenced subobject 'base' with type 'struct ethtool_link_settings' at offset 0 [-Warray-bounds]
-
-The problem is that the original code is trying to copy data into a
-some struct members adjacent to each other in a single call to
-memcpy(). This causes a legitimate compiler warning because memcpy()
-overruns the length of &link_usettings.base. Fix this by directly
-using &link_usettings and _from_ as destination and source addresses,
-instead.
-
-This helps with the ongoing efforts to globally enable -Warray-bounds
-and get us closer to being able to tighten the FORTIFY_SOURCE routines
-on memcpy().
-
-Link: https://github.com/KSPP/linux/issues/109
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
+[Ilya: fix commit message]
+Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ethtool/ioctl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/mediatek/mtk_eth_soc.c | 2 +-
+ drivers/net/ethernet/mediatek/mtk_eth_soc.h | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/net/ethtool/ioctl.c b/net/ethtool/ioctl.c
-index ec2cd7aab5ad..2917af3f5ac1 100644
---- a/net/ethtool/ioctl.c
-+++ b/net/ethtool/ioctl.c
-@@ -489,7 +489,7 @@ store_link_ksettings_for_user(void __user *to,
- {
- 	struct ethtool_link_usettings link_usettings;
+diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+index 6d2d60675ffd..d930fcda9c3b 100644
+--- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
++++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+@@ -1319,7 +1319,7 @@ static int mtk_poll_rx(struct napi_struct *napi, int budget,
+ 		skb->protocol = eth_type_trans(skb, netdev);
  
--	memcpy(&link_usettings.base, &from->base, sizeof(link_usettings));
-+	memcpy(&link_usettings, from, sizeof(link_usettings));
- 	bitmap_to_arr32(link_usettings.link_modes.supported,
- 			from->link_modes.supported,
- 			__ETHTOOL_LINK_MODE_MASK_NBITS);
+ 		if (netdev->features & NETIF_F_HW_VLAN_CTAG_RX &&
+-		    RX_DMA_VID(trxd.rxd3))
++		    (trxd.rxd2 & RX_DMA_VTAG))
+ 			__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q),
+ 					       RX_DMA_VID(trxd.rxd3));
+ 		skb_record_rx_queue(skb, 0);
+diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.h b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
+index 454cfcd465fd..73ce1f0f307a 100644
+--- a/drivers/net/ethernet/mediatek/mtk_eth_soc.h
++++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
+@@ -295,6 +295,7 @@
+ #define RX_DMA_LSO		BIT(30)
+ #define RX_DMA_PLEN0(_x)	(((_x) & 0x3fff) << 16)
+ #define RX_DMA_GET_PLEN0(_x)	(((_x) >> 16) & 0x3fff)
++#define RX_DMA_VTAG		BIT(15)
+ 
+ /* QDMA descriptor rxd3 */
+ #define RX_DMA_VID(_x)		((_x) & 0xfff)
 -- 
 2.30.2
 
