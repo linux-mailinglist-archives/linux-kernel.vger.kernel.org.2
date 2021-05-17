@@ -2,79 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61047382B61
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:44:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37B8F382B67
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:45:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236623AbhEQLpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 07:45:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40800 "EHLO mail.kernel.org"
+        id S236813AbhEQLqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 07:46:13 -0400
+Received: from foss.arm.com ([217.140.110.172]:49076 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229681AbhEQLpb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 07:45:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0117161073;
-        Mon, 17 May 2021 11:44:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621251855;
-        bh=fKCrMo6p14G4Wd3Gph0gHVlY5XhhTyAJlztAR6yNqIg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ySmJsb6Kq26EFm75VotlrybSRJYh9BgyTdlHhhH1MYiuz7pXDnCD+DVn0/RjC/u+7
-         0YrvQkCqZDtfqjQ9KBwfwVmklm9WARziPOoZMZXgVnCNvshItrkREl0xwJA80tm6mT
-         o4qI1b9MOjKrbOvel2+o9I6Vme+mJico4N/bPci4=
-Date:   Mon, 17 May 2021 13:44:13 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     =?utf-8?B?6ams5by6?= <maqianga@uniontech.com>
-Cc:     jikos <jikos@kernel.org>,
-        "benjamin.tissoires " <benjamin.tissoires@redhat.com>,
-        linux-usb <linux-usb@vger.kernel.org>,
-        linux-input <linux-input@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: Re: Re: Re: Re: [PATCH] HID: usbhid: enable remote wakeup for
- mouse
-Message-ID: <YKJXDT/xuzw1Gi+8@kroah.com>
-References: <20210517060145.32359-1-maqianga@uniontech.com>
- <YKIwIwx+nLyX/9LG@kroah.com>
- <1547909475.114060.1621244274064.JavaMail.xmail@bj-wm-cp-4>
- <YKI7WJa+YTRhwm5M@kroah.com>
- <1781917892.119659.1621247946603.JavaMail.xmail@bj-wm-cp-4>
- <YKJIfmkiDbqzlDjC@kroah.com>
- <440071991.120491.1621248757251.JavaMail.xmail@bj-wm-cp-4>
- <YKJRLMoohNUp4I/t@kroah.com>
- <671637326.122188.1621250895330.JavaMail.xmail@bj-wm-cp-4>
+        id S229445AbhEQLqM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 07:46:12 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9DD3B1042;
+        Mon, 17 May 2021 04:44:55 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.3.85])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 845F73F73D;
+        Mon, 17 May 2021 04:44:52 -0700 (PDT)
+Date:   Mon, 17 May 2021 12:44:49 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     "will@kernel.org" <will@kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "ardb@kernel.org" <ardb@kernel.org>,
+        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
+        KY Srinivasan <kys@microsoft.com>
+Subject: Re: [PATCH v10 2/7] arm64: hyperv: Add Hyper-V hypercall and
+ register access utilities
+Message-ID: <20210517114449.GB62656@C02TD0UTHF1T.local>
+References: <1620841067-46606-1-git-send-email-mikelley@microsoft.com>
+ <1620841067-46606-3-git-send-email-mikelley@microsoft.com>
+ <20210514125243.GC30645@C02TD0UTHF1T.local>
+ <MWHPR21MB1593A7625285A3E3F376B352D7509@MWHPR21MB1593.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <671637326.122188.1621250895330.JavaMail.xmail@bj-wm-cp-4>
+In-Reply-To: <MWHPR21MB1593A7625285A3E3F376B352D7509@MWHPR21MB1593.namprd21.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 07:28:15PM +0800, 马强 wrote:
+On Fri, May 14, 2021 at 03:14:41PM +0000, Michael Kelley wrote:
+> From: Mark Rutland <mark.rutland@arm.com> Sent: Friday, May 14, 2021 5:53 AM
+> > 
+> > On Wed, May 12, 2021 at 10:37:42AM -0700, Michael Kelley wrote:
+> > > hyperv-tlfs.h defines Hyper-V interfaces from the Hyper-V Top Level
+> > > Functional Spec (TLFS), and #includes the architecture-independent
+> > > part of hyperv-tlfs.h in include/asm-generic.  The published TLFS
+> > > is distinctly oriented to x86/x64, so the ARM64-specific
+> > > hyperv-tlfs.h includes information for ARM64 that is not yet formally
+> > > published. The TLFS is available here:
+> > >
+> > >   docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/reference/tlfs
+> > >
+> > > mshyperv.h defines Linux-specific structures and routines for
+> > > interacting with Hyper-V on ARM64, and #includes the architecture-
+> > > independent part of mshyperv.h in include/asm-generic.
+> > >
+> > > Use these definitions to provide utility functions to make
+> > > Hyper-V hypercalls and to get and set Hyper-V provided
+> > > registers associated with a virtual processor.
+> > >
+> > > Signed-off-by: Michael Kelley <mikelley@microsoft.com>
+> > > Reviewed-by: Sunil Muthuswamy <sunilmut@microsoft.com>
+> > > ---
+> > >  MAINTAINERS                          |   3 +
+> > >  arch/arm64/Kbuild                    |   1 +
+> > >  arch/arm64/hyperv/Makefile           |   2 +
+> > >  arch/arm64/hyperv/hv_core.c          | 130 +++++++++++++++++++++++++++++++++++
+> > >  arch/arm64/include/asm/hyperv-tlfs.h |  69 +++++++++++++++++++
+> > >  arch/arm64/include/asm/mshyperv.h    |  54 +++++++++++++++
+> > >  6 files changed, 259 insertions(+)
+> > >  create mode 100644 arch/arm64/hyperv/Makefile
+> > >  create mode 100644 arch/arm64/hyperv/hv_core.c
+> > >  create mode 100644 arch/arm64/include/asm/hyperv-tlfs.h
+> > >  create mode 100644 arch/arm64/include/asm/mshyperv.h
+> > 
+> > > +/*
+> > > + * hv_do_hypercall- Invoke the specified hypercall
+> > > + */
+> > > +u64 hv_do_hypercall(u64 control, void *input, void *output)
+> > > +{
+> > > +	struct arm_smccc_res	res;
+> > > +	u64			input_address;
+> > > +	u64			output_address;
+> > > +
+> > > +	input_address = input ? virt_to_phys(input) : 0;
+> > > +	output_address = output ? virt_to_phys(output) : 0;
+> > 
+> > I may have asked this before, but are `input` and `output` always linear
+> > map pointers, or can they ever be vmalloc pointers?
+> > 
+> > Otherwise, this looks fine to me.
 > 
-> > Given that you have not tested this change, why should we take this? 
-> 
-> 
-> I have tested this change.
-> 
-> Before adding the patch, "dev->power.should_wakeup" is disabled after the
-> insertion of the USB mouse,
-> 
-> and after adding the patch, "dev->power.should_wakeup" is enabled after the
-> insertion of the USB mouse.
-> 
->  
->  
-> 
+> The caller must ensure that hypercall arguments are aligned to
+> 4 Kbytes, and no larger than 4 Kbytes, since that's the page size
+> used by Hyper-V regardless of the guest page size.  A per-CPU
+> 4 Kbyte memory area (hyperv_pcpu_input_arg) meeting these
+> requirements is pre-allocated that callers can use for this purpose.
 
-How many different mice did you test this on?  What specific models?
+What I was trying to find out was how that was allocated, as vmalloc()'d
+pointers aren't legitimate to pass to virt_to_phys().
 
-Again, this is not a requirement of all Mice devices, as it is not a
-requirement of the USB specification, which is why we can not enable it
-for all devices of this type.
+From scanning ahead to patch 5, I see that memory comes from kmalloc(),
+and so it is legitimate to use virt_to_phys().
 
-And no other operating system does so either that I know of.  Do you
-know of one?
 
-thanks,
+I see; and from patch 5 I see that memory come from kmalloc(), and will
+therefore be part of the linear map, and so virt_to_phys() is
+legitimate.
 
-greg k-h
+What I was asking here was how that memory was allocated. So long as
+those are the only buffers used, this looks fine to me.
+
+Thanks,
+Mark.
