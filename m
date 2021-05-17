@@ -2,178 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CCC53822AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 04:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20F273822BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 04:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231968AbhEQCXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 22:23:10 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:40968 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231249AbhEQCXI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 22:23:08 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxP+4k06FgP_cXAA--.20760S4;
-        Mon, 17 May 2021 10:21:29 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Jonathan Corbet <corbet@lwn.net>, Marc Koderer <marc@koderer.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@polymtl.ca>,
-        Ananth N Mavinakayanahalli <ananth@in.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Joe Perches <joe@perches.com>
-Cc:     linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH v4 2/2] samples/kprobes: Fix typo in handler_post()
-Date:   Mon, 17 May 2021 10:21:23 +0800
-Message-Id: <1621218083-23519-3-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1621218083-23519-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1621218083-23519-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9DxP+4k06FgP_cXAA--.20760S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxAr1kJF47Xw17AF15CrykXwb_yoWrtFyDpa
-        4Yyw1UJF4rtw4agay2vF4vgryqkr1akaykurZ7CryYyFyIgw45ZF1ru3W0vrWruryFqw4j
-        qryFyFy7C3WjvrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUPE14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
-        x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-        Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
-        A2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F4UJVW0
-        owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-        IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4U
-        M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
-        kIc2xKxwCY02Avz4vE14v_Gr1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_
-        Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17
-        CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0
-        I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I
-        8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73
-        UjIFyTuYvjfU55l1DUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S233851AbhEQC2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 22:28:31 -0400
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:35496 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231338AbhEQC20 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 May 2021 22:28:26 -0400
+Received: by mail-ot1-f54.google.com with SMTP id 69-20020a9d0a4b0000b02902ed42f141e1so4340676otg.2;
+        Sun, 16 May 2021 19:27:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=R03QDnkN9zqsgroSoJg97D5ffisyGbIPB9o/7Bcnl+o=;
+        b=fDQp+jtSwBvzyH37RcNm0ePY0xGbGXKfj6INtjLbjMh+oUBEEBU46D+s/VeKK7g4BO
+         jdu0KbN8XCvcY9LIQkI8KZcg+4j1h3da9D/dpK/EFSgEbvqWbWwAn4ybtrIFmzbCFI3m
+         1UoKGZQnZzUyr+JSs2pNwj9wAYZQyK3ibb4/DBYkVyH1AZQFn5kvKiXUb8P6RelhHM2O
+         eDFEgQg67HngOIOMcwwzEAbVa6gcxF92mifXcozPXfp1Bueo77JJbuGwfnFmEIVrdesw
+         pUaOcBfTnTJPRRdKn/okC6FMtc3GLC5uz54G41GtVxW3gjuMxDxc02tndcvIlMyJl+JU
+         YoEA==
+X-Gm-Message-State: AOAM531aeT9izr2pTDFGKTbBpQA0KFmlgtjZDP4Gj9MVR7BM67t1SAeS
+        nvhI/soaDwzhxOggo29eEg==
+X-Google-Smtp-Source: ABdhPJwDIoiUywYuLTEq2x9lqWjoXgQgSJ8aRn8Y3IG0/gCe2Dd/S3PXka7/ZUEjsCsQdUMD4rEP1A==
+X-Received: by 2002:a9d:5a9b:: with SMTP id w27mr45874171oth.362.1621218430403;
+        Sun, 16 May 2021 19:27:10 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id v19sm2891231otq.35.2021.05.16.19.27.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 May 2021 19:27:09 -0700 (PDT)
+Received: (nullmailer pid 1315834 invoked by uid 1000);
+        Mon, 17 May 2021 02:27:03 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     linux-clk@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        devicetree@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        =?utf-8?b?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        linux-tegra@vger.kernel.org
+In-Reply-To: <20210516163041.12818-10-digetx@gmail.com>
+References: <20210516163041.12818-1-digetx@gmail.com> <20210516163041.12818-10-digetx@gmail.com>
+Subject: Re: [PATCH v8 9/9] dt-bindings: clock: tegra: Convert to schema
+Date:   Sun, 16 May 2021 21:27:03 -0500
+Message-Id: <1621218423.813065.1315833.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It should use post_handler instead of pre_handler in handler_post().
+On Sun, 16 May 2021 19:30:41 +0300, Dmitry Osipenko wrote:
+> Convert NVIDIA Tegra clock bindings to schema.
+> 
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  .../bindings/clock/nvidia,tegra114-car.txt    |  63 ----------
+>  .../bindings/clock/nvidia,tegra124-car.txt    | 107 ----------------
+>  .../bindings/clock/nvidia,tegra124-car.yaml   | 115 ++++++++++++++++++
+>  .../bindings/clock/nvidia,tegra20-car.txt     |  63 ----------
+>  .../bindings/clock/nvidia,tegra20-car.yaml    |  69 +++++++++++
+>  .../bindings/clock/nvidia,tegra210-car.txt    |  56 ---------
+>  .../bindings/clock/nvidia,tegra30-car.txt     |  63 ----------
+>  7 files changed, 184 insertions(+), 352 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra114-car.txt
+>  delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra124-car.txt
+>  create mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra124-car.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra20-car.txt
+>  create mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra20-car.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra210-car.txt
+>  delete mode 100644 Documentation/devicetree/bindings/clock/nvidia,tegra30-car.txt
+> 
 
-As Joe Perches suggested, it would be better to use pr_fmt and remove
-all the embedded pre/post/fault strings. This would change the style of
-the output through.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Fixes: e16c5dd5157e ("samples/kprobes: Add s390 case in kprobe example module")
-Acked-by: Marc Koderer <marc@koderer.com>
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-Suggested-by: Joe Perches <joe@perches.com>
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- samples/kprobes/kprobe_example.c | 33 +++++++++++++++++----------------
- 1 file changed, 17 insertions(+), 16 deletions(-)
+yamllint warnings/errors:
 
-diff --git a/samples/kprobes/kprobe_example.c b/samples/kprobes/kprobe_example.c
-index d77a546..5f1eb8b 100644
---- a/samples/kprobes/kprobe_example.c
-+++ b/samples/kprobes/kprobe_example.c
-@@ -10,6 +10,8 @@
-  * whenever kernel_clone() is invoked to create a new process.
-  */
- 
-+#define pr_fmt(fmt) "%s: " fmt, __func__
-+
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/kprobes.h>
-@@ -27,32 +29,31 @@ static struct kprobe kp = {
- static int __kprobes handler_pre(struct kprobe *p, struct pt_regs *regs)
- {
- #ifdef CONFIG_X86
--	pr_info("<%s> pre_handler: p->addr = 0x%p, ip = %lx, flags = 0x%lx\n",
-+	pr_info("<%s> p->addr = 0x%p, ip = %lx, flags = 0x%lx\n",
- 		p->symbol_name, p->addr, regs->ip, regs->flags);
- #endif
- #ifdef CONFIG_PPC
--	pr_info("<%s> pre_handler: p->addr = 0x%p, nip = 0x%lx, msr = 0x%lx\n",
-+	pr_info("<%s> p->addr = 0x%p, nip = 0x%lx, msr = 0x%lx\n",
- 		p->symbol_name, p->addr, regs->nip, regs->msr);
- #endif
- #ifdef CONFIG_MIPS
--	pr_info("<%s> pre_handler: p->addr = 0x%p, epc = 0x%lx, status = 0x%lx\n",
-+	pr_info("<%s> p->addr = 0x%p, epc = 0x%lx, status = 0x%lx\n",
- 		p->symbol_name, p->addr, regs->cp0_epc, regs->cp0_status);
- #endif
- #ifdef CONFIG_ARM64
--	pr_info("<%s> pre_handler: p->addr = 0x%p, pc = 0x%lx,"
--			" pstate = 0x%lx\n",
-+	pr_info("<%s> p->addr = 0x%p, pc = 0x%lx, pstate = 0x%lx\n",
- 		p->symbol_name, p->addr, (long)regs->pc, (long)regs->pstate);
- #endif
- #ifdef CONFIG_ARM
--	pr_info("<%s> pre_handler: p->addr = 0x%p, pc = 0x%lx, cpsr = 0x%lx\n",
-+	pr_info("<%s> p->addr = 0x%p, pc = 0x%lx, cpsr = 0x%lx\n",
- 		p->symbol_name, p->addr, (long)regs->ARM_pc, (long)regs->ARM_cpsr);
- #endif
- #ifdef CONFIG_RISCV
--	pr_info("<%s> pre_handler: p->addr = 0x%p, pc = 0x%lx, status = 0x%lx\n",
-+	pr_info("<%s> p->addr = 0x%p, pc = 0x%lx, status = 0x%lx\n",
- 		p->symbol_name, p->addr, regs->epc, regs->status);
- #endif
- #ifdef CONFIG_S390
--	pr_info("<%s> pre_handler: p->addr, 0x%p, ip = 0x%lx, flags = 0x%lx\n",
-+	pr_info("<%s> p->addr, 0x%p, ip = 0x%lx, flags = 0x%lx\n",
- 		p->symbol_name, p->addr, regs->psw.addr, regs->flags);
- #endif
- 
-@@ -65,31 +66,31 @@ static void __kprobes handler_post(struct kprobe *p, struct pt_regs *regs,
- 				unsigned long flags)
- {
- #ifdef CONFIG_X86
--	pr_info("<%s> post_handler: p->addr = 0x%p, flags = 0x%lx\n",
-+	pr_info("<%s> p->addr = 0x%p, flags = 0x%lx\n",
- 		p->symbol_name, p->addr, regs->flags);
- #endif
- #ifdef CONFIG_PPC
--	pr_info("<%s> post_handler: p->addr = 0x%p, msr = 0x%lx\n",
-+	pr_info("<%s> p->addr = 0x%p, msr = 0x%lx\n",
- 		p->symbol_name, p->addr, regs->msr);
- #endif
- #ifdef CONFIG_MIPS
--	pr_info("<%s> post_handler: p->addr = 0x%p, status = 0x%lx\n",
-+	pr_info("<%s> p->addr = 0x%p, status = 0x%lx\n",
- 		p->symbol_name, p->addr, regs->cp0_status);
- #endif
- #ifdef CONFIG_ARM64
--	pr_info("<%s> post_handler: p->addr = 0x%p, pstate = 0x%lx\n",
-+	pr_info("<%s> p->addr = 0x%p, pstate = 0x%lx\n",
- 		p->symbol_name, p->addr, (long)regs->pstate);
- #endif
- #ifdef CONFIG_ARM
--	pr_info("<%s> post_handler: p->addr = 0x%p, cpsr = 0x%lx\n",
-+	pr_info("<%s> p->addr = 0x%p, cpsr = 0x%lx\n",
- 		p->symbol_name, p->addr, (long)regs->ARM_cpsr);
- #endif
- #ifdef CONFIG_RISCV
--	pr_info("<%s> post_handler: p->addr = 0x%p, status = 0x%lx\n",
-+	pr_info("<%s> p->addr = 0x%p, status = 0x%lx\n",
- 		p->symbol_name, p->addr, regs->status);
- #endif
- #ifdef CONFIG_S390
--	pr_info("<%s> pre_handler: p->addr, 0x%p, flags = 0x%lx\n",
-+	pr_info("<%s> p->addr, 0x%p, flags = 0x%lx\n",
- 		p->symbol_name, p->addr, regs->flags);
- #endif
- }
-@@ -101,7 +102,7 @@ static void __kprobes handler_post(struct kprobe *p, struct pt_regs *regs,
-  */
- static int handler_fault(struct kprobe *p, struct pt_regs *regs, int trapnr)
- {
--	pr_info("fault_handler: p->addr = 0x%p, trap #%d\n", p->addr, trapnr);
-+	pr_info("p->addr = 0x%p, trap #%d\n", p->addr, trapnr);
- 	/* Return 0 because we don't handle the fault. */
- 	return 0;
- }
--- 
-2.1.0
+dtschema/dtc warnings/errors:
+Documentation/devicetree/bindings/clock/nvidia,tegra20-car.example.dt.yaml:0:0: /example-0/usb-controller@c5004000: failed to match any schema with compatible: ['nvidia,tegra20-ehci']
+Documentation/devicetree/bindings/clock/nvidia,tegra124-car.example.dt.yaml:0:0: /example-0/usb-controller@c5004000: failed to match any schema with compatible: ['nvidia,tegra20-ehci']
+
+See https://patchwork.ozlabs.org/patch/1479105
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
