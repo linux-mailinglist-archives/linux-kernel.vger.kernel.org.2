@@ -2,33 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D5B038394F
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99946383959
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345648AbhEQQNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:13:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44904 "EHLO mail.kernel.org"
+        id S1345750AbhEQQOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:14:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45528 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344018AbhEQPtq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:49:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DACFB6143C;
-        Mon, 17 May 2021 14:45:27 +0000 (UTC)
+        id S1345117AbhEQPuQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:50:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7248961D4D;
+        Mon, 17 May 2021 14:45:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262728;
-        bh=JaP8JF+iAXaoiUiigp6hkLEMLv2p2rM5QI0GfBWiHJM=;
+        s=korg; t=1621262747;
+        bh=0XE+QnL3JHPR+TgN9Ik6jfg9PYkegZ2Y/++OLng3eos=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b/0ZNka8zfFg1HRtaH3Fm7N4rKWRFBsd8JAXFcB7nVMX686lorQPpSF4jp4wMcTqb
-         meYiCZUtWnnFk8DKMgi6UucTi3Xb9qbTH724u4V3c9NzjHX349n7hgLbwa2olR/m1m
-         0Gr8ag8IYfTc7hZCM4VQ4sEyg7A9W84AOzL1mKGI=
+        b=ASZNghtaYN/nZ4J3MxmjAUWAtxILEKYwLi21kBE1QNYc4C1TJwt2QdAf2LYXU++fI
+         RIqC0Fg13/H0ov0rzDmQ7vx0KKmqsVwlH2h1RUciJwkflWExrUIpUfuEhdDFl/Mg6D
+         U7DRyK2ywAbkAGnTfVJds9zxkpW+EVdkUoMXlYKE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ashok Raj <ashok.raj@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <jroedel@suse.de>
-Subject: [PATCH 5.10 264/289] iommu/vt-d: Remove WO permissions on second-level paging entries
-Date:   Mon, 17 May 2021 16:03:09 +0200
-Message-Id: <20210517140314.031244314@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.10 265/289] mm: fix struct page layout on 32-bit systems
+Date:   Mon, 17 May 2021 16:03:10 +0200
+Message-Id: <20210517140314.070650269@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
 References: <20210517140305.140529752@linuxfoundation.org>
@@ -40,41 +45,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lu Baolu <baolu.lu@linux.intel.com>
+From: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-commit eea53c5816889ee8b64544fa2e9311a81184ff9c upstream.
+commit 9ddb3c14afba8bc5950ed297f02d4ae05ff35cd1 upstream.
 
-When the first level page table is used for IOVA translation, it only
-supports Read-Only and Read-Write permissions. The Write-Only permission
-is not supported as the PRESENT bit (implying Read permission) should
-always set. When using second level, we still give separate permissions
-that allows WriteOnly which seems inconsistent and awkward. We want to
-have consistent behavior. After moving to 1st level, we don't want things
-to work sometimes, and break if we use 2nd level for the same mappings.
-Hence remove this configuration.
+32-bit architectures which expect 8-byte alignment for 8-byte integers and
+need 64-bit DMA addresses (arm, mips, ppc) had their struct page
+inadvertently expanded in 2019.  When the dma_addr_t was added, it forced
+the alignment of the union to 8 bytes, which inserted a 4 byte gap between
+'flags' and the union.
 
-Suggested-by: Ashok Raj <ashok.raj@intel.com>
-Fixes: b802d070a52a1 ("iommu/vt-d: Use iova over first level")
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-Link: https://lore.kernel.org/r/20210320025415.641201-3-baolu.lu@linux.intel.com
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Fix this by storing the dma_addr_t in one or two adjacent unsigned longs.
+This restores the alignment to that of an unsigned long.  We always
+store the low bits in the first word to prevent the PageTail bit from
+being inadvertently set on a big endian platform.  If that happened,
+get_user_pages_fast() racing against a page which was freed and
+reallocated to the page_pool could dereference a bogus compound_head(),
+which would be hard to trace back to this cause.
+
+Link: https://lkml.kernel.org/r/20210510153211.1504886-1-willy@infradead.org
+Fixes: c25fff7171be ("mm: add dma_addr_t to struct page")
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Acked-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Tested-by: Matteo Croce <mcroce@linux.microsoft.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iommu/intel/iommu.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/linux/mm_types.h |    4 ++--
+ include/net/page_pool.h  |   12 +++++++++++-
+ net/core/page_pool.c     |   12 +++++++-----
+ 3 files changed, 20 insertions(+), 8 deletions(-)
 
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -2362,8 +2362,9 @@ static int __domain_mapping(struct dmar_
- 		return -EINVAL;
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -97,10 +97,10 @@ struct page {
+ 		};
+ 		struct {	/* page_pool used by netstack */
+ 			/**
+-			 * @dma_addr: might require a 64-bit value even on
++			 * @dma_addr: might require a 64-bit value on
+ 			 * 32-bit architectures.
+ 			 */
+-			dma_addr_t dma_addr;
++			unsigned long dma_addr[2];
+ 		};
+ 		struct {	/* slab, slob and slub */
+ 			union {
+--- a/include/net/page_pool.h
++++ b/include/net/page_pool.h
+@@ -191,7 +191,17 @@ static inline void page_pool_recycle_dir
  
- 	attr = prot & (DMA_PTE_READ | DMA_PTE_WRITE | DMA_PTE_SNP);
-+	attr |= DMA_FL_PTE_PRESENT;
- 	if (domain_use_first_level(domain)) {
--		attr |= DMA_FL_PTE_PRESENT | DMA_FL_PTE_XD | DMA_FL_PTE_US;
-+		attr |= DMA_FL_PTE_XD | DMA_FL_PTE_US;
+ static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
+ {
+-	return page->dma_addr;
++	dma_addr_t ret = page->dma_addr[0];
++	if (sizeof(dma_addr_t) > sizeof(unsigned long))
++		ret |= (dma_addr_t)page->dma_addr[1] << 16 << 16;
++	return ret;
++}
++
++static inline void page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
++{
++	page->dma_addr[0] = addr;
++	if (sizeof(dma_addr_t) > sizeof(unsigned long))
++		page->dma_addr[1] = upper_32_bits(addr);
+ }
  
- 		if (domain->domain.type == IOMMU_DOMAIN_DMA) {
- 			attr |= DMA_FL_PTE_ACCESS;
+ static inline bool is_page_pool_compiled_in(void)
+--- a/net/core/page_pool.c
++++ b/net/core/page_pool.c
+@@ -172,8 +172,10 @@ static void page_pool_dma_sync_for_devic
+ 					  struct page *page,
+ 					  unsigned int dma_sync_size)
+ {
++	dma_addr_t dma_addr = page_pool_get_dma_addr(page);
++
+ 	dma_sync_size = min(dma_sync_size, pool->p.max_len);
+-	dma_sync_single_range_for_device(pool->p.dev, page->dma_addr,
++	dma_sync_single_range_for_device(pool->p.dev, dma_addr,
+ 					 pool->p.offset, dma_sync_size,
+ 					 pool->p.dma_dir);
+ }
+@@ -224,7 +226,7 @@ static struct page *__page_pool_alloc_pa
+ 		put_page(page);
+ 		return NULL;
+ 	}
+-	page->dma_addr = dma;
++	page_pool_set_dma_addr(page, dma);
+ 
+ 	if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
+ 		page_pool_dma_sync_for_device(pool, page, pool->p.max_len);
+@@ -292,13 +294,13 @@ void page_pool_release_page(struct page_
+ 		 */
+ 		goto skip_dma_unmap;
+ 
+-	dma = page->dma_addr;
++	dma = page_pool_get_dma_addr(page);
+ 
+-	/* When page is unmapped, it cannot be returned our pool */
++	/* When page is unmapped, it cannot be returned to our pool */
+ 	dma_unmap_page_attrs(pool->p.dev, dma,
+ 			     PAGE_SIZE << pool->p.order, pool->p.dma_dir,
+ 			     DMA_ATTR_SKIP_CPU_SYNC);
+-	page->dma_addr = 0;
++	page_pool_set_dma_addr(page, 0);
+ skip_dma_unmap:
+ 	/* This may be the last page returned, releasing the pool, so
+ 	 * it is not safe to reference pool afterwards.
 
 
