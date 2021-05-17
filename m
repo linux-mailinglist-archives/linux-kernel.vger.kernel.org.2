@@ -2,150 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6066A386B6A
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1F5E386B66
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242763AbhEQUdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 16:33:55 -0400
-Received: from gateway36.websitewelcome.com ([192.185.200.11]:49785 "EHLO
-        gateway36.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234249AbhEQUdw (ORCPT
+        id S241509AbhEQUcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 16:32:54 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:44570 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234249AbhEQUcw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 16:33:52 -0400
-X-Greylist: delayed 1373 seconds by postgrey-1.27 at vger.kernel.org; Mon, 17 May 2021 16:33:51 EDT
-Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
-        by gateway36.websitewelcome.com (Postfix) with ESMTP id 20233400C8764
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 15:09:20 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id ijYGl4gPx8uM0ijYGlMNTI; Mon, 17 May 2021 15:09:20 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=nNkGB/SMOVehPker/eeuybln3ISVaMpsQpy10U9fYN8=; b=OIDqYC1WeuePW1/YMttvu6mq1o
-        tjzh7lKTt3baCQZH7Oh96AzHUhM2a6b+ERMwpJMivnV+wMd5a8P/zDui4b7rvb5u2mKWfzUvnWlCK
-        X5EYUVkzsRvUd+8pe1/lNR2bNtUcZuDd279Q+e8eny/jCHNnm9bTti9a3nJWzvMdaAhlA0j/XhlHe
-        gN2SI91KafFKqXTcNEYiO1PM1nzpi3if6RTJWsF+bcQKX4Gzkaq8zk+WyPjy2TqaRG/yyH4k83UQi
-        dRHuCN7ORsFmjjsrXskk4CLh8BjWwb03x7hLrNKpwbVAR6HmLpIUs6kTZMfqYZy2mBFVtKDKtkSuC
-        LCtLiXfg==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:52510 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lijYC-0021s7-SL; Mon, 17 May 2021 15:09:16 -0500
-Subject: Re: [PATCH RESEND][next] net: netrom: Fix fall-through warnings for
- Clang
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-hams@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20210305092210.GA139864@embeddedor>
- <5047001a-e5a8-ec64-0dc7-662e7cb0d100@embeddedor.com>
-Message-ID: <a3fa4bac-2b30-0954-30e6-e4202949e773@embeddedor.com>
-Date:   Mon, 17 May 2021 15:09:47 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 17 May 2021 16:32:52 -0400
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id A5DAA20B7188;
+        Mon, 17 May 2021 13:31:34 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A5DAA20B7188
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1621283495;
+        bh=+NhnXSLEEJVe5AKkog56DLhbOIesqKPIgLMypmjSRE0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XbvitoZS1YjW1YS3HQLZwb/TynDAH46ZbNYe4eTJBzPZxxF3eFb4IhHKfYot5aLSb
+         zx96B0YPfQnUbuxywFC8QqbiMBBAYMiKnN5+NH7iF86A6ZRCuoqa09/qqk1ncib4Zn
+         u6pq+csA1eDNeZxyybWGxXTWZ2XFJSTLsvjotsxA=
+Date:   Mon, 17 May 2021 15:31:32 -0500
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     jens.wiklander@linaro.org, zajec5@gmail.com,
+        Allen Pais <allen.lkml@gmail.com>
+Cc:     bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        op-tee@lists.trustedfirmware.org,
+        Allen Pais <apais@linux.microsoft.com>
+Subject: Re: [PATCH] optee: Disable shm cache when booting the crash kernel
+Message-ID: <20210517203132.GL4967@sequoia>
+References: <20210225090610.242623-1-allen.lkml@gmail.com>
+ <20210507035816.426585-1-tyhicks@linux.microsoft.com>
 MIME-Version: 1.0
-In-Reply-To: <5047001a-e5a8-ec64-0dc7-662e7cb0d100@embeddedor.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lijYC-0021s7-SL
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:52510
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 7
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210507035816.426585-1-tyhicks@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dave,
-
-I haven't received any feedback about these patches after resending them.
-
-We had thousands of these warnings and now we are down to less than a hundred in
-linux-next. I'm planning to take these patches in my -next tree for 5.14 as
-I'm planning to enable -Wimplicit-fallthrough for Clang for that release, too.
-
-Are you OK with this?
-
-Thanks
---
-Gustavo
-
-On 4/20/21 15:11, Gustavo A. R. Silva wrote:
-> Hi all,
+On 2021-05-06 22:58:16, Tyler Hicks wrote:
+> The .shutdown hook is not called after a kernel crash when a kdump
+> kernel is pre-loaded. A kexec into the kdump kernel takes place as
+> quickly as possible without allowing drivers to clean up.
 > 
-> Friendly ping: who can take this, please?
+> That means that the OP-TEE shared memory cache, which was initialized by
+> the kernel that crashed, is still in place when the kdump kernel is
+> booted. As the kdump kernel is shutdown, the .shutdown hook is called,
+> which calls optee_disable_shm_cache(), and OP-TEE's
+> OPTEE_SMC_DISABLE_SHM_CACHE API returns virtual addresses that are not
+> mapped for the kdump kernel since the cache was set up by the previous
+> kernel. Trying to dereference the tee_shm pointer or otherwise translate
+> the address results in a fault that cannot be handled:
 > 
-> Thanks
-> --
-> Gustavo
+>  Unable to handle kernel paging request at virtual address ffff4317b9c09744
+>  Mem abort info:
+>    ESR = 0x96000004
+>    EC = 0x25: DABT (current EL), IL = 32 bits
+>    SET = 0, FnV = 0
+>    EA = 0, S1PTW = 0
+>  Data abort info:
+>    ISV = 0, ISS = 0x00000004
+>    CM = 0, WnR = 0
+>  swapper pgtable: 4k pages, 48-bit VAs, pgdp=0000000970b1e000
+>  [ffff4317b9c09744] pgd=0000000000000000, p4d=0000000000000000
+>  Internal error: Oops: 96000004 [#1] SMP
+>  Modules linked in: bnxt_en pcie_iproc_platform pcie_iproc diagbe(O)
+>  CPU: 4 PID: 1 Comm: systemd-shutdow Tainted: G           O      5.10.19.8 #1
+>  Hardware name: Redacted (DT)
+>  pstate: 60400005 (nZCv daif +PAN -UAO -TCO BTYPE=--)
+>  pc : tee_shm_free (/usr/src/kernel/drivers/tee/tee_shm.c:363)
+>  lr : optee_disable_shm_cache (/usr/src/kernel/drivers/tee/optee/call.c:441)
+>  sp : ffff80001005bb70
+>  x29: ffff80001005bb70 x28: ffff608e74648e00
+>  x27: ffff80001005bb98 x26: dead000000000100
+>  x25: ffff80001005bbb8 x24: aaaaaaaaaaaaaaaa
+>  x23: ffff608e74cf8818 x22: ffff608e738be600
+>  x21: ffff80001005bbc8 x20: ffff608e738be638
+>  x19: ffff4317b9c09700 x18: ffffffffffffffff
+>  x17: 0000000000000041 x16: ffffba61b5171764
+>  x15: 0000000000000004 x14: 0000000000000fff
+>  x13: ffffba61b5c9dfc8 x12: 0000000000000003
+>  x11: 0000000000000000 x10: 0000000000000000
+>  x9 : ffffba61b5413824 x8 : 00000000ffff4317
+>  x7 : 0000000000000000 x6 : 0000000000000000
+>  x5 : 0000000000000000 x4 : 0000000000000000
+>  x3 : 0000000000000000 x2 : ffff4317b9c09700
+>  x1 : 00000000ffff4317 x0 : ffff4317b9c09700
+>  Call trace:
+>  tee_shm_free (/usr/src/kernel/drivers/tee/tee_shm.c:363)
+>  optee_disable_shm_cache (/usr/src/kernel/drivers/tee/optee/call.c:441)
+>  optee_shutdown (/usr/src/kernel/drivers/tee/optee/core.c:636)
+>  platform_drv_shutdown (/usr/src/kernel/drivers/base/platform.c:800)
+>  device_shutdown (/usr/src/kernel/include/linux/device.h:758 /usr/src/kernel/drivers/base/core.c:4078)
+>  kernel_restart (/usr/src/kernel/kernel/reboot.c:221 /usr/src/kernel/kernel/reboot.c:248)
+>  __arm64_sys_reboot (/usr/src/kernel/kernel/reboot.c:349 /usr/src/kernel/kernel/reboot.c:312 /usr/src/kernel/kernel/reboot.c:312)
+>  do_el0_svc (/usr/src/kernel/arch/arm64/kernel/syscall.c:56 /usr/src/kernel/arch/arm64/kernel/syscall.c:158 /usr/src/kernel/arch/arm64/kernel/syscall.c:197)
+>  el0_svc (/usr/src/kernel/arch/arm64/kernel/entry-common.c:368)
+>  el0_sync_handler (/usr/src/kernel/arch/arm64/kernel/entry-common.c:428)
+>  el0_sync (/usr/src/kernel/arch/arm64/kernel/entry.S:671)
+>  Code: aa0003f3 b5000060 12800003 14000002 (b9404663)
 > 
-> On 3/5/21 03:22, Gustavo A. R. Silva wrote:
->> In preparation to enable -Wimplicit-fallthrough for Clang, fix multiple
->> warnings by explicitly adding multiple break statements instead of
->> letting the code fall through to the next case.
->>
->> Link: https://github.com/KSPP/linux/issues/115
->> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->> ---
->>  net/netrom/nr_route.c | 4 ++++
->>  1 file changed, 4 insertions(+)
->>
->> diff --git a/net/netrom/nr_route.c b/net/netrom/nr_route.c
->> index 78da5eab252a..de9821b6a62a 100644
->> --- a/net/netrom/nr_route.c
->> +++ b/net/netrom/nr_route.c
->> @@ -266,6 +266,7 @@ static int __must_check nr_add_node(ax25_address *nr, const char *mnemonic,
->>  		fallthrough;
->>  	case 2:
->>  		re_sort_routes(nr_node, 0, 1);
->> +		break;
->>  	case 1:
->>  		break;
->>  	}
->> @@ -359,6 +360,7 @@ static int nr_del_node(ax25_address *callsign, ax25_address *neighbour, struct n
->>  					fallthrough;
->>  				case 1:
->>  					nr_node->routes[1] = nr_node->routes[2];
->> +					break;
->>  				case 2:
->>  					break;
->>  				}
->> @@ -482,6 +484,7 @@ static int nr_dec_obs(void)
->>  					fallthrough;
->>  				case 1:
->>  					s->routes[1] = s->routes[2];
->> +					break;
->>  				case 2:
->>  					break;
->>  				}
->> @@ -529,6 +532,7 @@ void nr_rt_device_down(struct net_device *dev)
->>  							fallthrough;
->>  						case 1:
->>  							t->routes[1] = t->routes[2];
->> +							break;
->>  						case 2:
->>  							break;
->>  						}
->>
+> When booting the kdump kernel, drain the shared memory cache while being
+> careful to not translate the addresses returned from
+> OPTEE_SMC_DISABLE_SHM_CACHE. Once the invalid cache objects are drained
+> and the cache is disabled, proceed with re-enabling the cache so that we
+> aren't dealing with invalid addresses while shutting down the kdump
+> kernel.
+> 
+> Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+> ---
+> 
+> This patch fixes a crash introduced by "optee: fix tee out of memory
+> failure seen during kexec reboot"[1]. However, I don't think that the
+> original two patch series[2] plus this patch is the full solution to
+> properly handling OP-TEE shared memory across kexec.
+> 
+> While testing this fix, I did about 10 kexec reboots and then triggered
+> a kernel crash by writing 'c' to /proc/sysrq-trigger. The kdump kernel
+> became unresponsive during boot while steadily streaming the following
+> errors to the serial console:
+> 
+>  arm-smmu 64000000.mmu: Blocked unknown Stream ID 0x2000; boot with "arm-smmu.disable_bypass=0" to allow, but this may have security implications
+>  arm-smmu 64000000.mmu:     GFSR 0x00000002, GFSYNR0 0x00000002, GFSYNR1 0x00002000, GFSYNR2 0x00000000
+> 
+> I suspect that this is related to the problems of OP-TEE shared memory
+> handling across kexec. My current hunch is that while we've disabled the
+> shared memory cache with this patch, we haven't unregistered all of the
+> addresses that the previous kernel (which crashed) had registered with
+> OP-TEE and that perhaps OP-TEE OS is still trying to make use those
+> addresses?
+> 
+> I'm still pretty early in investigating that assumption and
+> I'm learning about OP-TEE as I go but I wanted to get this initial
+> fix-of-the-fix out so that it was clear that the v2 of the series[2] is
+> not complete.
+> 
+> [1] https://lore.kernel.org/lkml/20210225090610.242623-2-allen.lkml@gmail.com/
+> [2] https://lore.kernel.org/lkml/20210225090610.242623-1-allen.lkml@gmail.com/#t
+> 
+>  drivers/tee/optee/call.c          | 11 ++++++++++-
+>  drivers/tee/optee/core.c          | 13 +++++++++++--
+>  drivers/tee/optee/optee_private.h |  2 +-
+>  3 files changed, 22 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
+> index 6132cc8d014c..799e84bec63d 100644
+> --- a/drivers/tee/optee/call.c
+> +++ b/drivers/tee/optee/call.c
+> @@ -417,8 +417,10 @@ void optee_enable_shm_cache(struct optee *optee)
+>   * optee_disable_shm_cache() - Disables caching of some shared memory allocation
+>   *			      in OP-TEE
+>   * @optee:	main service struct
+> + * @is_mapped:	true if the cached shared memory addresses were mapped by this
+> + *		kernel, are safe to dereference, and should be freed
+>   */
+> -void optee_disable_shm_cache(struct optee *optee)
+> +void optee_disable_shm_cache(struct optee *optee, bool is_mapped)
+>  {
+>  	struct optee_call_waiter w;
+>  
+> @@ -437,6 +439,13 @@ void optee_disable_shm_cache(struct optee *optee)
+>  		if (res.result.status == OPTEE_SMC_RETURN_OK) {
+>  			struct tee_shm *shm;
+>  
+> +			/*
+> +			 * Shared memory references that were not mapped by
+> +			 * this kernel must be ignored to prevent a crash.
+> +			 */
+> +			if (!is_mapped)
+> +				continue;
+> +
+>  			shm = reg_pair_to_ptr(res.result.shm_upper32,
+>  					      res.result.shm_lower32);
+>  			tee_shm_free(shm);
+> diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
+> index 69d1f698907c..9985c671bd1f 100644
+> --- a/drivers/tee/optee/core.c
+> +++ b/drivers/tee/optee/core.c
+> @@ -6,6 +6,7 @@
+>  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+>  
+>  #include <linux/arm-smccc.h>
+> +#include <linux/crash_dump.h>
+>  #include <linux/errno.h>
+>  #include <linux/io.h>
+>  #include <linux/module.h>
+> @@ -588,7 +589,7 @@ static int optee_remove(struct platform_device *pdev)
+>  	 * reference counters and also avoid wild pointers in secure world
+>  	 * into the old shared memory range.
+>  	 */
+> -	optee_disable_shm_cache(optee);
+> +	optee_disable_shm_cache(optee, true);
+>  
+>  	/*
+>  	 * The two devices have to be unregistered before we can free the
+> @@ -618,7 +619,7 @@ static int optee_remove(struct platform_device *pdev)
+>   */
+>  static void optee_shutdown(struct platform_device *pdev)
+>  {
+> -	optee_disable_shm_cache(platform_get_drvdata(pdev));
+> +	optee_disable_shm_cache(platform_get_drvdata(pdev), true);
+>  }
+>  
+>  static int optee_probe(struct platform_device *pdev)
+> @@ -705,6 +706,14 @@ static int optee_probe(struct platform_device *pdev)
+>  	optee->memremaped_shm = memremaped_shm;
+>  	optee->pool = pool;
+>  
+> +	/*
+> +	 * The kexec into the crash kernel did not call our .shutdown hook. The
+> +	 * shm cache objects registered with OP-TEE are not valid for the crash
+> +	 * kernel.
+> +	 */
+> +	if (is_kdump_kernel())
+> +		optee_disable_shm_cache(optee, false);
+
+Additional testing showed that only clearing the shm cache when booting
+the kdump kernel isn't quite enough. A kexec from an old kernel, without
+Allen's fix ("optee: fix OOM seen due to tee_shm_free()"), to a new
+kernel that contain the fix can still result in stale/invalid shm cache
+addresses hanging around in the secure world. When the fixed kernel is
+shutdown, it can still experience a crash and/or memory corruption
+because the secure world returns bad addresses from
+OPTEE_SMC_DISABLE_SHM_CACHE that are not valid for the current kernel.
+
+In order to safely support kexec within the OP-TEE driver, I think the
+best option is going to always do a call to optee_disable_shm_cache()
+prior to calling optee_enable_shm_cache() in optee_probe().
+
+This series is in need of a v3 with all the new knowledge/fixes after
+testing kexec/kdump more with OP-TEE. I'll try to get a v3 out in the
+coming days.
+
+Tyler
+
+> +
+>  	optee_enable_shm_cache(optee);
+>  
+>  	if (optee->sec_caps & OPTEE_SMC_SEC_CAP_DYNAMIC_SHM)
+> diff --git a/drivers/tee/optee/optee_private.h b/drivers/tee/optee/optee_private.h
+> index e25b216a14ef..16d8c82213e7 100644
+> --- a/drivers/tee/optee/optee_private.h
+> +++ b/drivers/tee/optee/optee_private.h
+> @@ -158,7 +158,7 @@ int optee_invoke_func(struct tee_context *ctx, struct tee_ioctl_invoke_arg *arg,
+>  int optee_cancel_req(struct tee_context *ctx, u32 cancel_id, u32 session);
+>  
+>  void optee_enable_shm_cache(struct optee *optee);
+> -void optee_disable_shm_cache(struct optee *optee);
+> +void optee_disable_shm_cache(struct optee *optee, bool is_mapped);
+>  
+>  int optee_shm_register(struct tee_context *ctx, struct tee_shm *shm,
+>  		       struct page **pages, size_t num_pages,
+> -- 
+> 2.25.1
+> 
