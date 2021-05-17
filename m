@@ -2,136 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A80A382E22
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:02:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D50E8382FD9
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237637AbhEQOC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:02:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237627AbhEQOCs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:02:48 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B3CBC061761;
-        Mon, 17 May 2021 07:01:31 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d78so4141718pfd.10;
-        Mon, 17 May 2021 07:01:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=p6jAyFEHVFCxlZGpGxYbrWuXzrXvA1+9+mG4jRlrIQk=;
-        b=hDuAmQ4A43GWP0rKjcktZ9hykeiArJVyGcpT4ujdQRFXSuywufDCZFAYgkM2exL46R
-         CwYqu8QPpPsZQvgWPTT1EfxUKKA5uEpuCb0xc199tMlwKt67dquZw7yFdxF7BC9Hf06i
-         gROqkq6d/HN1ithnaqgpCkOgwFuUpflhf3GjiQb++cKtJnwnAWVSXDHZGbp+/2abu9m8
-         pqNeC5PPQNUw6jyeFCDYhqB6ne1SEMGXPztMw/HAbAu6oIxMET7PePOTNzTFrw3yX/Aj
-         0k7husLzMEEQJ3QCU4/vNMKH3yqX0wgac8QI3+pnAvBC6FNv0GlnPVBbO633fl4WJIcQ
-         t+nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=p6jAyFEHVFCxlZGpGxYbrWuXzrXvA1+9+mG4jRlrIQk=;
-        b=X0h/x0Z+1RxriOTzM8ToK84BYQx67sCePFAj6GYt+VrQmYChpUNr0jFtDHyRIh7fkz
-         8l/BHWRFVC7M2MU/8Em85RnZmkAQHiHFllBd5yVgTnagCVPeJN50Z4QOiGtWkiDE9UR+
-         OZn0uy0NgwR70s8LPjP3WuGlPCfiTLFol7pkiCcC62b5SMkTUK+fi23uneOdpP+nCeER
-         D1FKBYSaT/GeWHfpir65PvBiwyEd00jtnVPvMj24dgijcO7TLyuG6BSayWZ1hEkTpoAM
-         AoHgLCfJDq3ezY3kMeBLgz4CFHwAFBVy6hvq8VY0+xTUljWq2TdPdV6hOfwm9zH3PGlr
-         kr9w==
-X-Gm-Message-State: AOAM532/7L9bUCznphbQnxEFKnIDtXGKirkbJT86ox69ozUITLkDyNFv
-        Upkwq20cfRwOYW153sa0S19Rt8El4yc=
-X-Google-Smtp-Source: ABdhPJwj9HbY7SlYmRb/kfzs3XrJiDdyRtN9RdDvWJz/I86GDCxyl34GyEAXm4sgQnz/hmSL5B9ePw==
-X-Received: by 2002:a63:571d:: with SMTP id l29mr9510292pgb.179.1621260090676;
-        Mon, 17 May 2021 07:01:30 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.61])
-        by smtp.googlemail.com with ESMTPSA id k10sm3074229pfu.175.2021.05.17.07.01.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 17 May 2021 07:01:30 -0700 (PDT)
-From:   Wanpeng Li <kernellwp@gmail.com>
-X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: [PATCH v3 4/5] KVM: x86: hyper-v: Task srcu lock when accessing kvm_memslots()
-Date:   Mon, 17 May 2021 07:00:27 -0700
-Message-Id: <1621260028-6467-4-git-send-email-wanpengli@tencent.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1621260028-6467-1-git-send-email-wanpengli@tencent.com>
-References: <1621260028-6467-1-git-send-email-wanpengli@tencent.com>
+        id S239083AbhEQOV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:21:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49986 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235734AbhEQOSA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:18:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBD656139A;
+        Mon, 17 May 2021 14:10:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621260616;
+        bh=3IjUhckdqDInYS9wKOMOIf9azJ1uG6SRWO0KmbO6Dts=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Pg9I+AtJllNxgK78P8+RqEFDQf22yiBSg7DGZvsUfSahkBteNgHtVQ1XO7VFc11Xf
+         4+QwwFQnWfQmmQBdSna5FlN1oy9TAzzcA1KbFWUe6s31ilfn3P+UfgjLIdFvCdrjlz
+         RVNAiZaQUTSZCZ04Zdz8lb87CGjvIWCU1u3IxQnA=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Chris Dion <Christopher.Dion@dell.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 162/363] SUNRPC: Handle major timeout in xprt_adjust_timeout()
+Date:   Mon, 17 May 2021 16:00:28 +0200
+Message-Id: <20210517140308.080471762@linuxfoundation.org>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210517140302.508966430@linuxfoundation.org>
+References: <20210517140302.508966430@linuxfoundation.org>
+User-Agent: quilt/0.66
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wanpeng Li <wanpengli@tencent.com>
+From: Chris Dion <Christopher.Dion@dell.com>
 
-   WARNING: suspicious RCU usage
-   5.13.0-rc1 #4 Not tainted
-   -----------------------------
-   ./include/linux/kvm_host.h:710 suspicious rcu_dereference_check() usage!
+[ Upstream commit 09252177d5f924f404551b4b4eded5daa7f04a3a ]
 
-  other info that might help us debug this:
+Currently if a major timeout value is reached, but the minor value has
+not been reached, an ETIMEOUT will not be sent back to the caller.
+This can occur if the v4 server is not responding to requests and
+retrans is configured larger than the default of two.
 
-  rcu_scheduler_active = 2, debug_locks = 1
-   1 lock held by hyperv_clock/8318:
-    #0: ffffb6b8cb05a7d8 (&hv->hv_lock){+.+.}-{3:3}, at: kvm_hv_invalidate_tsc_page+0x3e/0xa0 [kvm]
+For example, A TCP mount with a configured timeout value of 50 and a
+retransmission count of 3 to a v4 server which is not responding:
 
-  stack backtrace:
-  CPU: 3 PID: 8318 Comm: hyperv_clock Not tainted 5.13.0-rc1 #4
-  Call Trace:
-   dump_stack+0x87/0xb7
-   lockdep_rcu_suspicious+0xce/0xf0
-   kvm_write_guest_page+0x1c1/0x1d0 [kvm]
-   kvm_write_guest+0x50/0x90 [kvm]
-   kvm_hv_invalidate_tsc_page+0x79/0xa0 [kvm]
-   kvm_gen_update_masterclock+0x1d/0x110 [kvm]
-   kvm_arch_vm_ioctl+0x2a7/0xc50 [kvm]
-   kvm_vm_ioctl+0x123/0x11d0 [kvm]
-   __x64_sys_ioctl+0x3ed/0x9d0
-   do_syscall_64+0x3d/0x80
-   entry_SYSCALL_64_after_hwframe+0x44/0xae
+1. Initial value and increment set to 5s, maxval set to 20s, retries at 3
+2. Major timeout is set to 20s, minor timeout set to 5s initially
+3. xport_adjust_timeout() is called after 5s, retry with 10s timeout,
+   minor timeout is bumped to 10s
+4. And again after another 10s, 15s total time with minor timeout set
+   to 15s
+5. After 20s total time xport_adjust_timeout is called as major timeout is
+   reached, but skipped because the minor timeout is not reached
+       - After this time the cpu spins continually calling
+       	 xport_adjust_timeout() and returning 0 for 10 seconds.
+	 As seen on perf sched:
+   	 39243.913182 [0005]  mount.nfs[3794] 4607.938      0.017   9746.863
+6. This continues until the 15s minor timeout condition is reached (in
+   this case for 10 seconds). After which the ETIMEOUT is processed
+   back to the caller, the cpu spinning stops, and normal operations
+   continue
 
-kvm_memslots() will be called by kvm_write_guest(), so we should take the srcu lock.
-
-Fixes: e880c6ea5 (KVM: x86: hyper-v: Prevent using not-yet-updated TSC page by secondary CPUs)
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+Fixes: 7de62bc09fe6 ("SUNRPC dont update timeout value on connection reset")
+Signed-off-by: Chris Dion <Christopher.Dion@dell.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/hyperv.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ net/sunrpc/xprt.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-index f98370a39936..f00830e5202f 100644
---- a/arch/x86/kvm/hyperv.c
-+++ b/arch/x86/kvm/hyperv.c
-@@ -1172,6 +1172,7 @@ void kvm_hv_invalidate_tsc_page(struct kvm *kvm)
- {
- 	struct kvm_hv *hv = to_kvm_hv(kvm);
- 	u64 gfn;
-+	int idx;
+diff --git a/net/sunrpc/xprt.c b/net/sunrpc/xprt.c
+index 11ebe8a127b8..20fe31b1b776 100644
+--- a/net/sunrpc/xprt.c
++++ b/net/sunrpc/xprt.c
+@@ -698,9 +698,9 @@ int xprt_adjust_timeout(struct rpc_rqst *req)
+ 	const struct rpc_timeout *to = req->rq_task->tk_client->cl_timeout;
+ 	int status = 0;
  
- 	if (hv->hv_tsc_page_status == HV_TSC_PAGE_BROKEN ||
- 	    hv->hv_tsc_page_status == HV_TSC_PAGE_UNSET ||
-@@ -1190,9 +1191,16 @@ void kvm_hv_invalidate_tsc_page(struct kvm *kvm)
- 	gfn = hv->hv_tsc_page >> HV_X64_MSR_TSC_REFERENCE_ADDRESS_SHIFT;
- 
- 	hv->tsc_ref.tsc_sequence = 0;
-+
-+	/*
-+	 * Take the srcu lock as memslots will be accessed to check the gfn
-+	 * cache generation against the memslots generation.
-+	 */
-+	idx = srcu_read_lock(&kvm->srcu);
- 	if (kvm_write_guest(kvm, gfn_to_gpa(gfn),
- 			    &hv->tsc_ref, sizeof(hv->tsc_ref.tsc_sequence)))
- 		hv->hv_tsc_page_status = HV_TSC_PAGE_BROKEN;
-+	srcu_read_unlock(&kvm->srcu, idx);
- 
- out_unlock:
- 	mutex_unlock(&hv->hv_lock);
+-	if (time_before(jiffies, req->rq_minortimeo))
+-		return status;
+ 	if (time_before(jiffies, req->rq_majortimeo)) {
++		if (time_before(jiffies, req->rq_minortimeo))
++			return status;
+ 		if (to->to_exponential)
+ 			req->rq_timeout <<= 1;
+ 		else
 -- 
-2.25.1
+2.30.2
+
+
 
