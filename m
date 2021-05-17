@@ -2,92 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDEFD3822D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 04:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B1433822E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 04:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233784AbhEQCkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 May 2021 22:40:53 -0400
-Received: from mga02.intel.com ([134.134.136.20]:34015 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233524AbhEQCkw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 May 2021 22:40:52 -0400
-IronPort-SDR: m1N9fxitMZAxCQQVig5l420jkQSoCAmA2DcNmuzOq7iaw7KbHlMUbKN6A2Zu+6fjievAUNXKqL
- gJJIss17ixTg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9986"; a="187495306"
-X-IronPort-AV: E=Sophos;i="5.82,306,1613462400"; 
-   d="scan'208";a="187495306"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 May 2021 19:39:36 -0700
-IronPort-SDR: AZemN1N+C9Rz0wCLcGxfq2qNnmL2gA/lD5poLSS9/b7+cIqc846WgRqzFxixF3dqotq2JGhpJw
- Li+Tp5ttk4/A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,306,1613462400"; 
-   d="scan'208";a="626267587"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
-  by fmsmga006.fm.intel.com with ESMTP; 16 May 2021 19:39:34 -0700
-Cc:     baolu.lu@linux.intel.com, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Ashok Raj <ashok.raj@intel.com>,
-        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 392/530] iommu/vt-d: Preset Access/Dirty bits for
- IOVA over FL
-To:     =?UTF-8?Q?Wolfgang_M=c3=bcller?= <wolf@oriole.systems>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20210512144819.664462530@linuxfoundation.org>
- <20210512144832.660153884@linuxfoundation.org>
- <20210515132855.4bn7ve2ozvdhpnj4@nabokov.fritz.box>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <5d9b2c1a-f2f4-a9db-a14b-b6a31da59f54@linux.intel.com>
-Date:   Mon, 17 May 2021 10:38:42 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S233825AbhEQCvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 May 2021 22:51:09 -0400
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:60991 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229661AbhEQCvH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 16 May 2021 22:51:07 -0400
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 14H2nThF031004;
+        Mon, 17 May 2021 11:49:30 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 14H2nThF031004
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1621219770;
+        bh=BlDuqY9vGz6gg8gF6Ez1NhQjRQ3zVpTIC+qoFRfVW58=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=oe8DLjmTslGbVHZBTuEaPUV5obaGDkdPbTruXgzRLw29WyYvbC6dotL/bqnHlpvxL
+         2HhEHCYY9melTeDXzcUMZ+SlcGT4sQ35XsvehOn78Vj8Oc0zy767XPzzsWQoxolhvm
+         MUH4qU2DVL+Y66ahmaSl50+g5l5nFVFZVNdaCMIbHPvsSqLsHhQMnD6dqebFePOedM
+         81FR6OvrFwPANVZxZUwsSL9POygPFAqK1Rnq44Rz5y5PVJNtOT34NWyExFHpVrd7jJ
+         HGnxvSbaJ7cgn6SV0mllliy8bVMmeryiUWXn1vxuSCMYMgbm5LUQ6OXcuPGkXEGsTo
+         IGbxye/Q6vD8w==
+X-Nifty-SrcIP: [209.85.210.178]
+Received: by mail-pf1-f178.google.com with SMTP id w1so1303194pfu.0;
+        Sun, 16 May 2021 19:49:29 -0700 (PDT)
+X-Gm-Message-State: AOAM531Kl6Hm6MXabIhlwwC1GgRjCqR4iaxFsdHaCKHs9oK4eX+N92O8
+        NzeqJrt+x0WP0iXJ2xsWXziX6m+n/aiF2ENfYBQ=
+X-Google-Smtp-Source: ABdhPJzcIh10qvepSeRPqigyMT/8QPGLp73hIekQ8h2nLYsdRUOCvsLJ4ZTBfwOvUPO2xxslgUXXf6xMj9LsBmfiPLM=
+X-Received: by 2002:aa7:94af:0:b029:28e:80ff:cc1d with SMTP id
+ a15-20020aa794af0000b029028e80ffcc1dmr57688983pfl.63.1621219769255; Sun, 16
+ May 2021 19:49:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210515132855.4bn7ve2ozvdhpnj4@nabokov.fritz.box>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <13e53f8f5dab1e3e070b4cb34bbe8b89f85f5326.1621076083.git.mkubecek@suse.cz>
+In-Reply-To: <13e53f8f5dab1e3e070b4cb34bbe8b89f85f5326.1621076083.git.mkubecek@suse.cz>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 17 May 2021 11:48:52 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQewGP4aRU-Xm60wTZuJ5-u2jPcgxNSBxUP0VjzprtMhg@mail.gmail.com>
+Message-ID: <CAK7LNAQewGP4aRU-Xm60wTZuJ5-u2jPcgxNSBxUP0VjzprtMhg@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: dummy-tools: adjust to stricter stackprotector check
+To:     Michal Kubecek <mkubecek@suse.cz>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@suse.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wolfgang,
+On Sat, May 15, 2021 at 7:58 PM Michal Kubecek <mkubecek@suse.cz> wrote:
+>
+> Commit 3fb0fdb3bbe7 ("x86/stackprotector/32: Make the canary into a regular
+> percpu variable") modified the stackprotector check on 32-bit x86 to check
+> if gcc supports using %fs as canary. Adjust dummy-tools gcc script to pass
+> this new test by returning "%fs" rather than "%gs" if it detects
+> -mstack-protector-guard-reg=fs on command line.
+>
+> Fixes: 3fb0fdb3bbe7 ("x86/stackprotector/32: Make the canary into a regular percpu variable")
+> Signed-off-by: Michal Kubecek <mkubecek@suse.cz>
 
-On 5/15/21 9:28 PM, Wolfgang Müller wrote:
-> Hi!
-> 
-> First of all, apologies if this is the wrong place to post a problem
-> report. I figured since I was going to reference a particular commit
-> anyway I might as well reply to the patch series that (seemed to have)
-> introduced the problem.
-> 
->> From: Lu Baolu <baolu.lu@linux.intel.com>
->>
->> [ Upstream commit a8ce9ebbecdfda3322bbcece6b3b25888217f8e3 ]
->>
->> The Access/Dirty bits in the first level page table entry will be set
->> whenever a page table entry was used for address translation or write
->> permission was successfully translated. This is always true when using
->> the first-level page table for kernel IOVA. Instead of wasting hardware
->> cycles to update the certain bits, it's better to set them up at the
->> beginning.
-> 
-> This commit seems to trigger a kernel panic very early in boot for me in
-> 5.10.37 (36 is fine):
 
-It seems due to the back-ported patch:
+Applied to linux-kbuild/fixes.
+Thanks.
 
--	if (!sg) {
--		sg_res = nr_pages;
--		pteval = ((phys_addr_t)phys_pfn << VTD_PAGE_SHIFT) | attr;
-+		if (domain->domain.type == IOMMU_DOMAIN_DMA) {
-+			attr |= DMA_FL_PTE_ACCESS;
-+			if (prot & DMA_PTE_WRITE)
-+				attr |= DMA_FL_PTE_DIRTY;
-+		}
-  	}
+> ---
+>  scripts/dummy-tools/gcc | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/scripts/dummy-tools/gcc b/scripts/dummy-tools/gcc
+> index f6d543725f1e..b2483149bbe5 100755
+> --- a/scripts/dummy-tools/gcc
+> +++ b/scripts/dummy-tools/gcc
+> @@ -76,7 +76,11 @@ fi
+>  if arg_contain -S "$@"; then
+>         # For scripts/gcc-x86-*-has-stack-protector.sh
+>         if arg_contain -fstack-protector "$@"; then
+> -               echo "%gs"
+> +               if arg_contain -mstack-protector-guard-reg=fs "$@"; then
+> +                       echo "%fs"
+> +               else
+> +                       echo "%gs"
+> +               fi
+>                 exit 0
+>         fi
+>
+> --
+> 2.31.1
+>
 
-+	pteval = ((phys_addr_t)phys_pfn << VTD_PAGE_SHIFT) | attr;
 
-Greg, do you want me to rework this patch, or submit an incremental fix?
-
-Best regards,
-baolu
+-- 
+Best Regards
+Masahiro Yamada
