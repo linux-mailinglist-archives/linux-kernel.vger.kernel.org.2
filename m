@@ -2,76 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0584B382B54
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:40:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A70D5382B57
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236774AbhEQLlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 07:41:32 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2998 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236720AbhEQLlb (ORCPT
+        id S236854AbhEQLmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 07:42:38 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:48729 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236720AbhEQLmf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 07:41:31 -0400
-Received: from dggems703-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FkHCd3JgzzQnCJ;
-        Mon, 17 May 2021 19:36:45 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggems703-chm.china.huawei.com (10.3.19.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 17 May 2021 19:40:13 +0800
-Received: from [10.174.178.174] (10.174.178.174) by
- dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 17 May 2021 19:40:13 +0800
-Subject: Re: [PATCH -next] media: i2c: ov5648: fix wrong pointer passed to
- IS_ERR() and PTR_ERR()
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>
-CC:     <mchehab@kernel.org>
-References: <20210330130446.1053644-1-yangyingliang@huawei.com>
-Message-ID: <f4480fa4-3b7b-cce2-034b-9f458b1026d4@huawei.com>
-Date:   Mon, 17 May 2021 19:40:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Mon, 17 May 2021 07:42:35 -0400
+Received: by mail-io1-f70.google.com with SMTP id y191-20020a6bc8c80000b02904313407018fso3079779iof.15
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 04:41:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=t/TTXaV8QzTwuwOYqij+ItJRixCda6NgpqvvtZno+bU=;
+        b=EzQ1xgJWJnjrtaqjHt/q1zDE4aN+/Q0klXJrHpu7Iu9NkHLne5DraYLyqTvIbIB1JM
+         5wk8HAp9hcZztJWGaC6vHR0MYjpU5fmZPuWgh5ujZxt7/4sFmYyBmfKj/xMBTUec5uwY
+         nRbaDQx+8riWOwde7/YizHHHlRecSXZdDx5cBXrYHtcIjE+qoAD1umw/bZ6hRcjCHDLX
+         1qWEMSJpqw6rc29Oi0QgJY3oPfEyyXVGpLOmWgDt7JsI9qCOQ4i6M2BB/6raZ0LPf4VZ
+         pT8HmdwlM9UTfWtL+ZUyi/QMjBDOVGJ50x3iKD4tWJo9CU0zOAyzpWgyMeweb2WlGviA
+         Bkzg==
+X-Gm-Message-State: AOAM5321V1jgTQYNuLntxPLQIFLCC5CHcVPr3aAfcUM+RrcT5Tdw6fi0
+        2jtWR2ulxbipUgiMw9I+xQVbrc6/fKw10ezhDIb+O3JFVuy7
+X-Google-Smtp-Source: ABdhPJyqP92rXNkSdYoX7hHrZMo8thWR4jVx81B/+5ceA5YlaEId65TEAPAkVsMo0ApsUs0ohPwNrTFtFwUObd+PqqtQCBiTa5il
 MIME-Version: 1.0
-In-Reply-To: <20210330130446.1053644-1-yangyingliang@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.178.174]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+X-Received: by 2002:a05:6e02:1b0f:: with SMTP id i15mr33182851ilv.164.1621251679397;
+ Mon, 17 May 2021 04:41:19 -0700 (PDT)
+Date:   Mon, 17 May 2021 04:41:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000712bf205c28512b3@google.com>
+Subject: [syzbot] linux-next boot error: can't ssh into the instance (4)
+From:   syzbot <syzbot+9bc9321e24cb69b1d70b@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ping...
+Hello,
 
-On 2021/3/30 21:04, Yang Yingliang wrote:
-> IS_ERR() and PTR_ERR() use wrong pointer, it should be
-> sensor->dovdd, fix it.
->
-> Fixes: e43ccb0a045f ("media: i2c: Add support for the OV5648 image sensor")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> ---
->   drivers/media/i2c/ov5648.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/media/i2c/ov5648.c b/drivers/media/i2c/ov5648.c
-> index dfe38ab8224d..db6f626f92fb 100644
-> --- a/drivers/media/i2c/ov5648.c
-> +++ b/drivers/media/i2c/ov5648.c
-> @@ -2494,9 +2494,9 @@ static int ov5648_probe(struct i2c_client *client)
->   
->   	/* DOVDD: digital I/O */
->   	sensor->dovdd = devm_regulator_get(dev, "dovdd");
-> -	if (IS_ERR(sensor->dvdd)) {
-> +	if (IS_ERR(sensor->dovdd)) {
->   		dev_err(dev, "cannot get DOVDD (digital I/O) regulator\n");
-> -		ret = PTR_ERR(sensor->dvdd);
-> +		ret = PTR_ERR(sensor->dovdd);
->   		goto error_endpoint;
->   	}
->   
+syzbot found the following issue on:
+
+HEAD commit:    18250b53 Add linux-next specific files for 20210416
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=15f554c5d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1a0849068413e97e
+dashboard link: https://syzkaller.appspot.com/bug?extid=9bc9321e24cb69b1d70b
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9bc9321e24cb69b1d70b@syzkaller.appspotmail.com
+
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
