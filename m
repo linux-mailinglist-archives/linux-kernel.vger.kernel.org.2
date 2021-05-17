@@ -2,256 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C75DB386CF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 00:31:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EAB3386CFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 00:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343760AbhEQWcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 18:32:33 -0400
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:41900 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238052AbhEQWcc (ORCPT
+        id S1343794AbhEQWdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 18:33:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238052AbhEQWdH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 18:32:32 -0400
-Received: by mail-oi1-f178.google.com with SMTP id c3so7927529oic.8;
-        Mon, 17 May 2021 15:31:15 -0700 (PDT)
+        Mon, 17 May 2021 18:33:07 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCCA0C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 15:31:49 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id a2so11069360lfc.9
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 15:31:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tGw1wUzHGygdPQiaQ+eAoRqhEvUaiTqtJWO/+qT7Sec=;
+        b=BsKOnZSskjk3+kihrvXS6DVXY5L/+N52zGT9+xiTUxQxTkAIKdsxQLyk1O7ORMVhUR
+         mXoxSePwmtbrgsbhAU0zLqL45GrRsCHLjjZQ7tGsvZ2BaFd72dIQ1Hw5p73GwX8gGtur
+         1ZD92hodIXcVN7RvDQo4Glh8y2YWuP2LU2fNc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=sFKNGNEQ4VFVCXqmElsYGXP7lxtAMHRJSrvTNQOM490=;
-        b=DyB4BPHWMSSwGRDe3V581M9o7FQAfyxCyDH5+yl0M8RVdxkOir4HmRqvl4R+zQNzck
-         t0bf76hAkAshzX+Wsy8sfBSZMZnMKs2lprzvJpSdjAESePd17girU8X+h5xgJfcxtUw/
-         Qnd664cgANYio6fexJ1wvqBIxR/+daE11xVFeCaPMg0NZyoj1OX4HHw5o7+Sy69eQtN+
-         Hj3y8mdg4A1F1Mij/44kj5WV2hgCr4gsDtDREyGh5i9112K6NwcZei82qosXrmt1IJEc
-         Kr8Jtb+ryWmzC33T0wess2oGcmyLpxzoOdTuTM8sXqZkx5RvA6YAwAomZ3MUPgGXEGCy
-         OMcg==
-X-Gm-Message-State: AOAM530s5cAkHuiBkKgQyIqBJv6xmFdgEHu2puu8+I71Ut+mAUwYXMx2
-        jbDJu9rz0k6Wv4DoYdA9pjiXhXRV6A==
-X-Google-Smtp-Source: ABdhPJyTx0tTbvBWR12HGJ/Tfyg0uKPJqwr/U4h6fL7DPGpyeQRGomUIbg2fcZz8Eqjg/H3FO47HZg==
-X-Received: by 2002:a54:4809:: with SMTP id j9mr1021877oij.14.1621290674837;
-        Mon, 17 May 2021 15:31:14 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 19sm2964559oiy.11.2021.05.17.15.31.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 15:31:14 -0700 (PDT)
-Received: (nullmailer pid 3326623 invoked by uid 1000);
-        Mon, 17 May 2021 22:31:13 -0000
-Date:   Mon, 17 May 2021 17:31:13 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Sander Vanheule <sander@svanheule.net>
-Cc:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee.jones@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] dt-bindings: leds: Binding for RTL8231 scan matrix
-Message-ID: <20210517223113.GA3302542@robh.at.kernel.org>
-References: <cover.1620735871.git.sander@svanheule.net>
- <cb1910ab6ba0795666df1034b47221f8bac160f9.1620735871.git.sander@svanheule.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tGw1wUzHGygdPQiaQ+eAoRqhEvUaiTqtJWO/+qT7Sec=;
+        b=BrcLABmW4RYFWS8e2mV2baAbzb84dRD9u082SnaVbVAcewIf/Nl+kSNVsNQDSuKgU0
+         V5g5ecQUTaT5wsAOadS1nJ4aAWBcLYeYpCy3v2ZxyqyOIuAIQUMZY/+/56rEicUsC8Xl
+         Z/GujZ/goyayb/YF3SDYKcKqRQaAUSXRHYTN4wLiHhZq+cU7PkpZwcoOfRRNqdvi1nIg
+         aMobeOhNMZ1pij/9nBkIUHEW7pYih4b2UT6kIxF9QR/+OPp2qNSrWMSL5mIovXUs85lv
+         l+FwPLTUXUs+0OoNVsKshwNso9SP9Lb4kFtsW3NEy5qf6d/AHkPwQuFOlPqSFt6KiDjo
+         ghUA==
+X-Gm-Message-State: AOAM530u0gxUBmUm5biKhA+9PnsThrvov0c3eSVc3F3c05C7lEDf1PXZ
+        GI0+QJDKpEH7f6xJ0IIv+9h9qBRp/NNumobR
+X-Google-Smtp-Source: ABdhPJwPbOfBVK6qGrwI2C59SWxGZf3IPuKKZyUHdgOqdchEQVJb9FU8myory6qIQzYUGrzvdBCw5Q==
+X-Received: by 2002:ac2:4186:: with SMTP id z6mr1463549lfh.16.1621290708275;
+        Mon, 17 May 2021 15:31:48 -0700 (PDT)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
+        by smtp.gmail.com with ESMTPSA id w27sm1684235lfl.195.2021.05.17.15.31.47
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 May 2021 15:31:47 -0700 (PDT)
+Received: by mail-lf1-f43.google.com with SMTP id m11so11105703lfg.3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 15:31:47 -0700 (PDT)
+X-Received: by 2002:a19:ca15:: with SMTP id a21mr1421228lfg.487.1621290707592;
+ Mon, 17 May 2021 15:31:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cb1910ab6ba0795666df1034b47221f8bac160f9.1620735871.git.sander@svanheule.net>
+References: <CAHk-=wgX-4PTGAH7kRvqHYiq9wPJ-zN6jhLsuOAj6cG__g9N9A@mail.gmail.com>
+ <20210517135653.GA2116459@roeck-us.net>
+In-Reply-To: <20210517135653.GA2116459@roeck-us.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 17 May 2021 15:31:31 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whUsAw7g6x4ianP1VxsADr1b+fitmQ2qecrq70d9r3ZJQ@mail.gmail.com>
+Message-ID: <CAHk-=whUsAw7g6x4ianP1VxsADr1b+fitmQ2qecrq70d9r3ZJQ@mail.gmail.com>
+Subject: Re: Linux 5.13-rc2
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 02:25:19PM +0200, Sander Vanheule wrote:
-> Add a binding description for the Realtek RTL8231's LED support, which
-> consists of up to 88 LEDs arranged in a number of scanning matrices.
-> 
-> Signed-off-by: Sander Vanheule <sander@svanheule.net>
-> ---
->  .../bindings/leds/realtek,rtl8231-leds.yaml   | 159 ++++++++++++++++++
->  1 file changed, 159 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/leds/realtek,rtl8231-leds.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/leds/realtek,rtl8231-leds.yaml b/Documentation/devicetree/bindings/leds/realtek,rtl8231-leds.yaml
-> new file mode 100644
-> index 000000000000..aba2b55fb9c9
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/leds/realtek,rtl8231-leds.yaml
-> @@ -0,0 +1,159 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/leds/realtek,rtl8231-leds.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Realtek RTL8231 LED scan matrix.
-> +
-> +maintainers:
-> +  - Sander Vanheule <sander@svanheule.net>
-> +
-> +description: |
-> +  The RTL8231 has support for driving a number of LED matrices, by scanning
-> +  over the LEDs pins, alternatingly lighting different columns and/or rows.
-> +
-> +  In single color scan mode, 88 LEDs are supported. These are grouped into
-> +  three output matrices:
-> +    - Group A of 6×6 single color LEDs. Rows and columns are driven by GPIO
-> +      pins 0-11.
-> +               L0[n]    L1[n]    L2[n]    L0[n+6]  L1[n+6]  L2[n+6]
-> +                |        |        |        |        |        |
-> +       P0/P6  --<--------<--------<--------<--------<--------< (3)
-> +                |        |        |        |        |        |
-> +       P1/P7  --<--------<--------<--------<--------<--------< (4)
-> +                |        |        |        |        |        |
-> +       P2/P8  --<--------<--------<--------<--------<--------< (5)
-> +                |        |        |        |        |        |
-> +       P3/P9  --<--------<--------<--------<--------<--------< (6)
-> +                |        |        |        |        |        |
-> +       P4/P10 --<--------<--------<--------<--------<--------< (7)
-> +                |        |        |        |        |        |
-> +       P5/P11 --<--------<--------<--------<--------<--------< (8)
-> +               (0)      (1)      (2)      (9)     (10)     (11)
-> +    - Group B of 6×6 single color LEDs. Rows and columns are driven by GPIO
-> +      pins 12-23.
-> +               L0[n]    L1[n]    L2[n]    L0[n+6]  L1[n+6]  L2[n+6]
-> +                |        |        |        |        |        |
-> +      P12/P18 --<--------<--------<--------<--------<--------< (15)
-> +                |        |        |        |        |        |
-> +      P13/P19 --<--------<--------<--------<--------<--------< (16)
-> +                |        |        |        |        |        |
-> +      P14/P20 --<--------<--------<--------<--------<--------< (17)
-> +                |        |        |        |        |        |
-> +      P15/P21 --<--------<--------<--------<--------<--------< (18)
-> +                |        |        |        |        |        |
-> +      P16/P22 --<--------<--------<--------<--------<--------< (19)
-> +                |        |        |        |        |        |
-> +      P17/P23 --<--------<--------<--------<--------<--------< (20)
-> +              (12)     (13)     (14)    (21)      (22)     (23)
-> +    - Group C of 8 pairs of anti-parallel (or bi-color) LEDs. LED selection is
-> +      provided by GPIO pins 24-27 and 29-32, polarity selection by GPIO 28.
-> +               P24     P25  ...  P30     P31
-> +                |       |         |       |
-> +      LED POL --X-------X---/\/---X-------X (28)
-> +              (24)    (25)  ... (31)    (32)
-> +
-> +  In bi-color scan mode, 72 LEDs are supported. These are grouped into four
-> +  output matrices:
-> +    - Group A of 12 pairs of anti-parallel LEDs. LED selection is provided
-> +      by GPIO pins 0-11, polarity selection by GPIO 12.
-> +    - Group B of 6 pairs of anti-parallel LEDs. LED selection is provided
-> +      by GPIO pins 23-28, polarity selection by GPIO 21.
-> +    - Group C of 6 pairs of anti-parallel LEDs. LED selection is provided
-> +      by GPIO pins 29-34, polarity selection by GPIO 22.
-> +    - Group of 4×6 single color LEDs. Rows are driven by GPIO pins 15-20,
-> +      columns by GPIO pins 13-14 and 21-22 (shared with groups B and C).
-> +          P[n]     P[n+6]   P[n+12]  P[n+18]
-> +            |        |        |        |
-> +       +0 --<--------<--------<--------< (15)
-> +            |        |        |        |
-> +       +1 --<--------<--------<--------< (16)
-> +            |        |        |        |
-> +       +2 --<--------<--------<--------< (17)
-> +            |        |        |        |
-> +       +3 --<--------<--------<--------< (18)
-> +            |        |        |        |
-> +       +4 --<--------<--------<--------< (19)
-> +            |        |        |        |
-> +       +6 --<--------<--------<--------< (20)
-> +          (13)     (14)     (21)     (22)
-> +
-> +  This node must always be a child of a 'realtek,rtl8231' node.
-> +
-> +properties:
-> +  $nodename:
-> +    const: leds
+On Mon, May 17, 2021 at 6:56 AM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> I have seen a pull request that fixes the raspi2 problem. Hopefully that
+> fix should be in -rc3.
 
-led-controller
+Hmm. That commit actually made it into rc2. We're talking about that
+commit bb4031b8af80 ("clk: Skip clk provider registration when np is
+NULL"), aren't we?
 
-> +
-> +  compatible:
-> +    const: realtek,rtl8231-leds
+That's the patch that you reported fixed it for you.
 
-How is this device controlled?
+And it got merged by me (commit 28183dbf54ed: "Merge tag
+'driver-core-5.13-rc2' .."), and is part of rc2.
 
-> +
-> +  "#address-cells":
-> +    const: 2
-> +
-> +  "#size-cells":
-> +    const: 0
-> +
-> +  realtek,led-scan-mode:
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +    description: |
-> +      Specify the scanning mode the chip should run in. See general description
-> +      for how the scanning matrices are wired up.
-> +    enum: ["single-color", "bi-color"]
-> +
-> +patternProperties:
-> +  "^led@[0-9]+,[0-2]$":
-> +    description: |
-> +      LEDs are addressed by their port index and led index. Ports 0-23 always
-> +      support three LEDs. Additionally, but only when used in single color scan
-> +      mode, ports 24-31 support two LEDs.
+So if rc2 still has some raspi2 failures, there's something else going on..
 
-Normally unit-addresses are hex values.
+Strange. Mind double-checking?
 
-> +    type: object
-> +
-> +    properties:
-> +      reg:
-> +        maxItems: 1
-
-This should have more constraints:
-
-reg:
-  items: 
-    - items:
-        - description: port index
-          maximum: 31
-        - description: led index
-          maximum: 2
-
-> +
-> +    allOf:
-> +      - $ref: ../leds/common.yaml#
-> +
-> +    required:
-> +      - reg
-> +
-> +required:
-> +  - compatible
-> +  - "#address-cells"
-> +  - "#size-cells"
-> +  - realtek,led-scan-mode
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/leds/common.h>
-> +    leds {
-> +        compatible = "realtek,rtl8231-leds";
-> +        #address-cells = <2>;
-> +        #size-cells = <0>;
-> +
-> +        realtek,led-scan-mode = "single-color";
-> +
-> +        led@0,0 {
-> +            reg = <0 0>;
-> +            color = <LED_COLOR_ID_GREEN>;
-> +            function = LED_FUNCTION_LAN;
-> +            function-enumerator = <0>;
-> +        };
-> +
-> +        led@0,1 {
-> +            reg = <0 1>;
-> +            color = <LED_COLOR_ID_AMBER>;
-> +            function = LED_FUNCTION_LAN;
-> +            function-enumerator = <0>;
-> +        };
-> +
-> +        led@0,2 {
-> +            reg = <0 2>;
-> +            color = <LED_COLOR_ID_GREEN>;
-> +            function = LED_FUNCTION_STATUS;
-> +        };
-> +    };
-> -- 
-> 2.31.1
-> 
+                Linus
