@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B57438347D
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:11:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9DB3383483
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:11:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243230AbhEQPJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:09:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34300 "EHLO mail.kernel.org"
+        id S243392AbhEQPJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:09:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242551AbhEQO7y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:59:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8157460FDB;
-        Mon, 17 May 2021 14:26:33 +0000 (UTC)
+        id S242563AbhEQO74 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:59:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 902AF61002;
+        Mon, 17 May 2021 14:26:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261594;
-        bh=k5C75qtX6axUQoPUFNu69OAcxdQJxSQiBnEDC1eZvvU=;
+        s=korg; t=1621261601;
+        bh=DyR27eA7BveT8S5A53uC42YSqXL53DAj2gw+VDf+7jA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kASheDvLRf0EVoZj/FlRJYG8QklVbHHJmjbpRxnZjV+JzytBesU+2nYirPqUwgBPK
-         geS9BaKAZxPutYOUW0yzME2bcBaUnxIwNR/RMMiC0k28FVgzCMCWtrXyDP7AHJ8Y/a
-         MYAXn2SArgMEjAXG7ygxPl3YQjY85e0yeq6WbIQk=
+        b=i8Fsh/4A4O8tuQQF/cjWQgk6ib4cbm6ogi+mb8LL7RTjpHWWvqHjamTCGHnf4XbQe
+         I+skf7ca2EWC7rANLM5m/029/ZojE0sKwDBU01Y951wOt+6LOeI+ires/mP/E1Y5zK
+         fm6WUyBec7kE0t9sG48TfKQK4JYMU7t5fZ3X3KMI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Walle <michael@walle.cc>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        stable@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
+        Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 063/141] rtc: fsl-ftm-alarm: add MODULE_TABLE()
-Date:   Mon, 17 May 2021 16:01:55 +0200
-Message-Id: <20210517140244.884444912@linuxfoundation.org>
+Subject: [PATCH 5.4 064/141] ceph: fix inode leak on getattr error in __fh_to_dentry
+Date:   Mon, 17 May 2021 16:01:56 +0200
+Message-Id: <20210517140244.917434824@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
 References: <20210517140242.729269392@linuxfoundation.org>
@@ -40,34 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Walle <michael@walle.cc>
+From: Jeff Layton <jlayton@kernel.org>
 
-[ Upstream commit 7fcb86185978661c9188397d474f90364745b8d9 ]
+[ Upstream commit 1775c7ddacfcea29051c67409087578f8f4d751b ]
 
-The module doesn't load automatically. Fix it by adding the missing
-MODULE_TABLE().
-
-Fixes: 7b0b551dbc1e ("rtc: fsl-ftm-alarm: add FTM alarm driver")
-Signed-off-by: Michael Walle <michael@walle.cc>
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Link: https://lore.kernel.org/r/20210414084006.17933-1-michael@walle.cc
+Fixes: 878dabb64117 ("ceph: don't return -ESTALE if there's still an open file")
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+Reviewed-by: Xiubo Li <xiubli@redhat.com>
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/rtc/rtc-fsl-ftm-alarm.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/ceph/export.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/rtc/rtc-fsl-ftm-alarm.c b/drivers/rtc/rtc-fsl-ftm-alarm.c
-index 8df2075af9a2..835695bedaac 100644
---- a/drivers/rtc/rtc-fsl-ftm-alarm.c
-+++ b/drivers/rtc/rtc-fsl-ftm-alarm.c
-@@ -316,6 +316,7 @@ static const struct of_device_id ftm_rtc_match[] = {
- 	{ .compatible = "fsl,lx2160a-ftm-alarm", },
- 	{ },
- };
-+MODULE_DEVICE_TABLE(of, ftm_rtc_match);
- 
- static struct platform_driver ftm_rtc_driver = {
- 	.probe		= ftm_rtc_probe,
+diff --git a/fs/ceph/export.c b/fs/ceph/export.c
+index e088843a7734..baa6368bece5 100644
+--- a/fs/ceph/export.c
++++ b/fs/ceph/export.c
+@@ -178,8 +178,10 @@ static struct dentry *__fh_to_dentry(struct super_block *sb, u64 ino)
+ 		return ERR_CAST(inode);
+ 	/* We need LINK caps to reliably check i_nlink */
+ 	err = ceph_do_getattr(inode, CEPH_CAP_LINK_SHARED, false);
+-	if (err)
++	if (err) {
++		iput(inode);
+ 		return ERR_PTR(err);
++	}
+ 	/* -ESTALE if inode as been unlinked and no file is open */
+ 	if ((inode->i_nlink == 0) && (atomic_read(&inode->i_count) == 1)) {
+ 		iput(inode);
 -- 
 2.30.2
 
