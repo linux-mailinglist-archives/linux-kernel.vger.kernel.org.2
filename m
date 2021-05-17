@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55A5438348B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0C8E38348E
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:11:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243555AbhEQPKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:10:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60758 "EHLO mail.kernel.org"
+        id S243621AbhEQPK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:10:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241412AbhEQPBA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:01:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8290161482;
-        Mon, 17 May 2021 14:27:02 +0000 (UTC)
+        id S241479AbhEQPBD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:01:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 23B4661350;
+        Mon, 17 May 2021 14:27:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261623;
-        bh=Vkdazf81eNPntKsn1XK0QZ1xNKS8Daz7i776niXDBOo=;
+        s=korg; t=1621261629;
+        bh=xLpDf4K2JjtPSvXNkULM/lu74JUPeBUuWOGi/Nb0DLU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0nSygSrsMOOXgSvPwGVtnKAIxq6KbgMnKrAk3GsvkdJt6RBtYZeTTGX+25W86Lgd/
-         hiOPlSg5EiRW9et1G/OQQESTEu5d1X4up8X2Fl4fF6ng7cXb+yo7RQafIRpQW2Y/i1
-         jI8Idge1EONl+Dv3UgzRJ4UYwdt4Y4odZsz7iNe4=
+        b=pDnvHSFSGKDZzlNh+0Mp+rR5TTa/EarttT3KEPfba0O721DzhabUwWzmLF5Tsrr45
+         zVyHvMtTpCZRM82Y84cvBVRqQxA2owMITUkgSiCloZHodYcn9BoaeQAxXzzBsXs7Kl
+         Ij8F4ShMJojbQXDAi/1mN5qyRhENPL2pK/Y7m1dg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yufeng Mo <moyufeng@huawei.com>,
+        stable@vger.kernel.org, Jian Shen <shenjian15@huawei.com>,
         Huazhong Tan <tanhuazhong@huawei.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 067/141] net: hns3: initialize the message content in hclge_get_link_mode()
-Date:   Mon, 17 May 2021 16:01:59 +0200
-Message-Id: <20210517140245.032258768@linuxfoundation.org>
+Subject: [PATCH 5.4 068/141] net: hns3: add check for HNS3_NIC_STATE_INITED in hns3_reset_notify_up_enet()
+Date:   Mon, 17 May 2021 16:02:00 +0200
+Message-Id: <20210517140245.063416417@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
 References: <20210517140242.729269392@linuxfoundation.org>
@@ -41,36 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yufeng Mo <moyufeng@huawei.com>
+From: Jian Shen <shenjian15@huawei.com>
 
-[ Upstream commit 568a54bdf70b143f3e0befa298e22ad469ffc732 ]
+[ Upstream commit b4047aac4ec1066bab6c71950623746d7bcf7154 ]
 
-The message sent to VF should be initialized, otherwise random
-value of some contents may cause improper processing by the target.
-So add a initialization to message in hclge_get_link_mode().
+In some cases, the device is not initialized because reset failed.
+If another task calls hns3_reset_notify_up_enet() before reset
+retry, it will cause an error since uninitialized pointer access.
+So add check for HNS3_NIC_STATE_INITED before calling
+hns3_nic_net_open() in hns3_reset_notify_up_enet().
 
-Fixes: 9194d18b0577 ("net: hns3: fix the problem that the supported port is empty")
-Signed-off-by: Yufeng Mo <moyufeng@huawei.com>
+Fixes: bb6b94a896d4 ("net: hns3: Add reset interface implementation in client")
+Signed-off-by: Jian Shen <shenjian15@huawei.com>
 Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c
-index f5da28a60d00..23a706a1765a 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c
-@@ -455,7 +455,7 @@ static void hclge_get_link_mode(struct hclge_vport *vport,
- 	unsigned long advertising;
- 	unsigned long supported;
- 	unsigned long send_data;
--	u8 msg_data[10];
-+	u8 msg_data[10] = {};
- 	u8 dest_vfid;
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+index 696f21543aa7..6b43cbf4f909 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+@@ -4280,6 +4280,11 @@ static int hns3_reset_notify_up_enet(struct hnae3_handle *handle)
+ 	struct hns3_nic_priv *priv = netdev_priv(kinfo->netdev);
+ 	int ret = 0;
  
- 	advertising = hdev->hw.mac.advertising[0];
++	if (!test_bit(HNS3_NIC_STATE_INITED, &priv->state)) {
++		netdev_err(kinfo->netdev, "device is not initialized yet\n");
++		return -EFAULT;
++	}
++
+ 	clear_bit(HNS3_NIC_STATE_RESETTING, &priv->state);
+ 
+ 	if (netif_running(kinfo->netdev)) {
 -- 
 2.30.2
 
