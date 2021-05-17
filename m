@@ -2,148 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD930382C07
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 14:24:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 059CC382C11
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 14:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236984AbhEQMZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 08:25:41 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:50410 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230123AbhEQMZk (ORCPT
+        id S237011AbhEQM3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 08:29:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231161AbhEQM3A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 08:25:40 -0400
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 3E0911F4202E;
-        Mon, 17 May 2021 13:24:22 +0100 (BST)
-Date:   Mon, 17 May 2021 14:24:18 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Patrice CHOTARD <patrice.chotard@foss.st.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-spi@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <christophe.kerello@foss.st.com>
-Subject: Re: [PATCH v2 1/3] spi: spi-mem: add automatic poll status
- functions
-Message-ID: <20210517142418.7689c01f@collabora.com>
-In-Reply-To: <21717dd0-86a7-b3d9-952e-5c7539f90bee@foss.st.com>
-References: <20210507131756.17028-1-patrice.chotard@foss.st.com>
-        <20210507131756.17028-2-patrice.chotard@foss.st.com>
-        <20210517094140.53cb643a@collabora.com>
-        <e70b13ba-7f65-7ff1-0517-94b39615dcdb@foss.st.com>
-        <20210517132551.7dd56a5e@collabora.com>
-        <21717dd0-86a7-b3d9-952e-5c7539f90bee@foss.st.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Mon, 17 May 2021 08:29:00 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EBA2C061573;
+        Mon, 17 May 2021 05:27:43 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id w9so2930092qvi.13;
+        Mon, 17 May 2021 05:27:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RrMgSrZtTqdB/wlv0id/9NlOUPd01Z7kAGWKqnT2c2M=;
+        b=CctOlq+UkKn18QqKAOdc7VqJDwwJKN9HU/A5tTPZ0EUkYGQMbFanD0RNwVHW2f6R4E
+         7fGATCP3I/aegDtzmOBa5y7HYnBAOTRIl+10jhJuS7FOhQbBKJ3dZOOA6X3ITygKqzls
+         GYKmF56nNhO+08TdkpRANu9VXaTwgiFhOUXy8+b44TjtqJNCthTAiLbF/r709SBk+TTr
+         JFfUCWgDEX967xOAuQfbJGZ4in3xZj/3kE8Mf/9i0HFQ65dEhwLg/3wrcJKdfUh8FmVT
+         hxlDPhEvB3cXIZu0UWRwRNkFRYiWjfn70i3oucULeBS2i2/4Qn1sRdt3WfdmU+uTZ/f+
+         PWNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RrMgSrZtTqdB/wlv0id/9NlOUPd01Z7kAGWKqnT2c2M=;
+        b=o0mOKwYepWVVpxPVVWFgoPaBZbfTrIsGxkrg/g/y8NEukfd3Sm3jGA8VJzzbc6BGXc
+         DYTumsMOoVyJSPRDVZvNZdluPAxmeUhbmqlK6g9pxDY15LbtCS0hqTYT5tWMN39Tu6nJ
+         BYUrkcagLw6weSS33nn7OKNnvBNq87qwrQti34z+LV6zqA5d45Yq5lzFrFjGluSXrkkk
+         CN+WNfro4jJMRgyUGtbLuj2omndjJWFNfK8DSAhsoo8q3A1CdJmq8pZPKF2ibuBJwYFG
+         N14jhdmq4u1qfh+XVAdPvWu9WDygAAgXa0cyhJYCunxYx3suvhyfd0XpnEuJIg8iNUqs
+         wxMQ==
+X-Gm-Message-State: AOAM530ciHkAjoKLfSTKclWUICNuAVLZx7SmAT7uS9qPJSoK8bcg04hf
+        VtHrez+i2bnO3WAg/URPHt44nRWh7r3NABm3
+X-Google-Smtp-Source: ABdhPJzM+6xSTMZ2jK4banMxGU90aLBTrZTJZYJp2Lr/pLBs4nDcAdGVJO5Aq8VNiSxT+2/N1fJnug==
+X-Received: by 2002:a05:6214:87:: with SMTP id n7mr16082560qvr.1.1621254462149;
+        Mon, 17 May 2021 05:27:42 -0700 (PDT)
+Received: from ?IPv6:2804:14c:125:811b::1003? ([2804:14c:125:811b::1003])
+        by smtp.gmail.com with ESMTPSA id 10sm10377983qka.23.2021.05.17.05.27.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 May 2021 05:27:41 -0700 (PDT)
+Subject: Re: [PATCH] video: hgafb: correctly handle card detect failure during
+ probe
+To:     Anirudh Rayabharam <mail@anirudhrb.com>,
+        Ferenc Bakonyi <fero@drama.obuda.kando.hu>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        kernel test robot <oliver.sang@intel.com>,
+        stable <stable@vger.kernel.org>,
+        linux-nvidia@lists.surfsouth.com, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210516192714.25823-1-mail@anirudhrb.com>
+From:   Igor Torrente <igormtorrente@gmail.com>
+Message-ID: <2b945eaa-4288-1601-3f1a-60f2ceaa1ea7@gmail.com>
+Date:   Mon, 17 May 2021 09:27:38 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210516192714.25823-1-mail@anirudhrb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 May 2021 13:59:54 +0200
-Patrice CHOTARD <patrice.chotard@foss.st.com> wrote:
+Hi,
 
-> Hi 
+On 5/16/21 4:27 PM, Anirudh Rayabharam wrote:
+> The return value of hga_card_detect() is not properly handled causing
+> the probe to succeed even though hga_card_detect() failed. Since probe
+> succeeds, hgafb_open() can be called which will end up operating on an
+> unmapped hga_vram. This results in an out-of-bounds access as reported
+> by kernel test robot [1].
 > 
-> On 5/17/21 1:25 PM, Boris Brezillon wrote:
-> > On Mon, 17 May 2021 11:24:25 +0200
-> > Patrice CHOTARD <patrice.chotard@foss.st.com> wrote:
-> >   
-> >> Hi Boris
-> >>
-> >> On 5/17/21 9:41 AM, Boris Brezillon wrote:  
-> >>> On Fri, 7 May 2021 15:17:54 +0200
-> >>> <patrice.chotard@foss.st.com> wrote:
-> >>>     
-> >>>> +/**
-> >>>> + * spi_mem_poll_status() - Poll memory device status
-> >>>> + * @mem: SPI memory device
-> >>>> + * @op: the memory operation to execute
-> >>>> + * @mask: status bitmask to ckeck
-> >>>> + * @match: (status & mask) expected value
-> >>>> + * @timeout_ms: timeout in milliseconds
-> >>>> + *
-> >>>> + * This function send a polling status request to the controller driver
-> >>>> + *
-> >>>> + * Return: 0 in case of success, -ETIMEDOUT in case of error,
-> >>>> + *         -EOPNOTSUPP if not supported.
-> >>>> + */
-> >>>> +int spi_mem_poll_status(struct spi_mem *mem,
-> >>>> +			const struct spi_mem_op *op,
-> >>>> +			u16 mask, u16 match, u16 timeout_ms)    
-> >>>
-> >>> Maybe you should pass a delay_us too, to poll the status at the right
-> >>> rate in the SW-based case (can also be used by drivers if they need to    
-> >>
-> >> Ok, i will add a polling_rate_us parameter to poll_status() callback,
-> >> even if in STM32 driver case we will not use it, i agree it should be useful 
-> >> depending of driver's implementation.
-> >>  
-> >>> configure the polling rate). You could also add an initial_delay_us to
-> >>> avoid polling the status too early: an erase operation will take longer
-> >>> than a write which will take longer than a read. No need to check the
-> >>> status just after issuing the command, especially if the polling is
-> >>> done in SW. Those 2 arguments should also be passed to the driver.    
-> >>
-> >> Regarding the addition of an initial_delay_us. We got two solution:
-> >>   - use the same polling rate already used by read_poll_timeout() and 
-> >>     set read_poll_timeout()'s sleep_before_read parameter to true (in our case 20 us
-> >>     will be used as initial delay and as polling rate).
-> >>
-> >>   - add an udelay(initial_delay_us) or even better usleep_range(initial_delay_us,
-> >>     initial_delay_us + delta) before calling read_poll_timeout().
-> >>
-> >> I imagine you prefer the second solution ?  
-> > 
-> > Yep, you might want to use udelay() when the delay is small and
-> > usleep_range() otherwise.
-> >   
-> >>
-> >> By adding polling_rate_us and initial_delay_us parameters to 
-> >> spi_mem_poll_status(), it implies to update all spinand_wait() calls for 
-> >> different operations (reset, read page, write page, erase) with respective  
-> >> initial_delay_us/polling_rate_us values for spi_mem_poll_status()'s parameters.
-> >>
-> >> Can you provide adequate initial_delay_us and polling rate_us for each operation type ?.  
-> > 
-> > If I refer to the datasheets I have,
-> > 
-> > tBERS (erase) 1ms to 4ms
-> > tPROG 300us to 400us
-> > tREAD 25us to 100us
-> > 
-> > Let's assume we want to minimize the latency, I'd recommend dividing
-> > the min value by 4 for the initial delay, and dividing it by 20 for the
-> > poll delay, which gives:
-> > 
-> > ERASE -> initial_delay = 250us, poll_delay = 50us
-> > PROG -> initial_delay = 100us, poll_delay = 20us
-> > READ -> initial_delay = 6us, poll_delay = 5us  
+> To fix this, correctly detect failure of hga_card_detect() by checking
+> for a non-zero error code.
 > 
+> [1]: https://lore.kernel.org/lkml/20210516150019.GB25903@xsang-OptiPlex-9020/
 > 
-> What about RESET ? we also need an initial and poll delay too (see spinand_reset_op() )
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Fixes: dc13cac4862c ("video: hgafb: fix potential NULL pointer dereference")
+> Cc: stable <stable@vger.kernel.org>
+> Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+> ---
+>   drivers/video/fbdev/hgafb.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/video/fbdev/hgafb.c b/drivers/video/fbdev/hgafb.c
+> index cc8e62ae93f6..bd3d07aa4f0e 100644
+> --- a/drivers/video/fbdev/hgafb.c
+> +++ b/drivers/video/fbdev/hgafb.c
+> @@ -558,7 +558,7 @@ static int hgafb_probe(struct platform_device *pdev)
+>   	int ret;
+>   
+>   	ret = hga_card_detect();
+> -	if (!ret)
+> +	if (ret)
+>   		return ret;
+>   
+>   	printk(KERN_INFO "hgafb: %s with %ldK of memory detected.\n",
+> 
 
-5us/10us/500us if the device is respectively
-reading/programming/erasing when the RESET occurs. Since we always
-issue a RESET when the device is IDLE, I'd recommend going for 5us for
-both the initial_delay and poll_delay.
+In fact, this return isn't being properly handled. Thanks for fix it!
 
-> 
-> > 
-> > Of course, that'd be even better if we were able to extract this
-> > information from the NAND ID (or ONFI table), but I guess we can live
-> > with those optimistic values in the meantime.
-> >   
-> 
-> Thanks
-> Patrice
-
+Reviewed-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
