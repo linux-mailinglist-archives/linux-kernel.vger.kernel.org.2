@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30D9D3865F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:11:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC233865F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:11:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238295AbhEQULP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 16:11:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32952 "EHLO
+        id S238442AbhEQULU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 16:11:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236862AbhEQULG (ORCPT
+        with ESMTP id S236950AbhEQULI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 16:11:06 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 855CEC061760
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:09:49 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id p6so3786590plr.11
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:09:49 -0700 (PDT)
+        Mon, 17 May 2021 16:11:08 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C6DC061761
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:09:50 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id n3so3797427plf.7
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:09:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=+urYn/auWJUjc3W4sdmPucnZoewzDoUKh0jwgsir+nQ=;
-        b=RJIYA2O4giqjYO66q0SQpXcr1odgBXvF0aQ7MZWxCqHVao92mTCpdHiAQvvuOvnWb0
-         VZxZOmXubCqnouWsB4I/kkQdT1Im1eoL3aSwrMtqJyVTC9wk2bixTA8YpNXujs3ebJNq
-         UgdlMPwUrXlBTiOUWlGJKj96af58fxXxVUckM=
+        bh=ibC0JQ1noBgZMhZpAkhp6+LWFKsRlOrZ8j0drDGOJUc=;
+        b=WuNlzNsceu7te8upmYnD24kk4Zbrbvf7LBNU1IGaOZTNfldtXzy8SP5gxoJmy31Ztw
+         WqEQK49yIrFEDP5WcTNE1gQVxI2bG2TMmxPeQQGgwqNPO9i1CziftTYOrUqT4zaaon7n
+         m3/NL/6XIwHL0CmYhCmu/ETlm0QbHatWt1e9Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+urYn/auWJUjc3W4sdmPucnZoewzDoUKh0jwgsir+nQ=;
-        b=PuZgGRiVlinPQlmNCSs977q+Qpl80pNNC/9aXrAuZDnfsloUw9wYTCJMGmCYDizHt3
-         S/1pp68afABtK1W8rwpKN3ZDnXbOUsaIa+1bHLua/Z/9RaBLCpztCspkpObbkJDg4k1E
-         TPpTLHFjccjzYprkPXuQTSCwJDGDMo9Cwnu5f+he+gVohLrtd3AX69Cv8b5nGlXSZavu
-         Y1nKt9dQFnnbxlY4ManafkLgsONvLuTOuXTvCH89PYOvb/K9595R/YxqE7SIo6S29GBc
-         A1R0tnKEfMvRWjDR47ISO313/aHCu+vRPUyR0Hs1ZwhtyCTa0hbuQ0qD0po4kpZfHc98
-         oVDA==
-X-Gm-Message-State: AOAM533AVi0FT63Bbe/ETBz1VbYb4uWMfPFm37PDkNY3XmqDBkAqXy2E
-        fbFSJmKvqgy5NFhDWLIoql7oDg==
-X-Google-Smtp-Source: ABdhPJzqYY2WqAKQmfMbYwBASkiXd/jkLCuXy99v9JmQQ8Cmyq311d8LnPThMxqgk98rM3Md4cOG2w==
-X-Received: by 2002:a17:90b:188f:: with SMTP id mn15mr1153919pjb.219.1621282189154;
-        Mon, 17 May 2021 13:09:49 -0700 (PDT)
+        bh=ibC0JQ1noBgZMhZpAkhp6+LWFKsRlOrZ8j0drDGOJUc=;
+        b=ExfHBlIwzB7neG/KllAb3i3ZTHbd5rAYnhq0hUDioGmYt+1RLvv6o+obZ75DjxKeU8
+         gC3jOsADIl+KUd6CBEx7digxa22FJ/a0s/n54bRVANUm+kssS3u7oz9Sza2DKIca+o9J
+         kstxSxL7CQTCItqf2500xZNs+l665iXDau0ddKgP3g/s9gTtNrcjMPIYUHKilRICzfG+
+         67o5TzwNZrGK57Hmi+OtciQxNcQ6FPyd8Q83nCpc9UCW3GrRUYZ/Lvfgn1MC4ikJhTL3
+         V882MNZbCv99L7GcEh0ZpEXe3KxnK2Y+Zgx/M0FZ+g/P4trA30wCNyrHw4ECqmSEpQpm
+         7L/w==
+X-Gm-Message-State: AOAM5320cScWcCF0gk+rLtFLOkx1O2OmT/2Wi5x/b2HhB9x3tB1QPuw9
+        +eGFQg1eY0A0fHpiAB9QPi4H5Q==
+X-Google-Smtp-Source: ABdhPJzFA78VI2ZxClv8Expyof7VKru3oLqIN3yVSmvQaS6IsPGGiLHBrJQRCZ1MDayUfdlmXlfQsA==
+X-Received: by 2002:a17:90b:1bd2:: with SMTP id oa18mr1241491pjb.72.1621282190331;
+        Mon, 17 May 2021 13:09:50 -0700 (PDT)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:bc91:c597:ded0:7930])
-        by smtp.gmail.com with ESMTPSA id x19sm9078941pgj.66.2021.05.17.13.09.48
+        by smtp.gmail.com with ESMTPSA id x19sm9078941pgj.66.2021.05.17.13.09.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 13:09:48 -0700 (PDT)
+        Mon, 17 May 2021 13:09:49 -0700 (PDT)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     Andrzej Hajda <a.hajda@samsung.com>,
         Neil Armstrong <narmstrong@baylibre.com>,
@@ -65,12 +65,13 @@ Cc:     Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
         Douglas Anderson <dianders@chromium.org>,
         Daniel Vetter <daniel@ffwll.ch>,
         David Airlie <airlied@linux.ie>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
+        Sandeep Panda <spanda@codeaurora.org>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v7 02/10] dt-bindings: display: simple: List hpd properties in panel-simple
-Date:   Mon, 17 May 2021 13:08:59 -0700
-Message-Id: <20210517130450.v7.2.Ieb731d23680db4700cc41fe51ccc73ba0b785fb7@changeid>
+Subject: [PATCH v7 03/10] dt-bindings: drm/bridge: ti-sn65dsi86: Add aux-bus child
+Date:   Mon, 17 May 2021 13:09:00 -0700
+Message-Id: <20210517130450.v7.3.I98bf729846c37c4c143f6ab88b1e299280e2fe26@changeid>
 X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
 In-Reply-To: <20210517200907.1459182-1-dianders@chromium.org>
 References: <20210517200907.1459182-1-dianders@chromium.org>
@@ -80,35 +81,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These are described in panel-common.yaml but if I don't list them in
-panel-simple then I get yells when running 'dt_binding_check' in a
-future patch. List them along with other properties that seem to be
-listed in panel-simple for similar reasons.
+We want to be able to list an eDP panel as a child of a ti-sn65dsi86
+node to represent the fact that the panel is connected to the bridge's
+DP AUX bus. Though the panel and the bridge chip are connected in
+several ways, the DP AUX bus is the primary control interface between
+the two and thus makes the most sense to model in device tree
+hierarchy.
+
+Listing a panel in this way makes it possible for the panel driver to
+easily get access to the DP AUX bus that it resides on, which can be
+useful to help in auto-detecting the panel and for turning on various
+bits.
+
+NOTE: it's still possible to continue using the bridge chip and point
+to a panel that _isn't_ listed as a child of the bridge chip (since
+it's worked that way previously), but that should be deprecated since
+there is no downside to listing the panel under the bridge chip.
+
+The idea for this bus's design was hashed out over IRC [1].
+
+[1] https://people.freedesktop.org/~cbrill/dri-log/?channel=dri-devel&date=2021-05-11
 
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
-I didn't spend tons of time digging to see if there was supposed to be
-a better way of doing this. If there is, feel free to yell.
+Possibly we might want something fancier that could be included by
+other eDP controller bindings. If we want to do this, I'd love to be
+pointed at a good example to follow.
 
 Changes in v7:
-- List hpd properties bindings patch new for v7.
+- ti-sn65dsi86: Add aux-bus child patch new for v7.
 
- .../devicetree/bindings/display/panel/panel-simple.yaml         | 2 ++
- 1 file changed, 2 insertions(+)
+ .../bindings/display/bridge/ti,sn65dsi86.yaml | 22 ++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-index b3797ba2698b..4a0a5e1ee252 100644
---- a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-+++ b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-@@ -298,6 +298,8 @@ properties:
-   enable-gpios: true
-   port: true
-   power-supply: true
-+  no-hpd: true
-+  hpd-gpios: true
+diff --git a/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml b/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
+index 26932d2e86ab..51f5a29e216c 100644
+--- a/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
++++ b/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
+@@ -70,6 +70,11 @@ properties:
+     const: 1
+     description: See ../../pwm/pwm.yaml for description of the cell formats.
  
- additionalProperties: false
++  aux-bus:
++    description:
++      It is recommended that you place your panel under the aux-bus node
++      here to represent the control hierarchy.
++
+   ports:
+     $ref: /schemas/graph.yaml#/properties/ports
  
+@@ -201,11 +206,26 @@ examples:
+ 
+           port@1 {
+             reg = <1>;
+-            endpoint {
++            sn65dsi86_out: endpoint {
+               remote-endpoint = <&panel_in_edp>;
+             };
+           };
+         };
++
++        aux-bus {
++          panel {
++            compatible = "boe,nv133fhm-n62";
++            power-supply = <&pp3300_dx_edp>;
++            backlight = <&backlight>;
++            hpd-gpios = <&sn65dsi86_bridge 2 GPIO_ACTIVE_HIGH>;
++
++            port {
++              panel_in_edp: endpoint {
++                remote-endpoint = <&sn65dsi86_out>;
++              };
++            };
++          };
++        };
+       };
+     };
+   - |
 -- 
 2.31.1.751.gd2f1c929bd-goog
 
