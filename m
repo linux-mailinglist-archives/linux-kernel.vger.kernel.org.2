@@ -2,31 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF72A38388A
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E9BD38388D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345430AbhEQPzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:55:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40610 "EHLO mail.kernel.org"
+        id S1345565AbhEQP4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:56:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244314AbhEQPg5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S244425AbhEQPg5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 17 May 2021 11:36:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE1AF6193E;
-        Mon, 17 May 2021 14:40:19 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C40561940;
+        Mon, 17 May 2021 14:40:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262420;
-        bh=G0ZouCx4KY8m+lgR/uSo9qQJuuWGppTL+4CPKntMjnk=;
+        s=korg; t=1621262424;
+        bh=g3stNPFKA7ajHmbZMgJ4CldHGj3eVLlZJ3PVChcCdzI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Elp4+GaN1YBrIsXHF751jiVgoI61O0Ar83/A5ujS504qiEC9C12PkrVyOokouDGhq
-         kUfPKSYHXYR9qjg7Ucotot8f+vvGU0KH6HDL02W9oONv7lTYpTs7Hx0k6gdU+k9sVV
-         baiLmXrXIVPNBazX/zfXd/vFrJMBhAtl78VoUuqw=
+        b=FBcT591tZdq05Xq8QxpYUSwA2V3BFMUHd9qMcbwfReyW10jrnqZUpC93DUMgKsElu
+         qXEpXBFzqiRh9QonqwsJpQe478h1tscYlyEdym62DRri0KfbiqDvdzZJ/q0Vdkppp5
+         s9NvLS8+Knt/kCbb+9DAS2rzujGDc2WTIYLqbTXw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wesley Cheng <wcheng@codeaurora.org>
-Subject: [PATCH 5.11 287/329] usb: dwc3: gadget: Return success always for kick transfer in ep queue
-Date:   Mon, 17 May 2021 16:03:18 +0200
-Message-Id: <20210517140311.812102781@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Jack Pham <jackp@codeaurora.org>,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>
+Subject: [PATCH 5.11 288/329] usb: typec: ucsi: Retrieve all the PDOs instead of just the first 4
+Date:   Mon, 17 May 2021 16:03:19 +0200
+Message-Id: <20210517140311.847518762@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
 References: <20210517140302.043055203@linuxfoundation.org>
@@ -38,38 +41,165 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wesley Cheng <wcheng@codeaurora.org>
+From: Jack Pham <jackp@codeaurora.org>
 
-commit 18ffa988dbae69cc6e9949cddd9606f6fe533894 upstream.
+commit 1f4642b72be79757f050924a9b9673b6a02034bc upstream.
 
-If an error is received when issuing a start or update transfer
-command, the error handler will stop all active requests (including
-the current USB request), and call dwc3_gadget_giveback() to notify
-function drivers of the requests which have been stopped.  Avoid
-returning an error for kick transfer during EP queue, to remove
-duplicate cleanup operations on the request being queued.
+commit 4dbc6a4ef06d ("usb: typec: ucsi: save power data objects
+in PD mode") introduced retrieval of the PDOs when connected to a
+PD-capable source. But only the first 4 PDOs are received since
+that is the maximum number that can be fetched at a time given the
+MESSAGE_IN length limitation (16 bytes). However, as per the PD spec
+a connected source may advertise up to a maximum of 7 PDOs.
 
-Fixes: 8d99087c2db8 ("usb: dwc3: gadget: Properly handle failed kick_transfer")
-cc: stable@vger.kernel.org
-Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
-Link: https://lore.kernel.org/r/1620410119-24971-1-git-send-email-wcheng@codeaurora.org
+If such a source is connected it's possible the PPM could have
+negotiated a power contract with one of the PDOs at index greater
+than 4, and would be reflected in the request data object's (RDO)
+object position field. This would result in an out-of-bounds access
+when the rdo_index() is used to index into the src_pdos array in
+ucsi_psy_get_voltage_now().
+
+With the help of the UBSAN -fsanitize=array-bounds checker enabled
+this exact issue is revealed when connecting to a PD source adapter
+that advertise 5 PDOs and the PPM enters a contract having selected
+the 5th one.
+
+[  151.545106][   T70] Unexpected kernel BRK exception at EL1
+[  151.545112][   T70] Internal error: BRK handler: f2005512 [#1] PREEMPT SMP
+...
+[  151.545499][   T70] pc : ucsi_psy_get_prop+0x208/0x20c
+[  151.545507][   T70] lr : power_supply_show_property+0xc0/0x328
+...
+[  151.545542][   T70] Call trace:
+[  151.545544][   T70]  ucsi_psy_get_prop+0x208/0x20c
+[  151.545546][   T70]  power_supply_uevent+0x1a4/0x2f0
+[  151.545550][   T70]  dev_uevent+0x200/0x384
+[  151.545555][   T70]  kobject_uevent_env+0x1d4/0x7e8
+[  151.545557][   T70]  power_supply_changed_work+0x174/0x31c
+[  151.545562][   T70]  process_one_work+0x244/0x6f0
+[  151.545564][   T70]  worker_thread+0x3e0/0xa64
+
+We can resolve this by instead retrieving and storing up to the
+maximum of 7 PDOs in the con->src_pdos array. This would involve
+two calls to the GET_PDOS command.
+
+Fixes: 992a60ed0d5e ("usb: typec: ucsi: register with power_supply class")
+Fixes: 4dbc6a4ef06d ("usb: typec: ucsi: save power data objects in PD mode")
+Cc: stable@vger.kernel.org
+Reported-and-tested-by: Subbaraman Narayanamurthy <subbaram@codeaurora.org>
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Jack Pham <jackp@codeaurora.org>
+Link: https://lore.kernel.org/r/20210503074611.30973-1-jackp@codeaurora.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/dwc3/gadget.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/usb/typec/ucsi/ucsi.c |   41 ++++++++++++++++++++++++++++++++---------
+ drivers/usb/typec/ucsi/ucsi.h |    6 ++++--
+ 2 files changed, 36 insertions(+), 11 deletions(-)
 
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -1676,7 +1676,9 @@ static int __dwc3_gadget_ep_queue(struct
- 		}
+--- a/drivers/usb/typec/ucsi/ucsi.c
++++ b/drivers/usb/typec/ucsi/ucsi.c
+@@ -495,7 +495,8 @@ static void ucsi_unregister_altmodes(str
  	}
- 
--	return __dwc3_gadget_kick_transfer(dep);
-+	__dwc3_gadget_kick_transfer(dep);
-+
-+	return 0;
  }
  
- static int dwc3_gadget_ep_queue(struct usb_ep *ep, struct usb_request *request,
+-static void ucsi_get_pdos(struct ucsi_connector *con, int is_partner)
++static int ucsi_get_pdos(struct ucsi_connector *con, int is_partner,
++			 u32 *pdos, int offset, int num_pdos)
+ {
+ 	struct ucsi *ucsi = con->ucsi;
+ 	u64 command;
+@@ -503,17 +504,39 @@ static void ucsi_get_pdos(struct ucsi_co
+ 
+ 	command = UCSI_COMMAND(UCSI_GET_PDOS) | UCSI_CONNECTOR_NUMBER(con->num);
+ 	command |= UCSI_GET_PDOS_PARTNER_PDO(is_partner);
+-	command |= UCSI_GET_PDOS_NUM_PDOS(UCSI_MAX_PDOS - 1);
++	command |= UCSI_GET_PDOS_PDO_OFFSET(offset);
++	command |= UCSI_GET_PDOS_NUM_PDOS(num_pdos - 1);
+ 	command |= UCSI_GET_PDOS_SRC_PDOS;
+-	ret = ucsi_send_command(ucsi, command, con->src_pdos,
+-			       sizeof(con->src_pdos));
+-	if (ret < 0) {
++	ret = ucsi_send_command(ucsi, command, pdos + offset,
++				num_pdos * sizeof(u32));
++	if (ret < 0)
+ 		dev_err(ucsi->dev, "UCSI_GET_PDOS failed (%d)\n", ret);
++	if (ret == 0 && offset == 0)
++		dev_warn(ucsi->dev, "UCSI_GET_PDOS returned 0 bytes\n");
++
++	return ret;
++}
++
++static void ucsi_get_src_pdos(struct ucsi_connector *con, int is_partner)
++{
++	int ret;
++
++	/* UCSI max payload means only getting at most 4 PDOs at a time */
++	ret = ucsi_get_pdos(con, 1, con->src_pdos, 0, UCSI_MAX_PDOS);
++	if (ret < 0)
+ 		return;
+-	}
++
+ 	con->num_pdos = ret / sizeof(u32); /* number of bytes to 32-bit PDOs */
+-	if (ret == 0)
+-		dev_warn(ucsi->dev, "UCSI_GET_PDOS returned 0 bytes\n");
++	if (con->num_pdos < UCSI_MAX_PDOS)
++		return;
++
++	/* get the remaining PDOs, if any */
++	ret = ucsi_get_pdos(con, 1, con->src_pdos, UCSI_MAX_PDOS,
++			    PDO_MAX_OBJECTS - UCSI_MAX_PDOS);
++	if (ret < 0)
++		return;
++
++	con->num_pdos += ret / sizeof(u32);
+ }
+ 
+ static void ucsi_pwr_opmode_change(struct ucsi_connector *con)
+@@ -522,7 +545,7 @@ static void ucsi_pwr_opmode_change(struc
+ 	case UCSI_CONSTAT_PWR_OPMODE_PD:
+ 		con->rdo = con->status.request_data_obj;
+ 		typec_set_pwr_opmode(con->port, TYPEC_PWR_MODE_PD);
+-		ucsi_get_pdos(con, 1);
++		ucsi_get_src_pdos(con, 1);
+ 		break;
+ 	case UCSI_CONSTAT_PWR_OPMODE_TYPEC1_5:
+ 		con->rdo = 0;
+--- a/drivers/usb/typec/ucsi/ucsi.h
++++ b/drivers/usb/typec/ucsi/ucsi.h
+@@ -8,6 +8,7 @@
+ #include <linux/power_supply.h>
+ #include <linux/types.h>
+ #include <linux/usb/typec.h>
++#include <linux/usb/pd.h>
+ 
+ /* -------------------------------------------------------------------------- */
+ 
+@@ -133,7 +134,9 @@ void ucsi_connector_change(struct ucsi *
+ 
+ /* GET_PDOS command bits */
+ #define UCSI_GET_PDOS_PARTNER_PDO(_r_)		((u64)(_r_) << 23)
++#define UCSI_GET_PDOS_PDO_OFFSET(_r_)		((u64)(_r_) << 24)
+ #define UCSI_GET_PDOS_NUM_PDOS(_r_)		((u64)(_r_) << 32)
++#define UCSI_MAX_PDOS				(4)
+ #define UCSI_GET_PDOS_SRC_PDOS			((u64)1 << 34)
+ 
+ /* -------------------------------------------------------------------------- */
+@@ -301,7 +304,6 @@ struct ucsi {
+ 
+ #define UCSI_MAX_SVID		5
+ #define UCSI_MAX_ALTMODES	(UCSI_MAX_SVID * 6)
+-#define UCSI_MAX_PDOS		(4)
+ 
+ #define UCSI_TYPEC_VSAFE5V	5000
+ #define UCSI_TYPEC_1_5_CURRENT	1500
+@@ -329,7 +331,7 @@ struct ucsi_connector {
+ 	struct power_supply *psy;
+ 	struct power_supply_desc psy_desc;
+ 	u32 rdo;
+-	u32 src_pdos[UCSI_MAX_PDOS];
++	u32 src_pdos[PDO_MAX_OBJECTS];
+ 	int num_pdos;
+ };
+ 
 
 
