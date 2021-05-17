@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43179383767
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:42:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23E5938376F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:42:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343806AbhEQPnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:43:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44806 "EHLO mail.kernel.org"
+        id S1343683AbhEQPna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:43:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244524AbhEQP2E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:28:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B9AFB61400;
-        Mon, 17 May 2021 14:36:58 +0000 (UTC)
+        id S244620AbhEQP2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:28:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BAA96192B;
+        Mon, 17 May 2021 14:37:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262219;
-        bh=bLbd3KllPc+nb1HSgkE8C2q+J5Spfs4xjxOr+sJZ6kw=;
+        s=korg; t=1621262223;
+        bh=CwzVLBOwKRg26UVtCessCg/6EUEGMoygoRyT+GpjEis=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XAuqK6zOYh6CUSWDBK4iFwUZnVY81GSRyDviLQD+OmXkuOBsv/fDxQ4/h4/GoHfbL
-         ePYwSc30G2pOkkLOIrYB8xQ0BcekkWqyig752FqjQGgujjURmex8yoKAJGErCNt1w7
-         /MMo12mzZdAOi0ChI3HqjVbgHOe0qLldDfdSkmPg=
+        b=gJ7X9Iu4+uiXII/nDQRkg5x/MybbsNIjLQC0cgQ4mJ8QxGh4JLla5fS5JV7q9MHL3
+         HaX0/HrBk4BWQw/LV4k0H+5Qz3V54M4600MUSmM3W8WctHmAfQwLBvAFREeRjc3lFs
+         xixiTm0a6QzuPlXWFiN3ROiAH1RnSQC50kiU29L0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jason Bagavatsingham <jason.bagavatsingham@gmail.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Huang Rui <ray.huang@amd.com>, Ingo Molnar <mingo@kernel.org>,
-        Alexander Monakov <amonakov@ispras.ru>
-Subject: [PATCH 5.11 241/329] x86, sched: Fix the AMD CPPC maximum performance value on certain AMD Ryzen generations
-Date:   Mon, 17 May 2021 16:02:32 +0200
-Message-Id: <20210517140310.264877828@linuxfoundation.org>
+        stable@vger.kernel.org, Peter Collingbourne <pcc@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: [PATCH 5.11 242/329] arm64: mte: initialize RGSR_EL1.SEED in __cpu_setup
+Date:   Mon, 17 May 2021 16:02:33 +0200
+Message-Id: <20210517140310.297246516@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
 References: <20210517140302.043055203@linuxfoundation.org>
@@ -42,103 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Huang Rui <ray.huang@amd.com>
+From: Peter Collingbourne <pcc@google.com>
 
-commit 3743d55b289c203d8f77b7cd47c24926b9d186ae upstream.
+commit 37a8024d265564eba680575df6421f19db21dfce upstream.
 
-Some AMD Ryzen generations has different calculation method on maximum
-performance. 255 is not for all ASICs, some specific generations should use 166
-as the maximum performance. Otherwise, it will report incorrect frequency value
-like below:
+A valid implementation choice for the ChooseRandomNonExcludedTag()
+pseudocode function used by IRG is to behave in the same way as with
+GCR_EL1.RRND=0. This would mean that RGSR_EL1.SEED is used as an LFSR
+which must have a non-zero value in order for IRG to properly produce
+pseudorandom numbers. However, RGSR_EL1 is reset to an UNKNOWN value
+on soft reset and thus may reset to 0. Therefore we must initialize
+RGSR_EL1.SEED to a non-zero value in order to ensure that IRG behaves
+as expected.
 
-  ~ → lscpu | grep MHz
-  CPU MHz:                         3400.000
-  CPU max MHz:                     7228.3198
-  CPU min MHz:                     2200.0000
-
-[ mingo: Tidied up whitespace use. ]
-[ Alexander Monakov <amonakov@ispras.ru>: fix 225 -> 255 typo. ]
-
-Fixes: 41ea667227ba ("x86, sched: Calculate frequency invariance for AMD systems")
-Fixes: 3c55e94c0ade ("cpufreq: ACPI: Extend frequency tables to cover boost frequencies")
-Reported-by: Jason Bagavatsingham <jason.bagavatsingham@gmail.com>
-Fixed-by: Alexander Monakov <amonakov@ispras.ru>
-Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Huang Rui <ray.huang@amd.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Tested-by: Jason Bagavatsingham <jason.bagavatsingham@gmail.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210425073451.2557394-1-ray.huang@amd.com
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=211791
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Signed-off-by: Peter Collingbourne <pcc@google.com>
+Fixes: 3b714d24ef17 ("arm64: mte: CPU feature detection and initial sysreg configuration")
+Cc: <stable@vger.kernel.org> # 5.10
+Link: https://linux-review.googlesource.com/id/I2b089b6c7d6f17ee37e2f0db7df5ad5bcc04526c
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+Link: https://lore.kernel.org/r/20210507185905.1745402-1-pcc@google.com
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/include/asm/processor.h |    2 ++
- arch/x86/kernel/cpu/amd.c        |   16 ++++++++++++++++
- arch/x86/kernel/smpboot.c        |    2 +-
- drivers/cpufreq/acpi-cpufreq.c   |    6 +++++-
- 4 files changed, 24 insertions(+), 2 deletions(-)
+ arch/arm64/mm/proc.S |   12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -805,8 +805,10 @@ DECLARE_PER_CPU(u64, msr_misc_features_s
+--- a/arch/arm64/mm/proc.S
++++ b/arch/arm64/mm/proc.S
+@@ -454,6 +454,18 @@ SYM_FUNC_START(__cpu_setup)
+ 	mov	x10, #(SYS_GCR_EL1_RRND | SYS_GCR_EL1_EXCL_MASK)
+ 	msr_s	SYS_GCR_EL1, x10
  
- #ifdef CONFIG_CPU_SUP_AMD
- extern u32 amd_get_nodes_per_socket(void);
-+extern u32 amd_get_highest_perf(void);
- #else
- static inline u32 amd_get_nodes_per_socket(void)	{ return 0; }
-+static inline u32 amd_get_highest_perf(void)		{ return 0; }
- #endif
- 
- static inline uint32_t hypervisor_cpuid_base(const char *sig, uint32_t leaves)
---- a/arch/x86/kernel/cpu/amd.c
-+++ b/arch/x86/kernel/cpu/amd.c
-@@ -1170,3 +1170,19 @@ void set_dr_addr_mask(unsigned long mask
- 		break;
- 	}
- }
++	/*
++	 * If GCR_EL1.RRND=1 is implemented the same way as RRND=0, then
++	 * RGSR_EL1.SEED must be non-zero for IRG to produce
++	 * pseudorandom numbers. As RGSR_EL1 is UNKNOWN out of reset, we
++	 * must initialize it.
++	 */
++	mrs	x10, CNTVCT_EL0
++	ands	x10, x10, #SYS_RGSR_EL1_SEED_MASK
++	csinc	x10, x10, xzr, ne
++	lsl	x10, x10, #SYS_RGSR_EL1_SEED_SHIFT
++	msr_s	SYS_RGSR_EL1, x10
 +
-+u32 amd_get_highest_perf(void)
-+{
-+	struct cpuinfo_x86 *c = &boot_cpu_data;
-+
-+	if (c->x86 == 0x17 && ((c->x86_model >= 0x30 && c->x86_model < 0x40) ||
-+			       (c->x86_model >= 0x70 && c->x86_model < 0x80)))
-+		return 166;
-+
-+	if (c->x86 == 0x19 && ((c->x86_model >= 0x20 && c->x86_model < 0x30) ||
-+			       (c->x86_model >= 0x40 && c->x86_model < 0x70)))
-+		return 166;
-+
-+	return 255;
-+}
-+EXPORT_SYMBOL_GPL(amd_get_highest_perf);
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -2046,7 +2046,7 @@ static bool amd_set_max_freq_ratio(void)
- 		return false;
- 	}
- 
--	highest_perf = perf_caps.highest_perf;
-+	highest_perf = amd_get_highest_perf();
- 	nominal_perf = perf_caps.nominal_perf;
- 
- 	if (!highest_perf || !nominal_perf) {
---- a/drivers/cpufreq/acpi-cpufreq.c
-+++ b/drivers/cpufreq/acpi-cpufreq.c
-@@ -646,7 +646,11 @@ static u64 get_max_boost_ratio(unsigned
- 		return 0;
- 	}
- 
--	highest_perf = perf_caps.highest_perf;
-+	if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD)
-+		highest_perf = amd_get_highest_perf();
-+	else
-+		highest_perf = perf_caps.highest_perf;
-+
- 	nominal_perf = perf_caps.nominal_perf;
- 
- 	if (!highest_perf || !nominal_perf) {
+ 	/* clear any pending tag check faults in TFSR*_EL1 */
+ 	msr_s	SYS_TFSR_EL1, xzr
+ 	msr_s	SYS_TFSRE0_EL1, xzr
 
 
