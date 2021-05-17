@@ -2,233 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC64F38247B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 08:38:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 359D638247D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 08:39:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234716AbhEQGkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 02:40:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46508 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234617AbhEQGkD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 02:40:03 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A047C061573
-        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 23:38:47 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id et19so376523ejc.4
-        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 23:38:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=hHE3Ba5BaIKMhzZEapVVGkggYuEK/rT98XnlOxk2Lk0=;
-        b=zgp+HceZllI4jeH/IGwDMnHeDTO7kEJCoqby+N/Y9Z49mDVItFBAcsqOLPxR8wQYOl
-         YwooHxyiZpX132mexXtCbcxXBjFFKKXCFeukOGytdRF9eVEOOddNV/RFLaPqLP0LFRys
-         W5+9YfmVXjotu/UW/8YTJTazBKsgFJCYJ/GeRuRgKCBCNd6SCQSYELnp0GimxNotIVzK
-         8ktD8lduJNgDMqMiY3umUCshZ4dS96yxSG+OwmFGG5WGhjD3gH1L9158lsflUVQ0Vewx
-         6ivzkQNnFPB+aLsPxEi+phjfPI79eYwICrahrQYQ+Nl+2NvfTgzuIPoEjgnROteA0zmy
-         jWsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=hHE3Ba5BaIKMhzZEapVVGkggYuEK/rT98XnlOxk2Lk0=;
-        b=UMkG3N+lwnvIbHlHM5+sNDloMXkrFmT/HVB9XkvntZPWye8I5XuwN+FFVHrrnA+13W
-         OgSsUDO872C99yR8A0RRD6BZ225WNq/ozUq5tonrA4fFkyqf1vegkKsGQ1djAHsZPG0q
-         pCC00IlWWd23xmTneHtEtUj89dVYRjkq7oyeNhuE82yf4CgAtoXVdgafeNo/g1CG5PyZ
-         3TAn00P7nCNI+YaB87732a7oMqULcJORGkCaSlM0rMu+7HhMzwh+I31Nm+yTNbpmmhw9
-         GUpkQRmYfZojXsVK+NwfZ+JSrImMPioQ1zNzJbSBrdt2Dva8fZny0PWvLVulTLp7lZ0w
-         f0bg==
-X-Gm-Message-State: AOAM53218nQOJChK8m8TrWASkJT1XIhlGlllJ3KnOGL8Rv3h3Pl/ecSd
-        y2gpiwh6iFzv5TPH8WG4ltrKFA==
-X-Google-Smtp-Source: ABdhPJzHmjg2DHXQbZ9ONI9wCSF2TuCgLaYyGoyeS7Uxnvw5bFS5uVuOo+yGk3kPWMATV6GYEQ5evg==
-X-Received: by 2002:a17:906:594f:: with SMTP id g15mr3036208ejr.103.1621233525756;
-        Sun, 16 May 2021 23:38:45 -0700 (PDT)
-Received: from enceladus ([94.69.77.156])
-        by smtp.gmail.com with ESMTPSA id z17sm8094191ejc.69.2021.05.16.23.38.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 May 2021 23:38:45 -0700 (PDT)
-Date:   Mon, 17 May 2021 09:38:40 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
-        linux-mm@kvack.org, Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-Subject: Re: [PATCH net-next v5 3/5] page_pool: Allow drivers to hint on SKB
- recycling
-Message-ID: <YKIPcF9ACNmFtksz@enceladus>
-References: <20210513165846.23722-1-mcroce@linux.microsoft.com>
- <20210513165846.23722-4-mcroce@linux.microsoft.com>
- <798d6dad-7950-91b2-46a5-3535f44df4e2@huawei.com>
- <YJ4ocslvURa/H+6f@apalos.home>
- <212498cf-376b-2dac-e1cd-12c7cc7910c6@huawei.com>
- <YJ5APhzabmAKIKCE@apalos.home>
- <cd0c0a2b-986e-a672-de7e-798ab2843d76@huawei.com>
+        id S234863AbhEQGkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 02:40:23 -0400
+Received: from mga07.intel.com ([134.134.136.100]:34764 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234617AbhEQGkU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 02:40:20 -0400
+IronPort-SDR: aWSt5HsyicN8SNDyZ5/wEDzduBe9QwY6851bRnRe4z1tF/2cCWbHAAkonAeLJpjuZbWnJ2vpO7
+ VVwS2JavEWNQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9986"; a="264315876"
+X-IronPort-AV: E=Sophos;i="5.82,306,1613462400"; 
+   d="scan'208";a="264315876"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 May 2021 23:39:03 -0700
+IronPort-SDR: 0zyNZmLbxsHZlRqWEhQnoJc+Clitd+uXHaZDUa908XIP4XlRMGLSd4FQLR1+K8WPOm+0DCucGx
+ O6lzjc46VVZQ==
+X-IronPort-AV: E=Sophos;i="5.82,306,1613462400"; 
+   d="scan'208";a="437616252"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 May 2021 23:38:59 -0700
+Subject: Re: [PATCH v6 00/16] KVM: x86/pmu: Add *basic* support to enable
+ guest PEBS via DS
+To:     Liuxiangdong <liuxiangdong5@huawei.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, weijiang.yang@intel.com,
+        Kan Liang <kan.liang@linux.intel.com>, ak@linux.intel.com,
+        wei.w.wang@intel.com, eranian@google.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        "Fangyi (Eric)" <eric.fangyi@huawei.com>,
+        Xiexiangyou <xiexiangyou@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>
+References: <20210511024214.280733-1-like.xu@linux.intel.com>
+ <609FA2B7.7030801@huawei.com>
+From:   Like Xu <like.xu@linux.intel.com>
+Organization: Intel OTC
+Message-ID: <868a0ed9-d4a5-c135-811e-a3420b7913ac@linux.intel.com>
+Date:   Mon, 17 May 2021 14:38:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <609FA2B7.7030801@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <cd0c0a2b-986e-a672-de7e-798ab2843d76@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[...]
-> >>>> by the page pool? so that we do not need to set and clear it every
-> >>>> time the page is recycled。
-> >>>>
-> >>>
-> >>> If the page cannot be recycled, page->pp will not probably be set to begin
-> >>> with. Since we don't embed the feature in page_pool and we require the
-> >>> driver to explicitly enable it, as part of the 'skb flow', I'd rather keep 
-> >>> it as is.  When we set/clear the page->pp, the page is probably already in 
-> >>> cache, so I doubt this will have any measurable impact.
-> >>
-> >> The point is that we already have the skb->pp_recycle to let driver to
-> >> explicitly enable recycling, as part of the 'skb flow, if the page pool keep
-> >> the page->pp while it owns the page, then the driver may only need to call
-> >> one skb_mark_for_recycle() for a skb, instead of call skb_mark_for_recycle()
-> >> for each page frag of a skb.
-> >>
-> > 
-> > The driver is meant to call skb_mark_for_recycle for the skb and
-> > page_pool_store_mem_info() for the fragments (in order to store page->pp).
-> > Nothing bad will happen if you call skb_mark_for_recycle on a frag though,
-> > but in any case you need to store the page_pool pointer of each frag to
-> > struct page.
-> 
-> Right. Nothing bad will happen when we keep the page_pool pointer in
-> page->pp while page pool owns the page too, even if the skb->pp_recycle
-> is not set, right?
+Hi xiangdong,
 
-Yep, nothing bad will happen. Both functions using this (__skb_frag_unref and
-skb_free_head) always check the skb bit as well.
-
+On 2021/5/15 18:30, Liuxiangdong wrote:
 > 
-> > 
-> >> Maybe we can add a parameter in "struct page_pool_params" to let driver
-> >> to decide if the page pool ptr is stored in page->pp while the page pool
-> >> owns the page?
-> > 
-> > Then you'd have to check the page pool config before saving the meta-data,
 > 
-> I am not sure what the "saving the meta-data" meant?
+> On 2021/5/11 10:41, Like Xu wrote:
+>> A new kernel cycle has begun, and this version looks promising.
+>>
+>> The guest Precise Event Based Sampling (PEBS) feature can provide
+>> an architectural state of the instruction executed after the guest
+>> instruction that exactly caused the event. It needs new hardware
+>> facility only available on Intel Ice Lake Server platforms. This
+>> patch set enables the basic PEBS feature for KVM guests on ICX.
+>>
+>> We can use PEBS feature on the Linux guest like native:
+>>
+>>    # perf record -e instructions:ppp ./br_instr a
+>>    # perf record -c 100000 -e instructions:pp ./br_instr a
+> 
+> Hi, Like.
+> Has the qemu patch been modified?
+> 
+> https://lore.kernel.org/kvm/f4dcb068-2ddf-428f-50ad-39f65cad3710@intel.com/ ?
 
-I was referring to struct page_pool* and the signature we store in struct
-page.
+I think the qemu part still works based on
+609d7596524ab204ccd71ef42c9eee4c7c338ea4 (tag: v6.0.0).
+
+When the LBR qemu patch receives the ACK from the maintainer,
+I will submit PBES qemu support because their changes are very similar.
+
+Please help review this version and
+feel free to add your comments or "Reviewed-by".
+
+Thanks,
+Like Xu
 
 > 
-> > and you would have to make the skb path aware of that as well (I assume you
-> > mean replace pp_recycle with this?).
 > 
-> I meant we could set the in page->pp when the page is allocated from
-> alloc_pages() in __page_pool_alloc_pages_slow() unconditionally or
-> according to a newly add filed in pool->p, and only clear it in
-> page_pool_release_page(), between which the page is owned by page pool,
-> right?
-> 
-> > If not and you just want to add an extra flag on page_pool_params and be able 
-> > to enable recycling depending on that flag, we just add a patch afterwards.
-> > I am not sure we need an extra if for each packet though.
-> 
-> In that case, the skb_mark_for_recycle() could only set the skb->pp_recycle,
-> but not the pool->p.
-> 
-> > 
-> >>
-> >> Another thing accured to me is that if the driver use page from the
-> >> page pool to form a skb, and it does not call skb_mark_for_recycle(),
-> >> then there will be resource leaking, right? if yes, it seems the
-> >> skb_mark_for_recycle() call does not seems to add any value?
-> >>
-> > 
-> > Not really, the driver has 2 choices:
-> > - call page_pool_release_page() once it receives the payload. That will
-> >   clean up dma mappings (if page pool is responsible for them) and free the
-> >   buffer
-> 
-> The is only needed before SKB recycling is supported or the driver does not
-> want the SKB recycling support explicitly, right?
-> 
+>> To emulate guest PEBS facility for the above perf usages,
+>> we need to implement 2 code paths:
+>>
+>> 1) Fast path
+>>
+>> This is when the host assigned physical PMC has an identical index as
+>> the virtual PMC (e.g. using physical PMC0 to emulate virtual PMC0).
+>> This path is used in most common use cases.
+>>
+>> 2) Slow path
+>>
+>> This is when the host assigned physical PMC has a different index
+>> from the virtual PMC (e.g. using physical PMC1 to emulate virtual PMC0)
+>> In this case, KVM needs to rewrite the PEBS records to change the
+>> applicable counter indexes to the virtual PMC indexes, which would
+>> otherwise contain the physical counter index written by PEBS facility,
+>> and switch the counter reset values to the offset corresponding to
+>> the physical counter indexes in the DS data structure.
+>>
+>> The previous version [0] enables both fast path and slow path, which
+>> seems a bit more complex as the first step. In this patchset, we want
+>> to start with the fast path to get the basic guest PEBS enabled while
+>> keeping the slow path disabled. More focused discussion on the slow
+>> path [1] is planned to be put to another patchset in the next step.
+>>
+>> Compared to later versions in subsequent steps, the functionality
+>> to support host-guest PEBS both enabled and the functionality to
+>> emulate guest PEBS when the counter is cross-mapped are missing
+>> in this patch set (neither of these are typical scenarios).
+>>
+>> With the basic support, the guest can retrieve the correct PEBS
+>> information from its own PEBS records on the Ice Lake servers.
+>> And we expect it should work when migrating to another Ice Lake
+>> and no regression about host perf is expected.
+>>
+>> Here are the results of pebs test from guest/host for same workload:
+>>
+>> perf report on guest:
+>> # Samples: 2K of event 'instructions:ppp', # Event count (approx.): 
+>> 1473377250
+>> # Overhead  Command   Shared Object      Symbol
+>>    57.74%  br_instr  br_instr           [.] lfsr_cond
+>>    41.40%  br_instr  br_instr           [.] cmp_end
+>>     0.21%  br_instr  [kernel.kallsyms]  [k] __lock_acquire
+>>
+>> perf report on host:
+>> # Samples: 2K of event 'instructions:ppp', # Event count (approx.): 
+>> 1462721386
+>> # Overhead  Command   Shared Object     Symbol
+>>    57.90%  br_instr  br_instr          [.] lfsr_cond
+>>    41.95%  br_instr  br_instr          [.] cmp_end
+>>     0.05%  br_instr  [kernel.vmlinux]  [k] lock_acquire
+>>     Conclusion: the profiling results on the guest are similar tothat on 
+>> the host.
+>>
+>> A minimum guest kernel version may be v5.4 or a backport version
+>> support Icelake server PEBS.
+>>
+>> Please check more details in each commit and feel free to comment.
+>>
+>> Previous:
+>> https://lore.kernel.org/kvm/20210415032016.166201-1-like.xu@linux.intel.com/
+>>
+>> [0] 
+>> https://lore.kernel.org/kvm/20210104131542.495413-1-like.xu@linux.intel.com/
+>> [1] 
+>> https://lore.kernel.org/kvm/20210115191113.nktlnmivc3edstiv@two.firstfloor.org/ 
+>>
+>>
+>> V5 -> V6 Changelog:
+>> - Rebased on the latest kvm/queue tree;
+>> - Fix a git rebase issue (Liuxiangdong);
+>> - Adjust the patch sequence 06/07 for bisection (Liuxiangdong);
+>>
+>> Like Xu (16):
+>>    perf/x86/intel: Add EPT-Friendly PEBS for Ice Lake Server
+>>    perf/x86/intel: Handle guest PEBS overflow PMI for KVM guest
+>>    perf/x86/core: Pass "struct kvm_pmu *" to determine the guest values
+>>    KVM: x86/pmu: Set MSR_IA32_MISC_ENABLE_EMON bit when vPMU is enabled
+>>    KVM: x86/pmu: Introduce the ctrl_mask value for fixed counter
+>>    KVM: x86/pmu: Add IA32_PEBS_ENABLE MSR emulation for extended PEBS
+>>    KVM: x86/pmu: Reprogram PEBS event to emulate guest PEBS counter
+>>    KVM: x86/pmu: Add IA32_DS_AREA MSR emulation to support guest DS
+>>    KVM: x86/pmu: Add PEBS_DATA_CFG MSR emulation to support adaptive PEBS
+>>    KVM: x86: Set PEBS_UNAVAIL in IA32_MISC_ENABLE when PEBS is enabled
+>>    KVM: x86/pmu: Adjust precise_ip to emulate Ice Lake guest PDIR counter
+>>    KVM: x86/pmu: Move pmc_speculative_in_use() to arch/x86/kvm/pmu.h
+>>    KVM: x86/pmu: Disable guest PEBS temporarily in two rare situations
+>>    KVM: x86/pmu: Add kvm_pmu_cap to optimize perf_get_x86_pmu_capability
+>>    KVM: x86/cpuid: Refactor host/guest CPU model consistency check
+>>    KVM: x86/pmu: Expose CPUIDs feature bits PDCM, DS, DTES64
+>>
+>>   arch/x86/events/core.c            |   5 +-
+>>   arch/x86/events/intel/core.c      | 129 ++++++++++++++++++++++++------
+>>   arch/x86/events/perf_event.h      |   5 +-
+>>   arch/x86/include/asm/kvm_host.h   |  16 ++++
+>>   arch/x86/include/asm/msr-index.h  |   6 ++
+>>   arch/x86/include/asm/perf_event.h |   5 +-
+>>   arch/x86/kvm/cpuid.c              |  24 ++----
+>>   arch/x86/kvm/cpuid.h              |   5 ++
+>>   arch/x86/kvm/pmu.c                |  50 +++++++++---
+>>   arch/x86/kvm/pmu.h                |  38 +++++++++
+>>   arch/x86/kvm/vmx/capabilities.h   |  26 ++++--
+>>   arch/x86/kvm/vmx/pmu_intel.c      | 115 +++++++++++++++++++++-----
+>>   arch/x86/kvm/vmx/vmx.c            |  24 +++++-
+>>   arch/x86/kvm/vmx/vmx.h            |   2 +-
+>>   arch/x86/kvm/x86.c                |  14 ++--
+>>   15 files changed, 368 insertions(+), 96 deletions(-)
+>>
 
-This is needed in general even before recycling.  It's used to unmap the
-buffer, so once you free the SKB you don't leave any stale DMA mappings.  So
-that's what all the drivers that use page_pool call today.
-
-> > - call skb_mark_for_recycle(). Which will end up recycling the buffer.
-> 
-> If the driver need to add extra flag to enable recycling based on skb
-> instead of page pool, then adding skb_mark_for_recycle() makes sense to
-> me too, otherwise it seems adding a field in pool->p to recycling based
-> on skb makes more sense?
-> 
-
-The recycling is essentially an SKB feature though isn't it?  You achieve the
-SKB recycling with the help of page_pool API, not the other way around.  So I
-think this should remain on the SKB and maybe in the future find ways to turn
-in on/off?
-
-Thanks
-/Ilias
-
-> > 
-> > If you call none of those, you'd leak a page, but that's a driver bug.
-> > patches [4/5, 5/5] do that for two marvell drivers.
-> > I really want to make drivers opt-in in the feature instead of always
-> > enabling it.
-> > 
-> > Thanks
-> > /Ilias
-> >>
-> >>>
-> >>>>> +	page_pool_put_full_page(pp, virt_to_head_page(data), false);
-> >>>>> +
-> >>>>>  	C(end);
-> >>>
-> >>> [...]
-> >>
-> >>
-> > 
-> > .
-> > 
-> 
