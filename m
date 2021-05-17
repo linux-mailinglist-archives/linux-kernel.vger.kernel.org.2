@@ -2,194 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3E88383C4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 20:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40FA9383C52
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 20:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237087AbhEQSdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 14:33:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39898 "EHLO mail.kernel.org"
+        id S237128AbhEQSew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 14:34:52 -0400
+Received: from mga01.intel.com ([192.55.52.88]:28960 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237050AbhEQSc7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 14:32:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE86960FD8;
-        Mon, 17 May 2021 18:31:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621276302;
-        bh=Fxpe+QB7sQgi1r4WTLIIc0qePivJrHj1sVwQWdo0XlA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=kuH/HHRw116WwoMW9lKI8H1aP/GF0MCSyvx1/MH9CoZLQqUywVAWvP1l6T7NvCMkM
-         dTCShO4ZcZiL9i3vh4L20E+g2e70sHpsUUtYCIqbFdlg6b/h3QARhBwCr8Seka5qSO
-         3kBEpaRiS+TWsGWb0qCw1merxLwqY/IEAvCIkqdv6loqP7oYQ8uLiY6ZJBxcKJkIcn
-         Tp0edXOOJbx7og1puIA+jYY1yXwOpENZfI0E1grMpSph0ASbMdQOqd1CbD7g+XryEI
-         SP3YFld0m7gOdyeRdeKsW/rCXOTIXHypV+YjsDGLb5/VipnIIpUysjBjJHFhXBdiKZ
-         jTsSC1skfxLRA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A18F95C00C6; Mon, 17 May 2021 11:31:42 -0700 (PDT)
-Date:   Mon, 17 May 2021 11:31:42 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Manfred Spraul <manfred@colorfullife.com>
-Cc:     kasan-dev <kasan-dev@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Davidlohr Bueso <dbueso@suse.de>, 1vier1@web.de
-Subject: Re: ipc/sem, ipc/msg, ipc/mqueue.c kcsan questions
-Message-ID: <20210517183142.GB2013824@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <a9b36c77-dc42-4ab2-9740-f27b191dd403@colorfullife.com>
- <20210512201743.GW975577@paulmck-ThinkPad-P17-Gen-1>
- <343390da-2307-442e-8073-d1e779c85eeb@colorfullife.com>
- <20210513190201.GE975577@paulmck-ThinkPad-P17-Gen-1>
- <9c9739ec-1273-5137-7b6d-00a27a22ffca@colorfullife.com>
- <20210514184455.GJ975577@paulmck-ThinkPad-P17-Gen-1>
+        id S237050AbhEQSet (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 14:34:49 -0400
+IronPort-SDR: gUK88/s9XlBelmYFx85KX2g35eRkU8l7kNkZ68ffOSpERgGF09h7nblgsN8Z79Wd1tREQjU+lq
+ jsugUUEel8TQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="221578255"
+X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
+   d="scan'208";a="221578255"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 11:33:32 -0700
+IronPort-SDR: PqScEedPVH6BjnSbuf1qfn/wvGilmloPG18hP5whiy7Qe/NmyIcRkiwcmnhp8q18AR7mkprOys
+ c7/F8eubCerQ==
+X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
+   d="scan'208";a="404467496"
+Received: from seanlmol-mobl.amr.corp.intel.com (HELO [10.209.32.11]) ([10.209.32.11])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 11:33:31 -0700
+Subject: Re: [RFC v2 26/32] x86/mm: Move force_dma_unencrypted() to common
+ code
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Andi Kleen <ak@linux.intel.com>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
+References: <7c5adf75d69ea327b22b404b7c37b29712d73640.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <5536639a-918d-de8d-ff32-934a13902a03@intel.com>
+ <d04e5992-8800-a8df-99de-4dbb40e45d09@linux.intel.com>
+ <bbcb688c-5aa0-eeb1-192a-45edaccc2f32@intel.com>
+ <20210512130821.7r2rtzcyjltecun7@box.shutemov.name>
+ <e8886298-83fa-212e-ab3a-5e5b21a7ab6c@intel.com>
+ <YJv6EWJmDYQL4Eqt@google.com>
+ <c6b40305-d643-6023-907b-e6858d422a36@linux.intel.com>
+ <943645b7-3974-bf05-073c-03ef4f889379@intel.com>
+ <a72bce3a-d7da-c595-9456-cfda42d9cdc3@linux.intel.com>
+ <YKKzCOW9u6q06E5I@google.com>
+ <d5fb2565-110e-17d1-ea00-35cf4d196f1e@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <5cc06488-09fe-17b5-077b-02c4ba9ca198@intel.com>
+Date:   Mon, 17 May 2021 11:33:29 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210514184455.GJ975577@paulmck-ThinkPad-P17-Gen-1>
+In-Reply-To: <d5fb2565-110e-17d1-ea00-35cf4d196f1e@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 11:44:55AM -0700, Paul E. McKenney wrote:
-> On Fri, May 14, 2021 at 07:41:02AM +0200, Manfred Spraul wrote:
-> > On 5/13/21 9:02 PM, Paul E. McKenney wrote:
-> > > On Thu, May 13, 2021 at 08:10:51AM +0200, Manfred Spraul wrote:
-> > > > On 5/12/21 10:17 PM, Paul E. McKenney wrote:
-
-[ . . . ]
-
-> > > > > 	int foo;
-> > > > > 	DEFINE_RWLOCK(foo_rwlock);
-> > > > > 
-> > > > > 	void update_foo(int newval)
-> > > > > 	{
-> > > > > 		write_lock(&foo_rwlock);
-> > > > > 		foo = newval;
-> > > > > 		do_something(newval);
-> > > > > 		write_unlock(&foo_rwlock);
-> > > > > 	}
-> > > > > 
-> > > > > 	int read_foo(void)
-> > > > > 	{
-> > > > > 		int ret;
-> > > > > 
-> > > > > 		read_lock(&foo_rwlock);
-> > > > > 		do_something_else();
-> > > > > 		ret = foo;
-> > > > > 		read_unlock(&foo_rwlock);
-> > > > > 		return ret;
-> > > > > 	}
-> > > > > 
-> > > > > 	int read_foo_diagnostic(void)
-> > > > > 	{
-> > > > > 		return data_race(foo);
-> > > > > 	}
-> > > > The text didn't help, the example has helped:
-> > > > 
-> > > > It was not clear to me if I have to use data_race() both on the read and the
-> > > > write side, or only on one side.
-> > > > 
-> > > > Based on this example: plain C may be paired with data_race(), there is no
-> > > > need to mark both sides.
-> > > Actually, you just demonstrated that this example is quite misleading.
-> > > That data_race() works only because the read is for diagnostic
-> > > purposes.  I am queuing a commit with your Reported-by that makes
-> > > read_foo_diagnostic() just do a pr_info(), like this:
-> > > 
-> > > 	void read_foo_diagnostic(void)
-> > > 	{
-> > > 		pr_info("Current value of foo: %d\n", data_race(foo));
-> > > 	}
-> > > 
-> > > So thank you for that!
-> > 
-> > I would not like this change at all.
-> > Assume you chase a rare bug, and notice an odd pr_info() output.
-> > It will take you really long until you figure out that a data_race() mislead
-> > you.
-> > Thus for a pr_info(), I would consider READ_ONCE() as the correct thing.
+On 5/17/21 11:27 AM, Kuppuswamy, Sathyanarayanan wrote:
+> On 5/17/21 11:16 AM, Sean Christopherson wrote:
+>> What generic code needs access to SEV vs. TDX? 
+>> force_dma_unencrypted() is called from generic code, but its
+>> implementation is x86 specific.
 > 
-> It depends, but I agree with a general preference for READ_ONCE() over
-> data_race().
-> 
-> However, for some types of concurrency designs, using a READ_ONCE()
-> can make it more difficult to enlist KCSAN's help.  For example, if this
-> variable is read or written only while holding a particular lock, so that
-> read_foo_diagnostic() is the only lockless read, then using READ_ONCE()
-> adds a concurrent read.  In RCU, the updates would now need WRITE_ONCE(),
-> which would cause KCSAN to fail to detect a buggy lockless WRITE_ONCE().
-> If data_race() is used, then adding a buggy lockless WRITE_ONCE() will
-> cause KCSAN to complain.
-> 
-> Of course, you would be quite correct to say that this must be balanced
-> against the possibility of a messed-up pr_info() due to compiler mischief.
-> Tradeoffs, tradeoffs!  ;-)
-> 
-> I should document this tradeoff, shouldn't I?
+> When the hardening the drivers for TDX usage, we will have
+> requirement to check for is_protected_guest() to add code specific to
+> protected guests. Since this will be outside arch/x86, we need common
+> framework for it.
 
-Except that Marco Elver reminds me that there are two other possibilities:
+Just remember, a "common framework" doesn't mean that it can't be backed
+by extremely arch-specific mechanisms.
 
-1.	data_race(READ_ONCE(foo)), which both suppresses compiler
-	optimizations and causes KCSAN to ignore the access.
-
-2.	"void __no_kcsan read_foo_diagnostic(void)" to cause KCSAN to
-	ignore the entire function, and READ_ONCE() on the access.
-
-So things might be the way you want anyway.  Does the patch below work
-for you?
-
-							Thanx, Paul
-
-
-------------------------------------------------------------------------
-
-diff --git a/tools/memory-model/Documentation/access-marking.txt b/tools/memory-model/Documentation/access-marking.txt
-index fe4ad6d12d24..e3012f666e62 100644
---- a/tools/memory-model/Documentation/access-marking.txt
-+++ b/tools/memory-model/Documentation/access-marking.txt
-@@ -279,19 +279,34 @@ tells KCSAN that data races are expected, and should be silently
- ignored.  This data_race() also tells the human reading the code that
- read_foo_diagnostic() might sometimes return a bogus value.
- 
--However, please note that your kernel must be built with
--CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC=n in order for KCSAN to
--detect a buggy lockless write.  If you need KCSAN to detect such a
--write even if that write did not change the value of foo, you also
--need CONFIG_KCSAN_REPORT_VALUE_CHANGE_ONLY=n.  If you need KCSAN to
--detect such a write happening in an interrupt handler running on the
--same CPU doing the legitimate lock-protected write, you also need
--CONFIG_KCSAN_INTERRUPT_WATCHER=y.  With some or all of these Kconfig
--options set properly, KCSAN can be quite helpful, although it is not
--necessarily a full replacement for hardware watchpoints.  On the other
--hand, neither are hardware watchpoints a full replacement for KCSAN
--because it is not always easy to tell hardware watchpoint to conditionally
--trap on accesses.
-+If it is necessary to suppress compiler optimization and also detect
-+buggy lockless writes, read_foo_diagnostic() can be updated as follows:
-+
-+	void read_foo_diagnostic(void)
-+	{
-+		pr_info("Current value of foo: %d\n", data_race(READ_ONCE(foo)));
-+	}
-+
-+Alternatively, given that KCSAN is to ignore all accesses in this function,
-+this function can be marked __no_kcsan and the data_race() can be dropped:
-+
-+	void __no_kcsan read_foo_diagnostic(void)
-+	{
-+		pr_info("Current value of foo: %d\n", READ_ONCE(foo));
-+	}
-+
-+However, in order for KCSAN to detect buggy lockless writes, your kernel
-+must be built with CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC=n.  If you
-+need KCSAN to detect such a write even if that write did not change
-+the value of foo, you also need CONFIG_KCSAN_REPORT_VALUE_CHANGE_ONLY=n.
-+If you need KCSAN to detect such a write happening in an interrupt handler
-+running on the same CPU doing the legitimate lock-protected write, you
-+also need CONFIG_KCSAN_INTERRUPT_WATCHER=y.  With some or all of these
-+Kconfig options set properly, KCSAN can be quite helpful, although
-+it is not necessarily a full replacement for hardware watchpoints.
-+On the other hand, neither are hardware watchpoints a full replacement
-+for KCSAN because it is not always easy to tell hardware watchpoint to
-+conditionally trap on accesses.
- 
- 
- Lock-Protected Writes With Lockless Reads
+For instance, there's a lot of pkey-specific code in mm/mprotect.c.  It
+still gets optimized away on x86 with all the goodness of X86_FEATUREs.
