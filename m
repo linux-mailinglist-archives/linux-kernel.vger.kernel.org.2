@@ -2,92 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52C993828D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:54:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA41B3828DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:54:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232426AbhEQJz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 05:55:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229474AbhEQJzY (ORCPT
+        id S232923AbhEQJzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 05:55:46 -0400
+Received: from mail-m972.mail.163.com ([123.126.97.2]:55192 "EHLO
+        mail-m972.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229474AbhEQJzo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 05:55:24 -0400
-Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3284C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 02:54:08 -0700 (PDT)
-Received: by nautica.notk.org (Postfix, from userid 108)
-        id B5864C022; Mon, 17 May 2021 11:54:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1621245243; bh=hQ3FIc3FP39hQ5sinVKlpsPMQdlr7pQOzU9Lg3Kuuuk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=THvcf4nEk20zx43KQ4LuIpoZy/4f04nE7K3wdJIUyHn93AEJ/Qd6PVjvLf30BEQ9A
-         yQsa4HQILtkj07srQrxej3oRVG4EgZeUtlsyX2DnosEI1CtH0iKYukDUXXPY6IVbxY
-         ZXYvC0RhiiuCn/qTVwET+ZYWJl46FTkaOXClh//Zt6gswNPHQPHoKT/FL/2ewvpvOD
-         QvS9aq3YTz71mOF3Xl4uioBqbEGDKEvf7efSXPWJtzzr82a/r1V4IDtvmRNMBGHzHd
-         HNY6k8IKx6tKEuDlk/hyt5nsYT12qAnmlsuPOBPO4X7CDpQWKLhbBjzasM6cx5y9TN
-         liJdD+Tj8t16Q==
-X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on nautica.notk.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.0 required=5.0 tests=UNPARSEABLE_RELAY
-        autolearn=unavailable version=3.3.2
-Received: from odin.codewreck.org (localhost [127.0.0.1])
-        by nautica.notk.org (Postfix) with ESMTPS id 10DD3C009;
-        Mon, 17 May 2021 11:53:57 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1621245242; bh=hQ3FIc3FP39hQ5sinVKlpsPMQdlr7pQOzU9Lg3Kuuuk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=4kmQtAPfPpp5uxDjwZJVSDRtBlkdcMvHGcC7EqjXyJnNXCvgheRE9z7yBRmPjWogE
-         XPnL+vWpTZi7A9LL0SBl1i4VisYN+2IYeqgf5OI35lpD7+2DhjAH6HQSU0/u3mdh7k
-         lEItSYNyetultBuJuCnsbzlR2V6vOW/H1zhie1TGQyXfL94evvDHe/uj1wjNhKf9OA
-         XbrX262RhR9feraS4tXciTmMAw9djTAUj13+RLNw6FsjmqroVEcICPbT69TCUeNQFa
-         FKnWeBfxKuGqNUYyAMOV4by40oQijgsnWWOyCUNicHz8IQs1dFf10MDn2oyzuOT5BS
-         bc39PXNegUN5g==
-Received: from localhost (odin.codewreck.org [local])
-        by odin.codewreck.org (OpenSMTPD) with ESMTPA id 6f2eecd4;
-        Mon, 17 May 2021 09:53:54 +0000 (UTC)
-Date:   Mon, 17 May 2021 18:53:39 +0900
-From:   asmadeus@codewreck.org
-To:     Xie Yongji <xieyongji@bytedance.com>
-Cc:     mst@redhat.com, jasowang@redhat.com, stefanha@redhat.com,
-        amit@kernel.org, arei.gonglei@huawei.com, airlied@linux.ie,
-        kraxel@redhat.com, jean-philippe@linaro.org, ohad@wizery.com,
-        bjorn.andersson@linaro.org, david@redhat.com, vgoyal@redhat.com,
-        miklos@szeredi.hu, lucho@ionkov.net,
-        virtualization@lists.linux-foundation.org,
+        Mon, 17 May 2021 05:55:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=QcAgy
+        SaWC8DBmwtZa4v/kTfz8gjW0AhnQxlrhSqSjCM=; b=BYIXtf8cacLLAymc3D2AK
+        XKwPf+DkOG9lKZt7UaGFC0MtqfuMt5VwISUIe3x0mGbRFW8tXyB4GL3T0TV4V74s
+        G6ffQkM9C8+vVCePpo2f7KJmZFlEt7hwl641oNcHZIAZv8jbujLbBsqEHEKDuPdN
+        4NO4/itNQ0qhooQAhMab+E=
+Received: from localhost.localdomain (unknown [211.94.251.182])
+        by smtp2 (Coremail) with SMTP id GtxpCgBn7MRJPaJgcBKNBQ--.921S2;
+        Mon, 17 May 2021 17:54:18 +0800 (CST)
+From:   Shujun Wang <wsj20369@163.com>
+To:     mani@kernel.org, hemantk@codeaurora.org, loic.poulain@linaro.org,
+        jarvis.w.jiang@gmail.com, linux-arm-msm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 15/15] 9p/trans_virtio: Handle virtio_device_ready()
- failure
-Message-ID: <YKI9I9qg2iISlz65@codewreck.org>
-References: <20210517093428.670-1-xieyongji@bytedance.com>
- <20210517093428.670-16-xieyongji@bytedance.com>
+Cc:     Shujun Wang <wsj20369@163.com>
+Subject: [PATCH RESEND,v2] bus: mhi: pci_generic: T99W175: update channel name from AT to DUN
+Date:   Mon, 17 May 2021 17:54:15 +0800
+Message-Id: <20210517095415.3626-1-wsj20369@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210517093428.670-16-xieyongji@bytedance.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: GtxpCgBn7MRJPaJgcBKNBQ--.921S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7tr43Gw15Gw4Dur4kGF45ZFb_yoW8Gw4xpF
+        4I93yYyrnYy345XFy8A34kKF90g3Z7X3yDtr1DC340qrn5Aw1qqrW8K34IgFn09F92vF4F
+        yrnIqFyfAF1UA3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07b1a93UUUUU=
+X-Originating-IP: [211.94.251.182]
+X-CM-SenderInfo: hzvmjiqtwzqiywtou0bp/1tbiTAuVF1SInnZMDgAAsz
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Xie Yongji wrote on Mon, May 17, 2021 at 05:34:28PM +0800:
-> Now virtio_device_ready() will return error if we get
-> invalid status. Let's handle this case on probe.
+From: Jarvis Jiang <jarvis.w.jiang@gmail.com>
 
-The change itself looks good to me
+According to MHI v1.1 specification, change the channel name of T99W175
+from "AT" to "DUN" (Dial-up networking) for both channel 32 and 33,
+so that the channels can be bound to the Qcom WWAN control driver, and
+device node such as /dev/wwan0p3AT will be generated, which is very useful
+for debugging modem
 
-It's going to be a pain to apply though because it depends on
-https://lkml.kernel.org/r/20210517083557.172-1-xieyongji@bytedance.com
-you just sent, so this won't apply to virtio maintainers on one hand,
-and I can't take just this patch because it depends on the first patch
-in the patchset (well if it weren't RFC)...
+Fixes: aac426562f56 ("bus: mhi: pci_generic: Introduce Foxconn T99W175 support")
+Signed-off-by: Jarvis Jiang <jarvis.w.jiang@gmail.com>
+Signed-off-by: Shujun Wang <wsj20369@163.com>
+---
 
-I guess sending the other patch to Linus fast-ish so it can go in virtio
-tree would be the best way forward? other maintainers please advise, I'm
-bad at this.
+v2: Add: Fixes: aac426562f56
 
+ drivers/bus/mhi/pci_generic.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-
-Acked-by: Dominique Martinet <asmadeus@codewreck.org>
-
+diff --git a/drivers/bus/mhi/pci_generic.c b/drivers/bus/mhi/pci_generic.c
+index 7c810f02a2ef..8c7f6576e421 100644
+--- a/drivers/bus/mhi/pci_generic.c
++++ b/drivers/bus/mhi/pci_generic.c
+@@ -311,8 +311,8 @@ static const struct mhi_channel_config mhi_foxconn_sdx55_channels[] = {
+ 	MHI_CHANNEL_CONFIG_DL(5, "DIAG", 32, 1),
+ 	MHI_CHANNEL_CONFIG_UL(12, "MBIM", 32, 0),
+ 	MHI_CHANNEL_CONFIG_DL(13, "MBIM", 32, 0),
+-	MHI_CHANNEL_CONFIG_UL(32, "AT", 32, 0),
+-	MHI_CHANNEL_CONFIG_DL(33, "AT", 32, 0),
++	MHI_CHANNEL_CONFIG_UL(32, "DUN", 32, 0),
++	MHI_CHANNEL_CONFIG_DL(33, "DUN", 32, 0),
+ 	MHI_CHANNEL_CONFIG_HW_UL(100, "IP_HW0_MBIM", 128, 2),
+ 	MHI_CHANNEL_CONFIG_HW_DL(101, "IP_HW0_MBIM", 128, 3),
+ };
 -- 
-Dominique
+2.25.1
+
