@@ -2,99 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED6A7383184
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:42:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF5D83831F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240106AbhEQOhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:37:16 -0400
-Received: from mail-oo1-f54.google.com ([209.85.161.54]:34548 "EHLO
-        mail-oo1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240240AbhEQOdh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:33:37 -0400
-Received: by mail-oo1-f54.google.com with SMTP id i8-20020a4aa1080000b0290201edd785e7so1511624ool.1;
-        Mon, 17 May 2021 07:32:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LHI3b3DrW2T0MjQQgWMyWbXQ9GdigCHzYjyvIDoNZoE=;
-        b=glWsi7FJfzqrZvFPxQu14ljEsitaWe+jhb2bnf3Jai5F6unWF7tbr90jITGUBAsEq7
-         YvZmmzObSHywR9rBBLKDiv0OGJ6sMtikrrbr7udTLQplSDex2UCfzBFOyB04O/C0KsSO
-         OkgQniR97vL57wCiLdz3TsHfnu5CA3BgJXd2GgPfUomniDvAlSYl8bfrqToAEf1NBs1K
-         g9UzsxtVHR0KAZHmM81YzaYf0+QSxr/3a/QOWsKPqpRS9ElY6YucJyd8lIllOUPNYeIR
-         sAIYwgtJxA+nvtWOFgIErQn4xmKMEZXdWbYYHbaTgPP0dvEP9fZxx4gLN7gpkNT+ZNAV
-         h7nQ==
-X-Gm-Message-State: AOAM531/QfYdLIuiMzzHti6udCifI61+BtsmXjGaUVha6n9Chli2Y9vU
-        CBJ8WQHD6XSCqO7n4m0CnL07S1NFOvNGwvH9Kq63aADDF7Y=
-X-Google-Smtp-Source: ABdhPJzc2rxdxykvDgrq3LVlJMEuFAxBWrDmPrG65KUkzFceqYTVJUcH5pWimARkvOV2h+mTLPy6p+bZesk1kDkitDE=
-X-Received: by 2002:a4a:ab83:: with SMTP id m3mr186799oon.2.1621261935224;
- Mon, 17 May 2021 07:32:15 -0700 (PDT)
+        id S240391AbhEQOmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:42:44 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:43896 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240959AbhEQOgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:36:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=+etklaO9vkFUBnNppWvW4wT/pFgZKsFAvZPj7+HIov0=; b=zpD4UKF6csA6gWp48EJrtM/Jcv
+        pr7Ed12Me36Es1mhkIPUQI9CBD7Sqd6mSIVYVSGi4JtlVUhHPk+SPqr9NxuKQqsIUg4vi4+ynw3Ix
+        AEGn9kD+0a4htguaZTizw+/0CSrCsLhA+setHgH0Fm4heqTWKbybbmOQVAzf+DhTgPj8=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lieL2-004ZSU-Np; Mon, 17 May 2021 16:35:20 +0200
+Date:   Mon, 17 May 2021 16:35:20 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Xianting Tian <xianting.tian@linux.alibaba.com>
+Cc:     mst@redhat.com, jasowang@redhat.com, davem@davemloft.net,
+        kuba@kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] virtio_net: Use BUG_ON instead of if condition followed
+ by BUG
+Message-ID: <YKJ/KPtw5Xcjsea+@lunn.ch>
+References: <56270996-33a6-d71b-d935-452dad121df7@linux.alibaba.com>
 MIME-Version: 1.0
-References: <20210511063835.7794-1-jhp@endlessos.org>
-In-Reply-To: <20210511063835.7794-1-jhp@endlessos.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 17 May 2021 16:32:04 +0200
-Message-ID: <CAJZ5v0hsNSpL+1ero_+pzz97Xz4UCwjBv7swg+3CAne7_OUKkQ@mail.gmail.com>
-Subject: Re: [PATCH] ACPI / EC: Fix media keys not working problem on more
- Asus laptops
-To:     Jian-Hong Pan <jhp@endlessos.org>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Chris Chiu <chris.chiu@canonical.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux@endlessos.org, Chris Chiu <chiu@endlessm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <56270996-33a6-d71b-d935-452dad121df7@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 11, 2021 at 8:40 AM Jian-Hong Pan <jhp@endlessos.org> wrote:
->
-> From: Chris Chiu <chiu@endlessm.com>
->
-> More ASUS laptops have the _GPE define in the DSDT table with a
-> different value than the _GPE number in the ECDT.
->
-> This is causing media keys not working on ASUS X505BA/BP, X542BA/BP
->
-> Add model info to the quirks list.
->
-> Signed-off-by: Chris Chiu <chiu@endlessm.com>
-> Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
+On Mon, May 17, 2021 at 09:31:19PM +0800, Xianting Tian wrote:
+> BUG_ON() uses unlikely in if(), which can be optimized at compile time.
+> 
+> Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
 > ---
->  drivers/acpi/ec.c | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
->
-> diff --git a/drivers/acpi/ec.c b/drivers/acpi/ec.c
-> index 13565629ce0a..e8c5da2b964a 100644
-> --- a/drivers/acpi/ec.c
-> +++ b/drivers/acpi/ec.c
-> @@ -1846,6 +1846,22 @@ static const struct dmi_system_id ec_dmi_table[] __initconst = {
->         DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
->         DMI_MATCH(DMI_PRODUCT_NAME, "GL702VMK"),}, NULL},
->         {
-> +       ec_honor_ecdt_gpe, "ASUSTeK COMPUTER INC. X505BA", {
-> +       DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
-> +       DMI_MATCH(DMI_PRODUCT_NAME, "X505BA"),}, NULL},
-> +       {
-> +       ec_honor_ecdt_gpe, "ASUSTeK COMPUTER INC. X505BP", {
-> +       DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
-> +       DMI_MATCH(DMI_PRODUCT_NAME, "X505BP"),}, NULL},
-> +       {
-> +       ec_honor_ecdt_gpe, "ASUSTeK COMPUTER INC. X542BA", {
-> +       DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
-> +       DMI_MATCH(DMI_PRODUCT_NAME, "X542BA"),}, NULL},
-> +       {
-> +       ec_honor_ecdt_gpe, "ASUSTeK COMPUTER INC. X542BP", {
-> +       DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
-> +       DMI_MATCH(DMI_PRODUCT_NAME, "X542BP"),}, NULL},
-> +       {
->         ec_honor_ecdt_gpe, "ASUS X550VXK", {
->         DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
->         DMI_MATCH(DMI_PRODUCT_NAME, "X550VXK"),}, NULL},
-> --
+>  drivers/net/virtio_net.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index c921ebf3ae82..212d52204884 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -1646,10 +1646,9 @@ static int xmit_skb(struct send_queue *sq, struct
+> sk_buff *skb)
+>  	else
+>  		hdr = skb_vnet_hdr(skb);
+> 
+> -	if (virtio_net_hdr_from_skb(skb, &hdr->hdr,
 
-Applied as 5.14 material under a different subject ("ACPI: EC: Make
-more Asus laptops use ECDT _GPE"), thanks!
+How fatal is it not being able to get the header from the skb? There
+has been push back on the use of BUG() or its variants, since it kills
+the machine dead. Would it be possible to turn this into a WARN_ON and
+return -EPROTO or something?
+
+       Andrew
