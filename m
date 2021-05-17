@@ -2,229 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88A62383A31
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:40:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78E28383A34
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:40:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244308AbhEQQl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:41:28 -0400
+        id S243346AbhEQQl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:41:59 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241082AbhEQQlO (ORCPT
+        with ESMTP id S244019AbhEQQl0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 12:41:14 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 485F8C026BBE
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 08:46:20 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id h21so5160604qtu.5
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 08:46:20 -0700 (PDT)
+        Mon, 17 May 2021 12:41:26 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8560C043163
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 08:47:33 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id lj11-20020a17090b344bb029015bc3073608so3937310pjb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 08:47:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Jkes00BX0rKznAi3gyexVpFjEGtrWVTtKigoMYByprE=;
-        b=bUP3l6QMxkhn3MCEzasqZoRc08HbTjylvmyX4WPEZF1WsdLW6AxrBCj4rRo3rPbfYx
-         52Sncq8omuJF/LbbYufVcX1hDNHmu3CdGifXsPHPRkRDeL7KlKJWCPhW9Ias0BrymuCO
-         KAcVTy4H0PcQsYjN738YY4kdty6N477IENysLtV2ghzg3S8SFfaydt96C10T5K+u9uTI
-         7RNc8hVQSR1YIUhaB5CzBBBDgUUrDj4WEGRmnjKjcGGJuhbZ2L/7oOMPzuoSVnTcSaNo
-         9Mv7WHptlyYTKCnMdxQ1tAW2A2uK90GYpLPk34rpH/Q4Nm/yAva4Vg/sgSQ8MLRwG3IC
-         6Tfg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FRBnxsunwKZMN3HF3sG/rPb6rE3SlX3UxhINuxk4Q2g=;
+        b=UiIQMcXUY5269CNue563SejGPAfXEtbk4+D3088yWt3FZ23ZJxavGXVfapk+jydZe+
+         syNGASpatkACDUf67lQUWay0tml1OK9d2PjKHoroChl6KOkt3GicIWZn16YGxQrqgtE6
+         sA+iuOG93EiXC8EjHEW9iStuOA7vE34eHb/Idln5OhoHhkwqpRpP/vFtFZv84sjxp885
+         2ayprXeG9mZ/uMdV9V1hMk1JCJYbCI6hyNuKSrDUtjKDlHauLzR5V+G3flxfo8uUprQb
+         2lwzHvjDkuN2T7s9yyxvmjYN9OVqGLoRu6MCxa/OsAK0ybZVJ7QwPcQB684ujuyBfJ6b
+         eurA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Jkes00BX0rKznAi3gyexVpFjEGtrWVTtKigoMYByprE=;
-        b=CCgSM8lxmmIRcaN9kifj0fuGm2JE4ZEQbX5MxfzVrVVVbwTiJ0893B8JZ3+1frYi3/
-         dP+3ICFhJjw09/mcV/OjNXVJ5S+acaSMHSgt2J9kmbuLBzkc2/l1OcaZFczdDZY9HNht
-         cM5Feb+tQBT32b2uUFhlVX866/oIE0PqOSpMcDMBKvjPOCjB4xmlPwBdV3aJD1nAH/4m
-         r4e18ldFpFRMza0VKfHGv8vhmc6XT8db85FBkvExU8bCeeZSe7pLM8aOrhcwjQSzlOy0
-         upRLpp75LIG+J4JpS2yhrY91q4CGROqWLFzo7WgxvTM/kmwb25vIpzfyVMIxpY+szzx0
-         ayNg==
-X-Gm-Message-State: AOAM530e//pO031VsG9zVhZDWB4qN50Da6zCxz87KE4bQP0fRdQD9Lgj
-        UPL5H4ufE67aQVBuhzpozxFiur96+SGyDWyzbKMeDw==
-X-Google-Smtp-Source: ABdhPJzH5DSNkE6lofetnwYldwzZIaU+F1EkwzKU9eIbEKf8xROizqh+cfkvNd/kQ6J0NlPFwpntkFtpk2SH5K2DpUw=
-X-Received: by 2002:ac8:51d6:: with SMTP id d22mr124752qtn.67.1621266379229;
- Mon, 17 May 2021 08:46:19 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FRBnxsunwKZMN3HF3sG/rPb6rE3SlX3UxhINuxk4Q2g=;
+        b=eicclS0+P8VlKr88TFg/jq4naU4qBerLD6tUU8laDAm48a/h9KO0bwOp8fenVQuScr
+         bSwUq306Iijrx1bfImpjyMhOG6dYkGSbvNWX2cJSfhMHc3yslDleE9g1wZ2B9hHvCQIk
+         5RSTXFzCoqBKeMiUXnzDhh9TgL1jyh4puqQSEpsATcn7UIVku5RiWnyj3MDn10KT7Qbi
+         msouuRIX1O3y9gOzcroxEf04TWqG2f1qxe7si4wgAtlwKDWZ+Hk1CJ9I1x1HJNsc35+d
+         uwGL8KJ8Of3pxIqVMlBaFf2GcGXTpkLMc1YecAGYsJoT+svweSj+zrCktFIYiWCVm3WI
+         ylqg==
+X-Gm-Message-State: AOAM532AuZ2o5mnl/Wj0O0dcBcyk1NJW1Z2rC5QasipILCep1ObhkYyz
+        jD/oNXWY8tMloj4JLzHnFcAe9A==
+X-Google-Smtp-Source: ABdhPJyNnxU8yRlnUwkZ4bSnuzXA5ieaZwu1CTQ/cFaXqiqGgzklZz6RnwYGsshne7IYDvCyQ27qmw==
+X-Received: by 2002:a17:90a:b945:: with SMTP id f5mr86375pjw.233.1621266453330;
+        Mon, 17 May 2021 08:47:33 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id w2sm4839275pjq.5.2021.05.17.08.47.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 08:47:32 -0700 (PDT)
+Date:   Mon, 17 May 2021 09:47:30 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH v3 5/6] rpmsg: char: Introduce a rpmsg driver for the
+ rpmsg char device
+Message-ID: <20210517154730.GA496383@xps15>
+References: <20210429135507.8264-1-arnaud.pouliquen@foss.st.com>
+ <20210429135507.8264-6-arnaud.pouliquen@foss.st.com>
+ <20210505164159.GB1766375@xps15>
+ <5a41e653-4d75-c5d5-a8e3-e247a50507f3@foss.st.com>
+ <20210506161125.GA1804623@xps15>
+ <e54fb7ce-41c9-4282-22d0-3188af81dc0f@foss.st.com>
+ <20210507163113.GA1907885@xps15>
+ <17df93bf-a055-5519-f6e5-ab4751a81ebf@foss.st.com>
 MIME-Version: 1.0
-References: <CACT4Y+afi_p-w1BYHZNdkuz-Cnp0aScdoQQj1yEyxR3ZKd3HnA@mail.gmail.com>
- <000000000000457cb105c28878fd@google.com>
-In-Reply-To: <000000000000457cb105c28878fd@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 17 May 2021 17:46:06 +0200
-Message-ID: <CACT4Y+bZb6_gBqzLMbHujwNgD-6b9qNvxyf0vgwDuHc3WYZ5xQ@mail.gmail.com>
-Subject: Re: [syzbot] KMSAN: uninit-value in virtio_net_hdr_to_skb
-To:     syzbot <syzbot+106457891e3cf3b273a9@syzkaller.appspotmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        Alexander Potapenko <glider@google.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Tanner Love <tannerlove@google.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Xie He <xie.he.0141@gmail.com>, Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <17df93bf-a055-5519-f6e5-ab4751a81ebf@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 5:44 PM syzbot
-<syzbot+106457891e3cf3b273a9@syzkaller.appspotmail.com> wrote:
->
-> > On Mon, May 17, 2021 at 5:13 PM Willem de Bruijn
-> > <willemdebruijn.kernel@gmail.com> wrote:
+On Mon, May 17, 2021 at 12:04:29PM +0200, Arnaud POULIQUEN wrote:
+> Hello Mathieu,
+> 
+> On 5/7/21 6:31 PM, Mathieu Poirier wrote:
+> > Good morning,
+> > 
+> > On Fri, May 07, 2021 at 11:30:30AM +0200, Arnaud POULIQUEN wrote:
+> >> Hi Mathieu,
 > >>
-> >> On Mon, May 17, 2021 at 10:57 AM Dmitry Vyukov <dvyukov@google.com> wrote:
-> >> >
-> >> > On Mon, May 17, 2021 at 4:06 PM Willem de Bruijn
-> >> > <willemdebruijn.kernel@gmail.com> wrote:
-> >> > >
-> >> > > On Mon, May 17, 2021 at 7:27 AM syzbot
-> >> > > <syzbot+106457891e3cf3b273a9@syzkaller.appspotmail.com> wrote:
-> >> > > >
-> >> > > > Hello,
-> >> > > >
-> >> > > > syzbot found the following issue on:
-> >> > > >
-> >> > > > HEAD commit:    4ebaab5f kmsan: drop unneeded references to kmsan_context_..
-> >> > > > git tree:       https://github.com/google/kmsan.git master
-> >> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=17ac508ed00000
-> >> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=ab8076fe8508c0d3
-> >> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=106457891e3cf3b273a9
-> >> > > > compiler:       Debian clang version 11.0.1-2
-> >> > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=138f4972d00000
-> >> > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1624ffced00000
-> >> > > >
-> >> > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> >> > > > Reported-by: syzbot+106457891e3cf3b273a9@syzkaller.appspotmail.com
-> >> > > >
-> >> > > > =====================================================
-> >> > > > BUG: KMSAN: uninit-value in virtio_net_hdr_to_skb+0x1414/0x14f0 include/linux/virtio_net.h:86
-> >> > >
-> >> > > No answer/fix, just initial investigation.
-> >> > >
-> >> > > This is an odd location. Line 86 is the inner if statement. Both
-> >> > > protocol and skb->protocol are clearly initialized by then. But, that
-> >> > > is also not the allocation that MSAN reports, see below.
-> >> > >
-> >> > >                         if (!skb->protocol) {
-> >> > >                                 __be16 protocol =
-> >> > > dev_parse_header_protocol(skb);
-> >> > >
-> >> > >                                 virtio_net_hdr_set_proto(skb, hdr);
-> >> > >                                 if (protocol && protocol != skb->protocol)
-> >> > >                                         return -EINVAL;
-> >> > >                         }
-> >> > >
-> >> > > The repro itself seems mostly straightforward:
-> >> > >
-> >> > > - create a packet socket
-> >> > > - enable PACKET_VNET_HDR with setsockopt(r3, 0x107, 0xf ..)
-> >> > > - bind to AF_PACKET (0x11)
-> >> > >
-> >> > > - create a pipe
-> >> > > - write to pipe[1]
-> >> > > - splice pipe[0] to the packet socket
-> >> > >
-> >> > > there are a few other calls that I think are irrelevant and/or would fail.
-> >> > >
-> >> > > Perhaps there is some race condition in device refcounting, as bind
-> >> > > operates on that?
-> >> > >
-> >> > > > CPU: 0 PID: 8426 Comm: syz-executor777 Not tainted 5.12.0-rc6-syzkaller #0
-> >> > > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> >> > > > Call Trace:
-> >> > > >  __dump_stack lib/dump_stack.c:79 [inline]
-> >> > > >  dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
-> >> > > >  kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
-> >> > > >  __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
-> >> > > >  virtio_net_hdr_to_skb+0x1414/0x14f0 include/linux/virtio_net.h:86
-> >> > > >  packet_snd net/packet/af_packet.c:2994 [inline]
-> >> > > >  packet_sendmsg+0x85b8/0x99d0 net/packet/af_packet.c:3031
-> >> > > >  sock_sendmsg_nosec net/socket.c:654 [inline]
-> >> > > >  sock_sendmsg net/socket.c:674 [inline]
-> >> > > >  kernel_sendmsg+0x22c/0x2f0 net/socket.c:694
-> >> > > >  sock_no_sendpage+0x205/0x2b0 net/core/sock.c:2860
-> >> > > >  kernel_sendpage+0x47a/0x590 net/socket.c:3631
-> >> > > >  sock_sendpage+0x161/0x1a0 net/socket.c:947
-> >> > > >  pipe_to_sendpage+0x3e4/0x520 fs/splice.c:364
-> >> > > >  splice_from_pipe_feed fs/splice.c:418 [inline]
-> >> > > >  __splice_from_pipe+0x5e3/0xff0 fs/splice.c:562
-> >> > > >  splice_from_pipe fs/splice.c:597 [inline]
-> >> > > >  generic_splice_sendpage+0x1d5/0x2c0 fs/splice.c:746
-> >> > > >  do_splice_from fs/splice.c:767 [inline]
-> >> > > >  do_splice+0x23c3/0x2c10 fs/splice.c:1079
-> >> > > >  __do_splice fs/splice.c:1144 [inline]
-> >> > > >  __do_sys_splice fs/splice.c:1350 [inline]
-> >> > > >  __se_sys_splice+0x8fa/0xb50 fs/splice.c:1332
-> >> > > >  __x64_sys_splice+0x6e/0x90 fs/splice.c:1332
-> >> > > >  do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
-> >> > > >  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> >> > > > RIP: 0033:0x449a39
-> >> > > > Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 d1 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-> >> > > > RSP: 002b:00007f8ed790b2f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000113
-> >> > > > RAX: ffffffffffffffda RBX: 00000000004cf518 RCX: 0000000000449a39
-> >> > > > RDX: 0000000000000005 RSI: 0000000000000000 RDI: 0000000000000003
-> >> > > > RBP: 00000000004cf510 R08: 000000000004ffe0 R09: 0000000000000000
-> >> > > > R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004cf51c
-> >> > > > R13: 000000000049e46c R14: 6d32cc5e8ead0600 R15: 0000000000022000
-> >> > > >
-> >> > > > Uninit was created at:
-> >> > > >  kmsan_save_stack_with_flags+0x3c/0x90 mm/kmsan/kmsan.c:121
-> >> > > >  kmsan_alloc_page+0xd0/0x1e0 mm/kmsan/kmsan_shadow.c:274
-> >> > > >  __alloc_pages_nodemask+0x827/0xf90 mm/page_alloc.c:5044
-> >> > > >  alloc_pages_current+0x7b6/0xb60 mm/mempolicy.c:2277
-> >> > > >  alloc_pages include/linux/gfp.h:561 [inline]
-> >> > > >  alloc_slab_page mm/slub.c:1653 [inline]
-> >> > > >  allocate_slab+0x364/0x1260 mm/slub.c:1793
-> >> > > >  new_slab mm/slub.c:1856 [inline]
-> >> > > >  new_slab_objects mm/slub.c:2602 [inline]
-> >> > > >  ___slab_alloc+0xd42/0x1930 mm/slub.c:2765
-> >> > > >  __slab_alloc mm/slub.c:2805 [inline]
-> >> > > >  slab_alloc_node mm/slub.c:2886 [inline]
-> >> > > >  slab_alloc mm/slub.c:2931 [inline]
-> >> > > >  kmem_cache_alloc_trace+0xc53/0x1030 mm/slub.c:2948
-> >> > > >  kmalloc include/linux/slab.h:554 [inline]
-> >> > > >  kzalloc include/linux/slab.h:684 [inline]
-> >> > > >  ____ip_mc_inc_group+0x4d7/0x10b0 net/ipv4/igmp.c:1435
-> >> > >
-> >> > > This allocates ip_mc_list, but it uses kzalloc. Can that ever count as
-> >> > > uninitialized?
-> >> >
-> >> > Yes, kzalloc should never be a source of uninitialized-ness.
-> >> > But it's not actually this kzalloc, it's underlying page allocation
-> >> > (that is allocated uninitialized, so can be source of
-> >> > uninitialized-ness).
-> >> > If it would be this kzalloc, then stack would be shorter, along the
-> >> > lines of kzalloc->kmem_cache_alloc_trace->kmsan_save_stack_with_flags.
-> >> >
-> >> > This smells like a wild access in virtio_net_hdr_to_skb, which just
-> >> > hit a random uninit somewhere.
-> >> > Searching for virtio_net_hdr_to_skb I found this:
-> >> >
-> >> > KASAN: use-after-free Read in eth_header_parse_protocol
-> >> > https://syzkaller.appspot.com/bug?id=a486048b63065fd224f57b16d5a2fdece2b40eca
-> >> >
-> >> > Can it be a dup of that bug?
+> >> On 5/6/21 6:11 PM, Mathieu Poirier wrote:
+> >>> Good day,
+> >>>
+> >>> On Wed, May 05, 2021 at 08:25:24PM +0200, Arnaud POULIQUEN wrote:
+> >>>> Hi Mathieu,
+> >>>>
+> >>>> On 5/5/21 6:41 PM, Mathieu Poirier wrote:
+> >>>>> Hi Arnaud,
+> >>>>>
+> >>>>> On Thu, Apr 29, 2021 at 03:55:06PM +0200, Arnaud Pouliquen wrote:
+> 
+> [snip...]
+> 
+> >>>>>> +};
+> >>>>>
+> >>>>> The sole purpose of doing this is to create instances of rpmsg_chrdevs from the
+> >>>>> name service - but is it really needed?  Up to now and aside from GLINK and SMD,
+> >>>>> there asn't been other users of it so I'm wondering if it is worth going through
+> >>>>> all this trouble.
+> >>>>
+> >>>> It is a good point.
+> >>>>
+> >>>> Just as a reminder, the need of ST and, I assume, some other companies, is to
+> >>>> have a basic/generic communication channel to control a remote processor
+> >>>> application.
+> >>>>
+> >>>> Nothing generic exists today for a virtio transport based implementation.
+> >>>> Companies have to create their own driver.
+> >>>>
+> >>>> The purpose of my work is to allow our customer to use RPMsg without developing
+> >>>> a specific driver to control remote applications.
+> >>>>
+> >>>> The rpmsg_chrdev char is a good candidate for this. No protocol, just a simple
+> >>>> inter-processor link to send and receive data. The rpmsg_tty is another one.
+> >>>>
+> >>>> Focusing on the rpmsg_chrdev:
+> >>>> We did a part of the work with the first patch set that would be in 5.13.
+> >>>> But is it simple to use it for virtio transport based platforms?
+> >>>> If we don't implement the NS announcement support in rpmsg_chrdev, using
+> >>>> rpmsg_chrdev for a user application seems rather tricky.
+> >>>> How to instantiate the communication?
+> >>>
+> >>> Since we already have /dev/rpmsg_ctrlX user space can instantiate an 
+> >>> using that interface, which is how things are done in the GLINK/SMD world.
+> >>>
+> >>> Wouldn't that cover the usecases you had in mind?
 > >>
-> >> Great find.
+> >> I have in mind that to make RPMsg easy to use, we need a generic driver with a
+> >> basic user interface to send end receive data, that supports the NS announcement:
+> >> -  remote side could instantiate it.
+> >> -  an instantiation of the device by a Linux application generates a NS
+> >> announcement sent to the remote side (for instance to create a channel for debug
+> >> trace).
 > >>
-> >> That commit is not yet present at kmsan.git at 4ebaab5fb428.
-> >>
-> >> Certainly sounds plausible.
-> >
-> > Then let's consider:
-> >
-> > #syz dup: KASAN: use-after-free Read in eth_header_parse_protocol
->
-> Can't dup bug to a bug in different reporting (upstream->internal).Please dup syzbot bugs only onto syzbot bugs for the same kernel/reporting.
+> > 
+> > The communication using a rpmsg_chrdev should be happening in two different ways,
+> > i.e RPMSG_CREATE_EPT_IOCTL and RPMSG_CREATE_DEV_IOCTL (as you had in a previous
+> > patchset). 
+> > 
+> > From user space communication using a rpmsg_chrdev should be initiated in two
+> > different ways, i.e RPMSG_CREATE_EPT_IOCTL and RPMSG_CREATE_DEV_IOCTL (as you
+> > had in a previous patchset). 
+> > 
+> > Regarding RPMSG_CREATE_EPT_IOCTL, patches 1, 2 and 3 take care of the legacy
+> > compatibility and I am quite happy with that.  In this case the driver works the
+> > same way regardless of the transport mechanism - virtio, GLINK or SMD.
+> 
+> Ok i will send a new revision including only this ones, and continue the updates
+> in a new patchset.
+> 
+> > 
+> > Then there is instantiation with RPMSG_CREATE_DEV_IOCTL.  That creates a new
+> > channel (with endpoint) when coming from /dev/rpmsg_ctrlX.  When we have that
+> > functionality we can make the rpmsg_chrdev available from the name service, making
+> > sure the end result is the same regardless of source of the request (remote
+> > processor or user space).  I was under the impression that functionality would
+> > be part of an upcoming patchset.
+> > 
+> > Unless I'm missing parts of the story, proceeding this way should cover all the
+> > requirements we talked about.
+> 
+> From my windows, there are 3 remaining features:
+> - capability to instantiate rpmsg_chrdev from the remote side (NS announcement)
 
-Let's try:
+I think this should be #2.
 
-#syz fix: net: ensure mac header is set in virtio_net_hdr_to_skb()
+> - capability to instantiate rpmsg_chrdev from local user application
+>   (RPMSG_CREATE_DEV_IOCTL)
+
+This should be #1.  Once this is firmly in place #2 (above) should be relatively
+easy to implement.  #1 and #2 can be in the same patchset, or not, depending on
+what you prefer. 
+
+> - capability to send a NS announcement to the remote side on  rpmsg_chrdev local
+> instantiation using RPMSG_CREATE_DEV_IOCTL. This one could be more tricky to
+> implement as the endpoint can be created after the channel.
+
+That should probably come after #1 and #2, and in a separate patchset.
+
+> 
+> To simplify the review while keeping the overall picture in mind (and perhaps
+> prioritize based on other companies' interests), Please, just tell me what would
+> be your preference in term of splitting and next step.
+> 
+> > 
+> >> On the other side, the initial work requested by Bjorn seems to be reached:
+> >> de-correlate the control part to be able to reuse it for other rpmsg devices.
+> >>
+> >> I just have the feeling that we are stay in the middle of the road without the
+> >> patches 4,5 and 6 to have a first basic interface relying on RPMsg.
+> >>
+> >>>
+> >>> As you pointed out above rpmsg_chrdev should be light and simple - eliminating
+> >>> patches 4, 5 and 6 would yield that.
+> >>>
+> >>
+> >> My concern here is more about the complexity of using it by application, for
+> >> platforms that rely on virtio rpmsg transport. For instance applications need to
+> >> know the notion of local and remote RPMsg addressing.
+> >>
+> >> Based on your feeling, here is my proposition for next steps:
+> >>  1- resend a version a version with only patch 1,2 3 + the patch to clean-up the
+> >>    #include in rpmsg_char
+> >>  2- switch back to the RPMsg TTY upstream.
+> >>  3- extend rpmsg_ctrl IOCTLs to allow instantiate RPMSG_TTY from Linux userland.
+> >>
+> > 
+> > Introducing RPMSG_TTY makes sense if a serial controller is only accessible from
+> > the remote processor.  On the flip side it is an overkill if we just want a raw
+> > message passing mechanism.  For that the rpmsg_chrdev driver, with the above
+> > extention, should be used.
+> >  
+> 
+> Yes the rpmsg_chrdev should be the default one to use for basic communication.
+
+Perfect, we are on the same page.
+
+> The main purpose of the RPMSG_TTY (from ST company POW) is to easy the
+> transition in term of communication between an external and an internal
+> processor based on a serial link. It provides an abstraction layer that the
+> application does not have to manage the transport layer.
+> 
+
+Ok
+
+> Both seem to me interesting to implement, but let's continue to focus on
+> rpmsg_chrdev first.
+> 
+> Thanks,
+> Arnaud
+> 
+> >>
+> >> Then, we can come back to patches 4, 5 and 6 depending on the feedback from the
+> >> users.
+> >>
+> >> Does this proposition would be OK for you?
+> >>
+> >> Thanks,
+> >> Arnaud
+> >>
+> >>
+> >>>> The application will probably has to scan the /sys/bus/rpmsg/devices/ folder to
+> >>>> determine the services and associated remote address.
+> >>>>
+> >>>> I don't think the QCOM drivers have the same problem because they seems to
+> >>>> initiate the communication and work directly with the RPMsg endpoints ( new
+> >>>> channel creation on endpoint creation) while Virtio works with the RPMsg channel.
+> >>>>
+> >>>> By introducing the ability to instantiate rpmsg_chrdevs through the NS
+> >>>> announcement, we make this easy for applications to use.
+> >>>>
+> >>>> And without rpmsg_chrdevs instantiation, It also means that we can't create an
+> >>>> RPMsg channel for the rpmsg_chrdevs using a new RPMSG_CREATE_DEV_IOCTL control,
+> >>>> right?
+> >>>>
+> >>>> That said, If we consider that the aim was only to extract the rpmsg_ctrl part,
+> >>>> I'm not against leaving the rpmsg_char in this state and switching to the
+> >>>> rpmsg_tty driver upstream including the work on the rpmsg_ctrl to create rpmsg
+> >>>> channels.
+> >>>>
+> >>>> We could come back on this if requested by someone else.
+> >>>>
+> >>>> Thanks,
+> >>>> Arnaud
+> >>>>
+> >>>>>
+> >>>>> As such I suggest we don't go out of our way to expose rpmsg_chrdevs to the name
+> >>>>> service.  That way patches 4, 5 and 6 of this set can be dropped.
+> >>>>>
+> >>>>> Thanks,
+> >>>>> Mathieu
+> >>>>>
+> 
