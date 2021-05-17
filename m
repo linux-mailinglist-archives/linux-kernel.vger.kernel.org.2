@@ -2,75 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 287AA38347F
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:11:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 626D03833FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:05:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243283AbhEQPJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:09:34 -0400
-Received: from mga12.intel.com ([192.55.52.136]:52859 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242559AbhEQO7z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:59:55 -0400
-IronPort-SDR: OqUwtqWNYDfdDO3uFAqmgaq9Xdf5evGw+DmvOrl/3Nhhf2GL1ufZIFiyFCbKMKt+9DBaAIRiWd
- omE2D+2yHPjw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="180080141"
-X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="180080141"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 07:50:26 -0700
-IronPort-SDR: iIgpmFCjC+ba4PHw13ILGS1IQbgwQUXRhKvrLaJrySRFIcicr/hLb428X1DYTCkt3PCUMCgoEw
- kxVuVGQPc3IA==
-X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="410852673"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.212.163.36]) ([10.212.163.36])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 07:50:13 -0700
-Subject: Re: [PATCH v6 08/16] KVM: x86/pmu: Add IA32_DS_AREA MSR emulation to
- support guest DS
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Like Xu <like.xu@linux.intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, weijiang.yang@intel.com,
-        Kan Liang <kan.liang@linux.intel.com>, wei.w.wang@intel.com,
-        eranian@google.com, liuxiangdong5@huawei.com,
-        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org
-References: <20210511024214.280733-1-like.xu@linux.intel.com>
- <20210511024214.280733-9-like.xu@linux.intel.com>
- <YKJvC5T5UOoCFwhL@hirez.programming.kicks-ass.net>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <3b13359c-5b7a-f103-74ff-1f57389db181@linux.intel.com>
-Date:   Mon, 17 May 2021 07:50:02 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S242689AbhEQPEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:04:25 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:42895 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241844AbhEQOyG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:54:06 -0400
+Received: from mail-qt1-f197.google.com ([209.85.160.197])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1liebv-0000UT-KN
+        for linux-kernel@vger.kernel.org; Mon, 17 May 2021 14:52:47 +0000
+Received: by mail-qt1-f197.google.com with SMTP id b19-20020ac84f130000b02901d543c52248so5392362qte.1
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 07:52:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5YT3ArZkIAvGWeYJPmgevYctfMIJLv6m5yBthvtx2HM=;
+        b=q3GvT+L96JoSSusgAJhiVcneUBhxZfz9MIehPeJwRxQ/QfV4JhG+SLi+IcQFKe9SAB
+         k04R0/RrPQeRVD6aNN3LlEeetIpzGdq0J89uKklEZchClu3cZS22UyN3a+7HRU0LGXPa
+         j/RXThQREg5id6OqOY7EGA17NTtlFiE7hVyIhWeuSkxZOMGn7kQPmbi6pGiEPoU8DjBl
+         o0MpDEqV8vrhWooFNXIS40Cck/jdDX+n53q23YlGyl7JJeZQv4rsf9NQJn1KtXeiHKgj
+         K+LpgwyF1gZ42TMesnRagLKCD2oSk07LbgvPAXazw52FP8Rtpt0Z7HXvDoZoIr8qnXOx
+         +MKQ==
+X-Gm-Message-State: AOAM530r1DKV4h1qdAIu2VVk8qFhlaDgt24WjXp1RNB9vM8ZK2L+OBHf
+        VA1529KtySOl833MzvkaagyrMob1cAxEUqP6rd2dkENFXJAgZRYaQoB+oq6hTpvo267JvC/JhEU
+        XrHXL+zNeZefaxvfw9TA8mx2dBAmNevM3iZD9yNBjZw==
+X-Received: by 2002:ad4:5613:: with SMTP id ca19mr93492qvb.3.1621263166302;
+        Mon, 17 May 2021 07:52:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwz1sTR2nEo8tVy3soUcg7dJtwe6XA2FzYNjxD+WxF5X8O633T/gloDETC7dA01uBs4CI398A==
+X-Received: by 2002:ad4:5613:: with SMTP id ca19mr93463qvb.3.1621263166122;
+        Mon, 17 May 2021 07:52:46 -0700 (PDT)
+Received: from [192.168.1.4] ([45.237.48.1])
+        by smtp.gmail.com with ESMTPSA id h65sm10642727qkd.112.2021.05.17.07.52.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 May 2021 07:52:45 -0700 (PDT)
+Subject: Re: [PATCH v1 1/1] soc/tegra: Add
+ devm_tegra_core_dev_init_opp_table()
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Paul Fertser <fercerpav@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210516205138.22501-1-digetx@gmail.com>
+ <20210516205138.22501-2-digetx@gmail.com>
+ <3ea6b48f-af3f-51db-8d7b-1292a68ae74e@canonical.com>
+ <a3b42449-4cd8-f692-c41a-205cbaa987eb@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <d56d1e1e-73fe-9708-34ec-e31f10e17b44@canonical.com>
+Date:   Mon, 17 May 2021 10:52:41 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <YKJvC5T5UOoCFwhL@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <a3b42449-4cd8-f692-c41a-205cbaa987eb@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 17/05/2021 10:47, Dmitry Osipenko wrote:
+> 17.05.2021 14:43, Krzysztof Kozlowski пишет:
+> ...
+>>> +static int tegra_core_dev_init_opp_state(struct device *dev)
+>>> +{
+>>> +	struct dev_pm_opp *opp;
+>>> +	unsigned long rate;
+>>> +	struct clk *clk;
+>>> +	int err;
+>>> +
+>>> +	clk = devm_clk_get(dev, NULL);
+>>> +	if (IS_ERR(clk)) {
+>>> +		dev_err(dev, "failed to get clk: %pe\n", clk);
+>>> +		return PTR_ERR(clk);
+>>> +	}
+>>> +
+>>> +	rate = clk_get_rate(clk);
+>>> +	if (!rate) {
+>>> +		dev_err(dev, "failed to get clk rate\n");
+>>> +		return -EINVAL;
+>>> +	}
+>>> +
+>>> +	opp = dev_pm_opp_find_freq_ceil(dev, &rate);
+>>> +
+>>> +	if (opp == ERR_PTR(-ERANGE))
+>>> +		opp = dev_pm_opp_find_freq_floor(dev, &rate);
+>>> +
+>>> +	err = PTR_ERR_OR_ZERO(opp);
+>>> +	if (err) {
+>>> +		dev_err(dev, "failed to get OPP for %ld Hz: %d\n",
+>>> +			rate, err);
+>>> +		return err;
+>>> +	}
+>>> +
+>>> +	dev_pm_opp_put(opp);
+>>> +
+>>> +	/* first dummy rate-setting initializes voltage vote */
+>>> +	err = dev_pm_opp_set_rate(dev, rate);
+>>> +	if (err) {
+>>> +		dev_err(dev, "failed to initialize OPP clock: %d\n", err);
+>>> +		return err;
+>>> +	}
+>>
+>>
+>> The devm_pm_opp_set_clkname will call clk_get(), so here you should drop
+>> the clk reference at the end. Why having it twice?
+> 
+> The devm_pm_opp_set_clkname assigns clock to the OPP table.
+> 
+> The devm_clk_get() is needed for the clk_get_rate(). OPP core doesn't
+> initialize voltage vote and we need this initialization for the Tegra
+> memory drivers.
 
-On 5/17/2021 6:26 AM, Peter Zijlstra wrote:
-> On Tue, May 11, 2021 at 10:42:06AM +0800, Like Xu wrote:
->> @@ -3897,6 +3898,8 @@ static struct perf_guest_switch_msr *intel_guest_get_msrs(int *nr, void *data)
->>   {
->>   	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
->>   	struct perf_guest_switch_msr *arr = cpuc->guest_switch_msrs;
->> +	struct debug_store *ds = __this_cpu_read(cpu_hw_events.ds);
->> +	struct kvm_pmu *pmu = (struct kvm_pmu *)data;
-> You can do without the cast, this is C, 'void *' silently casts to any
-> other pointer type.
+I did not get the answer to my question. Why you need to keep the clk
+reference past this point? Why you cannot drop it after getting rate?
 
-FWIW doing the C++ like casts for void * is fairly standard C coding 
-style. I generally prefer it too for better documentation. K&R is 
-written this way.
+> The reference count of the clk will be dropped automatically once device
+> driver is released. The resource-managed helper avoids the need to care
+> about the error unwinding in the code, making it clean and easy to follow.
 
--Andi (my last email on this topic to avoid any bike shedding)
+I am not saying there is a leak.
+
+> 
+> ...
+>>> +EXPORT_SYMBOL_GPL(devm_tegra_core_dev_init_opp_table);
+>>> diff --git a/include/soc/tegra/common.h b/include/soc/tegra/common.h
+>>> index 98027a76ce3d..e8eab13aa199 100644
+>>> --- a/include/soc/tegra/common.h
+>>> +++ b/include/soc/tegra/common.h
+>>> @@ -6,6 +6,36 @@
+>>>  #ifndef __SOC_TEGRA_COMMON_H__
+>>>  #define __SOC_TEGRA_COMMON_H__
+>>>  
+>>> +#include <linux/errno.h>
+>>> +#include <linux/types.h>
+>>> +
+>>> +struct device;
+>>> +
+>>> +/**
+>>> + * Tegra SoC core device OPP table configuration
+>>> + *
+>>> + * @init_state: pre-initialize OPP state of a device
+>>> + */
+>>> +struct tegra_core_opp_params {
+>>> +	bool init_state;
+>>> +};
+>>> +
+>>> +#ifdef CONFIG_ARCH_TEGRA
+>>>  bool soc_is_tegra(void);
+>>> +int devm_tegra_core_dev_init_opp_table(struct device *dev,
+>>> +				       struct tegra_core_opp_params *params);
+>>> +#else
+>>> +static inline bool soc_is_tegra(void)
+>>
+>> This looks unrelated. Please make it a separate patch.
+> 
+> The missing stub for soc_is_tegra() popped up multiple times before.
+> Hence it didn't look like a bad idea to me to add stub for it since this
+> patch touches code around it.
+> 
+> I'll factor it out into a separate patch in v2.
+
+Thanks!
 
 
+Best regards,
+Krzysztof
