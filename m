@@ -2,111 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD61A383B60
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 19:34:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D6A3383B64
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 19:37:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236330AbhEQRfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 13:35:48 -0400
-Received: from mga01.intel.com ([192.55.52.88]:24147 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243983AbhEQRfS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 13:35:18 -0400
-IronPort-SDR: jJLRIIDDrhZXSY5Ois3LFuzBx3E3Qt4S/LMfQfMlHcKOZg97W/TTqGGJMEg7IEZ1TgHdT9czTp
- UYfhisqPRFSA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="221564852"
-X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="221564852"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 10:34:01 -0700
-IronPort-SDR: HGG3u8GFhtp4two7G9PkCwl/ciBhVNQGKFlIK9n9V2OpVQLmzON/dYvN5RdJplzqGCyp07FCC3
- 34wN/xBcEbMg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="432735820"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga007.jf.intel.com with ESMTP; 17 May 2021 10:33:59 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id A742C12F; Mon, 17 May 2021 20:34:20 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] serial: sc16is7xx: Use devm_clk_get_optional()
-Date:   Mon, 17 May 2021 20:34:15 +0300
-Message-Id: <20210517173415.7483-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S236339AbhEQRiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 13:38:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230157AbhEQRiH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 13:38:07 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19A01C061573;
+        Mon, 17 May 2021 10:36:50 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id d11so7283560wrw.8;
+        Mon, 17 May 2021 10:36:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7XsYTUx1bd2TMLBzGLJMdAv8774GZAoLJjC4TPLuaiE=;
+        b=hAI95AmEoPquzZm0RQNsHAvyYi3ps+FRa0T3uqSpNIyEqe30W6NP6MUWGtv6dd9tGO
+         OVCfSkcdPwj9hMt7mIsTvql6WvP5FFWk6j5N3hAPqv2yaDWyORNFp6rThhOXHrUQQ8TA
+         S+B+UvMefGprWPt4BxvUH39jRz9TLJCQbhAo/CXu5k2qN8KNEP67/ClzVwzpXzRbMk3n
+         HEMap4DjS0ua8MYXSYzodqiBNgZTbgViS9yllUTCJiqy3w4kl04HohSQUlf+YcvfGoFV
+         tKmCK8u4hlVhfFrk4OomxLtnWgjgFTiD42JlYNhKM0GC4gZljsCoUBrCm2j7t/q0D2/+
+         Hyfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=7XsYTUx1bd2TMLBzGLJMdAv8774GZAoLJjC4TPLuaiE=;
+        b=jFeqiR2YkTrantVReGCcrLjI8E+B8GBu4B7yYbHMsr4ZM5E+LLt2hHFKRegR2CPkLl
+         jpIwBA00QIdjuMzB7uSybNXeTmnSRZtcks+qXcCkAVH52sLYf5UJFizgPoShtLlbdAHd
+         h/h1u5zgO5xmd2xUYctl6dDBodH3NuCHTxb8dXrlgRfqcKq9fOtREl12fQEMVcDYLSie
+         f0qOTNfVlB15L6UYGiOljuPFM/kt5XiycrTdyTPiTaSs4fK271gfhiY7cA+DISu0eHPB
+         P1Kkl9BGV1y5sBXMU19p4dhYXPO1mA3QKLjYQF4zqf2onGQ8cDDWiJBnDDOVeEjitvL6
+         IAnQ==
+X-Gm-Message-State: AOAM531AyztHtKqPPnEB2nnTa7LrUoSuIl4lQPMGc7tQEZ6rR37T4dyf
+        2VvUq5h3GEc56cRoWxf6ar0=
+X-Google-Smtp-Source: ABdhPJyTMCRrbZJtlGWzjFOP+iisuO5V0f43VIB3BybJky/mau5jTY9tY1T+msh+QRwo75w6j5rHug==
+X-Received: by 2002:a5d:4b10:: with SMTP id v16mr922886wrq.259.1621273008861;
+        Mon, 17 May 2021 10:36:48 -0700 (PDT)
+Received: from pevik ([62.201.25.198])
+        by smtp.gmail.com with ESMTPSA id g4sm15010689wmk.45.2021.05.17.10.36.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 10:36:48 -0700 (PDT)
+Date:   Mon, 17 May 2021 19:36:46 +0200
+From:   Petr Vorel <petr.vorel@gmail.com>
+To:     David Ahern <dsahern@gmail.com>
+Cc:     Heiko Thiery <heiko.thiery@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stephen@networkplumber.org,
+        Dmitry Yakunin <zeil@yandex-team.ru>
+Subject: Re: [PATCH iproute2-next v3] lib/fs: fix issue when
+ {name,open}_to_handle_at() is not implemented
+Message-ID: <YKKprl2ukkR7Djv+@pevik>
+Reply-To: Petr Vorel <petr.vorel@gmail.com>
+References: <20210508064925.8045-1-heiko.thiery@gmail.com>
+ <fcd869bc-50c8-8e31-73d4-3eb4034ff116@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fcd869bc-50c8-8e31-73d4-3eb4034ff116@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace open coded variants of devm_clk_get_optional().
+> On 5/8/21 12:49 AM, Heiko Thiery wrote:
+> > With commit d5e6ee0dac64 the usage of functions name_to_handle_at() and
+> > open_by_handle_at() are introduced. But these function are not available
+> > e.g. in uclibc-ng < 1.0.35. To have a backward compatibility check for the
+> > availability in the configure script and in case of absence do a direct
+> > syscall.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/tty/serial/sc16is7xx.c | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+> > Fixes: d5e6ee0dac64 ("ss: introduce cgroup2 cache and helper functions")
+> > Cc: Dmitry Yakunin <zeil@yandex-team.ru>
+> > Cc: Petr Vorel <petr.vorel@gmail.com>
+> > Signed-off-by: Heiko Thiery <heiko.thiery@gmail.com>
+> > ---
+> > v3:
+> >  - use correct syscall number (thanks to Petr Vorel)
+> >  - add #include <sys/syscall.h> (thanks to Petr Vorel)
+> >  - remove bogus parameters (thanks to Petr Vorel)
+> >  - fix #ifdef (thanks to Petr Vorel)
+> >  - added Fixes tag (thanks to David Ahern)
+> >  - build test with buildroot 2020.08.3 using uclibc 1.0.34
 
-diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
-index c5433f9f15f4..2548b4c466ac 100644
---- a/drivers/tty/serial/sc16is7xx.c
-+++ b/drivers/tty/serial/sc16is7xx.c
-@@ -1201,8 +1201,16 @@ static int sc16is7xx_probe(struct device *dev,
- 	/* Always ask for fixed clock rate from a property. */
- 	device_property_read_u32(dev, "clock-frequency", &uartclk);
- 
--	s->clk = devm_clk_get(dev, NULL);
--	if (IS_ERR(s->clk)) {
-+	s->clk = devm_clk_get_optional(dev, NULL);
-+	if (IS_ERR(s->clk))
-+		return PTR_ERR(s->clk);
-+
-+	ret = clk_prepare_enable(s->clk);
-+	if (ret)
-+		return ret;
-+
-+	freq = clk_get_rate(s->clk);
-+	if (freq == 0) {
- 		if (uartclk)
- 			freq = uartclk;
- 		if (pfreq)
-@@ -1210,13 +1218,7 @@ static int sc16is7xx_probe(struct device *dev,
- 		if (freq)
- 			dev_dbg(dev, "Clock frequency: %luHz\n", freq);
- 		else
--			return PTR_ERR(s->clk);
--	} else {
--		ret = clk_prepare_enable(s->clk);
--		if (ret)
--			return ret;
--
--		freq = clk_get_rate(s->clk);
-+			return -EINVAL;
- 	}
- 
- 	s->regmap = regmap;
-@@ -1351,8 +1353,7 @@ static int sc16is7xx_probe(struct device *dev,
- 	kthread_stop(s->kworker_task);
- 
- out_clk:
--	if (!IS_ERR(s->clk))
--		clk_disable_unprepare(s->clk);
-+	clk_disable_unprepare(s->clk);
- 
- 	return ret;
- }
-@@ -1376,8 +1377,7 @@ static int sc16is7xx_remove(struct device *dev)
- 	kthread_flush_worker(&s->kworker);
- 	kthread_stop(s->kworker_task);
- 
--	if (!IS_ERR(s->clk))
--		clk_disable_unprepare(s->clk);
-+	clk_disable_unprepare(s->clk);
- 
- 	return 0;
- }
--- 
-2.30.2
+> > v2:
+> >  - small correction to subject
+> >  - removed IP_CONFIG_HANDLE_AT:=y option since it is not required
+> >  - fix indentation in check function
+> >  - removed empty lines (thanks to Petr Vorel)
+> >  - add #define _GNU_SOURCE in check (thanks to Petr Vorel)
+> >  - check only for name_to_handle_at (thanks to Petr Vorel)
 
+> >  configure | 28 ++++++++++++++++++++++++++++
+> >  lib/fs.c  | 25 +++++++++++++++++++++++++
+> >  2 files changed, 53 insertions(+)
+
+
+> applied to iproute2-next.
+
+Thanks a lot!
+
+I guess, it'll be merged to regular iproute2 in next merge window (for 5.14).
+
+Kind regards,
+Petr
