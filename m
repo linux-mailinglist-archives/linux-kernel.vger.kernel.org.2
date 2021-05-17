@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C39383702
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:39:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3A89383783
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:46:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243737AbhEQPih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:38:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41300 "EHLO mail.kernel.org"
+        id S1344401AbhEQPoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:44:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244914AbhEQPWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:22:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C274613F8;
-        Mon, 17 May 2021 14:35:06 +0000 (UTC)
+        id S244803AbhEQP2j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:28:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 064C461CAD;
+        Mon, 17 May 2021 14:37:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262107;
-        bh=8riokKxH2sHn+YGY/A9V+kGW3Q3eIEgRBSDmyHjbsgI=;
+        s=korg; t=1621262234;
+        bh=DcO3+0Pl6VbfrAtsgA9uT+SOD7nA8ur+05IvMxODMaI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uH0bVYT/w49a8waIFsb6+dq7dB8bU4D3qThc21XqwtrIcpxz/BRvW2zPYyxxZixIx
-         KdOyRR1xCZVFDiDWx+lHpGKG3lT0iBcwHdysjLKz+ExpRzUPKVkYUoC+1XJYSRhUyC
-         F7tlOGgFb1XpJ73fUgo21aoHMnpFv4d0Sd6B9gD8=
+        b=RNChhgWnHXCOhHTQBw8FpnUVBOCRNL/XAd2aCC7RyEm1yWL0DvWK9sm8YsX3r+u6i
+         E3jR8I1FwWuVA4CCANLellt3ML6FQ/Mx1gZnwn/zjrMOKy1w87hv9j/+3Yxg0vvniB
+         7iHMX1E/t4SsXIY8GBmnyXegZ9GTCUQmvLOGXKII=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
+        stable@vger.kernel.org, Yi Zhuang <zhuangyi1@huawei.com>,
+        Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 112/289] f2fs: fix to cover __allocate_new_section() with curseg_lock
-Date:   Mon, 17 May 2021 16:00:37 +0200
-Message-Id: <20210517140308.944855026@linuxfoundation.org>
+Subject: [PATCH 5.10 113/289] f2fs: Fix a hungtask problem in atomic write
+Date:   Mon, 17 May 2021 16:00:38 +0200
+Message-Id: <20210517140308.975893246@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
 References: <20210517140305.140529752@linuxfoundation.org>
@@ -40,48 +40,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chao Yu <yuchao0@huawei.com>
+From: Yi Zhuang <zhuangyi1@huawei.com>
 
-[ Upstream commit 823d13e12b6cbaef2f6e5d63c648643e7bc094dd ]
+[ Upstream commit be1ee45d51384161681ecf21085a42d316ae25f7 ]
 
-In order to avoid race with f2fs_do_replace_block().
+In the cache writing process, if it is an atomic file, increase the page
+count of F2FS_WB_CP_DATA, otherwise increase the page count of
+F2FS_WB_DATA.
 
-Fixes: f5a53edcf01e ("f2fs: support aligned pinned file")
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
+When you step into the hook branch due to insufficient memory in
+f2fs_write_begin, f2fs_drop_inmem_pages_all will be called to traverse
+all atomic inodes and clear the FI_ATOMIC_FILE mark of all atomic files.
+
+In f2fs_drop_inmem_pages，first acquire the inmem_lock , revoke all the
+inmem_pages, and then clear the FI_ATOMIC_FILE mark. Before this mark is
+cleared, other threads may hold inmem_lock to add inmem_pages to the inode
+that has just been emptied inmem_pages, and increase the page count of
+F2FS_WB_CP_DATA.
+
+When the IO returns, it is found that the FI_ATOMIC_FILE flag is cleared
+by f2fs_drop_inmem_pages_all, and f2fs_is_atomic_file returns false,which
+causes the page count of F2FS_WB_DATA to be decremented. The page count of
+F2FS_WB_CP_DATA cannot be cleared. Finally, hungtask is triggered in
+f2fs_wait_on_all_pages because get_pages will never return zero.
+
+process A:				process B:
+f2fs_drop_inmem_pages_all
+->f2fs_drop_inmem_pages of inode#1
+    ->mutex_lock(&fi->inmem_lock)
+    ->__revoke_inmem_pages of inode#1	f2fs_ioc_commit_atomic_write
+    ->mutex_unlock(&fi->inmem_lock)	->f2fs_commit_inmem_pages of inode#1
+					->mutex_lock(&fi->inmem_lock)
+					->__f2fs_commit_inmem_pages
+					    ->f2fs_do_write_data_page
+					        ->f2fs_outplace_write_data
+					            ->do_write_page
+					                ->f2fs_submit_page_write
+					                    ->inc_page_count(sbi, F2FS_WB_CP_DATA )
+					->mutex_unlock(&fi->inmem_lock)
+    ->spin_lock(&sbi->inode_lock[ATOMIC_FILE]);
+    ->clear_inode_flag(inode, FI_ATOMIC_FILE)
+    ->spin_unlock(&sbi->inode_lock[ATOMIC_FILE])
+					f2fs_write_end_io
+					->dec_page_count(sbi, F2FS_WB_DATA );
+
+We can fix the problem by putting the action of clearing the FI_ATOMIC_FILE
+mark into the inmem_lock lock. This operation can ensure that no one will
+submit the inmem pages before the FI_ATOMIC_FILE mark is cleared, so that
+there will be no atomic writes waiting for writeback.
+
+Fixes: 57864ae5ce3a ("f2fs: limit # of inmemory pages")
+Signed-off-by: Yi Zhuang <zhuangyi1@huawei.com>
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
 Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/segment.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ fs/f2fs/segment.c | 30 +++++++++++++++++-------------
+ 1 file changed, 17 insertions(+), 13 deletions(-)
 
 diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index 661b891aa1ca..ddfc3daebe9b 100644
+index ddfc3daebe9b..1c264fd5a0dd 100644
 --- a/fs/f2fs/segment.c
 +++ b/fs/f2fs/segment.c
-@@ -2948,19 +2948,23 @@ static void __allocate_new_section(struct f2fs_sb_info *sbi, int type)
+@@ -327,23 +327,27 @@ void f2fs_drop_inmem_pages(struct inode *inode)
+ 	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+ 	struct f2fs_inode_info *fi = F2FS_I(inode);
  
- void f2fs_allocate_new_section(struct f2fs_sb_info *sbi, int type)
- {
-+	down_read(&SM_I(sbi)->curseg_lock);
- 	down_write(&SIT_I(sbi)->sentry_lock);
- 	__allocate_new_section(sbi, type);
- 	up_write(&SIT_I(sbi)->sentry_lock);
-+	up_read(&SM_I(sbi)->curseg_lock);
+-	while (!list_empty(&fi->inmem_pages)) {
++	do {
+ 		mutex_lock(&fi->inmem_lock);
++		if (list_empty(&fi->inmem_pages)) {
++			fi->i_gc_failures[GC_FAILURE_ATOMIC] = 0;
++
++			spin_lock(&sbi->inode_lock[ATOMIC_FILE]);
++			if (!list_empty(&fi->inmem_ilist))
++				list_del_init(&fi->inmem_ilist);
++			if (f2fs_is_atomic_file(inode)) {
++				clear_inode_flag(inode, FI_ATOMIC_FILE);
++				sbi->atomic_files--;
++			}
++			spin_unlock(&sbi->inode_lock[ATOMIC_FILE]);
++
++			mutex_unlock(&fi->inmem_lock);
++			break;
++		}
+ 		__revoke_inmem_pages(inode, &fi->inmem_pages,
+ 						true, false, true);
+ 		mutex_unlock(&fi->inmem_lock);
+-	}
+-
+-	fi->i_gc_failures[GC_FAILURE_ATOMIC] = 0;
+-
+-	spin_lock(&sbi->inode_lock[ATOMIC_FILE]);
+-	if (!list_empty(&fi->inmem_ilist))
+-		list_del_init(&fi->inmem_ilist);
+-	if (f2fs_is_atomic_file(inode)) {
+-		clear_inode_flag(inode, FI_ATOMIC_FILE);
+-		sbi->atomic_files--;
+-	}
+-	spin_unlock(&sbi->inode_lock[ATOMIC_FILE]);
++	} while (1);
  }
  
- void f2fs_allocate_new_segments(struct f2fs_sb_info *sbi)
- {
- 	int i;
- 
-+	down_read(&SM_I(sbi)->curseg_lock);
- 	down_write(&SIT_I(sbi)->sentry_lock);
- 	for (i = CURSEG_HOT_DATA; i <= CURSEG_COLD_DATA; i++)
- 		__allocate_new_segment(sbi, i, false);
- 	up_write(&SIT_I(sbi)->sentry_lock);
-+	up_read(&SM_I(sbi)->curseg_lock);
- }
- 
- static const struct segment_allocation default_salloc_ops = {
+ void f2fs_drop_inmem_page(struct inode *inode, struct page *page)
 -- 
 2.30.2
 
