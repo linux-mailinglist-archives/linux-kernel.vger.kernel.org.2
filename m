@@ -2,78 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 463F3382971
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D6A338297B
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236239AbhEQKJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 06:09:11 -0400
-Received: from www.zeus03.de ([194.117.254.33]:39458 "EHLO mail.zeus03.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236078AbhEQKJG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 06:09:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=k1; bh=Z0f6aV6NsliMjT
-        tzNpWaoTKaZ24I1TbtLb9a3MIBU8E=; b=IMma1yLQIWMkbtuv0zbkIFwbyX5W5r
-        ZLnD4j2IwGmswWWiB/Jw+VrtAVRvqcKByzwJ0uPrOWfQaOEANDBnPqf01obQlfTb
-        6vDsK9Ag137TOvQF1WymA3DAUHemcFJPnmfTtQAKkOyI3mWm+iW76El4ZtM1Kkhg
-        /FnaoxL3M1GdI=
-Received: (qmail 2471414 invoked from network); 17 May 2021 12:07:48 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 17 May 2021 12:07:48 +0200
-X-UD-Smtp-Session: l3s3148p1@luD9w4PC/rggARa4RYY7ATBvQ5FTVwg4
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Corentin Chary <corentin.chary@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org
-Subject: [PATCH v3 2/2] platform/x86: samsung-laptop: set debugfs blobs to read only
-Date:   Mon, 17 May 2021 12:07:45 +0200
-Message-Id: <20210517100746.29663-2-wsa+renesas@sang-engineering.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210517100746.29663-1-wsa+renesas@sang-engineering.com>
-References: <20210517100746.29663-1-wsa+renesas@sang-engineering.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S236094AbhEQKJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 06:09:33 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:57142 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236141AbhEQKJ1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 06:09:27 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R631e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UZ78uCN_1621246070;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UZ78uCN_1621246070)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 17 May 2021 18:08:08 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     eugen.hristev@microchip.com
+Cc:     mchehab@kernel.org, nicolas.ferre@microchip.com,
+        alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com,
+        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] media: atmel: atmel-isc: Remove redundant assignment to i
+Date:   Mon, 17 May 2021 18:07:48 +0800
+Message-Id: <1621246068-58221-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Those blobs can only be read. So, don't confuse users with 'writable'
-flags. Also, remove S_IFREG because debugfs takes care of that.
+Variable i is being assigned a value however the assignment is
+never read, so this redundant assignment can be removed.
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Clean up the following clang-analyzer warning:
+
+drivers/media/platform/atmel/atmel-isc-base.c:975:2: warning: Value
+stored to 'i' is never read [clang-analyzer-deadcode.DeadStores].
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
+ drivers/media/platform/atmel/atmel-isc-base.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-change since v2: added Andy's tag and removed S_IFREG
-
- drivers/platform/x86/samsung-laptop.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/platform/x86/samsung-laptop.c b/drivers/platform/x86/samsung-laptop.c
-index 763d97cbbe53..7ee010aa740a 100644
---- a/drivers/platform/x86/samsung-laptop.c
-+++ b/drivers/platform/x86/samsung-laptop.c
-@@ -1296,12 +1296,12 @@ static void samsung_debugfs_init(struct samsung_laptop *samsung)
- 	debugfs_create_u32("d1", 0644, root, &samsung->debug.data.d1);
- 	debugfs_create_u16("d2", 0644, root, &samsung->debug.data.d2);
- 	debugfs_create_u8("d3", 0644, root, &samsung->debug.data.d3);
--	debugfs_create_blob("data", 0644, root, &samsung->debug.data_wrapper);
--	debugfs_create_blob("f0000_segment", 0600, root,
-+	debugfs_create_blob("data", 0444, root, &samsung->debug.data_wrapper);
-+	debugfs_create_blob("f0000_segment", 0400, root,
- 			    &samsung->debug.f0000_wrapper);
--	debugfs_create_file("call", S_IFREG | 0444, root, samsung,
-+	debugfs_create_file("call", 0444, root, samsung,
- 			    &samsung_laptop_call_fops);
--	debugfs_create_blob("sdiag", 0644, root, &samsung->debug.sdiag_wrapper);
-+	debugfs_create_blob("sdiag", 0444, root, &samsung->debug.sdiag_wrapper);
- }
+diff --git a/drivers/media/platform/atmel/atmel-isc-base.c b/drivers/media/platform/atmel/atmel-isc-base.c
+index ce8e135..a017572c 100644
+--- a/drivers/media/platform/atmel/atmel-isc-base.c
++++ b/drivers/media/platform/atmel/atmel-isc-base.c
+@@ -972,7 +972,6 @@ static int isc_enum_fmt_vid_cap(struct file *file, void *priv,
  
- static void samsung_sabi_exit(struct samsung_laptop *samsung)
+ 	index -= ARRAY_SIZE(controller_formats);
+ 
+-	i = 0;
+ 	supported_index = 0;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(formats_list); i++) {
 -- 
-2.30.2
+1.8.3.1
 
