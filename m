@@ -2,106 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B77B9383A41
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:42:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAC25383A50
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:46:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243434AbhEQQny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:43:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41596 "EHLO
+        id S242606AbhEQQrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:47:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242061AbhEQQnm (ORCPT
+        with ESMTP id S242214AbhEQQrt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 12:43:42 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE796C0612AB
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 08:53:23 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id 27so3643845pgy.3
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 08:53:23 -0700 (PDT)
+        Mon, 17 May 2021 12:47:49 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA465C0494FF;
+        Mon, 17 May 2021 09:15:11 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id v13so3417895ple.9;
+        Mon, 17 May 2021 09:15:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=F2QBpAAF++uWH6CxS2YX3b9qpY1ggeZ6Y1tZ4KY25HY=;
-        b=jAPqhJq6lwJYhWZL3sGNCzW5kQwuxbRa7eapGo0FDnsbS9I4G4jD55IAqlrFcWTSId
-         OB/lf7hTKTWzuTc3tBDEOUHHzILFsEplNAJM6ZJfuQ5zfQK5wd0uOY1lNJWPg2DYHu8W
-         aBhmPKW3ZDkV4iSO3VPB5/Au+tDdTKsf+IDSCq2mxcbWATOII374ANzAl5/w2Web+Hbm
-         ZohnJIsmDY2cjIb6uSdvEq6pTU/ZZBCXT9qgUuAmLInU8H0R7TiyxWBgQHtcziXsSbsf
-         SDDXhEDLxOLOKHrpxGNRv/RYCN+KDDb7sGO0y/vb80kjrIaAm6A4JJlzJUx8mHaM2RlR
-         t3eA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LlV1Ll+QQbUKRKwz/tVBMFCcvNLhli/v1vB7R2Id8zQ=;
+        b=pUJr8otnrSWcK8A1zZu7Bzk60GjF73STrrfVIOnSCuAL8KeJVL+22esj1OHltf+rL1
+         sduzR/3jeY9990q+fSNVJ8/JKAbIEQ8mxMkuHZTrZRGarmwbVFUTogMEHvBukllcBU9q
+         vyCwS9bnERuZ9VxRKurWtV7mjNVFzCBebHRLdwrMPymqdt0/KCA1UbBYHWfr3aO4Q2Gu
+         5ut8gEis/SkOLhgcLtE4wX8I5Ev+QE5FibqYZa+WYwmS0yi1fgFqWA8YGrIwavqcLyxL
+         kgtFo8fJRer0ji6Lj3OrLdh5hJ7AJYhhykmUerW0MNaTV0c+Err0fyvUshvYr8AgCOxN
+         GbSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=F2QBpAAF++uWH6CxS2YX3b9qpY1ggeZ6Y1tZ4KY25HY=;
-        b=FRzFx4GVC88EpAGIKZ2/378wV95OBCAF+Uy3Es+xtAIqGB5sD6H9yLjr3M0lf+TsMI
-         5c/X7D3jtfza05LFKLopcazyaeY4nWjPrw0YII/EhvkVwvpLcSJrRu42bp4JP+XCEiQh
-         DyJeK5pr0wLTM34kZpG5Ku89hedx8A+GirJdKGwvMqk8vT69EKbPMpjvtCxPwdTzEiAS
-         oy8xBaBa00y0VVazFxeotAP9kt/pzgPHyAHpXSx1qQ7hb4cmblBIrZabgS+Cbj1nGzhK
-         W9hkkMMuryOZLlQtjsxnZXeS/XGANtcylJNK17/6t3HveZuvEb2BbzNpw75KZafR9YPT
-         Ggxw==
-X-Gm-Message-State: AOAM530DGFxOiaZV1eYDdAIyd+WKchu5LsO0riuqachWrc1Ub5v+JA9P
-        0/WygMmhqYwCy66lJdAkC/k=
-X-Google-Smtp-Source: ABdhPJzU6fIFr1C7AGK5qoUaBq4gRzKSFRfaOhpc8WHiSr/G1AETnQfD/J2QXHrZE2JHH1y3edl2mA==
-X-Received: by 2002:a62:1a4b:0:b029:24e:ba53:aaa4 with SMTP id a72-20020a621a4b0000b029024eba53aaa4mr304822pfa.63.1621266803306;
-        Mon, 17 May 2021 08:53:23 -0700 (PDT)
-Received: from wuchi.mioffice.cn ([2408:8607:1b00:a:4a4d:7eff:feb5:2e68])
-        by smtp.gmail.com with ESMTPSA id jz7sm2190306pjb.32.2021.05.17.08.53.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 08:53:22 -0700 (PDT)
-From:   Chi Wu <wuchi.zero@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     jack@suse.cz, linux-kernel@vger.kernel.org, tan.hu@zte.com.cn,
-        Chi Wu <wuchi.zero@gmail.com>
-Subject: [PATCH] lib/flex_proportions.c: Use abs() when percpu_counter is negative.
-Date:   Mon, 17 May 2021 23:53:06 +0800
-Message-Id: <20210517155306.11113-1-wuchi.zero@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LlV1Ll+QQbUKRKwz/tVBMFCcvNLhli/v1vB7R2Id8zQ=;
+        b=shQ08Spg21jfUlwVSDR9lNhBq4Qzw3n9nTN/vmvv2+Dd4WHR+uTxq6aILD9ozknsiN
+         shXvdoTBuECHE81uYWwGduarzoJa7sXAKs0earzWy9WLS4Efj9Fqi2qG9wY7s/cqgUwi
+         OpUhv8WL9c/fRslNdSOpII0duv9VGWf3GYaI3HaobaHYDogTXMC6KIpZna0lBtbviqDr
+         T+8Sa7wCVQK0Ey3aeQ89NUL1d7pKovIUaqMEbLj+/jRUKXszo6YjjBU6upSVmv9xQoZM
+         cHRMLpsvtHWZXCimZzqYLo2MoXz7A1R4P7+ATCEtbhjWwBJ2aE099EoLEuTgS3A5chVi
+         1Pbg==
+X-Gm-Message-State: AOAM533E0twq5o8+QZVqjTStkVT9SJ7RzfzMDfIQQ+x+JemTYvRGzG4k
+        hr4YGlDdskxQz+7gq0QAXuYeuCt3SG0=
+X-Google-Smtp-Source: ABdhPJxR6QS1AvxNKjeXamQHVTrOVeAv6A7Z+CSPqWRjXVpFuFB7ppCBqbeG0XysI0V8ztVNHrrEdA==
+X-Received: by 2002:a17:902:ee8b:b029:ef:ab33:b835 with SMTP id a11-20020a170902ee8bb02900efab33b835mr788174pld.27.1621268110931;
+        Mon, 17 May 2021 09:15:10 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id y64sm10033490pfy.204.2021.05.17.09.15.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 May 2021 09:15:10 -0700 (PDT)
+Subject: Re: [PATCH 5.12 000/363] 5.12.5-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210517140302.508966430@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <19a16055-1757-5476-2437-7ef9118aa5da@gmail.com>
+Date:   Mon, 17 May 2021 09:15:07 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.1
+MIME-Version: 1.0
+In-Reply-To: <20210517140302.508966430@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The value of percpu_counter_read() may become negative after
-running percpu_counter_sum() in fprop_reflect_period_percpu().
-The value of variable 'num' will be zero in fprop_fraction_percpu()
-when using percpu_counter_read_positive(), but if using the abs of
-percpu_counter_read() will be close to the correct value.
 
-Signed-off-by: Chi Wu <wuchi.zero@gmail.com>
----
- lib/flex_proportions.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/lib/flex_proportions.c b/lib/flex_proportions.c
-index 451543937524..3ac79ca2c441 100644
---- a/lib/flex_proportions.c
-+++ b/lib/flex_proportions.c
-@@ -147,7 +147,7 @@ void fprop_fraction_single(struct fprop_global *p,
- 		seq = read_seqcount_begin(&p->sequence);
- 		fprop_reflect_period_single(p, pl);
- 		num = pl->events;
--		den = percpu_counter_read_positive(&p->events);
-+		den = abs(percpu_counter_read(&p->events));
- 	} while (read_seqcount_retry(&p->sequence, seq));
- 
- 	/*
-@@ -209,7 +209,7 @@ static void fprop_reflect_period_percpu(struct fprop_global *p,
- 			val = percpu_counter_sum(&pl->events);
- 
- 		percpu_counter_add_batch(&pl->events,
--			-val + (val >> (period-pl->period)), PROP_BATCH);
-+			-val + (val >> (period - pl->period)), PROP_BATCH);
- 	} else
- 		percpu_counter_set(&pl->events, 0);
- 	pl->period = period;
-@@ -234,8 +234,8 @@ void fprop_fraction_percpu(struct fprop_global *p,
- 	do {
- 		seq = read_seqcount_begin(&p->sequence);
- 		fprop_reflect_period_percpu(p, pl);
--		num = percpu_counter_read_positive(&pl->events);
--		den = percpu_counter_read_positive(&p->events);
-+		num = abs(percpu_counter_read(&pl->events));
-+		den = abs(percpu_counter_read(&p->events));
- 	} while (read_seqcount_retry(&p->sequence, seq));
- 
- 	/*
+On 5/17/2021 6:57 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.12.5 release.
+> There are 363 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 19 May 2021 14:02:12 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.5-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-2.17.1
-
+Florian
