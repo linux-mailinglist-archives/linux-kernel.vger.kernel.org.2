@@ -2,86 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EAB3386CFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 00:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC68386CFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 May 2021 00:32:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343794AbhEQWdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 18:33:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238052AbhEQWdH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 18:33:07 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCCA0C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 15:31:49 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id a2so11069360lfc.9
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 15:31:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tGw1wUzHGygdPQiaQ+eAoRqhEvUaiTqtJWO/+qT7Sec=;
-        b=BsKOnZSskjk3+kihrvXS6DVXY5L/+N52zGT9+xiTUxQxTkAIKdsxQLyk1O7ORMVhUR
-         mXoxSePwmtbrgsbhAU0zLqL45GrRsCHLjjZQ7tGsvZ2BaFd72dIQ1Hw5p73GwX8gGtur
-         1ZD92hodIXcVN7RvDQo4Glh8y2YWuP2LU2fNc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tGw1wUzHGygdPQiaQ+eAoRqhEvUaiTqtJWO/+qT7Sec=;
-        b=BrcLABmW4RYFWS8e2mV2baAbzb84dRD9u082SnaVbVAcewIf/Nl+kSNVsNQDSuKgU0
-         V5g5ecQUTaT5wsAOadS1nJ4aAWBcLYeYpCy3v2ZxyqyOIuAIQUMZY/+/56rEicUsC8Xl
-         Z/GujZ/goyayb/YF3SDYKcKqRQaAUSXRHYTN4wLiHhZq+cU7PkpZwcoOfRRNqdvi1nIg
-         aMobeOhNMZ1pij/9nBkIUHEW7pYih4b2UT6kIxF9QR/+OPp2qNSrWMSL5mIovXUs85lv
-         l+FwPLTUXUs+0OoNVsKshwNso9SP9Lb4kFtsW3NEy5qf6d/AHkPwQuFOlPqSFt6KiDjo
-         ghUA==
-X-Gm-Message-State: AOAM530u0gxUBmUm5biKhA+9PnsThrvov0c3eSVc3F3c05C7lEDf1PXZ
-        GI0+QJDKpEH7f6xJ0IIv+9h9qBRp/NNumobR
-X-Google-Smtp-Source: ABdhPJwPbOfBVK6qGrwI2C59SWxGZf3IPuKKZyUHdgOqdchEQVJb9FU8myory6qIQzYUGrzvdBCw5Q==
-X-Received: by 2002:ac2:4186:: with SMTP id z6mr1463549lfh.16.1621290708275;
-        Mon, 17 May 2021 15:31:48 -0700 (PDT)
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
-        by smtp.gmail.com with ESMTPSA id w27sm1684235lfl.195.2021.05.17.15.31.47
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 May 2021 15:31:47 -0700 (PDT)
-Received: by mail-lf1-f43.google.com with SMTP id m11so11105703lfg.3
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 15:31:47 -0700 (PDT)
-X-Received: by 2002:a19:ca15:: with SMTP id a21mr1421228lfg.487.1621290707592;
- Mon, 17 May 2021 15:31:47 -0700 (PDT)
+        id S1343818AbhEQWdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 18:33:25 -0400
+Received: from mga03.intel.com ([134.134.136.65]:47293 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238052AbhEQWdX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 18:33:23 -0400
+IronPort-SDR: cPW1V6n0WLiAYaMWDlzYxMiEzGsDHVD6QYUFI0e0qudyHYh2sulyPPHebYKgakoF0egFH2RqgK
+ Ek5kKd+FtcMQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9987"; a="200632718"
+X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
+   d="scan'208";a="200632718"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 15:32:06 -0700
+IronPort-SDR: 3pPbgw7KR3+4EfEe+dtQOrQE887y10H1DxmYzQT8KwAHjrBK4I3/Ziojxgrakddz7GKwb9ft9X
+ rR8+Eh0+RHCQ==
+X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
+   d="scan'208";a="543866390"
+Received: from daltonda-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.182.28])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 15:32:05 -0700
+Subject: Re: [RFC v2 26/32] x86/mm: Move force_dma_unencrypted() to common
+ code
+To:     Sean Christopherson <seanjc@google.com>,
+        Dave Hansen <dave.hansen@intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
+References: <bbcb688c-5aa0-eeb1-192a-45edaccc2f32@intel.com>
+ <20210512130821.7r2rtzcyjltecun7@box.shutemov.name>
+ <e8886298-83fa-212e-ab3a-5e5b21a7ab6c@intel.com>
+ <YJv6EWJmDYQL4Eqt@google.com>
+ <c6b40305-d643-6023-907b-e6858d422a36@linux.intel.com>
+ <943645b7-3974-bf05-073c-03ef4f889379@intel.com>
+ <a72bce3a-d7da-c595-9456-cfda42d9cdc3@linux.intel.com>
+ <YKKzCOW9u6q06E5I@google.com>
+ <d5fb2565-110e-17d1-ea00-35cf4d196f1e@linux.intel.com>
+ <5cc06488-09fe-17b5-077b-02c4ba9ca198@intel.com>
+ <YKK4AHhfv1nrYiw2@google.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <37da11b3-0313-982d-5a2b-af592db6f9e8@linux.intel.com>
+Date:   Mon, 17 May 2021 15:32:01 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <CAHk-=wgX-4PTGAH7kRvqHYiq9wPJ-zN6jhLsuOAj6cG__g9N9A@mail.gmail.com>
- <20210517135653.GA2116459@roeck-us.net>
-In-Reply-To: <20210517135653.GA2116459@roeck-us.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 17 May 2021 15:31:31 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whUsAw7g6x4ianP1VxsADr1b+fitmQ2qecrq70d9r3ZJQ@mail.gmail.com>
-Message-ID: <CAHk-=whUsAw7g6x4ianP1VxsADr1b+fitmQ2qecrq70d9r3ZJQ@mail.gmail.com>
-Subject: Re: Linux 5.13-rc2
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YKK4AHhfv1nrYiw2@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 6:56 AM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> I have seen a pull request that fixes the raspi2 problem. Hopefully that
-> fix should be in -rc3.
 
-Hmm. That commit actually made it into rc2. We're talking about that
-commit bb4031b8af80 ("clk: Skip clk provider registration when np is
-NULL"), aren't we?
 
-That's the patch that you reported fixed it for you.
+On 5/17/21 11:37 AM, Sean Christopherson wrote:
+>> Just remember, a "common framework" doesn't mean that it can't be backed
+>> by extremely arch-specific mechanisms.
+>>
+>> For instance, there's a lot of pkey-specific code in mm/mprotect.c.  It
+>> still gets optimized away on x86 with all the goodness of X86_FEATUREs.
+> Ya, exactly.  Ideally, generic code shouldn't have to differentiate between SEV,
+> SEV-ES, SEV-SNP, TDX, etc..., a vanilla "bool is_protected_guest(void)" should
+> suffice.  Under the hood, x86's implementation for is_protected_guest() can be
+> boot_cpu_has() checks (if we want).
 
-And it got merged by me (commit 28183dbf54ed: "Merge tag
-'driver-core-5.13-rc2' .."), and is part of rc2.
+What about the use case of protected_guest_has(flag)? Do you want to call it with
+with X86_FEATURE_* flags outside arch/x86 code ?
 
-So if rc2 still has some raspi2 failures, there's something else going on..
 
-Strange. Mind double-checking?
-
-                Linus
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
