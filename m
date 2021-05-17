@@ -2,299 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B7FE382C1B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 14:29:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15A29382C27
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 14:33:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237042AbhEQMa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 08:30:56 -0400
-Received: from mga04.intel.com ([192.55.52.120]:16516 "EHLO mga04.intel.com"
+        id S233226AbhEQMe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 08:34:26 -0400
+Received: from foss.arm.com ([217.140.110.172]:50034 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237012AbhEQMap (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 08:30:45 -0400
-IronPort-SDR: qG7d700sUpARSCe8FJJjv9x05IDyVaP1VrKFg0seU9wCfOyykpAm2zsP5x1u+8G5TI6i95v3Zk
- L6y6cDm4P46Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,9986"; a="198499870"
-X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="198499870"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 05:29:29 -0700
-IronPort-SDR: CvEQXuRsYSD3VkuaUiPfnJiMvvPtNRK3LbY1TlaLqNHFxVLJb8AzQIQZIBaBXm5Uy5Jlxaqr5l
- rjdtGWa98xGg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,307,1613462400"; 
-   d="scan'208";a="393498741"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga003.jf.intel.com with ESMTP; 17 May 2021 05:29:27 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 50669752; Mon, 17 May 2021 15:29:48 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: [PATCH v4 4/4] devres: Enable trace events
-Date:   Mon, 17 May 2021 15:29:46 +0300
-Message-Id: <20210517122946.53161-4-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210517122946.53161-1-andriy.shevchenko@linux.intel.com>
-References: <20210517122946.53161-1-andriy.shevchenko@linux.intel.com>
+        id S229776AbhEQMeZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 08:34:25 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BF98F113E;
+        Mon, 17 May 2021 05:33:08 -0700 (PDT)
+Received: from e112269-lin.arm.com (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0111E3F73B;
+        Mon, 17 May 2021 05:33:05 -0700 (PDT)
+From:   Steven Price <steven.price@arm.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>
+Cc:     Steven Price <steven.price@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: [PATCH v12 0/8] MTE support for KVM guest
+Date:   Mon, 17 May 2021 13:32:31 +0100
+Message-Id: <20210517123239.8025-1-steven.price@arm.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In some cases the printf() mechanism is too heavy and can't be used.
-For example, when debugging a race condition involving devres API.
-When CONFIG_DEBUG_DEVRES is enabled I can't reproduce an issue, and
-otherwise it's quite visible with a useful information being collected.
+This series adds support for using the Arm Memory Tagging Extensions
+(MTE) in a KVM guest.
 
-Enable trace events for devres part of the driver core.
+Changes since v11[1]:
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v4: rebased on top of v5.13-rc2
+ * Series is prefixed with a bug fix for a potential race synchronising
+   tags. This is basically race as was recently[2] fixed for
+   PG_dcache_clean where the update of the page flag cannot be done
+   atomically with the work that flag represents.
 
- drivers/base/Makefile  |  3 +++
- drivers/base/devres.c  | 47 +++++++++++++++--------------------
- drivers/base/trace.c   | 10 ++++++++
- drivers/base/trace.h   | 56 ++++++++++++++++++++++++++++++++++++++++++
- include/linux/device.h |  9 -------
- 5 files changed, 89 insertions(+), 36 deletions(-)
- create mode 100644 drivers/base/trace.c
- create mode 100644 drivers/base/trace.h
+   For the PG_dcache_clean case the problem is easier because extra
+   cache maintenance isn't a problem, but here restoring the tags twice
+   could cause data loss.
 
-diff --git a/drivers/base/Makefile b/drivers/base/Makefile
-index 8b93a7f291ec..ef8e44a7d288 100644
---- a/drivers/base/Makefile
-+++ b/drivers/base/Makefile
-@@ -30,3 +30,6 @@ obj-y			+= test/
- 
- ccflags-$(CONFIG_DEBUG_DRIVER) := -DDEBUG
- 
-+# define_trace.h needs to know how to find our header
-+CFLAGS_trace.o		:= -I$(src)
-+obj-$(CONFIG_TRACING)	+= trace.o
-diff --git a/drivers/base/devres.c b/drivers/base/devres.c
-index dee48858663f..eaa9a5cd1db9 100644
---- a/drivers/base/devres.c
-+++ b/drivers/base/devres.c
-@@ -14,14 +14,13 @@
- #include <asm/sections.h>
- 
- #include "base.h"
-+#include "trace.h"
- 
- struct devres_node {
- 	struct list_head		entry;
- 	dr_release_t			release;
--#ifdef CONFIG_DEBUG_DEVRES
- 	const char			*name;
- 	size_t				size;
--#endif
- };
- 
- struct devres {
-@@ -43,10 +42,6 @@ struct devres_group {
- 	/* -- 8 pointers */
- };
- 
--#ifdef CONFIG_DEBUG_DEVRES
--static int log_devres = 0;
--module_param_named(log, log_devres, int, S_IRUGO | S_IWUSR);
--
- static void set_node_dbginfo(struct devres_node *node, const char *name,
- 			     size_t size)
- {
-@@ -54,7 +49,11 @@ static void set_node_dbginfo(struct devres_node *node, const char *name,
- 	node->size = size;
- }
- 
--static void devres_log(struct device *dev, struct devres_node *node,
-+#ifdef CONFIG_DEBUG_DEVRES
-+static int log_devres = 0;
-+module_param_named(log, log_devres, int, S_IRUGO | S_IWUSR);
-+
-+static void devres_dbg(struct device *dev, struct devres_node *node,
- 		       const char *op)
- {
- 	if (unlikely(log_devres))
-@@ -62,10 +61,16 @@ static void devres_log(struct device *dev, struct devres_node *node,
- 			op, node, node->name, node->size);
- }
- #else /* CONFIG_DEBUG_DEVRES */
--#define set_node_dbginfo(node, n, s)	do {} while (0)
--#define devres_log(dev, node, op)	do {} while (0)
-+#define devres_dbg(dev, node, op)	do {} while (0)
- #endif /* CONFIG_DEBUG_DEVRES */
- 
-+static void devres_log(struct device *dev, struct devres_node *node,
-+		       const char *op)
-+{
-+	trace_devres_log(dev, op, node, node->name, node->size);
-+	devres_dbg(dev, node, op);
-+}
-+
- /*
-  * Release functions for devres group.  These callbacks are used only
-  * for identification.
-@@ -134,26 +139,13 @@ static void replace_dr(struct device *dev,
- 	list_replace(&old->entry, &new->entry);
- }
- 
--#ifdef CONFIG_DEBUG_DEVRES
--void * __devres_alloc_node(dr_release_t release, size_t size, gfp_t gfp, int nid,
--		      const char *name)
--{
--	struct devres *dr;
--
--	dr = alloc_dr(release, size, gfp | __GFP_ZERO, nid);
--	if (unlikely(!dr))
--		return NULL;
--	set_node_dbginfo(&dr->node, name, size);
--	return dr->data;
--}
--EXPORT_SYMBOL_GPL(__devres_alloc_node);
--#else
- /**
-- * devres_alloc_node - Allocate device resource data
-+ * __devres_alloc_node - Allocate device resource data
-  * @release: Release function devres will be associated with
-  * @size: Allocation size
-  * @gfp: Allocation flags
-  * @nid: NUMA node
-+ * @name: Name of the resource
-  *
-  * Allocate devres of @size bytes.  The allocated area is zeroed, then
-  * associated with @release.  The returned pointer can be passed to
-@@ -162,17 +154,18 @@ EXPORT_SYMBOL_GPL(__devres_alloc_node);
-  * RETURNS:
-  * Pointer to allocated devres on success, NULL on failure.
-  */
--void * devres_alloc_node(dr_release_t release, size_t size, gfp_t gfp, int nid)
-+void *__devres_alloc_node(dr_release_t release, size_t size, gfp_t gfp, int nid,
-+			  const char *name)
- {
- 	struct devres *dr;
- 
- 	dr = alloc_dr(release, size, gfp | __GFP_ZERO, nid);
- 	if (unlikely(!dr))
- 		return NULL;
-+	set_node_dbginfo(&dr->node, name, size);
- 	return dr->data;
- }
--EXPORT_SYMBOL_GPL(devres_alloc_node);
--#endif
-+EXPORT_SYMBOL_GPL(__devres_alloc_node);
- 
- /**
-  * devres_for_each_res - Resource iterator
-diff --git a/drivers/base/trace.c b/drivers/base/trace.c
-new file mode 100644
-index 000000000000..b24b0a309c4a
---- /dev/null
-+++ b/drivers/base/trace.c
-@@ -0,0 +1,10 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Device core Trace Support
-+ * Copyright (C) 2021, Intel Corporation
-+ *
-+ * Author: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-+ */
-+
-+#define CREATE_TRACE_POINTS
-+#include "trace.h"
-diff --git a/drivers/base/trace.h b/drivers/base/trace.h
-new file mode 100644
-index 000000000000..3192e18f877e
---- /dev/null
-+++ b/drivers/base/trace.h
-@@ -0,0 +1,56 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Device core Trace Support
-+ * Copyright (C) 2021, Intel Corporation
-+ *
-+ * Author: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-+ */
-+
-+#undef TRACE_SYSTEM
-+#define TRACE_SYSTEM dev
-+
-+#if !defined(__DEV_TRACE_H) || defined(TRACE_HEADER_MULTI_READ)
-+#define __DEV_TRACE_H
-+
-+#include <linux/device.h>
-+#include <linux/tracepoint.h>
-+#include <linux/types.h>
-+
-+DECLARE_EVENT_CLASS(devres,
-+	TP_PROTO(struct device *dev, const char *op, void *node, const char *name, size_t size),
-+	TP_ARGS(dev, op, node, name, size),
-+	TP_STRUCT__entry(
-+		__string(devname, dev_name(dev))
-+		__field(struct device *, dev)
-+		__field(const char *, op)
-+		__field(void *, node)
-+		__field(const char *, name)
-+		__field(size_t, size)
-+	),
-+	TP_fast_assign(
-+		__assign_str(devname, dev_name(dev));
-+		__entry->op = op;
-+		__entry->node = node;
-+		__entry->name = name;
-+		__entry->size = size;
-+	),
-+	TP_printk("%s %3s %p %s (%zu bytes)", __get_str(devname),
-+		  __entry->op, __entry->node, __entry->name, __entry->size)
-+);
-+
-+DEFINE_EVENT(devres, devres_log,
-+	TP_PROTO(struct device *dev, const char *op, void *node, const char *name, size_t size),
-+	TP_ARGS(dev, op, node, name, size)
-+);
-+
-+#endif /* __DEV_TRACE_H */
-+
-+/* this part has to be here */
-+
-+#undef TRACE_INCLUDE_PATH
-+#define TRACE_INCLUDE_PATH .
-+
-+#undef TRACE_INCLUDE_FILE
-+#define TRACE_INCLUDE_FILE trace
-+
-+#include <trace/define_trace.h>
-diff --git a/include/linux/device.h b/include/linux/device.h
-index 38a2071cf776..3769cce77e2c 100644
---- a/include/linux/device.h
-+++ b/include/linux/device.h
-@@ -165,21 +165,12 @@ void device_remove_bin_file(struct device *dev,
- typedef void (*dr_release_t)(struct device *dev, void *res);
- typedef int (*dr_match_t)(struct device *dev, void *res, void *match_data);
- 
--#ifdef CONFIG_DEBUG_DEVRES
- void *__devres_alloc_node(dr_release_t release, size_t size, gfp_t gfp,
- 			  int nid, const char *name) __malloc;
- #define devres_alloc(release, size, gfp) \
- 	__devres_alloc_node(release, size, gfp, NUMA_NO_NODE, #release)
- #define devres_alloc_node(release, size, gfp, nid) \
- 	__devres_alloc_node(release, size, gfp, nid, #release)
--#else
--void *devres_alloc_node(dr_release_t release, size_t size,
--			gfp_t gfp, int nid) __malloc;
--static inline void *devres_alloc(dr_release_t release, size_t size, gfp_t gfp)
--{
--	return devres_alloc_node(release, size, gfp, NUMA_NO_NODE);
--}
--#endif
- 
- void devres_for_each_res(struct device *dev, dr_release_t release,
- 			 dr_match_t match, void *match_data,
+   The current solution is a global spinlock for mte_sync_page_tags().
+   If we hit scalability problems that other solutions such as
+   potentially using another page flag as a lock will need to be
+   investigated.
+
+ * The second patch is from Catalin to mitigate the performance impact
+   of the first - by handling the page zeroing case explicitly we can
+   avoid entering mte_sync_page_tags() at all in most cases. Peter
+   Collingbourne has a patch which similarly improves this case using
+   the DC GZVA instruction. So this patch may be dropped in favour of
+   Peter's, however Catalin's is likely easier to backport.
+
+ * Use pte_access_permitted() in set_pte_at() to identify pages which
+   may be accessed by the user rather than open-coding a check for
+   PTE_USER. Also add a comment documenting what's going on.
+   There's also some short-cuts added in mte_sync_tags() compared to the
+   previous post, to again mitigate the performance impact of the first
+   patch.
+
+ * Move the code to sanitise tags out of user_mem_abort() into its own
+   function. Also call this new function from kvm_set_spte_gfn() as that
+   path was missing the sanitising.
+
+   Originally I was going to move the code all the way down to
+   kvm_pgtable_stage2_map(). Sadly as that also part of the EL2
+   hypervisor this breaks nVHE as the code needs to perform actions in
+   the host.
+
+ * Drop the union in struct kvm_vcpu_events - it served no purpose and
+   was confusing.
+
+ * Update CAP number (again) and other minor conflict resolutions.
+
+[1] https://lore.kernel.org/r/20210416154309.22129-1-steven.price@arm.com/
+[2] https://lore.kernel.org/r/20210514095001.13236-1-catalin.marinas@arm.com/
+[3] https://lore.kernel.org/r/de812a02fd94a0dba07d43606bd893c564aa4528.1620849613.git.pcc@google.com/
+
+Catalin Marinas (1):
+  arm64: Handle MTE tags zeroing in __alloc_zeroed_user_highpage()
+
+Steven Price (7):
+  arm64: mte: Handle race when synchronising tags
+  arm64: mte: Sync tags for pages where PTE is untagged
+  arm64: kvm: Introduce MTE VM feature
+  arm64: kvm: Save/restore MTE registers
+  arm64: kvm: Expose KVM_ARM_CAP_MTE
+  KVM: arm64: ioctl to fetch/store tags in a guest
+  KVM: arm64: Document MTE capability and ioctl
+
+ Documentation/virt/kvm/api.rst             | 53 +++++++++++++++
+ arch/arm64/include/asm/kvm_emulate.h       |  3 +
+ arch/arm64/include/asm/kvm_host.h          |  9 +++
+ arch/arm64/include/asm/kvm_mte.h           | 66 ++++++++++++++++++
+ arch/arm64/include/asm/page.h              |  6 +-
+ arch/arm64/include/asm/pgtable.h           |  9 ++-
+ arch/arm64/include/asm/sysreg.h            |  3 +-
+ arch/arm64/include/uapi/asm/kvm.h          | 11 +++
+ arch/arm64/kernel/asm-offsets.c            |  3 +
+ arch/arm64/kernel/mte.c                    | 37 ++++++++--
+ arch/arm64/kvm/arm.c                       | 78 ++++++++++++++++++++++
+ arch/arm64/kvm/hyp/entry.S                 |  7 ++
+ arch/arm64/kvm/hyp/exception.c             |  3 +-
+ arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h | 21 ++++++
+ arch/arm64/kvm/mmu.c                       | 37 +++++++++-
+ arch/arm64/kvm/sys_regs.c                  | 28 ++++++--
+ arch/arm64/mm/fault.c                      | 21 ++++++
+ include/uapi/linux/kvm.h                   |  2 +
+ 18 files changed, 381 insertions(+), 16 deletions(-)
+ create mode 100644 arch/arm64/include/asm/kvm_mte.h
+
 -- 
-2.30.2
+2.20.1
 
