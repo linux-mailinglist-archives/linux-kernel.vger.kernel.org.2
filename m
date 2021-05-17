@@ -2,133 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74DF8382B45
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:38:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18D13382B49
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:38:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236895AbhEQLit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 07:38:49 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:43921 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236869AbhEQLij (ORCPT
+        id S236912AbhEQLjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 07:39:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236897AbhEQLjM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 07:38:39 -0400
-Received: by mail-io1-f69.google.com with SMTP id r2-20020a5e95020000b0290435b891bacbso3079945ioj.10
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 04:37:22 -0700 (PDT)
+        Mon, 17 May 2021 07:39:12 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 729E2C061573;
+        Mon, 17 May 2021 04:37:56 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id x19so8319209lfa.2;
+        Mon, 17 May 2021 04:37:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=/Lk6lRGGKDk8jVlYh4Ia7bVfcb10zvdejQe0GtRSIxQ=;
+        b=E5we09gZggsfQun+UMNQ3JGiCMz0ShV/NUTjPlxP05wZxJxBRvOu8YbZkuZMgzBG1M
+         JtAfhLMGolE9cUKfXW+p03gtLyoPGl/GRGgix38tZcAAPY7KApBuJxhctqh/hNPVbTIn
+         ysIchEluEPlC63O8qrSyhAjWEQBTyx2g0hO5e/QfsSBdlHJSLzyk5jioJFpOmB/9fFpH
+         3q14rG7udOLMDsYKt20gr48gqui1i0qrP4ndzJBhYhlF+cSlXWeECZpecfLMuqk40eRU
+         iLcpBo0aojtYKXN4B99yEUzE6VZ8ddSzvZ+YPwwCV46/e4pL9eDlEHIZomJ1cwdflT80
+         Q0Aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=fzWof6NG8Kh47trWb40bJ/YHtNHenOjF35YU083dHvI=;
-        b=H6kyJhqNGLrO2kFm+WvTErpsS/fx7f1r0tQxzJcK5AXM8nwDLzyYZRhdVlwiWv18Jb
-         5mHL6wtNl/HohdT4AEwVDM7dwRvZpu1kVExhmX0bPT9ZFq6Nvl5zy9JVjK7e9UUYJRs/
-         xBzgk/z6HC+Rj4J0xVdj9wmACVjaqRPu9jtIpdcdI/PX+dXca9koTTXEdJSW6ijtNJwt
-         fNO3eOMkAVOb6EWkxdPAF4rG5j4bIdXA7h+c56UlnXb20SFAuujrCBnygmwIXFstz53O
-         CfY53JZPTFzH0IYv4PqxsKkxZ0kCJiXseFDb319Zq7RAIoY+zOHdatHJ+VAiBeGQWda1
-         olZQ==
-X-Gm-Message-State: AOAM531w/Q1c/YymJ69rCGxIDD10DSlwy1JqPCALQkdfbJM0DQok0Rz8
-        LT+509JnXG/miN5CA+4NpL/pGWASHzqH48C6lFp0FqASL2aD
-X-Google-Smtp-Source: ABdhPJz1ThHJpmHFL7Q4dp3DruEEXaJ0T5DIBsbIf1mwBmsn0gCQyC3HX9KWyfoj34cTvyGtAv9W6tr+A1H2ONPX3Vdhi0MbZLMp
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=/Lk6lRGGKDk8jVlYh4Ia7bVfcb10zvdejQe0GtRSIxQ=;
+        b=F3x8YK2UM/hs+fjULn63ExGmpPnHMimTd/Wbif+U6eDeESYzu+W0UYPR8cuiRVna0+
+         M8dClVoC0MgSxUsxG495VLDrO8cQvr+Y2btFLd5RkNfzYyD3r2knkaC7YP3jtgnLGtH+
+         RlKzaueW4zgOL5gFUgMmk4Gk2MnvxgD/+jvLDpFyJBH50e7IXU6HLnABbastjtBuyr8o
+         kBe4zHoPp4joajNrFZyG3OL9Y2Gbdw6araxe7IEa78UrUTdtpcR9N+vbHOwtnvVtgAGV
+         +tufz+9SKIjFQ+jje1dRs2eCmo8/8RznrXIt1F6A+488Bvi9pVLrlZplImXQosPNxhx3
+         jWRA==
+X-Gm-Message-State: AOAM530J0R8j//qCi0bTzAQmYZ/bkDlbAB0QJAn/Fgt/8XyfGTQ7HPKs
+        uBR1kyhmGyqBx29hn+MSAUI=
+X-Google-Smtp-Source: ABdhPJwZGbuiLpQgn5GG4nKwhrBTowYlbmASzqDnX4JEOY3PnpTNgwGt2jkboLcYOoNuJ72NadMfBw==
+X-Received: by 2002:a19:c182:: with SMTP id r124mr8390855lff.653.1621251474878;
+        Mon, 17 May 2021 04:37:54 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.227.227])
+        by smtp.gmail.com with ESMTPSA id p21sm1929669lfg.97.2021.05.17.04.37.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 04:37:54 -0700 (PDT)
+Date:   Mon, 17 May 2021 14:37:52 +0300
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     tiantao6@hisilicon.com, rdunlap@infradead.org,
+        reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+0ba9909df31c6a36974d@syzkaller.appspotmail.com
+Subject: Re: [PATCH] reiserfs: add check for invalid 1st journal block
+Message-ID: <20210517143752.2f43af03@gmail.com>
+In-Reply-To: <20210517101523.GB31755@quack2.suse.cz>
+References: <20210514212335.9709-1-paskripkin@gmail.com>
+        <20210517101523.GB31755@quack2.suse.cz>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:114:: with SMTP id s20mr45649561iot.98.1621251442264;
- Mon, 17 May 2021 04:37:22 -0700 (PDT)
-Date:   Mon, 17 May 2021 04:37:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004ecea505c28504b9@google.com>
-Subject: [syzbot] general protection fault in pm_qos_update_target
-From:   syzbot <syzbot+f7d9295d2565ee819d21@syzkaller.appspotmail.com>
-To:     len.brown@intel.com, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, pavel@ucw.cz, rjw@rjwysocki.net,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, 17 May 2021 12:15:23 +0200
+Jan Kara <jack@suse.cz> wrote:
+> On Sat 15-05-21 00:23:35, Pavel Skripkin wrote:
+> > syzbot reported divide error in reiserfs.
+> > The problem was in incorrect journal 1st block.
+> > 
+> > Syzbot's reproducer manualy generated wrong superblock
+> > with incorrect 1st block. In journal_init() wasn't
+> > any checks about this particular case.
+> > 
+> > For example, if 1st journal block is before superblock
+> > 1st block, it can cause zeroing important superblock members
+> > in do_journal_end().
+> > 
+> > Reported-and-tested-by:
+> > syzbot+0ba9909df31c6a36974d@syzkaller.appspotmail.com
+> > Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+> 
+> Thanks for the patch. One comment below:
+> 
+> > diff --git a/fs/reiserfs/journal.c b/fs/reiserfs/journal.c
+> > index 9edc8e2b154e..d58f24a08385 100644
+> > --- a/fs/reiserfs/journal.c
+> > +++ b/fs/reiserfs/journal.c
+> > @@ -2758,6 +2758,19 @@ int journal_init(struct super_block *sb,
+> > const char *j_dev_name, goto free_and_return;
+> >  	}
+> >  
+> > +	/*
+> > +	 * Sanity check to see is journal first block correct.
+> > +	 * If journal first block is invalid it can cause
+> > +	 * zeroing important superblock members.
+> > +	 */
+> > +	if (SB_ONDISK_JOURNAL_1st_BLOCK(sb) <
+> > SB_JOURNAL_1st_RESERVED_BLOCK(sb)) {
+> 
+> I guess this check is valid only if !SB_ONDISK_JOURNAL_DEVICE(sb),
+> isn't it? Otherwise you are comparing block numbers from two
+> different devices...
+> 
 
-syzbot found the following issue on:
+Hi!
 
-HEAD commit:    dbb5afad ptrace: make ptrace() fail if the tracee changed ..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=108190add00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=91ff0467ce169bc
-dashboard link: https://syzkaller.appspot.com/bug?extid=f7d9295d2565ee819d21
-compiler:       Debian clang version 11.0.1-2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16c75e73d00000
+Indeed. Thanks for pointing it out! I'll send v2 soon
 
-Bisection is inconclusive: the issue happens on the oldest tested release.
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1274f41dd00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1174f41dd00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1674f41dd00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f7d9295d2565ee819d21@syzkaller.appspotmail.com
-
-general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-CPU: 1 PID: 9989 Comm: syz-executor.5 Not tainted 5.13.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__list_del_entry_valid+0x67/0x100 lib/list_debug.c:51
-Code: 4c 89 f7 e8 9b a7 c6 fd 48 ba 00 01 00 00 00 00 ad de 49 8b 1e 48 39 d3 74 53 48 83 c2 22 49 39 d7 74 5d 4c 89 f8 48 c1 e8 03 <42> 80 3c 20 00 74 08 4c 89 ff e8 6a a7 c6 fd 49 8b 17 4c 39 f2 75
-RSP: 0018:ffffc9000bacf590 EFLAGS: 00010046
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff8880190e54c0
-RDX: dead000000000122 RSI: ffffffff8cdeada0 RDI: ffff88802920b860
-RBP: dffffc0000000000 R08: 0000000000000005 R09: ffffffff816335ff
-R10: 0000000000000003 R11: ffff8880190e54c0 R12: dffffc0000000000
-R13: 1ffff11005241709 R14: ffff88802920b858 R15: 0000000000000000
-FS:  00007f133b30a700(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fff68face5c CR3: 0000000018b54000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __list_del_entry include/linux/list.h:132 [inline]
- list_del_init include/linux/list.h:204 [inline]
- plist_del+0x2e3/0x420 lib/plist.c:130
- pm_qos_update_target+0x20c/0x5c0 kernel/power/qos.c:114
- cpu_latency_qos_apply kernel/power/qos.c:247 [inline]
- cpu_latency_qos_remove_request+0x94/0xd0 kernel/power/qos.c:328
- snd_pcm_hw_free sound/core/pcm_native.c:842 [inline]
- snd_pcm_common_ioctl+0x62e5/0x9760 sound/core/pcm_native.c:3219
- snd_pcm_ioctl+0x86/0xa0 sound/core/pcm_native.c:3302
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:1069 [inline]
- __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:1055
- do_syscall_64+0x3f/0xb0 arch/x86/entry/common.c:47
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665d9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f133b30a188 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 00000000004665d9
-RDX: 0000000000000000 RSI: 0000000000004112 RDI: 0000000000000004
-RBP: 00000000004bfcb9 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
-R13: 00007ffd68562d1f R14: 00007f133b30a300 R15: 0000000000022000
-Modules linked in:
----[ end trace bc5d821852e61222 ]---
-RIP: 0010:__list_del_entry_valid+0x67/0x100 lib/list_debug.c:51
-Code: 4c 89 f7 e8 9b a7 c6 fd 48 ba 00 01 00 00 00 00 ad de 49 8b 1e 48 39 d3 74 53 48 83 c2 22 49 39 d7 74 5d 4c 89 f8 48 c1 e8 03 <42> 80 3c 20 00 74 08 4c 89 ff e8 6a a7 c6 fd 49 8b 17 4c 39 f2 75
-RSP: 0018:ffffc9000bacf590 EFLAGS: 00010046
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff8880190e54c0
-RDX: dead000000000122 RSI: ffffffff8cdeada0 RDI: ffff88802920b860
-RBP: dffffc0000000000 R08: 0000000000000005 R09: ffffffff816335ff
-R10: 0000000000000003 R11: ffff8880190e54c0 R12: dffffc0000000000
-R13: 1ffff11005241709 R14: ffff88802920b858 R15: 0000000000000000
-FS:  00007f133b30a700(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fff68face5c CR3: 0000000018b54000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> 									Honza
+> 
+> > +		reiserfs_warning(sb, "journal-1393",
+> > +			"journal 1st super block is invalid: 1st
+> > reserved block %d, but actual 1st block is %d",
+> > +			SB_JOURNAL_1st_RESERVED_BLOCK(sb),
+> > +			SB_ONDISK_JOURNAL_1st_BLOCK(sb));
+> > +		goto free_and_return;
+> > +	}
+> > +
+> >  	if (journal_init_dev(sb, journal, j_dev_name) != 0) {
+> >  		reiserfs_warning(sb, "sh-462",
+> >  				 "unable to initialize journal
+> > device"); -- 
+> > 2.31.1
+> > 
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+
+With regards,
+Pavel Skripkin
