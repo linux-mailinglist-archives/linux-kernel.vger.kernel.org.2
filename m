@@ -2,84 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E7CD382773
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 10:48:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 473DD38275E
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 10:46:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235740AbhEQItL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 04:49:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35074 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232924AbhEQItK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 04:49:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7468B611B0
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 08:47:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621241274;
-        bh=wKFUx+C5ERFfmqlY7hiYgJ1TrE1UyI5kqLoJWdG3xVE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Hc3+4EinzN05fdWiu+7AnEnVl73CJ/Y7EcVk7kGGObC7DXnDjwBA5RhAFBVGZpUBd
-         9lvv2fvfsxiBv7PNrHa1P0IpSZBAksOGwMldDoT+YWdIcvR7ip9IIVfVK/at/GoVIx
-         QQm+dbiWjtGzDnMItKCG7x8xnG7ju/5rr2j5c32OYsQmvIS5CgQLXTKqq7bzpUxsVA
-         ijXvZWnCaV5KNW3yqT26wtjJnEvxuMOjSGn/a6OdEg4iciiACIPzo5Jr1pqiMszFeY
-         yM1e8XDlepaWy4agbVmlnafaAOXR3viDltifY3NkJPCSojJuzgrqXqkbXIBlDFJ25b
-         Od+hB7G1b+AmQ==
-Received: by mail-wr1-f45.google.com with SMTP id v12so5476700wrq.6
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 01:47:54 -0700 (PDT)
-X-Gm-Message-State: AOAM532LtzkXXIANcgM+9x1/nN8cdIyEkzpCbkqkYj5dOw3LfhGz7eSu
-        UqkrFLFJ6NTUlB5GDZEKGajZgeaD+bR5xaaSCNM=
-X-Google-Smtp-Source: ABdhPJx0vQssUkIXj2GNS4c8nCXiUWUdcDv60W6ZOqvdHUXSt87zzWrW7L939iBp8jMYgz/WyhCjBnRhsEC1tDzQ3MU=
-X-Received: by 2002:a5d:6dc4:: with SMTP id d4mr75233556wrz.105.1621241273114;
- Mon, 17 May 2021 01:47:53 -0700 (PDT)
+        id S235709AbhEQIsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 04:48:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230312AbhEQIsI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 04:48:08 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799CEC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 01:46:52 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id x8so5457431wrq.9
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 01:46:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=IgAtpP4C42Jpn6aKz2gV4v3gKQwjgJ+HgC0dgeMRD1c=;
+        b=uajCC0Ebo8Blxm2wh0QYcJBamX4RuhCCoVg3VCJfHbv6I7qBmqI+JXSonkCbtmV3Kl
+         PZq3/Z1FpmhMWvAGIYOpsNrPsWhyGamfFOLWi8cP/HKGpo/ffQu5mgvFlUAMLpzSA2GB
+         OSPsdWHL8ki9fzR2vya7EkNFMJMKVLyI5y6nVeHgFiO2Vwr6m6z2Wpr5SVt3Suw/aYdb
+         8IJz6KE5W4l+Ie7IjE2F4N1epS9YGpMSq0itwOcpSbAHlBZCzGNf8nplG8XR8joHkm7k
+         FoI8ELJ/mb2YSsRNmqG6FkBG5IvtGSPmKN8b2OGHQJnTvuIfliE4ZbC5QxG5hhEoJpsz
+         Lv0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IgAtpP4C42Jpn6aKz2gV4v3gKQwjgJ+HgC0dgeMRD1c=;
+        b=Qv8d2iZLUAw9Iqja9dWUrl8ttD8s/+Zw+c9PWQwngi5zBTrTHZjSOFZijQ/5faDeeI
+         9qqUX2Dv65sk69AtZ9grEZD/0wOlkPHAe5ORRb6rOXxdR2FL7rFvG2ldJ2FSw6V8Z+cM
+         Q+gLSpM/OVJefUHFczXuTwevjCaCaXGY32vstXkMOvUeLeowj+eLi7DQ3gC1CWis1pE/
+         qb0jd4MTajinQVI/HO66sJOECtrQXiIKXWW7d8ylWo0g/qZxg4rVY+ZkOErNsblwSBhn
+         cPhr9r4qeFfs3UR0gKHKGRjneCPHBy3nioyGcLGUkjqMhiUM9gb3TrFKnXNMtQCHebqV
+         3rBQ==
+X-Gm-Message-State: AOAM530Tp23JE0TCGa44DIhADdJbZdqAfEgMswjZ+nfiQhK5Cgoi6ySS
+        I9Q5hewpBRzsD+FJsTdDxvNGYA==
+X-Google-Smtp-Source: ABdhPJxbQWH0NruvXyA4qYlWgdE4BXN8N0wrN1exubtTlt6z0Q3rO9xWKVEb/vBUmkb+GYTX9W2Q5w==
+X-Received: by 2002:a5d:6d85:: with SMTP id l5mr71256571wrs.22.1621241211237;
+        Mon, 17 May 2021 01:46:51 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id r5sm15847622wmh.23.2021.05.17.01.46.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 17 May 2021 01:46:50 -0700 (PDT)
+Subject: Re: [PATCH 5.10 160/530] arm64: dts: qcom: db845c: fix correct
+ powerdown pin for WSA881x
+To:     Pavel Machek <pavel@denx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>, bgolaszewski@baylibre.com,
+        linus.walleij@linaro.org
+References: <20210512144819.664462530@linuxfoundation.org>
+ <20210512144825.099918971@linuxfoundation.org> <20210515081814.GA30461@amd>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <55d58470-f606-8c75-1f00-a2eb09314081@linaro.org>
+Date:   Mon, 17 May 2021 09:46:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20210514213456.745039-1-arnd@kernel.org> <5459852d-6c0b-2b8b-a05b-868f046b6233@rasmusvillemoes.dk>
-In-Reply-To: <5459852d-6c0b-2b8b-a05b-868f046b6233@rasmusvillemoes.dk>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 17 May 2021 10:46:45 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2fSB6sB4fhnR=q17QT8mZnSeOj2Gxgm8CH9LO8ocQL_Q@mail.gmail.com>
-Message-ID: <CAK8P3a2fSB6sB4fhnR=q17QT8mZnSeOj2Gxgm8CH9LO8ocQL_Q@mail.gmail.com>
-Subject: Re: [PATCH] [v2] printf: fix errname.c list
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <uwe@kleine-koenig.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210515081814.GA30461@amd>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 10:07 AM Rasmus Villemoes
-<linux@rasmusvillemoes.dk> wrote:
->
-> On 14/05/2021 23.34, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> > from EDEADLOCK, and remove the -ECANCELLED bit completely as it
-> >
-> > diff --git a/lib/errname.c b/lib/errname.c
-> > index 05cbf731545f..6c5c0aa4de75 100644
-> > --- a/lib/errname.c
-> > +++ b/lib/errname.c
-> > @@ -21,6 +21,7 @@ static const char *names_0[] = {
-> >       E(EADDRNOTAVAIL),
-> >       E(EADV),
-> >       E(EAFNOSUPPORT),
-> > +     E(EAGAIN), /* EWOULDBLOCK */
-> >       E(EALREADY),
-> >       E(EBADE),
-> >       E(EBADF),
-> > @@ -38,8 +39,12 @@ static const char *names_0[] = {
->
-> somewhere between EBADF and ECHRNG I'd expect a hunk dealing with the
-> ECANCELED stuff
->
-> > -     E(ECANCELED), /* ECANCELLED */
->
-> but I only see this removal?
->
-> Otherwise looks good.
++ Adding Linus W and Bartosz to CC.
 
-Fixed now, v3 coming. Thanks!
+On 15/05/2021 09:18, Pavel Machek wrote:
+> Hi!
+> 
+>> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>>
+>> [ Upstream commit c561740e7cfefaf3003a256f3a0cd9f8a069137c ]
+>>
+>> WSA881x powerdown pin is connected to GPIO1 not gpio2, so correct this.
+>> This was working so far due to a shift bug in gpio driver, however
+>> once that is fixed this will stop working, so fix this!
+> 
+> I don't see the correspoing update to the driver this talks about.
+> 
+> Do we have corresponding driver in 5.10 and was it fixed to match?
 
-        Arnd
+This corresponding gpio driver patch was submitted along with the 
+original fix, however it looks like it was not picked up yet.
+
+https://www.spinics.net/lists/linux-gpio/msg59264.html
+
+Bartosz/Linus W, Do you want me to resend this?
+
+--srini
+
+> 
+> Best regards,
+> 									Pavel
+> 
+>> +++ b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
+>> @@ -1015,7 +1015,7 @@
+>>   		left_spkr: wsa8810-left{
+>>   			compatible = "sdw10217201000";
+>>   			reg = <0 1>;
+>> -			powerdown-gpios = <&wcdgpio 2 GPIO_ACTIVE_HIGH>;
+>> +			powerdown-gpios = <&wcdgpio 1 GPIO_ACTIVE_HIGH>;
+>>   			#thermal-sensor-cells = <0>;
+>>   			sound-name-prefix = "SpkrLeft";
+>>   			#sound-dai-cells = <0>;
+>> @@ -1023,7 +1023,7 @@
+>>   
+>>   		right_spkr: wsa8810-right{
+>>   			compatible = "sdw10217201000";
+>> -			powerdown-gpios = <&wcdgpio 2 GPIO_ACTIVE_HIGH>;
+>> +			powerdown-gpios = <&wcdgpio 1 GPIO_ACTIVE_HIGH>;
+>>   			reg = <0 2>;
+>>   			#thermal-sensor-cells = <0>;
+>>   			sound-name-prefix = "SpkrRight";
+> 
