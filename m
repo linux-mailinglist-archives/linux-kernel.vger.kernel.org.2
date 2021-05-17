@@ -2,92 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3D013827D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 266BF3827E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235880AbhEQJKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 05:10:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39692 "EHLO mail.kernel.org"
+        id S235915AbhEQJNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 05:13:25 -0400
+Received: from mga12.intel.com ([192.55.52.136]:10148 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235734AbhEQJKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 05:10:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 41DC0611C2;
-        Mon, 17 May 2021 09:08:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621242535;
-        bh=BRGz+Os9JiMGd3fXuweYLwu0b6U6pfMRs8vms0cIF4E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YuzGYw8ynk+yr0zyDt1Tw3qHniQtoVCQChSHu55WUnSsIdQEpfp8wwSjt5/Wq1aFr
-         vMcYJ1luC8jDU+WGxBKnx8CfBA14UIZgbUt2dFLF0DB9yIIJfrVkfdIDXlug7B6OJW
-         Yi+sdwd2ctRqyhLWDlPuozfr3xIVCVJFF6T4na80=
-Date:   Mon, 17 May 2021 11:08:53 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Pavel Machek <pavel@ucw.cz>, linux-leds@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: Re: [PATCH 00/17] Add an experimental driver for Intel NUC leds
-Message-ID: <YKIypSbaft0euIoY@kroah.com>
-References: <cover.1621161037.git.mchehab+huawei@kernel.org>
- <YKIm8TNJfXIMFl+W@kroah.com>
- <20210517110258.341da12c@coco.lan>
+        id S235871AbhEQJKu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 05:10:50 -0400
+IronPort-SDR: 7XHAj6HXySiMR87XJ+xZ2Ir3iLDZGmT6GqoInAK7wDFibjPKIwpvku9Tui/1ROz0DNGX2Z8R2A
+ IQZ25gm/mgcw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9986"; a="180018720"
+X-IronPort-AV: E=Sophos;i="5.82,306,1613462400"; 
+   d="scan'208";a="180018720"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2021 02:09:33 -0700
+IronPort-SDR: X3esaw6tjhu+pmd2IeB1Gwmzz5yfQDZ6hy2jBv1v38rnCDHKHSlB3N47hnCpqzj6OiAT2F7auf
+ CrrEz9Snr+uQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,306,1613462400"; 
+   d="scan'208";a="540326831"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 17 May 2021 02:09:30 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 17 May 2021 12:09:30 +0300
+Date:   Mon, 17 May 2021 12:09:30 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: typec: mux: Fix copy-paste of the container_of
+Message-ID: <YKIyylBF9gxXSg/3@kuha.fi.intel.com>
+References: <20210516034833.621530-1-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210517110258.341da12c@coco.lan>
+In-Reply-To: <20210516034833.621530-1-bjorn.andersson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 11:02:58AM +0200, Mauro Carvalho Chehab wrote:
-> Em Mon, 17 May 2021 10:18:57 +0200
-> Greg KH <gregkh@linuxfoundation.org> escreveu:
-> 
-> > On Sun, May 16, 2021 at 12:53:28PM +0200, Mauro Carvalho Chehab wrote:
-> > > Hi Greg,
-> > > 
-> > > This series add support for the LEDs found at Intel NUCs since
-> > > NUC version 6.
-> > > 
-> > > On several NUC models, the function of the LEDs are programmable,
-> > > which allow them to indicate several different hardware events.
-> > > 
-> > > They can even be programmed to represent an userspace-driven event.
-> > > 
-> > > Some models come with single colored or dual-colored LEDs, but
-> > > high end models have RGB LEDs.
-> > > 
-> > > Programming them can ether be done via BIOS or by the OS.
-> > > 
-> > > There are 3 different API types, and there is already some OOT
-> > > drivers that were written to support them, using procfs, each
-> > > one using a different (and IMO confusing) API.
-> > > 
-> > > After looking at the existing drivers and not liking the uAPI
-> > > interfaces there, I opted to write a new driver from scratch,
-> > > unifying support for all different versions and using sysfs
-> > > via the leds class.  
-> > 
-> > Just do this the "right way" and not add it to staging first.  Just use
-> > the existing LED class apis and all should be fine, no need for doing
-> > anything unusual here.
-> 
-> I'm using the standard LED class already (but not triggers), and the
-> standard WMI support.
-> 
-> Still, this API is complex, as it controls the LED behavior even when
-> the machine is suspended. I would feel more comfortable if the ABI
-> is not set into a stone at the beginning.
+Hi,
 
-code in drivers/staging/ does not mean that you can mess with the
-userspace api at will.  It still follows the same "rules" of any other
-kernel code when it comes to that.
+On Sat, May 15, 2021 at 08:48:33PM -0700, Bjorn Andersson wrote:
+> Some of the boilerplate code was copy pasted from the typec_switch and
+> retained the use of the switch's container_of macros. The two structs
+> are identical in this regard, so this change doesn't cause a functional
+> change today, but could possibly cause future issues.
+> 
+> Fixes: 3370db35193b ("usb: typec: Registering real device entries for the muxes")
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>  drivers/usb/typec/mux.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/mux.c b/drivers/usb/typec/mux.c
+> index 8514bec7e1b8..e4467c4c3742 100644
+> --- a/drivers/usb/typec/mux.c
+> +++ b/drivers/usb/typec/mux.c
+> @@ -45,7 +45,7 @@ static void *typec_switch_match(struct fwnode_handle *fwnode, const char *id,
+>  	dev = class_find_device(&typec_mux_class, NULL, fwnode,
+>  				switch_fwnode_match);
+>  
+> -	return dev ? to_typec_switch(dev) : ERR_PTR(-EPROBE_DEFER);
+> +	return dev ? to_typec_mux(dev) : ERR_PTR(-EPROBE_DEFER);
 
-So just work with the LED developers to come to a valid api that works
-properly within that framework please.
+That does not look correct to me?
+
+>  }
+>  
+>  /**
+> @@ -87,7 +87,7 @@ EXPORT_SYMBOL_GPL(typec_switch_put);
+>  
+>  static void typec_switch_release(struct device *dev)
+>  {
+> -	kfree(to_typec_switch(dev));
+> +	kfree(to_typec_mux(dev));
+
+Ditto.
+
+>  }
+>  
+>  static const struct device_type typec_switch_dev_type = {
+> @@ -239,7 +239,7 @@ static void *typec_mux_match(struct fwnode_handle *fwnode, const char *id,
+>  	dev = class_find_device(&typec_mux_class, NULL, fwnode,
+>  				mux_fwnode_match);
+>  
+> -	return dev ? to_typec_switch(dev) : ERR_PTR(-EPROBE_DEFER);
+> +	return dev ? to_typec_mux(dev) : ERR_PTR(-EPROBE_DEFER);
+
+That looks correct.
+
+Either I'm missing something, or only the last change is needed.
 
 thanks,
 
-greg k-h
+-- 
+heikki
