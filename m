@@ -2,34 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5B2338390B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:06:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 703CA3838FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345072AbhEQQHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:07:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52166 "EHLO mail.kernel.org"
+        id S1346426AbhEQQGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:06:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344274AbhEQPoL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:44:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8ADEA61D19;
-        Mon, 17 May 2021 14:43:10 +0000 (UTC)
+        id S1344301AbhEQPoP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:44:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C4FBD61406;
+        Mon, 17 May 2021 14:43:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262591;
-        bh=fngY5Z8pt3dkBwALJzRZGtAqNPMwfFVcNbPbxtMCDN4=;
+        s=korg; t=1621262595;
+        bh=fBCwBoQIBu1Z/Im+ck+WQ9ZRSffBq64U6W6k0+CiYPY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FlucrVZMS5iRoKge+5DdM3lMNILQKUDU2L1T8ilq7/diRJljRM02QwCT6R2I4PIyQ
-         vOJnUyKBe1WGrQrRjv7RIdQseg3/wLXza7mYoMplmn4P4l81QGFFbuyr9W2Ucb2qUy
-         Stuk8J7cnELXfxb0ZXw/jY3EAcV0PBEVheYUl03I=
+        b=mThKyBUQFBjv60FKsTXXCDn+c/Eno/+iS7uvHYCXTGpLDmZ2hwCUcI2hzYYPNPYRO
+         m80+7jc7M58EEuLwQIu7GhKm/mYRnJexnheVwapZ5WeKrFJ4rERdLGX8QRXmebrwXA
+         W9K5tqNnyStePm1bNVODnNOIygCpoL+niPfRmgVg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Juergen Gross <jgross@suse.com>,
+        stable@vger.kernel.org, "Justin M. Forbes" <jforbes@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 220/289] xen/unpopulated-alloc: fix error return code in fill_list()
-Date:   Mon, 17 May 2021 16:02:25 +0200
-Message-Id: <20210517140312.562853920@linuxfoundation.org>
+Subject: [PATCH 5.10 221/289] perf tools: Fix dynamic libbpf link
+Date:   Mon, 17 May 2021 16:02:26 +0200
+Message-Id: <20210517140312.594711262@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
 References: <20210517140305.140529752@linuxfoundation.org>
@@ -41,40 +47,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Jiri Olsa <jolsa@kernel.org>
 
-[ Upstream commit dbc03e81586fc33e4945263fd6e09e22eb4b980f ]
+[ Upstream commit ad1237c30d975535a669746496cbed136aa5a045 ]
 
-Fix to return a negative error code from the error handling case instead
-of 0, as done elsewhere in this function.
+Justin reported broken build with LIBBPF_DYNAMIC=1.
 
-Fixes: a4574f63edc6 ("mm/memremap_pages: convert to 'struct range'")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Reviewed-by: Juergen Gross <jgross@suse.com>
-Link: https://lore.kernel.org/r/20210508021913.1727-1-thunder.leizhen@huawei.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
+When linking libbpf dynamically we need to use perf's
+hashmap object, because it's not exported in libbpf.so
+(only in libbpf.a).
+
+Following build is now passing:
+
+  $ make LIBBPF_DYNAMIC=1
+    BUILD:   Doing 'make -j8' parallel build
+    ...
+  $ ldd perf | grep libbpf
+        libbpf.so.0 => /lib64/libbpf.so.0 (0x00007fa7630db000)
+
+Fixes: eee19501926d ("perf tools: Grab a copy of libbpf's hashmap")
+Reported-by: Justin M. Forbes <jforbes@redhat.com>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Michael Petlan <mpetlan@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Link: http://lore.kernel.org/lkml/20210508205020.617984-1-jolsa@kernel.org
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/xen/unpopulated-alloc.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ tools/perf/Makefile.config | 1 +
+ tools/perf/util/Build      | 7 +++++++
+ 2 files changed, 8 insertions(+)
 
-diff --git a/drivers/xen/unpopulated-alloc.c b/drivers/xen/unpopulated-alloc.c
-index e64e6befc63b..87e6b7db892f 100644
---- a/drivers/xen/unpopulated-alloc.c
-+++ b/drivers/xen/unpopulated-alloc.c
-@@ -39,8 +39,10 @@ static int fill_list(unsigned int nr_pages)
- 	}
+diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+index ce8516e4de34..2abbd75fbf2e 100644
+--- a/tools/perf/Makefile.config
++++ b/tools/perf/Makefile.config
+@@ -530,6 +530,7 @@ ifndef NO_LIBELF
+       ifdef LIBBPF_DYNAMIC
+         ifeq ($(feature-libbpf), 1)
+           EXTLIBS += -lbpf
++          $(call detected,CONFIG_LIBBPF_DYNAMIC)
+         else
+           dummy := $(error Error: No libbpf devel library found, please install libbpf-devel);
+         endif
+diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+index e2563d0154eb..0cf27354aa45 100644
+--- a/tools/perf/util/Build
++++ b/tools/perf/util/Build
+@@ -140,7 +140,14 @@ perf-$(CONFIG_LIBELF) += symbol-elf.o
+ perf-$(CONFIG_LIBELF) += probe-file.o
+ perf-$(CONFIG_LIBELF) += probe-event.o
  
- 	pgmap = kzalloc(sizeof(*pgmap), GFP_KERNEL);
--	if (!pgmap)
-+	if (!pgmap) {
-+		ret = -ENOMEM;
- 		goto err_pgmap;
-+	}
++ifdef CONFIG_LIBBPF_DYNAMIC
++  hashmap := 1
++endif
+ ifndef CONFIG_LIBBPF
++  hashmap := 1
++endif
++
++ifdef hashmap
+ perf-y += hashmap.o
+ endif
  
- 	pgmap->type = MEMORY_DEVICE_GENERIC;
- 	pgmap->range = (struct range) {
 -- 
 2.30.2
 
