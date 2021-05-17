@@ -2,105 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB266383975
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCA2438397F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244071AbhEQQRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:17:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33074 "EHLO
+        id S242682AbhEQQSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:18:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244658AbhEQQCI (ORCPT
+        with ESMTP id S1344536AbhEQQMH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 12:02:08 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BE33C0467C6;
-        Mon, 17 May 2021 07:45:24 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id d21so6654049oic.11;
-        Mon, 17 May 2021 07:45:24 -0700 (PDT)
+        Mon, 17 May 2021 12:12:07 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4153C0494E3;
+        Mon, 17 May 2021 07:47:11 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id v8so4217685lft.8;
+        Mon, 17 May 2021 07:47:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=dQh3WD+V36DcjC0tRHnk3vjCMvP62JeajHSbxzekmLY=;
-        b=Chnd4Pj2Y8RyVvXPj6M832q/iB/no7+e0YmAxsL/N1cgnjquNf37lXctJQh0LpTK4i
-         S/fL/IIDIZ/vHpz/h7BZX7i5D6j/mipF3o9G/Zm1huxLajcP0lC3cEesQhzKcx5latte
-         ksudygWrQksl2LzfpcmkSFlDBUGw0pJEpVmvs9fGPAJSlV7ife2arQdoXchX+9BgekG8
-         fmbt1i8U0+nGpAEhrjsL7xNqXZB11aXEpRaZStKTG1E5wl89N9Pn9dtYFp20KP/pIKUN
-         w2i0KliAKI7RZelYlQIlUAua6B7+dLj+yXTa9wQJ9pzcfaa5GmvqcKKysxMcsItXSDvb
-         ZpEQ==
+        bh=SEA3EwJIt3rzzFHp4o5m/p8jxV9Zmq+VibaWYsv49TE=;
+        b=Hsiv82W97hbMKpEhsQMsW6lcJ2MT0an4aXXxdGMQhZpMeKZgrmcy2WHXuvlQ6QX2ZO
+         WrqmTOsWpd8IFdIR+sjdPPEf2x8qpZMp8pgis1M+h/5XOc/76wUlP4hvohw4+Ix/1/FQ
+         PAn6WK6Tk9+qdaHhIMTCuF3JRqLyK5xQwRa+lyAEBGz+Rmn2C0EYKcZK62cOjkBgT+Ur
+         m8HteSjr3ls4oxbKucPxwpzGRPTLf0ek/Mk98r/gRMQLjTKk8VBx3E5DhyBKZB4nHzGs
+         dqg44BFYcpwMFMC1B+zP40xRXeXmNbyCGXHyJe9RSjPlTML+gBGMcGRMlXLuMaNWBHb6
+         5KqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=dQh3WD+V36DcjC0tRHnk3vjCMvP62JeajHSbxzekmLY=;
-        b=t4BNKK95ocgjWONwp0LTP7jLyrRbb+Fhc+CkLNKlQsUeY4/hBaIuARjLdu2t6oyHk0
-         cDYrHJhLKRoJJRYJh5m9yIZ7VDtdM6cK1IRQg6cXZdxQIXnfO0GXoldXymUW1IGIXXRG
-         53q3TGRGb4qtcTCur/7Lb8v5x8XbFdm1AINH01c9Mu7NO23OMHMiiXQlX4Sa+euqRP61
-         d3JCCyCxUrAaV29hOQCBrqD1VNy7csfwxF5wxiF/oGAJhUSJYpThVrtS+PBJOHvsOuxh
-         oTkv+GiWztMg83svClOwxSiiJXeXiN+rqlqneQvh/+U9DwfZKuov1VUl9sCX6LqVE/XI
-         31bw==
-X-Gm-Message-State: AOAM533d53bC4+1osFrjTs5BoY1W3xGASWK3IoyF1W/YNsCAQpR1a4Pb
-        mMsOACv3GcRq9BSV6dhY2ks=
-X-Google-Smtp-Source: ABdhPJzXc1gbOm6DJ88PuSwBm6xawJcoOfwrpG+2Rpg+8grxci8Ca6BrK7Kn4BISGvZXBPkZrfs2QQ==
-X-Received: by 2002:aca:3684:: with SMTP id d126mr90498oia.129.1621262723613;
-        Mon, 17 May 2021 07:45:23 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.22])
-        by smtp.googlemail.com with ESMTPSA id o15sm3096753ota.61.2021.05.17.07.45.22
+        bh=SEA3EwJIt3rzzFHp4o5m/p8jxV9Zmq+VibaWYsv49TE=;
+        b=oPXazGV7CgdQXV9RakprUVarPgfNMwPhn+0HnzBbN/eIKLWQlq/BXZ+b3L2Ma1PuIZ
+         +hmjIDmFqdFqX/pgi1LUhv5ynSkI7Mj7W9SA8vNPjB5lSW3+kjRzK19gTgEazuS+xNln
+         uxxZC78yGHqA0mTOw/dlZnUYCOZAlKGBgjZimlZ0WECJNnmmQ3maqHjbRlwEFaVHAdm8
+         5IjOSoDQqNf+6SV+39io2/11E0ujGDMD3Nd5Euna41jnR8+UEyblhYbVsZFk8c/cEHaA
+         mUmVzK75FmdMvfQjLO+OgCWBmpvMf9444HNy6rHp9BQzu1BopmX2R51KbLF6zn5n5XUv
+         r51w==
+X-Gm-Message-State: AOAM530/we7IpSdS3UniwxNliwNVeUaL95yY13RMhprDq5ELP56RVgqq
+        0Zsu2CI7MACqCi1f4en7DWMUiAbvquY=
+X-Google-Smtp-Source: ABdhPJwIhZEsa68lzrxmBmtVnI6PtEzqWJDaxxtZQ37Pt6wE2KuNB43Zd8pMIJlReGk6G8bXJfU6yw==
+X-Received: by 2002:a05:6512:1109:: with SMTP id l9mr183151lfg.550.1621262830161;
+        Mon, 17 May 2021 07:47:10 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-91.dynamic.spd-mgts.ru. [109.252.193.91])
+        by smtp.googlemail.com with ESMTPSA id q2sm61976lfd.84.2021.05.17.07.47.09
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 May 2021 07:45:23 -0700 (PDT)
-Subject: Re: [PATCH iproute2-next v3] lib/fs: fix issue when
- {name,open}_to_handle_at() is not implemented
-To:     Heiko Thiery <heiko.thiery@gmail.com>, netdev@vger.kernel.org
-Cc:     petr.vorel@gmail.com, linux-kernel@vger.kernel.org,
-        stephen@networkplumber.org, Dmitry Yakunin <zeil@yandex-team.ru>
-References: <20210508064925.8045-1-heiko.thiery@gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <fcd869bc-50c8-8e31-73d4-3eb4034ff116@gmail.com>
-Date:   Mon, 17 May 2021 08:45:22 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.1
+        Mon, 17 May 2021 07:47:09 -0700 (PDT)
+Subject: Re: [PATCH v1 1/1] soc/tegra: Add
+ devm_tegra_core_dev_init_opp_table()
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Paul Fertser <fercerpav@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210516205138.22501-1-digetx@gmail.com>
+ <20210516205138.22501-2-digetx@gmail.com>
+ <3ea6b48f-af3f-51db-8d7b-1292a68ae74e@canonical.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <a3b42449-4cd8-f692-c41a-205cbaa987eb@gmail.com>
+Date:   Mon, 17 May 2021 17:47:09 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210508064925.8045-1-heiko.thiery@gmail.com>
+In-Reply-To: <3ea6b48f-af3f-51db-8d7b-1292a68ae74e@canonical.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/8/21 12:49 AM, Heiko Thiery wrote:
-> With commit d5e6ee0dac64 the usage of functions name_to_handle_at() and
-> open_by_handle_at() are introduced. But these function are not available
-> e.g. in uclibc-ng < 1.0.35. To have a backward compatibility check for the
-> availability in the configure script and in case of absence do a direct
-> syscall.
+17.05.2021 14:43, Krzysztof Kozlowski пишет:
+...
+>> +static int tegra_core_dev_init_opp_state(struct device *dev)
+>> +{
+>> +	struct dev_pm_opp *opp;
+>> +	unsigned long rate;
+>> +	struct clk *clk;
+>> +	int err;
+>> +
+>> +	clk = devm_clk_get(dev, NULL);
+>> +	if (IS_ERR(clk)) {
+>> +		dev_err(dev, "failed to get clk: %pe\n", clk);
+>> +		return PTR_ERR(clk);
+>> +	}
+>> +
+>> +	rate = clk_get_rate(clk);
+>> +	if (!rate) {
+>> +		dev_err(dev, "failed to get clk rate\n");
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	opp = dev_pm_opp_find_freq_ceil(dev, &rate);
+>> +
+>> +	if (opp == ERR_PTR(-ERANGE))
+>> +		opp = dev_pm_opp_find_freq_floor(dev, &rate);
+>> +
+>> +	err = PTR_ERR_OR_ZERO(opp);
+>> +	if (err) {
+>> +		dev_err(dev, "failed to get OPP for %ld Hz: %d\n",
+>> +			rate, err);
+>> +		return err;
+>> +	}
+>> +
+>> +	dev_pm_opp_put(opp);
+>> +
+>> +	/* first dummy rate-setting initializes voltage vote */
+>> +	err = dev_pm_opp_set_rate(dev, rate);
+>> +	if (err) {
+>> +		dev_err(dev, "failed to initialize OPP clock: %d\n", err);
+>> +		return err;
+>> +	}
 > 
-> Fixes: d5e6ee0dac64 ("ss: introduce cgroup2 cache and helper functions")
-> Cc: Dmitry Yakunin <zeil@yandex-team.ru>
-> Cc: Petr Vorel <petr.vorel@gmail.com>
-> Signed-off-by: Heiko Thiery <heiko.thiery@gmail.com>
-> ---
-> v3:
->  - use correct syscall number (thanks to Petr Vorel)
->  - add #include <sys/syscall.h> (thanks to Petr Vorel)
->  - remove bogus parameters (thanks to Petr Vorel)
->  - fix #ifdef (thanks to Petr Vorel)
->  - added Fixes tag (thanks to David Ahern)
->  - build test with buildroot 2020.08.3 using uclibc 1.0.34
 > 
-> v2:
->  - small correction to subject
->  - removed IP_CONFIG_HANDLE_AT:=y option since it is not required
->  - fix indentation in check function
->  - removed empty lines (thanks to Petr Vorel)
->  - add #define _GNU_SOURCE in check (thanks to Petr Vorel)
->  - check only for name_to_handle_at (thanks to Petr Vorel)
-> 
->  configure | 28 ++++++++++++++++++++++++++++
->  lib/fs.c  | 25 +++++++++++++++++++++++++
->  2 files changed, 53 insertions(+)
-> 
+> The devm_pm_opp_set_clkname will call clk_get(), so here you should drop
+> the clk reference at the end. Why having it twice?
 
-applied to iproute2-next.
+The devm_pm_opp_set_clkname assigns clock to the OPP table.
 
+The devm_clk_get() is needed for the clk_get_rate(). OPP core doesn't
+initialize voltage vote and we need this initialization for the Tegra
+memory drivers.
+
+The reference count of the clk will be dropped automatically once device
+driver is released. The resource-managed helper avoids the need to care
+about the error unwinding in the code, making it clean and easy to follow.
+
+...
+>> +EXPORT_SYMBOL_GPL(devm_tegra_core_dev_init_opp_table);
+>> diff --git a/include/soc/tegra/common.h b/include/soc/tegra/common.h
+>> index 98027a76ce3d..e8eab13aa199 100644
+>> --- a/include/soc/tegra/common.h
+>> +++ b/include/soc/tegra/common.h
+>> @@ -6,6 +6,36 @@
+>>  #ifndef __SOC_TEGRA_COMMON_H__
+>>  #define __SOC_TEGRA_COMMON_H__
+>>  
+>> +#include <linux/errno.h>
+>> +#include <linux/types.h>
+>> +
+>> +struct device;
+>> +
+>> +/**
+>> + * Tegra SoC core device OPP table configuration
+>> + *
+>> + * @init_state: pre-initialize OPP state of a device
+>> + */
+>> +struct tegra_core_opp_params {
+>> +	bool init_state;
+>> +};
+>> +
+>> +#ifdef CONFIG_ARCH_TEGRA
+>>  bool soc_is_tegra(void);
+>> +int devm_tegra_core_dev_init_opp_table(struct device *dev,
+>> +				       struct tegra_core_opp_params *params);
+>> +#else
+>> +static inline bool soc_is_tegra(void)
+> 
+> This looks unrelated. Please make it a separate patch.
+
+The missing stub for soc_is_tegra() popped up multiple times before.
+Hence it didn't look like a bad idea to me to add stub for it since this
+patch touches code around it.
+
+I'll factor it out into a separate patch in v2.
