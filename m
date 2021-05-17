@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13BA7383698
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:33:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2644383835
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:51:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343709AbhEQPes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:34:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52812 "EHLO mail.kernel.org"
+        id S238317AbhEQPur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:50:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244224AbhEQPTm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:19:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 11F7061C80;
-        Mon, 17 May 2021 14:33:58 +0000 (UTC)
+        id S243029AbhEQPda (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:33:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D49161936;
+        Mon, 17 May 2021 14:39:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262039;
-        bh=7oYuLHNwzc9jy8+tx7Q4sSHTjfKDMdJFbkcaYmc36R8=;
+        s=korg; t=1621262346;
+        bh=6sXij3xK4dKCiV3kP/AWBYeUFvn+ppSqbNv4mxYhJiU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ojrd87LtWiV1olGCEl1HpjDpaMcE+4U9s3a4JTnX7O3rzUmXAQtzg6V78eZGHw8K4
-         ATKSHAGwGPaX+LMXer89dfxP5se4+Lbhljcg2I+N2JlZ5Pz65dTXjvb0Q1E8u7ULaj
-         S5LDRMR/HKATInNoa+sNgOJBxkVtLsL5K88jpLfQ=
+        b=f9p6ZP6uXQOSHvfOB0lTjXMZDkLQcXvsvTbSiPucbMlFnLToEMdmVX+uClKFb+DPp
+         cCwWMkPpGy198fcsavpI/ydfbaQwe+fJvbK1ineWeZCf4VNdIiipvLa910FVGjZX7Y
+         e7Ceu5Xs5hKdW8405graTHr3oo6xp4CRwwzEpuR8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: [PATCH 5.4 128/141] MIPS: Avoid DIVU in `__div64_32 is result would be zero
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 269/329] ACPI: scan: Fix a memory leak in an error handling path
 Date:   Mon, 17 May 2021 16:03:00 +0200
-Message-Id: <20210517140247.127831336@linuxfoundation.org>
+Message-Id: <20210517140311.214468923@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
-References: <20210517140242.729269392@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,43 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maciej W. Rozycki <macro@orcam.me.uk>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit c1d337d45ec0a802299688e17d568c4e3a585895 upstream.
+[ Upstream commit 0c8bd174f0fc131bc9dfab35cd8784f59045da87 ]
 
-We already check the high part of the divident against zero to avoid the
-costly DIVU instruction in that case, needed to reduce the high part of
-the divident, so we may well check against the divisor instead and set
-the high part of the quotient to zero right away.  We need to treat the
-high part the divident in that case though as the remainder that would
-be calculated by the DIVU instruction we avoided.
+If 'acpi_device_set_name()' fails, we must free
+'acpi_device_bus_id->bus_id' or there is a (potential) memory leak.
 
-This has passed correctness verification with test_div64 and reduced the
-module's average execution time down to 1.0445s and 0.2619s from 1.0668s
-and 0.2629s respectively for an R3400 CPU @40MHz and a 5Kc CPU @160MHz.
-
-Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: eb50aaf960e3 ("ACPI: scan: Use unique number for instance_no")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/include/asm/div64.h |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/acpi/scan.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/mips/include/asm/div64.h
-+++ b/arch/mips/include/asm/div64.h
-@@ -68,9 +68,11 @@
- 									\
- 	__high = __div >> 32;						\
- 	__low = __div;							\
--	__upper = __high;						\
- 									\
--	if (__high) {							\
-+	if (__high < __radix) {						\
-+		__upper = __high;					\
-+		__high = 0;						\
-+	} else {							\
- 		__asm__("divu	$0, %z1, %z2"				\
- 		: "=x" (__modquot)					\
- 		: "Jr" (__high), "Jr" (__radix));			\
+diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+index 239eeeafc62f..32a9bd878852 100644
+--- a/drivers/acpi/scan.c
++++ b/drivers/acpi/scan.c
+@@ -705,6 +705,7 @@ int acpi_device_add(struct acpi_device *device,
+ 
+ 		result = acpi_device_set_name(device, acpi_device_bus_id);
+ 		if (result) {
++			kfree_const(acpi_device_bus_id->bus_id);
+ 			kfree(acpi_device_bus_id);
+ 			goto err_unlock;
+ 		}
+-- 
+2.30.2
+
 
 
