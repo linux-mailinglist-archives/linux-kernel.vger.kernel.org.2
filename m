@@ -2,176 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B1B83826C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 10:23:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3AF3826C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 10:22:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235431AbhEQIYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 04:24:21 -0400
-Received: from muru.com ([72.249.23.125]:56520 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235286AbhEQIYT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 04:24:19 -0400
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id 45BA380BA;
-        Mon, 17 May 2021 08:23:06 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     stable@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: [Backport for linux-5.10.y PATCH 1/2] clocksource/drivers/timer-ti-dm: Prepare to handle dra7 timer wrap issue
-Date:   Mon, 17 May 2021 11:22:43 +0300
-Message-Id: <20210517082244.17447-1-tony@atomide.com>
-X-Mailer: git-send-email 2.31.1
+        id S235246AbhEQIYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 04:24:02 -0400
+Received: from mail-bn7nam10on2080.outbound.protection.outlook.com ([40.107.92.80]:5185
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230087AbhEQIYA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 04:24:00 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Q7QXlZBvKwFKp1y64Y1c3i7MNnG63qihCyScBFs3DFPLljjAxBqS5U6wDnSjUcqev6yqMPVKJTaw6hkANIMel7365nDItT45zYV2qBsakZiHXpJKaD0DJSVXmJwnZm13jO6y7QBzFno7AD97ajSR4nj7DDGRhFCp6spEbnoYykk7FUtxnWpHO1tUtP4p3mG9u4Pbu/Y1rJsJdinQKb2b8AZb1qIxkVYefeYrhUt47JGMFHL9wo7m89O6psnN2RUSAzKQQDf34LcjLT5z070cryy/n7ZYhZ1cpcCaHs+GLTD7SA7ovfu/0uCjeHtQKRGX//qipXbnEMEBE8HgYqRDwQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=t0ERB0v+O04n0+NPzPFpx2SbGXpa2N0jA0T5cTCZEuw=;
+ b=MCoKnwA4zPYNFNib5iKw7f8HqvvqgiyZGvxruZEI5ltL5W259xEzorKTFTIvIhY5hPn+rqGz+x8WBor7XR4ZxQ35aFJhsiYrjrbWjijlEzuJocJCi9BcvH5KiddGENbM/I3PL+aPCveJ6y+RbVHCH1THG+8T+CcvF4eenSWM3QfHXcsw/hmTVBMzFUa5oKbnYtvSiSFQ/f4r/m0ySEqCavaKE6TAHR79IcG/fUk39VcpOLgXSxGPedkee5TpxYc4MtE7XmjXtmipS4nAaMS4zaJhtKuCULAThwV7NVFs2nyGIp/pAQSGmgfQLdtAXTQG1uQAE80/ZBw4VDV4EnSLOQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=t0ERB0v+O04n0+NPzPFpx2SbGXpa2N0jA0T5cTCZEuw=;
+ b=qhB6xMcbDoKney3P6vrRNrAW/EKFhI+yrzV6hCKUFd2IijhOUmWrgMDdSjwresiZlfsYdIg2dx5Djxf/qVFCWvI+132eYJHOTAY4xuOFjqeqFnj1IuIwNj0VPgCfNwI/R7XR9kIMbiKjUGoG7qmpCTtR7onWSuUB60bf+k5MR4E=
+Received: from DM4PR12MB5165.namprd12.prod.outlook.com (2603:10b6:5:394::9) by
+ DM6PR12MB5518.namprd12.prod.outlook.com (2603:10b6:5:1b9::21) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4129.25; Mon, 17 May 2021 08:22:43 +0000
+Received: from DM4PR12MB5165.namprd12.prod.outlook.com
+ ([fe80::4543:6802:6acc:c92d]) by DM4PR12MB5165.namprd12.prod.outlook.com
+ ([fe80::4543:6802:6acc:c92d%5]) with mapi id 15.20.4129.031; Mon, 17 May 2021
+ 08:22:43 +0000
+From:   "Pan, Xinhui" <Xinhui.Pan@amd.com>
+To:     Yu Kuai <yukuai3@huawei.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>
+CC:     "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "yi.zhang@huawei.com" <yi.zhang@huawei.com>
+Subject: =?gb2312?B?u9i4tDogW1BBVENIXSBkcm0vYW1kZ3B1OiBmaXggUE0gcmVmZXJlbmNlIGxl?=
+ =?gb2312?B?YWsgaW4gYW1kZ3B1X2RlYnVnZnNfZ2Z4b2ZmX3JlYSgp?=
+Thread-Topic: [PATCH] drm/amdgpu: fix PM reference leak in
+ amdgpu_debugfs_gfxoff_rea()
+Thread-Index: AQHXSvPpcLPz3EMHG0SAziNVEtRCPqrnVRtv
+Date:   Mon, 17 May 2021 08:22:43 +0000
+Message-ID: <DM4PR12MB5165A5E838057D0D49E601BB872D9@DM4PR12MB5165.namprd12.prod.outlook.com>
+References: <20210517081632.1563569-1-yukuai3@huawei.com>
+In-Reply-To: <20210517081632.1563569-1-yukuai3@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_Enabled=True;MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_SetDate=2021-05-17T08:22:42.888Z;MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_Name=AMD-Official
+ Use
+ Only;MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_ContentBits=0;MSIP_Label_88914ebd-7e6c-4e12-a031-a9906be2db14_Method=Standard;
+authentication-results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=amd.com;
+x-originating-ip: [180.167.199.185]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ddec04b4-a47f-48eb-85db-08d9190cf1c3
+x-ms-traffictypediagnostic: DM6PR12MB5518:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR12MB55188E200CFD605D60576598872D9@DM6PR12MB5518.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3968;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: hswYKjpNLnwvcWtrmSF3SuaUhbPs1qcUGtAs5+rZFZ5+Cb24qbErJ1sddOJC4i+Lz55Mc20mRbQ52Y/d4VolYQMjNH8Gyg1aAuJT+b63LlVKohpI3m3hsLs0QTM8ohfJDh6M9OVQ355NVGFs0xO0pDlsGpooP8zpm4IwwEFomkaICRyTapMcY9pqgts9pFtL5djIJO3TGTtX+KmEH1yUF11uCTVoZH++1wXFyKkidQJrSLlTMSACf86D2lTtS71Iy1QDjd0qZ2+/VoDoKDvNWBV4B1LeqHSLsiQMuptSvVzclkQGEDSfpiXE6u+lrRoI4fYsq7x2/FCSEUlyf3Fd7yGRWXKORsBdpjEHVNiYFb1CYf01TjQfRMpxPBZYlgZAGhvS9LQQYdPqoASs+5trnpzRP6rikfL+AtFC1PWvKgpJqk2Pv9LlGt6sCtwhECvG1r1GXujizzaBS5iHyRtl80DmtBSNhdcfsYpOghvX5mxk3tXAuwmyfsC5KneQR/2Wl1ytq1PdiM7fh0EIiqUPjGRjaXk40GGvYRNKaujME/3u8Tp1GqBmDD0SAzTH5Kb8tRT4wB+NnMsaKa1GwOH6hnz6nYLL5rLDAhX7H2RBu6k=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5165.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(396003)(39860400002)(366004)(71200400001)(224303003)(9686003)(55016002)(83380400001)(8936002)(6506007)(38100700002)(33656002)(122000001)(76116006)(66446008)(26005)(7696005)(64756008)(2906002)(478600001)(186003)(86362001)(66946007)(66556008)(91956017)(316002)(110136005)(4326008)(66476007)(5660300002)(54906003)(52536014);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?gb2312?B?ZHZ1ZS8vdWpQSlM3akZVMjlGMlJKRTlIY216N2xyTDdVK1BEODg3WFN0Y0R1?=
+ =?gb2312?B?YnBNQzVNNHoybFdlWHk2QlM4YW8rR1MraEt4R3dkOFc4WWwydk1RS3JkZlBZ?=
+ =?gb2312?B?ZitVTHBlTTc5cXFpa1VRNERnSDIyVnhhRGpyalBHOFBZVVA4c1g2bks3NHJr?=
+ =?gb2312?B?ZXJiUHJqOEZTMGVkRi9uc1Y5R29TSGRDYWRCcVEwRnJsUHo0eHdDajJqdXNT?=
+ =?gb2312?B?VzFOR3FXSHo0MXd3Y0tCUUkwQjNWNHU1dU1HTWpnLzhkWTY3NXFLRGIvQmpH?=
+ =?gb2312?B?SkJoT0lnNVhuYU0ycEVBWHFqbmR6WUcvc0tqRk1SZFIvU0l1a3FUU1ZxaGsz?=
+ =?gb2312?B?Q0MxSlh2QzZlWk1yVDM0Z0RiVHVVL3Y0dTRCVGdyL3k0b2hWSDhHOENrdU9q?=
+ =?gb2312?B?V3d3dVhueHdSeWpIWTJWcTlLUW1oUHBCZHQ5eDJQN2Q0RXN0MnF4U3p6NzUz?=
+ =?gb2312?B?ZVpJMDg4NnZiWkJFWk5zWFRsREtvVHp1K3M5YVB5TDRhMEdqR1VJcElTOXBW?=
+ =?gb2312?B?N1IzM21JRUtJdEEvcTBDWkJPRmxPTHZqMzZBeWFWTS9KRlJ2bXE4NDNrTDBE?=
+ =?gb2312?B?S29QenJnWnBhY0ZYeG5zai9EelVDTThibUpHNjdYcGE4d1pHMjdGZWdIYTN3?=
+ =?gb2312?B?QURzYXZHUnpyRU9qZExrcUZsT2N3RTg2VERRd2lFVks5bUFEZzhOZWQrQlNT?=
+ =?gb2312?B?elpzdDVDcXR0eUxPNWJ0K0IwbWt5ZlprWVhkcE4xNXdXbldHNE1FNUtmQVdZ?=
+ =?gb2312?B?Qm9MWkJVM2wwS3Q3QVpOTTNSTC95S0NDYjVNT0t5TVZYbzFHRlRRanB3VSt0?=
+ =?gb2312?B?dmY5NHRNTVRmZjZQakN4akF1MUdlaFZjaWd5SEVwbHpnNmdGbkVCNjlMa3lP?=
+ =?gb2312?B?UFNwUExWY2pBL3N1cXd4QlZzMmNidFh1WE0ydzhiNW9HYmRJa1BQeFZVbFdr?=
+ =?gb2312?B?bGlydHFVbEVPSXNGeTVuak80bnBmQ0VIUGRrdjhNbWN5L2dLYTB6U2IyQjhs?=
+ =?gb2312?B?Y0N4SC9VYkJzeVlyWUpEVjNBTlJHM04vcUlGU08zZ2J2VGxHb21BQXowYjJ0?=
+ =?gb2312?B?YllJSys3NTZkOW95VkRsMm1Xa0Q5Vis4Ykw0M2VMdHZLRDRncENLZ21zTE81?=
+ =?gb2312?B?OXAzb2lXMkFCdmc1eHNXOVIzb2dGMDVoS3BGMDNKK3k0WEJxL2VOTDdTelV5?=
+ =?gb2312?B?bW9scEZDWXFHSFZ1TUxzZkkxSjhkSnNjTlFVQm94OGhUNXB0SU84VnpDQXFY?=
+ =?gb2312?B?SGM4bjRBOVhOVEprWWF0d2V2a0hWNXd0ZXU0MU9xY1Q0emR4Q3R4bG1oNUIr?=
+ =?gb2312?B?NHRjaHFpWFBtRFhOQVRzQW9nQnl5RTlBaS92NHVrblVmb0gzK1dQRlBhVzQy?=
+ =?gb2312?B?SnI2VnBkT3dCWFRyZkpOUThEOVUrbUVIVHNaKy9pNnVEUlVRcnZlMW1aNXA0?=
+ =?gb2312?B?SkFDQnhmMHdOQzQxMHZ0eEZNZlQybGxSekVKNGJERXM2ZWJ0Y09mZHpXTWRC?=
+ =?gb2312?B?SzYxaDl5blRqRG56M1pCMlE2TTR6N2VCWFVWN3M3b09BQklmMzJkK1FLTnVk?=
+ =?gb2312?B?c3VhMmM1ZHcvWHpBb0tla3JXR21oTXlRVjdESWlRT1c0ZjhPYTJ2YmRSRXBU?=
+ =?gb2312?B?bENFT2tRQU4xa0VlUGJKSHNJSStYbjZnQXVxcHNHckx2Ymd1TndPZGNlZnM1?=
+ =?gb2312?B?UmdrSG8rQWpvZFNZTFFnbHB4aUFVWndHVWVaNlhieWhKeDRsZDAvQ3EwUGV0?=
+ =?gb2312?Q?fhGycR2Wp/Ei2fWfepGS4gHknd2Hzs3l9J5nQq9?=
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5165.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ddec04b4-a47f-48eb-85db-08d9190cf1c3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 May 2021 08:22:43.5403
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: r5BO6aGwLe4i/p9cW9/4gsZpZcY3NjWZ5aLoeyWerG79EXkPVx4Dok0TdGaI5C/+
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB5518
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Upstream commit 3efe7a878a11c13b5297057bfc1e5639ce1241ce. Updated to
-apply to stable linux-5.10.y without need for upstream typo fix commit
-4bf07f6562a01a488877e05267808da7147f44a5. Needed to avoid duplicate
-code for upstream commit 25de4ce5ed02994aea8bc111d133308f6fd62566.
-
-There is a timer wrap issue on dra7 for the ARM architected timer.
-In a typical clock configuration the timer fails to wrap after 388 days.
-
-To work around the issue, we need to use timer-ti-dm timers instead.
-
-Let's prepare for adding support for percpu timers by adding a common
-dmtimer_clkevt_init_common() and call it from dmtimer_clockevent_init().
-This patch makes no intentional functional changes.
-
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20210323074326.28302-2-tony@atomide.com
----
- drivers/clocksource/timer-ti-dm-systimer.c | 68 ++++++++++++++--------
- 1 file changed, 44 insertions(+), 24 deletions(-)
-
-diff --git a/drivers/clocksource/timer-ti-dm-systimer.c b/drivers/clocksource/timer-ti-dm-systimer.c
---- a/drivers/clocksource/timer-ti-dm-systimer.c
-+++ b/drivers/clocksource/timer-ti-dm-systimer.c
-@@ -530,17 +530,17 @@ static void omap_clockevent_unidle(struct clock_event_device *evt)
- 	writel_relaxed(OMAP_TIMER_INT_OVERFLOW, t->base + t->wakeup);
- }
- 
--static int __init dmtimer_clockevent_init(struct device_node *np)
-+static int __init dmtimer_clkevt_init_common(struct dmtimer_clockevent *clkevt,
-+					     struct device_node *np,
-+					     unsigned int features,
-+					     const struct cpumask *cpumask,
-+					     const char *name,
-+					     int rating)
- {
--	struct dmtimer_clockevent *clkevt;
- 	struct clock_event_device *dev;
- 	struct dmtimer_systimer *t;
- 	int error;
- 
--	clkevt = kzalloc(sizeof(*clkevt), GFP_KERNEL);
--	if (!clkevt)
--		return -ENOMEM;
--
- 	t = &clkevt->t;
- 	dev = &clkevt->dev;
- 
-@@ -548,25 +548,23 @@ static int __init dmtimer_clockevent_init(struct device_node *np)
- 	 * We mostly use cpuidle_coupled with ARM local timers for runtime,
- 	 * so there's probably no use for CLOCK_EVT_FEAT_DYNIRQ here.
- 	 */
--	dev->features = CLOCK_EVT_FEAT_PERIODIC | CLOCK_EVT_FEAT_ONESHOT;
--	dev->rating = 300;
-+	dev->features = features;
-+	dev->rating = rating;
- 	dev->set_next_event = dmtimer_set_next_event;
- 	dev->set_state_shutdown = dmtimer_clockevent_shutdown;
- 	dev->set_state_periodic = dmtimer_set_periodic;
- 	dev->set_state_oneshot = dmtimer_clockevent_shutdown;
- 	dev->set_state_oneshot_stopped = dmtimer_clockevent_shutdown;
- 	dev->tick_resume = dmtimer_clockevent_shutdown;
--	dev->cpumask = cpu_possible_mask;
-+	dev->cpumask = cpumask;
- 
- 	dev->irq = irq_of_parse_and_map(np, 0);
--	if (!dev->irq) {
--		error = -ENXIO;
--		goto err_out_free;
--	}
-+	if (!dev->irq)
-+		return -ENXIO;
- 
- 	error = dmtimer_systimer_setup(np, &clkevt->t);
- 	if (error)
--		goto err_out_free;
-+		return error;
- 
- 	clkevt->period = 0xffffffff - DIV_ROUND_CLOSEST(t->rate, HZ);
- 
-@@ -578,32 +576,54 @@ static int __init dmtimer_clockevent_init(struct device_node *np)
- 	writel_relaxed(OMAP_TIMER_CTRL_POSTED, t->base + t->ifctrl);
- 
- 	error = request_irq(dev->irq, dmtimer_clockevent_interrupt,
--			    IRQF_TIMER, "clockevent", clkevt);
-+			    IRQF_TIMER, name, clkevt);
- 	if (error)
- 		goto err_out_unmap;
- 
- 	writel_relaxed(OMAP_TIMER_INT_OVERFLOW, t->base + t->irq_ena);
- 	writel_relaxed(OMAP_TIMER_INT_OVERFLOW, t->base + t->wakeup);
- 
--	pr_info("TI gptimer clockevent: %s%lu Hz at %pOF\n",
--		of_find_property(np, "ti,timer-alwon", NULL) ?
-+	pr_info("TI gptimer %s: %s%lu Hz at %pOF\n",
-+		name, of_find_property(np, "ti,timer-alwon", NULL) ?
- 		"always-on " : "", t->rate, np->parent);
- 
--	clockevents_config_and_register(dev, t->rate,
--					3, /* Timer internal resynch latency */
-+	return 0;
-+
-+err_out_unmap:
-+	iounmap(t->base);
-+
-+	return error;
-+}
-+
-+static int __init dmtimer_clockevent_init(struct device_node *np)
-+{
-+	struct dmtimer_clockevent *clkevt;
-+	int error;
-+
-+	clkevt = kzalloc(sizeof(*clkevt), GFP_KERNEL);
-+	if (!clkevt)
-+		return -ENOMEM;
-+
-+	error = dmtimer_clkevt_init_common(clkevt, np,
-+					   CLOCK_EVT_FEAT_PERIODIC |
-+					   CLOCK_EVT_FEAT_ONESHOT,
-+					   cpu_possible_mask, "clockevent",
-+					   300);
-+	if (error)
-+		goto err_out_free;
-+
-+	clockevents_config_and_register(&clkevt->dev, clkevt->t.rate,
-+					3, /* Timer internal resync latency */
- 					0xffffffff);
- 
- 	if (of_machine_is_compatible("ti,am33xx") ||
- 	    of_machine_is_compatible("ti,am43")) {
--		dev->suspend = omap_clockevent_idle;
--		dev->resume = omap_clockevent_unidle;
-+		clkevt->dev.suspend = omap_clockevent_idle;
-+		clkevt->dev.resume = omap_clockevent_unidle;
- 	}
- 
- 	return 0;
- 
--err_out_unmap:
--	iounmap(t->base);
--
- err_out_free:
- 	kfree(clkevt);
- 
--- 
-2.31.1
+W0FNRCBPZmZpY2lhbCBVc2UgT25seV0NCg0KdGhhbmtzIEt1YWkuDQpCdXQgY29kZSBiZWxvdyBt
+YXRjaGVzIHRoZSBvdGhlciBjb2RlIGJsb2NrIGluIHRoaXMgZmlsZS4NCg0KICAgICAgICByID0g
+cG1fcnVudGltZV9nZXRfc3luYyhkZXYtPmRldik7DQogICAgICAgIGlmIChyIDwgMCkgew0KICAg
+ICAgICAgICAgICAgIHBtX3J1bnRpbWVfcHV0X2F1dG9zdXNwZW5kKGRldi0+ZGV2KTsNCiAgICAg
+ICAgICAgICAgICByZXR1cm4gcjsNCiAgICAgICAgfQ0KDQpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fDQq3orz+yMs6IFl1IEt1YWkgPHl1a3VhaTNAaHVhd2VpLmNvbT4N
+Creiy83KsbzkOiAyMDIxxOo11MIxN8jVIDE2OjE2DQrK1bz+yMs6IERldWNoZXIsIEFsZXhhbmRl
+cjsgS29lbmlnLCBDaHJpc3RpYW47IFBhbiwgWGluaHVpOyBhaXJsaWVkQGxpbnV4LmllOyBkYW5p
+ZWxAZmZ3bGwuY2gNCrOty806IGFtZC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnOyBkcmktZGV2
+ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyB5
+dWt1YWkzQGh1YXdlaS5jb207IHlpLnpoYW5nQGh1YXdlaS5jb20NCtb3zOI6IFtQQVRDSF0gZHJt
+L2FtZGdwdTogZml4IFBNIHJlZmVyZW5jZSBsZWFrIGluIGFtZGdwdV9kZWJ1Z2ZzX2dmeG9mZl9y
+ZWEoKQ0KDQpwbV9ydW50aW1lX2dldF9zeW5jIHdpbGwgaW5jcmVtZW50IHBtIHVzYWdlIGNvdW50
+ZXIgZXZlbiBpdCBmYWlsZWQuDQpGb3JnZXR0aW5nIHRvIHB1dHRpbmcgb3BlcmF0aW9uIHdpbGwg
+cmVzdWx0IGluIHJlZmVyZW5jZSBsZWFrIGhlcmUuDQpGaXggaXQgYnkgcmVwbGFjaW5nIGl0IHdp
+dGggcG1fcnVudGltZV9yZXN1bWVfYW5kX2dldCB0byBrZWVwIHVzYWdlDQpjb3VudGVyIGJhbGFu
+Y2VkLg0KDQpSZXBvcnRlZC1ieTogSHVsayBSb2JvdCA8aHVsa2NpQGh1YXdlaS5jb20+DQpTaWdu
+ZWQtb2ZmLWJ5OiBZdSBLdWFpIDx5dWt1YWkzQGh1YXdlaS5jb20+DQotLS0NCiBkcml2ZXJzL2dw
+dS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfZGVidWdmcy5jIHwgMiArLQ0KIDEgZmlsZSBjaGFuZ2Vk
+LCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9n
+cHUvZHJtL2FtZC9hbWRncHUvYW1kZ3B1X2RlYnVnZnMuYyBiL2RyaXZlcnMvZ3B1L2RybS9hbWQv
+YW1kZ3B1L2FtZGdwdV9kZWJ1Z2ZzLmMNCmluZGV4IGJjYWYyNzFiMzliZi4uZWI3ZjlkMjBkYWQ3
+IDEwMDY0NA0KLS0tIGEvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvYW1kZ3B1X2RlYnVnZnMu
+Yw0KKysrIGIvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvYW1kZ3B1X2RlYnVnZnMuYw0KQEAg
+LTEwNTgsNyArMTA1OCw3IEBAIHN0YXRpYyBzc2l6ZV90IGFtZGdwdV9kZWJ1Z2ZzX2dmeG9mZl9y
+ZWFkKHN0cnVjdCBmaWxlICpmLCBjaGFyIF9fdXNlciAqYnVmLA0KICAgICAgICBpZiAoc2l6ZSAm
+IDB4MyB8fCAqcG9zICYgMHgzKQ0KICAgICAgICAgICAgICAgIHJldHVybiAtRUlOVkFMOw0KDQot
+ICAgICAgIHIgPSBwbV9ydW50aW1lX2dldF9zeW5jKGFkZXZfdG9fZHJtKGFkZXYpLT5kZXYpOw0K
+KyAgICAgICByID0gcG1fcnVudGltZV9yZXN1bWVfYW5kX2dldChhZGV2X3RvX2RybShhZGV2KS0+
+ZGV2KTsNCiAgICAgICAgaWYgKHIgPCAwKQ0KICAgICAgICAgICAgICAgIHJldHVybiByOw0KDQot
+LQ0KMi4yNS40DQoNCg==
