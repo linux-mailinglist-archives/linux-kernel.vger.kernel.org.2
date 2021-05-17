@@ -2,118 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1CF5382A42
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:53:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7149382A47
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236565AbhEQKya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 06:54:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48164 "EHLO
+        id S236581AbhEQKyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 06:54:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236562AbhEQKyY (ORCPT
+        with ESMTP id S236489AbhEQKyu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 06:54:24 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A7BBC061760;
-        Mon, 17 May 2021 03:53:07 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d78so3800407pfd.10;
-        Mon, 17 May 2021 03:53:07 -0700 (PDT)
+        Mon, 17 May 2021 06:54:50 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2FD8C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 03:53:34 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id e19so4677529pfv.3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 03:53:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NdeCX4rjV+Zv636bnH2MvIF9sfediJRTDxYI7vsVq7k=;
-        b=KG7yrpr7MFAaHLzYMouAZxv9oYOv9wi/b9Rc3Z5FIjrar5ybjaMalFTe+M4WifUFR3
-         1WPNVODXgT711AWAOJpQ78shc6URv865j4YHD38PcADSNKkRbjyjiKwAFT8G4GLEbpT8
-         GBFXNal/CncMmsW23kg1jVtFP0xiQIohMkoDwY2St+2ltardX7wX7sg3fxhoVDuYxhJR
-         uBGQZ2AlQ6lSwEc+jq3C4oig0UOM0CL9zM2ReQJ1t3aOr/bfZ9UkBsPKY4LOLKo2uIiY
-         Qht/ITjszwrxIKA6h01Mdt9Gqklxd2vc9X7feBufOxj5O9UFmcGUipgAi8piOQS9+6Wb
-         i0NA==
+        d=ingics-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yTBxlhVVQ6O5eAhomhBBjHn+XCVqzUbosulYbl171R0=;
+        b=qhcfziigPT7XIWX42Rcy+Q1CvCnFV3sLU7zTexFQtkn5WhttcU6tdaSbKFLWWqGrWu
+         mta9om4bcUNLul/CF0hkCILZNz5gIm6f/f9CD7pzc76Qq8luDc/6uk/i6a6dn2UXJqkO
+         CFvwqzPxXzdx4Qe1KRYtntDflt2Upab2T/sZNBHEMYuq7N7lFYpxAgVnPt/FAjWkM5+1
+         1tOY/t2hPbG1s0Fr3X10gwixFgyei/64nHFJEi3F2riiGhAY8VdjoSt6RF/iQ9HPyUPo
+         cBjRRzLjanXOXv2g3Nrq2SsbtHvkhGcApSCh8tL8GPUHngcCROEVX7iHYZoeXV3CS3kD
+         OENw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=NdeCX4rjV+Zv636bnH2MvIF9sfediJRTDxYI7vsVq7k=;
-        b=KRgBSgKCpJKz665JUANJ/Q+iIcpZjlCCr+kxukm6u0z7ZgIYjmWMndCs4nEP6Agaof
-         hxd1lIZrMUBrFcAAY8DGLfd17RtothPOCsM+9vFVHH6CnqgHieEaDvr0zsl9cXtVX7du
-         lr2kdnBholt/TLHWmXSRpm5IcsCf/UBHIz94V4E3WC4e7YEhAugQ1HI1TTWwHqFQfwnx
-         TJzxJuzvOtuT5coV2XX7MD11FNbS+10V4RjHxEux8YfDaBtTGZO0nXd2bWjWPS7noA1r
-         wvzgQMhXsMQX1N/g//BHiXpA9QK3w0lQFR6Gx/8cXArLpSIwco0YIIOSegBmn+fj6MFP
-         yKrw==
-X-Gm-Message-State: AOAM532xHUNCfg2yuQrEXA9uXtdDbC9BbYLPCi5O+4CsY70bspkYUPjx
-        KZTIH6SLd4/STdZGE6hCg54=
-X-Google-Smtp-Source: ABdhPJzDEhmdVneoa/XCfz/yhzalZIFsiA1AKlDrfI2clNnDIRj7U0J1kbN7rPLHWZOF5hi64uiwkQ==
-X-Received: by 2002:a65:6a05:: with SMTP id m5mr22050754pgu.319.1621248786769;
-        Mon, 17 May 2021 03:53:06 -0700 (PDT)
-Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id a16sm9825613pfa.95.2021.05.17.03.53.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 May 2021 03:53:06 -0700 (PDT)
-From:   Akira Yokosawa <akiyks@gmail.com>
-Subject: Re: [PATCH v3 16/16] docs: RCU: replace some characters
-To:     mchehab+huawei@kernel.org
-Cc:     bigeasy@linutronix.de, corbet@lwn.net, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, josh@joshtriplett.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mathieu.desnoyers@efficios.com, nfraprado@protonmail.com,
-        paulmck@kernel.org, rcu@vger.kernel.org, rdunlap@infradead.org,
-        rostedt@goodmis.org, tiwai@suse.de, will@kernel.org,
-        Akira Yokosawa <akiyks@gmail.com>
-References: <909f3108e85895828bf3633f183e8f364cb4d752.1621159997.git.mchehab+huawei@kernel.org>
-Message-ID: <57bb2653-8754-707f-6d54-9a64dccd3c50@gmail.com>
-Date:   Mon, 17 May 2021 19:53:00 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=yTBxlhVVQ6O5eAhomhBBjHn+XCVqzUbosulYbl171R0=;
+        b=lfGiFfBwbrS8MrIGYqkz33FmDDAi2JVcIcjBdBkkkqoqD9ho7EQc6Xqc/rA00cYPjr
+         3U7zo0y8dJnSlCU2YUNAai/3xOqklzD0hGeuQWxJYfniRnVxcHfVsEab/uIywycAg8v+
+         bU27VGd4WmmMK1HwZbxNLiM/9FEN7pKSoEKgWUx6iLlAA42iSdyToB6txUC2cCP15sDS
+         9eL/Q9QhE0p2FOmr/gQpQ9DIDhTIXcAc/IcQJ2LsXiH5TmgjaIjEVooju8d5wy+LIYCA
+         hdVMx0ORGe+67iaQKX5+zJaM9OTbbmm3EVBUAx6VBmZT8nvOqauBMDgQt8dVPOuN2nSO
+         jNJw==
+X-Gm-Message-State: AOAM531v9ReW3sLMM7S33qz83mRA1T5NNqtSbvnp0h32oCbO3YktCRVC
+        JTzEnVBcDj/KXdAJfDEXGPLleg==
+X-Google-Smtp-Source: ABdhPJxnVyb7acAwoXIIBnmX0AH24LZ6wYVNmFI9u6fao4dTRCSfV/8ZgZrKyrnMiG0OEN80YEF/hA==
+X-Received: by 2002:a65:4689:: with SMTP id h9mr23537713pgr.347.1621248814185;
+        Mon, 17 May 2021 03:53:34 -0700 (PDT)
+Received: from localhost.localdomain (122-117-179-2.HINET-IP.hinet.net. [122.117.179.2])
+        by smtp.gmail.com with ESMTPSA id 187sm9511700pff.139.2021.05.17.03.53.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 03:53:33 -0700 (PDT)
+From:   Axel Lin <axel.lin@ingics.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Christoph Fritz <chf.fritz@googlemail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH v2 1/2] regulator: fan53880: Fix missing n_voltages setting
+Date:   Mon, 17 May 2021 18:53:24 +0800
+Message-Id: <20210517105325.1227393-1-axel.lin@ingics.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <909f3108e85895828bf3633f183e8f364cb4d752.1621159997.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 16 May 2021 12:18:33 +0200, Mauro Carvalho Chehab wrote:
-> The conversion tools used during DocBook/LaTeX/html/Markdown->ReST
-> conversion and some cut-and-pasted text contain some characters that
-> aren't easily reachable on standard keyboards and/or could cause
-> troubles when parsed by the documentation build system.
-> 
-> Replace the occurences of the following characters:
-> 
-> 	- U+00a0 (' '): NO-BREAK SPACE
-> 	  as it can cause lines being truncated on PDF output
+Fixes: e6dea51e2d41 ("regulator: fan53880: Add initial support")
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+v2: address Christoph' comment
+ drivers/regulator/fan53880.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-These NO-BREAK SPACEs originate from "&nbsp;"s in html docs converted by
-commit ccc9971e2147 ("docs: rcu: convert some articles from html to ReST").
-
-I think the patterns found in these files ("~" denotes NO-BREAK SPACE):
-
-    CPU~0
-    Tasks~T1, T2, and~T3
-    line~n
-    lines~m and~n
-    ...
-
-are quite appropriate and nice-to-have contextual markers.
-
-Despite the claim above, I don't believe these NO-BREAK SPACEs can cause
-any truncation in the PDF output, because they combine short numbers or
-symbols with terms such as "CPU", "Task", and "line". 
-
-So I'd like you all to keep these NO-BREAK SPACEs.
-
-If there ever emerges such truncations, they can be taken care of
-case-by-case bases.
-
-        Thanks, Akira
-
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  .../Data-Structures/Data-Structures.rst       | 46 ++++++------
->  .../Expedited-Grace-Periods.rst               | 36 +++++-----
->  .../Tree-RCU-Memory-Ordering.rst              |  2 +-
->  .../RCU/Design/Requirements/Requirements.rst  | 70 +++++++++----------
->  4 files changed, 77 insertions(+), 77 deletions(-)
+diff --git a/drivers/regulator/fan53880.c b/drivers/regulator/fan53880.c
+index e83eb4fb1876..1684faf82ed2 100644
+--- a/drivers/regulator/fan53880.c
++++ b/drivers/regulator/fan53880.c
+@@ -51,6 +51,7 @@ static const struct regulator_ops fan53880_ops = {
+ 		      REGULATOR_LINEAR_RANGE(800000, 0xf, 0x73, 25000),	\
+ 		},							\
+ 		.n_linear_ranges = 2,					\
++		.n_voltages =	   0x74,				\
+ 		.vsel_reg =	   FAN53880_LDO ## _num ## VOUT,	\
+ 		.vsel_mask =	   0x7f,				\
+ 		.enable_reg =	   FAN53880_ENABLE,			\
+@@ -76,6 +77,7 @@ static const struct regulator_desc fan53880_regulators[] = {
+ 		      REGULATOR_LINEAR_RANGE(600000, 0x1f, 0xf7, 12500),
+ 		},
+ 		.n_linear_ranges = 2,
++		.n_voltages =	   0xf8,
+ 		.vsel_reg =	   FAN53880_BUCKVOUT,
+ 		.vsel_mask =	   0x7f,
+ 		.enable_reg =	   FAN53880_ENABLE,
+@@ -95,6 +97,7 @@ static const struct regulator_desc fan53880_regulators[] = {
+ 		      REGULATOR_LINEAR_RANGE(3000000, 0x4, 0x70, 25000),
+ 		},
+ 		.n_linear_ranges = 2,
++		.n_voltages =	   0x71,
+ 		.vsel_reg =	   FAN53880_BOOSTVOUT,
+ 		.vsel_mask =	   0x7f,
+ 		.enable_reg =	   FAN53880_ENABLE_BOOST,
+-- 
+2.25.1
 
