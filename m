@@ -2,278 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72D97382C00
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 14:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2515382C01
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 14:22:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236985AbhEQMXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 08:23:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235039AbhEQMXo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 08:23:44 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DE6FC061573;
-        Mon, 17 May 2021 05:22:28 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id gc22-20020a17090b3116b02901558435aec1so3595154pjb.4;
-        Mon, 17 May 2021 05:22:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=pmtOpzqls0v/g8o8UmNm35xKnZImhknJV+CPfOBnR2I=;
-        b=ZSWDGwnAxGrYQr6RXUC+qdahlBpjYA7g/2VB/7Fk1AkXx6J5OVoJFGLyW9mTzLCl8U
-         86E+m8ChsCyJkvPyJc/C+/Vzc2vh1zMnMRHVGseOupql/aB8ZWSYT7i9CK1KkyGYZ9+E
-         saUhBUVgl+3M8iKLZ2T2cwFS/FL3pDKW8lLEcASZ2YeJ3mIncURhY1cOJJ5ejgGGqW1t
-         S4Tf7IvlDpwBSPSoCidLlMMIO68tK6Nx44uoE8UI9tx9yNt55p6it6CfypRrNhObDsdz
-         w5dkmFvVUUXpYatVK15wp+nBLdhdRMSZhO+Og/vnC3kWcMQlgneK5Btmc7mIQOHqsFEm
-         Gh8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=pmtOpzqls0v/g8o8UmNm35xKnZImhknJV+CPfOBnR2I=;
-        b=QaHXgFfI8HXcGEX9koRKogJEK1yC3HQtIJ+KpFNFOGnPhx9Btul9ly1/F1UeKD/ZvK
-         d92+BmP508MjDDRtLv87nvc9czYl+tAWSSpQMrM97zy/T1ocUpRYXkJ6YXEdbKryDpa9
-         MEjL8LjDa2uUdCoNubPdqf9sRb6Ujv8xeoDW2xIcmKwjkD7PmyDr5uwgyjE80jAkSChv
-         mfJ88gWRcy/5n+qLpKi3jVpuyM8qomBetPemwSgHQOR+aOBgl4QGDEhsJRKcMDSt91Ue
-         09iK6K/OgKcP9S+Ru/2duyMjBzrf50KUY6KUA4kXH1n+nWyuew/5mgts9QOwNkf0Jj6l
-         YqKg==
-X-Gm-Message-State: AOAM533ysFwqJp/g9Z9LIzRVSVPCjjS+g48FWvsosK0LDyWMHlUxybf3
-        SKE82L1gs4K+f36NmaRbwO4=
-X-Google-Smtp-Source: ABdhPJyY5B0QcOE1jsXz7him0KPOunpY/NeoUHNK0q33VZMgEdlMR4/O6K2+jGqiQrJFZ0wUbJmunw==
-X-Received: by 2002:a17:90a:aa0b:: with SMTP id k11mr26433295pjq.153.1621254147878;
-        Mon, 17 May 2021 05:22:27 -0700 (PDT)
-Received: from sz-dl-056.autox.sz ([45.67.53.159])
-        by smtp.gmail.com with ESMTPSA id x13sm10854990pjl.22.2021.05.17.05.22.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 17 May 2021 05:22:27 -0700 (PDT)
-From:   Yejune Deng <yejune.deng@gmail.com>
-X-Google-Original-From: Yejune Deng <yejunedeng@gmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, yoshfuji@linux-ipv6.org,
-        dsahern@kernel.org, xeb@mail.ru, steffen.klassert@secunet.com,
-        herbert@gondor.apana.org.au, vyasevich@gmail.com,
-        nhorman@tuxdriver.com, marcelo.leitner@gmail.com,
-        edumazet@google.com, yejunedeng@gmail.com, weiwan@google.com,
-        paul@paul-moore.com, rdunlap@infradead.org, rdias@singlestore.com,
-        fw@strlen.de, andrew@lunn.ch, tparkin@katalix.com,
-        stefan@datenfreihafen.org, matthieu.baerts@tessares.net
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dccp@vger.kernel.org, linux-sctp@vger.kernel.org
-Subject: [PATCH] net: Remove the member netns_ok
-Date:   Mon, 17 May 2021 20:22:05 +0800
-Message-Id: <1621254125-21588-1-git-send-email-yejunedeng@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        id S237007AbhEQMXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 08:23:54 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53820 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235036AbhEQMXp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 08:23:45 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1B6C8B1C2;
+        Mon, 17 May 2021 12:22:28 +0000 (UTC)
+Subject: Re: [PATCH 0/9] arm64: dts: rockchip: Initial Toybrick TB-RK1808M0
+ support
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
+References: <20210516230551.12469-1-afaerber@suse.de>
+ <87im3hvikv.wl-maz@kernel.org>
+From:   =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
+Organization: SUSE Software Solutions Germany GmbH
+Message-ID: <e633c5ac-7cd6-c733-a295-6dca8ba9c605@suse.de>
+Date:   Mon, 17 May 2021 14:22:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
+MIME-Version: 1.0
+In-Reply-To: <87im3hvikv.wl-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Every protocol has the 'netns_ok' member and it is euqal to 1. The
-'if (!prot->netns_ok)' always false in inet_add_protocol().
+Hi Marc,
 
-Signed-off-by: Yejune Deng <yejunedeng@gmail.com>
----
- include/net/protocol.h    | 1 -
- net/dccp/ipv4.c           | 1 -
- net/ipv4/af_inet.c        | 4 ----
- net/ipv4/gre_demux.c      | 1 -
- net/ipv4/ipmr.c           | 1 -
- net/ipv4/protocol.c       | 6 ------
- net/ipv4/tunnel4.c        | 3 ---
- net/ipv4/udplite.c        | 1 -
- net/ipv4/xfrm4_protocol.c | 3 ---
- net/l2tp/l2tp_ip.c        | 1 -
- net/sctp/protocol.c       | 1 -
- 11 files changed, 23 deletions(-)
+On 17.05.21 11:02, Marc Zyngier wrote:
+> On Mon, 17 May 2021 00:05:42 +0100,
+> Andreas Färber <afaerber@suse.de> wrote:
+>> Patches are based on the shipping toybrick.dtb file.
 
-diff --git a/include/net/protocol.h b/include/net/protocol.h
-index 2b778e1..f51c06a 100644
---- a/include/net/protocol.h
-+++ b/include/net/protocol.h
-@@ -43,7 +43,6 @@ struct net_protocol {
- 	int			(*err_handler)(struct sk_buff *skb, u32 info);
- 
- 	unsigned int		no_policy:1,
--				netns_ok:1,
- 				/* does the protocol do more stringent
- 				 * icmp tag validation than simple
- 				 * socket lookup?
-diff --git a/net/dccp/ipv4.c b/net/dccp/ipv4.c
-index ffc601a..f81c1df 100644
---- a/net/dccp/ipv4.c
-+++ b/net/dccp/ipv4.c
-@@ -977,7 +977,6 @@ static const struct net_protocol dccp_v4_protocol = {
- 	.handler	= dccp_v4_rcv,
- 	.err_handler	= dccp_v4_err,
- 	.no_policy	= 1,
--	.netns_ok	= 1,
- 	.icmp_strict_tag_validation = 1,
- };
- 
-diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
-index f17870e..d9bccad6 100644
---- a/net/ipv4/af_inet.c
-+++ b/net/ipv4/af_inet.c
-@@ -1720,7 +1720,6 @@ EXPORT_SYMBOL_GPL(snmp_fold_field64);
- #ifdef CONFIG_IP_MULTICAST
- static const struct net_protocol igmp_protocol = {
- 	.handler =	igmp_rcv,
--	.netns_ok =	1,
- };
- #endif
- 
-@@ -1733,7 +1732,6 @@ static struct net_protocol tcp_protocol = {
- 	.handler	=	tcp_v4_rcv,
- 	.err_handler	=	tcp_v4_err,
- 	.no_policy	=	1,
--	.netns_ok	=	1,
- 	.icmp_strict_tag_validation = 1,
- };
- 
-@@ -1746,14 +1744,12 @@ static struct net_protocol udp_protocol = {
- 	.handler =	udp_rcv,
- 	.err_handler =	udp_err,
- 	.no_policy =	1,
--	.netns_ok =	1,
- };
- 
- static const struct net_protocol icmp_protocol = {
- 	.handler =	icmp_rcv,
- 	.err_handler =	icmp_err,
- 	.no_policy =	1,
--	.netns_ok =	1,
- };
- 
- static __net_init int ipv4_mib_init_net(struct net *net)
-diff --git a/net/ipv4/gre_demux.c b/net/ipv4/gre_demux.c
-index 5d1e6fe..cbb2b4b 100644
---- a/net/ipv4/gre_demux.c
-+++ b/net/ipv4/gre_demux.c
-@@ -195,7 +195,6 @@ static int gre_err(struct sk_buff *skb, u32 info)
- static const struct net_protocol net_gre_protocol = {
- 	.handler     = gre_rcv,
- 	.err_handler = gre_err,
--	.netns_ok    = 1,
- };
- 
- static int __init gre_init(void)
-diff --git a/net/ipv4/ipmr.c b/net/ipv4/ipmr.c
-index 939792a..12b564b 100644
---- a/net/ipv4/ipmr.c
-+++ b/net/ipv4/ipmr.c
-@@ -3007,7 +3007,6 @@ static const struct seq_operations ipmr_mfc_seq_ops = {
- #ifdef CONFIG_IP_PIMSM_V2
- static const struct net_protocol pim_protocol = {
- 	.handler	=	pim_rcv,
--	.netns_ok	=	1,
- };
- #endif
- 
-diff --git a/net/ipv4/protocol.c b/net/ipv4/protocol.c
-index 9a8c089..6913979 100644
---- a/net/ipv4/protocol.c
-+++ b/net/ipv4/protocol.c
-@@ -31,12 +31,6 @@ EXPORT_SYMBOL(inet_offloads);
- 
- int inet_add_protocol(const struct net_protocol *prot, unsigned char protocol)
- {
--	if (!prot->netns_ok) {
--		pr_err("Protocol %u is not namespace aware, cannot register.\n",
--			protocol);
--		return -EINVAL;
--	}
--
- 	return !cmpxchg((const struct net_protocol **)&inet_protos[protocol],
- 			NULL, prot) ? 0 : -1;
- }
-diff --git a/net/ipv4/tunnel4.c b/net/ipv4/tunnel4.c
-index e44aaf4..5048c47 100644
---- a/net/ipv4/tunnel4.c
-+++ b/net/ipv4/tunnel4.c
-@@ -218,7 +218,6 @@ static const struct net_protocol tunnel4_protocol = {
- 	.handler	=	tunnel4_rcv,
- 	.err_handler	=	tunnel4_err,
- 	.no_policy	=	1,
--	.netns_ok	=	1,
- };
- 
- #if IS_ENABLED(CONFIG_IPV6)
-@@ -226,7 +225,6 @@ static const struct net_protocol tunnel64_protocol = {
- 	.handler	=	tunnel64_rcv,
- 	.err_handler	=	tunnel64_err,
- 	.no_policy	=	1,
--	.netns_ok	=	1,
- };
- #endif
- 
-@@ -235,7 +233,6 @@ static const struct net_protocol tunnelmpls4_protocol = {
- 	.handler	=	tunnelmpls4_rcv,
- 	.err_handler	=	tunnelmpls4_err,
- 	.no_policy	=	1,
--	.netns_ok	=	1,
- };
- #endif
- 
-diff --git a/net/ipv4/udplite.c b/net/ipv4/udplite.c
-index bd8773b..cd1cd68 100644
---- a/net/ipv4/udplite.c
-+++ b/net/ipv4/udplite.c
-@@ -31,7 +31,6 @@ static const struct net_protocol udplite_protocol = {
- 	.handler	= udplite_rcv,
- 	.err_handler	= udplite_err,
- 	.no_policy	= 1,
--	.netns_ok	= 1,
- };
- 
- struct proto 	udplite_prot = {
-diff --git a/net/ipv4/xfrm4_protocol.c b/net/ipv4/xfrm4_protocol.c
-index ea595c8..2fe5860 100644
---- a/net/ipv4/xfrm4_protocol.c
-+++ b/net/ipv4/xfrm4_protocol.c
-@@ -181,21 +181,18 @@ static const struct net_protocol esp4_protocol = {
- 	.handler	=	xfrm4_esp_rcv,
- 	.err_handler	=	xfrm4_esp_err,
- 	.no_policy	=	1,
--	.netns_ok	=	1,
- };
- 
- static const struct net_protocol ah4_protocol = {
- 	.handler	=	xfrm4_ah_rcv,
- 	.err_handler	=	xfrm4_ah_err,
- 	.no_policy	=	1,
--	.netns_ok	=	1,
- };
- 
- static const struct net_protocol ipcomp4_protocol = {
- 	.handler	=	xfrm4_ipcomp_rcv,
- 	.err_handler	=	xfrm4_ipcomp_err,
- 	.no_policy	=	1,
--	.netns_ok	=	1,
- };
- 
- static const struct xfrm_input_afinfo xfrm4_input_afinfo = {
-diff --git a/net/l2tp/l2tp_ip.c b/net/l2tp/l2tp_ip.c
-index 97ae125..536c30d 100644
---- a/net/l2tp/l2tp_ip.c
-+++ b/net/l2tp/l2tp_ip.c
-@@ -635,7 +635,6 @@ static struct inet_protosw l2tp_ip_protosw = {
- 
- static struct net_protocol l2tp_ip_protocol __read_mostly = {
- 	.handler	= l2tp_ip_recv,
--	.netns_ok	= 1,
- };
- 
- static int __init l2tp_ip_init(void)
-diff --git a/net/sctp/protocol.c b/net/sctp/protocol.c
-index 6f2bbfe..baa4e77 100644
---- a/net/sctp/protocol.c
-+++ b/net/sctp/protocol.c
-@@ -1171,7 +1171,6 @@ static const struct net_protocol sctp_protocol = {
- 	.handler     = sctp4_rcv,
- 	.err_handler = sctp_v4_err,
- 	.no_policy   = 1,
--	.netns_ok    = 1,
- 	.icmp_strict_tag_validation = 1,
- };
- 
+>> http://t.rock-chips.com/en/wiki.php?mod=view&id=110 gives instructions for
+
+>> compiling sources, but no source download or link is actually provided.
+
+>> 
+
+>> I encountered a hang: earlycon revealed it being related to KVM and
+>> vGIC.  Disabling KVM in Kconfig works around it, as does removing
+>> the vGIC irq in DT.  I've already tried low and high for the vGIC
+>> interrupt, so no clue what might cause it. On an mPCIe card with 1
+>> GiB of RAM I figured KVM is not going to be a major use case, so if
+>> we find no other solution, we could just delete the interrupts
+>> property in its .dts, as demonstrated here.
+> 
+> I think you figured it out wrong,
+
+Did I? I identified that an issue resulting in no serial console was
+dependent on CONFIG_KVM being enabled and specifically to the vGIC
+interrupt being specified in my DT. That's all I said.
+
+I never claimed KVM code was to blame, you should know me better by now!
+
+> for a number of reasons:
+> 
+> - KVM hanging is usually a sign that you have described the platform
+>   the wrong way. Either you are stepping over reserved memory regions,
+>   or you have badly described the GIC itself.
+
+This whole series is about a new DT hardware description, so yes, that
+is the most likely source of the problem I'm observing. Without further
+hints how to verify what may cause it, you're just stating the obvious.
+
+The only /reserved-memory entries in the shipping DTB are drm-logo of
+size 0 and ramoops - the latter I could try to test, but I'd assume that
+to just be a software convention that for lack of oops should not affect
+KVM here?
+
+And why would reserved memory affect the vGIC but no other driver doing
+allocations? Any way to narrow it down, does vGIC allocate specially?
+
+Only other issue I'm seeing is Debian failing to mount partitions that I
+checked I do have drivers built in for and ends up failing to provide an
+emergency shell. In order to boot a clean openSUSE rootfs for comparison
+I'd first need to figure out adding any USB host nodes and clocks.
+
+> 
+> - It could also be a bug in KVM, which will need to be fixed. If
+>   that's because the HW is broken, we need to be able to detect it.
+> 
+> - You cannot be prescriptive of what a user is going to run. People
+>   have been running KVM on systems with less memory than that.
+> 
+> So no, we don't paper over these issues.
+
+As you can see in patch 3, it does include the vGIC interrupt, so that
+anyone with access to the TB-96AIoT or any EVB can test KVM and report
+success or failure. Thus I don't see me as papering over something here.
+
+However, patch 5 is needed to test this patchset on at least M0 - to
+have serial and eMMC rootfs working - until a better fix is found.
+
+> We work out what is going
+> wrong and we fix it.
+
+Thanks. You were specifically copied to advise on
+how to figure out what might cause it, so that we/I can fix it properly. :)
+
+As I mentioned, I already tried changing the interrupt between high and
+low (which was a likely bug source on Realtek RK1319 (where I'm still
+waiting on them to confirm a ~year later...)).
+I don't have a data source other than the downstream .dtb to check the
+interrupt number - mainline PX30/RK3308/RK3328/RK3368/RK3399 do all use
+9 and high consistently though, so I figured it's likely correct.
+
+What I was wondering is whether the vGIC, similar to arch timer, might
+need some initialization in the bootloader? (Note: No U-Boot sources
+either at the link.)
+Unfortunately I'm seeing a recurring pattern (cf. Realtek) that vendors
+in their BSPs don't enable KVM and thus don't validate their hardware
+description against KVM; their shipping 4.4 based kernel here does not
+seem to have KVM enabled.
+
+Or is it possible for vendors to actually have a Cortex-A35 without the
+Armv8 Virtualization Extensions in silicon? If so, how could one verify?
+
+Thanks,
+Andreas
+
 -- 
-2.7.4
-
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 Nürnberg, Germany
+GF: Felix Imendörffer
+HRB 36809 (AG Nürnberg)
