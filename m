@@ -2,47 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 265A2382AFE
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D13E7382AFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:27:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236727AbhEQL2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 07:28:40 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:41622 "EHLO
+        id S236766AbhEQL2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 07:28:38 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:40947 "EHLO
         mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236749AbhEQL2h (ORCPT
+        with ESMTP id S236705AbhEQL2g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 07:28:37 -0400
-Received: by mail-io1-f72.google.com with SMTP id e18-20020a5d92520000b02903c332995d1eso3071430iol.8
+        Mon, 17 May 2021 07:28:36 -0400
+Received: by mail-io1-f72.google.com with SMTP id d12-20020a0566022d4cb029043a589d744fso3078525iow.7
         for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 04:27:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=phWGX5D48i6duaIRhXo6DP/xmvEEcuuIMR6IgKKz4xc=;
-        b=rUsHpRaGAlaE5IfHIpcPLvMJPVby/hp1PvNjmJA+x9bRnTwinxRsdQMcx0L7zbJHLG
-         vLlAsnkDRBu/sRFO7giR4gVYJKqcLGeqLf6CU3RwV3VfOdo80S95FRe2hmCaHNfA13NX
-         rUCJ+qLe0XFc8e6MFb3HzXm8hef+OswojG2w4xcu7IipyNNoKtDc4gGrgwHXOLpwERUf
-         h0A+uKdVupdTmMOWpO1C7D91fBtfm3dh4emVxv2IMmUfHEAK5eY8iJCuBk4gaaoO8/Mz
-         NzjhX1LR+P0Pb7b6e9DrqB4oXGSLgjNmZongrdF3F1Ta9AR5IMTmdTrXzBwvb3NdPBIi
-         VRjA==
-X-Gm-Message-State: AOAM533ayCiG8jGkBNkAfwglvGLvjdpIkI1qMwmxXO6C6lBKuCdNvfbi
-        AvNYWt3NT4auHjcko41wazQAJGx+Srul/En7d7Vp7uTzW9Sv
-X-Google-Smtp-Source: ABdhPJwRcMNlRBHcNqOaealrKrgBweS8+VDPtypmMK9pTCYzqPIYDK/ygpir3G/uhypQW46GB5bhX7+JJOqTCDTV7aLn2gZqu7wE
+        bh=VRtyE+K4bDvEeVJIGzRGJz8MzoagJik85ppor/eakrk=;
+        b=K+U6gqNGAvFCRN6UK6bEqdODpCbJEpTqE2c8BqyHqAYzczx1wioUoYYuedR1eYE76A
+         zaTxzTo5QKn9tNfjggX5M9fpkNAVxpmcfMjAWU8IHoGTya7YipkugFMwpHCfv/5MgpZo
+         2B0BaBl72vk6W4CP6A0ifGAo6ZbnAZhOEzhwqQtDMTTCnhCQTamyQL5Mp24koQ/2I2MO
+         0wjYL2hmI671BXVtrkx0m7pgVlrREocq8qLAzISyyarRssOhOmR/bF4sWqgEIukEp70a
+         evZ8yodWaWK2CYBVuCT0aPPNTnx30wXLIyonFMeK9nK+r7wyqZXFLpLkr7pSZUzNMDAG
+         hNGg==
+X-Gm-Message-State: AOAM530JiLBt62mfN2/DGhHCc1y5FCFP1U1PVH6wGOK32fnYO13skvSQ
+        0ugtbx9Od/g/bHHstrRWGcEcxLk3k9/7+0L8ofNG785ruxB7
+X-Google-Smtp-Source: ABdhPJwv4SXSZUY53hUX3Oi3hmYhGejpxNC0AbLMphCbwAiOTmorx+lrw+lwUrWBaCZ6ZiKvjwCCxceIHbgB09vzJEL0a8aKq5pu
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1aa7:: with SMTP id l7mr51973435ilv.307.1621250840097;
+X-Received: by 2002:a02:1c81:: with SMTP id c123mr58166571jac.42.1621250840268;
  Mon, 17 May 2021 04:27:20 -0700 (PDT)
 Date:   Mon, 17 May 2021 04:27:20 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006a77d205c284e0d2@google.com>
-Subject: [syzbot] KMSAN: uninit-value in virtio_net_hdr_to_skb
-From:   syzbot <syzbot+106457891e3cf3b273a9@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, glider@google.com,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, tannerlove@google.com,
-        willemb@google.com, xie.he.0141@gmail.com, yhs@fb.com
+Message-ID: <0000000000006d129905c284e02d@google.com>
+Subject: [syzbot] WARNING in blk_rq_append_bio
+From:   syzbot <syzbot+1c24e3484e48799b2333@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, hare@suse.de, hch@lst.de,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        martin.petersen@oracle.com, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -52,102 +48,67 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    4ebaab5f kmsan: drop unneeded references to kmsan_context_..
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=17ac508ed00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ab8076fe8508c0d3
-dashboard link: https://syzkaller.appspot.com/bug?extid=106457891e3cf3b273a9
-compiler:       Debian clang version 11.0.1-2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=138f4972d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1624ffced00000
+HEAD commit:    5103a5be Add linux-next specific files for 20210407
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=17b28e36d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c278e8a8a7f47f4c
+dashboard link: https://syzkaller.appspot.com/bug?extid=1c24e3484e48799b2333
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1232b5c9d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17971a36d00000
+
+The issue was bisected to:
+
+commit 393bb12e00580aaa23356504eed38d8f5571153a
+Author: Christoph Hellwig <hch@lst.de>
+Date:   Wed Mar 31 07:30:01 2021 +0000
+
+    block: stop calling blk_queue_bounce for passthrough requests
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=134e9381d00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=10ce9381d00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=174e9381d00000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+106457891e3cf3b273a9@syzkaller.appspotmail.com
+Reported-by: syzbot+1c24e3484e48799b2333@syzkaller.appspotmail.com
+Fixes: 393bb12e0058 ("block: stop calling blk_queue_bounce for passthrough requests")
 
-=====================================================
-BUG: KMSAN: uninit-value in virtio_net_hdr_to_skb+0x1414/0x14f0 include/linux/virtio_net.h:86
-CPU: 0 PID: 8426 Comm: syz-executor777 Not tainted 5.12.0-rc6-syzkaller #0
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 25 at block/blk-map.c:488 blk_rq_append_bio+0x565/0x680 block/blk-map.c:488
+Modules linked in:
+CPU: 0 PID: 25 Comm: kworker/u4:1 Not tainted 5.12.0-rc6-next-20210407-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events_unbound async_run_entry_fn
+RIP: 0010:blk_rq_append_bio+0x565/0x680 block/blk-map.c:488
+Code: 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 de 00 00 00 48 8b 44 24 10 48 89 98 a0 00 00 00 45 31 e4 e9 3f fe ff ff e8 6b 3e bc fd <0f> 0b 41 bc ea ff ff ff e9 2d fe ff ff c7 44 24 08 00 00 00 00 e9
+RSP: 0018:ffffc90000dff6d0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff888011cbb900 RSI: ffffffff83b7ea55 RDI: 0000000000000003
+RBP: 0000000000000008 R08: 0000000000000000 R09: 0000000000000001
+R10: ffffffff83b7e568 R11: 0000000000000000 R12: 0000000000000001
+R13: 0000000000000008 R14: ffff88801c86e400 R15: ffff88801c86e400
+FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fb8501cc930 CR3: 0000000023c21000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
- kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
- __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
- virtio_net_hdr_to_skb+0x1414/0x14f0 include/linux/virtio_net.h:86
- packet_snd net/packet/af_packet.c:2994 [inline]
- packet_sendmsg+0x85b8/0x99d0 net/packet/af_packet.c:3031
- sock_sendmsg_nosec net/socket.c:654 [inline]
- sock_sendmsg net/socket.c:674 [inline]
- kernel_sendmsg+0x22c/0x2f0 net/socket.c:694
- sock_no_sendpage+0x205/0x2b0 net/core/sock.c:2860
- kernel_sendpage+0x47a/0x590 net/socket.c:3631
- sock_sendpage+0x161/0x1a0 net/socket.c:947
- pipe_to_sendpage+0x3e4/0x520 fs/splice.c:364
- splice_from_pipe_feed fs/splice.c:418 [inline]
- __splice_from_pipe+0x5e3/0xff0 fs/splice.c:562
- splice_from_pipe fs/splice.c:597 [inline]
- generic_splice_sendpage+0x1d5/0x2c0 fs/splice.c:746
- do_splice_from fs/splice.c:767 [inline]
- do_splice+0x23c3/0x2c10 fs/splice.c:1079
- __do_splice fs/splice.c:1144 [inline]
- __do_sys_splice fs/splice.c:1350 [inline]
- __se_sys_splice+0x8fa/0xb50 fs/splice.c:1332
- __x64_sys_splice+0x6e/0x90 fs/splice.c:1332
- do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x449a39
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 d1 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f8ed790b2f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000113
-RAX: ffffffffffffffda RBX: 00000000004cf518 RCX: 0000000000449a39
-RDX: 0000000000000005 RSI: 0000000000000000 RDI: 0000000000000003
-RBP: 00000000004cf510 R08: 000000000004ffe0 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004cf51c
-R13: 000000000049e46c R14: 6d32cc5e8ead0600 R15: 0000000000022000
-
-Uninit was created at:
- kmsan_save_stack_with_flags+0x3c/0x90 mm/kmsan/kmsan.c:121
- kmsan_alloc_page+0xd0/0x1e0 mm/kmsan/kmsan_shadow.c:274
- __alloc_pages_nodemask+0x827/0xf90 mm/page_alloc.c:5044
- alloc_pages_current+0x7b6/0xb60 mm/mempolicy.c:2277
- alloc_pages include/linux/gfp.h:561 [inline]
- alloc_slab_page mm/slub.c:1653 [inline]
- allocate_slab+0x364/0x1260 mm/slub.c:1793
- new_slab mm/slub.c:1856 [inline]
- new_slab_objects mm/slub.c:2602 [inline]
- ___slab_alloc+0xd42/0x1930 mm/slub.c:2765
- __slab_alloc mm/slub.c:2805 [inline]
- slab_alloc_node mm/slub.c:2886 [inline]
- slab_alloc mm/slub.c:2931 [inline]
- kmem_cache_alloc_trace+0xc53/0x1030 mm/slub.c:2948
- kmalloc include/linux/slab.h:554 [inline]
- kzalloc include/linux/slab.h:684 [inline]
- ____ip_mc_inc_group+0x4d7/0x10b0 net/ipv4/igmp.c:1435
- __ip_mc_inc_group net/ipv4/igmp.c:1470 [inline]
- ip_mc_inc_group net/ipv4/igmp.c:1476 [inline]
- ip_mc_up+0x1ec/0x410 net/ipv4/igmp.c:1775
- inetdev_event+0x2036/0x20e0 net/ipv4/devinet.c:1573
- notifier_call_chain kernel/notifier.c:83 [inline]
- raw_notifier_call_chain+0x123/0x290 kernel/notifier.c:410
- __dev_notify_flags+0x5ac/0xba0 net/core/dev.c:2075
- dev_change_flags+0x1f8/0x280 net/core/dev.c:8762
- do_setlink+0x17f6/0x7890 net/core/rtnetlink.c:2708
- __rtnl_newlink net/core/rtnetlink.c:3376 [inline]
- rtnl_newlink+0x2fc4/0x3d80 net/core/rtnetlink.c:3491
- rtnetlink_rcv_msg+0x143b/0x18e0 net/core/rtnetlink.c:5553
- netlink_rcv_skb+0x6fa/0x810 net/netlink/af_netlink.c:2502
- rtnetlink_rcv+0x50/0x60 net/core/rtnetlink.c:5571
- netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
- netlink_unicast+0x11d6/0x14a0 net/netlink/af_netlink.c:1338
- netlink_sendmsg+0x1740/0x1840 net/netlink/af_netlink.c:1927
- sock_sendmsg_nosec net/socket.c:654 [inline]
- sock_sendmsg net/socket.c:674 [inline]
- __sys_sendto+0x9ea/0xc60 net/socket.c:1977
- __do_sys_sendto net/socket.c:1989 [inline]
- __se_sys_sendto+0x107/0x130 net/socket.c:1985
- __x64_sys_sendto+0x6e/0x90 net/socket.c:1985
- do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-=====================================================
+ blk_rq_map_kern+0x5db/0x750 block/blk-map.c:653
+ __scsi_execute+0x4c1/0x600 drivers/scsi/scsi_lib.c:224
+ scsi_execute_req include/scsi/scsi_device.h:462 [inline]
+ read_capacity_10+0x112/0x690 drivers/scsi/sd.c:2442
+ sd_read_capacity drivers/scsi/sd.c:2519 [inline]
+ sd_revalidate_disk.isra.0+0x206c/0x7c00 drivers/scsi/sd.c:3203
+ sd_probe+0x9e5/0x1140 drivers/scsi/sd.c:3459
+ really_probe+0x291/0xf60 drivers/base/dd.c:576
+ driver_probe_device+0x298/0x410 drivers/base/dd.c:763
+ __device_attach_driver+0x203/0x2c0 drivers/base/dd.c:870
+ bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
+ __device_attach_async_helper+0x1c9/0x290 drivers/base/dd.c:896
+ async_run_entry_fn+0x9d/0x550 kernel/async.c:127
+ process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
 
 
 ---
@@ -157,5 +118,6 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 syzbot can test patches for this issue, for details see:
 https://goo.gl/tpsmEJ#testing-patches
