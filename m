@@ -2,42 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8EE63830F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0015C383328
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240067AbhEQOdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:33:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53200 "EHLO mail.kernel.org"
+        id S242383AbhEQOzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:55:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239173AbhEQO2K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:28:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 353F361613;
-        Mon, 17 May 2021 14:14:03 +0000 (UTC)
+        id S238951AbhEQOrQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:47:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6058661074;
+        Mon, 17 May 2021 14:22:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621260843;
-        bh=8GpjL861nW8p/QuZ1v4SwYY5mHfItd02U0CdjZFA9i0=;
+        s=korg; t=1621261320;
+        bh=p/fxQKVd8v5lMLxdVnAVvp6K+pG2uYX7GCoI+xOyPWE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RgLR3ePa3hKXDO17KyXoPzPr86sjTEVD8p8JjO/yJyMtTMKcgQH8lKY3Fv66dZuZa
-         /DfQdD2LpfPr/R5LxsdR2ejJKdkzAGjKmVDLXM8im3qpRHsbPww7oGOEgk+SrxDIRz
-         Zjk2AGI5vgLUbKMr2NOemk5gJC+3t62k5WrPmSrE=
+        b=xlTjSEI4WMovFqaKI+bHLLWqgx6gyIo5DZJ61p1+eSFCVlqG1Cyg5fQ3S8g2x1nNB
+         Tv9SnVsU01wGqzk6PrtjJxJXE2d+B8rMHWVwL2WEfch/leMB5pZZ9qfJgayVl9AO21
+         KR9M5kGesXZeW6O+nTWIqkv4IjpKonHZ/Vq6WeRQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
-        David Hildenbrand <david@redhat.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Rafael Aquini <aquini@redhat.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 219/363] mm/migrate.c: fix potential indeterminate pte entry in migrate_vma_insert_page()
+Subject: [PATCH 5.4 033/141] ALSA: hda/hdmi: fix race in handling acomp ELD notification at resume
 Date:   Mon, 17 May 2021 16:01:25 +0200
-Message-Id: <20210517140309.996317570@linuxfoundation.org>
+Message-Id: <20210517140243.885541021@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.508966430@linuxfoundation.org>
-References: <20210517140302.508966430@linuxfoundation.org>
+In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
+References: <20210517140242.729269392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,47 +40,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miaohe Lin <linmiaohe@huawei.com>
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
-[ Upstream commit 34f5e9b9d1990d286199084efa752530ee3d8297 ]
+[ Upstream commit 0c37e2eb6b83e375e8a654d01598292d5591fc65 ]
 
-If the zone device page does not belong to un-addressable device memory,
-the variable entry will be uninitialized and lead to indeterminate pte
-entry ultimately.  Fix this unexpected case and warn about it.
+When snd-hda-codec-hdmi is used with ASoC HDA controller like SOF (acomp
+used for ELD notifications), display connection change done during suspend,
+can be lost due to following sequence of events:
 
-Link: https://lkml.kernel.org/r/20210325131524.48181-4-linmiaohe@huawei.com
-Fixes: df6ad69838fc ("mm/device-public-memory: device memory cache coherent with CPU")
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Cc: Alistair Popple <apopple@nvidia.com>
-Cc: Jerome Glisse <jglisse@redhat.com>
-Cc: Rafael Aquini <aquini@redhat.com>
-Cc: Yang Shi <shy828301@gmail.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+  1. system in S3 suspend
+  2. DP/HDMI receiver connected
+  3. system resumed
+  4. HDA controller resumed, but card->deferred_resume_work not complete
+  5. acomp eld_notify callback
+  6. eld_notify ignored as power state is not CTL_POWER_D0
+  7. HDA resume deferred work completed, power state set to CTL_POWER_D0
+
+This results in losing the notification, and the jack state reported to
+user-space is not correct.
+
+The check on step 6 was added in commit 8ae743e82f0b ("ALSA: hda - Skip
+ELD notification during system suspend"). It would seem with the deferred
+resume logic in ASoC core, this check is not safe.
+
+Fix the issue by modifying the check to use "dev.power.power_state.event"
+instead of ALSA specific card power state variable.
+
+BugLink: https://github.com/thesofproject/linux/issues/2825
+Suggested-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Link: https://lore.kernel.org/r/20210416131157.1881366-1-kai.vehmanen@linux.intel.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/migrate.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/pci/hda/patch_hdmi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 62b81d5257aa..773622cffe77 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -2973,6 +2973,13 @@ static void migrate_vma_insert_page(struct migrate_vma *migrate,
- 
- 			swp_entry = make_device_private_entry(page, vma->vm_flags & VM_WRITE);
- 			entry = swp_entry_to_pte(swp_entry);
-+		} else {
-+			/*
-+			 * For now we only support migrating to un-addressable
-+			 * device memory.
-+			 */
-+			pr_warn_once("Unsupported ZONE_DEVICE page type.\n");
-+			goto abort;
- 		}
- 	} else {
- 		entry = mk_pte(page, vma->vm_page_prot);
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index ce38b5d4670d..f620b402b309 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -2567,7 +2567,7 @@ static void generic_acomp_pin_eld_notify(void *audio_ptr, int port, int dev_id)
+ 	/* skip notification during system suspend (but not in runtime PM);
+ 	 * the state will be updated at resume
+ 	 */
+-	if (snd_power_get_state(codec->card) != SNDRV_CTL_POWER_D0)
++	if (codec->core.dev.power.power_state.event == PM_EVENT_SUSPEND)
+ 		return;
+ 	/* ditto during suspend/resume process itself */
+ 	if (snd_hdac_is_in_pm(&codec->core))
+@@ -2772,7 +2772,7 @@ static void intel_pin_eld_notify(void *audio_ptr, int port, int pipe)
+ 	/* skip notification during system suspend (but not in runtime PM);
+ 	 * the state will be updated at resume
+ 	 */
+-	if (snd_power_get_state(codec->card) != SNDRV_CTL_POWER_D0)
++	if (codec->core.dev.power.power_state.event == PM_EVENT_SUSPEND)
+ 		return;
+ 	/* ditto during suspend/resume process itself */
+ 	if (snd_hdac_is_in_pm(&codec->core))
 -- 
 2.30.2
 
