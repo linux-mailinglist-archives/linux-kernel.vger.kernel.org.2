@@ -2,122 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DAAA382D4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 15:21:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2667F382D4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 15:21:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236088AbhEQNWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 09:22:40 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:39770 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234106AbhEQNWj (ORCPT
+        id S237296AbhEQNW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 09:22:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234106AbhEQNW5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 09:22:39 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14HDLBiG069884;
-        Mon, 17 May 2021 08:21:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1621257671;
-        bh=aKJhphHTIRz/4OvbHwmcRnGbnQph6vycfFRpDRJ4ZTQ=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=Y6ONEvtWW8yJl7ikIF/WZmnNX6D/zs73ktDaaR8tx00/h0vg0Zsi1fUVKGuj9HjI0
-         cMkr3f0Pg/Tcec5nXy3Bp49FoG+Ot27PCx1eYip+3yLNv5oJjZbkZ/TjY+bWuhfQro
-         SjUzh82+jcCDvBEGZ58DGAssywV4wV2mF7ROEKII=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14HDLBN1060693
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 17 May 2021 08:21:11 -0500
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 17
- May 2021 08:21:10 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 17 May 2021 08:21:10 -0500
-Received: from [10.250.232.247] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14HDL6G1130696;
-        Mon, 17 May 2021 08:21:07 -0500
-Subject: Re: [PATCH 0/6] PCI: Add legacy interrupt support in Keystone
-To:     Christian Gmeiner <christian.gmeiner@gmail.com>
-CC:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Marc Zyngier <maz@kernel.org>, <linux-pci@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>
-References: <20210325090026.8843-1-kishon@ti.com>
- <CAH9NwWeOysq9yLheFAXgX0c7bOZAAX7ZuQHXM9Rmb1an_Z5ZYg@mail.gmail.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <692ce108-c85f-7aa6-8e9e-987d54703e93@ti.com>
-Date:   Mon, 17 May 2021 18:51:05 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 17 May 2021 09:22:57 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C9F2C061573;
+        Mon, 17 May 2021 06:21:40 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id c16so6084384ilo.1;
+        Mon, 17 May 2021 06:21:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MQyS3XJe4AKUr1SWVpgv2bs2/GuaT0/cfk3NUPLHQ08=;
+        b=dGZa+sD+S3wBlqHS13HTMc3qEXBZLPBYHl6BzQZzo9YDo6xgCbxZyRBv5dPWN+Aj9L
+         5m+gBW3elWiEH7YYw1YDfUkyxWfDPPqQxiRJnWie+1BAuI1K3qhY/OU/OybuLQZ9AzOs
+         Qi3ZJhM78kbmVyR4L2tHQbyGIJUatgoOlyntKgySbRe3pzGu14J5lHdEwgpUM2v6/Arr
+         3kmGliEVdHpb3sAahauZ8+h5/NtAfir4P/d+gCKT40KgKS/F/UScpMo8v+UTqDep7Fgk
+         0D8hQ64XCZn+yrNKgGyeHA0kCSyXgB798DA42Fbg6wRF4mYNdg67YqYBMM/a7gXm1axW
+         26FQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MQyS3XJe4AKUr1SWVpgv2bs2/GuaT0/cfk3NUPLHQ08=;
+        b=ilP/gMZ7ezYjnyFZKAkBbsOKVqAQ13gSrgrznCozOS/+14594nWQYF3IOXpu4FNz4F
+         qxdplFxGmsx4j+x1MUeEURBRrZb+1plASByeGIbUxoG/pZ0/BGhC9yphnWVwJa+H5PCE
+         56WyfB3XQPFzmKa1LIcJNDK0e6eoZ9W/73ghl288oMBRFevTu22WUSkfbjCt6ePyPvlK
+         hgRfIBdnODHOT2JC+/BocY+jsLdSnzT63KGNtm2F82XeaebJuhzm73h6Tom1CpxqKjzu
+         jYJo7uGs/1lN9hFhhV6bVZeb1FYRCF/6lp86kVViRb/ZhxhMC9DRobA7CS+lpLjNAoOr
+         ymlg==
+X-Gm-Message-State: AOAM5313RchiT8AK9e1NtE9nVVRE8N8JvLwlkXoGQgrZOI6ddny20QIi
+        4DZe+a36V54Y1qSVRI2bjpZO8tHYClFQNP8hjVC5290V3bo=
+X-Google-Smtp-Source: ABdhPJxhBSD4WvdOfYB6sx8VDZJJLMKintD92fmsIcCWYpAzSoK9/buptc6zD372ZfU6UGj0nRTAspMZ3WR9b+W/rtc=
+X-Received: by 2002:a92:cc43:: with SMTP id t3mr4301180ilq.250.1621257699449;
+ Mon, 17 May 2021 06:21:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAH9NwWeOysq9yLheFAXgX0c7bOZAAX7ZuQHXM9Rmb1an_Z5ZYg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20210125153057.3623715-1-balsini@android.com> <20210125153057.3623715-5-balsini@android.com>
+ <CAJfpegvL2kOCkbP9bBL8YD-YMFKiSazD3_wet2-+emFafA6y5A@mail.gmail.com>
+ <CAOQ4uxjOGx8gZ2biTEb4a54gw5c_aDn+FFkUvRpY+cmgEEh=sA@mail.gmail.com> <YKJVUUUapNSijV38@google.com>
+In-Reply-To: <YKJVUUUapNSijV38@google.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Mon, 17 May 2021 16:21:28 +0300
+Message-ID: <CAOQ4uxjpHTerNq70gp+GQP26RijzWOJR1pB+9GxVBSdJyjN1mQ@mail.gmail.com>
+Subject: Re: [PATCH RESEND V12 4/8] fuse: Passthrough initialization and release
+To:     Alessio Balsini <balsini@android.com>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        Akilesh Kailash <akailash@google.com>,
+        Antonio SJ Musumeci <trapexit@spawn.link>,
+        David Anderson <dvander@google.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Martijn Coenen <maco@android.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Lawrence <paullawrence@google.com>,
+        Peng Tao <bergwolf@gmail.com>,
+        Stefano Duo <duostefano93@gmail.com>,
+        Zimuzo Ezeozue <zezeozue@google.com>, wuyan <wu-yan@tcl.com>,
+        fuse-devel <fuse-devel@lists.sourceforge.net>,
+        kernel-team <kernel-team@android.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christian,
+> I have an ugly patch which uses IDR as Miklos asked, but unfortunately
+> I'm facing some performance issues due to the locking mechanisms to keep
+> guarantee the RCU consistency. I can post the new patch set as an RFC
+> soon for the community to take a look.
+> At a glance what happens is:
+> - the IDR, one for each fuse_conn, contains pointers to "struct
+>   fuse_passthrough" containing:
+>   - fuse_file *: which is using passthrough,
+>   - file *: native file system file target,
+>   - cred of the FUSE server,
+> - ioctl(PASSTHROUGH_OPEN): updates IDR, requires spinlock:
+>   - kmalloc(fuse_passthrough), update file and cred,
+>   - ID = idr_alloc(),
+>   - return ID,
+> - fuse_open reply from FUSE server with passthrough ID: updates IDR,
+>   requires spinlock:
+>   - pt = idr_find(ID),
+>   - update fuse_file with the current fuse_file,
+>   - update fuse_file->passthrough_id = ID,
+>   - idr_replace(),
+> - read/write/mmap: lock-free IDR read:
+>   - idr_find(fuse_file::passthrough_id),
+>   - forward request to lower file system as for the current FUSE
+>     passthrough patches.
+> - ioctl(PASSTHROUGH_CLOSE): updates IDR, requires spinlock:
+>   - idr_remove();
+>   - call_rcu(): tell possible open fuse_file user that the ID is no more
+>     valid and kfree() the allocated struct;
+> - close(fuse_file): updates IDR, requires spinlock:
+>   - ID = fuse_file::passthrough_id
+>   - idr_find(ID),
+>   - fuse_passthrough::fuse_file = NULL,
+>   - idr_replace().
+>
+> This would be fine if passthrough is activated for a few, big files,
+> where the passthrough overhead is dominated by the direct access
+> benefits, but if passthrough is enabled for many small files which just
+> do one or two read/writes (as what I did for my benchmark of total build
+> time for the kernel, where I was passing-through every opened file), the
+> overhead becomes a real issue.
+>
+> If you have any thoughts on how to make this simpler, I'm absolutely
+> open to fix this.
+>
 
-On 17/05/21 6:45 pm, Christian Gmeiner wrote:
-> Hi
-> 
-> Am Do., 25. März 2021 um 10:04 Uhr schrieb Kishon Vijay Abraham I
-> <kishon@ti.com>:
->>
->> Keystone driver is used by K2G and AM65 and the interrupt handling of
->> both of them is different. Add support to handle legacy interrupt for
->> both K2G and AM65 here.
->>
->> Some discussions regarding this was already done here [1] and it was
->> around having pulse interrupt for legacy interrupt.
->>
->> The HW interrupt line connected to GIC is a pulse interrupt whereas
->> the legacy interrupts by definition is level interrupt. In order to
->> provide level interrupt functionality to edge interrupt line, PCIe
->> in AM654 has provided IRQ_EOI register. When the SW writes to IRQ_EOI
->> register after handling the interrupt, the IP checks the state of
->> legacy interrupt and re-triggers pulse interrupt invoking the handler
->> again.
->>
->> Patch series also includes converting AM65 binding to YAML and an
->> errata applicable for i2037.
->>
->> [1] -> https://lore.kernel.org/linux-arm-kernel/20190221101518.22604-4-kishon@ti.com/
->>
->> Kishon Vijay Abraham I (6):
->>   dt-bindings: PCI: ti,am65: Add PCIe host mode dt-bindings for TI's
->>     AM65 SoC
->>   dt-bindings: PCI: ti,am65: Add PCIe endpoint mode dt-bindings for TI's
->>     AM65 SoC
->>   irqdomain: Export of_phandle_args_to_fwspec()
->>   PCI: keystone: Convert to using hierarchy domain for legacy interrupts
->>   PCI: keystone: Add PCI legacy interrupt support for AM654
->>   PCI: keystone: Add workaround for Errata #i2037 (AM65x SR 1.0)
->>
->>  .../bindings/pci/ti,am65-pci-ep.yaml          |  80 ++++
->>  .../bindings/pci/ti,am65-pci-host.yaml        | 111 ++++++
->>  drivers/pci/controller/dwc/pci-keystone.c     | 343 +++++++++++++-----
->>  include/linux/irqdomain.h                     |   2 +
->>  kernel/irq/irqdomain.c                        |   6 +-
->>  5 files changed, 440 insertions(+), 102 deletions(-)
->>  create mode 100644 Documentation/devicetree/bindings/pci/ti,am65-pci-ep.yaml
->>  create mode 100644 Documentation/devicetree/bindings/pci/ti,am65-pci-host.yaml
->>
->> --
->> 2.17.1
->>
-> 
-> Is there somewhere an updated version of this patch series?
+This IDR namespace usually serves a single process. Right?
+It sounds a bit more like a file table, more specifically, like io_file_table.
+I may be way off, but this sounds a bit like IORING_REGISTER_FILES.
+Is there anything that can be learned from this UAPI?
+Maybe even reuse of some of the io_uring file register code?
 
-I haven't posted an updated version yet. My plan was to re-work and post
-it by early June.
-
-Thanks
-Kishon
+Thanks,
+Amir.
