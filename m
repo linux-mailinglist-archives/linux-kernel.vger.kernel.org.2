@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 092E4383352
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC0F3383106
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:35:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239954AbhEQO5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:57:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42786 "EHLO mail.kernel.org"
+        id S240284AbhEQOdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:33:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239301AbhEQOsC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:48:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BBCC261973;
-        Mon, 17 May 2021 14:22:13 +0000 (UTC)
+        id S239394AbhEQO2b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:28:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BCC96615FF;
+        Mon, 17 May 2021 14:14:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261334;
-        bh=qWnEuDp7tInVLGa7lowuhueGdRtSWa778KG1J/vM9ns=;
+        s=korg; t=1621260865;
+        bh=CQDcJU3ZqcSKTRrBQ9LlwDUXFLIzAQWsCIa+ulVeLIU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FLURY65LdWtXuHX8x3Awy/LJdtNFftoCliShUI9vY4amIG8rXa6QZMGhAg+0er3vw
-         uQhzkc3GOnF4v2ramzDA4pd+x62PZx5u0iA/PswWOa350YbgHCwcBOaHrWucAL+CdM
-         ds1aBiT8kHn9KnnfnvxY5Xyw1nJBJbVG0lXE7EOs=
+        b=nz+pa3T8yF3H2PGRlrzwKLC36s8gqKIpVOHaVS6XmG7IMZzDgGdYBaeFmYT7rmYPZ
+         a6PtPHuFErlKiJwUKO2Paf5i8sXwRwyOanFasfZ1fiqR4uxgaZAYYhpf2vTN8QXNLI
+         ce1dK1qGINt+Qnn+GaVLyPUTNmHK6CuQ13/tYXMg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.10 009/289] cpufreq: intel_pstate: Use HWP if enabled by platform firmware
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 023/329] ASoC: Intel: bytcr_rt5640: Enable jack-detect support on Asus T100TAF
 Date:   Mon, 17 May 2021 15:58:54 +0200
-Message-Id: <20210517140305.489057408@linuxfoundation.org>
+Message-Id: <20210517140302.842374873@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
-References: <20210517140305.140529752@linuxfoundation.org>
+In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
+References: <20210517140302.043055203@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,64 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-commit e5af36b2adb858e982d78d41d7363d05d951a19a upstream.
+[ Upstream commit b7c7203a1f751348f35fc4bcb157572d303f7573 ]
 
-It turns out that there are systems where HWP is enabled during
-initialization by the platform firmware (BIOS), but HWP EPP support
-is not advertised.
+The Asus T100TAF uses the same jack-detect settings as the T100TA,
+this has been confirmed on actual hardware.
 
-After commit 7aa1031223bc ("cpufreq: intel_pstate: Avoid enabling HWP
-if EPP is not supported") intel_pstate refuses to use HWP on those
-systems, but the fallback PERF_CTL interface does not work on them
-either because of enabled HWP, and once enabled, HWP cannot be
-disabled.  Consequently, the users of those systems cannot control
-CPU performance scaling.
+Add these settings to the T100TAF quirks to enable jack-detect support
+on the T100TAF.
 
-Address this issue by making intel_pstate use HWP unconditionally if
-it is enabled already when the driver starts.
-
-Fixes: 7aa1031223bc ("cpufreq: intel_pstate: Avoid enabling HWP if EPP is not supported")
-Reported-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Tested-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Cc: 5.9+ <stable@vger.kernel.org> # 5.9+
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20210312114850.13832-1-hdegoede@redhat.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpufreq/intel_pstate.c |   14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/cpufreq/intel_pstate.c
-+++ b/drivers/cpufreq/intel_pstate.c
-@@ -3019,6 +3019,14 @@ static const struct x86_cpu_id hwp_suppo
- 	{}
- };
- 
-+static bool intel_pstate_hwp_is_enabled(void)
-+{
-+	u64 value;
-+
-+	rdmsrl(MSR_PM_ENABLE, value);
-+	return !!(value & 0x1);
-+}
-+
- static int __init intel_pstate_init(void)
- {
- 	const struct x86_cpu_id *id;
-@@ -3037,8 +3045,12 @@ static int __init intel_pstate_init(void
- 		 * Avoid enabling HWP for processors without EPP support,
- 		 * because that means incomplete HWP implementation which is a
- 		 * corner case and supporting it is generally problematic.
-+		 *
-+		 * If HWP is enabled already, though, there is no choice but to
-+		 * deal with it.
- 		 */
--		if (!no_hwp && boot_cpu_has(X86_FEATURE_HWP_EPP)) {
-+		if ((!no_hwp && boot_cpu_has(X86_FEATURE_HWP_EPP)) ||
-+		    intel_pstate_hwp_is_enabled()) {
- 			hwp_active++;
- 			hwp_mode_bdw = id->driver_data;
- 			intel_pstate.attr = hwp_cpufreq_attrs;
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 21d2e1cba380..07730ed7ab3c 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -478,6 +478,9 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "T100TAF"),
+ 		},
+ 		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
++					BYT_RT5640_JD_SRC_JD2_IN4N |
++					BYT_RT5640_OVCD_TH_2000UA |
++					BYT_RT5640_OVCD_SF_0P75 |
+ 					BYT_RT5640_MONO_SPEAKER |
+ 					BYT_RT5640_DIFF_MIC |
+ 					BYT_RT5640_SSP0_AIF2 |
+-- 
+2.30.2
+
 
 
