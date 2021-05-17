@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0313383875
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:52:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7B49383704
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243034AbhEQPxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:53:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37924 "EHLO mail.kernel.org"
+        id S244565AbhEQPiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:38:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38806 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243319AbhEQPf0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:35:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD28C61CD8;
-        Mon, 17 May 2021 14:39:44 +0000 (UTC)
+        id S238594AbhEQPXA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:23:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4868C61C97;
+        Mon, 17 May 2021 14:35:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262385;
-        bh=wnt279nJJ8vbj7pONq42NrMo7lIbIbQXr5x4KuW3GTQ=;
+        s=korg; t=1621262118;
+        bh=P2EqQavx1rP6XcL6iz3KrATM+pJWU8gQ3J8eYh0pZXE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q1GqwOE4eW+lKAUPqq5mz+gbjOIhUbq0yKkErEikkGvd1p5ZwY8LhqVB8ahqQYDBH
-         4aGJmxoXnonjOao1LJ1lNUefafaH4Ii2aOAExoXTfpsN0ymvAUz+5Z8k2VFbT0f0eQ
-         f8xkQvLJoohf2JT/EnUlUFbP1ZsghQShcnl2u0IU=
+        b=Fz/rfnzPKVdT1EAy+2OcFT6JwhFDN75gpcZk8EmEpmLJJVGNeLz2Jn8Txcq07UYcN
+         ww4DDqjqslEFR9cHHzKbXio2Bj+uNOJMyiYzWk5HT9L/BNL9SPK49PooUABGDQKHGI
+         SBqVDLT6hdVNreRou9rd4dBnf6QFLZ9X00HflNMc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
-        Ming Lei <ming.lei@redhat.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 280/329] blk-mq: Swap two calls in blk_mq_exit_queue()
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pawe=C5=82=20Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: [PATCH 5.4 139/141] clk: exynos7: Mark aclk_fsys1_200 as critical
 Date:   Mon, 17 May 2021 16:03:11 +0200
-Message-Id: <20210517140311.580384042@linuxfoundation.org>
+Message-Id: <20210517140247.509705750@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
+References: <20210517140242.729269392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,51 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bart Van Assche <bvanassche@acm.org>
+From: Paweł Chmiel <pawel.mikolaj.chmiel@gmail.com>
 
-[ Upstream commit 630ef623ed26c18a457cdc070cf24014e50129c2 ]
+commit 34138a59b92c1a30649a18ec442d2e61f3bc34dd upstream.
 
-If a tag set is shared across request queues (e.g. SCSI LUNs) then the
-block layer core keeps track of the number of active request queues in
-tags->active_queues. blk_mq_tag_busy() and blk_mq_tag_idle() update that
-atomic counter if the hctx flag BLK_MQ_F_TAG_QUEUE_SHARED is set. Make
-sure that blk_mq_exit_queue() calls blk_mq_tag_idle() before that flag is
-cleared by blk_mq_del_queue_tag_set().
+This clock must be always enabled to allow access to any registers in
+fsys1 CMU. Until proper solution based on runtime PM is applied
+(similar to what was done for Exynos5433), mark that clock as critical
+so it won't be disabled.
 
-Cc: Christoph Hellwig <hch@infradead.org>
-Cc: Ming Lei <ming.lei@redhat.com>
-Cc: Hannes Reinecke <hare@suse.com>
-Fixes: 0d2602ca30e4 ("blk-mq: improve support for shared tags maps")
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
-Link: https://lore.kernel.org/r/20210513171529.7977-1-bvanassche@acm.org
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+It was observed on Samsung Galaxy S6 device (based on Exynos7420), where
+UFS module is probed before pmic used to power that device.
+In this case defer probe was happening and that clock was disabled by
+UFS driver, causing whole boot to hang on next CMU access.
+
+Fixes: 753195a749a6 ("clk: samsung: exynos7: Correct CMU_FSYS1 clocks names")
+Signed-off-by: Paweł Chmiel <pawel.mikolaj.chmiel@gmail.com>
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+Link: https://lore.kernel.org/linux-clk/20201024154346.9589-1-pawel.mikolaj.chmiel@gmail.com
+[s.nawrocki: Added comment in the code]
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- block/blk-mq.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/clk/samsung/clk-exynos7.c |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 2cd922579b2f..88c843fa8d13 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -3244,10 +3244,12 @@ EXPORT_SYMBOL(blk_mq_init_allocated_queue);
- /* tags can _not_ be used after returning from blk_mq_exit_queue */
- void blk_mq_exit_queue(struct request_queue *q)
- {
--	struct blk_mq_tag_set	*set = q->tag_set;
-+	struct blk_mq_tag_set *set = q->tag_set;
+--- a/drivers/clk/samsung/clk-exynos7.c
++++ b/drivers/clk/samsung/clk-exynos7.c
+@@ -537,8 +537,13 @@ static const struct samsung_gate_clock t
+ 	GATE(CLK_ACLK_FSYS0_200, "aclk_fsys0_200", "dout_aclk_fsys0_200",
+ 		ENABLE_ACLK_TOP13, 28, CLK_SET_RATE_PARENT |
+ 		CLK_IS_CRITICAL, 0),
++	/*
++	 * This clock is required for the CMU_FSYS1 registers access, keep it
++	 * enabled permanently until proper runtime PM support is added.
++	 */
+ 	GATE(CLK_ACLK_FSYS1_200, "aclk_fsys1_200", "dout_aclk_fsys1_200",
+-		ENABLE_ACLK_TOP13, 24, CLK_SET_RATE_PARENT, 0),
++		ENABLE_ACLK_TOP13, 24, CLK_SET_RATE_PARENT |
++		CLK_IS_CRITICAL, 0),
  
--	blk_mq_del_queue_tag_set(q);
-+	/* Checks hctx->flags & BLK_MQ_F_TAG_QUEUE_SHARED. */
- 	blk_mq_exit_hw_queues(q, set, set->nr_hw_queues);
-+	/* May clear BLK_MQ_F_TAG_QUEUE_SHARED in hctx->flags. */
-+	blk_mq_del_queue_tag_set(q);
- }
- 
- static int __blk_mq_alloc_rq_maps(struct blk_mq_tag_set *set)
--- 
-2.30.2
-
+ 	GATE(CLK_SCLK_PHY_FSYS1_26M, "sclk_phy_fsys1_26m",
+ 		"dout_sclk_phy_fsys1_26m", ENABLE_SCLK_TOP1_FSYS11,
 
 
