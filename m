@@ -2,99 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16F1C382D0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 15:13:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 937F9382D13
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 15:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235226AbhEQNOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 09:14:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232909AbhEQNOf (ORCPT
+        id S235366AbhEQNQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 09:16:46 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:8584 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230312AbhEQNQp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 09:14:35 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D37E4C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 06:13:17 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id v19-20020a0568301413b0290304f00e3d88so5486098otp.4
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 06:13:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1niWPbp6OXctfAAznJewfN6Eqjsqw0nM8ckzYrVktvk=;
-        b=d7CG4UV4uV/QvT/PB3LlqCepedtDGPXwmcB5sYhOAr5UFDYI6t2UWqoAu6SQ50Dl+1
-         ybQlPRgq6zOcYfRTI8AcmZaVF9UmkTtuSsOILLQKg3mDgdY/GtdJWOLYJba019tbu+U3
-         5bHr8t+Jhpl7HsLNJUbqd4PynYK9iGwTXGaoA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1niWPbp6OXctfAAznJewfN6Eqjsqw0nM8ckzYrVktvk=;
-        b=mETdXB/GdbQ15+dWxmnZ7GtBC9PWawnjf/0R9pvhxtbrRZnxxiB+dFlxe2MOpLmFE3
-         7vWGJYYiGOCvTaZKV+z2jbqIFV+lx64ADBMVfd4qO+UYNIGZdQ+UzsikxIvdRETetsLi
-         3jiKIU5o+ho4fQLCFwjjfy8fMzz4LeHifOZnSh+ccmsijQ23MHPCuPdPNHZObYdRlzjU
-         GQKDeMvKRj2Vf4N7i3ztuV0gBDCpbT7J0m/bRrcXoB2agcsBZ56uyKHQoN2BcbwvQRgL
-         kN+1Uj5rdAnRz36vig5vtfB/QzgcQXMDkZJ8XjHqyNqNMsOKJsTxY+5vFs7rRWOkwZA3
-         S64w==
-X-Gm-Message-State: AOAM532BLfkNWnVPEFOVHjs5qd/2SA27etgvjbw+UkIa9HIEKqAwTzit
-        SjRdZ/jQ6KRFyyX8++9o39338u2cTNXhyTQJ9kHYAQ==
-X-Google-Smtp-Source: ABdhPJyDuQIvXw+luxml8GEexK3jECtW+UAWqe0kXDIKCICTTAfz7N7CV/zjN9R469BgZWNcW6e4zYMo96HA10ZPQKg=
-X-Received: by 2002:a05:6830:1155:: with SMTP id x21mr31941099otq.303.1621257196488;
- Mon, 17 May 2021 06:13:16 -0700 (PDT)
+        Mon, 17 May 2021 09:16:45 -0400
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14HDBDVu001655;
+        Mon, 17 May 2021 13:15:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=ma0UoF8ThuxWjuV2MJTVrxlighgBjQT54b+xSc7zqtk=;
+ b=YqJ96+9iqZxHfiExbtSBrkTcHk1zvzR3jK5at5Fkum4y41pMkeiXBe7EqtnHSyzJrRX2
+ 6OY8NyS42nO3JNe3avlLSKs+K+Osy+a4B6LkF67jngkD6jxc7zvxA0s6ZubZZTkjK5Tk
+ DVxS4OD3Y4cxYE0C/K6+sAnh9ZS7Rfe4C6PeKWs7wF3aC2pNggctRRoTm6uxnBT/Lzs0
+ zjcoD5Fq2Jj7ii8Q56yBi4lloXZ39av4ut2FGQV6GEjWemVVE02/hFGi8gVy0+oOltcy
+ IjZnacTj7h+9n6pvWBBDFi1fsji6qavNKuX++gFbFcNOklaTOgGLUsJa6j2ba1Gra/+y lw== 
+Received: from oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 38kfhwg6th-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 17 May 2021 13:15:22 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14HDFLOs024681;
+        Mon, 17 May 2021 13:15:21 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 38j645ej87-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 17 May 2021 13:15:21 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14HDFKBD024490;
+        Mon, 17 May 2021 13:15:20 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 38j645ej6k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 17 May 2021 13:15:20 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 14HDFIPx012386;
+        Mon, 17 May 2021 13:15:19 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 17 May 2021 06:15:18 -0700
+Date:   Mon, 17 May 2021 16:15:12 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     kbuild@lists.01.org, Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     lkp@intel.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Florian Fainelli <f.fainelli@gmail.com>
+Subject: drivers/net/dsa/ocelot/felix.c:1329 felix_check_xtr_pkt() error:
+ uninitialized symbol 'err'.
+Message-ID: <202105172026.SG93CMim-lkp@intel.com>
 MIME-Version: 1.0
-References: <0000000000006bbd0c05c14f1b09@google.com> <6e21483c-06f6-404b-4018-e00ee85c456c@i-love.sakura.ne.jp>
- <87d928e4-b2b9-ad30-f3f0-1dfb8e4e03ed@i-love.sakura.ne.jp>
- <05acdda8-dc1c-5119-4326-96eed24bea0c@i-love.sakura.ne.jp>
- <CAHk-=wguwhFpjhyMtDaH2hhjoV62gDgByC=aPyTrW9CkM5hqvA@mail.gmail.com>
- <alpine.DEB.2.21.2105142150460.3032@angie.orcam.me.uk> <CAHk-=wioOHwKNj8AmvXWV-oL60ae0jKswAHy9e6wCYYeA5EQXg@mail.gmail.com>
- <CAHk-=wjkVAjfWrmmJnJe1_MriK9gezWCew_MU=MbQNzHbGopsQ@mail.gmail.com>
- <97f1d292-c3a8-f4d6-0651-b4f5571ecb72@i-love.sakura.ne.jp>
- <alpine.DEB.2.21.2105151815040.3032@angie.orcam.me.uk> <alpine.DEB.2.21.2105151828380.3032@angie.orcam.me.uk>
- <CAHk-=wgz-iC97f0cnawKZc_S4-0ZEOdOx43J7pVX6b=AqYUhfg@mail.gmail.com>
-In-Reply-To: <CAHk-=wgz-iC97f0cnawKZc_S4-0ZEOdOx43J7pVX6b=AqYUhfg@mail.gmail.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Mon, 17 May 2021 15:13:05 +0200
-Message-ID: <CAKMK7uGO3_EtQem=zuTa2w8jO4zwwT27Ly6uJEYF4wVLYXGZ_Q@mail.gmail.com>
-Subject: Re: [PATCH v2] tty: vt: always invoke vc->vc_sw->con_resize callback
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Colin King <colin.king@canonical.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jani Nikula <jani.nikula@intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        "Antonino A. Daplas" <adaplas@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-GUID: E8kLUfMjSX7kFKhMyybC4pu_-SCk2smw
+X-Proofpoint-ORIG-GUID: E8kLUfMjSX7kFKhMyybC4pu_-SCk2smw
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 15, 2021 at 6:42 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Sat, May 15, 2021 at 9:33 AM Maciej W. Rozycki <macro@orcam.me.uk> wrote:
-> >
-> >  NB I suggest that you request your change to be backported, i.e. post v3
-> > with:
-> >
-> > Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> > Cc: stable@vger.kernel.org # v2.6.12+
->
-> I've applied it to my tree, but let's wait to see that it doesn't
-> cause any issues before notifying the stable people.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   d07f6ca923ea0927a1024dfccafc5b53b61cfecc
+commit: 0a6f17c6ae2116809a7b7eb6dd3eab59ef5460ef net: dsa: tag_ocelot_8021q: add support for PTP timestamping
+config: i386-randconfig-m021-20210517 (attached as .config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
 
-Ah I missed all the fun with the long w/e. fwiw I think this looks
-very reasonable, see my other reply why I think this shouldn't cause
-issues. Especially when fbcon_resize only touches hw when in KD_TEXT
-mode.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+
+smatch warnings:
+drivers/net/dsa/ocelot/felix.c:1329 felix_check_xtr_pkt() error: uninitialized symbol 'err'.
+
+vim +/err +1329 drivers/net/dsa/ocelot/felix.c
+
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1286  static bool felix_check_xtr_pkt(struct ocelot *ocelot, unsigned int ptp_type)
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1287  {
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1288  	struct felix *felix = ocelot_to_felix(ocelot);
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1289  	int err, grp = 0;
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1290  
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1291  	if (felix->tag_proto != DSA_TAG_PROTO_OCELOT_8021Q)
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1292  		return false;
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1293  
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1294  	if (!felix->info->quirk_no_xtr_irq)
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1295  		return false;
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1296  
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1297  	if (ptp_type == PTP_CLASS_NONE)
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1298  		return false;
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1299  
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1300  	while (ocelot_read(ocelot, QS_XTR_DATA_PRESENT) & BIT(grp)) {
+
+The static checker can't know whether we always enter this loop.
+
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1301  		struct sk_buff *skb;
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1302  		unsigned int type;
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1303  
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1304  		err = ocelot_xtr_poll_frame(ocelot, grp, &skb);
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1305  		if (err)
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1306  			goto out;
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1307  
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1308  		/* We trap to the CPU port module all PTP frames, but
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1309  		 * felix_rxtstamp() only gets called for event frames.
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1310  		 * So we need to avoid sending duplicate general
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1311  		 * message frames by running a second BPF classifier
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1312  		 * here and dropping those.
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1313  		 */
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1314  		__skb_push(skb, ETH_HLEN);
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1315  
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1316  		type = ptp_classify_raw(skb);
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1317  
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1318  		__skb_pull(skb, ETH_HLEN);
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1319  
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1320  		if (type == PTP_CLASS_NONE) {
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1321  			kfree_skb(skb);
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1322  			continue;
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1323  		}
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1324  
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1325  		netif_rx(skb);
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1326  	}
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1327  
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1328  out:
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14 @1329  	if (err < 0)
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1330  		ocelot_drain_cpu_queue(ocelot, 0);
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1331  
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1332  	return true;
+0a6f17c6ae21168 Vladimir Oltean 2021-02-14  1333  }
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
