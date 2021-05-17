@@ -2,86 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD0E38382B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:51:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACA5D383861
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:52:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345209AbhEQPub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:50:31 -0400
-Received: from mail-ot1-f42.google.com ([209.85.210.42]:35496 "EHLO
-        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244990AbhEQPd2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:33:28 -0400
-Received: by mail-ot1-f42.google.com with SMTP id 69-20020a9d0a4b0000b02902ed42f141e1so5896917otg.2;
-        Mon, 17 May 2021 08:32:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qLabWeFWWUTFvcwZHvdf6d9/NKDpE7SLOGHOguQ8yP0=;
-        b=Rt4gTDxAbTpYvZzySezezBQfpHXfPqz9mHJvkBhwm0HPBIjIGGQCVvOjwx94JEIPc6
-         q9Dqh6qhDDqXqDh11PVH0FIkoSTwRtfBfSwGSeYcb6TXpDyOpnYPYq+hKY9aHWqe3/c9
-         hhhuMzTmSBQuM9uzz7X2z7c6X3UT39riNzOac4xcgn5jydN/TjZCCEEUJRXTDhWaVzqS
-         pcPAoH3tyRE6BPtFm8pScfKKee8nB7Xh8Ybkqx4SlqrJWMBETOg6g3YMH8xZQ/W46UdO
-         XnAitpCItgDNOictpmAKzbuRqACnnLTllZ9jwbd08ayQxEEcYyNncTBiv2P/0OunCqsE
-         35Hw==
-X-Gm-Message-State: AOAM5302jCm//YKof3/U5zBkHj8sQIcM/UXk3h12QXz6MNokEpP1+Oue
-        EXOZyickEC0wBVjKrOqyiHe8pS1MNwnLOXW1bjU=
-X-Google-Smtp-Source: ABdhPJz8EaCRfO+89bvTzzIpwv9fxsJQPwePYnpt5jdL657j8M4bnnBiEHAfUXlkhLZIIb+awOW8EVF4DZefr8M3qcA=
-X-Received: by 2002:a9d:1e1:: with SMTP id e88mr141134ote.260.1621265530975;
- Mon, 17 May 2021 08:32:10 -0700 (PDT)
+        id S1343829AbhEQPwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:52:19 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57638 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239215AbhEQPfC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:35:02 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1621265625; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=P6+oiXgUBbiaQ/XIdIi+J5lKOSw2bw8dPTfk4MM0uUE=;
+        b=u0zDqmEJFdoLYXoTYowO0v/J27aISHzHszyWtgmZuKH+yd+ZSrOxGCOf0HZARqivSnMxJS
+        NNX8CgyZW4gE/h3faxtUuyR6KAZVvVY+yYcSZ735UPBNopr+2siAxh+7xs/1wfEaQAM5nW
+        iGm5n19sIIzLG48c6IV2RHhLcNXVzNw=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4AF1DB27A;
+        Mon, 17 May 2021 15:33:44 +0000 (UTC)
+Subject: Re: [PATCH 4/8] xen/blkfront: don't trust the backend response data
+ blindly
+To:     Juergen Gross <jgross@suse.com>
+Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, xen-devel@lists.xenproject.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210513100302.22027-1-jgross@suse.com>
+ <20210513100302.22027-5-jgross@suse.com>
+ <315ad8b9-8a98-8d3e-f66c-ab32af2731a8@suse.com>
+ <6095c4b9-a9bb-8a38-fb6c-a5483105b802@suse.com>
+ <a19a13ba-a386-2808-ad85-338d47085fa6@suse.com>
+ <030ef85e-b5af-f46e-c8dc-88b8d195c4e1@suse.com>
+From:   Jan Beulich <jbeulich@suse.com>
+Message-ID: <477f01cd-8793-705c-10f9-cf0c0cd6ed84@suse.com>
+Date:   Mon, 17 May 2021 17:33:42 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <8436da08-4812-d383-8f2a-1c07181ebfb8@gmail.com>
- <YJ4hrrUkKRkKsUtf@gmail.com> <CAJZ5v0h0Z3pfwpL2SsJ53=SfqE2d+7PrG+nt0PXjYrqeAkc27g@mail.gmail.com>
- <YJ5O5gytKMDOCnFz@gmail.com>
-In-Reply-To: <YJ5O5gytKMDOCnFz@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 17 May 2021 17:31:59 +0200
-Message-ID: <CAJZ5v0gE4GC6R=FW39Xp_xiLzc0RgPGu0VJygz4gN-OOBr4YCg@mail.gmail.com>
-Subject: Re: [PATCH] x86/acpi: Switch to pr_xxx log functions
-To:     Ingo Molnar <mingo@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <030ef85e-b5af-f46e-c8dc-88b8d195c4e1@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 12:20 PM Ingo Molnar <mingo@kernel.org> wrote:
->
->
-> * Rafael J. Wysocki <rafael@kernel.org> wrote:
->
-> > On Fri, May 14, 2021 at 9:07 AM Ingo Molnar <mingo@kernel.org> wrote:
-> > >
-> > >
-> > > * Heiner Kallweit <hkallweit1@gmail.com> wrote:
-> > >
-> > > > Switching to pr_debug et al has two benefits:
-> > > > - We don't have to add PREFIX to each log statement
-> > > > - Debug output is suppressed except DEBUG is defined or dynamic
-> > > >   debugging is enabled for the respective code piece.
-> > > >
-> > > > In addition ensure that longer messages aren't split to multiple lines
-> > > > in source code, checkpatch complains otherwise.
-> > > >
-> > > > Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-> > > > ---
-> > > >  arch/x86/kernel/acpi/boot.c | 118 ++++++++++++++----------------------
-> > > >  1 file changed, 47 insertions(+), 71 deletions(-)
-> > >
-> > > Reviewed-by: Ingo Molnar <mingo@kernel.org>
-> >
-> > So I'm going to take this through the ACPI tree if that's OK.
->
-> Sure!
+On 17.05.2021 17:22, Juergen Gross wrote:
+> On 17.05.21 17:12, Jan Beulich wrote:
+>> On 17.05.2021 16:23, Juergen Gross wrote:
+>>> On 17.05.21 16:11, Jan Beulich wrote:
+>>>> On 13.05.2021 12:02, Juergen Gross wrote:
+>>>>> @@ -1574,10 +1580,16 @@ static irqreturn_t blkif_interrupt(int irq, void *dev_id)
+>>>>>    	spin_lock_irqsave(&rinfo->ring_lock, flags);
+>>>>>     again:
+>>>>>    	rp = rinfo->ring.sring->rsp_prod;
+>>>>> +	if (RING_RESPONSE_PROD_OVERFLOW(&rinfo->ring, rp)) {
+>>>>> +		pr_alert("%s: illegal number of responses %u\n",
+>>>>> +			 info->gd->disk_name, rp - rinfo->ring.rsp_cons);
+>>>>> +		goto err;
+>>>>> +	}
+>>>>>    	rmb(); /* Ensure we see queued responses up to 'rp'. */
+>>>>
+>>>> I think you want to insert after the barrier.
+>>>
+>>> Why? The relevant variable which is checked is "rp". The result of the
+>>> check is in no way depending on the responses themselves. And any change
+>>> of rsp_cons is protected by ring_lock, so there is no possibility of
+>>> reading an old value here.
+>>
+>> But this is a standard double read situation: You might check a value
+>> and then (via a separate read) use a different one past the barrier.
+> 
+> Yes and no.
+> 
+> rsp_cons should never be written by the other side, and additionally
+> it would be read multiple times anyway.
 
-So applied as 5.14 material, thanks!
+But I'm talking about rsp_prod, as that's what rp gets loaded from.
+
+Jan
+
+> So if the other side is writing it, the write could always happen after
+> the test and before the loop is started. This is no real issue here as
+> the frontend would very soon stumble over an illegal response (either
+> no request pending, or some other inconsistency). The test is meant to
+> have a more detailed error message in case it hits.
+> 
+> In the end it doesn't really matter, so I can change it. I just wanted
+> to point out that IMO both variants are equally valid.
+> 
+> 
+> Juergen
+> 
+
