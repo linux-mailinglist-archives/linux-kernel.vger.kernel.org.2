@@ -2,172 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C069383CFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 21:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5B76383D12
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 21:17:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231847AbhEQTN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 15:13:27 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48178 "EHLO mx2.suse.de"
+        id S232328AbhEQTSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 15:18:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231161AbhEQTN0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 15:13:26 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 95131B2A0;
-        Mon, 17 May 2021 19:12:07 +0000 (UTC)
-To:     Arnd Bergmann <arnd@arndb.de>, Dave Airlie <airlied@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>
-References: <20210513110040.2268-1-maciej.kwapulinski@linux.intel.com>
- <YJ42MEgwDZrAEQLl@kroah.com>
- <CAK8P3a0pcBHfrwu9fHHRWim5WgQuCqpROpMM83yCCpjjwu1FJQ@mail.gmail.com>
- <YKIeBdwFb9Ng275X@phenom.ffwll.local>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Subject: Re: [PATCH v3 00/14] Driver of Intel(R) Gaussian & Neural Accelerator
-Message-ID: <503d101d-7273-757a-2809-e272db93c45d@suse.de>
-Date:   Mon, 17 May 2021 21:12:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S232147AbhEQTSe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 15:18:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 32E64610CD;
+        Mon, 17 May 2021 19:17:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621279038;
+        bh=bclKj3T5OzMHwLMDNU1qKI1Dt6RViH88PuPQbMHGRr4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=KyL2dYeDr8a1Y7Nyx672Enhc8n14G0dS9jL60PBUVlds1wh0Kdck4guWmafFfhg3J
+         V/ekBJ1Ql309JKIuC1rjKGqWTk69+8rbZC3OXkgujcOA1IwG+WanN1rZzn8DFNq58P
+         /4Ge3UjjnbW/X2xIj/v3ah6CBy+bqbmzwaeUf2DnCjnnyQh71YCuAu60u1LC/sRfdX
+         A6sthgM1T6iZHrLWLnp8kj4P0Zaksio3dAh/JeYsqNwFSoJb6sigvVkmFUsiWMpdSa
+         1iPEgKN+HfvtijCxyo4Gyzw5hjVgmCocJjrLVI/Sc8TKaf81WO2pcQnEypbxJ/7TF8
+         RkyiDl/acaF8g==
+Received: by mail-ed1-f43.google.com with SMTP id f1so8221677edt.4;
+        Mon, 17 May 2021 12:17:18 -0700 (PDT)
+X-Gm-Message-State: AOAM532i4vG8E7/FdVOGp00Zfb4EVe5XRevYp5PWWTyzjt6mBHKVILlt
+        wldue9jApE5nsrm2DrfyI96UjX9mXOWmjQig+Q==
+X-Google-Smtp-Source: ABdhPJxwWUTWR46pVeUhN6Po3a3w6B9MWb0twgV12pS8uxUBoS8TpJ9ffrEiu87zRYE9GCN0FD+HyoyXgJTdXkElYnA=
+X-Received: by 2002:a05:6402:54e:: with SMTP id i14mr1895380edx.289.1621279036856;
+ Mon, 17 May 2021 12:17:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YKIeBdwFb9Ng275X@phenom.ffwll.local>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="W9kAtv8EBXbI79dSBRez5c5Y3UeS7TbN9"
+References: <20210517155458.1016707-1-sudeep.holla@arm.com>
+In-Reply-To: <20210517155458.1016707-1-sudeep.holla@arm.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 17 May 2021 14:17:05 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqK6B40D8dRu8KoOsx6eSzRXx6KsSEu5mjDokPEAy+p4oA@mail.gmail.com>
+Message-ID: <CAL_JsqK6B40D8dRu8KoOsx6eSzRXx6KsSEu5mjDokPEAy+p4oA@mail.gmail.com>
+Subject: Re: [PATCH v4] dt-bindings: dvfs: Add support for generic performance domains
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Hector Yuan <hector.yuan@mediatek.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---W9kAtv8EBXbI79dSBRez5c5Y3UeS7TbN9
-Content-Type: multipart/mixed; boundary="0PmeoxnQa7yBXIDt9dyKmLw8B2Gp4ZCR0";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Arnd Bergmann <arnd@arndb.de>, Dave Airlie <airlied@gmail.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>,
- Jonathan Corbet <corbet@lwn.net>, Derek Kiernan <derek.kiernan@xilinx.com>,
- Dragan Cvetic <dragan.cvetic@xilinx.com>,
- Andy Shevchenko <andy.shevchenko@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
- DRI Development <dri-devel@lists.freedesktop.org>
-Message-ID: <503d101d-7273-757a-2809-e272db93c45d@suse.de>
-Subject: Re: [PATCH v3 00/14] Driver of Intel(R) Gaussian & Neural Accelerator
-References: <20210513110040.2268-1-maciej.kwapulinski@linux.intel.com>
- <YJ42MEgwDZrAEQLl@kroah.com>
- <CAK8P3a0pcBHfrwu9fHHRWim5WgQuCqpROpMM83yCCpjjwu1FJQ@mail.gmail.com>
- <YKIeBdwFb9Ng275X@phenom.ffwll.local>
-In-Reply-To: <YKIeBdwFb9Ng275X@phenom.ffwll.local>
+On Mon, May 17, 2021 at 10:55 AM Sudeep Holla <sudeep.holla@arm.com> wrote:
+>
+> The CLKSCREW attack [0] exposed security vulnerabilities in energy management
+> implementations where untrusted software had direct access to clock and
+> voltage hardware controls. In this attack, the malicious software was able to
+> place the platform into unsafe overclocked or undervolted configurations. Such
+> configurations then enabled the injection of predictable faults to reveal
+> secrets.
+>
+> Many Arm-based systems used to or still use voltage regulator and clock
+> frameworks in the kernel. These frameworks allow callers to independently
+> manipulate frequency and voltage settings. Such implementations can render
+> systems susceptible to this form of attack.
+>
+> Attacks such as CLKSCREW are now being mitigated by not having direct and
+> independent control of clock and voltage in the kernel and moving that
+> control to a trusted entity, such as the SCP firmware or secure world
+> firmware/software which are to perform sanity checking on the requested
+> performance levels, thereby preventing any attempted malicious programming.
+>
+> With the advent of such an abstraction, there is a need to replace the
+> generic clock and regulator bindings used by such devices with a generic
+> performance domains bindings.
+>
+> [0] https://www.usenix.org/conference/usenixsecurity17/technical-sessions/presentation/tang
+>
+> Link: https://lore.kernel.org/r/20201116181356.804590-1-sudeep.holla@arm.com
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
 
---0PmeoxnQa7yBXIDt9dyKmLw8B2Gp4ZCR0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-Hi
-
-Am 17.05.21 um 09:40 schrieb Daniel Vetter:
-> On Fri, May 14, 2021 at 11:00:38AM +0200, Arnd Bergmann wrote:
->> On Fri, May 14, 2021 at 10:34 AM Greg Kroah-Hartman
->> <gregkh@linuxfoundation.org> wrote:
->>> On Thu, May 13, 2021 at 01:00:26PM +0200, Maciej Kwapulinski wrote:
->>>> Dear kernel maintainers,
->>>>
->>>> This submission is a kernel driver to support Intel(R) Gaussian & Ne=
-ural
->>>> Accelerator (Intel(R) GNA). Intel(R) GNA is a PCI-based neural co-pr=
-ocessor
->>>> available on multiple Intel platforms. AI developers and users can o=
-ffload
->>>> continuous inference workloads to an Intel(R) GNA device in order to=20
-free
->>>> processor resources and save power. Noise reduction and speech recog=
-nition
->>>> are the examples of the workloads Intel(R) GNA deals with while its =
-usage
->>>> is not limited to the two.
->>>
->>> How does this compare with the "nnpi" driver being proposed here:
->>>          https://lore.kernel.org/r/20210513085725.45528-1-guy.zadicar=
-io@intel.com
->>>
->>> Please work with those developers to share code and userspace api and=
-
->>> tools.  Having the community review two totally different apis and
->>> drivers for the same type of functionality from the same company is
->>> totally wasteful of our time and energy.
->>
->> Agreed, but I think we should go further than this and work towards a
->> subsystem across companies for machine learning and neural networks
->> accelerators for both inferencing and training.
->=20
-> We have, it's called drivers/gpu. Feel free to rename to drivers/xpu or=
-
-> think G as in General, not Graphisc.
-
-I hope this was a joke.
-
-Just some thoughts:
-
-AFAICT AI first came as an application of GPUs, but has now=20
-evolved/specialized into something of its own. I can imagine sharing=20
-some code among the various subsystems, say GEM/TTM internals for memory =
-
-management. Besides that there's probably little that can be shared in=20
-the userspace interfaces. A GPU is device that puts an image onto the=20
-screen and an AI accelerator isn't. Treating both as the same, even if=20
-they share similar chip architectures, seems like a stretch. They might=20
-evolve in different directions and fit less and less under the same=20
-umbrella.
-
-And as Dave mentioned, these devices are hard to obtain. We don't really =
-
-know what we sign up for.
-
-Just my 2 cents.
-
-Best regards
-Thomas
-
-
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---0PmeoxnQa7yBXIDt9dyKmLw8B2Gp4ZCR0--
-
---W9kAtv8EBXbI79dSBRez5c5Y3UeS7TbN9
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmCiwAMFAwAAAAAACgkQlh/E3EQov+DJ
-XhAAyCyCre9HcN6z8zECZZaTWBLe0cqcMokVsLXDTngNMFJGBTEoUFqYGtFrcCR+1SqbG6u4kECD
-m+oAp9Ew5nw97eMZIHvYaUuOd6Sv21n4gwMsBy6u6R2iLOJ3xVTdobCea6IgP3si53dM7MJeUhNA
-aunSycxlvyg3p5yNZzcZtkEDmP9FkT4Ynt+x2ddstBVSgq3vfKmKwq10yu97c+4DMP5dU1LT9aOR
-tKT+9NgcnxvAjDiVLwtuNEbbTWa5IilCcPMVijGQYkvlHqLwchi+7IY4N8v7SU3Tns+GR/VAKoqg
-45mSUxUTHpbeO48VPHufqGA0uqaDaBSK1q76KrP2gLiKirO/FnMKj2jBTL6cI/tLblM5OxJtNeV1
-8lXb/oZKQVjTCVxTUKS2/4RhjX/fXbwUNf8mgMJWLReLzv6kTTVvokhcMF1leu75JajowOWv0KgV
-Ht3NYy+CV18PdZ2KS/cAnteBdlf11W9ehk8hTMA9tpkrxlOI9zmuchwVEcwCygLJkziQFBSdkdOK
-HblrUo9iOtZukQTMrs/GeH0YmFlPEbMiGeuB/UTlMx1+hzBcXGk20GarhL2lxAhbfsecbETYmK0r
-0pQA3bC+oKfnzBb7uDZFOAfzOgeDZVnBETUXHNzWOHxAI1hCGixpASbDOL5HzVfXCWud2/zSri68
-aT0=
-=TrzX
------END PGP SIGNATURE-----
-
---W9kAtv8EBXbI79dSBRez5c5Y3UeS7TbN9--
+Reviewed-by: Rob Herring <robh@kernel.org>
