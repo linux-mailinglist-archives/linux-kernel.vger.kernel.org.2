@@ -2,124 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE415382F05
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 343B2382F06
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:12:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238763AbhEQOMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:12:24 -0400
-Received: from mail-eopbgr00085.outbound.protection.outlook.com ([40.107.0.85]:30198
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238140AbhEQOKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:10:18 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LqDIlJWWOs8wSSa/7LWFHMvI8apMubwgyAuepOah2ZqdThmURIfeaWHV1uSoCt1NowjQFIsy+6NAMOU4OTR6dFRkqWV0UGk+b79fgNjMZ0aXILY2BPBa81cpaqIoSLlAN2sHU/XcIGepcgfGryHQbyVeFKDEv3YwOyGGL118FvU2aOupKPriQ91tWI7zi26vEb5D6nl0V9VKccupdD26FMRCk6aExE3mEEyyRiyZi2h3W0pt7U5vk7ULMm8EJpd/UMg+YQ2o7642goycPoS97RaS30MUVoyapjzdxzKDGhkImGgUIy0n0Q24n1Qikj0mMPQvnfWTmX6iWt2dCBbeZQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qnoIYe9jnCgmIKFtt130wSqVM1YRsKv+saUbWMgkT+o=;
- b=AIPJs/X/AGiU3kLkDkcNARFiQLO2lEHDyiLwAUJY8LOB703fEQ7HLriQv8k/iUjKy/O5112mhQ3qk/fgWUTkj/8oRVZEuaxtwKWkZku5PMihS/3wpAZICj97mb/VUWFJ2eV2NlUDfET3ZWu7HpJG6zzg4Oq62qLgeNPI5XGe8UyPxzrP7nPp8Sp7ZyFSSUyYsEnTP2ofdqXLd01OUPkDeLQnpqwcNPJ5z15g4gVBK9WBIiRx6fFEkut30vLbyKsPmznjFk6J84UqjxLV/5uCUR42MCWj5iM1figgQIh3IIpdnz4iFBLm+Ca/WU4wZOFPtdm3zMIggB4g5OL0zV2M4w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=diasemi.com; dmarc=pass action=none header.from=diasemi.com;
- dkim=pass header.d=diasemi.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=dialogsemiconductor.onmicrosoft.com;
- s=selector1-dialogsemiconductor-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qnoIYe9jnCgmIKFtt130wSqVM1YRsKv+saUbWMgkT+o=;
- b=oAQierWxMEuGjyTgxzvEGbLaFahGx/1p8UQ1kegKbvaKQ2brPknzDPspWwSCbOSwlmPy47IX6GEbG3bkr8xITsb30KLXWszBEAB435N3xxfxIKyGetmouV6FjWFvDIr4wZf89TJxcEUgQ+kzc+If84yvlr3RvFzPkW3b/Z5Seis=
-Received: from VI1PR10MB3167.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:803:12d::15)
- by VI1PR10MB2046.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:803:3a::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Mon, 17 May
- 2021 14:08:55 +0000
-Received: from VI1PR10MB3167.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::d843:6b8b:f783:31c2]) by VI1PR10MB3167.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::d843:6b8b:f783:31c2%9]) with mapi id 15.20.4129.031; Mon, 17 May 2021
- 14:08:55 +0000
-From:   Adam Ward <Adam.Ward.opensource@diasemi.com>
-To:     Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
-CC:     Adam Ward <Adam.Ward.opensource@diasemi.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] regulator: da9121: Return REGULATOR_MODE_INVALID for
- invalid mode
-Thread-Topic: [PATCH] regulator: da9121: Return REGULATOR_MODE_INVALID for
- invalid mode
-Thread-Index: AQHXSt1WvLxGJ28QUkaYNcYbLRQkzarntaJw
-Date:   Mon, 17 May 2021 14:08:54 +0000
-Message-ID: <VI1PR10MB316722676183BDD61E1C7AE2EC2D9@VI1PR10MB3167.EURPRD10.PROD.OUTLOOK.COM>
-References: <20210517052721.1063375-1-axel.lin@ingics.com>
-In-Reply-To: <20210517052721.1063375-1-axel.lin@ingics.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: ingics.com; dkim=none (message not signed)
- header.d=none;ingics.com; dmarc=none action=none header.from=diasemi.com;
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [147.161.166.97]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6bee1bf1-c11b-47a0-2a56-08d9193d4e82
-x-ms-traffictypediagnostic: VI1PR10MB2046:
-x-ms-exchange-sharedmailbox-routingagent-processed: True
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR10MB2046A31B3D5577E3FBAB1E69CB2D9@VI1PR10MB2046.EURPRD10.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:2733;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ulQ7WdyjJQvPs4vmN+2c+OV2alYnZVTsj90fsdqiPhTwsrd3NjmN0UaNuR0KaBrrNZd7ZptLCiUGChshwgd78LYIP1uuj2Y55DNJ2xZ3s8c1XxJE2LA2UqrAHXxExFJLGcV1jtnRC9EjhFPeNgShxyL0kTUADF93wgbXhyCXV/bRVSqmhlTizlsriTZcvxZv1vePQFtI4EtkSPuDWUAIfH8EgKUWmIRt10Y9QLDNYv03aEX+hsdzoCkTaR0qiQdOkoSoTyygzWFMRqIP6Tes2EDc8gsOLm9okqIQsVztIjq8Yw/Jn0wNKYPYog+3nZ+wJm+winAPYQv/YCBqJupspfaGTg1+tz1FH7SAgx4tPgM9Q7SHUK1oTJRVk9EzWDpXYQfcVUxA/ktUc7ekLl9ZsHAg97HKDASoQ29r81OG1wShGwIYq0ePjZ3HydyxL4CZxRYNWK0+SGYC16xhrC0f6D+REJhlL48e4O/6N2+SwdUcowOeVIYUqPNvt0igMIdIzSWJL2IrmHqBH71yoaF+XNlch/cWU/j/YkB0q88ld9Jm1KAjCGrd6ccedxTLxNRRqtyX20RMvavlZJ0CHtobPGY7oIQfJbvJxRFwan2w1G8=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR10MB3167.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(396003)(366004)(376002)(39850400004)(54906003)(110136005)(71200400001)(122000001)(7696005)(8676002)(66556008)(9686003)(26005)(64756008)(86362001)(66946007)(38100700002)(55016002)(53546011)(76116006)(316002)(558084003)(66446008)(66476007)(6506007)(478600001)(4326008)(33656002)(5660300002)(186003)(52536014)(8936002)(2906002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?MsYj4bDjtwnX2oeY8j31tAtVJ7uivKzvtw/3eJZBVE9o7Um7E9V/ei5XS1aT?=
- =?us-ascii?Q?XXIpoN83KIn47n2m6pOoIhuxV95OnNJo3hQ8Orpit+gzQ+35O5+N2xTiLwL4?=
- =?us-ascii?Q?h68icIesslw1fZgWTunaU2RXUFLBK9aYEeKwhutZ2njsMTGsA7iAds9WvsAY?=
- =?us-ascii?Q?2TcSBkDsjBY1rTK1x4r7pHqTgBD0EszBbMzTc5FKdIpZEI6oYOcOsFOjpZfg?=
- =?us-ascii?Q?bIeoewY+C+b5D5MWbnB6hauULtF+aVHYqyxVxYNPXE1G+OZEVZTVRqxNNU1b?=
- =?us-ascii?Q?oa9CF2aPKMXWArv+3jEIbMll6/+BRCfb+tL1b5iy32jMKn7U5ddGD1r5RazX?=
- =?us-ascii?Q?0hw2XR6DoI/SLM8FazwTmmnxlHb1do8RCqsPxw8pAtArfElu90KzhOKh1m6c?=
- =?us-ascii?Q?987UdcP6nV5Bk8a+aYpc5JwMBzJzzx3TlxELgM0x11MeMzkept2/c/40eZTS?=
- =?us-ascii?Q?Op3nK3IoLFWq/bQThSbPWbd966GFUUD1XuHn1jj5oCGbQqwqTswtS5ps+dMq?=
- =?us-ascii?Q?Buu5aPcwfF7Ldd7FkP78+XnchxQ4vox/aWQfhiYR40BBCVraShSypqNfbY8Z?=
- =?us-ascii?Q?TJPLlksUnuxga5CP0uuDOQIKnDNoAOiMftyDFzIH+YAzNNc4IJt3GDEQ+gOY?=
- =?us-ascii?Q?4O68gzrl2OoY8oHIJ75nJaW1HKsOi7cAxKQf/shANuGU+juYZeSHZYOOhgy/?=
- =?us-ascii?Q?x+RSfIyuufGgShiR3enYamDhCxZ998kSdaNZpP4uvULp431OzYU7UepzYeSa?=
- =?us-ascii?Q?mdGhaaIZMJ0mUSC3JsVUicC1dI3icpvSIq9r4WsiFMlW/Xp3wB2DdJxeGJfY?=
- =?us-ascii?Q?3stTBIgflIeeDLZxiFj6bVGDK6lp0sfva0VlZyILIGy4U7mn0lK11BloZoxh?=
- =?us-ascii?Q?EeZ7BJ9Eqvczt8azb+4lO0R/oxRvNzlrAJKI4v2odsPqvmO5uYFcYmGCcBp9?=
- =?us-ascii?Q?Yc4EaJSpgBJY8U5GlsDy7Aqa441AIgn8Ed7kx7WpvzWV95/ZoKPsps55JWWu?=
- =?us-ascii?Q?/mHDkZ16Qzj+P2kv7ectnVZsO4+OxjnQ5vXuv9OULysiXz+Jerjr7usbHemG?=
- =?us-ascii?Q?XhzR85135fJ1GZBYe0N84vgvcTrb5CjafmSnlio41CadC3gumIflZd7ubfxX?=
- =?us-ascii?Q?uEo9V3kMs/42h1JjRi22g3iiTuwDAQ3WqVQzHEcD0mPBsN6uw+N07wFlAMfa?=
- =?us-ascii?Q?Iq2S9T3vhZFCUPCKG3I1WeH+/06/fQ5zjXDiCADLFm1oxX/54794B3BbcYn5?=
- =?us-ascii?Q?U4qIgAPWnYVr4qO9+g5LVMqtSgDvV2JJXQO1SXJYRx0ARPbFQ1t+3Ew35C9l?=
- =?us-ascii?Q?C8QxDxo/gIDgg5HWTjZsrAng?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S238061AbhEQOMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:12:43 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:10376 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238523AbhEQOLD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:11:03 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14HE4BCL055678;
+        Mon, 17 May 2021 10:09:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=Q0TO+kcuIjMe7MQJjWxd00opYUXpbEKIDdLPIWA61EE=;
+ b=fR+CdIhZTjfDOPqqpqM9jVfj7hk/PTic6+23oGbYH65Fk0mHmoN1izaCE/WLO+knV6zl
+ ghe3sgUEZMmYAtJK/6UIXsRkaWn/YYuMrX3W9G1Cr2isWWVsB/aWQtPPvgvvraHQRrai
+ jZNTdn808JEKGbeCgLmTUJh3GhlQ9jVHtQt9lJuGmvaVsCqv8QcF6BYTrwhEisayRaLC
+ 4R0XzMYNRBvDNXDZnD0+NB9nzAyWv7MhSgsGKLLkCawN8kFbTC80UyFzjnYwu37lL66H
+ 2BmsrG4Y62lhOzwSAIiQr4KCkfcfDofW8cEwKr75rJ+iwPBQh/9St2dpWKAlyzazMGKp ZQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38ksefs9um-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 May 2021 10:09:45 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14HE4HEV056134;
+        Mon, 17 May 2021 10:09:45 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38ksefs9su-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 May 2021 10:09:45 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14HDw38e026118;
+        Mon, 17 May 2021 14:09:43 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma05fra.de.ibm.com with ESMTP id 38j5x8gfft-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 May 2021 14:09:43 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14HE9e4j35848492
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 17 May 2021 14:09:40 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 161835204E;
+        Mon, 17 May 2021 14:09:40 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id BE9D952052;
+        Mon, 17 May 2021 14:09:39 +0000 (GMT)
+From:   Thomas Richter <tmricht@linux.ibm.com>
+To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        acme@kernel.org, eranian@google.com
+Cc:     svens@linux.ibm.com, gor@linux.ibm.com, sumanthk@linux.ibm.com,
+        hca@linux.ibm.com, Thomas Richter <tmricht@linux.ibm.com>
+Subject: [PATCH] perf test: Test libpfm4 support (63) reports error
+Date:   Mon, 17 May 2021 16:09:31 +0200
+Message-Id: <20210517140931.2559364-1-tmricht@linux.ibm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-OriginatorOrg: diasemi.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR10MB3167.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6bee1bf1-c11b-47a0-2a56-08d9193d4e82
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 May 2021 14:08:54.9343
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: T7KcW05FhoElvmLcQp1JwyYw2oePio5YrbJPbQ/4pivXc+KcSoVHZLO288NG+XfFlCOvEugkIxqDMB41hBGPsg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR10MB2046
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: px00ve8kV28Y_SWxZdlxTC5a_hl8PJ__
+X-Proofpoint-GUID: WTUrRuid7QW42ruRZYtS0fNkviNr83Lt
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-17_05:2021-05-17,2021-05-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
+ adultscore=0 mlxlogscore=999 spamscore=0 priorityscore=1501
+ impostorscore=0 mlxscore=0 lowpriorityscore=0 malwarescore=0
+ suspectscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105170100
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17 May 2021 06:27, Axel Lin wrote:
+Compiling perf with make LIBPFM4=1 includes libpfm support and
+enables test case 63 'Test libpfm4 support'. This test reports an error
+on all platforms for subtest 63.2 'test groups of --pfm-events'.
+The reported error message is 'nested event groups not supported'
 
-> -EINVAL is not a valid return value for .of_map_mode, return
-> REGULATOR_MODE_INVALID instead.
->=20
-> Fixes: 65ac97042d4e ("regulator: da9121: add mode support")
-> Signed-off-by: Axel Lin <axel.lin@ingics.com>
-> ---
+ # ./perf test -F 63
+ 63: Test libpfm4 support                                            :
+ 63.1: test of individual --pfm-events                               :
+ Error:
+ failed to parse event stereolab : event not found
+ Error:
+ failed to parse event stereolab,instructions : event not found
+ Error:
+ failed to parse event instructions,stereolab : event not found
+  Ok
+ 63.2: test groups of --pfm-events                                   :
+ Error:
+ nested event groups not supported    <------ Error message here
+ Error:
+ failed to parse event {stereolab} : event not found
+ Error:
+ failed to parse event {instructions,cycles},{instructions,stereolab} :\
+	 event not found
+ Ok
+ #
 
-Acked-by: Adam Ward <Adam.Ward.opensource@diasemi.com>
+This patch addresses the error message 'nested event groups not supported'.
+The root cause is function parse_libpfm_events_option() which parses the
+event string '{},{instructions}' and can not handle a leading empty
+group notation '{},...'.
+
+The code detects the first (empty) group indicator '{' but does not
+terminate group processing on the following group closing character '}'.
+So when the second group indicator '{' is detected, the code assumes
+a nested group and returns an error.
+
+With the error message fixed, also change the expected event number to
+one for the test case to succeed.
+
+While at it also fix a memory leak. In good case the function does not
+free the duplicated string given as first parameter.
+
+Output after:
+ # ./perf test -F 63
+ 63: Test libpfm4 support                                            :
+ 63.1: test of individual --pfm-events                               :
+ Error:
+ failed to parse event stereolab : event not found
+ Error:
+ failed to parse event stereolab,instructions : event not found
+ Error:
+ failed to parse event instructions,stereolab : event not found
+  Ok
+ 63.2: test groups of --pfm-events                                   :
+ Error:
+ failed to parse event {stereolab} : event not found
+ Error:
+ failed to parse event {instructions,cycles},{instructions,stereolab} : \
+	 event not found
+  Ok
+ #
+Error message 'nested event groups not supported' is gone.
+
+Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
+Acked-By: Sumanth Korikkar <sumanthk@linux.ibm.com>
+---
+ tools/perf/tests/pfm.c |  4 ++--
+ tools/perf/util/pfm.c  | 11 ++++++++++-
+ 2 files changed, 12 insertions(+), 3 deletions(-)
+
+diff --git a/tools/perf/tests/pfm.c b/tools/perf/tests/pfm.c
+index 76a53126efdf..d4b0ef74defc 100644
+--- a/tools/perf/tests/pfm.c
++++ b/tools/perf/tests/pfm.c
+@@ -131,8 +131,8 @@ static int test__pfm_group(void)
+ 		},
+ 		{
+ 			.events = "{},{instructions}",
+-			.nr_events = 0,
+-			.nr_groups = 0,
++			.nr_events = 1,
++			.nr_groups = 1,
+ 		},
+ 		{
+ 			.events = "{instructions},{instructions}",
+diff --git a/tools/perf/util/pfm.c b/tools/perf/util/pfm.c
+index d735acb6c29c..6eef6dfeaa57 100644
+--- a/tools/perf/util/pfm.c
++++ b/tools/perf/util/pfm.c
+@@ -62,8 +62,16 @@ int parse_libpfm_events_option(const struct option *opt, const char *str,
+ 		}
+ 
+ 		/* no event */
+-		if (*q == '\0')
++		if (*q == '\0') {
++			if (*sep == '}') {
++				if (grp_evt < 0) {
++					ui__error("cannot close a non-existing event group\n");
++					goto error;
++				}
++				grp_evt--;
++			}
+ 			continue;
++		}
+ 
+ 		memset(&attr, 0, sizeof(attr));
+ 		event_attr_init(&attr);
+@@ -107,6 +115,7 @@ int parse_libpfm_events_option(const struct option *opt, const char *str,
+ 			grp_evt = -1;
+ 		}
+ 	}
++	free(p_orig);
+ 	return 0;
+ error:
+ 	free(p_orig);
+-- 
+2.31.1
 
