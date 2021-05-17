@@ -2,136 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE07382340
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 06:03:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB28338234E
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 06:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232717AbhEQEEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 00:04:41 -0400
-Received: from mail-mw2nam08on2130.outbound.protection.outlook.com ([40.107.101.130]:51616
-        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233104AbhEQEEY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 00:04:24 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TScIQod+knMiwSuUDfTlzLhem/Uyljyl594zqhSFgOTc+QpRJ5u0T2N9fetYMxw+89D/TJiFe90OrM5BZugSg0B4CMcSgMS/4b+9CLf7lzNswwb7mkNaZ6YyfaEME1CeqyiPJLl9kL370vlQBXyKpjZ52CTrwSaLCxpJ2hZqi6iMONUUR8/xdUfYneXXSlBxduaJLto1oDvEMo5wdyypsFO6PZbdzVFi+N3c1Vu8jV5C8RnciA7Cxt5bDgipQbfzJzX8yt5jqwS74IjNhqdPccqGzejdNrktEEXVkAKiF1NfLgoqzRenkkL1FsnjijHTxyQT2bSB1NYet02ooB44mg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/Pqi31ZQNKFyayjGR8MZbuQmsRWdGhkG0kbWnIGgksQ=;
- b=XCR9rLADgMlf7hatL/JUHLKJGbijndZ2PaEJObV+RUyzbXpobKz99HUkVcUr4sRgRXNKTvzoRf++1IioLPly2zU2tjDTfqZGqEpvePJuvrbDVoCilqNvc1Cp8n+ZGz5+Dg9y6tPscNvIkvNJuReISj+l3hAZ5aKPEcN+9OGHcETtbso0gHLU3MaOrhYrk4+Wxc79HlGwL65hJZrQgqw5MMK32abjSdbL8DNsyFlHA2PXtXOHFnAkUvUImk+p1qzKyBtkd7T3Lc025Jf3K7tjYl2IBdL/OVpDZdacpSQ3sv2Q9nRiPZUhBdnb5dXwB4tYpLaZF4YA4UvC/Z30vtVWng==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/Pqi31ZQNKFyayjGR8MZbuQmsRWdGhkG0kbWnIGgksQ=;
- b=VGCgsP0rci5PeDhNaxSY48js3A1w+/jPbI/JB6zqp5Ehy1ayWyyF7xMybfg/DYDZqUxRfe6ZPQN4eyBqksTNcOhNPrwUgREYRIxZRKK1I0RSFweMk35E6soA3PNkU80dO7LmGEx4xluSI1OX2zEXr86Jl1EZU+rFef/7MdCw3lk=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none
- header.from=os.amperecomputing.com;
-Received: from MW2PR0102MB3482.prod.exchangelabs.com (2603:10b6:302:c::32) by
- CO2PR01MB2006.prod.exchangelabs.com (2603:10b6:102:9::12) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4129.26; Mon, 17 May 2021 04:01:07 +0000
-Received: from MW2PR0102MB3482.prod.exchangelabs.com
- ([fe80::d840:7aa7:58d4:b503]) by MW2PR0102MB3482.prod.exchangelabs.com
- ([fe80::d840:7aa7:58d4:b503%5]) with mapi id 15.20.4129.031; Mon, 17 May 2021
- 04:01:07 +0000
-From:   Quan Nguyen <quan@os.amperecomputing.com>
-To:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     openbmc@lists.ozlabs.org,
-        Open Source Submission <patches@amperecomputing.com>,
-        Phong Vo <phong@os.amperecomputing.com>,
-        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
-Subject: [PATCH 3/3] ARM: dts: aspeed: mtjade: switch to 64MB flash layout
-Date:   Mon, 17 May 2021 11:00:36 +0700
-Message-Id: <20210517040036.13667-4-quan@os.amperecomputing.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210517040036.13667-1-quan@os.amperecomputing.com>
-References: <20210517040036.13667-1-quan@os.amperecomputing.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [118.69.219.201]
-X-ClientProxiedBy: CH2PR05CA0036.namprd05.prod.outlook.com (2603:10b6:610::49)
- To MW2PR0102MB3482.prod.exchangelabs.com (2603:10b6:302:c::32)
+        id S231735AbhEQEQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 00:16:05 -0400
+Received: from foss.arm.com ([217.140.110.172]:41128 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229452AbhEQEQE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 00:16:04 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 38BB31042;
+        Sun, 16 May 2021 21:14:48 -0700 (PDT)
+Received: from [192.168.0.130] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2D2313F73B;
+        Sun, 16 May 2021 21:14:44 -0700 (PDT)
+Subject: Re: [PATCH] mm/thp: Make ARCH_ENABLE_SPLIT_PMD_PTLOCK dependent on
+ PGTABLE_LEVELS > 2
+To:     linux-mm@kvack.org, akpm@linux-foundation.org
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1620621345-29176-1-git-send-email-anshuman.khandual@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <a4403be6-5b74-2c86-bc4c-42ae4f0764dc@arm.com>
+Date:   Mon, 17 May 2021 09:45:31 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from hcm-sw-17.amperecomputing.com (118.69.219.201) by CH2PR05CA0036.namprd05.prod.outlook.com (2603:10b6:610::49) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.11 via Frontend Transport; Mon, 17 May 2021 04:01:03 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 20645155-8abc-42b2-4786-08d918e8658a
-X-MS-TrafficTypeDiagnostic: CO2PR01MB2006:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CO2PR01MB20061E573A64081F62B7EDECF22D9@CO2PR01MB2006.prod.exchangelabs.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1013;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rwtT3KwBWsCWo+MYOoPWmYIK7qEwcZth1fgIjggm+Nl2yQsvTpzPlMS5xo/H9SIobvhW5aNGK8F+58w+8Yhush/JJBodv8D3EcPH/c+pFsfH5ZrWNMNOnyRIGnX4qk+Bpu/0R/o8Jpydx+WIwgpPZbANQaUQPxaWgj4TBUu7VdH5xpi6VqU+tx/2lyzocKL5N/TKux5eFSG4acOT/8YQ8nMBEXQ0Hui15AsNHF5RPPj3DbMnFvFGZO/wMNWKhS1UpT+6xMJidlb5cE5yt3cAE28RmkQPnoeKEeqRTY9yzZfkQ8jREGz1b0fU2RA0qW7wTTbEta/aR8X8YGkBruVpjyQMQjJ7otZCveeib2P72pOhvB1OkZU0k7bCMOhz/HMk3j3ZdheRr0EHE1hK0DkLCOUHF+dhEOQlxALtVCr6gRCs7FEHrzvcBQW9BmmF09Pbb8LpFvH6wMur4cnQTeFxH2UgC5f1oEG0hxND+bh+ssCAI1KUTioKTuAcosbJ5fsuds2ic8ckhiU18FbOHUK6amJCau6xwfQ2xplubsqkL1HaIvvjNKDKFAKHY8wq4KKRej8976U5BTyptiTSPlvRYHy2VTJ6HPWLz2Trlog7Kqo1/kfrRmDC1Y4L1PAJ5Y6UdzCd8lyMkIJjwfa0coTwRA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR0102MB3482.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(39850400004)(396003)(376002)(136003)(110136005)(1076003)(86362001)(38100700002)(16526019)(186003)(38350700002)(52116002)(83380400001)(316002)(956004)(26005)(107886003)(4744005)(2616005)(8676002)(54906003)(5660300002)(6666004)(8936002)(6506007)(4326008)(6512007)(66556008)(66476007)(66946007)(478600001)(6486002)(2906002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Q1UROAN/seaqjx621orN3Caybc9yvWXXqqqFw84dGIZNtc44DEZ6l5e/bVeR?=
- =?us-ascii?Q?Nn0FCLgAZRfbKAorSATceb47U3GnXmc8jOFsdCd7o9vtxCEgTAbl7BpUs+vc?=
- =?us-ascii?Q?UIVI/j1VrjoQT9qJUX9LJKDPzW5JA6dpjg3RHPdSPKX9YSrqxbGAbCCAsUDF?=
- =?us-ascii?Q?ow1DSCzlTjw70mxzOQzYULMKdJw2IEiLZOVN4tBwvhGWYKRNLy4Pp3qV8DYw?=
- =?us-ascii?Q?eQf7xaAnrjBzUtQdkgc3ptAQufDoAfEUPj0AulbKb2YvTY4eQIKcNabzzlgw?=
- =?us-ascii?Q?DPkWJa5Gfig4T4scYlFwKEH+BqUsgPR5M/MIr5T+m68pqjwHMAU4BRZg6LE6?=
- =?us-ascii?Q?AtOQsHzCCF5l50jzJLgTg4Cdv3VIFO4cecUBvT2AGU+Qx499/SypSY5AoE75?=
- =?us-ascii?Q?SNEli9fHTJyvVr+Nb76QSo2oMxBS25mfy05M8ajxjvII16Yo09MbRKiNcCvu?=
- =?us-ascii?Q?/cS7awx6ZoAD5MDBQzD8piY7ZT2kjCmRxocL/PrWykw+agQna4+QAOJExPKR?=
- =?us-ascii?Q?OVhiIOtkrGxwHh2BhENVoaCRs0BKa7Z+o4FOe4SIjeR/tK+sm8T6fi25kkVw?=
- =?us-ascii?Q?b1cYvhK7dLica8tJ8/O1xNSzsVCOMcvS36hYUGQZxx9zy5AVYIgu2/xPqv4p?=
- =?us-ascii?Q?qmKj3X2k+SHUvY18OwbtQU6TbfjuhXc4Xz1diMH0x2BWURQM3HL+MAjqPQyr?=
- =?us-ascii?Q?FgFVUG1kL2CVkO+vkfWshEhBV/PWY3CW7gHFPbOqD94UqTKd21vOrfOtb7b6?=
- =?us-ascii?Q?jpbjkYpSYfbieOXUMkw/7jzwKmqbrOT3XmTsrMeIPOhmG8Mtf1mddwjle3rA?=
- =?us-ascii?Q?NkrUubdda2okj58vMLh3BDNJ0KIwQNKdAx+n3kucYoA/iIMMR/oMHPjBRviD?=
- =?us-ascii?Q?C6dmEVqbEJpnvftnv9Rpz+yC9Q3V/M3rsCPF9jGzGgIuIc3D2WmPhaXdkytZ?=
- =?us-ascii?Q?imEPct1eS2fASn2HU9VfkMGvZVqO1pEux5CmAHLUCbbopLmAVd5ZUr9JkXUt?=
- =?us-ascii?Q?Co4t9fP4BdwXrBzb/lhTpeeio6RmDBHQXyTeKcbS995daTEMDaS33WWqK79+?=
- =?us-ascii?Q?VLEVJjLD4WzmfzQyE2Wi5n0s2gdrEajPbne+3s+irWjwxqbs/r9343HP0dWJ?=
- =?us-ascii?Q?LjJGgMb7QLpQTmz/5thS5YtSZKdrpG0vLB3FFDhdy/fKugF5xlPGfJ8PaAIk?=
- =?us-ascii?Q?GXxMAtqABP1jXpOOHKiFiFcE3XgO/T2x5JuwRVtPCsUrR4BdwNR0OeIDY6xa?=
- =?us-ascii?Q?w45zzGukGW75fkYvbrX0oJMVGz3HtWwu6ecoHt5QNmMoPDCuogHe25yLABCD?=
- =?us-ascii?Q?zx6DTOnkAr5SVa28Yjg0u/do?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 20645155-8abc-42b2-4786-08d918e8658a
-X-MS-Exchange-CrossTenant-AuthSource: MW2PR0102MB3482.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 May 2021 04:01:07.0782
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KIW+xzhlj4a7KfSrSGO38lhn5grvPy5smhx25bDDUpf705egpcIXlcTOYJQmn8Qe54LoPSoJihzGyUvnW2MX9xYs/W3a7xcEVLuqyRT3j54=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO2PR01MB2006
+In-Reply-To: <1620621345-29176-1-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As the 32MB flash layout will soon be exhausted, switch to 64MB layout.
 
-Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
-Signed-off-by: Phong Vo <phong@os.amperecomputing.com>
-Signed-off-by: Thang Q. Nguyen <thang@os.amperecomputing.com>
----
- arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dts b/arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dts
-index 364293e6ca76..0879f3917178 100644
---- a/arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dts
-+++ b/arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dts
-@@ -304,7 +304,7 @@ flash@0 {
- 		m25p,fast-read;
- 		label = "bmc";
- 		/* spi-max-frequency = <50000000>; */
--#include "openbmc-flash-layout.dtsi"
-+#include "openbmc-flash-layout-64.dtsi"
- 	};
- };
- 
--- 
-2.28.0
+On 5/10/21 10:05 AM, Anshuman Khandual wrote:
+> ARCH_ENABLE_SPLIT_PMD_PTLOCK is irrelevant unless there are two page table
+> levels including PMD (also per Documentation/vm/split_page_table_lock.rst).
+> Make this dependency explicit on remaining platforms i.e x86 and s390 where
+> ARCH_ENABLE_SPLIT_PMD_PTLOCK is subscribed.
+> 
+> Cc: Heiko Carstens <hca@linux.ibm.com>
+> Cc: Vasily Gorbik <gor@linux.ibm.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: x86@kernel.org
+> Cc: linux-s390@vger.kernel.org
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>  arch/s390/Kconfig | 2 +-
+>  arch/x86/Kconfig  | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
+> index b4c7c34069f8..fcc1ea339a9d 100644
+> --- a/arch/s390/Kconfig
+> +++ b/arch/s390/Kconfig
+> @@ -62,7 +62,7 @@ config S390
+>  	select ARCH_BINFMT_ELF_STATE
+>  	select ARCH_ENABLE_MEMORY_HOTPLUG if SPARSEMEM
+>  	select ARCH_ENABLE_MEMORY_HOTREMOVE
+> -	select ARCH_ENABLE_SPLIT_PMD_PTLOCK
+> +	select ARCH_ENABLE_SPLIT_PMD_PTLOCK if PGTABLE_LEVELS > 2
+>  	select ARCH_HAS_DEBUG_VM_PGTABLE
+>  	select ARCH_HAS_DEBUG_WX
+>  	select ARCH_HAS_DEVMEM_IS_ALLOWED
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index 0045e1b44190..ec9e9d3d7e3f 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -63,7 +63,7 @@ config X86
+>  	select ARCH_ENABLE_HUGEPAGE_MIGRATION if X86_64 && HUGETLB_PAGE && MIGRATION
+>  	select ARCH_ENABLE_MEMORY_HOTPLUG if X86_64 || (X86_32 && HIGHMEM)
+>  	select ARCH_ENABLE_MEMORY_HOTREMOVE if MEMORY_HOTPLUG
+> -	select ARCH_ENABLE_SPLIT_PMD_PTLOCK if X86_64 || X86_PAE
+> +	select ARCH_ENABLE_SPLIT_PMD_PTLOCK if (PGTABLE_LEVELS > 2) && (X86_64 || X86_PAE)
+>  	select ARCH_ENABLE_THP_MIGRATION if X86_64 && TRANSPARENT_HUGEPAGE
+>  	select ARCH_HAS_ACPI_TABLE_UPGRADE	if ACPI
+>  	select ARCH_HAS_CACHE_LINE_SIZE
+> 
 
+
+Gentle ping.
+
+Any updates or objections ?
