@@ -2,102 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5E0A3823ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 08:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F5033823F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 08:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233088AbhEQGFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 02:05:02 -0400
-Received: from lucky1.263xmail.com ([211.157.147.132]:55276 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231775AbhEQGFA (ORCPT
+        id S234291AbhEQGHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 02:07:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233778AbhEQGHu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 02:05:00 -0400
-Received: from localhost (unknown [192.168.167.32])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 8B79DF3F9D;
-        Mon, 17 May 2021 14:03:27 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [124.126.19.250])
-        by smtp.263.net (postfix) whith ESMTP id P18566T140528154826496S1621231401053565_;
-        Mon, 17 May 2021 14:03:27 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <240da64eecbce62dcea6f5674607e489>
-X-RL-SENDER: maqianga@uniontech.com
-X-SENDER: maqianga@uniontech.com
-X-LOGIN-NAME: maqianga@uniontech.com
-X-FST-TO: jikos@kernel.org
-X-RCPT-COUNT: 6
-X-SENDER-IP: 124.126.19.250
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Qiang Ma <maqianga@uniontech.com>
-To:     jikos@kernel.org, benjamin.tissoires@redhat.com,
-        linux-usb@vger.kernel.org
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Qiang Ma <maqianga@uniontech.com>
-Subject: [PATCH] HID: usbhid: enable remote wakeup for mouse
-Date:   Mon, 17 May 2021 14:01:45 +0800
-Message-Id: <20210517060145.32359-1-maqianga@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+        Mon, 17 May 2021 02:07:50 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38103C06174A
+        for <linux-kernel@vger.kernel.org>; Sun, 16 May 2021 23:06:34 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1liWOV-0003CW-Qv; Mon, 17 May 2021 08:06:23 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1liWOS-0007UL-CQ; Mon, 17 May 2021 08:06:20 +0200
+Date:   Mon, 17 May 2021 08:06:15 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Billy Tsai <billy_tsai@aspeedtech.com>
+Cc:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        BMC-SW <BMC-SW@aspeedtech.com>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [v5 2/2] pwm: Add Aspeed ast2600 PWM support
+Message-ID: <20210517060615.3hyifoebyrddsrta@pengutronix.de>
+References: <20210514024845.10531-1-billy_tsai@aspeedtech.com>
+ <20210514024845.10531-3-billy_tsai@aspeedtech.com>
+ <20210515151827.amiqh6j6brv44jif@pengutronix.de>
+ <7A439233-C5FF-4BCA-8A5C-945EB847F487@aspeedtech.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="jitc6yys25vbjviz"
+Content-Disposition: inline
+In-Reply-To: <7A439233-C5FF-4BCA-8A5C-945EB847F487@aspeedtech.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch enables remote wakeup by default for USB mouse
-devices.  Mouse in general are supposed to be wakeup devices, but
-the correct place to enable it depends on the device's bus; no single
-approach will work for all mouse devices.  In particular, this
-covers only USB mouse (and then only those supporting the boot
-protocol).
 
-Signed-off-by: Qiang Ma <maqianga@uniontech.com>
----
- drivers/hid/usbhid/hid-core.c | 12 +++++++-----
- drivers/hid/usbhid/usbmouse.c |  1 +
- 2 files changed, 8 insertions(+), 5 deletions(-)
+--jitc6yys25vbjviz
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/hid/usbhid/hid-core.c b/drivers/hid/usbhid/hid-core.c
-index 86257ce6d619..592aa57a97f5 100644
---- a/drivers/hid/usbhid/hid-core.c
-+++ b/drivers/hid/usbhid/hid-core.c
-@@ -1186,11 +1186,13 @@ static int usbhid_start(struct hid_device *hid)
- 	 * In addition, enable remote wakeup by default for all keyboard
- 	 * devices supporting the boot protocol.
- 	 */
--	if (interface->desc.bInterfaceSubClass == USB_INTERFACE_SUBCLASS_BOOT &&
--			interface->desc.bInterfaceProtocol ==
--				USB_INTERFACE_PROTOCOL_KEYBOARD) {
--		usbhid_set_leds(hid);
--		device_set_wakeup_enable(&dev->dev, 1);
-+	if (interface->desc.bInterfaceSubClass == USB_INTERFACE_SUBCLASS_BOOT) {
-+		if (interface->desc.bInterfaceProtocol == USB_INTERFACE_PROTOCOL_KEYBOARD ||
-+			interface->desc.bInterfaceProtocol == USB_INTERFACE_PROTOCOL_MOUSE) {
-+			if (interface->desc.bInterfaceProtocol == USB_INTERFACE_PROTOCOL_KEYBOARD)
-+				usbhid_set_leds(hid);
-+			device_set_wakeup_enable(&dev->dev, 1);
-+		}
- 	}
- 
- 	mutex_unlock(&usbhid->mutex);
-diff --git a/drivers/hid/usbhid/usbmouse.c b/drivers/hid/usbhid/usbmouse.c
-index 073127e65ac1..cf785369a5ed 100644
---- a/drivers/hid/usbhid/usbmouse.c
-+++ b/drivers/hid/usbhid/usbmouse.c
-@@ -188,6 +188,7 @@ static int usb_mouse_probe(struct usb_interface *intf, const struct usb_device_i
- 		goto fail3;
- 
- 	usb_set_intfdata(intf, mouse);
-+	device_set_wakeup_enable(&dev->dev, 1);
- 	return 0;
- 
- fail3:	
--- 
-2.20.1
+Hello Billy,
 
+On Mon, May 17, 2021 at 02:53:44AM +0000, Billy Tsai wrote:
+> =EF=BB=BFOn 2021/5/15, 11:57 PM,Uwe Kleine-K=C3=B6nigwrote:
+>=20
+> 	>	> +	div_h =3D DIV_ROUND_DOWN_ULL(div_h,
+> 	>	> +				   (FIELD_MAX(PWM_ASPEED_CTRL_CLK_DIV_L) + 1));
+> 	>	> +	div_h =3D DIV_ROUND_DOWN_ULL(div_h, NSEC_PER_SEC);
+>=20
+> 	> As a division is an expensive operation you can better first multiply
+> 	> NSEC_PER_SEC and FIELD_MAX(PWM_ASPEED_CTRL_CLK_DIV_L) + 1 and divide by
+> 	> the result.
+>=20
+> When I multiply NSEC_PER_SEC and FIELD_MAX(PWM_ASPEED_CTRL_CLK_DIV_L) + 1=
+ the result will overflow
+> for 32-bits and the divisor type of do_div is 32-bits so I need to do div=
+ twice to avoid the issue.
+> Can you give me some suggests?
 
+Hmm, you're right. There doesn't seem to be a div64_64, I thought there
+was one. Anyhow, while looking at the various divide functions I saw
+that dividing by a constant shouldn't be that expensive, so I think the
+sane way is to keep the two divisions and add a comment describing the
+problem.
 
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
+   |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--jitc6yys25vbjviz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmCiB9UACgkQwfwUeK3K
+7AkFCggAhYDJgJhK9vMuvxKsmyBpdGvk7Cxj1jfumQXEFfVFWnhAqzh6sTS0AaOO
+1gCpneq8ySB1xnuFkOcwZtpc8i2n2Lc6jy6N+OVpWKHFepLkcmg3G3zXcFTTaxiG
+mEYL7jm4TNEDGTmIG/6h2hLk/QVvB/PGTfUJLhaoINZctO0jWGZkTKy0iUxWOq5u
+Zklk3UmeDm8TVp+/y5xQl4gz3LaY4PKugHY1CHSVt7aZR1eaVYEYyZDjEWCsI7Ri
+PRx3BBp92Zt35aq9eQ6izuT6Bxaq+Mh2ole8uaiC1aeyVCN8xi5eZTFs4RuGDwSL
+s9Xfz8SqBeNWtheP8Ft0bBVQPuj/Lg==
+=kyG1
+-----END PGP SIGNATURE-----
+
+--jitc6yys25vbjviz--
