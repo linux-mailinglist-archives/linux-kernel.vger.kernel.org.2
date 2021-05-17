@@ -2,175 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54381383DDF
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 21:54:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A390D383DEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 21:58:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236988AbhEQTzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 15:55:46 -0400
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:45614 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236822AbhEQTze (ORCPT
+        id S236997AbhEQT7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 15:59:21 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:55158 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236924AbhEQT7S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 15:55:34 -0400
-Received: by mail-ot1-f53.google.com with SMTP id t10-20020a05683022eab0290304ed8bc759so6589877otc.12
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 12:54:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ox5Uad03HIvUneUEV0ZALlKBmbYKT82BLfWq3q/UJso=;
-        b=PLcV2wDMYCx5XhJFjFTYP54mzXTwMg9A/dCHe9Iim6SARtE0qQx58uDiuEco+qL2Q+
-         Z8ACw2pUeZMuS1KY0GfuS4M9jsjtZqTQGhve6YskNlSNlAdCPevH85yHfa4k4PZgWm6x
-         W35jj1/WGLduf/PVamzXLaJDfJVC8d1SLl4JdLeh7kEs4t95dvDHl3hPuyzugwuIh+9Z
-         btC2GM/V/R5Snnuz7mQsV6iMY6SGmdf4Ln6wNk45AHOGYSqzgAp3dzeRkrSsij4wvSo6
-         WQBe+A3bZYVyBQdWpx1x+JPXf/eCaPlfu+IEn4HkkEbevQnJo+u6EN2hkacThjpC6bmF
-         LnBg==
-X-Gm-Message-State: AOAM530tT0De17oocZS77KWVC6Znw3vFJbpcVckcWILPE8aGjLVzEtje
-        GOgZMMuD5BujQordDAIf7w==
-X-Google-Smtp-Source: ABdhPJxA55TueFl6ZH0b8jUa6655l5IlMrQ6hNVNItlskSFPY1EzoUbAAg7NtPBD/z5noHYY2Xiaqg==
-X-Received: by 2002:a9d:6244:: with SMTP id i4mr1019131otk.182.1621281257538;
-        Mon, 17 May 2021 12:54:17 -0700 (PDT)
-Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.googlemail.com with ESMTPSA id m81sm2920758oig.43.2021.05.17.12.54.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 12:54:16 -0700 (PDT)
-From:   Rob Herring <robh@kernel.org>
-To:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
+        Mon, 17 May 2021 15:59:18 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out01.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lijNH-009gqy-Gb; Mon, 17 May 2021 13:57:59 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lijMX-0001ch-UG; Mon, 17 May 2021 13:57:16 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Marco Elver <elver@google.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Florian Weimer <fweimer@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        honnappa.nagarahalli@arm.com, Zachary.Leaf@arm.com,
-        Raphael Gault <raphael.gault@arm.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v8 5/5] Documentation: arm64: Document PMU counters access from userspace
-Date:   Mon, 17 May 2021 14:54:05 -0500
-Message-Id: <20210517195405.3079458-6-robh@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210517195405.3079458-1-robh@kernel.org>
-References: <20210517195405.3079458-1-robh@kernel.org>
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Collingbourne <pcc@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
+References: <YIpkvGrBFGlB5vNj@elver.google.com>
+        <m11rat9f85.fsf@fess.ebiederm.org>
+        <CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com>
+        <m15z031z0a.fsf@fess.ebiederm.org> <YIxVWkT03TqcJLY3@elver.google.com>
+        <m1zgxfs7zq.fsf_-_@fess.ebiederm.org>
+        <m1r1irpc5v.fsf@fess.ebiederm.org>
+        <CANpmjNNfiSgntiOzgMc5Y41KVAV_3VexdXCMADekbQEqSP3vqQ@mail.gmail.com>
+        <m1czuapjpx.fsf@fess.ebiederm.org>
+        <CANpmjNNyifBNdpejc6ofT6+n6FtUw-Cap_z9Z9YCevd7Wf3JYQ@mail.gmail.com>
+        <m14kfjh8et.fsf_-_@fess.ebiederm.org>
+        <m1tuni8ano.fsf_-_@fess.ebiederm.org>
+Date:   Mon, 17 May 2021 14:56:54 -0500
+In-Reply-To: <m1tuni8ano.fsf_-_@fess.ebiederm.org> (Eric W. Biederman's
+        message of "Tue, 04 May 2021 16:13:47 -0500")
+Message-ID: <m1a6ot5e2h.fsf_-_@fess.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-XM-SPF: eid=1lijMX-0001ch-UG;;;mid=<m1a6ot5e2h.fsf_-_@fess.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19wgF5urIEeuZov1TyNkbEl+ZRf8d7DJfI=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa01.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,FVGT_m_MULTI_ODD,T_TM2_M_HEADER_IN_MSG,
+        T_TooManySym_01 autolearn=disabled version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4155]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa01 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.4 FVGT_m_MULTI_ODD Contains multiple odd letter combinations
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: XMission; sa01 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Marco Elver <elver@google.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 379 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 4.6 (1.2%), b_tie_ro: 3.1 (0.8%), parse: 1.13
+        (0.3%), extract_message_metadata: 4.9 (1.3%), get_uri_detail_list: 2.6
+        (0.7%), tests_pri_-1000: 3.5 (0.9%), tests_pri_-950: 1.07 (0.3%),
+        tests_pri_-900: 0.89 (0.2%), tests_pri_-90: 53 (14.1%), check_bayes:
+        52 (13.7%), b_tokenize: 7 (1.7%), b_tok_get_all: 9 (2.4%),
+        b_comp_prob: 1.89 (0.5%), b_tok_touch_all: 32 (8.3%), b_finish: 0.72
+        (0.2%), tests_pri_0: 293 (77.5%), check_dkim_signature: 0.39 (0.1%),
+        check_dkim_adsp: 2.5 (0.7%), poll_dns_idle: 1.16 (0.3%), tests_pri_10:
+        2.7 (0.7%), tests_pri_500: 7 (1.9%), rewrite_mail: 0.00 (0.0%)
+Subject: [PATCH v4 0/5] siginfo: ABI fixes for TRAP_PERF
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Raphael Gault <raphael.gault@arm.com>
 
-Add documentation to describe the access to the pmu hardware counters from
-userspace.
+During the merge window an issue with si_perf and the siginfo ABI came
+up.  The alpha and sparc siginfo structure layout had changed with the
+addition of SIGTRAP TRAP_PERF and the new field si_perf.
 
-Signed-off-by: Raphael Gault <raphael.gault@arm.com>
-Signed-off-by: Rob Herring <robh@kernel.org>
----
-v8:
- - Reword that config1:1 must always be set to request user access
-v7:
- - Merge into existing arm64 perf.rst
-v6:
-  - Update the chained event section with attr.config1 details
-v2:
-  - Update links to test examples
+The reason only alpha and sparc were affected is that they are the
+only architectures that use si_trapno.
 
-Changes from Raphael's v4:
-  - Convert to rSt
-  - Update chained event status
-  - Add section for heterogeneous systems
----
- Documentation/arm64/perf.rst | 68 +++++++++++++++++++++++++++++++++++-
- 1 file changed, 67 insertions(+), 1 deletion(-)
+Looking deeper it was discovered that si_trapno is used for only
+a few select signals on alpha and sparc, and that none of the
+other _sigfault fields past si_addr are used at all.  Which means
+technically no regression on alpha and sparc.
 
-diff --git a/Documentation/arm64/perf.rst b/Documentation/arm64/perf.rst
-index b567f177d385..5dcbb508586f 100644
---- a/Documentation/arm64/perf.rst
-+++ b/Documentation/arm64/perf.rst
-@@ -2,7 +2,10 @@
- 
- .. _perf_index:
- 
--=====================
-+====
-+Perf
-+====
-+
- Perf Event Attributes
- =====================
- 
-@@ -88,3 +91,66 @@ exclude_host. However when using !exclude_hv there is a small blackout
- window at the guest entry/exit where host events are not captured.
- 
- On VHE systems there are no blackout windows.
-+
-+Perf Userspace PMU Hardware Counter Access
-+==========================================
-+
-+Overview
-+--------
-+The perf userspace tool relies on the PMU to monitor events. It offers an
-+abstraction layer over the hardware counters since the underlying
-+implementation is cpu-dependent.
-+Arm64 allows userspace tools to have access to the registers storing the
-+hardware counters' values directly.
-+
-+This targets specifically self-monitoring tasks in order to reduce the overhead
-+by directly accessing the registers without having to go through the kernel.
-+
-+How-to
-+------
-+The focus is set on the armv8 PMUv3 which makes sure that the access to the pmu
-+registers is enabled and that the userspace has access to the relevant
-+information in order to use them.
-+
-+In order to have access to the hardware counter it is necessary to open the 
-+event using the perf tool interface with config1:1 attr bit set: the 
-+sys_perf_event_open syscall returns a fd which can subsequently be used 
-+with the mmap syscall in order to retrieve a page of memory containing 
-+information about the event. The PMU driver uses this page to expose to 
-+the user the hardware counter's index and other necessary data. Using 
-+this index enables the user to access the PMU registers using the `mrs` 
-+instruction.
-+
-+The userspace access is supported in libperf using the perf_evsel__mmap()
-+and perf_evsel__read() functions. See `tools/lib/perf/tests/test-evsel.c`_ for
-+an example.
-+
-+About heterogeneous systems
-+---------------------------
-+On heterogeneous systems such as big.LITTLE, userspace PMU counter access can
-+only be enabled when the tasks are pinned to a homogeneous subset of cores and
-+the corresponding PMU instance is opened by specifying the 'type' attribute.
-+The use of generic event types is not supported in this case.
-+
-+Have a look at `tools/perf/arch/arm64/tests/user-events.c`_ for an example. It
-+can be run using the perf tool to check that the access to the registers works
-+correctly from userspace:
-+
-+.. code-block:: sh
-+
-+  perf test -v user
-+
-+About chained events and 64-bit counters
-+----------------------------------------
-+Chained events are not supported in conjunction with userspace counter
-+access. If a 64-bit counter is requested (attr.config1:0) with userspace 
-+access (attr.config1:1 set), then counter chaining will be disabled. The 
-+'pmc_width' in the user page will indicate the actual width of the 
-+counter which could be only 32-bits depending on the event and PMU 
-+features.
-+
-+.. Links
-+.. _tools/perf/arch/arm64/tests/user-events.c:
-+   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/arch/arm64/tests/user-events.c
-+.. _tools/lib/perf/tests/test-evsel.c:
-+   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/lib/perf/tests/test-evsel.c
--- 
-2.27.0
+While the alignment concerns might be dismissed the abuse of
+si_errno by SIGTRAP TRAP_PERF does have the potential to cause
+regressions in existing userspace.
 
+While we still have time before userspace starts using and depending on
+the new definition siginfo for SIGTRAP TRAP_PERF this set of changes
+cleans up siginfo_t.
+
+- The si_trapno field is demoted from magic alpha and sparc status and
+  made an ordinary union member of the _sigfault member of siginfo_t.
+  Without moving it of course.
+
+- si_perf is replaced with si_perf_data and si_perf_type ending the
+  abuse of si_errno.
+
+- Unnecessary additions to signalfd_siginfo are removed.
+
+v3: https://lkml.kernel.org/r/m1tuni8ano.fsf_-_@fess.ebiederm.org
+v2: https://lkml.kernel.org/r/m14kfjh8et.fsf_-_@fess.ebiederm.org
+v1: https://lkml.kernel.org/r/m1zgxfs7zq.fsf_-_@fess.ebiederm.org
+
+This version drops the tests and fine grained handling of si_trapno
+on alpha and sparc (replaced assuming si_trapno is valid for
+all but the faults that defined different data).
+
+Eric W. Biederman (5):
+      siginfo: Move si_trapno inside the union inside _si_fault
+      signal: Implement SIL_FAULT_TRAPNO
+      signal: Factor force_sig_perf out of perf_sigtrap
+      signal: Deliver all of the siginfo perf data in _perf
+      signalfd: Remove SIL_PERF_EVENT fields from signalfd_siginfo
+
+
+ arch/m68k/kernel/signal.c                          |  3 +-
+ arch/x86/kernel/signal_compat.c                    |  9 +++-
+ fs/signalfd.c                                      | 23 ++++-----
+ include/linux/compat.h                             | 10 ++--
+ include/linux/sched/signal.h                       |  1 +
+ include/linux/signal.h                             |  1 +
+ include/uapi/asm-generic/siginfo.h                 | 15 +++---
+ include/uapi/linux/perf_event.h                    |  2 +-
+ include/uapi/linux/signalfd.h                      |  4 +-
+ kernel/events/core.c                               | 11 +---
+ kernel/signal.c                                    | 59 +++++++++++++---------
+ .../selftests/perf_events/sigtrap_threads.c        | 14 ++---
+ 12 files changed, 79 insertions(+), 73 deletions(-)
