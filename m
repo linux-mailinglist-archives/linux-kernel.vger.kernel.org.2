@@ -2,95 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8881D382A75
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78064382A79
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236619AbhEQLBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 07:01:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49832 "EHLO
+        id S236471AbhEQLCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 07:02:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236471AbhEQLB2 (ORCPT
+        with ESMTP id S236579AbhEQLCk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 07:01:28 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB482C061573;
-        Mon, 17 May 2021 04:00:11 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FkGPL2v7fz9sRK;
-        Mon, 17 May 2021 21:00:06 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1621249208;
-        bh=2Y30Sqquhl/9Xg91SIhYLicrc/NfN9wZV7c3dBixuaM=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=VI5JgnrgZ4xyeV2fG6OMRkRLi9t+nx0yM9RE5QaorROoFyOWMK4Ia15ckRi54qvrV
-         M+w6tLOpjdtpqYyR1YjTNAeSnVWRR5RIXgDzrQsPQt1nWa9Y9ev6r0llmCCwpRp9u5
-         tukI4W67KVjdGfCTlUB5kG8MvJKR3kFs+hSRt4D/EmpGx3efFAQOpCyG2JyaKPFkMy
-         t9NVJ2TggtS98H21zmNkHIxEfdtrweokHsKipNrE4CwK0s04IJEEuV0a8YFGlXvec8
-         FIQmJTzYp/lViFdUAP3QE4RTv9nQWCfzHBBAdqoMSj7x75+zdb+N43yN/oAtcQOUQd
-         lnqc/+sEjPGQA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Ondrej Mosnacek <omosnace@redhat.com>,
-        linux-security-module@vger.kernel.org,
-        James Morris <jmorris@namei.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        selinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Casey Schaufler <casey@schaufler-ca.com>
-Subject: Re: [PATCH v2] lockdown,selinux: avoid bogus SELinux lockdown
- permission checks
-In-Reply-To: <20210517092006.803332-1-omosnace@redhat.com>
-References: <20210517092006.803332-1-omosnace@redhat.com>
-Date:   Mon, 17 May 2021 21:00:04 +1000
-Message-ID: <87o8d9k4ln.fsf@mpe.ellerman.id.au>
+        Mon, 17 May 2021 07:02:40 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3003C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 04:01:24 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id h16so6340579edr.6
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 04:01:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Lvflle3nqVohqWXQjoKXKJ9NFkulfQYE+SnrI7kL87A=;
+        b=MoVu+reduWG5h6pq8tUmmTn9nel5GLj9nc2AA2INJyQkt984LNyYomhlVPZlvcWLZ0
+         lls8s5i9XYKig0wnrEIoUv6Xe6vt1lRX76z0LJdfoVjkMHeo1jhb1EwFTIU7gsXtkZrO
+         oPGk9wGC3l9H4L3m1IqSjO5dAoh7xjw7RsCrvuOaM4saQTgbFEMeZkxwU3BVpMBEJaJa
+         mfA85dJvkbUF6zQTJYCMAJlLJUbpIkGw0LRj/Ddo/Iwp81xX2gpnRhDA+gDLSjBlQH9s
+         Cctu54Wk3VXhpCZbSGcnTaNnMGt9Xqgk+vIqNqDiEIJ9plOt1DnhYwuKBv4N2J6Bsb5L
+         n0HQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Lvflle3nqVohqWXQjoKXKJ9NFkulfQYE+SnrI7kL87A=;
+        b=oDdYOLRftP3worOAAiTeg4q4o2Q1GZ2zAVe09b+jQWCeb8Qs5gPcZ7tgYbWGh99Bgm
+         qtnwx4F5BKUoJnhNAsZQQb/pPha24tl36IGrVXqofl7AUXr2dLCpjlmYg+y12E2iX1/I
+         +dDaPIQrPEAUwfCl7SnnjAbEukCBzoQheiUqSfbFOpnaE1lk6TCuA1/3ySX0jN3jWdd7
+         ejZ7hNyl5U3MbFAEAc5S7u3UyifOPVXSzt8zS8ChtfnfAbRkLAl9HRUPBG6yTzJgmoLC
+         /7WiCTbg7u2n1IBCbWvJ9BFM3/xHdfuDxgnrRChF8MAYSWTZCISXyx89kC07cjm2u5qc
+         EZ1g==
+X-Gm-Message-State: AOAM530z0Nwt2rPKZ+5w4AugLwfQN0sad4ZNfT4Aj7Yw78K07EbKZujc
+        /j0cOObZtCSAFQg6Kgf5kEZbUw==
+X-Google-Smtp-Source: ABdhPJxuXu7WgWkMd+zcEXExrCD7oxWrKloPSisc8iLH6+Wfy13blbncOFJ5C2EvOs8X4GMgZlU2Mg==
+X-Received: by 2002:aa7:d952:: with SMTP id l18mr70191962eds.83.1621249283128;
+        Mon, 17 May 2021 04:01:23 -0700 (PDT)
+Received: from [192.168.1.14] ([195.24.90.54])
+        by smtp.googlemail.com with ESMTPSA id g24sm10880568eds.41.2021.05.17.04.01.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 May 2021 04:01:22 -0700 (PDT)
+Subject: Re: [PATCH][next] media: venus: hfi_msgs.h: Replace one-element
+ arrays with flexible-array members
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20210211001044.GA69612@embeddedor>
+ <bf31beab-dc36-23e9-757f-9729be59f7b2@embeddedor.com>
+ <de8538ad-48d8-7a3c-af4f-ab31ee2da761@linaro.org>
+ <f63824ee-fc8b-25cf-f3c2-c7b3947b8076@embeddedor.com>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <64aa38bc-62b2-79d9-156f-74a09f11f871@linaro.org>
+Date:   Mon, 17 May 2021 14:01:20 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <f63824ee-fc8b-25cf-f3c2-c7b3947b8076@embeddedor.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ondrej Mosnacek <omosnace@redhat.com> writes:
-> Commit 59438b46471a ("security,lockdown,selinux: implement SELinux
-> lockdown") added an implementation of the locked_down LSM hook to
-> SELinux, with the aim to restrict which domains are allowed to perform
-> operations that would breach lockdown.
->
-> However, in several places the security_locked_down() hook is called in
-> situations where the current task isn't doing any action that would
-> directly breach lockdown, leading to SELinux checks that are basically
-> bogus.
->
-> Since in most of these situations converting the callers such that
-> security_locked_down() is called in a context where the current task
-> would be meaningful for SELinux is impossible or very non-trivial (and
-> could lead to TOCTOU issues for the classic Lockdown LSM
-> implementation), fix this by modifying the hook to accept a struct cred
-> pointer as argument, where NULL will be interpreted as a request for a
-> "global", task-independent lockdown decision only. Then modify SELinux
-> to ignore calls with cred == NULL.
->
-> Since most callers will just want to pass current_cred() as the cred
-> parameter, rename the hook to security_cred_locked_down() and provide
-> the original security_locked_down() function as a simple wrapper around
-> the new hook.
->
-> The callers migrated to the new hook, passing NULL as cred:
-> 1. arch/powerpc/xmon/xmon.c
->      Here the hook seems to be called from non-task context and is only
->      used for redacting some sensitive values from output sent to
->      userspace.
+Hi,
 
-It's hard to follow but it actually disables interactive use of xmon
-entirely if lockdown is in confidentiality mode, and disables
-modifications of the kernel in integrity mode.
+On 5/12/21 7:37 PM, Gustavo A. R. Silva wrote:
+> 
+> 
+> On 5/12/21 06:39, Stanimir Varbanov wrote:
+>> Hi,
+>>
+>> On 5/11/21 6:46 PM, Gustavo A. R. Silva wrote:
+>>> Hi all,
+>>>
+>>> Friendly ping:
+>>>
+>>> We are about to be able to globally enable -Warray-bounds and, these are one of
+>>> the last out-of-bounds warnings in linux-next.
+>>>
+>>> Could someone take this, please?
+>>
+>> This one introduces regressions, so I cannot take it. It needs some more
+>> work.
+> 
+> Please, share with me the errors or warnings you see with this. So, I can
+> have an idea of what is going on. Unfortunately, I don't have access to the
+> test suite or hardware to test this.
 
-But that's not really that important, the patch looks fine.
+I guess it needs more debugging, but the simple answer is that the
+driver refuse to start streaming with this patch.
 
-Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+> 
+> Thanks!
+> --
+> Gustavo
+> 
+> 
+> 
+>>>
+>>> Thanks
+>>> --
+>>> Gustavo
+>>>
+>>> On 2/10/21 18:10, Gustavo A. R. Silva wrote:
+>>>> There is a regular need in the kernel to provide a way to declare having
+>>>> a dynamically sized set of trailing elements in a structure. Kernel code
+>>>> should always use “flexible array members”[1] for these cases. The older
+>>>> style of one-element or zero-length arrays should no longer be used[2].
+>>>>
+>>>> Use flexible-array members in struct hfi_msg_sys_property_info_pkt and
+>>>> hfi_msg_session_property_info_pkt instead of one-element arrays.
+>>>>
+>>>> Also, this helps with the ongoing efforts to enable -Warray-bounds by
+>>>> fixing the following warnings:
+>>>>
+>>>>   CC [M]  drivers/media/platform/qcom/venus/hfi_msgs.o
+>>>> drivers/media/platform/qcom/venus/hfi_msgs.c: In function ‘hfi_sys_property_info’:
+>>>> drivers/media/platform/qcom/venus/hfi_msgs.c:246:35: warning: array subscript 1 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
+>>>>   246 |  if (req_bytes < 128 || !pkt->data[1] || pkt->num_properties > 1)
+>>>>       |                          ~~~~~~~~~^~~
+>>>> drivers/media/platform/qcom/venus/hfi_msgs.c: In function ‘hfi_session_prop_info’:
+>>>> drivers/media/platform/qcom/venus/hfi_msgs.c:342:62: warning: array subscript 1 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
+>>>>   342 |  if (!req_bytes || req_bytes % sizeof(*buf_req) || !pkt->data[1])
+>>>>       |                                                     ~~~~~~~~~^~~
+>>>>
+>>>> [1] https://en.wikipedia.org/wiki/Flexible_array_member
+>>>> [2] https://www.kernel.org/doc/html/v5.9/process/deprecated.html#zero-length-and-one-element-arrays
+>>>>
+>>>> Link: https://github.com/KSPP/linux/issues/79
+>>>> Link: https://github.com/KSPP/linux/issues/109
+>>>> Build-tested-by: <lkp@intel.com>
+>>>> Link: https://lore.kernel.org/lkml/6023dd80.MmTeFf8SzwX0iK7%2F%25lkp@intel.com/
+>>>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>>>> ---
+>>>>  drivers/media/platform/qcom/venus/hfi_msgs.h | 4 ++--
+>>>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/drivers/media/platform/qcom/venus/hfi_msgs.h b/drivers/media/platform/qcom/venus/hfi_msgs.h
+>>>> index 526d9f5b487b..e2d2ccfbdd24 100644
+>>>> --- a/drivers/media/platform/qcom/venus/hfi_msgs.h
+>>>> +++ b/drivers/media/platform/qcom/venus/hfi_msgs.h
+>>>> @@ -113,7 +113,7 @@ struct hfi_msg_sys_ping_ack_pkt {
+>>>>  struct hfi_msg_sys_property_info_pkt {
+>>>>  	struct hfi_pkt_hdr hdr;
+>>>>  	u32 num_properties;
+>>>> -	u32 data[1];
+>>>> +	u32 data[];
+>>>>  };
+>>>>  
+>>>>  struct hfi_msg_session_load_resources_done_pkt {
+>>>> @@ -233,7 +233,7 @@ struct hfi_msg_session_parse_sequence_header_done_pkt {
+>>>>  struct hfi_msg_session_property_info_pkt {
+>>>>  	struct hfi_session_hdr_pkt shdr;
+>>>>  	u32 num_properties;
+>>>> -	u32 data[1];
+>>>> +	u32 data[];
+>>>>  };
+>>>>  
+>>>>  struct hfi_msg_session_release_resources_done_pkt {
+>>>>
+>>
 
-cheers
+-- 
+regards,
+Stan
