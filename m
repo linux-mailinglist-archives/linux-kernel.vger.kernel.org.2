@@ -2,73 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5281F3828B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AFA93828B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 11:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236182AbhEQJrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 05:47:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47574 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236066AbhEQJrS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 05:47:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F03B461206;
-        Mon, 17 May 2021 09:46:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621244762;
-        bh=lAFa+Si5kWcFvvpJFNzN92TGH41WlcS6wS9EIQsMzEc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=k0i7XP6kOh9VnrlSvQ7gi+EQDFpkctkEEepo/8xcH20lARJSk3TyQlqc9AObdickI
-         5PeM93iSH3W0ZD70AlMuJWuacCRkECB96oWTW9jQio304b+Z3oizlLcoLpIVzHAYB/
-         kuVO9Eh9kVGtwNiz7RIujetyvyKHzAYPDrm6t/gw=
-Date:   Mon, 17 May 2021 11:46:00 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     =?utf-8?B?6ams5by6?= <maqianga@uniontech.com>
-Cc:     jikos <jikos@kernel.org>,
-        "benjamin.tissoires " <benjamin.tissoires@redhat.com>,
-        linux-usb <linux-usb@vger.kernel.org>,
-        linux-input <linux-input@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: Re: [PATCH] HID: usbhid: enable remote wakeup for mouse
-Message-ID: <YKI7WJa+YTRhwm5M@kroah.com>
-References: <20210517060145.32359-1-maqianga@uniontech.com>
- <YKIwIwx+nLyX/9LG@kroah.com>
- <1547909475.114060.1621244274064.JavaMail.xmail@bj-wm-cp-4>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1547909475.114060.1621244274064.JavaMail.xmail@bj-wm-cp-4>
+        id S236198AbhEQJsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 05:48:13 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:33043 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236075AbhEQJsM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 05:48:12 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R441e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UZ7JUQq_1621244812;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UZ7JUQq_1621244812)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 17 May 2021 17:46:54 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     clm@fb.com
+Cc:     josef@toxicpanda.com, dsterba@suse.com, nathan@kernel.org,
+        ndesaulniers@google.com, linux-btrfs@vger.kernel.org,
+        lukas.bulwahn@gmail.com, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH v2] btrfs: Remove redundant initialization of 'to_add'
+Date:   Mon, 17 May 2021 17:46:50 +0800
+Message-Id: <1621244810-38832-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 05:37:54PM +0800, 马强 wrote:
-> 
-> >> This patch enables remote wakeup by default for USB mouse  
-> >> devices. Mouse in general are supposed to be wakeup devices, but  
-> >> the correct place to enable it depends on the device's bus; no single  
-> >> approach will work for all mouse devices. In particular, this  
-> >> covers only USB mouse (and then only those supporting the boot  
-> >> protocol).  
-> >>  
-> >> Signed-off-by: Qiang Ma <maqianga@uniontech.com>  
->  
-> > Based on hardware testing, I do not think we can do this as no other  
-> > operating system does this, right? It's not a requirement of the USB  
-> > specification to support this, so we can not enforce it either.  
->  
-> 
-> Thanks for the prompt response.
-> 
-> We can change "dev->power.should_wakeup" to enabled,
+Variable 'to_add' is being initialized however this value is never
+read as 'to_add' is assigned a new value in if statement. Remove the
+redundant assignment. At the same time, move its declaration into the
+if statement, because the variable is not used elsewhere.
 
-I do not understand this statement.
+Clean up clang warning:
 
-> but ultimately it depends on the hardware and BIOS for wakeup.
+fs/btrfs/extent-tree.c:2774:8: warning: Value stored to 'to_add' during
+its initialization is never read [clang-analyzer-deadcode.DeadStores]
 
-Yes, and the hardware here (USB mice), do not all support this, so you
-can not enable it universally as it will cause problems, right?
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
 
-thanks,
+Change in v2:
+--According to Lukas's suggestion, combine the declaration and assignment of 
+  variable 'to_add' into one line, just as "u64 to_add = min(len, ...);"
+  https://lore.kernel.org/patchwork/patch/1428697/
 
-greg k-h
+ fs/btrfs/extent-tree.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index f1d15b6..13ac978 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -2774,11 +2774,9 @@ static int unpin_extent_range(struct btrfs_fs_info *fs_info,
+ 		spin_unlock(&cache->lock);
+ 		if (!readonly && return_free_space &&
+ 		    global_rsv->space_info == space_info) {
+-			u64 to_add = len;
+-
+ 			spin_lock(&global_rsv->lock);
+ 			if (!global_rsv->full) {
+-				to_add = min(len, global_rsv->size -
++				u64 to_add = min(len, global_rsv->size -
+ 					     global_rsv->reserved);
+ 				global_rsv->reserved += to_add;
+ 				btrfs_space_info_update_bytes_may_use(fs_info,
+-- 
+1.8.3.1
+
