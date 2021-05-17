@@ -2,174 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06E613839EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E27943839F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343967AbhEQQcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:32:23 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:34280 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343799AbhEQQcQ (ORCPT
+        id S1344152AbhEQQdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:33:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344054AbhEQQca (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 12:32:16 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14HGSf3A128962;
-        Mon, 17 May 2021 16:30:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=SHeZESCuoE8efIl3MYR+rVkrt5vdP40XjLEnDZnZqT4=;
- b=u+WB/X+QOw3sFYdYqzFRisJaNThNduQ1Zqs+JxEVblwca86kQTqNzj8Q1+IseMEAAOiS
- TqQipUhXlVUyH1n5Q3UD4iY+/6fNdRYlPE3DaHOQ1QK/gU7ayS0kqx0MiKCBhuEb/YCM
- Shppaz4KJQUn+0QNzBxaLjrOlWFQNHqvzy1m8pLfOKJPmmwGnaHZKn6fEcYi2CJgpJ2X
- 1EBuSkpbgViFd5DVdR77joIi68r46o0FtklcPcfiXlH0fnjZo1m6U2u2NgKUfW8D34ta
- +0e7Jl+aLpGMIyKdLLjlSYqPTMXPjWRu/Aau9ededpWnSAOOMmSSc+zrvXdZThyUwyLD iw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 38j68mbsdt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 17 May 2021 16:30:57 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14HGJrGY091219;
-        Mon, 17 May 2021 16:30:56 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2106.outbound.protection.outlook.com [104.47.70.106])
-        by aserp3020.oracle.com with ESMTP id 38j64632n6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 17 May 2021 16:30:56 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kkb5ceie6sxZ+Zvm4CKmcGc/3Q1pMyUvLKr+u2Qchb53t5oI7HIGGWTQpxp09wKowboBuWhh3CJ1ClMzT+d2VwLGIoFaJ1ltm82wYiDHESPs/FnK1rm5OMcAOsFE2CvZNVjKClPM5LnZWUKJntRf06DQ3Vc27HgAOlFzDb+Tm3+jtv9CqbDsd8BZNQ7ZjFEWd8abJaISNCvgGN2t2sRyRtjPSA6MqKEjdXA3xKF4ghK121UyX+aqWN16C4wuOSACV5kuXgcI1C3xdZAEXufzo4ocH22d0fHDzOaPoWHUc64BjlwSR5zOHDy3TmPCQvxfcYUe6V/KlSVOfG9ifC0oxw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SHeZESCuoE8efIl3MYR+rVkrt5vdP40XjLEnDZnZqT4=;
- b=USSVFiaU/jzdsLfzS67MVewoUlgUjbdkTC4GBMA/7WyknHDT1WY670dZlJ+gVv8/XRhUFoUr9d8KcyzojZGMCxwN05mHV1RPe/YqGt5lTHJWbwEagRy8SM0EH/pHAMtR8tuU+6qxvON5isXfe+YJLpsWcp1C4qvvD0VPj/Z3rYVDfcCnnSp8cPHOjraqZ8I6JKy6K2ly5ZcM+OFpq32DyaAWsMjIazPHc1BBqe9pMZczBvoDd3qfn26m/01eph0iw8CGZ6dLbDPD+ciLbzCwqZkU9PrXKBUjYE3DZKWF2wj4f2nqmeUwCnjqEVeuPgBQg33A2oQiGhMZgoSebyBjUg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Mon, 17 May 2021 12:32:30 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D61CC061343
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 08:20:42 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id h16so7374455edr.6
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 08:20:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SHeZESCuoE8efIl3MYR+rVkrt5vdP40XjLEnDZnZqT4=;
- b=xxxp3LhJZiGsTJLcKcNCm3jhaP7toxThFc90U3ObPg/4k7KyD9tNGCohkBlecNbXwLbNwJYFCCpf2mCsdRf11MhQMvRTp8DLrHXy+o3BqzR1vRhDYP3WEQNISPOl+DnXRt3PD5OQxVVyO7GUBx2sv7zMPv/iFzfuuXbXtyw6iNQ=
-Received: from MWHPR10MB1582.namprd10.prod.outlook.com (2603:10b6:300:22::8)
- by MWHPR10MB1310.namprd10.prod.outlook.com (2603:10b6:300:21::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Mon, 17 May
- 2021 16:30:53 +0000
-Received: from MWHPR10MB1582.namprd10.prod.outlook.com
- ([fe80::353a:1802:6e91:1811]) by MWHPR10MB1582.namprd10.prod.outlook.com
- ([fe80::353a:1802:6e91:1811%8]) with mapi id 15.20.4129.031; Mon, 17 May 2021
- 16:30:53 +0000
-From:   Liam Howlett <liam.howlett@oracle.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: Re: RCU tests for Maple Tree
-Thread-Topic: RCU tests for Maple Tree
-Thread-Index: AQHXSzMGIvrnY1Kh8EiA60B+RMV7eKrn3ZYA
-Date:   Mon, 17 May 2021 16:30:53 +0000
-Message-ID: <20210517163048.7zcg2435lsvg25ef@revolver>
-References: <20210517154048.GA2013926@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20210517154048.GA2013926@paulmck-ThinkPad-P17-Gen-1>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oracle.com;
-x-originating-ip: [23.233.25.87]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 29eb4249-a138-4320-994b-08d91951240f
-x-ms-traffictypediagnostic: MWHPR10MB1310:
-x-microsoft-antispam-prvs: <MWHPR10MB1310815454840AEA8049CCD0FD2D9@MWHPR10MB1310.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: mAewTuAfAiB5GZT3BenO4t9cFlEQPfkZmb7jq8FCdeWAORfaKW+NuKVCQk+8BrC43WqjdumXjwDqsv5EvRfXKRsN3H//lsbk/dgadB6v0gRzn2KxkCV2KtUH4Uch/DntQ5zKWft1NwSrpn9EWQZkLHMGaL9XSjYF+RwcrJ+Jcpy0ORn7TD3Uf9mnDXWkrF2QCnydPMEWKJid9mDFX1nWE11xXr59vK4lFofrfjtfyKBkMyqRNZmR1KYyqhc1Ur3a4qiNqjqiaV/dTmKTy9mgsAxQr/i/caflgFC1cP0uE4GrY34vgMObV4E1qyVKGGN4ucEn0fCw27bU8Szwye1YY6MQahSr1uu8gJ+xLzoauV/Xo8CyQaRtxE4MxsdvShVRhL7jR2rb08cCHpVcdLjslOnk5Uny4C7zc1CrNlJdLL+nzHOcH/Y5w1uUxD0b7NTsnSdk738WvgaYfNqqBiyg0RR3WSJ2f8IVfz4q327voo63phlGxcnSBUBD9sQvFHqZSxBhrVfOJGdcOXhb3bJZZvEP7Go87T8vWfW+g/epuUIj+iLhGAOUuqHu2sRXxGlRPbZ30Q+xI6htT4/ZMwjkCyWqPlepheU1kvGKG5VEwgo=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR10MB1582.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(136003)(346002)(366004)(396003)(376002)(39860400002)(6916009)(66446008)(54906003)(66556008)(66476007)(91956017)(66946007)(76116006)(64756008)(2906002)(1076003)(6486002)(6512007)(9686003)(6506007)(4326008)(186003)(33716001)(316002)(5660300002)(8676002)(86362001)(83380400001)(71200400001)(26005)(44832011)(8936002)(38100700002)(478600001)(122000001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?+9hBchvcbhdjtHSIVccOh2Hsz4NogeLFjYjGNyCI20DDrEpAXc4sXp23hjhn?=
- =?us-ascii?Q?h+7sLz/PEOJn8FJBLz7cEPCb+cl1W1q2QWVaIZI96/pLw/5jqXXZDl2OtB3S?=
- =?us-ascii?Q?11ceuSaMTyHcItYgmKkJB/19jS/PKVwljp2ZHsvS1n/X/TrFngz0LbbOURvQ?=
- =?us-ascii?Q?0gb2w3jJO8higdgbiEEe9HeWVqFodeGkMRBuYqgTTIJq8QOtpJ17CEqZEj3V?=
- =?us-ascii?Q?eH6out8qs3fZCHK2GbdI6fCa40rHAxzTEogrXY6VZQac9A83k8Fd7kBFw0R7?=
- =?us-ascii?Q?euy4/Utmq3d0xMZSDoQTuIwOZOGmpO4t27HXizxHUEdsnThX0CaypHN9psXJ?=
- =?us-ascii?Q?OztwnYMzimokjz1Lhwfhp+mGCQPFMj3d13KNsVpMKqvOCn9qaLiA2BZjblXC?=
- =?us-ascii?Q?N5RNk38TLDQW4UCgKcIT3GdJj+pIIdYcKCDOCAs3IasGBG7DzujDt9HNrv9V?=
- =?us-ascii?Q?5FjWtB8bW8lc6yMWe6nCeWvsICxkRu6B5btqCan/VKbgJc9znq7V9i1Iyk/J?=
- =?us-ascii?Q?q5xycZpCeeCb2eGPveDILx/QhY+q8AGskyz7kz+tytH2TlDckCuyBVhYrvyD?=
- =?us-ascii?Q?Ep5IW8Ss2nvFOmGXLLouEa8hdUkvbVngBKFsaPHRdoXewML+OxeV5471II/n?=
- =?us-ascii?Q?IHpTqX0UPX5XjEttPQJZFawKq/LBxyiof5caFQ7o9wi+BqYoMHLi/0M1YhWG?=
- =?us-ascii?Q?GfkYusijumt3sBNXDkKfUxouQEtStXIgMM0k3DuTkWJ/K8ubDbEnJdPIZ3up?=
- =?us-ascii?Q?xOdg/Mq4bOGDmJwlD8lMDcWfCAXQncWYzjayypOG2dl2H4Pj0gahL83pQ79n?=
- =?us-ascii?Q?/CM83H8nHdP6E2+7lxyPRjYUypAFDqzIoAdXi5exAVOOXsfjjRCjw6eAuP7m?=
- =?us-ascii?Q?xtHgFfi27fKwj2UsuwhEcBlM4HlbbM4I/3b2qFgX9tMw9EA7JrEa1snkXwOl?=
- =?us-ascii?Q?e4IC10sHUBXfOHBjBNh/3l/hLU0l7sL074eh5955yyEVZOZxF75WuRnIBmNF?=
- =?us-ascii?Q?FNTcx+Y7PVOek4xd/pVCsX4vE+DroHskAwy4qo9qeoDJQG+DY9NPkIhNr1eo?=
- =?us-ascii?Q?421N66Pd/hvg71oe/QPQxXClK/tOFPjBJN7Op1eKqHE+AcSrQ4AcnuoNJwRh?=
- =?us-ascii?Q?Dv7fJGIyorPRtyQ4aQpPlzXtfr9m2AYCkeF5hgxKHIXAqYyDB8lAC+dfr6C4?=
- =?us-ascii?Q?QQf7h9Mg2W02VnTTnfueXvFUAYJxL0mJHDBfYMP+8FAFPwUrrES3cKDiLEZw?=
- =?us-ascii?Q?qCcYReaL5hVPlufZR9Baz9UJE1B0beTQ9EA7PZF2U4uOJ9EoP/L0qQ1R6Xc8?=
- =?us-ascii?Q?sQJepJ2Z5vUfVf6ciV1IwOIH?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <9059787834A9C441B729FBE8F099A312@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3bLr3dvsxNdy0UeY38eDV6Oh4VUIamKJAGy6n2/RNMI=;
+        b=rlWsrHmq5zAdM7pgyI18kXkNymY1FfXFGuMchyiAVtdqJg0nEVDqJbu8FGYMgJsG0W
+         cN3Nqnq2CYCmKguPiAYhgUJK/tR634A4vE3TmGkMFnZTOCFFwTrPPDPBjWgY0qyCm86V
+         Mk17Ak1Hf6uSbTwakS3enaCGsYsJL/h/qCo+/N5FvQ/kOry7+dtQKkd2guN833JcQasW
+         CfnkI5aek693W7Fezpj66GVdwC6kJz3yC21KZnYPy59riueTx9/NVxidckIjI7BocI7o
+         dKiMmGv7Tm1Km1ccCMJyTSmV/yqhJFh3ctvTCIgSGUZF7LXi3Qghvvnhi7u3uLdpafQE
+         ZbvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3bLr3dvsxNdy0UeY38eDV6Oh4VUIamKJAGy6n2/RNMI=;
+        b=A2+MgMdXI8nxovxzH1RJ6IARDSopaC6kFNNHH2pjySHUfiSTVF6l/wX2YgTSn2M2FY
+         YETC2cWYtV+csL5QmF3EtNMwH6m2UZr0SXpCE3/2evXc8+TutlW70C+MTN80AMHapCZi
+         vlUR0NC0II6Izc5m3yQ0mDd8clMt2FuqWDLWjAyaKdNG69W+Q0jO3dZRngBoMbEAvVKo
+         E/xU8kNAkaMqt9RA9arJdZu4Bhp9z0IsslFkn4tpKbcf2Ny/zG3W7IHnowj7CM93pUw/
+         DRppHNCgGRq7qLE0z3GxMeic2DSC5sQQ/fdSilnCV0xJKL0Az0XVBuxvTMZVGbkcNCFp
+         5p2Q==
+X-Gm-Message-State: AOAM530iCd5njELn2G68duUwLDFVkXdchyXKbWbTlYRvul2wMjKTdJna
+        b8JpPFjcLF+1hXpdpxwV4XIbDUA7cOgp4jum
+X-Google-Smtp-Source: ABdhPJw+qobv3Ce68R3Kcn4vtQtDj5vWv6x3FysIbLmKFp3OS5SThNEOsZxuVlVbYvFNduPxRHRJlg==
+X-Received: by 2002:aa7:d058:: with SMTP id n24mr618444edo.275.1621264840677;
+        Mon, 17 May 2021 08:20:40 -0700 (PDT)
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com. [209.85.221.49])
+        by smtp.gmail.com with ESMTPSA id by3sm2152057edb.38.2021.05.17.08.20.40
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 May 2021 08:20:40 -0700 (PDT)
+Received: by mail-wr1-f49.google.com with SMTP id y14so4740781wrm.13
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 08:20:40 -0700 (PDT)
+X-Received: by 2002:a5d:6285:: with SMTP id k5mr241611wru.50.1621264422296;
+ Mon, 17 May 2021 08:13:42 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR10MB1582.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 29eb4249-a138-4320-994b-08d91951240f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 May 2021 16:30:53.6893
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: gJMmf3Nb8qvnppZH0mQok1uqQirL6E9LLYqaDidLkJ9CIVwxCgU1VvUjmEHH9alj1o+/RDTfZjMfi+ywc0NA9A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1310
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9987 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 malwarescore=0
- bulkscore=0 mlxlogscore=918 phishscore=0 adultscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105170112
-X-Proofpoint-ORIG-GUID: 8iaoZRC-iFvOMPFajjNDcgQKeAbOXWiA
-X-Proofpoint-GUID: 8iaoZRC-iFvOMPFajjNDcgQKeAbOXWiA
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9987 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999
- priorityscore=1501 impostorscore=0 suspectscore=0 clxscore=1015
- adultscore=0 bulkscore=0 phishscore=0 spamscore=0 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105170113
+References: <0000000000006a77d205c284e0d2@google.com> <CA+FuTSfjaqntvGGJAWc=QxWFkTPrXF+Ed9rkUKM8sor4=ZAK+Q@mail.gmail.com>
+ <CACT4Y+ZL4cZwTM=_Etizj+gXykxBLU2t6XCb-yA1d0S4N6L3LQ@mail.gmail.com>
+In-Reply-To: <CACT4Y+ZL4cZwTM=_Etizj+gXykxBLU2t6XCb-yA1d0S4N6L3LQ@mail.gmail.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Mon, 17 May 2021 11:13:04 -0400
+X-Gmail-Original-Message-ID: <CA+FuTSeoNgY_kc-zjUc0644k3_YyWfO==ezoi1D=rbjppPrxYA@mail.gmail.com>
+Message-ID: <CA+FuTSeoNgY_kc-zjUc0644k3_YyWfO==ezoi1D=rbjppPrxYA@mail.gmail.com>
+Subject: Re: [syzbot] KMSAN: uninit-value in virtio_net_hdr_to_skb
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+106457891e3cf3b273a9@syzkaller.appspotmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        Alexander Potapenko <glider@google.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin Lau <kafai@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Tanner Love <tannerlove@google.com>,
+        Xie He <xie.he.0141@gmail.com>, Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Paul E. McKenney <paulmck@kernel.org> [210517 11:40]:
-> Hello, Liam!
->=20
-> Apologies for my being so slow here, but just wanted to double-check my
-> understanding of this code.
->=20
-> There appear to be two tests that execute from run_check_rcu():
->=20
-> o	rcu_loop().  This appears to have RCU readers scanning the tree
-> 	while an updater is adding a single range.  (Or replacing it,
-> 	as the case might be.)
->=20
-> o	rcu_val().  This appears to have RCU readers repeatedly reading a
-> 	given value while an updater is adding/replacing a single range.
-> 	The test complains if no one sees the new value.
->=20
-> These tests appear to be the only use of threads, though perhaps the
-> test harness has some way of creating threads that I missed.
->=20
-> Are there other tests that I should be looking for?
+On Mon, May 17, 2021 at 10:57 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+>
+> On Mon, May 17, 2021 at 4:06 PM Willem de Bruijn
+> <willemdebruijn.kernel@gmail.com> wrote:
+> >
+> > On Mon, May 17, 2021 at 7:27 AM syzbot
+> > <syzbot+106457891e3cf3b273a9@syzkaller.appspotmail.com> wrote:
+> > >
+> > > Hello,
+> > >
+> > > syzbot found the following issue on:
+> > >
+> > > HEAD commit:    4ebaab5f kmsan: drop unneeded references to kmsan_context_..
+> > > git tree:       https://github.com/google/kmsan.git master
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=17ac508ed00000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=ab8076fe8508c0d3
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=106457891e3cf3b273a9
+> > > compiler:       Debian clang version 11.0.1-2
+> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=138f4972d00000
+> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1624ffced00000
+> > >
+> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > Reported-by: syzbot+106457891e3cf3b273a9@syzkaller.appspotmail.com
+> > >
+> > > =====================================================
+> > > BUG: KMSAN: uninit-value in virtio_net_hdr_to_skb+0x1414/0x14f0 include/linux/virtio_net.h:86
+> >
+> > No answer/fix, just initial investigation.
+> >
+> > This is an odd location. Line 86 is the inner if statement. Both
+> > protocol and skb->protocol are clearly initialized by then. But, that
+> > is also not the allocation that MSAN reports, see below.
+> >
+> >                         if (!skb->protocol) {
+> >                                 __be16 protocol =
+> > dev_parse_header_protocol(skb);
+> >
+> >                                 virtio_net_hdr_set_proto(skb, hdr);
+> >                                 if (protocol && protocol != skb->protocol)
+> >                                         return -EINVAL;
+> >                         }
+> >
+> > The repro itself seems mostly straightforward:
+> >
+> > - create a packet socket
+> > - enable PACKET_VNET_HDR with setsockopt(r3, 0x107, 0xf ..)
+> > - bind to AF_PACKET (0x11)
+> >
+> > - create a pipe
+> > - write to pipe[1]
+> > - splice pipe[0] to the packet socket
+> >
+> > there are a few other calls that I think are irrelevant and/or would fail.
+> >
+> > Perhaps there is some race condition in device refcounting, as bind
+> > operates on that?
+> >
+> > > CPU: 0 PID: 8426 Comm: syz-executor777 Not tainted 5.12.0-rc6-syzkaller #0
+> > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > > Call Trace:
+> > >  __dump_stack lib/dump_stack.c:79 [inline]
+> > >  dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
+> > >  kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+> > >  __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
+> > >  virtio_net_hdr_to_skb+0x1414/0x14f0 include/linux/virtio_net.h:86
+> > >  packet_snd net/packet/af_packet.c:2994 [inline]
+> > >  packet_sendmsg+0x85b8/0x99d0 net/packet/af_packet.c:3031
+> > >  sock_sendmsg_nosec net/socket.c:654 [inline]
+> > >  sock_sendmsg net/socket.c:674 [inline]
+> > >  kernel_sendmsg+0x22c/0x2f0 net/socket.c:694
+> > >  sock_no_sendpage+0x205/0x2b0 net/core/sock.c:2860
+> > >  kernel_sendpage+0x47a/0x590 net/socket.c:3631
+> > >  sock_sendpage+0x161/0x1a0 net/socket.c:947
+> > >  pipe_to_sendpage+0x3e4/0x520 fs/splice.c:364
+> > >  splice_from_pipe_feed fs/splice.c:418 [inline]
+> > >  __splice_from_pipe+0x5e3/0xff0 fs/splice.c:562
+> > >  splice_from_pipe fs/splice.c:597 [inline]
+> > >  generic_splice_sendpage+0x1d5/0x2c0 fs/splice.c:746
+> > >  do_splice_from fs/splice.c:767 [inline]
+> > >  do_splice+0x23c3/0x2c10 fs/splice.c:1079
+> > >  __do_splice fs/splice.c:1144 [inline]
+> > >  __do_sys_splice fs/splice.c:1350 [inline]
+> > >  __se_sys_splice+0x8fa/0xb50 fs/splice.c:1332
+> > >  __x64_sys_splice+0x6e/0x90 fs/splice.c:1332
+> > >  do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
+> > >  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > > RIP: 0033:0x449a39
+> > > Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 d1 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+> > > RSP: 002b:00007f8ed790b2f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000113
+> > > RAX: ffffffffffffffda RBX: 00000000004cf518 RCX: 0000000000449a39
+> > > RDX: 0000000000000005 RSI: 0000000000000000 RDI: 0000000000000003
+> > > RBP: 00000000004cf510 R08: 000000000004ffe0 R09: 0000000000000000
+> > > R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004cf51c
+> > > R13: 000000000049e46c R14: 6d32cc5e8ead0600 R15: 0000000000022000
+> > >
+> > > Uninit was created at:
+> > >  kmsan_save_stack_with_flags+0x3c/0x90 mm/kmsan/kmsan.c:121
+> > >  kmsan_alloc_page+0xd0/0x1e0 mm/kmsan/kmsan_shadow.c:274
+> > >  __alloc_pages_nodemask+0x827/0xf90 mm/page_alloc.c:5044
+> > >  alloc_pages_current+0x7b6/0xb60 mm/mempolicy.c:2277
+> > >  alloc_pages include/linux/gfp.h:561 [inline]
+> > >  alloc_slab_page mm/slub.c:1653 [inline]
+> > >  allocate_slab+0x364/0x1260 mm/slub.c:1793
+> > >  new_slab mm/slub.c:1856 [inline]
+> > >  new_slab_objects mm/slub.c:2602 [inline]
+> > >  ___slab_alloc+0xd42/0x1930 mm/slub.c:2765
+> > >  __slab_alloc mm/slub.c:2805 [inline]
+> > >  slab_alloc_node mm/slub.c:2886 [inline]
+> > >  slab_alloc mm/slub.c:2931 [inline]
+> > >  kmem_cache_alloc_trace+0xc53/0x1030 mm/slub.c:2948
+> > >  kmalloc include/linux/slab.h:554 [inline]
+> > >  kzalloc include/linux/slab.h:684 [inline]
+> > >  ____ip_mc_inc_group+0x4d7/0x10b0 net/ipv4/igmp.c:1435
+> >
+> > This allocates ip_mc_list, but it uses kzalloc. Can that ever count as
+> > uninitialized?
+>
+> Yes, kzalloc should never be a source of uninitialized-ness.
+> But it's not actually this kzalloc, it's underlying page allocation
+> (that is allocated uninitialized, so can be source of
+> uninitialized-ness).
+> If it would be this kzalloc, then stack would be shorter, along the
+> lines of kzalloc->kmem_cache_alloc_trace->kmsan_save_stack_with_flags.
+>
+> This smells like a wild access in virtio_net_hdr_to_skb, which just
+> hit a random uninit somewhere.
+> Searching for virtio_net_hdr_to_skb I found this:
+>
+> KASAN: use-after-free Read in eth_header_parse_protocol
+> https://syzkaller.appspot.com/bug?id=a486048b63065fd224f57b16d5a2fdece2b40eca
+>
+> Can it be a dup of that bug?
 
-No, those are the only ones I'm running with threads right now.  I think
-all RCU tests are run from check_rcu() iirc.  This did yield results of
-failures that had to be addressed so I'm somewhat confident that it's
-actually working.
+Great find.
 
-From your wording I'm gathering I need to increase this by a lot more
-test cases?
+That commit is not yet present at kmsan.git at 4ebaab5fb428.
 
-Thanks,
-Liam=
+Certainly sounds plausible.
