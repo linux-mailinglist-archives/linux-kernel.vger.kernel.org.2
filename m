@@ -2,71 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C20C9382B77
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09EBC382B7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 13:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236831AbhEQLu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 07:50:57 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:3009 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbhEQLu4 (ORCPT
+        id S236849AbhEQLxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 07:53:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229772AbhEQLxU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 07:50:56 -0400
-Received: from dggems701-chm.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FkHRv6Z7lzmWYB;
-        Mon, 17 May 2021 19:47:23 +0800 (CST)
-Received: from dggpeml500012.china.huawei.com (7.185.36.15) by
- dggems701-chm.china.huawei.com (10.3.19.178) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 17 May 2021 19:49:38 +0800
-Received: from [10.67.103.212] (10.67.103.212) by
- dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 17 May 2021 19:49:37 +0800
-Subject: Re: [PATCH] uacce: use sysfs_emit instead of sprintf
-To:     Greg KH <gregkh@linuxfoundation.org>
-References: <1621247137-42693-1-git-send-email-yekai13@huawei.com>
- <YKJHGP9LTnCRfIx6@kroah.com>
-CC:     <linux-accelerators@lists.ozlabs.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        <zhangfei.gao@linaro.org>, <wangzhou1@hisilicon.com>
-From:   "yekai(A)" <yekai13@huawei.com>
-Message-ID: <e5290000-5481-c662-974f-85eea7660953@huawei.com>
-Date:   Mon, 17 May 2021 19:49:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Mon, 17 May 2021 07:53:20 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4558CC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 04:52:03 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id z12so7330313ejw.0
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 04:52:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eOBbNnzXd5jDSyNZK3+7RsaXbe+7IZ4EESXVsBeqm6Q=;
+        b=YLXweJIH9XeTkd0h43dqIzoxxKTEZ2tFaW+VSOlnndWvyDeJ/676eYfmb6WaAurqbe
+         HHPaympL0jFvNJBqG+YyK1trYDSOB9cRLIdLp1PH6bWO/brWpRMIczF90CZ8HN68ZMlw
+         4Yido0/9ENIzoWlWzh4SxS6KsuUYaIPv0Kh0xAp6DA6eOzwkNJdl9Pe4wyB0BGCIDMlJ
+         OC+wPdftMwCu62wcZDD9D4FddDMO2iB9hfiYyWA8OAdFAWUL/CRoKxe57e1yBn2ttoX5
+         EwdvUL1HS+UVSp5i738E7mff7pZOUql04TKrIpEDgbxRG3o96BlhS4xRjAOByOC9m03k
+         Wvxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eOBbNnzXd5jDSyNZK3+7RsaXbe+7IZ4EESXVsBeqm6Q=;
+        b=Udq0eirO52nAUb4/k1ti9pmuVNt1E6/eFlpaGWaZlL7cUJjtQcOp40iJ6xOB34Hzi7
+         e5TuD0G0e1ugOvXEKgDY8L11yHQtJAqczUcVdBSnRda2p5orbzeCh8WcSTPwEgVt62Fb
+         0R1IC4OAcz3iL0XdhYL80gEunRR++fI6S3xjhd2hE9l27fATpJQ3QpgDUzJFpZebXuR2
+         NCdSm7jKUBxii5d/sJV/0O3W/51cQEZR+s6mqMPvuSBk55Ypa+u4ShTsDDnhEIsrs+2/
+         kJnvivzu3JotVx3sfLqhVNUqkGnp7u5KJ0j84rK4KCHSZTT/gwFKlLfUsRBtw62UEsvs
+         zQsQ==
+X-Gm-Message-State: AOAM532nHM2vT7k3b5NG0/96rqRaM+zowCy+2WN3DkJhHzHodtN1AtXs
+        hMFN3Gni0zHFXZmKbYFv34DqeVxTeYvVuQKVSZs=
+X-Google-Smtp-Source: ABdhPJw0DKItARIlJ5c5jQitKk0OjDf/tD3PqrbDvvDlhuMj1/tBvobGvQih53TbY52GyyV5fZjml8A2Qql1IbdS5kw=
+X-Received: by 2002:a17:906:924a:: with SMTP id c10mr22660696ejx.415.1621252321911;
+ Mon, 17 May 2021 04:52:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YKJHGP9LTnCRfIx6@kroah.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.103.212]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500012.china.huawei.com (7.185.36.15)
-X-CFilter-Loop: Reflected
+References: <20210516202056.2120-1-urezki@gmail.com> <20210516202056.2120-3-urezki@gmail.com>
+ <20210517082449.GT3672@suse.de>
+In-Reply-To: <20210517082449.GT3672@suse.de>
+From:   Uladzislau Rezki <urezki@gmail.com>
+Date:   Mon, 17 May 2021 13:51:50 +0200
+Message-ID: <CA+KHdyXMqMPhffiQ84h_+c7ckBe3U0Nfv+612EsfgJQPq_o3dA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mm/vmalloc: Switch to bulk allocator in __vmalloc_area_node()
+To:     Mel Gorman <mgorman@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+>
+> FWIW, it passed build and boot tests.
+>
+> Acked-by: Mel Gorman <mgorman@suse.de>
+>
+Thanks!
 
-
-On 2021/5/17 18:36, Greg KH wrote:
-> On Mon, May 17, 2021 at 06:25:37PM +0800, Kai Ye wrote:
->> Use the sysfs_emit to replace sprintf.
->
-> That says _what_ you did, not _why_ you are doing this.  What problem
-> are you solving with this change?
->
-> thanks,
->
-> greg k-h
-> .
->
-sprintf is not safe, and it not recommended to use.
-sprintf does not know the PAGE_SIZE maximum of the temporary buffer
-used for outputting sysfs content and it's possible to overrun the
-PAGE_SIZE buffer length. so used sysfs_emit that  knows that the size
-of the call situations that also ensures that no overrun is done. so use 
-sysfs_emit to replace sprintf maybe better.
-
-thanks,
-Kai Ye
+-- 
+Vlad Rezki
