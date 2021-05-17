@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E803638311B
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:35:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B25138339C
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:00:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240593AbhEQOew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:34:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43382 "EHLO mail.kernel.org"
+        id S241095AbhEQPAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:00:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239958AbhEQO3m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:29:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2ADE96162A;
-        Mon, 17 May 2021 14:14:53 +0000 (UTC)
+        id S241249AbhEQOua (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:50:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D5A561464;
+        Mon, 17 May 2021 14:23:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621260893;
-        bh=1fgGe6EVea6dgSAsAZvzBziRCktDtmZTRV18UlD/8CU=;
+        s=korg; t=1621261390;
+        bh=GTG8bbh8V6Po43xFaE8EyHLkS4c8grvCURbwrR39XoI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vUpnTKMy1tCoaGUL88kkXuawcBIKiXmuOwWbd9a5M1G7wMX9i106F7a4ReSGqPvDQ
-         3PeNy26mWH0SFeROekiVCxDqrnmdzMDz70tDw5aOKbdWQOAOAS+W4QBjty3ygWkTvj
-         vGG18UJoNXYWAT+xC52oVFxqoJiknx9nbwnOYKRA=
+        b=ct3oLnkbnKFRie6KGjlVF3zeB12Qv68WPNfFXuQGjedSOZO9MpfyeZmEp3INNNAuP
+         Sez4zU6Kz/TnTSL1vJuAAcD+WHEwMMoliYZvM/4gP89qIE5Q5oScTh1GoQtW1PIEGM
+         TwnlQqb6ZeynocvRw3lLKHv3JOIv1f+fz7plNCAw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Tong Zhang <ztong0001@gmail.com>,
+        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
+        David Teigland <teigland@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 029/329] ALSA: hdsp: dont disable if not enabled
+Subject: [PATCH 5.10 015/289] fs: dlm: flush swork on shutdown
 Date:   Mon, 17 May 2021 15:59:00 +0200
-Message-Id: <20210517140303.024556910@linuxfoundation.org>
+Message-Id: <20210517140305.689779548@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
+References: <20210517140305.140529752@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,47 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tong Zhang <ztong0001@gmail.com>
+From: Alexander Aring <aahringo@redhat.com>
 
-[ Upstream commit 507cdb9adba006a7798c358456426e1aea3d9c4f ]
+[ Upstream commit eec054b5a7cfe6d1f1598a323b05771ee99857b5 ]
 
-hdsp wants to disable a not enabled pci device, which makes kernel
-throw a warning. Make sure the device is enabled before calling disable.
+This patch fixes the flushing of send work before shutdown. The function
+cancel_work_sync() is not the right workqueue functionality to use here
+as it would cancel the work if the work queues itself. In cases of
+EAGAIN in send() for dlm message we need to be sure that everything is
+send out before. The function flush_work() will ensure that every send
+work is be done inclusive in EAGAIN cases.
 
-[    1.758292] snd_hdsp 0000:00:03.0: disabling already-disabled device
-[    1.758327] WARNING: CPU: 0 PID: 180 at drivers/pci/pci.c:2146 pci_disable_device+0x91/0xb0
-[    1.766985] Call Trace:
-[    1.767121]  snd_hdsp_card_free+0x94/0xf0 [snd_hdsp]
-[    1.767388]  release_card_device+0x4b/0x80 [snd]
-[    1.767639]  device_release+0x3b/0xa0
-[    1.767838]  kobject_put+0x94/0x1b0
-[    1.768027]  put_device+0x13/0x20
-[    1.768207]  snd_card_free+0x61/0x90 [snd]
-[    1.768430]  snd_hdsp_probe+0x524/0x5e0 [snd_hdsp]
-
-Suggested-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
-Link: https://lore.kernel.org/r/20210321153840.378226-2-ztong0001@gmail.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Alexander Aring <aahringo@redhat.com>
+Signed-off-by: David Teigland <teigland@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/rme9652/hdsp.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/dlm/lowcomms.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
-index cea53a878c36..4aee30db034d 100644
---- a/sound/pci/rme9652/hdsp.c
-+++ b/sound/pci/rme9652/hdsp.c
-@@ -5321,7 +5321,8 @@ static int snd_hdsp_free(struct hdsp *hdsp)
- 	if (hdsp->port)
- 		pci_release_regions(hdsp->pci);
+diff --git a/fs/dlm/lowcomms.c b/fs/dlm/lowcomms.c
+index 79f56f16bc2c..44e2716ac158 100644
+--- a/fs/dlm/lowcomms.c
++++ b/fs/dlm/lowcomms.c
+@@ -612,10 +612,7 @@ static void shutdown_connection(struct connection *con)
+ {
+ 	int ret;
  
--	pci_disable_device(hdsp->pci);
-+	if (pci_is_enabled(hdsp->pci))
-+		pci_disable_device(hdsp->pci);
- 	return 0;
- }
+-	if (cancel_work_sync(&con->swork)) {
+-		log_print("canceled swork for node %d", con->nodeid);
+-		clear_bit(CF_WRITE_PENDING, &con->flags);
+-	}
++	flush_work(&con->swork);
  
+ 	mutex_lock(&con->sock_mutex);
+ 	/* nothing to shutdown */
 -- 
 2.30.2
 
