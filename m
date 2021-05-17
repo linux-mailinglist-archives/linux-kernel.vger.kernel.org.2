@@ -2,34 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D5AC383745
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2495C38363F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343633AbhEQPlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:41:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40870 "EHLO mail.kernel.org"
+        id S1343511AbhEQPav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:30:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54616 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238961AbhEQP0W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:26:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC1D06192E;
-        Mon, 17 May 2021 14:36:23 +0000 (UTC)
+        id S243700AbhEQPQM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:16:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D9A6260720;
+        Mon, 17 May 2021 14:32:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262184;
-        bh=sW30hGEOgzmyPBbhJjZzCybDxuhJUkoIUlbPobGMwLg=;
+        s=korg; t=1621261960;
+        bh=6DL70WJF/GjCe/r7qzSX69zn8YOg5slAWfQuS0WdW0g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ad4mEgRFaO53UPOiPWcyFoR8k+iekrXjt69JVYZpVw6nyX6M/6DPCK0Kt3G+DctfA
-         Md15iBe/kEA+XUESX8rD2zUNkwCUfA8xX7clgt+hpWTac+/FeDraaqByTpPnsMEIZ+
-         azjktan/OMsDIKdCgIxHFh9F42z7QGRxJlNiPjv4=
+        b=QWDM1zOCGuOjapSoozX3dU2p9H2w9ZqdklBtMCS9x0q4iTrZ4AeAIhLGmVwxk9vrP
+         1HcoOt3JhgowEwBqfvj/WcuTikHSOz3suTxwTE1mKZaoLa/CaQq/4D2BwjIBja06iL
+         jF9RQ79cYmMd9ETQ0/elgGDVkgxEq8mBJU0gq9Vc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.11 234/329] powerpc/64s: Fix crashes when toggling entry flush barrier
-Date:   Mon, 17 May 2021 16:02:25 +0200
-Message-Id: <20210517140310.034043680@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Dawid Lukwinski <dawid.lukwinski@intel.com>,
+        Mateusz Palczewski <mateusz.palczewski@intel.com>,
+        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
+        Dave Switzer <david.switzer@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 094/141] i40e: Fix PHY type identifiers for 2.5G and 5G adapters
+Date:   Mon, 17 May 2021 16:02:26 +0200
+Message-Id: <20210517140245.932248259@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
+References: <20210517140242.729269392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,70 +44,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Ellerman <mpe@ellerman.id.au>
+From: Mateusz Palczewski <mateusz.palczewski@intel.com>
 
-commit aec86b052df6541cc97c5fca44e5934cbea4963b upstream.
+[ Upstream commit 15395ec4685bd45a43d1b54b8fd9846b87e2c621 ]
 
-The entry flush mitigation can be enabled/disabled at runtime via a
-debugfs file (entry_flush), which causes the kernel to patch itself to
-enable/disable the relevant mitigations.
+Unlike other supported adapters, 2.5G and 5G use different
+PHY type identifiers for reading/writing PHY settings
+and for reading link status. This commit introduces
+separate PHY identifiers for these two operation types.
 
-However depending on which mitigation we're using, it may not be safe to
-do that patching while other CPUs are active. For example the following
-crash:
-
-  sleeper[15639]: segfault (11) at c000000000004c20 nip c000000000004c20 lr c000000000004c20
-
-Shows that we returned to userspace with a corrupted LR that points into
-the kernel, due to executing the partially patched call to the fallback
-entry flush (ie. we missed the LR restore).
-
-Fix it by doing the patching under stop machine. The CPUs that aren't
-doing the patching will be spinning in the core of the stop machine
-logic. That is currently sufficient for our purposes, because none of
-the patching we do is to that code or anywhere in the vicinity.
-
-Fixes: f79643787e0a ("powerpc/64s: flush L1D on kernel entry")
-Cc: stable@vger.kernel.org # v5.10+
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210506044959.1298123-2-mpe@ellerman.id.au
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 2e45d3f4677a ("i40e: Add support for X710 B/P & SFP+ cards")
+Signed-off-by: Dawid Lukwinski <dawid.lukwinski@intel.com>
+Signed-off-by: Mateusz Palczewski <mateusz.palczewski@intel.com>
+Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
+Tested-by: Dave Switzer <david.switzer@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/lib/feature-fixups.c |   16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/intel/i40e/i40e_adminq_cmd.h | 6 ++++--
+ drivers/net/ethernet/intel/i40e/i40e_common.c     | 4 ++--
+ drivers/net/ethernet/intel/i40e/i40e_ethtool.c    | 4 ++--
+ drivers/net/ethernet/intel/i40e/i40e_type.h       | 7 ++-----
+ 4 files changed, 10 insertions(+), 11 deletions(-)
 
---- a/arch/powerpc/lib/feature-fixups.c
-+++ b/arch/powerpc/lib/feature-fixups.c
-@@ -299,8 +299,9 @@ void do_uaccess_flush_fixups(enum l1d_fl
- 						: "unknown");
- }
- 
--void do_entry_flush_fixups(enum l1d_flush_type types)
-+static int __do_entry_flush_fixups(void *data)
- {
-+	enum l1d_flush_type types = *(enum l1d_flush_type *)data;
- 	unsigned int instrs[3], *dest;
- 	long *start, *end;
- 	int i;
-@@ -369,6 +370,19 @@ void do_entry_flush_fixups(enum l1d_flus
- 							: "ori type" :
- 		(types &  L1D_FLUSH_MTTRIG)     ? "mttrig type"
- 						: "unknown");
-+
-+	return 0;
-+}
-+
-+void do_entry_flush_fixups(enum l1d_flush_type types)
-+{
-+	/*
-+	 * The call to the fallback flush can not be safely patched in/out while
-+	 * other CPUs are executing it. So call __do_entry_flush_fixups() on one
-+	 * CPU while all other CPUs spin in the stop machine core with interrupts
-+	 * hard disabled.
-+	 */
-+	stop_machine(__do_entry_flush_fixups, &types, NULL);
- }
- 
- void do_rfi_flush_fixups(enum l1d_flush_type types)
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_adminq_cmd.h b/drivers/net/ethernet/intel/i40e/i40e_adminq_cmd.h
+index d7684ac2522e..57a8328e9b4f 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_adminq_cmd.h
++++ b/drivers/net/ethernet/intel/i40e/i40e_adminq_cmd.h
+@@ -1893,8 +1893,10 @@ enum i40e_aq_phy_type {
+ 	I40E_PHY_TYPE_25GBASE_LR		= 0x22,
+ 	I40E_PHY_TYPE_25GBASE_AOC		= 0x23,
+ 	I40E_PHY_TYPE_25GBASE_ACC		= 0x24,
+-	I40E_PHY_TYPE_2_5GBASE_T		= 0x30,
+-	I40E_PHY_TYPE_5GBASE_T			= 0x31,
++	I40E_PHY_TYPE_2_5GBASE_T		= 0x26,
++	I40E_PHY_TYPE_5GBASE_T			= 0x27,
++	I40E_PHY_TYPE_2_5GBASE_T_LINK_STATUS	= 0x30,
++	I40E_PHY_TYPE_5GBASE_T_LINK_STATUS	= 0x31,
+ 	I40E_PHY_TYPE_MAX,
+ 	I40E_PHY_TYPE_NOT_SUPPORTED_HIGH_TEMP	= 0xFD,
+ 	I40E_PHY_TYPE_EMPTY			= 0xFE,
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_common.c b/drivers/net/ethernet/intel/i40e/i40e_common.c
+index 66f7deaf46ae..6475f78e85f6 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_common.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_common.c
+@@ -1156,8 +1156,8 @@ static enum i40e_media_type i40e_get_media_type(struct i40e_hw *hw)
+ 		break;
+ 	case I40E_PHY_TYPE_100BASE_TX:
+ 	case I40E_PHY_TYPE_1000BASE_T:
+-	case I40E_PHY_TYPE_2_5GBASE_T:
+-	case I40E_PHY_TYPE_5GBASE_T:
++	case I40E_PHY_TYPE_2_5GBASE_T_LINK_STATUS:
++	case I40E_PHY_TYPE_5GBASE_T_LINK_STATUS:
+ 	case I40E_PHY_TYPE_10GBASE_T:
+ 		media = I40E_MEDIA_TYPE_BASET;
+ 		break;
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
+index 502b4abc0aab..e4d0b7747e84 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
+@@ -839,8 +839,8 @@ static void i40e_get_settings_link_up(struct i40e_hw *hw,
+ 							     10000baseT_Full);
+ 		break;
+ 	case I40E_PHY_TYPE_10GBASE_T:
+-	case I40E_PHY_TYPE_5GBASE_T:
+-	case I40E_PHY_TYPE_2_5GBASE_T:
++	case I40E_PHY_TYPE_5GBASE_T_LINK_STATUS:
++	case I40E_PHY_TYPE_2_5GBASE_T_LINK_STATUS:
+ 	case I40E_PHY_TYPE_1000BASE_T:
+ 	case I40E_PHY_TYPE_100BASE_TX:
+ 		ethtool_link_ksettings_add_link_mode(ks, supported, Autoneg);
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_type.h b/drivers/net/ethernet/intel/i40e/i40e_type.h
+index b43ec94a0f29..666a251e8c72 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_type.h
++++ b/drivers/net/ethernet/intel/i40e/i40e_type.h
+@@ -253,11 +253,8 @@ struct i40e_phy_info {
+ #define I40E_CAP_PHY_TYPE_25GBASE_ACC BIT_ULL(I40E_PHY_TYPE_25GBASE_ACC + \
+ 					     I40E_PHY_TYPE_OFFSET)
+ /* Offset for 2.5G/5G PHY Types value to bit number conversion */
+-#define I40E_PHY_TYPE_OFFSET2 (-10)
+-#define I40E_CAP_PHY_TYPE_2_5GBASE_T BIT_ULL(I40E_PHY_TYPE_2_5GBASE_T + \
+-					     I40E_PHY_TYPE_OFFSET2)
+-#define I40E_CAP_PHY_TYPE_5GBASE_T BIT_ULL(I40E_PHY_TYPE_5GBASE_T + \
+-					     I40E_PHY_TYPE_OFFSET2)
++#define I40E_CAP_PHY_TYPE_2_5GBASE_T BIT_ULL(I40E_PHY_TYPE_2_5GBASE_T)
++#define I40E_CAP_PHY_TYPE_5GBASE_T BIT_ULL(I40E_PHY_TYPE_5GBASE_T)
+ #define I40E_HW_CAP_MAX_GPIO			30
+ /* Capabilities of a PF or a VF or the whole device */
+ struct i40e_hw_capabilities {
+-- 
+2.30.2
+
 
 
