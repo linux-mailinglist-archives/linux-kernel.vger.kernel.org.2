@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62E4D3836D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:37:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B95013838A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243323AbhEQPgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:36:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59456 "EHLO mail.kernel.org"
+        id S237568AbhEQP6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:58:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243728AbhEQPR6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:17:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4561A61C6A;
-        Mon, 17 May 2021 14:33:22 +0000 (UTC)
+        id S245225AbhEQPiI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 11:38:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ACAF661CF6;
+        Mon, 17 May 2021 14:40:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621262002;
-        bh=ofU2fTQirUJNLRwroyHP2ozx9iEiYI/y8Q2I5G7PQHU=;
+        s=korg; t=1621262442;
+        bh=py50fbytoLnctmcc9EJ5l2lc9q9JMW+dksMe7DJR8Iw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tXAmu75KYR05KAI2DicO7R7d+8F0/uZLb7Dt/EEwWRqSTEJG4HGeVKLe02793SPyF
-         0yummzyupM0I7JsNRFT/cPSYl+zLRy9fmVUt+kvprm40sxUOimLekRS2DIJYMZzvCW
-         1in/uJaRTe71+9PjcVbxm/gcq+sq4gybw5seRrZg=
+        b=H3AegJAF8Ho/JZwlITuJxWlR4n7ahq3G4W+zYBdWWck+YJUWW7WM4HMrLI5Sdvqoi
+         uM7VTDyMyqWyf3cge+r1jes+XC05uYIezp2kpdWNlstzSzdvaINvOiBxWyGBfWv/C+
+         uaEnQE3wZFErSeV2aaTyreVOeFl4Bxt9m9bAKjc8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
-        Feilong Lin <linfeilong@huawei.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Jesper Dangaard Brouer <brouer@redhat.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 202/329] mm/hugeltb: handle the error case in hugetlb_fix_reserve_counts()
+Subject: [PATCH 5.10 188/289] i40e: fix broken XDP support
 Date:   Mon, 17 May 2021 16:01:53 +0200
-Message-Id: <20210517140308.950703583@linuxfoundation.org>
+Message-Id: <20210517140311.443821823@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140305.140529752@linuxfoundation.org>
+References: <20210517140305.140529752@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,55 +42,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miaohe Lin <linmiaohe@huawei.com>
+From: Magnus Karlsson <magnus.karlsson@intel.com>
 
-[ Upstream commit da56388c4397878a65b74f7fe97760f5aa7d316b ]
+[ Upstream commit ae4393dfd472b194c90d75d2123105fb5ed59b04 ]
 
-A rare out of memory error would prevent removal of the reserve map region
-for a page.  hugetlb_fix_reserve_counts() handles this rare case to avoid
-dangling with incorrect counts.  Unfortunately, hugepage_subpool_get_pages
-and hugetlb_acct_memory could possibly fail too.  We should correctly
-handle these cases.
+Commit 12738ac4754e ("i40e: Fix sparse errors in i40e_txrx.c") broke
+XDP support in the i40e driver. That commit was fixing a sparse error
+in the code by introducing a new variable xdp_res instead of
+overloading this into the skb pointer. The problem is that the code
+later uses the skb pointer in if statements and these where not
+extended to also test for the new xdp_res variable. Fix this by adding
+the correct tests for xdp_res in these places.
 
-Link: https://lkml.kernel.org/r/20210410072348.20437-5-linmiaohe@huawei.com
-Fixes: b5cec28d36f5 ("hugetlbfs: truncate_hugepages() takes a range of pages")
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-Cc: Feilong Lin <linfeilong@huawei.com>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+The skb pointer was used to store the result of the XDP program by
+overloading the results in the error pointer
+ERR_PTR(-result). Therefore, the allocation failure test that used to
+only test for !skb now need to be extended to also consider !xdp_res.
+
+i40e_cleanup_headers() had a check that based on the skb value being
+an error pointer, i.e. a result from the XDP program != XDP_PASS, and
+if so start to process a new packet immediately, instead of populating
+skb fields and sending the skb to the stack. This check is not needed
+anymore, since we have added an explicit test for xdp_res being set
+and if so just do continue to pick the next packet from the NIC.
+
+Fixes: 12738ac4754e ("i40e: Fix sparse errors in i40e_txrx.c")
+Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Tested-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Reported-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/hugetlb.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 8e89b277ffcc..19c245b96bd1 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -745,13 +745,20 @@ void hugetlb_fix_reserve_counts(struct inode *inode)
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
+index 62b439232fa5..011f484606a3 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
+@@ -1810,10 +1810,6 @@ static bool i40e_cleanup_headers(struct i40e_ring *rx_ring, struct sk_buff *skb,
+ 				 union i40e_rx_desc *rx_desc)
+ 
  {
- 	struct hugepage_subpool *spool = subpool_inode(inode);
- 	long rsv_adjust;
-+	bool reserved = false;
+-	/* XDP packets use error pointer so abort at this point */
+-	if (IS_ERR(skb))
+-		return true;
+-
+ 	/* ERR_MASK will only have valid bits if EOP set, and
+ 	 * what we are doing here is actually checking
+ 	 * I40E_RX_DESC_ERROR_RXE_SHIFT, since it is the zeroth bit in
+@@ -2426,7 +2422,7 @@ static int i40e_clean_rx_irq(struct i40e_ring *rx_ring, int budget)
+ 		}
  
- 	rsv_adjust = hugepage_subpool_get_pages(spool, 1);
--	if (rsv_adjust) {
-+	if (rsv_adjust > 0) {
- 		struct hstate *h = hstate_inode(inode);
+ 		/* exit if we failed to retrieve a buffer */
+-		if (!skb) {
++		if (!xdp_res && !skb) {
+ 			rx_ring->rx_stats.alloc_buff_failed++;
+ 			rx_buffer->pagecnt_bias++;
+ 			break;
+@@ -2438,7 +2434,7 @@ static int i40e_clean_rx_irq(struct i40e_ring *rx_ring, int budget)
+ 		if (i40e_is_non_eop(rx_ring, rx_desc, skb))
+ 			continue;
  
--		hugetlb_acct_memory(h, 1);
-+		if (!hugetlb_acct_memory(h, 1))
-+			reserved = true;
-+	} else if (!rsv_adjust) {
-+		reserved = true;
- 	}
-+
-+	if (!reserved)
-+		pr_warn("hugetlb: Huge Page Reserved count may go negative.\n");
- }
- 
- /*
+-		if (i40e_cleanup_headers(rx_ring, skb, rx_desc)) {
++		if (xdp_res || i40e_cleanup_headers(rx_ring, skb, rx_desc)) {
+ 			skb = NULL;
+ 			continue;
+ 		}
 -- 
 2.30.2
 
