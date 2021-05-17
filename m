@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63EC23830CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:30:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 661D1382EBE
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:10:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239276AbhEQObJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:31:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53770 "EHLO mail.kernel.org"
+        id S238450AbhEQOKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:10:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239426AbhEQO0R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:26:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C0156128A;
-        Mon, 17 May 2021 14:13:32 +0000 (UTC)
+        id S237931AbhEQOH7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:07:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC148611ED;
+        Mon, 17 May 2021 14:06:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621260812;
-        bh=HXBZL71tidJvpD5CLLWpiTgA238TwpQKleyRhzYVTMI=;
+        s=korg; t=1621260385;
+        bh=eRQv70/rNK0L19ExA/Yr0MbrNbSgIIBgiMbTNbkG54c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZziaBHx2o2RsEx95QptuZBkDBSvaVRWdl+MJKr0y9sk/iJnWZnL6Jku4pcEX73UdJ
-         h1p/5ik/1BEgKVgyLuhY752ouDD+1WhG0NOCPdWyuiLzJvSr2lbQKQwVVS98Rv+dMh
-         rxdZpSwR/075UDQbvZgeIjP8vwsqmjKRTysMAKYI=
+        b=eXaUhsLf68MJPHMVh5YJ6O0d0Kly/LFBKCpaZ5p3YAPGPgKfTqWzn9wuPV+hRXvVQ
+         sieQyDeAu9ej6b8o2dwVfwqchpoPtrUJ5dw72a7HUVdplwzZz4GYGBDu+i8kVCHodR
+         aR0UW4g8HdxN+334r02ghE4bVioTr0OcI4vJNdy4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.11 010/329] cpufreq: intel_pstate: Use HWP if enabled by platform firmware
-Date:   Mon, 17 May 2021 15:58:41 +0200
-Message-Id: <20210517140302.398765394@linuxfoundation.org>
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 056/363] mac80211: Set priority and queue mapping for injected frames
+Date:   Mon, 17 May 2021 15:58:42 +0200
+Message-Id: <20210517140304.508044967@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
-References: <20210517140302.043055203@linuxfoundation.org>
+In-Reply-To: <20210517140302.508966430@linuxfoundation.org>
+References: <20210517140302.508966430@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,64 +41,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Johan Almbladh <johan.almbladh@anyfinetworks.com>
 
-commit e5af36b2adb858e982d78d41d7363d05d951a19a upstream.
+[ Upstream commit 96a7109a16665255b65d021e24141c2edae0e202 ]
 
-It turns out that there are systems where HWP is enabled during
-initialization by the platform firmware (BIOS), but HWP EPP support
-is not advertised.
+Some drivers, for example mt76, use the skb priority field, and
+expects that to be consistent with the skb queue mapping. On some
+frame injection code paths that was not true, and it broke frame
+injection. Now the skb queue mapping is set according to the skb
+priority value when the frame is injected. The skb priority value
+is also derived from the frame data for all frame types, as it
+was done prior to commit dbd50a851c50 (only allocate one queue
+when using iTXQs). Fixes frame injection with the mt76 driver on
+MT7610E chipset.
 
-After commit 7aa1031223bc ("cpufreq: intel_pstate: Avoid enabling HWP
-if EPP is not supported") intel_pstate refuses to use HWP on those
-systems, but the fallback PERF_CTL interface does not work on them
-either because of enabled HWP, and once enabled, HWP cannot be
-disabled.  Consequently, the users of those systems cannot control
-CPU performance scaling.
-
-Address this issue by making intel_pstate use HWP unconditionally if
-it is enabled already when the driver starts.
-
-Fixes: 7aa1031223bc ("cpufreq: intel_pstate: Avoid enabling HWP if EPP is not supported")
-Reported-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Tested-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Cc: 5.9+ <stable@vger.kernel.org> # 5.9+
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Link: https://lore.kernel.org/r/20210401164455.978245-1-johan.almbladh@anyfinetworks.com
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpufreq/intel_pstate.c |   14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ net/mac80211/tx.c | 20 +++++++++-----------
+ 1 file changed, 9 insertions(+), 11 deletions(-)
 
---- a/drivers/cpufreq/intel_pstate.c
-+++ b/drivers/cpufreq/intel_pstate.c
-@@ -3053,6 +3053,14 @@ static const struct x86_cpu_id hwp_suppo
- 	{}
- };
+diff --git a/net/mac80211/tx.c b/net/mac80211/tx.c
+index 3b3bcefbf657..28422d687096 100644
+--- a/net/mac80211/tx.c
++++ b/net/mac80211/tx.c
+@@ -2267,17 +2267,6 @@ netdev_tx_t ieee80211_monitor_start_xmit(struct sk_buff *skb,
+ 						    payload[7]);
+ 	}
  
-+static bool intel_pstate_hwp_is_enabled(void)
-+{
-+	u64 value;
+-	/* Initialize skb->priority for QoS frames. If the DONT_REORDER flag
+-	 * is set, stick to the default value for skb->priority to assure
+-	 * frames injected with this flag are not reordered relative to each
+-	 * other.
+-	 */
+-	if (ieee80211_is_data_qos(hdr->frame_control) &&
+-	    !(info->control.flags & IEEE80211_TX_CTRL_DONT_REORDER)) {
+-		u8 *p = ieee80211_get_qos_ctl(hdr);
+-		skb->priority = *p & IEEE80211_QOS_CTL_TAG1D_MASK;
+-	}
+-
+ 	rcu_read_lock();
+ 
+ 	/*
+@@ -2341,6 +2330,15 @@ netdev_tx_t ieee80211_monitor_start_xmit(struct sk_buff *skb,
+ 
+ 	info->band = chandef->chan->band;
+ 
++	/* Initialize skb->priority according to frame type and TID class,
++	 * with respect to the sub interface that the frame will actually
++	 * be transmitted on. If the DONT_REORDER flag is set, the original
++	 * skb-priority is preserved to assure frames injected with this
++	 * flag are not reordered relative to each other.
++	 */
++	ieee80211_select_queue_80211(sdata, skb, hdr);
++	skb_set_queue_mapping(skb, ieee80211_ac_from_tid(skb->priority));
 +
-+	rdmsrl(MSR_PM_ENABLE, value);
-+	return !!(value & 0x1);
-+}
-+
- static int __init intel_pstate_init(void)
- {
- 	const struct x86_cpu_id *id;
-@@ -3071,8 +3079,12 @@ static int __init intel_pstate_init(void
- 		 * Avoid enabling HWP for processors without EPP support,
- 		 * because that means incomplete HWP implementation which is a
- 		 * corner case and supporting it is generally problematic.
-+		 *
-+		 * If HWP is enabled already, though, there is no choice but to
-+		 * deal with it.
- 		 */
--		if (!no_hwp && boot_cpu_has(X86_FEATURE_HWP_EPP)) {
-+		if ((!no_hwp && boot_cpu_has(X86_FEATURE_HWP_EPP)) ||
-+		    intel_pstate_hwp_is_enabled()) {
- 			hwp_active++;
- 			hwp_mode_bdw = id->driver_data;
- 			intel_pstate.attr = hwp_cpufreq_attrs;
+ 	/* remove the injection radiotap header */
+ 	skb_pull(skb, len_rthdr);
+ 
+-- 
+2.30.2
+
 
 
