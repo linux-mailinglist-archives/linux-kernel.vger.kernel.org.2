@@ -2,105 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 526353829EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:35:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6923829FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 12:38:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236420AbhEQKhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 06:37:02 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:53958 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236047AbhEQKhB (ORCPT
+        id S236459AbhEQKjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 06:39:37 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.51]:33505 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236374AbhEQKjf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 06:37:01 -0400
-Received: by mail-io1-f69.google.com with SMTP id i187-20020a6b3bc40000b029043a2c9683dfso2965693ioa.20
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 03:35:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=iywxSo2lx3kZ1fCQDpQVN15Vtz3n4hPyATpxCDp6BbU=;
-        b=jlowRxnHuYgE3meK+ZIhHYqy7NivzOL1zA/L0Q7KWwLAPxtQpDa4r3nqRZBAixSpjc
-         WVBvIt8ywlPRfqbCH2DNkG0ghvTZFMgfiPLOfP8HDN73RXBeu/PvHtCw5aTX1K6/0j1+
-         ZwCOy6fvDOXVuPwcpAJqosHrIm09utPWb01JJu41cJdoGV3Trp7CcKsYTZXsLBtPcwmo
-         A09lFs1QVRbUUt3l3pqE98CjfrADzrD0U5bH5DbGUJrZcr3feZNBC4VVAEssMXPmux9d
-         rK8zORQyVvpHTZ/4yAtLt6bERpcOsrH27778lrEkwEZAMs5yZUFENc9mdFSGd8GRuR8n
-         zeSg==
-X-Gm-Message-State: AOAM531FRQnxfAziZzzTcGDX/FoImlx0CJEFEHWqrKjuyJEWtSdLsnoU
-        QO1G+2XwrYs043ZRyL31Y/jqyCOAIOo9c7M+inGIj+EnrW3c
-X-Google-Smtp-Source: ABdhPJzigzC05NsRon/Bi7ggPaRHOedoVm602oMpajmLvm3xYJiKUjUOC4+J44K7u/RBbIv6lORutlBUBRtLhLivv9Uza1mDa5wE
+        Mon, 17 May 2021 06:39:35 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1621247894; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=N3J6s6zrMN+loV5cQFaAP6JLxzJmQxPNN7Dh+VpN/Pp3BTRcEmR4O132WDjg0PlkVZ
+    bNt5NHxYBshOzdo6CiPdPTPg5ZVS17Qu7lGGmXO0qiwjQNBR9mRxmyUFVXfOKLNrPCL7
+    7pndFISsYkjxwrBy+LZMrekY1HtIA2JxVBP5gH1SoNIvhGhngpo0OLbuUnDWkLHiY2w+
+    +a+ZT6H+z6veQbohSGwIjwilrFVftljsmiDrpGy5426ZC+3CiL4O+oO6+NdPh3B67f+9
+    Gm6UQtNfYPyfIx9DLnz71sUelepbbm3MfD8vPs2G224b1/5th/k7MWwBcfCg7szJoYJK
+    O6gg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1621247894;
+    s=strato-dkim-0002; d=strato.com;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=v32wUkqLcAoYLrAdRMAH9OgsbN4EMWWzzWzMugcjqZY=;
+    b=bzf5UrepomYjIheHR5NZH7CZx9SJkX3lqw4ucDR76JDeWWiD90yGrjFFQNQ30zKSfe
+    TpuZ8ivlQoRGYVJPF+lojEDdtbRZ+5Lu2TEyJH1Y4QZz7DRnGNf1+kZUQUfkiykp3p5Y
+    mgLKanwnbPfxmDMw05ZPX46ko/JbsZSI7D2aaWLFfYjlfNS7NvOHn6QvTeKPxicKF4Yx
+    Q1IsZK4N+IfIH243W7qZi5abXvcKOGAUpzq4CWDdO/yRDEx940Z7bL+FnExjptFSTzwW
+    9iHg8TrndAkAKf8ffN8BVC1n5OJxNd9RIcMOWoVy+ZVjVmRrprUGeal5yVwbqb5kmm3r
+    WcLQ==
+ARC-Authentication-Results: i=1; strato.com;
+    dkim=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1621247894;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=v32wUkqLcAoYLrAdRMAH9OgsbN4EMWWzzWzMugcjqZY=;
+    b=RbYAiHNfU+WOG4UzdWhTF/Xsc8ZWtf35mLVJLeW4yhrxKftGTz5z2lGlqMz9an/9jq
+    xp2RUR9qrUwPgms7vyKPIEVYKRzGj6YlBD9riW5VrVb655z8KgBXwLefUal3HGHLNxcu
+    aPiBZETWx9hzf01vhdQ/NT9v75MpGOO/saMsm94CQlIjoCPoKWozfa4rlxI/dZJ0EH7s
+    K5jreoRz3v7AisPQAXsQN7B8AHUyEXdkXz+Vn+mseopeFFoZPeEtYW+7zI2pZZYjwOjR
+    NXvg5SyzAdMfHUoTWjHXdKDeCvQA+miTL4qR5gV1h7uTX+HFz+witviEfCrwy4KVgL/P
+    5r3w==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXS7IYBkLahKxB526NcMiO"
+X-RZG-CLASS-ID: mo00
+Received: from droid..
+    by smtp.strato.de (RZmta 47.26.0 DYNA|AUTH)
+    with ESMTPSA id 50be75x4HAcD1PR
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Mon, 17 May 2021 12:38:13 +0200 (CEST)
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Sebastian Reichel <sre@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Beomho Seo <beomho.seo@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Stephan Gerhold <stephan@gerhold.net>
+Subject: [PATCH 0/3] Fix RT5033 battery device tree probing
+Date:   Mon, 17 May 2021 12:35:51 +0200
+Message-Id: <20210517103554.168159-1-stephan@gerhold.net>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-Received: by 2002:a02:cac6:: with SMTP id f6mr2991780jap.142.1621247744762;
- Mon, 17 May 2021 03:35:44 -0700 (PDT)
-Date:   Mon, 17 May 2021 03:35:44 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000eb645905c28427b5@google.com>
-Subject: [syzbot] WARNING in ctx_sched_out
-From:   syzbot <syzbot+728b5fa8935674c320bf@syzkaller.appspotmail.com>
-To:     acme@kernel.org, alexander.shishkin@linux.intel.com,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, jolsa@redhat.com,
-        kafai@fb.com, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
-        netdev@vger.kernel.org, peterz@infradead.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+At the moment, the RT5033 MFD and battery driver suggest that the
+battery driver should probe as a sub-device of the MFD driver. However,
+this does not make any sense since the fuel gauge part of RT5033 has its
+own I2C device and interrupt line.
 
-syzbot found the following issue on:
+It was also documented as separate I2C device in the original device
+tree bindings [1] (that were never finished up and merged) but for some
+reason the code does not match the documentation (and reality). :/
 
-HEAD commit:    79c338ab riscv: keep interrupts disabled for BREAKPOINT ex..
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
-console output: https://syzkaller.appspot.com/x/log.txt?x=12d1bb9ad00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f8af20e245283c9a
-dashboard link: https://syzkaller.appspot.com/bug?extid=728b5fa8935674c320bf
-userspace arch: riscv64
+Given other fairly critical mistakes like setting the wrong bits
+in the regulator driver (see [2]), unfortunately I get the feeling
+that none of the RT5033 drivers were ever tested properly. :(
 
-Unfortunately, I don't have any reproducer for this issue yet.
+This patch sets adds a proper of_match_table to rt5033-battery
+and removes the rt5033-battery sub-device from the MFD driver.
+There is no compile/runtime dependency of the power supply / MFD patch
+so they can just be applied separately through the power supply / MFD tree.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+728b5fa8935674c320bf@syzkaller.appspotmail.com
+With these changes, rt5033-battery seems to work fine on the
+Samsung Galaxy A5 (2015) at least (it reports a reasonable
+battery percentage).
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 5748 at kernel/events/core.c:3219 ctx_sched_out+0x544/0x548 kernel/events/core.c:3219
-Modules linked in:
-CPU: 1 PID: 5748 Comm: syz-executor.0 Not tainted 5.12.0-rc6-syzkaller-00183-g79c338ab575e #0
-Hardware name: riscv-virtio,qemu (DT)
-epc : ctx_sched_out+0x544/0x548 kernel/events/core.c:3219
- ra : ctx_sched_out+0x544/0x548 kernel/events/core.c:3219
-epc : ffffffe00027c604 ra : ffffffe00027c604 sp : ffffffe01e84ba90
- gp : ffffffe004588ad0 tp : ffffffe007ba2f80 t0 : ffffffc400f57234
- t1 : 0000000000000001 t2 : 0000000000000000 s0 : ffffffe01e84baf0
- s1 : ffffffe006c8dc00 a0 : ffffffe067d79118 a1 : 00000000000f0000
- a2 : ffffffd013437000 a3 : ffffffe00027c604 a4 : ffffffd01343ddb0
- a5 : 0000000000000db6 a6 : 0000000000f00000 a7 : ffffffe00027d02e
- s2 : ffffffe067d78f70 s3 : 0000000000000000 s4 : ffffffe067d79118
- s5 : 0000000000000001 s6 : ffffffe006c8dd40 s7 : 0000000000000000
- s8 : ffffffe007ba2f80 s9 : ffffffe00458c0d0 s10: 0000000000000000
- s11: 0000000000000000 t3 : dca1909648c0c800 t4 : ffffffc403d09797
- t5 : ffffffc403d09799 t6 : ffffffe00d5a321c
-status: 0000000000000100 badaddr: 0000000000000000 cause: 0000000000000003
-Call Trace:
-[<ffffffe00027c604>] ctx_sched_out+0x544/0x548 kernel/events/core.c:3219
-[<ffffffe00027d162>] __perf_install_in_context+0x1f4/0x47c kernel/events/core.c:2799
-[<ffffffe00026b630>] remote_function kernel/events/core.c:91 [inline]
-[<ffffffe00026b630>] remote_function+0xa8/0xc0 kernel/events/core.c:71
-[<ffffffe0001452cc>] generic_exec_single+0x1a6/0x212 kernel/smp.c:293
-[<ffffffe00014546c>] smp_call_function_single+0x134/0x2ba kernel/smp.c:513
-[<ffffffe00026a8ba>] task_function_call+0x90/0xee kernel/events/core.c:119
-[<ffffffe00027bf4e>] perf_install_in_context+0x174/0x2e6 kernel/events/core.c:2902
-[<ffffffe000288690>] __do_sys_perf_event_open+0x10ea/0x199e kernel/events/core.c:12169
-[<ffffffe00028f3e6>] sys_perf_event_open+0x34/0x46 kernel/events/core.c:11775
-[<ffffffe000005578>] ret_from_syscall+0x0/0x2
+[1]: https://lore.kernel.org/linux-pm/1425864191-4121-3-git-send-email-beomho.seo@samsung.com/
+[2]: https://lore.kernel.org/lkml/20201110130047.8097-1-michael.srba@seznam.cz/
 
+Stephan Gerhold (3):
+  dt-bindings: power: supply: Add DT schema for richtek,rt5033-battery
+  power: supply: rt5033_battery: Fix device tree enumeration
+  mfd: rt5033: Drop rt5033-battery sub-device
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ .../power/supply/richtek,rt5033-battery.yaml  | 54 +++++++++++++++++++
+ drivers/mfd/rt5033.c                          |  3 --
+ drivers/power/supply/Kconfig                  |  3 +-
+ drivers/power/supply/rt5033_battery.c         |  7 +++
+ 4 files changed, 63 insertions(+), 4 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/power/supply/richtek,rt5033-battery.yaml
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+-- 
+2.31.1
+
