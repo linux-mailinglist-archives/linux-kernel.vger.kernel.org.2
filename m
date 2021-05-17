@@ -2,104 +2,326 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16BB838354F
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:24:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D4D3383608
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:26:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243499AbhEQPRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:17:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48686 "EHLO
+        id S239177AbhEQP1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:27:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241351AbhEQPG6 (ORCPT
+        with ESMTP id S243078AbhEQPNY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:06:58 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACF2DC08EAE9;
-        Mon, 17 May 2021 07:24:22 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id u19-20020a0568302493b02902d61b0d29adso5670713ots.10;
-        Mon, 17 May 2021 07:24:22 -0700 (PDT)
+        Mon, 17 May 2021 11:13:24 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E5B4C08EB1A
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 07:26:15 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id c17so5060649pfn.6
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 07:26:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=wP0qVRRFLaqKdNsvIebHqzMAQA0sHv3p78V+XQan4IE=;
-        b=SIIetbEYExbcUM1QfmpytUTa2IVHHxjrX5L6JO2j1xRF6GNf1rzKAyM40K3Hi5hYwf
-         REzXM3GmnmYKtfOC3JTzd+8Q5wzYuan+AmqRuwrgoXOPPqC9S/ccK8CLcBCIZT7ro76q
-         vdQ4N0tLO/zXJP4b5wg1VMck/JcqcLbL+m0YijN1z9Wy4KH1jVjVXeFNlbqjhBuEZpFL
-         clyJPWEn6AwkURWyVxA9BsFa3GCFHCy/9/3s1au+ksMHEydPpvbnXHqdH34qXED252Fr
-         3ipPzVpKQiT02tYGuDwi4Puho9+BjNndIhyvsV44R5iSoKNE4kJ2qajjZsijf8TctP+u
-         qB3A==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KdSFpMqeSPYKY8JsL8KBXbSSyqPDBQHT5s/OfgBjp4Q=;
+        b=N1dHUhRMyvzMhEySeYtGjz8PRPOa5PSy97rtpSzp1kN36MNOtrlMXNtbT+W3PxOh0V
+         BantaUkRf2RxH8fQ921ki0qrm6c4yYxbMmihPOqy/CamUKlT9+JmivI0VISWWFSVcJae
+         5eMafqmZd9nBa47zcVnYowlil2XMaM2BcuggD3gHERuElWW9Zz0MZjA27N/Nls0Q84PC
+         Te85WGN0fhdAAnTW1kNkkqpBvua7jYsKlM84eYcWKQqEGWDPVgaGvbk4DvWokhy25Y2U
+         sWsOG6jx51AA8gQEHebI219OVkiqPpIYM6lVJbVGnNKTZhX05gYlyMIhGdjs+7t8FCsJ
+         JtQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=wP0qVRRFLaqKdNsvIebHqzMAQA0sHv3p78V+XQan4IE=;
-        b=osMoT7u9T5fXUzO5HXAqTH1oLoA5zd5l+57LBKYBRAZOZY5Ph3o4owJ/0b/DQMa/zo
-         J9cxcUmHpxFLryZEnhKC1elFv9BOcHOmAtoXI/7Trj54YSGtFdMnOfIsi6CBy5JJIHeo
-         iIZEQCvxv2lLclDr9+siCCpmakBN6lVU6jWv67oqDHw7cESaGJEnNSDp5bbpvYWCH+N7
-         duojR+cZN2zqlf2QBvueN5gzxxu5J6m0U5J9748S4ziAe/f4NWovf9/kuYXLBIRhNTl9
-         5iYAhF5vo7PM2yBTWBEe1Vo38S9tgC/I8wYWC86gVyxeaNamolO/rgBw0/OdT7F/NpCY
-         PH0w==
-X-Gm-Message-State: AOAM533YJjx3Z8vU1/EKkOIuWoLCUx/2pxDNGvlyv8qt/FJqSMwtug0s
-        q3aXOOMVgYxHHUCv3BJK9zY=
-X-Google-Smtp-Source: ABdhPJxdOLV4H8+0nYsjoYe7S0t3PHTaJfdsTy6vFeUExppMn/WtX8UkSoPTI9j9rQzIApvCTHBZWA==
-X-Received: by 2002:a9d:4e88:: with SMTP id v8mr28025140otk.110.1621261462130;
-        Mon, 17 May 2021 07:24:22 -0700 (PDT)
-Received: from [192.168.99.80] (142-79-211-230.starry-inc.net. [142.79.211.230])
-        by smtp.gmail.com with ESMTPSA id 19sm2728380oiy.11.2021.05.17.07.24.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 May 2021 07:24:21 -0700 (PDT)
-Subject: Re: [PATCH v2 1/4] usb: early: Avoid using DbC if already enabled
-To:     Jan Beulich <jbeulich@suse.com>
-Cc:     Jann Horn <jannh@google.com>, Lee Jones <lee.jones@linaro.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xen-devel@lists.xenproject.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <cover.1620950220.git.connojdavis@gmail.com>
- <d160cee9b61c0ec41c2cd5ff9b4e107011d39d8c.1620952511.git.connojdavis@gmail.com>
- <8ccce25a-e3ca-cb30-f6a3-f9243a85a49b@suse.com>
- <16400ee4-4406-8b26-10c0-a423b2b1fed0@gmail.com>
- <ddb58cbd-0a72-f680-80f4-ce09b13a2cee@suse.com>
-From:   Connor Davis <connojdavis@gmail.com>
-Message-ID: <55325db1-b086-fc81-9117-6560c4914a12@gmail.com>
-Date:   Mon, 17 May 2021 08:24:41 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KdSFpMqeSPYKY8JsL8KBXbSSyqPDBQHT5s/OfgBjp4Q=;
+        b=iyEjZWYI0PW11+6PMDuYG4noF/2yrPZWT1ozG51afhCJpRtANlXd1qWYUVMXdhN7DV
+         5r858TcRfyNghOKpghyDJXXGkEJSMuxocwjEMQJ3kOmoZYr4D0U4vyW7XhqzTUFGmDFY
+         jb4ZpWDjF5hr7+L5ofA3DWPb5M3aw+HAX1IihBjjGzoNkwxy0XvyDeU6AsKLVrt5Q40Q
+         tkb/ySYb2RrCHHkZURgKEAu/dp+ozuktU65dSk7YJvDyP4NEcn51enJetMG4LY6+jbcO
+         0H37muOt8HuuDyhGNjC44msQ8XSDtdDqNsbihJ2fmlkj6Kr5ywoLyolEba+lt9AP/vPd
+         79iw==
+X-Gm-Message-State: AOAM5307gvxHxR5hXnerS9qQIbK3/Q7gcgfebG6ivJcC9Dslko1qrAml
+        mIKEMXMQ4fF2ZvW+5lv5J4c=
+X-Google-Smtp-Source: ABdhPJxj8ZULSGi53D2JWtuXO7iaZBGyssVKwk2aN0y4dxukRw+015cPT7aMM4Cnm9/DLuLcjCVJWA==
+X-Received: by 2002:a65:5248:: with SMTP id q8mr21067951pgp.176.1621261574591;
+        Mon, 17 May 2021 07:26:14 -0700 (PDT)
+Received: from localhost.localdomain ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id i20sm1442914pgb.38.2021.05.17.07.26.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 07:26:13 -0700 (PDT)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: dong.menglong@zte.com.cn
+To:     axboe@kernel.dk
+Cc:     hare@suse.de, jack@suse.cz, tj@kernel.org,
+        gregkh@linuxfoundation.org, dong.menglong@zte.com.cn,
+        song@kernel.org, neilb@suse.de, akpm@linux-foundation.org,
+        f.fainelli@gmail.com, linux@rasmusvillemoes.dk,
+        palmerdabbelt@google.com, mcgrof@kernel.org, arnd@arndb.de,
+        wangkefeng.wang@huawei.com, mhiramat@kernel.org,
+        rostedt@goodmis.org, keescook@chromium.org, vbabka@suse.cz,
+        pmladek@suse.com, glider@google.com, chris@chrisdown.name,
+        ebiederm@xmission.com, jojing64@gmail.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] init/initramfs.c: add a new mount as root file system
+Date:   Mon, 17 May 2021 07:25:42 -0700
+Message-Id: <20210517142542.187574-1-dong.menglong@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <ddb58cbd-0a72-f680-80f4-ce09b13a2cee@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Menglong Dong <dong.menglong@zte.com.cn>
 
-On 5/17/21 8:13 AM, Jan Beulich wrote:
-> On 17.05.2021 15:48, Connor Davis wrote:
->> On 5/17/21 3:32 AM, Jan Beulich wrote:
->>> On 14.05.2021 02:56, Connor Davis wrote:
->>>> Check if the debug capability is enabled in early_xdbc_parse_parameter,
->>>> and if it is, return with an error. This avoids collisions with whatever
->>>> enabled the DbC prior to linux starting.
->>> Doesn't this go too far and prevent use even if firmware (perhaps
->>> mistakenly) left it enabled?
->> Yes, but how is one supposed to distinguish the broken firmware and
->> non-broken
->>
->> firmware cases?
-> Well, a first step might be to only check if running virtualized.
-> And then if your running virtualized, there might be a way to
-> inquire the hypervisor?
+During the kernel initialization, the mount tree, which is used by the
+kernel, is created, and 'rootfs' is mounted as the root file system.
 
-Right, but if it was enabled by something other than a hypervisor,
+While using initramfs as the root file system, cpio file is unpacked
+into the rootfs. Thus, this rootfs is exactly what users see in user
+space, and some problems arose: this rootfs has no parent mount,
+which make it can't be umounted or pivot_root.
 
-or you're not running virtualized, how do you distinguish then? IMO
+'pivot_root' is used to change the rootfs and clean the old mountpoints,
+and it is essential for some users, such as docker. Docker use
+'pivot_root' to change the root fs of a process if the current root
+fs is a block device of initrd. However, when it comes to initramfs,
+things is different: docker has to use 'chroot()' to change the root
+fs, as 'pivot_root()' is not supported in initramfs.
 
-the proper thing to do in any case is to simply not use the DbC in linux.
+The usage of 'chroot()' to create root fs for a container introduced
+a lot problems.
 
-Thanks,
+First, 'chroot()' can't clean the old mountpoints which inherited
+from the host. It means that the mountpoints in host will have a
+duplicate in every container. Let's image that there are 100
+containers in host, and there will be 100 duplicates of every
+mountpoints, which makes resource release an issue. User may
+remove a USB after he (or she) umount it successfully in the
+host. However, the USB may still be mounted in containers, although
+it can't be seen by the 'mount' commond in the container. This
+means the USB is not released yet, and data may not write back.
+Therefore, data lose arise.
 
-Connor
+Second, net-namespace leak is another problem. The net-namespace
+of containers will be mounted in /var/run/docker/netns/ in host
+by dockerd. It means that the net-namespace of a container will
+be mounted in containers which are created after it. Things
+become worse now, as the net-namespace can't be remove after
+the destroy of that container, as it is still mounted in other
+containers. If users want to recreate that container, he will
+fail if a certain mac address is to be binded with the container,
+as it is not release yet.
+
+Maybe dockerd can umount the unnecessary mountpoints that inherited
+for the host before do 'chroot()', but that is not a graceful way.
+I think the best way is to make 'pivot_root()' support initramfs.
+
+After this patch, initramfs is supported by 'pivot_root()' perfectly.
+I just create a new rootfs and mount it to the mount-tree before
+unpack cpio. Therefore, the rootfs used by users has a parent mount,
+and can use 'pivot_root()'.
+
+Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+---
+ init/do_mounts.c | 53 +++++++++++++++++++++++++++++++++++++++---------
+ init/do_mounts.h |  1 +
+ init/initramfs.c | 32 +++++++++++++++++++++++++++++
+ init/main.c      | 17 +++++++++++++++-
+ 4 files changed, 92 insertions(+), 11 deletions(-)
+
+diff --git a/init/do_mounts.c b/init/do_mounts.c
+index a78e44ee6adb..a156b0d28b43 100644
+--- a/init/do_mounts.c
++++ b/init/do_mounts.c
+@@ -459,7 +459,7 @@ void __init mount_block_root(char *name, int flags)
+ out:
+ 	put_page(page);
+ }
+- 
++
+ #ifdef CONFIG_ROOT_NFS
+ 
+ #define NFSROOT_TIMEOUT_MIN	5
+@@ -617,24 +617,57 @@ void __init prepare_namespace(void)
+ 	init_chroot(".");
+ }
+ 
+-static bool is_tmpfs;
+-static int rootfs_init_fs_context(struct fs_context *fc)
++#ifdef CONFIG_TMPFS
++static __init bool is_tmpfs_enabled(void)
++{
++	return (!root_fs_names || strstr(root_fs_names, "tmpfs")) &&
++	       !saved_root_name[0];
++}
++#endif
++
++static __init bool is_ramfs_enabled(void)
+ {
+-	if (IS_ENABLED(CONFIG_TMPFS) && is_tmpfs)
+-		return shmem_init_fs_context(fc);
++	return true;
++}
++
++struct fs_user_root {
++	bool (*enabled)(void);
++	char *dev_name;
++	char *fs_name;
++};
+ 
+-	return ramfs_init_fs_context(fc);
++static struct fs_user_root user_roots[] __initdata = {
++#ifdef CONFIG_TMPFS
++	{.fs_name = "tmpfs", .enabled = is_tmpfs_enabled },
++#endif
++	{.fs_name = "ramfs", .enabled = is_ramfs_enabled }
++};
++static struct fs_user_root * __initdata user_root;
++
++int __init mount_user_root(void)
++{
++	return do_mount_root(user_root->dev_name,
++			     user_root->fs_name,
++			     root_mountflags,
++			     root_mount_data);
+ }
+ 
+ struct file_system_type rootfs_fs_type = {
+ 	.name		= "rootfs",
+-	.init_fs_context = rootfs_init_fs_context,
++	.init_fs_context = ramfs_init_fs_context,
+ 	.kill_sb	= kill_litter_super,
+ };
+ 
+ void __init init_rootfs(void)
+ {
+-	if (IS_ENABLED(CONFIG_TMPFS) && !saved_root_name[0] &&
+-		(!root_fs_names || strstr(root_fs_names, "tmpfs")))
+-		is_tmpfs = true;
++	struct fs_user_root *root;
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(user_roots); i++) {
++		root = &user_roots[i];
++		if (root->enabled()) {
++			user_root = root;
++			break;
++		}
++	}
+ }
+diff --git a/init/do_mounts.h b/init/do_mounts.h
+index 7a29ac3e427b..34978b17454a 100644
+--- a/init/do_mounts.h
++++ b/init/do_mounts.h
+@@ -13,6 +13,7 @@
+ void  mount_block_root(char *name, int flags);
+ void  mount_root(void);
+ extern int root_mountflags;
++int   mount_user_root(void);
+ 
+ static inline __init int create_dev(char *name, dev_t dev)
+ {
+diff --git a/init/initramfs.c b/init/initramfs.c
+index af27abc59643..c883379673c0 100644
+--- a/init/initramfs.c
++++ b/init/initramfs.c
+@@ -15,6 +15,11 @@
+ #include <linux/mm.h>
+ #include <linux/namei.h>
+ #include <linux/init_syscalls.h>
++#include <uapi/linux/mount.h>
++
++#include "do_mounts.h"
++
++extern bool ramdisk_exec_exist(bool abs);
+ 
+ static ssize_t __init xwrite(struct file *file, const char *p, size_t count,
+ 		loff_t *pos)
+@@ -667,6 +672,27 @@ static void __init populate_initrd_image(char *err)
+ }
+ #endif /* CONFIG_BLK_DEV_RAM */
+ 
++/*
++ * This function is used to chroot to new initramfs root that
++ * we unpacked.
++ */
++static void __init end_mount_user_root(bool succeed)
++{
++	if (!succeed)
++		goto on_failed;
++
++	if (!ramdisk_exec_exist(false))
++		goto on_failed;
++
++	init_mount(".", "/", NULL, MS_MOVE, NULL);
++	init_chroot(".");
++	return;
++
++on_failed:
++	init_chdir("/");
++	init_umount("/root", 0);
++}
++
+ static void __init do_populate_rootfs(void *unused, async_cookie_t cookie)
+ {
+ 	/* Load the built in initramfs */
+@@ -682,15 +708,21 @@ static void __init do_populate_rootfs(void *unused, async_cookie_t cookie)
+ 	else
+ 		printk(KERN_INFO "Unpacking initramfs...\n");
+ 
++	if (mount_user_root())
++		panic("Failed to create user root");
++
+ 	err = unpack_to_rootfs((char *)initrd_start, initrd_end - initrd_start);
+ 	if (err) {
++		end_mount_user_root(false);
+ #ifdef CONFIG_BLK_DEV_RAM
+ 		populate_initrd_image(err);
+ #else
+ 		printk(KERN_EMERG "Initramfs unpacking failed: %s\n", err);
+ #endif
++		goto done;
+ 	}
+ 
++	end_mount_user_root(true);
+ done:
+ 	/*
+ 	 * If the initrd region is overlapped with crashkernel reserved region,
+diff --git a/init/main.c b/init/main.c
+index eb01e121d2f1..431da5f01f11 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -607,6 +607,21 @@ static inline void setup_nr_cpu_ids(void) { }
+ static inline void smp_prepare_cpus(unsigned int maxcpus) { }
+ #endif
+ 
++bool __init ramdisk_exec_exist(bool abs)
++{
++	char *tmp_command = ramdisk_execute_command;
++
++	if (!tmp_command)
++		return false;
++
++	if (!abs) {
++		while (*tmp_command == '/' || *tmp_command == '.')
++			tmp_command++;
++	}
++
++	return init_eaccess(tmp_command) == 0;
++}
++
+ /*
+  * We need to store the untouched command line for future reference.
+  * We also need to store the touched command line since the parameter
+@@ -1568,7 +1583,7 @@ static noinline void __init kernel_init_freeable(void)
+ 	 * check if there is an early userspace init.  If yes, let it do all
+ 	 * the work
+ 	 */
+-	if (init_eaccess(ramdisk_execute_command) != 0) {
++	if (!ramdisk_exec_exist(true)) {
+ 		ramdisk_execute_command = NULL;
+ 		prepare_namespace();
+ 	}
+-- 
+2.25.1
 
