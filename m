@@ -2,107 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F709383A36
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:41:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6B34383A3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:42:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244522AbhEQQmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:42:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41634 "EHLO
+        id S243169AbhEQQn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:43:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244292AbhEQQln (ORCPT
+        with ESMTP id S241445AbhEQQnF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 12:41:43 -0400
-Received: from mx-rz-3.rrze.uni-erlangen.de (mx-rz-3.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 753D1C043168
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 08:48:05 -0700 (PDT)
-Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx-rz-3.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4FkNnZ1gxLz1y1G;
-        Mon, 17 May 2021 17:48:02 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2021;
-        t=1621266482; bh=9pqQThWi/Y3AKPfKgdmvXWPImVDj773LTGqRMq0trVM=;
-        h=Subject:From:In-Reply-To:Date:Cc:References:To:From:To:CC:
-         Subject;
-        b=EvK1WGSTJkU+WM30ocMOt2aAgmMRPA2Aeu8z3Ddd/pjWwp52Ms0gX8qRBbxkgtzSS
-         pOHPVsqoVmMXPxuBV4LNB/kX1CZolaeFgRLa3vqB+9tyzaTd79w+WRBzSh5GXLhJOO
-         0754IJHv45HY8JTNZLX8rEmbP2bso2dQCHDL4LqAQLTQFDfVg/iBznxNrTuRSEH1od
-         nR57qqwcvPEKZAvETR3zb5S4bvNpsB4JPsHbpilk/IhoCUp9EgYYPw79Ugz306DQIL
-         BjeanH+50HYO/II1+H3ykU/x8Btr8VPJOAYQRZqEX42CXB0qTUDzRUOO45/TZFMYwY
-         dIu9is54566Gg==
-X-Virus-Scanned: amavisd-new at boeck1.rrze.uni-erlangen.de (RRZE)
-X-RRZE-Flag: Not-Spam
-X-RRZE-Submit-IP: 93.238.10.8
-Received: from [192.168.2.114] (p5dee0a08.dip0.t-ipconnect.de [93.238.10.8])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: U2FsdGVkX188wS4LvBpAKACY8X69+vMtub4EsQXtDOw=)
-        by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4FkNnW5v52z1xtS;
-        Mon, 17 May 2021 17:47:59 +0200 (CEST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.40.0.2.32\))
-Subject: Re: [PATCH] objtool: include symbol value in check for contiguous
- objects
-From:   Vanessa Hack <vanessa.hack@fau.de>
-In-Reply-To: <20210503172814.suquyqr737ogn4ef@treble>
-Date:   Mon, 17 May 2021 17:47:58 +0200
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org,
-        Jonas Rabenstein <rabenstein@cs.fau.de>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <CEF166D9-6C75-4C54-8C6E-69FF730D8D2F@fau.de>
-References: <20210428210408.4546-1-vanessa.hack@fau.de>
- <20210503172814.suquyqr737ogn4ef@treble>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-X-Mailer: Apple Mail (2.3654.40.0.2.32)
+        Mon, 17 May 2021 12:43:05 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61211C0ADEE2;
+        Mon, 17 May 2021 08:52:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=C5HVt+49d+RVG/0UPKvULX99MaS5D0NU75IY07ck7wY=; b=hP7kp2Wr/fC8z11JVHDrCo6/oO
+        GjaBVoIcEhZowZioJkSHn6cIjYjwhgE2gATluTFYA5lCwRksosTfEsYeYj93AZwlPX5wrW4MqLuMP
+        oCa4CLabQ13ptyjeUoz4WKLBemZqinhz09sDbE6cHx3qRD6BBADmtx1XKFil13w5DmX1dGebu53dM
+        RWt4zoMYcD7GkJ9I+s3yXji2WORNO8KQQZkRTtUd/zJbKtn1QEiN7LyFpgvsNbOeyMMJQJCYHurX6
+        rGIhUBuVFrNw2YATuKoZvQz0Qrx2SEpwW7kRzWALkdkE9sMIkM6xPaA7V6tXTxZSk1v5PjLGKyack
+        NCvinUgA==;
+Received: from [2601:1c0:6280:3f0::7376]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lifXB-00Dwtk-NU; Mon, 17 May 2021 15:51:57 +0000
+Subject: Re: [PATCH -next resend] rtc: m41t80: correct function names in
+ rtc-m41t80.c
+To:     Yang Yingliang <yangyingliang@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org
+Cc:     a.zummo@towertech.it, alexandre.belloni@bootlin.com
+References: <20210517110641.473386-1-yangyingliang@huawei.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <d14f782a-0245-81c3-3c05-73671e670220@infradead.org>
+Date:   Mon, 17 May 2021 08:51:55 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210517110641.473386-1-yangyingliang@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Josh,
+On 5/17/21 4:06 AM, Yang Yingliang wrote:
+> Fix the following make W=1 kernel build warnings:
+> 
+>   drivers/rtc/rtc-m41t80.c:811: warning: expecting prototype for wdt_close(). Prototype was for wdt_release() instead
+>   drivers/rtc/rtc-m41t80.c:830: warning: expecting prototype for notify_sys(). Prototype was for wdt_notify_sys() instead
+> 
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> ---
+>  drivers/rtc/rtc-m41t80.c | 20 ++++++++------------
+>  1 file changed, 8 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/rtc/rtc-m41t80.c b/drivers/rtc/rtc-m41t80.c
+> index 89128fc29ccc..269ec4962db3 100644
+> --- a/drivers/rtc/rtc-m41t80.c
+> +++ b/drivers/rtc/rtc-m41t80.c
 
-I think there might have been a problem with my mail client, so I=E2=80=99=
-m sorry
-if this has been sent twice.
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 
-> I believe add_jump_table() -- in addition to all the other jump table
-> code -- assumes that reloc->sym is a section symbol (STT_SECTION),
-> rather than a function symbol (STT_FUNC).  Was it an STT_FUNC symbol
-> which caused the problem?
+thanks.
 
-Indeed as you proposed it was a symbol with another type than =
-STT_SECTION=20
-that caused the problem. This resulted of our mistake of not having =
-compiled=20
-our code using -fno-pic and the fact, that it was i386 code as we are =
-trying to=20
-adapt objtool for our 32 bit operating system. Consequently, local =
-labels for a=20
-switch jump table were created, which the existing objtool code seems =
-not to=20
-be intended to handle.=20
+-- 
+~Randy
 
-> diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-> index 5e5388a38e2a..4f30a763a4e3 100644
-> --- a/tools/objtool/check.c
-> +++ b/tools/objtool/check.c
-> @@ -1344,6 +1344,10 @@ static int add_jump_table(struct objtool_file =
-*file, struct instruction *insn,
-> 		if (prev_offset && reloc->offset !=3D prev_offset + 8)
-> 			break;
->=20
-> +		/* Jump table relocs are always STT_SECTION: */
-> +		if (reloc->sym->type !=3D STT_SECTION)
-> +			break;
-> +
-> 		/* Detect function pointers from contiguous objects: */
-> 		if (reloc->sym->sec =3D=3D pfunc->sec &&
-> 		    reloc->addend =3D=3D pfunc->offset)
-
-Your suggested patch would have helped us detecting the problem earlier =
-and=20
-seems like a good idea to check.
-
-Regards,
-Vanessa=
