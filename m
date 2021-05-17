@@ -2,132 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1472383C56
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 20:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 292D3383C7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 20:36:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237050AbhEQSgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 14:36:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39726 "EHLO
+        id S235417AbhEQSiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 14:38:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237141AbhEQSgB (ORCPT
+        with ESMTP id S230192AbhEQSiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 14:36:01 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 288E3C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 11:34:45 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id k5so4166321pjj.1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 11:34:45 -0700 (PDT)
+        Mon, 17 May 2021 14:38:10 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66961C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 11:36:53 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id q10so6775579qkc.5
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 11:36:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=bzvl/cyI6Vow+Fou3NqkXda8XWse6PpXRNaY31CBjZU=;
-        b=uXaQuk1ku0CrWVjOMU4k4deRZE8OOKuwRLCyNjyg+v7qPW/KrVncQ7ybChG9+D+bx7
-         PuBTTAi3SPDbT3STpXVq1Ubmq0ModxFtsymoP1K/zrzMi4d325lLsC1Erjpmy85wDx7h
-         Sc6CsNX7pW5uQ8vG1iyxGsAKEIlqbVnr3Zhk2xwsHLinIzBNskD214vo3q8T7qDuBNcS
-         aMEQ4E5WVRGoqy0QBPnXCiogGShmcivVjmK+bIxSvecHoPKadjGHKL+OkLgbV4ElIFzi
-         DO+nJ+KnGmC3wX8UjQor3DdvJ4eW2mEFWwPGfwZ5qkp89ng6u1b7kZLVyyUHRVca2/4G
-         I3oQ==
+        bh=xDXZeUPt5o63e3EAMlrrPUKhIs+5nbG9PoLpAGN3bQY=;
+        b=jd1bmNkpPE7ZLUvzEQY1VM5qpnYhmODjrvBEhSADdrN37zdq+gZcxuVS1kOjhe1iRZ
+         l7z9RMMz+2aP/oGTmB4kgjRxm5yJ9sltqK+WadRv4dcnJMFLs08BtKu4++uZWG3TZhJd
+         H6xCj/zOcdA5m94vyKp3V9W3Tt1u5+KLmivr7FLDAYZ3+86bXWG0PJSYIQazZgMlN/LW
+         0tSPdc/GICgCuDmSOcHh4IxUEYB5Wns09K6BzcB85NisvW0H/raUNUiijj9W3mX2GTh7
+         t8r9ikIvfqbMWtV59CPkUFicTydhzERtOsjBqefQDEQxbCT019whmstmJmk3mPnyNxkX
+         Zs2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=bzvl/cyI6Vow+Fou3NqkXda8XWse6PpXRNaY31CBjZU=;
-        b=O1LfjkPEyu+C0bbAQyPGlGvo9YXLHJutcgJqwP2XiStZWzgRZ85Dcrirlh+7CBeeBR
-         jYpbcwe2FcWf5FhA21vz+59fZ6NO8lFQfJ1KrYgf9F2ZQ/rFfsz29e5cG1McpC3dGozt
-         HO2Gq7/87G+c90rJhnOYQs5/o1VYHcUl165PPZcJSLCtut1w6cjg0TP+7ip/BAmXAsIF
-         eNfsWYTWKzzqtI8h8fMxnTpf2NPGG4UVa+9+TAGg0ly8+OYh/HjphLuV63nxunuxm6hj
-         B4Q1nD0QePgIkHZyHmCU2/TrPUCGj9YGZkaC7RGcESNS1WbTV7shWiF73t6G0+ia16fN
-         D5cg==
-X-Gm-Message-State: AOAM530AlWjKRAcl/BKj50qZ6fNox715A/868uSMrCdvnEUQESLHDKpY
-        HZu5GwEx2IjfpqZBnif508Z+Qg==
-X-Google-Smtp-Source: ABdhPJzOuuaprPntwecuzo2ZpnXzkx8fj6a6DdNi1LG7EL8cdvGS96KWq0ZX0xTFX/RMOWE+AlgewA==
-X-Received: by 2002:a17:902:dacf:b029:ee:ac0e:d0fe with SMTP id q15-20020a170902dacfb02900eeac0ed0femr1460779plx.30.1621276484513;
-        Mon, 17 May 2021 11:34:44 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id h19sm10926752pgm.40.2021.05.17.11.34.43
+        bh=xDXZeUPt5o63e3EAMlrrPUKhIs+5nbG9PoLpAGN3bQY=;
+        b=MBwHrc9Yt/CX6lw/onDC6xOE9f3cZx71gxoQKL/3fJFHsF4gkWNFG+ewI9d700TZdX
+         yih4RsTr0qH+xh3QayDAlJuZidDrcazNjUKMLJNpQ+5ZXIrBd+byU2vbCCunT/7LqWYL
+         NgOolS3sEsBJi2HshKKLQGFuKyJdaff/o82NVp7vZtKyyGiALMmC/dckcKJSVahg6hTe
+         CayiISmrih+qiKPLC2Iqk+Azery5UpUbxOqpnkNupUCqYL/nl3t7QvnvKT6o7i1YyiyW
+         HRtSf/A2lVNs+7k1w7ki/Yoz66zKtFG+ZsMj+yo8/Sc9Y98fTS8tVtB+tlIXwHZS6jCu
+         3xQg==
+X-Gm-Message-State: AOAM531iKiHLm8iZATdgV9e+uM2+lu1JsPqKnBvPP7Gvi1o/JRnTsB3n
+        XPry36XOJDydmd+Du1HXBoUC7Q==
+X-Google-Smtp-Source: ABdhPJxmJxfbXot8x9jqLb8m9kN9kDtpj8UeFDTbz81YB77VEsAqmcodHIPymeCiCHVKo/2lrpAxHQ==
+X-Received: by 2002:ae9:e919:: with SMTP id x25mr1251594qkf.232.1621276612686;
+        Mon, 17 May 2021 11:36:52 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:8d28])
+        by smtp.gmail.com with ESMTPSA id z11sm10986776qto.95.2021.05.17.11.36.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 May 2021 11:34:43 -0700 (PDT)
-Date:   Mon, 17 May 2021 18:34:40 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jim Mattson <jmattson@google.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jon Kohler <jon@nutanix.com>, Babu Moger <babu.moger@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Uros Bizjak <ubizjak@gmail.com>,
-        Petteri Aimonen <jpa@git.mail.kapsi.fi>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Benjamin Thiel <b.thiel@posteo.de>,
-        Fan Yang <Fan_Yang@sjtu.edu.cn>,
-        Juergen Gross <jgross@suse.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kvm list <kvm@vger.kernel.org>
-Subject: Re: [PATCH] KVM: x86: add hint to skip hidden rdpkru under
- kvm_load_host_xsave_state
-Message-ID: <YKK3QLr2OsUdrX5D@google.com>
-References: <20210507164456.1033-1-jon@nutanix.com>
- <CALCETrW0_vwpbVVpc+85MvoGqg3qJA+FV=9tmUiZz6an7dQrGg@mail.gmail.com>
- <5e01d18b-123c-b91f-c7b4-7ec583dd1ec6@redhat.com>
- <YKKqQZH7bX+7PDjX@google.com>
- <4e6f7056-6b66-46b9-9eac-922ae1c7b526@www.fastmail.com>
- <342a8ba9-037e-b841-f9b1-cb62e46c0db8@intel.com>
- <YKKwSLnkzc77HcnG@google.com>
- <CALMp9eS80a+Oy6spKT3cG7DCTW6jVwhyBuZ_t0SND=80Lg1XWA@mail.gmail.com>
+        Mon, 17 May 2021 11:36:52 -0700 (PDT)
+Date:   Mon, 17 May 2021 14:36:50 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Huangzhaoyang <huangzhaoyang@gmail.com>
+Cc:     Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
+        Ziwei Dai <ziwei.dai@unisoc.com>, Ke Wang <ke.wang@unisoc.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [[RFC]PATCH] psi: fix race between psi_trigger_create and psimon
+Message-ID: <YKK3wgrhqzaiE7rQ@cmpxchg.org>
+References: <1621242249-8314-1-git-send-email-huangzhaoyang@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALMp9eS80a+Oy6spKT3cG7DCTW6jVwhyBuZ_t0SND=80Lg1XWA@mail.gmail.com>
+In-Reply-To: <1621242249-8314-1-git-send-email-huangzhaoyang@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021, Jim Mattson wrote:
-> On Mon, May 17, 2021 at 11:05 AM Sean Christopherson <seanjc@google.com> wrote:
-> >
-> > On Mon, May 17, 2021, Dave Hansen wrote:
-> > > On 5/17/21 10:49 AM, Andy Lutomirski wrote:
-> > > >> The least awful solution would be to have the NMI handler restore
-> > > >> the host's PKRU.  The NMI handler would need to save/restore the
-> > > >> register, a la CR2, but the whole thing could be optimized to run
-> > > >> if and only if the NMI lands in the window where the guest's PKRU
-> > > >> is loaded.
-> > > >
-> > > > Or set a flag causing nmi_uaccess_ok() to return false.
-> > >
-> > > Oh, that doesn't sound too bad.  The VMENTER/EXIT paths are also
-> > > essentially a context switch.
-> >
-> > I like that idea, too.
-> >
-> > The flag might also be useful to fix the issue where the NMI handler activates
-> > PEBS after KVM disables it.  Jim?
+CC Suren
+
+On Mon, May 17, 2021 at 05:04:09PM +0800, Huangzhaoyang wrote:
+> From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 > 
-> The issue is actually that the NMI handler *clears* IA32_PEBS_ENABLE
-> bits after giving out the host value of the MSR to KVM. If we were to
-> block the NMI handler from modifying IA32_PEBS_ENABLE until after the
-> next VM-exit, that could solve this issue. I don't know if it makes
-> sense to piggyback on nmi_uaccess(), though.
+> Race detected between psimon_new and psimon_old as shown below, which
+> cause panic by accessing invalid psi_system->poll_wait->wait_queue_entry
+> and psi_system->poll_timer->entry->next. It is not necessary to reinit
+> resource of psi_system when psi_trigger_create.
+> 
+> psi_trigger_create      psimon_new     psimon_old
+>  init_waitqueue_head                    finish_wait
+>                                           spin_lock(lock_old)
+> 	spin_lock_init(lock_new)
+>  wake_up_process(psimon_new)
+> 
+>                         finish_wait
+>                           spin_lock(lock_new)
+>                             list_del       list_del
+> 
+> Signed-off-by: ziwei.dai <ziwei.dai@unisoc.com>
+> Signed-off-by: ke.wang <ke.wang@unisoc.com>
+> Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> ---
+>  kernel/sched/psi.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+> index cc25a3c..d00e585 100644
+> --- a/kernel/sched/psi.c
+> +++ b/kernel/sched/psi.c
+> @@ -182,6 +182,8 @@ struct psi_group psi_system = {
+>  
+>  static void psi_avgs_work(struct work_struct *work);
+>  
+> +static void poll_timer_fn(struct timer_list *t);
+> +
+>  static void group_init(struct psi_group *group)
+>  {
+>  	int cpu;
+> @@ -201,6 +203,8 @@ static void group_init(struct psi_group *group)
+>  	memset(group->polling_total, 0, sizeof(group->polling_total));
+>  	group->polling_next_update = ULLONG_MAX;
+>  	group->polling_until = 0;
+> +	init_waitqueue_head(&group->poll_wait);
+> +	timer_setup(&group->poll_timer, poll_timer_fn, 0);
 
-I wasn't thinking about using nmi_uaccess_okay(), but rather whatever flag is
-added so that can KVM can inform the NMI handler that KVM is in the middle of
-its version of a context switch.
+This makes sense.
 
-> > > Will widening the window where nmi_uaccess_okay()==false anger any of
-> > > the perf folks?  It looks like perf knows how to handle it nicely.
+>  	rcu_assign_pointer(group->poll_task, NULL);
+>  }
+>  
+> @@ -1157,7 +1161,6 @@ struct psi_trigger *psi_trigger_create(struct psi_group *group,
+>  			return ERR_CAST(task);
+>  		}
+>  		atomic_set(&group->poll_wakeup, 0);
+> -		init_waitqueue_head(&group->poll_wait);
+>  		wake_up_process(task);
+>  		timer_setup(&group->poll_timer, poll_timer_fn, 0);
+
+This looks now unncessary?
+
+>  		rcu_assign_pointer(group->poll_task, task);
+> @@ -1233,7 +1236,6 @@ static void psi_trigger_destroy(struct kref *ref)
+>  		 * But it might have been already scheduled before
+>  		 * that - deschedule it cleanly before destroying it.
+>  		 */
+> -		del_timer_sync(&group->poll_timer);
+
+And this looks wrong. Did you mean to delete the timer_setup() line
+instead?
