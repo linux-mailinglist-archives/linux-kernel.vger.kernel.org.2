@@ -2,63 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6A0238240C
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 08:17:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0927382412
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 08:18:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234827AbhEQGSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 02:18:15 -0400
-Received: from verein.lst.de ([213.95.11.211]:56039 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234798AbhEQGSO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 02:18:14 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 60D5F6736F; Mon, 17 May 2021 08:16:56 +0200 (CEST)
-Date:   Mon, 17 May 2021 08:16:56 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     linux-arch@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Christoph Hellwig <hch@lst.de>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Brian Cain <bcain@codeaurora.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Sid Manning <sidneym@codeaurora.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
-        uclinux-h8-devel@lists.sourceforge.jp,
-        linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-riscv@lists.infradead.org, linux-um@lists.infradead.org
-Subject: Re: [PATCH 4/6] [v2] arc: use generic strncpy/strnlen from_user
-Message-ID: <20210517061656.GB23581@lst.de>
-References: <20210515101803.924427-1-arnd@kernel.org> <20210515101803.924427-5-arnd@kernel.org>
+        id S234853AbhEQGTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 02:19:24 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:55284 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233139AbhEQGTX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 02:19:23 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14H6HxAK040787;
+        Mon, 17 May 2021 01:17:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1621232279;
+        bh=SDy+mnfmS0zKcFkEdHEEL45qbIDVtBWBDcD0aecXM/E=;
+        h=From:To:CC:Subject:Date;
+        b=xDplRIH1aJieI5+yu06WOxMS5LSKiw/nEsUSVmnCfcQ8ssjqQ9IBYTwLWQnQYlX5s
+         AxazjwmLLAY6xfLbsW9k0ebCHuN0kS+ropoqH/EBLFp9v7CYc1zOj/ppxOOH7o0Pku
+         jAJ0xZAXlDkGfi+6bJdS4xSTQ8vFcc1dBSIp+F0I=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14H6HxGt096264
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 17 May 2021 01:17:59 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 17
+ May 2021 01:17:58 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Mon, 17 May 2021 01:17:58 -0500
+Received: from a0393678-ssd.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14H6Hpl0003911;
+        Mon, 17 May 2021 01:17:53 -0500
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>, <a-govindraju@ti.com>
+Subject: [PATCH v2 0/6] AM64: EVM/SK: Enable PCIe and USB
+Date:   Mon, 17 May 2021 11:47:33 +0530
+Message-ID: <20210517061739.5762-1-kishon@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210515101803.924427-5-arnd@kernel.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 15, 2021 at 12:18:01PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Most per-architecture versions of these functions are broken
-> in some form, and they are almost certainly slower than the
-> generic code as well.
-> 
-> This version is fairly slow because it always does byte accesses
-> even for aligned data, and its checks for user_addr_max() differ
-> from the generic code.
-> 
-> Remove the ones for arc and instead use the generic version.
+AM642 EVM has one PCIe slot (no USB slot) and AM642 SK has one USB slot
+(no PCIe slot).
+AM64 SoC has one SERDES module which can be used by either PCIe or USB.
 
-Same comment as for hexaon before.
+Add DT nodes to represent and enable SERDES/PCIe/USB modules in EVM/SK.
+
+Changes from v1:
+1) Add a patch to convert reg-mux DT bindings to YAML
+2) Use generic names for clock node names
+3) Remove redundant status = "okay" for serdes_wiz0
+
+Kishon Vijay Abraham I (6):
+  dt-bindings: mux: Convert reg-mux DT bindings to YAML
+  arm64: dts: ti: k3-am64-main: Add SERDES DT node
+  arm64: dts: ti: k3-am64-main: Add PCIe DT node
+  arm64: dts: ti: k3-am642-evm: Enable PCIe and SERDES
+  arm64: dts: ti: k3-am642-sk: Enable USB Super-Speed HOST port
+  arm64: dts: ti: k3-am642-sk: Disable PCIe
+
+ .../bindings/mux/mux-controller.txt           | 113 ++++++++++++++-
+ .../devicetree/bindings/mux/reg-mux.txt       | 129 ------------------
+ .../devicetree/bindings/mux/reg-mux.yaml      |  47 +++++++
+ arch/arm64/boot/dts/ti/k3-am64-main.dtsi      | 102 ++++++++++++++
+ arch/arm64/boot/dts/ti/k3-am642-evm.dts       |  30 ++++
+ arch/arm64/boot/dts/ti/k3-am642-sk.dts        |  43 ++++++
+ 6 files changed, 334 insertions(+), 130 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mux/reg-mux.txt
+ create mode 100644 Documentation/devicetree/bindings/mux/reg-mux.yaml
+
+-- 
+2.17.1
+
