@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AAC4383607
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:26:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6323E3833CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 17:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239161AbhEQP1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 11:27:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34050 "EHLO mail.kernel.org"
+        id S240904AbhEQPCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 11:02:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243225AbhEQPNX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:13:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CF4D61444;
-        Mon, 17 May 2021 14:31:40 +0000 (UTC)
+        id S241566AbhEQOwA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:52:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EBD961988;
+        Mon, 17 May 2021 14:23:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621261901;
-        bh=uvTrru9RW9pBYtGkjU8CgVX/FurJ6q4jeDK4fRM5lUU=;
+        s=korg; t=1621261425;
+        bh=gHSj6tyoz1bH7DPcjnPJnj511RmRmxNiZ5alo7SwcLA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yQEL1zqv6yeUMg7gQu8UEQuvmpfpsYyhbNo00+ES73TLO7S1urCpy8hYSCoOTnrKJ
-         uR6C30NzHF0/wDg3w6q7clNsoFbhsHs4aP7h6lzNpRJ+LiHg4+mBzxhms6EWPSQKJH
-         zc28Q1N7w6K16I+V1HmF4FJ6yf/FgMOyrWl6ZzHs=
+        b=DASroyqKHgCMFym1qO9y+HADBinZpJ9uji33Mcx9dFbpgIZIlL2+be7rHP2dhH4b8
+         z5WXIqm4Bo20nBgzwx35HtodixC/tnAmD3mpgn6I7li5aff1+ooHRCyY5D/DTQ4yLY
+         pzGE/3tXpP5DE3e84/ZKt19UDtNYKI0lFjKQ3pPw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eddie James <eajames@linux.ibm.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 107/141] hwmon: (occ) Fix poll rate limiting
-Date:   Mon, 17 May 2021 16:02:39 +0200
-Message-Id: <20210517140246.394625648@linuxfoundation.org>
+        stable@vger.kernel.org, Reiji Watanabe <reijiw@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.12 331/363] KVM: x86: Add support for RDPID without RDTSCP
+Date:   Mon, 17 May 2021 16:03:17 +0200
+Message-Id: <20210517140313.798043158@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517140242.729269392@linuxfoundation.org>
-References: <20210517140242.729269392@linuxfoundation.org>
+In-Reply-To: <20210517140302.508966430@linuxfoundation.org>
+References: <20210517140302.508966430@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,64 +40,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eddie James <eajames@linux.ibm.com>
+From: Sean Christopherson <seanjc@google.com>
 
-[ Upstream commit 5216dff22dc2bbbbe6f00335f9fd2879670e753b ]
+commit 36fa06f9ff39f23e03cd8206dc6bbb7711c23be6 upstream.
 
-The poll rate limiter time was initialized at zero. This breaks the
-comparison in time_after if jiffies is large. Switch to storing the
-next update time rather than the previous time, and initialize the
-time when the device is probed.
+Allow userspace to enable RDPID for a guest without also enabling RDTSCP.
+Aside from checking for RDPID support in the obvious flows, VMX also needs
+to set ENABLE_RDTSCP=1 when RDPID is exposed.
 
-Fixes: c10e753d43eb ("hwmon (occ): Add sensor types and versions")
-Signed-off-by: Eddie James <eajames@linux.ibm.com>
-Link: https://lore.kernel.org/r/20210429151336.18980-1-eajames@linux.ibm.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+For the record, there is no known scenario where enabling RDPID without
+RDTSCP is desirable.  But, both AMD and Intel architectures allow for the
+condition, i.e. this is purely to make KVM more architecturally accurate.
+
+Fixes: 41cd02c6f7f6 ("kvm: x86: Expose RDPID in KVM_GET_SUPPORTED_CPUID")
+Cc: stable@vger.kernel.org
+Reported-by: Reiji Watanabe <reijiw@google.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Message-Id: <20210504171734.1434054-8-seanjc@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/hwmon/occ/common.c | 5 +++--
- drivers/hwmon/occ/common.h | 2 +-
- 2 files changed, 4 insertions(+), 3 deletions(-)
+ arch/x86/kvm/svm/svm.c |    6 ++++--
+ arch/x86/kvm/vmx/vmx.c |   27 +++++++++++++++++++++++----
+ arch/x86/kvm/x86.c     |    3 ++-
+ 3 files changed, 29 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/hwmon/occ/common.c b/drivers/hwmon/occ/common.c
-index 30e18eb60da7..0b689ccbb793 100644
---- a/drivers/hwmon/occ/common.c
-+++ b/drivers/hwmon/occ/common.c
-@@ -209,9 +209,9 @@ int occ_update_response(struct occ *occ)
- 		return rc;
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -2741,7 +2741,8 @@ static int svm_get_msr(struct kvm_vcpu *
+ 		if (!boot_cpu_has(X86_FEATURE_RDTSCP))
+ 			return 1;
+ 		if (!msr_info->host_initiated &&
+-		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
++		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) &&
++		    !guest_cpuid_has(vcpu, X86_FEATURE_RDPID))
+ 			return 1;
+ 		msr_info->data = svm->tsc_aux;
+ 		break;
+@@ -2952,7 +2953,8 @@ static int svm_set_msr(struct kvm_vcpu *
+ 			return 1;
  
- 	/* limit the maximum rate of polling the OCC */
--	if (time_after(jiffies, occ->last_update + OCC_UPDATE_FREQUENCY)) {
-+	if (time_after(jiffies, occ->next_update)) {
- 		rc = occ_poll(occ);
--		occ->last_update = jiffies;
-+		occ->next_update = jiffies + OCC_UPDATE_FREQUENCY;
- 	} else {
- 		rc = occ->last_error;
+ 		if (!msr->host_initiated &&
+-		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
++		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) &&
++		    !guest_cpuid_has(vcpu, X86_FEATURE_RDPID))
+ 			return 1;
+ 
+ 		/*
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -1734,7 +1734,8 @@ static void setup_msrs(struct vcpu_vmx *
+ 	if (update_transition_efer(vmx))
+ 		vmx_setup_uret_msr(vmx, MSR_EFER);
+ 
+-	if (guest_cpuid_has(&vmx->vcpu, X86_FEATURE_RDTSCP))
++	if (guest_cpuid_has(&vmx->vcpu, X86_FEATURE_RDTSCP)  ||
++	    guest_cpuid_has(&vmx->vcpu, X86_FEATURE_RDPID))
+ 		vmx_setup_uret_msr(vmx, MSR_TSC_AUX);
+ 
+ 	vmx_setup_uret_msr(vmx, MSR_IA32_TSX_CTRL);
+@@ -1933,7 +1934,8 @@ static int vmx_get_msr(struct kvm_vcpu *
+ 		break;
+ 	case MSR_TSC_AUX:
+ 		if (!msr_info->host_initiated &&
+-		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
++		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) &&
++		    !guest_cpuid_has(vcpu, X86_FEATURE_RDPID))
+ 			return 1;
+ 		goto find_uret_msr;
+ 	case MSR_IA32_DEBUGCTLMSR:
+@@ -2230,7 +2232,8 @@ static int vmx_set_msr(struct kvm_vcpu *
+ 		break;
+ 	case MSR_TSC_AUX:
+ 		if (!msr_info->host_initiated &&
+-		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
++		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) &&
++		    !guest_cpuid_has(vcpu, X86_FEATURE_RDPID))
+ 			return 1;
+ 		/* Check reserved bit, higher 32 bits should be zero */
+ 		if ((data >> 32) != 0)
+@@ -4302,7 +4305,23 @@ static void vmx_compute_secondary_exec_c
+ 						  xsaves_enabled, false);
  	}
-@@ -1089,6 +1089,7 @@ int occ_setup(struct occ *occ, const char *name)
- 		return rc;
- 	}
  
-+	occ->next_update = jiffies + OCC_UPDATE_FREQUENCY;
- 	occ_parse_poll_response(occ);
+-	vmx_adjust_sec_exec_feature(vmx, &exec_control, rdtscp, RDTSCP);
++	/*
++	 * RDPID is also gated by ENABLE_RDTSCP, turn on the control if either
++	 * feature is exposed to the guest.  This creates a virtualization hole
++	 * if both are supported in hardware but only one is exposed to the
++	 * guest, but letting the guest execute RDTSCP or RDPID when either one
++	 * is advertised is preferable to emulating the advertised instruction
++	 * in KVM on #UD, and obviously better than incorrectly injecting #UD.
++	 */
++	if (cpu_has_vmx_rdtscp()) {
++		bool rdpid_or_rdtscp_enabled =
++			guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) ||
++			guest_cpuid_has(vcpu, X86_FEATURE_RDPID);
++
++		vmx_adjust_secondary_exec_control(vmx, &exec_control,
++						  SECONDARY_EXEC_ENABLE_RDTSCP,
++						  rdpid_or_rdtscp_enabled, false);
++	}
+ 	vmx_adjust_sec_exec_feature(vmx, &exec_control, invpcid, INVPCID);
  
- 	rc = occ_setup_sensor_attrs(occ);
-diff --git a/drivers/hwmon/occ/common.h b/drivers/hwmon/occ/common.h
-index 67e6968b8978..e6df719770e8 100644
---- a/drivers/hwmon/occ/common.h
-+++ b/drivers/hwmon/occ/common.h
-@@ -99,7 +99,7 @@ struct occ {
- 	u8 poll_cmd_data;		/* to perform OCC poll command */
- 	int (*send_cmd)(struct occ *occ, u8 *cmd);
- 
--	unsigned long last_update;
-+	unsigned long next_update;
- 	struct mutex lock;		/* lock OCC access */
- 
- 	struct device *hwmon;
--- 
-2.30.2
-
+ 	vmx_adjust_sec_exec_exiting(vmx, &exec_control, rdrand, RDRAND);
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -5864,7 +5864,8 @@ static void kvm_init_msr_list(void)
+ 				continue;
+ 			break;
+ 		case MSR_TSC_AUX:
+-			if (!kvm_cpu_cap_has(X86_FEATURE_RDTSCP))
++			if (!kvm_cpu_cap_has(X86_FEATURE_RDTSCP) &&
++			    !kvm_cpu_cap_has(X86_FEATURE_RDPID))
+ 				continue;
+ 			break;
+ 		case MSR_IA32_UMWAIT_CONTROL:
 
 
