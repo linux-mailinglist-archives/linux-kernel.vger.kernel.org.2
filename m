@@ -2,134 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1125386BBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:53:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEDF5386BBF
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 22:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244552AbhEQUyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 16:54:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42956 "EHLO
+        id S237195AbhEQUzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 16:55:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244517AbhEQUyx (ORCPT
+        with ESMTP id S233271AbhEQUzk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 16:54:53 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E84C06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:53:32 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id v22so7732958oic.2
-        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:53:32 -0700 (PDT)
+        Mon, 17 May 2021 16:55:40 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6612AC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:54:23 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id d11so7218789iod.5
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 13:54:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tYiKNumB/sG3g6UoDTpwUaKhoLR3TJj2KrtveF22its=;
-        b=E4IYESmDgLDJKTJfDF4vUoPzJf3sI7MEpeT+1/mAXEdTQsZpiuuMol/4F+vLlpLrIE
-         sah8VFk6mwDiaNaEeoOzMK/Y6GiT3emWiXvBt3HP8YHmEZmkum/YGqd1Md+A1uvOpenb
-         uAHx856RtWQ1SJrIHA/Cb42hLyw1yEAs1zEkG/KI9N7mAWFbOIVyKZ5V5irdXysHT9UW
-         B0KlW/e/W866hpDt9/A9Rs93Aqhp8wNb73AI5+CVeIl5W51ZF4FsfNLPcj7xvUhSVLVP
-         mMFLmI9uzK/wK0RHafAEZbf7zEXFb9f5nQ/5UtJlXGrumhfnXfSWF4OQIGZRyq620vbs
-         6KgA==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=WzNUoUY7AUzQjydPiHh/ZS4e3yrInAcISdLJEmYM3yc=;
+        b=Wh5JfGpUaPJojzaNAJdl3t0QkhsYdECNwc7XO4FVOOoiBQrXIcmGr2ZP/wREltRbB1
+         fjEXaxhFvw3FgNeJWbg0ErSkZ1xl1iAapPD0SVAtsr7JYb/yFf5Uk2eBTTBtd1frw1la
+         Ym7pwwlLrenCybZD5B4vp0ky0zwOxWJDHqUuRc0HOjyQqLVH2/KqIskhf1FsSL+Dp8/e
+         xYxjMOaPVELZdOjae1WMx6QQWjjpfKjeTO5K3l7dItJheVjfWhhY8naIoVnRcTHKuoHY
+         vU1S+zxJviCcNNw3R5CIkt4m0RtXmJFEGfYG4RDLsM1HBzqv7VQhrv0iKi2dn7GZlKJi
+         58zQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tYiKNumB/sG3g6UoDTpwUaKhoLR3TJj2KrtveF22its=;
-        b=auO3faCJFW5vmTY9QULsbQyYKeGjCCAXPuOrmxR0mfcjQfHt83gX+GVqNnEkJLtQEf
-         TrukNrpRcSjknp+y6sXLPz/oKAawGPMLO97C9B8oF7M5h3WaNS08rU3JxA+N+RBn962P
-         JXc9rN5Y4YdZLbD0dHaKnEft2NI79Pmedrczrd12mqgfyLMglD/GZT4hEebvkntzv1je
-         MPiu4Mc85Xd0/Y43aqJGEyowIO96NTL2/0FMACsHkzQavo3whObCCXWBslww1JcRQnfc
-         m6skTiErrb6KqbQwlHDWYgIYWtuFJ0+1SxhFFATpBjbOvZN8b9+AalZEP0LEvNyCdjPF
-         R/hA==
-X-Gm-Message-State: AOAM530vmBPR2iZiwhVVCYXCY1fYhL9YzRXavTj4Ex8wLP/WaK5ihndR
-        plDXWlRHXwgMIQYdhSC/4x+mTS+8CHHuwZkBw/u82A==
-X-Google-Smtp-Source: ABdhPJydkSsTkVe66YjNSKFDH6L71UKujfw4XIMG1b/yqvx8GCOTa67p4xK47kkdF1AolTKy50FI6BZbal8CMHvsKAc=
-X-Received: by 2002:a05:6808:f94:: with SMTP id o20mr1223000oiw.121.1621284811977;
- Mon, 17 May 2021 13:53:31 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=WzNUoUY7AUzQjydPiHh/ZS4e3yrInAcISdLJEmYM3yc=;
+        b=kRHDSwHPFR+0REauumymdXXBhxRo9mDH+Dedmtx4pR9AnE4gNPDU823IT0NeaHbThS
+         gcEtCl0LJrEOfP77/pGCzYKAr1uiS6SV1FD5S8XU2M6V8AuwrfVdz4hzw4cb+BIT8grh
+         svs7fF77to2ddrcZQIaMzeRfHO6W5HG7mGSOF40QUXPkf7cc1MmPVK/Hh5eiuiunJpBD
+         YiNJ3oIEyzZGdNlUa3P6tTfyM6DzV4y6i5cgo6iYkdDF3TWXfhhUX1IcmSdHZ//8MbVb
+         UnfUhnSSzT423dHHfML4nD56HAzeOzI7mIYD2fl1hQyK6tQvEODmPVGUDv/Ru8XY1cj6
+         aMxw==
+X-Gm-Message-State: AOAM531dMN6S7V63/Au/BM2kk0jrkMpZoQc6jY1HQTQnqvR22RbLDS7e
+        U1uxCJe5ddc6KhDmZvmnRIMyJw==
+X-Google-Smtp-Source: ABdhPJxip/qt7R4PId8aNCMSR9857mihgvMm44XHKbpxBIiXIVxpmhORCNHvc6siUldmvVcddtNCWQ==
+X-Received: by 2002:a05:6638:138e:: with SMTP id w14mr1906162jad.33.1621284862780;
+        Mon, 17 May 2021 13:54:22 -0700 (PDT)
+Received: from localhost ([2601:602:9200:1465:17ad:f4bd:897d:c28a])
+        by smtp.gmail.com with ESMTPSA id v16sm9581998ilq.45.2021.05.17.13.54.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 May 2021 13:54:22 -0700 (PDT)
+From:   Kevin Hilman <khilman@baylibre.com>
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        narmstrong@baylibre.com, linux-amlogic@lists.infradead.org
+Cc:     jbrunet@baylibre.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: Re: [PATCH] soc: amlogic: meson-ee-pwrc: Rename "get_power" to
+ "is_powered_off"
+In-Reply-To: <20210517202115.1004065-1-martin.blumenstingl@googlemail.com>
+References: <20210517202115.1004065-1-martin.blumenstingl@googlemail.com>
+Date:   Mon, 17 May 2021 13:54:20 -0700
+Message-ID: <7hcztpt72b.fsf@baylibre.com>
 MIME-Version: 1.0
-References: <YIpkvGrBFGlB5vNj@elver.google.com> <m11rat9f85.fsf@fess.ebiederm.org>
- <CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com>
- <m15z031z0a.fsf@fess.ebiederm.org> <YIxVWkT03TqcJLY3@elver.google.com>
- <m1zgxfs7zq.fsf_-_@fess.ebiederm.org> <m1r1irpc5v.fsf@fess.ebiederm.org>
- <CANpmjNNfiSgntiOzgMc5Y41KVAV_3VexdXCMADekbQEqSP3vqQ@mail.gmail.com>
- <m1czuapjpx.fsf@fess.ebiederm.org> <CANpmjNNyifBNdpejc6ofT6+n6FtUw-Cap_z9Z9YCevd7Wf3JYQ@mail.gmail.com>
- <m14kfjh8et.fsf_-_@fess.ebiederm.org> <m1tuni8ano.fsf_-_@fess.ebiederm.org> <m1a6ot5e2h.fsf_-_@fess.ebiederm.org>
-In-Reply-To: <m1a6ot5e2h.fsf_-_@fess.ebiederm.org>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 17 May 2021 22:53:20 +0200
-Message-ID: <CANpmjNM6rzyTp_+myecf8_773HLWDyJDbxFM6rWvzfKTLkXbhQ@mail.gmail.com>
-Subject: Re: [PATCH v4 0/5] siginfo: ABI fixes for TRAP_PERF
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Florian Weimer <fweimer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 17 May 2021 at 21:58, Eric W. Biederman <ebiederm@xmission.com> wrote:
->
-> During the merge window an issue with si_perf and the siginfo ABI came
-> up.  The alpha and sparc siginfo structure layout had changed with the
-> addition of SIGTRAP TRAP_PERF and the new field si_perf.
->
-> The reason only alpha and sparc were affected is that they are the
-> only architectures that use si_trapno.
->
-> Looking deeper it was discovered that si_trapno is used for only
-> a few select signals on alpha and sparc, and that none of the
-> other _sigfault fields past si_addr are used at all.  Which means
-> technically no regression on alpha and sparc.
->
-> While the alignment concerns might be dismissed the abuse of
-> si_errno by SIGTRAP TRAP_PERF does have the potential to cause
-> regressions in existing userspace.
->
-> While we still have time before userspace starts using and depending on
-> the new definition siginfo for SIGTRAP TRAP_PERF this set of changes
-> cleans up siginfo_t.
->
-> - The si_trapno field is demoted from magic alpha and sparc status and
->   made an ordinary union member of the _sigfault member of siginfo_t.
->   Without moving it of course.
->
-> - si_perf is replaced with si_perf_data and si_perf_type ending the
->   abuse of si_errno.
->
-> - Unnecessary additions to signalfd_siginfo are removed.
->
-> v3: https://lkml.kernel.org/r/m1tuni8ano.fsf_-_@fess.ebiederm.org
-> v2: https://lkml.kernel.org/r/m14kfjh8et.fsf_-_@fess.ebiederm.org
-> v1: https://lkml.kernel.org/r/m1zgxfs7zq.fsf_-_@fess.ebiederm.org
->
-> This version drops the tests and fine grained handling of si_trapno
-> on alpha and sparc (replaced assuming si_trapno is valid for
-> all but the faults that defined different data).
+Martin Blumenstingl <martin.blumenstingl@googlemail.com> writes:
 
-And just to clarify, the rest of the series (including static-asserts)
-for the next merge-window will be sent once this series is all sorted,
-correct?
+> The name "get_power" is used within the Meson EE power controller driver
+> to indicate whether a power domain is turned on or off. With the
+> original "get_power" naming the result was:
+> - true = powered off
+> - false = powered on
+>
+> Rename "get_power" to "is_powered_off" to make the naming consistent
+> with the third argument to pm_genpd_init. Also this naming is easier to
+> understand when reading the code without looking at the implementation
+> of "get_power".
+>
+> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-> Eric W. Biederman (5):
->       siginfo: Move si_trapno inside the union inside _si_fault
->       signal: Implement SIL_FAULT_TRAPNO
->       signal: Factor force_sig_perf out of perf_sigtrap
->       signal: Deliver all of the siginfo perf data in _perf
->       signalfd: Remove SIL_PERF_EVENT fields from signalfd_siginfo
-
-Looks good, thank you! I build-tested (defconfig -- x86_64, i386, arm,
-arm64, m68k, sparc, alpha) this series together with a local patch to
-pull in the static asserts from v3. Also re-ran perf_events kselftests
-on x86_64 (native and 32bit compat).
-
-Thanks,
--- Marco
+Reviewed-by: Kevin Hilman <khilman@baylibre.com>
