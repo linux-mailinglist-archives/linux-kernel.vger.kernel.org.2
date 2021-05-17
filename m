@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA1F2383194
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:42:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63A8D3831A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:42:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237599AbhEQOhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:37:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43232 "EHLO mail.kernel.org"
+        id S240550AbhEQOip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:38:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239420AbhEQOdk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:33:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E4B461405;
-        Mon, 17 May 2021 14:16:14 +0000 (UTC)
+        id S240273AbhEQOdn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:33:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6998A6191C;
+        Mon, 17 May 2021 14:16:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621260974;
-        bh=zD/XlO3nFglcr4ayUhe59PHYI1gbpAn+M8Dg02aSF6A=;
+        s=korg; t=1621260976;
+        bh=cYITyM34fRkL0DDHNTO3gYgW71M19umtL2N33h6CW4s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OsXRjG5qdhIAUC7zq7OH8OhS2OM6cwSndbkUvKucCy4wq+az/+OSU22rgp7KpVeqD
-         Dh+W++eQFfvoa63oqFnpZSwt2Rm4Zi55O70a92nsgrXi4bv4FQ9YqsyY2ybNTweHJ8
-         m+BcBCvQqpxK7QSalHkNSD+/C+7pQgrPu+R9LY/s=
+        b=w5Mn+dRvsgqovD5fIqUG6wMhvxWJizTh3RoExjchYwiu5SqRShC0bosULOvqWFWhu
+         il2YczCcwAH87PN9rYLwXV3UFnCHVCBmQUQEzUTkZNC5U2K3QSOjTn4KzZAn71Z8pP
+         P6yEHAJAeIg0Tr1Hw1HyrMSJ+2X8ErqP1Dj1BO9U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
         David Teigland <teigland@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 019/329] fs: dlm: check on minimum msglen size
-Date:   Mon, 17 May 2021 15:58:50 +0200
-Message-Id: <20210517140302.702411095@linuxfoundation.org>
+Subject: [PATCH 5.11 020/329] fs: dlm: flush swork on shutdown
+Date:   Mon, 17 May 2021 15:58:51 +0200
+Message-Id: <20210517140302.730987387@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140302.043055203@linuxfoundation.org>
 References: <20210517140302.043055203@linuxfoundation.org>
@@ -42,40 +42,80 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Alexander Aring <aahringo@redhat.com>
 
-[ Upstream commit 710176e8363f269c6ecd73d203973b31ace119d3 ]
+[ Upstream commit eec054b5a7cfe6d1f1598a323b05771ee99857b5 ]
 
-This patch adds an additional check for minimum dlm header size which is
-an invalid dlm message and signals a broken stream. A msglen field cannot
-be less than the dlm header size because the field is inclusive header
-lengths.
+This patch fixes the flushing of send work before shutdown. The function
+cancel_work_sync() is not the right workqueue functionality to use here
+as it would cancel the work if the work queues itself. In cases of
+EAGAIN in send() for dlm message we need to be sure that everything is
+send out before. The function flush_work() will ensure that every send
+work is be done inclusive in EAGAIN cases.
 
 Signed-off-by: Alexander Aring <aahringo@redhat.com>
 Signed-off-by: David Teigland <teigland@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/dlm/midcomms.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ fs/dlm/lowcomms.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/fs/dlm/midcomms.c b/fs/dlm/midcomms.c
-index fde3a6afe4be..0bedfa8606a2 100644
---- a/fs/dlm/midcomms.c
-+++ b/fs/dlm/midcomms.c
-@@ -49,9 +49,10 @@ int dlm_process_incoming_buffer(int nodeid, unsigned char *buf, int len)
- 		 * cannot deliver this message to upper layers
- 		 */
- 		msglen = get_unaligned_le16(&hd->h_length);
--		if (msglen > DEFAULT_BUFFER_SIZE) {
--			log_print("received invalid length header: %u, will abort message parsing",
--				  msglen);
-+		if (msglen > DEFAULT_BUFFER_SIZE ||
-+		    msglen < sizeof(struct dlm_header)) {
-+			log_print("received invalid length header: %u from node %d, will abort message parsing",
-+				  msglen, nodeid);
- 			return -EBADMSG;
- 		}
+diff --git a/fs/dlm/lowcomms.c b/fs/dlm/lowcomms.c
+index f827d0b3962a..5fe571e44b1a 100644
+--- a/fs/dlm/lowcomms.c
++++ b/fs/dlm/lowcomms.c
+@@ -709,10 +709,7 @@ static void shutdown_connection(struct connection *con)
+ {
+ 	int ret;
  
+-	if (cancel_work_sync(&con->swork)) {
+-		log_print("canceled swork for node %d", con->nodeid);
+-		clear_bit(CF_WRITE_PENDING, &con->flags);
+-	}
++	flush_work(&con->swork);
+ 
+ 	mutex_lock(&con->sock_mutex);
+ 	/* nothing to shutdown */
 -- 
 2.30.2
 
+
+
+inuxfoundation.org>
+---
+ arch/powerpc/lib/feature-fixups.c |   16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
+
+--- a/arch/powerpc/lib/feature-fixups.c
++++ b/arch/powerpc/lib/feature-fixups.c
+@@ -299,8 +299,9 @@ void do_uaccess_flush_fixups(enum l1d_fl
+ 						: "unknown");
+ }
+ 
+-void do_entry_flush_fixups(enum l1d_flush_type types)
++static int __do_entry_flush_fixups(void *data)
+ {
++	enum l1d_flush_type types = *(enum l1d_flush_type *)data;
+ 	unsigned int instrs[3], *dest;
+ 	long *start, *end;
+ 	int i;
+@@ -369,6 +370,19 @@ void do_entry_flush_fixups(enum l1d_flus
+ 							: "ori type" :
+ 		(types &  L1D_FLUSH_MTTRIG)     ? "mttrig type"
+ 						: "unknown");
++
++	return 0;
++}
++
++void do_entry_flush_fixups(enum l1d_flush_type types)
++{
++	/*
++	 * The call to the fallback flush can not be safely patched in/out while
++	 * other CPUs are executing it. So call __do_entry_flush_fixups() on one
++	 * CPU while all other CPUs spin in the stop machine core with interrupts
++	 * hard disabled.
++	 */
++	stop_machine(__do_entry_flush_fixups, &types, NULL);
+ }
+ 
+ void do_rfi_flush_fixups(enum l1d_flush_type types)
 
 
