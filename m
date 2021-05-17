@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 405E7383195
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:42:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52B393830FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 16:35:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240316AbhEQOhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 10:37:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43402 "EHLO mail.kernel.org"
+        id S240239AbhEQOda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 10:33:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240282AbhEQOdp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 10:33:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C63D5613E8;
-        Mon, 17 May 2021 14:16:20 +0000 (UTC)
+        id S239288AbhEQO2S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 10:28:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ECF4861582;
+        Mon, 17 May 2021 14:14:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621260981;
-        bh=9/deoVy0/tN1by8qL0WOlNlc4En/IMSnzchfO2hrlYI=;
+        s=korg; t=1621260856;
+        bh=ayrtXFfexLm21Ax+2aCcvnfelywZrTIyJQle+XrJDzA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vBRtwWDXXwWl9A2t6A0UzpWk98Dq6AD1DKwob+F59VELXu2pC/24wvpvUVDyb7UUZ
-         T2pgtlhrQNaYkaZWSs0VrX4LDdccFkIr1bYs+6LRCaBgrmu4Ba+uMkyJ9sa/zErF9y
-         4krL75JBx7k9XbDtoP+9rCDUOtYBpHZ06EFJ7skQ=
+        b=cwvUKNNbJZU3QwkHpxJFPObUd9p/8j72lpJfgbExLdbG0+DJxBy0nlSEzMtrv3bJ4
+         nx3rLtXpi0kG5cp+BQ1PBQlQx3dvzd8x0/jgs34F/dDqZsv/oEtf7h5OpDWdQdywo5
+         xgiEWu9xBOxXg8AVXzZkoC6iCkSZkSPD9Boq7YiY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shahab Vahedi <shahab@synopsys.com>,
+        stable@vger.kernel.org, Vladimir Isaev <isaev@synopsys.com>,
+        kernel test robot <lkp@intel.com>,
         Vineet Gupta <vgupta@synopsys.com>
-Subject: [PATCH 5.12 248/363] ARC: entry: fix off-by-one error in syscall number validation
-Date:   Mon, 17 May 2021 16:01:54 +0200
-Message-Id: <20210517140310.977209373@linuxfoundation.org>
+Subject: [PATCH 5.12 249/363] ARC: mm: PAE: use 40-bit physical page mask
+Date:   Mon, 17 May 2021 16:01:55 +0200
+Message-Id: <20210517140311.008721558@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210517140302.508966430@linuxfoundation.org>
 References: <20210517140302.508966430@linuxfoundation.org>
@@ -39,51 +40,133 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vineet Gupta <vgupta@synopsys.com>
+From: Vladimir Isaev <isaev@synopsys.com>
 
-commit 3433adc8bd09fc9f29b8baddf33b4ecd1ecd2cdc upstream.
+commit c5f756d8c6265ebb1736a7787231f010a3b782e5 upstream.
 
-We have NR_syscall syscalls from [0 .. NR_syscall-1].
-However the check for invalid syscall number is "> NR_syscall" as
-opposed to >=. This off-by-one error erronesously allows "NR_syscall"
-to be treated as valid syscall causeing out-of-bounds access into
-syscall-call table ensuing a crash (holes within syscall table have a
-invalid-entry handler but this is beyond the array implementing the
-table).
+32-bit PAGE_MASK can not be used as a mask for physical addresses
+when PAE is enabled. PAGE_MASK_PHYS must be used for physical
+addresses instead of PAGE_MASK.
 
-This problem showed up on v5.6 kernel when testing glibc 2.33 (v5.10
-kernel capable, includng faccessat2 syscall 439). The v5.6 kernel has
-NR_syscalls=439 (0 to 438). Due to the bug, 439 passed by glibc was
-not handled as -ENOSYS but processed leading to a crash.
+Without this, init gets SIGSEGV if pte_modify was called:
 
-Link: https://github.com/foss-for-synopsys-dwc-arc-processors/linux/issues/48
-Reported-by: Shahab Vahedi <shahab@synopsys.com>
-Cc: <stable@vger.kernel.org>
+| potentially unexpected fatal signal 11.
+| Path: /bin/busybox
+| CPU: 0 PID: 1 Comm: init Not tainted 5.12.0-rc5-00003-g1e43c377a79f-dirty
+| Insn could not be fetched
+|     @No matching VMA found
+|  ECR: 0x00040000 EFA: 0x00000000 ERET: 0x00000000
+| STAT: 0x80080082 [IE U     ]   BTA: 0x00000000
+|  SP: 0x5f9ffe44  FP: 0x00000000 BLK: 0xaf3d4
+| LPS: 0x000d093e LPE: 0x000d0950 LPC: 0x00000000
+| r00: 0x00000002 r01: 0x5f9fff14 r02: 0x5f9fff20
+| ...
+| Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+
+Signed-off-by: Vladimir Isaev <isaev@synopsys.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Vineet Gupta <vgupta@synopsys.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arc/kernel/entry.S |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arc/include/asm/page.h      |   12 ++++++++++++
+ arch/arc/include/asm/pgtable.h   |   12 +++---------
+ arch/arc/include/uapi/asm/page.h |    1 -
+ arch/arc/mm/ioremap.c            |    5 +++--
+ arch/arc/mm/tlb.c                |    2 +-
+ 5 files changed, 19 insertions(+), 13 deletions(-)
 
---- a/arch/arc/kernel/entry.S
-+++ b/arch/arc/kernel/entry.S
-@@ -177,7 +177,7 @@ tracesys:
+--- a/arch/arc/include/asm/page.h
++++ b/arch/arc/include/asm/page.h
+@@ -7,6 +7,18 @@
  
- 	; Do the Sys Call as we normally would.
- 	; Validate the Sys Call number
--	cmp     r8,  NR_syscalls
-+	cmp     r8,  NR_syscalls - 1
- 	mov.hi  r0, -ENOSYS
- 	bhi     tracesys_exit
+ #include <uapi/asm/page.h>
  
-@@ -255,7 +255,7 @@ ENTRY(EV_Trap)
- 	;============ Normal syscall case
++#ifdef CONFIG_ARC_HAS_PAE40
++
++#define MAX_POSSIBLE_PHYSMEM_BITS	40
++#define PAGE_MASK_PHYS			(0xff00000000ull | PAGE_MASK)
++
++#else /* CONFIG_ARC_HAS_PAE40 */
++
++#define MAX_POSSIBLE_PHYSMEM_BITS	32
++#define PAGE_MASK_PHYS			PAGE_MASK
++
++#endif /* CONFIG_ARC_HAS_PAE40 */
++
+ #ifndef __ASSEMBLY__
  
- 	; syscall num shd not exceed the total system calls avail
--	cmp     r8,  NR_syscalls
-+	cmp     r8,  NR_syscalls - 1
- 	mov.hi  r0, -ENOSYS
- 	bhi     .Lret_from_system_call
+ #define clear_page(paddr)		memset((paddr), 0, PAGE_SIZE)
+--- a/arch/arc/include/asm/pgtable.h
++++ b/arch/arc/include/asm/pgtable.h
+@@ -107,8 +107,8 @@
+ #define ___DEF (_PAGE_PRESENT | _PAGE_CACHEABLE)
  
+ /* Set of bits not changed in pte_modify */
+-#define _PAGE_CHG_MASK	(PAGE_MASK | _PAGE_ACCESSED | _PAGE_DIRTY | _PAGE_SPECIAL)
+-
++#define _PAGE_CHG_MASK	(PAGE_MASK_PHYS | _PAGE_ACCESSED | _PAGE_DIRTY | \
++							   _PAGE_SPECIAL)
+ /* More Abbrevaited helpers */
+ #define PAGE_U_NONE     __pgprot(___DEF)
+ #define PAGE_U_R        __pgprot(___DEF | _PAGE_READ)
+@@ -132,13 +132,7 @@
+ #define PTE_BITS_IN_PD0		(_PAGE_GLOBAL | _PAGE_PRESENT | _PAGE_HW_SZ)
+ #define PTE_BITS_RWX		(_PAGE_EXECUTE | _PAGE_WRITE | _PAGE_READ)
+ 
+-#ifdef CONFIG_ARC_HAS_PAE40
+-#define PTE_BITS_NON_RWX_IN_PD1	(0xff00000000 | PAGE_MASK | _PAGE_CACHEABLE)
+-#define MAX_POSSIBLE_PHYSMEM_BITS 40
+-#else
+-#define PTE_BITS_NON_RWX_IN_PD1	(PAGE_MASK | _PAGE_CACHEABLE)
+-#define MAX_POSSIBLE_PHYSMEM_BITS 32
+-#endif
++#define PTE_BITS_NON_RWX_IN_PD1	(PAGE_MASK_PHYS | _PAGE_CACHEABLE)
+ 
+ /**************************************************************************
+  * Mapping of vm_flags (Generic VM) to PTE flags (arch specific)
+--- a/arch/arc/include/uapi/asm/page.h
++++ b/arch/arc/include/uapi/asm/page.h
+@@ -33,5 +33,4 @@
+ 
+ #define PAGE_MASK	(~(PAGE_SIZE-1))
+ 
+-
+ #endif /* _UAPI__ASM_ARC_PAGE_H */
+--- a/arch/arc/mm/ioremap.c
++++ b/arch/arc/mm/ioremap.c
+@@ -53,9 +53,10 @@ EXPORT_SYMBOL(ioremap);
+ void __iomem *ioremap_prot(phys_addr_t paddr, unsigned long size,
+ 			   unsigned long flags)
+ {
++	unsigned int off;
+ 	unsigned long vaddr;
+ 	struct vm_struct *area;
+-	phys_addr_t off, end;
++	phys_addr_t end;
+ 	pgprot_t prot = __pgprot(flags);
+ 
+ 	/* Don't allow wraparound, zero size */
+@@ -72,7 +73,7 @@ void __iomem *ioremap_prot(phys_addr_t p
+ 
+ 	/* Mappings have to be page-aligned */
+ 	off = paddr & ~PAGE_MASK;
+-	paddr &= PAGE_MASK;
++	paddr &= PAGE_MASK_PHYS;
+ 	size = PAGE_ALIGN(end + 1) - paddr;
+ 
+ 	/*
+--- a/arch/arc/mm/tlb.c
++++ b/arch/arc/mm/tlb.c
+@@ -576,7 +576,7 @@ void update_mmu_cache(struct vm_area_str
+ 		      pte_t *ptep)
+ {
+ 	unsigned long vaddr = vaddr_unaligned & PAGE_MASK;
+-	phys_addr_t paddr = pte_val(*ptep) & PAGE_MASK;
++	phys_addr_t paddr = pte_val(*ptep) & PAGE_MASK_PHYS;
+ 	struct page *page = pfn_to_page(pte_pfn(*ptep));
+ 
+ 	create_tlb(vma, vaddr, ptep);
 
 
