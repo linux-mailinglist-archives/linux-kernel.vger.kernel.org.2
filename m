@@ -2,70 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 437B0383962
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C1C93839DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 May 2021 18:30:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347212AbhEQQPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 May 2021 12:15:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47160 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244768AbhEQPvL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 May 2021 11:51:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6487F610A2;
-        Mon, 17 May 2021 15:13:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621264384;
-        bh=W5xkZsukITwxD2vyq79yAHhInfmLtEQuAjuviEfY5Gw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=JJQmSbUHURNv1p453cVx1E+CiI67NzqNDt5EQVhK0jwX2D4kJhMgTyUdWRO+YOwQI
-         yaORaFDJh4XkfzmcgS2naqPTjXGDFq3MZiB3+jLg9fzb2CWC5YMga98J8bmtPynkjN
-         Vgf5NJeLR+L+mhS4kWK5tCEQk2tBjfduCc+BZmCKH2k9oYyyErNYe+HE626ey8YIIy
-         SvE4Gn78abXd3w/CPbc8cDS3TloZX156Ifmxxpv6ZlwWCo/4N0jStnSTjlhMB3ctKy
-         wNa9B1wCU8XIthaxJDrgpCdDLPEoVkFY+1FSWcvyxNT8VBsVkYAIUo4QmSYlSFo+LZ
-         JOjovBjkqgkCA==
-Received: by mail-ed1-f54.google.com with SMTP id di13so7363173edb.2;
-        Mon, 17 May 2021 08:13:04 -0700 (PDT)
-X-Gm-Message-State: AOAM531yx8U/Gg/LP1wX6QowW4JFYIyGFS2CK8EOxFEyzpv6Iq/s5ZVN
-        jHQOCKIC50LZX8jh/1FBYTAlpj0GNeIA6hTGIA==
-X-Google-Smtp-Source: ABdhPJzlXPKQhfjtV7b7SxTeY0v65tOCReL5EfTzNb8MxkY9dfVx8RFPbEhGN+/BM+4NxfE1ePCtAV3Swas4r/nkUOA=
-X-Received: by 2002:a05:6402:100c:: with SMTP id c12mr579637edu.165.1621264382986;
- Mon, 17 May 2021 08:13:02 -0700 (PDT)
+        id S245156AbhEQQbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 May 2021 12:31:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243661AbhEQQaP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 17 May 2021 12:30:15 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A003C08EB04
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 08:13:07 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id c20so9779528ejm.3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 May 2021 08:13:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=usbkl3eSbLJY48dNZ3F0WFUOcTmkoTvft5/B7CL2sSU=;
+        b=kEuT1N5/kO7rAdEgl1j8JLVDuUgyk4mkEmZFl/+L8PvOtZmcdeETEi8LQMF8goxorE
+         FHnZ92LpD8DQrwHOQnBY0OJtFifqJVScvJBJMt7TI/clMG9wx1CsJjBQx5H0QwNpwNqz
+         MGfJd0FotdiakdxcCi9xYYnEwCAN2u0wOhxTnXByh1if0GaLk0sx0poV3LInQt1k+l8T
+         YULNsLltGxmiW6JJkLVGH4BUgIznFMaEjApb9esqcBXB3UeNl8GhX9YL3Yf/61VvVBEQ
+         3/0oV9tncPFMDubvXrNbDEVU9mMc9AvFU3gIfELO3i7hr2vxS/xIirAA+Ma1oZ+/A3ZB
+         woog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=usbkl3eSbLJY48dNZ3F0WFUOcTmkoTvft5/B7CL2sSU=;
+        b=P6YDWzfrPWLZpZVT1zrK0Y5wLLnJ7PvW/y3bhdKEVdUvvsAKt9cnpzY3tpIO8q8qmF
+         4dyvvqh7ohEODUmEfOkqUS8TiYzP3Xr2AhsAjKKaPJgZAkoAuYEh3LuThzI+yj3UrBUQ
+         0UtED8fYcTDo4Up/Tk/hcsPGMQquZPDYIcNqV3NqG3FrI1Ck2PzDR5pt8AmSbCxpW/cJ
+         z5CTMMZPQ3NYpM+N4YSIGOhaTEE8Jg38EMXeDPluBgCH2tOAO3yXykdEGe2yOkdpjl8Y
+         ZzrrexcX/4bhpvzsSEybGbfR9hJ8mmBjGfJQ9LrwgXCBlZPf9GLiDkZ30eb6q1fy9Ec2
+         Y31A==
+X-Gm-Message-State: AOAM532wMbNKvFOvhztdG0qb8fowrCv11087cEEAizHw+I5HIuXdJ6wj
+        V8aRuQ90i1KyCoXzhWuOjcNA5Q==
+X-Google-Smtp-Source: ABdhPJyz6c2G3oG+zPca9fjjDDqPHFgaRlOjr19GzNPtmUAVMbqQGJd82kvv2LT1kvF53lvygb3s8Q==
+X-Received: by 2002:a17:906:2559:: with SMTP id j25mr423050ejb.42.1621264386090;
+        Mon, 17 May 2021 08:13:06 -0700 (PDT)
+Received: from [192.168.1.14] ([195.24.90.54])
+        by smtp.googlemail.com with ESMTPSA id z4sm11175002edc.1.2021.05.17.08.13.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 May 2021 08:13:05 -0700 (PDT)
+Subject: Re: [PATCH 1/3] v4l: Add Qualcomm custom compressed pixel formats
+To:     Nicolas Dufresne <nicolas@ndufresne.ca>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-api@vger.kernel.org
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+References: <20210429105815.2790770-1-stanimir.varbanov@linaro.org>
+ <20210429105815.2790770-2-stanimir.varbanov@linaro.org>
+ <d54b1bb7956e1e3bea47fde1216084c7f2eae87e.camel@ndufresne.ca>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <892effb7-7a29-e016-c903-1a9bee6e9881@linaro.org>
+Date:   Mon, 17 May 2021 18:13:03 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210424110608.15748-3-michael@walle.cc> <20210510104411.11267-1-miquel.raynal@bootlin.com>
-In-Reply-To: <20210510104411.11267-1-miquel.raynal@bootlin.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 17 May 2021 10:12:51 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqK3Wym+ERaQ0np-v8HM39TyNUTAwbhKHPasOPx5xnMNsQ@mail.gmail.com>
-Message-ID: <CAL_JsqK3Wym+ERaQ0np-v8HM39TyNUTAwbhKHPasOPx5xnMNsQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] dt-bindings: mtd: add YAML schema for the generic
- MTD bindings
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Michael Walle <michael@walle.cc>,
-        MTD Maling List <linux-mtd@lists.infradead.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <d54b1bb7956e1e3bea47fde1216084c7f2eae87e.camel@ndufresne.ca>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 5:44 AM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
->
-> On Sat, 2021-04-24 at 11:06:05 UTC, Michael Walle wrote:
-> > Convert MTD's common.txt to mtd.yaml.
-> >
-> > Signed-off-by: Michael Walle <michael@walle.cc>
-> > Reviewed-by: Rob Herring <robh@kernel.org>
->
-> Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next, thanks.
 
-This is causing a warning in linux-next:
 
-/builds/robherring/linux-dt/Documentation/devicetree/bindings/spi/spi-mux.example.dt.yaml:
-spi-flash@0: $nodename:0: 'spi-flash@0' does not match '^flash(@.*)?$'
- From schema: /builds/robherring/linux-dt/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+On 4/29/21 10:10 PM, Nicolas Dufresne wrote:
+> Le jeudi 29 avril 2021 à 13:58 +0300, Stanimir Varbanov a écrit :
+>> Here we add custom Qualcomm raw compressed pixel formats. They are
+>> used in Qualcomm SoCs to optimaize the interconnect bandwidth.
+> 
+> Wasn't reviewing, just skimming the lists, but s/optimaize/optimize/
+> 
+>>
+>> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+>> ---
+>>  .../userspace-api/media/v4l/pixfmt-reserved.rst      | 12 ++++++++++++
+>>  drivers/media/v4l2-core/v4l2-ioctl.c                 |  2 ++
+>>  include/uapi/linux/videodev2.h                       |  2 ++
+>>  3 files changed, 16 insertions(+)
+>>
+>> diff --git a/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst b/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst
+>> index 0b879c0da713..30b9cef4cbf0 100644
+>> --- a/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst
+>> +++ b/Documentation/userspace-api/media/v4l/pixfmt-reserved.rst
+>> @@ -260,6 +260,18 @@ please make a proposal on the linux-media mailing list.
+>>  	of tiles, resulting in 32-aligned resolutions for the luminance plane
+>>  	and 16-aligned resolutions for the chrominance plane (with 2x2
+>>  	subsampling).
+>> +    * .. _V4L2-PIX-FMT-QC8C:
+>> +
+>> +      - ``V4L2_PIX_FMT_QC8C``
+>> +      - 'QC8C'
+>> +      - Compressed Macro-tile 8Bit YUV420 format used by Qualcomm platforms.
+>> +	The compression is lossless. It contains four planes.
+> 
+> Would be nice to document if the bytesperline is meaningful or not. Basically,
+> what information need to be carried to other drivers ?
 
-Rob
+I don't think that bytesperline has some valuable information, the
+important thing is the size of the memory buffer and it should be used
+to negotiate between v4l2 and drm for example. The layout of the buffer
+can be seen at [1].
+
+[1]
+https://android.googlesource.com/kernel/msm/+/android-msm-bullhead-3.10-marshmallow-dr/include/media/msm_media_info.h
+
+-- 
+regards,
+Stan
